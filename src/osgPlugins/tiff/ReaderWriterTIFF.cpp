@@ -248,7 +248,7 @@ simage_tiff_error(char * buffer, int buflen)
             strncpy(buffer, "TIFF loader: Error opening file", buflen);
             break;
         case ERR_READ:
-            strncpy(buffer, "TIFF loader: Error reding/decoding file", buflen);
+            strncpy(buffer, "TIFF loader: Error reading/decoding file", buflen);
             break;
         case ERR_MEM:
             strncpy(buffer, "TIFF loader: Out of memory error", buflen);

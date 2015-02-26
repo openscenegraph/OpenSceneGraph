@@ -1577,8 +1577,8 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
     const GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords[contextID];
     if (!transformedCoords->empty())
     {
-        state.setVertexPointer(transformedCoords);
-        state.setTexCoordPointer(0, glyphquad._texcoords);
+        state.setVertexPointer(transformedCoords.get());
+        state.setTexCoordPointer(0, glyphquad._texcoords.get());
 
         if(_colorGradientMode == SOLID)
         {
@@ -1587,7 +1587,7 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
         }
         else
         {
-            state.setColorPointer(glyphquad._colorCoords);
+            state.setColorPointer(glyphquad._colorCoords.get());
         }
 
         glyphquad._quadIndices->draw(state, _useVertexBufferObjects);
@@ -1665,7 +1665,7 @@ void Text::drawTextWithBackdrop(osg::State& state, const osg::Vec4& colorMultipl
                 max_backdrop_index = _backdropType+1;
             }
 
-            state.setTexCoordPointer(0, glyphquad._texcoords);
+            state.setTexCoordPointer(0, glyphquad._texcoords.get());
             state.disableColorPointer();
             state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
@@ -1674,7 +1674,7 @@ void Text::drawTextWithBackdrop(osg::State& state, const osg::Vec4& colorMultipl
                 const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
                 if (!transformedBackdropCoords->empty())
                 {
-                    state.setVertexPointer(transformedBackdropCoords);
+                    state.setVertexPointer(transformedBackdropCoords.get());
                     glyphquad._quadIndices->draw(state, _useVertexBufferObjects);
                 }
             }

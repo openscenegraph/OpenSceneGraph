@@ -165,6 +165,7 @@ Rudolf Wiedemann
 Maria Ten
 Liang Aibin
 Katharina Plugge
+Julien Valentin
 John Vidar Larring
 John Kelso
 John Ivar
@@ -194,6 +195,7 @@ Robert Milharcic
 Rene Molenaar
 Piotr Domagalski
 Phil Atkin
+Pawel Ksiezopolski
 Nathan Monteleone
 Miguel Escriva
 Mattias Linde
@@ -203,7 +205,6 @@ Lee Butler
 Lars Nilsson
 Konstantin Sinitsyn
 Ken Sewell
-Julien Valentin
 Julian Ortiz
 Julen Garcia
 John Kaniarz
@@ -252,7 +253,6 @@ Ralf Kern
 Piotr Gwiazdowski
 Pierre Haritchabalet
 Perry Miller
-Pawel Ksiezopolski
 Paul Palumbo
 Paul Obermeier
 Nguyen Van Truong
@@ -309,6 +309,7 @@ Daniel Trstenjak
 Craig Bosma
 Claus Scheiblauer
 Christophe Loustaunau
+Bradley Baker Searles
 Brad Anderegg
 Aric Aumann
 Andrew Sampson
@@ -382,7 +383,6 @@ Petr Salinger
 Peter Bear
 Peter Amstutz
 Per Nordqvist
-PawelKsiezopolski
 Paul Idstein
 Paul Fredrikson
 Paul Fotheringham

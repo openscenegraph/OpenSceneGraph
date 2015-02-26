@@ -315,6 +315,8 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         bool isBufferObjectSupported;
         bool isPBOSupported;
         bool isTBOSupported;
+        bool isVAOSupported;
+        bool isTransformFeedbackSupported;
 
         void (GL_APIENTRY * glGenBuffers) (GLsizei n, GLuint *buffers);
         void (GL_APIENTRY * glBindBuffer) (GLenum target, GLuint buffer);

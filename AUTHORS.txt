@@ -1,6 +1,6 @@
 OpenSceneGraph Library 3.3.4
 
-543 Contributors:
+542 Contributors:
 
 Firstname Surname
 -----------------
@@ -15,7 +15,7 @@ Wang Rui
 Jean-Sébastien Guay
 Ulrich Hertlein
 Mike Weiblen
-Sukender 
+Sukender
 Eric Wing
 Cedric Pinson
 Brede Johansen
@@ -30,7 +30,7 @@ Colin McDonald
 Trajce Nikolov
 Tim Moore
 Martin Lavery
-Tree 
+Tree
 Mattias Helsing
 Jason Beverage
 Luigi Calori
@@ -239,7 +239,7 @@ Yuzhong Shen
 Wee See
 Warren Macchi
 Vincent Bourdier
-Terrex 
+Terrex
 Tassilo Glander
 Steve Lunsford
 Stephane Simon
@@ -259,6 +259,7 @@ Nguyen Van Truong
 Nathan Cournia
 Morten Haukness
 Morné Pistorius
+Miha Rav¨elj
 Michael Henheffer
 Michael Guerrero
 Maya Leonard
@@ -301,7 +302,7 @@ Eduardo Poyart
 Edgar Ellis
 Dmitry Marakasov
 Dimi Christopoulos
-Diane DelallÃ©e
+Diane Delallée
 David Longest
 David Ergo
 Daniel Trstenjak
@@ -381,7 +382,7 @@ Petr Salinger
 Peter Bear
 Peter Amstutz
 Per Nordqvist
-PawelKsiezopolski 
+PawelKsiezopolski
 Paul Idstein
 Paul Fredrikson
 Paul Fotheringham
@@ -399,11 +400,9 @@ Nicolas Brodu
 Nick Black
 Mojtaba Fathi
 Mirko Viviani
-Mikkel GjÃ¸l
+Mikkel Gjøl
 Mike Krus
 Mike Garrity
-Miha RavÅ¡elj
-Miha Ravsel
 Michal Durkovic
 Michael Schanne
 Michael Polak

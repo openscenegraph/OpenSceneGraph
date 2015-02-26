@@ -1,6 +1,6 @@
-OpenSceneGraph Library 3.2.1
+OpenSceneGraph Library 3.2.2
 
-519 Contributors:
+526 Contributors:
 
 Firstname Surname
 -----------------
@@ -15,8 +15,8 @@ Wang Rui
 Jean-Sébastien Guay
 Ulrich Hertlein
 Mike Weiblen
-Eric Wing
 Sukender 
+Eric Wing
 Cedric Pinson
 Brede Johansen
 Bob Kuehne
@@ -37,11 +37,11 @@ Jason Beverage
 Chris Hanson
 Roland Smeenk
 Roger James
+Mattias Helsing
 Jeremy Moles
 Jan Peciva
-Mattias Helsing
-J.P. Delport
 Alberto Luaces
+J.P. Delport
 Magnus Kessler
 David Fries
 Andy Skinner
@@ -67,12 +67,12 @@ Alberto Farre
 Torben Dannhauer
 Sherman Wilcox
 Robert Michael
+Pjotr Svetachov
 Mourad Boufarguine
 André Garneau
 Adrian Egli
 Ruben Lopez
 Randall Hopper
-Pjotr Svetachov
 Jan Ciger
 Glenn Waldron
 Gideon May
@@ -91,6 +91,7 @@ Mike Connell
 Melchior Franz
 Johannes Baeuerle
 Thomas Hogarth
+Sebastian Messerschmidt
 Rafa Gaitan
 Neil Hughes
 Martin Beckett
@@ -105,7 +106,6 @@ Boris Bralo
 Yefei He
 Sondra Iverson
 Simon Julier
-Sebastian Messerschmidt
 Rune Schmidt Jensen
 Rainer Oder
 Nico Kruithof
@@ -129,6 +129,7 @@ Joseph Steel
 Jordi Torres
 John Shue
 Brad Colbert
+Björn Blissing
 Alexander Sinditskiy
 Vivek Rajan
 Uwe Woessner
@@ -137,6 +138,7 @@ Thom DeCarlo
 Tatsuhiro Nishioka
 Tanguy Fautré
 Sean Spicer
+Ryan Kawicki
 Richard Schmidt
 Peter Hrenka
 Paul de Repentigny
@@ -145,6 +147,7 @@ Neil Salter
 Mihai Radu
 Michael Hartman
 Martins Innus
+Marc Helbling
 Maciej Krol
 Lilin Xiong
 Leandro Motta Barros
@@ -153,11 +156,9 @@ Hartwig Wiesmann
 Donn Mielcarek
 Corbin Holtz
 Blasius Czink
-Björn Blissing
 Alexander Irion
 Toshiyuki Takahei
 Sebastien Grignard
-Ryan Kawicki
 Rudolf Wiedemann
 Robert Milharcic
 Maria Ten
@@ -266,6 +267,7 @@ Lilith Bryant
 Konstantin Matveyev
 Kevin Moiule
 Keith Steffen
+Julien Valentin
 Julen Garcia
 Joseph Winston
 John Aughey
@@ -273,6 +275,7 @@ Johannes Scholz
 Joachim Pouderoux
 Jean-Christophe Lombardo
 Javier Taibo
+Jan Klimke
 James Moliere
 Jaap Glas
 Igor Kravtchenko
@@ -291,7 +294,7 @@ Eric Buehler
 Eduardo Poyart
 Edgar Ellis
 Dimi Christopoulos
-Diane DelallÃ©e
+Diane Delallée
 David Longest
 David Ergo
 Daniel Trstenjak
@@ -299,6 +302,7 @@ Craig Bosma
 Claus Scheiblauer
 Christophe Loustaunau
 Christian Ruzicka
+Bradley Baker Searles
 Brad Anderegg
 Björn Hein
 Aric Aumann
@@ -327,6 +331,7 @@ Tomas Hnilica
 Todd Furlong
 Tobias Ottenweller
 Tino Schwarze
+Tim George
 Thorsten Brehm
 Thomas Weidner
 Tan Dunning
@@ -384,10 +389,10 @@ Nicolas Brodu
 Nick Black
 Mojtaba Fathi
 Mirko Viviani
-Mikkel GjÃ¸l
+Mikkel Gjøl
 Mike Krus
 Mike Garrity
-Miha Ravsel
+Miha Rav¨elj
 Michael Schanne
 Michael Polak
 Michael Morrison
@@ -411,7 +416,6 @@ Marius Kintel
 Mario Guimaraes
 Marco Sciabica
 Marco Lehmann
-Marc Helbling
 Maik Keller
 Lukas Diduch
 Louis Hamilton
@@ -443,7 +447,6 @@ Jeroen den Dekker
 Jay Zuckerman
 Jason Howlett
 Jason Ballenger
-Jan Klimke
 James Turner
 James Killian
 James Athey
@@ -486,7 +489,9 @@ Daniel Stien
 Dan Minor
 César L. B. Silveira
 Cyril Brulebois
+Clément B½sch
 Clay Fowler
+Claus Steuer
 Chuck Sembroski
 Christopher Blaesius
 Christopher Baker
@@ -508,6 +513,7 @@ Benjamin Wasty
 Ben van Basten
 Bart Gallet
 Axel Volley
+Arjun Ramamurthy
 Anthousis Andreadis
 Anish Thomas
 Andy Preece
@@ -522,4 +528,5 @@ Alan Purvis
 Alan Ott
 Alan Harris
 Adrien Grandemange
+Adrian Clark
 Adam Richard

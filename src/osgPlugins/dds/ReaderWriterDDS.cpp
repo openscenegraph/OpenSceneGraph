@@ -1016,7 +1016,7 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
 
     if (flipDDSRead) {
         osgImage->setOrigin(osg::Image::BOTTOM_LEFT);
-        if (!isDXTC || ((s>4 && s%4==0 && t>4 && t%4==0) || s<4))        // Flip may crash (access violation) or fail for non %4 dimensions (except for s<4). Tested with revision trunk 2013-02-22.
+        if (!isDXTC || ((s>4 && s%4==0 && t>4 && t%4==0) || s<=4)) // Flip may crash (access violation) or fail for non %4 dimensions (except for s<4). Tested with revision trunk 2013-02-22.
         {
             OSG_INFO<<"Flipping dds on load"<<std::endl;
             osgImage->flipVertical();
@@ -1281,7 +1281,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout, bool autoFlipDDSWri
         osg::ref_ptr<osg::Image> copy( new osg::Image(*img,osg::CopyOp::DEEP_COPY_ALL) );
         const int s(copy->s());
         const int t(copy->t());
-        if (!isDXTC || ((s>4 && s%4==0 && t>4 && t%4==0) || s<4))        // Flip may crash (access violation) or fail for non %4 dimensions (except for s<4). Tested with revision trunk 2013-02-22.
+        if (!isDXTC || ((s>4 && s%4==0 && t>4 && t%4==0) || s<=4)) // Flip may crash (access violation) or fail for non %4 dimensions (except for s<4). Tested with revision trunk 2013-02-22.
         {
             copy->flipVertical();
         }

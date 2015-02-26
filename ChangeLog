@@ -1,3 +1,43 @@
+2015-02-26 19:13  robert
+
+	* src/osg/Image.cpp: From Bradley Baker Searles, "We had someone
+	  replace a DDS texture with a GL_RGB/GL_UNSIGNED_SHORT_5_6_6
+	  image, which would trigger a crash in Image.cpp while flipping
+	  the mipmap chain. The code was trying to flip the mipmaps using
+	  the rowStep for the full-size image (we have "dds_flip" set in
+	  the osgDB::ReaderWriter::Options in the osgDB::Registry)."
+
+2015-02-26 18:07  robert
+
+	* src/osgPlugins/dds/ReaderWriterDDS.cpp: From Bradley Baker
+	  Searles, "Small patch attached to handle DDS flip when s=4.
+	  Currently it will omit flipping and generate a warning: "Vertical
+	  flip was skipped. Image dimensions have to be multiple of 4."."
+
+2015-02-26 14:16  robert
+
+	* src/osgPlugins/tiff/ReaderWriterTIFF.cpp: Fixed typo
+
+2015-02-23 20:28  robert
+
+	* src/osg/TransferFunction.cpp: Fixed image allocation operations.
+
+2015-02-23 11:07  robert
+
+	* src/osgViewer/StatsHandler.cpp: From Arjun Ramamurthy, fix for
+	  StatsHandler when being used in multiple view/windows
+
+2015-02-18 10:23  robert
+
+	* src/osgPlugins/dds/ReaderWriterDDS.cpp: From Sebastian
+	  Messerschmidt,"Attached you find a version of the ReaderWriterDDS
+	  with info outputs set to OSG_INFO instead of OSG_NOTICE. The old
+	  version spams the console for each loaded DDS file."
+
+2015-01-06 15:10  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2015-01-06 14:55  robert
 
 	* src/osgVolume/Property.cpp: From Julien Valentin, added missing

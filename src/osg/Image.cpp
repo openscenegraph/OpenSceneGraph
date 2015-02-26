@@ -1558,16 +1558,18 @@ void Image::flipVertical()
             {
                 if (!dxtc_tool::VerticalFlip(s,t,_pixelFormat,_data+_mipmapData[i]))
                 {
-                    OSG_NOTICE << "Notice Image::flipVertical(): Vertical flip do not succeed" << std::endl;
+                    OSG_NOTICE << "Notice Image::flipVertical(): Vertical flip did not succeed" << std::endl;
                 }
             }
             else
             {
-                // its not a compressed image, so implement flip oursleves.
+                // it's not a compressed image, so implement flip ourselves.
+                unsigned int mipRowSize = computeRowWidthInBytes(s, _pixelFormat, _dataType, _packing);
+                unsigned int mipRowStep = mipRowSize;
                 unsigned char* top = _data+_mipmapData[i];
-                unsigned char* bottom = top + (t-1)*rowStep;
+                unsigned char* bottom = top + (t-1)*mipRowStep;
 
-                flipImageVertical(top, bottom, rowSize, rowStep);
+                flipImageVertical(top, bottom, mipRowSize, mipRowStep);
             }
        }
     }

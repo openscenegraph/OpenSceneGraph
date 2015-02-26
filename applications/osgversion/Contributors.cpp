@@ -654,7 +654,11 @@ NameCorrection nameCorrections[] =
     {"Pjotr",          "Sventachov",
      "Pjotr",          "Svetachov"},
      {"Miha",          "Ravsel",
-      "Miha",          "Rav¨elj"}
+      "Miha",          "Rav¨elj"},
+     {"Bradley",       "Baker",
+      "Bradley",       "Baker Searles"},
+     {"PawelKsiezopolski", "",
+      "Pawel",          "Ksiezopolski"}
 };
 
 

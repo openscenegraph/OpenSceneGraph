@@ -990,7 +990,9 @@ void printContributors(const std::string& changeLog, bool printNumEntries)
         cout << "-------------------------" << endl;
         for (SortedNameMap::reverse_iterator sitr = sortedNames.rbegin(); sitr != sortedNames.rend(); ++sitr)
         {
-            cout << sitr->first << "\t" << sitr->second.first << " " << sitr->second.second << endl;
+            cout << sitr->first << "\t" << sitr->second.first;
+            if (!sitr->second.second.empty()) cout << " " << sitr->second.second;
+            cout << endl;
         }
     }
     else
@@ -999,7 +1001,9 @@ void printContributors(const std::string& changeLog, bool printNumEntries)
         cout << "-----------------" << endl;
         for (SortedNameMap::reverse_iterator sitr = sortedNames.rbegin(); sitr != sortedNames.rend(); ++sitr)
         {
-            cout << sitr->second.first << " " << sitr->second.second << endl;
+            cout << sitr->second.first;
+            if (!sitr->second.second.empty()) cout << " " << sitr->second.second;
+            cout << endl;
         }
     }
 }

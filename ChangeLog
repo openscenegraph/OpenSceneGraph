@@ -1,3 +1,8 @@
+2015-02-26 20:06  robert
+
+	* AUTHORS.txt, ChangeLog, applications/osgversion/Contributors.cpp:
+	  Updated AUTHORS
+
 2015-02-26 19:13  robert
 
 	* src/osg/Image.cpp: From Bradley Baker Searles, "We had someone

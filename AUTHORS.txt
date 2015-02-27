@@ -15,7 +15,7 @@ Wang Rui
 Jean-Sébastien Guay
 Ulrich Hertlein
 Mike Weiblen
-Sukender 
+Sukender
 Eric Wing
 Cedric Pinson
 Brede Johansen
@@ -30,7 +30,7 @@ Colin McDonald
 Trajce Nikolov
 Tim Moore
 Martin Lavery
-Tree 
+Tree
 Luigi Calori
 Mike Wittman
 Jason Beverage
@@ -230,7 +230,7 @@ Yuzhong Shen
 Wee See
 Warren Macchi
 Vincent Bourdier
-Terrex 
+Terrex
 Tassilo Glander
 Sylvain Marie
 Steve Lunsford

@@ -1847,14 +1847,14 @@ std::string State::getDefineString(const osg::ShaderDefines& shaderDefines)
             const StateSet::DefinePair& dp = cd_itr->second;
             shaderDefineStr += "#define ";
             shaderDefineStr += cd_itr->first;
-            if (cd_itr->second.first.empty())
+            if (dp.first.empty())
             {
                 shaderDefineStr += "\n";
             }
             else
             {
                 shaderDefineStr += " ";
-                shaderDefineStr += cd_itr->second.first;
+                shaderDefineStr += dp.first;
                 shaderDefineStr += "\n";
             }
 

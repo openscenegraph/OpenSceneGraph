@@ -156,7 +156,7 @@ void getPossibleConfigs(GraphicsContext* gc, BufferConfigList& colorConfigs,
 bool checkFramebufferStatus(GraphicsContext* gc, bool silent = false)
 {
     State& state = *gc->getState();
-    osg::GLExtensions* ext = gc->getState()->get<GLExtensions>();
+    osg::GLExtensions* ext = state.get<GLExtensions>();
     switch(ext->glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT)) {
         case GL_FRAMEBUFFER_COMPLETE_EXT:
             break;

@@ -83,7 +83,7 @@ static int str_lower (lua_State *L) {
   const char *s = luaL_checklstring(L, 1, &l);
   char *p = luaL_buffinitsize(L, &b, l);
   for (i=0; i<l; i++)
-    p[i] = tolower(uchar(s[i]));
+    p[i] = (char)(tolower(uchar(s[i])));
   luaL_pushresultsize(&b, l);
   return 1;
 }
@@ -96,7 +96,7 @@ static int str_upper (lua_State *L) {
   const char *s = luaL_checklstring(L, 1, &l);
   char *p = luaL_buffinitsize(L, &b, l);
   for (i=0; i<l; i++)
-    p[i] = toupper(uchar(s[i]));
+    p[i] = (char)(toupper(uchar(s[i])));
   luaL_pushresultsize(&b, l);
   return 1;
 }

@@ -154,6 +154,8 @@ bool StandardManipulator::isAnimating() const
 /// Finishes the animation by performing a step that moves it to its final position.
 void StandardManipulator::finishAnimation()
 {
+    _thrown = false;
+
     if( !isAnimating() )
         return;
 
@@ -586,7 +588,12 @@ void StandardManipulator::setAllowThrow( bool allowThrow )
     events that started the animation.*/
 float StandardManipulator::getThrowScale( const double eventTimeDelta ) const
 {
-    if( _thrown )  return float( _delta_frame_time / eventTimeDelta );
+    if( _thrown )
+    {
+        if (eventTimeDelta == 0.f)
+            return 0.f;
+        return float( _delta_frame_time / eventTimeDelta );
+    }
     else  return 1.f;
 }
 

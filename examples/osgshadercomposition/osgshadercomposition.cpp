@@ -82,7 +82,7 @@ osg::Node* createNewShaderCompositionScene(osg::ArgumentParser& arguments)
         // shader calling the lighting function per vertex
         osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform;
         pat->setPosition(position);
-        pat->getOrCreateStateSet()->setDefine("GL_LIGHTING");
+        pat->getOrCreateStateSet()->setDefine("LIGHTING");
 
         pat->addChild(node.get());
 
@@ -99,7 +99,7 @@ osg::Node* createNewShaderCompositionScene(osg::ArgumentParser& arguments)
         // the fragment shader to read the texture of unit 0 (provided by the "texture0" uniform above.
         osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform;
         pat->setPosition(position);
-        pat->getOrCreateStateSet()->setDefine("GL_TEXTURE_2D");
+        pat->getOrCreateStateSet()->setDefine("TEXTURE_2D");
 
         pat->addChild(node.get());
 
@@ -113,8 +113,8 @@ osg::Node* createNewShaderCompositionScene(osg::ArgumentParser& arguments)
         // fourth subgraph, enable texturing and lighting
         osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform;
         pat->setPosition(position);
-        pat->getOrCreateStateSet()->setDefine("GL_LIGHTING");
-        pat->getOrCreateStateSet()->setDefine("GL_TEXTURE_2D");
+        pat->getOrCreateStateSet()->setDefine("LIGHTING");
+        pat->getOrCreateStateSet()->setDefine("TEXTURE_2D");
 
         pat->addChild(node.get());
 
@@ -127,8 +127,8 @@ osg::Node* createNewShaderCompositionScene(osg::ArgumentParser& arguments)
         // fourth subgraph, enable texturing and lighting
         osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform;
         pat->setPosition(position);
-        pat->getOrCreateStateSet()->setDefine("GL_LIGHTING");
-        pat->getOrCreateStateSet()->setDefine("GL_TEXTURE_2D");
+        pat->getOrCreateStateSet()->setDefine("LIGHTING");
+        pat->getOrCreateStateSet()->setDefine("TEXTURE_2D");
         pat->getOrCreateStateSet()->setDefine("VERTEX_FUNC(v)", "vec4(v.x, v.y, v.z * sin(osg_SimulationTime), v.w)");
 
         pat->addChild(node.get());

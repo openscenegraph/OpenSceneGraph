@@ -379,12 +379,12 @@ void OrbitManipulator::OrbitAnimationData::start( const osg::Vec3d& movement, co
     Scale parameter is useful, for example, when manipulator is thrown.
     It scales the amount of rotation based, for example, on the current frame time.*/
 void OrbitManipulator::rotateTrackball( const float px0, const float py0,
-                                        const float px1, const float py1, const float /*scale*/ )
+                                        const float px1, const float py1, const float scale )
 {
     osg::Vec3d axis;
     float angle;
 
-    trackball( axis, angle, px1, py1, px0, py0 );
+    trackball( axis, angle, px0 + (px1-px0)*scale, py0 + (py1-py0)*scale, px0, py0 );
 
     Quat new_rotate;
     new_rotate.makeRotate( angle, axis );

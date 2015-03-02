@@ -1,0 +1,102 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+/* This file is derived from the libb64 project which itself was released to public domain.
+ * For details, see http://sourceforge.net/projects/libb64. Original code by Chris Venter
+ * c++ wrapper for a base64 encoding and decoding algorithm
+*/
+
+#ifndef OSGDB_CONVERTBASE64_H
+#define OSGDB_CONVERTBASE64_H 1
+
+#include <iostream>
+#include <string>
+#include <vector>
+
+#include <osgDB/Export>
+
+namespace osgDB
+{
+    const int BUFFERSIZE = 8192;
+
+    typedef enum
+    {
+        step_a, step_b, step_c, step_d
+    } base64_decodestep;
+
+    typedef enum
+    {
+        step_A, step_B, step_C
+    } base64_encodestep;
+
+    typedef struct
+    {
+        base64_encodestep step;
+        char result;
+        int stepcount;
+    } base64_encodestate;
+
+    typedef struct
+    {
+        base64_decodestep step;
+        char plainchar;
+    } base64_decodestate;
+
+    class OSGDB_EXPORT Base64encoder
+    {
+    public:
+        Base64encoder(int buffersize_in = BUFFERSIZE)
+        : _buffersize(buffersize_in)
+        {}
+
+        int encode(char value_in);
+
+        int encode(const char* code_in, const int length_in, char* plaintext_out);
+
+        int encode_end(char* plaintext_out);
+
+        void encode(std::istream& istream_in, std::ostream& ostream_in);
+
+        void encode(const char* chars_in, int length_in, std::string& code_out);
+
+    private:
+        base64_encodestate _state;
+        int _buffersize;
+    };
+
+    class OSGDB_EXPORT Base64decoder
+    {
+    public:
+        Base64decoder(int buffersize_in = BUFFERSIZE)
+        : _buffersize(buffersize_in)
+        {}
+
+        int decode(char value_in);
+
+        int decode(const char* code_in, const int length_in, char* plaintext_out);
+
+        void decode(std::istream& istream_in, std::ostream& ostream_in);
+
+        // Decode strings, returns one char* of appropriate size
+        // Note that deallocation of char* is up to the caller of this method
+        char* decode(const std::vector<std::string>& str_in, std::vector<unsigned int>& pos_out);
+
+    private:
+        base64_decodestate _state;
+        int _buffersize;
+    };
+
+} // namespace osgDB
+
+#endif // BASE64_DECODE_H
+

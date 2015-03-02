@@ -53,6 +53,7 @@ SET(TARGET_H
     ${HEADER_PATH}/AuthenticationMap
     ${HEADER_PATH}/Callbacks
     ${HEADER_PATH}/ClassInterface
+    ${HEADER_PATH}/ConvertBase64
     ${HEADER_PATH}/ConvertUTF
     ${HEADER_PATH}/DatabasePager
     ${HEADER_PATH}/DatabaseRevisions
@@ -91,6 +92,7 @@ SET(TARGET_SRC
     AuthenticationMap.cpp
     Callbacks.cpp
     ClassInterface.cpp
+    ConvertBase64.cpp
     ConvertUTF.cpp
     DatabasePager.cpp
     DatabaseRevisions.cpp

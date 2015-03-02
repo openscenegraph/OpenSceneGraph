@@ -15,9 +15,11 @@
 #include <osg/Notify>
 #include <osg/ImageSequence>
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 #include <osgDB/XmlParser>
 #include <osgDB/FileNameUtils>
 #include <osgDB/ObjectWrapper>
+#include <osgDB/ConvertBase64>
 
 using namespace osgDB;
 
@@ -725,6 +727,61 @@ osg::Image* InputStream::readImage(bool readFromExternal)
             }
             if ( image && levelSize>0 )
                 image->setMipmapLevels( levels );
+            readFromExternal = false;
+        } else { // ASCII
+            // _origin, _s & _t & _r, _internalTextureFormat
+            int origin, s, t, r, internalFormat;
+            *this >> PROPERTY("Origin") >> origin;
+            *this >> PROPERTY("Size") >> s >> t >> r;
+            *this >> PROPERTY("InternalTextureFormat") >> internalFormat;
+
+            // _pixelFormat, _dataType, _packing, _allocationMode
+            int pixelFormat, dataType, packing, mode;
+            *this >> PROPERTY("PixelFormat") >> pixelFormat;
+            *this >> PROPERTY("DataType") >> dataType;
+            *this >> PROPERTY("Packing") >> packing;
+            *this >> PROPERTY("AllocationMode") >> mode;
+
+            *this >> PROPERTY("Data");
+            unsigned int levelSize = readSize()-1;
+            *this >> BEGIN_BRACKET;
+
+            // _data
+            std::vector<std::string> encodedData;
+            encodedData.resize(levelSize+1);
+            readWrappedString(encodedData.at(0));
+
+            // Read all mipmap levels and to also add them to char* data
+            // _mipmapData
+            osg::Image::MipmapDataType levels(levelSize);
+            for ( unsigned int i=1; i<=levelSize; ++i )
+            {
+                //*this >> levels[i];
+                readWrappedString(encodedData.at(i));
+            }
+
+            Base64decoder d;
+            char* data = d.decode(encodedData, levels);
+            // remove last item as we do not need the actual size
+            // of the image including all mipmaps
+            levels.pop_back();
+
+            *this >> END_BRACKET;
+
+            if ( !data )
+                throwException( "InputStream::readImage() Decoding of stream failed. Out of memory." );
+            if ( getException() ) return NULL;
+
+            image = new osg::Image;
+            image->setOrigin( (osg::Image::Origin)origin );
+            image->setImage( s, t, r, internalFormat, pixelFormat, dataType,
+                (unsigned char*)data, (osg::Image::AllocationMode)mode, packing );
+
+            // Level positions (size of mipmap data)
+            // from actual size of mipmap data read before
+            if ( image && levelSize>0 )
+                image->setMipmapLevels( levels );
+
             readFromExternal = false;
         }
         break;

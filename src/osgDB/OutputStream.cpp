@@ -12,7 +12,9 @@
 */
 // Written by Wang Rui, (C) 2010
 
+#include <osg/Version>
 #include <osg/Notify>
+#include <osgDB/ConvertBase64>
 #include <osgDB/FileUtils>
 #include <osgDB/WriteFile>
 #include <osgDB/ObjectWrapper>
@@ -526,6 +528,31 @@ void OutputStream::writeImage( const osg::Image* img )
                     if (t<1) t=1;
                     if (r<1) r=1;
                 }
+            } else { // ASCII
+                *this << PROPERTY("Origin") << img->getOrigin() << std::endl;  // _origin
+                *this << PROPERTY("Size") << img->s() << img->t() << img->r() << std::endl; // _s & _t & _r
+                *this << PROPERTY("InternalTextureFormat") << img->getInternalTextureFormat() << std::endl;  // _internalTextureFormat
+                *this << PROPERTY("PixelFormat") << img->getPixelFormat() << std::endl;  // _pixelFormat
+                *this << PROPERTY("DataType") << img->getDataType() << std::endl;  // _dataType
+                *this << PROPERTY("Packing") << img->getPacking() << std::endl;  // _packing
+                *this << PROPERTY("AllocationMode") << img->getAllocationMode() << std::endl;  // _allocationMode
+
+                // _data
+                *this << PROPERTY("Data") << img->getNumMipmapLevels();
+                *this << BEGIN_BRACKET << std::endl;
+
+                Base64encoder e;
+                for(osg::Image::DataIterator img_itr(img); img_itr.valid(); ++img_itr)
+                {
+                    std::string encodedData;
+                    e.encode((char*)img_itr.data(), img_itr.size(), encodedData);
+                    // Each set of data is written into a separate string so we can
+                    // distiguish between main data and all mipmap levels, so writing
+                    // mipmap size is not required for ASCII mode.
+                    writeWrappedString(encodedData);
+                }
+
+                *this << END_BRACKET << std::endl;
             }
             break;
         case IMAGE_INLINE_FILE:

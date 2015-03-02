@@ -177,7 +177,7 @@ typedef char GLchar;
 #define GL_FRAMEBUFFER_SRGB               0x8DB9
 #endif
 
-#ifndef EXT_geometry_shader4
+#ifndef GL_EXT_geometry_shader4
 #define GL_GEOMETRY_VERTICES_OUT_EXT            0x8DDA
 #define GL_GEOMETRY_INPUT_TYPE_EXT              0x8DDB
 #define GL_GEOMETRY_OUTPUT_TYPE_EXT             0x8DDC

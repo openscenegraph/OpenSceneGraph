@@ -1,6 +1,13 @@
 /* A demonstration of Tessellation Shaders in OpenScenegraph.
+ *
+ * Instructions:
+ *   Press plus to increase tesselation and minus to decrease it.
+ *   Press right arrow to increase inner tesselation and left arrow to decrease it.
+ *   Press up arrow to increase outer tesselation and down arrow to decrease it.
+ *
  * Original code by Philip Rideout
  * Adapted to OpenScenegraph by John Kaniarz
+ * Additional work by Michael Mc Donnell
  */
 
 #include <osg/Program>
@@ -113,7 +120,8 @@ static const char* fragSource = {
 "}\n"
 };
 
-osg::ref_ptr<osg::Geode> CreateIcosahedron(osg::Program *program){
+osg::ref_ptr<osg::Geode> CreateIcosahedron(osg::Program *program)
+{
     osg::Geode *geode=new osg::Geode();
     osg::Geometry *geometry = new osg::Geometry();
     const unsigned int Faces[] = {
@@ -163,10 +171,16 @@ osg::ref_ptr<osg::Geode> CreateIcosahedron(osg::Program *program){
     geometry->setVertexArray(vertices);
     geometry->addPrimitiveSet(new osg::DrawElementsUInt(osg::PrimitiveSet::PATCHES,IndexCount,Faces));
 
+    // Expand the bounding box, otherwise the geometry is clipped in front when tessellating.
+    osg::BoundingBox bbox(osg::Vec3(-1.0f, -1.9f, -1.0f), osg::Vec3(1.0f, 1.0f, 1.0f));
+    geometry->setInitialBound(bbox);
+
     geode->addDrawable(geometry);
     return geode;
 }
-osg::ref_ptr<osg::Program> createProgram(){
+
+osg::ref_ptr<osg::Program> createProgram()
+{
     osg::Program *program = new osg::Program();
     program->addShader(new osg::Shader(osg::Shader::VERTEX,vertSource));
     program->addShader(new osg::Shader(osg::Shader::TESSCONTROL,tessControlSource));
@@ -179,38 +193,74 @@ osg::ref_ptr<osg::Program> createProgram(){
     return program;
 }
 
-float tessInner=1.0f;
-float tessOuter=1.0f;
-osg::ref_ptr<osg::Uniform> tessInnerU = new osg::Uniform("TessLevelInner",tessInner);
-osg::ref_ptr<osg::Uniform> tessOuterU = new osg::Uniform("TessLevelOuter",tessOuter);
-
-class KeyboardEventHandler : public osgGA::GUIEventHandler {
+class KeyboardEventHandler : public osgGA::GUIEventHandler
+{
 public:
-    KeyboardEventHandler():osgGA::GUIEventHandler(){}
-    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& gaa){
+    KeyboardEventHandler(osg::ref_ptr<osg::Uniform> tessInnerU, osg::ref_ptr<osg::Uniform> tessOuterU):
+        _tessInnerU(tessInnerU),
+        _tessOuterU(tessOuterU)
+    {
+        tessInnerU->get(_tessInner);
+        tessOuterU->get(_tessOuter);
+    }
+
+    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& gaa)
+    {
         if(ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN){
             switch (ea.getKey()){
                 case osgGA::GUIEventAdapter::KEY_Up:
-                    tessOuter++;
-                    tessOuterU->set(tessOuter);
+                    increaseOuterTesselation();
                     return true;
                 case osgGA::GUIEventAdapter::KEY_Down:
-                    tessOuter--;
-                    tessOuter=std::max(1.0f,tessOuter);
-                    tessOuterU->set(tessOuter);
+                    decreaseOuterTesselation();
                     return true;
                 case osgGA::GUIEventAdapter::KEY_Left:
-                    tessInner--;
-                    tessInner=std::max(1.0f,tessInner);
-                    tessInnerU->set(tessInner);
+                    decreaseInnerTesselation();
                     return true;
                 case osgGA::GUIEventAdapter::KEY_Right:
-                    tessInner++;
-                    tessInnerU->set(tessInner);
+                    increaseInnerTesselation();
+                    return true;
+                case osgGA::GUIEventAdapter::KEY_Plus:
+                case osgGA::GUIEventAdapter::KEY_KP_Add:
+                    increaseInnerTesselation();
+                    increaseOuterTesselation();
+                    return true;
+                case osgGA::GUIEventAdapter::KEY_Minus:
+                case osgGA::GUIEventAdapter::KEY_KP_Subtract:
+                    decreaseInnerTesselation();
+                    decreaseOuterTesselation();
                     return true;
             }
         }
-        return osgGA::GUIEventHandler::handle(ea,gaa);
+        return osgGA::GUIEventHandler::handle(ea, gaa);
+    }
+
+private:
+    osg::ref_ptr<osg::Uniform> _tessInnerU;
+    osg::ref_ptr<osg::Uniform> _tessOuterU;
+    float _tessInner;
+    float _tessOuter;
+
+    void increaseInnerTesselation()
+    {
+        _tessInnerU->set(++_tessInner);
+    }
+
+    void decreaseInnerTesselation()
+    {
+        _tessInner = std::max(1.0f, _tessInner-1.0f);
+        _tessInnerU->set(_tessInner);
+    }
+
+    void increaseOuterTesselation()
+    {
+        _tessOuterU->set(++_tessOuter);
+    }
+
+    void decreaseOuterTesselation()
+    {
+        _tessOuter = std::max(1.0f, _tessOuter-1.0f);
+        _tessOuterU->set(_tessOuter);
     }
 };
 
@@ -220,6 +270,9 @@ int main(int argc, char* argv[])
     viewer.setUpViewInWindow(100,100,800,600);
     osg::ref_ptr<osg::Program> program = createProgram();
     osg::ref_ptr<osg::Geode> geode = CreateIcosahedron(program.get());
+    osg::ref_ptr<osg::Uniform> tessInnerU = new osg::Uniform("TessLevelInner", 1.0f);
+    osg::ref_ptr<osg::Uniform> tessOuterU = new osg::Uniform("TessLevelOuter", 1.0f);
+
     osg::StateSet *state;
     state = geode->getOrCreateStateSet();
     state->addUniform(new osg::Uniform("AmbientMaterial",osg::Vec3(0.04f, 0.04f, 0.04f)));
@@ -229,7 +282,7 @@ int main(int argc, char* argv[])
     state->addUniform(tessOuterU.get());
     state->setAttribute(new osg::PatchParameter(3));
     state->setAttribute(program.get());
-    
+
     // switch on the uniforms that track the modelview and projection matrices
     osgViewer::Viewer::Windows windows;
     viewer.getWindows(windows);
@@ -241,8 +294,8 @@ int main(int argc, char* argv[])
         s->setUseModelViewAndProjectionUniforms(true);
         s->setUseVertexAttributeAliasing(true);
     }
-    
-    viewer.addEventHandler(new KeyboardEventHandler());
+
+    viewer.addEventHandler(new KeyboardEventHandler(tessInnerU, tessOuterU));
     viewer.setSceneData(geode.get());
     return viewer.run();
 }

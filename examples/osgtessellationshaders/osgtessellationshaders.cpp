@@ -171,6 +171,10 @@ osg::ref_ptr<osg::Geode> CreateIcosahedron(osg::Program *program)
     geometry->setVertexArray(vertices);
     geometry->addPrimitiveSet(new osg::DrawElementsUInt(osg::PrimitiveSet::PATCHES,IndexCount,Faces));
 
+    // Expand the bounding box, otherwise the geometry is clipped in front when tessellating.
+    osg::BoundingBox bbox(osg::Vec3(-1.0f, -1.9f, -1.0f), osg::Vec3(1.0f, 1.0f, 1.0f));
+    geometry->setInitialBound(bbox);
+
     geode->addDrawable(geometry);
     return geode;
 }

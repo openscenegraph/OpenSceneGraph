@@ -28,6 +28,10 @@
 namespace osgDB
 {
 
+typedef std::vector<std::string> StringList;
+extern OSGDB_EXPORT void split( const std::string& src, StringList& list, char separator=' ' );
+
+
 #ifndef OBJECT_CAST
     #define OBJECT_CAST static_cast
 #endif
@@ -1421,6 +1425,96 @@ public:
     Setter              _setter;
 };
 
+template<typename C, typename P=unsigned int>
+class BitFlagsSerializer : public osgDB::TemplateSerializer<P>
+{
+public:
+    typedef TemplateSerializer<P> ParentType;
+    typedef P (C::*Getter)() const;
+    typedef void (C::*Setter)( P );
+
+    BitFlagsSerializer( const char* name, P def, Getter gf, Setter sf )
+    : ParentType(name, def), _getter(gf), _setter(sf) {}
+
+    void add( const char* str, P value )
+    {
+        _lookup.add(str, static_cast<osgDB::IntLookup::Value>(value));
+    }
+
+    P getValue( const char* str )
+    { return static_cast<P>(_lookup.getValue(str)); }
+
+    const std::string& getString( P value )
+    { return _lookup.getString(static_cast<osgDB::IntLookup::Value>(value)); }
+
+    virtual bool read( osgDB::InputStream& is, osg::Object& obj )
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        if ( is.isBinary() )
+        {
+            bool ok = false; is >> ok; //code from user serialized ensuring backwards-compatibility
+            if ( !ok ) return true;
+
+            P mask;
+            is >> mask;
+            (object.*_setter)( mask );
+        }
+        else
+        {
+            if ( !is.matchString(ParentType::_name) ) //code from user serialized ensuring backwards-compatibility
+                return true;
+            P mask=P();
+            std::string maskSetString;
+            is >> maskSetString;
+            osgDB::StringList maskList;
+            osgDB::split( maskSetString, maskList, '|' );
+            for ( unsigned int i=0; i<maskList.size(); ++i )
+                mask |= _lookup.getValue( maskList[i].c_str());
+            (object.*_setter)( mask );
+        }
+        return true;
+    }
+
+    virtual bool write( osgDB::OutputStream& os, const osg::Object& obj )
+    {
+        const C& object = OBJECT_CAST<const C&>(obj);
+        const P mask = (object.*_getter)();
+        bool ok = ParentType::_defaultValue!=static_cast<P>(mask);
+        if ( os.isBinary() )
+        {
+            os << ok;
+            if ( !ok )
+                return true;
+            os << (int)mask; //just write int value in binary case
+        }
+        else
+        {
+            if ( !ok )
+                return true;
+            os << os.PROPERTY(ParentType::_name.c_str());
+
+            std::string maskString;
+            const osgDB::IntLookup::ValueToString& v2sm = _lookup.getValueToString();
+            for( osgDB::IntLookup::ValueToString::const_iterator itr = v2sm.begin() ; itr != v2sm.end() ; itr++)
+                if( (mask & itr->first) != 0 )
+                    maskString += std::string(itr->second + "|");
+
+            if ( !maskString.size() )
+                maskString = std::string("NONE|");
+            maskString.erase(maskString.size()-1,1);
+            os << maskString << std::endl; //remove last "|"
+        }
+        return true;
+    }
+
+public:
+    Getter _getter;
+    Setter _setter;
+
+protected:
+    osgDB::IntLookup _lookup;
+};
+
 // ADDING MANIPULATORS
 #define ADD_SERIALIZER(S) \
     wrapper->addSerializer( (S) )
@@ -1744,6 +1838,17 @@ public:
 
 #define END_ENUM_SERIALIZER() \
     wrapper->addSerializer(serializer.get(), osgDB::BaseSerializer::RW_ENUM); }
+
+#define BEGIN_BITFLAGS_SERIALIZER(PROP, DEF) \
+    { typedef osgDB::BitFlagsSerializer<MyClass> MySerializer; \
+    osg::ref_ptr<MySerializer> serializer = new MySerializer( \
+    #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP)
+
+#define ADD_BITFLAG_VALUE(VALUE_NAME, VALUE) \
+    serializer->add(#VALUE_NAME, VALUE)
+
+#define END_BITFLAGS_SERIALIZER() \
+    wrapper->addSerializer(serializer.get(), osgDB::BaseSerializer::RW_INT); }
 
 // VERSION CONTROL OPERATORS
 #define UPDATE_TO_VERSION(VER) \

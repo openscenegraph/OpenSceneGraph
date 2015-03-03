@@ -9,7 +9,7 @@
 REGISTER_OBJECT_WRAPPER( ClusterCullingCallback,
                          new osg::ClusterCullingCallback,
                          osg::ClusterCullingCallback,
-                         "osg::Object osg::NodeCallback osg::ClusterCullingCallback" )
+                         "osg::Object osg::Callback osg::NodeCallback osg::ClusterCullingCallback" )
 {
     ADD_VEC3_SERIALIZER( ControlPoint, osg::Vec3() );  // _controlPoint
     ADD_VEC3_SERIALIZER( Normal, osg::Vec3() );  // _normal

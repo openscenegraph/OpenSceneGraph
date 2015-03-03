@@ -1,6 +1,6 @@
-OpenSceneGraph Library 3.3.4
+OpenSceneGraph Library 3.3.5
 
-542 Contributors:
+543 Contributors:
 
 Firstname Surname
 -----------------
@@ -197,6 +197,7 @@ Piotr Domagalski
 Phil Atkin
 Pawel Ksiezopolski
 Nathan Monteleone
+Miha Rav¨elj
 Miguel Escriva
 Mattias Linde
 Mark Sciabica
@@ -208,6 +209,7 @@ Ken Sewell
 Julian Ortiz
 Julen Garcia
 John Kaniarz
+Johannes Scholz
 Jim Vaughan
 Jeremy Bell
 Jaromir Vitek
@@ -259,7 +261,7 @@ Nguyen Van Truong
 Nathan Cournia
 Morten Haukness
 Morné Pistorius
-Miha Rav¨elj
+Michael Mc Donnell
 Michael Henheffer
 Michael Guerrero
 Maya Leonard
@@ -279,7 +281,6 @@ Kevin Moiule
 Keith Steffen
 Joseph Winston
 John Aughey
-Johannes Scholz
 Joachim Pouderoux
 Jean-Christophe Lombardo
 Jan Klimke
@@ -407,7 +408,6 @@ Michal Durkovic
 Michael Schanne
 Michael Polak
 Michael Morrison
-Michael Mc Donnell
 Michael Logan
 Michael Kapelko
 Michael Bach Jensen
@@ -463,6 +463,7 @@ Jeffrey Kinross
 Jay Zuckerman
 Jason Howlett
 Jason Ballenger
+Jannik Heller
 Jamie Robertson
 James Killian
 James Athey

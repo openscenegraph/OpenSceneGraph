@@ -123,52 +123,6 @@ static bool writeText( osgDB::OutputStream& os, const osgText::TextBase& text )
     return true;
 }
 
-// _drawMode
-static bool checkDrawMode( const osgText::TextBase& text )
-{
-    return text.getDrawMode()!=osgText::TextBase::TEXT;
-}
-
-static bool readDrawMode( osgDB::InputStream& is, osgText::TextBase& text )
-{
-    unsigned int mask = osgText::TextBase::TEXT;
-    if ( is.isBinary() )
-        is >> mask;
-    else
-    {
-        std::string maskSetString; is >> maskSetString;
-        osgDB::StringList maskList; osgDB::split( maskSetString, maskList, '|' );
-        for ( unsigned int i=0; i<maskList.size(); ++i )
-        {
-            const std::string& maskValue = maskList[i];
-            if ( maskValue=="TEXT" ) mask |= osgText::TextBase::TEXT;
-            else if ( maskValue=="BOUND" ) mask |= osgText::TextBase::BOUNDINGBOX;
-            else if ( maskValue=="FILLED" ) mask |= osgText::TextBase::FILLEDBOUNDINGBOX;
-            else if ( maskValue=="ALIGNMENT" ) mask |= osgText::TextBase::ALIGNMENT;
-        }
-    }
-    text.setDrawMode( mask );
-    return true;
-}
-
-static bool writeDrawMode( osgDB::OutputStream& os, const osgText::TextBase& text )
-{
-    unsigned int mask = text.getDrawMode();
-    if ( os.isBinary() )
-        os << mask;
-    else
-    {
-        std::string maskString;
-        if ( (mask&osgText::TextBase::TEXT)!=0 ) maskString += std::string("TEXT|");
-        if ( (mask&osgText::TextBase::BOUNDINGBOX)!=0 ) maskString += std::string("BOUND|");
-        if ( (mask&osgText::TextBase::FILLEDBOUNDINGBOX)!=0 ) maskString += std::string("FILLED|");
-        if ( (mask&osgText::TextBase::ALIGNMENT)!=0 ) maskString += std::string("ALIGNMENT|");
-        if ( !maskString.size() ) maskString = std::string("NONE|");
-        os << maskString.substr(0, maskString.size()-1) << std::endl;
-    }
-    return true;
-}
-
 REGISTER_OBJECT_WRAPPER( osgText_TextBase,
                          /*new osgText::TextBase*/NULL,
                          osgText::TextBase,
@@ -228,7 +182,12 @@ REGISTER_OBJECT_WRAPPER( osgText_TextBase,
         ADD_ENUM_VALUE( VERTICAL );
     END_ENUM_SERIALIZER();  // _layout
 
-    ADD_USER_SERIALIZER( DrawMode );  // _drawMode
+    BEGIN_BITFLAGS_SERIALIZER(DrawMode,osgText::TextBase::TEXT);
+        ADD_BITFLAG_VALUE(TEXT, osgText::TextBase::TEXT);
+        ADD_BITFLAG_VALUE(BOUND, osgText::TextBase::BOUNDINGBOX);
+        ADD_BITFLAG_VALUE(FILLED, osgText::TextBase::FILLEDBOUNDINGBOX);
+        ADD_BITFLAG_VALUE(ALIGNMENT, osgText::TextBase::ALIGNMENT);
+    END_BITFLAGS_SERIALIZER();
     ADD_FLOAT_SERIALIZER( BoundingBoxMargin, 0.0f );  // _textBBMargin
     ADD_VEC4_SERIALIZER( BoundingBoxColor, osg::Vec4() );  // _textBBColor
 }

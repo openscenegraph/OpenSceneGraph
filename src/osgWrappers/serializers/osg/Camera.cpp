@@ -104,55 +104,6 @@ static void writeBufferAttachment( osgDB::OutputStream& os, const osg::Camera::A
     os << os.PROPERTY("MultisampleColorSamples") << attachment._multisampleColorSamples << std::endl;
 }
 
-// _clearMask
-static bool checkClearMask( const osg::Camera& node )
-{
-    return node.getClearMask()!=(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-}
-
-static bool readClearMask( osgDB::InputStream& is, osg::Camera& node )
-{
-    GLbitfield mask = 0;
-    if ( is.isBinary() )
-    {
-        int maskValue; is >> maskValue;
-        mask = (GLbitfield)maskValue;
-    }
-    else
-    {
-        std::string maskSetString; is >> maskSetString;
-        osgDB::StringList maskList; osgDB::split( maskSetString, maskList, '|' );
-        for ( unsigned int i=0; i<maskList.size(); ++i )
-        {
-            const std::string& maskValue = maskList[i];
-            if ( maskValue=="COLOR" ) mask |= GL_COLOR_BUFFER_BIT;
-            else if ( maskValue=="DEPTH" ) mask |= GL_DEPTH_BUFFER_BIT;
-            else if ( maskValue=="ACCUM" ) mask |= GL_ACCUM_BUFFER_BIT;
-            else if ( maskValue=="STENCIL" ) mask |= GL_STENCIL_BUFFER_BIT;
-        }
-    }
-    node.setClearMask( mask );
-    return true;
-}
-
-static bool writeClearMask( osgDB::OutputStream& os, const osg::Camera& node )
-{
-    GLbitfield mask = node.getClearMask();
-    if ( os.isBinary() )
-        os << (int)mask;
-    else
-    {
-        std::string maskString;
-        if ( (mask & GL_COLOR_BUFFER_BIT)!=0 ) maskString += std::string("COLOR|");
-        if ( (mask & GL_DEPTH_BUFFER_BIT)!=0 ) maskString += std::string("DEPTH|");
-        if ( (mask & GL_ACCUM_BUFFER_BIT)!=0 ) maskString += std::string("ACCUM|");
-        if ( (mask & GL_STENCIL_BUFFER_BIT)!=0 ) maskString += std::string("STENCIL|");
-        if ( !maskString.size() ) maskString = std::string("NONE|");
-        os << maskString.substr(0, maskString.size()-1) << std::endl;
-    }
-    return true;
-}
-
 // _renderOrder & _renderOrderNum
 static bool checkRenderOrder( const osg::Camera& node )
 {
@@ -234,7 +185,12 @@ REGISTER_OBJECT_WRAPPER( Camera,
                          "osg::Object osg::Node osg::Group osg::Transform osg::Camera" )
 {
     ADD_BOOL_SERIALIZER( AllowEventFocus, true );  // _allowEventFocus
-    ADD_USER_SERIALIZER( ClearMask );  // _clearMask
+    BEGIN_BITFLAGS_SERIALIZER(ClearMask,GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+        ADD_BITFLAG_VALUE(COLOR, GL_COLOR_BUFFER_BIT);
+        ADD_BITFLAG_VALUE(DEPTH, GL_DEPTH_BUFFER_BIT);
+        ADD_BITFLAG_VALUE(ACCUM, GL_ACCUM_BUFFER_BIT);
+        ADD_BITFLAG_VALUE(STENCIL, GL_STENCIL_BUFFER_BIT);
+    END_BITFLAGS_SERIALIZER();
     ADD_VEC4_SERIALIZER( ClearColor, osg::Vec4() );  // _clearColor
     ADD_VEC4_SERIALIZER( ClearAccum, osg::Vec4() );  // _clearAccum
     ADD_DOUBLE_SERIALIZER( ClearDepth, 1.0 );  // _clearDepth

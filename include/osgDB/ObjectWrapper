@@ -21,9 +21,6 @@
 namespace osgDB
 {
 
-typedef std::vector<std::string> StringList;
-extern OSGDB_EXPORT void split( const std::string& src, StringList& list, char separator=' ' );
-
 struct MethodObject : public osg::Referenced
 {
     typedef std::vector< osg::ref_ptr<osg::Object> > Parameters;

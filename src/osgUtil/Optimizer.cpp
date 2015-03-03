@@ -1099,13 +1099,7 @@ bool CollectLowestTransformsVisitor::removeTransforms(osg::Node* nodeWeCannotRem
         titr!=_transformMap.end();
         ++titr)
     {
-        if (titr->first==0)
-        {
-            OSG_NOTICE<<"Warning: CollectLowestTransformsVisitor::removeTransforms() error, encountered a NULL Transform pointer"<<std::endl;
-            break;
-        }
-
-        if (titr->second._canBeApplied)
+        if (titr->first!=0 && titr->second._canBeApplied)
         {
             if (titr->first!=nodeWeCannotRemove)
             {

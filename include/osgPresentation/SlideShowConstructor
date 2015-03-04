@@ -32,10 +32,10 @@
 #include <osgVolume/VolumeTile>
 #include <osgVolume/VolumeSettings>
 
-#include <osgPresentation/deprecated/AnimationMaterial>
-#include <osgPresentation/deprecated/SlideEventHandler>
-#include <osgPresentation/deprecated/PropertyManager>
-#include <osgPresentation/deprecated/Timeout>
+#include <osgPresentation/AnimationMaterial>
+#include <osgPresentation/SlideEventHandler>
+#include <osgPresentation/PropertyManager>
+#include <osgPresentation/Timeout>
 
 namespace osgPresentation
 {

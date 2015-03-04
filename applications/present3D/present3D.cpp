@@ -38,7 +38,7 @@
 #include <osgGA/StateSetManipulator>
 #include <osgGA/MultiTouchTrackballManipulator>
 
-#include <osgPresentation/deprecated/SlideEventHandler>
+#include <osgPresentation/SlideEventHandler>
 #include <osgPresentation/Cursor>
 
 #include "ReadShowFile.h"
@@ -149,15 +149,15 @@ public:
                 if (_forwardMouseEvents)
                     _device->sendEvent(ea);
                 break;
-                
+
             default:
                 _device->sendEvent(ea);
                 break;
         }
         return false;
     }
-    
-    
+
+
     bool handle(osgGA::Event* event, osg::Object* object, osg::NodeVisitor* nv)
     {
         if (event->asGUIEventAdapter())
@@ -203,7 +203,7 @@ public:
                 std::cout << "SCROLL: ";
                 break;
                 break;
-                
+
             default:
                 std::cout << ea.getEventType() << " ";
                 break;
@@ -211,8 +211,8 @@ public:
         std::cout << ea.getX() << "/" << ea.getY() << " " << ea.isMultiTouchEvent() << std::endl;
         return false;
     }
-    
-    
+
+
     bool handle(osgGA::Event* event, osg::Object* object, osg::NodeVisitor* nv)
     {
         if (event->asGUIEventAdapter())
@@ -414,7 +414,7 @@ int main( int argc, char **argv )
         viewer.readConfiguration(configurationFile);
         doSetViewer = false;
     }
-    
+
     bool forwardMouseEvents = false;
     if (arguments.read("--forwardMouseEvents"))
         forwardMouseEvents = true;
@@ -498,7 +498,7 @@ int main( int argc, char **argv )
 
         viewer.setCameraManipulator( keyswitchManipulator.get() );
     }
-    
+
     //viewer.getEventHandlers().push_front(new DumpEventHandler());
 
     // add the state manipulator
@@ -752,7 +752,7 @@ int main( int argc, char **argv )
     osg::ref_ptr<osgDB::ReaderWriter::Options> cacheAllOption = new osgDB::ReaderWriter::Options;
     if(suppress_env_tags)
         cacheAllOption->setPluginStringData("suppressEnvTags", "true");
-    
+
     cacheAllOption->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_ALL);
     osgDB::Registry::instance()->setOptions(cacheAllOption.get());
 

@@ -10,26 +10,29 @@
  * include LICENSE.txt for more details.
 */
 
-#ifndef PICKEVENTHANDLER
-#define PICKEVENTHANDLER 1
+#ifndef KEYEVENTHANDLER
+#define KEYEVENTHANDLER 1
 
 #include <osg/StateSet>
 #include <osg/Point>
 
 #include <osgGA/GUIEventHandler>
 
-#include <osgPresentation/deprecated/SlideEventHandler>
+#include <osgPresentation/SlideEventHandler>
 
 namespace osgPresentation
 {
 
-class OSGPRESENTATION_EXPORT PickEventHandler : public osgGA::GUIEventHandler
+class OSGPRESENTATION_EXPORT KeyEventHandler : public osgGA::GUIEventHandler
 {
     public:
 
-        PickEventHandler(osgPresentation::Operation operation, const JumpData& jumpData=JumpData());
-        PickEventHandler(const std::string& str, osgPresentation::Operation operation, const JumpData& jumpData=JumpData());
-        PickEventHandler(const osgPresentation::KeyPosition& keyPos, const JumpData& jumpData=JumpData());
+        KeyEventHandler(int key, osgPresentation::Operation operation, const JumpData& jumpData=JumpData());
+        KeyEventHandler(int key, const std::string& str, osgPresentation::Operation operation, const JumpData& jumpData=JumpData());
+        KeyEventHandler(int key, const osgPresentation::KeyPosition& keyPos, const JumpData& jumpData=JumpData());
+
+        void setKey(int key) { _key = key; }
+        int getKey() const { return _key; }
 
         void setOperation(osgPresentation::Operation operation) { _operation = operation; }
         osgPresentation::Operation getOperation() const { return _operation; }
@@ -49,13 +52,13 @@ class OSGPRESENTATION_EXPORT PickEventHandler : public osgGA::GUIEventHandler
 
         void doOperation();
 
+        int                                 _key;
+
         std::string                         _command;
         osgPresentation::KeyPosition        _keyPos;
         osgPresentation::Operation          _operation;
 
         JumpData                            _jumpData;
-        std::set<osg::Drawable*>            _drawablesOnPush;
-
 };
 
 }

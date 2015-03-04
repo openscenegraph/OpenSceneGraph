@@ -16,7 +16,7 @@
 
 #include <osg/Transform>
 
-#include <osgPresentation/deprecated/SlideEventHandler>
+#include <osgPresentation/SlideEventHandler>
 
 namespace osgPresentation {
 

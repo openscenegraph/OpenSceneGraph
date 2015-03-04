@@ -17,7 +17,6 @@
 
 #include <osgDB/ObjectWrapper>
 #include <osgDB/Registry>
-#include <osgPresentation/Group>
 #include <osg/ValueObject>
 
 namespace osgDB

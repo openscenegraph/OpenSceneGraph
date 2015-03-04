@@ -21,8 +21,8 @@
 #include <osgGA/GUIEventHandler>
 #include <osgViewer/Viewer>
 
-#include <osgPresentation/deprecated/CompileSlideCallback>
-#include <osgPresentation/deprecated/PropertyManager>
+#include <osgPresentation/CompileSlideCallback>
+#include <osgPresentation/PropertyManager>
 
 namespace osgPresentation
 {

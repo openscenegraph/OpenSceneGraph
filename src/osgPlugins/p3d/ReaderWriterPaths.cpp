@@ -20,8 +20,8 @@
 
 #include <osgWidget/PdfReader>
 
-#include <osgPresentation/deprecated/SlideShowConstructor>
-#include <osgPresentation/deprecated/AnimationMaterial>
+#include <osgPresentation/SlideShowConstructor>
+#include <osgPresentation/AnimationMaterial>
 
 #include <stdio.h>
 #include <string.h>

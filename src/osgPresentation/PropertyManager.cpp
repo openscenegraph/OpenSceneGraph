@@ -10,7 +10,7 @@
  * include LICENSE.txt for more details.
 */
 
-#include <osgPresentation/deprecated/PropertyManager>
+#include <osgPresentation/PropertyManager>
 #include <osg/io_utils>
 
 using namespace osgPresentation;

@@ -11,7 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgPresentation/deprecated/Timeout>
+#include <osgPresentation/Timeout>
 #include <osgUtil/CullVisitor>
 #include <osgGA/EventVisitor>
 

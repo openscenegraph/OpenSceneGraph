@@ -13,7 +13,7 @@
 #include "ReadShowFile.h"
 #include "ShowEventHandler.h"
 
-#include <osgPresentation/deprecated/SlideEventHandler>
+#include <osgPresentation/SlideEventHandler>
 
 #include <osg/ImageStream>
 #include <osg/Shape>

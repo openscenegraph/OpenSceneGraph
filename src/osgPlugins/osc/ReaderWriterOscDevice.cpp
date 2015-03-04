@@ -52,7 +52,7 @@
 #include <osgDB/FileUtils>
 #include "OscSendingDevice.hpp"
 #include "OscReceivingDevice.hpp"
-#include <osgPresentation/deprecated/PropertyManager>
+#include <osgPresentation/PropertyManager>
 
 
 

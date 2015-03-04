@@ -1,20 +1,20 @@
 SET(TARGET_SRC
-    deprecated/Cluster.cpp
-    deprecated/ExportHTML.cpp
-    deprecated/PointsEventHandler.cpp
-    deprecated/present3D.cpp
-    deprecated/ReadShowFile.cpp
-    deprecated/ShowEventHandler.cpp
-    deprecated/SpellChecker.cpp
+    Cluster.cpp
+    ExportHTML.cpp
+    PointsEventHandler.cpp
+    present3D.cpp
+    ReadShowFile.cpp
+    ShowEventHandler.cpp
+    SpellChecker.cpp
 )
 
 SET(TARGET_H
-    deprecated/Cluster.h
-    deprecated/ExportHTML.h
-    deprecated/PointsEventHandler.h
-    deprecated/ReadShowFile.h
-    deprecated/ShowEventHandler.h
-    deprecated/SpellChecker.h
+    Cluster.h
+    ExportHTML.h
+    PointsEventHandler.h
+    ReadShowFile.h
+    ShowEventHandler.h
+    SpellChecker.h
 )
 
 IF (SDL_FOUND)

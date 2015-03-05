@@ -1,3 +1,40 @@
+2015-03-03 12:56  robert
+
+	* src/osgUtil/Optimizer.cpp: Restructed the checks in the
+	  CollectLowestTransformsVisitor::removeTransforms() to avoid
+	  benign case being flagged as warning.
+
+2015-03-03 12:00  robert
+
+	* src/osg/PolygonMode.cpp: Re-organized the #ifdef's to avoid usage
+	  of glPolyginMode under GLES
+
+2015-03-02 11:08  robert
+
+	* examples/osgtessellationshaders/osgtessellationshaders.cpp: From
+	  Michael McDonnell, Merged enchancements to osgtesselationshader
+	  example from OSG-svn/trunk to OSG-3.2 branch.
+
+2015-03-01 11:08  robert
+
+	* src/osgGA/OrbitManipulator.cpp,
+	  src/osgGA/StandardManipulator.cpp: From Jannik Heller, "I noticed
+	  the rotation in the OrbitManipulator depends on the framerate. To
+	  reproduce this issue, start the osganimate example, rotate the
+	  model with the left mouse button, then let go of the mouse button
+	  while still moving. You will notice that with V-Sync enabled, the
+	  model rotates slower.
+	  
+	  The OrbitManipulator calculates a scale to counteract the
+	  framerate dependency, but it turns out this scale wasn't used for
+	  the rotation yet."
+
+2015-02-27 10:15  robert
+
+	* AUTHORS.txt, CMakeLists.txt, ChangeLog,
+	  applications/osgversion/Contributors.cpp: Updated AUTHROS,
+	  Controbitors and rc number in prep for the 3.2.2-rc1
+
 2015-02-26 20:06  robert
 
 	* AUTHORS.txt, ChangeLog, applications/osgversion/Contributors.cpp:

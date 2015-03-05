@@ -472,10 +472,14 @@ TypoCorrection typoCorrections[] =
     {"Messershmidt","Messerschmidt"},
     {"Auelien","Aurelien"},
     {"Aur√©lien","AurÈlien"},
+    {"McDonnel","Mc Donnell"},
     {"McDonnell","Mc Donnell"},
     {"Delall√©e","DelallÈe"},
     {"Gj√∏l","Gj¯l"},
-    {"Rav≈°elj","Rav®elj"}
+    {"Rav≈°elj","Rav®elj"},
+    {"Ravsel",  "Rav®elj"},
+    {"Ravselj", "Rav®elj"}
+
 };
 
 
@@ -653,8 +657,6 @@ NameCorrection nameCorrections[] =
      "Laurens",        "Voerman"},
     {"Pjotr",          "Sventachov",
      "Pjotr",          "Svetachov"},
-     {"Miha",          "Ravsel",
-      "Miha",          "Rav®elj"},
      {"Bradley",       "Baker",
       "Bradley",       "Baker Searles"},
      {"PawelKsiezopolski", "",

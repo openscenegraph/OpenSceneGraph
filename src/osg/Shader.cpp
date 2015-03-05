@@ -648,8 +648,10 @@ void Shader::PerContextShader::compileShader(osg::State& state)
                 if ((end_of_line-start_of_line)>=8 && source.compare(start_of_line, 8, "#version")==0)
                 {
                     versionLine = source.substr(start_of_line, end_of_line-start_of_line+1);
+                    if (source[source.size()-1]!='\n') source.push_back('\n');
+
                     source.insert(start_of_line, "// following version spec has been automatically reassigned to start of source list: ");
-                    //source.erase(start_of_line, end_of_line-start_of_line);
+
                     break;
                 }
                 previous_pos = end_of_line+1<source.size() ? end_of_line+1 : std::string::npos;

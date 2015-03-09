@@ -1,0 +1,114 @@
+#ifndef PRIMITIVE_OPERATORS_H
+#define PRIMITIVE_OPERATORS_H
+
+#include <vector>
+#include <osg/TriangleIndexFunctor>
+#include <osgUtil/MeshOptimizers>
+
+#include "TriangleLinePointIndexFunctor"
+#include "EdgeIndexFunctor"
+#include "LineIndexFunctor"
+#include "PointIndexFunctor"
+
+
+typedef std::vector<unsigned int> IndexList;
+
+
+// Construct an index list of triangles for DrawElements for any input
+// primitives.
+struct IndexOperator {
+    unsigned int _maxIndex;
+    IndexList _remapping;
+    IndexList _indices;
+
+    IndexOperator() : _maxIndex(0)
+    {}
+
+    inline unsigned int index(unsigned int v) {
+        if(_remapping.empty()) {
+            return v;
+        }
+        else {
+            return _remapping[v];
+        }
+    }
+
+    // triangles
+    inline void operator()(unsigned int p1, unsigned int p2, unsigned int p3) {
+        if(!valid(p1, p2, p3)) {
+            return;
+        }
+
+        if (_remapping.empty()) {
+            _indices.push_back(p1);
+            _indices.push_back(p2);
+            _indices.push_back(p3);
+        }
+        else {
+            _indices.push_back(_remapping[p1]);
+            _indices.push_back(_remapping[p2]);
+            _indices.push_back(_remapping[p3]);
+        }
+    }
+
+    // edges
+    inline void operator()(unsigned int p1, unsigned int p2) {
+        if(!valid(p1, p2)) {
+            return;
+        }
+
+        if (_remapping.empty()) {
+            _indices.push_back(p1);
+            _indices.push_back(p2);
+        }
+        else {
+            _indices.push_back(_remapping[p1]);
+            _indices.push_back(_remapping[p2]);
+        }
+    }
+
+    // points
+    inline void operator()(unsigned int p1) {
+        if(!valid(p1)) {
+            return;
+        }
+
+        if (_remapping.empty()) {
+            _indices.push_back(p1);
+        }
+        else {
+            _indices.push_back(_remapping[p1]);
+        }
+    }
+
+    // filter primitives referencing bad indices
+    inline bool valid(unsigned int v1, unsigned int v2, unsigned int v3) {
+        if(_maxIndex) {
+            return (v1 < _maxIndex && v2 < _maxIndex && v3 < _maxIndex);
+        }
+        return true;
+    }
+
+    inline bool valid(unsigned int v1, unsigned int v2) {
+        if(_maxIndex) {
+            return (v1 < _maxIndex && v2 < _maxIndex);
+        }
+        return true;
+    }
+
+    inline bool valid(unsigned int v1) {
+        if(_maxIndex) {
+            return (v1 < _maxIndex);
+        }
+        return true;
+    }
+
+};
+
+
+typedef osg::TriangleIndexFunctor<IndexOperator> TriangleIndexor;
+typedef EdgeIndexFunctor<IndexOperator> EdgeIndexor;
+typedef LineIndexFunctor<IndexOperator> LineIndexor; // indexes only primitives in LINES, LINE_STRIP, LINE_LOOP mode
+typedef PointIndexFunctor<IndexOperator> PointIndexor;
+
+#endif

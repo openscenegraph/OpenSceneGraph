@@ -1,0 +1,451 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 2012 Cedric Pinson  */
+#ifndef WRITE_VISITOR_H
+#define WRITE_VISITOR_H
+
+#include <osg/Image>
+#include <osg/Notify>
+#include <osg/Geode>
+#include <osg/Geometry>
+#include <osg/GL>
+#include <osg/Version>
+#include <osg/Endian>
+#include <osg/Projection>
+#include <osg/MatrixTransform>
+#include <osg/PagedLOD>
+#include <osg/PositionAttitudeTransform>
+#include <osgAnimation/BasicAnimationManager>
+#include <osg/LightSource>
+#include <osg/CullFace>
+#include <osg/Material>
+#include <osg/BlendColor>
+#include <osg/BlendFunc>
+#include <osg/ValueObject>
+
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <map>
+#include <string>
+
+#include "JSON_Objects"
+#include "Animation"
+#include "json_stream"
+
+
+#define WRITER_VERSION 7
+
+
+osg::Array* getTangentSpaceArray(osg::Geometry& geometry);
+void translateObject(JSONObject* json, osg::Object* osg);
+void getStringifiedUserValue(osg::Object* o, std::string& name, std::string& value);
+template<typename T>
+bool getStringifiedUserValue(osg::Object* o, std::string& name, std::string& value);
+
+
+class WriteVisitor : public osg::NodeVisitor
+{
+public:
+    typedef std::vector<osg::ref_ptr<osg::StateSet> > StateSetStack;
+
+    std::map<osg::ref_ptr<osg::Object>, osg::ref_ptr<JSONObject> > _maps;
+    std::vector<osg::ref_ptr<JSONObject> > _parents;
+    osg::ref_ptr<JSONObject> _root;
+    StateSetStack _stateset;
+    std::string _baseName;
+    bool _useExternalBinaryArray;
+    bool _mergeAllBinaryFiles;
+    bool _inlineImages;
+    bool _varint;
+    int _maxTextureDimension;
+    std::vector<std::string> _specificBuffers;
+    std::map<std::string, std::ofstream*> _buffers;
+
+    std::ofstream& getBufferFile(const std::string& name) {
+        if(_buffers.find(name) == _buffers.end()) {
+            _buffers[name] = new std::ofstream(name.c_str(), std::ios::binary);
+        }
+        return *_buffers[name];
+    }
+
+    WriteVisitor(): osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {
+        _mergeAllBinaryFiles = false;
+        _useExternalBinaryArray = false;
+        _inlineImages = false;
+        _maxTextureDimension = 0;
+        _varint = false;
+    }
+
+    ~WriteVisitor() {
+        for(std::map<std::string, std::ofstream*>::iterator buffer = _buffers.begin() ;
+            buffer != _buffers.end() ; ++ buffer) {
+            delete buffer->second;
+        }
+    }
+
+    std::string getBinaryFilename(const std::string& buffer = "") {
+        std::string suffix;
+        if(!buffer.empty()) {
+            suffix = "_" + buffer;
+        }
+        return std::string(_baseName) + suffix + ".bin";
+    }
+
+    void closeBuffers() {
+        for(std::map<std::string, std::ofstream*>::iterator buffer = _buffers.begin() ;
+            buffer != _buffers.end() ; ++ buffer) {
+            buffer->second->close();
+        }
+    }
+
+    unsigned int getBuffersSize() {
+        unsigned int size = 0;
+        for(std::map<std::string, std::ofstream*>::iterator buffer = _buffers.begin() ;
+            buffer != _buffers.end() ; ++ buffer) {
+            size += buffer->second->tellp();
+        }
+        return size;
+    }
+
+    void write(json_stream& str) {
+        osg::ref_ptr<JSONObject> o = new JSONObject();
+        o->getMaps()["Version"] = new JSONValue<int>(WRITER_VERSION);
+        o->getMaps()["Generator"] = new JSONValue<std::string>("OpenSceneGraph " + std::string(osgGetVersion()) );
+        o->getMaps()["osg.Node"] = _root.get();
+        o->write(str, *this);
+        if (_mergeAllBinaryFiles) {
+            closeBuffers();
+            unsigned int size = getBuffersSize();
+            osg::notify(osg::NOTICE) << "Use a merged binary file ";
+            if (size/1024.0 < 1.0) {
+                osg::notify(osg::NOTICE) << size << " bytes" << std::endl;
+            } else if (size/(1024.0*1024.0) < 1.0) {
+                osg::notify(osg::NOTICE) << size/1024.0 << " kb" << std::endl;
+            } else {
+                osg::notify(osg::NOTICE) << size/(1024.0*1024.0) << " mb" << std::endl;
+            }
+        }
+    }
+
+    void error() {
+        throw "Error occur";
+    }
+
+    void setBufferName(JSONObject *json, osg::Geometry* geometry) {
+        if(!_mergeAllBinaryFiles || _specificBuffers.empty())
+            return;
+        std::string bufferName = getBufferName(geometry);
+        std::string defaultBufferName = getBinaryFilename();
+        std::string jsonBufferName = json->getBufferName();
+        // if the buffer is shared we will always favor dumping it in the default
+        // buffer and otherwise we keep the first buffer name set.
+        if(!jsonBufferName.empty()) {
+            if(jsonBufferName != defaultBufferName && bufferName == defaultBufferName) {
+                json->setBufferName(defaultBufferName);
+            }
+        }
+        else {
+            json->setBufferName(bufferName);
+        }
+    }
+
+    std::string getBufferName(osg::Geometry* geometry) {
+        std::string name("");
+        bool isSpecific = false;
+        for(std::vector<std::string>::iterator it_flag = _specificBuffers.begin() ;
+            it_flag != _specificBuffers.end() ; ++ it_flag) {
+            if(geometry->getUserValue(*it_flag, isSpecific) && isSpecific) {
+                name = *it_flag;
+                break;
+            }
+        }
+        return getBinaryFilename(name);
+    }
+
+    JSONObject* createJSONPagedLOD(osg::PagedLOD* plod);
+    JSONObject* createJSONStateSet(osg::StateSet* ss);
+    JSONObject* createJSONTexture(osg::Texture* sa);
+    JSONObject* createJSONMaterial(osg::Material* sa);
+    JSONObject* createJSONLight(osg::Light* sa);
+    JSONObject* createJSONCullFace(osg::CullFace* sa);
+    JSONObject* createJSONBlendColor(osg::BlendColor* sa);
+    JSONObject* createJSONBlendFunc(osg::BlendFunc* sa);
+
+    JSONObject* createJSONBufferArray(osg::Array* array, osg::Geometry* geom = 0);
+    JSONObject* createJSONDrawElements(osg::DrawArrays* drawArray, osg::Geometry* geom = 0);
+
+    JSONObject* createJSONDrawElementsUInt(osg::DrawElementsUInt* de, osg::Geometry* geom = 0);
+    JSONObject* createJSONDrawElementsUShort(osg::DrawElementsUShort* de, osg::Geometry* geom = 0);
+    JSONObject* createJSONDrawElementsUByte(osg::DrawElementsUByte* de, osg::Geometry* geom = 0);
+
+    JSONObject* createJSONDrawArray(osg::DrawArrays* drawArray, osg::Geometry* geom = 0);
+    JSONObject* createJSONDrawArrayLengths(osg::DrawArrayLengths* drawArray, osg::Geometry* geom = 0);
+
+    JSONObject* createJSONGeometry(osg::Geometry* geom);
+
+    JSONObject* getParent() {
+        if (_parents.empty()) {
+            _root = new JSONObject;
+            _parents.push_back(_root.get());
+        }
+        return _parents.back().get();
+    }
+
+    void initJsonObjectFromNode(osg::Node& node, JSONObject& json) {
+        translateObject(&json, &node);
+    }
+
+
+    void createJSONStateSet(JSONObject* json, osg::StateSet* ss) {
+        JSONObject* json_stateset = createJSONStateSet(ss);
+        if (json_stateset) {
+            JSONObject* obj = new JSONObject;
+            obj->getMaps()["osg.StateSet"] = json_stateset;
+            json->getMaps()["StateSet"] = obj;
+
+        }
+    }
+    void createJSONStateSet(osg::Node& node, JSONObject* json) {
+        if (node.getStateSet()) {
+            createJSONStateSet(json, node.getStateSet());
+        }
+    }
+
+    void applyCallback(osg::Node& node, JSONObject* json) {
+        JSONArray* updateCallbacks = new JSONArray;
+        osg::Callback* nc = node.getUpdateCallback();
+        while (nc) {
+            osgAnimation::BasicAnimationManager* am = dynamic_cast<osgAnimation::BasicAnimationManager*>(nc);
+            if (am) {
+                JSONArray* array = new JSONArray;
+                JSONObject* bam = new JSONObject;
+                bam->getMaps()["Animations"] = array;
+
+
+                JSONObject* nodeCallbackObject = new JSONObject;
+                nodeCallbackObject->getMaps()["osgAnimation.BasicAnimationManager"] = bam;
+                updateCallbacks->getArray().push_back(nodeCallbackObject);
+
+                for ( unsigned int i = 0; i < am->getAnimationList().size(); i++) {
+                    osg::ref_ptr<JSONObject> jsonAnim = createJSONAnimation(am->getAnimationList()[i].get());
+                    if (jsonAnim) {
+                        JSONObject* obj = new JSONObject;
+                        obj->getMaps()["osgAnimation.Animation"] = jsonAnim;
+                        array->getArray().push_back(obj);
+                        //std::stringstream ss;
+                        //jsonAnim->write(ss);
+                        //std::cout << ss.str() << std::endl;
+                    }
+                }
+            } else {
+                osgAnimation::UpdateMatrixTransform* updateMT = dynamic_cast<osgAnimation::UpdateMatrixTransform*>(nc);
+                if (updateMT) {
+                    osg::ref_ptr<JSONObject> jsonCallback = createJSONUpdateMatrixTransform(*updateMT);
+                    if (jsonCallback.valid()) {
+                        osg::ref_ptr<JSONObject> jsonObject = new JSONObject;
+                        jsonObject->getMaps()["osgAnimation.UpdateMatrixTransform"] = jsonCallback;
+                        updateCallbacks->getArray().push_back(jsonObject);
+                    }
+                }
+            }
+            nc = nc->getNestedCallback();
+        }
+
+        if (!updateCallbacks->getArray().empty()) {
+            json->getMaps()["UpdateCallbacks"] = updateCallbacks;
+        }
+    }
+
+    void apply(osg::Drawable& drw) {
+        osg::Geometry* geom = dynamic_cast<osg::Geometry*>(&drw);
+        if (geom) {
+            JSONObject* json = createJSONGeometry(geom);
+            JSONObject* parent = getParent();
+            parent->addChild("osg.Geometry", json);
+        }
+    }
+
+    void apply(osg::Geode& node) {
+
+        JSONObject* parent = getParent();
+        if (_maps.find(&node) != _maps.end()) {
+            parent->addChild("osg.Node", _maps[&node]->getShadowObject());
+            return;
+        }
+
+        osg::ref_ptr<JSONObject> json = new JSONNode;
+        json->addUniqueID();
+        _maps[&node] = json;
+
+        applyCallback(node, json.get());
+        createJSONStateSet(node, json.get());
+
+        parent->addChild("osg.Node", json.get());
+        initJsonObjectFromNode(node, *json);
+        _parents.push_back(json);
+        for (unsigned int i = 0; i < node.getNumDrawables(); ++i) {
+            if (node.getDrawable(i))
+                apply(*node.getDrawable(i));
+        }
+        _parents.pop_back();
+    }
+
+    void apply(osg::Group& node) {
+
+        JSONObject* parent = getParent();
+        if (_maps.find(&node) != _maps.end()) {
+            parent->addChild("osg.Node", _maps[&node]->getShadowObject());
+            return;
+        }
+
+        osg::ref_ptr<JSONObject> json = new JSONNode;
+        json->addUniqueID();
+        _maps[&node] = json;
+        parent->addChild("osg.Node", json.get());
+
+        applyCallback(node, json.get());
+        createJSONStateSet(node, json.get());
+
+        initJsonObjectFromNode(node, *json);
+
+        _parents.push_back(json);
+        traverse(node);
+        _parents.pop_back();
+    }
+
+    void apply(osg::PagedLOD& node)
+    {
+        JSONObject* parent = getParent();
+        if (_maps.find(&node) != _maps.end()) {
+            parent->addChild("osg.PagedLOD", _maps[&node]->getShadowObject());
+            return;
+        }
+
+        osg::ref_ptr<JSONObject> json = createJSONPagedLOD(&node);
+        json->addUniqueID();
+        _maps[&node] = json;
+        parent->addChild("osg.PagedLOD", json.get());
+
+
+        applyCallback(node, json.get());
+
+
+        createJSONStateSet(node, json.get());
+
+        initJsonObjectFromNode(node, *json);
+        _parents.push_back(json);
+        traverse(node);
+        _parents.pop_back();
+    }
+
+    void apply(osg::LightSource& node) {
+
+        JSONObject* parent = getParent();
+        if (_maps.find(&node) != _maps.end()) {
+            parent->addChild("osg.LightSource", _maps[&node]->getShadowObject());
+            return;
+        }
+
+        osg::ref_ptr<JSONObject> json = new JSONNode;
+        json->addUniqueID();
+        _maps[&node] = json;
+
+        applyCallback(node, json.get());
+        createJSONStateSet(node, json.get());
+
+        parent->addChild("osg.LightSource", json.get());
+
+        initJsonObjectFromNode(node, *json);
+
+        if (node.getLight()) {
+            JSONObject* obj = new JSONObject;
+            obj->getMaps()["osg.Light"] = createJSONLight(node.getLight());
+            json->getMaps()["Light"] = obj;
+        }
+
+        _parents.push_back(json);
+        traverse(node);
+        _parents.pop_back();
+    }
+
+    void apply(osg::Projection& node) {
+        JSONObject* parent = getParent();
+        if (_maps.find(&node) != _maps.end()) {
+            parent->addChild("osg.Projection", _maps[&node]->getShadowObject());
+            return;
+        }
+
+        osg::ref_ptr<JSONObject> json = new JSONNode;
+        json->addUniqueID();
+        _maps[&node] = json;
+
+        applyCallback(node, json.get());
+        createJSONStateSet(node, json.get());
+
+        parent->addChild("osg.Projection", json.get());
+
+        initJsonObjectFromNode(node, *json);
+        json->getMaps()["Matrix"] = new JSONMatrix(node.getMatrix());
+        _parents.push_back(json);
+        traverse(node);
+        _parents.pop_back();
+    }
+
+    void apply(osg::MatrixTransform& node) {
+        JSONObject* parent = getParent();
+        if (_maps.find(&node) != _maps.end()) {
+            parent->addChild("osg.MatrixTransform", _maps[&node]->getShadowObject());
+            return;
+        }
+
+        osg::ref_ptr<JSONObject> json = new JSONNode;
+        json->addUniqueID();
+        _maps[&node] = json;
+
+        applyCallback(node, json.get());
+        createJSONStateSet(node, json.get());
+
+        parent->addChild("osg.MatrixTransform", json.get());
+
+        initJsonObjectFromNode(node, *json);
+        json->getMaps()["Matrix"] = new JSONMatrix(node.getMatrix());
+        _parents.push_back(json);
+        traverse(node);
+        _parents.pop_back();
+    }
+
+    void apply(osg::PositionAttitudeTransform& node)
+    {
+        JSONObject* parent = getParent();
+        if (_maps.find(&node) != _maps.end()) {
+            parent->addChild("osg.MatrixTransform", _maps[&node]->getShadowObject());
+            return;
+        }
+
+        osg::ref_ptr<JSONObject> json = new JSONNode;
+        json->addUniqueID();
+        _maps[&node] = json;
+
+        applyCallback(node, json.get());
+        createJSONStateSet(node, json.get());
+
+        parent->addChild("osg.MatrixTransform", json.get());
+
+        initJsonObjectFromNode(node, *json);
+        osg::Matrix matrix = osg::Matrix::identity();
+        node.computeLocalToWorldMatrix(matrix,0);
+        json->getMaps()["Matrix"] = new JSONMatrix(matrix);
+        _parents.push_back(json);
+        traverse(node);
+        _parents.pop_back();
+    }
+
+    void setBaseName(const std::string& basename) { _baseName = basename; }
+    void useExternalBinaryArray(bool use) { _useExternalBinaryArray = use; }
+    void mergeAllBinaryFiles(bool use) { _mergeAllBinaryFiles = use; }
+    void inlineImages(bool use) { _inlineImages = use; }
+    void setVarint(bool use) { _varint = use; }
+    void setMaxTextureDimension(int use) { _maxTextureDimension = use; }
+    void addSpecificBuffer(const std::string& bufferFlag) { _specificBuffers.push_back(bufferFlag); }
+};
+
+#endif

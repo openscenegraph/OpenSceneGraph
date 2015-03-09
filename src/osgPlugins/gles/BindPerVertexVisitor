@@ -1,0 +1,242 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Cedric Pinson
+ *
+ * This application is open source and may be redistributed and/or modified
+ * freely and without restriction, both in commercial and non commercial
+ * applications, as long as this copyright notice is maintained.
+ *
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
+
+#ifndef BIND_PER_VERTEX_VISITOR
+#define BIND_PER_VERTEX_VISITOR
+
+#include "GeometryUniqueVisitor"
+
+
+// TODO: deprecated
+class BindPerVertexVisitor : public GeometryUniqueVisitor {
+public:
+    BindPerVertexVisitor(): GeometryUniqueVisitor("BindPerVertexVisitor")
+    {}
+
+    void apply(osg::Geometry& geometry) {
+        if (geometry.getNormalArray() && geometry.getNormalBinding() != osg::Geometry::BIND_PER_VERTEX) {
+            bindPerVertex(geometry.getNormalArray(),
+                          geometry.getNormalBinding(),
+                          geometry.getPrimitiveSetList());
+            geometry.setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+        }
+
+        if (geometry.getColorArray() && geometry.getColorBinding() != osg::Geometry::BIND_PER_VERTEX) {
+            bindPerVertex(geometry.getColorArray(),
+                          geometry.getColorBinding(),
+                          geometry.getPrimitiveSetList());
+            geometry.setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+        }
+
+        if (geometry.getSecondaryColorArray() && geometry.getSecondaryColorBinding() != osg::Geometry::BIND_PER_VERTEX) {
+            bindPerVertex(geometry.getSecondaryColorArray(),
+                          geometry.getSecondaryColorBinding(),
+                          geometry.getPrimitiveSetList());
+            geometry.setSecondaryColorBinding(osg::Geometry::BIND_PER_VERTEX);
+        }
+
+        if (geometry.getFogCoordArray() && geometry.getFogCoordBinding() != osg::Geometry::BIND_PER_VERTEX) {
+            bindPerVertex(geometry.getFogCoordArray(),
+                          geometry.getFogCoordBinding(),
+                          geometry.getPrimitiveSetList());
+            geometry.setFogCoordBinding(osg::Geometry::BIND_PER_VERTEX);
+        }
+
+        setProcessed(&geometry);
+    };
+
+protected:
+    void bindPerVertex(osg::Array* src,
+                       osg::Geometry::AttributeBinding fromBinding,
+                       osg::Geometry::PrimitiveSetList& primitives) {
+        if (doConvert<osg::Vec3Array>(src, fromBinding, primitives))
+            return;
+
+        if (doConvert<osg::Vec2Array>(src, fromBinding, primitives))
+            return;
+
+        if (doConvert<osg::Vec4Array>(src, fromBinding, primitives))
+            return;
+
+        if (doConvert<osg::Vec4ubArray>(src, fromBinding, primitives))
+            return;
+    }
+
+    template <class T>
+    bool doConvert(osg::Array* src,
+                   osg::Geometry::AttributeBinding fromBinding,
+                   osg::Geometry::PrimitiveSetList& primitives) {
+        T* array= dynamic_cast<T*>(src);
+        if (array) {
+            convert(*array, fromBinding, primitives);
+            return true;
+        }
+        return false;
+    }
+
+    template <class T>
+    void convert(T& array,
+                 osg::Geometry::AttributeBinding fromBinding,
+                 osg::Geometry::PrimitiveSetList& primitives)
+    {
+        osg::ref_ptr<T> result = new T();
+        for (unsigned int p = 0; p < primitives.size(); p++) {
+            switch ( primitives[p]->getMode() ) {
+            case osg::PrimitiveSet::POINTS:
+                osg::notify(osg::WARN) << "ConvertToBindPerVertex not supported for POINTS" << std::endl;
+                break;
+
+            case osg::PrimitiveSet::LINE_STRIP:
+                switch(fromBinding) {
+                case osg::Geometry::BIND_OFF:
+                case osg::Geometry::BIND_PER_VERTEX:
+                    break;
+                case osg::Geometry::BIND_OVERALL:
+                {
+                    for (unsigned int i = 0; i < primitives[p]->getNumIndices(); i++)
+                        result->push_back(array[0]);
+                }
+                break;
+                case osg::Geometry::BIND_PER_PRIMITIVE_SET:
+                {
+                    unsigned int nb = primitives[p]->getNumIndices();
+                    for (unsigned int i = 0; i < nb; i++)
+                        result->push_back(array[p]);
+                }
+                break;
+                }
+                break;
+
+            case osg::PrimitiveSet::LINES:
+                switch(fromBinding) {
+                case osg::Geometry::BIND_OFF:
+                case osg::Geometry::BIND_PER_VERTEX:
+                    break;
+                case osg::Geometry::BIND_OVERALL:
+                {
+                    for (unsigned int i = 0; i < primitives[p]->getNumIndices(); i++)
+                        result->push_back(array[0]);
+                }
+                break;
+                case osg::Geometry::BIND_PER_PRIMITIVE_SET:
+                {
+                    unsigned int nb = primitives[p]->getNumIndices();
+                    for (unsigned int i = 0; i < nb; i++)
+                        result->push_back(array[p]);
+                }
+                break;
+                }
+                break;
+
+            case osg::PrimitiveSet::TRIANGLES:
+                switch(fromBinding) {
+                case osg::Geometry::BIND_OFF:
+                case osg::Geometry::BIND_PER_VERTEX:
+                    break;
+                case osg::Geometry::BIND_OVERALL:
+                {
+                    for (unsigned int i = 0; i < primitives[p]->getNumIndices(); i++)
+                        result->push_back(array[0]);
+                }
+                break;
+                case osg::Geometry::BIND_PER_PRIMITIVE_SET:
+                {
+                    unsigned int nb = primitives[p]->getNumIndices();
+                    for (unsigned int i = 0; i < nb; i++)
+                        result->push_back(array[p]);
+                }
+                break;
+                }
+                break;
+
+            case osg::PrimitiveSet::TRIANGLE_STRIP:
+                switch(fromBinding) {
+                case osg::Geometry::BIND_OFF:
+                case osg::Geometry::BIND_PER_VERTEX:
+                    break;
+                case osg::Geometry::BIND_OVERALL:
+                {
+                    for (unsigned int i = 0; i < primitives[p]->getNumIndices(); i++)
+                        result->push_back(array[0]);
+                }
+                break;
+                case osg::Geometry::BIND_PER_PRIMITIVE_SET:
+                {
+                    osg::notify(osg::FATAL) << "Can't convert Array from BIND_PER_PRIMITIVE_SET to BIND_PER_VERTEX, for TRIANGLE_STRIP" << std::endl;
+                }
+                break;
+                }
+                break;
+
+            case osg::PrimitiveSet::TRIANGLE_FAN:
+                switch(fromBinding) {
+                case osg::Geometry::BIND_OFF:
+                case osg::Geometry::BIND_PER_VERTEX:
+                    break;
+                case osg::Geometry::BIND_OVERALL:
+                {
+                    for (unsigned int i = 0; i < primitives[p]->getNumIndices(); i++)
+                        result->push_back(array[0]);
+                }
+                break;
+                case osg::Geometry::BIND_PER_PRIMITIVE_SET:
+                {
+                    osg::notify(osg::FATAL) << "Can't convert Array from BIND_PER_PRIMITIVE_SET to BIND_PER_VERTEX, for TRIANGLE_FAN" << std::endl;
+                }
+                break;
+                }
+                break;
+
+            case osg::PrimitiveSet::QUADS:
+                switch(fromBinding) {
+                case osg::Geometry::BIND_OFF:
+                case osg::Geometry::BIND_PER_VERTEX:
+                    break;
+                case osg::Geometry::BIND_OVERALL:
+                {
+                    for (unsigned int i = 0; i < primitives[p]->getNumIndices(); i++)
+                        result->push_back(array[0]);
+                }
+                break;
+                case osg::Geometry::BIND_PER_PRIMITIVE_SET:
+                {
+                    osg::notify(osg::FATAL) << "Can't convert Array from BIND_PER_PRIMITIVE_SET to BIND_PER_VERTEX, for QUADS" << std::endl;
+                }
+                break;
+                }
+                break;
+
+            case osg::PrimitiveSet::QUAD_STRIP:
+                switch(fromBinding) {
+                case osg::Geometry::BIND_OFF:
+                case osg::Geometry::BIND_PER_VERTEX:
+                    break;
+                case osg::Geometry::BIND_OVERALL:
+                {
+                    for (unsigned int i = 0; i < primitives[p]->getNumIndices(); i++)
+                        result->push_back(array[0]);
+                }
+                break;
+                case osg::Geometry::BIND_PER_PRIMITIVE_SET:
+                {
+                    osg::notify(osg::FATAL) << "Can't convert Array from BIND_PER_PRIMITIVE_SET to BIND_PER_VERTEX, for QUAD_STRIP" << std::endl;
+                }
+                break;
+                }
+                break;
+            }
+        }
+        array = *result;
+    }
+};
+
+#endif

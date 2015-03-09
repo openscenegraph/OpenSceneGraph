@@ -1,0 +1,66 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab
+ *
+ * This application is open source and may be redistributed and/or modified
+ * freely and without restriction, both in commercial and non commercial
+ * applications, as long as this copyright notice is maintained.
+ *
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+*/
+
+#ifndef GEOMETRY_UNIQUE_VISITOR_H
+#define GEOMETRY_UNIQUE_VISITOR_H
+
+#include <osg/NodeVisitor>
+#include <osg/Geometry>
+#include <osg/Geode>
+
+#include <set>
+#include <string>
+
+#include "StatLogger"
+
+
+class GeometryUniqueVisitor : public osg::NodeVisitor {
+public:
+    GeometryUniqueVisitor(const std::string label=std::string("GeometryUniqueVisitor")):
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _logger(formatStatLabel(label))
+    {}
+
+    virtual void apply(osg::Geode& geode){
+        for (unsigned int i = 0; i < geode.getNumDrawables(); i++) {
+            apply(*geode.getDrawable(i));
+        }
+    }
+
+    virtual void apply(osg::Drawable& drawable){
+        osg::Geometry* geometry = drawable.asGeometry();
+        if (!geometry || isProcessed(geometry)) {
+            return;
+        }
+        apply(*geometry);
+    }
+
+    virtual void apply(osg::Geometry& geometry) {} // to be implemented by actual visitors
+
+protected:
+    bool isProcessed(osg::Geometry* node) {
+        return _processed.find(node) != _processed.end();
+    }
+
+    void setProcessed(osg::Geometry* node) {
+        _processed.insert(node);
+    }
+
+    std::string formatStatLabel(const std::string& label) const {
+        return label + "::apply(..)";
+    }
+
+    std::set<osg::Geometry*> _processed;
+    StatLogger _logger;
+};
+
+#endif

@@ -1,0 +1,153 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Cedric Pinson
+ *
+ * This application is open source and may be redistributed and/or modified
+ * freely and without restriction, both in commercial and non commercial
+ * applications, as long as this copyright notice is maintained.
+ *
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
+
+#ifndef POINT_INDEX_FUNCTOR_H
+#define POINT_INDEX_FUNCTOR_H
+
+#include <osg/PrimitiveSet>
+#include <osg/Array>
+
+
+template<class T>
+class PointIndexFunctor : public osg::PrimitiveIndexFunctor, public T
+{
+public:
+
+
+    virtual void setVertexArray(unsigned int,const osg::Vec2*)
+    {
+    }
+
+    virtual void setVertexArray(unsigned int ,const osg::Vec3* )
+    {
+    }
+
+    virtual void setVertexArray(unsigned int,const osg::Vec4* )
+    {
+    }
+
+    virtual void setVertexArray(unsigned int,const osg::Vec2d*)
+    {
+    }
+
+    virtual void setVertexArray(unsigned int ,const osg::Vec3d* )
+    {
+    }
+
+    virtual void setVertexArray(unsigned int,const osg::Vec4d* )
+    {
+    }
+
+    virtual void begin(GLenum mode)
+    {
+        _modeCache = mode;
+        _indexCache.clear();
+    }
+
+    virtual void vertex(unsigned int vert)
+    {
+        _indexCache.push_back(vert);
+    }
+
+    virtual void end()
+    {
+        if (!_indexCache.empty())
+        {
+            drawElements(_modeCache,_indexCache.size(),&_indexCache.front());
+        }
+    }
+
+    virtual void drawArrays(GLenum mode,GLint first,GLsizei count)
+    {
+        switch(mode)
+        {
+        case(GL_POINTS):
+        {
+            unsigned int pos=first;
+            for(GLsizei i=0;i<count;++i)
+                this->operator()(pos+i);
+        }
+        break;
+        default:
+// can't be converted into to triangles.
+            break;
+        }
+    }
+
+    virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices)
+    {
+        if (indices==0 || count==0) return;
+
+        typedef GLubyte Index;
+        typedef const Index* IndexPointer;
+
+        switch(mode)
+        {
+        case (GL_POINTS):
+        {
+            IndexPointer ilast = &indices[count];
+            for(IndexPointer  iptr=indices;iptr<ilast;iptr+=1)
+                this->operator()(*iptr);
+        }
+        break;
+        default:
+            break;
+        }
+    }
+
+    virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices)
+    {
+        if (indices==0 || count==0) return;
+
+        typedef GLushort Index;
+        typedef const Index* IndexPointer;
+
+        switch(mode)
+        {
+        case (GL_POINTS):
+        {
+            IndexPointer ilast = &indices[count];
+            for(IndexPointer  iptr=indices;iptr<ilast;iptr+=1)
+                this->operator()(*iptr);
+        }
+        break;
+        default:
+            break;
+        }
+    }
+
+    virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices)
+    {
+        if (indices==0 || count==0) return;
+
+        typedef GLuint Index;
+        typedef const Index* IndexPointer;
+
+        switch(mode)
+        {
+        case (GL_POINTS):
+        {
+            IndexPointer ilast = &indices[count];
+            for(IndexPointer  iptr=indices;iptr<ilast;iptr+=1)
+                this->operator()(*iptr);
+        }
+        break;
+        default:
+            break;
+        }
+    }
+
+    GLenum               _modeCache;
+    std::vector<GLuint>  _indexCache;
+};
+
+#endif

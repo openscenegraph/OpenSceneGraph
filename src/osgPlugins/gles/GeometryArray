@@ -1,0 +1,339 @@
+/* -*-c++-*- */
+#ifndef GEOMETRY_ARRAY_UTILS_H
+#define GEOMETRY_ARRAY_UTILS_H
+
+#include <osg/Array>
+#include <osg/Geometry>
+#include <osg/Notify>
+#include <osg/Geometry>
+
+
+typedef std::vector<unsigned int> IndexList;
+
+struct GeometryArrayList {
+
+    class ArrayIndexAppendVisitor : public osg::ArrayVisitor
+    {
+    public:
+        ArrayIndexAppendVisitor(const IndexList& indexes, osg::Array* dst): _indexes(indexes), _dst(dst) 
+        {
+        }
+
+        const IndexList& _indexes;
+        osg::Array* _dst;
+
+        template<class T>
+        inline void copy(T& array)
+        {
+            if (!_dst) {
+                osg::notify(osg::WARN) << "Can't append to array null" << std::endl;
+                return;
+            }
+
+            T* dstArray = dynamic_cast<T*>(_dst);
+            for(IndexList::const_iterator it = _indexes.begin(); it != _indexes.end(); ++it)
+            {
+                unsigned int idx = *it;
+                dstArray->push_back(array[idx]);
+            }
+        }
+
+        virtual void apply(osg::Array&) {}
+        virtual void apply(osg::ByteArray& array) { copy(array); }
+        virtual void apply(osg::ShortArray& array) { copy(array); }
+        virtual void apply(osg::IntArray& array) { copy(array); }
+        virtual void apply(osg::UByteArray& array) { copy(array); }
+        virtual void apply(osg::UShortArray& array) { copy(array); }
+        virtual void apply(osg::UIntArray& array) { copy(array); }
+        virtual void apply(osg::FloatArray& array) { copy(array); }
+        virtual void apply(osg::DoubleArray& array) { copy(array); }
+
+        virtual void apply(osg::Vec2Array& array) { copy(array); }
+        virtual void apply(osg::Vec3Array& array) { copy(array); }
+        virtual void apply(osg::Vec4Array& array) { copy(array); }
+
+        virtual void apply(osg::Vec4ubArray& array) { copy(array); }
+
+        virtual void apply(osg::Vec2bArray& array) { copy(array); }
+        virtual void apply(osg::Vec3bArray& array) { copy(array); }
+        virtual void apply(osg::Vec4bArray& array) { copy(array); }
+
+        virtual void apply(osg::Vec2sArray& array) { copy(array); }
+        virtual void apply(osg::Vec3sArray& array) { copy(array); }
+        virtual void apply(osg::Vec4sArray& array) { copy(array); }
+
+        virtual void apply(osg::Vec2dArray& array) { copy(array); }
+        virtual void apply(osg::Vec3dArray& array) { copy(array); }
+        virtual void apply(osg::Vec4dArray& array) { copy(array); }
+
+        virtual void apply(osg::MatrixfArray& array) { copy(array); }
+    protected:
+
+        ArrayIndexAppendVisitor& operator = (const ArrayIndexAppendVisitor&) { return *this; }
+    };
+
+
+    struct ArrayAppendElement {
+
+        template <class T> bool arrayAppendElement(osg::Array* src, unsigned int index, osg::Array* dst)
+        {
+            T* array= dynamic_cast<T*>(src);
+            if (array) {
+                T* arrayDst = dynamic_cast<T*>(dst);
+                arrayDst->push_back((*array)[index]);
+                return true;
+            }
+            return false;
+        }        
+
+        void operator()(osg::Array* src, unsigned int index, osg::Array* dst) {
+
+            if (arrayAppendElement<osg::FloatArray>(src, index, dst))
+                return;
+
+            if (arrayAppendElement<osg::Vec2Array>(src, index, dst))
+                return;
+
+            if (arrayAppendElement<osg::Vec3Array>(src, index, dst))
+                return;
+
+            if (arrayAppendElement<osg::Vec4Array>(src, index, dst))
+                return;
+
+            if (arrayAppendElement<osg::Vec4ubArray>(src, index, dst))
+                return;
+        }
+    };
+
+    struct ArraySetNumElements {
+
+        template <class T> bool arraySetNumElements(osg::Array* src, unsigned int numElements)
+        {
+            T* array= dynamic_cast<T*>(src);
+            if (array) {
+                array->resize(numElements);
+                return true;
+            }
+            return false;
+        }
+
+        void operator()(osg::Array* array, unsigned int numElements) {
+
+            if (arraySetNumElements<osg::FloatArray>(array, numElements))
+                return;
+
+            if (arraySetNumElements<osg::Vec2Array>(array, numElements))
+                return;
+
+            if (arraySetNumElements<osg::Vec3Array>(array, numElements))
+                return;
+
+            if (arraySetNumElements<osg::Vec4Array>(array, numElements))
+                return;
+
+            if (arraySetNumElements<osg::Vec4ubArray>(array, numElements))
+                return;
+        }
+    };
+
+    osg::ref_ptr<osg::Array> _vertexes;
+    osg::ref_ptr<osg::Array> _normals;
+    osg::ref_ptr<osg::Array> _colors;
+    osg::ref_ptr<osg::Array> _secondaryColors;
+    osg::ref_ptr<osg::Array> _fogCoords;
+    std::vector<osg::ref_ptr<osg::Array> > _texCoordArrays;
+    std::vector<osg::ref_ptr<osg::Array> > _attributesArrays;
+
+    GeometryArrayList() {}
+    GeometryArrayList(osg::Geometry& geometry) {
+        _vertexes = geometry.getVertexArray();
+        unsigned int nbvertexes = _vertexes->getNumElements();
+        if (geometry.getNormalArray() && nbvertexes == geometry.getNormalArray()->getNumElements())
+            _normals = geometry.getNormalArray();
+
+        if (geometry.getColorArray() && nbvertexes == geometry.getColorArray()->getNumElements())
+            _colors = geometry.getColorArray();
+
+        if (geometry.getSecondaryColorArray() && nbvertexes == geometry.getSecondaryColorArray()->getNumElements())
+            _secondaryColors = geometry.getSecondaryColorArray();
+
+        if (geometry.getFogCoordArray() && nbvertexes == geometry.getFogCoordArray()->getNumElements())
+            _fogCoords = geometry.getFogCoordArray();
+
+        _texCoordArrays.resize(geometry.getNumTexCoordArrays());
+        for(unsigned int i=0;i<geometry.getNumTexCoordArrays();++i)
+            if (geometry.getTexCoordArray(i) && nbvertexes == geometry.getTexCoordArray(i)->getNumElements())
+                _texCoordArrays[i] = geometry.getTexCoordArray(i);
+
+        _attributesArrays.resize(geometry.getNumVertexAttribArrays());
+        for(unsigned int i=0;i<geometry.getNumVertexAttribArrays();++i)
+            if (geometry.getVertexAttribArrayList()[i] && nbvertexes == geometry.getVertexAttribArrayList()[i]->getNumElements())
+                _attributesArrays[i] = geometry.getVertexAttribArrayList()[i];
+    }
+
+    void setNumElements(unsigned int nbElements) {
+        if (_vertexes.valid())
+            ArraySetNumElements()(_vertexes.get(), nbElements);
+
+        if (_normals.valid())
+            ArraySetNumElements()(_normals.get(), nbElements);
+
+        if (_colors.valid())
+            ArraySetNumElements()(_colors.get(), nbElements);
+
+        if (_secondaryColors.valid())
+            ArraySetNumElements()(_secondaryColors.get(), nbElements);
+
+        if (_fogCoords.valid())
+            ArraySetNumElements()(_fogCoords.get(), nbElements);
+
+        for (unsigned int i = 0; i < _texCoordArrays.size(); i++)
+            if (_texCoordArrays[i].valid())
+                ArraySetNumElements()(_texCoordArrays[i].get(), nbElements);
+
+        for (unsigned int i = 0; i < _attributesArrays.size(); i++)
+            if (_attributesArrays[i].valid())
+                ArraySetNumElements()(_attributesArrays[i].get(), nbElements);
+    }
+
+    unsigned int append(unsigned int index, GeometryArrayList& dst) {
+        if (_vertexes.valid())
+            ArrayAppendElement()(_vertexes.get(), index, dst._vertexes.get());
+
+        if (_normals.valid())
+            ArrayAppendElement()(_normals.get(), index, dst._normals.get());
+
+        if (_colors.valid())
+            ArrayAppendElement()(_colors.get(), index, dst._colors.get());
+
+        if (_secondaryColors.valid())
+            ArrayAppendElement()(_secondaryColors.get(), index, dst._secondaryColors.get());
+
+        if (_fogCoords.valid())
+            ArrayAppendElement()(_fogCoords.get(), index, dst._fogCoords.get());
+
+        for (unsigned int i = 0; i < _texCoordArrays.size(); i++)
+            if (_texCoordArrays[i].valid())
+                ArrayAppendElement()(_texCoordArrays[i].get(), index, dst._texCoordArrays[i].get());
+
+        for (unsigned int i = 0; i < _attributesArrays.size(); i++)
+            if (_attributesArrays[i].valid())
+                ArrayAppendElement()(_attributesArrays[i].get(), index, dst._attributesArrays[i].get());
+
+        return dst._vertexes->getNumElements()-1;
+    }
+
+
+    unsigned int append(const IndexList& indexes, GeometryArrayList& dst) {
+
+        if (_vertexes.valid()) {
+            ArrayIndexAppendVisitor append(indexes, dst._vertexes.get());
+            _vertexes->accept(append);
+        }
+
+        if (_normals.valid()) {
+            ArrayIndexAppendVisitor append(indexes, dst._normals.get());
+            _normals->accept(append);
+        }
+
+        if (_colors.valid()) {
+            ArrayIndexAppendVisitor append(indexes, dst._colors.get());
+            _colors->accept(append);
+        }
+
+        if (_secondaryColors.valid()) {
+            ArrayIndexAppendVisitor append(indexes, dst._secondaryColors.get());
+            _secondaryColors->accept(append);
+        }
+
+        if (_fogCoords.valid()) {
+            ArrayIndexAppendVisitor append(indexes, dst._fogCoords.get());
+            _fogCoords->accept(append);
+        }
+
+        for (unsigned int i = 0; i < _texCoordArrays.size(); i++)
+            if (_texCoordArrays[i].valid()) {
+                ArrayIndexAppendVisitor append(indexes, dst._texCoordArrays[i].get());
+                _texCoordArrays[i]->accept(append);
+            }
+
+        for (unsigned int i = 0; i < _attributesArrays.size(); i++)
+            if (_attributesArrays[i].valid()) {
+                ArrayIndexAppendVisitor append(indexes, dst._attributesArrays[i].get());
+                _attributesArrays[i]->accept(append);
+            }
+
+        return dst._vertexes->getNumElements()-1;
+    }
+
+    GeometryArrayList cloneType() const {
+        GeometryArrayList array;
+        if (_vertexes.valid())
+            array._vertexes = dynamic_cast<osg::Array*>(_vertexes->cloneType());
+
+        if (_normals.valid())
+            array._normals = dynamic_cast<osg::Array*>(_normals->cloneType());
+
+        if (_colors.valid())
+            array._colors = dynamic_cast<osg::Array*>(_colors->cloneType());
+
+        if (_secondaryColors.valid())
+            array._secondaryColors = dynamic_cast<osg::Array*>(_secondaryColors->cloneType());
+
+        if (_fogCoords.valid())
+            array._fogCoords = dynamic_cast<osg::Array*>(_fogCoords->cloneType());
+
+        array._texCoordArrays.resize(_texCoordArrays.size());
+        for (unsigned int i = 0; i < _texCoordArrays.size(); i++) {
+            if (_texCoordArrays[i].valid())
+                array._texCoordArrays[i] = dynamic_cast<osg::Array*>(_texCoordArrays[i]->cloneType());
+        }
+
+        array._attributesArrays.resize(_attributesArrays.size());
+        for (unsigned int i = 0; i < _attributesArrays.size(); i++) {
+            if (_attributesArrays[i].valid())
+                array._attributesArrays[i] = dynamic_cast<osg::Array*>(_attributesArrays[i]->cloneType());
+        }
+
+        return array;
+    }
+
+    unsigned int size() const {
+        return _vertexes->getNumElements();
+    }
+
+    void setToGeometry(osg::Geometry& geom) {
+        if (_vertexes.valid())
+            geom.setVertexArray(_vertexes.get());
+
+        if (_normals.valid()) {
+            geom.setNormalArray(_normals.get(), osg::Array::BIND_PER_VERTEX);
+        }
+
+        if (_colors.valid()) {
+            geom.setColorArray(_colors.get(), osg::Array::BIND_PER_VERTEX);
+        }
+
+        if (_secondaryColors.valid()) {
+            geom.setSecondaryColorArray(_secondaryColors.get(), osg::Array::BIND_PER_VERTEX);
+        }
+
+        if (_fogCoords.valid()) {
+            geom.setFogCoordArray(_fogCoords.get(), osg::Array::BIND_PER_VERTEX);
+        }
+
+        for (unsigned int i = 0; i < _texCoordArrays.size(); ++i) {
+            if (_texCoordArrays[i].valid()) {
+                geom.setTexCoordArray(i, _texCoordArrays[i].get(), osg::Array::BIND_PER_VERTEX);
+            }
+        }
+
+        for (unsigned int i = 0; i < _attributesArrays.size(); ++i) {
+            if (_attributesArrays[i].valid()) {
+                geom.setVertexAttribArray(i, _attributesArrays[i].get(), osg::Array::BIND_PER_VERTEX);
+            }
+        }
+    }
+};
+
+#endif

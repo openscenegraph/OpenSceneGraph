@@ -1,0 +1,178 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab
+ *
+ * This application is open source and may be redistributed and/or modified
+ * freely and without restriction, both in commercial and non commercial
+ * applications, as long as this copyright notice is maintained.
+ *
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
+
+#ifndef LINE_INDEX_FUNCTOR_H
+#define LINE_INDEX_FUNCTOR_H
+
+#include <osg/PrimitiveSet>
+#include <osg/Array>
+
+#include <algorithm>
+#include <set>
+
+
+class Line {
+public:
+    Line(unsigned int a, unsigned int b) {
+        _a = std::min<unsigned int>(a, b);
+        _b = std::max<unsigned int>(a, b);
+    }
+
+    bool operator<(const Line& e) {
+        return _a < e._a || (_a == e._a && _b < e._b);
+    }
+
+    unsigned int _a, _b;
+};
+
+struct LineCompare {
+    bool operator()(const Line& lhs, const Line& rhs) {
+        return lhs._a < rhs._a || (lhs._a == rhs._a && lhs._b < rhs._b);
+    }
+};
+
+
+template<class T>
+class LineIndexFunctor : public osg::PrimitiveIndexFunctor, public T
+{
+public:
+    virtual void setVertexArray(unsigned int,const osg::Vec2*)
+    {}
+
+    virtual void setVertexArray(unsigned int ,const osg::Vec3* )
+    {}
+
+    virtual void setVertexArray(unsigned int,const osg::Vec4* )
+    {}
+
+    virtual void setVertexArray(unsigned int,const osg::Vec2d*)
+    {}
+
+    virtual void setVertexArray(unsigned int ,const osg::Vec3d* )
+    {}
+
+    virtual void setVertexArray(unsigned int,const osg::Vec4d* )
+    {}
+
+    virtual void begin(GLenum mode) {
+        _modeCache = mode;
+        _indexCache.clear();
+    }
+
+    virtual void vertex(unsigned int vert) {
+        _indexCache.push_back(vert);
+    }
+
+    virtual void end() {
+        if (!_indexCache.empty()) {
+            drawElements(_modeCache, _indexCache.size(), &_indexCache.front());
+        }
+    }
+
+    virtual void drawArrays(GLenum mode, GLint first, GLsizei count) {
+        switch(mode)
+        {
+            case(GL_LINES):
+            {
+                unsigned int pos = first;
+                for(GLsizei i = 0 ; i < count ; i += 2, pos += 2) {
+                    line(pos, pos + 1);
+                }
+            }
+            break;
+            case(GL_LINE_STRIP):
+            {
+                unsigned int pos = first;
+                for(GLsizei i = 0 ; i < count - 1 ; i += 1, pos += 1) {
+                    line(pos, pos + 1);
+                }
+            }
+            break;
+            case(GL_LINE_LOOP):
+            {
+                unsigned int pos = first;
+                for(GLsizei i = 0 ; i < count - 1 ; i += 1, pos += 1) {
+                    line(pos, pos + 1);
+                }
+                line(pos, first);
+            }
+            break;
+            default: // not a line
+            break;
+        }
+    }
+
+    template<typename I>
+    void drawElements(GLenum mode, GLsizei count, const I* indices)
+    {
+        if (indices == 0 || count == 0) return;
+
+        switch(mode)
+        {
+            case(GL_LINES):
+            {
+                const I* iptr = indices;
+                for(GLsizei i = 0 ; i < count ; i += 2, iptr += 2) {
+                    line(*iptr, *(iptr+1));
+                }
+            }
+            break;
+            case(GL_LINE_STRIP):
+            {
+                const I* iptr = indices;
+                for(GLsizei i = 0 ; i < count - 1 ; i += 1, iptr += 1) {
+                    line(*iptr, *(iptr+1));
+                }
+            }
+            break;
+            case(GL_LINE_LOOP):
+            {
+                const I* iptr = indices;
+                I first = *iptr;
+                for(GLsizei i = 0 ; i < count - 1 ; i += 1, iptr += 1) {
+                    line(*iptr, *(iptr+1));
+                }
+                line(*iptr, first);
+            }
+            break;
+            default: // not a line
+            break;
+        }
+    }
+
+    virtual void drawElements(GLenum mode, GLsizei count, const GLubyte* indices) {
+        drawElements<GLubyte>(mode, count, indices);
+    }
+
+    virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices) {
+        drawElements<GLushort>(mode, count, indices);
+    }
+
+    virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices) {
+        drawElements<GLuint>(mode, count, indices);
+    }
+
+    void line(unsigned int a, unsigned int b) {
+        Line e(T::index(a), T::index(b)); // use remapped indices to deduplicate lines
+
+        if(_lineCache.find(e) == _lineCache.end()) {
+            this->operator()(a, b);
+            _lineCache.insert(e);
+        }
+    }
+
+    GLenum               _modeCache;
+    std::vector<GLuint>  _indexCache;
+    std::set<Line, LineCompare> _lineCache;
+};
+
+#endif

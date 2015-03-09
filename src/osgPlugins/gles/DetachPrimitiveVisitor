@@ -1,0 +1,97 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab
+ *
+ * This application is open source and may be redistributed and/or modified
+ * freely and without restriction, both in commercial and non commercial
+ * applications, as long as this copyright notice is maintained.
+ *
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+*/
+
+#ifndef DETACH_PRIMITIVE_VISITOR
+#define DETACH_PRIMITIVE_VISITOR
+
+#include <osg/ValueObject>
+#include "GeometryUniqueVisitor"
+
+class DetachPrimitiveVisitor : public GeometryUniqueVisitor {
+public:
+    DetachPrimitiveVisitor(std::string const& userValue, bool keepGeometryAttributes=false, bool inlined=true):
+        GeometryUniqueVisitor("DetachPrimitiveVisitor"),
+        _userValue(userValue), _keepGeometryAttributes(keepGeometryAttributes), _inlined(inlined)
+    {}
+
+    void apply(osg::Geometry& geometry) {
+        if(shouldDetach(geometry)) {
+            osg::Geometry* detached = createDetachedGeometry(geometry);
+
+            unsigned int nbParents = geometry.getNumParents();
+            for(unsigned int i = 0 ; i < nbParents ; ++ i) {
+                osg::Node* parent = geometry.getParent(i);
+                // TODO: Geode will be soon deprecated
+                if(parent && parent->asGeode()) {
+                    osg::Geode* geode = parent->asGeode();
+                    geode->addDrawable(detached);
+                    if(!_inlined) {
+                        geode->removeDrawable(&geometry);
+                    }
+                }
+            }
+            setProcessed(detached);
+        }
+        setProcessed(&geometry);
+    }
+
+protected:
+    bool shouldDetach(osg::Geometry& geometry) {
+        bool detach = false;
+        for(unsigned int i = 0 ; i < geometry.getNumPrimitiveSets() ; ++ i) {
+            osg::PrimitiveSet* primitive = geometry.getPrimitiveSet(i);
+            if(primitive && primitive->getUserValue(_userValue, detach) && detach) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    osg::Geometry* createDetachedGeometry(osg::Geometry& source) {
+        osg::Geometry* detached = new osg::Geometry(source, osg::CopyOp::SHALLOW_COPY);
+        if(!_keepGeometryAttributes) {
+            // we keep only vertexes and clean all other attributes and values
+            detached->setNormalArray(0);
+            detached->setColorArray(0);
+            detached->setSecondaryColorArray(0);
+            detached->setFogCoordArray(0);
+            for (unsigned int i = 0 ; i < source.getNumTexCoordArrays(); ++ i) {
+                detached->setTexCoordArray(i, 0);
+            }
+            detached->getVertexAttribArrayList().clear();
+            detached->setStateSet(0);
+            detached->setUserDataContainer(0);
+        }
+
+        // filter primitivesets
+        osg::Geometry::PrimitiveSetList detachedPrimitives;
+        for(int i = source.getNumPrimitiveSets() - 1 ; i >= 0 ; -- i) {
+            osg::PrimitiveSet* primitive = source.getPrimitiveSet(i);
+            bool isTrue = false;
+            if(primitive && primitive->getUserValue(_userValue, isTrue) && isTrue) {
+                detachedPrimitives.push_back(primitive);
+                source.removePrimitiveSet(i);
+            }
+        }
+
+        detached->setPrimitiveSetList(detachedPrimitives);
+        detached->setUserValue(_userValue, true);
+        return detached;
+    }
+
+
+    std::string _userValue;
+    bool _keepGeometryAttributes;
+    bool _inlined;
+};
+
+#endif

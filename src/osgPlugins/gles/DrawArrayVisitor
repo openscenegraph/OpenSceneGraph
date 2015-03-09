@@ -1,0 +1,88 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Cedric Pinson
+ *
+ * This application is open source and may be redistributed and/or modified
+ * freely and without restriction, both in commercial and non commercial
+ * applications, as long as this copyright notice is maintained.
+ *
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+*/
+
+#ifndef DRAW_ARRAY_VISITOR
+#define DRAW_ARRAY_VISITOR
+
+#include "GeometryUniqueVisitor"
+#include "GeometryArray"
+
+
+class DrawArrayVisitor : public GeometryUniqueVisitor {
+public:
+    DrawArrayVisitor(): GeometryUniqueVisitor("DrawArrayVisitor")
+    {}
+
+    void apply(osg::Geometry& geometry) {
+        GeometryArrayList srcArrays(geometry);
+
+        // clone but clear content
+        osg::Geometry* newGeometry = new osg::Geometry;
+        GeometryArrayList dst = srcArrays.cloneType();
+
+        for (unsigned int i = 0; i < geometry.getNumPrimitiveSets(); i++) {
+            osg::PrimitiveSet* ps = geometry.getPrimitiveSet(i);
+            switch (ps->getType()) {
+                case osg::PrimitiveSet::DrawArraysPrimitiveType:
+                    {
+                        osg::DrawArrays* dw = dynamic_cast<osg::DrawArrays*>(ps);
+                        unsigned int start = dst.size();
+                        osg::DrawArrays* ndw = new osg::DrawArrays(dw->getMode(), start, dw->getNumIndices());
+                        newGeometry->getPrimitiveSetList().push_back(ndw);
+                        for ( unsigned int j = 0; j < dw->getNumIndices(); j++) {
+                            srcArrays.append(dw->getFirst()+j, dst);
+                        }
+                    }
+                    break;
+                case osg::PrimitiveSet::DrawElementsUBytePrimitiveType:
+                case osg::PrimitiveSet::DrawElementsUShortPrimitiveType:
+                case osg::PrimitiveSet::DrawElementsUIntPrimitiveType:
+                    {
+                        osg::DrawElements* de = ps->getDrawElements();
+                        unsigned int start = dst.size();
+                        osg::DrawArrays* ndw = new osg::DrawArrays(de->getMode(), start, de->getNumIndices());
+                        newGeometry->getPrimitiveSetList().push_back(ndw);
+                        for (unsigned int j = 0; j < de->getNumIndices(); j++) {
+                            unsigned int idx = de->getElement(j);
+                            srcArrays.append(idx, dst);
+                        }
+                    }
+                    break;
+                case osg::PrimitiveSet::DrawArrayLengthsPrimitiveType:
+                    {
+                        osg::DrawArrayLengths* dal = dynamic_cast<osg::DrawArrayLengths*>(ps);
+                        unsigned int start = dst.size();
+                        unsigned int offset = dal->getFirst();
+                        unsigned int totalDrawArraysVertexes = 0;
+                        for (unsigned int j = 0; j < dal->size(); j++) {
+                            totalDrawArraysVertexes += (*dal)[j];
+                        }
+                        osg::DrawArrays* ndw = new osg::DrawArrays(dal->getMode(), start, totalDrawArraysVertexes);
+                        newGeometry->getPrimitiveSetList().push_back(ndw);
+
+                        for (unsigned int v = 0; v < totalDrawArraysVertexes; v++) {
+                            srcArrays.append(offset + v, dst);
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        dst.setToGeometry(geometry);
+        geometry.setPrimitiveSetList(newGeometry->getPrimitiveSetList());
+        setProcessed(&geometry);
+    }
+};
+
+#endif

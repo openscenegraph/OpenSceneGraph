@@ -1,0 +1,35 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Cedric Pinson
+ *
+ * This application is open source and may be redistributed and/or modified
+ * freely and without restriction, both in commercial and non commercial
+ * applications, as long as this copyright notice is maintained.
+ *
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+*/
+
+#ifndef TRIANGLE_STRIP_VISITOR_H
+#define TRIANGLE_STRIP_VISITOR_H
+
+#include "GeometryUniqueVisitor"
+
+class TriangleStripVisitor : public GeometryUniqueVisitor {
+public:
+    TriangleStripVisitor(unsigned int cacheSize, unsigned int minSize, bool merge):
+        GeometryUniqueVisitor("TriangleStripVisitor"),
+        _cacheSize(cacheSize), _minSize(minSize), _merge(merge)
+    {}
+
+    void apply(osg::Geometry& geometry);
+
+protected:
+    void mergeTrianglesStrip(osg::Geometry& geometry);
+
+    unsigned int _cacheSize;
+    unsigned int _minSize;
+    bool _merge;
+};
+
+#endif

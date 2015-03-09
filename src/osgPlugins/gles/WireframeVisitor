@@ -1,0 +1,84 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Cedric Pinson
+ *
+ * This application is open source and may be redistributed and/or modified
+ * freely and without restriction, both in commercial and non commercial
+ * applications, as long as this copyright notice is maintained.
+ *
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+*/
+
+#ifndef WIREFRAME_VISITOR
+#define WIREFRAME_VISITOR
+
+#include <set>
+
+#include <osg/ValueObject>
+#include <osg/Geode>
+#include <osg/Geometry>
+
+#include "GeometryUniqueVisitor"
+#include "PrimitiveIndexors"
+
+
+class WireframeVisitor : public GeometryUniqueVisitor
+{
+public:
+    WireframeVisitor(bool inlined=false):
+        GeometryUniqueVisitor("WireframeVisitor"),
+        _inlined(inlined)
+    {}
+
+    void apply(osg::Node& node) {
+        handleStateSet(node);
+        traverse(node);
+    }
+
+    void apply(osg::Geode& geode) {
+        handleStateSet(geode);
+        for (unsigned int i = 0; i < geode.getNumDrawables(); i++) {
+            apply(*geode.getDrawable(i));
+        }
+    }
+
+    void apply(osg::Drawable& drawable) {
+        osg::Geometry* geometry = drawable.asGeometry();
+        if (!geometry) {
+            return;
+        }
+        apply(*geometry);
+    }
+
+    void apply(osg::Geometry& geometry) {
+        if(_processed.find(&geometry) == _processed.end()) {
+            const unsigned int nbSourcePrimitives = geometry.getNumPrimitiveSets();
+            for(unsigned int i = 0 ; i < nbSourcePrimitives ; ++ i) {
+                osg::PrimitiveSet* primitive = geometry.getPrimitiveSet(i);
+                EdgeIndexor edges;
+                primitive->accept(edges);
+                if(!edges._indices.empty()) {
+                    osg::DrawElementsUInt* wireframe = new osg::DrawElementsUInt(osg::PrimitiveSet::LINES,
+                                                                                 edges._indices.begin(),
+                                                                                 edges._indices.end());
+                    wireframe->setUserValue("wireframe", true);
+                    geometry.getPrimitiveSetList().push_back(wireframe);
+                }
+            }
+
+            _processed.insert(&geometry);
+        }
+    }
+
+    void handleStateSet(osg::Node& node) {
+        if(!_inlined) {
+            node.setStateSet(0);
+        }
+    }
+
+    std::set<osg::Geometry*> _processed;
+    bool _inlined;
+};
+
+#endif

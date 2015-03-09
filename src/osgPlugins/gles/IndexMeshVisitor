@@ -1,0 +1,34 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Cedric Pinson
+ *
+ * This application is open source and may be redistributed and/or modified
+ * freely and without restriction, both in commercial and non commercial
+ * applications, as long as this copyright notice is maintained.
+ *
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+*/
+
+#ifndef INDEX_MESH_VISITOR
+#define INDEX_MESH_VISITOR
+
+#include "GeometryUniqueVisitor"
+
+class IndexMeshVisitor : public GeometryUniqueVisitor
+{
+public:
+    IndexMeshVisitor(): GeometryUniqueVisitor("IndexMeshVisitor")
+    {}
+
+    void apply(osg::Geometry& geom);
+
+protected:
+    typedef std::vector<unsigned int> IndexList;
+    void addDrawElements(IndexList&,
+                         osg::PrimitiveSet::Mode,
+                         osg::Geometry::PrimitiveSetList&,
+                         std::string userValue = std::string());
+};
+
+#endif

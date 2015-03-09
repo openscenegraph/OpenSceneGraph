@@ -1,0 +1,106 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Cedric Pinson
+ *
+ * This application is open source and may be redistributed and/or modified
+ * freely and without restriction, both in commercial and non commercial
+ * applications, as long as this copyright notice is maintained.
+ *
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+*/
+
+#ifndef TANGENT_SPACE_VISITOR
+#define TANGENT_SPACE_VISITOR
+
+#define TANGENT_ATTRIBUTE_INDEX 20
+
+#include <osgUtil/TangentSpaceGenerator>
+#include <osg/ValueObject> // {get,set}UserValue
+#include <osg/Array>
+
+#include "GeometryUniqueVisitor"
+
+
+// we will store only tangent and rebuilt tangent2 in the vertex shader
+// http://www.terathon.com/code/tangent.html
+
+class TangentSpaceVisitor : public GeometryUniqueVisitor
+{
+public:
+    TangentSpaceVisitor(int textureUnit = 0):
+        GeometryUniqueVisitor("TangentSpaceVisitor"),
+        _textureUnit(textureUnit)
+    {}
+
+    void apply(osg::Geometry& geom) {
+        if (!geom.getTexCoordArray(_textureUnit)){
+            int texUnit = 0;
+            bool found = false;
+            while(texUnit < 32){
+                if (_textureUnit != texUnit && geom.getTexCoordArray(texUnit)){
+                    _textureUnit = texUnit;
+                    found = true;
+                    break;
+                }
+                texUnit++;
+            }
+            if (!found)
+                return;
+        }
+
+        osg::ref_ptr<osgUtil::TangentSpaceGenerator> generator = new osgUtil::TangentSpaceGenerator;
+        generator->generate(&geom, _textureUnit);
+
+        // keep original normal array
+        if (!geom.getNormalArray()) {
+            if (generator->getNormalArray()) {
+                osg::Vec3Array* vec3Normals = new osg::Vec3Array();
+                osg::Vec4Array* vec4Normals = generator->getNormalArray();
+                for (unsigned int i = 0; i < vec4Normals->size(); i++) {
+                    osg::Vec3 n = osg::Vec3((*vec4Normals)[i][0],
+                                            (*vec4Normals)[i][1],
+                                            (*vec4Normals)[i][2]);
+                    vec3Normals->push_back(n);
+                }
+                geom.setNormalArray(vec3Normals, osg::Array::BIND_PER_VERTEX);
+            }
+        }
+
+        if (generator->getTangentArray()) {
+            osg::Vec4Array* normal = generator->getNormalArray();
+            osg::Vec4Array* tangent = generator->getTangentArray();
+            osg::Vec4Array* tangent2 = generator->getBinormalArray();
+            osg::Vec4Array* finalTangent = dynamic_cast<osg::Vec4Array*>(generator->getTangentArray()
+                                                                                  ->clone(osg::CopyOp::DEEP_COPY_ALL));
+            for (unsigned int i = 0; i < tangent->size(); i++) {
+                osg::Vec3 n = osg::Vec3((*normal)[i][0],
+                                        (*normal)[i][1],
+                                        (*normal)[i][2]);
+                osg::Vec3 t = osg::Vec3((*tangent)[i][0],
+                                        (*tangent)[i][1],
+                                        (*tangent)[i][2]);
+                osg::Vec3 t2 = osg::Vec3((*tangent2)[i][0],
+                                         (*tangent2)[i][1],
+                                         (*tangent2)[i][2]);
+
+                // Gram-Schmidt orthogonalize
+                osg::Vec3 t3 = (t - n * (n * t));
+                t3.normalize();
+                (*finalTangent)[i] = osg::Vec4(t3, 0.0);
+
+                // Calculate handedness
+                (*finalTangent)[i][3] = (((n ^ t) * t2) < 0.0) ? -1.0 : 1.0;
+                // The bitangent vector B is then given by B = (N × T) · Tw
+            }
+            finalTangent->setUserValue("tangent", true);
+            geom.setVertexAttribArray(geom.getNumVertexAttribArrays(), finalTangent, osg::Array::BIND_PER_VERTEX);
+        }
+        setProcessed(&geom);
+    }
+
+protected:
+    int _textureUnit;
+};
+
+#endif

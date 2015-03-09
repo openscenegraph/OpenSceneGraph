@@ -1,0 +1,32 @@
+#ifndef STAT_LOGGER
+#define STAT_LOGGER
+
+#include <osg/Timer>
+#include <osg/Notify>
+
+
+class StatLogger
+{
+public:
+    StatLogger(const std::string& label): _start(getTick()), _label(label) {}
+    ~StatLogger() {
+        _stop = getTick();
+        OSG_INFO << std::flush
+                 << "Info: " << _label << " timing: " << getElapsedSeconds() << "s"
+                 << std::endl << std::flush;
+    }
+
+protected:
+    osg::Timer_t _start, _stop;
+    std::string _label;
+
+    inline osg::Timer_t getTick() const {
+        return osg::Timer::instance()->tick();
+    }
+
+    inline double getElapsedSeconds() const {
+        return osg::Timer::instance()->delta_s(_start, _stop);
+    }
+};
+
+#endif

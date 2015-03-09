@@ -1,0 +1,28 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Cedric Pinson 
+*
+* This application is open source and may be redistributed and/or modified   
+* freely and without restriction, both in commercial and non commercial
+* applications, as long as this copyright notice is maintained.
+* 
+* This application is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*
+*/
+
+#ifndef UNINDEX_MESH_VISITOR
+#define UNINDEX_MESH_VISITOR
+
+#include "GeometryUniqueVisitor"
+
+
+class UnIndexMeshVisitor : public GeometryUniqueVisitor
+{
+public:
+    UnIndexMeshVisitor(): GeometryUniqueVisitor("UnIndexMeshVisitor")
+    {}
+
+    void apply(osg::Geometry& geom);
+};
+
+#endif

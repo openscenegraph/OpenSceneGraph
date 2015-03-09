@@ -1,0 +1,372 @@
+/*  -*-c++-*-
+ *  Copyright (C) 2010 Cedric Pinson <cedric.pinson@plopbyte.net>
+ */
+
+#ifndef JSON_OBJECT
+#define JSON_OBJECT
+
+#include <osg/Matrix>
+#include <osg/Array>
+#include <osg/Light>
+#include <osg/Notify>
+#include <osg/PrimitiveSet>
+
+#include <map>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+#include "json_stream"
+
+#ifdef WIN32
+  #include <cstdint>
+#endif
+
+class WriteVisitor;
+
+struct Vec5
+{
+    float _v[5];
+    Vec5() {}
+    Vec5(float a0, float a1, float a2, float a3, float a4) {
+        _v[0] = a0;
+        _v[1] = a1;
+        _v[2] = a2;
+        _v[3] = a3;
+        _v[4] = a4;
+    };
+    inline float& operator [] (int i) { return _v[i]; }
+    inline float operator [] (int i) const { return _v[i]; }
+};
+
+struct JSONObjectBase : public osg::Referenced
+{
+    static int level;
+    static std::string indent();
+    virtual void write(json_stream& str, WriteVisitor& visitor) {}
+};
+
+template <class T> struct JSONValue;
+
+struct JSONArray;
+struct JSONObject : public JSONObjectBase
+{
+    typedef std::map<std::string, osg::ref_ptr<JSONObject> > JSONMap;
+    typedef std::vector<std::string> OrderList;
+    JSONMap _maps;
+    JSONMap& getMaps() { return _maps; }
+    void writeOrder(json_stream& str, const OrderList& order, WriteVisitor& visitor);
+    virtual void write(json_stream& str, WriteVisitor& visitor);
+    void addChild(const std::string& type, JSONObject* child);
+    virtual JSONArray* asArray() { return 0; }
+    template<class T> JSONValue<T>* asValue() {
+        return dynamic_cast<JSONValue<T> * > ( this);
+    }
+
+    JSONObject(const unsigned int id, const std::string& bufferName = "");
+    JSONObject();
+    void addUniqueID();
+    unsigned int getUniqueID() const { return _uniqueID; }
+    JSONObject* getShadowObject() { return new JSONObject(_uniqueID, _bufferName); }
+
+    unsigned int _uniqueID;
+    static unsigned int uniqueID;
+
+    std::string _bufferName;
+    virtual void setBufferName(const std::string& name) { _bufferName = name; }
+    std::string getBufferName() { return _bufferName; }
+    bool isVarintableIntegerBuffer(osg::Array const*) const;
+    void encodeArrayAsVarintBuffer(osg::Array const*, std::vector<uint8_t>&) const;
+    template<typename T>
+    void dumpVarintVector(std::vector<uint8_t>&, T const*, bool) const;
+    template<typename T>
+    void dumpVarintValue(std::vector<uint8_t>&, T const*, bool) const;
+    std::vector<uint8_t> varintEncoding(unsigned int value) const;
+
+    // see https://developers.google.com/protocol-buffers/docs/encoding?hl=fr&csw=1#types
+    inline unsigned int toVarintUnsigned(int const v) const
+    { return (v << 1) ^ (v >> ((sizeof(v) << 3) - 1)); }
+
+};
+
+JSONObject* createLight(osg::Light* light);
+
+struct JSONNode : public JSONObject
+{
+    void write(json_stream& str, WriteVisitor& visitor);
+};
+
+typedef JSONObject JSONStateSet;
+typedef JSONObject JSONMaterial;
+typedef JSONObject JSONLight;
+
+
+struct JSONArray : public JSONObject
+{
+    typedef std::vector<osg::ref_ptr<JSONObject> > JSONList;
+    JSONList _array;
+    JSONArray() {}
+    virtual void write(json_stream& str, WriteVisitor& visitor);
+    JSONList& getArray() { return _array; }
+    JSONArray* asArray() { return this; }
+};
+
+struct JSONKeyframes : public JSONArray
+{
+    virtual void write(json_stream& str, WriteVisitor& visitor);
+};
+
+
+struct JSONVec3Array : public JSONArray
+{
+    JSONVec3Array() {}
+    JSONVec3Array(const osg::Vec3&);
+    virtual void write(json_stream& str, WriteVisitor& visitor);
+};
+
+struct JSONVec4Array : public JSONVec3Array
+{
+    JSONVec4Array(const osg::Vec4&);
+};
+
+struct JSONVec5Array : public JSONVec3Array
+{
+    JSONVec5Array(const Vec5&);
+};
+
+struct JSONVec2Array : public JSONVec3Array
+{
+    JSONVec2Array(const osg::Vec2&);
+};
+
+template <class T>
+struct JSONValue : public JSONObject
+{
+    T _value;
+    JSONValue(const T& v) {
+        _value = v;
+    }
+    T& getValue() { return _value; }
+    virtual void write(json_stream& str, WriteVisitor& visitor) {
+        str << _value ;
+    }
+
+};
+
+template <>
+struct JSONValue<double> : public JSONObject
+{
+    double _value;
+    JSONValue(const double& v) {
+        _value = v;
+    }
+    void write(json_stream& str, WriteVisitor& visitor) {
+        if (osg::isNaN(_value)) {
+            _value = 0.0;
+        }
+        str << _value;
+    }
+};
+
+template <>
+struct JSONValue<std::string> : public JSONObject
+{
+    std::string _value;
+
+    JSONValue(const std::string& v) {
+        _value = jsonEscape(v);
+    }
+
+    void write(json_stream& str, WriteVisitor& visitor) {
+        str << '"' << _value  << '"';
+    }
+
+    protected:
+        std::string jsonEscape(const std::string& input) {
+            std::string value = input;
+            replace(value, std::string("\\"), std::string("\\\\"));
+            replace(value, std::string("\""), std::string("\\\""));
+            replace(value, std::string("\b"), std::string("\\b"));
+            replace(value, std::string("\f"), std::string("\\f"));
+            replace(value, std::string("\n"), std::string("\\n"));
+            replace(value, std::string("\r"), std::string("\\r"));
+            replace(value, std::string("\t"), std::string("\\t"));
+            return value;
+        }
+
+        void replace(std::string& str, const std::string& from, const std::string& to) {
+            if(from.empty())
+                return;
+            size_t start_pos = 0;
+            while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+                str.replace(start_pos, from.length(), to);
+                start_pos += to.length();
+            }
+        }
+};
+
+
+struct JSONMatrix : public JSONArray
+{
+    JSONMatrix(const osg::Matrix& matrix) {
+        for (int i = 0; i < 16; i++) {
+            _array.push_back(new JSONValue<double>(matrix.ptr()[i]));
+        }
+    }
+    void write(json_stream& str, WriteVisitor& visitor);
+};
+
+
+
+struct JSONVertexArray : public JSONArray
+{
+    osg::ref_ptr<const osg::Array> _arrayData;
+    std::string _filename;
+
+    std::pair<unsigned int, unsigned int> writeMergeData(const osg::Array* array,
+                                                         WriteVisitor &visitor,
+                                                         const std::string& filename,
+                                                         std::string& encoding);
+
+    unsigned int writeData(const osg::Array* array, const std::string& filename)
+    {
+        std::ofstream myfile;
+        myfile.open(filename.c_str(), std::ios::binary );
+        const char* b = static_cast<const char*>(array->getDataPointer());
+        myfile.write(b, array->getTotalDataSize());
+        unsigned int fsize = myfile.tellp();
+        myfile.close();
+        return fsize;
+    }
+
+    template <class T> void writeInlineArray(json_stream& str, unsigned int size, const T* array) {
+        str << JSONObjectBase::indent() << "\"Elements\": [ " << array[0];
+        for (unsigned int i = 1; i < size; i++) {
+            T v = array[i];
+            str << ", " << v;
+        }
+        str << " ]," << std::endl;
+    }
+
+    template <typename T, typename U> void writeInlineArray(json_stream& str, unsigned int size, const T* array) {
+        str << JSONObjectBase::indent() << "\"Elements\": [ " << static_cast<U>(array[0]);
+        for (unsigned int i = 1; i < size; i++) {
+            str << ", " << static_cast<U>(array[i]);
+        }
+        str << " ]," << std::endl;
+    }
+
+    template <class T> void writeInlineArrayReal(json_stream& str, unsigned int size, const T* array) {
+        str << JSONObjectBase::indent() << "\"Elements\": [ " << array[0];
+        for (unsigned int i = 1; i < size; i++) {
+            float v = array[i];
+            if (osg::isNaN(v))
+                v = 0;
+            str << ", " << v;
+        }
+        str << " ]," << std::endl;
+    }
+
+
+    void write(json_stream& str, WriteVisitor& visitor);
+
+    JSONVertexArray() {}
+    JSONVertexArray(const osg::Array* array) {
+        _arrayData = array;
+    }
+};
+
+struct JSONBufferArray : public JSONObject
+{
+    JSONBufferArray() {}
+    JSONBufferArray(const osg::Array* array)
+    {
+        JSONVertexArray* b = new JSONVertexArray(array);
+        getMaps()["Array"] = b;
+        getMaps()["ItemSize"] = new JSONValue<int>(array->getDataSize());
+        getMaps()["Type"] = new JSONValue<std::string>("ARRAY_BUFFER"); //0x8892);
+    }
+
+    void setBufferName(const std::string& bufferName) {
+        JSONObject::setBufferName(bufferName);
+        getMaps()["Array"]->setBufferName(bufferName);
+    }
+};
+
+
+JSONObject* getDrawMode(GLenum mode);
+
+struct JSONDrawArray : public JSONObject
+{
+    JSONDrawArray(osg::DrawArrays& array);
+};
+
+struct JSONDrawArrayLengths : public JSONObject
+{
+    JSONDrawArrayLengths(osg::DrawArrayLengths& array);
+
+    void setBufferName(const std::string& bufferName) {
+        JSONObject::setBufferName(bufferName);
+        getMaps()["ArrayLengths"]->setBufferName(bufferName);
+    }
+};
+
+
+template<typename T>
+struct BufferArray
+{ typedef osg::UShortArray type; };
+
+#define ADD_INDEX_BUFFER(T, B)\
+template<> \
+struct BufferArray<T> \
+{ typedef B type; }
+
+ADD_INDEX_BUFFER(osg::DrawElementsUInt, osg::UIntArray);
+ADD_INDEX_BUFFER(osg::DrawElementsUByte, osg::UByteArray);
+
+
+template <class T>
+struct JSONDrawElements : public JSONObject
+{
+    JSONDrawElements(T& array) {
+        typedef typename BufferArray<T>::type array_type;
+        typedef typename array_type::ElementDataType element_type;
+
+        JSONBufferArray* buf;
+
+        if (array.getMode() == GL_QUADS) {
+            int size = array.getNumIndices();
+            osg::ref_ptr<array_type> buffer = new array_type(size);
+            unsigned int idx = 0;
+            for (int i = 0; i < size/4; ++i) {
+                (*buffer)[idx++] = static_cast<element_type>(array.index(i*4 + 0));
+                (*buffer)[idx++] = static_cast<element_type>(array.index(i*4 + 1));
+                (*buffer)[idx++] = static_cast<element_type>(array.index(i*4 + 3));
+
+                (*buffer)[idx++] = static_cast<element_type>(array.index(i*4 + 1));
+                (*buffer)[idx++] = static_cast<element_type>(array.index(i*4 + 2));
+                (*buffer)[idx++] = static_cast<element_type>(array.index(i*4 + 3));
+            }
+            buf = new JSONBufferArray(buffer.get());
+            getMaps()["Mode"] = getDrawMode(osg::PrimitiveSet::TRIANGLES);
+        }
+        else {
+            osg::ref_ptr<array_type> buffer = new array_type(array.getNumIndices());
+            for(unsigned int i = 0 ; i < array.getNumIndices() ; ++ i)
+                (*buffer)[i] = static_cast<element_type>(array.index(i));
+            buf = new JSONBufferArray(buffer.get());
+            getMaps()["Mode"] = getDrawMode(array.getMode());
+        }
+
+        buf->getMaps()["Type"] = new JSONValue<std::string>("ELEMENT_ARRAY_BUFFER");
+        getMaps()["Indices"] = buf;
+    }
+
+    void setBufferName(const std::string& bufferName) {
+        JSONObject::setBufferName(bufferName);
+        getMaps()["Indices"]->setBufferName(bufferName);
+    }
+};
+
+
+#endif

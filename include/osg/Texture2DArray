@@ -59,7 +59,7 @@ class OSG_EXPORT Texture2DArray : public Texture
          * image/layer count, you have to use the extension subclass, since it provides
          * graphic context dependent information.
          */
-        virtual unsigned int getNumImages() const { return getTextureDepth(); }
+        virtual unsigned int getNumImages() const { return _images.size(); }
 
         /** Check how often was a certain layer in the given context modified */
         inline unsigned int& getModifiedCount(unsigned int layer, unsigned int contextID) const
@@ -131,10 +131,8 @@ class OSG_EXPORT Texture2DArray : public Texture
 
         void applyTexImage2DArray_subload(State& state, Image* image, GLsizei inwidth, GLsizei inheight, GLsizei indepth, GLint inInternalFormat, GLsizei& numMipmapLevels) const;
 
-        /**
-         * Use std::vector to encapsulate referenced pointers to images of different layers.
-         * Vectors gives us a random access iterator. The overhead of non-used elements is negligible */
-        std::vector<ref_ptr<Image> > _images;
+        typedef std::vector< ref_ptr<Image> > Images;
+        Images _images;
 
         // subloaded images can have different texture and image sizes.
         mutable GLsizei _textureWidth, _textureHeight, _textureDepth;

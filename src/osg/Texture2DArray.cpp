@@ -107,15 +107,17 @@ int Texture2DArray::compare(const StateAttribute& sa) const
 
 void Texture2DArray::setImage(unsigned int layer, Image* image)
 {
-    // check if the layer exceeds the texture depth
-    if (static_cast<int>(layer) >= _textureDepth)
+    if (layer>= static_cast<unsigned int>(_images.size()))
     {
-        // print warning and do nothing
-        OSG_WARN<<"Warning: Texture2DArray::setImage(..) failed, the given layer number is bigger then the size of the texture array."<<std::endl;
-        return;
+        // _images vector not large enough to contain layer so expand it.
+        _images.resize(layer+1);
+        _modifiedCount.resize(layer+1);
     }
-
-    if (_images[layer] == image) return;
+    else
+    {
+        // do not need to replace already assigned images
+        if (_images[layer] == image) return;
+    }
 
     unsigned numImageRequireUpdateBefore = 0;
     for (unsigned int i=0; i<getNumImages(); ++i)
@@ -159,6 +161,29 @@ void Texture2DArray::setImage(unsigned int layer, Image* image)
     }
 }
 
+Image* Texture2DArray::getImage(unsigned int layer)
+{
+    return (layer<static_cast<unsigned int>(_images.size())) ? _images[layer].get() : 0;
+}
+
+const Image* Texture2DArray::getImage(unsigned int layer) const
+{
+    return (layer<static_cast<unsigned int>(_images.size())) ? _images[layer].get() : 0;
+}
+
+bool Texture2DArray::imagesValid() const
+{
+    if (_images.empty()) return false;
+
+    for(Images::const_iterator itr = _images.begin();
+        itr != _images.end();
+        ++itr)
+    {
+        if (!(itr->valid()) || !((*itr)->valid())) return false;
+    }
+    return true;
+}
+
 void Texture2DArray::setTextureSize(int width, int height, int depth)
 {
     // set dimensions
@@ -170,42 +195,14 @@ void Texture2DArray::setTextureSize(int width, int height, int depth)
 void Texture2DArray::setTextureDepth(int depth)
 {
     // if we decrease the number of layers, then delete non-used
-    if (depth < _textureDepth)
+    if (depth < static_cast<int>(_images.size()))
     {
         _images.resize(depth);
         _modifiedCount.resize(depth);
     }
 
-    // if we increase the array, then add new empty elements
-    if (depth > _textureDepth)
-    {
-        _images.resize(depth, ref_ptr<Image>(0));
-        _modifiedCount.resize(depth, ImageModifiedCount());
-    }
-
     // resize the texture array
     _textureDepth = depth;
-}
-
-Image* Texture2DArray::getImage(unsigned int layer)
-{
-    return _images[layer].get();
-}
-
-const Image* Texture2DArray::getImage(unsigned int layer) const
-{
-    return _images[layer].get();
-}
-
-bool Texture2DArray::imagesValid() const
-{
-    if (_textureDepth < 1) return false;
-    for (int n=0; n < _textureDepth; n++)
-    {
-        if (!_images[n].valid() || !_images[n]->data())
-            return false;
-    }
-    return true;
 }
 
 void Texture2DArray::computeInternalFormat() const

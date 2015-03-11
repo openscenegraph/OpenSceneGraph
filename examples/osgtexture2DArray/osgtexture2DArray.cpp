@@ -25,6 +25,7 @@
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 
 #include <osgViewer/Viewer>
 
@@ -72,6 +73,13 @@ osg::StateSet* createState(osg::ArgumentParser& arguments)
     texture->setFilter(osg::Texture2DArray::MAG_FILTER, osg::Texture2DArray::LINEAR);
     texture->setWrap(osg::Texture2DArray::WRAP_R, osg::Texture2DArray::REPEAT);
 
+    if (arguments.read("--mipmap"))
+    {
+        OSG_NOTICE<<"Enabling Mipmaping"<<std::endl;
+        texture->setUseHardwareMipMapGeneration(true);
+        texture->setFilter(osg::Texture2DArray::MIN_FILTER, osg::Texture2DArray::LINEAR_MIPMAP_LINEAR);
+    }
+
     if (arguments.read("--packed"))
     {
         OSG_NOTICE<<"Packing all images into a single osg::Image to pass to Texture2DArray."<<std::endl;
@@ -88,8 +96,6 @@ osg::StateSet* createState(osg::ArgumentParser& arguments)
         image_3d->setInternalTextureFormat(image_0->getInternalTextureFormat());
 
         texture->setImage(0, image_3d.get());
-        
-        texture->setTextureDepth(4);
     }
     else
     {
@@ -99,7 +105,6 @@ osg::StateSet* createState(osg::ArgumentParser& arguments)
         texture->setImage(1, image_1.get());
         texture->setImage(2, image_2.get());
         texture->setImage(3, image_3.get());
-        texture->setTextureDepth(4);
     }
 
 
@@ -124,42 +129,6 @@ osg::StateSet* createState(osg::ArgumentParser& arguments)
     stateset->setAttribute( program.get() );
     return stateset;
 }
-
-
-class UpdateStateCallback : public osg::NodeCallback
-{
-    public:
-        UpdateStateCallback() {}
-
-        void animateState(osg::StateSet* stateset)
-        {
-            // here we simply get any existing texgen, and then increment its
-            // plane, pushing the R coordinate through the texture.
-            osg::StateAttribute* attribute = stateset->getTextureAttribute(0,osg::StateAttribute::TEXGEN);
-            osg::TexGen* texgen = dynamic_cast<osg::TexGen*>(attribute);
-            if (texgen)
-            {
-                texgen->getPlane(osg::TexGen::R)[3] += 0.001f;
-            }
-
-        }
-
-        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-        {
-
-            osg::StateSet* stateset = node->getStateSet();
-            if (stateset)
-            {
-                // we have an exisitng stateset, so lets animate it.
-                animateState(stateset);
-            }
-
-            // note, callback is repsonsible for scenegraph traversal so
-            // should always include call the traverse(node,nv) to ensure
-            // that the rest of cullbacks and the scene graph are traversed.
-            traverse(node,nv);
-        }
-};
 
 /** create 2,2 square with center at 0,0,0 and aligned along the XZ plan */
 osg::Drawable* createSquare()
@@ -192,23 +161,11 @@ osg::Drawable* createSquare()
 
 osg::Node* createModel(osg::ArgumentParser& arguments)
 {
-
     // create the geometry of the model, just a simple 2d quad right now.
     osg::Geode* geode = new osg::Geode;
+
     geode->addDrawable(createSquare());
 
-    // normally we'd create the stateset's to contain all the textures
-    // etc here, but, the above technique uses osg::Image::scaleImage and
-    // osg::Image::copySubImage() which are implemented with OpenGL utility
-    // library, which unfortunately can't be used until we have a valid
-    // OpenGL context, and at this point in initilialization we don't have
-    // a valid OpenGL context, so we have to delay creation of state until
-    // there is a valid OpenGL context.  I'll manage this by using an
-    // app callback which will create the state during the first traversal.
-    // A bit hacky, and my plan is to reimplement the osg::scaleImage and
-    // osg::Image::copySubImage() without using GLU which will get round
-    // this current limitation.
-    geode->setUpdateCallback(new UpdateStateCallback());
     geode->setStateSet(createState(arguments));
 
     return geode;
@@ -220,11 +177,26 @@ int main(int argc, char **argv)
 {
     osg::ArgumentParser arguments(&argc, argv);
 
+    // create a model from the images and pass it to the viewer.
+    osg::ref_ptr<osg::Node> model = createModel(arguments);
+    if (!model) return 0;
+
+    std::string filename;
+    if (arguments.read("-o",filename))
+    {
+        osg::ref_ptr<osgDB::Options> options = new osgDB::Options;
+        options->setOptionString("WriteImageHint=IncludeData");
+        osgDB::writeNodeFile(*model, filename, options.get());
+        return 0;
+    }
+
+
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
 
-    // create a model from the images and pass it to the viewer.
-    viewer.setSceneData(createModel(arguments));
+    // assign scene graph to viewer
+    viewer.setSceneData(model.get());
 
+    // run viewer
     return viewer.run();
 }

@@ -39,7 +39,11 @@ JoystickDevice::JoystickDevice()
         std::cout<<"number of joysticks "<<numJoysticks<<std::endl;
         for(int i=0; i<numJoysticks; ++i)
         {
-            std::cout<<"Joystick name '"<<SDL_JoystickName(i)<<"'"<<std::endl;
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+            std::cout << "Joystick name '" << SDL_JoystickNameForIndex(i) << "'" << std::endl;
+#else
+            std::cout << "Joystick name '" << SDL_JoystickName(i) << "'" << std::endl;
+#endif
         }
     }
     

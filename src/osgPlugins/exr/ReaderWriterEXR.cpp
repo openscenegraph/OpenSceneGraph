@@ -92,7 +92,7 @@ unsigned char *exr_load(std::istream& fin,
     unsigned char *buffer=NULL; // returned to sender & as read from the disk
     bool inputError = false;
     Array2D<Rgba> pixels;
-    int width,height,numComponents;
+    int width=0,height=0,numComponents;
 
     try
     {
@@ -111,6 +111,7 @@ unsigned char *exr_load(std::istream& fin,
         rgbafile.readPixels(dw.min.y, dw.max.y);
     }
     catch( char * str ) {
+        OSG_WARN << "exr_load error : " << str << std::endl;
         inputError = true;
     }
 
@@ -335,6 +336,7 @@ protected:
          }
          catch( char * str )
          {
+             OSG_WARN << "writeEXRStream error : " << str << std::endl;
              writeOK = false;
          }
 

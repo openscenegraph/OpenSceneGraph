@@ -9,7 +9,7 @@
 REGISTER_OBJECT_WRAPPER( osgAnimation_UpdateMorph,
                          new osgAnimation::UpdateMorph,
                          osgAnimation::UpdateMorph,
-                         "osg::Object osg::NodeCallback osgAnimation::UpdateMorph" )
+                         "osg::Object osg::Callback osg::NodeCallback osgAnimation::UpdateMorph" )
 {
 }
 

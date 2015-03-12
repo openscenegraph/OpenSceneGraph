@@ -9,7 +9,7 @@
 REGISTER_OBJECT_WRAPPER( osgAnimation_UpdateBone,
                          new osgAnimation::UpdateBone,
                          osgAnimation::UpdateBone,
-                         "osg::Object osg::NodeCallback osgAnimation::UpdateMatrixTransform osgAnimation::UpdateBone" )
+                         "osg::Object osg::Callback osg::NodeCallback osgAnimation::UpdateMatrixTransform osgAnimation::UpdateBone" )
 {
 }
 

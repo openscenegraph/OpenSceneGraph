@@ -25,6 +25,8 @@ USE_SERIALIZER_WRAPPER(osgAnimation_UpdateMaterial)
 USE_SERIALIZER_WRAPPER(osgAnimation_UpdateMatrixTransform)
 USE_SERIALIZER_WRAPPER(osgAnimation_UpdateMorph)
 USE_SERIALIZER_WRAPPER(osgAnimation_UpdateSkeleton)
+USE_SERIALIZER_WRAPPER(osgAnimation_UpdateMorphGeometry)
+USE_SERIALIZER_WRAPPER(osgAnimation_UpdateRigGeometry)
 
 extern "C" void wrapper_serializer_library_osgAnimation(void) {}
 

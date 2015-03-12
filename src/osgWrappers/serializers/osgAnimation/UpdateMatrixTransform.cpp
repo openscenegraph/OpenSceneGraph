@@ -41,7 +41,7 @@ static bool writeStackedTransforms( osgDB::OutputStream& os, const osgAnimation:
 REGISTER_OBJECT_WRAPPER( osgAnimation_UpdateMatrixTransform,
                          new osgAnimation::UpdateMatrixTransform,
                          osgAnimation::UpdateMatrixTransform,
-                         "osg::Object osg::NodeCallback osgAnimation::UpdateMatrixTransform" )
+                         "osg::Object osg::Callback osg::NodeCallback osgAnimation::UpdateMatrixTransform" )
 {
     ADD_USER_SERIALIZER( StackedTransforms );  // _transforms
 }

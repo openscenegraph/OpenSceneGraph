@@ -10,7 +10,7 @@ REGISTER_OBJECT_WRAPPER2( osgAnimation_UpdateSkeleton,
                           new osgAnimation::Skeleton::UpdateSkeleton,
                           osgAnimation::Skeleton::UpdateSkeleton,
                           "osgAnimation::UpdateSkeleton",
-                          "osg::Object osg::NodeCallback osgAnimation::UpdateSkeleton" )
+                          "osg::Object osg::Callback osg::NodeCallback osgAnimation::UpdateSkeleton" )
 {
 }
 

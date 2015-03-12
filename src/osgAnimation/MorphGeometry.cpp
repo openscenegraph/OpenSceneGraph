@@ -25,7 +25,7 @@ MorphGeometry::MorphGeometry() :
     _morphNormals(true)
 {
     setUseDisplayList(false);
-    setUpdateCallback(new UpdateVertex);
+    setUpdateCallback(new UpdateMorphGeometry);
     setDataVariance(osg::Object::DYNAMIC);
     setUseVertexBufferObjects(true);
 }
@@ -37,7 +37,7 @@ MorphGeometry::MorphGeometry(const osg::Geometry& b) :
     _morphNormals(true)
 {
     setUseDisplayList(false);
-    setUpdateCallback(new UpdateVertex);
+    setUpdateCallback(new UpdateMorphGeometry);
     setDataVariance(osg::Object::DYNAMIC);
     setUseVertexBufferObjects(true);
 }

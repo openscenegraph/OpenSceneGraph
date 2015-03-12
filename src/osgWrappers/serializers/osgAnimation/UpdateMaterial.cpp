@@ -9,7 +9,7 @@
 REGISTER_OBJECT_WRAPPER( osgAnimation_UpdateMaterial,
                          new osgAnimation::UpdateMaterial,
                          osgAnimation::UpdateMaterial,
-                         "osg::Object osgAnimation::UpdateMaterial" )
+                         "osg::Object osg::Callback osgAnimation::UpdateMaterial" )
 {
 }
 

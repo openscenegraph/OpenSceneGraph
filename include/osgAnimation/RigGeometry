@@ -46,6 +46,7 @@ namespace osgAnimation
         mutable osg::BoundingBox _boundingBox;
     };
 
+
     class OSGANIMATION_EXPORT RigGeometry : public osg::Geometry
     {
     public:
@@ -92,41 +93,16 @@ namespace osgAnimation
 
         void copyFrom(osg::Geometry& from);
 
-        struct UpdateVertex : public osg::Drawable::UpdateCallback
+        struct FindNearestParentSkeleton : public osg::NodeVisitor
         {
-            UpdateVertex() {}
-
-            UpdateVertex(const UpdateCallback&, const osg::CopyOp&) {}
-
-            META_Object(osgAnimation, UpdateVertex);
-
-            virtual void update(osg::NodeVisitor*, osg::Drawable* drw) {
-                RigGeometry* geom = dynamic_cast<RigGeometry*>(drw);
-                if(!geom)
+            osg::ref_ptr<Skeleton> _root;
+            FindNearestParentSkeleton() : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS) {}
+            void apply(osg::Transform& node)
+            {
+                if (_root.valid())
                     return;
-                if(!geom->getSkeleton() && !geom->getParents().empty())
-                {
-                    FindNearestParentSkeleton finder;
-                    if(geom->getParents().size() > 1)
-                        osg::notify(osg::WARN) << "A RigGeometry should not have multi parent ( " << geom->getName() << " )" << std::endl;
-                    geom->getParents()[0]->accept(finder);
-
-                    if(!finder._root.valid())
-                    {
-                        osg::notify(osg::WARN) << "A RigGeometry did not find a parent skeleton for RigGeomtry ( " << geom->getName() << " )" << std::endl;
-                        return;
-                    }
-                    geom->buildVertexInfluenceSet();
-                    geom->setSkeleton(finder._root.get());
-                }
-
-                if(!geom->getSkeleton())
-                    return;
-
-                if(geom->getNeedToComputeMatrix())
-                    geom->computeMatrixFromRootSkeleton();
-
-                geom->update();
+                _root = dynamic_cast<osgAnimation::Skeleton*>(&node);
+                traverse(node);
             }
         };
 
@@ -143,21 +119,47 @@ namespace osgAnimation
         osg::observer_ptr<Skeleton> _root;
         bool _needToComputeMatrix;
 
-        struct FindNearestParentSkeleton : public osg::NodeVisitor
-        {
-            osg::ref_ptr<Skeleton> _root;
-            FindNearestParentSkeleton() : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS) {}
-            void apply(osg::Transform& node)
-            {
-                if (_root.valid())
-                    return;
-                _root = dynamic_cast<osgAnimation::Skeleton*>(&node);
-                traverse(node);
-            }
-        };
 
    };
 
+
+    struct UpdateRigGeometry : public osg::Drawable::UpdateCallback
+    {
+        UpdateRigGeometry() {}
+
+        UpdateRigGeometry(const UpdateRigGeometry&, const osg::CopyOp&) {}
+
+        META_Object(osgAnimation, UpdateRigGeometry);
+
+        virtual void update(osg::NodeVisitor*, osg::Drawable* drw) {
+            RigGeometry* geom = dynamic_cast<RigGeometry*>(drw);
+            if(!geom)
+                return;
+            if(!geom->getSkeleton() && !geom->getParents().empty())
+            {
+                RigGeometry::FindNearestParentSkeleton finder;
+                if(geom->getParents().size() > 1)
+                    osg::notify(osg::WARN) << "A RigGeometry should not have multi parent ( " << geom->getName() << " )" << std::endl;
+                geom->getParents()[0]->accept(finder);
+
+                if(!finder._root.valid())
+                {
+                    osg::notify(osg::WARN) << "A RigGeometry did not find a parent skeleton for RigGeomtry ( " << geom->getName() << " )" << std::endl;
+                    return;
+                }
+                geom->buildVertexInfluenceSet();
+                geom->setSkeleton(finder._root.get());
+            }
+
+            if(!geom->getSkeleton())
+                return;
+
+            if(geom->getNeedToComputeMatrix())
+                geom->computeMatrixFromRootSkeleton();
+
+            geom->update();
+        }
+    };
 }
 
 #endif

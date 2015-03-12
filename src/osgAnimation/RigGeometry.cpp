@@ -53,7 +53,7 @@ RigGeometry::RigGeometry()
 {
     _supportsDisplayList = false;
     setUseVertexBufferObjects(true);
-    setUpdateCallback(new UpdateVertex);
+    setUpdateCallback(new UpdateRigGeometry);
     setDataVariance(osg::Object::DYNAMIC);
     _needToComputeMatrix = true;
     _matrixFromSkeletonToGeometry = _invMatrixFromSkeletonToGeometry = osg::Matrix::identity();

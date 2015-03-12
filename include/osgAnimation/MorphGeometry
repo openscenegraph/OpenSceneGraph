@@ -48,18 +48,6 @@ namespace osgAnimation
 
         typedef std::vector<MorphTarget> MorphTargetList;
 
-        struct UpdateVertex : public osg::Drawable::UpdateCallback
-        {
-            virtual void update(osg::NodeVisitor*, osg::Drawable* drw)
-            {
-                MorphGeometry* geom = dynamic_cast<MorphGeometry*>(drw);
-                if (!geom)
-                    return;
-
-                geom->transformSoftwareMethod();
-            }
-        };
-
         MorphGeometry();
         MorphGeometry(const osg::Geometry& b);
         MorphGeometry(const MorphGeometry& b, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
@@ -148,6 +136,25 @@ namespace osgAnimation
         bool needLink() const;
         bool link(osgAnimation::Channel* channel);
     };
+
+    struct UpdateMorphGeometry : public osg::Drawable::UpdateCallback
+    {
+        UpdateMorphGeometry() {}
+
+        UpdateMorphGeometry(const UpdateMorphGeometry&, const osg::CopyOp&) {}
+
+        META_Object(osgAnimation, UpdateMorphGeometry);
+
+        virtual void update(osg::NodeVisitor*, osg::Drawable* drw)
+        {
+            MorphGeometry* geom = dynamic_cast<MorphGeometry*>(drw);
+            if (!geom)
+                return;
+
+            geom->transformSoftwareMethod();
+        }
+    };
+
 
 }
 

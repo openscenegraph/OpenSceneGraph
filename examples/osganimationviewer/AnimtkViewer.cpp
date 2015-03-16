@@ -24,6 +24,7 @@
 #include <osg/Geometry>
 #include <osg/MatrixTransform>
 #include <osg/Geode>
+#include <osgDB/FileNameUtils>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 #include <osgWidget/ViewerEventHandlers>
@@ -136,10 +137,30 @@ int main(int argc, char** argv)
     // Set our Singleton's model.
     AnimationManagerFinder finder;
     node->accept(finder);
-    if (finder._am.valid()) {
+    if (finder._am.valid())
+    {
+
+        std::string playModeOpt;
+        if (arguments.read("--play-mode", playModeOpt))
+        {
+            osgAnimation::Animation::PlayMode playMode = osgAnimation::Animation::LOOP;
+            if (osgDB::equalCaseInsensitive(playModeOpt, "ONCE")) playMode = osgAnimation::Animation::ONCE;
+            else if (osgDB::equalCaseInsensitive(playModeOpt, "STAY")) playMode = osgAnimation::Animation::STAY;
+            else if (osgDB::equalCaseInsensitive(playModeOpt, "LOOP")) playMode = osgAnimation::Animation::LOOP;
+            else if (osgDB::equalCaseInsensitive(playModeOpt, "PPONG")) playMode = osgAnimation::Animation::PPONG;
+
+            for (osgAnimation::AnimationList::const_iterator animIter = finder._am->getAnimationList().begin();
+                    animIter != finder._am->getAnimationList().end(); ++animIter)
+            {
+                (*animIter)->setPlayMode(playMode);
+            }
+        }
+
         node->setUpdateCallback(finder._am.get());
         AnimtkViewerModelController::setModel(finder._am.get());
-    } else {
+    }
+    else
+    {
         osg::notify(osg::WARN) << "no osgAnimation::AnimationManagerBase found in the subgraph, no animations available" << std::endl;
     }
 

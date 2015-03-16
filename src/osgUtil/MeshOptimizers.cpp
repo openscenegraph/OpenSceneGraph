@@ -16,7 +16,6 @@
 #include <limits>
 
 #include <algorithm>
-#include <utility>
 #include <vector>
 
 #include <iostream>
@@ -29,7 +28,6 @@
 
 #include <osgUtil/MeshOptimizers>
 
-using namespace std;
 using namespace osg;
 
 namespace osgUtil
@@ -415,7 +413,7 @@ struct LRUCache
     {
         entries.reserve(maxSize_ + 3);
     }
-    vector<unsigned> entries;
+    std::vector<unsigned> entries;
     size_t maxSize;
 
     // Add a list of values to the cache
@@ -423,10 +421,10 @@ struct LRUCache
     {
         // If any of the new vertices are already in the cache, remove
         // them, leaving some room at the front of the cache.
-        vector<unsigned>::reverse_iterator validEnd = entries.rend();
+        std::vector<unsigned>::reverse_iterator validEnd = entries.rend();
         for (unsigned* pent = begin; pent != end; ++pent)
         {
-            validEnd = remove(entries.rbegin(), validEnd, *pent);
+            validEnd = std::remove(entries.rbegin(), validEnd, *pent);
         }
         // Now make room still needed for new cache entries
         size_t newEnts = end - begin;
@@ -437,10 +435,10 @@ struct LRUCache
                 entries.resize(entries.size() + spaceNeeded);
             else if (entries.size() < maxSize)
                 entries.resize(maxSize);
-            copy_backward(entries.begin() + newEnts - spaceNeeded,
-                          entries.end() - spaceNeeded, entries.end());
+            std::copy_backward(entries.begin() + newEnts - spaceNeeded,
+                               entries.end() - spaceNeeded, entries.end());
         }
-        copy(begin, end, entries.begin());
+        std::copy(begin, end, entries.begin());
     }
 
     bool empty()
@@ -532,7 +530,7 @@ float findVertexScore (Vertex& vert)
 }
 
 
-typedef vector<Vertex> VertexList;
+typedef std::vector<Vertex> VertexList;
 
 struct Triangle
 {
@@ -540,7 +538,7 @@ struct Triangle
     unsigned verts[3];
 };
 
-typedef vector<Triangle> TriangleList;
+typedef std::vector<Triangle> TriangleList;
 
 inline float findTriangleScore(Triangle& tri, const VertexList& vertices)
 {
@@ -553,7 +551,7 @@ inline float findTriangleScore(Triangle& tri, const VertexList& vertices)
 typedef std::pair<unsigned, float> TriangleScore;
 
 TriangleScore computeTriScores(Vertex& vert, const VertexList& vertices,
-                               TriangleList& triangles, vector<unsigned>& triStore)
+                               TriangleList& triangles, std::vector<unsigned>& triStore)
 {
     float bestScore = 0.0;
     unsigned bestTri = 0;
@@ -570,10 +568,10 @@ TriangleScore computeTriScores(Vertex& vert, const VertexList& vertices,
             bestTri = tri;
         }
     }
-    return make_pair(bestTri, bestScore);
+    return std::make_pair(bestTri, bestScore);
 }
 
-typedef vector<Triangle> TriangleList;
+typedef std::vector<Triangle> TriangleList;
 
 struct TriangleCounterOperator
 {
@@ -601,7 +599,7 @@ struct TriangleCounterOperator
 
 struct TriangleCounter : public TriangleIndexFunctor<TriangleCounterOperator>
 {
-    TriangleCounter(vector<Vertex>* vertices_)
+    TriangleCounter(std::vector<Vertex>* vertices_)
     {
         vertices = vertices_;
     }
@@ -611,7 +609,7 @@ struct TriangleCounter : public TriangleIndexFunctor<TriangleCounterOperator>
 struct TriangleAddOperator
 {
     VertexList* vertices;
-    vector<unsigned>* vertexTris;
+    std::vector<unsigned>* vertexTris;
     TriangleList* triangles;
     int triIdx;
     TriangleAddOperator() : vertices(0), triIdx(0) {}
@@ -638,7 +636,7 @@ struct TriangleAddOperator
 
 struct TriangleAdder : public TriangleIndexFunctor<TriangleAddOperator>
 {
-    TriangleAdder(VertexList* vertices_, vector<unsigned>* vertexTris_,
+    TriangleAdder(VertexList* vertices_, std::vector<unsigned>* vertexTris_,
                   TriangleList* triangles_)
     {
         vertices = vertices_;
@@ -702,14 +700,14 @@ void VertexCacheVisitor::optimizeVertices(Geometry& geom)
         cout << "0.0\n";
     missv.reset();
 #endif
-    vector<unsigned> newVertList;
+    std::vector<unsigned> newVertList;
     doVertexOptimization(geom, newVertList);
     Geometry::PrimitiveSetList newPrims;
     if (vertArraySize < 65536)
     {
         osg::DrawElementsUShort* elements = new DrawElementsUShort(GL_TRIANGLES);
         elements->reserve(newVertList.size());
-        for (vector<unsigned>::iterator itr = newVertList.begin(),
+        for (std::vector<unsigned>::iterator itr = newVertList.begin(),
                  end = newVertList.end();
              itr != end;
              ++itr)
@@ -747,7 +745,7 @@ void VertexCacheVisitor::optimizeVertices(Geometry& geom)
 
 // The main optimization loop
 void VertexCacheVisitor::doVertexOptimization(Geometry& geom,
-                                              vector<unsigned>& vertDrawList)
+                                              std::vector<unsigned>& vertDrawList)
 {
     Geometry::PrimitiveSetList& primSets = geom.getPrimitiveSetList();
     // lists for all the vertices and triangles
@@ -770,7 +768,7 @@ void VertexCacheVisitor::doVertexOptimization(Geometry& geom,
         vertTrisSize += itr->trisUsing;
     }
     // Store for lists of triangles (indices) used by the vertices
-    vector<unsigned> vertTriListStore(vertTrisSize);
+    std::vector<unsigned> vertTriListStore(vertTrisSize);
     TriangleAdder triAdder(&vertices, &vertTriListStore, &triangles);
     for (Geometry::PrimitiveSetList::iterator itr = primSets.begin(),
              end = primSets.end();
@@ -798,7 +796,7 @@ void VertexCacheVisitor::doVertexOptimization(Geometry& geom,
     {
         Triangle* triToAdd = 0;
         float bestScore = 0.0;
-        for (vector<unsigned>::const_iterator itr = cache.entries.begin(),
+        for (std::vector<unsigned>::const_iterator itr = cache.entries.begin(),
                  end = cache.entries.end();
              itr != end;
              ++itr)
@@ -831,7 +829,7 @@ void VertexCacheVisitor::doVertexOptimization(Geometry& geom,
             unsigned vertIdx = triToAdd->verts[i];
             Vertex* vert = &vertices[vertIdx];
             vertDrawList.push_back(vertIdx);
-            remove(vertTriListStore.begin() + vert->triList,
+            std::remove(vertTriListStore.begin() + vert->triList,
                    vertTriListStore.begin() + vert->triList
                    + vert->numActiveTris,
                    triToAddIdx);
@@ -843,7 +841,7 @@ void VertexCacheVisitor::doVertexOptimization(Geometry& geom,
         // change their scores.
         if (cache.maxSize - cache.entries.size() < 3)
         {
-            for (vector<unsigned>::iterator itr = cache.entries.end() - 3,
+            for (std::vector<unsigned>::iterator itr = cache.entries.end() - 3,
                      end = cache.entries.end();
                  itr != end;
                 ++itr)
@@ -851,7 +849,7 @@ void VertexCacheVisitor::doVertexOptimization(Geometry& geom,
                 vertices[*itr].cachePosition = -1;
                 vertices[*itr].score = findVertexScore(vertices[*itr]);
             }
-            for (vector<unsigned>::iterator itr = cache.entries.end() - 3,
+            for (std::vector<unsigned>::iterator itr = cache.entries.end() - 3,
                      end = cache.entries.end();
                  itr != end;
                 ++itr)
@@ -859,7 +857,7 @@ void VertexCacheVisitor::doVertexOptimization(Geometry& geom,
                                  vertTriListStore);
         }
         cache.addEntries(&triToAdd->verts[0], &triToAdd->verts[3]);
-        for (vector<unsigned>::const_iterator itr = cache.entries.begin(),
+        for (std::vector<unsigned>::const_iterator itr = cache.entries.begin(),
                  end = cache.entries.end();
              itr != end;
              ++itr)
@@ -914,7 +912,7 @@ struct FIFOCache
     {
         entries.reserve(maxSize_);
     }
-    vector<unsigned> entries;
+    std::vector<unsigned> entries;
     size_t maxSize;
 
     // Add a list of values to the cache
@@ -924,9 +922,9 @@ struct FIFOCache
         size_t newEnts = end - begin;
         if (entries.size() < maxSize)
             entries.resize(osg::minimum(entries.size() + newEnts, maxSize));
-        vector<unsigned>::iterator copyEnd = entries.end() - newEnts;
-        copy_backward(entries.begin(), copyEnd, entries.end());
-        copy(begin, end, entries.begin());
+        std::vector<unsigned>::iterator copyEnd = entries.end() - newEnts;
+        std::copy_backward(entries.begin(), copyEnd, entries.end());
+        std::copy(begin, end, entries.begin());
     }
 
     bool empty()
@@ -951,7 +949,7 @@ struct CacheRecordOperator
         triangles++;
         for (int i = 0; i < 3; ++i)
         {
-            if (find(cache->entries.begin(), cache->entries.end(), verts[i])
+            if (std::find(cache->entries.begin(), cache->entries.end(), verts[i])
                 == cache->entries.end())
                 misses++;
         }
@@ -1001,10 +999,10 @@ class Remapper : public osg::ArrayVisitor
 {
 public:
     static const unsigned invalidIndex;
-    Remapper(const vector<unsigned>& remapping)
+    Remapper(const std::vector<unsigned>& remapping)
         : _remapping(remapping), _newsize(0)
     {
-        for (vector<unsigned>::const_iterator itr = _remapping.begin(),
+        for (std::vector<unsigned>::const_iterator itr = _remapping.begin(),
                  end = _remapping.end();
              itr != end;
              ++itr)
@@ -1012,7 +1010,7 @@ public:
                 ++_newsize;
     }
 
-    const vector<unsigned>& _remapping;
+    const std::vector<unsigned>& _remapping;
     size_t _newsize;
 
     template<class T>
@@ -1117,7 +1115,7 @@ void VertexAccessOrderVisitor::optimizeOrder()
 
 template<typename DE>
 inline void reorderDrawElements(DE& drawElements,
-                                const vector<unsigned>& reorder)
+                                const std::vector<unsigned>& reorder)
 {
     for (typename DE::iterator itr = drawElements.begin(), end = drawElements.end();
          itr != end;

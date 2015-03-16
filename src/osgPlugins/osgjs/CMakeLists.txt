@@ -18,7 +18,6 @@ SET(TARGET_H
 #### end var setup  ###
 SET(TARGET_ADDED_LIBRARIES
     osgAnimation
-    osgSim
-    osgUtil)
+    osgSim)
 
 SETUP_PLUGIN(osgjs)

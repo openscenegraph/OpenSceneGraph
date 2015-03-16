@@ -107,7 +107,13 @@ bool Animation::update (double time, int priority)
     {
     case ONCE:
         if (t > _originalDuration)
+        {
+            for (ChannelList::const_iterator chan = _channels.begin();
+                     chan != _channels.end(); ++chan)
+                (*chan)->update(_originalDuration, _weight, priority);
+
             return false;
+        }
         break;
     case STAY:
         if (t > _originalDuration)

@@ -52,15 +52,60 @@
 
 using namespace osg;
 
-osg::Node* createDistortionSubgraph(osg::Node* subgraph, const osg::Vec4& clearColour)
+struct CommandLineOptions
+{
+    unsigned int width;
+    unsigned int height;
+    unsigned int tex_width;
+    unsigned int tex_height;
+    double sphere_radius;
+    double collar_radius;
+    double distance;
+
+    CommandLineOptions():
+        width(1024),
+        height(1024),
+        tex_width(1024),
+        tex_height(1024),
+        sphere_radius(1.0),
+        collar_radius(0.45),
+        distance(1.0)
+    {
+
+        osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
+        if (!wsi)
+        {
+            osg::notify(osg::NOTICE)<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
+            return;
+        }
+
+        unsigned int width, height;
+        wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
+
+        distance = sqrt(sphere_radius*sphere_radius - collar_radius*collar_radius);
+    }
+
+     void read(osg::ArgumentParser& arguments)
+     {
+        while (arguments.read("--width",width)) {}
+        while (arguments.read("--height",height)) {}
+        while (arguments.read("--texture-width",tex_width) || arguments.read("--tx",tex_width) ) {}
+        while (arguments.read("--texture-height",tex_height) || arguments.read("--ty",tex_height) ) {}
+
+        while (arguments.read("--radius", sphere_radius)) {}
+        while (arguments.read("--collar", collar_radius)) {}
+
+        distance = sqrt(sphere_radius*sphere_radius - collar_radius*collar_radius);
+        while (arguments.read("--distance", distance)) {}
+     }
+};
+
+osg::Node* createDistortionSubgraph(CommandLineOptions& options, osg::Node* subgraph, const osg::Vec4& clearColour)
 {
     osg::Group* distortionNode = new osg::Group;
 
-    unsigned int tex_width = 1024;
-    unsigned int tex_height = 1024;
-
     osg::Texture2D* texture = new osg::Texture2D;
-    texture->setTextureSize(tex_width, tex_height);
+    texture->setTextureSize(options.tex_width, options.tex_height);
     texture->setInternalFormat(GL_RGBA);
     texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
     texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
@@ -79,7 +124,7 @@ osg::Node* createDistortionSubgraph(osg::Node* subgraph, const osg::Vec4& clearC
         camera->setViewMatrix(osg::Matrixd::identity());
 
         // set viewport
-        camera->setViewport(0,0,tex_width,tex_height);
+        camera->setViewport(0,0,options.tex_width,options.tex_height);
 
         // set the camera to render before the main camera.
         camera->setRenderOrder(osg::Camera::PRE_RENDER);
@@ -186,27 +231,13 @@ osg::Node* createDistortionSubgraph(osg::Node* subgraph, const osg::Vec4& clearC
     return distortionNode;
 }
 
-void setDomeFaces(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments)
+void setDomeFaces(osgViewer::Viewer& viewer, CommandLineOptions& options)
 {
-
-    osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-    if (!wsi)
-    {
-        osg::notify(osg::NOTICE)<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
-        return;
-    }
-
-    unsigned int width, height;
-    wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
-
-    while (arguments.read("--width",width)) {}
-    while (arguments.read("--height",height)) {}
-
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
     traits->x = 0;
     traits->y = 0;
-    traits->width = width;
-    traits->height = height;
+    traits->width = options.width;
+    traits->height = options.height;
     traits->windowDecoration = true;
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
@@ -219,8 +250,8 @@ void setDomeFaces(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments)
     }
 
 
-    int center_x = width/2;
-    int center_y = height/2;
+    int center_x = options.width/2;
+    int center_y = options.height/2;
     int camera_width = 256;
     int camera_height = 256;
 
@@ -303,27 +334,18 @@ void setDomeFaces(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments)
 }
 
 osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector,
-                                        osg::ArgumentParser& arguments)
+                                        CommandLineOptions& options)
 {
-    double sphere_radius = 1.0;
-    if (arguments.read("--radius", sphere_radius)) {}
-
-    double collar_radius = 0.45;
-    if (arguments.read("--collar", collar_radius)) {}
-
     osg::Vec3d center(0.0,0.0,0.0);
     osg::Vec3d eye(0.0,0.0,0.0);
 
-    double distance = sqrt(sphere_radius*sphere_radius - collar_radius*collar_radius);
-    if (arguments.read("--distance", distance)) {}
-
     bool centerProjection = false;
 
-    osg::Vec3d projector = eye - osg::Vec3d(0.0,0.0, distance);
+    osg::Vec3d projector = eye - osg::Vec3d(0.0,0.0, options.distance);
 
 
     osg::notify(osg::NOTICE)<<"Projector position = "<<projector<<std::endl;
-    osg::notify(osg::NOTICE)<<"distance = "<<distance<<std::endl;
+    osg::notify(osg::NOTICE)<<"distance = "<<options.distance<<std::endl;
 
 
     // create the quad to visualize.
@@ -396,15 +418,15 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
 
                 // osg::notify(osg::NOTICE)<<"theta = "<<theta<< "phi="<<phi<<std::endl;
 
-                double f = distance * sin(phi);
-                double e = distance * cos(phi) + sqrt( sphere_radius*sphere_radius - f*f);
+                double f = options.distance * sin(phi);
+                double e = options.distance * cos(phi) + sqrt( options.sphere_radius*options.sphere_radius - f*f);
                 double l = e * cos(phi);
                 double h = e * sin(phi);
-                double z = l - distance;
+                double z = l - options.distance;
 
-                osg::Vec3 texcoord(h * cos(theta) / sphere_radius,
-                                   h * sin(theta) / sphere_radius,
-                                   z / sphere_radius);
+                osg::Vec3 texcoord(h * cos(theta) / options.sphere_radius,
+                                   h * sin(theta) / options.sphere_radius,
+                                   z / options.sphere_radius);
 
                 vertices->push_back(cursor);
                 colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
@@ -437,32 +459,16 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
     return geometry;
 }
 
-void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments)
+void setDomeCorrection(osgViewer::Viewer& viewer, CommandLineOptions& options)
 {
-
-    osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-    if (!wsi)
-    {
-        osg::notify(osg::NOTICE)<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
-        return;
-    }
-
-    unsigned int width, height;
-    wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
-
-    while (arguments.read("--width",width)) {}
-    while (arguments.read("--height",height)) {}
-
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
     traits->x = 0;
     traits->y = 0;
-    traits->width = width;
-    traits->height = height;
+    traits->width = options.width;
+    traits->height = options.height;
     traits->windowDecoration = false;
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
-
-
 
     osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
     if (!gc)
@@ -471,18 +477,18 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
         return;
     }
 
-    int tex_width = 512;
-    int tex_height = 512;
-
-    int camera_width = tex_width;
-    int camera_height = tex_height;
+    int camera_width = options.tex_width;
+    int camera_height = options.tex_height;
 
     osg::TextureCubeMap* texture = new osg::TextureCubeMap;
 
-    texture->setTextureSize(tex_width, tex_height);
+    texture->setTextureSize(options.tex_width, options.tex_height);
     texture->setInternalFormat(GL_RGB);
     texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
     texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+    texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
+    texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
+    texture->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
 
 #if 0
     osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::SEPERATE_WINDOW;
@@ -614,7 +620,7 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
     // distortion correction set up.
     {
         osg::Geode* geode = new osg::Geode();
-        geode->addDrawable(createDomeDistortionMesh(osg::Vec3(0.0f,0.0f,0.0f), osg::Vec3(width,0.0f,0.0f), osg::Vec3(0.0f,height,0.0f), arguments));
+        geode->addDrawable(createDomeDistortionMesh(osg::Vec3(0.0f,0.0f,0.0f), osg::Vec3(options.width,0.0f,0.0f), osg::Vec3(0.0f,options.height,0.0f), options));
 
         // new we need to add the texture to the mesh, we do so by creating a
         // StateSet to contain the Texture StateAttribute.
@@ -626,7 +632,7 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
         camera->setGraphicsContext(gc.get());
         camera->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
         camera->setClearColor( osg::Vec4(0.1,0.1,1.0,1.0) );
-        camera->setViewport(new osg::Viewport(0, 0, width, height));
+        camera->setViewport(new osg::Viewport(0, 0, options.width, options.height));
         GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);
@@ -635,7 +641,7 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
         //camera->setInheritanceMask(camera->getInheritanceMask() & ~osg::CullSettings::CLEAR_COLOR & ~osg::CullSettings::COMPUTE_NEAR_FAR_MODE);
         //camera->setComputeNearFarMode(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
 
-        camera->setProjectionMatrixAsOrtho2D(0,width,0,height);
+        camera->setProjectionMatrixAsOrtho2D(0,options.width,0,options.height);
         camera->setViewMatrix(osg::Matrix::identity());
 
         // add subgraph to render
@@ -655,8 +661,11 @@ int main(int argc, char** argv)
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
 
+    CommandLineOptions options;
+    options.read(arguments);
+
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
 
     // load the nodes from the commandline arguments.
     osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
@@ -674,20 +683,20 @@ int main(int argc, char** argv)
     if (arguments.read("--dome") || arguments.read("--puffer") )
     {
 
-        setDomeCorrection(viewer, arguments);
+        setDomeCorrection(viewer, options);
 
         viewer.setSceneData( loadedModel );
     }
     else if (arguments.read("--faces"))
     {
 
-        setDomeFaces(viewer, arguments);
+        setDomeFaces(viewer, options);
 
         viewer.setSceneData( loadedModel );
     }
     else
     {
-        osg::Node* distortionNode = createDistortionSubgraph( loadedModel, viewer.getCamera()->getClearColor());
+        osg::Node* distortionNode = createDistortionSubgraph( options, loadedModel, viewer.getCamera()->getClearColor());
         viewer.setSceneData( distortionNode );
     }
 
@@ -737,6 +746,9 @@ int main(int argc, char** argv)
     }
 
     viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
+
+    // add window resize handler
+    viewer.addEventHandler(new osgViewer::WindowSizeHandler);
 
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );

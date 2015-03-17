@@ -62,7 +62,7 @@ JSONObject::JSONObject(const unsigned int id, const std::string& bufferName)
 
 JSONObject::JSONObject()
 {
-    _uniqueID = -1;
+    _uniqueID = 0xffffffff;
 }
 
 void JSONObject::addUniqueID()

@@ -6,11 +6,11 @@
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
 
-REGISTER_OBJECT_WRAPPER2(osg_ComputeBoundingBoxCallback,
-                        new osg::Drawable::ComputeBoundingBoxCallback,
-                        osg::Drawable::ComputeBoundingBoxCallback,
-                        "osg::ComputeBoundingBoxCallback",
-                        "osg::Object osg::ComputeBoundingBoxCallback") {
+REGISTER_OBJECT_WRAPPER2(ComputeBoundingBoxCallback,
+                         new osg::Drawable::ComputeBoundingBoxCallback,
+                         osg::Drawable::ComputeBoundingBoxCallback,
+                         "osg::ComputeBoundingBoxCallback",
+                         "osg::Object osg::ComputeBoundingBoxCallback") {
 }
 
 #undef OBJECT_CAST

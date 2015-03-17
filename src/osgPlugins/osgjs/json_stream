@@ -22,10 +22,11 @@
 #include <iomanip>
 #include <cctype>  // control characters
 #include <sstream>
-#include <fstream>
 #include <string>
 #include <cmath>
 #include <limits>
+
+#include <osgDB/fstream>
 
 using namespace std;
 
@@ -35,7 +36,7 @@ using namespace std;
 // * disallow some control characters
 // * does not support inf or nan values
 
-class json_stream : public std::ofstream {
+class json_stream : public osgDB::ofstream {
     public:
         json_stream(const std::string& filename, bool strict=true) :
             _stream(filename.c_str()),

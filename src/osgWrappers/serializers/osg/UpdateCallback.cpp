@@ -6,11 +6,11 @@
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
 
-REGISTER_OBJECT_WRAPPER2(osg_Drawable_UpdateCallback,
+REGISTER_OBJECT_WRAPPER2(UpdateCallback,
                          new osg::Drawable::UpdateCallback,
                          osg::Drawable::UpdateCallback,
                          "osg::UpdateCallback",
-                         "osg::Object osg::UpdateCallback") {}
+                         "osg::Object osg::Callback osg::UpdateCallback") {}
 
 #undef OBJECT_CAST
 #define OBJECT_CAST static_cast

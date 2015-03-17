@@ -30,8 +30,8 @@ Colin McDonald
 Trajce Nikolov
 Tim Moore
 Martin Lavery
-Tree
 Mattias Helsing
+Tree
 Jason Beverage
 Luigi Calori
 Pjotr Svetachov
@@ -152,6 +152,7 @@ Martins Innus
 Maciej Krol
 Lilin Xiong
 Leandro Motta Barros
+Konstantin Matveyev
 Johan Nouvel
 Javier Taibo
 Hartwig Wiesmann
@@ -276,7 +277,6 @@ Marius Heise
 Marcin Hajder
 Marcel Pursche
 Lilith Bryant
-Konstantin Matveyev
 Kevin Moiule
 Keith Steffen
 Joseph Winston

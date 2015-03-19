@@ -109,6 +109,8 @@ osg::Node* createDistortionSubgraph(CommandLineOptions& options, osg::Node* subg
     texture->setInternalFormat(GL_RGBA);
     texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
     texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+    texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::CLAMP_TO_EDGE);
+    texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::CLAMP_TO_EDGE);
 
     // set up the render to texture camera.
     {

@@ -296,6 +296,7 @@ int main(int argc, char* argv[])
     }
 
     viewer.addEventHandler(new KeyboardEventHandler(tessInnerU, tessOuterU));
+    viewer.addEventHandler(new osgViewer::StatsHandler);
     viewer.setSceneData(geode.get());
     return viewer.run();
 }

@@ -143,6 +143,10 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         void setCameraRequiresSetUp(bool flag) { _cameraRequiresSetUp = flag; }
         bool getCameraRequiresSetUp() const { return _cameraRequiresSetUp; }
 
+        void setCameraAttachmentMapCount(unsigned int v) { _cameraAttachmentMapModifiedCount = v; }
+        unsigned int getCameraAttachmentMapCount() { return _cameraAttachmentMapModifiedCount; }
+
+
         /** Attempt the set the RenderStage from the Camera settings.*/
         void runCameraSetUp(osg::RenderInfo& renderInfo);
 
@@ -288,6 +292,7 @@ protected:
         int                                 _clearStencil;
 
         bool                                _cameraRequiresSetUp;
+        unsigned int                        _cameraAttachmentMapModifiedCount;
         osg::observer_ptr<osg::Camera>      _camera;
 
         osg::ref_ptr<osg::Texture>              _texture;

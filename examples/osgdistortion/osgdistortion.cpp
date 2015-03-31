@@ -108,6 +108,31 @@ public:
     {
     }
 
+    void resizeRTTCamera(osg::Camera* camera,unsigned int width, unsigned int height)
+    {
+        camera->setViewport(0, 0, width, height);
+
+        osg::Camera::BufferAttachmentMap& cbam = camera->getBufferAttachmentMap();
+        for(osg::Camera::BufferAttachmentMap::iterator itr = cbam.begin();
+            itr != cbam.end();
+            ++itr)
+        {
+            osg::Camera::Attachment& attachment = itr->second;
+            if (attachment._texture.get())
+            {
+                osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(attachment._texture.get());
+                if (texture2D)
+                {
+                    OSG_NOTICE<<"Resetting Texture size"<<std::endl;
+                    texture2D->setTextureSize(width, height);
+                    texture2D->dirtyTextureObject();
+                }
+            }
+        }
+
+        camera->dirtyAttachmentMap();
+    }
+
     virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, osg::Object* object, osg::NodeVisitor* nv)
     {
         osg::Camera* camera = dynamic_cast<osg::Camera*>(object);
@@ -126,26 +151,8 @@ public:
             // reset the Camera and associated Texture's to make sure it tracks the new window size.
             int width = ea.getWindowWidth();
             int height = ea.getWindowHeight();
-            camera->setViewport(0, 0, width, height);
-            camera->setRenderingCache(0);
 
-            osg::Camera::BufferAttachmentMap& cbam = camera->getBufferAttachmentMap();
-            for(osg::Camera::BufferAttachmentMap::iterator itr = cbam.begin();
-                itr != cbam.end();
-                ++itr)
-            {
-                osg::Camera::Attachment& attachment = itr->second;
-                if (attachment._texture.get())
-                {
-                    osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(attachment._texture.get());
-                    if (texture2D)
-                    {
-                        OSG_NOTICE<<"Resetting Texture size"<<std::endl;
-                        texture2D->setTextureSize(width, height);
-                        texture2D->dirtyTextureObject();
-                    }
-                }
-            }
+            resizeRTTCamera(camera, width, height);
         }
         return false;
     }

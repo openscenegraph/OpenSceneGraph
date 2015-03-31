@@ -255,7 +255,7 @@ void Texture2DArray::apply(State& state) const
 
     if (textureObject && textureDepth>0)
     {
-        const osg::Image* image = _images[0].get();
+        const osg::Image* image = (_images.size()>0) ? _images[0].get() : 0;
         if (image && getModifiedCount(0, contextID) != image->getModifiedCount())
         {
             // compute the internal texture format, this set the _internalFormat to an appropriate value.

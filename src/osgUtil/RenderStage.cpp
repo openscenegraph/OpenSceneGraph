@@ -53,6 +53,7 @@ RenderStage::RenderStage():
     _clearStencil = 0;
 
     _cameraRequiresSetUp = false;
+    _cameraAttachmentMapModifiedCount = 0;
     _camera = 0;
 
     _level = 0;
@@ -83,6 +84,7 @@ RenderStage::RenderStage(SortMode mode):
     _clearStencil = 0;
 
     _cameraRequiresSetUp = false;
+    _cameraAttachmentMapModifiedCount = 0;
     _camera = 0;
 
     _level = 0;
@@ -109,6 +111,7 @@ RenderStage::RenderStage(const RenderStage& rhs,const osg::CopyOp& copyop):
         _clearDepth(rhs._clearDepth),
         _clearStencil(rhs._clearStencil),
         _cameraRequiresSetUp(rhs._cameraRequiresSetUp),
+        _cameraAttachmentMapModifiedCount(rhs._cameraAttachmentMapModifiedCount),
         _camera(rhs._camera),
         _level(rhs._level),
         _face(rhs._face),
@@ -226,6 +229,10 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
     _cameraRequiresSetUp = false;
 
     if (!_camera) return;
+
+    OSG_INFO<<"RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo) "<<this<<std::endl;
+
+    _cameraAttachmentMapModifiedCount = _camera->getAttachmentMapModifiedCount();
 
     osg::State& state = *renderInfo.getState();
 
@@ -1160,7 +1167,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     // so there is no need to call it here.
     drawPreRenderStages(renderInfo,previous);
 
-    if (_cameraRequiresSetUp)
+    if (_cameraRequiresSetUp || (_cameraAttachmentMapModifiedCount!=_camera->getAttachmentMapModifiedCount()))
     {
         runCameraSetUp(renderInfo);
     }

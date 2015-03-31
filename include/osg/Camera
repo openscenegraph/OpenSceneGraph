@@ -416,6 +416,16 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         const BufferAttachmentMap& getBufferAttachmentMap() const { return _bufferAttachmentMap; }
 
 
+        /** Increment the _attachementMapModifiedCount so that the rendering backend will know that it needs to be updated to handle any new settings (such as format change/resizes.).*/
+        void dirtyAttachmentMap() { ++_attachmentMapModifiedCount; }
+
+        /** Set the AttachmentMapModifiedCount to a specific value.  Note, normal usage you would simply call dirtyAttachmentMap(). */
+        void setAttachmentMapModifiedCount(unsigned int v) { _attachmentMapModifiedCount = v; }
+
+        /** Get the AttachmentMapModifiedCount. */
+        unsigned int getAttachmentMapModifiedCount() const { return _attachmentMapModifiedCount; }
+
+
         /** Explicit control over implicit allocation of buffers when using FBO.
          Implicit buffers are automatically substituted when user have not attached such buffer.
 
@@ -666,6 +676,8 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         BufferAttachmentMap                 _bufferAttachmentMap;
         ImplicitBufferAttachmentMask        _implicitBufferAttachmentRenderMask;
         ImplicitBufferAttachmentMask        _implicitBufferAttachmentResolveMask;
+
+        unsigned int                        _attachmentMapModifiedCount;
 
         ref_ptr<OperationThread>            _cameraThread;
 

@@ -35,7 +35,8 @@ Camera::Camera():
     _renderTargetImplementation(FRAME_BUFFER),
     _renderTargetFallback(FRAME_BUFFER),
     _implicitBufferAttachmentRenderMask( USE_DISPLAY_SETTINGS_MASK ),
-    _implicitBufferAttachmentResolveMask( USE_DISPLAY_SETTINGS_MASK )
+    _implicitBufferAttachmentResolveMask( USE_DISPLAY_SETTINGS_MASK ),
+    _attachmentMapModifiedCount(0)
 {
     setStateSet(new StateSet);
 }
@@ -66,6 +67,7 @@ Camera::Camera(const Camera& camera,const CopyOp& copyop):
     _bufferAttachmentMap(camera._bufferAttachmentMap),
     _implicitBufferAttachmentRenderMask(camera._implicitBufferAttachmentRenderMask),
     _implicitBufferAttachmentResolveMask(camera._implicitBufferAttachmentResolveMask),
+    _attachmentMapModifiedCount(camera._attachmentMapModifiedCount),
     _initialDrawCallback(camera._initialDrawCallback),
     _preDrawCallback(camera._preDrawCallback),
     _postDrawCallback(camera._postDrawCallback),

@@ -112,25 +112,7 @@ public:
     {
         camera->setViewport(0, 0, width, height);
 
-        osg::Camera::BufferAttachmentMap& cbam = camera->getBufferAttachmentMap();
-        for(osg::Camera::BufferAttachmentMap::iterator itr = cbam.begin();
-            itr != cbam.end();
-            ++itr)
-        {
-            osg::Camera::Attachment& attachment = itr->second;
-            if (attachment._texture.get())
-            {
-                osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(attachment._texture.get());
-                if (texture2D)
-                {
-                    OSG_NOTICE<<"Resetting Texture size"<<std::endl;
-                    texture2D->setTextureSize(width, height);
-                    texture2D->dirtyTextureObject();
-                }
-            }
-        }
-
-        camera->dirtyAttachmentMap();
+        camera->resizeAttachments(width, height);
     }
 
     virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, osg::Object* object, osg::NodeVisitor* nv)

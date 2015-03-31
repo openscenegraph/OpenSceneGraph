@@ -159,6 +159,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         Viewport* getViewport() { return _viewport.get(); }
 
 
+
         enum TransformOrder
         {
             PRE_MULTIPLY,
@@ -424,6 +425,9 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         /** Get the AttachmentMapModifiedCount. */
         unsigned int getAttachmentMapModifiedCount() const { return _attachmentMapModifiedCount; }
+
+        /** Resize the image and textures in the AttachementMap.*/
+        void resizeAttachments(int width, int height);
 
 
         /** Explicit control over implicit allocation of buffers when using FBO.

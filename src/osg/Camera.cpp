@@ -12,6 +12,12 @@
 */
 #include <osg/Camera>
 #include <osg/RenderInfo>
+#include <osg/Texture1D>
+#include <osg/Texture2D>
+#include <osg/Texture3D>
+#include <osg/TextureRectangle>
+#include <osg/TextureCubeMap>
+#include <osg/Texture2DArray>
 #include <osg/Notify>
 
 using namespace osg;
@@ -405,6 +411,73 @@ void Camera::inheritCullSettings(const CullSettings& settings, unsigned int inhe
 
         if (inheritanceMask & READ_BUFFER)
             _drawBuffer = camera->_readBuffer;
+    }
+}
+
+void Camera::resizeAttachments(int width, int height)
+{
+    bool modified = false;
+    for(BufferAttachmentMap::iterator itr = _bufferAttachmentMap.begin();
+        itr != _bufferAttachmentMap.end();
+        ++itr)
+    {
+        Attachment& attachment = itr->second;
+        if (attachment._texture.valid())
+        {
+            {
+                osg::Texture1D* texture = dynamic_cast<osg::Texture1D*>(attachment._texture.get());
+                if (texture && (texture->getTextureWidth()!=width))
+                {
+                    modified = true;
+                    texture->setTextureWidth(width);
+                    texture->dirtyTextureObject();
+                }
+            }
+
+            {
+                osg::Texture2D* texture = dynamic_cast<osg::Texture2D*>(attachment._texture.get());
+                if (texture && ((texture->getTextureWidth()!=width) || (texture->getTextureHeight()!=height)))
+                {
+                    modified = true;
+                    texture->setTextureSize(width, height);
+                    texture->dirtyTextureObject();
+                }
+            }
+
+            {
+                osg::Texture3D* texture = dynamic_cast<osg::Texture3D*>(attachment._texture.get());
+                if (texture && ((texture->getTextureWidth()!=width) || (texture->getTextureHeight()!=height)))
+                {
+                    modified = true;
+                    texture->setTextureSize(width, height, texture->getTextureDepth());
+                    texture->dirtyTextureObject();
+                }
+            }
+
+            {
+                osg::Texture2DArray* texture = dynamic_cast<osg::Texture2DArray*>(attachment._texture.get());
+                if (texture && ((texture->getTextureWidth()!=width) || (texture->getTextureHeight()!=height)))
+                {
+                    modified = true;
+                    texture->setTextureSize(width, height, texture->getTextureDepth());
+                    texture->dirtyTextureObject();
+                }
+            }
+        }
+
+        if (attachment._image.valid() && (attachment._image->s()!=width || attachment._image->s()!=height) )
+        {
+            modified = true;
+            osg::Image* image = attachment._image.get();
+            image->allocateImage(width, height, image->r(),
+                                 image->getPixelFormat(), image->getDataType(),
+                                 image->getPacking());
+        }
+    }
+
+    if (modified)
+    {
+        dirtyAttachmentMap();
     }
 }
 

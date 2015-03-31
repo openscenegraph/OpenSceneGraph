@@ -39,6 +39,14 @@
 
 typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
 
+class SubloadCallback : public osg::Texture2DArray::SubloadCallback
+{
+  public:
+    virtual void load(const osg::Texture2DArray& texture, osg::State& state) const   { }
+    virtual void subload(const osg::Texture2DArray& texture, osg::State& state) const   { }
+};
+
+
 osg::StateSet* createState(osg::ArgumentParser& arguments)
 {
     // read 4 2d images
@@ -80,7 +88,12 @@ osg::StateSet* createState(osg::ArgumentParser& arguments)
         texture->setFilter(osg::Texture2DArray::MIN_FILTER, osg::Texture2DArray::LINEAR_MIPMAP_LINEAR);
     }
 
-    if (arguments.read("--packed"))
+    if (arguments.read("--subload"))
+    {
+        texture->setTextureSize(textureSize, textureSize, 1);
+        texture->setSubloadCallback(new SubloadCallback());
+    }
+    else if (arguments.read("--packed"))
     {
         OSG_NOTICE<<"Packing all images into a single osg::Image to pass to Texture2DArray."<<std::endl;
 
@@ -106,7 +119,6 @@ osg::StateSet* createState(osg::ArgumentParser& arguments)
         texture->setImage(2, image_2.get());
         texture->setImage(3, image_3.get());
     }
-
 
     std::string vsFileName("shaders/osgtexture2DArray.vert");
     std::string fsFileName("shaders/osgtexture2DArray.frag");

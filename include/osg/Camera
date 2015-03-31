@@ -430,6 +430,19 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         void resizeAttachments(int width, int height);
 
 
+        enum ResizeMask
+        {
+            RESIZE_VIEWPORT=1,
+            RESIZE_ATTACHMENTS=2,
+            RESIZE_PROJECTIONMATRIX=4,
+            RESIZE_DEFAULT=RESIZE_VIEWPORT|RESIZE_ATTACHMENTS
+        };
+
+        /** Resize, to the specified width and height, the viewport, attachments and projection matrix according to the resizeMask provided.
+          * Note, the adjustment of the projection matrix is done if the RESIZE_PROJECTIONMATRIX mask to set and according to the rules specified in the ProjectionResizePolicy. */
+        void resize(int width, int height, int resizeMask=RESIZE_DEFAULT);
+
+
         /** Explicit control over implicit allocation of buffers when using FBO.
          Implicit buffers are automatically substituted when user have not attached such buffer.
 

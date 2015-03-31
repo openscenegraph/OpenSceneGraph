@@ -481,6 +481,47 @@ void Camera::resizeAttachments(int width, int height)
     }
 }
 
+void Camera::resize(int width, int height, int resizeMask)
+{
+    if (getViewport())
+    {
+        double previousWidth = getViewport()->width();
+        double previousHeight = getViewport()->height();
+        double newWidth = width;
+        double newHeight = height;
+
+        if ((previousWidth!=newWidth) || (previousHeight!=newHeight))
+        {
+            if ((resizeMask&RESIZE_PROJECTIONMATRIX)!=0 && (getProjectionResizePolicy()!=FIXED))
+            {
+                double widthChangeRatio = newWidth / previousWidth;
+                double heigtChangeRatio = newHeight / previousHeight;
+                double aspectRatioChange = widthChangeRatio / heigtChangeRatio;
+                if (aspectRatioChange!=1.0)
+                {
+                    switch(getProjectionResizePolicy())
+                    {
+                        case(HORIZONTAL): getProjectionMatrix() *= osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0); break;
+                        case(VERTICAL): getProjectionMatrix() *= osg::Matrix::scale(1.0, aspectRatioChange,1.0); break;
+                        case(FIXED): break;
+                    }
+                }
+            }
+
+            if ((resizeMask&RESIZE_VIEWPORT)!=0)
+            {
+                setViewport(0,0,width, height);
+            }
+        }
+    }
+
+    if ((resizeMask&RESIZE_ATTACHMENTS)!=0)
+    {
+        resizeAttachments(width, height);
+    }
+}
+
+
 void Camera::createCameraThread()
 {
     if (!_cameraThread)

@@ -108,13 +108,6 @@ public:
     {
     }
 
-    void resizeRTTCamera(osg::Camera* camera,unsigned int width, unsigned int height)
-    {
-        camera->setViewport(0, 0, width, height);
-
-        camera->resizeAttachments(width, height);
-    }
-
     virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, osg::Object* object, osg::NodeVisitor* nv)
     {
         osg::Camera* camera = dynamic_cast<osg::Camera*>(object);
@@ -130,11 +123,8 @@ public:
             OSG_NOTICE<<"   WindowWidth="<<ea.getWindowWidth()<<std::endl;
             OSG_NOTICE<<"   WindowHeight="<<ea.getWindowHeight()<<std::endl;
 
-            // reset the Camera and associated Texture's to make sure it tracks the new window size.
-            int width = ea.getWindowWidth();
-            int height = ea.getWindowHeight();
-
-            resizeRTTCamera(camera, width, height);
+            // reset the Camera viewpoer and associated Texture's to make sure it tracks the new window size.
+            camera->resize(ea.getWindowWidth(), ea.getWindowHeight());
         }
         return false;
     }

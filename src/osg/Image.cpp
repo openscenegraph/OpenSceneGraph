@@ -833,7 +833,11 @@ int Image::computeNumberOfMipmapLevels(int s,int t, int r)
 {
     int w = maximum(s, t);
     w = maximum(w, r);
-    return 1 + static_cast<int>(floor(logf(w)/logf(2.0f)));
+
+    int n = 0;
+    while (w >>= 1)
+        ++n;
+    return n+1;
 }
 
 bool Image::isCompressed() const

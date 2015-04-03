@@ -15,9 +15,11 @@
 #include <string.h>
 
 #include <osg/Math>
-#include <osg/Notify>
 #include <osg/ImageUtils>
 #include <osg/Texture>
+
+#include <osg/Notify>
+#include <osg/io_utils>
 
 namespace osg
 {
@@ -700,6 +702,56 @@ osg::Image* colorSpaceConversion(ColorSpaceOperation op, osg::Image* image, cons
 }
 
 
+OSG_EXPORT osg::Image* createImageWithOrientationConversion(const osg::Image* srcImage, const osg::Vec3i& srcOrigin, const osg::Vec3i& srcRow, const osg::Vec3i& srcColumn, const osg::Vec3i& srcLayer)
+{
+    osg::ref_ptr<osg::Image> dstImage = new osg::Image;
+    int width  = osg::maximum(osg::maximum(osg::absolute(srcRow.x()), osg::absolute(srcRow.y())), osg::absolute(srcRow.z()));
+    int height = osg::maximum(osg::maximum(osg::absolute(srcColumn.x()), osg::absolute(srcColumn.y())), osg::absolute(srcColumn.z()));
+    int depth  = osg::maximum(osg::maximum(osg::absolute(srcLayer.x()), osg::absolute(srcLayer.y())), osg::absolute(srcLayer.z()));
+
+    osg::Vec3i rowDelta(osg::signOrZero(srcRow.x()), osg::signOrZero(srcRow.y()), osg::signOrZero(srcRow.z()));
+    osg::Vec3i columnDelta(osg::signOrZero(srcColumn.x()), osg::signOrZero(srcColumn.y()), osg::signOrZero(srcColumn.z()));
+    osg::Vec3i layerDelta(osg::signOrZero(srcLayer.x()), osg::signOrZero(srcLayer.y()), osg::signOrZero(srcLayer.z()));
+
+    unsigned int pixelSizeInBits =  srcImage->getPixelSizeInBits();
+    unsigned int pixelSizeInBytes = pixelSizeInBits/8;
+    unsigned int pixelSizeRemainder = pixelSizeInBits%8;
+    if (pixelSizeRemainder!=0)
+    {
+        OSG_NOTICE<<"Warning: createImageWithOrientationConversion(..) cannot handle non byte aligned pixel formats."<<std::endl;
+        return const_cast<osg::Image*>(srcImage);
+    }
+
+    dstImage->allocateImage(width, height, depth, srcImage->getPixelFormat(), srcImage->getDataType());
+
+    // copy across the pixels from the source image to the destination image.
+    for(int l=0; l<depth; l++)
+    {
+        for(int r=0; r<height; r++)
+        {
+            osg::Vec3i cp( srcOrigin.x() + columnDelta.x()*r + layerDelta.x()*l,
+                           srcOrigin.y() + columnDelta.y()*r + layerDelta.y()*l,
+                           srcOrigin.z() + columnDelta.z()*r + layerDelta.z()*l);
+
+
+            for(int c=0; c<width; c++)
+            {
+                // OSG_NOTICE<<"source cp = ("<<cp<<")  destination ("<<c<<","<<r<<","<<l<<")"<<std::endl;
+                const unsigned char* src_pixel = srcImage->data(cp.x(), cp.y(), cp.z());
+                unsigned char* dst_pixel = dstImage->data(c, r, l);
+                for(unsigned int i=0; i<pixelSizeInBytes; ++i)
+                {
+                    *(dst_pixel++) = *(src_pixel++);
+                }
+                cp.x() += rowDelta.x();
+                cp.y() += rowDelta.y();
+                cp.z() += rowDelta.z();
+            }
+        }
+    }
+
+    return dstImage.release();
+}
 
 }
 

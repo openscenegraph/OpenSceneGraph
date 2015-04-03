@@ -239,7 +239,7 @@ enum ColorSpaceOperation
 /** Convert the RGBA values in a Image based on a ColorSpaceOperation defined scheme.*/
 extern OSG_EXPORT osg::Image* colorSpaceConversion(ColorSpaceOperation op, osg::Image* image, const osg::Vec4& colour);
 
-/** Create a copy of an osg::Image. converting the origin to standard lower left OpenGL style origin .*/
+/** Create a copy of an osg::Image. converting the origin and orientation to standard lower left OpenGL style origin .*/
 extern OSG_EXPORT osg::Image* createImageWithOrientationConversion(const osg::Image* srcImage, const osg::Vec3i& srcOrigin, const osg::Vec3i& srcRow, const osg::Vec3i& srcColumn, const osg::Vec3i& srcLayer);
 
 }

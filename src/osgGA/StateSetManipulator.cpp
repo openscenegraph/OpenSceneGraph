@@ -72,14 +72,8 @@ void StateSetManipulator::clone()
         itr !=  parents.end();
         ++itr)
     {
-        osg::Object* object = *itr;
-        osg::Node* node = dynamic_cast<osg::Node*>(object);
-        if (node) node->setStateSet(newStateSet.get());
-        else
-        {
-            osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(object);
-            if (drawable) drawable->setStateSet(newStateSet.get());
-        }
+        osg::Node* node = *itr;
+        node->setStateSet(newStateSet.get());
     }
 
     _stateset = newStateSet;

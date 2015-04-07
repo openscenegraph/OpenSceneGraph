@@ -438,9 +438,9 @@ void Optimizer::StateVisitor::reset()
     _statesets.clear();
 }
 
-void Optimizer::StateVisitor::addStateSet(osg::StateSet* stateset,osg::Object* obj)
+void Optimizer::StateVisitor::addStateSet(osg::StateSet* stateset, osg::Node* node)
 {
-    _statesets[stateset].insert(obj);
+    _statesets[stateset].insert(node);
 }
 
 void Optimizer::StateVisitor::apply(osg::Node& node)
@@ -688,26 +688,13 @@ void Optimizer::StateVisitor::optimize()
             if (**current==**first_unique)
             {
                 OSG_INFO << "    found duplicate "<<(*current)->className()<<"  first="<<*first_unique<<"  current="<<*current<< std::endl;
-                ObjectSet& objSet = _statesets[*current];
-                for(ObjectSet::iterator sitr=objSet.begin();
-                    sitr!=objSet.end();
+                NodeSet& nodeSet = _statesets[*current];
+                for(NodeSet::iterator sitr=nodeSet.begin();
+                    sitr!=nodeSet.end();
                     ++sitr)
                 {
                     OSG_INFO << "       replace duplicate "<<*current<<" with "<<*first_unique<< std::endl;
-                    osg::Object* obj = *sitr;
-                    osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(obj);
-                    if (drawable)
-                    {
-                        drawable->setStateSet(*first_unique);
-                    }
-                    else
-                    {
-                        osg::Node* node = dynamic_cast<osg::Node*>(obj);
-                        if (node)
-                        {
-                            node->setStateSet(*first_unique);
-                        }
-                    }
+                    (*sitr)->setStateSet(*first_unique);
                 }
             }
             else first_unique = current;

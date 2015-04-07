@@ -461,15 +461,15 @@ class OSGUTIL_EXPORT Optimizer
 
             protected:
 
-                void addStateSet(osg::StateSet* stateset,osg::Object* obj);
+                void addStateSet(osg::StateSet* stateset, osg::Node* node);
 
                 inline bool optimize(osg::Object::DataVariance variance)
                 {
                     return _optimize[variance];
                 }
 
-                typedef std::set<osg::Object*>              ObjectSet;
-                typedef std::map<osg::StateSet*,ObjectSet>  StateSetMap;
+                typedef std::set<osg::Node*>               NodeSet;
+                typedef std::map<osg::StateSet*, NodeSet>  StateSetMap;
 
                 // note, one element for DYNAMIC, STATIC and UNSPECIFIED
                 bool _optimize[3];

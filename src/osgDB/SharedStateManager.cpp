@@ -162,19 +162,8 @@ osg::StateAttribute *SharedStateManager::find(osg::StateAttribute *sa)
 //----------------------------------------------------------------
 void SharedStateManager::setStateSet(osg::StateSet* ss, osg::Object* object)
 {
-    osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(object);
-    if (drawable)
-    {
-        drawable->setStateSet(ss);
-    }
-    else
-    {
-        osg::Node* node = dynamic_cast<osg::Node*>(object);
-        if (node)
-        {
-            node->setStateSet(ss);
-        }
-    }
+    osg::Node* node = dynamic_cast<osg::Node*>(object);
+    if (node) node->setStateSet(ss);
 }
 
 

@@ -1249,6 +1249,23 @@ ReaderWriter3DS::StateSetInfo ReaderWriter3DS::ReaderObject::createStateSet(Lib3
     if (texture1_map)
     {
         if(textureTransparency) transparency = true;
+
+        // a diffuse texture can be transparent (e.g. a PNG with alpha channel)
+        if (texture1_map->getImage()->isImageTranslucent()) transparency = true;
+
+        // set UV scaling...
+        // to do: import offset and scaling
+        float uscale = mat->texture1_map.scale[0];
+        float vscale = mat->texture1_map.scale[1];
+        if (uscale != 1.0 || vscale != 1.0)
+        {
+            osg::ref_ptr<osg::TexMat> texmat = new osg::TexMat();
+            osg::Matrix uvScaling;
+            uvScaling.makeScale(osg::Vec3(uscale, vscale, 1.0));
+            texmat->setMatrix(uvScaling);
+            stateset->setTextureAttributeAndModes(unit, texmat.get(), osg::StateAttribute::ON);
+        }
+
         stateset->setTextureAttributeAndModes(unit, texture1_map, osg::StateAttribute::ON);
 
         double factor = mat->texture1_map.percent;
@@ -1294,28 +1311,90 @@ ReaderWriter3DS::StateSetInfo ReaderWriter3DS::ReaderObject::createStateSet(Lib3
     osg::Texture2D* opacity_map = createTexture(&(mat->opacity_map),"opacity_map", textureTransparency);
     if (opacity_map)
     {
-        if(opacity_map->getImage()->isImageTranslucent())
+        // set UV scaling...
+        // to do: import offset and scaling
+        float uscale = mat->opacity_map.scale[0];
+        float vscale = mat->opacity_map.scale[1];
+        if (uscale != 1.0 || vscale != 1.0)
         {
-            transparency = true;
-
-            stateset->setTextureAttributeAndModes(unit, opacity_map, osg::StateAttribute::ON);
-
-            double factor = mat->opacity_map.percent;
-
-                osg::TexEnvCombine* texenv = new osg::TexEnvCombine();
-                texenv->setCombine_Alpha(osg::TexEnvCombine::INTERPOLATE);
-                texenv->setSource0_Alpha(osg::TexEnvCombine::TEXTURE);
-                texenv->setSource1_Alpha(osg::TexEnvCombine::PREVIOUS);
-                texenv->setSource2_Alpha(osg::TexEnvCombine::CONSTANT);
-                texenv->setConstantColor(osg::Vec4(factor, factor, factor, 1.0 - factor));
-                stateset->setTextureAttributeAndModes(unit, texenv, osg::StateAttribute::ON);
-
-            unit++;
+            osg::ref_ptr<osg::TexMat> texmat = new osg::TexMat();
+            osg::Matrix uvScaling;
+            uvScaling.makeScale(osg::Vec3(uscale, vscale, 1.0));
+            texmat->setMatrix(uvScaling);
+            stateset->setTextureAttributeAndModes(unit, texmat.get(), osg::StateAttribute::ON);
         }
-        else
+
+        double factor = mat->opacity_map.percent;
+
+        // opacity map: add an alpha channel to the image to make opacity work
+        // (rebuid the image anyway if it must be rescaled according to factor)
+        if(!opacity_map->getImage()->isImageTranslucent() || factor<1.0)
         {
-            osg::notify(WARN)<<"The plugin does not support images without alpha channel for opacity"<<std::endl;
+            osg::notify(WARN)<<"Image without alpha channel for opacity. An extra alpha channel will be added."<<std::endl;
+            double one_minus_factor = 1.0 - factor;
+            osg::ref_ptr<osg::Image> osg_image = opacity_map->getImage();
+            int nc = (int)osg_image->getPixelSizeInBits()/8;
+            unsigned char* orig_img_data = (unsigned char*)osg_image->getDataPointer();
+            int n = osg_image->s()*osg_image->t()*4;
+            unsigned char* img_data = new unsigned char[n];
+            // rebuild the texture with alpha channel (rescale according to map amount)
+            for (int i=0, j=0; i<n; i+=4, j+=nc)
+            {
+                img_data[i] = img_data[i+1] = img_data[i+2] = img_data[i+3] = one_minus_factor + orig_img_data[j]*factor;
+            }
+            osg_image->setImage(osg_image->s(),osg_image->t(),osg_image->r(), GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, img_data, osg::Image::USE_NEW_DELETE);
+            opacity_map->setImage(osg_image.get());
         }
+
+        transparency = true;
+
+        stateset->setTextureAttributeAndModes(unit, opacity_map, osg::StateAttribute::ON);
+
+        // set up and enable the texture combiner
+        osg::TexEnvCombine* texenv = new osg::TexEnvCombine();
+
+        texenv->setCombine_RGB(osg::TexEnvCombine::REPLACE);
+        texenv->setSource0_RGB(osg::TexEnvCombine::PREVIOUS);
+        texenv->setOperand0_RGB(osg::TexEnvCombine::SRC_COLOR);
+
+        texenv->setCombine_Alpha(osg::TexEnvCombine::MODULATE);
+        texenv->setSource0_Alpha(osg::TexEnvCombine::TEXTURE);
+        texenv->setOperand0_Alpha(osg::TexEnvCombine::SRC_ALPHA);
+        texenv->setSource1_Alpha(osg::TexEnvCombine::PRIMARY_COLOR);
+        texenv->setOperand1_Alpha(osg::TexEnvCombine::SRC_ALPHA);
+
+        stateset->setTextureAttributeAndModes(unit, texenv, osg::StateAttribute::ON);
+
+        osg::BlendFunc* blendfunc = new osg::BlendFunc(osg::BlendFunc::SRC_ALPHA,osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
+        stateset->setAttributeAndModes(blendfunc, osg::StateAttribute::ON);
+        osg::TexEnv* tenv = new osg::TexEnv();
+        tenv->setMode(osg::TexEnv::MODULATE);
+        stateset->setTextureAttributeAndModes(unit, tenv, osg::StateAttribute::ON);
+
+        unit++;
+    }
+
+    // derived from code in src/osgPlugins/fbx/fbxRMesh.cpp
+    osg::ref_ptr<osg::Texture> reflection_map = createTexture(&(mat->reflection_map),"reflection_map",textureTransparency);
+    if (reflection_map)
+    {
+        stateset->setTextureAttributeAndModes(unit, reflection_map, osg::StateAttribute::ON);
+
+        // setup spherical map...
+        osg::ref_ptr<osg::TexGen> texgen = new osg::TexGen();
+        texgen->setMode(osg::TexGen::SPHERE_MAP);
+        stateset->setTextureAttributeAndModes(unit, texgen.get(), osg::StateAttribute::ON);
+
+        // setup combiner for factor...
+        double factor = mat->reflection_map.percent;
+        osg::ref_ptr<osg::TexEnvCombine> texenv = new osg::TexEnvCombine();
+        texenv->setCombine_RGB(osg::TexEnvCombine::INTERPOLATE);
+        texenv->setSource0_RGB(osg::TexEnvCombine::TEXTURE);
+        texenv->setSource1_RGB(osg::TexEnvCombine::PREVIOUS);
+        texenv->setSource2_RGB(osg::TexEnvCombine::CONSTANT);
+        texenv->setConstantColor(osg::Vec4(factor, factor, factor, factor));
+        stateset->setTextureAttributeAndModes(unit, texenv.get(), osg::StateAttribute::ON);
+        unit++;
     }
 
     // material

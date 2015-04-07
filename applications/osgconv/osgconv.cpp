@@ -373,16 +373,6 @@ public:
             ++_numStateSetRemoved;
         }
 
-        for(unsigned int i=0;i<node.getNumDrawables();++i)
-        {
-            osg::Drawable* drawable = node.getDrawable(i);
-            if (drawable && drawable->getStateSet())
-            {
-                drawable->setStateSet(0);
-                ++_numStateSetRemoved;
-            }
-        }
-
         traverse(node);
     }
 

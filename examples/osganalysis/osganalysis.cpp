@@ -56,18 +56,7 @@ public:
         traverse(node);
     }
 
-    void apply(osg::Geode& node)
-    {
-        if (!_useStateSets && node.getStateSet()) node.setStateSet(0);
-        for(unsigned int i = 0; i<node.getNumDrawables(); ++i)
-        {
-            process(*node.getDrawable(i));
-        }
-
-        traverse(node);
-    }
-
-    void process(osg::Drawable& drawable)
+    void apply(osg::Drawable& drawable)
     {
         if (!_useStateSets && drawable.getStateSet())
         {

@@ -75,7 +75,7 @@ class OSGMANIPULATOR_EXPORT Scale2DDragger : public Dragger
         inline osg::Node* getBottomRightHandleNode() { return _bottomRightHandleNode.get(); }
         inline const osg::Node* getBottomRightHandleNode() const { return _bottomRightHandleNode.get(); }
 
-        /** Set/Get the handle nodes postion for dragger. */
+        /** Set/Get the handle nodes position for dragger. */
         inline void setTopLeftHandlePosition(const osg::Vec2d& pos) { _topLeftHandlePosition = pos; }
         const osg::Vec2d& getTopLeftHandlePosition() const { return _topLeftHandlePosition; }
         inline void setBottomLeftHandlePosition(const osg::Vec2d& pos) { _bottomLeftHandlePosition = pos; }

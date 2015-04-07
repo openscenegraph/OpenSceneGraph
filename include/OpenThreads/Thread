@@ -29,7 +29,7 @@ namespace OpenThreads {
 /**
  *  Get the number of processors.
  *
- *  Note, systems where no support exists for querrying the number of processors, 1 is returned.
+ *  Note, systems where no support exists for querying the number of processors, 1 is returned.
  *
  */
 extern OPENTHREAD_EXPORT_DIRECTIVE int GetNumberOfProcessors();

@@ -87,7 +87,7 @@ public:
                 // update filter modes and text.
                 setValues();
 
-                // advance the current positon, wrap round if required.
+                // advance the current position, wrap round if required.
                 _currPos++;
                 if (_currPos>=_minFilterList.size()) _currPos=0;
 
@@ -246,7 +246,7 @@ public:
                 // update filter modes and text.
                 setValues();
 
-                // advance the current positon, wrap round if required.
+                // advance the current position, wrap round if required.
                 _currPos++;
                 if (_currPos>=_maxAnisotropyList.size()) _currPos=0;
 
@@ -402,7 +402,7 @@ public:
                 // update filter modes and text.
                 setValues();
 
-                // advance the current positon, wrap round if required.
+                // advance the current position, wrap round if required.
                 _currPos++;
                 if (_currPos>=_wrapList.size()) _currPos=0;
 
@@ -596,7 +596,7 @@ public:
                 // update filter modes and text.
                 setValues();
 
-                // advance the current positon, wrap round if required.
+                // advance the current position, wrap round if required.
                 _currPos++;
                 if (_currPos>=_imageList.size()) _currPos=0;
 

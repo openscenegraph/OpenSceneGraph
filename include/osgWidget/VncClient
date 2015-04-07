@@ -38,7 +38,7 @@ class VncImage : public osg::Image
 };
 
 
-/** Convinience Vnc Client class that provides a interactive quad that can be placed directly in the scene.*/
+/** Convenience Vnc Client class that provides a interactive quad that can be placed directly in the scene.*/
 class OSGWIDGET_EXPORT VncClient : public osg::Geode
 {
     public:

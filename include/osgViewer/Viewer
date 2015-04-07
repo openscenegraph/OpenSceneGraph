@@ -42,7 +42,7 @@ class OSGVIEWER_EXPORT Viewer : public ViewerBase, public osgViewer::View
         virtual void take(osg::View& rhs);
 
 
-        /** Set the Stats object used for collect various frame related timing and scene graph stats.*/
+        /** Set the Stats object used to collect various frame related timing and scene graph stats.*/
         virtual void setViewerStats(osg::Stats* stats) { setStats(stats); }
 
         /** Get the Viewers Stats object.*/

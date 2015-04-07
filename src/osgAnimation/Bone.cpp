@@ -15,7 +15,6 @@
 #include <osgAnimation/Bone>
 #include <osgAnimation/Skeleton>
 #include <osgAnimation/UpdateBone>
-#include <osgAnimation/BoneMapVisitor>
 
 using namespace osgAnimation;
 

@@ -69,7 +69,7 @@ void readImage(const osg::Image* image, O& operation)
     }
 }
 
-/** Convinience method for making it easy to cast all pixel channels types to a unit float RGBA form.*/
+/** Convenience method for making it easy to cast all pixel channels types to a unit float RGBA form.*/
 struct CastAndScaleToFloatOperation
 {
     float cast(char v) { return static_cast<float>(v)*(1.0f/128.0f); }

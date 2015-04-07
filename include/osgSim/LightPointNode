@@ -93,7 +93,7 @@ class OSGSIM_EXPORT LightPointNode : public osg::Node
 
         ~LightPointNode() {}
 
-        // used to cache the bouding box of the lightpoints as a tighter
+        // used to cache the bounding box of the lightpoints as a tighter
         // view frustum check.
         mutable osg::BoundingBox _bbox;
 

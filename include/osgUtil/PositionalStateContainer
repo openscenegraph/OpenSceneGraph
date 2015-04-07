@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGUTIL_POSTIONALSTATECONTIANER
-#define OSGUTIL_POSTIONALSTATECONTIANER 1
+#ifndef OSGUTIL_POSITIONALSTATECONTAINER
+#define OSGUTIL_POSITIONALSTATECONTAINER 1
 
 #include <osg/Object>
 #include <osg/Light>

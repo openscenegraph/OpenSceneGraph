@@ -28,7 +28,7 @@ class IntersectionVisitor;
 
 /** Pure virtual base class for implementing custom intersection technique.
   * To implement a specific intersection technique on must override all
-  * the pure virtue methods, concrete examples of how to do this can be seen in
+  * the pure virtual methods, concrete examples of how to do this can be seen in
   * the LineSegmentIntersector. */
 class Intersector : public osg::Referenced
 {
@@ -146,7 +146,7 @@ class OSGUTIL_EXPORT IntersectorGroup : public Intersector
 
 };
 
-/** InteresectionVisitor is used to testing for intersections with the scene, traversing the scene using generic osgUtil::Intersector's to test against the scene.
+/** IntersectionVisitor is used to testing for intersections with the scene, traversing the scene using generic osgUtil::Intersector's to test against the scene.
   * To implement different types of intersection techniques, one implements custom versions of the osgUtil::Intersector, and then
   * pass the constructed intersector to the IntersectionVisitor.*/
 class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor

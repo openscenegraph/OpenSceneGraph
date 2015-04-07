@@ -116,7 +116,7 @@ class PropertyInputIterator;
 
 
 /** ClassInterface provides a general means of checking for supported properties of classes, and getting/setting thoses properties.
-    Uses the osgDB serializers to do the actual object querry/get/set.
+    Uses the osgDB serializers to do the actual object query/get/set.
 */
 class OSGDB_EXPORT ClassInterface
 {

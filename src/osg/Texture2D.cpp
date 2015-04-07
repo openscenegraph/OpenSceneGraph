@@ -350,7 +350,7 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
             copyTexSubImage2D(state,0 ,0, x, y, width, height);
             return;
         }
-        // the relevent texture object is not of the right size so
+        // the relevant texture object is not of the right size so
         // needs to been deleted
         // remove previously bound textures.
         dirtyTextureObject();

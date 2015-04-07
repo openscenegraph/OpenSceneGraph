@@ -879,11 +879,11 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
         {
         case(HEADLIGHT):
             if (_light.valid()) renderStage->addPositionedAttribute(NULL,_light.get());
-            else OSG_WARN<<"Warning: no osg::Light attached to ogUtil::SceneView to provide head light.*/"<<std::endl;
+            else OSG_WARN<<"Warning: no osg::Light attached to osgUtil::SceneView to provide head light.*/"<<std::endl;
             break;
         case(SKY_LIGHT):
             if (_light.valid()) renderStage->addPositionedAttribute(mv.get(),_light.get());
-            else OSG_WARN<<"Warning: no osg::Light attached to ogUtil::SceneView to provide sky light.*/"<<std::endl;
+            else OSG_WARN<<"Warning: no osg::Light attached to osgUtil::SceneView to provide sky light.*/"<<std::endl;
             break;
         default:
             break;
@@ -1379,7 +1379,7 @@ void SceneView::draw()
         _renderStage->draw(_renderInfo,previous);
     }
 
-    // re apply the defalt OGL state.
+    // re apply the default OGL state.
     state->popAllStateSets();
     state->apply();
 
@@ -1459,7 +1459,7 @@ const osg::Matrix SceneView::computeMVPW() const
     if (getViewport())
         matrix.postMult(getViewport()->computeWindowMatrix());
     else
-        OSG_WARN<<"osg::Matrix SceneView::computeMVPW() - error no viewport attached to SceneView, coords will be computed inccorectly."<<std::endl;
+        OSG_WARN<<"osg::Matrix SceneView::computeMVPW() - error no viewport attached to SceneView, coords will be computed incorrectly."<<std::endl;
 
     return matrix;
 }

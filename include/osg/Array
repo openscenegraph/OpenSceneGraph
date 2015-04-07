@@ -212,10 +212,10 @@ class OSG_EXPORT Array : public BufferData
         bool    _preserveDataType;
 };
 
-/** convinience function for getting the binding of array via a ptr that may be null.*/
+/** convenience function for getting the binding of array via a ptr that may be null.*/
 inline osg::Array::Binding getBinding(const osg::Array* array) { return array ? array->getBinding() : osg::Array::BIND_OFF; }
 
-/** convinience function for getting the binding of array via a ptr that may be null.*/
+/** convenience function for getting the binding of array via a ptr that may be null.*/
 inline bool getNormalize(const osg::Array* array) { return array ? array->getNormalize() : false; }
 
 

@@ -300,7 +300,7 @@ void View::setSceneData(osg::Node* node)
         }
         else
         {
-            OSG_INFO<<"View::setSceneData() Reusing exisitng scene"<<_scene.get()<<std::endl;
+            OSG_INFO<<"View::setSceneData() Reusing existing scene"<<_scene.get()<<std::endl;
         }
 
         _scene->setSceneData(node);

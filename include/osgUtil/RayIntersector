@@ -77,7 +77,7 @@ class OSGUTIL_EXPORT RayIntersector : public Intersector
             const osg::Vec3& getLocalIntersectNormal() const { return localIntersectionNormal; }
             osg::Vec3 getWorldIntersectNormal() const { return matrix.valid() ? osg::Matrix::transform3x3(osg::Matrix::inverse(*matrix),localIntersectionNormal) : localIntersectionNormal; }
 
-            /** convinience function for mapping the intersection point to any textures assigned to the objects intersected.
+            /** Convenience function for mapping the intersection point to any textures assigned to the objects intersected.
              *  Returns the Texture pointer and texture coords of object hit when a texture is available on the object, returns NULL otherwise.*/
             osg::Texture* getTextureLookUp(osg::Vec3& tc) const;
 

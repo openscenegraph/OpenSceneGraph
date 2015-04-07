@@ -137,7 +137,7 @@ class OSG_EXPORT Object : public Referenced
         /** get the const UserDataContainer attached to this object.*/
         const osg::UserDataContainer* getUserDataContainer() const { return _userDataContainer; }
 
-        /** Convinience method that returns the UserDataContainer, and if one doesn't already exist creates and assigns
+        /** Convenience method that returns the UserDataContainer, and if one doesn't already exist creates and assigns
          * a DefaultUserDataContainer to the Object and then return this new UserDataContainer.*/
         osg::UserDataContainer* getOrCreateUserDataContainer();
 
@@ -158,12 +158,12 @@ class OSG_EXPORT Object : public Referenced
 
 
 
-        /** Convinience method that casts the named UserObject to osg::TemplateValueObject<T> and gets the value.
+        /** Convenience method that casts the named UserObject to osg::TemplateValueObject<T> and gets the value.
           * To use this template method you need to include the osg/ValueObject header.*/
         template<typename T>
         bool getUserValue(const std::string& name, T& value) const;
 
-        /** Convinience method that creates the osg::TemplateValueObject<T> to store the
+        /** Convenience method that creates the osg::TemplateValueObject<T> to store the
           * specified value and adds it as a named UserObject.
           * To use this template method you need to include the osg/ValueObject header. */
         template<typename T>

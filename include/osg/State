@@ -200,7 +200,7 @@ class OSG_EXPORT State : public Referenced
         /** Get the unform list in which to inject any uniforms that StateAttribute::apply(State&) methods provide.*/
         StateSet::UniformList& getCurrentShaderCompositionUniformList() { return _currentShaderCompositionUniformList; }
 
-        /** Convinience method for StateAttribute:::apply(State&) methods to pass on their uniforms to osg::State so it can apply them at the appropriate point.*/
+        /** Convenience method for StateAttribute:::apply(State&) methods to pass on their uniforms to osg::State so it can apply them at the appropriate point.*/
         void applyShaderCompositionUniform(const osg::Uniform* uniform, StateAttribute::OverrideValue value=StateAttribute::ON)
         {
             StateSet::RefUniformPair& up = _currentShaderCompositionUniformList[uniform->getName()];

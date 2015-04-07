@@ -40,7 +40,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         ViewerBase(const ViewerBase& vb);
 
 
-        /** Set the Stats object used for collect various frame related timing and scene graph stats.*/
+        /** Set the Stats object used to collect various frame related timing and scene graph stats.*/
         virtual void setViewerStats(osg::Stats* stats) = 0;
 
         /** Get the Viewers Stats object.*/
@@ -85,7 +85,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         /** Return true if viewer threads are running. */
         bool areThreadsRunning() const { return _threadsRunning; }
 
-        /** Stop any threads begin run by viewer.*/
+        /** Stop any threads being run by viewer.*/
         virtual void stopThreading();
 
         /** Start any threads required by the viewer.*/
@@ -148,7 +148,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         bool getQuitEventSetsDone() const { return _quitEventSetsDone; }
 
 
-        /** Hint to tell the renderingTraversals() method whether to call relaseContext() on the last
+        /** Hint to tell the renderingTraversals() method whether to call releaseContext() on the last
           * context that was made current by the thread calling renderingTraverals().  Note, when
           * running multi-threaded viewer no threads will be made current or release current.
           * Setting this hint to false can enable the frame loop to be lazy about calling makeCurrent
@@ -157,7 +157,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
           * be left on, otherwise the wrong context could be left active, introducing errors in rendering.*/
         void setReleaseContextAtEndOfFrameHint(bool hint) { _releaseContextAtEndOfFrameHint = hint; }
 
-        /** Hint to tell the renderingTraversals() method whether to call relaseContext().*/
+        /** Hint to tell the renderingTraversals() method whether to call releaseContext().*/
         bool getReleaseContextAtEndOfFrameHint() const { return _releaseContextAtEndOfFrameHint; }
 
 

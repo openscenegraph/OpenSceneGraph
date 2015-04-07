@@ -830,7 +830,7 @@ int Thread::setCancelModeAsynchronous() {
 
 //-----------------------------------------------------------------------------
 //
-// Description: set the thread to cancel at the next convienent point.
+// Description: set the thread to cancel at the next convenient point.
 //
 // Use: public
 //

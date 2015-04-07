@@ -40,7 +40,7 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase
         bool readConfiguration(const std::string& filename);
 
 
-        /** Set the Stats object used for collect various frame related timing and scene graph stats.*/
+        /** Set the Stats object used to collect various frame related timing and scene graph stats.*/
         virtual void setViewerStats(osg::Stats* stats) { _stats = stats; }
 
         /** Get the Viewers Stats object.*/

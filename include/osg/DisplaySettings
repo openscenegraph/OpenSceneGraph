@@ -217,8 +217,8 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
          For more info: See description of Camera::setImplicitBufferAttachment method
 
          DisplaySettings implicit buffer attachment selection defaults to: DEPTH and COLOR
-         for both primary (Render) FBO and seconday Multisample (Resolve) FBO
-         ie: IMPLICT_DEPTH_BUFFER_ATTACHMENT | IMPLICIT_COLOR_BUFFER_ATTACHMENT
+         for both primary (Render) FBO and secondary Multisample (Resolve) FBO
+         ie: IMPLICIT_DEPTH_BUFFER_ATTACHMENT | IMPLICIT_COLOR_BUFFER_ATTACHMENT
         **/
         enum ImplicitBufferAttachment
         {
@@ -246,10 +246,10 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
             _implicitBufferAttachmentResolveMask = implicitBufferAttachmentResolveMask;
         }
 
-        /** Get mask selecting default implict buffer attachments for Cameras primary FBOs. */
+        /** Get mask selecting default implicit buffer attachments for Cameras primary FBOs. */
         ImplicitBufferAttachmentMask getImplicitBufferAttachmentRenderMask() const {  return _implicitBufferAttachmentRenderMask; }
 
-        /** Get mask selecting default implict buffer attachments for Cameras secondary MULTISAMPLE FBOs. */
+        /** Get mask selecting default implicit buffer attachments for Cameras secondary MULTISAMPLE FBOs. */
         ImplicitBufferAttachmentMask getImplicitBufferAttachmentResolveMask() const { return _implicitBufferAttachmentResolveMask;}
 
         enum SwapMethod

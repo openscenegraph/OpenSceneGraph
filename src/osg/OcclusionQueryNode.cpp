@@ -482,7 +482,7 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
 
     {
         // Two situations where we want to simply do a regular traversal:
-        //  1) it's the first frame for this camers
+        //  1) it's the first frame for this camera
         //  2) we haven't rendered for an abnormally long time (probably because we're an out-of-range LOD child)
         // In these cases, assume we're visible to avoid blinking.
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _frameCountMutex );

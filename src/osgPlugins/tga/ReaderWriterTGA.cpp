@@ -35,8 +35,8 @@
  *      Peder Blekken
  *
  *
- * Ported into the OSG as a plugin, Robert Osfield Decemeber 2000.
- * Note, reference above to license of simage_rgb is not relevent to the OSG
+ * Ported into the OSG as a plugin, Robert Osfield December 2000.
+ * Note, reference above to license of simage_rgb is not relevant to the OSG
  * as the OSG does not use it.  Also for patches, bugs and new features
  * please send them direct to the OSG dev team rather than address above.
  *

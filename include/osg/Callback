@@ -120,7 +120,7 @@ public:
 
 };
 
-/** Convinience function for getting the CallbackObject associated with specificed name from an Object's UserDataContainer.*/
+/** Convenience function for getting the CallbackObject associated with specificed name from an Object's UserDataContainer.*/
 inline CallbackObject* getCallbackObject(osg::Object* object, const std::string& name)
 {
     osg::UserDataContainer* udc = object->getUserDataContainer();
@@ -128,7 +128,7 @@ inline CallbackObject* getCallbackObject(osg::Object* object, const std::string&
 }
 
 
-/** Convinience function for getting the CallbackObject associated with specificed name from an Object's UserDataContainer.*/
+/** Convenience function for getting the CallbackObject associated with specificed name from an Object's UserDataContainer.*/
 inline const CallbackObject* getCallbackObject(const osg::Object* object, const std::string& name)
 {
     const osg::UserDataContainer* udc = object->getUserDataContainer();

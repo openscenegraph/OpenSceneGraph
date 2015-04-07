@@ -89,7 +89,7 @@ void Texture2DMultisample::apply(State& state) const
     const GLExtensions* extensions = state.get<GLExtensions>();
     if (!extensions->isTextureMultisampledSupported)
     {
-        OSG_INFO<<"Texture2DMultisample not supoorted."<<std::endl;
+        OSG_INFO<<"Texture2DMultisample not supported."<<std::endl;
         return;
     }
 

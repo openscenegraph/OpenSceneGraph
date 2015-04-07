@@ -126,13 +126,13 @@ class AnimateTexGenCallback : public osg::NodeCallback
 
             if (texgenNode && nv->getFrameStamp())
             {
-                // we have an exisitng stateset, so lets animate it.
+                // we have an existing stateset, so lets animate it.
                 animateTexGen(texgenNode,nv->getFrameStamp()->getSimulationTime());
             }
 
-            // note, callback is repsonsible for scenegraph traversal so
+            // note, callback is responsible for scenegraph traversal so
             // should always include call the traverse(node,nv) to ensure 
-            // that the rest of cullbacks and the scene graph are traversed.
+            // that the rest of callbacks and the scene graph are traversed.
             traverse(node,nv);
         } 
 };

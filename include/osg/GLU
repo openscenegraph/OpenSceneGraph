@@ -70,10 +70,10 @@ extern OSG_EXPORT GLint gluBuild2DMipmaps (GLenum target, GLint internalFormat, 
 
 typedef void (GL_APIENTRY * GLTexImage3DProc)      ( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
 
-/** Small variation on normal gluBuild3DMipmapLevels as we pass in the function pointer to glTexImage3D rather than rely on GLU style querry for this functon pointer.*/
+/** Small variation on normal gluBuild3DMipmapLevels as we pass in the function pointer to glTexImage3D rather than rely on GLU style query for this function pointer.*/
 extern OSG_EXPORT GLint gluBuild3DMipmapLevels (GLTexImage3DProc glTextImage3DProc, GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLint level, GLint base, GLint max, const void *data);
 
-/** Small variation on normal gluBuild3DMipmapLevels as we pass in the function pointer to glTexImage3D rather than rely on GLU style querry for this functon pointer.*/
+/** Small variation on normal gluBuild3DMipmapLevels as we pass in the function pointer to glTexImage3D rather than rely on GLU style query for this function pointer.*/
 extern OSG_EXPORT GLint gluBuild3DMipmaps (GLTexImage3DProc glTextImage3DProc, GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void *data);
 
 /* ErrorCode */

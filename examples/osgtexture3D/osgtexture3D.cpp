@@ -132,13 +132,13 @@ class UpdateStateCallback : public osg::NodeCallback
             osg::StateSet* stateset = node->getStateSet();
             if (stateset)
             {
-                // we have an exisitng stateset, so lets animate it.
+                // we have an existing stateset, so lets animate it.
                 animateState(stateset);
             }
 
-            // note, callback is repsonsible for scenegraph traversal so
+            // note, callback is responsible for scenegraph traversal so
             // should always include call the traverse(node,nv) to ensure
-            // that the rest of cullbacks and the scene graph are traversed.
+            // that the rest of callbacks and the scene graph are traversed.
             traverse(node,nv);
         }
 };

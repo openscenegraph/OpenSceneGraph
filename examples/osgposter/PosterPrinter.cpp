@@ -365,7 +365,7 @@ void PosterPrinter::bindCameraToImage( osg::Camera* camera, int row, int col )
     camera->accept( iv );
     if ( _intersector->containsIntersections() )
     {
-        // Apply a cull calback to every paged node obtained, to force the highest level displaying.
+        // Apply a cull callback to every paged node obtained, to force the highest level displaying.
         // This will be done by the PosterVisitor, who already records all the paged nodes.
     }
 

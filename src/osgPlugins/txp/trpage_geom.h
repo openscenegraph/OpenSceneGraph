@@ -2899,7 +2899,7 @@ protected:
 
 /* The Support Styles are used to consolidate attributes related to labels.
    For the most part, support styles are very simple, consisting of
-   very basic description of object to use for drawing suport.
+   very basic description of object to use for drawing support.
 */
 TX_EXDECL class TX_CLDECL trpgSupportStyle : public trpgReadWriteable
 {

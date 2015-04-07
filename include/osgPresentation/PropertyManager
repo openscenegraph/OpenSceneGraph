@@ -35,7 +35,7 @@ public:
 
     META_Object(osgPresentation, PropertyManager)
 
-    /** Convinience method that casts the named UserObject to osg::TemplateValueObject<T> and gets the value.
+    /** Convenience method that casts the named UserObject to osg::TemplateValueObject<T> and gets the value.
         * To use this template method you need to include the osg/ValueObject header.*/
     template<typename T>
     bool getProperty(const std::string& name, T& value) const
@@ -44,7 +44,7 @@ public:
         return getUserValue(name, value);
     }
 
-    /** Convinience method that creates the osg::TemplateValueObject<T> to store the
+    /** Convenience method that creates the osg::TemplateValueObject<T> to store the
         * specified value and adds it as a named UserObject.
         * To use this template method you need to include the osg/ValueObject header. */
     template<typename T>

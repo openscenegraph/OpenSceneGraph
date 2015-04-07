@@ -388,7 +388,7 @@ class OSG_EXPORT Image : public BufferData
         /** Flip the image vertically, around t dimension. */
         void flipVertical();
 
-        /** Flip the image around the r dimension. Only relevent for 3D textures. */
+        /** Flip the image around the r dimension. Only relevant for 3D textures. */
         void flipDepth();
 
         /** Ensure image dimensions are a power of two.

@@ -72,7 +72,7 @@ public:
     /** Write the file specified by the "filename" user value field. Return true if file successfully written. */
     bool writeToFile();
 
-    /** convinience function that loads and assigns any keystone files specified in the DisplaySettings::KeystoneFileNames list, return true if Keystone's assigned to DisplaySettings.*/
+    /** Convenience function that loads and assigns any keystone files specified in the DisplaySettings::KeystoneFileNames list, return true if Keystone's assigned to DisplaySettings.*/
     static bool loadKeystoneFiles(osg::DisplaySettings* ds);
 
 

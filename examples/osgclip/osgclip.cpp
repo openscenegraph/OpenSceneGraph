@@ -126,7 +126,7 @@ int main( int argc, char **argv )
 
     if (!loadedModel)
     {
-        osg::notify(osg::NOTICE)<<"Please specifiy a filename and the command line"<<std::endl;
+        osg::notify(osg::NOTICE)<<"Please specify a filename on the command line"<<std::endl;
         return 1;
     }
   

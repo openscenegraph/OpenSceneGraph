@@ -238,7 +238,7 @@ unsigned int getNextCharacter(look_ahead_iterator& charString,String::Encoding e
 
 ////////////////////////////////////////////////////////////////////////////
 //
-// String implemention.
+// String implementation.
 //
 
 String::String(const String& str):

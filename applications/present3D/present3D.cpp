@@ -599,13 +599,13 @@ int main( int argc, char **argv )
 
     // set up optimizer options
     unsigned int optimizer_options = osgUtil::Optimizer::DEFAULT_OPTIMIZATIONS;
-    bool relase_and_compile = false;
+    bool release_and_compile = false;
     while (arguments.read("--release-and-compile"))
     {
-        relase_and_compile = true;
+        release_and_compile = true;
     }
-    seh->setReleaseAndCompileOnEachNewSlide(relase_and_compile);
-    if (relase_and_compile)
+    seh->setReleaseAndCompileOnEachNewSlide(release_and_compile);
+    if (release_and_compile)
     {
         // make sure that imagery stays around after being applied to textures.
         viewer.getDatabasePager()->setUnrefImageDataAfterApplyPolicy(true,false);

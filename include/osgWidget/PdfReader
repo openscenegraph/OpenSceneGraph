@@ -118,7 +118,7 @@ class PdfImage : public osg::Image
 };
 
 
-/** Convinience class that provides a interactive quad that can be placed directly in the scene.*/
+/** Convenience class that provides a interactive quad that can be placed directly in the scene.*/
 class OSGWIDGET_EXPORT PdfReader : public osg::Geode
 {
     public:

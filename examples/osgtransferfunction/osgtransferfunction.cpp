@@ -584,7 +584,7 @@ int main(int argc, char ** argv)
             }
             else if (tf.valid())
             {
-                // No exisitng trasfer function but need to assign one
+                // No existing transfer function but need to assign one
                 OSG_NOTICE<<"Need to assign transfer function to CompositeProperty"<<std::endl;
                 InsertTransferFunctionPropertyVisitor itfpv(tf.get());
                 property->accept(itfpv);

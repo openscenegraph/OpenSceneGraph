@@ -1,14 +1,14 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2014 Robert Osfield
  *  Copyright (C) 2014 Pawel Ksiezopolski
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
 */
@@ -26,7 +26,7 @@ void FakeGLBeginEndAdapter::PushMatrix()
 {
     if (_matrixStack.empty())
         _matrixStack.push_back(osg::Matrixd());
-    else 
+    else
         _matrixStack.push_back(_matrixStack.back());
 }
 void FakeGLBeginEndAdapter::MultMatrixd(const GLdouble* m)
@@ -91,7 +91,7 @@ void FakeGLBeginEndAdapter::End()
             _overallNormal.normalize();
         }
     }
-    
+
 
     if (_colorAssigned)
     {
@@ -154,9 +154,9 @@ void FakeGLBeginEndAdapter::End()
 
     if (_primitiveMode==GL_QUAD_STRIP) // will the winding be wrong? Do we need to swap it?
         geometry->addPrimitiveSet( new osg::DrawArrays( GL_TRIANGLE_STRIP, vOffset, vSize ) );
-    else if (_primitiveMode==GL_POLYGON) 
+    else if (_primitiveMode==GL_POLYGON)
         geometry->addPrimitiveSet( new osg::DrawArrays( GL_TRIANGLE_FAN, vOffset, vSize ) );
-    else 
+    else
         geometry->addPrimitiveSet( new osg::DrawArrays( _primitiveMode, vOffset, vSize ) );
 }
 
@@ -1155,19 +1155,4 @@ osg::Geode* convertShapeToGeode(const osg::Shape& shape, const osg::Tessellation
     osg::Geode *geode = new osg::Geode;
     geode->addDrawable( convertShapeToGeometry(shape,hints,color) );
     return geode;
-}
-
-
-void ShapesToGeometriesVisitor::apply( osg::Geode& geode )
-{
-    for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
-    {
-        osg::ShapeDrawable* drawable = dynamic_cast<osg::ShapeDrawable*>( geode.getDrawable(i) );
-        if(drawable==NULL)
-            continue;
-        osg::Geometry* newGeom = convertShapeToGeometry(*(drawable->getShape()), _hints);
-        newGeom->setStateSet( drawable->getStateSet() );
-        geode.setDrawable( i, newGeom );
-    }
-    traverse(geode);
 }

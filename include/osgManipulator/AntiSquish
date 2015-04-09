@@ -64,7 +64,7 @@ class OSGMANIPULATOR_EXPORT AntiSquish: public osg::Transform
 
         virtual ~AntiSquish();
 
-        bool computeUnSquishedMatrix(const osg::NodeVisitor*,osg::Matrix&) const;
+        bool computeUnSquishedMatrix(osg::Matrix&) const;
 
         osg::Vec3d _pivot;
         bool _usePivot;

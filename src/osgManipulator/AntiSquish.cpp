@@ -52,8 +52,10 @@ AntiSquish::~AntiSquish()
 bool AntiSquish::computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const
 {
     osg::Matrix unsquishedMatrix;
-    if ( !computeUnSquishedMatrix( nv, unsquishedMatrix ) )
-        return Transform::computeLocalToWorldMatrix( matrix, nv );
+    if ( !computeUnSquishedMatrix( unsquishedMatrix ) )
+    {
+        return false;
+    }
 
     if (_referenceFrame==RELATIVE_RF)
     {
@@ -68,11 +70,13 @@ bool AntiSquish::computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor*
 }
 
 
-bool AntiSquish::computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const
+bool AntiSquish::computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisitor*) const
 {
     osg::Matrix unsquishedMatrix;
-    if ( !computeUnSquishedMatrix( nv, unsquishedMatrix ) )
-        return Transform::computeWorldToLocalMatrix( matrix, nv );
+    if ( !computeUnSquishedMatrix( unsquishedMatrix ) )
+    {
+        return false;
+    }
 
     osg::Matrixd inverse;
     inverse.invert( unsquishedMatrix );
@@ -89,22 +93,13 @@ bool AntiSquish::computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisitor*
 }
 
 
-bool AntiSquish::computeUnSquishedMatrix(const osg::NodeVisitor* nv, osg::Matrix& unsquished) const
+bool AntiSquish::computeUnSquishedMatrix(osg::Matrix& unsquished) const
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _cacheLock );
 
-    if ( !nv )
-    {
-        if ( !_cacheDirty )
-        {
-            unsquished = _cache;
-            return true;
-        }
-
-        return false;
-    }
-
-    osg::NodePath np = nv->getNodePath();
+    osg::NodePathList nodePaths = getParentalNodePaths();
+    osg::NodePath np;
+    if (!nodePaths.empty()) np = nodePaths.front();
 
     // Remove the last node which is the anti squish node itself.
     np.pop_back();
@@ -112,6 +107,7 @@ bool AntiSquish::computeUnSquishedMatrix(const osg::NodeVisitor* nv, osg::Matrix
     // Get the accumulated modeling matrix.
     const osg::Matrix localToWorld = osg::computeLocalToWorld(np);
 
+    // reuse cached value
     if ( !_cacheDirty && _cacheLocalToWorld==localToWorld )
     {
         unsquished = _cache;

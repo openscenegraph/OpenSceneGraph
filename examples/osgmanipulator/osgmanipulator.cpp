@@ -19,6 +19,7 @@
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
 #include <osg/CoordinateSystemNode>
 #include <osgText/Text>
 
@@ -47,11 +48,11 @@ class PlaneConstraint : public osgManipulator::Constraint
 {
 public:
         PlaneConstraint() {}
-    
+
         virtual bool constrain(osgManipulator::TranslateInLineCommand& command) const
         {
             OSG_NOTICE<<"PlaneConstraint TranslateInLineCommand "<<command.getTranslation()<<std::endl;
-            return true;            
+            return true;
         }
         virtual bool constrain(osgManipulator::TranslateInPlaneCommand& command) const
         {
@@ -63,7 +64,7 @@ public:
         {
             //command.setScale(1.0f);
             OSG_NOTICE<<"PlaneConstraint Scale1DCommand"<<command.getScale()<<std::endl;
-            return true;            
+            return true;
         }
         virtual bool constrain(osgManipulator::Scale2DCommand& command) const
         {
@@ -74,7 +75,7 @@ public:
         virtual bool constrain(osgManipulator::ScaleUniformCommand& command) const
         {
             OSG_NOTICE<<"PlaneConstraint ScaleUniformCommand"<<command.getScale()<<std::endl;
-            return true;            
+            return true;
         }
 };
 
@@ -106,8 +107,8 @@ osgManipulator::Dragger* createDragger(const std::string& name)
     {
         osgManipulator::TrackballDragger* d = new osgManipulator::TrackballDragger();
         d->setupDefaultGeometry();
-        d->setAxisLineWidth(5.0f);
-        d->setPickCylinderHeight(0.1f);
+        //d->setAxisLineWidth(5.0f);
+        //d->setPickCylinderHeight(0.1f);
         dragger = d;
     }
     else if ("Translate1DDragger" == name)
@@ -168,8 +169,8 @@ osgManipulator::Dragger* createDragger(const std::string& name)
         dragger = d;
     }
 
-    
- 
+
+
     return dragger;
 }
 
@@ -178,29 +179,29 @@ class DraggerContainer : public osg::Group
 {
 public:
     DraggerContainer() : _draggerSize(240.0f), _active(true) {}
-    
+
     DraggerContainer( const DraggerContainer& copy, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY )
     :   osg::Group(copy, copyop),
         _dragger(copy._dragger), _draggerSize(copy._draggerSize), _active(copy._active)
     {}
-    
+
     META_Node( osgManipulator, DraggerContainer );
-    
+
     void setDragger( osgManipulator::Dragger* dragger )
     {
         _dragger = dragger;
         if ( !containsNode(dragger) ) addChild( dragger );
     }
-    
+
     osgManipulator::Dragger* getDragger() { return _dragger.get(); }
     const osgManipulator::Dragger* getDragger() const { return _dragger.get(); }
-    
+
     void setDraggerSize( float size ) { _draggerSize = size; }
     float getDraggerSize() const { return _draggerSize; }
-    
+
     void setActive( bool b ) { _active = b; }
     bool getActive() const { return _active; }
-    
+
     void traverse( osg::NodeVisitor& nv )
     {
         if ( _dragger.valid() )
@@ -208,13 +209,13 @@ public:
             if ( _active && nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR )
             {
                 osgUtil::CullVisitor* cv = static_cast<osgUtil::CullVisitor*>(&nv);
-                
+
                 float pixelSize = cv->pixelSize(_dragger->getBound().center(), 0.48f);
                 if ( pixelSize!=_draggerSize )
                 {
                     float pixelScale = pixelSize>0.0f ? _draggerSize/pixelSize : 1.0f;
                     osg::Vec3d scaleFactor(pixelScale, pixelScale, pixelScale);
-                    
+
                     osg::Vec3 trans = _dragger->getMatrix().getTrans();
                     _dragger->setMatrix( osg::Matrix::scale(scaleFactor) * osg::Matrix::translate(trans) );
                 }
@@ -222,7 +223,7 @@ public:
         }
         osg::Group::traverse(nv);
     }
-    
+
 protected:
     osg::ref_ptr<osgManipulator::Dragger> _dragger;
     float _draggerSize;
@@ -278,7 +279,7 @@ osg::Node* addDraggerToScene(osg::Node* scene, const std::string& name, bool fix
 }
 
 osg::Node* createDemoScene(bool fixedSizeInScreen) {
- 
+
     osg::Group* root = new osg::Group;
 
     osg::ref_ptr<osg::Geode> geode_1 = new osg::Geode;
@@ -302,7 +303,7 @@ osg::Node* createDemoScene(bool fixedSizeInScreen) {
     osg::ref_ptr<osg::Geode> geode_7 = new osg::Geode;
     osg::ref_ptr<osg::MatrixTransform> transform_7 = new osg::MatrixTransform;
 
- 
+
 
 
 
@@ -369,17 +370,17 @@ osg::Node* createDemoScene(bool fixedSizeInScreen) {
     root->addChild(transform_6.get());
     root->addChild(transform_7.get());
 
- 
- 
+
+
     return root;
 }
-// 
+//
 int main( int argc, char **argv )
 {
 
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
+
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
@@ -392,12 +393,15 @@ int main( int argc, char **argv )
 
     arguments.getApplicationUsage()->addCommandLineOption("--dragger <draggername>","Use the specified dragger for manipulation [TabPlaneDragger, TabPlaneTrackballDragger, TrackballDragger, Translate1DDragger, Translate2DDragger, TranslateAxisDragger, TabBoxDragger, TranslatePlaneDragger, Scale1DDragger, Scale2DDragger, RotateCylinderDragger, RotateSphereDragger]");
     arguments.getApplicationUsage()->addCommandLineOption("--fixedDraggerSize","Fix the size of the dragger geometry in the screen space");
-    
+
     bool fixedSizeInScreen = false;
     while (arguments.read("--fixedDraggerSize")) { fixedSizeInScreen = true; }
 
     // construct the viewer.
     osgViewer::Viewer viewer;
+
+    // add the window size toggle handler
+    viewer.addEventHandler(new osgViewer::WindowSizeHandler);
 
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
@@ -430,7 +434,7 @@ int main( int argc, char **argv )
 
     // if no model has been successfully loaded report failure.
     bool tragger2Scene(true);
-    if (!loadedModel) 
+    if (!loadedModel)
     {
         //std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         //return 1;
@@ -456,11 +460,11 @@ int main( int argc, char **argv )
     osgUtil::Optimizer optimizer;
     optimizer.optimize(loadedModel.get());
 
-    
+
     // pass the loaded scene graph to the viewer.
     if ( tragger2Scene ) {
         viewer.setSceneData(addDraggerToScene(loadedModel.get(), dragger_name, fixedSizeInScreen));
-    } else { 
+    } else {
         viewer.setSceneData(loadedModel.get());
     }
 

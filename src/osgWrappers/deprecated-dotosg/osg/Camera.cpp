@@ -125,7 +125,7 @@ bool Camera_readLocalData(Object& obj, Input& fr)
         else if (fr[1].matchWord("PIXEL_BUFFER_RTT")) implementation = osg::Camera::PIXEL_BUFFER_RTT;
         else if (fr[1].matchWord("PIXEL_BUFFER")) implementation = osg::Camera::PIXEL_BUFFER;
         else if (fr[1].matchWord("FRAME_BUFFER")) implementation = osg::Camera::FRAME_BUFFER;
-        else if (fr[1].matchWord("SEPERATE_WINDOW")) implementation = osg::Camera::SEPERATE_WINDOW;
+        else if (fr[1].matchWord("SEPARATE_WINDOW")) implementation = osg::Camera::SEPARATE_WINDOW;
 
         camera.setRenderTargetImplementation(implementation);
 
@@ -141,7 +141,7 @@ bool Camera_readLocalData(Object& obj, Input& fr)
         else if (fr[1].matchWord("PIXEL_BUFFER_RTT")) fallback = osg::Camera::PIXEL_BUFFER_RTT;
         else if (fr[1].matchWord("PIXEL_BUFFER")) fallback = osg::Camera::PIXEL_BUFFER;
         else if (fr[1].matchWord("FRAME_BUFFER")) fallback = osg::Camera::FRAME_BUFFER;
-        else if (fr[1].matchWord("SEPERATE_WINDOW")) fallback = osg::Camera::SEPERATE_WINDOW;
+        else if (fr[1].matchWord("SEPARATE_WINDOW")) fallback = osg::Camera::SEPARATE_WINDOW;
 
         camera.setRenderTargetImplementation(camera.getRenderTargetImplementation(), fallback);
 
@@ -273,7 +273,7 @@ bool Camera_writeLocalData(const Object& obj, Output& fw)
         case(osg::Camera::PIXEL_BUFFER_RTT): fw <<"PIXEL_BUFFER_RTT"<<std::endl; break;
         case(osg::Camera::PIXEL_BUFFER): fw <<"PIXEL_BUFFER"<<std::endl; break;
         case(osg::Camera::FRAME_BUFFER): fw <<"FRAME_BUFFER"<<std::endl; break;
-        case(osg::Camera::SEPERATE_WINDOW): fw <<"SEPERATE_WINDOW"<<std::endl; break;
+        case(osg::Camera::SEPARATE_WINDOW): fw <<"SEPARATE_WINDOW"<<std::endl; break;
     }
 
     fw.indent()<<"renderTargetFallback ";
@@ -283,7 +283,7 @@ bool Camera_writeLocalData(const Object& obj, Output& fw)
         case(osg::Camera::PIXEL_BUFFER_RTT): fw <<"PIXEL_BUFFER_RTT"<<std::endl; break;
         case(osg::Camera::PIXEL_BUFFER): fw <<"PIXEL_BUFFER"<<std::endl; break;
         case(osg::Camera::FRAME_BUFFER): fw <<"FRAME_BUFFER"<<std::endl; break;
-        case(osg::Camera::SEPERATE_WINDOW): fw <<"SEPERATE_WINDOW"<<std::endl; break;
+        case(osg::Camera::SEPARATE_WINDOW): fw <<"SEPARATE_WINDOW"<<std::endl; break;
     }
 
     fw.indent()<<"drawBuffer "<<std::hex<<camera.getDrawBuffer()<<std::endl;

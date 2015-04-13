@@ -448,7 +448,7 @@ int main( int argc, char **argv )
     while (arguments.read("--pbuffer")) { renderImplementation = osg::Camera::PIXEL_BUFFER; }
     while (arguments.read("--pbuffer-rtt")) { renderImplementation = osg::Camera::PIXEL_BUFFER_RTT; }
     while (arguments.read("--fb")) { renderImplementation = osg::Camera::FRAME_BUFFER; }
-    while (arguments.read("--window")) { renderImplementation = osg::Camera::SEPERATE_WINDOW; }
+    while (arguments.read("--window")) { renderImplementation = osg::Camera::SEPARATE_WINDOW; }
     while (arguments.read("--fbo-samples", samples)) {}
     while (arguments.read("--color-samples", colorSamples)) {}
 

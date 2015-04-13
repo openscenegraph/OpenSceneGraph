@@ -241,7 +241,7 @@ struct Segment
     {
         UNCLASSIFIED,
         IDENTICAL,
-        SEPERATE,
+        SEPARATE,
         JOINED,
         OVERLAPPING,
         ENCLOSING,
@@ -262,10 +262,10 @@ struct Segment
 
         if (delta_distance==0.0)
         {
-            return SEPERATE;
+            return SEPARATE;
         }
 
-        if (rhs._p2->distance < _p1->distance || _p2->distance < rhs._p1->distance) return SEPERATE;
+        if (rhs._p2->distance < _p1->distance || _p2->distance < rhs._p1->distance) return SEPARATE;
 
         bool rhs_p1_inside = (_p1->distance <= rhs._p1->distance) && (rhs._p1->distance <= _p2->distance);
         bool rhs_p2_inside = (_p1->distance <= rhs._p2->distance) && (rhs._p2->distance <= _p2->distance);
@@ -406,7 +406,7 @@ struct LineConstructor
                 switch(classification)
                 {
                     case(Segment::IDENTICAL): OSG_NOTICE<<"i"; break;
-                    case(Segment::SEPERATE): OSG_NOTICE<<"s"<<std::endl; break;
+                    case(Segment::SEPARATE): OSG_NOTICE<<"s"<<std::endl; break;
                     case(Segment::JOINED): OSG_NOTICE<<"j"; break;
                     case(Segment::OVERLAPPING): OSG_NOTICE<<"o"; break;
                     case(Segment::ENCLOSING): OSG_NOTICE<<"E"; break;
@@ -1110,7 +1110,7 @@ struct LineConstructor
             Segment::Classification classification = prevItr->compare(*nextItr);
             switch(classification)
             {
-                case(Segment::SEPERATE):
+                case(Segment::SEPARATE):
                 {
                     intersections.push_back( nextItr->_p1->position );
                     distanceHeightIntersections.push_back( ElevationSlice::DistanceHeight(nextItr->_p1->distance, nextItr->_p1->height) );

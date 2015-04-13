@@ -22,7 +22,7 @@
 
 namespace osg {
 
-// forward decare visitors.
+// forward declare visitors.
 class ShapeVisitor;
 class ConstShapeVisitor;
 

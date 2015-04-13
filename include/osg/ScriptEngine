@@ -101,7 +101,7 @@ class ScriptEngine : public osg::Object
         /** run a Script.*/
         bool run(osg::Script* script)
         {
-            // assumpt empty input and output paramters lists
+            // assumpt empty input and output parameters lists
             Parameters inputParameters, outputParameters;
             return run(script, "", inputParameters, outputParameters);
         }

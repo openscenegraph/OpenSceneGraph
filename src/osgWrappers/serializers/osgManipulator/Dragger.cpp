@@ -73,7 +73,7 @@ REGISTER_OBJECT_WRAPPER( osgManipulator_Dragger,
                          osgManipulator::Dragger,
                          "osg::Object osg::Node osg::Transform osg::MatrixTransform osgManipulator::Dragger" )
 {
-    // Dragger should not record children seperately, so ignore the osg::Group class wrapper
+    // Dragger should not record children separately, so ignore the osg::Group class wrapper
 
     ADD_BOOL_SERIALIZER( HandleEvents, false );  // _handleEvents
     ADD_BOOL_SERIALIZER( DraggerActive, false );  // _draggerActive

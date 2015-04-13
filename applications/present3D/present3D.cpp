@@ -248,7 +248,7 @@ void processLoadedModel(osg::ref_ptr<osg::Node>& loadedModel, int optimizer_opti
     loadedModel->getOrCreateStateSet()->setMode(GL_ALPHA_TEST, osg::StateAttribute::ON);
 #endif
 
-    // optimize the scene graph, remove rendundent nodes and state etc.
+    // optimize the scene graph, remove redundant nodes and state etc.
     osgUtil::Optimizer optimizer;
     optimizer.optimize(loadedModel.get(), optimizer_options);
 

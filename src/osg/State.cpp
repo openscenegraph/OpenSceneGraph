@@ -277,7 +277,7 @@ void State::reset()
     _lastAppliedProgramObject = 0;
 
     // what about uniforms??? need to clear them too...
-    // go through all active Unfirom's, setting to change to force update,
+    // go through all active Uniform's, setting to change to force update,
     // the idea is to leave only the global defaults left.
     for(UniformMap::iterator uitr=_uniformMap.begin();
         uitr!=_uniformMap.end();
@@ -945,7 +945,7 @@ void State::setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* p
     OSG_NOTICE<<"Warning: State::setInterleavedArrays(..) not implemented."<<std::endl;
 #endif
 
-    // the crude way, assume that all arrays have been effected so dirty them and
+    // the crude way, assume that all arrays have been affected so dirty them and
     // disable them...
     dirtyAllVertexArrays();
 }

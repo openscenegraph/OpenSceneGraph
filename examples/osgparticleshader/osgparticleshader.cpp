@@ -56,7 +56,7 @@ void createFountainEffect( osgParticle::ModularEmitter* emitter, osgParticle::Mo
     // Bounce particles off objects defined by one or more domains.
     // Supported domains include triangle, rectangle, plane, disk and sphere.
     // Since a bounce always happens instantaneously, it will not work correctly with unstable delta-time.
-    // At present, even the floating error of dt (which are applied to ParticleSystem and Operator seperately)
+    // At present, even the floating error of dt (which are applied to ParticleSystem and Operator separately)
     // causes wrong bounce results. Some one else may have better solutions for this.
     osg::ref_ptr<osgParticle::BounceOperator> bounce = new osgParticle::BounceOperator;
     bounce->setFriction( -0.05 );
@@ -191,7 +191,7 @@ int main( int argc, char** argv )
     
     // A floating error of delta-time should be explained here:
     // The particles emitter, program and updater all use a 'dt' to compute the time value in every frame.
-    // Because the 'dt' is a double value, it is not suitable to keep three copies of it seperately, which
+    // Because the 'dt' is a double value, it is not suitable to keep three copies of it separately, which
     // is the previous implementation. The small error makes some opeartors unable to work correctly, e.g.
     // the BounceOperator.
     // Now we make use of the getDeltaTime() of ParticleSystem to maintain and dispatch the delta time. But..

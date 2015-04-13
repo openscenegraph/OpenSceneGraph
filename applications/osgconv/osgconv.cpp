@@ -174,7 +174,7 @@ public:
             {
                 texture->setInternalFormatMode(_internalFormatMode);
 
-                // need to disable the unref after apply, other the image could go out of scope.
+                // need to disable the unref after apply, otherwise the image could go out of scope.
                 bool unrefImageDataAfterApply = texture->getUnRefImageDataAfterApply();
                 texture->setUnRefImageDataAfterApply(false);
 
@@ -807,7 +807,7 @@ int main( int argc, char **argv )
             root->accept(av);
         }
 
-        // optimize the scene graph, remove rendundent nodes and state etc.
+        // optimize the scene graph, remove redundant nodes and state etc.
         osgUtil::Optimizer optimizer;
         optimizer.optimize(root.get());
 

@@ -23,7 +23,7 @@ namespace osg
 {
 
 /** Template buffer class to be used with a struct as template parameter.
-  * This class is usefull to send C++ structures on the GPU (e.g. for uniform blocks) but be carefull to the alignments rules on the GPU side !
+  * This class is useful to send C++ structures on the GPU (e.g. for uniform blocks) but be careful to the alignments rules on the GPU side !
   */
 template <typename T>
 class BufferTemplate : public BufferData

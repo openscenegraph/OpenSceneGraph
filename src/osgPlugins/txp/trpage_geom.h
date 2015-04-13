@@ -138,13 +138,13 @@ public:
     bool    GetTileOriginType(trpgTileType &) const;
     /* Group IDs are used by TerraPage to hook level of detail structures together.
        A TerraPage database can have an arbitrary number of terrain LODs, each stored
-       seperately.  To hook them together we use trpgAttach nodes and number each group &
+       separately.  To hook them together we use trpgAttach nodes and number each group &
        LOD node.  This returns the maximum group ID in the file, which is important
        to know if you're keeping an array of them. */
     bool    GetMaxGroupID(int &) const;
 
     /* A TerraPage archive can contain any number of terrain LODs (a typical number is 4).
-       Each of these terrain LODs is accessed seperately (as are the tiles within them).
+       Each of these terrain LODs is accessed separately (as are the tiles within them).
        This returns the number of terrain LODs in the file.  It will be at least 1.
        See trpgAttach for instructions on how to hook the terrain LODs together.
 
@@ -2551,14 +2551,14 @@ public:
        this node rotates around the center in the way specified by GetMode.  (2) Individual - This
        is a little weirder.  Basically, it's here for trees.  It's assumed that
        there will be one or more trpgGeometry nodes below this node.  Each single
-       primitive is supposed to rotate "seperately".  That is, you must take into
+       primitive is supposed to rotate "separately".  That is, you must take into
        account the unique center of each one and rotate it around that.  If you have
        some optimization scheme where you can deal with groups of billboards (ala Performer)
        it is valid to do so in the Individual case. */
     bool    GetType(int &) const;
     /* Center of the thing to be rotated.  For Group this does the obvious thing.
        For Individual it should be the center of the group of things you want to rotate.
-       This has no use if you're going to rotate each primitive seperately, but if you've
+       This has no use if you're going to rotate each primitive separately, but if you've
        got some sort of optimized scheme for doing so (ala Performer) this information is useful.
     */
     bool    GetCenter(trpg3dPoint &) const;

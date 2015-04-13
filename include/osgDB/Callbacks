@@ -33,7 +33,7 @@ enum CaseSensitivity
     CASE_INSENSITIVE
 };
 
-// forward decare
+// forward declare
 class Options;
 
 class OSGDB_EXPORT FindFileCallback : public virtual osg::Referenced

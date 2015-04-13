@@ -312,10 +312,10 @@ class OSG_EXPORT StateSet : public Object
         typedef std::pair<std::string, StateAttribute::OverrideValue> DefinePair;
         typedef std::map<std::string, DefinePair> DefineList;
 
-        /** Added define pass on to shaders that use utilize that define, as secified by the GLSL #pragma import_defines(..) and #pragam requires(..). */
+        /** Added define pass on to shaders that use utilize that define, as specified by the GLSL #pragma import_defines(..) and #pragma requires(..). */
         void setDefine(const std::string& defineName, StateAttribute::OverrideValue value=StateAttribute::ON);
 
-        /** Added define with value to pass on to shaders that use utilize that define, as secified by the GLSL #pragma import_defines(..) and #pragam requires(..). */
+        /** Added define with value to pass on to shaders that use utilize that define, as specified by the GLSL #pragma import_defines(..) and #pragma requires(..). */
         void setDefine(const std::string& defineName, const std::string& defineValue, StateAttribute::OverrideValue value=StateAttribute::ON);
 
         DefinePair* getDefinePair(const std::string& defineName) { DefineList::iterator itr = _defineList.find(defineName); return (itr!=_defineList.end()) ? &(itr->second) : 0; }

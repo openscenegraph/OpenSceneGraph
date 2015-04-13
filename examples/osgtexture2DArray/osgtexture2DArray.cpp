@@ -112,7 +112,7 @@ osg::StateSet* createState(osg::ArgumentParser& arguments)
     }
     else
     {
-        OSG_NOTICE<<"Assigned all images to Texture2DArray seperately."<<std::endl;
+        OSG_NOTICE<<"Assigned all images to Texture2DArray separately."<<std::endl;
 
         texture->setImage(0, image_0.get());
         texture->setImage(1, image_1.get());

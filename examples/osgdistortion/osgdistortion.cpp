@@ -123,7 +123,7 @@ public:
             OSG_NOTICE<<"   WindowWidth="<<ea.getWindowWidth()<<std::endl;
             OSG_NOTICE<<"   WindowHeight="<<ea.getWindowHeight()<<std::endl;
 
-            // reset the Camera viewpoer and associated Texture's to make sure it tracks the new window size.
+            // reset the Camera viewport and associated Texture's to make sure it tracks the new window size.
             camera->resize(ea.getWindowWidth(), ea.getWindowHeight());
         }
         return false;

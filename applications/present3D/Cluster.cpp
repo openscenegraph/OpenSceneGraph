@@ -250,7 +250,7 @@ void CameraPacket::writeEventQueue(osgViewer::Viewer& viewer)
 
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Reciever
+//  Receiver
 //
 Receiver::Receiver( void )
 {

@@ -101,7 +101,7 @@ void CameraManipulator::computeHomePosition(const osg::Camera *camera, bool useB
         if (camera)
         {
 
-            // try to compute dist from frustrum
+            // try to compute dist from frustum
             double left,right,bottom,top,zNear,zFar;
             if (camera->getProjectionMatrixAsFrustum(left,right,bottom,top,zNear,zFar))
             {

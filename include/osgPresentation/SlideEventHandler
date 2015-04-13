@@ -294,7 +294,7 @@ public:
     ActiveOperators();
     ~ActiveOperators();
 
-    void collect(osg::Node* incommingNode, osg::NodeVisitor::TraversalMode tm = osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
+    void collect(osg::Node* incomingNode, osg::NodeVisitor::TraversalMode tm = osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
 
     void process(SlideEventHandler* seh);
 
@@ -310,7 +310,7 @@ public:
 protected:
 
     void processOutgoing(SlideEventHandler* seh);
-    void processIncomming(SlideEventHandler* seh);
+    void processIncoming(SlideEventHandler* seh);
     void processMaintained(SlideEventHandler* seh);
 
     bool            _pause;
@@ -319,7 +319,7 @@ protected:
     OperatorList    _current;
 
     OperatorList    _outgoing;
-    OperatorList    _incomming;
+    OperatorList    _incoming;
     OperatorList    _maintained;
 
 };

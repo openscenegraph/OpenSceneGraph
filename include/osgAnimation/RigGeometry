@@ -144,7 +144,7 @@ namespace osgAnimation
 
                 if(!finder._root.valid())
                 {
-                    osg::notify(osg::WARN) << "A RigGeometry did not find a parent skeleton for RigGeomtry ( " << geom->getName() << " )" << std::endl;
+                    osg::notify(osg::WARN) << "A RigGeometry did not find a parent skeleton for RigGeometry ( " << geom->getName() << " )" << std::endl;
                     return;
                 }
                 geom->buildVertexInfluenceSet();

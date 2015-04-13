@@ -130,7 +130,7 @@ osg::Node* createModel()
     // create the root node which will hold the model.
     osg::Group* root = new osg::Group();
 
-    // add the drawable into a single goede to be shared...
+    // add the drawable into a single geode to be shared...
     osg::Billboard* center = new osg::Billboard();
     center->setMode(osg::Billboard::POINT_ROT_EYE);
     center->addDrawable(

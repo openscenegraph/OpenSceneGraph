@@ -136,7 +136,7 @@ class OSG_EXPORT Shader : public osg::Object
 
         enum ShaderDefinesMode
         {
-            USE_SHADER_PRAGAMA,
+            USE_SHADER_PRAGMA,
             USE_MANUAL_SETTINGS
         };
 

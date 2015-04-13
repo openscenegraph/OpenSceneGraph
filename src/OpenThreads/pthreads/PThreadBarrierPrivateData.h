@@ -43,7 +43,7 @@ private:
 
     volatile int       cnt;             // number of waiting threads
 
-    volatile int       phase;           // flag to seperate two barriers
+    volatile int       phase;           // flag to separate two barriers
 
 };
 

@@ -132,7 +132,7 @@ class OSG_EXPORT State : public Referenced
 
         /** Set the current OpenGL context uniqueID.
          *  The ContextID is used by classes like osg::StateAttribute's and osg::Drawable's to
-         *  help manage seperate OpenGL objects, such as display lists, vertex buffer objects
+         *  help manage separate OpenGL objects, such as display lists, vertex buffer objects
          *  and texture object for each graphics context. The ContextID simply acts as an index
          *  into arrays that these classes maintain for the purpose of storing GL object handles.
          *
@@ -1461,9 +1461,9 @@ class OSG_EXPORT State : public Referenced
         enum CheckForGLErrors
         {
             /** NEVER_CHECK_GL_ERRORS hints that OpenGL need not be checked for, this
-                is the fastest option since checking for errors does incurr a small overhead.*/
+                is the fastest option since checking for errors does incur a small overhead.*/
             NEVER_CHECK_GL_ERRORS,
-            /** ONCE_PER_FRAME means that OpenGl errors will be checked for once per
+            /** ONCE_PER_FRAME means that OpenGL errors will be checked for once per
                 frame, the overhead is still small, but at least OpenGL errors that are occurring
                 will be caught, the reporting isn't fine grained enough for debugging purposes.*/
             ONCE_PER_FRAME,

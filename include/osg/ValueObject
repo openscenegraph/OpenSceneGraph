@@ -21,7 +21,7 @@
 
 namespace osg {
 
-// foward declare core OSG math classes
+// forward declare core OSG math classes
 class Vec2f;
 class Vec3f;
 class Vec4f;

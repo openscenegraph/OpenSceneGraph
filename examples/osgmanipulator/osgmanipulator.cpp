@@ -397,8 +397,9 @@ int main( int argc, char **argv )
     bool fixedSizeInScreen = false;
     while (arguments.read("--fixedDraggerSize")) { fixedSizeInScreen = true; }
 
+
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
 
     // add the window size toggle handler
     viewer.addEventHandler(new osgViewer::WindowSizeHandler);

@@ -166,7 +166,7 @@ Section 3. Release notes on iOS build, by Thomas Hoghart
   This will give us the static build we need for iPhone.
 * Disable OSG_GL1_AVAILABLE, OSG_GL2_AVAILABLE, OSG_GL3_AVAILABLE,
   OSG_GL_DISPLAYLISTS_AVAILABLE, OSG_GL_VERTEX_FUNCS_AVAILABLE
-* Enable OSG_GLES1_AVAILABLE *OR* OSG_GLES2_AVAILABLE
+* Enable OSG_GLES1_AVAILABLE *OR* OSG_GLES2_AVAILABLE *OR* OSG_GLES3_AVAILABLE (GLES3 will enable GLES2 features)
 * Ensure OSG_WINDOWING_SYSTEM is set to IOS
 * Change FREETYPE include and library paths to an iPhone version
   (OpenFrameworks has one bundled with its distribution)

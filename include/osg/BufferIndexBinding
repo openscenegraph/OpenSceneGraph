@@ -45,7 +45,7 @@ class OSG_EXPORT BufferIndexBinding : public StateAttribute
     BufferIndexBinding(const BufferIndexBinding& rhs, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
  public:
     // The member value is part of the key to this state attribute in
-    // the State class. Using the index target, we can seperately
+    // the State class. Using the index target, we can separately
     // track the bindings for many different index targets.
     virtual unsigned getMember() const { return static_cast<unsigned int>(_index); }
 

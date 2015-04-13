@@ -985,7 +985,7 @@ unsigned int Uniform::getNameID(const std::string& name)
     return id;
 }
 
-// Use a proxy to force the initialization of the static variables in the Unifrom::getNameID() method during static initialization
+// Use a proxy to force the initialization of the static variables in the Uniform::getNameID() method during static initialization
 OSG_INIT_SINGLETON_PROXY(UniformNameIDStaticInitializationProxy, Uniform::getNameID(std::string()))
 
 

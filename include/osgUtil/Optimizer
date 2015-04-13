@@ -793,7 +793,7 @@ class OSGUTIL_EXPORT Optimizer
 
 
         /** Optimize texture usage in the scene graph by combining textures into texture atlas
-          * Use of texture atlas cuts down on the number of seperate states in the scene, reducing
+          * Use of texture atlas cuts down on the number of separate states in the scene, reducing
           * state changes and improving the chances of using larger batches of geometry.*/
         class OSGUTIL_EXPORT TextureAtlasVisitor : public BaseOptimizerVisitor
         {

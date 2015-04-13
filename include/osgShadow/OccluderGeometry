@@ -29,7 +29,7 @@ class ShadowVolumeGeometry;
 /** OccluderGeometry provides a sepecialised geometry representation of objects in scene that occlude light and therefore cast shadows.
   * OccluderGeometry supports the computation of silhouette edges and shadow volume geometries, as well as use as geometry that one can rendering
   * into a shadow map or end caps for the ZP+ algorithm.  OccluderGeometry may be of the same resolution as an underlying geometry that it
-  * represents, or can be of lower resolution and combine manager seperate geometries together into a single shadow casting object.
+  * represents, or can be of lower resolution and combine manager separate geometries together into a single shadow casting object.
   * OccluderGeometry may be attached as UserData to Nodes or to Drawables.  */
 class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
 {

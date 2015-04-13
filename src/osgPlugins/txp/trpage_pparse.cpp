@@ -28,8 +28,8 @@
 
 namespace
 {
-   // This will recursivelly call itself up until
-   // all the tiule are done
+   // This will recursively call itself up until
+   // all the tiles are done
    void printBuf(int lod, int x, int y, trpgr_Archive *archive, trpgPrintGraphParser& parser, trpgMemReadBuffer &buf, trpgPrintBuffer &pBuf)
    {
       char ls[1024];

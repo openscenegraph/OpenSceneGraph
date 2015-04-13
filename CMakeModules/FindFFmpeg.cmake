@@ -14,8 +14,8 @@
 #In OSG ffmpeg plugin, we used "#include <header.h>" for compatibility with old version of ffmpeg
 #With the new version of FFmpeg, a file named "time.h" was added that breaks compatability with the old version of ffmpeg.
 
-#We have to search the path which contain the header.h (usefull for old version)
-#and search the path which contain the libname/header.h (usefull for new version)
+#We have to search the path which contain the header.h (useful for old version)
+#and search the path which contain the libname/header.h (useful for new version)
 
 #Then we need to include ${FFMPEG_libname_INCLUDE_DIRS} (in old version case, use by ffmpeg header and osg plugin code)
 #                                                       (in new version case, use by ffmpeg header) 

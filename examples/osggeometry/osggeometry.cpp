@@ -44,7 +44,7 @@
 // wraps OpenGL very thinly and therefore uses all the same enum and naming conventions. The coordinate data is also
 // wrapped around OpenGL's vertex arrays and draw arrays/elements calls.  Familiarity with
 // OpenGL will help you understand the osg::Geometry class which encapsulate all this, or if you
-// havn't learned OpenGL yet, learning osg::Geometry will help you understand how OpenGL
+// haven't learned OpenGL yet, learning osg::Geometry will help you understand how OpenGL
 // works!
 
 // The osg::Geometry class "is a" subclass of osg::Drawable base class, so is an object that provides

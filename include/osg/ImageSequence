@@ -137,7 +137,7 @@ protected:
 
         int imageIndex(double time);
 
-        // setImage without aquiring mutex.
+        // setImage without acquiring mutex.
         void _setImage(unsigned int pos, osg::Image* image);
 
         double                          _referenceTime;

@@ -215,13 +215,13 @@ void Shader::discardDeletedGlShaders(unsigned int contextID)
 
 Shader::Shader(Type type) :
     _type(type),
-    _shaderDefinesMode(USE_SHADER_PRAGAMA)
+    _shaderDefinesMode(USE_SHADER_PRAGMA)
 {
 }
 
 Shader::Shader(Type type, const std::string& source) :
     _type(type),
-    _shaderDefinesMode(USE_SHADER_PRAGAMA)
+    _shaderDefinesMode(USE_SHADER_PRAGMA)
 {
     setShaderSource( source);
 }
@@ -229,7 +229,7 @@ Shader::Shader(Type type, const std::string& source) :
 Shader::Shader(Type type, ShaderBinary* shaderBinary) :
     _type(type),
     _shaderBinary(shaderBinary),
-    _shaderDefinesMode(USE_SHADER_PRAGAMA)
+    _shaderDefinesMode(USE_SHADER_PRAGMA)
 {
 }
 

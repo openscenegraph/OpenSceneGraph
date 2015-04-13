@@ -96,7 +96,7 @@ int main( int argc, char **argv )
     }
 
 
-    // optimize the scene graph, remove rendundent nodes and state etc.
+    // optimize the scene graph, remove redundant nodes and state etc.
     osgUtil::Optimizer optimizer;
     optimizer.optimize(loadedModel.get());
 

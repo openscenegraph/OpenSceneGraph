@@ -32,7 +32,7 @@ namespace osg
 //#define ENFORCE_THREADSAFE
 //#define DEBUG_OBJECT_ALLOCATION_DESTRUCTION
 
-// specialized smart pointer, used to get round auto_ptr<>'s lack of the destructor reseting itself to 0.
+// specialized smart pointer, used to get round auto_ptr<>'s lack of the destructor resetting itself to 0.
 template<typename T>
 struct ResetPointer
 {

@@ -49,9 +49,9 @@ DebugShadowMap::DebugShadowMap():
     // Why this fancy 24 bit depth to 24 bit rainbow colors shader ?
     //
     // Depth values cannot be easily cast on color component because they are:
-    // a) 24 or 32 bit and we loose lots of precision when cast on 8 bit
+    // a) 24 or 32 bit and we lose lots of precision when cast on 8 bit
     // b) depth value distribution is non linear due to projection division
-    // when cast on componenent color there is usually very minor shade variety
+    // when cast on component color there is usually very minor shade variety
     // and its often difficult to notice that there is anything in the buffer
     //
     // Shader looks complex but it is used only for debug head-up rectangle

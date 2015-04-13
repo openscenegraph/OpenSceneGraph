@@ -71,7 +71,7 @@ int main (int argc, char* argv[])
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
     geode->addDrawable(new osg::ShapeDrawable(new osg::Box(osg::Vec3(0.0f,0.0f,0.0f),0.5)));
 
-    //Tranformation to be manipulated by the animation
+    //Transformation to be manipulated by the animation
     osg::ref_ptr<osg::MatrixTransform> trans = new osg::MatrixTransform();
     trans->setName("AnimatedNode");
     //Dynamic object, has to be updated during update traversal
@@ -84,7 +84,7 @@ int main (int argc, char* argv[])
     //The second element modifies the rotation around x-axis
     updatecb->getStackedTransforms().push_back(new osgAnimation::StackedTranslateElement("position"));
     updatecb->getStackedTransforms().push_back(new osgAnimation::StackedRotateAxisElement("euler",osg::Vec3(1,0,0),0));
-    //connect the UpdateMatrixTransform callback to the MatrixTRanform
+    //connect the UpdateMatrixTransform callback to the MatrixTransform
     trans->setUpdateCallback(updatecb);
     //initialize MatrixTranform
     trans->setMatrix(osg::Matrix::identity());
@@ -102,7 +102,7 @@ int main (int argc, char* argv[])
     //add the rest of the scene to the grp node
     grp->addChild(root);
 
-    // And we finaly define our channel for linear Vector interpolation
+    // And we finally define our channel for linear Vector interpolation
     osgAnimation::Vec3LinearChannel* channelAnimation1 = new osgAnimation::Vec3LinearChannel;
     //name of the AnimationUpdateCallback
     channelAnimation1->setTargetName("AnimatedCallback");

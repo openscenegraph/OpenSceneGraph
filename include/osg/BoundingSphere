@@ -180,7 +180,7 @@ void BoundingSphereImpl<VT>::expandRadiusBy(const vector_type& v)
 template<typename VT>
 void BoundingSphereImpl<VT>::expandBy(const BoundingSphereImpl& sh)
 {
-    // ignore operation if incomming BoundingSphere is invalid.
+    // ignore operation if incoming BoundingSphere is invalid.
     if (!sh.valid()) return;
 
     // This sphere is not set so use the inbound sphere

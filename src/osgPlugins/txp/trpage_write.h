@@ -50,7 +50,7 @@ public:
     int stripStat[15];  // Strip length stats
     int fanStat[15];    // Fan length stats
 
-    int stripGeom;        // Number of seperate trpgGeometry nodes for strips
+    int stripGeom;        // Number of separate trpgGeometry nodes for strips
     int fanGeom;        // Same for fans
     int bagGeom;        // Same for bags
 

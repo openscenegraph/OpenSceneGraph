@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-// Search in str for all occurences of spat and replace them with rpat.
+// Search in str for all occurrences of spat and replace them with rpat.
 void searchAndReplace(std::string& str, const std::string& spat, const std::string& rpat)
 {
     std::string::size_type pos = 0;

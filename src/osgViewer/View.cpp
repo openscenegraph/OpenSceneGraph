@@ -656,7 +656,7 @@ Cameras getActiveCameras(osg::View& view)
 
 }
 
-bool View::setUpDepthPartitionForCamera(osg::Camera* cameraToPartition, DepthPartitionSettings* incomming_dps)
+bool View::setUpDepthPartitionForCamera(osg::Camera* cameraToPartition, DepthPartitionSettings* incoming_dps)
 {
     osg::ref_ptr<osg::GraphicsContext> context = cameraToPartition->getGraphicsContext();
     if (!context) return false;
@@ -664,7 +664,7 @@ bool View::setUpDepthPartitionForCamera(osg::Camera* cameraToPartition, DepthPar
     osg::ref_ptr<osg::Viewport> viewport = cameraToPartition->getViewport();
     if (!viewport) return false;
 
-    osg::ref_ptr<DepthPartitionSettings> dps = incomming_dps;
+    osg::ref_ptr<DepthPartitionSettings> dps = incoming_dps;
     if (!dps) dps = new DepthPartitionSettings;
 
     bool useMastersSceneData = true;

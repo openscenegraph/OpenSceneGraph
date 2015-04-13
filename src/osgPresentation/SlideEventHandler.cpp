@@ -557,7 +557,7 @@ ActiveOperators::~ActiveOperators()
 {
 }
 
-void ActiveOperators::collect(osg::Node* incommingNode, osg::NodeVisitor::TraversalMode tm)
+void ActiveOperators::collect(osg::Node* incomingNode, osg::NodeVisitor::TraversalMode tm)
 {
     _previous.swap(_current);
 
@@ -565,21 +565,21 @@ void ActiveOperators::collect(osg::Node* incommingNode, osg::NodeVisitor::Traver
 
     FindOperatorsVisitor fov(_current, tm);
 
-    if (incommingNode)
+    if (incomingNode)
     {
-        incommingNode->accept(fov);
+        incomingNode->accept(fov);
     }
     else
     {
-        OSG_NOTICE<<"ActiveOperators::collect() incommingNode="<<incommingNode<<std::endl;
+        OSG_NOTICE<<"ActiveOperators::collect() incomingNode="<<incomingNode<<std::endl;
     }
 
-    OSG_INFO<<"ActiveOperators::collect("<<incommingNode<<")"<<std::endl;
+    OSG_INFO<<"ActiveOperators::collect("<<incomingNode<<")"<<std::endl;
     OSG_INFO<<"  _previous.size()="<<_previous.size()<<std::endl;
     OSG_INFO<<"  _current.size()="<<_current.size()<<std::endl;
 
     _outgoing.clear();
-    _incomming.clear();
+    _incoming.clear();
     _maintained.clear();
 
     for(OperatorList::iterator itr = _previous.begin();
@@ -596,7 +596,7 @@ void ActiveOperators::collect(osg::Node* incommingNode, osg::NodeVisitor::Traver
         ++itr)
     {
         ObjectOperator* curr = itr->get();
-        if (_previous.count(curr)==0) _incomming.insert(curr);
+        if (_previous.count(curr)==0) _incoming.insert(curr);
     }
 }
 
@@ -636,7 +636,7 @@ void ActiveOperators::process(SlideEventHandler* seh)
 {
     processOutgoing(seh);
     processMaintained(seh);
-    processIncomming(seh);
+    processIncoming(seh);
 }
 
 void ActiveOperators::processOutgoing(SlideEventHandler* seh)
@@ -661,11 +661,11 @@ void ActiveOperators::processMaintained(SlideEventHandler* seh)
     }
 }
 
-void ActiveOperators::processIncomming(SlideEventHandler* seh)
+void ActiveOperators::processIncoming(SlideEventHandler* seh)
 {
-    OSG_INFO<<"  incomming.size()="<<_incomming.size()<<std::endl;
-    for(OperatorList::iterator itr = _incomming.begin();
-        itr != _incomming.end();
+    OSG_INFO<<"  incoming.size()="<<_incoming.size()<<std::endl;
+    for(OperatorList::iterator itr = _incoming.begin();
+        itr != _incoming.end();
         ++itr)
     {
         (*itr)->enter(seh);

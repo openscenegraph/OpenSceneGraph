@@ -41,7 +41,7 @@
 // A simple demo demonstrating planar reflections using multiple renderings
 // of a subgraph, overriding of state attribures and use of the stencil buffer.
 //
-// The multipass system implemented here is a variation if Mark Kilgard's
+// The multipass system implemented here is a variation of Mark Kilgard's
 // paper "Improving Shadows and Reflections via the Stencil Buffer" which
 // can be found on the developer parts of the NVidia web site.
 //
@@ -52,7 +52,7 @@
 // world poking through the mirror to be seen in the final rendering and
 // also obscures the world correctly when on the reverse side of the mirror.
 // Although there is still some unresolved issue with the clip plane needing
-// to be flipped when looking at the reverse side of the mirror.  Niether
+// to be flipped when looking at the reverse side of the mirror.  Neither
 // of these issues are mentioned in the Mark's paper, but trip us up when
 // we apply them.
 
@@ -322,7 +322,7 @@ osg::Node* createMirroredScene(osg::Node* model)
 //
 // create the viewer
 // load a model
-// decoate the model so it renders using a multipass stencil buffer technique for planar reflections.
+// decorate the model so it renders using a multipass stencil buffer technique for planar reflections.
 // release the viewer
 // run main loop.
 //

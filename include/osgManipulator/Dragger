@@ -264,7 +264,7 @@ class OSGMANIPULATOR_EXPORT Dragger : public osg::MatrixTransform
 
         /**
          * Set/Get the traversal mask used by this dragger when looking for intersections during event handling.
-         * This is usefull to "hide" some geometry during event handling.
+         * This is useful to "hide" some geometry during event handling.
          */
         virtual void setIntersectionMask(osg::Node::NodeMask intersectionMask) { _intersectionMask = intersectionMask; }
         osg::Node::NodeMask getIntersectionMask() const { return _intersectionMask; }

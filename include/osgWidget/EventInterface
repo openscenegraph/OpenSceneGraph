@@ -280,7 +280,7 @@ class OSGWIDGET_EXPORT EventInterface
 
         // Notify the EventInterface object that is has been focused or unfocused; since
         // this isn't always bound to a mouse event (i.e., if you want to be able to use
-        // the TAB key to focus), we need seperate events here.
+        // the TAB key to focus), we need separate events here.
         virtual bool focus   (const WindowManager*) { return false; }
         virtual bool unfocus (const WindowManager*) { return false; }
 

@@ -406,7 +406,7 @@ int main( int argc, char **argv )
          viewer.renderingTraversals();
 
         osg::Timer_t afterRenderTick = osg::Timer::instance()->tick();
-        std::cout<<"Rendring time = "<<osg::Timer::instance()->delta_s(beforeRenderTick, afterRenderTick) <<" seconds"<<std::endl;
+        std::cout<<"Rendering time = "<<osg::Timer::instance()->delta_s(beforeRenderTick, afterRenderTick) <<" seconds"<<std::endl;
 
         return 0;
     }

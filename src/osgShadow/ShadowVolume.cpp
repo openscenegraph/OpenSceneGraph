@@ -111,7 +111,7 @@ void ShadowVolume::init()
     }
     else
     {
-        OSG_NOTICE<<"STENCIL_TWO_PASSES selecteted"<<std::endl;
+        OSG_NOTICE<<"STENCIL_TWO_PASSES selected"<<std::endl;
 
         osg::StateSet* ss_sv1 = geode->getOrCreateStateSet();
         ss_sv1->setRenderBinDetails(shadowVolumeBin, "RenderBin");
@@ -351,6 +351,6 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
 
 void ShadowVolume::cleanSceneGraph()
 {
-    OSG_NOTICE<<className()<<"::cleanSceneGraph()) not implemened yet, but almost."<<std::endl;
+    OSG_NOTICE<<className()<<"::cleanSceneGraph()) not implemented yet, but almost."<<std::endl;
 }
 

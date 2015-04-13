@@ -1603,7 +1603,7 @@ void ConvexPolyhedron::extrude( const osg::Vec3d & offset )
             double dotOffset0 = edgeFaces[0]->plane.getNormal() * offset;
             double dotOffset1 = edgeFaces[1]->plane.getNormal() * offset;
 #endif
-            //Select orthogonal faces and vertices appropriate for offseting
+            //Select orthogonal faces and vertices appropriate for offsetting
             if( (dotOffset0 == 0.0 && dotOffset1 < 0.0) ||
                 (dotOffset1 == 0.0 && dotOffset0 < 0.0) )
             {

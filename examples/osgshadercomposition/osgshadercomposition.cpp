@@ -173,7 +173,7 @@ int main( int argc, char **argv )
     }
     else
     {
-        // use new #pragama(tic) shader composition.
+        // use new #pragma(tic) shader composition.
         osg::ref_ptr<osg::Node> scenegraph = createNewShaderCompositionScene(arguments);
         if (!scenegraph) return 1;
 

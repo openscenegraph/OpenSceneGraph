@@ -21,7 +21,7 @@ namespace osg {
 
 /** Billboard is a derived form of Geode that orients its osg::Drawable
   * children to face the eye point. Typical uses include trees and
-  * particle explosions,
+  * particle explosions.
 */
 class OSG_EXPORT Billboard : public Geode
 {

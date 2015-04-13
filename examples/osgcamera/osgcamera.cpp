@@ -304,7 +304,7 @@ int main( int argc, char **argv )
         osgViewer::View* view = dynamic_cast<osgViewer::View*>(object.get());
         if (view)
         {
-            osg::notify(osg::NOTICE)<<"Read config file succesfully"<<std::endl;
+            osg::notify(osg::NOTICE)<<"Read config file successfully"<<std::endl;
         }
         else
         {

@@ -1,5 +1,5 @@
 // The majority of the application is dedicated to building the
-// current contribitors list by parsing the ChangeLog, it just takes
+// current contributors list by parsing the ChangeLog, it just takes
 // one line in the main itself to report the version number.
 
 #include <set>

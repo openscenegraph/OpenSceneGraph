@@ -59,7 +59,7 @@ osg::Node* decorate_with_clip_node(osg::Node* subgraph)
     rootnode->addChild(wireframe_subgraph);
 
 /*
-    // simple approach to adding a clipnode above a subrgaph.
+    // simple approach to adding a clipnode above a subgraph.
 
     // create clipped part.
     osg::ClipNode* clipped_subgraph = new osg::ClipNode;
@@ -78,7 +78,7 @@ osg::Node* decorate_with_clip_node(osg::Node* subgraph)
 
 
     // more complex approach to managing ClipNode, allowing
-    // ClipNode node to be transformed independantly from the subgraph
+    // ClipNode node to be transformed independently from the subgraph
     // that it is clipping.
     
     osg::MatrixTransform* transform= new osg::MatrixTransform;

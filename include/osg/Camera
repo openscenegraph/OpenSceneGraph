@@ -292,7 +292,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
             PIXEL_BUFFER_RTT,
             PIXEL_BUFFER,
             FRAME_BUFFER,
-            SEPERATE_WINDOW
+            SEPARATE_WINDOW
         };
 
         /** Set the render target.*/

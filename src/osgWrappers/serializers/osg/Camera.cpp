@@ -220,7 +220,7 @@ REGISTER_OBJECT_WRAPPER( Camera,
         ADD_ENUM_VALUE( PIXEL_BUFFER_RTT );
         ADD_ENUM_VALUE( PIXEL_BUFFER );
         ADD_ENUM_VALUE( FRAME_BUFFER );
-        ADD_ENUM_VALUE( SEPERATE_WINDOW );
+        ADD_ENUM_VALUE( SEPARATE_WINDOW );
     END_ENUM_SERIALIZER();  // _renderTargetImplementation
 
     ADD_USER_SERIALIZER( BufferAttachmentMap );  // _bufferAttachmentMap

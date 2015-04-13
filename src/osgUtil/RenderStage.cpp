@@ -610,7 +610,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
     while (!getGraphicsContext() &&
            (renderTargetImplementation==osg::Camera::PIXEL_BUFFER_RTT ||
             renderTargetImplementation==osg::Camera::PIXEL_BUFFER ||
-            renderTargetImplementation==osg::Camera::SEPERATE_WINDOW) )
+            renderTargetImplementation==osg::Camera::SEPARATE_WINDOW) )
     {
         osg::ref_ptr<osg::GraphicsContext> context = getGraphicsContext();
         if (!context)
@@ -625,8 +625,8 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             // OSG_NOTICE<<"traits = "<<traits->width<<" "<<traits->height<<std::endl;
 
             traits->pbuffer = (renderTargetImplementation==osg::Camera::PIXEL_BUFFER || renderTargetImplementation==osg::Camera::PIXEL_BUFFER_RTT);
-            traits->windowDecoration = (renderTargetImplementation==osg::Camera::SEPERATE_WINDOW);
-            traits->doubleBuffer = (renderTargetImplementation==osg::Camera::SEPERATE_WINDOW);
+            traits->windowDecoration = (renderTargetImplementation==osg::Camera::SEPARATE_WINDOW);
+            traits->doubleBuffer = (renderTargetImplementation==osg::Camera::SEPARATE_WINDOW);
 
             osg::Texture* pBufferTexture = 0;
             GLenum bufferFormat = GL_NONE;
@@ -699,7 +699,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                     }
                     default:
                     {
-                        if (renderTargetImplementation==osg::Camera::SEPERATE_WINDOW)
+                        if (renderTargetImplementation==osg::Camera::SEPARATE_WINDOW)
                         {
                             OSG_NOTICE<<"Warning: RenderStage::runCameraSetUp(State&) Window ";
                         }

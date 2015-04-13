@@ -47,6 +47,9 @@
 #include <sstream> // for istream
 #include <iostream> // for ios::
 
+#ifndef GL_BGRA_EXT
+#    define GL_BGRA_EXT GL_BGRA
+#endif
 
 /**************************************************************
  ***** Begin Callback functions for istream block reading *****

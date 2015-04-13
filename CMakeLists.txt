@@ -402,7 +402,7 @@ OPTION(OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION "Set to ON to use the ref_ptr<
 
 
 # Map the OPENGL_PROFILE to OSG_GL*_AVAILABLE settings
-SET(OPENGL_PROFILE "GL2" CACHE STRING "OpenGL Profile to use, choose from GL2, GL3, GLES1, GLES2")
+SET(OPENGL_PROFILE "GL2" CACHE STRING "OpenGL Profile to use, choose from GL2, GL3, GLES1, GLES2, GLES3")
 
 IF ((OPENGL_PROFILE STREQUAL "GL1") OR (OPENGL_PROFILE STREQUAL "GL2"))
     OPTION(OSG_GL1_AVAILABLE "Set to OFF to disable use of OpenGL 1.x functions library." ON )
@@ -430,8 +430,12 @@ ENDIF()
 
 IF ((OPENGL_PROFILE STREQUAL "GLES2"))
     OPTION(OSG_GLES2_AVAILABLE "Set to OFF to disable use of OpenGL ES 2.x functions library." ON )
+ELSEIF ((OPENGL_PROFILE STREQUAL "GLES3"))
+    OPTION(OSG_GLES2_AVAILABLE "Set to OFF to disable use of OpenGL ES 2.x functions library." ON )
+    OPTION(OSG_GLES3_AVAILABLE "Set to OFF to disable use of OpenGL ES 3.x functions library." ON )
 ELSE()
     OPTION(OSG_GLES2_AVAILABLE "Set to OFF to disable use of OpenGL ES 2.x functions library." OFF )
+    OPTION(OSG_GLES3_AVAILABLE "Set to OFF to disable use of OpenGL ES 3.x functions library." OFF )
 ENDIF()
 
 
@@ -498,9 +502,11 @@ ELSEIF(OSG_GLES2_AVAILABLE)
     IF (APPLE AND NOT ANDROID)
         SET(OPENGL_HEADER1 "#include \"TargetConditionals.h\"" CACHE STRING "#include<> line for OpenGL Header")
         SET(OPENGL_HEADER2 "#include <OpenGLES/ES2/gl.h>" CACHE STRING "#include<> line for additional OpenGL Headers if required")
+        # TODO: GLES3
     ELSE()
         SET(OPENGL_HEADER1 "#include <GLES2/gl2.h>" CACHE STRING "#include<> line for OpenGL Header")
         SET(OPENGL_HEADER2 "" CACHE STRING "#include<> line for additional OpenGL Headers if required")
+        # TODO: GLES3
     ENDIF()
 ELSE()
     IF (APPLE)
@@ -540,6 +546,12 @@ IF (OSG_GLES2_AVAILABLE)
     SET(OSG_GLES2_FEATURES "true")
 ELSE()
     SET(OSG_GLES2_FEATURES "false")
+ENDIF()
+
+IF (OSG_GLES3_AVAILABLE)
+    SET(OSG_GLES3_FEATURES "true")
+ELSE()
+    SET(OSG_GLES3_FEATURES "false")
 ENDIF()
 
 IF(ANDROID)

@@ -10,7 +10,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
- * This file is Copyright (C) 2007 - André Garneau (andre@pixdev.com) and licensed under OSGPL.
+ * This file is Copyright (C) 2007 - Andre Garneau (andre@pixdev.com) and licensed under OSGPL.
  *
  * Some elements of GraphicsWindowWin32 have used the Producer implementation as a reference.
  * These elements are licensed under OSGPL as above, with Copyright (C) 2001-2004  Don Burns.
@@ -400,6 +400,41 @@ class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterfa
      Win32WindowingSystem( const Win32WindowingSystem& );
      Win32WindowingSystem& operator=( const Win32WindowingSystem& );
 };
+
+///////////////////////////////////////////////////////////////////////////////
+//  Check if window dimensions have changed w.r.t stored values
+//////////////////////////////////////////////////////////////////////////////
+static bool areWindowDimensionsChanged(HWND hwnd, int screenOriginX, int screenOriginY, int& windowX, int& windowY, int& windowWidth, int& windowHeight)
+{
+    POINT origin;
+    origin.x = 0;
+    origin.y = 0;
+
+    ::ClientToScreen(hwnd, &origin);
+
+    int new_windowX = origin.x - screenOriginX;
+    int new_windowY = origin.y - screenOriginY;
+
+    RECT clientRect;
+    ::GetClientRect(hwnd, &clientRect);
+
+    int new_windowWidth = (clientRect.right == 0) ? 1 : clientRect.right;
+    int new_windowHeight = (clientRect.bottom == 0) ? 1 : clientRect.bottom;
+
+    if ((new_windowX != windowX) || (new_windowY != windowY) || (new_windowWidth != windowWidth) || (new_windowHeight != windowHeight))
+    {
+        windowX = new_windowX;
+        windowY = new_windowY;
+        windowWidth = new_windowWidth;
+        windowHeight = new_windowHeight;
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 //                             Error reporting
@@ -1176,7 +1211,7 @@ void GraphicsWindowWin32::init()
 
     // getEventQueue()->setCurrentEventState(osgGA::GUIEventAdapter::getAccumulatedEventState().get());
 
-    WindowData *windowData = _traits.get() ? dynamic_cast<WindowData*>(_traits->inheritedWindowData.get()) : 0;
+    WindowData *windowData = _traits.valid() ? dynamic_cast<WindowData*>(_traits->inheritedWindowData.get()) : 0;
     HWND windowHandle = windowData ? windowData->_hwnd : 0;
 
     _ownsWindow    = windowHandle==0;
@@ -1186,6 +1221,20 @@ void GraphicsWindowWin32::init()
 
     _initialized = _ownsWindow ? createWindow() : setWindow(windowHandle);
     _valid       = _initialized;
+
+    int windowX = 0, windowY = 0, windowWidth = 0, windowHeight = 0;
+    if (_traits.valid())
+    {
+        windowX = _traits->x;
+        windowY = _traits->y;
+        windowWidth = _traits->width;
+        windowHeight = _traits->height;
+    }
+
+    if (areWindowDimensionsChanged(_hwnd, _screenOriginX, _screenOriginY, windowX, windowY, windowWidth, windowHeight))
+    {
+        resized(windowX, windowY, windowWidth, windowHeight);
+    }
 
     // make sure the event queue has the correct window rectangle size and input range
     getEventQueue()->syncWindowRectangleWithGraphicsContext();
@@ -2463,7 +2512,6 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
 
     //!@todo adapt windows event time to osgGA event queue time for better resolution
     double eventTime  = getEventQueue()->getTime();
-    double resizeTime = eventTime;
     _timeOfLastCheckEvents = eventTime;
 
     switch(uMsg)
@@ -2593,27 +2641,11 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
         /////////////////
 
             {
-                POINT origin;
-                origin.x = 0;
-                origin.y = 0;
-
-                ::ClientToScreen(hwnd, &origin);
-
-                int windowX = origin.x - _screenOriginX;
-                int windowY = origin.y - _screenOriginY;
-                resizeTime  = eventTime;
-
-                RECT clientRect;
-                ::GetClientRect(hwnd, &clientRect);
-
-                int windowWidth = (clientRect.right == 0) ? 1 : clientRect.right ;
-                int windowHeight = (clientRect.bottom == 0) ? 1 : clientRect.bottom;;
-
-                // send resize event if window position or size was changed
-                if (windowX!=_traits->x || windowY!=_traits->y || windowWidth!=_traits->width || windowHeight!=_traits->height)
+                int windowX=_traits->x, windowY=_traits->y, windowWidth=_traits->width, windowHeight=_traits->height;
+                if (areWindowDimensionsChanged(hwnd, _screenOriginX, _screenOriginY, windowX, windowY, windowWidth, windowHeight))
                 {
                     resized(windowX, windowY, windowWidth, windowHeight);
-                    getEventQueue()->windowResize(windowX, windowY, windowWidth, windowHeight, resizeTime);
+                    getEventQueue()->windowResize(windowX, windowY, windowWidth, windowHeight, eventTime);
 
                     // request redraw if window size was changed
                     if (windowWidth!=_traits->width || windowHeight!=_traits->height)

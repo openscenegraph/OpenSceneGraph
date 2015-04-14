@@ -20,7 +20,7 @@
 
 #ifdef WIN32
 
-#if !defined(__MINGW32__) && (!defined(_MSC_VER) || _MSC_VER<1600)
+#if defined(__MINGW32__) || (!defined(_MSC_VER) || _MSC_VER<1600)
 
 typedef unsigned __int8 uint8_t;
 typedef unsigned __int16 uint16_t;

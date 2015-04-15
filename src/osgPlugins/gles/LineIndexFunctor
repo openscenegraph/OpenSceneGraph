@@ -35,7 +35,7 @@ public:
 };
 
 struct LineCompare {
-    bool operator()(const Line& lhs, const Line& rhs) {
+    bool operator()(const Line& lhs, const Line& rhs) const {
         return lhs._a < rhs._a || (lhs._a == rhs._a && lhs._b < rhs._b);
     }
 };

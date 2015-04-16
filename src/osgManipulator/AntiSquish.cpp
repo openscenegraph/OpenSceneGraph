@@ -98,8 +98,10 @@ bool AntiSquish::computeUnSquishedMatrix(osg::Matrix& unsquished) const
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _cacheLock );
 
     osg::NodePathList nodePaths = getParentalNodePaths();
-    osg::NodePath np;
-    if (!nodePaths.empty()) np = nodePaths.front();
+    if (nodePaths.empty()) return false;
+
+    osg::NodePath np = nodePaths.front();
+    if (np.empty()) return false;
 
     // Remove the last node which is the anti squish node itself.
     np.pop_back();

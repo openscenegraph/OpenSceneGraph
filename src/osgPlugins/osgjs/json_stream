@@ -36,7 +36,7 @@ using namespace std;
 // * disallow some control characters
 // * does not support inf or nan values
 
-#if defined(WIN32) && !defined(__MINGW32__) && (!defined(_MSC_VER) || _MSC_VER<1600)
+#if defined(WIN32) && !defined(__MINGW32__) && (!defined(_MSC_VER) || _MSC_VER<=1600)
 inline int isfinite( double x ) { return _finite( x ); }
 inline int isinf( double x ) { return !_finite( x ) && !_isnan( x ); }
 #endif

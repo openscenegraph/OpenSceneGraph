@@ -35,6 +35,7 @@
 #include <osgManipulator/TranslateAxisDragger>
 #include <osgManipulator/TranslatePlaneDragger>
 #include <osgManipulator/RotateCylinderDragger>
+#include <osgManipulator/AntiSquish>
 
 #include <osg/ShapeDrawable>
 #include <osg/MatrixTransform>
@@ -168,8 +169,6 @@ osgManipulator::Dragger* createDragger(const std::string& name)
         d->setupDefaultGeometry();
         dragger = d;
     }
-
-
 
     return dragger;
 }
@@ -374,6 +373,7 @@ osg::Node* createDemoScene(bool fixedSizeInScreen) {
 
     return root;
 }
+
 //
 int main( int argc, char **argv )
 {
@@ -406,6 +406,28 @@ int main( int argc, char **argv )
 
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
+
+
+    if (arguments.read("--test-NodeMask"))
+    {
+        const osg::ref_ptr<osg::Group> group = new osg::Group();
+        group->setNodeMask(0);
+
+        const osg::ref_ptr<osgManipulator::AntiSquish> antiSquish = new osgManipulator::AntiSquish();
+
+        group->addChild(antiSquish);
+
+        const osg::ref_ptr<osg::Node> node = new osg::Node();
+        node->setInitialBound(osg::BoundingSphere(osg::Vec3(0.0, 0.0, 0.0), 1.0));
+
+        antiSquish->addChild(node);
+
+        group->getBound();
+
+        return 1;
+    }
+
+
 
     // if user request help write it out to cout.
     bool helpAll = arguments.read("--help-all");

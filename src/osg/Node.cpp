@@ -33,6 +33,7 @@ namespace osg
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS),
             _haltTraversalAtNode(haltTraversalAtNode)
         {
+            setNodeMaskOverride(0xffffffff);
         }
 
         virtual void apply(osg::Node& node)

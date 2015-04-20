@@ -94,7 +94,7 @@ class OSGUTIL_EXPORT VertexAccessOrderVisitor : public GeometryCollector
         inline bool operator() (const osg::ref_ptr<osg::PrimitiveSet>& prim1, const osg::ref_ptr<osg::PrimitiveSet>& prim2)
         {
             if(prim1 && prim2) {
-                return prim1->getMode() >= prim2->getMode();
+                return prim1->getMode() > prim2->getMode();
             }
             else if(prim1) {
                 return true;

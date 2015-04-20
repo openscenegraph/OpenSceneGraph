@@ -1378,7 +1378,7 @@ ReaderWriter3DS::StateSetInfo ReaderWriter3DS::ReaderObject::createStateSet(Lib3
     osg::ref_ptr<osg::Texture> reflection_map = createTexture(&(mat->reflection_map),"reflection_map",textureTransparency);
     if (reflection_map)
     {
-        stateset->setTextureAttributeAndModes(unit, reflection_map, osg::StateAttribute::ON);
+        stateset->setTextureAttributeAndModes(unit, reflection_map.get(), osg::StateAttribute::ON);
 
         // setup spherical map...
         osg::ref_ptr<osg::TexGen> texgen = new osg::TexGen();

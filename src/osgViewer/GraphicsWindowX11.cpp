@@ -962,11 +962,14 @@ bool GraphicsWindowX11::createWindow()
     XFlush( _display );
     XSync( _display, 0 );
 
-    // now update the window dimensions to account for any size changes made by the window manager,
-    XGetWindowAttributes( _display, _window, &watt );
 
-    if (_traits->x != watt.x || _traits->y != watt.y
-        ||_traits->width != watt.width || _traits->height != watt.height)
+    // get window geometry relative to root window/screen
+    Window child_return;
+    int windowX, windowY;
+    XGetWindowAttributes( _display, _window, &watt );
+    XTranslateCoordinates( _display, _window, watt.root, watt.x, watt.y, &windowX, &windowY, &child_return);
+
+    if (_traits->x != windowX || _traits->y != windowY ||_traits->width != watt.width || _traits->height != watt.height)
     {
 
         if (doFullSceenWorkAround)
@@ -978,9 +981,10 @@ bool GraphicsWindowX11::createWindow()
             XSync(_display, 0);
 
             XGetWindowAttributes( _display, _window, &watt );
+            XTranslateCoordinates( _display, _window, watt.root, watt.x, watt.y, &windowX, &windowY, &child_return);
         }
 
-        resized( watt.x, watt.y, watt.width, watt.height );
+        resized( windowX, windowY, watt.width, watt.height );
     }
 
     //OSG_NOTICE<<"After sync apply.x = "<<watt.x<<" watt.y="<<watt.y<<" width="<<watt.width<<" height="<<watt.height<<std::endl;
@@ -1229,10 +1233,10 @@ bool GraphicsWindowX11::checkEvents()
         {
             case ClientMessage:
             {
-                OSG_NOTICE<<"ClientMessage event received"<<std::endl;
+                OSG_INFO<<"ClientMessage event received"<<std::endl;
                 if (static_cast<Atom>(ev.xclient.data.l[0]) == _deleteWindow)
                 {
-                    OSG_NOTICE<<"DeleteWindow event received"<<std::endl;
+                    OSG_INFO<<"DeleteWindow event received"<<std::endl;
                     // FIXME only do if _ownsWindow ?
                     getEventQueue()->closeWindow(eventTime);
                 }
@@ -1252,15 +1256,13 @@ bool GraphicsWindowX11::checkEvents()
                 break;
 
             case DestroyNotify :
-                OSG_NOTICE<<"DestroyNotify event received"<<std::endl;
+                OSG_INFO<<"DestroyNotify event received"<<std::endl;
                 _realized =  false;
                 _valid = false;
                 break;
 
             case ConfigureNotify :
             {
-                OSG_INFO<<"ConfigureNotify x="<<ev.xconfigure.x<<" y="<<ev.xconfigure.y<<" width="<<ev.xconfigure.width<<", height="<<ev.xconfigure.height<<std::endl;
-
                 if (windowX != ev.xconfigure.x ||
                     windowY != ev.xconfigure.y ||
                     windowWidth != ev.xconfigure.width ||
@@ -1284,8 +1286,6 @@ bool GraphicsWindowX11::checkEvents()
                 do
                     XGetWindowAttributes(display, _window, &watt );
                 while( watt.map_state != IsViewable );
-
-                OSG_INFO<<"MapNotify x="<<watt.x<<" y="<<watt.y<<" width="<<watt.width<<", height="<<watt.height<<std::endl;
 
                 if (windowWidth != watt.width || windowHeight != watt.height)
                 {
@@ -1543,11 +1543,21 @@ bool GraphicsWindowX11::checkEvents()
             }
 
             default:
-                OSG_NOTICE<<"Other event "<<ev.type<<std::endl;
+                OSG_INFO<<"Other event "<<ev.type<<std::endl;
                 break;
 
         }
         _lastEventType = ev.type;
+    }
+
+
+    // get window geometry relative to root window/screen
+    {
+        XWindowAttributes watt;
+        Window child_return;
+
+        XGetWindowAttributes( display, _window, &watt );
+        XTranslateCoordinates(display, _window, watt.root, watt.x, watt.y, &windowX, &windowY, &child_return);
     }
 
     // send window resize event if window position or size was changed
@@ -1556,6 +1566,7 @@ bool GraphicsWindowX11::checkEvents()
         windowWidth != _traits->width ||
         windowHeight != _traits->height)
     {
+
         resized(windowX, windowY, windowWidth, windowHeight);
         getEventQueue()->windowResize(windowX, windowY, windowWidth, windowHeight, resizeTime);
 

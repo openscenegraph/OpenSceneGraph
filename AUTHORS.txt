@@ -1,6 +1,6 @@
-OpenSceneGraph Library 3.3.6
+OpenSceneGraph Library 3.3.8
 
-543 Contributors:
+545 Contributors:
 
 Firstname Surname
 -----------------
@@ -54,12 +54,12 @@ Pavel Moloshtan
 Brad Christiansen
 Olaf Flebbe
 Mathieu Marache
+Lionel Lagarde
 Jason Daly
 Art Tevs
 Philip Lowman
 Per Fahlberg
 Norman Vine
-Lionel Lagarde
 Terry Welsh
 Serge Lages
 Romano José Magacho da Silva
@@ -114,6 +114,7 @@ Nico Kruithof
 Martin Aumueller
 Mario Valle
 Lukasz Izdebski
+Konstantin Matveyev
 Jorge Izquierdo Ciges
 Jordi Torres
 Gordon Tomlinson
@@ -152,9 +153,9 @@ Martins Innus
 Maciej Krol
 Lilin Xiong
 Leandro Motta Barros
-Konstantin Matveyev
 Johan Nouvel
 Javier Taibo
+Jannik Heller
 Hartwig Wiesmann
 Donn Mielcarek
 Corbin Holtz
@@ -376,6 +377,7 @@ Ragnar Hammarqvist
 Qing Shen
 Piotr Rak
 Pierre Bourdin
+Philippe Renon
 Philipp Svehla
 Philipp Siemoleit
 Philipp Mächler
@@ -463,7 +465,6 @@ Jeffrey Kinross
 Jay Zuckerman
 Jason Howlett
 Jason Ballenger
-Jannik Heller
 Jamie Robertson
 James Killian
 James Athey
@@ -476,6 +477,7 @@ Gunter Huber
 Gregory Jaegy
 Graeme Harkness
 Gian Lorenzetto
+Giampaolo Viganò
 George Papagiannakis
 Galen Faidley
 Frida Schlaug

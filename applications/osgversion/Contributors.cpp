@@ -353,6 +353,7 @@ TypoCorrection typoCorrections[] =
     {"Krulthof",       "Kruithof"},
     {"Lagrade",        "Lagarde"},
     {"Largade",        "Lagarde"},
+    {"Largarde",       "Lagarde"},
     {"Larshkari",      "Lashkari"},
     {"Lashakari",      "Lashkari"},
     {"Lashari",        "Lashkari"},
@@ -478,8 +479,9 @@ TypoCorrection typoCorrections[] =
     {"GjÃ¸l","Gjøl"},
     {"RavÅ¡elj","Rav¨elj"},
     {"Ravsel",  "Rav¨elj"},
-    {"Ravselj", "Rav¨elj"}
-
+    {"Ravselj", "Rav¨elj"},
+    {"Janik", "Jannik"},
+    {"ViganÃ²", "Viganò"}
 };
 
 

@@ -415,12 +415,12 @@ int main( int argc, char **argv )
 
         const osg::ref_ptr<osgManipulator::AntiSquish> antiSquish = new osgManipulator::AntiSquish();
 
-        group->addChild(antiSquish);
+        group->addChild(antiSquish.get());
 
         const osg::ref_ptr<osg::Node> node = new osg::Node();
         node->setInitialBound(osg::BoundingSphere(osg::Vec3(0.0, 0.0, 0.0), 1.0));
 
-        antiSquish->addChild(node);
+        antiSquish->addChild(node.get());
 
         group->getBound();
 

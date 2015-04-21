@@ -90,6 +90,20 @@ class json_stream : public osgDB::ofstream {
             return d;
         }
 
+#if _MSC_VER == 1700 // check if the code is compiled on MSVC 2012
+        double to_valid_float(const double d) {
+            if(_finite(d)) {
+                return d;
+            }
+            else {
+                if(!_finite(d)) {
+                    return std::numeric_limits<double>::max();
+                }
+                // no much way to do better than replace invalid float NaN by 0
+                return 0.;
+            }
+        }
+#else
         double to_valid_float(const double d) {
             if(isfinite(d)) {
                 return d;
@@ -102,6 +116,7 @@ class json_stream : public osgDB::ofstream {
                 return 0.;
             }
         }
+#endif
 
         std::string sanitize(const std::string& s) {
             if(_strict) {

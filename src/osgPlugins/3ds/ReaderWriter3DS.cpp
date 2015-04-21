@@ -193,7 +193,7 @@ protected:
         StateSetInfo(const StateSetInfo & v) : stateset(v.stateset), lib3dsmat(v.lib3dsmat) {}
         StateSetInfo & operator=(const StateSetInfo & v) { stateset=v.stateset; lib3dsmat=v.lib3dsmat; return *this; }
 
-        osg::StateSet * stateset;
+        osg::ref_ptr<osg::StateSet> stateset;
         Lib3dsMaterial * lib3dsmat;
     };
 
@@ -413,7 +413,7 @@ void ReaderWriter3DS::ReaderObject::addDrawableFromFace(osg::Geode * geode, Face
             if (drawable.valid())
             {
                 if (ssi.stateset)
-                    drawable->setStateSet(ssi.stateset);
+                    drawable->setStateSet(ssi.stateset.get());
                 geode->addDrawable(drawable.get());
             }
         }
@@ -426,7 +426,7 @@ void ReaderWriter3DS::ReaderObject::addDrawableFromFace(osg::Geode * geode, Face
         if (drawable.valid())
         {
             if (ssi.stateset)
-                drawable->setStateSet(ssi.stateset);
+                drawable->setStateSet(ssi.stateset.get());
             geode->addDrawable(drawable.get());
         }
     }

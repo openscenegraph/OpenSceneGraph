@@ -41,7 +41,16 @@ void lib3ds_util_reserve_array(void ***ptr, int *n, int *size, int new_size, int
                 (*ptr)[i] = 0;
             }
         }
-        *ptr = (void**)realloc(*ptr, sizeof(void*) * new_size);
+        if (*ptr || new_size != 0)
+        {
+            // As this reserve_array function is also used for cleanup
+            // by passing in zero as new_size, we only want to call realloc
+            // when new_size non zero OR there is an existing array allocated.
+            // This is because realloc(NULL, 0) actually allocates
+            // storage and thus causes a memory leak when this function
+            // is used to clear an array that was never allocated.
+            *ptr = (void**)realloc(*ptr, sizeof(void*) * new_size);
+        }
         *size = new_size;
         if (*n > new_size) {
             *n = new_size;

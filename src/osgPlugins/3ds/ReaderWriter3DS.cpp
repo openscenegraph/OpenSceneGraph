@@ -1365,8 +1365,6 @@ ReaderWriter3DS::StateSetInfo ReaderWriter3DS::ReaderObject::createStateSet(Lib3
 
         stateset->setTextureAttributeAndModes(unit, texenv, osg::StateAttribute::ON);
 
-        osg::BlendFunc* blendfunc = new osg::BlendFunc(osg::BlendFunc::SRC_ALPHA,osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
-        stateset->setAttributeAndModes(blendfunc, osg::StateAttribute::ON);
         osg::TexEnv* tenv = new osg::TexEnv();
         tenv->setMode(osg::TexEnv::MODULATE);
         stateset->setTextureAttributeAndModes(unit, tenv, osg::StateAttribute::ON);
@@ -1392,7 +1390,11 @@ ReaderWriter3DS::StateSetInfo ReaderWriter3DS::ReaderObject::createStateSet(Lib3
         texenv->setSource0_RGB(osg::TexEnvCombine::TEXTURE);
         texenv->setSource1_RGB(osg::TexEnvCombine::PREVIOUS);
         texenv->setSource2_RGB(osg::TexEnvCombine::CONSTANT);
-        texenv->setConstantColor(osg::Vec4(factor, factor, factor, factor));
+        texenv->setCombine_Alpha(osg::TexEnvCombine::REPLACE);
+        texenv->setSource0_Alpha(osg::TexEnvCombine::CONSTANT);
+        texenv->setOperand0_Alpha(osg::TexEnvCombine::SRC_ALPHA);
+        texenv->setConstantColor(osg::Vec4(factor, factor, factor, alpha));
+
         stateset->setTextureAttributeAndModes(unit, texenv.get(), osg::StateAttribute::ON);
         unit++;
     }

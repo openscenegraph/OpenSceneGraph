@@ -77,7 +77,7 @@ osg::Group* createHUDText()
 
     osgText::Font* font = osgText::readFontFile("fonts/arial.ttf");
 
-    osg::setNotifyLevel(osg::INFO);
+    //osg::setNotifyLevel(osg::INFO);
 
     osg::Geode* geode  = new osg::Geode;
     rootNode->addChild(geode);

@@ -255,95 +255,7 @@ public:
         return new_vertex;
     }
 
-    void addBoundaryToGeometry(osg::Geometry* geometry, float targetThickness, bool requireFace)
-    {
-        if (_segments.empty()) return;
-
-        if (geometry->getVertexArray()==0) geometry->setVertexArray(new osg::Vec3Array);
-        osg::Vec3Array* new_vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
-
-        // allocate the primitive set to store the face geometry
-        osg::ref_ptr<osg::DrawElementsUShort> face = new osg::DrawElementsUShort(GL_POLYGON);
-        face->setName("face");
-
-        // reserve enough space in the vertex array to accomodate the vertices associated with the segments
-        new_vertices->reserve(new_vertices->size() + _segments.size()+1 + _elements->size());
-
-        // create vertices
-        unsigned int previous_second = _segments[0].second;
-        osg::Vec3 newPoint = computeBisectorPoint(0, targetThickness);
-        unsigned int first = new_vertices->size();
-        new_vertices->push_back(newPoint);
-
-        unsigned int start = (*_elements)[0];
-        unsigned int count = _elements->size();
-
-        if (_segments[0].first != start)
-        {
-            //OSG_NOTICE<<"We have pruned from the start"<<std::endl;
-            for(unsigned int j=start; j<=_segments[0].first;++j)
-            {
-                face->push_back(first);
-            }
-        }
-        else
-        {
-            face->push_back(first);
-        }
-
-
-        for(unsigned int i=1; i<_segments.size(); ++i)
-        {
-            newPoint = computeBisectorPoint(i, targetThickness);
-            unsigned int vi = new_vertices->size();
-            new_vertices->push_back(newPoint);
-
-            if (previous_second != _segments[i].first)
-            {
-                //OSG_NOTICE<<"Gap in boundary"<<previous_second<<" to "<<_segments[i].first<<std::endl;
-                for(unsigned int j=previous_second; j<=_segments[i].first;++j)
-                {
-                    face->push_back(vi);
-                }
-            }
-            else
-            {
-                face->push_back(vi);
-            }
-
-            previous_second = _segments[i].second;
-        }
-
-        // fill the end of the polygon with repititions of the first index in the polygon to ensure
-        // that the orignal and new boundary polygons have the same number and pairing of indices.
-        // This ensures that the bevel can be created coherently.
-        while(face->size() < count)
-        {
-            face->push_back(first);
-        }
-
-
-        if (requireFace)
-        {
-            // add face primitive set for polygon
-            geometry->addPrimitiveSet(face.get());
-        }
-
-
-        osg::DrawElementsUShort* bevel = new osg::DrawElementsUShort(GL_QUAD_STRIP);
-        bevel->setName("bevel");
-        bevel->reserve(count*2);
-        for(unsigned int i=0; i<count; ++i)
-        {
-            unsigned int vi = new_vertices->size();
-            new_vertices->push_back((*_vertices)[(*_elements)[i]]);
-            bevel->push_back(vi);
-            bevel->push_back((*face)[i]);
-        }
-        geometry->addPrimitiveSet(bevel);
-    }
-
-    void newAddBoundaryToGeometry(osg::Geometry* geometry, float targetThickness, const std::string& faceName, const std::string& bevelName)
+    void addBoundaryToGeometry(osg::Geometry* geometry, float targetThickness, const std::string& faceName, const std::string& bevelName)
     {
         if (_segments.empty()) return;
 
@@ -470,11 +382,11 @@ OSGTEXT_EXPORT osg::Geometry* computeGlyphGeometry(const osgText::Glyph3D* glyph
         {
             Boundary boundaryInner(orig_vertices, itr->get());
             boundaryInner.removeAllSegmentsBelowThickness(bevelThickness);
-            boundaryInner.newAddBoundaryToGeometry(new_geometry.get(), bevelThickness, "face", "bevel");
+            boundaryInner.addBoundaryToGeometry(new_geometry.get(), bevelThickness, "face", "bevel");
 
             Boundary boundaryOuter(orig_vertices, itr->get());
             boundaryOuter.removeAllSegmentsAboveThickness(-shellThickness);
-            boundaryOuter.newAddBoundaryToGeometry(new_geometry.get(), -shellThickness, "", "shell");
+            boundaryOuter.addBoundaryToGeometry(new_geometry.get(), -shellThickness, "", "shell");
         }
 
     }

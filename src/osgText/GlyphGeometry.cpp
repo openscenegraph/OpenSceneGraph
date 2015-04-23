@@ -28,31 +28,55 @@ namespace osgText
 //
 // Boundary
 //
-class Boundary
+class Boundary : public osg::Referenced
 {
 public:
 
-    typedef std::pair<unsigned int, unsigned int> Segment;
+    struct Segment
+    {
+        Segment(unsigned int f, unsigned int s, float t):
+            first(f), second(s), thickness(t) {}
+
+        Segment(const Segment& seg):
+            first(seg.first),
+            second(seg.second),
+            thickness(seg.thickness) {}
+
+        Segment& operator = (const Segment& seg)
+        {
+            first = seg.first;
+            second = seg.second;
+            thickness = seg.thickness;
+            return *this;
+        }
+
+        unsigned int    first;
+        unsigned int    second;
+        float           thickness;
+    };
+
+
+    //typedef std::pair<unsigned int, unsigned int> Segment;
     typedef std::vector<Segment>  Segments;
     osg::ref_ptr<const osg::Vec3Array> _vertices;
     osg::ref_ptr<const osg::DrawElementsUShort> _elements;
     Segments _segments;
 
-    Boundary(const osg::Vec3Array* vertices, const osg::PrimitiveSet* primitiveSet)
+    Boundary(const osg::Vec3Array* vertices, const osg::PrimitiveSet* primitiveSet, float thickness)
     {
         const osg::DrawArrays* drawArrays = dynamic_cast<const osg::DrawArrays*>(primitiveSet);
         if (drawArrays)
         {
-            set(vertices, drawArrays->getFirst(), drawArrays->getCount());
+            set(vertices, drawArrays->getFirst(), drawArrays->getCount(), thickness);
         }
         else
         {
             const osg::DrawElementsUShort* elements = dynamic_cast<const osg::DrawElementsUShort*>(primitiveSet);
-            if (elements) set(vertices, elements);
+            if (elements) set(vertices, elements, thickness);
         }
     }
 
-    void set(const osg::Vec3Array* vertices, unsigned int start, unsigned int count)
+    void set(const osg::Vec3Array* vertices, unsigned int start, unsigned int count, float thickness)
     {
         osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(osg::PrimitiveSet::POLYGON);
         for(unsigned int i=start; i<start+count; ++i)
@@ -60,10 +84,10 @@ public:
             elements->push_back(i);
         }
 
-        set(vertices, elements);
+        set(vertices, elements, thickness);
     }
 
-    void set(const osg::Vec3Array* vertices, const osg::DrawElementsUShort* elements)
+    void set(const osg::Vec3Array* vertices, const osg::DrawElementsUShort* elements, float thickness)
     {
         _vertices = vertices;
         _elements = elements;
@@ -75,7 +99,7 @@ public:
         _segments.reserve(elements->size()-1);
         for(unsigned int i=0; i<elements->size()-1; ++i)
         {
-            _segments.push_back(Segment((*elements)[i],(*elements)[i+1]));
+            _segments.push_back( Segment((*elements)[i], (*elements)[i+1], thickness) );
         }
     }
 
@@ -166,14 +190,6 @@ public:
             (*_vertices)[seg_after.first], (*_vertices)[seg_after.second]);
     }
 
-    void computeAllThickness()
-    {
-        for(unsigned int i=0; i<_segments.size(); ++i)
-        {
-            computeThickness(i);
-        }
-    }
-
 
     bool findMinThickness(unsigned int& minThickness_i, float& minThickness)
     {
@@ -255,6 +271,11 @@ public:
         return new_vertex;
     }
 
+    osg::Vec3 computeBisectorPoint(unsigned int i)
+    {
+        return computeBisectorPoint(i, _segments[i].thickness);
+    }
+
     void addBoundaryToGeometry(osg::Geometry* geometry, float targetThickness, const std::string& faceName, const std::string& bevelName)
     {
         if (_segments.empty()) return;
@@ -274,7 +295,9 @@ public:
 
         // create vertices
         unsigned int previous_second = _segments[0].second;
-        osg::Vec3 newPoint = computeBisectorPoint(0, targetThickness);
+
+        osg::Vec3 newPoint = computeBisectorPoint(0);
+
         unsigned int first = new_vertices->size();
         new_vertices->push_back(newPoint);
 
@@ -294,7 +317,9 @@ public:
 
         for(unsigned int i=1; i<_segments.size(); ++i)
         {
-            newPoint = computeBisectorPoint(i, targetThickness);
+
+            newPoint = computeBisectorPoint(i);
+
             unsigned int vi = new_vertices->size();
             new_vertices->push_back(newPoint);
 
@@ -338,6 +363,10 @@ public:
         }
         geometry->addPrimitiveSet(bevel);
     }
+
+protected:
+
+    virtual ~Boundary() {}
 };
 
 
@@ -374,6 +403,42 @@ OSGTEXT_EXPORT osg::Geometry* computeGlyphGeometry(const osgText::Glyph3D* glyph
 
     osg::ref_ptr<osg::Geometry> new_geometry = new osg::Geometry;
 
+#if 1
+    typedef std::vector< osg::ref_ptr<Boundary> > Boundaries;
+    Boundaries innerBoundaries;
+    Boundaries outerBoundaries;
+
+    for(osg::Geometry::PrimitiveSetList::const_iterator itr = orig_primitives.begin();
+        itr != orig_primitives.end();
+        ++itr)
+    {
+        if ((*itr)->getMode()==GL_POLYGON)
+        {
+            osg::ref_ptr<Boundary> boundaryInner = new Boundary(orig_vertices, itr->get(), bevelThickness);
+            boundaryInner->removeAllSegmentsBelowThickness(bevelThickness);
+            innerBoundaries.push_back(boundaryInner.get());
+
+            osg::ref_ptr<Boundary> boundaryOuter = new Boundary(orig_vertices, itr->get(), -shellThickness);
+            boundaryOuter->removeAllSegmentsAboveThickness(-shellThickness);
+            outerBoundaries.push_back(boundaryOuter.get());
+        }
+    }
+
+    for(Boundaries::iterator itr = innerBoundaries.begin();
+        itr != innerBoundaries.end();
+        ++itr)
+    {
+        (*itr)->addBoundaryToGeometry(new_geometry.get(), bevelThickness, "face", "bevel");
+    }
+
+    for(Boundaries::iterator itr = innerBoundaries.begin();
+        itr != innerBoundaries.end();
+        ++itr)
+    {
+        (*itr)->addBoundaryToGeometry(new_geometry.get(), -shellThickness, "", "shell");
+    }
+
+#else
     for(osg::Geometry::PrimitiveSetList::const_iterator itr = orig_primitives.begin();
         itr != orig_primitives.end();
         ++itr)
@@ -390,6 +455,7 @@ OSGTEXT_EXPORT osg::Geometry* computeGlyphGeometry(const osgText::Glyph3D* glyph
         }
 
     }
+#endif
 
     osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(new_geometry->getVertexArray());
 

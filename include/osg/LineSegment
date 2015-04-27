@@ -44,45 +44,48 @@ class OSG_EXPORT LineSegment : public Referenced
 
         inline bool valid() const { return _s.valid() && _e.valid() && _s!=_e; }
 
+
         /** return true if segment intersects BoundingBox. */
         bool intersect(const BoundingBox& bb) const;
 
-        /** return true if segment intersects BoundingBox
-          * and return the intersection ratios.
+        /** return true if segment intersects BoundingBox and
+          * set float ratios for the first and second intersections, where the ratio is 0.0 at the segment start point, and 1.0 at the segment end point.
         */
-        bool intersect(const BoundingBox& bb,float& r1,float& r2) const;
+        bool intersectAndComputeRatios(const BoundingBox& bb, float& ratioFromStartToEnd1, float& ratioFromStartToEnd2) const;
 
-        /** return true if segment intersects BoundingBox
-          * and return the intersection ratios.
+        /** return true if segment intersects BoundingBox and
+          * set double ratios for the first and second intersections, where the ratio is 0.0 at the segment start point, and 1.0 at the segment end point.
         */
-        bool intersect(const BoundingBox& bb,double& r1,double& r2) const;
+        bool intersectAndComputeRatios(const BoundingBox& bb, double& ratioFromStartToEnd1, double& ratioFromStartToEnd2) const;
+
 
         /** return true if segment intersects BoundingSphere. */
         bool intersect(const BoundingSphere& bs) const;
 
-        /** return true if segment intersects BoundingSphere and return the
-          * intersection ratio.
+        /** return true if segment intersects BoundingSphere and
+          * set float ratios for the first and second intersections, where the ratio is 0.0 at the segment start point, and 1.0 at the segment end point.
         */
-        bool intersect(const BoundingSphere& bs,float& r1,float& r2) const;
+        bool intersectAndComputeRatios(const BoundingSphere& bs, float& ratioFromStartToEnd1, float& ratioFromStartToEnd2) const;
 
-        /** return true if segment intersects BoundingSphere and return the
-          * intersection ratio.
+        /** return true if segment intersects BoundingSphere and
+          * set double ratios for the first and second intersections, where the ratio is 0.0 at the segment start point, and 1.0 at the segment end point.
         */
-        bool intersect(const BoundingSphere& bs,double& r1,double& r2) const;
+        bool intersectAndComputeRatios(const BoundingSphere& bs,double& ratioFromStartToEnd1, double& ratioFromStartToEnd2) const;
 
-        /** return true if segment intersects triangle
-          * and set ratio long segment.
+        /** return true if segment intersects triangle and
+          * set float ratios where the ratio is 0.0 at the segment start point, and 1.0 at the segment end point.
         */
-        bool intersect(const Vec3f& v1,const Vec3f& v2,const Vec3f& v3,float& r);
+        bool intersect(const Vec3f& v1,const Vec3f& v2,const Vec3f& v3,float& ratioFromStartToEnd);
 
-        /** return true if segment intersects triangle
-          * and set ratio long segment.
+        /** return true if segment intersects triangle and
+          * set double ratios where the ratio is 0.0 at the segment start point, and 1.0 at the segment end point.
         */
-        bool intersect(const Vec3d& v1,const Vec3d& v2,const Vec3d& v3,double& r);
+        bool intersect(const Vec3d& v1,const Vec3d& v2,const Vec3d& v3,double& ratioFromStartToEnd);
 
 
         /** post multiply a segment by matrix.*/
         inline void mult(const LineSegment& seg,const Matrix& m) { _s = seg._s*m; _e = seg._e*m; }
+
         /** pre multiply a segment by matrix.*/
         inline void mult(const Matrix& m,const LineSegment& seg) { _s = m*seg._s; _e = m*seg._e; }
 

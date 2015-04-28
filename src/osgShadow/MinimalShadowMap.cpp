@@ -353,17 +353,22 @@ void MinimalShadowMap::ViewData::cutScenePolytope
         _sceneReceivingShadowPolytope.clear();
 }
 
-osg::BoundingBox
-    MinimalShadowMap::ViewData::computeScenePolytopeBounds( const osg::Matrix & m )
+osg::BoundingBox MinimalShadowMap::ViewData::computeScenePolytopeBounds()
 {
     osg::BoundingBox bb;
 
-    if( &m )
-        for( unsigned i = 0; i < _sceneReceivingShadowPolytopePoints.size(); ++i )
-            bb.expandBy( _sceneReceivingShadowPolytopePoints[i] * m );
-    else
-        for( unsigned i = 0; i < _sceneReceivingShadowPolytopePoints.size(); ++i )
-            bb.expandBy( _sceneReceivingShadowPolytopePoints[i] );
+    for( unsigned i = 0; i < _sceneReceivingShadowPolytopePoints.size(); ++i )
+        bb.expandBy( _sceneReceivingShadowPolytopePoints[i] );
+
+    return bb;
+}
+
+osg::BoundingBox MinimalShadowMap::ViewData::computeScenePolytopeBounds( const osg::Matrix & m )
+{
+    osg::BoundingBox bb;
+
+    for( unsigned i = 0; i < _sceneReceivingShadowPolytopePoints.size(); ++i )
+        bb.expandBy( _sceneReceivingShadowPolytopePoints[i] * m );
 
     return bb;
 }

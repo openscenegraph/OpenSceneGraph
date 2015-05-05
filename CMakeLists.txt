@@ -39,7 +39,7 @@ if(COMMAND cmake_policy)
     # disable autolinking to qtmain as we have our own main() functions (new in Qt 5.1)
     if(${CMAKE_MAJOR_VERSION} GREATER 2 OR
         (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 8) OR
-        (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 8 AND ${CMAKE_PATCH_VERSION} GREATER 9))
+        (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 8 AND ${CMAKE_PATCH_VERSION} GREATER 10))
         cmake_policy(SET CMP0020 OLD)
     endif()
     # nicer version check - but needs at least CMake 2.6.2? Worth upgrading the requirements?
@@ -54,7 +54,7 @@ PROJECT(OpenSceneGraph)
 SET(OPENSCENEGRAPH_MAJOR_VERSION 3)
 SET(OPENSCENEGRAPH_MINOR_VERSION 3)
 SET(OPENSCENEGRAPH_PATCH_VERSION 8)
-SET(OPENSCENEGRAPH_SOVERSION 121)
+SET(OPENSCENEGRAPH_SOVERSION 122)
 
 # set to 0 when not a release candidate, non zero means that any generated
 # svn tags will be treated as release candidates of given number

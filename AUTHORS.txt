@@ -1,6 +1,6 @@
 OpenSceneGraph Library 3.3.8
 
-545 Contributors:
+547 Contributors:
 
 Firstname Surname
 -----------------
@@ -60,10 +60,10 @@ Art Tevs
 Philip Lowman
 Per Fahlberg
 Norman Vine
+Chris Denham
 Terry Welsh
 Serge Lages
 Romano José Magacho da Silva
-Chris Denham
 Alberto Farre
 Torben Dannhauer
 Sherman Wilcox
@@ -296,6 +296,7 @@ Guillaume Taze
 Guillaume Chouvenc
 Giuseppe Donvito
 Gill Peacegood
+Giampaolo Viganò
 Gerrick Bivins
 George Tarantilis
 Ferdi Smit
@@ -477,7 +478,6 @@ Gunter Huber
 Gregory Jaegy
 Graeme Harkness
 Gian Lorenzetto
-Giampaolo Viganò
 George Papagiannakis
 Galen Faidley
 Frida Schlaug
@@ -500,6 +500,7 @@ Duvan Cope
 Duncan Cavens
 Drew Whitehouse
 Douglas A. Pouk
+Dmitriy Ogalcev
 Dean Iverson
 David Jung
 Danny Valente
@@ -515,6 +516,7 @@ Christopher Blaesius
 Christopher Baker
 Christophe Herreman
 Christian Noon
+Christian Kehl
 Christian Kaser
 Christian Ehrlicher
 Chris McGlone

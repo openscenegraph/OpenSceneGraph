@@ -481,7 +481,8 @@ TypoCorrection typoCorrections[] =
     {"Ravsel",  "Rav¨elj"},
     {"Ravselj", "Rav¨elj"},
     {"Janik", "Jannik"},
-    {"ViganÃ²", "Viganò"}
+    {"ViganÃ²", "Viganò"},
+    {"Vigano", "Viganò"}
 };
 
 

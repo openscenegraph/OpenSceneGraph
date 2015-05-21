@@ -369,12 +369,11 @@ void Text3D::computeGlyphRepresentation()
             ++itr;
         }
 
-        if (itr!=_text.end())
-        {
-            // skip over spaces and return.
-            while (*itr==' ') ++itr;
-            if (*itr=='\n') ++itr;
-        }
+        // skip over spaces
+        while ((itr!=_text.end()) && (*itr==' ')) ++itr;
+
+        // skip over return
+        if ((itr!=_text.end()) && (*itr=='\n')) ++itr;
 
         // move to new line.
         switch(_layout)

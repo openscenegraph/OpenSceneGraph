@@ -20,10 +20,14 @@
 
 namespace osg {
 
-/** Observer base class for tracking when objects are unreferenced (their reference count goes to 0) and are being deleted.*/
+/** Observer base class for tracking objects. When objects are unreferenced (their reference count
+*   goes to 0) and are being deleted, observers are guaranteed to be notified. In addition, some
+*    objects may signal internal state changes. If and under which circumstances the object does so
+*   depends on the specific implementation. */
 class OSG_EXPORT Observer
 {
     public:
+
         Observer();
         virtual ~Observer();
 
@@ -32,9 +36,14 @@ class OSG_EXPORT Observer
         * to call removeObserver() on the observed object. */
         virtual void objectDeleted(void*) {}
 
+        /** objectStateChanged is called when the observed object's internal state changed. Note
+        * that it depends on the specific implementation of the observed object, if and under which
+        * circumstances objectStateChanged is called. */
+        virtual void objectStateChanged(void*, ObserverRecord* /*data*/ = 0) {}
+
 };
 
-/** Class used by osg::Referenced to track the observers associated with it.*/
+/** Class used by osg::Referenced and siblings to track the observers associated with it.*/
 class OSG_EXPORT ObserverSet : public osg::Referenced
 {
     public:
@@ -56,6 +65,7 @@ class OSG_EXPORT ObserverSet : public osg::Referenced
         void removeObserver(Observer* observer);
 
         void signalObjectDeleted(void* ptr);
+        void signalObjectStateChanged(void* ptr, ObserverRecord* data = 0);
 
         typedef std::set<Observer*> Observers;
         Observers& getObservers() { return _observers; }

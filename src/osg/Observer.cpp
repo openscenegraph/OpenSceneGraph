@@ -83,3 +83,15 @@ void ObserverSet::signalObjectDeleted(void* ptr)
     // reset the observed object so that we know that it's now detached.
     _observedObject = 0;
 }
+
+void ObserverSet::signalObjectStateChanged(void* ptr, ObserverRecord* data)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
+    for(Observers::iterator itr = _observers.begin();
+        itr != _observers.end();
+       ++itr)
+    {
+        (*itr)->objectStateChanged(ptr, data);
+    }
+}

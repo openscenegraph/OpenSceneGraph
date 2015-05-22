@@ -193,3 +193,12 @@ BoundingSphere Transform::computeBound() const
     return bsphere;
 
 }
+
+void Transform::notifyObservers()
+{
+    if (ObserverSet* observerSet = Referenced::getObserverSet())
+    {
+        ObserverRecord scoped;
+        observerSet->signalObjectStateChanged(this, &scoped);
+    }
+}

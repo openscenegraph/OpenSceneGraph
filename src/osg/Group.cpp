@@ -106,6 +106,13 @@ bool Group::insertChild( unsigned int index, Node *child )
         // tell any subclasses that a child has been inserted so that they can update themselves.
         childInserted(index);
 
+        // also tell external observers that a child has been inserted.
+        if (ObserverSet* observerSet = Referenced::getObserverSet())
+        {
+            ObserverRecord scoped(ObserverRecord::Inserted, index);
+            observerSet->signalObjectStateChanged(this, &scoped);
+        }
+
         dirtyBound();
 
         // could now require app traversal thanks to the new subgraph,
@@ -223,6 +230,14 @@ bool Group::removeChildren(unsigned int pos,unsigned int numChildrenToRemove)
         }
 
         dirtyBound();
+
+        // notify external observers that children have been removed.
+        if (ObserverSet* observerSet = Referenced::getObserverSet())
+        {
+            ObserverRecord scoped(ObserverRecord::Removed, pos, numChildrenToRemove);
+            observerSet->signalObjectStateChanged(this, &scoped);
+        }
+
 
         return true;
     }

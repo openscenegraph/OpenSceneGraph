@@ -38,6 +38,12 @@ struct depends_on
     depends_on() { M(); }
 };
 
+/** Base class to derive observer notifications from */
+struct ObserverRecord
+{
+    virtual ~ObserverRecord() {}
+};
+
 /** Base class for providing reference counted objects.*/
 class OSG_EXPORT Referenced
 {
@@ -109,7 +115,7 @@ class OSG_EXPORT Referenced
         /** Get the ObserverSet if one is attached, otherwise create an ObserverSet, attach it, then return this newly created ObserverSet.*/
         ObserverSet* getOrCreateObserverSet() const;
 
-        /** Add a Observer that is observing this object, notify the Observer when this object gets deleted.*/
+        /** Add a Observer that is observing this object, notify the Observer when this object gets deleted or its state changed.*/
         void addObserver(Observer* observer) const;
 
         /** Remove Observer that is observing this object.*/

@@ -150,6 +150,47 @@ class OSG_EXPORT Group : public Node
 
         virtual BoundingSphere computeBound() const;
 
+
+        /** Passed to observers via ObserverSet::signalObjectStateChanged() when children were
+           * inserted or removed. */
+        class ObserverRecord : public osg::ObserverRecord
+        {
+            public:
+
+                enum EventType { Inserted, Removed };
+
+                ObserverRecord(EventType e, unsigned int index)
+                    : _event(e)
+                    , _firstIndex(index)
+                    , _numChildren(1)
+                {
+                }
+
+                ObserverRecord(EventType e, unsigned int firstIndex, unsigned int numChildren)
+                    : _event(e)
+                    , _firstIndex(firstIndex)
+                    , _numChildren(numChildren)
+                {
+                }
+
+                /** Get the event type that caused the notification. */
+                EventType getEventType() const { return _event; }
+
+                /** Get a range [first,last) into base class' \ref _children member */
+                std::pair<unsigned int, unsigned int> getRange() const
+                {
+                    return std::make_pair(_firstIndex, _firstIndex + _numChildren);
+                }
+
+            private:
+
+                EventType    _event;
+                unsigned int _firstIndex;
+                unsigned int _numChildren;
+
+        };
+
+
     protected:
 
         virtual ~Group();

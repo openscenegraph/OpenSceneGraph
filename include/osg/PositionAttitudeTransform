@@ -43,24 +43,28 @@ class OSG_EXPORT PositionAttitudeTransform : public Transform
         virtual PositionAttitudeTransform* asPositionAttitudeTransform() { return this; }
         virtual const PositionAttitudeTransform* asPositionAttitudeTransform() const { return this; }
 
-        inline void setPosition(const Vec3d& pos) { _position = pos; dirtyBound(); }
+        inline void setPosition(const Vec3d& pos) { _position = pos; notifyObservers(); dirtyBound(); }
         inline const Vec3d& getPosition() const { return _position; }
 
 
-        inline void setAttitude(const Quat& quat) { _attitude = quat; dirtyBound(); }
+        inline void setAttitude(const Quat& quat) { _attitude = quat; notifyObservers(); dirtyBound(); }
         inline const Quat& getAttitude() const { return _attitude; }
 
 
-        inline void setScale(const Vec3d& scale) { _scale = scale; dirtyBound(); }
+        inline void setScale(const Vec3d& scale) { _scale = scale; notifyObservers(); dirtyBound(); }
         inline const Vec3d& getScale() const { return _scale; }
 
 
-        inline void setPivotPoint(const Vec3d& pivot) { _pivotPoint = pivot; dirtyBound(); }
+        inline void setPivotPoint(const Vec3d& pivot) { _pivotPoint = pivot; notifyObservers(); dirtyBound(); }
         inline const Vec3d& getPivotPoint() const { return _pivotPoint; }
 
 
         virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const;
         virtual bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const;
+
+
+        /** Passed to external observers on change. */
+        struct ObserverRecord : Transform::ObserverRecord {};
 
 
     protected :

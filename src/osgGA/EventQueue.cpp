@@ -138,7 +138,7 @@ void EventQueue::syncWindowRectangleWithGraphicsContext()
     if (traits) _accumulateEventState->setWindowRectangle(traits->x, traits->y, traits->width, traits->height, !_useFixedMouseInputRange);
 }
 
-void EventQueue::windowResize(int x, int y, int width, int height, double time)
+osgGA::GUIEventAdapter* EventQueue::windowResize(int x, int y, int width, int height, double time)
 {
     _accumulateEventState->setWindowRectangle(x, y, width, height, !_useFixedMouseInputRange);
 
@@ -147,9 +147,11 @@ void EventQueue::windowResize(int x, int y, int width, int height, double time)
     event->setTime(time);
 
     addEvent(event);
+    
+    return event;
 }
 
-void EventQueue::penPressure(float pressure, double time)
+osgGA::GUIEventAdapter* EventQueue::penPressure(float pressure, double time)
 {
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
     event->setEventType(GUIEventAdapter::PEN_PRESSURE);
@@ -157,9 +159,11 @@ void EventQueue::penPressure(float pressure, double time)
     event->setTime(time);
 
     addEvent(event);
+
+    return event;
 }
 
-void EventQueue::penOrientation(float tiltX, float tiltY, float rotation, double time)
+osgGA::GUIEventAdapter* EventQueue::penOrientation(float tiltX, float tiltY, float rotation, double time)
 {
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
     event->setEventType(GUIEventAdapter::PEN_ORIENTATION);
@@ -169,9 +173,11 @@ void EventQueue::penOrientation(float tiltX, float tiltY, float rotation, double
     event->setTime(time);
 
     addEvent(event);
+
+    return event;
 }
 
-void EventQueue::penProximity(GUIEventAdapter::TabletPointerType pt, bool isEntering, double time)
+osgGA::GUIEventAdapter* EventQueue::penProximity(GUIEventAdapter::TabletPointerType pt, bool isEntering, double time)
 {
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
     event->setEventType( (isEntering) ? GUIEventAdapter::PEN_PROXIMITY_ENTER : GUIEventAdapter::PEN_PROXIMITY_LEAVE);
@@ -179,9 +185,11 @@ void EventQueue::penProximity(GUIEventAdapter::TabletPointerType pt, bool isEnte
     event->setTime(time);
 
     addEvent(event);
+
+    return event;
 }
 
-void EventQueue::mouseScroll(GUIEventAdapter::ScrollingMotion sm, double time)
+osgGA::GUIEventAdapter* EventQueue::mouseScroll(GUIEventAdapter::ScrollingMotion sm, double time)
 {
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
     event->setEventType(GUIEventAdapter::SCROLL);
@@ -189,9 +197,11 @@ void EventQueue::mouseScroll(GUIEventAdapter::ScrollingMotion sm, double time)
     event->setTime(time);
 
     addEvent(event);
+
+    return event;
 }
 
-void EventQueue::mouseScroll2D(float x, float y, double time)
+osgGA::GUIEventAdapter* EventQueue::mouseScroll2D(float x, float y, double time)
 {
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
     event->setEventType(GUIEventAdapter::SCROLL);
@@ -199,6 +209,8 @@ void EventQueue::mouseScroll2D(float x, float y, double time)
     event->setTime(time);
 
     addEvent(event);
+
+    return event;
 }
 
 
@@ -209,7 +221,7 @@ void EventQueue::mouseWarped(float x, float y)
 }
 
 
-void EventQueue::mouseMotion(float x, float y, double time)
+osgGA::GUIEventAdapter* EventQueue::mouseMotion(float x, float y, double time)
 {
     _accumulateEventState->setX(x);
     _accumulateEventState->setY(y);
@@ -219,9 +231,11 @@ void EventQueue::mouseMotion(float x, float y, double time)
     event->setTime(time);
 
     addEvent(event);
+
+    return event;
 }
 
-void EventQueue::mouseButtonPress(float x, float y, unsigned int button, double time)
+osgGA::GUIEventAdapter* EventQueue::mouseButtonPress(float x, float y, unsigned int button, double time)
 {
     _accumulateEventState->setX(x);
     _accumulateEventState->setY(y);
@@ -257,9 +271,11 @@ void EventQueue::mouseButtonPress(float x, float y, unsigned int button, double 
     }
 
     addEvent(event);
+
+    return event;
 }
 
-void EventQueue::mouseDoubleButtonPress(float x, float y, unsigned int button, double time)
+osgGA::GUIEventAdapter* EventQueue::mouseDoubleButtonPress(float x, float y, unsigned int button, double time)
 {
     _accumulateEventState->setX(x);
     _accumulateEventState->setY(y);
@@ -295,9 +311,11 @@ void EventQueue::mouseDoubleButtonPress(float x, float y, unsigned int button, d
     }
 
     addEvent(event);
+
+    return event;
 }
 
-void EventQueue::mouseButtonRelease(float x, float y, unsigned int button, double time)
+osgGA::GUIEventAdapter* EventQueue::mouseButtonRelease(float x, float y, unsigned int button, double time)
 {
     _accumulateEventState->setX(x);
     _accumulateEventState->setY(y);
@@ -333,9 +351,11 @@ void EventQueue::mouseButtonRelease(float x, float y, unsigned int button, doubl
     }
 
     addEvent(event);
+
+    return event;
 }
 
-void EventQueue::keyPress(int key, double time, int unmodifiedKey)
+osgGA::GUIEventAdapter* EventQueue::keyPress(int key, double time, int unmodifiedKey)
 {
     switch(key)
     {
@@ -377,9 +397,11 @@ void EventQueue::keyPress(int key, double time, int unmodifiedKey)
     event->setTime(time);
 
     addEvent(event);
+    
+    return event;
 }
 
-void EventQueue::keyRelease(int key, double time, int unmodifiedKey)
+osgGA::GUIEventAdapter* EventQueue::keyRelease(int key, double time, int unmodifiedKey)
 {
     switch(key)
     {
@@ -405,10 +427,12 @@ void EventQueue::keyRelease(int key, double time, int unmodifiedKey)
     event->setTime(time);
 
     addEvent(event);
+
+    return event;
 }
 
 
-GUIEventAdapter*  EventQueue::touchBegan(unsigned int id, GUIEventAdapter::TouchPhase phase, float x, float y, double time)
+GUIEventAdapter* EventQueue::touchBegan(unsigned int id, GUIEventAdapter::TouchPhase phase, float x, float y, double time)
 {
     if(_firstTouchEmulatesMouse)
     {
@@ -432,7 +456,7 @@ GUIEventAdapter*  EventQueue::touchBegan(unsigned int id, GUIEventAdapter::Touch
 }
 
 
-GUIEventAdapter*  EventQueue::touchMoved(unsigned int id, GUIEventAdapter::TouchPhase phase, float x, float y, double time)
+GUIEventAdapter* EventQueue::touchMoved(unsigned int id, GUIEventAdapter::TouchPhase phase, float x, float y, double time)
 {
     if(_firstTouchEmulatesMouse)
     {
@@ -449,7 +473,7 @@ GUIEventAdapter*  EventQueue::touchMoved(unsigned int id, GUIEventAdapter::Touch
     return event;
 }
 
-GUIEventAdapter*  EventQueue::touchEnded(unsigned int id, GUIEventAdapter::TouchPhase phase, float x, float y, unsigned int tap_count, double time)
+GUIEventAdapter* EventQueue::touchEnded(unsigned int id, GUIEventAdapter::TouchPhase phase, float x, float y, unsigned int tap_count, double time)
 {
     if (_firstTouchEmulatesMouse)
     {
@@ -471,34 +495,38 @@ GUIEventAdapter*  EventQueue::touchEnded(unsigned int id, GUIEventAdapter::Touch
 }
 
 
-void EventQueue::closeWindow(double time)
+osgGA::GUIEventAdapter* EventQueue::closeWindow(double time)
 {
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
     event->setEventType(GUIEventAdapter::CLOSE_WINDOW);
     event->setTime(time);
 
     addEvent(event);
+    
+    return event;
 }
 
-void EventQueue::quitApplication(double time)
+osgGA::GUIEventAdapter* EventQueue::quitApplication(double time)
 {
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
     event->setEventType(GUIEventAdapter::QUIT_APPLICATION);
     event->setTime(time);
 
     addEvent(event);
+    
+    return event;
 }
 
 
-void EventQueue::frame(double time)
+osgGA::GUIEventAdapter* EventQueue::frame(double time)
 {
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
     event->setEventType(GUIEventAdapter::FRAME);
     event->setTime(time);
 
-    // OSG_NOTICE<<"frame("<<time<<"), event->getX()="<<event->getX()<<", event->getY()="<<event->getY()<<", event->getXmin()="<<event->getXmin()<<", event->getYmin()="<<event->getYmin()<<", event->getXmax()="<<event->getXmax()<<", event->getYmax()="<<event->getYmax()<<std::endl;
-
     addEvent(event);
+    
+    return event;
 }
 
 GUIEventAdapter* EventQueue::createEvent()
@@ -507,7 +535,7 @@ GUIEventAdapter* EventQueue::createEvent()
     else return new GUIEventAdapter();
 }
 
-void EventQueue::userEvent(osg::Referenced* userEventData, double time)
+GUIEventAdapter* EventQueue::userEvent(osg::Referenced* userEventData, double time)
 {
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
     event->setEventType(GUIEventAdapter::USER);
@@ -515,6 +543,8 @@ void EventQueue::userEvent(osg::Referenced* userEventData, double time)
     event->setTime(time);
 
     addEvent(event);
+
+    return event;
 }
 
 

@@ -853,6 +853,8 @@ void CompositeViewer::generatePointerData(osgGA::GUIEventAdapter& event)
     event.addPointerData(new osgGA::PointerData(gw, x, 0, gw->getTraits()->width,
                                                     y, 0, gw->getTraits()->height));
 
+    event.setMouseYOrientationAndUpdateCoords(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
+
     typedef std::vector<osg::Camera*> CameraVector;
     CameraVector activeCameras;
 
@@ -910,6 +912,8 @@ void CompositeViewer::reprojectPointerData(osgGA::GUIEventAdapter& source_event,
 
     dest_event.addPointerData(new osgGA::PointerData(gw, x, 0, gw->getTraits()->width,
                                                          y, 0, gw->getTraits()->height));
+
+    dest_event.setMouseYOrientationAndUpdateCoords(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
 
     osg::Camera* camera = (source_event.getNumPointerData()>=2) ? dynamic_cast<osg::Camera*>(source_event.getPointerData(1)->object.get()) : 0;
     osg::Viewport* viewport = camera ? camera->getViewport() : 0;
@@ -1015,17 +1019,6 @@ void CompositeViewer::eventTraversal()
                     reprojectPointerData(*_previousEvent, *event);
                 }
 
-#if 0
-                // assign topmost PointeData settings as the events X,Y and InputRange
-                osgGA::PointerData* pd = event->getPointerData(event->getNumPointerData()-1);
-                event->setX(pd->x);
-                event->setY(pd->y);
-                event->setInputRange(pd->xMin, pd->yMin, pd->xMax, pd->yMax);
-                event->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
-#else
-                event->setMouseYOrientationAndUpdateCoords(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
-#endif
-
                 _previousEvent = event;
 
                 break;
@@ -1117,8 +1110,20 @@ void CompositeViewer::eventTraversal()
             es->getEventQueue()->takeEvents(viewEventsMap[view], cutOffTime);
         }
 
-        // generate frame event
-        view->getEventQueue()->frame( getFrameStamp()->getReferenceTime() );
+        // create a frame event for the new frame.
+        {
+            osgGA::GUIEventAdapter* event = view->getEventQueue()->frame( getFrameStamp()->getReferenceTime() );
+            
+            if (!_previousEvent || _previousEvent->getNumPointerData()<2)
+            {
+                generatePointerData(*event);
+            }
+            else
+            {
+                reprojectPointerData(*_previousEvent, *event);
+            }
+        }
+        
 
         view->getEventQueue()->takeEvents(viewEventsMap[view], cutOffTime);
     }

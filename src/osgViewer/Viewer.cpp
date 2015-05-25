@@ -786,6 +786,8 @@ void Viewer::generatePointerData(osgGA::GUIEventAdapter& event)
     event.addPointerData(new osgGA::PointerData(gw, x, 0, gw->getTraits()->width,
                                                     y, 0, gw->getTraits()->height));
 
+    event.setMouseYOrientationAndUpdateCoords(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
+
     typedef std::vector<osg::Camera*> CameraVector;
     CameraVector activeCameras;
 
@@ -843,6 +845,8 @@ void Viewer::reprojectPointerData(osgGA::GUIEventAdapter& source_event, osgGA::G
     dest_event.addPointerData(new osgGA::PointerData(gw, x, 0, gw->getTraits()->width,
                                                          y, 0, gw->getTraits()->height));
 
+    dest_event.setMouseYOrientationAndUpdateCoords(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
+
     osg::Camera* camera = (source_event.getNumPointerData()>=2) ? dynamic_cast<osg::Camera*>(source_event.getPointerData(1)->object.get()) : 0;
     osg::Viewport* viewport = camera ? camera->getViewport() : 0;
 
@@ -856,6 +860,10 @@ void Viewer::reprojectPointerData(osgGA::GUIEventAdapter& source_event, osgGA::G
     {
         generateSlavePointerData(camera, dest_event);
     }
+}
+
+void generateOrReprojectPointerData(osgGA::GUIEventAdapter& source_event, osgGA::GUIEventAdapter& dest_event)
+{
 }
 
 void Viewer::eventTraversal()
@@ -936,16 +944,6 @@ void Viewer::eventTraversal()
                             reprojectPointerData(*eventState, *event);
                         }
 
-#if 0
-                        // assign topmost PointeData settings as the events X,Y and InputRange
-                        osgGA::PointerData* pd = event->getPointerData(event->getNumPointerData()-1);
-                        event->setX(pd->x);
-                        event->setY(pd->y);
-                        event->setInputRange(pd->xMin, pd->yMin, pd->xMax, pd->yMax);
-                        event->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
-#else
-                        event->setMouseYOrientationAndUpdateCoords(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
-#endif
 
                         eventState->copyPointerDataFrom(*event);
 
@@ -988,8 +986,19 @@ void Viewer::eventTraversal()
     }
 
     // create a frame event for the new frame.
-    _eventQueue->frame( getFrameStamp()->getReferenceTime() );
-
+    {
+        osgGA::GUIEventAdapter* event = _eventQueue->frame( getFrameStamp()->getReferenceTime() );
+        
+        if (!eventState || eventState->getNumPointerData()<2)
+        {
+            generatePointerData(*event);
+        }
+        else
+        {
+            reprojectPointerData(*eventState, *event);
+        }
+    }
+    
     // OSG_NOTICE<<"mouseEventState Xmin = "<<eventState->getXmin()<<" Ymin="<<eventState->getYmin()<<" xMax="<<eventState->getXmax()<<" Ymax="<<eventState->getYmax()<<std::endl;
 
     _eventQueue->takeEvents(events, cutOffTime);

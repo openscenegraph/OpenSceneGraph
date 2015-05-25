@@ -84,43 +84,43 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
 
 
         /** Method for adapting window resize event, placing this event on the back of the event queue. */
-        void windowResize(int x, int y, int width, int height) { windowResize(x,y,width,height,getTime()); }
+        osgGA::GUIEventAdapter* windowResize(int x, int y, int width, int height) { return windowResize(x,y,width,height,getTime()); }
 
         /** Method for adapting window resize event, placing this event on the back of the event queue, with specified time. */
-        void windowResize(int x, int y, int width, int height, double time);
+        osgGA::GUIEventAdapter* windowResize(int x, int y, int width, int height, double time);
 
 
         /** Method for adapting mouse scroll wheel events, placing this event on the back of the event queue. */
-        void mouseScroll(GUIEventAdapter::ScrollingMotion sm) { mouseScroll(sm,getTime()); }
+        osgGA::GUIEventAdapter* mouseScroll(GUIEventAdapter::ScrollingMotion sm) { return mouseScroll(sm,getTime()); }
 
         /** Method for adapting mouse scroll wheel events, placing this event on the back of the event queue, with specified time. */
-        void mouseScroll(GUIEventAdapter::ScrollingMotion sm, double time);
+        osgGA::GUIEventAdapter* mouseScroll(GUIEventAdapter::ScrollingMotion sm, double time);
 
 
         /** Method for adapting mouse scroll wheel events, placing this event on the back of the event queue. */
-        void mouseScroll2D(float x, float y) { mouseScroll2D(x, y, getTime()); }
+        osgGA::GUIEventAdapter* mouseScroll2D(float x, float y) { return mouseScroll2D(x, y, getTime()); }
 
         /** Method for adapting mouse scroll wheel events, placing this event on the back of the event queue. */
-        void mouseScroll2D(float x, float y, double time);
+        osgGA::GUIEventAdapter* mouseScroll2D(float x, float y, double time);
 
 
         /** Method for adapting pen pressure events, placing this event on the back of the event queue.*/
-        void penPressure(float pressure) { penPressure(pressure, getTime()); }
+        osgGA::GUIEventAdapter* penPressure(float pressure) { return penPressure(pressure, getTime()); }
 
         /** Method for adapting pen pressure events, placing this event on the back of the event queue, with specified time.*/
-        void penPressure(float pressure, double time);
+        osgGA::GUIEventAdapter* penPressure(float pressure, double time);
 
         /** Method for adapting pen orientation events, placing this event on the back of the event queue.*/
-        void penOrientation(float tiltX, float tiltY, float rotation) { penOrientation(tiltX, tiltY, rotation, getTime()); }
+        osgGA::GUIEventAdapter* penOrientation(float tiltX, float tiltY, float rotation) { return penOrientation(tiltX, tiltY, rotation, getTime()); }
 
         /** Method for adapting pen orientation events, placing this event on the back of the event queue, with specified time.*/
-        void penOrientation(float tiltX, float tiltY, float rotation, double time);
+        osgGA::GUIEventAdapter* penOrientation(float tiltX, float tiltY, float rotation, double time);
 
          /** Method for adapting pen proximity events, placing this event on the back of the event queue.*/
-        void penProximity(GUIEventAdapter::TabletPointerType pt, bool isEntering) { penProximity(pt, isEntering, getTime()); }
+        osgGA::GUIEventAdapter* penProximity(GUIEventAdapter::TabletPointerType pt, bool isEntering) { return penProximity(pt, isEntering, getTime()); }
 
          /** Method for adapting pen proximity events, placing this event on the back of the event queue, with specified time.*/
-        void penProximity(GUIEventAdapter::TabletPointerType pt, bool isEntering, double time);
+        osgGA::GUIEventAdapter* penProximity(GUIEventAdapter::TabletPointerType pt, bool isEntering, double time);
 
 
         /** Method for updating in response to a mouse warp. Note, just moves the mouse position without creating a new event for it.*/
@@ -128,51 +128,51 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
 
 
         /** Method for adapting mouse motion events, placing this event on the back of the event queue.*/
-        void mouseMotion(float x, float y) { mouseMotion(x,y, getTime()); }
+        osgGA::GUIEventAdapter* mouseMotion(float x, float y) { return mouseMotion(x,y, getTime()); }
 
         /** Method for adapting mouse motion events, placing this event on the back of the event queue, with specified time.*/
-        void mouseMotion(float x, float y, double time);
+        osgGA::GUIEventAdapter* mouseMotion(float x, float y, double time);
 
 
         /** Method for adapting mouse button pressed events, placing this event on the back of the event queue.
           * Button numbering is 1 for left mouse button, 2 for middle, 3 for right. */
-        void mouseButtonPress(float x, float y, unsigned int button) { mouseButtonPress(x, y, button, getTime()); }
+        osgGA::GUIEventAdapter* mouseButtonPress(float x, float y, unsigned int button) { return mouseButtonPress(x, y, button, getTime()); }
 
         /** Method for adapting mouse button pressed events, placing this event on the back of the event queue, with specified time.
           * Button numbering is 1 for left mouse button, 2 for middle, 3 for right. */
-        void mouseButtonPress(float x, float y, unsigned int button, double time);
+        osgGA::GUIEventAdapter* mouseButtonPress(float x, float y, unsigned int button, double time);
 
 
         /** Method for adapting mouse button pressed events, placing this event on the back of the event queue.
           * Button numbering is 1 for left mouse button, 2 for middle, 3 for right. */
-        void mouseDoubleButtonPress(float x, float y, unsigned int button) { mouseDoubleButtonPress(x, y, button, getTime()); }
+        osgGA::GUIEventAdapter* mouseDoubleButtonPress(float x, float y, unsigned int button) { return mouseDoubleButtonPress(x, y, button, getTime()); }
 
         /** Method for adapting mouse button pressed events, placing this event on the back of the event queue, with specified time.
           * Button numbering is 1 for left mouse button, 2 for middle, 3 for right. */
-        void mouseDoubleButtonPress(float x, float y, unsigned int button, double time);
+        osgGA::GUIEventAdapter* mouseDoubleButtonPress(float x, float y, unsigned int button, double time);
 
 
         /** Method for adapting mouse button release events, placing this event on the back of the event queue.
           * Button numbering is 1 for left mouse button, 2 for middle, 3 for right. */
-        void mouseButtonRelease(float x, float y, unsigned int button) { mouseButtonRelease(x, y, button, getTime()); }
+        osgGA::GUIEventAdapter* mouseButtonRelease(float x, float y, unsigned int button) { return mouseButtonRelease(x, y, button, getTime()); }
 
         /** Method for adapting mouse button release events, placing this event on the back of the event queue, with specified time.
           * Button numbering is 1 for left mouse button, 2 for middle, 3 for right. */
-        void mouseButtonRelease(float x, float y, unsigned int button, double time);
+        osgGA::GUIEventAdapter* mouseButtonRelease(float x, float y, unsigned int button, double time);
 
 
         /** Method for adapting keyboard press events. Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings.*/
-        void keyPress(int key, int unmodifiedKey = 0) { keyPress(key, getTime(), unmodifiedKey); }
+        osgGA::GUIEventAdapter* keyPress(int key, int unmodifiedKey = 0) { return keyPress(key, getTime(), unmodifiedKey); }
 
         /** Method for adapting keyboard press events. Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings, with specified time.*/
-        void keyPress(int key, double time, int unmodifiedKey = 0);
+        osgGA::GUIEventAdapter* keyPress(int key, double time, int unmodifiedKey = 0);
 
 
         /** Method for adapting keyboard press events. Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings.*/
-        void keyRelease(int key, int unmodifiedKey = 0) { keyRelease(key, getTime(), unmodifiedKey); }
+        osgGA::GUIEventAdapter* keyRelease(int key, int unmodifiedKey = 0) { return keyRelease(key, getTime(), unmodifiedKey); }
 
         /** Method for adapting keyboard press events. Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings, with specified time.*/
-        void keyRelease(int key, double time, int unmodifiedKey = 0);
+        osgGA::GUIEventAdapter* keyRelease(int key, double time, int unmodifiedKey = 0);
 
         GUIEventAdapter* touchBegan(unsigned int id, GUIEventAdapter::TouchPhase phase, float x, float y, double time);
         GUIEventAdapter*  touchBegan(unsigned int id, GUIEventAdapter::TouchPhase phase,  float x, float y) {
@@ -192,21 +192,21 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
 
 
         /** Method for adapting close window events.*/
-        void closeWindow() { closeWindow(getTime()); }
+        osgGA::GUIEventAdapter* closeWindow() { return closeWindow(getTime()); }
 
         /** Method for adapting close window event with specified event time.*/
-        void closeWindow(double time);
+        osgGA::GUIEventAdapter* closeWindow(double time);
 
 
         /** Method for adapting application quit events.*/
-        void quitApplication() { quitApplication(getTime()); }
+        osgGA::GUIEventAdapter* quitApplication() { return quitApplication(getTime()); }
 
         /** Method for adapting application quit events with specified event time.*/
-        void quitApplication(double time);
+        osgGA::GUIEventAdapter* quitApplication(double time);
 
 
         /** Method for adapting frame events.*/
-        void frame(double time);
+        osgGA::GUIEventAdapter* frame(double time);
 
 
         void setStartTick(osg::Timer_t tick) { _startTick = tick; clear(); }
@@ -226,10 +226,10 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         const GUIEventAdapter* getCurrentEventState() const { return _accumulateEventState.get(); }
 
         /** Method for adapting user defined events */
-        void userEvent(osg::Referenced* userEventData) { userEvent(userEventData, getTime()); }
+        GUIEventAdapter* userEvent(osg::Referenced* userEventData) { return userEvent(userEventData, getTime()); }
 
         /** Method for adapting user defined events with specified event time */
-        void userEvent(osg::Referenced* userEventData, double time);
+        GUIEventAdapter* userEvent(osg::Referenced* userEventData, double time);
 
         void setFirstTouchEmulatesMouse(bool b) { _firstTouchEmulatesMouse = b; }
         bool getFirstTouchEmulatesMouse() const { return _firstTouchEmulatesMouse; }

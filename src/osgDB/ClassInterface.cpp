@@ -536,7 +536,7 @@ bool ClassInterface::getSupportedProperties(const osg::Object* object, PropertyM
         unsigned int i=0;
         for(osgDB::ObjectWrapper::SerializerList::const_iterator itr = serializers.begin();
             itr != serializers.end();
-            ++itr)
+            ++itr, ++i)
         {
             const std::string& propertyName = (*itr)->getName();
             bool notBlackListed = (bl_itr == _blackList.end()) || (bl_itr->second.count(propertyName)==0);

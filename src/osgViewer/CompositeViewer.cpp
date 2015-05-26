@@ -1112,7 +1112,7 @@ void CompositeViewer::eventTraversal()
 
         // create a frame event for the new frame.
         {
-            osgGA::GUIEventAdapter* event = view->getEventQueue()->frame( getFrameStamp()->getReferenceTime() );
+            osg::ref_ptr<osgGA::GUIEventAdapter> event = view->getEventQueue()->frame( getFrameStamp()->getReferenceTime() );
             
             if (!_previousEvent || _previousEvent->getNumPointerData()<2)
             {

@@ -987,7 +987,7 @@ void Viewer::eventTraversal()
 
     // create a frame event for the new frame.
     {
-        osgGA::GUIEventAdapter* event = _eventQueue->frame( getFrameStamp()->getReferenceTime() );
+        osg::ref_ptr<osgGA::GUIEventAdapter> event = _eventQueue->frame( getFrameStamp()->getReferenceTime() );
         
         if (!eventState || eventState->getNumPointerData()<2)
         {

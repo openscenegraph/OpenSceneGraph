@@ -1146,14 +1146,15 @@ void SceneView::draw()
                 _renderStageRight->drawPreRenderStages(_renderInfo,previous);
 
                 double separation = _displaySettings->getSplitStereoHorizontalSeparation();
+                if (separation > 0.0)
+                {
+                    double  left_half_width = (getViewport()->width()-separation)/2.0;
 
-                double  left_half_width = (getViewport()->width()-separation)/2.0;
-
-                clearArea(static_cast<int>(getViewport()->x()+left_half_width),
-                          static_cast<int>(getViewport()->y()),
-                          static_cast<int>(separation),
-                          static_cast<int>(getViewport()->height()),_renderStageLeft->getClearColor());
-
+                    clearArea(static_cast<int>(getViewport()->x()+left_half_width),
+                              static_cast<int>(getViewport()->y()),
+                              static_cast<int>(separation),
+                              static_cast<int>(getViewport()->height()),_renderStageLeft->getClearColor());
+                }
 
                 _localStateSet->setAttribute(_viewportLeft.get());
                 _renderStageLeft->draw(_renderInfo,previous);
@@ -1196,14 +1197,16 @@ void SceneView::draw()
                 _renderStageRight->drawPreRenderStages(_renderInfo,previous);
 
                 double separation = _displaySettings->getSplitStereoVerticalSeparation();
+                if (separation > 0.0)
+                {
+                    double bottom_half_height = (getViewport()->height()-separation)/2.0;
 
-                double bottom_half_height = (getViewport()->height()-separation)/2.0;
-
-                clearArea(static_cast<int>(getViewport()->x()),
-                          static_cast<int>(getViewport()->y()+bottom_half_height),
-                          static_cast<int>(getViewport()->width()),
-                          static_cast<int>(separation),
-                          _renderStageLeft->getClearColor());
+                    clearArea(static_cast<int>(getViewport()->x()),
+                              static_cast<int>(getViewport()->y()+bottom_half_height),
+                              static_cast<int>(getViewport()->width()),
+                              static_cast<int>(separation),
+                              _renderStageLeft->getClearColor());
+                }
 
                 _localStateSet->setAttribute(_viewportLeft.get());
                 _renderStageLeft->draw(_renderInfo,previous);

@@ -1167,7 +1167,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     // so there is no need to call it here.
     drawPreRenderStages(renderInfo,previous);
 
-    if (_cameraRequiresSetUp || (_cameraAttachmentMapModifiedCount!=_camera->getAttachmentMapModifiedCount()))
+    if (_cameraRequiresSetUp || (_camera.valid() && _cameraAttachmentMapModifiedCount!=_camera->getAttachmentMapModifiedCount()))
     {
         runCameraSetUp(renderInfo);
     }

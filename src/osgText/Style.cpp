@@ -23,12 +23,14 @@ using namespace osgText;
 //
 Bevel::Bevel()
 {
+    _smoothConcaveJunctions = false;
     _thickness = 0.02f;
     flatBevel();
 }
 
 Bevel::Bevel(const Bevel& bevel, const osg::CopyOp& copyop):
     osg::Object(bevel, copyop),
+    _smoothConcaveJunctions(bevel._smoothConcaveJunctions),
     _thickness(bevel._thickness),
     _vertices(bevel._vertices)
 {

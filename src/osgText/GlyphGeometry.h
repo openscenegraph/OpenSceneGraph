@@ -19,7 +19,7 @@
 namespace osgText
 {
 
-extern OSGTEXT_EXPORT osg::Geometry* computeGlyphGeometry(const osgText::Glyph3D* glyph, float bevelThickness, float shellThickness);
+extern OSGTEXT_EXPORT osg::Geometry* computeGlyphGeometry(const osgText::Glyph3D* glyph, const Bevel& profile, float shellThickness);
 
 extern OSGTEXT_EXPORT osg::Geometry* computeTextGeometry(const osgText::Glyph3D* glyph, float width);
 

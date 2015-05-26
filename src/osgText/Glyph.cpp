@@ -626,9 +626,7 @@ void GlyphGeometry::setup(const Glyph3D* glyph, const Style* style)
 
         if (bevel)
         {
-            float thickness = bevel->getBevelThickness();
-
-            osg::ref_ptr<osg::Geometry> glyphGeometry = osgText::computeGlyphGeometry(glyph, thickness, width);
+            osg::ref_ptr<osg::Geometry> glyphGeometry = osgText::computeGlyphGeometry(glyph, *bevel, width);
 
             _geometry = osgText::computeTextGeometry(glyphGeometry.get(), *bevel, width);
             shellGeometry = outline ? osgText::computeShellGeometry(glyphGeometry.get(), *bevel, width) : 0;

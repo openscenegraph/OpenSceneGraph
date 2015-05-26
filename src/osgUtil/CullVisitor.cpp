@@ -1565,7 +1565,7 @@ void CullVisitor::apply(osg::Camera& camera)
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*(camera.getDataChangeMutex()));
 
-            rtts = new osgUtil::RenderStage;
+            rtts = _rootRenderStage.valid() ? osg::cloneType(_rootRenderStage.get()) : new osgUtil::RenderStage;
             rsCache->setRenderStage(this,rtts.get());
 
             rtts->setCamera(&camera);

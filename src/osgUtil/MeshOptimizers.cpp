@@ -815,7 +815,7 @@ void VertexCacheVisitor::doVertexOptimization(Geometry& geom,
             // vertices in the cache have already been added.
             OSG_DEBUG << "VertexCacheVisitor searching all triangles" << std::endl;
             TriangleList::iterator maxItr
-                = max_element(triangles.begin(), triangles.end(),
+                = std::max_element(triangles.begin(), triangles.end(),
                               CompareTriangle());
             triToAdd = &(*maxItr);
         }

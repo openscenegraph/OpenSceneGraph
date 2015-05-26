@@ -62,7 +62,17 @@ int main(int argc, char** argv)
     while(arguments.read("--flat",r)) { bevel = new osgText::Bevel; bevel->flatBevel(r); }
     while(arguments.read("--flat")) { bevel = new osgText::Bevel; bevel->flatBevel(0.25); }
     while(arguments.read("--bevel-thickness",r)) { if (bevel.valid()) bevel->setBevelThickness(r); }
+    
+    
+    if (bevel.valid()) 
+    {
+        while(arguments.read("--smooth-concave-Junctions") || arguments.read("--scj"))
+        {
+            bevel->setSmoothConcaveJunctions(true);
+        }
+    }
 
+        
     style->setBevel(bevel.get());
 
     // set up outline.

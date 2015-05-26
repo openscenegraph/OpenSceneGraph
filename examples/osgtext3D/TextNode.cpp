@@ -183,9 +183,7 @@ void TextTechnique::addCharacter(const osg::Vec3& position, const osg::Vec3& siz
 
     if (bevel)
     {
-        float thickness = bevel->getBevelThickness();
-
-        osg::ref_ptr<osg::Geometry> glyphGeometry = osgText::computeGlyphGeometry(glyph, thickness, width);
+        osg::ref_ptr<osg::Geometry> glyphGeometry = osgText::computeGlyphGeometry(glyph, *bevel, width);
         osg::ref_ptr<osg::Geometry> textGeometry = osgText::computeTextGeometry(glyphGeometry.get(), *bevel, width);
         osg::ref_ptr<osg::Geometry> shellGeometry = outline ? osgText::computeShellGeometry(glyphGeometry.get(), *bevel, width) : 0;
         if (textGeometry.valid()) geode->addDrawable(textGeometry.get());

@@ -35,10 +35,14 @@ class OSGTEXT_EXPORT Bevel : public osg::Object
 
         bool operator == (const Bevel& rhs) const
         {
+            if (_smoothConcaveJunctions != rhs._smoothConcaveJunctions) return false;
             if (_thickness != rhs._thickness) return false;
             return _vertices==rhs._vertices;
         }
 
+        void setSmoothConcaveJunctions(bool flag) { _smoothConcaveJunctions = flag; }
+        bool getSmoothConcaveJunctions() const { return _smoothConcaveJunctions; }
+        
         void setBevelThickness(float thickness) { _thickness = thickness; }
         float getBevelThickness() const { return _thickness; }
 
@@ -58,6 +62,7 @@ class OSGTEXT_EXPORT Bevel : public osg::Object
 
     protected:
 
+        bool            _smoothConcaveJunctions;
         float           _thickness;
         Vertices        _vertices;
 };

@@ -583,7 +583,7 @@ bool GLBufferObjectSet::makeSpace(unsigned int& size)
     return size==0;
 }
 
-GLBufferObject* GLBufferObjectSet::takeFromOrphans(BufferObject* bufferObject)
+osg::ref_ptr<GLBufferObject> GLBufferObjectSet::takeFromOrphans(BufferObject* bufferObject)
 {
     // take front of orphaned list.
     ref_ptr<GLBufferObject> glbo = _orphanedGLBufferObjects.front();
@@ -604,11 +604,11 @@ GLBufferObject* GLBufferObjectSet::takeFromOrphans(BufferObject* bufferObject)
 
     //OSG_NOTICE<<"Reusing orphaned GLBufferObject, _numOfGLBufferObjects="<<_numOfGLBufferObjects<<" target="<<std::hex<<_profile._target<<std::dec<<std::endl;
 
-    return glbo.release();
+    return glbo;
 }
 
 
-GLBufferObject* GLBufferObjectSet::takeOrGenerate(BufferObject* bufferObject)
+osg::ref_ptr<GLBufferObject> GLBufferObjectSet::takeOrGenerate(BufferObject* bufferObject)
 {
     // see if we can recyle GLBufferObject from the orphan list
     {
@@ -657,7 +657,7 @@ GLBufferObject* GLBufferObjectSet::takeOrGenerate(BufferObject* bufferObject)
         glbo->setBufferObject(bufferObject);
         glbo->setProfile(_profile);
 
-        return glbo.release();
+        return glbo;
     }
 
     //
@@ -885,7 +885,7 @@ bool GLBufferObjectManager::makeSpace(unsigned int size)
 }
 
 
-GLBufferObject* GLBufferObjectManager::generateGLBufferObject(const BufferObject* bufferObject)
+osg::ref_ptr<GLBufferObject> GLBufferObjectManager::generateGLBufferObject(const BufferObject* bufferObject)
 {
     ElapsedTime elapsedTime(&(getGenerateTime()));
     ++getNumberGenerated();
@@ -1051,7 +1051,7 @@ osg::ref_ptr<GLBufferObjectManager>& GLBufferObjectManager::getGLBufferObjectMan
     return s_GLBufferObjectManager[contextID];
 }
 
-GLBufferObject* GLBufferObject::createGLBufferObject(unsigned int contextID, const BufferObject* bufferObject)
+osg::ref_ptr<GLBufferObject> GLBufferObject::createGLBufferObject(unsigned int contextID, const BufferObject* bufferObject)
 {
     return GLBufferObjectManager::getGLBufferObjectManager(contextID)->generateGLBufferObject(bufferObject);
 }

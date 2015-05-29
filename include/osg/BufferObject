@@ -221,7 +221,7 @@ class OSG_EXPORT GLBufferObject : public Referenced
 
         bool isPBOSupported() const { return _extensions->isPBOSupported; }
 
-        static GLBufferObject* createGLBufferObject(unsigned int contextID, const BufferObject* bufferObject);
+        static osg::ref_ptr<GLBufferObject> createGLBufferObject(unsigned int contextID, const BufferObject* bufferObject);
 
         static void deleteAllBufferObjects(unsigned int contextID);
         static void discardAllBufferObjects(unsigned int contextID);
@@ -287,8 +287,8 @@ class OSG_EXPORT GLBufferObjectSet : public Referenced
         void discardAllDeletedGLBufferObjects();
         void flushDeletedGLBufferObjects(double currentTime, double& availableTime);
 
-        GLBufferObject* takeFromOrphans(BufferObject* bufferObject);
-        GLBufferObject* takeOrGenerate(BufferObject* bufferObject);
+        osg::ref_ptr<GLBufferObject> takeFromOrphans(BufferObject* bufferObject);
+        osg::ref_ptr<GLBufferObject> takeOrGenerate(BufferObject* bufferObject);
 
         void moveToBack(GLBufferObject* to);
         void addToBack(GLBufferObject* to);
@@ -353,7 +353,7 @@ class OSG_EXPORT GLBufferObjectManager : public osg::Referenced
         bool hasSpace(unsigned int size) const { return (_currGLBufferObjectPoolSize+size)<=_maxGLBufferObjectPoolSize; }
         bool makeSpace(unsigned int size);
 
-        GLBufferObject* generateGLBufferObject(const osg::BufferObject* bufferObject);
+        osg::ref_ptr<GLBufferObject> generateGLBufferObject(const osg::BufferObject* bufferObject);
 
         void handlePendingOrphandedGLBufferObjects();
 

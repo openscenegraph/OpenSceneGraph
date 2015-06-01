@@ -1918,7 +1918,7 @@ void DirectShowImageStream::stop()
 
     if (!_renderer->StopFilters())
     {
-        OSG_WARN << this << " cant stop filters" << std::endl;
+        OSG_WARN << this << " can't stop filters" << std::endl;
     }
 
     _renderer->releaseRessources();

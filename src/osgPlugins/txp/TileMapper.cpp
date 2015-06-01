@@ -181,7 +181,7 @@ bool TileMapper::isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx
     // identify whether the tile is a NE/SE/SW/NW tile relative to its parent.
     osg::Vec3 delta(tid.x%2,tid.y%2,0);
 
-    if (delta.y()>0.0f) // noth side
+    if (delta.y()>0.0f) // north side
     {
         if (delta.x()>0.0f)
         {

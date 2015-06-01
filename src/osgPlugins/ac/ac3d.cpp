@@ -461,7 +461,7 @@ private:
     std::vector<MaterialData> mMaterials;
 
     /// Local per model texture attribute cache.
-    /// ... images are usualy cached in the registries object cache
+    /// ... images are usually cached in the registries object cache
     typedef std::map<std::string, TextureData> TextureDataMap;
     TextureDataMap mTextureStates;
     /// A common shared TexEnv set to modulate

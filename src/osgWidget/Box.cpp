@@ -91,7 +91,7 @@ void Box::_resizeImplementation(point_type w, point_type h) {
     }
 
     // Get the width and height of our largest widgets; these values take
-    // into account the padding, and will be affected by any resizing that occured above.
+    // into account the padding, and will be affected by any resizing that occurred above.
     point_type maxWidth  = _getMaxWidgetWidthTotal();
     point_type maxHeight = _getMaxWidgetHeightTotal();
 

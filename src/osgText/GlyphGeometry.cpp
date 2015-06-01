@@ -500,7 +500,7 @@ public:
         osg::ref_ptr<osg::DrawElementsUShort> face = new osg::DrawElementsUShort(GL_POLYGON);
         face->setName(faceName);
 
-        // reserve enough space in the vertex array to accomodate the vertices associated with the segments
+        // reserve enough space in the vertex array to accommodate the vertices associated with the segments
         new_vertices->reserve(new_vertices->size() + _segments.size()+1 + count);
 
         // create vertices

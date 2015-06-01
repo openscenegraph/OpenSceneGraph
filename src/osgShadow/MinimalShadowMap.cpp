@@ -87,7 +87,7 @@ osg::BoundingBox MinimalShadowMap::ViewData::computeShadowReceivingCoarseBounds(
         frustum.cut( box );
 
         // approximate sphere with octahedron. Ie first cut by box then
-        // additionaly cut with the same box rotated 45, 45, 45 deg.
+        // additionally cut with the same box rotated 45, 45, 45 deg.
         box.transform( // rotate box around its center
             osg::Matrix::translate( -bs.center() ) *
             osg::Matrix::rotate( osg::PI_4, 0, 0, 1 ) *

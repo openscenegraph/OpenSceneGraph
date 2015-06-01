@@ -255,7 +255,7 @@ Widget::Layer Style::strToLayer(const std::string& layer)
     else if(l == "bg") return Widget::LAYER_BG;
 
     else {
-        warn() << "Unkown Layer name [" << layer << "]; using LAYER_MIDDLE." << std::endl;
+        warn() << "Unknown Layer name [" << layer << "]; using LAYER_MIDDLE." << std::endl;
 
         return Widget::LAYER_MIDDLE;
     }
@@ -271,7 +271,7 @@ Widget::VerticalAlignment Style::strToVAlign(const std::string& valign) {
     else if(va == "bottom") return Widget::VA_BOTTOM;
 
     else {
-        warn() << "Unkown VAlign name [" << valign << "]; using VA_CENTER." << std::endl;
+        warn() << "Unknown VAlign name [" << valign << "]; using VA_CENTER." << std::endl;
 
         return Widget::VA_CENTER;
     }
@@ -287,7 +287,7 @@ Widget::HorizontalAlignment Style::strToHAlign(const std::string& halign) {
     else if(ha == "right") return Widget::HA_RIGHT;
 
     else {
-        warn() << "Unkown HAlign name [" << halign << "]; using HA_CENTER." << std::endl;
+        warn() << "Unknown HAlign name [" << halign << "]; using HA_CENTER." << std::endl;
 
         return Widget::HA_CENTER;
     }
@@ -302,7 +302,7 @@ Widget::CoordinateMode Style::strToCoordMode(const std::string& coordmode) {
 
     else {
         warn()
-            << "Unkown CoordMode name [" << coordmode
+            << "Unknown CoordMode name [" << coordmode
             << "]; using CM_ABSOLUTE." << std::endl
         ;
 
@@ -319,7 +319,7 @@ bool Style::strToFill(const std::string& fill) {
 
     else {
         warn()
-            << "Unkown Fill name [" << fill
+            << "Unknown Fill name [" << fill
             << "]; using false." << std::endl
         ;
 

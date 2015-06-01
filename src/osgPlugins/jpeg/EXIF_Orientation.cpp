@@ -78,7 +78,7 @@ int EXIF_Orientation (j_decompress_ptr cinfo)
             0x0002: APP1 length entry = 2 bytes
             0x0004: Exif Identifier entry = 6 bytes
             0x000A: Start of TIFF header (Byte order entry) - 4 bytes
-                    - This is what we look for, to determine endianess.
+                    - This is what we look for, to determine endianness.
             0x000E: 0th IFD offset pointer - 4 bytes
 
             exif_marker->data points to the first data after the APP1 marker
@@ -88,7 +88,7 @@ int EXIF_Orientation (j_decompress_ptr cinfo)
     */
 
 
-    /* Check for TIFF header and catch endianess */
+    /* Check for TIFF header and catch endianness */
     unsigned int i = 0;
     for(i=0; i < 16; ++i)
     {

@@ -210,12 +210,12 @@ bool XmlNode::read(Input& input)
             commentNode->contents = input.substr(0, end);
             if (end!=std::string::npos)
             {
-                OSG_INFO<<"Valid infomation record ["<<commentNode->contents<<"]"<<std::endl;
+                OSG_INFO<<"Valid information record ["<<commentNode->contents<<"]"<<std::endl;
                 input += (end+2);
             }
             else
             {
-                OSG_NOTICE<<"Error: Unclosed infomation record ["<<commentNode->contents<<"]"<<std::endl;
+                OSG_NOTICE<<"Error: Unclosed information record ["<<commentNode->contents<<"]"<<std::endl;
                 input += end;
             }
         }
@@ -230,12 +230,12 @@ bool XmlNode::read(Input& input)
             commentNode->contents = input.substr(0, end);
             if (end!=std::string::npos)
             {
-                OSG_INFO<<"Valid infomation record ["<<commentNode->contents<<"]"<<std::endl;
+                OSG_INFO<<"Valid information record ["<<commentNode->contents<<"]"<<std::endl;
                 input += (end+2);
             }
             else
             {
-                OSG_NOTICE<<"Error: Unclosed infomation record ["<<commentNode->contents<<"]"<<std::endl;
+                OSG_NOTICE<<"Error: Unclosed information record ["<<commentNode->contents<<"]"<<std::endl;
                 input += end;
             }
         }
@@ -250,12 +250,12 @@ bool XmlNode::read(Input& input)
             commentNode->contents = input.substr(0, end);
             if (end!=std::string::npos)
             {
-                OSG_INFO<<"Valid infomation record ["<<commentNode->contents<<"]"<<std::endl;
+                OSG_INFO<<"Valid information record ["<<commentNode->contents<<"]"<<std::endl;
                 input += (end+2);
             }
             else
             {
-                OSG_NOTICE<<"Error: Unclosed infomation record ["<<commentNode->contents<<"]"<<std::endl;
+                OSG_NOTICE<<"Error: Unclosed information record ["<<commentNode->contents<<"]"<<std::endl;
                 input += end;
             }
         }

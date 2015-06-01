@@ -430,7 +430,7 @@ void TextBase::positionCursor(const osg::Vec2 & endOfLine_coords, osg::Vec2 & cu
             switch (_alignment)
             {
                 // TODO: current behaviour top baselines lined up in both cases - need to implement
-                //       top of characters aligment - Question is this neccesary?
+                //       top of characters aligment - Question is this necessary?
                 // ... otherwise, nothing to be done for these 6 cases
                 //case LEFT_TOP:
                 //case CENTER_TOP:

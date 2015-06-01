@@ -104,7 +104,7 @@ void InsertImpostorsVisitor::insertImpostors()
                     impostor->addChild(group);
                     impostor->setRange(0,0.0f,1e7f);
 
-                    // impostor specfic settings.
+                    // impostor specific settings.
                     impostor->setImpostorThresholdToBound(_impostorThresholdRatio);
 
                     // now replace the group by the new impostor in all of the
@@ -157,7 +157,7 @@ void InsertImpostorsVisitor::insertImpostors()
                     impostor->setCenter(lod->getCenter());
                     impostor->setCenterMode(lod->getCenterMode());
 
-                    // impostor specfic settings.
+                    // impostor specific settings.
                     impostor->setImpostorThresholdToBound(_impostorThresholdRatio);
 
                     // now replace the lod by the new impostor in all of the

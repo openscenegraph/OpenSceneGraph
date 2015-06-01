@@ -72,7 +72,7 @@ public:
 
         supportsOption("enableWireframe[=inline]","create a wireframe geometry for each triangles geometry. The wire geometry will be stored along the solid geometry if 'inline' is specified.");
         supportsOption("generateTangentSpace","Build tangent space to each geometry");
-        supportsOption("tangentSpaceTextureUnit=<unit>","Specify on wich texture unit normal map is");
+        supportsOption("tangentSpaceTextureUnit=<unit>","Specify on which texture unit normal map is");
         supportsOption("triStripCacheSize=<int>","set the cache size when doing tristrip");
         supportsOption("triStripMinSize=<int>","set the minimum accepted length for a strip");
         supportsOption("disableMergeTriStrip","disable the merge of all tristrip into one");

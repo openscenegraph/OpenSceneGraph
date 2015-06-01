@@ -210,7 +210,7 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
     //     then push to coords to far plane by setting its coord to c[i].z = -1.
     //     then transform far plane polygon back into projection space, by p[i]*inv(P)
     //     compute orientation of front plane, if normal.z()<0 then facing away from eye pont, so reverse the polygons, or simply invert planes.
-    //     compute volume (quality) betwen front polygon in projection space and back polygon in projection space.
+    //     compute volume (quality) between front polygon in projection space and back polygon in projection space.
 
 
     const VertexList& vertices_in = occluder.getOccluder().getVertexList();

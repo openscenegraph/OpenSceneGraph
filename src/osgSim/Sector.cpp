@@ -301,7 +301,7 @@ float DirectionalSector::operator() (const osg::Vec3& eyeLocal) const
 {
    float elev_intensity, azim_intensity ;
 
-   // Tranform eyeLocal into the LightPoint frame
+   // Transform eyeLocal into the LightPoint frame
    osg::Vec3 EPlp = _local_to_LP * eyeLocal ;
 
    /*fprintf(stderr, "    eyeLocal = %f, %f, %f\n", eyeLocal[0], eyeLocal[1], eyeLocal[2]) ;

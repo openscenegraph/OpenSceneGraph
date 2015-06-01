@@ -517,8 +517,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
             }
         }
 
-        // if user has explictly specified curl then we don't about at this point,
-        // instead assume the curl can read it any way, if it doesn't explictly
+        // if user has explicitly specified curl then we don't about at this point,
+        // instead assume the curl can read it any way, if it doesn't explicitly
         // specify curl then we assume that the file is a local file and not appropriate
         // for the curl plugin to load.
         if (!curl_ext) return ReadResult::FILE_NOT_HANDLED;

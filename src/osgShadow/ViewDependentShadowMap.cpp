@@ -2145,7 +2145,7 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(osgUtil::R
     double gamma_v = acos(dotProduct_v);
     if (gamma_v<osg::DegreesToRadians(settings->getPerspectiveShadowMapCutOffAngle()) || gamma_v>osg::DegreesToRadians(180-settings->getPerspectiveShadowMapCutOffAngle()))
     {
-        // OSG_NOTICE<<"Light and view vectors near parrallel - use standard shadow map."<<std::endl;
+        // OSG_NOTICE<<"Light and view vectors near parallel - use standard shadow map."<<std::endl;
         return true;
     }
 

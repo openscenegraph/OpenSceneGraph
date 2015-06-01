@@ -96,7 +96,7 @@ class ReaderWriterTRANS : public osgDB::ReaderWriter
 public:
     ReaderWriterTRANS()
     {
-        supportsExtension(EXTENSION_NAME,"Translation Psuedo loader.");
+        supportsExtension(EXTENSION_NAME,"Translation Pseudo loader.");
     }
 
     virtual const char* className() const { return "translation pseudo-loader"; }

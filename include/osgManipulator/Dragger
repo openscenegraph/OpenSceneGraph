@@ -37,7 +37,7 @@ class Scale2DCommand;
 class ScaleUniformCommand;
 class Rotate3DCommand;
 
-/** Computes the nodepath from the given node all the way upto the root. */
+/** Computes the nodepath from the given node all the way up to the root. */
 extern OSGMANIPULATOR_EXPORT void computeNodePathToRoot(osg::Node& node, osg::NodePath& np);
 
 

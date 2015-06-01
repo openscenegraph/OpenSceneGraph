@@ -5,7 +5,7 @@
 //  SGI Inventor , or TGS Inventor.
 //
 //
-//  Autor: PCJohn (peciva _at fit.vutbr.cz)
+//  Author: PCJohn (peciva _at fit.vutbr.cz)
 //
 //  License: public domain
 //
@@ -1009,7 +1009,7 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
     // just SoMaterial::transparency, SoTexture2 with alpha channel carry transparency information
     // that is controlled by SoGLRenderAction::transparency type that is set to SCREEN_DOOR by default
     // (dither pattern). So, if the user does not select better transparency type, there is no
-    // possiblity to control transparency type from file format.
+    // possibility to control transparency type from file format.
     //
     // However, SoTransparencyType node was introduced to overcome this historical limitation
     // because transparency was performance expensive long time ago.

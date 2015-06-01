@@ -1652,7 +1652,7 @@ ConvertFromInventor::getStateSet(SoCallbackAction* action)
 
         stateSet->setTextureAttributeAndModes(0, texture.get(), osg::StateAttribute::ON);
 
-        // propogate name
+        // propagate name
         if(texture.valid())
         {
             std::string name = texture->getName();

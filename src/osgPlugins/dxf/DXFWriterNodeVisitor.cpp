@@ -23,7 +23,7 @@
 
 /** writes all values of an array out to a stream, applies a matrix beforehand if necessary */
 
-// I think this is a bit over the top for just a simple vertex array - but if anyone knwos different?
+// I think this is a bit over the top for just a simple vertex array - but if anyone knows different?
 /*
 class ValueVisitor : public osg::ValueVisitor {
     public:

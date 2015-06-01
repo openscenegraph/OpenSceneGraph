@@ -1013,7 +1013,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                     else
                     {
                         // we're holding of the move to next layer to slide, but we need slip the time forward accordingly
-                        // componensate for the extra time that this frame is recieving.
+                        // componensate for the extra time that this frame is receiving.
                         _previousTime = time-getCurrentTimeDelayBetweenSlides();
                     }
                 }

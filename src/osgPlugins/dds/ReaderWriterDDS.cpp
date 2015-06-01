@@ -440,7 +440,7 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
         depth = ddsd.dwDepth;
     }
 
-    // Retreive image properties.
+    // Retrieve image properties.
     int s = ddsd.dwWidth;
     int t = ddsd.dwHeight;
     int r = depth;

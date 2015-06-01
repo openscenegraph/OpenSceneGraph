@@ -204,7 +204,7 @@ void Dragger::setHandleEvents(bool flag)
 
     _handleEvents = flag;
 
-    // update the number of children that require an event traversal to make sure this dragger recieves events.
+    // update the number of children that require an event traversal to make sure this dragger receives events.
     if (_handleEvents) setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()+1);
     else if (getNumChildrenRequiringEventTraversal()>=1) setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-1);
 }

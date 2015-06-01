@@ -161,7 +161,7 @@ namespace OpenThreads {
 
         //--------------------------------------------------------------------------
         // Set thread scheduling parameters.
-        // Note that time-critical priority is ommited :
+        // Note that time-critical priority is omitted :
         // 1) It's not sensible thing to do
         // 2) there's no enum for that in Thread interface
         // Also, on Windows, effective thread priority is :

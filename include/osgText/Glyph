@@ -272,7 +272,7 @@ public:
     /** Resize any per context GLObject buffers to specified size. */
     virtual void resizeGLObjectBuffers(unsigned int maxSize);
 
-    /** create an image that maps all the associated Glyph's onto a single image, that is equivilant to what will be downloaded to the texture.*/
+    /** create an image that maps all the associated Glyph's onto a single image, that is equivalent to what will be downloaded to the texture.*/
     osg::Image* createImage();
 
 protected:

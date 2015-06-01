@@ -279,7 +279,7 @@ osg::Node* daeReader::processMorph(domMorph* pDomMorph, domBind_material* pDomBi
                     pOsgMorphGeometry->setWeight(j, weights.get(j));
                 }
 
-                // See if morph weights are targetted by animations
+                // See if morph weights are targeted by animations
                 daeElementDomChannelMap::iterator iter = _daeElementDomChannelMap.find(pDomSource);
                 if (iter != _daeElementDomChannelMap.end())
                 {

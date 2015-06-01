@@ -236,7 +236,7 @@ void Texture2D::apply(State& state) const
         // perhaps it is the first glBind which is not required...
         //glBindTexture( GL_TEXTURE_2D, handle );
 
-        // update the modified tag to show that it is upto date.
+        // update the modified tag to show that it is up to date.
         if (_image.valid()) getModifiedCount(contextID) = _image->getModifiedCount();
     }
     else if (_image.valid() && _image->data())
@@ -272,7 +272,7 @@ void Texture2D::apply(State& state) const
             textureObject->setAllocated(true);
         }
 
-        // update the modified tag to show that it is upto date.
+        // update the modified tag to show that it is up to date.
         getModifiedCount(contextID) = image->getModifiedCount();
 
         // unref image data?

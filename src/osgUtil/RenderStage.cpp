@@ -1025,7 +1025,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
                 }
             }
             // reset the read and draw buffers?  will comment out for now with the assumption that
-            // the buffers will be set explictly when needed elsewhere.
+            // the buffers will be set explicitly when needed elsewhere.
             // glReadBuffer(GL_COLOR_ATTACHMENT0_EXT);
             // glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
         }
@@ -1159,7 +1159,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
 
     if (_camera.valid() && _camera->getInitialDrawCallback())
     {
-        // if we have a camera with a intial draw callback invoke it.
+        // if we have a camera with a initial draw callback invoke it.
         (*(_camera->getInitialDrawCallback()))(renderInfo);
     }
 

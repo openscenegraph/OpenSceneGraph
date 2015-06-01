@@ -338,7 +338,7 @@ void Sequence::traverse(NodeVisitor& nv)
             int loops = (int)(deltaT/adjTotalTime);
 
 
-            // adjust reps & quick check to see if done becuase reps used up
+            // adjust reps & quick check to see if done because reps used up
 
             if (_nreps>0)
             {

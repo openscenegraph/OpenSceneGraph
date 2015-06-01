@@ -44,7 +44,7 @@ class Logos: public osg::Drawable
                 unsigned int contextID = cv->getState()!=0 ? cv->getState()->getContextID() : 0;
                 if(contextID != logos->getContextID())
                 {
-                    // logo not appropiate for window assigned to the cull visitor so cull it.
+                    // logo not appropriate for window assigned to the cull visitor so cull it.
                     return true;
                 }
 

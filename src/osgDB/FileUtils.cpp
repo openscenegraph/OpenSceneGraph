@@ -964,7 +964,7 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
     }
 
     // The Cocoa version is about 10 lines of code.
-    // The Carbon version is noticably longer.
+    // The Carbon version is noticeably longer.
     // Unfortunately, the Cocoa version requires -lobjc to be
     // linked in when creating an executable.
     // Rumor is that this will be done autmatically in gcc 3.5/Tiger,

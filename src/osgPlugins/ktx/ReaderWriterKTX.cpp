@@ -65,7 +65,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterKTX::readKTXStream(std::istream& fin
         return ReadResult(ReadResult::FILE_NOT_HANDLED);
     }
 
-    //correct the byte order if the endianess doesn't match
+    //correct the byte order if the endianness doesn't match
     if(correctByteOrder(header) == false)
     {
         OSG_WARN << "Corrupt KTX header (invalid endianness marker)" << std::endl;

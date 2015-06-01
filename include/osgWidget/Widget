@@ -27,7 +27,7 @@ namespace osgWidget {
 class Window;
 class WindowManager;
 
-// A Widget is a rectangular region that recieves events about the state of various input
+// A Widget is a rectangular region that receives events about the state of various input
 // devices such as the pointer and keyboard. It is aware of it's width, height, and origin but
 // nothing else. It is the job of higher-level container objects to organize layouts and
 // the like, and to contextualize the meaning of the widgets "origin" (whether it is absolute
@@ -468,7 +468,7 @@ public:
         point_type _padTop;
         point_type _padBottom;
 
-        // The alignments are used in conjuction when the widget is NOT set to fill.
+        // The alignments are used in conjunction when the widget is NOT set to fill.
         VerticalAlignment _valign;
         HorizontalAlignment _halign;
 

@@ -20,7 +20,7 @@ namespace osgParticle
 {
 
     /** ConnectConnectedParticleSystem is a specialise ConnectedParticleSystem for effects
-      * like missle trails, where the individual particles are rendered as
+      * like missile trails, where the individual particles are rendered as
       * single ribbon.
     */
     class OSGPARTICLE_EXPORT ConnectedParticleSystem: public osgParticle::ParticleSystem

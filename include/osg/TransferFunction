@@ -95,7 +95,7 @@ class OSG_EXPORT TransferFunction1D : public osg::TransferFunction
         /** Set the color for a specified transfer function value.
           * updateImage defaults to true, and tells the setColor function to update the associate osg::Image that
           * tracks the color map.  Pass in false as the updateImage parameter if you are setting up many values
-          * at once to avoid recomputation of the image data, then once all setColor calls are made explictly call
+          * at once to avoid recomputation of the image data, then once all setColor calls are made explicitly call
           * updateImage() to bring the osg::Image back into sync with the color map. */
         void setColor(float v, const osg::Vec4& color, bool updateImage=true);
 

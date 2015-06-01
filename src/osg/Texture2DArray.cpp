@@ -367,7 +367,7 @@ void Texture2DArray::apply(State& state) const
 
         // For certain we have to manually allocate memory for mipmaps if images are compressed
         // if not allocated OpenGL will produce errors on mipmap upload.
-        // I have not tested if this is neccessary for plain texture formats but
+        // I have not tested if this is necessary for plain texture formats but
         // common sense suggests its required as well.
         if( _min_filter != LINEAR && _min_filter != NEAREST && _images[0]->isMipmap() )
         {
@@ -630,7 +630,7 @@ void Texture2DArray::copyTexSubImage2DArray(State& state, int xoffset, int yoffs
     }
     else
     {
-        OSG_WARN<<"Warning: Texture2DArray::copyTexSubImage2DArray(..) failed, cannot not copy to a non existant texture."<<std::endl;
+        OSG_WARN<<"Warning: Texture2DArray::copyTexSubImage2DArray(..) failed, cannot not copy to a non existent texture."<<std::endl;
     }
 }
 

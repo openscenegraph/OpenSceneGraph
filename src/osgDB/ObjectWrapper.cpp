@@ -647,6 +647,8 @@ void ObjectWrapperManager::addWrapper( ObjectWrapper* wrapper )
 {
     if ( !wrapper ) return;
 
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_wrapperMutex);
+
     WrapperMap::iterator itr = _wrappers.find( wrapper->getName() );
     if ( itr!=_wrappers.end() )
     {
@@ -660,12 +662,16 @@ void ObjectWrapperManager::removeWrapper( ObjectWrapper* wrapper )
 {
     if ( !wrapper ) return;
 
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_wrapperMutex);
+
     WrapperMap::iterator itr = _wrappers.find( wrapper->getName() );
     if ( itr!=_wrappers.end() ) _wrappers.erase( itr );
 }
 
 ObjectWrapper* ObjectWrapperManager::findWrapper( const std::string& name )
 {
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_wrapperMutex);
+
     WrapperMap::iterator itr = _wrappers.find( name );
     if ( itr!=_wrappers.end() ) return itr->second.get();
 
@@ -694,6 +700,8 @@ void ObjectWrapperManager::addCompressor( BaseCompressor* compressor )
 {
     if ( !compressor ) return;
 
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_wrapperMutex);
+
     CompressorMap::iterator itr = _compressors.find( compressor->getName() );
     if ( itr!=_compressors.end() )
     {
@@ -707,12 +715,16 @@ void ObjectWrapperManager::removeCompressor( BaseCompressor* compressor )
 {
     if ( !compressor ) return;
 
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_wrapperMutex);
+
     CompressorMap::iterator itr = _compressors.find( compressor->getName() );
     if ( itr!=_compressors.end() ) _compressors.erase( itr );
 }
 
 BaseCompressor* ObjectWrapperManager::findCompressor( const std::string& name )
 {
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_wrapperMutex);
+
     CompressorMap::iterator itr = _compressors.find( name );
     if ( itr!=_compressors.end() ) return itr->second.get();
 

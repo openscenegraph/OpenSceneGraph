@@ -15,6 +15,7 @@
 #ifndef OSGDB_OBJECTWRAPPER
 #define OSGDB_OBJECTWRAPPER
 
+#include <OpenThreads/ReentrantMutex>
 #include <osgDB/Serializer>
 #include <osg/ScriptEngine>
 
@@ -168,6 +169,8 @@ protected:
 
     ObjectWrapperManager();
     virtual ~ObjectWrapperManager();
+
+    OpenThreads::ReentrantMutex _wrapperMutex;
 
     WrapperMap _wrappers;
     CompressorMap _compressors;

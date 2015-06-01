@@ -579,7 +579,7 @@ void Texture::TextureObjectSet::discardAllDeletedTextureObjects()
     // update the TextureObjectManager's running total of current pool size
     _parent->getCurrTexturePoolSize() -= numDiscarded*_profile._size;
 
-    // update the number of active and orphaned TextureOjects
+    // update the number of active and orphaned TextureObjects
     _parent->getNumberOrphanedTextureObjects() -= numDiscarded;
     _parent->getNumberDeleted() += numDiscarded;
 
@@ -623,7 +623,7 @@ void Texture::TextureObjectSet::flushDeletedTextureObjects(double /*currentTime*
         _orphanedTextureObjects.size();
 
     OSG_INFO<<"_parent->getCurrTexturePoolSize()="<<_parent->getCurrTexturePoolSize() <<" _parent->getMaxTexturePoolSize()="<< _parent->getMaxTexturePoolSize()<<std::endl;
-    OSG_INFO<<"Looking to reclaim "<<sizeRequired<<", going to look to remove "<<maxNumObjectsToDelete<<" from "<<_orphanedTextureObjects.size()<<" orhpans"<<std::endl;
+    OSG_INFO<<"Looking to reclaim "<<sizeRequired<<", going to look to remove "<<maxNumObjectsToDelete<<" from "<<_orphanedTextureObjects.size()<<" orphans"<<std::endl;
 
     ElapsedTime timer;
 
@@ -650,7 +650,7 @@ void Texture::TextureObjectSet::flushDeletedTextureObjects(double /*currentTime*
 
     _parent->getCurrTexturePoolSize() -= numDeleted*_profile._size;
 
-    // update the number of active and orphaned TextureOjects
+    // update the number of active and orphaned TextureObjects
     _parent->getNumberOrphanedTextureObjects() -= numDeleted;
     _parent->getNumberDeleted() += numDeleted;
 
@@ -691,7 +691,7 @@ osg::ref_ptr<Texture::TextureObject> Texture::TextureObjectSet::takeFromOrphans(
     // assign to new texture
     to->setTexture(texture);
 
-    // update the number of active and orphaned TextureOjects
+    // update the number of active and orphaned TextureObjects
     _parent->getNumberOrphanedTextureObjects() -= 1;
     _parent->getNumberActiveTextureObjects() += 1;
 

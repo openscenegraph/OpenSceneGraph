@@ -1094,7 +1094,7 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
         FSRef     f;
         OSErr    errCode;
 
-        // Start with the the Bundle PlugIns directory.
+        // Start with the Bundle PlugIns directory.
 
         // Get the main bundle first. No need to retain or release it since
         //  we are not keeping a reference

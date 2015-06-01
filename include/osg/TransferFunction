@@ -107,10 +107,10 @@ class OSG_EXPORT TransferFunction1D : public osg::TransferFunction
         /** set the color map and automatically update the image to make sure they are in sync.*/
         void setColorMap(const ColorMap& vcm) { assign(vcm); }
 
-        /** Get the color map that stores the mapping between the the transfer function value and the colour it maps to.*/
+        /** Get the color map that stores the mapping between the transfer function value and the colour it maps to.*/
         ColorMap& getColorMap() { return _colorMap; }
 
-        /** Get the const color map that stores the mapping between the the transfer function value and the colour it maps to.*/
+        /** Get the const color map that stores the mapping between the transfer function value and the colour it maps to.*/
         const ColorMap& getColorMap() const { return _colorMap; }
 
         /** Assign a color map and automatically update the image to make sure they are in sync.*/

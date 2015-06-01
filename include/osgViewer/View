@@ -227,7 +227,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** deprecated, use view.apply(new osgViewer::AcrossAllWindows()). */
         void setUpViewAcrossAllScreens();
 
-        /** depreacted, use view.apply(new osgViewer::SingleWindow(x,y,width,screenNum)). */
+        /** deprecated, use view.apply(new osgViewer::SingleWindow(x,y,width,screenNum)). */
         void setUpViewInWindow(int x, int y, int width, int height, unsigned int screenNum=0);
 
         /** deprecated, use view.apply(new osgViewer::SingleScreen(screenNum)). */
@@ -236,7 +236,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** deprecated, use view.apply(new osgViewer::SphericalDisplay(radius, collar, screenNum, intensityMap, projectorMatrix)). */
         void setUpViewFor3DSphericalDisplay(double radius=1.0, double collar=0.45, unsigned int screenNum=0, osg::Image* intensityMap=0, const osg::Matrixd& projectorMatrix = osg::Matrixd());
 
-        /** depreacted, use view.apply(new osgViewer::PanoramicSphericalDisplay(radius, collar, screenNum, intensityMap, projectorMatrix)). */
+        /** deprecated, use view.apply(new osgViewer::PanoramicSphericalDisplay(radius, collar, screenNum, intensityMap, projectorMatrix)). */
         void setUpViewForPanoramicSphericalDisplay(double radius=1.0, double collar=0.45, unsigned int screenNum=0, osg::Image* intensityMap=0, const osg::Matrixd& projectorMatrix = osg::Matrixd());
 
         /** deprecated. use view.apply(new osgViewer::WoWVxDisplay(type (20 to 42), screenNum). */

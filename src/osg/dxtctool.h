@@ -2,7 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 //
-//  Copyright (C) 2002 Tanguy Fautré.
+//  Copyright (C) 2002 Tanguy Fautr.
 //
 //  This software is provided 'as-is', without any express or implied
 //  warranty.  In no event will the authors be held liable for any damages
@@ -20,7 +20,7 @@
 //     misrepresented as being the original software.
 //  3. This notice may not be removed or altered from any source distribution.
 //
-//  Tanguy Fautré
+//  Tanguy Fautr
 //  softdev@telenet.be
 //
 //////////////////////////////////////////////////////////////////////
@@ -197,7 +197,7 @@ inline void dxtc_pixels::BVF_Color_H2(void * const pBlock) const {
 
 
 inline void dxtc_pixels::BVF_Color_H4(void * const pBlock) const {
-    // Swap the the first row of pixels with the last one, then the 2 middle row of pixels
+    // Swap the first row of pixels with the last one, then the 2 middle row of pixels
     dxtc_int8 * pP = ((dxtc_int8 *) pBlock) + 4;
 
     std::swap(pP[0], pP[3]);
@@ -232,7 +232,7 @@ inline void dxtc_pixels::BVF_Alpha_DXT3_H2(void * const pBlock) const {
 
 
 inline void dxtc_pixels::BVF_Alpha_DXT3_H4(void * const pBlock) const {
-    // Swap the the first row of pixels with the last one, then the 2 middle row of pixels
+    // Swap the first row of pixels with the last one, then the 2 middle row of pixels
     dxtc_int16 * pP = (dxtc_int16 * ) pBlock;
 
     std::swap(pP[0], pP[3]);
@@ -268,7 +268,7 @@ inline void dxtc_pixels::BVF_Alpha_DXT5_H2(void * const pBlock) const {
 
 
 inline void dxtc_pixels::BVF_Alpha_DXT5_H4(void * const pBlock) const {
-    // Swap the the first row of pixels with the last one, then the 2 middle row of pixels (tricky again)
+    // Swap the first row of pixels with the last one, then the 2 middle row of pixels (tricky again)
     dxtc_int64 * pB = (dxtc_int64 * ) pBlock;
 
     dxtc_int64 TmpQWord = (pB[0] & HEX_0x000000000000FFFF);

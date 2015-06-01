@@ -401,7 +401,7 @@ int main( int argc, char **argv )
 
 
         // we must assign callback as both an update and cull callback, as update callback to do the update of
-        // the the osgFX::MultiTextureControl node a thread safe way, and as a cull callback to gather the camera
+        // the osgFX::MultiTextureControl node a thread safe way, and as a cull callback to gather the camera
         // position information.
         ElevationLayerBlendingCallback* elbc = new ElevationLayerBlendingCallback(mtc, elevations);
         terrain->setUpdateCallback(elbc);

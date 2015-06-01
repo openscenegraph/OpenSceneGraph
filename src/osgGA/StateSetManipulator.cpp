@@ -41,7 +41,7 @@ void StateSetManipulator::setStateSet(StateSet *stateset)
     // specify that this stateset is dynamic so it prevents
     // the draw and update phase from overlapping - good for
     // stability but breaks all the performance advantage of
-    // DrawThreadPerContex.
+    // DrawThreadPerContext.
     _stateset->setDataVariance(osg::Object::DYNAMIC);
 #endif
 }

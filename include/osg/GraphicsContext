@@ -272,7 +272,7 @@ class OSG_EXPORT GraphicsContext : public Object
 
         typedef std::list< ref_ptr<Operation> > GraphicsOperationQueue;
 
-        /** Get the operations queue, not you must use the OperationsMutex when accessing the queue.*/
+        /** Get the operations queue, note you must use the OperationsMutex when accessing the queue.*/
         GraphicsOperationQueue& getOperationsQueue() { return _operations; }
 
         /** Get the operations queue mutex.*/
@@ -467,10 +467,10 @@ class OSG_EXPORT GraphicsContext : public Object
 
         typedef std::list< osg::Camera* > Cameras;
 
-        /** Get the the list of cameras associated with this graphics context.*/
+        /** Get the list of cameras associated with this graphics context.*/
         Cameras& getCameras() { return _cameras; }
 
-        /** Get the the const list of cameras associated with this graphics context.*/
+        /** Get the const list of cameras associated with this graphics context.*/
         const Cameras& getCameras() const { return _cameras; }
 
         /** set the default FBO-id, this id will be used when the rendering-backend is finished with RTT FBOs */

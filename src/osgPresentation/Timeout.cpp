@@ -228,7 +228,7 @@ void Timeout::traverse(osg::NodeVisitor& nv)
             cv->setCurrentRenderBin(previousRenderBin);
 
             // and the render to texture stage to the current stages
-            // dependancy list.
+            // dependency list.
             cv->getCurrentRenderBin()->getStage()->addPostRenderStage(rs.get(),0);
         }
     }

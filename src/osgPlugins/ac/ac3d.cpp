@@ -1005,7 +1005,7 @@ class SurfaceBin : public PrimitiveBin {
             shadeModel->setMode(osg::ShadeModel::FLAT);
         stateSet->setAttribute(shadeModel);
 
-        // Set up the arrays, allways store texture coords, may be we need them later ...
+        // Set up the arrays, always store texture coords, may be we need them later ...
         osg::Geometry* geometry = new osg::Geometry;
         _geode->addDrawable(geometry);
         geometry->setDataVariance(osg::Object::STATIC);
@@ -1021,7 +1021,7 @@ class SurfaceBin : public PrimitiveBin {
             geometry->setTexCoordArray(0, texcoordArray);
         }
 
-        // At first handle the the polygons to tessellate, fix them and append the other polygons later
+        // At first handle the polygons to tessellate, fix them and append the other polygons later
         if (!_toTessellatePolygons.empty())
         {
             for (unsigned i = 0; i < _toTessellatePolygons.size(); ++i)

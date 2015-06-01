@@ -152,7 +152,7 @@ class OSG_EXPORT Texture3D : public Texture
         /** Subloaded images can have different texture and image sizes. */
         mutable GLsizei _textureWidth, _textureHeight, _textureDepth;
 
-        /** Number of mip map levels the the texture has been created with, */
+        /** Number of mip map levels the texture has been created with, */
         mutable GLsizei _numMipmapLevels;
 
         ref_ptr<SubloadCallback> _subloadCallback;

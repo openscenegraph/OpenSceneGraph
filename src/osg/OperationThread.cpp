@@ -339,7 +339,7 @@ int OperationThread::cancel()
             if (_currentOperation.valid()) _currentOperation->release();
         }
 
-        // then wait for the the thread to stop running.
+        // then wait for the thread to stop running.
         while(isRunning())
         {
 

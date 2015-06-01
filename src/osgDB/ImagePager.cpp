@@ -157,7 +157,7 @@ int ImagePager::ImageThread::cancel()
         // release the frameBlock and _databasePagerThreadBlock in case its holding up thread cancellation.
         // _databasePagerThreadBlock->release();
 
-        // then wait for the the thread to stop running.
+        // then wait for the thread to stop running.
         join();
 
         // _startThreadCalled = false;

@@ -183,7 +183,7 @@ bool osg::initNotifyLevel()
     return true;
 }
 
-// Use a proxy to force the initialization of the the NotifySingleton during static initialization
+// Use a proxy to force the initialization of the NotifySingleton during static initialization
 OSG_INIT_SINGLETON_PROXY(NotifySingletonProxy, osg::initNotifyLevel())
 
 void osg::setNotifyLevel(osg::NotifySeverity severity)

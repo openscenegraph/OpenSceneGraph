@@ -98,12 +98,12 @@ class OSG_EXPORT Texture2DArray : public Texture
 
 
 
-        /** Set the number of mip map levels the the texture has been created with.
+        /** Set the number of mip map levels the texture has been created with.
           * Should only be called within an osg::Texture::apply() and custom OpenGL texture load.
         */
         void setNumMipmapLevels(unsigned int num) const { _numMipmapLevels=num; }
 
-        /** Get the number of mip map levels the the texture has been created with. */
+        /** Get the number of mip map levels the texture has been created with. */
         unsigned int getNumMipmapLevels() const { return _numMipmapLevels; }
 
         /** Copies a two-dimensional texture subimage, as per
@@ -138,7 +138,7 @@ class OSG_EXPORT Texture2DArray : public Texture
         // subloaded images can have different texture and image sizes.
         mutable GLsizei _textureWidth, _textureHeight, _textureDepth;
 
-        // number of mip map levels the the texture has been created with,
+        // number of mip map levels the texture has been created with,
         mutable GLsizei _numMipmapLevels;
 
         ref_ptr<SubloadCallback> _subloadCallback;

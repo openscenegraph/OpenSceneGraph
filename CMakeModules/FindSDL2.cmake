@@ -5,12 +5,12 @@
 #  SDL2_INCLUDE_DIR, where to find SDL.h
 #  SDL2_VERSION_STRING, human-readable string containing the version of SDL
 #
-# This module responds to the the flag:
+# This module responds to the flag:
 #  SDL2_BUILDING_LIBRARY
 #    If this is defined, then no SDL2_main will be linked in because
 #    only applications need main().
 #    Otherwise, it is assumed you are building an application and this
-#    module will attempt to locate and set the the proper link flags
+#    module will attempt to locate and set the proper link flags
 #    as part of the returned SDL2_LIBRARY variable.
 #
 # Don't forget to include SDLmain.h and SDLmain.m your project for the

@@ -998,7 +998,7 @@ void SceneView::draw()
         flushDeletedGLObjects(availableTime);
     }
 
-    // assume the the draw which is about to happen could generate GL objects that need flushing in the next frame.
+    // assume the draw which is about to happen could generate GL objects that need flushing in the next frame.
     _requiresFlush = _automaticFlush;
 
     RenderLeaf* previous = NULL;

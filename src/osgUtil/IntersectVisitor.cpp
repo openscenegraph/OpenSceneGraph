@@ -205,7 +205,7 @@ void IntersectVisitor::reset()
 {
     _intersectStateStack.clear();
 
-    // create a empty IntersectState on the the intersectStateStack.
+    // create a empty IntersectState on the intersectStateStack.
     _intersectStateStack.push_back(new IntersectState);
 
     _segHitList.clear();

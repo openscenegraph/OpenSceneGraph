@@ -54,7 +54,7 @@ static RenderBinPrototypeList* renderBinPrototypeList()
     return s_renderBinPrototypeList.get();
 }
 
-// Use a proxy to force the initialization of the the RenderBinPrototypeListSingleton during static initialization
+// Use a proxy to force the initialization of the RenderBinPrototypeListSingleton during static initialization
 OSG_INIT_SINGLETON_PROXY(RenderBinSingletonProxy, renderBinPrototypeList())
 
 

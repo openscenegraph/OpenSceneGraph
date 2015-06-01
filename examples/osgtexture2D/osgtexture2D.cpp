@@ -546,7 +546,7 @@ public:
                            originalImage->getPixelFormat(),originalImage->getDataType(), // same pixel foramt and data type
                            originalImage->data(originalImage->s()/4,originalImage->t()/4), // offset teh start point to 1/4 into the image
                            osg::Image::NO_DELETE, // don't attempt to delete the image data, leave this to the originalImage
-                           originalImage->getPacking(), // use the the same packing
+                           originalImage->getPacking(), // use the same packing
                            originalImage->s()); // use the width of the original image as the row width
 
 

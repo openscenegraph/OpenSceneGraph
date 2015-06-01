@@ -258,7 +258,7 @@ class RenderSurface : public osg::Referenced
           */
         static void shareAllGLContexts(bool);
 
-        /** Returns true or false indicating the the state flag for sharing contexts
+        /** Returns true or false indicating the state flag for sharing contexts
           * between RenderSurfaces
           */
         static bool allGLContextsAreShared();

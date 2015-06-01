@@ -91,7 +91,7 @@ namespace osgDB
         const unsigned int _allowUpDirs;
 
         /// Generates a unique name for an object to be written on disk.
-        /// Side effect: updates _lastGeneratedObjectIndex to the index associated withe the returned name.
+        /// Side effect: updates _lastGeneratedObjectIndex to the index associated with the returned name.
         void generateObjectName(std::string & out_relativePath, std::string & out_absolutePath, int type);
 
         bool absoluteObjectPathExists(const std::string & path);

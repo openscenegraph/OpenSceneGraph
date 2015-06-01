@@ -63,7 +63,7 @@ public:
 
     /**
     TextProperties allows users to specify a number of properties for the
-    text used to display the labels & title on the ScalarBar. Specifiying a character
+    text used to display the labels & title on the ScalarBar. Specifying a character
     size of 0 will cause the ScalarBar to estimate an appropriate size. Note that
     the attributes are public, and may be set directly.
     */

@@ -63,7 +63,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         void readCommandLine(osg::ArgumentParser& commandLine);
 
         /** register an .fileextension alias to mapExt toExt, the later
-          * should the the extension name of the readerwriter plugin library.
+          * should be the extension name of the readerwriter plugin library.
           * For example to map .tif files to the tiff loader, use
           * addExtAlias("tif","tiff") which will enable .tif to be read
           * by the libdb_tiff readerwriter plugin.*/

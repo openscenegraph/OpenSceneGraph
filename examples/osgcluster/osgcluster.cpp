@@ -615,7 +615,7 @@ int main( int argc, char **argv )
 
         osg::notify(osg::INFO)<<"Time to do cluster sync "<<osg::Timer::instance()->delta_m(startTick,endTick)<<std::endl;
 
-        // update the scene by traversing it with the the update visitor which will
+        // update the scene by traversing it with the update visitor which will
         // call all node update callbacks and animations.
         viewer.eventTraversal();
         viewer.updateTraversal();

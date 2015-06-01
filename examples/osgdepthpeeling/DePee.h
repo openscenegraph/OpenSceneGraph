@@ -20,7 +20,7 @@
 
 /*!
   The DePee class is main class for setting up and managing depth peeling. 
-  A DePee object can be seen as a virtual node, that has one parent and one child. The rendering of every child and subchil of this child is managed by the the DePee node. Besides that, it handles a head up display.
+  A DePee object can be seen as a virtual node, that has one parent and one child. The rendering of every child and subchil of this child is managed by the DePee node. Besides that, it handles a head up display.
  */
 class DePee : public osg::Referenced
 {

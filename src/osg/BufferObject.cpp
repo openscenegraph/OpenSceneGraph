@@ -71,12 +71,12 @@ GLBufferObject::GLBufferObject(unsigned int contextID, BufferObject* bufferObjec
         _extensions->glGenBuffers(1, &_glObjectID);
     }
 
-    // OSG_NOTICE<<"Constucting BufferObject "<<this<<std::endl;
+    // OSG_NOTICE<<"Constructing BufferObject "<<this<<std::endl;
 }
 
 GLBufferObject::~GLBufferObject()
 {
-    //OSG_NOTICE<<"Destucting BufferObject "<<this<<std::endl;
+    //OSG_NOTICE<<"Destructing BufferObject "<<this<<std::endl;
 }
 
 void GLBufferObject::setBufferObject(BufferObject* bufferObject)
@@ -529,7 +529,7 @@ void GLBufferObjectSet::flushDeletedGLBufferObjects(double /*currentTime*/, doub
     unsigned int sizeRequired = _parent->getCurrGLBufferObjectPoolSize() - _parent->getMaxGLBufferObjectPoolSize();
     unsigned int maxNumObjectsToDelete = static_cast<unsigned int>(ceil(double(sizeRequired) / double(_profile._size)));
     OSG_INFO<<"_parent->getCurrGLBufferObjectPoolSize()="<<_parent->getCurrGLBufferObjectPoolSize() <<" _parent->getMaxGLBufferObjectPoolSize()="<< _parent->getMaxGLBufferObjectPoolSize()<<std::endl;
-    OSG_INFO<<"Looking to reclaim "<<sizeRequired<<", going to look to remove "<<maxNumObjectsToDelete<<" from "<<_orphanedGLBufferObjects.size()<<" orhpans"<<std::endl;
+    OSG_INFO<<"Looking to reclaim "<<sizeRequired<<", going to look to remove "<<maxNumObjectsToDelete<<" from "<<_orphanedGLBufferObjects.size()<<" orphans"<<std::endl;
 
     ElapsedTime timer;
 
@@ -553,7 +553,7 @@ void GLBufferObjectSet::flushDeletedGLBufferObjects(double /*currentTime*/, doub
 
     _parent->setCurrGLBufferObjectPoolSize( _parent->getCurrGLBufferObjectPoolSize() - numDeleted*_profile._size );
 
-    // update the number of active and orphaned TextureOjects
+    // update the number of active and orphaned TextureObjects
     _parent->getNumberOrphanedGLBufferObjects() -= numDeleted;
     _parent->getNumberDeleted() += numDeleted;
 

@@ -930,7 +930,7 @@ int main( int argc, char **argv )
                 }
             }
 
-            // update the scene by traversing it with the the update visitor which will
+            // update the scene by traversing it with the update visitor which will
             // call all node update callbacks and animations.
             viewer.eventTraversal();
 
@@ -959,7 +959,7 @@ int main( int argc, char **argv )
 
             }
 
-            // update the scene by traversing it with the the update visitor which will
+            // update the scene by traversing it with the update visitor which will
             // call all node update callbacks and animations.
             viewer.updateTraversal();
 

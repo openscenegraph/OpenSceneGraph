@@ -118,7 +118,7 @@ class OSG_EXPORT StateAttribute : public Object
           * extending the osg's StateAttribute's simply define your
           * own Type value which is unique, using the StateAttribute::Type
           * enum as a guide of what values to use.  If your new subclass
-          * needs to override a standard StateAttriubte then simply use
+          * needs to override a standard StateAttribute then simply use
           * that type's value. */
         enum Type
         {

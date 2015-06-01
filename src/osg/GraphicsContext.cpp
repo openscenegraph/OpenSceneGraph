@@ -295,7 +295,7 @@ unsigned int GraphicsContext::createNewContextID()
     OSG_INFO<<"GraphicsContext::createNewContextID() creating contextID="<<contextID<<std::endl;
     OSG_INFO<<"Updating the MaxNumberOfGraphicsContexts to "<<contextID+1<<std::endl;
 
-    // update the the maximum number of graphics contexts,
+    // update the maximum number of graphics contexts,
     // to ensure that texture objects and display buffers are configured to the correct size.
     osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts( contextID + 1 );
 
@@ -586,7 +586,7 @@ void GraphicsContext::close(bool callCloseImplementation)
 
 
     // now discard any deleted deleted OpenGL objects that the are still hanging around - such as due to
-    // the the flushDelete*() methods not being invoked, such as when using GraphicContextEmbedded where makeCurrent
+    // the flushDelete*() methods not being invoked, such as when using GraphicContextEmbedded where makeCurrent
     // does not work.
     if ( !sharedContextExists && _state.valid())
     {

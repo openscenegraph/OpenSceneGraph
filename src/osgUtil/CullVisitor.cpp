@@ -1596,7 +1596,7 @@ void CullVisitor::apply(osg::Camera& camera)
             rtts->reset();
         }
 
-        // set up clera masks/values
+        // set up clear masks/values
         rtts->setClearDepth(camera.getClearDepth());
         rtts->setClearAccum(camera.getClearAccum());
         rtts->setClearStencil(camera.getClearStencil());
@@ -1664,7 +1664,7 @@ void CullVisitor::apply(osg::Camera& camera)
 
 
         // and the render to texture stage to the current stages
-        // dependancy list.
+        // dependency list.
         switch(camera.getRenderOrder())
         {
             case osg::Camera::PRE_RENDER:

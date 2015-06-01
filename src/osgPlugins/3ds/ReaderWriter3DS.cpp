@@ -1418,7 +1418,7 @@ ReaderWriter3DS::StateSetInfo ReaderWriter3DS::ReaderObject::createStateSet(Lib3
     // Set back face culling state if single sided material applied.
     // This seems like a reasonable assumption given that the backface cull option
     // doesn't appear to be encoded directly in the 3DS format, and also because
-    // it mirrors the effect of code in 3DS writer which uses the the face culling
+    // it mirrors the effect of code in 3DS writer which uses the face culling
     // attribute to determine the state of the 'two_sided' 3DS material being written.
     if (!mat->two_sided)
     {

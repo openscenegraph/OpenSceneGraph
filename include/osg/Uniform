@@ -573,7 +573,7 @@ class OSG_EXPORT Uniform : public Object
         /** Return the name of a Type enum as string. */
         static const char* getTypename( Type t );
 
-        /** Return the the number of components for a GLSL type. */
+        /** Return the number of components for a GLSL type. */
         static int getTypeNumComponents( Type t );
 
         /** Return the Type enum of a Uniform typename string */

@@ -307,7 +307,7 @@ class TestGraph
         This was written to aid the auto-registration of tests at specific points in
         the test tree, where the tests' AutoRegistrationAgents may be distributed across
         several files, and cannot be guaranteed to run in a given order. E.g. You cannot
-        register a test "root.osg.MyTest" unless you know that the the suite "root.osg"
+        register a test "root.osg.MyTest" unless you know that the suite "root.osg"
         already exists.
         
 
@@ -481,9 +481,9 @@ public:
     TestRunner( TestContext& ctx );
 
     /**
-        Tests may be specified by partial names. E.g. specifiying "root"
+        Tests may be specified by partial names. E.g. specifying "root"
         will run all tests below root, i.e. all tests.
-        Specifiying    "root.osg" will run all tests below \em root.osg.
+        Specifying    "root.osg" will run all tests below \em root.osg.
         Specifying "root.osg.de" will run all tests (and suites) below
         \em root.osg with names beginning with the \em de.
     */

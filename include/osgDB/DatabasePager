@@ -69,7 +69,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
 
 
-        /** Add a request to load a node file to end the the database request list.*/
+        /** Add a request to load a node file to end the database request list.*/
         virtual void requestNodeFile(const std::string& fileName, osg::NodePath& nodePath,
                                      float priority, const osg::FrameStamp* framestamp,
                                      osg::ref_ptr<osg::Referenced>& databaseRequest,

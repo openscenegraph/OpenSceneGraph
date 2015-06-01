@@ -186,8 +186,8 @@ void GlyphTexture::apply(osg::State& state) const
 
         // being bound for the first time, need to allocate the texture
 
-        _textureObjectBuffer[contextID] = textureObject = osg::Texture::generateTextureObject(
-            this, contextID, GL_TEXTURE_2D, 1, OSGTEXT_GLYPH_INTERNALFORMAT, getTextureWidth(), getTextureHeight(), 1, 0);
+        textureObject = osg::Texture::generateAndAssignTextureObject(
+            contextID, GL_TEXTURE_2D, 1, OSGTEXT_GLYPH_INTERNALFORMAT, getTextureWidth(), getTextureHeight(), 1, 0);
 
         textureObject->bind();
 

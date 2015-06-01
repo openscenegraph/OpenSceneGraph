@@ -135,8 +135,7 @@ void TextureBuffer::apply(State& state) const
     }
     else if (_image.valid() && _image->data())
     {
-        textureObject = generateTextureObject(this, contextID, GL_TEXTURE_BUFFER);
-        _textureObjectBuffer[contextID] = textureObject;
+        textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_BUFFER);
         textureObject->bind();
 
         textureBufferObject = new TextureBufferObject(contextID,_usageHint);

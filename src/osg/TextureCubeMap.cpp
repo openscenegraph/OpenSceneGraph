@@ -259,7 +259,7 @@ void TextureCubeMap::apply(State& state) const
     }
     else if (_subloadCallback.valid())
     {
-        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(this, contextID,GL_TEXTURE_CUBE_MAP);
+        textureObject = generateAndAssignTextureObject(contextID,GL_TEXTURE_CUBE_MAP);
 
         textureObject->bind();
 
@@ -289,8 +289,8 @@ void TextureCubeMap::apply(State& state) const
             _textureWidth = _textureHeight = minimum( _textureWidth , _textureHeight );
         }
 
-        textureObject = generateTextureObject(
-                this, contextID,GL_TEXTURE_CUBE_MAP,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
+        textureObject = generateAndAssignTextureObject(
+                contextID,GL_TEXTURE_CUBE_MAP,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
 
         textureObject->bind();
 
@@ -315,8 +315,6 @@ void TextureCubeMap::apply(State& state) const
 
         }
 
-        _textureObjectBuffer[contextID] = textureObject;
-
         // unref image data?
         if (isSafeToUnrefImageData(state))
         {
@@ -333,8 +331,8 @@ void TextureCubeMap::apply(State& state) const
     }
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_internalFormat!=0) )
     {
-        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
-                this, contextID,GL_TEXTURE_CUBE_MAP,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
+        textureObject = generateAndAssignTextureObject(
+                contextID,GL_TEXTURE_CUBE_MAP,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
 
         textureObject->bind();
 

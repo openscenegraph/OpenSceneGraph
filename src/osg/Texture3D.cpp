@@ -265,7 +265,7 @@ void Texture3D::apply(State& state) const
     else if (_subloadCallback.valid())
     {
 
-        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(this, contextID,GL_TEXTURE_3D);
+        textureObject = generateAndAssignTextureObject(contextID,GL_TEXTURE_3D);
 
         textureObject->bind();
 
@@ -291,7 +291,7 @@ void Texture3D::apply(State& state) const
         // compute the dimensions of the texture.
         computeRequiredTextureDimensions(state,*_image,_textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
 
-        textureObject = generateTextureObject(this, contextID,GL_TEXTURE_3D);
+        textureObject = generateAndAssignTextureObject(contextID,GL_TEXTURE_3D);
 
         textureObject->bind();
 
@@ -305,8 +305,6 @@ void Texture3D::apply(State& state) const
         // update the modified count to show that it is upto date.
         getModifiedCount(contextID) = _image->getModifiedCount();
 
-        _textureObjectBuffer[contextID] = textureObject;
-
         // unref image data?
         if (isSafeToUnrefImageData(state) && _image->getDataVariance()==STATIC)
         {
@@ -317,8 +315,8 @@ void Texture3D::apply(State& state) const
     }
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_textureDepth!=0) && (_internalFormat!=0) )
     {
-        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
-                this, contextID,GL_TEXTURE_3D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,_textureDepth,0);
+        textureObject = generateAndAssignTextureObject(
+                contextID,GL_TEXTURE_3D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,_textureDepth,0);
 
         textureObject->bind();
 

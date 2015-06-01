@@ -211,7 +211,7 @@ void TextureRectangle::apply(State& state) const
         {
             applyTexImage_subload(GL_TEXTURE_RECTANGLE, _image.get(), state, _textureWidth, _textureHeight, _internalFormat);
 
-            // update the modified count to show that it is upto date.
+            // update the modified count to show that it is up to date.
             getModifiedCount(contextID) = _image->getModifiedCount();
         }
     }
@@ -310,7 +310,7 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
     const unsigned int contextID = state.getContextID();
     const GLExtensions* extensions = state.get<GLExtensions>();
 
-    // update the modified count to show that it is upto date.
+    // update the modified count to show that it is up to date.
     getModifiedCount(contextID) = image->getModifiedCount();
 
     // compute the internal texture format, sets _internalFormat.
@@ -393,7 +393,7 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
     const GLExtensions* extensions = state.get<GLExtensions>();
 
 
-    // update the modified count to show that it is upto date.
+    // update the modified count to show that it is up to date.
     getModifiedCount(contextID) = image->getModifiedCount();
 
     // compute the internal texture format, sets _internalFormat.

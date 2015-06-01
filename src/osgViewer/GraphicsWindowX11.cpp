@@ -679,7 +679,7 @@ void GraphicsWindowX11::init()
             return;
         }
 
-        OSG_NOTICE<<"GraphicsWindowX11::init() - eglInitialize() succeded eglMajorVersion="<<eglMajorVersion<<" iMinorVersion="<<eglMinorVersion<<std::endl;
+        OSG_NOTICE<<"GraphicsWindowX11::init() - eglInitialize() succeeded eglMajorVersion="<<eglMajorVersion<<" iMinorVersion="<<eglMinorVersion<<std::endl;
 
    #else
         // Query for GLX extension
@@ -903,7 +903,7 @@ bool GraphicsWindowX11::createWindow()
         // we have a modern X11 server so assume we need the do the full screen hack.
         if (netWMStateAtom != None && netWMStateFullscreenAtom != None)
         {
-            // artifically reduce the initial window size so that the windowing
+            // artificially reduce the initial window size so that the windowing
             // system has a size to go back to when toggling off full screen,
             // we don't have to worry about the window being initially smaller as the
             // setWindowDecoration(..) implementation with enable full screen for us

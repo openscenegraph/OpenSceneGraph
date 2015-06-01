@@ -97,7 +97,7 @@ void Window::EmbeddedWindow::positioned() {
     point_type h = getHeight();
 
     // If the widget is fillable, ask the internal Window to resize itself.
-    // Whether or not the Window honors this reqest will be up to it.
+    // Whether or not the Window honors this request will be up to it.
     _window->setOrigin(x, y);
     _window->setZ(_calculateZ(getLayer() + 1));
     _window->setZRange(_calculateZ(LAYER_TOP - (getLayer() + 1)));

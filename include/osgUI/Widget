@@ -59,7 +59,7 @@ public:
     const GraphicsSubgraphMap& getGraphicsSubgraphMap() const { return _graphicsSubgraphMap; }
 
     /** Set the WidgetStateSet is used internally by Widgets to manage state that decorates the subgraph.
-      * WidgetStateSet is not serialized and is typically populated by teh Widget::createGraphics() implementation,
+      * WidgetStateSet is not serialized and is typically populated by the Widget::createGraphics() implementation,
       * end users will not normally touoch the WidgetStateSet, use the normal Node::setStateSet() if you want to apply
       * your own state to the Widget and it's subgraphs.*/
     void setWidgetStateSet(osg::StateSet* stateset) { _widgetStateSet = stateset; }

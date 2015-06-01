@@ -64,13 +64,13 @@ Mutex::Mutex(MutexType type):
     //
     //  PRIO_INHERIT causes any thread locking the mutex to temporarily become
     //  the same priority as the highest thread also blocked on the mutex. 
-    //  Although more expensive, this is the prefered method.
+    //  Although more expensive, this is the preferred method.
     //
     //  PRIO_PROTECT causes any thread locking the mutex to assume the priority
     //  specified by setprioceiling.  pthread_mutex_lock will fail if
     //  the priority ceiling is lower than the thread's priority.  Therefore,
     //  the priority ceiling must be set to the max priority in order to 
-    //  garantee no deadlocks will occur.
+    //  guarantee no deadlocks will occur.
     //
 #if defined (_POSIX_THREAD_PRIO_INHERIT) || defined (_POSIX_THREAD_PRIO_PROTECT) // [
 

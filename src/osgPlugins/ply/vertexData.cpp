@@ -266,7 +266,7 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
     // Catch the if any exception thrown
     catch( exception& e )
     {
-        MESHERROR << "Unable to read PLY file, an exception occured:  "
+        MESHERROR << "Unable to read PLY file, an exception occurred:  "
                     << e.what() << endl;
     }
 
@@ -309,7 +309,7 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         }
         catch( exception& e )
         {
-            MESHERROR << "Unable to get PLY file description, an exception occured:  "
+            MESHERROR << "Unable to get PLY file description, an exception occurred:  "
                         << e.what() << endl;
         }
         MESHASSERT( props != 0 );
@@ -386,7 +386,7 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
             }
             catch( exception& e )
             {
-                MESHERROR << "Unable to read vertex in PLY file, an exception occured:  "
+                MESHERROR << "Unable to read vertex in PLY file, an exception occurred:  "
                             << e.what() << endl;
                 // stop for loop by setting the loop variable to break condition
                 // this way resources still get released even on error cases
@@ -411,7 +411,7 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         }
         catch( exception& e )
         {
-            MESHERROR << "Unable to read PLY file, an exception occured:  "
+            MESHERROR << "Unable to read PLY file, an exception occurred:  "
                       << e.what() << endl;
             // stop for loop by setting the loop variable to break condition
             // this way resources still get released even on error cases

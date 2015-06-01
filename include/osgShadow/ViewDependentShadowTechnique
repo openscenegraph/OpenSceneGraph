@@ -78,13 +78,13 @@ virtual ViewDependentShadowTechnique::ViewData * initViewDependentData         \
     unique CullVisitor used to cull the scene in every frame.
 
     Based on CullVisitor ptr passed to cull method, associated Technique::ViewData
-    object is created (if neccessary) and then seleced. Then control is passed to
+    object is created (if necessary) and then seleced. Then control is passed to
     this ViewData object. So, each view has its associated unique ViewData
     (or derived) object performing dirty work of shadow resources management and
     shadow generation for the view.
 
     To support creation of classes derived from ViewDependentShadowTechnique it
-    was neccessary to provide mechanism to override ViewData and allow for
+    was necessary to provide mechanism to override ViewData and allow for
     initialization of new derived ViewData objects. Creation and initialization
     is performed when ViewDependendentShadowTechnique::cull gets called with
     CullVistor ptr which does not yet have associated ViewData object. When it

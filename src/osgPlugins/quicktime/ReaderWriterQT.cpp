@@ -302,7 +302,7 @@ public:
           }
       }
 
-      // Not an encoded "live" psuedo file - so check a real file exists
+      // Not an encoded "live" pseudo file - so check a real file exists
       // only find the file if it isn't a URL
       std::string fileName = file;
 

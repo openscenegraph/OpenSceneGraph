@@ -152,7 +152,7 @@ std::string osgDB::getNameLessExtension(const std::string& fileName)
 // strip all extensions from the filename.
 std::string osgDB::getNameLessAllExtensions(const std::string& fileName)
 {
-    // Finds start serach position: from last slash, or the begining of the string if none found
+    // Finds start serach position: from last slash, or the beginning of the string if none found
     std::string::size_type startPos = fileName.find_last_of(PATH_SEPARATORS);            // Finds forward slash *or* back slash
     if (startPos == std::string::npos) startPos = 0;
     std::string::size_type dot = fileName.find_first_of('.', startPos);        // Finds *FIRST* dot from start pos

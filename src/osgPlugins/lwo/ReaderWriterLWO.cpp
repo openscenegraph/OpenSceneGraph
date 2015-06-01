@@ -339,7 +339,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
 
     osgUtil::Tessellator tessellator;
 
-    // add everthing into the Geode.
+    // add everything into the Geode.
     osgUtil::SmoothingVisitor smoother;
     for(itr=mtgcm.begin();
         itr!=mtgcm.end();

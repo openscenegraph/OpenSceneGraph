@@ -86,7 +86,7 @@ class OSG_EXPORT Object : public Referenced
             by derived classes.*/
         virtual const char* className() const = 0;
 
-        /** return the compound class name that combines the libary name and class name.*/
+        /** return the compound class name that combines the library name and class name.*/
         std::string getCompoundClassName() const { return std::string(libraryName()) + std::string("::") + std::string(className()); }
 
 

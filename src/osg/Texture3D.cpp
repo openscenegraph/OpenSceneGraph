@@ -257,7 +257,7 @@ void Texture3D::apply(State& state) const
 
             applyTexImage3D(GL_TEXTURE_3D,_image.get(),state, _textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
 
-            // update the modified count to show that it is upto date.
+            // update the modified count to show that it is up to date.
             getModifiedCount(contextID) = _image->getModifiedCount();
         }
 
@@ -302,7 +302,7 @@ void Texture3D::apply(State& state) const
 
         textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,_textureDepth,0);
 
-        // update the modified count to show that it is upto date.
+        // update the modified count to show that it is up to date.
         getModifiedCount(contextID) = _image->getModifiedCount();
 
         // unref image data?
@@ -505,7 +505,7 @@ void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zo
     }
     else
     {
-        OSG_WARN<<"Warning: Texture3D::copyTexSubImage3D(..) failed, cannot not copy to a non existant texture."<<std::endl;
+        OSG_WARN<<"Warning: Texture3D::copyTexSubImage3D(..) failed, cannot not copy to a non existent texture."<<std::endl;
     }
 }
 

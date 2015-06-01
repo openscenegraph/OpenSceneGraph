@@ -347,7 +347,7 @@ bool clearImageToColor(osg::Image* image, const osg::Vec4& colour)
     return true;
 }
 
-/** Search through the list of Images and find the maximum number of components used amoung the images.*/
+/** Search through the list of Images and find the maximum number of components used among the images.*/
 unsigned int maximimNumOfComponents(const ImageList& imageList)
 {
     unsigned int max_components = 0;

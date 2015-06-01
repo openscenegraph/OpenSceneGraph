@@ -27,9 +27,9 @@ namespace osg {
   * To use the observer_ptr<> robustly in multi-threaded applications it is recommend to access the pointer via
   * the lock() method that passes back a ref_ptr<> that safely takes a reference to the object to prevent deletion
   * during usage of the object.  In certain conditions it may be safe to use the pointer directly without using lock(),
-  * which will confer a perfomance advantage, the conditions are:
+  * which will confer a performance advantage, the conditions are:
   *   1) The data structure is only accessed/deleted in single threaded/serial way.
-  *   2) The data strucutre is guarenteed by high level management of data strucutures and threads which avoid
+  *   2) The data strucutre is guaranteed by high level management of data strucutures and threads which avoid
   *      possible situations where the observer_ptr<>'s object may be deleted by one thread whilst being accessed
   *      by another.
   * If you are in any doubt about whether it is safe to access the object safe then use the

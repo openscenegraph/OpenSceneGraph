@@ -3,7 +3,7 @@
 //  and writes it to the stream.
 //
 //
-//  Autor: PCJohn (peciva _at fit.vutbr.cz)
+//  Author: PCJohn (peciva _at fit.vutbr.cz)
 //                developed for research purposes of Cadwork (c) and
 //                Brno University of Technology (Czech Rep., EU)
 //

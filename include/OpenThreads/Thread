@@ -77,12 +77,12 @@ public:
      */
     enum ThreadPriority {
 
-	THREAD_PRIORITY_MAX,      /**< The maximum possible priority  */
-	THREAD_PRIORITY_HIGH,     /**< A high (but not max) setting   */
-	THREAD_PRIORITY_NOMINAL,  /**< An average priority            */
-	THREAD_PRIORITY_LOW,      /**< A low (but not min) setting    */
-	THREAD_PRIORITY_MIN,      /**< The miniumum possible priority */
-	THREAD_PRIORITY_DEFAULT   /**< Priority scheduling default    */
+        THREAD_PRIORITY_MAX,      /**< The maximum possible priority  */
+        THREAD_PRIORITY_HIGH,     /**< A high (but not max) setting   */
+        THREAD_PRIORITY_NOMINAL,  /**< An average priority            */
+        THREAD_PRIORITY_LOW,      /**< A low (but not min) setting    */
+        THREAD_PRIORITY_MIN,      /**< The miniumum possible priority */
+        THREAD_PRIORITY_DEFAULT   /**< Priority scheduling default    */
 
     };
 
@@ -91,10 +91,10 @@ public:
      */
     enum ThreadPolicy {
 
-	THREAD_SCHEDULE_FIFO,        /**< First in, First out scheduling         */
-	THREAD_SCHEDULE_ROUND_ROBIN, /**< Round-robin scheduling (LINUX_DEFAULT) */
-	THREAD_SCHEDULE_TIME_SHARE,  /**< Time-share scheduling (IRIX DEFAULT)   */
-	THREAD_SCHEDULE_DEFAULT      /**< Default scheduling                     */
+        THREAD_SCHEDULE_FIFO,        /**< First in, First out scheduling         */
+        THREAD_SCHEDULE_ROUND_ROBIN, /**< Round-robin scheduling (LINUX_DEFAULT) */
+        THREAD_SCHEDULE_TIME_SHARE,  /**< Time-share scheduling (IRIX DEFAULT)   */
+        THREAD_SCHEDULE_DEFAULT      /**< Default scheduling                     */
 
     };
 
@@ -342,7 +342,7 @@ public:
       */
     int setProcessorAffinity( unsigned int cpunum );
 
-    /** microSleep method, equivilant to the posix usleep(microsec).
+    /** microSleep method, equivalent to the posix usleep(microsec).
       *  This is not strictly thread API but is used
       * so often with threads. It's basically UNIX usleep. Parameter is
       * number of microseconds we current thread to sleep. Returns 0 on

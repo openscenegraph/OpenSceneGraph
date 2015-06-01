@@ -137,7 +137,7 @@ TXFFont::loadFont(std::istream& stream)
         return false;
     }
 
-    // read endianess hint
+    // read endianness hint
     bool isSwapped = 0x12345678u != readInt(stream, false);
 
     unsigned format = readInt(stream, isSwapped);

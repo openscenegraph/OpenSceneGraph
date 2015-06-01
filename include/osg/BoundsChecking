@@ -47,7 +47,7 @@ inline void clampLEQUAL(T& value,const T maxValue,const char* valueName)
 
 /** If value is between or equal to minValue and maxValue do nothing - legal
   * value, Otherwise clamp value to specified range and warn that valueName
-  * was clamped. Equivilant to calling
+  * was clamped. Equivalent to calling
   *   clampGEQUAL( value, minValue, valueName );
   *   clampLEQUAL( value, maxValue, valueName ); */
 template <typename T>
@@ -95,7 +95,7 @@ inline void clampArrayElementLEQUAL(A& value,unsigned int i,const T maxValue,con
 
 /** If value[i] is between or equal to minValue and maxValue do nothing - legal
   * value, Otherwise clamp value[i] to specified range and warn that
-  * valueName[i] was clamped. Equivilant to calling
+  * valueName[i] was clamped. Equivalent to calling
   *   clampArrayElementGEQUAL( value, i, minValue, valueName );
   *   clampArrayElementLEQUAL( value, i, maxValue, valueName ); */
 template <typename A, typename T>

@@ -120,7 +120,7 @@ void TexGen::apply(State&) const
     else                         // SPHERE_MAP
     {
         // Also don't set the mode of GL_R & GL_Q as these will generate
-        // GL_INVALID_ENUM (See OpenGL Refrence Guide, glTexGEn.)
+        // GL_INVALID_ENUM (See OpenGL Reference Guide, glTexGEn.)
 
         glTexGeni( GL_S, GL_TEXTURE_GEN_MODE, _mode );
         glTexGeni( GL_T, GL_TEXTURE_GEN_MODE, _mode );

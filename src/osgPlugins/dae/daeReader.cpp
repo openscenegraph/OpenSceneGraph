@@ -152,7 +152,7 @@ bool daeReader::processDocument( const std::string& fileURI)
             }
         }
 
-        // Build a map of elements that are targetted by animations
+        // Build a map of elements that are targeted by animations
         count = database->getElementCount(NULL, COLLADA_TYPE_CHANNEL, NULL);
         for (int i=0; i<count; i++)
         {

@@ -176,13 +176,13 @@ class OSG_EXPORT Geometry : public Drawable
         */
         virtual void drawImplementation(RenderInfo& renderInfo) const;
 
-	/** Set up the vertex arrays for the purpose of rendering, called by drawImplemtation() prior to it calling drawPrimitivesImplementation().*/
-	void drawVertexArraysImplementation(RenderInfo& renderInfo) const;
+        /** Set up the vertex arrays for the purpose of rendering, called by drawImplemtation() prior to it calling drawPrimitivesImplementation().*/
+        void drawVertexArraysImplementation(RenderInfo& renderInfo) const;
 
-	/** dispatch the primitives to OpenGL, called by drawImplemtation() after calling drawVertexArraysImplementation().*/
-	void drawPrimitivesImplementation(RenderInfo& renderInfo) const;
+        /** dispatch the primitives to OpenGL, called by drawImplemtation() after calling drawVertexArraysImplementation().*/
+        void drawPrimitivesImplementation(RenderInfo& renderInfo) const;
 
-	/** Return true, osg::Geometry does support accept(Drawable::AttributeFunctor&). */
+        /** Return true, osg::Geometry does support accept(Drawable::AttributeFunctor&). */
         virtual bool supports(const Drawable::AttributeFunctor&) const { return true; }
 
         /** Accept an Drawable::AttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has. */
@@ -232,7 +232,7 @@ class OSG_EXPORT Geometry : public Drawable
     public:
 
 
-        /** Return true if the deprecated use array indicies or BIND_PER_PRIMITIVE binding has been assigned to arrays.*/
+        /** Return true if the deprecated use array indices or BIND_PER_PRIMITIVE binding has been assigned to arrays.*/
         bool containsDeprecatedData() const { return  _containsDeprecatedData; }
 
         /** fallback for deprecated functionality. Return true if the Geometry contains any array indices or BIND_PER_PRIMITIVE arrays. */
@@ -294,7 +294,7 @@ inline Geometry* createTexturedQuadGeometry(const Vec3& corner,const Vec3& width
 namespace deprecated_osg {
 
 /** Geometry class contaning deprecated features.
- * Users should only use deprecatged_osg::Geometry when absolutely neccessary for keeping things compiling,
+ * Users should only use deprecated_osg::Geometry when absolutely necessary for keeping things compiling,
  * it is recommended that you should migrate your code to work just with osg::Geometry as existing
  * deprecated_osg::Geometry will be removed in future release.
 */

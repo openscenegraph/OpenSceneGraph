@@ -1942,7 +1942,7 @@ char **get_words(FILE *fp, int *nwords, char **orig_line)
   words = (char **) myalloc (sizeof (char *) * max_words);
 
   /* convert line-feed and tabs into spaces */
-  /* (this guarentees that there will be a space before the */
+  /* (this guarantees that there will be a space before the */
   /*  null character at the end of the string) */
 
   str[BIG_STRING-2] = ' ';

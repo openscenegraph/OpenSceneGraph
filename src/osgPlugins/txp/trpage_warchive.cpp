@@ -1349,7 +1349,7 @@ void trpgwGeomHelper::Optimize()
                 vid = 3*triId;
 
                 if (triId < numTri) {
-                    // B is the new primary, check it agains the next
+                    // B is the new primary, check it against the next
                     c[0] = optVert(numMat,vid,vert,norm,tex);
                     c[1] = optVert(numMat,vid+1,vert,norm,tex);
                     c[2] = optVert(numMat,vid+2,vert,norm,tex);

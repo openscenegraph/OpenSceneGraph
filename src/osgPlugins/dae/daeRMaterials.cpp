@@ -388,7 +388,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         {
             // Diffuse texture will defeat specular highlighting
             // So postpone specular - Not sure if I should do this here
-            // beacuse it will override any global light model states
+            // because it will override any global light model states
             osg::LightModel* lightmodel = new osg::LightModel;
             lightmodel->setColorControl(osg::LightModel::SEPARATE_SPECULAR_COLOR);
             ss->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
@@ -462,7 +462,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         {
             // Diffuse texture will defeat specular highlighting
             // So postpone specular - Not sure if I should do this here
-            // beacuse it will override any global light model states
+            // because it will override any global light model states
             osg::LightModel* lightmodel = new osg::LightModel;
             lightmodel->setColorControl(osg::LightModel::SEPARATE_SPECULAR_COLOR);
             ss->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);

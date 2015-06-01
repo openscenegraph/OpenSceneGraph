@@ -85,7 +85,7 @@ public:
         requestWarpPointer(int,int) is requesting a repositioning of the mouse pointer
         to a specified x,y location on the window.  This is used by some camera manipulators
         to initialise the mouse pointer when mouse position relative to a controls
-        neutral mouse position is required, i.e when mimicking a aircrafts joystick.
+        neutral mouse position is required, i.e when mimicking an aircraft joystick.
         */
         virtual void requestWarpPointer(float x,float y) = 0;
 

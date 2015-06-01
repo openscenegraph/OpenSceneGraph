@@ -854,7 +854,7 @@ ReaderWriter* Registry::getReaderWriterForExtension(const std::string& ext)
 
     OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
 
-    // first attemt one of the installed loaders
+    // first attempt one of the installed loaders
     for(ReaderWriterList::iterator itr=_rwList.begin();
         itr!=_rwList.end();
         ++itr)

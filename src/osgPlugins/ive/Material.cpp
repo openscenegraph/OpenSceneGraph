@@ -44,7 +44,7 @@ void Material::write(DataOutputStream* out){
     out->writeBool(_specularFrontAndBack);
     out->writeVec4(_specularFront);
     out->writeVec4(_specularBack);
-    // Write emmision
+    // Write emission
     out->writeBool(_emissionFrontAndBack);
     out->writeVec4(_emissionFront);
     out->writeVec4(_emissionBack);

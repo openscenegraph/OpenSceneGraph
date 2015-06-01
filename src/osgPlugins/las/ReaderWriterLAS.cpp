@@ -136,7 +136,7 @@ class ReaderWriterLAS : public osgDB::ReaderWriter
             double mid_y = 0.5*(my.second - my.first);
             double mid_z = 0.5*(mz.second - mz.first);
 
-            // now we do a second pass substracting the mid point to each point
+            // now we do a second pass subtracting the mid point to each point
             reader.Reset();
             uint32_t i = 0;
             while (reader.ReadNextPoint())

@@ -511,7 +511,7 @@ bool trpgGeometry::Write(trpgWriteBuffer &buf)
 
     /* Material info
         Num materials
-        Material indicies
+        Material indices
         */
     if (materials.size() > 0) {
         buf.Begin(TRPG_GEOM_MATERIAL);

@@ -1298,7 +1298,7 @@ Uniform::Uniform( const char* name, bool b0, bool b1, bool b2, bool b3 ) :
 
 ///////////////////////////////////////////////////////////////////////////
 // Value assignment for single-element (ie: non-array) uniforms.
-// (For backwards compatability, if not already configured, set the
+// (For backwards compatibility, if not already configured, set the
 // Uniform's _numElements=1)
 
 bool Uniform::set( float f )

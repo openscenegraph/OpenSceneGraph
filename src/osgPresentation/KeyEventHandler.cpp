@@ -125,7 +125,7 @@ void KeyEventHandler::doOperation()
 
             if (commandRunsInBackground)
             {
-                // Sleep breifly while command runs in background to give it a chance to open
+                // Sleep briefly while command runs in background to give it a chance to open
                 // a window and obscure this present3D's window avoiding this present3D from
                 // rendering anything new before the new window opens.
                 OpenThreads::Thread::microSleep(500000); // half second sleep.

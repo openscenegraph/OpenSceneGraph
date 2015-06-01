@@ -176,16 +176,16 @@ public:
     /// Properties supported for a range of classes, used for white and black lists
     typedef std::map<std::string, PropertyMap> ObjectPropertyMap;
 
-    /// Get the list of properties that are explictly defined as supported
+    /// Get the list of properties that are explicitly defined as supported
     ObjectPropertyMap& getWhiteList() { return _whiteList; }
 
-    /// Get the const list of properties that are explictly defined as supported
+    /// Get the const list of properties that are explicitly defined as supported
     const ObjectPropertyMap& getWhiteList() const { return _whiteList; }
 
-    /// Get the list of properties that are explictly defined as not supported
+    /// Get the list of properties that are explicitly defined as not supported
     ObjectPropertyMap& getBlackList() { return _blackList; }
 
-    /// Get the const list of properties that are explictly defined as not supported
+    /// Get the const list of properties that are explicitly defined as not supported
     const ObjectPropertyMap& getBlackList() const { return _blackList; }
 
     osgDB::ObjectWrapper* getObjectWrapper(const osg::Object* object) const;

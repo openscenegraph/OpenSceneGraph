@@ -754,7 +754,7 @@ public:
             if (itr!=_edgeSet.end())
             {
                 // remove the edge from the list, as its positoin in the list
-                // may need to change once its values have been ammended
+                // may need to change once its values have been amended
                 _edgeSet.erase(itr);
             }
 

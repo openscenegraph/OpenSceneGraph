@@ -654,7 +654,7 @@ VisualInfo *VisualChooser::choose( Display *dpy, int screen, bool strict_adheren
             vid = ChoosePixelFormat(*dpy, &pfd);
             if ( vid != 0 )
             {
-              // Is this additional check neccessary ?
+              // Is this additional check necessary ?
               // Did anyone encountered a situation where
               // ChoosePixelFormat returned PXIELFORMAT worse than required ?
               _visual_id = static_cast<unsigned int>(vid);

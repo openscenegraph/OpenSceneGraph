@@ -224,7 +224,7 @@ class OSG_EXPORT Image : public BufferData
           * Typically used to copy to an already allocated image, such as creating
           * a 3D image from a stack 2D images.
           * If this Image is empty then image data is created to
-          * accomodate the source image in its offset position.
+          * accommodate the source image in its offset position.
           * If source is NULL then no operation happens, this Image is left unchanged.
         */
         virtual void copySubImage(int s_offset, int t_offset, int r_offset, const osg::Image* source);

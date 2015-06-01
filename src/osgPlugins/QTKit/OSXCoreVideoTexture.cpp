@@ -86,7 +86,7 @@ int OSXCoreVideoTexture::compare(const osg::StateAttribute& sa) const {
     int result = compareTexture(rhs);
     if (result!=0) return result;
 
-    // compare each paramter in turn against the rhs.
+    // compare each parameter in turn against the rhs.
 #if 1    
     if (_textureWidth != 0 && rhs._textureWidth != 0)
     {

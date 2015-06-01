@@ -509,7 +509,7 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap& drawStateMap,
     Lib3dsMesh * mesh = lib3ds_file_mesh_for_node(f,node);
     assert(!(mesh && !object));        // Node must be a LIB3DS_NODE_MESH_INSTANCE if a mesh exists
 
-    // Retreive LOCAL transform
+    // Retrieve LOCAL transform
     static const osg::Matrix::value_type MATRIX_EPSILON = 1e-10;
     osg::Matrix osgWorldToNodeMatrix( copyLib3dsMatrixToOsgMatrix(node->matrix) );
     osg::Matrix osgWorldToParentNodeMatrix;
@@ -624,7 +624,7 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap& drawStateMap,
         }
         else
         {
-            // didnt use group for children, return a ptr directly to the Geode for this mesh
+            // didn't use group for children, return a ptr directly to the Geode for this mesh
             // there is no group node but may have a meshTransform node to hold the meshes matrix
             if (meshTransform) {
                 processMesh(drawStateMap,meshTransform,mesh,meshAppliedMatPtr);
@@ -900,7 +900,7 @@ bool isNumber(float x)
    not required, we must split the vertex if a different normal is required.
    For example if we are processing a cube mesh with no smoothing group
    made from 12 triangles and 8 vertices, the resultant mesh should have
-   24 vertices to accomodate the 3 different normals at each vertex.
+   24 vertices to accommodate the 3 different normals at each vertex.
   */
 static void addVertex(
     const Lib3dsMesh* mesh,

@@ -281,8 +281,8 @@ bool trpgReadBuffer::GetToken(trpgToken &tok,int32 &len)
 }
 
 /* Limit Handling functions
-   These impose arbitrary lenght limits on the read buffer.
-   This keeps us from reading pased a token group and parsing
+   These impose arbitrary length limits on the read buffer.
+   This keeps us from reading passed a token group and parsing
    random data within an archive.
 */
 // Push Limit

@@ -4249,7 +4249,7 @@ void Optimizer::TextureAtlasVisitor::optimize()
                         }
                         else
                         {
-                            // if no texcoords then texgen must be being used, therefore must assume that texture is truely repeating
+                            // if no texcoords then texgen must be being used, therefore must assume that texture is truly repeating
                             s_outOfRange = true;
                             t_outOfRange = true;
                         }

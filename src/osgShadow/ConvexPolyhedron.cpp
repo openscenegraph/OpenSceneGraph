@@ -88,7 +88,7 @@ namespace
 typedef std::vector< double > Distances;
 typedef std::vector< osg::Vec4d > Points;
 
-// Auxilliary params contined per face
+// Auxiliary params continued per face
 struct FaceDistances
 {
     ConvexPolyhedron::Faces::iterator itr;

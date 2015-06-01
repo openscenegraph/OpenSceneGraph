@@ -969,7 +969,7 @@ void Win32WindowingSystem::getScreenSettings( const osg::GraphicsContext::Screen
         if (resolution.refreshRate == 0 || resolution.refreshRate == 1) {
             // Windows specific: 0 and 1 represent the hhardware's default refresh rate.
             // If someone knows how to get this refresh rate (in Hz)...
-            OSG_NOTICE << "Win32WindowingSystem::getScreenSettings() is not fully implemented (cannot retreive the hardware's default refresh rate)."<<std::endl;
+            OSG_NOTICE << "Win32WindowingSystem::getScreenSettings() is not fully implemented (cannot retrieve the hardware's default refresh rate)."<<std::endl;
             resolution.refreshRate = 0;
         }
     } else
@@ -1255,7 +1255,7 @@ void GraphicsWindowWin32::init()
     //
     // When using OpenGL in threaded app ( main thread sets up context / renderer thread draws using it )
     // first wglMakeCurrent seems to not work right and screw OpenGL context driver data:
-    // 1: succesive drawing shows a number of artifacts in TriangleStrips and TriangleFans
+    // 1: successive drawing shows a number of artifacts in TriangleStrips and TriangleFans
     // 2: weird behaviour of FramBufferObjects (glGenFramebuffer generates already generated ids ...)
     // Looks like repeating wglMakeCurrent call fixes all these issues
     // wglMakeCurrent call can impact performance so I try to minimize number of
@@ -1749,7 +1749,7 @@ bool GraphicsWindowWin32::setPixelFormat()
                                         << _traits->screenNum
                                         << std::endl;
 
-                _traits->red = bpp / 4; //integer devide, determine minimum number of bits we will accept
+                _traits->red = bpp / 4; //integer divide, determine minimum number of bits we will accept
                 _traits->green = bpp / 4;
                 _traits->blue = bpp / 4;
                 ::PreparePixelFormatSpecifications(*_traits, formatSpecs, true);// try again with WGL_SWAP_METHOD_ARB

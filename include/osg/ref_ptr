@@ -97,7 +97,7 @@ class ref_ptr
         /** release the pointer from ownership by this ref_ptr<>, decrementing the objects refencedCount() via unref_nodelete() to prevent the Object
           * object from being deleted even if the reference count goes to zero.  Use when using a local ref_ptr<> to an Object that you want to return
           * from a function/method via a C pointer, whilst preventing the normal ref_ptr<> destructor from cleaning up the object. When using release()
-          * you are implicitly expecting other code to take over managment of the object, otherwise a memory leak will result. */
+          * you are implicitly expecting other code to take over management of the object, otherwise a memory leak will result. */
         T* release() { T* tmp=_ptr; if (_ptr) _ptr->unref_nodelete(); _ptr=0; return tmp; }
 
         void swap(ref_ptr& rp) { T* tmp=_ptr; _ptr=rp._ptr; rp._ptr=tmp; }

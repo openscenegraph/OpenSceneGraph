@@ -267,7 +267,7 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
 
 static void replace(std::string & str, const char from, const std::string & to)
 {
-    // Replace for all occurences
+    // Replace for all occurrences
     for(std::string::size_type pos=str.find(from); pos!=std::string::npos; pos=str.find(from))
     {
         str.replace(pos, 1, to);
@@ -276,7 +276,7 @@ static void replace(std::string & str, const char from, const std::string & to)
 
 static void replace(std::string & str, const std::string & from, const std::string & to)
 {
-    // Replace for all occurences
+    // Replace for all occurrences
     std::size_t lenFrom = from.size();
     std::size_t lenTo = to.size();
     for(std::string::size_type pos=str.find(from); pos!=std::string::npos; pos = str.find(from, pos+lenTo))

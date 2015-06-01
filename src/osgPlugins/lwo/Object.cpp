@@ -214,7 +214,7 @@ void Object::parse(const iff::Chunk_list &data)
 
                 // FIX FOR A LIGHTWAVE BUG? MAYBE IT IS A FEATURE, I DON'T KNOW...
                 // if the first vertex is at a concave corner, we must invert the winding of the polygon
-                // beacuse it appears as flipped in Lighwave. Also, we tell the polygon to invert its normal.
+                // because it appears as flipped in Lighwave. Also, we tell the polygon to invert its normal.
                 // (not implemented yet)
                 /*if (i->vert.size() >= 4) {
                     if (must_invert_winding == triangle_is_clockwise(current_layer.units().back().points(), i->vert.front().index, i->vert.back().index, i->vert[1].index)) {

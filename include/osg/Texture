@@ -1101,8 +1101,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             void discardAllDeletedTextureObjects();
             void flushDeletedTextureObjects(double currentTime, double& availableTime);
 
-            TextureObject* takeFromOrphans(Texture* texture);
-            TextureObject* takeOrGenerate(Texture* texture);
+            osg::ref_ptr<TextureObject> takeFromOrphans(Texture* texture);
+            osg::ref_ptr<TextureObject> takeOrGenerate(Texture* texture);
             void moveToBack(TextureObject* to);
             void addToBack(TextureObject* to);
             void orphan(TextureObject* to);
@@ -1167,8 +1167,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             bool hasSpace(unsigned int size) const { return (_currTexturePoolSize+size)<=_maxTexturePoolSize; }
             bool makeSpace(unsigned int size);
 
-            TextureObject* generateTextureObject(const Texture* texture, GLenum target);
-            TextureObject* generateTextureObject(const Texture* texture,
+            osg::ref_ptr<TextureObject> generateTextureObject(const Texture* texture, GLenum target);
+            osg::ref_ptr<TextureObject> generateTextureObject(const Texture* texture,
                                                         GLenum    target,
                                                         GLint     numMipmapLevels,
                                                         GLenum    internalFormat,
@@ -1231,9 +1231,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         static osg::ref_ptr<Texture::TextureObjectManager>&  getTextureObjectManager(unsigned int contextID);
 
-        static TextureObject* generateTextureObject(const Texture* texture, unsigned int contextID,GLenum target);
+        static osg::ref_ptr<TextureObject> generateTextureObject(const Texture* texture, unsigned int contextID,GLenum target);
 
-        static TextureObject* generateTextureObject(const Texture* texture,
+        static osg::ref_ptr<TextureObject> generateTextureObject(const Texture* texture,
                                                      unsigned int contextID,
                                                      GLenum    target,
                                                      GLint     numMipmapLevels,
@@ -1242,6 +1242,17 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                                                      GLsizei   height,
                                                      GLsizei   depth,
                                                      GLint     border);
+
+        TextureObject* generateAndAssignTextureObject(unsigned int contextID, GLenum target) const;
+
+        TextureObject* generateAndAssignTextureObject(unsigned int contextID,
+                                                     GLenum    target,
+                                                     GLint     numMipmapLevels,
+                                                     GLenum    internalFormat,
+                                                     GLsizei   width,
+                                                     GLsizei   height,
+                                                     GLsizei   depth,
+                                                     GLint     border) const;
 
         static void deleteAllTextureObjects(unsigned int contextID);
         static void discardAllTextureObjects(unsigned int contextID);

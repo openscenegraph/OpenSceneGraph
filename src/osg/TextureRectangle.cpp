@@ -218,7 +218,7 @@ void TextureRectangle::apply(State& state) const
     else if (_subloadCallback.valid())
     {
         // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.
-        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(this, contextID,GL_TEXTURE_RECTANGLE);
+        textureObject = generateAndAssignTextureObject(contextID,GL_TEXTURE_RECTANGLE);
 
         textureObject->bind();
 
@@ -247,8 +247,8 @@ void TextureRectangle::apply(State& state) const
         _textureWidth = image->s();
         _textureHeight = image->t();
 
-        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
-                this, contextID,GL_TEXTURE_RECTANGLE,1,_internalFormat,_textureWidth,_textureHeight,1,0);
+        textureObject = generateAndAssignTextureObject(
+                contextID,GL_TEXTURE_RECTANGLE,1,_internalFormat,_textureWidth,_textureHeight,1,0);
 
         textureObject->bind();
 
@@ -273,8 +273,8 @@ void TextureRectangle::apply(State& state) const
     }
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_internalFormat!=0) )
     {
-        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
-                this, contextID,GL_TEXTURE_RECTANGLE,0,_internalFormat,_textureWidth,_textureHeight,1,0);
+        textureObject = generateAndAssignTextureObject(
+                contextID,GL_TEXTURE_RECTANGLE,0,_internalFormat,_textureWidth,_textureHeight,1,0);
 
         textureObject->bind();
 
@@ -493,7 +493,7 @@ void TextureRectangle::copyTexImage2D(State& state, int x, int y, int width, int
 
     // switch off mip-mapping.
     //
-    _textureObjectBuffer[contextID] = textureObject = generateTextureObject(this, contextID,GL_TEXTURE_RECTANGLE);
+    textureObject = generateAndAssignTextureObject(contextID,GL_TEXTURE_RECTANGLE);
 
     textureObject->bind();
 

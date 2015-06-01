@@ -106,8 +106,7 @@ void Texture2DMultisample::apply(State& state) const
     }
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_numSamples!=0) )
     {
-        _textureObjectBuffer[contextID] = textureObject =
-          generateTextureObject( this,
+        textureObject = generateAndAssignTextureObject(
                                  contextID,
                                  getTextureTarget(),
                                  1,

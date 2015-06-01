@@ -680,7 +680,7 @@ bool Texture::TextureObjectSet::makeSpace(unsigned int& size)
     return size==0;
 }
 
-Texture::TextureObject* Texture::TextureObjectSet::takeFromOrphans(Texture* texture)
+osg::ref_ptr<Texture::TextureObject> Texture::TextureObjectSet::takeFromOrphans(Texture* texture)
 {
     // take front of orphaned list.
     ref_ptr<TextureObject> to = _orphanedTextureObjects.front();
@@ -700,11 +700,11 @@ Texture::TextureObject* Texture::TextureObjectSet::takeFromOrphans(Texture* text
 
     OSG_INFO<<"Reusing orphaned TextureObject, _numOfTextureObjects="<<_numOfTextureObjects<<std::endl;
 
-    return to.release();
+    return to;
 }
 
 
-Texture::TextureObject* Texture::TextureObjectSet::takeOrGenerate(Texture* texture)
+osg::ref_ptr<Texture::TextureObject> Texture::TextureObjectSet::takeOrGenerate(Texture* texture)
 {
     // see if we can recyle TextureObject from the orphan list
     {
@@ -752,7 +752,7 @@ Texture::TextureObject* Texture::TextureObjectSet::takeOrGenerate(Texture* textu
         // assign to new texture
         to->setTexture(texture);
 
-        return to.release();
+        return to;
     }
 
     //
@@ -761,7 +761,7 @@ Texture::TextureObject* Texture::TextureObjectSet::takeOrGenerate(Texture* textu
     GLuint id;
     glGenTextures( 1L, &id );
 
-    TextureObject* to = new Texture::TextureObject(const_cast<Texture*>(texture),id,_profile);
+    osg::ref_ptr<TextureObject> to = new Texture::TextureObject(const_cast<Texture*>(texture),id,_profile);
     to->_set = this;
     ++_numOfTextureObjects;
 
@@ -769,7 +769,7 @@ Texture::TextureObject* Texture::TextureObjectSet::takeOrGenerate(Texture* textu
     _parent->getCurrTexturePoolSize() += _profile._size;
     _parent->getNumberActiveTextureObjects() += 1;
 
-    addToBack(to);
+    addToBack(to.get());
 
     OSG_INFO<<"Created new " << this << " TextureObject, _numOfTextureObjects "<<_numOfTextureObjects<<std::endl;
 
@@ -990,12 +990,12 @@ bool Texture::TextureObjectManager::makeSpace(unsigned int size)
 }
 
 
-Texture::TextureObject* Texture::TextureObjectManager::generateTextureObject(const Texture* texture, GLenum target)
+osg::ref_ptr<Texture::TextureObject> Texture::TextureObjectManager::generateTextureObject(const Texture* texture, GLenum target)
 {
     return generateTextureObject(texture, target, 0, 0, 0, 0, 0, 0);
 }
 
-Texture::TextureObject* Texture::TextureObjectManager::generateTextureObject(const Texture* texture,
+osg::ref_ptr<Texture::TextureObject> Texture::TextureObjectManager::generateTextureObject(const Texture* texture,
                                              GLenum    target,
                                              GLint     numMipmapLevels,
                                              GLenum    internalFormat,
@@ -1010,6 +1010,26 @@ Texture::TextureObject* Texture::TextureObjectManager::generateTextureObject(con
     Texture::TextureProfile profile(target,numMipmapLevels,internalFormat,width,height,depth,border);
     TextureObjectSet* tos = getTextureObjectSet(profile);
     return tos->takeOrGenerate(const_cast<Texture*>(texture));
+}
+
+Texture::TextureObject* Texture::generateAndAssignTextureObject(unsigned int contextID, GLenum target) const
+{
+    _textureObjectBuffer[contextID] = generateTextureObject(this, contextID, target);
+    return _textureObjectBuffer[contextID].get();
+}
+
+Texture::TextureObject* Texture::generateAndAssignTextureObject(
+                                             unsigned int contextID,
+                                             GLenum    target,
+                                             GLint     numMipmapLevels,
+                                             GLenum    internalFormat,
+                                             GLsizei   width,
+                                             GLsizei   height,
+                                             GLsizei   depth,
+                                             GLint     border) const
+{
+    _textureObjectBuffer[contextID] = generateTextureObject(this, contextID, target, numMipmapLevels, internalFormat, width, height, depth, border);
+    return _textureObjectBuffer[contextID].get();
 }
 
 Texture::TextureObjectSet* Texture::TextureObjectManager::getTextureObjectSet(const TextureProfile& profile)
@@ -1203,12 +1223,12 @@ osg::ref_ptr<Texture::TextureObjectManager>& Texture::getTextureObjectManager(un
 }
 
 
-Texture::TextureObject* Texture::generateTextureObject(const Texture* texture, unsigned int contextID, GLenum target)
+osg::ref_ptr<Texture::TextureObject> Texture::generateTextureObject(const Texture* texture, unsigned int contextID, GLenum target)
 {
     return getTextureObjectManager(contextID)->generateTextureObject(texture, target);
 }
 
-Texture::TextureObject* Texture::generateTextureObject(const Texture* texture, unsigned int contextID,
+osg::ref_ptr<Texture::TextureObject> Texture::generateTextureObject(const Texture* texture, unsigned int contextID,
                                              GLenum    target,
                                              GLint     numMipmapLevels,
                                              GLenum    internalFormat,

@@ -47,7 +47,8 @@ osgParticle::ParticleProcessor::ParticleProcessor(const ParticleProcessor& copy,
     _lifeTime(copy._lifeTime),
     _startTime(copy._startTime),
     _currentTime(copy._currentTime),
-    _resetTime(copy._resetTime)
+    _resetTime(copy._resetTime),
+    _frameNumber(copy._frameNumber)
 {
 }
 

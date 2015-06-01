@@ -779,11 +779,11 @@ OSGTEXT_EXPORT osg::Geometry* computeGlyphGeometry(const osgText::Glyph3D* glyph
     {
         if ((*itr)->getMode()==GL_POLYGON)
         {
-            osg::ref_ptr<Boundary> boundaryInner = new Boundary(orig_vertices, itr->get(), bevelThickness);
+            osg::ref_ptr<Boundary> boundaryInner = new Boundary(orig_vertices.get(), itr->get(), bevelThickness);
             //boundaryInner->removeAllSegmentsBelowThickness(bevelThickness);
             innerBoundaries.push_back(boundaryInner.get());
 #if HANDLE_SHELL
-            osg::ref_ptr<Boundary> boundaryOuter = new Boundary(orig_vertices, itr->get(), -shellThickness);
+            osg::ref_ptr<Boundary> boundaryOuter = new Boundary(orig_vertices.get(), itr->get(), -shellThickness);
             boundaryOuter->removeAllSegmentsAboveThickness(-shellThickness);
             outerBoundaries.push_back(boundaryOuter.get());
 #endif

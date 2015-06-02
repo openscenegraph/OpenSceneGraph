@@ -98,7 +98,7 @@ char fragmentShaderSource[] =
 
 // Callback for animating the WarmColor
 
-class UniformCallback : public StateAttributeCallback
+class UniformBufferCallback : public StateAttributeCallback
 {
 public:
     void operator() (StateAttribute* attr, NodeVisitor* nv)
@@ -196,7 +196,7 @@ int main(int argc, char** argv)
     scene->addChild(group3);    
     ref_ptr<UniformBufferBinding> ubb3
         = new UniformBufferBinding(0, ubo3.get(), 0, blockSize);
-    ubb3->setUpdateCallback(new UniformCallback);
+    ubb3->setUpdateCallback(new UniformBufferCallback);
     ubb3->setDataVariance(Object::DYNAMIC);
     ss3->setAttributeAndModes(ubb3.get(), StateAttribute::ON);
     

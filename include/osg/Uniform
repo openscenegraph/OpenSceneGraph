@@ -21,6 +21,7 @@
 
 #include <osg/ref_ptr>
 #include <osg/Array>
+#include <osg/Callback>
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
@@ -823,38 +824,28 @@ class OSG_EXPORT Uniform : public Object
         bool getElement( unsigned int index, bool& b0, bool& b1 ) const;
         bool getElement( unsigned int index, bool& b0, bool& b1, bool& b2 ) const;
         bool getElement( unsigned int index, bool& b0, bool& b1, bool& b2, bool& b3 ) const;
-
-
-        struct Callback : public virtual osg::Object
-        {
-            Callback() {}
-
-            Callback(const Callback&,const CopyOp&) {}
-
-            META_Object(osg,Callback);
-
-            /** do customized update code.*/
-            virtual void operator () (Uniform*, NodeVisitor*) {}
-        };
+        
+        
+        typedef UniformCallback Callback;
+        
 
         /** Set the UpdateCallback which allows users to attach customize the updating of an object during the update traversal.*/
-        void setUpdateCallback(Callback* uc);
+        void setUpdateCallback(UniformCallback* uc);
 
         /** Get the non const UpdateCallback.*/
-        Callback* getUpdateCallback() { return _updateCallback.get(); }
+        UniformCallback* getUpdateCallback() { return _updateCallback.get(); }
 
         /** Get the const UpdateCallback.*/
-        const Callback* getUpdateCallback() const { return _updateCallback.get(); }
-
+        const UniformCallback* getUpdateCallback() const { return _updateCallback.get(); }
 
         /** Set the EventCallback which allows users to attach customize the updating of an object during the Event traversal.*/
-        void setEventCallback(Callback* ec);
+        void setEventCallback(UniformCallback* ec);
 
         /** Get the non const EventCallback.*/
-        Callback* getEventCallback() { return _eventCallback.get(); }
+        UniformCallback* getEventCallback() { return _eventCallback.get(); }
 
         /** Get the const EventCallback.*/
-        const Callback* getEventCallback() const { return _eventCallback.get(); }
+        const UniformCallback* getEventCallback() const { return _eventCallback.get(); }
 
         /** Increment the modified count on the Uniform so Programs watching it know it update themselves.
           * NOTE: automatically called during osg::Uniform::set*();
@@ -923,8 +914,8 @@ class OSG_EXPORT Uniform : public Object
         ref_ptr<IntArray>    _intArray;
         ref_ptr<UIntArray>   _uintArray;
 
-        ref_ptr<Callback>    _updateCallback;
-        ref_ptr<Callback>    _eventCallback;
+        ref_ptr<UniformCallback> _updateCallback;
+        ref_ptr<UniformCallback> _eventCallback;
 
         unsigned int         _modifiedCount;
 };

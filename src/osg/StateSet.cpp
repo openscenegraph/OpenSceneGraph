@@ -1780,7 +1780,7 @@ void StateSet::runUpdateCallbacks(osg::NodeVisitor* nv)
             uitr != _uniformList.end();
             ++uitr)
         {
-            Uniform::Callback* callback = uitr->second.first->getUpdateCallback();
+            UniformCallback* callback = uitr->second.first->getUpdateCallback();
             if (callback) (*callback)(uitr->second.first.get(),nv);
         }
     }
@@ -1843,7 +1843,7 @@ void StateSet::runEventCallbacks(osg::NodeVisitor* nv)
             uitr != _uniformList.end();
             ++uitr)
         {
-            Uniform::Callback* callback = uitr->second.first->getEventCallback();
+            UniformCallback* callback = uitr->second.first->getEventCallback();
             if (callback) (*callback)(uitr->second.first.get(),nv);
         }
     }

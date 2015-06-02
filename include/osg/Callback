@@ -207,6 +207,26 @@ class OSG_EXPORT StateAttributeCallback : public virtual osg::Callback
         virtual void operator () (StateAttribute*, NodeVisitor*) {}
 };
 
+// forward declare
+class Uniform;
+
+/** Deprecated. */
+class OSG_EXPORT UniformCallback : public virtual osg::Callback
+{
+public:
+    UniformCallback() {}
+
+    UniformCallback(const UniformCallback&, const CopyOp&) {}
+
+    META_Object(osg, UniformCallback);
+
+    /** override Callback::run() entry point to adapt to UniformCallback::run(..) method.*/
+    virtual bool run(osg::Object* object, osg::Object* data);
+
+    /** do customized update code.*/
+    virtual void operator () (Uniform*, NodeVisitor*) {}
+};
+
 
 } // namespace
 

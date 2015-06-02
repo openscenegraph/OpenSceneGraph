@@ -107,3 +107,22 @@ bool StateAttributeCallback::run(osg::Object* object, osg::Object* data)
         return traverse(object, data);
     }
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// UniformCallback
+//
+bool UniformCallback::run(osg::Object* object, osg::Object* data)
+{
+    osg::Uniform* uniform = dynamic_cast<osg::Uniform*>(object);
+    osg::NodeVisitor* nv = dynamic_cast<osg::NodeVisitor*>(data);
+    if (uniform && nv)
+    {
+        operator()(uniform, nv);
+        return true;
+    }
+    else
+    {
+        return traverse(object, data);
+    }
+}

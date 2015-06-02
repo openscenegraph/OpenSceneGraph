@@ -214,7 +214,7 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
     {
         //int entry = fr[0].getNoNestedBrackets();
         fr += 2;
-        Uniform::Callback* callback = fr.readObjectOfType<Uniform::Callback>();
+        UniformCallback* callback = fr.readObjectOfType<UniformCallback>();
         if (callback) {
             uniform.setUpdateCallback(callback);
         }
@@ -225,7 +225,7 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
     {
         //int entry = fr[0].getNoNestedBrackets();
         fr += 2;
-        Uniform::Callback* callback = fr.readObjectOfType<Uniform::Callback>();
+        UniformCallback* callback = fr.readObjectOfType<UniformCallback>();
         if (callback) {
             uniform.setEventCallback(callback);
         }

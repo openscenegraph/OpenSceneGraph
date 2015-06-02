@@ -45,10 +45,13 @@ Uniform::Uniform( Type type, const std::string& name, int numElements ) :
     allocateDataArray();
 }
 
-Uniform::Uniform( const Uniform& rhs, const CopyOp& copyop ) :
-    Object(rhs,copyop), _type(rhs._type)
+Uniform::Uniform(const Uniform& uniform, const CopyOp& copyop) :
+    Object(uniform, copyop),
+    _type(uniform._type),
+    _updateCallback(copyop(uniform._updateCallback.get())),
+    _eventCallback(copyop(uniform._eventCallback.get()))
 {
-    copyData( rhs );
+    copyData(uniform);
 }
 
 Uniform::~Uniform()
@@ -1298,7 +1301,7 @@ Uniform::Uniform( const char* name, bool b0, bool b1, bool b2, bool b3 ) :
 
 ///////////////////////////////////////////////////////////////////////////
 // Value assignment for single-element (ie: non-array) uniforms.
-// (For backwards compatibility, if not already configured, set the
+// (For backwards compatability, if not already configured, set the
 // Uniform's _numElements=1)
 
 bool Uniform::set( float f )
@@ -2607,7 +2610,7 @@ void Uniform::apply(const GLExtensions* ext, GLint location) const
     }
 }
 
-void Uniform::setUpdateCallback(Callback* uc)
+void Uniform::setUpdateCallback(UniformCallback* uc)
 {
     OSG_INFO<<"Uniform::Setting Update callbacks"<<std::endl;
 
@@ -2633,7 +2636,7 @@ void Uniform::setUpdateCallback(Callback* uc)
     }
 }
 
-void Uniform::setEventCallback(Callback* ec)
+void Uniform::setEventCallback(UniformCallback* ec)
 {
     OSG_INFO<<"Uniform::Setting Event callbacks"<<std::endl;
 

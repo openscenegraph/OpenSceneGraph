@@ -9,7 +9,7 @@
 namespace osgAnimation
 {
     template <typename T>
-    class OSGANIMATION_EXPORT UpdateUniform : public AnimationUpdateCallback<osg::UniformCallback>
+    class UpdateUniform : public AnimationUpdateCallback<osg::UniformCallback>
     {
     protected:
         osg::ref_ptr< TemplateTarget<T> > _uniformTarget;

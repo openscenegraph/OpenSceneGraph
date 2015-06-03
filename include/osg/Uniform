@@ -826,6 +826,7 @@ class OSG_EXPORT Uniform : public Object
         bool getElement( unsigned int index, bool& b0, bool& b1, bool& b2, bool& b3 ) const;
         
         
+        /** provide typedef for backwards compatibility to OSG-3.2 and other previous versions. */
         typedef UniformCallback Callback;
         
 

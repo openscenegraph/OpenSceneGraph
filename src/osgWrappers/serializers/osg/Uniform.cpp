@@ -190,6 +190,6 @@ REGISTER_OBJECT_WRAPPER( Uniform,
 
     ADD_UINT_SERIALIZER( NumElements, 0 );  // _numElements
     ADD_USER_SERIALIZER( Elements );  // _floatArray, _doubleArray, _intArray, _uintArray
-    ADD_OBJECT_SERIALIZER( UpdateCallback, osg::Uniform::Callback, NULL );  // _updateCallback
-    ADD_OBJECT_SERIALIZER( EventCallback, osg::Uniform::Callback, NULL );  // _eventCallback
+    ADD_OBJECT_SERIALIZER( UpdateCallback, osg::UniformCallback, NULL );  // _updateCallback
+    ADD_OBJECT_SERIALIZER( EventCallback, osg::UniformCallback, NULL );  // _eventCallback
 }

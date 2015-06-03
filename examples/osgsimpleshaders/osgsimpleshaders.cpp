@@ -94,7 +94,7 @@ static const char *blockyFragSource = {
 ///////////////////////////////////////////////////////////////////////////
 // callback for animating various Uniforms (currently only the SIN uniform)
 
-class AnimateCallback: public osg::Uniform::Callback
+class AnimateCallback: public osg::UniformCallback
 {
     public:
         enum Operation { SIN };

@@ -46,7 +46,7 @@
 
 #ifdef ENABLE_GLSL
 
-class SineAnimation: public osg::Uniform::Callback
+class SineAnimation: public osg::UniformCallback
 {
 public:
     SineAnimation( float rate = 1.0f, float scale = 1.0f, float offset = 0.0f ) :

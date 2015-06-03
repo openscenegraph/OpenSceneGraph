@@ -173,7 +173,7 @@ static osg::Shader*  MarbleFragObj;
 // for demo simplicity, this one callback animates all the shaders, instancing
 // for each uniform but with a specific operation each time.
 
-class AnimateCallback: public osg::Uniform::Callback
+class AnimateCallback: public osg::UniformCallback
 {
     public:
     

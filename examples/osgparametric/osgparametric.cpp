@@ -96,7 +96,7 @@ char fragmentShaderSource[] =
 
 
 
-class UniformVarying : public osg::Uniform::Callback
+class UniformVarying : public osg::UniformCallback
 {
     virtual void operator () (osg::Uniform* uniform, osg::NodeVisitor* nv)
     {

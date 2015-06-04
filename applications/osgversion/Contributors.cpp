@@ -482,7 +482,8 @@ TypoCorrection typoCorrections[] =
     {"Ravselj", "Rav¨elj"},
     {"Janik", "Jannik"},
     {"ViganÃ²", "Viganò"},
-    {"Vigano", "Viganò"}
+    {"Vigano", "Viganò"},
+    {"Frashud", "Farshid"}
 };
 
 
@@ -663,7 +664,15 @@ NameCorrection nameCorrections[] =
      {"Bradley",       "Baker",
       "Bradley",       "Baker Searles"},
      {"PawelKsiezopolski", "",
-      "Pawel",          "Ksiezopolski"}
+      "Pawel",          "Ksiezopolski"},
+     {"Albert", "Luaces",
+      "Alberto","Luaces"},
+     {"KOS", "",
+      "Konstantin","Matveyev"},
+     {"WeSee", "",
+       "Alois", "Wismer"},
+     {"We", "See",
+       "Alois", "Wismer"}
 };
 
 

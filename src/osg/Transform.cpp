@@ -178,17 +178,18 @@ BoundingSphere Transform::computeBound() const
     bsphere._center = bsphere._center*l2w;
 
     xdash -= bsphere._center;
-    osg::BoundingSphere::value_type len_xdash = xdash.length();
+    osg::BoundingSphere::value_type sqrlen_xdash = xdash.length2();
 
     ydash -= bsphere._center;
-    osg::BoundingSphere::value_type len_ydash = ydash.length();
+    osg::BoundingSphere::value_type sqrlen_ydash = ydash.length2();
 
     zdash -= bsphere._center;
-    osg::BoundingSphere::value_type len_zdash = zdash.length();
+    osg::BoundingSphere::value_type sqrlen_zdash = zdash.length2();
 
-    bsphere._radius = len_xdash;
-    if (bsphere._radius<len_ydash) bsphere._radius = len_ydash;
-    if (bsphere._radius<len_zdash) bsphere._radius = len_zdash;
+    bsphere._radius = sqrlen_xdash;
+    if (bsphere._radius<sqrlen_ydash) bsphere._radius = sqrlen_ydash;
+    if (bsphere._radius<sqrlen_zdash) bsphere._radius = sqrlen_zdash;
+    bsphere._radius = (osg::BoundingSphere::value_type)sqrt(bsphere._radius);
 
     return bsphere;
 

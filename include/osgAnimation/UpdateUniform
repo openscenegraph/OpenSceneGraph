@@ -42,7 +42,7 @@ namespace osgAnimation
         bool link(Channel* channel)
         {
             if (channel->getName().find("uniform") != std::string::npos)
-                return channel->setTarget(_uniformTarget);
+                return channel->setTarget(_uniformTarget.get());
             else
                 OSG_WARN << "Channel " << channel->getName() << " does not contain a valid symbolic name for this class " << className() << std::endl;
 

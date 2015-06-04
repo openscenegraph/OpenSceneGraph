@@ -1,6 +1,6 @@
 OpenSceneGraph Library 3.3.8
 
-547 Contributors:
+548 Contributors:
 
 Firstname Surname
 -----------------
@@ -38,10 +38,10 @@ Pjotr Svetachov
 Mike Wittman
 Jan Peciva
 Chris Hanson
+Alberto Luaces
 Roland Smeenk
 Roger James
 Jeremy Moles
-Alberto Luaces
 J.P. Delport
 Magnus Kessler
 David Fries
@@ -73,6 +73,7 @@ André Garneau
 Adrian Egli
 Ruben Lopez
 Randall Hopper
+Jannik Heller
 Jan Ciger
 Glenn Waldron
 Sebastian Messerschmidt
@@ -89,11 +90,12 @@ Bryan Thrall
 Rafa Gaitan
 Fabien Lavignotte
 Andreas Ekstrand
+Thomas Hogarth
 Riccardo Corsi
 Mike Connell
 Melchior Franz
+Konstantin Matveyev
 Johannes Baeuerle
-Thomas Hogarth
 Neil Hughes
 Martin Beckett
 Marc Helbling
@@ -114,7 +116,6 @@ Nico Kruithof
 Martin Aumueller
 Mario Valle
 Lukasz Izdebski
-Konstantin Matveyev
 Jorge Izquierdo Ciges
 Jordi Torres
 Gordon Tomlinson
@@ -155,7 +156,6 @@ Lilin Xiong
 Leandro Motta Barros
 Johan Nouvel
 Javier Taibo
-Jannik Heller
 Hartwig Wiesmann
 Donn Mielcarek
 Corbin Holtz
@@ -541,6 +541,7 @@ Andrew Reyonolds
 Andreas Roth
 Andreas Jochens
 Andre Normann
+Alois Wismer
 Almalric Alexandre
 Allen Bierbaum
 Alexey Pavlov

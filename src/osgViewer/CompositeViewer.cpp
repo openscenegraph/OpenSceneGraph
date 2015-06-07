@@ -362,7 +362,7 @@ void CompositeViewer::setReferenceTime(double time)
 {
     osg::Timer_t tick = osg::Timer::instance()->tick();
     double currentTime = osg::Timer::instance()->delta_s(_startTick, tick);
-    double delta_ticks = (time-currentTime)*(osg::Timer::instance()->getSecondsPerTick());
+    double delta_ticks = (time-currentTime)/(osg::Timer::instance()->getSecondsPerTick());
     if (delta_ticks>=0) tick += osg::Timer_t(delta_ticks);
     else tick -= osg::Timer_t(-delta_ticks);
 

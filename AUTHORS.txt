@@ -88,11 +88,11 @@ David Spilling
 Daniel Sjölie
 Bryan Thrall
 Rafa Gaitan
+Mike Connell
 Fabien Lavignotte
 Andreas Ekstrand
 Thomas Hogarth
 Riccardo Corsi
-Mike Connell
 Melchior Franz
 Konstantin Matveyev
 Johannes Baeuerle

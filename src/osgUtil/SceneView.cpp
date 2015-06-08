@@ -597,15 +597,17 @@ void SceneView::computeRightEyeViewport(const osg::Viewport *viewport)
 void SceneView::setLightingMode(LightingMode mode)
 {
     if (mode==_lightingMode) return;
+    
+    osg::StateSet* stateSetToModify = _secondaryStateSet.valid() ? _secondaryStateSet.get() : _globalStateSet.get();
 
     if (_lightingMode!=NO_SCENEVIEW_LIGHT)
     {
         // remove GL_LIGHTING mode
-        _globalStateSet->removeMode(GL_LIGHTING);
+        stateSetToModify->removeMode(GL_LIGHTING);
 
         if (_light.valid())
         {
-            _globalStateSet->removeAssociatedModes(_light.get());
+            stateSetToModify->removeAssociatedModes(_light.get());
         }
 
     }
@@ -616,10 +618,10 @@ void SceneView::setLightingMode(LightingMode mode)
     {
         #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
             // add GL_LIGHTING mode
-            _globalStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+            stateSetToModify->setMode(GL_LIGHTING, osg::StateAttribute::ON);
             if (_light.valid())
             {
-                _globalStateSet->setAssociatedModes(_light.get(), osg::StateAttribute::ON);
+                stateSetToModify->setAssociatedModes(_light.get(), osg::StateAttribute::ON);
             }
         #endif
     }

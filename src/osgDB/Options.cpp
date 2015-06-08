@@ -31,7 +31,8 @@ Options::Options(const Options& options,const osg::CopyOp& copyop):
     _writeFileCallback(options._writeFileCallback),
     _fileLocationCallback(options._fileLocationCallback),
     _fileCache(options._fileCache),
-    _terrain(options._terrain) {}
+    _terrain(options._terrain),
+    _parentGroup(options._parentGroup) {}
 
 void Options::parsePluginStringData(const std::string& str, char separator1, char separator2)
 {

@@ -249,6 +249,11 @@ class OSGDB_EXPORT Options : public osg::Object
         /** Get the terrain observer_ptr, use to decorate any osgTerrain subgraphs.*/
         const osg::observer_ptr<osg::Node>& getTerrain() const { return _terrain; }
 
+        /** Set the parentGroup observer_ptr, where the loaded model is intended to be added */
+        void setParentGroup(osg::observer_ptr<osg::Group>& parentGroup) { _parentGroup= parentGroup; }
+
+        /** Get the parentGroup observer_ptr, where the loaded model is intended to be added */
+        const osg::observer_ptr<osg::Group>& getParentGroup() const { return _parentGroup; }
 
     protected:
 
@@ -277,6 +282,7 @@ class OSGDB_EXPORT Options : public osg::Object
         osg::ref_ptr<FileCache>             _fileCache;
 
         osg::observer_ptr<osg::Node>        _terrain;
+        osg::observer_ptr<osg::Group>       _parentGroup; // Set by the DatabasePager to the node where the requested file will be inserted. NOTE: observer since prent can be dettached whilst DB thread is loading the object
 };
 
 }

@@ -769,6 +769,7 @@ void DatabasePager::DatabaseThread::run()
                 OpenThreads::ScopedLock<OpenThreads::Mutex> drLock(_pager->_dr_mutex);
                 dr_loadOptions = databaseRequest->_loadOptions.valid() ? databaseRequest->_loadOptions->cloneOptions() : new osgDB::Options;
                 dr_loadOptions->setTerrain(databaseRequest->_terrain);
+                dr_loadOptions->setParentGroup(databaseRequest->_group);
                 fileName = databaseRequest->_fileName;
                 frameNumberLastRequest = databaseRequest->_frameNumberLastRequest;
             }

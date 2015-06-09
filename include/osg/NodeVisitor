@@ -96,6 +96,15 @@ class OSG_EXPORT NodeVisitor : public virtual Object
 
         META_Object(osg, NodeVisitor)
 
+        /** Convert 'this' into a NodeVisitor pointer if Object is a NodeVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<NodeVisitor*>(this).*/
+        virtual NodeVisitor* asNodeVisitor() { return this; }
+
+        /** convert 'const this' into a const NodeVisitor pointer if Object is a NodeVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<const NodeVisitor*>(this).*/
+        virtual const NodeVisitor* asNodeVisitor() const { return this; }
+
+        
         /** Method to call to reset visitor. Useful if your visitor accumulates
             state during a traversal, and you plan to reuse the visitor.
             To flush that state for the next traversal: call reset() prior

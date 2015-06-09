@@ -235,6 +235,14 @@ class OSG_EXPORT StateAttribute : public Object
         virtual const char* className() const { return "StateAttribute"; }
 
 
+        /** Convert 'this' into a StateAttribute pointer if Object is a StateAttribute, otherwise return 0.
+          * Equivalent to dynamic_cast<StateAttribute*>(this).*/
+        virtual StateAttribute* asStateAttribute() { return this; }
+
+        /** convert 'const this' into a const StateAttribute pointer if Object is a StateAttribute, otherwise return 0.
+          * Equivalent to dynamic_cast<const StateAttribute*>(this).*/
+        virtual const StateAttribute* asStateAttribute() const { return this; }
+
         /** Fast alternative to dynamic_cast<> for determining if state attribute is a Texture.*/
         virtual Texture* asTexture() { return 0; }
 

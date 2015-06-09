@@ -95,6 +95,14 @@ class OSG_EXPORT Node : public Object
         /** return the name of the node's class type.*/
         virtual const char* className() const { return "Node"; }
 
+        /** Convert 'this' into a Node pointer if Object is a Node, otherwise return 0.
+          * Equivalent to dynamic_cast<Node*>(this).*/
+        virtual Node* asNode() { return this; }
+
+        /** convert 'const this' into a const Node pointer if Object is a Node, otherwise return 0.
+          * Equivalent to dynamic_cast<const Node*>(this).*/
+        virtual const Node* asNode() const { return this; }
+
         /** convert 'this' into a Drawable pointer if Node is a Drawable, otherwise return 0.
           * Equivalent to dynamic_cast<Group*>(this).*/
         virtual Drawable* asDrawable() { return 0; }

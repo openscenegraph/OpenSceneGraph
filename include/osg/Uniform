@@ -551,7 +551,15 @@ class OSG_EXPORT Uniform : public Object
 
         META_Object(osg, Uniform);
 
+        /** Convert 'this' into a Uniform pointer if Object is a Uniform, otherwise return 0.
+          * Equivalent to dynamic_cast<Uniform*>(this).*/
+        virtual Uniform* asUniform() { return this; }
 
+        /** convert 'const this' into a const Uniform pointer if Object is a Uniform, otherwise return 0.
+          * Equivalent to dynamic_cast<const Uniform*>(this).*/
+        virtual const Uniform* asUniform() const { return this; }
+
+        
         /** Set the type of glUniform, ensuring it is only set once.*/
         bool setType( Type t );
 

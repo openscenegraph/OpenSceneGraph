@@ -27,6 +27,10 @@ namespace osg {
 // forward declare
 class State;
 class UserDataContainer;
+class Node;
+class NodeVisitor;
+class StateAttribute;
+class Uniform;
 
 #define _ADDQUOTES(def) #def
 #define ADDQUOTES(def) _ADDQUOTES(def)
@@ -88,6 +92,39 @@ class OSG_EXPORT Object : public Referenced
 
         /** return the compound class name that combines the library name and class name.*/
         std::string getCompoundClassName() const { return std::string(libraryName()) + std::string("::") + std::string(className()); }
+        
+        
+        /** Convert 'this' into a Node pointer if Object is a Node, otherwise return 0.
+          * Equivalent to dynamic_cast<Node*>(this).*/
+        virtual Node* asNode() { return 0; }
+
+        /** convert 'const this' into a const Node pointer if Object is a Node, otherwise return 0.
+          * Equivalent to dynamic_cast<const Node*>(this).*/
+        virtual const Node* asNode() const { return 0; }
+
+        /** Convert 'this' into a NodeVisitor pointer if Object is a NodeVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<NodeVisitor*>(this).*/
+        virtual NodeVisitor* asNodeVisitor() { return 0; }
+
+        /** convert 'const this' into a const NodeVisitor pointer if Object is a NodeVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<const NodeVisitor*>(this).*/
+        virtual const NodeVisitor* asNodeVisitor() const { return 0; }
+
+        /** Convert 'this' into a StateAttribute pointer if Object is a StateAttribute, otherwise return 0.
+          * Equivalent to dynamic_cast<StateAttribute*>(this).*/
+        virtual StateAttribute* asStateAttribute() { return 0; }
+
+        /** convert 'const this' into a const StateAttribute pointer if Object is a StateAttribute, otherwise return 0.
+          * Equivalent to dynamic_cast<const StateAttribute*>(this).*/
+        virtual const StateAttribute* asStateAttribute() const { return 0; }
+
+        /** Convert 'this' into a Uniform pointer if Object is a Uniform, otherwise return 0.
+          * Equivalent to dynamic_cast<Uniform*>(this).*/
+        virtual Uniform* asUniform() { return 0; }
+
+        /** convert 'const this' into a const Uniform pointer if Object is a Uniform, otherwise return 0.
+          * Equivalent to dynamic_cast<const Uniform*>(this).*/
+        virtual const Uniform* asUniform() const { return 0; }
 
 
         /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/

@@ -227,6 +227,8 @@ struct SnapImage : public osg::Camera::DrawCallback
     mutable osg::ref_ptr<osg::Image>    _image;
 };
 
+
+
 struct SnapeImageHandler : public osgGA::GUIEventHandler
 {
 
@@ -234,7 +236,7 @@ struct SnapeImageHandler : public osgGA::GUIEventHandler
         _key(key),
         _snapImage(si) {}
 
-    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter&)
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
     {
         if (ea.getHandled()) return false;
 
@@ -242,6 +244,18 @@ struct SnapeImageHandler : public osgGA::GUIEventHandler
         {
             case(osgGA::GUIEventAdapter::KEYUP):
             {
+                if (ea.getKey() == 'o' )
+                {
+                    osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+                    osg::Node* node = view ? view->getSceneData() : 0;
+                    if (node) 
+                    {
+                        osgDB::writeNodeFile(*node, "hud.osgt");
+                        osgDB::writeNodeFile(*node, "hud.osgb");
+                    }
+                    return true;
+                }
+
                 if (ea.getKey() == _key)
                 {
                     osg::notify(osg::NOTICE)<<"event handler"<<std::endl;
@@ -358,7 +372,7 @@ int main( int argc, char **argv )
         viewer.getCamera()->setFinalDrawCallback(finalDrawCallback);
         viewer.addEventHandler(new SnapeImageHandler('f',finalDrawCallback));
 
-        osg::ref_ptr<osg::Group> group  = new osg::Group;
+        osg::ref_ptr<osg::Group> group = new osg::Group;
 
         // add the HUD subgraph.
         if (scene.valid()) group->addChild(scene.get());

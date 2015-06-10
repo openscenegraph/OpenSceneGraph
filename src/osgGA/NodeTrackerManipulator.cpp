@@ -275,7 +275,7 @@ bool NodeTrackerManipulator::performMovementLeftMouseButton( const double eventT
     } else
         rotateTrackball( _ga_t0->getXnormalized(), _ga_t0->getYnormalized(),
                          _ga_t1->getXnormalized(), _ga_t1->getYnormalized(),
-                         _thrown ? float( _delta_frame_time / eventTimeDelta ) : 1.f );
+                         getThrowScale( eventTimeDelta ) );
 
     return true;
 }

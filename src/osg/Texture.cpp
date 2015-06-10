@@ -2699,7 +2699,8 @@ bool Texture::isHardwareMipmapGenerationEnabled(const State& state) const
             return true;
         }
 
-        if (extensions->glGenerateMipmap)
+        // FrameBufferObjects are required for glGenerateMipmap
+        if (extensions->isFrameBufferObjectSupported && extensions->glGenerateMipmap)
         {
             return true;
         }
@@ -2717,7 +2718,7 @@ Texture::GenerateMipmapMode Texture::mipmapBeforeTexImage(const State& state, bo
 #else
 
         const GLExtensions* extensions = state.get<GLExtensions>();
-        bool useGenerateMipMap = extensions->glGenerateMipmap!=0;
+        bool useGenerateMipMap = extensions->isFrameBufferObjectSupported && extensions->glGenerateMipmap;
 
         if (useGenerateMipMap)
         {
@@ -2788,8 +2789,8 @@ void Texture::generateMipmap(State& state) const
     // get fbo extension which provides us with the glGenerateMipmapEXT function
     osg::GLExtensions* ext = state.get<GLExtensions>();
 
-    // check if the function is supported
-    if (ext->glGenerateMipmap)
+    // FrameBufferObjects are required for glGenerateMipmap
+    if (ext->isFrameBufferObjectSupported && ext->glGenerateMipmap)
     {
         textureObject->bind();
         ext->glGenerateMipmap(textureObject->target());

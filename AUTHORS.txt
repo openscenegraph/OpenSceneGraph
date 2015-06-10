@@ -256,6 +256,7 @@ Raymond de Vries
 Ralf Kern
 Piotr Gwiazdowski
 Pierre Haritchabalet
+Philippe Renon
 Perry Miller
 Paul Palumbo
 Paul Obermeier
@@ -378,7 +379,6 @@ Ragnar Hammarqvist
 Qing Shen
 Piotr Rak
 Pierre Bourdin
-Philippe Renon
 Philipp Svehla
 Philipp Siemoleit
 Philipp Mächler

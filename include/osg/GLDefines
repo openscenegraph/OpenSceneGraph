@@ -32,7 +32,6 @@
     (defined(GL_VERSION_ES_CM_1_1) && GL_VERSION_ES_CM_1_1 > 0)
 
     #define OPENGLES_1_1_FOUND 1
-    typedef GLfloat GLdouble;
 #endif
 
 #ifndef GL_SAMPLER_2D_ARRAY_EXT

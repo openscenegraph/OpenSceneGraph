@@ -25,17 +25,6 @@
         #define OPENTHREAD_EXPORT_DIRECTIVE __declspec(dllexport)
     #else
         #define OPENTHREAD_EXPORT_DIRECTIVE __declspec(dllimport)
-
-        #if 0 // Commented out for now
-
-            #ifdef _MSC_VER
-                #ifdef _DEBUG
-                #pragma comment(lib ,"OpenThreadsWin32d")
-                #else
-                #pragma comment(lib, "OpenThreadsWin32")
-                #endif
-            #endif
-        #endif
     #endif
 #endif
 

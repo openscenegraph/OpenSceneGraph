@@ -105,12 +105,17 @@ void TextBase::setFont(const std::string& fontfile)
 
 void TextBase::setFontResolution(unsigned int width, unsigned int height)
 {
-    _fontSize = FontResolution(width,height);
+    FontResolution size(width,height);
+    if (_fontSize==size) return;
+
+    _fontSize = size;
     computeGlyphRepresentation();
 }
 
 void TextBase::setCharacterSize(float height)
 {
+    if (_characterHeight==height) return;
+
     _characterHeight = height;
     computeGlyphRepresentation();
 }
@@ -126,18 +131,24 @@ void TextBase::setCharacterSize(float height, float aspectRatio)
 
 void TextBase::setMaximumWidth(float maximumWidth)
 {
+    if (_maximumWidth==maximumWidth) return;
+
     _maximumWidth = maximumWidth;
     computeGlyphRepresentation();
 }
 
 void  TextBase::setMaximumHeight(float maximumHeight)
 {
+    if (_maximumHeight==maximumHeight) return;
+
     _maximumHeight = maximumHeight;
     computeGlyphRepresentation();
 }
 
 void TextBase::setLineSpacing(float lineSpacing)
 {
+    if (_lineSpacing==lineSpacing) return;
+
     _lineSpacing = lineSpacing;
     computeGlyphRepresentation();
 }

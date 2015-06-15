@@ -15,9 +15,14 @@ SET(SOURCES_H
 IF ( Qt5Widgets_FOUND )
     QT5_WRAP_CPP( SOURCES_H_MOC ${SOURCES_H} OPTIONS
           "-fosgQt/QGraphicsViewAdapter" )
+    set(OSGQT_QT_VERSION 5)
 ELSE()
     QT4_WRAP_CPP( SOURCES_H_MOC ${SOURCES_H} OPTIONS "-f" )
+    set(OSGQT_QT_VERSION 4)
 ENDIF()
+
+SET(OSGQT_VERSION_HEADER "${PROJECT_BINARY_DIR}/include/osgQt/Version")
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/Version.in" ${OSGQT_VERSION_HEADER})
 
 SET(TARGET_H
     ${HEADER_PATH}/Export
@@ -26,6 +31,7 @@ SET(TARGET_H
     ${HEADER_PATH}/QGraphicsViewAdapter
     ${HEADER_PATH}/QWidgetImage
     ${HEADER_PATH}/QWebViewImage
+    ${OSGQT_VERSION_HEADER}
 )
 
 

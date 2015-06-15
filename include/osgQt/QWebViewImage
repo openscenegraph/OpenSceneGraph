@@ -26,6 +26,7 @@
 
 #include <osgWidget/Browser>
 #include <osgQt/QGraphicsViewAdapter>
+#include <osgQt/Version>
 
 namespace osgQt
 {

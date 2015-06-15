@@ -15,6 +15,7 @@
 
 #include <osgText/Font>
 #include <osgQt/Export>
+#include <osgQt/Version>
 
 #include <QtGui/QFont>
 

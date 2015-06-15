@@ -19,6 +19,7 @@
 #include <osg/Image>
 #include <osg/observer_ptr>
 #include <osgQt/Export>
+#include <osgQt/Version>
 
 #include <QPointer>
 #include <QGraphicsScene>

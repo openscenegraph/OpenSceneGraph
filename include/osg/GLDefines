@@ -599,15 +599,23 @@ namespace osg
     //all ES versions except GL_OES_VERSION_1_0 provide these types for OpenGL ES
     #if !defined(GL_VERSION_1_5) && !defined(GL_ARB_vertex_buffer_object) \
     && !defined(GL_ES_VERSION_2_0) && !defined(OPENGLES_1_1_FOUND)
-        #if defined(_WIN64)
-            typedef __int64 GLintptr;
-            typedef __int64 GLsizeiptr;
-        #elif defined(__ia64__) || defined(__x86_64__) || defined(__ANDROID__)
-            typedef long int GLintptr;
-            typedef long int GLsizeiptr;
+    
+        #if 1
+            // experimental defination.
+            typedef ptrdiff_t GLsizeiptr;
+            typedef ptrdiff_t GLintptr;
         #else
-            typedef int GLintptr;
-            typedef int GLsizeiptr;
+    
+            #if defined(_WIN64)
+                typedef __int64 GLintptr;
+                typedef __int64 GLsizeiptr;
+            #elif defined(__ia64__) || defined(__x86_64__) || defined(__ANDROID__)
+                typedef long int GLintptr;
+                typedef long int GLsizeiptr;
+            #else
+                typedef int GLintptr;
+                typedef int GLsizeiptr;
+            #endif
         #endif
     #endif
 }

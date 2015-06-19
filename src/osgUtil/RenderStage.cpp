@@ -1517,14 +1517,14 @@ void RenderStage::clearReferencesToDependentCameras()
         itr != _preRenderList.end();
         ++itr)
     {
-        itr->second->collateReferencesToDependentCameras();
+        itr->second->clearReferencesToDependentCameras();
     }
 
     for(RenderStageList::iterator itr = _postRenderList.begin();
         itr != _postRenderList.end();
         ++itr)
     {
-        itr->second->collateReferencesToDependentCameras();
+        itr->second->clearReferencesToDependentCameras();
     }
 
     _dependentCameras.clear();

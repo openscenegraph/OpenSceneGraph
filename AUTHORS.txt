@@ -1,4 +1,4 @@
-OpenSceneGraph Library 3.3.8
+OpenSceneGraph Library 3.3.9
 
 548 Contributors:
 
@@ -64,6 +64,7 @@ Chris Denham
 Terry Welsh
 Serge Lages
 Romano José Magacho da Silva
+Jannik Heller
 Alberto Farre
 Torben Dannhauer
 Sherman Wilcox
@@ -73,7 +74,6 @@ André Garneau
 Adrian Egli
 Ruben Lopez
 Randall Hopper
-Jannik Heller
 Jan Ciger
 Glenn Waldron
 Sebastian Messerschmidt
@@ -313,6 +313,7 @@ Daniel Trstenjak
 Craig Bosma
 Claus Scheiblauer
 Christophe Loustaunau
+Christian Kehl
 Bradley Baker Searles
 Brad Anderegg
 Aric Aumann
@@ -516,7 +517,6 @@ Christopher Blaesius
 Christopher Baker
 Christophe Herreman
 Christian Noon
-Christian Kehl
 Christian Kaser
 Christian Ehrlicher
 Chris McGlone

@@ -134,11 +134,20 @@ public:
 
     virtual ReadResult readFile(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
     {
+#if GDAL_VERSION_MAJOR<2
         if (OGRSFDriverRegistrar::GetRegistrar()->GetDriverCount() == 0)
             OGRRegisterAll();
 
         // Try to open data source
         OGRDataSource* file = OGRSFDriverRegistrar::Open(fileName.c_str());
+#else
+        if (GDALGetDriverCount() == 0)
+            GDALAllRegister();
+
+        // Try to open data source
+        GDALDataset* file  = (GDALDataset*) GDALOpenEx( fileName.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL );        
+#endif
+        
         if (!file)
             return 0;
 
@@ -156,6 +165,7 @@ public:
 
         osg::Group* group = new osg::Group;
 
+#if GDAL_VERSION_MAJOR<2        
         for (int i = 0; i < file->GetLayerCount(); i++)
         {
             osg::Group* node = readLayer(file->GetLayer(i), file->GetName(), useRandomColorByFeature, addGroupPerFeature);
@@ -163,6 +173,17 @@ public:
                 group->addChild( node );
         }
         OGRDataSource::DestroyDataSource( file );
+#else
+        for (int i = 0; i < GDALDatasetGetLayerCount(file); i++)
+        {
+            OGRLayer* layer = (OGRLayer *)GDALDatasetGetLayer(file, i); 
+            osg::Group* node = readLayer(layer, layer->GetName(), useRandomColorByFeature, addGroupPerFeature);
+            if (node)
+                group->addChild( node );
+        }
+        GDALClose( file );
+#endif        
+        
         return group;
     }
 

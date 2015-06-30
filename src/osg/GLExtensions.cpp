@@ -467,6 +467,8 @@ GLExtensions::GLExtensions(unsigned int contextID)
                           isGLExtensionSupported(contextID,"GL_EXT_texture_cube_map") ||
                           (glVersion >= 1.3f);
 
+    isClipControlSupported = isGLExtensionSupported(contextID,"GL_ARB_clip_control") ||
+                             (glVersion >= 4.5f);
 
 
     isGlslSupported = ( glVersion >= 2.0f ) ||
@@ -600,6 +602,9 @@ GLExtensions::GLExtensions(unsigned int contextID)
     setGLExtensionFuncPtr(glUniformMatrix4x2fv,  "glUniformMatrix4x2fv" );
     setGLExtensionFuncPtr(glUniformMatrix3x4fv,  "glUniformMatrix3x4fv" );
     setGLExtensionFuncPtr(glUniformMatrix4x3fv,  "glUniformMatrix4x3fv" );
+
+    // ARB_clip_control
+    setGLExtensionFuncPtr(glClipControl, "glClipControl");
 
     // EXT_geometry_shader4
     setGLExtensionFuncPtr(glProgramParameteri,  "glProgramParameteri", "glProgramParameteriEXT" );

@@ -307,10 +307,11 @@ bool Viewer::readConfiguration(const std::string& filename)
     ViewConfig* config = dynamic_cast<ViewConfig*>(object.get());
     if (config)
     {
-        OSG_NOTICE<<"Using osgViewer::Config : "<<config->className()<<std::endl;
+        OSG_INFO<<"Using osgViewer::Config : "<<config->className()<<std::endl;
+        
         config->configure(*this);
 
-        osgDB::writeObjectFile(*config,"test.osgt");
+        //osgDB::writeObjectFile(*config,"test.osgt");
 
         return true;
     }

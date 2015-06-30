@@ -167,6 +167,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         bool isShaderAtomicCountersSupported;
         bool isRectangleSupported;
         bool isCubeMapSupported;
+        bool isClipControlSupported;
 
         void (GL_APIENTRY * glDrawBuffers)(GLsizei n, const GLenum *bufs);
         void (GL_APIENTRY * glAttachShader)(GLuint program, GLuint shader);
@@ -267,6 +268,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glUniformMatrix4x2fv)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
         void (GL_APIENTRY * glUniformMatrix3x4fv)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
         void (GL_APIENTRY * glUniformMatrix4x3fv)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
+        void (GL_APIENTRY * glClipControl)( GLenum origin, GLenum depthMode );
         void (GL_APIENTRY * glProgramParameteri)( GLuint program, GLenum pname, GLint value );
         void (GL_APIENTRY * glPatchParameteri)( GLenum pname, GLint value );
         void (GL_APIENTRY * glPatchParameterfv)( GLenum pname, const GLfloat* values );

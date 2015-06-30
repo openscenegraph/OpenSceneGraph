@@ -166,6 +166,7 @@ class OSG_EXPORT StateAttribute : public Object
             HINT,
             SAMPLEMASKI,
             PRIMITIVERESTARTINDEX,
+            CLIPCONTROL,
 
             /// osgFX namespace
             VALIDATOR,

@@ -46,6 +46,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Capability
     ${HEADER_PATH}/ClampColor
     ${HEADER_PATH}/ClearNode
+    ${HEADER_PATH}/ClipControl
     ${HEADER_PATH}/ClipNode
     ${HEADER_PATH}/ClipPlane
     ${HEADER_PATH}/ClusterCullingCallback
@@ -246,6 +247,7 @@ SET(TARGET_SRC
     CameraView.cpp
     ClampColor.cpp
     ClearNode.cpp
+    ClipControl.cpp
     ClipNode.cpp
     ClipPlane.cpp
     ClusterCullingCallback.cpp

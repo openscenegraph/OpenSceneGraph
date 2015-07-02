@@ -188,6 +188,10 @@ typedef char GLchar;
 #define GL_TRIANGLE_STRIP_ADJACENCY_EXT         0x000D
 #endif
 
+#ifndef GL_VERSION_3_0
+#define GL_MAX_VARYING_COMPONENTS                0x8B4B
+#endif
+
 #ifndef GL_VERSION_3_2
 #define GL_GEOMETRY_SHADER                       0x8DD9
 #define GL_GEOMETRY_VERTICES_OUT                 0x8916
@@ -196,7 +200,6 @@ typedef char GLchar;
 #define GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS      0x8C29
 #define GL_MAX_GEOMETRY_VARYING_COMPONENTS       0x8DDD
 #define GL_MAX_VERTEX_VARYING_COMPONENTS         0x8DDE
-#define GL_MAX_VARYING_COMPONENTS                0x8B4B
 #define GL_MAX_GEOMETRY_UNIFORM_COMPONENTS       0x8DDF
 #define GL_MAX_GEOMETRY_OUTPUT_VERTICES          0x8DE0
 #define GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS  0x8DE1

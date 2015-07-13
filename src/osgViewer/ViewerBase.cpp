@@ -177,6 +177,17 @@ void ViewerBase::setUpThreading()
 
                 Scenes scenes;
                 getScenes(scenes);
+
+                for(Scenes::iterator scitr = scenes.begin();
+                    scitr != scenes.end();
+                    ++scitr)
+                {
+                    if ((*scitr)->getSceneData())
+                    {
+                        // update the scene graph so that it has enough GL object buffer memory for the graphics contexts that will be using it.
+                        (*scitr)->getSceneData()->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
+                    }
+                }
             }
         }
     }

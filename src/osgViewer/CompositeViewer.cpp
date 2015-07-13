@@ -639,13 +639,14 @@ void CompositeViewer::realize()
     }
 
 
-    startThreading();
-
     // initialize the global timer to be relative to the current time.
     osg::Timer::instance()->setStartTick();
 
     // pass on the start tick to all the associated eventqueues
     setStartTick(osg::Timer::instance()->getStartTick());
+
+    // configure threading.
+    setUpThreading();
 
     if (osg::DisplaySettings::instance()->getCompileContextsHint())
     {

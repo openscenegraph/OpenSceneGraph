@@ -490,6 +490,15 @@ typedef char GLchar;
 #define GL_COMPUTE_SHADER_BIT             0x00000020
 #endif
 
+#ifndef GL_ARB_clip_control
+#define GL_LOWER_LEFT 0x8CA1
+#define GL_UPPER_LEFT 0x8CA2
+#define GL_CLIP_ORIGIN 0x935C
+#define GL_CLIP_DEPTH_MODE 0x935D
+#define GL_NEGATIVE_ONE_TO_ONE 0x935E
+#define GL_ZERO_TO_ONE 0x935F
+#endif
+
 #ifndef GL_ARB_depth_clamp
 #define GL_DEPTH_CLAMP                    0x864F
 #endif

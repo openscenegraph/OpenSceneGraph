@@ -723,7 +723,15 @@ void Text::computePositions(unsigned int contextID) const
         ++titr)
     {
         GlyphQuads& glyphquad = titr->second;
+        //OSG_NOTICE<<"Text::computePositions("<<contextID<<") glyphquad= "<<&glyphquad<<std::endl;
         GlyphQuads::Coords2& coords2 = glyphquad._coords;
+        
+        if (contextID>=glyphquad._transformedCoords.size())
+        {
+            // contextID exceeds one setup for glyphquad._transformedCoords, ignore this request.
+            continue;
+        }
+        
         GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords[contextID];
 
         unsigned int numCoords = coords2->size();
@@ -1496,13 +1504,28 @@ void Text::resizeGLObjectBuffers(unsigned int maxSize)
     TextBase::resizeGLObjectBuffers(maxSize);
 
     getActiveFont()->resizeGLObjectBuffers(maxSize);
+    
+    for(TextureGlyphQuadMap::iterator itr = _textureGlyphQuadMap.begin();
+        itr != _textureGlyphQuadMap.end();
+        ++itr)
+    {
+        itr->second.resizeGLObjectBuffers(maxSize);
+    }    
 }
 
 
 void Text::releaseGLObjects(osg::State* state) const
 {
     TextBase::releaseGLObjects(state);
+
     getActiveFont()->releaseGLObjects(state);
+
+    for(TextureGlyphQuadMap::iterator itr = _textureGlyphQuadMap.begin();
+        itr != _textureGlyphQuadMap.end();
+        ++itr)
+    {
+        itr->second.releaseGLObjects(state);
+    }    
 }
 
 
@@ -2027,9 +2050,20 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
 
 Text::GlyphQuads::GlyphQuads()
 {
+    initGlyphQuads();
+}
+
+Text::GlyphQuads::GlyphQuads(const GlyphQuads&)
+{
+    initGlyphQuads();
+}
+
+void Text::GlyphQuads::initGlyphQuads()
+{
     _coords = new osg::Vec2Array();
     _texcoords = new osg::Vec2Array();
     _colorCoords = new osg::Vec4Array();
+    
     for (size_t i = 0; i < _transformedCoords.size(); i++)
     {
         _transformedCoords[i] = new osg::Vec3Array();
@@ -2049,7 +2083,10 @@ void Text::GlyphQuads::updateQuadIndices()
 {
     _quadIndices->clear();
     if (_coords->size() % 4 != 0)
+    {
         OSG_WARN << "size of _coords is not divisible by 4.";
+    }
+    
     for (unsigned int i = 0; i < (unsigned int)_coords->size(); i += 4)
     {
         _quadIndices->push_back(i);
@@ -2086,4 +2123,35 @@ void Text::GlyphQuads::initGPUBufferObjects()
     }
 
     _quadIndices->setElementBufferObject(new osg::ElementBufferObject());
+}
+
+
+void Text::GlyphQuads::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    _transformedCoords.resize(maxSize);
+
+    for (int j = 0; j < 8; j++)
+    {
+        for (size_t i = 0; i < _transformedBackdropCoords[j].size(); i++)
+        {
+            _transformedBackdropCoords[j][i]->resizeGLObjectBuffers(maxSize);    
+        }
+    }
+    
+    _quadIndices->resizeGLObjectBuffers(maxSize);
+    
+    initGPUBufferObjects();
+}
+
+void Text::GlyphQuads::releaseGLObjects(osg::State* state) const
+{
+    for (int j = 0; j < 8; j++)
+    {
+        for (size_t i = 0; i < _transformedBackdropCoords[j].size(); i++)
+        {
+            _transformedBackdropCoords[j][i]->releaseGLObjects(state);    
+        }
+    }
+
+    _quadIndices->releaseGLObjects(state);    
 }

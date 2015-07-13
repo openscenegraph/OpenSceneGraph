@@ -317,11 +317,13 @@ public:
         void updateQuadIndices();
 
         GlyphQuads();
+        GlyphQuads(const GlyphQuads& gq);
 
+        void initGlyphQuads();
         void initGPUBufferObjects();
 
-        Glyphs getGlyphs() { return _glyphs; }
-        const Glyphs getGlyphs() const { return _glyphs; }
+        Glyphs& getGlyphs() { return _glyphs; }
+        const Glyphs& getGlyphs() const { return _glyphs; }
 
         Coords2& getCoords() { return _coords; }
         const Coords2& getCoords() const { return _coords; }
@@ -334,6 +336,18 @@ public:
 
         LineNumbers& getLineNumbers() { return _lineNumbers; }
         const LineNumbers& getLineNumbers() const { return _lineNumbers; }
+        
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
+        /** If State is non-zero, this function releases OpenGL objects for
+        * the specified graphics context. Otherwise, releases OpenGL objexts
+        * for all graphics contexts. */
+        virtual void releaseGLObjects(osg::State* state=0) const;
+        
+    private:
+        
+        GlyphQuads& operator = (const GlyphQuads&) { return *this; }
     };
 
     typedef std::map<osg::ref_ptr<GlyphTexture>,GlyphQuads> TextureGlyphQuadMap;

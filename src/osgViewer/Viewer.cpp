@@ -587,6 +587,7 @@ void Viewer::realize()
     // pass on the start tick to all the associated event queues
     setStartTick(osg::Timer::instance()->getStartTick());
 
+    // configure threading.
     setUpThreading();
 
     if (osg::DisplaySettings::instance()->getCompileContextsHint())

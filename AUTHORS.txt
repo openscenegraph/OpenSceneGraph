@@ -1,4 +1,4 @@
-OpenSceneGraph Library 3.3.9
+OpenSceneGraph Library 3.5.0
 
 548 Contributors:
 
@@ -57,11 +57,11 @@ Mathieu Marache
 Lionel Lagarde
 Jason Daly
 Art Tevs
+Terry Welsh
 Philip Lowman
 Per Fahlberg
 Norman Vine
 Chris Denham
-Terry Welsh
 Serge Lages
 Romano José Magacho da Silva
 Jannik Heller

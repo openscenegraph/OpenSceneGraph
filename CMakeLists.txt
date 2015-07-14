@@ -692,16 +692,7 @@ IF(OSG_USE_QT AND NOT ANDROID)
 
     IF  (DESIRED_QT_VERSION)
         IF  (DESIRED_QT_VERSION MATCHES 5)
-              
-            IF(COMMAND cmake_policy)
-                # Qt5 qt5_use_modules usage was causing "Policy CMP0043 is not set: Ignore COMPILE_DEFINITIONS_<Config> properties." warnings
-                cmake_policy(SET CMP0043 NEW)
-            ENDIF()
-            
-            
             FIND_PACKAGE(Qt5Widgets)
-              
-              
         ELSEIF (DESIRED_QT_VERSION MATCHES 4)
             FIND_PACKAGE(Qt4)
         ELSE()
@@ -737,6 +728,11 @@ IF(OSG_USE_QT AND NOT ANDROID)
     #If we have found Qt5, let's try to top off by getting the webkit as well
     IF ( Qt5Widgets_FOUND )
         FIND_PACKAGE(Qt5WebKitWidgets QUIET)
+
+        IF(COMMAND cmake_policy)
+            # Qt5 qt5_use_modules usage was causing "Policy CMP0043 is not set: Ignore COMPILE_DEFINITIONS_<Config> properties." warnings
+            cmake_policy(SET CMP0043 NEW)
+        ENDIF()
     ENDIF()
 
 ENDIF()

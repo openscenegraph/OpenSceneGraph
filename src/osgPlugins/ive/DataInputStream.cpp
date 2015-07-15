@@ -292,7 +292,7 @@ bool DataInputStream::uncompress(std::istream& fin, std::string& destination) co
 #endif
 
 bool DataInputStream::readBool(){
-    char c;
+    char c=0;
     _istream->read(&c, CHARSIZE);
 
     if (_istream->rdstate() & _istream->failbit)
@@ -304,7 +304,7 @@ bool DataInputStream::readBool(){
 }
 
 char DataInputStream::readChar(){
-    char c;
+    char c=0;
     _istream->read(&c, CHARSIZE);
 
     if (_istream->rdstate() & _istream->failbit)
@@ -316,7 +316,7 @@ char DataInputStream::readChar(){
 }
 
 unsigned char DataInputStream::readUChar(){
-    unsigned char c;
+    unsigned char c=0;
     _istream->read((char*)&c, CHARSIZE);
 
     if (_istream->rdstate() & _istream->failbit)
@@ -328,7 +328,7 @@ unsigned char DataInputStream::readUChar(){
 }
 
 unsigned short DataInputStream::readUShort(){
-    unsigned short s;
+    unsigned short s=0;
     _istream->read((char*)&s, SHORTSIZE);
     if (_istream->rdstate() & _istream->failbit)
         throwException("DataInputStream::readUShort(): Failed to read unsigned short value.");
@@ -341,7 +341,7 @@ unsigned short DataInputStream::readUShort(){
 }
 
 unsigned int DataInputStream::readUInt(){
-    unsigned int s;
+    unsigned int s=0;
     _istream->read((char*)&s, INTSIZE);
 
     if (_istream->rdstate() & _istream->failbit)
@@ -359,15 +359,11 @@ int DataInputStream::readInt(){
         _peeking = false;
         return _peekValue;
     }
-    int i;
+    int i=0;
     _istream->read((char*)&i, INTSIZE);
 
-    // comment out for time being as this check seems to eroneously cause a
-    // premature exit when reading .ive files under OSX!#?:!
-    // Robet Osfield, September 12th 2003.
-    // if (_istream->rdstate() & _istream->failbit)
-    //    throwException("DataInputStream::readInt(): Failed to read int value.");
-
+    if (_istream->rdstate() & _istream->failbit)
+        throwException("DataInputStream::readInt(): Failed to read int value.");
 
     if (_byteswap) osg::swapBytes((char *)&i,INTSIZE) ;
 
@@ -391,7 +387,7 @@ int DataInputStream::peekInt(){
 }
 
 float DataInputStream::readFloat(){
-    float f;
+    float f=0.0f;
     _istream->read((char*)&f, FLOATSIZE);
     if (_istream->rdstate() & _istream->failbit)
         throwException("DataInputStream::readFloat(): Failed to read float value.");
@@ -403,7 +399,7 @@ float DataInputStream::readFloat(){
 }
 
 long DataInputStream::readLong(){
-    long l;
+    long l=0;
     _istream->read((char*)&l, LONGSIZE);
     if (_istream->rdstate() & _istream->failbit)
         throwException("DataInputStream::readLong(): Failed to read long value.");
@@ -415,7 +411,7 @@ long DataInputStream::readLong(){
 }
 
 unsigned long DataInputStream::readULong(){
-    unsigned long l;
+    unsigned long l=0;
     _istream->read((char*)&l, LONGSIZE);
     if (_istream->rdstate() & _istream->failbit)
         throwException("DataInputStream::readULong(): Failed to read unsigned long value.");
@@ -429,7 +425,7 @@ unsigned long DataInputStream::readULong(){
 
 double DataInputStream::readDouble()
 {
-    double d;
+    double d=0.0;
     _istream->read((char*)&d, DOUBLESIZE);
     if (_istream->rdstate() & _istream->failbit)
         throwException("DataInputStream::readDouble(): Failed to read double value.");

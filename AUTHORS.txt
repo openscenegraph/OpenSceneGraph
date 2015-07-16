@@ -1,6 +1,6 @@
 OpenSceneGraph Library 3.5.0
 
-548 Contributors:
+549 Contributors:
 
 Firstname Surname
 -----------------
@@ -509,6 +509,7 @@ Daniel Stien
 Dan Minor
 César L. B. Silveira
 Cyril Brulebois
+Cory Slep
 Clément B½sch
 Clay Fowler
 Claus Steuer

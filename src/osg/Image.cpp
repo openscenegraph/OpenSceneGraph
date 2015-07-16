@@ -425,6 +425,8 @@ GLenum Image::computeFormatDataType(GLenum pixelFormat)
 {
     switch (pixelFormat)
     {
+        case GL_R32F:
+        case GL_RG32F:
         case GL_LUMINANCE32F_ARB:
         case GL_LUMINANCE16F_ARB:
         case GL_LUMINANCE_ALPHA32F_ARB:
@@ -466,6 +468,8 @@ GLenum Image::computeFormatDataType(GLenum pixelFormat)
 
         case GL_RGBA:
         case GL_RGB:
+        case GL_RED:
+        case GL_RG:
         case GL_LUMINANCE:
         case GL_LUMINANCE_ALPHA:
         case GL_ALPHA: return GL_UNSIGNED_BYTE;
@@ -525,6 +529,9 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_ALPHA32UI_EXT): return 1;
         case(GL_ALPHA16F_ARB): return 1;
         case(GL_ALPHA32F_ARB): return 1;
+        case(GL_R32F): return 1;
+        case(GL_RG): return 2;
+        case(GL_RG32F): return 2;
         case(GL_RGB): return 3;
         case(GL_BGR): return 3;
         case(GL_RGB8I_EXT): return 3;

@@ -811,6 +811,12 @@ void Text::computeBackdropPositions(unsigned int contextID) const
         }
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
+            if (contextID >= glyphquad._transformedBackdropCoords[backdrop_index].size()) 
+            {
+                // contextID exceeds one setup for glyphquad._transformedBackdropCoords, ignore this request.
+                continue;
+            }
+                
             GlyphQuads::Coords3& transformedCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
             unsigned int numCoords = coords2->size();
             if (numCoords!=transformedCoords->size())

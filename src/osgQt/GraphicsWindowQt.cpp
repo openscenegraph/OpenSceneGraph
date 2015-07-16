@@ -15,6 +15,7 @@
 #include <osgQt/GraphicsWindowQt>
 #include <osgViewer/ViewerBase>
 #include <QInputEvent>
+#include <QPointer>
 
 #if (QT_VERSION>=QT_VERSION_CHECK(4, 6, 0))
 # define USE_GESTURES
@@ -119,18 +120,24 @@ static QtKeyboardMap s_QtKeyboardMap;
 /// The object responsible for the scene re-rendering.
 class HeartBeat : public QObject {
 public:
-int _timerId;
-osg::Timer _lastFrameStartTime;
-osg::observer_ptr< osgViewer::ViewerBase > _viewer;
+    int _timerId;
+    osg::Timer _lastFrameStartTime;
+    osg::observer_ptr< osgViewer::ViewerBase > _viewer;
 
-HeartBeat();
-virtual ~HeartBeat();
-void init( osgViewer::ViewerBase *viewer );
-void stopTimer();
-void timerEvent( QTimerEvent *event );
+    virtual ~HeartBeat();
+    
+    void init( osgViewer::ViewerBase *viewer );
+    void stopTimer();
+    void timerEvent( QTimerEvent *event );
+
+    static HeartBeat* instance();
+private:
+    HeartBeat();
+
+    static QPointer<HeartBeat> heartBeat;
 };
 
-static HeartBeat heartBeat;
+QPointer<HeartBeat> HeartBeat::heartBeat;
 
 #if (QT_VERSION < QT_VERSION_CHECK(5, 2, 0))
     #define GETDEVICEPIXELRATIO() 1.0
@@ -955,7 +962,7 @@ void osgQt::initQtWindowingSystem()
 
 void osgQt::setViewer( osgViewer::ViewerBase *viewer )
 {
-    heartBeat.init( viewer );
+    HeartBeat::instance()->init( viewer );
 }
 
 
@@ -971,6 +978,14 @@ HeartBeat::~HeartBeat()
     stopTimer();
 }
 
+HeartBeat* HeartBeat::instance()
+{
+    if (!heartBeat)
+    {
+        heartBeat = new HeartBeat();
+    }
+    return heartBeat;
+}
 
 void HeartBeat::stopTimer()
 {

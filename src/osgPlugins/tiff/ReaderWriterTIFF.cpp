@@ -852,6 +852,9 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
                         else if (compressTypeOpt == "jpeg") {
                             compressionType = COMPRESSION_JPEG;
                         }
+                        else if (compressTypeOpt == "none") {
+                            compressionType = COMPRESSION_NONE;
+                        }
                     }
                 }
             }
@@ -883,10 +886,12 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
                 case GL_DEPTH_COMPONENT:
                 case GL_LUMINANCE:
                 case GL_ALPHA:
+                case GL_RED:
                     photometric = PHOTOMETRIC_MINISBLACK;
                     samplesPerPixel = 1;
                     break;
                 case GL_LUMINANCE_ALPHA:
+                case GL_RG:
                     photometric = PHOTOMETRIC_MINISBLACK;
                     samplesPerPixel = 2;
                     break;
@@ -911,6 +916,10 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
                     break;
                 case GL_SHORT:
                     TIFFSetField(image, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_INT);
+                    bitsPerSample = 16;
+                    break;
+                case GL_UNSIGNED_SHORT:
+                    TIFFSetField(image, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_UINT);
                     bitsPerSample = 16;
                     break;
                 default:

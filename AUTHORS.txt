@@ -1,6 +1,6 @@
 OpenSceneGraph Library 3.5.0
 
-549 Contributors:
+550 Contributors:
 
 Firstname Surname
 -----------------
@@ -9,10 +9,10 @@ Don Burns
 Stephan Huber
 Paul Martz
 Farshid Lashkari
-Mathias Fröhlich
+Mathias Frhlich
 Marco Jez
 Wang Rui
-Jean-Sébastien Guay
+Jean-Sbastien Guay
 Ulrich Hertlein
 Mike Weiblen
 Sukender
@@ -63,14 +63,14 @@ Per Fahlberg
 Norman Vine
 Chris Denham
 Serge Lages
-Romano José Magacho da Silva
+Romano Jos Magacho da Silva
 Jannik Heller
 Alberto Farre
 Torben Dannhauer
 Sherman Wilcox
 Robert Michael
 Mourad Boufarguine
-André Garneau
+Andr Garneau
 Adrian Egli
 Ruben Lopez
 Randall Hopper
@@ -85,7 +85,7 @@ Martin Naylor
 Kristofer Tingdahl
 Joakim Simonsson
 David Spilling
-Daniel Sjölie
+Daniel Sjlie
 Bryan Thrall
 Rafa Gaitan
 Mike Connell
@@ -134,13 +134,13 @@ Loic Dachary
 Joseph Steel
 John Shue
 Brad Colbert
-Björn Blissing
+Bjrn Blissing
 Vivek Rajan
 Uwe Woessner
 Tony Horrobin
 Thom DeCarlo
 Tatsuhiro Nishioka
-Tanguy Fautré
+Tanguy Fautr
 Sean Spicer
 Ryan Kawicki
 Richard Schmidt
@@ -199,7 +199,7 @@ Piotr Domagalski
 Phil Atkin
 Pawel Ksiezopolski
 Nathan Monteleone
-Miha Rav¨elj
+Miha Ravelj
 Miguel Escriva
 Mattias Linde
 Mark Sciabica
@@ -231,8 +231,8 @@ Christian Ruzicka
 Christian Buchner
 Charles Cole
 Blake Williams
-Björn Hein
-Aurélien Chatelain
+Bjrn Hein
+Aurlien Chatelain
 Antoine Hue
 Andrew Bettison
 Andreas Henne
@@ -260,10 +260,11 @@ Philippe Renon
 Perry Miller
 Paul Palumbo
 Paul Obermeier
+Patrick Neary
 Nguyen Van Truong
 Nathan Cournia
 Morten Haukness
-Morné Pistorius
+Morn Pistorius
 Michael Mc Donnell
 Michael Henheffer
 Michael Guerrero
@@ -297,7 +298,7 @@ Guillaume Taze
 Guillaume Chouvenc
 Giuseppe Donvito
 Gill Peacegood
-Giampaolo Viganò
+Giampaolo Vigan
 Gerrick Bivins
 George Tarantilis
 Ferdi Smit
@@ -306,7 +307,7 @@ Eduardo Poyart
 Edgar Ellis
 Dmitry Marakasov
 Dimi Christopoulos
-Diane Delallée
+Diane Delalle
 David Longest
 David Ergo
 Daniel Trstenjak
@@ -337,7 +338,7 @@ Vasily Radostev
 Valery Bickov
 Valeriy Dubov
 Vaclav Bilek
-Tyge Løvset
+Tyge Lvset
 Troy Yee
 Tomas Hogarth
 Tomas Hnilica
@@ -382,7 +383,7 @@ Piotr Rak
 Pierre Bourdin
 Philipp Svehla
 Philipp Siemoleit
-Philipp Mächler
+Philipp Mchler
 Philip Lamb
 Petr Salinger
 Peter Bear
@@ -405,7 +406,7 @@ Nicolas Brodu
 Nick Black
 Mojtaba Fathi
 Mirko Viviani
-Mikkel Gjøl
+Mikkel Gjl
 Mike Krus
 Mike Garrity
 Michal Durkovic
@@ -507,10 +508,10 @@ David Jung
 Danny Valente
 Daniel Stien
 Dan Minor
-César L. B. Silveira
+Csar L. B. Silveira
 Cyril Brulebois
 Cory Slep
-Clément B½sch
+Clment Bsch
 Clay Fowler
 Claus Steuer
 Chuck Sembroski

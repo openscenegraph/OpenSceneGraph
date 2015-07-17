@@ -1,3 +1,7 @@
+2015-07-17 08:35  robert
+
+	* AUTHORS.txt, ChangeLog: Updated ChangeLog and AUTHORS file
+
 2015-07-17 08:17  robert
 
 	* CMakeLists.txt: Added cmake_policy setting for cmake-3.x to avoid

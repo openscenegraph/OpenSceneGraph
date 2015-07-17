@@ -730,8 +730,10 @@ IF(OSG_USE_QT AND NOT ANDROID)
         FIND_PACKAGE(Qt5WebKitWidgets QUIET)
 
         IF(COMMAND cmake_policy)
-            # Qt5 qt5_use_modules usage was causing "Policy CMP0043 is not set: Ignore COMPILE_DEFINITIONS_<Config> properties." warnings
-            cmake_policy(SET CMP0043 NEW)
+            IF(${CMAKE_MAJOR_VERSION} GREATER 2)
+                # Qt5 qt5_use_modules usage was causing "Policy CMP0043 is not set: Ignore COMPILE_DEFINITIONS_<Config> properties." warnings
+                cmake_policy(SET CMP0043 NEW)
+            ENDIF()
         ENDIF()
     ENDIF()
 

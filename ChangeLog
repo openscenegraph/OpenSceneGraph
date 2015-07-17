@@ -1,3 +1,153 @@
+2015-07-17 08:17  robert
+
+	* CMakeLists.txt: Added cmake_policy setting for cmake-3.x to avoid
+	  warning with Qt usage.
+
+2015-07-17 08:13  robert
+
+	* src/osgPlugins/tiff/ReaderWriterTIFF.cpp: From Patrick Neary, "To
+	  the tiff plugin, add the capability to write tiff images with
+	  unsigned short data"
+
+2015-07-16 19:19  robert
+
+	* src/osg/Image.cpp: From Patrick Neary, "Added some lesser used
+	  tokens that we use from GL_ARB_texture_rg to
+	  computeFormatDataType(), and computeNumComponents() in
+	  src/osg/Image.cpp"
+
+2015-06-30 08:38  robert
+
+	* src/osgPlugins/ogr/ReaderWriterOGR.cpp: Build fix for GLDAL>=2.0
+
+2015-06-19 09:54  robert
+
+	* src/osgUtil/RenderStage.cpp: From Jannik Heller, fix to
+	  clearReferencesToDependentCameras().
+
+2015-06-12 08:04  robert
+
+	* src/osgText/TextBase.cpp: From Farshid Lashkari, "I've modified
+	  some setter methods of TextBase to avoid unnecessary calls to
+	  computeGlyphRepresentation() if the value has not changed."
+
+2015-06-10 10:02  robert
+
+	* src/osgGA/NodeTrackerManipulator.cpp: Philippe Renon, "Fixed
+	  potential divide by zero in NodeTrackerManipulator : The divide
+	  by zero happens when throwing a NodeTrackerManipulator.
+	  The infinite result trickles down and later causes NaN in
+	  culling.
+	  
+	  The fix was to use getThrowScale() as done everywhere else."
+
+2015-06-07 11:13  robert
+
+	* src/osgViewer/CompositeViewer.cpp, src/osgViewer/Viewer.cpp:
+	  Fixed setReferenceTime() bug where a * eather than the correct /
+	  was being used. Bug and fix suggested Benjamin Richter.
+
+2015-05-21 14:11  robert
+
+	* src/osgText/Text3D.cpp: Fixed memory error associated with
+	  reading over the end of container due to an unbounded while loop.
+
+2015-05-05 11:04  robert
+
+	* CMakeLists.txt: Changed the CMP0020 check to > 2.8.10
+
+2015-04-20 10:43  robert
+
+	* src/osgViewer/GraphicsWindowX11.cpp: Merged correction to
+	  coordinates from svn/trunk
+
+2015-04-20 10:42  robert
+
+	* applications/osgversion/Contributors.cpp: Updated contributor
+	  fixes
+
+2015-04-20 09:38  robert
+
+	* src/osg/State.cpp: Moved uniform substitution to infront of
+	  vertex attribute substituion to make sure gl_Vertex usage is
+	  replaced when required.
+
+2015-04-01 09:37  robert
+
+	* src/osg/Image.cpp: From Lionel Largarde, "fix for the
+	  Image::computeNumberOfMipmapLevels method. The method did use the
+	  float version of the log function and the / operator.
+	  It works for most of the input sizes, but fails for 8192,
+	  32768...
+	  For 8192, the method returns 13 instead of 14."
+
+2015-03-17 09:10  robert
+
+	* src/osgWrappers/serializers/osg/LibraryWrapper.cpp: Removed
+	  unimplemented ComputeBoundingBoxCallback and
+	  ComputeBoundingSphereCallback
+
+2015-03-17 08:26  robert
+
+	* src/osgWrappers/serializers/osg/LibraryWrapper.cpp: Added missing
+	  references for static build
+
+2015-03-16 10:30  robert
+
+	* src/osgAnimation/Animation.cpp: From Konstantin Matveyev, "Last
+	  update in the osgAnimation::Animation ONCE mode bug fix"
+
+2015-03-13 08:13  robert
+
+	* src/osgWrappers/serializers/osg/LibraryWrapper.cpp: Reverted
+	  merged from svn/trunk.
+
+2015-03-13 08:12  robert
+
+	* src/osgWrappers/serializers/osg/LibraryWrapper.cpp: From
+	  Konstantin Matveyev, "Small fix for OSG 3.3.6.119 in the
+	  attachment.
+	  
+	  One line added in osg/LibraryWrapper.cpp
+	  
+	  USE_SERIALIZER_WRAPPER(Callback)
+	  "
+
+2015-03-12 15:12  robert
+
+	* CMakeModules/FindFBX.cmake: From Laurens Voerman, "attached is a
+	  zip with a modified version of:
+	  OpenSceneGraph\CMakeModules\FindFBX.cmake
+	  
+	  This version can find fbx sdk 2015.1 and will prefer it over
+	  older versions.
+	  
+	  Tested with Visual Studio Express 2013 on 64bit windows 7"
+
+2015-03-11 17:47  robert
+
+	* src/osgPlugins/exr/ReaderWriterEXR.cpp: Warning fixes
+
+2015-03-11 17:37  robert
+
+	* src/osgPlugins/sdl/JoystickDevice.cpp: From Laurens Voerman, "The
+	  current version will not compile with SDL version 2, error
+	  OpenSceneGraph\src\osgPlugins\sdl\JoystickDevice.cpp(42): error
+	  C2664: 'const char *SDL_JoystickName(SDL_Joystick *)' : cannot
+	  convert argument 1 from 'int' to 'SDL_Joystick *'
+	  due to changes in the SDL api.
+	  
+	  Tested with Visual Studio Express 2013; SDL 2.0.1"
+
+2015-03-05 18:00  robert
+
+	* CMakeLists.txt: Updated RC to 2.
+
+2015-03-05 18:00  robert
+
+	* AUTHORS.txt, ChangeLog, applications/osgversion/Contributors.cpp:
+	  Updated AUTHORS file for next release candidate
+
 2015-03-03 12:56  robert
 
 	* src/osgUtil/Optimizer.cpp: Restructed the checks in the

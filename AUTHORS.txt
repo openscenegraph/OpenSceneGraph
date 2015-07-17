@@ -1,6 +1,6 @@
 OpenSceneGraph Library 3.4.0
 
-548 Contributors:
+550 Contributors:
 
 Firstname Surname
 -----------------
@@ -57,11 +57,11 @@ Mathieu Marache
 Lionel Lagarde
 Jason Daly
 Art Tevs
+Terry Welsh
 Philip Lowman
 Per Fahlberg
 Norman Vine
 Chris Denham
-Terry Welsh
 Serge Lages
 Romano José Magacho da Silva
 Jannik Heller
@@ -260,6 +260,7 @@ Philippe Renon
 Perry Miller
 Paul Palumbo
 Paul Obermeier
+Patrick Neary
 Nguyen Van Truong
 Nathan Cournia
 Morten Haukness
@@ -509,6 +510,7 @@ Daniel Stien
 Dan Minor
 César L. B. Silveira
 Cyril Brulebois
+Cory Slep
 Clément B½sch
 Clay Fowler
 Claus Steuer

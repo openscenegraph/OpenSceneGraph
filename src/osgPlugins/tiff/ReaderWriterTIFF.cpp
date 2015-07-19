@@ -908,10 +908,12 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
                     break;
             }
 
+            uint32 rowsperstrip = 0;
+            
             switch(img.getDataType()){
                 case GL_FLOAT:
                     TIFFSetField(image, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_IEEEFP);
-                    TIFFSetField(image, TIFFTAG_ROWSPERSTRIP, 1);
+                    rowsperstrip = 1;
                     bitsPerSample = 32;
                     break;
                 case GL_SHORT:
@@ -935,9 +937,9 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             TIFFSetField(image, TIFFTAG_COMPRESSION, compressionType);
             TIFFSetField(image, TIFFTAG_FILLORDER, FILLORDER_MSB2LSB);
             TIFFSetField(image, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
-
-            //uint32 rowsperstrip = TIFFDefaultStripSize(image, -1);
-            //TIFFSetField(image, TIFFTAG_ROWSPERSTRIP, rowsperstrip);
+            
+            if (rowsperstrip==0) rowsperstrip = TIFFDefaultStripSize(image, 0);
+            TIFFSetField(image, TIFFTAG_ROWSPERSTRIP, rowsperstrip);
 
             // Write the information to the file
             for(int i = 0; i < img.t(); ++i) {

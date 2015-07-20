@@ -1,3 +1,31 @@
+2015-07-20 07:42  robert
+
+	* src/osgPlugins/osgjs/json_stream: Changed the _MSC_VER check to
+	  <= 1700 to support VS2012.
+
+2015-07-19 09:51  robert
+
+	* src/osgPlugins/tiff/ReaderWriterTIFF.cpp: Reinstated the
+	  TIFFSetField(image, TIFFTAG_ROWSPERSTRIP, rowsperstrip);
+
+2015-07-17 18:31  robert
+
+	* CMakeModules/FindGStreamer.cmake: From KOS, "I've mentioned in
+	  the "osg-users" ML about build error with the newest GStreamer
+	  1.5
+	  
+	  Please, have a look at the attached patch."
+	  
+	  CMakeModules/FindGStreamer.cmake
+
+2015-07-17 09:16  robert
+
+	* CMakeLists.txt: Updated release candidate number
+
+2015-07-17 09:06  robert
+
+	* AUTHORS.txt, ChangeLog: Updated ChangeLog and AUTHORS
+
 2015-07-17 08:21  robert
 
 	* CMakeLists.txt: Added cmake version checked for cmake_policy

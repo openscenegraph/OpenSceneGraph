@@ -220,7 +220,15 @@ protected:
         material->setDiffuse (osg::Material::FRONT_AND_BACK,osg::Vec4(diffuse,alpha));
         material->setSpecular(osg::Material::FRONT_AND_BACK,osg::Vec4(specular,alpha));
         material->setEmission(osg::Material::FRONT_AND_BACK,osg::Vec4(emissive,alpha));
-        material->setShininess(osg::Material::FRONT_AND_BACK,shininess);
+        
+        if (shininess>=0.0f)
+        {        
+            material->setShininess(osg::Material::FRONT_AND_BACK,shininess);
+        }
+        else
+        {
+            OSG_INFO<<"Warning: OpenFlight shininess value out of range: "<<shininess<<std::endl;
+        }
 
         MaterialPool* mp = document.getOrCreateMaterialPool();
         (*mp)[index] = material;
@@ -266,7 +274,15 @@ protected:
             material->setDiffuse (osg::Material::FRONT_AND_BACK,osg::Vec4(diffuse,alpha));
             material->setSpecular(osg::Material::FRONT_AND_BACK,osg::Vec4(specular,alpha));
             material->setEmission(osg::Material::FRONT_AND_BACK,osg::Vec4(emissive,alpha));
-            material->setShininess(osg::Material::FRONT_AND_BACK,shininess);
+
+            if (shininess>=0.0f)
+            {        
+                material->setShininess(osg::Material::FRONT_AND_BACK,shininess);
+            }
+            else
+            {
+                OSG_INFO<<"Warning: OpenFlight shininess value out of range: "<<shininess<<std::endl;
+            }
 
             MaterialPool* mp = document.getOrCreateMaterialPool();
             (*mp)[i] = material;

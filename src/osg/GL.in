@@ -36,6 +36,8 @@
 #define OSG_GLES1_FEATURES @OSG_GLES1_FEATURES@
 #define OSG_GLES2_FEATURES @OSG_GLES2_FEATURES@
 #define OSG_GLES3_FEATURES @OSG_GLES3_FEATURES@
+#define GL_HEADER_HAS_GLINT64 @GL_HEADER_HAS_GLINT64@
+#define GL_HEADER_HAS_GLUINT64 @GL_HEADER_HAS_GLUINT64@
 
 #ifndef WIN32
 
@@ -115,12 +117,18 @@
 #endif // GL_APIENTRY
 
 
-#if !defined(GL_VERSION_3_1)
+#if !GL_HEADER_HAS_GLINT64
     #ifdef _WIN32
-        typedef          __int64 GLint64;
-        typedef unsigned __int64 GLuint64;
+        typedef __int64 GLint64;
     #else
         typedef long long int GLint64;
+    #endif
+#endif
+
+#if !GL_HEADER_HAS_GLUINT64
+    #ifdef _WIN32
+        typedef unsigned __int64 GLuint64;
+    #else
         typedef unsigned long long int GLuint64;
     #endif
 #endif

@@ -600,6 +600,10 @@ typedef char GLchar;
 #define GL_RASTERIZER_DISCARD           0x8C89
 #endif
 
+#ifndef GL_ALPHA_TEST
+    #define GL_ALPHA_TEST 0x0BC0
+#endif
+
 namespace osg
 {
     #ifndef GL_VERSION_3_2

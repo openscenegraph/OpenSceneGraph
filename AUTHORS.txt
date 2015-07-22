@@ -9,10 +9,10 @@ Don Burns
 Stephan Huber
 Paul Martz
 Farshid Lashkari
-Mathias Frhlich
+Mathias Fröhlich
 Marco Jez
 Wang Rui
-Jean-Sbastien Guay
+Jean-Sébastien Guay
 Ulrich Hertlein
 Mike Weiblen
 Sukender
@@ -63,14 +63,14 @@ Per Fahlberg
 Norman Vine
 Chris Denham
 Serge Lages
-Romano Jos Magacho da Silva
+Romano José Magacho da Silva
 Jannik Heller
 Alberto Farre
 Torben Dannhauer
 Sherman Wilcox
 Robert Michael
 Mourad Boufarguine
-Andr Garneau
+André Garneau
 Adrian Egli
 Ruben Lopez
 Randall Hopper
@@ -85,7 +85,7 @@ Martin Naylor
 Kristofer Tingdahl
 Joakim Simonsson
 David Spilling
-Daniel Sjlie
+Daniel Sjölie
 Bryan Thrall
 Rafa Gaitan
 Mike Connell
@@ -134,13 +134,13 @@ Loic Dachary
 Joseph Steel
 John Shue
 Brad Colbert
-Bjrn Blissing
+Björn Blissing
 Vivek Rajan
 Uwe Woessner
 Tony Horrobin
 Thom DeCarlo
 Tatsuhiro Nishioka
-Tanguy Fautr
+Tanguy Fautré
 Sean Spicer
 Ryan Kawicki
 Richard Schmidt
@@ -199,7 +199,7 @@ Piotr Domagalski
 Phil Atkin
 Pawel Ksiezopolski
 Nathan Monteleone
-Miha Ravelj
+Miha Rav¨elj
 Miguel Escriva
 Mattias Linde
 Mark Sciabica
@@ -231,8 +231,8 @@ Christian Ruzicka
 Christian Buchner
 Charles Cole
 Blake Williams
-Bjrn Hein
-Aurlien Chatelain
+Björn Hein
+Aurélien Chatelain
 Antoine Hue
 Andrew Bettison
 Andreas Henne
@@ -264,7 +264,7 @@ Patrick Neary
 Nguyen Van Truong
 Nathan Cournia
 Morten Haukness
-Morn Pistorius
+Morné Pistorius
 Michael Mc Donnell
 Michael Henheffer
 Michael Guerrero
@@ -298,7 +298,7 @@ Guillaume Taze
 Guillaume Chouvenc
 Giuseppe Donvito
 Gill Peacegood
-Giampaolo Vigan
+Giampaolo Viganò
 Gerrick Bivins
 George Tarantilis
 Ferdi Smit
@@ -307,7 +307,7 @@ Eduardo Poyart
 Edgar Ellis
 Dmitry Marakasov
 Dimi Christopoulos
-Diane Delalle
+Diane Delallée
 David Longest
 David Ergo
 Daniel Trstenjak
@@ -338,7 +338,7 @@ Vasily Radostev
 Valery Bickov
 Valeriy Dubov
 Vaclav Bilek
-Tyge Lvset
+Tyge Løvset
 Troy Yee
 Tomas Hogarth
 Tomas Hnilica
@@ -383,7 +383,7 @@ Piotr Rak
 Pierre Bourdin
 Philipp Svehla
 Philipp Siemoleit
-Philipp Mchler
+Philipp Mächler
 Philip Lamb
 Petr Salinger
 Peter Bear
@@ -406,7 +406,7 @@ Nicolas Brodu
 Nick Black
 Mojtaba Fathi
 Mirko Viviani
-Mikkel Gjl
+Mikkel Gjøl
 Mike Krus
 Mike Garrity
 Michal Durkovic
@@ -508,10 +508,10 @@ David Jung
 Danny Valente
 Daniel Stien
 Dan Minor
-Csar L. B. Silveira
+César L. B. Silveira
 Cyril Brulebois
 Cory Slep
-Clment Bsch
+Clément B½sch
 Clay Fowler
 Claus Steuer
 Chuck Sembroski

@@ -1,3 +1,39 @@
+2015-07-22 14:41  robert
+
+	* CMakeLists.txt: Update rc to 6.
+
+2015-07-22 14:30  robert
+
+	* include/osg/AlphaFunc, include/osg/GLDefines: Moved from
+	  svn/trunk, moved GL_ALPHA_TEST from AlphaFunc to GLDefines
+
+2015-07-22 14:27  robert
+
+	* CMakeLists.txt, src/osg/GL.in: From svn/trunk merged automatic
+	  detection of GLint64 + GLuint64 in GL headers
+
+2015-07-21 14:22  robert
+
+	* src/osgPlugins/OpenFlight/PaletteRecords.cpp: Added check for
+	  validity of OpenFlight shininess value.
+
+2015-07-21 13:42  robert
+
+	* include/osg/BoundsChecking: Fixed typo
+
+2015-07-20 13:23  robert
+
+	* src/osgViewer/CompositeViewer.cpp, src/osgViewer/Viewer.cpp:
+	  Reduced debug message verbosity.
+
+2015-07-20 07:53  robert
+
+	* CMakeLists.txt: Updated RC to 5 for 3.4.0-rc5 release
+
+2015-07-20 07:46  robert
+
+	* ChangeLog: Updated ChangeLog for rc
+
 2015-07-20 07:42  robert
 
 	* src/osgPlugins/osgjs/json_stream: Changed the _MSC_VER check to

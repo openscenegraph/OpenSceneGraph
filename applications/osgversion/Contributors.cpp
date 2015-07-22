@@ -260,7 +260,8 @@ const char* invalidNames[] =
     "PushStackValueVisitor",
     "RayIntersector",
     "OpenSceneGraph-Data",
-    "Node"
+    "Node",
+    "AlphaFunc"
 };
 
 

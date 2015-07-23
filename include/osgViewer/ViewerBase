@@ -335,6 +335,12 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         osg::ref_ptr<osgUtil::IncrementalCompileOperation>  _incrementalCompileOperation;
 
         osg::observer_ptr<osg::GraphicsContext>             _currentContext;
+        
+    private:
+        
+        // Define private copy constructor
+        // otherwsie VS2015 will construct it's own which will call the private copy operator from osg::Object resulting in an compile error.
+        ViewerBase& operator = (const ViewerBase&) { return *this; }
 };
 
 }

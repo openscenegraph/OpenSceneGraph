@@ -1366,6 +1366,7 @@ class CompileStateCallback : public osg::Operation
 {
     public:
         CompileStateCallback(GameEventHandler* eh):
+            osg::Referenced(true),
             osg::Operation("CompileStateCallback", false),
             _gameEventHandler(eh) {}
         

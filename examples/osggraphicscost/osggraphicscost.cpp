@@ -29,6 +29,7 @@ class CalibrateCostEsimator : public osg::GraphicsOperation
 public:
 
     CalibrateCostEsimator(osg::GraphicsCostEstimator* gce):
+        osg::Referenced(true),
         osg::GraphicsOperation("CalbirateCostEstimator",false),
         _gce(gce) {}
 

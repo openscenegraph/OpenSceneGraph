@@ -22,6 +22,7 @@ using namespace OpenThreads;
 struct BlockOperation : public Operation, public Block
 {
     BlockOperation():
+        osg::Referenced(true),
         Operation("Block",false)
     {
         reset();

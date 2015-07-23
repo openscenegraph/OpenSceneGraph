@@ -52,7 +52,6 @@ class Operation : virtual public Referenced
     public:
 
         Operation(const std::string& name, bool keep):
-            osg::Referenced(true),
             _name(name),
             _keep(keep) {}
 
@@ -75,14 +74,12 @@ class Operation : virtual public Referenced
         /** Do the actual task of this operation.*/
         virtual void operator () (Object*) = 0;
 
-    protected:
+protected:
 
         Operation():
-            Referenced(true),
             _keep(false) {}
 
         Operation(const Operation& op):
-            Referenced(true),
             _name(op._name),
             _keep(op._keep) {}
 

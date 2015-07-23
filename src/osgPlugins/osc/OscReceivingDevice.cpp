@@ -424,8 +424,6 @@ public:
     {
         out << getRequestPath() << "(int keycode): send KEY_DOWN and KEY_UP";
     }
-private:
-    bool _handleKeyPress;
 };
 
 

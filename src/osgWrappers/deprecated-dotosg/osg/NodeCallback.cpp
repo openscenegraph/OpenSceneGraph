@@ -23,15 +23,15 @@ REGISTER_DOTOSGWRAPPER(NodeCallback)
 
 bool NodeCallback_readLocalData(osg::Object &obj, osgDB::Input &fr)
 {
-    NodeCallback& nc = dynamic_cast<NodeCallback&>(obj);
-    if (!(&nc)) return false;
+    NodeCallback* nc = dynamic_cast<NodeCallback*>(&obj);
+    if (!nc) return false;
 
     bool itrAdvanced = false;
 
     NodeCallback* ncc = fr.readObjectOfType<NodeCallback>();
     if (ncc)
     {
-        nc.setNestedCallback(ncc);
+        nc->setNestedCallback(ncc);
         itrAdvanced = true;
     }
 

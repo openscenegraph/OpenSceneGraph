@@ -44,7 +44,6 @@
 #include "broadcaster.h"
 
 
-const unsigned int MAX_NUM_EVENTS = 10;
 const unsigned int SWAP_BYTES_COMPARE = 0x12345678;
 class CameraPacket {
     public:

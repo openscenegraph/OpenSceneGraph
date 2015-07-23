@@ -136,7 +136,6 @@ public:
           _listTriangles(listTriangles),
           _hasNormalCoords(geo->getNormalArray() != NULL),
           _hasTexCoords(geo->getTexCoordArray(0) != NULL),
-          _geo(geo),
           _lastFaceIndex(0),
           _material(material)
       {
@@ -288,7 +287,6 @@ private:
     GLenum               _modeCache;
     std::vector<GLuint>  _indexCache;
     bool                 _hasNormalCoords, _hasTexCoords;
-    osg::Geometry*       _geo;
     unsigned int         _lastFaceIndex;
     unsigned int         _material;
 };

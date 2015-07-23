@@ -54,18 +54,26 @@
     #if defined(__GLIBC__) || defined(__ANDROID__) || defined(__CYGWIN__)
         #include <endian.h>
         #if (__BYTE_ORDER == __LITTLE_ENDIAN)
-            #define __LITTLE_ENDIAN__
+            #ifndef __LITTLE_ENDIAN__
+                #define __LITTLE_ENDIAN__
+            #endif
         #elif (__BYTE_ORDER == __BIG_ENDIAN)
-            #define __BIG_ENDIAN__
+            #ifndef __BIG_ENDIAN__
+                #define __BIG_ENDIAN__
+            #endif
         #else
             #error Unknown machine endianness detected.
         #endif
     #elif defined(__FreeBSD__)
         #include <sys/endian.h>
         #if (_BYTE_ORDER == _LITTLE_ENDIAN)
-            #define __LITTLE_ENDIAN__
+            #ifndef __LITTLE_ENDIAN__
+                #define __LITTLE_ENDIAN__
+            #endif
         #elif (_BYTE_ORDER == _BIG_ENDIAN)
-            #define __BIG_ENDIAN__
+            #ifndef __BIG_ENDIAN__
+                #define __BIG_ENDIAN__
+            #endif
         #else
             #error Unknown machine endianness detected.
         #endif

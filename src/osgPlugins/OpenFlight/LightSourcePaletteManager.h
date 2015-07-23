@@ -36,7 +36,7 @@ class DataOutputStream;
 class LightSourcePaletteManager
 {
   public:
-      LightSourcePaletteManager( ExportOptions& fltOpt );
+      LightSourcePaletteManager();
 
     // Add a light to the palette and auto-assign it the next available index
     int add(osg::Light const* light);
@@ -63,9 +63,6 @@ class LightSourcePaletteManager
     // Map to allow lookups by Light pointer
     typedef std::map<osg::Light const*, LightRecord> LightPalette;
     LightPalette _lightPalette;
-
-
-    ExportOptions& _fltOpt;
 
 protected:
 

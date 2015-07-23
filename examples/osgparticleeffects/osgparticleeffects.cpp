@@ -340,10 +340,11 @@ public:
                     itr!=parents.end();
                     ++itr)
                 {
-                    if (typeid(*(*itr))==typeid(osg::Group))
+                    osg::Group* parent = (*itr);
+                    if (typeid(*parent)==typeid(osg::Group))
                     {
                         ++numGroupsFound;
-                        insertGroup = *itr;
+                        insertGroup = parent;
                     }
                 }
                 if (numGroupsFound==parents.size() && numGroupsFound==1 && insertGroup)

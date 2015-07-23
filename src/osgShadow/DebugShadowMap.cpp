@@ -225,7 +225,8 @@ void DebugShadowMap::ViewData::setDebugPolytope
 {
     if( !getDebugDraw() ) return;
 
-    if( &polytope == NULL ) { // delete
+    const ConvexPolyhedron* polytope_ptr = &polytope;
+    if( polytope_ptr == NULL ) { // delete
         PolytopeGeometry & pg = _polytopeGeometryMap[ std::string( name ) ];
         for( unsigned int i = 0; i < VECTOR_LENGTH( pg._geometry ) ; i++ )
         {

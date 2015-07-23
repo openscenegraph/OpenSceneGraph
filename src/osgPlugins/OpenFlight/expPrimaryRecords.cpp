@@ -163,10 +163,10 @@ FltExportVisitor::writeHeader( const std::string& headerName )
 // Group flags
 static const unsigned int FORWARD_ANIM     = 0x80000000u >> 1;
 static const unsigned int SWING_ANIM       = 0x80000000u >> 2;
-static const unsigned int BOUND_BOX_FOLLOW = 0x80000000u >> 3;
-static const unsigned int FREEZE_BOUND_BOX = 0x80000000u >> 4;
-static const unsigned int DEFAULT_PARENT   = 0x80000000u >> 5;
-static const unsigned int BACKWARD_ANIM    = 0x80000000u >> 6;
+//static const unsigned int BOUND_BOX_FOLLOW = 0x80000000u >> 3;
+//static const unsigned int FREEZE_BOUND_BOX = 0x80000000u >> 4;
+//static const unsigned int DEFAULT_PARENT   = 0x80000000u >> 5;
+//static const unsigned int BACKWARD_ANIM    = 0x80000000u >> 6;
 
 
 //
@@ -402,8 +402,8 @@ FltExportVisitor::writeDegreeOfFreedom( const osgSim::DOFTransform* dof )
 static const unsigned long COLOR_PALETTE_OVERRIDE        = 0x80000000u >> 0;
 static const unsigned long MATERIAL_PALETTE_OVERRIDE     = 0x80000000u >> 1;
 static const unsigned long TEXTURE_PALETTE_OVERRIDE      = 0x80000000u >> 2;
-static const unsigned long LINE_STYLE_PALETTE_OVERRIDE   = 0x80000000u >> 3;
-static const unsigned long SOUND_PALETTE_OVERRIDE        = 0x80000000u >> 4;
+//static const unsigned long LINE_STYLE_PALETTE_OVERRIDE   = 0x80000000u >> 3;
+//static const unsigned long SOUND_PALETTE_OVERRIDE        = 0x80000000u >> 4;
 static const unsigned long LIGHT_SOURCE_PALETTE_OVERRIDE = 0x80000000u >> 5;
 static const unsigned long LIGHT_POINT_PALETTE_OVERRIDE  = 0x80000000u >> 6;
 static const unsigned long SHADER_PALETTE_OVERRIDE       = 0x80000000u >> 7;

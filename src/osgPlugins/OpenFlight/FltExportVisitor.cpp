@@ -68,7 +68,7 @@ FltExportVisitor::FltExportVisitor( DataOutputStream* dos,
     _dos( *dos ),
     _materialPalette( new MaterialPaletteManager( *fltOpt ) ),
     _texturePalette( new TexturePaletteManager( *this, *fltOpt ) ),
-    _lightSourcePalette( new LightSourcePaletteManager( *fltOpt ) ),
+    _lightSourcePalette( new LightSourcePaletteManager( ) ),
     _vertexPalette( new VertexPaletteManager( *fltOpt ) ),
     _firstNode( true )
 {

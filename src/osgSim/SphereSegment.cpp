@@ -893,7 +893,8 @@ struct ActivateTransparencyOnType
 
     void operator()(osg::ref_ptr<osg::Node>& nptr) const
     {
-        if(typeid(*nptr)==_t)
+        const osg::Node* ptr = nptr.get();
+        if(typeid(*ptr)==_t)
         {
             osg::Drawable* drawable = nptr->asDrawable();
             osg::StateSet* ss = drawable->getOrCreateStateSet();
@@ -919,7 +920,8 @@ struct DeactivateTransparencyOnType
 
     void operator()(osg::ref_ptr<osg::Node>& nptr) const
     {
-        if(typeid(*nptr)==_t)
+        const osg::Node* ptr = nptr.get();
+        if(typeid(*ptr)==_t)
         {
             osg::Drawable* drawable = nptr->asDrawable();
             osg::StateSet* ss = drawable->getOrCreateStateSet();

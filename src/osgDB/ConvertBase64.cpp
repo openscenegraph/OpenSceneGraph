@@ -317,8 +317,9 @@ namespace osgDB
         }
 
         // Allocate memory for use with osg::Image
-        char* allocated_out = new char[stream_out.tellp()];
-        memcpy(allocated_out, stream_out.str().c_str(), stream_out.tellp());
+        const std::string str = stream_out.str();
+        char* allocated_out = new char[str.size()];
+        memcpy(allocated_out, str.c_str(), str.size());
 
         return allocated_out;
     }

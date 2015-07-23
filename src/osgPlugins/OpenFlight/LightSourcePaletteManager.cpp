@@ -28,10 +28,8 @@ namespace flt
 {
 
 
-LightSourcePaletteManager::LightSourcePaletteManager( ExportOptions& fltOpt )
-  : _currIndex( -1 ),
-    _fltOpt( fltOpt )
-
+LightSourcePaletteManager::LightSourcePaletteManager()
+  : _currIndex( -1 )
 {
     // TODO: Pay attention to the version here(?)
 }

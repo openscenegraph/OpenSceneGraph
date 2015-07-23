@@ -5557,12 +5557,10 @@ static void empty_image(const PixelStorageModes *psm,
  * Decimation of packed pixel types
  *--------------------------------------------------------------------------
  */
-static void extract332(int isSwap,
+static void extract332(int /*isSwap*/,
                        const void *packedPixel, GLfloat extractComponents[])
 {
    GLubyte ubyte= *(const GLubyte *)packedPixel;
-
-   isSwap= isSwap;                /* turn off warnings */
 
    /* 11100000 == 0xe0 */
    /* 00011100 == 0x1c */
@@ -5593,12 +5591,10 @@ static void shove332(const GLfloat shoveComponents[],
      ((GLubyte)((shoveComponents[2] * 3)+0.5)           ) & 0x03;
 } /* shove332() */
 
-static void extract233rev(int isSwap,
+static void extract233rev(int /*isSwap*/,
                           const void *packedPixel, GLfloat extractComponents[])
 {
    GLubyte ubyte= *(const GLubyte *)packedPixel;
-
-   isSwap= isSwap;                /* turn off warnings */
 
    /* 0000,0111 == 0x07 */
    /* 0011,1000 == 0x38 */
@@ -8559,10 +8555,8 @@ GLint GLAPIENTRY gluBuild3DMipmaps(GLTexImage3DProc gluTexImage3D,
                                      data);
 } /* gluBuild3DMipmaps() */
 
-static GLdouble extractUbyte(int isSwap, const void *ubyte)
+static GLdouble extractUbyte(int /*isSwap*/, const void *ubyte)
 {
-   isSwap= isSwap;                /* turn off warnings */
-
    return (GLdouble)(*((const GLubyte *)ubyte));
 } /* extractUbyte() */
 
@@ -8573,10 +8567,8 @@ static void shoveUbyte(GLdouble value, int index, void *data)
    ((GLubyte *)data)[index]= (GLubyte)value;
 } /* shoveUbyte() */
 
-static GLdouble extractSbyte(int isSwap, const void *sbyte)
+static GLdouble extractSbyte(int /*isSwap*/, const void *sbyte)
 {
-   isSwap= isSwap;                /* turn off warnings */
-
    return (GLdouble)(*((const GLbyte *)sbyte));
 } /* extractSbyte() */
 

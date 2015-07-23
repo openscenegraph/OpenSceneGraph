@@ -1,31 +1,31 @@
 /*
-	oscpack -- Open Sound Control packet manipulation library
-	http://www.audiomulch.com/~rossb/oscpack
+    oscpack -- Open Sound Control packet manipulation library
+    http://www.audiomulch.com/~rossb/oscpack
 
-	Copyright (c) 2004-2005 Ross Bencina <rossb@audiomulch.com>
+    Copyright (c) 2004-2005 Ross Bencina <rossb@audiomulch.com>
 
-	Permission is hereby granted, free of charge, to any person obtaining
-	a copy of this software and associated documentation files
-	(the "Software"), to deal in the Software without restriction,
-	including without limitation the rights to use, copy, modify, merge,
-	publish, distribute, sublicense, and/or sell copies of the Software,
-	and to permit persons to whom the Software is furnished to do so,
-	subject to the following conditions:
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files
+    (the "Software"), to deal in the Software without restriction,
+    including without limitation the rights to use, copy, modify, merge,
+    publish, distribute, sublicense, and/or sell copies of the Software,
+    and to permit persons to whom the Software is furnished to do so,
+    subject to the following conditions:
 
-	The above copyright notice and this permission notice shall be
-	included in all copies or substantial portions of the Software.
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
 
-	Any person wishing to distribute modifications to the Software is
-	requested to send the modifications to the original developer so that
-	they can be incorporated into the canonical version.
+    Any person wishing to distribute modifications to the Software is
+    requested to send the modifications to the original developer so that
+    they can be incorporated into the canonical version.
 
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
-	ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
-	CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-	WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+    ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+    CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #include "OscOutboundPacketStream.h"
 
@@ -219,7 +219,7 @@ void OutboundPacketStream::CheckForAvailableBundleSpace()
 void OutboundPacketStream::CheckForAvailableMessageSpace( const char *addressPattern )
 {
     // plus 4 for at least four bytes of type tag
-	unsigned long required = Size() + ((ElementSizeSlotRequired()) ? 4 : 0) + RoundUp4(static_cast<unsigned long>(strlen(addressPattern)) + 1) + 4;
+    unsigned long required = Size() + ((ElementSizeSlotRequired()) ? 4 : 0) + RoundUp4(static_cast<unsigned long>(strlen(addressPattern)) + 1) + 4;
 
     if( required > Capacity() )
         throw OutOfBufferMemoryException();
@@ -254,11 +254,11 @@ unsigned int OutboundPacketStream::Capacity() const
 
 unsigned int OutboundPacketStream::Size() const
 {
-	unsigned int result = static_cast<unsigned int>(argumentCurrent_ - data_);
+    unsigned int result = static_cast<unsigned int>(argumentCurrent_ - data_);
     if( IsMessageInProgress() ){
         // account for the length of the type tag string. the total type tag
         // includes an initial comma, plus at least one terminating \0
-		result += static_cast<unsigned int>(RoundUp4((end_ - typeTagsCurrent_) + 2));
+        result += static_cast<unsigned int>(RoundUp4((end_ - typeTagsCurrent_) + 2));
     }
 
     return result;
@@ -333,7 +333,7 @@ OutboundPacketStream& OutboundPacketStream::operator<<( const BeginMessage& rhs 
     messageCursor_ = BeginElement( messageCursor_ );
 
     strcpy( messageCursor_, rhs.addressPattern );
-	unsigned long rhsLength = static_cast<unsigned long>(strlen(rhs.addressPattern));
+    unsigned long rhsLength = static_cast<unsigned long>(strlen(rhs.addressPattern));
     messageCursor_ += rhsLength + 1;
 
     // zero pad to 4-byte boundary
@@ -359,7 +359,7 @@ OutboundPacketStream& OutboundPacketStream::operator<<( const MessageTerminator&
     if( !IsMessageInProgress() )
         throw MessageNotInProgressException();
 
-	int typeTagsCount = static_cast<int>(end_ - typeTagsCurrent_);
+    int typeTagsCount = static_cast<int>(end_ - typeTagsCurrent_);
 
     if( typeTagsCount ){
 
@@ -369,7 +369,7 @@ OutboundPacketStream& OutboundPacketStream::operator<<( const MessageTerminator&
         // slot size includes comma and null terminator
         int typeTagSlotSize = RoundUp4( typeTagsCount + 2 );
 
-		uint32 argumentsSize = static_cast<uint32>(argumentCurrent_ - messageCursor_);
+        uint32 argumentsSize = static_cast<uint32>(argumentCurrent_ - messageCursor_);
 
         memmove( messageCursor_ + typeTagSlotSize, messageCursor_, argumentsSize );
 
@@ -571,11 +571,11 @@ OutboundPacketStream& OutboundPacketStream::operator<<( double rhs )
 
 OutboundPacketStream& OutboundPacketStream::operator<<( const char *rhs )
 {
-	CheckForAvailableArgumentSpace(static_cast<long>(RoundUp4(strlen(rhs) + 1)));
+    CheckForAvailableArgumentSpace(static_cast<long>(RoundUp4(strlen(rhs) + 1)));
 
     *(--typeTagsCurrent_) = STRING_TYPE_TAG;
     strcpy( argumentCurrent_, rhs );
-	unsigned long rhsLength = static_cast<unsigned long>(strlen(rhs));
+    unsigned long rhsLength = static_cast<unsigned long>(strlen(rhs));
     argumentCurrent_ += rhsLength + 1;
 
     // zero pad to 4-byte boundary
@@ -591,11 +591,11 @@ OutboundPacketStream& OutboundPacketStream::operator<<( const char *rhs )
 
 OutboundPacketStream& OutboundPacketStream::operator<<( const Symbol& rhs )
 {
-	CheckForAvailableArgumentSpace(static_cast<long>(RoundUp4(strlen(rhs) + 1)));
+    CheckForAvailableArgumentSpace(static_cast<long>(RoundUp4(strlen(rhs) + 1)));
 
     *(--typeTagsCurrent_) = SYMBOL_TYPE_TAG;
     strcpy( argumentCurrent_, rhs );
-	unsigned long rhsLength = static_cast<unsigned long>(strlen(rhs));
+    unsigned long rhsLength = static_cast<unsigned long>(strlen(rhs));
     argumentCurrent_ += rhsLength + 1;
 
     // zero pad to 4-byte boundary

@@ -952,14 +952,15 @@ protected:
         if (_parent.valid())
         {
             // LODs adds an empty child group so it is safe to remove this object record.
-            if (typeid(*_parent)==typeid(flt::LevelOfDetail))
+            PrimaryRecord* parent = _parent.get();
+            if (typeid(parent)==typeid(flt::LevelOfDetail))
                 return true;
 
-            if (typeid(*_parent)==typeid(flt::OldLevelOfDetail))
+            if (typeid(parent)==typeid(flt::OldLevelOfDetail))
                 return true;
 
             // If parent is a Group record we have to check for animation.
-            Group* parentGroup = dynamic_cast<flt::Group*>(_parent.get());
+            Group* parentGroup = dynamic_cast<flt::Group*>(parent);
             if (parentGroup && !parentGroup->hasAnimation())
                 return true;
         }

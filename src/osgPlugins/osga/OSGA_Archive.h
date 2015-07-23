@@ -94,8 +94,8 @@ class OSGA_Archive : public osgDB::Archive
         typedef __int64 pos_type;
         typedef __int64 size_type;
         #else
-        typedef unsigned long long pos_type;
-        typedef unsigned long long size_type;
+        typedef long long pos_type;
+        typedef long long size_type;
         #endif
 
         typedef std::pair<pos_type, size_type> PositionSizePair;

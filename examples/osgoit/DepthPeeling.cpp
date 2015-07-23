@@ -139,10 +139,8 @@ protected:
 };
 
 
-DepthPeeling::CullCallback::CullCallback(unsigned int texUnit, unsigned int texWidth, unsigned int texHeight, unsigned int offsetValue) :
+DepthPeeling::CullCallback::CullCallback(unsigned int texUnit, unsigned int offsetValue) :
     _texUnit(texUnit),
-    _texWidth(texWidth),
-    _texHeight(texHeight),
     _offsetValue(offsetValue)
 {
 }
@@ -317,7 +315,7 @@ void DepthPeeling::createPeeling()
     // create some uniform and cull callback objects
     osg::Uniform *depthOff = new osg::Uniform("depthtest", (bool)false);
     osg::Uniform *depthOn  = new osg::Uniform("depthtest", (bool)true);
-    CullCallback *ccb      = new CullCallback(_texUnit, _texWidth, _texHeight, _offsetValue);
+    CullCallback *ccb      = new CullCallback(_texUnit, _offsetValue);
 
     // create a node for solid model rendering
     osg::Group *pre_solidNode = new osg::Group;
@@ -412,7 +410,7 @@ void DepthPeeling::createPeeling()
     _compositeCamera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
     _compositeCamera->setViewMatrix(osg::Matrix());
     _compositeCamera->setProjectionMatrix(osg::Matrix::ortho2D(0, 1, 0, 1));
-    _compositeCamera->setCullCallback(new CullCallback(0, _texWidth, _texHeight, 0));
+    _compositeCamera->setCullCallback(new CullCallback(0, 0));
     osg::StateSet* stateSet = _compositeCamera->getOrCreateStateSet();
     stateSet->setRenderBinDetails(100, "TraversalOrderBin", osg::StateSet::OVERRIDE_RENDERBIN_DETAILS);
     _root->addChild(_compositeCamera.get());

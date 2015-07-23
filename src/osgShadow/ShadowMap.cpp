@@ -60,16 +60,6 @@ static const char fragmentShaderSource_withBaseTexture[] =
 //////////////////////////////////////////////////////////////////
 // fragment shader
 //
-static const char fragmentShaderSource_debugHUD_texcoord[] =
-    "uniform sampler2D osgShadow_shadowTexture; \n"
-    " \n"
-    "void main(void) \n"
-    "{ \n"
-    "   vec4 texCoord = gl_TexCoord[1].xyzw; \n"
-    "   float value = texCoord.z / texCoord.w; \n"
-    "   gl_FragColor = vec4( value, value, value, 1.0 ); \n"
-    "} \n";
-
 static const char fragmentShaderSource_debugHUD[] =
     "uniform sampler2D osgShadow_shadowTexture; \n"
     " \n"

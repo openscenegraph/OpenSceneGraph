@@ -261,7 +261,6 @@ osg::Node* createModel()
 {
     osg::Vec3 center(0.0f,0.0f,0.0f);
     float radius = 100.0f;
-    osg::Vec3 lightPosition(center+osg::Vec3(0.0f,0.0f,radius));
 
     // the shadower model
     osg::Node* shadower = createMovingModel(center,radius*0.5f);

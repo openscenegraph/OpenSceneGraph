@@ -993,7 +993,7 @@ bool DelaunayTriangulator::triangulate()
                                         {
                                             e1=titr->c(); e2=titr->a();
                                         }
-                                        else if (icut==3)
+                                        else
                                         {
                                             e1=titr->a(); e2=titr->b();
                                         }

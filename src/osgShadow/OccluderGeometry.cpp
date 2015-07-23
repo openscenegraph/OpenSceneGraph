@@ -787,8 +787,6 @@ void OccluderGeometry::computeShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
         UIntList silhouetteIndices;
         computeLightDirectionSilhouetteEdges(lightdirection, silhouetteIndices);
 
-        osg::Vec3 offset( lightdirection*5.0f );
-
         float directionScale = 1.0f / basePlane.dotProductNormal(lightdirection);
 
         for(UIntList::iterator itr = silhouetteIndices.begin();

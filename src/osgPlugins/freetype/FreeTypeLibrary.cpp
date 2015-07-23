@@ -114,7 +114,7 @@ FT_Byte* FreeTypeLibrary::getFace(std::istream& fontstream, unsigned int index, 
     std::streampos length = end - start;
 
     /* empty stream into memory, open that, and keep the pointer in a FreeTypeFont for cleanup */
-    FT_Byte *buffer = new FT_Byte[length];
+    FT_Byte *buffer = new FT_Byte[static_cast<int>(length)];
     fontstream.read(reinterpret_cast<char*>(buffer), length);
     if (!fontstream || (static_cast<std::streampos>(fontstream.gcount()) != length))
     {

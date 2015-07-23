@@ -179,15 +179,23 @@ namespace
         {
             // implement pass #1 (solid surfaces)
             {
-                const char * vert_source =
-                "const vec3 LightPosition = vec3( 0.0, 2.0, 4.0 );"
-                "varying float CartoonTexCoord;"
-                "void main( void )"
-                "{"
-                    "vec3 eye_space_normal = normalize(gl_NormalMatrix * gl_Normal);"
-                    "CartoonTexCoord = max(0.0, dot(normalize(LightPosition), eye_space_normal));"
-                    "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
-                "}";
+                std::ostringstream vert_source;
+                vert_source <<
+                "varying float CartoonTexCoord;\n"
+                "void main( void )\n"
+                "{\n"
+                    "    vec4 LightPosition = gl_LightSource["<<_lightnum<<"].position;\n"
+                    "    vec3 LightDirection;\n"
+                    "    if (LightPosition[3]!=0.0) { \n"
+                    "        vec4 eye_space_position = gl_ModelViewMatrix * gl_Vertex;\n"
+                    "        LightDirection = (LightPosition.xyz-eye_space_position.xyz);\n"
+                    "    } else {\n"
+                    "        LightDirection = LightPosition.xyz;\n"
+                    "    }\n"
+                    "    vec3 eye_space_normal = normalize(gl_NormalMatrix * gl_Normal);\n"
+                    "    CartoonTexCoord = max(0.0, dot(normalize(LightDirection), eye_space_normal));\n"
+                    "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+                "}\n";
 
                 const char * frag_source =
                 "uniform sampler1D CartoonTexUnit;"
@@ -205,7 +213,7 @@ namespace
                 ss->setAttributeAndModes(polyoffset.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
                 osg::ref_ptr<osg::Program> program = new osg::Program;
-                program->addShader( new osg::Shader( osg::Shader::VERTEX, vert_source ) );
+                program->addShader( new osg::Shader( osg::Shader::VERTEX, vert_source.str() ) );
                 program->addShader( new osg::Shader( osg::Shader::FRAGMENT, frag_source ) );
 
                 ss->addUniform( new osg::Uniform("CartoonTexUnit", 0));

@@ -63,13 +63,11 @@ protected:
 
     class CullCallback : public osg::NodeCallback {
     public:
-        CullCallback(unsigned int texUnit, unsigned int texWidth, unsigned int texHeight, unsigned int offsetValue);
+        CullCallback(unsigned int texUnit, unsigned int offsetValue);
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
 
     private:
         unsigned int _texUnit;
-        unsigned int _texWidth;
-        unsigned int _texHeight;
         unsigned int _offsetValue;
     };
 

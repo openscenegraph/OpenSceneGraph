@@ -14,7 +14,6 @@
 #include <osgWidget/ViewerEventHandlers>
 
 const unsigned int MASK_2D = 0xF0000000;
-const unsigned int MASK_3D = 0x0F000000;
 
 class Notebook: public osgWidget::Box {
     osg::ref_ptr<osgWidget::Box>    _tabs;

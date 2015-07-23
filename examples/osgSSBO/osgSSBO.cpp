@@ -119,7 +119,6 @@ enum BufferOffset
 
 const int __numDataValuesPerChannel = OFFSET_END;
 const int __numChannels = 4;
-const float __particleRenderScaleMultiplier = 0.3;
 
 //512x512x4x7 = 7.340.032 floats in SSBO on GPU
 const int NUM_ELEMENTS_X = 512;

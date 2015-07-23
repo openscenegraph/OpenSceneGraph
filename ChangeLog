@@ -1,3 +1,83 @@
+2015-07-23 15:46  robert
+
+	* examples/osganalysis/osganalysis.cpp,
+	  examples/osgcatch/osgcatch.cpp,
+	  examples/osggraphicscost/osggraphicscost.cpp,
+	  examples/osgmotionblur/osgmotionblur.cpp,
+	  examples/osgshaderterrain/osgshaderterrain.cpp,
+	  examples/osgtext/osgtext.cpp,
+	  examples/osgthreadedterrain/osgthreadedterrain.cpp,
+	  examples/osgvolume/osgvolume.cpp, include/osg/GraphicsThread,
+	  include/osg/OperationThread, src/osg/GraphicsThread.cpp,
+	  src/osg/OperationThread.cpp, src/osgUtil/GLObjectsVisitor.cpp,
+	  src/osgUtil/IncrementalCompileOperation.cpp,
+	  src/osgUtil/RenderStage.cpp, src/osgViewer/Renderer.cpp: Added
+	  explicit initialization of osg::Referenced(true) to
+	  osg::Operation subclasses as it uses virtual inhertiance from
+	  osg::Referenced.
+
+2015-07-23 14:37  robert
+
+	* include/osg/Types, include/osgViewer/ViewerBase: From Pjotr
+	  Svetachov, buid fixes for VS2015.
+
+2015-07-23 14:30  robert
+
+	* src/osgPlugins/osc/osc/OscOutboundPacketStream.cpp: Fixed
+	  indentation
+
+2015-07-23 14:03  robert
+
+	* src/osgPlugins/osc/osc/OscOutboundPacketStream.cpp:
+
+2015-07-23 11:14  robert
+
+	* examples/osgSSBO/osgSSBO.cpp, examples/osgcluster/osgcluster.cpp,
+	  examples/osggpucull/AggregateGeometryVisitor.h,
+	  examples/osgoit/DepthPeeling.cpp, examples/osgoit/DepthPeeling.h,
+	  examples/osgparticleeffects/osgparticleeffects.cpp,
+	  examples/osgshadow/osgshadow.cpp,
+	  examples/osgspotlight/osgspotlight.cpp,
+	  examples/osgwidgetnotebook/osgwidgetnotebook.cpp,
+	  src/osg/glu/libutil/mipmap.cpp, src/osgDB/ConvertBase64.cpp,
+	  src/osgPlugins/3ds/WriterNodeVisitor.cpp,
+	  src/osgPlugins/OpenFlight/FltExportVisitor.cpp,
+	  src/osgPlugins/OpenFlight/LightSourcePaletteManager.cpp,
+	  src/osgPlugins/OpenFlight/LightSourcePaletteManager.h,
+	  src/osgPlugins/OpenFlight/PrimaryRecords.cpp,
+	  src/osgPlugins/OpenFlight/expPrimaryRecords.cpp,
+	  src/osgPlugins/freetype/FreeTypeLibrary.cpp,
+	  src/osgPlugins/osc/OscReceivingDevice.cpp,
+	  src/osgPlugins/osc/osc/OscHostEndianness.h,
+	  src/osgPlugins/osga/OSGA_Archive.h,
+	  src/osgShadow/ConvexPolyhedron.cpp,
+	  src/osgShadow/DebugShadowMap.cpp,
+	  src/osgShadow/OccluderGeometry.cpp, src/osgShadow/ShadowMap.cpp,
+	  src/osgSim/SphereSegment.cpp,
+	  src/osgUtil/DelaunayTriangulator.cpp, src/osgUtil/Optimizer.cpp,
+	  src/osgUtil/SceneView.cpp, src/osgViewer/View.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/NodeCallback.cpp: Warning
+	  fixes for Clang-3.6
+
+2015-07-23 09:23  robert
+
+	* src/osgFX/BumpMapping.cpp, src/osgFX/Cartoon.cpp: Added missing
+	  handling of lightnumber and associate lights
+
+2015-07-23 07:39  robert
+
+	* src/osg/GL.in: Changed the GL_HEADER_HAS_GLINT64 and
+	  GL_HEADER_HAS_GLUINT64 to use cmakedefine to improve handling of
+	  when cmake doesn't find GLint64 and GLuint64.
+
+2015-07-22 14:55  robert
+
+	* applications/osgversion/Contributors.cpp: Fixed Contributors list
+
+2015-07-22 14:51  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2015-07-22 14:41  robert
 
 	* CMakeLists.txt: Update rc to 6.

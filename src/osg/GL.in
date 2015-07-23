@@ -29,6 +29,8 @@
 #cmakedefine OSG_GL_VERTEX_FUNCS_AVAILABLE
 #cmakedefine OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
 #cmakedefine OSG_GL_FIXED_FUNCTION_AVAILABLE
+#cmakedefine GL_HEADER_HAS_GLINT64
+#cmakedefine GL_HEADER_HAS_GLUINT64
 
 #define OSG_GL1_FEATURES @OSG_GL1_FEATURES@
 #define OSG_GL2_FEATURES @OSG_GL2_FEATURES@
@@ -36,8 +38,7 @@
 #define OSG_GLES1_FEATURES @OSG_GLES1_FEATURES@
 #define OSG_GLES2_FEATURES @OSG_GLES2_FEATURES@
 #define OSG_GLES3_FEATURES @OSG_GLES3_FEATURES@
-#define GL_HEADER_HAS_GLINT64 @GL_HEADER_HAS_GLINT64@
-#define GL_HEADER_HAS_GLUINT64 @GL_HEADER_HAS_GLUINT64@
+
 
 #ifndef WIN32
 
@@ -117,7 +118,7 @@
 #endif // GL_APIENTRY
 
 
-#if !GL_HEADER_HAS_GLINT64
+#ifndef GL_HEADER_HAS_GLINT64
     #ifdef _WIN32
         typedef __int64 GLint64;
     #else
@@ -125,7 +126,7 @@
     #endif
 #endif
 
-#if !GL_HEADER_HAS_GLUINT64
+#ifndef GL_HEADER_HAS_GLUINT64
     #ifdef _WIN32
         typedef unsigned __int64 GLuint64;
     #else

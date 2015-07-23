@@ -98,6 +98,7 @@ void ReleaseContext_Block_MakeCurrentOperation::operator () (GraphicsContext* co
 
 
 BlockAndFlushOperation::BlockAndFlushOperation():
+    osg::Referenced(true),
     GraphicsOperation("Block",false)
 {
     reset();
@@ -115,6 +116,7 @@ void BlockAndFlushOperation::operator () (GraphicsContext*)
 }
 
 FlushDeletedGLObjectsOperation::FlushDeletedGLObjectsOperation(double availableTime, bool keep):
+    osg::Referenced(true),
     GraphicsOperation("FlushDeletedGLObjectsOperation",keep),
     _availableTime(availableTime)
 {

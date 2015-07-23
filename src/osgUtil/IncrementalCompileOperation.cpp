@@ -445,6 +445,7 @@ bool IncrementalCompileOperation::CompileSet::compile(CompileInfo& compileInfo)
 // IncrementalCompileOperation
 //
 IncrementalCompileOperation::IncrementalCompileOperation():
+    osg::Referenced(true),
     osg::GraphicsOperation("IncrementalCompileOperation",true),
     _flushTimeRatio(0.5),
     _conservativeTimeRatio(0.5),

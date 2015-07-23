@@ -49,6 +49,7 @@ struct OSG_EXPORT GraphicsOperation : public Operation
 struct OSG_EXPORT SwapBuffersOperation : public GraphicsOperation
 {
     SwapBuffersOperation():
+        osg::Referenced(true),
         GraphicsOperation("SwapBuffers",true) {}
 
     virtual void operator () (GraphicsContext* context);
@@ -65,6 +66,7 @@ struct OSG_EXPORT BarrierOperation : public Operation, public OpenThreads::Barri
     };
 
     BarrierOperation(int numThreads, PreBlockOp op=NO_OPERATION, bool keep=true):
+        osg::Referenced(true),
         Operation("Barrier", keep),
         OpenThreads::Barrier(numThreads),
         _preBlockOp(op) {}
@@ -81,6 +83,7 @@ struct OSG_EXPORT BarrierOperation : public Operation, public OpenThreads::Barri
 struct OSG_EXPORT ReleaseContext_Block_MakeCurrentOperation : public GraphicsOperation, public RefBlock
 {
     ReleaseContext_Block_MakeCurrentOperation():
+        osg::Referenced(true),
         GraphicsOperation("ReleaseContext_Block_MakeCurrent", false) {}
 
     virtual void release();

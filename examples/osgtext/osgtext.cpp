@@ -559,6 +559,7 @@ class UpdateTextOperation : public osg::Operation
 public:
 
     UpdateTextOperation(const osg::Vec3& center, float diameter, osg::Group* group):
+        osg::Referenced(true),
         Operation("UpdateTextOperation", true),
         _center(center),
         _diameter(diameter),

@@ -352,6 +352,7 @@ static OpenThreads::ReentrantMutex s_drawSerializerMutex;
 //
 //  Renderer
 Renderer::Renderer(osg::Camera* camera):
+    osg::Referenced(true),
     osg::GraphicsOperation("Renderer",true),
     _camera(camera),
     _done(false),

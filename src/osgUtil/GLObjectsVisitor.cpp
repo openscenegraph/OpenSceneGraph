@@ -181,12 +181,14 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
 //
 
 GLObjectsOperation::GLObjectsOperation(GLObjectsVisitor::Mode mode):
+    osg::Referenced(true),
     osg::GraphicsOperation("GLObjectOperation",false),
     _mode(mode)
 {
 }
 
 GLObjectsOperation::GLObjectsOperation(osg::Node* subgraph, GLObjectsVisitor::Mode mode):
+    osg::Referenced(true),
     osg::GraphicsOperation("GLObjectOperation",false),
     _subgraph(subgraph),
     _mode(mode)

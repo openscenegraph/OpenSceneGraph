@@ -83,6 +83,7 @@ class LoadAndCompileOperation : public osg::Operation
 public:
 
     LoadAndCompileOperation(const std::string& filename, osgUtil::IncrementalCompileOperation* ico , osg::RefBlockCount* block):
+        osg::Referenced(true),
         Operation("Load and compile Operation", false),
         _filename(filename),
         _incrementalCompileOperation(ico),
@@ -128,6 +129,7 @@ public:
 
 
     MasterOperation(const std::string& filename, osgUtil::IncrementalCompileOperation* ico):
+        osg::Referenced(true),
         Operation("Master reading operation",true),
         _filename(filename),
         _incrementalCompileOperation(ico)

@@ -540,6 +540,7 @@ public:
                             const std::string& outputFilename,
                              SceneGraphProcessor* sceneGraphProcessor, 
                              osgUtil::IncrementalCompileOperation* ico):
+        osg::Referenced(true),
         Operation("DatabasePaging Operation", false),
         _filename(filename),
         _outputFilename(outputFilename),

@@ -26,6 +26,7 @@ class MotionBlurOperation: public osg::Operation
 {
 public:
     MotionBlurOperation(double persistence):
+        osg::Referenced(true),
         osg::Operation("MotionBlur",true),
         cleared_(false),
         persistence_(persistence)

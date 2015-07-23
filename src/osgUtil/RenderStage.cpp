@@ -1122,6 +1122,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
 struct DrawInnerOperation : public osg::Operation
 {
     DrawInnerOperation(RenderStage* stage, osg::RenderInfo& renderInfo) :
+        osg::Referenced(true),
         osg::Operation("DrawInnerStage",false),
         _stage(stage),
         _renderInfo(renderInfo) {}

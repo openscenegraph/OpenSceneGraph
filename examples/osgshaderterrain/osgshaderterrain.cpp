@@ -261,6 +261,7 @@ class TestSupportOperation: public osg::GraphicsOperation
 public:
 
     TestSupportOperation():
+        osg::Referenced(true),
         osg::GraphicsOperation("TestSupportOperation",false),
         _supported(true),
         _errorMessage() {}

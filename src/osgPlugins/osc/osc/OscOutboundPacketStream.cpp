@@ -129,8 +129,8 @@ static void FromUInt64( char *p, uint64 x )
 #endif
 }
 
-
-static inline long RoundUp4( long x )
+template<typename T>
+T RoundUp4( T x )
 {
     return ((x-1) & (~0x03L)) + 4;
 }
@@ -188,13 +188,11 @@ void OutboundPacketStream::EndElement( char *endPtr )
         // while building an element, an offset to the containing element's
         // size slot is stored in the elements size slot (or a ptr to data_
         // if there is no containing element). We retrieve that here
-        uint32 *previousElementSizePtr =
-                (uint32*)(data_ + *reinterpret_cast<uint32*>(elementSizePtr_));
+        uint32 *previousElementSizePtr = (uint32*)(data_ + *reinterpret_cast<uint32*>(elementSizePtr_));
 
         // then we store the element size in the slot, note that the element
         // size does not include the size slot, hence the - 4 below.
-        uint32 elementSize =
-                (endPtr - reinterpret_cast<char*>(elementSizePtr_)) - 4;
+        uint32 elementSize = static_cast<uint32> (endPtr - reinterpret_cast<char*>(elementSizePtr_)) - 4;
         FromUInt32( reinterpret_cast<char*>(elementSizePtr_), elementSize );
 
         // finally, we reset the element size ptr to the containing element
@@ -221,8 +219,7 @@ void OutboundPacketStream::CheckForAvailableBundleSpace()
 void OutboundPacketStream::CheckForAvailableMessageSpace( const char *addressPattern )
 {
     // plus 4 for at least four bytes of type tag
-     unsigned long required = Size() + ((ElementSizeSlotRequired())?4:0)
-            + RoundUp4(strlen(addressPattern) + 1) + 4;
+    unsigned long required = Size() + ((ElementSizeSlotRequired()) ? 4 : 0) + RoundUp4(static_cast<unsigned long>(strlen(addressPattern)) + 1) + 4;
 
     if( required > Capacity() )
         throw OutOfBufferMemoryException();
@@ -232,8 +229,7 @@ void OutboundPacketStream::CheckForAvailableMessageSpace( const char *addressPat
 void OutboundPacketStream::CheckForAvailableArgumentSpace( long argumentLength )
 {
     // plus three for extra type tag, comma and null terminator
-     unsigned long required = (argumentCurrent_ - data_) + argumentLength
-            + RoundUp4( (end_ - typeTagsCurrent_) + 3 );
+     unsigned long required = static_cast<unsigned long>((argumentCurrent_ - data_) + argumentLength + RoundUp4( (end_ - typeTagsCurrent_) + 3 ));
 
     if( required > Capacity() )
         throw OutOfBufferMemoryException();
@@ -252,17 +248,17 @@ void OutboundPacketStream::Clear()
 
 unsigned int OutboundPacketStream::Capacity() const
 {
-    return end_ - data_;
+    return static_cast<unsigned int>(end_ - data_);
 }
 
 
 unsigned int OutboundPacketStream::Size() const
 {
-    unsigned int result = argumentCurrent_ - data_;
+    unsigned int result = static_cast<unsigned int>(argumentCurrent_ - data_);
     if( IsMessageInProgress() ){
         // account for the length of the type tag string. the total type tag
         // includes an initial comma, plus at least one terminating \0
-        result += RoundUp4( (end_ - typeTagsCurrent_) + 2 );
+        result += static_cast<unsigned int>(RoundUp4((end_ - typeTagsCurrent_) + 2));
     }
 
     return result;
@@ -337,7 +333,7 @@ OutboundPacketStream& OutboundPacketStream::operator<<( const BeginMessage& rhs 
     messageCursor_ = BeginElement( messageCursor_ );
 
     strcpy( messageCursor_, rhs.addressPattern );
-    unsigned long rhsLength = strlen(rhs.addressPattern);
+    unsigned long rhsLength = static_cast<unsigned long>(strlen(rhs.addressPattern));
     messageCursor_ += rhsLength + 1;
 
     // zero pad to 4-byte boundary
@@ -363,7 +359,7 @@ OutboundPacketStream& OutboundPacketStream::operator<<( const MessageTerminator&
     if( !IsMessageInProgress() )
         throw MessageNotInProgressException();
 
-    int typeTagsCount = end_ - typeTagsCurrent_;
+    int typeTagsCount = static_cast<int>(end_ - typeTagsCurrent_);
 
     if( typeTagsCount ){
 
@@ -373,7 +369,7 @@ OutboundPacketStream& OutboundPacketStream::operator<<( const MessageTerminator&
         // slot size includes comma and null terminator
         int typeTagSlotSize = RoundUp4( typeTagsCount + 2 );
 
-        uint32 argumentsSize = argumentCurrent_ - messageCursor_;
+        uint32 argumentsSize = static_cast<uint32>(argumentCurrent_ - messageCursor_);
 
         memmove( messageCursor_ + typeTagSlotSize, messageCursor_, argumentsSize );
 
@@ -575,11 +571,11 @@ OutboundPacketStream& OutboundPacketStream::operator<<( double rhs )
 
 OutboundPacketStream& OutboundPacketStream::operator<<( const char *rhs )
 {
-    CheckForAvailableArgumentSpace( RoundUp4(strlen(rhs) + 1) );
+    CheckForAvailableArgumentSpace(static_cast<long>(RoundUp4(strlen(rhs) + 1)));
 
     *(--typeTagsCurrent_) = STRING_TYPE_TAG;
     strcpy( argumentCurrent_, rhs );
-    unsigned long rhsLength = strlen(rhs);
+    unsigned long rhsLength = static_cast<unsigned long>(strlen(rhs));
     argumentCurrent_ += rhsLength + 1;
 
     // zero pad to 4-byte boundary
@@ -595,11 +591,11 @@ OutboundPacketStream& OutboundPacketStream::operator<<( const char *rhs )
 
 OutboundPacketStream& OutboundPacketStream::operator<<( const Symbol& rhs )
 {
-    CheckForAvailableArgumentSpace( RoundUp4(strlen(rhs) + 1) );
+    CheckForAvailableArgumentSpace(static_cast<long>(RoundUp4(strlen(rhs) + 1)));
 
     *(--typeTagsCurrent_) = SYMBOL_TYPE_TAG;
     strcpy( argumentCurrent_, rhs );
-    unsigned long rhsLength = strlen(rhs);
+    unsigned long rhsLength = static_cast<unsigned long>(strlen(rhs));
     argumentCurrent_ += rhsLength + 1;
 
     // zero pad to 4-byte boundary

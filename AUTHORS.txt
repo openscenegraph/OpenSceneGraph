@@ -52,19 +52,19 @@ Luc Frauciel
 Aurelien Albert
 Pavel Moloshtan
 Brad Christiansen
+Terry Welsh
 Olaf Flebbe
 Mathieu Marache
 Lionel Lagarde
 Jason Daly
 Art Tevs
-Terry Welsh
 Philip Lowman
 Per Fahlberg
 Norman Vine
+Jannik Heller
 Chris Denham
 Serge Lages
 Romano José Magacho da Silva
-Jannik Heller
 Alberto Farre
 Torben Dannhauer
 Sherman Wilcox
@@ -77,12 +77,12 @@ Randall Hopper
 Jan Ciger
 Glenn Waldron
 Sebastian Messerschmidt
+Kristofer Tingdahl
 Gideon May
 Don Tidrow
 Stephane Lamoliatte
 Michael Gronager
 Martin Naylor
-Kristofer Tingdahl
 Joakim Simonsson
 David Spilling
 Daniel Sjölie

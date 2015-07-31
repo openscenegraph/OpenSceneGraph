@@ -721,8 +721,8 @@ bool InteractiveImageHandler::mousePosition(osgViewer::View* view, osg::NodeVisi
     if (!view) return false;
     if (_fullscreen)
     {
-        x = ea.getX();
-        y = ea.getY();
+        x = (int) ea.getX();
+        y = (int) ea.getY();
         return true;
     }
 

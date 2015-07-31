@@ -1,3 +1,85 @@
+2015-07-31 15:01  robert
+
+	* CMakeLists.txt: Updated rc number to 8 for 3.4.9-rc8
+
+2015-07-31 13:47  robert
+
+	* CMakeModules/OsgAndroidMacroUtils.cmake: From Terry Welsh, "I
+	  downloaded the Android 3rdparty deps from here
+	  http://www.openscenegraph.org/index.php/download-section/dependencies
+	  but was not able to use them for a while. Attached are changes to
+	  OsgAndroidMacroUtils.cmake that allow the deps to be found by
+	  cmake.
+	  
+	  Specifically, all FIND_PATH commands require the
+	  NO_CMAKE_FIND_ROOT_PATH option to actually find paths. This is
+	  odd
+	  because if you inspect CMAKE_FIND_ROOT_PATH it appears to be
+	  empty. I
+	  would expect it to have no effect at all.
+	  
+	  I also needed to remove quotes from this line in order for
+	  headers to be found:
+	  
+	  set(FREETYPE_INCLUDE_DIRS "${FREETYPE_DIR}/include
+	  ${FREETYPE_DIR}/include/freetype/config")
+	  
+	  Assuming this script worked in the past, it seems like cmake
+	  behavior
+	  may have changed at some point. I'm using cmake version
+	  2.8.12.2."
+
+2015-07-31 13:44  robert
+
+	* src/osg/GLExtensions.cpp: From Jannik Heller, "Here is a patch
+	  for the S3TC capability check.
+	  
+	  On a Intel HD graphics Linux system with Mesa 10.1.3, I found
+	  that osg's Extensions::isTextureCompressionS3TCSupported()
+	  returned false, even though S3TC compressed textures *are* in
+	  fact working. I tested this by loading and rendering various
+	  DXT1, DXT3 and DXT5 compressed textures in the OSG.
+	  
+	  "glxinfo | grep s3tc" gives:
+	  GL_S3_s3tc
+	  
+	  Note, if I install the package "libtxc-dxtn-s2tc0", I get in
+	  addition:
+	  
+	  glxinfo | grep s3tc
+	  GL_EXT_texture_compression_s3tc
+	  GL_S3_s3tc
+	  
+	  However, S3TC compressed textures worked correctly within the OSG
+	  even without libtxc-dxtn-s2tc0 installed.
+	  
+	  I'm not sure what the differences between these extensions are,
+	  but based on the description at
+	  https://www.opengl.org/registry/specs/S3/s3tc.txt I would assume
+	  that both will work for OSG's purposes. The attached patch
+	  changes isTextureCompressionS3TCSupported() to accept either
+	  extension."
+
+2015-07-31 10:59  robert
+
+	* include/osgText/Text: Warning fix
+
+2015-07-31 10:54  robert
+
+	* src/osg/Image.cpp, src/osgPlugins/3ds/ReaderWriter3DS.cpp,
+	  src/osgPlugins/lua/LuaScriptEngine.cpp,
+	  src/osgViewer/ViewerEventHandlers.cpp: From Kristofer Tingdahl,
+	  warning fixes.
+
+2015-07-31 10:27  robert
+
+	* src/osg/GL.in: Compile fix for Mingw.
+
+2015-07-23 21:32  robert
+
+	* AUTHORS.txt, CMakeLists.txt, ChangeLog: Update version and rc
+	  number of 3.4.0-rc7.
+
 2015-07-23 15:46  robert
 
 	* examples/osganalysis/osganalysis.cpp,

@@ -140,7 +140,7 @@ static int getContainerProperty(lua_State * _lua)
             osgDB::VectorBaseSerializer* vs = dynamic_cast<osgDB::VectorBaseSerializer*>(bs);
             if (vs)
             {
-                const void* dataPtr = vs->getElement(*object, index);
+                const void* dataPtr = vs->getElement(*object, (unsigned int) index);
                 if (dataPtr)
                 {
                     SerializerScratchPad valuesp(vs->getElementType(), dataPtr, vs->getElementSize());
@@ -191,7 +191,7 @@ static int setContainerProperty(lua_State* _lua)
                 SerializerScratchPad ssp;
                 lse->getDataFromStack(&ssp, vs->getElementType(), 3);
                 {
-                    vs->setElement(*object, index, ssp.data);
+                    vs->setElement(*object, (unsigned int) index, ssp.data);
                 }
             }
             return 0;
@@ -3808,7 +3808,7 @@ void LuaScriptEngine::pushValue(const osg::Matrixf& value) const
     {
         for(unsigned int c=0; c<4; ++c)
         {
-            lua_pushnumber(_lua, r*4+c); lua_pushinteger(_lua, value(r,c)); lua_settable(_lua, -3);
+            lua_pushnumber(_lua, r*4+c); lua_pushinteger(_lua, (lua_Integer) value(r,c)); lua_settable(_lua, -3);
         }
     }
 }

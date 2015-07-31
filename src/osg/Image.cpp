@@ -1950,13 +1950,13 @@ void _writeColor(GLenum pixelFormat, T* data, float scale, const Vec4& c)
     switch(pixelFormat)
     {
     case(GL_DEPTH_COMPONENT):   //intentionally fall through and execute the code for GL_LUMINANCE
-    case(GL_LUMINANCE):         { (*data++) = c[0] * scale; } break;
-    case(GL_ALPHA):             { (*data++) = c[3] * scale; } break;
-    case(GL_LUMINANCE_ALPHA):   { (*data++) = c[0] * scale;  (*data++) = c[3] * scale; } break;
-    case(GL_RGB):               { (*data++) = c[0] *scale; (*data++) = c[1] *scale; (*data++) = c[2] *scale;} break;
-    case(GL_RGBA):              { (*data++) = c[0] *scale; (*data++) = c[1] *scale; (*data++) = c[2] *scale; (*data++) = c[3] *scale;} break;
-    case(GL_BGR):               { (*data++) = c[2] *scale; (*data++) = c[1] *scale; (*data++) = c[0] *scale;} break;
-    case(GL_BGRA):              { (*data++) = c[2] *scale; (*data++) = c[1] *scale; (*data++) = c[0] *scale; (*data++) = c[3] *scale;} break;
+    case(GL_LUMINANCE):         { (*data++) = (T)(c[0] * scale); } break;
+    case(GL_ALPHA):             { (*data++) = (T)(c[3] * scale); } break;
+    case(GL_LUMINANCE_ALPHA):   { (*data++) = (T)(c[0] * scale);  (*data++) = (T)(c[3] * scale); } break;
+    case(GL_RGB):               { (*data++) = (T)(c[0] *scale); (*data++) = (T)(c[1] *scale); (*data++) = (T)(c[2] *scale);} break;
+    case(GL_RGBA):              { (*data++) = (T)(c[0] *scale); (*data++) = (T)(c[1] *scale); (*data++) = (T)(c[2] *scale); (*data++) = (T)(c[3] *scale);} break;
+    case(GL_BGR):               { (*data++) = (T)(c[2] *scale); (*data++) = (T)(c[1] *scale); (*data++) = (T)(c[0] *scale);} break;
+    case(GL_BGRA):              { (*data++) = (T)(c[2] *scale); (*data++) = (T)(c[1] *scale); (*data++) = (T)(c[0] *scale); (*data++) = (T)(c[3] *scale);} break;
     }
 
 }

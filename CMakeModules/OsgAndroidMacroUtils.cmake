@@ -67,7 +67,7 @@ MACRO(ANDROID_3RD_PARTY)
     #JPEG
     ################################################
     FIND_PATH(JPEG_INCLUDE_DIR Android.mk
-        ${CMAKE_SOURCE_DIR}/3rdparty/libjpeg
+        ${CMAKE_SOURCE_DIR}/3rdparty/libjpeg NO_CMAKE_FIND_ROOT_PATH
     )
     #set(ENV{AND_OSG_LIB_NAMES} "$ENV{AND_OSG_LIB_NAMES} libjpeg")
     #set(ENV{AND_OSG_LIB_PATHS} "$ENV{AND_OSG_LIB_PATHS}include ${JPEG_INCLUDE_DIR}/Android.mk \n")
@@ -82,7 +82,7 @@ MACRO(ANDROID_3RD_PARTY)
     #PNG
     ################################################
     FIND_PATH(PNG_INCLUDE_DIR Android.mk
-        ${CMAKE_SOURCE_DIR}/3rdparty/libpng
+        ${CMAKE_SOURCE_DIR}/3rdparty/libpng NO_CMAKE_FIND_ROOT_PATH
     )
     #set(ENV{AND_OSG_LIB_NAMES} "$ENV{AND_OSG_LIB_NAMES} libpng")
     #set(ENV{AND_OSG_LIB_PATHS} "$ENV{AND_OSG_LIB_PATHS}include ${PNG_INCLUDE_DIR}/Android.mk \n")
@@ -97,7 +97,7 @@ MACRO(ANDROID_3RD_PARTY)
     #GIF
     ################################################
     FIND_PATH(GIFLIB_INCLUDE_DIR Android.mk
-        ${CMAKE_SOURCE_DIR}/3rdparty/giflib
+        ${CMAKE_SOURCE_DIR}/3rdparty/giflib NO_CMAKE_FIND_ROOT_PATH
     )
     #set(ENV{AND_OSG_LIB_NAMES} "$ENV{AND_OSG_LIB_NAMES} libgif")
     #set(ENV{AND_OSG_LIB_PATHS} "$ENV{AND_OSG_LIB_PATHS}include ${GIFLIB_INCLUDE_DIR}/Android.mk \n")
@@ -112,7 +112,7 @@ MACRO(ANDROID_3RD_PARTY)
     #TIF
     ################################################
     FIND_PATH(TIFF_INCLUDE_DIR Android.mk
-        ${CMAKE_SOURCE_DIR}/3rdparty/libtiff
+        ${CMAKE_SOURCE_DIR}/3rdparty/libtiff NO_CMAKE_FIND_ROOT_PATH
     )
     #set(ENV{AND_OSG_LIB_NAMES} "$ENV{AND_OSG_LIB_NAMES} libtiff")
     #set(ENV{AND_OSG_LIB_PATHS} "$ENV{AND_OSG_LIB_PATHS}include ${TIFF_INCLUDE_DIR}/Android.mk \n")
@@ -142,7 +142,7 @@ MACRO(ANDROID_3RD_PARTY)
     #CURL
     ################################################
     FIND_PATH(CURL_DIR Android.mk
-        ${CMAKE_SOURCE_DIR}/3rdparty/curl
+        ${CMAKE_SOURCE_DIR}/3rdparty/curl NO_CMAKE_FIND_ROOT_PATH
     )
     #set(ENV{AND_OSG_LIB_NAMES} "$ENV{AND_OSG_LIB_NAMES} libcurl")
     #set(ENV{AND_OSG_LIB_PATHS} "$ENV{AND_OSG_LIB_PATHS}include ${CURL_DIR}/Android.mk \n")
@@ -159,11 +159,11 @@ MACRO(ANDROID_3RD_PARTY)
     #FREETYPE
     ################################################
     FIND_PATH(FREETYPE_DIR Android.mk
-        ${CMAKE_SOURCE_DIR}/3rdparty/freetype
+        ${CMAKE_SOURCE_DIR}/3rdparty/freetype NO_CMAKE_FIND_ROOT_PATH
     )
     #set(ENV{AND_OSG_LIB_NAMES} "$ENV{AND_OSG_LIB_NAMES} libft2")
     #set(ENV{AND_OSG_LIB_PATHS} "$ENV{AND_OSG_LIB_PATHS}include ${FREETYPE_DIR}/Android.mk \n")
-    set(FREETYPE_INCLUDE_DIRS "${FREETYPE_DIR}/include ${FREETYPE_DIR}/include/freetype/config")
+    set(FREETYPE_INCLUDE_DIRS ${FREETYPE_DIR}/include ${FREETYPE_DIR}/include/freetype/config)
     if(FREETYPE_DIR)
         message(STATUS "FREETYPE found ${FREETYPE_DIR}" )
         set(FREETYPE_FOUND "Yes")
@@ -175,7 +175,7 @@ MACRO(ANDROID_3RD_PARTY)
     #GDAL
     ################################################
     FIND_PATH(GDAL_DIR gdal.h
-        ${CMAKE_SOURCE_DIR}/3rdparty/gdal/include
+        ${CMAKE_SOURCE_DIR}/3rdparty/gdal/include NO_CMAKE_FIND_ROOT_PATH
     )
     set(GDAL_INCLUDE_DIR "${GDAL_DIR}")
     if(GDAL_DIR)

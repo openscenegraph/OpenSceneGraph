@@ -1340,7 +1340,7 @@ ReaderWriter3DS::StateSetInfo ReaderWriter3DS::ReaderObject::createStateSet(Lib3
             // rebuild the texture with alpha channel (rescale according to map amount)
             for (int i=0, j=0; i<n; i+=4, j+=nc)
             {
-                img_data[i] = img_data[i+1] = img_data[i+2] = img_data[i+3] = one_minus_factor + orig_img_data[j]*factor;
+                img_data[i] = img_data[i+1] = img_data[i+2] = img_data[i+3] = (unsigned char)(one_minus_factor + orig_img_data[j]*factor);
             }
             osg_image->setImage(osg_image->s(),osg_image->t(),osg_image->r(), GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, img_data, osg::Image::USE_NEW_DELETE);
             opacity_map->setImage(osg_image.get());

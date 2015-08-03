@@ -83,6 +83,17 @@ class OSGVIEWER_EXPORT PixelBufferX11 : public osg::GraphicsContext, public osgV
         bool            _realized;
 
         bool            _useGLX1_3;
+        bool            _useSGIX;
+
+        typedef Pbuffer ( *GLXCreateGLXPbufferSGIX_FuncPtr) (Display *dpy, GLXFBConfig config, unsigned int, unsigned height, int* attrib_list);
+        typedef void ( *GLXDestroyGLXPbufferSGIX_FuncPtr) (Display *dpy, Pbuffer pbuf);
+        typedef int ( *GLXQueryGLXPbufferSGIX_FuncCPtr) (Display *dpy, Pbuffer pbuf, int attribute, unsigned int *value);
+        typedef GLXFBConfig ( *GLXGetFBConfigFromVisualSGIX_FuncPtr) (Display *dpy, XVisualInfo *vis);
+
+        GLXCreateGLXPbufferSGIX_FuncPtr _glXCreateGLXPbufferSGIX;
+        GLXDestroyGLXPbufferSGIX_FuncPtr _glXDestroyGLXPbufferSGIX;
+        GLXQueryGLXPbufferSGIX_FuncCPtr _glXQueryGLXPbufferSGIX;
+        GLXGetFBConfigFromVisualSGIX_FuncPtr _glXGetFBConfigFromVisualSGIX;
 };
 
 }

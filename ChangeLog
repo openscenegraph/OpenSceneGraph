@@ -1,3 +1,27 @@
+2015-08-03 19:14  robert
+
+	* include/osgViewer/api/X11/PixelBufferX11,
+	  src/osgViewer/PixelBufferX11.cpp: From Andy Skinner, "Someone was
+	  using our code on a system that does not seem to have the SGIX
+	  symbols used in osgViewer.cpp.
+	  
+	  
+	  
+	  I used osgSetGLExtensionsFuncPtr to remove the symbols. I don't
+	  know how to test this path, but it did remove the symbols from
+	  libosgViewer.so. I have also not been able yet to see if that was
+	  sufficient for our customer.
+	  
+	  
+	  
+	  I did this by looking at other cases, and I tried to follow some
+	  of the same practices in PixelBufferX11, like using _useSGIX in a
+	  similar way to the previous _useGLX1_3."
+
+2015-07-31 15:12  robert
+
+	* AUTHORS.txt, ChangeLog: Update ChangeLog and AUTHORS
+
 2015-07-31 15:01  robert
 
 	* CMakeLists.txt: Updated rc number to 8 for 3.4.9-rc8

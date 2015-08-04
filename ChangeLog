@@ -1,3 +1,38 @@
+2015-08-04 10:11  robert
+
+	* CMakeLists.txt: Upated rc number to 4
+
+2015-08-04 09:35  robert
+
+	* include/osg/GL: Build fix for Mingw
+
+2015-07-23 14:42  robert
+
+	* include/osgViewer/ViewerBase: From Pjotr Svetachov, buid fixes
+	  for VS2015.
+
+2015-07-21 14:22  robert
+
+	* src/osgPlugins/OpenFlight/PaletteRecords.cpp: Added check for
+	  validity of OpenFlight shininess value.
+
+2015-07-21 13:42  robert
+
+	* include/osg/BoundsChecking: Fixed typo
+
+2015-07-19 09:51  robert
+
+	* src/osgPlugins/tiff/ReaderWriterTIFF.cpp: Reinstated the
+	  TIFFSetField(image, TIFFTAG_ROWSPERSTRIP, rowsperstrip);
+
+2015-07-17 09:15  robert
+
+	* CMakeLists.txt: Updated release candidate nubmer
+
+2015-07-17 09:03  robert
+
+	* AUTHORS.txt, ChangeLog: Updated ChangeLog and AURHORS
+
 2015-07-17 08:35  robert
 
 	* AUTHORS.txt, ChangeLog: Updated ChangeLog and AUTHORS file

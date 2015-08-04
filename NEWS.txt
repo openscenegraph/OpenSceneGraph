@@ -25,7 +25,7 @@ OpenSceneGraph project is backed up with professional services by [http://www.op
 === Community support and contributions ===
 The diverse and growing community of over 5000 developers is centred around the public osg-users mailing list/forum, where members discuss how best to use OpenSceneGraph, provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists.
 
-The OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/index.php/about/56-contributors/162-contributors-to-openscenegraph-3-2-1 individuals] from around the world that have directly contributed to the development and refinement of the OpenSceneGraph code base.
+The OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/index.php/about/197-contributors-to-openscenegraph-3-2-2 individuals] from around the world that have directly contributed to the development and refinement of the OpenSceneGraph code base.
 
 
 

@@ -1,3 +1,26 @@
+2015-08-06 15:04  robert
+
+	* src/osgVolume/Shaders/volume_frag.cpp,
+	  src/osgVolume/Shaders/volume_iso_frag.cpp,
+	  src/osgVolume/Shaders/volume_lit_frag.cpp,
+	  src/osgVolume/Shaders/volume_lit_tf_frag.cpp,
+	  src/osgVolume/Shaders/volume_mip_frag.cpp,
+	  src/osgVolume/Shaders/volume_tf_frag.cpp,
+	  src/osgVolume/Shaders/volume_tf_iso_frag.cpp,
+	  src/osgVolume/Shaders/volume_tf_mip_frag.cpp: Merged workaround
+	  for NVidia driver/GPU bug by updating shaders from svn/trunk that
+	  change float to int usage.
+
+2015-08-06 15:03  robert
+
+	* src/osgText/Text.cpp: Added checks for the validity of chached
+	  coordinate arrays.
+
+2015-08-03 19:38  robert
+
+	* AUTHORS.txt, CMakeLists.txt, ChangeLog: Updated rc number to 9,
+	  and updated ChangeLog and AUTHORS.txt
+
 2015-08-03 19:14  robert
 
 	* include/osgViewer/api/X11/PixelBufferX11,

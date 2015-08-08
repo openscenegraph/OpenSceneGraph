@@ -641,7 +641,7 @@ ZipArchive::getDataNoLock() const
         {
             data._zipHandle = OpenZip( _filename.c_str(), _password.c_str() );
         }
-        else if ( _membuffer.empty() )
+        else if ( !_membuffer.empty() )
         {
             data._zipHandle = OpenZip( (void*)_membuffer.c_str(), _membuffer.length(), _password.c_str() );
         }

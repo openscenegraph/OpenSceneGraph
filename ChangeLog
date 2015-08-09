@@ -1,3 +1,29 @@
+2015-08-09 10:16  robert
+
+	* CMakeLists.txt: Updated RC number to 11.
+
+2015-08-09 10:16  robert
+
+	* src/osg/GL.in: Changed GLint64 and GLuint64 to use int64_t and
+	  uint64_t (pulled in via include/osg/Types) to avoid conflict with
+	  Qt5 definitions
+
+2015-08-09 09:40  robert
+
+	* include/osgViewer/api/X11/PixelBufferX11,
+	  src/osgViewer/PixelBufferX11.cpp: Added #idef guards for SGIX
+	  usage
+
+2015-08-08 08:49  robert
+
+	* src/osgPlugins/zip/ZipArchive.cpp: From Glenn Waldron, fix error
+	  in ZIP plugin handling of memory buffer
+
+2015-08-06 15:10  robert
+
+	* CMakeLists.txt, ChangeLog: Updated rc number and ChangeLog for
+	  3.4.0-rc10
+
 2015-08-06 15:04  robert
 
 	* src/osgVolume/Shaders/volume_frag.cpp,

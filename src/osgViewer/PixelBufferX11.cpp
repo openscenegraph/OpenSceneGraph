@@ -33,12 +33,14 @@ PixelBufferX11::PixelBufferX11(osg::GraphicsContext::Traits* traits)
     _initialized(false),
     _realized(false),
     _useGLX1_3(false),
-    _useSGIX(false),
-    _glXCreateGLXPbufferSGIX(NULL),
+    _useSGIX(false)
+#ifdef GLX_SGIX_pbuffer
+    ,_glXCreateGLXPbufferSGIX(NULL),
     _glXDestroyGLXPbufferSGIX(NULL),
     _glXQueryGLXPbufferSGIX(NULL),
     _glXGetFBConfigFromVisualSGIX(NULL)
-{
+#endif
+    {
     _traits = traits;
 
     init();
@@ -179,7 +181,7 @@ void PixelBufferX11::init()
         haveGLX1_3 = true;
     }
 
-#if defined(GLX_VERSION_1_1)
+#if defined(GLX_VERSION_1_1) && defined(GLX_SGIX_pbuffer)
     // We need at least GLX 1.1 for glXQueryExtensionsString
     if (!haveGLX1_3 && 1 <= minor)
     {

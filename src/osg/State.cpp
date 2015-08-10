@@ -19,6 +19,7 @@
 #include <osg/ApplicationUsage>
 
 #include <sstream>
+#include <algorithm>
 
 #ifndef GL_MAX_TEXTURE_COORDS
 #define GL_MAX_TEXTURE_COORDS 0x8871
@@ -953,6 +954,18 @@ void State::setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* p
 void State::initializeExtensionProcs()
 {
     if (_extensionProcsInitialized) return;
+    
+    
+    const char* vendor = (const char*) glGetString( GL_VENDOR );
+    if (vendor)
+    {
+        std::string str_vendor(vendor);
+        std::replace(str_vendor.begin(), str_vendor.end(), ' ', '_');
+        OSG_INFO<<"GL_VENDOR = ["<<str_vendor<<"]"<<std::endl;
+        _defineMap.map[str_vendor].defineVec.push_back(osg::StateSet::DefinePair("1",osg::StateAttribute::ON));
+        _defineMap.map[str_vendor].changed = true;
+        _defineMap.changed = true;
+    }
 
     _glExtensions = new GLExtensions(_contextID);
     GLExtensions::Set(_contextID, _glExtensions.get());

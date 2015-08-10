@@ -182,6 +182,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Transform
     ${HEADER_PATH}/TriangleFunctor
     ${HEADER_PATH}/TriangleIndexFunctor
+    ${HEADER_PATH}/Types
     ${HEADER_PATH}/Uniform
     ${HEADER_PATH}/UserDataContainer
     ${HEADER_PATH}/ValueObject

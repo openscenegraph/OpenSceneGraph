@@ -1,3 +1,14 @@
+2015-08-10 19:56  robert
+
+	* src/osg/State.cpp: From svn/trunk merged support for passing the
+	  GL_VENDOR string into the #pragma(tic) shader compositions
+	  defines
+
+2015-08-10 19:46  robert
+
+	* CMakeLists.txt, ChangeLog: Update RC number to 12, and updated
+	  ChangeLog
+
 2015-08-10 19:40  robert
 
 	* CMakeLists.txt: Fixed line endings

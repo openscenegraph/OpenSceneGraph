@@ -954,8 +954,7 @@ void State::setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* p
 void State::initializeExtensionProcs()
 {
     if (_extensionProcsInitialized) return;
-    
-    
+
     const char* vendor = (const char*) glGetString( GL_VENDOR );
     if (vendor)
     {

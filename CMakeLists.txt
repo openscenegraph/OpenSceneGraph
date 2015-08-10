@@ -579,24 +579,24 @@ ENDIF()
 SET(OPENSCENEGRAPH_CONFIG_HEADER "${PROJECT_BINARY_DIR}/include/osg/Config")
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/osg/Config.in"
                "${OPENSCENEGRAPH_CONFIG_HEADER}")
-      
-      
+
+
 ################################################################################
 # Set OpenGL header file
-               
+
 INCLUDE (CheckCXXSourceCompiles)
 #SET(CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES} ${OPENGL_INCLUDE_DIR})
 
 check_cxx_source_compiles(
-    "${OPENGL_HEADER1} 
-    ${OPENGL_HEADER2} 
+    "${OPENGL_HEADER1}
+    ${OPENGL_HEADER2}
     int main() { GLint64 test; return 0; }"
     GL_HEADER_HAS_GLINT64
 )
-               
+
 check_cxx_source_compiles(
-    "${OPENGL_HEADER1} 
-    ${OPENGL_HEADER2} 
+    "${OPENGL_HEADER1}
+    ${OPENGL_HEADER2}
     int main() { GLuint64 test; return 0; }"
     GL_HEADER_HAS_GLUINT64
 )

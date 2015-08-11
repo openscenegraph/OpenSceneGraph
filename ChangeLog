@@ -1,3 +1,26 @@
+2015-08-11 20:08  robert
+
+	* src/osgVolume/Shaders/volume_frag.cpp,
+	  src/osgVolume/Shaders/volume_iso_frag.cpp,
+	  src/osgVolume/Shaders/volume_lit_frag.cpp,
+	  src/osgVolume/Shaders/volume_lit_tf_frag.cpp,
+	  src/osgVolume/Shaders/volume_mip_frag.cpp,
+	  src/osgVolume/Shaders/volume_tf_frag.cpp,
+	  src/osgVolume/Shaders/volume_tf_iso_frag.cpp,
+	  src/osgVolume/Shaders/volume_tf_mip_frag.cpp: Refactored
+	  workaround of NVidia nan length bug.
+
+2015-08-11 08:44  robert
+
+	* CMakeLists.txt, CMakeModules/FindAsio.cmake,
+	  CMakeModules/FindLIBLAS.cmake, src/osgPlugins/CMakeLists.txt:
+	  Moved the FIND_PACKAGE(Boost) from the root CMakeLists.txt into
+	  the local Find scripts to avoid Boost check when not neccessary.
+
+2015-08-10 19:58  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2015-08-10 19:56  robert
 
 	* src/osg/State.cpp: From svn/trunk merged support for passing the

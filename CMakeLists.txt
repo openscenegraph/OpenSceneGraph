@@ -682,7 +682,6 @@ ELSE()
     ENDIF()
     FIND_PACKAGE(ZeroConf)
 
-    FIND_PACKAGE(Boost) # used by LIBLAS
     FIND_PACKAGE(LIBLAS)
 
     IF (NOT(OSG_USE_LOCAL_LUA_SOURCE))

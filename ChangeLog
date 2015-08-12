@@ -1,3 +1,20 @@
+2015-08-12 08:34  robert
+
+	* src/osgVolume/Shaders/volume_frag.cpp,
+	  src/osgVolume/Shaders/volume_iso_frag.cpp,
+	  src/osgVolume/Shaders/volume_lit_frag.cpp,
+	  src/osgVolume/Shaders/volume_lit_tf_frag.cpp,
+	  src/osgVolume/Shaders/volume_mip_frag.cpp,
+	  src/osgVolume/Shaders/volume_tf_frag.cpp,
+	  src/osgVolume/Shaders/volume_tf_iso_frag.cpp,
+	  src/osgVolume/Shaders/volume_tf_mip_frag.cpp: Revised shaders to
+	  catch NVidia length bug that generates NAN's
+
+2015-08-12 07:41  robert
+
+	* ChangeLog, include/osg/Version: Updated version and ChangeLog for
+	  release
+
 2015-08-12 07:38  robert
 
 	* CMakeLists.txt: Updated version number for 3.2.3 release

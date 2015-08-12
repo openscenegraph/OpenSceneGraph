@@ -1,3 +1,8 @@
+2015-08-11 20:12  robert
+
+	* CMakeLists.txt, ChangeLog: Updated ChangeLog and RC nubmer to 13,
+	  and added GL1 to the docs on the GL_PROFILE usage
+
 2015-08-11 20:08  robert
 
 	* src/osgVolume/Shaders/volume_frag.cpp,

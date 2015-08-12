@@ -69,12 +69,12 @@ Torben Dannhauer
 Sherman Wilcox
 Robert Michael
 Mourad Boufarguine
+Glenn Waldron
 André Garneau
 Adrian Egli
 Ruben Lopez
 Randall Hopper
 Jan Ciger
-Glenn Waldron
 Gideon May
 Don Tidrow
 Stephane Lamoliatte

@@ -1592,7 +1592,8 @@ class OSG_EXPORT State : public Referenced
         {
             typedef std::vector<StateSet::DefinePair> DefineVec;
 
-            DefineStack() {}
+            DefineStack():
+                changed(false) {}
 
             void print(std::ostream& fout) const;
 

@@ -1,3 +1,17 @@
+2015-08-12 07:38  robert
+
+	* CMakeLists.txt: Updated version number for 3.2.3 release
+
+2015-08-12 07:37  robert
+
+	* AUTHORS.txt, ChangeLog, README.txt: Updated AUTHORS, ChangeLog
+	  and README for 3.2.3 release
+
+2015-08-12 06:50  robert
+
+	* applications/osgversion/Contributors.cpp: Merged Contributors
+	  list from svn/trunk.
+
 2015-08-08 08:49  robert
 
 	* src/osgPlugins/zip/ZipArchive.cpp: From Glenn Waldron, fix error

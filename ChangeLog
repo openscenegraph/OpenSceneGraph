@@ -1,3 +1,11 @@
+2015-08-12 10:44  robert
+
+	* include/osg/State: Added initializer
+
+2015-08-12 10:30  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2015-08-12 10:19  robert
 
 	* src/osgVolume/Shaders/volume_frag.cpp,

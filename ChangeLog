@@ -1,3 +1,19 @@
+2015-08-12 10:19  robert
+
+	* src/osgVolume/Shaders/volume_frag.cpp,
+	  src/osgVolume/Shaders/volume_iso_frag.cpp,
+	  src/osgVolume/Shaders/volume_lit_frag.cpp,
+	  src/osgVolume/Shaders/volume_lit_tf_frag.cpp,
+	  src/osgVolume/Shaders/volume_mip_frag.cpp,
+	  src/osgVolume/Shaders/volume_tf_frag.cpp,
+	  src/osgVolume/Shaders/volume_tf_iso_frag.cpp,
+	  src/osgVolume/Shaders/volume_tf_mip_frag.cpp: Merged shaders from
+	  svn/trunk that refactor the workaround to the NVidia driver bug
+
+2015-08-12 10:06  robert
+
+	* ChangeLog: Update ChangeLog
+
 2015-08-12 06:38  robert
 
 	* CMakeLists.txt, ChangeLog, README.txt: Change RC number to 0 for

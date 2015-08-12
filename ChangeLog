@@ -1,3 +1,10 @@
+2015-08-12 06:38  robert
+
+	* CMakeLists.txt, ChangeLog, README.txt: Change RC number to 0 for
+	  3.4.0 stable release.
+	  Updated ChangeLog
+	  Updated the release data in the README
+
 2015-08-11 20:12  robert
 
 	* CMakeLists.txt, ChangeLog: Updated ChangeLog and RC nubmer to 13,

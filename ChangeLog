@@ -1,3 +1,37 @@
+2015-08-08 08:49  robert
+
+	* src/osgPlugins/zip/ZipArchive.cpp: From Glenn Waldron, fix error
+	  in ZIP plugin handling of memory buffer
+
+2015-08-06 10:09  robert
+
+	* src/osgVolume/Shaders/volume_frag.cpp,
+	  src/osgVolume/Shaders/volume_iso_frag.cpp,
+	  src/osgVolume/Shaders/volume_lit_frag.cpp,
+	  src/osgVolume/Shaders/volume_lit_tf_frag.cpp,
+	  src/osgVolume/Shaders/volume_mip_frag.cpp,
+	  src/osgVolume/Shaders/volume_tf_frag.cpp,
+	  src/osgVolume/Shaders/volume_tf_iso_frag.cpp,
+	  src/osgVolume/Shaders/volume_tf_mip_frag.cpp: Updated
+	  RayTracedTechnique shaders from svn/trunk.
+
+2015-08-04 15:52  robert
+
+	* CMakeLists.txt, NEWS.txt: Updated version and NEWS for 3.2.2
+	  stable release
+
+2015-08-04 10:37  robert
+
+	* NEWS.txt: Update NEWS to online Contributors list.
+
+2015-08-04 10:26  robert
+
+	* AUTHORS.txt: Updated AUTHORS
+
+2015-08-04 10:25  robert
+
+	* ChangeLog, NEWS.txt: Updated ChangeLog and NEWS for 3.2.2 release
+
 2015-08-04 10:11  robert
 
 	* CMakeLists.txt: Upated rc number to 4

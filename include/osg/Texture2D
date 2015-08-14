@@ -93,9 +93,9 @@ class OSG_EXPORT Texture2D : public Texture
                     return texture.textureObjectValid(state);
                 }
 
-                virtual TextureObject* generateTextureObject(const Texture2D& texture, State& state) const
+                virtual osg::ref_ptr<TextureObject> generateTextureObject(const Texture2D& texture, State& state) const
                 {
-                    return osg::Texture::generateTextureObject(&texture, state.getContextID(), GL_TEXTURE_2D).release();
+                    return osg::Texture::generateTextureObject(&texture, state.getContextID(), GL_TEXTURE_2D);
                 }
 
                 virtual void load(const Texture2D& texture,State& state) const = 0;

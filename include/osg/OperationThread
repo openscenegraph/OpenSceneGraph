@@ -77,9 +77,11 @@ class Operation : virtual public Referenced
 protected:
 
         Operation():
+            Referenced(true),
             _keep(false) {}
 
         Operation(const Operation& op):
+            Referenced(true),
             _name(op._name),
             _keep(op._keep) {}
 

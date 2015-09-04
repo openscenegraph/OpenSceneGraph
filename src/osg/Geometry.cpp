@@ -201,7 +201,7 @@ void Geometry::setTexCoordArrayList(const ArrayList& arrayList)
             itr != _texCoordList.end();
             ++itr)
         {
-            addVertexBufferObjectIfRequired(itr->get());
+           if (itr->get()) addVertexBufferObjectIfRequired(itr->get());
         }
     }
 }
@@ -244,7 +244,7 @@ void Geometry::setVertexAttribArrayList(const ArrayList& arrayList)
             itr != _vertexAttribList.end();
             ++itr)
         {
-            addVertexBufferObjectIfRequired(itr->get());
+            if (itr->get()) addVertexBufferObjectIfRequired(itr->get());
         }
     }
 }

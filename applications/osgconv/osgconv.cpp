@@ -157,6 +157,7 @@ public:
         }
 
         osg::ref_ptr<osg::State> state = new osg::State;
+        state->initializeExtensionProcs();
 
         for(TextureSet::iterator itr=_textureSet.begin();
             itr!=_textureSet.end();

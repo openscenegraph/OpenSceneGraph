@@ -62,13 +62,14 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
         _vertexAttribList.push_back(copyop(vitr->get()));
     }
 
-    if ((copyop.getCopyFlags() & osg::CopyOp::DEEP_COPY_ARRAYS))
+    if ((copyop.getCopyFlags() & osg::CopyOp::DEEP_COPY_ARRAYS) || (copyop.getCopyFlags() & osg::CopyOp::DEEP_COPY_PRIMITIVES))
     {
         if (_useVertexBufferObjects)
         {
             // copying of arrays doesn't set up buffer objects so we'll need to force
-            // Geometry to assign these, we'll do this by switching off VBO's then renabling them.
-            setUseVertexBufferObjects(false);
+            // Geometry to assign these, we'll do this by changing the cached value to false then re-enabling.
+            // note do not use setUseVertexBufferObjects(false) as it might modify Arrays that we have not deep-copied.
+            _useVertexBufferObjects = false;
             setUseVertexBufferObjects(true);
         }
     }

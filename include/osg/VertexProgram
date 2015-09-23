@@ -205,25 +205,6 @@ class OSG_EXPORT VertexProgram : public StateAttribute
         /** Force a recompile on next apply() of associated OpenGL vertex program objects. */
         void dirtyVertexProgramObject();
 
-        /** Use deleteVertexProgramObject instead of glDeletePrograms to allow
-          * OpenGL Vertex Program objects to cached until they can be deleted
-          * by the OpenGL context in which they were created, specified
-          * by contextID.
-        */
-        static void deleteVertexProgramObject(unsigned int contextID,GLuint handle);
-
-        /** Flush all the cached vertex programs which need to be deleted
-          * in the OpenGL context related to contextID.
-        */
-        static void flushDeletedVertexProgramObjects(unsigned int contextID,double currentTime, double& availableTime);
-
-        /** discard all the cached vertex programs which need to be deleted
-          * in the OpenGL context related to contextID.
-          * Note, unlike flush no OpenGL calls are made, instead the handles are all removed.
-          * this call is useful for when an OpenGL context has been destroyed.
-        */
-        static void discardDeletedVertexProgramObjects(unsigned int contextID);
-
         virtual void apply(State& state) const;
 
         virtual void compileGLObjects(State& state) const { apply(state); }

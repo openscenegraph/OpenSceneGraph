@@ -31,6 +31,7 @@
 #include <osg/Program>
 #include <osg/Shader>
 #include <osg/GLExtensions>
+#include <osg/ContextData>
 
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
@@ -39,62 +40,17 @@
 
 using namespace osg;
 
-///////////////////////////////////////////////////////////////////////////
-// static cache of glPrograms flagged for deletion, which will actually
-// be deleted in the correct GL context.
-
-typedef std::list<GLuint> GlProgramHandleList;
-typedef osg::buffered_object<GlProgramHandleList> DeletedGlProgramCache;
-
-static OpenThreads::Mutex    s_mutex_deletedGlProgramCache;
-static DeletedGlProgramCache s_deletedGlProgramCache;
-
-void Program::deleteGlProgram(unsigned int contextID, GLuint program)
+class GLProgramManager : public GLObjectManager
 {
-    if( program )
+public:
+    GLProgramManager(unsigned int contextID) : GLObjectManager("GLProgramManager", contextID) {}
+
+    virtual void deleteGLObject(GLuint globj)
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedGlProgramCache);
-
-        // add glProgram to the cache for the appropriate context.
-        s_deletedGlProgramCache[contextID].push_back(program);
+        const GLExtensions* extensions = GLExtensions::Get(_contextID,true);
+        if (extensions->isGlslSupported) extensions->glDeleteProgram( globj );
     }
-}
-
-void Program::flushDeletedGlPrograms(unsigned int contextID,double /*currentTime*/, double& availableTime)
-{
-    // if no time available don't try to flush objects.
-    if (availableTime<=0.0) return;
-
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedGlProgramCache);
-    const GLExtensions* extensions = GLExtensions::Get(contextID,true);
-    if( ! extensions->isGlslSupported ) return;
-
-    const osg::Timer& timer = *osg::Timer::instance();
-    osg::Timer_t start_tick = timer.tick();
-    double elapsedTime = 0.0;
-
-    {
-
-        GlProgramHandleList& pList = s_deletedGlProgramCache[contextID];
-        for(GlProgramHandleList::iterator titr=pList.begin();
-            titr!=pList.end() && elapsedTime<availableTime;
-            )
-        {
-            extensions->glDeleteProgram( *titr );
-            titr = pList.erase( titr );
-            elapsedTime = timer.delta_s(start_tick,timer.tick());
-        }
-    }
-
-    availableTime -= elapsedTime;
-}
-
-void Program::discardDeletedGlPrograms(unsigned int contextID)
-{
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedGlProgramCache);
-    GlProgramHandleList& pList = s_deletedGlProgramCache[contextID];
-    pList.clear();
-}
+};
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -733,7 +689,7 @@ Program::PerContextProgram::~PerContextProgram()
 {
     if (_ownsProgramHandle)
     {
-        Program::deleteGlProgram( _contextID, _glProgramHandle );
+        osg::get<GLProgramManager>(_contextID)->deleteGLObject(_glProgramHandle);
     }
 }
 

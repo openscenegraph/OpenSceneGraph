@@ -24,72 +24,36 @@
 #include <osg/TextureCubeMap>
 #include <osg/TextureRectangle>
 #include <osg/Notify>
+#include <osg/ContextData>
 #include <osg/Timer>
 
 using namespace osg;
 
 
+GLRenderBufferManager::GLRenderBufferManager(unsigned int contextID):
+    GLObjectManager("GLRenderBufferManager",contextID)
+{}
+
+void GLRenderBufferManager::deleteGLObject(GLuint globj)
+{
+    const GLExtensions* extensions = GLExtensions::Get(_contextID,true);
+    if (extensions->isGlslSupported) extensions->glDeleteRenderbuffers(1, &globj );
+}
+
+GLFrameBufferObjectManager::GLFrameBufferObjectManager(unsigned int contextID):
+    GLObjectManager("GLFrameBufferObjectManager",contextID)
+{}
+
+void GLFrameBufferObjectManager::deleteGLObject(GLuint globj)
+{
+    const GLExtensions* extensions = GLExtensions::Get(_contextID,true);
+    if (extensions->isGlslSupported) extensions->glDeleteFramebuffers(1, &globj );
+}
+
+
 /**************************************************************************
  * RenderBuffer
  **************************************************************************/
-
-///////////////////////////////////////////////////////////////////////////
-// static cache of glRenderbuffers flagged for deletion, which will actually
-// be deleted in the correct GL context.
-
-typedef std::list<GLuint> RenderBufferHandleList;
-typedef osg::buffered_object<RenderBufferHandleList> DeletedRenderBufferCache;
-
-static OpenThreads::Mutex    s_mutex_deletedRenderBufferCache;
-static DeletedRenderBufferCache s_deletedRenderBufferCache;
-
-void RenderBuffer::deleteRenderBuffer(unsigned int contextID, GLuint rb)
-{
-    if( rb )
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedRenderBufferCache);
-
-        // add glProgram to the cache for the appropriate context.
-        s_deletedRenderBufferCache[contextID].push_back(rb);
-    }
-}
-
-void RenderBuffer::flushDeletedRenderBuffers(unsigned int contextID,double /*currentTime*/, double& availableTime)
-{
-    // if no time available don't try to flush objects.
-    if (availableTime<=0.0) return;
-
-    const GLExtensions* extensions = GLExtensions::Get(contextID,true);
-    if(!extensions || !extensions->isFrameBufferObjectSupported ) return;
-
-    const osg::Timer& timer = *osg::Timer::instance();
-    osg::Timer_t start_tick = timer.tick();
-    double elapsedTime = 0.0;
-
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedRenderBufferCache);
-
-        RenderBufferHandleList& pList = s_deletedRenderBufferCache[contextID];
-        for(RenderBufferHandleList::iterator titr=pList.begin();
-            titr!=pList.end() && elapsedTime<availableTime;
-            )
-        {
-            extensions->glDeleteRenderbuffers(1, &(*titr) );
-            titr = pList.erase( titr );
-            elapsedTime = timer.delta_s(start_tick,timer.tick());
-        }
-    }
-
-    availableTime -= elapsedTime;
-}
-
-void RenderBuffer::discardDeletedRenderBuffers(unsigned int contextID)
-{
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedRenderBufferCache);
-    RenderBufferHandleList& pList = s_deletedRenderBufferCache[contextID];
-    pList.clear();
-}
-
 
 RenderBuffer::RenderBuffer()
 :    Object(),
@@ -125,7 +89,7 @@ RenderBuffer::~RenderBuffer()
 {
     for(unsigned i=0; i<_objectID.size(); ++i)
     {
-        if (_objectID[i]) deleteRenderBuffer(i, _objectID[i]);
+        if (_objectID[i]) osg::get<GLRenderBufferManager>(i)->deleteGLObject(_objectID[i]);
     }
 }
 
@@ -209,7 +173,7 @@ void RenderBuffer::releaseGLObjects(osg::State* state) const
         unsigned int contextID = state->getContextID();
         if (_objectID[contextID])
         {
-            deleteRenderBuffer(contextID, _objectID[contextID]);
+            osg::get<GLRenderBufferManager>(contextID)->deleteGLObject(_objectID[contextID]);
             _objectID[contextID] = 0;
         }
     }
@@ -219,7 +183,7 @@ void RenderBuffer::releaseGLObjects(osg::State* state) const
         {
             if (_objectID[i])
             {
-                deleteRenderBuffer(i, _objectID[i]);
+                osg::get<GLRenderBufferManager>(i)->deleteGLObject(_objectID[i]);
                 _objectID[i] = 0;
             }
         }
@@ -615,66 +579,6 @@ unsigned int FrameBufferAttachment::getTextureArrayLayer() const
  * FrameBufferObject
  **************************************************************************/
 
-///////////////////////////////////////////////////////////////////////////
-// static cache of glRenderbuffers flagged for deletion, which will actually
-// be deleted in the correct GL context.
-
-typedef std::list<GLuint> FrameBufferObjectHandleList;
-typedef osg::buffered_object<FrameBufferObjectHandleList> DeletedFrameBufferObjectCache;
-
-static OpenThreads::Mutex    s_mutex_deletedFrameBufferObjectCache;
-static DeletedFrameBufferObjectCache s_deletedFrameBufferObjectCache;
-
-void FrameBufferObject::deleteFrameBufferObject(unsigned int contextID, GLuint rb)
-{
-    if( rb )
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedFrameBufferObjectCache);
-
-        // add glProgram to the cache for the appropriate context.
-        s_deletedFrameBufferObjectCache[contextID].push_back(rb);
-    }
-}
-
-void FrameBufferObject::flushDeletedFrameBufferObjects(unsigned int contextID,double /*currentTime*/, double& availableTime)
-{
-    // if no time available don't try to flush objects.
-    if (availableTime<=0.0) return;
-
-    const GLExtensions* extensions = GLExtensions::Get(contextID,true);
-    if(!extensions || !extensions->isFrameBufferObjectSupported ) return;
-
-    const osg::Timer& timer = *osg::Timer::instance();
-    osg::Timer_t start_tick = timer.tick();
-    double elapsedTime = 0.0;
-
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedFrameBufferObjectCache);
-
-        FrameBufferObjectHandleList& pList = s_deletedFrameBufferObjectCache[contextID];
-        for(FrameBufferObjectHandleList::iterator titr=pList.begin();
-            titr!=pList.end() && elapsedTime<availableTime;
-            )
-        {
-            extensions->glDeleteFramebuffers(1, &(*titr) );
-            titr = pList.erase( titr );
-            elapsedTime = timer.delta_s(start_tick,timer.tick());
-        }
-    }
-
-    availableTime -= elapsedTime;
-}
-
-void FrameBufferObject::discardDeletedFrameBufferObjects(unsigned int contextID)
-{
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedFrameBufferObjectCache);
-    FrameBufferObjectHandleList& pList = s_deletedFrameBufferObjectCache[contextID];
-
-    pList.clear();
-}
-
-
-
 FrameBufferObject::FrameBufferObject()
 :    StateAttribute()
 {
@@ -691,7 +595,7 @@ FrameBufferObject::~FrameBufferObject()
 {
     for(unsigned i=0; i<_fboID.size(); ++i)
     {
-        if (_fboID[i]) deleteFrameBufferObject(i, _fboID[i]);
+        if (_fboID[i]) osg::get<GLFrameBufferObjectManager>(i)->deleteGLObject(_fboID[i]);
     }
 }
 
@@ -709,7 +613,7 @@ void FrameBufferObject::releaseGLObjects(osg::State* state) const
         unsigned int contextID = state->getContextID();
         if (_fboID[contextID])
         {
-            deleteFrameBufferObject(contextID, _fboID[contextID]);
+            osg::get<GLFrameBufferObjectManager>(contextID)->deleteGLObject(_fboID[contextID]);
             _fboID[contextID] = 0;
         }
     }
@@ -719,7 +623,7 @@ void FrameBufferObject::releaseGLObjects(osg::State* state) const
         {
             if (_fboID[i])
             {
-                deleteFrameBufferObject(i, _fboID[i]);
+                osg::get<GLFrameBufferObjectManager>(i)->deleteGLObject(_fboID[i]);
                 _fboID[i] = 0;
             }
         }

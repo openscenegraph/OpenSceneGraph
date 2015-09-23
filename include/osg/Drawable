@@ -95,10 +95,6 @@ class OSG_EXPORT Drawable : public Node
 {
     public:
 
-        static unsigned int s_numberDrawablesReusedLastInLastFrame;
-        static unsigned int s_numberNewDrawablesInLastFrame;
-        static unsigned int s_numberDeletedDrawablesInLastFrame;
-
         Drawable();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
@@ -355,31 +351,19 @@ class OSG_EXPORT Drawable : public Node
         /** Return a OpenGL display list handle a newly generated or reused from display list cache. */
         static GLuint generateDisplayList(unsigned int contextID, unsigned int sizeHint = 0);
 
-        /** Set the minimum number of display lists to retain in the deleted display list cache. */
-        static void setMinimumNumberOfDisplayListsToRetainInCache(unsigned int minimum);
-
-        /** Get the minimum number of display lists to retain in the deleted display list cache. */
-        static unsigned int getMinimumNumberOfDisplayListsToRetainInCache();
-
         /** Use deleteDisplayList instead of glDeleteList to allow
           * OpenGL display list to be cached until they can be deleted
           * by the OpenGL context in which they were created, specified
           * by contextID.*/
         static void deleteDisplayList(unsigned int contextID,GLuint globj, unsigned int sizeHint = 0);
 
-        /** Flush all the cached display list which need to be deleted
-          * in the OpenGL context related to contextID.*/
-        static void flushAllDeletedDisplayLists(unsigned int contextID);
+        /** Set the minimum number of display lists to retain in the deleted display list cache. */
+        static void setMinimumNumberOfDisplayListsToRetainInCache(unsigned int minimum);
 
-        /** Flush all the cached display list which need to be deleted
-          * in the OpenGL context related to contextID.
-          * Note, unlike flush no OpenGL calls are made, instead the handles are all removed.
-          * this call is useful for when an OpenGL context has been destroyed. */
-        static void discardAllDeletedDisplayLists(unsigned int contextID);
+        /** Get the minimum number of display lists to retain in the deleted display list cache. */
+        static unsigned int getMinimumNumberOfDisplayListsToRetainInCache();
 
-        /** Flush the cached display list which need to be deleted
-          * in the OpenGL context related to contextID.*/
-        static void flushDeletedDisplayLists(unsigned int contextID,double& availableTime);
+
 
         typedef unsigned int AttributeType;
 

@@ -19,13 +19,13 @@ FOREACH( mylibfolder
         osgFX
         osgManipulator
         osgParticle
-        osgPresentation
+        osgUI
+        osgVolume
         osgShadow
         osgSim
         osgTerrain
         osgWidget
-        osgUI
-        osgVolume
+        osgPresentation
         osgWrappers/serializers
         osgWrappers/deprecated-dotosg
         osgPlugins

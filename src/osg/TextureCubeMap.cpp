@@ -199,10 +199,6 @@ void TextureCubeMap::apply(State& state) const
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
 
-    Texture::TextureObjectManager* tom = Texture::getTextureObjectManager(contextID).get();
-    ElapsedTime elapsedTime(&(tom->getApplyTime()));
-    tom->getNumberApplied()++;
-
     const GLExtensions* extensions = state.get<GLExtensions>();
 
     if (!extensions->isCubeMapSupported)
@@ -226,7 +222,7 @@ void TextureCubeMap::apply(State& state) const
 
             if (!textureObject->match(GL_TEXTURE_CUBE_MAP, new_numMipmapLevels, _internalFormat, new_width, new_height, 1, _borderWidth))
             {
-                Texture::releaseTextureObject(contextID, _textureObjectBuffer[contextID].get());
+                _textureObjectBuffer[contextID]->release();
                 _textureObjectBuffer[contextID] = 0;
                 textureObject = 0;
             }

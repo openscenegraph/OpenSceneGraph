@@ -15,71 +15,21 @@
 #include <osg/VertexProgram>
 #include <osg/State>
 #include <osg/Timer>
-
-#include <list>
-
-#include <OpenThreads/ScopedLock>
-#include <OpenThreads/Mutex>
+#include <osg/ContextData>
 
 using namespace osg;
 
-// static cache of deleted vertex programs which can only
-// by completely deleted once the appropriate OpenGL context
-// is set.
-typedef std::list<GLuint> VertexProgramObjectList;
-typedef osg::buffered_object<VertexProgramObjectList> DeletedVertexProgramObjectCache;
-
-static OpenThreads::Mutex              s_mutex_deletedVertexProgramObjectCache;
-static DeletedVertexProgramObjectCache s_deletedVertexProgramObjectCache;
-
-void VertexProgram::deleteVertexProgramObject(unsigned int contextID,GLuint handle)
+class GLVertexProgramManager : public GLObjectManager
 {
-    if (handle!=0)
+public:
+    GLVertexProgramManager(unsigned int contextID) : GLObjectManager("GLVertexProgramManager",contextID) {}
+
+    virtual void deleteGLObject(GLuint globj)
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexProgramObjectCache);
-
-        // insert the handle into the cache for the appropriate context.
-        s_deletedVertexProgramObjectCache[contextID].push_back(handle);
+        const GLExtensions* extensions = GLExtensions::Get(_contextID,true);
+        if (extensions->isGlslSupported) extensions->glDeletePrograms(1, &globj );
     }
-}
-
-
-void VertexProgram::flushDeletedVertexProgramObjects(unsigned int contextID,double /*currentTime*/, double& availableTime)
-{
-    // if no time available don't try to flush objects.
-    if (availableTime<=0.0) return;
-
-    const osg::Timer& timer = *osg::Timer::instance();
-    osg::Timer_t start_tick = timer.tick();
-    double elapsedTime = 0.0;
-
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexProgramObjectCache);
-
-        const GLExtensions* extensions = GLExtensions::Get(contextID,true);
-
-        VertexProgramObjectList& vpol = s_deletedVertexProgramObjectCache[contextID];
-
-        for(VertexProgramObjectList::iterator titr=vpol.begin();
-            titr!=vpol.end() && elapsedTime<availableTime;
-            )
-        {
-            extensions->glDeletePrograms( 1L, &(*titr ) );
-            titr = vpol.erase(titr);
-            elapsedTime = timer.delta_s(start_tick,timer.tick());
-        }
-    }
-
-    availableTime -= elapsedTime;
-}
-
-void VertexProgram::discardDeletedVertexProgramObjects(unsigned int contextID)
-{
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexProgramObjectCache);
-    VertexProgramObjectList& vpol = s_deletedVertexProgramObjectCache[contextID];
-    vpol.clear();
-}
-
+};
 
 VertexProgram::VertexProgram()
 {
@@ -117,7 +67,7 @@ void VertexProgram::dirtyVertexProgramObject()
     {
         if (_vertexProgramIDList[i] != 0)
         {
-            VertexProgram::deleteVertexProgramObject(i,_vertexProgramIDList[i]);
+            osg::get<GLVertexProgramManager>(i)->deleteGLObject(_vertexProgramIDList[i]);
             _vertexProgramIDList[i] = 0;
         }
     }
@@ -207,7 +157,7 @@ void VertexProgram::releaseGLObjects(State* state) const
         unsigned int contextID = state->getContextID();
         if (_vertexProgramIDList[contextID] != 0)
         {
-            VertexProgram::deleteVertexProgramObject(contextID,_vertexProgramIDList[contextID]);
+            osg::get<GLVertexProgramManager>(contextID)->deleteGLObject(_vertexProgramIDList[contextID]);
             _vertexProgramIDList[contextID] = 0;
         }
     }

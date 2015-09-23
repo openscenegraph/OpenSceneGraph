@@ -134,10 +134,6 @@ void Texture1D::apply(State& state) const
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
 
-    Texture::TextureObjectManager* tom = Texture::getTextureObjectManager(contextID).get();
-    ElapsedTime elapsedTime(&(tom->getApplyTime()));
-    tom->getNumberApplied()++;
-
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
 
@@ -153,7 +149,7 @@ void Texture1D::apply(State& state) const
 
             if (!textureObject->match(GL_TEXTURE_1D, new_numMipmapLevels, _internalFormat, new_width, 1, 1, _borderWidth))
             {
-                Texture::releaseTextureObject(contextID, _textureObjectBuffer[contextID].get());
+                _textureObjectBuffer[contextID]->release();
                 _textureObjectBuffer[contextID] = 0;
                 textureObject = 0;
             }

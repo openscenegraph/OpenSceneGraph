@@ -155,7 +155,7 @@ class OSG_EXPORT State : public Referenced
         typedef std::map<const std::type_info*, osg::ref_ptr<osg::Referenced> > ExtensionMap;
         ExtensionMap _extensionMap;
 
-        /** Get a specific GL extensions object, initialize if not already present.
+        /** Get a specific GL extensions object or GraphicsObjectManager, initialize if not already present.
           * Note, must only be called from a the graphics context thread associated with this osg::State. */
         template<typename T>
         T* get()
@@ -169,7 +169,7 @@ class OSG_EXPORT State : public Referenced
             return static_cast<T*>(ptr.get());
         }
 
-        /** Get a specific GL extensions object if it already exists in the extension map.
+        /** Get a specific GL extensions object or GraphicsObjectManager if it already exists in the extension map.
           * Note, safe to call outwith a the graphics context thread associated with this osg::State.
           * Returns NULL if the desired extension object has not been created yet.*/
         template<typename T>
@@ -181,6 +181,13 @@ class OSG_EXPORT State : public Referenced
             else return itr->second.get();
         }
 
+        /** Set a specific GL extensions object pr GraphicsObjectManager. */
+        template<typename T>
+        void set(T* ptr)
+        {
+            const std::type_info* id(&typeid(T));
+            _extensionMap[id] = ptr;
+        }
 
         /* Set whether shader composition is enabled.*/
         void setShaderCompositionEnabled(bool flag) { _shaderCompositionEnabled = flag; }
@@ -2945,6 +2952,7 @@ inline bool State::setActiveTextureUnit( unsigned int unit )
 // forward declare speciailization of State::get() method
 template<> inline GLExtensions* State::get<GLExtensions>() { return _glExtensions.get(); }
 template<> inline const GLExtensions* State::get<GLExtensions>() const { return _glExtensions.get(); }
+template<> inline void State::set<GLExtensions>(GLExtensions* ptr) { _glExtensions = ptr; }
 
 }
 

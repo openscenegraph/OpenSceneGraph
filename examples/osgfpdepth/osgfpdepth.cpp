@@ -28,6 +28,7 @@
 #include <osg/Projection>
 #include <osg/Switch>
 #include <osg/Texture2D>
+#include <osg/ContextData>
 
 #include <osgDB/ReadFile>
 #include <osgGA/GUIEventHandler>
@@ -313,12 +314,9 @@ void destroyFBO(GraphicsContext* gc, FboData &data)
     data.fb = 0;
     data.resolveFB = 0;
     State& state = *gc->getState();
-    double availableTime = 100.0;
-    RenderBuffer::flushDeletedRenderBuffers(state.getContextID(), 0.0,
-                                            availableTime);
-    availableTime = 100.0;
-    FrameBufferObject::flushDeletedFrameBufferObjects(state.getContextID(),
-                                                      0.0, availableTime);
+
+    osg::get<GLRenderBufferManager>(state.getContextID())->flushAllDeletedGLObjects();
+    osg::get<GLFrameBufferObjectManager>(state.getContextID())->flushAllDeletedGLObjects();
 }
 
 void setAttachmentsFromConfig(Camera* camera, const FboConfig& config);

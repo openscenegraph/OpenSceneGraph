@@ -405,7 +405,14 @@
     #define GL_MAX_COMBINED_IMAGE_UNIFORMS    0x90CF
 #endif
 
+//#define OSG_COLLECT_TEXTURE_APPLIED_STATS 1
+
 namespace osg {
+
+
+// forward declare
+class TextureObjectSet;
+class TextureObjectManager;
 
 
 /** Texture pure virtual base class that encapsulates OpenGL texture
@@ -983,11 +990,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             unsigned int _size;
         };
 
-        // forward declare
-        class TextureObjectSet;
-        class TextureObjectManager;
-
-        class OSG_EXPORT TextureObject : public osg::Referenced
+        class OSG_EXPORT TextureObject : public GraphicsObject
         {
         public:
 
@@ -1068,6 +1071,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
             inline bool isReusable() const { return _allocated && _profile._width!=0; }
 
+            /** release TextureObject to the orphan list to be reused or deleted.*/
+            void release();
 
             GLuint              _id;
             TextureProfile      _profile;
@@ -1086,150 +1091,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         typedef std::list< ref_ptr<TextureObject> > TextureObjectList;
 
-        class OSG_EXPORT TextureObjectSet : public Referenced
-        {
-        public:
-            TextureObjectSet(TextureObjectManager* parent, const TextureProfile& profile);
-
-            const TextureProfile& getProfile() const { return _profile; }
-
-            void handlePendingOrphandedTextureObjects();
-
-            void deleteAllTextureObjects();
-            void discardAllTextureObjects();
-            void flushAllDeletedTextureObjects();
-            void discardAllDeletedTextureObjects();
-            void flushDeletedTextureObjects(double currentTime, double& availableTime);
-
-            osg::ref_ptr<TextureObject> takeFromOrphans(Texture* texture);
-            osg::ref_ptr<TextureObject> takeOrGenerate(Texture* texture);
-            void moveToBack(TextureObject* to);
-            void addToBack(TextureObject* to);
-            void orphan(TextureObject* to);
-            void remove(TextureObject* to);
-            void moveToSet(TextureObject* to, TextureObjectSet* set);
-
-            unsigned int size() const { return _profile._size * _numOfTextureObjects; }
-
-            bool makeSpace(unsigned int& size);
-
-            bool checkConsistency() const;
-
-            TextureObjectManager* getParent() { return _parent; }
-
-            unsigned int computeNumTextureObjectsInList() const;
-            unsigned int getNumOfTextureObjects() const { return _numOfTextureObjects; }
-            unsigned int getNumOrphans() const { return static_cast<unsigned int>(_orphanedTextureObjects.size()); }
-            unsigned int getNumPendingOrphans() const { return static_cast<unsigned int>(_pendingOrphanedTextureObjects.size()); }
-
-        protected:
-
-            virtual ~TextureObjectSet();
-
-            OpenThreads::Mutex  _mutex;
-
-            TextureObjectManager*       _parent;
-            unsigned int                _contextID;
-            TextureProfile              _profile;
-            unsigned int                _numOfTextureObjects;
-            TextureObjectList           _orphanedTextureObjects;
-            TextureObjectList           _pendingOrphanedTextureObjects;
-
-            TextureObject*              _head;
-            TextureObject*              _tail;
-
-        };
-
-        class OSG_EXPORT TextureObjectManager : public osg::Referenced
-        {
-        public:
-            TextureObjectManager(unsigned int contextID);
-
-            unsigned int getContextID() const { return _contextID; }
-
-
-
-            void setNumberActiveTextureObjects(unsigned int size) { _numActiveTextureObjects = size; }
-            unsigned int& getNumberActiveTextureObjects() { return _numActiveTextureObjects; }
-            unsigned int getNumberActiveTextureObjects() const { return _numActiveTextureObjects; }
-
-            void setNumberOrphanedTextureObjects(unsigned int size) { _numOrphanedTextureObjects = size; }
-            unsigned int& getNumberOrphanedTextureObjects() { return _numOrphanedTextureObjects; }
-            unsigned int getNumberOrphanedTextureObjects() const { return _numOrphanedTextureObjects; }
-
-            void setCurrTexturePoolSize(unsigned int size) { _currTexturePoolSize = size; }
-            unsigned int& getCurrTexturePoolSize() { return _currTexturePoolSize; }
-            unsigned int getCurrTexturePoolSize() const { return _currTexturePoolSize; }
-
-            void setMaxTexturePoolSize(unsigned int size);
-            unsigned int getMaxTexturePoolSize() const { return _maxTexturePoolSize; }
-
-            bool hasSpace(unsigned int size) const { return (_currTexturePoolSize+size)<=_maxTexturePoolSize; }
-            bool makeSpace(unsigned int size);
-
-            osg::ref_ptr<TextureObject> generateTextureObject(const Texture* texture, GLenum target);
-            osg::ref_ptr<TextureObject> generateTextureObject(const Texture* texture,
-                                                        GLenum    target,
-                                                        GLint     numMipmapLevels,
-                                                        GLenum    internalFormat,
-                                                        GLsizei   width,
-                                                        GLsizei   height,
-                                                        GLsizei   depth,
-                                                        GLint     border);
-            void handlePendingOrphandedTextureObjects();
-            void deleteAllTextureObjects();
-            void discardAllTextureObjects();
-            void flushAllDeletedTextureObjects();
-            void discardAllDeletedTextureObjects();
-            void flushDeletedTextureObjects(double currentTime, double& availableTime);
-            void releaseTextureObject(TextureObject* to);
-
-            TextureObjectSet* getTextureObjectSet(const TextureProfile& profile);
-
-            void newFrame(osg::FrameStamp* fs);
-            void resetStats();
-            void reportStats(std::ostream& out);
-            void recomputeStats(std::ostream& out) const;
-            bool checkConsistency() const;
-
-            unsigned int& getFrameNumber() { return _frameNumber; }
-            unsigned int& getNumberFrames() { return _numFrames; }
-
-            unsigned int& getNumberDeleted() { return _numDeleted; }
-            double& getDeleteTime() { return _deleteTime; }
-
-            unsigned int& getNumberGenerated() { return _numGenerated; }
-            double& getGenerateTime() { return _generateTime; }
-
-            unsigned int& getNumberApplied() { return _numApplied; }
-            double& getApplyTime() { return _applyTime; }
-
-
-        protected:
-
-            typedef std::map< TextureProfile, osg::ref_ptr<TextureObjectSet> > TextureSetMap;
-            unsigned int        _contextID;
-            unsigned int        _numActiveTextureObjects;
-            unsigned int        _numOrphanedTextureObjects;
-            unsigned int        _currTexturePoolSize;
-            unsigned int        _maxTexturePoolSize;
-            TextureSetMap       _textureSetMap;
-
-            unsigned int        _frameNumber;
-
-            unsigned int        _numFrames;
-            unsigned int        _numDeleted;
-            double              _deleteTime;
-
-            unsigned int        _numGenerated;
-            double              _generateTime;
-
-            unsigned int        _numApplied;
-            double              _applyTime;
-
-        };
-
-        static osg::ref_ptr<Texture::TextureObjectManager>&  getTextureObjectManager(unsigned int contextID);
 
         static osg::ref_ptr<TextureObject> generateTextureObject(const Texture* texture, unsigned int contextID,GLenum target);
 
@@ -1254,13 +1115,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                                                      GLsizei   depth,
                                                      GLint     border) const;
 
-        static void deleteAllTextureObjects(unsigned int contextID);
-        static void discardAllTextureObjects(unsigned int contextID);
-        static void flushAllDeletedTextureObjects(unsigned int contextID);
-        static void discardAllDeletedTextureObjects(unsigned int contextID);
-        static void flushDeletedTextureObjects(unsigned int contextID,double currentTime, double& availableTime);
-        static void releaseTextureObject(unsigned int contextID, TextureObject* to);
-
     protected:
 
         typedef buffered_object< ref_ptr<TextureObject> >  TextureObjectBuffer;
@@ -1269,6 +1123,139 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
 };
 
+class OSG_EXPORT TextureObjectSet : public Referenced
+{
+public:
+    TextureObjectSet(TextureObjectManager* parent, const Texture::TextureProfile& profile);
+
+    const Texture::TextureProfile& getProfile() const { return _profile; }
+
+    void handlePendingOrphandedTextureObjects();
+
+    void deleteAllTextureObjects();
+    void discardAllTextureObjects();
+    void flushAllDeletedTextureObjects();
+    void discardAllDeletedTextureObjects();
+    void flushDeletedTextureObjects(double currentTime, double& availableTime);
+
+    osg::ref_ptr<Texture::TextureObject> takeFromOrphans(Texture* texture);
+    osg::ref_ptr<Texture::TextureObject> takeOrGenerate(Texture* texture);
+    void moveToBack(Texture::TextureObject* to);
+    void addToBack(Texture::TextureObject* to);
+    void orphan(Texture::TextureObject* to);
+    void remove(Texture::TextureObject* to);
+    void moveToSet(Texture::TextureObject* to, TextureObjectSet* set);
+
+    unsigned int size() const { return _profile._size * _numOfTextureObjects; }
+
+    bool makeSpace(unsigned int& size);
+
+    bool checkConsistency() const;
+
+    TextureObjectManager* getParent() { return _parent; }
+
+    unsigned int computeNumTextureObjectsInList() const;
+    unsigned int getNumOfTextureObjects() const { return _numOfTextureObjects; }
+    unsigned int getNumOrphans() const { return static_cast<unsigned int>(_orphanedTextureObjects.size()); }
+    unsigned int getNumPendingOrphans() const { return static_cast<unsigned int>(_pendingOrphanedTextureObjects.size()); }
+
+protected:
+
+    virtual ~TextureObjectSet();
+
+    OpenThreads::Mutex  _mutex;
+
+    TextureObjectManager*       _parent;
+    unsigned int                _contextID;
+    Texture::TextureProfile     _profile;
+    unsigned int                _numOfTextureObjects;
+    Texture::TextureObjectList  _orphanedTextureObjects;
+    Texture::TextureObjectList  _pendingOrphanedTextureObjects;
+
+    Texture::TextureObject*     _head;
+    Texture::TextureObject*     _tail;
+
+};
+
+class OSG_EXPORT TextureObjectManager : public GraphicsObjectManager
+{
+public:
+    TextureObjectManager(unsigned int contextID);
+
+
+    void setNumberActiveTextureObjects(unsigned int size) { _numActiveTextureObjects = size; }
+    unsigned int& getNumberActiveTextureObjects() { return _numActiveTextureObjects; }
+    unsigned int getNumberActiveTextureObjects() const { return _numActiveTextureObjects; }
+
+    void setNumberOrphanedTextureObjects(unsigned int size) { _numOrphanedTextureObjects = size; }
+    unsigned int& getNumberOrphanedTextureObjects() { return _numOrphanedTextureObjects; }
+    unsigned int getNumberOrphanedTextureObjects() const { return _numOrphanedTextureObjects; }
+
+    void setCurrTexturePoolSize(unsigned int size) { _currTexturePoolSize = size; }
+    unsigned int& getCurrTexturePoolSize() { return _currTexturePoolSize; }
+    unsigned int getCurrTexturePoolSize() const { return _currTexturePoolSize; }
+
+    void setMaxTexturePoolSize(unsigned int size);
+    unsigned int getMaxTexturePoolSize() const { return _maxTexturePoolSize; }
+
+    bool hasSpace(unsigned int size) const { return (_currTexturePoolSize+size)<=_maxTexturePoolSize; }
+    bool makeSpace(unsigned int size);
+
+    osg::ref_ptr<Texture::TextureObject> generateTextureObject(const Texture* texture, GLenum target);
+    osg::ref_ptr<Texture::TextureObject> generateTextureObject(const Texture* texture,
+                                                GLenum    target,
+                                                GLint     numMipmapLevels,
+                                                GLenum    internalFormat,
+                                                GLsizei   width,
+                                                GLsizei   height,
+                                                GLsizei   depth,
+                                                GLint     border);
+    void handlePendingOrphandedTextureObjects();
+
+    void deleteAllGLObjects();
+    void discardAllGLObjects();
+    void flushAllDeletedGLObjects();
+    void discardAllDeletedGLObjects();
+    void flushDeletedGLObjects(double currentTime, double& availableTime);
+
+    TextureObjectSet* getTextureObjectSet(const Texture::TextureProfile& profile);
+
+    void newFrame(osg::FrameStamp* fs);
+    void resetStats();
+    void reportStats(std::ostream& out);
+    void recomputeStats(std::ostream& out) const;
+    bool checkConsistency() const;
+
+    unsigned int& getFrameNumber() { return _frameNumber; }
+    unsigned int& getNumberFrames() { return _numFrames; }
+
+    unsigned int& getNumberDeleted() { return _numDeleted; }
+    double& getDeleteTime() { return _deleteTime; }
+
+    unsigned int& getNumberGenerated() { return _numGenerated; }
+    double& getGenerateTime() { return _generateTime; }
+
+protected:
+
+    ~TextureObjectManager();
+
+    typedef std::map< Texture::TextureProfile, osg::ref_ptr<TextureObjectSet> > TextureSetMap;
+
+    unsigned int        _numActiveTextureObjects;
+    unsigned int        _numOrphanedTextureObjects;
+    unsigned int        _currTexturePoolSize;
+    unsigned int        _maxTexturePoolSize;
+    TextureSetMap       _textureSetMap;
+
+    unsigned int        _frameNumber;
+
+    unsigned int        _numFrames;
+    unsigned int        _numDeleted;
+    double              _deleteTime;
+
+    unsigned int        _numGenerated;
+    double              _generateTime;
+};
 }
 
 #endif

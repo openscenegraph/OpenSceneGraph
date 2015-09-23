@@ -205,21 +205,6 @@ class OSG_EXPORT Shader : public osg::Object
         /** If needed, compile the PCS's glShader */
         void compileShader(osg::State& state) const;
 
-
-        /** Mark internal glShader for deletion.
-          * Deletion requests are queued until they can be executed
-          * in the proper GL context. */
-        static void deleteGlShader(unsigned int contextID, GLuint shader);
-
-        /** flush all the cached glShaders which need to be deleted
-          * in the OpenGL context related to contextID.*/
-        static void flushDeletedGlShaders(unsigned int contextID,double currentTime, double& availableTime);
-
-        /** discard all the cached glShaders which need to be deleted in the OpenGL context related to contextID.
-          * Note, unlike flush no OpenGL calls are made, instead the handles are all removed.
-          * this call is useful for when an OpenGL context has been destroyed. */
-        static void discardDeletedGlShaders(unsigned int contextID);
-
         static Shader::Type getTypeId( const std::string& tname );
 
     public:

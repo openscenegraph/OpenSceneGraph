@@ -147,20 +147,6 @@ class OSG_EXPORT RenderBuffer: public Object
         GLuint getObjectID(unsigned int contextID, const GLExtensions *ext) const;
         inline int compare(const RenderBuffer &rb) const;
 
-        /** Mark internal RenderBuffer for deletion.
-          * Deletion requests are queued until they can be executed
-          * in the proper GL context. */
-        static void deleteRenderBuffer(unsigned int contextID, GLuint rb);
-
-        /** flush all the cached RenderBuffers which need to be deleted
-          * in the OpenGL context related to contextID.*/
-        static void flushDeletedRenderBuffers(unsigned int contextID,double currentTime, double& availableTime);
-
-        /** discard all the cached RenderBuffers which need to be deleted in the OpenGL context related to contextID.
-          * Note, unlike flush no OpenGL calls are made, instead the handles are all removed.
-          * this call is useful for when an OpenGL context has been destroyed. */
-        static void discardDeletedRenderBuffers(unsigned int contextID);
-
         static int getMaxSamples(unsigned int contextID, const GLExtensions* ext);
 
         /** Resize any per context GLObject buffers to specified size. */
@@ -372,19 +358,6 @@ class OSG_EXPORT FrameBufferObject: public StateAttribute
         /** Bind the FBO as either the read or draw target, or both. */
         void apply(State &state, BindTarget target) const;
 
-        /** Mark internal FBO for deletion.
-          * Deletion requests are queued until they can be executed
-          * in the proper GL context. */
-        static void deleteFrameBufferObject(unsigned int contextID, GLuint program);
-
-        /** flush all the cached FBOs which need to be deleted
-          * in the OpenGL context related to contextID.*/
-        static void flushDeletedFrameBufferObjects(unsigned int contextID,double currentTime, double& availableTime);
-
-        /** discard all the cached FBOs which need to be deleted
-          * in the OpenGL context related to contextID.*/
-        static void discardDeletedFrameBufferObjects(unsigned int contextID);
-
         /** Resize any per context GLObject buffers to specified size. */
         virtual void resizeGLObjectBuffers(unsigned int maxSize);
 
@@ -413,30 +386,43 @@ class OSG_EXPORT FrameBufferObject: public StateAttribute
         mutable buffered_value<int>         _unsupported;
         mutable buffered_value<GLuint>      _fboID;
 
-    };
+};
 
-    // INLINE METHODS
+// INLINE METHODS
 
-    inline const FrameBufferObject::AttachmentMap &FrameBufferObject::getAttachmentMap() const
-    {
-        return _attachments;
-    }
+inline const FrameBufferObject::AttachmentMap &FrameBufferObject::getAttachmentMap() const
+{
+    return _attachments;
+}
 
-    inline bool FrameBufferObject::hasAttachment(FrameBufferObject::BufferComponent attachment_point) const
-    {
-        return _attachments.find(attachment_point) != _attachments.end();
-    }
+inline bool FrameBufferObject::hasAttachment(FrameBufferObject::BufferComponent attachment_point) const
+{
+    return _attachments.find(attachment_point) != _attachments.end();
+}
 
-    inline const FrameBufferAttachment &FrameBufferObject::getAttachment(FrameBufferObject::BufferComponent attachment_point) const
-    {
-        return _attachments.find(attachment_point)->second;
-    }
+inline const FrameBufferAttachment &FrameBufferObject::getAttachment(FrameBufferObject::BufferComponent attachment_point) const
+{
+    return _attachments.find(attachment_point)->second;
+}
 
-    inline void FrameBufferObject::dirtyAll()
-    {
-        _dirtyAttachmentList.setAllElementsTo(1);
-    }
+inline void FrameBufferObject::dirtyAll()
+{
+    _dirtyAttachmentList.setAllElementsTo(1);
+}
 
+class OSG_EXPORT GLRenderBufferManager : public GLObjectManager
+{
+public:
+    GLRenderBufferManager(unsigned int contextID);
+    virtual void deleteGLObject(GLuint globj);
+};
+
+class OSG_EXPORT GLFrameBufferObjectManager : public GLObjectManager
+{
+public:
+    GLFrameBufferObjectManager(unsigned int contextID);
+    virtual void deleteGLObject(GLuint globj);
+};
 
 }
 

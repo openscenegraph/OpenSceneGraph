@@ -21,6 +21,7 @@
 #include <osg/GLExtensions>
 #include <osg/Timer>
 #include <osg/TriangleFunctor>
+#include <osg/ContextData>
 #include <osg/io_utils>
 
 #include <algorithm>
@@ -32,58 +33,7 @@
 
 using namespace osg;
 
-unsigned int Drawable::s_numberDrawablesReusedLastInLastFrame = 0;
-unsigned int Drawable::s_numberNewDrawablesInLastFrame = 0;
-unsigned int Drawable::s_numberDeletedDrawablesInLastFrame = 0;
-
-// static cache of deleted display lists which can only
-// by completely deleted once the appropriate OpenGL context
-// is set.  Used osg::Drawable::deleteDisplayList(..) and flushDeletedDisplayLists(..) below.
-typedef std::multimap<unsigned int,GLuint> DisplayListMap;
-typedef osg::buffered_object<DisplayListMap> DeletedDisplayListCache;
-
-static OpenThreads::Mutex s_mutex_deletedDisplayListCache;
-static DeletedDisplayListCache s_deletedDisplayListCache;
-
-GLuint Drawable::generateDisplayList(unsigned int contextID, unsigned int sizeHint)
-{
-#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
-
-    DisplayListMap& dll = s_deletedDisplayListCache[contextID];
-    if (dll.empty())
-    {
-        ++s_numberNewDrawablesInLastFrame;
-        return  glGenLists( 1 );
-    }
-    else
-    {
-        DisplayListMap::iterator itr = dll.lower_bound(sizeHint);
-        if (itr!=dll.end())
-        {
-            // OSG_NOTICE<<"Reusing a display list of size = "<<itr->first<<" for requested size = "<<sizeHint<<std::endl;
-
-            ++s_numberDrawablesReusedLastInLastFrame;
-
-            GLuint globj = itr->second;
-            dll.erase(itr);
-
-            return globj;
-        }
-        else
-        {
-            // OSG_NOTICE<<"Creating a new display list of size = "<<sizeHint<<" although "<<dll.size()<<" are available"<<std::endl;
-            ++s_numberNewDrawablesInLastFrame;
-            return  glGenLists( 1 );
-        }
-    }
-#else
-    OSG_NOTICE<<"Warning: Drawable::generateDisplayList(..) - not supported."<<std::endl;
-    return 0;
-#endif
-}
-
-unsigned int s_minimumNumberOfDisplayListsToRetainInCache = 0;
+static unsigned int s_minimumNumberOfDisplayListsToRetainInCache = 0;
 void Drawable::setMinimumNumberOfDisplayListsToRetainInCache(unsigned int minimum)
 {
     s_minimumNumberOfDisplayListsToRetainInCache = minimum;
@@ -94,127 +44,204 @@ unsigned int Drawable::getMinimumNumberOfDisplayListsToRetainInCache()
     return s_minimumNumberOfDisplayListsToRetainInCache;
 }
 
-void Drawable::deleteDisplayList(unsigned int contextID,GLuint globj, unsigned int sizeHint)
+class DisplayListManager : public GraphicsObjectManager
 {
-#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
-    if (globj!=0)
+public:
+    DisplayListManager(unsigned int contextID):
+        GraphicsObjectManager("DisplayListManager", contextID),
+        _numberDrawablesReusedLastInLastFrame(0),
+        _numberNewDrawablesInLastFrame(0),
+        _numberDeletedDrawablesInLastFrame(0)
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
-
-        // insert the globj into the cache for the appropriate context.
-        s_deletedDisplayListCache[contextID].insert(DisplayListMap::value_type(sizeHint,globj));
-    }
-#else
-    OSG_NOTICE<<"Warning: Drawable::deleteDisplayList(..) - not supported."<<std::endl;
-#endif
-}
-
-void Drawable::flushAllDeletedDisplayLists(unsigned int contextID)
-{
-#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
-
-    DisplayListMap& dll = s_deletedDisplayListCache[contextID];
-
-    for(DisplayListMap::iterator ditr=dll.begin();
-        ditr!=dll.end();
-        ++ditr)
-    {
-        glDeleteLists(ditr->second,1);
     }
 
-    dll.clear();
-#else
-    OSG_NOTICE<<"Warning: Drawable::deleteDisplayList(..) - not supported."<<std::endl;
-#endif
-}
-
-void Drawable::discardAllDeletedDisplayLists(unsigned int contextID)
-{
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
-
-    DisplayListMap& dll = s_deletedDisplayListCache[contextID];
-    dll.clear();
-}
-
-void Drawable::flushDeletedDisplayLists(unsigned int contextID, double& availableTime)
-{
-#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
-    // if no time available don't try to flush objects.
-    if (availableTime<=0.0) return;
-
-    const osg::Timer& timer = *osg::Timer::instance();
-    osg::Timer_t start_tick = timer.tick();
-    double elapsedTime = 0.0;
-
-    unsigned int noDeleted = 0;
-
+    virtual void flushDeletedGLObjects(double, double& availableTime)
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
+    #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
+        // OSG_NOTICE<<"void DisplayListManager::flushDeletedGLObjects(, "<<availableTime<<")"<<std::endl;
 
-        DisplayListMap& dll = s_deletedDisplayListCache[contextID];
+        // if no time available don't try to flush objects.
+        if (availableTime<=0.0) return;
 
-        bool trimFromFront = true;
-        if (trimFromFront)
+        const osg::Timer& timer = *osg::Timer::instance();
+        osg::Timer_t start_tick = timer.tick();
+        double elapsedTime = 0.0;
+
+        unsigned int noDeleted = 0;
+
         {
-            unsigned int prev_size = dll.size();
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_deletedDisplayListCache);
 
-            DisplayListMap::iterator ditr=dll.begin();
-            unsigned int maxNumToDelete = (dll.size() > s_minimumNumberOfDisplayListsToRetainInCache) ? dll.size()-s_minimumNumberOfDisplayListsToRetainInCache : 0;
-            for(;
-                ditr!=dll.end() && elapsedTime<availableTime && noDeleted<maxNumToDelete;
-                ++ditr)
+            bool trimFromFront = true;
+            if (trimFromFront)
             {
-                glDeleteLists(ditr->second,1);
+                unsigned int prev_size = _displayListMap.size();
 
-                elapsedTime = timer.delta_s(start_tick,timer.tick());
-                ++noDeleted;
+                DisplayListMap::iterator ditr=_displayListMap.begin();
+                unsigned int maxNumToDelete = (_displayListMap.size() > s_minimumNumberOfDisplayListsToRetainInCache) ? _displayListMap.size()-s_minimumNumberOfDisplayListsToRetainInCache : 0;
+                for(;
+                    ditr!=_displayListMap.end() && elapsedTime<availableTime && noDeleted<maxNumToDelete;
+                    ++ditr)
+                {
+                    glDeleteLists(ditr->second,1);
 
-                ++Drawable::s_numberDeletedDrawablesInLastFrame;
-             }
+                    elapsedTime = timer.delta_s(start_tick,timer.tick());
+                    ++noDeleted;
 
-             if (ditr!=dll.begin()) dll.erase(dll.begin(),ditr);
+                    ++_numberDeletedDrawablesInLastFrame;
+                }
 
-             if (noDeleted+dll.size() != prev_size)
-             {
-                OSG_WARN<<"Error in delete"<<std::endl;
-             }
+                if (ditr!=_displayListMap.begin()) _displayListMap.erase(_displayListMap.begin(),ditr);
+
+                if (noDeleted+_displayListMap.size() != prev_size)
+                {
+                    OSG_WARN<<"Error in delete"<<std::endl;
+                }
+            }
+            else
+            {
+                unsigned int prev_size = _displayListMap.size();
+
+                DisplayListMap::reverse_iterator ditr=_displayListMap.rbegin();
+                unsigned int maxNumToDelete = (_displayListMap.size() > s_minimumNumberOfDisplayListsToRetainInCache) ? _displayListMap.size()-s_minimumNumberOfDisplayListsToRetainInCache : 0;
+                for(;
+                    ditr!=_displayListMap.rend() && elapsedTime<availableTime && noDeleted<maxNumToDelete;
+                    ++ditr)
+                {
+                    glDeleteLists(ditr->second,1);
+
+                    elapsedTime = timer.delta_s(start_tick,timer.tick());
+                    ++noDeleted;
+
+                    ++_numberDeletedDrawablesInLastFrame;
+                }
+
+                if (ditr!=_displayListMap.rbegin()) _displayListMap.erase(ditr.base(),_displayListMap.end());
+
+                if (noDeleted+_displayListMap.size() != prev_size)
+                {
+                    OSG_WARN<<"Error in delete"<<std::endl;
+                }
+            }
+        }
+        elapsedTime = timer.delta_s(start_tick,timer.tick());
+
+        if (noDeleted!=0) OSG_INFO<<"Number display lists deleted = "<<noDeleted<<" elapsed time"<<elapsedTime<<std::endl;
+
+        availableTime -= elapsedTime;
+    #else
+        OSG_NOTICE<<"Warning: Drawable::flushDeletedDisplayLists(..) - not supported."<<std::endl;
+    #endif
+    }
+
+    virtual void flushAllDeletedGLObjects()
+    {
+    #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
+
+        OSG_NOTICE<<"void DisplayListManager::flushAllDeletedGLObjects()"<<std::endl;
+
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_deletedDisplayListCache);
+
+        for(DisplayListMap::iterator ditr=_displayListMap.begin();
+            ditr!=_displayListMap.end();
+            ++ditr)
+        {
+            glDeleteLists(ditr->second,1);
+        }
+
+        _displayListMap.clear();
+    #else
+        OSG_NOTICE<<"Warning: Drawable::deleteDisplayList(..) - not supported."<<std::endl;
+    #endif
+    }
+
+    virtual void deleteAllGLObjects()
+    {
+         OSG_NOTICE<<"DisplayListManager::deleteAllGLObjects() Not currently implementated"<<std::endl;
+    }
+
+    virtual void discardAllGLObjects()
+    {
+        OSG_NOTICE<<"void DisplayListManager::discardAllGLObjects()"<<std::endl;
+
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_deletedDisplayListCache);
+        _displayListMap.clear();
+    }
+
+    void deleteDisplayList(GLuint globj, unsigned int sizeHint)
+    {
+    #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
+        if (globj!=0)
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_deletedDisplayListCache);
+
+            // insert the globj into the cache for the appropriate context.
+            _displayListMap.insert(DisplayListMap::value_type(sizeHint,globj));
+        }
+    #else
+        OSG_NOTICE<<"Warning: Drawable::deleteDisplayList(..) - not supported."<<std::endl;
+    #endif
+    }
+
+    GLuint generateDisplayList(unsigned int sizeHint)
+    {
+    #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_deletedDisplayListCache);
+
+        if (_displayListMap.empty())
+        {
+            ++_numberNewDrawablesInLastFrame;
+            return  glGenLists( 1 );
         }
         else
         {
-            unsigned int prev_size = dll.size();
-
-            DisplayListMap::reverse_iterator ditr=dll.rbegin();
-            unsigned int maxNumToDelete = (dll.size() > s_minimumNumberOfDisplayListsToRetainInCache) ? dll.size()-s_minimumNumberOfDisplayListsToRetainInCache : 0;
-            for(;
-                ditr!=dll.rend() && elapsedTime<availableTime && noDeleted<maxNumToDelete;
-                ++ditr)
+            DisplayListMap::iterator itr = _displayListMap.lower_bound(sizeHint);
+            if (itr!=_displayListMap.end())
             {
-                glDeleteLists(ditr->second,1);
+                // OSG_NOTICE<<"Reusing a display list of size = "<<itr->first<<" for requested size = "<<sizeHint<<std::endl;
 
-                elapsedTime = timer.delta_s(start_tick,timer.tick());
-                ++noDeleted;
+                ++_numberDrawablesReusedLastInLastFrame;
 
-                ++Drawable::s_numberDeletedDrawablesInLastFrame;
-             }
+                GLuint globj = itr->second;
+                _displayListMap.erase(itr);
 
-             if (ditr!=dll.rbegin()) dll.erase(ditr.base(),dll.end());
-
-             if (noDeleted+dll.size() != prev_size)
-             {
-                OSG_WARN<<"Error in delete"<<std::endl;
-             }
+                return globj;
+            }
+            else
+            {
+                // OSG_NOTICE<<"Creating a new display list of size = "<<sizeHint<<" although "<<_displayListMap.size()<<" are available"<<std::endl;
+                ++_numberNewDrawablesInLastFrame;
+                return  glGenLists( 1 );
+            }
         }
+    #else
+        OSG_NOTICE<<"Warning: Drawable::generateDisplayList(..) - not supported."<<std::endl;
+        return 0;
+    #endif
     }
-    elapsedTime = timer.delta_s(start_tick,timer.tick());
 
-    if (noDeleted!=0) OSG_INFO<<"Number display lists deleted = "<<noDeleted<<" elapsed time"<<elapsedTime<<std::endl;
+protected:
 
-    availableTime -= elapsedTime;
-#else
-    OSG_NOTICE<<"Warning: Drawable::flushDeletedDisplayLists(..) - not supported."<<std::endl;
-#endif
+    int _numberDrawablesReusedLastInLastFrame;
+    int _numberNewDrawablesInLastFrame;
+    int _numberDeletedDrawablesInLastFrame;
+
+    typedef std::multimap<unsigned int,GLuint> DisplayListMap;
+    OpenThreads::Mutex _mutex_deletedDisplayListCache;
+    DisplayListMap _displayListMap;
+
+};
+
+GLuint Drawable::generateDisplayList(unsigned int contextID, unsigned int sizeHint)
+{
+    return osg::get<DisplayListManager>(contextID)->generateDisplayList(sizeHint);
 }
+
+void Drawable::deleteDisplayList(unsigned int contextID,GLuint globj, unsigned int sizeHint)
+{
+    osg::get<DisplayListManager>(contextID)->deleteDisplayList(globj, sizeHint);
+}
+
 
 bool Drawable::UpdateCallback::run(osg::Object* object, osg::Object* data)
 {

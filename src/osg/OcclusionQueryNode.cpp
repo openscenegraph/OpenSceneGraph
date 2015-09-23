@@ -32,6 +32,7 @@
 #include <osg/ColorMask>
 #include <osg/PolygonOffset>
 #include <osg/Depth>
+#include <osg/ContextData>
 #include <map>
 #include <vector>
 
@@ -230,17 +231,21 @@ struct ClearQueriesCallback : public osg::Camera::DrawCallback
 };
 
 
-// static cache of deleted query objects which can only
-// be completely deleted once the appropriate OpenGL context
-// is set.
-typedef std::list< GLuint > QueryObjectList;
-typedef osg::buffered_object< QueryObjectList > DeletedQueryObjectCache;
-
-static OpenThreads::Mutex s_mutex_deletedQueryObjectCache;
-static DeletedQueryObjectCache s_deletedQueryObjectCache;
 
 namespace osg
 {
+
+class QueryObjectManager : public GLObjectManager
+{
+public:
+    QueryObjectManager(unsigned int contextID) : GLObjectManager("QueryObjectManager", contextID) {}
+
+    virtual void deleteGLObject(GLuint globj)
+    {
+        const GLExtensions* extensions = GLExtensions::Get(_contextID,true);
+        if (extensions->isGlslSupported) extensions->glDeleteQueries( 1L, &globj );
+    }
+};
 
 
 QueryGeometry::QueryGeometry( const std::string& oqnName )
@@ -378,7 +383,11 @@ QueryGeometry::releaseGLObjects( osg::State* state ) const
             TestResult& tr = it->second;
             if (tr._contextID == contextID)
             {
+#if 1
+                osg::get<QueryObjectManager>(contextID)->sheduleGLObjectForDeletion(tr._id );
+#else
                 QueryGeometry::deleteQueryObject( contextID, tr._id );
+#endif
                 tr._init = false;
             }
             it++;
@@ -389,52 +398,20 @@ QueryGeometry::releaseGLObjects( osg::State* state ) const
 void
 QueryGeometry::deleteQueryObject( unsigned int contextID, GLuint handle )
 {
-    if (handle!=0)
-    {
-        OpenThreads::ScopedLock< OpenThreads::Mutex > lock( s_mutex_deletedQueryObjectCache );
-
-        // insert the handle into the cache for the appropriate context.
-        s_deletedQueryObjectCache[contextID].push_back( handle );
-    }
+    osg::get<QueryObjectManager>(contextID)->sheduleGLObjectForDeletion(handle);
 }
 
 
 void
-QueryGeometry::flushDeletedQueryObjects( unsigned int contextID, double /*currentTime*/, double& availableTime )
+QueryGeometry::flushDeletedQueryObjects( unsigned int contextID, double currentTime, double& availableTime )
 {
-    // if no time available don't try to flush objects.
-    if (availableTime<=0.0) return;
-
-    const osg::Timer& timer = *osg::Timer::instance();
-    osg::Timer_t start_tick = timer.tick();
-    double elapsedTime = 0.0;
-
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedQueryObjectCache);
-
-        const osg::GLExtensions* extensions = osg::GLExtensions::Get( contextID, true );
-
-        QueryObjectList& qol = s_deletedQueryObjectCache[contextID];
-
-        for(QueryObjectList::iterator titr=qol.begin();
-            titr!=qol.end() && elapsedTime<availableTime;
-            )
-        {
-            extensions->glDeleteQueries( 1L, &(*titr ) );
-            titr = qol.erase(titr);
-            elapsedTime = timer.delta_s(start_tick,timer.tick());
-        }
-    }
-
-    availableTime -= elapsedTime;
+    osg::get<QueryObjectManager>(contextID)->flushDeletedGLObjects(currentTime, availableTime);
 }
 
 void
 QueryGeometry::discardDeletedQueryObjects( unsigned int contextID )
 {
-    OpenThreads::ScopedLock< OpenThreads::Mutex > lock( s_mutex_deletedQueryObjectCache );
-    QueryObjectList& qol = s_deletedQueryObjectCache[ contextID ];
-    qol.clear();
+    osg::get<QueryObjectManager>(contextID)->discardAllGLObjects();
 }
 
 // End support classes

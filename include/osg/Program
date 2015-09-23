@@ -228,21 +228,6 @@ class OSG_EXPORT Program : public osg::StateAttribute
         /** Query InfoLog from a glProgram */
         bool getGlProgramInfoLog(unsigned int contextID, std::string& log) const;
 
-        /** Mark internal glProgram for deletion.
-          * Deletion requests are queued until they can be executed
-          * in the proper GL context. */
-        static void deleteGlProgram(unsigned int contextID, GLuint program);
-
-        /** flush all the cached glPrograms which need to be deleted
-          * in the OpenGL context related to contextID.*/
-        static void flushDeletedGlPrograms(unsigned int contextID,double currentTime, double& availableTime);
-
-        /** discard all the cached glPrograms which need to be deleted
-          * in the OpenGL context related to contextID.
-          * Note, unlike flush no OpenGL calls are made, instead the handles are all removed.
-          * this call is useful for when an OpenGL context has been destroyed. */
-        static void discardDeletedGlPrograms(unsigned int contextID);
-
         struct ActiveVarInfo {
             ActiveVarInfo() : _location(-1), _type(Uniform::UNDEFINED), _size(-1) {}
             ActiveVarInfo( GLint loc, GLenum type, GLint size ) : _location(loc), _type(type), _size(size) {}
@@ -409,7 +394,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 PerContextProgram& operator=(const PerContextProgram&);        // disallowed
         };
 
-        struct OSG_EXPORT ProgramObjects : public osg::Referenced
+        struct OSG_EXPORT ProgramObjects : public osg::GraphicsObject
         {
             typedef std::vector< osg::ref_ptr<PerContextProgram> > PerContextPrograms;
 

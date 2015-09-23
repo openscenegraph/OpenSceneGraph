@@ -15,71 +15,21 @@
 #include <osg/FragmentProgram>
 #include <osg/State>
 #include <osg/Timer>
-
-#include <list>
-
-#include <OpenThreads/ScopedLock>
-#include <OpenThreads/Mutex>
+#include <osg/ContextData>
 
 using namespace osg;
 
-// static cache of deleted fragment programs which can only
-// by completely deleted once the appropriate OpenGL context
-// is set.
-typedef std::list<GLuint> FragmentProgramObjectList;
-typedef osg::buffered_object<FragmentProgramObjectList> DeletedFragmentProgramObjectCache;
-
-static OpenThreads::Mutex                s_mutex_deletedFragmentProgramObjectCache;
-static DeletedFragmentProgramObjectCache s_deletedFragmentProgramObjectCache;
-
-void FragmentProgram::deleteFragmentProgramObject(unsigned int contextID,GLuint handle)
+class GLFragmentProgramManager : public GLObjectManager
 {
-    if (handle!=0)
+public:
+    GLFragmentProgramManager(unsigned int contextID) : GLObjectManager("GLFragmentProgramManager",contextID) {}
+
+    virtual void deleteGLObject(GLuint globj)
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedFragmentProgramObjectCache);
-
-        // insert the handle into the cache for the appropriate context.
-        s_deletedFragmentProgramObjectCache[contextID].push_back(handle);
+        const GLExtensions* extensions = GLExtensions::Get(_contextID,true);
+        if (extensions->isGlslSupported) extensions->glDeletePrograms(1, &globj );
     }
-}
-
-
-void FragmentProgram::flushDeletedFragmentProgramObjects(unsigned int contextID,double /*currentTime*/, double& availableTime)
-{
-    // if no time available don't try to flush objects.
-    if (availableTime<=0.0) return;
-
-    const osg::Timer& timer = *osg::Timer::instance();
-    osg::Timer_t start_tick = timer.tick();
-    double elapsedTime = 0.0;
-
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedFragmentProgramObjectCache);
-
-        const GLExtensions* extensions = GLExtensions::Get(contextID,true);
-
-        FragmentProgramObjectList& vpol = s_deletedFragmentProgramObjectCache[contextID];
-
-        for(FragmentProgramObjectList::iterator titr=vpol.begin();
-            titr!=vpol.end() && elapsedTime<availableTime;
-            )
-        {
-            extensions->glDeletePrograms( 1L, &(*titr ) );
-            titr = vpol.erase(titr);
-            elapsedTime = timer.delta_s(start_tick,timer.tick());
-        }
-    }
-
-    availableTime -= elapsedTime;
-}
-
-void FragmentProgram::discardDeletedFragmentProgramObjects(unsigned int contextID)
-{
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedFragmentProgramObjectCache);
-    FragmentProgramObjectList& vpol = s_deletedFragmentProgramObjectCache[contextID];
-    vpol.clear();
-}
-
+};
 
 FragmentProgram::FragmentProgram()
 {
@@ -117,7 +67,7 @@ void FragmentProgram::dirtyFragmentProgramObject()
     {
         if (_fragmentProgramIDList[i] != 0)
         {
-            FragmentProgram::deleteFragmentProgramObject(i,_fragmentProgramIDList[i]);
+            osg::get<GLFragmentProgramManager>(i)->deleteGLObject(_fragmentProgramIDList[i]);
             _fragmentProgramIDList[i] = 0;
         }
     }
@@ -207,7 +157,7 @@ void FragmentProgram::releaseGLObjects(State* state) const
         unsigned int contextID = state->getContextID();
         if (_fragmentProgramIDList[contextID] != 0)
         {
-            FragmentProgram::deleteFragmentProgramObject(contextID,_fragmentProgramIDList[contextID]);
+            osg::get<GLFragmentProgramManager>(contextID)->deleteGLObject(_fragmentProgramIDList[contextID]);
             _fragmentProgramIDList[contextID] = 0;
         }
     }

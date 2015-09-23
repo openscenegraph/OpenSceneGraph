@@ -14,6 +14,7 @@
 #include <osg/GLExtensions>
 #include <osg/Texture2D>
 #include <osg/State>
+#include <osg/ContextData>
 #include <osg/Notify>
 
 using namespace osg;
@@ -165,10 +166,6 @@ void Texture2D::apply(State& state) const
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
 
-    Texture::TextureObjectManager* tom = Texture::getTextureObjectManager(contextID).get();
-    ElapsedTime elapsedTime(&(tom->getApplyTime()));
-    tom->getNumberApplied()++;
-
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
     if (textureObject)
@@ -186,7 +183,7 @@ void Texture2D::apply(State& state) const
         if (textureObjectInvalidated)
         {
             // OSG_NOTICE<<"Discarding TextureObject"<<std::endl;
-            Texture::releaseTextureObject(contextID, _textureObjectBuffer[contextID].get());
+            _textureObjectBuffer[contextID]->release();
             _textureObjectBuffer[contextID] = 0;
             textureObject = 0;
         }

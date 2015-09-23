@@ -202,25 +202,8 @@ class OSG_EXPORT FragmentProgram : public StateAttribute
         /** Get list of Matrices */
         inline const MatrixList& getMatrices() const { return _matrixList; }
 
-
         /** Force a recompile on next apply() of associated OpenGL vertex program objects.*/
         void dirtyFragmentProgramObject();
-
-        /** use deleteFragmentProgramObject instead of glDeletePrograms to allow
-          * OpenGL Fragment Program objects to be cached until they can be deleted
-          * by the OpenGL context in which they were created, specified
-          * by contextID.*/
-        static void deleteFragmentProgramObject(unsigned int contextID,GLuint handle);
-
-        /** flush all the cached fragment programs which need to be deleted
-          * in the OpenGL context related to contextID.*/
-        static void flushDeletedFragmentProgramObjects(unsigned int contextID,double currentTime, double& availableTime);
-
-        /** discard all the cached fragment programs which need to be deleted
-          * in the OpenGL context related to contextID.
-          * Note, unlike flush no OpenGL calls are made, instead the handles are all removed.
-          * this call is useful for when an OpenGL context has been destroyed. */
-        static void discardDeletedFragmentProgramObjects(unsigned int contextID);
 
         virtual void apply(State& state) const;
 

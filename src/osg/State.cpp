@@ -17,6 +17,7 @@
 #include <osg/GLExtensions>
 #include <osg/Drawable>
 #include <osg/ApplicationUsage>
+#include <osg/ContextData>
 
 #include <sstream>
 #include <algorithm>
@@ -301,14 +302,14 @@ void State::setInitialViewMatrix(const osg::RefMatrix* matrix)
 void State::setMaxTexturePoolSize(unsigned int size)
 {
     _maxTexturePoolSize = size;
-    osg::Texture::getTextureObjectManager(getContextID())->setMaxTexturePoolSize(size);
+    osg::get<TextureObjectManager>(_contextID)->setMaxTexturePoolSize(size);
     OSG_INFO<<"osg::State::_maxTexturePoolSize="<<_maxTexturePoolSize<<std::endl;
 }
 
 void State::setMaxBufferObjectPoolSize(unsigned int size)
 {
     _maxBufferObjectPoolSize = size;
-    osg::GLBufferObjectManager::getGLBufferObjectManager(getContextID())->setMaxGLBufferObjectPoolSize(_maxBufferObjectPoolSize);
+    osg::get<GLBufferObjectManager>(_contextID)->setMaxGLBufferObjectPoolSize(_maxBufferObjectPoolSize);
     OSG_INFO<<"osg::State::_maxBufferObjectPoolSize="<<_maxBufferObjectPoolSize<<std::endl;
 }
 

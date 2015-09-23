@@ -17,6 +17,7 @@
 #include <osg/Camera>
 #include <osg/View>
 #include <osg/GLObjects>
+#include <osg/ContextData>
 
 #include <osg/FrameBufferObject>
 #include <osg/Program>
@@ -232,7 +233,7 @@ bool GraphicsContext::Traits::getContextVersion(unsigned int& major, unsigned in
     return true;
 }
 
-
+#if 0
 class ContextData
 {
 public:
@@ -261,197 +262,63 @@ public:
     osg::ref_ptr<osg::GraphicsContext> _compileContext;
 
 };
-
-
-typedef std::map<unsigned int, ContextData>  ContextIDMap;
-static ContextIDMap s_contextIDMap;
-static OpenThreads::ReentrantMutex s_contextIDMapMutex;
-static GraphicsContext::GraphicsContexts s_registeredContexts;
+#endif
 
 unsigned int GraphicsContext::createNewContextID()
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
-
-    // first check to see if we can reuse contextID;
-    for(ContextIDMap::iterator itr = s_contextIDMap.begin();
-        itr != s_contextIDMap.end();
-        ++itr)
-    {
-        if (itr->second._numContexts == 0)
-        {
-
-            // reuse contextID;
-            itr->second._numContexts = 1;
-
-            OSG_INFO<<"GraphicsContext::createNewContextID() reusing contextID="<<itr->first<<std::endl;
-
-            return itr->first;
-        }
-    }
-
-    unsigned int contextID = s_contextIDMap.size();
-    s_contextIDMap[contextID]._numContexts = 1;
-
-    OSG_INFO<<"GraphicsContext::createNewContextID() creating contextID="<<contextID<<std::endl;
-    OSG_INFO<<"Updating the MaxNumberOfGraphicsContexts to "<<contextID+1<<std::endl;
-
-    // update the maximum number of graphics contexts,
-    // to ensure that texture objects and display buffers are configured to the correct size.
-    osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts( contextID + 1 );
-
-    return contextID;
+    return ContextData::createNewContextID();
 }
 
 unsigned int GraphicsContext::getMaxContextID()
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
-    unsigned int maxContextID = 0;
-    for(ContextIDMap::iterator itr = s_contextIDMap.begin();
-        itr != s_contextIDMap.end();
-        ++itr)
-    {
-        if (itr->first > maxContextID) maxContextID = itr->first;
-    }
-    return maxContextID;
+    return ContextData::getMaxContextID();
 }
 
 
 void GraphicsContext::incrementContextIDUsageCount(unsigned int contextID)
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
-
-    s_contextIDMap[contextID].incrementUsageCount();
-
-    OSG_INFO<<"GraphicsContext::incrementContextIDUsageCount("<<contextID<<") to "<<s_contextIDMap[contextID]._numContexts<<std::endl;
+    return ContextData::incrementContextIDUsageCount(contextID);
 }
 
 void GraphicsContext::decrementContextIDUsageCount(unsigned int contextID)
 {
-
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
-
-    if (s_contextIDMap[contextID]._numContexts!=0)
-    {
-        s_contextIDMap[contextID].decrementUsageCount();
-    }
-    else
-    {
-        OSG_NOTICE<<"Warning: decrementContextIDUsageCount("<<contextID<<") called on expired contextID."<<std::endl;
-    }
-
-    OSG_INFO<<"GraphicsContext::decrementContextIDUsageCount("<<contextID<<") to "<<s_contextIDMap[contextID]._numContexts<<std::endl;
-
+    return ContextData::decrementContextIDUsageCount(contextID);
 }
 
 
 void GraphicsContext::registerGraphicsContext(GraphicsContext* gc)
 {
-    OSG_INFO<<"GraphicsContext::registerGraphicsContext "<<gc<<std::endl;
-
-    if (!gc) return;
-
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
-
-    GraphicsContexts::iterator itr = std::find(s_registeredContexts.begin(), s_registeredContexts.end(), gc);
-    if (itr != s_registeredContexts.end()) s_registeredContexts.erase(itr);
-
-    s_registeredContexts.push_back(gc);
+    ContextData::registerGraphicsContext(gc);
 }
 
 void GraphicsContext::unregisterGraphicsContext(GraphicsContext* gc)
 {
-    OSG_INFO<<"GraphicsContext::unregisterGraphicsContext "<<gc<<std::endl;
-
-    if (!gc) return;
-
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
-
-    GraphicsContexts::iterator itr = std::find(s_registeredContexts.begin(), s_registeredContexts.end(), gc);
-    if (itr != s_registeredContexts.end()) s_registeredContexts.erase(itr);
+    ContextData::unregisterGraphicsContext(gc);
 }
 
 GraphicsContext::GraphicsContexts GraphicsContext::getAllRegisteredGraphicsContexts()
 {
-    OSG_INFO<<"GraphicsContext::getAllRegisteredGraphicsContexts s_registeredContexts.size()="<<s_registeredContexts.size()<<std::endl;
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
-    return s_registeredContexts;
+    return ContextData::getAllRegisteredGraphicsContexts();
 }
 
 GraphicsContext::GraphicsContexts GraphicsContext::getRegisteredGraphicsContexts(unsigned int contextID)
 {
-    GraphicsContexts contexts;
-
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
-    for(GraphicsContexts::iterator itr = s_registeredContexts.begin();
-        itr != s_registeredContexts.end();
-        ++itr)
-    {
-        GraphicsContext* gc = *itr;
-        if (gc->getState() && gc->getState()->getContextID()==contextID) contexts.push_back(gc);
-    }
-
-    OSG_INFO<<"GraphicsContext::getRegisteredGraphicsContexts "<<contextID<<" contexts.size()="<<contexts.size()<<std::endl;
-
-    return contexts;
+    return ContextData::getRegisteredGraphicsContexts(contextID);
 }
 
 GraphicsContext* GraphicsContext::getOrCreateCompileContext(unsigned int contextID)
 {
-    OSG_NOTICE<<"GraphicsContext::createCompileContext."<<std::endl;
-
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
-        if (s_contextIDMap[contextID]._compileContext.valid()) return s_contextIDMap[contextID]._compileContext.get();
-    }
-
-    GraphicsContext::GraphicsContexts contexts = GraphicsContext::getRegisteredGraphicsContexts(contextID);
-    if (contexts.empty()) return 0;
-
-    GraphicsContext* src_gc = contexts.front();
-    const osg::GraphicsContext::Traits* src_traits = src_gc->getTraits();
-
-    osg::GraphicsContext::Traits* traits = new osg::GraphicsContext::Traits;
-    traits->screenNum = src_traits->screenNum;
-    traits->displayNum = src_traits->displayNum;
-    traits->hostName = src_traits->hostName;
-    traits->width = 100;
-    traits->height = 100;
-    traits->red = src_traits->red;
-    traits->green = src_traits->green;
-    traits->blue = src_traits->blue;
-    traits->alpha = src_traits->alpha;
-    traits->depth = src_traits->depth;
-    traits->sharedContext = src_gc;
-    traits->pbuffer = true;
-
-    osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits);
-    if (gc.valid() && gc->realize())
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
-        s_contextIDMap[contextID]._compileContext = gc;
-        OSG_NOTICE<<"   succeeded GraphicsContext::createCompileContext."<<std::endl;
-        return gc.release();
-    }
-    else
-    {
-        return 0;
-    }
-
+    return ContextData::getOrCreateCompileContext(contextID);
 }
 
 void GraphicsContext::setCompileContext(unsigned int contextID, GraphicsContext* gc)
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
-    s_contextIDMap[contextID]._compileContext = gc;
+    return ContextData::setCompileContext(contextID, gc);
 }
 
 GraphicsContext* GraphicsContext::getCompileContext(unsigned int contextID)
 {
-    // OSG_NOTICE<<"GraphicsContext::getCompileContext "<<contextID<<std::endl;
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
-    ContextIDMap::iterator itr = s_contextIDMap.find(contextID);
-    if (itr != s_contextIDMap.end()) return itr->second._compileContext.get();
-    else return 0;
+    return ContextData::getCompileContext(contextID);
 }
 
 
@@ -530,8 +397,8 @@ void GraphicsContext::close(bool callCloseImplementation)
 
     if (_state.valid())
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
-        if (s_contextIDMap[_state->getContextID()]._numContexts>1) sharedContextExists = true;
+        osg::ContextData* cd = osg::getContextData(_state->getContextID());
+        if (cd && cd->getNumContexts()>1) sharedContextExists = true;
     }
 
     // release all the OpenGL objects in the scene graphs associated with this
@@ -1011,3 +878,4 @@ void SyncSwapBuffersCallback::swapBuffersImplementation(osg::GraphicsContext* gc
 
     //OSG_NOTICE<<"After swap"<<std::endl;
 }
+

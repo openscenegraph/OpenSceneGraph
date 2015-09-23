@@ -19,6 +19,7 @@
 #include <osg/Texture3D>
 #include <osg/TextureRectangle>
 #include <osg/TextureCubeMap>
+#include <osg/ContextData>
 #include <osg/GLExtensions>
 #include <osg/GLU>
 
@@ -537,12 +538,8 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                 fbo = 0;
 
                 // clean up.
-                double availableTime = 100.0f;
-                double currentTime = state.getFrameStamp()?state.getFrameStamp()->getReferenceTime():0.0;
-                osg::RenderBuffer::flushDeletedRenderBuffers(state.getContextID(),currentTime,availableTime);
-                osg::FrameBufferObject::flushDeletedFrameBufferObjects(state.getContextID(),currentTime,availableTime);
-
-
+                osg::get<osg::GLRenderBufferManager>(state.getContextID())->flushAllDeletedGLObjects();
+                osg::get<osg::GLFrameBufferObjectManager>(state.getContextID())->flushAllDeletedGLObjects();
             }
             else
             {
@@ -568,10 +565,8 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                         _resolveFbo = 0;
 
                         // clean up.
-                        double availableTime = 100.0f;
-                        double currentTime = state.getFrameStamp()?state.getFrameStamp()->getReferenceTime():0.0;
-                        osg::RenderBuffer::flushDeletedRenderBuffers(state.getContextID(),currentTime,availableTime);
-                        osg::FrameBufferObject::flushDeletedFrameBufferObjects(state.getContextID(),currentTime,availableTime);
+                        osg::get<osg::GLRenderBufferManager>(state.getContextID())->flushAllDeletedGLObjects();
+                        osg::get<osg::GLFrameBufferObjectManager>(state.getContextID())->flushAllDeletedGLObjects();
                     }
                     else
                     {

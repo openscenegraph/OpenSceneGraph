@@ -20,6 +20,8 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 
+#include <osg/ContextData>
+
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osgDB/FileNameUtils>
@@ -504,7 +506,7 @@ protected:
         optimizeVertexOrder = false;
 
         reallocateMemory = false;
-        
+
         modifyTextureSettings = false;
         buildImageMipmaps = false;
         compressImages = false;
@@ -524,21 +526,21 @@ protected:
     bool optimizeVertexOrder;
 
     bool reallocateMemory;
-    
+
     bool modifyTextureSettings;
     bool buildImageMipmaps;
     bool compressImages;
     bool disableMipmaps;
 
 };
-// 
+//
 class DatabasePagingOperation : public osg::Operation, public osgUtil::IncrementalCompileOperation::CompileCompletedCallback
 {
 public:
 
     DatabasePagingOperation(const std::string& filename,
                             const std::string& outputFilename,
-                             SceneGraphProcessor* sceneGraphProcessor, 
+                             SceneGraphProcessor* sceneGraphProcessor,
                              osgUtil::IncrementalCompileOperation* ico):
         osg::Referenced(true),
         Operation("DatabasePaging Operation", false),
@@ -570,7 +572,7 @@ public:
             if (!_outputFilename.empty())
             {
                 OSG_NOTICE<<"Writing out file "<<_outputFilename<<std::endl;
-                
+
                 osgDB::writeNodeFile(*_loadedModel, _outputFilename);
             }
 
@@ -618,8 +620,7 @@ public:
         {
             if (ea.getKey()=='r')
             {
-                osg::Texture::getTextureObjectManager(0)->reportStats(osg::notify(osg::NOTICE));
-                osg::GLBufferObjectManager::getGLBufferObjectManager(0)->reportStats(osg::notify(osg::NOTICE));
+                osg::getOrCreateContextData(0)->reportStats(osg::notify(osg::NOTICE));
             }
         }
         return false;
@@ -631,8 +632,7 @@ struct ReportStatsAnimationCompletedCallback : public osgGA::AnimationPathManipu
     virtual void completed(const osgGA::AnimationPathManipulator*)
     {
         OSG_NOTICE<<"Animation completed"<<std::endl;
-        osg::Texture::getTextureObjectManager(0)->reportStats(osg::notify(osg::NOTICE));
-        osg::GLBufferObjectManager::getGLBufferObjectManager(0)->reportStats(osg::notify(osg::NOTICE));
+        osg::getOrCreateContextData(0)->reportStats(osg::notify(osg::NOTICE));
     }
 };
 
@@ -664,7 +664,7 @@ int main(int argc, char** argv)
             {
                 apm->setTimeScale(animationSpeed);
                 apm->setAnimationCompletedCallback(new ReportStatsAnimationCompletedCallback());
-                
+
                 unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
                 keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
                 keyswitchManipulator->selectMatrixManipulator(num);
@@ -675,7 +675,7 @@ int main(int argc, char** argv)
         viewer.setCameraManipulator( keyswitchManipulator.get() );
     }
 
-    // set up event handlers 
+    // set up event handlers
     {
         viewer.addEventHandler( new osgViewer::StatsHandler());
         viewer.addEventHandler( new osgViewer::WindowSizeHandler() );
@@ -797,7 +797,7 @@ int main(int argc, char** argv)
         if (databasePagingOperation.get() && databasePagingOperation->_modelReadyToMerge)
         {
             OSG_NOTICE<<"Merging subgraph"<<std::endl;
-            
+
             timeOfLastMerge = currentTime;
 
             group->removeChildren(0,group->getNumChildren());

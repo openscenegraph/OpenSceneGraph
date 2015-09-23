@@ -24,6 +24,7 @@
 #include <osg/ColorMatrix>
 #include <osg/LightModel>
 #include <osg/CollectOccludersVisitor>
+#include <osg/ContextData>
 
 #include <osg/GLU>
 
@@ -579,7 +580,7 @@ void SceneView::computeRightEyeViewport(const osg::Viewport *viewport)
 void SceneView::setLightingMode(LightingMode mode)
 {
     if (mode==_lightingMode) return;
-    
+
     osg::StateSet* stateSetToModify = _secondaryStateSet.valid() ? _secondaryStateSet.get() : _globalStateSet.get();
 
     if (_lightingMode!=NO_SCENEVIEW_LIGHT)
@@ -963,11 +964,7 @@ void SceneView::draw()
 
     state->initializeExtensionProcs();
 
-    osg::Texture::TextureObjectManager* tom = osg::Texture::getTextureObjectManager(state->getContextID()).get();
-    tom->newFrame(state->getFrameStamp());
-
-    osg::GLBufferObjectManager* bom = osg::GLBufferObjectManager::getGLBufferObjectManager(state->getContextID()).get();
-    bom->newFrame(state->getFrameStamp());
+    osg::get<ContextData>(state->getContextID())->newFrame(state->getFrameStamp());
 
     if (!_initCalled) init();
 

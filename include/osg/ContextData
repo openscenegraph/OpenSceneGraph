@@ -143,10 +143,10 @@ class OSG_EXPORT ContextData : public GraphicsObjectManager
 
 
 /** Get the ContextData for a specific contextID.*/
-extern ContextData* getContextData(unsigned int contextID);
+extern OSG_EXPORT ContextData* getContextData(unsigned int contextID);
 
 /** Get or create the ContextData for a specific contextID.*/
-extern ContextData* getOrCreateContextData(unsigned int contextID);
+extern OSG_EXPORT ContextData* getOrCreateContextData(unsigned int contextID);
 
 template<typename T>
 inline T* get(unsigned int contextID)

@@ -130,15 +130,13 @@ public:
 
         availableTime -= elapsedTime;
     #else
-        OSG_NOTICE<<"Warning: Drawable::flushDeletedDisplayLists(..) - not supported."<<std::endl;
+        OSG_INFO<<"Warning: Drawable::flushDeletedDisplayLists(..) - not supported."<<std::endl;
     #endif
     }
 
     virtual void flushAllDeletedGLObjects()
     {
     #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
-
-        OSG_NOTICE<<"void DisplayListManager::flushAllDeletedGLObjects()"<<std::endl;
 
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_deletedDisplayListCache);
 
@@ -151,19 +149,17 @@ public:
 
         _displayListMap.clear();
     #else
-        OSG_NOTICE<<"Warning: Drawable::deleteDisplayList(..) - not supported."<<std::endl;
+        OSG_INFO<<"Warning: Drawable::deleteDisplayList(..) - not supported."<<std::endl;
     #endif
     }
 
     virtual void deleteAllGLObjects()
     {
-         OSG_NOTICE<<"DisplayListManager::deleteAllGLObjects() Not currently implementated"<<std::endl;
+         OSG_INFO<<"DisplayListManager::deleteAllGLObjects() Not currently implementated"<<std::endl;
     }
 
     virtual void discardAllGLObjects()
     {
-        OSG_NOTICE<<"void DisplayListManager::discardAllGLObjects()"<<std::endl;
-
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_deletedDisplayListCache);
         _displayListMap.clear();
     }
@@ -179,7 +175,7 @@ public:
             _displayListMap.insert(DisplayListMap::value_type(sizeHint,globj));
         }
     #else
-        OSG_NOTICE<<"Warning: Drawable::deleteDisplayList(..) - not supported."<<std::endl;
+        OSG_INFO<<"Warning: Drawable::deleteDisplayList(..) - not supported."<<std::endl;
     #endif
     }
 
@@ -215,7 +211,7 @@ public:
             }
         }
     #else
-        OSG_NOTICE<<"Warning: Drawable::generateDisplayList(..) - not supported."<<std::endl;
+        OSG_INFO<<"Warning: Drawable::generateDisplayList(..) - not supported."<<std::endl;
         return 0;
     #endif
     }

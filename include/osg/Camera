@@ -495,12 +495,17 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
             _implicitBufferAttachmentResolveMask = implicitBufferAttachmentResolveMask;
         }
 
+        ImplicitBufferAttachmentMask getImplicitBufferAttachmentRenderMask() const
+        {
+            return _implicitBufferAttachmentRenderMask;
+        }
+
         /**
         Get mask selecting implicit buffer attachments for Camera primary FBO
         if effectiveMask parameter is set, method follows USE_DISPLAY_SETTINGS_MASK dependence and returns effective mask
         if effectiveMask parameter is reset, method returns nominal mask set by the Camera
         */
-        ImplicitBufferAttachmentMask getImplicitBufferAttachmentRenderMask(bool effectiveMask = false) const
+        ImplicitBufferAttachmentMask getImplicitBufferAttachmentRenderMask(bool effectiveMask) const
         {
             if( effectiveMask && _implicitBufferAttachmentRenderMask == USE_DISPLAY_SETTINGS_MASK )
             {
@@ -513,12 +518,17 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
             }
         }
 
+        ImplicitBufferAttachmentMask getImplicitBufferAttachmentResolveMask() const
+        {
+            return _implicitBufferAttachmentResolveMask;
+        }
+
         /**
         Get mask selecting implicit buffer attachments for Camera secondary MULTISAMPLE FBO
         if effectiveMask parameter is set, method follows USE_DISPLAY_SETTINGS_MASK dependence and returns effective mask
         if effectiveMask parameter is reset, method returns nominal mask set by the Camera
         */
-        ImplicitBufferAttachmentMask getImplicitBufferAttachmentResolveMask(bool effectiveMask = false) const
+        ImplicitBufferAttachmentMask getImplicitBufferAttachmentResolveMask(bool effectiveMask) const
         {
             if( effectiveMask && _implicitBufferAttachmentResolveMask == USE_DISPLAY_SETTINGS_MASK )
             {

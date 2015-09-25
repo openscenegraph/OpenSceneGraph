@@ -286,8 +286,6 @@ private:
             pthread_getschedparam(thread->getProcessId(),
                       &th_policy, &th_param);
 
-#ifndef __linux__
-
             switch(thread->getSchedulePolicy())
             {
 
@@ -312,23 +310,9 @@ private:
                 break;
             };
 
-#else
-            th_policy = SCHED_OTHER;  // Must protect linux from realtime.
-#endif
-
-#ifdef __linux__
-
-            max_priority = 0;
-            min_priority = 20;
-            nominal_priority = (max_priority + min_priority)/2;
-
-#else
-
             max_priority = sched_get_priority_max(th_policy);
             min_priority = sched_get_priority_min(th_policy);
             nominal_priority = (max_priority + min_priority)/2;
-
-#endif
 
             switch(thread->getSchedulePriority())
             {

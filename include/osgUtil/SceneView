@@ -408,6 +408,9 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         inline void setFrameStamp(osg::FrameStamp* fs) { _frameStamp = fs; }
 
         /** Get the frame stamp for the current frame.*/
+        inline osg::FrameStamp* getFrameStamp() { return _frameStamp.get(); }
+
+        /** Get the const frame stamp for the current frame.*/
         inline const osg::FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
 
 

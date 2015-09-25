@@ -368,6 +368,10 @@ Renderer::Renderer(osg::Camera* camera):
     _sceneView[0] = new osgUtil::SceneView;
     _sceneView[1] = new osgUtil::SceneView;
 
+    // each SceneView to have their own FrameStamp to avoid thread conflicts with the Viewer's main FrameStamp
+    _sceneView[0]->setFrameStamp(new osg::FrameStamp());
+    _sceneView[1]->setFrameStamp(new osg::FrameStamp());
+
     osg::Camera* masterCamera = _camera->getView() ? _camera->getView()->getCamera() : camera;
 
     osg::StateSet* global_stateset = 0;
@@ -528,7 +532,11 @@ void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
     osgDB::ImagePager* imagePager = view ? view->getImagePager() : 0;
     sceneView->getCullVisitor()->setImageRequestHandler(imagePager);
 
-    sceneView->setFrameStamp(view ? view->getFrameStamp() : state->getFrameStamp());
+
+    if (view->getFrameStamp())
+    {
+        (*sceneView->getFrameStamp()) = *(view->getFrameStamp());
+    }
 
     osg::DisplaySettings* ds = _camera->getDisplaySettings() ?  _camera->getDisplaySettings() :
                                ((view &&view->getDisplaySettings()) ?  view->getDisplaySettings() :  osg::DisplaySettings::instance().get());
@@ -627,8 +635,7 @@ void Renderer::cull()
         if (view) sceneView->setFusionDistance(view->getFusionDistanceMode(), view->getFusionDistanceValue());
 
         osg::Stats* stats = sceneView->getCamera()->getStats();
-        osg::State* state = sceneView->getState();
-        const osg::FrameStamp* fs = state->getFrameStamp();
+        const osg::FrameStamp* fs = sceneView->getFrameStamp();
         unsigned int frameNumber = fs ? fs->getFrameNumber() : 0;
 
         // do cull traversal
@@ -640,6 +647,7 @@ void Renderer::cull()
         osg::Timer_t afterCullTick = osg::Timer::instance()->tick();
 
 #if 0
+        osg::State* state = sceneView->getState();
         if (sceneView->getDynamicObjectCount()==0 && state->getDynamicObjectRenderingCompletedCallback())
         {
             // OSG_NOTICE<<"Completed in cull"<<std::endl;

@@ -533,9 +533,13 @@ void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
     sceneView->getCullVisitor()->setImageRequestHandler(imagePager);
 
 
-    if (view->getFrameStamp())
+    if (view && view->getFrameStamp())
     {
         (*const_cast<osg::FrameStamp*>(sceneView->getFrameStamp())) = *(view->getFrameStamp());
+    }
+    else if (state->getFrameStamp())
+    {
+        (*const_cast<osg::FrameStamp*>(sceneView->getFrameStamp())) = *(state->getFrameStamp());
     }
 
     osg::DisplaySettings* ds = _camera->getDisplaySettings() ?  _camera->getDisplaySettings() :

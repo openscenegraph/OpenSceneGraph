@@ -214,6 +214,8 @@ Registry* Registry::instance(bool erase)
     return s_registry.get(); // will return NULL on erase
 }
 
+OSG_INIT_SINGLETON_PROXY(ProxyInitRegistry, Registry::instance())
+
 
 // definition of the Registry
 Registry::Registry()

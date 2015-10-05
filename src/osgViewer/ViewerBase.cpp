@@ -40,23 +40,6 @@ static osg::ApplicationUsageProxy ViewerBase_e5(osg::ApplicationUsage::ENVIRONME
 
 using namespace osgViewer;
 
-
-struct InitRegistry
-{
-    InitRegistry()
-    {
-        osgDB::Registry::instance();
-    }
-
-    ~InitRegistry()
-    {
-        osgDB::DatabasePager::prototype() = 0;
-        osgDB::Registry::instance(true);
-    }
-};
-
-static InitRegistry s_InitRegistry;
-
 ViewerBase::ViewerBase():
     osg::Object(true)
 {

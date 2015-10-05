@@ -1236,6 +1236,8 @@ osg::ref_ptr<DatabasePager>& DatabasePager::prototype()
     return s_DatabasePager;
 }
 
+OSG_INIT_SINGLETON_PROXY(ProxyInitDatabasePager, DatabasePager::prototype())
+
 DatabasePager* DatabasePager::create()
 {
     return DatabasePager::prototype().valid() ?

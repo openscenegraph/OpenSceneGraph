@@ -431,6 +431,8 @@ void GraphicsContext::close(bool callCloseImplementation)
 
                 osg::deleteAllGLObjects(_state->getContextID());
 
+                osg::flushAllDeletedGLObjects(_state->getContextID());
+
                 OSG_INFO<<"Done delete of GL objects"<<std::endl;
             }
             else

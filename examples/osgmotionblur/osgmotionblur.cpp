@@ -37,7 +37,7 @@ public:
     {
         osg::GraphicsContext* gc = dynamic_cast<osg::GraphicsContext*>(object);
         if (!gc) return;
-    
+
         double t = gc->getState()->getFrameStamp()->getSimulationTime();
 
         if (!cleared_)
@@ -73,14 +73,14 @@ int main( int argc, char **argv )
 
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
+
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is an OpenSceneGraph example that shows how to use the accumulation buffer to achieve a simple motion blur effect.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("-P or --persistence","Set the motion blur persistence time");
-    
+
 
     // construct the viewer.
     osgViewer::Viewer viewer;
@@ -96,13 +96,13 @@ int main( int argc, char **argv )
     arguments.read("-P", persistence) || arguments.read("--persistence", persistence);
 
     // read the scene from the list of file specified commandline args.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
-    
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
+
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!loadedModel) loadedModel = osgDB::readNodeFile("cow.osgt");
+    if (!loadedModel) loadedModel = osgDB::readRefNodeFile("cow.osgt");
 
     // if no model has been successfully loaded report failure.
-    if (!loadedModel) 
+    if (!loadedModel)
     {
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;

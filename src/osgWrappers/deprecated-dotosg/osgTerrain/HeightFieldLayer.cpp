@@ -38,7 +38,7 @@ bool HeightFieldLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
         osgTerrain::extractSetNameAndFileName(fr[1].getStr(),setname, filename);
         if (!filename.empty())
         {
-            osg::ref_ptr<osg::HeightField> hf = osgDB::readHeightFieldFile(filename);
+            osg::ref_ptr<osg::HeightField> hf = osgDB::readRefHeightFieldFile(filename);
             if (hf.valid())
             {
                 layer.setName(setname);

@@ -91,7 +91,7 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
                 std::string file_ext = osgDB::getLowerCaseFileExtension(*itr);
                 if (osgDB::equalCaseInsensitive(file_ext,"osg"))
                 {
-                    osg::Node *node = osgDB::readNodeFile( *itr, local_options.get() );
+                    osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile( *itr, local_options.get() );
                     grp->addChild( node );
                 }
             }

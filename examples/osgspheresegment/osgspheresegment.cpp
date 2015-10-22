@@ -183,7 +183,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius, osg::Geode *
 
     osg::Group* model = new osg::Group;
 
-    osg::Node* glider = osgDB::readNodeFile("glider.osgt");
+    osg::ref_ptr<osg::Node> glider = osgDB::readRefNodeFile("glider.osgt");
     if (glider)
     {
         const osg::BoundingSphere& bs = glider->getBound();
@@ -236,7 +236,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius, osg::Geode *
         model->addChild(xform);
     }
 
-    osg::Node* cessna = osgDB::readNodeFile("cessna.osgt");
+    osg::ref_ptr<osg::Node> cessna = osgDB::readRefNodeFile("cessna.osgt");
     if (cessna)
     {
         const osg::BoundingSphere& bs = cessna->getBound();
@@ -361,12 +361,12 @@ void build_world(osg::Group *root, unsigned int testCase, bool useOverlay, osgSi
 {
 
     // create terrain
-    osg::ref_ptr<osg::Geode> terrainGeode = 0;
+    osg::ref_ptr<osg::Geode> terrainGeode;
     {
         terrainGeode = new osg::Geode;
 
-        osg::StateSet* stateset = new osg::StateSet();
-        osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
+        osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet();
+        osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile("Images/lz.rgb");
         if (image)
         {
             osg::Texture2D* texture = new osg::Texture2D;
@@ -385,7 +385,7 @@ void build_world(osg::Group *root, unsigned int testCase, bool useOverlay, osgSi
             osg::Vec3 origin(0.0f,0.0f,0.0f);
             osg::Vec3 size(1000.0f,1000.0f,250.0f);
 
-            osg::Geometry* geometry = new osg::Geometry;
+            osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
 
             osg::Vec3Array& v = *(new osg::Vec3Array(numColumns*numRows));
             osg::Vec2Array& tc = *(new osg::Vec2Array(numColumns*numRows));

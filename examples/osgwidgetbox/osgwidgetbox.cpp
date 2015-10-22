@@ -23,7 +23,7 @@ struct ColorWidget: public osgWidget::Widget {
 
     bool mouseEnter(double, double, const osgWidget::WindowManager*) {
         addColor(-osgWidget::Color(0.4f, 0.4f, 0.4f, 0.0f));
-        
+
         // osgWidget::warn() << "enter: " << getColor() << std::endl;
 
         return true;
@@ -31,14 +31,14 @@ struct ColorWidget: public osgWidget::Widget {
 
     bool mouseLeave(double, double, const osgWidget::WindowManager*) {
         addColor(osgWidget::Color(0.4f, 0.4f, 0.4f, 0.0f));
-        
+
         // osgWidget::warn() << "leave: " << getColor() << std::endl;
-        
+
         return true;
     }
 
     bool mouseOver(double x, double y, const osgWidget::WindowManager*) {
-        
+
         osgWidget::Color c = getImageColorAtPointerXY(x, y);
 
         if(c.a() < 0.001f) {
@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
         MASK_2D,
         osgWidget::WindowManager::WM_PICK_DEBUG
     );
-    
+
     wm->setPointerFocusMode(osgWidget::WindowManager::PFM_SLOPPY);
 
     osgWidget::Window* box1 = createBox("HBOX", osgWidget::Box::HORIZONTAL);
@@ -112,9 +112,9 @@ int main(int argc, char** argv) {
 
     box4->hide();
 
-    osg::Node* model = osgDB::readNodeFile("spaceship.osgt");
+    osg::ref_ptr<osg::Node> model = osgDB::readRefNodeFile("spaceship.osgt");
 
     model->setNodeMask(MASK_3D);
 
-    return osgWidget::createExample(viewer, wm, model);
+    return osgWidget::createExample(viewer, wm, model.get());
 }

@@ -772,7 +772,7 @@ int main( int argc, char **argv )
 
     osg::Timer_t startTick = osg::Timer::instance()->tick();
 
-    osg::ref_ptr<osg::Node> root = osgDB::readNodeFiles(fileNames);
+    osg::ref_ptr<osg::Node> root = osgDB::readRefNodeFiles(fileNames);
 
     if (root.valid())
     {

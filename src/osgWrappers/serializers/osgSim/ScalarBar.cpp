@@ -75,9 +75,8 @@ static bool checkScalarPrinter( const osgSim::ScalarBar& bar )
 static bool readScalarPrinter( osgDB::InputStream& is, osgSim::ScalarBar& bar )
 {
     is >> is.BEGIN_BRACKET;
-    osgSim::ScalarBar::ScalarPrinter* sp =
-        dynamic_cast<osgSim::ScalarBar::ScalarPrinter*>( is.readObject() );
-    if ( sp ) bar.setScalarPrinter( sp );
+    osg::ref_ptr<osgSim::ScalarBar::ScalarPrinter> sp = is.readObjectOfType<osgSim::ScalarBar::ScalarPrinter>();
+    if ( sp ) bar.setScalarPrinter( sp.get() );
     is >> is.END_BRACKET;
     return true;
 }

@@ -40,10 +40,9 @@
 #include <osgUtil/Optimizer>
 
 
-osg::Node* decorate_with_clip_node(osg::Node* subgraph)
+osg::ref_ptr<osg::Node> decorate_with_clip_node(const osg::ref_ptr<osg::Node>& subgraph)
 {
-    osg::Group* rootnode = new osg::Group;
-    
+    osg::ref_ptr<osg::Group> rootnode = new osg::Group;
 
     // create wireframe view of the model so the user can see
     // what parts are being culled away.
@@ -52,7 +51,7 @@ osg::Node* decorate_with_clip_node(osg::Node* subgraph)
     osg::PolygonMode* polymode = new osg::PolygonMode;
     polymode->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE);
     stateset->setAttributeAndModes(polymode,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
-    
+
     osg::Group* wireframe_subgraph = new osg::Group;
     wireframe_subgraph->setStateSet(stateset);
     wireframe_subgraph->addChild(subgraph);
@@ -80,7 +79,7 @@ osg::Node* decorate_with_clip_node(osg::Node* subgraph)
     // more complex approach to managing ClipNode, allowing
     // ClipNode node to be transformed independently from the subgraph
     // that it is clipping.
-    
+
     osg::MatrixTransform* transform= new osg::MatrixTransform;
 
     osg::NodeCallback* nc = new osg::AnimationPathCallback(subgraph->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
@@ -117,11 +116,11 @@ int main( int argc, char **argv )
     osg::ArgumentParser arguments(&argc,argv);
 
     // load the nodes from the commandline arguments.
-    osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
 
 
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!loadedModel) loadedModel = osgDB::readNodeFile("cow.osgt");
+    if (!loadedModel) loadedModel = osgDB::readRefNodeFile("cow.osgt");
 
 
     if (!loadedModel)
@@ -129,16 +128,16 @@ int main( int argc, char **argv )
         osg::notify(osg::NOTICE)<<"Please specify a filename on the command line"<<std::endl;
         return 1;
     }
-  
+
     // decorate the scenegraph with a clip node.
-    osg::Node* rootnode = decorate_with_clip_node(loadedModel);
-      
+    osg::ref_ptr<osg::Node> rootnode = decorate_with_clip_node(loadedModel);
+
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
     optimzer.optimize(rootnode);
-    
+
     osgViewer::Viewer viewer;
-     
+
     // set the scene to render
     viewer.setSceneData(rootnode);
 

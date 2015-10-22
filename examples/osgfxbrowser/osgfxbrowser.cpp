@@ -127,7 +127,7 @@ public:
         for (osgFX::Registry::EffectMap::const_iterator i=emap.begin(); i!=emap.end(); ++i) {
             std::cout << "INFO: \t" << i->first << "\n";
             osg::ref_ptr<osgFX::Effect> effect = static_cast<osgFX::Effect *>(i->second->cloneType());
-            _effects.push_back(effect.get());            
+            _effects.push_back(effect.get());
         }
 
         std::cout << "INFO: " << emap.size() << " effect(s) ready.\n";
@@ -144,9 +144,9 @@ public:
     inline void setScene(osg::Node* node) { _scene = node; }
 
     inline bool getEffectsEnabled() const { return _fxen; }
-    inline void setEffectsEnabled(bool v) 
-    { 
-        _fxen = v; 
+    inline void setEffectsEnabled(bool v)
+    {
+        _fxen = v;
         if (getSelectedEffect()) {
             getSelectedEffect()->setEnabled(_fxen);
         }
@@ -156,7 +156,7 @@ public:
     inline void setEffectIndex(int i)
     {
         if (i >= static_cast<int>(_effects.size())) i = 0;
-        if (i < 0) i = static_cast<int>(_effects.size()-1);        
+        if (i < 0) i = static_cast<int>(_effects.size()-1);
         _selected_fx = i;
         rebuild();
     }
@@ -174,11 +174,11 @@ protected:
     {
                 float zPos = -0.1; // note from Robert, was 0.1f, but now must be -0.1f to keep text visible??#!? due
                                    // to some other change in the OSG not tracked down yet...
-        
-        osg::ref_ptr<osgText::Font> arial = osgText::readFontFile("fonts/arial.ttf");
+
+        osg::ref_ptr<osgText::Font> arial = osgText::readRefFontFile("fonts/arial.ttf");
 
         osg::ref_ptr<osgText::Text> hints = new osgText::Text;
-        hints->setFont(arial.get());
+        hints->setFont(arial);
         hints->setColor(_hints_color);
         hints->setAlignment(osgText::Text::CENTER_BOTTOM);
         hints->setCharacterSize(13);
@@ -195,7 +195,7 @@ protected:
             if (!author_name.empty()) {
                 effect_description = author_name = "AUTHOR: " + std::string(_effects[_selected_fx]->effectAuthor()) + std::string("\n\n");
             }
-            effect_description += "DESCRIPTION:\n" + std::string(_effects[_selected_fx]->effectDescription());            
+            effect_description += "DESCRIPTION:\n" + std::string(_effects[_selected_fx]->effectDescription());
 
             if (_scene.valid() && _root.valid()) {
                 _root->removeChildren(0, _root->getNumChildren());
@@ -268,7 +268,7 @@ EffectPanel* build_gui(osg::Group* root)
 
     osg::ref_ptr<EffectPanel> effect_panel = new EffectPanel;
     effect_panel->setCaption("osgFX Effect Browser");
-    effect_panel->setRect(osgfxbrowser::Rect(20, 20, 1000, 280));    
+    effect_panel->setRect(osgfxbrowser::Rect(20, 20, 1000, 280));
 
     hud->addChild(effect_panel.get());
 
@@ -325,7 +325,7 @@ int main(int argc, char *argv[])
     unsigned int clearMask = viewer.getCamera()->getClearMask();
     viewer.getCamera()->setClearMask(clearMask | GL_STENCIL_BUFFER_BIT);
     viewer.getCamera()->setClearStencil(0);
- 
+
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 
@@ -336,11 +336,11 @@ int main(int argc, char *argv[])
     }
 
     // read the scene from the list of file specified commandline args.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
 
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!loadedModel) loadedModel = osgDB::readNodeFile("dumptruck.osgt");
-  
+    if (!loadedModel) loadedModel = osgDB::readRefNodeFile("dumptruck.osgt");
+
     if (!loadedModel)
     {
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;

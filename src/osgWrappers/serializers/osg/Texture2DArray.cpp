@@ -13,7 +13,7 @@ static bool readImages( osgDB::InputStream& is, osg::Texture2DArray& tex )
     unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        osg::Image* image = is.readImage();
+        osg::ref_ptr<osg::Image> image = is.readImage();
         if ( image ) tex.setImage( i, image );
     }
     is >> is.END_BRACKET;

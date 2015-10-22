@@ -13,8 +13,8 @@ static bool readPlacers( osgDB::InputStream& is, osgParticle::CompositePlacer& c
     unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        osgParticle::Placer* p = dynamic_cast<osgParticle::Placer*>( is.readObject() );
-        if ( p ) cp.addPlacer( p );
+        osg::ref_ptr<osgParticle::Placer> p = is.readObjectOfType<osgParticle::Placer>();
+        if ( p ) cp.addPlacer( p.get() );
     }
     is >> is.END_BRACKET;
     return true;

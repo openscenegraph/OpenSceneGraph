@@ -42,10 +42,10 @@
 typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
 
 /** create quad at specified position. */
-osg::Drawable* createSquare(const osg::Vec3& corner,const osg::Vec3& width,const osg::Vec3& height, osg::Image* image=NULL)
+osg::Drawable* createSquare(const osg::Vec3& corner,const osg::Vec3& width,const osg::Vec3& height, osg::ref_ptr<osg::Image> image)
 {
     // set up the Geometry.
-    osg::Geometry* geom = new osg::Geometry;
+    osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
 
     osg::Vec3Array* coords = new osg::Vec3Array(4);
     (*coords)[0] = corner;
@@ -80,13 +80,13 @@ osg::Drawable* createSquare(const osg::Vec3& corner,const osg::Vec3& width,const
         geom->setStateSet(stateset);
     }
 
-    return geom;
+    return geom.release();
 }
 
 osg::Drawable* createAxis(const osg::Vec3& corner,const osg::Vec3& xdir,const osg::Vec3& ydir,const osg::Vec3& zdir)
 {
     // set up the Geometry.
-    osg::Geometry* geom = new osg::Geometry;
+    osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
 
     osg::Vec3Array* coords = new osg::Vec3Array(6);
     (*coords)[0] = corner;
@@ -121,20 +121,20 @@ osg::Drawable* createAxis(const osg::Vec3& corner,const osg::Vec3& xdir,const os
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     geom->setStateSet(stateset);
 
-    return geom;
+    return geom.release();
 }
 
-osg::Node* createModel()
+osg::ref_ptr<osg::Node> createModel()
 {
 
     // create the root node which will hold the model.
-    osg::Group* root = new osg::Group();
+    osg::ref_ptr<osg::Group> root = new osg::Group();
 
     // add the drawable into a single geode to be shared...
     osg::Billboard* center = new osg::Billboard();
     center->setMode(osg::Billboard::POINT_ROT_EYE);
     center->addDrawable(
-        createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Images/reflect.rgb")),
+        createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readRefImageFile("Images/reflect.rgb")),
         osg::Vec3(0.0f,0.0f,0.0f));
 
     osg::Billboard* x_arrow = new osg::Billboard();
@@ -142,7 +142,7 @@ osg::Node* createModel()
     x_arrow->setAxis(osg::Vec3(1.0f,0.0f,0.0f));
     x_arrow->setNormal(osg::Vec3(0.0f,-1.0f,0.0f));
     x_arrow->addDrawable(
-       createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Cubemap_axis/posx.png")),
+       createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readRefImageFile("Cubemap_axis/posx.png")),
        osg::Vec3(5.0f,0.0f,0.0f));
 
     osg::Billboard* y_arrow = new osg::Billboard();
@@ -150,7 +150,7 @@ osg::Node* createModel()
     y_arrow->setAxis(osg::Vec3(0.0f,1.0f,0.0f));
     y_arrow->setNormal(osg::Vec3(1.0f,0.0f,0.0f));
     y_arrow->addDrawable(
-        createSquare(osg::Vec3(0.0f,-0.5f,-0.5f),osg::Vec3(0.0f,1.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Cubemap_axis/posy.png")),
+        createSquare(osg::Vec3(0.0f,-0.5f,-0.5f),osg::Vec3(0.0f,1.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readRefImageFile("Cubemap_axis/posy.png")),
         osg::Vec3(0.0f,5.0f,0.0f));
 
     osg::Billboard* z_arrow = new osg::Billboard();
@@ -158,7 +158,7 @@ osg::Node* createModel()
     z_arrow->setAxis(osg::Vec3(0.0f,0.0f,1.0f));
     z_arrow->setNormal(osg::Vec3(0.0f,-1.0f,0.0f));
     z_arrow->addDrawable(
-        createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Cubemap_axis/posz.png")),
+        createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readRefImageFile("Cubemap_axis/posz.png")),
         osg::Vec3(0.0f,0.0f,5.0f));
 
 

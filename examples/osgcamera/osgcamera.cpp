@@ -25,50 +25,50 @@
 #include <osgGA/AnimationPathManipulator>
 #include <iostream>
 
-class ModelHandler : public osgGA::GUIEventHandler 
+class ModelHandler : public osgGA::GUIEventHandler
 {
-public: 
+public:
 
     ModelHandler():
         _position(0) {}
-    
+
     typedef std::vector<std::string> Filenames;
     Filenames _filenames;
     unsigned int _position;
-    
+
     void add(const std::string& filename) { _filenames.push_back(filename); }
-        
+
     bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
     {
         osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
         if (!viewer) return false;
-    
+
         if (_filenames.empty()) return false;
-    
+
         switch(ea.getEventType())
         {
             case(osgGA::GUIEventAdapter::KEYUP):
             {
                 if (ea.getKey()=='l')
-                {                    
-                    osg::ref_ptr<osg::Node> model = osgDB::readNodeFile( _filenames[_position] );
+                {
+                    osg::ref_ptr<osg::Node> model = osgDB::readRefNodeFile( _filenames[_position] );
                     ++_position;
                     if (_position>=_filenames.size()) _position = 0;
-                    
+
                     if (model.valid())
                     {
                         viewer->setSceneData(model.get());
                     }
-                    
+
                     return true;
                 }
             }
             default: break;
         }
-        
+
         return false;
     }
-    
+
     bool _done;
 };
 
@@ -76,12 +76,12 @@ public:
 void singleWindowMultipleCameras(osgViewer::Viewer& viewer)
 {
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-    if (!wsi) 
+    if (!wsi)
     {
         osg::notify(osg::NOTICE)<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
         return;
     }
-    
+
     unsigned int width, height;
     wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
 
@@ -127,12 +127,12 @@ void singleWindowMultipleCameras(osgViewer::Viewer& viewer)
 void multipleWindowMultipleCameras(osgViewer::Viewer& viewer, bool multipleScreens)
 {
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-    if (!wsi) 
+    if (!wsi)
     {
         osg::notify(osg::NOTICE)<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
         return;
     }
-    
+
     unsigned int width, height;
     wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
 
@@ -198,7 +198,7 @@ int main( int argc, char **argv )
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
 
-    if (argc<2) 
+    if (argc<2)
     {
         std::cout << argv[0] <<": requires filename argument." << std::endl;
         return 1;
@@ -214,7 +214,7 @@ int main( int argc, char **argv )
         osg::ref_ptr<osg::Node> model;
         if (sharedModel)
         {
-            model = osgDB::readNodeFiles(arguments);
+            model = osgDB::readRefNodeFiles(arguments);
             if (!model) return 0;
 
             if (enableVBO)
@@ -242,7 +242,7 @@ int main( int argc, char **argv )
                 if (sharedModel) viewer.setSceneData(model.get());
                 else
                 {
-                    osg::ref_ptr<osg::Node> node = osgDB::readNodeFiles(arguments);
+                    osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFiles(arguments);
                     if (!node) return 0;
 
                     if (enableVBO)
@@ -268,19 +268,19 @@ int main( int argc, char **argv )
     while (arguments.read("-p",pathfile))
     {
         apm = new osgGA::AnimationPathManipulator(pathfile);
-        if (!apm.valid() || !(apm->valid()) ) 
+        if (!apm.valid() || !(apm->valid()) )
         {
             apm = 0;
         }
     }
 
     osgViewer::Viewer viewer(arguments);
-    
+
     while (arguments.read("-s")) { viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded); }
     while (arguments.read("-g")) { viewer.setThreadingModel(osgViewer::Viewer::CullDrawThreadPerContext); }
     while (arguments.read("-d")) { viewer.setThreadingModel(osgViewer::Viewer::DrawThreadPerContext); }
     while (arguments.read("-c")) { viewer.setThreadingModel(osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext); }
-    
+
     bool limitNumberOfFrames = false;
     unsigned int maxFrames = 10;
     while (arguments.read("--run-till-frame-number",maxFrames)) { limitNumberOfFrames = true; }
@@ -292,7 +292,7 @@ int main( int argc, char **argv )
 
     if (apm.valid()) viewer.setCameraManipulator(apm.get());
     else viewer.setCameraManipulator( new osgGA::TrackballManipulator() );
-    
+
     viewer.addEventHandler(new osgViewer::StatsHandler);
     viewer.addEventHandler(new osgViewer::ThreadingHandler);
 
@@ -300,7 +300,7 @@ int main( int argc, char **argv )
     while (arguments.read("--config", configfile))
     {
         osg::notify(osg::NOTICE)<<"Trying to read config file "<<configfile<<std::endl;
-        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(configfile);
+        osg::ref_ptr<osg::Object> object = osgDB::readRefObjectFile(configfile);
         osgViewer::View* view = dynamic_cast<osgViewer::View*>(object.get());
         if (view)
         {
@@ -329,19 +329,19 @@ int main( int argc, char **argv )
     else
     {
         // load the scene.
-        osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+        osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
 
-        if (!loadedModel) loadedModel = osgDB::readNodeFile("cow.osgt");
+        if (!loadedModel) loadedModel = osgDB::readRefNodeFile("cow.osgt");
 
-        if (!loadedModel) 
+        if (!loadedModel)
         {
             std::cout << argv[0] <<": No data loaded." << std::endl;
             return 1;
         }
 
-        viewer.setSceneData(loadedModel.get());
+        viewer.setSceneData(loadedModel);
     }
-    
+
     viewer.realize();
 
     unsigned int numFrames = 0;

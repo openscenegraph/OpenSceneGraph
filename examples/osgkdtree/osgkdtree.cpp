@@ -16,7 +16,7 @@
 *  THE SOFTWARE.
 */
 
-  
+
 #include <osgDB/ReadFile>
 
 #include <osg/ArgumentParser>
@@ -47,24 +47,24 @@ int main(int argc, char **argv)
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
+
     int maxNumLevels = 16;
     int targetNumIndicesPerLeaf = 16;
 
     while (arguments.read("--max", maxNumLevels)) {}
     while (arguments.read("--leaf", targetNumIndicesPerLeaf)) {}
-    
+
     osgDB::Registry::instance()->setBuildKdTreesHint(osgDB::ReaderWriter::Options::BUILD_KDTREES);
-    
-    osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
-    
-    if (!scene) 
+
+    osg::ref_ptr<osg::Node> scene = osgDB::readRefNodeFiles(arguments);
+
+    if (!scene)
     {
         std::cout<<"No model loaded, please specify a valid model on the command line."<<std::endl;
         return 0;
     }
 
     osgViewer::Viewer viewer;
-    viewer.setSceneData(scene.get());
+    viewer.setSceneData(scene);
     return viewer.run();
 }

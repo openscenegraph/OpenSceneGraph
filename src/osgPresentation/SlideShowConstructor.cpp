@@ -321,7 +321,7 @@ void SlideShowConstructor::addScriptEngine(const std::string& scriptEngineName)
         OSG_NOTICE<<"Script engine "<<scriptEngineName<<" already loaded."<<std::endl;
     }
 
-    osg::ref_ptr<osg::ScriptEngine> scriptEngine = osgDB::readFile<osg::ScriptEngine>(std::string("ScriptEngine.")+scriptEngineName);
+    osg::ref_ptr<osg::ScriptEngine> scriptEngine = osgDB::readRefFile<osg::ScriptEngine>(std::string("ScriptEngine.")+scriptEngineName);
     if (scriptEngine.valid())
     {
         _scriptEngines[scriptEngineName] = scriptEngine;
@@ -340,7 +340,7 @@ void SlideShowConstructor::addScriptEngine(const std::string& scriptEngineName)
 void SlideShowConstructor::addScriptFile(const std::string& name, const std::string& filename)
 {
     OSG_NOTICE<<"addScriptFile() name="<<name<<", filename = "<<filename<<std::endl;
-    osg::ref_ptr<osg::Script> script = osgDB::readFile<osg::Script>(filename);
+    osg::ref_ptr<osg::Script> script = osgDB::readRefFile<osg::Script>(filename);
     if (script.valid())
     {
         _scripts[name] = script;
@@ -467,7 +467,7 @@ void SlideShowConstructor::addLayer(bool inheritPreviousLayers, bool defineAsBas
         // OSG_NOTICE<<"   new layer background = "<<_slideBackgroundImageFileName<<std::endl;
 
         osg::ref_ptr<osg::Image> image = !_slideBackgroundImageFileName.empty() ?
-            osgDB::readImageFile(_slideBackgroundImageFileName, _options.get()) :
+            osgDB::readRefImageFile(_slideBackgroundImageFileName, _options.get()) :
             0;
 
         // create the background and title..
@@ -532,7 +532,7 @@ void SlideShowConstructor::addLayer(bool inheritPreviousLayers, bool defineAsBas
             osg::Vec3 localPosition = computePositionInModelCoords(_titlePositionData);
 
             osgText::Text* text = new osgText::Text;
-            text->setFont(osgText::readFontFile(_titleFontData.font, _options.get()));
+            text->setFont(osgText::readRefFontFile(_titleFontData.font, _options.get()));
             text->setColor(_titleFontData.color);
             text->setCharacterSize(_titleFontData.characterSize*_slideHeight);
             text->setFontResolution(110,120);
@@ -813,7 +813,7 @@ void SlideShowConstructor::addBullet(const std::string& bullet, PositionData& po
 
     osg::Vec3 localPosition = computePositionInModelCoords(positionData);
 
-    text->setFont(osgText::readFontFile(fontData.font, _options.get()));
+    text->setFont(osgText::readRefFontFile(fontData.font, _options.get()));
     text->setColor(fontData.color);
     text->setCharacterSize(fontData.characterSize*_slideHeight);
     text->setCharacterSizeMode(fontData.characterSizeMode);
@@ -863,7 +863,7 @@ void SlideShowConstructor::addParagraph(const std::string& paragraph, PositionDa
 
     osgText::Text* text = new osgText::Text;
 
-    text->setFont(osgText::readFontFile(fontData.font, _options.get()));
+    text->setFont(osgText::readRefFontFile(fontData.font, _options.get()));
     text->setColor(fontData.color);
     text->setCharacterSize(fontData.characterSize*_slideHeight);
     text->setCharacterSizeMode(fontData.characterSizeMode);
@@ -1061,7 +1061,7 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
 
 
 
-osg::Image* SlideShowConstructor::readImage(const std::string& filename, const ImageData& imageData)
+osg::ref_ptr<osg::Image> SlideShowConstructor::readImage(const std::string& filename, const ImageData& imageData)
 {
     osg::ref_ptr<osgDB::Options> options = _options;
     if (!imageData.options.empty())
@@ -1148,7 +1148,7 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
 
     if (filenames.size()==1)
     {
-        image = osgDB::readImageFile(filenames[0], options.get());
+        image = osgDB::readRefImageFile(filenames[0], options.get());
         if (image.valid()) recordOptionsFilePath(options.get() );
     }
     else
@@ -1169,7 +1169,7 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
             if (imageSequence->getMode()==osg::ImageSequence::PRE_LOAD_ALL_IMAGES)
             {
                 OSG_INFO<<"Attempting to read "<<*itr<<std::endl;
-                osg::ref_ptr<osg::Image> loadedImage = osgDB::readImageFile(*itr, options.get());
+                osg::ref_ptr<osg::Image> loadedImage = osgDB::readRefImageFile(*itr, options.get());
                 if (loadedImage.valid())
                 {
                     OSG_INFO<<"Loaded image "<<*itr<<std::endl;
@@ -1182,7 +1182,7 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
                 imageSequence->addImageFile(*itr);
                 if (firstLoad)
                 {
-                    osg::ref_ptr<osg::Image> loadedImage = osgDB::readImageFile(*itr, options.get());
+                    osg::ref_ptr<osg::Image> loadedImage = osgDB::readRefImageFile(*itr, options.get());
                     if (loadedImage.valid())
                     {
                         imageSequence->addImage(loadedImage.get());
@@ -1250,7 +1250,7 @@ osg::Image* SlideShowConstructor::readImage(const std::string& filename, const I
     {
         OSG_NOTICE<<"Could not load image file: "<<filename<<std::endl;
     }
-    return image.release();
+    return image;
 }
 
 struct VolumeCallback : public osg::NodeCallback
@@ -1479,7 +1479,7 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
 void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, const ImageData& imageDataLeft, const std::string& filenameRight, const ImageData& imageDataRight,const PositionData& positionData, const ScriptData& scriptData)
 {
     osg::ref_ptr<osg::Image> imageLeft = readImage(filenameLeft, imageDataLeft);
-    osg::ref_ptr<osg::Image> imageRight = (filenameRight==filenameLeft) ? imageLeft.get() : readImage(filenameRight, imageDataRight);
+    osg::ref_ptr<osg::Image> imageRight = (filenameRight==filenameLeft) ? imageLeft : readImage(filenameRight, imageDataRight);
 
     if (!imageLeft && !imageRight) return;
 
@@ -1732,7 +1732,7 @@ void SlideShowConstructor::addGraph(const std::string& contents, const PositionD
     }
     else
     {
-        osg::ref_ptr<osg::Node> model = osgDB::readNodeFile(filename, _options.get());
+        osg::ref_ptr<osg::Node> model = osgDB::readRefNodeFile(filename, _options.get());
         if (!model) return;
 
         dotFileName = tmpDirectory+osgDB::getStrippedName(filename)+std::string(".dot");
@@ -1814,7 +1814,7 @@ public:
 };
 
 
-osg::Image* SlideShowConstructor::addInteractiveImage(const std::string& filename, const PositionData& positionData, const ImageData& imageData, const ScriptData& scriptData)
+osg::ref_ptr<osg::Image> SlideShowConstructor::addInteractiveImage(const std::string& filename, const PositionData& positionData, const ImageData& imageData, const ScriptData& scriptData)
 {
     osg::ref_ptr<osgDB::Options> options = _options;
     if (!imageData.options.empty())
@@ -1823,7 +1823,7 @@ osg::Image* SlideShowConstructor::addInteractiveImage(const std::string& filenam
         options->setOptionString(imageData.options);
     }
 
-    osg::Image* image = osgDB::readImageFile(filename, options.get());
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(filename, options.get());
 
     OSG_INFO<<"addInteractiveImage("<<filename<<") "<<image<<std::endl;
 
@@ -1852,9 +1852,9 @@ osg::Image* SlideShowConstructor::addInteractiveImage(const std::string& filenam
     osg::Vec3 image_pos = positionData.autoRotate ? image_local_pos : (pos+image_local_pos);
 
     bool usedTextureRectangle = false;
-    osg::Geometry* pictureQuad = createTexturedQuadGeometry(image_pos, positionData.rotate, image_width, image_height, image, usedTextureRectangle);
+    osg::Geometry* pictureQuad = createTexturedQuadGeometry(image_pos, positionData.rotate, image_width, image_height, image.get(), usedTextureRectangle);
 
-    osg::ref_ptr<osgViewer::InteractiveImageHandler> handler = new osgViewer::InteractiveImageHandler(image);
+    osg::ref_ptr<osgViewer::InteractiveImageHandler> handler = new osgViewer::InteractiveImageHandler(image.get());
     pictureQuad->setEventCallback(handler.get());
     pictureQuad->setCullCallback(handler.get());
 
@@ -1939,7 +1939,7 @@ osg::Image* SlideShowConstructor::addInteractiveImage(const std::string& filenam
 
     addToCurrentLayer(subgraph);
 
-    osgWidget::PdfImage* pdfImage = dynamic_cast<osgWidget::PdfImage*>(image);
+    osgWidget::PdfImage* pdfImage = dynamic_cast<osgWidget::PdfImage*>(image.get());
     if (pdfImage && imageData.page>=0)
     {
         getOrCreateLayerAttributes(_currentLayer.get())->addEnterCallback(new SetPageCallback(pdfImage, imageData.page));
@@ -2070,7 +2070,7 @@ void SlideShowConstructor::addModel(const std::string& filename, const PositionD
     }
     else
     {
-        subgraph = osgDB::readNodeFile(filename, options.get());
+        subgraph = osgDB::readRefNodeFile(filename, options.get());
         if (subgraph) recordOptionsFilePath(options.get());
     }
 
@@ -2682,7 +2682,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
             itr != filenames.end();
             ++itr)
         {
-            osg::ref_ptr<osg::Image> loadedImage = osgDB::readImageFile(*itr, options.get());
+            osg::ref_ptr<osg::Image> loadedImage = osgDB::readRefImageFile(*itr, options.get());
             if (loadedImage.valid())
             {
                 images.push_back(loadedImage.get());
@@ -2702,26 +2702,26 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
 
         if (fileType == osgDB::DIRECTORY)
         {
-            image = osgDB::readImageFile(foundFile+".dicom", options.get());
+            image = osgDB::readRefImageFile(foundFile+".dicom", options.get());
         }
         else if (fileType == osgDB::REGULAR_FILE)
         {
             std::string ext = osgDB::getFileExtension(foundFile);
             if (ext=="osg" || ext=="ive" || ext=="osgx" || ext=="osgb" || ext=="osgt")
             {
-                osg::ref_ptr<osg::Object> obj = osgDB::readObjectFile(foundFile);
+                osg::ref_ptr<osg::Object> obj = osgDB::readRefObjectFile(foundFile);
                 image = dynamic_cast<osg::Image*>(obj.get());
                 volume = dynamic_cast<osgVolume::Volume*>(obj.get());
             }
             else
             {
-                image = osgDB::readImageFile( foundFile, options.get() );
+                image = osgDB::readRefImageFile( foundFile, options.get() );
             }
         }
         else
         {
             // not found image, so fallback to plugins/callbacks to find the model.
-            image = osgDB::readImageFile( filename, options.get() );
+            image = osgDB::readRefImageFile( filename, options.get() );
             if (image) recordOptionsFilePath(options.get() );
         }
     }
@@ -3056,7 +3056,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
 
     if (!volumeData.hull.empty())
     {
-        osg::ref_ptr<osg::Node> hull = osgDB::readNodeFile(volumeData.hull, _options.get());
+        osg::ref_ptr<osg::Node> hull = osgDB::readRefNodeFile(volumeData.hull, _options.get());
         if (hull.valid())
         {
             hull = decorateSubgraphForPositionAndAnimation(hull.get(), volumeData.hullPositionData);
@@ -3100,7 +3100,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
 
 
 #if 1
-    osgUI::Widget* widget = vs.valid() ? osgDB::readFile<osgUI::Widget>("ui/VolumeSettings.lua") : 0;
+    osg::ref_ptr<osgUI::Widget> widget = vs.valid() ? osgDB::readRefFile<osgUI::Widget>("ui/VolumeSettings.lua") : 0;
     if (widget)
     {
         OSG_NOTICE<<"Adding widget"<<std::endl;
@@ -3170,7 +3170,7 @@ bool SlideShowConstructor::attachTexMat(osg::StateSet* stateset, const ImageData
 
 osg::Node* SlideShowConstructor::attachMaterialAnimation(osg::Node* model, const PositionData& positionData)
 {
-    AnimationMaterial* animationMaterial = 0;
+    osg::ref_ptr<AnimationMaterial> animationMaterial = 0;
 
     if (!positionData.animation_material_filename.empty())
     {
@@ -3186,8 +3186,7 @@ osg::Node* SlideShowConstructor::attachMaterialAnimation(osg::Node* model, const
             }
         }
 #else
-        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(positionData.animation_material_filename, _options.get());
-        animationMaterial = dynamic_cast<AnimationMaterial*>(object.get());
+        animationMaterial = osgDB::readRefFile<AnimationMaterial>(positionData.animation_material_filename, _options.get());
 #endif
 
     }
@@ -3214,7 +3213,7 @@ osg::Node* SlideShowConstructor::attachMaterialAnimation(osg::Node* model, const
     {
         animationMaterial->setLoopMode(positionData.animation_material_loop_mode);
 
-        AnimationMaterialCallback* animationMaterialCallback = new AnimationMaterialCallback(animationMaterial);
+        AnimationMaterialCallback* animationMaterialCallback = new AnimationMaterialCallback(animationMaterial.get());
         animationMaterialCallback->setTimeOffset(positionData.animation_material_time_offset);
         animationMaterialCallback->setTimeMultiplier(positionData.animation_material_time_multiplier);
 
@@ -3243,7 +3242,7 @@ osg::AnimationPathCallback* SlideShowConstructor::getAnimationPathCallback(const
         osg::ref_ptr<osgDB::Options> options = _options.valid() ? _options->cloneOptions() : new osgDB::Options;
         options->setObjectCacheHint(osgDB::Options::CACHE_NONE);
 
-        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(positionData.path, options.get());
+        osg::ref_ptr<osg::Object> object = osgDB::readRefObjectFile(positionData.path, options.get());
         osg::AnimationPath* animation = dynamic_cast<osg::AnimationPath*>(object.get());
         if (animation)
         {

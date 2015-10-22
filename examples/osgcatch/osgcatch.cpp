@@ -55,11 +55,11 @@ class Character : public osg::Referenced
 {
 public:
     Character();
-    
+
     void setCharacter(const std::string& filename, const std::string& name, const osg::Vec3& orgin, const osg::Vec3& width, const osg::Vec3& catchPos, float positionRatio);
-    
+
     void setLives(const std::string& filename, const osg::Vec3& orgin, const osg::Vec3& delta, unsigned int numLives);
-    
+
     void setCatches(const std::string& filename, const osg::Vec3& orgin, const osg::Vec3& delta, unsigned int numLives);
 
     void moveLeft();
@@ -71,7 +71,7 @@ public:
     void resetCatches();
 
     bool addCatch();
-    
+
     bool looseLife();
 
     osg::Vec3 getCurrentCenterOfBasket() const { return _character->getPosition()+_centerBasket; }
@@ -91,12 +91,12 @@ public:
 
     unsigned int                                 _numCatches;
     osg::ref_ptr<osg::Switch>                    _catchSwitch;
-    
+
     osg::ref_ptr<osg::Group>                     _objectsGroup;
-    
+
     osg::Vec3                                    _centerBasket;
     float                                        _radiusBasket;
-    
+
 };
 
 Character::Character():
@@ -117,7 +117,7 @@ void Character::setCharacter(const std::string& filename, const std::string& nam
 
     float _characterSize = _width.length()*0.2f;
 
-    osg::Image* image = osgDB::readImageFile(filename);
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(filename);
     if (image)
     {
         osg::Vec3 pos(-0.5f*_characterSize,0.0f,0.0f);
@@ -136,14 +136,14 @@ void Character::setCharacter(const std::string& filename, const std::string& nam
         _character = new osg::PositionAttitudeTransform;
         _character->setName(name);
         _character->addChild(geode);
-        
+
         moveTo(positionRatio);
 
         _centerBasket = width*catchPos.x() + height*catchPos.y() + pos;
         _radiusBasket = width.length()*catchPos.z();
 
     }
-    
+
 }
 
 void Character::setLives(const std::string& filename, const osg::Vec3& origin, const osg::Vec3& delta, unsigned int numLives)
@@ -153,7 +153,7 @@ void Character::setLives(const std::string& filename, const osg::Vec3& origin, c
     _numLives = numLives;
     _livesSwitch = new osg::Switch;
 
-    osg::Image* image = osgDB::readImageFile(filename);
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(filename);
     if (image)
     {
         osg::StateSet* stateset = _livesSwitch->getOrCreateStateSet();
@@ -186,7 +186,7 @@ void Character::setCatches(const std::string& filename, const osg::Vec3& origin,
     _numCatches = 0;
     _catchSwitch = new osg::Switch;
 
-    osg::Image* image = osgDB::readImageFile(filename);
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(filename);
     if (image)
     {
         osg::StateSet* stateset = _catchSwitch->getOrCreateStateSet();
@@ -249,20 +249,20 @@ void Character::resetCatches()
 bool Character::addCatch()
 {
     if (!_catchSwitch || _numCatches>=_catchSwitch->getNumChildren()) return false;
-    
+
     _catchSwitch->setValue(_numCatches,true);
     ++_numCatches;
-    
+
     return true;
 }
 
 bool Character::looseLife()
 {
     if (!_livesSwitch || _numLives==0) return false;
-    
+
     --_numLives;
     _livesSwitch->setValue(_numLives,false);
-    
+
     return (_numLives!=0);
 }
 
@@ -279,21 +279,21 @@ class CatchableObject  : public osg::Referenced
         bool anyInside(const osg::Vec3& lower_left, const osg::Vec3& top_right);
 
         bool centerInside(const osg::Vec3& center, float radius);
-        
+
         void explode();
-        
+
         bool dangerous() { return _dangerous; }
 
         void stop() { _stopped = true; }
-        
+
         bool stopped() { return _stopped; }
-        
+
         void setTimeToRemove(double time) { _timeToRemove=time; }
-        
+
         double getTimeToRemove() { return _timeToRemove; }
-        
+
         bool needToRemove(double time) { return  _timeToRemove>=0.0 && time>_timeToRemove; }
-        
+
         osg::ref_ptr<osg::PositionAttitudeTransform> _object;
         osg::Vec3                                    _velocity;
         float                                        _mass;
@@ -307,7 +307,7 @@ class CatchableObject  : public osg::Referenced
         static void setUpCatchablesMap(const FileList& fileList);
 
     public:
-    
+
         // update position and velocity
         void update(double dt);
 
@@ -317,7 +317,7 @@ class CatchableObject  : public osg::Referenced
             _viscosity = v;
             _viscosityCoefficient = 6 * osg::PI * _viscosity;
         }
-       
+
         /// Get the viscosity of the fluid.
         inline float getFluidViscosity() const { return _viscosity; }
 
@@ -330,17 +330,17 @@ class CatchableObject  : public osg::Referenced
 
         /// Get the density of the fluid.
         inline float getFluidDensity() const { return _density; }
-        
-        
+
+
         /// Set the wind vector.
         inline void setWind(const osg::Vec3& wind) { _wind = wind; }
-        
+
         /// Get the wind vector.
         inline const osg::Vec3& getWind() const { return _wind; }
-        
+
         /// Set the acceleration vector.
         inline void setAcceleration(const osg::Vec3& v) { _acceleration = v; }
-        
+
         /// Get the acceleration vector.
         inline const osg::Vec3& getAcceleration() const { return _acceleration; }
 
@@ -356,7 +356,7 @@ class CatchableObject  : public osg::Referenced
             setFluidDensity(1.2929f);
             setFluidViscosity(1.8e-5f);
         }
-        
+
         /// Set the fluid parameters as for pure water (20°C temperature).
         inline void setFluidToWater()
         {
@@ -364,7 +364,7 @@ class CatchableObject  : public osg::Referenced
             setFluidDensity(1.0f);
             setFluidViscosity(1.002e-3f);
         }
-            
+
 
     protected:
 
@@ -375,15 +375,15 @@ class CatchableObject  : public osg::Referenced
 
         float       _viscosityCoefficient;
         float       _densityCoefficeint;
-        
- 
+
+
 };
 
 CatchableObject::CatchableObject()
 {
     _stopped = false;
     _dangerous = false;
-    
+
     _timeToRemove = -1.0; // do not remove.
     setFluidToAir();
 }
@@ -395,14 +395,14 @@ void CatchableObject::setUpCatchablesMap(const FileList& fileList)
         ++itr)
     {
         const std::string& filename = *itr;
-        osg::Image* image = osgDB::readImageFile(filename);
+        osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(filename);
         if (image)
         {
             osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet();
             stateset->setTextureAttributeAndModes(0,new osg::Texture2D(image),osg::StateAttribute::ON);
             stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
             stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-            
+
             osg::Vec3 width((float)(image->s())/(float)(image->t()),0.0f,0.0);
             osg::Vec3 height(0.0f,0.0f,1.0f);
             osg::Vec3 pos = (width+height)*-0.5f;
@@ -455,8 +455,8 @@ void CatchableObject::update(double dt)
     osg::Vec3 force = _acceleration * (_mass - _density*Volume);
 
     // compute force due to friction
-    osg::Vec3 relative_wind = _velocity-_wind;            
-    force -= relative_wind * Area * (_viscosityCoefficient + _densityCoefficeint*relative_wind.length());            
+    osg::Vec3 relative_wind = _velocity-_wind;
+    force -= relative_wind * Area * (_viscosityCoefficient + _densityCoefficeint*relative_wind.length());
 
     // divide force by mass to get acceleration.
     _velocity += force*(dt/_mass);
@@ -466,7 +466,7 @@ void CatchableObject::update(double dt)
 bool CatchableObject::anyInside(const osg::Vec3& lower_left, const osg::Vec3& upper_right)
 {
     osg::Vec3 pos = _object->getPosition();
-    
+
     if (pos.x()+_radius < lower_left.x()) return false;
     if (pos.x()-_radius > upper_right.x()) return false;
     if (pos.z()+_radius < lower_left.z()) return false;
@@ -513,20 +513,20 @@ class GameEventHandler : public osgGA::GUIEventHandler
 public:
 
     GameEventHandler();
-    
+
     META_Object(osgStereImageApp,GameEventHandler);
 
     virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&);
-    
+
     virtual void getUsage(osg::ApplicationUsage& usage) const;
-    
+
     osg::Matrix getCameraPosition();
-    
+
     void compileGLObjects(osg::State& state)
     {
         osgUtil::GLObjectsVisitor compile;
         compile.setState(&state);
-    
+
         for(ObjectMap::iterator itr = s_objectMap.begin();
             itr != s_objectMap.end();
             ++itr)
@@ -534,14 +534,14 @@ public:
             itr->second->accept(compile);
         }
     }
-    
+
     osg::Node* createScene();
-    
+
     void setFOVY(float fovy) { _fovy = fovy; }
     float getFOVY() const { return _fovy; }
-    
+
     void createNewCatchable();
-    
+
     void clearCatchables()
     {
         for(CatchableObjectList::iterator itr=_catchableObjects.begin();
@@ -562,7 +562,7 @@ public:
 
         _catchableObjects.clear();
     }
-    
+
     void resetLevel()
     {
         _level = 0;
@@ -573,7 +573,7 @@ public:
 
         _levelStartTick = osg::Timer::instance()->tick();
     }
-    
+
     void nextLevel()
     {
         ++_level;
@@ -596,12 +596,12 @@ public:
     void resetGame()
     {
         _currentScore = 0;
-        
+
         updateTextWithScore();
 
         clearCatchables();
         resetLevel();
-        
+
         for(unsigned int i=0;i<_numberOfPlayers;++i)
         {
             _players[i].reset();
@@ -629,12 +629,12 @@ public:
             livesPosition = _originBaseLine+osg::Vec3(1000.0f,-0.5f,000.0f);
             catchesPosition = _originBaseLine+osg::Vec3(1100.0f,-0.5f,0.0f);
         }
-        
+
         switch(player)
         {
             case PLAYER_GIRL:
             {
-                std::string player_one = "Catch/girl.png"; 
+                std::string player_one = "Catch/girl.png";
                 osg::Vec3 catchPos(0.2, 0.57, 0.34);
 
                 _players[_numberOfPlayers].setCharacter(player_one,"girl", _originBaseLine + osg::Vec3(0.0f,-1.0f,0.0f), _widthBaseLine, catchPos, 0.5f);
@@ -646,7 +646,7 @@ public:
             }
             case PLAYER_BOY:
             {
-                std::string player_two = "Catch/boy.png"; 
+                std::string player_two = "Catch/boy.png";
                 osg::Vec3 catchPos(0.8, 0.57, 0.34);
 
                 _players[_numberOfPlayers].setCharacter(player_two,"boy", _originBaseLine + osg::Vec3(0.0f,-2.0f,0.0f), _widthBaseLine, catchPos, 0.5f);
@@ -656,10 +656,10 @@ public:
                  ++_numberOfPlayers;
                break;
             }
-        }                
+        }
     }
-    
-    
+
+
     typedef std::vector< osg::ref_ptr<osgText::Text> > TextList;
 
     void updateScoreWithCatch()
@@ -673,8 +673,8 @@ public:
         osg::Timer_t newTick = osg::Timer::instance()->tick();
         double timeForLevel = osg::Timer::instance()->delta_s(_levelStartTick, newTick);
 
-        // a ten second level gets you 10 points, 
-        // a twenty second levels gets you 5 points.        
+        // a ten second level gets you 10 points,
+        // a twenty second levels gets you 5 points.
         _currentScore += static_cast<unsigned int>(10000.0f/(timeForLevel*timeForLevel));
 
         updateTextWithScore();
@@ -685,24 +685,24 @@ public:
     {
         std::ostringstream os;
         os<<"Score: "<<_currentScore;
-        
+
         std::string textString = os.str();
-    
+
         for(TextList::iterator itr = _scoreTextList.begin();
             itr != _scoreTextList.end();
             ++itr)
         {
             (*itr)->setText(textString);
         }
-    }        
-    
+    }
+
     void updateLevelText()
     {
         std::ostringstream os;
         os<<"Level: "<<_level+1;
         _levelText->setText(os.str());
     }
-        
+
 
 protected:
 
@@ -715,45 +715,45 @@ protected:
     osg::Vec3 _originBaseLine;
     osg::Vec3 _widthBaseLine;
     float     _characterSize;
-    
+
     float _fovy;
 
     unsigned _level;
-    
+
     float _chanceOfExplodingAtStart;
     float _initialNumDropsPerSecond;
-    
+
     osg::ref_ptr<osg::Switch>   _gameSwitch;
     osg::ref_ptr<osg::Group>    _gameGroup;
     osg::ref_ptr<osg::Switch>   _levelSwitch;
-    
+
     unsigned int                _currentIndex;
     unsigned int                _welcomeIndex;
     unsigned int                _lostIndex;
     unsigned int                _wonIndex;
     unsigned int                _gameIndex;
-    
+
     osg::Timer_t                _levelStartTick;
     unsigned int                _currentScore;
-    
+
     osg::ref_ptr<osgText::Text> _levelText;
     TextList                    _scoreTextList;
-    
+
     unsigned int _numberOfPlayers;
     Character _players[2];
 
     typedef std::list< osg::ref_ptr<CatchableObject> > CatchableObjectList;
     CatchableObjectList _catchableObjects;
-    
+
     FileList _backgroundFiles;
     FileList _benignCatachables;
 
     bool _leftKeyPressed;
     bool _rightKeyPressed;
-    
+
     osg::ref_ptr<CatchableObject> _dummyCatchable;
-    
-        
+
+
 };
 
 
@@ -791,11 +791,11 @@ GameEventHandler::GameEventHandler()
     _benignCatachables.push_back("Catch/t.png");
     _benignCatachables.push_back("Catch/u.png");
     _benignCatachables.push_back("Catch/ball.png");
-    
+
     CatchableObject::setUpCatchablesMap(_benignCatachables);
-    
+
     _currentScore = 0;
-    
+
     setFOVY(osg::DegreesToRadians(60.0));
 
 }
@@ -817,7 +817,7 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
             default:
                 return false;
         }
-        
+
     }
     else if (_currentIndex==_lostIndex)
     {
@@ -834,7 +834,7 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
             default:
                 return false;
         }
-        
+
     }
     else if (_currentIndex==_wonIndex)
     {
@@ -851,7 +851,7 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
             default:
                 return false;
         }
-        
+
     }
     else if (_currentIndex==_gameIndex)
     {
@@ -888,7 +888,7 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                     for(unsigned int i=0;i<_numberOfPlayers;++i)
                     {
                         bool inBasket = ((*itr)->centerInside(_players[i].getCurrentCenterOfBasket(),_players[i].getCurrentRadiusOfBasket()));
-                    
+
                         if ((*itr)->dangerous())
                         {
                             if ((*itr)->anyInside(_players[i].getLowerLeft(),_players[i].getUpperRight()) || inBasket)
@@ -912,7 +912,7 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                         {
                             // player has caught a safe object.
                             updateScoreWithCatch();
-                            
+
                             if (!_players[i].addCatch())
                             {
                                 _players[i].resetCatches();
@@ -930,7 +930,7 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                         }
                     }
 
-                    if (!(*itr)->anyInside(_origin, _origin+_width+_height) || 
+                    if (!(*itr)->anyInside(_origin, _origin+_width+_height) ||
                         (*itr)->needToRemove(ea.getTime()) ||
                         removeEntry)
                     {
@@ -968,7 +968,7 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                 float numDropsPerSecond = _initialNumDropsPerSecond * (_level+1);
                 float r = (float)rand()/(float)RAND_MAX;
                 if (r < deltaTime*numDropsPerSecond)
-                { 
+                {
                     createNewCatchable();
                 }
 
@@ -1015,7 +1015,7 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                 return false;
         }
     }
-    return false;    
+    return false;
 }
 
 void GameEventHandler::getUsage(osg::ApplicationUsage&) const
@@ -1026,9 +1026,9 @@ osg::Matrix GameEventHandler::getCameraPosition()
 {
     osg::Matrix cameraPosition;
     osg::Vec3 center = _origin+(_width+_height)*0.5f;
-    
+
     float distance = _height.length()/(2.0f*tanf(_fovy*0.5f));
-    
+
     cameraPosition.makeLookAt(center-osg::Vec3(0.0f,distance,0.0f),center,osg::Vec3(0.0f,0.0f,1.0f));
     return cameraPosition;
 }
@@ -1036,8 +1036,8 @@ osg::Matrix GameEventHandler::getCameraPosition()
 osg::Node* GameEventHandler::createScene()
 {
     _gameSwitch = new osg::Switch;
-    
-    // create a dummy catchable to load all the particule textures to reduce 
+
+    // create a dummy catchable to load all the particule textures to reduce
     // latency later on..
     _dummyCatchable = new CatchableObject;
     _dummyCatchable->setObject("Catch/a.png","a",osg::Vec3(0.0f,0.0,0.0f),1.0f,osg::Vec3(0.0f,0.0,0.0f));
@@ -1045,10 +1045,10 @@ osg::Node* GameEventHandler::createScene()
 
     // set up welcome subgraph
     {
-        osg::Geode* geode = new osg::Geode;
+        osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
         // set up the background
-        osg::Image* image = osgDB::readImageFile("Catch/Welcome.jpg");
+        osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile("Catch/Welcome.jpg");
         if (image)
         {
             osg::Geometry* geometry = osg::createTexturedQuadGeometry(_origin,_width,_height);
@@ -1057,7 +1057,7 @@ osg::Node* GameEventHandler::createScene()
 
             geode->addDrawable(geometry);
         }
-        
+
         // set up the text
         osg::Vec3 textPosition = _origin+_width*0.5f+_height*0.8f -osg::Vec3(0.0f,0.1f,0.0f);
         {
@@ -1072,7 +1072,7 @@ osg::Node* GameEventHandler::createScene()
 
             geode->addDrawable(text);
         }
-        
+
         {
             textPosition -= _height*0.25f;
             osgText::Text* text = new osgText::Text;
@@ -1121,9 +1121,9 @@ osg::Node* GameEventHandler::createScene()
 
     // set up you've lost subgraph
     {
-        osg::Geode* geode = new osg::Geode;
+        osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
-        osg::Image* image = osgDB::readImageFile("Catch/YouLost.jpg");
+        osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile("Catch/YouLost.jpg");
         if (image)
         {
             osg::Geometry* geometry = osg::createTexturedQuadGeometry(_origin,_width,_height);
@@ -1132,7 +1132,7 @@ osg::Node* GameEventHandler::createScene()
 
             geode->addDrawable(geometry);
         }
-        
+
         // set up the text
         osg::Vec3 textPosition = _origin+_width*0.5f+_height*0.75f -osg::Vec3(0.0f,0.1f,0.0f);
         {
@@ -1147,7 +1147,7 @@ osg::Node* GameEventHandler::createScene()
 
             geode->addDrawable(text);
         }
-        
+
         {
             textPosition -= _height*0.25f;
             osgText::Text* text = new osgText::Text;
@@ -1184,9 +1184,9 @@ osg::Node* GameEventHandler::createScene()
 
     // set up you've won subgraph
     {
-        osg::Geode* geode = new osg::Geode;
+        osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
-        osg::Image* image = osgDB::readImageFile("Catch/YouWon.jpg");
+        osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile("Catch/YouWon.jpg");
         if (image)
         {
             osg::Geometry* geometry = osg::createTexturedQuadGeometry(_origin,_width,_height);
@@ -1195,7 +1195,7 @@ osg::Node* GameEventHandler::createScene()
 
             geode->addDrawable(geometry);
         }
-        
+
         // set up the text
         osg::Vec3 textPosition = _origin+_width*0.5f+_height*0.75f -osg::Vec3(0.0f,0.1f,0.0f);
         {
@@ -1210,7 +1210,7 @@ osg::Node* GameEventHandler::createScene()
 
             geode->addDrawable(text);
         }
-        
+
         {
             textPosition -= _height*0.25f;
             osgText::Text* text = new osgText::Text;
@@ -1258,7 +1258,7 @@ osg::Node* GameEventHandler::createScene()
             _gameGroup->addChild(_players[i]._character.get());
             _gameGroup->addChild(_players[i]._livesSwitch.get());
             _gameGroup->addChild(_players[i]._catchSwitch.get());
-        }    
+        }
 
         // background
         {
@@ -1269,7 +1269,7 @@ osg::Node* GameEventHandler::createScene()
                 ++itr)
             {
 
-                osg::Image* image = osgDB::readImageFile(*itr);
+                osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(*itr);
                 if (image)
                 {
                     osg::Geometry* geometry = osg::createTexturedQuadGeometry(_origin,_width,_height);
@@ -1305,7 +1305,7 @@ osg::Node* GameEventHandler::createScene()
             osg::Geode* geode = new osg::Geode;
             geode->addDrawable(text);
             _scoreTextList.push_back(text);
-            
+
             textPosition -= _height*0.05f;
             _levelText = new osgText::Text;
             _levelText->setText("Level : 0");
@@ -1317,7 +1317,7 @@ osg::Node* GameEventHandler::createScene()
             _levelText->setAxisAlignment(osgText::Text::XZ_PLANE);
 
             geode->addDrawable(_levelText.get());
-            
+
 
 
             _gameGroup->addChild(geode);
@@ -1325,7 +1325,7 @@ osg::Node* GameEventHandler::createScene()
 
 
     }
-    
+
     _currentIndex = _welcomeIndex;
     _gameSwitch->setSingleChildOn(_currentIndex);
 
@@ -1338,7 +1338,7 @@ void GameEventHandler::createNewCatchable()
 
     unsigned int catachableIndex = (unsigned int)((float)_benignCatachables.size()*(float)rand()/(float)RAND_MAX);
     if (catachableIndex>=_benignCatachables.size()) catachableIndex = _benignCatachables.size()-1;
-    
+
     const std::string& filename = _benignCatachables[catachableIndex];
 
     float ratio = ((float)rand() / (float)RAND_MAX);
@@ -1356,7 +1356,7 @@ void GameEventHandler::createNewCatchable()
     float r = (float)rand() / (float)RAND_MAX;
     if (r < _chanceOfExplodingAtStart)
     {
-       catchableObject->explode(); 
+       catchableObject->explode();
     }
 
     _gameGroup->addChild(catchableObject->_object.get());
@@ -1369,7 +1369,7 @@ class CompileStateCallback : public osg::Operation
             osg::Referenced(true),
             osg::Operation("CompileStateCallback", false),
             _gameEventHandler(eh) {}
-        
+
         virtual void operator () (osg::Object* object)
         {
             osg::GraphicsContext* context = dynamic_cast<osg::GraphicsContext*>(object);
@@ -1380,7 +1380,7 @@ class CompileStateCallback : public osg::Operation
                 _gameEventHandler->compileGLObjects(*(context->getState()));
             }
         }
-        
+
         OpenThreads::Mutex  _mutex;
         GameEventHandler*  _gameEventHandler;
 };
@@ -1390,7 +1390,7 @@ int main( int argc, char **argv )
 
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
+
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use node masks to create stereo images.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] image_file_left_eye image_file_right_eye");
@@ -1410,8 +1410,8 @@ int main( int argc, char **argv )
 
     while (arguments.read("--boy")) seh->addPlayer(GameEventHandler::PLAYER_BOY);
     while (arguments.read("--girl")) seh->addPlayer(GameEventHandler::PLAYER_GIRL);
-    
-    
+
+
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
@@ -1428,8 +1428,8 @@ int main( int argc, char **argv )
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
-    
-    
+
+
     // enable the image cache so we don't need to keep loading the particle files
     osgDB::ReaderWriter::Options* options = new osgDB::ReaderWriter::Options;
     options->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_IMAGES);
@@ -1454,7 +1454,7 @@ int main( int argc, char **argv )
 
     double fovy, aspectRatio, zNear, zFar;
     viewer.getCamera()->getProjectionMatrixAsPerspective(fovy, aspectRatio, zNear, zFar);
-    seh->setFOVY(osg::DegreesToRadians(fovy));    
+    seh->setFOVY(osg::DegreesToRadians(fovy));
 
     // todo for osgViewer - create default set up.
     viewer.setUpViewAcrossAllScreens();
@@ -1472,7 +1472,7 @@ int main( int argc, char **argv )
     }
 
     // todo for osgViewer - implement warp pointer that can be done relative to different coordinate frames
-    // viewer.requestWarpPointer(0.5f,0.5f);        
+    // viewer.requestWarpPointer(0.5f,0.5f);
 
     while( !viewer.done() )
     {
@@ -1480,8 +1480,8 @@ int main( int argc, char **argv )
 
         // fire off the cull and draw traversals of the scene.
         viewer.frame();
-        
+
     }
-    
+
     return 0;
 }

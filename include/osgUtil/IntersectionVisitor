@@ -160,7 +160,7 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
           * tighter integration.*/
         struct ReadCallback : public osg::Referenced
         {
-            virtual osg::Node* readNodeFile(const std::string& filename) = 0;
+            virtual osg::ref_ptr<osg::Node> readNodeFile(const std::string& filename) = 0;
         };
 
 

@@ -114,8 +114,7 @@ class ReaderWriterRevisions : public osgDB::ReaderWriter
                         {
                             std::string complete_path = osgDB::concatPaths(revisions_path, filename);
                             OSG_INFO<<"    complete_path="<<complete_path<<std::endl;
-                            osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(complete_path, options);
-                            fileList = dynamic_cast<osgDB::FileList*>(object.get());
+                            fileList = osgDB::readRefFile<osgDB::FileList>(complete_path, options);
                         }
 
                         if (!fileList)

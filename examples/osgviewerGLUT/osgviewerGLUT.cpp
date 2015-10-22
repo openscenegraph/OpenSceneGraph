@@ -59,7 +59,7 @@ void display(void)
 void reshape( int w, int h )
 {
     // update the window dimensions, in case the window has been resized.
-    if (window.valid()) 
+    if (window.valid())
     {
         window->resized(window->getTraits()->x, window->getTraits()->y, w, h);
         window->getEventQueue()->windowResize(window->getTraits()->x, window->getTraits()->y, w, h );
@@ -88,7 +88,7 @@ void keyboard( unsigned char key, int /*x*/, int /*y*/ )
     switch( key )
     {
         case 27:
-            // clean up the viewer 
+            // clean up the viewer
             if (viewer.valid()) viewer = 0;
             glutDestroyWindow(glutGetWindow());
             break;
@@ -113,7 +113,7 @@ int main( int argc, char **argv )
     }
 
     // load the scene.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(argv[1]);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFile(argv[1]);
     if (!loadedModel)
     {
         std::cout << argv[0] <<": No data loaded." << std::endl;
@@ -139,7 +139,7 @@ int main( int argc, char **argv )
     viewer->realize();
 
     glutMainLoop();
-    
+
     return 0;
 }
 

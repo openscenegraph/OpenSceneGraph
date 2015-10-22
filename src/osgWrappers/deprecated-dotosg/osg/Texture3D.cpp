@@ -41,7 +41,7 @@ bool Texture3D_readLocalData(Object& obj, Input& fr)
     if (fr[0].matchWord("file") && fr[1].isString())
     {
         std::string filename = fr[1].getStr();
-        Image* image = fr.readImage(filename.c_str());
+        osg::ref_ptr<Image> image = fr.readImage(filename.c_str());
         if (image)
         {
             // name will have already been set by the image plugin,
@@ -57,7 +57,7 @@ bool Texture3D_readLocalData(Object& obj, Input& fr)
 
     if (fr[0].matchWord("ImageSequence") || fr[0].matchWord("Image"))
     {
-        osg::Image* image = fr.readImage();
+        osg::ref_ptr<osg::Image> image = fr.readImage();
         if (image) texture.setImage(image);
     }
 

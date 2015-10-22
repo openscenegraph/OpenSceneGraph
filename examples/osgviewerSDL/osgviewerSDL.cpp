@@ -78,10 +78,10 @@ int main( int argc, char **argv )
         exit(1);
     }
     atexit(SDL_Quit);
-    
+
 
     // load the scene.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(argv[1]);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFile(argv[1]);
     if (!loadedModel)
     {
         std::cout << argv[0] <<": No data loaded." << std::endl;
@@ -111,7 +111,7 @@ int main( int argc, char **argv )
     SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
     SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-    
+
     // set up the surface to render to
     SDL_Surface* screen = SDL_SetVideoMode(windowWidth, windowHeight, bitDepth, SDL_OPENGL | SDL_FULLSCREEN | SDL_RESIZABLE);
     if ( screen == NULL )
@@ -121,11 +121,11 @@ int main( int argc, char **argv )
     }
 
     SDL_EnableUNICODE(1);
-    
+
     // If we used 0 to set the fields, query the values so we can pass it to osgViewer
     windowWidth = screen->w;
     windowHeight = screen->h;
-    
+
     osgViewer::Viewer viewer;
     osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> gw = viewer.setUpViewerAsEmbeddedInWindow(0,0,windowWidth,windowHeight);
     viewer.setSceneData(loadedModel.get());
@@ -153,7 +153,7 @@ int main( int argc, char **argv )
                 case SDL_KEYUP:
 
                     if (event.key.keysym.sym==SDLK_ESCAPE) done = true;
-                    if (event.key.keysym.sym=='f') 
+                    if (event.key.keysym.sym=='f')
                     {
                         SDL_WM_ToggleFullScreen(screen);
                         gw->resized(0, 0, screen->w, screen->h );
@@ -175,7 +175,7 @@ int main( int argc, char **argv )
         // Swap Buffers
         SDL_GL_SwapBuffers();
     }
-   
+
     return 0;
 }
 

@@ -75,21 +75,20 @@ std::string ImageReaderWriter::local_insertReference(const std::string& fileName
     return myReference;
 }
 
-osg::Image* ImageReaderWriter::readImage_Archive(DataReference& dr, float& s,float& t)
+osg::ref_ptr<osg::Image> ImageReaderWriter::readImage_Archive(DataReference& dr, float& s,float& t)
 {
     for(PhotoArchiveList::iterator itr=_photoArchiveList.begin();
         itr!=_photoArchiveList.end();
         ++itr)
     {
-        osg::Image* image = (*itr)->readImage(dr._fileName,dr._resolutionX,dr._resolutionY,s,t);
+        osg::ref_ptr<osg::Image> image = (*itr)->readImage(dr._fileName,dr._resolutionX,dr._resolutionY,s,t);
         if (image) return image;
     }
     return 0;
 }
 
-osg::Image* ImageReaderWriter::readImage_DynamicSampling(DataReference& dr, float& s,float& t)
+osg::ref_ptr<osg::Image> ImageReaderWriter::readImage_DynamicSampling(DataReference& dr, float& s,float& t)
 {
-
     // record previous options.
     osg::ref_ptr<osgDB::ReaderWriter::Options> previousOptions = osgDB::Registry::instance()->getOptions();
 
@@ -99,7 +98,7 @@ osg::Image* ImageReaderWriter::readImage_DynamicSampling(DataReference& dr, floa
 
     osgDB::Registry::instance()->setOptions(options.get());
 
-    osg::Image* image = osgDB::readImageFile(dr._fileName);
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(dr._fileName);
 
     // restore previous options.
     osgDB::Registry::instance()->setOptions(previousOptions.get());
@@ -119,7 +118,7 @@ osgDB::ReaderWriter::ReadResult ImageReaderWriter::local_readNode(const std::str
 
     DataReference& dr = itr->second;
 
-    osg::Image* image = 0;
+    osg::ref_ptr<osg::Image> image;
     float s=1.0f,t=1.0f;
 
     // try to load photo from any loaded PhotoArchives

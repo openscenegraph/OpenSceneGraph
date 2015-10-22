@@ -15,8 +15,8 @@ static bool readMorphTargets( osgDB::InputStream& is, osgAnimation::MorphGeometr
     {
         float weight = 0.0f;
         is >> is.PROPERTY("MorphTarget") >> weight;
-        osg::Geometry* target = dynamic_cast<osg::Geometry*>( is.readObject() );
-        if ( target ) geom.addMorphTarget( target, weight );
+        osg::ref_ptr<osg::Geometry> target = is.readObjectOfType<osg::Geometry>();
+        if ( target ) geom.addMorphTarget( target.get(), weight );
     }
     is >> is.END_BRACKET;
     return true;

@@ -83,7 +83,7 @@ class ReaderWriterTerrain : public osgDB::ReaderWriter
 
                 if (fr.matchSequence("file %s") || fr.matchSequence("file %w") )
                 {
-                    osg::Node* node = osgDB::readNodeFile(fr[1].getStr());
+                    osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile(fr[1].getStr());
 
                     if (node) group->addChild(node);
 
@@ -94,7 +94,7 @@ class ReaderWriterTerrain : public osgDB::ReaderWriter
                 osg::ref_ptr<osg::Node> node = fr.readNode();
                 if (node.valid())
                 {
-                    group->addChild(node.get());
+                    group->addChild(node);
                     itrAdvanced = true;
                 }
 
@@ -105,7 +105,7 @@ class ReaderWriterTerrain : public osgDB::ReaderWriter
                 }
             }
 
-            if (group->getNumChildren()>0) return group.release();
+            if (group->getNumChildren()>0) return group;
             else return 0;
         }
 

@@ -55,7 +55,7 @@ public:
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
         _foundNode(0)
     {}
-    
+
     void apply(osg::Node& node)
     {
         T* result = dynamic_cast<T*>(&node);
@@ -68,18 +68,18 @@ public:
             traverse(node);
         }
     }
-    
+
     T* _foundNode;
 };
 
-template<class T>
-T* findTopMostNodeOfType(osg::Node* node)
+template<class T, class R>
+T* findTopMostNodeOfType(R node)
 {
     if (!node) return 0;
 
     FindTopMostNodeOfTypeVisitor<T> fnotv;
     node->accept(fnotv);
-    
+
     return fnotv._foundNode;
 }
 
@@ -87,7 +87,7 @@ T* findTopMostNodeOfType(osg::Node* node)
 class ElevationLayerBlendingCallback : public osg::NodeCallback
 {
     public:
-    
+
         typedef std::vector<double> Elevations;
 
         ElevationLayerBlendingCallback(osgFX::MultiTextureControl* mtc, const Elevations& elevations, float animationTime=4.0f):
@@ -97,7 +97,7 @@ class ElevationLayerBlendingCallback : public osg::NodeCallback
             _currentElevation(0.0),
             _mtc(mtc),
             _elevations(elevations) {}
-    
+
         /** Callback method called by the NodeVisitor when visiting a node.*/
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
         {
@@ -118,7 +118,7 @@ class ElevationLayerBlendingCallback : public osg::NodeCallback
                     unsigned int index = _mtc->getNumTextureWeights()-1;
                     for(unsigned int i=0; i<_elevations.size(); ++i)
                     {
-                        if (_currentElevation>_elevations[i]) 
+                        if (_currentElevation>_elevations[i])
                         {
                             index = i;
                             break;
@@ -153,7 +153,7 @@ class ElevationLayerBlendingCallback : public osg::NodeCallback
                 _currentElevation = nv->getViewPoint().z();
 
                 osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(node);
-                if (csn) 
+                if (csn)
                 {
                     osg::EllipsoidModel* em = csn->getEllipsoidModel();
                     if (em)
@@ -175,7 +175,7 @@ class ElevationLayerBlendingCallback : public osg::NodeCallback
         double                                          _previousTime;
         float                                           _animationTime;
         double                                          _currentElevation;
-        
+
         osg::observer_ptr<osgFX::MultiTextureControl>   _mtc;
         Elevations                                      _elevations;
 };
@@ -183,17 +183,17 @@ class ElevationLayerBlendingCallback : public osg::NodeCallback
 
 // class to handle events with a pick
 class TerrainHandler : public osgGA::GUIEventHandler {
-public: 
+public:
 
     TerrainHandler(osgTerrain::Terrain* terrain):
         _terrain(terrain) {}
-    
+
     bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
     {
         switch(ea.getEventType())
         {
             case(osgGA::GUIEventAdapter::KEYDOWN):
-            {   
+            {
                 if (ea.getKey()=='r')
                 {
                     _terrain->setSampleRatio(_terrain->getSampleRatio()*0.5);
@@ -220,12 +220,12 @@ public:
                 }
 
                 return false;
-            }    
+            }
             default:
                 return false;
         }
     }
-    
+
 protected:
 
     ~TerrainHandler() {}
@@ -240,7 +240,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-v","Set the terrain vertical scale.");
     arguments.getApplicationUsage()->addCommandLineOption("-r","Set the terrain sample ratio.");
     arguments.getApplicationUsage()->addCommandLineOption("--login <url> <username> <password>","Provide authentication information for http file access.");
-   
+
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
 
@@ -262,7 +262,7 @@ int main( int argc, char **argv )
     // obtain the vertical scale
     float verticalScale = 1.0f;
     while(arguments.read("-v",verticalScale)) {}
-    
+
     // obtain the sample ratio
     float sampleRatio = 1.0f;
     while(arguments.read("-r",sampleRatio)) {}
@@ -322,7 +322,7 @@ int main( int argc, char **argv )
         while (arguments.read("-p",pathfile))
         {
             osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
-            if (apm || !apm->valid()) 
+            if (apm || !apm->valid())
             {
                 num = keyswitchManipulator->getNumMatrixManipulators();
                 keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
@@ -338,7 +338,7 @@ int main( int argc, char **argv )
     // set up the scene graph
     {
         // load the nodes from the commandline arguments.
-        osg::Node* rootnode = osgDB::readNodeFiles(arguments);
+        osg::ref_ptr<osg::Node> rootnode = osgDB::readRefNodeFiles(arguments);
 
         if (!rootnode)
         {
@@ -410,7 +410,7 @@ int main( int argc, char **argv )
         // add a viewport to the viewer and attach the scene graph.
         viewer.setSceneData( rootnode );
     }
-    
+
 
 
     // create the windows and run the threads.

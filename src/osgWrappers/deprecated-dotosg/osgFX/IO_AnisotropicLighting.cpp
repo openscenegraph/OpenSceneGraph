@@ -31,9 +31,9 @@ bool AnisotropicLighting_readLocalData(osg::Object &obj, osgDB::Input &fr)
     }
 
     if (fr[0].matchWord("lightingMapFileName") && fr[1].isString()) {
-        osg::Image *lmap = fr.readImage(fr[1].getStr());
+        osg::ref_ptr<osg::Image> lmap = fr.readImage(fr[1].getStr());
         if (lmap) {
-            myobj.setLightingMap(lmap);
+            myobj.setLightingMap(lmap.get());
         }
         fr += 2;
         itAdvanced = true;

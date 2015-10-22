@@ -58,7 +58,7 @@ static bool readShaders( osgDB::InputStream& is, osg::Program& attr )
     unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        osg::Shader* shader = dynamic_cast<osg::Shader*>( is.readObject() );
+        osg::ref_ptr<osg::Shader> shader = is.readObjectOfType<osg::Shader>();
         if ( shader ) attr.addShader( shader );
     }
     is >> is.END_BRACKET;

@@ -13,7 +13,7 @@ static bool readDraggers( osgDB::InputStream& is, osgManipulator::CompositeDragg
     unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        osgManipulator::Dragger* child = dynamic_cast<osgManipulator::Dragger*>( is.readObject() );
+        osg::ref_ptr<osgManipulator::Dragger> child = is.readObjectOfType<osgManipulator::Dragger>();
         if ( child ) dragger.addDragger( child );
     }
     is >> is.END_BRACKET;

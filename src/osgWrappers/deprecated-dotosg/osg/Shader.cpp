@@ -46,7 +46,7 @@ bool Shader_readLocalData(Object& obj, Input& fr)
     if (fr.matchSequence("file %w") || fr.matchSequence("file %s") )
     {
 
-        osg::ref_ptr<Shader> s = osgDB::readShaderFile(fr[1].getStr(), fr.getOptions());
+        osg::ref_ptr<Shader> s = osgDB::readRefShaderFile(fr[1].getStr(), fr.getOptions());
         if(s.get())
             shader.setShaderSource(s->getShaderSource());
         else

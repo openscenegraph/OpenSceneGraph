@@ -53,23 +53,23 @@ int runApp(std::string xapp);
 
 // class to handle events with a pick
 class PickHandler : public osgGA::GUIEventHandler {
-public: 
+public:
 
     PickHandler(osgViewer::Viewer* viewer,osgText::Text* updateText):
         _viewer(viewer),
         _updateText(updateText) {}
-        
+
     ~PickHandler() {}
-    
+
     bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& us);
 
     std::string pick(const osgGA::GUIEventAdapter& event);
-    
+
     void highlight(const std::string& name)
     {
         if (_updateText.get()) _updateText->setText(name);
     }
-    
+
 protected:
 
     osgViewer::Viewer* _viewer;
@@ -133,14 +133,14 @@ osg::Node* createHUD(osgText::Text* updateText)
     osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
     modelview_abs->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
     modelview_abs->setMatrix(osg::Matrix::identity());
-    
+
     osg::Projection* projection = new osg::Projection;
     projection->setMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
     projection->addChild(modelview_abs);
-    
-    
+
+
     std::string timesFont("fonts/times.ttf");
-    
+
     // turn lighting off for the text and disable depth test to ensure its always ontop.
     osg::Vec3 position(50.0f,510.0f,0.0f);
     osg::Vec3 delta(0.0f,-60.0f,0.0f);
@@ -153,16 +153,16 @@ osg::Node* createHUD(osgText::Text* updateText)
         geode->setName("The text label");
         geode->addDrawable( updateText );
         modelview_abs->addChild(geode);
-        
+
         updateText->setCharacterSize(20.0f);
         updateText->setFont(timesFont);
         updateText->setColor(osg::Vec4(1.0f,1.0f,0.0f,1.0f));
         updateText->setText("");
         updateText->setPosition(position);
-        
+
         position += delta;
-    }    
-    
+    }
+
     return projection;
 
 } // end create HUDf
@@ -179,13 +179,13 @@ class Xample
     std::string app;
   public:
       Xample(std::string image, std::string prog)
-    { 
+    {
         texture    = image;
         app     = prog;
         osg::notify(osg::INFO) << "New Xample!" << std::endl;
     };
     ~Xample() { };
-    
+
     std::string getTexture()
     {
         return texture;
@@ -225,11 +225,11 @@ int runApp(std::string xapp)
         if(!xapp.compare(x.getApp()))
         {
             osg::notify(osg::INFO) << "app found!" << std::endl;
-            
+
             const char* cxapp = xapp.c_str();
-            
+
             osg::notify(osg::INFO) << "char* = " << cxapp <<std::endl;
-            
+
             return system(cxapp);
         }
     }
@@ -241,14 +241,14 @@ int runApp(std::string xapp)
 void readConfFile(const char* confFile)                                                                // read confFile            1
 {
     osg::notify(osg::INFO) << "Start reading confFile" << std::endl;
-    
+
     std::string fileName = osgDB::findDataFile(confFile);
     if (fileName.empty())
     {
         osg::notify(osg::INFO) << "Config file not found"<<confFile << std::endl;
         return;
     }
-    
+
 
     osgDB::ifstream in(fileName.c_str());
     if (!in)
@@ -258,7 +258,7 @@ void readConfFile(const char* confFile)                                         
     }
     std::string imageBuffer;
     std::string appBuffer;
-    
+
     while (!in.eof())
     {
         std::getline(in, imageBuffer);
@@ -269,18 +269,18 @@ void readConfFile(const char* confFile)                                         
             osg::notify(osg::INFO) << "imageBuffer: " << imageBuffer << std::endl;
             osg::notify(osg::INFO) << "appBuffer: " << appBuffer << std::endl;
 //            jeweils checken ob image vorhanden ist.
-            
+
             Xample tmp(imageBuffer, appBuffer);                                                    // create Xample objects    2
-            
+
             Xamplelist.push_back(tmp);                                                            // store objects in list    2
-            
+
         }
     }
-    
+
     in.close();
-    
+
     osg::notify(osg::INFO) << "End reading confFile" << std::endl;
-    
+
     printList();
 } // end readConfFile
 
@@ -291,8 +291,8 @@ void SetObjectTextureState(osg::Geode *geodeCurrent, std::string texture)
     osg::StateSet* stateTexture = geodeCurrent->getOrCreateStateSet();
 
     // load texture.jpg as an image
-    osg::Image* imgTexture = osgDB::readImageFile( texture );
-    
+    osg::ref_ptr<osg::Image> imgTexture = osgDB::readRefImageFile( texture );
+
     // if the image is successfully loaded
     if (imgTexture)
     {
@@ -338,11 +338,11 @@ osg::PositionAttitudeTransform* getPATransformation(osg::Node* object, osg::Vec3
 {
     osg::PositionAttitudeTransform* tmpTrans = new osg::PositionAttitudeTransform();
     tmpTrans->addChild( object );
-    
+
     tmpTrans->setPosition( position );
     tmpTrans->setScale( scale );
     tmpTrans->setPivotPoint( pivot );
-    
+
     return tmpTrans;
 }
 
@@ -352,7 +352,7 @@ void printBoundings(osg::Node* current, std::string name)
     osg::notify(osg::INFO) << name << std::endl;
     osg::notify(osg::INFO) << "center = " << currentBound.center() << std::endl;
     osg::notify(osg::INFO) << "radius = " << currentBound.radius() << std::endl;
-    
+
 //    return currentBound.radius();
 }
 
@@ -361,7 +361,7 @@ osg::Group* setupGraph()                                                        
 {
     osg::Group* xGroup = new osg::Group();
 
-    
+
 //    positioning and sizes
     float defaultRadius = 0.8f;
 
@@ -375,20 +375,20 @@ osg::Group* setupGraph()                                                        
     float xjump        = (2*bs);
     float zjump        = xjump;
     osg::Vec3 vScale( 0.5f, 0.5f, 0.5f );
-    osg::Vec3 vPivot( 0.0f, 0.0f, 0.0f );    
+    osg::Vec3 vPivot( 0.0f, 0.0f, 0.0f );
 
 //  run through Xampleliste
     int z = 1;
     for (OP i = Xamplelist.begin() ; i != Xamplelist.end() ; ++i, ++z)
     {
         Xample& x = *i;
-        
+
         osg::Node* tmpCube = createTexturedCube(defaultRadius, defaultPos, x.getTexture(), x.getApp());
         printBoundings(tmpCube, x.getApp());
         osg::Vec3 vPosition( xnext, 0.0f, znext );
         osg::PositionAttitudeTransform*    transX = getPATransformation(tmpCube, vPosition, vScale, vPivot);
         xGroup->addChild( transX );
-        
+
         // line feed
         if(z < itemsInLine)
             xnext += xjump;
@@ -398,8 +398,8 @@ osg::Group* setupGraph()                                                        
             znext -= zjump;
             z = 0;
         }
-    } // end run through list    
-    
+    } // end run through list
+
     return xGroup;
 } // end setupGraph
 
@@ -414,7 +414,7 @@ int main( int argc, char **argv )
     {
         readConfFile(argv[1]);                                                                          // read ConfigFile        1
     }
-    
+
     // construct the viewer.
     osgViewer::Viewer viewer;
 
@@ -428,9 +428,9 @@ int main( int argc, char **argv )
 
     root->addChild( setupGraph() );
 
-    // add the HUD subgraph.    
+    // add the HUD subgraph.
     root->addChild(createHUD(updateText.get()));
-   
+
     // add model to viewer.
     viewer.setSceneData( root );
 
@@ -438,13 +438,13 @@ int main( int argc, char **argv )
     lookAt.makeLookAt(osg::Vec3(0.0f, -4.0f, 0.0f), centerScope, osg::Vec3(0.0f, 0.0f, 1.0f));
 
     viewer.getCamera()->setViewMatrix(lookAt);
-        
+
     viewer.realize();
 
     while( !viewer.done() )
     {
         // fire off the cull and draw traversals of the scene.
-        viewer.frame();        
+        viewer.frame();
     }
 
     return 0;

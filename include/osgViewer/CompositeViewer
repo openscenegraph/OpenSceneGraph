@@ -51,7 +51,10 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase
 
 
         void addView(osgViewer::View* view);
+        template<class T> void addView(const osg::ref_ptr<T>& view) { addView(view.get()); }
+
         void removeView(osgViewer::View* view);
+        template<class T> void removeView(const osg::ref_ptr<T>& view) { removeView(view.get()); }
 
         osgViewer::View* getView(unsigned i) { return _views[i].get(); }
         const osgViewer::View* getView(unsigned i) const { return _views[i].get(); }
@@ -142,7 +145,7 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase
 
         osg::observer_ptr<osg::Camera>      _cameraWithFocus;
         osg::observer_ptr<osgViewer::View>  _viewWithFocus;
-        
+
         osg::ref_ptr<osgGA::GUIEventAdapter> _previousEvent;
 
 };

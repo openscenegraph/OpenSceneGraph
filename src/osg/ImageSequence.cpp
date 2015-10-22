@@ -191,7 +191,7 @@ void ImageSequence::addImage(osg::Image* image)
 
 void ImageSequence::setImageToChild(int pos)
 {
-    
+
     const osg::Image* image = (pos>=0 && pos<static_cast<int>(_imageDataList.size())) ? _imageDataList[pos]._image.get() : 0;
     if (image==0) return;
 
@@ -223,9 +223,9 @@ void ImageSequence::setImageToChild(int pos)
                 OSG_INFO<<"   deleting "<<_previousAppliedImageIndex<<std::endl;
                 --_previousAppliedImageIndex;
             }
-        }        
+        }
     }
-    
+
 
     _previousAppliedImageIndex = pos;
 
@@ -275,7 +275,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
     bool looping = getLoopingMode()==LOOPING;
     double time = (fs->getSimulationTime() - _referenceTime)*_timeMultiplier;
     bool useDirectTimeRequest = _seekTimeSet;
-    
+
     if (_seekTimeSet || _status==PAUSED || _status==INVALID)
     {
         time = _seekTime;
@@ -313,7 +313,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         {
             if (!(itr->_image) && !(itr->_filename.empty()))
             {
-                itr->_image = irh->readImageFile(itr->_filename, _readOptions.get());
+                itr->_image = irh->readRefImageFile(itr->_filename, _readOptions.get());
             }
         }
     }
@@ -327,7 +327,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
     {
         // need to find the nearest relevant change.
         if (!_imageDataList[index]._image)
-        {            
+        {
             if (_previousAppliedImageIndex<index)
             {
                 OSG_DEBUG<<"ImageSequence::update(..) Moving forward by "<<index-_previousAppliedImageIndex<<std::endl;
@@ -345,7 +345,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
                 }
             }
         }
-        
+
         if (index>=0 && index!=_previousAppliedImageIndex)
         {
             setImageToChild(index);
@@ -357,7 +357,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
     if (!irh) return;
 
     bool loadDirectly = (_mode==LOAD_AND_RETAIN_IN_UPDATE_TRAVERSAL) || (_mode==LOAD_AND_DISCARD_IN_UPDATE_TRAVERSAL);
-    
+
     if (useDirectTimeRequest)
     {
         int i = osg::maximum<int>(0, int(time/_timePerImage));
@@ -368,7 +368,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
              if (loadDirectly)
              {
                  OSG_NOTICE<<"Reading file, entry="<<i<<" : _fileNames[i]="<<_imageDataList[i]._filename<<std::endl;
-                 osg::ref_ptr<osg::Image> image = irh->readImageFile(_imageDataList[i]._filename, _readOptions.get());
+                 osg::ref_ptr<osg::Image> image = irh->readRefImageFile(_imageDataList[i]._filename, _readOptions.get());
                  if (image.valid())
                  {
                      OSG_NOTICE<<"   Assigning image "<<_imageDataList[i]._filename<<std::endl;

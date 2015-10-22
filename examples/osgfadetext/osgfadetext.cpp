@@ -44,21 +44,21 @@ osg::Node* createEarth()
     osg::TessellationHints* hints = new osg::TessellationHints;
     hints->setDetailRatio(5.0f);
 
-    
+
     osg::ShapeDrawable* sd = new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0,0.0,0.0), osg::WGS_84_RADIUS_POLAR), hints);
-    
+
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(sd);
-    
+
     std::string filename = osgDB::findDataFile("Images/land_shallow_topo_2048.jpg");
-    geode->getOrCreateStateSet()->setTextureAttributeAndModes(0, new osg::Texture2D(osgDB::readImageFile(filename)));
-    
+    geode->getOrCreateStateSet()->setTextureAttributeAndModes(0, new osg::Texture2D(osgDB::readRefImageFile(filename)));
+
     osg::CoordinateSystemNode* csn = new osg::CoordinateSystemNode;
     csn->setEllipsoidModel(new osg::EllipsoidModel());
     csn->addChild(geode);
-    
+
     return csn;
-    
+
 }
 
 osgText::Text* createText(osg::EllipsoidModel* ellipsoid, double latitude, double longitude, double height, const std::string& str)
@@ -78,7 +78,7 @@ osgText::Text* createText(osg::EllipsoidModel* ellipsoid, double latitude, doubl
     text->setCharacterSize(300000.0f);
     text->setCharacterSizeMode(osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
     text->setAutoRotateToScreen(true);
-    
+
     return text;
 }
 
@@ -87,10 +87,10 @@ osg::Node* createFadeText(osg::EllipsoidModel* ellipsoid)
     osg::Group* group = new osg::Group;
 
     group->getOrCreateStateSet()->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
-    
+
     osg::Geode* geode = new osg::Geode;
     group->addChild(geode);
-    
+
     std::vector<std::string> textList;
     textList.push_back("Town");
     textList.push_back("City");
@@ -99,7 +99,7 @@ osg::Node* createFadeText(osg::EllipsoidModel* ellipsoid)
     textList.push_back("Mountain");
     textList.push_back("Road");
     textList.push_back("Lake");
-    
+
     unsigned int numLat = 15;
     unsigned int numLong = 20;
     double latitude = 0.0;
@@ -118,7 +118,7 @@ osg::Node* createFadeText(osg::EllipsoidModel* ellipsoid)
     }
 
     return group;
-} 
+}
 
 
 int main(int, char**)
@@ -128,10 +128,10 @@ int main(int, char**)
 
     viewer.getCamera()->setComputeNearFarMode(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
     viewer.getCamera()->setNearFarRatio(0.00001f);
-    
+
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> root = createEarth();
-    
+
     if (!root) return 0;
 
     // add a viewport to the viewer and attach the scene graph.
@@ -142,7 +142,7 @@ int main(int, char**)
     {
         // add fade text around the globe
         csn->addChild(createFadeText(csn->getEllipsoidModel()));
-    }    
+    }
 
     viewer.setCameraManipulator(new osgGA::TerrainManipulator);
 

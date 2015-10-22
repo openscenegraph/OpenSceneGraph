@@ -273,7 +273,7 @@ Frame* Frame::createSimpleFrameWithSingleTexture(
 // Inspired by: http://www.wowwiki.com/EdgeFiles
 Frame* Frame::createSimpleFrameWithSingleTexture(
     const std::string& name,
-    osg::Image*        image,
+    osg::ref_ptr<osg::Image> image,
     point_type         width,
     point_type         height,
     unsigned int       flags,
@@ -347,14 +347,14 @@ osg::Image* createNatifEdgeImageFromTheme(osg::Image* theme);
 
 Frame* Frame::createSimpleFrameFromTheme(
     const std::string& name,
-    osg::Image*        image,
+    osg::ref_ptr<osg::Image> image,
     point_type         width,
     point_type         height,
     unsigned int       flags,
     Frame*             exFrame
 ) {
 
-    osg::ref_ptr<osg::Image> natifImage = createNatifEdgeImageFromTheme(image);
+    osg::ref_ptr<osg::Image> natifImage = createNatifEdgeImageFromTheme(image.get());
     Frame* frame;
 
     frame = createSimpleFrameWithSingleTexture(name, natifImage.get(), width, height, flags, exFrame);

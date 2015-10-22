@@ -288,10 +288,10 @@ class OSGDB_EXPORT Input : public FieldReaderIterator
         virtual osg::Node*           readNode();
         virtual osg::Shader*         readShader();
 
-        virtual osg::Object*         readObject(const std::string& fileName);
-        virtual osg::Image*          readImage(const std::string& fileName);
-        virtual osg::Node*           readNode(const std::string& fileName);
-        virtual osg::Shader*         readShader(const std::string& fileName);
+        virtual osg::ref_ptr<osg::Object>       readObject(const std::string& fileName);
+        virtual osg::ref_ptr<osg::Image>        readImage(const std::string& fileName);
+        virtual osg::ref_ptr<osg::Node>         readNode(const std::string& fileName);
+        virtual osg::ref_ptr<osg::Shader>       readShader(const std::string& fileName);
 
         virtual osg::Object*         getObjectForUniqueID(const std::string& uniqueID);
         virtual void                 registerUniqueIDForObject(const std::string& uniqueID,osg::Object* obj);

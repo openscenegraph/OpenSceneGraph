@@ -8,7 +8,8 @@
         return shape.get##PROP()!=NULL; \
     } \
     static bool read##PROP(osgDB::InputStream& is, osg::TriangleMesh& shape) { \
-        shape.set##PROP( dynamic_cast<TYPE*>(is.readArray()) ); \
+        osg::ref_ptr<osg::Array> array = is.readArray(); \
+        shape.set##PROP( dynamic_cast<TYPE*>(array.get()) ); \
         return true; \
     } \
     static bool write##PROP(osgDB::OutputStream& os, const osg::TriangleMesh& shape) { \

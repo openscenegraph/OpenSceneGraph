@@ -266,7 +266,7 @@ void processLoadedModel(osg::ref_ptr<osg::Node>& loadedModel, int optimizer_opti
 
 void addDeviceTo(osgViewer::Viewer& viewer, const std::string& device_name, bool forward_mouse_events)
 {
-    osg::ref_ptr<osgGA::Device> dev = osgDB::readFile<osgGA::Device>(device_name);
+    osg::ref_ptr<osgGA::Device> dev = osgDB::readRefFile<osgGA::Device>(device_name);
     if (dev.valid())
     {
         OSG_INFO << "Adding Device : " << device_name << std::endl;
@@ -317,7 +317,7 @@ int main( int argc, char **argv )
     if (arguments.read("-devices") || arguments.read("--devices"))
     {
         // Force load QuickTime plugin, probe video capability, exit
-        osgDB::readImageFile("devices.live");
+        osgDB::readRefImageFile("devices.live");
         return 1;
     }
 
@@ -451,7 +451,7 @@ int main( int argc, char **argv )
 
         osg::ref_ptr<osgDB::Options> device_options = new osgDB::Options("documentRegisteredHandlers");
 
-        osg::ref_ptr<osgGA::Device> rest_http_device = osgDB::readFile<osgGA::Device>(server_address+":"+server_port+"/"+document_root+".resthttp", device_options.get());
+        osg::ref_ptr<osgGA::Device> rest_http_device = osgDB::readRefFile<osgGA::Device>(server_address+":"+server_port+"/"+document_root+".resthttp", device_options.get());
         if (rest_http_device.valid())
         {
             viewer.addDevice(rest_http_device.get());

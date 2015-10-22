@@ -179,12 +179,15 @@ namespace osgParticle
 
         /// Set the interpolator for computing size values.
         inline void setSizeInterpolator(Interpolator* ri);
+        template<class T> void setSizeInterpolator(const osg::ref_ptr<T>& ri) { setSizeInterpolator(ri.get()); }
 
         /// Set the interpolator for computing alpha values.
         inline void setAlphaInterpolator(Interpolator* ai);
+        template<class T> void setAlphaInterpolator(const osg::ref_ptr<T>& ri) { setAlphaInterpolator(ri.get()); }
 
         /// Set the interpolator for computing color values.
         inline void setColorInterpolator(Interpolator* ci);
+        template<class T> void setColorInterpolator(const osg::ref_ptr<T>& ri) { setColorInterpolator(ri.get()); }
 
         /** Set the physical radius of the particle.
             For built-in operators to work correctly, lengths must be expressed in meters.
@@ -284,6 +287,7 @@ namespace osgParticle
 
         /// Set the user-defined particle drawable
         inline void setDrawable(osg::Drawable* d) { _drawable = d; }
+        template<class T> void setDrawable(const osg::ref_ptr<T>& ri) { setDrawable(ri.get()); }
 
         /// Get the user-defined particle drawable
         inline osg::Drawable* getDrawable() const { return _drawable.get(); }

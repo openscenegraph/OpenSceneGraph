@@ -36,7 +36,7 @@ static bool readColorLayers( osgDB::InputStream& is, osgTerrain::TerrainTile& ti
     for ( unsigned int i=0; i<numValidLayers; ++i )
     {
         unsigned int layerNum=0; is >> is.PROPERTY("Layer") >> layerNum;
-        osgTerrain::Layer* layer = dynamic_cast<osgTerrain::Layer*>( is.readObject() );
+        osg::ref_ptr<osgTerrain::Layer> layer = is.readObjectOfType<osgTerrain::Layer>();
         if ( layer ) tile.setColorLayer( layerNum, layer );
     }
     is >> is.END_BRACKET;

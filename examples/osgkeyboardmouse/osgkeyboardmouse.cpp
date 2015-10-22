@@ -341,10 +341,10 @@ int main( int argc, char **argv )
     osg::ref_ptr<osg::Node> loadedModel;
 
     // load the scene.
-    if (argc>1) loadedModel = osgDB::readNodeFile(argv[1]);
+    if (argc>1) loadedModel = osgDB::readRefNodeFile(argv[1]);
 
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!loadedModel) loadedModel = osgDB::readNodeFile("dumptruck.osgt");
+    if (!loadedModel) loadedModel = osgDB::readRefNodeFile("dumptruck.osgt");
 
     if (!loadedModel)
     {
@@ -374,7 +374,7 @@ int main( int argc, char **argv )
     osgViewer::Viewer viewer;
     viewer.getCamera()->setGraphicsContext(gc.get());
     viewer.getCamera()->setViewport(0,0,800,600);
-    viewer.setSceneData(loadedModel.get());
+    viewer.setSceneData(loadedModel);
 
     // create a tracball manipulator to move the camera around in response to keyboard/mouse events
     viewer.setCameraManipulator( new osgGA::TrackballManipulator );

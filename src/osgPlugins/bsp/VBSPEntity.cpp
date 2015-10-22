@@ -518,7 +518,7 @@ ref_ptr<Group> VBSPEntity::createModelGeometry()
     ref_ptr<Group>   entityGroup;
 
     // Try to load the model
-    modelNode = osgDB::readNodeFile(entity_model);
+    modelNode = osgDB::readRefNodeFile(entity_model);
     if (modelNode.valid())
     {
         // Create a group and add the model to it

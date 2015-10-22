@@ -137,17 +137,12 @@ public:
     InputStream& operator>>( osg::BoundingSpheref& bs );
     InputStream& operator>>( osg::BoundingSphered& bs );
 
-    InputStream& operator>>( osg::Image*& img ) { img = readImage(); return *this; }
-    InputStream& operator>>( osg::Array*& a ) { if (_fileVersion>=112) a = readObjectOfType<osg::Array>(); else a = readArray(); return *this; }
-    InputStream& operator>>( osg::PrimitiveSet*& p ) { if (_fileVersion>=112) p = readObjectOfType<osg::PrimitiveSet>(); else p = readPrimitiveSet(); return *this; }
-    InputStream& operator>>( osg::Object*& obj ) { obj = readObject(); return *this; }
-
     InputStream& operator>>( osg::ref_ptr<osg::Image>& ptr ) { ptr = readImage(); return *this; }
     InputStream& operator>>( osg::ref_ptr<osg::Array>& ptr ) { if (_fileVersion>=112) ptr = readObjectOfType<osg::Array>(); else ptr = readArray(); return *this; }
     InputStream& operator>>( osg::ref_ptr<osg::PrimitiveSet>& ptr ) { if (_fileVersion>=112) ptr = readObjectOfType<osg::PrimitiveSet>(); else ptr = readPrimitiveSet(); return *this; }
 
     template<typename T> InputStream& operator>>( osg::ref_ptr<T>& ptr )
-    { ptr = static_cast<T*>(readObject()); return *this; }
+    { ptr = readObjectOfType<T>(); return *this; }
 
     // Convenient methods for reading
     bool matchString( const std::string& str ) { return _in->matchString(str); }
@@ -160,23 +155,31 @@ public:
     unsigned int readSize() { unsigned int size; *this>>size; return size; }
 
     // Global reading functions
-    osg::Array* readArray();
-    osg::PrimitiveSet* readPrimitiveSet();
-    osg::Image* readImage(bool readFromExternal=true);
+    osg::ref_ptr<osg::Array> readArray();
+    osg::ref_ptr<osg::PrimitiveSet> readPrimitiveSet();
+    osg::ref_ptr<osg::Image> readImage(bool readFromExternal=true);
 
     template<typename T>
-    T* readObjectOfType()
+    osg::ref_ptr<T> readObjectOfType()
     {
         osg::ref_ptr<osg::Object> obj = readObject();
         T* ptr = dynamic_cast<T*>(obj.get());
-        if (ptr) { obj.release(); return ptr; }
+        if (ptr) { return ptr; }
         else return 0;
     }
 
-    osg::Object* readObject( osg::Object* existingObj=0 );
+    osg::ref_ptr<osg::Object> readObject( osg::Object* existingObj=0 );
 
+    osg::ref_ptr<osg::Object> readObjectFields( const std::string& className, unsigned int id, osg::Object* existingObj=0);
 
-    osg::Object* readObjectFields( const std::string& className, unsigned int id, osg::Object* existingObj=0);
+    template<typename T>
+    osg::ref_ptr<T> readObjectFieldsOfType( const std::string& className, unsigned int id, osg::Object* existingObj=0)
+    {
+        osg::ref_ptr<osg::Object> obj = readObjectFields(className, id, existingObj);
+        T* ptr = dynamic_cast<T*>(obj.get());
+        if (ptr) { return ptr; }
+        else return 0;
+    }
 
     /// set an input iterator, used directly when not using InputStream with a traditional file releated stream.
     void setInputIterator( InputIterator* ii ) { _in = ii; }

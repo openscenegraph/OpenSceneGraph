@@ -87,10 +87,10 @@ int main(int argc, char** argv)
     std::string device;
     while(arguments.read("--device", device))
     {
-        osg::ref_ptr<osgGA::Device> dev = osgDB::readFile<osgGA::Device>(device);
+        osg::ref_ptr<osgGA::Device> dev = osgDB::readRefFile<osgGA::Device>(device);
         if (dev.valid())
         {
-            viewer.addDevice(dev.get());
+            viewer.addDevice(dev);
         }
     }
 
@@ -152,7 +152,7 @@ int main(int argc, char** argv)
     viewer.addEventHandler(new osgViewer::ScreenCaptureHandler);
 
     // load the data
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
     if (!loadedModel)
     {
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
@@ -172,9 +172,9 @@ int main(int argc, char** argv)
 
     // optimize the scene graph, remove redundant nodes and state etc.
     osgUtil::Optimizer optimizer;
-    optimizer.optimize(loadedModel.get());
+    optimizer.optimize(loadedModel);
 
-    viewer.setSceneData( loadedModel.get() );
+    viewer.setSceneData(loadedModel);
 
     viewer.realize();
 

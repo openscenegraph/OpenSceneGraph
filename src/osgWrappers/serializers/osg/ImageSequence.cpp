@@ -48,7 +48,7 @@ static bool readImages( osgDB::InputStream& is, osg::ImageSequence& image )
     unsigned int images = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<images; ++i )
     {
-        osg::Image* img = dynamic_cast<osg::Image*>( is.readObject() );
+        osg::ref_ptr<osg::Image> img = is.readImage();
         if ( img ) image.addImage( img );
     }
     is >> is.END_BRACKET;

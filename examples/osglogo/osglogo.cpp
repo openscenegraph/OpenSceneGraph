@@ -234,7 +234,7 @@ osg:: Node* createGlobe(const osg::BoundingBox& bb,float ratio, const std::strin
     osg::MatrixTransform* xform = new osg::MatrixTransform;
     xform->setUpdateCallback(new osg::AnimationPathCallback(bb.center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(10.0f)));
 
-    osg::Node* bluemarble = filename.empty() ? 0 : osgDB::readNodeFile(filename.c_str());
+    osg::ref_ptr<osg::Node> bluemarble = filename.empty() ? 0 : osgDB::readRefNodeFile(filename.c_str());
     if (bluemarble)
     {
         const osg::BoundingSphere& bs = bluemarble->getBound();
@@ -252,7 +252,7 @@ osg:: Node* createGlobe(const osg::BoundingBox& bb,float ratio, const std::strin
 
         osg::StateSet* stateset = geode->getOrCreateStateSet();
 
-        osg::Image* image = osgDB::readImageFile("Images/land_shallow_topo_2048.jpg");
+        osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile("Images/land_shallow_topo_2048.jpg");
         if (image)
         {
             osg::Texture2D* texture = new osg::Texture2D;

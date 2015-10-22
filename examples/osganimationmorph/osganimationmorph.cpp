@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -33,11 +33,11 @@ struct GeometryFinder : public osg::NodeVisitor
 {
     osg::ref_ptr<osg::Geometry> _geom;
     GeometryFinder() : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
-    void apply(osg::Geode& geode) 
+    void apply(osg::Geode& geode)
     {
         if (_geom.valid())
             return;
-        for (unsigned int i = 0; i < geode.getNumDrawables(); i++) 
+        for (unsigned int i = 0; i < geode.getNumDrawables(); i++)
         {
             osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
             if (geom) {
@@ -50,7 +50,7 @@ struct GeometryFinder : public osg::NodeVisitor
 
 osg::ref_ptr<osg::Geometry> getShape(const std::string& name)
 {
-    osg::ref_ptr<osg::Node> shape0 = osgDB::readNodeFile(name);
+    osg::ref_ptr<osg::Node> shape0 = osgDB::readRefNodeFile(name);
     if (shape0)
     {
         GeometryFinder finder;
@@ -104,7 +104,7 @@ int main (int argc, char* argv[])
 
     osg::Group* scene = new osg::Group;
     scene->addUpdateCallback(bam);
-    
+
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(morph);
     geode->addUpdateCallback(new osgAnimation::UpdateMorph("MorphNodeCallback"));

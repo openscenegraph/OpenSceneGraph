@@ -16,8 +16,8 @@ static bool readAnimations( osgDB::InputStream& is, osgAnimation::AnimationManag
     unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        osgAnimation::Animation* ani = dynamic_cast<osgAnimation::Animation*>( is.readObject() );
-        if ( ani ) manager.registerAnimation( ani );
+        osg::ref_ptr<osgAnimation::Animation> ani = is.readObjectOfType<osgAnimation::Animation>();
+        if ( ani ) manager.registerAnimation( ani.get() );
     }
     is >> is.END_BRACKET;
     return true;

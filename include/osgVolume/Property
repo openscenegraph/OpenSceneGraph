@@ -126,11 +126,15 @@ class OSGVOLUME_EXPORT CompositeProperty : public Property
 
         void setProperty(unsigned int i, Property* property) { if (i>=_properties.size()) _properties.resize(i+1); _properties[i] = property; }
 
+        template<class T> void setProperty(unsigned int i, const osg::ref_ptr<T>& p) { setProperty(i, p.get()); }
+
         Property* getProperty(unsigned int i) { return i<_properties.size() ? _properties[i].get() : 0; }
 
         const Property* getProperty(unsigned int i) const { return i<_properties.size() ? _properties[i].get() : 0; }
 
         void addProperty(Property* property) { _properties.push_back(property); dirty(); }
+
+        template<class T> void addProperty(const osg::ref_ptr<T>& p) { addProperty(p.get()); }
 
         void removeProperty(unsigned int i) { _properties.erase(_properties.begin()+i); }
 

@@ -749,8 +749,8 @@ int main(int argc, char** argv)
 
     if (arguments.argc()>1)
     {
-        root = osgDB::readNodeFiles( arguments );
-        if (root.valid())
+        root = osgDB::readRefNodeFiles( arguments );
+        if (root)
         {
             // Run a NodeVisitor to insert OcclusionQueryNodes in the scene graph.
             OcclusionQueryVisitor oqv;
@@ -787,10 +787,10 @@ int main(int argc, char** argv)
     if (optimize)
     {
         osgUtil::Optimizer optimizer;
-        optimizer.optimize( root.get() );
+        optimizer.optimize( root );
     }
 
-    viewer.setSceneData( root.get() );
+    viewer.setSceneData( root );
 
     KeyHandler* kh = new KeyHandler( *root );
     viewer.addEventHandler( kh );

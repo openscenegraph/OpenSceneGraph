@@ -71,6 +71,9 @@ class OSGVOLUME_EXPORT Layer : public osg::Object
         virtual const std::string& getFileName() const { return _filename; }
 
         void setLocator(Locator* locator) { _locator = locator; }
+
+        template<class T> void setLocator(const osg::ref_ptr<T>& locator) { setLocator(locator.get()); }
+
         Locator* getLocator() { return _locator.get(); }
         const Locator* getLocator() const { return _locator.get(); }
 
@@ -99,6 +102,8 @@ class OSGVOLUME_EXPORT Layer : public osg::Object
         /** Set the Property (or Properties via the CompositeProperty) that informs the VolumeTechnique how this layer should be rendered.*/
         void setProperty(Property* property) { _property = property; }
 
+        template<class T> void setProperty(const osg::ref_ptr<T>& p) { setProperty(p.get()); }
+
         /** Get the Property that informs the VolumeTechnique how this layer should be rendered.*/
         Property* getProperty() { return _property.get(); }
 
@@ -108,6 +113,7 @@ class OSGVOLUME_EXPORT Layer : public osg::Object
         /** Add a property, automatically creating a CompositePorperty if one isn't already assigned.*/
         void addProperty(Property* property);
 
+        template<class T> void addProperty(const osg::ref_ptr<T>& p) { addProperty(p.get()); }
 
         /** Specify whether ImageLayer requires update traversal. */
         virtual bool requiresUpdateTraversal() const { return false; }
@@ -155,6 +161,8 @@ class OSGVOLUME_EXPORT ImageLayer : public Layer
         virtual const std::string& getFileName() const { return _image.get() ? _image->getFileName() : _filename; }
 
         void setImage(osg::Image* image);
+
+        template<class T> void setImage(const osg::ref_ptr<T>& image) { setImage(image.get()); }
 
         /** Return image associated with layer. */
         virtual osg::Image* getImage() { return _image.get(); }
@@ -217,10 +225,16 @@ class OSGVOLUME_EXPORT CompositeLayer : public Layer
         const std::string& getFileName(unsigned int i) const { return _layers[i].layer.valid() ? _layers[i].layer->getFileName() : _layers[i].filename; }
 
         void setLayer(unsigned int i, Layer* layer) { if (i>=_layers.size()) _layers.resize(i+1); _layers[i].layer = layer; }
+
+        template<class T> void setLayer(unsigned int i, const osg::ref_ptr<T>& layer) { setLayer(i, layer.get()); }
+
         Layer* getLayer(unsigned int i) { return i<_layers.size() ? _layers[i].layer.get() : 0; }
+
         const Layer* getLayer(unsigned int i) const { return i<_layers.size() ? _layers[i].layer.get() : 0; }
 
         void addLayer(Layer* layer) { _layers.push_back(NameLayer(layer->getFileName(),layer)); }
+
+        template<class T> void addLayer(const osg::ref_ptr<T>& layer) { addLayer(layer.get()); }
 
         void removeLayer(unsigned int i) { _layers.erase(_layers.begin()+i); }
 

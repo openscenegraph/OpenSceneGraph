@@ -305,7 +305,7 @@ bool WhiteListTileLoadedCallback::readImageLayer(osgTerrain::ImageLayer* imageLa
     {
         if (layerAcceptable(imageLayer->getSetName()))
         {
-            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(imageLayer->getFileName(), options);
+            osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(imageLayer->getFileName(), options);
             imageLayer->setImage(image.get());
         }
     }

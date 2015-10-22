@@ -41,7 +41,7 @@ using namespace osg;
 using namespace osgGA;
 
 
-class SwitchDOFVisitor : public osg::NodeVisitor, public osgGA::GUIEventHandler 
+class SwitchDOFVisitor : public osg::NodeVisitor, public osgGA::GUIEventHandler
 {
 public:
     SwitchDOFVisitor():
@@ -52,11 +52,11 @@ public:
     SwitchDOFVisitor(const SwitchDOFVisitor& sdfv, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) {}
 
     META_Object(osg, SwitchDOFVisitor)
-    
+
     virtual void apply(Group& node)
     {
         osgSim::MultiSwitch* pMSwitch = dynamic_cast<osgSim::MultiSwitch*>(&node);
-        
+
         if (pMSwitch)
         {
             mSwitches.push_back(pMSwitch);
@@ -64,11 +64,11 @@ public:
 
         osg::NodeVisitor::apply(node);
     }
-    
+
     virtual void apply(Transform& node)
     {
         osgSim::DOFTransform* pDof = dynamic_cast<osgSim::DOFTransform*>(&node);
-        
+
         if (pDof)
         {
             mDofs.push_back(pDof);
@@ -159,12 +159,12 @@ private:
 void singleWindowSideBySideCameras(osgViewer::Viewer& viewer)
 {
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-    if (!wsi) 
+    if (!wsi)
     {
         osg::notify(osg::NOTICE)<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
         return;
     }
-    
+
     unsigned int width, height;
     wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
 
@@ -237,14 +237,14 @@ int main( int argc, char **argv )
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
 
-    if (argc<2) 
+    if (argc<2)
     {
         std::cout << argv[0] <<": requires filename argument." << std::endl;
         return 1;
     }
 
     osgViewer::Viewer viewer(arguments);
-    
+
     std::string outputfile("output.osgt");
     while (arguments.read("-o",outputfile)) {}
 
@@ -252,7 +252,7 @@ int main( int argc, char **argv )
     while (arguments.read("-g")) { viewer.setThreadingModel(osgViewer::Viewer::CullDrawThreadPerContext); }
     while (arguments.read("-d")) { viewer.setThreadingModel(osgViewer::Viewer::DrawThreadPerContext); }
     while (arguments.read("-c")) { viewer.setThreadingModel(osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext); }
-    
+
     singleWindowSideBySideCameras(viewer);
 
     viewer.setCameraManipulator( new osgGA::TrackballManipulator() );
@@ -264,30 +264,26 @@ int main( int argc, char **argv )
 
     SwitchDOFVisitor* visit = new SwitchDOFVisitor;
     viewer.addEventHandler(visit);
-    
-    osg::ref_ptr<osg::Node> loadedModel;
-    // load the scene.
-    loadedModel = osgDB::readNodeFiles(arguments);
 
-    if (!loadedModel) 
+    // load the scene.
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
+    if (!loadedModel)
     {
         std::cout << argv[0] <<": No data loaded." << std::endl;
         return 1;
     }
 
     osg::Group* group = new osg::Group;
-    
+
     osg::Group* group1 = new osg::Group;
-    group1->addChild(loadedModel.get());
+    group1->addChild(loadedModel);
     group1->setNodeMask(1);
 
     // Uncomment these lines if you like to compare the loaded model to the resulting model in a merge/diff tool
     //osgDB::writeNodeFile(*loadedModel.get(), "dummy1.osgt");
 
-    osgDB::writeNodeFile(*loadedModel.get(), outputfile);
-    osg::ref_ptr<osg::Node> convertedModel = osgDB::readNodeFile(outputfile);
-
-    //osgDB::writeNodeFile(*convertedModel.get(), "dummy2.osgt");
+    osgDB::writeNodeFile(*loadedModel, outputfile);
+    osg::ref_ptr<osg::Node> convertedModel = osgDB::readRefNodeFile(outputfile);
 
     osg::Group* group2 = new osg::Group;
     group2->addChild(convertedModel.get());

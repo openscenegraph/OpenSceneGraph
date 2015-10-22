@@ -33,12 +33,10 @@ bool Texture2DArray_readLocalData(Object& obj, Input& fr)
 
     Texture2DArray& texture = static_cast<Texture2DArray&>(obj);
 
-    while (fr[0].matchWord("file") ||
-        fr[0].matchWord("ImageSequence") || 
-        fr[0].matchWord("Image") && matched)
+    while (matched && (fr[0].matchWord("file") || fr[0].matchWord("ImageSequence") || fr[0].matchWord("Image")))
     {
         matched = false;
-        Image* image = NULL;
+        osg::ref_ptr<Image> image;
         if (fr[0].matchWord("file") && fr[1].isString())
         {
             std::string filename = fr[1].getStr();
@@ -62,8 +60,8 @@ bool Texture2DArray_readLocalData(Object& obj, Input& fr)
                 textureW = image->s();
                 textureH = image->t();
             }
-            else if(textureW != image->s() || 
-                textureH != image->t()) 
+            else if(textureW != image->s() ||
+                textureH != image->t())
             {
                 //scale to match size of first image.
                 image->scaleImage(textureW,textureH,1);

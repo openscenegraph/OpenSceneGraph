@@ -86,6 +86,8 @@ class OSG_EXPORT Program : public osg::StateAttribute
           * Mark Program as needing relink.  Return true for success */
         bool addShader( Shader* shader );
 
+        template<class T> bool addShader( const ref_ptr<T>& shader ) { return addShader(shader.get()); }
+
         unsigned int getNumShaders() const { return static_cast<unsigned int>(_shaderList.size()); }
 
         Shader* getShader( unsigned int i ) { return _shaderList[i].get(); }
@@ -94,6 +96,8 @@ class OSG_EXPORT Program : public osg::StateAttribute
         /** Remove osg::Shader from this osg::Program.
           * Mark Program as needing relink.  Return true for success */
         bool removeShader( Shader* shader );
+
+        template<class T> bool removeShader( const ref_ptr<T>& shader ) { return removeShader(shader.get()); }
 
         /** Set/get GL program parameters */
         void setParameter( GLenum pname, GLint value );

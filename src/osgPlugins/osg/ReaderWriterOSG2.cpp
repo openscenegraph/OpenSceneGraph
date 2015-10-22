@@ -201,7 +201,7 @@ public:
         }
         is.decompress(); CATCH_EXCEPTION(is);
 
-        osg::Object* obj = is.readObject(); CATCH_EXCEPTION(is);
+        osg::ref_ptr<osg::Object> obj = is.readObject(); CATCH_EXCEPTION(is);
         return obj;
     }
 
@@ -231,7 +231,7 @@ public:
         }
 
         is.decompress(); CATCH_EXCEPTION(is);
-        osg::Image* image = is.readImage(); CATCH_EXCEPTION(is);
+        osg::ref_ptr<osg::Image> image = is.readImage(); CATCH_EXCEPTION(is);
 
         return image;
     }
@@ -262,7 +262,7 @@ public:
         }
 
         is.decompress(); CATCH_EXCEPTION(is);
-        osg::Node* node = dynamic_cast<osg::Node*>(is.readObject()); CATCH_EXCEPTION(is);
+        osg::ref_ptr<osg::Node> node = is.readObjectOfType<osg::Node>(); CATCH_EXCEPTION(is);
         if ( !node ) return ReadResult::FILE_NOT_HANDLED;
         return node;
     }

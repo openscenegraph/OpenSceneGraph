@@ -1767,7 +1767,7 @@ static int readObjectFile(lua_State * _lua)
     if (n==1 && lua_type(_lua, 1)==LUA_TSTRING)
     {
         std::string filename = lua_tostring(_lua, 1);
-        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(filename);
+        osg::ref_ptr<osg::Object> object = osgDB::readRefObjectFile(filename);
         if (object.valid())
         {
             lse->pushObject(object.get());
@@ -1785,7 +1785,7 @@ static int readImageFile(lua_State * _lua)
     if (n==1 && lua_type(_lua, 1)==LUA_TSTRING)
     {
         std::string filename = lua_tostring(_lua, 1);
-        osg::ref_ptr<osg::Image> image = osgDB::readImageFile(filename);
+        osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(filename);
         if (image.valid())
         {
             lse->pushObject(image.get());
@@ -1803,7 +1803,7 @@ static int readNodeFile(lua_State * _lua)
     if (n==1 && lua_type(_lua, 1)==LUA_TSTRING)
     {
         std::string filename = lua_tostring(_lua, 1);
-        osg::ref_ptr<osg::Node> node = osgDB::readNodeFile(filename);
+        osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile(filename);
         if (node.valid())
         {
             lse->pushObject(node.get());

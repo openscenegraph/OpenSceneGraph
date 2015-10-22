@@ -15,7 +15,7 @@ static bool readDrawables( osgDB::InputStream& is, osg::Geode& node )
     unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        osg::Drawable* drawable = dynamic_cast<osg::Drawable*>( is.readObject() );
+        osg::ref_ptr<osg::Drawable> drawable = is.readObjectOfType<osg::Drawable>();
         if ( drawable )
         {
             node.addDrawable( drawable );

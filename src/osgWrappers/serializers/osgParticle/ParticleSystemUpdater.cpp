@@ -13,8 +13,8 @@ static bool readParticleSystems( osgDB::InputStream& is, osgParticle::ParticleSy
     unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        osgParticle::ParticleSystem* ps = dynamic_cast<osgParticle::ParticleSystem*>( is.readObject() );
-        if ( ps ) updater.addParticleSystem( ps );
+        osg::ref_ptr<osgParticle::ParticleSystem> ps = is.readObjectOfType<osgParticle::ParticleSystem>();
+        if ( ps ) updater.addParticleSystem( ps.get() );
     }
     is >> is.END_BRACKET;
     return true;

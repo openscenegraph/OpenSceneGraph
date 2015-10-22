@@ -105,7 +105,7 @@ bool Browser::assign(BrowserImage* browserImage, const GeometryHints& hints)
 
 bool Browser::open(const std::string& hostname, const GeometryHints& hints)
 {
-    osg::ref_ptr<osg::Image> image = osgDB::readImageFile(hostname+".gecko");
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(hostname+".gecko");
     return assign(dynamic_cast<BrowserImage*>(image.get()), hints);
 }
 

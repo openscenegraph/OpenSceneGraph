@@ -39,10 +39,10 @@ typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
 osg::StateSet* createState()
 {
     // read 4 2d images
-    osg::ref_ptr<osg::Image> image_0 = osgDB::readImageFile("Images/lz.rgb");
-    osg::ref_ptr<osg::Image> image_1 = osgDB::readImageFile("Images/reflect.rgb");
-    osg::ref_ptr<osg::Image> image_2 = osgDB::readImageFile("Images/tank.rgb");
-    osg::ref_ptr<osg::Image> image_3 = osgDB::readImageFile("Images/skymap.jpg");
+    osg::ref_ptr<osg::Image> image_0 = osgDB::readRefImageFile("Images/lz.rgb");
+    osg::ref_ptr<osg::Image> image_1 = osgDB::readRefImageFile("Images/reflect.rgb");
+    osg::ref_ptr<osg::Image> image_2 = osgDB::readRefImageFile("Images/tank.rgb");
+    osg::ref_ptr<osg::Image> image_3 = osgDB::readRefImageFile("Images/skymap.jpg");
 
     if (!image_0 || !image_1 || !image_2 || !image_3)
     {

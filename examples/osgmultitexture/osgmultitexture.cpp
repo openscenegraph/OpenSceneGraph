@@ -44,10 +44,10 @@ int main( int argc, char **argv )
     osgViewer::Viewer viewer;
 
     // load the nodes from the commandline arguments.
-    osg::Node* rootnode = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> rootnode = osgDB::readRefNodeFiles(arguments);
 
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!rootnode) rootnode = osgDB::readNodeFile("cessnafire.osgt");
+    if (!rootnode) rootnode = osgDB::readRefNodeFile("cessnafire.osgt");
 
     if (!rootnode)
     {
@@ -55,7 +55,7 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    osg::Image* image = osgDB::readImageFile("Images/reflect.rgb");
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile("Images/reflect.rgb");
     if (image)
     {
         osg::Texture2D* texture = new osg::Texture2D;

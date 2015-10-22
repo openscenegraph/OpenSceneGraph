@@ -31,7 +31,7 @@
 class KeyboardEventHandler : public osgGA::GUIEventHandler
 {
 public:
-    
+
         KeyboardEventHandler(osg::StateSet* stateset):
             _stateset(stateset)
         {
@@ -39,7 +39,7 @@ public:
             _point->setDistanceAttenuation(osg::Vec3(0.0,0.0000,0.05f));
             _stateset->setAttribute(_point.get());
         }
-    
+
         virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
         {
             switch(ea.getEventType())
@@ -73,13 +73,13 @@ public:
             }
             return false;
         }
-        
-        
+
+
         float getPointSize() const
         {
             return _point->getSize();
         }
-        
+
         void setPointSize(float psize)
         {
             if (psize>0.0)
@@ -98,10 +98,10 @@ public:
         {
             _point->setDistanceAttenuation(_point->getDistanceAttenuation()*scale);
         }
-        
+
         osg::ref_ptr<osg::StateSet> _stateset;
         osg::ref_ptr<osg::Point>    _point;
-        
+
 };
 
 int main( int argc, char **argv )
@@ -109,7 +109,7 @@ int main( int argc, char **argv )
 
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
+
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" example provides an interactive viewer for visualising point clouds..");
@@ -131,7 +131,7 @@ int main( int argc, char **argv )
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
-    
+
     bool usePointSprites = false;
     while (arguments.read("--sprites")) { usePointSprites = true; };
 
@@ -145,10 +145,10 @@ int main( int argc, char **argv )
     }
 
     // read the scene from the list of file specified commandline args.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
 
     // if no model has been successfully loaded report failure.
-    if (!loadedModel) 
+    if (!loadedModel)
     {
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;
@@ -161,10 +161,10 @@ int main( int argc, char **argv )
 
     // set the scene to render
     viewer.setSceneData(loadedModel.get());
-    
+
 
     osg::StateSet* stateset = loadedModel->getOrCreateStateSet();
-    if (usePointSprites)    
+    if (usePointSprites)
     {
         /// Setup cool blending
         osg::BlendFunc *fn = new osg::BlendFunc();
@@ -176,7 +176,7 @@ int main( int argc, char **argv )
 
         /// The texture for the sprites
         osg::Texture2D *tex = new osg::Texture2D();
-        tex->setImage(osgDB::readImageFile("Images/particle.rgb"));
+        tex->setImage(osgDB::readRefImageFile("Images/particle.rgb"));
         stateset->setTextureAttributeAndModes(0, tex, osg::StateAttribute::ON);
     }
 
@@ -187,7 +187,7 @@ int main( int argc, char **argv )
             osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::POINT );
         stateset->setAttributeAndModes( pm, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
     }
-    
+
 
     // register the handler for modifying the point size
     viewer.addEventHandler(new KeyboardEventHandler(viewer.getCamera()->getOrCreateStateSet()));
@@ -196,10 +196,10 @@ int main( int argc, char **argv )
     if (shader)
     {
         osg::StateSet* stateset = loadedModel->getOrCreateStateSet();
-    
+
         ///////////////////////////////////////////////////////////////////
         // vertex shader using just Vec4 coefficients
-        char vertexShaderSource[] = 
+        char vertexShaderSource[] =
             "void main(void) \n"
             "{ \n"
             "\n"
@@ -218,7 +218,7 @@ int main( int argc, char **argv )
         //////////////////////////////////////////////////////////////////
         // fragment shader
         //
-        char fragmentShaderSource[] = 
+        char fragmentShaderSource[] =
             "void main(void) \n"
             "{ \n"
             "    gl_FragColor = gl_Color; \n"

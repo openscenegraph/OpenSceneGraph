@@ -49,6 +49,8 @@ class OSG_EXPORT TextureCubeMap : public Texture
         /** Set the texture image for specified face. */
         virtual void setImage(unsigned int face, Image* image);
 
+        template<class T> void setImage(unsigned int face, const ref_ptr<T>& image) { setImage(face, image.get()); }
+
         /** Get the texture image for specified face. */
         virtual Image* getImage(unsigned int face);
 

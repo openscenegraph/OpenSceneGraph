@@ -656,7 +656,7 @@ JSONObject* WriteVisitor::createJSONPagedLOD(osg::PagedLOD *plod)
         ss << i;
         std::string str = ss.str();
         // We need to convert first from osg format to osgjs format.
-        osg::ref_ptr<osg::Node> n = osgDB::readNodeFile(plod->getFileName(i)+".gles");
+        osg::ref_ptr<osg::Node> n = osgDB::readRefNodeFile(plod->getFileName(i)+".gles");
         if (n)
         {
             std::string filename(osgDB::getStrippedName(plod->getFileName(i))+".osgjs");

@@ -165,7 +165,7 @@ int main(int argc, char** argv)
     viewer.addEventHandler(new osgViewer::ScreenCaptureHandler);
 
     // load the data
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
     if (!loadedModel)
     {
         osg::Geometry * quad = osg::createTexturedQuadGeometry(osg::Vec3f(-2.0f, 0.0f, -2.0f),

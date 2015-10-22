@@ -17,9 +17,8 @@ static bool readStackedTransforms( osgDB::InputStream& is, osgAnimation::UpdateM
     unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        osgAnimation::StackedTransformElement* element =
-            dynamic_cast<osgAnimation::StackedTransformElement*>( is.readObject() );
-        if ( element ) transform.push_back( element );
+        osg::ref_ptr<osgAnimation::StackedTransformElement> element = is.readObjectOfType<osgAnimation::StackedTransformElement>();
+        if ( element ) transform.push_back( element.get() );
     }
     is >> is.END_BRACKET;
     return true;

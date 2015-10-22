@@ -1914,7 +1914,7 @@ osgTerrain::Layer* DataInputStream::readLayer()
     else if (layerid==IVEPROXYLAYER)
     {
         std::string filename = readString();
-        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(filename+".gdal");
+        osg::ref_ptr<osg::Object> object = osgDB::readRefObjectFile(filename+".gdal");
         osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<osgTerrain::ProxyLayer*>(object.get());
 
         osg::ref_ptr<osgTerrain::Locator> locator = readLocator();

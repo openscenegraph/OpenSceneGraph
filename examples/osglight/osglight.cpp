@@ -226,7 +226,7 @@ osg::Geometry* createWall(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
 }
 
 
-osg::Node* createRoom(osg::Node* loadedModel)
+osg::ref_ptr<osg::Node> createRoom(const osg::ref_ptr<osg::Node>& loadedModel)
 {
     // default scale for this model.
     osg::BoundingSphere bs(osg::Vec3(0.0f,0.0f,0.0f),1.0f);
@@ -323,20 +323,20 @@ int main( int argc, char **argv )
     osgViewer::Viewer viewer;
 
     // load the nodes from the commandline arguments.
-    osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
 
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!loadedModel) loadedModel = osgDB::readNodeFile("glider.osgt");
+    if (!loadedModel) loadedModel = osgDB::readRefNodeFile("glider.osgt");
 
     // create a room made of foor walls, a floor, a roof, and swinging light fitting.
-    osg::Node* rootnode = createRoom(loadedModel);
+    osg::ref_ptr<osg::Node> rootnode = createRoom(loadedModel);
 
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
     optimzer.optimize(rootnode);
 
     // add a viewport to the viewer and attach the scene graph.
-    viewer.setSceneData( rootnode );
+    viewer.setSceneData(rootnode);
 
 
     // create the windows and run the threads.

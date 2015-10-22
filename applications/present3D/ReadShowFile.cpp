@@ -215,24 +215,24 @@ osg::ref_ptr<osg::Node> p3d::readShowFiles(osg::ArgumentParser& arguments,const 
     std::string filename;
     while (arguments.read("--image",filename))
     {
-        osg::ref_ptr<osg::Image> image = readImageFile(filename.c_str(), local_options.get());
-        if (image.valid()) nodeList.push_back(osg::createGeodeForImage(image.get()));
+        osg::ref_ptr<osg::Image> image = readRefImageFile(filename.c_str(), local_options.get());
+        if (image.valid()) nodeList.push_back(osg::createGeodeForImage(image));
     }
 
     while (arguments.read("--movie",filename))
     {
-        osg::ref_ptr<osg::Image> image = readImageFile(filename.c_str(), local_options.get());
+        osg::ref_ptr<osg::Image> image = readRefImageFile(filename.c_str(), local_options.get());
         osg::ref_ptr<osg::ImageStream> imageStream = dynamic_cast<osg::ImageStream*>(image.get());
         if (image.valid())
         {
             imageStream->play();
-            nodeList.push_back(osg::createGeodeForImage(imageStream.get()));
+            nodeList.push_back(osg::createGeodeForImage(imageStream));
         }
     }
 
     while (arguments.read("--dem",filename))
     {
-        osg::HeightField* hf = readHeightFieldFile(filename.c_str(), local_options.get());
+        osg::ref_ptr<osg::HeightField> hf = readRefHeightFieldFile(filename.c_str(), local_options.get());
         if (hf)
         {
             osg::Geode* geode = new osg::Geode;
@@ -247,7 +247,7 @@ osg::ref_ptr<osg::Node> p3d::readShowFiles(osg::ArgumentParser& arguments,const 
         if (!arguments.isOption(pos))
         {
             // not an option so assume string is a filename.
-            osg::Node *node = osgDB::readNodeFile( arguments[pos], local_options.get());
+            osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile( arguments[pos], local_options.get());
 
             if(node)
             {

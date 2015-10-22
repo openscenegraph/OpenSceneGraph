@@ -40,7 +40,7 @@ osg::Camera* createHUD(const std::string& label)
     // set the projection matrix
     camera->setProjectionMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
 
-    // set the view matrix    
+    // set the view matrix
     camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
     camera->setViewMatrix(osg::Matrix::identity());
 
@@ -80,14 +80,14 @@ osg::Camera* createHUD(const std::string& label)
     return camera;
 }
 
-osg::Node* creatQuad(const std::string& name, 
-                     osg::Image* image, 
+osg::Node* creatQuad(const std::string& name,
+                     osg::Image* image,
                      osg::Texture::InternalFormatMode formatMode,
                      osg::Texture::FilterMode minFilter)
 {
 
     osg::Group* group = new osg::Group;
-    
+
     {
         osg::Geode* geode = new osg::Geode;
 
@@ -104,14 +104,14 @@ osg::Node* creatQuad(const std::string& name,
         texture->setInternalFormatMode(formatMode);
         texture->setFilter(osg::Texture::MIN_FILTER, minFilter);
         stateset->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
-        
+
         group->addChild(geode);
     }
-    
+
     {
         group->addChild(createHUD(name));
     }
-    
+
     return group;
 }
 
@@ -121,16 +121,16 @@ int main(int argc, char** argv)
 
     // construct the viewer.
     osgViewer::CompositeViewer viewer(arguments);
-    
+
     if (arguments.argc()<=1)
     {
         std::cout<<"Please supply an image filename on the commnand line."<<std::endl;
         return 1;
     }
-    
+
     std::string filename = arguments[1];
-    osg::ref_ptr<osg::Image> image = osgDB::readImageFile(filename);
-    
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(filename);
+
     if (!image)
     {
         std::cout<<"Error: unable able to read image from "<<filename<<std::endl;
@@ -138,7 +138,7 @@ int main(int argc, char** argv)
     }
 
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-    if (!wsi) 
+    if (!wsi)
     {
         osg::notify(osg::NOTICE)<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
         return 1;
@@ -155,7 +155,7 @@ int main(int argc, char** argv)
     traits->height = height;
     traits->windowDecoration = false;
     traits->doubleBuffer = true;
-    
+
     osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
     if (!gc)
     {
@@ -166,16 +166,16 @@ int main(int argc, char** argv)
     gc->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     osg::ref_ptr<osgGA::TrackballManipulator> trackball = new osgGA::TrackballManipulator;
-    
+
     typedef std::vector< osg::ref_ptr<osg::Node> > Models;
-    
+
     Models models;
     models.push_back(creatQuad("no compression", image.get(), osg::Texture::USE_IMAGE_DATA_FORMAT, osg::Texture::LINEAR));
     models.push_back(creatQuad("ARB compression", image.get(), osg::Texture::USE_ARB_COMPRESSION, osg::Texture::LINEAR));
     models.push_back(creatQuad("DXT1 compression", image.get(), osg::Texture::USE_S3TC_DXT1_COMPRESSION, osg::Texture::LINEAR));
     models.push_back(creatQuad("DXT3 compression", image.get(), osg::Texture::USE_S3TC_DXT3_COMPRESSION, osg::Texture::LINEAR));
     models.push_back(creatQuad("DXT5 compression", image.get(), osg::Texture::USE_S3TC_DXT5_COMPRESSION, osg::Texture::LINEAR));
-    
+
     int numX = 1;
     int numY = 1;
 
@@ -203,10 +203,10 @@ int main(int argc, char** argv)
     for(unsigned int i=0; i<models.size(); ++i)
     {
         osgViewer::View* view = new osgViewer::View;
-        
+
         int xCell = i % numX;
         int yCell = i / numX;
-    
+
         int vx = int((float(xCell)/float(numX)) * float(width));
         int vy = int((float(yCell)/float(numY)) * float(height));
         int vw =  int(float(width) / float(numX));
@@ -214,7 +214,7 @@ int main(int argc, char** argv)
 
         view->setSceneData(models[i].get());
         view->getCamera()->setProjectionMatrixAsPerspective(30.0, double(vw) / double(vh), 1.0, 1000.0);
-        view->getCamera()->setViewport(new osg::Viewport(vx, vy, vw, vh));    
+        view->getCamera()->setViewport(new osg::Viewport(vx, vy, vw, vh));
         view->getCamera()->setGraphicsContext(gc.get());
         view->getCamera()->setClearMask(0);
         view->setCameraManipulator(trackball.get());

@@ -244,7 +244,7 @@ int main( int argc, char **argv )
 
 
     // load the nodes from the commandline arguments.
-    osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> model = osgDB::readRefNodeFiles(arguments);
     if (model)
     {
         // the osgSim::InsertImpostorsVisitor used lower down to insert impostors
@@ -280,7 +280,7 @@ int main( int argc, char **argv )
         // on it right now as it requires a getRoots() method to be added to
         // osg::Node, and we're about to make a release so no new features!
         osg::ref_ptr<osg::Group> rootnode = new osg::Group;
-        rootnode->addChild(model.get());
+        rootnode->addChild(model);
 
 
         // now insert impostors in the model using the InsertImpostorsVisitor.
@@ -304,7 +304,7 @@ int main( int argc, char **argv )
     }
 
     // add model to viewer.
-    viewer.setSceneData(model.get());
+    viewer.setSceneData(model);
 
     return viewer.run();
 }

@@ -747,6 +747,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         /** Sets the texture image for the specified face. */
         virtual void setImage(unsigned int face, Image* image) = 0;
 
+        template<class T> void setImage(unsigned int face, const ref_ptr<T>& image) { setImage(face, image.get()); }
+
         /** Gets the texture image for the specified face. */
         virtual Image* getImage(unsigned int face) = 0;
 
@@ -759,6 +761,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         /** Set the PBuffer graphics context to read from when using PBuffers for RenderToTexture.*/
         void setReadPBuffer(GraphicsContext* context) { _readPBuffer = context; }
+
+        template<class T> void setReadPBuffer(const ref_ptr<T>& context) { setReadPBuffer(context.get()); }
 
         /** Get the PBuffer graphics context to read from when using PBuffers for RenderToTexture.*/
         GraphicsContext* getReadPBuffer() { return _readPBuffer.get(); }

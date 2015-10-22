@@ -563,8 +563,8 @@ public:
             is >> hasObject;
             if ( hasObject )
             {
-                P* value = dynamic_cast<P*>( is.readObject() );
-                (object.*_setter)( value );
+                osg::ref_ptr<P> value = is.readObjectOfType<P>();
+                (object.*_setter)( value.get() );
             }
         }
         else if ( is.matchString(ParentType::_name) )
@@ -573,8 +573,8 @@ public:
             if ( hasObject )
             {
                 is >> is.BEGIN_BRACKET;
-                P* value = dynamic_cast<P*>( is.readObject() );
-                (object.*_setter)( value );
+                osg::ref_ptr<P> value = is.readObjectOfType<P>();
+                (object.*_setter)( value.get() );
                 is >> is.END_BRACKET;
             }
         }
@@ -639,7 +639,8 @@ public:
             is >> hasObject;
             if ( hasObject )
             {
-                P* value = dynamic_cast<P*>( is.readImage() );
+                osg::ref_ptr<osg::Image> image = is.readImage();
+                P* value = dynamic_cast<P*>( image.get() );
                 (object.*_setter)( value );
             }
         }
@@ -649,7 +650,8 @@ public:
             if ( hasObject )
             {
                 is >> is.BEGIN_BRACKET;
-                P* value = dynamic_cast<P*>( is.readImage() );
+                osg::ref_ptr<osg::Image> image = is.readImage();
+                P* value = dynamic_cast<P*>( image.get() );
                 (object.*_setter)( value );
                 is >> is.END_BRACKET;
             }
@@ -1457,7 +1459,7 @@ public:
                 bool ok = false; is >> ok; //code from user serialized ensuring backwards-compatibility
                 if ( !ok ) return true;
             }
-            
+
             P mask;
             is >> mask;
             (object.*_setter)( mask );
@@ -1844,7 +1846,7 @@ protected:
 
 #define END_ENUM_SERIALIZER() \
     wrapper->addSerializer(serializer.get(), osgDB::BaseSerializer::RW_ENUM); }
-    
+
 /** defaults to uint bitfield type.*/
 #define BEGIN_BITFLAGS_SERIALIZER(PROP, DEF) \
     { typedef osgDB::BitFlagsSerializer<MyClass> MySerializer; \

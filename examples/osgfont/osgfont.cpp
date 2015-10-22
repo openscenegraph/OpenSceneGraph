@@ -62,7 +62,7 @@ osgText::Text* createLabel(const std::string& l, const char* f, unsigned int siz
     static osg::Vec3 pos(10.0f, 10.0f, 0.0f);
 
     osgText::Text* label = new osgText::Text();
-    osgText::Font* font  = osgText::readFontFile(f);
+    osg::ref_ptr<osgText::Font> font  = osgText::readRefFontFile(f);
 
     label->setFont(font);
     label->setCharacterSize(size);

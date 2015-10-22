@@ -35,21 +35,21 @@ bool readParticle( osgDB::InputStream& is, osgParticle::Particle& p )
     if ( hasInterpolator )
     {
         is >> is.BEGIN_BRACKET;
-        p.setSizeInterpolator( static_cast<osgParticle::Interpolator*>(is.readObject()) );
+        p.setAlphaInterpolator( is.readObjectOfType<osgParticle::Interpolator>() );
         is >> is.END_BRACKET;
     }
     is >> is.PROPERTY("AlphaInterpolator") >> hasInterpolator;
     if ( hasInterpolator )
     {
         is >> is.BEGIN_BRACKET;
-        p.setAlphaInterpolator( static_cast<osgParticle::Interpolator*>(is.readObject()) );
+        p.setAlphaInterpolator( is.readObjectOfType<osgParticle::Interpolator>() );
         is >> is.END_BRACKET;
     }
     is >> is.PROPERTY("ColorInterpolator") >> hasInterpolator;
     if ( hasInterpolator )
     {
         is >> is.BEGIN_BRACKET;
-        p.setColorInterpolator( static_cast<osgParticle::Interpolator*>(is.readObject()) );
+        p.setAlphaInterpolator( is.readObjectOfType<osgParticle::Interpolator>() );
         is >> is.END_BRACKET;
     }
 
@@ -73,7 +73,7 @@ bool readParticle( osgDB::InputStream& is, osgParticle::Particle& p )
     if ( hasObject )
     {
         is >> is.BEGIN_BRACKET;
-        p.setDrawable( dynamic_cast<osg::Drawable*>(is.readObject()) );
+        p.setDrawable( is.readObjectOfType<osg::Drawable>() );
         is >> is.END_BRACKET;
     }
 

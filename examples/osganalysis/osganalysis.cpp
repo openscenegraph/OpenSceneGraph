@@ -557,7 +557,7 @@ public:
         osg::notify(osg::NOTICE)<<"LoadAndCompileOperation "<<_filename<<std::endl;
 
         _modelReadyToMerge = false;
-        _loadedModel = osgDB::readNodeFile(_filename);
+        _loadedModel = osgDB::readRefNodeFile(_filename);
 
         if (_loadedModel.valid())
         {

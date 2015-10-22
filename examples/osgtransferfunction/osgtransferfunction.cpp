@@ -463,57 +463,8 @@ int main(int argc, char ** argv)
 
     bool createHistorgram = arguments.read("--histogram");
 
-#if 0
-    for(int i=1; i<arguments.argc(); ++i)
-    {
-        if (!arguments.isOption(i))
-        {
-            osg::ref_ptr<osg::Image> image;
-            osg::ref_ptr<osgVolume::Volume> volume;
-            osg::ref_ptr<osgVolume::VolumeTile> volumeTile;
+    osg::ref_ptr<osg::Node> model = osgDB::readRefNodeFiles(arguments);
 
-            std::string filename = arguments[i];
-            osgDB::FileType fileType = osgDB::fileType(foundFile);
-
-            if (fileType == osgDB::DIRECTORY)
-            {
-                osg::ref_ptr<osg::Image> image = osgDB::readImageFile(foundFile+".dicom", options.get());
-            }
-            else if (fileType == osgDB::REGULAR_FILE)
-            {
-                std::string ext = osgDB::getFileExtension(foundFile);
-                if (ext=="osg" || ext=="ive" || ext=="osgx" || ext=="osgb" || ext=="osgt")
-                {
-                    osg::ref_ptr<osg::Object> obj = osgDB::readObjectFile(foundFile);
-                    image = dynamic_cast<osg::Image*>(obj.get());
-                    volume = dynamic_cast<osgVolume::Volume*>(obj.get());
-                    volumeTile = dynamic_cast<osgVolume::VolumeTile*>(obj.get());
-                }
-                else
-                {
-                    image = osgDB::readImageFile( foundFile );
-                }
-            }
-            else
-            {
-                // not found image, so fallback to plugins/callbacks to find the model.
-                image = osgDB::readImageFile( filename);
-            }
-
-            if (image.valid())
-            {
-                volumeTile = new osgVolume::VolumeTile;
-            }
-
-        }
-        OSG_NOTICE<<"Argument "<<i<<" "<<arguments[i]<<std::endl;
-    }
-
-    return 1;
-#else
-
-    osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
-#endif
     typedef std::vector< osg::ref_ptr<osg::Node> > Nodes;
     Nodes nodes;
 

@@ -7,7 +7,7 @@
     static bool check##PROP( const osgManipulator::Scale1DDragger& dragger ) \
     { return dragger.get##PROP()!=NULL; } \
     static bool read##PROP( osgDB::InputStream& is, osgManipulator::Scale1DDragger& dragger ) { \
-        osg::Node* node = dynamic_cast<osg::Node*>( is.readObject() ); \
+        osg::ref_ptr<osg::Node> node = is.readObjectOfType<osg::Node>(); \
         if ( node ) dragger.set##PROP( *node ); return true; \
     } \
     static bool write##PROP( osgDB::OutputStream& os, const osgManipulator::Scale1DDragger& dragger ) { \

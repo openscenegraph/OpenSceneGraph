@@ -169,7 +169,7 @@ struct AssignDirectionColour
         osg::ref_ptr<osg::StateSet> stateset = geometry->getOrCreateStateSet();
         osg::ref_ptr<osg::Program> program = new osg::Program;
 
-        osg::ref_ptr<osg::Shader> vertexShader = osgDB::readShaderFile(osg::Shader::VERTEX, vertexShaderFile);
+        osg::ref_ptr<osg::Shader> vertexShader = osgDB::readRefShaderFile(osg::Shader::VERTEX, vertexShaderFile);
         if (!vertexShader)
         {
             vertexShader = new osg::Shader(osg::Shader::VERTEX, vert_shader_str);

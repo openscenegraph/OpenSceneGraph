@@ -85,7 +85,7 @@ int main( int argc, char **argv )
     std::string filename;
     if (arguments.read("--shader",filename))
     {
-        osg::ref_ptr<osg::Shader> shader = osgDB::readShaderFile(filename);
+        osg::ref_ptr<osg::Shader> shader = osgDB::readRefShaderFile(filename);
         if (shader.valid())
         {
             std::string name = osgDB::getStrippedName(filename);

@@ -366,7 +366,7 @@ osg::Geode* SolarSystem::createSpace( const std::string& name, const std::string
 
     if( !textureName.empty() )
     {
-        osg::Image* image = osgDB::readImageFile( textureName );
+        osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile( textureName );
         if ( image )
         {
             sSpaceSphere->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D( image ), osg::StateAttribute::ON );
@@ -467,7 +467,7 @@ osg::Geode* SolarSystem::createPlanet( double radius, const std::string& name, c
 
     if( !textureName.empty() )
     {
-        osg::Image* image = osgDB::readImageFile( textureName );
+        osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile( textureName );
         if ( image )
         {
             osg::Texture2D* tex2d = new osg::Texture2D( image );
@@ -493,7 +493,7 @@ osg::Geode* SolarSystem::createPlanet( double radius, const std::string& name, c
 
     if( !textureName2.empty() )
     {
-        osg::Image* image = osgDB::readImageFile( textureName2 );
+        osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile( textureName2 );
         if ( image )
         {
             osg::StateSet* stateset = geodePlanet->getOrCreateStateSet();

@@ -127,7 +127,8 @@ int main(int argc, char** argv)
     osgViewer::Viewer viewer(arguments);
     osg::ref_ptr<osg::Group> group = new osg::Group();
 
-    osg::Group* node = dynamic_cast<osg::Group*>(osgDB::readNodeFiles(arguments)); //dynamic_cast<osgAnimation::AnimationManager*>(osgDB::readNodeFile(psr[1]));
+    osg::ref_ptr<osg::Node> loadedmodel = osgDB::readRefNodeFiles(arguments);
+    osg::Group* node = dynamic_cast<osg::Group*>(loadedmodel.get());
     if(!node)
     {
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;

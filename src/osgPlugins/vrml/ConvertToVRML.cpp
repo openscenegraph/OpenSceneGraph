@@ -845,7 +845,7 @@ void ToVRML::findTextureName(osg::Texture2D* tex, std::string& name, bool& alrea
   std::string::size_type pos = nameInput.find_last_of(".");
   std::string ext = nameInput.substr(pos, nameInput.length() - pos);
 
-  osg::ref_ptr < osg::Image > imgIn = osgDB::readImageFile(nameInput);
+  osg::ref_ptr < osg::Image > imgIn = osgDB::readRefImageFile(nameInput);
   if (!imgIn.valid()) {
     osg::notify(osg::ALWAYS) << "WARNING: couldn't read texture named: -" << nameOri << "- use default one instead -" << _defaultImage->getFileName() << "-" << std::endl;
     tex->setImage(_defaultImage.get());

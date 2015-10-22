@@ -47,12 +47,12 @@ void addToLightPointNode(osgSim::LightPointNode& lpn,osgSim::LightPoint& start,o
         lpn.addLightPoint(start);
         return;
     }
-    
+
     float rend = 0.0f;
     float rdelta = 1.0f/((float)noSteps-1.0f);
-    
+
     lpn.getLightPointList().reserve(noSteps);
-    
+
     for(unsigned int i=0;i<noSteps;++i,rend+=rdelta)
     {
         float rstart = 1.0f-rend;
@@ -63,7 +63,7 @@ void addToLightPointNode(osgSim::LightPointNode& lpn,osgSim::LightPoint& start,o
         INTERPOLATE(_radius);
 
         lpn.addLightPoint(lp);
-        
+
    }
 }
 
@@ -78,12 +78,12 @@ osg::Node* createLightPointsDatabase()
 
     start._position.set(-500.0f,-500.0f,0.0f);
     start._color.set(1.0f,0.0f,0.0f,1.0f);
-    
+
     end._position.set(500.0f,-500.0f,0.0f);
     end._color.set(1.0f,1.0f,1.0f,1.0f);
-    
+
     osg::MatrixTransform* transform = new osg::MatrixTransform;
-    
+
     transform->setDataVariance(osg::Object::STATIC);
     transform->setMatrix(osg::Matrix::scale(0.1,0.1,0.1));
 
@@ -100,7 +100,7 @@ osg::Node* createLightPointsDatabase()
 //     bs->addPulse(0.5,osg::Vec4(0.0f,0.0f,0.0f,0.0f)); // off
 //     bs->addPulse(1.0,osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 //     bs->addPulse(0.5,osg::Vec4(0.0f,0.0f,0.0f,0.0f)); // off
-    
+
 
 //    osgSim::Sector* sector = new osgSim::ConeSector(osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0),osg::inDegrees(45.0));
 //    osgSim::Sector* sector = new osgSim::ElevationSector(-osg::inDegrees(45.0),osg::inDegrees(45.0),osg::inDegrees(45.0));
@@ -113,7 +113,7 @@ osg::Node* createLightPointsDatabase()
     {
 
 //         osgSim::BlinkSequence* local_bs = new osgSim::BlinkSequence(*bs);
-//         local_bs->setSequenceGroup(new osgSim::BlinkSequence::SequenceGroup((double)i*0.1));        
+//         local_bs->setSequenceGroup(new osgSim::BlinkSequence::SequenceGroup((double)i*0.1));
 //         start._blinkSequence = local_bs;
 
 //        start._sector = sector;
@@ -129,7 +129,7 @@ osg::Node* createLightPointsDatabase()
 
             // Set point sprite texture in LightPointNode StateSet.
             osg::Texture2D *tex = new osg::Texture2D();
-            tex->setImage(osgDB::readImageFile("Images/particle.rgb"));
+            tex->setImage(osgDB::readRefImageFile("Images/particle.rgb"));
             set->setTextureAttributeAndModes(0, tex, osg::StateAttribute::ON);
         }
 
@@ -140,17 +140,17 @@ osg::Node* createLightPointsDatabase()
         //
 
         addToLightPointNode(*lpn,start,end,noStepsX);
-        
+
         start._position += start_delta;
         end._position += end_delta;
-        
-        transform->addChild(lpn);    
+
+        transform->addChild(lpn);
     }
-        
+
     osg::Group* group = new osg::Group;
     group->addChild(transform);
-    
-    
+
+
     return group;
 }
 
@@ -232,16 +232,16 @@ int main( int argc, char **argv )
     osg::Group* rootnode = new osg::Group;
 
     // load the nodes from the commandline arguments.
-    rootnode->addChild(osgDB::readNodeFiles(arguments));
+    rootnode->addChild(osgDB::readRefNodeFiles(arguments));
     rootnode->addChild(createLightPointsDatabase());
     rootnode->addChild(CreateBlinkSequenceLightNode());
-    
+
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
     optimzer.optimize(rootnode);
-     
+
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData( rootnode );
-    
+
     return viewer.run();
 }

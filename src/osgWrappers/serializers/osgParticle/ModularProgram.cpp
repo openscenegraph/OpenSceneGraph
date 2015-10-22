@@ -13,8 +13,8 @@ static bool readOperators( osgDB::InputStream& is, osgParticle::ModularProgram& 
     unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        osgParticle::Operator* op = dynamic_cast<osgParticle::Operator*>( is.readObject() );
-        if ( op ) prog.addOperator( op );
+        osg::ref_ptr<osgParticle::Operator> op = is.readObjectOfType<osgParticle::Operator>();
+        if ( op ) prog.addOperator( op.get() );
     }
     is >> is.END_BRACKET;
     return true;

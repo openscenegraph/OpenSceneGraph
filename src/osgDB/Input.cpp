@@ -65,10 +65,7 @@ osg::Image*  Input::readImage()
 
 osg::Drawable* Input::readDrawable()
 {
-    osg::Drawable* drawable = Registry::instance()->getDeprecatedDotOsgObjectWrapperManager()->readDrawable(*this);
-    osg::Geometry* geometry = drawable ? drawable->asGeometry() : 0;
-    if (geometry && geometry->containsDeprecatedData()) geometry->fixDeprecatedData();
-    return drawable;
+    return Registry::instance()->getDeprecatedDotOsgObjectWrapperManager()->readDrawable(*this);
 }
 
 osg::StateAttribute* Input::readStateAttribute()
@@ -85,29 +82,29 @@ osg::Node* Input::readNode()
     return Registry::instance()->getDeprecatedDotOsgObjectWrapperManager()->readNode(*this);
 }
 
-osg::Object* Input::readObject(const std::string& fileName)
-{
-    return readObjectFile(fileName,_options.get());
-}
-
 osg::Shader*  Input::readShader()
 {
     return Registry::instance()->getDeprecatedDotOsgObjectWrapperManager()->readShader(*this);
 }
 
-osg::Image*  Input::readImage(const std::string& fileName)
+osg::ref_ptr<osg::Object> Input::readObject(const std::string& fileName)
 {
-    return readImageFile(fileName,_options.get());
+    return readRefObjectFile(fileName,_options.get());
 }
 
-osg::Node* Input::readNode(const std::string& fileName)
+osg::ref_ptr<osg::Image>  Input::readImage(const std::string& fileName)
 {
-    return readNodeFile(fileName,_options.get());
+    return readRefImageFile(fileName,_options.get());
 }
 
-osg::Shader*  Input::readShader(const std::string& fileName)
+osg::ref_ptr<osg::Node> Input::readNode(const std::string& fileName)
 {
-    return readShaderFile(fileName,_options.get());
+    return readRefNodeFile(fileName,_options.get());
+}
+
+osg::ref_ptr<osg::Shader> Input::readShader(const std::string& fileName)
+{
+    return readRefShaderFile(fileName,_options.get());
 }
 
 bool Input::read(Parameter value1)

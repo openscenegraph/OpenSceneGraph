@@ -107,7 +107,7 @@ osg::Group *SceneLoader::load(const std::string &filename, const osgDB::ReaderWr
 
     std::getline(ifs, field);
     version_ = atoi(field.c_str());
-        
+
 
     std::string identifier;
     while (ifs >> identifier) {
@@ -256,7 +256,7 @@ bool SceneLoader::parse_block(const std::string &name, const std::string &data)
 
                 OSG_NOTICE << "Loading object \"" << filename << "\"" << std::endl;
 
-                objnode = dynamic_cast<osg::Group *>(osgDB::readNodeFile(filename));
+                objnode = osgDB::readRefFile<osg::Group>(filename);
                 if (!objnode.valid()) return false;
 
                 objects_[filename] = objnode;

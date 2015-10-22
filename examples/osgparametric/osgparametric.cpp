@@ -40,7 +40,7 @@
 
 ///////////////////////////////////////////////////////////////////
 // vertex shader using just Vec4 coefficients
-char vertexShaderSource_simple[] = 
+char vertexShaderSource_simple[] =
     "uniform vec4 coeff; \n"
     "\n"
     "void main(void) \n"
@@ -52,11 +52,11 @@ char vertexShaderSource_simple[] =
     "             gl_Vertex.y*coeff[2] + gl_Vertex.y*gl_Vertex.y* coeff[3]; \n"
     "    gl_Position = gl_ModelViewProjectionMatrix * vert;\n"
     "}\n";
-  
-  
+
+
 //////////////////////////////////////////////////////////////////
 // vertex shader using full Matrix4 coefficients
-char vertexShaderSource_matrix[] = 
+char vertexShaderSource_matrix[] =
     "uniform vec4  origin; \n"
     "uniform mat4  coeffMatrix; \n"
     "\n"
@@ -70,7 +70,7 @@ char vertexShaderSource_matrix[] =
 
 //////////////////////////////////////////////////////////////////
 // vertex shader using texture read
-char vertexShaderSource_texture[] = 
+char vertexShaderSource_texture[] =
     "uniform sampler2D vertexTexture; \n"
     "\n"
     "void main(void) \n"
@@ -86,7 +86,7 @@ char vertexShaderSource_texture[] =
 //////////////////////////////////////////////////////////////////
 // fragment shader
 //
-char fragmentShaderSource[] = 
+char fragmentShaderSource[] =
     "uniform sampler2D baseTexture; \n"
     "\n"
     "void main(void) \n"
@@ -109,17 +109,17 @@ class UniformVarying : public osg::UniformCallback
 osg::Node* createModel(const std::string& shader, const std::string& textureFileName, const std::string& terrainFileName, bool dynamic, bool useVBO)
 {
     osg::Geode* geode = new osg::Geode;
-    
+
     osg::Geometry* geom = new osg::Geometry;
     geode->addDrawable(geom);
-    
+
     // dimensions for ~one million triangles :-)
     unsigned int num_x = 708;
     unsigned int num_y = 708;
 
     // set up state
     {
-    
+
         osg::StateSet* stateset = geom->getOrCreateStateSet();
 
         osg::Program* program = new osg::Program;
@@ -131,7 +131,7 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
             program->addShader(vertex_shader);
 
             osg::Uniform* coeff = new osg::Uniform("coeff",osg::Vec4(1.0,-1.0f,-1.0f,1.0f));
-            
+
             stateset->addUniform(coeff);
 
             if (dynamic)
@@ -140,7 +140,7 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
                 coeff->setDataVariance(osg::Object::DYNAMIC);
                 stateset->setDataVariance(osg::Object::DYNAMIC);
             }
-            
+
         }
         else if (shader=="matrix")
         {
@@ -163,7 +163,7 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
             osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource_texture);
             program->addShader(vertex_shader);
 
-            osg::Image* image = 0;
+            osg::ref_ptr<osg::Image> image;
 
             if (terrainFileName.empty())
             {
@@ -184,7 +184,7 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
             }
             else
             {
-                image = osgDB::readImageFile(terrainFileName);
+                image = osgDB::readRefImageFile(terrainFileName);
 
                 num_x = image->s();
                 num_y = image->t();
@@ -206,7 +206,7 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
         osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
         program->addShader(fragment_shader);
 
-        osg::Texture2D* texture = new osg::Texture2D(osgDB::readImageFile(textureFileName));
+        osg::Texture2D* texture = new osg::Texture2D(osgDB::readRefImageFile(textureFileName));
         stateset->setTextureAttributeAndModes(0,texture);
 
         osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
@@ -218,11 +218,11 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
     // set up geometry data.
 
     osg::Vec3Array* vertices = new osg::Vec3Array( num_x * num_y );
-    
+
     float dx = 1.0f/(float)(num_x-1);
     float dy = 1.0f/(float)(num_y-1);
     osg::Vec3 row(0.0f,0.0f,0.0);
-    
+
     unsigned int vert_no = 0;
     unsigned int iy;
     for(iy=0; iy<num_y; ++iy)
@@ -232,7 +232,7 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
         {
             (*vertices)[vert_no++] = column;
             column.x() += dx;
-        }        
+        }
         row.y() += dy;
     }
 
@@ -240,7 +240,7 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
 
     osg::VertexBufferObject* vbo = useVBO ? new osg::VertexBufferObject : 0;
     if (vbo) vertices->setVertexBufferObject(vbo);
-    
+
     osg::ElementBufferObject* ebo = useVBO ? new osg::ElementBufferObject : 0;
 
     for(iy=0; iy<num_y-1; ++iy)
@@ -253,11 +253,11 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
             (*elements)[element_no++] = index + num_x;
             (*elements)[element_no++] = index++;
         }
-        geom->addPrimitiveSet(elements); 
-        
+        geom->addPrimitiveSet(elements);
+
         if (ebo) elements->setElementBufferObject(ebo);
     }
-    
+
     geom->setUseVertexBufferObjects(useVBO);
 
     return geode;
@@ -272,7 +272,7 @@ int main(int argc, char *argv[])
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrate support for ARB_vertex_program.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-   
+
     // construct the viewer.
     osgViewer::Viewer viewer;
 
@@ -281,7 +281,7 @@ int main(int argc, char *argv[])
 
     std::string shader("simple");
     while(arguments.read("-s",shader)) {}
-    
+
     std::string textureFileName("Images/lz.rgb");
     while(arguments.read("-t",textureFileName)) {}
 
@@ -300,14 +300,14 @@ int main(int argc, char *argv[])
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
-    
+
     // load the nodes from the commandline arguments.
     osg::Node* model = createModel(shader,textureFileName,terrainFileName, dynamic, vbo);
     if (!model)
     {
         return 1;
     }
-    
+
     viewer.setSceneData(model);
 
     return viewer.run();

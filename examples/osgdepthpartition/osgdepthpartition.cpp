@@ -139,7 +139,7 @@ int main( int argc, char **argv )
     bool needToSetHomePosition = false;
 
     // read the scene from the list of file specified commandline args.
-    osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> scene = osgDB::readRefNodeFiles(arguments);
 
     // if one hasn't been loaded create an earth and sun test model.
     if (!scene)

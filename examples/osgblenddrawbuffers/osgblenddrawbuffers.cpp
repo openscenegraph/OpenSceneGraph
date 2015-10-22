@@ -71,9 +71,17 @@ int main( int argc, char **argv )
     bool useGlobalBlending = false;
     if ( arguments.read("--no-draw-buffers") ) useGlobalBlending = true;
 
+
+    osg::ref_ptr<osg::Node> cessna = osgDB::readRefNodeFile("cessna.osgt");
+    if (!cessna)
+    {
+        OSG_NOTICE<<"Cannot not find model 'cessna.osg' to render"<<std::endl;
+        return 1;
+    }
+
     // Create a camera to output multi-rendering-targets (MRT)
-    osg::Camera* mrtCam = createMRTCamera( textures );
-    mrtCam->addChild( osgDB::readNodeFile("cessna.osgt") );
+    osg::ref_ptr<osg::Camera> mrtCam = createMRTCamera( textures );
+    mrtCam->addChild( cessna );
 
     // Create shader program to be used
     const char* mrtFragmentCode = {
@@ -87,8 +95,8 @@ int main( int argc, char **argv )
     osg::ref_ptr<osg::Program> program = new osg::Program;
     program->addShader( new osg::Shader(osg::Shader::FRAGMENT, mrtFragmentCode) );
 
-    osg::StateSet* ss = mrtCam->getOrCreateStateSet();
-    ss->setAttributeAndModes( program.get() );
+    osg::ref_ptr<osg::StateSet> ss = mrtCam->getOrCreateStateSet();
+    ss->setAttributeAndModes( program );
 
     // Apply blending to the original scene in MRT
     if ( !useGlobalBlending )
@@ -103,8 +111,8 @@ int main( int argc, char **argv )
         // Accept different blend/colormask attributes on multiple render targets
         osg::ref_ptr<osg::BlendFunci> blend0 = new osg::BlendFunci(0, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         osg::ref_ptr<osg::ColorMaski> colormask3 = new osg::ColorMaski(3, false, true, false, true);
-        ss->setAttribute( blend0.get() );
-        ss->setAttributeAndModes( colormask3.get() );
+        ss->setAttribute( blend0 );
+        ss->setAttributeAndModes( colormask3 );
     }
     else
     {

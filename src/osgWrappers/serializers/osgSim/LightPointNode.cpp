@@ -26,14 +26,14 @@ static bool readLightPointList( osgDB::InputStream& is, osgSim::LightPointNode& 
         if ( hasObject )
         {
             is >> is.BEGIN_BRACKET;
-            pt._sector = dynamic_cast<osgSim::Sector*>( is.readObject() );
+            pt._sector = is.readObjectOfType<osgSim::Sector>();
             is >> is.END_BRACKET;
         }
         hasObject = false; is >> is.PROPERTY("BlinkSequence") >> hasObject;
         if ( hasObject )
         {
             is >> is.BEGIN_BRACKET;
-            pt._blinkSequence = dynamic_cast<osgSim::BlinkSequence*>( is.readObject() );
+            pt._blinkSequence = is.readObjectOfType<osgSim::BlinkSequence>();
             is >> is.END_BRACKET;
         }
         is >> is.END_BRACKET;

@@ -49,6 +49,8 @@ class OSG_EXPORT Geode : public Group
         */
         virtual bool addDrawable( Drawable *drawable );
 
+        template<class T> bool addDrawable( const ref_ptr<T>& drawable ) { return addDrawable(drawable.get()); }
+
         /** Remove a \c Drawable from the \c Geode.
           * Equivalent to <tt>removeDrawable(getDrawableIndex(drawable)</tt>.
           * @param drawable The drawable to be removed.
@@ -56,6 +58,8 @@ class OSG_EXPORT Geode : public Group
           *         otherwise.
         */
         virtual bool removeDrawable( Drawable *drawable );
+
+        template<class T> bool removeDrawable( const ref_ptr<T>& drawable ) { return removeDrawable( drawable.get() ); }
 
         /** Remove <tt>Drawable</tt>(s) from the specified position in
           * <tt>Geode</tt>'s drawable list.
@@ -73,6 +77,8 @@ class OSG_EXPORT Geode : public Group
         */
         virtual bool replaceDrawable( Drawable *origDraw, Drawable *newDraw );
 
+        template<class T, class R> bool replaceDrawable( const ref_ptr<T>& origDraw, const ref_ptr<R>& newDraw ) { return replaceDrawable(origDraw.get(), newDraw.get()); }
+
         /** Set \c Drawable at position \c i.
           * Decrement the reference count origGSet and increments the
           * reference count of newGset, and dirty the bounding sphere
@@ -84,6 +90,8 @@ class OSG_EXPORT Geode : public Group
           *         (if node==NULL || i is out of range).
         */
         virtual bool setDrawable( unsigned int i, Drawable* drawable );
+
+        template<class T> bool setDrawable( unsigned int i, const ref_ptr<T>& drawable ) { return setDrawable(i, drawable.get()); }
 
         /** Return the number of <tt>Drawable</tt>s currently attached to the
           * \c Geode.
@@ -108,6 +116,8 @@ class OSG_EXPORT Geode : public Group
             return false;
         }
 
+        template<class T> bool containsDrawable(const ref_ptr<T>& drawable) const { return containsDrawable(drawable.get()); }
+
         /** Get the index number of \c drawable.
           * @return A value between 0 and <tt>getNumDrawables()-1</tt> if
           *         \c drawable is found; if not found, then
@@ -117,6 +127,8 @@ class OSG_EXPORT Geode : public Group
         {
             return getChildIndex(drawable);
         }
+
+        template<class T> unsigned int getDrawableIndex( const ref_ptr<T>& drawable ) const { return getDrawableIndex(drawable.get()); }
 
         /** Compile OpenGL Display List for each drawable.*/
         void compileDrawables(RenderInfo& renderInfo);

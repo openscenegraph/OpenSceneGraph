@@ -38,10 +38,14 @@ class OSGSHADOW_EXPORT ShadowedScene : public osg::Group
         virtual void traverse(osg::NodeVisitor& nv);
 
         void setShadowSettings(ShadowSettings* ss);
+        template<class T> void setShadowSettings(const osg::ref_ptr<T>& ss) { setShadowSettings(ss.get()); }
+
         ShadowSettings* getShadowSettings() { return _shadowSettings.get(); }
         const ShadowSettings* getShadowSettings() const { return _shadowSettings.get(); }
 
         void setShadowTechnique(ShadowTechnique* technique);
+        template<class T> void setShadowTechnique(const osg::ref_ptr<T>& ss) { setShadowTechnique(ss.get()); }
+
         ShadowTechnique* getShadowTechnique() { return _shadowTechnique.get(); }
         const ShadowTechnique* getShadowTechnique() const { return _shadowTechnique.get(); }
 

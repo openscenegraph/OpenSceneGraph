@@ -478,7 +478,7 @@ public:
 
     void addParagraph(const std::string& paragraph, PositionData& positionData, FontData& fontData, const ScriptData& scriptData);
 
-    osg::Image* readImage(const std::string& filename, const ImageData& imageData);
+    osg::ref_ptr<osg::Image> readImage(const std::string& filename, const ImageData& imageData);
 
     void addImage(const std::string& filename,const PositionData& positionData, const ImageData& imageData, const ScriptData& scriptData);
 
@@ -488,7 +488,7 @@ public:
     void addVNC(const std::string& filename,const PositionData& positionData, const ImageData& imageData, const std::string& password, const ScriptData& scriptData);
     void addBrowser(const std::string& filename,const PositionData& positionData, const ImageData& imageData, const ScriptData& scriptData);
     void addPDF(const std::string& filename,const PositionData& positionData, const ImageData& imageData, const ScriptData& scriptData);
-    osg::Image* addInteractiveImage(const std::string& filename,const PositionData& positionData, const ImageData& imageData, const ScriptData& scriptData);
+    osg::ref_ptr<osg::Image> addInteractiveImage(const std::string& filename,const PositionData& positionData, const ImageData& imageData, const ScriptData& scriptData);
 
     void addModel(osg::Node* subgraph, const PositionData& positionData, const ModelData& modelData, const ScriptData& scriptData);
 

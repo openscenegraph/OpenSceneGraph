@@ -13,7 +13,8 @@ static bool readParticleSystem( osgDB::InputStream& is, osgParticle::ParticleEff
 {
     is >> is.BEGIN_BRACKET;
     effect.setUseLocalParticleSystem( false );
-    effect.setParticleSystem( static_cast<osgParticle::ParticleSystem*>(is.readObject()) );
+    osg::ref_ptr<osgParticle::ParticleSystem> ps = is.readObjectOfType<osgParticle::ParticleSystem>();
+    effect.setParticleSystem( ps.get() );
     is >> is.END_BRACKET;
     return true;
 }

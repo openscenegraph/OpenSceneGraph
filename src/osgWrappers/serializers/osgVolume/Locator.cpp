@@ -13,8 +13,7 @@ static bool readLocatorCallbacks( osgDB::InputStream& is, osgVolume::Locator& lo
     unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        osgVolume::Locator::LocatorCallback* cb =
-            dynamic_cast<osgVolume::Locator::LocatorCallback*>( is.readObject() );
+        osg::ref_ptr<osgVolume::Locator::LocatorCallback> cb = is.readObjectOfType<osgVolume::Locator::LocatorCallback>();
         if ( cb ) locator.addCallback( cb );
     }
     is >> is.END_BRACKET;

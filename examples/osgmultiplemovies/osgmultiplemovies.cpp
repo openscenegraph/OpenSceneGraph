@@ -362,7 +362,7 @@ private:
 
 static osg::Node* readImageStream(const std::string& file_name, osg::Vec3& p, float desired_height, osgDB::Options* options)
 {
-    osg::ref_ptr<osg::Object> obj = osgDB::readObjectFile(file_name, options);
+    osg::ref_ptr<osg::Object> obj = osgDB::readRefObjectFile(file_name, options);
     osg::ref_ptr<osg::Texture> tex = dynamic_cast<osg::Texture*>(obj.get());
     osg::Geometry* geo(NULL);
     float w(0);
@@ -374,7 +374,7 @@ static osg::Node* readImageStream(const std::string& file_name, osg::Vec3& p, fl
         // try readImageFile if readObjectFile failed
         if (!img_stream)
         {
-            img_stream = dynamic_cast<osg::ImageStream*>(osgDB::readImageFile(file_name, options));
+            img_stream = osgDB::readRefFile<osg::ImageStream>(file_name, options);
         }
 
         if (img_stream)
@@ -531,7 +531,9 @@ private:
         if (!tex) {
             osg::ref_ptr<osg::ImageStream> stream = dynamic_cast<osg::ImageStream*>(obj.get());
             if (!stream)
-                stream = dynamic_cast<osg::ImageStream*>(osgDB::readImageFile(_files[_currentFile], _options.get()));
+            {
+                stream = osgDB::readRefFile<osg::ImageStream>(_files[_currentFile], _options.get());
+            }
 
             if (stream)
             {

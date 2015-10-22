@@ -82,7 +82,7 @@ public:
 #if VERBOSE
                 std::cout<<"Reading "<<filename;
 #endif
-                osg::ref_ptr<osg::Node> node = osgDB::readNodeFile(filename);
+                osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile(filename);
 #if VERBOSE
                 if (node.valid()) std::cout<<"..  OK"<<std::endl;
                 else std::cout<<"..  FAILED"<<std::endl;

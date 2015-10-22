@@ -54,7 +54,7 @@ class SliceProcessor
                 _nearFarOffset = _sliceDelta;
             }
             _image->allocateImage( _sliceNumber, _sliceNumber,_sliceNumber, GL_RGBA, GL_UNSIGNED_BYTE );
-            
+
         }
         // needs 3D-Texture object
         osg::Image* _image;
@@ -63,7 +63,7 @@ class SliceProcessor
         double _nearPlane;
         double _farPlane;
         double _nearFarOffset;
-        
+
     // needs function to do rendering and slicing
 };
 
@@ -77,7 +77,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("-o <filename>","Object to be loaded");
-    
+
     if( arguments.read( "-h" ) || arguments.read( "--help" ) )
     {
         std::cout << "Argumentlist:" << std::endl;
@@ -85,10 +85,10 @@ int main( int argc, char **argv )
         std::cout << "\t--slices <unsigned int> sets number of slices through the object" << std::endl;
         std::cout << "\t--near <double> sets start for near clipping plane" << std::endl;
         std::cout << "\t--far <double> sets start for far clipping plane" << std::endl;
-        
+
         return 1;
     }
-    
+
     std::string outputName("volume_tex.dds");
     while( arguments.read( "-o", outputName ) ) { }
 
@@ -101,10 +101,10 @@ int main( int argc, char **argv )
     while( arguments.read( "--near",nearClip ) ) { }
     while( arguments.read( "--far", farClip) ) { }
 
-    
+
     // load the scene.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles( arguments );
-    if (!loadedModel) 
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles( arguments );
+    if (!loadedModel)
     {
         std::cout << "No data loaded." << std::endl;
         return 1;
@@ -124,7 +124,7 @@ int main( int argc, char **argv )
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
-    
+
 
 
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
@@ -144,7 +144,7 @@ int main( int argc, char **argv )
         osg::notify(osg::NOTICE)<<"Error: unable to create graphics window"<<std::endl;
         return 1;
     }
-    
+
     gc->realize();
     gc->makeCurrent();
 
@@ -157,25 +157,25 @@ int main( int argc, char **argv )
     osg::Matrix viewMatrix;
     // distance from viewport to object's center is set to be 2x bs.radius()
     viewMatrix.makeLookAt(bs.center()-osg::Vec3(0.0,2.0f*bs.radius(),0.0),bs.center(),osg::Vec3(0.0f,0.0f,1.0f));
-    
+
     // turn off autocompution of near and far clipping planes
     sceneView->setComputeNearFarMode(osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR);
 
     // set the clear color of the background to make sure that the alpha is 0.0.
     sceneView->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
 
-    // record the timer tick at the start of rendering.     
+    // record the timer tick at the start of rendering.
     osg::Timer_t start_tick = osg::Timer::instance()->tick();
-    
+
     std::cout << "radius: " << bs.radius() << std::endl;
-    
+
     unsigned int frameNum = 0;
     double tmpNear, tmpFar;
     std::string baseImageName("shot_");
     std::string tmpImageName;
-    
+
     osg::Image* tmpImage = new osg::Image;
-    
+
     // main loop (note, window toolkits which take control over the main loop will require a window redraw callback containing the code below.)
     for( unsigned int i = 0 ; i < sp->_sliceNumber && gc->isRealized() ; ++i )
     {
@@ -183,17 +183,17 @@ int main( int argc, char **argv )
         osg::ref_ptr<osg::FrameStamp> frameStamp = new osg::FrameStamp;
         frameStamp->setReferenceTime(osg::Timer::instance()->delta_s(start_tick,osg::Timer::instance()->tick()));
         frameStamp->setFrameNumber(frameNum++);
-        
+
         // pass frame stamp to the SceneView so that the update, cull and draw traversals all use the same FrameStamp
         sceneView->setFrameStamp(frameStamp.get());
-        
+
         // update the viewport dimensions, incase the window has been resized.
         sceneView->setViewport(0,0,traits->width,traits->height);
-        
-        
+
+
         // set the view
         sceneView->setViewMatrix(viewMatrix);
-        
+
         // set Projection Matrix
         tmpNear = sp->_nearPlane+i*sp->_sliceDelta;
         tmpFar = sp->_farPlane+(i*sp->_sliceDelta)+sp->_nearFarOffset;
@@ -201,24 +201,24 @@ int main( int argc, char **argv )
 
         // do the update traversal the scene graph - such as updating animations
         sceneView->update();
-        
+
         // do the cull traversal, collect all objects in the view frustum into a sorted set of rendering bins
         sceneView->cull();
-        
+
         // draw the rendering bins.
         sceneView->draw();
-                
+
         // Swap Buffers
         gc->swapBuffers();
-        
+
         std::cout << "before readPixels: _r = " << sp->_image->r() << std::endl;
-        
+
         tmpImage->readPixels(static_cast<int>(sceneView->getViewport()->x()),
                              static_cast<int>(sceneView->getViewport()->y()),
                              static_cast<int>(sceneView->getViewport()->width()),
                              static_cast<int>(sceneView->getViewport()->height()),
                              GL_RGBA,GL_UNSIGNED_BYTE);
-        
+
 //        std::cout << "vor copySubImage: _r = " << sp->_image->r() << std::endl;
         sp->_image->copySubImage( 0, 0, i, tmpImage );
 

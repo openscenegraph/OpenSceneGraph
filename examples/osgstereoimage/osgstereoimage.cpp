@@ -141,8 +141,8 @@ osg::Geode* createSectorForImage(osg::Image* image, osg::TexMat* texmat, float s
 
 osg::Group * loadImages(std::string image1, std::string image2, osg::TexMat* texmatLeft, osg::TexMat* texmatRight, float radius, float height, float length)
 {
-    osg::ref_ptr<osg::Image> imageLeft = osgDB::readImageFile(image1);
-    osg::ref_ptr<osg::Image> imageRight = osgDB::readImageFile(image2);
+    osg::ref_ptr<osg::Image> imageLeft = osgDB::readRefImageFile(image1);
+    osg::ref_ptr<osg::Image> imageRight = osgDB::readRefImageFile(image2);
     if (imageLeft.valid() && imageRight.valid())
     {
 	osg::ImageStream* streamLeft = dynamic_cast<osg::ImageStream*>(imageLeft.get());

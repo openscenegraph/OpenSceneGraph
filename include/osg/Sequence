@@ -41,13 +41,21 @@ class OSG_EXPORT Sequence : public Group
         // maintained.  New code should set defaultTime and use addChild, and
         // not mess with the setTime method
 
+        using osg::Group::addChild;
+        using osg::Group::insertChild;
+        using osg::Group::removeChild;
+
         virtual bool addChild( Node *child);
 
         virtual bool addChild( Node *child, double t);
 
+        template<class T> bool addChild( const ref_ptr<T>& child, double t) { return addChild(child.get(), t); }
+
         virtual bool insertChild( unsigned int index, Node *child);
 
         virtual bool insertChild( unsigned int index, Node *child, double t);
+
+        template<class T> bool insertChild( unsigned int index, const ref_ptr<T>& child, double t) { return insertChild(index, child.get(), t); }
 
         virtual bool removeChild( Node *child );
 

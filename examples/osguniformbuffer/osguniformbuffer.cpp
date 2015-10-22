@@ -118,18 +118,18 @@ public:
         array->dirty();
     }
 };
-    
+
 int main(int argc, char** argv)
 {
     osg::ArgumentParser arguments(&argc,argv);
     osgViewer::Viewer viewer(arguments);
-    
+
     if (arguments.argc() <= 1) {
         cerr << "Need a scene.\n";
         return 1;
     }
 
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
     if (!loadedModel) {
         cerr << "couldn't load " << argv[1] << "\n";
         return 1;
@@ -167,7 +167,7 @@ int main(int argc, char** argv)
     ref_ptr<UniformBufferBinding> ubb1
         = new UniformBufferBinding(0, ubo.get(), 0, blockSize);
     ss1->setAttributeAndModes(ubb1.get(), StateAttribute::ON);
-    
+
     ref_ptr<FloatArray> colorArray2
         = new FloatArray(&colors2[0],
                          &colors2[sizeof(colors2) / sizeof(GLfloat)]);
@@ -193,13 +193,13 @@ int main(int argc, char** argv)
     group3->setMatrix(mat3);
     StateSet* ss3 = group3->getOrCreateStateSet();
     group3->addChild(loadedModel.get());
-    scene->addChild(group3);    
+    scene->addChild(group3);
     ref_ptr<UniformBufferBinding> ubb3
         = new UniformBufferBinding(0, ubo3.get(), 0, blockSize);
     ubb3->setUpdateCallback(new UniformBufferCallback);
     ubb3->setDataVariance(Object::DYNAMIC);
     ss3->setAttributeAndModes(ubb3.get(), StateAttribute::ON);
-    
+
     viewer.setSceneData(scene);
     viewer.realize();
     return viewer.run();

@@ -87,7 +87,7 @@ osg::Node* Input::readNode()
 
 osg::Object* Input::readObject(const std::string& fileName)
 {
-    return readObjectFile(fileName,_options.get());
+    return readRefObjectFile(fileName,_options.get()).release();
 }
 
 osg::Shader*  Input::readShader()
@@ -97,17 +97,17 @@ osg::Shader*  Input::readShader()
 
 osg::Image*  Input::readImage(const std::string& fileName)
 {
-    return readImageFile(fileName,_options.get());
+    return readRefImageFile(fileName,_options.get()).release();
 }
 
 osg::Node* Input::readNode(const std::string& fileName)
 {
-    return readNodeFile(fileName,_options.get());
+    return readRefNodeFile(fileName,_options.get()).release();
 }
 
 osg::Shader*  Input::readShader(const std::string& fileName)
 {
-    return readShaderFile(fileName,_options.get());
+    return readRefShaderFile(fileName,_options.get()).release();
 }
 
 bool Input::read(Parameter value1)

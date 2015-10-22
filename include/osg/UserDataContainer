@@ -47,6 +47,8 @@ class OSG_EXPORT UserDataContainer : public osg::Object
          */
         virtual void setUserData(Referenced* obj) = 0;
 
+        using osg::Object::setUserData;
+
         /** Get user data.*/
         virtual Referenced* getUserData() = 0;
 
@@ -55,6 +57,8 @@ class OSG_EXPORT UserDataContainer : public osg::Object
 
         /** Add user data object. Returns the index position of object added. */
         virtual unsigned int addUserObject(Object* obj)  = 0;
+
+        template<class T> unsigned int addUserObject(const osg::ref_ptr<T>& obj) { return addUserObject(obj.get()); }
 
          /** Add element to list of user data objects.*/
         virtual void setUserObject(unsigned int i, Object* obj)  = 0;
@@ -126,6 +130,9 @@ class OSG_EXPORT DefaultUserDataContainer : public osg::UserDataContainer
          * which points to your own object and handles the memory addressing.
          */
         virtual void setUserData(Referenced* obj);
+
+        using osg::Object::setUserData;
+        using osg::UserDataContainer::addUserObject;
 
         /** Get user data.*/
         virtual Referenced* getUserData();

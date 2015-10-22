@@ -38,7 +38,7 @@ PhotoArchive::PhotoArchive(const std::string& filename)
 bool PhotoArchive::readPhotoIndex(const std::string& filename)
 {
     osgDB::ifstream in(filename.c_str());
-    
+
     char* fileIndentifier = new char [FILE_IDENTIFER.size()];
     in.read(fileIndentifier,FILE_IDENTIFER.size());
     if (FILE_IDENTIFER!=fileIndentifier)
@@ -47,17 +47,17 @@ bool PhotoArchive::readPhotoIndex(const std::string& filename)
         return false;
     }
     delete [] fileIndentifier;
-    
+
     unsigned int numPhotos;
     in.read((char*)&numPhotos,sizeof(numPhotos));
 
     _photoIndex.resize(numPhotos);
 
     in.read((char*)&_photoIndex.front(),sizeof(PhotoHeader)*numPhotos);
-    
+
     // success record filename.
     _archiveFileName = filename;
-    
+
     return true;
 }
 
@@ -69,10 +69,10 @@ void PhotoArchive::getImageFileNameList(FileNameList& filenameList)
     {
         filenameList.push_back(std::string(itr->filename));
     }
-                        
+
 }
 
-osg::Image* PhotoArchive::readImage(const std::string& filename,
+osg::ref_ptr<osg::Image> PhotoArchive::readImage(const std::string& filename,
                                     unsigned int target_s, unsigned target_t,
                                     float& original_s, float& original_t)
 {
@@ -83,56 +83,56 @@ osg::Image* PhotoArchive::readImage(const std::string& filename,
         if (filename==itr->filename)
         {
             const PhotoHeader& photoHeader = *itr;
-        
+
             if  (target_s <= photoHeader.thumbnail_s &&
                  target_t <= photoHeader.thumbnail_t &&
                  photoHeader.thumbnail_position != 0)
             {
                 osgDB::ifstream in(_archiveFileName.c_str(),std::ios::in | std::ios::binary);
-                
+
                 // find image
                 in.seekg(photoHeader.thumbnail_position);
-                
+
                 // read image header
                 ImageHeader imageHeader;
                 in.read((char*)&imageHeader,sizeof(ImageHeader));
                 unsigned char* data = new unsigned char[imageHeader.size];
                 in.read((char*)data,imageHeader.size);
-                
-                osg::Image* image = new osg::Image;
+
+                osg::ref_ptr<osg::Image> image = new osg::Image;
                 image->setImage(photoHeader.thumbnail_s,photoHeader.thumbnail_t,1,
                                 imageHeader.pixelFormat,imageHeader.pixelFormat,imageHeader.type,
                                 data,osg::Image::USE_NEW_DELETE);
-                                
+
                 original_s =  photoHeader.original_s;
                 original_t =  photoHeader.original_t;
-                
+
                 return image;
             }
-                 
+
             if  (photoHeader.fullsize_s &&
                  photoHeader.fullsize_t &&
                  photoHeader.fullsize_position != 0)
             {
                 osgDB::ifstream in(_archiveFileName.c_str(),std::ios::in | std::ios::binary);
-                
+
                 // find image
                 in.seekg(photoHeader.fullsize_position);
-                
+
                 // read image header
                 ImageHeader imageHeader;
                 in.read((char*)&imageHeader,sizeof(ImageHeader));
                 unsigned char* data = new unsigned char[imageHeader.size];
                 in.read((char*)data,imageHeader.size);
-                
-                osg::Image* image = new osg::Image;
+
+                osg::ref_ptr<osg::Image> image = new osg::Image;
                 image->setImage(photoHeader.fullsize_s,photoHeader.fullsize_t,1,
                                 imageHeader.pixelFormat,imageHeader.pixelFormat,imageHeader.type,
                                 data,osg::Image::USE_NEW_DELETE);
-                                
+
                 original_s =  photoHeader.original_s;
                 original_t =  photoHeader.original_t;
-                
+
                 return image;
            }
 
@@ -152,21 +152,21 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
         ++fitr)
     {
         PhotoHeader header;
-        
+
         // set name
         strncpy(header.filename,fitr->c_str(),255);
         header.filename[255]=0;
-        
+
         header.thumbnail_s = thumbnailSize;
         header.thumbnail_t = thumbnailSize;
         header.thumbnail_position = 0;
-        
+
         header.fullsize_s = thumbnailSize;
         header.fullsize_t = thumbnailSize;
         header.fullsize_position = 0;
 
         photoIndex.push_back(header);
-        
+
     }
 
     std::cout<<"Building photo archive containing "<<photoIndex.size()<<" pictures"<<std::endl;
@@ -185,21 +185,21 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
     unsigned int startOfPhotoIndex = out.tellp();
     out.write((char*)&photoIndex.front(),sizeof(PhotoHeader)*photoIndex.size());
 
-    unsigned int photoCount=1;    
+    unsigned int photoCount=1;
     for(PhotoIndexList::iterator pitr=photoIndex.begin();
         pitr!=photoIndex.end();
         ++pitr,++photoCount)
     {
         PhotoHeader& photoHeader = *pitr;
-        
-        
+
+
         std::cout<<"Processing image "<<photoCount<<" of "<< photoIndex.size()<<" filename="<< photoHeader.filename << std::endl;
         std::cout<<"    reading image...";std::cout.flush();
-        
-        osg::ref_ptr<osg::Image> image = osgDB::readImageFile(photoHeader.filename);
-        
+
+        osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(photoHeader.filename);
+
         std::cout<<"done."<< std::endl;
-        
+
         photoHeader.original_s = image->s();
         photoHeader.original_t = image->t();
 
@@ -207,7 +207,7 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
 
             std::cout<<"    creating thumbnail image...";
             // first need to rescale image to the require thumbnail size
-            unsigned int newTotalSize = 
+            unsigned int newTotalSize =
                 image->computeRowWidthInBytes(thumbnailSize,image->getPixelFormat(),image->getDataType(),image->getPacking())*
                 thumbnailSize;
 
@@ -241,7 +241,7 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
                 osg::notify(osg::WARN) << "Error scaleImage() did not succeed : errorString = "<<osg::gluErrorString((GLenum)status)<<std::endl;
                 return;
             }
-    
+
             // now set up the photo header.
             photoHeader.thumbnail_s = thumbnailSize;
             photoHeader.thumbnail_t = thumbnailSize;
@@ -259,13 +259,13 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
             // write out image header and image data.
             out.write((char*)&imageHeader,sizeof(ImageHeader));
             out.write((char*)newData,imageHeader.size);
-            
+
             delete [] newData;
 
             std::cout<<"done."<< std::endl;
 
         }
-        
+
         {
             std::cout<<"    creating fullsize image...";std::cout.flush();
 
@@ -275,7 +275,7 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
             photoHeader.fullsize_position = (unsigned int)out.tellp();
 
             // first need to rescale image to the require thumbnail size
-            unsigned int newTotalSize = 
+            unsigned int newTotalSize =
                 image->computeRowWidthInBytes(photoHeader.fullsize_s,image->getPixelFormat(),image->getDataType(),image->getPacking())*
                 photoHeader.fullsize_t;
 
@@ -326,7 +326,7 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
 
             std::cout<<"done."<< std::endl;
         }
-        
+
     }
 
     // rewrite photo index now it has the correct sizes set

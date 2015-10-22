@@ -239,10 +239,10 @@ int main( int argc, char **argv )
     }
     else
     {
-        rootnode = osgDB::readNodeFiles(arguments);
+        rootnode = osgDB::readRefNodeFiles(arguments);
 
         // if not loaded assume no arguments passed in, try use default mode instead.
-        if (!rootnode) rootnode = osgDB::readNodeFile("cow.osgt");
+        if (!rootnode) rootnode = osgDB::readRefNodeFile("cow.osgt");
 
         if (!rootnode)
         {

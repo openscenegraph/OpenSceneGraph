@@ -38,14 +38,14 @@ public:
     :   osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
         _foundNode(0)
     {}
-    
+
     void apply( osg::Node& node )
     {
         T* result = dynamic_cast<T*>( &node );
         if ( result ) _foundNode = result;
         else traverse( node );
     }
-    
+
     T* _foundNode;
 };
 
@@ -53,7 +53,7 @@ template<class T>
 T* findTopMostNodeOfType( osg::Node* node )
 {
     if ( !node ) return 0;
-    
+
     FindTopMostNodeOfTypeVisitor<T> fnotv;
     node->accept( fnotv );
     return fnotv._foundNode;
@@ -75,31 +75,31 @@ void computeViewMatrixOnEarth( osg::Camera* camera, osg::Node* scene,
 {
     osg::CoordinateSystemNode* csn = findTopMostNodeOfType<osg::CoordinateSystemNode>(scene);
     if ( !csn ) return;
-    
+
     // Compute eye point in world coordiantes
     osg::Vec3d eye;
     csn->getEllipsoidModel()->convertLatLongHeightToXYZ(
         latLongHeight.x(), latLongHeight.y(), latLongHeight.z(), eye.x(), eye.y(), eye.z() );
-    
+
     // Build matrix for computing target vector
     osg::Matrixd target_matrix =
         osg::Matrixd::rotate( -hpr.x(), osg::Vec3d(1,0,0),
                               -latLongHeight.x(), osg::Vec3d(0,1,0),
                                latLongHeight.y(), osg::Vec3d(0,0,1) );
-    
+
     // Compute tangent vector
     osg::Vec3d tangent = target_matrix.preMult( osg::Vec3d(0,0,1) );
-    
+
     // Compute non-inclined, non-rolled up vector
     osg::Vec3d up( eye );
     up.normalize();
-    
+
     // Incline by rotating the target- and up vector around the tangent/up-vector
     // cross-product
     osg::Vec3d up_cross_tangent = up ^ tangent;
     osg::Matrixd incline_matrix = osg::Matrixd::rotate( hpr.y(), up_cross_tangent );
     osg::Vec3d target = incline_matrix.preMult( tangent );
-    
+
     // Roll by rotating the up vector around the target vector
     osg::Matrixd roll_matrix = incline_matrix * osg::Matrixd::rotate( hpr.z(), target );
     up = roll_matrix.preMult( up );
@@ -114,7 +114,7 @@ public:
     : osgViewer::Renderer(camera), _cullOnly(true)
     {
     }
-    
+
     void setCullOnly(bool on) { _cullOnly = on; }
 
     virtual void operator ()( osg::GraphicsContext* )
@@ -125,22 +125,22 @@ public:
             else cull_draw();
         }
     }
-    
+
     virtual void cull()
     {
         osgUtil::SceneView* sceneView = _sceneView[0].get();
         if ( !sceneView || _done || _graphicsThreadDoesCull )
             return;
-        
+
         updateSceneView( sceneView );
-        
+
         osgViewer::View* view = dynamic_cast<osgViewer::View*>( _camera->getView() );
         if ( view )
             sceneView->setFusionDistance( view->getFusionDistanceMode(), view->getFusionDistanceValue() );
         sceneView->inheritCullSettings( *(sceneView->getCamera()) );
         sceneView->cull();
     }
-    
+
     bool _cullOnly;
 };
 
@@ -150,12 +150,12 @@ class PrintPosterHandler : public osgGA::GUIEventHandler
 public:
     PrintPosterHandler( PosterPrinter* printer )
     : _printer(printer), _started(false) {}
-    
+
     bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
     {
         osgViewer::View* view = dynamic_cast<osgViewer::View*>( &aa );
         if ( !view ) return false;
-        
+
         switch( ea.getEventType() )
         {
         case osgGA::GUIEventAdapter::FRAME:
@@ -165,7 +165,7 @@ public:
                 if ( view->getDatabasePager()->getRequestsInProgress() )
                     break;
             }
-            
+
             if ( _printer.valid() )
             {
                 _printer->frame( view->getFrameStamp(), view->getSceneData() );
@@ -183,7 +183,7 @@ public:
                 }
             }
             break;
-        
+
         case osgGA::GUIEventAdapter::KEYDOWN:
             if ( ea.getKey()=='p' || ea.getKey()=='P' )
             {
@@ -196,14 +196,14 @@ public:
                         root->setValue( 0, false );
                         root->setValue( 1, true );
                     }
-                    
+
                     _printer->init( view->getCamera() );
                     _started = true;
                 }
                 return true;
             }
             break;
-        
+
         default:
             break;
         }
@@ -241,13 +241,13 @@ int main( int argc, char** argv )
     usage->addCommandLineOption( "--camera-eye <x> <y> <z>", "Set eye position in inactive mode." );
     usage->addCommandLineOption( "--camera-latlongheight <lat> <lon> <h>", "Set eye position on earth in inactive mode." );
     usage->addCommandLineOption( "--camera-hpr <h> <p> <r>", "Set eye rotation in inactive mode." );
-    
+
     if ( arguments.read("-h") || arguments.read("--help") )
     {
         usage->write( std::cout );
         return 1;
     }
-    
+
     // Poster arguments
     bool activeMode = true;
     bool outputPoster = true;
@@ -257,7 +257,7 @@ int main( int argc, char** argv )
     std::string posterName = "poster.bmp", extName = "bmp";
     osg::Vec4 bgColor(0.2f, 0.2f, 0.6f, 1.0f);
     osg::Camera::RenderTargetImplementation renderImplementation = osg::Camera::FRAME_BUFFER_OBJECT;
-    
+
     while ( arguments.read("--inactive") ) { activeMode = false; }
     while ( arguments.read("--color", bgColor.r(), bgColor.g(), bgColor.b()) ) {}
     while ( arguments.read("--tilesize", tileWidth, tileHeight) ) {}
@@ -272,7 +272,7 @@ int main( int argc, char** argv )
     while ( arguments.read("--use-pbuffer")) { renderImplementation = osg::Camera::PIXEL_BUFFER; }
     while ( arguments.read("--use-pbuffer-rtt")) { renderImplementation = osg::Camera::PIXEL_BUFFER_RTT; }
     while ( arguments.read("--use-fb")) { renderImplementation = osg::Camera::FRAME_BUFFER; }
-    
+
     // Camera settings for inactive screenshot
     bool useLatLongHeight = true;
     osg::Vec3d eye;
@@ -296,16 +296,16 @@ int main( int argc, char** argv )
         hpr.y() = osg::DegreesToRadians( hpr.y() );
         hpr.z() = osg::DegreesToRadians( hpr.z() );
     }
-    
+
     // Construct scene graph
-    osg::Node* scene = osgDB::readNodeFiles( arguments );
-    if ( !scene ) scene = osgDB::readNodeFile( "cow.osgt" );
+    osg::ref_ptr<osg::Node> scene = osgDB::readRefNodeFiles( arguments );
+    if ( !scene ) scene = osgDB::readRefNodeFile( "cow.osgt" );
     if ( !scene )
     {
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;
     }
-    
+
     // Create camera for rendering tiles offscreen. FrameBuffer is recommended because it requires less memory.
     osg::ref_ptr<osg::Camera> camera = new osg::Camera;
     camera->setClearColor( bgColor );
@@ -315,13 +315,13 @@ int main( int argc, char** argv )
     camera->setRenderTargetImplementation( renderImplementation );
     camera->setViewport( 0, 0, tileWidth, tileHeight );
     camera->addChild( scene );
-    
+
     // Set the printer
     osg::ref_ptr<PosterPrinter> printer = new PosterPrinter;
     printer->setTileSize( tileWidth, tileHeight );
     printer->setPosterSize( posterWidth, posterHeight );
     printer->setCamera( camera.get() );
-    
+
     osg::ref_ptr<osg::Image> posterImage = 0;
     if ( outputPoster )
     {
@@ -330,7 +330,7 @@ int main( int argc, char** argv )
         printer->setFinalPoster( posterImage.get() );
         printer->setOutputPosterName( posterName );
     }
-    
+
 #if 0
     // While recording sub-images of the poster, the scene will always be traversed twice, from its two
     // parent node: root and camera. Sometimes this may not be so comfortable.
@@ -345,11 +345,11 @@ int main( int argc, char** argv )
     root->addChild( scene );
     root->addChild( camera.get() );
 #endif
-    
+
     osgViewer::Viewer viewer;
     viewer.setSceneData( root.get() );
     viewer.getDatabasePager()->setDoPreCompile( false );
-    
+
     if ( renderImplementation==osg::Camera::FRAME_BUFFER )
     {
         // FRAME_BUFFER requires the window resolution equal or greater than the to-be-copied size
@@ -360,7 +360,7 @@ int main( int argc, char** argv )
         // We want to see the console output, so just render in a window
         viewer.setUpViewInWindow( 100, 100, 800, 600 );
     }
-    
+
     if ( activeMode )
     {
         viewer.addEventHandler( new PrintPosterHandler(printer.get()) );
@@ -373,21 +373,21 @@ int main( int argc, char** argv )
     {
         osg::Camera* camera = viewer.getCamera();
         if ( !useLatLongHeight ) computeViewMatrix( camera, eye, hpr );
-        else computeViewMatrixOnEarth( camera, scene, latLongHeight, hpr );
-        
+        else computeViewMatrixOnEarth( camera, scene.get(), latLongHeight, hpr );
+
         osg::ref_ptr<CustomRenderer> renderer = new CustomRenderer( camera );
         camera->setRenderer( renderer.get() );
         viewer.setThreadingModel( osgViewer::Viewer::SingleThreaded );
-        
+
         // Realize and initiate the first PagedLOD request
         viewer.realize();
         viewer.frame();
-        
+
         printer->init( camera );
         while ( !printer->done() )
         {
             viewer.advance();
-            
+
             // Keep updating and culling until full level of detail is reached
             renderer->setCullOnly( true );
             while ( viewer.getDatabasePager()->getRequestsInProgress() )
@@ -395,7 +395,7 @@ int main( int argc, char** argv )
                 viewer.updateTraversal();
                 viewer.renderingTraversals();
             }
-            
+
             renderer->setCullOnly( false );
             printer->frame( viewer.getFrameStamp(), viewer.getSceneData() );
             viewer.renderingTraversals();

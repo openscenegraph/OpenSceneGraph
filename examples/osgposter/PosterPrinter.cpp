@@ -11,7 +11,7 @@ struct PagedLoadingCallback : public osgUtil::IntersectionVisitor::ReadCallback
 {
     virtual osg::Node* readNodeFile( const std::string& filename )
     {
-        return osgDB::readNodeFile( filename );
+        return osgDB::readRefNodeFile( filename ).release();
     }
 };
 static osg::ref_ptr<PagedLoadingCallback> g_pagedLoadingCallback = new PagedLoadingCallback;

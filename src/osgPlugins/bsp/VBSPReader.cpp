@@ -1094,7 +1094,7 @@ void VBSPReader::createScene()
 
         // Load the prop's model
         propModel = bsp_data->getStaticPropModel(staticProp.prop_type);
-        propNode = osgDB::readNodeFile(propModel);
+        propNode = osgDB::readRefNodeFile(propModel);
 
         // If we loaded the prop correctly, add it to the scene
         if (propNode.valid())

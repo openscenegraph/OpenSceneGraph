@@ -601,21 +601,18 @@ osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTyp
     _programMap[layerTypes] = program;
 
     // add shader that provides the lighting functions
-    program->addShader(osgDB::readShaderFile("shaders/lighting.vert"));
+    program->addShader(osgDB::readRefShaderFile("shaders/lighting.vert"));
 
     // OSG_NOTICE<<") creating new Program "<<program.get()<<std::endl;
     {
         #include "shaders/terrain_displacement_mapping_vert.cpp"
-        osg::ref_ptr<osg::Shader> shader = osgDB::readShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping.vert", terrain_displacement_mapping_vert);
-
-        program->addShader(shader.get());
+        program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::VERTEX, "shaders/terrain_displacement_mapping.vert", terrain_displacement_mapping_vert));
     }
 
 
     {
         #include "shaders/terrain_displacement_mapping_geom.cpp"
-        osg::ref_ptr<osg::Shader> shader = osgDB::readShaderFileWithFallback(osg::Shader::GEOMETRY, "shaders/terrain_displacement_mapping.geom", terrain_displacement_mapping_geom);
-        program->addShader(shader.get());
+        program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::GEOMETRY, "shaders/terrain_displacement_mapping.geom", terrain_displacement_mapping_geom));
 
         program->setParameter( GL_GEOMETRY_VERTICES_OUT, 4 );
         program->setParameter( GL_GEOMETRY_INPUT_TYPE, GL_LINES_ADJACENCY );
@@ -629,13 +626,7 @@ osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTyp
 
     {
         #include "shaders/terrain_displacement_mapping_frag.cpp"
-        osg::ref_ptr<osg::Shader> shader = osgDB::readShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/terrain_displacement_mapping.frag", terrain_displacement_mapping_frag);
-
-        if (shader.valid())
-        {
-            program->addShader(shader.get());
-        }
-
+        program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/terrain_displacement_mapping.frag", terrain_displacement_mapping_frag));
     }
 
     return program;

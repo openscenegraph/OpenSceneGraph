@@ -231,7 +231,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterJSON::readNode(const std::string& fi
     fileName = osgDB::findDataFile( fileName, options );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-    osg::Node *node = osgDB::readNodeFile( fileName, options );
+    osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile( fileName, options );
     if (!node)
         return ReadResult::FILE_NOT_HANDLED;
 

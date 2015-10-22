@@ -339,7 +339,8 @@ bool Widget::setImage(const std::string& filePath, bool setTexCoords, bool useTe
         return false;
     }
 
-    return setImage(osgDB::readImageFile(filePath), setTexCoords, useTextRect);
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(filePath);
+    return setImage(image.get(), setTexCoords, useTextRect);
 }
 
 bool Widget::setTexture(osg::Texture* texture, bool setTexCoords, bool useTextRect) {

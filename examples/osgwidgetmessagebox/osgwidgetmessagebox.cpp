@@ -17,19 +17,19 @@ const unsigned int MASK_2D = 0xF0000000;
 class MessageBox
 {
 protected:
-        
+
     osgWidget::Frame* createButtonOk(const std::string& theme, const std::string& text, const std::string& font, int fontSize);
     osgWidget::Label* createLabel(const std::string& string, const std::string& font, int size, const osgWidget::Color& color);
-        
+
     osg::ref_ptr<osgWidget::Frame> _window;
     osg::ref_ptr<osgWidget::Frame> _button;
 
 public:
-        
+
     osgWidget::Frame* getButton();
     osgWidget::Frame* getWindow();
 
-    bool create(const std::string& themeMessage, 
+    bool create(const std::string& themeMessage,
                 const std::string& themeButton,
                 const std::string& titleText,
                 const std::string& messageText,
@@ -56,7 +56,7 @@ struct AlphaSetterVisitor : public osg::NodeVisitor
             for (osgWidget::Window::Iterator it = win->begin(); it != win->end(); it++)
             {
 //                 osgWidget::warn() << "   I am operating on Widget: " << it->get()->getName() << std::endl;
-                
+
                 osgWidget::Color color = it->get()->getColor();
                 color[3] = color[3] *_alpha;
                 it->get()->setColor(color);
@@ -87,7 +87,7 @@ struct ColorSetterVisitor : public osg::NodeVisitor
             for (osgWidget::Window::Iterator it = win->begin(); it != win->end(); it++)
             {
 //                osgWidget::warn() << "   I am operating on Widget: " << it->get()->getName() << std::endl;
-                
+
 //                 osgWidget::Color color = it->get()->getColor();
 //                 color[3] = color[3] *_alpha;
                 it->get()->setColor(_color);
@@ -110,7 +110,7 @@ struct EventOK : public osgWidget::Callback, osg::NodeCallback
 //    typedef osgAnimation::OutQuartMotion WidgetMotion;
     WidgetMotion _motionOver;
     WidgetMotion _motionLeave;
-    
+
     double _lastUpdate;
     osgWidget::Color _defaultColor;
     osgWidget::Color _overColor;
@@ -119,7 +119,7 @@ struct EventOK : public osgWidget::Callback, osg::NodeCallback
     float _width;
     float _height;
     osg::Matrix _matrix;
-    EventOK(osgWidget::Frame* frame) : osgWidget::Callback(osgWidget::EVENT_ALL), _frame(frame) 
+    EventOK(osgWidget::Frame* frame) : osgWidget::Callback(osgWidget::EVENT_ALL), _frame(frame)
     {
         _motionOver = WidgetMotion(0.0, 0.4);
         _motionLeave = WidgetMotion(0.0, 0.5);
@@ -204,15 +204,15 @@ osgWidget::Label* MessageBox::createLabel(const std::string& string, const std::
     return label;
 }
 
-osgWidget::Frame* MessageBox::createButtonOk(const std::string& theme, 
-                                                 const std::string& text, 
-                                                 const std::string& font, 
+osgWidget::Frame* MessageBox::createButtonOk(const std::string& theme,
+                                                 const std::string& text,
+                                                 const std::string& font,
                                                  int fontSize)
 {
     osg::ref_ptr<osgWidget::Frame> frame = osgWidget::Frame::createSimpleFrameFromTheme(
         "ButtonOK",
-        osgDB::readImageFile(theme),
-        300.0f, 
+        osgDB::readRefImageFile(theme),
+        300.0f,
         50.0f,
         osgWidget::Frame::FRAME_TEXTURE
         );
@@ -240,7 +240,7 @@ osgWidget::Frame* MessageBox::createButtonOk(const std::string& theme,
     return frame.release();
 }
 
-bool MessageBox::create(const std::string& themeMessage, 
+bool MessageBox::create(const std::string& themeMessage,
                         const std::string& themeButton,
                         const std::string& titleText,
                         const std::string& messageText,
@@ -251,7 +251,7 @@ bool MessageBox::create(const std::string& themeMessage,
 
     osg::ref_ptr<osgWidget::Frame> frame = osgWidget::Frame::createSimpleFrameFromTheme(
         "error",
-        osgDB::readImageFile(themeMessage),
+        osgDB::readRefImageFile(themeMessage),
         300.0f,
         50.0f,
         osgWidget::Frame::FRAME_ALL
@@ -300,7 +300,7 @@ const char* LABEL1 =
     "nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in..."
 ;
 
-int main(int argc, char** argv) 
+int main(int argc, char** argv)
 {
 
     osgViewer::Viewer viewer;
@@ -319,7 +319,7 @@ int main(int argc, char** argv)
     std::string borderTheme = "osgWidget/theme-8.png";
 
     MessageBox message;
-    message.create(borderTheme, 
+    message.create(borderTheme,
                    buttonTheme,
                    "Error - Critical",
                    LABEL1,
@@ -422,7 +422,7 @@ struct AlphaSetterVisitor : public osg::NodeVisitor
             for (osgWidget::Window::Iterator it = win->begin(); it != win->end(); it++)
             {
 //                 osgWidget::warn() << "   I am operating on Widget: " << it->get()->getName() << std::endl;
-                
+
                 osgWidget::Color color = it->get()->getColor();
                 color[3] = color[3] *_alpha;
                 it->get()->setColor(color);
@@ -453,7 +453,7 @@ struct ColorSetterVisitor : public osg::NodeVisitor
             for (osgWidget::Window::Iterator it = win->begin(); it != win->end(); it++)
             {
 //                osgWidget::warn() << "   I am operating on Widget: " << it->get()->getName() << std::endl;
-                
+
 //                 osgWidget::Color color = it->get()->getColor();
 //                 color[3] = color[3] *_alpha;
                 it->get()->setColor(_color);
@@ -474,7 +474,7 @@ struct EventOK : public osgWidget::Callback, osg::NodeCallback
     typedef osgAnimation::OutQuartMotion WidgetMotion;
     WidgetMotion _motionOver;
     WidgetMotion _motionLeave;
-    
+
     double _lastUpdate;
     osgWidget::Color _defaultColor;
     osgWidget::Color _overColor;
@@ -482,7 +482,7 @@ struct EventOK : public osgWidget::Callback, osg::NodeCallback
     osg::ref_ptr<osgWidget::Frame> _frame;
     float _width;
     float _height;
-    EventOK(osgWidget::Frame* frame) : osgWidget::Callback(osgWidget::EVENT_ALL), _frame(frame) 
+    EventOK(osgWidget::Frame* frame) : osgWidget::Callback(osgWidget::EVENT_ALL), _frame(frame)
     {
         _motionOver = WidgetMotion(0.0, 0.4);
         _motionLeave = WidgetMotion(0.0, 0.5);
@@ -507,7 +507,7 @@ struct EventOK : public osgWidget::Callback, osg::NodeCallback
 //             _frame->resize(_width * 1.2, _height * 1.2);
             return true;
         }
-        else if (ev.type == osgWidget::EVENT_MOUSE_LEAVE) 
+        else if (ev.type == osgWidget::EVENT_MOUSE_LEAVE)
         {
             _over = false;
 //            std::cout << "Leave" << std::endl;
@@ -568,7 +568,7 @@ osgWidget::Window* createButtonOk(const std::string& theme, const std::string& t
     osg::ref_ptr<osgWidget::Frame> frame = osgWidget::Frame::createSimpleFrameFromTheme(
         "ButtonOK",
         osgDB::readImageFile(theme),
-        300.0f, 
+        300.0f,
         50.0f,
         osgWidget::Frame::FRAME_TEXTURE
         );
@@ -596,7 +596,7 @@ osgWidget::Window* createButtonOk(const std::string& theme, const std::string& t
     return frame.release();
 }
 
-osgWidget::Frame* createErrorMessage(const std::string& themeMessage, 
+osgWidget::Frame* createErrorMessage(const std::string& themeMessage,
                               const std::string& themeButton,
                               const std::string& titleText,
                               const std::string& messageText,
@@ -645,7 +645,7 @@ const char* LABEL1 =
     "nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in..."
 ;
 
-int main(int argc, char** argv) 
+int main(int argc, char** argv)
 {
     std::string theme = "osgWidget/theme-1.png";
     if (argc > 1)

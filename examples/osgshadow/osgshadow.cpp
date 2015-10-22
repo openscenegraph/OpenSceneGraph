@@ -390,7 +390,7 @@ namespace ModelTwo
 
         // set up the texture of the base.
         osg::StateSet* stateset = new osg::StateSet();
-        osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
+        osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile("Images/lz.rgb");
         if (image)
         {
             osg::Texture2D* texture = new osg::Texture2D;
@@ -451,7 +451,7 @@ namespace ModelTwo
 
         osg::Group* model = new osg::Group;
 
-        osg::Node* cessna = osgDB::readNodeFile("cessna.osgt");
+        osg::ref_ptr<osg::Node> cessna = osgDB::readRefNodeFile("cessna.osgt");
         if (cessna)
         {
             const osg::BoundingSphere& bs = cessna->getBound();
@@ -571,7 +571,7 @@ namespace ModelThree
 
         if (withBaseTexture)
         {
-            scene->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D(osgDB::readImageFile("Images/lz.rgb")), osg::StateAttribute::ON);
+            scene->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D(osgDB::readRefImageFile("Images/lz.rgb")), osg::StateAttribute::ON);
         }
 
         return scene;
@@ -626,13 +626,13 @@ namespace ModelFive
     {
         // Set the ground (only receives shadow)
         osg::ref_ptr<osg::MatrixTransform> groundNode = new osg::MatrixTransform;
-        groundNode->addChild( osgDB::readNodeFile("lz.osg") );
+        groundNode->addChild( osgDB::readRefNodeFile("lz.osg") );
         groundNode->setMatrix( osg::Matrix::translate(200.0f, 200.0f,-200.0f) );
         groundNode->setNodeMask( ReceivesShadowTraversalMask );
 
         // Set the cessna (only casts shadow)
         osg::ref_ptr<osg::MatrixTransform> cessnaNode = new osg::MatrixTransform;
-        cessnaNode->addChild( osgDB::readNodeFile("cessna.osg.0,0,90.rot") );
+        cessnaNode->addChild( osgDB::readRefNodeFile("cessna.osg.0,0,90.rot") );
         cessnaNode->addUpdateCallback( createAnimationPathCallback(50.0f, 6.0f) );
         cessnaNode->setNodeMask( CastsShadowTraversalMask );
 
@@ -1025,7 +1025,7 @@ int main(int argc, char** argv)
 
     OSG_INFO<<"shadowedScene->getShadowTechnique()="<<shadowedScene->getShadowTechnique()<<std::endl;
 
-    osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> model = osgDB::readRefNodeFiles(arguments);
     if (model.valid())
     {
         model->setNodeMask(CastsShadowTraversalMask | ReceivesShadowTraversalMask);
@@ -1061,7 +1061,7 @@ int main(int argc, char** argv)
 
         geode->setNodeMask(shadowedScene->getReceivesShadowTraversalMask());
 
-        geode->getOrCreateStateSet()->setTextureAttributeAndModes(0, new osg::Texture2D(osgDB::readImageFile("Images/lz.rgb")));
+        geode->getOrCreateStateSet()->setTextureAttributeAndModes(0, new osg::Texture2D(osgDB::readRefImageFile("Images/lz.rgb")));
 
         shadowedScene->addChild(geode);
     }

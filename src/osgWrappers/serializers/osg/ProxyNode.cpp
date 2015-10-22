@@ -50,7 +50,7 @@ static bool readChildren( osgDB::InputStream& is, osg::ProxyNode& node )
         is >> is.BEGIN_BRACKET;
         for ( unsigned int i=0; i<size; ++i )
         {
-            osg::Node* child = dynamic_cast<osg::Node*>( is.readObject() );
+            osg::ref_ptr<osg::Node> child = is.readObjectOfType<osg::Node>();
             if ( child ) node.addChild( child );
         }
         is >> is.END_BRACKET;
@@ -117,7 +117,7 @@ struct ProxyNodeFinishedObjectReadCallback : public osgDB::FinishedObjectReadCal
                 {
                     osgDB::FilePathList& fpl = ((osgDB::ReaderWriter::Options*)is.getOptions())->getDatabasePathList();
                     fpl.push_front( fpl.empty() ? osgDB::getFilePath(proxyNode.getFileName(i)) : fpl.front()+'/'+ osgDB::getFilePath(proxyNode.getFileName(i)));
-                    osg::Node* node = osgDB::readNodeFile(proxyNode.getFileName(i), is.getOptions());
+                    osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile(proxyNode.getFileName(i), is.getOptions());
                     fpl.pop_front();
                     if(node)
                         proxyNode.insertChild(i, node);

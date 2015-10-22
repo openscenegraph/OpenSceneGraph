@@ -49,7 +49,7 @@ class MyGustCallback : public osg::NodeCallback
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
         {
             osgParticle::PrecipitationEffect* pe = dynamic_cast<osgParticle::PrecipitationEffect*>(node);
-            
+
             float value = sin(nv->getFrameStamp()->getSimulationTime());
             if (value<-0.5)
             {
@@ -59,7 +59,7 @@ class MyGustCallback : public osg::NodeCallback
             {
                 pe->rain(0.5);
             }
-        
+
             traverse(node, nv);
         }
 };
@@ -70,7 +70,7 @@ int main( int argc, char **argv )
 
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
+
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" example provides an interactive viewer for visualising point clouds..");
@@ -89,7 +89,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--fogDensity <density>","Set the fog density");
     arguments.getApplicationUsage()->addCommandLineOption("--fogColour <red> <green> <blue> <alpha>","Set fog colour.");
     arguments.getApplicationUsage()->addCommandLineOption("-useFarLineSegments","Switch on the use of line segments");
-    
+
 
     // construct the viewer.
     osgViewer::Viewer viewer;
@@ -108,7 +108,7 @@ int main( int argc, char **argv )
         while (arguments.read("-p",pathfile))
         {
             osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
-            if (apm || !apm->valid()) 
+            if (apm || !apm->valid())
             {
                 unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
                 keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
@@ -135,7 +135,7 @@ int main( int argc, char **argv )
 
     osg::Vec3 wind;
     while (arguments.read("--wind", wind.x(), wind.y(), wind.z())) precipitationEffect->setWind(wind);
-    
+
     while (arguments.read("--particleSpeed", value)) precipitationEffect->setParticleSpeed(value);
 
     while (arguments.read("--nearTransition", value )) precipitationEffect->setNearTransition(value);
@@ -144,7 +144,7 @@ int main( int argc, char **argv )
     while (arguments.read("--particleDensity", value )) precipitationEffect->setMaximumParticleDensity(value);
 
     osg::Vec3 cellSize;
-    while (arguments.read("--cellSize", cellSize.x(), cellSize.y(), cellSize.z())) precipitationEffect->setCellSize(cellSize); 
+    while (arguments.read("--cellSize", cellSize.x(), cellSize.y(), cellSize.z())) precipitationEffect->setCellSize(cellSize);
 
     double clipDistance = 0.0;
     while (arguments.read("--clip",clipDistance)) {}
@@ -160,10 +160,10 @@ int main( int argc, char **argv )
     while (arguments.read("--fogDensity", value )) precipitationEffect->getFog()->setDensity(value);
     while (arguments.read("--fogColor", color.r(), color.g(), color.b(), color.a() ))  precipitationEffect->getFog()->setColor(color);
     while (arguments.read("--fogColour", color.r(), color.g(), color.b(), color.a() ))  precipitationEffect->getFog()->setColor(color);
- 
+
     while (arguments.read("--useFarLineSegments")) { precipitationEffect->setUseFarLineSegments(true); }
 
-    
+
     viewer.getCamera()->setClearColor( precipitationEffect->getFog()->getColor() );
 
 
@@ -173,21 +173,21 @@ int main( int argc, char **argv )
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
-    
+
     // read the scene from the list of file specified commandline args.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
-    if (!loadedModel) 
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
+    if (!loadedModel)
     {
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;
     }
-    
+
     // precipitationEffect->setUpdateCallback(new MyGustCallback);
-    
+
     osg::ref_ptr<osg::Group> group = new osg::Group;
-    
+
     if (clipDistance!=0.0)
-    {    
+    {
         osg::ref_ptr<osg::ClipNode> clipNode = new osg::ClipNode;
         clipNode->addClipPlane( new osg::ClipPlane( 0 ) );
         clipNode->getClipPlane(0)->setClipPlane( 0.0, 0.0, -1.0, -clipDistance );
@@ -200,12 +200,12 @@ int main( int argc, char **argv )
     {
         group->addChild(precipitationEffect.get());
     }
-    
+
     group->addChild(loadedModel.get());
 
     loadedModel->getOrCreateStateSet()->setAttributeAndModes(precipitationEffect->getFog());
-    
-    // create the light    
+
+    // create the light
     osg::LightSource* lightSource = new osg::LightSource;
     group->addChild(lightSource);
 

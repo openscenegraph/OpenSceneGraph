@@ -28,7 +28,7 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 #include <osgViewer/Renderer>
-    
+
 #include <iostream>
 #include <sstream>
 
@@ -41,7 +41,7 @@ public:
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
         _foundNode(0)
     {}
-    
+
     void apply(osg::Node& node)
     {
         T* result = dynamic_cast<T*>(&node);
@@ -50,7 +50,7 @@ public:
          else
              traverse(node);
      }
-    
+
     T* _foundNode;
 };
 
@@ -62,21 +62,21 @@ T* findTopMostNodeOfType(osg::Node* node)
 
     FindTopMostNodeOfTypeVisitor<T> fnotv;
     node->accept(fnotv);
-    
+
     return fnotv._foundNode;
 }
 
 /** Capture the frame buffer and write image to disk*/
 class WindowCaptureCallback : public osg::Camera::DrawCallback
 {
-public:    
+public:
     WindowCaptureCallback(GLenum readBuffer, const std::string& name):
         _readBuffer(readBuffer),
         _fileName(name)
         {
             _image = new osg::Image;
         }
-    
+
     virtual void operator () (osg::RenderInfo& renderInfo) const
         {
             #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
@@ -93,9 +93,9 @@ public:
 
                 if (gc->getTraits()->alpha)
                     pixelFormat = GL_RGBA;
-                else 
+                else
                     pixelFormat = GL_RGB;
-                
+
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
                  if (pixelFormat == GL_RGB)
                  {
@@ -118,7 +118,7 @@ public:
 
                 _image->readPixels(0, 0, width, height, pixelFormat, GL_UNSIGNED_BYTE);
             }
-                
+
             if (!_fileName.empty())
             {
                 std::cout << "Writing to: " << _fileName << std::endl;
@@ -126,7 +126,7 @@ public:
             }
         }
 
-protected:    
+protected:
     GLenum                      _readBuffer;
     std::string                 _fileName;
     osg::ref_ptr<osg::Image>    _image;
@@ -138,7 +138,7 @@ protected:
 class CustomRenderer : public osgViewer::Renderer
 {
 public:
-    CustomRenderer(osg::Camera* camera) 
+    CustomRenderer(osg::Camera* camera)
         : osgViewer::Renderer(camera),
           _cullOnly(true)
         {
@@ -162,19 +162,19 @@ public:
         {
             osgUtil::SceneView* sceneView = _sceneView[0].get();
             if (!sceneView || _done ) return;
-            
+
             updateSceneView(sceneView);
-            
+
             osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
             if (view) sceneView->setFusionDistance(view->getFusionDistanceMode(), view->getFusionDistanceValue());
 
             sceneView->inheritCullSettings(*(sceneView->getCamera()));
             sceneView->cull();
         }
-    
+
     bool _cullOnly;
 };
-    
+
 
 //===============================================================
 // MAIN
@@ -287,8 +287,8 @@ int main( int argc, char **argv )
     }
 
     // load the data
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
-    if (!loadedModel) 
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
+    if (!loadedModel)
     {
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;
@@ -309,7 +309,7 @@ int main( int argc, char **argv )
     {
         osg::CoordinateSystemNode* csn = findTopMostNodeOfType<osg::CoordinateSystemNode>(loadedModel.get());
         if(!csn) return 1;
-        
+
         // Compute eye point in world coordiantes
         osg::Vec3d eye;
         csn->getEllipsoidModel()->convertLatLongHeightToXYZ(lat, lon, alt, eye.x(), eye.y(), eye.z());
@@ -331,11 +331,11 @@ int main( int argc, char **argv )
         osg::Vec3d up_cross_tangent = up ^ tangent;
         osg::Matrixd incline_matrix = osg::Matrixd::rotate(incline, up_cross_tangent);
         osg::Vec3d target = incline_matrix.preMult(tangent);
-        
+
         // Roll by rotating the up vector around the target vector ...
         osg::Matrixd roll_matrix = incline_matrix * osg::Matrixd::rotate(roll, target);
         up = roll_matrix.preMult(up);
-        
+
         viewer.getCamera()->setViewMatrixAsLookAt(eye, eye+target, up);
     }
     else
@@ -349,10 +349,10 @@ int main( int argc, char **argv )
         keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
         keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
 
-        viewer.setCameraManipulator( keyswitchManipulator.get() ); 
+        viewer.setCameraManipulator( keyswitchManipulator.get() );
     }
 
-            
+
     // Optimize DatabasePager for auto-capture
     osgDB::DatabasePager* pager = viewer.getDatabasePager();
     pager->setDoPreCompile(false);
@@ -374,9 +374,9 @@ int main( int argc, char **argv )
 
     // Initiate the first PagedLOD request
     viewer.frame();
-        
+
     osg::Timer_t beforeLoadTick = osg::Timer::instance()->tick();
-    
+
     // Keep updating and culling until full level of detail is reached
     while(!viewer.done() && pager->getRequestsInProgress())
     {
@@ -385,14 +385,14 @@ int main( int argc, char **argv )
         viewer.renderingTraversals();
     }
 //    std::cout<<std::endl;
-        
+
     osg::Timer_t afterLoadTick = osg::Timer::instance()->tick();
     std::cout<<"Load and Compile time = "<<osg::Timer::instance()->delta_s(beforeLoadTick, afterLoadTick)<<" seconds"<<std::endl;
 
     // Do cull and draw to render the scene correctly
     customRenderer->setCullOnly(false);
-    
-  
+
+
     //--- Capture the image!!! ---
     if (!activeMode)
     {

@@ -31,17 +31,18 @@ static bool checkHeights( const osg::HeightField& shape )
 
 static bool readHeights( osgDB::InputStream& is, osg::HeightField& shape )
 {
-    osg::FloatArray* array = dynamic_cast<osg::FloatArray*>( is.readArray() );
-    if ( array )
+    osg::ref_ptr<osg::Array> array = is.readArray();
+    osg::FloatArray* farray = dynamic_cast<osg::FloatArray*>( array.get() );
+    if ( farray )
     {
         unsigned int numCols = shape.getNumColumns(), numRows = shape.getNumRows();
-        if ( array->size()<numRows*numCols ) return false;
+        if ( farray->size()<numRows*numCols ) return false;
 
         unsigned int index = 0;
         for ( unsigned int r=0; r<numRows; ++r )
         {
             for ( unsigned int c=0; c<numCols; ++c )
-                shape.setHeight( c, r, (*array)[index++] );
+                shape.setHeight( c, r, (*farray)[index++] );
         }
     }
     return true;

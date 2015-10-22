@@ -573,7 +573,7 @@ bool Keystone::loadKeystoneFiles(osg::DisplaySettings* ds)
             ++itr)
         {
             const std::string& filename = *itr;
-            osg::ref_ptr<osgViewer::Keystone> keystone = osgDB::readFile<osgViewer::Keystone>(filename);
+            osg::ref_ptr<osgViewer::Keystone> keystone = osgDB::readRefFile<osgViewer::Keystone>(filename);
             if (keystone.valid())
             {
                 keystone->setUserValue("filename",filename);

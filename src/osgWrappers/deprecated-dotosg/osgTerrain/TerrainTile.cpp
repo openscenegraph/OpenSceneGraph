@@ -143,7 +143,7 @@ bool TerrainTile_readLocalData(osg::Object& obj, osgDB::Input &fr)
 
             if (fr.matchSequence("ProxyFile %s") || fr.matchSequence("ProxyFile %w") )
             {
-                osg::ref_ptr<osg::Object> image = osgDB::readObjectFile(std::string(fr[1].getStr())+".gdal");
+                osg::ref_ptr<osg::Object> image = osgDB::readRefObjectFile(std::string(fr[1].getStr())+".gdal");
                 osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<osgTerrain::ProxyLayer*>(image.get());
                 if (proxyLayer)
                 {

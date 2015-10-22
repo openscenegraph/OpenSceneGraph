@@ -18,8 +18,8 @@ static bool readTransformUpdating( osgDB::InputStream& is, osgManipulator::Dragg
         std::string name; is >> name >> is.BEGIN_BRACKET;
         if ( name=="DraggerTransformCallback" )
         {
-            osg::MatrixTransform* transform = dynamic_cast<osg::MatrixTransform*>( is.readObject() );
-            if ( transform ) dragger.addTransformUpdating( transform );
+            osg::ref_ptr<osg::MatrixTransform> transform = is.readObjectOfType<osg::MatrixTransform>();
+            if ( transform ) dragger.addTransformUpdating( transform.get() );
         }
         is >> is.END_BRACKET;
     }

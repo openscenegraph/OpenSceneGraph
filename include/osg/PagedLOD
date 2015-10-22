@@ -31,15 +31,19 @@ class OSG_EXPORT PagedLOD : public LOD
 
         META_Node(osg, PagedLOD);
 
-
-
         virtual void traverse(NodeVisitor& nv);
+
+        using osg::Group::addChild;
 
         virtual bool addChild(Node *child);
 
-        virtual bool addChild(Node *child, float min, float max);
+        virtual bool addChild(Node *child, float rmin, float rmax);
 
-        virtual bool addChild(Node *child, float min, float max,const std::string& filename, float priorityOffset=0.0f, float priorityScale=1.0f);
+        template<class T> bool addChild( const ref_ptr<T>& child, float rmin, float rmax) { return addChild(child.get(), rmin, rmax); }
+
+        virtual bool addChild(Node *child, float rmin, float rmax, const std::string& filename, float priorityOffset=0.0f, float priorityScale=1.0f);
+
+        template<class T> bool addChild( const ref_ptr<T>& child, float rmin, float rmax, const std::string& filename, float priorityOffset=0.0f, float priorityScale=1.0f) { return addChild(child.get(), rmin, rmax, filename, priorityOffset, priorityScale); }
 
         virtual bool removeChildren(unsigned int pos,unsigned int numChildrenToRemove=1);
 

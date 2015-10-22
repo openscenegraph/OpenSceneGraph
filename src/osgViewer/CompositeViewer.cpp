@@ -135,7 +135,7 @@ CompositeViewer::~CompositeViewer()
 bool CompositeViewer::readConfiguration(const std::string& filename)
 {
     OSG_NOTICE<<"CompositeViewer::readConfiguration("<<filename<<")"<<std::endl;
-    osg::ref_ptr<osg::Object> obj = osgDB::readObjectFile(filename);
+    osg::ref_ptr<osg::Object> obj = osgDB::readRefObjectFile(filename);
     osgViewer::View * view = dynamic_cast<osgViewer::View *>(obj.get());
     if (view)
     {
@@ -1114,7 +1114,7 @@ void CompositeViewer::eventTraversal()
         // create a frame event for the new frame.
         {
             osg::ref_ptr<osgGA::GUIEventAdapter> event = view->getEventQueue()->frame( getFrameStamp()->getReferenceTime() );
-            
+
             if (!_previousEvent || _previousEvent->getNumPointerData()<2)
             {
                 generatePointerData(*event);
@@ -1124,7 +1124,7 @@ void CompositeViewer::eventTraversal()
                 reprojectPointerData(*_previousEvent, *event);
             }
         }
-        
+
 
         view->getEventQueue()->takeEvents(viewEventsMap[view], cutOffTime);
     }

@@ -140,20 +140,20 @@ main( int argc,
     //   of the view frustum.
     root->addChild( makeFrustumFromCamera( NULL ) );
 
-    osg::ref_ptr< osg::Node > scene;
-    scene = osgDB::readNodeFiles( arguments );
+    osg::ref_ptr< osg::Node > scene = osgDB::readRefNodeFiles( arguments );
     if (!scene)
     {
         // User didn't specify anything, or file(s) didn't exist.
         // Try to load the cow...
         osg::notify( osg::WARN ) << arguments.getApplicationName() << ": Could not find specified files. Trying \"cow.osgt\" instead." << std::endl;
-        if ( !(scene = osgDB::readNodeFile( std::string( "cow.osgt" ) ) ) )
+        scene = osgDB::readRefNodeFile("cow.osgt");
+        if (!scene)
         {
             osg::notify( osg::FATAL ) << arguments.getApplicationName() << ": No data loaded." << std::endl;
             return 1;
         }
     }
-    root->addChild( scene.get() );
+    root->addChild( scene );
 
 
     osgViewer::CompositeViewer viewer( arguments );

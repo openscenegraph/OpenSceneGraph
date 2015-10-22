@@ -107,6 +107,7 @@ std::string osgText::findFontFile(const std::string& str)
     return std::string();
 }
 
+#ifdef OSG_PROVIDE_READFILE
 osgText::Font* osgText::readFontFile(const std::string& filename, const osgDB::ReaderWriter::Options* userOptions)
 {
     if (filename.empty()) return 0;
@@ -167,6 +168,7 @@ osgText::Font* osgText::readFontStream(std::istream& stream, const osgDB::Reader
     if (object && object->referenceCount()==0) object->unref();
     return 0;
 }
+#endif
 
 osg::ref_ptr<Font> osgText::readRefFontFile(const std::string& filename, const osgDB::ReaderWriter::Options* userOptions)
 {

@@ -146,7 +146,7 @@ osg::Node* createRectangle(osg::BoundingBox& bb,
     geom->setUseDisplayList(false);
 
     // load image
-    osg::Image* img = osgDB::readImageFile(filename);
+    osg::ref_ptr<osg::Image> img = osgDB::readRefImageFile(filename);
 
     // setup texture
     osg::TextureRectangle* texture = new osg::TextureRectangle(img);

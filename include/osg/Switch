@@ -45,6 +45,9 @@ class OSG_EXPORT Switch : public Group
 
         bool getNewChildDefaultValue() const { return _newChildDefaultValue; }
 
+        using osg::Group::addChild;
+        using osg::Group::insertChild;
+
         virtual bool addChild( Node *child );
 
         virtual bool addChild( Node *child, bool value );

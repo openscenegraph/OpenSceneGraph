@@ -139,10 +139,10 @@ int main( int argc, char **argv )
     osgViewer::Viewer viewer;
 
     // load the nodes from the commandline arguments.
-    osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
 
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!loadedModel) loadedModel = osgDB::readNodeFile("cessnafire.osgt");
+    if (!loadedModel) loadedModel = osgDB::readRefNodeFile("cessnafire.osgt");
 
     if (!loadedModel)
     {
@@ -150,11 +150,11 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    osg::Group* root = new osg::Group;
+    osg::ref_ptr<osg::Group> root = new osg::Group;
     root->addChild(loadedModel);
 
 
-    osg::StateSet* stateset = new osg::StateSet;
+    osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
     stateset->setDataVariance(osg::Object::DYNAMIC);
 
     osg::BlendEquation* blendEquation = new osg::BlendEquation(osg::BlendEquation::FUNC_ADD);

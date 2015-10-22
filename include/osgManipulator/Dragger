@@ -204,6 +204,7 @@ class OSGMANIPULATOR_EXPORT Dragger : public osg::MatrixTransform
          * this dragger.
          */
         virtual void setParentDragger(Dragger* parent) { _parentDragger = parent; }
+
         Dragger* getParentDragger() { return _parentDragger; }
         const Dragger* getParentDragger() const { return _parentDragger; }
 
@@ -236,7 +237,10 @@ class OSGMANIPULATOR_EXPORT Dragger : public osg::MatrixTransform
         typedef std::vector< osg::ref_ptr<Constraint> > Constraints;
 
         void addConstraint(Constraint* constraint);
+        template<class T> void addConstraint(const osg::ref_ptr<T>& c) { addConstraint(c.get()); }
+
         void removeConstraint(Constraint* constraint);
+        template<class T> void removeConstraint(const osg::ref_ptr<T>& c) { removeConstraint(c.get()); }
 
         Constraints& getConstraints() { return _constraints; }
         const Constraints& getConstraints() const { return _constraints; }
@@ -245,7 +249,10 @@ class OSGMANIPULATOR_EXPORT Dragger : public osg::MatrixTransform
         typedef std::vector< osg::ref_ptr<DraggerCallback> > DraggerCallbacks;
 
         void addDraggerCallback(DraggerCallback* dc);
+        template<class T> void addDraggerCallback(const osg::ref_ptr<T>& dc) { addDraggerCallback(dc.get()); }
+
         void removeDraggerCallback(DraggerCallback* dc);
+        template<class T> void removeDraggerCallback(const osg::ref_ptr<T>& dc) { removeDraggerCallback(dc.get()); }
 
         DraggerCallbacks& getDraggerCallbacks() { return _draggerCallbacks; }
         const DraggerCallbacks& getDraggerCallbacks() const { return _draggerCallbacks; }
@@ -320,11 +327,19 @@ class OSGMANIPULATOR_EXPORT CompositeDragger : public Dragger
 
         // Composite-specific methods below
         virtual bool addDragger(Dragger* dragger);
+        template<class T> bool addDragger(const osg::ref_ptr<T>& dc) { return addDragger(dc.get()); }
+
         virtual bool removeDragger(Dragger* dragger);
+        template<class T> bool removeDragger(const osg::ref_ptr<T>& dc) { return removeDragger(dc.get()); }
+
         unsigned int getNumDraggers() const { return _draggerList.size(); }
+
         Dragger* getDragger(unsigned int i) { return _draggerList[i].get(); }
         const Dragger* getDragger(unsigned int i) const { return _draggerList[i].get(); }
+
         bool containsDragger(const Dragger* dragger) const;
+        template<class T> bool containsDragger(const osg::ref_ptr<T>& dc) const { return containsDragger(dc.get()); }
+
         DraggerList::iterator findDragger(const Dragger* dragger);
 
         virtual void setIntersectionMask(osg::Node::NodeMask intersectionMask);

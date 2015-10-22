@@ -67,7 +67,7 @@ bool PdfReader::assign(PdfImage* pdfImage, const GeometryHints& hints)
                 osg::StateAttribute::ON);
 
     osg::ref_ptr<osgViewer::InteractiveImageHandler> iih = new osgViewer::InteractiveImageHandler(_pdfImage.get());
-    
+
     pictureQuad->setEventCallback(iih.get());
     pictureQuad->setCullCallback(iih.get());
 
@@ -78,7 +78,7 @@ bool PdfReader::assign(PdfImage* pdfImage, const GeometryHints& hints)
 
 bool PdfReader::open(const std::string& filename, const GeometryHints& hints)
 {
-    osg::ref_ptr<osg::Image> image = osgDB::readImageFile(filename);
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(filename);
     return assign(dynamic_cast<PdfImage*>(image.get()), hints);
 }
 

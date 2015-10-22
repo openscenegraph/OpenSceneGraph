@@ -67,7 +67,7 @@ int main( int argc, char** argv )
 {
     osg::ArgumentParser arguments( &argc, argv );
 
-    osg::Node* root = osgDB::readNodeFiles( arguments );
+    osg::ref_ptr<osg::Node> root = osgDB::readRefNodeFiles( arguments );
     if( root == NULL )
     {
         osg::notify( osg::FATAL ) << "Unable to load model from command line." << std::endl;

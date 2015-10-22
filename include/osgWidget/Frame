@@ -175,6 +175,18 @@ class OSGWIDGET_EXPORT Frame: public Table
             Frame*       = 0
         );
 
+        template<class T>
+        static Frame* createSimpleFrameWithSingleTexture(
+            const std::string& name,
+            const osg::ref_ptr<T>& image,
+            point_type width,
+            point_type height,
+            unsigned int flags = 0,
+            Frame* exFrame = 0)
+        {
+            return Frame::createSimpleFrameWithSingleTexture(name, image.get(), width, height, flags, exFrame);
+        }
+
         static Frame* createSimpleFrameFromTheme(
             const std::string&,
             osg::Image*,
@@ -183,6 +195,18 @@ class OSGWIDGET_EXPORT Frame: public Table
             unsigned int = 0,
             Frame*       = 0
         );
+
+        template<class T>
+        static Frame* createSimpleFrameFromTheme(
+            const std::string& name,
+            const osg::ref_ptr<T>& image,
+            point_type width,
+            point_type height,
+            unsigned int flags = 0,
+            Frame* exFrame = 0)
+        {
+            return Frame::createSimpleFrameFromTheme(name, image.get(), width, height, flags, exFrame);
+        }
 
         void createSimpleFrame(point_type cw, point_type ch, point_type w, point_type h)
         {

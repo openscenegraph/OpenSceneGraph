@@ -104,7 +104,7 @@ class OSG_EXPORT NodeVisitor : public virtual Object
           * Equivalent to dynamic_cast<const NodeVisitor*>(this).*/
         virtual const NodeVisitor* asNodeVisitor() const { return this; }
 
-        
+
         /** Method to call to reset visitor. Useful if your visitor accumulates
             state during a traversal, and you plan to reuse the visitor.
             To flush that state for the next traversal: call reset() prior

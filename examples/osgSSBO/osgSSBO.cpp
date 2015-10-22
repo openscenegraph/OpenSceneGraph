@@ -311,7 +311,7 @@ public:
 //set  OSG_FILE_PATH for loading axes.osgt
 void ComputeNode::addHelperGeometry()
 {
-    _helperNode = osgDB::readNodeFile("axes.osgt");
+    _helperNode = osgDB::readRefNodeFile("axes.osgt");
 
     if (_helperNode.valid())
     {
@@ -464,8 +464,8 @@ void ComputeNode::addDataMonitor(osg::Vec3 placement, osg::Vec3 relativePlacemen
     ss->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
     //add a label
-    osgText::Text* text = new osgText::Text;
-    osgText::Font* font = osgText::readFontFile("fonts/arial.ttf");
+    osg::ref_ptr<osgText::Text> text = new osgText::Text;
+    osg::ref_ptr<osgText::Font> font = osgText::readRefFontFile("fonts/arial.ttf");
     text->setFont(font);
     text->setColor(osg::Vec4(1, 1, 1, 1));
     text->setCharacterSize(0.1*scale);

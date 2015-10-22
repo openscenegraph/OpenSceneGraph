@@ -434,7 +434,7 @@ bool TXPArchive::loadModel(int ix)
         mod->GetName(name,1023);
 
         // Load the model.  It's probably not TerraPage
-    osg::Node *osg_model = osgDB::readNodeFile( name );
+    osg::ref_ptr<osg::Node> osg_model = osgDB::readRefNodeFile( name );
     if ( !osg_model )
         {
             OSG_WARN << "TrPageArchive::LoadModels() error: "
@@ -642,9 +642,8 @@ bool TXPArchive::loadTextStyles()
         continue;
 
     std::string fontfilename = fontmap[*fontName];
-    if ( !fontfilename.length() )
-        fontfilename = "arial.ttf";
-    osg::ref_ptr< osgText::Font > font = osgText::readFontFile(fontfilename);
+    if ( !fontfilename.length() ) fontfilename = "arial.ttf";
+    osg::ref_ptr< osgText::Font > font = osgText::readRefFontFile(fontfilename);
 
     _fonts[itr->first] = font;
 

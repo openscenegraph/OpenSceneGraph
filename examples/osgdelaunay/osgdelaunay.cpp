@@ -224,7 +224,7 @@ public:
         osg::StateSet *dstate=   gm->getOrCreateStateSet(  );
         dstate->setMode( GL_LIGHTING, osg::StateAttribute::ON );
 
-        osg::Image* image = osgDB::readImageFile("Images/Brick-Std-Orange.TGA");
+        osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile("Images/Brick-Std-Orange.TGA");
         if (image)
         {
             osg::Texture2D* txt = new osg::Texture2D;
@@ -354,7 +354,7 @@ osg::Group *makedelaunay(const int ndcs)
 
     osg::Vec3Array *points=new osg::Vec3Array;
 
-    osg::Image* image = osgDB::readImageFile("Images/blueFlowers.png");
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile("Images/blueFlowers.png");
     if (image)
     {
         osg::Texture2D* texture = new osg::Texture2D;
@@ -817,7 +817,7 @@ osg::Geometry *WallConstraint::makeWallGeometry() const
 {
     osg::ref_ptr<osg::Geometry> gm=new osg::Geometry; // the wall
     if (texture!="") {
-        osg::Image* image = osgDB::readImageFile(texture.c_str());
+        osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(texture.c_str());
         if (image)
         {
             osg::Texture2D* txt = new osg::Texture2D;
@@ -1005,7 +1005,7 @@ deprecated_osg::Geometry *ArealConstraint::makeWallGeometry( osg::Vec3Array *pt)
     tscx->retessellatePolygons(*(edges)); // find all edges
 
     if (walltexture!="") {
-        osg::Image* image = osgDB::readImageFile(walltexture.c_str());
+        osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(walltexture.c_str());
         if (image)
         {
             osg::Texture2D* txt = new osg::Texture2D;
@@ -1062,7 +1062,7 @@ deprecated_osg::Geometry * ArealConstraint::makeAreal( osg::Vec3Array *points)
         gm->setNormalArray(getCanopyNormals(points));
         gm->setNormalBinding(deprecated_osg::Geometry::BIND_PER_PRIMITIVE);
         gm->setTexCoordArray(0,getCanopyTexcoords(points));
-        osg::Image* image = osgDB::readImageFile(texture);
+        osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(texture);
         if (image)
         {
             osg::Texture2D* txt = new osg::Texture2D;
@@ -1238,7 +1238,7 @@ deprecated_osg::Geometry * LinearConstraint::makeGeometry(const osg::Vec3Array *
     if (_midline->size()>0) {
         osg::ref_ptr<osg::Vec3Array> locpts=getPoints(points);
         if (texture!="") {
-            osg::Image* image = osgDB::readImageFile(texture.c_str());
+            osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(texture.c_str());
             if (image)
             {
                 osg::Texture2D* txt = new osg::Texture2D;

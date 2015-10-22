@@ -132,6 +132,12 @@ class OSG_EXPORT ShapeDrawable : public Drawable
 
         ShapeDrawable(Shape* shape, TessellationHints* hints=0);
 
+        template<class T> ShapeDrawable(const ref_ptr<T>& shape, TessellationHints* hints=0):
+            _color(1.0f,1.0f,1.0f,1.0f),
+            _tessellationHints(hints) { setShape(shape.get()); }
+
+
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         ShapeDrawable(const ShapeDrawable& pg,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 

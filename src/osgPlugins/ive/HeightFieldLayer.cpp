@@ -107,7 +107,7 @@ void HeightFieldLayer::read(DataInputStream* in)
 
         if (in->getVersion()>=VERSION_0035)
         {
-            osg::HeightField* hf = new osg::HeightField;
+            osg::ref_ptr<osg::HeightField> hf = new osg::HeightField;
 
             // Read HeightField's properties
             //setColor(in->readVec4());
@@ -128,13 +128,13 @@ void HeightFieldLayer::read(DataInputStream* in)
                 in->readPackedFloatArray(hf->getFloatArray());
             }
 
-            setHeightField(hf);
+            setHeightField(hf.get());
 
         }
         else
         {
-            osg::Shape* shape = in->readShape();
-            setHeightField(dynamic_cast<osg::HeightField*>(shape));
+            osg::ref_ptr<osg::Shape> shape = in->readShape();
+            setHeightField(dynamic_cast<osg::HeightField*>(shape.get()));
         }
 
     }
@@ -143,7 +143,8 @@ void HeightFieldLayer::read(DataInputStream* in)
         std::string filename = in->readString();
         setFileName(filename);
 
-        setHeightField(osgDB::readHeightFieldFile(filename,in->getOptions()));
+        osg::ref_ptr<osg::HeightField> hf = osgDB::readRefHeightFieldFile(filename,in->getOptions());
+        if (hf) setHeightField(hf.get());
     }
 
 }

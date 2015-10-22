@@ -22,7 +22,7 @@
 
 osg::Node* createOldShaderCompositionScene(osg::ArgumentParser& arguments)
 {
-    osg::Node* node = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFiles(arguments);
     if (!node) return 0;
 
     osg::Group* group = new osg::Group;

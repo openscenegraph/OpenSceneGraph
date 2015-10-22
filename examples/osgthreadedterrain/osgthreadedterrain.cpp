@@ -66,11 +66,11 @@ struct ReleaseBlockOnCompileCompleted : public osgUtil::IncrementalCompileOperat
     virtual bool compileCompleted(osgUtil::IncrementalCompileOperation::CompileSet* compileSet)
     {
         if (_block.valid()) _block->completed();
-        
+
         // tell IncrementalCompileOperation that it's now safe to remove the compileSet
-        
+
         osg::notify(osg::NOTICE)<<"compileCompleted("<<compileSet<<")"<<std::endl;
-        
+
         return true;
     }
 
@@ -93,25 +93,25 @@ public:
     {
         // osg::notify(osg::NOTICE)<<"LoadAndCompileOperation "<<_filename<<std::endl;
 
-        _loadedModel = osgDB::readNodeFile(_filename);
+        _loadedModel = osgDB::readRefNodeFile(_filename);
 
         if (_loadedModel.valid() && _incrementalCompileOperation.valid())
         {
-            osg::ref_ptr<osgUtil::IncrementalCompileOperation::CompileSet> compileSet = 
+            osg::ref_ptr<osgUtil::IncrementalCompileOperation::CompileSet> compileSet =
                 new osgUtil::IncrementalCompileOperation::CompileSet(_loadedModel.get());
 
             compileSet->_compileCompletedCallback = new ReleaseBlockOnCompileCompleted(_block.get());
 
             _incrementalCompileOperation->add(compileSet.get());
         }
-        else 
+        else
         {
             if (_block.valid()) _block->completed();
         }
 
         // osg::notify(osg::NOTICE)<<"done LoadAndCompileOperation "<<_filename<<std::endl;
     }
-    
+
     std::string                                         _filename;
     osg::ref_ptr<osg::Node>                             _loadedModel;
     osg::ref_ptr<osgUtil::IncrementalCompileOperation>  _incrementalCompileOperation;
@@ -135,12 +135,12 @@ public:
         _incrementalCompileOperation(ico)
     {
     }
-    
-    /** Set the OperationQueue that the MasterOperation can use to place tasks like file loading on for other processes to handle.*/ 
+
+    /** Set the OperationQueue that the MasterOperation can use to place tasks like file loading on for other processes to handle.*/
     void setOperationQueue(osg::OperationQueue* oq) { _operationQueue = oq; }
-    
+
     osg::OperationQueue* getOperationQueue() { return _operationQueue.get(); }
-    
+
     bool readMasterFile(Files& files) const
     {
         osgDB::ifstream fin(_filename.c_str());
@@ -167,12 +167,12 @@ public:
                     ++fr;
                 }
             }
-            
+
             return readFilename;
         }
         return false;
     }
-    
+
     bool open(osg::Group* group)
     {
         Files files;
@@ -181,7 +181,7 @@ public:
             itr != files.end();
             ++itr)
         {
-            osg::Node* model = osgDB::readNodeFile(*itr);
+            osg::ref_ptr<osg::Node> model = osgDB::readRefNodeFile(*itr);
             if (model)
             {
                 osg::notify(osg::NOTICE)<<"open: Loaded file "<<*itr<<std::endl;
@@ -189,10 +189,10 @@ public:
                 _existingFilenameNodeMap[*itr] = model;
             }
         }
-        
+
         return true;
     }
-    
+
 
     virtual void operator () (osg::Object* callingObject)
     {
@@ -208,7 +208,7 @@ public:
         //osg::notify(osg::NOTICE)<<"void load(Object)"<<std::endl;
         Files filesA;
         Files filesB;
-        
+
         readMasterFile(filesB);
         // osg::notify(osg::NOTICE)<<"First read "<<filesA.size()<<std::endl;
 
@@ -222,7 +222,7 @@ public:
             readMasterFile(filesB);
 
             // osg::notify(osg::NOTICE)<<"second read "<<filesB.size()<<std::endl;
-            
+
         } while (filesA!=filesB);
 
         Files files;
@@ -235,7 +235,7 @@ public:
         Files removedFiles;
 
         // find out which files are new, and which ones have been removed.
-        {            
+        {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
             for(Files::iterator fitr = files.begin();
@@ -255,7 +255,7 @@ public:
                 }
             }
         }
-        
+
 #if 0
         if (!newFiles.empty() || !removedFiles.empty())
         {
@@ -270,7 +270,7 @@ public:
 
             typedef std::vector< osg::ref_ptr<osg::GraphicsThread> > GraphicsThreads;
             GraphicsThreads threads;
-        
+
             for(unsigned int i=0; i<= osg::GraphicsContext::getMaxContextID(); ++i)
             {
                 osg::GraphicsContext* gc = osg::GraphicsContext::getCompileContext(i);
@@ -283,12 +283,12 @@ public:
                 // osg::notify(osg::NOTICE)<<"Using OperationQueue"<<std::endl;
 
                 _endOfLoadBlock = new osg::RefBlockCount(newFiles.size());
-                
+
                 _endOfLoadBlock->reset();
-     
+
                 typedef std::list< osg::ref_ptr<LoadAndCompileOperation> > LoadAndCompileList;
                 LoadAndCompileList loadAndCompileList;
-     
+
                 for(Files::iterator nitr = newFiles.begin();
                     nitr != newFiles.end();
                     ++nitr)
@@ -307,11 +307,11 @@ public:
                     // osg::notify(osg::NOTICE)<<"Local running of operation"<<std::endl;
                     (*operation)(0);
                 }
-#endif                                
+#endif
                 // osg::notify(osg::NOTICE)<<"Waiting for completion of LoadAndCompile operations"<<std::endl;
                 _endOfLoadBlock->block();
                 // osg::notify(osg::NOTICE)<<"done ... Waiting for completion of LoadAndCompile operations"<<std::endl;
-                
+
                 for(LoadAndCompileList::iterator litr = loadAndCompileList.begin();
                     litr != loadAndCompileList.end();
                     ++litr)
@@ -323,19 +323,19 @@ public:
                 }
 
             }
-            
+
             else
             {
 
                 _endOfLoadBlock = new osg::RefBlockCount(newFiles.size());
-                
+
                 _endOfLoadBlock->reset();
 
                 for(Files::iterator nitr = newFiles.begin();
                     nitr != newFiles.end();
                     ++nitr)
                 {
-                    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(*nitr);
+                    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFile(*nitr);
 
                     if (loadedModel.get())
                     {
@@ -343,7 +343,7 @@ public:
 
                         if (_incrementalCompileOperation.valid())
                         {
-                            osg::ref_ptr<osgUtil::IncrementalCompileOperation::CompileSet> compileSet = 
+                            osg::ref_ptr<osgUtil::IncrementalCompileOperation::CompileSet> compileSet =
                                 new osgUtil::IncrementalCompileOperation::CompileSet(loadedModel.get());
 
                             compileSet->_compileCompletedCallback = new ReleaseBlockOnCompileCompleted(_endOfLoadBlock.get());
@@ -364,15 +364,15 @@ public:
                 _endOfLoadBlock->block();
 
             }
-                        
+
         }
-        
+
         bool requiresBlock = false;
-        
+
         // pass the locally peppared data to MasterOperations shared data
-        // so that updated thread can merge these changes with the main scene 
+        // so that updated thread can merge these changes with the main scene
         // graph.  This merge is carried out via the update(..) method.
-        if (!removedFiles.empty() || !nodesToAdd.empty())        
+        if (!removedFiles.empty() || !nodesToAdd.empty())
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
             _nodesToRemove.swap(removedFiles);
@@ -392,7 +392,7 @@ public:
         }
 
     }
-    
+
     // merge the changes with the main scene graph.
     void update(osg::Node* scene)
     {
@@ -404,9 +404,9 @@ public:
             osg::notify(osg::NOTICE)<<"Error, MasterOperation::update(Node*) can only work with a Group as Viewer::getSceneData()."<<std::endl;
             return;
         }
-    
+
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-        
+
         if (!_nodesToRemove.empty() || !_nodesToAdd.empty())
         {
             osg::notify(osg::NOTICE)<<"update().................. "<<std::endl;
@@ -422,7 +422,7 @@ public:
                 if (fnmItr != _existingFilenameNodeMap.end())
                 {
                     osg::notify(osg::NOTICE)<<"  update():removing "<<*itr<<std::endl;
-                
+
                     group->removeChild(fnmItr->second.get());
                     _existingFilenameNodeMap.erase(fnmItr);
                 }
@@ -430,7 +430,7 @@ public:
 
             _nodesToRemove.clear();
         }
-        
+
         if (!_nodesToAdd.empty())
         {
             for(FilenameNodeMap::iterator itr = _nodesToAdd.begin();
@@ -441,14 +441,14 @@ public:
                 group->addChild(itr->second.get());
                 _existingFilenameNodeMap[itr->first] = itr->second;
             }
-            
+
             _nodesToAdd.clear();
         }
 
         _updatesMergedBlock.release();
 
     }
-    
+
     // add release implementation so that any thread cancellation can
     // work even when blocks and barriers are used.
     virtual void release()
@@ -460,9 +460,9 @@ public:
         if (_endOfLoadBlock.valid()) _endOfLoadBlock.release();
     }
 
-    
+
     std::string                         _filename;
-    
+
     OpenThreads::Mutex                  _mutex;
     FilenameNodeMap                     _existingFilenameNodeMap;
     Files                               _nodesToRemove;
@@ -472,13 +472,13 @@ public:
     osg::ref_ptr<osgUtil::IncrementalCompileOperation>  _incrementalCompileOperation;
     osg::ref_ptr<osg::BarrierOperation> _endOfCompilebarrier;
     osg::ref_ptr<osg::RefBlockCount>    _endOfLoadBlock;
-    
+
     osg::ref_ptr<osg::OperationQueue>   _operationQueue;
 };
 
-class FilterHandler : public osgGA::GUIEventHandler 
+class FilterHandler : public osgGA::GUIEventHandler
 {
-public: 
+public:
 
     FilterHandler(osgTerrain::GeometryTechnique* gt):
         _gt(gt) {}
@@ -550,9 +550,9 @@ protected:
 
 
 
-class LayerHandler : public osgGA::GUIEventHandler 
+class LayerHandler : public osgGA::GUIEventHandler
 {
-public: 
+public:
 
     LayerHandler(osgTerrain::Layer* layer):
         _layer(layer) {}
@@ -612,7 +612,7 @@ int main(int argc, char** argv)
         while (arguments.read("-p",pathfile))
         {
             osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
-            if (apm || !apm->valid()) 
+            if (apm || !apm->valid())
             {
                 unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
                 keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
@@ -634,7 +634,7 @@ int main(int argc, char** argv)
     // add the record camera path handler
     viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
 
-    // attach an IncrementaCompileOperation to allow the master loading 
+    // attach an IncrementaCompileOperation to allow the master loading
     // to be handled with an incremental compile to avoid frame drops when large objects are added.
     viewer.setIncrementalCompileOperation(new osgUtil::IncrementalCompileOperation());
 
@@ -652,7 +652,7 @@ int main(int argc, char** argv)
     {
         masterOperation = new MasterOperation(masterFilename, viewer.getIncrementalCompileOperation());
     }
-    
+
 
     osg::ref_ptr<osgTerrain::TerrainTile> terrainTile = new osgTerrain::TerrainTile;
     osg::ref_ptr<osgTerrain::Locator> locator = new osgTerrain::Locator;
@@ -676,8 +676,8 @@ int main(int argc, char** argv)
     while(pos<arguments.argc())
     {
         std::string filename;
-        
-        if (arguments.read(pos, "--layer",layerNum)) 
+
+        if (arguments.read(pos, "--layer",layerNum))
         {
             osg::notify(osg::NOTICE)<<"Set layer number to "<<layerNum<<std::endl;
         }
@@ -686,7 +686,7 @@ int main(int argc, char** argv)
         {
             terrainTile->setTreatBoundariesToValidDataAsDefaultValue(true);
         }
-        
+
         else if (arguments.read(pos, "-e",x,y,w,h))
         {
             // define the extents.
@@ -710,42 +710,42 @@ int main(int argc, char** argv)
         {
             osg::notify(osg::NOTICE)<<"--hf "<<filename<<std::endl;
 
-            osg::ref_ptr<osg::HeightField> hf = osgDB::readHeightFieldFile(filename);
+            osg::ref_ptr<osg::HeightField> hf = osgDB::readRefHeightFieldFile(filename);
             if (hf.valid())
             {
                 osg::ref_ptr<osgTerrain::HeightFieldLayer> hfl = new osgTerrain::HeightFieldLayer;
                 hfl->setHeightField(hf.get());
-                
+
                 hfl->setLocator(locator.get());
                 hfl->setValidDataOperator(validDataOperator.get());
                 hfl->setMagFilter(filter);
-                
+
                 if (offset!=0.0f || scale!=1.0f)
                 {
                     hfl->transform(offset,scale);
                 }
-                
+
                 terrainTile->setElevationLayer(hfl.get());
-                
+
                 lastAppliedLayer = hfl.get();
-                
+
                 osg::notify(osg::NOTICE)<<"created osgTerrain::HeightFieldLayer"<<std::endl;
             }
             else
             {
                 osg::notify(osg::NOTICE)<<"failed to create osgTerrain::HeightFieldLayer"<<std::endl;
             }
-            
+
             scale = 1.0f;
             offset = 0.0f;
-            
+
         }
 
         else if (arguments.read(pos, "-d",filename) || arguments.read(pos, "--elevation-image",filename))
         {
             osg::notify(osg::NOTICE)<<"--elevation-image "<<filename<<std::endl;
 
-            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(filename);
+            osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(filename);
             if (image.valid())
             {
                 osg::ref_ptr<osgTerrain::ImageLayer> imageLayer = new osgTerrain::ImageLayer;
@@ -753,14 +753,14 @@ int main(int argc, char** argv)
                 imageLayer->setLocator(locator.get());
                 imageLayer->setValidDataOperator(validDataOperator.get());
                 imageLayer->setMagFilter(filter);
-                
+
                 if (offset!=0.0f || scale!=1.0f)
                 {
                     imageLayer->transform(offset,scale);
                 }
-                
+
                 terrainTile->setElevationLayer(imageLayer.get());
-                
+
                 lastAppliedLayer = imageLayer.get();
 
                 osg::notify(osg::NOTICE)<<"created Elevation osgTerrain::ImageLayer"<<std::endl;
@@ -772,14 +772,14 @@ int main(int argc, char** argv)
 
             scale = 1.0f;
             offset = 0.0f;
-            
+
         }
-        
+
         else if (arguments.read(pos, "-c",filename) || arguments.read(pos, "--image",filename))
         {
             osg::notify(osg::NOTICE)<<"--image "<<filename<<" x="<<x<<" y="<<y<<" w="<<w<<" h="<<h<<std::endl;
 
-            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(filename);
+            osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(filename);
             if (image.valid())
             {
                 osg::ref_ptr<osgTerrain::ImageLayer> imageLayer = new osgTerrain::ImageLayer;
@@ -787,7 +787,7 @@ int main(int argc, char** argv)
                 imageLayer->setLocator(locator.get());
                 imageLayer->setValidDataOperator(validDataOperator.get());
                 imageLayer->setMagFilter(filter);
-                
+
                 if (offset!=0.0f || scale!=1.0f)
                 {
                     imageLayer->transform(offset,scale);
@@ -806,7 +806,7 @@ int main(int argc, char** argv)
 
             scale = 1.0f;
             offset = 0.0f;
-            
+
         }
 
         else if (arguments.read(pos, "--filter",filterName))
@@ -816,7 +816,7 @@ int main(int argc, char** argv)
                 osg::notify(osg::NOTICE)<<"--filter "<<filterName<<std::endl;
                 filter = osg::Texture::NEAREST;
             }
-            else if (filterName=="LINEAR") 
+            else if (filterName=="LINEAR")
             {
                 filter = osg::Texture::LINEAR;
                 osg::notify(osg::NOTICE)<<"--filter "<<filterName<<std::endl;
@@ -824,23 +824,23 @@ int main(int argc, char** argv)
             else
             {
                 osg::notify(osg::NOTICE)<<"--filter "<<filterName<<" unrecognized filter name, please use LINEAER or NEAREST."<<std::endl;
-            }            
+            }
 
             if (terrainTile->getColorLayer(layerNum))
             {
                 terrainTile->getColorLayer(layerNum)->setMagFilter(filter);
             }
-            
+
         }
 
         else if (arguments.read(pos, "--tf",minValue, maxValue))
         {
             osg::ref_ptr<osg::TransferFunction1D> tf = new osg::TransferFunction1D;
-            
+
             unsigned int numCells = 6;
             float delta = (maxValue-minValue)/float(numCells-1);
             float v = minValue;
-            
+
             tf->allocate(6);
             tf->setColor(v, osg::Vec4(1.0,1.0,1.0,1.0)); v += delta;
             tf->setColor(v, osg::Vec4(1.0,0.0,1.0,1.0)); v += delta;
@@ -848,7 +848,7 @@ int main(int argc, char** argv)
             tf->setColor(v, osg::Vec4(1.0,1.0,0.0,1.0)); v += delta;
             tf->setColor(v, osg::Vec4(0.0,1.0,1.0,1.0)); v += delta;
             tf->setColor(v, osg::Vec4(0.0,1.0,0.0,1.0));
-            
+
             osg::notify(osg::NOTICE)<<"--tf "<<minValue<<" "<<maxValue<<std::endl;
 
             terrainTile->setColorLayer(layerNum, new osgTerrain::ContourLayer(tf.get()));
@@ -859,14 +859,14 @@ int main(int argc, char** argv)
         }
 
     }
-    
+
 
     osg::ref_ptr<osg::Group> scene = new osg::Group;
 
     if (terrainTile.valid() && (terrainTile->getElevationLayer() || terrainTile->getColorLayer(0)))
     {
         osg::notify(osg::NOTICE)<<"Terrain created"<<std::endl;
-    
+
         scene->addChild(terrainTile.get());
 
         osg::ref_ptr<osgTerrain::GeometryTechnique> geometryTechnique = new osgTerrain::GeometryTechnique;
@@ -881,27 +881,27 @@ int main(int argc, char** argv)
 
         masterOperation->open(scene.get());
     }
-    
+
     if (scene->getNumChildren()==0)
     {
         osg::notify(osg::NOTICE)<<"No model created, please specify terrain or master file on command line."<<std::endl;
         return 0;
     }
-    
+
     viewer.setSceneData(scene.get());
 
 
     // start operation thread if a master file has been used.
     osg::ref_ptr<osg::OperationThread> masterOperationThread;
-    
+
     typedef std::list< osg::ref_ptr<osg::OperationThread> > OperationThreadList;
     OperationThreadList generalThreadList;
-    
-    if (masterOperation.valid()) 
+
+    if (masterOperation.valid())
     {
         masterOperationThread = new osg::OperationThread;
         masterOperationThread->startThread();
-        
+
         masterOperationThread->add(masterOperation.get());
 
 //        if (numLoadThreads>0)
@@ -910,19 +910,19 @@ int main(int argc, char** argv)
             masterOperation->setOperationQueue(operationQueue.get());
 
             for(unsigned int i=0; i<numLoadThreads; ++i)
-            {        
+            {
                 osg::ref_ptr<osg::OperationThread> thread = new osg::OperationThread;
                 thread->setOperationQueue(operationQueue.get());
                 thread->startThread();
                 generalThreadList.push_back(thread);
             }
         }
-        
+
         viewer.addUpdateOperation(masterOperation.get());
     }
-    
+
     viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
-    
+
     // enable the use of compile contexts and associated threads.
     // osg::DisplaySettings::instance()->setCompileContextsHint(true);
 

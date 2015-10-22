@@ -74,21 +74,21 @@ osg::Node* createEarth()
     osg::TessellationHints* hints = new osg::TessellationHints;
     hints->setDetailRatio(5.0f);
 
-    
+
     osg::ShapeDrawable* sd = new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0,0.0,0.0), osg::WGS_84_RADIUS_POLAR), hints);
-    
+
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(sd);
-    
+
     std::string filename = osgDB::findDataFile("Images/land_shallow_topo_2048.jpg");
-    geode->getOrCreateStateSet()->setTextureAttributeAndModes(0, new osg::Texture2D(osgDB::readImageFile(filename)));
-    
+    geode->getOrCreateStateSet()->setTextureAttributeAndModes(0, new osg::Texture2D(osgDB::readRefImageFile(filename)));
+
     osg::CoordinateSystemNode* csn = new osg::CoordinateSystemNode;
     csn->setEllipsoidModel(new osg::EllipsoidModel());
     csn->addChild(geode);
-    
+
     return csn;
-    
+
 }
 
 
@@ -104,7 +104,7 @@ public:
     {
         _rotation.makeRotate(osg::DegreesToRadians(90.0),0.0,0.0,1.0);
     }
-    
+
     void updateParameters()
     {
         _longitude += _speed * ((2.0*osg::PI)/360.0)/20.0;
@@ -114,7 +114,7 @@ public:
     virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
     {
         updateParameters();
-        
+
         osg::NodePath nodePath = nv->getNodePath();
 
         osg::MatrixTransform* mt = nodePath.empty() ? 0 : dynamic_cast<osg::MatrixTransform*>(nodePath.back());
@@ -128,7 +128,7 @@ public:
             {
                 csn = dynamic_cast<osg::CoordinateSystemNode*>(nodePath[i]);
             }
-            
+
             if (csn)
             {
 
@@ -142,22 +142,22 @@ public:
                         osg::Transform* transform = nodePath[i]->asTransform();
                         if (transform) transform->computeLocalToWorldMatrix(inheritedMatrix, nv);
                     }
-                    
+
                     osg::Matrixd matrix(inheritedMatrix);
 
                     //osg::Matrixd matrix;
                     ellipsoid->computeLocalToWorldTransformFromLatLongHeight(_latitude,_longitude,_height,matrix);
                     matrix.preMultRotate(_rotation);
-                    
+
                     mt->setMatrix(matrix);
                 }
 
-            }        
+            }
         }
-            
+
         traverse(node,nv);
-    }   
-    
+    }
+
     double                  _latitude;
     double                  _longitude;
     double                  _height;
@@ -172,7 +172,7 @@ public:
     FindNamedNodeVisitor(const std::string& name):
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
         _name(name) {}
-    
+
     virtual void apply(osg::Node& node)
     {
         if (node.getName()==_name)
@@ -181,7 +181,7 @@ public:
         }
         traverse(node);
     }
-    
+
     typedef std::vector< osg::ref_ptr<osg::Node> > NodeList;
 
     std::string _name;
@@ -193,28 +193,28 @@ int main(int argc, char **argv)
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
+
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of node tracker.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName());
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    
+
 
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
 
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
-    
+
     // add the thread model handler
     viewer.addEventHandler(new osgViewer::ThreadingHandler);
 
     // add the window size toggle handler
     viewer.addEventHandler(new osgViewer::WindowSizeHandler);
-        
+
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
-        
+
     // add the record camera path  handler
     viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
 
@@ -236,7 +236,7 @@ int main(int argc, char **argv)
     {
         osg::Quat local_rotate;
         local_rotate.makeRotate(osg::DegreesToRadians(vec4[0]),vec4[1],vec4[2],vec4[3]);
-        
+
         rotation = rotation * local_rotate;
     }
 
@@ -252,7 +252,7 @@ int main(int argc, char **argv)
             nc = new osg::AnimationPathCallback(path);
         }
     }
-    
+
     osgGA::NodeTrackerManipulator::TrackerMode trackerMode = osgGA::NodeTrackerManipulator::NODE_CENTER_AND_ROTATION;
     std::string mode;
     while (arguments.read("--tracker-mode",mode))
@@ -269,8 +269,8 @@ int main(int argc, char **argv)
             return 1;
         }
     }
-    
-    
+
+
     osgGA::NodeTrackerManipulator::RotationMode rotationMode = osgGA::NodeTrackerManipulator::TRACKBALL;
     while (arguments.read("--rotation-mode",mode))
     {
@@ -287,7 +287,7 @@ int main(int argc, char **argv)
 
     bool useOverlay = true;
     while (arguments.read("--no-overlay") || arguments.read("-n")) useOverlay = false;
-    
+
     osgSim::OverlayNode::OverlayTechnique technique = osgSim::OverlayNode::OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY;
     while (arguments.read("--object")) technique = osgSim::OverlayNode::OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY;
     while (arguments.read("--ortho") || arguments.read("--orthographic")) technique = osgSim::OverlayNode::VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY;
@@ -295,7 +295,7 @@ int main(int argc, char **argv)
 
     unsigned int overlayTextureUnit = 1;
     while (arguments.read("--unit", overlayTextureUnit)) {}
-    
+
     std::string pathfile;
     while (arguments.read("-p",pathfile)) {}
 
@@ -307,15 +307,15 @@ int main(int argc, char **argv)
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
-    
-    
+
+
     osg::ref_ptr<osgGA::NodeTrackerManipulator> tm;
-    
+
     std::string overlayFilename;
     while(arguments.read("--overlay", overlayFilename)) {}
 
     // read the scene from the list of file specified commandline args.
-    osg::ref_ptr<osg::Node> root = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> root = osgDB::readRefNodeFiles(arguments);
 
     if (!root) root = createEarth();
 
@@ -330,8 +330,8 @@ int main(int argc, char **argv)
         //ConvertLatLon2EllipsoidCoordinates latlon2em;
         //shapefile->accept(latlon2em);
 
-        osg::ref_ptr<osg::Node> shapefile = osgDB::readNodeFile(overlayFilename);
-        
+        osg::ref_ptr<osg::Node> shapefile = osgDB::readRefNodeFile(overlayFilename);
+
         if (!shapefile)
         {
             osg::notify(osg::NOTICE)<<"File `"<<overlayFilename<<"` not found"<<std::endl;
@@ -372,7 +372,7 @@ int main(int argc, char **argv)
     }
     else
     {
-    
+
 
         // add a viewport to the viewer and attach the scene graph.
         viewer.setSceneData(root.get());
@@ -401,7 +401,7 @@ int main(int argc, char **argv)
             }
 
 
-            osg::Node* cessna = osgDB::readNodeFile("cessna.osgt");
+            osg::ref_ptr<osg::Node> cessna = osgDB::readRefNodeFile("cessna.osgt");
             if (cessna)
             {
                 double s = 200000.0 / cessna->getBound().radius();
@@ -410,15 +410,15 @@ int main(int argc, char **argv)
                 scaler->addChild(cessna);
                 scaler->setMatrix(osg::Matrixd::scale(s,s,s)*osg::Matrixd::rotate(rotation));
                 scaler->getOrCreateStateSet()->setMode(GL_RESCALE_NORMAL,osg::StateAttribute::ON);
-                
+
                 if (addFireEffect)
-                {                
+                {
                     osg::Vec3d center = cessna->getBound().center();
-                    
+
                     osgParticle::FireEffect* fire = new osgParticle::FireEffect(center, 10.0f);
                     scaler->addChild(fire);
                 }
-                
+
 
                 if (false)
                 {
@@ -460,7 +460,7 @@ int main(int argc, char **argv)
                  std::cout<<"Failed to read cessna.osgt"<<std::endl;
             }
 
-        }    
+        }
     }
 
     // set up camera manipulators.
@@ -477,7 +477,7 @@ int main(int argc, char **argv)
         if (!pathfile.empty())
         {
             osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
-            if (apm || !apm->valid()) 
+            if (apm || !apm->valid())
             {
                 unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
                 keyswitchManipulator->addMatrixManipulator( '5', "Path", apm );

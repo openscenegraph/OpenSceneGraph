@@ -1,4 +1,4 @@
-/* -*-c++-*- 
+/* -*-c++-*-
 *
 *  OpenSceneGraph example, osgphotoalbum.
 *
@@ -30,14 +30,14 @@
 
 #include "PhotoArchive.h"
 
-#define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)  
+#define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)
 
 class ImageReaderWriter : public osgDB::ReaderWriter
 {
     public:
-        
+
         ImageReaderWriter();
-        
+
         virtual const char* className() const { return "ImageReader"; }
 
         void addPhotoArchive(PhotoArchive* archive) { _photoArchiveList.push_back(archive); }
@@ -54,7 +54,7 @@ class ImageReaderWriter : public osgDB::ReaderWriter
             return const_cast<ImageReaderWriter*>(this)->local_readNode(fileName, options);
         }
 
-        
+
     protected:
 
         std::string local_insertReference(const std::string& fileName, unsigned int res, float width, float height, bool backPage);
@@ -73,16 +73,16 @@ class ImageReaderWriter : public osgDB::ReaderWriter
             unsigned int    _resolutionX;
             unsigned int    _resolutionY;
             osg::Vec3       _center;
-            osg::Vec3       _maximumWidth; 
+            osg::Vec3       _maximumWidth;
             osg::Vec3       _maximumHeight;
-            unsigned int    _numPointsAcross; 
+            unsigned int    _numPointsAcross;
             unsigned int    _numPointsUp;
             bool            _backPage;
         };
-        
-        osg::Image* readImage_Archive(DataReference& dr, float& s,float& t);
-        
-        osg::Image* readImage_DynamicSampling(DataReference& dr, float& s,float& t);
+
+        osg::ref_ptr<osg::Image> readImage_Archive(DataReference& dr, float& s,float& t);
+
+        osg::ref_ptr<osg::Image> readImage_DynamicSampling(DataReference& dr, float& s,float& t);
 
         typedef std::map< std::string,DataReference > DataReferenceMap;
         typedef std::vector< osg::ref_ptr<PhotoArchive> > PhotoArchiveList;

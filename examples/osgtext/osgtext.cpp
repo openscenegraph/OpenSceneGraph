@@ -75,7 +75,7 @@ osg::Group* createHUDText()
 
     osg::Group* rootNode = new osg::Group;
 
-    osgText::Font* font = osgText::readFontFile("fonts/arial.ttf");
+    osg::ref_ptr<osgText::Font> font = osgText::readRefFontFile("fonts/arial.ttf");
 
     //osg::setNotifyLevel(osg::INFO);
 
@@ -344,7 +344,7 @@ osg::Group* createHUDText()
     float spacing = 40.0f;
 
     {
-        osgText::Text* text = new osgText::Text;
+        osg::ref_ptr<osgText::Text> text = new osgText::Text;
         text->setUseVertexBufferObjects(useVBOs);
         text->setColor(fontColor);
         text->setPosition(cursor);
@@ -358,9 +358,9 @@ osg::Group* createHUDText()
     }
 
     {
-        osgText::Font* arial = osgText::readFontFile("fonts/arial.ttf");
+        osg::ref_ptr<osgText::Font> arial = osgText::readRefFontFile("fonts/arial.ttf");
 
-        osgText::Text* text = new osgText::Text;
+        osg::ref_ptr<osgText::Text> text = new osgText::Text;
         text->setUseVertexBufferObjects(useVBOs);
         text->setColor(fontColor);
         text->setPosition(cursor);
@@ -376,9 +376,9 @@ osg::Group* createHUDText()
     }
 
     {
-        osgText::Font* times = osgText::readFontFile("fonts/times.ttf");
+        osg::ref_ptr<osgText::Font> times = osgText::readRefFontFile("fonts/times.ttf");
 
-        osgText::Text* text = new osgText::Text;
+        osg::ref_ptr<osgText::Text> text = new osgText::Text;
         text->setUseVertexBufferObjects(useVBOs);
         text->setColor(fontColor);
         text->setPosition(cursor);
@@ -397,9 +397,9 @@ osg::Group* createHUDText()
     cursor.y() = margin;
 
     {
-        osgText::Font* dirtydoz = osgText::readFontFile("fonts/dirtydoz.ttf");
+        osg::ref_ptr<osgText::Font> dirtydoz = osgText::readRefFontFile("fonts/dirtydoz.ttf");
 
-        osgText::Text* text = new osgText::Text;
+        osg::ref_ptr<osgText::Text> text = new osgText::Text;
         text->setUseVertexBufferObjects(useVBOs);
         text->setColor(fontColor);
         text->setPosition(cursor);
@@ -415,9 +415,9 @@ osg::Group* createHUDText()
     }
 
     {
-        osgText::Font* fudd = osgText::readFontFile("fonts/fudd.ttf");
+        osg::ref_ptr<osgText::Font> fudd = osgText::readRefFontFile("fonts/fudd.ttf");
 
-        osgText::Text* text = new osgText::Text;
+        osg::ref_ptr<osgText::Text> text = new osgText::Text;
         text->setUseVertexBufferObjects(useVBOs);
         text->setColor(fontColor);
         text->setPosition(cursor);
@@ -706,10 +706,10 @@ int main(int argc, char** argv)
         osg::Vec3 center(0.5f,0.5f,0.5f);
         float diameter = 1.0f;
 
-        osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+        osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
         if (loadedModel.valid())
         {
-            mainGroup->addChild(loadedModel.get());
+            mainGroup->addChild(loadedModel);
 
             center = loadedModel->getBound().center();
             diameter = loadedModel->getBound().radius() * 2.0f;

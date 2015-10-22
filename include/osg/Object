@@ -92,8 +92,8 @@ class OSG_EXPORT Object : public Referenced
 
         /** return the compound class name that combines the library name and class name.*/
         std::string getCompoundClassName() const { return std::string(libraryName()) + std::string("::") + std::string(className()); }
-        
-        
+
+
         /** Convert 'this' into a Node pointer if Object is a Node, otherwise return 0.
           * Equivalent to dynamic_cast<Node*>(this).*/
         virtual Node* asNode() { return 0; }
@@ -168,6 +168,8 @@ class OSG_EXPORT Object : public Referenced
         /** set the UserDataContainer object.*/
         void setUserDataContainer(osg::UserDataContainer* udc);
 
+        template<class T> void setUserDataContainer(const ref_ptr<T>& udc) { setUserDataContainer(udc.get()); }
+
         /** get the UserDataContainer attached to this object.*/
         osg::UserDataContainer* getUserDataContainer() { return _userDataContainer; }
 
@@ -186,6 +188,8 @@ class OSG_EXPORT Object : public Referenced
          * which points to your own object and handles the memory addressing.
          */
         virtual void setUserData(Referenced* obj);
+
+        template<class T> void setUserData(const ref_ptr<T>& ud) { setUserData(ud.get()); }
 
         /** Get user data.*/
         virtual Referenced* getUserData();

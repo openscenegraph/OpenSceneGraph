@@ -50,10 +50,10 @@ class SubloadCallback : public osg::Texture2DArray::SubloadCallback
 osg::StateSet* createState(osg::ArgumentParser& arguments)
 {
     // read 4 2d images
-    osg::ref_ptr<osg::Image> image_0 = osgDB::readImageFile("Images/lz.rgb");
-    osg::ref_ptr<osg::Image> image_1 = osgDB::readImageFile("Images/reflect.rgb");
-    osg::ref_ptr<osg::Image> image_2 = osgDB::readImageFile("Images/tank.rgb");
-    osg::ref_ptr<osg::Image> image_3 = osgDB::readImageFile("Images/skymap.jpg");
+    osg::ref_ptr<osg::Image> image_0 = osgDB::readRefImageFile("Images/lz.rgb");
+    osg::ref_ptr<osg::Image> image_1 = osgDB::readRefImageFile("Images/reflect.rgb");
+    osg::ref_ptr<osg::Image> image_2 = osgDB::readRefImageFile("Images/tank.rgb");
+    osg::ref_ptr<osg::Image> image_3 = osgDB::readRefImageFile("Images/skymap.jpg");
 
     if (!image_0 || !image_1 || !image_2 || !image_3)
     {
@@ -128,10 +128,10 @@ osg::StateSet* createState(osg::ArgumentParser& arguments)
 
     osg::ref_ptr<osg::Program> program = new osg::Program;
 
-    osg::ref_ptr<osg::Shader> vertexShader = osgDB::readShaderFile( osg::Shader::VERTEX, vsFileName) ;
+    osg::ref_ptr<osg::Shader> vertexShader = osgDB::readRefShaderFile( osg::Shader::VERTEX, vsFileName) ;
     if (vertexShader.get()) program->addShader( vertexShader.get() );
 
-    osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readShaderFile( osg::Shader::FRAGMENT, fsFileName) ;
+    osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile( osg::Shader::FRAGMENT, fsFileName) ;
     if (fragmentShader.get()) program->addShader( fragmentShader.get() );
 
     // create the StateSet to store the texture data

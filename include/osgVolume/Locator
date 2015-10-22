@@ -83,6 +83,9 @@ class OSGVOLUME_EXPORT Locator : public osg::Object
         };
 
         void addCallback(LocatorCallback* callback);
+        template<class T> void addCallback(const osg::ref_ptr<T>& callback) { addCallback(callback.get()); }
+
+
         void removeCallback(LocatorCallback* callback);
 
         typedef std::vector< osg::ref_ptr<LocatorCallback> > LocatorCallbacks;

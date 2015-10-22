@@ -32,7 +32,7 @@
 
 const int _ops_nb=16;
 const osg::LogicOp::Opcode _operations[_ops_nb]=
-{    
+{
     osg::LogicOp::CLEAR,
     osg::LogicOp::SET,
     osg::LogicOp::COPY,
@@ -52,7 +52,7 @@ const osg::LogicOp::Opcode _operations[_ops_nb]=
 };
 
 const char* _ops_name[_ops_nb]=
-{    
+{
     "osg::LogicOp::CLEAR",
     "osg::LogicOp::SET",
     "osg::LogicOp::COPY",
@@ -142,22 +142,22 @@ int main( int argc, char **argv )
     osg::ArgumentParser arguments(&argc,argv);
 
     // load the nodes from the commandline arguments.
-    osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
-    
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
+
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!loadedModel) loadedModel = osgDB::readNodeFile("glider.osgt");
-    
+    if (!loadedModel) loadedModel = osgDB::readRefNodeFile("glider.osgt");
+
     if (!loadedModel)
     {
         osg::notify(osg::NOTICE)<<"Please specify model filename on the command line."<<std::endl;
         return 1;
     }
-  
-    osg::Group* root = new osg::Group;
+
+    osg::ref_ptr<osg::Group> root = new osg::Group;
     root->addChild(loadedModel);
-    
-    osg::StateSet*  stateset =  new osg::StateSet;
-    osg::LogicOp*   logicOp =   new osg::LogicOp(osg::LogicOp::OR_INVERTED);
+
+    osg::ref_ptr<osg::StateSet>  stateset =  new osg::StateSet;
+    osg::ref_ptr<osg::LogicOp>   logicOp =   new osg::LogicOp(osg::LogicOp::OR_INVERTED);
 
     stateset->setAttributeAndModes(logicOp,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
@@ -170,14 +170,14 @@ int main( int argc, char **argv )
     // construct the viewer.
     osgViewer::Viewer viewer;
 
-    viewer.addEventHandler(new TechniqueEventHandler(logicOp));
-    
+    viewer.addEventHandler(new TechniqueEventHandler(logicOp.get()));
+
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
     optimzer.optimize(root);
-     
+
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData( root );
-    
+
     return viewer.run();
 }

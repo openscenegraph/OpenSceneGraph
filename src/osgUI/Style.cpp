@@ -259,7 +259,7 @@ osg::Node* Style::createText(const osg::BoundingBox& extents, const AlignmentSet
 
 osg::Node* Style::createIcon(const osg::BoundingBox& extents, const std::string& filename, const osg::Vec4& color)
 {
-    osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(filename);
+    osg::ref_ptr<osg::Object> object = osgDB::readRefObjectFile(filename);
     if (!object)
     {
         //OSG_NOTICE<<"Warning: Style::createIcon(.., "<<filename<<") could not find icon file."<<std::endl;

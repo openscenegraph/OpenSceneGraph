@@ -92,6 +92,8 @@ class OSG_EXPORT ImageSequence : public ImageStream
 
         void addImage(osg::Image* image);
 
+        template<class  T> void addImage(const osg::ref_ptr<T>& image) { addImage(image.get()); }
+
         void setImage(int s,int t,int r,
                       GLint internalTextureformat,
                       GLenum pixelFormat,GLenum type,
@@ -100,6 +102,9 @@ class OSG_EXPORT ImageSequence : public ImageStream
                       int packing=1) { Image::setImage(s,t,r,internalTextureformat, pixelFormat, type, data, mode, packing); }
 
         void setImage(unsigned int pos, osg::Image* image);
+
+        template<class  T> void setImage(unsigned int pos, const osg::ref_ptr<T>& image) { setImage(pos, image.get()); }
+
         Image* getImage(unsigned int pos);
         const Image* getImage(unsigned int pos) const;
 
@@ -108,7 +113,7 @@ class OSG_EXPORT ImageSequence : public ImageStream
         ImageDataList& getImageDataList() { return _imageDataList; }
         const ImageDataList& getImageDataList() const { return _imageDataList; }
 
-        
+
         /** ImageSequence requires a call to update(NodeVisitor*) during the update traversal so return true.*/
         virtual bool requiresUpdateCall() const { return true; }
 

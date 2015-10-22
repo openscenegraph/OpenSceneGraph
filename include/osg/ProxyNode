@@ -36,8 +36,13 @@ class OSG_EXPORT ProxyNode : public Group
 
         virtual void traverse(NodeVisitor& nv);
 
+        using osg::Group::addChild;
+
         virtual bool addChild(Node *child);
+
         virtual bool addChild(Node *child, const std::string& filename);
+
+        template<class T> bool addChild( const ref_ptr<T>& child, const std::string& filename) { return addChild(child.get(), filename); }
 
         virtual bool removeChildren(unsigned int pos,unsigned int numChildrenToRemove);
 

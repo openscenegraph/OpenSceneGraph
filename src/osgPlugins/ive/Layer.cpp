@@ -190,8 +190,7 @@ osgTerrain::Layer* LayerHelper::readLayer(DataInputStream* in)
     else if (id==IVEPROXYLAYER)
     {
         std::string filename = in->readString();
-        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(filename+".gdal");
-        osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<osgTerrain::ProxyLayer*>(object.get());
+        osg::ref_ptr<osgTerrain::ProxyLayer> proxyLayer = osgDB::readRefFile<osgTerrain::ProxyLayer>(filename+".gdal");
 
         osg::ref_ptr<osgTerrain::Locator> locator = readLocator(in);
         unsigned int minLevel = in->readUInt();
@@ -205,7 +204,7 @@ osgTerrain::Layer* LayerHelper::readLayer(DataInputStream* in)
             proxyLayer->setMaxLevel(maxLevel);
         }
 
-        return proxyLayer;
+        return proxyLayer.release();
     }
 
     return new osgTerrain::ImageLayer;

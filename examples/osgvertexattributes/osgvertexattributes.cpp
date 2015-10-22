@@ -372,7 +372,7 @@ osg::Node* createSimpleTextureTestModel()
     osg::StateSet* stateset = geometry->getOrCreateStateSet();
     stateset->setAttribute(program);
 
-    osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile("Images/lz.rgb");
     osg::Texture2D* texture = new osg::Texture2D(image);
     texture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
     texture->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
@@ -415,7 +415,7 @@ int main(int argc, char *argv[])
         while (arguments.read("--vertex-attrib")) { runConvertToVertexAttributes = true; }
         while (arguments.read("--no-vertex-attrib")) { runConvertToVertexAttributes = false; }
 
-        loadedModel = osgDB::readNodeFiles(arguments);
+        loadedModel = osgDB::readRefNodeFiles(arguments);
         if (!loadedModel.get())
         {
             osg::notify(osg::NOTICE)<<"No model loaded, please specify a model filename."<<std::endl;
@@ -446,7 +446,7 @@ int main(int argc, char *argv[])
     }
 
     // add a viewport to the viewer and attach the scene graph.
-    viewer.setSceneData(loadedModel.get());
+    viewer.setSceneData(loadedModel);
 
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
 

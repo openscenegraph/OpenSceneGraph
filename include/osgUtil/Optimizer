@@ -122,9 +122,13 @@ class OSGUTIL_EXPORT Optimizer
           * visitors, specified by the OptimizationOptions.*/
         void optimize(osg::Node* node);
 
+        template<class T> void optimize(const osg::ref_ptr<T>& node) { optimize(node.get()); }
+
         /** Traverse the node and its subgraph with a series of optimization
           * visitors, specified by the OptimizationOptions.*/
         virtual void optimize(osg::Node* node, unsigned int options);
+
+        template<class T> void optimize(const osg::ref_ptr<T>& node, unsigned int options) { optimize(node.get(), options); }
 
 
         /** Callback for customizing what operations are permitted on objects in the scene graph.*/

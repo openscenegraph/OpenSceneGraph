@@ -1,4 +1,4 @@
-/* -*-c++-*- 
+/* -*-c++-*-
 *
 *  OpenSceneGraph example, osgphotoalbum.
 *
@@ -35,19 +35,19 @@ public:
     }
 
     typedef std::vector<std::string> FileNameList;
-    
+
     bool empty() { return _photoIndex.empty(); }
 
     void getImageFileNameList(FileNameList& filenameList);
-    
+
     static void buildArchive(const std::string& filename, const FileNameList& imageList, unsigned int thumbnailSize=256, unsigned int maximumSize=1024, bool compressed=true);
 
-    osg::Image* readImage(const std::string& filename,
+    osg::ref_ptr<osg::Image> readImage(const std::string& filename,
                           unsigned int target_s, unsigned target_t,
                           float& original_s, float& original_t);
-                          
-    
-    
+
+
+
 protected:
 
     PhotoArchive(const std::string& filename);
@@ -55,7 +55,7 @@ protected:
     virtual ~PhotoArchive() {}
 
     bool readPhotoIndex(const std::string& filename);
-    
+
     struct PhotoHeader
     {
         PhotoHeader():
@@ -70,7 +70,7 @@ protected:
         {
             filename[0]='\0';
         }
-    
+
         char filename[256];
         unsigned int original_s;
         unsigned int original_t;
@@ -84,7 +84,7 @@ protected:
         unsigned int fullsize_position;
     };
 
-    
+
     struct ImageHeader
     {
         ImageHeader():
@@ -94,7 +94,7 @@ protected:
             pixelFormat(0),
             type(0),
             size(0) {}
-    
+
         unsigned int s;
         unsigned int t;
         GLint internalTextureformat;
@@ -107,7 +107,7 @@ protected:
     typedef std::vector<PhotoHeader> PhotoIndexList;
 
     std::string     _archiveFileName;
-    PhotoIndexList  _photoIndex;    
+    PhotoIndexList  _photoIndex;
 
 };
 

@@ -43,8 +43,8 @@ osg::Image* createSpotLightImage(const osg::Vec4& centerColour, const osg::Vec4&
     osg::Image* image = new osg::Image;
     image->allocateImage(size,size,1,
                          GL_RGBA,GL_UNSIGNED_BYTE);
-     
-     
+
+
     float mid = (float(size)-1)*0.5f;
     float div = 2.0f/float(size);
     for(unsigned int r=0;r<size;++r)
@@ -71,11 +71,11 @@ osg::Image* createSpotLightImage(const osg::Vec4& centerColour, const osg::Vec4&
 osg::StateSet* createSpotLightDecoratorState(unsigned int lightNum, unsigned int textureUnit)
 {
     osg::StateSet* stateset = new osg::StateSet;
-    
+
     stateset->setMode(GL_LIGHT0+lightNum, osg::StateAttribute::ON);
 
     osg::Vec4 centerColour(1.0f,1.0f,1.0f,1.0f);
-    osg::Vec4 ambientColour(0.05f,0.05f,0.05f,1.0f); 
+    osg::Vec4 ambientColour(0.05f,0.05f,0.05f,1.0f);
 
     // set up spot light texture
     osg::Texture2D* texture = new osg::Texture2D();
@@ -84,15 +84,15 @@ osg::StateSet* createSpotLightDecoratorState(unsigned int lightNum, unsigned int
     texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_BORDER);
     texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_BORDER);
     texture->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_BORDER);
-    
+
     stateset->setTextureAttributeAndModes(textureUnit, texture, osg::StateAttribute::ON);
-    
+
     // set up tex gens
     stateset->setTextureMode(textureUnit, GL_TEXTURE_GEN_S, osg::StateAttribute::ON);
     stateset->setTextureMode(textureUnit, GL_TEXTURE_GEN_T, osg::StateAttribute::ON);
     stateset->setTextureMode(textureUnit, GL_TEXTURE_GEN_R, osg::StateAttribute::ON);
     stateset->setTextureMode(textureUnit, GL_TEXTURE_GEN_Q, osg::StateAttribute::ON);
-    
+
     return stateset;
 }
 
@@ -100,7 +100,7 @@ osg::StateSet* createSpotLightDecoratorState(unsigned int lightNum, unsigned int
 osg::Node* createSpotLightNode(const osg::Vec3& position, const osg::Vec3& direction, float angle, unsigned int lightNum, unsigned int textureUnit)
 {
     osg::Group* group = new osg::Group;
-    
+
     // create light source.
     osg::LightSource* lightsource = new osg::LightSource;
     osg::Light* light = lightsource->getLight();
@@ -109,13 +109,13 @@ osg::Node* createSpotLightNode(const osg::Vec3& position, const osg::Vec3& direc
     light->setAmbient(osg::Vec4(0.00f,0.00f,0.05f,1.0f));
     light->setDiffuse(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
     group->addChild(lightsource);
-    
+
     // create tex gen.
-    
+
     osg::Vec3 up(0.0f,0.0f,1.0f);
     up = (direction ^ up) ^ direction;
     up.normalize();
-    
+
     osg::TexGenNode* texgenNode = new osg::TexGenNode;
     texgenNode->setTextureUnit(textureUnit);
     osg::TexGen* texgen = texgenNode->getTexGen();
@@ -125,56 +125,56 @@ osg::Node* createSpotLightNode(const osg::Vec3& position, const osg::Vec3& direc
                                 osg::Matrixd::translate(1.0,1.0,1.0)*
                                 osg::Matrixd::scale(0.5,0.5,0.5));
 
-    
+
     group->addChild(texgenNode);
-    
+
     return group;
-    
+
 }
 
 
 osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,double looptime)
 {
-    // set up the animation path 
+    // set up the animation path
     osg::AnimationPath* animationPath = new osg::AnimationPath;
     animationPath->setLoopMode(osg::AnimationPath::LOOP);
-    
+
     int numSamples = 40;
     float yaw = 0.0f;
     float yaw_delta = 2.0f*osg::PI/((float)numSamples-1.0f);
     float roll = osg::inDegrees(30.0f);
-    
+
     double time=0.0f;
     double time_delta = looptime/(double)numSamples;
     for(int i=0;i<numSamples;++i)
     {
         osg::Vec3 position(center+osg::Vec3(sinf(yaw)*radius,cosf(yaw)*radius,0.0f));
         osg::Quat rotation(osg::Quat(roll,osg::Vec3(0.0,1.0,0.0))*osg::Quat(-(yaw+osg::inDegrees(90.0f)),osg::Vec3(0.0,0.0,1.0)));
-        
+
         animationPath->insert(time,osg::AnimationPath::ControlPoint(position,rotation));
 
         yaw += yaw_delta;
         time += time_delta;
 
     }
-    return animationPath;    
+    return animationPath;
 }
 
 osg::Node* createBase(const osg::Vec3& center,float radius)
 {
 
     osg::Geode* geode = new osg::Geode;
-    
+
     // set up the texture of the base.
     osg::StateSet* stateset = new osg::StateSet();
-    osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile("Images/lz.rgb");
     if (image)
     {
         osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
         stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     }
-    
+
     geode->setStateSet( stateset );
 
 
@@ -183,7 +183,7 @@ osg::Node* createBase(const osg::Vec3& center,float radius)
     grid->setOrigin(center+osg::Vec3(-radius,-radius,0.0f));
     grid->setXInterval(radius*2.0f/(float)(38-1));
     grid->setYInterval(radius*2.0f/(float)(39-1));
-    
+
     float minHeight = FLT_MAX;
     float maxHeight = -FLT_MAX;
 
@@ -198,7 +198,7 @@ osg::Node* createBase(const osg::Vec3& center,float radius)
             if (h<minHeight) minHeight=h;
         }
     }
-    
+
     float hieghtScale = radius*0.5f/(maxHeight-minHeight);
     float hieghtOffset = -(minHeight+maxHeight)*0.5f;
 
@@ -210,12 +210,12 @@ osg::Node* createBase(const osg::Vec3& center,float radius)
             grid->setHeight(c,r,(h+hieghtOffset)*hieghtScale);
         }
     }
-    
+
     geode->addDrawable(new osg::ShapeDrawable(grid));
-     
+
     osg::Group* group = new osg::Group;
     group->addChild(geode);
-     
+
     return group;
 
 }
@@ -227,8 +227,8 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
     osg::AnimationPath* animationPath = createAnimationPath(center,radius,animationLength);
 
     osg::Group* model = new osg::Group;
- 
-    osg::Node* cessna = osgDB::readNodeFile("cessna.osgt");
+
+    osg::ref_ptr<osg::Node> cessna = osgDB::readRefNodeFile("cessna.osgt");
     if (cessna)
     {
         const osg::BoundingSphere& bs = cessna->getBound();
@@ -239,9 +239,9 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
         positioned->setMatrix(osg::Matrix::translate(-bs.center())*
                               osg::Matrix::scale(size,size,size)*
                               osg::Matrix::rotate(osg::inDegrees(180.0f),0.0f,0.0f,2.0f));
-    
+
         positioned->addChild(cessna);
-    
+
         osg::MatrixTransform* xform = new osg::MatrixTransform;
         xform->setUpdateCallback(new osg::AnimationPathCallback(animationPath,0.0f,2.0));
         xform->addChild(positioned);
@@ -250,7 +250,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
 
         model->addChild(xform);
     }
-    
+
     return model;
 }
 
@@ -270,7 +270,7 @@ osg::Node* createModel()
 
     // combine the models together to create one which has the shadower and the shadowed with the required callback.
     osg::Group* root = new osg::Group;
-    
+
     root->setStateSet(createSpotLightDecoratorState(0,1));
 
     root->addChild(shadower);
@@ -284,10 +284,10 @@ int main(int, char **)
 {
     // construct the viewer.
     osgViewer::Viewer viewer;
-    
+
     // add the spoit light model to the viewer
     viewer.setSceneData( createModel() );
-    
+
     // run the viewer main frame loop.
     return viewer.run();
 }

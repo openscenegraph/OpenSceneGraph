@@ -12,7 +12,7 @@
 */
 
 //
-// OpenFlight� loader for OpenSceneGraph
+// OpenFlight loader for OpenSceneGraph
 //
 //  Copyright (C) 2005-2007  Brede Johansen
 //
@@ -174,7 +174,7 @@ public:
             std::string filename = node.getFileName(pos);
 
             // read external
-            osg::ref_ptr<osg::Node> external = osgDB::readNodeFile(filename,_options.get());
+            osg::ref_ptr<osg::Node> external = osgDB::readRefNodeFile(filename,_options.get());
             if (external.valid())
             {
                 if (_cloneExternalReferences)

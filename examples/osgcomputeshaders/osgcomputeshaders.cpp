@@ -43,7 +43,7 @@ static const char* computeSrc = {
 int main( int argc, char** argv )
 {
     osg::ArgumentParser arguments( &argc, argv );
-    
+
     // Create the texture as both the output of compute shader and the input of a normal quad
     osg::ref_ptr<osg::Texture2D> tex2D = new osg::Texture2D;
     tex2D->setTextureSize( 512, 512 );
@@ -53,23 +53,23 @@ int main( int argc, char** argv )
     tex2D->setSourceFormat( GL_RED );
     tex2D->setSourceType( GL_FLOAT );
     tex2D->bindToImageUnit( 0, osg::Texture::WRITE_ONLY );  // So we can use 'image2D' in the compute shader
-    
+
     // The compute shader can't work with other kinds of shaders
     // It also requires the work group numbers. Setting them to 0 will disable the compute shader
     osg::ref_ptr<osg::Program> computeProg = new osg::Program;
     computeProg->setComputeGroups( 512/16, 512/16, 1 );
     computeProg->addShader( new osg::Shader(osg::Shader::COMPUTE, computeSrc) );
-    
+
     // Create a node for outputting to the texture.
     // It is OK to have just an empty node here, but seems inbuilt uniforms like osg_FrameTime won't work then.
     // TODO: maybe we can have a custom drawable which also will implement glMemoryBarrier?
-    osg::Node* sourceNode = osgDB::readNodeFile("axes.osgt");
+    osg::ref_ptr<osg::Node> sourceNode = osgDB::readRefNodeFile("axes.osgt");
     if ( !sourceNode ) sourceNode = new osg::Node;
     sourceNode->setDataVariance( osg::Object::DYNAMIC );
     sourceNode->getOrCreateStateSet()->setAttributeAndModes( computeProg.get() );
     sourceNode->getOrCreateStateSet()->addUniform( new osg::Uniform("targetTex", (int)0) );
     sourceNode->getOrCreateStateSet()->setTextureAttributeAndModes( 0, tex2D.get() );
-    
+
     // Display the texture on a quad. We will also be able to operate on the data if reading back to CPU side
     osg::Geometry* geom = osg::createTexturedQuadGeometry(
         osg::Vec3(), osg::Vec3(1.0f,0.0f,0.0f), osg::Vec3(0.0f,0.0f,1.0f) );
@@ -77,12 +77,12 @@ int main( int argc, char** argv )
     quad->addDrawable( geom );
     quad->getOrCreateStateSet()->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
     quad->getOrCreateStateSet()->setTextureAttributeAndModes( 0, tex2D.get() );
-    
+
     // Create the scene graph and start the viewer
     osg::ref_ptr<osg::Group> scene = new osg::Group;
     scene->addChild( sourceNode );
     scene->addChild( quad.get() );
-    
+
     osgViewer::Viewer viewer;
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
     viewer.addEventHandler( new osgViewer::StatsHandler );

@@ -12,7 +12,8 @@ static bool checkFont( const osgText::TextBase& text )
 static bool readFont( osgDB::InputStream& is, osgText::TextBase& text )
 {
     std::string fontName; is.readWrappedString( fontName );
-    text.setFont( osgText::readFontFile(fontName) );
+    osg::ref_ptr<osgText::Font> font = osgText::readRefFontFile(fontName);
+    text.setFont( font );
     return true;
 }
 
@@ -77,11 +78,12 @@ static bool readText( osgDB::InputStream& is, osgText::TextBase& text )
     }
     else
     {
-        osg::UIntArray* array = dynamic_cast<osg::UIntArray*>( is.readArray() );
-        if ( array )
+        osg::ref_ptr<osg::Array> array = is.readArray();
+        osg::UIntArray* uiarray = dynamic_cast<osg::UIntArray*>( array.get() );
+        if ( uiarray )
         {
             osgText::String string;
-            for ( osg::UIntArray::iterator itr=array->begin(); itr!=array->end(); ++itr )
+            for ( osg::UIntArray::iterator itr=uiarray->begin(); itr!=uiarray->end(); ++itr )
             {
                 string.push_back( *itr );
             }

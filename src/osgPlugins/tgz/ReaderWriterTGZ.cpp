@@ -113,8 +113,8 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
                     *itr!=std::string(".") &&
                     *itr!=std::string(".."))
                 {
-                    osg::Node *node = osgDB::readNodeFile(*itr, local_options.get());
-                    grp->addChild( node );
+                    osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile(*itr, local_options.get());
+                    if (node) grp->addChild( node );
                 }
             }
 
@@ -136,7 +136,7 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
                 return ReadResult::FILE_NOT_HANDLED;
             }
 
-            return grp.get();
+            return grp;
 
         }
 

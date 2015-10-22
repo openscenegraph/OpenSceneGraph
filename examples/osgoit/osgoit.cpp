@@ -55,23 +55,23 @@ int main(int argc, char** argv)
 
     osg::DisplaySettings* displaySettings = new osg::DisplaySettings;
     viewer.setDisplaySettings(displaySettings);
-   
+
     // Add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
-   
+
     // add the help handler
     viewer.addEventHandler(new osgViewer::HelpHandler(arguments.getApplicationUsage()));
 
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
-   
+
     // read the dump truck, we will need it twice
-    osg::ref_ptr<osg::Node> dt = osgDB::readNodeFile("dumptruck.osg");
+    osg::ref_ptr<osg::Node> dt = osgDB::readRefNodeFile("dumptruck.osg");
 
     // display a solid version of the dump truck
     osg::ref_ptr<osg::PositionAttitudeTransform> solidModel = new osg::PositionAttitudeTransform;
     solidModel->setPosition(osg::Vec3f(7.0f, -2.0f, 7.0f));
-    solidModel->addChild(dt.get());
+    solidModel->addChild(dt);
 
     // generate the 3D heatmap surface to display
     osg::ref_ptr<Heatmap> hm = new Heatmap(30, 30, 10, 30, 30, 1.0, 0.25);

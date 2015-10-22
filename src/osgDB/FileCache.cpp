@@ -343,7 +343,7 @@ bool FileCache::loadDatabaseRevisionsForFile(const std::string& originalFileName
         if (!cacheFileName.empty() && osgDB::fileExists(cacheFileName))
         {
             OSG_INFO<<"   found revisions file in local cache, now loading it"<<std::endl;
-            osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(cacheFileName);
+            osg::ref_ptr<osg::Object> object = osgDB::readRefObjectFile(cacheFileName);
             dr_local = dynamic_cast<DatabaseRevisions*>(object.get());
             if (dr_local)
             {
@@ -357,7 +357,7 @@ bool FileCache::loadDatabaseRevisionsForFile(const std::string& originalFileName
     }
 
     // now load revision file from remote server
-    osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(revisionsFileName+".curl");
+    osg::ref_ptr<osg::Object> object = osgDB::readRefObjectFile(revisionsFileName+".curl");
     osg::ref_ptr<DatabaseRevisions> dr_remote = dynamic_cast<DatabaseRevisions*>(object.get());
 
     if (dr_remote.valid())
@@ -463,7 +463,7 @@ FileList* FileCache::readFileList(const std::string& originalFileName) const
     std::string cacheFileListName = createCacheFileName(originalFileName);
     if (!cacheFileListName.empty() && osgDB::fileExists(cacheFileListName))
     {
-        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(cacheFileListName);
+        osg::ref_ptr<osg::Object> object = osgDB::readRefObjectFile(cacheFileListName);
         fileList = dynamic_cast<osgDB::FileList*>(object.get());
         if (fileList) OSG_INFO<<"     loadeded FileList from local cache "<<fileList->getName()<<std::endl;
     }
@@ -471,7 +471,7 @@ FileList* FileCache::readFileList(const std::string& originalFileName) const
     if (!fileList)
     {
         OSG_INFO<<"       complete_path="<<originalFileName<<std::endl;
-        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(originalFileName+".curl");
+        osg::ref_ptr<osg::Object> object = osgDB::readRefObjectFile(originalFileName+".curl");
         fileList = dynamic_cast<osgDB::FileList*>(object.get());
         if (fileList)
         {

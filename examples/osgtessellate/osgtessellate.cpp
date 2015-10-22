@@ -98,7 +98,7 @@ osg::Geometry *makePolsTwo (void)
     // demonstrate that the Tessellator makes textured tessellations
     osg::StateSet* stateset = new osg::StateSet();
 
-    osg::Image* image = osgDB::readImageFile("Cubemap_snow/posy.jpg");
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile("Cubemap_snow/posy.jpg");
     if (image)
     {
         osg::Texture2D* texture = new osg::Texture2D;
@@ -169,7 +169,7 @@ osg::Geometry *makeSideWall (const float xpos)
     // demonstrate that the Tessellator makes textured tessellations
     osg::StateSet* stateset = new osg::StateSet();
 
-    osg::Image* image = osgDB::readImageFile("Cubemap_snow/posx.jpg");
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile("Cubemap_snow/posx.jpg");
     if (image)
     {
         osg::Texture2D* texture = new osg::Texture2D;
@@ -265,7 +265,7 @@ osg::Geometry *makeFrontWall (const float zpos) {
     // demonstrate that the Tessellator makes textured tessellations
     osg::StateSet* stateset = new osg::StateSet();
 
-    osg::Image* image = osgDB::readImageFile("Cubemap_snow/posy.jpg");
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile("Cubemap_snow/posy.jpg");
     if (image)
     {
         osg::Texture2D* texture = new osg::Texture2D;
@@ -458,7 +458,7 @@ osg::Geometry *makePols (void) {
     // demonstrate that the Tessellator makes textured tessellations
     osg::StateSet* stateset = new osg::StateSet();
 
-    osg::Image* image = osgDB::readImageFile("Cubemap_snow/posz.jpg");
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile("Cubemap_snow/posz.jpg");
     if (image)
     {
         osg::Texture2D* texture = new osg::Texture2D;
@@ -750,7 +750,7 @@ int main( int argc, char **argv )
     osgViewer::Viewer viewer;
 
     // read the scene from the list of file specified commandline args.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
 
     // if no model has been successfully loaded report failure.
     if (!loadedModel)

@@ -54,12 +54,12 @@ static osg::Camera::Attachment readBufferAttachment( osgDB::InputStream& is )
     else if ( type==1 )
     {
         is >> is.PROPERTY("Image");
-        attachment._image = dynamic_cast<osg::Image*>( is.readObject() );
+        attachment._image = is.readObjectOfType<osg::Image>();
     }
     else if ( type==2 )
     {
         is >> is.PROPERTY("Texture");
-        attachment._texture = dynamic_cast<osg::Texture*>( is.readObject() );
+        attachment._texture = is.readObjectOfType<osg::Texture>();
         is >> is.PROPERTY("Level") >> attachment._level;
         is >> is.PROPERTY("Face") >> attachment._face;
         is >> is.PROPERTY("MipMapGeneration") >> attachment._mipMapGeneration;

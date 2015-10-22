@@ -50,7 +50,7 @@ osg::Node* DatabaseCacheReadCallback::readNodeFile(const std::string& filename)
     }
 
     // now load the file.
-    osg::ref_ptr<osg::Node> node = osgDB::readNodeFile(filename);
+    osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile(filename);
 
     // insert into the cache.
     if (node.valid())

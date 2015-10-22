@@ -48,6 +48,8 @@ class OSG_EXPORT Texture2DArray : public Texture
         /** Set the texture image for specified layer. */
         virtual void setImage(unsigned int layer, Image* image);
 
+        template<class T> void setImage(unsigned int layer, const ref_ptr<T>& image) { setImage(layer, image.get()); }
+
         /** Get the texture image for specified layer. */
         virtual Image* getImage(unsigned int layer);
 

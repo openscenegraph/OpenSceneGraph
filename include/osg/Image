@@ -542,11 +542,17 @@ class Geode;
   * Use the image's s and t values to scale the dimensions of the image.
 */
 extern OSG_EXPORT Geode* createGeodeForImage(Image* image);
+
+template<class T> Geode* createGeodeForImage(const ref_ptr<T>& image) { return createGeodeForImage(image.get()); }
+
+
 /** Convenience function to be used by image loaders to generate a valid geode
   * to return for readNode().
   * Use the specified s and t values to scale the dimensions of the image.
 */
-extern OSG_EXPORT Geode* createGeodeForImage(Image* image,float s,float t);
+extern OSG_EXPORT Geode* createGeodeForImage(Image* image, float s, float t);
+
+template<class T> Geode* createGeodeForImage(const ref_ptr<T>& image, float s, float t) { return createGeodeForImage(image.get(), s, t); }
 
 }
 

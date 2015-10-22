@@ -64,11 +64,11 @@ int main( int argc, char **argv )
     osg::ArgumentParser arguments(&argc,argv);
 
     // read the scene from the list of file specified commandline args.
-    osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> scene = osgDB::readRefNodeFiles(arguments);
 
     if (!scene)
     {
-        scene = osgDB::readNodeFile("http://www.openscenegraph.org/data/earth_bayarea/earth.ive");
+        scene = osgDB::readRefNodeFile("http://www.openscenegraph.org/data/earth_bayarea/earth.ive");
     }
 
     if (!scene)
@@ -123,7 +123,7 @@ int main( int argc, char **argv )
             view->setName("View one");
             viewer.addView(view);
 
-            view->setSceneData(scene.get());
+            view->setSceneData(scene);
             view->getCamera()->setName("Cam one");
             view->getCamera()->setViewport(new osg::Viewport(0,0, traits->width/2, traits->height/2));
             view->getCamera()->setGraphicsContext(gc.get());
@@ -148,7 +148,7 @@ int main( int argc, char **argv )
             view->setName("View two");
             viewer.addView(view);
 
-            view->setSceneData(scene.get());
+            view->setSceneData(scene);
             view->getCamera()->setName("Cam two");
             view->getCamera()->setViewport(new osg::Viewport(traits->width/2,0, traits->width/2, traits->height/2));
             view->getCamera()->setGraphicsContext(gc.get());
@@ -162,7 +162,7 @@ int main( int argc, char **argv )
             view->setName("View three");
             viewer.addView(view);
 
-            view->setSceneData(scene.get());
+            view->setSceneData(scene);
 
             view->getCamera()->setName("Cam three");
             view->getCamera()->setProjectionMatrixAsPerspective(30.0, double(traits->width) / double(traits->height/2), 1.0, 1000.0);

@@ -62,7 +62,7 @@ bool VncClient::assign(VncImage* vncImage, const GeometryHints& hints)
                 osg::StateAttribute::ON);
 
     osg::ref_ptr<osgViewer::InteractiveImageHandler> iih = new osgViewer::InteractiveImageHandler(_vncImage.get());
-    
+
     pictureQuad->setEventCallback(iih.get());
     pictureQuad->setCullCallback(iih.get());
 
@@ -73,7 +73,7 @@ bool VncClient::assign(VncImage* vncImage, const GeometryHints& hints)
 
 bool VncClient::connect(const std::string& hostname, const GeometryHints& hints)
 {
-    osg::ref_ptr<osg::Image> image = osgDB::readImageFile(hostname+".vnc");
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(hostname+".vnc");
     return assign(dynamic_cast<VncImage*>(image.get()), hints);
 }
 

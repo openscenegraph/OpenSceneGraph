@@ -163,7 +163,8 @@ int main (int argc, char* argv[])
         file = psr[1];
 
     // replace the manager
-    osg::Group* root = dynamic_cast<osg::Group*>(osgDB::readNodeFile(file));
+    osg::ref_ptr<osg::Node> loadedmodel = osgDB::readRefNodeFile(file);
+    osg::Group* root = dynamic_cast<osg::Group*>(loadedmodel.get());
     if (!root) {
         osg::notify(osg::FATAL) << "can't read file " << file << std::endl;
         return 1;

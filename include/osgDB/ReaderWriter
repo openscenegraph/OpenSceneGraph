@@ -123,7 +123,11 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
 
                 ReadResult(ReadStatus status=FILE_NOT_HANDLED):_status(status) {}
                 ReadResult(const std::string& m):_status(ERROR_IN_READING_FILE),_message(m) {}
+
                 ReadResult(osg::Object* obj, ReadStatus status=FILE_LOADED):_status(status),_object(obj) {}
+
+                template<class T>
+                ReadResult(const osg::ref_ptr<T>& obj, ReadStatus status=FILE_LOADED):_status(status),_object(obj.get()) {}
 
                 ReadResult(const ReadResult& rr):_status(rr._status),_message(rr._message),_object(rr._object) {}
                 ReadResult& operator = (const ReadResult& rr) { if (this==&rr) return *this; _status=rr._status; _message=rr._message;_object=rr._object; return *this; }

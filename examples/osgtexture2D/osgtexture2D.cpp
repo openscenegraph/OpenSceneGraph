@@ -170,7 +170,7 @@ osg::Node* createFilterWall(osg::BoundingBox& bb,const std::string& filename)
     // set up the texture state.
     osg::Texture2D* texture = new osg::Texture2D;
     texture->setDataVariance(osg::Object::DYNAMIC); // protect from being optimized away as static state.
-    texture->setImage(osgDB::readImageFile(filename));
+    texture->setImage(osgDB::readRefImageFile(filename));
 
     osg::StateSet* stateset = geom->getOrCreateStateSet();
     stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
@@ -327,7 +327,7 @@ osg::Node* createAnisotripicWall(osg::BoundingBox& bb,const std::string& filenam
     // set up the texture state.
     osg::Texture2D* texture = new osg::Texture2D;
     texture->setDataVariance(osg::Object::DYNAMIC); // protect from being optimized away as static state.
-    texture->setImage(osgDB::readImageFile(filename));
+    texture->setImage(osgDB::readRefImageFile(filename));
 
     osg::StateSet* stateset = geom->getOrCreateStateSet();
     stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
@@ -485,7 +485,7 @@ osg::Node* createWrapWall(osg::BoundingBox& bb,const std::string& filename)
     osg::Texture2D* texture = new osg::Texture2D;
     texture->setDataVariance(osg::Object::DYNAMIC); // protect from being optimized away as static state.
     texture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,0.5f)); // only used when wrap is set to CLAMP_TO_BORDER
-    texture->setImage(osgDB::readImageFile(filename));
+    texture->setImage(osgDB::readRefImageFile(filename));
 
     osg::StateSet* stateset = geom->getOrCreateStateSet();
     stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
@@ -535,7 +535,7 @@ public:
     {
 
 #if 1
-        osg::ref_ptr<osg::Image> originalImage = osgDB::readImageFile("Images/dog_left_eye.jpg");
+        osg::ref_ptr<osg::Image> originalImage = osgDB::readRefImageFile("Images/dog_left_eye.jpg");
 
         osg::ref_ptr<osg::Image> subImage = new osg::Image;
         subImage->setUserData(originalImage.get()); // attach the originalImage as user data to prevent it being deleted.
@@ -573,14 +573,14 @@ public:
 #endif
 
 
-        _imageList.push_back(subImage.get());
+        _imageList.push_back(subImage);
 
 #else
-        _imageList.push_back(osgDB::readImageFile("Images/dog_left_eye.jpg"));
+        _imageList.push_back(osgDB::readRefImageFile("Images/dog_left_eye.jpg"));
 #endif
         _textList.push_back("Subloaded Image 1 - dog_left_eye.jpg");
 
-        _imageList.push_back(osgDB::readImageFile("Images/dog_right_eye.jpg"));
+        _imageList.push_back(osgDB::readRefImageFile("Images/dog_right_eye.jpg"));
         _textList.push_back("Subloaded Image 2 - dog_right_eye.jpg");
 
         setValues();

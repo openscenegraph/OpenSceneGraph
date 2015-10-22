@@ -121,7 +121,7 @@ public:
         if (!technique) technique = new osgShadow::ShadowVolume;
 
         // recursively load the subfile.
-        osg::Node *node = osgDB::readNodeFile( subFileName, options );
+        osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile( subFileName, options );
         if( !node )
         {
             // propagate the read failure upwards
@@ -130,7 +130,7 @@ public:
         }
 
         osgShadow::ShadowedScene* shadowedScene = new osgShadow::ShadowedScene;
-        shadowedScene->setShadowTechnique(technique.get());
+        shadowedScene->setShadowTechnique(technique);
         shadowedScene->addChild( node );
         return shadowedScene;
     }

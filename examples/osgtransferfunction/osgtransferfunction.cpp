@@ -512,7 +512,7 @@ int main(int argc, char ** argv)
     return 1;
 #else
 
-    osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> model = osgDB::readRefNodeFiles(arguments);
 #endif
     typedef std::vector< osg::ref_ptr<osg::Node> > Nodes;
     Nodes nodes;

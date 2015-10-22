@@ -57,6 +57,8 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         /** Set the overlay subgraph which will be rendered to texture.*/
         void setOverlaySubgraph(osg::Node* node);
 
+        template<class T> void setOverlaySubgraph(const osg::ref_ptr<T>& node) { setOverlaySubgraph(node.get()); }
+
         /** Get the overlay subgraph which will be rendered to texture.*/
         osg::Node* getOverlaySubgraph() { return _overlaySubgraph.get(); }
 

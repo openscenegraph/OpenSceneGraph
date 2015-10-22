@@ -85,6 +85,8 @@ namespace osgParticle
         virtual const Program* getProgram() const  = 0;
 
         void setParticleSystem(ParticleSystem* ps);
+        template<class T> void setParticleSystem(const osg::ref_ptr<T>& ri) { setParticleSystem(ri.get()); }
+
         inline ParticleSystem* getParticleSystem() { return _particleSystem.get(); }
         inline const ParticleSystem* getParticleSystem() const { return _particleSystem.get(); }
 

@@ -388,7 +388,7 @@ osg::Geode* ForestTechniqueManager::createTerrain(const osg::Vec3& origin, const
     // ---------------------------------------
     osg::StateSet* stateset = new osg::StateSet();
 
-    osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile("Images/lz.rgb");
     if (image)
     {
         osg::Texture2D* texture = new osg::Texture2D;
@@ -1182,7 +1182,7 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates, u
     osg::Texture2D *tex = new osg::Texture2D;
     tex->setWrap( osg::Texture2D::WRAP_S, osg::Texture2D::CLAMP );
     tex->setWrap( osg::Texture2D::WRAP_T, osg::Texture2D::CLAMP );
-    tex->setImage(osgDB::readImageFile("Images/tree0.rgba"));
+    tex->setImage(osgDB::readRefImageFile("Images/tree0.rgba"));
 
     osg::StateSet *dstate = new osg::StateSet;
     {

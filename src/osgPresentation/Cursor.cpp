@@ -77,7 +77,7 @@ void Cursor::initializeCursor()
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
 
-    osg::ref_ptr<osg::Image> image = osgDB::readImageFile(osgDB::findDataFile(_filename));
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(osgDB::findDataFile(_filename));
     osg::ref_ptr<osg::Texture2D> texture = (image.valid()) ? new osg::Texture2D(image.get()) : 0;
 
     // full cursor

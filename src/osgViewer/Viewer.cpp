@@ -165,7 +165,7 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
         std::string intensityMapFilename;
         while (arguments.read("--im",intensityMapFilename)) {}
 
-        osg::ref_ptr<osg::Image> intensityMap = intensityMapFilename.empty() ? 0 : osgDB::readImageFile(intensityMapFilename);
+        osg::ref_ptr<osg::Image> intensityMap = intensityMapFilename.empty() ? 0 : osgDB::readRefImageFile(intensityMapFilename);
 
         if (screenNum<0) screenNum = 0;
 
@@ -297,7 +297,7 @@ bool Viewer::readConfiguration(const std::string& filename)
 {
     OSG_INFO<<"Viewer::readConfiguration("<<filename<<")"<<std::endl;
 
-    osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(filename);
+    osg::ref_ptr<osg::Object> object = osgDB::readRefObjectFile(filename);
     if (!object)
     {
         //OSG_NOTICE<<"Error: Unable to load configuration file \""<<filename<<"\""<<std::endl;
@@ -308,7 +308,7 @@ bool Viewer::readConfiguration(const std::string& filename)
     if (config)
     {
         OSG_INFO<<"Using osgViewer::Config : "<<config->className()<<std::endl;
-        
+
         config->configure(*this);
 
         //osgDB::writeObjectFile(*config,"test.osgt");
@@ -986,7 +986,7 @@ void Viewer::eventTraversal()
     // create a frame event for the new frame.
     {
         osg::ref_ptr<osgGA::GUIEventAdapter> event = _eventQueue->frame( getFrameStamp()->getReferenceTime() );
-        
+
         if (!eventState || eventState->getNumPointerData()<2)
         {
             generatePointerData(*event);
@@ -996,7 +996,7 @@ void Viewer::eventTraversal()
             reprojectPointerData(*eventState, *event);
         }
     }
-    
+
     // OSG_NOTICE<<"mouseEventState Xmin = "<<eventState->getXmin()<<" Ymin="<<eventState->getYmin()<<" xMax="<<eventState->getXmax()<<" Ymax="<<eventState->getYmax()<<std::endl;
 
     _eventQueue->takeEvents(events, cutOffTime);

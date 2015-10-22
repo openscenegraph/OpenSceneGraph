@@ -453,7 +453,7 @@ int main( int argc, char **argv )
     osg::Timer_t start_tick = osg::Timer::instance()->tick();
 
     // read the scene from the list of file specified command line args.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
 
     // if no model has been successfully loaded report failure.
     bool tragger2Scene(true);
@@ -481,14 +481,14 @@ int main( int argc, char **argv )
 
     // optimize the scene graph, remove redundant nodes and state etc.
     osgUtil::Optimizer optimizer;
-    optimizer.optimize(loadedModel.get());
+    optimizer.optimize(loadedModel);
 
 
     // pass the loaded scene graph to the viewer.
     if ( tragger2Scene ) {
         viewer.setSceneData(addDraggerToScene(loadedModel.get(), dragger_name, fixedSizeInScreen));
     } else {
-        viewer.setSceneData(loadedModel.get());
+        viewer.setSceneData(loadedModel);
     }
 
 

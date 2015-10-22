@@ -14,7 +14,7 @@ static bool checkUserData( const osg::Object& obj )
 static bool readUserData( osgDB::InputStream& is, osg::Object& obj )
 {
     is >> is.BEGIN_BRACKET;
-    osg::Object* object = is.readObject();
+    osg::ref_ptr<osg::Object> object = is.readObject();
     if(object) obj.setUserData(object);
     is >> is.END_BRACKET;
     return true;

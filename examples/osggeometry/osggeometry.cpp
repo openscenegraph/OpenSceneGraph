@@ -550,7 +550,7 @@ osg::Node* createBackground()
 {
 
     // we'll create a texture mapped quad to sit behind the Geometry
-    osg::Image* image = osgDB::readImageFile("Images/primitives.gif");
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile("Images/primitives.gif");
     if (!image) return NULL;
 
 

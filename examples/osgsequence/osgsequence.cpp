@@ -124,7 +124,7 @@ osg::Sequence* createSequence(osg::ArgumentParser& arguments)
 
     typedef std::vector<std::string> Filenames;
     Filenames filenames;
-    
+
     if (arguments.argc() > 1)
     {
         for (int i = 1; i < arguments.argc(); ++i)
@@ -139,17 +139,17 @@ osg::Sequence* createSequence(osg::ArgumentParser& arguments)
         filenames.push_back("cessna.osgt");
         filenames.push_back("glider.osgt");
     }
-    
+
     for(Filenames::iterator itr = filenames.begin();
         itr != filenames.end();
-        ++itr)        
+        ++itr)
     {
         // load model
-        osg::Node* node = osgDB::readNodeFile(*itr);
+        osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile(*itr);
 
         if (node)
         {
-            seq->addChild(createScaledNode(node, 100.0f));
+            seq->addChild(createScaledNode(node.get(), 100.0f));
             seq->setTime(seq->getNumChildren()-1, 1.0f);
         }
     }
@@ -231,7 +231,7 @@ int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-   
+
     // construct the viewer.
     osgViewer::Viewer viewer;
     // root

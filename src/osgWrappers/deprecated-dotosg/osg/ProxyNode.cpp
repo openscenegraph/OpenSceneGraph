@@ -147,7 +147,7 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr)
             {
                 osgDB::FilePathList& fpl = ((osgDB::ReaderWriter::Options*)fr.getOptions())->getDatabasePathList();
                 fpl.push_front( fpl.empty() ? osgDB::getFilePath(proxyNode.getFileName(i)) : fpl.front()+'/'+ osgDB::getFilePath(proxyNode.getFileName(i)));
-                osg::Node *node = osgDB::readNodeFile(proxyNode.getFileName(i), fr.getOptions());
+                osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile(proxyNode.getFileName(i), fr.getOptions());
                 fpl.pop_front();
                 if(node)
                 {

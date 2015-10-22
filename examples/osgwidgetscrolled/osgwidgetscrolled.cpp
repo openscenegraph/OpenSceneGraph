@@ -22,9 +22,9 @@ bool scrollWindow(osgWidget::Event& ev) {
     osgWidget::Window::EmbeddedWindow* ew =
         dynamic_cast<osgWidget::Window::EmbeddedWindow*>(frame->getEmbeddedWindow())
     ;
-        
+
     if(!ew) return false;
-    
+
     // Lets get the visible area so that we can use it to make sure our scrolling action
     // is necessary in the first place.
     const osgWidget::Quad& va = ew->getWindow()->getVisibleArea();
@@ -34,7 +34,7 @@ bool scrollWindow(osgWidget::Event& ev) {
     if(ev.getWindowManager()->isMouseScrollingUp() && va[1] != 0.0f)
         ew->getWindow()->addVisibleArea(0, -20)
     ;
-    
+
     else if(va[1] <= (ew->getWindow()->getHeight() - ew->getHeight()))
         ew->getWindow()->addVisibleArea(0, 20)
     ;
@@ -88,10 +88,10 @@ int main(int argc, char** argv) {
         osgWidget::WindowManager::WM_PICK_DEBUG
         //osgWidget::WindowManager::WM_NO_INVERT_Y
     );
-    
+
     osgWidget::Frame* frame = osgWidget::Frame::createSimpleFrameFromTheme(
         "frame",
-        osgDB::readImageFile("osgWidget/theme.png"),
+        osgDB::readRefImageFile("osgWidget/theme.png"),
         40.0f,
         40.0f,
 	osgWidget::Frame::FRAME_ALL

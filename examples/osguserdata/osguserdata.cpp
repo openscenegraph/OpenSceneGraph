@@ -101,7 +101,7 @@ class GetNumeric : public osg::ValueObject::GetValueVisitor
         GetNumeric():
             _set(false),
             _value(0) {}
-        
+
         virtual void apply(bool value) { _value = value; _set = true; }
         virtual void apply(char value) { _value = value; _set = true;  }
         virtual void apply(unsigned char value) { _value = value; _set = true;  }
@@ -174,7 +174,7 @@ void testResults(osg::Node* node)
             OSG_NOTICE<<std::endl;
         }
     }
-    
+
     OSG_NOTICE<<std::endl<<std::endl;
 }
 
@@ -182,14 +182,14 @@ void testResults(osg::Node* node)
 int main(int argc, char** argv)
 {
     osg::ArgumentParser arguments(&argc, argv);
-    
+
     osg::ref_ptr<osg::Group> node = new osg::Group;
 
     if (arguments.read("--MyUserDataContainer") || arguments.read("--mydc"))
     {
         node->setUserDataContainer(new MyNamespace::MyUserDataContainer);
     }
-    
+
     int i = 10;
     node->setUserValue("Int value",i);
 
@@ -216,18 +216,18 @@ int main(int argc, char** argv)
     {
         osgDB::writeNodeFile(*node, "results.osgt");
 
-        osg::ref_ptr<osg::Node> from_osgt = osgDB::readNodeFile("results.osgt");
+        osg::ref_ptr<osg::Node> from_osgt = osgDB::readRefNodeFile("results.osgt");
         if (from_osgt.valid())
         {
             OSG_NOTICE<<std::endl<<"Testing results for values from scene graph read from .osgt file"<<std::endl;
             testResults(from_osgt.get());
         }
     }
-    
+
     {
         osgDB::writeNodeFile(*node, "results.osgb");
 
-        osg::ref_ptr<osg::Node> from_osgb = osgDB::readNodeFile("results.osgb");
+        osg::ref_ptr<osg::Node> from_osgb = osgDB::readRefNodeFile("results.osgb");
         if (from_osgb.valid())
         {
             OSG_NOTICE<<std::endl<<"Testing results for values from scene graph read from .osgb file"<<std::endl;
@@ -238,7 +238,7 @@ int main(int argc, char** argv)
     {
         osgDB::writeNodeFile(*node, "results.osgx");
 
-        osg::ref_ptr<osg::Node> from_osgx = osgDB::readNodeFile("results.osgx");
+        osg::ref_ptr<osg::Node> from_osgx = osgDB::readRefNodeFile("results.osgx");
         if (from_osgx.valid())
         {
             OSG_NOTICE<<std::endl<<"Testing results for values from scene graph read from .osgx file"<<std::endl;

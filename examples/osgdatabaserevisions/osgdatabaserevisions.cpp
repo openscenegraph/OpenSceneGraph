@@ -1,9 +1,9 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This application is open source and may be redistributed and/or modified   
+ * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial applications,
  * as long as this copyright notice is maintained.
- * 
+ *
  * This application is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
         arguments.getApplicationUsage()->write(std::cout, helpType);
         return 1;
     }
-    
+
     // report any errors if they have occurred when parsing the program arguments.
     if (arguments.errors())
     {
@@ -81,7 +81,7 @@ int main(int argc, char** argv)
         while (arguments.read("-p",pathfile))
         {
             osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
-            if (apm || !apm->valid()) 
+            if (apm || !apm->valid())
             {
                 unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
                 keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
@@ -95,13 +95,13 @@ int main(int argc, char** argv)
 
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
-    
+
     // add the thread model handler
     viewer.addEventHandler(new osgViewer::ThreadingHandler);
 
     // add the window size toggle handler
     viewer.addEventHandler(new osgViewer::WindowSizeHandler);
-        
+
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
 
@@ -129,8 +129,8 @@ int main(int argc, char** argv)
 
 
     // load the data
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(file);
-    if (!loadedModel) 
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFile(file);
+    if (!loadedModel)
     {
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;

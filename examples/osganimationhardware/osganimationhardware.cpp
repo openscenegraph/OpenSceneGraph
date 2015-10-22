@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -110,7 +110,7 @@ struct MyRigTransformHardware : public osgAnimation::RigTransformHardware
 
                 osg::notify(osg::INFO) << "set vertex attrib " << ss.str() << std::endl;
             }
-        } 
+        }
         for (int i = 0; i < nbAttribs; i++)
         {
             std::stringstream ss;
@@ -134,7 +134,7 @@ struct SetupRigGeometry : public osg::NodeVisitor
 {
     bool _hardware;
     SetupRigGeometry( bool hardware = true) : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN), _hardware(hardware) {}
-    
+
     void apply(osg::Geode& geode)
     {
         for (unsigned int i = 0; i < geode.getNumDrawables(); i++)
@@ -173,7 +173,7 @@ osg::Group* createCharacterInstance(osg::Group* character, bool hardware)
         anim->playAnimation(list[v].get());
         v = (v + 1)%list.size();
     }
-        
+
     anim->playAnimation(list[v].get());
 
     SetupRigGeometry switcher(hardware);
@@ -196,9 +196,9 @@ int main (int argc, char* argv[])
     while (psr.read("--software")) { hardware = false; }
     while (psr.read("--number", maxChar)) {}
 
-
-    osg::ref_ptr<osg::Group> root = dynamic_cast<osg::Group*>(osgDB::readNodeFiles(psr));
-    if (!root) 
+    osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFiles(psr);
+    osg::ref_ptr<osg::Group> root = dynamic_cast<osg::Group*>(node.get());
+    if (!root)
     {
         std::cout << psr.getApplicationName() <<": No data loaded" << std::endl;
         return 1;
@@ -206,7 +206,7 @@ int main (int argc, char* argv[])
 
     {
         osgAnimation::AnimationManagerBase* animationManager = dynamic_cast<osgAnimation::AnimationManagerBase*>(root->getUpdateCallback());
-        if(!animationManager) 
+        if(!animationManager)
         {
             osg::notify(osg::FATAL) << "no AnimationManagerBase found, updateCallback need to animate elements" << std::endl;
             return 1;
@@ -218,13 +218,13 @@ int main (int argc, char* argv[])
 
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
-    
+
     // add the thread model handler
     viewer.addEventHandler(new osgViewer::ThreadingHandler);
 
     // add the window size toggle handler
     viewer.addEventHandler(new osgViewer::WindowSizeHandler);
-        
+
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
 

@@ -41,7 +41,7 @@ int main(int argc, char** argv)
     std::string fontFile("arial.ttf");
     while(arguments.read("-f",fontFile)) {}
 
-    osg::ref_ptr<osgText::Font> font = osgText::readFontFile(fontFile);
+    osg::ref_ptr<osgText::Font> font = osgText::readRefFontFile(fontFile);
     if (!font) return 1;
     OSG_NOTICE<<"Read font "<<fontFile<<" font="<<font.get()<<std::endl;
 
@@ -62,9 +62,9 @@ int main(int argc, char** argv)
     while(arguments.read("--flat",r)) { bevel = new osgText::Bevel; bevel->flatBevel(r); }
     while(arguments.read("--flat")) { bevel = new osgText::Bevel; bevel->flatBevel(0.25); }
     while(arguments.read("--bevel-thickness",r)) { if (bevel.valid()) bevel->setBevelThickness(r); }
-    
-    
-    if (bevel.valid()) 
+
+
+    if (bevel.valid())
     {
         while(arguments.read("--smooth-concave-Junctions") || arguments.read("--scj"))
         {
@@ -72,7 +72,7 @@ int main(int argc, char** argv)
         }
     }
 
-        
+
     style->setBevel(bevel.get());
 
     // set up outline.
@@ -139,12 +139,12 @@ int main(int argc, char** argv)
         while(arguments.read("--image",imageFilename))
         {
             OSG_NOTICE<<"--image "<<imageFilename<<std::endl;
-            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(imageFilename);
+            osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(imageFilename);
             if (image.valid())
             {
                 OSG_NOTICE<<"  loaded image "<<imageFilename<<std::endl;
                 osg::StateSet* stateset = text3D->getOrCreateStateSet();
-                stateset->setTextureAttributeAndModes(0, new osg::Texture2D(image.get()), osg::StateAttribute::ON);
+                stateset->setTextureAttributeAndModes(0, new osg::Texture2D(image), osg::StateAttribute::ON);
             }
         }
 
@@ -158,11 +158,11 @@ int main(int argc, char** argv)
 
         while(arguments.read("--wall-image",imageFilename))
         {
-            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(imageFilename);
+            osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(imageFilename);
             if (image.valid())
             {
                 osg::StateSet* stateset = text3D->getOrCreateWallStateSet();
-                stateset->setTextureAttributeAndModes(0, new osg::Texture2D(image.get()), osg::StateAttribute::ON);
+                stateset->setTextureAttributeAndModes(0, new osg::Texture2D(image), osg::StateAttribute::ON);
             }
         }
 
@@ -176,11 +176,11 @@ int main(int argc, char** argv)
 
         while(arguments.read("--back-image",imageFilename))
         {
-            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(imageFilename);
-            if (image.valid())
+            osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(imageFilename);
+            if (image)
             {
                 osg::StateSet* stateset = text3D->getOrCreateBackStateSet();
-                stateset->setTextureAttributeAndModes(0, new osg::Texture2D(image.get()), osg::StateAttribute::ON);
+                stateset->setTextureAttributeAndModes(0, new osg::Texture2D(image), osg::StateAttribute::ON);
             }
         }
 
@@ -190,8 +190,8 @@ int main(int argc, char** argv)
         }
     }
 
-    
-    viewer.setSceneData(group.get());
+
+    viewer.setSceneData(group);
 
 #endif
 

@@ -104,7 +104,7 @@ class OSG_EXPORT NodeVisitor : public virtual Object
           * Equivalent to dynamic_cast<const NodeVisitor*>(this).*/
         virtual const NodeVisitor* asNodeVisitor() const { return this; }
 
-        
+
         /** Method to call to reset visitor. Useful if your visitor accumulates
             state during a traversal, and you plan to reuse the visitor.
             To flush that state for the next traversal: call reset() prior
@@ -303,7 +303,7 @@ class OSG_EXPORT NodeVisitor : public virtual Object
 
             virtual double getPreLoadTime() const = 0;
 
-            virtual osg::Image* readImageFile(const std::string& fileName, const osg::Referenced* options=0) = 0;
+            virtual osg::ref_ptr<osg::Image> readRefImageFile(const std::string& fileName, const osg::Referenced* options=0) = 0;
 
             virtual void requestImageFile(const std::string& fileName,osg::Object* attachmentPoint, int attachmentIndex, double timeToMergeBy, const FrameStamp* framestamp, osg::ref_ptr<osg::Referenced>& imageRequest, const osg::Referenced* options=0) = 0;
 

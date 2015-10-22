@@ -64,6 +64,8 @@ class OSGVIEWER_EXPORT Viewer : public ViewerBase, public osgViewer::View
         virtual void setStartTick(osg::Timer_t tick);
         void setReferenceTime(double time=0.0);
 
+        using  osgViewer::View::setSceneData;
+
         /** Set the sene graph data that viewer with view.*/
         virtual void setSceneData(osg::Node* node);
 

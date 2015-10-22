@@ -14,7 +14,7 @@ extern osg::Node * CreateAdvancedHierarchy( osg::Node * model );
 ////////////////////////////////////////////////////////////////////////////////
 osg::Node * CreateGlobe( void )
 {
-    // File not found - create textured sphere 
+    // File not found - create textured sphere
     osg::Geode * geode = new osg::Geode;
     osg::ref_ptr<osg::TessellationHints> hints = new osg::TessellationHints;
     hints->setDetailRatio( 0.3 );
@@ -33,8 +33,8 @@ osg::Node * CreateGlobe( void )
 
     osg::StateSet * stateSet = new osg::StateSet;
 
-    osg::Texture2D * texture =  new osg::Texture2D( 
-        osgDB::readImageFile("Images/land_shallow_topo_2048.jpg") 
+    osg::Texture2D * texture =  new osg::Texture2D(
+        osgDB::readRefImageFile("Images/land_shallow_topo_2048.jpg")
     );
 
     osg::Material * material = new osg::Material;
@@ -68,14 +68,15 @@ int main( int argc, char **argv )
 
     bool useSimpleExample = arguments.read("-s") || arguments.read("--simple") ;
 
-    osg::Node * model = NULL;
+    osg::ref_ptr<osg::Node> model;
 
-    if (arguments.argc()>1 && !arguments.isOption(1) ) {
+    if (arguments.argc()>1 && !arguments.isOption(1) )
+    {
         std::string filename = arguments[1];
-        model = osgDB::readNodeFile( filename );
+        model = osgDB::readRefNodeFile( filename );
         if ( !model ) {
-            osg::notify( osg::NOTICE ) 
-                << "Error, cannot read " << filename 
+            osg::notify( osg::NOTICE )
+                << "Error, cannot read " << filename
                 << ". Loading default earth model instead." << std::endl;
         }
     }
@@ -83,9 +84,9 @@ int main( int argc, char **argv )
     if( model == NULL )
         model = CreateGlobe( );
 
-    osg::Node * node = useSimpleExample ?        
-        CreateSimpleHierarchy( model ):
-        CreateAdvancedHierarchy( model );
+    osg::ref_ptr<osg::Node> node = useSimpleExample ?
+        CreateSimpleHierarchy( model.get() ):
+        CreateAdvancedHierarchy( model.get() );
 
     viewer.setSceneData( node );
     viewer.realize(  );

@@ -17,7 +17,7 @@ static bool readLayers( osgDB::InputStream& is, osgTerrain::CompositeLayer& laye
         is >> type;
         if ( type=="Object" )
         {
-            osgTerrain::Layer* child = dynamic_cast<osgTerrain::Layer*>( is.readObject() );
+            osg::ref_ptr<osgTerrain::Layer> child = is.readObjectOfType<osgTerrain::Layer>();
             if ( child ) layer.addLayer( child );
         }
         else if ( type=="File" )

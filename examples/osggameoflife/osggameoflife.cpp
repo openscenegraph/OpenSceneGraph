@@ -117,14 +117,14 @@ int main(int argc, char *argv[])
     }
 
     // load the image
-    osg::ref_ptr<osg::Image> startIm = osgDB::readImageFile(startName);
+    osg::ref_ptr<osg::Image> startIm = osgDB::readRefImageFile(startName);
 
     if (!startIm) {
         std::cout << "Could not load start image.\n";
         return(1);
     }
 
-    osg::Node* scene = createScene(startIm.get());
+    osg::ref_ptr<osg::Node> scene = createScene(startIm.get());
 
     // construct the viewer.
     osgViewer::Viewer viewer;

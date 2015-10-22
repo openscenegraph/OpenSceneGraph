@@ -1370,7 +1370,7 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
     std::string vs;
     if (getProperty(cur, "vs", vs) || getProperty(cur, "VolumeSettings", vs))
     {
-        volumeData.volumeSettings = osgDB::readFile<osgVolume::VolumeSettings>(vs);
+        volumeData.volumeSettings = osgDB::readRefFile<osgVolume::VolumeSettings>(vs);
         if (volumeData.volumeSettings.valid())
         {
             OSG_NOTICE<<"VolumeSetting read "<<vs<<" "<<volumeData.volumeSettings.get()<<std::endl;
@@ -1438,12 +1438,12 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
     std::string transferFunctionFile;
     if (getTrimmedProperty(cur, "tf", transferFunctionFile))
     {
-        volumeData.transferFunction = osgDB::readFile<osg::TransferFunction1D>(transferFunctionFile);
+        volumeData.transferFunction = osgDB::readRefFile<osg::TransferFunction1D>(transferFunctionFile);
     }
 
     if (getTrimmedProperty(cur, "tf-255", transferFunctionFile))
     {
-        volumeData.transferFunction = osgDB::readFile<osg::TransferFunction1D>(transferFunctionFile);
+        volumeData.transferFunction = osgDB::readRefFile<osg::TransferFunction1D>(transferFunctionFile);
     }
 
     if (getProperty(cur, "options", volumeData.options)) {}
@@ -2567,7 +2567,7 @@ void ReaderWriterP3DXML::parseRunScriptFile(osgPresentation::SlideShowConstructo
     std::string function = "";
     getProperty(cur, "function", function);
 
-    osg::ref_ptr<osg::Script> script = osgDB::readFile<osg::Script>(cur->getTrimmedContents());
+    osg::ref_ptr<osg::Script> script = osgDB::readRefFile<osg::Script>(cur->getTrimmedContents());
     if (script.valid())
     {
         osg::ScriptEngine* se = constructor.getOrCreateScriptEngine(script->getLanguage());

@@ -52,7 +52,7 @@ osg::Camera* createHUD(unsigned int w, unsigned int h)
     // set the projection matrix
     camera->setProjectionMatrix(osg::Matrix::ortho2D(0,w,0,h));
 
-    // set the view matrix    
+    // set the view matrix
     camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
     camera->setViewMatrix(osg::Matrix::identity());
 
@@ -64,7 +64,7 @@ osg::Camera* createHUD(unsigned int w, unsigned int h)
 
     // we don't want the camera to grab event focus from the viewers main camera(s).
     camera->setAllowEventFocus(false);
-    
+
 
 
     // add to this camera a subgraph to render
@@ -87,7 +87,7 @@ osg::Camera* createHUD(unsigned int w, unsigned int h)
             text->setFont(timesFont);
             text->setPosition(position);
             text->setText("A simple multi-touch-example\n1 touch = rotate, \n2 touches = drag + scale, \n3 touches = home");
-        }    
+        }
 
         camera->addChild(geode);
     }
@@ -106,49 +106,49 @@ public:
     {
         createTouchRepresentations(parent_group, 10);
     }
-    
+
 private:
-    void createTouchRepresentations(osg::Group* parent_group, unsigned int num_objects) 
+    void createTouchRepresentations(osg::Group* parent_group, unsigned int num_objects)
     {
         // create some geometry which is shown for every touch-point
-        for(unsigned int i = 0; i != num_objects; ++i) 
+        for(unsigned int i = 0; i != num_objects; ++i)
         {
             std::ostringstream ss;
-            
+
             osg::Geode* geode = new osg::Geode();
-            
+
             osg::ShapeDrawable* drawable = new osg::ShapeDrawable(new osg::Box(osg::Vec3(0,0,0), 100));
             drawable->setColor(osg::Vec4(0.5, 0.5, 0.5,1));
             geode->addDrawable(drawable);
-            
+
             ss << "Touch " << i;
-            
+
             osgText::Text* text = new  osgText::Text;
             geode->addDrawable( text );
             drawable->setDataVariance(osg::Object::DYNAMIC);
             _drawables.push_back(drawable);
-            
-            
+
+
             text->setFont("fonts/arial.ttf");
             text->setPosition(osg::Vec3(110,0,0));
             text->setText(ss.str());
             _texts.push_back(text);
             text->setDataVariance(osg::Object::DYNAMIC);
-            
-            
-            
+
+
+
             osg::MatrixTransform* mat = new osg::MatrixTransform();
             mat->addChild(geode);
             mat->setNodeMask(0x0);
-            
+
             _mats.push_back(mat);
-            
+
             parent_group->addChild(mat);
-        } 
-        
+        }
+
         parent_group->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     }
-    
+
     virtual bool handle (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, osg::Object *, osg::NodeVisitor *)
     {
         if (ea.getEventType() != osgGA::GUIEventAdapter::FRAME) {
@@ -162,7 +162,7 @@ private:
             }
             std::cout << std::endl;
         }
-        
+
         switch(ea.getEventType())
         {
             case osgGA::GUIEventAdapter::FRAME:
@@ -171,7 +171,7 @@ private:
                     _cleanupOnNextFrame = false;
                 }
                 break;
-            
+
             case osgGA::GUIEventAdapter::PUSH:
             case osgGA::GUIEventAdapter::DRAG:
             case osgGA::GUIEventAdapter::RELEASE:
@@ -179,74 +179,74 @@ private:
                     // is this a multi-touch event?
                     if (!ea.isMultiTouchEvent())
                         return false;
-                    
+
                     unsigned int j(0);
-                    
+
                     // iterate over all touch-points and update the geometry
                     unsigned num_touch_ended(0);
-                    
+
                     for(osgGA::GUIEventAdapter::TouchData::iterator i = ea.getTouchData()->begin(); i != ea.getTouchData()->end(); ++i, ++j)
                     {
                         const osgGA::GUIEventAdapter::TouchData::TouchPoint& tp = (*i);
                         float x = ea.getTouchPointNormalizedX(j);
                         float y = ea.getTouchPointNormalizedY(j);
-                        
+
                         // std::cout << j << ": " << tp.x << "/" << tp.y <<" "<< x << " " << y << " " << _w << " " << _h << std::endl;
-                        
+
                         _mats[j]->setMatrix(osg::Matrix::translate((1+x) * 0.5 * _w, (1+y) * 0.5 * _h, 0));
                         _mats[j]->setNodeMask(0xffff);
-                        
+
                         std::ostringstream ss;
                         ss << "Touch " << tp.id;
                         _texts[j]->setText(ss.str());
-                        
-                        switch (tp.phase) 
+
+                        switch (tp.phase)
                         {
                             case osgGA::GUIEventAdapter::TOUCH_BEGAN:
                                     _drawables[j]->setColor(osg::Vec4(0,1,0,1));
                                     break;
-                                    
+
                             case osgGA::GUIEventAdapter::TOUCH_MOVED:
                                     _drawables[j]->setColor(osg::Vec4(1,1,1,1));
                                     break;
-                                    
+
                             case osgGA::GUIEventAdapter::TOUCH_ENDED:
                                     _drawables[j]->setColor(osg::Vec4(1,0,0,1));
                                     ++num_touch_ended;
                                     break;
-                                    
+
                             case osgGA::GUIEventAdapter::TOUCH_STATIONERY:
                                     _drawables[j]->setColor(osg::Vec4(0.8,0.8,0.8,1));
                                     break;
-                                    
+
                             default:
                                 break;
 
                         }
                     }
-                    
+
                     // hide unused geometry
                     cleanup(j);
-                    
+
                     //check if all touches ended
                     if ((ea.getTouchData()->getNumTouchPoints() > 0) && (ea.getTouchData()->getNumTouchPoints() == num_touch_ended))
                     {
                         _cleanupOnNextFrame = true;
                     }
-                    
+
                     // reposition mouse-pointer
                     aa.requestWarpPointer((ea.getWindowX() + ea.getWindowWidth()) / 2.0, (ea.getWindowY() + ea.getWindowHeight()) / 2.0);
                 }
                 break;
-                
+
             default:
                 break;
         }
-        
+
         return false;
     }
-    
-    void cleanup(unsigned int j) 
+
+    void cleanup(unsigned int j)
     {
         for(unsigned k = j; k < _mats.size(); ++k) {
             _mats[k]->setNodeMask(0x0);
@@ -257,7 +257,7 @@ private:
     std::vector<osg::MatrixTransform*> _mats;
     std::vector<osgText::Text*> _texts;
     bool _cleanupOnNextFrame;
-    
+
     float _w, _h;
 
 };
@@ -267,7 +267,7 @@ int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
+
 
     unsigned int helpType = 0;
     if ((helpType = arguments.readHelpType()))
@@ -284,12 +284,12 @@ int main( int argc, char **argv )
     }
 
     // read the scene from the list of file specified commandline args.
-    osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
-    
+    osg::ref_ptr<osg::Node> scene = osgDB::readRefNodeFiles(arguments);
+
     // if not loaded assume no arguments passed in, try use default model instead.
-    if (!scene) scene = osgDB::readNodeFile("dumptruck.osgt");
-    
-    if (!scene) 
+    if (!scene) scene = osgDB::readRefNodeFile("dumptruck.osgt");
+
+    if (!scene)
     {
             osg::Geode* geode = new osg::Geode();
             osg::ShapeDrawable* drawable = new osg::ShapeDrawable(new osg::Box(osg::Vec3(0,0,0), 100));
@@ -301,43 +301,43 @@ int main( int argc, char **argv )
 
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
-    
-    
+
+
     //opening devices
     std::string device;
     while(arguments.read("--device", device))
     {
-        osg::ref_ptr<osgGA::Device> dev = osgDB::readFile<osgGA::Device>(device);
+        osg::ref_ptr<osgGA::Device> dev = osgDB::readRefFile<osgGA::Device>(device);
         if (dev.valid())
         {
-            viewer.addDevice(dev.get());
+            viewer.addDevice(dev);
         }
     }
-    
-    
+
+
     osg::ref_ptr<osg::Group> group  = new osg::Group;
 
-    // add the HUD subgraph.    
-    if (scene.valid()) group->addChild(scene.get());
-    
+    // add the HUD subgraph.
+    if (scene) group->addChild(scene);
+
     viewer.setCameraManipulator(new osgGA::MultiTouchTrackballManipulator());
     viewer.realize();
-    
+
     osg::GraphicsContext* gc = viewer.getCamera()->getGraphicsContext();
-    
+
     #ifdef __APPLE__
         // as multitouch is disabled by default, enable it now
         osgViewer::GraphicsWindowCocoa* win = dynamic_cast<osgViewer::GraphicsWindowCocoa*>(gc);
         if (win) win->setMultiTouchEnabled(true);
     #endif
-    
+
     std::cout << "creating hud with " << gc->getTraits()->width << "x" <<  gc->getTraits()->height << std::endl;
     osg::Camera* hud_camera = createHUD(gc->getTraits()->width, gc->getTraits()->height);
-    
-    
+
+
     viewer.addEventHandler(new TestMultiTouchEventHandler(hud_camera, gc->getTraits()->width, gc->getTraits()->height));
-    
-    
+
+
     group->addChild(hud_camera);
 
     // set the scene to render
@@ -345,5 +345,5 @@ int main( int argc, char **argv )
 
     return viewer.run();
 
-    
+
 }

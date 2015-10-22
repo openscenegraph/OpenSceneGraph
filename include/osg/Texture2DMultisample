@@ -63,6 +63,7 @@ class OSG_EXPORT Texture2DMultisample : public Texture
 
         // unnecessary for Texture2DMultisample
         virtual void setImage(unsigned int /*face*/, Image* /*image*/) {}
+
         virtual Image* getImage(unsigned int /*face*/) { return NULL; }
         virtual const Image* getImage(unsigned int /*face*/) const { return NULL; }
         virtual unsigned int getNumImages() const {return 0; }

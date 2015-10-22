@@ -53,14 +53,14 @@ struct CallbackObject: public osgWidget::Callback {
 
     virtual bool operator()(osgWidget::Event& ev) {
         std::cout << "here" << std::endl;
-        
+
         return false;
     }
 };
 
 int main(int argc, char** argv) {
     osgViewer::Viewer viewer;
-    
+
     // Let's get busy! The WindowManager class is actually an osg::Switch,
     // so you can add it to (ideally) an orthographic camera and have it behave as
     // expected. Note that you create a WindowManager with a NodeMask--it is very important
@@ -117,7 +117,7 @@ int main(int argc, char** argv) {
     widget1->setCanFill(true);
     widget3->setColor(0.0f, 1.0f, 0.0f, 1.0f);
 
-    widget1->setImage(osgDB::readImageFile("Images/Saturn.TGA"), true);
+    widget1->setImage(osgDB::readRefImageFile("Images/Saturn.TGA"), true);
 
     // Set the color of widget2, to differentiate it and make it sassy. This is
     // like a poor man's gradient!
@@ -166,16 +166,16 @@ int main(int argc, char** argv) {
     // simply use the createParentOrthoCamera method of the WindowManager class,
     // which will wrap the calls to createOrthoCamera and addChild for us! Check out
     // some of the other examples to see this in action...
-    osg::Group*  group  = new osg::Group();
-    osg::Camera* camera = osgWidget::createOrthoCamera(1280.0f, 1024.0f);
-    osg::Node*   model  = osgDB::readNodeFile("cow.osgt");
+    osg::ref_ptr<osg::Group>  group  = new osg::Group();
+    osg::ref_ptr<osg::Camera> camera = osgWidget::createOrthoCamera(1280.0f, 1024.0f);
+    osg::ref_ptr<osg::Node>   model  = osgDB::readRefNodeFile("cow.osgt");
 
     // Add our event handler; is this better as a MatrixManipulator? Add a few other
     // helpful ViewerEventHandlers.
     viewer.addEventHandler(new osgWidget::MouseHandler(wm));
     viewer.addEventHandler(new osgWidget::KeyboardHandler(wm));
-    viewer.addEventHandler(new osgWidget::ResizeHandler(wm, camera));
-    viewer.addEventHandler(new osgWidget::CameraSwitchHandler(wm, camera));
+    viewer.addEventHandler(new osgWidget::ResizeHandler(wm, camera.get()));
+    viewer.addEventHandler(new osgWidget::CameraSwitchHandler(wm, camera.get()));
     viewer.addEventHandler(new osgViewer::StatsHandler());
     viewer.addEventHandler(new osgViewer::WindowSizeHandler());
     viewer.addEventHandler(new osgGA::StateSetManipulator(
@@ -210,7 +210,7 @@ int main(int argc, char** argv) {
     viewer.setSceneData(group);
 
     /*
-    osgViewer::Viewer::Cameras cameras; 
+    osgViewer::Viewer::Cameras cameras;
     viewer.getCameras(cameras);
     osg::Camera* c = cameras[0];
     osg::Matrix s = osg::Matrix::scale(1.0f, -1.0f, 1.0f);

@@ -505,7 +505,7 @@ int main( int argc, char **argv )
     }
 
     // load model.
-    osg::ref_ptr<osg::Node> rootnode = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> rootnode = osgDB::readRefNodeFiles(arguments);
 
     // set the scene to render
     viewer.setSceneData(rootnode.get());

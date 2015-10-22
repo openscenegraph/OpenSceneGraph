@@ -32,7 +32,7 @@ class OSGSIM_EXPORT DatabaseCacheReadCallback : public osgUtil::IntersectionVisi
 
         void pruneUnusedDatabaseCache();
 
-        virtual osg::Node* readNodeFile(const std::string& filename);
+        virtual osg::ref_ptr<osg::Node> readNodeFile(const std::string& filename);
 
     protected:
 

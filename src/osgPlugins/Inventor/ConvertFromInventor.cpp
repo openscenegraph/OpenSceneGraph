@@ -1088,7 +1088,7 @@ static osgDB::ReaderWriter::Options* createOptions()
 
 static osg::Image* loadImage(const char *fileName, osgDB::ReaderWriter::Options *options)
 {
-    osg::ref_ptr<osg::Image> osgImage = osgDB::readImageFile(fileName, options);
+    osg::ref_ptr<osg::Image> osgImage = osgDB::readRefImageFile(fileName, options);
 
     if (!osgImage)
     {

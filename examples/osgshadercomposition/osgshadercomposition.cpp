@@ -25,7 +25,7 @@ extern osg::Node* createOldShaderCompositionScene(osg::ArgumentParser& arguments
 
 osg::Node* createNewShaderCompositionScene(osg::ArgumentParser& arguments)
 {
-    osg::ref_ptr<osg::Node> node = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFiles(arguments);
     if (!node) return 0;
 
     osg::ref_ptr<osg::Group> group = new osg::Group;
@@ -34,21 +34,21 @@ osg::Node* createNewShaderCompositionScene(osg::ArgumentParser& arguments)
     osg::ref_ptr<osg::Program> program = new osg::Program;
     stateset->setAttribute(program.get());
 
-    osg::ref_ptr<osg::Shader> lighting_shader = osgDB::readShaderFile("shaders/lighting.vert");
+    osg::ref_ptr<osg::Shader> lighting_shader = osgDB::readRefShaderFile("shaders/lighting.vert");
     if (lighting_shader.valid())
     {
         program->addShader(lighting_shader.get());
         OSG_NOTICE<<"Adding lighting shader"<<std::endl;
     }
 
-    osg::ref_ptr<osg::Shader> vertex_shader = osgDB::readShaderFile("shaders/osgshadercomposition.vert");
+    osg::ref_ptr<osg::Shader> vertex_shader = osgDB::readRefShaderFile("shaders/osgshadercomposition.vert");
     if (vertex_shader.valid())
     {
         program->addShader(vertex_shader.get());
         OSG_NOTICE<<"Adding vertex shader"<<std::endl;
     }
 
-    osg::ref_ptr<osg::Shader> fragment_shader = osgDB::readShaderFile("shaders/osgshadercomposition.frag");
+    osg::ref_ptr<osg::Shader> fragment_shader = osgDB::readRefShaderFile("shaders/osgshadercomposition.frag");
     if (fragment_shader.valid())
     {
         program->addShader(fragment_shader.get());

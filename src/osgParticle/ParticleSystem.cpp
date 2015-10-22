@@ -249,7 +249,7 @@ void osgParticle::ParticleSystem::setDefaultAttributes(const std::string& textur
 
     if (!texturefile.empty()) {
         osg::Texture2D *texture = new osg::Texture2D;
-        texture->setImage(osgDB::readImageFile(texturefile));
+        texture->setImage(osgDB::readRefImageFile(texturefile));
         texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
         texture->setFilter(osg::Texture2D::MAG_FILTER, osg::Texture2D::LINEAR);
         texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::MIRROR);
@@ -292,7 +292,7 @@ void osgParticle::ParticleSystem::setDefaultAttributesUsingShaders(const std::st
     if (!texturefile.empty())
     {
         osg::Texture2D *texture = new osg::Texture2D;
-        texture->setImage(osgDB::readImageFile(texturefile));
+        texture->setImage(osgDB::readRefImageFile(texturefile));
         texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
         texture->setFilter(osg::Texture2D::MAG_FILTER, osg::Texture2D::LINEAR);
         texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::MIRROR);

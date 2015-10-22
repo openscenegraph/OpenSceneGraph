@@ -33,12 +33,12 @@
 
 #include <iostream>
 
-// Customize the CopyOp so that we add our own verbose 
+// Customize the CopyOp so that we add our own verbose
 // output of what's being copied.
 class MyCopyOp : public osg::CopyOp
 {
     public:
-    
+
         inline MyCopyOp(CopyFlags flags=SHALLOW_COPY):
             osg::CopyOp(flags),
             _indent(0),
@@ -46,11 +46,11 @@ class MyCopyOp : public osg::CopyOp
 
         inline void moveIn() const { _indent += _step; }
         inline void moveOut() const { _indent -= _step; }
-        inline void writeIndent() const 
+        inline void writeIndent() const
         {
             for(int i=0;i<_indent;++i) std::cout << " ";
         }
-    
+
         virtual osg::Referenced*     operator() (const osg::Referenced* ref) const
         {
             writeIndent(); std::cout << "copying Referenced "<<ref<<std::endl;
@@ -59,7 +59,7 @@ class MyCopyOp : public osg::CopyOp
             moveOut();
             return ret_ref;
         }
-        
+
         virtual osg::Object*         operator() (const osg::Object* obj) const
         {
             writeIndent(); std::cout << "copying Object "<<obj;
@@ -70,7 +70,7 @@ class MyCopyOp : public osg::CopyOp
             moveOut();
             return ret_obj;
         }
-        
+
         virtual osg::Node*           operator() (const osg::Node* node) const
         {
             writeIndent(); std::cout << "copying Node "<<node;
@@ -136,25 +136,25 @@ class MyCopyOp : public osg::CopyOp
             moveOut();
             return ret_image;
         }
-        
+
     protected:
-    
+
         // must be mutable since CopyOp is passed around as const to
         // the various clone/copy constructors.
         mutable int _indent;
         mutable int _step;
 };
 
-// this CopyOp class will preserve the multi-parent structure of the copied 
-// object, instead of expanding it into a tree. Works with the 
+// this CopyOp class will preserve the multi-parent structure of the copied
+// object, instead of expanding it into a tree. Works with the
 // DEEP_COPY_NODES flag.
 class GraphCopyOp : public osg::CopyOp
 {
     public:
-    
+
         inline GraphCopyOp(CopyFlags flags=SHALLOW_COPY):
             osg::CopyOp(flags) { _nodeCopyMap.clear();}
-            
+
         virtual osg::Node* operator() (const osg::Node* node) const
         {
             if (node && _flags&DEEP_COPY_NODES)
@@ -180,9 +180,9 @@ class GraphCopyOp : public osg::CopyOp
             else
                 return const_cast<osg::Node*>(node);
         }
-         
+
     protected:
-    
+
         // must be mutable since CopyOp is passed around as const to
         // the various clone/copy constructors.
         mutable std::map<const osg::Node*,osg::Node*> _nodeCopyMap;
@@ -198,19 +198,19 @@ int main( int argc, char **argv )
     osgViewer::Viewer viewer;
 
     // load the nodes from the commandline arguments.
-    osg::Node* rootnode = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> rootnode = osgDB::readRefNodeFiles(arguments);
     if (!rootnode)
     {
         osg::notify(osg::NOTICE)<<"Please specify a model filename on the command line."<<std::endl;
         return 1;
     }
-    
+
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
     optimzer.optimize(rootnode);
-    
+
 // -------------    Start of copy specific code -------------------------------------------------------
-    
+
     // do a deep copy, using MyCopyOp to reveal whats going on under the hood,
     // in your own code you'd typically just use the basic osg::CopyOp something like
     osg::ref_ptr<osg::Node> mycopy = dynamic_cast<osg::Node*>(rootnode->clone(osg::CopyOp::DEEP_COPY_ALL));
@@ -219,7 +219,7 @@ int main( int argc, char **argv )
     // note, we need the dyanmic_cast because MS Visual Studio can't handle covarient
     // return types, so that clone has return just Object*.  bahh hum bug
     osg::ref_ptr<osg::Node> deep_copy = dynamic_cast<osg::Node*>(rootnode->clone(MyCopyOp(osg::CopyOp::DEEP_COPY_ALL)));
-    
+
     std::cout << "----------------------------------------------------------------"<<std::endl;
 
     // do a graph preserving deep copy.
@@ -260,18 +260,18 @@ int main( int argc, char **argv )
     //        DEEP_COPY_IMAGES = 64,
     //        DEEP_COPY_ALL = 0xffffffff
     // };
-    // 
+    //
     // These options you can use together such as :
     //    osg::Node* mycopy = dynamic_cast<osg::Node*>(rootnode->clone(osg::CopyOp::DEEP_COPY_NODES | DEEP_COPY_DRAWABLES));
     // Which shares state but creates copies of all nodes and drawables (which contain the geometry).
-    // 
+    //
     // You may also want to subclass from CopyOp to provide finer grained control of what gets shared (shallow copy) vs
     // cloned (deep copy).
-    
+
 
 
 // -------------    End of copy specific code -------------------------------------------------------
-     
+
     // set the scene to render
     viewer.setSceneData(rootnode);
 

@@ -626,7 +626,7 @@ void BumpMapping::setUpDemo()
     // set up diffuse texture
     if (!_diffuse_tex.valid()) {
         _diffuse_tex = new osg::Texture2D;
-        _diffuse_tex->setImage(osgDB::readImageFile("Images/whitemetal_diffuse.jpg"));
+        _diffuse_tex->setImage(osgDB::readRefImageFile("Images/whitemetal_diffuse.jpg"));
         _diffuse_tex->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
         _diffuse_tex->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
         _diffuse_tex->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);
@@ -637,7 +637,7 @@ void BumpMapping::setUpDemo()
     // set up normal map texture
     if (!_normal_tex.valid()) {
         _normal_tex = new osg::Texture2D;
-        _normal_tex->setImage(osgDB::readImageFile("Images/whitemetal_normal.jpg"));
+        _normal_tex->setImage(osgDB::readRefImageFile("Images/whitemetal_normal.jpg"));
         _normal_tex->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
         _normal_tex->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
         _normal_tex->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);

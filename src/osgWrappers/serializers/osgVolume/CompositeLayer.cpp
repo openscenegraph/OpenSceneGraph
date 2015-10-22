@@ -13,7 +13,7 @@ static bool readLayers( osgDB::InputStream& is, osgVolume::CompositeLayer& layer
     unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        osgVolume::Layer* child = dynamic_cast<osgVolume::Layer*>( is.readObject() );
+        osg::ref_ptr<osgVolume::Layer> child = is.readObjectOfType<osgVolume::Layer>();
         if ( child ) layer.addLayer( child );
     }
     is >> is.END_BRACKET;

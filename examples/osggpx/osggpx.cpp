@@ -434,8 +434,8 @@ int main(int argv, char **argc)
 
     osg::ref_ptr<osg::Group> group = new osg::Group;
 
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
-    if (loadedModel.valid()) group->addChild(loadedModel.get());
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
+    if (loadedModel.valid()) group->addChild(loadedModel);
 
     for(Tracks::iterator itr = tracks.begin();
         itr != tracks.end();

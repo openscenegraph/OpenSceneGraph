@@ -62,7 +62,7 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
         if (transparentColor[0] < 1.0 || transparentColor[1] < 1.0 || transparentColor[2] < 1.0) {
             transparencyColorFactor = transparentColor[0]*0.30 + transparentColor[1]*0.59 + transparentColor[2]*0.11;
             useTransparencyColorFactor = true;
-        }         
+        }
 
         int lNbTex = lOpacityProperty.GetSrcObjectCount<FbxFileTexture>();
         for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
@@ -187,7 +187,7 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
                 static_cast<float>(color[1] * factor),
                 static_cast<float>(color[2] * factor),
                 1.0f));
-            // Since Maya and 3D studio Max stores their glossiness values in exponential format (2^(log2(x)) 
+            // Since Maya and 3D studio Max stores their glossiness values in exponential format (2^(log2(x))
             // We need to linearize to values between 0-100 and then scale to values between 0-128.
             // Glossiness values above 100 will result in shininess larger than 128.0 and will be clamped
             double shininess = (64.0 * log (pFbxPhong->Shininess.Get())) / (5.0 * log(2.0));
@@ -226,9 +226,9 @@ FbxMaterialToOsgStateSet::fbxTextureToOsgTexture(const FbxFileTexture* fbx)
 
     // Warning: fbx->GetRelativeFileName() is relative TO EXECUTION DIR
     //          fbx->GetFileName() is as stored initially in the FBX
-    if ((pImage = osgDB::readImageFile(osgDB::concatPaths(_dir, fbx->GetFileName()), _options)) ||                // First try "export dir/name"
-        (pImage = osgDB::readImageFile(fbx->GetFileName(), _options)) ||                                        // Then try  "name" (if absolute)
-        (pImage = osgDB::readImageFile(osgDB::concatPaths(_dir, fbx->GetRelativeFileName()), _options)))        // Else try  "current dir/name"
+    if ((pImage = osgDB::readRefImageFile(osgDB::concatPaths(_dir, fbx->GetFileName()), _options)) ||                // First try "export dir/name"
+        (pImage = osgDB::readRefImageFile(fbx->GetFileName(), _options)) ||                                        // Then try  "name" (if absolute)
+        (pImage = osgDB::readRefImageFile(osgDB::concatPaths(_dir, fbx->GetRelativeFileName()), _options)))        // Else try  "current dir/name"
     {
         osg::ref_ptr<osg::Texture2D> pOsgTex = new osg::Texture2D;
         pOsgTex->setImage(pImage.get());

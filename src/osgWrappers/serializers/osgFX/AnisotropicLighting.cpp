@@ -13,7 +13,8 @@ static bool checkLightingMap( const osgFX::AnisotropicLighting& effect )
 static bool readLightingMap( osgDB::InputStream& is, osgFX::AnisotropicLighting& effect )
 {
     std::string fileName; is.readWrappedString( fileName );
-    effect.setLightingMap( osgDB::readImageFile(fileName) );
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(fileName, is.getOptions());
+    effect.setLightingMap( image.get() );
     return true;
 }
 

@@ -155,12 +155,12 @@ osg::TextureCubeMap* readCubeMap()
     //#define CUBEMAP_FILENAME(face) "Cubemap_axis/" #face ".png"
     #define CUBEMAP_FILENAME(face) "Cubemap_snow/" #face ".jpg"
 
-    osg::Image* imagePosX = osgDB::readImageFile(CUBEMAP_FILENAME(posx));
-    osg::Image* imageNegX = osgDB::readImageFile(CUBEMAP_FILENAME(negx));
-    osg::Image* imagePosY = osgDB::readImageFile(CUBEMAP_FILENAME(posy));
-    osg::Image* imageNegY = osgDB::readImageFile(CUBEMAP_FILENAME(negy));
-    osg::Image* imagePosZ = osgDB::readImageFile(CUBEMAP_FILENAME(posz));
-    osg::Image* imageNegZ = osgDB::readImageFile(CUBEMAP_FILENAME(negz));
+    osg::ref_ptr<osg::Image>imagePosX = osgDB::readRefImageFile(CUBEMAP_FILENAME(posx));
+    osg::ref_ptr<osg::Image>imageNegX = osgDB::readRefImageFile(CUBEMAP_FILENAME(negx));
+    osg::ref_ptr<osg::Image>imagePosY = osgDB::readRefImageFile(CUBEMAP_FILENAME(posy));
+    osg::ref_ptr<osg::Image>imageNegY = osgDB::readRefImageFile(CUBEMAP_FILENAME(negy));
+    osg::ref_ptr<osg::Image>imagePosZ = osgDB::readRefImageFile(CUBEMAP_FILENAME(posz));
+    osg::ref_ptr<osg::Image>imageNegZ = osgDB::readRefImageFile(CUBEMAP_FILENAME(negz));
 
     if (imagePosX && imageNegX && imagePosY && imageNegY && imagePosZ && imageNegZ)
     {
@@ -371,7 +371,7 @@ int main(int argc, char *argv[])
     rootnode->addChild(createSkyBox());
 
     // load the nodes from the commandline arguments.
-    osg::Node* model = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> model = osgDB::readRefNodeFiles(arguments);
     if (!model)
     {
         const float radius = 1.0f;
@@ -388,7 +388,7 @@ int main(int argc, char *argv[])
     osgUtil::SmoothingVisitor smoother;
     model->accept(smoother);
 
-    rootnode->addChild( addRefractStateSet(model) );
+    rootnode->addChild( addRefractStateSet(model.get()) );
 
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData(rootnode);

@@ -311,7 +311,7 @@ int main(int argc, char** argv)
     viewer.addEventHandler(new osgViewer::HelpHandler(arguments.getApplicationUsage()));
 
     // load the data
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
     if (!loadedModel)
     {
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
@@ -331,9 +331,9 @@ int main(int argc, char** argv)
 
     // optimize the scene graph, remove redundant nodes and state etc.
     osgUtil::Optimizer optimizer;
-    optimizer.optimize(loadedModel.get());
+    optimizer.optimize(loadedModel);
 
-    viewer.setSceneData( loadedModel.get() );
+    viewer.setSceneData(loadedModel);
 
     viewer.realize();
 

@@ -622,6 +622,8 @@ class OSG_EXPORT CompositeShape : public Shape
         /** Add a child to the list.*/
         void addChild(Shape* shape) { _children.push_back(shape); }
 
+        template<class T> void addChild( const ref_ptr<T>& child ) { addChild(child.get()); }
+
         /** remove a child from the list.*/
         void removeChild(unsigned int i) { _children.erase(_children.begin()+i); }
 

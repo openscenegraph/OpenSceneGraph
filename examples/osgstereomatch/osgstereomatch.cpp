@@ -175,8 +175,8 @@ int main(int argc, char *argv[])
     }
 
     // load the images
-    osg::ref_ptr<osg::Image> leftIm = osgDB::readImageFile(leftName);
-    osg::ref_ptr<osg::Image> rightIm = osgDB::readImageFile(rightName);
+    osg::ref_ptr<osg::Image> leftIm = osgDB::readRefImageFile(leftName);
+    osg::ref_ptr<osg::Image> rightIm = osgDB::readRefImageFile(rightName);
 
     osg::Node* scene = createScene(leftIm.get(), rightIm.get(), minDisparity, maxDisparity, windowSize, useSinglePass);
 

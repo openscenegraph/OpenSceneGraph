@@ -40,55 +40,55 @@ int main( int argc, char **argv )
     osgViewer::Viewer viewer;
 
     // load the nodes from the commandline arguments.
-    osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
 
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!loadedModel) loadedModel = osgDB::readNodeFile("cow.osgt");
-    
+    if (!loadedModel) loadedModel = osgDB::readRefNodeFile("cow.osgt");
+
     if (!loadedModel)
     {
         osg::notify(osg::NOTICE)<<"Please specify a model filename on the command line."<<std::endl;
         return 1;
     }
-  
+
     // to do scribe mode we create a top most group to contain the
     // original model, and then a second group contains the same model
     // but overrides various state attributes, so that the second instance
     // is rendered as wireframe.
-    
-    osg::Group* rootnode = new osg::Group;
 
-    osg::Group* decorator = new osg::Group;
-    
+    osg::ref_ptr<osg::Group> rootnode = new osg::Group;
+
+    osg::ref_ptr<osg::Group> decorator = new osg::Group;
+
     rootnode->addChild(loadedModel);
-    
-    
+
+
     rootnode->addChild(decorator);
-    
-    decorator->addChild(loadedModel);  
+
+    decorator->addChild(loadedModel);
 
     // set up the state so that the underlying color is not seen through
     // and that the drawing mode is changed to wireframe, and a polygon offset
-    // is added to ensure that we see the wireframe itself, and turn off 
+    // is added to ensure that we see the wireframe itself, and turn off
     // so texturing too.
-    osg::StateSet* stateset = new osg::StateSet;
-    osg::PolygonOffset* polyoffset = new osg::PolygonOffset;
+    osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
+    osg::ref_ptr<osg::PolygonOffset> polyoffset = new osg::PolygonOffset;
     polyoffset->setFactor(-1.0f);
     polyoffset->setUnits(-1.0f);
-    osg::PolygonMode* polymode = new osg::PolygonMode;
+    osg::ref_ptr<osg::PolygonMode> polymode = new osg::PolygonMode;
     polymode->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE);
     stateset->setAttributeAndModes(polyoffset,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
     stateset->setAttributeAndModes(polymode,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
 #if 1
-    osg::Material* material = new osg::Material;
+    osg::ref_ptr<osg::Material> material = new osg::Material;
     stateset->setAttributeAndModes(material,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
 #else
     // version which sets the color of the wireframe.
     osg::Material* material = new osg::Material;
     material->setColorMode(osg::Material::OFF); // switch glColor usage off
-    // turn all lighting off 
+    // turn all lighting off
     material->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(0.0,0.0f,0.0f,1.0f));
     material->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(0.0,0.0f,0.0f,1.0f));
     material->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0.0,0.0f,0.0f,1.0f));
@@ -99,21 +99,21 @@ int main( int argc, char **argv )
 #endif
 
     stateset->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
-    
+
 //     osg::LineStipple* linestipple = new osg::LineStipple;
 //     linestipple->setFactor(1);
 //     linestipple->setPattern(0xf0f0);
 //     stateset->setAttributeAndModes(linestipple,osg::StateAttribute::OVERRIDE_ON);
-    
+
     decorator->setStateSet(stateset);
-  
-    
+
+
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
     optimzer.optimize(rootnode);
-     
+
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData( rootnode );
-    
+
     return viewer.run();
 }

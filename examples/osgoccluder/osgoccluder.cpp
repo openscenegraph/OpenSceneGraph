@@ -311,10 +311,10 @@ int main( int argc, char **argv )
     }
 
     // load the nodes from the commandline arguments.
-    osg::Node* loadedmodel = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> loadedmodel = osgDB::readRefNodeFiles(arguments);
 
     // if not loaded assume no arguments passed in, try using default mode instead.
-    if (!loadedmodel) loadedmodel = osgDB::readNodeFile("glider.osgt");
+    if (!loadedmodel) loadedmodel = osgDB::readRefNodeFile("glider.osgt");
 
     if (!loadedmodel)
     {
@@ -336,12 +336,12 @@ int main( int argc, char **argv )
     }
     else
     {
-        rootnode = createOccludersAroundModel(loadedmodel);
+        rootnode = createOccludersAroundModel(loadedmodel.get());
     }
 
 
     // add a viewport to the viewer and attach the scene graph.
-    viewer.setSceneData( rootnode.get() );
+    viewer.setSceneData( rootnode );
 
     return viewer.run();
 }

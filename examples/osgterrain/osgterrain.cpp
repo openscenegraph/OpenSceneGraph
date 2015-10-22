@@ -343,7 +343,7 @@ int main(int argc, char** argv)
     while(arguments.read("--db-affinity", cpuNum)) { setDatabaseThreadAffinity = true; }
 
     // load the nodes from the commandline arguments.
-    osg::ref_ptr<osg::Node> rootnode = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> rootnode = osgDB::readRefNodeFiles(arguments);
 
     if (!rootnode)
     {

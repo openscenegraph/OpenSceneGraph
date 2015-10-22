@@ -36,9 +36,15 @@
 
 struct MyReadCallback : public osgUtil::IntersectionVisitor::ReadCallback
 {
+#if 0
     virtual osg::Node* readNodeFile(const std::string& filename)
     {
-        return osgDB::readNodeFile(filename);
+        return osgDB::readRefNodeFile(filename).release();
+    }
+#endif
+    virtual osg::ref_ptr<osg::Node> readNodeFile(const std::string& filename)
+    {
+        return osgDB::readRefNodeFile(filename);
     }
 };
 
@@ -47,37 +53,37 @@ int main(int argc, char **argv)
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
-    osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
-    
-    if (!scene) 
+
+    osg::ref_ptr<osg::Node> scene = osgDB::readRefNodeFiles(arguments);
+
+    if (!scene)
     {
         std::cout<<"No model loaded, please specify a valid model on the command line."<<std::endl;
         return 0;
     }
-    
+
     std::cout<<"Intersection "<<std::endl;
-    
-    
+
+
     osg::BoundingSphere bs = scene->getBound();
 
 
     bool useIntersectorGroup = true;
     bool useLineOfSight = true;
-    
+
     //osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(scene.get());
     //osg::EllipsoidModel* em = csn ? csn->getEllipsoidModel() : 0;
 
     if (useLineOfSight)
     {
-    
+
         osg::Vec3d start = bs.center() + osg::Vec3d(0.0,bs.radius(),0.0);
         osg::Vec3d end = bs.center() - osg::Vec3d(0.0, bs.radius(),0.0);
         osg::Vec3d deltaRow( 0.0, 0.0, bs.radius()*0.01);
         osg::Vec3d deltaColumn( bs.radius()*0.01, 0.0, 0.0);
 
         osgSim::LineOfSight los;
-        
+
 #if 1
         unsigned int numRows = 20;
         unsigned int numColumns = 20;
@@ -118,7 +124,7 @@ int main(int argc, char **argv)
                 }
             }
         }
-        
+
         {
             // now do a second traversal to test performance of cache.
             osg::Timer_t startTick = osg::Timer::instance()->tick();
@@ -173,7 +179,7 @@ int main(int argc, char **argv)
     else if (useIntersectorGroup)
     {
         osg::Timer_t startTick = osg::Timer::instance()->tick();
-    
+
         osg::Vec3d start = bs.center() + osg::Vec3d(0.0,bs.radius(),0.0);
         osg::Vec3d end = bs.center();// - osg::Vec3d(0.0, bs.radius(),0.0);
         osg::Vec3d deltaRow( 0.0, 0.0, bs.radius()*0.01);
@@ -194,7 +200,7 @@ int main(int argc, char **argv)
             }
         }
 
-        
+
         osgUtil::IntersectionVisitor intersectVisitor( intersectorGroup.get(), new MyReadCallback );
         scene->accept(intersectVisitor);
 
@@ -229,7 +235,7 @@ int main(int argc, char **argv)
                     }
                 }
             }
-        
+
         }
 
     }
@@ -272,6 +278,6 @@ int main(int argc, char **argv)
             }
         }
     }
-    
+
     return 0;
 }

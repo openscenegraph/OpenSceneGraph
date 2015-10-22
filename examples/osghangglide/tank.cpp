@@ -161,7 +161,7 @@ Node *makeTank( void )
 
     for( i = 0; i < c; i++ )
         conv( vc[i], mat, vc[i] );
-     
+
      gset->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLE_FAN,prev_c,c-prev_c));
 
 
@@ -171,7 +171,7 @@ Node *makeTank( void )
 
     tex->setWrap( Texture2D::WRAP_S, Texture2D::REPEAT );
     tex->setWrap( Texture2D::WRAP_T, Texture2D::REPEAT );
-    tex->setImage(osgDB::readImageFile("Images/tank.rgb"));
+    tex->setImage(osgDB::readRefImageFile("Images/tank.rgb"));
 
     StateSet *dstate = new StateSet;
     dstate->setTextureAttributeAndModes(0, tex, StateAttribute::ON );

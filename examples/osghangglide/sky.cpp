@@ -112,7 +112,7 @@ Node *makeSky( void )
 
 
     Texture2D *tex = new Texture2D;
-    tex->setImage(osgDB::readImageFile("Images/white.rgb"));
+    tex->setImage(osgDB::readRefImageFile("Images/white.rgb"));
 
     StateSet *dstate = new StateSet;
 

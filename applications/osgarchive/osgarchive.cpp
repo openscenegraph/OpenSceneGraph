@@ -1,9 +1,9 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This application is open source and may be redistributed and/or modified   
+ * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial applications,
  * as long as this copyright notice is maintained.
- * 
+ *
  * This application is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -26,12 +26,12 @@ int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
+
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is an application for collecting a set of separate files into a single archive file that can be later read in OSG applications..");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
-        
+
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
@@ -49,14 +49,14 @@ int main( int argc, char **argv )
     {
         insert = true;
     }
-    
+
     bool extract = false;
     while (arguments.read("-e") || arguments.read("--extract"))
     {
         extract = true;
     }
-    
-    bool list = false;    
+
+    bool list = false;
     while (arguments.read("-l") || arguments.read("--list"))
     {
         list = true;
@@ -93,7 +93,7 @@ int main( int argc, char **argv )
             }
         }
     }
-    
+
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 
@@ -103,7 +103,7 @@ int main( int argc, char **argv )
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
-    
+
     if (archiveFilename.empty())
     {
         std::cout<<"Please specify an archive name using --archive filename"<<std::endl;
@@ -115,7 +115,7 @@ int main( int argc, char **argv )
         std::cout<<"Please specify an operation on the archive, either --insert, --extract or --list"<<std::endl;
         return 1;
     }
-    
+
     if (insert && extract)
     {
         std::cout<<"Cannot insert and extract files from the archive at one time, please use either --insert or --extract."<<std::endl;
@@ -127,7 +127,7 @@ int main( int argc, char **argv )
     if (insert)
     {
         archive = osgDB::openArchive(archiveFilename, osgDB::Archive::WRITE);
-        
+
         if (archive.valid())
         {
             for (FileNameList::iterator itr=files.begin();
@@ -135,7 +135,7 @@ int main( int argc, char **argv )
                 ++itr)
             {
                 std::cout<<"reading "<<*itr<<std::endl;
-                osg::ref_ptr<osg::Object> obj = osgDB::readObjectFile(*itr);
+                osg::ref_ptr<osg::Object> obj = osgDB::readRefObjectFile(*itr);
                 if (obj.valid())
                 {
                     std::cout<<"  write to archive "<<*itr<<std::endl;
@@ -152,10 +152,10 @@ int main( int argc, char **argv )
             }
         }
     }
-    else 
+    else
     {
         archive = osgDB::openArchive(archiveFilename, osgDB::Archive::READ);
-        
+
         if (extract && archive.valid())
         {
             for (FileNameList::iterator itr=files.begin();
@@ -175,7 +175,7 @@ int main( int argc, char **argv )
     }
 
     if (list && archive.valid())
-    {        
+    {
         std::cout<<"List of files in archive:"<<std::endl;
         osgDB::Archive::FileNameList fileNames;
         if (archive->getFileNames(fileNames))
@@ -187,11 +187,11 @@ int main( int argc, char **argv )
                 std::cout<<"    "<<*itr<<std::endl;
             }
         }
-        
+
         std::cout<<std::endl;
         std::cout<<"Master file "<<archive->getMasterFileName()<<std::endl;
     }
-    
+
     return 0;
 }
 

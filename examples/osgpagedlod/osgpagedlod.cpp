@@ -43,17 +43,17 @@ public:
         _count(0)
     {
     }
-    
+
     virtual void apply(osg::Node& node)
     {
         std::ostringstream os;
         os << node.className() << "_"<<_count++;
 
         node.setName(os.str());
-    
+
         traverse(node);
-    }    
-    
+    }
+
     unsigned int _count;
 };
 
@@ -64,7 +64,7 @@ public:
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
     {
     }
-    
+
     virtual void apply(osg::PagedLOD& plod)
     {
         std::cout<<"PagedLOD "<<plod.getName()<<"  numRanges = "<< plod.getNumRanges()<<"  numFiles = "<<plod.getNumFileNames()<<std::endl;
@@ -72,7 +72,7 @@ public:
         {
             std::cout<<"  files = '"<<plod.getFileName(i)<<"'"<<std::endl;
         }
-    }    
+    }
 };
 
 
@@ -83,7 +83,7 @@ public:
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
     {
     }
-    
+
     virtual void apply(osg::PagedLOD& plod)
     {
 
@@ -98,9 +98,9 @@ public:
                 osgDB::writeNodeFile(*child,filename);
             }
         }
-    
+
         traverse(plod);
-    }    
+    }
 };
 
 class ConvertToPageLODVistor : public osg::NodeVisitor
@@ -113,7 +113,7 @@ public:
         _makeAllChildrenPaged(makeAllChildrenPaged)
     {
     }
-    
+
     virtual ~ConvertToPageLODVistor()
     {
     }
@@ -121,9 +121,9 @@ public:
     virtual void apply(osg::LOD& lod)
     {
         _lodSet.insert(&lod);
-    
+
         traverse(lod);
-    }    
+    }
 
     virtual void apply(osg::PagedLOD& plod)
     {
@@ -139,7 +139,7 @@ public:
             ++itr, ++lodNum)
         {
             osg::ref_ptr<osg::LOD> lod = const_cast<osg::LOD*>(itr->get());
-            
+
             if (lod->getNumParents()==0)
             {
                 osg::notify(osg::NOTICE)<<"Warning can't operator on root node."<<std::endl;
@@ -153,9 +153,9 @@ public:
             }
 
             osg::notify(osg::NOTICE)<<"Converting LOD to PagedLOD."<<std::endl;
-            
+
             osg::PagedLOD* plod = new osg::PagedLOD;
-            
+
             const osg::LOD::RangeList& originalRangeList = lod->getRangeList();
             typedef std::multimap< osg::LOD::MinMaxPair , unsigned int > MinMaxPairMap;
             MinMaxPairMap rangeMap;
@@ -166,7 +166,7 @@ public:
             {
                 rangeMap.insert(std::multimap< osg::LOD::MinMaxPair , unsigned int >::value_type(*ritr, pos));
             }
-            
+
             pos = 0;
             for(MinMaxPairMap::reverse_iterator mitr = rangeMap.rbegin();
                 mitr != rangeMap.rend();
@@ -181,11 +181,11 @@ public:
                     std::string filename = _basename;
                     std::ostringstream os;
                     os << _basename << "_"<<lodNum<<"_"<<pos<<_extension;
-                    
+
                     plod->addChild(lod->getChild(mitr->second), mitr->first.first, mitr->first.second, os.str());
                 }
             }
-            
+
             osg::Node::ParentList parents = lod->getParents();
             for(osg::Node::ParentList::iterator pitr=parents.begin();
                 pitr!=parents.end();
@@ -195,12 +195,12 @@ public:
             }
 
             plod->setCenter(plod->getBound().center());
-            
+
 
         }
     }
 
-    
+
     typedef std::set< osg::ref_ptr<osg::LOD> >  LODSet;
     LODSet _lodSet;
     std::string _basename;
@@ -214,7 +214,7 @@ int main( int argc, char **argv )
 
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
+
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" creates a hierarchy of files for paging which can be later loaded by viewers.");
@@ -232,8 +232,8 @@ int main( int argc, char **argv )
 
     std::string outputfile("output.ive");
     while (arguments.read("-o",outputfile)) {}
-    
-    
+
+
     bool makeAllChildrenPaged = false;
     while (arguments.read("--makeAllChildrenPaged")) { makeAllChildrenPaged = true; }
 
@@ -246,7 +246,7 @@ int main( int argc, char **argv )
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
-    
+
 //     if (arguments.argc()<=1)
 //     {
 //         arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
@@ -254,21 +254,21 @@ int main( int argc, char **argv )
 //     }
 
 
-    osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
-    
+    osg::ref_ptr<osg::Node> model = osgDB::readRefNodeFiles(arguments);
+
     if (!model)
     {
         osg::notify(osg::NOTICE)<<"No model loaded."<<std::endl;
         return 1;
     }
-    
+
     std::string basename( osgDB::getNameLessExtension(outputfile) );
     std::string ext = '.'+ osgDB::getFileExtension(outputfile);
-    
+
     ConvertToPageLODVistor converter(basename,ext, makeAllChildrenPaged);
     model->accept(converter);
     converter.convert();
-    
+
     NameVistor nameNodes;
     model->accept(nameNodes);
 
@@ -278,7 +278,7 @@ int main( int argc, char **argv )
     if (model.valid())
     {
         osgDB::writeNodeFile(*model,outputfile);
-        
+
         WriteOutPagedLODSubgraphsVistor woplsv;
         model->accept(woplsv);
     }

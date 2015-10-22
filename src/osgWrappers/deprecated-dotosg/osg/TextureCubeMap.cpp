@@ -38,8 +38,8 @@ REGISTER_DOTOSGWRAPPER(TextureCubeMap)
             } \
             else if (fr[2].isString())\
             { \
-                Image* image = fr.readImage(fr[2].getStr());\
-                if (image) texture.setImage(osg::TextureCubeMap::FACE,image);\
+                osg::ref_ptr<Image> image = fr.readImage(fr[2].getStr());\
+                if (image) texture.setImage(osg::TextureCubeMap::FACE,image.get());\
                 fr += 3;\
                 iteratorAdvanced = true; \
                 matched = true;\

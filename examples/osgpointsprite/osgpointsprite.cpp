@@ -86,7 +86,7 @@ osg::StateSet* makeStateSet(float size)
 
     /// The texture for the sprites
     osg::Texture2D *tex = new osg::Texture2D();
-    tex->setImage(osgDB::readImageFile("Images/particle.rgb"));
+    tex->setImage(osgDB::readRefImageFile("Images/particle.rgb"));
     set->setTextureAttributeAndModes(0, tex, osg::StateAttribute::ON);
 
     return set;

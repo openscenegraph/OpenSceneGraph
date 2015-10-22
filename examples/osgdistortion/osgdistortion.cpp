@@ -703,10 +703,10 @@ int main(int argc, char** argv)
     osgViewer::Viewer viewer(arguments);
 
     // load the nodes from the commandline arguments.
-    osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
 
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!loadedModel) loadedModel = osgDB::readNodeFile("cow.osgt");
+    if (!loadedModel) loadedModel = osgDB::readRefNodeFile("cow.osgt");
 
     if (!loadedModel)
     {
@@ -731,7 +731,7 @@ int main(int argc, char** argv)
     }
     else
     {
-        osg::Node* distortionNode = createDistortionSubgraph( options, loadedModel, viewer.getCamera()->getClearColor());
+        osg::Node* distortionNode = createDistortionSubgraph( options, loadedModel.get(), viewer.getCamera()->getClearColor());
         viewer.setSceneData( distortionNode );
     }
 

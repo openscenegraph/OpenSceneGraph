@@ -95,10 +95,10 @@ int main(int argc, char *argv[])
     osgViewer::Viewer viewer;
 
     // load the nodes from the commandline arguments.
-    osg::Node* rootnode = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> rootnode = osgDB::readRefNodeFiles(arguments);
 
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!rootnode) rootnode = osgDB::readNodeFile("cessna.osgt");
+    if (!rootnode) rootnode = osgDB::readRefNodeFile("cessna.osgt");
 
     if (!rootnode)
     {
@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
     }
 
     // create specular highlights
-    create_specular_highlights(rootnode);
+    create_specular_highlights(rootnode.get());
 
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;

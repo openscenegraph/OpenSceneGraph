@@ -187,6 +187,8 @@ class OSG_EXPORT Drawable : public Node
         */
         inline void setShape(Shape* shape) { _shape = shape; }
 
+        template<class T> void setShape(const ref_ptr<T>& shape) { setShape(shape.get()); }
+
         /** Get the Shape of the Drawable.*/
         inline Shape* getShape() { return _shape.get(); }
 

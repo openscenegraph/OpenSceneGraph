@@ -129,6 +129,10 @@ public:
         void setTexCoordWrapVertical   ();
 
         bool setImage   (osg::Image*, bool = false, bool = false);
+
+        template<class T> bool setImage(const osg::ref_ptr<T>& image, bool f1 = false, bool f2 = false) { return setImage(image.get(), f1, f2); }
+
+
         bool setImage   (const std::string&, bool = false, bool = false);
         bool setTexture (osg::Texture*, bool = false, bool = false);
 

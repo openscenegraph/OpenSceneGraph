@@ -78,7 +78,7 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
         void setPreLoadTime(double preLoadTime) { _preLoadTime=preLoadTime; }
         virtual double getPreLoadTime() const { return _preLoadTime; }
 
-        virtual osg::Image* readImageFile(const std::string& fileName, const osg::Referenced* options=0);
+        virtual osg::ref_ptr<osg::Image> readRefImageFile(const std::string& fileName, const osg::Referenced* options=0);
 
         virtual void requestImageFile(const std::string& fileName, osg::Object* attachmentPoint, int attachmentIndex, double timeToMergeBy, const osg::FrameStamp* framestamp, osg::ref_ptr<osg::Referenced>& imageRequest, const osg::Referenced* options);
 

@@ -48,9 +48,13 @@ class OSG_EXPORT LOD : public Group
 
         virtual void traverse(NodeVisitor& nv);
 
+        using osg::Group::addChild;
+
         virtual bool addChild(Node *child);
 
-        virtual bool addChild(Node *child, float min, float max);
+        virtual bool addChild(Node *child, float rmin, float rmax);
+
+        template<class T> bool addChild( const ref_ptr<T>& child, float rmin, float rmax) { return addChild(child.get(), rmin, rmax); }
 
         virtual bool removeChildren(unsigned int pos,unsigned int numChildrenToRemove=1);
 

@@ -36,6 +36,19 @@ class OSG_EXPORT TextureRectangle : public Texture
 
         TextureRectangle(Image* image);
 
+        template<class T> TextureRectangle(const osg::ref_ptr<T>& image):
+                    _textureWidth(0),
+                    _textureHeight(0)
+        {
+            setWrap(WRAP_S, CLAMP);
+            setWrap(WRAP_T, CLAMP);
+
+            setFilter(MIN_FILTER, LINEAR);
+            setFilter(MAG_FILTER, LINEAR);
+
+            setImage(image.get());
+        }
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         TextureRectangle(const TextureRectangle& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
@@ -48,6 +61,8 @@ class OSG_EXPORT TextureRectangle : public Texture
 
         /** Set the texture image. */
         void setImage(Image* image);
+
+        template<class T> void setImage(const ref_ptr<T>& image) { setImage(image.get()); }
 
         /** Get the texture image. */
         Image* getImage() { return _image.get(); }

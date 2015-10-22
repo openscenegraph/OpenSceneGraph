@@ -13,7 +13,7 @@ static bool readProperties( osgDB::InputStream& is, osgVolume::CompositeProperty
     unsigned int size = 0; is >> size >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        osgVolume::Property* child = dynamic_cast<osgVolume::Property*>( is.readObject() );
+        osg::ref_ptr<osgVolume::Property> child = is.readObjectOfType<osgVolume::Property>();
         if ( child ) prop.addProperty( child );
     }
     is >> is.END_BRACKET;

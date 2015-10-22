@@ -139,7 +139,7 @@ public:
         }
 
         // recursively load the subfile.
-        osg::Node *node = osgDB::readNodeFile( subFileName, options );
+        osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile( subFileName, options );
         if( !node )
         {
             // propagate the read failure upwards
@@ -147,7 +147,7 @@ public:
             return ReadResult::FILE_NOT_HANDLED;
         }
 
-        osg::MatrixTransform *xform = new osg::MatrixTransform;
+        osg::ref_ptr<osg::MatrixTransform> xform = new osg::MatrixTransform;
         xform->setDataVariance( osg::Object::STATIC );
         xform->setMatrix( osg::Matrix::rotate(
             osg::DegreesToRadians( rx ), osg::Vec3( 1, 0, 0 ),

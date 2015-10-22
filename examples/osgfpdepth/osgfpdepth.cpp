@@ -961,7 +961,7 @@ int main(int argc, char **argv)
         arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
         return 1;
     }
-    ref_ptr<Node> loadedModel = osgDB::readNodeFiles(arguments);
+    ref_ptr<Node> loadedModel = osgDB::readRefNodeFiles(arguments);
     if (!loadedModel) {
         cerr << "couldn't load " << argv[1] << "\n";
         return 1;

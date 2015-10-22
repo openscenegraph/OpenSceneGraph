@@ -520,8 +520,8 @@ int main(int argc, char** argv)
     {
         if (arguments.isString(i))
         {
-            osg::Image* image = osgDB::readImageFile(arguments[i]);
-            osg::ImageStream* imagestream = dynamic_cast<osg::ImageStream*>(image);
+            osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(arguments[i]);
+            osg::ImageStream* imagestream = dynamic_cast<osg::ImageStream*>(image.get());
             if (imagestream)
             {
                 osg::ImageStream::AudioStreams& audioStreams = imagestream->getAudioStreams();
@@ -550,7 +550,7 @@ int main(int argc, char** argv)
                 float width = image->s() * image->getPixelAspectRatio();
                 float height = image->t();
 
-                osg::ref_ptr<osg::Drawable> drawable = myCreateTexturedQuadGeometry(pos, width, height,image, useTextureRectangle, xyPlane, flip);
+                osg::ref_ptr<osg::Drawable> drawable = myCreateTexturedQuadGeometry(pos, width, height, image.get(), useTextureRectangle, xyPlane, flip);
 
                 if (image->isImageTranslucent())
                 {

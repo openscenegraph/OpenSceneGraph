@@ -212,6 +212,8 @@ class OSG_EXPORT Node : public Object
         /** Set update node callback, called during update traversal. */
         void setUpdateCallback(Callback* nc);
 
+        template<class T> void setUpdateCallback(const ref_ptr<T>& nc) { setUpdateCallback(nc.get()); }
+
         /** Get update node callback, called during update traversal. */
         inline Callback* getUpdateCallback() { return _updateCallback.get(); }
 
@@ -226,6 +228,8 @@ class OSG_EXPORT Node : public Object
             }
         }
 
+        template<class T> void addUpdateCallback(const ref_ptr<T>& nc) { addUpdateCallback(nc.get()); }
+
         /** Convenience method that removes a given callback from a node, even if that callback is nested. There is no error return in case the given callback is not found. */
         inline void removeUpdateCallback(Callback* nc) {
             if (nc != NULL && _updateCallback.valid()) {
@@ -239,6 +243,8 @@ class OSG_EXPORT Node : public Object
             }
         }
 
+        template<class T> void removeUpdateCallback(const ref_ptr<T>& nc) { removeUpdateCallback(nc.get()); }
+
         /** Get the number of Children of this node which require Update traversal,
           * since they have an Update Callback attached to them or their children.*/
         inline unsigned int getNumChildrenRequiringUpdateTraversal() const { return _numChildrenRequiringUpdateTraversal; }
@@ -246,6 +252,8 @@ class OSG_EXPORT Node : public Object
 
         /** Set event node callback, called during event traversal. */
         void setEventCallback(Callback* nc);
+
+        template<class T> void setEventCallback(const ref_ptr<T>& nc) { setEventCallback(nc.get()); }
 
         /** Get event node callback, called during event traversal. */
         inline Callback* getEventCallback() { return _eventCallback.get(); }
@@ -261,6 +269,8 @@ class OSG_EXPORT Node : public Object
             }
         }
 
+        template<class T> void addEventCallback(const ref_ptr<T>& nc) { addEventCallback(nc.get()); }
+
         /** Convenience method that removes a given callback from a node, even if that callback is nested. There is no error return in case the given callback is not found. */
         inline void removeEventCallback(Callback* nc) {
             if (nc != NULL && _eventCallback.valid()) {
@@ -274,13 +284,17 @@ class OSG_EXPORT Node : public Object
             }
         }
 
-        /** Get the number of Children of this node which require Event traversal,
+        template<class T> void removeEventCallback(const ref_ptr<T>& nc) { removeEventCallback(nc.get()); }
+
+            /** Get the number of Children of this node which require Event traversal,
           * since they have an Event Callback attached to them or their children.*/
         inline unsigned int getNumChildrenRequiringEventTraversal() const { return _numChildrenRequiringEventTraversal; }
 
 
         /** Set cull node callback, called during cull traversal. */
         void setCullCallback(Callback* nc) { _cullCallback = nc; }
+
+        template<class T> void setCullCallback(const ref_ptr<T>& nc) { setCullCallback(nc.get()); }
 
         /** Get cull node callback, called during cull traversal. */
         inline Callback* getCullCallback() { return _cullCallback.get(); }
@@ -296,6 +310,8 @@ class OSG_EXPORT Node : public Object
             }
         }
 
+        template<class T> void addCullCallback(const ref_ptr<T>& nc) { addCullCallback(nc.get()); }
+
         /** Convenience method that removes a given callback from a node, even if that callback is nested. There is no error return in case the given callback is not found. */
         inline void removeCullCallback(Callback* nc) {
             if (nc != NULL && _cullCallback.valid()) {
@@ -308,6 +324,8 @@ class OSG_EXPORT Node : public Object
                 else _cullCallback->removeNestedCallback(nc);
             }
         }
+
+        template<class T> void removeCullCallback(const ref_ptr<T>& nc) { removeCullCallback(nc.get()); }
 
         /** Set the view frustum/small feature culling of this node to be active or inactive.
           * The default value is true for _cullingActive. Used as a guide
@@ -359,6 +377,8 @@ class OSG_EXPORT Node : public Object
 
         /** Set the node's StateSet.*/
         void setStateSet(osg::StateSet* stateset);
+
+        template<class T> void setStateSet(const osg::ref_ptr<T>& stateset) { setStateSet(stateset.get()); }
 
         /** return the node's StateSet, if one does not already exist create it
           * set the node and return the newly created StateSet. This ensures
@@ -443,6 +463,8 @@ class OSG_EXPORT Node : public Object
 
         /** Set the compute bound callback to override the default computeBound.*/
         void setComputeBoundingSphereCallback(ComputeBoundingSphereCallback* callback) { _computeBoundCallback = callback; }
+
+        template<class T> void setComputeBoundingSphereCallback(const ref_ptr<T>& callback) { setComputeBoundingSphereCallback(callback.get()); }
 
         /** Get the compute bound callback.*/
         ComputeBoundingSphereCallback* getComputeBoundingSphereCallback() { return _computeBoundCallback.get(); }

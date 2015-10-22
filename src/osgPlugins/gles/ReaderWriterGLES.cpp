@@ -133,7 +133,7 @@ public:
             return ReadResult::FILE_NOT_HANDLED;
 
         // recursively load the subfile.
-        osg::ref_ptr<osg::Node> node = osgDB::readNodeFile( realName, options );
+        osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile( realName, options );
         if( !node )
         {
             // propagate the read failure upwards

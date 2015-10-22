@@ -200,7 +200,7 @@ private:
 
 bool UserEventHandler::handle(osgGA::Event* event, osg::Object* object, osg::NodeVisitor* nv)
 {
-    
+
     OSG_ALWAYS << "handle user-event: " << event->getName() << std::endl;
 
     if (event->getName() == "/pick-result")
@@ -215,7 +215,7 @@ bool UserEventHandler::handle(osgGA::Event* event, osg::Object* object, osg::Nod
         ss << "x: " << y << " y: " << y << std::endl;
 
         _text->setText(ss.str());
-        
+
         return true;
     }
     else if(event->getName() == "/osgga")
@@ -231,7 +231,7 @@ bool UserEventHandler::handle(osgGA::Event* event, osg::Object* object, osg::Nod
             if (win)
                 win->setWindowRectangle(rect[2] + 10 + rect[0], rect[1], rect[2], rect[3]);
         }
-        
+
         return true;
     }
     else {
@@ -251,7 +251,7 @@ bool UserEventHandler::handle(osgGA::Event* event, osg::Object* object, osg::Nod
         }
         return true;
     }
-    
+
     return false;
 }
 
@@ -377,8 +377,8 @@ public:
 
             std::ostringstream ss ;
             ss << host << ":" << port << ".sender.osc";
-            _device = osgDB::readFile<osgGA::Device>(ss.str());
-            
+            _device = osgDB::readRefFile<osgGA::Device>(ss.str());
+
             osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
             osgViewer::View* view = ev ? dynamic_cast<osgViewer::View*>(ev->getActionAdapter()) : NULL;
             if (view)
@@ -403,14 +403,14 @@ int main( int argc, char **argv )
 
 
     // read the scene from the list of file specified commandline args.
-    osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> scene = osgDB::readRefNodeFiles(arguments);
 
     if (!scene)
     {
         osg::Geode* geode = new osg::Geode();
         osg::ShapeDrawable* drawable = new osg::ShapeDrawable(new osg::Box());
         geode->addDrawable(drawable);
-        
+
         scene = geode;
     }
 
@@ -463,15 +463,15 @@ int main( int argc, char **argv )
         view->addEventHandler( new osgViewer::StatsHandler );
         view->addEventHandler( new UserEventHandler(text) );
 
-        osg::ref_ptr<osgGA::Device> device = osgDB::readFile<osgGA::Device>("0.0.0.0:9000.receiver.osc");
+        osg::ref_ptr<osgGA::Device> device = osgDB::readRefFile<osgGA::Device>("0.0.0.0:9000.receiver.osc");
         if (device.valid() && (device->getCapabilities() & osgGA::Device::RECEIVE_EVENTS))
         {
-            view->addDevice(device.get());
+            view->addDevice(device);
 
             // add a zeroconf device, advertising the osc-device
             if(use_zeroconf)
             {
-                osgGA::Device* zeroconf_device = osgDB::readFile<osgGA::Device>("_osc._udp:9000.advertise.zeroconf");
+                osg::ref_ptr<osgGA::Device> zeroconf_device = osgDB::readRefFile<osgGA::Device>("_osc._udp:9000.advertise.zeroconf");
                 if (zeroconf_device)
                 {
                     view->addDevice(zeroconf_device);
@@ -496,8 +496,8 @@ int main( int argc, char **argv )
         traits->windowName = "Sender / view one";
 
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-        
-        
+
+
         #ifdef __APPLE__
             // as multitouch is disabled by default, enable it now
             osgViewer::GraphicsWindowCocoa* win = dynamic_cast<osgViewer::GraphicsWindowCocoa*>(gc.get());
@@ -527,7 +527,7 @@ int main( int argc, char **argv )
 
         if (use_zeroconf)
         {
-            osgGA::Device* zeroconf_device = osgDB::readFile<osgGA::Device>("_osc._udp.discover.zeroconf");
+            osg::ref_ptr<osgGA::Device> zeroconf_device = osgDB::readRefFile<osgGA::Device>("_osc._udp.discover.zeroconf");
             if(zeroconf_device) {
                 view->addDevice(zeroconf_device);
                 view->getEventHandlers().push_front(new OscServiceDiscoveredEventHandler());
@@ -536,7 +536,7 @@ int main( int argc, char **argv )
         }
         else
         {
-            osg::ref_ptr<osgGA::Device> device = osgDB::readFile<osgGA::Device>("localhost:9000.sender.osc");
+            osg::ref_ptr<osgGA::Device> device = osgDB::readRefFile<osgGA::Device>("localhost:9000.sender.osc");
             if (device.valid() && (device->getCapabilities() & osgGA::Device::SEND_EVENTS))
             {
                 // add as first event handler, so it gets ALL events ...

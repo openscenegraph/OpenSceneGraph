@@ -34,7 +34,7 @@ void DatabaseCacheReadCallback::pruneUnusedDatabaseCache()
 {
 }
 
-osg::Node* DatabaseCacheReadCallback::readNodeFile(const std::string& filename)
+osg::ref_ptr<osg::Node> DatabaseCacheReadCallback::readNodeFile(const std::string& filename)
 {
     // first check to see if file is already loaded.
     {
@@ -50,7 +50,7 @@ osg::Node* DatabaseCacheReadCallback::readNodeFile(const std::string& filename)
     }
 
     // now load the file.
-    osg::ref_ptr<osg::Node> node = osgDB::readNodeFile(filename);
+    osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile(filename);
 
     // insert into the cache.
     if (node.valid())
@@ -84,7 +84,7 @@ osg::Node* DatabaseCacheReadCallback::readNodeFile(const std::string& filename)
         }
     }
 
-    return node.release();
+    return node;
 }
 
 LineOfSight::LineOfSight()

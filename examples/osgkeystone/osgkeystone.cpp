@@ -38,14 +38,14 @@
 int main( int argc, char **argv )
 {
     osg::ArgumentParser arguments(&argc,argv);
-    
+
     // initialize the viewer.
     osgViewer::Viewer viewer(arguments);
-    
+
     osg::DisplaySettings* ds = viewer.getDisplaySettings() ? viewer.getDisplaySettings() : osg::DisplaySettings::instance().get();
     ds->readCommandLine(arguments);
 
-    osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> model = osgDB::readRefNodeFiles(arguments);
 
     if (!model)
     {
@@ -57,8 +57,8 @@ int main( int argc, char **argv )
     OSG_NOTICE<<"Stereo "<<ds->getStereo()<<std::endl;
     OSG_NOTICE<<"StereoMode "<<ds->getStereoMode()<<std::endl;
 
-    viewer.setSceneData(model.get());
-    
+    viewer.setSceneData(model);
+
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
 
@@ -77,7 +77,7 @@ int main( int argc, char **argv )
     }
 
     ds->setKeystoneHint(true);
-    
+
     if (!ds->getKeystoneFileNames().empty())
     {
         for(osg::DisplaySettings::Objects::iterator itr = ds->getKeystones().begin();
@@ -85,19 +85,19 @@ int main( int argc, char **argv )
             ++itr)
         {
             osgViewer::Keystone* keystone = dynamic_cast<osgViewer::Keystone*>(itr->get());
-            if (keystone) 
+            if (keystone)
             {
                 std::string filename;
                 keystone->getUserValue("filename",filename);
                 OSG_NOTICE<<"Loaded keystone "<<filename<<", "<<keystone<<std::endl;
-                
+
                 ds->getKeystones().push_back(keystone);
             }
         }
     }
-    
+
     viewer.apply(new osgViewer::SingleScreen(0));
-    
+
     viewer.realize();
 
     while(!viewer.done())

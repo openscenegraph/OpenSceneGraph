@@ -50,12 +50,16 @@ class OSG_EXPORT Group : public Node
         */
         virtual bool addChild( Node *child );
 
+        template<class T> bool addChild( const ref_ptr<T>& child ) { return addChild(child.get()); }
+
         /** Insert Node to Group at specific location.
           * The new child node is inserted into the child list
           * before the node at the specified index. No nodes
           * are removed from the group with this operation.
         */
         virtual bool insertChild( unsigned int index, Node *child );
+
+        template<class T> bool insertChild( unsigned int index, const ref_ptr<T>& child ) { return insertChild(index, child.get()); }
 
         /** Remove Node from Group.
           * If Node is contained in Group then remove it from the child
@@ -66,6 +70,8 @@ class OSG_EXPORT Group : public Node
           * Note, do not override, only override removeChildren(,) is required.
         */
         virtual bool removeChild( Node *child );
+
+        template<class T> bool removeChild( const ref_ptr<T>& child ) { return removeChild(child.get()); }
 
         /** Remove Node from Group.
           * If Node is contained in Group then remove it from the child
@@ -90,6 +96,8 @@ class OSG_EXPORT Group : public Node
           * See docs for setChild for further details on implementation.
           */
         virtual bool replaceChild( Node *origChild, Node* newChild );
+
+        template<class T, class R> bool replaceChild( const ref_ptr<T>& origChild, const ref_ptr<R>& newChild ) { return replaceChild( origChild.get(), newChild.get()); }
 
         /** Return the number of children nodes. */
         virtual unsigned int getNumChildren() const;
@@ -123,6 +131,8 @@ class OSG_EXPORT Group : public Node
             }
             return false;
         }
+
+        template<class T> bool conatainsNode(const ref_ptr<T>& node) const { return containsNode(node.get()); }
 
         /** Get the index number of child, return a value between
           * 0 and _children.size()-1 if found, if not found then

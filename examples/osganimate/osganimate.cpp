@@ -136,9 +136,9 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
 
     osg::AnimationPath* animationPath = createAnimationPath(center,radius,animationLength);
 
-    osg::Group* model = new osg::Group;
+    osg::ref_ptr<osg::Group> model = new osg::Group;
 
-    osg::Node* glider = osgDB::readNodeFile("glider.osgt");
+    osg::ref_ptr<osg::Node> glider = osgDB::readRefNodeFile("glider.osgt");
     if (glider)
     {
         const osg::BoundingSphere& bs = glider->getBound();
@@ -159,7 +159,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
         model->addChild(xform);
     }
 
-    osg::Node* cessna = osgDB::readNodeFile("cessna.osgt");
+    osg::ref_ptr<osg::Node> cessna = osgDB::readRefNodeFile("cessna.osgt");
     if (cessna)
     {
         const osg::BoundingSphere& bs = cessna->getBound();
@@ -173,26 +173,26 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
 
         positioned->addChild(cessna);
 
-        osg::MatrixTransform* xform = new osg::MatrixTransform;
+        osg::ref_ptr<osg::MatrixTransform> xform = new osg::MatrixTransform;
         xform->setUpdateCallback(new osg::AnimationPathCallback(animationPath,0.0f,2.0));
         xform->addChild(positioned);
 
         model->addChild(xform);
     }
 
-    return model;
+    return model.release();
 }
 
-osg::Node* createModel(bool overlay, osgSim::OverlayNode::OverlayTechnique technique)
+osg::ref_ptr<osg::Group> createModel(bool overlay, osgSim::OverlayNode::OverlayTechnique technique)
 {
     osg::Vec3 center(0.0f,0.0f,0.0f);
     float radius = 100.0f;
 
-    osg::Group* root = new osg::Group;
+    osg::ref_ptr<osg::Group> root = new osg::Group;
 
     float baseHeight = center.z()-radius*0.5;
-    osg::Node* baseModel = createBase(osg::Vec3(center.x(), center.y(), baseHeight),radius);
-    osg::Node* movingModel = createMovingModel(center,radius*0.8f);
+    osg::ref_ptr<osg::Node> baseModel = createBase(osg::Vec3(center.x(), center.y(), baseHeight),radius);
+    osg::ref_ptr<osg::Node> movingModel = createMovingModel(center,radius*0.8f);
 
     if (overlay)
     {
@@ -232,14 +232,14 @@ int main( int argc, char **argv )
     osgViewer::Viewer viewer;
 
     // load the nodes from the commandline arguments.
-    osg::Node* model = createModel(overlay, technique);
+    osg::ref_ptr<osg::Group> model = createModel(overlay, technique);
     if (!model)
     {
         return 1;
     }
 
     // tilt the scene so the default eye position is looking down on the model.
-    osg::MatrixTransform* rootnode = new osg::MatrixTransform;
+    osg::ref_ptr<osg::MatrixTransform> rootnode = new osg::MatrixTransform;
     rootnode->setMatrix(osg::Matrix::rotate(osg::inDegrees(30.0f),1.0f,0.0f,0.0f));
     rootnode->addChild(model);
 

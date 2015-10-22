@@ -57,7 +57,7 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
 
                 const std::string filename = code.substr( pos2 + 1, pos3 - pos2 - 1 );
 
-                osg::ref_ptr<osg::Shader> innerShader = osgDB::readShaderFile( shader->getType(), filename, options );
+                osg::ref_ptr<osg::Shader> innerShader = osgDB::readRefShaderFile( shader->getType(), filename, options );
 
                 if ( !innerShader.valid() )
                 {

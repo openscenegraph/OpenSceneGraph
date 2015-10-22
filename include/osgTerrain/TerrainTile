@@ -102,6 +102,8 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
         /** Set the TerrainTechnique*/
         void setTerrainTechnique(TerrainTechnique* terrainTechnique);
 
+        template<class T> void setTerrainTechnique(const osg::ref_ptr<T>& terrainTechnique) { setTerrainTechnique(terrainTechnique.get()); }
+
         /** Get the TerrainTechnique*/
         TerrainTechnique* getTerrainTechnique() { return _terrainTechnique.get(); }
 
@@ -113,6 +115,8 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
           * The locator takes non-dimensional s,t coordinates into the X,Y,Z world coords and back.*/
         void setLocator(Locator* locator) { _locator = locator; }
 
+        template<class T> void setLocator(const osg::ref_ptr<T>& locator) { setLocator(locator.get()); }
+
         /** Get the coordinate frame locator of the terrain node.*/
         Locator* getLocator() { return _locator.get(); }
 
@@ -121,6 +125,8 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
 
         /** Set the layer to use to define the elevations of the terrain.*/
         void setElevationLayer(Layer* layer);
+
+        template<class T> void setElevationLayer(const osg::ref_ptr<T>& layer) { setElevationLayer(layer.get()); }
 
         /** Get the layer to use to define the elevations of the terrain.*/
         Layer* getElevationLayer() { return _elevationLayer.get(); }
@@ -132,6 +138,8 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
         /** Set a color layer with specified layer number.*/
         void setColorLayer(unsigned int i, Layer* layer);
 
+        template<class T> void setColorLayer(unsigned int i, const osg::ref_ptr<T>& layer) { setColorLayer(i, layer.get()); }
+
         /** Get color layer with specified layer number.*/
         Layer* getColorLayer(unsigned int i) { return i<_colorLayers.size() ? _colorLayers[i].get() : 0; }
 
@@ -139,7 +147,7 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
         const Layer* getColorLayer(unsigned int i) const { return i<_colorLayers.size() ? _colorLayers[i].get() : 0; }
 
         /** Get the number of colour layers.*/
-        unsigned int getNumColorLayers() const { return static_cast<unsigned int>(_colorLayers.size()); }
+        unsigned int getNumColorLayers() const { return _colorLayers.size(); }
 
 
         /** Set hint to whether the TerrainTechnique should create per vertex normals for lighting purposes.*/

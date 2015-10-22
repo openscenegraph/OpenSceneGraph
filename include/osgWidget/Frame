@@ -168,7 +168,7 @@ class OSGWIDGET_EXPORT Frame: public Table
 
         static Frame* createSimpleFrameWithSingleTexture(
             const std::string&,
-            osg::Image*,
+            osg::ref_ptr<osg::Image>,
             point_type,
             point_type,
             unsigned int = 0,
@@ -177,7 +177,7 @@ class OSGWIDGET_EXPORT Frame: public Table
 
         static Frame* createSimpleFrameFromTheme(
             const std::string&,
-            osg::Image*,
+            osg::ref_ptr<osg::Image>,
             point_type,
             point_type,
             unsigned int = 0,

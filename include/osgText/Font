@@ -28,6 +28,7 @@ namespace osgText {
 // forward declare Font
 class Font;
 
+#ifdef OSG_PROVIDE_READFILE
 /** Read a font from specified file. The filename may contain a path.
   * It will search for the font file in the following places in this order:
   * - In the current directory
@@ -51,6 +52,7 @@ extern OSGTEXT_EXPORT Font* readFontFile(const std::string& filename, const osgD
 
 /** read a font from specified stream.*/
 extern OSGTEXT_EXPORT Font* readFontStream(std::istream& stream, const osgDB::Options* userOptions = 0);
+#endif
 
 extern OSGTEXT_EXPORT osg::ref_ptr<Font> readRefFontFile(const std::string& filename, const osgDB::Options* userOptions = 0);
 

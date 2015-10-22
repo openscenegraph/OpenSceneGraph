@@ -14,7 +14,7 @@ using osgCandidate::VirtualProgram;
 ////////////////////////////////////////////////////////////////////////////////
 // Example shaders assume:
 // one texture
-// one directional light 
+// one directional light
 // front face lighting
 // color material mode not used (its not supported by GLSL anyway)
 // diffuse/ambient/emissive/specular factors defined in material structure
@@ -50,7 +50,7 @@ char SphereMapTextureVertexShaderSource[] =
 "    return vec4(r.x / m + 0.5, r.y / m + 0.5, 1.0, 1.0 );                  \n" //6
 "}                                                                          \n";//7
 
-char PerVertexDirectionalLightingVertexShaderSource[] = 
+char PerVertexDirectionalLightingVertexShaderSource[] =
 "void lighting( in vec3 position, in vec3 normal )                          \n" //1
 "{                                                                          \n" //2
 "    float NdotL = dot( normal, normalize(gl_LightSource[0].position.xyz) );\n" //3
@@ -152,7 +152,7 @@ void AddLabel( osg::Group * group, const std::string & label, float offset )
     osg::Vec3 center( 0, 0, offset * 0.5 );
     osg::Geode * geode = new osg::Geode;
 
-    // Make sure no program breaks text outputs 
+    // Make sure no program breaks text outputs
     geode->getOrCreateStateSet()->setAttribute
       ( new osg::Program, osg::StateAttribute::ON | osg::StateAttribute::PROTECTED );
 
@@ -209,16 +209,16 @@ osg::Node * CreateAdvancedHierarchy( osg::Node * model )
     transformRightBottom->setMatrix( osg::Matrix::translate( offset * 0.8,0, -offset * 0.8 ) );
     transformRightBottom->addChild( model );
 
-    // Set default VirtualProgram in root StateSet 
-    // With main vertex and main fragment shaders calling 
+    // Set default VirtualProgram in root StateSet
+    // With main vertex and main fragment shaders calling
     // lighting and texture functions defined in aditional shaders
     // Lighting is done per vertex using simple directional light
     // Texture uses stage 0 TexCoords and TexMap
 
-    if( 1 ) 
+    if( 1 )
     {
         // NOTE:
-        // duplicating the same semantics name in virtual program 
+        // duplicating the same semantics name in virtual program
         // is only possible if its used for shaders of differing types
         // here for VERTEX and FRAGMENT
 
@@ -251,35 +251,35 @@ osg::Node * CreateAdvancedHierarchy( osg::Node * model )
 
     // Override default vertex ligting with pixel lighting shaders
     // For three bottom models
-    if( 1 ) 
+    if( 1 )
     {
         AddLabel( transformCenterBottom, "Per Pixel Lighting VP", offset );
         VirtualProgram * vp = new VirtualProgram( );
         transformCenterBottom->getOrCreateStateSet()->setAttribute( vp );
 
         SetVirtualProgramShader( vp, "lighting",osg::Shader::VERTEX,
-            "Vertex Shader For Per Pixel Lighting", 
+            "Vertex Shader For Per Pixel Lighting",
             PerFragmentLightingVertexShaderSource );
 
         SetVirtualProgramShader( vp, "lighting",osg::Shader::FRAGMENT,
-            "Fragment Shader For Per Pixel Lighting", 
+            "Fragment Shader For Per Pixel Lighting",
             PerFragmentDirectionalLightingFragmentShaderSource );
     }
 
-    // Additionaly set bottom left model texture to procedural blue to 
+    // Additionaly set bottom left model texture to procedural blue to
     // better observe smooth speculars done through per pixel lighting
-    if( 1 ) 
+    if( 1 )
     {
         AddLabel( transformLeftBottom, "Blue Tex VP", offset );
         VirtualProgram * vp = new VirtualProgram( );
         transformLeftBottom->getOrCreateStateSet()->setAttribute( vp );
 
         SetVirtualProgramShader( vp, "texture",osg::Shader::FRAGMENT,
-            "Fragment Shader Procedural Blue Tex", 
+            "Fragment Shader Procedural Blue Tex",
             ProceduralBlueTextureFragmentShaderSource );
     }
 
-    // Additionaly change texture mapping to SphereMAp in bottom right model 
+    // Additionaly change texture mapping to SphereMAp in bottom right model
     if( 1 )
     {
         AddLabel( transformRightBottom, "EnvMap Sphere VP", offset );
@@ -290,13 +290,10 @@ osg::Node * CreateAdvancedHierarchy( osg::Node * model )
         SetVirtualProgramShader( vp, "texture",osg::Shader::VERTEX,
             "Vertex Texture Sphere Map", SphereMapTextureVertexShaderSource );
 
-        osg::Texture2D * texture =  new osg::Texture2D(
-//            osgDB::readImageFile("Images/reflect.rgb") 
-            osgDB::readImageFile("Images/skymap.jpg") 
-        );
+        osg::Texture2D * texture =  new osg::Texture2D( osgDB::readRefImageFile("Images/skymap.jpg") );
 
         // Texture is set on stage 1 to not interfere with label text
-        // The same could be achieved with texture override 
+        // The same could be achieved with texture override
         // but such approach also turns off label texture
         ss->setTextureAttributeAndModes( 1, texture, osg::StateAttribute::ON );
         ss->addUniform( new osg::Uniform( "baseTexture", 1 ) );
@@ -313,7 +310,7 @@ osg::Node * CreateAdvancedHierarchy( osg::Node * model )
 
 
     // Top center model usues osg::Program overriding VirtualProgram in model
-    if( 1 ) 
+    if( 1 )
     {
         AddLabel( transformCenterTop, "Fixed Vertex + Simple Fragment osg::Program", offset );
         osg::Program * program = new osg::Program;
@@ -339,8 +336,8 @@ osg::Node * CreateAdvancedHierarchy( osg::Node * model )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Shders not used in the example but left for fun if anyone wants to play 
-char LightingVertexShaderSource[] = 
+// Shders not used in the example but left for fun if anyone wants to play
+char LightingVertexShaderSource[] =
 "// Forward declarations                                                    \n" //1
 "                                                                           \n" //2
 "void SpotLight( in int i, in vec3 eye, in vec3 position, in vec3 normal,   \n" //3
@@ -385,7 +382,7 @@ char LightingVertexShaderSource[] =
 "    gl_BackSecondaryColor = gl_FrontSecondaryColor;                        \n" //42
 "}                                                                          \n";//43
 
-char SpotLightShaderSource[] = 
+char SpotLightShaderSource[] =
 "void SpotLight(in int i,                                                   \n" //1
 "               in vec3 eye,                                                \n" //2
 "               in vec3 position,                                           \n" //3
@@ -444,7 +441,7 @@ char SpotLightShaderSource[] =
 "    specular += gl_LightSource[i].specular * pf * attenuation;             \n" //56
 "}                                                                          \n";//57
 
-char PointLightShaderSource[] = 
+char PointLightShaderSource[] =
 "void PointLight(in int i,                                                  \n" //1
 "                in vec3 eye,                                               \n" //2
 "                in vec3 position,                                          \n" //3

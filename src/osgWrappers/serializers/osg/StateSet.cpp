@@ -46,7 +46,7 @@ static void readAttributes( osgDB::InputStream& is, osg::StateSet::AttributeList
         is >> is.BEGIN_BRACKET;
         for ( unsigned int i=0; i<size; ++i )
         {
-            osg::StateAttribute* sa = dynamic_cast<osg::StateAttribute*>( is.readObject() );
+            osg::ref_ptr<osg::StateAttribute> sa = is.readObjectOfType<osg::StateAttribute>();
             is >> is.PROPERTY("Value");
             int value = readValue( is );
             if ( sa )
@@ -144,7 +144,7 @@ static bool readAttributeList( osgDB::InputStream& is, osg::StateSet& ss )
     for ( osg::StateSet::AttributeList::iterator itr=attrs.begin();
           itr!=attrs.end(); ++itr )
     {
-        ss.setAttribute( itr->second.first.get(), itr->second.second );
+        ss.setAttribute( itr->second.first, itr->second.second );
     }
     return true;
 }
@@ -211,7 +211,7 @@ static bool readTextureAttributeList( osgDB::InputStream& is, osg::StateSet& ss 
         for ( osg::StateSet::AttributeList::iterator itr=attrs.begin();
               itr!=attrs.end(); ++itr )
         {
-            ss.setTextureAttribute( i, itr->second.first.get(), itr->second.second );
+            ss.setTextureAttribute( i, itr->second.first, itr->second.second );
         }
         attrs.clear();
     }
@@ -244,7 +244,7 @@ static bool readUniformList( osgDB::InputStream& is, osg::StateSet& ss )
     unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        osg::Uniform* uniform = dynamic_cast<osg::Uniform*>( is.readObject() );
+        osg::ref_ptr<osg::Uniform> uniform = is.readObjectOfType<osg::Uniform>();
         is >> is.PROPERTY("Value");
         int value = readValue( is );
         if ( uniform )

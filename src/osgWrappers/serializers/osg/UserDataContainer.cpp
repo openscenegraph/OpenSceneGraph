@@ -12,7 +12,7 @@ static bool checkUDC_UserData( const osg::DefaultUserDataContainer& udc )
 static bool readUDC_UserData( osgDB::InputStream& is, osg::DefaultUserDataContainer& udc )
 {
     is >> is.BEGIN_BRACKET;
-    osg::Object* object = is.readObject();
+    osg::ref_ptr<osg::Object> object = is.readObject();
     if(object) udc.setUserData(object);
     is >> is.END_BRACKET;
     return true;
@@ -70,7 +70,7 @@ static bool readUDC_UserObjects( osgDB::InputStream& is, osg::DefaultUserDataCon
     unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for( unsigned int i=0; i<size; ++i )
     {
-        osg::Object* read_object = is.readObject();
+        osg::ref_ptr<osg::Object> read_object = is.readObject();
         if (read_object) udc.addUserObject( read_object );
     }
     is >> is.END_BRACKET;

@@ -103,6 +103,8 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Set the scene graph that the View will use.*/
         virtual void setSceneData(osg::Node* node);
 
+        template<class T> void setSceneData(const osg::ref_ptr<T>& node) { setSceneData(node.get()); }
+
         /** Get the View's scene graph.*/
         osg::Node* getSceneData() { return _scene.valid() ? _scene->getSceneData() : 0; }
 
@@ -113,6 +115,8 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Set the View's database pager.*/
         void setDatabasePager(osgDB::DatabasePager* dp);
 
+        template<class T> void setDatabasePager(const osg::ref_ptr<T>& dp) { setDatabasePager(dp.get()); }
+
         /** Get the View's database pager.*/
         osgDB::DatabasePager* getDatabasePager();
 
@@ -122,6 +126,8 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
         /** Set the View's image pager.*/
         void setImagePager(osgDB::ImagePager* ip);
+
+        template<class T> void setImagePager(const osg::ref_ptr<T>* ip) { setImagePager(ip.get()); }
 
         /** Get the View's image pager.*/
         osgDB::ImagePager* getImagePager();
@@ -134,8 +140,12 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
          * The Device is polled on each new frame via it's Device::checkEvents() method and any events generated then collected via Device::getEventQueue()*/
         void addDevice(osgGA::Device* eventSource);
 
+        template<class T> void addDevice(const osg::ref_ptr<T>& eventSource) { addDevice(eventSource.get()); }
+
         /** Remove a Device. /*/
         void removeDevice(osgGA::Device* eventSource);
+
+        template<class T> void removeDevice(const osg::ref_ptr<T>& eventSource) { removeDevice(eventSource.get()); }
 
         typedef std::vector< osg::ref_ptr<osgGA::Device> > Devices;
 
@@ -146,6 +156,8 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /* Set the EventQueue that the View uses to integrate external non window related events.*/
         void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }
 
+        template<class T> void setEventQueue(const osg::ref_ptr<T>& eventQueue) { setEventQueue(eventQueue.get()); }
+
         /* Get the View's EventQueue.*/
         osgGA::EventQueue* getEventQueue() { return _eventQueue.get(); }
 
@@ -155,6 +167,8 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Set the CameraManipulator that moves the View's master Camera position in response to events.
           * The parameter resetPosition determines whether manipulator is set to its home position.*/
         void setCameraManipulator(osgGA::CameraManipulator* manipulator, bool resetPosition = true);
+
+        template<class T> void setCameraManipulator(const osg::ref_ptr<T>& manipulator, bool resetPosition = true) { setCameraManipulator(manipulator.get(), resetPosition); }
 
         /** Get the View's CameraManipulator.*/
         osgGA::CameraManipulator* getCameraManipulator() { return _cameraManipulator.get(); }
@@ -172,8 +186,12 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Add an EventHandler that adds handling of events to the View.*/
         void addEventHandler(osgGA::EventHandler* eventHandler);
 
+        template<class T> void addEventHandler(const osg::ref_ptr<T>& eventHandler) { addEventHandler(eventHandler.get()); }
+
         /** Remove an EventHandler from View.*/
         void removeEventHandler(osgGA::EventHandler* eventHandler);
+
+        template<class T> void removeEventHandler(const osg::ref_ptr<T>& eventHandler) { removeEventHandler(eventHandler.get()); }
 
         /** Get the View's list of EventHandlers.*/
         EventHandlers& getEventHandlers() { return _eventHandlers; }
@@ -197,6 +215,8 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Set the DisplaySettings object associated with this view.*/
         void setDisplaySettings(osg::DisplaySettings* ds) { _displaySettings = ds; }
 
+        template<class T> void setDisplaySettings(const osg::ref_ptr<T>& ds) { setDisplaySettings(ds.get()); }
+
         /** Set the DisplaySettings object associated with this view.*/
         osg::DisplaySettings* getDisplaySettings() { return _displaySettings.get(); }
 
@@ -219,6 +239,8 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
         /** Apply a viewer configuration to set up Cameras and Windowing. */
         void apply(ViewConfig* config);
+
+        template<class T> void apply(const osg::ref_ptr<T>& config) { apply(config.get()); }
 
         ViewConfig* getLastAppliedViewConfig() { return _lastAppliedViewConfig.get(); }
         const ViewConfig* getLastAppliedViewConfig() const { return _lastAppliedViewConfig.get(); }
@@ -254,6 +276,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Return true if this view contains a specified camera.*/
         bool containsCamera(const osg::Camera* camera) const;
 
+        template<class T> bool containsCamera(const osg::ref_ptr<T>& camera) const { return containsCamera(camera.get()); }
 
         /** deprecated. */
         const osg::Camera* getCameraContainingPosition(float x, float y, float& local_x, float& local_y) const;

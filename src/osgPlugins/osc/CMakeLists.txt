@@ -35,7 +35,7 @@ if(WIN32 AND NOT ANDROID)
         ip/win32/NetworkingUtils.cpp
         ip/win32/UdpSocket.cpp
     )
-    SET(TARGET_EXTERNAL_LIBRARIES "${TARGET_EXTERNAL_LIBRARIES};Ws2_32.lib;winmm")
+    SET(TARGET_EXTERNAL_LIBRARIES "${TARGET_EXTERNAL_LIBRARIES};ws2_32.lib;winmm")
 ELSE()
     SET(TARGET_SRC
         ${TARGET_SRC}

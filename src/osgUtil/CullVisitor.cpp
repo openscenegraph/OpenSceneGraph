@@ -1600,27 +1600,8 @@ void CullVisitor::apply(osg::Camera& camera)
         rtts->setClearDepth(camera.getClearDepth());
         rtts->setClearAccum(camera.getClearAccum());
         rtts->setClearStencil(camera.getClearStencil());
-        rtts->setClearMask(camera.getClearMask());
-
-
-        // set up the background color and clear mask.
-        if (camera.getInheritanceMask() & CLEAR_COLOR)
-        {
-            rtts->setClearColor(previous_stage->getClearColor());
-        }
-        else
-        {
-            rtts->setClearColor(camera.getClearColor());
-        }
-        if (camera.getInheritanceMask() & CLEAR_MASK)
-        {
-            rtts->setClearMask(previous_stage->getClearMask());
-        }
-        else
-        {
-            rtts->setClearMask(camera.getClearMask());
-        }
-
+        rtts->setClearMask((camera.getInheritanceMask() & CLEAR_MASK) ? previous_stage->getClearMask() : camera.getClearMask());
+        rtts->setClearColor((camera.getInheritanceMask() & CLEAR_COLOR) ? previous_stage->getClearColor() : camera.getClearColor());
 
         // set the color mask.
         osg::ColorMask* colorMask = camera.getColorMask()!=0 ? camera.getColorMask() : previous_stage->getColorMask();

@@ -1220,6 +1220,7 @@ bool GraphicsWindowX11::checkEvents()
     int windowY = _traits->y;
     int windowWidth = _traits->width;
     int windowHeight = _traits->height;
+    bool needNewWindowSize = false;
 
     Time firstEventTime = 0;
 
@@ -1275,6 +1276,7 @@ bool GraphicsWindowX11::checkEvents()
                     windowWidth = ev.xconfigure.width;
                     windowHeight = ev.xconfigure.height;
                 }
+                needNewWindowSize = true;
 
                 break;
             }
@@ -1294,6 +1296,7 @@ bool GraphicsWindowX11::checkEvents()
                     windowWidth = watt.width;
                     windowHeight = watt.height;
                 }
+                needNewWindowSize = true;
 
                 break;
             }
@@ -1552,6 +1555,7 @@ bool GraphicsWindowX11::checkEvents()
 
 
     // get window geometry relative to root window/screen
+    if (needNewWindowSize)
     {
         XWindowAttributes watt;
         Window child_return;

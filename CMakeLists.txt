@@ -53,8 +53,8 @@ PROJECT(OpenSceneGraph)
 
 SET(OPENSCENEGRAPH_MAJOR_VERSION 3)
 SET(OPENSCENEGRAPH_MINOR_VERSION 5)
-SET(OPENSCENEGRAPH_PATCH_VERSION 0)
-SET(OPENSCENEGRAPH_SOVERSION 140)
+SET(OPENSCENEGRAPH_PATCH_VERSION 1)
+SET(OPENSCENEGRAPH_SOVERSION 141)
 
 # set to 0 when not a release candidate, non zero means that any generated
 # svn tags will be treated as release candidates of given number
@@ -180,7 +180,6 @@ IF(APPLE)
     STRING(REPLACE "." ";" MACOS_VERSION_LIST ${OSG_OSX_SDK_NAME})
     LIST(GET MACOS_VERSION_LIST 0 MACOS_VERSION_MAJOR)
     LIST(GET MACOS_VERSION_LIST 1 MACOS_VERSION_MINOR)
-    LIST(GET MACOS_VERSION_LIST 2 MACOS_VERSION_PATCH)
 
     SET(OSG_OSX_SDK_NAME "macosx${MACOS_VERSION_MAJOR}.${MACOS_VERSION_MINOR}")
 
@@ -1109,7 +1108,7 @@ IF(APPLE AND NOT ANDROID)
         # FORCE is used because the options are not reflected in the UI otherwise.
         # Seems like a good place to add version specific compiler flags too.
         IF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
-            IF(${OSG_OSX_SDK_NAME} STREQUAL "macosx10.8" OR ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.9" OR ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.10")
+            IF(${MACOS_VERSION_MAJOR} EQUAL 10 AND ${MACOS_VERSION_MINOR} GREATER 7)
                 SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio" CACHE STRING "Forced imageio default image plugin for OSX" FORCE)
                 # 64 Bit Works, i386,ppc is not supported any more
                 SET(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX" FORCE)

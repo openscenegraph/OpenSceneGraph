@@ -515,7 +515,7 @@ void DisplaySettings::readEnvironmentalVariables()
         _maxNumOfGraphicsContexts = atoi(ptr);
     }
 
-    if( (ptr = getenv("OSG_COMPIlE_CONTEXTS")) != 0)
+    if( (ptr = getenv("OSG_COMPILE_CONTEXTS")) != 0)
     {
         if (strcmp(ptr,"OFF")==0)
         {

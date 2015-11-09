@@ -262,7 +262,8 @@ bool Geometry::addPrimitiveSet(PrimitiveSet* primitiveset)
         dirtyBound();
         return true;
     }
-    OSG_WARN<<"Warning: invalid index i or primitiveset passed to osg::Geometry::addPrimitiveSet(i,primitiveset), ignoring call."<<std::endl;
+
+    OSG_WARN<<"Warning: invalid primitiveset passed to osg::Geometry::addPrimitiveSet(i, primitiveset), ignoring call."<<std::endl;
     return false;
 }
 

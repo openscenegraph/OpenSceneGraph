@@ -103,6 +103,19 @@ class ESRIShapeReaderWriter : public osgDB::ReaderWriter
                             osgTerrain::Locator* locator = new osgTerrain::Locator;
                             sp.getGeode()->setUserData(locator);
 
+                            if (projstring.compare(0,6,"GEOCCS")==0)
+                            {
+                                locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
+                            }
+                            else if (projstring.compare(0,6,"PROJCS")==0)
+                            {
+                                locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
+                            }
+                            else if (projstring.compare(0,6,"GEOGCS")==0)
+                            {
+                                locator->setCoordinateSystemType(osgTerrain::Locator::GEOGRAPHIC);
+                            }
+
                             locator->setFormat("WKT");
                             locator->setCoordinateSystem(projstring);
                             locator->setDefinedInFile(false);

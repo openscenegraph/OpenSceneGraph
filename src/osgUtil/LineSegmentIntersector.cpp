@@ -559,8 +559,8 @@ void LineSegmentIntersector::reset()
 
 bool LineSegmentIntersector::intersects(const osg::BoundingSphere& bs)
 {
-    // if bs not valid then return true based on the assumption that an invalid sphere is yet to be defined.
-    if (!bs.valid()) return true;
+    // if bs not valid then return false based on the assumption that the node is empty.
+    if (!bs.valid()) return false;
 
     osg::Vec3d sm = _start - bs._center;
     double c = sm.length2()-bs._radius*bs._radius;

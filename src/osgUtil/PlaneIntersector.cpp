@@ -641,7 +641,7 @@ bool PlaneIntersector::enter(const osg::Node& node)
 {
     if (reachedLimit()) return false;
     return !node.isCullingActive() ||
-           ( _plane.intersect(node.getBound())==0 && _polytope.contains(node.getBound()) );
+           ( node.getBound().valid() && _plane.intersect(node.getBound())==0 && _polytope.contains(node.getBound()) );
 }
 
 

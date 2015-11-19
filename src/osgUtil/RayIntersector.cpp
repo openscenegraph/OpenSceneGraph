@@ -148,8 +148,8 @@ void RayIntersector::intersect(IntersectionVisitor& iv, Drawable* drawable)
 
 bool RayIntersector::intersects(const BoundingSphere& bs)
 {
-    // if bs not valid then return true based on the assumption that an invalid sphere is yet to be defined.
-    if (!bs.valid()) return true;
+    // if bs not valid then return false based on the assumption that the node is empty.
+    if (!bs.valid()) return false;
 
     // test for _start inside the bounding sphere
     Vec3d sm = _start - bs._center;

@@ -165,7 +165,8 @@ osgUtil::Intersector* PosterIntersector::clone( osgUtil::IntersectionVisitor& iv
 
 bool PosterIntersector::enter( const osg::Node& node )
 {
-    if ( !node.isCullingActive() ) return true;
+    if (!node.getBound().valid()) return false;
+    if (!node.isCullingActive()) return true;
     if ( _polytope.contains(node.getBound()) )
     {
         if ( node.getCullCallback() )

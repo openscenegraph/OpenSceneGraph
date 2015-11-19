@@ -109,8 +109,10 @@ class OSG_EXPORT CullStack : public osg::CullSettings
 
         inline bool isCulled(const osg::Node& node)
         {
-            if (node.isCullingActive())
+            if (node.getNumChildrenWithCullingDisabled() == 0 && node.getCullingActive())
             {
+                if (!node.getBound().valid())
+                    return true;
                 return getCurrentCullingSet().isCulled(node.getBound());
             }
             else

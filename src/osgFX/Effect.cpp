@@ -153,6 +153,7 @@ void Effect::build_dummy_node()
 {
     _dummy_for_validation = new osg::Geode;
     osg::ref_ptr<osg::Geometry> geo = new osg::Geometry;
+    geo->setCullingActive(false);
     _dummy_for_validation->addDrawable(geo.get());
     _dummy_for_validation->getOrCreateStateSet()->setAttribute(new Validator(this));
 }

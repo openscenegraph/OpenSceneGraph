@@ -861,6 +861,8 @@ protected:
             addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP, 0, 0));
 
             setDrawCallback(new GraphUpdateCallback(this, pos, width, height, viewerStats, stats, max, nameBegin, nameEnd));
+
+            setCullingActive(false);
         }
     };
 

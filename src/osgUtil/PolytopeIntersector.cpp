@@ -533,7 +533,7 @@ Intersector* PolytopeIntersector::clone(osgUtil::IntersectionVisitor& iv)
 bool PolytopeIntersector::enter(const osg::Node& node)
 {
     if (reachedLimit()) return false;
-    return !node.isCullingActive() || _polytope.contains( node.getBound() );
+    return !node.isCullingActive() || (node.getBound().valid() && _polytope.contains( node.getBound()) );
 }
 
 

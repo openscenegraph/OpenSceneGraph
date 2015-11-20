@@ -1,3 +1,21 @@
+"OSG on steroids"
+=================
+
+This fork was created to experiment with performance enhancements for [OpenMW](https://github.com/OpenMW/openmw) that are too controversial to be included in the general purpose OSG project - either for design reasons or backward compatibility reasons.
+
+OpenMW still works with "vanilla" OpenSceneGraph, but it is recommended to use the fork for better performance (around 10-15% on most devices). Note that the improvements are very specific to OpenMW and its animation code in particular; other OpenSceneGraph applications are not likely to see the same speed-up, or any speed-up at all if they are already GPU limited.
+
+The fork is currently based on the OpenSceneGraph-3.6 branch and will continue to be based on the latest stable branch of OSG at the time. 
+
+- Use single precision matrices & planes by default.
+- Added option for single precision osg::Quat's (enabled by default). [Similar change rejected on osg-submissions.](http://forum.openscenegraph.org/viewtopic.php?t=12953)
+- Nodes with invalid bounding sphere (which you get e.g. when creating a completely empty node) are interpreted as "always culled". This type of node is common in a bone hierarchy for skeletal animation, and culling them early helps performance. [Rejected on osg-submissions](http://forum.openscenegraph.org/viewtopic.php?t=15412).
+- Removed several dynamic_cast's.
+- (Occasionally:) Uncontroversial bug fixes that were proposed upstream but have not been merged yet.
+
+The original OpenSceneGraph read me and credits follows below.
+
+
 [![Build Status](https://travis-ci.org/openscenegraph/OpenSceneGraph.svg?branch=master)](https://travis-ci.org/openscenegraph/OpenSceneGraph)
 [![Coverity Status](https://scan.coverity.com/projects/9159/badge.svg)](https://scan.coverity.com/projects/openscenegraph-openscenegraph)
 [![Documentation](https://codedocs.xyz/openscenegraph/OpenSceneGraph.svg)](https://codedocs.xyz/openscenegraph/OpenSceneGraph/)

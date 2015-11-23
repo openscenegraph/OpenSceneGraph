@@ -32,7 +32,10 @@
 #include <signal.h>
 #include <stdlib.h>
 
-static bool s_ExitApplication = false;
+#include <OpenThreads/Atomic>
+
+static OpenThreads::Atomic s_ExitApplication;
+static OpenThreads::Atomic s_SigValue;
 
 struct Extents
 {
@@ -383,8 +386,8 @@ protected:
 
 static void signalHandler(int sig)
 {
-    printf("\nCaught signal %d, requesting exit...\n\n",sig);
-    s_ExitApplication = true;
+    s_SigValue.exchange(sig);
+    s_ExitApplication.exchange(1);
 }
 
 int main( int argc, char **argv )
@@ -483,7 +486,7 @@ int main( int argc, char **argv )
 
     if (s_ExitApplication)
     {
-        std::cout<<"osgfilecache cleanly exited in response to signal."<<std::endl;
+        std::cout<<"osgfilecache exited in response to signal : "<<s_SigValue<<std::endl;
     }
 
     return 0;

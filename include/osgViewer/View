@@ -127,7 +127,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Set the View's image pager.*/
         void setImagePager(osgDB::ImagePager* ip);
 
-        template<class T> void setImagePager(const osg::ref_ptr<T>* ip) { setImagePager(ip.get()); }
+        template<class T> void setImagePager(const osg::ref_ptr<T>& ip) { setImagePager(ip.get()); }
 
         /** Get the View's image pager.*/
         osgDB::ImagePager* getImagePager();

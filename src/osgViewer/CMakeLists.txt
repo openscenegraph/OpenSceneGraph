@@ -8,6 +8,10 @@ ENDIF()
 SET(LIB_NAME osgViewer)
 
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
+
+FILE(GLOB CONFIG_HEADER_FILES ${HEADER_PATH}/config/*)
+FILE(GLOB CONFIG_SOURCE_FILES config/*.cpp)
+
 SET(TARGET_H
     ${HEADER_PATH}/CompositeViewer
     ${HEADER_PATH}/Export
@@ -22,10 +26,8 @@ SET(TARGET_H
     ${HEADER_PATH}/ViewerEventHandlers
 )
 
-FILE(GLOB LIB_COMMON_FILES config/*.cpp)
-
 SET(LIB_COMMON_FILES
-    ${LIB_COMMON_FILES}
+    ${CONFIG_SOURCE_FILES}
     CompositeViewer.cpp
     GraphicsWindow.cpp
     HelpHandler.cpp
@@ -47,8 +49,8 @@ SET(LIB_EXTRA_LIBS)
 
 IF(WIN32 AND NOT ANDROID)
     #
-    # Enable workaround for OpenGL driver issues when used in multithreaded/multiscreen with NVidia drivers on Windows XP 
-    # For example: osgviewer dumptruck.osg was showing total garbage (screen looked like shattered, splashed hedgehog) 
+    # Enable workaround for OpenGL driver issues when used in multithreaded/multiscreen with NVidia drivers on Windows XP
+    # For example: osgviewer dumptruck.osg was showing total garbage (screen looked like shattered, splashed hedgehog)
     # There were also serious issues with render to texture cameras.
     # Workaround repeats makeCurrentContext call as it was found that this causes the problems to dissapear.
     #
@@ -63,13 +65,13 @@ IF(WIN32 AND NOT ANDROID)
         ${HEADER_PATH}/api/Win32/GraphicsWindowWin32
         ${HEADER_PATH}/api/Win32/PixelBufferWin32
     )
-        
-    SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} 
+
+    SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
         GraphicsWindowWin32.cpp
         PixelBufferWin32.cpp
     )
 ELSE()
-    IF(APPLE AND NOT ANDROID) 
+    IF(APPLE AND NOT ANDROID)
 
         IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
             SET(OSG_WINDOWING_SYSTEM "IOS" CACHE STRING "Windowing system type for graphics window creation, options only IOS.")
@@ -93,15 +95,15 @@ ELSE()
     ENDIF()
 
     IF(${OSG_WINDOWING_SYSTEM} STREQUAL "Cocoa")
-        ADD_DEFINITIONS(-DUSE_DARWIN_COCOA_IMPLEMENTATION)    
- 
+        ADD_DEFINITIONS(-DUSE_DARWIN_COCOA_IMPLEMENTATION)
+
         IF(OSG_COMPILE_FRAMEWORKS)
-           SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} 
+           SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
                  ${HEADER_PATH}/api/Cocoa/GraphicsHandleCocoa
                  ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa
                  ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa
              )
-            SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/GraphicsHandleCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa) 
+            SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/GraphicsHandleCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa)
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa)
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa)
         ELSE()
@@ -110,9 +112,9 @@ ELSE()
                 ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa
                 ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa
             )
-        ENDIF()  
-  
-        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} 
+        ENDIF()
+
+        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
             GraphicsWindowCocoa.mm
             DarwinUtils.h
             DarwinUtils.mm
@@ -121,15 +123,15 @@ ELSE()
         SET(LIB_EXTRA_LIBS ${COCOA_LIBRARY} ${LIB_EXTRA_LIBS})
 
     ELSEIF(${OSG_WINDOWING_SYSTEM} STREQUAL "Carbon")
-        ADD_DEFINITIONS(-DUSE_DARWIN_CARBON_IMPLEMENTATION)     
- 
+        ADD_DEFINITIONS(-DUSE_DARWIN_CARBON_IMPLEMENTATION)
+
         IF(OSG_COMPILE_FRAMEWORKS)
-           SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} 
+           SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
                  ${HEADER_PATH}/api/Carbon/GraphicsHandleCarbon
                  ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon
                  ${HEADER_PATH}/api/Carbon/PixelBufferCarbon
              )
-            SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/GraphicsHandleCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon) 
+            SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/GraphicsHandleCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon)
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon)
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/PixelBufferCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon)
         ELSE()
@@ -140,7 +142,7 @@ ELSE()
             )
         ENDIF()
 
-        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} 
+        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
             GraphicsWindowCarbon.cpp
             DarwinUtils.h
             DarwinUtils.mm
@@ -151,10 +153,10 @@ ELSE()
 
     ELSEIF(${OSG_WINDOWING_SYSTEM} STREQUAL "IOS")
 
-        ADD_DEFINITIONS(-DUSE_IOS_IMPLEMENTATION)     
- 
+        ADD_DEFINITIONS(-DUSE_IOS_IMPLEMENTATION)
+
         IF(OSG_COMPILE_FRAMEWORKS)
-           SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} 
+           SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
                  ${HEADER_PATH}/api/IOS/GraphicsWindowIOS
              )
 
@@ -164,9 +166,9 @@ ELSE()
                 ${HEADER_PATH}/api/IOS/GraphicsWindowIOS
                 #${HEADER_PATH}/api/IOS/PixelBufferIOS
             )
-        ENDIF()   
- 
-        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} 
+        ENDIF()
+
+        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
             GraphicsWindowIOS.mm
             IOSUtils.h
             IOSUtils.mm
@@ -179,9 +181,9 @@ ELSE()
         INCLUDE(FindPkgConfig OPTIONAL)
         IF(PKG_CONFIG_FOUND)
             PKG_CHECK_MODULES(XRANDR xrandr)
-            IF(XRANDR_FOUND) 
+            IF(XRANDR_FOUND)
                 OPTION(OSGVIEWER_USE_XRANDR "Set to ON to enable Xrandr support for GraphicsWindowX11." ON)
-            ELSE() 
+            ELSE()
                 SET(OSGVIEWER_USE_XRANDR OFF)
             ENDIF()
         ELSE()
@@ -194,11 +196,11 @@ ELSE()
             ${HEADER_PATH}/api/X11/PixelBufferX11
         )
 
-        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} 
-            GraphicsWindowX11.cpp 
+        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
+            GraphicsWindowX11.cpp
             PixelBufferX11.cpp
         )
-        
+
         IF(OSGVIEWER_USE_XRANDR)
             ADD_DEFINITIONS(-DOSGVIEWER_USE_XRANDR)
             SET(LIB_PRIVATE_HEADERS ${LIB_PRIVATE_HEADERS} ${XRANDR_INCLUDE_DIRS} )
@@ -247,7 +249,7 @@ SET(TARGET_SRC
 )
 
 
-SET(TARGET_LIBRARIES    
+SET(TARGET_LIBRARIES
     osgGA
     osgText
     osgDB
@@ -266,12 +268,12 @@ SETUP_LIBRARY(${LIB_NAME})
 
 # install these headers manually since setup_library and moduleinstall
 # wouldn't keep the structure, e.g. api/X11/xyz.h
-FOREACH(HEADERFILE ${TARGET_H_NO_MODULE_INSTALL})
+FOREACH(HEADERFILE ${TARGET_H_NO_MODULE_INSTALL} ${CONFIG_HEADER_FILES})
   # get relative path to graphics system dependant header
   FILE(RELATIVE_PATH REL_INCLUDEFILE ${HEADER_PATH} ${HEADERFILE})
   GET_FILENAME_COMPONENT(REL_INCLUDE_PATH ${REL_INCLUDEFILE} PATH)
 
-  INSTALL(FILES ${HEADERFILE} 
+  INSTALL(FILES ${HEADERFILE}
     DESTINATION ${INSTALL_INCDIR}/${LIB_NAME}/${REL_INCLUDE_PATH}
     COMPONENT libopenscenegraph-dev
   )

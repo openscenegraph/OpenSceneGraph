@@ -38,12 +38,14 @@ public:
 
     void UseCursor(bool value);
 
+	void SetContextCurrent();
 private:
     DECLARE_EVENT_TABLE()
 
     osg::ref_ptr<osgViewer::GraphicsWindow> _graphics_window;
 
     wxCursor _oldCursor;
+    wxGLContext _context;
 };
 
 class GraphicsWindowWX : public osgViewer::GraphicsWindow

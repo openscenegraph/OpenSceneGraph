@@ -136,8 +136,7 @@ bool Group::insertChild( unsigned int index, Node *child )
             );
     }
 
-    if (child->getNumChildrenWithOccluderNodes()>0 ||
-        dynamic_cast<osg::OccluderNode*>(child))
+    if (child->getNumChildrenWithOccluderNodes()>0 || child->isOccluderNode())
     {
         setNumChildrenWithOccluderNodes(
             getNumChildrenWithOccluderNodes()+1
@@ -190,7 +189,7 @@ bool Group::removeChildren(unsigned int pos,unsigned int numChildrenToRemove)
 
             if (child->getNumChildrenWithCullingDisabled()>0 || !child->getCullingActive()) ++numChildrenWithCullingDisabledRemoved;
 
-            if (child->getNumChildrenWithOccluderNodes()>0 || dynamic_cast<osg::OccluderNode*>(child)) ++numChildrenWithOccludersRemoved;
+            if (child->getNumChildrenWithOccluderNodes()>0 || child->isOccluderNode()) ++numChildrenWithOccludersRemoved;
 
         }
 
@@ -326,12 +325,12 @@ bool Group::setChild( unsigned  int i, Node* newNode )
         // so need to check and update if required.
         int delta_numChildrenWithOccluderNodes = 0;
         if (origNode->getNumChildrenWithOccluderNodes()>0 ||
-            dynamic_cast<osg::OccluderNode*>(origNode.get()))
+            origNode->isOccluderNode())
         {
             --delta_numChildrenWithOccluderNodes;
         }
         if (newNode->getNumChildrenWithOccluderNodes()>0 ||
-            dynamic_cast<osg::OccluderNode*>(newNode))
+            newNode->isOccluderNode())
         {
             ++delta_numChildrenWithOccluderNodes;
         }

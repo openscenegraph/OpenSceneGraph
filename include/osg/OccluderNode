@@ -34,6 +34,7 @@ class OSG_EXPORT OccluderNode : public Group
 
         META_Node(osg, OccluderNode);
 
+        virtual bool isOccluderNode() const { return true; }
 
         /** Attach a ConvexPlanarOccluder to an OccluderNode.*/
         void setOccluder(ConvexPlanarOccluder* occluder) { _occluder = occluder; }

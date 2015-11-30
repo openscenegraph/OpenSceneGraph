@@ -158,6 +158,7 @@ class OSG_EXPORT Node : public Object
           * Equivalent to dynamic_cast<const Terrain*>(this).*/
         virtual const osgTerrain::Terrain* asTerrain() const { return 0; }
 
+        virtual bool isOccluderNode() const { return false; }
 
         /** Visitor Pattern : calls the apply method of a NodeVisitor with this node's type.*/
         virtual void accept(NodeVisitor& nv);

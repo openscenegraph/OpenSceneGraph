@@ -94,6 +94,9 @@ osgParticle::ParticleSystem::ParticleSystem(const ParticleSystem& copy, const os
 osgParticle::ParticleSystem::~ParticleSystem()
 {
 //    OSG_NOTICE<<"ParticleSystem::~ParticleSystem() "<<std::dec<<this<<std::dec<<" _particles.size()="<<_particles.size()<<", _particles.capacity()="<<_particles.capacity()<<" _estimatedMaxNumOfParticles="<<_estimatedMaxNumOfParticles<<std::endl;
+    for (unsigned int i=0; i<_particles.size(); ++i)
+        delete _particles[i];
+    _particles.clear();
 }
 
 osgParticle::Particle* osgParticle::ParticleSystem::createParticle(const osgParticle::Particle* ptemplate)
@@ -125,9 +128,14 @@ osgParticle::Particle* osgParticle::ParticleSystem::createParticle(const osgPart
         }
 
         // add a new particle to the vector
-        _particles.push_back(ptemplate? *ptemplate: _def_ptemp);
-        return &_particles.back();
+        _particles.push_back(new Particle(ptemplate?*ptemplate:_def_ptemp));
+        return _particles.back();
     }
+}
+
+bool cmp_particles(const osgParticle::Particle* left, const osgParticle::Particle* right)
+{
+    return *left < *right;
 }
 
 void osgParticle::ParticleSystem::update(double dt, osg::NodeVisitor& nv)
@@ -154,7 +162,7 @@ void osgParticle::ParticleSystem::update(double dt, osg::NodeVisitor& nv)
 
     for(unsigned int i=0; i<_particles.size(); ++i)
     {
-        Particle& particle = _particles[i];
+        Particle& particle = *_particles[i];
         if (particle.isAlive())
         {
             if (particle.update(dt, _useShaders))
@@ -179,15 +187,16 @@ void osgParticle::ParticleSystem::update(double dt, osg::NodeVisitor& nv)
             double deadDistance = DBL_MAX;
             for (unsigned int i=0; i<_particles.size(); ++i)
             {
-                Particle& particle = _particles[i];
+                Particle& particle = *_particles[i];
                 if (particle.isAlive())
                     particle.setDepth(distance(particle.getPosition(), modelview) * scale);
                 else
                     particle.setDepth(deadDistance);
             }
-            std::sort<Particle_vector::iterator>(_particles.begin(), _particles.end());
+            std::sort<Particle_vector::iterator>(_particles.begin(), _particles.end(), cmp_particles);
 
             // Repopulate the death stack as it will have been invalidated by the sort.
+            /*
             unsigned int numDead = _deadparts.size();
             if (numDead>0)
             {
@@ -195,13 +204,14 @@ void osgParticle::ParticleSystem::update(double dt, osg::NodeVisitor& nv)
                 _deadparts = Death_stack();
 
                 // copy the tail of the _particles vector as this will contain all the dead Particle thanks to the depth sort against DBL_MAX
-                Particle* first_dead_ptr  = &_particles[_particles.size()-numDead];
-                Particle* last_dead_ptr  = &_particles[_particles.size()-1];
+                Particle* first_dead_ptr  = _particles[_particles.size()-numDead];
+                Particle* last_dead_ptr  = _particles[_particles.size()-1];
                 for(Particle* dead_ptr  = first_dead_ptr; dead_ptr<=last_dead_ptr; ++dead_ptr)
                 {
                     _deadparts.push(dead_ptr);
                 }
             }
+            */
         }
     }
 
@@ -252,7 +262,7 @@ void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo
 
         for(unsigned int i=0; i<_particles.size(); i+=_detail)
         {
-            const Particle* particle = &_particles[i];
+            const Particle* particle = _particles[i];
             const osg::Vec4& color = particle->getCurrentColor();
             const osg::Vec3& pos = particle->getPosition();
             const osg::Vec3& vel = particle->getVelocity();
@@ -321,7 +331,7 @@ void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo
 
         for(unsigned int i=0; i<_particles.size(); i+=_detail)
         {
-            const Particle* currentParticle = &_particles[i];
+            const Particle* currentParticle = _particles[i];
 
             bool insideDistance = true;
             if (_sortMode != NO_SORT && _visibilityDistance>0.0)

@@ -173,7 +173,7 @@ namespace osgParticle
         inline virtual void destroyParticle(int i);
 
         /// Reuse the i-th particle.
-        inline virtual void reuseParticle(int i) { _deadparts.push(&(_particles[i])); }
+        inline virtual void reuseParticle(int i) { _deadparts.push((_particles[i])); }
 
         /// Get the last frame number.
         inline unsigned int getLastFrameNumber() const;
@@ -280,7 +280,12 @@ namespace osgParticle
 
         inline void update_bounds(const osg::Vec3& p, float r);
 
-        typedef std::vector<Particle> Particle_vector;
+        void single_pass_render(osg::RenderInfo& renderInfo, const osg::Matrix& modelview) const;
+
+        void new_drawImplementation(osg::RenderInfo& renderInfo) const;
+
+        typedef std::vector<Particle*> Particle_vector;
+
         typedef std::stack<Particle*> Death_stack;
 
         Particle_vector _particles;
@@ -436,17 +441,17 @@ namespace osgParticle
 
     inline Particle* ParticleSystem::getParticle(int i)
     {
-        return &_particles[i];
+        return _particles[i];
     }
 
     inline const Particle* ParticleSystem::getParticle(int i) const
     {
-        return &_particles[i];
+        return _particles[i];
     }
 
     inline void ParticleSystem::destroyParticle(int i)
     {
-        _particles[i].kill();
+        _particles[i]->kill();
     }
 
     inline unsigned int ParticleSystem::getLastFrameNumber() const

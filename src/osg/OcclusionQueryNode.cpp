@@ -243,7 +243,7 @@ public:
     virtual void deleteGLObject(GLuint globj)
     {
         const GLExtensions* extensions = GLExtensions::Get(_contextID,true);
-        if (extensions->isGlslSupported) extensions->glDeleteQueries( 1L, &globj );
+        if (extensions->isOcclusionQuerySupported || extensions->isARBOcclusionQuerySupported) extensions->glDeleteQueries( 1L, &globj );
     }
 };
 
@@ -285,6 +285,10 @@ QueryGeometry::drawImplementation( osg::RenderInfo& renderInfo ) const
 {
     unsigned int contextID = renderInfo.getState()->getContextID();
     osg::GLExtensions* ext = renderInfo.getState()->get<GLExtensions>();
+
+    if (!ext->isARBOcclusionQuerySupported && !ext->isOcclusionQuerySupported)
+        return;
+
     osg::Camera* cam = renderInfo.getCurrentCamera();
 
     // Add callbacks if necessary.

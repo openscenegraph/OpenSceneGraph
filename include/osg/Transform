@@ -153,12 +153,20 @@ class OSG_EXPORT Transform : public Group
         */
         virtual BoundingSphere computeBound() const;
 
+
+        /** Passed to external observers on change. */
+        struct ObserverRecord : osg::ObserverRecord { };
+
+
     protected :
 
         virtual ~Transform();
 
 
         ReferenceFrame                      _referenceFrame;
+
+        /** Issue NotifyChanged to external observers. */
+        void notifyObservers();
 
 };
 

@@ -17,10 +17,16 @@
 */
 
 #include <osgDB/ReadFile>
+
 #include <osgUtil/Optimizer>
 #include <osgUtil/Simplifier>
+
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
+
 #include <osgGA/TrackballManipulator>
+#include <osgGA/StateSetManipulator>
+
 #include <iostream>
 
 class KeyboardEventHandler : public osgGA::GUIEventHandler
@@ -116,10 +122,19 @@ int main( int argc, char **argv )
     unsigned int keyFlag = 0;
     viewer.addEventHandler(new KeyboardEventHandler(keyFlag));
 
-    // set the scene to render
-    viewer.setSceneData(loadedModel.get());
+    // add the state manipulator
+    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
+
+    // add the window size toggle handler
+    viewer.addEventHandler(new osgViewer::WindowSizeHandler);
+
+    // add the stats handler
+    viewer.addEventHandler(new osgViewer::StatsHandler);
 
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
+
+    // set the scene to render
+    viewer.setSceneData(loadedModel.get());
 
     // create the windows and run the threads.
     viewer.realize();

@@ -19,6 +19,14 @@
 
 namespace osg {
 
+// forward declare
+class CallbackObject;
+class NodeCallback;
+class StateAtteributeCallback;
+class UniformCallback;
+class DrawableUpdateCallback;
+class DrawableEventCallback;
+class DrawableCullCallback;
 
 class OSG_EXPORT Callback : public virtual Object {
 
@@ -31,6 +39,30 @@ class OSG_EXPORT Callback : public virtual Object {
             _nestedCallback(cb._nestedCallback) {}
 
         META_Object(osg, Callback);
+
+        virtual Callback* asCallback() { return this; }
+        virtual const Callback* asCallback() const { return this; }
+
+        virtual CallbackObject* asCallbackObject() { return 0; }
+        virtual const CallbackObject* asCallbackObject() const { return 0; }
+
+        virtual NodeCallback* asNodeCallback() { return 0; }
+        virtual const NodeCallback* asNodeCallback() const { return 0; }
+
+        virtual StateAttributeCallback* asStateAttributeCallback() { return 0; }
+        virtual const StateAttributeCallback* asStateAttributeCallback() const { return 0; }
+
+        virtual UniformCallback* asUniformCallback() { return 0; }
+        virtual const UniformCallback* asUniformCallback() const { return 0; }
+
+        virtual DrawableUpdateCallback* asDrawableUpdateCallback() { return 0; }
+        virtual const DrawableUpdateCallback* asDrawableUpdateCallback() const { return 0; }
+
+        virtual DrawableEventCallback* asDrawableEventCallback() { return 0; }
+        virtual const DrawableEventCallback* asDrawableEventCallback() const { return 0; }
+
+        virtual DrawableCullCallback* asDrawableCullCallback() { return 0; }
+        virtual const DrawableCullCallback* asDrawableCullCallback() const { return 0; }
 
         /** Invoke the callback, first parameter is the Object that the callback is attached to,
          *  the second parameter, the data, is typically the NodeVisitor that is invoking the callback.
@@ -100,7 +132,7 @@ public:
     CallbackObject(const CallbackObject& co, const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY):
         osg::Object(co, copyop),
         osg::Callback(co,copyop) {}
-        
+
     META_Object(osg, CallbackObject);
 
     virtual CallbackObject* asCallbackObject() { return this; }
@@ -124,7 +156,12 @@ public:
 inline CallbackObject* getCallbackObject(osg::Object* object, const std::string& name)
 {
     osg::UserDataContainer* udc = object->getUserDataContainer();
-    return udc ? dynamic_cast<osg::CallbackObject*>(udc->getUserObject(name)) : 0;
+    if (!udc) return 0;
+
+    osg::Object* obj = udc->getUserObject(name);
+    if (!obj) return 0;
+
+    return obj->asCallbackObject();
 }
 
 
@@ -132,7 +169,12 @@ inline CallbackObject* getCallbackObject(osg::Object* object, const std::string&
 inline const CallbackObject* getCallbackObject(const osg::Object* object, const std::string& name)
 {
     const osg::UserDataContainer* udc = object->getUserDataContainer();
-    return udc ? dynamic_cast<const osg::CallbackObject*>(udc->getUserObject(name)) : 0;
+    if (!udc) return 0;
+
+    const osg::Object* obj = udc->getUserObject(name);
+    if (!obj) return 0;
+
+    return obj->asCallbackObject();
 }
 
 /** Call run(..) on named CallbackObjects attached to specified Object. Return true if at least one CallbackObject has been successfully invoked.*/
@@ -147,7 +189,7 @@ inline bool runNamedCallbackObjects(osg::Object* object, const std::string& name
             osg::Object* obj = udc->getUserObject(i);
             if (obj && obj->getName()==name)
             {
-                osg::CallbackObject* co = dynamic_cast<osg::CallbackObject*>(obj);
+                osg::CallbackObject* co = obj->asCallbackObject();
                 if (co) result = co->run(object, inputParameters, outputParameters) | result;
             }
         }
@@ -168,13 +210,15 @@ class OSG_EXPORT NodeCallback : public virtual Callback {
 
     public :
 
-
         NodeCallback(){}
 
         NodeCallback(const NodeCallback& nc,const CopyOp& copyop):
             Callback(nc,copyop) {}
 
         META_Object(osg,NodeCallback);
+
+        virtual NodeCallback* asNodeCallback() { return this; }
+        virtual const NodeCallback* asNodeCallback() const { return this; }
 
         /** NodeCallback overrides the Callback::run() method to adapt it the old style NodeCallback::operator()(Node* node, NodeVisitor* nv) method.*/
         virtual bool run(osg::Object* object, osg::Object* data);
@@ -200,6 +244,9 @@ class OSG_EXPORT StateAttributeCallback : public virtual osg::Callback
 
         META_Object(osg,StateAttributeCallback);
 
+        virtual StateAttributeCallback* asStateAttributeCallback() { return this; }
+        virtual const StateAttributeCallback* asStateAttributeCallback() const { return this; }
+
         /** override Callback::run() entry point to adapt to StateAttributeCallback::run(..) method.*/
         virtual bool run(osg::Object* object, osg::Object* data);
 
@@ -220,11 +267,72 @@ public:
 
     META_Object(osg, UniformCallback);
 
+    virtual UniformCallback* asUniformCallback() { return this; }
+    virtual const UniformCallback* asUniformCallback() const { return this; }
+
     /** override Callback::run() entry point to adapt to UniformCallback::run(..) method.*/
     virtual bool run(osg::Object* object, osg::Object* data);
 
     /** do customized update code.*/
     virtual void operator () (Uniform*, NodeVisitor*) {}
+};
+
+
+// forward declare
+class Drawable;
+class State;
+class RenderInfo;
+
+struct OSG_EXPORT DrawableUpdateCallback : public virtual Callback
+{
+    DrawableUpdateCallback() {}
+
+    DrawableUpdateCallback(const DrawableUpdateCallback&,const CopyOp&) {}
+
+    META_Object(osg,DrawableUpdateCallback);
+
+    virtual DrawableUpdateCallback* asDrawableUpdateCallback() { return this; }
+    virtual const DrawableUpdateCallback* asDrawableUpdateCallback() const { return this; }
+
+    /** override Callback::run() entry point to adapt to StateAttributeCallback::run(..) method.*/
+    virtual bool run(osg::Object* object, osg::Object* data);
+
+    /** do customized update code.*/
+    virtual void update(osg::NodeVisitor*, osg::Drawable*) {}
+};
+
+
+struct OSG_EXPORT DrawableEventCallback : public virtual Callback
+{
+    DrawableEventCallback() {}
+
+    DrawableEventCallback(const DrawableEventCallback&,const CopyOp&) {}
+
+    META_Object(osg,DrawableEventCallback);
+
+    /** override Callback::run() entry point to adapt to StateAttributeCallback::run(..) method.*/
+    virtual bool run(osg::Object* object, osg::Object* data);
+
+    /** do customized Event code. */
+    virtual void event(osg::NodeVisitor*, osg::Drawable*) {}
+};
+
+struct DrawableCullCallback : public virtual Callback
+{
+    DrawableCullCallback() {}
+
+    DrawableCullCallback(const DrawableCullCallback&,const CopyOp&) {}
+
+    META_Object(osg,DrawableCullCallback);
+
+    // just use the standard run implementation to passes run onto any nested callbacks.
+    using Callback::run;
+
+    /** deprecated.*/
+    virtual bool cull(osg::NodeVisitor*, osg::Drawable*, osg::State*) const { return false; }
+
+    /** do customized cull code, return true if drawable should be culled.*/
+    virtual bool cull(osg::NodeVisitor* nv, osg::Drawable* drawable, osg::RenderInfo* renderInfo) const;
 };
 
 

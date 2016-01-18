@@ -31,6 +31,8 @@ class Node;
 class NodeVisitor;
 class StateAttribute;
 class Uniform;
+class Callback;
+class CallbackObject;
 
 #define _ADDQUOTES(def) #def
 #define ADDQUOTES(def) _ADDQUOTES(def)
@@ -126,7 +128,31 @@ class OSG_EXPORT Object : public Referenced
           * Equivalent to dynamic_cast<const Uniform*>(this).*/
         virtual const Uniform* asUniform() const { return 0; }
 
+        /** Convert 'this' into a Drawable pointer if Object is a Drawable, otherwise return 0.
+          * Equivalent to dynamic_cast<Drawable*>(this).*/
+        virtual Drawable* asDrawable() { return 0; }
 
+        /** convert 'const this' into a const Drawable pointer if Object is a Drawable, otherwise return 0.
+          * Equivalent to dynamic_cast<const Drawable*>(this).*/
+        virtual const Drawable* asDrawable() const { return 0; }
+
+        /** Convert 'this' into a Callback pointer if Object is a Callback, otherwise return 0.
+          * Equivalent to dynamic_cast<Callback*>(this).*/
+        virtual Callback* asCallback() { return 0; }
+
+        /** convert 'const this' into a const Callback pointer if Object is a Callback, otherwise return 0.
+          * Equivalent to dynamic_cast<const Callback*>(this).*/
+        virtual const Callback* asCallback() const { return 0; }
+
+        /** Convert 'this' into a CallbackObject pointer if Object is a CallbackObject, otherwise return 0.
+          * Equivalent to dynamic_cast<CallbackObject*>(this).*/
+        virtual CallbackObject* asCallbackObject() { return 0; }
+
+        /** convert 'const this' into a const CallbackObject pointer if Object is a CallbackObject, otherwise return 0.
+          * Equivalent to dynamic_cast<const CallbackObject*>(this).*/
+        virtual const CallbackObject* asCallbackObject() const { return 0; }
+
+        
         /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
         virtual void setThreadSafeRefUnref(bool threadSafe);
 

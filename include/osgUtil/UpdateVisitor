@@ -53,9 +53,9 @@ class OSGUTIL_EXPORT UpdateVisitor : public osg::NodeVisitor
             osg::Callback* callback = drawable.getUpdateCallback();
             if (callback)
             {
-                osg::Drawable::UpdateCallback* drawable_callback = dynamic_cast<osg::Drawable::UpdateCallback*>(callback);
-                osg::NodeCallback* node_callback = dynamic_cast<osg::NodeCallback*>(callback);
-                osg::CallbackObject* callback_object = dynamic_cast<osg::CallbackObject*>(callback);
+                osg::DrawableUpdateCallback* drawable_callback = callback->asDrawableUpdateCallback();
+                osg::NodeCallback* node_callback = callback->asNodeCallback();
+                osg::CallbackObject* callback_object = callback->asCallbackObject();
 
                 if (drawable_callback) drawable_callback->update(this,&drawable);
                 if (node_callback) (*node_callback)(&drawable, this);

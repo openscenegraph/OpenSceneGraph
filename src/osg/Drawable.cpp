@@ -239,36 +239,6 @@ void Drawable::deleteDisplayList(unsigned int contextID,GLuint globj, unsigned i
 }
 
 
-bool Drawable::UpdateCallback::run(osg::Object* object, osg::Object* data)
-{
-    osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(object);
-    osg::NodeVisitor* nv = dynamic_cast<osg::NodeVisitor*>(data);
-    if (drawable && nv)
-    {
-        update(nv, drawable);
-        return true;
-    }
-    else
-    {
-        return traverse(object, data);
-    }
-}
-
-bool Drawable::EventCallback::run(osg::Object* object, osg::Object* data)
-{
-    osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(object);
-    osg::NodeVisitor* nv = dynamic_cast<osg::NodeVisitor*>(data);
-    if (drawable && nv)
-    {
-        event(nv, drawable);
-        return true;
-    }
-    else
-    {
-        return traverse(object, data);
-    }
-}
-
 Drawable::Drawable()
 {
     _boundingBoxComputed = false;
@@ -302,9 +272,6 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     _useDisplayList(drawable._useDisplayList),
     _supportsVertexBufferObjects(drawable._supportsVertexBufferObjects),
     _useVertexBufferObjects(drawable._useVertexBufferObjects),
-    _drawableUpdateCallback(drawable._drawableUpdateCallback),
-    _drawableEventCallback(drawable._drawableEventCallback),
-    _drawableCullCallback(drawable._drawableCullCallback),
     _drawCallback(drawable._drawCallback)
 {
     setStateSet(copyop(drawable._stateset.get()));
@@ -381,9 +348,6 @@ void Drawable::setThreadSafeRefUnref(bool threadSafe)
     Object::setThreadSafeRefUnref(threadSafe);
 
     if (_stateset.valid()) _stateset->setThreadSafeRefUnref(threadSafe);
-    if (_drawableUpdateCallback.valid()) _drawableUpdateCallback->setThreadSafeRefUnref(threadSafe);
-    if (_drawableEventCallback.valid()) _drawableEventCallback->setThreadSafeRefUnref(threadSafe);
-    if (_drawableCullCallback.valid()) _drawableCullCallback->setThreadSafeRefUnref(threadSafe);
     if (_drawCallback.valid()) _drawCallback->setThreadSafeRefUnref(threadSafe);
 }
 

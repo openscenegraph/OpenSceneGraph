@@ -165,7 +165,7 @@ class OSG_EXPORT StateSet : public Object
         /** Set this StateSet to contain specified attribute and set the associated GLMode's to specified value.*/
         void setAttributeAndModes(StateAttribute *attribute, StateAttribute::GLModeValue value=StateAttribute::ON);
 
-        template<class T> void setAttributeAndModes(const ref_ptr<T>& attribute, StateAttribute::GLModeValue value=StateAttribute::ON) { setAttribute(attribute.get(), value); }
+        template<class T> void setAttributeAndModes(const ref_ptr<T>& attribute, StateAttribute::GLModeValue value=StateAttribute::ON) { setAttributeAndModes(attribute.get(), value); }
 
         /** remove attribute of specified type from StateSet.*/
         void removeAttribute(StateAttribute::Type type, unsigned int member=0);

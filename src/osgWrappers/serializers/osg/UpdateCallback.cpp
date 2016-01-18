@@ -7,8 +7,8 @@
 #include <osgDB/OutputStream>
 
 REGISTER_OBJECT_WRAPPER2(UpdateCallback,
-                         new osg::Drawable::UpdateCallback,
-                         osg::Drawable::UpdateCallback,
+                         new osg::DrawableUpdateCallback,
+                         osg::DrawableUpdateCallback,
                          "osg::UpdateCallback",
                          "osg::Object osg::Callback osg::UpdateCallback") {}
 

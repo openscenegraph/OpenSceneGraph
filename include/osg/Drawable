@@ -266,55 +266,10 @@ class OSG_EXPORT Drawable : public Node
           * for all graphics contexts. */
         virtual void releaseGLObjects(State* state=0) const;
 
-        struct OSG_EXPORT UpdateCallback : public virtual Callback
-        {
-            UpdateCallback() {}
-
-            UpdateCallback(const UpdateCallback&,const CopyOp&) {}
-
-            META_Object(osg,UpdateCallback);
-
-            /** override Callback::run() entry point to adapt to StateAttributeCallback::run(..) method.*/
-            virtual bool run(osg::Object* object, osg::Object* data);
-
-            /** do customized update code.*/
-            virtual void update(osg::NodeVisitor*, osg::Drawable*) {}
-        };
-
-
-        struct OSG_EXPORT EventCallback : public virtual Callback
-        {
-            EventCallback() {}
-
-            EventCallback(const EventCallback&,const CopyOp&) {}
-
-            META_Object(osg,EventCallback);
-
-            /** override Callback::run() entry point to adapt to StateAttributeCallback::run(..) method.*/
-            virtual bool run(osg::Object* object, osg::Object* data);
-
-            /** do customized Event code. */
-            virtual void event(osg::NodeVisitor*, osg::Drawable*) {}
-        };
-
-        struct CullCallback : public virtual Callback
-        {
-            CullCallback() {}
-
-            CullCallback(const CullCallback&,const CopyOp&) {}
-
-            META_Object(osg,CullCallback);
-
-            // just use the standard run implementation to passes run onto any nested callbacks.
-            using Callback::run;
-
-            /** deprecated.*/
-            virtual bool cull(osg::NodeVisitor*, osg::Drawable*, osg::State*) const { return false; }
-
-            /** do customized cull code, return true if drawable should be culled.*/
-            virtual bool cull(osg::NodeVisitor* nv, osg::Drawable* drawable, osg::RenderInfo* renderInfo) const { return cull(nv, drawable, renderInfo? renderInfo->getState():0); }
-        };
-
+        // for backwards compatibility as local implementations are now found in osg namespace within the include/osg/Callback header
+        typedef DrawableUpdateCallback UpdateCallback;
+        typedef DrawableEventCallback EventCallback;
+        typedef DrawableCullCallback CullCallback;
 
         /** Callback attached to an Drawable which allows the users to customize the drawing of an exist Drawable object.
           * The draw callback is implement as a replacement to the Drawable's own drawImplementation() method, if the
@@ -509,12 +464,9 @@ class OSG_EXPORT Drawable : public Node
         typedef osg::buffered_value<GLuint> GLObjectList;
         mutable GLObjectList    _globjList;
 
-        ref_ptr<UpdateCallback> _drawableUpdateCallback;
-        ref_ptr<EventCallback>  _drawableEventCallback;
-
-        ref_ptr<CullCallback>   _drawableCullCallback;
         ref_ptr<DrawCallback>   _drawCallback;
 };
+
 
 inline void Drawable::draw(RenderInfo& renderInfo) const
 {

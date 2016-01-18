@@ -75,9 +75,9 @@ class OSGGA_EXPORT EventVisitor : public osg::NodeVisitor
             osg::Callback* callback = drawable.getEventCallback();
             if (callback)
             {
-                osg::Drawable::EventCallback* drawable_callback = dynamic_cast<osg::Drawable::EventCallback*>(callback);
-                osg::NodeCallback* node_callback = dynamic_cast<osg::NodeCallback*>(callback);
-                osg::CallbackObject* callback_object = dynamic_cast<osg::CallbackObject*>(callback);
+                osg::DrawableEventCallback* drawable_callback = callback->asDrawableEventCallback();
+                osg::NodeCallback* node_callback = callback->asNodeCallback();
+                osg::CallbackObject* callback_object = callback->asCallbackObject();
 
                 if (drawable_callback) drawable_callback->event(this,&drawable);
                 if (node_callback) (*node_callback)(&drawable, this);

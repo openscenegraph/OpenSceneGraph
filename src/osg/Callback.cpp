@@ -13,6 +13,8 @@
 #include <osg/Node>
 #include <osg/NodeVisitor>
 #include <osg/ScriptEngine>
+#include <osg/RenderInfo>
+#include <osg/Drawable>
 
 using namespace osg;
 
@@ -121,4 +123,42 @@ bool UniformCallback::run(osg::Object* object, osg::Object* data)
     {
         return traverse(object, data);
     }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//
+bool DrawableUpdateCallback::run(osg::Object* object, osg::Object* data)
+{
+    osg::Drawable* drawable = object->asDrawable();
+    osg::NodeVisitor* nv = data->asNodeVisitor();
+    if (drawable && nv)
+    {
+        update(nv, drawable);
+        return true;
+    }
+    else
+    {
+        return traverse(object, data);
+    }
+}
+
+bool DrawableEventCallback::run(osg::Object* object, osg::Object* data)
+{
+    osg::Drawable* drawable = object->asDrawable();
+    osg::NodeVisitor* nv = data->asNodeVisitor();
+    if (drawable && nv)
+    {
+        event(nv, drawable);
+        return true;
+    }
+    else
+    {
+        return traverse(object, data);
+    }
+}
+
+bool DrawableCullCallback::cull(osg::NodeVisitor* nv, osg::Drawable* drawable, osg::RenderInfo* renderInfo) const
+{
+    return cull(nv, drawable, renderInfo? renderInfo->getState():0);
 }

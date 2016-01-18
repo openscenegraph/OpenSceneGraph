@@ -112,6 +112,14 @@ class OSG_EXPORT Object : public Referenced
           * Equivalent to dynamic_cast<const NodeVisitor*>(this).*/
         virtual const NodeVisitor* asNodeVisitor() const { return 0; }
 
+        /** Convert 'this' into a StateSet pointer if Object is a StateSet, otherwise return 0.
+          * Equivalent to dynamic_cast<StateSet*>(this).*/
+        virtual StateSet* asStateSet() { return 0; }
+
+        /** convert 'const this' into a const StateSet pointer if Object is a StateSet, otherwise return 0.
+          * Equivalent to dynamic_cast<const StateSet*>(this).*/
+        virtual const StateSet* asStateSet() const { return 0; }
+
         /** Convert 'this' into a StateAttribute pointer if Object is a StateAttribute, otherwise return 0.
           * Equivalent to dynamic_cast<StateAttribute*>(this).*/
         virtual StateAttribute* asStateAttribute() { return 0; }
@@ -152,7 +160,7 @@ class OSG_EXPORT Object : public Referenced
           * Equivalent to dynamic_cast<const CallbackObject*>(this).*/
         virtual const CallbackObject* asCallbackObject() const { return 0; }
 
-        
+
         /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
         virtual void setThreadSafeRefUnref(bool threadSafe);
 

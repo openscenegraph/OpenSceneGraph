@@ -63,6 +63,14 @@ class OSG_EXPORT StateSet : public Object
         bool operator == (const StateSet& rhs) const { return compare(rhs)==0; }
         bool operator != (const StateSet& rhs) const { return compare(rhs)!=0; }
 
+        /** Convert 'this' into a StateSet pointer if Object is a StateSet, otherwise return 0.
+          * Equivalent to dynamic_cast<StateSet*>(this).*/
+        virtual StateSet* asStateSet() { return this; }
+
+        /** convert 'const this' into a const StateSet pointer if Object is a StateSet, otherwise return 0.
+          * Equivalent to dynamic_cast<const StateSet*>(this).*/
+        virtual const StateSet* asStateSet() const { return this; }
+
 
         /** A vector of osg::Object pointers which is used to store the parent(s) of this Stateset, the parents could be osg::Node or osg::Drawable.*/
         typedef std::vector<Node*> ParentList;

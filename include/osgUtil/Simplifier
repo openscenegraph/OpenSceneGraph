@@ -59,6 +59,11 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
                 {
                     return simplifier.continueSimplificationImplementation(nextError, numOriginalPrimitives, numRemainingPrimitives);
                 }
+                
+                virtual bool requiresDownSampling(const Simplifier& simplifier) const
+                {
+                    return simplifier.requiresDownSamplingImplementation();
+                }
 
             protected:
                 virtual ~ContinueSimplificationCallback() {}
@@ -80,7 +85,17 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
             if (getSampleRatio()<1.0) return ((float)numRemainingPrimitives > ((float)numOriginalPrimitives) * getSampleRatio()) && nextError<=getMaximumError();
             else return ((float)numRemainingPrimitives < ((float)numOriginalPrimitives) * getSampleRatio()) && nextError>getMaximumLength();
         }
+        
+        bool requiresDownSampling() const
+        {
+            if (_continueSimplificationCallback.valid()) return _continueSimplificationCallback->requiresDownSampling(*this);
+            else return requiresDownSamplingImplementation();
+        }
 
+        virtual bool requiresDownSamplingImplementation() const
+        {
+            return getSampleRatio()<1.0;
+        }
 
         virtual void apply(osg::Geode& geode)
         {

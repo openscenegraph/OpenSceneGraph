@@ -1744,14 +1744,17 @@ void Simplifier::simplify(osg::Geometry& geometry, const IndexList& protectedPoi
 {
     OSG_INFO<<"++++++++++++++simplifier************"<<std::endl;
 
+    bool downSample = requiresDownSampling();
+
     EdgeCollapse ec;
-    ec.setComputeErrorMetricUsingLength(getSampleRatio()>=1.0);
+    ec.setComputeErrorMetricUsingLength(!downSample);
     ec.setGeometry(&geometry, protectedPoints);
     ec.updateErrorMetricForAllEdges();
 
     unsigned int numOriginalPrimitives = ec._triangleSet.size();
 
-    if (getSampleRatio()<1.0)
+    
+    if (downSample)
     {
         while (!ec._edgeSet.empty() &&
                continueSimplification((*ec._edgeSet.begin())->getErrorMetric() , numOriginalPrimitives, ec._triangleSet.size()) &&

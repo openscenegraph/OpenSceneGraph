@@ -92,8 +92,8 @@ bool osg::isTextureMode(StateAttribute::GLMode mode)
 //
 bool StateSet::Callback::run(osg::Object* object, osg::Object* data)
 {
-    osg::StateSet* ss = dynamic_cast<osg::StateSet*>(object);
-    osg::NodeVisitor* nv = dynamic_cast<osg::NodeVisitor*>(data);
+    osg::StateSet* ss = object->asStateSet();
+    osg::NodeVisitor* nv = data->asNodeVisitor();
     if (ss && nv)
     {
         operator()(ss, nv);
@@ -313,7 +313,7 @@ int StateSet::compare(const StateSet& rhs,bool compareAttributeContents) const
     if (_defineList.size()<rhs._defineList.size()) return -1;
     if (_defineList.size()>rhs._defineList.size()) return 1;
 
-    
+
     // check render bin details
 
     if ( _binMode < rhs._binMode ) return -1;
@@ -512,7 +512,7 @@ int StateSet::compare(const StateSet& rhs,bool compareAttributeContents) const
     }
     else if (rhs_define_itr == rhs._defineList.end()) return 1;
 
-    
+
     return 0;
 }
 

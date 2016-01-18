@@ -66,7 +66,7 @@ class TransformVisitor : public NodeVisitor
                     ritr != nodePath.rend();
                     ++ritr, --i)
                 {
-                    const osg::Camera* camera = dynamic_cast<const osg::Camera*>(*ritr);
+                    const osg::Camera* camera = (*ritr)->asCamera();
                     if (camera &&
                         (camera->getReferenceFrame()!=osg::Transform::RELATIVE_RF || camera->getParents().empty()))
                     {

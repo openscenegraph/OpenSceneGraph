@@ -384,7 +384,7 @@ QueryGeometry::releaseGLObjects( osg::State* state ) const
             if (tr._contextID == contextID)
             {
 #if 1
-                osg::get<QueryObjectManager>(contextID)->sheduleGLObjectForDeletion(tr._id );
+                osg::get<QueryObjectManager>(contextID)->scheduleGLObjectForDeletion(tr._id );
 #else
                 QueryGeometry::deleteQueryObject( contextID, tr._id );
 #endif
@@ -398,7 +398,7 @@ QueryGeometry::releaseGLObjects( osg::State* state ) const
 void
 QueryGeometry::deleteQueryObject( unsigned int contextID, GLuint handle )
 {
-    osg::get<QueryObjectManager>(contextID)->sheduleGLObjectForDeletion(handle);
+    osg::get<QueryObjectManager>(contextID)->scheduleGLObjectForDeletion(handle);
 }
 
 

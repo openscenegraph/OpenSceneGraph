@@ -109,7 +109,7 @@ public:
     virtual void discardAllGLObjects();
 
     /** schedule a GL object for deletion by the graphics thread.*/
-    virtual void sheduleGLObjectForDeletion(GLuint globj);
+    virtual void scheduleGLObjectForDeletion(GLuint globj);
 
     /** implementation of the actual creation of an GL object - subclasses from GLObjectManager must implement the appropriate GL calls.*/
     virtual GLuint createGLObject();

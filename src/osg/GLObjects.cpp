@@ -134,7 +134,7 @@ void GLObjectManager::discardAllGLObjects()
     _deleteGLObjectHandles.clear();
 }
 
-void GLObjectManager::sheduleGLObjectForDeletion(GLuint globj)
+void GLObjectManager::scheduleGLObjectForDeletion(GLuint globj)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 

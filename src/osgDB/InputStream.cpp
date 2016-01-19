@@ -813,7 +813,7 @@ osg::Image* InputStream::readImage(bool readFromExternal)
                     else
                     {
                         OSG_WARN << "InputStream::readImage(): "
-                                               << rr.message() << std::endl;
+                                               << rr.statusMessage() << std::endl;
                     }
                 }
                 else
@@ -843,7 +843,7 @@ osg::Image* InputStream::readImage(bool readFromExternal)
         }
         else
         {
-            if (rr.error()) OSG_WARN << rr.message() << std::endl;
+            if (!rr.success()) OSG_WARN << rr.statusMessage() << std::endl;
         }
 
         if ( !image && _forceReadingImage ) image = new osg::Image;

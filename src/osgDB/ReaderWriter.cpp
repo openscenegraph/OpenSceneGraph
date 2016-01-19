@@ -35,6 +35,66 @@ osgDB::Archive* ReaderWriter::ReadResult::takeArchive() { osgDB::Archive* archiv
 osg::Shader* ReaderWriter::ReadResult::takeShader() { osg::Shader* shader=dynamic_cast<osg::Shader*>(_object.get()); if (shader) { shader->ref(); _object=NULL; shader->unref_nodelete(); } return shader; }
 osg::Script* ReaderWriter::ReadResult::takeScript() { osg::Script* script=dynamic_cast<osg::Script*>(_object.get()); if (script) { script->ref(); _object=NULL; script->unref_nodelete(); } return script; }
 
+std::string ReaderWriter::ReadResult::statusMessage() const
+{
+    std::string description;
+    switch (_status)
+    {
+    case NOT_IMPLEMENTED:
+        description += "not implemented";
+        break;
+    case FILE_NOT_HANDLED:
+        description += "file not handled";
+        break;
+    case FILE_NOT_FOUND:
+        description += "file not found";
+        break;
+    case ERROR_IN_READING_FILE:
+        description += "read error";
+        break;
+    case FILE_LOADED:
+        description += "file loaded";
+        break;
+    case FILE_LOADED_FROM_CACHE:
+        description += "file loaded from cache";
+        break;
+    case FILE_REQUESTED:
+        description += "file requested";
+        break;
+    case INSUFFICIENT_MEMORY_TO_LOAD:
+        description += "insufficient memory to load";
+        break;
+    }
+
+    if (!_message.empty())
+        description += " (" + _message + ")";
+    return description;
+}
+
+std::string ReaderWriter::WriteResult::statusMessage() const
+{
+    std::string description;
+    switch (_status)
+    {
+    case NOT_IMPLEMENTED:
+        description += "not implemented";
+        break;
+    case FILE_NOT_HANDLED:
+        description += "file not handled";
+        break;
+    case ERROR_IN_WRITING_FILE:
+        description += "write error";
+        break;
+    case FILE_SAVED:
+        description += "file saved";
+        break;
+    }
+
+    if (!_message.empty())
+        description += " (" + _message + ")";
+    return description;
+}
+
 ReaderWriter::~ReaderWriter()
 {
 }

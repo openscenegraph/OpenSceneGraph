@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
  * Authors:
@@ -26,7 +26,7 @@
 const std::string IMAGE_PATH = "osgWidget/";
 
 template <class T>
-struct Sampler: public osg::Drawable::UpdateCallback 
+struct Sampler: public osg::Drawable::UpdateCallback
 {
     T _motion;
     Sampler() {
@@ -35,28 +35,28 @@ struct Sampler: public osg::Drawable::UpdateCallback
 
 typedef Sampler<osgAnimation::OutQuadMotion> WidgetSampler;
 
-struct ButtonFunctor: public WidgetSampler 
+struct ButtonFunctor: public WidgetSampler
 {
     float _direction;
     float _previous;
 
     const float _speed;
-    
+
     ButtonFunctor(): _speed(5) { _direction = -_speed; _previous = 0;}
 
     bool enter(osgWidget::Event&)
     {
-        _direction = _speed; 
+        _direction = _speed;
         return true;
     }
 
     bool leave(osgWidget::Event&)
     {
-        _direction = -_speed; 
+        _direction = -_speed;
         return true;
     }
 
-    void update(osg::NodeVisitor* nv , osg::Drawable* geom) 
+    void update(osg::NodeVisitor* nv , osg::Drawable* geom)
     {
         const osg::FrameStamp* f = nv->getFrameStamp();
         float dt = f->getSimulationTime() - _previous;
@@ -67,7 +67,7 @@ struct ButtonFunctor: public WidgetSampler
     void update(float t, osgWidget::Widget* w)
     {
         if (!w) return;
-        _motion.update(t*_direction); 
+        _motion.update(t*_direction);
         float val = _motion.getValue()*0.5;
         val += 0.5;
         if (val >= 1.0)
@@ -76,7 +76,7 @@ struct ButtonFunctor: public WidgetSampler
     }
 };
 
-struct LabelFunctor: public WidgetSampler 
+struct LabelFunctor: public WidgetSampler
 {
     float _previous;
     bool  _active;
@@ -86,7 +86,7 @@ struct LabelFunctor: public WidgetSampler
     osgAnimation::OutCubicMotion _scaleSampler;
 
     LabelFunctor():
-        _fadeOutTime(1.5f) 
+        _fadeOutTime(1.5f)
 {
         _previous = 0.0f;
         _active   = false;
@@ -94,7 +94,7 @@ struct LabelFunctor: public WidgetSampler
         _scaleSampler = osgAnimation::OutCubicMotion(0.5, 1.0, 1.0);
     }
 
-    void setActive(bool active) 
+    void setActive(bool active)
 {
         _active = active;
 
@@ -103,7 +103,7 @@ struct LabelFunctor: public WidgetSampler
         _scaleSampler.reset();
     }
 
-    void update(osg::NodeVisitor* nv , osg::Drawable* geom) 
+    void update(osg::NodeVisitor* nv , osg::Drawable* geom)
 {
         const osg::FrameStamp* f = nv->getFrameStamp();
 
@@ -118,7 +118,7 @@ struct LabelFunctor: public WidgetSampler
         updateScale(dt, dynamic_cast<osgWidget::Label*>(geom));
     }
 
-    void update(float t, osgWidget::Label* w) 
+    void update(float t, osgWidget::Label* w)
 {
         if(!w) return;
 
@@ -134,7 +134,7 @@ struct LabelFunctor: public WidgetSampler
         w->setFontColor(osg::Vec4(0.0f, 0.0f, 0.0f, (1.0f - val) * 0.7f));
     }
 
-    void updateScale(float t, osgWidget::Label* w) 
+    void updateScale(float t, osgWidget::Label* w)
 {
         _scaleSampler.update(t);
         float val = _scaleSampler.getValue();
@@ -146,14 +146,14 @@ struct LabelFunctor: public WidgetSampler
 };
 
 
-struct ListFunctor: public osg::NodeCallback 
+struct ListFunctor: public osg::NodeCallback
 {
     float _previous;
     int   _direction;
 
     osgAnimation::InQuadMotion _transformSampler;
 
-    ListFunctor() 
+    ListFunctor()
 {
         _direction = 1;
         _previous  = 0;
@@ -161,14 +161,14 @@ struct ListFunctor: public osg::NodeCallback
         _transformSampler.update(1.0f);
     }
 
-    void toggleShown() 
+    void toggleShown()
 {
         if(_direction == 1) _direction = -1;
 
         else _direction = 1;
     }
 
-    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv) 
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
 {
         const osg::FrameStamp* f = nv->getFrameStamp();
 
@@ -195,13 +195,13 @@ struct ListFunctor: public osg::NodeCallback
 };
 
 // This is a temporary hack to "prevent" dragging on Widgets and Windows.
-bool eatDrag(osgWidget::Event&) 
+bool eatDrag(osgWidget::Event&)
 {
     return true;
 }
 
 AnimtkViewerGUI::AnimtkViewerGUI(osgViewer::View* view, float w, float h, unsigned int mask):
-    osgWidget::WindowManager(view, w, h, mask, 0) 
+    osgWidget::WindowManager(view, w, h, mask, 0)
 {
     _createButtonBox();
     _createLabelBox();
@@ -226,10 +226,10 @@ AnimtkViewerGUI::AnimtkViewerGUI(osgViewer::View* view, float w, float h, unsign
     _buttonBox->resizeAdd(0.0f, 10.0f);
 }
 
-osgWidget::Widget* AnimtkViewerGUI::_createButton(const std::string& name) 
+osgWidget::Widget* AnimtkViewerGUI::_createButton(const std::string& name)
 {
     osgWidget::Widget* b = new osgWidget::Widget(name, 64.0f, 64.0f);
-    
+
     if(!b) return 0;
 
     b->setImage(IMAGE_PATH + name + ".png", true);
@@ -237,7 +237,7 @@ osgWidget::Widget* AnimtkViewerGUI::_createButton(const std::string& name)
 
     ButtonFunctor* bt = new ButtonFunctor();
     b->setUpdateCallback(bt);
-    
+
     b->addCallback(new osgWidget::Callback(&ButtonFunctor::enter, bt, osgWidget::EVENT_MOUSE_ENTER));
     b->addCallback(new osgWidget::Callback(&ButtonFunctor::leave, bt, osgWidget::EVENT_MOUSE_LEAVE));
     b->addCallback(new osgWidget::Callback(&AnimtkViewerGUI::_buttonPush, this, osgWidget::EVENT_MOUSE_PUSH));
@@ -246,7 +246,7 @@ osgWidget::Widget* AnimtkViewerGUI::_createButton(const std::string& name)
     return b;
 }
 
-bool AnimtkViewerGUI::_listMouseHover(osgWidget::Event& ev) 
+bool AnimtkViewerGUI::_listMouseHover(osgWidget::Event& ev)
 {
     osgWidget::Label* l = dynamic_cast<osgWidget::Label*>(ev.getWidget());
 
@@ -259,13 +259,13 @@ bool AnimtkViewerGUI::_listMouseHover(osgWidget::Event& ev)
     else if(ev.type == osgWidget::EVENT_MOUSE_PUSH) {
         AnimtkViewerModelController::instance().playByName(ev.getWidget()->getName());
     }
-    
+
     else return false;
 
     return true;
 }
 
-bool AnimtkViewerGUI::_buttonPush(osgWidget::Event& ev) 
+bool AnimtkViewerGUI::_buttonPush(osgWidget::Event& ev)
 {
     if(!ev.getWidget()) return false;
 
@@ -285,7 +285,7 @@ bool AnimtkViewerGUI::_buttonPush(osgWidget::Event& ev)
 
     else if(name == "stop") mc.stop();
 
-    else if(name == "next") 
+    else if(name == "next")
 {
         mc.next();
 
@@ -293,21 +293,21 @@ bool AnimtkViewerGUI::_buttonPush(osgWidget::Event& ev)
         l->setLabel(mc.getCurrentAnimationName());
         lf->setActive(true);
     }
-    
-    else if(name == "back") 
+
+    else if(name == "back")
 {
         mc.previous();
-        
+
         l->setFontColor(osg::Vec4(0.0f, 0.0f, 0.0f, 0.7f));
         l->setLabel(mc.getCurrentAnimationName());
         lf->setActive(true);
     }
 
-    else if(name == "pause") 
+    else if(name == "pause")
 {
     }
 
-    else if(name == "open") 
+    else if(name == "open")
 {
         ListFunctor* lsf = dynamic_cast<ListFunctor*>(_listBox->getUpdateCallback());
 
@@ -321,7 +321,7 @@ bool AnimtkViewerGUI::_buttonPush(osgWidget::Event& ev)
     return true;
 }
 
-void AnimtkViewerGUI::_createButtonBox() 
+void AnimtkViewerGUI::_createButtonBox()
 {
     _buttonBox = new osgWidget::Box("buttonBox", osgWidget::Box::HORIZONTAL);
 
@@ -345,12 +345,12 @@ void AnimtkViewerGUI::_createButtonBox()
     _buttonBox->addWidget(open);
     _buttonBox->addWidget(osg::clone(space, "space1", osg::CopyOp::DEEP_COPY_ALL));
     _buttonBox->getBackground()->setColor(0.0f, 0.0f, 0.0f, 0.7f);
-    
+
     _buttonBox->setEventMask(osgWidget::EVENT_MASK_MOUSE_DRAG);
     _buttonBox->addCallback(new osgWidget::Callback(&eatDrag, osgWidget::EVENT_MOUSE_DRAG));
 }
 
-void AnimtkViewerGUI::_createListBox() 
+void AnimtkViewerGUI::_createListBox()
 {
     _listBox = new osgWidget::Box("listBox", osgWidget::Box::VERTICAL);
 
@@ -362,7 +362,7 @@ void AnimtkViewerGUI::_createListBox()
         AnimtkViewerModelController::AnimationMapVector::const_iterator i = amv.begin();
         i != amv.end();
         i++
-        ) 
+        )
 {
         osgWidget::Label* label = new osgWidget::Label(*i);
 
@@ -387,12 +387,12 @@ void AnimtkViewerGUI::_createListBox()
     _listBox->getBackground()->setColor(0.0f, 0.0f, 0.0f, 0.7f);
 }
 
-void AnimtkViewerGUI::_createLabelBox() 
+void AnimtkViewerGUI::_createLabelBox()
 {
     _labelBox = new osgWidget::Box("labelBox", osgWidget::Box::VERTICAL);
 
     osgWidget::Label* label = new osgWidget::Label("label");
-    
+
     label->setFont("fonts/Vera.ttf");
     label->setFontSize(50);
     label->setFontColor(0.0f, 0.0f, 0.0f, 0.7f);

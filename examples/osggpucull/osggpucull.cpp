@@ -1,14 +1,14 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2014 Robert Osfield
  *  Copyright (C) 2014 Pawel Ksiezopolski
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
 */
@@ -66,24 +66,24 @@ struct InstanceLOD
     {
         if( &iLod != this )
         {
-            bbMin                   = iLod.bbMin; 
-            bbMax                   = iLod.bbMax; 
-            indirectTargetParams    = iLod.indirectTargetParams; 
+            bbMin                   = iLod.bbMin;
+            bbMax                   = iLod.bbMax;
+            indirectTargetParams    = iLod.indirectTargetParams;
             distances               = iLod.distances;
         }
         return *this;
     }
-    
+
     inline void setBoundingBox( const osg::BoundingBox& bbox )
     {
         bbMin = osg::Vec4f( bbox.xMin(), bbox.yMin(), bbox.zMin(), 1.0f );
-        bbMax = osg::Vec4f( bbox.xMax(), bbox.yMax(), bbox.zMax(), 1.0f );  
+        bbMax = osg::Vec4f( bbox.xMax(), bbox.yMax(), bbox.zMax(), 1.0f );
     }
     inline osg::BoundingBox getBoundingBox()
     {
         return osg::BoundingBox( bbMin.x(), bbMin.y(), bbMin.z(), bbMax.x(), bbMax.y(), bbMax.z() );
     }
-    
+
     osg::Vec4f bbMin;                   // LOD bounding box
     osg::Vec4f bbMax;
     osg::Vec4i indirectTargetParams;    // x=lodIndirectCommand, y=lodIndirectCommandIndex, z=offsetsInTarget, w=lodMaxQuantity
@@ -101,7 +101,7 @@ struct InstanceType
             lods[i] = InstanceLOD();
     }
     InstanceType( const InstanceType& iType )
-        : bbMin(iType.bbMin), bbMax(iType.bbMax), params(iType.params) 
+        : bbMin(iType.bbMin), bbMax(iType.bbMax), params(iType.params)
     {
         for(unsigned int i=0;i<OSGGPUCULL_MAXIMUM_LOD_NUMBER;++i)
             lods[i] = iType.lods[i];
@@ -111,7 +111,7 @@ struct InstanceType
         if( &iType != this )
         {
             bbMin   = iType.bbMin;
-            bbMax   = iType.bbMax; 
+            bbMax   = iType.bbMax;
             params  = iType.params;
             for(unsigned int i=0;i<OSGGPUCULL_MAXIMUM_LOD_NUMBER;++i)
                 lods[i] = iType.lods[i];
@@ -137,13 +137,13 @@ struct InstanceType
     inline void setBoundingBox( const osg::BoundingBox& bbox )
     {
         bbMin = osg::Vec4f( bbox.xMin(), bbox.yMin(), bbox.zMin(), 1.0f );
-        bbMax = osg::Vec4f( bbox.xMax(), bbox.yMax(), bbox.zMax(), 1.0f );  
+        bbMax = osg::Vec4f( bbox.xMax(), bbox.yMax(), bbox.zMax(), 1.0f );
     }
     inline osg::BoundingBox getBoundingBox()
     {
         return osg::BoundingBox( bbMin.x(), bbMin.y(), bbMin.z(), bbMax.x(), bbMax.y(), bbMax.z() );
     }
-    
+
     osg::Vec4f  bbMin;                              // bounding box that includes all LODs
     osg::Vec4f  bbMax;
     osg::Vec4i  params;                             // x=number of active LODs
@@ -170,8 +170,8 @@ struct DrawArraysIndirectCommand
 // During the first phase of instance rendering cull shader places information about
 // instance LODs in texture buffers called "indirect targets"
 // All data associated with the indirect target is placed in struct defined below
-// ( like for example - draw shader associated with specific indirect target. 
-// Draw shader performs second phase of instance rendering - the actual rendering of objects 
+// ( like for example - draw shader associated with specific indirect target.
+// Draw shader performs second phase of instance rendering - the actual rendering of objects
 // to screen or to frame buffer object ).
 struct IndirectTarget
 {
@@ -194,7 +194,7 @@ struct IndirectTarget
         indirectCommandTextureBuffer->setUsageHint(GL_DYNAMIC_DRAW);
         indirectCommandTextureBuffer->bindToImageUnit(index, osg::Texture::READ_WRITE);
         indirectCommandTextureBuffer->setUnRefImageDataAfterApply(false);
-        
+
         // add proper primitivesets to geometryAggregators
         if( !useMultiDrawArraysIndirect ) // use glDrawArraysIndirect()
         {
@@ -213,21 +213,21 @@ struct IndirectTarget
         }
         geometryAggregator->getAggregatedGeometry()->setUseVertexBufferObjects(true);
         geometryAggregator->getAggregatedGeometry()->setUseDisplayList(false);
-        
+
         osg::Image* instanceTargetImage = new osg::Image;
         instanceTargetImage->allocateImage( maxTargetQuantity*rowsPerInstance, 1, 1, pixelFormat, type );
         instanceTarget = new osg::TextureBuffer(instanceTargetImage);
         instanceTarget->setInternalFormat( internalFormat );
         instanceTarget->setUsageHint(GL_DYNAMIC_DRAW);
         instanceTarget->bindToImageUnit(OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index, osg::Texture::READ_WRITE);
-        
+
     }
     void addIndirectCommandData( const std::string& uniformNamePrefix, int index, osg::StateSet* stateset )
     {
         std::string uniformName = uniformNamePrefix + char( '0' + index );
-        osg::Uniform* uniform = new osg::Uniform(uniformName.c_str(), (int)index ); 
-        stateset->addUniform( uniform );  
-        stateset->setTextureAttribute( index, indirectCommandTextureBuffer.get() ); 
+        osg::Uniform* uniform = new osg::Uniform(uniformName.c_str(), (int)index );
+        stateset->addUniform( uniform );
+        stateset->setTextureAttribute( index, indirectCommandTextureBuffer.get() );
     }
     void addIndirectTargetData( bool cullPhase, const std::string& uniformNamePrefix, int index, osg::StateSet* stateset )
     {
@@ -236,9 +236,9 @@ struct IndirectTarget
             uniformName = uniformNamePrefix + char( '0' + index );
         else
             uniformName = uniformNamePrefix;
-        
-        osg::Uniform* uniform = new osg::Uniform(uniformName.c_str(), (int)(OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index) ); 
-        stateset->addUniform( uniform );  
+
+        osg::Uniform* uniform = new osg::Uniform(uniformName.c_str(), (int)(OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index) );
+        stateset->addUniform( uniform );
         stateset->setTextureAttribute( OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index, instanceTarget.get() );
     }
     void addDrawProgram( const std::string& uniformBlockName, osg::StateSet* stateset )
@@ -246,7 +246,7 @@ struct IndirectTarget
         drawProgram->addBindUniformBlock(uniformBlockName, 1);
         stateset->setAttributeAndModes( drawProgram.get(), osg::StateAttribute::ON );
     }
-    
+
     osg::ref_ptr< osg::BufferTemplate< std::vector<DrawArraysIndirectCommand> > >  indirectCommands;
     osg::ref_ptr<osg::TextureBuffer>                                indirectCommandTextureBuffer;
     osg::ref_ptr< AggregateGeometryVisitor >                        geometryAggregator;
@@ -268,7 +268,7 @@ struct GPUCullData
 //        instanceTypesUBO->setUsage( GL_STREAM_DRAW );
         instanceTypes->setBufferObject( instanceTypesUBO.get() );
         instanceTypesUBB = new osg::UniformBufferBinding(1, instanceTypesUBO.get(), 0, 0);
-        
+
     }
     void setUseMultiDrawArraysIndirect( bool value )
     {
@@ -289,7 +289,7 @@ struct GPUCullData
         unsigned int lodNumber = (unsigned int)itd.params.x();
         if( lodNumber >= OSGGPUCULL_MAXIMUM_LOD_NUMBER )
             return false;
-    
+
         std::map<unsigned int, IndirectTarget>::iterator target = targets.find(targetID);
         if( target==targets.end() )
             return false;
@@ -298,25 +298,25 @@ struct GPUCullData
         AggregateGeometryVisitor::AddObjectResult aoResult = target->second.geometryAggregator->addObject( node , typeID, lodNumber );
         // Information about first vertex and a number of vertices is stored for later primitiveset creation
         target->second.indirectCommands->getData().push_back( DrawArraysIndirectCommand( aoResult.first, aoResult.count ) );
-        
+
         osg::ComputeBoundsVisitor cbv;
         node->accept(cbv);
 
-        // Indirect target texture buffers have finite size, therefore each instance LOD has maximum number that may be rendered in one frame. 
+        // Indirect target texture buffers have finite size, therefore each instance LOD has maximum number that may be rendered in one frame.
         // This maximum number of rendered instances is estimated from the area that LOD covers and maximum density of instances per square kilometer.
         float lodArea = osg::PI * ( lodDistances.w() * lodDistances.w() - lodDistances.x() * lodDistances.x() ) / 1000000.0f;
         // calculate max quantity of objects in lodArea using maximum density per square kilometer
         unsigned int maxQuantity   = (unsigned int) ceil( lodArea * maxDensityPerSquareKilometer );
-        
+
         itd.setLodDefinition( lodNumber, targetID, aoResult.index, lodDistances, target->second.maxTargetQuantity, maxQuantity, cbv.getBoundingBox() ) ;
         target->second.maxTargetQuantity += maxQuantity;
         return true;
     }
     // endRegister() method is called after all indirect targets and instance types are registered.
-    // It creates indirect targets with pixel format and data type provided by user ( indirect targets may hold 
+    // It creates indirect targets with pixel format and data type provided by user ( indirect targets may hold
     // different information about single instance depending on user's needs ( in our example : static rendering
     // sends all vertex data to indirect target during GPU cull phase, while dynamic rendering sends only a "pointer"
-    // to texture buffer containing instance data ( look at endRegister() invocations in createStaticRendering() and 
+    // to texture buffer containing instance data ( look at endRegister() invocations in createStaticRendering() and
     // createDynamicRendering() )
     void endRegister( unsigned int rowsPerInstance, GLenum pixelFormat, GLenum type, GLint internalFormat )
     {
@@ -334,7 +334,7 @@ struct GPUCullData
             }
             OSG_INFO<< ") => " << sum << " elements"<<std::endl;
         }
-        
+
         OSG_INFO<<"indirect targets"<<std::endl;
         std::map<unsigned int, IndirectTarget>::iterator it,eit;
         for(it=targets.begin(), eit=targets.end(); it!=eit; ++it)
@@ -344,26 +344,26 @@ struct GPUCullData
                 DrawArraysIndirectCommand& iComm = it->second.indirectCommands->getData().at(j);
                 OSG_INFO<<"("<<iComm.first<<" "<<iComm.primCount<<" "<<iComm.count<<") ";
             }
-            unsigned int sizeInBytes = (unsigned int ) it->second.maxTargetQuantity * sizeof(osg::Vec4); 
+            unsigned int sizeInBytes = (unsigned int ) it->second.maxTargetQuantity * sizeof(osg::Vec4);
             OSG_INFO<<" => Maximum elements in target : "<< it->second.maxTargetQuantity <<" ( "<< sizeInBytes <<" bytes, " << sizeInBytes/1024<< " kB )" << std::endl;
         }
-        
+
         instanceTypesUBB->setSize( instanceTypes->getTotalDataSize() );
         for(it=targets.begin(), eit=targets.end(); it!=eit; ++it)
             it->second.endRegister(it->first,rowsPerInstance,pixelFormat,type,internalFormat,useMultiDrawArraysIndirect);
 
     }
-    
+
     bool                                                useMultiDrawArraysIndirect;
     osg::ref_ptr< osg::BufferTemplate< std::vector<InstanceType> > >   instanceTypes;
     osg::ref_ptr<osg::UniformBufferObject>              instanceTypesUBO;
     osg::ref_ptr<osg::UniformBufferBinding>             instanceTypesUBB;
-    
+
     std::map<unsigned int, IndirectTarget>               targets;
 };
 
-// StaticInstance struct represents data of a single static instance : 
-// its position, type, identification and additional params 
+// StaticInstance struct represents data of a single static instance :
+// its position, type, identification and additional params
 // ( params are user dependent. In our example params are used
 // to describe color, waving amplitude, waving frequency and waving offset )
 struct StaticInstance
@@ -401,7 +401,7 @@ struct DynamicInstance
    osg::Matrixf position;
    osg::Vec4f   extraParams;
    osg::Vec4i   idParams;
-   osg::Matrixf bones[OSGGPUCULL_MAXIMUM_BONES_NUMBER];   
+   osg::Matrixf bones[OSGGPUCULL_MAXIMUM_BONES_NUMBER];
 };
 
 // This class has been taken from osgforest example and modified a little bit.
@@ -413,9 +413,9 @@ public:
     typedef std::vector< osg::ref_ptr<InstanceCell<T> > > InstanceCellList;
 
     InstanceCell(): _parent(0) {}
-    
+
     InstanceCell(osg::BoundingBox& bb):_parent(0), _bb(bb) {}
-    
+
     void addCell(InstanceCell* cell) { cell->_parent=this; _cells.push_back(cell); }
 
     void computeBound();
@@ -581,42 +581,42 @@ void InstanceCell<T>::bin()
 osg::Geometry* buildGPUCullGeometry( const std::vector<StaticInstance>& instances  )
 {
     osg::Vec3Array* vertexArray = new osg::Vec3Array;
-    
+
     osg::Vec4Array* attrib10 = new osg::Vec4Array;
     osg::Vec4Array* attrib11 = new osg::Vec4Array;
     osg::Vec4Array* attrib12 = new osg::Vec4Array;
     osg::Vec4Array* attrib13 = new osg::Vec4Array;
     osg::Vec4Array* attrib14 = new osg::Vec4Array;
     osg::Vec4Array* attrib15 = new osg::Vec4Array;
-    
+
     osg::BoundingBox bbox;
     std::vector<StaticInstance>::const_iterator it,eit;
     for(it=instances.begin(), eit=instances.end(); it!=eit; ++it)
     {
-        vertexArray->push_back( it->getPosition() );        
+        vertexArray->push_back( it->getPosition() );
         attrib10->push_back( osg::Vec4( it->position(0,0), it->position(0,1), it->position(0,2), it->position(0,3) ) );
         attrib11->push_back( osg::Vec4( it->position(1,0), it->position(1,1), it->position(1,2), it->position(1,3) ) );
         attrib12->push_back( osg::Vec4( it->position(2,0), it->position(2,1), it->position(2,2), it->position(2,3) ) );
         attrib13->push_back( osg::Vec4( it->position(3,0), it->position(3,1), it->position(3,2), it->position(3,3) ) );
         attrib14->push_back( it->extraParams );
         attrib15->push_back( osg::Vec4( it->idParams.x(), it->idParams.y(), 0.0, 0.0 ) );
-        
+
         bbox.expandBy( it->getPosition() );
     }
-    
+
     osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
-    geom->setVertexArray(vertexArray);    
+    geom->setVertexArray(vertexArray);
     geom->setVertexAttribArray(10, attrib10, osg::Array::BIND_PER_VERTEX);
     geom->setVertexAttribArray(11, attrib11, osg::Array::BIND_PER_VERTEX);
     geom->setVertexAttribArray(12, attrib12, osg::Array::BIND_PER_VERTEX);
     geom->setVertexAttribArray(13, attrib13, osg::Array::BIND_PER_VERTEX);
     geom->setVertexAttribArray(14, attrib14, osg::Array::BIND_PER_VERTEX);
     geom->setVertexAttribArray(15, attrib15, osg::Array::BIND_PER_VERTEX);
-    
+
     geom->addPrimitiveSet( new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, instances.size() ) );
-    
+
     geom->setInitialBound( bbox );
-    
+
     return geom.release();
 }
 
@@ -667,7 +667,7 @@ osg::Node* createInstanceTree(const std::vector<T>& instances, const osg::Boundi
     osg::ref_ptr<InstanceCell<T> > rootCell = new InstanceCell<T>();
     rootCell->_instances = instances;
     rootCell->divide( maxNumInstancesPerCell );
-    
+
     osg::ref_ptr<osg::Node> resultNode = createInstanceGraph<T>( rootCell.get(), objectsBBox );
     return resultNode.release();
 }
@@ -675,9 +675,9 @@ osg::Node* createInstanceTree(const std::vector<T>& instances, const osg::Boundi
 // Texture buffers holding information about the number of instances to render ( named "indirect command
 // texture buffers", or simply - indirect commands ) must reset instance number to 0 in the beggining of each frame.
 // It is done by simple texture reload from osg::Image.
-// Moreover - texture buffers that use texture images ( i mean "images" as defined in ARB_shader_image_load_store extension ) 
+// Moreover - texture buffers that use texture images ( i mean "images" as defined in ARB_shader_image_load_store extension )
 // should call glBindImageTexture() before every shader that uses imageLoad(), imageStore() and imageAtomic*() GLSL functions.
-// It looks like glBindImageTexture() should be used the same way the glBindTexture() is used. 
+// It looks like glBindImageTexture() should be used the same way the glBindTexture() is used.
 struct ResetTexturesCallback : public osg::StateSet::Callback
 {
     ResetTexturesCallback()
@@ -691,7 +691,7 @@ struct ResetTexturesCallback : public osg::StateSet::Callback
     {
         texUnitsDirtyParams.push_back(texUnit);
     }
-    
+
     virtual void operator() (osg::StateSet* stateset, osg::NodeVisitor* nv)
     {
         std::vector<unsigned int>::iterator it,eit;
@@ -711,7 +711,7 @@ struct ResetTexturesCallback : public osg::StateSet::Callback
                 tex->dirtyTextureParameters();
         }
     }
-    
+
     std::vector<unsigned int> texUnitsDirty;
     std::vector<unsigned int> texUnitsDirtyParams;
 };
@@ -726,7 +726,7 @@ struct InvokeMemoryBarrier : public osg::Drawable::DrawCallback
         : _barriers(barriers)
     {
     }
-    virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const 
+    virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
     {
         DrawIndirectGLExtensions *ext = DrawIndirectGLExtensions::getExtensions( renderInfo.getContextID(), true );
         ext->glMemoryBarrier( _barriers );
@@ -739,15 +739,15 @@ osg::Program* createProgram( const std::string& name, const std::string& vertexS
 {
     osg::ref_ptr<osg::Program> program = new osg::Program;
     program->setName( name );
-    
+
     osg::ref_ptr<osg::Shader> vertexShader = new osg::Shader(osg::Shader::VERTEX, vertexSource);
     vertexShader->setName( name + "_vertex" );
     program->addShader(vertexShader.get());
-    
+
     osg::ref_ptr<osg::Shader> fragmentShader = new osg::Shader(osg::Shader::FRAGMENT, fragmentSource);
     fragmentShader->setName( name + "_fragment" );
     program->addShader(fragmentShader.get());
-  
+
     return program.release();
 }
 
@@ -758,15 +758,15 @@ osg::Group* createConiferTree( float detailRatio, const osg::Vec4& leafColor, co
     osg::ref_ptr<osg::TessellationHints> tessHints = new osg::TessellationHints;
     tessHints->setCreateTextureCoords(true);
     tessHints->setDetailRatio(detailRatio);
-    
-    osg::ref_ptr<osg::Group> root           = new osg::Group; 
-    
+
+    osg::ref_ptr<osg::Group> root           = new osg::Group;
+
     osg::ref_ptr<osg::Cylinder> trunk       = new osg::Cylinder( osg::Vec3( 0.0, 0.0, 1.0 ), 0.25, 2.0 );
-    osg::ref_ptr<osg::Geode> trunkGeode     = convertShapeToGeode( *trunk.get(), tessHints.get(), trunkColor ); 
+    osg::ref_ptr<osg::Geode> trunkGeode     = convertShapeToGeode( *trunk.get(), tessHints.get(), trunkColor );
     root->addChild( trunkGeode.get() );
 
     osg::ref_ptr<osg::Cone> shapeCone       = new osg::Cone( osg::Vec3( 0.0, 0.0, 4.0 ), 2.0, 8.0 );
-    osg::ref_ptr<osg::Geode> shapeGeode     = convertShapeToGeode( *shapeCone.get(), tessHints.get(), leafColor ); 
+    osg::ref_ptr<osg::Geode> shapeGeode     = convertShapeToGeode( *shapeCone.get(), tessHints.get(), leafColor );
     root->addChild( shapeGeode.get() );
 
     return root.release();
@@ -781,15 +781,15 @@ osg::Group* createDecidousTree( float detailRatio, const osg::Vec4& leafColor, c
     osg::ref_ptr<osg::TessellationHints> tessHints = new osg::TessellationHints;
     tessHints->setCreateTextureCoords(true);
     tessHints->setDetailRatio(detailRatio);
-    
-    osg::ref_ptr<osg::Group> root           = new osg::Group; 
-    
+
+    osg::ref_ptr<osg::Group> root           = new osg::Group;
+
     osg::ref_ptr<osg::Cylinder> trunk       = new osg::Cylinder( osg::Vec3( 0.0, 0.0, 1.0 ), 0.4, 2.0 );
-    osg::ref_ptr<osg::Geode> trunkGeode     = convertShapeToGeode( *trunk.get(), tessHints.get(), trunkColor ); 
+    osg::ref_ptr<osg::Geode> trunkGeode     = convertShapeToGeode( *trunk.get(), tessHints.get(), trunkColor );
     root->addChild( trunkGeode.get() );
 
     osg::ref_ptr<osg::Capsule> shapeCapsule = new osg::Capsule( osg::Vec3( 0.0, 0.0, 7.4 ), 3.0, 5.0 );
-    osg::ref_ptr<osg::Geode> shapeGeode     = convertShapeToGeode( *shapeCapsule.get(), tessHints.get(), leafColor ); 
+    osg::ref_ptr<osg::Geode> shapeGeode     = convertShapeToGeode( *shapeCapsule.get(), tessHints.get(), leafColor );
     root->addChild( shapeGeode.get() );
 
     return root.release();
@@ -801,27 +801,27 @@ osg::Group* createSimpleHouse( float detailRatio, const osg::Vec4& buildingColor
     osg::ref_ptr<osg::TessellationHints> tessHints = new osg::TessellationHints;
     tessHints->setCreateTextureCoords(true);
     tessHints->setDetailRatio(detailRatio);
-    
-    osg::ref_ptr<osg::Group> root           = new osg::Group; 
-    
+
+    osg::ref_ptr<osg::Group> root           = new osg::Group;
+
     osg::ref_ptr<osg::Box> building         = new osg::Box( osg::Vec3( 0.0, 0.0, 8.0 ), 15.0, 9.0, 16.0 );
-    osg::ref_ptr<osg::Geode> buildingGeode  = convertShapeToGeode( *building.get(), tessHints.get(), buildingColor ); 
+    osg::ref_ptr<osg::Geode> buildingGeode  = convertShapeToGeode( *building.get(), tessHints.get(), buildingColor );
     root->addChild( buildingGeode.get() );
 
     // osg::Box always creates geometry with 12 triangles, so to differentiate building LODs we will add three "chimneys"
     {
         osg::ref_ptr<osg::Cylinder> chimney       = new osg::Cylinder( osg::Vec3( -6.0, 3.0, 16.75 ), 0.1, 1.5 );
-        osg::ref_ptr<osg::Geode> chimneyGeode     = convertShapeToGeode( *chimney.get(), tessHints.get(), chimneyColor ); 
+        osg::ref_ptr<osg::Geode> chimneyGeode     = convertShapeToGeode( *chimney.get(), tessHints.get(), chimneyColor );
         root->addChild( chimneyGeode.get() );
     }
     {
         osg::ref_ptr<osg::Cylinder> chimney       = new osg::Cylinder( osg::Vec3( -5.5, 3.0, 16.5 ), 0.1, 1.0 );
-        osg::ref_ptr<osg::Geode> chimneyGeode     = convertShapeToGeode( *chimney.get(), tessHints.get(), chimneyColor ); 
+        osg::ref_ptr<osg::Geode> chimneyGeode     = convertShapeToGeode( *chimney.get(), tessHints.get(), chimneyColor );
         root->addChild( chimneyGeode.get() );
     }
     {
         osg::ref_ptr<osg::Cylinder> chimney       = new osg::Cylinder( osg::Vec3( -5.0, 3.0, 16.25 ), 0.1, 0.5 );
-        osg::ref_ptr<osg::Geode> chimneyGeode     = convertShapeToGeode( *chimney.get(), tessHints.get(), chimneyColor ); 
+        osg::ref_ptr<osg::Geode> chimneyGeode     = convertShapeToGeode( *chimney.get(), tessHints.get(), chimneyColor );
         root->addChild( chimneyGeode.get() );
     }
 
@@ -833,19 +833,19 @@ osg::MatrixTransform* createPropeller( float detailRatio, int propNum, float pro
     osg::ref_ptr<osg::TessellationHints> tessHints = new osg::TessellationHints;
     tessHints->setCreateTextureCoords(true);
     tessHints->setDetailRatio(detailRatio);
-    
-    osg::ref_ptr<osg::MatrixTransform> root = new osg::MatrixTransform; 
+
+    osg::ref_ptr<osg::MatrixTransform> root = new osg::MatrixTransform;
     osg::ref_ptr<osg::Cone> center          = new osg::Cone( osg::Vec3( 0.0, 0.0, 0.05 ), 0.1*propRadius, 0.25*propRadius );
-    osg::ref_ptr<osg::Geode> centerGeode    = convertShapeToGeode( *center.get(), tessHints.get(), color ); 
+    osg::ref_ptr<osg::Geode> centerGeode    = convertShapeToGeode( *center.get(), tessHints.get(), color );
     osg::ref_ptr<osg::Cone> prop            = new osg::Cone( osg::Vec3( 0.0, 0.0, -0.75*propRadius ), 0.1*propRadius, 1.0*propRadius );
-    osg::ref_ptr<osg::Geode> propGeode      = convertShapeToGeode( *prop.get(), tessHints.get(), color ); 
-    
+    osg::ref_ptr<osg::Geode> propGeode      = convertShapeToGeode( *prop.get(), tessHints.get(), color );
+
     root->addChild( centerGeode.get() );
     for( int i=0; i<propNum; ++i )
     {
         float angle = (float)i * 2.0f * osg::PI / (float)propNum;
         osg::ref_ptr<osg::MatrixTransform> propMt = new osg::MatrixTransform( osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0) ) * osg::Matrix::scale(1.0,1.0,0.3) * osg::Matrix::rotate( angle, osg::Vec3(0.0,0.0,1.0) ) );
-        propMt->addChild( propGeode.get() ); 
+        propMt->addChild( propGeode.get() );
         root->addChild( propMt.get() );
     }
     return root.release();
@@ -857,34 +857,34 @@ osg::Group* createBlimp( float detailRatio, const osg::Vec4& hullColor, const os
     osg::ref_ptr<osg::TessellationHints> tessHints = new osg::TessellationHints;
     tessHints->setCreateTextureCoords(true);
     tessHints->setDetailRatio(detailRatio);
-    
-    osg::ref_ptr<osg::Group> root           = new osg::Group; 
+
+    osg::ref_ptr<osg::Group> root           = new osg::Group;
     osg::ref_ptr<osg::Capsule> hull         = new osg::Capsule( osg::Vec3( 0.0, 0.0, 0.0 ), 5.0, 10.0 );
-    osg::ref_ptr<osg::Geode> hullGeode      = convertShapeToGeode( *hull.get(), tessHints.get(), hullColor ); 
+    osg::ref_ptr<osg::Geode> hullGeode      = convertShapeToGeode( *hull.get(), tessHints.get(), hullColor );
 
     osg::ref_ptr<osg::Capsule> gondola      = new osg::Capsule( osg::Vec3( 5.5, 0.0, 0.0 ), 1.0, 6.0 );
-    osg::ref_ptr<osg::Geode> gondolaGeode   = convertShapeToGeode( *gondola.get(), tessHints.get(), hullColor ); 
-    
+    osg::ref_ptr<osg::Geode> gondolaGeode   = convertShapeToGeode( *gondola.get(), tessHints.get(), hullColor );
+
     osg::ref_ptr<osg::Box> rudderV          = new osg::Box( osg::Vec3( 0.0, 0.0, -10.0 ), 8.0, 0.3, 4.0 );
-    osg::ref_ptr<osg::Geode> rudderVGeode   = convertShapeToGeode( *rudderV.get(), tessHints.get(), hullColor ); 
+    osg::ref_ptr<osg::Geode> rudderVGeode   = convertShapeToGeode( *rudderV.get(), tessHints.get(), hullColor );
     osg::ref_ptr<osg::Box> rudderH          = new osg::Box( osg::Vec3( 0.0, 0.0, -10.0 ), 0.3, 8.0, 4.0 );
-    osg::ref_ptr<osg::Geode> rudderHGeode   = convertShapeToGeode( *rudderH.get(), tessHints.get(), hullColor ); 
-    
+    osg::ref_ptr<osg::Geode> rudderHGeode   = convertShapeToGeode( *rudderH.get(), tessHints.get(), hullColor );
+
     osg::Matrix m;
     m = osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0));
     osg::ref_ptr<osg::MatrixTransform> hullMt = new osg::MatrixTransform(m);
-    hullMt->addChild( hullGeode.get() ); 
+    hullMt->addChild( hullGeode.get() );
     hullMt->addChild( gondolaGeode.get() );
     hullMt->addChild( rudderVGeode.get() );
     hullMt->addChild( rudderHGeode.get() );
     root->addChild( hullMt.get() );
-    
+
     osg::ref_ptr<osg::MatrixTransform> propellerLeft = createPropeller( detailRatio, 4, 1.0, propColor );
-    propellerLeft->setMatrix( osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0)) * osg::Matrix::translate(0.0,2.0,-6.0) ); 
+    propellerLeft->setMatrix( osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0)) * osg::Matrix::translate(0.0,2.0,-6.0) );
     propellerLeft->setName("prop0"); root->addChild( propellerLeft.get() );
 
     osg::ref_ptr<osg::MatrixTransform> propellerRight = createPropeller( detailRatio, 4, 1.0, propColor );
-    propellerRight->setMatrix( osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0)) * osg::Matrix::translate(0.0,-2.0,-6.0) ); 
+    propellerRight->setMatrix( osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0)) * osg::Matrix::translate(0.0,-2.0,-6.0) );
     propellerRight->setName("prop1"); root->addChild( propellerRight.get() );
 
     return root.release();
@@ -895,10 +895,10 @@ osg::Group* createCar( float detailRatio, const osg::Vec4& hullColor, const osg:
     osg::ref_ptr<osg::TessellationHints> tessHints = new osg::TessellationHints;
     tessHints->setCreateTextureCoords(true);
     tessHints->setDetailRatio(detailRatio);
-    
-    osg::ref_ptr<osg::Group> root           = new osg::Group; 
+
+    osg::ref_ptr<osg::Group> root           = new osg::Group;
     osg::ref_ptr<osg::Cylinder> wheel       = new osg::Cylinder( osg::Vec3( 0.0, 0.0, 0.0 ), 1.0, 0.6 );
-    osg::ref_ptr<osg::Geometry> wheelGeom   = convertShapeToGeometry( *wheel.get(), tessHints.get(), wheelColor ); 
+    osg::ref_ptr<osg::Geometry> wheelGeom   = convertShapeToGeometry( *wheel.get(), tessHints.get(), wheelColor );
     // one random triangle on every wheel will use black color to show that wheel is rotating
     osg::Vec4Array* colorArray = dynamic_cast<osg::Vec4Array*>( wheelGeom->getColorArray() );
     if(colorArray!=NULL)
@@ -918,7 +918,7 @@ osg::Group* createCar( float detailRatio, const osg::Vec4& hullColor, const osg:
     m = osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(1.0,0.0,0.0)) * osg::Matrix::translate(2.0,1.8,1.0);
     osg::ref_ptr<osg::MatrixTransform> wheel0Mt = new osg::MatrixTransform(m);
     wheel0Mt->setName("wheel0"); wheel0Mt->addChild( wheelGeode.get() ); root->addChild( wheel0Mt.get() );
-    
+
     m = osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(1.0,0.0,0.0)) * osg::Matrix::translate(-2.0,1.8,1.0);
     osg::ref_ptr<osg::MatrixTransform> wheel1Mt = new osg::MatrixTransform(m);
     wheel1Mt->setName("wheel1"); wheel1Mt->addChild( wheelGeode.get() ); root->addChild( wheel1Mt.get() );
@@ -930,7 +930,7 @@ osg::Group* createCar( float detailRatio, const osg::Vec4& hullColor, const osg:
     m = osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(1.0,0.0,0.0)) * osg::Matrix::translate(-2.0,-1.8,1.0);
     osg::ref_ptr<osg::MatrixTransform> wheel3Mt = new osg::MatrixTransform(m);
     wheel3Mt->setName("wheel3"); wheel3Mt->addChild( wheelGeode.get() ); root->addChild( wheel3Mt.get() );
-    
+
     return root.release();
 }
 
@@ -939,47 +939,47 @@ osg::Group* createAirplane( float detailRatio, const osg::Vec4& hullColor, const
     osg::ref_ptr<osg::TessellationHints> tessHints = new osg::TessellationHints;
     tessHints->setCreateTextureCoords(true);
     tessHints->setDetailRatio(detailRatio);
-    
-    osg::ref_ptr<osg::Group> root           = new osg::Group; 
+
+    osg::ref_ptr<osg::Group> root           = new osg::Group;
     osg::ref_ptr<osg::Capsule> hull         = new osg::Capsule( osg::Vec3( 0.0, 0.0, 0.0 ), 0.8, 6.0 );
-    osg::ref_ptr<osg::Geode> hullGeode      = convertShapeToGeode( *hull.get(), tessHints.get(), hullColor ); 
+    osg::ref_ptr<osg::Geode> hullGeode      = convertShapeToGeode( *hull.get(), tessHints.get(), hullColor );
 
     osg::ref_ptr<osg::Box> wing0          = new osg::Box( osg::Vec3( 0.4, 0.0, 1.3 ), 0.1, 7.0, 1.6 );
-    osg::ref_ptr<osg::Geode> wing0Geode   = convertShapeToGeode( *wing0.get(), tessHints.get(), hullColor ); 
+    osg::ref_ptr<osg::Geode> wing0Geode   = convertShapeToGeode( *wing0.get(), tessHints.get(), hullColor );
     osg::ref_ptr<osg::Box> wing1          = new osg::Box( osg::Vec3( -1.4, 0.0, 1.5 ), 0.1, 10.0, 1.8 );
-    osg::ref_ptr<osg::Geode> wing1Geode   = convertShapeToGeode( *wing1.get(), tessHints.get(), hullColor ); 
-    
+    osg::ref_ptr<osg::Geode> wing1Geode   = convertShapeToGeode( *wing1.get(), tessHints.get(), hullColor );
+
     osg::ref_ptr<osg::Box> rudderV          = new osg::Box( osg::Vec3( -0.8, 0.0, -3.9 ), 1.5, 0.05, 1.0 );
-    osg::ref_ptr<osg::Geode> rudderVGeode   = convertShapeToGeode( *rudderV.get(), tessHints.get(), hullColor ); 
+    osg::ref_ptr<osg::Geode> rudderVGeode   = convertShapeToGeode( *rudderV.get(), tessHints.get(), hullColor );
     osg::ref_ptr<osg::Box> rudderH          = new osg::Box( osg::Vec3( -0.2, 0.0, -3.9 ), 0.05, 4.0, 1.0 );
-    osg::ref_ptr<osg::Geode> rudderHGeode   = convertShapeToGeode( *rudderH.get(), tessHints.get(), hullColor ); 
-    
+    osg::ref_ptr<osg::Geode> rudderHGeode   = convertShapeToGeode( *rudderH.get(), tessHints.get(), hullColor );
+
     osg::Matrix m;
     m = osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0));
     osg::ref_ptr<osg::MatrixTransform> hullMt = new osg::MatrixTransform(m);
-    hullMt->addChild( hullGeode.get() ); 
+    hullMt->addChild( hullGeode.get() );
     hullMt->addChild( wing0Geode.get() );
     hullMt->addChild( wing1Geode.get() );
     hullMt->addChild( rudderVGeode.get() );
     hullMt->addChild( rudderHGeode.get() );
     root->addChild( hullMt.get() );
-    
+
     osg::ref_ptr<osg::MatrixTransform> propeller = createPropeller( detailRatio, 3, 1.6, propColor );
-    propeller->setMatrix( osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0)) * osg::Matrix::translate(3.8,0.0,0.0) ); 
+    propeller->setMatrix( osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0)) * osg::Matrix::translate(3.8,0.0,0.0) );
     propeller->setName("prop0"); root->addChild( propeller.get() );
 
     return root.release();
 }
 
-// createStaticRendering() shows how to use any OSG graph ( wheter it is single osg::Geode, or sophisticated osg::PagedLOD tree covering whole earth ) 
+// createStaticRendering() shows how to use any OSG graph ( wheter it is single osg::Geode, or sophisticated osg::PagedLOD tree covering whole earth )
 // as a source of  instance data. This way, the OSG graph of arbitrary size is at first culled using typical OSG mechanisms, then remaining osg::Geometries
-// are sent to cull shader ( cullProgram ). Cull shader does not draw anything to screen ( thanks to GL_RASTERIZER_DISCARD mode ), but calculates if particular 
+// are sent to cull shader ( cullProgram ). Cull shader does not draw anything to screen ( thanks to GL_RASTERIZER_DISCARD mode ), but calculates if particular
 // instances - sourced from above mentioned osg::Geometries - are visible and what LODs for these instances should be rendered.
-// Information about instances is stored into indirect commands ( the number of instances sent to indirect target ) and in indirect targets 
+// Information about instances is stored into indirect commands ( the number of instances sent to indirect target ) and in indirect targets
 // ( static rendering sends all instance data from vertex attributes to indirect target : position, id, extra params, etc ).
 // Next the draw shader ( associated with indirect target ) plays its role. The main trick at draw shader invocation is a right use of indirect command.
-// Indirect command is bound as a GL_DRAW_INDIRECT_BUFFER and glDrawArraysIndirect() function is called. Thanks to this - proper number 
-// of instances is rendered without time-consuming GPU->CPU roundtrip. Draw shader renders an aggregate geometry - an osg::Geometry object 
+// Indirect command is bound as a GL_DRAW_INDIRECT_BUFFER and glDrawArraysIndirect() function is called. Thanks to this - proper number
+// of instances is rendered without time-consuming GPU->CPU roundtrip. Draw shader renders an aggregate geometry - an osg::Geometry object
 // that contains all objects to render ( for specific indirect target ).
 void createStaticRendering( osg::Group* root, GPUCullData& gpuData, const osg::Vec2& minArea, const osg::Vec2& maxArea, unsigned int maxNumInstancesPerCell, float lodModifier, float densityModifier, float triangleModifier, bool exportInstanceObjects )
 {
@@ -993,21 +993,21 @@ void createStaticRendering( osg::Group* root, GPUCullData& gpuData, const osg::V
     if( exportInstanceObjects ) osgDB::writeNodeFile(*coniferTree1.get(),"coniferTree1.osgt");
     osg::ref_ptr<osg::Node> coniferTree2 = createConiferTree( 0.15f * triangleModifier, osg::Vec4(1.0,0.0,0.0,1.0), osg::Vec4(0.0,0.0,1.0,1.0) );
     if( exportInstanceObjects ) osgDB::writeNodeFile(*coniferTree2.get(),"coniferTree2.osgt");
-    
+
     osg::ref_ptr<osg::Node> decidousTree0 = createDecidousTree( 0.75f * triangleModifier, osg::Vec4(1.0,1.0,1.0,1.0), osg::Vec4(0.0,1.0,0.0,1.0) );
     if( exportInstanceObjects ) osgDB::writeNodeFile(*decidousTree0.get(),"decidousTree0.osgt");
     osg::ref_ptr<osg::Node> decidousTree1 = createDecidousTree( 0.45f * triangleModifier, osg::Vec4(0.0,0.0,1.0,1.0), osg::Vec4(1.0,1.0,0.0,1.0) );
     if( exportInstanceObjects ) osgDB::writeNodeFile(*decidousTree1.get(),"decidousTree1.osgt");
     osg::ref_ptr<osg::Node> decidousTree2 = createDecidousTree( 0.15f * triangleModifier, osg::Vec4(1.0,0.0,0.0,1.0), osg::Vec4(0.0,0.0,1.0,1.0) );
     if( exportInstanceObjects ) osgDB::writeNodeFile(*decidousTree2.get(),"decidousTree2.osgt");
-    
+
     osg::ref_ptr<osg::Node> simpleHouse0 = createSimpleHouse( 0.75f * triangleModifier, osg::Vec4(1.0,1.0,1.0,1.0), osg::Vec4(0.0,1.0,0.0,1.0) );
     if( exportInstanceObjects ) osgDB::writeNodeFile(*simpleHouse0.get(),"simpleHouse0.osgt");
     osg::ref_ptr<osg::Node> simpleHouse1 = createSimpleHouse( 0.45f * triangleModifier, osg::Vec4(0.0,0.0,1.0,1.0), osg::Vec4(1.0,1.0,0.0,1.0) );
     if( exportInstanceObjects ) osgDB::writeNodeFile(*simpleHouse1.get(),"simpleHouse1.osgt");
     osg::ref_ptr<osg::Node> simpleHouse2 = createSimpleHouse( 0.15f * triangleModifier, osg::Vec4(1.0,0.0,0.0,1.0), osg::Vec4(0.0,0.0,1.0,1.0) );
     if( exportInstanceObjects ) osgDB::writeNodeFile(*simpleHouse2.get(),"simpleHouse2.osgt");
-    
+
     // Two indirect targets are registered : the first one renders static objects. The second one is used to render trees waving in the wind.
     gpuData.registerIndirectTarget( 0, new AggregateGeometryVisitor( new ConvertTrianglesOperatorClassic() ), createProgram( "static_draw_0", SHADER_STATIC_DRAW_0_VERTEX, SHADER_STATIC_DRAW_0_FRAGMENT ) );
     gpuData.registerIndirectTarget( 1, new AggregateGeometryVisitor( new ConvertTrianglesOperatorClassic() ), createProgram( "static_draw_1", SHADER_STATIC_DRAW_1_VERTEX, SHADER_STATIC_DRAW_1_FRAGMENT ) );
@@ -1060,38 +1060,38 @@ void createStaticRendering( osg::Group* root, GPUCullData& gpuData, const osg::V
     for(iit=gpuData.instanceTypes->getData().begin(), ieit=gpuData.instanceTypes->getData().end(); iit!=ieit; ++iit)
         allObjectsBbox.expandBy(iit->getBoundingBox());
     osg::ref_ptr<osg::Node> instancesTree = createInstanceTree(instances, allObjectsBbox, maxNumInstancesPerCell);
-    if( exportInstanceObjects ) 
+    if( exportInstanceObjects )
         osgDB::writeNodeFile(*instancesTree.get(),"staticInstancesTree.osgt");
     root->addChild( instancesTree.get() );
-    // instance OSG tree is connected to cull shader with all necessary data ( all indirect commands, all 
+    // instance OSG tree is connected to cull shader with all necessary data ( all indirect commands, all
     // indirect targets, necessary OpenGl modes etc. )
     {
         osg::ref_ptr<ResetTexturesCallback> resetTexturesCallback = new ResetTexturesCallback;
-        
+
         osg::ref_ptr<osg::Program> cullProgram = createProgram( "static_cull", SHADER_STATIC_CULL_VERTEX, SHADER_STATIC_CULL_FRAGMENT );
         cullProgram->addBindUniformBlock("instanceTypesData", 1);
-        instancesTree->getOrCreateStateSet()->setAttributeAndModes( cullProgram.get(), osg::StateAttribute::ON );       
+        instancesTree->getOrCreateStateSet()->setAttributeAndModes( cullProgram.get(), osg::StateAttribute::ON );
         instancesTree->getOrCreateStateSet()->setAttributeAndModes( gpuData.instanceTypesUBB.get() );
         instancesTree->getOrCreateStateSet()->setMode( GL_RASTERIZER_DISCARD, osg::StateAttribute::ON );
 
         std::map<unsigned int, IndirectTarget>::iterator it,eit;
         for(it=gpuData.targets.begin(), eit=gpuData.targets.end(); it!=eit; ++it)
         {
-            it->second.addIndirectCommandData( "indirectCommand", it->first, instancesTree->getOrCreateStateSet() ); 
+            it->second.addIndirectCommandData( "indirectCommand", it->first, instancesTree->getOrCreateStateSet() );
             resetTexturesCallback->addTextureDirty( it->first );
             resetTexturesCallback->addTextureDirtyParams( it->first );
-            
-            it->second.addIndirectTargetData( true, "indirectTarget", it->first, instancesTree->getOrCreateStateSet() ); 
+
+            it->second.addIndirectTargetData( true, "indirectTarget", it->first, instancesTree->getOrCreateStateSet() );
             resetTexturesCallback->addTextureDirtyParams( OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+it->first );
         }
-        
+
         osg::Uniform* indirectCommandSize = new osg::Uniform( osg::Uniform::INT, "indirectCommandSize" );
         indirectCommandSize->set( (int)(sizeof(DrawArraysIndirectCommand) / sizeof(unsigned int))  );
         instancesTree->getOrCreateStateSet()->addUniform( indirectCommandSize );
-               
+
         instancesTree->getOrCreateStateSet()->setUpdateCallback( resetTexturesCallback.get() );
     }
-    
+
     // in the end - we create OSG objects that draw instances using indirect targets and commands.
     std::map<unsigned int, IndirectTarget>::iterator it,eit;
     for(it=gpuData.targets.begin(), eit=gpuData.targets.end(); it!=eit; ++it)
@@ -1100,11 +1100,11 @@ void createStaticRendering( osg::Group* root, GPUCullData& gpuData, const osg::V
         it->second.geometryAggregator->getAggregatedGeometry()->setDrawCallback( new InvokeMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_COMMAND_BARRIER_BIT) );
         drawGeode->addDrawable( it->second.geometryAggregator->getAggregatedGeometry() );
         drawGeode->setCullingActive(false);
-        
+
         it->second.addIndirectTargetData( false, "indirectTarget", it->first, drawGeode->getOrCreateStateSet() );
-        drawGeode->getOrCreateStateSet()->setAttributeAndModes( gpuData.instanceTypesUBB.get() );        
+        drawGeode->getOrCreateStateSet()->setAttributeAndModes( gpuData.instanceTypesUBB.get() );
         it->second.addDrawProgram( "instanceTypesData", drawGeode->getOrCreateStateSet() );
-        drawGeode->getOrCreateStateSet()->setAttributeAndModes( new osg::CullFace( osg::CullFace::BACK ) );        
+        drawGeode->getOrCreateStateSet()->setAttributeAndModes( new osg::CullFace( osg::CullFace::BACK ) );
 
         root->addChild(drawGeode.get());
     }
@@ -1117,30 +1117,30 @@ osg::Geometry* buildGPUCullGeometry( const std::vector<DynamicInstance>& instanc
 {
     osg::Vec3Array* vertexArray = new osg::Vec3Array;
     osg::Vec4iArray* attrib10   = new osg::Vec4iArray;
-    
+
     osg::BoundingBox bbox;
     std::vector<DynamicInstance>::const_iterator it,eit;
     for(it=instances.begin(), eit=instances.end(); it!=eit; ++it)
     {
         vertexArray->push_back( it->getPosition() );
         attrib10->push_back( it->idParams );
-        
+
         bbox.expandBy( it->getPosition() );
     }
-    
+
     osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
     geom->setVertexArray(vertexArray);
     geom->setVertexAttribArray(10, attrib10, osg::Array::BIND_PER_VERTEX);
-    
+
     geom->addPrimitiveSet( new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, instances.size() ) );
-    
+
     geom->setInitialBound( bbox );
-    
+
     return geom.release();
 }
 
 // To animate dynamic objects we use an update callback. It performs some simple
-// instance wandering ( object goes to random destination point and when it reaches 
+// instance wandering ( object goes to random destination point and when it reaches
 // destination, it picks another random point and so on ).
 // Object parts are animated ( wheels and propellers )
 struct AnimateObjectsCallback : public osg::Drawable::UpdateCallback
@@ -1161,7 +1161,7 @@ struct AnimateObjectsCallback : public osg::Drawable::UpdateCallback
         for(; i<3*_quantityPerType; ++i) // speed of airplanes
             _speed.push_back( random( 10.0, 16.0 ) );
     }
-    virtual void update(osg::NodeVisitor* nv, osg::Drawable* drawable) 
+    virtual void update(osg::NodeVisitor* nv, osg::Drawable* drawable)
     {
         if( nv->getVisitorType() != osg::NodeVisitor::UPDATE_VISITOR )
             return;
@@ -1173,47 +1173,47 @@ struct AnimateObjectsCallback : public osg::Drawable::UpdateCallback
         if(_lastTime!=0.0)
             deltaTime = currentTime - _lastTime;
         _lastTime = currentTime;
-        
+
         osg::Geometry* geom = dynamic_cast<osg::Geometry*>(drawable);
         if(geom==NULL)
             return;
         osg::Vec3Array* vertexArray = dynamic_cast<osg::Vec3Array*>( geom->getVertexArray() );
         if( vertexArray == NULL )
             return;
-            
-        
+
+
         osg::BoundingBox nbbox;
         unsigned int i=0;
         for(;i<_quantityPerType;++i) // update blimps
         {
             nbbox.expandBy( updateObjectPosition( vertexArray, i, deltaTime ) );
             // now we update propeler positions
-            setRotationUsingRotSpeed( i, 5, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0)) * osg::Matrix::translate(0.0,2.0,-6.0), currentTime, 0.5 ); 
-            setRotationUsingRotSpeed( i, 6, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0)) * osg::Matrix::translate(0.0,-2.0,-6.0), currentTime, -0.5 ); 
+            setRotationUsingRotSpeed( i, 5, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0)) * osg::Matrix::translate(0.0,2.0,-6.0), currentTime, 0.5 );
+            setRotationUsingRotSpeed( i, 6, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0)) * osg::Matrix::translate(0.0,-2.0,-6.0), currentTime, -0.5 );
         }
         for(;i<2*_quantityPerType;++i) //update cars
         {
             nbbox.expandBy( updateObjectPosition( vertexArray, i, deltaTime ) );
             // calculate car wheel rotation speed measured in rot/sec
             double wheelRotSpeed = -1.0 * _speed[i] / ( 2.0*osg::PI );
-            setRotationUsingRotSpeed( i, 1, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(1.0,0.0,0.0)) * osg::Matrix::translate(2.0,1.8,1.0), currentTime, wheelRotSpeed ); 
-            setRotationUsingRotSpeed( i, 2, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(1.0,0.0,0.0)) * osg::Matrix::translate(-2.0,1.8,1.0), currentTime, wheelRotSpeed ); 
-            setRotationUsingRotSpeed( i, 3, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(1.0,0.0,0.0)) * osg::Matrix::translate(2.0,-1.8,1.0), currentTime, wheelRotSpeed ); 
-            setRotationUsingRotSpeed( i, 4, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(1.0,0.0,0.0)) * osg::Matrix::translate(-2.0,-1.8,1.0), currentTime, wheelRotSpeed ); 
+            setRotationUsingRotSpeed( i, 1, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(1.0,0.0,0.0)) * osg::Matrix::translate(2.0,1.8,1.0), currentTime, wheelRotSpeed );
+            setRotationUsingRotSpeed( i, 2, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(1.0,0.0,0.0)) * osg::Matrix::translate(-2.0,1.8,1.0), currentTime, wheelRotSpeed );
+            setRotationUsingRotSpeed( i, 3, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(1.0,0.0,0.0)) * osg::Matrix::translate(2.0,-1.8,1.0), currentTime, wheelRotSpeed );
+            setRotationUsingRotSpeed( i, 4, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(1.0,0.0,0.0)) * osg::Matrix::translate(-2.0,-1.8,1.0), currentTime, wheelRotSpeed );
         }
         for(;i<3*_quantityPerType;++i) // update airplanes
         {
             nbbox.expandBy( updateObjectPosition( vertexArray, i, deltaTime ) );
-            setRotationUsingRotSpeed( i, 5, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0)) * osg::Matrix::translate(3.8,0.0,0.0), currentTime, 1.5 ); 
+            setRotationUsingRotSpeed( i, 5, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0)) * osg::Matrix::translate(3.8,0.0,0.0), currentTime, 1.5 );
         }
         geom->setInitialBound( nbbox );
         _instancesImage->dirty();
     }
-    
+
     osg::Vec3 updateObjectPosition( osg::Vec3Array* vertexArray, unsigned int index, float deltaTime )
     {
         osg::Vec3 oldPosition = _instances->getData().at(index).getPosition();
-        
+
         osg::Vec2 op2(oldPosition.x(), oldPosition.y() );
         while( ( (*_destination)[index]- op2).length()  < 10.0 )
             (*_destination)[index] = osg::Vec2(random( _bbox.xMin(), _bbox.xMax()), random( _bbox.yMin(), _bbox.yMax()) );
@@ -1237,10 +1237,10 @@ struct AnimateObjectsCallback : public osg::Drawable::UpdateCallback
         osg::Matrix mRot = osg::Matrix::rotate( fmod( 2.0 * osg::PI * rotSpeed * currentTime,2.0*osg::PI) , osg::Vec3(0.0,0.0,1.0) );
         _instances->getData().at(index).bones[boneIndex] = osg::Matrix::inverse(zeroMatrix) * mRot * zeroMatrix;
     }
-    
+
 
     osg::ref_ptr< osg::BufferTemplate< std::vector<DynamicInstance> > > _instances;
-    osg::ref_ptr<osg::Image> _instancesImage; 
+    osg::ref_ptr<osg::Image> _instancesImage;
     osg::BoundingBox _bbox;
     unsigned int _quantityPerType;
     osg::ref_ptr<osg::Vec2Array> _destination;
@@ -1253,7 +1253,7 @@ struct AnimateObjectsCallback : public osg::Drawable::UpdateCallback
 //   in osg::Geometry store only a "pointer" to that buffer. This pointer is later sent to indirect target by the cull shader. And then - used by draw
 //   shader to get instance data from "dynamicInstancesData" buffer during rendering.
 // - draw shader shows how to animate objects using "bones". Each vertex in rendered geometry is associated with single "bone". Such association is
-//   sufficient to animate mechanical objects. It is also possible to animate organic objects ( large crowds of people ) but it is far beyond 
+//   sufficient to animate mechanical objects. It is also possible to animate organic objects ( large crowds of people ) but it is far beyond
 //   the scope of this example.
 void createDynamicRendering( osg::Group* root, GPUCullData& gpuData, osg::BufferTemplate< std::vector<DynamicInstance> >* instances, const osg::Vec2& minArea, const osg::Vec2& maxArea, float lodModifier, float densityModifier, float triangleModifier, bool exportInstanceObjects )
 {
@@ -1267,7 +1267,7 @@ void createDynamicRendering( osg::Group* root, GPUCullData& gpuData, osg::Buffer
     if( exportInstanceObjects ) osgDB::writeNodeFile(*blimpLod1.get(),"blimpLod1.osgt");
     osg::ref_ptr<osg::Node> blimpLod2 = createBlimp( 0.15f * triangleModifier, osg::Vec4(1.0,0.0,0.0,1.0), osg::Vec4(0.0,0.0,1.0,1.0) );
     if( exportInstanceObjects ) osgDB::writeNodeFile(*blimpLod2.get(),"blimpLod2.osgt");
-    
+
     osg::ref_ptr<osg::Node> carLod0 = createCar( 0.75f * triangleModifier, osg::Vec4(1.0,1.0,1.0,1.0), osg::Vec4(0.3,0.3,0.3,1.0) );
     if( exportInstanceObjects ) osgDB::writeNodeFile(*carLod0.get(),"carLod0.osgt");
     osg::ref_ptr<osg::Node> carLod1 = createCar( 0.45f * triangleModifier, osg::Vec4(0.0,0.0,1.0,1.0), osg::Vec4(1.0,1.0,0.0,1.0) );
@@ -1281,7 +1281,7 @@ void createDynamicRendering( osg::Group* root, GPUCullData& gpuData, osg::Buffer
     if( exportInstanceObjects ) osgDB::writeNodeFile(*airplaneLod1.get(),"airplaneLod1.osgt");
     osg::ref_ptr<osg::Node> airplaneLod2 = createAirplane( 0.15f * triangleModifier, osg::Vec4(1.0,0.0,0.0,1.0), osg::Vec4(0.0,0.0,1.0,1.0) );
     if( exportInstanceObjects ) osgDB::writeNodeFile(*airplaneLod2.get(),"airplaneLod2.osgt");
-    
+
     // ConvertTrianglesOperatorClassic struct is informed which node names correspond to which bone indices
     ConvertTrianglesOperatorClassic* target0Converter = new ConvertTrianglesOperatorClassic();
     target0Converter->registerBoneByName("wheel0",1);
@@ -1306,18 +1306,18 @@ void createDynamicRendering( osg::Group* root, GPUCullData& gpuData, osg::Buffer
     gpuData.registerType( 2, 0, airplaneLod2.get(), osg::Vec4(400.0f,410.0f,1200.0f,1210.0f) * lodModifier, objectDensity );
     // dynamic targets store only a "pointer" to instanceTarget buffer
     gpuData.endRegister(1,GL_RGBA,GL_INT, GL_RGBA32I_EXT);
-    
+
     // add dynamic instances to instances container
     float objectZ[3];
     objectZ[0] = 50.0f;
     objectZ[1] = 0.0f;
     objectZ[2] = 20.0f;
-    
+
     osg::BoundingBox bbox( minArea.x(), minArea.y(), 0.0, maxArea.x(), maxArea.y(), 0.0 );
     float fullArea = ( bbox.xMax() - bbox.xMin() ) * ( bbox.yMax() - bbox.yMin() );
     unsigned int objectQuantity = (unsigned int) floor ( objectDensity * fullArea / 1000000.0f );
     unsigned int currentID = 0;
-    
+
     for( unsigned int i=0; i<3; ++i)
     {
         for(unsigned int j=0; j<objectQuantity; ++j )
@@ -1336,34 +1336,34 @@ void createDynamicRendering( osg::Group* root, GPUCullData& gpuData, osg::Buffer
     osg::TextureBuffer* instancesTextureBuffer = new osg::TextureBuffer(instancesImage);
     instancesTextureBuffer->setUsageHint(GL_STATIC_DRAW);
     instancesTextureBuffer->setUnRefImageDataAfterApply(false);
-    
+
     osg::Uniform* dynamicInstancesDataUniform = new osg::Uniform( "dynamicInstancesData", 8 );
     osg::Uniform* dynamicInstancesDataSize = new osg::Uniform( osg::Uniform::INT, "dynamicInstancesDataSize" );
     dynamicInstancesDataSize->set( (int)(sizeof(DynamicInstance) / sizeof(osg::Vec4f)) );
-    
+
     // all instance "pointers" are stored in a single geometry rendered with cull shader
     osg::ref_ptr<osg::Geometry> instanceGeometry = buildGPUCullGeometry( instances->getData()  );
     osg::ref_ptr<osg::Geode> instanceGeode = new osg::Geode;
     instanceGeode->addDrawable(instanceGeometry.get());
-    if( exportInstanceObjects ) 
+    if( exportInstanceObjects )
         osgDB::writeNodeFile(*instanceGeode.get(),"dynamicInstanceGeode.osgt");
 
     // update callback that animates dynamic objects
     instanceGeometry->setUpdateCallback( new AnimateObjectsCallback( instances, instancesImage, bbox, objectQuantity ) );
     instanceGeometry->setDrawCallback( new InvokeMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT) );
     root->addChild( instanceGeode.get() );
-    // instance geode is connected to cull shader with all necessary data ( all indirect commands, all 
+    // instance geode is connected to cull shader with all necessary data ( all indirect commands, all
     // indirect targets, necessary OpenGL modes etc. )
     {
-        
+
         instanceGeode->getOrCreateStateSet()->setAttributeAndModes( gpuData.instanceTypesUBB.get() );
         osg::ref_ptr<ResetTexturesCallback> resetTexturesCallback = new ResetTexturesCallback;
         osg::ref_ptr<osg::Program> cullProgram = createProgram( "dynamic_cull", SHADER_DYNAMIC_CULL_VERTEX, SHADER_DYNAMIC_CULL_FRAGMENT );
         cullProgram->addBindUniformBlock("instanceTypesData", 1);
         instanceGeode->getOrCreateStateSet()->setAttributeAndModes( cullProgram.get(), osg::StateAttribute::ON );
-        
+
         instanceGeode->getOrCreateStateSet()->setMode( GL_RASTERIZER_DISCARD, osg::StateAttribute::ON );
- 
+
         instanceGeode->getOrCreateStateSet()->setTextureAttribute( 8, instancesTextureBuffer );
         instanceGeode->getOrCreateStateSet()->addUniform( dynamicInstancesDataUniform );
         instanceGeode->getOrCreateStateSet()->addUniform( dynamicInstancesDataSize );
@@ -1371,21 +1371,21 @@ void createDynamicRendering( osg::Group* root, GPUCullData& gpuData, osg::Buffer
         std::map<unsigned int, IndirectTarget>::iterator it,eit;
         for(it=gpuData.targets.begin(), eit=gpuData.targets.end(); it!=eit; ++it)
         {
-            it->second.addIndirectCommandData( "indirectCommand", it->first, instanceGeode->getOrCreateStateSet() ); 
+            it->second.addIndirectCommandData( "indirectCommand", it->first, instanceGeode->getOrCreateStateSet() );
             resetTexturesCallback->addTextureDirty( it->first );
             resetTexturesCallback->addTextureDirtyParams( it->first );
 
-            it->second.addIndirectTargetData( true, "indirectTarget", it->first, instanceGeode->getOrCreateStateSet() ); 
-            resetTexturesCallback->addTextureDirtyParams( OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+it->first );            
+            it->second.addIndirectTargetData( true, "indirectTarget", it->first, instanceGeode->getOrCreateStateSet() );
+            resetTexturesCallback->addTextureDirtyParams( OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+it->first );
         }
-        
+
         osg::Uniform* indirectCommandSize = new osg::Uniform( osg::Uniform::INT, "indirectCommandSize" );
         indirectCommandSize->set( (int)(sizeof(DrawArraysIndirectCommand) / sizeof(unsigned int))  );
         instanceGeode->getOrCreateStateSet()->addUniform( indirectCommandSize );
-               
+
         instanceGeode->getOrCreateStateSet()->setUpdateCallback( resetTexturesCallback.get() );
     }
-    
+
     // in the end - we create OSG objects that draw instances using indirect targets and commands.
     std::map<unsigned int, IndirectTarget>::iterator it,eit;
     for(it=gpuData.targets.begin(), eit=gpuData.targets.end(); it!=eit; ++it)
@@ -1398,12 +1398,12 @@ void createDynamicRendering( osg::Group* root, GPUCullData& gpuData, osg::Buffer
         drawGeode->getOrCreateStateSet()->setTextureAttribute( 8, instancesTextureBuffer );
         drawGeode->getOrCreateStateSet()->addUniform( dynamicInstancesDataUniform );
         drawGeode->getOrCreateStateSet()->addUniform( dynamicInstancesDataSize );
-        
+
         it->second.addIndirectTargetData( false, "indirectTarget", it->first, drawGeode->getOrCreateStateSet() );
         drawGeode->getOrCreateStateSet()->setAttributeAndModes( gpuData.instanceTypesUBB.get() );
         it->second.addDrawProgram( "instanceTypesData", drawGeode->getOrCreateStateSet() );
-        drawGeode->getOrCreateStateSet()->setAttributeAndModes( new osg::CullFace( osg::CullFace::BACK ) );        
-        
+        drawGeode->getOrCreateStateSet()->setAttributeAndModes( new osg::CullFace( osg::CullFace::BACK ) );
+
         root->addChild(drawGeode.get());
     }
 }
@@ -1412,7 +1412,7 @@ int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
+
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates two-phase geometry instancing using GPU to cull and lod objects");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] ");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
@@ -1426,13 +1426,13 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--lod-modifier","LOD range [%] = 100");
     arguments.getApplicationUsage()->addCommandLineOption("--density-modifier","Instance density [%] = 100");
     arguments.getApplicationUsage()->addCommandLineOption("--triangle-modifier","Instance triangle quantity [%] = 100");
-    
+
     if (arguments.read("-h") || arguments.read("--help"))
     {
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
-    
+
     // application configuration - default values
     bool showStaticRendering        = true;
     bool showDynamicRendering       = true;
@@ -1444,7 +1444,7 @@ int main( int argc, char **argv )
     float lodModifier               = 100.0f;
     float densityModifier           = 100.0f;
     float triangleModifier          = 100.0f;
-    
+
     if ( arguments.read("--skip-static") )
         showStaticRendering = false;
     if ( arguments.read("--skip-dynamic") )
@@ -1459,11 +1459,11 @@ int main( int argc, char **argv )
     arguments.read("--lod-modifier",lodModifier);
     arguments.read("--density-modifier",densityModifier);
     arguments.read("--triangle-modifier",triangleModifier);
-    
+
     lodModifier /= 100.0f;
     densityModifier /= 100.0f;
     triangleModifier /= 100.0f;
-    
+
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
     // To enable proper LOD fading we use multisampling
@@ -1473,15 +1473,15 @@ int main( int argc, char **argv )
     viewer.addEventHandler(new osgViewer::StatsHandler);
     viewer.addEventHandler(new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()));
     viewer.addEventHandler(new osgViewer::ThreadingHandler);
-    
+
     osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
 
     keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::TrackballManipulator() );
     keyswitchManipulator->addMatrixManipulator( '2', "Flight", new osgGA::FlightManipulator() );
     keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
     keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
-    viewer.setCameraManipulator( keyswitchManipulator.get() );   
-    
+    viewer.setCameraManipulator( keyswitchManipulator.get() );
+
     // create root node
     osg::ref_ptr<osg::Group> root = new osg::Group;
 
@@ -1491,18 +1491,18 @@ int main( int argc, char **argv )
     lSource->getLight()->setDiffuse(osg::Vec4(0.9,0.9,0.9,1.0));
     lSource->getLight()->setAmbient(osg::Vec4(0.1,0.1,0.1,1.0));
     root->addChild( lSource.get() );
-    
+
     // Add ground
     osg::ref_ptr<osg::Geometry> groundGeometry = createTexturedQuadGeometry( osg::Vec3(-0.5*staticAreaSize,-0.5*staticAreaSize,0.0), osg::Vec3(0.0,staticAreaSize,0.0), osg::Vec3(staticAreaSize,0.0,0.0) );
     osg::ref_ptr<osg::Geode> groundGeode = new osg::Geode;
     groundGeode->addDrawable( groundGeometry.get() );
     root->addChild( groundGeode.get() );
-    
+
     // Uniform for trees waving in the wind
     osg::Vec2 windDirection( random(-1.0,1.0), random(-1.0,1.0) );
     windDirection.normalize();
     osg::ref_ptr<osg::Uniform> windDirectionUniform = new osg::Uniform("windDirection", windDirection);
-    root->getOrCreateStateSet()->addUniform( windDirectionUniform.get() ); 
+    root->getOrCreateStateSet()->addUniform( windDirectionUniform.get() );
 
     // create static objects and setup its rendering
     GPUCullData staticGpuData;
@@ -1511,7 +1511,7 @@ int main( int argc, char **argv )
     {
         createStaticRendering( root.get(), staticGpuData, osg::Vec2(-0.5*staticAreaSize,-0.5*staticAreaSize), osg::Vec2(0.5*staticAreaSize,0.5*staticAreaSize), instancesPerCell, lodModifier, densityModifier, triangleModifier, exportInstanceObjects );
     }
-    
+
     // create dynamic objects and setup its rendering
     GPUCullData dynamicGpuData;
     dynamicGpuData.setUseMultiDrawArraysIndirect( useMultiDrawArraysIndirect );
@@ -1521,9 +1521,9 @@ int main( int argc, char **argv )
         dynamicInstances = new osg::BufferTemplate< std::vector<DynamicInstance> >();
         createDynamicRendering( root.get(), dynamicGpuData, dynamicInstances.get(), osg::Vec2(-0.5*dynamicAreaSize,-0.5*dynamicAreaSize), osg::Vec2(0.5*dynamicAreaSize,0.5*dynamicAreaSize), lodModifier, densityModifier, triangleModifier, exportInstanceObjects );
     }
-    
+
     viewer.setSceneData( root.get() );
-    
+
     viewer.realize();
 
     // shaders use osg_ variables so we must do the following

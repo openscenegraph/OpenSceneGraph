@@ -80,7 +80,7 @@ class TransformVisitor : public NodeVisitor
                 i<nodePath.size();
                 ++i)
             {
-                const_cast<Node*>(nodePath[i])->accept(*this);
+                nodePath[i]->accept(*this);
             }
         }
 

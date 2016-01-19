@@ -47,7 +47,7 @@
 
 // call back which creates a deformation field to oscillate the model.
 class MyGeometryCallback :
-    public osg::Drawable::UpdateCallback,
+    public osg::DrawableUpdateCallback,
     public osg::Drawable::AttributeFunctor
 {
     public:

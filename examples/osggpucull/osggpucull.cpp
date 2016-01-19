@@ -1143,7 +1143,7 @@ osg::Geometry* buildGPUCullGeometry( const std::vector<DynamicInstance>& instanc
 // instance wandering ( object goes to random destination point and when it reaches
 // destination, it picks another random point and so on ).
 // Object parts are animated ( wheels and propellers )
-struct AnimateObjectsCallback : public osg::Drawable::UpdateCallback
+struct AnimateObjectsCallback : public osg::DrawableUpdateCallback
 {
     AnimateObjectsCallback( osg::BufferTemplate< std::vector<DynamicInstance> >* instances, osg::Image* instancesImage, const osg::BoundingBox& bbox, unsigned int quantityPerType )
         : _instances(instances), _instancesImage(instancesImage), _bbox(bbox), _quantityPerType(quantityPerType), _lastTime(0.0)

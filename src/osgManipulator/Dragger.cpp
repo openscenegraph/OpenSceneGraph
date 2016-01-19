@@ -566,7 +566,7 @@ void CompositeDragger::setIntersectionMask(osg::Node::NodeMask intersectionMask)
     }
 }
 
-class ForceCullCallback : public osg::Drawable::CullCallback
+class ForceCullCallback : public osg::DrawableCullCallback
 {
     public:
         virtual bool cull(osg::NodeVisitor*, osg::Drawable*, osg::State*) const

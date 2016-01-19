@@ -985,7 +985,7 @@ void CullVisitor::apply(osg::Drawable& drawable)
 
     if( drawable.getCullCallback() )
     {
-        osg::Drawable::CullCallback* dcb = dynamic_cast<osg::Drawable::CullCallback*>(drawable.getCullCallback());
+        osg::DrawableCullCallback* dcb = drawable.getCullCallback()->asDrawableCullCallback();
         if (dcb)
         {
             if( dcb->cull( this, &drawable, &_renderInfo ) == true ) return;
@@ -1076,7 +1076,7 @@ void CullVisitor::apply(Billboard& node)
 
         if( drawable->getCullCallback() )
         {
-            osg::Drawable::CullCallback* dcb = dynamic_cast<osg::Drawable::CullCallback*>(drawable->getCullCallback());
+            osg::DrawableCullCallback* dcb = drawable->getCullCallback()->asDrawableCullCallback();
             if (dcb && dcb->cull( this, drawable, &_renderInfo ) == true )
                 continue;
         }

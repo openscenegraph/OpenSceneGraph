@@ -41,10 +41,10 @@
 
 #include <iostream>
 
-class ImageStreamStateCallback : public osg::Drawable::UpdateCallback {
+class ImageStreamStateCallback : public osg::DrawableUpdateCallback {
 public:
     ImageStreamStateCallback(osgText::Text* text, osg::ImageStream* is)
-        : osg::Drawable::UpdateCallback()
+        : osg::DrawableUpdateCallback()
         , _text(text)
         , _imageStream(is)
         , _fps(0)

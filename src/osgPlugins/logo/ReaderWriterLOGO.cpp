@@ -33,7 +33,7 @@ class Logos: public osg::Drawable
             last_position
         };
 
-        struct logosCullCallback : public osg::Drawable::CullCallback
+        struct logosCullCallback : public osg::DrawableCullCallback
         {
             virtual bool cull(osg::NodeVisitor *visitor, osg::Drawable* drawable, osg::State*) const
             {

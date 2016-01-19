@@ -30,7 +30,7 @@ namespace osgGA{
 EventHandler is base class for adding handling of events, either as node event callback, drawable event callback or an event handler attached directly to the view(er)
 */
 
-class OSGGA_EXPORT EventHandler : public osg::NodeCallback, public osg::Drawable::EventCallback
+class OSGGA_EXPORT EventHandler : public osg::NodeCallback, public osg::DrawableEventCallback
 {
 public:
 
@@ -39,7 +39,7 @@ public:
             osg::Object(eh, copyop),
             osg::Callback(eh, copyop),
             osg::NodeCallback(eh, copyop),
-            osg::Drawable::EventCallback(eh, copyop) {}
+            osg::DrawableEventCallback(eh, copyop) {}
 
         META_Object(osgGA, EventHandler);
 

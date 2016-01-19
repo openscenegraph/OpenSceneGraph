@@ -137,7 +137,7 @@ namespace osgAnimation
         bool link(osgAnimation::Channel* channel);
     };
 
-    struct UpdateMorphGeometry : public osg::Drawable::UpdateCallback
+    struct UpdateMorphGeometry : public osg::DrawableUpdateCallback
     {
         UpdateMorphGeometry() {}
 

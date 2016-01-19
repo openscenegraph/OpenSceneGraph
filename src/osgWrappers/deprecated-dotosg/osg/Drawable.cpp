@@ -41,14 +41,21 @@ bool Drawable_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    Drawable::UpdateCallback* uc = fr.readObjectOfType<Drawable::UpdateCallback>();
+    DrawableUpdateCallback* uc = fr.readObjectOfType<DrawableUpdateCallback>();
     if (uc)
     {
         drawable.setUpdateCallback(uc);
         iteratorAdvanced = true;
     }
 
-    Drawable::CullCallback* cc = fr.readObjectOfType<Drawable::CullCallback>();
+    DrawableEventCallback* ec = fr.readObjectOfType<DrawableEventCallback>();
+    if (ec)
+    {
+        drawable.setEventCallback(ec);
+        iteratorAdvanced = true;
+    }
+
+    DrawableCullCallback* cc = fr.readObjectOfType<DrawableCullCallback>();
     if (cc)
     {
         drawable.setCullCallback(cc);

@@ -123,7 +123,7 @@ namespace osgAnimation
    };
 
 
-    struct UpdateRigGeometry : public osg::Drawable::UpdateCallback
+    struct UpdateRigGeometry : public osg::DrawableUpdateCallback
     {
         UpdateRigGeometry() {}
 

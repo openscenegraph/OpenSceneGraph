@@ -270,7 +270,7 @@ GlobalFadeText* getGlobalFadeText()
     return s_globalFadeText.get();
 }
 
-struct FadeText::FadeTextUpdateCallback : public osg::Drawable::UpdateCallback
+struct FadeText::FadeTextUpdateCallback : public osg::DrawableUpdateCallback
 {
     FadeTextData _ftd;
 

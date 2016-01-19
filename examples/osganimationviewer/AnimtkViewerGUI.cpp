@@ -26,7 +26,7 @@
 const std::string IMAGE_PATH = "osgWidget/";
 
 template <class T>
-struct Sampler: public osg::Drawable::UpdateCallback
+struct Sampler: public osg::DrawableUpdateCallback
 {
     T _motion;
     Sampler() {

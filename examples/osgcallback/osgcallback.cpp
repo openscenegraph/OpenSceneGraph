@@ -65,7 +65,7 @@ class DrawableDrawCallback : public osg::Drawable::DrawCallback
         }
 };
 
-struct DrawableUpdateCallback : public osg::Drawable::UpdateCallback
+struct DrawableUpdateCallback : public osg::DrawableUpdateCallback
 {
     virtual void update(osg::NodeVisitor*, osg::Drawable* drawable)
     {
@@ -73,7 +73,7 @@ struct DrawableUpdateCallback : public osg::Drawable::UpdateCallback
     }
 };
 
-struct DrawableCullCallback : public osg::Drawable::CullCallback
+struct DrawableCullCallback : public osg::DrawableCullCallback
 {
     /** do customized cull code.*/
     virtual bool cull(osg::NodeVisitor*, osg::Drawable* drawable, osg::State* /*state*/) const
@@ -158,7 +158,7 @@ class CameraEventCallback : public osg::NodeCallback
 };
 
 
-struct TestDrawableUpdateCallback : public osg::Drawable::UpdateCallback
+struct TestDrawableUpdateCallback : public osg::DrawableUpdateCallback
 {
     TestDrawableUpdateCallback(const std::string &message): _message(message) {}
 

@@ -91,7 +91,7 @@ void Keystone::compute3DPositions(osg::DisplaySettings* ds, osg::Vec3& tl, osg::
 //
 // Keystone helper functions
 //
-struct KeystoneCullCallback : public osg::Drawable::CullCallback
+struct KeystoneCullCallback : public osg::DrawableCullCallback
 {
     KeystoneCullCallback(Keystone* keystone=0):_keystone(keystone) {}
     KeystoneCullCallback(const KeystoneCullCallback&, const osg::CopyOp&) {}
@@ -108,7 +108,7 @@ struct KeystoneCullCallback : public osg::Drawable::CullCallback
 };
 
 
-struct KeystoneUpdateCallback : public osg::Drawable::UpdateCallback
+struct KeystoneUpdateCallback : public osg::DrawableUpdateCallback
 {
     KeystoneUpdateCallback(Keystone* keystone=0):_keystone(keystone) {}
     KeystoneUpdateCallback(const KeystoneUpdateCallback&, const osg::CopyOp&) {}

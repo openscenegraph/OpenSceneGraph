@@ -173,7 +173,7 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
         NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, // depth buffer size in bits
 //        NSOpenGLPFAColorSize, (NSOpenGLPixelFormatAttribute)24, // Not sure if this helps
 //        NSOpenGLPFAAlphaSize, (NSOpenGLPixelFormatAttribute)8, // Not sure if this helps
-        (NSOpenGLPixelFormatAttribute)nil
+        0
     };
     return [[[NSOpenGLPixelFormat alloc] initWithAttributes:pixel_attributes] autorelease];
 }

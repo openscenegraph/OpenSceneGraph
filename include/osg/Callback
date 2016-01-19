@@ -317,7 +317,7 @@ struct OSG_EXPORT DrawableEventCallback : public virtual Callback
     virtual void event(osg::NodeVisitor*, osg::Drawable*) {}
 };
 
-struct DrawableCullCallback : public virtual Callback
+struct OSG_EXPORT DrawableCullCallback : public virtual Callback
 {
     DrawableCullCallback() {}
 

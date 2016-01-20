@@ -1014,7 +1014,7 @@ bool View::computeIntersections(const osgGA::GUIEventAdapter& ea, osgUtil::LineS
     if (ea.getNumPointerData()>=1)
     {
         const osgGA::PointerData* pd = ea.getPointerData(ea.getNumPointerData()-1);
-        const osg::Camera* camera = dynamic_cast<const osg::Camera*>(pd->object.get());
+        const osg::Camera* camera = pd->object.valid() ? pd->object->asCamera() : 0;
         if (camera)
         {
             return computeIntersections(camera, osgUtil::Intersector::PROJECTION, pd->getXnormalized(), pd->getYnormalized(), intersections, traversalMask);
@@ -1030,7 +1030,7 @@ bool View::computeIntersections(const osgGA::GUIEventAdapter& ea, const osg::Nod
     if (ea.getNumPointerData()>=1)
     {
         const osgGA::PointerData* pd = ea.getPointerData(ea.getNumPointerData()-1);
-        const osg::Camera* camera = dynamic_cast<const osg::Camera*>(pd->object.get());
+        const osg::Camera* camera = pd->object.valid() ? pd->object->asCamera() : 0;
         if (camera)
         {
             return computeIntersections(camera, osgUtil::Intersector::PROJECTION, pd->getXnormalized(), pd->getYnormalized(), nodePath, intersections, traversalMask);

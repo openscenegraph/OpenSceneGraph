@@ -179,7 +179,7 @@ void Cursor::traverse(osg::NodeVisitor& nv)
     }
     else if (nv.getVisitorType()==osg::NodeVisitor::EVENT_VISITOR)
     {
-        osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(&nv);
+        osgGA::EventVisitor* ev = nv.asEventVisitor();
         if (!ev) return;
 
         osgGA::EventQueue::Events& events = ev->getEvents();
@@ -200,7 +200,7 @@ void Cursor::traverse(osg::NodeVisitor& nv)
                     if (event->getNumPointerData()>=1)
                     {
                         const osgGA::PointerData* pd = event->getPointerData(event->getNumPointerData()-1);
-                        osg::Camera* camera = dynamic_cast<osg::Camera*>(pd->object.get());
+                        osg::Camera* camera = pd->object.valid() ? pd->object->asCamera() : 0;
 
                         _cursorXY.set(pd->getXnormalized(), pd->getYnormalized());
                         _camera = camera;
@@ -239,7 +239,7 @@ void Cursor::traverse(osg::NodeVisitor& nv)
 #if 0
         if (!_camera)
         {
-            osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+            osgUtil::CullVisitor* cv = nv.asCullVisitor();
             if (cv)
             {
                 _camera = cv->getCurrentCamera();

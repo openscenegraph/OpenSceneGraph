@@ -135,7 +135,7 @@ void osgParticle::ParticleSystem::update(double dt, osg::NodeVisitor& nv)
     if (_sortMode != NO_SORT)
     {
         // sort particles
-        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+        osgUtil::CullVisitor* cv = nv.asCullVisitor();
         if (cv)
         {
             osg::Matrixd modelview = *(cv->getModelViewMatrix());

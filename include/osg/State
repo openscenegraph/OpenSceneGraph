@@ -1744,7 +1744,7 @@ class OSG_EXPORT State : public Referenced
         {
             if (as.last_applied_attribute != attribute)
             {
-                if (!as.global_default_attribute.valid()) as.global_default_attribute = dynamic_cast<StateAttribute*>(attribute->cloneType());
+                if (!as.global_default_attribute.valid()) as.global_default_attribute = attribute->cloneType()->asStateAttribute();
 
                 as.last_applied_attribute = attribute;
                 attribute->apply(*this);
@@ -1770,7 +1770,7 @@ class OSG_EXPORT State : public Referenced
             {
                 if (setActiveTextureUnit(unit))
                 {
-                    if (!as.global_default_attribute.valid()) as.global_default_attribute = dynamic_cast<StateAttribute*>(attribute->cloneType());
+                    if (!as.global_default_attribute.valid()) as.global_default_attribute = attribute->cloneType()->asStateAttribute();
 
                     as.last_applied_attribute = attribute;
                     attribute->apply(*this);

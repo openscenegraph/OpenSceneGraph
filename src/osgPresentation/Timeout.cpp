@@ -196,7 +196,7 @@ void Timeout::traverse(osg::NodeVisitor& nv)
 {
     if (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
     {
-        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+        osgUtil::CullVisitor* cv = nv.asCullVisitor();
         if (_displayTimeout && cv)
         {
             osgUtil::RenderStage* previous_stage = cv->getCurrentRenderBin()->getStage();
@@ -248,7 +248,7 @@ void Timeout::traverse(osg::NodeVisitor& nv)
         bool previous_displayTimeout = _displayTimeout;
         bool needToDismiss = false;
 
-        osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(&nv);
+        osgGA::EventVisitor* ev = nv.asEventVisitor();
         osgViewer::Viewer* viewer = ev ? dynamic_cast<osgViewer::Viewer*>(ev->getActionAdapter()) : 0;
         if (ev)
         {

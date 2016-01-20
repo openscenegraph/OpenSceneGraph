@@ -31,6 +31,8 @@ class Node;
 class NodeVisitor;
 class StateAttribute;
 class Uniform;
+class Drawable;
+class Camera;
 class Callback;
 class CallbackObject;
 
@@ -135,6 +137,14 @@ class OSG_EXPORT Object : public Referenced
         /** convert 'const this' into a const Uniform pointer if Object is a Uniform, otherwise return 0.
           * Equivalent to dynamic_cast<const Uniform*>(this).*/
         virtual const Uniform* asUniform() const { return 0; }
+
+        /** Convert 'this' into a Camera pointer if Node is a Camera, otherwise return 0.
+          * Equivalent to dynamic_cast<Camera*>(this).*/
+        virtual Camera* asCamera() { return 0; }
+        
+        /** convert 'const this' into a const Camera pointer if Node is a Camera, otherwise return 0.
+          * Equivalent to dynamic_cast<const Camera*>(this).*/
+        virtual const Camera* asCamera() const { return 0; }
 
         /** Convert 'this' into a Drawable pointer if Object is a Drawable, otherwise return 0.
           * Equivalent to dynamic_cast<Drawable*>(this).*/

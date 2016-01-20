@@ -908,7 +908,7 @@ void Renderer::operator () (osg::Object* object)
     osg::GraphicsContext* context = dynamic_cast<osg::GraphicsContext*>(object);
     if (context) operator()(context);
 
-    osg::Camera* camera = dynamic_cast<osg::Camera*>(object);
+    osg::Camera* camera =object->asCamera();
     if (camera) cull();
 }
 

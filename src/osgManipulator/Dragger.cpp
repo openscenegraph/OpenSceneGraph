@@ -298,7 +298,7 @@ void Dragger::traverse(osg::NodeVisitor& nv)
 {
     if (_handleEvents && nv.getVisitorType()==osg::NodeVisitor::EVENT_VISITOR)
     {
-        osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(&nv);
+        osgGA::EventVisitor* ev = nv.asEventVisitor();
         if (ev)
         {
             for(osgGA::EventQueue::Events::iterator itr = ev->getEvents().begin();

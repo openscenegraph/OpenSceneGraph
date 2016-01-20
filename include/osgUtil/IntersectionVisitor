@@ -56,7 +56,6 @@ class Intersector : public osg::Referenced
             _disabledCount(0),
             _precisionHint(USE_DOUBLE_CALCULATIONS) {}
 
-
         void setCoordinateFrame(CoordinateFrame cf) { _coordinateFrame = cf; }
 
         CoordinateFrame getCoordinateFrame() const { return _coordinateFrame; }
@@ -168,8 +167,16 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
 
         META_NodeVisitor(osgUtil, IntersectionVisitor)
 
-        virtual void reset();
+        /** Convert 'this' into a osgUtil::IntersectionVisitor pointer if Object is a IntersectionVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<osgUtil::IntersectionVisitor*>(this).*/
+        virtual osgUtil::IntersectionVisitor* asIntersectionVisitor() { return this; }
 
+        /** convert 'const this' into a const osgUtil::IntersectionVisitor pointer if Object is a IntersectionVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<const osgUtil::IntersectionVisitor*>(this).*/
+        virtual const osgUtil::IntersectionVisitor* asIntersectionVisitor() const { return this; }
+
+
+        virtual void reset();
 
         /** Set the intersector that will be used to intersect with the scene, and to store any hits that occur.*/
         void setIntersector(Intersector* intersector);

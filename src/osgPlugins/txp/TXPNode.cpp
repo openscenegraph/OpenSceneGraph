@@ -107,7 +107,7 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
 
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+        osgUtil::CullVisitor* cv = nv.asCullVisitor();
         if (cv)
         {
 //#define PRINT_TILEMAPP_TIMEINFO

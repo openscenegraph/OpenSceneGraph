@@ -1330,7 +1330,7 @@ void OverlayNode::traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeV
         return;
     }
 
-    osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+    osgUtil::CullVisitor* cv = nv.asCullVisitor();
     if (!cv)
     {
         Group::traverse(nv);
@@ -1384,7 +1384,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         return;
     }
 
-    osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+    osgUtil::CullVisitor* cv = nv.asCullVisitor();
     if (!cv)
     {
         Group::traverse(nv);

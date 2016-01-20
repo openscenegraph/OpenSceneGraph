@@ -18,7 +18,7 @@ using namespace osgGA;
 
 void EventHandler::operator()(osg::Node* node, osg::NodeVisitor* nv)
 {
-    osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
+    osgGA::EventVisitor* ev = nv->asEventVisitor();
     if (ev && ev->getActionAdapter() && !ev->getEvents().empty())
     {
         for(osgGA::EventQueue::Events::iterator itr = ev->getEvents().begin();
@@ -33,7 +33,7 @@ void EventHandler::operator()(osg::Node* node, osg::NodeVisitor* nv)
 
 void EventHandler::event(osg::NodeVisitor* nv, osg::Drawable* drawable)
 {
-    osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
+    osgGA::EventVisitor* ev = nv->asEventVisitor();
     if (ev && ev->getActionAdapter() && !ev->getEvents().empty())
     {
         for(osgGA::EventQueue::Events::iterator itr = ev->getEvents().begin();

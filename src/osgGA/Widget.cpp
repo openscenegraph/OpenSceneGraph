@@ -50,7 +50,7 @@ void Widget::setExtents(const osg::BoundingBoxf& bb)
 
 void Widget::updateFocus(osg::NodeVisitor& nv)
 {
-    osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(&nv);
+    osgGA::EventVisitor* ev = nv.asEventVisitor();
     osgGA::GUIActionAdapter* aa = ev ? ev->getActionAdapter() : 0;
     if (ev && aa)
     {
@@ -214,7 +214,7 @@ void Widget::traverseImplementation(osg::NodeVisitor& nv)
     if (!_graphicsInitialized && nv.getVisitorType()!=osg::NodeVisitor::CULL_VISITOR) createGraphics();
 
 
-    osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(&nv);
+    osgGA::EventVisitor* ev = nv.asEventVisitor();
     if (ev)
     {
         updateFocus(nv);

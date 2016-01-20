@@ -55,7 +55,7 @@ osgParticle::ParticleProcessor::ParticleProcessor(const ParticleProcessor& copy,
 void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
 {
     // typecast the NodeVisitor to CullVisitor
-    osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+    osgUtil::CullVisitor* cv = nv.asCullVisitor();
 
     // continue only if the visitor actually is a cull visitor
     if (cv) {

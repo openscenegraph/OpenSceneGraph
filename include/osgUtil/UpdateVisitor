@@ -43,6 +43,14 @@ class OSGUTIL_EXPORT UpdateVisitor : public osg::NodeVisitor
 
         META_NodeVisitor(osgUtil, UpdateVisitor)
 
+        /** Convert 'this' into a osgUtil::UpdateVisitor pointer if Object is a osgUtil::UpdateVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<osgUtil::UpdateVisitor*>(this).*/
+        virtual osgUtil::UpdateVisitor* asUpdateVisitor() { return this; }
+
+        /** convert 'const this' into a const osgUtil::UpdateVisitor pointer if Object is a osgUtil::UpdateVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<const osgUtil::UpdateVisitor*>(this).*/
+        virtual const osgUtil::UpdateVisitor* asUpdateVisitor() const { return this; }
+
         virtual void reset();
 
         /** During traversal each type of node calls its callbacks and its children traversed. */

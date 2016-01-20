@@ -103,6 +103,13 @@ class OSG_EXPORT Node : public Object
           * Equivalent to dynamic_cast<const Node*>(this).*/
         virtual const Node* asNode() const { return this; }
 
+        /** convert 'this' into a Drawable pointer if Node is a Drawable, otherwise return 0.
+          * Equivalent to dynamic_cast<Group*>(this).*/
+        virtual Drawable* asDrawable() { return 0; }
+        /** convert 'const this' into a const Drawable pointer if Node is a Drawable, otherwise return 0.
+          * Equivalent to dynamic_cast<const Group*>(this).*/
+        virtual const Drawable* asDrawable() const { return 0; }
+
         /** convert 'this' into a Geometry pointer if Node is a Geometry, otherwise return 0.
           * Equivalent to dynamic_cast<Group*>(this).*/
         virtual Geometry* asGeometry() { return 0; }
@@ -125,13 +132,6 @@ class OSG_EXPORT Node : public Object
           * Equivalent to dynamic_cast<const Transform*>(this).*/
         virtual const Transform* asTransform() const { return 0; }
 
-
-        /** Convert 'this' into a Camera pointer if Node is a Camera, otherwise return 0.
-          * Equivalent to dynamic_cast<Camera*>(this).*/
-        virtual Camera* asCamera() { return 0; }
-        /** convert 'const this' into a const Camera pointer if Node is a Camera, otherwise return 0.
-          * Equivalent to dynamic_cast<const Camera*>(this).*/
-        virtual const Camera* asCamera() const { return 0; }
 
 
         /** Convert 'this' into a Switch pointer if Node is a Switch, otherwise return 0.

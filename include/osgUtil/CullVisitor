@@ -59,6 +59,14 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 
         META_NodeVisitor(osgUtil, CullVisitor)
 
+        /** Convert 'this' into a osgUtil::CullVisitor pointer if Object is a osgUtil::CullVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<osgUtil::CullVisitor*>(this).*/
+        virtual osgUtil::CullVisitor* asCullVisitor() { return this; }
+
+        /** convert 'const this' into a const osgUtil::CullVisitor pointer if Object is a osgUtil::CullVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<const osgUtil::CullVisitor*>(this).*/
+        virtual const osgUtil::CullVisitor* asCullVisitor() const { return this; }
+
         /** Create a shallow copy of the CullVisitor, used by CullVisitor::create() to clone the prototype. */
         virtual CullVisitor* clone() const { return new CullVisitor(*this); }
 

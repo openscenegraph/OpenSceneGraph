@@ -46,6 +46,14 @@ class OSGGA_EXPORT EventVisitor : public osg::NodeVisitor
 
         META_NodeVisitor(osgGA, EventVisitor)
 
+        /** Convert 'this' into a osgGA::EventVisitor pointer if Object is a osgGA::EventVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<osgGA::EventVisitor*>(this).*/
+        virtual osgGA::EventVisitor* asEventVisitor() { return this; }
+
+        /** convert 'const this' into a const osgGA::EventVisitor pointer if Object is a osgGA::EventVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<const osgGA::EventVisitor*>(this).*/
+        virtual const osgGA::EventVisitor* asEventVisitor() const { return this; }
+
         void setActionAdapter(osgGA::GUIActionAdapter* actionAdapter) { _actionAdapter=actionAdapter; }
 
         osgGA::GUIActionAdapter* getActionAdapter() { return _actionAdapter; }

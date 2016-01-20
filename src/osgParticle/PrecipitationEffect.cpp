@@ -182,7 +182,7 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
         return;
     }
 
-    osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+    osgUtil::CullVisitor* cv = nv.asCullVisitor();
     if (!cv)
     {
         return;

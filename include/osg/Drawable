@@ -102,7 +102,12 @@ class OSG_EXPORT Drawable : public Node
 
         META_Node(osg, Drawable);
 
+        /** Convert 'this' into a Drawable pointer if Object is a Drawable, otherwise return 0.
+          * Equivalent to dynamic_cast<Drawable*>(this).*/
         virtual Drawable* asDrawable() { return this; }
+
+        /** convert 'const this' into a const Drawable pointer if Object is a Drawable, otherwise return 0.
+          * Equivalent to dynamic_cast<const Drawable*>(this).*/
         virtual const Drawable* asDrawable() const { return this; }
 
         /** Compute the DataVariance based on an assessment of callback etc.*/

@@ -33,7 +33,7 @@ class RTTCameraCullCallback : public osg::NodeCallback
 
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
         {
-            osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
+            osgUtil::CullVisitor* cv = nv->asCullVisitor();
 
             _volumeScene->osg::Group::traverse(*nv);
 
@@ -135,7 +135,7 @@ TileData* VolumeScene::getTileData(osgUtil::CullVisitor* cv, osgVolume::VolumeTi
 
 void VolumeScene::traverse(osg::NodeVisitor& nv)
 {
-    osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+    osgUtil::CullVisitor* cv = nv.asCullVisitor();
     if (!cv)
     {
         Group::traverse(nv);

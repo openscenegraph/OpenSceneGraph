@@ -84,7 +84,7 @@ void ShadowTechnique::traverse(osg::NodeVisitor& nv)
     }
     else if (nv.getVisitorType() == osg::NodeVisitor::CULL_VISITOR)
     {
-        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+        osgUtil::CullVisitor* cv = nv.asCullVisitor();
         if (cv) cull(*cv);
         else _shadowedScene->osg::Group::traverse(nv);
     }

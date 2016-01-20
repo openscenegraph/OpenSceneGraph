@@ -38,7 +38,7 @@ bool CloseCallback::run(osg::Object* object, osg::Parameters&, osg::Parameters&)
         _closeWidget->setVisible(false);
     }
 
-    osg::Node* node = dynamic_cast<osg::Node*>(object);
+    osg::Node* node = object->asNode();
     if (node)
     {
         osg::NodePathList nodePathList = node->getParentalNodePaths();

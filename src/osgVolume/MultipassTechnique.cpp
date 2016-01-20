@@ -163,7 +163,7 @@ class RTTCameraCullCallback : public osg::NodeCallback
 
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
         {
-            osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
+            osgUtil::CullVisitor* cv = nv->asCullVisitor();
 
             cv->pushProjectionMatrix(_tileData->projectionMatrix.get());
 
@@ -937,7 +937,7 @@ class RTTBackfaceCameraCullCallback : public osg::NodeCallback
 
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
         {
-            osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
+            osgUtil::CullVisitor* cv = nv->asCullVisitor();
 
             cv->pushProjectionMatrix(_tileData->projectionMatrix.get());
 
@@ -1157,7 +1157,7 @@ void MultipassTechnique::traverse(osg::NodeVisitor& nv)
     {
         if (_volumeTile->getDirty()) _volumeTile->init();
 
-        osgUtil::UpdateVisitor* uv = dynamic_cast<osgUtil::UpdateVisitor*>(&nv);
+        osgUtil::UpdateVisitor* uv = nv.asUpdateVisitor();
         if (uv)
         {
             update(uv);
@@ -1167,7 +1167,7 @@ void MultipassTechnique::traverse(osg::NodeVisitor& nv)
     }
     else if (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
     {
-        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+        osgUtil::CullVisitor* cv = nv.asCullVisitor();
         if (cv)
         {
             cull(cv);

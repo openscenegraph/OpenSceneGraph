@@ -61,7 +61,7 @@ void Widget::setExtents(const osg::BoundingBoxf& bb)
 
 void Widget::updateFocus(osg::NodeVisitor& nv)
 {
-    osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(&nv);
+    osgGA::EventVisitor* ev = nv.asEventVisitor();
     osgGA::GUIActionAdapter* aa = ev ? ev->getActionAdapter() : 0;
     if (ev && aa)
     {
@@ -209,7 +209,7 @@ void Widget::traverseImplementation(osg::NodeVisitor& nv)
 {
     if (!_graphicsInitialized && nv.getVisitorType()!=osg::NodeVisitor::CULL_VISITOR) createGraphics();
 
-    osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(&nv);
+    osgGA::EventVisitor* ev = nv.asEventVisitor();
     if (ev)
     {
         if (_visible && _enabled)
@@ -255,7 +255,7 @@ void Widget::traverseImplementation(osg::NodeVisitor& nv)
     else if (_visible ||
             (nv.getVisitorType()!=osg::NodeVisitor::UPDATE_VISITOR && nv.getVisitorType()!=osg::NodeVisitor::CULL_VISITOR && nv.getVisitorType()!=osg::NodeVisitor::INTERSECTION_VISITOR) )
     {
-        osgUtil::CullVisitor* cv = (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR) ? dynamic_cast<osgUtil::CullVisitor*>(&nv) : 0;
+        osgUtil::CullVisitor* cv = (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR) ? nv.asCullVisitor() : 0;
         if (cv && _widgetStateSet.valid()) cv->pushStateSet(_widgetStateSet.get());
 
         GraphicsSubgraphMap::iterator itr = _graphicsSubgraphMap.begin();
@@ -476,7 +476,7 @@ bool Widget::computeExtentsPositionInLocalCoordinates(osgGA::EventVisitor* ev, o
     if (event->getNumPointerData()>=1)
     {
         const osgGA::PointerData* pd = event->getPointerData(event->getNumPointerData()-1);
-        camera = dynamic_cast<const osg::Camera*>(pd->object.get());
+        camera = pd->object->asCamera();
         if (camera)
         {
             x = pd->getXnormalized();

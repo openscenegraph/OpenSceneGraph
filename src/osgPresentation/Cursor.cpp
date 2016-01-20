@@ -179,7 +179,7 @@ void Cursor::traverse(osg::NodeVisitor& nv)
     }
     else if (nv.getVisitorType()==osg::NodeVisitor::EVENT_VISITOR)
     {
-        osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(&nv);
+        osgGA::EventVisitor* ev = nv.asEventVisitor();
         if (!ev) return;
 
         osgGA::EventQueue::Events& events = ev->getEvents();
@@ -239,7 +239,7 @@ void Cursor::traverse(osg::NodeVisitor& nv)
 #if 0
         if (!_camera)
         {
-            osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+            osgUtil::CullVisitor* cv = nv.asCullVisitor();
             if (cv)
             {
                 _camera = cv->getCurrentCamera();

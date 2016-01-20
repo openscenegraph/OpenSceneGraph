@@ -42,7 +42,7 @@ void Technique::traverse_implementation(osg::NodeVisitor& nv, Effect* fx)
     }
 
     // special actions must be taken if the node visitor is actually a CullVisitor
-    osgUtil::CullVisitor *cv = dynamic_cast<osgUtil::CullVisitor *>(&nv);
+    osgUtil::CullVisitor *cv = nv.asCullVisitor();
 
     // traverse all passes
     for (int i=0; i<getNumPasses(); ++i) {

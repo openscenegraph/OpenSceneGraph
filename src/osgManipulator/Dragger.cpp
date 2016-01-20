@@ -298,7 +298,7 @@ void Dragger::traverse(osg::NodeVisitor& nv)
 {
     if (_handleEvents && nv.getVisitorType()==osg::NodeVisitor::EVENT_VISITOR)
     {
-        osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(&nv);
+        osgGA::EventVisitor* ev = nv.asEventVisitor();
         if (ev)
         {
             for(osgGA::EventQueue::Events::iterator itr = ev->getEvents().begin();
@@ -392,7 +392,7 @@ bool Dragger::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& 
                                     ritr != nodePath.rend();
                                     ++ritr)
                                 {
-                                    osg::Camera* camera = dynamic_cast<osg::Camera*>(*ritr);
+                                    osg::Camera* camera = (*ritr)->asCamera();
                                     if (camera && (camera->getReferenceFrame()!=osg::Transform::RELATIVE_RF || camera->getParents().empty()))
                                     {
                                          rootCamera = camera;

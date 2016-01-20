@@ -30,7 +30,7 @@ writeNodeImplementation( const Node& node, ostream& fout,
                          const osgDB::ReaderWriter::Options* options )
 {
    // get camera on the top of scene graph
-   const Camera *camera = dynamic_cast< const Camera* >( &node );
+   const Camera *camera = node.asCamera();
 
    Vec3d eye, center, up, right;
    double fovy, aspectRatio, tmp;

@@ -118,7 +118,7 @@ struct KeystoneUpdateCallback : public osg::DrawableUpdateCallback
     /** do customized update code.*/
     virtual void update(osg::NodeVisitor*, osg::Drawable* drawable)
     {
-        update(dynamic_cast<osg::Geometry*>(drawable));
+        update(drawable->asGeometry());
     }
 
     void update(osg::Geometry* geometry)
@@ -418,8 +418,8 @@ osg::Vec2d KeystoneHandler::incrementScale(const osgGA::GUIEventAdapter& ea) con
 
 bool KeystoneHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& /*aa*/, osg::Object* obj, osg::NodeVisitor* /*nv*/)
 {
-    osg::Camera* camera = dynamic_cast<osg::Camera*>(obj);
-    osg::Viewport* viewport = camera ?  camera->getViewport() : 0;
+    osg::Camera* camera = obj ? obj->asCamera() : 0;
+    osg::Viewport* viewport = camera ? camera->getViewport() : 0;
 
     if (!viewport) return false;
 

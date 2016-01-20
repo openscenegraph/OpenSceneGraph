@@ -719,11 +719,11 @@ void SceneView::cull()
         else
         {
 
-            if (!_cullVisitorLeft.valid()) _cullVisitorLeft = dynamic_cast<CullVisitor*>(_cullVisitor->clone());
+            if (!_cullVisitorLeft.valid()) _cullVisitorLeft = _cullVisitor->clone();
             if (!_stateGraphLeft.valid()) _stateGraphLeft = dynamic_cast<StateGraph*>(_stateGraph->cloneType());
             if (!_renderStageLeft.valid()) _renderStageLeft = dynamic_cast<RenderStage*>(_renderStage->clone(osg::CopyOp::DEEP_COPY_ALL));
 
-            if (!_cullVisitorRight.valid()) _cullVisitorRight = dynamic_cast<CullVisitor*>(_cullVisitor->clone());
+            if (!_cullVisitorRight.valid()) _cullVisitorRight = _cullVisitor->clone();
             if (!_stateGraphRight.valid()) _stateGraphRight = dynamic_cast<StateGraph*>(_stateGraph->cloneType());
             if (!_renderStageRight.valid()) _renderStageRight = dynamic_cast<RenderStage*>(_renderStage->clone(osg::CopyOp::DEEP_COPY_ALL));
 

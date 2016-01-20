@@ -26,7 +26,7 @@ GUIEventHandler::~GUIEventHandler()
 // adapt EventHandler usage to old style GUIEventHandler usage
 bool GUIEventHandler::handle(osgGA::Event* event, osg::Object* object, osg::NodeVisitor* nv)
 {
-    osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
+    osgGA::EventVisitor* ev = nv->asEventVisitor();
     osgGA::GUIEventAdapter* ea = event->asGUIEventAdapter();
     if (ea && ev && ev->getActionAdapter())
     {

@@ -92,7 +92,7 @@ void Terrain::traverse(osg::NodeVisitor& nv)
     if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
     {
         // need to check if any TerrainTechniques need to have their update called on them.
-        osgUtil::UpdateVisitor* uv = dynamic_cast<osgUtil::UpdateVisitor*>(&nv);
+        osgUtil::UpdateVisitor* uv = nv.asUpdateVisitor();
         if (uv)
         {
             typedef std::list< osg::ref_ptr<TerrainTile> >  TerrainTileList;
@@ -125,7 +125,7 @@ void Terrain::traverse(osg::NodeVisitor& nv)
 
     if (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
     {
-        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+        osgUtil::CullVisitor* cv = nv.asCullVisitor();
         osg::StateSet* ss = _geometryPool.valid() ? _geometryPool->getRootStateSetForTerrain(this) : 0;
         if (cv && ss)
         {

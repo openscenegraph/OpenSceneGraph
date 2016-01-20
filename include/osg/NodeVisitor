@@ -18,6 +18,10 @@
 #include <osg/Matrix>
 #include <osg/FrameStamp>
 
+
+namespace osgUtil { class UpdateVisitor; class CullVisitor; class IntersectionVisitor; }
+namespace osgGA { class EventVisitor; }
+
 namespace osg {
 
 class Billboard;
@@ -43,6 +47,10 @@ class Camera;
 class CameraView;
 class Drawable;
 class Geometry;
+
+
+
+
 
 const unsigned int UNINITIALIZED_FRAME_NUMBER=0xffffffff;
 
@@ -103,6 +111,40 @@ class OSG_EXPORT NodeVisitor : public virtual Object
         /** convert 'const this' into a const NodeVisitor pointer if Object is a NodeVisitor, otherwise return 0.
           * Equivalent to dynamic_cast<const NodeVisitor*>(this).*/
         virtual const NodeVisitor* asNodeVisitor() const { return this; }
+
+        /** Convert 'this' into a osgUtil::UpdateVisitor pointer if Object is a osgUtil::UpdateVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<osgUtil::UpdateVisitor*>(this).*/
+        virtual osgUtil::UpdateVisitor* asUpdateVisitor() { return 0; }
+
+        /** convert 'const this' into a const osgUtil::UpdateVisitor pointer if Object is a osgUtil::UpdateVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<const osgUtil::UpdateVisitor*>(this).*/
+        virtual const osgUtil::UpdateVisitor* asUpdateVisitor() const { return 0; }
+
+        /** Convert 'this' into a osgUtil::CullVisitor pointer if Object is a osgUtil::CullVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<osgUtil::CullVisitor*>(this).*/
+        virtual osgUtil::CullVisitor* asCullVisitor() { return 0; }
+
+        /** convert 'const this' into a const osgUtil::CullVisitor pointer if Object is a osgUtil::CullVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<const osgUtil::CullVisitor*>(this).*/
+        virtual const osgUtil::CullVisitor* asCullVisitor() const { return 0; }
+
+        /** Convert 'this' into a osgGA::EventVisitor pointer if Object is a osgGA::EventVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<osgGA::EventVisitor*>(this).*/
+        virtual osgGA::EventVisitor* asEventVisitor() { return 0; }
+
+        /** convert 'const this' into a const osgGA::EventVisitor pointer if Object is a osgGA::EventVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<const osgGA::EventVisitor*>(this).*/
+        virtual const osgGA::EventVisitor* asEventVisitor() const { return 0; }
+
+        /** Convert 'this' into a osgUtil::IntersectionVisitor pointer if Object is a IntersectionVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<osgUtil::IntersectionVisitor*>(this).*/
+        virtual osgUtil::IntersectionVisitor* asIntersectionVisitor() { return 0; }
+
+        /** convert 'const this' into a const osgUtil::IntersectionVisitor pointer if Object is a IntersectionVisitor, otherwise return 0.
+          * Equivalent to dynamic_cast<const osgUtil::IntersectionVisitor*>(this).*/
+        virtual const osgUtil::IntersectionVisitor* asIntersectionVisitor() const { return 0; }
+
+
 
 
         /** Method to call to reset visitor. Useful if your visitor accumulates

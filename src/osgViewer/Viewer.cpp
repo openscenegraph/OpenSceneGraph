@@ -849,7 +849,8 @@ void Viewer::reprojectPointerData(osgGA::GUIEventAdapter& source_event, osgGA::G
 
     dest_event.setMouseYOrientationAndUpdateCoords(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
 
-    osg::Camera* camera = (source_event.getNumPointerData()>=2) ? dynamic_cast<osg::Camera*>(source_event.getPointerData(1)->object.get()) : 0;
+    osg::Object* object = (source_event.getNumPointerData()>=2) ? source_event.getPointerData(1)->object.get() : 0;
+    osg::Camera* camera = object ? object->asCamera() : 0;
     osg::Viewport* viewport = camera ? camera->getViewport() : 0;
 
     if (!viewport) return;

@@ -221,6 +221,7 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
             else if (opt == "daeLinkOriginalTexturesNoForce") { pluginOptions.linkOrignialTextures = true; pluginOptions.forceTexture = false; }
             else if (opt == "daeLinkOriginalTexturesForce")   { pluginOptions.linkOrignialTextures = true; pluginOptions.forceTexture = true; }
             else if (opt == "daeNamesUseCodepage") pluginOptions.namesUseCodepage = true;
+            else if (opt == "daeRenameIds") pluginOptions.renameIds = true;
             else if (!opt.empty())
             {
                 OSG_NOTICE << std::endl << "COLLADA dae plugin: unrecognized option \"" << opt <<  std::endl;

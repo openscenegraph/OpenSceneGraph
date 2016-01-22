@@ -29,7 +29,7 @@ static bool writeUserData( osgDB::OutputStream& os, const osg::Object& obj )
 }
 
 REGISTER_OBJECT_WRAPPER( Object,
-                         /*new osg::Object*/NULL,
+                         new osg::DummyObject,
                          osg::Object,
                          "osg::Object" )
 {

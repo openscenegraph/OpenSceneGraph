@@ -17,6 +17,10 @@
 
 using namespace osg;
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// PrimitiveSet
+//
 unsigned int PrimitiveSet::getNumPrimitives() const
 {
     switch(_mode)
@@ -36,6 +40,10 @@ unsigned int PrimitiveSet::getNumPrimitives() const
     return 0;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// DrawArray
+//
 void DrawArrays::draw(State& state, bool) const
 {
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
@@ -72,6 +80,10 @@ void DrawArrays::accept(PrimitiveIndexFunctor& functor) const
     functor.drawArrays(_mode,_first,_count);
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// DrawArrayLengths
+//
 unsigned int DrawArrayLengths::getNumPrimitives() const
 {
     switch(_mode)
@@ -159,6 +171,10 @@ unsigned int DrawArrayLengths::getNumIndices() const
     return count;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// DrawElementsUByte
+//
 DrawElementsUByte::~DrawElementsUByte()
 {
     releaseGLObjects();
@@ -215,6 +231,10 @@ void DrawElementsUByte::offsetIndices(int offset)
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// DrawElementsUShort
+//
 DrawElementsUShort::~DrawElementsUShort()
 {
     releaseGLObjects();
@@ -270,7 +290,10 @@ void DrawElementsUShort::offsetIndices(int offset)
     }
 }
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// DrawElementsUInt
+//
 DrawElementsUInt::~DrawElementsUInt()
 {
     releaseGLObjects();
@@ -325,3 +348,101 @@ void DrawElementsUInt::offsetIndices(int offset)
         *itr += offset;
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// MultiDrawArrays
+//
+#ifdef OSG_HAS_MULTIDRAWARRAYS
+void MultiDrawArrays::draw(osg::State& state, bool) const
+{
+    // OSG_NOTICE<<"osg::MultiDrawArrays::draw"<<std::endl;
+
+    GLExtensions* ext = state.get<GLExtensions>();
+    if (ext->glMultiDrawArrays)
+    {
+        GLsizei primcount = std::min(_firsts.size(), _counts.size());
+
+        ext->glMultiDrawArrays(_mode, &_firsts.front(), &_counts.front(), primcount);
+    }
+}
+
+void MultiDrawArrays::accept(PrimitiveFunctor& functor) const
+{
+    unsigned int primcount = std::min(_firsts.size(), _counts.size());
+    for(unsigned int i=0; i<primcount; ++i)
+    {
+        functor.drawArrays(_mode, _firsts[i], _counts[i]);
+    }
+}
+
+void MultiDrawArrays::accept(PrimitiveIndexFunctor& functor) const
+{
+    unsigned int primcount = std::min(_firsts.size(), _counts.size());
+    for(unsigned int i=0; i<primcount; ++i)
+    {
+        functor.drawArrays(_mode, _firsts[i], _counts[i]);
+    }
+}
+
+unsigned int MultiDrawArrays::getNumIndices() const
+{
+    unsigned int total=0;
+    for(Counts::const_iterator itr = _counts.begin(); itr!=_counts.end(); ++itr)
+    {
+        total += *itr;
+    }
+    return total;
+}
+
+unsigned int MultiDrawArrays::index(unsigned int pos) const
+{
+    unsigned int i;
+    for(i=0; i<_counts.size(); ++i)
+    {
+        unsigned int count = _counts[i];
+        if (pos<count) break;
+        pos -= count;
+    }
+    if (i>=_firsts.size()) return 0;
+
+    return _firsts[i] + pos;
+}
+
+void MultiDrawArrays::offsetIndices(int offset)
+{
+    for(Firsts::iterator itr = _firsts.begin(); itr!=_firsts.end(); ++itr)
+    {
+        *itr += offset;
+    }
+}
+
+unsigned int MultiDrawArrays::getNumPrimitives() const
+{
+    switch(_mode)
+    {
+        case(POINTS): return getNumIndices();
+        case(LINES): return getNumIndices()/2;
+        case(TRIANGLES): return getNumIndices()/3;
+        case(QUADS): return getNumIndices()/4;
+        case(LINE_STRIP):
+        case(LINE_LOOP):
+        case(TRIANGLE_STRIP):
+        case(TRIANGLE_FAN):
+        case(QUAD_STRIP):
+        case(PATCHES):
+        case(POLYGON):
+        {
+            unsigned int primcount = std::min(_firsts.size(), _counts.size());
+            return primcount;
+        }
+    }
+    return 0;
+}
+
+void MultiDrawArrays::add(GLint first, GLsizei count)
+{
+    _firsts.push_back(first);
+    _counts.push_back(count);
+}
+#endif

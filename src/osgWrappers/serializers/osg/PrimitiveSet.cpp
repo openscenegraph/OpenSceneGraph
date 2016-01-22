@@ -149,3 +149,18 @@ REGISTER_OBJECT_WRAPPER( DrawElements,
 DRAW_ELEMENTS_WRAPPER( DrawElementsUByte, RW_UCHAR )
 DRAW_ELEMENTS_WRAPPER( DrawElementsUShort, RW_USHORT )
 DRAW_ELEMENTS_WRAPPER( DrawElementsUInt, RW_UINT )
+
+#ifdef OSG_HAS_MULTIDRAWARRAYS
+namespace MultiDrawArrayWrapper {
+
+REGISTER_OBJECT_WRAPPER( MultiDrawArrays,
+                         new osg::MultiDrawArrays,
+                         osg::MultiDrawArrays,
+                         "osg::Object osg::PrimitiveSet osg::MultiDrawArrays" )
+{
+    ADD_VECTOR_SERIALIZER( Firsts, osg::MultiDrawArrays::Firsts, osgDB::BaseSerializer::RW_INT, 8 );
+    ADD_VECTOR_SERIALIZER( Counts, osg::MultiDrawArrays::Counts, osgDB::BaseSerializer::RW_INT, 8 );
+}
+
+}
+#endif

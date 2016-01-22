@@ -14,6 +14,7 @@
 #include <osg/BufferObject>
 #include <osg/State>
 #include <osg/Notify>
+#include <algorithm>
 
 using namespace osg;
 

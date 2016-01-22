@@ -29,6 +29,8 @@
 
 #include <vector>
 
+#define OSG_HAS_MULTIDRAWARRAYS
+
 namespace osg {
 
 typedef MixinVector<GLsizei> VectorGLsizei;
@@ -174,7 +176,8 @@ class OSG_EXPORT PrimitiveSet : public BufferData
             DrawArrayLengthsPrimitiveType,
             DrawElementsUBytePrimitiveType,
             DrawElementsUShortPrimitiveType,
-            DrawElementsUIntPrimitiveType
+            DrawElementsUIntPrimitiveType,
+            MultiDrawArraysPrimitiveType
         };
 
         enum Mode
@@ -586,6 +589,57 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
 
         virtual ~DrawElementsUInt();
 };
+
+#ifdef OSG_HAS_MULTIDRAWARRAYS
+class OSG_EXPORT MultiDrawArrays : public osg::PrimitiveSet
+{
+public:
+
+    MultiDrawArrays(GLenum mode=0):
+        osg::PrimitiveSet(Type(MultiDrawArraysPrimitiveType), mode) {}
+
+    MultiDrawArrays(const MultiDrawArrays& dal,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+        osg::PrimitiveSet(dal,copyop),
+        _firsts(dal._firsts),
+        _counts(dal._counts) {}
+
+    virtual osg::Object* cloneType() const { return new MultiDrawArrays(); }
+    virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new MultiDrawArrays(*this,copyop); }
+    virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const MultiDrawArrays*>(obj)!=NULL; }
+    virtual const char* libraryName() const { return "osg"; }
+    virtual const char* className() const { return "MultiDrawArrays"; }
+
+
+    virtual void draw(osg::State& state, bool useVertexBufferObjects) const;
+
+    virtual void accept(PrimitiveFunctor& functor) const;
+    virtual void accept(PrimitiveIndexFunctor& functor) const;
+
+    virtual unsigned int getNumIndices() const;
+    virtual unsigned int index(unsigned int pos) const;
+    virtual void offsetIndices(int offset);
+
+    virtual unsigned int getNumPrimitives() const;
+
+    typedef std::vector<GLint> Firsts;
+    void setFirsts(const Firsts& firsts) { _firsts = firsts; }
+    Firsts& getFirsts() { return _firsts; }
+    const Firsts& getFirsts() const { return _firsts; }
+
+    typedef std::vector<GLsizei> Counts;
+    void setCounts(const Counts& firsts) { _counts = firsts; }
+    Counts& getCounts() { return _counts; }
+    const Counts& getCounts() const { return _counts; }
+
+    void add(GLint first, GLsizei count);
+
+protected:
+
+    Firsts _firsts;
+    Counts _counts;
+};
+#endif
+
 
 }
 

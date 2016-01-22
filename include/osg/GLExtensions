@@ -609,6 +609,10 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         GLboolean (GL_APIENTRY * glIsVertexArray) (GLuint handle);
         void (GL_APIENTRY * glBindVertexArray) (GLuint handle);
 
+        // MultiDrawArrays
+        void (GL_APIENTRY * glMultiDrawArrays) (GLenum mode, const GLint * first, const GLsizei * count, GLsizei primcount);
+
+
 };
 
 

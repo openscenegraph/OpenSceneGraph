@@ -1034,7 +1034,7 @@ GLExtensions::GLExtensions(unsigned int contextID)
         glGenerateMipmap != 0 &&
         glGetRenderbufferParameteriv != 0 &&
     ( OSG_GLES1_FEATURES || isGLExtensionOrVersionSupported(contextID, "GL_EXT_framebuffer_object",3.0f) );
-      
+
 
     isPackedDepthStencilSupported = OSG_GL3_FEATURES ||
         (isGLExtensionSupported(contextID, "GL_EXT_packed_depth_stencil")) ||
@@ -1077,7 +1077,9 @@ GLExtensions::GLExtensions(unsigned int contextID)
     osg::setGLExtensionFuncPtr(glBindVertexArray,"glBindVertexArray");
     osg::setGLExtensionFuncPtr(glDeleteVertexArrays,"glDeleteVertexArrays");
     osg::setGLExtensionFuncPtr(glIsVertexArray,"glIsVertexArray");
-    
+
+    // MultiDrawArrays
+    setGLExtensionFuncPtr(glMultiDrawArrays, "glMultiDrawArrays", "glMultiDrawArraysEXT");
 }
 
 

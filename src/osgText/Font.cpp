@@ -151,9 +151,9 @@ osgText::Font* osgText::readFontStream(std::istream& stream, const osgDB::Reader
     osgDB::ReaderWriter *reader = osgDB::Registry::instance()->getReaderWriterForExtension("ttf");
     if (reader == 0) return 0;
     osgDB::ReaderWriter::ReadResult rr = reader->readObject(stream, userOptions ? userOptions : localOptions.get());
-    if (!rr.success())
+    if (rr.error())
     {
-        OSG_WARN << rr.statusMessage() << std::endl;
+        OSG_WARN << rr.message() << std::endl;
         return 0;
     }
     if (!rr.validObject()) return 0;
@@ -211,9 +211,9 @@ osg::ref_ptr<Font> osgText::readRefFontStream(std::istream& stream, const osgDB:
     osgDB::ReaderWriter *reader = osgDB::Registry::instance()->getReaderWriterForExtension("ttf");
     if (reader == 0) return 0;
     osgDB::ReaderWriter::ReadResult rr = reader->readObject(stream, userOptions ? userOptions : localOptions.get());
-    if (!rr.success())
+    if (rr.error())
     {
-        OSG_WARN << rr.statusMessage() << std::endl;
+        OSG_WARN << rr.message() << std::endl;
         return 0;
     }
     if (!rr.validObject()) return 0;

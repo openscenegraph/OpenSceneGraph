@@ -161,9 +161,6 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 std::string& message() { return _message; }
                 const std::string& message() const { return _message; }
 
-                /// report the ReadResult's status, and message (if any). Useful for reporting of errors to users.
-                std::string statusMessage() const;
-
                 ReadStatus status() const { return _status; }
                 bool success() const { return _status==FILE_LOADED || _status==FILE_LOADED_FROM_CACHE ; }
                 bool loadedFromCache() const { return _status==FILE_LOADED_FROM_CACHE; }
@@ -202,9 +199,6 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
 
                 std::string& message() { return _message; }
                 const std::string& message() const { return _message; }
-
-                /// Report the WriteResult's status, and message (if any). Useful for reporting of errors to users.
-                std::string statusMessage() const;
 
                 WriteStatus status() const { return _status; }
                 bool success() const { return _status==FILE_SAVED; }

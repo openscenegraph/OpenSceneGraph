@@ -79,6 +79,10 @@ State::State():
     {
         _checkGLErrors = ONCE_PER_ATTRIBUTE;
     }
+    else if(str && (strcmp(str, "OFF") == 0 || strcmp(str, "off") == 0))
+    {
+        _checkGLErrors = NEVER_CHECK_GL_ERRORS;
+    }
 
     _currentActiveTextureUnit=0;
     _currentClientActiveTextureUnit=0;

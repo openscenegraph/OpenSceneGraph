@@ -105,9 +105,19 @@ osg::Program* ShaderComposer::getOrCreateProgram(const ShaderComponents& shaderC
         addShaderToProgram(program.get(), vertexShaders);
     }
 
+     if (!tessControlShaders.empty())
+    {
+        addShaderToProgram(program.get(), tessControlShaders);
+    }
+
     if (!geometryShaders.empty())
     {
         addShaderToProgram(program.get(), geometryShaders);
+    }
+
+     if (!tessEvaluationShaders.empty())
+    {
+        addShaderToProgram(program.get(), tessEvaluationShaders);
     }
 
     if (!fragmentShaders.empty())

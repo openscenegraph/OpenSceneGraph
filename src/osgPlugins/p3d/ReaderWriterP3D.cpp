@@ -2335,8 +2335,8 @@ void ReaderWriterP3DXML::parsePdfDocument(osgPresentation::SlideShowConstructor&
     osgPresentation::SlideShowConstructor::ScriptData scriptData;
     getProperties(cur, scriptData);
 
-    osg::Image* image = constructor.addInteractiveImage(cur->contents, positionData, imageData, scriptData);
-    osgWidget::PdfImage* pdfImage = dynamic_cast<osgWidget::PdfImage*>(image);
+    osg::ref_ptr<osg::Image> image = constructor.addInteractiveImage(cur->contents, positionData, imageData, scriptData);
+    osgWidget::PdfImage* pdfImage = dynamic_cast<osgWidget::PdfImage*>(image.get());
     if (pdfImage)
     {
         int numPages = pdfImage->getNumOfPages();

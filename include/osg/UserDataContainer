@@ -39,6 +39,14 @@ class OSG_EXPORT UserDataContainer : public osg::Object
             by derived classes.*/
         virtual const char* className() const  { return "UserDataContainer"; }
 
+        /** Convert 'this' into a UserDataContainer pointer if Object is a UserDataContainer, otherwise return 0.
+          * Equivalent to dynamic_cast<UserDataContainer*>(this).*/
+        virtual UserDataContainer* asUserDataContainer() { return this; }
+
+        /** convert 'const this' into a const UserDataContainer pointer if Object is a UserDataContainer, otherwise return 0.
+          * Equivalent to dynamic_cast<const UserDataContainer*>(this).*/
+        virtual const UserDataContainer* asUserDataContainer() const { return this; }
+
         /**
          * Set user data, data must be subclassed from Referenced to allow
          * automatic memory handling.  If your own data isn't directly
@@ -208,7 +216,6 @@ inline const Object* getUserObject(const osg::Object* object, const std::string&
     const osg::UserDataContainer* udc = object->getUserDataContainer();
     return udc ? udc->getUserObject(name) : 0;
 }
-
 
 }
 

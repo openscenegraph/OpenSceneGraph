@@ -19,6 +19,8 @@
 #include <osg/BoundingBox>
 #include <osg/BoundingSphere>
 
+#include <typeinfo>
+
 namespace osg {
 
 // forward declare core OSG math classes
@@ -126,6 +128,10 @@ class TemplateValueObject : public ValueObject
             ValueObject(),
             _value() {}
 
+        TemplateValueObject(const T& value) :
+            ValueObject(),
+            _value(value) {}
+
         TemplateValueObject(const std::string& name, const T& value) :
             ValueObject(name),
             _value(value) {}
@@ -189,12 +195,15 @@ bool osg::Object::getUserValue(const std::string& name, T& value) const
 {
     typedef TemplateValueObject<T> UserValueObject;
 
-    const osg::UserDataContainer* udc = dynamic_cast<const osg::UserDataContainer*>(this);
+    const osg::UserDataContainer* udc = asUserDataContainer();
     if (!udc) udc = _userDataContainer;
 
-    const UserValueObject* uvo = udc ? dynamic_cast<const UserValueObject*>(udc->getUserObject(name)) : 0;
-    if (uvo)
+    if (!udc) return false;
+
+    const Object* obj = udc->getUserObject(name);
+    if (obj && typeid(*obj)==typeid(UserValueObject))
     {
+        const UserValueObject* uvo = static_cast<const UserValueObject*>(obj);
         value = uvo->getValue();
         return true;
     }
@@ -210,7 +219,7 @@ void osg::Object::setUserValue(const std::string& name, const T& value)
 {
     typedef TemplateValueObject<T> UserValueObject;
 
-    osg::UserDataContainer* udc = dynamic_cast<osg::UserDataContainer*>(this);
+    osg::UserDataContainer* udc = asUserDataContainer();
     if (!udc)
     {
         getOrCreateUserDataContainer();
@@ -218,9 +227,60 @@ void osg::Object::setUserValue(const std::string& name, const T& value)
     }
 
     unsigned int i = udc->getUserObjectIndex(name);
-    if (i<udc->getNumUserObjects()) udc->setUserObject(i, new UserValueObject(name,value));
-    else udc->addUserObject(new UserValueObject(name,value));
+    if (i<udc->getNumUserObjects())
+    {
+        Object* obj = udc->getUserObject(i);
+        if (typeid(*obj)==typeid(UserValueObject))
+        {
+            UserValueObject* uvo = static_cast<UserValueObject*>(obj);
+            uvo->setValue(value);
+        }
+        else
+        {
+            udc->setUserObject(i, new UserValueObject(name, value));
+        }
+    }
+    else
+    {
+        udc->addUserObject(new UserValueObject(name,value));
+    }
 }
+
+
+template<class P, class T>
+T* getOrCreateUserObjectOfType(P* parent)
+{
+    T* object=0;
+    const char* name = typeid(T).name();
+    osg::UserDataContainer* udc = parent->getOrCreateUserDataContainer();
+    unsigned int index = udc->getUserObjectIndex(name);
+    if (index<udc->getNumUserObjects())
+    {
+        osg::Object* userObject = udc->getUserObject(index);
+        if (typeid(*userObject)==typeid(T))
+        {
+            object = static_cast<T*>(userObject);
+            // OSG_NOTICE<<"Reusing "<<name<<std::endl;
+        }
+        else
+        {
+            // OSG_NOTICE<<"Replacing "<<name<<", original object "<<userObject->className()<<std::endl;
+
+            object = new T;
+            object->setName(name);
+            udc->setUserObject(index, object);
+        }
+    }
+    else
+    {
+        object = new T;
+        object->setName(name);
+        udc->addUserObject(object);
+        // OSG_NOTICE<<"Creating new "<<name<<std::endl;
+    }
+    return object;
+}
+
 
 
 }

@@ -141,7 +141,7 @@ class OSG_EXPORT Object : public Referenced
         /** Convert 'this' into a Camera pointer if Node is a Camera, otherwise return 0.
           * Equivalent to dynamic_cast<Camera*>(this).*/
         virtual Camera* asCamera() { return 0; }
-        
+
         /** convert 'const this' into a const Camera pointer if Node is a Camera, otherwise return 0.
           * Equivalent to dynamic_cast<const Camera*>(this).*/
         virtual const Camera* asCamera() const { return 0; }
@@ -169,6 +169,14 @@ class OSG_EXPORT Object : public Referenced
         /** convert 'const this' into a const CallbackObject pointer if Object is a CallbackObject, otherwise return 0.
           * Equivalent to dynamic_cast<const CallbackObject*>(this).*/
         virtual const CallbackObject* asCallbackObject() const { return 0; }
+
+        /** Convert 'this' into a UserDataContainer pointer if Object is a UserDataContainer, otherwise return 0.
+          * Equivalent to dynamic_cast<UserDataContainer*>(this).*/
+        virtual UserDataContainer* asUserDataContainer() { return 0; }
+
+        /** convert 'const this' into a const UserDataContainer pointer if Object is a UserDataContainer, otherwise return 0.
+          * Equivalent to dynamic_cast<const UserDataContainer*>(this).*/
+        virtual const UserDataContainer* asUserDataContainer() const { return 0; }
 
 
         /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
@@ -364,7 +372,6 @@ public:
 protected:
     virtual ~DummyObject() {}
 };
-
 
 
 }

@@ -90,6 +90,7 @@ SET(TARGET_H
     ${HEADER_PATH}/GraphicsThread
     ${HEADER_PATH}/Group
     ${HEADER_PATH}/Hint
+    ${HEADER_PATH}/Identifier
     ${HEADER_PATH}/Image
     ${HEADER_PATH}/ImageSequence
     ${HEADER_PATH}/ImageStream
@@ -188,6 +189,8 @@ SET(TARGET_H
     ${HEADER_PATH}/Uniform
     ${HEADER_PATH}/UserDataContainer
     ${HEADER_PATH}/ValueObject
+    ${HEADER_PATH}/ValueMap
+    ${HEADER_PATH}/ValueStack
     ${HEADER_PATH}/Vec2
     ${HEADER_PATH}/Vec2b
     ${HEADER_PATH}/Vec2d
@@ -292,6 +295,7 @@ SET(TARGET_SRC
     GraphicsThread.cpp
     Group.cpp
     Hint.cpp
+    Identifier.cpp
     Image.cpp
     ImageSequence.cpp
     ImageStream.cpp
@@ -377,6 +381,8 @@ SET(TARGET_SRC
     Transform.cpp
     Uniform.cpp
     UserDataContainer.cpp
+    ValueMap.cpp
+    ValueStack.cpp
     Version.cpp
     VertexAttribDivisor.cpp
     VertexProgram.cpp

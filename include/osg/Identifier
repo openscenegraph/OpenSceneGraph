@@ -41,7 +41,7 @@ inline bool iequals(const std::string& lhs, const std::string& rhs)
 
 /** Unique Indentifier class to help with efficiently comparing
   * road classification or region via pointers.*/
-class Identifier : public osg::Referenced, public osg::Observer
+class OSG_EXPORT Identifier : public osg::Referenced, public osg::Observer
 {
 public:
     static Identifier* get(const std::string& name, int number=0, osg::Referenced* first=0, osg::Referenced* second=0);

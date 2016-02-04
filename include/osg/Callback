@@ -310,6 +310,9 @@ struct OSG_EXPORT DrawableEventCallback : public virtual Callback
 
     META_Object(osg,DrawableEventCallback);
 
+    virtual DrawableEventCallback* asDrawableEventCallback() { return this; }
+    virtual const DrawableEventCallback* asDrawableEventCallback() const { return this; }
+
     /** override Callback::run() entry point to adapt to StateAttributeCallback::run(..) method.*/
     virtual bool run(osg::Object* object, osg::Object* data);
 
@@ -324,6 +327,9 @@ struct OSG_EXPORT DrawableCullCallback : public virtual Callback
     DrawableCullCallback(const DrawableCullCallback&,const CopyOp&) {}
 
     META_Object(osg,DrawableCullCallback);
+
+    virtual DrawableCullCallback* asDrawableCullCallback() { return this; }
+    virtual const DrawableCullCallback* asDrawableCullCallback() const { return this; }
 
     // just use the standard run implementation to passes run onto any nested callbacks.
     using Callback::run;

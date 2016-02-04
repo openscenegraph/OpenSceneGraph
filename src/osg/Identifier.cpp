@@ -72,12 +72,12 @@ void Identifier::objectDeleted(void* ptr)
             IdentifierMap::iterator itr = s_IdentifierMap.find(key);
             if (itr!=s_IdentifierMap.end())
             {
-                OSG_NOTICE<<"Warning : this = "<<this<<"  Identifier::objectDeleted("<<ptr<<") found and deleted from s_IdentifierMap, s_IdentifierMap.size()="<<s_IdentifierMap.size()<<std::endl;
+               //  OSG_NOTICE<<"Warning : this = "<<this<<"  Identifier::objectDeleted("<<ptr<<") found and deleted from s_IdentifierMap, s_IdentifierMap.size()="<<s_IdentifierMap.size()<<std::endl;
                 s_IdentifierMap.erase(itr);
             }
             else
             {
-                OSG_NOTICE<<"Warning : this = "<<this<<"  Identifier::objectDeleted("<<ptr<<") not found in s_IdentifierMap."<<s_IdentifierMap.size()<<std::endl;
+               //  OSG_NOTICE<<"Warning : this = "<<this<<"  Identifier::objectDeleted("<<ptr<<") not found in s_IdentifierMap."<<s_IdentifierMap.size()<<std::endl;
             }
         }
 

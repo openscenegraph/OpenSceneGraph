@@ -361,7 +361,7 @@ void MultiDrawArrays::draw(osg::State& state, bool) const
     GLExtensions* ext = state.get<GLExtensions>();
     if (ext->glMultiDrawArrays)
     {
-        GLsizei primcount = std::min(_firsts.size(), _counts.size());
+        GLsizei primcount = osg::minimum(_firsts.size(), _counts.size());
 
         ext->glMultiDrawArrays(_mode, &_firsts.front(), &_counts.front(), primcount);
     }
@@ -369,7 +369,7 @@ void MultiDrawArrays::draw(osg::State& state, bool) const
 
 void MultiDrawArrays::accept(PrimitiveFunctor& functor) const
 {
-    unsigned int primcount = std::min(_firsts.size(), _counts.size());
+    unsigned int primcount = osg::minimum(_firsts.size(), _counts.size());
     for(unsigned int i=0; i<primcount; ++i)
     {
         functor.drawArrays(_mode, _firsts[i], _counts[i]);
@@ -378,7 +378,7 @@ void MultiDrawArrays::accept(PrimitiveFunctor& functor) const
 
 void MultiDrawArrays::accept(PrimitiveIndexFunctor& functor) const
 {
-    unsigned int primcount = std::min(_firsts.size(), _counts.size());
+    unsigned int primcount = osg::minimum(_firsts.size(), _counts.size());
     for(unsigned int i=0; i<primcount; ++i)
     {
         functor.drawArrays(_mode, _firsts[i], _counts[i]);
@@ -433,7 +433,7 @@ unsigned int MultiDrawArrays::getNumPrimitives() const
         case(PATCHES):
         case(POLYGON):
         {
-            unsigned int primcount = std::min(_firsts.size(), _counts.size());
+            unsigned int primcount = osg::minimum(_firsts.size(), _counts.size());
             return primcount;
         }
     }

@@ -272,6 +272,47 @@ ParallelSplitShadowMap::ParallelSplitShadowMap(const ParallelSplitShadowMap& cop
 {
 }
 
+void ParallelSplitShadowMap::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    for(PSSMShadowSplitTextureMap::iterator itr = _PSSMShadowSplitTextureMap.begin();
+        itr != _PSSMShadowSplitTextureMap.end();
+        ++itr)
+    {
+        itr->second.resizeGLObjectBuffers(maxSize);
+    }
+}
+
+void ParallelSplitShadowMap::releaseGLObjects(osg::State* state) const
+{
+    for(PSSMShadowSplitTextureMap::const_iterator itr = _PSSMShadowSplitTextureMap.begin();
+        itr != _PSSMShadowSplitTextureMap.end();
+        ++itr)
+    {
+        itr->second.releaseGLObjects(state);
+    }
+}
+
+
+void ParallelSplitShadowMap::PSSMShadowSplitTexture::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    osg::resizeGLObjectBuffers(_camera, maxSize);
+    osg::resizeGLObjectBuffers(_texture, maxSize);
+    osg::resizeGLObjectBuffers(_stateset, maxSize);
+    osg::resizeGLObjectBuffers(_debug_camera, maxSize);
+    osg::resizeGLObjectBuffers(_debug_texture, maxSize);
+    osg::resizeGLObjectBuffers(_debug_stateset, maxSize);
+}
+
+void ParallelSplitShadowMap::PSSMShadowSplitTexture::releaseGLObjects(osg::State* state) const
+{
+    osg::releaseGLObjects(_camera, state);
+    osg::releaseGLObjects(_texture, state);
+    osg::releaseGLObjects(_stateset, state);
+    osg::releaseGLObjects(_debug_camera, state);
+    osg::releaseGLObjects(_debug_texture, state);
+    osg::releaseGLObjects(_debug_stateset, state);
+}
+
 void ParallelSplitShadowMap::setAmbientBias(const osg::Vec2& ambientBias)
 {
     _ambientBias = ambientBias;

@@ -365,6 +365,37 @@ StandardShadowMap::~StandardShadowMap(void)
 
 }
 
+void StandardShadowMap::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    osg::resizeGLObjectBuffers(_mainVertexShader, maxSize);
+    osg::resizeGLObjectBuffers(_mainFragmentShader, maxSize);
+    osg::resizeGLObjectBuffers(_shadowVertexShader, maxSize);
+    osg::resizeGLObjectBuffers(_shadowFragmentShader, maxSize);
+
+    DebugShadowMap::resizeGLObjectBuffers(maxSize);
+}
+
+void StandardShadowMap::releaseGLObjects(osg::State* state) const
+{
+    osg::releaseGLObjects(_mainVertexShader, state);
+    osg::releaseGLObjects(_mainFragmentShader, state);
+    osg::releaseGLObjects(_shadowVertexShader, state);
+    osg::releaseGLObjects(_shadowFragmentShader, state);
+
+    DebugShadowMap::releaseGLObjects(state);
+}
+
+void StandardShadowMap::ViewData::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    osg::resizeGLObjectBuffers(_stateset, maxSize);
+}
+
+void StandardShadowMap::ViewData::releaseGLObjects(osg::State* state) const
+{
+    osg::releaseGLObjects(_stateset, state);
+}
+
+
 void StandardShadowMap::updateTextureCoordIndices( unsigned int fromTextureCoordIndex, unsigned int toTextureCoordIndex )
 {
 

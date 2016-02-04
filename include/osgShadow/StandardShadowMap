@@ -124,7 +124,16 @@ class OSGSHADOW_EXPORT StandardShadowMap : public DebugShadowMap
         void setMainFragmentShader( osg::Shader * shader )
             { _mainFragmentShader = shader; }
 
-    protected:
+
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
+        /** If State is non-zero, this function releases any associated OpenGL objects for
+           * the specified graphics context. Otherwise, releases OpenGL objects
+           * for all graphics contexts. */
+        virtual void releaseGLObjects(osg::State* = 0) const;
+
+protected:
         /** Classic protected OSG destructor */
         virtual ~StandardShadowMap(void);
 
@@ -188,6 +197,9 @@ class OSGSHADOW_EXPORT StandardShadowMap : public DebugShadowMap
                 const osg::Vec3 &worldLightDir,
                 const osg::Vec3 &worldLightUp
                 = osg::Vec3(0,1,0) );
+
+            virtual void resizeGLObjectBuffers(unsigned int maxSize);
+            virtual void releaseGLObjects(osg::State* = 0) const;
         };
 
         friend struct ViewData;

@@ -76,6 +76,9 @@ class OSGSHADOW_EXPORT MinimalDrawBoundsShadowMap
             virtual void performBoundAnalysis( const osg::Camera& camera );
 
             ViewData( void ): _boundAnalysisSize( 64, 64 ) {}
+
+            virtual void resizeGLObjectBuffers(unsigned int maxSize);
+            virtual void releaseGLObjects(osg::State* = 0) const;
         };
 
         friend struct ViewData;

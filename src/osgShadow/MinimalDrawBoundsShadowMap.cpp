@@ -46,6 +46,22 @@ MinimalDrawBoundsShadowMap::~MinimalDrawBoundsShadowMap()
 {
 }
 
+void MinimalDrawBoundsShadowMap::ViewData::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    BaseClass::ViewData::resizeGLObjectBuffers(maxSize);
+
+    _boundAnalysisTexture->resizeGLObjectBuffers(maxSize);
+    _boundAnalysisCamera->resizeGLObjectBuffers(maxSize);
+}
+
+void MinimalDrawBoundsShadowMap::ViewData::releaseGLObjects(osg::State* state) const
+{
+    BaseClass::ViewData::releaseGLObjects(state);
+
+    _boundAnalysisTexture->releaseGLObjects(state);
+    _boundAnalysisCamera->releaseGLObjects(state);
+}
+
 void MinimalDrawBoundsShadowMap::ViewData::cullShadowReceivingScene( )
 {
     BaseClass::ViewData::cullShadowReceivingScene( );

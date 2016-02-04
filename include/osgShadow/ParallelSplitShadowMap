@@ -134,6 +134,14 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
         inline SplitCalcMode getSplitCalculationMode() const { return _SplitCalcMode; }
 
 
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
+        /** If State is non-zero, this function releases any associated OpenGL objects for
+           * the specified graphics context. Otherwise, releases OpenGL objects
+           * for all graphics contexts. */
+        virtual void releaseGLObjects(osg::State* = 0) const;
+
     protected :
 
         virtual ~ParallelSplitShadowMap() {}
@@ -169,7 +177,11 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
             unsigned int                      _splitID;
             unsigned int                      _resolution;
 
-            osg::Uniform*                    _farDistanceSplit;
+            osg::ref_ptr<osg::Uniform>        _farDistanceSplit;
+
+            void resizeGLObjectBuffers(unsigned int maxSize);
+            void releaseGLObjects(osg::State* = 0) const;
+
         };
 
         typedef std::map<unsigned int,PSSMShadowSplitTexture> PSSMShadowSplitTextureMap;

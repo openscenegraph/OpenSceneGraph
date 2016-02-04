@@ -123,6 +123,67 @@ DebugShadowMap::~DebugShadowMap()
 {
 }
 
+
+void DebugShadowMap::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    osg::resizeGLObjectBuffers(_depthColorFragmentShader, maxSize);
+
+    ViewDependentShadowTechnique::resizeGLObjectBuffers(maxSize);
+}
+
+void DebugShadowMap::releaseGLObjects(osg::State* state) const
+{
+    osg::releaseGLObjects(_depthColorFragmentShader, state);
+
+    ViewDependentShadowTechnique::releaseGLObjects(state);
+}
+
+void DebugShadowMap::ViewData::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    BaseClass::ViewData::resizeGLObjectBuffers(maxSize);
+
+    osg::resizeGLObjectBuffers(_texture, maxSize);
+    osg::resizeGLObjectBuffers(_camera, maxSize);
+    osg::resizeGLObjectBuffers(_depthColorFragmentShader, maxSize);
+
+    for(PolytopeGeometryMap::iterator itr = _polytopeGeometryMap.begin();
+        itr != _polytopeGeometryMap.end();
+        ++itr)
+    {
+        osg::resizeGLObjectBuffers(itr->second._geometry[0], maxSize);
+        osg::resizeGLObjectBuffers(itr->second._geometry[1], maxSize);
+    }
+
+    osg::resizeGLObjectBuffers(_geode[0], maxSize);
+    osg::resizeGLObjectBuffers(_geode[1], maxSize);
+    osg::resizeGLObjectBuffers(_transform[0], maxSize);
+    osg::resizeGLObjectBuffers(_transform[1], maxSize);
+    osg::resizeGLObjectBuffers(_cameraDebugHUD, maxSize);
+}
+
+void DebugShadowMap::ViewData::releaseGLObjects(osg::State* state) const
+{
+    BaseClass::ViewData::releaseGLObjects(state);
+
+    osg::releaseGLObjects(_texture, state);
+    osg::releaseGLObjects(_camera, state);
+    osg::releaseGLObjects(_depthColorFragmentShader, state);
+
+    for(PolytopeGeometryMap::const_iterator itr = _polytopeGeometryMap.begin();
+        itr != _polytopeGeometryMap.end();
+        ++itr)
+    {
+        osg::releaseGLObjects(itr->second._geometry[0], state);
+        osg::releaseGLObjects(itr->second._geometry[1], state);
+    }
+
+    osg::releaseGLObjects(_geode[0], state);
+    osg::releaseGLObjects(_geode[1], state);
+    osg::releaseGLObjects(_transform[0], state);
+    osg::releaseGLObjects(_transform[1], state);
+    osg::releaseGLObjects(_cameraDebugHUD, state);
+}
+
 void DebugShadowMap::ViewData::cull( void )
 {
     if( getDebugDraw() && !_cameraDebugHUD.valid() )

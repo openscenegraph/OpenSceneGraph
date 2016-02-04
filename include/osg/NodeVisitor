@@ -18,6 +18,9 @@
 #include <osg/Matrix>
 #include <osg/FrameStamp>
 
+#include <osg/ValueMap>
+#include <osg/ValueStack>
+
 
 namespace osgUtil { class UpdateVisitor; class CullVisitor; class IntersectionVisitor; }
 namespace osgGA { class EventVisitor; }
@@ -220,6 +223,40 @@ class OSG_EXPORT NodeVisitor : public virtual Object
         /** Get the traversal mode.*/
         inline TraversalMode getTraversalMode() const { return _traversalMode; }
 
+
+        /** Set the ValueMap used to store Values that can be reused over a series of traversals. */
+        inline void setValueMap(ValueMap* ps) { _valueMap = ps; }
+
+        /** Get the ValueMap. */
+        inline ValueMap* getValueMap() { return _valueMap.get(); }
+
+        /** Get the ValueMap. */
+        inline const ValueMap* getValueMap() const { return _valueMap.get(); }
+
+        /** Get the ValueMap. */
+        inline ValueMap* getOrCreateValueMap()
+        {
+            if (!_valueMap) _valueMap = new ValueMap;
+            return _valueMap.get();
+        }
+
+        /** Set the ValueStack used to stack Values during traversal. */
+        inline void setValueStack(ValueStack* ps) { _valueStack = ps; }
+
+        /** Get the ValueStack. */
+        inline ValueStack* getValueStack() { return _valueStack.get(); }
+
+        /** Get the const ValueStack. */
+        inline const ValueStack* getValueStack() const { return _valueStack.get(); }
+
+        /** Get the ValueStack. */
+        inline ValueStack* getOrCreateValueStack()
+        {
+            if (!_valueStack) _valueStack = new ValueStack;
+            return _valueStack.get();
+        }
+
+
         /** Method for handling traversal of a nodes.
             If you intend to use the visitor for actively traversing
             the scene graph then make sure the accept() methods call
@@ -380,6 +417,8 @@ class OSG_EXPORT NodeVisitor : public virtual Object
         ref_ptr<DatabaseRequestHandler> _databaseRequestHandler;
         ref_ptr<ImageRequestHandler>    _imageRequestHandler;
 
+        osg::ref_ptr<ValueMap>          _valueMap;
+        osg::ref_ptr<ValueStack>        _valueStack;
 };
 
 
@@ -400,6 +439,98 @@ class NodeAcceptOp
 
         NodeVisitor& _nv;
 };
+
+
+class PushPopObject
+{
+public:
+
+
+    PushPopObject(NodeVisitor* nv, const Referenced* key, Object* value):
+        _valueStack(0),
+        _key(0)
+    {
+        if (key)
+        {
+            _valueStack = nv->getOrCreateValueStack();
+            _key = key;
+            _valueStack->push(_key, value);
+        }
+    }
+
+    PushPopObject(ValueStack* valueStack, const Referenced* key, Object* value):
+        _valueStack(valueStack),
+        _key(0)
+    {
+        if (_valueStack && key)
+        {
+            _key = key;
+            _valueStack->push(_key, value);
+        }
+    }
+
+    inline ~PushPopObject()
+    {
+        if (_valueStack) _valueStack->pop(_key);
+    }
+
+protected:
+    ValueStack* _valueStack;
+    const Referenced* _key;
+};
+
+class PushPopValue
+{
+public:
+
+
+    template<typename T>
+    PushPopValue(NodeVisitor* nv, const Referenced* key, const T& value):
+        _valueStack(0),
+        _key(0)
+    {
+        if (key)
+        {
+            _valueStack = nv->getOrCreateValueStack();
+            _key = key;
+            _valueStack->push(_key, value);
+        }
+    }
+
+    template<typename T>
+    PushPopValue(ValueStack* valueStack, const Referenced* key, const T& value):
+        _valueStack(valueStack),
+        _key(0)
+    {
+        if (_valueStack && key)
+        {
+            _key = key;
+            _valueStack->push(_key, value);
+        }
+    }
+
+    inline ~PushPopValue()
+    {
+        if (_valueStack) _valueStack->pop(_key);
+    }
+
+protected:
+    ValueStack* _valueStack;
+    const Referenced* _key;
+};
+
+template<>
+inline ValueStack* getOrCreateUserObjectOfType<NodeVisitor,ValueStack>(NodeVisitor* nv)
+{
+    return nv->getOrCreateValueStack();
+}
+
+template<>
+inline ValueMap* getOrCreateUserObjectOfType<NodeVisitor,ValueMap>(NodeVisitor* nv)
+{
+    return nv->getOrCreateValueMap();
+}
+
 
 }
 

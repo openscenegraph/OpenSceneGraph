@@ -53,6 +53,14 @@ class OSGSHADOW_EXPORT ShadowVolume : public ShadowTechnique
         virtual void cleanSceneGraph();
 
 
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
+        /** If State is non-zero, this function releases any associated OpenGL objects for
+           * the specified graphics context. Otherwise, releases OpenGL objects
+           * for all graphics contexts. */
+        virtual void releaseGLObjects(osg::State* = 0) const;
+
     protected :
 
         virtual ~ShadowVolume();
@@ -60,7 +68,7 @@ class OSGSHADOW_EXPORT ShadowVolume : public ShadowTechnique
         osgShadow::ShadowVolumeGeometry::DrawMode       _drawMode;
         bool                                            _dynamicShadowVolumes;
 
-        osg::ref_ptr<osgShadow::OccluderGeometry> _occluder;
+        osg::ref_ptr<osgShadow::OccluderGeometry>       _occluder;
 
         OpenThreads::Mutex                              _shadowVolumeMutex;
         osg::ref_ptr<osgShadow::ShadowVolumeGeometry>   _shadowVolume;

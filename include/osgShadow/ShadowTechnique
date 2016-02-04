@@ -35,7 +35,9 @@ class OSGSHADOW_EXPORT ShadowTechnique : public osg::Object
 
         ShadowTechnique(const ShadowTechnique& es, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-        META_Object(osgShadow, ShadowTechnique);
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const ShadowTechnique*>(obj)!=NULL; } \
+        virtual const char* libraryName() const { return "osgShadow"; }\
+        virtual const char* className() const { return "ShadowTechnique"; }
 
         ShadowedScene* getShadowedScene() { return _shadowedScene; }
 
@@ -58,7 +60,15 @@ class OSGSHADOW_EXPORT ShadowTechnique : public osg::Object
         /** Dirty so that cached data structures are updated.*/
         virtual void dirty() { _dirty = true; }
 
-    protected :
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize) = 0;
+
+        /** If State is non-zero, this function releases any associated OpenGL objects for
+           * the specified graphics context. Otherwise, releases OpenGL objects
+           * for all graphics contexts. */
+        virtual void releaseGLObjects(osg::State* = 0) const = 0;
+
+protected :
 
         class OSGSHADOW_EXPORT CameraCullCallback : public osg::NodeCallback
         {

@@ -83,6 +83,16 @@ class OSGSHADOW_EXPORT ShadowMap : public ShadowTechnique
         /** Clean scene graph from any shadow technique specific nodes, state and drawables.*/
         virtual void cleanSceneGraph();
 
+
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
+        /** If State is non-zero, this function releases any associated OpenGL objects for
+           * the specified graphics context. Otherwise, releases OpenGL objects
+           * for all graphics contexts. */
+        virtual void releaseGLObjects(osg::State* = 0) const;
+
+
         // debug methods
 
         osg::ref_ptr<osg::Camera> makeDebugHUD();

@@ -37,6 +37,27 @@ ViewDependentShadowTechnique::~ViewDependentShadowTechnique(void)
 
 }
 
+
+void ViewDependentShadowTechnique::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    for(ViewDataMap::iterator itr = _viewDataMap.begin();
+        itr != _viewDataMap.end();
+        ++itr)
+    {
+        itr->second->resizeGLObjectBuffers(maxSize);
+    }
+}
+
+void ViewDependentShadowTechnique::releaseGLObjects(osg::State* state) const
+{
+    for(ViewDataMap::const_iterator itr = _viewDataMap.begin();
+        itr != _viewDataMap.end();
+        ++itr)
+    {
+        itr->second->releaseGLObjects(state);
+    }
+}
+
 void ViewDependentShadowTechnique::traverse(osg::NodeVisitor& nv)
 {
     osgShadow::ShadowTechnique::traverse(nv);
@@ -96,14 +117,14 @@ ViewDependentShadowTechnique::ViewData *
 ViewDependentShadowTechnique::getViewDependentData( osgUtil::CullVisitor * cv )
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_viewDataMapMutex);
-    return _viewDataMap[ cv ].get();
+    return _viewDataMap[ osg::Identifier::get(cv) ].get();
 }
 
 void ViewDependentShadowTechnique::setViewDependentData
     ( osgUtil::CullVisitor * cv, ViewData * data )
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_viewDataMapMutex);
-    _viewDataMap[ cv ] = data;
+    _viewDataMap[ osg::Identifier::get(cv) ] = data;
 }
 
 void ViewDependentShadowTechnique::ViewData::dirty( bool flag )

@@ -77,7 +77,16 @@ class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique
         /** Set the file name of debuging dump */
         void setDebugDump( const std::string & debugDumpFile ) { _debugDump = debugDumpFile; }
 
-    protected:
+
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
+        /** If State is non-zero, this function releases any associated OpenGL objects for
+           * the specified graphics context. Otherwise, releases OpenGL objects
+           * for all graphics contexts. */
+        virtual void releaseGLObjects(osg::State* = 0) const;
+
+protected:
         /** Classic protected OSG destructor */
         virtual ~DebugShadowMap();
 
@@ -182,6 +191,11 @@ class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique
                   const ConvexPolyhedron * hull );
 
             void dump( const std::string & filename );
+
+            virtual void resizeGLObjectBuffers(unsigned int maxSize);
+            virtual void releaseGLObjects(osg::State* = 0) const;
+
+
         };
 
         META_ViewDependentShadowTechniqueData( ThisClass, ViewData )

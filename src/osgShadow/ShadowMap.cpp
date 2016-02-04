@@ -89,6 +89,42 @@ ShadowTechnique(copy,copyop),
 {
 }
 
+void ShadowMap::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    osg::resizeGLObjectBuffers(_camera, maxSize);
+    osg::resizeGLObjectBuffers(_texgen, maxSize);
+    osg::resizeGLObjectBuffers(_texture, maxSize);
+    osg::resizeGLObjectBuffers(_stateset, maxSize);
+    osg::resizeGLObjectBuffers(_program, maxSize);
+
+    osg::resizeGLObjectBuffers(_ls, maxSize);
+
+    for(ShaderList::iterator itr = _shaderList.begin();
+        itr != _shaderList.end();
+        ++itr)
+    {
+        osg::resizeGLObjectBuffers(*itr, maxSize);
+    }
+}
+
+void ShadowMap::releaseGLObjects(osg::State* state) const
+{
+    osg::releaseGLObjects(_camera, state);
+    osg::releaseGLObjects(_texgen, state);
+    osg::releaseGLObjects(_texture, state);
+    osg::releaseGLObjects(_stateset, state);
+    osg::releaseGLObjects(_program, state);
+
+    osg::releaseGLObjects(_ls, state);
+
+    for(ShaderList::const_iterator itr = _shaderList.begin();
+        itr != _shaderList.end();
+        ++itr)
+    {
+        osg::releaseGLObjects(*itr, state);
+    }
+}
+
 void ShadowMap::setTextureUnit(unsigned int unit)
 {
     _shadowTextureUnit = unit;

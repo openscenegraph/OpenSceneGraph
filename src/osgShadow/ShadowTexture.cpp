@@ -30,6 +30,20 @@ ShadowTexture::ShadowTexture(const ShadowTexture& copy, const osg::CopyOp& copyo
 {
 }
 
+void ShadowTexture::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    osg::resizeGLObjectBuffers(_camera, maxSize);
+    osg::resizeGLObjectBuffers(_texture, maxSize);
+    osg::resizeGLObjectBuffers(_stateset, maxSize);
+}
+
+void ShadowTexture::releaseGLObjects(osg::State* state) const
+{
+    osg::releaseGLObjects(_camera, state);
+    osg::releaseGLObjects(_texture, state);
+    osg::releaseGLObjects(_stateset, state);
+}
+
 void ShadowTexture::setTextureUnit(unsigned int unit)
 {
     _textureUnit = unit;

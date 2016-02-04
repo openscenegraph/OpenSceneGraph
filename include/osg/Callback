@@ -283,8 +283,9 @@ class Drawable;
 class State;
 class RenderInfo;
 
-struct OSG_EXPORT DrawableUpdateCallback : public virtual Callback
+class OSG_EXPORT DrawableUpdateCallback : public virtual Callback
 {
+public:
     DrawableUpdateCallback() {}
 
     DrawableUpdateCallback(const DrawableUpdateCallback&,const CopyOp&) {}
@@ -302,8 +303,9 @@ struct OSG_EXPORT DrawableUpdateCallback : public virtual Callback
 };
 
 
-struct OSG_EXPORT DrawableEventCallback : public virtual Callback
+class OSG_EXPORT DrawableEventCallback : public virtual Callback
 {
+public:
     DrawableEventCallback() {}
 
     DrawableEventCallback(const DrawableEventCallback&,const CopyOp&) {}
@@ -317,8 +319,9 @@ struct OSG_EXPORT DrawableEventCallback : public virtual Callback
     virtual void event(osg::NodeVisitor*, osg::Drawable*) {}
 };
 
-struct OSG_EXPORT DrawableCullCallback : public virtual Callback
+class OSG_EXPORT DrawableCullCallback : public virtual Callback
 {
+public:
     DrawableCullCallback() {}
 
     DrawableCullCallback(const DrawableCullCallback&,const CopyOp&) {}

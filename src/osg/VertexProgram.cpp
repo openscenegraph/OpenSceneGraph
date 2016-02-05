@@ -67,7 +67,7 @@ void VertexProgram::dirtyVertexProgramObject()
     {
         if (_vertexProgramIDList[i] != 0)
         {
-            osg::get<GLVertexProgramManager>(i)->deleteGLObject(_vertexProgramIDList[i]);
+            osg::get<GLVertexProgramManager>(i)->scheduleGLObjectForDeletion(_vertexProgramIDList[i]);
             _vertexProgramIDList[i] = 0;
         }
     }
@@ -157,7 +157,7 @@ void VertexProgram::releaseGLObjects(State* state) const
         unsigned int contextID = state->getContextID();
         if (_vertexProgramIDList[contextID] != 0)
         {
-            osg::get<GLVertexProgramManager>(contextID)->deleteGLObject(_vertexProgramIDList[contextID]);
+            osg::get<GLVertexProgramManager>(contextID)->scheduleGLObjectForDeletion(_vertexProgramIDList[contextID]);
             _vertexProgramIDList[contextID] = 0;
         }
     }

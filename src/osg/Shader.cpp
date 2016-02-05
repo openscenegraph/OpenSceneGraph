@@ -464,7 +464,7 @@ Shader::PerContextShader::PerContextShader(const Shader* shader, unsigned int co
 
 Shader::PerContextShader::~PerContextShader()
 {
-    osg::get<GLShaderManager>(_contextID)->deleteGLObject(_glShaderHandle);
+    osg::get<GLShaderManager>(_contextID)->scheduleGLObjectForDeletion(_glShaderHandle);
 }
 
 

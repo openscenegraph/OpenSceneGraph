@@ -689,7 +689,7 @@ Program::PerContextProgram::~PerContextProgram()
 {
     if (_ownsProgramHandle)
     {
-        osg::get<GLProgramManager>(_contextID)->deleteGLObject(_glProgramHandle);
+        osg::get<GLProgramManager>(_contextID)->scheduleGLObjectForDeletion(_glProgramHandle);
     }
 }
 

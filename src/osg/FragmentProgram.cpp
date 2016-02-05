@@ -67,7 +67,7 @@ void FragmentProgram::dirtyFragmentProgramObject()
     {
         if (_fragmentProgramIDList[i] != 0)
         {
-            osg::get<GLFragmentProgramManager>(i)->deleteGLObject(_fragmentProgramIDList[i]);
+            osg::get<GLFragmentProgramManager>(i)->scheduleGLObjectForDeletion(_fragmentProgramIDList[i]);
             _fragmentProgramIDList[i] = 0;
         }
     }
@@ -157,7 +157,7 @@ void FragmentProgram::releaseGLObjects(State* state) const
         unsigned int contextID = state->getContextID();
         if (_fragmentProgramIDList[contextID] != 0)
         {
-            osg::get<GLFragmentProgramManager>(contextID)->deleteGLObject(_fragmentProgramIDList[contextID]);
+            osg::get<GLFragmentProgramManager>(contextID)->scheduleGLObjectForDeletion(_fragmentProgramIDList[contextID]);
             _fragmentProgramIDList[contextID] = 0;
         }
     }

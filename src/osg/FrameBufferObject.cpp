@@ -89,7 +89,7 @@ RenderBuffer::~RenderBuffer()
 {
     for(unsigned i=0; i<_objectID.size(); ++i)
     {
-        if (_objectID[i]) osg::get<GLRenderBufferManager>(i)->deleteGLObject(_objectID[i]);
+        if (_objectID[i]) osg::get<GLRenderBufferManager>(i)->scheduleGLObjectForDeletion(_objectID[i]);
     }
 }
 
@@ -173,7 +173,7 @@ void RenderBuffer::releaseGLObjects(osg::State* state) const
         unsigned int contextID = state->getContextID();
         if (_objectID[contextID])
         {
-            osg::get<GLRenderBufferManager>(contextID)->deleteGLObject(_objectID[contextID]);
+            osg::get<GLRenderBufferManager>(contextID)->scheduleGLObjectForDeletion(_objectID[contextID]);
             _objectID[contextID] = 0;
         }
     }
@@ -183,7 +183,7 @@ void RenderBuffer::releaseGLObjects(osg::State* state) const
         {
             if (_objectID[i])
             {
-                osg::get<GLRenderBufferManager>(i)->deleteGLObject(_objectID[i]);
+                osg::get<GLRenderBufferManager>(i)->scheduleGLObjectForDeletion(_objectID[i]);
                 _objectID[i] = 0;
             }
         }
@@ -595,7 +595,7 @@ FrameBufferObject::~FrameBufferObject()
 {
     for(unsigned i=0; i<_fboID.size(); ++i)
     {
-        if (_fboID[i]) osg::get<GLFrameBufferObjectManager>(i)->deleteGLObject(_fboID[i]);
+        if (_fboID[i]) osg::get<GLFrameBufferObjectManager>(i)->scheduleGLObjectForDeletion(_fboID[i]);
     }
 }
 
@@ -613,7 +613,7 @@ void FrameBufferObject::releaseGLObjects(osg::State* state) const
         unsigned int contextID = state->getContextID();
         if (_fboID[contextID])
         {
-            osg::get<GLFrameBufferObjectManager>(contextID)->deleteGLObject(_fboID[contextID]);
+            osg::get<GLFrameBufferObjectManager>(contextID)->scheduleGLObjectForDeletion(_fboID[contextID]);
             _fboID[contextID] = 0;
         }
     }
@@ -623,7 +623,7 @@ void FrameBufferObject::releaseGLObjects(osg::State* state) const
         {
             if (_fboID[i])
             {
-                osg::get<GLFrameBufferObjectManager>(i)->deleteGLObject(_fboID[i]);
+                osg::get<GLFrameBufferObjectManager>(i)->scheduleGLObjectForDeletion(_fboID[i]);
                 _fboID[i] = 0;
             }
         }

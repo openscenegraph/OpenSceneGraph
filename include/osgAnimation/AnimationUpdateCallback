@@ -41,6 +41,13 @@ namespace osgAnimation
 
         META_Object(osgAnimation, AnimationUpdateCallback<T>);
 
+        virtual osg::Callback* asCallback() { return T::asCallback(); }
+        virtual const osg::Callback* asCallback() const { return T::asCallback(); }
+
+        virtual osg::CallbackObject* asCallbackObject() { return T::asCallbackObject(); }
+        virtual const osg::CallbackObject* asCallbackObject() const { return T::asCallbackObject(); }
+
+
         const std::string& getName() const { return T::getName(); }
         bool link(Channel* /*channel*/) { return 0; }
         int link(Animation* animation)

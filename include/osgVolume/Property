@@ -487,6 +487,9 @@ class OSGVOLUME_EXPORT PropertyAdjustmentCallback : public osgGA::GUIEventHandle
 
         META_Object(osgVolume, PropertyAdjustmentCallback);
 
+        virtual NodeCallback* asNodeCallback() { return osg::NodeCallback::asNodeCallback(); }
+        virtual const NodeCallback* asNodeCallback() const { return osg::NodeCallback::asNodeCallback(); }
+
         virtual bool run(osg::Object* object, osg::Object* data) { return osgGA::GUIEventHandler::run(object, data); }
 
         void setKeyEventCycleForward(int key) { _cyleForwardKey = key; }

@@ -43,6 +43,9 @@ public:
 
         META_Object(osgGA, EventHandler);
 
+        virtual NodeCallback* asNodeCallback() { return osg::NodeCallback::asNodeCallback(); }
+        virtual const NodeCallback* asNodeCallback() const { return osg::NodeCallback::asNodeCallback(); }
+
         virtual bool run(osg::Object* object, osg::Object* data)
         {
             osg::Node* node = dynamic_cast<osg::Node*>(object);

@@ -510,6 +510,9 @@ public:
 
     META_Object(osgViewer, InteractiveImageHandler);
 
+    virtual NodeCallback* asNodeCallback() { return osg::NodeCallback::asNodeCallback(); }
+    virtual const NodeCallback* asNodeCallback() const { return osg::NodeCallback::asNodeCallback(); }
+
     // use the osgGA::GUIEventHandler implementation of run.
     virtual bool run(osg::Object* object, osg::Object* data) { return osgGA::GUIEventHandler::run(object, data); }
 

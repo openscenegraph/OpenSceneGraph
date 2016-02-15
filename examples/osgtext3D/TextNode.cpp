@@ -104,7 +104,7 @@ void Layout::layout(TextNode& text) const
         }
         else
         {
-            osgText::Glyph3D* glyph = font->getGlyph3D(charcode);
+            osgText::Glyph3D* glyph = font->getGlyph3D(resolution, charcode);
             OSG_NOTICE<<"pos = "<<pos<<", charcode="<<charcode<<", glyph="<<glyph<< std::endl;
             if (glyph)
             {
@@ -116,7 +116,7 @@ void Layout::layout(TextNode& text) const
 
         if (previousCharcode!=0 && charcode!=0)
         {
-            osg::Vec2 offset = font->getKerning(previousCharcode, charcode, kerningType);
+            osg::Vec2 offset = font->getKerning(resolution, previousCharcode, charcode, kerningType);
             OSG_NOTICE<<"  offset = "<<offset<< std::endl;
             pos.x() += offset.x();
             pos.y() += offset.y();

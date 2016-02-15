@@ -32,11 +32,11 @@ public:
 
     virtual osgText::Glyph* getGlyph(const osgText::FontResolution& fontRes, unsigned int charcode);
 
-    virtual osgText::Glyph3D* getGlyph3D(unsigned int) { return 0; }
+    virtual osgText::Glyph3D* getGlyph3D(const osgText::FontResolution&, unsigned int) { return 0; }
 
     virtual bool hasVertical() const;
 
-    virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType kerningType);
+    virtual osg::Vec2 getKerning(const osgText::FontResolution& fontRes, unsigned int leftcharcode, unsigned int rightcharcode, osgText::KerningType kerningType);
 
     bool loadFont(std::istream& stream);
 

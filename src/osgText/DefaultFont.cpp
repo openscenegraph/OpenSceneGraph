@@ -69,7 +69,7 @@ osgText::Glyph* DefaultFont::getGlyph(const FontResolution& fontRes, unsigned in
 }
 
 
-osg::Vec2 DefaultFont::getKerning(unsigned int,unsigned int, KerningType)
+osg::Vec2 DefaultFont::getKerning(const osgText::FontResolution&, unsigned int, unsigned int, KerningType)
 {
     // no kerning on default font.
     return osg::Vec2(0.0f,0.0f);

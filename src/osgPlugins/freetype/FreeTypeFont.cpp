@@ -413,9 +413,11 @@ osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, u
 
 }
 
-osgText::Glyph3D * FreeTypeFont::getGlyph3D(unsigned int charcode)
+osgText::Glyph3D * FreeTypeFont::getGlyph3D(const osgText::FontResolution& fontRes, unsigned int charcode)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
+
+    setFontResolution(fontRes);
 
     //
     // GT: fix for symbol fonts (i.e. the Webdings font) as the wrong character are being
@@ -515,9 +517,11 @@ osgText::Glyph3D * FreeTypeFont::getGlyph3D(unsigned int charcode)
     return glyph.release();
 }
 
-osg::Vec2 FreeTypeFont::getKerning(unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType kerningType)
+osg::Vec2 FreeTypeFont::getKerning(const osgText::FontResolution& fontRes, unsigned int leftcharcode, unsigned int rightcharcode, osgText::KerningType kerningType)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
+
+    setFontResolution(fontRes);
 
     if (!FT_HAS_KERNING(_face) || (kerningType == osgText::KERNING_NONE)) return osg::Vec2(0.0f,0.0f);
 

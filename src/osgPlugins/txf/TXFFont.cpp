@@ -120,7 +120,7 @@ TXFFont::hasVertical() const
 }
 
 osg::Vec2
-TXFFont::getKerning(unsigned int, unsigned int, osgText::KerningType)
+TXFFont::getKerning(const osgText::FontResolution&, unsigned int, unsigned int, osgText::KerningType)
 {
     return osg::Vec2(0, 0);
 }

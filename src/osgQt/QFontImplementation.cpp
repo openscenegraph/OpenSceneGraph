@@ -122,7 +122,7 @@ QFontImplementation::getGlyph(const osgText::FontResolution& fontRes, unsigned i
 }
 
 osg::Vec2
-QFontImplementation::getKerning(unsigned int /*leftcharcode*/, unsigned int /*rightcharcode*/, osgText::KerningType /*kerningType*/)
+QFontImplementation::getKerning(const osgText::FontResolution& /*fontRes*/, unsigned int /*leftcharcode*/, unsigned int /*rightcharcode*/, osgText::KerningType /*kerningType*/)
 {
     return osg::Vec2(0, 0);
 }

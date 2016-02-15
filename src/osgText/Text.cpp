@@ -132,14 +132,14 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
                 {
                   case LEFT_TO_RIGHT:
                   {
-                    osg::Vec2 delta(activefont->getKerning(previous_charcode,charcode,_kerningType));
+                    osg::Vec2 delta(activefont->getKerning(_fontSize, previous_charcode, charcode, _kerningType));
                     cursor.x() += delta.x() * wr;
                     cursor.y() += delta.y() * hr;
                     break;
                   }
                   case RIGHT_TO_LEFT:
                   {
-                    osg::Vec2 delta(activefont->getKerning(charcode,previous_charcode,_kerningType));
+                    osg::Vec2 delta(activefont->getKerning(_fontSize, charcode, previous_charcode, _kerningType));
                     cursor.x() -= delta.x() * wr;
                     cursor.y() -= delta.y() * hr;
                     break;
@@ -396,14 +396,14 @@ void Text::computeGlyphRepresentation()
                         {
                           case LEFT_TO_RIGHT:
                           {
-                            osg::Vec2 delta(activefont->getKerning(previous_charcode,charcode,_kerningType));
+                            osg::Vec2 delta(activefont->getKerning(_fontSize, previous_charcode, charcode, _kerningType));
                             cursor.x() += delta.x() * wr;
                             cursor.y() += delta.y() * hr;
                             break;
                           }
                           case RIGHT_TO_LEFT:
                           {
-                            osg::Vec2 delta(activefont->getKerning(charcode,previous_charcode,_kerningType));
+                            osg::Vec2 delta(activefont->getKerning(_fontSize, charcode, previous_charcode, _kerningType));
                             cursor.x() -= delta.x() * wr;
                             cursor.y() -= delta.y() * hr;
                             break;

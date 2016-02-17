@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-//  This is an implementation of Tom Forsyth's "Linear-Speed Vertex Cache 
+//  This is an implementation of Tom Forsyth's "Linear-Speed Vertex Cache
 //  Optimization" algorithm as described here:
 //  http://home.comcast.net/~tom_forsyth/papers/fast_vert_cache_opt.html
 //
@@ -9,7 +9,7 @@
 //  THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
-//  SHALL ANYONE DISTRIBUTING THE SOFTWARE BE LIABLE FOR ANY DAMAGES OR OTHER 
+//  SHALL ANYONE DISTRIBUTING THE SOFTWARE BE LIABLE FOR ANY DAMAGES OR OTHER
 //  LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 //  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
@@ -42,6 +42,7 @@ namespace Forsyth
 
     namespace
     {
+#if 0
         // code for computing vertex score was taken, as much as possible
         // directly from the original publication.
         float ComputeVertexCacheScore(int cachePosition, int vertexCacheSize)
@@ -77,6 +78,7 @@ namespace Forsyth
 
             return score;
         }
+#endif
 
         float ComputeVertexValenceScore(unsigned int numActiveFaces)
         {
@@ -100,6 +102,7 @@ namespace Forsyth
         float s_vertexCacheScores[kMaxVertexCacheSize+1][kMaxVertexCacheSize];
         float s_vertexValenceScores[kMaxPrecomputedVertexValenceScores];
 
+#if 0
         bool ComputeVertexScores()
         {
             for (int cacheSize=0; cacheSize<=kMaxVertexCacheSize; ++cacheSize)
@@ -118,6 +121,7 @@ namespace Forsyth
             return true;
         }
         bool s_vertexScoresComputed = ComputeVertexScores();
+#endif
 
 //        inline float FindVertexCacheScore(unsigned int cachePosition, unsigned int maxSizeVertexCache)
 //        {

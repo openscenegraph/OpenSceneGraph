@@ -36,6 +36,9 @@ class OSG_EXPORT ClusterCullingCallback : public DrawableCullCallback, public No
         virtual NodeCallback* asNodeCallback() { return osg::NodeCallback::asNodeCallback(); }
         virtual const NodeCallback* asNodeCallback() const { return osg::NodeCallback::asNodeCallback(); }
 
+        virtual DrawableCullCallback* asDrawableCullCallback() { return osg::DrawableCullCallback::asDrawableCullCallback(); }
+        virtual const DrawableCullCallback* asDrawableCullCallback() const { return osg::DrawableCullCallback::asDrawableCullCallback(); }
+
         // use the NodeCallbacks implementation of run.
         virtual bool run(osg::Object* object, osg::Object* data) { return NodeCallback::run(object, data); }
 

@@ -513,6 +513,12 @@ public:
     virtual NodeCallback* asNodeCallback() { return osg::NodeCallback::asNodeCallback(); }
     virtual const NodeCallback* asNodeCallback() const { return osg::NodeCallback::asNodeCallback(); }
 
+    virtual DrawableEventCallback* asDrawableEventCallback() { return osg::DrawableEventCallback::asDrawableEventCallback(); }
+    virtual const DrawableEventCallback* asDrawableEventCallback() const { return osg::DrawableEventCallback::asDrawableEventCallback(); }
+
+    virtual DrawableCullCallback* asDrawableCullCallback() { return osg::DrawableCullCallback::asDrawableCullCallback(); }
+    virtual const DrawableCullCallback* asDrawableCullCallback() const { return osg::DrawableCullCallback::asDrawableCullCallback(); }
+
     // use the osgGA::GUIEventHandler implementation of run.
     virtual bool run(osg::Object* object, osg::Object* data) { return osgGA::GUIEventHandler::run(object, data); }
 

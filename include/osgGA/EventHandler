@@ -46,6 +46,9 @@ public:
         virtual NodeCallback* asNodeCallback() { return osg::NodeCallback::asNodeCallback(); }
         virtual const NodeCallback* asNodeCallback() const { return osg::NodeCallback::asNodeCallback(); }
 
+        virtual DrawableEventCallback* asDrawableEventCallback() { return osg::DrawableEventCallback::asDrawableEventCallback(); }
+        virtual const DrawableEventCallback* asDrawableEventCallback() const { return osg::DrawableEventCallback::asDrawableEventCallback(); }
+
         virtual bool run(osg::Object* object, osg::Object* data)
         {
             osg::Node* node = dynamic_cast<osg::Node*>(object);

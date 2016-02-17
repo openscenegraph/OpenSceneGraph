@@ -43,6 +43,43 @@
 #include "old_Lwo2Layer.h"
 #include "lwo2read.h"
 
+// makes 4-byte integer tag from four chars
+// used in IFF standard
+
+unsigned long make_id(const char* tag)
+{
+    unsigned long result = 0;
+    for (unsigned int i = 0; i < strlen(tag) && i < 4; i++)
+    {
+        result <<= 8;
+        result += int(tag[i]);
+    }
+    return result;
+}
+
+const unsigned long tag_FORM = make_id("FORM");
+const unsigned long tag_LWO2 = make_id("LWO2");
+const unsigned long tag_LAYR = make_id("LAYR");
+const unsigned long tag_TAGS = make_id("TAGS");
+const unsigned long tag_PNTS = make_id("PNTS");
+const unsigned long tag_VMAP = make_id("VMAP");
+const unsigned long tag_VMAD = make_id("VMAD");
+const unsigned long tag_TXUV = make_id("TXUV");
+const unsigned long tag_POLS = make_id("POLS");
+const unsigned long tag_FACE = make_id("FACE");
+const unsigned long tag_PTAG = make_id("PTAG");
+const unsigned long tag_SURF = make_id("SURF");
+const unsigned long tag_CLIP = make_id("CLIP");
+const unsigned long tag_BLOK = make_id("BLOK");
+const unsigned long tag_IMAP = make_id("IMAP");
+const unsigned long tag_IMAG = make_id("IMAG");
+const unsigned long tag_COLR = make_id("COLR");
+
+#if 0
+const unsigned long tag_STIL = make_id("STIL");
+const unsigned long tag_TMAP = make_id("TMAP");
+#endif
+
 Lwo2::Lwo2():
   _current_layer(0),
   _successfully_read(false)
@@ -770,18 +807,4 @@ Lwo2::_generate_statesets_from_surfaces()
 
         surface->state_set = state_set;
     }
-}
-
-// makes 4-byte integer tag from four chars
-// used in IFF standard
-
-unsigned long make_id(const char* tag)
-{
-    unsigned long result = 0;
-    for (unsigned int i = 0; i < strlen(tag) && i < 4; i++)
-    {
-        result <<= 8;
-        result += int(tag[i]);
-    }
-    return result;
 }

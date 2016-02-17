@@ -228,11 +228,12 @@ void ARBQuerySupport::checkQuery(osg::Stats* stats, osg::State* state,
                 // If the high bits on any of the timestamp bits are
                 // different then the counters may have wrapped.
                 const int hiShift = (tbits - 1);
-                const GLuint64 hiMask = 1 << hiShift;
+                const GLuint64 one = 1;
+                const GLuint64 hiMask = one << hiShift;
                 const GLuint64 sum = (beginTimestamp >> hiShift)
                     + (endTimestamp >> hiShift) + (gpuTimestamp >> hiShift);
                 if (sum == 1 || sum == 2) {
-                    const GLuint64 wrapAdd = 1 << tbits;
+                    const GLuint64 wrapAdd = one << tbits;
                     // Counter wrapped between begin and end?
                     if (beginTimestamp > endTimestamp)
                     {

@@ -92,29 +92,4 @@ class Lwo2
   void _generate_statesets_from_surfaces();
 };
 
-// makes 4-byte integer tag from four chars
-// used in IFF standard
-
-unsigned long make_id(const char* tag);
-
-const unsigned long tag_FORM = make_id("FORM");
-const unsigned long tag_LWO2 = make_id("LWO2");
-const unsigned long tag_LAYR = make_id("LAYR");
-const unsigned long tag_TAGS = make_id("TAGS");
-const unsigned long tag_PNTS = make_id("PNTS");
-const unsigned long tag_VMAP = make_id("VMAP");
-const unsigned long tag_VMAD = make_id("VMAD");
-const unsigned long tag_TXUV = make_id("TXUV");
-const unsigned long tag_POLS = make_id("POLS");
-const unsigned long tag_FACE = make_id("FACE");
-const unsigned long tag_PTAG = make_id("PTAG");
-const unsigned long tag_SURF = make_id("SURF");
-const unsigned long tag_CLIP = make_id("CLIP");
-const unsigned long tag_STIL = make_id("STIL");
-const unsigned long tag_BLOK = make_id("BLOK");
-const unsigned long tag_IMAP = make_id("IMAP");
-const unsigned long tag_TMAP = make_id("TMAP");
-const unsigned long tag_IMAG = make_id("IMAG");
-const unsigned long tag_COLR = make_id("COLR");
-
 #endif

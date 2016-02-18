@@ -412,17 +412,17 @@ const char* Uniform::getTypename( Type t )
     case INT_SAMPLER_BUFFER:               return "isamplerBuffer";
     case INT_SAMPLER_2D_RECT:              return "isampler2DRect";
 
-    case UNSIGNED_INT_SAMPLER_1D:                   return "usample1D";
-    case UNSIGNED_INT_SAMPLER_2D:                   return "usample2D";
-    case UNSIGNED_INT_SAMPLER_3D:                   return "usample3D";
-    case UNSIGNED_INT_SAMPLER_CUBE:                 return "usampleCube";
-    case UNSIGNED_INT_SAMPLER_1D_ARRAY:             return "usample1DArray";
-    case UNSIGNED_INT_SAMPLER_2D_ARRAY:             return "usample2DArray";
-    case UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY:       return "usampleCubeMapArray";
-    case UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE:       return "usample2DMS";
-    case UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY: return "usample2DMSArray";
-    case UNSIGNED_INT_SAMPLER_BUFFER:               return "usampleBuffer";
-    case UNSIGNED_INT_SAMPLER_2D_RECT:              return "usample2DRect";
+    case UNSIGNED_INT_SAMPLER_1D:                   return "usampler1D";
+    case UNSIGNED_INT_SAMPLER_2D:                   return "usampler2D";
+    case UNSIGNED_INT_SAMPLER_3D:                   return "usampler3D";
+    case UNSIGNED_INT_SAMPLER_CUBE:                 return "usamplerCube";
+    case UNSIGNED_INT_SAMPLER_1D_ARRAY:             return "usampler1DArray";
+    case UNSIGNED_INT_SAMPLER_2D_ARRAY:             return "usampler2DArray";
+    case UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY:       return "usamplerCubeMapArray";
+    case UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE:       return "usampler2DMS";
+    case UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY: return "usampler2DMSArray";
+    case UNSIGNED_INT_SAMPLER_BUFFER:               return "usamplerBuffer";
+    case UNSIGNED_INT_SAMPLER_2D_RECT:              return "usampler2DRect";
 
     case IMAGE_1D:                   return "image1D";
     case IMAGE_2D:                   return "image2D";

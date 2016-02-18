@@ -35,10 +35,14 @@ public:
     {
         BASIC           = 1<<0,
         DIGEST          = 1<<1,
-        NTLM            = 1<<2,
-        GSSNegotiate    = 1<<2,
-        ANY             = ~0,
-        ANYSAFE         = ~BASIC
+        NEGOTIATE       = 1<<2,
+        GSSNegotiate    = NEGOTIATE,
+        NTLM            = 1<<3,
+        DIGEST_IE       = 1<<4,
+        NTLM_WB         = 1<<5,
+        ONLY            = 1<<31,
+        ANY             = ~(DIGEST_IE),
+        ANYSAFE         = ~(BASIC|DIGEST_IE)
     };
 
     AuthenticationDetails(const std::string& u, const std::string& p, HttpAuthentication auth=BASIC):

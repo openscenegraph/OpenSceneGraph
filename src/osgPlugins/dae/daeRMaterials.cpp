@@ -39,7 +39,7 @@ using namespace ColladaDOM141;
 #endif
 
 template <typename T>
-void daeReader::getTransparencyCounts(daeDatabase* database, int& zero, int& one) const
+void daeReader::getTransparencyCounts(daeDatabase* database, int& transparentCount, int& opaqueCount) const
 {
     std::vector<T*> constantVec;
     database->typeLookup(constantVec);
@@ -51,7 +51,7 @@ void daeReader::getTransparencyCounts(daeDatabase* database, int& zero, int& one
             domFx_opaque_enum opaque = pTransparent->getOpaque();
             if (opaque == FX_OPAQUE_ENUM_RGB_ZERO)
             {
-                ++one;
+                ++opaqueCount;
                 continue;
             }
         }
@@ -77,11 +77,11 @@ void daeReader::getTransparencyCounts(daeDatabase* database, int& zero, int& one
 
             if (transparency < 0.01f)
             {
-                ++zero;
+                ++transparentCount;
             }
             else if (transparency > 0.99f)
             {
-                ++one;
+                ++opaqueCount;
             }
         }
 
@@ -91,13 +91,13 @@ void daeReader::getTransparencyCounts(daeDatabase* database, int& zero, int& one
 
 bool daeReader::findInvertTransparency(daeDatabase* database) const
 {
-    int zero = 0, one = 0;
-    getTransparencyCounts<domProfile_COMMON::domTechnique::domConstant>(database, zero, one);
-    getTransparencyCounts<domProfile_COMMON::domTechnique::domLambert>(database, zero, one);
-    getTransparencyCounts<domProfile_COMMON::domTechnique::domPhong>(database, zero, one);
-    getTransparencyCounts<domProfile_COMMON::domTechnique::domBlinn>(database, zero, one);
+    int transparentCount = 0, opaqueCount = 0;
+    getTransparencyCounts<domProfile_COMMON::domTechnique::domConstant>(database, transparentCount, opaqueCount);
+    getTransparencyCounts<domProfile_COMMON::domTechnique::domLambert>(database, transparentCount, opaqueCount);
+    getTransparencyCounts<domProfile_COMMON::domTechnique::domPhong>(database, transparentCount, opaqueCount);
+    getTransparencyCounts<domProfile_COMMON::domTechnique::domBlinn>(database, transparentCount, opaqueCount);
 
-    return zero > one;
+    return transparentCount > opaqueCount;
 }
 
 // <bind_material>

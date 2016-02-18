@@ -7,6 +7,7 @@
 #include <osg/TextureRectangle>
 #include <osg/Texture2D>
 #include <osg/Texture1D>
+#include <osg/Types>
 #include <osg/Material>
 #include <osg/BlendFunc>
 #include <osgSim/ShapeAttribute>
@@ -225,7 +226,7 @@ JSONObject* createImage(osg::Image* image, bool inlineImages, int maxTextureDime
             // no image file so use this inline name image and create a file
             std::stringstream ss;
             ss << osgDB::getFilePath(baseName) << osgDB::getNativePathSeparator();
-            ss << (long int)image << ".inline_conv_generated.png"; // write the pointer location
+            ss << (int64_t)image << ".inline_conv_generated.png"; // write the pointer location
             std::string filename = ss.str();
             if (osgDB::writeImageFile(*image, filename)) {
                 image->setFileName(filename);

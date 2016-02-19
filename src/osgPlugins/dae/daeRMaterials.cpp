@@ -33,8 +33,13 @@
 
 using namespace osgDAE;
 
+#ifdef COLLADA_DOM_2_4_OR_LATER
+#include <dom/domAny.h>
+using namespace ColladaDOM141;
+#endif
+
 template <typename T>
-void daeReader::getTransparencyCounts(daeDatabase* database, int& zero, int& one) const
+void daeReader::getTransparencyCounts(daeDatabase* database, int& transparentCount, int& opaqueCount) const
 {
     std::vector<T*> constantVec;
     database->typeLookup(constantVec);
@@ -46,7 +51,7 @@ void daeReader::getTransparencyCounts(daeDatabase* database, int& zero, int& one
             domFx_opaque_enum opaque = pTransparent->getOpaque();
             if (opaque == FX_OPAQUE_ENUM_RGB_ZERO)
             {
-                ++one;
+                ++opaqueCount;
                 continue;
             }
         }
@@ -72,11 +77,11 @@ void daeReader::getTransparencyCounts(daeDatabase* database, int& zero, int& one
 
             if (transparency < 0.01f)
             {
-                ++zero;
+                ++transparentCount;
             }
             else if (transparency > 0.99f)
             {
-                ++one;
+                ++opaqueCount;
             }
         }
 
@@ -86,13 +91,13 @@ void daeReader::getTransparencyCounts(daeDatabase* database, int& zero, int& one
 
 bool daeReader::findInvertTransparency(daeDatabase* database) const
 {
-    int zero = 0, one = 0;
-    getTransparencyCounts<domProfile_COMMON::domTechnique::domConstant>(database, zero, one);
-    getTransparencyCounts<domProfile_COMMON::domTechnique::domLambert>(database, zero, one);
-    getTransparencyCounts<domProfile_COMMON::domTechnique::domPhong>(database, zero, one);
-    getTransparencyCounts<domProfile_COMMON::domTechnique::domBlinn>(database, zero, one);
+    int transparentCount = 0, opaqueCount = 0;
+    getTransparencyCounts<domProfile_COMMON::domTechnique::domConstant>(database, transparentCount, opaqueCount);
+    getTransparencyCounts<domProfile_COMMON::domTechnique::domLambert>(database, transparentCount, opaqueCount);
+    getTransparencyCounts<domProfile_COMMON::domTechnique::domPhong>(database, transparentCount, opaqueCount);
+    getTransparencyCounts<domProfile_COMMON::domTechnique::domBlinn>(database, transparentCount, opaqueCount);
 
-    return zero > one;
+    return transparentCount > opaqueCount;
 }
 
 // <bind_material>
@@ -296,9 +301,10 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
             //  <technique profile="GOOGLEEARTH">
             //      <double_sided>0</double_sided>
             //  </technique>
-            if (strcmp(TechniqueArray[CurrentTechnique]->getProfile(), "GOOGLEEARTH") == 0)
+            const domTechniqueRef& TechniqueRef = TechniqueArray[CurrentTechnique];
+            if (TechniqueRef->getProfile() && strcmp(TechniqueRef->getProfile(), "GOOGLEEARTH") == 0)
             {
-                const daeElementRefArray& ElementArray = TechniqueArray[CurrentTechnique]->getContents();
+                const daeElementRefArray& ElementArray = TechniqueRef->getContents();
                 size_t NumberOfElements = ElementArray.getCount();
                 size_t CurrentElement;
                 for (CurrentElement = 0; CurrentElement < NumberOfElements; CurrentElement++)
@@ -307,7 +313,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
                     if (strcmp(pAny->getElementName(), "double_sided") == 0)
                     {
                         daeString Value = pAny->getValue();
-                        if (strcmp(Value, "1") == 0)
+                        if (Value && strcmp(Value, "1") == 0)
                             ss->setMode( GL_CULL_FACE, osg::StateAttribute::OFF );
                     }
                 }
@@ -382,7 +388,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         {
             // Diffuse texture will defeat specular highlighting
             // So postpone specular - Not sure if I should do this here
-            // beacuse it will override any global light model states
+            // because it will override any global light model states
             osg::LightModel* lightmodel = new osg::LightModel;
             lightmodel->setColorControl(osg::LightModel::SEPARATE_SPECULAR_COLOR);
             ss->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
@@ -456,7 +462,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         {
             // Diffuse texture will defeat specular highlighting
             // So postpone specular - Not sure if I should do this here
-            // beacuse it will override any global light model states
+            // because it will override any global light model states
             osg::LightModel* lightmodel = new osg::LightModel;
             lightmodel->setColorControl(osg::LightModel::SEPARATE_SPECULAR_COLOR);
             ss->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);

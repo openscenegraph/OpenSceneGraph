@@ -50,6 +50,10 @@
 #include <dae/daeDocument.h>
 #include <dom/domChannel.h>
 
+#ifdef COLLADA_DOM_2_4_OR_LATER
+namespace ColladaDOM141
+{
+#endif
 
 class domCOLLADA;
 class domGeometry;
@@ -68,6 +72,12 @@ class domSource;
 class domVisual_scene;
 class domP;
 
+#ifdef COLLADA_DOM_2_4_OR_LATER
+}
+
+using namespace ColladaDOM141;
+#endif
+
 namespace osgDAE {
 
 /// Convert value to string using it's stream operator
@@ -79,9 +89,14 @@ std::string toString(T value)
     return str.str();
 }
 
+std::string toString(const osg::Vec2f& value);
+std::string toString(const osg::Vec2d& value);
 std::string toString(const osg::Vec3f& value);
 std::string toString(const osg::Vec3d& value);
-std::string toString(const osg::Matrix& value);
+std::string toString(const osg::Vec4f& value);
+std::string toString(const osg::Vec4d& value);
+std::string toString(const osg::Matrixf& value);
+std::string toString(const osg::Matrixd& value);
 
 // Collects all nodes that are targeted by an animation
 class FindAnimatedNodeVisitor : public osg::NodeVisitor
@@ -154,6 +169,8 @@ public:
         bool forceTexture;
         bool namesUseCodepage;
         unsigned int relativiseImagesPathNbUpDirs;
+        /** Rename all IDs (geometries, materials, etc.) to remove characters which may be interpreted as an URI. */
+        bool renameIds;
     };
     daeWriter(DAE *dae_, const std::string &fileURI, const std::string & directory, const std::string & srcDirectory, const osgDB::ReaderWriter::Options * options, TraversalMode tm=TRAVERSE_ALL_CHILDREN, const Options * pluginOptions=NULL);
     virtual ~daeWriter();
@@ -254,7 +271,8 @@ protected: //members
     typedef std::map< osgAnimation::RigGeometry*, domController *> OsgRigGeometryDomControllerMap;
     typedef std::map< osgAnimation::MorphGeometry*, domController *> OsgMorphGeometryDomControllerMap;
 
-    std::map< std::string, int > uniqueNames;
+    typedef std::map< std::string, int > UniqueNames;
+    UniqueNames uniqueNames;
     OsgGeometryDomGeometryMap geometryMap;
     OsgRigGeometryDomControllerMap _osgRigGeometryDomControllerMap;
     OsgMorphGeometryDomControllerMap _osgMorphGeometryDomControllerMap;

@@ -20,7 +20,7 @@
 
 #include <sstream>
 #include <osgDB/ConvertUTF>
-
+#include <limits>
 
 namespace osgDAE {
 
@@ -71,6 +71,20 @@ daeWriter::ArrayNIndices::ArrayNIndices( osg::Array* valArray, osg::IndexArray* 
 }
 
 
+std::string toString(const osg::Vec2f& value)
+{
+    std::stringstream str;
+    str << value.x() << " " << value.y();
+    return str.str();
+}
+
+std::string toString(const osg::Vec2d& value)
+{
+    std::stringstream str;
+    str << value.x() << " " << value.y();
+    return str.str();
+}
+
 std::string toString(const osg::Vec3f& value)
 {
     std::stringstream str;
@@ -85,7 +99,22 @@ std::string toString(const osg::Vec3d& value)
     return str.str();
 }
 
-std::string toString(const osg::Matrix& value)
+std::string toString(const osg::Vec4f& value)
+{
+    std::stringstream str;
+    str << value.x() << " " << value.y() << " " << value.z() << " " << value.w();
+    return str.str();
+}
+
+std::string toString(const osg::Vec4d& value)
+{
+    std::stringstream str;
+    str << value.x() << " " << value.y() << " " << value.z() << " " << value.w();
+    return str.str();
+}
+
+template <typename T>
+std::string matrixToString(T value)
 {
     std::stringstream str;
     str << value(0,0) << " " << value(1,0) << " " << value(2,0) << " " << value(3,0) << " "
@@ -95,6 +124,15 @@ std::string toString(const osg::Matrix& value)
     return str.str();
 }
 
+std::string toString(const osg::Matrixf& value)
+{
+    return matrixToString<osg::Matrixf>(value);
+}
+
+std::string toString(const osg::Matrixd& value)
+{
+    return matrixToString<osg::Matrixd>(value);
+}
 
 daeWriter::Options::Options()
     : usePolygons(false),
@@ -104,7 +142,8 @@ daeWriter::Options::Options()
     linkOrignialTextures(false),
     forceTexture(false),
     namesUseCodepage(false),
-    relativiseImagesPathNbUpDirs(0)
+    relativiseImagesPathNbUpDirs(0),
+    renameIds(false)
 {}
 
 daeWriter::daeWriter( DAE *dae_, const std::string & fileURI, const std::string & directory, const std::string & srcDirectory, const osgDB::ReaderWriter::Options * options, TraversalMode tm, const Options * pluginOptions) : osg::NodeVisitor( tm ),
@@ -211,20 +250,29 @@ void daeWriter::updateCurrentDaeNode()
 
 std::string daeWriter::uniquify( const std::string &_name )
 {
-    const std::string name( _pluginOptions.namesUseCodepage ? osgDB::convertStringFromCurrentCodePageToUTF8(_name) : _name );
-    std::map< std::string, int >::iterator iter = uniqueNames.find( name );
-    if ( iter != uniqueNames.end() )
+    const std::string baseName( _pluginOptions.namesUseCodepage ? osgDB::convertStringFromCurrentCodePageToUTF8(_name) : _name );
+    std::string newName( baseName );
+    if (_pluginOptions.renameIds)
     {
-        iter->second++;
+        // Turn 'newName' into a simple ID
+        // Note: ConvertFilePathToColladaCompatibleURI(newName) did not the job: names such as "C:\somedir\somefile" become "/C:/somedir/somefile" and are not interpreted as a simple ID within Google Earth.
+        static const char * const REPLACE_CHARS = " /\\:#?=%&*";
+        for(std::size_t found = newName.find_first_of(REPLACE_CHARS); found != std::string::npos; found = newName.find_first_of(REPLACE_CHARS)) newName[found] = '_';
+    }
+
+    // Loop while newName is in use
+    UniqueNames::iterator iter;
+    for (iter = uniqueNames.find(newName); iter != uniqueNames.end(); iter = uniqueNames.find(newName))
+    {
+        if (iter->second == std::numeric_limits<UniqueNames::mapped_type>::max()) throw std::runtime_error("Not implemented: renaming DAE name above given limit.");
+        iter->second++;        // Increment usage count
         std::ostringstream num;
         num << std::dec << iter->second;
-        return name + "_" + num.str();
+        newName = baseName + "_" + num.str();
     }
-    else
-    {
-        uniqueNames.insert( std::make_pair( name, 0 ) );
-        return name;
-    }
+
+    uniqueNames.insert( std::make_pair( newName, 0 ) );
+    return newName;
 }
 
 void daeWriter::createAssetTag( bool isZUpAxis )

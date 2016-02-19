@@ -22,6 +22,11 @@
 #include <osgAnimation/Bone>
 #include <osgSim/DOFTransform>
 
+#ifdef COLLADA_DOM_2_4_OR_LATER
+#include <dom/domAny.h>
+using namespace ColladaDOM141;
+#endif
+
 using namespace osgDAE;
 
 
@@ -309,7 +314,7 @@ void daeWriter::apply( osg::Transform &node )
                 domMatrix *mat = daeSafeCast< domMatrix >(currentNode->add( COLLADA_ELEMENT_MATRIX ) );
                 nodeName += "_matrix";
                 mat->setSid(nodeName.c_str());
-        
+
                 const osg::Matrix::value_type *mat_vals = matrix.ptr();
                 for ( int i = 0; i < 4; i++ )
                 {

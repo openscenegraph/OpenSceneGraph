@@ -35,6 +35,10 @@
 #include <osgAnimation/Bone>
 #include <osgAnimation/Skeleton>
 
+#ifdef COLLADA_DOM_2_4_OR_LATER
+namespace ColladaDOM141
+{
+#endif
 class domBind_material;
 class domCamera;
 //class domCommon_color_or_texture_type;
@@ -54,6 +58,12 @@ class domSkew;
 class domTranslate;
 class domRotate;
 class domVisual_scene;
+
+#ifdef COLLADA_DOM_2_4_OR_LATER
+}
+
+using namespace ColladaDOM141;
+#endif
 
 namespace osgDAE
 {
@@ -241,7 +251,7 @@ public:
     typedef std::map<domMaterial*, osg::ref_ptr<osg::StateSet> > domMaterialStateSetMap;
     typedef std::map<std::string, osg::ref_ptr<osg::StateSet> >    MaterialStateSetMap;
     typedef std::multimap< daeElement*, domChannel*> daeElementDomChannelMap;
-    typedef std::map<domChannel*, osg::ref_ptr<osg::NodeCallback> > domChannelOsgAnimationUpdateCallbackMap;
+    typedef std::map<domChannel*, osg::ref_ptr<osg::Callback> > domChannelOsgAnimationUpdateCallbackMap;
     typedef std::map<domNode*, osg::ref_ptr<osgAnimation::Bone> > domNodeOsgBoneMap;
     typedef std::map<domNode*, osg::ref_ptr<osgAnimation::Skeleton> > domNodeOsgSkeletonMap;
     typedef std::map<TextureParameters, osg::ref_ptr<osg::Texture2D> > TextureParametersMap;
@@ -253,7 +263,7 @@ public:
     typedef std::map< int, osg::Array*, std::less<int> > ArrayMap;
 
     typedef std::multimap< osgAnimation::Target*, osg::ref_ptr<ChannelPart> > TargetChannelPartMap;
-    typedef std::multimap<std::pair<const domMesh*, unsigned>, std::pair<osg::ref_ptr<osg::Geometry>, GLuint> > OldToNewIndexMap;
+    typedef std::multimap<std::pair<const domMesh*, size_t>, std::pair<osg::ref_ptr<osg::Geometry>, GLuint> > OldToNewIndexMap;
 
 private:
     bool processDocument( const std::string& );
@@ -380,6 +390,7 @@ private:
     osg::Node* _rootNode;
     osg::ref_ptr<osg::StateSet> _rootStateSet;
     domCOLLADA* _document;
+
     domVisual_scene* _visualScene;
 
     std::map<std::string,bool> _targetMap;

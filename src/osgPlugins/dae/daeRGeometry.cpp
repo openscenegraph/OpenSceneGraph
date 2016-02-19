@@ -279,7 +279,7 @@ osg::Node* daeReader::processMorph(domMorph* pDomMorph, domBind_material* pDomBi
                     pOsgMorphGeometry->setWeight(j, weights.get(j));
                 }
 
-                // See if morph weights are targetted by animations
+                // See if morph weights are targeted by animations
                 daeElementDomChannelMap::iterator iter = _daeElementDomChannelMap.find(pDomSource);
                 if (iter != _daeElementDomChannelMap.end())
                 {
@@ -928,7 +928,15 @@ void daeReader::resolveMeshArrays(const domP_Array& domPArray,
 
     if (color_source)
     {
+        // first try Vec4Array
         osg::ref_ptr<osg::Array> array( createGeometryArray<osg::Vec4Array, osg::Vec4dArray, VertexIndices::COLOR>(sources[color_source], vertexIndicesIndexMap, readDoubleColors) );
+
+        // if no array matched try Vec3Array
+        if (!array)
+        {
+            array = createGeometryArray<osg::Vec3Array, osg::Vec3dArray, VertexIndices::COLOR>(sources[color_source], vertexIndicesIndexMap, readDoubleColors);
+        }
+
         if (array.valid())
         {
             geometry->setColorArray(array.get());

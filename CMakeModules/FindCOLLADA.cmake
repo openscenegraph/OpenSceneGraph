@@ -53,10 +53,16 @@ FIND_PATH(COLLADA_INCLUDE_DIR dae.h
     /usr/local/include
     /usr/local/include/colladadom
     /usr/local/include/collada-dom
+    /usr/local/include/collada-dom2.4
+    /usr/local/include/collada-dom2.2
     /opt/local/include/collada-dom
+    /opt/local/include/collada-dom2.4
+    /opt/local/include/collada-dom2.2
     /usr/include/
     /usr/include/colladadom
     /usr/include/collada-dom
+    /usr/include/collada-dom2.4
+    /usr/include/collada-dom2.2
     /sw/include # Fink
     /opt/local/include # DarwinPorts
     /opt/csw/include # Blastwave

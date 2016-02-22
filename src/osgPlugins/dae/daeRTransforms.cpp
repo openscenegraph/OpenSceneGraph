@@ -49,7 +49,7 @@ osg::Transform* daeReader::processOsgMatrixTransform(domNode *node, bool isBone)
         resultNode = new osg::MatrixTransform;
     }
 
-    osg::Callback* pNodeCallback = resultNode->getUpdateCallback();
+    osg::NodeCallback* pNodeCallback = resultNode->getUpdateCallback();
     std::vector<osg::ref_ptr<osgAnimation::StackedTransformElement> > transformElements;
     osg::ref_ptr<osgAnimation::StackedTransformElement> pLastStaticTransformElement;
 

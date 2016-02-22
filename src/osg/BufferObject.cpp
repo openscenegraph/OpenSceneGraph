@@ -188,11 +188,13 @@ void GLBufferObject::compileBuffer()
     {
         OSG_INFO<<"newTotalSize="<<newTotalSize<<", _profile._size="<<_profile._size<<std::endl;
 
+        unsigned int sizeDifference = newTotalSize - _profile._size;
         _profile._size = newTotalSize;
 
         if (_set)
         {
             _set->moveToSet(this, _set->getParent()->getGLBufferObjectSet(_profile));
+            _set->getParent()->getCurrGLBufferObjectPoolSize() += sizeDifference;
         }
 
     }

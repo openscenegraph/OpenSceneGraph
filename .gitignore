@@ -1,0 +1,58 @@
+doc/all_Doxyfile
+doc/auto_Doxyfile
+doc/core_Doxyfile
+doc/openscenegraph.doxyfile
+doc/openthreads.doxyfile
+
+doc/OpenSceneGraphReferenceDocs/
+doc/OpenThreadsReferenceDocs/
+
+cmake_uninstall.cmake
+
+include/OpenThreads/Config
+include/OpenThreads/Version
+include/osg/Config
+include/osg/GL
+include/osg/Version
+
+lib/
+bin/
+
+*.pc
+*.conf
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Makefile
+cmake_install.cmake
+install_manifest.txt
+
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app

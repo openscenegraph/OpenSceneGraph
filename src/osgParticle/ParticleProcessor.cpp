@@ -99,10 +99,12 @@ void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
                         _currentTime += t - _t0;
 
                         // process only if the particle system is not frozen/culled
+                        // We need to allow at least 2 frames difference, because the particle system's lastFrameNumber
+                        // is updated in the draw thread which may not have completed yet.
                         if (alive &&
                             _enabled &&
                             !_ps->isFrozen() &&
-                            ((_ps->getLastFrameNumber()+1) >= (nv.getFrameStamp()->getFrameNumber()) || !_ps->getFreezeOnCull()))
+                            ((_ps->getLastFrameNumber()+2) >= (nv.getFrameStamp()->getFrameNumber()) || !_ps->getFreezeOnCull()))
                         {
                             // initialize matrix flags
                             _need_ltw_matrix = true;

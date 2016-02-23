@@ -41,7 +41,10 @@ void osgParticle::ParticleSystemUpdater::traverse(osg::NodeVisitor& nv)
 
                         ParticleSystem::ScopedWriteLock lock(*(ps->getReadWriteMutex()));
 
-                        if (!ps->isFrozen() && (ps->getLastFrameNumber() >= (nv.getFrameStamp()->getFrameNumber() - 1) || !ps->getFreezeOnCull()))
+                        // We need to allow at least 2 frames difference, because the particle system's lastFrameNumber
+                        // is updated in the draw thread which may not have completed yet.
+                        if (!ps->isFrozen() &&
+                            (!ps->getFreezeOnCull() || ((nv.getFrameStamp()->getFrameNumber()-ps->getLastFrameNumber()) <= 2)) )
                         {
                             ps->update(t - _t0, nv);
                         }

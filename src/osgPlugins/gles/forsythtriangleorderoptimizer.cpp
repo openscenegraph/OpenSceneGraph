@@ -135,7 +135,7 @@ namespace Forsyth
 
         float FindVertexScore(unsigned int numActiveFaces, unsigned int cachePosition, unsigned int vertexCacheSize)
         {
-            assert(s_vertexScoresComputed);
+//            assert(s_vertexScoresComputed);
 
             if ( numActiveFaces == 0 )
             {

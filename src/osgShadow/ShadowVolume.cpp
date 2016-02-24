@@ -305,14 +305,14 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
         const osg::Light* selectLight = 0;
 
         osgUtil::PositionalStateContainer::AttrMatrixList& aml = orig_rs->getPositionalStateContainer()->getAttrMatrixList();
-        for(osgUtil::PositionalStateContainer::AttrMatrixList::iterator itr = aml.begin();
-            itr != aml.end();
-            ++itr)
+        for(osgUtil::PositionalStateContainer::AttrMatrixList::iterator amlitr = aml.begin();
+            amlitr != aml.end();
+            ++amlitr)
         {
-            const osg::Light* light = dynamic_cast<const osg::Light*>(itr->first.get());
+            const osg::Light* light = dynamic_cast<const osg::Light*>(amlitr->first.get());
             if (light)
             {
-                osg::RefMatrix* matrix = itr->second.get();
+                osg::RefMatrix* matrix = amlitr->second.get();
                 if (matrix) lightpos = light->getPosition() * (*matrix);
                 else lightpos = light->getPosition();
 
@@ -320,7 +320,7 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
             }
             else
             {
-                ps->addPositionedAttribute(itr->second.get(), itr->first.get());
+                ps->addPositionedAttribute(amlitr->second.get(), amlitr->first.get());
             }
         }
 

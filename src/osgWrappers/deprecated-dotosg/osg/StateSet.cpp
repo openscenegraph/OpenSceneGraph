@@ -413,13 +413,13 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
     }
 
     bool readingMode = true;
-    StateAttribute::GLModeValue value;
     while (readingMode)
     {
 
         readingMode=false;
         if (fr[0].isInt())
         {
+	    StateAttribute::GLModeValue value;
             if (StateSet_matchModeStr(fr[1].getStr(),value))
             {
                 int mode;
@@ -442,6 +442,7 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
         else
         if (fr[0].getStr())
         {
+	    StateAttribute::GLModeValue value;
             if (StateSet_matchModeStr(fr[1].getStr(),value))
             {
                 StateAttribute::GLMode mode=0;
@@ -501,11 +502,11 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
         {
             bool localIteratorAdvanced = false;
 
-            bool readingMode = true;
+            bool nestedBracketReadingMode = true;
             StateAttribute::GLModeValue value;
-            while (readingMode)
+            while (nestedBracketReadingMode)
             {
-                readingMode=false;
+                nestedBracketReadingMode=false;
                 if (fr[0].isInt())
                 {
                     if (StateSet_matchModeStr(fr[1].getStr(),value))
@@ -515,7 +516,7 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
                         stateset.setTextureMode(unit,(StateAttribute::GLMode)mode,value);
                         fr+=2;
                         localIteratorAdvanced = true;
-                        readingMode=true;
+                        nestedBracketReadingMode=true;
                     }
                 }
                 else
@@ -529,16 +530,16 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
                             stateset.setTextureMode(unit,mode,value);
                             fr+=2;
                             localIteratorAdvanced = true;
-                            readingMode=true;
+                            nestedBracketReadingMode=true;
                         }
                     }
                 }
             }
 
-            StateAttribute* attribute = NULL;
-            while((attribute=fr.readStateAttribute())!=NULL)
+            StateAttribute* stateAttribute = NULL;
+            while((stateAttribute=fr.readStateAttribute())!=NULL)
             {
-                stateset.setTextureAttribute(unit,attribute);
+                stateset.setTextureAttribute(unit,stateAttribute);
                 localIteratorAdvanced = true;
             }
 
@@ -641,9 +642,9 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
 
         if (unit<tml.size())
         {
-            const StateSet::ModeList& ml = tml[unit];
-            for(StateSet::ModeList::const_iterator mitr=ml.begin();
-                mitr!=ml.end();
+            const StateSet::ModeList& unitml = tml[unit];
+            for(StateSet::ModeList::const_iterator mitr=unitml.begin();
+                mitr!=unitml.end();
                 ++mitr)
             {
                 std::string str;
@@ -661,9 +662,9 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
 
         if (unit<tal.size())
         {
-            const StateSet::AttributeList& sl = tal[unit];
-            for(StateSet::AttributeList::const_iterator sitr=sl.begin();
-                sitr!=sl.end();
+            const StateSet::AttributeList& unitsl = tal[unit];
+            for(StateSet::AttributeList::const_iterator sitr=unitsl.begin();
+                sitr!=unitsl.end();
                 ++sitr)
             {
                 fw.writeObject(*(sitr->second.first));

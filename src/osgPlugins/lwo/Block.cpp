@@ -60,20 +60,20 @@ void Block::compile(const lwo2::FORM::SURF::BLOK *blok)
             const lwo2::FORM::SURF::BLOK::IMAP::TMAP *tmap = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::TMAP *>(*i);
             if (tmap) {
                 Texture_mapping mapping;
-                for (iff::Chunk_list::const_iterator i=tmap->attributes.begin(); i!=tmap->attributes.end(); ++i) {
-                    const lwo2::FORM::SURF::BLOK::IMAP::TMAP::CNTR *cntr = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::TMAP::CNTR *>(*i);
+                for (iff::Chunk_list::const_iterator j=tmap->attributes.begin(); j!=tmap->attributes.end(); ++j) {
+                    const lwo2::FORM::SURF::BLOK::IMAP::TMAP::CNTR *cntr = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::TMAP::CNTR *>(*j);
                     if (cntr) {
                         mapping.center_ = osg::Vec3(cntr->vector.X, cntr->vector.Y, cntr->vector.Z);
                     }
-                    const lwo2::FORM::SURF::BLOK::IMAP::TMAP::SIZE *size = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::TMAP::SIZE *>(*i);
+                    const lwo2::FORM::SURF::BLOK::IMAP::TMAP::SIZE *size = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::TMAP::SIZE *>(*j);
                     if (size) {
                         mapping.size_ = osg::Vec3(size->vector.X, size->vector.Y, size->vector.Z);
                     }
-                    const lwo2::FORM::SURF::BLOK::IMAP::TMAP::ROTA *rota = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::TMAP::ROTA *>(*i);
+                    const lwo2::FORM::SURF::BLOK::IMAP::TMAP::ROTA *rota = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::TMAP::ROTA *>(*j);
                     if (rota) {
                         mapping.rotation_ = osg::Vec3(rota->vector.X, rota->vector.Y, rota->vector.Z);
                     }
-                    const lwo2::FORM::SURF::BLOK::IMAP::TMAP::CSYS *csys = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::TMAP::CSYS *>(*i);
+                    const lwo2::FORM::SURF::BLOK::IMAP::TMAP::CSYS *csys = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::TMAP::CSYS *>(*j);
                     if (csys) {
                         mapping.csys_ = static_cast<Texture_mapping::Coordinate_system_type>(csys->type);
                     }

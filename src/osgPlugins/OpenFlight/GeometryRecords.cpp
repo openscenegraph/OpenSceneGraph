@@ -75,9 +75,9 @@ void addDrawableAndReverseWindingOrder( osg::Geode* geode )
                 , osg::CopyOp::DEEP_COPY_ARRAYS | osg::CopyOp::DEEP_COPY_PRIMITIVES);
             new_drawables.push_back(geom);
 
-            for( size_t i = 0; i < geom->getNumPrimitiveSets( ); ++i )
+            for( size_t j = 0; j < geom->getNumPrimitiveSets( ); ++j )
             {
-                osg::DrawArrays* drawarray = dynamic_cast<osg::DrawArrays*>( geom->getPrimitiveSet( i ) );
+                osg::DrawArrays* drawarray = dynamic_cast<osg::DrawArrays*>( geom->getPrimitiveSet( j ) );
                 if( drawarray )
                 {
                     GLint first = drawarray->getFirst();
@@ -96,9 +96,9 @@ void addDrawableAndReverseWindingOrder( osg::Geode* geode )
                         if( normals )
                         {
                             // First, invert the direction of the normals.
-                            for( GLint i = first; i < last; ++i )
+                            for( GLint k = first; k < last; ++k )
                             {
-                                (*normals)[i] = -(*normals)[i];
+                                (*normals)[k] = -(*normals)[k];
                             }
                             reverseWindingOrder( normals, drawarray->getMode(), first, last );
                         }
@@ -113,9 +113,9 @@ void addDrawableAndReverseWindingOrder( osg::Geode* geode )
                         }
                     }
 
-                    for( size_t i = 0; i < geom->getNumTexCoordArrays(); ++i )
+                    for( size_t k = 0; k < geom->getNumTexCoordArrays(); ++k )
                     {
-                        osg::Vec2Array* UVs = dynamic_cast<osg::Vec2Array*>(geom->getTexCoordArray(i));
+                        osg::Vec2Array* UVs = dynamic_cast<osg::Vec2Array*>(geom->getTexCoordArray(k));
                         if( UVs )
                         {
                             reverseWindingOrder( UVs, drawarray->getMode(), first, last );

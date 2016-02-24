@@ -255,9 +255,9 @@ void WoWVxDisplay::configure(osgViewer::View& view) const
             camera->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
             camera->setClearColor( osg::Vec4(0.0,0.0,0.0,1.0) );
             camera->setViewport(new osg::Viewport(0, 0, width, height));
-            GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
-            camera->setDrawBuffer(buffer);
-            camera->setReadBuffer(buffer);
+            GLenum cambuffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+            camera->setDrawBuffer(cambuffer);
+            camera->setReadBuffer(cambuffer);
             camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
             camera->setAllowEventFocus(false);
             camera->setInheritanceMask(camera->getInheritanceMask() & ~osg::CullSettings::CLEAR_COLOR & ~osg::CullSettings::COMPUTE_NEAR_FAR_MODE);

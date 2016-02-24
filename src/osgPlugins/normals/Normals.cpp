@@ -104,7 +104,7 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                         Vec3 v(0,0,0);
                         Vec3 n = *(normals_index++);
                         int ni = (*itr)->getNumIndices();
-                        for( int i = 0; i < ni; i++ )
+                        for( int j = 0; j < ni; j++ )
                             v += *(coord_index++) * _mat;
                         v /= (float)(ni);
 

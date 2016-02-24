@@ -1073,8 +1073,6 @@ osg::ref_ptr<osg::Image> SlideShowConstructor::readImage(const std::string& file
     osg::ref_ptr<osg::Image> image;
     osgDB::DirectoryContents filenames;
 
-    std::string foundFile = filename;
-
     if (imageData.imageSequence)
     {
         // check for wild cards
@@ -2800,7 +2798,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         osg::ref_ptr<osgVolume::ImageDetails> details = dynamic_cast<osgVolume::ImageDetails*>(image->getUserData());
         osg::ref_ptr<osg::RefMatrix> matrix = details ? details->getMatrix() : dynamic_cast<osg::RefMatrix*>(image->getUserData());
 
-        osg::ref_ptr<osgVolume::ImageLayer> layer = new osgVolume::ImageLayer(image.get());
+        layer = new osgVolume::ImageLayer(image.get());
         if (details)
         {
             layer->setTexelOffset(details->getTexelOffset());

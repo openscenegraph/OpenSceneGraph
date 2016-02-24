@@ -234,8 +234,8 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
         copyPointListToVertexList(points,_occluderVolume.getReferenceVertexList());
 
         // create the front face of the occluder
-        Plane occludePlane = computeFrontPlane(points);
-        _occluderVolume.add(occludePlane);
+        Plane frontPlane = computeFrontPlane(points);
+        _occluderVolume.add(frontPlane);
 
         // create the sides of the occluder
         computePlanes(points,farPoints,_occluderVolume.getPlaneList());
@@ -243,7 +243,7 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
         _occluderVolume.setupMask();
 
         // if the front face is pointing away from the eye point flip the whole polytope.
-        if (occludePlane[3]>0.0f)
+        if (frontPlane[3]>0.0f)
         {
             _occluderVolume.flip();
         }
@@ -255,31 +255,31 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
             hitr!=occluder.getHoleList().end();
             ++hitr)
         {
-            PointList points;
-            if (clip(cullingset.getFrustum().getPlaneList(),hitr->getVertexList(),points)>=3)
+            PointList holePoints;
+            if (clip(cullingset.getFrustum().getPlaneList(),hitr->getVertexList(),holePoints)>=3)
             {
                 _holeList.push_back(Polytope());
                 Polytope& polytope = _holeList.back();
 
                 // compute the points on the far plane.
-                PointList farPoints;
-                farPoints.reserve(points.size());
-                transform(points,farPoints,MVP);
-                pushToFarPlane(farPoints);
-                transform(farPoints,invP);
+                PointList holeFarPoints;
+                holeFarPoints.reserve(holePoints.size());
+                transform(holePoints,holeFarPoints,MVP);
+                pushToFarPlane(holeFarPoints);
+                transform(holeFarPoints,invP);
 
                 // move the occlude points into projection space.
-                transform(points,MV);
+                transform(holePoints,MV);
 
                 // use the points on the front plane as reference vertices on the _occluderVolume
                 // so that the vertices can later by used to test for occlusion of the occluder itself.
-                copyPointListToVertexList(points,polytope.getReferenceVertexList());
+                copyPointListToVertexList(holePoints,polytope.getReferenceVertexList());
 
                 // create the front face of the occluder
-                Plane occludePlane = computeFrontPlane(points);
+                Plane occludePlane = computeFrontPlane(holePoints);
 
                 // create the sides of the occluder
-                computePlanes(points,farPoints,polytope.getPlaneList());
+                computePlanes(holePoints,holeFarPoints,polytope.getPlaneList());
 
                 polytope.setupMask();
 
@@ -290,7 +290,7 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
                 }
 
                 // remove the hole's volume from the occluder volume.
-                _volume -= computePolytopeVolume(points,farPoints)/volumeview;
+                _volume -= computePolytopeVolume(holePoints,holeFarPoints)/volumeview;
             }
 
         }

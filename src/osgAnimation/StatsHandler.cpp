@@ -90,8 +90,8 @@ struct StatsGraph : public osg::MatrixTransform
 
     void changeYposition(float y)
     {
-        osg::Vec3 _pos = getMatrix().getTrans();
-        _pos[1] = y - _height;
+        osg::Vec3 pos = getMatrix().getTrans();
+        pos[1] = y - _height;
         setMatrix(osg::Matrix::translate(_pos));
     }
 

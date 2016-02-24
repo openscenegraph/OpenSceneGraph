@@ -120,8 +120,8 @@ void Object::parse(const iff::Chunk_list &data)
         const lwo2::FORM::PNTS *pnts = dynamic_cast<const lwo2::FORM::PNTS *>(*i);
         if (pnts) {
             Unit new_unit;
-            for (lwo2::FORM::PNTS::Point_list::const_iterator i=pnts->point_location.begin(); i!=pnts->point_location.end(); ++i) {
-                new_unit.points()->push_back(csf_->fix_point(osg::Vec3(i->X, i->Y, i->Z) /*+ current_layer.pivot()*/));
+            for (lwo2::FORM::PNTS::Point_list::const_iterator j=pnts->point_location.begin(); j!=pnts->point_location.end(); ++j) {
+                new_unit.points()->push_back(csf_->fix_point(osg::Vec3(j->X, j->Y, j->Z) /*+ current_layer.pivot()*/));
             }
             new_unit.shares().assign(new_unit.points()->size(), Unit::Index_list());
             current_layer.units().push_back(new_unit);
@@ -136,8 +136,8 @@ void Object::parse(const iff::Chunk_list &data)
                     continue;
                 }
                 VertexMap *new_map = current_layer.units().back().weight_maps()->getOrCreate(vmap->name);
-                for (lwo2::FORM::VMAP::Mapping_list::const_iterator i=vmap->mapping.begin(); i!=vmap->mapping.end(); ++i) {
-                    (*new_map)[i->vert.index] = osg::Vec4(i->value.at(0), 0, 0, 0);
+                for (lwo2::FORM::VMAP::Mapping_list::const_iterator j=vmap->mapping.begin(); j!=vmap->mapping.end(); ++j) {
+                    (*new_map)[j->vert.index] = osg::Vec4(j->value.at(0), 0, 0, 0);
                 }
             }
             if (type == "MNVW") {
@@ -146,8 +146,8 @@ void Object::parse(const iff::Chunk_list &data)
                     continue;
                 }
                 VertexMap *new_map = current_layer.units().back().subpatch_weight_maps()->getOrCreate(vmap->name);
-                for (lwo2::FORM::VMAP::Mapping_list::const_iterator i=vmap->mapping.begin(); i!=vmap->mapping.end(); ++i) {
-                    (*new_map)[i->vert.index] = osg::Vec4(i->value.at(0), 0, 0, 0);
+                for (lwo2::FORM::VMAP::Mapping_list::const_iterator j=vmap->mapping.begin(); j!=vmap->mapping.end(); ++j) {
+                    (*new_map)[j->vert.index] = osg::Vec4(j->value.at(0), 0, 0, 0);
                 }
             }
             if (type == "TXUV") {
@@ -156,8 +156,8 @@ void Object::parse(const iff::Chunk_list &data)
                     continue;
                 }
                 VertexMap *new_map = current_layer.units().back().texture_maps()->getOrCreate(vmap->name);
-                for (lwo2::FORM::VMAP::Mapping_list::const_iterator i=vmap->mapping.begin(); i!=vmap->mapping.end(); ++i) {
-                    (*new_map)[i->vert.index] = osg::Vec4(i->value.at(0), i->value.at(1), 0, 0);
+                for (lwo2::FORM::VMAP::Mapping_list::const_iterator j=vmap->mapping.begin(); j!=vmap->mapping.end(); ++j) {
+                    (*new_map)[j->vert.index] = osg::Vec4(j->value.at(0), j->value.at(1), 0, 0);
                 }
             }
             if (type == "RGB ") {
@@ -166,8 +166,8 @@ void Object::parse(const iff::Chunk_list &data)
                     continue;
                 }
                 VertexMap *new_map = current_layer.units().back().rgb_maps()->getOrCreate(vmap->name);
-                for (lwo2::FORM::VMAP::Mapping_list::const_iterator i=vmap->mapping.begin(); i!=vmap->mapping.end(); ++i) {
-                    (*new_map)[i->vert.index] = osg::Vec4(i->value.at(0), i->value.at(1), i->value.at(2), 1);
+                for (lwo2::FORM::VMAP::Mapping_list::const_iterator j=vmap->mapping.begin(); j!=vmap->mapping.end(); ++j) {
+                    (*new_map)[j->vert.index] = osg::Vec4(j->value.at(0), j->value.at(1), j->value.at(2), 1);
                 }
             }
             if (type == "RGBA") {
@@ -176,8 +176,8 @@ void Object::parse(const iff::Chunk_list &data)
                     continue;
                 }
                 VertexMap *new_map = current_layer.units().back().rgba_maps()->getOrCreate(vmap->name);
-                for (lwo2::FORM::VMAP::Mapping_list::const_iterator i=vmap->mapping.begin(); i!=vmap->mapping.end(); ++i) {
-                    (*new_map)[i->vert.index] = osg::Vec4(i->value.at(0), i->value.at(1), i->value.at(2), i->value.at(3));
+                for (lwo2::FORM::VMAP::Mapping_list::const_iterator j=vmap->mapping.begin(); j!=vmap->mapping.end(); ++j) {
+                    (*new_map)[j->vert.index] = osg::Vec4(j->value.at(0), j->value.at(1), j->value.at(2), j->value.at(3));
                 }
             }
             if (type == "MORF") {
@@ -186,8 +186,8 @@ void Object::parse(const iff::Chunk_list &data)
                     continue;
                 }
                 VertexMap *new_map = current_layer.units().back().displacement_maps()->getOrCreate(vmap->name);
-                for (lwo2::FORM::VMAP::Mapping_list::const_iterator i=vmap->mapping.begin(); i!=vmap->mapping.end(); ++i) {
-                    (*new_map)[i->vert.index] = osg::Vec4(i->value.at(0), i->value.at(1), i->value.at(2), 0);
+                for (lwo2::FORM::VMAP::Mapping_list::const_iterator j=vmap->mapping.begin(); j!=vmap->mapping.end(); ++j) {
+                    (*new_map)[j->vert.index] = osg::Vec4(j->value.at(0), j->value.at(1), j->value.at(2), 0);
                 }
             }
             if (type == "SPOT") {
@@ -196,8 +196,8 @@ void Object::parse(const iff::Chunk_list &data)
                     continue;
                 }
                 VertexMap *new_map = current_layer.units().back().spot_maps()->getOrCreate(vmap->name);
-                for (lwo2::FORM::VMAP::Mapping_list::const_iterator i=vmap->mapping.begin(); i!=vmap->mapping.end(); ++i) {
-                    (*new_map)[i->vert.index] = osg::Vec4(csf_->fix_point(osg::Vec3(i->value.at(0), i->value.at(1), i->value.at(2))), 0);
+                for (lwo2::FORM::VMAP::Mapping_list::const_iterator j=vmap->mapping.begin(); j!=vmap->mapping.end(); ++j) {
+                    (*new_map)[j->vert.index] = osg::Vec4(csf_->fix_point(osg::Vec3(j->value.at(0), j->value.at(1), j->value.at(2))), 0);
                 }
             }
         }
@@ -208,7 +208,7 @@ void Object::parse(const iff::Chunk_list &data)
             if (type != "FACE") {
                 OSG_INFO << "INFO: Lwo2Object: polygon list of type " << type << " not supported, rendering may be inaccurate" << std::endl;
             }
-            for (lwo2::FORM::POLS::Polygon_list::const_iterator i=pols->polygons.begin(); i!=pols->polygons.end(); ++i) {
+            for (lwo2::FORM::POLS::Polygon_list::const_iterator j=pols->polygons.begin(); j!=pols->polygons.end(); ++j) {
                 Polygon polygon;
                 bool must_invert_winding = csf_->invert_winding();
 
@@ -216,22 +216,22 @@ void Object::parse(const iff::Chunk_list &data)
                 // if the first vertex is at a concave corner, we must invert the winding of the polygon
                 // because it appears as flipped in Lighwave. Also, we tell the polygon to invert its normal.
                 // (not implemented yet)
-                /*if (i->vert.size() >= 4) {
-                    if (must_invert_winding == triangle_is_clockwise(current_layer.units().back().points(), i->vert.front().index, i->vert.back().index, i->vert[1].index)) {
+                /*if (j->vert.size() >= 4) {
+                    if (must_invert_winding == triangle_is_clockwise(current_layer.units().back().points(), j->vert.front().index, j->vert.back().index, j->vert[1].index)) {
                         must_invert_winding = !must_invert_winding;
                         polygon.set_invert_normal(true);
                     }
                 }*/
 
                 if (must_invert_winding) {
-                    for (unsigned j=0; j<i->numvert; ++j) {
-                        int index = i->vert.at((i->numvert-j)%i->numvert).index;
+                    for (unsigned k=0; k<j->numvert; ++k) {
+                        int index = j->vert.at((j->numvert-k)%j->numvert).index;
                         polygon.indices().push_back(index);
                         current_layer.units().back().shares().at(index).push_back(current_layer.units().back().polygons().size());
                     }
                 } else {
-                    for (unsigned j=0; j<i->numvert; ++j) {
-                        int index = i->vert.at(j).index;
+                    for (unsigned k=0; k<j->numvert; ++k) {
+                        int index = j->vert.at(k).index;
                         polygon.indices().push_back(index);
                         current_layer.units().back().shares().at(index).push_back(current_layer.units().back().polygons().size());
                     }
@@ -249,18 +249,18 @@ void Object::parse(const iff::Chunk_list &data)
         if (ptag && !current_layer.units().empty()) {
             std::string type(ptag->type.id, 4);
             if (type == "SURF") {
-                for (lwo2::FORM::PTAG::Mapping_list::const_iterator i=ptag->mapping.begin(); i!=ptag->mapping.end(); ++i) {
-                    current_layer.units().back().polygons().at(i->poly.index).set_surface(&surfaces_[tag_strings.at(i->tag)]);
+                for (lwo2::FORM::PTAG::Mapping_list::const_iterator j=ptag->mapping.begin(); j!=ptag->mapping.end(); ++j) {
+                    current_layer.units().back().polygons().at(j->poly.index).set_surface(&surfaces_[tag_strings.at(j->tag)]);
                 }
             }
             if (type == "PART") {
-                for (lwo2::FORM::PTAG::Mapping_list::const_iterator i=ptag->mapping.begin(); i!=ptag->mapping.end(); ++i) {
-                    current_layer.units().back().polygons().at(i->poly.index).set_part_name(tag_strings.at(i->tag));
+                for (lwo2::FORM::PTAG::Mapping_list::const_iterator j=ptag->mapping.begin(); j!=ptag->mapping.end(); ++j) {
+                    current_layer.units().back().polygons().at(j->poly.index).set_part_name(tag_strings.at(j->tag));
                 }
             }
             if (type == "SMGP") {
-                for (lwo2::FORM::PTAG::Mapping_list::const_iterator i=ptag->mapping.begin(); i!=ptag->mapping.end(); ++i) {
-                    current_layer.units().back().polygons().at(i->poly.index).set_smoothing_group(tag_strings.at(i->tag));
+                for (lwo2::FORM::PTAG::Mapping_list::const_iterator j=ptag->mapping.begin(); j!=ptag->mapping.end(); ++j) {
+                    current_layer.units().back().polygons().at(j->poly.index).set_smoothing_group(tag_strings.at(j->tag));
                 }
             }
         }
@@ -273,9 +273,9 @@ void Object::parse(const iff::Chunk_list &data)
                     OSG_WARN << "Warning: Lwo2Object: invalid " << type << " discontinuous vertex map dimension: " << vmad->dimension << std::endl;
                     continue;
                 }
-                for (lwo2::FORM::VMAD::Mapping_list::const_iterator i=vmad->mapping.begin(); i!=vmad->mapping.end(); ++i) {
-                    VertexMap *this_map = current_layer.units().back().polygons().at(i->poly.index).weight_maps()->getOrCreate(vmad->name);
-                    (*this_map)[i->vert.index] = osg::Vec4(i->value.at(0), 0, 0, 0);
+                for (lwo2::FORM::VMAD::Mapping_list::const_iterator j=vmad->mapping.begin(); j!=vmad->mapping.end(); ++j) {
+                    VertexMap *this_map = current_layer.units().back().polygons().at(j->poly.index).weight_maps()->getOrCreate(vmad->name);
+                    (*this_map)[j->vert.index] = osg::Vec4(j->value.at(0), 0, 0, 0);
                 }
             }
             if (type == "TXUV") {
@@ -283,9 +283,9 @@ void Object::parse(const iff::Chunk_list &data)
                     OSG_WARN << "Warning: Lwo2Object: invalid " << type << " discontinuous vertex map dimension: " << vmad->dimension << std::endl;
                     continue;
                 }
-                for (lwo2::FORM::VMAD::Mapping_list::const_iterator i=vmad->mapping.begin(); i!=vmad->mapping.end(); ++i) {
-                    VertexMap *this_map = current_layer.units().back().polygons().at(i->poly.index).texture_maps()->getOrCreate(vmad->name);
-                    (*this_map)[i->vert.index] = osg::Vec4(i->value.at(0), i->value.at(1), 0, 0);
+                for (lwo2::FORM::VMAD::Mapping_list::const_iterator j=vmad->mapping.begin(); j!=vmad->mapping.end(); ++j) {
+                    VertexMap *this_map = current_layer.units().back().polygons().at(j->poly.index).texture_maps()->getOrCreate(vmad->name);
+                    (*this_map)[j->vert.index] = osg::Vec4(j->value.at(0), j->value.at(1), 0, 0);
                 }
             }
             if (type == "RGB ") {
@@ -293,9 +293,9 @@ void Object::parse(const iff::Chunk_list &data)
                     OSG_WARN << "Warning: Lwo2Object: invalid " << type << " discontinuous vertex map dimension: " << vmad->dimension << std::endl;
                     continue;
                 }
-                for (lwo2::FORM::VMAD::Mapping_list::const_iterator i=vmad->mapping.begin(); i!=vmad->mapping.end(); ++i) {
-                    VertexMap *this_map = current_layer.units().back().polygons().at(i->poly.index).rgb_maps()->getOrCreate(vmad->name);
-                    (*this_map)[i->vert.index] = osg::Vec4(i->value.at(0), i->value.at(1), i->value.at(2), 1);
+                for (lwo2::FORM::VMAD::Mapping_list::const_iterator j=vmad->mapping.begin(); j!=vmad->mapping.end(); ++j) {
+                    VertexMap *this_map = current_layer.units().back().polygons().at(j->poly.index).rgb_maps()->getOrCreate(vmad->name);
+                    (*this_map)[j->vert.index] = osg::Vec4(j->value.at(0), j->value.at(1), j->value.at(2), 1);
                 }
             }
             if (type == "RGBA") {
@@ -303,9 +303,9 @@ void Object::parse(const iff::Chunk_list &data)
                     OSG_WARN << "Warning: Lwo2Object: invalid " << type << " discontinuous vertex map dimension: " << vmad->dimension << std::endl;
                     continue;
                 }
-                for (lwo2::FORM::VMAD::Mapping_list::const_iterator i=vmad->mapping.begin(); i!=vmad->mapping.end(); ++i) {
-                    VertexMap *this_map = current_layer.units().back().polygons().at(i->poly.index).rgba_maps()->getOrCreate(vmad->name);
-                    (*this_map)[i->vert.index] = osg::Vec4(i->value.at(0), i->value.at(1), i->value.at(2), i->value.at(3));
+                for (lwo2::FORM::VMAD::Mapping_list::const_iterator j=vmad->mapping.begin(); j!=vmad->mapping.end(); ++j) {
+                    VertexMap *this_map = current_layer.units().back().polygons().at(j->poly.index).rgba_maps()->getOrCreate(vmad->name);
+                    (*this_map)[j->vert.index] = osg::Vec4(j->value.at(0), j->value.at(1), j->value.at(2), j->value.at(3));
                 }
             }
         }
@@ -371,22 +371,22 @@ void Object::generate_auto_texture_maps()
 
                                 osg::Vec3 N = csf_->fix_vector(poly.face_normal(h->points()));
 
-                                Image_map::Axis_type axis = Image_map::X;
-                                if (N.y() > N.x() && N.y() > N.z()) axis = Image_map::Y;
-                                if (-N.y() > N.x() && -N.y() > N.z()) axis = Image_map::Y;
-                                if (N.z() > N.x() && N.z() > N.y()) axis = Image_map::Z;
-                                if (-N.z() > N.x() && -N.z() > N.y()) axis = Image_map::Z;
+                                Image_map::Axis_type polyaxis = Image_map::X;
+                                if (N.y() > N.x() && N.y() > N.z()) polyaxis = Image_map::Y;
+                                if (-N.y() > N.x() && -N.y() > N.z()) polyaxis = Image_map::Y;
+                                if (N.z() > N.x() && N.z() > N.y()) polyaxis = Image_map::Z;
+                                if (-N.z() > N.x() && -N.z() > N.y()) polyaxis = Image_map::Z;
 
-                                for (Polygon::Index_list::iterator i=poly.indices().begin(); i!=poly.indices().end(); ++i) {
+                                for (Polygon::Index_list::iterator m=poly.indices().begin(); m!=poly.indices().end(); ++m) {
 
                                     // fetch vertex
-                                    osg::Vec3 P = csf_->fix_point((*h->points())[*i]);
+                                    osg::Vec3 P = csf_->fix_point((*h->points())[*m]);
 
                                     // setup scale/translation/rotation
                                     P = block.setup_texture_point(P);
 
                                     osg::Vec2 uv;
-                                    switch (axis) {
+                                    switch (polyaxis) {
                                         case Image_map::X: uv.set(P.z(), P.y()); break;
                                         case Image_map::Y: uv.set(P.x(), P.z()); break;
                                         case Image_map::Z: uv.set(P.x(), P.y()); break;
@@ -396,10 +396,10 @@ void Object::generate_auto_texture_maps()
 
                                     osg::Vec4 map_value(uv.x(), uv.y(), 0, 0);
 
-                                    if ((new_map->find(*i) != new_map->end()) && (map_value != (*new_map.get())[*i])) {
-                                        (*local_uv_map.get())[*i] = map_value;
+                                    if ((new_map->find(*m) != new_map->end()) && (map_value != (*new_map.get())[*m])) {
+                                        (*local_uv_map.get())[*m] = map_value;
                                     } else {
-                                        (*new_map.get())[*i] = map_value;
+                                        (*new_map.get())[*m] = map_value;
                                     }
                                 }
                             }

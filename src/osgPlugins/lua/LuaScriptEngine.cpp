@@ -1380,14 +1380,14 @@ static int callImageGet(lua_State* _lua)
     osg::Vec4d colour;
     switch(image->getDataType())
     {
-        case(GL_BYTE): for(unsigned int i=0; i<numComponents; ++i) { colour[i] = static_cast<double>(*(reinterpret_cast<const char*>(ptr)+i)); } break;
-        case(GL_UNSIGNED_BYTE): for(unsigned int i=0; i<numComponents; ++i) { colour[i] = static_cast<double>(*(ptr+i)); } break;
-        case(GL_SHORT): for(unsigned int i=0; i<numComponents; ++i) { colour[i] = static_cast<double>(*(reinterpret_cast<const short*>(ptr)+i)); } break;
-        case(GL_UNSIGNED_SHORT): for(unsigned int i=0; i<numComponents; ++i) { colour[i] = static_cast<double>(*(reinterpret_cast<const unsigned short*>(ptr)+i)); } break;
-        case(GL_INT): for(unsigned int i=0; i<numComponents; ++i) { colour[i] = static_cast<double>(*(reinterpret_cast<const int*>(ptr)+i)); } break;
-        case(GL_UNSIGNED_INT): for(unsigned int i=0; i<numComponents; ++i) { colour[i] = static_cast<double>(*(reinterpret_cast<const unsigned int*>(ptr)+i)); } break;
-        case(GL_FLOAT): for(unsigned int i=0; i<numComponents; ++i) { colour[i] = static_cast<double>(*(reinterpret_cast<const float*>(ptr)+i)); } break;
-        case(GL_DOUBLE): for(unsigned int i=0; i<numComponents; ++i) { colour[i] = static_cast<double>(*(reinterpret_cast<const double*>(ptr)+i)); } break;
+        case(GL_BYTE): for(unsigned int l=0; l<numComponents; ++l) { colour[l] = static_cast<double>(*(reinterpret_cast<const char*>(ptr)+l)); } break;
+        case(GL_UNSIGNED_BYTE): for(unsigned int l=0; l<numComponents; ++l) { colour[l] = static_cast<double>(*(ptr+l)); } break;
+        case(GL_SHORT): for(unsigned int l=0; l<numComponents; ++l) { colour[l] = static_cast<double>(*(reinterpret_cast<const short*>(ptr)+l)); } break;
+        case(GL_UNSIGNED_SHORT): for(unsigned int l=0; l<numComponents; ++l) { colour[l] = static_cast<double>(*(reinterpret_cast<const unsigned short*>(ptr)+l)); } break;
+        case(GL_INT): for(unsigned int l=0; l<numComponents; ++l) { colour[l] = static_cast<double>(*(reinterpret_cast<const int*>(ptr)+l)); } break;
+        case(GL_UNSIGNED_INT): for(unsigned int l=0; l<numComponents; ++l) { colour[l] = static_cast<double>(*(reinterpret_cast<const unsigned int*>(ptr)+l)); } break;
+        case(GL_FLOAT): for(unsigned int l=0; l<numComponents; ++l) { colour[l] = static_cast<double>(*(reinterpret_cast<const float*>(ptr)+l)); } break;
+        case(GL_DOUBLE): for(unsigned int l=0; l<numComponents; ++l) { colour[l] = static_cast<double>(*(reinterpret_cast<const double*>(ptr)+l)); } break;
         default:
             OSG_NOTICE<<"Warning: Unsupported DataType in Image::get()"<<std::endl;
             return 0;
@@ -1458,20 +1458,19 @@ static void setImageColour(osg::Image* image, int i, int j, int k, const osg::Ve
 
     switch(image->getDataType())
     {
-        case(GL_BYTE): for(unsigned int i=0; i<numComponents; ++i) { *(reinterpret_cast<char*>(ptr)+i) = static_cast<char>(colourToWrite[i]); } break;
-        case(GL_UNSIGNED_BYTE): for(unsigned int i=0; i<numComponents; ++i) { *(reinterpret_cast<unsigned char*>(ptr)+i) = static_cast<unsigned char>(colourToWrite[i]); } break;
-        case(GL_SHORT): for(unsigned int i=0; i<numComponents; ++i) { *(reinterpret_cast<short*>(ptr)+i) = static_cast<short>(colourToWrite[i]); } break;
-        case(GL_UNSIGNED_SHORT): for(unsigned int i=0; i<numComponents; ++i) { *(reinterpret_cast<unsigned short*>(ptr)+i) = static_cast<unsigned short>(colourToWrite[i]); } break;
-        case(GL_INT): for(unsigned int i=0; i<numComponents; ++i) {  *(reinterpret_cast<int*>(ptr)+i) = static_cast<int>(colourToWrite[i]); } break;
-        case(GL_UNSIGNED_INT): for(unsigned int i=0; i<numComponents; ++i) { *(reinterpret_cast<unsigned int*>(ptr)+i) = static_cast<unsigned int>(colourToWrite[i]); } break;
-        case(GL_FLOAT): for(unsigned int i=0; i<numComponents; ++i) { *(reinterpret_cast<float*>(ptr)+i) = static_cast<float>(colourToWrite[i]); } break;
-        case(GL_DOUBLE): for(unsigned int i=0; i<numComponents; ++i) { *(reinterpret_cast<double*>(ptr)+i) = static_cast<double>(colourToWrite[i]); } break;
+        case(GL_BYTE): 			for(unsigned int l=0; i<numComponents; ++l) { *(reinterpret_cast<char*>(ptr)+l) = static_cast<char>(colourToWrite[l]); } break;
+        case(GL_UNSIGNED_BYTE):		for(unsigned int l=0; i<numComponents; ++l) { *(reinterpret_cast<unsigned char*>(ptr)+l) = static_cast<unsigned char>(colourToWrite[l]); } break;
+        case(GL_SHORT): 		for(unsigned int l=0; i<numComponents; ++l) { *(reinterpret_cast<short*>(ptr)+l) = static_cast<short>(colourToWrite[l]); } break;
+        case(GL_UNSIGNED_SHORT):	for(unsigned int l=0; i<numComponents; ++l) { *(reinterpret_cast<unsigned short*>(ptr)+l) = static_cast<unsigned short>(colourToWrite[l]); } break;
+        case(GL_INT):			for(unsigned int l=0; i<numComponents; ++l) {  *(reinterpret_cast<int*>(ptr)+l) = static_cast<int>(colourToWrite[l]); } break;
+        case(GL_UNSIGNED_INT):		for(unsigned int l=0; l<numComponents; ++l) { *(reinterpret_cast<unsigned int*>(ptr)+l) = static_cast<unsigned int>(colourToWrite[l]); } break;
+        case(GL_FLOAT):			for(unsigned int l=0; l<numComponents; ++l) { *(reinterpret_cast<float*>(ptr)+l) = static_cast<float>(colourToWrite[l]); } break;
+        case(GL_DOUBLE):		for(unsigned int l=0; l<numComponents; ++l) { *(reinterpret_cast<double*>(ptr)+l) = static_cast<double>(colourToWrite[l]); } break;
         default:
             OSG_NOTICE<<"Warning: Unsupported DataType in Image::set()"<<std::endl;
             return;
     }
 }
-
 static int callImageSet(lua_State* _lua)
 {
     const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
@@ -1501,11 +1500,11 @@ static int callImageSet(lua_State* _lua)
     else if (lua_istable(_lua, n))
     {
         lua_getfield(_lua, n, "intensity");
-        if (lua_isnumber(_lua, -1)) { double i = lua_tonumber(_lua, -1); colour[0] = i; colour[1] = i; colour[2] = i; colour[3] = i; }
+        if (lua_isnumber(_lua, -1)) { double intensity = lua_tonumber(_lua, -1); colour[0] = intensity; colour[1] = intensity; colour[2] = intensity; colour[3] = intensity; }
         lua_pop(_lua, 1);
 
         lua_getfield(_lua, n, "i");
-        if (lua_isnumber(_lua, -1)) { double i = lua_tonumber(_lua, -1); colour[0] = i; colour[1] = i; colour[2] = i; colour[3] = i; }
+        if (lua_isnumber(_lua, -1)) { double ival = lua_tonumber(_lua, -1); colour[0] = ival; colour[1] = ival; colour[2] = ival; colour[3] = ival; }
         lua_pop(_lua, 1);
 
 

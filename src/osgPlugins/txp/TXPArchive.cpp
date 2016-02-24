@@ -797,13 +797,13 @@ public:
         offset[0] -= bbox._min[0];
         offset[1] -= bbox._min[1];
 
-        trpg2dPoint offsetXY, tileID(_tileInfo.x,_tileInfo.y);
+        trpg2dPoint offsetXY, tileInfo(_tileInfo.x,_tileInfo.y);
         int divider = (0x01 << _tileInfo.lod);
         // calculate which tile model is located in
         tileExtents.x /= divider;
         tileExtents.y /= divider;
-        offset[0] -= tileID.x*tileExtents.x;
-        offset[1] -= tileID.y*tileExtents.y;
+        offset[0] -= tileInfo.x*tileExtents.x;
+        offset[1] -= tileInfo.y*tileExtents.y;
 
         osg::Matrix mat(xform.getMatrix());
         mat.setTrans(offset);
@@ -868,11 +868,11 @@ osg::Group* TXPArchive::getTileContent(
 
     if(childRef)
     {
-        TileLocationInfo loc;
-        childRef->GetTileLoc(loc.x, loc.y, loc.lod);
-        childRef->GetTileZValue(loc.zmin, loc.zmax);
-        childRef->GetTileAddress(loc.addr);
-        childInfoList.push_back(loc);
+        TileLocationInfo childloc;
+        childRef->GetTileLoc(childloc.x, childloc.y, childloc.lod);
+        childRef->GetTileZValue(childloc.zmin, childloc.zmax);
+        childRef->GetTileAddress(childloc.addr);
+        childInfoList.push_back(childloc);
 
     }
     }

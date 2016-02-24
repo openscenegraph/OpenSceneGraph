@@ -735,9 +735,9 @@ OSGTEXT_EXPORT osg::Geometry* computeGlyphGeometry(const osgText::Glyph3D* glyph
 
                             (*orig_vertices)[new_index] = v_before;
 
-                            for(int i=1; i<=num_vertices_on_web-1; ++i)
+                            for(int j=1; j<=num_vertices_on_web-1; ++j)
                             {                        
-                                float gamma = ((static_cast<float>(i)/static_cast<float>(num_vertices_on_web))-0.5f) * beta;
+                                float gamma = ((static_cast<float>(j)/static_cast<float>(num_vertices_on_web))-0.5f) * beta;
                                 // OSG_NOTICE<<"     gamma = "<<osg::RadiansToDegrees(gamma)<<" sin(gamma)="<<sin(gamma)<<", cos(gamma)="<<cos(gamma)<<std::endl;
                                 
                                 osg::Vec3 v = v_center + horizontal*sin(gamma) + vertical*cos(gamma);

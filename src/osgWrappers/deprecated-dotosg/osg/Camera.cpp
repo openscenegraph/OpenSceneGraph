@@ -70,14 +70,14 @@ bool Camera_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    osg::ref_ptr<osg::StateAttribute> attribute;
-    while((attribute=fr.readStateAttribute())!=NULL)
+    osg::ref_ptr<osg::StateAttribute> stateAttribute;
+    while((stateAttribute=fr.readStateAttribute())!=NULL)
     {
-        osg::Viewport* viewport = dynamic_cast<osg::Viewport*>(attribute.get());
+        osg::Viewport* viewport = dynamic_cast<osg::Viewport*>(stateAttribute.get());
         if (viewport) camera.setViewport(viewport);
         else
         {
-            osg::ColorMask* colormask = dynamic_cast<osg::ColorMask*>(attribute.get());
+            osg::ColorMask* colormask = dynamic_cast<osg::ColorMask*>(stateAttribute.get());
             camera.setColorMask(colormask);
         }
     }
@@ -178,16 +178,16 @@ bool Camera_readLocalData(Object& obj, Input& fr)
                 localAdvance = true;
             }
 
-            osg::ref_ptr<osg::Object> attribute;
-            while((attribute=fr.readObject())!=NULL)
+            osg::ref_ptr<osg::Object> readAttribute;
+            while((readAttribute=fr.readObject())!=NULL)
             {
                 localAdvance = true;
 
-                osg::Texture* texture = dynamic_cast<osg::Texture*>(attribute.get());
+                osg::Texture* texture = dynamic_cast<osg::Texture*>(readAttribute.get());
                 if (texture) attachment._texture = texture;
                 else
                 {
-                    osg::Image* image = dynamic_cast<osg::Image*>(attribute.get());
+                    osg::Image* image = dynamic_cast<osg::Image*>(readAttribute.get());
                     attachment._image = image;
                 }
 

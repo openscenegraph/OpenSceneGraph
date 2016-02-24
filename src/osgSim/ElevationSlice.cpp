@@ -453,8 +453,6 @@ struct LineConstructor
     void pruneOverlappingSegments()
     {
         SegmentSet::iterator prevItr = _segments.begin();
-        SegmentSet::iterator nextItr = prevItr;
-        ++nextItr;
 
         double epsilon = 0.001;
 

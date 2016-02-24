@@ -475,9 +475,9 @@ dxfPolyline::assign(dxfFile* dxf, codeValue& cv)
 void
 dxfPolyline::drawScene(scene* sc)
 {
-    Matrixd m;
-    getOCSMatrix(_ocs, m);
-    sc->ocs(m);
+    Matrixd matrix;
+    getOCSMatrix(_ocs, matrix);
+    sc->ocs(matrix);
     std::vector<Vec3d> vlist;
     std::vector<Vec3d> qlist;
     Vec3d a, b, c, d;

@@ -298,9 +298,9 @@ void CameraConfig::addCamera( std::string name, Camera *camera )
     RenderSurface *rs = camera->getRenderSurface();
     if( rs->getWindowName() == osgProducer::RenderSurface::defaultWindowName )
     {
-        char name[80];
-        sprintf( name, "%s (%02d)", osgProducer::RenderSurface::defaultWindowName.c_str(), (int)_render_surface_map.size() );
-        rs->setWindowName( name );
+        char windowname[80];
+        sprintf( windowname, "%s (%02d)", osgProducer::RenderSurface::defaultWindowName.c_str(), (int)_render_surface_map.size() );
+        rs->setWindowName( windowname );
     }
     _render_surface_map.insert(std::pair<std::string, osg::ref_ptr<RenderSurface> >( rs->getWindowName(), rs ));
 }

@@ -65,9 +65,9 @@ bool osgDB::queryPlugin(const std::string& fileName, ReaderWriterInfoList& infoL
 
     if (osgDB::Registry::instance()->loadLibrary(fileName))
     {
-        const Registry::ReaderWriterList& rwList = osgDB::Registry::instance()->getReaderWriterList();
-        for(Registry::ReaderWriterList::const_iterator itr = rwList.begin();
-            itr != rwList.end();
+        const Registry::ReaderWriterList& libRwList = osgDB::Registry::instance()->getReaderWriterList();
+        for(Registry::ReaderWriterList::const_iterator itr = libRwList.begin();
+            itr != libRwList.end();
             ++itr)
         {
             const ReaderWriter* rw = itr->get();

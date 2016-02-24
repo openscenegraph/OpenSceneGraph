@@ -1273,20 +1273,20 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                 vertexSet->setCreaseAngle(creaseAngle);
 
                 for (unsigned n = 0; n < num; ++n) {
-                    std::string token;
-                    stream >> token;
+                    std::string looptoken;
+                    stream >> looptoken;
 
-                    if (token != "SURF") {
+                    if (looptoken != "SURF") {
                         OSG_FATAL << "osgDB ac3d reader: expected SURF line while reading object \""
                                                 << group->getName() << "\"!" << std::endl;
                         return group.release();
                     }
 
-                    stream >> token;
-                    unsigned flags = strtol(token.c_str(), NULL, 0);
+                    stream >> looptoken;
+                    unsigned flags = strtol(looptoken.c_str(), NULL, 0);
 
-                    stream >> token;
-                    if (token != "mat") {
+                    stream >> looptoken;
+                    if (looptoken != "mat") {
                         OSG_FATAL << "osgDB ac3d reader: expected mat line while reading object \""
                                                 << group->getName() << "\"!" << std::endl;
                         return group.release();
@@ -1311,8 +1311,8 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                     }
 
                     // read the refs
-                    stream >> token;
-                    if (token != "refs") {
+                    stream >> looptoken;
+                    if (looptoken != "refs") {
                         OSG_FATAL << "osgDB ac3d reader: expected refs line while reading object \""
                                                 << group->getName() << "\"" << std::endl;
                         return group.release();

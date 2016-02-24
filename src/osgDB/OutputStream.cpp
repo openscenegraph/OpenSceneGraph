@@ -516,8 +516,8 @@ void OutputStream::writeImage( const osg::Image* img )
                 unsigned int offset = 0;
                 for (unsigned int i=0; i<numMipmaps; ++i)
                 {
-                    unsigned int size = osg::Image::computeImageSizeInBytes(s,t,r,img->getPixelFormat(),img->getDataType(),img->getPacking());
-                    offset += size;
+                    unsigned int imageSize = osg::Image::computeImageSizeInBytes(s,t,r,img->getPixelFormat(),img->getDataType(),img->getPacking());
+                    offset += imageSize;
 
                     *this << offset;
 

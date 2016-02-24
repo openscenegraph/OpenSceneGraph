@@ -281,23 +281,23 @@ void trpgPageManager::LodPageInfo::Clean()
     activeUnload = false;
 }
 
-bool trpgPageManager::LodPageInfo::Init(trpgr_Archive *archive, int myLod, double scale, int freeListDivider)
+bool trpgPageManager::LodPageInfo::Init(trpgr_Archive *in_archive, int in_lod, double in_scale, int in_freeListDivider)
 {
     Clean();
 
-    lod = myLod;
+    lod = in_lod;
     // In theory we could have a negative scale, but I don't
     //  really want to deal with that.
-    if (scale < 0)  scale = 0.0;
+    if (in_scale < 0)  in_scale = 0.0;
 
-    tileTable = archive->GetTileTable();
+    tileTable = in_archive->GetTileTable();
 
     // Need some size and shape info about our terrain LOD
-    const trpgHeader *head = archive->GetHeader();
+    const trpgHeader *head = in_archive->GetHeader();
     head->GetTileSize(lod,cellSize);
     head->GetLodRange(lod,pageDist);
     head->GetLodSize(lod,lodSize);
-    pageDist *= scale;
+    pageDist *= in_scale;
 
     head->GetVersion(majorVersion, minorVersion);
 
@@ -318,7 +318,7 @@ bool trpgPageManager::LodPageInfo::Init(trpgr_Archive *archive, int myLod, doubl
     */
     maxNumTiles = (int)(1.15*(2*aoiSize.x+1)*(2*aoiSize.y+1));
     if(majorVersion == 2 && minorVersion >= 1)
-        maxNumTiles = (int)(1.15*(2*aoiSize.x+1)*(2*aoiSize.y+1)/freeListDivider);
+        maxNumTiles = (int)(1.15*(2*aoiSize.x+1)*(2*aoiSize.y+1)/in_freeListDivider);
     else
         maxNumTiles = (int)(1.15*(2*aoiSize.x+1)*(2*aoiSize.y+1));
 

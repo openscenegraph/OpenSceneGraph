@@ -967,7 +967,7 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
 
         int width = s;
         int height = t;
-        int depth = r;
+        int mipmapDepth = r;
 
         for( unsigned int k = 0; k < mipmap_offsets.size(); ++k  )
         {
@@ -975,10 +975,10 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
 
            width = osg::maximum( width >> 1, 1 );
            height = osg::maximum( height >> 1, 1 );
-           depth = osg::maximum( depth >> 1, 1 );
+           mipmapDepth = osg::maximum( mipmapDepth >> 1, 1 );
 
            sizeWithMipmaps +=
-                ComputeImageSizeInBytes( width, height, depth, pixelFormat, dataType, packing );
+                ComputeImageSizeInBytes( width, height, mipmapDepth, pixelFormat, dataType, packing );
         }
     }
 

@@ -248,19 +248,19 @@ void MinimalShadowMap::ViewData::frameShadowCastingCamera
     {
 #if 1
         {
-            osg::Matrix mvp = cameraShadow->getViewMatrix() * cameraShadow->getProjectionMatrix();
+            osg::Matrix lastPassMVP = cameraShadow->getViewMatrix() * cameraShadow->getProjectionMatrix();
             ConvexPolyhedron frustum;
             frustum.setToUnitFrustum();
-            frustum.transform( osg::Matrix::inverse( mvp ), mvp );
+            frustum.transform( osg::Matrix::inverse( lastPassMVP ), lastPassMVP );
 
             setDebugPolytope( "shadowCamFrustum", frustum, osg::Vec4(0,0,1,1) );
         }
 
         {
-            osg::Matrix mvp = cameraMain->getViewMatrix() * cameraMain->getProjectionMatrix();
+            osg::Matrix lastPassMVP = cameraMain->getViewMatrix() * cameraMain->getProjectionMatrix();
             ConvexPolyhedron frustum;
             frustum.setToUnitFrustum();
-            frustum.transform( osg::Matrix::inverse( mvp ), mvp );
+            frustum.transform( osg::Matrix::inverse( lastPassMVP ), lastPassMVP );
 
             setDebugPolytope( "mainCamFrustum", frustum, osg::Vec4(1,1,1,1) );
         }

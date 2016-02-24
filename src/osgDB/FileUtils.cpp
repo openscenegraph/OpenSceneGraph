@@ -198,25 +198,25 @@ bool osgDB::makeDirectory( const std::string &path )
 
     while( !paths.empty() )
     {
-        std::string dir = paths.top();
+        std::string curdir = paths.top();
 
         #if defined(WIN32)
             //catch drive name
-            if (dir.size() == 2 && dir.c_str()[1] == ':') {
+            if (curdir.size() == 2 && curdir.c_str()[1] == ':') {
                 paths.pop();
                 continue;
             }
         #endif
 
 #ifdef OSG_USE_UTF8_FILENAME
-        if ( _wmkdir(OSGDB_STRING_TO_FILENAME(dir).c_str())< 0 )
+        if ( _wmkdir(OSGDB_STRING_TO_FILENAME(curdir).c_str())< 0 )
 #else
-        if( mkdir( dir.c_str(), 0755 )< 0 )
+        if( mkdir( curdir.c_str(), 0755 )< 0 )
 #endif
         {
             // Only return an error if the directory actually doesn't exist.  It's possible that the directory was created
             // by another thread or process
-            if (!osgDB::fileExists(dir))
+            if (!osgDB::fileExists(curdir))
             {
                 OSG_DEBUG << "osgDB::makeDirectory(): "  << strerror(errno) << std::endl;
                 return false;

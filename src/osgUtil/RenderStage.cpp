@@ -372,11 +372,11 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 
             if (ext->isRenderbufferMultisampleSupported())
             {
-                for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachments.begin();
-                    itr != bufferAttachments.end();
-                    ++itr)
+                for(osg::Camera::BufferAttachmentMap::iterator attachmentitr = bufferAttachments.begin();
+                    attachmentitr != bufferAttachments.end();
+                    ++attachmentitr)
                 {
-                    osg::Camera::Attachment& attachment = itr->second;
+                    osg::Camera::Attachment& attachment = attachmentitr->second;
                     samples = maximum(samples, attachment._multisampleSamples);
                     colorSamples = maximum(colorSamples, attachment._multisampleColorSamples);
                 }
@@ -398,13 +398,13 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                 }
             }
 
-            for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachments.begin();
-                itr != bufferAttachments.end();
-                ++itr)
+            for(osg::Camera::BufferAttachmentMap::iterator attachmentitr = bufferAttachments.begin();
+                attachmentitr != bufferAttachments.end();
+                ++attachmentitr)
             {
 
-                osg::Camera::BufferComponent buffer = itr->first;
-                osg::Camera::Attachment& attachment = itr->second;
+                osg::Camera::BufferComponent buffer = attachmentitr->first;
+                osg::Camera::Attachment& attachment = attachmentitr->second;
 
                 if (attachment._texture.valid() || attachment._image.valid())
                     fbo->setAttachment(buffer, osg::FrameBufferAttachment(attachment));
@@ -526,7 +526,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                 #endif
             }
 
-            GLenum status = ext->glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT);
+            const GLenum status = ext->glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT);
 
             if (status != GL_FRAMEBUFFER_COMPLETE_EXT)
             {
@@ -551,8 +551,6 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                 if (fbo_multisample.valid())
                 {
                     fbo_multisample->apply(state);
-
-                    GLenum status = ext->glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT);
 
                     if (status != GL_FRAMEBUFFER_COMPLETE_EXT)
                     {
@@ -630,13 +628,13 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 
             bool colorAttached = false;
             bool depthAttached = false;
-            for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachments.begin();
-                itr != bufferAttachments.end();
-                ++itr)
+            for(osg::Camera::BufferAttachmentMap::iterator attachmentitr = bufferAttachments.begin();
+                attachmentitr != bufferAttachments.end();
+                ++attachmentitr)
             {
 
-                osg::Camera::BufferComponent buffer = itr->first;
-                osg::Camera::Attachment& attachment = itr->second;
+                osg::Camera::BufferComponent buffer = attachmentitr->first;
+                osg::Camera::Attachment& attachment = attachmentitr->second;
                 switch(buffer)
                 {
                     case(osg::Camera::DEPTH_BUFFER):
@@ -794,12 +792,17 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
     {
         OSG_INFO<<"Setting up osg::Camera::FRAME_BUFFER"<<std::endl;
 
-        for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachments.begin();
-            itr != bufferAttachments.end();
-            ++itr)
+        for(osg::Camera::BufferAttachmentMap::iterator attachmentitr = bufferAttachments.begin();
+            attachmentitr != bufferAttachments.end();
+            ++attachmentitr)
         {
             // assign the texture...
-            if (itr->second._texture.valid()) setTexture(itr->second._texture.get(), itr->second._level, itr->second._face);
+            if (attachmentitr->second._texture.valid())
+	    {
+		setTexture(attachmentitr->second._texture.get(),
+			   attachmentitr->second._level,
+			   attachmentitr->second._face);
+	    }
         }
     }
 
@@ -1100,15 +1103,15 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
     {
         // now generate mipmaps if they are required.
         const osg::Camera::BufferAttachmentMap& bufferAttachments = _camera->getBufferAttachmentMap();
-        for(osg::Camera::BufferAttachmentMap::const_iterator itr = bufferAttachments.begin();
-            itr != bufferAttachments.end();
-            ++itr)
+        for(osg::Camera::BufferAttachmentMap::const_iterator mapitr = bufferAttachments.begin();
+            mapitr != bufferAttachments.end();
+            ++mapitr)
         {
-            if (itr->second._texture.valid() && itr->second._mipMapGeneration)
+            if (mapitr->second._texture.valid() && mapitr->second._mipMapGeneration)
             {
                 state.setActiveTextureUnit(0);
-                state.applyTextureAttribute(0, itr->second._texture.get());
-                ext->glGenerateMipmap(itr->second._texture->getTextureTarget());
+                state.applyTextureAttribute(0, mapitr->second._texture.get());
+                ext->glGenerateMipmap(mapitr->second._texture->getTextureTarget());
             }
         }
     }

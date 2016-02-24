@@ -370,9 +370,7 @@ void ConvexPolyhedron::transformClip(const osg::Matrix& matrix, const osg::Matri
     typedef std::set< Edge > Edges;
     Edges edges;
 
-    for( FaceDistancesList::iterator fd = faceDistances.begin();
-        fd != faceDistances.end();
-        ++fd )
+    for( fd = faceDistances.begin(); fd != faceDistances.end(); ++fd )
     {
         if ( fd->below == 0 )
         {  // skip face if all points on or above cutting plane ( below == 0 )
@@ -1288,7 +1286,7 @@ void ConvexPolyhedron::cut(const osg::Plane& plane, const std::string& name)
     typedef std::set< Edge > Edges;
     Edges edges;
 
-    for( FaceDistancesList::iterator fd = faceDistances.begin();
+    for( fd = faceDistances.begin();
         fd != faceDistances.end();
         ++fd )
     {
@@ -1846,11 +1844,11 @@ bool ConvexPolyhedron::dumpGeometry
 
     if( plane )
     {
-        ConvexPolyhedron cp;
-        Face & face = cp.createFace();
-        face.plane = *plane;
+        ConvexPolyhedron planeCP;
+        Face& planeface = planeCP.createFace();
+        planeface.plane = *plane;
 
-        osg::Vec3d normal = face.plane.getNormal();
+        osg::Vec3d normal = planeface.plane.getNormal();
         osg::Vec3d side = fabs(normal.x()) < fabs(normal.y()) ?
                             osg::Vec3d(1.0, 0.0, 0.0) :
                             osg::Vec3d(0.0, 1.0, 0.0);
@@ -1864,14 +1862,14 @@ bool ConvexPolyhedron::dumpGeometry
         u *= bb.radius();
 
         osg::Vec3d c = bb.center();
-        c -= face.plane.getNormal() * face.plane.distance( c );
+        c -= planeface.plane.getNormal() * planeface.plane.distance( c );
 
-        face.vertices.push_back( c - u - v );
-        face.vertices.push_back( c - u + v );
-        face.vertices.push_back( c + u + v );
-        face.vertices.push_back( c + u - v );
+        planeface.vertices.push_back( c - u - v );
+        planeface.vertices.push_back( c - u + v );
+        planeface.vertices.push_back( c + u + v );
+        planeface.vertices.push_back( c + u - v );
 
-        geode->addDrawable( cp.buildGeometry( planeColorOutline, planeColorInside ) );
+        geode->addDrawable( planeCP.buildGeometry( planeColorOutline, planeColorInside ) );
     }
 
     if( base )

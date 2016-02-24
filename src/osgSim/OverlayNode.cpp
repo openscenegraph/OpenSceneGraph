@@ -241,8 +241,7 @@ public:
 
         Faces removedFaces;
 
-        Faces::iterator itr;
-        for(itr = _faces.begin();
+        for(Faces::iterator itr = _faces.begin();
             itr != _faces.end();
             )
         {
@@ -266,7 +265,7 @@ public:
 
         double numVerticesAdded=0.0;
         osg::Vec3d center;
-        for(itr = removedFaces.begin();
+        for(Faces::iterator itr = removedFaces.begin();
             itr != removedFaces.end();
             ++itr)
         {
@@ -330,7 +329,7 @@ public:
             }
 
             //compute centroid of the base vertices
-            osg::Vec3d center;
+            osg::Vec3d basecenter;
             double totalArea = 0;
             for(unsigned int i=0; i<baseVertices.size()-1; ++i)
             {
@@ -339,14 +338,14 @@ public:
                 const osg::Vec3d& c = baseVertices[(i+2)%baseVertices.size()];
                 double area = ((a-b)^(b-c)).length()*0.5;
                 osg::Vec3d localCenter = (a+b+c)/3.0;
-                center += localCenter*area;
+                basecenter += localCenter*area;
                 totalArea += area;
             }
-            center /= totalArea;
-            osg::Vec3d normal(center);
+            basecenter /= totalArea;
+            osg::Vec3d normal(basecenter);
             normal.normalize();
 
-            osg::Plane basePlane(normal, center);
+            osg::Plane basePlane(normal, basecenter);
 
             cut(basePlane,"basePlane");
         }

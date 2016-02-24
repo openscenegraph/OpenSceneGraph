@@ -516,9 +516,9 @@ void Optimizer::StateVisitor::optimize()
             sitr!=_statesets.end();
             ++sitr)
         {
-            const osg::StateSet::AttributeList& attributes = sitr->first->getAttributeList();
-            for(osg::StateSet::AttributeList::const_iterator aitr= attributes.begin();
-                aitr!=attributes.end();
+            const osg::StateSet::AttributeList& stateAttributes = sitr->first->getAttributeList();
+            for(osg::StateSet::AttributeList::const_iterator aitr= stateAttributes.begin();
+                aitr!=stateAttributes.end();
                 ++aitr)
             {
                 if (optimize(aitr->second.first->getDataVariance()))
@@ -531,9 +531,9 @@ void Optimizer::StateVisitor::optimize()
             const osg::StateSet::TextureAttributeList& texAttributes = sitr->first->getTextureAttributeList();
             for(unsigned int unit=0;unit<texAttributes.size();++unit)
             {
-                const osg::StateSet::AttributeList& attributes = texAttributes[unit];
-                for(osg::StateSet::AttributeList::const_iterator aitr= attributes.begin();
-                    aitr!=attributes.end();
+                const osg::StateSet::AttributeList& unitTexAttributes = texAttributes[unit];
+                for(osg::StateSet::AttributeList::const_iterator aitr= unitTexAttributes.begin();
+                    aitr!=unitTexAttributes.end();
                     ++aitr)
                 {
                     if (optimize(aitr->second.first->getDataVariance()))
@@ -2700,8 +2700,7 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Group* group, unsigned int 
 
     // create the original box.
     osg::BoundingBox bb;
-    unsigned int i;
-    for(i=0;i<group->getNumChildren();++i)
+    for(unsigned int i=0;i<group->getNumChildren();++i)
     {
         bb.expandBy(group->getChild(i)->getBound().center());
     }
@@ -2783,7 +2782,7 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Group* group, unsigned int 
     // bin each child into associated bb group
     typedef std::vector< osg::ref_ptr<osg::Node> > NodeList;
     NodeList unassignedList;
-    for(i=0;i<group->getNumChildren();++i)
+    for(unsigned int i=0;i<group->getNumChildren();++i)
     {
         bool assigned = false;
         osg::Vec3 center = group->getChild(i)->getBound().center();
@@ -2868,8 +2867,7 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Geode* geode, unsigned int 
 
     // create the original box.
     osg::BoundingBox bb;
-    unsigned int i;
-    for(i=0; i<geode->getNumDrawables(); ++i)
+    for(unsigned int i=0; i<geode->getNumDrawables(); ++i)
     {
         bb.expandBy(geode->getDrawable(i)->getBoundingBox().center());
     }
@@ -2898,7 +2896,7 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Geode* geode, unsigned int 
     osg::ref_ptr<osg::Group> group = new osg::Group;
     group->setName(geode->getName());
     group->setStateSet(geode->getStateSet());
-    for(i=0; i<geode->getNumDrawables(); ++i)
+    for(unsigned int i=0; i<geode->getNumDrawables(); ++i)
     {
         osg::Geode* newGeode = new osg::Geode;
         newGeode->addDrawable(geode->getDrawable(i));
@@ -3352,8 +3350,8 @@ void Optimizer::TextureAtlasBuilder::completeRow(unsigned int indexAtlas)
             Source * srcAdded = sitr4->get();
             int y_min = srcAdded->_y + srcAdded->_image->t() + 2 * _margin;
             int x_min = srcAdded->_x;
-            int x_max = x_min + srcAdded->_image->s();        // Hides upper block's x_max
-            if (y_min >= y_max || x_min >= x_max) continue;
+            int cur_x_max = x_min + srcAdded->_image->s();
+            if (y_min >= y_max || x_min >= cur_x_max) continue;
 
             Source * maxWidthSource = NULL;
             for(SourceList::iterator sitr2 = _sourceList.begin(); sitr2 != _sourceList.end(); ++sitr2)
@@ -3366,7 +3364,7 @@ void Optimizer::TextureAtlasBuilder::completeRow(unsigned int indexAtlas)
                 }
                 int image_s = source->_image->s();
                 int image_t = source->_image->t();
-                if(x_min + image_s <= x_max && y_min + image_t <= y_max)        // Test if the image can fit in the empty space.
+                if(x_min + image_s <= cur_x_max && y_min + image_t <= y_max)        // Test if the image can fit in the empty space.
                 {
                     if (maxWidthSource == NULL || maxWidthSource->_image->s() < source->_image->s())
                     {
@@ -4427,12 +4425,12 @@ void Optimizer::TextureAtlasVisitor::optimize()
                             osg::Vec2Array* texcoords = geom ? dynamic_cast<osg::Vec2Array*>(geom->getTexCoordArray(unit)) : 0;
                             if (texcoords)
                             {
-                                for(osg::Vec2Array::iterator titr = texcoords->begin();
-                                    titr != texcoords->end();
-                                    ++titr)
+                                for(osg::Vec2Array::iterator tcitr = texcoords->begin();
+                                    tcitr != texcoords->end();
+                                    ++tcitr)
                                 {
-                                    osg::Vec2 tc = *titr;
-                                    (*titr).set(tc[0]*matrix(0,0) + tc[1]*matrix(1,0) + matrix(3,0),
+                                    osg::Vec2 tc = *tcitr;
+                                    (*tcitr).set(tc[0]*matrix(0,0) + tc[1]*matrix(1,0) + matrix(3,0),
                                               tc[0]*matrix(0,1) + tc[1]*matrix(1,1) + matrix(3,1));
                                 }
                             }
@@ -4706,22 +4704,22 @@ void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::transf
     if(geometry)
     {
         // transform all geometry
-        osg::Vec3Array* verts = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
-        if(verts)
+        osg::Vec3Array* verts3d = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+        if(verts3d)
         {
-            for(unsigned int j=0; j<verts->size(); j++)
+            for(unsigned int j=0; j<verts3d->size(); j++)
             {
-                (*verts)[j] = (*verts)[j] * _matrixStack.back();
+                (*verts3d)[j] = (*verts3d)[j] * _matrixStack.back();
             }
         }
         else
         {
-            osg::Vec4Array* verts = dynamic_cast<osg::Vec4Array*>(geometry->getVertexArray());
-            if(verts)
+            osg::Vec4Array* verts4d = dynamic_cast<osg::Vec4Array*>(geometry->getVertexArray());
+            if(verts4d)
             {
-                for(unsigned int j=0; j<verts->size(); j++)
+                for(unsigned int j=0; j<verts4d->size(); j++)
                 {
-                    (*verts)[j] = _matrixStack.back() * (*verts)[j];
+                    (*verts4d)[j] = _matrixStack.back() * (*verts4d)[j];
                 }
             }
         }

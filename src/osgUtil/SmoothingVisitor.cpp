@@ -521,10 +521,10 @@ struct FindSharpEdgesFunctor
                     aitr != associatedTriangles.end();
                     ++aitr)
                 {
-                    Triangle* tri = aitr->get();
-                    if (tri->_p1==p) tri->_p1 = duplicated_p;
-                    if (tri->_p2==p) tri->_p2 = duplicated_p;
-                    if (tri->_p3==p) tri->_p3 = duplicated_p;
+                    Triangle* assocTri = aitr->get();
+                    if (assocTri->_p1==p) assocTri->_p1 = duplicated_p;
+                    if (assocTri->_p2==p) assocTri->_p2 = duplicated_p;
+                    if (assocTri->_p3==p) assocTri->_p3 = duplicated_p;
                 }
 
                 // reset iterator to beginning

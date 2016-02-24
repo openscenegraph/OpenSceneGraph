@@ -677,8 +677,9 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
     OSG_NOTIFY(level)<<"    currentTime = "<<currentTime<<std::endl;
     OSG_NOTIFY(level)<<"    currentElapsedFrameTime = "<<currentElapsedFrameTime<<std::endl;
 
-    double _flushTimeRatio(0.5);
-    double _conservativeTimeRatio(0.5);
+    //Seems wront to define these here
+    //double _flushTimeRatio(0.5);
+    //double _conservativeTimeRatio(0.5);
 
     double availableTime = std::max((targetFrameTime - currentElapsedFrameTime)*_conservativeTimeRatio,
                                     minimumTimeAvailableForGLCompileAndDeletePerFrame);

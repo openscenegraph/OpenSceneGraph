@@ -277,19 +277,19 @@ void ComboBox::createGraphicsImplementation()
 
             // setup graphics for button
             {
-                osg::ref_ptr<osg::Group> group = new osg::Group;
-                if (item->getColor().a()!=0.0f) group->addChild( style->createPanel(extents, item->getColor()) );
-                if (!item->getText().empty()) group->addChild( style->createText(extents, getAlignmentSettings(), getTextSettings(), item->getText()) );
-                _buttonSwitch->addChild(group.get());
+                osg::ref_ptr<osg::Group> buttongroup = new osg::Group;
+                if (item->getColor().a()!=0.0f) buttongroup->addChild( style->createPanel(extents, item->getColor()) );
+                if (!item->getText().empty()) buttongroup->addChild( style->createText(extents, getAlignmentSettings(), getTextSettings(), item->getText()) );
+                _buttonSwitch->addChild(buttongroup.get());
             }
 
             // setup graphics for popup
             {
-                osg::ref_ptr<osg::Group> group = new osg::Group;
+                osg::ref_ptr<osg::Group> popupgroup = new osg::Group;
 
-                if (item->getColor().a()!=0.0f) group->addChild( style->createPanel(popupItemExtents, item->getColor()) );
-                if (!item->getText().empty()) group->addChild( style->createText(popupItemExtents, getAlignmentSettings(), getTextSettings(), item->getText()) );
-                _popup->addChild(group.get());
+                if (item->getColor().a()!=0.0f) popupgroup->addChild( style->createPanel(popupItemExtents, item->getColor()) );
+                if (!item->getText().empty()) popupgroup->addChild( style->createText(popupItemExtents, getAlignmentSettings(), getTextSettings(), item->getText()) );
+                _popup->addChild(popupgroup.get());
 
                 popupItemExtents.yMin() -= (itemHeight+margin);
                 popupItemExtents.yMax() -= (itemHeight+margin);

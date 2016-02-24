@@ -207,15 +207,15 @@ public:
     {
         return ((flags & ISLOCAL)==ISLOCAL);
     }
-    void    SetBlocks(int rows,int cols)
+    void    SetBlocks(int in_rows,int in_cols)
     {
-        this->rows = rows;
-        this->cols = cols;
+        this->rows = in_rows;
+        this->cols = in_cols;
     }
-    void    GetBlocks(int &rows,int &cols)
+    void    GetBlocks(int &out_rows,int &out_cols)
     {
-        rows = this->rows;
-        cols = this->cols;
+        out_rows = this->rows;
+        out_cols = this->cols;
     }
 protected:
     int verMinor,verMajor;
@@ -1960,15 +1960,15 @@ public:
     bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
     bool    Print(trpgPrintBuffer &) const;
-    void    SetBlockNo(int row, int col)
+    void    SetBlockNo(int in_row, int in_col)
     {
-        this->row = row;
-        this->col = col;
+        this->row = in_row;
+        this->col = in_col;
     }
-    void    GetBlockNo(int &row, int &col)
+    void    GetBlockNo(int &out_row, int &out_col)
     {
-        row = this->row;
-        col = this->col;
+        out_row = this->row;
+        out_col = this->col;
     }
 protected:
     std::vector<int> matList;

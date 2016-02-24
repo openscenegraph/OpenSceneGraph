@@ -69,8 +69,8 @@ void Image::write(DataOutputStream* out)
     if(data())
     {
         // Compute the size of image data and write this.
-        unsigned int size = getTotalSizeInBytesIncludingMipmaps();
-        out->writeInt(size);
+        const unsigned int totalsize = getTotalSizeInBytesIncludingMipmaps();
+        out->writeInt(totalsize);
         // Write the data
         for(osg::Image::DataIterator itr(this); itr.valid(); ++itr)
         {

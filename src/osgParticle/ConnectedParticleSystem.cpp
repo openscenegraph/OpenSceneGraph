@@ -147,8 +147,8 @@ void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) co
             const Particle* nextParticle = (particle->getNextParticle() != Particle::INVALID_INDEX) ? &_particles[particle->getNextParticle()] : 0;
             if (nextParticle)
             {
-                const osg::Vec3& nextPos = nextParticle->getPosition();
-                osg::Vec3 startDelta = nextPos-pos;
+                const osg::Vec3& startNextPos = nextParticle->getPosition();
+                osg::Vec3 startDelta = startNextPos-pos;
                 startDelta.normalize();
                 float distance2 = 0.0;
 
@@ -187,8 +187,8 @@ void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) co
 
             if (nextParticle)
             {
-                const osg::Vec3& nextPos = nextParticle->getPosition();
-                osg::Vec3 startDelta = nextPos-pos;
+                const osg::Vec3& startNextPos = nextParticle->getPosition();
+                osg::Vec3 startDelta = startNextPos-pos;
                 startDelta.normalize();
                 float distance2 = 0.0;
 
@@ -203,7 +203,7 @@ void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) co
                     distance2 = (delta^startDelta).length2();
                 }
 
-                delta = nextPos-pos;
+                delta = startNextPos-pos;
             }
 
             osg::Vec3 normal( delta ^ (pos-eyeLocal));

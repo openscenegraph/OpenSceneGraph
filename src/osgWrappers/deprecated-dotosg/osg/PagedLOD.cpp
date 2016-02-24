@@ -37,10 +37,10 @@ bool PagedLOD_readLocalData(Object& obj, Input& fr)
     {
         if (lod.getDatabasePath().empty() && fr.getOptions() && !fr.getOptions()->getDatabasePathList().empty())
         {
-            const std::string& path = fr.getOptions()->getDatabasePathList().front();
-            if (!path.empty())
+            const std::string& frontpath = fr.getOptions()->getDatabasePathList().front();
+            if (!frontpath.empty())
             {
-                lod.setDatabasePath(path);
+                lod.setDatabasePath(frontpath);
             }
         }
     }

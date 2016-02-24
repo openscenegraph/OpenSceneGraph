@@ -1543,11 +1543,11 @@ void Geometry::fixDeprecatedData()
                     if ((primCount%primLength)==0) ++source_pindex;
 
                     // copy bind per vertex from vindex
-                    for(PtrList::iterator itr = perVertexPtrs.begin();
-                        itr != perVertexPtrs.end();
-                        ++itr)
+                    for(PtrList::iterator pitr = perVertexPtrs.begin();
+                        pitr != perVertexPtrs.end();
+                        ++pitr)
                     {
-                        GeometryUtilFunctions::PtrData& ptrs = *itr;
+                        GeometryUtilFunctions::PtrData& ptrs = *pitr;
                         char* source = ptrs.source + vindex*ptrs.elementSize;
                         char* target = ptrs.target + target_vindex*ptrs.elementSize;
                         for(unsigned int c=0; c<ptrs.elementSize; ++c)
@@ -1557,11 +1557,11 @@ void Geometry::fixDeprecatedData()
                     }
 
                     // copy bind per primitive from source_pindex
-                    for(PtrList::iterator itr = perPrimitivePtrs.begin();
-                        itr != perPrimitivePtrs.end();
-                        ++itr)
+                    for(PtrList::iterator pitr = perPrimitivePtrs.begin();
+                        pitr != perPrimitivePtrs.end();
+                        ++pitr)
                     {
-                        GeometryUtilFunctions::PtrData& ptrs = *itr;
+                        GeometryUtilFunctions::PtrData& ptrs = *pitr;
                         char* source = ptrs.source + source_pindex*ptrs.elementSize;
                         char* target = ptrs.target + target_vindex*ptrs.elementSize;
                         for(unsigned int c=0; c<ptrs.elementSize; ++c)
@@ -1590,11 +1590,11 @@ void Geometry::fixDeprecatedData()
                     {
                         if ((primCount%localPrimLength)==0) ++source_pindex;
                         // copy bind per vertex from vindex
-                        for(PtrList::iterator itr = perVertexPtrs.begin();
-                            itr != perVertexPtrs.end();
-                            ++itr)
+                        for(PtrList::iterator pitr = perVertexPtrs.begin();
+                            pitr != perVertexPtrs.end();
+                            ++pitr)
                         {
-                            GeometryUtilFunctions::PtrData& ptrs = *itr;
+                            GeometryUtilFunctions::PtrData& ptrs = *pitr;
                             char* source = ptrs.source + vindex*ptrs.elementSize;
                             char* target = ptrs.target + target_vindex*ptrs.elementSize;
                             for(unsigned int c=0; c<ptrs.elementSize; ++c)
@@ -1604,11 +1604,11 @@ void Geometry::fixDeprecatedData()
                         }
 
                         // copy bind per primitive from source_pindex
-                        for(PtrList::iterator itr = perPrimitivePtrs.begin();
-                            itr != perPrimitivePtrs.end();
-                            ++itr)
+                        for(PtrList::iterator pitr = perPrimitivePtrs.begin();
+                            pitr != perPrimitivePtrs.end();
+                            ++pitr)
                         {
-                            GeometryUtilFunctions::PtrData& ptrs = *itr;
+                            GeometryUtilFunctions::PtrData& ptrs = *pitr;
                             char* source = ptrs.source + source_pindex*ptrs.elementSize;
                             char* target = ptrs.target + target_vindex*ptrs.elementSize;
                             for(unsigned int c=0; c<ptrs.elementSize; ++c)
@@ -1635,11 +1635,11 @@ void Geometry::fixDeprecatedData()
                     *primItr=target_vindex;
 
                     // copy bind per vertex from vindex
-                    for(PtrList::iterator itr = perVertexPtrs.begin();
-                        itr != perVertexPtrs.end();
-                        ++itr)
+                    for(PtrList::iterator pitr = perVertexPtrs.begin();
+                        pitr != perVertexPtrs.end();
+                        ++pitr)
                     {
-                        GeometryUtilFunctions::PtrData& ptrs = *itr;
+                        GeometryUtilFunctions::PtrData& ptrs = *pitr;
                         char* source = ptrs.source + vindex*ptrs.elementSize;
                         char* target = ptrs.target + target_vindex*ptrs.elementSize;
                         for(unsigned int c=0; c<ptrs.elementSize; ++c)
@@ -1649,11 +1649,11 @@ void Geometry::fixDeprecatedData()
                     }
 
                     // copy bind per primitive from source_pindex
-                    for(PtrList::iterator itr = perPrimitivePtrs.begin();
-                        itr != perPrimitivePtrs.end();
-                        ++itr)
+                    for(PtrList::iterator pitr = perPrimitivePtrs.begin();
+                        pitr != perPrimitivePtrs.end();
+                        ++pitr)
                     {
-                        GeometryUtilFunctions::PtrData& ptrs = *itr;
+                        GeometryUtilFunctions::PtrData& ptrs = *pitr;
                         char* source = ptrs.source + source_pindex*ptrs.elementSize;
                         char* target = ptrs.target + target_vindex*ptrs.elementSize;
                         for(unsigned int c=0; c<ptrs.elementSize; ++c)
@@ -1679,11 +1679,11 @@ void Geometry::fixDeprecatedData()
                     *primItr=target_vindex;
 
                     // copy bind per vertex from vindex
-                    for(PtrList::iterator itr = perVertexPtrs.begin();
-                        itr != perVertexPtrs.end();
-                        ++itr)
+                    for(PtrList::iterator pitr = perVertexPtrs.begin();
+                        pitr != perVertexPtrs.end();
+                        ++pitr)
                     {
-                        GeometryUtilFunctions::PtrData& ptrs = *itr;
+                        GeometryUtilFunctions::PtrData& ptrs = *pitr;
                         char* source = ptrs.source + vindex*ptrs.elementSize;
                         char* target = ptrs.target + target_vindex*ptrs.elementSize;
                         for(unsigned int c=0; c<ptrs.elementSize; ++c)
@@ -1692,11 +1692,11 @@ void Geometry::fixDeprecatedData()
                         }
                     }
                     // copy bind per primitive from source_pindex
-                    for(PtrList::iterator itr = perPrimitivePtrs.begin();
-                        itr != perPrimitivePtrs.end();
-                        ++itr)
+                    for(PtrList::iterator pitr = perPrimitivePtrs.begin();
+                        pitr != perPrimitivePtrs.end();
+                        ++pitr)
                     {
-                        GeometryUtilFunctions::PtrData& ptrs = *itr;
+                        GeometryUtilFunctions::PtrData& ptrs = *pitr;
                         char* source = ptrs.source + source_pindex*ptrs.elementSize;
                         char* target = ptrs.target + target_vindex*ptrs.elementSize;
                         for(unsigned int c=0; c<ptrs.elementSize; ++c)
@@ -1722,11 +1722,11 @@ void Geometry::fixDeprecatedData()
                     *primItr=target_vindex;
 
                     // copy bind per vertex from vindex
-                    for(PtrList::iterator itr = perVertexPtrs.begin();
-                        itr != perVertexPtrs.end();
-                        ++itr)
+                    for(PtrList::iterator pitr = perVertexPtrs.begin();
+                        pitr != perVertexPtrs.end();
+                        ++pitr)
                     {
-                        GeometryUtilFunctions::PtrData& ptrs = *itr;
+                        GeometryUtilFunctions::PtrData& ptrs = *pitr;
                         char* source = ptrs.source + vindex*ptrs.elementSize;
                         char* target = ptrs.target + target_vindex*ptrs.elementSize;
                         for(unsigned int c=0; c<ptrs.elementSize; ++c)
@@ -1736,11 +1736,11 @@ void Geometry::fixDeprecatedData()
                     }
 
                     // copy bind per primitive from source_pindex
-                    for(PtrList::iterator itr = perPrimitivePtrs.begin();
-                        itr != perPrimitivePtrs.end();
-                        ++itr)
+                    for(PtrList::iterator pitr = perPrimitivePtrs.begin();
+                        pitr != perPrimitivePtrs.end();
+                        ++pitr)
                     {
-                        GeometryUtilFunctions::PtrData& ptrs = *itr;
+                        GeometryUtilFunctions::PtrData& ptrs = *pitr;
                         char* source = ptrs.source + source_pindex*ptrs.elementSize;
                         char* target = ptrs.target + target_vindex*ptrs.elementSize;
                         for(unsigned int c=0; c<ptrs.elementSize; ++c)

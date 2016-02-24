@@ -677,9 +677,9 @@ void ParallelSplitShadowMap::cull(osgUtil::CullVisitor& cv){
         // do traversal of shadow receiving scene which does need to be decorated by the shadow map
         //unsigned int iMaxSplit = _PSSMShadowSplitTextureMap.size();
 
-        for (PSSMShadowSplitTextureMap::iterator it=_PSSMShadowSplitTextureMap.begin();it!=_PSSMShadowSplitTextureMap.end();it++)
+        for (PSSMShadowSplitTextureMap::iterator tmitr=_PSSMShadowSplitTextureMap.begin();tmitr!=_PSSMShadowSplitTextureMap.end();tmitr++)
         {
-            PSSMShadowSplitTexture pssmShadowSplitTexture = it->second;
+            PSSMShadowSplitTexture pssmShadowSplitTexture = tmitr->second;
 
 
             //////////////////////////////////////////////////////////////////////////

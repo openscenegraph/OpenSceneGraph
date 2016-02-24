@@ -530,10 +530,10 @@ bool trpgwArchive::CheckpointHeader()
             {
 
                 // Set up the sizes
-                int32 numLod;
-                header.GetNumLods(numLod);
-                tileTable.SetNumLod(numLod);
-                for (int i=0;i<numLod;i++) {
+                int32 titleTableNumLod;
+                header.GetNumLods(titleTableNumLod);
+                tileTable.SetNumLod(titleTableNumLod);
+                for (int i=0;i<titleTableNumLod;i++) {
                     trpg2iPoint lodSize;
                     header.GetLodSize(i,lodSize);
                     tileTable.SetNumTiles(lodSize.x,lodSize.y,i);
@@ -743,7 +743,7 @@ trpgwAppFile *trpgwArchive::GetNewWAppFile(trpgEndian inNess,const char *fileNam
 
 /* Get a new write image helper
  */
-trpgwImageHelper *trpgwArchive::GetNewWImageHelper(trpgEndian ness,char *dir,trpgTexTable &inTexTable)
+trpgwImageHelper *trpgwArchive::GetNewWImageHelper(trpgEndian in_ness,char *in_dir,trpgTexTable &in_inTexTable)
 {
     bool separateGeo = false;
     int majorVer,minorVer;
@@ -751,7 +751,7 @@ trpgwImageHelper *trpgwArchive::GetNewWImageHelper(trpgEndian ness,char *dir,trp
     if((majorVer >= TRPG_NOMERGE_VERSION_MAJOR) && (minorVer>=TRPG_NOMERGE_VERSION_MINOR)) {
         separateGeo = true;
     }
-    return new trpgwImageHelper(ness,dir,inTexTable,separateGeo);
+    return new trpgwImageHelper(in_ness,in_dir,in_inTexTable,separateGeo);
 }
 
 /* Increment Tile File.
@@ -1371,19 +1371,19 @@ void trpgwGeomHelper::Optimize()
    *************************
    */
 
-trpgwImageHelper::trpgwImageHelper(trpgEndian inNess,char *inDir,trpgTexTable &inTable,bool separateGeoTypical)
+trpgwImageHelper::trpgwImageHelper(trpgEndian inNess,char *inDir,trpgTexTable &inTable,bool inSeparateGeoTypical)
 {
-    Init(inNess,inDir,inTable,separateGeoTypical);
+    Init(inNess,inDir,inTable,inSeparateGeoTypical);
 }
 
-void trpgwImageHelper::Init(trpgEndian inNess,char *inDir,trpgTexTable &inTable,bool separateGeoTypical)
+void trpgwImageHelper::Init(trpgEndian inNess,char *inDir,trpgTexTable &inTable,bool inSeparateGeoTypical)
 {
     ness = inNess;
     strcpy(dir,inDir);
     texTable = &inTable;
     texFile = NULL;
     geotypFile = NULL;
-    this->separateGeoTypical = separateGeoTypical;
+    this->separateGeoTypical = inSeparateGeoTypical;
     maxTexFileLen = -1;
 }
 

@@ -98,7 +98,7 @@ bool CompositeLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
         }
         else
         {
-            osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Layer>());
+            readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Layer>());
             osgTerrain::Layer* readLayer = dynamic_cast<osgTerrain::Layer*>(readObject.get());
             if (readLayer)
             {

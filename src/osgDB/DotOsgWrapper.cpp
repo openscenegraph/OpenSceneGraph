@@ -245,11 +245,11 @@ osg::Object* DeprecatedDotOsgWrapperManager::readObjectOfType(const basic_type_w
             FileNames fileNames;
             if (getLibraryFileNamesToTry(libraryName, fileNames))
             {
-                for(FileNames::iterator itr = fileNames.begin();
-                    itr != fileNames.end();
-                    ++itr)
+                for(FileNames::iterator fileItr = fileNames.begin();
+                    fileItr != fileNames.end();
+                    ++fileItr)
                 {
-                    if (osgDB::Registry::instance()->loadLibrary(*itr)==osgDB::Registry::LOADED) return readObjectOfType(btw,fr);
+                    if (osgDB::Registry::instance()->loadLibrary(*fileItr)==osgDB::Registry::LOADED) return readObjectOfType(btw,fr);
                 }
             }
         }
@@ -310,11 +310,11 @@ osg::Object* DeprecatedDotOsgWrapperManager::readObjectOfType(const basic_type_w
                         FileNames fileNames;
                         if (getLibraryFileNamesToTry(libraryName, fileNames))
                         {
-                            for(FileNames::iterator itr = fileNames.begin();
-                                itr != fileNames.end() && mitr==_objectWrapperMap.end();
-                                ++itr)
+                            for(FileNames::iterator fileItr = fileNames.begin();
+                                fileItr != fileNames.end() && mitr==_objectWrapperMap.end();
+                                ++fileItr)
                             {
-                                if (osgDB::Registry::instance()->loadLibrary(*itr)==osgDB::Registry::LOADED)
+                                if (osgDB::Registry::instance()->loadLibrary(*fileItr)==osgDB::Registry::LOADED)
                                 {
                                     mitr = _objectWrapperMap.find(*aitr);
                                 }
@@ -368,11 +368,11 @@ osg::Object* DeprecatedDotOsgWrapperManager::readObject(DotOsgWrapperMap& dowMap
             FileNames fileNames;
             if (getLibraryFileNamesToTry(libraryName, fileNames))
             {
-                for(FileNames::iterator itr = fileNames.begin();
-                    itr != fileNames.end();
-                    ++itr)
+                for(FileNames::iterator fileItr = fileNames.begin();
+                    fileItr != fileNames.end();
+                    ++fileItr)
                 {
-                    if (osgDB::Registry::instance()->loadLibrary(*itr)==osgDB::Registry::LOADED) return readObject(dowMap,fr);
+                    if (osgDB::Registry::instance()->loadLibrary(*fileItr)==osgDB::Registry::LOADED) return readObject(dowMap,fr);
                 }
             }
         }
@@ -431,11 +431,11 @@ osg::Object* DeprecatedDotOsgWrapperManager::readObject(DotOsgWrapperMap& dowMap
                         FileNames fileNames;
                         if (getLibraryFileNamesToTry(libraryName, fileNames))
                         {
-                            for(FileNames::iterator itr = fileNames.begin();
-                                itr != fileNames.end() && mitr==_objectWrapperMap.end();
-                                ++itr)
+                            for(FileNames::iterator fileItr = fileNames.begin();
+                                fileItr != fileNames.end() && mitr==_objectWrapperMap.end();
+                                ++fileItr)
                             {
-                                if (osgDB::Registry::instance()->loadLibrary(*itr)==osgDB::Registry::LOADED)
+                                if (osgDB::Registry::instance()->loadLibrary(*fileItr)==osgDB::Registry::LOADED)
                                 {
                                     mitr = _objectWrapperMap.find(*aitr);
                                 }
@@ -656,11 +656,11 @@ bool DeprecatedDotOsgWrapperManager::writeObject(const osg::Object& obj,Output& 
         FileNames fileNames;
         if (getLibraryFileNamesToTry(libraryName, fileNames))
         {
-            for(FileNames::iterator itr = fileNames.begin();
-                itr != fileNames.end();
-                ++itr)
+            for(FileNames::iterator fileItr = fileNames.begin();
+                fileItr != fileNames.end();
+                ++fileItr)
             {
-                if (osgDB::Registry::instance()->loadLibrary(*itr)==osgDB::Registry::LOADED) return writeObject(obj,fw);
+                if (osgDB::Registry::instance()->loadLibrary(*fileItr)==osgDB::Registry::LOADED) return writeObject(obj,fw);
             }
         }
 
@@ -724,16 +724,16 @@ bool DeprecatedDotOsgWrapperManager::writeObject(const osg::Object& obj,Output& 
                     // are try to load it, and then retry the find to see
                     // if we can recognize the objects.
 
-                    std::string libraryName = std::string(token,0,posDoubleColon);
+                    std::string compositeLibraryName = std::string(token,0,posDoubleColon);
 
                     FileNames fileNames;
-                    if (getLibraryFileNamesToTry(libraryName, fileNames))
+                    if (getLibraryFileNamesToTry(compositeLibraryName, fileNames))
                     {
-                        for(FileNames::iterator itr = fileNames.begin();
-                            itr != fileNames.end() && mitr==_objectWrapperMap.end();
-                            ++itr)
+                        for(FileNames::iterator fileItr = fileNames.begin();
+                            fileItr != fileNames.end() && mitr==_objectWrapperMap.end();
+                            ++fileItr)
                         {
-                            if (osgDB::Registry::instance()->loadLibrary(*itr)==osgDB::Registry::LOADED)
+                            if (osgDB::Registry::instance()->loadLibrary(*fileItr)==osgDB::Registry::LOADED)
                             {
                                 mitr = _objectWrapperMap.find(*aitr);
                             }

@@ -65,8 +65,8 @@ void Text3D::accept(osg::PrimitiveFunctor& pf) const
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
     {
         // ** for each glyph in the line, do ...
-        LineRenderInfo::const_iterator it, end = itLine->end();
-        for (it = itLine->begin(); it!=end; ++it)
+        LineRenderInfo::const_iterator it;
+        for (it = itLine->begin(); it!=itLine->end(); ++it)
         {
             osg::Vec3Array* vertices = it->_glyphGeometry->getVertexArray();
 
@@ -605,8 +605,8 @@ void Text3D::renderPerGlyph(osg::State & state) const
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
     {
         // ** for each glyph in the line, do ...
-        LineRenderInfo::const_iterator it, end = itLine->end();
-        for (it = itLine->begin(); it!=end; ++it)
+        LineRenderInfo::const_iterator it;
+        for (it = itLine->begin(); it!=itLine->end(); ++it)
         {
 
             osg::Matrix matrix(original_modelview);
@@ -681,8 +681,8 @@ void Text3D::renderPerFace(osg::State & state) const
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
     {
         // ** for each glyph in the line, do ...
-        LineRenderInfo::const_iterator it, end = itLine->end();
-        for (it = itLine->begin(); it!=end; ++it)
+        LineRenderInfo::const_iterator it;
+        for (it = itLine->begin(); it!=itLine->end(); ++it)
         {
             osg::Matrix matrix(original_modelview);
             matrix.preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
@@ -706,8 +706,8 @@ void Text3D::renderPerFace(osg::State & state) const
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
     {
         // ** for each glyph in the line, do ...
-        LineRenderInfo::const_iterator it, end = itLine->end();
-        for (it = itLine->begin(); it!=end; ++it)
+        LineRenderInfo::const_iterator it;
+        for (it = itLine->begin(); it!=itLine->end(); ++it)
         {
             osg::Matrix matrix(original_modelview);
             matrix.preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
@@ -739,8 +739,8 @@ void Text3D::renderPerFace(osg::State & state) const
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
     {
         // ** for each glyph in the line, do ...
-        LineRenderInfo::const_iterator it, end = itLine->end();
-        for (it = itLine->begin(); it!=end; ++it)
+        LineRenderInfo::const_iterator it;
+        for (it = itLine->begin(); it!=itLine->end(); ++it)
         {
             osg::Matrix matrix(original_modelview);
             matrix.preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));

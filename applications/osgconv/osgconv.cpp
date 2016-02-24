@@ -579,10 +579,10 @@ int main( int argc, char **argv )
         return 0;
     }
 
-    std::string ext;
-    if (arguments.read("--format", ext))
+    std::string extarg;
+    if (arguments.read("--format", extarg))
     {
-        plugin = osgDB::Registry::instance()->createLibraryNameForExtension(ext);
+        plugin = osgDB::Registry::instance()->createLibraryNameForExtension(extarg);
         osgDB::outputPluginDetails(std::cout, plugin);
         return 0;
     }
@@ -622,9 +622,9 @@ int main( int argc, char **argv )
         osgDB::Registry::instance()->setOptions(options);
     }
 
-    while (arguments.read("-e",ext))
+    while (arguments.read("-e",extarg))
     {
-        std::string libName = osgDB::Registry::instance()->createLibraryNameForExtension(ext);
+        std::string libName = osgDB::Registry::instance()->createLibraryNameForExtension(extarg);
         osgDB::Registry::instance()->loadLibrary(libName);
     }
 

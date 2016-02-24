@@ -336,7 +336,7 @@ void WhiteListTileLoadedCallback::loaded(osgTerrain::TerrainTile* tile, const os
         {
             for(unsigned int si=0; si<switchLayer->getNumLayers(); ++si)
             {
-                osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(si));
+                imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(si));
                 if (imageLayer)
                 {
                     if (readImageLayer(imageLayer, options))
@@ -357,7 +357,7 @@ void WhiteListTileLoadedCallback::loaded(osgTerrain::TerrainTile* tile, const os
         {
             for(unsigned int ci=0; ci<compositeLayer->getNumLayers(); ++ci)
             {
-                osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(compositeLayer->getLayer(ci));
+                imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(compositeLayer->getLayer(ci));
                 if (imageLayer)
                 {
                     readImageLayer(imageLayer, options);
@@ -387,7 +387,7 @@ void WhiteListTileLoadedCallback::loaded(osgTerrain::TerrainTile* tile, const os
         {
             for(unsigned int si=0; si<switchLayer->getNumLayers(); ++si)
             {
-                osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(si));
+                imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(si));
                 if (imageLayer && imageLayer->getImage()!=0)
                 {
                     validLayer = imageLayer;
@@ -401,7 +401,7 @@ void WhiteListTileLoadedCallback::loaded(osgTerrain::TerrainTile* tile, const os
         {
             for(unsigned int ci=0; ci<compositeLayer->getNumLayers(); ++ci)
             {
-                osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(ci));
+                imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(ci));
                 if (imageLayer && imageLayer->getImage()!=0)
                 {
                     validLayer = imageLayer;
@@ -433,7 +433,7 @@ void WhiteListTileLoadedCallback::loaded(osgTerrain::TerrainTile* tile, const os
             {
                 for(unsigned int si=0; si<switchLayer->getNumLayers(); ++si)
                 {
-                    osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(si));
+                    imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(si));
                     if (imageLayer && imageLayer->getImage()==0)
                     {
                         if (_replaceSwitchLayer) tile->setColorLayer(i, imageLayer);
@@ -461,7 +461,7 @@ void WhiteListTileLoadedCallback::loaded(osgTerrain::TerrainTile* tile, const os
             {
                 for(unsigned int ci=0; ci<compositeLayer->getNumLayers(); ++ci)
                 {
-                    osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(ci));
+                    imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(ci));
                     if (imageLayer && imageLayer->getImage()==0)
                     {
                         tile->setColorLayer(i, validLayer);

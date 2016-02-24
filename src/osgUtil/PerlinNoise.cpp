@@ -235,14 +235,14 @@ double PerlinNoise::PerlinNoise1D(double x,double alpha,double beta,int n)
 {
    int i;
    double val,sum = 0;
-   double p,scale = 1;
+   double p_val,scale = 1;
 
-   p = x;
+   p_val = x;
    for (i=0;i<n;i++) {
-      val = noise1(p);
+      val = noise1(p_val);
       sum += val / scale;
       scale *= alpha;
-      p *= beta;
+      p_val *= beta;
    }
    return(sum);
 }
@@ -251,16 +251,16 @@ double PerlinNoise::PerlinNoise2D(double x,double y,double alpha,double beta,int
 {
    int i;
    double val,sum = 0;
-   double p[2],scale = 1;
+   double p_arr[2],scale = 1;
 
-   p[0] = x;
-   p[1] = y;
+   p_arr[0] = x;
+   p_arr[1] = y;
    for (i=0;i<n;i++) {
-      val = noise2(p);
+      val = noise2(p_arr);
       sum += val / scale;
       scale *= alpha;
-      p[0] *= beta;
-      p[1] *= beta;
+      p_arr[0] *= beta;
+      p_arr[1] *= beta;
    }
    return(sum);
 }
@@ -269,18 +269,18 @@ double PerlinNoise::PerlinNoise3D(double x,double y,double z,double alpha,double
 {
    int i;
    double val,sum = 0;
-   double p[3],scale = 1;
+   double p_arr[3],scale = 1;
 
-   p[0] = x;
-   p[1] = y;
-   p[2] = z;
+   p_arr[0] = x;
+   p_arr[1] = y;
+   p_arr[2] = z;
    for (i=0;i<n;i++) {
-      val = noise3(p);
+      val = noise3(p_arr);
       sum += val / scale;
       scale *= alpha;
-      p[0] *= beta;
-      p[1] *= beta;
-      p[2] *= beta;
+      p_arr[0] *= beta;
+      p_arr[1] *= beta;
+      p_arr[2] *= beta;
    }
    return(sum);
 }

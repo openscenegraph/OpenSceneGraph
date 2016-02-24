@@ -190,7 +190,7 @@ typedef struct {
 
 class _face {
 public:
-    _face() { nVertStart=0; opening=NULL; idx=NULL; nv=0; nop=0; nset=0; nrm[0]=nrm[1]=nrm[2]=0;}
+    _face() { nVertStart=0; opening=NULL; idx=NULL; nv=0; nop=0; nset=0; _nrm[0]=_nrm[1]=_nrm[2]=0;}
     ~_face() { delete [] idx;}
     void setnv(const int n){ nv=n; idx=new int[n];}
     void addvtx(const int n){
@@ -209,7 +209,7 @@ public:
         n=s2^side; // perpendicular
         n.normalize(); // unit norm
     }
-    const Vec3 getnorm(void) const { return nrm; } // use the predefined normal
+    const Vec3 getnorm(void) const { return _nrm; } // use the predefined normal
     void getside12(Vec3 &s1, Vec3 &s2, const std::vector<Vec3> verts) const {
         int ic=0; // counter for later vertices to ensure not coincident
         int i1=idx[0]; // first vertex of face
@@ -235,7 +235,7 @@ public:
     void getnorm(const std::vector<Vec3> verts) {
         Vec3 side, s2; // used in cross product to find normal
         getside12(side,s2, verts);
-        norm(nrm, s2, side);
+        norm(_nrm, s2, side);
     }
     void settrans(Matrix &mx, const Vec3 nrm, const std::vector<Vec3> verts, const dwmaterial *mat) const {
         // define the matrix perpendcular to normal for mapping textures
@@ -314,7 +314,7 @@ public:
         getnorm(verts);
         for (int i=0; i<nop; i++) {
             opening[i].setnorm(verts);
-            if (nrm*opening[i].nrm > 0.0f) { // normals are parallel - reverse order of vertices
+            if (_nrm*opening[i]._nrm > 0.0f) { // normals are parallel - reverse order of vertices
                 opening[i].reverse();
                 opening[i].setnorm(verts);
             }
@@ -324,7 +324,7 @@ public:
         poses.pos[0]=verts[idx[j]].x();
         poses.pos[1]=verts[idx[j]].y();
         poses.pos[2]=verts[idx[j]].z();
-        poses.nrmv=nrm;
+        poses.nrmv=_nrm;
         poses.idx=idx[j];
     }
     void tessellate(const std::vector<Vec3>& verts, const dwmaterial *themat,
@@ -346,7 +346,7 @@ private:
     int nv; // number of vertices in the face
     int nset; // number read so far
     int nVertStart; // start index of vertices in the grand Geometry
-    Vec3 nrm; // surface normal
+    Vec3 _nrm; // surface normal
     int *idx; // indices into the vertex list for the object
 };
 
@@ -519,7 +519,7 @@ private:
 //===================
 class _dwobj {  // class for design workshop read of a single object
 public:
-    _dwobj() { nverts=nfaces=0; openings=NULL;faces=NULL; tmat=NULL; edges=NULL;
+    _dwobj() { nverts=nfaces=0; openings=NULL;faces=NULL; _tmat=NULL; edges=NULL;
         nopens=nfaceverts=0; fc1=fc2=NULL; colour[0]=colour[1]=colour[2]=colour[3]=1;
     }
     ~_dwobj() {/*delete verts; delete faces;delete openings;*/
@@ -640,17 +640,17 @@ public:
         return nverts-1;
     }
     void settmat(const Matrix& mx) {
-        tmat= new RefMatrix(mx);
+        _tmat= new RefMatrix(mx);
     }
     void makeuv(Vec2 &uv, const double pos[]) {
         Vec3 p;
         Vec3 txc;
         p.set(pos[0],pos[1],pos[2]);
-        txc = (*mx)*p;
+        txc = (*_mx)*p;
         uv[0]=txc[0];
         uv[1]=txc[1];
     }
-    inline void setmx(RefMatrix *m) { mx=m;}
+    inline void setmx(RefMatrix *m) { _mx=m;}
 private:
     Vec4 colour;
     std::vector<Vec3> verts;
@@ -662,8 +662,8 @@ private:
     _dwedge *edges;
     int *openings;
     unsigned short *fc1, *fc2; // openings[i] is in faces[fc1[i]] to faces[fc2[i]]
-    osg::ref_ptr<RefMatrix> tmat;
-    osg::ref_ptr<RefMatrix> mx; // current uvw transform for currently tessealting face
+    osg::ref_ptr<RefMatrix> _tmat;
+    osg::ref_ptr<RefMatrix> _mx; // current uvw transform for currently tessealting face
 };
 
 void _face::tessellate(const std::vector<Vec3>& verts, const dwmaterial *themat,
@@ -672,7 +672,7 @@ void _face::tessellate(const std::vector<Vec3>& verts, const dwmaterial *themat,
     int nused=0;
     avertex *poses=new avertex[2*nvall]; // passed to Tessellator to redraw
     Matrix mx; // texture matrix transform to plane
-    settrans(mx, nrm, verts,themat);
+    settrans(mx, _nrm, verts,themat);
     dwob->setmx(new RefMatrix(mx)); // may be used by combine callback to define txcoord
     gluTessBeginPolygon(ts, dwob);
     gluTessBeginContour(ts); /**/
@@ -693,7 +693,7 @@ void _face::tessellate(const std::vector<Vec3>& verts, const dwmaterial *themat,
             uv=mx*verts[opening[k].idx[j]];
             opening[k].setposes(poses[nused], j, verts);
             poses[nused].nrmv*=-1; // get to agree with base polygon
-            poses[nused].nrmv=nrm;
+            poses[nused].nrmv=_nrm;
             poses[nused].uv[0]=uv[0];
             poses[nused].uv[1]=uv[1];
             gluTessVertex(ts, (double *)&(poses[nused]), (double *)(poses+nused));
@@ -760,7 +760,7 @@ void _dwobj::buildDrawable(Group *grp, const osgDB::ReaderWriter::Options *optio
             // for Geometry we dont need to collect prim types individually
             //     prd.setmode(nvf , nfnvf); // filter out only this type of tessellated face
             prd=new prims;
-            prd->settmat(tmat.get());
+            prd->settmat(_tmat.get());
             osg::Geometry *gset = new osg::Geometry;
             prd->setGeometry(gset);
             StateSet *dstate=themat->make(options);
@@ -901,8 +901,8 @@ class ReaderWriterDW : public osgDB::ReaderWriter
                                 obj.setmat(&(matpalet[j]));
                         }
                     } else if( strncmp(buff,"Color:",6)==0) {
-                        float rgb[3];
                         if (rdg==MATERIAL) { // get material colour
+			    float rgb[3];
                             sscanf(buff+6,"%f %f %f", &rgb[0], &rgb[1], &rgb[2]);
                             matpalet[nmat].setcolour(rgb);
                         } else if (rdg==OBJECT) {

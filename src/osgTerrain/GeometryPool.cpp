@@ -149,15 +149,9 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
     LocationCoords locationCoords;
     locationCoords.reserve(numVertices);
 
-    osg::Vec3d pos(0.0, 0.0, 0.0);
-    osg::Vec3d normal(0.0, 0.0, 1.0);
-    osg::Vec2 delta(1.0f/static_cast<float>(nx), 1.0f/static_cast<float>(ny));
-
     // pass in the delta texcoord per texel via the color array
     (*colours)[0].x() = c_mult;
     (*colours)[0].y() = r_mult;
-
-
 
     osg::Matrixd matrix;
     const osgTerrain::Locator* locator = computeMasterLocator(tile);
@@ -190,6 +184,11 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
 
     // set up the vertex data
     {
+	osg::Vec3d pos(0.0, 0.0, 0.0);
+	const osg::Vec3d defaultNormal(0.0, 0.0, 1.0);
+	osg::Vec2 delta(1.0f/static_cast<float>(nx), 1.0f/static_cast<float>(ny));
+
+
         // bottom row for skirt
         pos.y () = static_cast<double>(0)*r_mult;
         pos.z() = skirtHeight;
@@ -197,7 +196,7 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
         {
             pos.x() = static_cast<double>(c)*c_mult;
             vertices->push_back(pos);
-            normals->push_back(normal);
+            normals->push_back(defaultNormal);
             texcoords->push_back(osg::Vec4(pos.x(), pos.y(), 1.0f, 1.0f));
             locationCoords.push_back(osg::Vec4d(pos.x(), pos.y(),c_mult, r_mult));
             vthfm.push_back(0*nx + c);
@@ -213,7 +212,7 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
             {
                 pos.x() = static_cast<double>(0)*c_mult;
                 vertices->push_back(pos);
-                normals->push_back(normal);
+                normals->push_back(defaultNormal);
                 texcoords->push_back(osg::Vec4(pos.x(), pos.y(), 1.0f, 1.0f));
                 locationCoords.push_back(osg::Vec4d(pos.x(), pos.y(),c_mult, r_mult));
                 vthfm.push_back(r*nx + 0);
@@ -224,7 +223,7 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
             {
                 pos.x() = static_cast<double>(c)*c_mult;
                 vertices->push_back(pos);
-                normals->push_back(normal);
+                normals->push_back(defaultNormal);
                 texcoords->push_back(osg::Vec4(pos.x(), pos.y(), 1.0f, 1.0f));
                 locationCoords.push_back(osg::Vec4d(pos.x(), pos.y(),c_mult, r_mult));
                 vthfm.push_back(r*nx + c);
@@ -235,7 +234,7 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
             {
                 pos.x() = static_cast<double>(nx-1)*c_mult;
                 vertices->push_back(pos);
-                normals->push_back(normal);
+                normals->push_back(defaultNormal);
                 texcoords->push_back(osg::Vec4(pos.x(), pos.y(), 1.0f, 1.0f));
                 locationCoords.push_back(osg::Vec4d(pos.x(), pos.y(),c_mult, r_mult));
                 vthfm.push_back((r+1)*nx-1);
@@ -250,7 +249,7 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
         {
             pos.x() = static_cast<double>(c)*c_mult;
             vertices->push_back(pos);
-            normals->push_back(normal);
+            normals->push_back(defaultNormal);
             texcoords->push_back(osg::Vec4(pos.x(), pos.y(), 1.0f, 1.0f));
             locationCoords.push_back(osg::Vec4d(pos.x(), pos.y(),c_mult, r_mult));
             vthfm.push_back((ny-1)*nx + c);
@@ -364,7 +363,7 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
 
         osg::Vec3d center(0.5, 0.5, 0.0);
 
-        osg::Vec3d bottom_left(0.0,0.0,0.0);
+        bottom_left = osg::Vec3d(0.0,0.0,0.0);
         osg::Vec3d bottom_right(1.0,0.0,0.0);
         osg::Vec3d top_left(0.0,1.0,0.0);
 
@@ -383,19 +382,19 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
  //       OSG_NOTICE<<"   in lat/longs : bottom_right = "<<bottom_right<<std::endl;
  //       OSG_NOTICE<<"   in lat/longs : top_left = "<<top_left<<std::endl;
 
-        const osg::EllipsoidModel* em = locator->getEllipsoidModel();
-        if (em && locator->getCoordinateSystemType()==osgTerrain::Locator::GEOCENTRIC)
+        const osg::EllipsoidModel* locator_em = locator->getEllipsoidModel();
+        if (locator_em && locator->getCoordinateSystemType()==osgTerrain::Locator::GEOCENTRIC)
         {
             osg::Matrixd localToWorldTransform;
             // note y axis maps to latitude, x axis to longitude
-            em->computeLocalToWorldTransformFromLatLongHeight(center.y(), center.x(), center.z(), localToWorldTransform);
+            locator_em->computeLocalToWorldTransformFromLatLongHeight(center.y(), center.x(), center.z(), localToWorldTransform);
  //           OSG_NOTICE<<"We have a EllipsoidModel to take account of "<<localToWorldTransform<<std::endl;
 
             // note y axis maps to latitude, x axis to longitude
-            em->convertLatLongHeightToXYZ(center.y(), center.x(), center.z(), center.x(), center.y(),center.z());
-            em->convertLatLongHeightToXYZ(bottom_left.y(), bottom_left.x(), bottom_left.z(), bottom_left.x(), bottom_left.y(),bottom_left.z());
-            em->convertLatLongHeightToXYZ(bottom_right.y(), bottom_right.x(), bottom_right.z(), bottom_right.x(), bottom_right.y(),bottom_right.z());
-            em->convertLatLongHeightToXYZ(top_left.y(), top_left.x(), top_left.z(), top_left.x(), top_left.y(),top_left.z());
+            locator_em->convertLatLongHeightToXYZ(center.y(), center.x(), center.z(), center.x(), center.y(),center.z());
+            locator_em->convertLatLongHeightToXYZ(bottom_left.y(), bottom_left.x(), bottom_left.z(), bottom_left.x(), bottom_left.y(),bottom_left.z());
+            locator_em->convertLatLongHeightToXYZ(bottom_right.y(), bottom_right.x(), bottom_right.z(), bottom_right.x(), bottom_right.y(),bottom_right.z());
+            locator_em->convertLatLongHeightToXYZ(top_left.y(), top_left.x(), top_left.z(), top_left.x(), top_left.y(),top_left.z());
 
             osg::Matrixd worldToLocalTransform;
             worldToLocalTransform.invert(localToWorldTransform);
@@ -411,21 +410,20 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
                 const osg::Vec4d& location = locationCoords[i];
                 double height = (*vertices)[i].z();
                 osg::Vec3d pos = osg::Vec3d(location.x(), location.y(), 0.0) * matrix;
-                em->convertLatLongHeightToXYZ(pos.y(), pos.x(), height, pos.x(), pos.y(),pos.z());
+                locator_em->convertLatLongHeightToXYZ(pos.y(), pos.x(), height, pos.x(), pos.y(),pos.z());
 
                 osg::Vec4& tc = (*texcoords)[i];
 
                 osg::Vec3d pos_right = osg::Vec3d(location.x()+location[2], location.y(), 0.0) * matrix;
-                em->convertLatLongHeightToXYZ(pos_right.y(), pos_right.x(), height, pos_right.x(), pos_right.y(),pos_right.z());
+                locator_em->convertLatLongHeightToXYZ(pos_right.y(), pos_right.x(), height, pos_right.x(), pos_right.y(),pos_right.z());
 
                 osg::Vec3d pos_up = osg::Vec3d(location.x(), location.y()+location[3], 0.0) * matrix;
-                em->convertLatLongHeightToXYZ(pos_up.y(), pos_up.x(), height, pos_up.x(), pos_up.y(),pos_up.z());
+                locator_em->convertLatLongHeightToXYZ(pos_up.y(), pos_up.x(), height, pos_up.x(), pos_up.y(),pos_up.z());
 
                 double length_right = (pos_right-pos).length();
                 double length_up = (pos_up-pos).length();
                 tc[2] = 1.0/length_right;
                 tc[3] = 1.0/length_up;
-
 
                 osg::Vec3d normal(pos);
                 normal = osg::Matrixd::transform3x3(localToWorldTransform, normal);
@@ -487,12 +485,12 @@ osg::ref_ptr<osg::MatrixTransform> GeometryPool::getTileSubgraph(osgTerrain::Ter
         osg::Vec3d center = osg::Vec3d(0.5, 0.5, 0.0) * matrix;
 
         // shift to center.x() to x=0 and carry all the corners with it.
-        const osg::EllipsoidModel* em = locator->getEllipsoidModel();
-        if (em && locator->getCoordinateSystemType()==osgTerrain::Locator::GEOCENTRIC)
+        const osg::EllipsoidModel* locator_em = locator->getEllipsoidModel();
+        if (locator_em && locator->getCoordinateSystemType()==osgTerrain::Locator::GEOCENTRIC)
         {
             osg::Matrixd localToWorldTransform;
             // note y axis maps to latitude, x axis to longitude
-            em->computeLocalToWorldTransformFromLatLongHeight(center.y(), center.x(), center.z(), localToWorldTransform);
+            locator_em->computeLocalToWorldTransformFromLatLongHeight(center.y(), center.x(), center.z(), localToWorldTransform);
  //           OSG_NOTICE<<"We have a EllipsoidModel to take account of "<<localToWorldTransform<<std::endl;
 
             transform->setMatrix(localToWorldTransform);
@@ -578,11 +576,11 @@ osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTyp
     unsigned int num_HeightField = 0;
     unsigned int num_Color = 0;
     unsigned int num_Contour = 0;
-    for(LayerTypes::iterator itr = layerTypes.begin();
-        itr != layerTypes.end();
-        ++itr)
+    for(LayerTypes::iterator ltitr = layerTypes.begin();
+        ltitr != layerTypes.end();
+        ++ltitr)
     {
-        switch(*itr)
+        switch(*ltitr)
         {
             case(HEIGHTFIELD_LAYER): ++num_HeightField; break;
             case(COLOR_LAYER): ++num_Color; break;

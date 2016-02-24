@@ -62,11 +62,11 @@ osg::Program* ShaderComposer::getOrCreateProgram(const ShaderComponents& shaderC
 
     OSG_NOTICE<<"ShaderComposer::getOrCreateProgram(shaderComponents.size()=="<<shaderComponents.size()<<std::endl;
 
-    for(ShaderComponents::const_iterator itr = shaderComponents.begin();
-        itr != shaderComponents.end();
-        ++itr)
+    for(ShaderComponents::const_iterator compitr = shaderComponents.begin();
+        compitr != shaderComponents.end();
+        ++compitr)
     {
-        const ShaderComponent* sc = *itr;
+        const ShaderComponent* sc = *compitr;
 
         for(unsigned int i=0; i<sc->getNumShaders(); ++i)
         {
@@ -153,11 +153,11 @@ void ShaderComposer::addShaderToProgram(Program* program, const Shaders& shaders
         program->addShader(itr->second.get());
     }
 
-    for(Shaders::const_iterator itr = shaders.begin();
-        itr != shaders.end();
-        ++itr)
+    for(Shaders::const_iterator shaderitr = shaders.begin();
+        shaderitr != shaders.end();
+        ++shaderitr)
     {
-        Shader* shader = const_cast<Shader*>(*itr);
+        Shader* shader = const_cast<Shader*>(*shaderitr);
         if (!(shader->getShaderSource().empty()) || shader->getShaderBinary())
         {
             program->addShader(shader);

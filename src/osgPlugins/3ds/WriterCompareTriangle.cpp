@@ -1,7 +1,7 @@
 #include "WriterCompareTriangle.h"
 #include <assert.h>
 
-WriterCompareTriangle::WriterCompareTriangle(const osg::Geode & geode, unsigned int nbVertices) : geode(geode)
+WriterCompareTriangle::WriterCompareTriangle(const osg::Geode & in_geode, unsigned int nbVertices) : geode(in_geode)
 {
     cutscene(nbVertices, geode.getBoundingBox());
 }
@@ -10,15 +10,15 @@ bool
 WriterCompareTriangle::operator()(const std::pair<Triangle, int> & t1,
                                   const std::pair<Triangle, int> & t2) const
 {
-    const osg::Geometry *g = geode.getDrawable( t1.second )->asGeometry();
+    const osg::Geometry *g1 = geode.getDrawable( t1.second )->asGeometry();
 
-    const osg::Vec3Array * vecs= static_cast<const osg::Vec3Array *>(g->getVertexArray());
+    const osg::Vec3Array * vecs= static_cast<const osg::Vec3Array *>(g1->getVertexArray());
     const osg::BoundingBox::vec_type v1( (*vecs)[t1.first.t1] );
 
     if (t1.second != t2.second)
     {
-        const osg::Geometry *g = geode.getDrawable( t2.second )->asGeometry();
-        vecs = static_cast<const osg::Vec3Array *>(g->getVertexArray());
+        const osg::Geometry *g2 = geode.getDrawable( t2.second )->asGeometry();
+        vecs = static_cast<const osg::Vec3Array *>(g2->getVertexArray());
     };
     const osg::BoundingBox::vec_type v2( (*vecs)[t2.first.t1] );
     int val1 = inWhichBox(v1);

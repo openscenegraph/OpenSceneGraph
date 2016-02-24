@@ -1795,9 +1795,9 @@ namespace SphereSegmentIntersector
             }
             else
             {
-                Edge* edge = const_cast<Edge*>(itr->get());
-                edge->addTriangle(tri);
-                return edge;
+                Edge* curedge = const_cast<Edge*>(itr->get());
+                curedge->addTriangle(tri);
+                return curedge;
             }
         }
 
@@ -2056,23 +2056,23 @@ namespace SphereSegmentIntersector
                         if (possible1 && possible2)
                         {
 
-                            double start1 = intersector1.distance(start);
-                            double start2 = intersector2.distance(start);
+                            const double start1d = intersector1.distance(start);
+                            const double start2d = intersector2.distance(start);
 
                             // need to check which intersection is latest.
-                            double end1 = intersector1.distance(end);
-                            double delta1 = (end1-start1);
+                            const double end1d = intersector1.distance(end);
+                            const double delta1d = (end1d-start1d);
 
-                            double end2 = intersector2.distance(end);
-                            double delta2 = (end2-start2);
+                            const double end2d = intersector2.distance(end);
+                            const double delta2d = (end2d-start2d);
 
-                            double r1 = fabs(delta1)>0.0 ? start1/delta1 : 0.0;
-                            double r2 = fabs(delta2)>0.0 ? start2/delta2 : 0.0;
+                            const double r1d = fabs(delta1d)>0.0 ? start1d/delta1d : 0.0;
+                            const double r2d = fabs(delta2d)>0.0 ? start2d/delta2d : 0.0;
 
                             // choose intersection which is nearest the end point.
-                            if (r1<r2)
+                            if (r1d<r2d)
                             {
-                                OSG_INFO<<"start point, 1 near to end than 2"<<r1<<" "<<r2<<std::endl;
+                                OSG_INFO<<"start point, 1 near to end than 2"<<r1d<<" "<<r2d<<std::endl;
                                 possible1 = true;
                                 possible2 = false;
                             }
@@ -2123,19 +2123,19 @@ namespace SphereSegmentIntersector
                             if (possible1 && possible2)
                             {
                                 // need to check which intersection is latest.
-                                double end1 = intersector1.distance(end);
-                                double delta1 = (end1-start1);
+                                double end1d = intersector1.distance(end);
+                                double delta1d = (end1d-start1);
 
-                                double end2 = intersector2.distance(end);
-                                double delta2 = (end2-start2);
+                                double end2d = intersector2.distance(end);
+                                double delta2d = (end2d-start2);
 
-                                double r1 = fabs(delta1)>0.0 ? start1/delta1 : 0.0;
-                                double r2 = fabs(delta2)>0.0 ? start2/delta2 : 0.0;
+                                double r1d = fabs(delta1d)>0.0 ? start1/delta1d : 0.0;
+                                double r2d = fabs(delta2d)>0.0 ? start2/delta2d : 0.0;
 
                                 // choose intersection which is nearest the end point.
-                                if (r1>r2)
+                                if (r1d>r2d)
                                 {
-                                    OSG_INFO<<"end point, 1 near to end than 2"<<r1<<" "<<r2<<std::endl;
+                                    OSG_INFO<<"end point, 1 near to end than 2"<<r1d<<" "<<r2d<<std::endl;
                                     possible1 = true;
                                     possible2 = false;
                                 }

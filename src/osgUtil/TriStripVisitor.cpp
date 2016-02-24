@@ -388,11 +388,11 @@ void TriStripVisitor::stripify(Geometry& geom)
         OSG_INFO<<"TriStripVisitor::stripify(Geometry&):     doing tri strip"<< std::endl;
 
         unsigned int in_numVertices = 0;
-        for(triangle_stripper::indices::iterator itr=taf._in_indices.begin();
-            itr!=taf._in_indices.end();
-            ++itr)
+        for(triangle_stripper::indices::iterator iitr=taf._in_indices.begin();
+            iitr!=taf._in_indices.end();
+            ++iitr)
         {
-            if (*itr>in_numVertices) in_numVertices=*itr;
+            if (*iitr>in_numVertices) in_numVertices=*iitr;
         }
         // the largest indice is in_numVertices, but indices start at 0
         // so increment to give to the corrent number of verticies.
@@ -440,8 +440,8 @@ void TriStripVisitor::stripify(Geometry& geom)
             // handle the quads
             if (!quadMap.empty())
             {
-                IndexList indices;
-                indices.reserve(4*quadMap.size());
+                IndexList quadIndices;
+                quadIndices.reserve(4*quadMap.size());
 
                 // adds all the quads into the quad primitive, in ascending order
                 // and the QuadMap stores the quad's in ascending order.
@@ -457,23 +457,23 @@ void TriStripVisitor::stripify(Geometry& geom)
                         if (pitr->Indices[min_pos]>pitr->Indices[i])
                             min_pos = i;
                     }
-                    indices.push_back(pitr->Indices[min_pos]);
-                    indices.push_back(pitr->Indices[(min_pos+1)%4]);
-                    indices.push_back(pitr->Indices[(min_pos+2)%4]);
-                    indices.push_back(pitr->Indices[(min_pos+3)%4]);
+                    quadIndices.push_back(pitr->Indices[min_pos]);
+                    quadIndices.push_back(pitr->Indices[(min_pos+1)%4]);
+                    quadIndices.push_back(pitr->Indices[(min_pos+2)%4]);
+                    quadIndices.push_back(pitr->Indices[(min_pos+3)%4]);
                 }
 
-                unsigned int maxValue = *(std::max_element(indices.begin(),indices.end()));
+                unsigned int maxValue = *(std::max_element(quadIndices.begin(),quadIndices.end()));
                 if (maxValue>=65536)
                 {
                     osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_QUADS);
-                    std::copy(indices.begin(),indices.end(),std::back_inserter(*elements));
+                    std::copy(quadIndices.begin(),quadIndices.end(),std::back_inserter(*elements));
                     new_primitives.push_back(elements);
                 }
                 else
                 {
                     osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(GL_QUADS);
-                    std::copy(indices.begin(),indices.end(),std::back_inserter(*elements));
+                    std::copy(quadIndices.begin(),quadIndices.end(),std::back_inserter(*elements));
                     new_primitives.push_back(elements);
                 }
             }

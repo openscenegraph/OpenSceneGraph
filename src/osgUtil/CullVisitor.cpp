@@ -1108,9 +1108,9 @@ void CullVisitor::apply(Billboard& node)
                                     <<"    depth="<<depth<<", pos=("<<pos<<"),"<<std::endl
                                     <<"    *billboard_matrix="<<*billboard_matrix<<std::endl;
             OSG_DEBUG << "    NodePath:" << std::endl;
-            for (NodePath::const_iterator i = getNodePath().begin(); i != getNodePath().end(); ++i)
+            for (NodePath::const_iterator j = getNodePath().begin(); j != getNodePath().end(); ++j)
             {
-                OSG_DEBUG << "        \"" << (*i)->getName() << "\"" << std::endl;
+                OSG_DEBUG << "        \"" << (*j)->getName() << "\"" << std::endl;
             }
         }
         else

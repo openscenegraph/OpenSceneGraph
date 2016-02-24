@@ -31,20 +31,22 @@ bool TerrainTile_readLocalData(osg::Object& obj, osgDB::Input &fr)
 
     bool itrAdvanced = false;
 
-    osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Locator>());
-    if (readObject.valid()) itrAdvanced = true;
-
-    std::string blendingPolicy;
-    if (fr.read("BlendingPolicy",blendingPolicy))
     {
-        if (blendingPolicy == "INHERIT") terrainTile.setBlendingPolicy(osgTerrain::TerrainTile::INHERIT);
-        else if (blendingPolicy == "DO_NOT_SET_BLENDING") terrainTile.setBlendingPolicy(osgTerrain::TerrainTile::DO_NOT_SET_BLENDING);
-        else if (blendingPolicy == "ENABLE_BLENDING") terrainTile.setBlendingPolicy(osgTerrain::TerrainTile::ENABLE_BLENDING);
-        else if (blendingPolicy == "ENABLE_BLENDING_WHEN_ALPHA_PRESENT") terrainTile.setBlendingPolicy(osgTerrain::TerrainTile::ENABLE_BLENDING_WHEN_ALPHA_PRESENT);
-    }
+	osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Locator>());
+	if (readObject.valid()) itrAdvanced = true;
 
-    osgTerrain::Locator* locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
-    if (locator) terrainTile.setLocator(locator);
+	std::string blendingPolicy;
+	if (fr.read("BlendingPolicy",blendingPolicy))
+	{
+	    if (blendingPolicy == "INHERIT") terrainTile.setBlendingPolicy(osgTerrain::TerrainTile::INHERIT);
+	    else if (blendingPolicy == "DO_NOT_SET_BLENDING") terrainTile.setBlendingPolicy(osgTerrain::TerrainTile::DO_NOT_SET_BLENDING);
+	    else if (blendingPolicy == "ENABLE_BLENDING") terrainTile.setBlendingPolicy(osgTerrain::TerrainTile::ENABLE_BLENDING);
+	    else if (blendingPolicy == "ENABLE_BLENDING_WHEN_ALPHA_PRESENT") terrainTile.setBlendingPolicy(osgTerrain::TerrainTile::ENABLE_BLENDING_WHEN_ALPHA_PRESENT);
+	}
+
+	osgTerrain::Locator* locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
+	if (locator) terrainTile.setLocator(locator);
+    }
 
     if (fr.matchSequence("ElevationLayer {"))
     {
@@ -55,9 +57,12 @@ bool TerrainTile_readLocalData(osg::Object& obj, osgDB::Input &fr)
         {
             bool localAdvanced = false;
 
-            osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Locator>());
-            osgTerrain::Locator* locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
-            if (readObject.valid()) localAdvanced = true;
+            osg::ref_ptr<osgTerrain::Locator> locator = 0;
+	    {
+		osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Locator>());
+		locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
+		if (readObject.valid()) localAdvanced = true;
+	    }
 
             unsigned int minLevel=0;
             if (fr.read("MinLevel",minLevel))
@@ -125,9 +130,12 @@ bool TerrainTile_readLocalData(osg::Object& obj, osgDB::Input &fr)
         {
             bool localAdvanced = false;
 
-            osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Locator>());
-            osgTerrain::Locator* locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
-            if (readObject.valid()) localAdvanced = true;
+            osg::ref_ptr<osgTerrain::Locator> locator = 0;
+	    {
+		osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Locator>());
+		locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
+		if (readObject.valid()) localAdvanced = true;
+	    }
 
             unsigned int minLevel=0;
             if (fr.read("MinLevel",minLevel))
@@ -181,7 +189,7 @@ bool TerrainTile_readLocalData(osg::Object& obj, osgDB::Input &fr)
     }
 
 
-    readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::TerrainTechnique>());
+    osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::TerrainTechnique>());
     if (readObject.valid())
     {
         terrainTile.setTerrainTechnique(dynamic_cast<osgTerrain::TerrainTechnique*>(readObject.get()));

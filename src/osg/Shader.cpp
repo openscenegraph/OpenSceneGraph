@@ -33,8 +33,62 @@
 #include <osg/Shader>
 #include <osg/GLExtensions>
 
-#include <OpenThreads/ScopedLock>
-#include <OpenThreads/Mutex>
+namespace osg
+{
+
+template<typename M>
+inline std::string::size_type find_first(const std::string& str, const M& match, std::string::size_type startpos, std::string::size_type endpos=std::string::npos)
+{
+    std::string::size_type endp = (endpos!=std::string::npos) ? endpos : str.size();
+
+    while(startpos<endp)
+    {
+        if (match(str[startpos])) return startpos;
+
+        ++startpos;
+    }
+    return endpos;
+}
+
+struct EqualTo
+{
+    EqualTo(char c): _c(c) {}
+    bool operator() (char rhs) const { return rhs==_c; }
+    char _c;
+};
+
+struct OneOf
+{
+    OneOf(const char* str) : _str(str) {}
+    bool operator() (char rhs) const
+    {
+        const char* ptr = _str;
+        while(*ptr!=0 && rhs!=*ptr) ++ptr;
+        return (*ptr!=0);
+    }
+    const char* _str;
+};
+
+struct NotEqualTo
+{
+    NotEqualTo(char c): _c(c) {}
+    bool operator() (char rhs) const { return rhs!=_c; }
+    char _c;
+};
+
+struct NoneOf
+{
+    NoneOf(const char* str) : _str(str) {}
+    bool operator() (char rhs) const
+    {
+        const char* ptr = _str;
+        while(*ptr!=0 && rhs!=*ptr) ++ptr;
+        return (*ptr==0);
+    }
+    const char* _str;
+};
+
+}
 
 using namespace osg;
 
@@ -535,7 +589,7 @@ namespace
         std::string::size_type previous_pos = 0;
         do
         {
-            std::string::size_type pos = source.find_first_of("\n", previous_pos);
+            std::string::size_type pos = find_first(source, EqualTo('\n'), previous_pos);
             if (pos != std::string::npos)
             {
                 ostr << std::setw(5)<<std::right<<lineNum<<": "<<source.substr(previous_pos, pos-previous_pos)<<std::endl;
@@ -640,8 +694,8 @@ void Shader::PerContextShader::compileShader(osg::State& state)
         std::string::size_type previous_pos = 0;
         do
         {
-            std::string::size_type start_of_line = source.find_first_not_of(" \t", previous_pos);
-            std::string::size_type end_of_line = (start_of_line != std::string::npos) ? source.find_first_of("\n\r", start_of_line) : std::string::npos;
+            std::string::size_type start_of_line = find_first(source, NoneOf(" \t"), previous_pos);
+            std::string::size_type end_of_line = (start_of_line != std::string::npos) ? find_first(source, OneOf("\n\r"), start_of_line) : std::string::npos;
             if (end_of_line != std::string::npos)
             {
                 // OSG_NOTICE<<"A Checking line "<<lineNum<<" ["<<source.substr(start_of_line, end_of_line-start_of_line)<<"]"<<std::endl;
@@ -734,15 +788,15 @@ void Shader::_parseShaderDefines(const std::string& str, ShaderDefines& defines)
     do
     {
         // skip spaces, tabs, commans
-        start_of_parameter = str.find_first_not_of(" \t,", start_of_parameter);
+        start_of_parameter = find_first(str, NoneOf(" \t,"), start_of_parameter);
         if (start_of_parameter==std::string::npos) break;
 
         // find end of the parameter
-        std::string::size_type end_of_parameter = str.find_first_of(" \t,)", start_of_parameter);
+        std::string::size_type end_of_parameter = find_first(str, OneOf(" \t,)"), start_of_parameter);
 
         if (end_of_parameter!=std::string::npos)
         {
-            std::string::size_type start_of_open_brackets = str.find_first_of("(", start_of_parameter);
+            std::string::size_type start_of_open_brackets = find_first(str, EqualTo('('), start_of_parameter);
             if (start_of_open_brackets<end_of_parameter) ++end_of_parameter;
         }
         else
@@ -762,6 +816,7 @@ void Shader::_parseShaderDefines(const std::string& str, ShaderDefines& defines)
     } while (start_of_parameter<str.size());
 }
 
+
 void Shader::_computeShaderDefines()
 {
     if (_shaderDefinesMode==USE_MANUAL_SETTINGS) return;
@@ -775,21 +830,20 @@ void Shader::_computeShaderDefines()
     {
         // skip over #pragma characters
         pos += 7;
-        std::string::size_type first_chararcter = _shaderSource.find_first_not_of(" \t", pos);
-        std::string::size_type eol = _shaderSource.find_first_of("\n\r", pos);
-        if (eol==std::string::npos) eol = _shaderSource.size();
+        std::string::size_type eol = find_first(_shaderSource, OneOf("\n\r"), pos);
+
+        std::string::size_type first_chararcter = find_first(_shaderSource, NoneOf(" \t"), pos, eol);
 
         OSG_INFO<<"\nFound pragma line ["<<_shaderSource.substr(first_chararcter, eol-first_chararcter)<<"]"<<std::endl;
 
         if (first_chararcter<eol)
         {
-            std::string::size_type end_of_keyword = _shaderSource.find_first_of(" \t(", first_chararcter);
+            std::string::size_type end_of_keyword = find_first(_shaderSource, OneOf(" \t("), first_chararcter, eol);
 
             std::string keyword = _shaderSource.substr(first_chararcter, end_of_keyword-first_chararcter);
 
-            std::string::size_type open_brackets = _shaderSource.find_first_of("(", end_of_keyword);
-
-            if ((open_brackets!=std::string::npos))
+            std::string::size_type open_brackets = find_first(_shaderSource, EqualTo('('), end_of_keyword, eol);
+            if (open_brackets<eol)
             {
                 std::string str(_shaderSource, open_brackets+1, eol-open_brackets-1);
 

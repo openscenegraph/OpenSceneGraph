@@ -149,12 +149,12 @@ IF(OSG_BUILD_PLATFORM_ANDROID)
           DEPENDS Android-OpenSceneGraph
     )
     install(DIRECTORY include/ DESTINATION include/
-        PATTERN ".svn" EXCLUDE
+        PATTERN ".git" EXCLUDE
     )
     install(DIRECTORY ${CMAKE_BINARY_DIR}/include/ DESTINATION include/
     )
     install(DIRECTORY ${CMAKE_BINARY_DIR}/obj/ DESTINATION obj/
-        PATTERN ".svn" EXCLUDE
+        PATTERN ".git" EXCLUDE
         PATTERN "objs" EXCLUDE
     )
 
@@ -183,7 +183,7 @@ IF(CMAKE_SYSTEM MATCHES IRIX)
     SET(CMAKE_THREAD_LIBS_INIT "" CACHE INTERNAL "")
 ENDIF()
 
-OPTION(OSG_MAINTAINER "Enable OpenSceneGraph maintainer build methods, such as making svn branches, tags, updating ChangeLog." OFF)
+OPTION(OSG_MAINTAINER "Enable OpenSceneGraph maintainer build methods, such as making git branches, tags, updating ChangeLog." OFF)
 IF (OSG_MAINTAINER)
 
     SET(OPENSCENEGRAPH_BRANCH OpenSceneGraph-${OPENSCENEGRAPH_MAJOR_VERSION}.${OPENSCENEGRAPH_MINOR_VERSION})

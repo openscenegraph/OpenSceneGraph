@@ -1053,8 +1053,9 @@ void Image::readPixels(int x,int y,int width,int height,
     allocateImage(width,height,1,format,type, packing);
 
     glPixelStorei(GL_PACK_ALIGNMENT,_packing);
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glPixelStorei(GL_PACK_ROW_LENGTH,_rowLength);
-
+#endif
     glReadPixels(x,y,width,height,format,type,_data);
 }
 

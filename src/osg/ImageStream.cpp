@@ -21,12 +21,13 @@ ImageStream::ImageStream():
 {
     setDataVariance(DYNAMIC);
 
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
 //#ifndef __APPLE__
     // disabled under OSX for time being while we resolve why PBO
     // doesn't function properly under OSX.
     setPixelBufferObject(new PixelBufferObject(this));
 //#endif
-
+#endif
 }
 
 ImageStream::ImageStream(const ImageStream& image,const CopyOp& copyop):

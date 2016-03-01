@@ -30,7 +30,9 @@ USE_SERIALIZER_WRAPPER(osgAnimation_UpdateMorphGeometry)
 USE_SERIALIZER_WRAPPER(osgAnimation_UpdateRigGeometry)
 USE_SERIALIZER_WRAPPER(osgAnimation_UpdateFloatUniform)
 USE_SERIALIZER_WRAPPER(osgAnimation_UpdateMatrixfUniform)
+USE_SERIALIZER_WRAPPER(osgAnimation_UpdateVec2fUniform)
 USE_SERIALIZER_WRAPPER(osgAnimation_UpdateVec3fUniform)
+USE_SERIALIZER_WRAPPER(osgAnimation_UpdateVec4fUniform)
 
 
 extern "C" void wrapper_serializer_library_osgAnimation(void) {}

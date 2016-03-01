@@ -57,7 +57,7 @@ SET(OPENSCENEGRAPH_PATCH_VERSION 2)
 SET(OPENSCENEGRAPH_SOVERSION 143)
 
 # set to 0 when not a release candidate, non zero means that any generated
-# svn tags will be treated as release candidates of given number
+# git tags will be treated as release candidates of given number
 SET(OPENSCENEGRAPH_RELEASE_CANDIDATE 0)
 
 SET(OPENSCENEGRAPH_VERSION ${OPENSCENEGRAPH_MAJOR_VERSION}.${OPENSCENEGRAPH_MINOR_VERSION}.${OPENSCENEGRAPH_PATCH_VERSION})
@@ -117,24 +117,12 @@ ENDIF()
 OPTION(OSG_MAINTAINER "Enable OpenSceneGraph maintainer build methods, such as making svn branches, tags, updating ChangeLog." OFF)
 IF (OSG_MAINTAINER)
 
-    SET(OPENSCENEGRAPH_SVN "trunk")
-    #SET(OPENSCENEGRAPH_SVN "branches")
     SET(OPENSCENEGRAPH_BRANCH OpenSceneGraph-${OPENSCENEGRAPH_MAJOR_VERSION}.${OPENSCENEGRAPH_MINOR_VERSION})
 
     #
     # Provide target for tagging a release
     #
-    SET(SVNCOMMAND svn)
-    SET(SVNTRUNKDIR     http://svn.openscenegraph.org/osg/OpenSceneGraph/trunk)
-    SET(SVNTAGDIR       http://svn.openscenegraph.org/osg/OpenSceneGraph/tags)
-    SET(SVNBRANCHDIR    http://svn.openscenegraph.org/osg/OpenSceneGraph/branches)
-
-    IF   (OPENSCENEGRAPH_SVN STREQUAL "trunk")
-        SET(SVNSOURCEDIR ${SVNTRUNKDIR})
-    ELSE()
-        SET(SVNSOURCEDIR ${SVNBRANCHDIR}/${OPENSCENEGRAPH_BRANCH})
-    ENDIF()
-
+    SET(GITCOMMAND git)
 
     IF   (OPENSCENEGRAPH_RELEASE_CANDIDATE EQUAL 0)
         SET(RELEASE_NAME OpenSceneGraph-${OPENSCENEGRAPH_VERSION})
@@ -144,29 +132,33 @@ IF (OSG_MAINTAINER)
 
 
     ADD_CUSTOM_TARGET(tag-test
-        COMMAND echo ${SVNCOMMAND} copy ${SVNSOURCEDIR} ${SVNTAGDIR}/${RELEASE_NAME} -m "Release ${RELEASE_NAME}"
+        COMMAND echo ${GITCOMMAND} tag -a ${RELEASE_NAME} -m \\\"Release ${RELEASE_NAME}\\\"
+        COMMAND echo ${GITCOMMAND} push origin ${RELEASE_NAME}
     )
 
     ADD_CUSTOM_TARGET(tag-run
-        COMMAND ${SVNCOMMAND} copy ${SVNSOURCEDIR} ${SVNTAGDIR}/${RELEASE_NAME} -m "Release ${RELEASE_NAME}"
+        COMMAND ${GITCOMMAND} tag -a ${RELEASE_NAME} -m \\\"Release ${RELEASE_NAME}\\\"
+        COMMAND ${GITCOMMAND} push origin ${RELEASE_NAME}
     )
 
     ADD_CUSTOM_TARGET(branch-test
-        COMMAND echo ${SVNCOMMAND} copy ${SVNSOURCEDIR} ${SVNBRANCHDIR}/${OPENSCENEGRAPH_BRANCH} -m "Branch ${OPENSCENEGRAPH_BRANCH}"
+        COMMAND echo ${GITCOMMAND} branch ${OPENSCENEGRAPH_BRANCH} -m \\\"Branch ${OPENSCENEGRAPH_BRANCH}\\\"
+        COMMAND echo ${GITCOMMAND} push origin ${OPENSCENEGRAPH_BRANCH}
     )
 
     ADD_CUSTOM_TARGET(branch-run
-        COMMAND ${SVNCOMMAND} copy ${SVNSOURCEDIR} ${SVNBRANCHDIR}/${OPENSCENEGRAPH_BRANCH} -m "Branch ${OPENSCENEGRAPH_BRANCH}"
+        COMMAND ${GITCOMMAND} branch ${OPENSCENEGRAPH_BRANCH} -m \\\"Branch ${OPENSCENEGRAPH_BRANCH}\\\"
+        COMMAND ${GITCOMMAND} push origin ${OPENSCENEGRAPH_BRANCH}
     )
 
     #
     # Provide target for generating ChangeLog
     #
-    SET(GENERATELOGS svn2cl)
+    SET(GITLOGFORMAT "%aD%nChecked in by : %an%n%s%b%n")
+    SET(GENERATELOGS git log --pretty=format:${GITLOGFORMAT})
 
     ADD_CUSTOM_TARGET(ChangeLog
-        COMMAND ${SVNCOMMAND} update
-        COMMAND ${GENERATELOGS} ${SVNSOURCEDIR}
+        COMMAND ${GENERATELOGS} > ChangeLog
     )
 
 ENDIF(OSG_MAINTAINER)

@@ -2091,7 +2091,7 @@ void Text::GlyphQuads::initGlyphQuads()
         }
     }
 
-    _quadIndices = new DrawElementsUInt(PrimitiveSet::TRIANGLES);
+    _quadIndices = new DrawElementsUShort(PrimitiveSet::TRIANGLES);
 }
 
 void Text::GlyphQuads::updateQuadIndices()
@@ -2102,7 +2102,7 @@ void Text::GlyphQuads::updateQuadIndices()
         OSG_WARN << "size of _coords is not divisible by 4.";
     }
     
-    for (unsigned int i = 0; i < (unsigned int)_coords->size(); i += 4)
+    for (unsigned short i = 0; i < (unsigned short)_coords->size(); i += 4)
     {
         _quadIndices->push_back(i);
         _quadIndices->push_back(i + 1);

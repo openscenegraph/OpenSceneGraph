@@ -313,7 +313,7 @@ public:
         osg::buffered_object<Coords3>   _transformedBackdropCoords[8];
         ColorCoords    _colorCoords;
 
-        osg::ref_ptr<osg::DrawElementsUInt> _quadIndices;
+        osg::ref_ptr<osg::DrawElementsUShort> _quadIndices;
         void updateQuadIndices();
 
         GlyphQuads();
@@ -336,7 +336,7 @@ public:
 
         LineNumbers& getLineNumbers() { return _lineNumbers; }
         const LineNumbers& getLineNumbers() const { return _lineNumbers; }
-        
+
         /** Resize any per context GLObject buffers to specified size. */
         void resizeGLObjectBuffers(unsigned int maxSize);
 
@@ -344,9 +344,9 @@ public:
         * the specified graphics context. Otherwise, releases OpenGL objexts
         * for all graphics contexts. */
         void releaseGLObjects(osg::State* state=0) const;
-        
+
     private:
-        
+
         GlyphQuads& operator = (const GlyphQuads&) { return *this; }
     };
 

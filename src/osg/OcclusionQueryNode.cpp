@@ -98,7 +98,7 @@ StateSet* initOQDebugState()
 
 struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
 {
-    typedef std::vector<osg::TestResult*> ResultsVector;
+    typedef std::vector<osg::ref_ptr<osg::TestResult> > ResultsVector;
     ResultsVector _results;
 
     RetrieveQueriesCallback( osg::GLExtensions* ext=NULL )
@@ -144,7 +144,7 @@ struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
         ResultsVector::const_iterator it = _results.begin();
         while (it != _results.end())
         {
-            osg::TestResult* tr = const_cast<osg::TestResult*>( *it );
+            osg::TestResult* tr = const_cast<osg::TestResult*>( (*it).get() );
 
             if (!tr->_active || !tr->_init)
             {
@@ -160,31 +160,20 @@ struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
             OSG_DEBUG <<
                 "osgOQ: RQCB: Retrieving..." << std::endl;
 
-#ifdef FORCE_QUERY_RESULT_AVAILABLE_BEFORE_RETRIEVAL
-
-            // Should not need to do this, but is required on some platforms to
-            // work aroung issues in the device driver. For example, without this
-            // code, we've seen crashes on 64-bit Mac/Linux NVIDIA systems doing
-            // multithreaded, multipipe rendering (as in a CAVE).
-            // Tried with ATI and verified this workaround is not needed; the
-            //   problem is specific to NVIDIA.
-            GLint ready( 0 );
-            while( !ready )
+            GLint ready = 0;
+            ext->glGetQueryObjectiv( tr->_id, GL_QUERY_RESULT_AVAILABLE, &ready );
+            if (ready)
             {
-                // Apparently, must actually sleep here to avoid issues w/ NVIDIA Quadro.
-                OpenThreads::Thread::microSleep( 5 );
-                ext->glGetQueryObjectiv( tr->_id, GL_QUERY_RESULT_AVAILABLE, &ready );
-            };
-#endif
+                ext->glGetQueryObjectiv( tr->_id, GL_QUERY_RESULT, &(tr->_numPixels) );
+                if (tr->_numPixels < 0)
+                    OSG_WARN << "osgOQ: RQCB: " <<
+                    "glGetQueryObjectiv returned negative value (" << tr->_numPixels << ")." << std::endl;
 
-            ext->glGetQueryObjectiv( tr->_id, GL_QUERY_RESULT, &(tr->_numPixels) );
-            if (tr->_numPixels < 0)
-                OSG_WARN << "osgOQ: RQCB: " <<
-                "glGetQueryObjectiv returned negative value (" << tr->_numPixels << ")." << std::endl;
-
-            // Either retrieve last frame's results, or ignore it because the
-            //   camera is inside the view. In either case, _active is now false.
-            tr->_active = false;
+                // Either retrieve last frame's results, or ignore it because the
+                //   camera is inside the view. In either case, _active is now false.
+                tr->_active = false;
+            }
+            // else: query result not available yet, try again next frame
 
             it++;
             count++;
@@ -197,7 +186,13 @@ struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
 
     void reset()
     {
-        _results.clear();
+        for (ResultsVector::iterator it = _results.begin(); it != _results.end();)
+        {
+            if (!(*it)->_active || !(*it)->_init) // remove results that have already been retrieved or their query objects deleted.
+                it = _results.erase(it);
+            else
+                ++it;
+        }
     }
 
     void add( osg::TestResult* tr )
@@ -269,9 +264,9 @@ QueryGeometry::reset()
     ResultMap::iterator it = _results.begin();
     while (it != _results.end())
     {
-        TestResult& tr = it->second;
-        if (tr._init)
-            QueryGeometry::deleteQueryObject( tr._contextID, tr._id );
+        osg::ref_ptr<TestResult> tr = it->second;
+        if (tr->_init)
+            QueryGeometry::deleteQueryObject( tr->_contextID, tr->_id );
         it++;
     }
     _results.clear();
@@ -303,10 +298,30 @@ QueryGeometry::drawImplementation( osg::RenderInfo& renderInfo ) const
     }
 
     // Get TestResult from Camera map
-    TestResult* tr;
+    osg::ref_ptr<osg::TestResult> tr;
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _mapMutex );
-        tr = &( _results[ cam ] );
+        tr = ( _results[ cam ] );
+        if (!tr.valid())
+        {
+            tr = new osg::TestResult;
+            _results[ cam ] = tr;
+        }
+    }
+
+
+    // Issue query
+    if (!tr->_init)
+    {
+        ext->glGenQueries( 1, &(tr->_id) );
+        tr->_contextID = contextID;
+        tr->_init = true;
+    }
+
+    if (tr->_active)
+    {
+        // last query hasn't been retrieved yet
+        return;
     }
 
     // Add TestResult to RQCB.
@@ -318,15 +333,6 @@ QueryGeometry::drawImplementation( osg::RenderInfo& renderInfo ) const
         return;
     }
     rqcb->add( tr );
-
-
-    // Issue query
-    if (!tr->_init)
-    {
-        ext->glGenQueries( 1, &(tr->_id) );
-        tr->_contextID = contextID;
-        tr->_init = true;
-    }
 
     OSG_DEBUG <<
         "osgOQ: QG: Querying for: " << _oqnName << std::endl;
@@ -358,12 +364,17 @@ QueryGeometry::drawImplementation( osg::RenderInfo& renderInfo ) const
 unsigned int
 QueryGeometry::getNumPixels( const osg::Camera* cam )
 {
-    TestResult tr;
+    osg::ref_ptr<osg::TestResult> tr;
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _mapMutex );
         tr =  _results[ cam ];
+        if (!tr.valid())
+        {
+            tr = new osg::TestResult;
+            _results[ cam ] = tr;
+        }
     }
-    return tr._numPixels;
+    return tr->_numPixels;
 }
 
 
@@ -384,15 +395,11 @@ QueryGeometry::releaseGLObjects( osg::State* state ) const
         ResultMap::iterator it = _results.begin();
         while (it != _results.end())
         {
-            TestResult& tr = it->second;
-            if (tr._contextID == contextID)
+            osg::ref_ptr<osg::TestResult> tr = it->second;
+            if (tr->_contextID == contextID)
             {
-#if 1
-                osg::get<QueryObjectManager>(contextID)->scheduleGLObjectForDeletion(tr._id );
-#else
-                QueryGeometry::deleteQueryObject( contextID, tr._id );
-#endif
-                tr._init = false;
+                osg::get<QueryObjectManager>(contextID)->scheduleGLObjectForDeletion(tr->_id );
+                tr->_init = false;
             }
             it++;
         }

@@ -40,7 +40,7 @@ osg::StateSet* initOQDebugState();
 class TestResult : public osg::Referenced
 {
 public:
-    TestResult() : _init( false ), _id( 0 ), _contextID( 0 ), _active( false ), _numPixels( 0 ) {}
+    TestResult() : _init( false ), _id( 0 ), _contextID( 0 ), _active( false ), _numPixels( 0 ) {setThreadSafeRefUnref(true);}
     ~TestResult() {}
 
     bool _init;
@@ -81,7 +81,7 @@ public:
     static void discardDeletedQueryObjects( unsigned int contextID );
 
 protected:
-    typedef std::map< const osg::Camera*, TestResult > ResultMap;
+    typedef std::map< const osg::Camera*, osg::ref_ptr<osg::TestResult> > ResultMap;
     mutable ResultMap _results;
     mutable OpenThreads::Mutex _mapMutex;
 

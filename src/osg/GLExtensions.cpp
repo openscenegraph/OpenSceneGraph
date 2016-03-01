@@ -888,7 +888,10 @@ GLExtensions::GLExtensions(unsigned int contextID)
     else isTexture3DSupported = (glVersion >= 1.2f);
 
     maxTexture3DSize = 0;
+
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &maxTexture3DSize);
+#endif
 
     setGLExtensionFuncPtr(glTexImage3D, "glTexImage3D","glTexImage3DEXT");
     setGLExtensionFuncPtr(glTexSubImage3D, "glTexSubImage3D","glTexSubImage3DEXT");
@@ -903,8 +906,10 @@ GLExtensions::GLExtensions(unsigned int contextID)
     max2DSize = 0;
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max2DSize);
     maxLayerCount = 0;
+  
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS_EXT, &maxLayerCount);
-
+#endif
     // Blending
     isBlendColorSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
                             isGLExtensionSupported(contextID,"GL_EXT_blend_color") ||

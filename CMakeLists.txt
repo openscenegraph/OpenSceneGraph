@@ -114,7 +114,7 @@ IF(CMAKE_SYSTEM MATCHES IRIX)
     SET(CMAKE_THREAD_LIBS_INIT "" CACHE INTERNAL "")
 ENDIF()
 
-OPTION(OSG_MAINTAINER "Enable OpenSceneGraph maintainer build methods, such as making svn branches, tags, updating ChangeLog." OFF)
+OPTION(OSG_MAINTAINER "Enable OpenSceneGraph maintainer build methods, such as making git branches, tags, updating ChangeLog." OFF)
 IF (OSG_MAINTAINER)
 
     SET(OPENSCENEGRAPH_BRANCH OpenSceneGraph-${OPENSCENEGRAPH_MAJOR_VERSION}.${OPENSCENEGRAPH_MINOR_VERSION})

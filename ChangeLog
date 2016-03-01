@@ -1,3 +1,15 @@
+Tue, 1 Mar 2016 20:24:19 +0000
+Checked in by : Robert Osfield
+Fixed the make tag-run and branch-run
+
+Tue, 1 Mar 2016 19:55:01 +0000
+Checked in by : Robert Osfield
+Updated ChangeLog and AURHORS file
+
+Tue, 1 Mar 2016 19:44:32 +0000
+Checked in by : Robert Osfield
+Refactored the make tag-test, tag-run, branch-test, branch-run and ChangeLog features of the CMakeLists build system so it now supports working off git instead of subversion
+
 Tue, 1 Mar 2016 15:33:16 +0000
 Checked in by : Robert Osfield
 Updated version number for 3.5.2 dev release

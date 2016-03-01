@@ -186,9 +186,6 @@ ENDIF()
 OPTION(OSG_MAINTAINER "Enable OpenSceneGraph maintainer build methods, such as making svn branches, tags, updating ChangeLog." OFF)
 IF (OSG_MAINTAINER)
 
-    #SET(OPENSCENEGRAPH_SVN "trunk")
-    SET(OPENSCENEGRAPH_SVN "branches")
-
     SET(OPENSCENEGRAPH_BRANCH OpenSceneGraph-${OPENSCENEGRAPH_MAJOR_VERSION}.${OPENSCENEGRAPH_MINOR_VERSION})
 
     #

@@ -100,6 +100,8 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
         osg::Camera* getCamera() { return _camera.get(); }
         const osg::Camera* getCamera() const { return _camera.get(); }
 
+        virtual void collectWhichCamerasToRenderStatsFor(osgViewer::ViewerBase* viewer, osgViewer::ViewerBase::Cameras& cameras);
+
         virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
 
         /** Get the keyboard and mouse usage of this manipulator.*/

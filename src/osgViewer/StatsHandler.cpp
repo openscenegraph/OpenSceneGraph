@@ -54,6 +54,11 @@ StatsHandler::StatsHandler():
     _camera->setProjectionResizePolicy(osg::Camera::FIXED);
 }
 
+void StatsHandler::collectWhichCamerasToRenderStatsFor(osgViewer::ViewerBase* viewer, osgViewer::ViewerBase::Cameras& cameras)
+{
+  if (viewer) viewer->getCameras(cameras);
+}
+
 bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
 {
 
@@ -89,7 +94,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                     if (_statsType==LAST) _statsType = NO_STATS;
 
                     osgViewer::ViewerBase::Cameras cameras;
-                    viewer->getCameras(cameras);
+                    collectWhichCamerasToRenderStatsFor(viewer, cameras);
 
                     switch(_statsType)
                     {
@@ -1081,7 +1086,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
     // collect all the relevant cameras
     ViewerBase::Cameras validCameras;
-    viewer->getCameras(validCameras);
+    collectWhichCamerasToRenderStatsFor(viewer, validCameras);
 
     ViewerBase::Cameras cameras;
     for(ViewerBase::Cameras::iterator itr = validCameras.begin();

@@ -556,6 +556,15 @@ void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
         _startTick = view->getStartTick();
         if (state) state->setStartTick(_startTick);
     }
+    else
+    {
+        osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(context);
+        if (gw)
+        {
+            _startTick = gw->getEventQueue()->getStartTick();
+            if (state) state->setStartTick(_startTick);
+        }
+    }
 }
 
 void Renderer::compile()

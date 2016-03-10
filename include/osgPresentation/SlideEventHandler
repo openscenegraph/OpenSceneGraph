@@ -344,6 +344,7 @@ public:
 
     osg::Switch* getPresentationSwitch() { return _presentationSwitch.get(); }
 
+
     enum WhichPosition
     {
         FIRST_POSITION = 0,
@@ -404,6 +405,8 @@ public:
     bool getRequestReload() const { return _requestReload; }
 
     double getReferenceTime() const { return _referenceTime; }
+
+    virtual bool checkNeedToDoFrame();
 
 protected:
 

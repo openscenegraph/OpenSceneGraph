@@ -865,7 +865,7 @@ int main( int argc, char **argv )
         {
             osg::Timer_t startFrameTick = osg::Timer::instance()->tick();
 
-            if (viewer.getRunFrameScheme()!=osgViewer::ViewerBase::ON_DEMAND || viewer.checkNeedToDoFrame())
+            if (viewer.getRunFrameScheme()!=osgViewer::ViewerBase::ON_DEMAND || seh->checkNeedToDoFrame())
             {
                 // do the normal frame.
 

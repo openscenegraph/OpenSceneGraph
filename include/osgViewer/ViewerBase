@@ -224,7 +224,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 
         /** check to see if the new frame is required, called by run(..) when FrameScheme is set to ON_DEMAND.*/
         virtual bool checkNeedToDoFrame() = 0;
-        
+
         /** check to see if events have been received, return true if events are now available.*/
         virtual bool checkEvents() = 0;
 
@@ -277,7 +277,11 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         /** Get the keyboard and mouse usage of this viewer.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const = 0;
 
-    protected:
+        bool getRequestRedraw() const { return _requestRedraw; }
+        
+        bool getRequestContinousUpdate() const { return _requestContinousUpdate; }
+
+protected:
 
         void viewerBaseInit();
 
@@ -335,9 +339,9 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         osg::ref_ptr<osgUtil::IncrementalCompileOperation>  _incrementalCompileOperation;
 
         osg::observer_ptr<osg::GraphicsContext>             _currentContext;
-        
+
     private:
-        
+
         // Define private copy constructor
         // otherwsie VS2015 will construct it's own which will call the private copy operator from osg::Object resulting in an compile error.
         ViewerBase& operator = (const ViewerBase&) { return *this; }

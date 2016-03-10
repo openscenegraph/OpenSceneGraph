@@ -1655,3 +1655,41 @@ void SlideEventHandler::setRequestReload(bool flag)
     _requestReload = flag;
 }
 
+bool SlideEventHandler::checkNeedToDoFrame()
+{
+    if (_viewer.valid())
+    {
+        if (_viewer->getRequestRedraw()) return true;
+        if (_viewer->getRequestContinousUpdate()) return true;
+
+        // If the database pager is going to update the scene the render flag is
+        // set so that the updates show up
+        if(_viewer->getDatabasePager()->requiresUpdateSceneGraph() || _viewer->getDatabasePager()->getRequestsInProgress()) return true;
+
+        // if there update callbacks then we need to do frame.
+        if (_viewer->getCamera()->getUpdateCallback()) return true;
+
+        if (!_pause)
+        {
+            if (_slideSwitch.valid() && _activeLayer<static_cast<int>(_slideSwitch->getNumChildren()))
+            {
+                if (_slideSwitch->getChild(_activeLayer)->getNumChildrenRequiringUpdateTraversal()>0) return true;
+            }
+            else if (_viewer->getSceneData()!=0 && _viewer->getSceneData()->getNumChildrenRequiringUpdateTraversal()>0) return true;
+        }
+
+        // check if events are available and need processing
+        if (_viewer->checkEvents()) return true;
+
+        // now check if any of the event handles have prompted a redraw.
+        if (_viewer->getRequestRedraw()) return true;
+        if (_viewer->getRequestContinousUpdate()) return true;
+
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+

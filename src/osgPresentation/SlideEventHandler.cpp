@@ -19,6 +19,7 @@
 #include <osg/TexEnvCombine>
 #include <osg/LightSource>
 #include <osg/AlphaFunc>
+#include <osg/Timer>
 #include <osg/io_utils>
 
 #include <osgUtil/TransformCallback>
@@ -1009,6 +1010,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                         _previousTime += getCurrentTimeDelayBetweenSlides();
 
                         nextLayerOrSlide();
+                        aa.requestRedraw();
                     }
                     else
                     {
@@ -1676,6 +1678,17 @@ bool SlideEventHandler::checkNeedToDoFrame()
                 if (_slideSwitch->getChild(_activeLayer)->getNumChildrenRequiringUpdateTraversal()>0) return true;
             }
             else if (_viewer->getSceneData()!=0 && _viewer->getSceneData()->getNumChildrenRequiringUpdateTraversal()>0) return true;
+
+            if (_autoSteppingActive)
+            {
+                if (_firstTraversal) return true;
+                else
+                {
+                    osg::Timer_t tick = osg::Timer::instance()->tick();
+                    double currentTime = osg::Timer::instance()->delta_s(_viewer->getStartTick(), tick);
+                    if ((currentTime-_previousTime)>=getCurrentTimeDelayBetweenSlides()) return true;
+                }
+            }
         }
 
         // check if events are available and need processing

@@ -1296,7 +1296,7 @@ void StateSet::setTextureAttributeAndModes(unsigned int unit,StateAttribute *att
             OSG_NOTICE<<"Warning: non texture attribute '"<<attribute->className()<<"' passed to setTextureAttributeAndModes(unit,attr,value), "<<std::endl;
             OSG_NOTICE<<"         assuming setAttributeAndModes(attr,value) instead."<<std::endl;
             OSG_NOTICE<<"         please change calling code to use appropriate call."<<std::endl;
-            setAttribute(attribute,value);
+            setAttributeAndModes(attribute,value);
         }
     }
 }

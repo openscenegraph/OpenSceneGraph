@@ -907,6 +907,10 @@ void SlideEventHandler::set(osg::Node* model)
     FindNamedSwitchVisitor findPresentation("Presentation");
     model->accept(findPresentation);
 
+    std::string fullpath;
+    model->getUserValue("fullpath", fullpath);
+    if (!fullpath.empty()) setUserValue("fullpath", fullpath);
+
     if (findPresentation._switch)
     {
         OSG_INFO<<"Presentation '"<<model->getName()<<"'"<<std::endl;
@@ -1189,6 +1193,25 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
             else if (ea.getKey()=='k')
             {
                 updateLight(ea.getXnormalized(),ea.getYnormalized());
+                return true;
+            }
+
+            else if (ea.getKey()=='U')
+            {
+                char* editor = getenv("P3D_EDITOR");
+                if (!editor) editor = getenv("EDITOR");
+
+                std::string filename;
+                if (editor && getUserValue("fullpath", filename) && !filename.empty())
+                {
+                    std::stringstream command;
+                    command<<editor<<" "<<filename<<" &"<<std::endl;
+
+                    int result = system(command.str().c_str());
+
+                    OSG_INFO<<"system("<<command.str()<<") result "<<result<<std::endl;
+
+                }
                 return true;
             }
 

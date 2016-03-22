@@ -8,9 +8,9 @@ Robert Osfield
 Stephan Huber
 Paul Martz
 Farshid Lashkari
-Mathias Fröhlich
+Mathias FrÃ¶hlich
 Wang Rui
-Jean-Sébastien Guay
+Jean-SÃ©bastien Guay
 Mike Weiblen
 Ulrich Hertlein
 Marco Jez
@@ -67,10 +67,10 @@ Mourad Boufarguine
 Alberto Farre
 Torben Dannhauer
 Sherman Wilcox
-Romano José Magacho da Silva
+Romano JosÃ© Magacho da Silva
 Marco Fri
 Glenn Waldron
-André Garneau
+AndrÃ© Garneau
 Adrian Egli
 Sebastian Messerschmidt
 Randall Hopper
@@ -83,7 +83,7 @@ Michael Gronager
 Martin Naylor
 Joakim Simonsson
 David Spilling
-Daniel Sjölie
+Daniel SjÃ¶lie
 Bryan Thrall
 Robert Michael
 Rafa Gaitan
@@ -120,7 +120,7 @@ Gordon Tomlinson
 Frederic Marmond
 Frederic Bouvier
 Carlo Camporesi
-Björn Blissing
+BjÃ¶rn Blissing
 Alexander Sinditskiy
 Yefei He
 Thibault Genessay
@@ -138,7 +138,7 @@ Uwe Woessner
 Tony Horrobin
 Thom DeCarlo
 Tatsuhiro Nishioka
-Tanguy Fautré
+Tanguy FautrÃ©
 Ryan Kawicki
 Richard Schmidt
 Peter Hrenka
@@ -202,7 +202,7 @@ Phil Atkin
 Pawel Ksiezopolski
 Patrick Neary
 Nathan Monteleone
-Miha Rav¨elj
+Miha RavÅ¡elj
 Miguel Escriva
 Mattias Linde
 Mark Sciabica
@@ -235,8 +235,8 @@ Christian Ruzicka
 Christian Buchner
 Charles Cole
 Blake Williams
-Björn Hein
-Aurélien Chatelain
+BjÃ¶rn Hein
+AurÃ©lien Chatelain
 Antoine Hue
 Andrew Bettison
 Andreas Henne
@@ -269,7 +269,7 @@ Nick Mon
 Nguyen Van Truong
 Nathan Cournia
 Morten Haukness
-Morné Pistorius
+MornÃ© Pistorius
 Michael Mc Donnell
 Michael Henheffer
 Michael Guerrero
@@ -302,7 +302,7 @@ Guillaume Taze
 Guillaume Chouvenc
 Giuseppe Donvito
 Gill Peacegood
-Giampaolo Viganò
+Giampaolo ViganÃ²
 Gerrick Bivins
 George Tarantilis
 Geoff Fri
@@ -311,7 +311,7 @@ Eduardo Poyart
 Edgar Ellis
 Dmitry Marakasov
 Dimi Christopoulos
-Diane Delallée
+Diane DelallÃ©e
 David Longest
 David Ergo
 Daniel Trstenjak
@@ -344,7 +344,7 @@ Vasily Radostev
 Valery Bickov
 Valeriy Dubov
 Vaclav Bilek
-Tyge Løvset
+Tyge LÃ¸vset
 Troy Yee
 Tony Vasile
 Tomas Hogarth
@@ -399,7 +399,7 @@ Piotr Rak
 Pierre Bourdin
 Philipp Svehla
 Philipp Siemoleit
-Philipp Mächler
+Philipp MÃ¤chler
 Philip Lamb
 Petr Salinger
 Peter Bear
@@ -427,7 +427,7 @@ Nick Black
 Neil Tue
 Mojtaba Fathi
 Mirko Viviani
-Mikkel Gjøl
+Mikkel GjÃ¸l
 Mike Krus
 Mike Garrity
 Mick Thu
@@ -539,11 +539,11 @@ David Jung
 Danny Valente
 Daniel Stien
 Dan Minor
-César L. B. Silveira
+CÃ©sar L. B. Silveira
 Cyril Brulebois
 Curtis Rubel
 Cory Slep
-Clément B½sch
+ClÃ©ment BÅ“sch
 Clay Fowler
 Claus Steuer
 Chuck Sembroski

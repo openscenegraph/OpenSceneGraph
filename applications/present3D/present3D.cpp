@@ -847,7 +847,6 @@ int main( int argc, char **argv )
         }
     }
 
-    osg::Timer_t startOfFrameTick = osg::Timer::instance()->tick();
     double targetFrameTime = 1.0/targetFrameRate;
 
     if (exportName.empty())
@@ -864,116 +863,117 @@ int main( int argc, char **argv )
 
         while( !viewer.done() && !masterKilled)
         {
-            // wait for all cull and draw threads to complete.
-            viewer.advance();
+            osg::Timer_t startFrameTick = osg::Timer::instance()->tick();
 
-            osg::Timer_t currentTick = osg::Timer::instance()->tick();
-            double deltaTime = osg::Timer::instance()->delta_s(startOfFrameTick, currentTick);
-
-
-            if (deltaTime<targetFrameTime)
+            if (viewer.getRunFrameScheme()!=osgViewer::ViewerBase::ON_DEMAND || seh->checkNeedToDoFrame())
             {
-                OpenThreads::Thread::microSleep(static_cast<unsigned int>((targetFrameTime-deltaTime)*1000000.0));
-            }
+                // do the normal frame.
 
-            startOfFrameTick =  osg::Timer::instance()->tick();
+                // wait for all cull and draw threads to complete.
+                viewer.advance();
 
-#if 0
-            if (kmcb)
-            {
-                double time = kmcb->getTime();
-                viewer.getFrameStamp()->setReferenceTime(time);
-            }
-#endif
-
-#ifdef USE_SDL
-            sdlIntegration.update(viewer);
-#endif
-
-            if (P3DApplicationType==MASTER)
-            {
-                // take camera zero as the guide.
-                osg::Matrix modelview(viewer.getCamera()->getViewMatrix());
-
-                cp.setPacket(modelview,viewer.getFrameStamp());
-
-                // cp.readEventQueue(viewer);
-
-                scratchPad.reset();
-                scratchPad.write(cp);
-
-                scratchPad.reset();
-                scratchPad.read(cp);
-
-                bc.setBuffer(scratchPad.startPtr(), scratchPad.numBytes());
-
-                std::cout << "bc.sync()"<<scratchPad.numBytes()<<std::endl;
-
-                bc.sync();
-            }
-            else if (P3DApplicationType==SLAVE)
-            {
-                rc.setBuffer(scratchPad.startPtr(), scratchPad.numBytes());
-
-                rc.sync();
-
-                scratchPad.reset();
-                scratchPad.read(cp);
-
-                // cp.writeEventQueue(viewer);
-
-                if (cp.getMasterKilled())
+    #if 0
+                if (kmcb)
                 {
-                    std::cout << "Received master killed."<<std::endl;
-                    // break out of while (!done) loop since we've now want to shut down.
-                    masterKilled = true;
+                    double time = kmcb->getTime();
+                    viewer.getFrameStamp()->setReferenceTime(time);
                 }
-            }
+    #endif
 
-            // update the scene by traversing it with the update visitor which will
-            // call all node update callbacks and animations.
-            viewer.eventTraversal();
+    #ifdef USE_SDL
+                sdlIntegration.update(viewer);
+    #endif
 
-            if (seh->getRequestReload())
-            {
-                OSG_INFO<<"Reload requested"<<std::endl;
-                seh->setRequestReload(false);
-                int previous_ActiveSlide = seh->getActiveSlide();
-                int previous_ActiveLayer = seh->getActiveLayer();
-
-                // reset time so any event key generate
-
-                loadedModel = p3d::readShowFiles(arguments,cacheAllOption.get());
-                processLoadedModel(loadedModel, optimizer_options, cursorFileName);
-
-                if (!loadedModel)
+                if (P3DApplicationType==MASTER)
                 {
-                    return 0;
+                    // take camera zero as the guide.
+                    osg::Matrix modelview(viewer.getCamera()->getViewMatrix());
+
+                    cp.setPacket(modelview,viewer.getFrameStamp());
+
+                    // cp.readEventQueue(viewer);
+
+                    scratchPad.reset();
+                    scratchPad.write(cp);
+
+                    scratchPad.reset();
+                    scratchPad.read(cp);
+
+                    bc.setBuffer(scratchPad.startPtr(), scratchPad.numBytes());
+
+                    std::cout << "bc.sync()"<<scratchPad.numBytes()<<std::endl;
+
+                    bc.sync();
+                }
+                else if (P3DApplicationType==SLAVE)
+                {
+                    rc.setBuffer(scratchPad.startPtr(), scratchPad.numBytes());
+
+                    rc.sync();
+
+                    scratchPad.reset();
+                    scratchPad.read(cp);
+
+                    // cp.writeEventQueue(viewer);
+
+                    if (cp.getMasterKilled())
+                    {
+                        std::cout << "Received master killed."<<std::endl;
+                        // break out of while (!done) loop since we've now want to shut down.
+                        masterKilled = true;
+                    }
                 }
 
-                viewer.setSceneData(loadedModel.get());
-                seh->set(loadedModel.get());
-                seh->selectSlide(previous_ActiveSlide, previous_ActiveLayer);
+                // update the scene by traversing it with the update visitor which will
+                // call all node update callbacks and animations.
+                viewer.eventTraversal();
 
-                continue;
+                if (seh->getRequestReload())
+                {
+                    OSG_INFO<<"Reload requested"<<std::endl;
+                    seh->setRequestReload(false);
+                    int previous_ActiveSlide = seh->getActiveSlide();
+                    int previous_ActiveLayer = seh->getActiveLayer();
 
+                    // reset time so any event key generate
+
+                    loadedModel = p3d::readShowFiles(arguments,cacheAllOption.get());
+                    processLoadedModel(loadedModel, optimizer_options, cursorFileName);
+
+                    if (!loadedModel)
+                    {
+                        return 0;
+                    }
+
+                    viewer.setSceneData(loadedModel.get());
+                    seh->set(loadedModel.get());
+                    seh->selectSlide(previous_ActiveSlide, previous_ActiveLayer);
+
+                    continue;
+
+                }
+
+                // update the scene by traversing it with the update visitor which will
+                // call all node update callbacks and animations.
+                viewer.updateTraversal();
+
+                if (P3DApplicationType==SLAVE)
+                {
+                    osg::Matrix modelview;
+                    cp.getModelView(modelview,camera_offset);
+
+                    viewer.getCamera()->setViewMatrix(modelview);
+                }
+
+                // fire off the cull and draw traversals of the scene.
+                if(!masterKilled)
+                    viewer.renderingTraversals();
             }
 
-            // update the scene by traversing it with the update visitor which will
-            // call all node update callbacks and animations.
-            viewer.updateTraversal();
-
-            if (P3DApplicationType==SLAVE)
-            {
-                osg::Matrix modelview;
-                cp.getModelView(modelview,camera_offset);
-
-                viewer.getCamera()->setViewMatrix(modelview);
-            }
-
-            // fire off the cull and draw traversals of the scene.
-            if(!masterKilled)
-                viewer.renderingTraversals();
+            // work out if we need to force a sleep to hold back the frame rate
+            osg::Timer_t endFrameTick = osg::Timer::instance()->tick();
+            double frameTime = osg::Timer::instance()->delta_s(startFrameTick, endFrameTick);
+            if (frameTime < targetFrameTime) OpenThreads::Thread::microSleep(static_cast<unsigned int>(1000000.0*(targetFrameTime-frameTime)));
         }
     }
     else

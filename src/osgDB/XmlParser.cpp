@@ -97,6 +97,7 @@ void XmlNode::ControlMap::setUpControlMappings()
     addControlToCharacter("&gt;",'>');
     addControlToCharacter("&quot;",'"');
     addControlToCharacter("&apos;",'\'');
+    addControlToCharacter("&nl;",'\n');
 }
 
 XmlNode::Input::Input():

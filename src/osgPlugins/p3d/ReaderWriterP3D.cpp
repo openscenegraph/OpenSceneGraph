@@ -2956,6 +2956,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(const std::string& 
     local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
     local_opt->setFindFileCallback(new MyFindFileCallback);
     local_opt->setPluginStringData("filename",file);
+    local_opt->setPluginStringData("fullpath",fileName);
 
     osgDB::XmlNode::Input input;
     input.open(fileName);
@@ -2980,6 +2981,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(std::istream& fin, 
 osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Input& input, osgDB::ReaderWriter::Options* options) const
 {
     std::string fileName = options ? options->getPluginStringData("filename") : std::string();
+    std::string fullpath = options ? options->getPluginStringData("fullpath") : std::string();
     std::string extension = osgDB::getFileExtension(fileName);
     std::string fileNameSansExtension = osgDB::getNameLessExtension(fileName);
     std::string nestedExtension = osgDB::getFileExtension(fileNameSansExtension);
@@ -3085,6 +3087,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Inp
 
     if (presentation_node.valid())
     {
+        presentation_node->setUserValue("filename",fileName);
+        presentation_node->setUserValue("fullpath",fullpath);
+
         if (!options || options->getPluginStringData("P3D_EVENTHANDLER")!="none")
         {
             // if (!readOnlyHoldingPage && !readOnlyMainPresentation)

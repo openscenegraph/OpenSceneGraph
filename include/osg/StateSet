@@ -238,7 +238,7 @@ class OSG_EXPORT StateSet : public Object
         /** Set this StateSet to contain specified attribute and set the associated GLMode's to specified value.*/
         void setTextureAttributeAndModes(unsigned int unit,StateAttribute *attribute, StateAttribute::GLModeValue value=StateAttribute::ON);
 
-        template<class T> void setTextureAttributeAndModes(unsigned int unit, const ref_ptr<T>& attribute, StateAttribute::OverrideValue value=StateAttribute::OFF) { setTextureAttributeAndModes( unit, attribute.get(), value); }
+        template<class T> void setTextureAttributeAndModes(unsigned int unit, const ref_ptr<T>& attribute, StateAttribute::OverrideValue value=StateAttribute::ON) { setTextureAttributeAndModes( unit, attribute.get(), value); }
 
         /** remove texture attribute of specified type from StateSet.*/
         void removeTextureAttribute(unsigned int unit, StateAttribute::Type type);

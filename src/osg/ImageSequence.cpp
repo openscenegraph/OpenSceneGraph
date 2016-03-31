@@ -235,6 +235,8 @@ void ImageSequence::setImageToChild(int pos)
              const_cast<unsigned char*>(image->data()),
              osg::Image::NO_DELETE,
              image->getPacking());
+
+    setMipmapLevels(image->getMipmapLevels());
 }
 
 void ImageSequence::applyLoopingMode()

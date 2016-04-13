@@ -107,7 +107,7 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
         struct SortFileRequestFunctor;
         friend struct SortFileRequestFunctor;
 
-        struct ImageRequest : public osg::Referenced
+        struct OSGDB_EXPORT ImageRequest : public osg::Referenced
         {
             ImageRequest():
                 osg::Referenced(true),
@@ -126,7 +126,7 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
 
         };
 
-        struct RequestQueue : public osg::Referenced
+        struct OSGDB_EXPORT RequestQueue : public osg::Referenced
         {
             typedef std::vector< osg::ref_ptr<ImageRequest> > RequestList;
 
@@ -139,7 +139,7 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
         };
 
 
-        struct ReadQueue : public RequestQueue
+        struct OSGDB_EXPORT ReadQueue : public RequestQueue
         {
             ReadQueue(ImagePager* pager, const std::string& name);
 

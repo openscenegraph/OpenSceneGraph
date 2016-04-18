@@ -37,10 +37,21 @@ ShaderComposer::~ShaderComposer()
     OSG_INFO<<"ShaderComposer::~ShaderComposer() "<<this<<std::endl;
 }
 
-void ShaderComposer::releaseGLObjects(osg::State* state)
+void ShaderComposer::releaseGLObjects(osg::State* state) const
 {
-    _programMap.clear();
-    _shaderMainMap.clear();
+    for(ProgramMap::const_iterator itr = _programMap.begin();
+        itr != _programMap.end();
+        ++itr)
+    {
+        itr->second->releaseGLObjects(state);
+    }
+
+    for(ShaderMainMap::const_iterator itr = _shaderMainMap.begin();
+        itr != _shaderMainMap.end();
+        ++itr)
+    {
+        itr->second->releaseGLObjects(state);
+    }
 }
 
 osg::Program* ShaderComposer::getOrCreateProgram(const ShaderComponents& shaderComponents)

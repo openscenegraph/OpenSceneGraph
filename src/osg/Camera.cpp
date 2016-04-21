@@ -410,7 +410,7 @@ void Camera::inheritCullSettings(const CullSettings& settings, unsigned int inhe
             _drawBuffer = camera->_drawBuffer;
 
         if (inheritanceMask & READ_BUFFER)
-            _drawBuffer = camera->_readBuffer;
+            _readBuffer = camera->_readBuffer;
     }
 }
 

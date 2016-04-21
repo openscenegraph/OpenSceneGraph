@@ -30,6 +30,49 @@
 namespace osgVolume
 {
 
+class TransformLocatorCallback : public Locator::LocatorCallback
+{
+    public:
+
+        TransformLocatorCallback(osg::MatrixTransform* transform): _transform(transform) {}
+
+        void locatorModified(Locator* locator)
+        {
+            if (_transform.valid()) _transform->setMatrix(locator->getTransform());
+        }
+
+    protected:
+
+        osg::observer_ptr<osg::MatrixTransform> _transform;
+};
+
+
+class TexGenLocatorCallback : public Locator::LocatorCallback
+{
+    public:
+
+        TexGenLocatorCallback(osg::TexGen* texgen, Locator* geometryLocator, Locator* imageLocator):
+            _texgen(texgen),
+            _geometryLocator(geometryLocator),
+            _imageLocator(imageLocator) {}
+
+        void locatorModified(Locator*)
+        {
+            if (!_texgen || !_geometryLocator || !_imageLocator) return;
+
+            _texgen->setPlanesFromMatrix(
+                _geometryLocator->getTransform() *
+                osg::Matrix::inverse(_imageLocator->getTransform()));
+        }
+
+    protected:
+
+        osg::observer_ptr<osg::TexGen> _texgen;
+        osg::observer_ptr<osgVolume::Locator> _geometryLocator;
+        osg::observer_ptr<osgVolume::Locator> _imageLocator;
+};
+
+
 RayTracedTechnique::RayTracedTechnique()
 {
 }
@@ -48,7 +91,9 @@ enum ShadingModel
     Standard,
     Light,
     Isosurface,
-    MaximumIntensityProjection
+    MaximumIntensityProjection,
+	Cut,
+	AnyCut
 };
 
 void RayTracedTechnique::init()
@@ -96,7 +141,16 @@ void RayTracedTechnique::init()
         _volumeTile->getLayer()->getProperty()->accept(cpv);
     }
 
-    if (cpv._isoProperty.valid())
+
+	if (cpv._anycutProperty.valid())
+	{
+		shadingModel = AnyCut;
+	}
+	else if (cpv._cutProperty.valid())
+	{
+		shadingModel = Cut;
+	}
+    else if (cpv._isoProperty.valid())
     {
         shadingModel = Isosurface;
         alphaFuncValue = cpv._isoProperty->getValue();
@@ -146,6 +200,8 @@ void RayTracedTechnique::init()
     OSG_INFO<<"RayTracedTechnique::init() : geometryMatrix = "<<geometryMatrix<<std::endl;
     OSG_INFO<<"RayTracedTechnique::init() : imageMatrix = "<<imageMatrix<<std::endl;
 
+	float cutXFront,cutXBack,cutYFront,cutYBack,cutZFront,cutZBack;
+
     osg::Texture::InternalFormatMode internalFormatMode = osg::Texture::USE_IMAGE_DATA_FORMAT;
 
     {
@@ -165,7 +221,7 @@ void RayTracedTechnique::init()
         osg::ref_ptr<osg::Shader> vertexShader = osgDB::readRefShaderFile(osg::Shader::VERTEX, "shaders/volume.vert");
         if (vertexShader.valid())
         {
-            program->addShader(vertexShader.get());
+            program->addShader(vertexShader);
         }
         else
         {
@@ -182,9 +238,18 @@ void RayTracedTechnique::init()
             texture3D->setResizeNonPowerOfTwoHint(false);
             texture3D->setFilter(osg::Texture3D::MIN_FILTER,minFilter);
             texture3D->setFilter(osg::Texture3D::MAG_FILTER, magFilter);
-            texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP_TO_BORDER);
-            texture3D->setWrap(osg::Texture3D::WRAP_S,osg::Texture3D::CLAMP_TO_BORDER);
-            texture3D->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP_TO_BORDER);
+			if (shadingModel==Isosurface)
+			{
+				texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP_TO_BORDER);
+				texture3D->setWrap(osg::Texture3D::WRAP_S,osg::Texture3D::CLAMP_TO_BORDER);
+				texture3D->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP_TO_BORDER);
+			}
+			else
+			{
+				texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP_TO_EDGE);
+				texture3D->setWrap(osg::Texture3D::WRAP_S,osg::Texture3D::CLAMP_TO_EDGE);
+				texture3D->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP_TO_EDGE);
+			}
             texture3D->setBorderColor(osg::Vec4(0.0,0.0,0.0,0.0));
             if (image_3d->getPixelFormat()==GL_ALPHA ||
                 image_3d->getPixelFormat()==GL_LUMINANCE)
@@ -235,7 +300,6 @@ void RayTracedTechnique::init()
             stateset->addUniform(new osg::Uniform("tfTexture",1));
             stateset->addUniform(new osg::Uniform("tfOffset",tfOffset));
             stateset->addUniform(new osg::Uniform("tfScale",tfScale));
-
         }
 
         if (shadingModel==MaximumIntensityProjection)
@@ -273,6 +337,99 @@ void RayTracedTechnique::init()
                 }
             }
         }
+		else if (shadingModel==AnyCut)
+		{
+
+			enableBlending = true;
+
+			float xRatio,yRatio,zRatio,dValue;
+			bool cutDirect;
+			cpv._anycutProperty->getCutValue(cutDirect,xRatio,yRatio,zRatio,dValue);
+			stateset->addUniform(new osg::Uniform("XRatio",xRatio));
+			stateset->addUniform(new osg::Uniform("YRatio",yRatio));
+			stateset->addUniform(new osg::Uniform("ZRatio",zRatio));
+			stateset->addUniform(new osg::Uniform("DValue",dValue));
+			stateset->addUniform(new osg::Uniform("CutDirect",cutDirect));
+			stateset->addUniform(cpv._anycutProperty->getUniform());
+
+			if (tf)
+			{
+				osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_anycut_tf.frag");
+				if (fragmentShader.valid())
+				{
+					program->addShader(fragmentShader);
+				}
+				else
+				{
+					#include "Shaders/volume_anycut_tf_frag.cpp"
+					program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_anycut_tf_frag));
+				}
+			}
+			else
+			{
+				osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_anycut_tf.frag");
+				if (fragmentShader.valid())
+				{
+					OSG_INFO<<"Shader found"<<std::endl;
+
+					program->addShader(fragmentShader);
+				}
+				else
+				{
+					OSG_INFO<<"No Shader found"<<std::endl;
+
+					#include "Shaders/volume_anycut_tf_frag.cpp"
+					program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_anycut_tf_frag));
+				}
+			}
+		}
+		else if (shadingModel==Cut)
+		{
+
+			enableBlending = true;
+			
+			bool cutBox;
+			cpv._cutProperty->getCutValue(cutBox,cutXFront,cutXBack,cutYFront,cutYBack,cutZFront,cutZBack);
+			stateset->addUniform(new osg::Uniform("CutXFront",cutXFront));
+			stateset->addUniform(new osg::Uniform("CutXBack",cutXBack));
+			stateset->addUniform(new osg::Uniform("CutYFront",cutYFront));
+			stateset->addUniform(new osg::Uniform("CutYBack",cutYBack));
+			stateset->addUniform(new osg::Uniform("CutZFront",cutZFront));
+			stateset->addUniform(new osg::Uniform("CutZBack",cutZBack));
+			stateset->addUniform(new osg::Uniform("CutBox",cutBox));
+			stateset->addUniform(cpv._cutProperty->getUniform());
+
+			if (tf)
+			{
+				osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_cut_tf.frag");
+				if (fragmentShader.valid())
+				{
+					program->addShader(fragmentShader);
+				}
+				else
+				{
+					#include "Shaders/volume_cut_tf_frag.cpp"
+					program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_cut_tf_frag));
+				}
+			}
+			else
+			{
+				osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_cut_tf.frag");
+				if (fragmentShader.valid())
+				{
+					OSG_INFO<<"Shader found"<<std::endl;
+
+					program->addShader(fragmentShader);
+				}
+				else
+				{
+					OSG_INFO<<"No Shader found"<<std::endl;
+
+					#include "Shaders/volume_cut_tf_frag.cpp"
+					program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_cut_tf_frag));
+				}
+			}
+		}
         else if (shadingModel==Isosurface)
         {
 
@@ -285,7 +442,7 @@ void RayTracedTechnique::init()
                 osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_tf_iso.frag");
                 if (fragmentShader.valid())
                 {
-                    program->addShader(fragmentShader.get());
+                    program->addShader(fragmentShader);
                 }
                 else
                 {
@@ -300,7 +457,7 @@ void RayTracedTechnique::init()
                 {
                     OSG_INFO<<"Shader found"<<std::endl;
 
-                    program->addShader(fragmentShader.get());
+                    program->addShader(fragmentShader);
                 }
                 else
                 {
@@ -320,7 +477,7 @@ void RayTracedTechnique::init()
                 osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_lit_tf.frag");
                 if (fragmentShader.valid())
                 {
-                    program->addShader(fragmentShader.get());
+                    program->addShader(fragmentShader);
                 }
                 else
                 {
@@ -334,7 +491,7 @@ void RayTracedTechnique::init()
                 osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_lit.frag");
                 if (fragmentShader.valid())
                 {
-                    program->addShader(fragmentShader.get());
+                    program->addShader(fragmentShader);
                 }
                 else
                 {
@@ -352,7 +509,7 @@ void RayTracedTechnique::init()
                 osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_tf.frag");
                 if (fragmentShader.valid())
                 {
-                    program->addShader(fragmentShader.get());
+                    program->addShader(fragmentShader);
                 }
                 else
                 {
@@ -366,7 +523,7 @@ void RayTracedTechnique::init()
                 osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume.frag");
                 if (fragmentShader.valid())
                 {
-                    program->addShader(fragmentShader.get());
+                    program->addShader(fragmentShader);
                 }
                 else
                 {
@@ -398,10 +555,15 @@ void RayTracedTechnique::init()
         {
             stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
             stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+			//stateset->setRenderBinDetails( 11, "DepthSortedBin");
+			//stateset->setRenderBinDetails( -1, "RenderBin");
         }
 
-
-        stateset->setMode(GL_CULL_FACE, osg::StateAttribute::ON);
+		stateset->setMode(GL_CULL_FACE, osg::StateAttribute::ON);
+		//stateset->setRenderBinMode(osg::StateSet::OVERRIDE_RENDERBIN_DETAILS);
+		//stateset->setMode(GL_LIGHTING,osg::StateAttribute::ON);
+  //      stateset->setMode(GL_CULL_FACE_MODE, osg::StateAttribute::ON);
+		//stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::ON);
 
         osg::TexGen* texgen = new osg::TexGen;
         texgen->setMode(osg::TexGen::OBJECT_LINEAR);
@@ -425,14 +587,28 @@ void RayTracedTechnique::init()
         osg::Geometry* geom = new osg::Geometry;
 
         osg::Vec3Array* coords = new osg::Vec3Array(8);
-        (*coords)[0] = osg::Vec3d(0.0,0.0,0.0);
-        (*coords)[1] = osg::Vec3d(1.0,0.0,0.0);
-        (*coords)[2] = osg::Vec3d(1.0,1.0,0.0);
-        (*coords)[3] = osg::Vec3d(0.0,1.0,0.0);
-        (*coords)[4] = osg::Vec3d(0.0,0.0,1.0);
-        (*coords)[5] = osg::Vec3d(1.0,0.0,1.0);
-        (*coords)[6] = osg::Vec3d(1.0,1.0,1.0);
-        (*coords)[7] = osg::Vec3d(0.0,1.0,1.0);
+		if (shadingModel==Cut)
+		{
+			(*coords)[0] = osg::Vec3d(cutXFront,cutYFront,cutZFront);
+			(*coords)[1] = osg::Vec3d(cutXBack,cutYFront,cutZFront);
+			(*coords)[2] = osg::Vec3d(cutXBack,cutYBack,cutZFront);
+			(*coords)[3] = osg::Vec3d(cutXFront,cutYBack,cutZFront);
+			(*coords)[4] = osg::Vec3d(cutXFront,cutYFront,cutZBack);
+			(*coords)[5] = osg::Vec3d(cutXBack,cutYFront,cutZBack);
+			(*coords)[6] = osg::Vec3d(cutXBack,cutYBack,cutZBack);
+			(*coords)[7] = osg::Vec3d(cutXFront,cutYBack,cutZBack);
+		}
+		else
+		{
+			(*coords)[0] = osg::Vec3d(0.0,0.0,0.0);
+			(*coords)[1] = osg::Vec3d(1.0,0.0,0.0);
+			(*coords)[2] = osg::Vec3d(1.0,1.0,0.0);
+			(*coords)[3] = osg::Vec3d(0.0,1.0,0.0);
+			(*coords)[4] = osg::Vec3d(0.0,0.0,1.0);
+			(*coords)[5] = osg::Vec3d(1.0,0.0,1.0);
+			(*coords)[6] = osg::Vec3d(1.0,1.0,1.0);
+			(*coords)[7] = osg::Vec3d(0.0,1.0,1.0);
+		}
         geom->setVertexArray(coords);
 
         osg::Vec4Array* colours = new osg::Vec4Array(1);
@@ -498,11 +674,36 @@ void RayTracedTechnique::cull(osgUtil::CullVisitor* cv)
 {
     if (!_transform.valid()) return;
 
-    if (_whenMovingStateSet.valid() && isMoving(cv))
+    if (_whenMovingStateSet.valid())
     {
-        cv->pushStateSet(_whenMovingStateSet.get());
-        _transform->accept(*cv);
-        cv->popStateSet();
+        bool moving = false;
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            ModelViewMatrixMap::iterator itr = _modelViewMatrixMap.find(cv->getIdentifier());
+            if (itr!=_modelViewMatrixMap.end())
+            {
+                osg::Matrix newModelViewMatrix = *(cv->getModelViewMatrix());
+                osg::Matrix& previousModelViewMatrix = itr->second;
+                moving = (newModelViewMatrix != previousModelViewMatrix);
+
+                previousModelViewMatrix = newModelViewMatrix;
+            }
+            else
+            {
+                _modelViewMatrixMap[cv->getIdentifier()] = *(cv->getModelViewMatrix());
+            }
+        }
+
+        if (moving)
+        {
+            cv->pushStateSet(_whenMovingStateSet.get());
+            _transform->accept(*cv);
+            cv->popStateSet();
+        }
+        else
+        {
+            _transform->accept(*cv);
+        }
     }
     else
     {
@@ -525,7 +726,7 @@ void RayTracedTechnique::traverse(osg::NodeVisitor& nv)
     {
         if (_volumeTile->getDirty()) _volumeTile->init();
 
-        osgUtil::UpdateVisitor* uv = nv.asUpdateVisitor();
+        osgUtil::UpdateVisitor* uv = dynamic_cast<osgUtil::UpdateVisitor*>(&nv);
         if (uv)
         {
             update(uv);
@@ -535,7 +736,7 @@ void RayTracedTechnique::traverse(osg::NodeVisitor& nv)
     }
     else if (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
     {
-        osgUtil::CullVisitor* cv = nv.asCullVisitor();
+        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
         if (cv)
         {
             cull(cv);

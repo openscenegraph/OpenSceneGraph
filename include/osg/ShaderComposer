@@ -39,6 +39,9 @@ class OSG_EXPORT ShaderComposer : public osg::Object
         virtual osg::Shader* composeMain(const Shaders& shaders);
         virtual void addShaderToProgram(Program* program, const Shaders& shaders);
 
+        /// kept for backward compatibility
+        void releaseGLObjects(osg::State* state) { static_cast<const ShaderComposer*>(this)->releaseGLObjects(state); }
+
         virtual void releaseGLObjects(osg::State* state) const;
 
     protected:

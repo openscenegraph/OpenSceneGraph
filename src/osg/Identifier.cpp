@@ -7,7 +7,8 @@
 
 #include <map>
 
-using namespace osg;
+namespace osg
+{
 
 struct IdentifierKey
 {
@@ -42,8 +43,8 @@ struct IdentifierKey
 
 typedef std::map<IdentifierKey, osg::ref_ptr<Identifier> > IdentifierMap;
 
-IdentifierMap  s_IdentifierMap;
-OpenThreads::Mutex s_IdentifierMapMutex;
+static IdentifierMap  s_IdentifierMap;
+static OpenThreads::Mutex s_IdentifierMapMutex;
 
 Identifier::Identifier(const std::string& name, int number, osg::Referenced* f, osg::Referenced* s):
     _name(name),
@@ -120,4 +121,6 @@ Identifier* osg::Identifier::get(int number, osg::Referenced* first, osg::Refere
 Identifier* osg::Identifier::get(osg::Referenced* first, osg::Referenced* second)
 {
     return get("", 0, first, second);
+}
+
 }

@@ -738,7 +738,14 @@ void GraphicsWindowX11::init()
 
         EGLConfig eglConfig = 0;
 
-        #if defined(OSG_GLES2_AVAILABLE)
+        #if defined(OSG_GLES3_AVAILABLE)
+
+            #ifndef EGL_OPENGL_ES3_BIT
+                #define EGL_OPENGL_ES3_BIT 0x00000040
+            #endif
+            #define OSG_EGL_OPENGL_TARGET_BIT EGL_OPENGL_ES3_BIT
+
+        #elif defined(OSG_GLES2_AVAILABLE)
             #define OSG_EGL_OPENGL_TARGET_BIT EGL_OPENGL_ES2_BIT
         #else
             #define OSG_EGL_OPENGL_TARGET_BIT EGL_OPENGL_ES_BIT

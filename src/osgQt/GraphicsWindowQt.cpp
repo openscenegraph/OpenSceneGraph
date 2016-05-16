@@ -125,7 +125,7 @@ public:
     osg::observer_ptr< osgViewer::ViewerBase > _viewer;
 
     virtual ~HeartBeat();
-    
+
     void init( osgViewer::ViewerBase *viewer );
     void stopTimer();
     void timerEvent( QTimerEvent *event );
@@ -869,7 +869,6 @@ void GraphicsWindowQt::requestWarpPointer( float x, float y )
         QCursor::setPos( _widget->mapToGlobal(QPoint((int)x,(int)y)) );
 }
 
-
 class QtWindowingSystem : public osg::GraphicsContext::WindowingSystemInterface
 {
 public:
@@ -945,6 +944,9 @@ private:
     QtWindowingSystem& operator=( const QtWindowingSystem& );
 };
 
+#if 1
+REGISTER_WINDOWINGSYSTEMINTERFACE(Qt, QtWindowingSystem)
+#else
 
 // declare C entry point for static compilation.
 extern "C" void OSGQT_EXPORT graphicswindow_Qt(void)
@@ -957,7 +959,7 @@ void osgQt::initQtWindowingSystem()
 {
     graphicswindow_Qt();
 }
-
+#endif
 
 
 void osgQt::setViewer( osgViewer::ViewerBase *viewer )

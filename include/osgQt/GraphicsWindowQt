@@ -39,8 +39,10 @@ namespace osgQt
 // forward declarations
 class GraphicsWindowQt;
 
+#if 0
 /// The function sets the WindowingSystem to Qt.
 void OSGQT_EXPORT initQtWindowingSystem();
+#endif
 
 /** The function sets the viewer that will be used after entering
  *  the Qt main loop (QCoreApplication::exec()).
@@ -69,7 +71,7 @@ public:
 
     inline bool getForwardKeyEvents() const { return _forwardKeyEvents; }
     virtual void setForwardKeyEvents( bool f ) { _forwardKeyEvents = f; }
-    
+
     inline bool getTouchEventsEnabled() const { return _touchEventsEnabled; }
     void setTouchEventsEnabled( bool e );
 

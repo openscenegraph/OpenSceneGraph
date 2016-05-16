@@ -2144,6 +2144,12 @@ public:
 
 };
 
+#if 1
+
+REGISTER_WINDOWINGSYSTEMINTERFACE(X11, X11WindowingSystemInterface)
+
+
+#else
 struct RegisterWindowingSystemInterfaceProxy
 {
     RegisterWindowingSystemInterfaceProxy()
@@ -2166,7 +2172,6 @@ struct RegisterWindowingSystemInterfaceProxy
 
     }
 };
-
 RegisterWindowingSystemInterfaceProxy createWindowingSystemInterfaceProxy;
 
 // declare C entry point for static compilation.
@@ -2174,6 +2179,7 @@ extern "C" void graphicswindow_X11(void)
 {
     osg::GraphicsContext::setWindowingSystemInterface(new X11WindowingSystemInterface);
 }
+#endif
 
 void GraphicsWindowX11::raiseWindow()
 {

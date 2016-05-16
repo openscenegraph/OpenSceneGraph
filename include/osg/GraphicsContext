@@ -76,6 +76,12 @@ class OSG_EXPORT GraphicsContext : public Object
             int width;
             int height;
 
+            // provide a hint as to which WindowingSystemInterface implementation to use, i.e. "X11", "Win32", "Cocoa", "Carbon" etc.
+            // if the windowingSystemPreference string is empty (default) then return the first available WindowingSystemInterface that
+            // has been registered with the osg::GraphiccsContext::WindowingSystemInterfaces singleton
+            // if the windowingSystemPreference string is not empty then return the first WindowingSystemInterface that matches
+            std::string windowingSystemPreference;
+
             // window decoration and behaviour
             std::string windowName;
             bool        windowDecoration;
@@ -168,6 +174,9 @@ class OSG_EXPORT GraphicsContext : public Object
         /** Callback to be implemented to provide access to Windowing API's ability to create Windows/pbuffers.*/
         struct WindowingSystemInterface : public osg::Referenced
         {
+            void setName(const std::string& name) { _name = name; }
+            const std::string& getName() const { return _name; }
+
             virtual unsigned int getNumScreens(const ScreenIdentifier& screenIdentifier = ScreenIdentifier()) = 0;
 
             virtual void getScreenSettings(const ScreenIdentifier& screenIdentifier, ScreenSettings & resolution) = 0;
@@ -181,9 +190,6 @@ class OSG_EXPORT GraphicsContext : public Object
             virtual osg::DisplaySettings* getDisplaySettings() const { return 0; }
 
             virtual GraphicsContext* createGraphicsContext(Traits* traits) = 0;
-
-            virtual ~WindowingSystemInterface() {}
-
 
             /** Gets screen resolution without using the ScreenResolution structure.
               * \deprecated Provided only for backward compatibility. */
@@ -210,15 +216,38 @@ class OSG_EXPORT GraphicsContext : public Object
                 settings.refreshRate = refreshRate;
                 return setScreenSettings(screenIdentifier, settings);
             }
+        protected:
+            WindowingSystemInterface() {}
+            virtual ~WindowingSystemInterface() {}
 
+            std::string _name;
         };
 
+        class OSG_EXPORT WindowingSystemInterfaces : public osg::Referenced
+        {
+        public:
+            WindowingSystemInterfaces();
 
-        /** Set the query the windowing system for screens and create graphics context - this functor should be supplied by the windows toolkit. */
-        static void setWindowingSystemInterface(WindowingSystemInterface* wsInterface);
+            typedef std::vector< osg::ref_ptr<GraphicsContext::WindowingSystemInterface> > Interfaces;
 
-        /** Get the WindowingSystemInterface*/
-        static WindowingSystemInterface* getWindowingSystemInterface();
+            Interfaces& getInterfaces() { return _interfaces; }
+
+            void addWindowingSystemInterface(WindowingSystemInterface* wsInterface);
+
+            void removeWindowingSystemInterface(WindowingSystemInterface* wsInterface);
+
+            /** get named WindowingSystemInterface if one is available, otherwise return 0; */
+            WindowingSystemInterface* getWindowingSystemInterface(const std::string& name = "");
+
+        private:
+            virtual ~WindowingSystemInterfaces();
+            Interfaces _interfaces;
+        };
+
+        static osg::ref_ptr<WindowingSystemInterfaces>& getWindowingSystemInterfaces();
+
+        /** Get the default WindowingSystemInterface for this OS*/
+        static WindowingSystemInterface* getWindowingSystemInterface(const std::string& name = "");
 
         /** Create a graphics context for a specified set of traits.*/
         static GraphicsContext* createGraphicsContext(Traits* traits);
@@ -543,6 +572,30 @@ public:
 
     GLsync _previousSync;
 };
+
+
+template<class T>
+struct WindowingSystemInterfaceProxy
+{
+    WindowingSystemInterfaceProxy(const std::string& name)
+    {
+        _wsi = new T;
+        _wsi->setName(name);
+
+        osg::GraphicsContext::getWindowingSystemInterfaces()->addWindowingSystemInterface(_wsi.get());
+    }
+
+    ~WindowingSystemInterfaceProxy()
+    {
+        osg::GraphicsContext::getWindowingSystemInterfaces()->removeWindowingSystemInterface(_wsi.get());
+    }
+
+    osg::ref_ptr<T> _wsi;
+};
+
+#define REGISTER_WINDOWINGSYSTEMINTERFACE(ext, classname) \
+    extern "C" void graphicswindow_##ext(void) {} \
+    static osg::WindowingSystemInterfaceProxy<classname> s_proxy_##classname(#ext);
 
 }
 

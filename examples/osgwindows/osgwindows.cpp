@@ -50,6 +50,7 @@ int main( int argc, char **argv )
     // left window + left slave camera
     {
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+
         traits->x = xoffset + 0;
         traits->y = yoffset + 0;
         traits->width = 600;

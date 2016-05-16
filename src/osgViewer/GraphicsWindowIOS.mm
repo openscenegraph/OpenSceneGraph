@@ -1226,7 +1226,9 @@ public:
 
 }//end namspace
 
-
+#if 1
+REGISTER_WINDOWINGSYSTEMINTERFACE(IOS, osgViewer::ConcreteIOSWindowingSystemInterface)
+#else
 RegisterWindowingSystemInterfaceProxy<osgViewer::ConcreteIOSWindowingSystemInterface> createWindowingSystemInterfaceProxy;
 
 
@@ -1235,3 +1237,4 @@ extern "C" void graphicswindow_IOS(void)
 {
     osg::GraphicsContext::setWindowingSystemInterface(new osgViewer::ConcreteIOSWindowingSystemInterface());
 }
+#endif

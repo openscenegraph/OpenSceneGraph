@@ -34,42 +34,95 @@
 #include <sstream>
 #include <algorithm>
 #include <iterator>
+#include <stdio.h>
 
 using namespace osg;
 
 /////////////////////////////////////////////////////////////////////////////
+//
+// WindowSystemInterfaces
+//
+GraphicsContext::WindowingSystemInterfaces::WindowingSystemInterfaces()
+{
+}
 
+GraphicsContext::WindowingSystemInterfaces::~WindowingSystemInterfaces()
+{
+}
+
+void GraphicsContext::WindowingSystemInterfaces::addWindowingSystemInterface(GraphicsContext::WindowingSystemInterface* wsi)
+{
+    if (std::find(_interfaces.begin(), _interfaces.end(), wsi)==_interfaces.end())
+    {
+        OSG_NOTICE<<"GraphicsContext::WindowingSystemInterfaces::addWindowingSystemInterface("<<wsi<<") Name="<<wsi->getName()<<std::endl;
+        _interfaces.push_back(wsi);
+    }
+}
+
+void GraphicsContext::WindowingSystemInterfaces::removeWindowingSystemInterface(GraphicsContext::WindowingSystemInterface* wsi)
+{
+    printf("GraphicsContext::WindowingSystemInterfaces::removeWindowingSystemInterface()\n");
+    Interfaces::iterator itr = std::find(_interfaces.begin(), _interfaces.end(), wsi);
+    if (itr!=_interfaces.end())
+    {
+        printf("    succeded GraphicsContext::WindowingSystemInterfaces::removeWindowingSystemInterface()\n");
+        _interfaces.erase(itr);
+    }
+}
+
+GraphicsContext::WindowingSystemInterface* GraphicsContext::WindowingSystemInterfaces::getWindowingSystemInterface(const std::string& name)
+{
+    if (_interfaces.empty())
+    {
+        OSG_WARN<<"Warning: GraphicsContext::WindowingSystemInterfaces::getWindowingSystemInterface() failed, no interfaces available."<<std::endl;
+        return 0;
+    }
+
+    if (!name.empty())
+    {
+        for(Interfaces::iterator itr = _interfaces.begin();
+            itr != _interfaces.end();
+            ++itr)
+        {
+            if ((*itr)->getName()==name)
+            {
+                return itr->get();
+            }
+
+            OSG_NOTICE<<"   tried interface "<<typeid(*itr).name()<<", name= "<<(*itr)->getName()<<std::endl;
+        }
+
+        OSG_WARN<<"Warning: GraphicsContext::WindowingSystemInterfaces::getWindowingSystemInterface() failed, no interfaces matches name : "<<name<<std::endl;
+        return 0;
+    }
+    else
+    {
+        // no preference provided so just take the first available interface
+        return _interfaces.front().get();
+    }
+}
 
 // Use a static reference pointer to hold the window system interface.
 // Wrap this within a function, in order to control the order in which
 // the static pointer's constructor is executed.
-
-static ref_ptr<GraphicsContext::WindowingSystemInterface> &windowingSystemInterfaceRef()
+osg::ref_ptr<GraphicsContext::WindowingSystemInterfaces>& GraphicsContext::getWindowingSystemInterfaces()
 {
-    static ref_ptr<GraphicsContext::WindowingSystemInterface> s_WindowingSystemInterface;
+    static ref_ptr<GraphicsContext::WindowingSystemInterfaces> s_WindowingSystemInterface = new GraphicsContext::WindowingSystemInterfaces;
     return s_WindowingSystemInterface;
 }
 
+OSG_INIT_SINGLETON_PROXY(ProxyInitWindowingSystemInterfaces, GraphicsContext::getWindowingSystemInterfaces())
+
 
 //  GraphicsContext static method implementations
-
-void GraphicsContext::setWindowingSystemInterface(WindowingSystemInterface* callback)
+GraphicsContext::WindowingSystemInterface* GraphicsContext::getWindowingSystemInterface(const std::string& name)
 {
-    ref_ptr<GraphicsContext::WindowingSystemInterface> &wsref = windowingSystemInterfaceRef();
-    wsref = callback;
-    OSG_INFO<<"GraphicsContext::setWindowingSystemInterface() "<<wsref.get()<<"\t"<<&wsref<<std::endl;
-}
-
-GraphicsContext::WindowingSystemInterface* GraphicsContext::getWindowingSystemInterface()
-{
-    ref_ptr<GraphicsContext::WindowingSystemInterface> &wsref = windowingSystemInterfaceRef();
-    OSG_INFO<<"GraphicsContext::getWindowingSystemInterface() "<<wsref.get()<<"\t"<<&wsref<<std::endl;
-    return wsref.get();
+    return GraphicsContext::getWindowingSystemInterfaces()->getWindowingSystemInterface(name);
 }
 
 GraphicsContext* GraphicsContext::createGraphicsContext(Traits* traits)
 {
-    ref_ptr<GraphicsContext::WindowingSystemInterface> &wsref = windowingSystemInterfaceRef();
+    ref_ptr<GraphicsContext::WindowingSystemInterface> wsref = getWindowingSystemInterface(traits ? traits->windowingSystemPreference : "") ;
     if ( wsref.valid())
     {
         // catch any undefined values.

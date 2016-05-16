@@ -1829,6 +1829,9 @@ private:
 
 }
 
+#if 1
+REGISTER_WINDOWINGSYSTEMINTERFACE(Cocoa, osgViewer::CocoaWindowingSystemInterface)
+#else
 #ifdef USE_DARWIN_COCOA_IMPLEMENTATION
 RegisterWindowingSystemInterfaceProxy<osgViewer::CocoaWindowingSystemInterface> createWindowingSystemInterfaceProxy;
 #endif
@@ -1838,3 +1841,4 @@ extern "C" void graphicswindow_Cocoa(void)
 {
     osg::GraphicsContext::setWindowingSystemInterface(new osgViewer::CocoaWindowingSystemInterface());
 }
+#endif

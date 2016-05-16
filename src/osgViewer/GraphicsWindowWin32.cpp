@@ -317,14 +317,16 @@ class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterfa
     static std::string osgGraphicsWindowWithCursorClass;    //!< Name of Win32 window class (with cursor) used by OSG graphics window instances
     static std::string osgGraphicsWindowWithoutCursorClass; //!< Name of Win32 window class (without cursor) used by OSG graphics window instances
 
-    Win32WindowingSystem();
-    ~Win32WindowingSystem();
+    Win32WindowingSystem()
+    {
+        getInterface() = this;
+    }
 
     // Access the Win32 windowing system through this singleton class.
-    static Win32WindowingSystem* getInterface()
+    static osg::ref_ptr<Win32WindowingSystem>& getInterface()
     {
-        static Win32WindowingSystem* win32Interface = new Win32WindowingSystem;
-        return win32Interface;
+        static osg::ref_ptr<Win32WindowingSystem> s_win32Interface;
+        return s_win32Interface;
     }
 
     // Return the number of screens present in the system
@@ -367,6 +369,8 @@ class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterfa
     virtual bool getSampleOpenGLContext( OpenGLContext& context, HDC windowHDC, int windowOriginX, int windowOriginY );
 
   protected:
+
+    virtual ~Win32WindowingSystem() {}
 
     // Display devices present in the system
     typedef std::vector<DISPLAY_DEVICE> DisplayDevices;
@@ -2273,7 +2277,7 @@ void GraphicsWindowWin32::setCursorImpl( MouseCursor mouseCursor )
 
         _currentCursor = newCursor;
         _traits->useCursor = (_currentCursor != NULL) && (_mouseCursor != NoCursor);
-        
+
         PostMessage(_hwnd, WM_SETCURSOR, 0, 0);
     }
 }
@@ -2894,7 +2898,7 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
 //////////////////////////////////////////////////////////////////////////////
 //  Class responsible for registering the Win32 Windowing System interface
 //////////////////////////////////////////////////////////////////////////////
-
+#if 0
 struct RegisterWindowingSystemInterfaceProxy
 {
     RegisterWindowingSystemInterfaceProxy()
@@ -2915,16 +2919,19 @@ struct RegisterWindowingSystemInterfaceProxy
 };
 
 static RegisterWindowingSystemInterfaceProxy createWindowingSystemInterfaceProxy;
+#endif
 
 } // namespace OsgViewer
 
-
+#if 1
+REGISTER_WINDOWINGSYSTEMINTERFACE(Win32, Win32WindowingSystem)
+#else
 // declare C entry point for static compilation.
 extern "C" void OSGVIEWER_EXPORT graphicswindow_Win32(void)
 {
     osg::GraphicsContext::setWindowingSystemInterface(osgViewer::Win32WindowingSystem::getInterface());
 }
-
+#endif
 
 void GraphicsWindowWin32::raiseWindow()
 {

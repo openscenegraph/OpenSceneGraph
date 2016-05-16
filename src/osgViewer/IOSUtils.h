@@ -11,8 +11,8 @@
  *
  */
 
-#ifdef __APPLE__ 
- 
+#ifdef __APPLE__
+
 #ifndef IOS_UTILS_HEADER_
 #define IOS_UTILS_HEADER_
 
@@ -45,7 +45,7 @@ public:
     virtual void getScreenSettings(const osg::GraphicsContext::ScreenIdentifier& si, osg::GraphicsContext::ScreenSettings & resolution);
 
     virtual void enumerateScreenSettings(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, osg::GraphicsContext::ScreenSettingsList & resolutionList);
-    
+
     virtual bool setScreenSettings (const osg::GraphicsContext::ScreenIdentifier & si, const osg::GraphicsContext::ScreenSettings & settings);
 
     /** returns screen-ndx containing rect x,y,w,h, NOT_TESTED@tom */
@@ -57,12 +57,12 @@ public:
     //return the UIScreen object asscoiated with the passed ScreenIdentifier
     //returns nil if si isn't found
     UIScreen* getUIScreen(const osg::GraphicsContext::ScreenIdentifier& si);
-    
+
     //
     //Get the contents scale factor of the screen, this is the scale factor required
     //to convert points to pixels on this screen
     bool getScreenContentScaleFactor(const osg::GraphicsContext::ScreenIdentifier& si, float& scaleFactor);
-    
+
     //
     //Get the screens size in points, docs state a point is roughly 1/160th of an inch
     bool getScreenSizeInPoints(const osg::GraphicsContext::ScreenIdentifier& si, osg::Vec2& pointSize);
@@ -80,11 +80,12 @@ protected:
 
 
 private:
-    
 
-    
+
+
 };
 
+#if 0
 template <class WSI>
 struct RegisterWindowingSystemInterfaceProxy
 {
@@ -104,7 +105,7 @@ struct RegisterWindowingSystemInterfaceProxy
         osg::GraphicsContext::setWindowingSystemInterface(0);
     }
 };
-
+#endif
 
 
 }

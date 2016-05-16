@@ -323,9 +323,9 @@ class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterfa
     }
 
     // Access the Win32 windowing system through this singleton class.
-    static osg::ref_ptr<Win32WindowingSystem>& getInterface()
+    static osg::observer_ptr<Win32WindowingSystem>& getInterface()
     {
-        static osg::ref_ptr<Win32WindowingSystem> s_win32Interface;
+        static osg::observer_ptr<Win32WindowingSystem> s_win32Interface;
         return s_win32Interface;
     }
 

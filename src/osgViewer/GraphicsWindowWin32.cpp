@@ -317,10 +317,7 @@ class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterfa
     static std::string osgGraphicsWindowWithCursorClass;    //!< Name of Win32 window class (with cursor) used by OSG graphics window instances
     static std::string osgGraphicsWindowWithoutCursorClass; //!< Name of Win32 window class (without cursor) used by OSG graphics window instances
 
-    Win32WindowingSystem()
-    {
-        getInterface() = this;
-    }
+	Win32WindowingSystem();
 
     // Access the Win32 windowing system through this singleton class.
     static osg::observer_ptr<Win32WindowingSystem>& getInterface()
@@ -370,7 +367,7 @@ class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterfa
 
   protected:
 
-    virtual ~Win32WindowingSystem() {}
+    virtual ~Win32WindowingSystem();
 
     // Display devices present in the system
     typedef std::vector<DISPLAY_DEVICE> DisplayDevices;
@@ -703,7 +700,9 @@ std::string Win32WindowingSystem::osgGraphicsWindowWithoutCursorClass;
 Win32WindowingSystem::Win32WindowingSystem()
 : _windowClassesRegistered(false)
 {
-  // Detect presence of runtime support for multitouch
+    getInterface() = this;
+
+    // Detect presence of runtime support for multitouch
     HMODULE hModule = LoadLibrary("user32");
     if (hModule)
     {

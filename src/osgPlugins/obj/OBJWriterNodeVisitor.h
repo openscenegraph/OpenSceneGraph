@@ -70,10 +70,12 @@ class OBJWriterNodeVisitor: public osg::NodeVisitor {
         virtual void apply(osg::Group &node)
         {
             _nameStack.push_back( node.getName().empty() ? node.className() : node.getName() );
+
             _fout << std::endl;
             _fout << "g " << getUniqueName() << std::endl;
 
-            osg::NodeVisitor::traverse( node );
+            traverse( node );
+
             _nameStack.pop_back();
         }
 

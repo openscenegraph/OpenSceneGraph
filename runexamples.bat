@@ -51,6 +51,9 @@ osgcubemap
 echo osgdistortion
 osgdistortion
 
+echo osgdeferred
+osgdeferred
+
 echo osgforest
 osgforest
 

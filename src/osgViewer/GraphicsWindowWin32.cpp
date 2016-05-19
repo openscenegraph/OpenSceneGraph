@@ -1546,7 +1546,7 @@ bool GraphicsWindowWin32::determineWindowPositionAndStyle( unsigned int  screenN
     //
 
     osg::GraphicsContext::ScreenIdentifier screenId(screenNum);
-    Win32WindowingSystem* windowManager = Win32WindowingSystem::getInterface();
+    osg::ref_ptr<Win32WindowingSystem> windowManager = Win32WindowingSystem::getInterface();
 
     windowManager->getScreenPosition(screenId, _screenOriginX, _screenOriginY, _screenWidth, _screenHeight);
     if (_screenWidth==0 || _screenHeight==0) return false;

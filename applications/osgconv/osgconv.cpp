@@ -817,7 +817,7 @@ int main( int argc, char **argv )
 
         if (internalFormatMode != osg::Texture::USE_IMAGE_DATA_FORMAT)
         {
-            std::string ext = osgDB::getFileExtension(fileNameOut);
+            ext = osgDB::getFileExtension(fileNameOut);
             CompressTexturesVisitor ctv(internalFormatMode);
             root->accept(ctv);
             ctv.compress();

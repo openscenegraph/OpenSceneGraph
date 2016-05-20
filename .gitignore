@@ -58,3 +58,23 @@ install_manifest.txt
 *.exe
 *.out
 *.app
+
+# Platform Specifics - auto generated files
+PlatformSpecifics/Windows/*.rc
+
+# Visual studio - project files
+*.sln
+*.suo
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# Visual Studio - Build Results
+[Dd]ebug/
+[Rr]elease/
+[Mm]in[Ss]ize[Rr]el/
+[Rr]el[Ww]ith[Dd]eb[Ii]nfo/
+
+# Visual Studio - Browsing Database File
+*.sdf
+*.opensdf

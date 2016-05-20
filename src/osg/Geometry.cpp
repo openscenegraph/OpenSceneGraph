@@ -1504,11 +1504,11 @@ void Geometry::fixDeprecatedData()
     // we start processing the primitive sets.
     int target_vindex = 0;
     int source_pindex = -1; // equals primitiveNum
-    for(PrimitiveSetList::iterator itr = _primitives.begin();
-        itr != _primitives.end();
-        ++itr)
+    for(PrimitiveSetList::iterator prim_itr = _primitives.begin();
+        prim_itr != _primitives.end();
+        ++prim_itr)
     {
-        osg::PrimitiveSet* primitiveset = itr->get();
+        osg::PrimitiveSet* primitiveset = prim_itr->get();
         GLenum mode=primitiveset->getMode();
 
         unsigned int primLength;

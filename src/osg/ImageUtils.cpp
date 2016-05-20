@@ -561,13 +561,13 @@ static void fillSpotLightImage(unsigned char* ptr, const osg::Vec4& centerColour
 
     float mid = (float(size)-1.0f)*0.5f;
     float div = 2.0f/float(size);
-    for(unsigned int r=0;r<size;++r)
+    for(unsigned int row=0;row<size;++row)
     {
         //unsigned char* ptr = image->data(0,r,0);
-        for(unsigned int c=0;c<size;++c)
+        for(unsigned int col=0;col<size;++col)
         {
-            float dx = (float(c) - mid)*div;
-            float dy = (float(r) - mid)*div;
+            float dx = (float(col) - mid)*div;
+            float dy = (float(row) - mid)*div;
             float r = powf(1.0f-sqrtf(dx*dx+dy*dy),power);
             if (r<0.0f) r=0.0f;
             osg::Vec4 color = centerColour*r+backgroudColour*(1.0f-r);

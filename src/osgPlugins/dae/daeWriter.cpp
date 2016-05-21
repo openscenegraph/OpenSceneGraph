@@ -19,6 +19,7 @@
 #include <dom/domConstants.h>
 
 #include <sstream>
+#include <stdexcept>
 #include <osgDB/ConvertUTF>
 #include <limits>
 

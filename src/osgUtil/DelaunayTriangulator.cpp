@@ -838,11 +838,10 @@ bool DelaunayTriangulator::triangulate()
 
     // begin triangulation
     GLuint pidx = 0;
-    osg::Vec3Array::const_iterator i;
 
     OSG_INFO << "DelaunayTriangulator: triangulating vertex grid (" << (points->size()-3) <<" points)\n";
 
-    for (i=points->begin(); i!=points->end(); ++i, ++pidx)
+    for (osg::Vec3Array::const_iterator i=points->begin(); i!=points->end(); ++i, ++pidx)
     {
 
         // don't process supertriangle vertices

@@ -215,40 +215,40 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
 
     const VertexList& vertices_in = occluder.getOccluder().getVertexList();
 
-    PointList points;
+    PointList clipped_points;
 
-    if (clip(cullingset.getFrustum().getPlaneList(),vertices_in,points)>=3)
+    if (clip(cullingset.getFrustum().getPlaneList(),vertices_in, clipped_points)>=3)
     {
         // compute the points on the far plane.
-        PointList farPoints;
-        farPoints.reserve(points.size());
-        transform(points,farPoints,MVP);
-        pushToFarPlane(farPoints);
-        transform(farPoints,invP);
+        PointList clipped_farPoints;
+        clipped_farPoints.reserve(clipped_points.size());
+        transform(clipped_points,clipped_farPoints,MVP);
+        pushToFarPlane(clipped_farPoints);
+        transform(clipped_farPoints,invP);
 
         // move the occlude points into projection space.
-        transform(points,MV);
+        transform(clipped_points,MV);
 
         // use the points on the front plane as reference vertices on the _occluderVolume
         // so that the vertices can later by used to test for occlusion of the occluder itself.
-        copyPointListToVertexList(points,_occluderVolume.getReferenceVertexList());
+        copyPointListToVertexList(clipped_points,_occluderVolume.getReferenceVertexList());
 
         // create the front face of the occluder
-        Plane occludePlane = computeFrontPlane(points);
-        _occluderVolume.add(occludePlane);
+        Plane clipped_occludePlane = computeFrontPlane(clipped_points);
+        _occluderVolume.add(clipped_occludePlane);
 
         // create the sides of the occluder
-        computePlanes(points,farPoints,_occluderVolume.getPlaneList());
+        computePlanes(clipped_points,clipped_farPoints,_occluderVolume.getPlaneList());
 
         _occluderVolume.setupMask();
 
         // if the front face is pointing away from the eye point flip the whole polytope.
-        if (occludePlane[3]>0.0f)
+        if (clipped_occludePlane[3]>0.0f)
         {
             _occluderVolume.flip();
         }
 
-        _volume = computePolytopeVolume(points,farPoints)/volumeview;
+        _volume = computePolytopeVolume(clipped_points,clipped_farPoints)/volumeview;
 
 
         for(ConvexPlanarOccluder::HoleList::const_iterator hitr=occluder.getHoleList().begin();

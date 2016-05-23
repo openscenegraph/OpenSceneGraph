@@ -122,8 +122,8 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
 
                 // Get extensions using new indexed string interface.
 
-                typedef const GLubyte * GL_APIENTRY PFNGLGETSTRINGIPROC( GLenum, GLuint );
-                PFNGLGETSTRINGIPROC* glGetStringi = 0;
+                typedef const GLubyte * GL_APIENTRY MYGLGETSTRINGIPROC( GLenum, GLuint );
+                MYGLGETSTRINGIPROC* glGetStringi = 0;
                 setGLExtensionFuncPtr( glGetStringi, "glGetStringi");
 
                 if( glGetStringi != NULL )

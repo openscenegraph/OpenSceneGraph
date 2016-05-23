@@ -56,11 +56,11 @@ void ShaderComposer::releaseGLObjects(osg::State* state) const
 
 osg::Program* ShaderComposer::getOrCreateProgram(const ShaderComponents& shaderComponents)
 {
-    ProgramMap::iterator itr = _programMap.find(shaderComponents);
-    if (itr != _programMap.end())
+    ProgramMap::iterator pmitr = _programMap.find(shaderComponents);
+    if (pmitr != _programMap.end())
     {
         // OSG_NOTICE<<"ShaderComposer::getOrCreateProgram(..) using cached Program"<<std::endl;
-        return itr->second.get();
+        return pmitr->second.get();
     }
 
     // strip out vertex shaders
@@ -151,8 +151,8 @@ osg::Program* ShaderComposer::getOrCreateProgram(const ShaderComponents& shaderC
 
 void ShaderComposer::addShaderToProgram(Program* program, const Shaders& shaders)
 {
-    ShaderMainMap::iterator itr = _shaderMainMap.find(shaders);
-    if (itr == _shaderMainMap.end())
+    ShaderMainMap::iterator smitr = _shaderMainMap.find(shaders);
+    if (smitr == _shaderMainMap.end())
     {
         // no vertex shader in map yet, need to compose a new main shader
         osg::Shader* mainShader = composeMain(shaders);
@@ -161,7 +161,7 @@ void ShaderComposer::addShaderToProgram(Program* program, const Shaders& shaders
     }
     else
     {
-        program->addShader(itr->second.get());
+        program->addShader(smitr->second.get());
     }
 
     for(Shaders::const_iterator itr = shaders.begin();

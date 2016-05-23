@@ -15,6 +15,10 @@
 #define OSG_REF_PTR 1
 
 #include <osg/Config>
+#ifdef OSG_USE_REF_PTR_SAFE_DEREFERENCE
+#include <typeinfo>
+#include <stdexcept>
+#endif
 
 namespace osg {
 
@@ -86,6 +90,27 @@ class ref_ptr
         // safe bool conversion
         operator unspecified_bool_type() const { return valid()? &ref_ptr::_ptr : 0; }
 #endif
+
+        T& operator*() const
+        {
+#ifdef OSG_USE_REF_PTR_SAFE_DEREFERENCE
+            if( !_ptr ) {
+                // pointer is invalid, so throw an exception
+                throw std::runtime_error(std::string("could not dereference invalid osg pointer ") + std::string(typeid(T).name()));
+            }
+#endif
+            return *_ptr;
+        }
+        T* operator->() const
+        {
+#ifdef OSG_USE_REF_PTR_SAFE_DEREFERENCE
+            if( !_ptr ) {
+                // pointer is invalid, so throw an exception.
+                throw std::runtime_error(std::string("could not call invalid osg pointer ") + std::string(typeid(T).name()));
+            }
+#endif
+            return _ptr;
+        }
 
         T& operator*() const { return *_ptr; }
         T* operator->() const { return _ptr; }

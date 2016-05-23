@@ -164,7 +164,6 @@ bool View::addSlave(osg::Camera* camera, const osg::Matrix& projectionOffset, co
 
     camera->setView(this);
 
-    unsigned int i = _slaves.size();
 
     if (useMastersSceneData)
     {
@@ -179,8 +178,9 @@ bool View::addSlave(osg::Camera* camera, const osg::Matrix& projectionOffset, co
         }
     }
 
-    _slaves.push_back(Slave(camera, projectionOffset, viewOffset, useMastersSceneData));
+    unsigned int i = _slaves.size();
 
+    _slaves.push_back(Slave(camera, projectionOffset, viewOffset, useMastersSceneData));
     _slaves[i].updateSlave(*this);
 
     camera->setRenderer(createRenderer(camera));

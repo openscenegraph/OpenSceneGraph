@@ -499,8 +499,7 @@ void OutputStream::writeImage( const osg::Image* img )
                 *this << img->getAllocationMode();  // _allocationMode
 
                 // _data
-                unsigned int size = img->getTotalSizeInBytesIncludingMipmaps();
-                writeSize(size);
+                writeSize( static_cast<unsigned int>(img->getTotalSizeInBytesIncludingMipmaps()) );
 
                 for(osg::Image::DataIterator img_itr(img); img_itr.valid(); ++img_itr)
                 {

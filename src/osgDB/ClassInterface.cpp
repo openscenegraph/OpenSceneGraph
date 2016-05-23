@@ -575,13 +575,13 @@ bool ClassInterface::run(void* objectPtr, const std::string& compoundClassName, 
     ObjectWrapper* ow = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(compoundClassName);
     if (!ow) return false;
 
-    const ObjectWrapper::MethodObjectMap& methodObjectMap = ow->getMethodObjectMap();
-    ObjectWrapper::MethodObjectMap::const_iterator itr = methodObjectMap.find(methodName);
-    while ((itr!=methodObjectMap.end()) && (itr->first==methodName))
+    const ObjectWrapper::MethodObjectMap& ow_methodObjectMap = ow->getMethodObjectMap();
+    for(ObjectWrapper::MethodObjectMap::const_iterator itr = ow_methodObjectMap.find(methodName);
+        (itr!=ow_methodObjectMap.end()) && (itr->first==methodName);
+        ++itr)
     {
         MethodObject* mo = itr->second.get();
         if (mo->run(objectPtr, inputParameters, outputParameters)) return true;
-        ++itr;
     }
 
     const osgDB::StringList& associates = ow->getAssociates();
@@ -593,12 +593,12 @@ bool ClassInterface::run(void* objectPtr, const std::string& compoundClassName, 
         if (aow)
         {
             const ObjectWrapper::MethodObjectMap& methodObjectMap = aow->getMethodObjectMap();
-            ObjectWrapper::MethodObjectMap::const_iterator itr = methodObjectMap.find(methodName);
-            while ((itr!=methodObjectMap.end()) && (itr->first==methodName))
+            for(ObjectWrapper::MethodObjectMap::const_iterator itr = methodObjectMap.find(methodName);
+                (itr!=methodObjectMap.end()) && (itr->first==methodName);
+                ++itr)
             {
                 MethodObject* mo = itr->second.get();
                 if (mo->run(objectPtr, inputParameters, outputParameters)) return true;
-                ++itr;
             }
         }
     }
@@ -616,9 +616,9 @@ bool ClassInterface::hasMethod(const std::string& compoundClassName, const std::
     ObjectWrapper* ow = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(compoundClassName);
     if (!ow) return false;
 
-    const ObjectWrapper::MethodObjectMap& methodObjectMap = ow->getMethodObjectMap();
-    ObjectWrapper::MethodObjectMap::const_iterator itr = methodObjectMap.find(methodName);
-    if (itr!=methodObjectMap.end()) return true;
+    const ObjectWrapper::MethodObjectMap& ow_methodObjectMap = ow->getMethodObjectMap();
+    ObjectWrapper::MethodObjectMap::const_iterator oitr = ow_methodObjectMap.find(methodName);
+    if (oitr!=ow_methodObjectMap.end()) return true;
 
     const osgDB::StringList& associates = ow->getAssociates();
     for(osgDB::StringList::const_iterator aitr = associates.begin();

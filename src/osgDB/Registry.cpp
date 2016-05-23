@@ -1092,6 +1092,7 @@ std::string Registry::findLibraryFileImplementation(const std::string& filename,
 
     const FilePathList& filepath = Registry::instance()->getLibraryFilePathList();
 
+
     std::string fileFound = findFileInPath(filename, filepath,caseSensitivity);
     if (!fileFound.empty())
         return fileFound;
@@ -1106,7 +1107,7 @@ std::string Registry::findLibraryFileImplementation(const std::string& filename,
     std::string simpleFileName = getSimpleFileName(filename);
     if (simpleFileName!=filename)
     {
-        std::string fileFound = findFileInPath(simpleFileName, filepath,caseSensitivity);
+        fileFound = findFileInPath(simpleFileName, filepath,caseSensitivity);
         if (!fileFound.empty()) return fileFound;
     }
 

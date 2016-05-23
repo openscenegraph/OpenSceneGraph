@@ -168,13 +168,11 @@ bool osgDB::makeDirectory( const std::string &path )
         }
     }
 
-    std::string dir = path;
     std::stack<std::string> paths;
-    while( true )
+    for(std::string dir = path;
+        !dir.empty();
+        dir = getFilePath(dir))
     {
-        if( dir.empty() )
-            break;
-
 #ifdef OSG_USE_UTF8_FILENAME
         if( _wstat64( OSGDB_STRING_TO_FILENAME(dir).c_str(), &stbuf ) < 0 )
 #else
@@ -193,7 +191,6 @@ bool osgDB::makeDirectory( const std::string &path )
                     return false;
             }
         }
-        dir = getFilePath(std::string(dir));
     }
 
     while( !paths.empty() )
@@ -1016,7 +1013,7 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
         }
 
         appendInstallationLibraryFilePaths(filepath);
-        
+
         // Since this is currently the only Objective-C code in the
         // library, we need an autoreleasepool for obj-c memory management.
         // If more Obj-C is added, we might move this pool to another
@@ -1036,7 +1033,7 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
         // the Obj-C strings must be converted down to C strings so
         // C++ can make them into C++ strings.
         filepath.push_back( [myBundlePlugInPath UTF8String] );
-        
+
         // add all application-support-folders
         NSArray *systemSearchPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSAllDomainsMask, YES);
 
@@ -1117,7 +1114,7 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
 
         // Next, check the User's Application Support folder
         int domains[3] = { kUserDomain, kLocalDomain, kNetworkDomain };
-        
+
         for(unsigned int domain_ndx = 0; domain_ndx < 3; ++domain_ndx)
         {
             errCode = FSFindFolder( domains[domain_ndx], kApplicationSupportFolderType, kDontCreateFolder, &f );

@@ -522,7 +522,7 @@ bool XmlNode::writeProperties(const ControlMap& controlMap, std::ostream& fout) 
     return true;
 }
 
-bool XmlNode::readAndReplaceControl(std::string& contents, XmlNode::Input& input)
+bool XmlNode::readAndReplaceControl(std::string& in_contents, XmlNode::Input& input) const
 {
     int c = 0;
     std::string value;
@@ -533,7 +533,7 @@ bool XmlNode::readAndReplaceControl(std::string& contents, XmlNode::Input& input
     {
         c = input._controlToCharacterMap[value];
         OSG_INFO<<"Read control character "<<value<<" converted to "<<char(c)<<std::endl;
-        contents.push_back(c);
+        in_contents.push_back(c);
         return true;
     }
     else

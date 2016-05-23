@@ -229,8 +229,8 @@ osg::Object* DeprecatedDotOsgWrapperManager::readObjectOfType(const basic_type_w
     }
 
     std::string name = str;
-    DotOsgWrapperMap::iterator itr = _objectWrapperMap.find(name);
-    if (itr==_objectWrapperMap.end())
+    DotOsgWrapperMap::iterator ow_itr = _objectWrapperMap.find(name);
+    if (ow_itr==_objectWrapperMap.end())
     {
         // not found so check if a library::class composite name.
         std::string token = fr[0].getStr();
@@ -256,7 +256,7 @@ osg::Object* DeprecatedDotOsgWrapperManager::readObjectOfType(const basic_type_w
     }
     else if (fr[1].isOpenBracket())
     {
-        DotOsgWrapper* wrapper = itr->second.get();
+        DotOsgWrapper* wrapper = ow_itr->second.get();
         const osg::Object* proto = wrapper->getPrototype();
         if (proto==NULL)
         {

@@ -387,7 +387,6 @@ void Texture2DArray::apply(State& state) const
             }
         }
 
-        const GLExtensions* extensions = state.get<GLExtensions>();
         // source images have no mipmamps but we could generate them...
         if( _min_filter != LINEAR && _min_filter != NEAREST && !_images[0]->isMipmap() &&
             _useHardwareMipMapGeneration && extensions->isGenerateMipMapSupported )

@@ -481,11 +481,11 @@ struct FindSharpEdgesFunctor
             Triangles::iterator titr = pv->_triangles.begin();
             while(titr != pv->_triangles.end())
             {
-                Triangle* tri = titr->get();
-                osg::Vec3 normal = computeNormal(tri->_p1, tri->_p2, tri->_p3);
+                Triangle* pv_tri = titr->get();
+                osg::Vec3 normal = computeNormal(pv_tri->_p1, pv_tri->_p2, pv_tri->_p3);
 
                 Triangles associatedTriangles;
-                associatedTriangles.push_back(tri);
+                associatedTriangles.push_back(pv_tri);
 
                 // remove triangle for list
                 pv->_triangles.erase(titr);
@@ -516,7 +516,7 @@ struct FindSharpEdgesFunctor
                 // create duplicate vertex to set of associated triangles
                 unsigned int duplicated_p = duplicateVertex(p);
 
-                // now rest the index on th triangles of the point that was duplicated
+                // now rest the index on the triangles of the point that was duplicated
                 for(Triangles::iterator aitr = associatedTriangles.begin();
                     aitr != associatedTriangles.end();
                     ++aitr)

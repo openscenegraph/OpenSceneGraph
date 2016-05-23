@@ -231,8 +231,7 @@ void TriStripVisitor::stripify(Geometry& geom)
     unsigned int numSurfacePrimitives = 0;
     unsigned int numNonSurfacePrimitives = 0;
     Geometry::PrimitiveSetList& primitives = geom.getPrimitiveSetList();
-    Geometry::PrimitiveSetList::iterator itr;
-    for(itr=primitives.begin();
+    for(Geometry::PrimitiveSetList::iterator itr=primitives.begin();
         itr!=primitives.end();
         ++itr)
     {
@@ -258,24 +257,23 @@ void TriStripVisitor::stripify(Geometry& geom)
 
     // compute duplicate vertices
 
-    typedef std::vector<unsigned int> IndexList;
     unsigned int numVertices = geom.getVertexArray()->getNumElements();
-    IndexList indices(numVertices);
+    IndexList vindices(numVertices);
     unsigned int i,j;
     for(i=0;i<numVertices;++i)
     {
-        indices[i] = i;
+        vindices[i] = i;
     }
 
     VertexAttribComparitor arrayComparitor(geom);
-    std::sort(indices.begin(),indices.end(),arrayComparitor);
+    std::sort(vindices.begin(), vindices.end(), arrayComparitor);
 
     unsigned int lastUnique = 0;
     unsigned int numUnique = 1;
     unsigned int numDuplicate = 0;
     for(i=1;i<numVertices;++i)
     {
-        if (arrayComparitor.compare(indices[lastUnique],indices[i])==0)
+        if (arrayComparitor.compare(vindices[lastUnique], vindices[i])==0)
         {
             //std::cout<<"  found duplicate "<<indices[lastUnique]<<" and "<<indices[i]<<std::endl;
             ++numDuplicate;
@@ -297,31 +295,31 @@ void TriStripVisitor::stripify(Geometry& geom)
     lastUnique = 0;
     for(i=1;i<numVertices;++i)
     {
-        if (arrayComparitor.compare(indices[lastUnique],indices[i])!=0)
+        if (arrayComparitor.compare(vindices[lastUnique], vindices[i])!=0)
         {
             // found a new vertex entry, so previous run of duplicates needs
             // to be put together.
-            unsigned int min_index = indices[lastUnique];
+            unsigned int min_index = vindices[lastUnique];
             for(j=lastUnique+1;j<i;++j)
             {
-                min_index = osg::minimum(min_index,indices[j]);
+                min_index = osg::minimum(min_index, vindices[j]);
             }
             for(j=lastUnique;j<i;++j)
             {
-                remapDuplicatesToOrignals[indices[j]]=min_index;
+                remapDuplicatesToOrignals[vindices[j]]=min_index;
             }
             lastUnique = i;
         }
 
     }
-    unsigned int min_index = indices[lastUnique];
+    unsigned int min_index = vindices[lastUnique];
     for(j=lastUnique+1;j<i;++j)
     {
-        min_index = osg::minimum(min_index,indices[j]);
+        min_index = osg::minimum(min_index, vindices[j]);
     }
     for(j=lastUnique;j<i;++j)
     {
-        remapDuplicatesToOrignals[indices[j]]=min_index;
+        remapDuplicatesToOrignals[vindices[j]]=min_index;
     }
 
 
@@ -355,7 +353,7 @@ void TriStripVisitor::stripify(Geometry& geom)
     Geometry::PrimitiveSetList new_primitives;
     new_primitives.reserve(primitives.size());
 
-    for(itr=primitives.begin();
+    for(Geometry::PrimitiveSetList::iterator itr=primitives.begin();
         itr!=primitives.end();
         ++itr)
     {

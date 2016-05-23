@@ -112,8 +112,6 @@ class ref_ptr
             return _ptr;
         }
 
-        T& operator*() const { return *_ptr; }
-        T* operator->() const { return _ptr; }
         T* get() const { return _ptr; }
 
         bool operator!() const   { return _ptr==0; } // not required

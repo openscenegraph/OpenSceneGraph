@@ -240,8 +240,7 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
     unsigned int numSurfacePrimitives = 0;
     unsigned int numNonIndexedPrimitives = 0;
     Geometry::PrimitiveSetList& primitives = geom.getPrimitiveSetList();
-    Geometry::PrimitiveSetList::iterator itr;
-    for(itr=primitives.begin();
+    for(Geometry::PrimitiveSetList::iterator itr=primitives.begin();
         itr!=primitives.end();
         ++itr)
     {
@@ -358,7 +357,7 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
     Geometry::PrimitiveSetList new_primitives;
     new_primitives.reserve(primitives.size());
 
-    for(itr=primitives.begin();
+    for(Geometry::PrimitiveSetList::iterator itr=primitives.begin();
         itr!=primitives.end();
         ++itr)
     {

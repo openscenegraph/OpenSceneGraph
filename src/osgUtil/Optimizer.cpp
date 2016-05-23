@@ -531,9 +531,9 @@ void Optimizer::StateVisitor::optimize()
             const osg::StateSet::TextureAttributeList& texAttributes = sitr->first->getTextureAttributeList();
             for(unsigned int unit=0;unit<texAttributes.size();++unit)
             {
-                const osg::StateSet::AttributeList& attributes = texAttributes[unit];
-                for(osg::StateSet::AttributeList::const_iterator aitr= attributes.begin();
-                    aitr!=attributes.end();
+                const osg::StateSet::AttributeList& tex_attributes = texAttributes[unit];
+                for(osg::StateSet::AttributeList::const_iterator aitr= tex_attributes.begin();
+                    aitr!=tex_attributes.end();
                     ++aitr)
                 {
                     if (optimize(aitr->second.first->getDataVariance()))
@@ -2030,7 +2030,6 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
         if (needToDoMerge)
         {
             // first take a reference to all the drawables to prevent them being deleted prematurely
-            typedef std::vector< osg::ref_ptr<osg::Drawable> >          DrawableList;
             DrawableList keepDrawables;
             keepDrawables.resize(geode.getNumDrawables());
             for(i=0; i<geode.getNumDrawables(); ++i)
@@ -2700,8 +2699,7 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Group* group, unsigned int 
 
     // create the original box.
     osg::BoundingBox bb;
-    unsigned int i;
-    for(i=0;i<group->getNumChildren();++i)
+    for(unsigned int i=0;i<group->getNumChildren();++i)
     {
         bb.expandBy(group->getChild(i)->getBound().center());
     }
@@ -2783,7 +2781,7 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Group* group, unsigned int 
     // bin each child into associated bb group
     typedef std::vector< osg::ref_ptr<osg::Node> > NodeList;
     NodeList unassignedList;
-    for(i=0;i<group->getNumChildren();++i)
+    for(unsigned int i=0;i<group->getNumChildren();++i)
     {
         bool assigned = false;
         osg::Vec3 center = group->getChild(i)->getBound().center();
@@ -3352,8 +3350,8 @@ void Optimizer::TextureAtlasBuilder::completeRow(unsigned int indexAtlas)
             Source * srcAdded = sitr4->get();
             int y_min = srcAdded->_y + srcAdded->_image->t() + 2 * _margin;
             int x_min = srcAdded->_x;
-            int x_max = x_min + srcAdded->_image->s();        // Hides upper block's x_max
-            if (y_min >= y_max || x_min >= x_max) continue;
+            int inner_x_max = x_min + srcAdded->_image->s();        // Hides upper block's x_max
+            if (y_min >= y_max || x_min >= inner_x_max) continue;
 
             Source * maxWidthSource = NULL;
             for(SourceList::iterator sitr2 = _sourceList.begin(); sitr2 != _sourceList.end(); ++sitr2)
@@ -3366,7 +3364,7 @@ void Optimizer::TextureAtlasBuilder::completeRow(unsigned int indexAtlas)
                 }
                 int image_s = source->_image->s();
                 int image_t = source->_image->t();
-                if(x_min + image_s <= x_max && y_min + image_t <= y_max)        // Test if the image can fit in the empty space.
+                if(x_min + image_s <= inner_x_max && y_min + image_t <= y_max)        // Test if the image can fit in the empty space.
                 {
                     if (maxWidthSource == NULL || maxWidthSource->_image->s() < source->_image->s())
                     {
@@ -4269,8 +4267,7 @@ void Optimizer::TextureAtlasVisitor::optimize()
     // now change any texture that repeat but all texcoords to them
     // are in 0 to 1 range than converting the to CLAMP mode, to allow them
     // to be used in an atlas.
-    Textures::iterator titr;
-    for(titr = texturesThatRepeat.begin();
+    for(Textures::iterator titr = texturesThatRepeat.begin();
         titr != texturesThatRepeat.end();
         ++titr)
     {
@@ -4286,7 +4283,7 @@ void Optimizer::TextureAtlasVisitor::optimize()
     //typedef std::list<osg::Texture2D *> SourceListTmp;
     //SourceListTmp sourceToAdd;
     // add the textures as sources for the TextureAtlasBuilder
-    for(titr = _textures.begin();
+    for(Textures::iterator titr = _textures.begin();
         titr != _textures.end();
         ++titr)
     {
@@ -4706,12 +4703,12 @@ void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::transf
     if(geometry)
     {
         // transform all geometry
-        osg::Vec3Array* verts = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
-        if(verts)
+        osg::Vec3Array* verts3 = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+        if(verts3)
         {
-            for(unsigned int j=0; j<verts->size(); j++)
+            for(unsigned int j=0; j<verts3->size(); j++)
             {
-                (*verts)[j] = (*verts)[j] * _matrixStack.back();
+                (*verts3)[j] = (*verts3)[j] * _matrixStack.back();
             }
         }
         else

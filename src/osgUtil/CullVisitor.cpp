@@ -1368,6 +1368,8 @@ class RenderStageCache : public osg::Object, public osg::Observer
 {
     public:
 
+        typedef std::map<CullVisitor*, osg::ref_ptr<RenderStage> > RenderStageMap;
+
         RenderStageCache() {}
         RenderStageCache(const RenderStageCache&, const osg::CopyOp&) {}
         virtual ~RenderStageCache()
@@ -1386,28 +1388,46 @@ class RenderStageCache : public osg::Object, public osg::Observer
         {
             osg::Referenced* ref = reinterpret_cast<osg::Referenced*>(object);
             osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(ref);
+
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
             RenderStageMap::iterator itr = _renderStageMap.find(cv);
             if (itr!=_renderStageMap.end())
             {
-                _renderStageMap.erase(cv);
+                _renderStageMap.erase(itr);
             }
         }
 
         void setRenderStage(CullVisitor* cv, RenderStage* rs)
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-            _renderStageMap[cv] = rs;
-            cv->addObserver(this);
+            RenderStageMap::iterator itr = _renderStageMap.find(cv);
+            if (itr==_renderStageMap.end())
+            {
+                _renderStageMap[cv] = rs;
+                cv->addObserver(this);
+            }
+            else
+            {
+                itr->second = rs;
+            }
+
         }
 
         RenderStage* getRenderStage(osgUtil::CullVisitor* cv)
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-            return _renderStageMap[cv].get();
+            RenderStageMap::iterator itr = _renderStageMap.find(cv);
+            if (itr!=_renderStageMap.end())
+            {
+                return itr->second.get();
+            }
+            else
+            {
+                return 0;
+            }
         }
 
-        typedef std::map<CullVisitor*, osg::ref_ptr<RenderStage> > RenderStageMap;
 
         /** Resize any per context GLObject buffers to specified size. */
         virtual void resizeGLObjectBuffers(unsigned int maxSize)

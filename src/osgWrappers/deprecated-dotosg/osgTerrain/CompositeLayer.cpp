@@ -50,9 +50,9 @@ bool CompositeLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
     {
         itrAdvanced = false;
 
-        osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Locator>());
-        locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
-        if (readObject.valid()) itrAdvanced = true;
+        osg::ref_ptr<osg::Object> readLocatorObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Locator>());
+        locator = dynamic_cast<osgTerrain::Locator*>(readLocatorObject.get());
+        if (readLocatorObject.valid()) itrAdvanced = true;
 
         unsigned int minLevel=0;
         if (fr.read("MinLevel",minLevel))

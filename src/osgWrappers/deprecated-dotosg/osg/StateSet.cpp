@@ -412,12 +412,11 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    bool readingMode = true;
-    StateAttribute::GLModeValue value;
-    while (readingMode)
+    bool readingGLMode = true;
+    while (readingGLMode)
     {
-
-        readingMode=false;
+        StateAttribute::GLModeValue value;
+        readingGLMode=false;
         if (fr[0].isInt())
         {
             if (StateSet_matchModeStr(fr[1].getStr(),value))
@@ -436,7 +435,7 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
                 }
                 fr+=2;
                 iteratorAdvanced = true;
-                readingMode=true;
+                readingGLMode=true;
             }
         }
         else
@@ -458,7 +457,7 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
                     }
                     fr+=2;
                     iteratorAdvanced = true;
-                    readingMode=true;
+                    readingGLMode=true;
                 }
             }
         }
@@ -474,17 +473,17 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
 
 
     // new code using osg::Registry's list of prototypes to loaded attributes.
-    StateAttribute* attribute = NULL;
-    while((attribute=fr.readStateAttribute())!=NULL)
+    StateAttribute* stateAttribute = NULL;
+    while((stateAttribute=fr.readStateAttribute())!=NULL)
     {
-        if (attribute->isTextureAttribute())
+        if (stateAttribute->isTextureAttribute())
         {
             // remap to be a texture attribute
-            stateset.setTextureAttribute(0,attribute);
+            stateset.setTextureAttribute(0,stateAttribute);
         }
         else
         {
-            stateset.setAttribute(attribute);
+            stateset.setAttribute(stateAttribute);
         }
         iteratorAdvanced = true;
     }
@@ -597,9 +596,9 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
     }
 
 
-  const StateSet::ModeList& ml = stateset.getModeList();
-  for(StateSet::ModeList::const_iterator mitr=ml.begin();
-        mitr!=ml.end();
+  const StateSet::ModeList& ss_ml = stateset.getModeList();
+  for(StateSet::ModeList::const_iterator mitr=ss_ml.begin();
+        mitr!=ss_ml.end();
         ++mitr)
      {
          std::string str;
@@ -622,9 +621,9 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
         fw.writeObject(*(uitr->second.first));
     }
 
-    const StateSet::AttributeList& sl = stateset.getAttributeList();
-    for(StateSet::AttributeList::const_iterator sitr=sl.begin();
-        sitr!=sl.end();
+    const StateSet::AttributeList& ss_sl = stateset.getAttributeList();
+    for(StateSet::AttributeList::const_iterator sitr=ss_sl.begin();
+        sitr!=ss_sl.end();
         ++sitr)
     {
         fw.writeObject(*(sitr->second.first));

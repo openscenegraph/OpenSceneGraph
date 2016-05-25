@@ -70,14 +70,14 @@ bool Camera_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    osg::ref_ptr<osg::StateAttribute> attribute;
-    while((attribute=fr.readStateAttribute())!=NULL)
+    osg::ref_ptr<osg::StateAttribute> stateAttribute;
+    while((stateAttribute=fr.readStateAttribute())!=NULL)
     {
-        osg::Viewport* viewport = dynamic_cast<osg::Viewport*>(attribute.get());
+        osg::Viewport* viewport = dynamic_cast<osg::Viewport*>(stateAttribute.get());
         if (viewport) camera.setViewport(viewport);
         else
         {
-            osg::ColorMask* colormask = dynamic_cast<osg::ColorMask*>(attribute.get());
+            osg::ColorMask* colormask = dynamic_cast<osg::ColorMask*>(stateAttribute.get());
             camera.setColorMask(colormask);
         }
     }

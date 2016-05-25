@@ -813,7 +813,6 @@ bool Array_writeLocalData(const Array& array,Output& fw)
         }
         else
         {
-            std::string uniqueID;
             fw.createUniqueIDForObject(&array,uniqueID);
             fw.registerUniqueIDForObject(&array,uniqueID);
             fw << "UniqueID " << uniqueID << " ";

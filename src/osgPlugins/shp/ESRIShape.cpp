@@ -268,11 +268,11 @@ bool MultiPoint::read( int fd )
 
     SAFE_DELETE_ARRAY( points );
 
-    Integer shapeType;
-    if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
+    Integer st;
+    if( readVal<Integer>(fd, st, LittleEndian ) == false )
         return false;
 
-    if( shapeType != ShapeTypeMultiPoint )
+    if( st != ShapeTypeMultiPoint )
         return false;
 
     if( bbox.read(fd) == false )
@@ -336,11 +336,11 @@ bool PolyLine::read( int fd )
     SAFE_DELETE_ARRAY( parts );
     SAFE_DELETE_ARRAY( points );
 
-    Integer shapeType;
-    if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
+    Integer st;
+    if( readVal<Integer>(fd, st, LittleEndian ) == false )
         return false;
 
-    if( shapeType != ShapeTypePolyLine )
+    if( st != ShapeTypePolyLine )
         return false;
 
     if( bbox.read(fd) == false )
@@ -408,11 +408,11 @@ bool Polygon::read( int fd )
     SAFE_DELETE_ARRAY( parts );
     SAFE_DELETE_ARRAY( points );
 
-    Integer shapeType;
-    if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
+    Integer st;
+    if( readVal<Integer>(fd, st, LittleEndian ) == false )
         return false;
 
-    if( shapeType != ShapeTypePolygon )
+    if( st != ShapeTypePolygon )
         return false;
 
     if( bbox.read(fd) == false )
@@ -526,11 +526,11 @@ bool MultiPointM::read( int fd )
     SAFE_DELETE_ARRAY( points );
     SAFE_DELETE_ARRAY( mArray );
 
-    Integer shapeType;
-    if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
+    Integer st;
+    if( readVal<Integer>(fd, st, LittleEndian ) == false )
         return false;
 
-    if( shapeType != ShapeTypeMultiPointM )
+    if( st != ShapeTypeMultiPointM )
         return false;
 
     if( bbox.read(fd) == false )
@@ -619,11 +619,11 @@ bool PolyLineM::read( int fd )
     SAFE_DELETE_ARRAY( points );
     SAFE_DELETE_ARRAY( mArray );
 
-    Integer shapeType;
-    if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
+    Integer st;
+    if( readVal<Integer>(fd, st, LittleEndian ) == false )
         return false;
 
-    if( shapeType != ShapeTypePolyLineM )
+    if( st != ShapeTypePolyLineM )
         return false;
 
     if( bbox.read(fd) == false )
@@ -717,11 +717,11 @@ bool PolygonM::read( int fd )
     SAFE_DELETE_ARRAY( points );
     SAFE_DELETE_ARRAY( mArray );
 
-    Integer shapeType;
-    if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
+    Integer st;
+    if( readVal<Integer>(fd, st, LittleEndian ) == false )
         return false;
 
-    if( shapeType != ShapeTypePolygonM )
+    if( st != ShapeTypePolygonM )
         return false;
 
     if( bbox.read(fd) == false )
@@ -793,11 +793,11 @@ bool PointZ::read( int fd )
     if( rh.read(fd) == false )
         return false;
 
-    Integer shapeType;
-    if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
+    Integer st;
+    if( readVal<Integer>(fd, st, LittleEndian ) == false )
         return false;
 
-    if( shapeType != ShapeTypePointZ )
+    if( st != ShapeTypePointZ )
         return false;
 
     if( readVal<Double>( fd, x, LittleEndian ) == false )
@@ -865,11 +865,11 @@ bool MultiPointZ::read( int fd )
     SAFE_DELETE_ARRAY( zArray );
     SAFE_DELETE_ARRAY( mArray );
 
-    Integer shapeType;
-    if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
+    Integer st;
+    if( readVal<Integer>(fd, st, LittleEndian ) == false )
         return false;
 
-    if( shapeType != ShapeTypeMultiPointZ )
+    if( st != ShapeTypeMultiPointZ )
         return false;
 
     if( bbox.read(fd) == false )
@@ -982,11 +982,11 @@ bool PolyLineZ::read( int fd )
     SAFE_DELETE_ARRAY( zArray );
     SAFE_DELETE_ARRAY( mArray );
 
-    Integer shapeType;
-    if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
+    Integer st;
+    if( readVal<Integer>(fd, st, LittleEndian ) == false )
         return false;
 
-    if( shapeType != ShapeTypePolyLineZ )
+    if( st != ShapeTypePolyLineZ )
         return false;
 
     if( bbox.read(fd) == false )
@@ -1095,11 +1095,11 @@ bool PolygonZ::read( int fd )
     SAFE_DELETE_ARRAY( zArray );
     SAFE_DELETE_ARRAY( mArray );
 
-    Integer shapeType;
-    if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
+    Integer st;
+    if( readVal<Integer>(fd, st, LittleEndian ) == false )
         return false;
 
-    if( shapeType != ShapeTypePolygonZ )
+    if( st != ShapeTypePolygonZ )
         return false;
 
     if( bbox.read(fd) == false )

@@ -189,7 +189,7 @@ protected:
     /// An OSG state set with the original 3DS material attached (used to get info such as UV scaling & offset)
     struct StateSetInfo
     {
-        StateSetInfo(osg::StateSet * stateset=NULL, Lib3dsMaterial * lib3dsmat=NULL) : stateset(stateset), lib3dsmat(lib3dsmat) {}
+        StateSetInfo(osg::StateSet * ss=NULL, Lib3dsMaterial * lm=NULL) : stateset(ss), lib3dsmat(lm) {}
         StateSetInfo(const StateSetInfo & v) : stateset(v.stateset), lib3dsmat(v.lib3dsmat) {}
         StateSetInfo & operator=(const StateSetInfo & v) { stateset=v.stateset; lib3dsmat=v.lib3dsmat; return *this; }
 
@@ -265,9 +265,9 @@ ReaderWriter3DS::ReaderWriter3DS()
 
 }
 
-ReaderWriter3DS::ReaderObject::ReaderObject(const osgDB::ReaderWriter::Options* options) :
+ReaderWriter3DS::ReaderObject::ReaderObject(const osgDB::ReaderWriter::Options* op) :
     _useSmoothingGroups(true),
-    options(options),
+    options(op),
     noMatrixTransforms(false),
     checkForEspilonIdentityMatrices(false),
     restoreMatrixTransformsNoMeshes(false)

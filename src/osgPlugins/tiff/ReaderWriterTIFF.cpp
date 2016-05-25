@@ -222,7 +222,7 @@ toff_t libtiffOStreamSeekProc(thandle_t fd, toff_t off, int i)
         // position required past the end of the stream so we need to insert extra characters to
         // ensure the stream is big enough to encompass the new the position.
         fout->seekp(0, std::ios::end);
-        for(toff_t i=stream_end; i<pos_required; ++i)
+        for(toff_t is=stream_end; is<pos_required; ++is)
         {
             fout->put(char(0));
         }
@@ -909,7 +909,7 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             }
 
             uint32 rowsperstrip = 0;
-            
+
             switch(img.getDataType()){
                 case GL_FLOAT:
                     TIFFSetField(image, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_IEEEFP);
@@ -937,7 +937,7 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             TIFFSetField(image, TIFFTAG_COMPRESSION, compressionType);
             TIFFSetField(image, TIFFTAG_FILLORDER, FILLORDER_MSB2LSB);
             TIFFSetField(image, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
-            
+
             if (rowsperstrip==0) rowsperstrip = TIFFDefaultStripSize(image, 0);
             TIFFSetField(image, TIFFTAG_ROWSPERSTRIP, rowsperstrip);
 

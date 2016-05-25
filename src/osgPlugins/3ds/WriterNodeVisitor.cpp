@@ -358,8 +358,8 @@ void PrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
 
 
 
-WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg::StateSet * stateset, osg::Material* mat, osg::Texture* tex, bool preserveName, int index) :
-    index(index),
+WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg::StateSet * stateset, osg::Material* mat, osg::Texture* tex, bool preserveName, int ind) :
+    index(ind),
     diffuse(1,1,1,1),
     ambient(0.2,0.2,0.2,1),
     specular(0,0,0,1),

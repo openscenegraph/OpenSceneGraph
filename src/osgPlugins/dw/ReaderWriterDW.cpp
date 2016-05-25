@@ -237,7 +237,7 @@ public:
         getside12(side,s2, verts);
         norm(nrm, s2, side);
     }
-    void settrans(Matrix &mx, const Vec3 nrm, const std::vector<Vec3> verts, const dwmaterial *mat) const {
+    void settrans(Matrix &mx, const Vec3 normal, const std::vector<Vec3> verts, const dwmaterial *mat) const {
         // define the matrix perpendcular to normal for mapping textures
         float wid=mat->getRepWid();
         float ht=mat->getRepHt();
@@ -246,7 +246,7 @@ public:
             Vec3 s2; // want transformed u coordinate parallel to 'r1'
             getside12(r1,s2, verts); // r1 = edge of first side
 //         printf("fullface s2 %f %f %f\n", s2.x(),s2.y(),s2.z());//, errm
-            r3=nrm;
+            r3=normal;
             float len=r1.length();
             r1=r1/len;
             r2=r3^r1;
@@ -257,7 +257,7 @@ public:
             // the transformation is unitary - preserves lengths; and
             // converts points on a plane into (s,t, constant) coords for use with texturing
             // Rinv.(0,0,1) = (nrm) implies R since Rinv=R(transpose)
-            r3=nrm; // already a unit vector
+            r3=normal; // already a unit vector
             // mat.(010) = (0ab) -> Minv.(0ab) = (010); and this row DOT nrm=0
             if (r3.z() < 0.99f && r3.z() > -0.99f) { // not face parallel to ground - choose r1 perpendicular to nrm & 001
                 r2.set(0,0,1); // therefore r1 is in plane of face.
@@ -639,8 +639,8 @@ public:
         nverts++;
         return nverts-1;
     }
-    void settmat(const Matrix& mx) {
-        tmat= new RefMatrix(mx);
+    void settmat(const Matrix& matrix) {
+        tmat= new RefMatrix(matrix);
     }
     void makeuv(Vec2 &uv, const double pos[]) {
         Vec3 p;
@@ -906,7 +906,6 @@ class ReaderWriterDW : public osgDB::ReaderWriter
                             sscanf(buff+6,"%f %f %f", &rgb[0], &rgb[1], &rgb[2]);
                             matpalet[nmat].setcolour(rgb);
                         } else if (rdg==OBJECT) {
-                            float rgb[3];
                             sscanf(buff+6,"%f %f %f", &rgb[0], &rgb[1], &rgb[2]);
                             rgb[0]/=65536.0f; // convert to range 0-1
                             rgb[1]/=65536.0f; // convert to range 0-1

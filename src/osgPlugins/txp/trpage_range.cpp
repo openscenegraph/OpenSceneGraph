@@ -267,12 +267,12 @@ bool trpgRangeTable::SetRange(int id,trpgRange &inRange)
 
 int trpgRangeTable::AddRange(trpgRange &range)
 {
-    int handle = range.GetHandle();
-    if(handle==-1) {
-        handle = rangeMap.size();
+    int range_handle = range.GetHandle();
+    if(range_handle==-1) {
+        range_handle = rangeMap.size();
     }
-    rangeMap[handle] = range;
-    return handle;
+    rangeMap[range_handle] = range;
+    return range_handle;
 
 }
 

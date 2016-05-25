@@ -960,12 +960,12 @@ bool trpgLightTable::isValid() const
 // Set functions
 int trpgLightTable::AddLightAttr(const trpgLightAttr& inLight)
 {
-    int handle = inLight.GetHandle();
-    if(handle==-1) {
-        handle = lightMap.size();
+    int light_handle = inLight.GetHandle();
+    if(light_handle==-1) {
+        light_handle = lightMap.size();
     }
-    lightMap[handle] = inLight;
-    return handle;
+    lightMap[light_handle] = inLight;
+    return light_handle;
 }
 int trpgLightTable::FindAddLightAttr(const trpgLightAttr& inLight)
 {

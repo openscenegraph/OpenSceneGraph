@@ -122,13 +122,13 @@ bool TXPArchive::openFile(const std::string& archiveName)
         return false;
     }
 
-    const trpgHeader *header = GetHeader();
-    if (header)
+    const trpgHeader* trpgheader = GetHeader();
+    if (trpgheader)
     {
-        header->GetNumLods(_numLODs);
-        header->GetExtents(_swExtents,_neExtents);
-        header->GetVersion(_majorVersion, _minorVersion);
-    _isMaster = header->GetIsMaster();
+        trpgheader->GetNumLods(_numLODs);
+        trpgheader->GetExtents(_swExtents,_neExtents);
+        trpgheader->GetVersion(_majorVersion, _minorVersion);
+        _isMaster = trpgheader->GetIsMaster();
     }
 
     int numTextures;
@@ -589,10 +589,10 @@ void trim(std::string& str)
 }
 bool TXPArchive::loadTextStyles()
 {
-    const trpgTextStyleTable *textStyleTable = GetTextStyleTable();
-    if ( !textStyleTable )
+    const trpgTextStyleTable* textStyleTablePtr = GetTextStyleTable();
+    if ( !textStyleTablePtr )
     return false;
-    if ( textStyleTable->GetNumStyle() < 1 )
+    if ( textStyleTablePtr->GetNumStyle() < 1 )
     return true;
 
     // try fontmap.txt
@@ -629,7 +629,7 @@ bool TXPArchive::loadTextStyles()
     OSG_NOTICE << "txp:: All fonts defaulted to arial.ttf" << std::endl;
     }
 
-    const trpgTextStyleTable::StyleMapType *smap = textStyleTable->getStyleMap();
+    const trpgTextStyleTable::StyleMapType *smap = textStyleTablePtr->getStyleMap();
     trpgTextStyleTable::StyleMapType::const_iterator itr = smap->begin();
     for (  ; itr != smap->end(); itr++)
     {
@@ -668,13 +668,13 @@ bool TXPArchive::loadTextStyles()
     return true;
 }
 
-void TXPArchive::addLightAttribute(osgSim::LightPointNode* lpn, osg::StateSet* fallback, const osg::Vec3& att,int handle)
+void TXPArchive::addLightAttribute(osgSim::LightPointNode* lpn, osg::StateSet* fallback, const osg::Vec3& att,int light_handle)
 {
     DeferredLightAttribute la;
     la.lightPoint = lpn;
     la.fallback = fallback;
     la.attitude = att;
-    _lights[handle] = la;
+    _lights[light_handle] = la;
 }
 
 bool TXPArchive::getTileInfo(const TileLocationInfo& loc, TileInfo& info)
@@ -797,13 +797,13 @@ public:
         offset[0] -= bbox._min[0];
         offset[1] -= bbox._min[1];
 
-        trpg2dPoint offsetXY, tileID(_tileInfo.x,_tileInfo.y);
+        trpg2dPoint offsetXY, local_tileID(_tileInfo.x,_tileInfo.y);
         int divider = (0x01 << _tileInfo.lod);
         // calculate which tile model is located in
         tileExtents.x /= divider;
         tileExtents.y /= divider;
-        offset[0] -= tileID.x*tileExtents.x;
-        offset[1] -= tileID.y*tileExtents.y;
+        offset[0] -= local_tileID.x*tileExtents.x;
+        offset[1] -= local_tileID.y*tileExtents.y;
 
         osg::Matrix mat(xform.getMatrix());
         mat.setTrans(offset);
@@ -868,11 +868,11 @@ osg::Group* TXPArchive::getTileContent(
 
     if(childRef)
     {
-        TileLocationInfo loc;
-        childRef->GetTileLoc(loc.x, loc.y, loc.lod);
-        childRef->GetTileZValue(loc.zmin, loc.zmax);
-        childRef->GetTileAddress(loc.addr);
-        childInfoList.push_back(loc);
+        TileLocationInfo child_loc;
+        childRef->GetTileLoc(child_loc.x, child_loc.y, child_loc.lod);
+        childRef->GetTileZValue(child_loc.zmin, child_loc.zmax);
+        childRef->GetTileAddress(child_loc.addr);
+        childInfoList.push_back(child_loc);
 
     }
     }

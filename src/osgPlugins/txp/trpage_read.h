@@ -162,9 +162,9 @@ TX_EXDECL class TX_CLDECL trpgrImageHelper
     {
     return geotypCache;
     }
-    void SetTexTable(trpgTexTable *texTable)
+    void SetTexTable(trpgTexTable *tt)
     {
-    this->texTable = texTable;
+    this->texTable = tt;
     }
  protected:
     char dir[1024];

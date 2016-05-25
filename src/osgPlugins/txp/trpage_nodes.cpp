@@ -724,27 +724,27 @@ void trpgAttach::Reset()
 }
 
 // Parent ID is the node this one gets attached to
-void trpgAttach::SetParentID(int id)
+void trpgAttach::SetParentID(int pid)
 {
-    parentID = id;
+    parentID = pid;
 }
-bool trpgAttach::GetParentID(int &id) const
+bool trpgAttach::GetParentID(int &pid) const
 {
     if (!isValid()) return false;
-    id = parentID;
+    pid = parentID;
     return true;
 }
 
 // Child Position is a unique number of parent
 // It could be used as an array index, for example
-void trpgAttach::SetChildPos(int id)
+void trpgAttach::SetChildPos(int cid)
 {
-    childPos = id;
+    childPos = cid;
 }
-bool trpgAttach::GetChildPos(int &id) const
+bool trpgAttach::GetChildPos(int &cid) const
 {
     if (!isValid()) return false;
-    id = childPos;
+    cid = childPos;
     return true;
 }
 

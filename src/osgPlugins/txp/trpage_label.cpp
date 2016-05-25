@@ -247,12 +247,12 @@ bool trpgTextStyleTable::isValid() const
 
 int trpgTextStyleTable::AddStyle(const trpgTextStyle &style)
 {
-    int handle = style.GetHandle();
-    if(handle==-1) {
-        handle = styleMap.size();
+    int texthandle = style.GetHandle();
+    if(texthandle==-1) {
+        texthandle = styleMap.size();
     }
-    styleMap[handle] = style;
-    return handle;
+    styleMap[texthandle] = style;
+    return texthandle;
 }
 
 int trpgTextStyleTable::FindAddStyle(const trpgTextStyle &style)
@@ -492,12 +492,12 @@ bool trpgSupportStyleTable::isValid() const
 
 int trpgSupportStyleTable::AddStyle(const trpgSupportStyle &style)
 {
-    int handle = style.GetHandle();
-    if(handle==-1)
+    int stylehandle = style.GetHandle();
+    if(stylehandle==-1)
     {
-        handle = supportStyleMap.size();
+        stylehandle = supportStyleMap.size();
     }
-    supportStyleMap[handle] = style;
+    supportStyleMap[stylehandle] = style;
     return handle;
 }
 
@@ -748,12 +748,12 @@ bool trpgLabelPropertyTable::isValid() const
 
 int trpgLabelPropertyTable::AddProperty(const trpgLabelProperty &property)
 {
-    int handle = property.GetHandle();
-    if(handle==-1)
+    int label_handle = property.GetHandle();
+    if(label_handle==-1)
     {
-        handle = labelPropertyMap.size();
+        label_handle = labelPropertyMap.size();
     }
-    labelPropertyMap[handle] = property;
+    labelPropertyMap[label_handle] = property;
     return handle;
 }
 

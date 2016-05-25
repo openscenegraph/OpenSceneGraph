@@ -102,7 +102,7 @@ trpgrAppFileCache* trpgr_Archive::GetNewRAppFileCache(const char *fullBase, cons
     return new trpgrAppFileCache(fullBase,ext);
 }
 
-trpgrImageHelper* trpgr_Archive::GetNewRImageHelper(trpgEndian ness,char *dir,const trpgMatTable &matTable,const trpgTexTable &texTable)
+trpgrImageHelper* trpgr_Archive::GetNewRImageHelper(trpgEndian endian,char *imagedir,const trpgMatTable &matTable,const trpgTexTable &tTable)
 {
     bool separateGeo = false;
     int majorVer,minorVer;
@@ -110,7 +110,7 @@ trpgrImageHelper* trpgr_Archive::GetNewRImageHelper(trpgEndian ness,char *dir,co
     if((majorVer >= TRPG_NOMERGE_VERSION_MAJOR) && (minorVer>=TRPG_NOMERGE_VERSION_MINOR)) {
         separateGeo = true;
     }
-    return new trpgrImageHelper(ness,dir,matTable,texTable,separateGeo);
+    return new trpgrImageHelper(endian,imagedir,matTable,tTable,separateGeo);
 }
 
 // Close File
@@ -379,30 +379,30 @@ bool trpgr_Archive::ReadExternalTile(uint32 x,uint32 y,uint32 lod,trpgMemReadBuf
         sprintf(filename,"%s" PATHSEPERATOR "tile_%d_%d_%d.tpt",dir,x,y,lod);
     }
     // Open the file and read the contents
-    FILE *fp= 0;
+    FILE *filep= 0;
     try {
-        if (!(fp = osgDB::fopen(filename,"rb")))  {
+        if (!(filep = osgDB::fopen(filename,"rb")))  {
 
             throw 1;
         }
         // Find the file end
-        if (fseek(fp,0,SEEK_END))
+        if (fseek(filep,0,SEEK_END))
             throw 1;
         // Note: This means tile is capped at 2 gigs
-        long pos = ftell(fp);
-        if (fseek(fp,0,SEEK_SET))
+        long pos = ftell(filep);
+        if (fseek(filep,0,SEEK_SET))
             throw 1;
         // Now we know the size.  Read the whole file
         buf.SetLength(pos);
         char *data = buf.GetDataPtr();
-        if (fread(data,pos,1,fp) != 1)
+        if (fread(data,pos,1,filep) != 1)
             throw 1;
-        fclose(fp);
-        fp = NULL;
+        fclose(filep);
+        filep = NULL;
     }
     catch (...) {
-        if (fp)
-            fclose(fp);
+        if (filep)
+            fclose(filep);
         return false;
     }
 
@@ -505,17 +505,17 @@ bool trpgr_Archive::trpgGetTileMBR(uint32 x,uint32 y,uint32 lod,trpg3dPoint &ll,
    */
 
 trpgrImageHelper::trpgrImageHelper(trpgEndian inNess,char *inDir,
-                                   const trpgMatTable &inMatTable,const trpgTexTable &inTexTable,bool separateGeoTyp)
+                                   const trpgMatTable &inMatTable,const trpgTexTable &inTexTable,bool sepGeoTyp)
 {
-    Init(inNess,inDir,inMatTable,inTexTable,separateGeoTyp);
+    Init(inNess,inDir,inMatTable,inTexTable,sepGeoTyp);
 }
 
 void trpgrImageHelper::Init(trpgEndian inNess,char *inDir,
-                            const trpgMatTable &inMatTable,const trpgTexTable &inTexTable,bool separateGeoTyp)
+                            const trpgMatTable &inMatTable,const trpgTexTable &inTexTable,bool sepGeoTyp)
 {
     ness = inNess;
     strcpy(dir,inDir);
-    this->separateGeoTyp = separateGeoTyp;
+    separateGeoTyp = sepGeoTyp;
     matTable = &inMatTable;
     texTable = &inTexTable;
 
@@ -524,7 +524,7 @@ void trpgrImageHelper::Init(trpgEndian inNess,char *inDir,
     char fullBase[1024];
     sprintf(fullBase,"%s" PATHSEPERATOR "texFile",dir);
     texCache = GetNewRAppFileCache(fullBase,"txf");
-    if(separateGeoTyp) {
+    if(sepGeoTyp) {
         sprintf(fullBase,"%s" PATHSEPERATOR "geotypFile",dir);
         geotypCache = GetNewRAppFileCache(fullBase,"txf");
     }

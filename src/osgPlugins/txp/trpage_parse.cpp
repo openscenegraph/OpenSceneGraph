@@ -204,9 +204,9 @@ bool trpgr_Parser::Parse(trpgReadBuffer &buf)
                 // Run the callback
                 if (tcb->cb)
                 {
-                    void *ret = tcb->cb->Parse(tok,buf);
+                    void *retval = tcb->cb->Parse(tok,buf);
                     // Note: Do something with the return value
-                    lastObject = ret;
+                    lastObject = retval;
                 }
             }
             catch (...)

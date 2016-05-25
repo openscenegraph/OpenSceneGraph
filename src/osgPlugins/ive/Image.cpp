@@ -59,9 +59,9 @@ void Image::write(DataOutputStream* out)
     out->writeInt(getModifiedCount());
 
     // Write mipmapdata vector
-    int size = _mipmapData.size();
-    out->writeInt(size);
-    for(int i=0;i<size;i++)
+    int mipmapsize = _mipmapData.size();
+    out->writeInt(mipmapsize);
+    for(int i=0;i<mipmapsize;i++)
         out->writeInt(_mipmapData[i]);
 
     // Write image data if any

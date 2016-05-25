@@ -59,8 +59,8 @@ void ConvexPlanarOccluder::read(DataInputStream* in){
         // Read ConvexPlanarOccluder's properties
 
         // Read planar polygon occluder.
-        osg::ConvexPlanarPolygon* cpp = &getOccluder();
-        ((ive::ConvexPlanarPolygon*)(cpp))->read(in);
+        osg::ConvexPlanarPolygon* occluder = &getOccluder();
+        ((ive::ConvexPlanarPolygon*)(occluder))->read(in);
 
         // Read hole list.
         int size = in->readInt();

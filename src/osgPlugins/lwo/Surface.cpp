@@ -288,8 +288,8 @@ osg::Group *Surface::apply(osg::Geometry *geo, const VertexMap_map *texture_maps
     geo->setStateSet(stateset_.get());
 
     int unit = 0;
-    for (Block_map::const_iterator i=blocks_.begin(); i!=blocks_.end(); ++i) {
-        const Block &block = i->second;
+    for (Block_map::const_iterator bi=blocks_.begin(); bi!=blocks_.end(); ++bi) {
+        const Block &block = bi->second;
         if (block.get_type() == "IMAP" && block.get_channel() == "COLR" && block.get_image_map().clip) {
             std::string image_file = block.get_image_map().clip->get_still_filename();
             if (!image_file.empty()) {

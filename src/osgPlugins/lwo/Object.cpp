@@ -106,9 +106,9 @@ void Object::parse(const iff::Chunk_list &data)
 
     Layer current_layer;
 
-    for (iff::Chunk_list::const_iterator i=data.begin(); i!=data.end(); ++i) {
+    for (iff::Chunk_list::const_iterator di=data.begin(); di!=data.end(); ++di) {
 
-        const lwo2::FORM::LAYR *layr = dynamic_cast<const lwo2::FORM::LAYR *>(*i);
+        const lwo2::FORM::LAYR *layr = dynamic_cast<const lwo2::FORM::LAYR *>(*di);
         if (layr) {
             if (!current_layer.units().empty() || current_layer.get_layer_chunk()) {
                 layers_[current_layer.number()] = current_layer;
@@ -117,7 +117,7 @@ void Object::parse(const iff::Chunk_list &data)
             current_layer.units().clear();
         }
 
-        const lwo2::FORM::PNTS *pnts = dynamic_cast<const lwo2::FORM::PNTS *>(*i);
+        const lwo2::FORM::PNTS *pnts = dynamic_cast<const lwo2::FORM::PNTS *>(*di);
         if (pnts) {
             Unit new_unit;
             for (lwo2::FORM::PNTS::Point_list::const_iterator i=pnts->point_location.begin(); i!=pnts->point_location.end(); ++i) {
@@ -127,7 +127,7 @@ void Object::parse(const iff::Chunk_list &data)
             current_layer.units().push_back(new_unit);
         }
 
-        const lwo2::FORM::VMAP *vmap = dynamic_cast<const lwo2::FORM::VMAP *>(*i);
+        const lwo2::FORM::VMAP *vmap = dynamic_cast<const lwo2::FORM::VMAP *>(*di);
         if (vmap && !current_layer.units().empty()) {
             std::string type(vmap->type.id, 4);
             if (type == "WGHT") {
@@ -202,7 +202,7 @@ void Object::parse(const iff::Chunk_list &data)
             }
         }
 
-        const lwo2::FORM::POLS *pols = dynamic_cast<const lwo2::FORM::POLS *>(*i);
+        const lwo2::FORM::POLS *pols = dynamic_cast<const lwo2::FORM::POLS *>(*di);
         if (pols && !current_layer.units().empty()) {
             std::string type(pols->type.id, 4);
             if (type != "FACE") {
@@ -240,12 +240,12 @@ void Object::parse(const iff::Chunk_list &data)
             }
         }
 
-        const lwo2::FORM::TAGS *tags = dynamic_cast<const lwo2::FORM::TAGS *>(*i);
+        const lwo2::FORM::TAGS *tags = dynamic_cast<const lwo2::FORM::TAGS *>(*di);
         if (tags) {
             tag_strings = tags->tag_string;
         }
 
-        const lwo2::FORM::PTAG *ptag = dynamic_cast<const lwo2::FORM::PTAG *>(*i);
+        const lwo2::FORM::PTAG *ptag = dynamic_cast<const lwo2::FORM::PTAG *>(*di);
         if (ptag && !current_layer.units().empty()) {
             std::string type(ptag->type.id, 4);
             if (type == "SURF") {
@@ -265,7 +265,7 @@ void Object::parse(const iff::Chunk_list &data)
             }
         }
 
-        const lwo2::FORM::VMAD *vmad = dynamic_cast<const lwo2::FORM::VMAD *>(*i);
+        const lwo2::FORM::VMAD *vmad = dynamic_cast<const lwo2::FORM::VMAD *>(*di);
         if (vmad && !current_layer.units().empty()) {
             std::string type(vmad->type.id, 4);
             if (type == "WGHT") {
@@ -310,12 +310,12 @@ void Object::parse(const iff::Chunk_list &data)
             }
         }
 
-        const lwo2::FORM::DESC *desc = dynamic_cast<const lwo2::FORM::DESC *>(*i);
+        const lwo2::FORM::DESC *desc = dynamic_cast<const lwo2::FORM::DESC *>(*di);
         if (desc) {
             description_ = desc->description_line;
         }
 
-        const lwo2::FORM::TEXT *text = dynamic_cast<const lwo2::FORM::TEXT *>(*i);
+        const lwo2::FORM::TEXT *text = dynamic_cast<const lwo2::FORM::TEXT *>(*di);
         if (text) {
             comment_ = text->comment;
         }
@@ -338,13 +338,13 @@ void Object::generate_normals()
 
 void Object::generate_auto_texture_maps()
 {
-    for (Surface_map::iterator i=surfaces_.begin(); i!=surfaces_.end(); ++i) {
-        for (Surface::Block_map::iterator j=i->second.blocks().begin(); j!=i->second.blocks().end(); ++j) {
+    for (Surface_map::iterator si=surfaces_.begin(); si!=surfaces_.end(); ++si) {
+        for (Surface::Block_map::iterator j=si->second.blocks().begin(); j!=si->second.blocks().end(); ++j) {
             Block &block = j->second;
             if (block.get_type() == "IMAP") {
                 if (block.get_image_map().projection == Image_map::UV) continue;
 
-                Image_map::Axis_type axis = block.get_image_map().axis;
+                Image_map::Axis_type image_axis = block.get_image_map().axis;
 
                 std::ostringstream oss;
                 oss << "Auto_map_" << &block;
@@ -416,7 +416,7 @@ void Object::generate_auto_texture_maps()
                                 osg::Vec2 uv;
 
                                 if (block.get_image_map().projection == Image_map::PLANAR) {
-                                    switch (axis) {
+                                    switch (image_axis) {
                                         case Image_map::X: uv.set(P.z(), P.y()); break;
                                         case Image_map::Y: uv.set(P.x(), P.z()); break;
                                         case Image_map::Z: uv.set(P.x(), P.y()); break;
@@ -426,7 +426,7 @@ void Object::generate_auto_texture_maps()
                                 }
 
                                 if (block.get_image_map().projection == Image_map::CYLINDRICAL) {
-                                    switch (axis) {
+                                    switch (image_axis) {
                                         case Image_map::X: uv.set(cylindrical_angle(-P.z(), -P.y()), P.x()); break;
                                         case Image_map::Y: uv.set(cylindrical_angle(P.x(), P.z()), P.y()); break;
                                         case Image_map::Z: uv.set(cylindrical_angle(P.x(), -P.y()), P.z()); break;
@@ -439,7 +439,7 @@ void Object::generate_auto_texture_maps()
                                 if (block.get_image_map().projection == Image_map::SPHERICAL) {
                                     float r = P.length();
                                     if (r != 0) {
-                                        switch (axis) {
+                                        switch (image_axis) {
                                             case Image_map::X: uv.set(cylindrical_angle(-P.z(), -P.y()), (asinf(P.x()/r) + osg::PI_2) / osg::PI); break;
                                             case Image_map::Y: uv.set(cylindrical_angle(P.x(), P.z()), (asinf(P.y()/r) + osg::PI_2) / osg::PI); break;
                                             case Image_map::Z: uv.set(cylindrical_angle(P.x(), -P.y()), (asinf(P.z()/r) + osg::PI_2) / osg::PI); break;

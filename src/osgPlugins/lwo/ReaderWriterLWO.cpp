@@ -73,7 +73,7 @@ public:
         if (result.success()) return result;
 
         if (!options || options->getOptionString() != "USE_OLD_READER") {
-            ReadResult result = readNode_LWO2(fileName, local_opt.get());
+            result = readNode_LWO2(fileName, local_opt.get());
             if (result.success()) return result;
         }
 

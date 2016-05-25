@@ -317,7 +317,7 @@ Lwo2Layer::_find_triangle_fan(PolygonsList& polygons, PolygonsList& triangle_fan
               c = d;
               while ((next_polygon_index = _find_triangle_begins_with(polygons, a, c)) >= 0)
                 {
-                  PointData d = polygons[next_polygon_index][2];
+                  d = polygons[next_polygon_index][2];
                   point_list.push_back(d);
 
                   // delete next triangle (mark as deleted)
@@ -374,7 +374,7 @@ Lwo2Layer::_find_triangle_strip(PolygonsList& polygons, PolygonsList& triangle_s
 
               while ((next_polygon_index = _find_triangle_begins_with(polygons, strip_a, strip_b)) >= 0)
                 {
-                  PointData d = polygons[next_polygon_index][2];
+                  d = polygons[next_polygon_index][2];
                   point_list.push_back(d);
 
                   if (current_strip_a)

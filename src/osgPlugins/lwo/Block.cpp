@@ -56,8 +56,8 @@ void Block::compile(const lwo2::FORM::SURF::BLOK *blok)
         read_common_attributes(imap->block_attributes);
 
         // read imagemap-related attributes
-        for (iff::Chunk_list::const_iterator i=blok->attributes.begin(); i!=blok->attributes.end(); ++i) {
-            const lwo2::FORM::SURF::BLOK::IMAP::TMAP *tmap = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::TMAP *>(*i);
+        for (iff::Chunk_list::const_iterator bi=blok->attributes.begin(); bi!=blok->attributes.end(); ++bi) {
+            const lwo2::FORM::SURF::BLOK::IMAP::TMAP *tmap = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::TMAP *>(*bi);
             if (tmap) {
                 Texture_mapping mapping;
                 for (iff::Chunk_list::const_iterator i=tmap->attributes.begin(); i!=tmap->attributes.end(); ++i) {
@@ -81,43 +81,43 @@ void Block::compile(const lwo2::FORM::SURF::BLOK *blok)
                 imap_.mapping = mapping;
             }
 
-            const lwo2::FORM::SURF::BLOK::IMAP::PROJ *proj = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::PROJ *>(*i);
+            const lwo2::FORM::SURF::BLOK::IMAP::PROJ *proj = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::PROJ *>(*bi);
             if (proj) {
                 imap_.projection = static_cast<Image_map::Projection_mode>(proj->projection_mode);
             }
 
-            const lwo2::FORM::SURF::BLOK::IMAP::AXIS *axis = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::AXIS *>(*i);
+            const lwo2::FORM::SURF::BLOK::IMAP::AXIS *axis = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::AXIS *>(*bi);
             if (axis) {
                 imap_.axis = static_cast<Image_map::Axis_type>(axis->texture_axis);
             }
 
-            const lwo2::FORM::SURF::BLOK::IMAP::IMAG *imag = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::IMAG *>(*i);
+            const lwo2::FORM::SURF::BLOK::IMAP::IMAG *imag = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::IMAG *>(*bi);
             if (imag) {
                 imap_.image_map = imag->texture_image.index;
             }
 
-            const lwo2::FORM::SURF::BLOK::IMAP::WRAP *wrap = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::WRAP *>(*i);
+            const lwo2::FORM::SURF::BLOK::IMAP::WRAP *wrap = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::WRAP *>(*bi);
             if (wrap) {
                 imap_.width_wrap = static_cast<Image_map::Wrap_type>(wrap->width_wrap);
                 imap_.height_wrap = static_cast<Image_map::Wrap_type>(wrap->height_wrap);
             }
 
-            const lwo2::FORM::SURF::BLOK::IMAP::WRPW *wrpw = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::WRPW *>(*i);
+            const lwo2::FORM::SURF::BLOK::IMAP::WRPW *wrpw = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::WRPW *>(*bi);
             if (wrpw) {
                 imap_.wrap_amount_w = wrpw->cycles.fraction;
             }
 
-            const lwo2::FORM::SURF::BLOK::IMAP::WRPH *wrph = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::WRPH *>(*i);
+            const lwo2::FORM::SURF::BLOK::IMAP::WRPH *wrph = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::WRPH *>(*bi);
             if (wrph) {
                 imap_.wrap_amount_h = wrph->cycles.fraction;
             }
 
-            const lwo2::FORM::SURF::BLOK::IMAP::VMAP *vmap = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::VMAP *>(*i);
+            const lwo2::FORM::SURF::BLOK::IMAP::VMAP *vmap = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::VMAP *>(*bi);
             if (vmap) {
                 imap_.uv_map = vmap->txuv_map_name;
             }
 
-            const lwo2::FORM::SURF::BLOK::IMAP::TAMP *tamp = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::TAMP *>(*i);
+            const lwo2::FORM::SURF::BLOK::IMAP::TAMP *tamp = dynamic_cast<const lwo2::FORM::SURF::BLOK::IMAP::TAMP *>(*bi);
             if (tamp) {
                 imap_.texture_amplitude = tamp->amplitude.fraction;
             }

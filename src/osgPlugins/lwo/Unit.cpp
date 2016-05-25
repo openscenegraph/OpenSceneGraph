@@ -105,8 +105,6 @@ void Unit::flatten_maps()
         flatten_map(*i, i->local_normals(), normals_.get());
         i->local_normals()->clear();
 
-        VertexMap_map::const_iterator j;
-
         // flatten weight maps
         while (!i->weight_maps()->empty()) {
             VertexMap_map::iterator j = i->weight_maps()->begin();

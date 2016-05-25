@@ -351,8 +351,8 @@ osg::Object* DeprecatedDotOsgWrapperManager::readObject(DotOsgWrapperMap& dowMap
     if (str==NULL) return NULL;
 
     std::string name = str;
-    DotOsgWrapperMap::iterator itr = dowMap.find(name);
-    if (itr==dowMap.end())
+    DotOsgWrapperMap::iterator dow_itr = dowMap.find(name);
+    if (dow_itr==dowMap.end())
     {
         // not found so check if a library::class composite name.
         std::string token = fr[0].getStr();
@@ -380,7 +380,7 @@ osg::Object* DeprecatedDotOsgWrapperManager::readObject(DotOsgWrapperMap& dowMap
     else if (fr[1].isOpenBracket())
     {
 
-        DotOsgWrapper* wrapper = itr->second.get();
+        DotOsgWrapper* wrapper = dow_itr->second.get();
         const osg::Object* proto = wrapper->getPrototype();
         if (proto==NULL)
         {
@@ -649,9 +649,9 @@ bool DeprecatedDotOsgWrapperManager::writeObject(const osg::Object& obj,Output& 
     const std::string compositeName( libraryName + "::" + classname );
 
     // try composite name first
-    DotOsgWrapperMap::iterator itr = _classNameWrapperMap.find(compositeName);
+    DotOsgWrapperMap::iterator cnw_itr = _classNameWrapperMap.find(compositeName);
 
-    if (itr==_classNameWrapperMap.end())
+    if (cnw_itr==_classNameWrapperMap.end())
     {
         FileNames fileNames;
         if (getLibraryFileNamesToTry(libraryName, fileNames))
@@ -665,13 +665,13 @@ bool DeprecatedDotOsgWrapperManager::writeObject(const osg::Object& obj,Output& 
         }
 
         // otherwise try simple class name
-        if (itr == _classNameWrapperMap.end())
-            itr = _classNameWrapperMap.find(classname);
+        if (cnw_itr == _classNameWrapperMap.end())
+            cnw_itr = _classNameWrapperMap.find(classname);
     }
 
-    if (itr!=_classNameWrapperMap.end())
+    if (cnw_itr!=_classNameWrapperMap.end())
     {
-        DotOsgWrapper* wrapper = itr->second.get();
+        DotOsgWrapper* wrapper = cnw_itr->second.get();
         const DotOsgWrapper::Associates& assoc = wrapper->getAssociates();
 
         if (libraryName=="osg")
@@ -724,10 +724,10 @@ bool DeprecatedDotOsgWrapperManager::writeObject(const osg::Object& obj,Output& 
                     // are try to load it, and then retry the find to see
                     // if we can recognize the objects.
 
-                    std::string libraryName = std::string(token,0,posDoubleColon);
+                    std::string assoc_libraryName = std::string(token,0,posDoubleColon);
 
                     FileNames fileNames;
-                    if (getLibraryFileNamesToTry(libraryName, fileNames))
+                    if (getLibraryFileNamesToTry(assoc_libraryName, fileNames))
                     {
                         for(FileNames::iterator itr = fileNames.begin();
                             itr != fileNames.end() && mitr==_objectWrapperMap.end();

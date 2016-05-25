@@ -149,9 +149,6 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
     LocationCoords locationCoords;
     locationCoords.reserve(numVertices);
 
-    osg::Vec3d pos(0.0, 0.0, 0.0);
-    osg::Vec3d normal(0.0, 0.0, 1.0);
-    osg::Vec2 delta(1.0f/static_cast<float>(nx), 1.0f/static_cast<float>(ny));
 
     // pass in the delta texcoord per texel via the color array
     (*colours)[0].x() = c_mult;
@@ -166,30 +163,37 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
         matrix = locator->getTransform();
     }
 
+    double skirtHeight = -1.0;
+
     // compute the size of the skirtHeight
-    osg::Vec3d bottom_left(0.0,0.0,0.0);
-    osg::Vec3d top_right(1.0,1.0,0.0);
-
-    // transform for unit coords to local coords of the tile
-    bottom_left = bottom_left * matrix;
-    top_right = top_right * matrix;
-
-    // if we have a geocentric database then transform into geocentric coords.
-    const osg::EllipsoidModel* em = locator->getEllipsoidModel();
-    if (em && locator->getCoordinateSystemType()==osgTerrain::Locator::GEOCENTRIC)
     {
-        // note y axis maps to latitude, x axis to longitude
-        em->convertLatLongHeightToXYZ(bottom_left.y(), bottom_left.x(), bottom_left.z(), bottom_left.x(), bottom_left.y(), bottom_left.z());
-        em->convertLatLongHeightToXYZ(top_right.y(), top_right.x(), top_right.z(), top_right.x(), top_right.y(), top_right.z());
+        osg::Vec3d bottom_left(0.0,0.0,0.0);
+        osg::Vec3d top_right(1.0,1.0,0.0);
+
+        // transform for unit coords to local coords of the tile
+        bottom_left = bottom_left * matrix;
+        top_right = top_right * matrix;
+
+        // if we have a geocentric database then transform into geocentric coords.
+        const osg::EllipsoidModel* em = locator->getEllipsoidModel();
+        if (em && locator->getCoordinateSystemType()==osgTerrain::Locator::GEOCENTRIC)
+        {
+            // note y axis maps to latitude, x axis to longitude
+            em->convertLatLongHeightToXYZ(bottom_left.y(), bottom_left.x(), bottom_left.z(), bottom_left.x(), bottom_left.y(), bottom_left.z());
+            em->convertLatLongHeightToXYZ(top_right.y(), top_right.x(), top_right.z(), top_right.x(), top_right.y(), top_right.z());
+        }
+
+        double diagonalLength = (top_right-bottom_left).length();
+        double skirtRatio = 0.02;
+        skirtHeight = -diagonalLength*skirtRatio;
     }
-
-    double diagonalLength = (top_right-bottom_left).length();
-    double skirtRatio = 0.02;
-    double skirtHeight = -diagonalLength*skirtRatio;
-
 
     // set up the vertex data
     {
+        osg::Vec3d pos(0.0, 0.0, 0.0);
+        osg::Vec3d normal(0.0, 0.0, 1.0);
+        osg::Vec2 delta(1.0f/static_cast<float>(nx), 1.0f/static_cast<float>(ny));
+
         // bottom row for skirt
         pos.y () = static_cast<double>(0)*r_mult;
         pos.z() = skirtHeight;
@@ -567,11 +571,11 @@ osg::ref_ptr<osg::MatrixTransform> GeometryPool::getTileSubgraph(osgTerrain::Ter
 osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTypes)
 {
     //OpenThreads::ScopedLock<OpenThreads::Mutex>  lock(_programMapMutex);
-    ProgramMap::iterator itr = _programMap.find(layerTypes);
-    if (itr!=_programMap.end())
+    ProgramMap::iterator p_itr = _programMap.find(layerTypes);
+    if (p_itr!=_programMap.end())
     {
-        // OSG_NOTICE<<") returning existing Program "<<itr->second.get()<<std::endl;
-        return itr->second.get();
+        // OSG_NOTICE<<") returning existing Program "<<p_itr->second.get()<<std::endl;
+        return p_itr->second.get();
     }
 
 #if 1

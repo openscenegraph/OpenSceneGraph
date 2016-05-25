@@ -64,8 +64,8 @@ TerrainTechnique::TerrainTechnique():
     setThreadSafeRefUnref(true);
 }
 
-TerrainTechnique::TerrainTechnique(const TerrainTechnique& TerrainTechnique,const osg::CopyOp& copyop):
-    osg::Object(TerrainTechnique,copyop),
+TerrainTechnique::TerrainTechnique(const TerrainTechnique& tt,const osg::CopyOp& copyop):
+    osg::Object(tt,copyop),
     _terrainTile(0)
 {
 }

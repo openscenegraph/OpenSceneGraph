@@ -1958,21 +1958,21 @@ void View::assignStereoOrKeystoneToCamera(osg::Camera* camera, osg::DisplaySetti
 
             // set up the stencil buffer
             {
-                osg::ref_ptr<osg::Camera> camera = new osg::Camera;
-                camera->setGraphicsContext(gc.get());
-                camera->setViewport(0, 0, traits->width, traits->height);
-                camera->setDrawBuffer(traits->doubleBuffer ? GL_BACK : GL_FRONT);
-                camera->setReadBuffer(camera->getDrawBuffer());
-                camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
-                camera->setClearMask(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
-                camera->setClearStencil(0);
-                camera->setRenderOrder(osg::Camera::NESTED_RENDER, 0);
-                addSlave(camera.get(), false);
+                osg::ref_ptr<osg::Camera> stencil_camera = new osg::Camera;
+                stencil_camera->setGraphicsContext(gc.get());
+                stencil_camera->setViewport(0, 0, traits->width, traits->height);
+                stencil_camera->setDrawBuffer(traits->doubleBuffer ? GL_BACK : GL_FRONT);
+                stencil_camera->setReadBuffer(stencil_camera->getDrawBuffer());
+                stencil_camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
+                stencil_camera->setClearMask(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
+                stencil_camera->setClearStencil(0);
+                stencil_camera->setRenderOrder(osg::Camera::NESTED_RENDER, 0);
+                addSlave(stencil_camera.get(), false);
 
                 osg::ref_ptr<osg::Geometry> geometry = osg::createTexturedQuadGeometry(osg::Vec3(-1.0f,-1.0f,0.0f), osg::Vec3(2.0f,0.0f,0.0f), osg::Vec3(0.0f,2.0f,0.0f), 0.0f, 0.0f, 1.0f, 1.0f);
                 osg::ref_ptr<osg::Geode> geode = new osg::Geode;
                 geode->addDrawable(geometry.get());
-                camera->addChild(geode.get());
+                stencil_camera->addChild(geode.get());
 
                 geode->setCullingActive(false);
 

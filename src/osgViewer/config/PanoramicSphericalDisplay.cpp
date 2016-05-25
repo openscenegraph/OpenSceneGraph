@@ -219,16 +219,16 @@ void PanoramicSphericalDisplay::configure(osgViewer::View& view) const
     texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
     texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
 
-#if 0
-    osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::SEPERATE_WINDOW;
-    GLenum buffer = GL_FRONT;
-#else
-    osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::FRAME_BUFFER_OBJECT;
-    GLenum buffer = GL_FRONT;
-#endif
-
     // front face
     {
+        #if 0
+            osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::SEPERATE_WINDOW;
+            GLenum buffer = GL_FRONT;
+        #else
+            osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::FRAME_BUFFER_OBJECT;
+            GLenum buffer = GL_FRONT;
+        #endif
+
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
         camera->setName("Front face camera");
         camera->setGraphicsContext(gc.get());
@@ -270,6 +270,7 @@ void PanoramicSphericalDisplay::configure(osgViewer::View& view) const
         camera->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
         camera->setClearColor( osg::Vec4(0.0,0.0,0.0,1.0) );
         camera->setViewport(new osg::Viewport(0, 0, width, height));
+
         GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);

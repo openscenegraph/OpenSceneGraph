@@ -386,9 +386,10 @@ void SphericalDisplay::configure(osgViewer::View& view) const
         camera->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
         camera->setClearColor( osg::Vec4(0.0,0.0,0.0,1.0) );
         camera->setViewport(new osg::Viewport(0, 0, width, height));
-        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
-        camera->setDrawBuffer(buffer);
-        camera->setReadBuffer(buffer);
+
+        GLenum window_buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+        camera->setDrawBuffer(window_buffer);
+        camera->setReadBuffer(window_buffer);
         camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
         camera->setAllowEventFocus(true);
         camera->setInheritanceMask(camera->getInheritanceMask() & ~osg::CullSettings::CLEAR_COLOR & ~osg::CullSettings::COMPUTE_NEAR_FAR_MODE);

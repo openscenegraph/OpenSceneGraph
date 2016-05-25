@@ -88,16 +88,16 @@ void WoWVxDisplay::configure(osgViewer::View& view) const
     textureD->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
     textureD->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
 
-#if 0
-    osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::SEPERATE_WINDOW;
-    GLenum buffer = GL_FRONT;
-#else
-    osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::FRAME_BUFFER_OBJECT;
-    GLenum buffer = GL_FRONT;
-#endif
-
     // front face
     {
+        #if 0
+            osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::SEPERATE_WINDOW;
+            GLenum buffer = GL_FRONT;
+        #else
+            osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::FRAME_BUFFER_OBJECT;
+            GLenum buffer = GL_FRONT;
+        #endif
+
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
         camera->setName("Front face camera");
         camera->setGraphicsContext(gc.get());

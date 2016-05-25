@@ -251,10 +251,16 @@ bool RigTransformHardware::init(RigGeometry& geom)
     std::string str = _shader->getShaderSource();
     std::string toreplace = std::string("MAX_MATRIX");
     std::size_t start = str.find(toreplace);
-    std::stringstream ss;
-    ss << getMatrixPaletteUniform()->getNumElements();
-    str.replace(start, toreplace.size(), ss.str());
-    _shader->setShaderSource(str);
+    if (std::string::npos != start) {
+        std::stringstream ss;
+        ss << getMatrixPaletteUniform()->getNumElements();
+        str.replace(start, toreplace.size(), ss.str());
+        _shader->setShaderSource(str);
+    }
+    else
+    {
+        OSG_WARN << "MAX_MATRIX not found in Shader! " << str << std::endl;
+    }
     OSG_INFO << "Shader " << str << std::endl;
     }
 

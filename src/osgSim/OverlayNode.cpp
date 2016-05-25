@@ -241,8 +241,7 @@ public:
 
         Faces removedFaces;
 
-        Faces::iterator itr;
-        for(itr = _faces.begin();
+        for(Faces::iterator itr = _faces.begin();
             itr != _faces.end();
             )
         {
@@ -265,8 +264,8 @@ public:
         Edges edges;
 
         double numVerticesAdded=0.0;
-        osg::Vec3d center;
-        for(itr = removedFaces.begin();
+        osg::Vec3d faces_center;
+        for(Faces::iterator itr = removedFaces.begin();
             itr != removedFaces.end();
             ++itr)
         {
@@ -279,13 +278,13 @@ public:
                 if (a<b) ++edges[Edge(a,b)];
                 else ++edges[Edge(b,a)];
 
-                center += a;
+                faces_center += a;
                 numVerticesAdded += 1.0;
             }
         }
 
         if (numVerticesAdded==0.0) return;
-        center /= numVerticesAdded;
+        faces_center /= numVerticesAdded;
 
         typedef std::set<osg::Vec3> VertexSet;
         VertexSet uniqueVertices;
@@ -304,7 +303,7 @@ public:
                 face.vertices.push_back(vertex);
                 face.vertices.push_back(edge.first);
                 face.vertices.push_back(edge.second);
-                if (face.plane.distance(center)<0.0) face.plane.flip();
+                if (face.plane.distance(faces_center)<0.0) face.plane.flip();
                 _faces.push_back(face);
 
                 uniqueVertices.insert(edge.first);

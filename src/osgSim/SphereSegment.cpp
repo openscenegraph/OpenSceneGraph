@@ -1785,13 +1785,13 @@ namespace SphereSegmentIntersector
         Edge* addEdge(unsigned int p1, unsigned int p2, Triangle* tri)
         {
 
-            osg::ref_ptr<Edge> edge = new Edge(p1, p2);
-            EdgeSet::iterator itr = _edges.find(edge);
+            osg::ref_ptr<Edge> new_edge = new Edge(p1, p2);
+            EdgeSet::iterator itr = _edges.find(new_edge);
             if (itr==_edges.end())
             {
-                edge->addTriangle(tri);
-                _edges.insert(edge);
-                return edge.get();
+                new_edge->addTriangle(tri);
+                _edges.insert(new_edge);
+                return new_edge.get();
             }
             else
             {
@@ -2045,14 +2045,10 @@ namespace SphereSegmentIntersector
                         osg::Vec3 start = (*sourceLine)[first-1]-_centre;
                         osg::Vec3 end = (*sourceLine)[first]-_centre;
 
-                        float end1 = intersector1.distance(end);
-                        float end2 = intersector2.distance(end);
-
-
                         // work out which intersector to use by discounting the one that
                         // isn't a plausible candidate.
-                        bool possible1 = end1>=0.0;
-                        bool possible2 = end2>=0.0;
+                        bool possible1 = intersector1.distance(end)>=0.0;
+                        bool possible2 = intersector2.distance(end)>=0.0;
                         if (possible1 && possible2)
                         {
 
@@ -2114,11 +2110,8 @@ namespace SphereSegmentIntersector
                         bool possible2 = start2>=0.0;
                         if (possible1 && possible2)
                         {
-                            double end1 = intersector1.distance(end);
-                            double end2 = intersector2.distance(end);
-
-                            possible1 = end1<0.0;
-                            possible2 = end2<0.0;
+                            possible1 = intersector1.distance(end)<0.0;
+                            possible2 = intersector2.distance(end)<0.0;
 
                             if (possible1 && possible2)
                             {

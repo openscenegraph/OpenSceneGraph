@@ -466,11 +466,11 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
             else    // directional light
             {
                 // make an orthographic projection
-                osg::Vec3 lightDir(lightpos.x(), lightpos.y(), lightpos.z());
-                lightDir.normalize();
+                osg::Vec3 ortho_lightDir(lightpos.x(), lightpos.y(), lightpos.z());
+                ortho_lightDir.normalize();
 
                 // set the position far away along the light direction
-                osg::Vec3 position = bb.center() + lightDir * bb.radius() * 2;
+                osg::Vec3 position = bb.center() + ortho_lightDir * bb.radius() * 2;
 
                 float centerDistance = (position-bb.center()).length();
 
@@ -483,7 +483,7 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
                 float right = top;
 
                 _camera->setProjectionMatrixAsOrtho(-right, right, -top, top, znear, zfar);
-                _camera->setViewMatrixAsLookAt(position,bb.center(),computeOrthogonalVector(lightDir));
+                _camera->setViewMatrixAsLookAt(position,bb.center(),computeOrthogonalVector(ortho_lightDir));
             }
 
 

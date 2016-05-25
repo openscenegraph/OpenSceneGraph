@@ -323,22 +323,22 @@ void ConvexPolyhedron::transformClip(const osg::Matrix& matrix, const osg::Matri
 
     double min = FLT_MAX, max = -FLT_MAX; //Hull max & min point distances
 
-    FaceDistancesList::iterator fd = faceDistances.begin();
     // First step compute each face points distances to cutting plane
-    for( Faces::iterator itr = _faces.begin();
-        itr != _faces.end();
-        ++itr, ++fd )
+    Faces::iterator faces_itr = _faces.begin();
+    for(FaceDistancesList::iterator fd = faceDistances.begin();
+        faces_itr != _faces.end();
+        ++faces_itr, ++fd)
     {
-        fd->itr = itr;
-        fd->distances.reserve( itr->vertices.size() );
+        fd->itr = faces_itr;
+        fd->distances.reserve( faces_itr->vertices.size() );
         fd->on = 0;
         fd->above = 0;
         fd->below = 0;
 
-        itr->plane.transformProvidingInverse(inverse);
+        faces_itr->plane.transformProvidingInverse(inverse);
 
-        for( Vertices::iterator vitr = itr->vertices.begin();
-            vitr != itr->vertices.end();
+        for( Vertices::iterator vitr = faces_itr->vertices.begin();
+            vitr != faces_itr->vertices.end();
             ++vitr)
         {
             osg::Vec4d p( *vitr, 1.0 );
@@ -1236,32 +1236,33 @@ void ConvexPolyhedron::cut(const osg::Plane& plane, const std::string& name)
 
     double min = FLT_MAX, max = -FLT_MAX; //Hull max & min point distances
 
-    FaceDistancesList::iterator fd = faceDistances.begin();
+
     // First step compute each face points distances to cutting plane
-    for( Faces::iterator itr = _faces.begin();
-        itr != _faces.end();
-        ++itr, ++fd )
+    Faces::iterator faces_itr = _faces.begin();
+    for(FaceDistancesList::iterator fd = faceDistances.begin();
+        faces_itr != _faces.end();
+        ++faces_itr, ++fd )
     {
-        fd->itr = itr;
-        fd->distances.reserve( itr->vertices.size() );
+        fd->itr = faces_itr;
+        fd->distances.reserve( faces_itr->vertices.size() );
         fd->on = 0;
         fd->above = 0;
         fd->below = 0;
 
 #if 0 //  Skip if cutting plane the same as one of faces
-        if( plane.ptr()[0] ) == itr->plane.ptr()[0] &&
-            plane.ptr()[1] ) == itr->plane.ptr()[1] &&
-            plane.ptr()[2] ) == itr->plane.ptr()[2] &&
+        if( plane.ptr()[0] == faces_itr->plane.ptr()[0] &&
+            plane.ptr()[1] == faces_itr->plane.ptr()[1] &&
+            plane.ptr()[2] == faces_itr->plane.ptr()[2] &&
 #else    // check plane using less precise float values
-        if( float( plane.ptr()[0] ) == float( itr->plane.ptr()[0] ) &&
-            float( plane.ptr()[1] ) == float( itr->plane.ptr()[1] ) &&
-            float( plane.ptr()[2] ) == float( itr->plane.ptr()[2] ) &&
+        if( float( plane.ptr()[0] ) == float( faces_itr->plane.ptr()[0] ) &&
+            float( plane.ptr()[1] ) == float( faces_itr->plane.ptr()[1] ) &&
+            float( plane.ptr()[2] ) == float( faces_itr->plane.ptr()[2] ) &&
 #endif
-            plane_hull_tolerance >= fabs( float( plane.ptr()[3] )-  float( itr->plane.ptr()[3] ) ) )
+            plane_hull_tolerance >= fabs( float( plane.ptr()[3] )-  float( faces_itr->plane.ptr()[3] ) ) )
             return;
 
-        for( Vertices::iterator vitr = itr->vertices.begin();
-            vitr != itr->vertices.end();
+        for(Vertices::iterator vitr = faces_itr->vertices.begin();
+            vitr != faces_itr->vertices.end();
             ++vitr)
         {
             double d = plane.distance( *vitr );
@@ -1815,28 +1816,28 @@ bool ConvexPolyhedron::dumpGeometry
     for( unsigned int i = 0; i < vertices.size(); i++ )
         bb.expandBy( vertices[i] );
 
-    ConvexPolyhedron cp( *this ), cpFace;
+    ConvexPolyhedron cph( *this ), cpFace;
 
-    for( Faces::iterator itr = cp._faces.begin(); itr != cp._faces.end(); )
+    for( Faces::iterator itr = cph._faces.begin(); itr != cph._faces.end(); )
     {
         bool found = ( face &&
                        itr->name == face->name &&
                        itr->plane == face->plane &&
                        itr->vertices == face->vertices );
 #if 1
-        if( cp.isFacePolygonConvex( *itr ) < 0 )
+        if( cph.isFacePolygonConvex( *itr ) < 0 )
             std::reverse( itr->vertices.begin(), itr->vertices.end() );
 #endif
 
         if( found ) {
             cpFace.createFace() = *face;
-            itr = cp._faces.erase( itr );
+            itr = cph._faces.erase( itr );
         } else {
             ++itr;
         }
     }
 
-    osg::Geometry * geometry = cp.buildGeometry( colorOutline, colorInside );
+    osg::Geometry * geometry = cph.buildGeometry( colorOutline, colorInside );
     geometry->getOrCreateStateSet()->setMode( GL_CULL_FACE, osg::StateAttribute::ON );
 
     geode->addDrawable( geometry );
@@ -1847,10 +1848,10 @@ bool ConvexPolyhedron::dumpGeometry
     if( plane )
     {
         ConvexPolyhedron cp;
-        Face & face = cp.createFace();
-        face.plane = *plane;
+        Face & cp_face = cp.createFace();
+        cp_face.plane = *plane;
 
-        osg::Vec3d normal = face.plane.getNormal();
+        osg::Vec3d normal = cp_face.plane.getNormal();
         osg::Vec3d side = fabs(normal.x()) < fabs(normal.y()) ?
                             osg::Vec3d(1.0, 0.0, 0.0) :
                             osg::Vec3d(0.0, 1.0, 0.0);
@@ -1864,12 +1865,12 @@ bool ConvexPolyhedron::dumpGeometry
         u *= bb.radius();
 
         osg::Vec3d c = bb.center();
-        c -= face.plane.getNormal() * face.plane.distance( c );
+        c -= cp_face.plane.getNormal() * cp_face.plane.distance( c );
 
-        face.vertices.push_back( c - u - v );
-        face.vertices.push_back( c - u + v );
-        face.vertices.push_back( c + u + v );
-        face.vertices.push_back( c + u - v );
+        cp_face.vertices.push_back( c - u - v );
+        cp_face.vertices.push_back( c - u + v );
+        cp_face.vertices.push_back( c + u + v );
+        cp_face.vertices.push_back( c + u - v );
 
         geode->addDrawable( cp.buildGeometry( planeColorOutline, planeColorInside ) );
     }

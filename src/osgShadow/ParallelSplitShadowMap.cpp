@@ -604,13 +604,13 @@ void ParallelSplitShadowMap::cull(osgUtil::CullVisitor& cv){
     osgUtil::RenderStage* orig_rs = cv.getRenderStage();
 
 #ifdef SHADOW_TEXTURE_GLSL
-    PSSMShadowSplitTextureMap::iterator it=_PSSMShadowSplitTextureMap.begin();
+    PSSMShadowSplitTextureMap::iterator tm_itr=_PSSMShadowSplitTextureMap.begin();
 #else
     // do traversal of shadow receiving scene which does need to be decorated by the shadow map
-    for (PSSMShadowSplitTextureMap::iterator it=_PSSMShadowSplitTextureMap.begin();it!=_PSSMShadowSplitTextureMap.end();it++)
+    for (PSSMShadowSplitTextureMap::iterator tm_itr=_PSSMShadowSplitTextureMap.begin();it!=_PSSMShadowSplitTextureMap.end();it++)
 #endif
     {
-        PSSMShadowSplitTexture pssmShadowSplitTexture = it->second;
+        PSSMShadowSplitTexture pssmShadowSplitTexture = tm_itr->second;
         cv.pushStateSet(pssmShadowSplitTexture._stateset.get());
 
         //////////////////////////////////////////////////////////////////////////
@@ -677,7 +677,7 @@ void ParallelSplitShadowMap::cull(osgUtil::CullVisitor& cv){
         // do traversal of shadow receiving scene which does need to be decorated by the shadow map
         //unsigned int iMaxSplit = _PSSMShadowSplitTextureMap.size();
 
-        for (PSSMShadowSplitTextureMap::iterator it=_PSSMShadowSplitTextureMap.begin();it!=_PSSMShadowSplitTextureMap.end();it++)
+        for(PSSMShadowSplitTextureMap::iterator it=_PSSMShadowSplitTextureMap.begin();it!=_PSSMShadowSplitTextureMap.end();it++)
         {
             PSSMShadowSplitTexture pssmShadowSplitTexture = it->second;
 

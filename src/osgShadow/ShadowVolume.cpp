@@ -269,16 +269,16 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
 
     cv.setCurrentRenderBin(original_bin.get());
 
-    osgUtil::RenderBin::RenderBinList::iterator itr =  new_bin->getRenderBinList().find(1000);
     osg::ref_ptr<osgUtil::RenderBin> shadowVolumeBin;
-    if (itr != new_bin->getRenderBinList().end())
+    osgUtil::RenderBin::RenderBinList::iterator rb_itr =  new_bin->getRenderBinList().find(1000);
+    if (rb_itr != new_bin->getRenderBinList().end())
     {
-        shadowVolumeBin = itr->second;
+        shadowVolumeBin = rb_itr->second;
 
         if (shadowVolumeBin.valid())
         {
             //OSG_NOTICE<<"Found shadow volume bin, now removing it"<<std::endl;
-            new_bin->getRenderBinList().erase(itr);
+            new_bin->getRenderBinList().erase(rb_itr);
         }
     }
 

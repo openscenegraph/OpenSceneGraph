@@ -661,11 +661,11 @@ OSGTEXT_EXPORT osg::Geometry* computeGlyphGeometry(const osgText::Glyph3D* glyph
             orig_primitives.push_back(new_elements.get());
 
             int num_indices = elements->size();
-            for(int i = 0; i<num_indices-1; ++i)
+            for(int ei = 0; ei<num_indices-1; ++ei)
             {
-                int vi_before = (i==0) ? (*elements)[(elements->size()-2)] : (*elements)[i-1];
-                int vi_curr = (*elements)[i];
-                int vi_after = (*elements)[i+1];
+                int vi_before = (ei==0) ? (*elements)[(elements->size()-2)] : (*elements)[ei-1];
+                int vi_curr = (*elements)[ei];
+                int vi_after = (*elements)[ei+1];
 
                 osg::Vec3 va = (*source_vertices)[vi_before];
                 osg::Vec3 vb = (*source_vertices)[vi_curr];

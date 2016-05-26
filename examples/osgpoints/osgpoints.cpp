@@ -195,7 +195,7 @@ int main( int argc, char **argv )
 
     if (shader)
     {
-        osg::StateSet* stateset = loadedModel->getOrCreateStateSet();
+        osg::StateSet* ss = loadedModel->getOrCreateStateSet();
 
         ///////////////////////////////////////////////////////////////////
         // vertex shader using just Vec4 coefficients
@@ -209,7 +209,7 @@ int main( int argc, char **argv )
 
 
         osg::Program* program = new osg::Program;
-        stateset->setAttribute(program);
+        ss->setAttribute(program);
 
         osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource);
         program->addShader(vertex_shader);

@@ -1365,14 +1365,14 @@ static int callImageGet(lua_State* _lua)
         return 0;
     }
 
-    int i = 0;
-    int j = 0;
-    int k = 0;
-    if (n>=2 && lua_isnumber(_lua, 2)) i = static_cast<int>(lua_tonumber(_lua, 2));
-    if (n>=3 && lua_isnumber(_lua, 3)) j = static_cast<int>(lua_tonumber(_lua, 3));
-    if (n>=4 && lua_isnumber(_lua, 4)) k = static_cast<int>(lua_tonumber(_lua, 4));
+    int image_i = 0;
+    int image_j = 0;
+    int image_k = 0;
+    if (n>=2 && lua_isnumber(_lua, 2)) image_i = static_cast<int>(lua_tonumber(_lua, 2));
+    if (n>=3 && lua_isnumber(_lua, 3)) image_j = static_cast<int>(lua_tonumber(_lua, 3));
+    if (n>=4 && lua_isnumber(_lua, 4)) image_k = static_cast<int>(lua_tonumber(_lua, 4));
 
-    const unsigned char* ptr = image->data(i,j,k);
+    const unsigned char* ptr = image->data(image_i,image_j,image_k);
     unsigned int numComponents = osg::Image::computeNumComponents(image->getPixelFormat());
 
     // OSG_NOTICE<<"Need to implement Image::get("<<i<<", "<<j<<", "<<k<<") ptr="<<(void*)ptr<<", numComponents="<<numComponents<<std::endl;
@@ -1445,15 +1445,15 @@ static int callImageGet(lua_State* _lua)
     return 0;
 }
 
-static void setImageColour(osg::Image* image, int i, int j, int k, const osg::Vec4d& colourToWrite)
+static void setImageColour(osg::Image* image, int image_i, int image_j, int image_k, const osg::Vec4d& colourToWrite)
 {
-    if (i>=image->s() || j>=image->t() || k>=image->r())
+    if (image_i>=image->s() || image_j>=image->t() || image_k>=image->r())
     {
-        OSG_NOTICE<<"Warning: Image::set("<<i<<", "<<j<<", "<<k<<") out of range"<<std::endl;
+        OSG_NOTICE<<"Warning: Image::set("<<image_i<<", "<<image_j<<", "<<image_k<<") out of range"<<std::endl;
         return;
     }
 
-    unsigned char* ptr = image->data(i,j,k);
+    unsigned char* ptr = image->data(image_i,image_j,image_k);
     unsigned int numComponents = osg::Image::computeNumComponents(image->getPixelFormat());
 
     switch(image->getDataType())
@@ -1486,12 +1486,12 @@ static int callImageSet(lua_State* _lua)
     }
 
     bool positionSet = false;
-    int i = 0;
-    int j = 0;
-    int k = 0;
-    if (n>=3 && lua_isnumber(_lua, 2)) { i = static_cast<int>(lua_tonumber(_lua, 2)); positionSet = true; }
-    if (n>=4 && lua_isnumber(_lua, 3)) { j = static_cast<int>(lua_tonumber(_lua, 3)); positionSet = true; }
-    if (n>=5 && lua_isnumber(_lua, 4)) { k = static_cast<int>(lua_tonumber(_lua, 4)); positionSet = true; }
+    int image_i = 0;
+    int image_j = 0;
+    int image_k = 0;
+    if (n>=3 && lua_isnumber(_lua, 2)) { image_i = static_cast<int>(lua_tonumber(_lua, 2)); positionSet = true; }
+    if (n>=4 && lua_isnumber(_lua, 3)) { image_j = static_cast<int>(lua_tonumber(_lua, 3)); positionSet = true; }
+    if (n>=5 && lua_isnumber(_lua, 4)) { image_k = static_cast<int>(lua_tonumber(_lua, 4)); positionSet = true; }
 
     osg::Vec4d colour(1.0,1.0,1.0,1.0);
     if (lua_isnumber(_lua, n))
@@ -1587,15 +1587,15 @@ static int callImageSet(lua_State* _lua)
 
     if (positionSet)
     {
-        setImageColour(image, i,j,k, colourToWrite);
+        setImageColour(image, image_i,image_j,image_k, colourToWrite);
     }
     else
     {
-        for(k=0; k<image->r(); ++k)
+        for(int k=0; k<image->r(); ++k)
         {
-            for(j=0; j<image->t(); ++j)
+            for(int j=0; j<image->t(); ++j)
             {
-                for(i=0; i<image->s(); ++i)
+                for(int i=0; i<image->s(); ++i)
                 {
                     setImageColour(image, i,j,k, colourToWrite);
                 }

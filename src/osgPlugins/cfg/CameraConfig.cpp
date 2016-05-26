@@ -288,10 +288,10 @@ RenderSurface *CameraConfig::getRenderSurface( unsigned int index )
     return (p->second.get());
 }
 
-void CameraConfig::addCamera( std::string name, Camera *camera )
+void CameraConfig::addCamera( std::string cameraName, Camera *camera )
 {
     std::pair<std::map<std::string, osg::ref_ptr<Camera> >::iterator,bool> res =
-      _camera_map.insert(std::pair<std::string, osg::ref_ptr<Camera> >(name, camera));
+      _camera_map.insert(std::pair<std::string, osg::ref_ptr<Camera> >(cameraName, camera));
     _current_camera = (res.first)->second.get();
     _can_add_camera_attributes = true;
 

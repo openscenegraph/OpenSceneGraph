@@ -24,11 +24,11 @@
 
 namespace osgDAE {
 
-daeWriter::ArrayNIndices::ArrayNIndices( osg::Array* valArray, osg::IndexArray* ind ) :
+daeWriter::ArrayNIndices::ArrayNIndices( osg::Array* vArray, osg::IndexArray* ind ) :
     vec2(0),  vec3(0),  vec4(0),
     vec2d(0), vec3d(0), vec4d(0),
     vec4ub(0),
-    valArray(valArray),
+    valArray(vArray),
     inds( ind ), mode(NONE)
 {
     if ( valArray != NULL )
@@ -248,9 +248,9 @@ void daeWriter::updateCurrentDaeNode()
     }
 }
 
-std::string daeWriter::uniquify( const std::string &_name )
+std::string daeWriter::uniquify( const std::string & uname )
 {
-    const std::string baseName( _pluginOptions.namesUseCodepage ? osgDB::convertStringFromCurrentCodePageToUTF8(_name) : _name );
+    const std::string baseName( _pluginOptions.namesUseCodepage ? osgDB::convertStringFromCurrentCodePageToUTF8(uname) : uname );
     std::string newName( baseName );
     if (_pluginOptions.renameIds)
     {

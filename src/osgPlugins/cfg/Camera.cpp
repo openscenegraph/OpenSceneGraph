@@ -277,7 +277,6 @@ bool Camera::Lens::convertToPerspective( float d )
 
 void Camera::Lens::apply(float xshear, float yshear)
 {
-    osg::Matrix::value_type _matrix[16];
     generateMatrix(xshear,yshear,_matrix);
 }
 

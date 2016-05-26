@@ -76,5 +76,10 @@ ENDIF()
 
 SET(TARGET_ADDED_LIBRARIES osgSim osgAnimation)
 
+IF(CMAKE_COMPILER_IS_GNUCXX)
+    # Remove -Wshadow flag as it barfs on ffmoeg headers
+   STRING(REGEX REPLACE "-Wshadow" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+ENDIF()
+
 #### end var setup  ###
 SETUP_PLUGIN(dae dae)

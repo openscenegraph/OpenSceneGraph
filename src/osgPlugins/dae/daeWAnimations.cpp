@@ -35,10 +35,10 @@
 using namespace osgDAE;
 
 
-void daeWriter::writeAnimations( osg::Node &node )
+void daeWriter::writeAnimations( osg::Node &wnode )
 {
-    const std::string nodeNameUTF( _pluginOptions.namesUseCodepage ? osgDB::convertStringFromCurrentCodePageToUTF8(node.getName()) : node.getName() );
-    osg::Callback* ncb = node.getUpdateCallback();
+    const std::string nodeNameUTF( _pluginOptions.namesUseCodepage ? osgDB::convertStringFromCurrentCodePageToUTF8(wnode.getName()) : wnode.getName() );
+    osg::Callback* ncb = wnode.getUpdateCallback();
     if (ncb)
     {
         osgAnimation::AnimationManagerBase* am = dynamic_cast<osgAnimation::AnimationManagerBase*>(ncb);
@@ -51,12 +51,12 @@ void daeWriter::writeAnimations( osg::Node &node )
             }
 
             osgAnimation::AnimationList animationList = am->getAnimationList();
-            for (size_t i = 0; i < animationList.size(); i++)
+            for (size_t ai = 0; ai < animationList.size(); ai++)
             {
                 domAnimation* pDomAnimation = daeSafeCast< domAnimation >( _domLibraryAnimations->add( COLLADA_ELEMENT_ANIMATION ) );
                 domAnimation* pMainDomAnimation = pDomAnimation;
 
-                osg::ref_ptr<osgAnimation::Animation> animation = animationList[i];
+                osg::ref_ptr<osgAnimation::Animation> animation = animationList[ai];
                 std::string animationName( animation->getName() );
                 if (animationName.empty())
                     animationName = "animation";
@@ -264,7 +264,7 @@ void daeWriter::writeAnimations( osg::Node &node )
                             {
                                 domInputLocal* pDomInput = daeSafeCast< domInputLocal >(pDomSampler->add(COLLADA_ELEMENT_INPUT));
                                 pDomInput->setSemantic(COMMON_PROFILE_INPUT_INPUT);
-                                std::string url = "#" + inputSourceName;
+                                url = "#" + inputSourceName;
                                 pDomInput->setSource(url.c_str());
 
                                 pDomInput = daeSafeCast< domInputLocal >(pDomSampler->add(COLLADA_ELEMENT_INPUT));
@@ -280,7 +280,7 @@ void daeWriter::writeAnimations( osg::Node &node )
 
                             // Set sampler as source
                             domChannel* pDomChannel = daeSafeCast< domChannel >(pDomAnimation->add(COLLADA_ELEMENT_CHANNEL));
-                            std::string url = "#" + sourceNameX;
+                            url = "#" + sourceNameX;
                             pDomChannel->setSource(url.c_str());
 
                             // targetName contains the name of the updateCallback
@@ -308,7 +308,7 @@ void daeWriter::writeAnimations( osg::Node &node )
                             {
                                 domInputLocal* pDomInput = daeSafeCast< domInputLocal >(pDomSampler->add(COLLADA_ELEMENT_INPUT));
                                 pDomInput->setSemantic(COMMON_PROFILE_INPUT_INPUT);
-                                std::string url = "#" + inputSourceName;
+                                url = "#" + inputSourceName;
                                 pDomInput->setSource(url.c_str());
 
                                 pDomInput = daeSafeCast< domInputLocal >(pDomSampler->add(COLLADA_ELEMENT_INPUT));
@@ -324,7 +324,7 @@ void daeWriter::writeAnimations( osg::Node &node )
 
                             // Set sampler as source
                             domChannel* pDomChannel = daeSafeCast< domChannel >(pDomAnimation->add(COLLADA_ELEMENT_CHANNEL));
-                            std::string url = "#" + sourceNameY;
+                            url = "#" + sourceNameY;
                             pDomChannel->setSource(url.c_str());
 
                             // targetName contains the name of the updateCallback
@@ -352,7 +352,7 @@ void daeWriter::writeAnimations( osg::Node &node )
                             {
                                 domInputLocal* pDomInput = daeSafeCast< domInputLocal >(pDomSampler->add(COLLADA_ELEMENT_INPUT));
                                 pDomInput->setSemantic(COMMON_PROFILE_INPUT_INPUT);
-                                std::string url = "#" + inputSourceName;
+                                url = "#" + inputSourceName;
                                 pDomInput->setSource(url.c_str());
 
                                 pDomInput = daeSafeCast< domInputLocal >(pDomSampler->add(COLLADA_ELEMENT_INPUT));
@@ -368,7 +368,7 @@ void daeWriter::writeAnimations( osg::Node &node )
 
                             // Set sampler as source
                             domChannel* pDomChannel = daeSafeCast< domChannel >(pDomAnimation->add(COLLADA_ELEMENT_CHANNEL));
-                            std::string url = "#" + sourceNameZ;
+                            url = "#" + sourceNameZ;
                             pDomChannel->setSource(url.c_str());
 
                             // targetName contains the name of the updateCallback
@@ -438,7 +438,7 @@ void daeWriter::writeAnimations( osg::Node &node )
                         {
                             domInputLocal* pDomInput = daeSafeCast< domInputLocal >(pDomSampler->add(COLLADA_ELEMENT_INPUT));
                             pDomInput->setSemantic(COMMON_PROFILE_INPUT_INPUT);
-                            std::string url = "#" + inputSourceName;
+                            url = "#" + inputSourceName;
                             pDomInput->setSource(url.c_str());
 
                             pDomInput = daeSafeCast< domInputLocal >(pDomSampler->add(COLLADA_ELEMENT_INPUT));
@@ -454,7 +454,7 @@ void daeWriter::writeAnimations( osg::Node &node )
 
                         // Set sampler as source
                         domChannel* pDomChannel = daeSafeCast< domChannel >(pDomAnimation->add(COLLADA_ELEMENT_CHANNEL));
-                        std::string url = "#" + sourceName;
+                        url = "#" + sourceName;
                         pDomChannel->setSource(url.c_str());
 
                         // targetName contains the name of the updateCallback

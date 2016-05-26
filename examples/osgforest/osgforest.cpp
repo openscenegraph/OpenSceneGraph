@@ -794,8 +794,8 @@ class ShaderGeometry : public osg::Drawable
         ShaderGeometry() { setUseDisplayList(false); }
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        ShaderGeometry(const ShaderGeometry& ShaderGeometry,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            osg::Drawable(ShaderGeometry,copyop) {}
+        ShaderGeometry(const ShaderGeometry& sg,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+            osg::Drawable(sg,copyop) {}
 
         META_Object(osg,ShaderGeometry)
 

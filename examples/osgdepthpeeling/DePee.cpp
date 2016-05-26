@@ -326,10 +326,10 @@ bool DePee::createHUD()
 
       geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,4));
 
-      osg::StateSet* stateset = geom->getOrCreateStateSet();
-      stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
+      osg::StateSet* ss = geom->getOrCreateStateSet();
+      ss->setMode(GL_BLEND,osg::StateAttribute::ON);
 
-      stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+      ss->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
       //geode->addDrawable(geom);
     }

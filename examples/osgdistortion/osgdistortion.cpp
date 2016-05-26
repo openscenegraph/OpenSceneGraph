@@ -79,9 +79,7 @@ struct CommandLineOptions
             return;
         }
 
-        unsigned int width, height;
         wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
-
         distance = sqrt(sphere_radius*sphere_radius - collar_radius*collar_radius);
     }
 
@@ -558,9 +556,9 @@ void setDomeCorrection(osgViewer::Viewer& viewer, CommandLineOptions& options)
         camera->setName("Top face camera");
         camera->setGraphicsContext(gc.get());
         camera->setViewport(new osg::Viewport(0,0,camera_width, camera_height));
-        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
-        camera->setDrawBuffer(buffer);
-        camera->setReadBuffer(buffer);
+        GLenum cbuffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+        camera->setDrawBuffer(cbuffer);
+        camera->setReadBuffer(cbuffer);
         camera->setAllowEventFocus(false);
 
         // tell the camera to use OpenGL frame buffer object where supported.
@@ -668,9 +666,9 @@ void setDomeCorrection(osgViewer::Viewer& viewer, CommandLineOptions& options)
         camera->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
         camera->setClearColor( osg::Vec4(0.1,0.1,1.0,1.0) );
         camera->setViewport(new osg::Viewport(0, 0, options.width, options.height));
-        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
-        camera->setDrawBuffer(buffer);
-        camera->setReadBuffer(buffer);
+        GLenum cbuffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+        camera->setDrawBuffer(cbuffer);
+        camera->setReadBuffer(cbuffer);
         camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
         camera->setAllowEventFocus(false);
         //camera->setInheritanceMask(camera->getInheritanceMask() & ~osg::CullSettings::CLEAR_COLOR & ~osg::CullSettings::COMPUTE_NEAR_FAR_MODE);

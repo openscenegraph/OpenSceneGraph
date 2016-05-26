@@ -33,7 +33,7 @@ static int inited = 0;
 static float dbcenter[3];
 static float dbradius;
 
-static void getDatabaseCenterRadius( float dbcenter[3], float *dbradius )
+static void computeDatabaseCenterRadius()
 {
     int i;
     double n=0.0;
@@ -68,7 +68,7 @@ static void getDatabaseCenterRadius( float dbcenter[3], float *dbradius )
 
     }
 
-    *dbradius = r;
+    dbradius = r;
     dbcenter[0] = (float)center[0];
     dbcenter[1] = (float)center[1];
     dbcenter[2] = (float)center[2];
@@ -82,7 +82,7 @@ static void getDatabaseCenterRadius( float dbcenter[3], float *dbradius )
 
 static void init( void )
 {
-    getDatabaseCenterRadius( dbcenter, &dbradius );
+    computeDatabaseCenterRadius();
     inited = 1;
 }
 

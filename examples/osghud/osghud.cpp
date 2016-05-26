@@ -174,10 +174,10 @@ osg::Camera* createHUD()
 
             geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,4));
 
-            osg::StateSet* stateset = geom->getOrCreateStateSet();
-            stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
-            //stateset->setAttribute(new osg::PolygonOffset(1.0f,1.0f),osg::StateAttribute::ON);
-            stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+            osg::StateSet* ss = geom->getOrCreateStateSet();
+            ss->setMode(GL_BLEND,osg::StateAttribute::ON);
+            //ss->setAttribute(new osg::PolygonOffset(1.0f,1.0f),osg::StateAttribute::ON);
+            ss->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
             geode->addDrawable(geom);
         }

@@ -371,19 +371,19 @@ int main( int argc, char** argv )
     }
     else
     {
-        osg::Camera* camera = viewer.getCamera();
-        if ( !useLatLongHeight ) computeViewMatrix( camera, eye, hpr );
-        else computeViewMatrixOnEarth( camera, scene.get(), latLongHeight, hpr );
+        osg::Camera* viewer_camera = viewer.getCamera();
+        if ( !useLatLongHeight ) computeViewMatrix( viewer_camera, eye, hpr );
+        else computeViewMatrixOnEarth( viewer_camera, scene.get(), latLongHeight, hpr );
 
-        osg::ref_ptr<CustomRenderer> renderer = new CustomRenderer( camera );
-        camera->setRenderer( renderer.get() );
+        osg::ref_ptr<CustomRenderer> renderer = new CustomRenderer( viewer_camera );
+        viewer_camera->setRenderer( renderer.get() );
         viewer.setThreadingModel( osgViewer::Viewer::SingleThreaded );
 
         // Realize and initiate the first PagedLOD request
         viewer.realize();
         viewer.frame();
 
-        printer->init( camera );
+        printer->init( viewer_camera );
         while ( !printer->done() )
         {
             viewer.advance();

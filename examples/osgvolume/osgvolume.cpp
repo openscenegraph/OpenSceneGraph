@@ -766,7 +766,7 @@ int main( int argc, char **argv )
     {
         if (!arguments.isOption(pos))
         {
-            std::string filename = arguments[pos];
+            filename = arguments[pos];
             if (osgDB::getLowerCaseFileExtension(filename)=="dicom")
             {
                 // not an option so assume string is a filename.

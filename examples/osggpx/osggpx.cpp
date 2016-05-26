@@ -437,11 +437,11 @@ int main(int argv, char **argc)
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
     if (loadedModel.valid()) group->addChild(loadedModel);
 
-    for(Tracks::iterator itr = tracks.begin();
-        itr != tracks.end();
-        ++itr)
+    for(Tracks::iterator titr = tracks.begin();
+        titr != tracks.end();
+        ++titr)
     {
-        Track* track = itr->get();
+        Track* track = titr->get();
 
         group->addChild(createTrackModel(track, osg::Vec4(1.0,1.0,1.0,1.0)));
 
@@ -547,11 +547,11 @@ int main(int argv, char **argc)
 
         fout<<"<?xml version=\"1.0\" encoding=\"utf-8\"?><gpx version=\"1.0\" creator=\"osggpx\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">"<<std::endl;
 
-        for(Tracks::iterator itr = tracks.begin();
-            itr != tracks.end();
-            ++itr)
+        for(Tracks::iterator titr = tracks.begin();
+            titr != tracks.end();
+            ++titr)
         {
-            Track* track = itr->get();
+            Track* track = titr->get();
 
             fout<<"<trk>"<<std::endl;
             fout<<"<desc>The track description</desc>"<<std::endl;

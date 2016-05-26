@@ -1108,7 +1108,7 @@ int main(int argc, char** argv)
 
     if (fov!=0.0)
     {
-        double fovy, aspectRatio, zNear, zFar;
+        double fovy, aspectRatio;
         viewer.getCamera()->getProjectionMatrix().getPerspective(fovy, aspectRatio, zNear, zFar);
 
         std::cout << "Setting FOV to " << fov << std::endl;
@@ -1144,8 +1144,6 @@ int main(int argc, char** argv)
     while (!viewer.done())
     {
         {
-            osgShadow::MinimalShadowMap * msm = dynamic_cast<osgShadow::MinimalShadowMap*>( shadowedScene->getShadowTechnique() );
-
             if( msm ) {
 
                 // If scene decorated by CoordinateSystemNode try to find localToWorld
@@ -1197,8 +1195,6 @@ int main(int argc, char** argv)
             dumpFileNo ++;
             char filename[256];
             std::sprintf( filename, "shadowDump%d.osgt", dumpFileNo );
-
-            osgShadow::MinimalShadowMap * msm = dynamic_cast<osgShadow::MinimalShadowMap*>( shadowedScene->getShadowTechnique() );
 
             if( msm ) msm->setDebugDump( filename );
         }

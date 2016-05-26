@@ -11,21 +11,21 @@
 using namespace osg;
 
 // If graphics board has program linking problems set MERGE_SHADERS to 1
-// Merge shaders can be used to merge shaders strings into one shader. 
+// Merge shaders can be used to merge shaders strings into one shader.
 #define MERGE_SHADERS 0
 #define NOTIFICATION_MESSAGES 0
 
 namespace osgCandidate {
 ////////////////////////////////////////////////////////////////////////////////
-VirtualProgram::VirtualProgram( unsigned int mask ) : _mask( mask ) 
+VirtualProgram::VirtualProgram( unsigned int mask ) : _mask( mask )
 {
 }
 ////////////////////////////////////////////////////////////////////////////////
 VirtualProgram::VirtualProgram
-    ( const VirtualProgram& VirtualProgram, const osg::CopyOp& copyop ):
-       osg::Program( VirtualProgram, copyop ),
-       _shaderMap( VirtualProgram._shaderMap ),
-       _mask( VirtualProgram._mask )
+    ( const VirtualProgram& vp, const osg::CopyOp& copyop ):
+       osg::Program( vp, copyop ),
+       _shaderMap( vp._shaderMap ),
+       _mask( vp._mask )
 {
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@ osg::Shader * VirtualProgram::getShader
 osg::Shader * VirtualProgram::setShader
 ( const std::string & shaderSemantic, osg::Shader * shader )
 {
-    if( shader->getType() == osg::Shader::UNDEFINED ) 
+    if( shader->getType() == osg::Shader::UNDEFINED )
         return NULL;
 
     ShaderMap::key_type key( shaderSemantic, shader->getType() );
@@ -52,8 +52,8 @@ osg::Shader * VirtualProgram::setShader
     ref_ptr< osg::Shader >   shaderNew     = shader;
     ref_ptr< osg::Shader > & shaderCurrent = _shaderMap[ key ];
 
-#if 0 // Good for debugging of shader linking problems. 
-      // Don't do it - User could use the name for its own purposes 
+#if 0 // Good for debugging of shader linking problems.
+      // Don't do it - User could use the name for its own purposes
     shaderNew->setName( shaderSemantic );
 #endif
 
@@ -84,16 +84,16 @@ void VirtualProgram::apply( osg::State & state ) const
 #endif
 
     ShaderMap shaderMap;
-    for( State::AttributeVec::iterator i = av->begin(); i != av->end(); ++i )
+    for( State::AttributeVec::iterator ai = av->begin(); ai != av->end(); ++ai )
     {
-        const osg::StateAttribute * sa = i->first;
+        const osg::StateAttribute * sa = ai->first;
         const VirtualProgram * vp = dynamic_cast< const VirtualProgram *>( sa );
         if( vp && ( vp->_mask & _mask ) ) {
 
 #if NOTIFICATION_MESSAGES
             if( vp->getName().empty() )
                 os << "VirtualProgram cumulate [ Unnamed VP ] apply" << std::endl;
-            else 
+            else
                 os << "VirtualProgram cumulate ["<< vp->getName() << "] apply" << std::endl;
 #endif
 
@@ -136,7 +136,7 @@ void VirtualProgram::apply( osg::State & state ) const
             std::string strFragment;
             std::string strVertex;
             std::string strGeometry;
-            
+
             for( ShaderList::iterator i = sl.begin(); i != sl.end(); ++i )
             {
                 if( i->get()->getType() == osg::Shader::FRAGMENT )

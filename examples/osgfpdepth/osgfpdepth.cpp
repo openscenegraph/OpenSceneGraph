@@ -108,7 +108,7 @@ typedef vector<BufferConfig> BufferConfigList;
 
 vector<FboConfig> validConfigs;
 // Ugly global variables for the viewport width and height
-int width, height;
+// int width, height;
 
 // This is only used when testing possible frame buffer configurations
 // to find valid ones.
@@ -406,10 +406,10 @@ AppState::AppState(osgViewer::Viewer* viewer_)
 
 void AppState::setStateFromConfig(const FboConfig& config)
 {
-    Camera* camera = viewer->getSlave(0)._camera.get();
-    setAttachmentsFromConfig(camera, config);
+    Camera* cam = viewer->getSlave(0)._camera.get();
+    setAttachmentsFromConfig(cam, config);
     osgViewer::Renderer* renderer
-        = dynamic_cast<osgViewer::Renderer*>(camera->getRenderer());
+        = dynamic_cast<osgViewer::Renderer*>(cam->getRenderer());
     if (renderer)
         renderer->setCameraRequiresSetUp(true);
     if (configText.valid())
@@ -954,8 +954,8 @@ int main(int argc, char **argv)
         return 1;
     gc->setResizedCallback(new ResizedCallback(appState.get()));
     const GraphicsContext::Traits* traits = gc->getTraits();
-    width = traits->width;
-    height = traits->height;
+    int width = traits->width;
+    int height = traits->height;
     if (arguments.argc()<=1)
     {
         arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);

@@ -411,8 +411,8 @@ void DepthPeeling::createPeeling()
     _compositeCamera->setViewMatrix(osg::Matrix());
     _compositeCamera->setProjectionMatrix(osg::Matrix::ortho2D(0, 1, 0, 1));
     _compositeCamera->setCullCallback(new CullCallback(0, 0));
-    osg::StateSet* stateSet = _compositeCamera->getOrCreateStateSet();
-    stateSet->setRenderBinDetails(100, "TraversalOrderBin", osg::StateSet::OVERRIDE_RENDERBIN_DETAILS);
+    osg::StateSet* ss = _compositeCamera->getOrCreateStateSet();
+    ss->setRenderBinDetails(100, "TraversalOrderBin", osg::StateSet::OVERRIDE_RENDERBIN_DETAILS);
     _root->addChild(_compositeCamera.get());
 
     // solid geometry is blended first, transparency layers are blended in back to front order.

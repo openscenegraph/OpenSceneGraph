@@ -55,8 +55,6 @@
 #include <iostream>
 
 
-typedef std::vector< osg::ref_ptr<osg::GraphicsThread> > GraphicsThreads;
-
 struct ReleaseBlockOnCompileCompleted : public osgUtil::IncrementalCompileOperation::CompileCompletedCallback
 {
 

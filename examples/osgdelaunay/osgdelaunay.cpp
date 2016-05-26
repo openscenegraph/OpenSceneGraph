@@ -390,20 +390,6 @@ osg::Group *makedelaunay(const int ndcs)
     osg::ref_ptr<LinearConstraint> forestroad3;
     osg::ref_ptr<osgUtil::DelaunayConstraint> dc;
     std::ostringstream what;
-    if (1==0) { // add a simple constraint of few points
-        osg::ref_ptr<osgUtil::DelaunayConstraint> dc=new osgUtil::DelaunayConstraint;
-        osg::Vec3Array *bounds=new osg::Vec3Array;
-        unsigned int nmax=4;
-        for (i=0 ; i<nmax; i++) {
-            float x=910.0+800.0*(i)/(float)nmax,y=810.0+6000*(i-1)*(i-1)/(float)(nmax*nmax);
-            bounds->push_back(osg::Vec3(x,y,getheight(x,y)));
-        }
-        dc->setVertexArray(bounds);
-        dc->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP,0,nmax) );
-
-        trig->addInputConstraint(dc.get());
-        what << nmax << " point simple constraint\n";
-    }
     if (ndcs>0) { // add 5 pyramids
         for (unsigned int ipy=0; ipy<5/*5*/; ipy++) {
             osg::ref_ptr<pyramid> pyr=new pyramid;
@@ -743,11 +729,11 @@ public:
       int iview;
 };
 
-osg::Vec3Array * WallConstraint::getWall(const float height) const
+osg::Vec3Array * WallConstraint::getWall(const float h) const
 { // return array of points for a wall height high around the constraint
     osg::Vec3Array *wall=new osg::Vec3Array;
-    if (height>0.0) {
-        osg::Vec3 off(0,0,height);
+    if (h>0.0) {
+        osg::Vec3 off(0,0,h);
         const osg::Vec3Array *vertices= dynamic_cast<const osg::Vec3Array*>(getVertexArray());
         for (unsigned int ipr=0; ipr<getNumPrimitiveSets(); ipr++) {
             const osg::PrimitiveSet* prset=getPrimitiveSet(ipr);
@@ -767,10 +753,10 @@ osg::Vec3Array * WallConstraint::getWall(const float height) const
     }
     return wall;
 }
-osg::Vec2Array * WallConstraint::getWallTexcoords(const float height) const
+osg::Vec2Array * WallConstraint::getWallTexcoords(const float h) const
 { // return array of points for a wall height high around the constraint
     osg::Vec2Array *tcoords= NULL;
-    if (height>0.0) {
+    if (h>0.0) {
         float texrepRound=txxrepWall;
         tcoords= new osg::Vec2Array;
         float circumference=0; // distance around wall to get exact number of repeats of texture
@@ -784,8 +770,8 @@ osg::Vec2Array * WallConstraint::getWallTexcoords(const float height) const
                 circumference+=(curp-prevp).length();
                 prevp=curp;
             }
-            const osg::Vec3 curp=(*vertices)[prset->index (0)];
-            circumference+=(curp-prevp).length();
+            const osg::Vec3 curppoint=(*vertices)[prset->index (0)];
+            circumference+=(curppoint-prevp).length();
 
             int nround=(int)(circumference/txxrepWall);
             if (nround<1) nround=1; // at least one repeat.
@@ -798,14 +784,14 @@ osg::Vec2Array * WallConstraint::getWallTexcoords(const float height) const
                     const osg::Vec3 curp=(*vertices)[prset->index (i)];
                     osg::Vec2 tci=osg::Vec2f(ds/texrepRound,0/txyrepWall);
                     tcoords->push_back(tci);
-                    tci=osg::Vec2f(ds/texrepRound,height/txyrepWall);
+                    tci=osg::Vec2f(ds/texrepRound,h/txyrepWall);
                     tcoords->push_back(tci);
                     ds+=(curp-prevp).length();
                     prevp=curp;
                 }
                 osg::Vec2 tci=osg::Vec2f(ds/texrepRound,0/txyrepWall);
                 tcoords->push_back(tci);
-                tci=osg::Vec2f(ds/texrepRound,height/txyrepWall);
+                tci=osg::Vec2f(ds/texrepRound,h/txyrepWall);
                 tcoords->push_back(tci);
             }
         } // per primitiveset
@@ -869,11 +855,11 @@ osg::Vec3Array *ArealConstraint::getWallNormals() const
 }
 
 
-osg::Vec3Array * ArealConstraint::getWall(const float height) const
-{ // return array of points for a wall height high around the constraint
+osg::Vec3Array * ArealConstraint::getWall(const float h) const
+{ // return array of points for a wall h high around the constraint
     osg::Vec3Array *wall=new osg::Vec3Array;
-    if (height>0.0) {
-        osg::Vec3 off(0,0,height);
+    if (h>0.0) {
+        osg::Vec3 off(0,0,h);
         const osg::Vec3Array *vertices= dynamic_cast<const osg::Vec3Array*>(getVertexArray());
         for (unsigned int ipr=0; ipr<getNumPrimitiveSets(); ipr++) {
             const osg::PrimitiveSet* prset=getPrimitiveSet(ipr);
@@ -893,10 +879,10 @@ osg::Vec3Array * ArealConstraint::getWall(const float height) const
     return wall;
 }
 
-osg::Vec2Array * ArealConstraint::getWallTexcoords(const float height) const
-{ // return array of points for a wall height high around the constraint
+osg::Vec2Array * ArealConstraint::getWallTexcoords(const float h) const
+{ // return array of points for a wall h high around the constraint
     osg::Vec2Array *tcoords= NULL;
-    if (height>0.0) {
+    if (h>0.0) {
         float texrepRound=txxrepWall;
         tcoords= new osg::Vec2Array;
         float circumference=0; // distance around wall to get exact number of repeats of texture
@@ -910,8 +896,8 @@ osg::Vec2Array * ArealConstraint::getWallTexcoords(const float height) const
                 circumference+=(curp-prevp).length();
                 prevp=curp;
             }
-            const osg::Vec3 curp=(*vertices)[prset->index (0)];
-            circumference+=(curp-prevp).length();
+            const osg::Vec3 curpoint=(*vertices)[prset->index (0)];
+            circumference+=(curpoint-prevp).length();
 
             int nround=(int)(circumference/txxrepWall);
             if (nround<1) nround=1; // at least one repeat.
@@ -924,14 +910,14 @@ osg::Vec2Array * ArealConstraint::getWallTexcoords(const float height) const
                     const osg::Vec3 curp=(*vertices)[prset->index (i)];
                     osg::Vec2 tci=osg::Vec2f(ds/texrepRound,0/txyrepWall);
                     tcoords->push_back(tci);
-                    tci=osg::Vec2f(ds/texrepRound,height/txyrepWall);
+                    tci=osg::Vec2f(ds/texrepRound,h/txyrepWall);
                     tcoords->push_back(tci);
                     ds+=(curp-prevp).length();
                     prevp=curp;
                 }
                 osg::Vec2 tci=osg::Vec2f(ds/texrepRound,0/txyrepWall);
                 tcoords->push_back(tci);
-                tci=osg::Vec2f(ds/texrepRound,height/txyrepWall);
+                tci=osg::Vec2f(ds/texrepRound,h/txyrepWall);
                 tcoords->push_back(tci);
             }
         } // per primitiveset
@@ -942,9 +928,9 @@ osg::DrawArrays* ArealConstraint::makeCanopy( void ) const
 {
     return (new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES,0,3*_interiorTris.size()));
 }
-osg::Vec3Array *ArealConstraint::getCanopy(const osg::Vec3Array *points,const float height) const
+osg::Vec3Array *ArealConstraint::getCanopy(const osg::Vec3Array *points,const float h) const
 { // returns the array of vertices in the canopy
-    osg::Vec3 off(0,0,height);
+    osg::Vec3 off(0,0,h);
     osg::Vec3Array *internals=new osg::Vec3Array;
     trilist::const_iterator tritr;
     for (tritr=_interiorTris.begin(); tritr!=_interiorTris.end();tritr++) {
@@ -987,11 +973,11 @@ osg::DrawArrays * ArealConstraint::makeWall(void) const
     return (new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP,0,2+2*_line->size()));
 }
 
-deprecated_osg::Geometry *ArealConstraint::makeWallGeometry( osg::Vec3Array *pt)
+deprecated_osg::Geometry *ArealConstraint::makeWallGeometry( osg::Vec3Array *ptarray)
 {
     osg::ref_ptr<deprecated_osg::Geometry> gm=new deprecated_osg::Geometry; // the wall
     osg::ref_ptr<deprecated_osg::Geometry> edges=new deprecated_osg::Geometry; // edges of bounds
-    edges->setVertexArray(pt);
+    edges->setVertexArray(ptarray);
     osg::DrawElementsUInt *trgeom=getTriangles();
     edges->addPrimitiveSet(trgeom);
 
@@ -1026,7 +1012,7 @@ deprecated_osg::Geometry *ArealConstraint::makeWallGeometry( osg::Vec3Array *pt)
             float ds=0;
             for (unsigned int icon=0; icon<pr->getNumIndices(); icon++) {
                 unsigned int ithis=pr->index(icon);
-                osg::Vec3 pt=                (*points)[ithis];
+                osg::Vec3 pt= (*points)[ithis];
                 coords->push_back(pt);
                 coords->push_back(pt+osg::Vec3(0,0,height));
                 tcoords->push_back(osg::Vec2(ds/txxrepWall,0));

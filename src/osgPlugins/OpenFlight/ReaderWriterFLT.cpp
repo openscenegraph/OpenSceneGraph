@@ -374,8 +374,8 @@ class FLTReaderWriter : public ReaderWriter
                 document.setUseTextureAlphaForTransparancyBinning(options->getOptionString().find("noTextureAlphaForTransparancyBinning")==std::string::npos);
                 OSG_DEBUG << readerMsg << "noTextureAlphaForTransparancyBinning=" << !document.getUseTextureAlphaForTransparancyBinning() << std::endl;
 
-                document.setReadObjectRecordData(options->getOptionString().find("readObjectRecordData")==std::string::npos);
-                OSG_DEBUG << readerMsg << "readObjectRecordData=" << !document.getReadObjectRecordData() << std::endl;
+                document.setReadObjectRecordData(options->getOptionString().find("readObjectRecordData")!=std::string::npos);
+                OSG_DEBUG << readerMsg << "readObjectRecordData=" << document.getReadObjectRecordData() << std::endl;
 
                 document.setPreserveNonOsgAttrsAsUserData((options->getOptionString().find("preserveNonOsgAttrsAsUserData")!=std::string::npos));
                 OSG_DEBUG << readerMsg << "preserveNonOsgAttrsAsUserData=" << document.getPreserveNonOsgAttrsAsUserData() << std::endl;

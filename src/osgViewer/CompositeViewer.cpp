@@ -255,14 +255,18 @@ bool CompositeViewer::checkNeedToDoFrame()
         osgViewer::View* view = itr->get();
         if (view)
         {
-            // If the database pager is going to update the scene the render flag is
-            // set so that the updates show up
+            // check if the database pager needs to update the scene
             if (view->getDatabasePager()->requiresUpdateSceneGraph() ||
                 view->getDatabasePager()->getRequestsInProgress()) return true;
 
-            // if there update callbacks then we need to do frame.
+            // check if there are camera update callbacks
             if (view->getCamera()->getUpdateCallback()) return true;
-            if (view->getSceneData()!=0 && view->getSceneData()->getNumChildrenRequiringUpdateTraversal()>0) return true;
+
+            // check if there are node update callbacks
+            if (view->getSceneData() != 0)
+            {
+                if (view->getSceneData()->getUpdateCallback() || (view->getSceneData()->getNumChildrenRequiringUpdateTraversal()>0) ) return true;
+            }
         }
     }
 

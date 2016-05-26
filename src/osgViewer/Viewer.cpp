@@ -358,22 +358,26 @@ bool Viewer::isRealized() const
 
 bool Viewer::checkNeedToDoFrame()
 {
+    // check if any event handler has prompted a redraw
     if (_requestRedraw) return true;
     if (_requestContinousUpdate) return true;
 
+    // check if the database pager needs to update the scene
+    if (getDatabasePager()->requiresUpdateSceneGraph() || getDatabasePager()->getRequestsInProgress()) return true;
 
-    // If the database pager is going to update the scene the render flag is
-    // set so that the updates show up
-    if(getDatabasePager()->requiresUpdateSceneGraph() || getDatabasePager()->getRequestsInProgress()) return true;
-
-    // if there update callbacks then we need to do frame.
+    // check if there are camera update callbacks
     if (_camera->getUpdateCallback()) return true;
-    if (getSceneData()!=0 && getSceneData()->getNumChildrenRequiringUpdateTraversal()>0) return true;
+
+    // check if there are node update callbacks
+    if (getSceneData() != 0)
+    {
+        if (getSceneData()->getUpdateCallback() || (getSceneData()->getNumChildrenRequiringUpdateTraversal()>0) ) return true;
+    }
 
     // check if events are available and need processing
     if (checkEvents()) return true;
 
-    // now check if any of the event handles have prompted a redraw.
+    // and check again if any event handler has prompted a redraw
     if (_requestRedraw) return true;
     if (_requestContinousUpdate) return true;
 

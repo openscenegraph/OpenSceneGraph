@@ -107,10 +107,10 @@ Character::Character():
 }
 
 
-void Character::setCharacter(const std::string& filename, const std::string& name, const osg::Vec3& origin, const osg::Vec3& width, const osg::Vec3& catchPos, float positionRatio)
+void Character::setCharacter(const std::string& filename, const std::string& name, const osg::Vec3& origin, const osg::Vec3& cwidth, const osg::Vec3& catchPos, float positionRatio)
 {
     _origin = origin;
-    _width = width;
+    _width = cwidth;
     _positionRatio = positionRatio;
     _numLives = 3;
     _numCatches = 0;

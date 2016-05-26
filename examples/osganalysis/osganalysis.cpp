@@ -104,9 +104,9 @@ public:
     {
         if (!stateset) return;
 
-        for(unsigned int i=0; i<stateset->getNumTextureAttributeLists(); ++i)
+        for(unsigned int ti=0; ti<stateset->getNumTextureAttributeLists(); ++ti)
         {
-            osg::StateAttribute* sa = stateset->getTextureAttribute(i, osg::StateAttribute::TEXTURE);
+            osg::StateAttribute* sa = stateset->getTextureAttribute(ti, osg::StateAttribute::TEXTURE);
             osg::Texture* texture = dynamic_cast<osg::Texture*>(sa);
             if (texture)
             {
@@ -782,8 +782,8 @@ int main(int argc, char** argv)
             modelIndex<fileNames.size() &&
             (currentTime-timeOfLastMerge)>timeBetweenMerges)
         {
-            std::string filename = fileNames[modelIndex++];
-            std::string outputFilename = outputPostfix.empty() ? std::string() : osgDB::getStrippedName(filename)+outputPostfix;
+            filename = fileNames[modelIndex++];
+            outputFilename = outputPostfix.empty() ? std::string() : osgDB::getStrippedName(filename)+outputPostfix;
 
             databasePagingOperation = new DatabasePagingOperation(
                 filename,

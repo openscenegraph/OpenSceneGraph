@@ -688,13 +688,13 @@ FltExportVisitor::writeLightPoint( const osgSim::LightPointNode* lpn )
     float32 horizLobe( 360.f );
     float32 vertLobe( 360.f );
     float32 lobeRoll( 0.f );
-    const osgSim::DirectionalSector* ds = dynamic_cast< osgSim::DirectionalSector* >( lp0._sector.get() );
-    if (ds)
+    const osgSim::DirectionalSector* dirSector = dynamic_cast< osgSim::DirectionalSector* >( lp0._sector.get() );
+    if (dirSector)
     {
         directionality = UNIDIRECTIONAL;
-        horizLobe = osg::RadiansToDegrees( ds->getHorizLobeAngle() );
-        vertLobe = osg::RadiansToDegrees( ds->getVertLobeAngle() );
-        lobeRoll = osg::RadiansToDegrees( ds->getLobeRollAngle() );
+        horizLobe = osg::RadiansToDegrees( dirSector->getHorizLobeAngle() );
+        vertLobe = osg::RadiansToDegrees( dirSector->getVertLobeAngle() );
+        lobeRoll = osg::RadiansToDegrees( dirSector->getLobeRollAngle() );
     }
 
     {

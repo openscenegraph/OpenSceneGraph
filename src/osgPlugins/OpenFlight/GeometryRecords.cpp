@@ -66,18 +66,18 @@ void addDrawableAndReverseWindingOrder( osg::Geode* geode )
     // Replace double sided polygons by duplicating the drawables and inverting the normals.
     std::vector<osg::Geometry*> new_drawables;
 
-    for (size_t i=0; i<geode->getNumDrawables(); ++i)
+    for (size_t di=0; di<geode->getNumDrawables(); ++di)
     {
-        const osg::Geometry* geometry = dynamic_cast<const osg::Geometry*>(geode->getDrawable(i));
+        const osg::Geometry* geometry = dynamic_cast<const osg::Geometry*>(geode->getDrawable(di));
         if(geometry)
         {
             osg::Geometry* geom = new osg::Geometry(*geometry
                 , osg::CopyOp::DEEP_COPY_ARRAYS | osg::CopyOp::DEEP_COPY_PRIMITIVES);
             new_drawables.push_back(geom);
 
-            for( size_t i = 0; i < geom->getNumPrimitiveSets( ); ++i )
+            for( size_t pi = 0; pi < geom->getNumPrimitiveSets( ); ++pi )
             {
-                osg::DrawArrays* drawarray = dynamic_cast<osg::DrawArrays*>( geom->getPrimitiveSet( i ) );
+                osg::DrawArrays* drawarray = dynamic_cast<osg::DrawArrays*>( geom->getPrimitiveSet( pi ) );
                 if( drawarray )
                 {
                     GLint first = drawarray->getFirst();

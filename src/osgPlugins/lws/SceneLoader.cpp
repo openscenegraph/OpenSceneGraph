@@ -162,12 +162,12 @@ osg::Group *SceneLoader::load(const std::string &filename, const osgDB::ReaderWr
     // build objects and object animations
     typedef std::map<int, osg::ref_ptr<osg::PositionAttitudeTransform> > PAT_map;
     PAT_map pats;
-    int j = 0;
-    for (Scene_object_list::iterator i=scene_objects_.begin(); i!=scene_objects_.end(); ++i, ++j) {
-        osg::ref_ptr<osg::PositionAttitudeTransform> pat = pats[j];
+    int p = 0;
+    for (Scene_object_list::iterator i=scene_objects_.begin(); i!=scene_objects_.end(); ++i, ++p) {
+        osg::ref_ptr<osg::PositionAttitudeTransform> pat = pats[p];
         if (!pat.valid()) {
             pat = new osg::PositionAttitudeTransform;
-            pats[j] = pat;
+            pats[p] = pat;
         }
 
         pat->setName(i->name);

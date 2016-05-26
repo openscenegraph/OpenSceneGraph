@@ -26,17 +26,17 @@ namespace osgFFmpeg
             packet.data = 0;
         }
 
-        explicit FFmpegPacket(const Type type) : 
-            type(type)
-        { 
+        explicit FFmpegPacket(const Type t) :
+            type(t)
+        {
             packet.data = 0;
         }
 
-        explicit FFmpegPacket(const AVPacket & packet) : 
-            packet(packet),
+        explicit FFmpegPacket(const AVPacket & p) :
+            packet(p),
             type(PACKET_DATA)
-        { 
-            
+        {
+
         }
 
         void clear()

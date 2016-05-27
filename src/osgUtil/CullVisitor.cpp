@@ -1368,7 +1368,7 @@ class RenderStageCache : public osg::Object, public osg::Observer
 {
     public:
 
-        typedef std::map<CullVisitor*, osg::ref_ptr<RenderStage> > RenderStageMap;
+        typedef std::map<osg::Referenced*, osg::ref_ptr<RenderStage> > RenderStageMap;
 
         RenderStageCache() {}
         RenderStageCache(const RenderStageCache&, const osg::CopyOp&) {}
@@ -1387,18 +1387,17 @@ class RenderStageCache : public osg::Object, public osg::Observer
         virtual void objectDeleted(void* object)
         {
             osg::Referenced* ref = reinterpret_cast<osg::Referenced*>(object);
-            osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(ref);
 
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-            RenderStageMap::iterator itr = _renderStageMap.find(cv);
+            RenderStageMap::iterator itr = _renderStageMap.find(ref);
             if (itr!=_renderStageMap.end())
             {
                 _renderStageMap.erase(itr);
             }
         }
 
-        void setRenderStage(CullVisitor* cv, RenderStage* rs)
+        void setRenderStage(osg::Referenced* cv, RenderStage* rs)
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
             RenderStageMap::iterator itr = _renderStageMap.find(cv);
@@ -1414,7 +1413,7 @@ class RenderStageCache : public osg::Object, public osg::Observer
 
         }
 
-        RenderStage* getRenderStage(osgUtil::CullVisitor* cv)
+        RenderStage* getRenderStage(osg::Referenced* cv)
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
             RenderStageMap::iterator itr = _renderStageMap.find(cv);

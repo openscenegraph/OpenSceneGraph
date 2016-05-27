@@ -920,6 +920,7 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
                                                                     osg::Vec3i(0, pOsgImage->t(), 0),
                                                                     osg::Vec3i(pOsgImage->s(), 0, 0),
                                                                     osg::Vec3i(0, 0, 1));
+                        break;
                     case(8):
                         OSG_INFO<<"EXIF_Orientation 8 (left side, bottom). rotate 270."<<std::endl;
                         pOsgImage = osg::createImageWithOrientationConversion(pOsgImage.get(),

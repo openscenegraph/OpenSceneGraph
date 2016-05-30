@@ -362,7 +362,7 @@ protected:
         int materialIndex = in.readInt16(-1);
         int16 surface = in.readInt16();
         int16 feature = in.readInt16();
-        /*int32 IRMaterial =*/ in.readInt32(-1);
+        int32 IRMaterial = in.readInt32();
         _transparency = in.readUInt16(0);
         // version > 13
         /*uint8 influenceLOD =*/ in.readUInt8();
@@ -455,6 +455,12 @@ protected:
         if (document.getPreserveNonOsgAttrsAsUserData() && 0 != IRColor)
         {
           _geometry->setUserValue("<UA:IRC>", IRColor);
+        }
+
+        // IR Material ID (IRM)
+        if (document.getPreserveNonOsgAttrsAsUserData() && 0 != IRMaterial)
+        {
+          _geometry->setUserValue("<UA:IRM>", IRMaterial);
         }
 
         // surface (SMC)

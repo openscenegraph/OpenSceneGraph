@@ -289,7 +289,7 @@ public:
         //    return value is 0 - no crossing; 1,2,3 - which edge of the triangle is cut.
         if (a_==ip1)
         {
-            // first vertex is the vertex - test that a_ to p2 lies beteen edges a,b and a,c
+            // first vertex is the vertex - test that a_ to p2 lies between edges a,b and a,c
             osg::Vec3 apt=(*points)[a_];
             osg::Vec3 bpt=(*points)[b_];
             osg::Vec3 cpt=(*points)[c_];
@@ -297,7 +297,7 @@ public:
         }
         else if (b_==ip1)
         {
-            // second vertex is the vertex - test that b_ to p2 lies beteen edges a,b and a,c
+            // second vertex is the vertex - test that b_ to p2 lies between edges a,b and a,c
             osg::Vec3 apt=(*points)[b_];
             osg::Vec3 bpt=(*points)[c_];
             osg::Vec3 cpt=(*points)[a_];
@@ -305,7 +305,7 @@ public:
         }
         else if (c_==ip1)
         {
-            // 3rd vertex is the vertex - test that c_ to p2 lies beteen edges a,b and a,c
+            // 3rd vertex is the vertex - test that c_ to p2 lies between edges a,b and a,c
             osg::Vec3 apt=(*points)[c_];
             osg::Vec3 bpt=(*points)[a_];
             osg::Vec3 cpt=(*points)[b_];
@@ -940,7 +940,7 @@ bool DelaunayTriangulator::triangulate()
                         unsigned int ip2=getindex((*vercon)[prset->index(i)],points_.get());
                         if (i>0 || prset->getMode()==osg::PrimitiveSet::LINE_LOOP)
                         {
-                            // dont check edge from end to start
+                            // don't check edge from end to start
                             // for strips
                             // 2 points on the constraint
                             bool edgused=false;// first check for exact edge indices are used.

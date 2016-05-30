@@ -549,7 +549,7 @@ namespace ModelThree
 
         shape = new osg::ShapeDrawable(new osg::Cylinder(osg::Vec3(0.0f, 3.0f, 0.0f), radius, height), hints.get());
         shape->setColor(osg::Vec4(1.0f, 0.3f, 0.3f, 1.0f));
-        shape->setName("red cyclinder");
+        shape->setName("red cylinder");
         geode_2->addDrawable(shape.get());
 
         shape = new osg::ShapeDrawable(new osg::Box(osg::Vec3(0.0f, 0.0f, 3.0f), 2.0f, 2.0f, 0.1f), hints.get());

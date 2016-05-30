@@ -231,7 +231,7 @@ public:
         _textList.push_back("Anisotropic filtering\nsetMaxAnisotropy(8.0f)");
 
         _maxAnisotropyList.push_back(16.0f);
-        _textList.push_back("Higest quality anisotropic filtering\nsetMaxAnisotropy(16.0f)");
+        _textList.push_back("Highest quality anisotropic filtering\nsetMaxAnisotropy(16.0f)");
 
         setValues();
     }
@@ -544,7 +544,7 @@ public:
         subImage->setImage(originalImage->s()/2, originalImage->t()/2, originalImage->r(), // half the width and height
                            originalImage->getInternalTextureFormat(), // same internal texture format
                            originalImage->getPixelFormat(),originalImage->getDataType(), // same pixel foramt and data type
-                           originalImage->data(originalImage->s()/4,originalImage->t()/4), // offset teh start point to 1/4 into the image
+                           originalImage->data(originalImage->s()/4,originalImage->t()/4), // offset the start point to 1/4 into the image
                            osg::Image::NO_DELETE, // don't attempt to delete the image data, leave this to the originalImage
                            originalImage->getPacking(), // use the same packing
                            originalImage->s()); // use the width of the original image as the row width

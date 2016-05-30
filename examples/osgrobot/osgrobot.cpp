@@ -17,7 +17,7 @@
 */
 
 /* 
-    The code below is to show how a heirarchy of objects can be made within a scenegraph.
+    The code below is to show how a hierarchy of objects can be made within a scenegraph.
     In other words, how there can be a parent/child relationship between objects such
     that when a parent is rotated or translated, the children move is respect to it's
     parent movement.  A robotic arm is used in this example because this is what I'm

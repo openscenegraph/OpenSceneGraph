@@ -250,7 +250,7 @@ class Teapot : public osg::Drawable
         {
             osg::BoundingBox bbox;
 
-            // follow is some truely horrible code required to calculate the
+            // follow is some truly horrible code required to calculate the
             // bounding box of the teapot.  Have used the original code above to do
             // help compute it.
             float p[4][4][3], q[4][4][3], r[4][4][3], s[4][4][3];

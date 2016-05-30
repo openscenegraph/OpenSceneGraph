@@ -213,7 +213,7 @@ class ReaderWriterTRK : public osgDB::ReaderWriter
 
             if (fin.fail()) return ReadResult::ERROR_IN_READING_FILE;
 
-            OSG_NOTICE<<"Read header successfuly ["<<header.id_string<<"]"<<std::endl;
+            OSG_NOTICE<<"Read header successfully ["<<header.id_string<<"]"<<std::endl;
             bool requiresByteSwap = header.hdr_size!=1000;
             if (requiresByteSwap)
             {

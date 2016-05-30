@@ -393,7 +393,7 @@ protected:
 
    virtual bool processTriangle()
    {
-      // dont produce trinagle until we have got three vertices
+      // don't produce triangle until we have got three vertices
       if( numIndices < 3 )
          return false;
 

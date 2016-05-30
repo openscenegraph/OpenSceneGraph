@@ -8,7 +8,7 @@
 const unsigned int MASK_2D = 0xF0000000;
 
 // This examples demonstrates the use of an osgWidget::Table, which differs from a Box in
-// many ways. First and foremost, a Table's size is intially known, whereas a Box can be
+// many ways. First and foremost, a Table's size is initially known, whereas a Box can be
 // dynamically added to. Secondly, a table is matrix Layout, with both vertical and
 // horizontal placement cells. A Box, on the other hand, can only be vertical or horizontal.
 

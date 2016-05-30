@@ -240,7 +240,7 @@ osg::Node* createMirroredScene(osg::Node* model)
         // create a Transform which flips the loaded model about the z axis
         // relative to the mirror node, the loadedModel is added to the
         // Transform so now appears twice in the scene, but is shared so there
-        // is negligable memory overhead.  Also use an osg::StateSet
+        // is negligible memory overhead.  Also use an osg::StateSet
         // attached to the Transform to override the face culling on the subgraph
         // to prevert an 'inside' out view of the reflected model.
         // set up the stencil ops so that only operator on this mirrors stencil value.

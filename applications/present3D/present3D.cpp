@@ -851,7 +851,7 @@ int main( int argc, char **argv )
 
     if (exportName.empty())
     {
-        // objects for managing the broadcasting and recieving of camera packets.
+        // objects for managing the broadcasting and receiving of camera packets.
         CameraPacket cp;
         Broadcaster  bc;
         Receiver     rc;

@@ -193,7 +193,7 @@ Page::Page(Album* album, unsigned int pageNo, const std::string& frontFileName, 
     osgDB::ReaderWriter* readerWriter = osgDB::Registry::instance()->getReaderWriterForExtension("gdal");
     if (!readerWriter)
     {
-        std::cout<<"Error: GDAL plugin not available, cannot preceed with database creation"<<std::endl;
+        std::cout<<"Error: GDAL plugin not available, cannot proceed with database creation"<<std::endl;
     }
 
     _switch = new osg::Switch;

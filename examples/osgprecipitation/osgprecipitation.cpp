@@ -82,8 +82,8 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--particleColour <red> <green> <blue> <alpha>","");
     arguments.getApplicationUsage()->addCommandLineOption("--wind <x> <y> <z>","Set the wind speed in model coordinates");
     arguments.getApplicationUsage()->addCommandLineOption("--particleSpeed <float>","Set the particle speed");
-    arguments.getApplicationUsage()->addCommandLineOption("--nearTransition <distance>","Set the near transistion distance");
-    arguments.getApplicationUsage()->addCommandLineOption("--farTransition  <distance>","Set the far transistion distance");
+    arguments.getApplicationUsage()->addCommandLineOption("--nearTransition <distance>","Set the near transition distance");
+    arguments.getApplicationUsage()->addCommandLineOption("--farTransition  <distance>","Set the far transition distance");
     arguments.getApplicationUsage()->addCommandLineOption("--particleDensity <density>","Set the particle density");
     arguments.getApplicationUsage()->addCommandLineOption("--cellSize <x> <y> <z>","Set the cell size in model coordinates");
     arguments.getApplicationUsage()->addCommandLineOption("--fogDensity <density>","Set the fog density");

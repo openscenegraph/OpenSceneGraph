@@ -157,7 +157,7 @@ int main( int argc, char **argv )
 
             osgUtil::Simplifier simplifier(ratio, maxError);
 
-            std::cout<<"Runing osgUtil::Simplifier with SampleRatio="<<ratio<<" maxError="<<maxError<<" ...";
+            std::cout<<"Running osgUtil::Simplifier with SampleRatio="<<ratio<<" maxError="<<maxError<<" ...";
             std::cout.flush();
 
             osg::ref_ptr<osg::Node> root = (osg::Node*)loadedModel->clone(osg::CopyOp::DEEP_COPY_ALL);

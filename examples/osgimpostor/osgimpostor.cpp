@@ -264,7 +264,7 @@ int main( int argc, char **argv )
                 impostor->setRange(0,0.0f,1e7f);
                 impostor->setCenter(bs.center());
 
-                // impostor specfic settings.
+                // impostor specific settings.
                 impostor->setImpostorThresholdToBound(5.0f);
 
                 model = impostor;

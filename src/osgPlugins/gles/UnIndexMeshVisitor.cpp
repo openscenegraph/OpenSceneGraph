@@ -46,7 +46,7 @@ void UnIndexMeshVisitor::apply(osg::Geometry& geom)
         return;
     }
 
-    // we dont manage lines
+    // we don't manage lines
     
     GeometryArrayList arraySrc(geom);
     GeometryArrayList arrayList = arraySrc.cloneType();

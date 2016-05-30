@@ -81,7 +81,7 @@ osg::StateSet* createState()
     // set up the 3d texture itself,
     // note, well set the filtering up so that mip mapping is disabled,
     // gluBuild3DMipsmaps doesn't do a very good job of handled the
-    // inbalanced dimensions of the 256x256x4 texture.
+    // imbalanced dimensions of the 256x256x4 texture.
     osg::Texture3D* texture3D = new osg::Texture3D;
     texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
     texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);

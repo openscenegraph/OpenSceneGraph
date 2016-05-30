@@ -39,7 +39,7 @@ inline bool iequals(const std::string& lhs, const std::string& rhs)
 }
 
 
-/** Unique Indentifier class to help with efficiently comparing
+/** Unique Identifier class to help with efficiently comparing
   * road classification or region via pointers.*/
 class OSG_EXPORT Identifier : public osg::Referenced, public osg::Observer
 {

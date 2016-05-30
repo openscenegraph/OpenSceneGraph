@@ -168,7 +168,7 @@ bool Animation_readChannel(osgAnimation::Channel* pChannel, Input& fr)
     }
     pChannel->setTargetName(target);
 
-// we dont need this info
+// we don't need this info
     float weight = 1.0;
     if (fr.matchSequence("weight %f"))
     {

@@ -437,7 +437,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
 
     if (sizeof(unsigned int) != 4)
     {
-        OSG_NOTICE<<"Waring: STL reading not supported as unsigned int is not 4 bytes on this system."<<std::endl;
+        OSG_NOTICE<<"Warning: STL reading not supported as unsigned int is not 4 bytes on this system."<<std::endl;
         return ReadResult::ERROR_IN_READING_FILE;
     }
 

@@ -275,7 +275,7 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
 {
     if (localOptions.fixBlackMaterials)
     {
-        // hack to fix Maya exported models that contian all black materials.
+        // hack to fix Maya exported models that contain all black materials.
         int numBlack = 0;
         int numNotBlack = 0;
         obj::Model::MaterialMap::iterator itr;

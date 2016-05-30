@@ -757,7 +757,7 @@ void _dwobj::buildDrawable(Group *grp, const osgDB::ReaderWriter::Options *optio
             gluTessCallback(ts, GLU_TESS_ERROR, (GLU_TESS_CALLBACK) error);
             gluTessCallback(ts, GLU_TESS_COMBINE_DATA, (GLU_TESS_CALLBACK) combineCallback);
             //  for (int nvf=0; nvf<6; nvf++) { // for each length of face
-            // for Geometry we dont need to collect prim types individually
+            // for Geometry we don't need to collect prim types individually
             //     prd.setmode(nvf , nfnvf); // filter out only this type of tessellated face
             prd=new prims;
             prd->settmat(tmat.get());

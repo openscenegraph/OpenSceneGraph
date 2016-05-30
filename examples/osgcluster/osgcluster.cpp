@@ -491,7 +491,7 @@ int main( int argc, char **argv )
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 
-    // report any errors if they have occured when parsing the program aguments.
+    // report any errors if they have occurred when parsing the program aguments.
     if (arguments.errors())
     {
         arguments.writeErrorMessages(std::cout);
@@ -541,7 +541,7 @@ int main( int argc, char **argv )
 
     CameraPacket *cp = new CameraPacket;
 
-    // objects for managing the broadcasting and recieving of camera packets.
+    // objects for managing the broadcasting and receiving of camera packets.
     Broadcaster     bc;
     Receiver        rc;
 

@@ -266,7 +266,7 @@ osg::Node * CreateAdvancedHierarchy( osg::Node * model )
             PerFragmentDirectionalLightingFragmentShaderSource );
     }
 
-    // Additionaly set bottom left model texture to procedural blue to
+    // Additionally set bottom left model texture to procedural blue to
     // better observe smooth speculars done through per pixel lighting
     if( 1 )
     {
@@ -279,7 +279,7 @@ osg::Node * CreateAdvancedHierarchy( osg::Node * model )
             ProceduralBlueTextureFragmentShaderSource );
     }
 
-    // Additionaly change texture mapping to SphereMAp in bottom right model
+    // Additionally change texture mapping to SphereMAp in bottom right model
     if( 1 )
     {
         AddLabel( transformRightBottom, "EnvMap Sphere VP", offset );

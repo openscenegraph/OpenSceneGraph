@@ -3683,13 +3683,13 @@ Optimizer::TextureAtlasBuilder::Atlas::FitsIn Optimizer::TextureAtlasBuilder::At
 
             if (_texture->getFilter(osg::Texture2D::MIN_FILTER) != sourceTexture->getFilter(osg::Texture2D::MIN_FILTER))
             {
-                // inconsitent min filters
+                // inconsistent min filters
                 return DOES_NOT_FIT_IN_ANY_ROW;
             }
 
             if (_texture->getFilter(osg::Texture2D::MAG_FILTER) != sourceTexture->getFilter(osg::Texture2D::MAG_FILTER))
             {
-                // inconsitent mag filters
+                // inconsistent mag filters
                 return DOES_NOT_FIT_IN_ANY_ROW;
             }
 
@@ -3707,19 +3707,19 @@ Optimizer::TextureAtlasBuilder::Atlas::FitsIn Optimizer::TextureAtlasBuilder::At
 
             if (_texture->getShadowCompareFunc() != sourceTexture->getShadowCompareFunc())
             {
-                // shadow functions inconsitent
+                // shadow functions inconsistent
                 return DOES_NOT_FIT_IN_ANY_ROW;
             }
 
             if (_texture->getShadowTextureMode() != sourceTexture->getShadowTextureMode())
             {
-                // shadow texture mode inconsitent
+                // shadow texture mode inconsistent
                 return DOES_NOT_FIT_IN_ANY_ROW;
             }
 
             if (_texture->getShadowAmbient() != sourceTexture->getShadowAmbient())
             {
-                // shadow ambient inconsitent
+                // shadow ambient inconsistent
                 return DOES_NOT_FIT_IN_ANY_ROW;
             }
         }

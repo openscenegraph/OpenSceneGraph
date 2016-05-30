@@ -189,7 +189,7 @@ public:
    virtual bool acceptsExtension(const std::string& extension) const
    {
       // this should be the only image importer required on the Mac
-      // dont know what else it supports, but these will do
+      // don't know what else it supports, but these will do
       return
 
          #ifdef QT_HANDLE_IMAGES_ALSO

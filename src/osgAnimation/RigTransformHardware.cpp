@@ -90,7 +90,7 @@ bool RigTransformHardware::createPalette(int nbVertexes, BoneMap boneMap, const 
                 bonesForThisVertex++; // count max number of bones per vertexes
                 vertexIndexWeight[vertexIndex].push_back(IndexWeightEntry(bname2palette[bw.getBoneName()],bw.getWeight()));
             }
-            else if (fabs(bw.getWeight()) > 1e-2) // dont use bone with weight too small
+            else if (fabs(bw.getWeight()) > 1e-2) // don't use bone with weight too small
             {
                 if (boneMap.find(bw.getBoneName()) == boneMap.end())
                 {

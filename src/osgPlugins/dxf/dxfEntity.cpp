@@ -490,7 +490,7 @@ dxfPolyline::drawScene(scene* sc)
         unsigned int ncount;
         unsigned int mcount;
         if (_surfacetype == 6) {
-            // I dont have examples of type 5 and 8, but they may be the same as 6
+            // I don't have examples of type 5 and 8, but they may be the same as 6
             mcount = _mdensity;
             ncount = _ndensity;
         } else {

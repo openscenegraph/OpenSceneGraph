@@ -809,7 +809,7 @@ bool CTextureRenderer::initBuildGraph()
 
 
     hr = _graphBuilder->QueryInterface( IID_IBasicAudio, (void **)&_basicAudio);
-    checkError(prefixForMessage, hr); //May be no sound so dont effect return result
+    checkError(prefixForMessage, hr); //May be no sound so don't effect return result
 
     return true;
 }

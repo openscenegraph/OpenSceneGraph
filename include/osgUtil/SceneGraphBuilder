@@ -23,7 +23,7 @@
 
 namespace osgUtil {
 
-/** A class for assisting the building a scene graph that is equivilant to OpenGL 1.0 style calls.
+/** A class for assisting the building a scene graph that is equivalent to OpenGL 1.0 style calls.
   */
 class OSGUTIL_EXPORT SceneGraphBuilder
 {

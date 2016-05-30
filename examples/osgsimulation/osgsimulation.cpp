@@ -395,7 +395,7 @@ int main(int argc, char **argv)
                 csn->removeChildren(0, csn->getNumChildren());
                 csn->addChild(overlayNode.get());
 
-                // tell the overlay node to continously update its overlay texture
+                // tell the overlay node to continuously update its overlay texture
                 // as we know we'll be tracking a moving target.
                 overlayNode->setContinuousUpdate(true);
             }

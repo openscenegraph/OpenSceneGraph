@@ -45,7 +45,7 @@
 #include <iostream>
 
 
-float refract = 1.02;          // ratio of indicies of refraction
+float refract = 1.02;          // ratio of indices of refraction
 float fresnel = 0.2;           // Fresnel multiplier
 
 

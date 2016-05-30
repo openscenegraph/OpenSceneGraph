@@ -129,7 +129,7 @@ struct ExampleTimelineUsage : public osgGA::GUIEventHandler
             if (_releaseKey) // we hit a key and release it execute an action
             {
                 osgAnimation::Timeline* tml = _manager->getTimeline();
-                // dont play if already playing
+                // don't play if already playing
                 if (!tml->isActive(_scratchNose.get()))
                 {
                     // add this animation on top of two other

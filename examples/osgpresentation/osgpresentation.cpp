@@ -299,7 +299,7 @@ int main(int argc, char** argv)
 //    if (pi.setProperty(presentation.get(), "Matrix", osg::Matrixd::scale(1.0,2.0,2.0)))
     if (pi.setProperty(presentation.get(), "Matrix", osg::Matrixd::scale(2.0,2.0,2.0)))
     {
-        OSG_NOTICE<<"setProperty(..,Matrix) succedded."<<std::endl;
+        OSG_NOTICE<<"setProperty(..,Matrix) succeeded."<<std::endl;
     }
     else
     {

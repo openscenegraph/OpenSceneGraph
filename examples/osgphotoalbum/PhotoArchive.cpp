@@ -174,7 +174,7 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
     // open up the archive for writing to
     osgDB::ofstream out(filename.c_str(), std::ios::out | std::ios::binary);
 
-    // write out file indentifier.
+    // write out file identifier.
     out.write(FILE_IDENTIFER.c_str(),FILE_IDENTIFER.size());
 
     unsigned int numPhotos = photoIndex.size();

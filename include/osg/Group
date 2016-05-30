@@ -132,7 +132,7 @@ class OSG_EXPORT Group : public Node
             return false;
         }
 
-        template<class T> bool conatainsNode(const ref_ptr<T>& node) const { return containsNode(node.get()); }
+        template<class T> bool containsNode(const ref_ptr<T>& node) const { return containsNode(node.get()); }
 
         /** Get the index number of child, return a value between
           * 0 and _children.size()-1 if found, if not found then

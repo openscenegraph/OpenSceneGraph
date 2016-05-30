@@ -21,7 +21,7 @@
 
 namespace osg {
 
-/** Encapsulates OpenGL texture buffer functionality.
+/** Encapsulates OpenGL texture buffer functionality in a Texture delegating BufferObject management to TextureBufferObject
 */
 class OSG_EXPORT TextureBuffer : public Texture
 {
@@ -46,10 +46,10 @@ class OSG_EXPORT TextureBuffer : public Texture
         void setImage(Image* image);
 
         /** Gets the texture image. */
-        Image* getImage() { return _image.get(); }
+        Image* getImage() { return _bo.valid() &&_bo->getNumBufferData()>0? dynamic_cast<Image*>(_bo->getBufferData(0) ):0; }
 
         /** Gets the const texture image. */
-        inline const Image* getImage() const { return _image.get(); }
+        inline const Image* getImage() const { return _bo.valid() &&_bo->getNumBufferData()>0?  dynamic_cast<Image*>(_bo->getBufferData(0) ):0; }
 
         inline unsigned int& getModifiedCount(unsigned int contextID) const
         {
@@ -62,10 +62,10 @@ class OSG_EXPORT TextureBuffer : public Texture
         virtual void setImage(unsigned int, Image* image) { setImage(image); }
 
         /** Gets the texture image, ignoring face. */
-        virtual Image* getImage(unsigned int) { return _image.get(); }
+        virtual Image* getImage(unsigned int) { return getImage(); }
 
         /** Gets the const texture image, ignoring face. */
-        virtual const Image* getImage(unsigned int) const { return _image.get(); }
+        virtual const Image* getImage(unsigned int) const { return getImage(); }
 
         /** Gets the number of images that can be assigned to the Texture. */
         virtual unsigned int getNumImages() const { return 1; }
@@ -80,58 +80,36 @@ class OSG_EXPORT TextureBuffer : public Texture
         virtual int getTextureHeight() const { return 1; }
         virtual int getTextureDepth() const { return 1; }
 
-        inline void setUsageHint( GLenum usageHint ) { _usageHint=usageHint; }
-        inline GLenum getUsageHint() const { return _usageHint; }
-
         virtual void allocateMipmap(State& /*state*/) const {};
+
+        /** upload the image to the texture. */
+        virtual void compileGLObjects(State& state) const;
 
         /** Bind the texture buffer.*/
         virtual void apply(State& state) const;
 
-        /** Bind buffer to different target. */
-        void bindBufferAs(unsigned int contextID, GLenum target);
-        void unbindBufferAs(unsigned int contextID, GLenum target);
 
+
+        /**  Get BufferObject attached.*/
+        const BufferObject* getBufferObject()const {return _bo.get() ;}
+        BufferObject* getBufferObject(){return _bo.get() ;}
+        /**  Set BufferObject attached */
+        void setBufferObject(BufferObject *bo);
     protected :
 
         virtual ~TextureBuffer();
 
         virtual void computeInternalFormat() const;
 
-        ref_ptr<Image> _image;
+        ref_ptr< BufferObject>               _bo;
 
-        mutable GLsizei _textureWidth;
-        GLenum _usageHint;
+
+        mutable GLsizei _textureWidth; //not crucial in the code
 
         typedef buffered_value<unsigned int> ImageModifiedCount;
         mutable ImageModifiedCount _modifiedCount;
 
-        class TextureBufferObject : public osg::Referenced
-        {
-        public:
-            TextureBufferObject(unsigned int contextID, GLenum usageHint) :
-                _id(0),
-                _usageHint(usageHint)
-            {
-                _extensions = osg::GLExtensions::Get(contextID, true);
-            }
-
-            void bindBuffer(GLenum target);
-            void unbindBuffer(GLenum target);
-
-            void texBuffer(GLenum internalFormat);
-            void bufferData( osg::Image* image );
-            void bufferSubData( osg::Image* image );
-
-        public:
-            GLuint _id;
-            GLenum _usageHint;
-            osg::GLExtensions* _extensions;
-        };
-
-        typedef osg::buffered_object<osg::ref_ptr<TextureBufferObject> > TextureBufferObjectList;
-        mutable TextureBufferObjectList _textureBufferObjects;
-};
+      };
 
 }
 

@@ -473,7 +473,7 @@ class OSG_EXPORT BufferObject : public Object
 
         ~BufferObject();
 
-        typedef std::vector< BufferData* > BufferDataList;
+        typedef std::vector< osg::ref_ptr<BufferData> > BufferDataList;
         typedef osg::buffered_object< osg::ref_ptr<GLBufferObject> > GLBufferObjects;
 
         BufferObjectProfile     _profile;

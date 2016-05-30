@@ -1,14 +1,14 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2014 Robert Osfield
  *  Copyright (C) 2014 Pawel Ksiezopolski
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
 */
@@ -19,35 +19,44 @@
 #include <osg/GLExtensions>
 #include <osg/Drawable>
 
-void DrawArraysIndirect::draw(osg::State& state, bool useVertexBufferObjects) const 
+void DrawArraysIndirect::draw(osg::State& state, bool useVertexBufferObjects) const
 {
+    unsigned int contextID = state.getContextID();
+    osg::GLExtensions* extensions = state.get<osg::GLExtensions>();
     if( !_buffer.valid() )
         return;
-    _buffer->bindBufferAs( state.getContextID(), GL_DRAW_INDIRECT_BUFFER );
+   // _buffer->bindBufferAs( state.getContextID(), GL_DRAW_INDIRECT_BUFFER );
+    extensions->glBindBuffer(GL_DRAW_INDIRECT_BUFFER,_buffer->getBufferObject()->getGLBufferObject(contextID)->getGLObjectID() );
 
-// if you want to see how many primitives were rendered - uncomment code below, but 
+// if you want to see how many primitives were rendered - uncomment code below, but
 // be warned : it is a serious performance killer ( because of GPU->CPU roundtrip )
-    
+
 // osg::Drawable::Extensions *dext = osg::Drawable::getExtensions( state.getContextID(),true );
 // int* tab = (int*)dext->glMapBuffer(GL_DRAW_INDIRECT_BUFFER,GL_READ_ONLY);
 // int val = _indirect/sizeof(int);
 // OSG_WARN<<"DrawArraysIndirect ("<<val<<"): "<< tab[val] << " " << tab[val+1] << " " << tab[val+2] << " " << tab[val+3] << std::endl;
 // dext->glUnmapBuffer(GL_DRAW_INDIRECT_BUFFER);
-    
+
     DrawIndirectGLExtensions *ext = DrawIndirectGLExtensions::getExtensions( state.getContextID(),true );
     ext->glDrawArraysIndirect( _mode, reinterpret_cast<const void*>(_indirect) );
-    _buffer->unbindBufferAs( state.getContextID(), GL_DRAW_INDIRECT_BUFFER );
+    //_buffer->unbindBufferAs( state.getContextID(), GL_DRAW_INDIRECT_BUFFER );
+    extensions->glBindBuffer(GL_DRAW_INDIRECT_BUFFER,0);
 }
 
-void MultiDrawArraysIndirect::draw(osg::State& state, bool useVertexBufferObjects) const 
+void MultiDrawArraysIndirect::draw(osg::State& state, bool useVertexBufferObjects) const
 {
+
+    unsigned int contextID = state.getContextID();
+    osg::GLExtensions* extensions = state.get<osg::GLExtensions>();
     if( !_buffer.valid() )
         return;
-    _buffer->bindBufferAs( state.getContextID(), GL_DRAW_INDIRECT_BUFFER );
-    
+   // _buffer->bindBufferAs( state.getContextID(), GL_DRAW_INDIRECT_BUFFER );
+    extensions->glBindBuffer(GL_DRAW_INDIRECT_BUFFER,_buffer->getBufferObject()->getGLBufferObject(contextID)->getGLObjectID() );
+
     DrawIndirectGLExtensions *ext = DrawIndirectGLExtensions::getExtensions( state.getContextID(),true );
     ext->glMultiDrawArraysIndirect( _mode, reinterpret_cast<const void*>(_indirect), _drawcount, _stride );
-    _buffer->unbindBufferAs( state.getContextID(), GL_DRAW_INDIRECT_BUFFER );
+    //_buffer->unbindBufferAs( state.getContextID(), GL_DRAW_INDIRECT_BUFFER );
+    extensions->glBindBuffer(GL_DRAW_INDIRECT_BUFFER,0);
 }
 
 DrawIndirectGLExtensions::DrawIndirectGLExtensions( unsigned int contextID )
@@ -110,7 +119,7 @@ void DrawIndirectGLExtensions::glMultiDrawArraysIndirect(GLenum mode, const void
     else
     {
         OSG_WARN<<"Error: glMultiDrawArraysIndirect not supported by OpenGL driver"<<std::endl;
-    }    
+    }
 }
 
 void DrawIndirectGLExtensions::glMemoryBarrier(GLbitfield barriers)

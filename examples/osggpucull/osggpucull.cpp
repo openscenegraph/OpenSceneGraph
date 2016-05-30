@@ -46,7 +46,7 @@
 #endif
 
 // each instance type may have max 8 LODs ( if you change
-// this value, don't forget to change it in vertex shaders accordingly )
+// this value, dont forget to change it in vertex shaders accordingly )
 const unsigned int OSGGPUCULL_MAXIMUM_LOD_NUMBER = 8;
 // during culling each instance may be sent to max 4 indirect targets
 const unsigned int OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER = 4;
@@ -191,7 +191,7 @@ struct IndirectTarget
         indirectCommandImage->setImage( indirectCommands->getTotalDataSize()/sizeof(unsigned int), 1, 1, GL_R32I, GL_RED, GL_UNSIGNED_INT, (unsigned char*)indirectCommands->getDataPointer(), osg::Image::NO_DELETE );
         indirectCommandTextureBuffer = new osg::TextureBuffer(indirectCommandImage);
         indirectCommandTextureBuffer->setInternalFormat( GL_R32I );
-        indirectCommandTextureBuffer->setUsageHint(GL_DYNAMIC_DRAW);
+        indirectCommandTextureBuffer->getBufferObject()->setUsage(GL_DYNAMIC_DRAW);
         indirectCommandTextureBuffer->bindToImageUnit(index, osg::Texture::READ_WRITE);
         indirectCommandTextureBuffer->setUnRefImageDataAfterApply(false);
 
@@ -218,7 +218,7 @@ struct IndirectTarget
         instanceTargetImage->allocateImage( maxTargetQuantity*rowsPerInstance, 1, 1, pixelFormat, type );
         instanceTarget = new osg::TextureBuffer(instanceTargetImage);
         instanceTarget->setInternalFormat( internalFormat );
-        instanceTarget->setUsageHint(GL_DYNAMIC_DRAW);
+        instanceTarget->getBufferObject()->setUsage(GL_DYNAMIC_DRAW);
         instanceTarget->bindToImageUnit(OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index, osg::Texture::READ_WRITE);
 
     }
@@ -673,7 +673,7 @@ osg::Node* createInstanceTree(const std::vector<T>& instances, const osg::Boundi
 }
 
 // Texture buffers holding information about the number of instances to render ( named "indirect command
-// texture buffers", or simply - indirect commands ) must reset instance number to 0 in the beginning of each frame.
+// texture buffers", or simply - indirect commands ) must reset instance number to 0 in the beggining of each frame.
 // It is done by simple texture reload from osg::Image.
 // Moreover - texture buffers that use texture images ( i mean "images" as defined in ARB_shader_image_load_store extension )
 // should call glBindImageTexture() before every shader that uses imageLoad(), imageStore() and imageAtomic*() GLSL functions.
@@ -1143,7 +1143,7 @@ osg::Geometry* buildGPUCullGeometry( const std::vector<DynamicInstance>& instanc
 // instance wandering ( object goes to random destination point and when it reaches
 // destination, it picks another random point and so on ).
 // Object parts are animated ( wheels and propellers )
-struct AnimateObjectsCallback : public osg::DrawableUpdateCallback
+struct AnimateObjectsCallback : public osg::Drawable::UpdateCallback
 {
     AnimateObjectsCallback( osg::BufferTemplate< std::vector<DynamicInstance> >* instances, osg::Image* instancesImage, const osg::BoundingBox& bbox, unsigned int quantityPerType )
         : _instances(instances), _instancesImage(instancesImage), _bbox(bbox), _quantityPerType(quantityPerType), _lastTime(0.0)
@@ -1231,7 +1231,7 @@ struct AnimateObjectsCallback : public osg::DrawableUpdateCallback
     }
     void setRotationUsingRotSpeed( unsigned int index, unsigned int boneIndex, const osg::Matrix& zeroMatrix, double currentTime, double rotSpeed )
     {
-        // setRotationUsingRotSpeed() is a very unoptimally written ( because it uses osg::Matrix::inverse() ),
+        // setRotationUsingRotSpeed() is a very unoptimally writen ( because it uses osg::Matrix::inverse() ),
         // and that is done on purpose : in real life scenario functions making updates may take long time
         // to calculate new object positions due to sophisticated physics models, geometry intersections etc.
         osg::Matrix mRot = osg::Matrix::rotate( fmod( 2.0 * osg::PI * rotSpeed * currentTime,2.0*osg::PI) , osg::Vec3(0.0,0.0,1.0) );
@@ -1334,7 +1334,7 @@ void createDynamicRendering( osg::Group* root, GPUCullData& gpuData, osg::Buffer
     osg::Image* instancesImage = new osg::Image;
     instancesImage->setImage( instances->getTotalDataSize() / sizeof(osg::Vec4f), 1, 1, GL_RGBA32F_ARB, GL_RGBA, GL_FLOAT, (unsigned char*)instances->getDataPointer(), osg::Image::NO_DELETE );
     osg::TextureBuffer* instancesTextureBuffer = new osg::TextureBuffer(instancesImage);
-    instancesTextureBuffer->setUsageHint(GL_STATIC_DRAW);
+    instancesTextureBuffer->getBufferObject()->setUsage(GL_STATIC_DRAW);
     instancesTextureBuffer->setUnRefImageDataAfterApply(false);
 
     osg::Uniform* dynamicInstancesDataUniform = new osg::Uniform( "dynamicInstancesData", 8 );

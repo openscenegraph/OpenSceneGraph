@@ -12,60 +12,83 @@
 */
 #include <osg/TextureBuffer>
 #include <osg/State>
+#include <osg/PrimitiveSet>
 
 using namespace osg;
 
 TextureBuffer::TextureBuffer():
-            _textureWidth(0), _usageHint(GL_STREAM_DRAW)
+    _textureWidth(0),_bo(NULL)
 {
 }
 
 TextureBuffer::TextureBuffer(osg::Image* image):
-            _textureWidth(0), _usageHint(GL_STREAM_DRAW)
+    _textureWidth(0),_bo(NULL)
 {
     setImage(image);
 }
 
 TextureBuffer::TextureBuffer(const TextureBuffer& text,const CopyOp& copyop):
-            Texture(text,copyop),
-            _textureWidth(text._textureWidth),
-            _usageHint(text._usageHint)
+    Texture(text,copyop),
+    _textureWidth(text._textureWidth)
 {
-    setImage(copyop(text._image.get()));
+    setBufferObject(dynamic_cast<BufferObject*>(copyop(text._bo)));
 }
 
 TextureBuffer::~TextureBuffer()
 {
-    setImage(NULL);
+    _bo=NULL;
 }
 
+void TextureBuffer::setBufferObject(BufferObject *bo){
+         if (_bo == bo) return;
+
+
+
+    if (_bo.valid())
+    {  for (unsigned int ibd=0; ibd<_bo->getNumBufferData(); ibd++)
+
+       _bo-> getBufferData(ibd)->removeClient(this);
+    }
+
+     _bo=bo;
+
+    _modifiedCount.setAllElementsTo(0);
+
+    if (bo)
+    {
+        for (unsigned int ibd=0; ibd<bo->getNumBufferData(); ibd++)
+
+         bo->getBufferData(ibd)->addClient(this);
+    }
+
+        }
 int TextureBuffer::compare(const StateAttribute& sa) const
 {
     // check the types are equal and then create the rhs variable
     // used by the COMPARE_StateAttribute_Parameter macros below.
     COMPARE_StateAttribute_Types(TextureBuffer,sa)
 
-    if (_image!=rhs._image) // smart pointer comparison.
+    if (getImage()!=rhs.getImage())
     {
-        if (_image.valid())
+        if (getImage() )
         {
-            if (rhs._image.valid())
+            if (rhs.getImage() )
             {
-                int result = _image->compare(*rhs._image);
+                int result = getImage()->compare(*rhs.getImage());
                 if (result!=0) return result;
             }
             else
             {
-                return 1; // valid lhs._image is greater than null.
+                return 1; // valid lhs.getImage() is greater than null.
             }
         }
-        else if (rhs._image.valid())
+        else if (rhs.getImage())
         {
-            return -1; // valid rhs._image is greater than null.
+            return -1; // valid rhs.getImage() is greater than null.
         }
     }
 
-    if (!_image && !rhs._image)
+    if (!getImage() && !rhs.getImage())
     {
         int result = compareTextureObjects(rhs);
         if (result!=0) return result;
@@ -76,96 +99,162 @@ int TextureBuffer::compare(const StateAttribute& sa) const
 
     // compare each parameter in turn against the rhs.
     COMPARE_StateAttribute_Parameter(_textureWidth)
-    COMPARE_StateAttribute_Parameter(_usageHint)
+
+///compare buffer object profile
+    if(_bo.valid()&&rhs._bo.valid())
+    {
+        if (_bo->getProfile()<rhs._bo->getProfile()) return -1;
+        if (rhs._bo->getProfile()<_bo->getProfile()) return 1;
+///TODO compare buffer datas
+
+    }
 
     return 0;
 }
 
 void TextureBuffer::setImage(Image* image)
 {
-    if (_image == image) return;
-
-    if (_image.valid())
+    ///set TBO if not created
+    if(!_bo.valid() )
     {
-        _image->removeClient(this);
+        _bo=new  VertexBufferObject();
+        _bo->setUsage(GL_STREAM_DRAW_ARB);
+        _bo->setTarget(GL_TEXTURE_BUFFER_ARB);
+
     }
 
-    _image = image;
+    if (getImage() == image) return;
+
+
+
+    if (getImage())
+    {
+        getImage()->removeClient(    _bo);
+    }
+    ///delegate
+    _bo->setBufferData(0,image);
+
     _modifiedCount.setAllElementsTo(0);
 
-    if (_image.valid())
+    if (image)
     {
-        _image->addClient(this);
+        image->addClient(   _bo );
     }
 }
 
+/** TODO upload image to the bufferobject...but as Texture do that in apply I don't know if it's consistent with the design */
+void TextureBuffer::compileGLObjects(State& state) const
+{
+    unsigned int contextID=state.getContextID();
+    TextureBuffer::apply(state);
+}
 void TextureBuffer::apply(State& state) const
 {
 #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     const unsigned int contextID = state.getContextID();
 
     TextureObject* textureObject = getTextureObject(contextID);
-    TextureBufferObject* textureBufferObject = _textureBufferObjects[contextID].get();
-
 
     if (textureObject)
     {
-        if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
+        const GLExtensions* extensions = state.get<GLExtensions>();
+
+        unsigned int totalmodified=0;
+        for (unsigned int ibd=0; ibd<_bo->getNumBufferData(); ibd++)
+            totalmodified+=_bo->getBufferData(ibd)->getModifiedCount();
+        if(totalmodified!= getModifiedCount(contextID))
         {
             computeInternalFormat();
-            textureBufferObject->bindBuffer(GL_TEXTURE_BUFFER);
-            textureBufferObject->bufferSubData(_image.get() );
-            textureBufferObject->unbindBuffer(GL_TEXTURE_BUFFER);
-            _modifiedCount[contextID] = _image->getModifiedCount();
+            GLBufferObject* glBufferObject = _bo->getOrCreateGLBufferObject(contextID);
+            if (glBufferObject)///force buffer upload
+            {
+                // OSG_NOTICE<<"Compile buffer "<<glBufferObject<<std::endl;
+                glBufferObject->compileBuffer();
+            }
+
+            _modifiedCount[contextID] = totalmodified;
         }
+
         textureObject->bind();
 
         if( getTextureParameterDirty(contextID) )
         {
-            const GLExtensions* extensions = state.get<GLExtensions>();
             if (extensions->isBindImageTextureSupported() && _imageAttachment.access!=0)
             {
-                 extensions->glBindImageTexture(
-                     _imageAttachment.unit, textureObject->id(), _imageAttachment.level,
-                     _imageAttachment.layered, _imageAttachment.layer, _imageAttachment.access,
-                     _imageAttachment.format!=0 ? _imageAttachment.format : _internalFormat);
-            }
-            getTextureParameterDirty(state.getContextID()) = false;
-        }
-    }
-    else if (_image.valid() && _image->data())
-    {
-        textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_BUFFER);
-        textureObject->bind();
-
-        textureBufferObject = new TextureBufferObject(contextID,_usageHint);
-        _textureBufferObjects[contextID] = textureBufferObject;
-
-        const GLExtensions* extensions = state.get<GLExtensions>();
-        if (extensions->isBindImageTextureSupported() && _imageAttachment.access!=0)
-        {
                 extensions->glBindImageTexture(
                     _imageAttachment.unit, textureObject->id(), _imageAttachment.level,
                     _imageAttachment.layered, _imageAttachment.layer, _imageAttachment.access,
                     _imageAttachment.format!=0 ? _imageAttachment.format : _internalFormat);
+            }
+            getTextureParameterDirty(state.getContextID()) = false;
+        }
+    }
+    else if (_bo.valid()&& _bo->getNumBufferData()>0)
+    {
+unsigned int totalmodified=0;
+        for (unsigned int ibd=0; ibd<_bo->getNumBufferData(); ibd++)
+            totalmodified+=_bo->getBufferData(ibd)->getModifiedCount();
+        const GLExtensions* extensions = state.get<GLExtensions>();
+
+        textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_BUFFER_ARB);
+        textureObject->bind();
+
+        if (extensions->isBindImageTextureSupported() && _imageAttachment.access!=0)
+        {
+            extensions->glBindImageTexture(
+                _imageAttachment.unit, textureObject->id(), _imageAttachment.level,
+                _imageAttachment.layered, _imageAttachment.layer, _imageAttachment.access,
+                _imageAttachment.format!=0 ? _imageAttachment.format : _internalFormat);
         }
         getTextureParameterDirty(state.getContextID()) = false;
 
         computeInternalFormat();
-        _textureWidth = _image->s();
-        textureBufferObject->bindBuffer(GL_TEXTURE_BUFFER);
-        textureBufferObject->bufferData( _image.get() );
-        textureObject->setAllocated(true);
-        textureBufferObject->unbindBuffer(GL_TEXTURE_BUFFER);
 
-        textureObject->bind();
-        textureBufferObject->texBuffer(_internalFormat);
 
-        _modifiedCount[contextID] = _image->getModifiedCount();
+#if 1
+        ///try to compute textureWidth if not set by user
+        /// (seams dirty and useless textureWidth is not used annywhere)
+        ///check for downcast for getTotalDataSize/datasize  ( kind of dirty just toretrieve datasize )
+        if(_textureWidth==0)
+            for (unsigned int ibd=0; ibd<_bo->getNumBufferData(); ibd++)
+            {
+                osg::BufferData *bd=_bo->getBufferData(ibd);
+
+                osg::Array* arr;
+                osg::Image* im;
+                osg::PrimitiveSet*pr;
+                if(arr=bd->asArray())     _textureWidth+=  arr->asArray()->getNumElements()  ;
+                else if (im=bd->asImage())    _textureWidth+= im->s()  ;
+                else if(pr=bd->asPrimitiveSet())   _textureWidth+=pr->getNumPrimitives();
+                else
+                {
+                    OSG_NOTIFY(WARN)<<"Warning: osg::TextureBuffer: you're trying to bind a not handle BufferData Type , assuming 32bit vec4 container";
+                    _textureWidth+=bd->getTotalDataSize()/16;
+                }
+            }
+#endif
+
+/// now compile tbo if required
+        GLBufferObject* glBufferObject = _bo->getOrCreateGLBufferObject(contextID);
+        if (glBufferObject )
+        {
+            if( glBufferObject->isDirty())
+                   glBufferObject->compileBuffer();
+            else      glBufferObject->bindBuffer();
+
+            textureObject->setAllocated(true);
+            //  extensions->glBindBuffer(GL_TEXTURE_BUFFER_ARB,0);
+
+            textureObject->bind();
+            extensions->glTexBuffer(GL_TEXTURE_BUFFER_ARB, _internalFormat, glBufferObject->getGLObjectID());
+        }
+
+        ///assuming the same modified count as the first buff data
+        _modifiedCount[contextID] =totalmodified;// _bo->getBufferData(0)->getModifiedCount();
     }
     else
     {
-        glBindTexture(GL_TEXTURE_BUFFER, 0);
+        glBindTexture(GL_TEXTURE_BUFFER_ARB, 0);
     }
 
 #else
@@ -173,49 +262,10 @@ void TextureBuffer::apply(State& state) const
 #endif
 }
 
-void TextureBuffer::bindBufferAs( unsigned int contextID, GLuint target )
-{
-    TextureBufferObject* textureBufferObject = _textureBufferObjects[contextID].get();
-    textureBufferObject->bindBuffer(target);
-
-}
-
-void TextureBuffer::unbindBufferAs( unsigned int contextID, GLuint target )
-{
-    TextureBufferObject* textureBufferObject = _textureBufferObjects[contextID].get();
-    textureBufferObject->unbindBuffer(target);
-}
-
 
 void TextureBuffer::computeInternalFormat() const
 {
-    if (_image.valid()) computeInternalFormatWithImage(*_image);
+    if (getImage() ) computeInternalFormatWithImage(*getImage());
     else computeInternalFormatType();
 }
 
-void TextureBuffer::TextureBufferObject::bindBuffer(GLenum target)
-{
-    if (_id == 0)
-        _extensions->glGenBuffers(1, &_id);
-    _extensions->glBindBuffer(target, _id);
-}
-
-void TextureBuffer::TextureBufferObject::unbindBuffer(GLenum target)
-{
-    _extensions->glBindBuffer(target, 0);
-}
-
-void TextureBuffer::TextureBufferObject::texBuffer(GLenum internalFormat)
-{
-    _extensions->glTexBuffer(GL_TEXTURE_BUFFER, internalFormat, _id);
-}
-
-void TextureBuffer::TextureBufferObject::bufferData( osg::Image* image )
-{
-    _extensions->glBufferData(GL_TEXTURE_BUFFER, image->getTotalDataSize(), image->data(), _usageHint);
-}
-
-void TextureBuffer::TextureBufferObject::bufferSubData( osg::Image* image )
-{
-    _extensions->glBufferSubData(GL_TEXTURE_BUFFER, 0, image->getTotalDataSize(), image->data());
-}

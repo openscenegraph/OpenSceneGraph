@@ -119,6 +119,12 @@ bool NVTTProcessor::OSGImageOutputHandler::assignImage(osg::Image& image)
     case nvtt::Format_DXT5:
         pixelFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
         break;
+    case nvtt::Format_BC4:
+        pixelFormat = GL_COMPRESSED_RED_RGTC1_EXT;
+        break;
+    case nvtt::Format_BC5:
+        pixelFormat = GL_COMPRESSED_RED_GREEN_RGTC2_EXT;
+        break;
     default:
         OSG_WARN<<" Invalid or not supported format"<<std::endl;
         return false;
@@ -332,6 +338,12 @@ void NVTTProcessor::compress(osg::Image& image, osg::Texture::InternalFormatMode
         break;
     case osg::Texture::USE_S3TC_DXT5_COMPRESSION:
         format = nvtt::Format_DXT5;
+        break;
+    case osg::Texture::USE_RGTC1_COMPRESSION:
+        format = nvtt::Format_BC4;
+        break;
+    case osg::Texture::USE_RGTC2_COMPRESSION:
+        format = nvtt::Format_BC5;
         break;
     default:
         OSG_WARN<<" Invalid or not supported compress format"<<std::endl;

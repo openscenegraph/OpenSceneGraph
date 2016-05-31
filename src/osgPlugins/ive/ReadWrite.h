@@ -180,11 +180,7 @@ namespace ive {
 #define IVEFADETEXT                     0x10000003
 
 class ReadWrite{
-
 public:
-    virtual ~ReadWrite() {}
-    virtual void write(DataOutputStream* out) = 0;
-    virtual void read(DataInputStream* out) = 0;
 };
 
 }

@@ -43,7 +43,9 @@
 #endif
 #if defined (__FreeBSD__) || defined (__APPLE__) || defined (__MACH__)
     #include <sys/types.h>
+#if !defined (__GNU__)
     #include <sys/sysctl.h>
+#endif
 #endif
 
 #if defined(__ANDROID__)
@@ -1012,7 +1014,7 @@ int Thread::microSleep(unsigned int microsec)
 //
 int OpenThreads::GetNumberOfProcessors()
 {
-#if defined(__linux__)
+#if defined(__linux__) || defined(__GNU__)
    long ret = sysconf(_SC_NPROCESSORS_ONLN);
    if (ret == -1)
       return 0;

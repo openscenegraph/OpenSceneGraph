@@ -45,6 +45,8 @@
     #include <net/soioctl.h>
 #elif defined(__CYGWIN__) 
     #include <unistd.h>
+#elif defined (__GNU__)
+    #include <unistd.h>
 #elif defined(__sun) 
     #include <unistd.h>
     #include <sys/sockio.h>

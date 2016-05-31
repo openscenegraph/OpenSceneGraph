@@ -30,6 +30,10 @@
     using std::tolower;
 #endif
 
+#if defined(__GNU__) && !defined(PATH_MAX)
+#define PATH_MAX 4096
+#endif
+
 using namespace std;
 
 static const char * const PATH_SEPARATORS = "/\\";

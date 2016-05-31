@@ -122,7 +122,7 @@ void Receiver::sync( void )
         return;
     }
 
-#if defined(__linux) || defined(__FreeBSD__) || defined( __APPLE__ )
+#if defined(__linux) || defined(__FreeBSD__) || defined( __APPLE__ ) || defined(__FreeBSD_kernel__) || defined(__GNU__)
     socklen_t size; 
 #else
     int size;

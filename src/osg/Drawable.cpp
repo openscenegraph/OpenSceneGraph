@@ -614,3 +614,54 @@ void Drawable::setBound(const BoundingBox& bb) const
      _boundingBox = bb;
      _boundingBoxComputed = true;
 }
+
+TransformFeedBackDrawCallback::  TransformFeedBackDrawCallback(const Drawable::DrawCallback&dc,const CopyOp&co):osg::Drawable::DrawCallback(dc,co)
+{
+}
+void TransformFeedBackDrawCallback::addTransformFeedbackBufferBinding(osg::BufferIndexBinding * tfbb)
+{
+
+    if(tfbb){
+        if(tfbb->getTarget()!=GL_TRANSFORM_FEEDBACK)
+            OSG_NOTIFY(WARN)<<"TransformFeedBackDrawCallback::addTransformFeedbackBufferBinding: Warning: add a BufferBinding other than GL_TRANSFORM_FEEDBACK"<<std::endl;
+        _tfbbs.push_back(tfbb);
+    }
+}
+void TransformFeedBackDrawCallback::removeTransformFeedbackBufferBinding(osg::BufferIndexBinding * tfbb)
+{
+
+    for(std::vector<osg::ref_ptr<osg::BufferIndexBinding> >::iterator i=_tfbbs.begin(); i!=_tfbbs.end(); i++)
+    {
+        if((*i).get()==tfbb)
+        {
+            _tfbbs.erase(i);
+            return;
+        }
+    }
+}
+
+/** do TransformFeedback draw code.*/
+void TransformFeedBackDrawCallback::drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable*  drawable ) const
+{
+    osg::GLExtensions* ext = renderInfo.getState()->get<osg::GLExtensions>();
+
+   /* for(std::vector<osg::ref_ptr<osg::BufferIndexBinding> >::const_iterator i=_tfbbs.begin(); i!=_tfbbs.end(); i++)
+    {
+//GLBufferObject* glObject            =(*i)->getBufferObject()->getOrCreateGLBufferObject(renderInfo.getState()->getContextID());
+
+        (*i)->apply(*renderInfo.getState());
+
+
+    }*/
+
+
+    glEnable(GL_RASTERIZER_DISCARD);
+    ext->glBeginTransformFeedback(_type);
+    drawable->drawImplementation(renderInfo);
+
+    ext->glEndTransformFeedback();
+
+    glDisable(GL_RASTERIZER_DISCARD);
+
+
+}

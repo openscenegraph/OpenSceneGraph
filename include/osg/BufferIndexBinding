@@ -50,15 +50,20 @@ class OSG_EXPORT BufferIndexBinding : public StateAttribute
     virtual unsigned getMember() const { return static_cast<unsigned int>(_index); }
 
     GLenum getTarget() const { return _target; }
+
     /** Get the index target.
      */
     GLuint getIndex() const { return _index; }
+    /** Set the index target. (and update parents StateSets)
+     */
+    void setIndex(GLuint index);
     /** Set the buffer object that will be bound to the index target.
      */
     void setBufferObject(BufferObject *bo) { _bufferObject = bo; }
     /** Get the buffer object to be bound.
      */
-    BufferObject* getBufferObject() const { return _bufferObject.get(); }
+    const BufferObject* getBufferObject() const { return _bufferObject.get(); }
+    BufferObject* getBufferObject(){ return _bufferObject.get(); }
     /** Set the starting offset into the buffer object for data for
     the indexed target. Note: the required  alignment on the offset
     may be quite large (e.g., 256 bytes on NVidia 8600M). This
@@ -71,10 +76,11 @@ class OSG_EXPORT BufferIndexBinding : public StateAttribute
     void setSize(GLsizeiptr size) { _size = size; }
     GLsizeiptr getSize() const { return _size; }
     virtual void apply(State& state) const;
+
  protected:
     virtual ~BufferIndexBinding();
     const GLenum _target;
-    const GLuint _index;
+    GLuint _index;
     ref_ptr<BufferObject> _bufferObject;
     GLintptr _offset;
     GLsizeiptr _size;

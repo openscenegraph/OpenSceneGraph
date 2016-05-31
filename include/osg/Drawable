@@ -20,6 +20,7 @@
 #include <osg/PrimitiveSet>
 #include <osg/RenderInfo>
 #include <osg/Group>
+#include <osg/BufferIndexBinding>
 
 
 #ifndef GL_NV_occlusion_query
@@ -612,6 +613,48 @@ protected:
         Drawable::AttributeType             _type;
 };
 
+class OSG_EXPORT TransformFeedBackDrawCallback: public Drawable::DrawCallback
+{
+protected:
+    std::vector<osg::ref_ptr<osg::BufferIndexBinding> > _tfbbs;
+    GLenum _type;
+public:
+    META_Object(osg,TransformFeedBackDrawCallback);
+
+    TransformFeedBackDrawCallback():Drawable::DrawCallback()
+    {
+        _type=0;
+    }
+    TransformFeedBackDrawCallback(const Drawable::DrawCallback&dc,const CopyOp&co);
+
+    /** Get the primitive type of the feedback.
+     */
+    GLenum getFeedBackType() const
+    {
+        return _type;
+    }
+    void  setFeedBackType(GLenum e)
+    {
+        _type=e;
+    }
+
+   /** add a bufferBinding.*/
+    void addTransformFeedbackBufferBinding(osg::BufferIndexBinding * tfbb);
+    void removeTransformFeedbackBufferBinding(osg::BufferIndexBinding * tfbb);
+    osg::BufferIndexBinding *getTransformFeedbackBufferBinding(const unsigned int &i)const
+    {
+        return getNumTransformFeedbackBufferBindings()>i?_tfbbs[i]:0;
+    }
+
+    unsigned int getNumTransformFeedbackBufferBindings()const
+    {
+        return _tfbbs.size();
+    }
+
+    /** do TransformFeedback draw code.*/
+    virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable*  drawable ) const;
+
+};
 }
 
 #endif

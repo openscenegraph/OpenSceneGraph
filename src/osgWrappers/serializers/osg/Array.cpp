@@ -34,7 +34,7 @@ struct ResizeArray : public osgDB::MethodObject
 REGISTER_OBJECT_WRAPPER( Array,
                          0,
                          osg::Array,
-                         "osg::Object osg::Array" )
+                         "osg::Object osg::BufferData osg::Array" )
 {
 #if 0
     BEGIN_ENUM_SERIALIZER_NO_SET( Type, ArrayType );
@@ -114,7 +114,7 @@ REGISTER_OBJECT_WRAPPER( Array,
 
 #define ARRAY_WRAPPERS( ARRAY, ELEMENTTYPE, NUMELEMENTSONROW ) \
     namespace Wrappers##ARRAY { \
-        REGISTER_OBJECT_WRAPPER( ARRAY, new osg::ARRAY, osg::ARRAY, "osg::Object osg::Array osg::"#ARRAY) \
+        REGISTER_OBJECT_WRAPPER( ARRAY, new osg::ARRAY, osg::ARRAY, "osg::Object osg::BufferData osg::Array osg::"#ARRAY) \
         { \
                 ADD_ISAVECTOR_SERIALIZER( vector, osgDB::BaseSerializer::ELEMENTTYPE, NUMELEMENTSONROW ); \
         } \

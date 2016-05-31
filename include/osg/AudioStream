@@ -16,6 +16,8 @@
 
 #include <osg/Image>
 #include <stdlib.h>
+#include <osg/Drawable>
+#include <osg/BufferIndexBinding>
 
 namespace osg {
 

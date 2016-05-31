@@ -45,6 +45,17 @@ BufferIndexBinding::~BufferIndexBinding()
 {
 }
 
+void BufferIndexBinding::setIndex(GLuint index){
+    _index=index;
+    ///update parents because index is part of the key of this attribute
+    StateSet*parent;
+    for(unsigned int i=0;i<getNumParents();i++){
+        parent=getParent(i);
+        StateSet::AttributeList::const_iterator itr=parent->getAttributeList().find(getTypeMemberPair());
+        parent->setAttributeAndModes(this,  itr->second.second);
+
+    }
+}
 void BufferIndexBinding::apply(State& state) const
 {
     if (_bufferObject.valid())

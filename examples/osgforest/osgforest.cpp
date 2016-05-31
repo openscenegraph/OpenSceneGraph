@@ -1137,7 +1137,7 @@ osg::Node* ForestTechniqueManager::createHUDWithText(const std::string& str)
         osgText::Text* text = new  osgText::Text;
         geode->addDrawable( text );
 
-       // text->setFont(timesFont);
+        text->setFont(timesFont);
         text->setPosition(position);
         text->setText(str);
 

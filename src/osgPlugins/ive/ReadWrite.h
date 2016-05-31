@@ -183,8 +183,6 @@ class ReadWrite{
 
 public:
     virtual ~ReadWrite() {}
-    virtual void write(DataOutputStream* out) = 0;
-    virtual void read(DataInputStream* out) = 0;
 };
 
 }

@@ -21,7 +21,7 @@
 namespace ive
 {
 
-class ImageLayer : public osgTerrain::ImageLayer, public ReadWrite
+class ImageLayer : public osgTerrain::ImageLayer
 {
 public:
 	void write(DataOutputStream* out);

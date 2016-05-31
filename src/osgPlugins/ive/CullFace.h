@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class CullFace : public osg::CullFace, public ReadWrite {
+class CullFace : public osg::CullFace {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

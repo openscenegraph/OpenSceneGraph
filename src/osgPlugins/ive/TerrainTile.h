@@ -21,7 +21,7 @@
 namespace ive
 {
 
-class TerrainTile : public osgTerrain::TerrainTile, public ReadWrite
+class TerrainTile : public osgTerrain::TerrainTile
 {
 public:
 	void write(DataOutputStream* out);

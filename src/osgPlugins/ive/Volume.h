@@ -21,7 +21,7 @@
 namespace ive
 {
 
-class Volume : public osgVolume::Volume, public ReadWrite
+class Volume : public osgVolume::Volume
 {
 public:
     void write(DataOutputStream* out);

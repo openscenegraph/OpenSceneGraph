@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class VolumePropertyAdjustmentCallback : public osgVolume::PropertyAdjustmentCallback, public ReadWrite {
+class VolumePropertyAdjustmentCallback : public osgVolume::PropertyAdjustmentCallback {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

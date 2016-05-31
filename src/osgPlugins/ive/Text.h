@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Text : public osgText::Text, public ReadWrite {
+class Text : public osgText::Text {
 public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

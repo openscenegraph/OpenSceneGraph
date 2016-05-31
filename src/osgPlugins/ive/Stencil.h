@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Stencil : public osg::Stencil, public ReadWrite {
+class Stencil : public osg::Stencil {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

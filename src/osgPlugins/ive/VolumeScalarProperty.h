@@ -21,7 +21,7 @@
 namespace ive
 {
 
-class VolumeScalarProperty : public osgVolume::ScalarProperty, public ReadWrite
+class VolumeScalarProperty : public osgVolume::ScalarProperty
 {
 public:
 	void write(DataOutputStream* out);

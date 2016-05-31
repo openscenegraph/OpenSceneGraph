@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class ConvexPlanarOccluder : public osg::ConvexPlanarOccluder, public ReadWrite {
+class ConvexPlanarOccluder : public osg::ConvexPlanarOccluder {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

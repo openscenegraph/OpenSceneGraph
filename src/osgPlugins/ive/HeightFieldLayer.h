@@ -20,7 +20,7 @@
 namespace ive
 {
 
-class HeightFieldLayer : public osgTerrain::HeightFieldLayer, public ReadWrite
+class HeightFieldLayer : public osgTerrain::HeightFieldLayer
 {
 public:
 	void write(DataOutputStream* out);

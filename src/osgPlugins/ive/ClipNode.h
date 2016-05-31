@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class ClipNode : public osg::ClipNode, public ReadWrite {
+class ClipNode : public osg::ClipNode {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

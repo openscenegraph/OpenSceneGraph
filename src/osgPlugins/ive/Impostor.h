@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Impostor : public osgSim::Impostor, public ReadWrite {
+class Impostor : public osgSim::Impostor {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

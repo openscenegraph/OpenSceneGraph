@@ -18,7 +18,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class VolumeLocator : public osgVolume::Locator, public ReadWrite {
+class VolumeLocator : public osgVolume::Locator {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

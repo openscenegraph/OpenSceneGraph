@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class ConeSector : public osgSim::ConeSector, public ReadWrite {
+class ConeSector : public osgSim::ConeSector {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

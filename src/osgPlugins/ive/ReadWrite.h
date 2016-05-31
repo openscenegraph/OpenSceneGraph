@@ -179,9 +179,5 @@ namespace ive {
 #define IVETEXT3D                       0x10000002
 #define IVEFADETEXT                     0x10000003
 
-class ReadWrite{
-public:
-};
-
 }
 #endif // IVE_READWRITE

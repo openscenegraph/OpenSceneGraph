@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class TexEnv : public osg::TexEnv, public ReadWrite {
+class TexEnv : public osg::TexEnv {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class PolygonOffset : public osg::PolygonOffset, public ReadWrite {
+class PolygonOffset : public osg::PolygonOffset {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

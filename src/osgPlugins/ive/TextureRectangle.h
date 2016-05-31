@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class TextureRectangle : public osg::TextureRectangle, public ReadWrite {
+class TextureRectangle : public osg::TextureRectangle {
 public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-  class AlphaFunc : public osg::AlphaFunc, public ReadWrite {
+  class AlphaFunc : public osg::AlphaFunc {
   public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

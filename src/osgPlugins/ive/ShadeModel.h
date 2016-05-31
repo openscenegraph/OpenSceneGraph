@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class ShadeModel : public osg::ShadeModel, public ReadWrite {
+class ShadeModel : public osg::ShadeModel {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Camera : public osg::Camera, public ReadWrite {
+class Camera : public osg::Camera {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

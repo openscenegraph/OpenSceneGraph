@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Scissor : public osg::Scissor, public ReadWrite {
+class Scissor : public osg::Scissor {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

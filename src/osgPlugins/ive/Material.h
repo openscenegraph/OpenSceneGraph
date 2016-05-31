@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Material : public osg::Material, public ReadWrite {
+class Material : public osg::Material {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

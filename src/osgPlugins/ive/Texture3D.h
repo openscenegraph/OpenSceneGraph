@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Texture3D : public osg::Texture3D, public ReadWrite {
+class Texture3D : public osg::Texture3D {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

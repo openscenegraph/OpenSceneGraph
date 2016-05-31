@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class BlendEquation : public osg::BlendEquation, public ReadWrite {
+class BlendEquation : public osg::BlendEquation {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

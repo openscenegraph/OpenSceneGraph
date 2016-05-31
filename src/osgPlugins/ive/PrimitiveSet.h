@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class PrimitiveSet : public ReadWrite, public osg::PrimitiveSet{
+class PrimitiveSet : public osg::PrimitiveSet{
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Group : public osg::Group, public ReadWrite{
+class Group : public osg::Group{
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* out);

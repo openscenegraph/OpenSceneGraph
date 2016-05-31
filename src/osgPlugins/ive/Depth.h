@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Depth : public osg::Depth, public ReadWrite {
+class Depth : public osg::Depth {
 public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

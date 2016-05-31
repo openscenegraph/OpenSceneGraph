@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class FrontFace : public osg::FrontFace, public ReadWrite {
+class FrontFace : public osg::FrontFace {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

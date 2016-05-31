@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Cartoon : public osgFX::Cartoon, public ReadWrite {
+class Cartoon : public osgFX::Cartoon {
 public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

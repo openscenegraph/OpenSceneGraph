@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class BumpMapping : public osgFX::BumpMapping, public ReadWrite {
+class BumpMapping : public osgFX::BumpMapping {
 public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

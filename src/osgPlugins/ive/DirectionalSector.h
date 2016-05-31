@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class DirectionalSector : public osgSim::DirectionalSector, public ReadWrite {
+class DirectionalSector : public osgSim::DirectionalSector {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

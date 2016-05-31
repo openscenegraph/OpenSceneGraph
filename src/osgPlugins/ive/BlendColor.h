@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-   class BlendColor : public osg::BlendColor, public ReadWrite {
+   class BlendColor : public osg::BlendColor {
        public:
            void write(DataOutputStream* out);
            void read(DataInputStream* in);

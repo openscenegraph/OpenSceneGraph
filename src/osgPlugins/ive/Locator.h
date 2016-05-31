@@ -18,7 +18,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Locator : public osgTerrain::Locator, public ReadWrite {
+class Locator : public osgTerrain::Locator {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

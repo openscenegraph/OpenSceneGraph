@@ -21,7 +21,7 @@
 namespace ive
 {
 
-class VolumeTransferFunctionProperty : public osgVolume::TransferFunctionProperty, public ReadWrite
+class VolumeTransferFunctionProperty : public osgVolume::TransferFunctionProperty
 {
 public:
 	void write(DataOutputStream* out);

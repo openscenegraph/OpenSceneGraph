@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class PolygonStipple : public osg::PolygonStipple, public ReadWrite {
+class PolygonStipple : public osg::PolygonStipple {
 public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

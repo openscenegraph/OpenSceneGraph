@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class LightSource : public osg::LightSource, public ReadWrite {
+class LightSource : public osg::LightSource {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

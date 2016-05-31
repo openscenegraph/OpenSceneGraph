@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class ProxyNode : public osg::ProxyNode, public ReadWrite {
+class ProxyNode : public osg::ProxyNode {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

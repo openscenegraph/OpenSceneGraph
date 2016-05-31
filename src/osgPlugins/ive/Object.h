@@ -7,7 +7,7 @@
 
 namespace ive{
 
-class Object : public ReadWrite, public osg::Object{
+class Object : public osg::Object{
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* out);

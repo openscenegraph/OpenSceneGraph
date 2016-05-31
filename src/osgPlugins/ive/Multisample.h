@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Multisample : public osg::Multisample, public ReadWrite {
+class Multisample : public osg::Multisample {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class FadeText : public osgText::FadeText, public ReadWrite {
+class FadeText : public osgText::FadeText {
 public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

@@ -6,37 +6,37 @@
 
 namespace ive{
 
-class Sphere : public osg::Sphere, public ReadWrite {
+class Sphere : public osg::Sphere {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);
 };
 
-class Box : public osg::Box, public ReadWrite {
+class Box : public osg::Box {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);
 };
 
-class Cone : public osg::Cone, public ReadWrite {
+class Cone : public osg::Cone {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);
 };
 
-class Cylinder : public osg::Cylinder, public ReadWrite {
+class Cylinder : public osg::Cylinder {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);
 };
 
-class Capsule : public osg::Capsule, public ReadWrite {
+class Capsule : public osg::Capsule {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);
 };
 
-class HeightField : public osg::HeightField, public ReadWrite {
+class HeightField : public osg::HeightField {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

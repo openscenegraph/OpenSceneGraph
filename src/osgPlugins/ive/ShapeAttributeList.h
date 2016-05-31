@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class ShapeAttributeList : public osgSim::ShapeAttributeList, public ReadWrite {
+class ShapeAttributeList : public osgSim::ShapeAttributeList {
 public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

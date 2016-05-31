@@ -47,7 +47,7 @@ void TextureBuffer::setBufferObject(BufferObject *bo){
     if (_bo.valid())
     {  for (unsigned int ibd=0; ibd<_bo->getNumBufferData(); ibd++)
 
-       _bo-> getBufferData(ibd)->removeClient(this);
+       _bo-> getBufferData(ibd)->removeClient(_bo);
     }
 
      _bo=bo;
@@ -58,7 +58,7 @@ void TextureBuffer::setBufferObject(BufferObject *bo){
     {
         for (unsigned int ibd=0; ibd<bo->getNumBufferData(); ibd++)
 
-         bo->getBufferData(ibd)->addClient(this);
+         bo->getBufferData(ibd)->addClient(bo);
     }
 
         }

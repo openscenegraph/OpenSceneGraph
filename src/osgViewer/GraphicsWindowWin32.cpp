@@ -2840,35 +2840,39 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
             {
                 unsigned int numInputs = (unsigned int) wParam;
                 TOUCHINPUT* ti = new TOUCHINPUT[numInputs];
+                POINT pt;
                 osg::ref_ptr<osgGA::GUIEventAdapter> osg_event(NULL);
                 if(getTouchInputInfoFunc && (*getTouchInputInfoFunc)((HTOUCHINPUT)lParam, numInputs, ti, sizeof(TOUCHINPUT)))
                 {
                     // For each contact, dispatch the message to the appropriate message handler.
                     for(unsigned int i=0; i< numInputs; ++i)
                     {
+                        pt.x =TOUCH_COORD_TO_PIXEL(ti[i].x);
+                        pt.y =TOUCH_COORD_TO_PIXEL(ti[i].y);
+                        ScreenToClient(getHWND(), &pt);
                         if(ti[i].dwFlags & TOUCHEVENTF_DOWN)
                         {
                             if (!osg_event) {
-                                osg_event = getEventQueue()->touchBegan( ti[i].dwID, osgGA::GUIEventAdapter::TOUCH_BEGAN, ti[i].x / 100 , ti[i].y/100);
+                                osg_event = getEventQueue()->touchBegan( ti[i].dwID, osgGA::GUIEventAdapter::TOUCH_BEGAN, pt.x, pt.y);
                             } else {
-                                osg_event->addTouchPoint( ti[i].dwID, osgGA::GUIEventAdapter::TOUCH_BEGAN, ti[i].x / 100, ti[i].y/100);
+                                osg_event->addTouchPoint( ti[i].dwID, osgGA::GUIEventAdapter::TOUCH_BEGAN, pt.x, pt.y);
                             }
                         }
                         else if(ti[i].dwFlags & TOUCHEVENTF_MOVE)
                         {
                             if (!osg_event) {
-                                osg_event = getEventQueue()->touchMoved(  ti[i].dwID, osgGA::GUIEventAdapter::TOUCH_MOVED, ti[i].x/ 100, ti[i].y/ 100);
+                                osg_event = getEventQueue()->touchMoved(  ti[i].dwID, osgGA::GUIEventAdapter::TOUCH_MOVED, pt.x, pt.y);
                             } else {
-                                osg_event->addTouchPoint( ti[i].dwID, osgGA::GUIEventAdapter::TOUCH_MOVED, ti[i].x / 100, ti[i].y/100);
+                                osg_event->addTouchPoint( ti[i].dwID, osgGA::GUIEventAdapter::TOUCH_MOVED, pt.x, pt.y);
                             }
                         }
                         else if(ti[i].dwFlags & TOUCHEVENTF_UP)
                         {
                             // No double tap detection with RAW TOUCH Events, sorry.
                             if (!osg_event) {
-                                osg_event = getEventQueue()->touchEnded( ti[i].dwID, osgGA::GUIEventAdapter::TOUCH_ENDED, ti[i].x/ 100, ti[i].y/ 100, 1);
+                                osg_event = getEventQueue()->touchEnded( ti[i].dwID, osgGA::GUIEventAdapter::TOUCH_ENDED, pt.x, pt.y, 1);
                             } else {
-                                osg_event->addTouchPoint( ti[i].dwID, osgGA::GUIEventAdapter::TOUCH_ENDED, ti[i].x / 100, ti[i].y/100);
+                                osg_event->addTouchPoint( ti[i].dwID, osgGA::GUIEventAdapter::TOUCH_ENDED, pt.x, pt.y);
                             }
                         }
                     }

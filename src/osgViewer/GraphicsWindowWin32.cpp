@@ -317,7 +317,7 @@ class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterfa
     static std::string osgGraphicsWindowWithCursorClass;    //!< Name of Win32 window class (with cursor) used by OSG graphics window instances
     static std::string osgGraphicsWindowWithoutCursorClass; //!< Name of Win32 window class (without cursor) used by OSG graphics window instances
 
-	Win32WindowingSystem();
+    Win32WindowingSystem();
 
     // Access the Win32 windowing system through this singleton class.
     static osg::observer_ptr<Win32WindowingSystem>& getInterface()

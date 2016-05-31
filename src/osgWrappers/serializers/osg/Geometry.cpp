@@ -113,22 +113,20 @@ struct GeometryFinishedObjectReadCallback : public osgDB::FinishedObjectReadCall
 {
     virtual void objectRead(osgDB::InputStream&, osg::Object& obj)
     {
-#if 0
+#if 1
         osg::Geometry& geometry = static_cast<osg::Geometry&>(obj);
         if (geometry.getUseVertexBufferObjects())
         {
             bool someBufferObjectDefined=false;
             ///if any BufferObject havent been serialized
-            if(geometry.getVertexArray())if(geometry.getVertexArray()->getBufferObject())
-                someBufferObjectDefined=true;
-            if(geometry.getNormalArray())if(geometry.getNormalArray()->getBufferObject())
-                someBufferObjectDefined=true;
-            if(geometry.getColorArray())if(geometry.getColorArray()->getBufferObject())
-                someBufferObjectDefined=true;
-           for(int i=0;i<geometry.getNumTexCoordArrays();i++) if(geometry.getTexCoordArray(i))if(geometry.getTexCoordArray(i)->getBufferObject())
-                someBufferObjectDefined=true;
-            for(int i=0;i<geometry.getNumVertexAttribArrays();i++)if(geometry.getVertexAttribArray(i))if(!geometry.getVertexAttribArray(i)->getBufferObject())
-                someBufferObjectDefined=true;
+            #define TESTARRAY(XXX)if(geometry.XXX)if(geometry.XXX->getBufferObject())someBufferObjectDefined=true;
+            TESTARRAY(getVertexArray())
+            TESTARRAY(getNormalArray())
+            TESTARRAY(getColorArray())
+
+            for(int i=0;i<geometry.getNumTexCoordArrays();i++)  TESTARRAY(getTexCoordArray(i))
+            for(int i=0;i<geometry.getNumVertexAttribArrays();i++)TESTARRAY(getVertexAttribArray(i))
+
 
             if(!someBufferObjectDefined){
                 geometry.setUseVertexBufferObjects(false);

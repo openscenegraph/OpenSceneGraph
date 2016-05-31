@@ -201,16 +201,25 @@ struct IndirectTarget
             std::vector<DrawArraysIndirect*> newPrimitiveSets;
 
             for(unsigned int j=0;j<indirectCommands->getData().size(); ++j)
-                newPrimitiveSets.push_back( new DrawArraysIndirect( GL_TRIANGLES, indirectCommandTextureBuffer.get(), j*sizeof( DrawArraysIndirectCommand ) ) );
+                newPrimitiveSets.push_back( new DrawArraysIndirect( GL_TRIANGLES, j*sizeof( DrawArraysIndirectCommand ) ) );
             geometryAggregator->getAggregatedGeometry()->removePrimitiveSet(0,geometryAggregator->getAggregatedGeometry()->getNumPrimitiveSets() );
             for(unsigned int j=0;j<indirectCommands->getData().size(); ++j)
                 geometryAggregator->getAggregatedGeometry()->addPrimitiveSet( newPrimitiveSets[j] );
+
+
         }
         else // use glMultiDrawArraysIndirect()
         {
             geometryAggregator->getAggregatedGeometry()->removePrimitiveSet(0,geometryAggregator->getAggregatedGeometry()->getNumPrimitiveSets() );
-            geometryAggregator->getAggregatedGeometry()->addPrimitiveSet( new MultiDrawArraysIndirect( GL_TRIANGLES, indirectCommandTextureBuffer.get(), 0, indirectCommands->getData().size(), 0 ) );
+            geometryAggregator->getAggregatedGeometry()->addPrimitiveSet( new MultiDrawArraysIndirect( GL_TRIANGLES, 0, indirectCommands->getData().size(), 0 ) );
+
+
         }
+     ///attach a DrawIndirect buffer binding to the stateset
+        osg::ref_ptr<osg::DrawIndirectBufferBinding> bb=new osg::DrawIndirectBufferBinding();
+        bb->setBufferObject(indirectCommandTextureBuffer->getBufferObject());
+       geometryAggregator->getAggregatedGeometry()->getOrCreateStateSet()->setAttribute(bb );
+
         geometryAggregator->getAggregatedGeometry()->setUseVertexBufferObjects(true);
         geometryAggregator->getAggregatedGeometry()->setUseDisplayList(false);
 
@@ -218,7 +227,7 @@ struct IndirectTarget
         instanceTargetImage->allocateImage( maxTargetQuantity*rowsPerInstance, 1, 1, pixelFormat, type );
         instanceTarget = new osg::TextureBuffer(instanceTargetImage);
         instanceTarget->setInternalFormat( internalFormat );
-        instanceTarget->getBufferObject()->setUsage(GL_DYNAMIC_DRAW);
+        instanceTarget->getBufferObject()->setUsage (GL_DYNAMIC_DRAW);
         instanceTarget->bindToImageUnit(OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index, osg::Texture::READ_WRITE);
 
     }
@@ -228,6 +237,8 @@ struct IndirectTarget
         osg::Uniform* uniform = new osg::Uniform(uniformName.c_str(), (int)index );
         stateset->addUniform( uniform );
         stateset->setTextureAttribute( index, indirectCommandTextureBuffer.get() );
+
+
     }
     void addIndirectTargetData( bool cullPhase, const std::string& uniformNamePrefix, int index, osg::StateSet* stateset )
     {
@@ -728,8 +739,8 @@ struct InvokeMemoryBarrier : public osg::Drawable::DrawCallback
     }
     virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
     {
-        DrawIndirectGLExtensions *ext = DrawIndirectGLExtensions::getExtensions( renderInfo.getContextID(), true );
-        ext->glMemoryBarrier( _barriers );
+        //DrawIndirectGLExtensions *ext = DrawIndirectGLExtensions::getExtensions( renderInfo.getContextID(), true );
+        renderInfo.getState()->get<osg::GLExtensions>()->glMemoryBarrier( _barriers );
         drawable->drawImplementation(renderInfo);
     }
     GLbitfield _barriers;
@@ -1143,7 +1154,7 @@ osg::Geometry* buildGPUCullGeometry( const std::vector<DynamicInstance>& instanc
 // instance wandering ( object goes to random destination point and when it reaches
 // destination, it picks another random point and so on ).
 // Object parts are animated ( wheels and propellers )
-struct AnimateObjectsCallback : public osg::Drawable::UpdateCallback
+struct AnimateObjectsCallback : public osg::DrawableUpdateCallback
 {
     AnimateObjectsCallback( osg::BufferTemplate< std::vector<DynamicInstance> >* instances, osg::Image* instancesImage, const osg::BoundingBox& bbox, unsigned int quantityPerType )
         : _instances(instances), _instancesImage(instancesImage), _bbox(bbox), _quantityPerType(quantityPerType), _lastTime(0.0)

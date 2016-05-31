@@ -44,11 +44,8 @@
 #include <osgDB/WriteFile>
 
 #include <iostream>
-#include <osg/AudioStream>
 
-#include <osgDB/WriteFile>
-#include <osgDB/ReadFile>
-static float random(float min,float max) { return min + (max-min)*(float)rand()/(float)RAND_MAX; }
+
 ///////////////////////////////////////////////////////////////////////////
 
 class SineAnimation: public osg::UniformCallback
@@ -171,131 +168,6 @@ osg::Program* createRenderShader()
     return pgm;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////
-
-
-
-class SomePointsRenderer;
-class SomePointsGenerator:public osg::Geometry
-{
-public:
-    SomePointsGenerator();
-    void setRenderer(osg::Geometry*renderer);
-    GLuint getNumPrimitivesGenerated()const;
-
-protected:
-    osg::Program * _program;
-    osg::ref_ptr<osg::VertexBufferObject> genbuffer;//Renderer buffer
-    osg::Vec3Array* vAry;
-
-    //  virtual void drawImplementation( osg::RenderInfo& renderInfo ) const;
-};
-/////////////////////////////////////////////////////////////////////////////////////
-
-class SomePointsRenderer : public osg::Geometry
-{
-public:
-
-    SomePointsRenderer(SomePointsGenerator*_generator)
-    {
-
-        setUseVertexBufferObjects(true);
-        setUseDisplayList(false);
-
-        osg::Vec3Array* vAry2 = new osg::Vec3Array;
-        vAry2->resize(_generator->getNumPrimitivesGenerated());
-        setVertexArray(vAry2);
-        addPrimitiveSet( new osg::DrawArrays( GL_LINES, 0,_generator->getNumPrimitivesGenerated()));
-
-        osg::StateSet* sset = getOrCreateStateSet();
-        ///hacking rendering order
-        /*osg::BlendFunc* bf = new
-        osg::BlendFunc(osg::BlendFunc::SRC_ALPHA,
-        osg::BlendFunc::ONE_MINUS_SRC_ALPHA );
-        sset->setAttributeAndModes(bf);*/
-
-        sset->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
-        //getOrCreateVertexBufferObject();
-        sset->setAttribute( createRenderShader() );
-
-
-    }
-
-
-
-};
-
-///////////////////////////////////////////////////////////////////////////
-GLuint SomePointsGenerator::getNumPrimitivesGenerated()const
-{
-    return vAry->size()*3;
-}
-/*
-void SomePointsGenerator::drawImplementation( osg::RenderInfo& renderInfo ) const
-{
-
-    //get output buffer
-    unsigned int contextID = renderInfo.getState()->getContextID();
-
-    GLuint ubuff= genbuffer->getOrCreateGLBufferObject(contextID)->getGLObjectID();
-
-    osg::GLExtensions* ext = renderInfo.getState()->get<osg::GLExtensions>();
-
-    ext->glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0,ubuff);
-
-    glEnable(GL_RASTERIZER_DISCARD);
-
-    ext->glBeginTransformFeedback(GL_POINTS);
-
-
-    osg::Geometry::drawImplementation(  renderInfo );
-
-
-    ext->glEndTransformFeedback();
-
-    glDisable(GL_RASTERIZER_DISCARD);
-
-    ext->glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0);
-}
-*/
-
-
-SomePointsGenerator::SomePointsGenerator():osg::Geometry()
-{
-
-    setUseVertexBufferObjects(true);
-    setUseDisplayList(false);
-
-    osg::StateSet* sset = getOrCreateStateSet();
-    sset->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
-    vAry = new osg::Vec3Array;;
-    vAry->push_back( osg::Vec3(0,0,0) );
-    vAry->push_back( osg::Vec3(0,1,0) );
-    vAry->push_back( osg::Vec3(1,0,0) );
-    vAry->push_back( osg::Vec3(1,1,0 ));
-    addPrimitiveSet( new osg::DrawArrays( GL_POINTS, 0, vAry->size() ) );
-    setVertexArray( vAry );
-
-    _program=createGeneratorShader() ;
-    sset->setAttribute(_program );
-
-    // a generic cyclic animation value
-    osg::Uniform* u_anim1( new osg::Uniform( "u_anim1", 0.9f ) );
-    u_anim1->setUpdateCallback( new SineAnimation( 4, 0.5, 0.5 ) );
-    sset->addUniform( u_anim1 );
-
-}
-
-void SomePointsGenerator::setRenderer(osg::Geometry* renderer)
-{
-    genbuffer = renderer->getOrCreateVertexBufferObject();
-    osg::TransformFeedBackDrawCallback *tr=new  osg::TransformFeedBackDrawCallback();
-    //tr->addTransformFeedbackBufferBinding(TargetArray(renderer->getVertexArray());
-    setDrawCallback(tr);
-}
-
-
-
 ///////////////////////////////////////////////////////////////////////////
 
 int main( int , char** )
@@ -325,7 +197,7 @@ int main( int , char** )
         NoBluevAry2->setVertexBufferObject(new osg::VertexBufferObject);
         somePointsGenerator->setColorArray(NoBluevAry2);
 
-   somePointsGenerator->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+        somePointsGenerator->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
         somePointsGenerator->addPrimitiveSet( new osg::DrawArrays( GL_POINTS, 0, vAry->size() ) );
 
         osg::ref_ptr<osg::Program> _program=createGeneratorShader() ;
@@ -344,7 +216,7 @@ int main( int , char** )
         somePointsRenderer->setUseDisplayList(false);
 
         osg::ref_ptr<osg::Vec4Array> vAry2 = new osg::Vec4Array;
-        vAry2->resize(numprimgen);//_generator->getNumPrimitivesGenerated());
+        vAry2->resize(numprimgen);
         vAry2->setVertexBufferObject(new osg::VertexBufferObject);
         somePointsRenderer-> setVertexArray(vAry2);
 
@@ -352,20 +224,13 @@ int main( int , char** )
         gencolorvAry->resize(numprimgen);
         gencolorvAry->setVertexBufferObject(new osg::VertexBufferObject);
         somePointsRenderer->setColorArray(gencolorvAry);
-somePointsRenderer->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+        somePointsRenderer->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
 
         somePointsRenderer-> addPrimitiveSet( new osg::DrawArrays( GL_LINES, 0,numprimgen));
 
         osg::StateSet* sset =   somePointsRenderer-> getOrCreateStateSet();
-        ///hacking rendering order
-        /*osg::BlendFunc* bf = new
-        osg::BlendFunc(osg::BlendFunc::SRC_ALPHA,
-        osg::BlendFunc::ONE_MINUS_SRC_ALPHA );
-        sset->setAttributeAndModes(bf);*/
 
-      //  sset->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
-        //getOrCreateVertexBufferObject();
         sset->setAttribute( createRenderShader() );
 
 
@@ -379,48 +244,22 @@ somePointsRenderer->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
     tfbb->setSize(somePointsRenderer->getVertexArray()->getTotalDataSize());
     tfbb2->setSize(somePointsRenderer->getColorArray()->getTotalDataSize());
-    // tr->setTargetArray(somePointsRenderer->getVertexArray());
 
     tr->addTransformFeedbackBufferBinding(tfbb);
     tr->addTransformFeedbackBufferBinding(tfbb2);
 
-        somePointsGenerator->setDrawCallback(tr);
+    somePointsGenerator->setDrawCallback(tr);
 
     somePointsGenerator->getStateSet()->setAttribute(tfbb);
     somePointsGenerator->getStateSet()->setAttribute(tfbb2);
-   // somePointsRenderer->getVertexArray()->getVertexBufferObject()->setCopyDataAndReleaseGLBufferObject(true);
-    //pate->setRenderer( pate2);
-    /*osg::ref_ptr<osg::Geode> geo=new osg::Geode();
-    geo->addDrawable( somePointsGenerator );
-    geo->addDrawable( somePointsRenderer );
-    root->addChild(geo);*/
-    root->addChild(somePointsGenerator);
 
+    root->addChild(somePointsGenerator);
     root->addChild(somePointsRenderer);
 
     somePointsGenerator->setName("SomePointsGenerator");
     somePointsRenderer->setName("SomePointsRenderer");
     somePointsGenerator->getStateSet()->setRenderBinDetails(0,"RenderBin");
     somePointsRenderer->getStateSet()->setRenderBinDetails(1,"RenderBin");
- osgDB::writeNodeFile(*root,"transfeedback.osgt");
-
- /*osg::Image * im=new osg::Image();
- osg::Image * im2D=osgDB::readImageFile("random20130606210642.png");
-
-if(im2D){
- im->setImage(im2D->s()*im2D->t(),1,1,im2D->getInternalTextureFormat(),im2D->getPixelFormat(), im2D->getDataType(),im2D->data(),osg::Image::NO_DELETE);
- osgDB::writeImageFile(*im,"random1D.png");
-}*/
-
-unsigned int imsize=65656;
-float * dataf=new float [imsize*4];
-float *ptr=dataf;
-while (ptr<dataf+imsize*4)
-*ptr++=random(-1.0f,1.0f);
-osg::Image * im=new osg::Image();
-//im->allocateImage( 3*cell->_trees.size(), 1, 1, GL_RGBA, GL_FLOAT );
-im->setImage(imsize,1,1,GL_RGBA32F_ARB,GL_RGBA,GL_FLOAT,(unsigned char*)dataf,osg::Image::NO_DELETE);
- osgDB::writeImageFile(*im,"random1D.ive");
 
     osgViewer::Viewer viewer;
     viewer.setSceneData( root );

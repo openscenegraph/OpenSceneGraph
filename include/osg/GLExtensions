@@ -580,6 +580,12 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glWaitSync) (GLsync sync, GLbitfield flags, GLuint64 timeout);
         void (GL_APIENTRY * glGetSynciv) (GLsync sync, GLenum pname, GLsizei bufSize, GLsizei *length, GLint *values);
 
+        // Indirect Rendering
+        void (GL_APIENTRY * glDrawArraysIndirect) (GLenum  mode,  const void * indirect);
+        void (GL_APIENTRY * glMultiDrawArraysIndirect) (GLenum mode, const void *indirect, GLsizei drawcount, GLsizei stride);
+        void (GL_APIENTRY * glDrawElementsIndirect) (GLenum mode,  GLenum type,  const void *indirect);
+        void (GL_APIENTRY * glMultiDrawElementsIndirect)( 	GLenum mode,  	GLenum type,  	const void *indirect,  	GLsizei drawcount,  	GLsizei stride);
+
 
         // Transform feedback
         void (GL_APIENTRY * glBeginTransformFeedback) (GLenum primitiveMode);

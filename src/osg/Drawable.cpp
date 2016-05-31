@@ -622,8 +622,8 @@ void TransformFeedBackDrawCallback::addTransformFeedbackBufferBinding(osg::Buffe
 {
 
     if(tfbb){
-        if(tfbb->getTarget()!=GL_TRANSFORM_FEEDBACK)
-            OSG_NOTIFY(WARN)<<"TransformFeedBackDrawCallback::addTransformFeedbackBufferBinding: Warning: add a BufferBinding other than GL_TRANSFORM_FEEDBACK"<<std::endl;
+        if(tfbb->getTarget()!=GL_TRANSFORM_FEEDBACK_BUFFER)
+            OSG_NOTIFY(WARN)<<"TransformFeedBackDrawCallback::addTransformFeedbackBufferBinding: Warning: add a BufferBinding other than GL_TRANSFORM_FEEDBACK_BUFFER"<<std::endl;
         _tfbbs.push_back(tfbb);
     }
 }
@@ -655,13 +655,13 @@ void TransformFeedBackDrawCallback::drawImplementation(osg::RenderInfo& renderIn
     }*/
 
 
-    glEnable(GL_RASTERIZER_DISCARD);
+    if(!_rasterize)glEnable(GL_RASTERIZER_DISCARD);
     ext->glBeginTransformFeedback(_type);
     drawable->drawImplementation(renderInfo);
 
     ext->glEndTransformFeedback();
 
-    glDisable(GL_RASTERIZER_DISCARD);
+    if(!_rasterize)glDisable(GL_RASTERIZER_DISCARD);
 
 
 }

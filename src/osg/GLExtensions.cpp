@@ -1049,6 +1049,11 @@ GLExtensions::GLExtensions(unsigned int contextID)
     osg::setGLExtensionFuncPtr(glWaitSync, "glWaitSync");
     osg::setGLExtensionFuncPtr(glGetSynciv, "glGetSynciv");
 
+    // Indirect Rendering
+    osg::setGLExtensionFuncPtr(glDrawArraysIndirect, "glDrawArraysIndirect", "glDrawArraysIndirectEXT");
+    osg::setGLExtensionFuncPtr(glMultiDrawArraysIndirect, "glMultiDrawArraysIndirect", "glMultiDrawArraysIndirectEXT");
+    osg::setGLExtensionFuncPtr(glDrawElementsIndirect, "glDrawElementsIndirect", "glDrawElementsIndirectEXT");
+    osg::setGLExtensionFuncPtr(glMultiDrawElementsIndirect, "glMultiDrawElementsIndirect", "glMultiDrawElementsIndirectEXT");
 
     // Transform Feeedback
     osg::setGLExtensionFuncPtr(glBeginTransformFeedback, "glBeginTransformFeedback", "glBeginTransformFeedbackEXT");

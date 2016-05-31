@@ -172,6 +172,7 @@ void TextureBuffer::apply(State& state) const
                 glBufferObject->compileBuffer();
             }
 
+              extensions->glBindBuffer(GL_TEXTURE_BUFFER_ARB,0);
             _modifiedCount[contextID] = totalmodified;
         }
 

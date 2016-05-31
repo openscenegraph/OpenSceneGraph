@@ -1,3 +1,5 @@
+#undef OBJECT_CAST
+#define OBJECT_CAST dynamic_cast
 #include <osg/Drawable>
 #include <osgDB/ObjectWrapper>
 #include <osgDB/InputStream>
@@ -53,3 +55,65 @@ REGISTER_OBJECT_WRAPPER( Drawable,
         ADD_HEXINT_SERIALIZER( NodeMask, 0xffffffff );  // _nodeMask
     }
 }
+
+
+
+
+namespace DrawableDrawCallbackWrapper  {
+REGISTER_OBJECT_WRAPPER( DrawableDrawCallback,
+                         /*new osg::Drawable::DrawCallback*/NULL,
+                        osg::Drawable::DrawCallback,
+                         "osg::Object osg::Drawable::DrawCallback" )
+{
+
+}
+}
+static bool checkTFBufferBindings( const osg::TransformFeedBackDrawCallback& node )
+{
+    return node.getNumTransformFeedbackBufferBindings()//Arrays();
+           >0;
+}
+
+static bool readTFBufferBindings( osgDB::InputStream& is, osg::TransformFeedBackDrawCallback& node )
+{
+    unsigned int size = 0;
+    is >> size >> is.BEGIN_BRACKET;
+    for ( unsigned int i=0; i<size; ++i )
+    {
+        osg::ref_ptr<osg::Object> obj = is.readObject();
+        osg::BufferIndexBinding* child = dynamic_cast<osg:: BufferIndexBinding*>( obj.get() );
+        if ( child ) node.addTransformFeedbackBufferBinding( child );
+    }
+    is >> is.END_BRACKET;
+    return true;
+}
+
+static bool writeTFBufferBindings( osgDB::OutputStream& os, const osg::TransformFeedBackDrawCallback& node )
+{
+    unsigned int size = node.getNumTransformFeedbackBufferBindings();//Arrays();
+    os << size << os.BEGIN_BRACKET << std::endl;
+    for ( unsigned int i=0; i<size; ++i )
+    {
+        os << node.getTransformFeedbackBufferBinding(i);
+    }
+    os << os.END_BRACKET << std::endl;
+    return true;
+}
+namespace TransformFeedBackDrawCallbackWrapper{
+REGISTER_OBJECT_WRAPPER( TransformFeedBackDrawCallback,
+                         new  osg::TransformFeedBackDrawCallback,
+                         osg::TransformFeedBackDrawCallback,
+                         "osg::Object osg::Drawable::DrawCallback osg::TransformFeedBackDrawCallback" )
+{
+
+    //ADD_OBJECT_SERIALIZER( BufferObject, osg::BufferObject, NULL );  // _bufferObject
+    //ADD_OBJECT_SERIALIZER( TargetArray, osg::Array, NULL );  // _bufferObject
+    ADD_USER_SERIALIZER(TFBufferBindings);
+
+   // ADD_UINT_SERIALIZER( Index, 0);  // _index
+    ADD_GLENUM_SERIALIZER( FeedBackType,GLenum, GL_POINTS);  // _type
+
+}
+}
+#undef OBJECT_CAST
+#define OBJECT_CAST static_cast

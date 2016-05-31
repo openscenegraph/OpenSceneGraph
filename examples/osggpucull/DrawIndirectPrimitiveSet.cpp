@@ -21,13 +21,6 @@
 
 void DrawArraysIndirect::draw(osg::State& state, bool useVertexBufferObjects) const
 {
-    unsigned int contextID = state.getContextID();
-    osg::GLExtensions* extensions = state.get<osg::GLExtensions>();
-    if( !_buffer.valid() )
-        return;
-   // _buffer->bindBufferAs( state.getContextID(), GL_DRAW_INDIRECT_BUFFER );
-    extensions->glBindBuffer(GL_DRAW_INDIRECT_BUFFER,_buffer->getBufferObject()->getGLBufferObject(contextID)->getGLObjectID() );
-
 // if you want to see how many primitives were rendered - uncomment code below, but
 // be warned : it is a serious performance killer ( because of GPU->CPU roundtrip )
 
@@ -37,28 +30,16 @@ void DrawArraysIndirect::draw(osg::State& state, bool useVertexBufferObjects) co
 // OSG_WARN<<"DrawArraysIndirect ("<<val<<"): "<< tab[val] << " " << tab[val+1] << " " << tab[val+2] << " " << tab[val+3] << std::endl;
 // dext->glUnmapBuffer(GL_DRAW_INDIRECT_BUFFER);
 
-    DrawIndirectGLExtensions *ext = DrawIndirectGLExtensions::getExtensions( state.getContextID(),true );
-    ext->glDrawArraysIndirect( _mode, reinterpret_cast<const void*>(_indirect) );
-    //_buffer->unbindBufferAs( state.getContextID(), GL_DRAW_INDIRECT_BUFFER );
-    extensions->glBindBuffer(GL_DRAW_INDIRECT_BUFFER,0);
+   state.get<osg::GLExtensions>()->glDrawArraysIndirect( _mode, reinterpret_cast<const void*>(_indirect) );
+
 }
 
 void MultiDrawArraysIndirect::draw(osg::State& state, bool useVertexBufferObjects) const
 {
-
-    unsigned int contextID = state.getContextID();
-    osg::GLExtensions* extensions = state.get<osg::GLExtensions>();
-    if( !_buffer.valid() )
-        return;
-   // _buffer->bindBufferAs( state.getContextID(), GL_DRAW_INDIRECT_BUFFER );
-    extensions->glBindBuffer(GL_DRAW_INDIRECT_BUFFER,_buffer->getBufferObject()->getGLBufferObject(contextID)->getGLObjectID() );
-
-    DrawIndirectGLExtensions *ext = DrawIndirectGLExtensions::getExtensions( state.getContextID(),true );
-    ext->glMultiDrawArraysIndirect( _mode, reinterpret_cast<const void*>(_indirect), _drawcount, _stride );
-    //_buffer->unbindBufferAs( state.getContextID(), GL_DRAW_INDIRECT_BUFFER );
-    extensions->glBindBuffer(GL_DRAW_INDIRECT_BUFFER,0);
+   // DrawIndirectGLExtensions *ext = DrawIndirectGLExtensions::getExtensions( state.getContextID(),true );
+    state.get<osg::GLExtensions>()->glMultiDrawArraysIndirect( _mode, reinterpret_cast<const void*>(_indirect), _drawcount, _stride );
 }
-
+/*
 DrawIndirectGLExtensions::DrawIndirectGLExtensions( unsigned int contextID )
 {
     setupGLExtensions( contextID );
@@ -146,3 +127,4 @@ DrawIndirectGLExtensions* DrawIndirectGLExtensions::getExtensions( unsigned int 
     }
     return bdiExtensions[contextID].get();
 }
+*/

@@ -947,6 +947,7 @@ public:
         if ( is.isBinary() )
         {
             is >> size;
+            list.reserve(size);
             for ( unsigned int i=0; i<size; ++i )
             {
                 ValueType value;
@@ -958,6 +959,7 @@ public:
         else if ( is.matchString(_name) )
         {
             is >> size;
+            list.reserve(size);
             if ( size>0 ) is >> is.BEGIN_BRACKET;
             for ( unsigned int i=0; i<size; ++i )
             {
@@ -1102,6 +1104,7 @@ public:
         if ( is.isBinary() )
         {
             is >> size;
+            list.reserve(size);
             for ( unsigned int i=0; i<size; ++i )
             {
                 ValueType value;
@@ -1112,6 +1115,7 @@ public:
         else if ( is.matchString(_name) )
         {
             is >> size;
+            list.reserve(size);
             if ( size>0 ) is >> is.BEGIN_BRACKET;
             for ( unsigned int i=0; i<size; ++i )
             {

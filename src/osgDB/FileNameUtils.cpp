@@ -436,6 +436,7 @@ bool osgDB::isAbsolutePath(const std::string& path) {
     if (path[0] == '/') return true;
     // Now test for Windows root
     if (path.length()<2) return false;
+    if (path[0] == '\\' && path[1] == '\\') return true;
     return path[1] == ':';        // We should check that path[0] is a letter, but as ':' is invalid in paths in other cases, that's not a problem.
 }
 

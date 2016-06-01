@@ -39,18 +39,17 @@ TextureBuffer::~TextureBuffer()
     _bo=NULL;
 }
 
-void TextureBuffer::setBufferObject(BufferObject *bo){
-         if (_bo == bo) return;
-
-
+void TextureBuffer::setBufferObject(BufferObject *bo)
+{
+    if (_bo == bo) return;
 
     if (_bo.valid())
-    {  for (unsigned int ibd=0; ibd<_bo->getNumBufferData(); ibd++)
-
-       _bo-> getBufferData(ibd)->removeClient(_bo);
+    {
+        for (unsigned int ibd=0; ibd<_bo->getNumBufferData(); ibd++)
+            _bo-> getBufferData(ibd)->removeClient(_bo);
     }
 
-     _bo=bo;
+    _bo=bo;
 
     _modifiedCount.setAllElementsTo(0);
 
@@ -58,10 +57,10 @@ void TextureBuffer::setBufferObject(BufferObject *bo){
     {
         for (unsigned int ibd=0; ibd<bo->getNumBufferData(); ibd++)
 
-         bo->getBufferData(ibd)->addClient(bo);
+            bo->getBufferData(ibd)->addClient(bo);
     }
 
-        }
+}
 int TextureBuffer::compare(const StateAttribute& sa) const
 {
     // check the types are equal and then create the rhs variable
@@ -119,17 +118,15 @@ void TextureBuffer::setImage(Image* image)
     {
         _bo=new  VertexBufferObject();
         _bo->setUsage(GL_STREAM_DRAW_ARB);
-        _bo->setTarget(GL_TEXTURE_BUFFER_ARB);
 
     }
 
     if (getImage() == image) return;
 
 
-
     if (getImage())
     {
-        getImage()->removeClient(    _bo);
+        getImage()->removeClient(    this);
     }
     ///delegate
     _bo->setBufferData(0,image);
@@ -138,7 +135,7 @@ void TextureBuffer::setImage(Image* image)
 
     if (image)
     {
-        image->addClient(   _bo );
+        image->addClient(   this );
     }
 }
 
@@ -172,7 +169,8 @@ void TextureBuffer::apply(State& state) const
                 glBufferObject->compileBuffer();
             }
 
-              extensions->glBindBuffer(GL_TEXTURE_BUFFER_ARB,0);
+            extensions->glBindBuffer(_bo->getTarget(),0);
+
             _modifiedCount[contextID] = totalmodified;
         }
 
@@ -192,7 +190,7 @@ void TextureBuffer::apply(State& state) const
     }
     else if (_bo.valid()&& _bo->getNumBufferData()>0)
     {
-unsigned int totalmodified=0;
+        unsigned int totalmodified=0;
         for (unsigned int ibd=0; ibd<_bo->getNumBufferData(); ibd++)
             totalmodified+=_bo->getBufferData(ibd)->getModifiedCount();
         const GLExtensions* extensions = state.get<GLExtensions>();
@@ -214,7 +212,7 @@ unsigned int totalmodified=0;
 
 #if 1
         ///try to compute textureWidth if not set by user
-        /// (seams dirty and useless textureWidth is not used annywhere)
+        /// ( seams dirty and useless : textureWidth is not used anywhere )
         ///check for downcast for getTotalDataSize/datasize  ( kind of dirty just toretrieve datasize )
         if(_textureWidth==0)
             for (unsigned int ibd=0; ibd<_bo->getNumBufferData(); ibd++)
@@ -235,17 +233,19 @@ unsigned int totalmodified=0;
             }
 #endif
 
-/// now compile tbo if required
+
+        /// now compile bufferobject if required
         GLBufferObject* glBufferObject = _bo->getOrCreateGLBufferObject(contextID);
         if (glBufferObject )
         {
             if( glBufferObject->isDirty())
-                   glBufferObject->compileBuffer();
-            else      glBufferObject->bindBuffer();
+                glBufferObject->compileBuffer();
+        }
 
-            textureObject->setAllocated(true);
-            //  extensions->glBindBuffer(GL_TEXTURE_BUFFER_ARB,0);
-
+        textureObject->setAllocated(true);
+        extensions->glBindBuffer(_bo->getTarget(),0);
+        if (glBufferObject )
+        {
             textureObject->bind();
             extensions->glTexBuffer(GL_TEXTURE_BUFFER_ARB, _internalFormat, glBufferObject->getGLObjectID());
         }

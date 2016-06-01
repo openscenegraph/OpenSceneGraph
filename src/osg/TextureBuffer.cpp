@@ -126,7 +126,7 @@ void TextureBuffer::setImage(Image* image)
 
     if (getImage())
     {
-        getImage()->removeClient(    this);
+        getImage()->removeClient(_bo);
     }
     ///delegate
     _bo->setBufferData(0,image);
@@ -135,7 +135,7 @@ void TextureBuffer::setImage(Image* image)
 
     if (image)
     {
-        image->addClient(   this );
+        image->addClient( _bo );
     }
 }
 

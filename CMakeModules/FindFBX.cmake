@@ -135,8 +135,8 @@ IF(NOT FBX_FOUND)
 
     SET( FBX_SEARCH_PATHS
         $ENV{FBX_DIR}
-        "$ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2013.3
-        "$ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2013.3
+        "$ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2013.3"
+        "$ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2013.3"
         "/Applications/Autodesk/FBX/FBX SDK/2013.3"
         /Applications/Autodesk/FBXSDK20133
     )

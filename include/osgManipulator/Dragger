@@ -196,7 +196,7 @@ class OSGMANIPULATOR_EXPORT Dragger : public osg::MatrixTransform
     public:
 
 
-        META_Node(osgManipulator,Dragger)
+        META_Node(osgManipulator,Dragger);
 
         /**
          * Set/Get parent dragger. For simple draggers parent points to itself.
@@ -314,7 +314,7 @@ class OSGMANIPULATOR_EXPORT CompositeDragger : public Dragger
 {
     public:
 
-        META_Node(osgManipulator,CompositeDragger)
+        META_Node(osgManipulator,CompositeDragger);
 
         typedef std::vector< osg::ref_ptr<Dragger> > DraggerList;
 

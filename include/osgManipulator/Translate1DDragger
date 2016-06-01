@@ -30,7 +30,7 @@ class OSGMANIPULATOR_EXPORT Translate1DDragger : public Dragger
 
         Translate1DDragger();
 
-        META_OSGMANIPULATOR_Object(osgManipulator,Translate1DDragger)
+        META_OSGMANIPULATOR_Object(osgManipulator,Translate1DDragger);
 
         Translate1DDragger(const osg::Vec3d& s, const osg::Vec3d& e);
 

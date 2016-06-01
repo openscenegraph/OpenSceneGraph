@@ -446,6 +446,7 @@ class OSGVIEWER_EXPORT ScreenCaptureHandler : public osgGA::GUIEventHandler
                 std::vector<unsigned int> _contextSaveCounter;
         };
 
+        /** @param defaultOperation : operation to do when screen capture happens. */
         /** @param numFrames >0: capture that number of frames. <0: capture all frames, call stopCapture() to stop it. */
         ScreenCaptureHandler(CaptureOperation* defaultOperation = 0, int numFrames = 1);
 

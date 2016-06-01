@@ -49,7 +49,7 @@ class OSG_EXPORT ShaderBinary : public osg::Object
 
         META_Object(osg, ShaderBinary);
 
-        /** Allocated a data buffer of specified size/*/
+        /** Allocated a data buffer of specified size.*/
         void allocate(unsigned int size);
 
         /** Assign shader binary data, copying the specified data into locally stored data buffer, the original data can then be deleted.*/
@@ -321,7 +321,7 @@ class OSG_EXPORT ShaderComponent : public osg::Object
         ShaderComponent();
         ShaderComponent(const ShaderComponent& sc,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
-        META_Object(osg, ShaderComponent)
+        META_Object(osg, ShaderComponent);
 
         unsigned int addShader(osg::Shader* shader);
         void removeShader(unsigned int i);

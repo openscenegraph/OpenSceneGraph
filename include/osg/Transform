@@ -59,7 +59,7 @@ extern OSG_EXPORT Matrix computeEyeToLocal(const Matrix& modelview, const NodePa
   * Transform itself does not provide set/get functions, only the interface
   * for defining what the 4x4 transformation is.  Subclasses, such as
   * MatrixTransform and PositionAttitudeTransform support the use of an
-  * osg::Matrix or a osg::Vec3/osg::Quat respectively.
+  * osg::Matrix or a Vec3 and Quat respectively.
   *
   * Note: If the transformation matrix scales the subgraph then the normals
   * of the underlying geometry will need to be renormalized to be unit

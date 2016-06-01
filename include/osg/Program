@@ -180,7 +180,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
 
                 META_Object(osg, ProgramBinary);
 
-                /** Allocated a data buffer of specified size/*/
+                /** Allocated a data buffer of specified size.*/
                 void allocate(unsigned int size);
 
                 /** Assign program binary data, copying the specified data into locally stored data buffer, the original data can then be deleted.*/

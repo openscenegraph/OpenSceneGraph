@@ -30,7 +30,7 @@ class OSG_EXPORT ValueMap : public osg::Object
 
         ValueMap(const ValueMap& vm, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-        META_Object(osg, ValueMap)
+        META_Object(osg, ValueMap);
 
         typedef std::map< osg::ref_ptr<const osg::Referenced>, osg::ref_ptr<osg::Object>  > KeyValueMap;
 

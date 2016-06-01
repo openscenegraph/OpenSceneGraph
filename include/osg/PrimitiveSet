@@ -418,13 +418,17 @@ class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
             vector_type(array) {}
 
         /**
+         * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
          * \param no Number of intended elements. This will be the size of the underlying vector.
+         * \param ptr Pointer to a GLubyte to copy index data from.
+         * \param numInstances When non zero passed as the number of draw instances to use re.
          */
         DrawElementsUByte(GLenum mode, unsigned int no, const GLubyte* ptr, int numInstances=0) :
             DrawElements(DrawElementsUBytePrimitiveType,mode,numInstances),
             vector_type(ptr,ptr+no) {}
 
         /**
+         * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
          * \param no Number of intended elements. This will be the size of the underlying vector.
          */
         DrawElementsUByte(GLenum mode, unsigned int no) :
@@ -477,13 +481,17 @@ class OSG_EXPORT DrawElementsUShort : public DrawElements, public VectorGLushort
             vector_type(array) {}
 
         /**
+         * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
          * \param no Number of intended elements. This will be the size of the underlying vector.
+         * \param ptr Pointer to a GLushort to copy index data from.
+         * \param numInstances When non zero passed as the number of draw instances to use re.
          */
         DrawElementsUShort(GLenum mode, unsigned int no, const GLushort* ptr, int numInstances=0) :
             DrawElements(DrawElementsUShortPrimitiveType,mode,numInstances),
             vector_type(ptr,ptr+no) {}
 
         /**
+         * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
          * \param no Number of intended elements. This will be the size of the underlying vector.
          */
         DrawElementsUShort(GLenum mode, unsigned int no) :
@@ -542,12 +550,15 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
         /**
          * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
          * \param no Number of intended elements. This will be the size of the underlying vector.
+         * \param ptr Pointer to a GLuint to copy index data from.
+         * \param numInstances When non zero passed as the number of draw instances to use re.
          */
         DrawElementsUInt(GLenum mode, unsigned int no, const GLuint* ptr, int numInstances=0) :
             DrawElements(DrawElementsUIntPrimitiveType,mode,numInstances),
             vector_type(ptr,ptr+no) {}
 
         /**
+         * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
          * \param no Number of intended elements. This will be the size of the underlying vector.
          */
         DrawElementsUInt(GLenum mode, unsigned int no) :

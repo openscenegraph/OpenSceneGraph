@@ -227,8 +227,7 @@ printf("### CONVERTING from sample format %s TO %s\n\t\tFROM %d TO %d channels\n
         if (avcodec_open2(m_context, p_codec, NULL) < 0)
             throw std::runtime_error("avcodec_open() failed");
 
-        m_context->get_buffer = avcodec_default_get_buffer;
-        m_context->release_buffer = avcodec_default_release_buffer;
+        m_context->get_buffer2 = avcodec_default_get_buffer2;
 
     }
 

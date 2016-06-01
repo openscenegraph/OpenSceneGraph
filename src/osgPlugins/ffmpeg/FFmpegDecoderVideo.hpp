@@ -94,8 +94,8 @@ private:
                 int src_pix_fmt, int src_width, int src_height);
 
 
-    static int getBuffer(AVCodecContext * context, AVFrame * picture);
-    static void releaseBuffer(AVCodecContext * context, AVFrame * picture);
+    static int getBuffer(AVCodecContext * context, AVFrame * picture, int flags);
+    static void freeBuffer(void * opaque, uint8_t *data);
 
     PacketQueue &           m_packets;
     FFmpegClocks &          m_clocks;

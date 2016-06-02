@@ -958,14 +958,21 @@ void SharedGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
 
     osg::GLBufferObject* ebo = _drawElements->getOrCreateGLBufferObject(state.getContextID());
 
-    state.bindElementBufferObject(ebo);
+    if (ebo)
+    {
+        state.bindElementBufferObject(ebo);
 
-    glDrawElements(primitiveType, _drawElements->getNumIndices(), _drawElements->getDataType(), (const GLvoid *)(ebo->getOffset(_drawElements->getBufferIndex())));
+        glDrawElements(primitiveType, _drawElements->getNumIndices(), _drawElements->getDataType(), (const GLvoid *)(ebo->getOffset(_drawElements->getBufferIndex())));
 
+        state.unbindElementBufferObject();
+    }
+    else
+    {
+        glDrawElements(primitiveType, _drawElements->getNumIndices(), _drawElements->getDataType(), _drawElements->getDataPointer());
+    }
 
     // unbind the VBO's if any are used.
     state.unbindVertexBufferObject();
-    state.unbindElementBufferObject();
 
     if (checkForGLErrors) state.checkGLErrors("end of SharedGeometry::drawImplementation().");
 }

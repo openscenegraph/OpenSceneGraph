@@ -618,10 +618,10 @@ void GlyphGeometry::setup(const Glyph3D* glyph, const Style* style)
         OSG_INFO<<"GlyphGeometry::setup(const Glyph* glyph, NULL) create glyph geometry with custom Style."<<std::endl;
 
         // record the style
-        _style = dynamic_cast<Style*>(style->clone(osg::CopyOp::DEEP_COPY_ALL));
+        _style = osg::clone(style, osg::CopyOp::DEEP_COPY_ALL);
 
-        const Bevel* bevel = style ? style->getBevel() : 0;
-        bool outline = style ? style->getOutlineRatio()>0.0f : false;
+        const Bevel* bevel = style->getBevel();
+        bool outline = style->getOutlineRatio()>0.0f;
         float width = style->getThicknessRatio();
 
         if (bevel)

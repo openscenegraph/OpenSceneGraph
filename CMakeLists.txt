@@ -939,6 +939,7 @@ SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} CACHE STRING "You may add additiona
 # This is unofficial so this may be removed or changed at anytime.
 SET(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} CACHE STRING "(EXPERIMENTAL) You may add additional search paths here. Use ; to separate multiple paths.")
 
+
 # This is for an advanced option to give aggressive warnings
 # under different compilers. If yours is not implemented, this option
 # will not be made available.
@@ -1006,16 +1007,17 @@ ENDIF()
 # This will only be made available if we set values for OSG_AGGRESSIVE_WARNING_FLAGS.
 IF(OSG_AGGRESSIVE_WARNING_FLAGS)
 
+    SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} CACHE STRING "Compiler flags to use when OSG_AGGRESSIVE_WARNINGS is enabled." FORCE)
+
     IF (APPLE)
         SET(DEFAULT_USE_AGGRESSIVE_WARNINGS OFF)
     ELSE()
         SET(DEFAULT_USE_AGGRESSIVE_WARNINGS ON)
     ENDIF()
 
-    OPTION(OSG_USE_AGGRESSIVE_WARNINGS "Enable to activate aggressive warnings" ${DEFAULT_USE_AGGRESSIVE_WARNINGS})
-    MARK_AS_ADVANCED(OSG_USE_AGGRESSIVE_WARNINGS)
+    OPTION(OSG_AGGRESSIVE_WARNINGS "Enable to activate aggressive warnings" ${DEFAULT_USE_AGGRESSIVE_WARNINGS})
 
-    IF(OSG_USE_AGGRESSIVE_WARNINGS)
+    IF(OSG_AGGRESSIVE_WARNINGS)
         # Add flags defined by OSG_AGGRESSIVE_WARNING_FLAGS if they aren't already there
         FOREACH(flag ${OSG_AGGRESSIVE_WARNING_FLAGS})
             IF(NOT CMAKE_CXX_FLAGS MATCHES "${flag}")

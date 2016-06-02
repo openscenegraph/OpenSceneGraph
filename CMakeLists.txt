@@ -1015,7 +1015,7 @@ IF(OSG_AGGRESSIVE_WARNING_FLAGS)
         SET(DEFAULT_USE_AGGRESSIVE_WARNINGS ON)
     ENDIF()
 
-    OPTION(g "Enable to activate aggressive warnings" ${DEFAULT_USE_AGGRESSIVE_WARNINGS})
+    OPTION(OSG_AGGRESSIVE_WARNINGS "Enable to activate aggressive warnings" ${DEFAULT_USE_AGGRESSIVE_WARNINGS})
 
     IF(OSG_AGGRESSIVE_WARNINGS)
         # Add flags defined by OSG_AGGRESSIVE_WARNING_FLAGS if they aren't already there

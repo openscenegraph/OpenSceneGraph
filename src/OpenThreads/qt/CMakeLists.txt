@@ -71,11 +71,11 @@ INSTALL(
     DESTINATION include/OpenThreads
     COMPONENT libopenthreads-dev
 )
-if(MSVC)
+IF(MSVC)
     INSTALL(
         FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenThreads${CMAKE_BUILD_POSTFIX}.pdb
         DESTINATION bin
         COMPONENT libopenthreads
     )
-)
+ENDIF()
 #commented out# INCLUDE(ModuleInstall OPTIONAL)

@@ -957,6 +957,7 @@ void SharedGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
     GLenum primitiveType = computeDiagonals ? GL_LINES_ADJACENCY : GL_QUADS;
 
     osg::GLBufferObject* ebo = _drawElements->getOrCreateGLBufferObject(state.getContextID());
+
     state.bindElementBufferObject(ebo);
 
     glDrawElements(primitiveType, _drawElements->getNumIndices(), _drawElements->getDataType(), (const GLvoid *)(ebo->getOffset(_drawElements->getBufferIndex())));
@@ -965,19 +966,6 @@ void SharedGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
     // unbind the VBO's if any are used.
     state.unbindVertexBufferObject();
     state.unbindElementBufferObject();
-
-#if 0
-    if (computeDiagonals)
-    {
-        if (state.checkGLErrors("End of SharedGeometry::drawImplementation. computeDiagonals=TRUE")) {}
-        else OSG_NOTICE<<"SharedGeometry::drawImplementation. OK computeDiagonals=TRUE"<<std::endl;
-    }
-    else
-    {
-        if (state.checkGLErrors("End of SharedGeometry::drawImplementation. computeDiagonals=FALSE")) {}
-        else OSG_NOTICE<<"SharedGeometry::drawImplementation. OK computeDiagonals=FALSE"<<std::endl;
-    }
-#endif
 
     if (checkForGLErrors) state.checkGLErrors("end of SharedGeometry::drawImplementation().");
 }

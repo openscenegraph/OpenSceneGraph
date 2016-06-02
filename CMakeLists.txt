@@ -53,8 +53,8 @@ PROJECT(OpenSceneGraph)
 
 SET(OPENSCENEGRAPH_MAJOR_VERSION 3)
 SET(OPENSCENEGRAPH_MINOR_VERSION 5)
-SET(OPENSCENEGRAPH_PATCH_VERSION 2)
-SET(OPENSCENEGRAPH_SOVERSION 143)
+SET(OPENSCENEGRAPH_PATCH_VERSION 3)
+SET(OPENSCENEGRAPH_SOVERSION 144)
 
 # set to 0 when not a release candidate, non zero means that any generated
 # git tags will be treated as release candidates of given number
@@ -1015,7 +1015,7 @@ IF(OSG_AGGRESSIVE_WARNING_FLAGS)
         SET(DEFAULT_USE_AGGRESSIVE_WARNINGS ON)
     ENDIF()
 
-    OPTION(OSG_AGGRESSIVE_WARNINGS "Enable to activate aggressive warnings" ${DEFAULT_USE_AGGRESSIVE_WARNINGS})
+    OPTION(g "Enable to activate aggressive warnings" ${DEFAULT_USE_AGGRESSIVE_WARNINGS})
 
     IF(OSG_AGGRESSIVE_WARNINGS)
         # Add flags defined by OSG_AGGRESSIVE_WARNING_FLAGS if they aren't already there

@@ -72,56 +72,28 @@ public:
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_deletedDisplayListCache);
 
-            bool trimFromFront = true;
-            if (trimFromFront)
+            unsigned int prev_size = _displayListMap.size();
+
+            // trim from front
+            DisplayListMap::iterator ditr=_displayListMap.begin();
+            unsigned int maxNumToDelete = (_displayListMap.size() > s_minimumNumberOfDisplayListsToRetainInCache) ? _displayListMap.size()-s_minimumNumberOfDisplayListsToRetainInCache : 0;
+            for(;
+                ditr!=_displayListMap.end() && elapsedTime<availableTime && noDeleted<maxNumToDelete;
+                ++ditr)
             {
-                unsigned int prev_size = _displayListMap.size();
+                glDeleteLists(ditr->second,1);
 
-                DisplayListMap::iterator ditr=_displayListMap.begin();
-                unsigned int maxNumToDelete = (_displayListMap.size() > s_minimumNumberOfDisplayListsToRetainInCache) ? _displayListMap.size()-s_minimumNumberOfDisplayListsToRetainInCache : 0;
-                for(;
-                    ditr!=_displayListMap.end() && elapsedTime<availableTime && noDeleted<maxNumToDelete;
-                    ++ditr)
-                {
-                    glDeleteLists(ditr->second,1);
+                elapsedTime = timer.delta_s(start_tick,timer.tick());
+                ++noDeleted;
 
-                    elapsedTime = timer.delta_s(start_tick,timer.tick());
-                    ++noDeleted;
-
-                    ++_numberDeletedDrawablesInLastFrame;
-                }
-
-                if (ditr!=_displayListMap.begin()) _displayListMap.erase(_displayListMap.begin(),ditr);
-
-                if (noDeleted+_displayListMap.size() != prev_size)
-                {
-                    OSG_WARN<<"Error in delete"<<std::endl;
-                }
+                ++_numberDeletedDrawablesInLastFrame;
             }
-            else
+
+            if (ditr!=_displayListMap.begin()) _displayListMap.erase(_displayListMap.begin(),ditr);
+
+            if (noDeleted+_displayListMap.size() != prev_size)
             {
-                unsigned int prev_size = _displayListMap.size();
-
-                DisplayListMap::reverse_iterator ditr=_displayListMap.rbegin();
-                unsigned int maxNumToDelete = (_displayListMap.size() > s_minimumNumberOfDisplayListsToRetainInCache) ? _displayListMap.size()-s_minimumNumberOfDisplayListsToRetainInCache : 0;
-                for(;
-                    ditr!=_displayListMap.rend() && elapsedTime<availableTime && noDeleted<maxNumToDelete;
-                    ++ditr)
-                {
-                    glDeleteLists(ditr->second,1);
-
-                    elapsedTime = timer.delta_s(start_tick,timer.tick());
-                    ++noDeleted;
-
-                    ++_numberDeletedDrawablesInLastFrame;
-                }
-
-                if (ditr!=_displayListMap.rbegin()) _displayListMap.erase(ditr.base(),_displayListMap.end());
-
-                if (noDeleted+_displayListMap.size() != prev_size)
-                {
-                    OSG_WARN<<"Error in delete"<<std::endl;
-                }
+                OSG_WARN<<"Error in delete"<<std::endl;
             }
         }
         elapsedTime = timer.delta_s(start_tick,timer.tick());

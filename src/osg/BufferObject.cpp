@@ -1018,7 +1018,7 @@ void GLBufferObjectManager::resetStats()
     _applyTime = 0;
 }
 
-void GLBufferObjectManager::recomputeStats(std::ostream& out)
+void GLBufferObjectManager::recomputeStats(std::ostream& out) const
 {
     out<<"GLBufferObjectMananger::recomputeStats()"<<std::endl;
     unsigned int numObjectsInLists = 0;
@@ -1026,11 +1026,11 @@ void GLBufferObjectManager::recomputeStats(std::ostream& out)
     unsigned int numOrphans = 0;
     unsigned int numPendingOrphans = 0;
     unsigned int currentSize = 0;
-    for(GLBufferObjectSetMap::iterator itr = _glBufferObjectSetMap.begin();
+    for(GLBufferObjectSetMap::const_iterator itr = _glBufferObjectSetMap.begin();
         itr != _glBufferObjectSetMap.end();
         ++itr)
     {
-         GLBufferObjectSet* os = itr->second.get();
+         const GLBufferObjectSet* os = itr->second.get();
          numObjectsInLists += os->computeNumGLBufferObjectsInList();
          numActive += os->getNumOfGLBufferObjects();
          numOrphans += os->getNumOrphans();

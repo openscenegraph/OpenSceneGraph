@@ -360,7 +360,7 @@ class OSG_EXPORT GLBufferObjectManager : public GraphicsObjectManager
         void newFrame(osg::FrameStamp* fs);
         void resetStats();
         void reportStats(std::ostream& out);
-        void recomputeStats(std::ostream& out);
+        void recomputeStats(std::ostream& out) const;
 
         unsigned int& getFrameNumber() { return _frameNumber; }
         unsigned int& getNumberFrames() { return _numFrames; }

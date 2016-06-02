@@ -509,12 +509,12 @@ bool ClassInterface::getSupportedProperties(const osg::Object* object, PropertyM
 
     if (searchAssociates)
     {
-        const osgDB::StringList& associates = ow->getAssociates();
-        for(osgDB::StringList::const_iterator aitr = associates.begin();
+        const osgDB::ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
+        for(osgDB::ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
             aitr != associates.end();
             ++aitr)
         {
-            osgDB::ObjectWrapper* associate_wrapper = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(*aitr);
+            osgDB::ObjectWrapper* associate_wrapper = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(aitr->_name);
             if (associate_wrapper)
             {
                 const osgDB::ObjectWrapper::SerializerList& associate_serializers = associate_wrapper->getSerializerList();
@@ -560,12 +560,12 @@ bool ClassInterface::isObjectOfType(const osg::Object* object, const std::string
         return false;
     }
 
-    const osgDB::StringList& associates = ow->getAssociates();
-    for(osgDB::StringList::const_iterator aitr = associates.begin();
+    const osgDB::ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
+    for(osgDB::ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
         aitr != associates.end();
         ++aitr)
     {
-        if ((*aitr)==compoundClassName) return true;
+        if ((aitr->_name)==compoundClassName) return true;
     }
     return false;
 }
@@ -584,12 +584,12 @@ bool ClassInterface::run(void* objectPtr, const std::string& compoundClassName, 
         if (mo->run(objectPtr, inputParameters, outputParameters)) return true;
     }
 
-    const osgDB::StringList& associates = ow->getAssociates();
-    for(osgDB::StringList::const_iterator aitr = associates.begin();
+    const osgDB::ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
+    for(osgDB::ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
         aitr != associates.end();
         ++aitr)
     {
-        osgDB::ObjectWrapper* aow = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(*aitr);
+        osgDB::ObjectWrapper* aow = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(aitr->_name);
         if (aow)
         {
             const ObjectWrapper::MethodObjectMap& methodObjectMap = aow->getMethodObjectMap();
@@ -620,12 +620,12 @@ bool ClassInterface::hasMethod(const std::string& compoundClassName, const std::
     ObjectWrapper::MethodObjectMap::const_iterator oitr = ow_methodObjectMap.find(methodName);
     if (oitr!=ow_methodObjectMap.end()) return true;
 
-    const osgDB::StringList& associates = ow->getAssociates();
-    for(osgDB::StringList::const_iterator aitr = associates.begin();
+    const osgDB::ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
+    for(osgDB::ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
         aitr != associates.end();
         ++aitr)
     {
-        osgDB::ObjectWrapper* aow = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(*aitr);
+        osgDB::ObjectWrapper* aow = osgDB::Registry::instance()->getObjectWrapperManager()->findWrapper(aitr->_name);
         if (aow)
         {
             const ObjectWrapper::MethodObjectMap& methodObjectMap = aow->getMethodObjectMap();

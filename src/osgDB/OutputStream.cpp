@@ -639,50 +639,56 @@ void OutputStream::writeObjectFields( const osg::Object* obj, const std::string&
     // OSG_NOTICE<<"OutputStream::writeObjectFields("<<obj->className()<<", name="<<name<<")"<<std::endl;
 
     ObjectWrapper* wrapper = Registry::instance()->getObjectWrapperManager()->findWrapper( name );
+
     if ( !wrapper )
     {
         OSG_WARN << "OutputStream::writeObject(): Unsupported wrapper class "
                                 << name << std::endl;
         return;
     }
-
-    const StringList& associates = wrapper->getAssociates();
-    for ( StringList::const_iterator itr=associates.begin(); itr!=associates.end(); ++itr )
+    int outputVersion =  getFileVersion(wrapper->getDomain());
+    const ObjectWrapper::RevisionAssociateList& associates = wrapper->getAssociates();
+    for ( ObjectWrapper::RevisionAssociateList::const_iterator itr=associates.begin(); itr!=associates.end(); ++itr )
     {
-        const std::string& assocName = *itr;
-        ObjectWrapper* assocWrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(assocName);
-        if ( !assocWrapper )
+        if ( itr->_firstVersion <= outputVersion &&
+             outputVersion <= itr->_lastVersion)
         {
-            OSG_WARN << "OutputStream::writeObject(): Unsupported associated class "
-                                    << assocName << std::endl;
-            continue;
-        }
-        else if ( _useSchemaData )
-        {
-            if ( _inbuiltSchemaMap.find(assocName)==_inbuiltSchemaMap.end() )
+            const std::string& assocName = itr->_name;
+            ObjectWrapper* assocWrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(assocName);
+            if ( !assocWrapper )
             {
-                StringList properties;
-                ObjectWrapper::TypeList types;
-                assocWrapper->writeSchema( properties, types );
-
-                unsigned int size = osg::minimum( properties.size(), types.size() );
-                if ( size>0 )
+                OSG_WARN << "OutputStream::writeObject(): Unsupported associated class "
+                                        << assocName << std::endl;
+                continue;
+            }
+            else if ( _useSchemaData )
+            {
+                if ( _inbuiltSchemaMap.find(assocName)==_inbuiltSchemaMap.end() )
                 {
-                    std::stringstream propertiesStream;
-                    for ( unsigned int i=0; i<size; ++i )
+                    StringList properties;
+                    ObjectWrapper::TypeList types;
+                    assocWrapper->writeSchema( properties, types );
+
+                    unsigned int size = osg::minimum( properties.size(), types.size() );
+                    if ( size>0 )
                     {
-                        propertiesStream << properties[i] << ":" << types[i] << " ";
+                        std::stringstream propertiesStream;
+                        for ( unsigned int i=0; i<size; ++i )
+                        {
+                            propertiesStream << properties[i] << ":" << types[i] << " ";
+                        }
+                        _inbuiltSchemaMap[assocName] = propertiesStream.str();
                     }
-                    _inbuiltSchemaMap[assocName] = propertiesStream.str();
                 }
             }
+
+            _fields.push_back( assocWrapper->getName() );
+
+            assocWrapper->write( *this, *obj );
+            if ( getException() ) return;
+
+            _fields.pop_back();
         }
-        _fields.push_back( assocWrapper->getName() );
-
-        assocWrapper->write( *this, *obj );
-        if ( getException() ) return;
-
-        _fields.pop_back();
     }
 }
 

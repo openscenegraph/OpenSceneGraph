@@ -899,32 +899,36 @@ osg::ref_ptr<osg::Object> InputStream::readObject( osg::Object* existingObj )
 osg::ref_ptr<osg::Object> InputStream::readObjectFields( const std::string& className, unsigned int id, osg::Object* existingObj )
 {
     ObjectWrapper* wrapper = Registry::instance()->getObjectWrapperManager()->findWrapper( className );
+
     if ( !wrapper )
     {
         OSG_WARN << "InputStream::readObject(): Unsupported wrapper class "
                                << className << std::endl;
         return NULL;
     }
-
+    int inputVersion =  getFileVersion(wrapper->getDomain());
     osg::ref_ptr<osg::Object> obj = existingObj ? existingObj : wrapper->createInstance();
     _identifierMap[id] = obj;
     if ( obj.valid() )
     {
-        const StringList& associates = wrapper->getAssociates();
-        for ( StringList::const_iterator itr=associates.begin(); itr!=associates.end(); ++itr )
+        const ObjectWrapper::RevisionAssociateList& associates = wrapper->getAssociates();
+        for ( ObjectWrapper::RevisionAssociateList::const_iterator itr=associates.begin(); itr!=associates.end(); ++itr )
         {
-            ObjectWrapper* assocWrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(*itr);
-            if ( !assocWrapper )
-            {
-                OSG_WARN << "InputStream::readObject(): Unsupported associated class "
-                                       << *itr << std::endl;
-                continue;
-            }
-            _fields.push_back( assocWrapper->getName() );
-            assocWrapper->read( *this, *obj );
-            if ( getException() ) return NULL;
+            if ( itr->_firstVersion <= inputVersion &&
+                 inputVersion <= itr->_lastVersion){
+                ObjectWrapper* assocWrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(itr->_name);
+                if ( !assocWrapper )
+                {
+                    OSG_WARN << "InputStream::readObject(): Unsupported associated class "
+                                           << itr->_name << std::endl;
+                    continue;
+                }
+                _fields.push_back( assocWrapper->getName() );
+                assocWrapper->read( *this, *obj );
+                if ( getException() ) return NULL;
 
-            _fields.pop_back();
+                _fields.pop_back();
+            }
         }
     }
     return obj;

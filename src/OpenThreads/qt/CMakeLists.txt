@@ -46,11 +46,11 @@ else( QT4_FOUND )
 IF ( Qt5Widgets_FOUND )
     qt5_use_modules( ${LIB_NAME} Core )
 ENDIF ( Qt5Widgets_FOUND )
-    
+
 endif( QT4_FOUND )
 
-# Since we're building different platforms binaries in 
-# their respective directories, we need to set the 
+# Since we're building different platforms binaries in
+# their respective directories, we need to set the
 # link directory so it can find this location.
 LINK_DIRECTORIES(
     ${CMAKE_CURRENT_BINARY_DIR}

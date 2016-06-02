@@ -50,12 +50,19 @@ struct FinishedObjectReadCallback : public osg::Referenced
     virtual void objectRead(osgDB::InputStream& is, osg::Object& obj) = 0;
 };
 
+struct OSGDB_EXPORT ObjectWrapperAssociate{
+    ObjectWrapperAssociate(std::string name):_firstVersion(0),_lastVersion(INT_MAX),_name(name){}
+    int _firstVersion;
+    int _lastVersion;
+    std::string _name;
+};
 class OSGDB_EXPORT ObjectWrapper : public osg::Referenced
 {
 public:
     typedef std::vector< BaseSerializer::Type > TypeList;
     typedef std::vector< osg::ref_ptr<BaseSerializer> > SerializerList;
     typedef std::vector< osg::ref_ptr<FinishedObjectReadCallback> > FinishedObjectReadCallbackList;
+    typedef std::list<ObjectWrapperAssociate>  RevisionAssociateList;
     typedef osg::Object* CreateInstanceFunc();
 
     ObjectWrapper( CreateInstanceFunc* createInstanceFunc, const std::string& name,
@@ -63,13 +70,15 @@ public:
     ObjectWrapper( CreateInstanceFunc* createInstanceFunc, const std::string& domain, const std::string& name,
                    const std::string& associates );
 
-    void setUpdatedVersion( int ver ) { _version = ver; }
+    void setUpdatedVersion( int ver );
     int getUpdatedVersion() const { return _version; }
 
     osg::Object* createInstance() const { return  _createInstanceFunc(); }
     const std::string& getDomain() const { return _domain; }
     const std::string& getName() const { return _name; }
-    const StringList& getAssociates() const { return _associates; }
+    const RevisionAssociateList& getAssociates() const { return _associates; }
+    void associateAddedAtVersion(std::string name);
+    void associateRemovedAtVersion(std::string name);
 
     SerializerList& getSerializerList() { return _serializers; }
     const SerializerList& getSerializerList() const { return _serializers; }
@@ -106,7 +115,7 @@ protected:
     CreateInstanceFunc* _createInstanceFunc;
     std::string _domain;
     std::string _name;
-    StringList _associates;
+    RevisionAssociateList _associates;
     SerializerList _serializers;
     SerializerList _backupSerializers;
     TypeList _typeList;

@@ -129,7 +129,7 @@ Pipeline createPipelinePlainOSG(
     pass2->attach(osg::Camera::COLOR_BUFFER1, p.pass2Normals);
     pass2->attach(osg::Camera::COLOR_BUFFER2, p.pass2Colors);
     pass2->addChild(scene.get());
-    osg::StateSet *ss = setShaderProgram(pass2, "shaders/pass2.vert", "shaders/pass2.frag");
+    osg::ref_ptr<osg::StateSet> ss = setShaderProgram(pass2, "shaders/pass2.vert", "shaders/pass2.frag");
     ss->setTextureAttributeAndModes(0, createTexture("Images/whitemetal_diffuse.jpg"));
     ss->setTextureAttributeAndModes(1, createTexture("Images/whitemetal_normal.jpg"));
     ss->addUniform(new osg::Uniform("diffMap", 0));
@@ -284,7 +284,7 @@ void setAnimationPath(osg::ref_ptr<osg::MatrixTransform> node,
                      osg::AnimationPath::ControlPoint(pos, rot));
     }
     // Assign it.
-    node->setUpdateCallback(new osg::AnimationPathCallback(path));
+    node->setUpdateCallback(new osg::AnimationPathCallback(path.get()));
 }
 
 osg::ref_ptr<osg::StateSet> setShaderProgram(osg::ref_ptr<osg::Camera> pass,
@@ -314,7 +314,7 @@ int main()
     osg::ref_ptr<osgShadow::SoftShadowMap> shadowMap = new osgShadow::SoftShadowMap;
     shadowMap->setJitteringScale(16);
     shadowMap->addShader(osgDB::readShaderFile("shaders/pass1Shadow.frag"));
-    shadowMap->setLight(light);
+    shadowMap->setLight(light.get());
     osg::ref_ptr<osgShadow::ShadowedScene> shadowedScene = new osgShadow::ShadowedScene;
     shadowedScene->setShadowTechnique(shadowMap.get());
     shadowedScene->addChild(scene.get());

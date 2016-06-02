@@ -332,7 +332,7 @@ QueryGeometry::drawImplementation( osg::RenderInfo& renderInfo ) const
         OSG_FATAL << "osgOQ: QG: Invalid RQCB." << std::endl;
         return;
     }
-    rqcb->add( tr );
+    rqcb->add( tr.get() );
 
     OSG_DEBUG <<
         "osgOQ: QG: Querying for: " << _oqnName << std::endl;

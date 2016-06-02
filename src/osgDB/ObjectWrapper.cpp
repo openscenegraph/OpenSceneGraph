@@ -108,9 +108,6 @@ ObjectWrapper::ObjectWrapper( CreateInstanceFunc* createInstanceFunc, const std:
         _associates.push_back(ObjectWrapperAssociate(*i));
 }
 
-void ObjectWrapper::setUpdatedVersion( int ver ) {
-    _version = ver;
-}
 void ObjectWrapper::associateAddedAtVersion(std::string name){
    for ( ObjectWrapper::RevisionAssociateList:: iterator itr=_associates.begin(); itr!=_associates.end(); ++itr ){
        if(itr->_name==name)

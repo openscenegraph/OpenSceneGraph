@@ -671,14 +671,15 @@ int Thread::start() {
     status = pthread_attr_setinheritsched( &thread_attr,
                        PTHREAD_EXPLICIT_SCHED );
 
-    pthread_attr_setscope(&thread_attr, PTHREAD_SCOPE_SYSTEM);
-
-#endif // ] ALLOW_PRIORITY_SCHEDULING
-
     if(status != 0)
     {
         return status;
     }
+
+    pthread_attr_setscope(&thread_attr, PTHREAD_SCOPE_SYSTEM);
+
+#endif // ] ALLOW_PRIORITY_SCHEDULING
+
 
     pd->threadStartedBlock.reset();
 

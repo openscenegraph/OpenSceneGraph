@@ -1101,7 +1101,7 @@ public:
 }
 
 #if 1
-REGISTER_WINDOWINGSYSTEMINTERFACE(Carbon, osgViewer::CarbonWindowingSystemInterface)
+REGISTER_WINDOWINGSYSTEMINTERFACE(Carbon, CarbonWindowingSystemInterface)
 #else
 
 #ifdef USE_DARWIN_CARBON_IMPLEMENTATION

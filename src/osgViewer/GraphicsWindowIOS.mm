@@ -1227,7 +1227,7 @@ public:
 }//end namspace
 
 #if 1
-REGISTER_WINDOWINGSYSTEMINTERFACE(IOS, osgViewer::ConcreteIOSWindowingSystemInterface)
+REGISTER_WINDOWINGSYSTEMINTERFACE(IOS, ConcreteIOSWindowingSystemInterface)
 #else
 RegisterWindowingSystemInterfaceProxy<osgViewer::ConcreteIOSWindowingSystemInterface> createWindowingSystemInterfaceProxy;
 

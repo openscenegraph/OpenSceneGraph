@@ -1830,7 +1830,7 @@ private:
 }
 
 #if 1
-REGISTER_WINDOWINGSYSTEMINTERFACE(Cocoa, osgViewer::CocoaWindowingSystemInterface)
+REGISTER_WINDOWINGSYSTEMINTERFACE(Cocoa, CocoaWindowingSystemInterface)
 #else
 #ifdef USE_DARWIN_COCOA_IMPLEMENTATION
 RegisterWindowingSystemInterfaceProxy<osgViewer::CocoaWindowingSystemInterface> createWindowingSystemInterfaceProxy;

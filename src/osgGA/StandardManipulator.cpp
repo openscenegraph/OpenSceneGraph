@@ -48,18 +48,17 @@ StandardManipulator::StandardManipulator( int flags )
 
 /// Constructor.
 StandardManipulator::StandardManipulator( const StandardManipulator& uim, const CopyOp& copyOp )
-    : osg::Callback(uim, copyOp),
-     inherited( uim, copyOp ),
-     _thrown( uim._thrown ),
-     _allowThrow( uim._allowThrow ),
-     _mouseCenterX(0.0f), _mouseCenterY(0.0f),
-     _ga_t1( dynamic_cast< GUIEventAdapter* >( copyOp( uim._ga_t1.get() ) ) ),
-     _ga_t0( dynamic_cast< GUIEventAdapter* >( copyOp( uim._ga_t0.get() ) ) ),
-     _delta_frame_time(0.01), _last_frame_time(0.0),
-     _modelSize( uim._modelSize ),
-     _verticalAxisFixed( uim._verticalAxisFixed ),
-     _flags( uim._flags ),
-     _relativeFlags( uim._relativeFlags )
+    : inherited( uim, copyOp ),
+      _thrown( uim._thrown ),
+      _allowThrow( uim._allowThrow ),
+      _mouseCenterX(0.0f), _mouseCenterY(0.0f),
+      _ga_t1( dynamic_cast< GUIEventAdapter* >( copyOp( uim._ga_t1.get() ) ) ),
+      _ga_t0( dynamic_cast< GUIEventAdapter* >( copyOp( uim._ga_t0.get() ) ) ),
+      _delta_frame_time(0.01), _last_frame_time(0.0),
+      _modelSize( uim._modelSize ),
+      _verticalAxisFixed( uim._verticalAxisFixed ),
+      _flags( uim._flags ),
+      _relativeFlags( uim._relativeFlags )
 {
 }
 

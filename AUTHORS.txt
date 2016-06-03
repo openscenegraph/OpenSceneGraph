@@ -1,6 +1,6 @@
-OpenSceneGraph Library 3.5.2
+OpenSceneGraph Library 3.5.3
 
-582 Contributors:
+584 Contributors:
 
 Firstname Surname
 -----------------
@@ -30,8 +30,8 @@ Tim Moore
 Martin Lavery
 Trajce Nikolov
 Mattias Helsing
-Jason Beverage
 Jannik Heller
+Jason Beverage
 Tree Wed
 Pjotr Svetachov
 Luigi Calori
@@ -62,11 +62,11 @@ Philip Lowman
 Per Fahlberg
 Norman Vine
 Chris Denham
+Sherman Wilcox
 Serge Lages
 Mourad Boufarguine
 Alberto Farre
 Torben Dannhauer
-Sherman Wilcox
 Romano José Magacho da Silva
 Marco Fri
 Glenn Waldron
@@ -85,7 +85,7 @@ Joakim Simonsson
 David Spilling
 Daniel Sjölie
 Bryan Thrall
-Robert Michael
+Robert I
 Rafa Gaitan
 Mike Connell
 Konstantin Matveyev
@@ -133,6 +133,7 @@ Joseph Steel
 John Shue
 Brad Colbert
 Ben Discoe
+Vladimir Chebaev
 Vivek Rajan
 Uwe Woessner
 Tony Horrobin
@@ -160,6 +161,7 @@ Donn Mielcarek
 Corbin Holtz
 Blasius Czink
 Alexander Irion
+Wee See
 Ulrich Fri
 Toshiyuki Takahei
 Sebastien Grignard
@@ -183,9 +185,7 @@ Andreas Goebel
 Alok Priyadarshi
 Ali Botorabi
 Alan Dickinson
-Wee See
 Vladimir Shabanov
-Vladimir Chebaev
 Tugkan Calapoglu
 Tim Daoust
 Sylvain Marie
@@ -198,6 +198,7 @@ Ryan Pavlik
 Robert Milharcic
 Rene Molenaar
 Piotr Domagalski
+Philippe Renon
 Phil Atkin
 Pawel Ksiezopolski
 Patrick Neary
@@ -261,7 +262,6 @@ Raymond de Vries
 Ralf Kern
 Piotr Gwiazdowski
 Pierre Haritchabalet
-Philippe Renon
 Perry Miller
 Paul Palumbo
 Paul Obermeier
@@ -384,6 +384,7 @@ Romain Charbit
 Rocco Martino
 Robert Swain
 Robert Mon
+Robert Michael
 Rob Smith
 Rob Radtke
 Rob Bloemkool
@@ -488,6 +489,7 @@ John Donovan
 John Davis
 John Cummings
 John Argentieri
+Joe Thompson
 Joan Abadie
 Jim Brooks
 Jeroen den Dekker

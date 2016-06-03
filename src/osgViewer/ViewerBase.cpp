@@ -40,14 +40,12 @@ static osg::ApplicationUsageProxy ViewerBase_e5(osg::ApplicationUsage::ENVIRONME
 
 using namespace osgViewer;
 
-ViewerBase::ViewerBase():
-    osg::Object(true)
+ViewerBase::ViewerBase()
 {
     viewerBaseInit();
 }
 
-ViewerBase::ViewerBase(const ViewerBase&):
-    osg::Object(true)
+ViewerBase::ViewerBase(const ViewerBase&)
 {
     viewerBaseInit();
 }

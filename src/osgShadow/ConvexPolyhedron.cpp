@@ -817,11 +817,11 @@ void ConvexPolyhedron::removeDuplicateVertices( void )
     // Aggressive removal, find very close points and replace them
     // with their average. Second step wil do the rest.
 
-    typedef std::map< osg::Vec3f, osg::Vec4d > Points;
+    typedef std::map< osg::Vec3f, osg::Vec4d > PointMap;
     typedef std::set< osg::Vec3d > VertexSet;
 
     VertexSet  vertexSet;
-    Points     points;
+    PointMap     points;
 
     for( Faces::iterator itr = _faces.begin();
          itr != _faces.end();
@@ -842,7 +842,7 @@ void ConvexPolyhedron::removeDuplicateVertices( void )
         points[ *vitr ] += osg::Vec4d( *vitr, 1.0 );
     }
 
-    for( Points::iterator itr = points.begin();
+    for(PointMap::iterator itr = points.begin();
          itr != points.end();
          ++itr )
     {

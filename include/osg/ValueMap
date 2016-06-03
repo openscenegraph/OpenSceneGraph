@@ -50,16 +50,18 @@ class OSG_EXPORT ValueMap : public osg::Object
         {
             typedef TemplateValueObject<T> UserValueObject;
             KeyValueMap::iterator itr = _keyValueMap.find(key);
-            if (itr!=_keyValueMap.end() && typeid(*(itr->second))==typeid(UserValueObject))
+            if (itr!=_keyValueMap.end())
             {
-                UserValueObject* uvo = static_cast<UserValueObject*>(itr->second.get());
-                uvo->setValue(value);
-                return uvo;
+                osg::Object* obj = itr->second.get();
+                if (typeid(*(obj))==typeid(UserValueObject))
+                {
+                    UserValueObject* uvo = static_cast<UserValueObject*>(itr->second.get());
+                    uvo->setValue(value);
+                    return uvo;
+                }
             }
-            else
-            {
-                return (_keyValueMap[key] = new UserValueObject(value)).get();
-            }
+
+            return (_keyValueMap[key] = new UserValueObject(value)).get();
         }
 
 

@@ -117,7 +117,8 @@ void DrawArrayLengths::draw(State& state, bool) const
         itr!=end();
         ++itr)
     {
-        glDrawArrays(mode,first,*itr);
+        if (_numInstances>=1) state.glDrawArraysInstanced(mode,first,*itr,_numInstances);
+        else glDrawArrays(mode,first,*itr);
         first += *itr;
     }
 

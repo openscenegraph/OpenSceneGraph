@@ -1674,20 +1674,20 @@ static int ChooseMatchingPixelFormat( HDC hdc, int screenNum, const WGLIntegerAt
             1,                     // version number
             PFD_DRAW_TO_WINDOW |   // support window
             PFD_SUPPORT_OPENGL |   // support OpenGL
-            (_traits->doubleBuffer ? PFD_DOUBLEBUFFER : NULL) |      // double buffered ?
-            (_traits->swapMethod ==  osg::DisplaySettings::SWAP_COPY ? PFD_SWAP_COPY : NULL) |
-            (_traits->swapMethod ==  osg::DisplaySettings::SWAP_EXCHANGE ? PFD_SWAP_EXCHANGE : NULL),
+            DWORD(_traits->doubleBuffer ? PFD_DOUBLEBUFFER : NULL) |      // double buffered ?
+            DWORD(_traits->swapMethod ==  osg::DisplaySettings::SWAP_COPY ? PFD_SWAP_COPY : NULL) |
+            DWORD(_traits->swapMethod ==  osg::DisplaySettings::SWAP_EXCHANGE ? PFD_SWAP_EXCHANGE : NULL),
             PFD_TYPE_RGBA,         // RGBA type
-            _traits->red + _traits->green + _traits->blue,                // color depth
-            _traits->red ,0, _traits->green ,0, _traits->blue, 0,          // shift bits ignored
-            _traits->alpha,          // alpha buffer ?
+            BYTE(_traits->red + _traits->green + _traits->blue),                      // color depth
+            BYTE(_traits->red), 0, BYTE(_traits->green), 0, BYTE(_traits->blue), 0,   // shift bits ignored
+            BYTE(_traits->alpha),  // alpha buffer ?
             0,                     // shift bit ignored
             0,                     // no accumulation buffer
             0, 0, 0, 0,            // accum bits ignored
-            _traits->depth,          // 32 or 16 bit z-buffer ?
-            _traits->stencil,        // stencil buffer ?
+            BYTE(_traits->depth),      // 32 or 16 bit z-buffer ?
+            BYTE(_traits->stencil),    // stencil buffer ?
             0,                     // no auxiliary buffer
-            PFD_MAIN_PLANE,        // main layer
+            PFD_MAIN_PLANE,  // main layer
             0,                     // reserved
             0, 0, 0                // layer masks ignored
         };
@@ -2736,8 +2736,8 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                     UINT scanCode = ::MapVirtualKeyEx( i, 0, ::GetKeyboardLayout(0));
                     // Set Extended Key bit + Scan Code + 30 bit to indicate key was set before sending message
                     // See Windows SDK help on WM_KEYDOWN for explanation
-                    LONG lParam = rightSideCode | ( ( scanCode & 0xFF ) << 16 ) | (1 << 30);
-                    ::SendMessage(hwnd, WM_KEYDOWN, i, lParam );
+                    LONG lParamKey = rightSideCode | ( ( scanCode & 0xFF ) << 16 ) | (1 << 30);
+                    ::SendMessage(hwnd, WM_KEYDOWN, i, lParamKey);
                 }
             }
             break;

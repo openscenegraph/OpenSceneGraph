@@ -64,6 +64,11 @@ ELSE()
   INCLUDE_DIRECTORIES(${LUA_INCLUDE_DIR} )
 ENDIF()
 
+IF (MSVC)
+    #disable specific warning :
+    #warning C4702: unreachable code
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4702")
+ENDIF(MSVC)
 
 #### end var setup  ###
 SETUP_PLUGIN(lua)

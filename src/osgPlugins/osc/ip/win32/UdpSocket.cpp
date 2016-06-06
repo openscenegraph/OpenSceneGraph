@@ -398,7 +398,7 @@ public:
 
 		while( !break_ ){
 
-			double currentTimeMs = GetCurrentTimeMs();
+			currentTimeMs = GetCurrentTimeMs();
 
             DWORD waitTime = INFINITE;
             if( !timerQueue_.empty() ){

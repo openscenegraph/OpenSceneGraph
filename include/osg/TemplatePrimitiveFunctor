@@ -152,6 +152,12 @@ namespace osg {
                         this->operator()(*(vptr),*(vptr+1),_treatVertexDataAsTemporary);
                     break;
                 }
+                case(GL_LINE_STRIP_ADJACENCY_EXT): {
+                    const Vec3* vlast = &_vertexArrayPtr[first+count-2];
+                    for(const Vec3* vptr=&_vertexArrayPtr[first+1];vptr<vlast;vptr+=1)
+                        this->operator()(*(vptr),*(vptr+1),_treatVertexDataAsTemporary);
+                    break;
+                }
                 case(GL_LINE_LOOP): {
                     const Vec3* vlast = &_vertexArrayPtr[first+count-1];
                     for(const Vec3* vptr=&_vertexArrayPtr[first];vptr<vlast;vptr+=1)
@@ -238,6 +244,13 @@ namespace osg {
                 case(GL_LINE_STRIP): {
                     IndexPointer ilast = &indices[count-1];
                     for(IndexPointer  iptr=indices;iptr<ilast;iptr+=1)
+                        this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],
+                                         _treatVertexDataAsTemporary);
+                    break;
+                }
+                case(GL_LINE_STRIP_ADJACENCY_EXT): {
+                    IndexPointer ilast = &indices[count-2];
+                    for(IndexPointer  iptr=&indices[1];iptr<ilast;iptr+=1)
                         this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],
                                          _treatVertexDataAsTemporary);
                     break;

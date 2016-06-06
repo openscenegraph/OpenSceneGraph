@@ -238,19 +238,19 @@ void *trpgPrintGraphParser::ReadHelper::Parse(trpgToken tok,trpgReadBuffer &buf)
                 const trpgMaterial *baseMat;
                 const trpgTexture *baseTex;
                 int totSize;
-                trpgrImageHelper *imageHelp = parse->GetImageHelp();
+                trpgrImageHelper *parse_imageHelp = parse->GetImageHelp();
                 int numImages=1;
                 locMat.GetNumLocals(numImages);
                 for (int imgN=0;imgN<numImages;imgN++) {
                     // read all the images for each local material
-                    imageHelp->GetNthImageInfoForLocalMat(&locMat,imgN,&baseMat,&baseTex,totSize);
+                    parse_imageHelp->GetNthImageInfoForLocalMat(&locMat,imgN,&baseMat,&baseTex,totSize);
 
                     // Fetch the whole image
                     {
                         char *pixels = new char[totSize];
                         bool failed = false;
                         try {
-                            failed = !imageHelp->GetNthImageForLocalMat(&locMat,imgN,pixels,totSize);
+                            failed = !parse_imageHelp->GetNthImageForLocalMat(&locMat,imgN,pixels,totSize);
                         }
                         catch (...) {
                             failed = true;
@@ -275,7 +275,7 @@ void *trpgPrintGraphParser::ReadHelper::Parse(trpgToken tok,trpgReadBuffer &buf)
                                 char *pixels = new char[mipSize];
                                 bool failed = false;
                                 try {
-                                    failed = !imageHelp->GetNthImageMipLevelForLocalMat(j,&locMat,imgN,pixels,mipSize);
+                                    failed = !parse_imageHelp->GetNthImageMipLevelForLocalMat(j,&locMat,imgN,pixels,mipSize);
                                 }
                                 catch (...) {
                                     failed = true;

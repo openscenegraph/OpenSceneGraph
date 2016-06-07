@@ -633,8 +633,6 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             typedef std::list<FileInfo> FileInfoList;
             FileInfoList fileInfoList;
 
-            SeriesIdentifier seriesIdentifier;
-
             typedef std::map<double, FileInfo> DistanceFileInfoMap;
             typedef std::map<SeriesIdentifier, DistanceFileInfoMap> SeriesFileInfoMap;
             SeriesFileInfoMap seriesFileInfoMap;
@@ -764,7 +762,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 double imageOrientationPatient[6] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0 };
                 for(int i=0; i<6; ++i)
                 {
-                    double value = 0.0;
+                    value = 0.0;
                     if (fileformat.getDataset()->findAndGetFloat64(DCM_ImageOrientationPatient, value,i).good())
                     {
                         imageOrientationPatient[i] = value;

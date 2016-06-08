@@ -49,7 +49,12 @@ public:
     {
     }
 
-    SwitchDOFVisitor(const SwitchDOFVisitor& sdfv, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) {}
+    SwitchDOFVisitor(const SwitchDOFVisitor& sdfv, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+        osg::Object(sdfv, copyop),
+        osg::Callback(sdfv, copyop),
+        osg::NodeVisitor(sdfv, copyop),
+        osgGA::GUIEventHandler(sdfv, copyop)
+        {}
 
     META_Object(osg, SwitchDOFVisitor)
 

@@ -1,14 +1,14 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2014 Robert Osfield
  *  Copyright (C) 2014 Pawel Ksiezopolski
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
 */
@@ -25,14 +25,14 @@
 // with data matching users needs
 struct ConvertTrianglesOperator : public osg::Referenced
 {
-    ConvertTrianglesOperator() 
+    ConvertTrianglesOperator()
         : osg::Referenced()
     {
     }
     virtual void initGeometry( osg::Geometry* outputGeometry ) = 0;
-    virtual bool pushNode( osg::Node* node )
-    {   
-        return false;   
+    virtual bool pushNode( osg::Node* /*node*/ )
+    {
+        return false;
     }
     virtual void popNode() = 0;
     virtual void setGeometryData( const osg::Matrix &matrix, osg::Geometry *inputGeometry, osg::Geometry* outputGeometry, float typeID, float lodNumber ) = 0;
@@ -47,7 +47,7 @@ public:
     }
     void apply( GLfloat& value )
     {
-        out = osg::Vec2( value, 0.0 );       
+        out = osg::Vec2( value, 0.0 );
     }
     void apply( osg::Vec2& value )
     {
@@ -83,7 +83,7 @@ public:
 // texCoord1 holds additional information about vertex ( typeID, lodNumber, boneIndex )
 struct ConvertTrianglesOperatorClassic : public ConvertTrianglesOperator
 {
-    ConvertTrianglesOperatorClassic() 
+    ConvertTrianglesOperatorClassic()
         : ConvertTrianglesOperator(), _typeID(0.0f), _lodNumber(0.0f)
 
     {
@@ -113,18 +113,18 @@ struct ConvertTrianglesOperatorClassic : public ConvertTrianglesOperator
     virtual void setGeometryData( const osg::Matrix &matrix, osg::Geometry *inputGeometry, osg::Geometry* outputGeometry, float typeID, float lodNumber )
     {
         _matrix = matrix;
-        
+
         _inputVertices  = dynamic_cast<osg::Vec3Array *>( inputGeometry->getVertexArray() );
         _inputColors    = dynamic_cast<osg::Vec4Array *>( inputGeometry->getColorArray() );
         _inputNormals   = dynamic_cast<osg::Vec3Array *>( inputGeometry->getNormalArray() );
         _inputTexCoord0 = inputGeometry->getTexCoordArray(0);
-        
+
         _outputVertices = dynamic_cast<osg::Vec3Array *>( outputGeometry->getVertexArray() );
         _outputColors   = dynamic_cast<osg::Vec4Array *>( outputGeometry->getColorArray() );
         _outputNormals  = dynamic_cast<osg::Vec3Array *>( outputGeometry->getNormalArray() );
         _outputTexCoord0 = dynamic_cast<osg::Vec2Array *>( outputGeometry->getTexCoordArray(0) );
         _outputTexCoord1 = dynamic_cast<osg::Vec3Array *>( outputGeometry->getTexCoordArray(1) );
-        
+
         _typeID = typeID;
         _lodNumber = lodNumber;
     }
@@ -147,7 +147,7 @@ struct ConvertTrianglesOperatorClassic : public ConvertTrianglesOperator
         _outputVertices->push_back( _inputVertices->at( i1 ) * _matrix );
         _outputVertices->push_back( _inputVertices->at( i2 ) * _matrix  );
         _outputVertices->push_back( _inputVertices->at( i3 ) * _matrix  );
-        
+
         if( _inputColors != NULL )
         {
             _outputColors->push_back( _inputColors->at( ic1 ) );
@@ -159,7 +159,7 @@ struct ConvertTrianglesOperatorClassic : public ConvertTrianglesOperator
             for(unsigned int i=0; i<3; ++i)
                 _outputColors->push_back( osg::Vec4(1.0,1.0,1.0,1.0) );
         }
-        
+
         if( _inputNormals != NULL )
         {
             _outputNormals->push_back( osg::Matrix::transform3x3( _inputNormals->at( in1 ), _matrix ) );
@@ -185,7 +185,7 @@ struct ConvertTrianglesOperatorClassic : public ConvertTrianglesOperator
             for(unsigned int i=0; i<3; ++i)
                 _outputTexCoord0->push_back( osg::Vec2(0.0,0.0) );
         }
-        
+
         for(unsigned int i=0; i<3; ++i)
             _outputTexCoord1->push_back( osg::Vec3( _typeID, _lodNumber, _boneIndices.back() ) );
     }
@@ -195,24 +195,24 @@ struct ConvertTrianglesOperatorClassic : public ConvertTrianglesOperator
     }
 
     osg::Matrix _matrix;
-    
+
     osg::Vec3Array* _inputVertices;
     osg::Vec4Array* _inputColors;
     osg::Vec3Array* _inputNormals;
     osg::Array*     _inputTexCoord0;
-    
+
     osg::Vec3Array* _outputVertices;
     osg::Vec4Array* _outputColors;
     osg::Vec3Array* _outputNormals;
     osg::Vec2Array* _outputTexCoord0;
     osg::Vec3Array* _outputTexCoord1;
-    
+
     float _typeID;
     float _lodNumber;
     std::vector<float> _boneIndices;
-    
+
     std::map<std::string,float> _boneNames;
-    
+
     GetVec2FromArrayVisitor _inputTexCoord0Visitor;
 };
 
@@ -220,10 +220,10 @@ struct ConvertTrianglesOperatorClassic : public ConvertTrianglesOperator
 
 class AggregateGeometryVisitor : public osg::NodeVisitor
 {
-public:    
+public:
     AggregateGeometryVisitor( ConvertTrianglesOperator* ctOperator );
     void init();
-    
+
     // osg::TriangleIndexFunctor uses its template parameter as a base class, so we must use an adapter pattern to hack it
     struct ConvertTrianglesBridge
     {
@@ -251,10 +251,10 @@ public:
         {
             _converter->operator()(i1,i2,i3);
         }
-        
+
         osg::ref_ptr<ConvertTrianglesOperator> _converter;
     };
-    
+
 
     // struct returning information about added object ( first vertex, vertex count, primitiveset index )
     // used later to create indirect command texture buffers
@@ -269,11 +269,11 @@ public:
         unsigned int index;
     };
     AddObjectResult addObject( osg::Node* object, unsigned int typeID, unsigned int lodNumber );
-    
+
     void apply( osg::Node& node );
     void apply( osg::Transform& transform );
     void apply( osg::Geode& geode );
-    
+
     inline osg::Geometry* getAggregatedGeometry()
     {
         return _aggregatedGeometry.get();
@@ -282,7 +282,7 @@ protected:
     osg::ref_ptr<osg::Geometry> _aggregatedGeometry;
     osg::TriangleIndexFunctor<ConvertTrianglesBridge> _ctOperator;
     std::vector<osg::Matrix>    _matrixStack;
-  
+
     unsigned int _currentTypeID;
     unsigned int _currentLodNumber;
 };

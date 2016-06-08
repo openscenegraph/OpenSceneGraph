@@ -85,7 +85,7 @@ public:
         _terrain(terrain),
         _mtc(mtc) {}
 
-    bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
+    bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& /*aa*/)
     {
         switch(ea.getEventType())
         {

@@ -35,12 +35,10 @@ DisplacementMappingTechnique::~DisplacementMappingTechnique()
 {
 }
 
-void DisplacementMappingTechnique::init(int dirtyMask, bool assumeMultiThreaded)
+void DisplacementMappingTechnique::init(int /*dirtyMask*/, bool /*assumeMultiThreaded*/)
 {
     if (!_terrainTile) return;
     if (!_terrainTile->getTerrain()) return;
-
-    //OSG_NOTICE<<"DisplacementMappingTechnique::init("<<dirtyMask<<", "<<assumeMultiThreaded<<")"<<std::endl;
 
     GeometryPool* geometryPool = _terrainTile->getTerrain()->getGeometryPool();
     _transform = geometryPool->getTileSubgraph(_terrainTile);

@@ -137,7 +137,7 @@ class ForwardToDeviceEventHandler : public osgGA::GUIEventHandler {
 public:
     ForwardToDeviceEventHandler(osgGA::Device* device, bool format_mouse_events) : osgGA::GUIEventHandler(), _device(device), _forwardMouseEvents(format_mouse_events) {}
 
-    virtual bool handle (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, osg::Object *, osg::NodeVisitor *)
+    virtual bool handle (const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& /*aa*/, osg::Object *, osg::NodeVisitor *)
     {
         switch (ea.getEventType())
         {
@@ -180,7 +180,7 @@ class DumpEventHandler : public osgGA::GUIEventHandler {
 public:
     DumpEventHandler() : osgGA::GUIEventHandler() {}
 
-    virtual bool handle (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, osg::Object *, osg::NodeVisitor *)
+    virtual bool handle (const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& /*aa*/, osg::Object *, osg::NodeVisitor *)
     {
         switch (ea.getEventType())
         {

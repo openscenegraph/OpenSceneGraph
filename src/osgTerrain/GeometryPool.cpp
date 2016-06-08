@@ -812,7 +812,7 @@ void GeometryPool::applyLayers(osgTerrain::TerrainTile* tile, osg::StateSet* sta
     }
 }
 
-osg::StateSet* GeometryPool::getRootStateSetForTerrain(Terrain* terrain)
+osg::StateSet* GeometryPool::getRootStateSetForTerrain(Terrain* /*terrain*/)
 {
     //OSG_NOTICE<<"getRootStateSetForTerrain("<<terrain<<")"<<std::endl;
     return _rootStateSet.get();

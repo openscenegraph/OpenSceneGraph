@@ -7,7 +7,7 @@
 #include <osgDB/FileUtils>
 #include <osgWidget/Window>
 
-bool osgWidget_EmbeddedWindow_readData(osg::Object& /*obj*/, osgDB::Input& fr)
+bool osgWidget_EmbeddedWindow_readData(osg::Object& /*obj*/, osgDB::Input& /*fr*/)
 {
 	osgWidget::warn() << "EmbeddedWindow read" << std::endl;
 

@@ -165,6 +165,14 @@ IF( ZLIB_FOUND )
     SET(COMPRESSION_LIBRARIES ZLIB_LIBRARY)
 ENDIF()
 
+################################################################################
+## Quieten warnings that a due to optional code paths
+
+IF(CMAKE_COMPILER_IS_GNUCXX)
+    # Remove -Wextra flag as it barfs on ffmoeg headers
+   STRING(REGEX REPLACE "-Wextra" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+ENDIF()
+
 ADD_DEFINITIONS(-DOSG_PLUGIN_EXTENSION=${CMAKE_SHARED_MODULE_SUFFIX})
 
 SET(TARGET_LIBRARIES

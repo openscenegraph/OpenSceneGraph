@@ -692,7 +692,7 @@ struct ResetTexturesCallback : public osg::StateSet::Callback
         texUnitsDirtyParams.push_back(texUnit);
     }
 
-    virtual void operator() (osg::StateSet* stateset, osg::NodeVisitor* nv)
+    virtual void operator() (osg::StateSet* stateset, osg::NodeVisitor* /*nv*/)
     {
         std::vector<unsigned int>::iterator it,eit;
         for(it=texUnitsDirty.begin(), eit=texUnitsDirty.end(); it!=eit; ++it)

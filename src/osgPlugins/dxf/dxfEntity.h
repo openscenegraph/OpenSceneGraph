@@ -186,10 +186,10 @@ public:
     virtual void assign(dxfFile* dxf, codeValue& cv);
     void getVertex(double &x, double &y, double &z) { x=_vertex.x();y=_vertex.y();z=_vertex.z(); }
     const osg::Vec3d& getVertex() const { return _vertex; }
-    const unsigned int getIndice1() const { return _indice1; }
-    const unsigned int getIndice2() const { return _indice2; }
-    const unsigned int getIndice3() const { return _indice3; }
-    const unsigned int getIndice4() const { return _indice4; }
+    unsigned int getIndice1() const { return _indice1; }
+    unsigned int getIndice2() const { return _indice2; }
+    unsigned int getIndice3() const { return _indice3; }
+    unsigned int getIndice4() const { return _indice4; }
 
 protected:
     osg::Vec3d    _vertex;

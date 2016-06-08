@@ -11,7 +11,8 @@
 
 const unsigned int MASK_2D = 0xF0000000;
 
-int main(int argc, char** argv) {
+int main(int, char**)
+{
     osgViewer::Viewer viewer;
 
     osgWidget::WindowManager* wm = new osgWidget::WindowManager(
@@ -21,7 +22,7 @@ int main(int argc, char** argv) {
         MASK_2D,
         osgWidget::WindowManager::WM_PICK_DEBUG
     );
-    
+
     osgWidget::Box*   box   = new osgWidget::Box("vbox", osgWidget::Box::VERTICAL);
     osgWidget::Input* input = new osgWidget::Input("input", "", 50);
 

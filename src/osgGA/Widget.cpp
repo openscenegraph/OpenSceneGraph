@@ -35,7 +35,7 @@ Widget::Widget():
 }
 
 Widget::Widget(const Widget& widget, const osg::CopyOp& copyop):
-    osg::Group(),
+    osg::Group(widget, copyop),
     _focusBehaviour(widget._focusBehaviour),
     _hasEventFocus(false),
     _graphicsInitialized(false)
@@ -277,7 +277,7 @@ bool Widget::handle(osgGA::EventVisitor* ev, osgGA::Event* event)
     }
 }
 
-bool Widget::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
+bool Widget::handleImplementation(osgGA::EventVisitor* /*ev*/, osgGA::Event* /*event*/)
 {
     return false;
 }

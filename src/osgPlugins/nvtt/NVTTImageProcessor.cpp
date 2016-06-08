@@ -155,7 +155,7 @@ bool NVTTProcessor::OSGImageOutputHandler::assignImage(osg::Image& image)
 }
 
 /// Indicate the start of a new compressed image that's part of the final texture.
-void NVTTProcessor::OSGImageOutputHandler::beginImage(int size, int width, int height, int depth, int face, int miplevel)
+void NVTTProcessor::OSGImageOutputHandler::beginImage(int size, int width, int height, int /*depth*/, int /*face*/, int miplevel)
 {
     // store the new width/height of the texture
     if (miplevel == 0)

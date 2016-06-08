@@ -23,7 +23,7 @@ extern "C"
 
 #  include <libavutil/opt.h>
 
-  inline AVAudioResampleContext * swr_alloc_set_opts_proxy(SwrContext *ctx, int64_t out_ch_layout, enum AVSampleFormat out_sample_format, int out_sample_rate, int64_t in_ch_layout, enum AVSampleFormat in_sample_format, int in_sample_rate, int /*log_offset*/, void * /*log_ctx*/)
+  inline AVAudioResampleContext * swr_alloc_set_opts_proxy(SwrContext* /*ctx*/, int64_t out_ch_layout, enum AVSampleFormat out_sample_format, int out_sample_rate, int64_t in_ch_layout, enum AVSampleFormat in_sample_format, int in_sample_rate, int /*log_offset*/, void * /*log_ctx*/)
   {
     AVAudioResampleContext *avr = avresample_alloc_context();
     av_opt_set_int(avr, "in_channel_layout",  in_ch_layout, 0);

@@ -312,7 +312,7 @@ public:
         errorMessage(),
         maximumTextureSize(256) {}
 
-    virtual void operator () (osg::GraphicsContext* gc)
+    virtual void operator () (osg::GraphicsContext* /*gc*/)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(mutex);
 

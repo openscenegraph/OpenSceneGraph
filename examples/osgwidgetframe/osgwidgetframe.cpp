@@ -9,7 +9,8 @@
 
 const unsigned int MASK_2D = 0xF0000000;
 
-int main(int argc, char** argv) {
+int main(int, char**)
+{
     osgViewer::Viewer viewer;
 
     osgWidget::WindowManager* wm = new osgWidget::WindowManager(

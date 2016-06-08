@@ -1,5 +1,15 @@
 INCLUDE_DIRECTORIES( ${COLLADA_INCLUDE_DIR} ${COLLADA_INCLUDE_DIR}/1.4)
 
+
+################################################################################
+## Quieten warnings that a due to dae headers
+
+IF(CMAKE_COMPILER_IS_GNUCXX)
+    # Remove -Wextra flag as it barfs on ffmoeg headers
+   STRING(REGEX REPLACE "-Wextra" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+ENDIF()
+
+
 SET(TARGET_SRC
     daeReader.cpp
     daeRAnimations.cpp

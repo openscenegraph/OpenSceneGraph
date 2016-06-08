@@ -43,7 +43,8 @@ OrbitManipulator::OrbitManipulator( int flags )
 
 /// Constructor.
 OrbitManipulator::OrbitManipulator( const OrbitManipulator& om, const CopyOp& copyOp )
-   : osg::Callback(om, copyOp),
+    : osg::Object(om, copyOp),
+     osg::Callback(om, copyOp),
      inherited( om, copyOp ),
      _center( om._center ),
      _rotation( om._rotation ),

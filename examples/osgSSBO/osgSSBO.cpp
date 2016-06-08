@@ -142,7 +142,7 @@ enum Channel
 class ShaderStorageBufferCallback : public osg::StateAttributeCallback
 {
 public:
-    void operator() (osg::StateAttribute* attr, osg::NodeVisitor* nv)
+    void operator() (osg::StateAttribute* /*attr*/, osg::NodeVisitor* /*nv*/)
     {
         //if you need to process the data in your app-code , better leaving it on GPU and processing there, uploading per frame will make it slow
 #if 0

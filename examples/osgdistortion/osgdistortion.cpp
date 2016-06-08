@@ -106,7 +106,7 @@ public:
     {
     }
 
-    virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, osg::Object* object, osg::NodeVisitor* nv)
+    virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& /*aa*/, osg::Object* object, osg::NodeVisitor* nv)
     {
         osg::Camera* camera = dynamic_cast<osg::Camera*>(object);
         if (!camera) return false;

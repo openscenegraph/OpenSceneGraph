@@ -40,7 +40,7 @@ struct JSONObjectBase : public osg::Referenced
 {
     static int level;
     static std::string indent();
-    virtual void write(json_stream& str, WriteVisitor& visitor) {}
+    virtual void write(json_stream& /*str*/, WriteVisitor& /*visitor*/) {}
 };
 
 template <class T> struct JSONValue;
@@ -144,7 +144,7 @@ struct JSONValue : public JSONObject
         _value = v;
     }
     T& getValue() { return _value; }
-    virtual void write(json_stream& str, WriteVisitor& visitor) {
+    virtual void write(json_stream& str, WriteVisitor& /*visitor*/) {
         str << _value ;
     }
 
@@ -157,7 +157,7 @@ struct JSONValue<double> : public JSONObject
     JSONValue(const double& v) {
         _value = v;
     }
-    void write(json_stream& str, WriteVisitor& visitor) {
+    void write(json_stream& str, WriteVisitor& /*visitor*/) {
         if (osg::isNaN(_value)) {
             _value = 0.0;
         }
@@ -174,7 +174,7 @@ struct JSONValue<std::string> : public JSONObject
         _value = jsonEscape(v);
     }
 
-    void write(json_stream& str, WriteVisitor& visitor) {
+    void write(json_stream& str, WriteVisitor& /*visitor*/) {
         str << '"' << _value  << '"';
     }
 

@@ -162,7 +162,7 @@ struct TestDrawableUpdateCallback : public osg::DrawableUpdateCallback
 {
     TestDrawableUpdateCallback(const std::string &message): _message(message) {}
 
-    virtual void update(osg::NodeVisitor*, osg::Drawable* drw) {
+    virtual void update(osg::NodeVisitor*, osg::Drawable* /*drw*/) {
         printf("%s\n", _message.c_str());
     }
     std::string _message;
@@ -172,7 +172,7 @@ struct TestNodeUpdateCallback : public osg::NodeCallback
 {
     TestNodeUpdateCallback(const std::string &message): _message(message) {}
 
-    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv) {
+    virtual void operator()(osg::Node* /*node*/, osg::NodeVisitor* /*nv*/) {
         printf("%s\n", _message.c_str());
     }
     std::string _message;

@@ -180,7 +180,7 @@ public:
 
 
     // Returns true if we are under billboard subgraph
-    inline const bool underBillboardSubgraph() const
+    inline bool underBillboardSubgraph() const
     {
         return _underBillboardSubgraph;
     }
@@ -216,7 +216,7 @@ public:
     DeferredLightAttribute& getLightAttribute(int ix);
 
     // Returns if we are under layer subgraph
-    inline const bool underLayerSubgraph() const
+    inline bool underLayerSubgraph() const
     {
         return _underLayerSubgraph;
     }

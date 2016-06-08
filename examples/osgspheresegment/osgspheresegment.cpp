@@ -160,7 +160,7 @@ class RotateUpdateCallback : public osg::NodeCallback
 {
 public:
     RotateUpdateCallback() { i=0;}
-        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+        virtual void operator()(osg::Node* node, osg::NodeVisitor* /*nv*/)
         {
             osgSim::SphereSegment * ss = dynamic_cast<osgSim::SphereSegment *>(node);
             if (ss)

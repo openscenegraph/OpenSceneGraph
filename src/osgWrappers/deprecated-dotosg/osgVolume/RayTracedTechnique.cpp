@@ -26,14 +26,14 @@ REGISTER_DOTOSGWRAPPER(RayTracedTechnique_Proxy)
 );
 
 
-bool RayTracedTechnique_readLocalData(osg::Object& obj, osgDB::Input &fr)
+bool RayTracedTechnique_readLocalData(osg::Object& /*obj*/, osgDB::Input& /*fr*/)
 {
     //osgVolume::RayTracedTechnique& st = static_cast<osgVolume::RayTracedTechnique&>(obj);
     bool itrAdvanced = false;
     return itrAdvanced;
 }
 
-bool RayTracedTechnique_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
+bool RayTracedTechnique_writeLocalData(const osg::Object& /*obj*/, osgDB::Output& /*fw*/)
 {
     //const osgVolume::RayTracedTechnique& st = static_cast<const osgVolume::RayTracedTechnique&>(obj);
     return true;

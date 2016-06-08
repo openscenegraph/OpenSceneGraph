@@ -2564,7 +2564,7 @@ struct VolumeSettingsCallback : public osgGA::GUIEventHandler
     int _saveKey;
     int _editKey;
 
-    bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object* object, osg::NodeVisitor* nv)
+    bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& /*aa*/, osg::Object* object, osg::NodeVisitor* /*nv*/)
     {
         if (ea.getHandled()) return false;
 

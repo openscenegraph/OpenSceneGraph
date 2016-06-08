@@ -121,7 +121,7 @@ IntValidator::IntValidator(const IntValidator& validator, const osg::CopyOp& cop
 {
 }
 
-IntValidator::State IntValidator::validateImplementation(std::string& str, int& cursorpos) const
+IntValidator::State IntValidator::validateImplementation(std::string& str, int& /*cursorpos*/) const
 {
     std::string newstring;
     bool canBeNegative = _bottom<0.0;
@@ -205,7 +205,7 @@ DoubleValidator::DoubleValidator(const DoubleValidator& validator, const osg::Co
 {
 }
 
-DoubleValidator::State DoubleValidator::validateImplementation(std::string& str, int& cursorpos) const
+DoubleValidator::State DoubleValidator::validateImplementation(std::string& str, int& /*cursorpos*/) const
 {
     std::string newstring;
     bool canBeNegative = _bottom<0.0;

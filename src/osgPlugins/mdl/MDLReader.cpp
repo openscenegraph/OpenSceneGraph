@@ -103,8 +103,7 @@ MDLReader::~MDLReader()
 }
 
 
-std::string MDLReader::getToken(std::string str, const char * delim,
-                                size_t & index)
+std::string MDLReader::getToken(std::string str, const char * /*delim*/, size_t & index)
 {
     size_t start;
     size_t end = std::string::npos;

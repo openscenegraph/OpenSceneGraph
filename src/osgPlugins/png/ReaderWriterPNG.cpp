@@ -49,7 +49,7 @@ private:
     std::string _message;
 };
 
-void user_error_fn(png_structp png_ptr, png_const_charp error_msg)
+void user_error_fn(png_structp /*png_ptr*/, png_const_charp error_msg)
 {
 #ifdef OSG_CPP_EXCEPTIONS_AVAILABLE
     throw PNGError(error_msg);
@@ -58,7 +58,7 @@ void user_error_fn(png_structp png_ptr, png_const_charp error_msg)
 #endif
 }
 
-void user_warning_fn(png_structp png_ptr, png_const_charp warning_msg)
+void user_warning_fn(png_structp /*png_ptr*/, png_const_charp warning_msg)
 {
     OSG_WARN << "PNG lib warning : " << warning_msg << std::endl;
 }

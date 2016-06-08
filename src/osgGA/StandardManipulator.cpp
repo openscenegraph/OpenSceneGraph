@@ -48,7 +48,9 @@ StandardManipulator::StandardManipulator( int flags )
 
 /// Constructor.
 StandardManipulator::StandardManipulator( const StandardManipulator& uim, const CopyOp& copyOp )
-    : inherited( uim, copyOp ),
+    : osg::Object(uim, copyOp),
+      osg::Callback(uim, copyOp),
+      inherited( uim, copyOp ),
       _thrown( uim._thrown ),
       _allowThrow( uim._allowThrow ),
       _mouseCenterX(0.0f), _mouseCenterY(0.0f),

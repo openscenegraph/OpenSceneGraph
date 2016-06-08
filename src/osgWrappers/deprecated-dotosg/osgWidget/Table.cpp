@@ -7,7 +7,7 @@
 #include <osgDB/FileUtils>
 #include <osgWidget/Table>
 
-bool osgWidget_Table_readData(osg::Object& /*obj*/, osgDB::Input& fr) {
+bool osgWidget_Table_readData(osg::Object& /*obj*/, osgDB::Input& /*fr*/) {
 	osgWidget::warn() << "Table read" << std::endl;
 
 	return false;

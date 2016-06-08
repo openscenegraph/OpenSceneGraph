@@ -229,7 +229,7 @@ class DXFWriterNodeVisitor: public osg::NodeVisitor {
             }
         }
 
-        int getNodeAcadColor(osg::Geometry *geo,int index=0) { return 0;}
+        int getNodeAcadColor(osg::Geometry* /*geo*/,int /*index*/=0) { return 0;}
 
     protected:
         struct CompareStateSet

@@ -42,7 +42,7 @@ namespace osgDot {
     drawNode( id, "record", "solid", label.str(), "black", "white" );
   }
 
-  void SimpleDotVisitor::handle(osg::Group& parent, osg::Node& child, int parentID, int childID ) {
+  void SimpleDotVisitor::handle(osg::Group&, osg::Node&, int parentID, int childID ) {
     drawEdge( parentID, childID, "setlinewidth(2)" );
   }
 
@@ -53,7 +53,7 @@ namespace osgDot {
     drawNode( id, "Mrecord", "solid", label.str(), "green", "white" );
   }
 
-  void SimpleDotVisitor::handle(osg::Node& node, osg::StateSet& stateset, int parentID, int childID ) {
+  void SimpleDotVisitor::handle(osg::Node&, osg::StateSet&, int parentID, int childID ) {
     drawEdge( parentID, childID, "dashed" );
   }
 
@@ -64,11 +64,11 @@ namespace osgDot {
     drawNode( id, "record", "solid", label.str(), "blue", "white" );
   }
 
-  void SimpleDotVisitor::handle(osg::Geode& geode, osg::Drawable& drawable, int parentID, int childID ) {
+  void SimpleDotVisitor::handle(osg::Geode&, osg::Drawable&, int parentID, int childID ) {
     drawEdge( parentID, childID, "dashed" );
   }
 
-  void SimpleDotVisitor::handle(osg::Drawable& drawable, osg::StateSet& stateset, int parentID, int childID ) {
+  void SimpleDotVisitor::handle(osg::Drawable&, osg::StateSet&, int parentID, int childID ) {
     drawEdge( parentID, childID, "dashed" );
   }
 

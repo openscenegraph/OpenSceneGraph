@@ -120,7 +120,7 @@ static const char* fragSource = {
 "}\n"
 };
 
-osg::ref_ptr<osg::Geode> CreateIcosahedron(osg::Program *program)
+osg::ref_ptr<osg::Geode> CreateIcosahedron(osg::Program* /*program*/)
 {
     osg::Geode *geode=new osg::Geode();
     osg::Geometry *geometry = new osg::Geometry();
@@ -264,7 +264,7 @@ private:
     }
 };
 
-int main(int argc, char* argv[])
+int main(int, char* [])
 {
     osgViewer::Viewer viewer;
     viewer.setUpViewInWindow(100,100,800,600);

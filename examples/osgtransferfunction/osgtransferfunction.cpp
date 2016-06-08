@@ -103,12 +103,12 @@ struct PopulateHistogram
 
     void luminance(float l) { update(l); }
     void alpha(float a) { update(a); }
-    void luminance_alpha(float l, float a) { update(l); }
-    void rgb(float r, float g, float b) { update(r); }
-    void rgba(float r, float g, float b, float a) { update(a); }
+    void luminance_alpha(float l, float /*a*/) { update(l); }
+    void rgb(float r, float /*g*/, float /*b*/) { update(r); }
+    void rgba(float /*r*/, float /*g*/, float /*b*/, float a) { update(a); }
 };
 
-void Histogram::analyse(const osg::Image* image, double interval)
+void Histogram::analyse(const osg::Image* image, double /*interval*/)
 {
     PopulateHistogram populateHistogram(_valueMap);
     readImage(image, populateHistogram);

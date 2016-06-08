@@ -693,7 +693,7 @@ static size_t fileo_write_func(void *self, const void *buffer, size_t size)
     return f->fail() ? 0 : size;
 }
 
-static void fileio_log_func(void *self, Lib3dsLogLevel level, int indent, const char *msg)
+static void fileio_log_func(void* /*self*/, Lib3dsLogLevel level, int /*indent*/, const char *msg)
 {
     osg::NotifySeverity l = osg::INFO;
     // Intentionally NOT mapping 3DS levels with OSG levels

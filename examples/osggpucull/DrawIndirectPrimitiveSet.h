@@ -38,7 +38,7 @@ public:
   {
   }
   virtual osg::Object* cloneType() const { return new DrawArraysIndirect(); }
-  virtual osg::Object* clone(const osg::CopyOp& copyop) const { return NULL; }
+  virtual osg::Object* clone(const osg::CopyOp& /*copyop*/) const { return NULL; }
   virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const DrawArraysIndirect*>(obj)!=NULL; }
   virtual const char* libraryName() const { return "osg"; }
   virtual const char* className() const { return "DrawArraysIndirect"; }
@@ -57,7 +57,7 @@ public:
   {
   }
   virtual osg::Object* cloneType() const { return new MultiDrawArraysIndirect(); }
-  virtual osg::Object* clone(const osg::CopyOp& copyop) const { return NULL; }
+  virtual osg::Object* clone(const osg::CopyOp& /*copyop*/) const { return NULL; }
   virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const MultiDrawArraysIndirect*>(obj)!=NULL; }
   virtual const char* libraryName() const { return "osg"; }
   virtual const char* className() const { return "MultiDrawArraysIndirect"; }

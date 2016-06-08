@@ -4,6 +4,14 @@ ELSE()
     ADD_DEFINITIONS(-DOSG_LIBRARY_STATIC)
 ENDIF()
 
+################################################################################
+## Quieten warnings that a due to optional code paths
+
+IF(CMAKE_COMPILER_IS_GNUCXX)
+    # Remove -Wextra flag as it barfs on ffmoeg headers
+   STRING(REGEX REPLACE "-Wextra" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+ENDIF()
+
 SET(LIB_NAME osgWidget)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(TARGET_H

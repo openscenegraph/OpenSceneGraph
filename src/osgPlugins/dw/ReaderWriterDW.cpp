@@ -331,7 +331,7 @@ public:
           GLUtesselator *ts, _dwobj *dwob, const RefMatrix *tmat) const;
 
     void link(const int idop, const _face *f2, const int idop2,const std::vector<Vec3> verts, const dwmaterial *themat) const; // to join up opposed faces of a hole
-    inline const int getidx(int i) const { return idx[i];}
+    inline int getidx(int i) const { return idx[i];}
 private:
     void linkholes(const std::vector<Vec3> verts, const dwmaterial *themat, const _face *f2) const;
     void reverse() { // reverse order of the vertices

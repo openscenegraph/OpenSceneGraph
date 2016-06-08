@@ -225,7 +225,7 @@ LineSegmentIntersector::LineSegmentIntersector(const osg::Vec3d& start, const os
 LineSegmentIntersector::LineSegmentIntersector(CoordinateFrame cf, const osg::Vec3d& start, const osg::Vec3d& end,
                                                LineSegmentIntersector* parent, osgUtil::Intersector::IntersectionLimit intersectionLimit):
     Intersector(cf, intersectionLimit),
-    _parent(0),
+    _parent(parent),
     _start(start),
     _end(end)
 {

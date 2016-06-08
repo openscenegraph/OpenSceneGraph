@@ -12,7 +12,8 @@ const unsigned int MASK_2D = 0xF0000000;
 // dynamically added to. Secondly, a table is matrix Layout, with both vertical and
 // horizontal placement cells. A Box, on the other hand, can only be vertical or horizontal.
 
-int main(int argc, char** argv) {
+int main(int, char**)
+{
     osgViewer::Viewer viewer;
 
     osgWidget::WindowManager* wm = new osgWidget::WindowManager(
@@ -22,7 +23,7 @@ int main(int argc, char** argv) {
         MASK_2D,
         osgWidget::WindowManager::WM_PICK_DEBUG
     );
-    
+
     osgWidget::Table* table = new osgWidget::Table("table", 3, 3);
 
     // Here we create our "cells" manually, though it will often be convenient to
@@ -32,11 +33,11 @@ int main(int argc, char** argv) {
     table->addWidget(new osgWidget::Widget("0, 0", 100.0f, 25.0f), 0, 0);
     table->addWidget(new osgWidget::Widget("0, 1", 100.0f, 25.0f), 0, 1);
     table->addWidget(new osgWidget::Widget("0, 2", 100.0f, 75.0f), 0, 2);
-    
+
     table->addWidget(new osgWidget::Widget("1, 0", 200.0f, 45.0f), 1, 0);
     table->addWidget(new osgWidget::Widget("1, 1", 200.0f, 45.0f), 1, 1);
     table->addWidget(new osgWidget::Widget("1, 2", 200.0f, 45.0f), 1, 2);
-    
+
     table->addWidget(new osgWidget::Widget("2, 0", 300.0f, 65.0f), 2, 0);
     table->addWidget(new osgWidget::Widget("2, 1", 300.0f, 65.0f), 2, 1);
     table->addWidget(new osgWidget::Widget("2, 2", 300.0f, 65.0f), 2, 2);
@@ -58,7 +59,7 @@ int main(int argc, char** argv) {
     table->getByName("0, 0")->setAlignVertical(osgWidget::Widget::VA_BOTTOM);
     table->getByName("0, 0")->setPadLeft(50.0f);
     table->getByName("0, 0")->setPadTop(3.0f);
-    
+
     // Change the colors a bit to differentiate this row from the others.
     table->getByName("2, 0")->setColor(1.0f, 0.0f, 0.0f, 1.0f, osgWidget::Widget::LOWER_LEFT);
     table->getByName("2, 1")->setColor(1.0f, 0.0f, 0.0f, 0.5f);

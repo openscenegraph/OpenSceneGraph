@@ -172,7 +172,7 @@ VertexPaletteManager::write( DataOutputStream& dos ) const
 
 
 VertexPaletteManager::PaletteRecordType
-VertexPaletteManager::recordType( const osg::Array* v, const osg::Array* c,
+VertexPaletteManager::recordType( const osg::Array* /*v*/, const osg::Array* /*c*/,
     const osg::Array* n, const osg::Array* t )
 {
     if (t)

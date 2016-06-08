@@ -16,7 +16,7 @@ const char* LABEL1 =
     "nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in..."
 ;
 
-const char* LABEL2 = 
+const char* LABEL2 =
     "...reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla\n"
     "pariatur. Excepteur sint occaecat cupidatat non proident, sunt in \n"
     "culpa qui officia deserunt mollit anim id est laborum. BBBBB"
@@ -39,7 +39,8 @@ osgWidget::Label* createLabel(const std::string& l, unsigned int size=13) {
     return label;
 }
 
-int main(int argc, char** argv) {
+int main(int, char**)
+{
     osgViewer::Viewer viewer;
 
     osgWidget::WindowManager* wm = new osgWidget::WindowManager(
@@ -50,7 +51,7 @@ int main(int argc, char** argv) {
         // osgWidget::WindowManager::WM_USE_RENDERBINS |
         osgWidget::WindowManager::WM_PICK_DEBUG
     );
-    
+
     osgWidget::Box*   box    = new osgWidget::Box("HBOX", osgWidget::Box::HORIZONTAL);
     osgWidget::Box*   vbox   = new osgWidget::Box("vbox", osgWidget::Box::VERTICAL);
     osgWidget::Label* label1 = createLabel(LABEL1);
@@ -86,7 +87,7 @@ int main(int argc, char** argv) {
     label3->setColor(0.0f, 0.0f, 0.5f, 0.5f);
     label4->setColor(0.0f, 0.0f, 0.5f, 0.5f);
     label5->setColor(0.0f, 0.0f, 0.5f, 0.5f);
-    
+
     //label5->setAlignHorizontal(osgWidget::Widget::HA_LEFT);
     //label5->setAlignVertical(osgWidget::Widget::VA_BOTTOM);
 
@@ -111,7 +112,7 @@ int main(int argc, char** argv) {
 
     // Test our label-in-window copy construction...
     osgWidget::Box* clonedBox = osg::clone(box, "HBOX-new", osg::CopyOp::DEEP_COPY_ALL);
-    
+
     clonedBox->getBackground()->setColor(0.0f, 1.0f, 0.0f, 0.5f);
 
     wm->addChild(box);

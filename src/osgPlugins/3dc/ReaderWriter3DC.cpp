@@ -185,7 +185,7 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
 
         }
 
-        virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options =NULL) const
+        virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* /*options*/ =NULL) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(fileName);
             if( !acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;

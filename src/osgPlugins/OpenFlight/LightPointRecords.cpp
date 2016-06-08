@@ -447,7 +447,7 @@ protected:
 
     virtual ~LightPointSystem() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& document)
+    virtual void readRecord(RecordInputStream& in, Document& /*document*/)
     {
         std::string id = in.readString(8);
 
@@ -483,7 +483,7 @@ protected:
             _parent->addChild(*((osg::Group*)_switch.get()));
     }
 
-    virtual void dispose(Document& document)
+    virtual void dispose(Document& /*document*/)
     {
         if (!_switch.valid()) return;
 

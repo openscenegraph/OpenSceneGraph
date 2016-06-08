@@ -41,13 +41,13 @@ public:
 
     virtual bool mousePush(double, double, const osgWidget::WindowManager*) {
         addColor(0.2f, 0.2f, 0.2f, 0.0f);
-        
+
         return true;
     }
 
     virtual bool mouseRelease(double, double, const osgWidget::WindowManager*) {
         addColor(-0.2f, -0.2f, -0.2f, 0.0f);
-        
+
         return true;
     }
 };
@@ -86,7 +86,7 @@ public:
         wm->addChild(_win1.get());
     }
 
-    bool handlePressAdd(osgWidget::Event& ev) {
+    bool handlePressAdd(osgWidget::Event& /*ev*/) {
         static unsigned int num = 0;
 
         std::stringstream ss;
@@ -100,10 +100,10 @@ public:
         return true;
     }
 
-    bool handlePressRemove(osgWidget::Event& ev) {
+    bool handlePressRemove(osgWidget::Event& /*ev*/) {
         // TODO: Temporary hack!
         const osgWidget::Box::Vector& v = _win1->getObjects();
-    
+
         if(!v.size()) return false;
 
         osgWidget::Widget* w = _win1->getObjects()[v.size() - 1].get();
@@ -114,7 +114,8 @@ public:
     }
 };
 
-int main(int argc, char** argv) {
+int main(int, char**)
+{
     osgViewer::Viewer viewer;
 
     osgWidget::WindowManager* wm = new osgWidget::WindowManager(
@@ -123,7 +124,7 @@ int main(int argc, char** argv) {
         1024.0f,
         MASK_2D
     );
-    
+
     osgWidget::Box* buttons = new AddRemove();
 
     wm->addChild(buttons);

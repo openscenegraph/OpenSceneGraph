@@ -126,11 +126,11 @@ RegisterDotOsgWrapperProxy g_BoneProxy
 
 
 
-bool Skeleton_readLocalData(Object& obj, Input& fr)
+bool Skeleton_readLocalData(Object& /*obj*/, Input& /*fr*/)
 {
     return false;
 }
-bool Skeleton_writeLocalData(const Object& obj, Output& fr)
+bool Skeleton_writeLocalData(const Object& /*obj*/, Output& /*fr*/)
 {
     return true;
 }
@@ -1009,13 +1009,13 @@ RegisterDotOsgWrapperProxy g_osgAnimationMorphGeometryProxy
 
 
 
-bool UpdateBone_readLocalData(Object& obj, Input& fr)
+bool UpdateBone_readLocalData(Object& /*obj*/, Input& /*fr*/)
 {
     bool iteratorAdvanced = false;
     return iteratorAdvanced;
 }
 
-bool UpdateBone_writeLocalData(const Object& obj, Output& fw)
+bool UpdateBone_writeLocalData(const Object& /*obj*/, Output& /*fw*/)
 {
     return true;
 }
@@ -1032,13 +1032,13 @@ RegisterDotOsgWrapperProxy g_UpdateBoneProxy
 
 
 
-bool UpdateSkeleton_readLocalData(Object& obj, Input& fr)
+bool UpdateSkeleton_readLocalData(Object& /*obj*/, Input& /*fr*/)
 {
     bool iteratorAdvanced = false;
     return iteratorAdvanced;
 }
 
-bool UpdateSkeleton_writeLocalData(const Object& obj, Output& fw)
+bool UpdateSkeleton_writeLocalData(const Object& /*obj*/, Output& /*fw*/)
 {
     return true;
 }
@@ -1054,13 +1054,13 @@ RegisterDotOsgWrapperProxy g_UpdateSkeletonProxy
     );
 
 
-bool UpdateMorph_readLocalData(Object& obj, Input& fr)
+bool UpdateMorph_readLocalData(Object& /*obj*/, Input& /*fr*/)
 {
     bool iteratorAdvanced = false;
     return iteratorAdvanced;
 }
 
-bool UpdateMorph_writeLocalData(const Object& obj, Output& fw)
+bool UpdateMorph_writeLocalData(const Object& /*obj*/, Output& /*fw*/)
 {
     return true;
 }

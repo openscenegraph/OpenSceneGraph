@@ -957,7 +957,7 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
     SET(OSG_AGGRESSIVE_WARNING_FLAGS -Wall -Wparentheses -Wno-long-long -Wno-import -pedantic -Wreturn-type -Wmissing-braces -Wunknown-pragmas -Wunused)
 
     IF(${CMAKE_MAJOR_VERSION} GREATER 2 AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.9)
-        SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wshadow)
+        SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wshadow -Wmaybe-uninitialized -Wextra)
     ENDIF()
 
     # Previous included -Wformat=2 in OSG_AGGRESSIVE_WARNING_FLAGS but had to remove it due to standard library errors

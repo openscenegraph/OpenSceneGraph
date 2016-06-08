@@ -82,7 +82,8 @@ Input::Input(const std::string& name, const std::string& label, unsigned int siz
    _cursor->setDrawCallback( new BlinkCursorCallback(_insertMode) );
 }
 
-void Input::_calculateSize(const XYCoord& size) {
+void Input::_calculateSize(const XYCoord& /*size*/)
+    {
    // An Input cannot currently set it's own size RELIABLY until the osgText implementation
    // is dratiscally improved. I'm getting wildly crazy results. :(
    // point_type height = size.y() > _cursor->getHeight() ? size.y() : _cursor->getHeight();
@@ -281,11 +282,12 @@ void Input::positioned()
     }
 }
 
-bool Input::keyUp(int key, int mask, const WindowManager*) {
+bool Input::keyUp(int /*key*/, int /*mask*/, const WindowManager*)
+{
    return false;
 }
 
-bool Input::mouseDrag (double x, double y, const WindowManager*)
+bool Input::mouseDrag (double x, double /*y*/, const WindowManager*)
 {
     _mouseClickX += x;
     x = _mouseClickX;
@@ -306,7 +308,7 @@ bool Input::mouseDrag (double x, double y, const WindowManager*)
     return true;
 }
 
-bool Input::mousePush (double x, double y, const WindowManager* wm)
+bool Input::mousePush (double x, double /*y*/, const WindowManager* /*wm*/)
 {
     double offset = getOrigin().x();
     Window* window = getParent();

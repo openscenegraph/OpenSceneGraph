@@ -25,7 +25,7 @@ osg::Group* test_create3DText(const osg::Vec3& center,float radius)
 
     float characterSize=radius*0.2f;
     float characterDepth=characterSize*0.2f;
-    
+
     osg::Vec3 pos(center.x()-radius*.5f,center.y()-radius*.5f,center.z()-radius*.5f);
 #define SHOW_INTESECTION_CEASH
 #ifdef SHOW_INTESECTION_CEASH
@@ -72,22 +72,22 @@ osg::Group* test_create3DText(const osg::Vec3& center,float radius)
     stateset->setAttributeAndModes(polymode,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
     rootNode->setStateSet(stateset);
 #endif
-    
-    
-    return rootNode;    
+
+
+    return rootNode;
 }
 
 //////////////////////////////////////////////////////////////////////////
 #include <osg/PositionAttitudeTransform>
 #include <osg/ShapeDrawable>
-class CInputHandler : public osgGA::GUIEventHandler 
+class CInputHandler : public osgGA::GUIEventHandler
 {
 public:
   CInputHandler( osg::PositionAttitudeTransform* pPatSphere )
   {
     m_rPatSphere = pPatSphere;
   }
-  virtual bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, osg::Object* pObject, osg::NodeVisitor* pNodeVisitor )
+  virtual bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, osg::Object* /*pObject*/, osg::NodeVisitor* /*pNodeVisitor*/ )
   {
     osgViewer::Viewer* pViewer = dynamic_cast<osgViewer::Viewer*>(&aa);
     if ( !pViewer )

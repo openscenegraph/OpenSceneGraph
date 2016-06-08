@@ -88,7 +88,7 @@ class OSGVOLUME_EXPORT Property : public osg::Object
         unsigned int getModifiedCount() const { return _modifiedCount; }
 
         virtual void accept(PropertyVisitor& pv) { pv.apply(*this); }
-        virtual void traverse(PropertyVisitor& pv) {}
+        virtual void traverse(PropertyVisitor& /*pv*/) {}
 
     protected:
 

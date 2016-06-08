@@ -42,7 +42,8 @@ class TrackSegment : public osg::Object
 public:
     TrackSegment() {}
 
-    TrackSegment(const TrackSegment& ts, const osg::CopyOp=osg::CopyOp::SHALLOW_COPY) {}
+    TrackSegment(const TrackSegment& ts, const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY):
+        osg::Object(ts, copyop) {}
 
     META_Object(osg, TrackSegment)
 
@@ -78,7 +79,8 @@ class Track : public osg::Object
 public:
     Track() {}
 
-    Track(const Track& track, const osg::CopyOp=osg::CopyOp::SHALLOW_COPY) {}
+    Track(const Track& track, const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY):
+        osg::Object(track, copyop) {}
 
     META_Object(osg, Track)
 

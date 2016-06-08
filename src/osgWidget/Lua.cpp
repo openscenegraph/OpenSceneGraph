@@ -131,7 +131,7 @@ bool LuaEngine::close() {
 #endif
 }
 
-bool LuaEngine::eval(const std::string& code) {
+bool LuaEngine::eval(const std::string& /*code*/) {
 #ifdef OSGWIDGET_USELUA
     if(luaL_dostring(_data->lua, code.c_str())) {
         warn() << "LuaEngine::eval - " << lua_tostring(_data->lua, -1) << std::endl;
@@ -146,7 +146,7 @@ bool LuaEngine::eval(const std::string& code) {
 #endif
 }
 
-bool LuaEngine::runFile(const std::string& filePath) {
+bool LuaEngine::runFile(const std::string& /*filePath*/) {
 #ifdef OSGWIDGET_USELUA
     if(!osgDB::fileExists(filePath)) {
         warn() << "Couldn't find file \"" << filePath << "\" for LuaEngine." << std::endl;

@@ -198,7 +198,7 @@ private:
     std::ostringstream _ss;
 };
 
-bool UserEventHandler::handle(osgGA::Event* event, osg::Object* object, osg::NodeVisitor* nv)
+bool UserEventHandler::handle(osgGA::Event* event, osg::Object* /*object*/, osg::NodeVisitor* nv)
 {
 
     OSG_ALWAYS << "handle user-event: " << event->getName() << std::endl;
@@ -347,7 +347,7 @@ class ForwardToDeviceEventHandler : public osgGA::EventHandler {
 public:
     ForwardToDeviceEventHandler(osgGA::Device* device) : osgGA::EventHandler(), _device(device) {}
 
-    virtual bool handle(osgGA::Event* event, osg::Object* object, osg::NodeVisitor* nv)
+    virtual bool handle(osgGA::Event* event, osg::Object* /*object*/, osg::NodeVisitor* /*nv*/)
     {
         _device->sendEvent(*event);
         return false;

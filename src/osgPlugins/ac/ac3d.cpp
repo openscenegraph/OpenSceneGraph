@@ -768,7 +768,7 @@ class LineBin : public PrimitiveBin
         return true;
     }
 
-    virtual osg::Geode* finalize(const MaterialData& material, const TextureData& textureData)
+    virtual osg::Geode* finalize(const MaterialData& material, const TextureData& /*textureData*/)
     {
         _geode->addDrawable(_geometry.get());
         material.toStateSet(_geode->getOrCreateStateSet());

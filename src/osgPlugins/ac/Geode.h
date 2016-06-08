@@ -9,7 +9,7 @@ namespace ac3d
     class Geode : public osg::Geode
     {
     public:
-        const int ProcessMaterial(std::ostream& fout, const unsigned int igeode);
+        int ProcessMaterial(std::ostream& fout, const unsigned int igeode);
         void ProcessGeometry(std::ostream& fout, const unsigned int igeode);
     private:
         void OutputTriangle(const int iCurrentMaterial,const unsigned int surfaceFlags,

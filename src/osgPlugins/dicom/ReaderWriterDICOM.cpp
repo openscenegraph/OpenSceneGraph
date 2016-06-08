@@ -255,7 +255,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
         }
 
 
-        virtual ReadResult readImage(std::istream& fin,const osgDB::ReaderWriter::Options*) const
+        virtual ReadResult readImage(std::istream&,const osgDB::ReaderWriter::Options*) const
         {
             return 0;
         }

@@ -33,7 +33,8 @@ FFmpegImageStream::FFmpegImageStream() :
 
 
 FFmpegImageStream::FFmpegImageStream(const FFmpegImageStream & image, const osg::CopyOp & copyop) :
-    osg::ImageStream(image, copyop)
+    osg::ImageStream(image, copyop),
+    OpenThreads::Thread()
 {
     // TODO: probably incorrect or incomplete
 }

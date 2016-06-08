@@ -141,7 +141,7 @@ class CameraPacket {
         void writeEventQueue(osgViewer::Viewer& viewer);
 
         void setMasterKilled(const bool flag) { _masterKilled = flag; }
-        const bool getMasterKilled() const { return _masterKilled; }
+        bool getMasterKilled() const { return _masterKilled; }
 
         unsigned int    _byte_order;
         bool            _masterKilled;

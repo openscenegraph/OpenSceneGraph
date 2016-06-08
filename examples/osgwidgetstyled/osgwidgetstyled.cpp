@@ -30,7 +30,7 @@ class CustomStyled: public osgWidget::Widget {
 };
 
 class CustomStyle: public osgWidget::Style {
-    virtual bool applyStyle(osgWidget::Widget* w, osgWidget::Reader r) {
+    virtual bool applyStyle(osgWidget::Widget* w, osgWidget::Reader /*r*/) {
         CustomStyled* cs = dynamic_cast<CustomStyled*>(w);
 
         if(!cs) return false;
@@ -41,7 +41,8 @@ class CustomStyle: public osgWidget::Style {
     }
 };
 
-int main(int argc, char** argv) {
+int main(int, char**)
+{
     osgViewer::Viewer viewer;
 
     osgWidget::WindowManager* wm = new osgWidget::WindowManager(

@@ -44,7 +44,7 @@ public:
         apply(*geometry);
     }
 
-    virtual void apply(osg::Geometry& geometry) {} // to be implemented by actual visitors
+    virtual void apply(osg::Geometry& /*geometry*/) {} // to be implemented by actual visitors
 
 protected:
     bool isProcessed(osg::Geometry* node) {

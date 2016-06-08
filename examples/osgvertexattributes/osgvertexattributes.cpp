@@ -105,7 +105,7 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
             shader.setShaderSource(source);
         }
 
-        void convertFragmentShader(osg::Program& program, osg::Shader& shader)
+        void convertFragmentShader(osg::Program& /*program*/, osg::Shader& /*shader*/)
         {
         }
 

@@ -28,6 +28,14 @@ IF(MSVC)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zp16")
 ENDIF()
 
+################################################################################
+## Quieten warnings that a due to optional code paths
+
+IF(CMAKE_COMPILER_IS_GNUCXX)
+    # Remove -Wextra flag as it barfs on ffmoeg headers
+   STRING(REGEX REPLACE "-Wextra" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+ENDIF()
+
 SET(TARGET_DEFAULT_PREFIX "osgdb_serializers_")
 SET(TARGET_DEFAULT_LABEL_PREFIX "Plugins osg serializer")
 SET(TARGET_COMMON_LIBRARIES

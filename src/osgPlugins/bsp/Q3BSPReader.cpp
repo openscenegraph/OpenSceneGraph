@@ -167,7 +167,7 @@ public:
 
 osg::Geode* Q3BSPReader::convertFromBSP(
                             Q3BSPLoad& aLoadData,
-                            const osgDB::ReaderWriter::Options* options) const
+                            const osgDB::ReaderWriter::Options* /*options*/) const
 {
 
   std::vector<osg::Texture2D*> texture_array;

@@ -23,7 +23,7 @@ void VBSPData::addEntity(std::string & newEntity)
 }
 
 
-const int VBSPData::getNumEntities() const
+int VBSPData::getNumEntities() const
 {
     return entity_list.size();
 }
@@ -41,7 +41,7 @@ void VBSPData::addModel(Model & newModel)
 }
 
 
-const int VBSPData::getNumModels() const
+int VBSPData::getNumModels() const
 {
     return model_list.size();
 }
@@ -59,7 +59,7 @@ void VBSPData::addPlane(bsp::Plane & newPlane)
 }
 
 
-const int VBSPData::getNumPlanes() const
+int VBSPData::getNumPlanes() const
 {
     return plane_list.size();
 }
@@ -78,7 +78,7 @@ void VBSPData::addVertex(osg::Vec3f & newVertex)
 }
 
 
-const int VBSPData::getNumVertices() const
+int VBSPData::getNumVertices() const
 {
     return vertex_list.size();
 }
@@ -96,7 +96,7 @@ void VBSPData::addEdge(Edge & newEdge)
 }
 
 
-const int VBSPData::getNumEdges() const
+int VBSPData::getNumEdges() const
 {
     return edge_list.size();
 }
@@ -114,13 +114,13 @@ void VBSPData::addSurfaceEdge(int & newSurfEdge)
 }
 
 
-const int VBSPData::getNumSurfaceEdges() const
+int VBSPData::getNumSurfaceEdges() const
 {
     return surface_edge_list.size();
 }
 
 
-const int VBSPData::getSurfaceEdge(int index) const
+int VBSPData::getSurfaceEdge(int index) const
 {
     return surface_edge_list[index];
 }
@@ -132,7 +132,7 @@ void VBSPData::addFace(Face & newFace)
 }
 
 
-const int VBSPData::getNumFaces() const
+int VBSPData::getNumFaces() const
 {
     return face_list.size();
 }
@@ -150,7 +150,7 @@ void VBSPData::addTexInfo(TexInfo & newTexInfo)
 }
 
 
-const int VBSPData::getNumTexInfos() const
+int VBSPData::getNumTexInfos() const
 {
     return texinfo_list.size();
 }
@@ -168,7 +168,7 @@ void VBSPData::addTexData(TexData & newTexData)
 }
 
 
-const int VBSPData::getNumTexDatas() const
+int VBSPData::getNumTexDatas() const
 {
     return texdata_list.size();
 }
@@ -186,7 +186,7 @@ void VBSPData::addTexDataString(std::string & newTexDataString)
 }
 
 
-const int VBSPData::getNumTexDataStrings() const
+int VBSPData::getNumTexDataStrings() const
 {
     return texdata_string_list.size();
 }
@@ -204,7 +204,7 @@ void VBSPData::addDispInfo(DisplaceInfo & newDispInfo)
 }
 
 
-const int VBSPData::getNumDispInfos() const
+int VBSPData::getNumDispInfos() const
 {
     return dispinfo_list.size();
 }
@@ -222,7 +222,7 @@ void VBSPData::addDispVertex(DisplacedVertex & newDispVertex)
 }
 
 
-const int VBSPData::getNumDispVertices() const
+int VBSPData::getNumDispVertices() const
 {
     return displaced_vertex_list.size();
 }
@@ -240,7 +240,7 @@ void VBSPData::addStaticPropModel(std::string & newModel)
 }
 
 
-const int VBSPData::getNumStaticPropModels() const
+int VBSPData::getNumStaticPropModels() const
 {
     return static_prop_model_list.size();
 }
@@ -272,7 +272,7 @@ void VBSPData::addStaticProp(StaticProp & newProp)
 }
 
 
-const int VBSPData::getNumStaticProps() const
+int VBSPData::getNumStaticProps() const
 {
     return static_prop_list.size();
 }
@@ -290,7 +290,7 @@ void VBSPData::addStateSet(StateSet * stateSet)
 }
 
 
-const int VBSPData::getNumStateSets() const
+int VBSPData::getNumStateSets() const
 {
     return state_set_list.size();
 }

@@ -285,7 +285,7 @@ OcclusionQueryVisitor::getOccluderThreshold() const
 }
 
 void
-OcclusionQueryVisitor::apply( osg::OcclusionQueryNode& oqn )
+OcclusionQueryVisitor::apply( osg::OcclusionQueryNode& /*oqn*/ )
 {
     // A subgraph is already under osgOQ control.
     // Don't traverse further.

@@ -49,7 +49,7 @@ struct ColorWidget: public osgWidget::Widget {
         return true;
     }
 
-    bool keyUp(int key, int keyMask, osgWidget::WindowManager*) {
+    bool keyUp(int /*key*/, int /*keyMask*/, osgWidget::WindowManager*) {
         // osgWidget::warn() << "..." << key << " - " << keyMask << std::endl;
 
         return true;
@@ -78,7 +78,8 @@ osgWidget::Box* createBox(const std::string& name, osgWidget::Box::BoxType bt) {
     return box;
 }
 
-int main(int argc, char** argv) {
+int main(int, char**)
+{
     osgViewer::Viewer viewer;
 
     osgWidget::WindowManager* wm = new osgWidget::WindowManager(

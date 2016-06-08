@@ -300,9 +300,8 @@ const char* LABEL1 =
     "nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in..."
 ;
 
-int main(int argc, char** argv)
+int main(int, char**)
 {
-
     osgViewer::Viewer viewer;
 
     osgWidget::WindowManager* wm = new osgWidget::WindowManager(

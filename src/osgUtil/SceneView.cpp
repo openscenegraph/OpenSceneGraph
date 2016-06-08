@@ -310,7 +310,9 @@ void SceneView::init()
 
     // force the initialization of the OpenGL extension string
     // to try and work around a Windows NVidia driver bug circa Oct 2006.
+#ifndef __APPLE__
     osg::isGLExtensionSupported(_renderInfo.getState()->getContextID(),"");
+#endif
 
     if (_camera.valid() && _initVisitor.valid())
     {

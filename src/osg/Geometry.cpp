@@ -25,6 +25,9 @@ Geometry::Geometry():
     _supportsVertexBufferObjects = true;
     // temporary test
     // setSupportsDisplayList(false);
+#ifndef OSG_GL_FIXED_FUNCTION_AVAILABLE
+    _useVertexBufferObjects = true;
+#endif
 }
 
 Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
@@ -40,6 +43,9 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
     // temporary test
     // setSupportsDisplayList(false);
 
+#ifndef OSG_GL_FIXED_FUNCTION_AVAILABLE
+    _useVertexBufferObjects = true;
+#endif
     for(PrimitiveSetList::const_iterator pitr=geometry._primitives.begin();
         pitr!=geometry._primitives.end();
         ++pitr)

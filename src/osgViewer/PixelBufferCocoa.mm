@@ -56,6 +56,12 @@ bool PixelBufferCocoa::realizeImplementation()
         attr[i++] = static_cast<NSOpenGLPixelFormatAttribute>(_traits->samples);
     }
 
+#ifdef OSG_GL3_AVAILABLE
+    attr[i++] = NSOpenGLPFAOpenGLProfile;
+    attr[i++] = NSOpenGLProfileVersion3_2Core;
+    OSG_INFO << "PixelBufferCocoa::realizeImplementation set up for GL3"<< std::endl;
+#endif
+
     attr[i++] = NSOpenGLPFAPixelBuffer; // for pbuffer usage
     attr[i++] = NSOpenGLPFAAccelerated;
     attr[i] = static_cast<NSOpenGLPixelFormatAttribute>(0);

@@ -145,14 +145,14 @@ public:
 
       virtual void setVertexArray(unsigned int,const osg::Vec2*) {}
 
-      virtual void setVertexArray(unsigned int count,const osg::Vec3* vecs) {}
+      virtual void setVertexArray(unsigned int,const osg::Vec3*) {}
 
-      virtual void setVertexArray(unsigned int,const osg::Vec4* ) {}
+      virtual void setVertexArray(unsigned int,const osg::Vec4*) {}
 
       virtual void setVertexArray(unsigned int,const osg::Vec2d*) {}
 
-      virtual void setVertexArray(unsigned int ,const osg::Vec3d* ) {}
-      virtual void setVertexArray(unsigned int,const osg::Vec4d* ) {}
+      virtual void setVertexArray(unsigned int ,const osg::Vec3d*) {}
+      virtual void setVertexArray(unsigned int,const osg::Vec4d*) {}
 
 
       // operator for triangles

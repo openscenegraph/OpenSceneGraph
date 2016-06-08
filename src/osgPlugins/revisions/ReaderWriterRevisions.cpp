@@ -48,7 +48,7 @@ class ReaderWriterRevisions : public osgDB::ReaderWriter
             else return readFileList(fin, fileName, options);
         }
 
-        ReadResult readFileList(std::istream& fin, const std::string& name, const osgDB::ReaderWriter::Options* options) const
+        ReadResult readFileList(std::istream& fin, const std::string& name, const osgDB::ReaderWriter::Options* /*options*/) const
         {
             OSG_INFO<<"    readFileList="<<name<<std::endl;
 

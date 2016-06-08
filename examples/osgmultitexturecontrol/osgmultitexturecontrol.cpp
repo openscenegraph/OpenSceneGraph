@@ -188,7 +188,7 @@ public:
     TerrainHandler(osgTerrain::Terrain* terrain):
         _terrain(terrain) {}
 
-    bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
+    bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& /*aa*/)
     {
         switch(ea.getEventType())
         {

@@ -185,9 +185,9 @@ bool daeReader::processDocument( const std::string& fileURI)
         // identify every node as a joint, making it meaningless.
         std::vector<domInstance_controller*> instanceControllers;
         database->typeLookup(instanceControllers);
-        for (size_t i = 0; i < instanceControllers.size(); ++i)
+        for (size_t controller = 0; controller < instanceControllers.size(); ++controller)
         {
-            domInstance_controller* pInstanceController = instanceControllers[i];
+            domInstance_controller* pInstanceController = instanceControllers[controller];
 
             domController *pDomController = daeSafeCast<domController>(getElementFromURI(pInstanceController->getUrl()));
             if (!pDomController)

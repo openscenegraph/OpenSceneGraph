@@ -89,7 +89,7 @@ public:
             return WriteResult(WriteResult::FILE_NOT_HANDLED);
     }
 
-    virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options =NULL) const
+    virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* /*options*/ =NULL) const
     {
         if (!acceptsExtension(osgDB::getFileExtension(fileName)))
             return WriteResult(WriteResult::FILE_NOT_HANDLED);

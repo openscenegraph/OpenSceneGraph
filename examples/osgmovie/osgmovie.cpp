@@ -701,8 +701,8 @@ void SDLAudioSink::play()
 
 
 
-    SDL_AudioSpec specs = { 0 };
-    SDL_AudioSpec wanted_specs = { 0 };
+    SDL_AudioSpec specs;
+    SDL_AudioSpec wanted_specs;
 
     wanted_specs.freq = _audioStream->audioFrequency();
     wanted_specs.channels = _audioStream->audioNbChannels();

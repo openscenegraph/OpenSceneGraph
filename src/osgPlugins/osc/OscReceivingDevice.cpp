@@ -298,7 +298,7 @@ public:
     {
     }
 
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
+    virtual bool operator()(const std::string& /*request_path*/, const std::string& /*full_request_path*/, const osc::ReceivedMessage& m, const IpEndpointName& /*remoteEndPoint*/)
     {
         try {
             float x_min(-1.0f), y_min(-1.0f), x_max(1.0f), y_max(1.0f);
@@ -330,7 +330,7 @@ public:
     {
     }
 
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
+    virtual bool operator()(const std::string& /*request_path*/, const std::string& /*full_request_path*/, const osc::ReceivedMessage& m, const IpEndpointName& /*remoteEndPoint*/)
     {
         try {
             bool increasing_upwards(false);
@@ -364,7 +364,7 @@ public:
     {
     }
 
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
+    virtual bool operator()(const std::string& /*request_path*/, const std::string& /*full_request_path*/, const osc::ReceivedMessage& m, const IpEndpointName& /*remoteEndPoint*/)
     {
         try {
             osc::int32 keycode(0);
@@ -401,7 +401,7 @@ public:
     {
     }
 
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
+    virtual bool operator()(const std::string& /*request_path*/, const std::string& /*full_request_path*/, const osc::ReceivedMessage& m, const IpEndpointName& /*remoteEndPoint*/)
     {
         try {
             osc::int32 keycode(0);
@@ -438,7 +438,7 @@ public:
     {
     }
 
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
+    virtual bool operator()(const std::string& /*request_path*/, const std::string& /*full_request_path*/, const osc::ReceivedMessage& m, const IpEndpointName& /*remoteEndPoint*/)
     {
 
         try {
@@ -473,7 +473,7 @@ public:
     {
     }
 
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
+    virtual bool operator()(const std::string& /*request_path*/, const std::string& /*full_request_path*/, const osc::ReceivedMessage& m, const IpEndpointName& /*remoteEndPoint*/)
     {
 
         try {
@@ -514,7 +514,7 @@ public:
     {
     }
 
-    virtual bool operator()(const std::string& request_path, const std::string& full_request_path, const osc::ReceivedMessage& m, const IpEndpointName& remoteEndPoint)
+    virtual bool operator()(const std::string& /*request_path*/, const std::string& /*full_request_path*/, const osc::ReceivedMessage& m, const IpEndpointName& /*remoteEndPoint*/)
     {
         float down(0.0f);
 

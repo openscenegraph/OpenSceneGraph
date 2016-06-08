@@ -49,7 +49,7 @@ AntiSquish::~AntiSquish()
 }
 
 
-bool AntiSquish::computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const
+bool AntiSquish::computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* /*nv*/) const
 {
     osg::Matrix unsquishedMatrix;
     if ( !computeUnSquishedMatrix( unsquishedMatrix ) )

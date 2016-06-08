@@ -27,7 +27,7 @@ ReaderWriterPOV::ReaderWriterPOV()
 
 static osgDB::ReaderWriter::WriteResult
 writeNodeImplementation( const Node& node, ostream& fout,
-                         const osgDB::ReaderWriter::Options* options )
+                         const osgDB::ReaderWriter::Options* /*options*/ )
 {
    // get camera on the top of scene graph
    const Camera *camera = node.asCamera();

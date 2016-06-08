@@ -37,7 +37,7 @@ _dataset(0), _gdalReader(0)
 }
 
 DataSetLayer::DataSetLayer(const DataSetLayer& dataSetLayer,const osg::CopyOp& copyop):
-    Layer(dataSetLayer), _gdalReader(dataSetLayer._gdalReader)
+    Layer(dataSetLayer, copyop), _gdalReader(dataSetLayer._gdalReader)
 {
     if (dataSetLayer._dataset) open();
 }

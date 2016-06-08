@@ -77,7 +77,8 @@ bool changeTheme(osgWidget::Event& ev) {
     return true;
 }
 
-int main(int argc, char** argv) {
+int main(int, char**)
+{
     osgViewer::Viewer viewer;
 
     osgWidget::WindowManager* wm = new osgWidget::WindowManager(

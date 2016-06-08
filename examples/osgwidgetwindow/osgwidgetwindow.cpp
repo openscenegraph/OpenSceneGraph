@@ -51,14 +51,15 @@ struct CallbackObject: public osgWidget::Callback {
     osgWidget::Callback(evType) {
     }
 
-    virtual bool operator()(osgWidget::Event& ev) {
+    virtual bool operator()(osgWidget::Event& /*ev*/) {
         std::cout << "here" << std::endl;
 
         return false;
     }
 };
 
-int main(int argc, char** argv) {
+int main(int, char**)
+{
     osgViewer::Viewer viewer;
 
     // Let's get busy! The WindowManager class is actually an osg::Switch,

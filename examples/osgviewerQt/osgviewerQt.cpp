@@ -81,7 +81,7 @@ public:
         return new osgQt::GraphicsWindowQt(traits.get());
     }
 
-    virtual void paintEvent( QPaintEvent* event )
+    virtual void paintEvent( QPaintEvent* /*event*/ )
     { frame(); }
 
 protected:

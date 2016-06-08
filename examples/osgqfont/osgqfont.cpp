@@ -506,11 +506,11 @@ public:
         startTimer(10);
     }
 
-    virtual void paintEvent(QPaintEvent* event)
+    virtual void paintEvent(QPaintEvent* /*event*/)
     {
         _viewer.frame();
     }
-    virtual void timerEvent(QTimerEvent* event)
+    virtual void timerEvent(QTimerEvent* /*event*/)
     {
         _viewer.frame();
     }

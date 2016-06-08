@@ -31,7 +31,7 @@ LineEdit::LineEdit(const osgUI::LineEdit& label, const osg::CopyOp& copyop):
 {
 }
 
-bool LineEdit::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
+bool LineEdit::handleImplementation(osgGA::EventVisitor* /*ev*/, osgGA::Event* event)
 {
     if (!getHasEventFocus()) return false;
 

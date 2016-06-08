@@ -30,7 +30,7 @@ Popup::Popup(const osgUI::Popup& dialog, const osg::CopyOp& copyop):
 {
 }
 
-bool Popup::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
+bool Popup::handleImplementation(osgGA::EventVisitor* /*ev*/, osgGA::Event* event)
 {
 //    OSG_NOTICE<<"Popup::handleImplementation"<<std::endl;
 

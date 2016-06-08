@@ -30,7 +30,7 @@ PushButton::PushButton(const osgUI::PushButton& pb, const osg::CopyOp& copyop):
 {
 }
 
-bool PushButton::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
+bool PushButton::handleImplementation(osgGA::EventVisitor* /*ev*/, osgGA::Event* event)
 {
     if (!getHasEventFocus()) return false;
 

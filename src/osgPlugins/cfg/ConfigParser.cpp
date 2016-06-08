@@ -1118,6 +1118,7 @@ yydestruct (yytype, yyvaluep)
 #endif
 {
   /* Pacify ``unused variable'' warnings.  */
+  (void) yytype;
   (void) yyvaluep;
 
 }

@@ -1,14 +1,14 @@
-/*  -*-c++-*- 
+/*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
  *  Authors:
@@ -33,7 +33,7 @@
   public:
       META_Object(osgAnimation, AnimtkUpdateCallback);
 
-      AnimtkUpdateCallback() 
+      AnimtkUpdateCallback()
       {
           _sampler = new osgAnimation::Vec3CubicBezierSampler;
           _playing = false;
@@ -41,6 +41,7 @@
       }
       AnimtkUpdateCallback(const AnimtkUpdateCallback& val, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY):
           osg::Object(val, copyop),
+          osg::Callback(val, copyop),
           osg::NodeCallback(val, copyop),
           _sampler(val._sampler),
           _startTime(val._startTime),
@@ -52,16 +53,16 @@
 
       /** Callback method called by the NodeVisitor when visiting a node.*/
       virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-      { 
-          if (nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR && 
-              nv->getFrameStamp() && 
-              nv->getFrameStamp()->getFrameNumber() != _lastUpdate) 
+      {
+          if (nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR &&
+              nv->getFrameStamp() &&
+              nv->getFrameStamp()->getFrameNumber() != _lastUpdate)
           {
 
               _lastUpdate = nv->getFrameStamp()->getFrameNumber();
               _currentTime = osg::Timer::instance()->tick();
 
-              if (_playing && _sampler.get() && _sampler->getKeyframeContainer()) 
+              if (_playing && _sampler.get() && _sampler->getKeyframeContainer())
               {
                   osg::MatrixTransform* transform = dynamic_cast<osg::MatrixTransform*>(node);
                   if (transform) {
@@ -97,7 +98,7 @@ class AnimtkStateSetUpdateCallback : public osg::StateSet::Callback
 public:
     META_Object(osgAnimation, AnimtkStateSetUpdateCallback);
 
-    AnimtkStateSetUpdateCallback() 
+    AnimtkStateSetUpdateCallback()
     {
         _sampler = new osgAnimation::Vec4LinearSampler;
         _playing = false;
@@ -106,6 +107,7 @@ public:
 
     AnimtkStateSetUpdateCallback(const AnimtkStateSetUpdateCallback& val, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY):
         osg::Object(val, copyop),
+        osg::Callback(val, copyop),
         osg::StateSet::Callback(val, copyop),
         _sampler(val._sampler),
         _startTime(val._startTime),
@@ -117,19 +119,19 @@ public:
 
     /** Callback method called by the NodeVisitor when visiting a node.*/
     virtual void operator()(osg::StateSet* state, osg::NodeVisitor* nv)
-    { 
-        if (state && 
-            nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR && 
-            nv->getFrameStamp() && 
+    {
+        if (state &&
+            nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR &&
+            nv->getFrameStamp() &&
             nv->getFrameStamp()->getFrameNumber() != _lastUpdate) {
 
             _lastUpdate = nv->getFrameStamp()->getFrameNumber();
             _currentTime = osg::Timer::instance()->tick();
 
-            if (_playing && _sampler.get() && _sampler->getKeyframeContainer()) 
+            if (_playing && _sampler.get() && _sampler->getKeyframeContainer())
             {
                 osg::Material* material = dynamic_cast<osg::Material*>(state->getAttribute(osg::StateAttribute::MATERIAL));
-                if (material) 
+                if (material)
                 {
                     osg::Vec4 result;
                     float t = osg::Timer::instance()->delta_s(_startTime, _currentTime);
@@ -155,7 +157,7 @@ public:
 
 // This won't really give good results in any situation, but it does demonstrate
 // on possible "fast" usage...
-class MakePathTimeCallback: public AnimtkUpdateCallback 
+class MakePathTimeCallback: public AnimtkUpdateCallback
 {
     osg::ref_ptr<osg::Geode> _geode;
     float _lastAdd;
@@ -168,11 +170,11 @@ public:
         _addSeconds(0.08f) {
     }
 
-    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv) 
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
     {
         float t = osg::Timer::instance()->delta_s(_startTime, _currentTime);
 
-        if(_lastAdd + _addSeconds <= t && t <= 8.0f) 
+        if(_lastAdd + _addSeconds <= t && t <= 8.0f)
         {
             osg::Vec3 pos;
 
@@ -190,7 +192,7 @@ public:
 
 // This will give great results if you DO NOT have VSYNC enabled and can generate
 // decent FPS.
-class MakePathDistanceCallback: public AnimtkUpdateCallback 
+class MakePathDistanceCallback: public AnimtkUpdateCallback
 {
     osg::ref_ptr<osg::Geode> _geode;
     osg::Vec3 _lastAdd;
@@ -203,7 +205,7 @@ public:
         _threshold(0.5f),
         _count(0) {}
 
-    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv) 
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
     {
         static bool countReported = false;
 
@@ -215,13 +217,13 @@ public:
 
         osg::Vec3 distance = _lastAdd - pos;
 
-        if(t <= 8.0f && distance.length() >= _threshold) 
+        if(t <= 8.0f && distance.length() >= _threshold)
         {
             _geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(pos, 0.25f)));
             _lastAdd = pos;
             _count++;
         }
-        else if(t > 8.0f) 
+        else if(t > 8.0f)
         {
             if(!countReported) std::cout << "Created " << _count << " nodes." << std::endl;
             countReported = true;
@@ -231,13 +233,13 @@ public:
     }
 };
 
-osg::StateSet* setupStateSet() 
+osg::StateSet* setupStateSet()
 {
     osg::StateSet* st = new osg::StateSet();
-    
+
     st->setAttributeAndModes(new osg::Material(), true);
     st->setMode(GL_BLEND, true);
-    
+
     AnimtkStateSetUpdateCallback* callback = new AnimtkStateSetUpdateCallback();
     osgAnimation::Vec4KeyframeContainer* keys = callback->_sampler->getOrCreateKeyframeContainer();
     keys->push_back(osgAnimation::Vec4Keyframe(0, osg::Vec4(1,0,0,1)));
@@ -248,11 +250,11 @@ osg::StateSet* setupStateSet()
     keys->push_back(osgAnimation::Vec4Keyframe(10, osg::Vec4(1,0,0,1)));
     callback->start();
     st->setUpdateCallback(callback);
-    
+
     return st;
 }
 
-osg::MatrixTransform* setupAnimtkNode(osg::Geode* staticGeode) 
+osg::MatrixTransform* setupAnimtkNode(osg::Geode* staticGeode)
 {
     osg::Vec3 v[5];
 
@@ -300,20 +302,20 @@ osg::MatrixTransform* setupAnimtkNode(osg::Geode* staticGeode)
     node->setUpdateCallback(callback);
 
     osg::Geode* geode = new osg::Geode();
-    
+
     geode->setStateSet(setupStateSet());
     geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), 2)));
-    
+
     node->addChild(geode);
 
     return node;
 }
 
-int main(int argc, char** argv) 
+int main(int argc, char** argv)
 {
     osg::ArgumentParser arguments(&argc, argv);
     osgViewer::Viewer viewer(arguments);
-    
+
     osgGA::TrackballManipulator* tbm = new osgGA::TrackballManipulator();
 
     viewer.setCameraManipulator(tbm);

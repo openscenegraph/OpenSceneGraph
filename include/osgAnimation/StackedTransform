@@ -32,6 +32,9 @@ namespace osgAnimation
         const osg::Matrix& getMatrix() const;
 
     protected:
+
+        typedef osg::MixinVector<osg::ref_ptr<StackedTransformElement> > inherited;
+
         osg::Matrix _matrix;
     };
 

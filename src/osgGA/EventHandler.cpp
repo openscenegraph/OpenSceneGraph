@@ -45,7 +45,7 @@ void EventHandler::event(osg::NodeVisitor* nv, osg::Drawable* drawable)
     }
 }
 
-bool EventHandler::handle(osgGA::Event* event, osg::Object* object, osg::NodeVisitor* nv)
+bool EventHandler::handle(osgGA::Event* event, osg::Object* /*object*/, osg::NodeVisitor* /*nv*/)
 {
     OSG_NOTICE<<"Handle event "<<event<<std::endl;
     return false;

@@ -30,7 +30,7 @@
 
 // Creates a stateset which contains a 1D texture which is populated by contour banded color,
 // and allows tex gen to override the S texture coordinate
-osg::StateSet* create1DTextureStateToDecorate(osg::Node* loadedModel)
+osg::StateSet* create1DTextureStateToDecorate(osg::Node* /*loadedModel*/)
 {
     osg::Image* image = new osg::Image;
 

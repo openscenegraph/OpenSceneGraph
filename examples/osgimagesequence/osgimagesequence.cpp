@@ -330,7 +330,7 @@ void MovieEventHandler::set(osg::Node* node)
 }
 
 
-bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object*, osg::NodeVisitor* nv)
+bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&, osg::Object*, osg::NodeVisitor*)
 {
     switch(ea.getEventType())
     {

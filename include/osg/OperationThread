@@ -79,10 +79,6 @@ protected:
         Operation():
             _keep(false) {}
 
-        Operation(const Operation& op):
-            _name(op._name),
-            _keep(op._keep) {}
-
         virtual ~Operation() {}
 
         std::string _name;

@@ -1,3 +1,7 @@
+### Status
+
+[![Build Status](https://travis-ci.org/openscenegraph/OpenSceneGraph.svg?branch=master)](https://travis-ci.org/openscenegraph/OpenSceneGraph)
+
 Welcome to the OpenSceneGraph (OSG).
 
 For up-to-date information on the project, in-depth details on how to

@@ -1040,6 +1040,13 @@ GLExtensions::GLExtensions(unsigned int contextID)
         (isGLExtensionSupported(contextID, "GL_EXT_packed_depth_stencil")) ||
         (isGLExtensionSupported(contextID, "GL_OES_packed_depth_stencil"));
 
+    //subroutine
+    osg::setGLExtensionFuncPtr(glGetSubroutineUniformLocation, "glGetSubroutineUniformLocation");
+    osg::setGLExtensionFuncPtr(glGetActiveSubroutineUniformName, "glGetActiveSubroutineUniformName");
+    osg::setGLExtensionFuncPtr(glGetActiveSubroutineUniformiv, "glGetActiveSubroutineUniformiv");
+    osg::setGLExtensionFuncPtr(glGetSubroutineIndex, "glGetSubroutineIndex");
+    osg::setGLExtensionFuncPtr(glGetActiveSubroutineName, "glGetActiveSubroutineName");
+    osg::setGLExtensionFuncPtr(glGetProgramStageiv, "glGetProgramStageiv");
 
     // Sync
     osg::setGLExtensionFuncPtr(glFenceSync, "glFenceSync");

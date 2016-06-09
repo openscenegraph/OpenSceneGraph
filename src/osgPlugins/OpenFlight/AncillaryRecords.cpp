@@ -12,7 +12,7 @@
 */
 
 //
-// OpenFlight® loader for OpenSceneGraph
+// OpenFlight loader for OpenSceneGraph
 //
 //  Copyright (C) 2005-2007  Brede Johansen
 //
@@ -20,6 +20,7 @@
 #include <osg/MatrixTransform>
 #include <osg/Texture2D>
 #include <osg/TexEnv>
+#include <osg/ValueObject>
 
 #include "Registry.h"
 #include "Document.h"
@@ -189,8 +190,8 @@ class Multitexture : public Record
                 {
                     int16 textureIndex = in.readInt16();
                     int16 effect = in.readInt16();
-                    /*int16 mappingIndex =*/ in.readInt16();
-                    /*uint16 data =*/ in.readUInt16();
+                    int16 mappingIndex = in.readInt16();
+                    uint16 data = in.readUInt16();
 
                     osg::ref_ptr<osg::StateSet> texturePoolStateset = document.getOrCreateTexturePool()->get(textureIndex);
                     if (stateset.valid() && texturePoolStateset.valid())
@@ -198,8 +199,15 @@ class Multitexture : public Record
                         // Apply texture from texture pool.
                         osg::Texture* texture = dynamic_cast<osg::Texture*>(texturePoolStateset->getTextureAttribute(0,osg::StateAttribute::TEXTURE));
                         if (texture)
+                        {
                             stateset->setTextureAttributeAndModes(layer,texture,osg::StateAttribute::ON);
-
+                            if (document.getPreserveNonOsgAttrsAsUserData())
+                            {
+                                texture->setUserValue("<UA::TexEffect>", effect);
+                                texture->setUserValue("<UA::TexMappingIdx>", mappingIndex);
+                                texture->setUserValue("<UA::TexData>", data);
+                            }
+                        }
                         // Apply texture environment
                         switch (effect)
                         {

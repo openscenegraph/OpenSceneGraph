@@ -77,5 +77,5 @@ if(MSVC)
         DESTINATION bin
         COMPONENT libopenthreads
     )
-)
+endif()
 #commented out# INCLUDE(ModuleInstall OPTIONAL)

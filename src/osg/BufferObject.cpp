@@ -249,7 +249,6 @@ void GLBufferObject::deleteGLObject()
     {
         _extensions->glDeleteBuffers(1, &_glObjectID);
         _glObjectID = 0;
-
         _allocatedSize = 0;
         _bufferEntries.clear();
     }

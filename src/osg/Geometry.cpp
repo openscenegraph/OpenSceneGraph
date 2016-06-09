@@ -25,6 +25,13 @@ Geometry::Geometry():
     _supportsVertexBufferObjects = true;
     // temporary test
     // setSupportsDisplayList(false);
+    _glVaoId = 0;
+#ifndef OSG_GL_FIXED_FUNCTION_AVAILABLE
+    _useVertexBufferObjects = true;
+    _useVertexArrayObjects = true;
+#else
+    _useVertexArrayObjects = false;
+#endif
 }
 
 Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
@@ -34,11 +41,19 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
     _colorArray(copyop(geometry._colorArray.get())),
     _secondaryColorArray(copyop(geometry._secondaryColorArray.get())),
     _fogCoordArray(copyop(geometry._fogCoordArray.get())),
-    _containsDeprecatedData(geometry._containsDeprecatedData)
+    _containsDeprecatedData(geometry._containsDeprecatedData),
+    _glVaoId(0)
 {
     _supportsVertexBufferObjects = true;
     // temporary test
     // setSupportsDisplayList(false);
+
+#ifndef OSG_GL_FIXED_FUNCTION_AVAILABLE
+    _useVertexBufferObjects = true;
+    _useVertexArrayObjects = true;
+#else
+    _useVertexArrayObjects = false;
+#endif
 
     for(PrimitiveSetList::const_iterator pitr=geometry._primitives.begin();
         pitr!=geometry._primitives.end();
@@ -80,6 +95,11 @@ Geometry::~Geometry()
 {
     // do dirty here to keep the getGLObjectSizeHint() estimate on the ball
     dirtyDisplayList();
+
+    if(_useVertexArrayObjects && _glVaoId !=0)
+    {
+        // TODO remove _glVaoId
+    }
 
     // no need to delete, all automatically handled by ref_ptr :-)
 }
@@ -704,11 +724,28 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
             itr != bufferObjects.end();
             ++itr)
         {
+            if (_useVertexArrayObjects)
+            {
+                if (dynamic_cast<VertexBufferObject*>((*itr)) != 0)
+                {
+                    if (_glVaoId==0)
+                    {
+                        extensions->glGenVertexArrays(1, &_glVaoId);
+                    }
+                    extensions->glBindVertexArray( _glVaoId );
+                }
+            }
+
             GLBufferObject* glBufferObject = (*itr)->getOrCreateGLBufferObject(contextID);
             if (glBufferObject && glBufferObject->isDirty())
             {
                 // OSG_NOTICE<<"Compile buffer "<<glBufferObject<<std::endl;
                 glBufferObject->compileBuffer();
+            }
+
+            if (_useVertexArrayObjects)
+            {
+                extensions->glBindVertexArray(0);
             }
         }
 
@@ -717,7 +754,6 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
         // unbind the BufferObjects
         extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
         extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
-
     }
     else
     {
@@ -758,6 +794,14 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
+    unsigned int contextID = state.getContextID();
+    GLExtensions* extensions = state.get<GLExtensions>();
+
+
+    if(_useVertexArrayObjects && extensions)
+    {
+        extensions->glBindVertexArray(_glVaoId);
+    }
 
     bool handleVertexAttributes = !_vertexAttribList.empty();
 
@@ -830,6 +874,12 @@ void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
             }
         }
     }
+
+//    TODO: unserstand when to unbind verstexArray (mathieu)
+//    if(_useVertexArrayObjects && extensions)
+//    {
+//        extensions->glBindVertexArray(0);
+//    }
 
     state.applyDisablingOfVertexAttributes();
 }
@@ -1504,11 +1554,11 @@ void Geometry::fixDeprecatedData()
     // we start processing the primitive sets.
     int target_vindex = 0;
     int source_pindex = -1; // equals primitiveNum
-    for(PrimitiveSetList::iterator prim_itr = _primitives.begin();
-        prim_itr != _primitives.end();
-        ++prim_itr)
+    for(PrimitiveSetList::iterator itr = _primitives.begin();
+        itr != _primitives.end();
+        ++itr)
     {
-        osg::PrimitiveSet* primitiveset = prim_itr->get();
+        osg::PrimitiveSet* primitiveset = itr->get();
         GLenum mode=primitiveset->getMode();
 
         unsigned int primLength;

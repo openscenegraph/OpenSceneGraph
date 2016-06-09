@@ -228,7 +228,8 @@ class OSG_EXPORT Geometry : public Drawable
         ArrayList                       _vertexAttribList;
 
         bool                            _containsDeprecatedData;
-
+        bool                            _useVertexArrayObjects;
+        mutable GLuint                 _glVaoId;
     public:
 
 

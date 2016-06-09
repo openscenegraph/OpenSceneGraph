@@ -51,9 +51,7 @@ VolumeTile* Volume::getVolumeTile(const TileID& tileID)
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
     VolumeTileMap::iterator itr = _volumeTileMap.find(tileID);
-    if (itr != _volumeTileMap.end()) return 0;
-
-    return itr->second;
+    return (itr != _volumeTileMap.end()) ? itr->second : 0;
 }
 
 const VolumeTile* Volume::getVolumeTile(const TileID& tileID) const
@@ -61,9 +59,7 @@ const VolumeTile* Volume::getVolumeTile(const TileID& tileID) const
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
     VolumeTileMap::const_iterator itr = _volumeTileMap.find(tileID);
-    if (itr != _volumeTileMap.end()) return 0;
-
-    return itr->second;
+    return (itr != _volumeTileMap.end()) ? itr->second : 0;
 }
 
 void Volume::dirtyRegisteredVolumeTiles()

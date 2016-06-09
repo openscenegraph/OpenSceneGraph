@@ -1,0 +1,36 @@
+matrix:
+  fast_finish: true
+  include:
+    #Linux build
+    - os: linux
+      dist: trusty
+      language: cpp
+      env:
+         #- LLVM_VERSION=3.8
+      sudo: false
+      cache:
+        apt: true
+        directories:
+          - $HOME/.ccache
+      compiler: 
+          #- clang 
+          - g++
+      addons:
+        apt:
+          sources:
+            #- llvm-toolchain-precise-3.8
+            - ubuntu-toolchain-r-test
+          packages:
+            #- clang-3.8
+            - g++
+            - cmake
+    # OSX build
+    - os: osx
+      language: cpp
+
+script:
+   - mkdir build
+   - cd build
+   - travis_wait 60 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../product -DBUILD_OSG_EXAMPLES=ON ..
+   - make install -j3
+

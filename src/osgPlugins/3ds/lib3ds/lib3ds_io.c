@@ -98,16 +98,19 @@ lib3ds_io_log_str(Lib3dsIo *io, Lib3dsLogLevel level, const char *str) {
 
 void
 lib3ds_io_log(Lib3dsIo *io, Lib3dsLogLevel level, const char *format, ...) {
-    va_list args;
-    /* FIXME */ char str[1024];
 
     assert(io);
     if (!io || !io->log_func)
         return;
 
+    va_list args;
     va_start(args, format);
-    /* FIXME: */ vsprintf(str, format, args);
+
+    char str[1024];
+    vsprintf(str, format, args);
     lib3ds_io_log_str(io, level, str);
+
+    va_end(args);
 
     if (level == LIB3DS_LOG_ERROR) {
         longjmp(((Lib3dsIoImpl*)io->impl)->jmpbuf, 1);

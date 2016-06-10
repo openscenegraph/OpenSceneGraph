@@ -546,7 +546,10 @@ void WriterNodeVisitor::writeMaterials()
                 else tex.flags &= ~LIB3DS_TEXTURE_NO_TILE;
             }
             if (!succeeded())
+            {
+                lib3ds_material_free(mat3ds);
                 return;
+            }
             lib3ds_file_insert_material(_file3ds, mat3ds, itr->second.index);
             break;        // Ugly thing (3)
         }

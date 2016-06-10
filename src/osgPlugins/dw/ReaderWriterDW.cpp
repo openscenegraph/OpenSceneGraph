@@ -946,6 +946,8 @@ class ReaderWriterDW : public osgDB::ReaderWriter
             fclose( fp );
             obj.buildDrawable(grp, options); // tidy up any remaining objects
 
+            if (matpalet) delete [] matpalet;
+
             return grp;
 
         }

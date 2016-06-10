@@ -411,6 +411,7 @@ int *numComponents_ret)
     }
 
     if (linebuf) delete [] linebuf;
+    if (colormap) delete [] colormap;
 
     if (tgaerror)
     {

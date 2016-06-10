@@ -113,7 +113,10 @@ public:
 class BSP_BIQUADRATIC_PATCH
 {
 public:
-    BSP_BIQUADRATIC_PATCH():m_vertices(32),m_indices(32)
+    BSP_BIQUADRATIC_PATCH():
+        m_tessellation(0),
+        m_vertices(32),
+        m_indices(32)
     {
     }
     ~BSP_BIQUADRATIC_PATCH()

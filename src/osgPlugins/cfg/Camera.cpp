@@ -121,6 +121,7 @@ Camera::Lens::Lens( void )
     _ortho_top    =  1.0;
     _nearClip     =  1.0;
     _farClip      =  1e6;
+    _auto_aspect  = false;
     _updateFOV();
     _projection = Perspective;
 }

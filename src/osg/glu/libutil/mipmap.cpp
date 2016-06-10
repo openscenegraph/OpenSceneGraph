@@ -3851,8 +3851,7 @@ static int bitmapBuild2DMipmaps(GLenum target, GLint internalFormat,
 }
 
 /* To make swapping images less error prone */
-#define __GLU_INIT_SWAP_IMAGE void *tmpImage
-#define __GLU_SWAP_IMAGE(a,b) tmpImage = a; a = b; b = tmpImage;
+#define __GLU_SWAP_IMAGE(a,b) { void *tmpImage = a; a = b; b = tmpImage; }
 
 static int gluBuild2DMipmapLevelsCore(GLenum target, GLint internalFormat,
                                       GLsizei width, GLsizei height,
@@ -3867,7 +3866,7 @@ static int gluBuild2DMipmapLevelsCore(GLenum target, GLint internalFormat,
     GLint level, levels;
     const void *usersImage; /* passed from user. Don't touch! */
     void *srcImage, *dstImage; /* scratch area to build mipmapped images */
-    __GLU_INIT_SWAP_IMAGE;
+
     size_t memreq;
     GLint cmpts;
 
@@ -4586,6 +4585,7 @@ static int gluBuild2DMipmapLevelsCore(GLenum target, GLint internalFormat,
              glPixelStorei(GL_UNPACK_ROW_LENGTH, psm.unpack_row_length);
              glPixelStorei(GL_UNPACK_SWAP_BYTES, psm.unpack_swap_bytes);
 #endif
+             free(dstImage);
              return GLU_OUT_OF_MEMORY;
           }
 
@@ -7756,7 +7756,7 @@ static int gluBuild3DMipmapLevelsCore(GLTexImage3DProc gluTexImage3D,
    GLint level, levels;
    const void *usersImage;
    void *srcImage, *dstImage;
-   __GLU_INIT_SWAP_IMAGE;
+
    GLint memReq;
    GLint cmpts;
 

@@ -142,9 +142,15 @@ class BSP_PATCH
 {
 public:
 
-    BSP_PATCH():m_quadraticPatches(32)
+    BSP_PATCH():
+        m_textureIndex(0),
+        m_lightmapIndex(0),
+        m_width(0), m_height(0),
+        m_numQuadraticPatches(0),
+        m_quadraticPatches(32)
     {
     }
+
     ~BSP_PATCH()
     {
     }

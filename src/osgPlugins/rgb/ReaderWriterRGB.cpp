@@ -38,8 +38,38 @@
 using namespace osg;
 
 
-typedef struct _rawImageRec
+struct rawImageRec : public osg::Referenced
 {
+    rawImageRec():
+        imagic(0),
+        type(0),
+        dim(0),
+        sizeX(0), sizeY(0), sizeZ(0),
+        min(0), max(0),
+        wasteBytes(0),
+        colorMap(0),
+        file(0),
+        tmp(0), tmpR(0), tmpG(0), tmpB(0), tmpA(0),
+        rleEnd(0),
+        rowStart(0),
+        rowSize(0),
+        swapFlag(0),
+        bpc(0)
+    {
+    }
+
+    virtual ~rawImageRec()
+    {
+        if (tmp) delete [] tmp;
+        if (tmpR) delete [] tmpR;
+        if (tmpG) delete [] tmpG;
+        if (tmpB) delete [] tmpB;
+        if (tmpA) delete [] tmpA;
+
+        if (rowStart) delete [] rowStart;
+        if (rowSize) delete [] rowSize;
+    }
+
     unsigned short imagic;
     unsigned short type;
     unsigned short dim;
@@ -98,7 +128,7 @@ typedef struct _rawImageRec
         swapBytes( max );
         swapBytes( colorMap );
     }
-} rawImageRec;
+};
 
 static void ConvertShort(unsigned short *array, long length)
 {
@@ -131,36 +161,18 @@ static void ConvertLong(GLuint *array, long length)
 }
 
 
-static void RawImageClose(rawImageRec *raw)
-{
-    if (raw)
-    {
 
-        if (raw->tmp) delete [] raw->tmp;
-        if (raw->tmpR) delete [] raw->tmpR;
-        if (raw->tmpG) delete [] raw->tmpG;
-        if (raw->tmpB) delete [] raw->tmpB;
-        if (raw->tmpA) delete [] raw->tmpA;
-
-        if (raw->rowStart) delete [] raw->rowStart;
-        if (raw->rowSize) delete [] raw->rowSize;
-
-        delete raw;
-    }
-}
-
-
-static rawImageRec *RawImageOpen(std::istream& fin)
+static osg::ref_ptr<rawImageRec> RawImageOpen(std::istream& fin)
 {
     union
     {
         int testWord;
         char testByte[4];
     } endianTest;
-    rawImageRec *raw;
+
     int x;
 
-    raw = new rawImageRec;
+    osg::ref_ptr<rawImageRec> raw = new rawImageRec;
     if (raw == NULL)
     {
         OSG_WARN<< "Out of memory!"<< std::endl;
@@ -180,9 +192,11 @@ static rawImageRec *RawImageOpen(std::istream& fin)
         raw->swapFlag = GL_FALSE;
     }
 
-    fin.read((char*)raw,12);
+    fin.read((char*)&(raw->imagic),12);
     if (!fin.good())
+    {
         return NULL;
+    }
 
     if (raw->swapFlag)
     {
@@ -198,7 +212,6 @@ static rawImageRec *RawImageOpen(std::istream& fin)
     if (raw->tmp == NULL )
     {
         OSG_FATAL<< "Out of memory!"<< std::endl;
-        RawImageClose(raw);
         return NULL;
     }
 
@@ -207,7 +220,6 @@ static rawImageRec *RawImageOpen(std::istream& fin)
         if( (raw->tmpR = new unsigned char [raw->sizeX*raw->bpc]) == NULL )
         {
             OSG_FATAL<< "Out of memory!"<< std::endl;
-            RawImageClose(raw);
             return NULL;
         }
     }
@@ -216,7 +228,6 @@ static rawImageRec *RawImageOpen(std::istream& fin)
         if( (raw->tmpG = new unsigned char [raw->sizeX*raw->bpc]) == NULL )
         {
             OSG_FATAL<< "Out of memory!"<< std::endl;
-            RawImageClose(raw);
             return NULL;
         }
     }
@@ -225,7 +236,6 @@ static rawImageRec *RawImageOpen(std::istream& fin)
         if( (raw->tmpB = new unsigned char [raw->sizeX*raw->bpc]) == NULL )
         {
             OSG_FATAL<< "Out of memory!"<< std::endl;
-            RawImageClose(raw);
             return NULL;
         }
     }
@@ -234,7 +244,6 @@ static rawImageRec *RawImageOpen(std::istream& fin)
         if( (raw->tmpA = new unsigned char [raw->sizeX*raw->bpc]) == NULL )
         {
             OSG_FATAL<< "Out of memory!"<< std::endl;
-            RawImageClose(raw);
             return NULL;
         }
     }
@@ -245,14 +254,12 @@ static rawImageRec *RawImageOpen(std::istream& fin)
         if ( (raw->rowStart = new GLuint [ybyz]) == NULL )
         {
             OSG_FATAL<< "Out of memory!"<< std::endl;
-            RawImageClose(raw);
             return NULL;
         }
 
         if ( (raw->rowSize = new GLint [ybyz]) == NULL )
         {
             OSG_FATAL<< "Out of memory!"<< std::endl;
-            RawImageClose(raw);
             return NULL;
         }
         x = ybyz * sizeof(GLuint);
@@ -471,7 +478,7 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
 
         ReadResult readRGBStream(std::istream& fin) const
         {
-            rawImageRec *raw;
+            osg::ref_ptr<rawImageRec> raw;
 
             if( (raw = RawImageOpen(fin)) == NULL )
             {
@@ -481,7 +488,7 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
             int s = raw->sizeX;
             int t = raw->sizeY;
             int r = 1;
-        
+
             unsigned int pixelFormat =
                 raw->sizeZ == 1 ? GL_LUMINANCE :
                 raw->sizeZ == 2 ? GL_LUMINANCE_ALPHA :
@@ -494,8 +501,7 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
               GL_UNSIGNED_SHORT;
 
             unsigned char *data;
-            RawImageGetData(raw, &data);
-            RawImageClose(raw);
+            RawImageGetData(raw.get(), &data);
 
             Image* image = new Image();
             image->setImage(s,t,r,

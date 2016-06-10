@@ -957,11 +957,12 @@ int dwfgets(char *clin, int max, FILE *fin)
     // Macintosh produced files (such as those obtainable
     //from the great buildings site at www.Artifice.com) use 13 format, PC models use 10.
     int nread=0;
-    char c1=1;
+    int c1=1;
     do {
-        if (!feof( fin )) {
-            clin[nread]=c1=fgetc(fin);
-            nread++;
+        if (!feof( fin ))
+        {
+            c1=fgetc(fin);
+            clin[nread++]=static_cast<char>(c1);
         }
     } while (nread<max && c1!= 13 && c1!= 10 &&  feof( fin )== 0 );
     if (nread>0) clin[nread-1]='\0'; // null terminate and remove training blank

@@ -371,35 +371,37 @@ int *numComponents_ret)
         case 10:                 /* RGB, compressed */
         {
             int size, x, y;
-            unsigned char *buf;
-            unsigned char *src;
             int pos = fin.tellg();
+
             fin.seekg(0,std::ios::end);
             size = (int)fin.tellg() - pos;
             fin.seekg(pos,std::ios::beg);
-            buf = new unsigned char [size];
+            unsigned char* buf = new unsigned char [size];
             if (buf == NULL)
             {
                 tgaerror = ERR_MEM;
                 break;
             }
-            src = buf;
+            unsigned char* src = buf;
+
             fin.read((char*)buf,size);
-            if (fin.gcount() != (std::streamsize) size)
+            if (fin.gcount() == (std::streamsize) size)
+            {
+                for (y = 0; y < height; y++)
+                {
+                    rle_decode(&src, linebuf, width*depth, &rleRemaining,
+                        &rleIsCompressed, rleCurrent, rleEntrySize);
+                    assert(src <= buf + size);
+                    for (x = 0; x < width; x++)
+                    {
+                        convert_data(linebuf, dest,  bLeftToRight ? x : (width-1) - x, depth, format);
+                    }
+                    dest += lineoffset;
+                }
+            }
+            else
             {
                 tgaerror = ERR_READ;
-                break;
-            }
-            for (y = 0; y < height; y++)
-            {
-                rle_decode(&src, linebuf, width*depth, &rleRemaining,
-                    &rleIsCompressed, rleCurrent, rleEntrySize);
-                assert(src <= buf + size);
-                for (x = 0; x < width; x++)
-                {
-                    convert_data(linebuf, dest,  bLeftToRight ? x : (width-1) - x, depth, format);
-                }
-                dest += lineoffset;
             }
             if (buf) delete [] buf;
         }

@@ -475,11 +475,13 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
         return ReadResult::ERROR_IN_READING_FILE;
     }
 
+    std::string header_text(header.text, sizeof(header.text));
+
     if (stb.st_size == expectLen)
     {
         isBinary = true;
     }
-    else if (strstr(header.text, "solid") != 0)
+    else if (header_text.find("solid") != std::string::npos)
     {
         isBinary = false;
     }

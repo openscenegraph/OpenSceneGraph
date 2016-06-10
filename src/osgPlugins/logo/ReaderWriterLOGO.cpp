@@ -246,7 +246,7 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
             }
 
 
-            osg::Geode *geode = new osg::Geode;
+            osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
             unsigned int screen = 0;
 

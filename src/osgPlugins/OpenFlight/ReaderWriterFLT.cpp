@@ -576,7 +576,7 @@ class FLTReaderWriter : public ReaderWriter
         virtual WriteResult writeNode( const osg::Node& node, std::ostream& fOut, const Options* options ) const
         {
             // Convert Options to FltOptions.
-            ExportOptions* fltOpt = new ExportOptions( options );
+            osg::ref_ptr<ExportOptions> fltOpt = new ExportOptions( options );
             fltOpt->parseOptionsString();
 
             // If user didn't specify a temp dir, use the output directory
@@ -594,7 +594,7 @@ class FLTReaderWriter : public ReaderWriter
             }
 
             flt::DataOutputStream dos( fOut.rdbuf(), fltOpt->getValidateOnly() );
-            flt::FltExportVisitor fnv( &dos, fltOpt );
+            flt::FltExportVisitor fnv( &dos, fltOpt.get() );
 
             // Hm. 'node' is const, but in order to write out this scene graph,
             //   must use Node::accept() which requires 'node' to be non-const.

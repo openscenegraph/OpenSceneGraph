@@ -461,6 +461,11 @@ void ZipArchive::IndexZipFiles(HZIP hz)
             {
                 _zipIndex.insert(ZipEntryMapping(name, ze));
             }
+            else
+            {
+                // ze isn't being used to delete it
+                delete ze;
+            }
         }
     }
 }

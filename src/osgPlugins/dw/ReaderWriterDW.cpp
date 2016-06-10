@@ -205,12 +205,12 @@ public:
         }
     }
     void setNBegin(int n1) {nVertStart=n1;}
-    void norm(Vec3 &n, const Vec3 side, const Vec3 s2) const {
+    void norm(Vec3 &n, const Vec3& side, const Vec3& s2) const {
         n=s2^side; // perpendicular
         n.normalize(); // unit norm
     }
     const Vec3 getnorm(void) const { return nrm; } // use the predefined normal
-    void getside12(Vec3 &s1, Vec3 &s2, const std::vector<Vec3> verts) const {
+    void getside12(Vec3 &s1, Vec3 &s2, const std::vector<Vec3>& verts) const {
         int ic=0; // counter for later vertices to ensure not coincident
         int i1=idx[0]; // first vertex of face
         int i2=idx[1]; // second, must be non-coincident
@@ -232,12 +232,12 @@ public:
         s1=(verts[i2]-verts[i1]); // side 1 of face
         s2=(verts[i3]-verts[i2]); // side 2 of face
     }
-    void getnorm(const std::vector<Vec3> verts) {
+    void getnorm(const std::vector<Vec3>& verts) {
         Vec3 side, s2; // used in cross product to find normal
         getside12(side,s2, verts);
-        norm(nrm, s2, side);
+        norm(nrm, side, s2);
     }
-    void settrans(Matrix &mx, const Vec3 normal, const std::vector<Vec3> verts, const dwmaterial *mat) const {
+    void settrans(Matrix &mx, const Vec3& normal, const std::vector<Vec3>& verts, const dwmaterial *mat) const {
         // define the matrix perpendcular to normal for mapping textures
         float wid=mat->getRepWid();
         float ht=mat->getRepHt();
@@ -310,7 +310,7 @@ public:
         for (int i=0; i<nop; i++) ntot+=opening[i].getnv();
         return ntot;
     }
-    void setnorm(const std::vector<Vec3> verts) { // set the face normal
+    void setnorm(const std::vector<Vec3>& verts) { // set the face normal
         getnorm(verts);
         for (int i=0; i<nop; i++) {
             opening[i].setnorm(verts);
@@ -320,7 +320,7 @@ public:
             }
         }
     }
-    void setposes(avertex &poses, const int j, const std::vector<Vec3> verts) const {
+    void setposes(avertex &poses, const int j, const std::vector<Vec3>& verts) const {
         poses.pos[0]=verts[idx[j]].x();
         poses.pos[1]=verts[idx[j]].y();
         poses.pos[2]=verts[idx[j]].z();
@@ -330,10 +330,10 @@ public:
     void tessellate(const std::vector<Vec3>& verts, const dwmaterial *themat,
           GLUtesselator *ts, _dwobj *dwob, const RefMatrix *tmat) const;
 
-    void link(const int idop, const _face *f2, const int idop2,const std::vector<Vec3> verts, const dwmaterial *themat) const; // to join up opposed faces of a hole
+    void link(const int idop, const _face *f2, const int idop2,const std::vector<Vec3>& verts, const dwmaterial *themat) const; // to join up opposed faces of a hole
     inline int getidx(int i) const { return idx[i];}
 private:
-    void linkholes(const std::vector<Vec3> verts, const dwmaterial *themat, const _face *f2) const;
+    void linkholes(const std::vector<Vec3>& verts, const dwmaterial *themat, const _face *f2) const;
     void reverse() { // reverse order of the vertices
         for (int j=0; j<nv/2; j++) {
             int it=idx[j];
@@ -409,7 +409,7 @@ public:
     }
     void combine( GLdouble coords[3], avertex *d[4],
         GLfloat w[4], avertex **dataOut , _dwobj *dwob);
-    void linkholes(const std::vector<Vec3> verts, const dwmaterial *themat,
+    void linkholes(const std::vector<Vec3>& verts, const dwmaterial *themat,
         const _face *f1, const _face *f2,
         const int ipr[2], const int nv) {
         int gsidx[4];
@@ -493,7 +493,7 @@ void CALLBACK error (GLenum errno)
     printf("Tessellator error %d %s\n", static_cast<int>(errno),errm);//, errm
 }
     //==========
-void _face::linkholes(const std::vector<Vec3> verts, const dwmaterial *themat, const _face *f2) const
+void _face::linkholes(const std::vector<Vec3>& verts, const dwmaterial *themat, const _face *f2) const
 {
     int ipr[2];
     ipr[0]=nv-1;
@@ -503,7 +503,7 @@ void _face::linkholes(const std::vector<Vec3> verts, const dwmaterial *themat, c
         ipr[0]=ipr[1];
     }
 }
-void _face::link(const int idop, const _face *f2, const int idop2,const std::vector<Vec3> verts, const dwmaterial *themat) const
+void _face::link(const int idop, const _face *f2, const int idop2,const std::vector<Vec3>& verts, const dwmaterial *themat) const
 { // to join up opposed faces of a hole; starts using hole[idop] in THIS, ands at f2.Hole[idop2]
     opening[idop].linkholes(verts, themat, &f2->opening[idop2]);
 }

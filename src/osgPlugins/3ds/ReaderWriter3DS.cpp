@@ -736,8 +736,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::doReadNode(std::istream& fin,  
     if (lib3ds_file_read(file3ds, &io) != 0)
     {
         result = constructFrom3dsFile(file3ds,fileNamelib3ds,options);
-        lib3ds_file_free(file3ds);
     }
+    lib3ds_file_free(file3ds);
 
     return(result);
 }

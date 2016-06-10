@@ -460,7 +460,7 @@ struct LineConstructor
 
         for(SegmentSet::iterator itr = _segments.begin();
             itr != _segments.end();
-            ++itr)
+            ) // itr increment is done manually at end of loop
         {
             SegmentSet::iterator nextItr = itr;
             ++nextItr;
@@ -1060,6 +1060,9 @@ struct LineConstructor
 
                 classification = ((itr != _segments.end()) && (nextItr != _segments.end())) ?  itr->compare(*nextItr) : Segment::UNCLASSIFIED;
             }
+
+            // increment iterator it it's not already at end of container.
+            if (itr!=_segments.end()) ++itr;
         }
     }
 

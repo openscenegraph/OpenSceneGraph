@@ -180,9 +180,9 @@ osg::Geode* Q3BSPReader::convertFromBSP(
 
   // Convertir los vertices
   unsigned int num_load_vertices=aLoadData.m_loadVertices.size();
-  osg::Vec3Array* vertex_array = new osg::Vec3Array(num_load_vertices);
-  osg::Vec2Array* text_decal_array = new osg::Vec2Array(num_load_vertices);
-  osg::Vec2Array* text_lmap_array = new osg::Vec2Array(num_load_vertices);
+  osg::ref_ptr<osg::Vec3Array> vertex_array = new osg::Vec3Array(num_load_vertices);
+  osg::ref_ptr<osg::Vec2Array> text_decal_array = new osg::Vec2Array(num_load_vertices);
+  osg::ref_ptr<osg::Vec2Array> text_lmap_array = new osg::Vec2Array(num_load_vertices);
 
   float scale = 0.0254;
   unsigned int i;

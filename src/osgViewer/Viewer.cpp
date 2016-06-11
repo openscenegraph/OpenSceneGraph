@@ -362,17 +362,8 @@ bool Viewer::checkNeedToDoFrame()
     if (_requestRedraw) return true;
     if (_requestContinousUpdate) return true;
 
-    // check if the database pager needs to update the scene
-    if (getDatabasePager()->requiresUpdateSceneGraph() || getDatabasePager()->getRequestsInProgress()) return true;
-
-    // check if there are camera update callbacks
-    if (_camera->getUpdateCallback()) return true;
-
-    // check if there are node update callbacks
-    if (getSceneData() != 0)
-    {
-        if (getSceneData()->getUpdateCallback() || (getSceneData()->getNumChildrenRequiringUpdateTraversal()>0) ) return true;
-    }
+    // check if the view needs to update the scene graph
+    if (requiresUpdateSceneGraph()) return true;
 
     // check if events are available and need processing
     if (checkEvents()) return true;

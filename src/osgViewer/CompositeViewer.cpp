@@ -245,34 +245,23 @@ bool CompositeViewer::isRealized() const
 
 bool CompositeViewer::checkNeedToDoFrame()
 {
+    // check if any event handler has prompted a redraw
     if (_requestRedraw) return true;
     if (_requestContinousUpdate) return true;
 
+    // check if any view needs to update the scene graph
     for(RefViews::iterator itr = _views.begin();
         itr != _views.end();
         ++itr)
     {
         osgViewer::View* view = itr->get();
-        if (view)
-        {
-            // check if the database pager needs to update the scene
-            if (view->getDatabasePager()->requiresUpdateSceneGraph() ||
-                view->getDatabasePager()->getRequestsInProgress()) return true;
-
-            // check if there are camera update callbacks
-            if (view->getCamera()->getUpdateCallback()) return true;
-
-            // check if there are node update callbacks
-            if (view->getSceneData() != 0)
-            {
-                if (view->getSceneData()->getUpdateCallback() || (view->getSceneData()->getNumChildrenRequiringUpdateTraversal()>0) ) return true;
-            }
-        }
+        if (view && view->requiresUpdateSceneGraph()) return true;
     }
 
     // check if events are available and need processing
     if (checkEvents()) return true;
 
+    // and check again if any event handler has prompted a redraw
     if (_requestRedraw) return true;
     if (_requestContinousUpdate) return true;
 

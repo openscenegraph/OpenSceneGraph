@@ -1674,9 +1674,9 @@ static int ChooseMatchingPixelFormat( HDC hdc, int screenNum, const WGLIntegerAt
             1,                     // version number
             PFD_DRAW_TO_WINDOW |   // support window
             PFD_SUPPORT_OPENGL |   // support OpenGL
-            DWORD(_traits->doubleBuffer ? PFD_DOUBLEBUFFER : NULL) |      // double buffered ?
-            DWORD(_traits->swapMethod ==  osg::DisplaySettings::SWAP_COPY ? PFD_SWAP_COPY : NULL) |
-            DWORD(_traits->swapMethod ==  osg::DisplaySettings::SWAP_EXCHANGE ? PFD_SWAP_EXCHANGE : NULL),
+            DWORD(_traits->doubleBuffer ? PFD_DOUBLEBUFFER : 0) |      // double buffered ?
+            DWORD(_traits->swapMethod ==  osg::DisplaySettings::SWAP_COPY ? PFD_SWAP_COPY : 0) |
+            DWORD(_traits->swapMethod ==  osg::DisplaySettings::SWAP_EXCHANGE ? PFD_SWAP_EXCHANGE : 0),
             PFD_TYPE_RGBA,         // RGBA type
             BYTE(_traits->red + _traits->green + _traits->blue),                      // color depth
             BYTE(_traits->red), 0, BYTE(_traits->green), 0, BYTE(_traits->blue), 0,   // shift bits ignored

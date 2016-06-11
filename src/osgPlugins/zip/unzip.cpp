@@ -2989,7 +2989,7 @@ int unzlocal_getByte(LUFILE *fin,int *pi)
 int unzlocal_getShort (LUFILE *fin,uLong *pX)
 {
     uLong x ;
-    int i;
+    int i = 0;
     int err;
 
     err = unzlocal_getByte(fin,&i);
@@ -3009,7 +3009,7 @@ int unzlocal_getShort (LUFILE *fin,uLong *pX)
 int unzlocal_getLong (LUFILE *fin,uLong *pX)
 {
     uLong x ;
-    int i;
+    int i = 0;
     int err;
 
     err = unzlocal_getByte(fin,&i);

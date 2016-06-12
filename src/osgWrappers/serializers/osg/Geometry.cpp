@@ -115,6 +115,10 @@ struct GeometryFinishedObjectReadCallback : public osgDB::FinishedObjectReadCall
     {
 #if 1
         osg::Geometry& geometry = static_cast<osg::Geometry&>(obj);
+        geometry.setUseDisplayList(false);
+        //geometry.setUseVertexBufferObjects(true);
+        geometry.setUseVertexArrayObject(true);
+
         if (geometry.getUseVertexBufferObjects())
         {
             bool someBufferObjectDefined=false;

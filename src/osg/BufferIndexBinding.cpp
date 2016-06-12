@@ -187,7 +187,7 @@ void DrawIndirectBufferBinding::apply(State& state) const
             = _bufferObject->getOrCreateGLBufferObject(state.getContextID());
         if (!glObject->_extensions->isUniformBufferObjectSupported)
             return;
-        if (glObject->isDirty()) glObject->compileBuffer();
+      //  if (glObject->isDirty()) glObject->compileBuffer();
         glObject->_extensions->glBindBuffer (_target, glObject->getGLObjectID());
     }
 }

@@ -189,9 +189,13 @@ struct IndirectTarget
     {
         osg::Image* indirectCommandImage = new osg::Image;
         indirectCommandImage->setImage( indirectCommands->getTotalDataSize()/sizeof(unsigned int), 1, 1, GL_R32I, GL_RED, GL_UNSIGNED_INT, (unsigned char*)indirectCommands->getDataPointer(), osg::Image::NO_DELETE );
+
+        osg::VertexBufferObject * indirectCommandImagebuffer=new osg::VertexBufferObject();
+        indirectCommandImagebuffer->setUsage(GL_DYNAMIC_DRAW);
+        indirectCommandImage->setBufferObject(indirectCommandImagebuffer);
+
         indirectCommandTextureBuffer = new osg::TextureBuffer(indirectCommandImage);
         indirectCommandTextureBuffer->setInternalFormat( GL_R32I );
-        indirectCommandTextureBuffer->getBufferObject()->setUsage(GL_DYNAMIC_DRAW);
         indirectCommandTextureBuffer->bindToImageUnit(index, osg::Texture::READ_WRITE);
         indirectCommandTextureBuffer->setUnRefImageDataAfterApply(false);
 
@@ -217,17 +221,22 @@ struct IndirectTarget
         }
      ///attach a DrawIndirect buffer binding to the stateset
         osg::ref_ptr<osg::DrawIndirectBufferBinding> bb=new osg::DrawIndirectBufferBinding();
-        bb->setBufferObject(indirectCommandTextureBuffer->getBufferObject());
+        bb->setBufferObject(indirectCommandImage->getBufferObject());
        geometryAggregator->getAggregatedGeometry()->getOrCreateStateSet()->setAttribute(bb );
+   geometryAggregator->getAggregatedGeometry()->setUseDisplayList(false);
+         geometryAggregator->getAggregatedGeometry()->setUseVertexBufferObjects(true);
+        //  geometryAggregator->getAggregatedGeometry()->setUseVertexArrayObject(true);
 
-        geometryAggregator->getAggregatedGeometry()->setUseVertexBufferObjects(true);
-        geometryAggregator->getAggregatedGeometry()->setUseDisplayList(false);
 
         osg::Image* instanceTargetImage = new osg::Image;
         instanceTargetImage->allocateImage( maxTargetQuantity*rowsPerInstance, 1, 1, pixelFormat, type );
+
+        osg::VertexBufferObject * instanceTargetImageBuffer=new osg::VertexBufferObject();
+        instanceTargetImageBuffer->setUsage(GL_DYNAMIC_DRAW);
+        instanceTargetImage->setBufferObject(instanceTargetImageBuffer);
+
         instanceTarget = new osg::TextureBuffer(instanceTargetImage);
         instanceTarget->setInternalFormat( internalFormat );
-        instanceTarget->getBufferObject()->setUsage (GL_DYNAMIC_DRAW);
         instanceTarget->bindToImageUnit(OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index, osg::Texture::READ_WRITE);
 
     }
@@ -628,6 +637,10 @@ osg::Geometry* buildGPUCullGeometry( const std::vector<StaticInstance>& instance
 
     geom->setInitialBound( bbox );
 
+  geom->setUseDisplayList(false);
+        geom->setUseVertexBufferObjects(true);
+        geom->setUseVertexArrayObject(true);
+
     return geom.release();
 }
 
@@ -654,6 +667,10 @@ osg::Node* createInstanceGraph(InstanceCell<T>* cell, const osg::BoundingBox& ob
         bbox.zMax() += objectsBBox.zMax();
         geometry->setInitialBound(bbox);
         geode = new osg::Geode;
+        geometry->setUseDisplayList(false);
+        geometry->setUseVertexBufferObjects(true);
+        geometry->setUseVertexArrayObject(true);
+
         geode->addDrawable( geometry );
     }
 
@@ -1108,7 +1125,8 @@ void createStaticRendering( osg::Group* root, GPUCullData& gpuData, const osg::V
     for(it=gpuData.targets.begin(), eit=gpuData.targets.end(); it!=eit; ++it)
     {
         osg::ref_ptr<osg::Geode> drawGeode = new osg::Geode;
-        it->second.geometryAggregator->getAggregatedGeometry()->setDrawCallback( new InvokeMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_COMMAND_BARRIER_BIT) );
+         it->second.geometryAggregator->getAggregatedGeometry() ->setUseVertexArrayObject(true);
+         it->second.geometryAggregator->getAggregatedGeometry()->setDrawCallback( new InvokeMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_COMMAND_BARRIER_BIT) );
         drawGeode->addDrawable( it->second.geometryAggregator->getAggregatedGeometry() );
         drawGeode->setCullingActive(false);
 
@@ -1344,8 +1362,12 @@ void createDynamicRendering( osg::Group* root, GPUCullData& gpuData, osg::Buffer
     // all data about instances is stored in texture buffer ( compare it with static rendering )
     osg::Image* instancesImage = new osg::Image;
     instancesImage->setImage( instances->getTotalDataSize() / sizeof(osg::Vec4f), 1, 1, GL_RGBA32F_ARB, GL_RGBA, GL_FLOAT, (unsigned char*)instances->getDataPointer(), osg::Image::NO_DELETE );
+
+    osg::VertexBufferObject *instancesBuffer =new osg::VertexBufferObject;
+    instancesBuffer->setUsage(GL_STATIC_DRAW);
+    instancesImage->setBufferObject(instancesBuffer);
+
     osg::TextureBuffer* instancesTextureBuffer = new osg::TextureBuffer(instancesImage);
-    instancesTextureBuffer->getBufferObject()->setUsage(GL_STATIC_DRAW);
     instancesTextureBuffer->setUnRefImageDataAfterApply(false);
 
     osg::Uniform* dynamicInstancesDataUniform = new osg::Uniform( "dynamicInstancesData", 8 );

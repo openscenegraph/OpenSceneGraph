@@ -140,6 +140,9 @@ class OSG_EXPORT Geometry : public Drawable
             method to use OpenGL vertex buffer objects for rendering.*/
         virtual void setUseVertexBufferObjects(bool flag);
 
+        void setUseVertexArrayObject(bool flag);
+        bool getUseVertexArrayObject()const{return _useVertexArrayObject;}
+
         /** Force a recompile on next draw() of any OpenGL display list associated with this geoset.*/
         virtual void dirtyDisplayList();
 
@@ -228,6 +231,13 @@ class OSG_EXPORT Geometry : public Drawable
         ArrayList                       _vertexAttribList;
 
         bool                            _containsDeprecatedData;
+
+
+        typedef  std::list<GLuint> VAOKey;
+        static OpenThreads::Mutex _VAOSmutex;
+        static std::map<VAOKey,GLuint> _VAOS;
+        mutable buffered_object<GLuint> _vao;
+        bool _useVertexArrayObject;
 
     public:
 

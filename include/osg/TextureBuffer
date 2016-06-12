@@ -21,7 +21,7 @@
 
 namespace osg {
 
-/** Encapsulates OpenGL texture buffer functionality in a Texture delegating BufferObject management to TextureBufferObject
+/** Encapsulates OpenGL texture buffer functionality in a Texture delegating its content to attached BufferObject
 */
 class OSG_EXPORT TextureBuffer : public Texture
 {
@@ -30,7 +30,7 @@ class OSG_EXPORT TextureBuffer : public Texture
 
         TextureBuffer();
 
-        TextureBuffer(Image* image);
+        TextureBuffer(BufferData* image);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         TextureBuffer(const TextureBuffer& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
@@ -46,17 +46,16 @@ class OSG_EXPORT TextureBuffer : public Texture
         void setImage(Image* image);
 
         /** Gets the texture image. */
-        Image* getImage() { return _bo.valid() &&_bo->getNumBufferData()>0? dynamic_cast<Image*>(_bo->getBufferData(0) ):0; }
+        Image* getImage() { return _bufferData.valid() ?dynamic_cast<Image*>(_bufferData.get() ):0; }
 
         /** Gets the const texture image. */
-        inline const Image* getImage() const { return _bo.valid() &&_bo->getNumBufferData()>0?  dynamic_cast<Image*>(_bo->getBufferData(0) ):0; }
+        inline const Image* getImage() const { return _bufferData.valid() ? dynamic_cast<Image*>(_bufferData.get() ):0; }
 
-        inline unsigned int& getModifiedCount(unsigned int contextID) const
+         inline unsigned int & getModifiedCount(unsigned int contextID) const
         {
             // get the modified count for the current contextID.
             return _modifiedCount[contextID];
         }
-
 
         /** Sets the texture image, ignoring face. */
         virtual void setImage(unsigned int, Image* image) { setImage(image); }
@@ -82,32 +81,27 @@ class OSG_EXPORT TextureBuffer : public Texture
 
         virtual void allocateMipmap(State& /*state*/) const {};
 
-        /** upload the image to the texture. */
-        virtual void compileGLObjects(State& state) const;
-
         /** Bind the texture buffer.*/
         virtual void apply(State& state) const;
 
+        /**  Set setBufferData attached */
+        void setBufferData(BufferData *bo);
 
-
-        /**  Get BufferObject attached.*/
-        const BufferObject* getBufferObject()const {return _bo.get() ;}
-        BufferObject* getBufferObject(){return _bo.get() ;}
-        /**  Set BufferObject attached */
-        void setBufferObject(BufferObject *bo);
+         /**  Set setBufferData attached */
+        const BufferData * getBufferData()const {return _bufferData.get();}
     protected :
 
         virtual ~TextureBuffer();
 
         virtual void computeInternalFormat() const;
 
-        ref_ptr< BufferObject>               _bo;
+        ref_ptr< BufferData > _bufferData;
 
+        GLsizei _textureWidth;
 
-        mutable GLsizei _textureWidth; //not crucial in the code
+        typedef buffered_value< unsigned int > BufferDataModifiedCount;
+        mutable BufferDataModifiedCount _modifiedCount;
 
-        typedef buffered_value<unsigned int> ImageModifiedCount;
-        mutable ImageModifiedCount _modifiedCount;
 
       };
 

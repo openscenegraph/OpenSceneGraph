@@ -34,7 +34,10 @@ typedef char TCHAR;
     #include <direct.h> // for _mkdir
 
     #define mkdir(x,y) _mkdir((x))
+
+#if !defined(__MINGW32__)
     #define stat64 _stati64
+#endif
 
     // set up for windows so acts just like unix access().
 #ifndef F_OK

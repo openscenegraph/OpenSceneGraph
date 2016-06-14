@@ -13,7 +13,9 @@
 #include <osg/TextureBuffer>
 #include <osg/State>
 #include <osg/PrimitiveSet>
-
+#ifndef GL_TEXTURE_BUFFER_ARB
+    #define GL_TEXTURE_BUFFER_ARB 0x8C2A
+#endif
 using namespace osg;
 
 TextureBuffer::TextureBuffer():

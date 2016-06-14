@@ -18,7 +18,9 @@
 
 #include <string.h> // for memcpy
 
-
+#ifndef GL_DRAW_INDIRECT_BUFFER
+    #define GL_DRAW_INDIRECT_BUFFER 0x8F3F
+#endif
 namespace osg {
 
 BufferIndexBinding::BufferIndexBinding(GLenum target, GLuint index)

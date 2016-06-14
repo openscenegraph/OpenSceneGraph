@@ -233,10 +233,29 @@ class OSG_EXPORT Geometry : public Drawable
         bool                            _containsDeprecatedData;
 
 
-        typedef  std::list<GLuint> VAOKey;
-        static OpenThreads::Mutex _VAOSmutex;
-        static std::map<VAOKey,GLuint> _VAOS;
-        mutable buffered_object<GLuint> _vao;
+        typedef std::list<GLuint> VAOKey;
+
+        ///VAO Encapsulation
+        class VertexArrayObject: public Referenced{
+        public:
+            VertexArrayObject(VAOKey &key,GLExtensions* ext);
+
+            ///return OpenGL name of the vao encapsulated
+            inline GLuint getGLID()const{return _GLID;}
+
+            ///return VertexArrayObject pointer for given key or NULL if not exists
+            static VertexArrayObject * getVertexArrayObject(VAOKey &key);
+        protected:
+            ~VertexArrayObject();
+            GLuint _GLID;
+            std::map<VAOKey,VertexArrayObject*>::iterator _itvao;
+            GLExtensions *_ext;
+
+            static OpenThreads::Mutex _VAOSmutex;
+            static std::map< VAOKey, VertexArrayObject* > _VAOS;
+        };
+
+        mutable buffered_object< osg::ref_ptr<VertexArrayObject > > _vao;
         bool _useVertexArrayObject;
 
     public:

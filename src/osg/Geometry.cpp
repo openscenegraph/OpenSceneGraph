@@ -18,8 +18,38 @@
 
 using namespace osg;
 
-OpenThreads::Mutex Geometry::_VAOSmutex;
-std::map<Geometry::VAOKey,GLuint> Geometry::_VAOS;
+//////////////////////////////////////////////////////////////////
+//////////////////// VertexArrayObject  //////////////////////////
+//////////////////////////////////////////////////////////////////
+
+OpenThreads::Mutex Geometry::VertexArrayObject::_VAOSmutex;
+std::map<Geometry::VAOKey,Geometry::VertexArrayObject*> Geometry::VertexArrayObject::_VAOS;
+
+Geometry::VertexArrayObject::VertexArrayObject( VAOKey &key,GLExtensions* ext):_ext(ext){
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_VAOSmutex);
+    _ext->glGenVertexArrays(1,&_GLID);
+    //OSG_WARN<<"VertexArrayObject::VertexArrayObject"<<_GLID<<std::endl;
+    _itvao=_VAOS.insert(std::pair<VAOKey,VertexArrayObject*>(key,this)).first;
+}
+
+Geometry::VertexArrayObject::~VertexArrayObject(){
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_VAOSmutex);
+   // OSG_WARN<<"VertexArrayObject::~VertexArrayObject"<<_GLID<<std::endl;
+    _ext->glDeleteVertexArrays(1,&_GLID);
+    _VAOS.erase(_itvao);
+}
+
+Geometry::VertexArrayObject * Geometry::VertexArrayObject::getVertexArrayObject(VAOKey &key){
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_VAOSmutex);
+    std::map<VAOKey,VertexArrayObject*>::iterator itvao;
+    itvao=  _VAOS.find(key);
+    if(itvao!=_VAOS.end())return itvao->second;
+    return 0;
+}
+
+//////////////////////////////////////////////////////////////////
+////////////////////  Geometry  //////////////////////////////////
+//////////////////////////////////////////////////////////////////
 
 Geometry::Geometry():
     _containsDeprecatedData(false)
@@ -662,6 +692,9 @@ void Geometry::releaseGLObjects(State* state) const
             (*itr)->releaseGLObjects(state);
         }
     }
+    ///unref VertexArrayObject
+    if(state)
+        _vao[state->getContextID()]=0;
 
 }
 
@@ -728,18 +761,37 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
         }
 
         if(_useVertexArrayObject){
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_VAOSmutex);
-
-            std::map<VAOKey,GLuint>::iterator itvao;
-            itvao=  _VAOS.find(VAOkey);
-            if(itvao!=_VAOS.end())
-                _vao[contextID]=itvao->second;
-            else {
-                extensions->glGenVertexArrays(1,&_vao[contextID]);
-                _VAOS[VAOkey]=_vao[contextID];
-                extensions->glBindVertexArray(_VAOS[VAOkey]);
+            const BufferObject * ebo; GLBufferObject *glebo;
+            for (unsigned int primitiveSetNum = 0; primitiveSetNum != _primitives.size(); ++primitiveSetNum)
+            {
+                if (ebo = getPrimitiveSet(primitiveSetNum)->getBufferObject()){
+                    glebo = ebo->getOrCreateGLBufferObject(contextID);
+                    if (glebo){
+                        if (glebo->isDirty())glebo->compileBuffer();
+                        VAOkey.push_back(glebo->getGLObjectID());
+                        break;///assume core profile (all primset share the same ebo)
+                    }
+                }
+            }
+            VertexArrayObject* vao=VertexArrayObject::getVertexArrayObject(VAOkey);
+            if(vao)
+                _vao[contextID]=vao;
+            else
+            {
+                ///VAO setup
+                _vao[contextID]=new VertexArrayObject(VAOkey,extensions);
+                extensions->glBindVertexArray(_vao[contextID]->getGLID());
                 drawVertexArraysImplementation(renderInfo);
-                ArrayDispatchers& arrayDispatchers = state.getArrayDispatchers();
+                for (unsigned int primitiveSetNum = 0; primitiveSetNum != _primitives.size(); ++primitiveSetNum)
+                {
+                    if (ebo = getPrimitiveSet(primitiveSetNum)->getBufferObject()){
+                        glebo = ebo->getGLBufferObject(contextID);
+                        if (glebo){
+                            glebo->bindBuffer();
+                            break;///assume core profile (all primset share the same ebo)
+                        }
+                    }
+                }
 
                 extensions->glBindVertexArray(0);
                 state.disableVertexPointer();
@@ -792,94 +844,31 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     if (checkForGLErrors) state.checkGLErrors("start of Geometry::drawImplementation()");
 
 
-    if(!_useVertexArrayObject) drawVertexArraysImplementation(renderInfo);
-    else{
- bool handleVertexAttributes = !_vertexAttribList.empty();
+    if(!_useVertexArrayObject)
+        drawVertexArraysImplementation(renderInfo);
+    else
+        state.get<GLExtensions>()->glBindVertexArray(_vao[state.getContextID()]->getGLID());
 
-    ArrayDispatchers& arrayDispatchers = state.getArrayDispatchers();
-
-    arrayDispatchers.reset();
-    arrayDispatchers.setUseVertexAttribAlias(state.getUseVertexAttributeAliasing());
-
-    if (_normalArray.valid() && _colorArray->getBinding()==osg::Array::BIND_OVERALL) arrayDispatchers.activateNormalArray(_normalArray.get());
-     if (_colorArray.valid() && _colorArray->getBinding()==osg::Array::BIND_OVERALL)arrayDispatchers.activateColorArray(_colorArray.get());
-    if (_secondaryColorArray.valid() && _colorArray->getBinding()==osg::Array::BIND_OVERALL) arrayDispatchers.activateSecondaryColorArray(_secondaryColorArray.get());
-    if (_fogCoordArray.valid() && _colorArray->getBinding()==osg::Array::BIND_OVERALL) arrayDispatchers.activateFogCoordArray(_fogCoordArray.get());
-
-    if (handleVertexAttributes)
-    {
-       for(unsigned int index = 0; index < _vertexAttribList.size(); ++index)
-        {
-            if (_vertexAttribList[index].valid() && _vertexAttribList[index].get()->getBinding()==osg::Array::BIND_OVERALL)
-            arrayDispatchers.activateVertexAttribArray(index, _vertexAttribList[index].get());
-        }
-    }
-
-    // dispatch any attributes that are bound overall
-    arrayDispatchers.dispatch(osg::Array::BIND_OVERALL,0);
-
-    state.lazyDisablingOfVertexAttributes();
-
-    // set up overall arrays
-    if( _vertexArray.valid() && _vertexArray->getBinding()==osg::Array::BIND_OVERALL)
-        state.setVertexPointer(_vertexArray.get());
-
-    if (_normalArray.valid() && _normalArray->getBinding()==osg::Array::BIND_OVERALL)
-        state.setNormalPointer(_normalArray.get());
-
-    if (_colorArray.valid() && _colorArray->getBinding()==osg::Array::BIND_OVERALL)
-        state.setColorPointer(_colorArray.get());
-
-    if (_secondaryColorArray.valid() && _secondaryColorArray->getBinding()==osg::Array::BIND_OVERALL)
-        state.setSecondaryColorPointer(_secondaryColorArray.get());
-
-    if (_fogCoordArray.valid() && _fogCoordArray->getBinding()==osg::Array::BIND_OVERALL)
-        state.setFogCoordPointer(_fogCoordArray.get());
-
-
-    if ( handleVertexAttributes )
-    {
-        for(unsigned int index = 0; index < _vertexAttribList.size(); ++index)
-        {
-            const Array* array = _vertexAttribList[index].get();
-            if (array && array->getBinding()==osg::Array::BIND_OVERALL)
-            {
-                if (array->getPreserveDataType())
-                {
-                    GLenum dataType = array->getDataType();
-                    if (dataType==GL_FLOAT) state.setVertexAttribPointer( index, array );
-                    else if (dataType==GL_DOUBLE) state.setVertexAttribLPointer( index, array );
-                    else state.setVertexAttribIPointer( index, array );
-                }
-                else
-                {
-                    state.setVertexAttribPointer( index, array );
-                }
-            }
-        }
-    }
-
-    state.applyDisablingOfVertexAttributes();
-     state.get<GLExtensions>()->glBindVertexArray(_vao[state.getContextID()]);
-}
     if (checkForGLErrors) state.checkGLErrors("Geometry::drawImplementation() after vertex arrays setup.");
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // draw the primitives themselves.
     //
-    drawPrimitivesImplementation(renderInfo);
     if(!_useVertexArrayObject){
 
+        drawPrimitivesImplementation(renderInfo);
         // unbind the VBO's if any are used.
         state.unbindVertexBufferObject();
         state.unbindElementBufferObject();
     }
     else{
+        /// drawPrimitivesImplementation(renderInfo) not used because there is no such all vertex attribute buffer binding in core profile are assumed to be BIND_PER_VERTEX
+        for (unsigned int primitiveSetNum = 0; primitiveSetNum != _primitives.size(); ++primitiveSetNum)
+            _primitives[primitiveSetNum]->draw(state, true, false);
+        state.get<GLExtensions>()->glBindVertexArray(0);
+    }
 
-     state.get<GLExtensions>()->glBindVertexArray(0);
-    //  state.getArrayDispatchers().reset();
-}
     if (checkForGLErrors) state.checkGLErrors("end of Geometry::drawImplementation().");
 }
 

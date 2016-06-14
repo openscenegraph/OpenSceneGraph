@@ -37,6 +37,10 @@ REGISTER_OBJECT_WRAPPER( Drawable,
                          osg::Drawable,
                          "osg::Object osg::Node osg::Drawable" )
 {
+    {
+            UPDATE_TO_VERSION_SCOPED( 143 )
+            ADDED_ASSOCIATE("osg::Node")
+    }
     ADD_OBJECT_SERIALIZER( StateSet, osg::StateSet, NULL );  // _stateset
     ADD_USER_SERIALIZER( InitialBound );  // _initialBound
     ADD_OBJECT_SERIALIZER( ComputeBoundingBoxCallback,

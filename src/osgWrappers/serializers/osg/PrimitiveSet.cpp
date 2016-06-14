@@ -18,7 +18,10 @@ REGISTER_OBJECT_WRAPPER( PrimitiveSet,
                          osg::PrimitiveSet,
                          "osg::Object osg::BufferData osg::PrimitiveSet" )
 {
-
+    {
+        UPDATE_TO_VERSION_SCOPED( 143 )
+        ADDED_ASSOCIATE("osg::BufferData")
+    }
     ADD_INT_SERIALIZER( NumInstances, 0);
 
 #if 1

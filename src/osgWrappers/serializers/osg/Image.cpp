@@ -9,6 +9,10 @@ REGISTER_OBJECT_WRAPPER( Image,
                          "osg::Object osg::BufferData osg::Image" )
 {
     {
+        UPDATE_TO_VERSION_SCOPED( 143 )
+        ADDED_ASSOCIATE("osg::BufferData")
+    }
+    {
         UPDATE_TO_VERSION_SCOPED( 112 )
 
         ADD_STRING_SERIALIZER(FileName, "");

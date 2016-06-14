@@ -36,6 +36,12 @@ REGISTER_OBJECT_WRAPPER( Array,
                          osg::Array,
                          "osg::Object osg::BufferData osg::Array" )
 {
+
+
+    {
+        UPDATE_TO_VERSION_SCOPED( 143 )
+        ADDED_ASSOCIATE("osg::BufferData")
+    }
 #if 0
     BEGIN_ENUM_SERIALIZER_NO_SET( Type, ArrayType );
         ADD_ENUM_VALUE( ArrayType );
@@ -116,6 +122,10 @@ REGISTER_OBJECT_WRAPPER( Array,
     namespace Wrappers##ARRAY { \
         REGISTER_OBJECT_WRAPPER( ARRAY, new osg::ARRAY, osg::ARRAY, "osg::Object osg::BufferData osg::Array osg::"#ARRAY) \
         { \
+            {\
+                UPDATE_TO_VERSION_SCOPED( 143 )\
+                ADDED_ASSOCIATE("osg::BufferData")\
+            }\
                 ADD_ISAVECTOR_SERIALIZER( vector, osgDB::BaseSerializer::ELEMENTTYPE, NUMELEMENTSONROW ); \
         } \
     }

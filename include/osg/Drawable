@@ -457,7 +457,6 @@ class OSG_EXPORT Drawable : public Node
         BoundingBox                         _initialBound;
         ref_ptr<ComputeBoundingBoxCallback> _computeBoundCallback;
         mutable BoundingBox                 _boundingBox;
-        mutable bool                        _boundingBoxComputed;
 
         ref_ptr<Shape>          _shape;
 

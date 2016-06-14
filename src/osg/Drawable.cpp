@@ -213,8 +213,6 @@ void Drawable::deleteDisplayList(unsigned int contextID,GLuint globj, unsigned i
 
 Drawable::Drawable()
 {
-    _boundingBoxComputed = false;
-
     // Note, if your are defining a subclass from drawable which is
     // dynamically updated then you should set both the following to
     // to false in your constructor.  This will prevent any display
@@ -238,7 +236,6 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     _initialBound(drawable._initialBound),
     _computeBoundCallback(drawable._computeBoundCallback),
     _boundingBox(drawable._boundingBox),
-    _boundingBoxComputed(drawable._boundingBoxComputed),
     _shape(copyop(drawable._shape.get())),
     _supportsDisplayList(drawable._supportsDisplayList),
     _useDisplayList(drawable._useDisplayList),
@@ -584,5 +581,6 @@ BoundingBox Drawable::computeBoundingBox() const
 void Drawable::setBound(const BoundingBox& bb) const
 {
      _boundingBox = bb;
-     _boundingBoxComputed = true;
+     _boundingSphere = computeBound();
+     _boundingSphereComputed = true;
 }

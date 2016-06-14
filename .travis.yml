@@ -30,6 +30,31 @@ matrix:
             #- clang-3.8
             - g++
             - cmake
+        coverity_scan:
+
+            # GitHub project metadata
+            # ** specific to your project **
+            project:
+            name: "openscenegraph/osg"
+            description: "OpenSceneGraph"
+            version: 3.5.x
+
+            # Where email notification of build analysis results will be sent
+            notification_email: robert@openscenegraph.com
+
+            # Commands to prepare for build_command
+            # ** likely specific to your build **
+            build_command_prepend: cmake -DOSG_USE_AGGRESSIVE_WARNINGS=0 .
+
+            # The command that will be added as an argument to "cov-build" to compile your project for analysis,
+            # ** likely specific to your build **
+            build_command: make -j 3
+
+            # Pattern to match selecting branches that will run analysis. We recommend leaving this set to 'coverity_scan'.
+            # Take care in resource usage, and consider the build frequency allowances per
+            #   https://scan.coverity.com/faq#frequency
+            branch_pattern: coverity_scan
+
     # OSX build
     - os: osx
       language: cpp
@@ -39,29 +64,3 @@ script:
    - cd build
    - travis_wait 60 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../product -DBUILD_OSG_EXAMPLES=ON ..
    - make install -j 3
-
-addons:
-  coverity_scan:
-
-    # GitHub project metadata
-    # ** specific to your project **
-    project:
-      name: "openscenegraph/osg"
-      description: "OpenSceneGraph"
-      version: 3.5
-
-    # Where email notification of build analysis results will be sent
-    notification_email: robert@openscenegraph.com
-
-    # Commands to prepare for build_command
-    # ** likely specific to your build **
-    build_command_prepend: cmake -DOSG_USE_AGGRESSIVE_WARNINGS=0 .
-
-    # The command that will be added as an argument to "cov-build" to compile your project for analysis,
-    # ** likely specific to your build **
-    build_command: make -j 3
-
-    # Pattern to match selecting branches that will run analysis. We recommend leaving this set to 'coverity_scan'.
-    # Take care in resource usage, and consider the build frequency allowances per
-    #   https://scan.coverity.com/faq#frequency
-    branch_pattern: coverity_scan

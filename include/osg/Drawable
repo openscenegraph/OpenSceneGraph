@@ -618,11 +618,10 @@ class OSG_EXPORT TransformFeedBackDrawCallback: public Drawable::DrawCallback
 protected:
     std::vector<osg::ref_ptr<osg::BufferIndexBinding> > _tfbbs;
     GLenum _type;
-    bool _rasterize;
 public:
     META_Object(osg,TransformFeedBackDrawCallback);
 
-    TransformFeedBackDrawCallback():Drawable::DrawCallback(),_rasterize(false),_type(GL_POINTS){}
+    TransformFeedBackDrawCallback():Drawable::DrawCallback(),_type(GL_POINTS){}
     TransformFeedBackDrawCallback(const Drawable::DrawCallback&dc,const CopyOp&co);
 
     /** Get the primitive type of the feedback.
@@ -630,10 +629,6 @@ public:
     inline GLenum getFeedBackType() const      { return _type;      }
     inline void  setFeedBackType(GLenum e)     { _type= e;          }
 
-    /** is rasterizer is enabled for the transform feedback
-     */
-    inline bool isRasterizerEnable()const       { return _rasterize; }
-    inline void setRasterizerEnable(bool r)     { _rasterize= r;     }
 
     /** add a buffer binding.*/
     void addTransformFeedbackBufferBinding(osg::BufferIndexBinding * tfbb);

@@ -655,13 +655,11 @@ void TransformFeedBackDrawCallback::drawImplementation(osg::RenderInfo& renderIn
     }*/
 
 
-    if(!_rasterize)glEnable(GL_RASTERIZER_DISCARD);
     ext->glBeginTransformFeedback(_type);
     drawable->drawImplementation(renderInfo);
 
     ext->glEndTransformFeedback();
 
-    if(!_rasterize)glDisable(GL_RASTERIZER_DISCARD);
 
 
 }

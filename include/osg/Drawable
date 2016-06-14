@@ -20,7 +20,6 @@
 #include <osg/PrimitiveSet>
 #include <osg/RenderInfo>
 #include <osg/Group>
-#include <osg/BufferIndexBinding>
 
 
 #ifndef GL_NV_occlusion_query
@@ -629,21 +628,6 @@ public:
     inline GLenum getFeedBackType() const      { return _type;      }
     inline void  setFeedBackType(GLenum e)     { _type= e;          }
 
-
-    /** add a buffer binding.*/
-    void addTransformFeedbackBufferBinding(osg::BufferIndexBinding * tfbb);
-
-    /** remove a buffer binding.*/
-    void removeTransformFeedbackBufferBinding(osg::BufferIndexBinding * tfbb);
-
-    /** get the i-nth attached bufferbinding .*/
-    osg::BufferIndexBinding *getTransformFeedbackBufferBinding(const unsigned int &i)const
-    {
-        return getNumTransformFeedbackBufferBindings()>i?_tfbbs[i]:0;
-    }
-
-    /** return the count of attached bufferbinding.*/
-    inline unsigned int getNumTransformFeedbackBufferBindings() const    { return _tfbbs.size(); }
 
     /** do TransformFeedback draw code.*/
     virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable*  drawable ) const;

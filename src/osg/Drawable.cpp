@@ -618,27 +618,7 @@ void Drawable::setBound(const BoundingBox& bb) const
 TransformFeedbackDrawCallback::  TransformFeedbackDrawCallback(const Drawable::DrawCallback&dc,const CopyOp&co):osg::Drawable::DrawCallback(dc,co)
 {
 }
-void TransformFeedbackDrawCallback::addTransformFeedbackBufferBinding(osg::BufferIndexBinding * tfbb)
-{
 
-    if(tfbb){
-        if(tfbb->getTarget()!=GL_TRANSFORM_FEEDBACK_BUFFER)
-            OSG_NOTIFY(WARN)<<"TransformFeedbackDrawCallback::addTransformFeedbackBufferBinding: Warning: add a BufferBinding other than GL_TRANSFORM_FEEDBACK_BUFFER"<<std::endl;
-        _tfbbs.push_back(tfbb);
-    }
-}
-void TransformFeedbackDrawCallback::removeTransformFeedbackBufferBinding(osg::BufferIndexBinding * tfbb)
-{
-
-    for(std::vector<osg::ref_ptr<osg::BufferIndexBinding> >::iterator i=_tfbbs.begin(); i!=_tfbbs.end(); i++)
-    {
-        if((*i).get()==tfbb)
-        {
-            _tfbbs.erase(i);
-            return;
-        }
-    }
-}
 
 /** do TransformFeedback draw code.*/
 void TransformFeedbackDrawCallback::drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable*  drawable ) const

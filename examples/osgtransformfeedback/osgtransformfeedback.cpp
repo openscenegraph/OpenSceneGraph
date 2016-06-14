@@ -245,8 +245,7 @@ int main( int , char** )
     tfbb->setSize(somePointsRenderer->getVertexArray()->getTotalDataSize());
     tfbb2->setSize(somePointsRenderer->getColorArray()->getTotalDataSize());
 
-    tr->addTransformFeedbackBufferBinding(tfbb);
-    tr->addTransformFeedbackBufferBinding(tfbb2);
+
 
     somePointsGenerator->setDrawCallback(tr);
 

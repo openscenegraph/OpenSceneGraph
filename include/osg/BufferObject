@@ -360,7 +360,7 @@ class OSG_EXPORT GLBufferObjectManager : public GraphicsObjectManager
         void newFrame(osg::FrameStamp* fs);
         void resetStats();
         void reportStats(std::ostream& out);
-        void recomputeStats(std::ostream& out);
+        void recomputeStats(std::ostream& out) const;
 
         unsigned int& getFrameNumber() { return _frameNumber; }
         unsigned int& getNumberFrames() { return _numFrames; }
@@ -519,7 +519,7 @@ class OSG_EXPORT BufferData : public Object
         virtual osg::Image* asImage() { return 0; }
         virtual const osg::Image* asImage() const { return 0; }
 
-        void setBufferObject(BufferObject* bufferObject);
+        void setBufferObject(BufferObject* bufferObject,bool addDataToBufferObject=true);
         BufferObject* getBufferObject() { return _bufferObject.get(); }
         const BufferObject* getBufferObject() const { return _bufferObject.get(); }
 

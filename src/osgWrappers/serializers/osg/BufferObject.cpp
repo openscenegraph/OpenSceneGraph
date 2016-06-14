@@ -99,4 +99,10 @@ namespace VertexBufferObjectWrapper
                              osg::VertexBufferObject,
                              "osg::Object osg::BufferObject osg::VertexBufferObject" ){    }
 }
-
+namespace ElementBufferObjectWrapper
+{
+    REGISTER_OBJECT_WRAPPER( ElementBufferObject,
+                             new osg::ElementBufferObject,
+                             osg::ElementBufferObject,
+                             "osg::Object osg::BufferObject osg::ElementBufferObject" ){    }
+}

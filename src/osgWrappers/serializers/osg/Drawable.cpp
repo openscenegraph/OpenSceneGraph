@@ -64,60 +64,25 @@ REGISTER_OBJECT_WRAPPER( Drawable,
 
 
 namespace DrawableDrawCallbackWrapper  {
-REGISTER_OBJECT_WRAPPER( DrawableDrawCallback,
-                         /*new osg::Drawable::DrawCallback*/NULL,
-                        osg::Drawable::DrawCallback,
-                         "osg::Object osg::Drawable::DrawCallback" )
-{
-
-}
-}
-static bool checkTFBufferBindings( const osg::TransformFeedbackDrawCallback& node )
-{
-    return node.getNumTransformFeedbackBufferBindings()//Arrays();
-           >0;
-}
-
-static bool readTFBufferBindings( osgDB::InputStream& is, osg::TransformFeedbackDrawCallback& node )
-{
-    unsigned int size = 0;
-    is >> size >> is.BEGIN_BRACKET;
-    for ( unsigned int i=0; i<size; ++i )
+    REGISTER_OBJECT_WRAPPER( DrawableDrawCallback,
+                             /*new osg::Drawable::DrawCallback*/NULL,
+                            osg::Drawable::DrawCallback,
+                             "osg::Object osg::Drawable::DrawCallback" )
     {
-        osg::ref_ptr<osg::Object> obj = is.readObject();
-        osg::BufferIndexBinding* child = dynamic_cast<osg:: BufferIndexBinding*>( obj.get() );
-        if ( child ) node.addTransformFeedbackBufferBinding( child );
+
     }
-    is >> is.END_BRACKET;
-    return true;
 }
 
-static bool writeTFBufferBindings( osgDB::OutputStream& os, const osg::TransformFeedbackDrawCallback& node )
-{
-    unsigned int size = node.getNumTransformFeedbackBufferBindings();//Arrays();
-    os << size << os.BEGIN_BRACKET << std::endl;
-    for ( unsigned int i=0; i<size; ++i )
-    {
-        os << node.getTransformFeedbackBufferBinding(i);
-    }
-    os << os.END_BRACKET << std::endl;
-    return true;
-}
 namespace TransformFeedBackDrawCallbackWrapper{
-REGISTER_OBJECT_WRAPPER( TransformFeedbackDrawCallback,
-                         new  osg::TransformFeedbackDrawCallback,
-                         osg::TransformFeedbackDrawCallback,
-                         "osg::Object osg::Drawable::DrawCallback osg::TransformFeedbackDrawCallback" )
-{
+    REGISTER_OBJECT_WRAPPER( TransformFeedbackDrawCallback,
+                             new  osg::TransformFeedbackDrawCallback,
+                             osg::TransformFeedbackDrawCallback,
+                             "osg::Object osg::Drawable::DrawCallback osg::TransformFeedbackDrawCallback" )
+    {
 
-    //ADD_OBJECT_SERIALIZER( BufferObject, osg::BufferObject, NULL );  // _bufferObject
-    //ADD_OBJECT_SERIALIZER( TargetArray, osg::Array, NULL );  // _bufferObject
-    ADD_USER_SERIALIZER(TFBufferBindings);
+        ADD_GLENUM_SERIALIZER( FeedBackType,GLenum, GL_POINTS);  // _type
 
-   // ADD_UINT_SERIALIZER( Index, 0);  // _index
-    ADD_GLENUM_SERIALIZER( FeedBackType,GLenum, GL_POINTS);  // _type
-
-}
+    }
 }
 #undef OBJECT_CAST
 #define OBJECT_CAST static_cast

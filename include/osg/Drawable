@@ -306,7 +306,7 @@ class OSG_EXPORT Drawable : public Node
           * must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable.
           * drawImplementation(RenderInfo&) is called from the draw(RenderInfo&) method, with the draw method handling management of OpenGL display lists,
           * and drawImplementation(RenderInfo&) handling the actual drawing itself.
-          * @param renderInfo The osg::RenderInfo object that encapsulates the current rendering information including the osg::State OpenGL state for the current graphics context. */
+          * renderInfo : The osg::RenderInfo object that encapsulates the current rendering information including the osg::State OpenGL state for the current graphics context. */
         virtual void drawImplementation(RenderInfo& /*renderInfo*/) const {}
 
 
@@ -457,7 +457,6 @@ class OSG_EXPORT Drawable : public Node
         BoundingBox                         _initialBound;
         ref_ptr<ComputeBoundingBoxCallback> _computeBoundCallback;
         mutable BoundingBox                 _boundingBox;
-        mutable bool                        _boundingBoxComputed;
 
         ref_ptr<Shape>          _shape;
 
@@ -612,27 +611,27 @@ protected:
         Drawable::AttributeType             _type;
 };
 
+
 class OSG_EXPORT TransformFeedbackDrawCallback: public Drawable::DrawCallback
 {
 protected:
-    std::vector<osg::ref_ptr<osg::BufferIndexBinding> > _tfbbs;
     GLenum _type;
 public:
     META_Object(osg,TransformFeedbackDrawCallback);
 
     TransformFeedbackDrawCallback():Drawable::DrawCallback(),_type(GL_POINTS){}
-    TransformFeedbackDrawCallback(const Drawable::DrawCallback&dc,const CopyOp&co);
+    TransformFeedbackDrawCallback(const TransformFeedbackDrawCallback&dc,const CopyOp&co);
 
     /** Get the primitive type of the feedback.
      */
     inline GLenum getFeedBackType() const      { return _type;      }
     inline void  setFeedBackType(GLenum e)     { _type= e;          }
 
-
     /** do TransformFeedback draw code.*/
     virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable*  drawable ) const;
 
 };
+
 }
 
 #endif

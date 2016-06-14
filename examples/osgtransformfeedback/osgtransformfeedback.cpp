@@ -152,9 +152,9 @@ osg::Program* createGeneratorShader()
     pgm->setParameter( GL_GEOMETRY_OUTPUT_TYPE_EXT, GL_POINTS );
     pgm->addShader( new osg::Shader( osg::Shader::GEOMETRY, geomSource ) );
 
-    pgm->addTransformFeedBackVarying(std::string("out1"));
-    pgm->addTransformFeedBackVarying(std::string("out2"));
-    pgm->setTransformFeedBackMode(GL_SEPARATE_ATTRIBS);
+    pgm->addTransformFeedbackVarying(std::string("out1"));
+    pgm->addTransformFeedbackVarying(std::string("out2"));
+    pgm->setTransformFeedbackMode(GL_SEPARATE_ATTRIBS);
 
     return pgm;
 }
@@ -236,7 +236,7 @@ int main( int , char** )
 
     }
 
-    osg::TransformFeedBackDrawCallback *tr=new  osg::TransformFeedBackDrawCallback();
+    osg::TransformFeedbackDrawCallback *tr=new  osg::TransformFeedbackDrawCallback();
     osg::TransformFeedbackBufferBinding *tfbb=new   osg::TransformFeedbackBufferBinding (0);
     tfbb->setBufferObject(somePointsRenderer->getVertexArray()->getVertexBufferObject());
     osg::TransformFeedbackBufferBinding *tfbb2=new   osg::TransformFeedbackBufferBinding (1);

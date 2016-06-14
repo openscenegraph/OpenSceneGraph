@@ -53,8 +53,8 @@ PROJECT(OpenSceneGraph)
 
 SET(OPENSCENEGRAPH_MAJOR_VERSION 3)
 SET(OPENSCENEGRAPH_MINOR_VERSION 5)
-SET(OPENSCENEGRAPH_PATCH_VERSION 2)
-SET(OPENSCENEGRAPH_SOVERSION 143)
+SET(OPENSCENEGRAPH_PATCH_VERSION 4)
+SET(OPENSCENEGRAPH_SOVERSION 145)
 
 # set to 0 when not a release candidate, non zero means that any generated
 # git tags will be treated as release candidates of given number
@@ -394,7 +394,7 @@ MARK_AS_ADVANCED(OSG_DISABLE_MSVC_WARNINGS)
 
 OPTION(OSG_PROVIDE_READFILE "Set to ON for include/osgDB/ReadFile to provide the osgDB::read*File(() methods. " ON)
 OPTION(OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION "Set to ON to use the ref_ptr<> T* operator() output conversion. " ON)
-OPTION(OSG_USE_REF_PTR_SAFE_DEREFERENCE "Set to ON to throw an exception whenever ref_ptr<> is dereferenced or called. " ON)
+OPTION(OSG_USE_REF_PTR_SAFE_DEREFERENCE "Set to ON to throw an exception whenever ref_ptr<> is dereferenced or called. " OFF)
 
 # Map the OPENGL_PROFILE to OSG_GL*_AVAILABLE settings
 SET(OPENGL_PROFILE "GL2" CACHE STRING "OpenGL Profile to use, choose from GL1, GL2, GL3, GLES1, GLES2, GLES3")
@@ -939,6 +939,7 @@ SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} CACHE STRING "You may add additiona
 # This is unofficial so this may be removed or changed at anytime.
 SET(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} CACHE STRING "(EXPERIMENTAL) You may add additional search paths here. Use ; to separate multiple paths.")
 
+
 # This is for an advanced option to give aggressive warnings
 # under different compilers. If yours is not implemented, this option
 # will not be made available.
@@ -953,7 +954,11 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
     # errors instead of warnings for certain issues, including superfluous
     # semicolons and commas, and the use of long long. -fpermissive seems
     # to be the workaround.
-    SET(OSG_AGGRESSIVE_WARNING_FLAGS -Wall -Wshadow -Wparentheses -Wno-long-long -Wno-import -pedantic -Wreturn-type -Wmissing-braces -Wunknown-pragmas -Wunused)
+    SET(OSG_AGGRESSIVE_WARNING_FLAGS -Wall -Wparentheses -Wno-long-long -Wno-import -pedantic -Wreturn-type -Wmissing-braces -Wunknown-pragmas -Wunused)
+
+    IF(${CMAKE_MAJOR_VERSION} GREATER 2 AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.9)
+        SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wshadow -Wmaybe-uninitialized -Wextra)
+    ENDIF()
 
     # Previous included -Wformat=2 in OSG_AGGRESSIVE_WARNING_FLAGS but had to remove it due to standard library errors
 
@@ -1006,16 +1011,17 @@ ENDIF()
 # This will only be made available if we set values for OSG_AGGRESSIVE_WARNING_FLAGS.
 IF(OSG_AGGRESSIVE_WARNING_FLAGS)
 
+    SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} CACHE STRING "Compiler flags to use when OSG_AGGRESSIVE_WARNINGS is enabled." FORCE)
+
     IF (APPLE)
         SET(DEFAULT_USE_AGGRESSIVE_WARNINGS OFF)
     ELSE()
         SET(DEFAULT_USE_AGGRESSIVE_WARNINGS ON)
     ENDIF()
 
-    OPTION(OSG_USE_AGGRESSIVE_WARNINGS "Enable to activate aggressive warnings" ${DEFAULT_USE_AGGRESSIVE_WARNINGS})
-    MARK_AS_ADVANCED(OSG_USE_AGGRESSIVE_WARNINGS)
+    OPTION(OSG_AGGRESSIVE_WARNINGS "Enable to activate aggressive warnings" ${DEFAULT_USE_AGGRESSIVE_WARNINGS})
 
-    IF(OSG_USE_AGGRESSIVE_WARNINGS)
+    IF(OSG_AGGRESSIVE_WARNINGS)
         # Add flags defined by OSG_AGGRESSIVE_WARNING_FLAGS if they aren't already there
         FOREACH(flag ${OSG_AGGRESSIVE_WARNING_FLAGS})
             IF(NOT CMAKE_CXX_FLAGS MATCHES "${flag}")

@@ -38,7 +38,7 @@ REGISTER_OBJECT_WRAPPER( Drawable,
                          "osg::Object osg::Node osg::Drawable" )
 {
     {
-            UPDATE_TO_VERSION_SCOPED( 143 )
+            UPDATE_TO_VERSION_SCOPED( 145 )
             ADDED_ASSOCIATE("osg::Node")
     }
     ADD_OBJECT_SERIALIZER( StateSet, osg::StateSet, NULL );  // _stateset
@@ -72,13 +72,13 @@ REGISTER_OBJECT_WRAPPER( DrawableDrawCallback,
 
 }
 }
-static bool checkTFBufferBindings( const osg::TransformFeedBackDrawCallback& node )
+static bool checkTFBufferBindings( const osg::TransformFeedbackDrawCallback& node )
 {
     return node.getNumTransformFeedbackBufferBindings()//Arrays();
            >0;
 }
 
-static bool readTFBufferBindings( osgDB::InputStream& is, osg::TransformFeedBackDrawCallback& node )
+static bool readTFBufferBindings( osgDB::InputStream& is, osg::TransformFeedbackDrawCallback& node )
 {
     unsigned int size = 0;
     is >> size >> is.BEGIN_BRACKET;
@@ -92,7 +92,7 @@ static bool readTFBufferBindings( osgDB::InputStream& is, osg::TransformFeedBack
     return true;
 }
 
-static bool writeTFBufferBindings( osgDB::OutputStream& os, const osg::TransformFeedBackDrawCallback& node )
+static bool writeTFBufferBindings( osgDB::OutputStream& os, const osg::TransformFeedbackDrawCallback& node )
 {
     unsigned int size = node.getNumTransformFeedbackBufferBindings();//Arrays();
     os << size << os.BEGIN_BRACKET << std::endl;
@@ -104,10 +104,10 @@ static bool writeTFBufferBindings( osgDB::OutputStream& os, const osg::Transform
     return true;
 }
 namespace TransformFeedBackDrawCallbackWrapper{
-REGISTER_OBJECT_WRAPPER( TransformFeedBackDrawCallback,
-                         new  osg::TransformFeedBackDrawCallback,
-                         osg::TransformFeedBackDrawCallback,
-                         "osg::Object osg::Drawable::DrawCallback osg::TransformFeedBackDrawCallback" )
+REGISTER_OBJECT_WRAPPER( TransformFeedbackDrawCallback,
+                         new  osg::TransformFeedbackDrawCallback,
+                         osg::TransformFeedbackDrawCallback,
+                         "osg::Object osg::Drawable::DrawCallback osg::TransformFeedbackDrawCallback" )
 {
 
     //ADD_OBJECT_SERIALIZER( BufferObject, osg::BufferObject, NULL );  // _bufferObject

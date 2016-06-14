@@ -39,7 +39,7 @@ REGISTER_OBJECT_WRAPPER( Array,
 
 
     {
-        UPDATE_TO_VERSION_SCOPED( 143 )
+        UPDATE_TO_VERSION_SCOPED( 145 )
         ADDED_ASSOCIATE("osg::BufferData")
     }
 #if 0
@@ -123,7 +123,7 @@ REGISTER_OBJECT_WRAPPER( Array,
         REGISTER_OBJECT_WRAPPER( ARRAY, new osg::ARRAY, osg::ARRAY, "osg::Object osg::BufferData osg::Array osg::"#ARRAY) \
         { \
             {\
-                UPDATE_TO_VERSION_SCOPED( 143 )\
+                UPDATE_TO_VERSION_SCOPED( 145 )\
                 ADDED_ASSOCIATE("osg::BufferData")\
             }\
                 ADD_ISAVECTOR_SERIALIZER( vector, osgDB::BaseSerializer::ELEMENTTYPE, NUMELEMENTSONROW ); \

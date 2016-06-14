@@ -24,7 +24,7 @@
 //  Copyright 2006. Released under the OSGPL.
 //  Ported to osgViewer::Viewer by Martin Lavery 7/06/07
 //
-/* This class demonstrates how to subclass NSOpenGLView to integrate with the 
+/* This class demonstrates how to subclass NSOpenGLView to integrate with the
  * osgViewer::Viewer.
  * This class demonstrates:
  * Objective-C++
@@ -46,10 +46,10 @@
  * Using osg::Camera's Framebuffer Objects to generate screen captures
  * Code to detect drawing to offscreen (e.g. printer)
  * Localization/Localizable strings (really need some different languages)
- * Use of respondsToSelector and instancesRespondToSelector to demonstrate 
+ * Use of respondsToSelector and instancesRespondToSelector to demonstrate
  *   runtime feature checking to provide access to newer features while still
  *   supporting legacy versions.
- * 
+ *
  * Things not demonstrated by this view or application example (but would be interesting):
  * Cocoa Bindings (highly recommended)
  * Core Data (works great with Cocoa Bindings)
@@ -64,15 +64,15 @@
  * Non-view stuff (Application Delegates, models, controllers)
  * Launching by double-clicking a model or drag-and-drop onto Application Icon (non-view)
  * Launching via commandline with parameters (non-view)
- */ 
+ */
 
 /* Commentary:
  * This class packs a lot of functionality that you might not expect from a "Viewer".
- * The reason is that Mac users have high expectations of their applications, so things 
- * that might not even be considered on other platforms (like drag-and-drop), are almost 
+ * The reason is that Mac users have high expectations of their applications, so things
+ * that might not even be considered on other platforms (like drag-and-drop), are almost
  * a requirment on Mac OS X.
  * The good news is that this class can almost be used as a template for other purposes.
- * If you are looking for the bare minimum code needed, focus your attention on 
+ * If you are looking for the bare minimum code needed, focus your attention on
  * the init* routines and drawRect.
  */
 
@@ -80,17 +80,17 @@
  * Coding conventions:
  * My coding style is slightly different than what you normally see in Cocoa.
  * So here is the cheat sheet:
- * I hate Hungarian (Microsoft) notation. And prefixed underscore _variables 
+ * I hate Hungarian (Microsoft) notation. And prefixed underscore _variables
  * are technically reserved by the compiler which is why I avoid them. So...
  * Member variables use camelCase (Pascal/Java)
  * Local variables use under_scores (Ada)
  * For methods, I follow standard Cocoa conventions.
  * I tend to keep * with the type (e.g. NSView* foo) instead of with the variable (NSView *foo).
  * (I tend to think of the pointer as part of the type.)
- * For Obj-C named parameters, I tend to keep the namedParameter and the value 
- * together instead of separated by spaces 
+ * For Obj-C named parameters, I tend to keep the namedParameter and the value
+ * together instead of separated by spaces
  * e.g. [self initWithX:x_val yVal:y_val zVal:z_val].
- * (When I was first learning Objective-C, this made it easier for me to 
+ * (When I was first learning Objective-C, this made it easier for me to
  * figure out which things were paired.)
  */
 #import "ViewerCocoa.h"
@@ -152,7 +152,7 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
 //            register unsigned char * the_green = (sp_char+1);
 //            register unsigned char * the_blue = (sp_char+2);
             register unsigned char * the_alpha = (sp_char+3);
-    
+
             *the_alpha = alpha_value;
             *the_pixel++;
         }
@@ -184,7 +184,7 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
 /////////////////////////// Init Stuff /////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 
-/* This is the designated initializer for an NSOpenGLView. However, since I'm 
+/* This is the designated initializer for an NSOpenGLView. However, since I'm
  * using Interface Builder to help, initWithCoder: is the initializer that gets called.
  * But for completeness, I implement this method here.
  */
@@ -199,7 +199,7 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
 }
 
 /* Going through the IB palette, this initializer is calling instead of the designated initializer
- * initWithFrame:pixelFormat: 
+ * initWithFrame:pixelFormat:
  * But for some reason, the pixel format set in IB selected seems to be either ignored or is missing
  * a value I need. (The depth buffer looks too shallow to me and glErrors are triggered.)
  * So I explicitly set the pixel format inside here (overriding the IB palette options).
@@ -243,10 +243,10 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
 
     [self initOSGViewer];
     [self initAnimationTimer];
-    
+
     // Register for Drag and Drop
     [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, NSURLPboardType, nil]];
-    
+
     // Add minification observer so we can set the Dock picture since OpenGL views don't do this automatically for us.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(prepareForMiniaturization:) name:NSWindowWillMiniaturizeNotification object:nil];
 
@@ -260,16 +260,16 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
 #ifdef VIEWER_USE_SHARED_CONTEXTS
 
     NSOpenGLContext* this_views_opengl_context = nil;
-    
+
     // create a context the first time through
     if(s_sharedOpenGLContext == NULL)
     {
         s_sharedOpenGLContext = [[NSOpenGLContext alloc]
                       initWithFormat:[ViewerCocoa basicPixelFormat]
                         shareContext:nil];
-        
+
     }
-    
+
     this_views_opengl_context = [[NSOpenGLContext alloc]
                       initWithFormat:[ViewerCocoa basicPixelFormat]
                         shareContext:s_sharedOpenGLContext];
@@ -301,7 +301,7 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
     theViewer->getEventQueue()->getCurrentEventState()->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
     // Use a trackball manipulator...matches nicely with the Mighty Mouse Scrollball.
     theViewer->setCameraManipulator(new osgGA::TrackballManipulator);
-    
+
 }
 
 - (void) initAnimationTimer
@@ -317,18 +317,18 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
     an_invocation = [NSInvocation invocationWithMethodSignature:a_signature] ;
     [an_invocation setSelector:the_selector];
     [an_invocation setTarget:self];
-    
+
     animationTimer = [NSTimer
         scheduledTimerWithTimeInterval:1.0/60.0 // fps
         invocation:an_invocation
         repeats:YES];
     [animationTimer retain];
-    
+
     // For single threaded apps like this one,
     // Cocoa seems to block timers or events sometimes. This can be seen
     // when I'm animating (via a timer) and you open an popup box or move a slider.
     // Apparently, sheets and dialogs can also block (try printing).
-    // To work around this, Cocoa provides different run-loop modes. I need to 
+    // To work around this, Cocoa provides different run-loop modes. I need to
     // specify the modes to avoid the blockage.
     // NSDefaultRunLoopMode seems to be the default. I don't think I need to explicitly
     // set this one, but just in case, I will set it anyway.
@@ -357,15 +357,15 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
 
 /* NSOpenGLView defines this method to be called (only once) after the OpenGL
  * context is created and made the current context. It is intended to be used to setup
- * your initial OpenGL state. This seems like a good place to initialize the 
+ * your initial OpenGL state. This seems like a good place to initialize the
  * OSG stuff. This method exists in 10.3 and later. If you are running pre-10.3, you
- * must manually call this method sometime after the OpenGL context is created and 
+ * must manually call this method sometime after the OpenGL context is created and
  * made current, or refactor this code.
  */
 - (void) prepareOpenGL
 {
     [super prepareOpenGL];
-    
+
     // The NSOpenGLCPSwapInterval seems to be vsync. If 1, buffers are swapped with vertical refresh.
     // If 0, flushBuffer will execute as soon as possible.
     const GLint swap_interval = 1 ;
@@ -426,7 +426,7 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
 
 
     // This is optional:
-    // This is to setup some default text in the OpenGL view so the 
+    // This is to setup some default text in the OpenGL view so the
     // user knows that they should drag and drop a model into the view.
     osg::ref_ptr<osgText::Text> default_text = new osgText::Text;
 
@@ -436,13 +436,13 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
     default_text->setColor(osg::Vec4(1.0, 1.0, 0.0, 1.0));
     default_text->setBackdropColor(osg::Vec4(0.0, 0.0, 0.0, 1.0));
     default_text->setAxisAlignment(osgText::Text::XZ_PLANE);
-    
+
     // We should use a (Cocoa) localizable string instead of a hard coded string.
 //    default_text->setText("Drag-and-Drop\nyour .osg model here!");
     // The first string is the key name (you need a Localizable.strings file for your Nib). The second string is just a comment.
     NSString* localized_string = NSLocalizedString(@"DragAndDropHere", @"Drag-and-Drop\nyour .osg model here!");
     default_text->setText([localized_string UTF8String]);
-    
+
     osg::ref_ptr<osg::Geode> the_geode = new osg::Geode;
     the_geode->addDrawable(default_text.get());
 
@@ -452,7 +452,7 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
 /* disableScreenUpdatesUntilFlush was introduced in Tiger. It will prevent
  * unnecessary screen flashing caused by NSSplitViews or NSScrollviews.
  * From Apple's release notes:
- 
+
 NSWindow -disableScreenUpdatesUntilFlush API (Section added since WWDC)
 
 When a view that renders to a hardware surface (such as an OpenGL view) is placed in an NSScrollView or NSSplitView, there can be a noticeable flicker or lag when the scroll position or splitter position is moved. This happens because each move of the hardware surface takes effect immediately, before the remaining window content has had the chance to draw and flush.
@@ -473,7 +473,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 }
 
 
-/* When you minimize an app, you usually can see its shrunken contents 
+/* When you minimize an app, you usually can see its shrunken contents
  * in the dock. However, an OpenGL view by default only produces a blank
  * white window. So we use this method to do an image capture of our view
  * which will be used as its minimized picture.
@@ -541,7 +541,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
     // local view coordinate system.
     NSPoint the_point = [the_event locationInWindow];
     NSPoint converted_point = [self convertPoint:the_point fromView:nil];
-    
+
     theViewer->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
     [self setNeedsDisplay:YES];
 }
@@ -579,7 +579,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
     // local view coordinate system.
     NSPoint the_point = [the_event locationInWindow];
     NSPoint converted_point = [self convertPoint:the_point fromView:nil];
-    
+
     theViewer->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
     [self setNeedsDisplay:YES];
 }
@@ -614,7 +614,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
     // local view coordinate system.
     NSPoint the_point = [the_event locationInWindow];
     NSPoint converted_point = [self convertPoint:the_point fromView:nil];
-    
+
     theViewer->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
     [self setNeedsDisplay:YES];
 }
@@ -635,7 +635,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
     else // buttonNumber should be 3,4,5,etc; must map to 4,5,6,etc in osgViewer
     {
         // I don't think osgViewer does anything for these additional buttons,
-        // but just in case, pass them along. But as a Cocoa programmer, you might 
+        // but just in case, pass them along. But as a Cocoa programmer, you might
         // think about things you can do natively here instead of passing the buck.
     }    [self doExtraMouseButtonUp:the_event buttonNumber:[the_event buttonNumber]];
 }
@@ -674,8 +674,8 @@ A -respondsToSelector: check has been used to provide compatibility with previou
     else
     {
         theViewer->getEventQueue()->mouseDoubleButtonPress(converted_point.x, converted_point.y, 1);
-        
-        
+
+
         // Let's toggle fullscreen for show
         [self toggleFullScreen:nil];
 
@@ -689,7 +689,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
     // local view coordinate system.
     NSPoint the_point = [the_event locationInWindow];
     NSPoint converted_point = [self convertPoint:the_point fromView:nil];
-    
+
     theViewer->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, 1);
     [self setNeedsDisplay:YES];
 }
@@ -718,7 +718,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
     // local view coordinate system.
     NSPoint the_point = [the_event locationInWindow];
     NSPoint converted_point = [self convertPoint:the_point fromView:nil];
-    
+
     theViewer->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, 3);
     [self setNeedsDisplay:YES];
 }
@@ -729,7 +729,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
     // local view coordinate system.
     NSPoint the_point = [the_event locationInWindow];
     NSPoint converted_point = [self convertPoint:the_point fromView:nil];
-    
+
     if([the_event clickCount] == 1)
     {
         theViewer->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, 2);
@@ -777,16 +777,16 @@ A -respondsToSelector: check has been used to provide compatibility with previou
     NSPoint the_point = [the_event locationInWindow];
     NSPoint converted_point = [self convertPoint:the_point fromView:nil];
     theViewer->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, button_number+1);
-    
+
     [self setNeedsDisplay:YES];
 }
 
 // This is a job for Mighty Mouse!
 // For the most fluid experience turn on 360 degree mode availble in 10.4.8+.
-// With your Mighty Mouse plugged in, 
-// open 'Keyboard & Mouse' in 'System Preferences'. 
+// With your Mighty Mouse plugged in,
+// open 'Keyboard & Mouse' in 'System Preferences'.
 // Select the 'Mouse' tab.
-// Under 'Scrolling Options' select '360 degree'. 
+// Under 'Scrolling Options' select '360 degree'.
 // That should improve diagonal scrolling.
 // You should also be able to use 'two-finger scrolling' on newer laptops.
 - (void) scrollWheel:(NSEvent*)the_event
@@ -903,17 +903,17 @@ A -respondsToSelector: check has been used to provide compatibility with previou
         NSSize size_in_points = [self bounds].size;
         NSSize size_in_window_coordinates = [self convertSize:size_in_points toView:nil];
         NSBitmapImageRep * bitmap_image_rep = [self renderOpenGLSceneToFramebufferAsFormat:GL_RGB viewWidth:size_in_window_coordinates.width viewHeight:size_in_window_coordinates.height];
-        
+
         NSImage* ns_image = [self imageFromBitmapImageRep:bitmap_image_rep];
 
         if(ns_image)
         {
             NSSize image_size = [ns_image size];
-            [ns_image drawAtPoint:NSMakePoint(0.0, 0.0) 
+            [ns_image drawAtPoint:NSMakePoint(0.0, 0.0)
                     fromRect: NSMakeRect(0.0, 0.0, image_size.width, image_size.height)
 //                   operation: NSCompositeSourceOver
                    operation: NSCompositeCopy
-                    fraction: 1.0];     
+                    fraction: 1.0];
         }
         else
         {
@@ -954,10 +954,10 @@ A -respondsToSelector: check has been used to provide compatibility with previou
     // Round values and bring to closest integer.
     int viewport_width = (int)(view_width + 0.5f);
     int viewport_height = (int)(view_height + 0.5f);
-    
+
     NSBitmapImageRep* ns_image_rep;
     osg::ref_ptr<osg::Image> osg_image = new osg::Image;
-    
+
     if(GL_RGBA == gl_format)
     {
         // Introduced in 10.4, but gives much better looking results if you utilize transparency
@@ -993,7 +993,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
         }
         // This is an optimization. Instead of creating data in both an osg::Image and NSBitmapImageRep,
         // Allocate just the memory in the NSBitmapImageRep and give the osg::Image a reference to the data.
-        // I let NSBitmapImageRep control the memory because I think it will be easier to deal with 
+        // I let NSBitmapImageRep control the memory because I think it will be easier to deal with
         // memory management in the cases where it must interact with other Cocoa mechanisms like Drag-and-drop
         // where the memory persistence is less obvious. Make sure that you don't expect to use the osg::Image
         // outside the scope of this function because there is no telling when the data will be removed out
@@ -1017,7 +1017,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 
         // This is an optimization. Instead of creating data in both an osg::Image and NSBitmapImageRep,
         // Allocate just the memory in the NSBitmapImageRep and give the osg::Image a reference to the data.
-        // I let NSBitmapImageRep control the memory because I think it will be easier to deal with 
+        // I let NSBitmapImageRep control the memory because I think it will be easier to deal with
         // memory management in the cases where it must interact with other Cocoa mechanisms like Drag-and-drop
         // where the memory persistence is less obvious. Make sure that you don't expect to use the osg::Image
         // outside the scope of this function because there is no telling when the data will be removed out
@@ -1076,7 +1076,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
     // This must be ABSOLUTE_RF, and not a copy of the root camera because the transforms are additive.
     the_camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
 
-    // We need to insert the new (second) camera into the scene (below the root camera) and attach 
+    // We need to insert the new (second) camera into the scene (below the root camera) and attach
     // the scene data to the new camera.
     osg::ref_ptr<osg::Node> root_node = theViewer->getSceneData();
 
@@ -1187,7 +1187,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 {
     NSPasteboard* paste_board = [the_sender draggingPasteboard];
 
- 
+
     if([[paste_board types] containsObject:NSFilenamesPboardType])
     {
         NSArray* file_names = [paste_board propertyListForType:NSFilenamesPboardType];
@@ -1243,7 +1243,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 {
     NSString* type = NSTIFFPboardType;
     NSData* image_data = [self contentsAsDataOfType:type];
-        
+
     if(image_data)
     {
         NSPasteboard* general_pboard = [NSPasteboard generalPasteboard];
@@ -1310,18 +1310,18 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 
     if(image_data)
     {
-    
+
         drag_paste_board = [NSPasteboard pasteboardWithName:NSDragPboard];
         // is owner:self or nil? (Hillegass says self)
         [drag_paste_board declareTypes: [NSArray arrayWithObjects: type, nil] owner: self];
         [drag_paste_board setData:image_data forType: type];
-        
+
         // create an image from the data
         the_image = [[NSImage alloc] initWithData:[bitmap_image_rep_transparent_copy TIFFRepresentation]];
-        
+
         the_point = [self convertPoint:[the_event locationInWindow] fromView:nil];
         the_size = [the_image size];
-        
+
         // shift the point to the center of the image
         the_point.x = the_point.x - the_size.width/2.0;
         the_point.y = the_point.y - the_size.height/2.0;
@@ -1334,14 +1334,14 @@ A -respondsToSelector: check has been used to provide compatibility with previou
              pasteboard:drag_paste_board
                  source:self
               slideBack:YES];
-              
+
         [the_image release];
     }
     else
     {
         NSLog(@"Error, failed to create image data");
     }
-    
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -1363,12 +1363,12 @@ A -respondsToSelector: check has been used to provide compatibility with previou
     //    osgGA::MatrixManipulator* camera_manipulator = theViewer->getCameraManipulator();
     // This only resets the position
     //    camera_manipulator->home(0.0);
-    
+
     // There is no external API from SimpleViewer that I can see that will stop movement.
     // So fake the 'spacebar' to stop things and reset.
     // (Changed in Viewer?)
-    //    printf("I'am here"); 
-    
+    //    printf("I'am here");
+
     // Reset to start position
     theViewer->home();
     [self setNeedsDisplay:YES];

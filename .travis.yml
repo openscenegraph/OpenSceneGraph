@@ -36,7 +36,10 @@ matrix:
       language: cpp
 
 script:
-   - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then  mkdir build; cd build; travis_wait 60 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../product -DBUILD_OSG_EXAMPLES=ON .. ; make install -j 3; fi
+   - mkdir build
+   - cd build
+   - travis_wait 60 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../product -DBUILD_OSG_EXAMPLES=ON ..
+   - make install -j 3
 
 
 addons:
@@ -46,9 +49,9 @@ addons:
         # GitHub project metadata
         # ** specific to your project **
         project:
-        name: openscenegraph/osg
-        description: OpenSceneGraph
-        version: 3.5.x
+            name: openscenegraph/osg
+            description: OpenSceneGraph
+            version: 3.5.x
 
         # Where email notification of build analysis results will be sent
         notification_email: robert@openscenegraph.com

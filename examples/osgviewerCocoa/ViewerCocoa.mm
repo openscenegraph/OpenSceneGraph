@@ -136,22 +136,22 @@ static NSOpenGLContext* s_sharedOpenGLContext = NULL;
 // Taken/Adapted from one of the Apple OpenGL developer examples
 static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_value)
 {
-    register unsigned char * sp = [imageRep bitmapData];
-    register int bytesPerRow = [imageRep bytesPerRow];
-    register int height = [imageRep pixelsHigh];
-    register int width = [imageRep pixelsWide];
+    unsigned char * sp = [imageRep bitmapData];
+    int bytesPerRow = [imageRep bytesPerRow];
+    int height = [imageRep pixelsHigh];
+    int width = [imageRep pixelsWide];
 
     for(int i=0; i<height; i++)
     {
-        register unsigned int * the_pixel = (unsigned int *) sp;
-        register int w = width;
+        unsigned int * the_pixel = (unsigned int *) sp;
+        int w = width;
         while (w-- > 0)
         {
             unsigned char* sp_char = (unsigned char *) the_pixel;
-//            register unsigned char * the_red = sp_char;
-//            register unsigned char * the_green = (sp_char+1);
-//            register unsigned char * the_blue = (sp_char+2);
-            register unsigned char * the_alpha = (sp_char+3);
+//            unsigned char * the_red = sp_char;
+//            unsigned char * the_green = (sp_char+1);
+//            unsigned char * the_blue = (sp_char+2);
+            unsigned char * the_alpha = (sp_char+3);
 
             *the_alpha = alpha_value;
             *the_pixel++;

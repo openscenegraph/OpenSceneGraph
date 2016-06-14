@@ -61,9 +61,13 @@ osg::Object* ObjectCache::getFromObjectCache(const std::string& fileName, const 
     {
         osg::ref_ptr<const osgDB::Options> o = itr->first.second;
         if (o.valid())
+        {
             OSG_DEBUG<<"Found "<<fileName<<" with options '"<< o->getOptionString()<< "' in ObjectCache "<<this<<std::endl;
+        }
         else
+        {
             OSG_DEBUG<<"Found "<<fileName<<" in ObjectCache "<<this<<std::endl;
+        }
         return itr->second.first.get();
     }
     else return 0;
@@ -78,9 +82,13 @@ osg::ref_ptr<osg::Object> ObjectCache::getRefFromObjectCache(const std::string& 
     {
         osg::ref_ptr<const osgDB::Options> o = itr->first.second;
         if (o.valid())
+        {
             OSG_DEBUG<<"Found "<<fileName<<" with options '"<< o->getOptionString()<< "' in ObjectCache "<<this<<std::endl;
+        }
         else
+        {
             OSG_DEBUG<<"Found "<<fileName<<" in ObjectCache "<<this<<std::endl;
+        }
         return itr->second.first.get();
     }
     else return 0;

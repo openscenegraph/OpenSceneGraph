@@ -50,6 +50,7 @@ class OSG_EXPORT BufferIndexBinding : public StateAttribute
     virtual unsigned getMember() const { return static_cast<unsigned int>(_index); }
 
     GLenum getTarget() const { return _target; }
+
     /** Get the index target.
      */
     GLuint getIndex() const { return _index; }
@@ -58,7 +59,8 @@ class OSG_EXPORT BufferIndexBinding : public StateAttribute
     void setBufferObject(BufferObject *bo) { _bufferObject = bo; }
     /** Get the buffer object to be bound.
      */
-    BufferObject* getBufferObject() const { return _bufferObject.get(); }
+    const BufferObject* getBufferObject() const { return _bufferObject.get(); }
+    BufferObject* getBufferObject(){ return _bufferObject.get(); }
     /** Set the starting offset into the buffer object for data for
     the indexed target. Note: the required  alignment on the offset
     may be quite large (e.g., 256 bytes on NVidia 8600M). This
@@ -71,6 +73,7 @@ class OSG_EXPORT BufferIndexBinding : public StateAttribute
     void setSize(GLsizeiptr size) { _size = size; }
     GLsizeiptr getSize() const { return _size; }
     virtual void apply(State& state) const;
+
  protected:
     virtual ~BufferIndexBinding();
     const GLenum _target;
@@ -190,7 +193,27 @@ class OSG_EXPORT ShaderStorageBufferBinding : public BufferIndexBinding
     }
 };
 
+class OSG_EXPORT DrawIndirectBufferBinding : public BufferIndexBinding
+{
+ public:
+    DrawIndirectBufferBinding();
+    /** Create a binding for a uniform buffer index target.
+     *  @param bo associated buffer object
+     */
+    DrawIndirectBufferBinding( BufferObject* bo);
+    void apply(State& state) const;
+    DrawIndirectBufferBinding(const DrawIndirectBufferBinding& rhs, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
+    META_StateAttribute(osg, DrawIndirectBufferBinding, INDIRECTDRAWBUFFERBINDING);
+
+    virtual int compare(const StateAttribute& bb) const
+    {
+        COMPARE_StateAttribute_Types(DrawIndirectBufferBinding, bb)
+        COMPARE_StateAttribute_Parameter(_target)
+        COMPARE_StateAttribute_Parameter(_bufferObject)
+        return 0;
+    }
+};
 
 
 } // namespace osg

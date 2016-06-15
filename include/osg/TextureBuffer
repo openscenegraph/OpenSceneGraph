@@ -21,7 +21,7 @@
 
 namespace osg {
 
-/** Encapsulates OpenGL texture buffer functionality.
+/** Encapsulates OpenGL texture buffer functionality in a Texture delegating its content to attached BufferObject
 */
 class OSG_EXPORT TextureBuffer : public Texture
 {
@@ -30,7 +30,7 @@ class OSG_EXPORT TextureBuffer : public Texture
 
         TextureBuffer();
 
-        TextureBuffer(Image* image);
+        TextureBuffer(BufferData* image);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         TextureBuffer(const TextureBuffer& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
@@ -46,26 +46,25 @@ class OSG_EXPORT TextureBuffer : public Texture
         void setImage(Image* image);
 
         /** Gets the texture image. */
-        Image* getImage() { return _image.get(); }
+        Image* getImage() { return dynamic_cast<Image*>(_bufferData.get() ); }
 
         /** Gets the const texture image. */
-        inline const Image* getImage() const { return _image.get(); }
+        inline const Image* getImage() const { return dynamic_cast<Image*>(_bufferData.get() ); }
 
-        inline unsigned int& getModifiedCount(unsigned int contextID) const
+         inline unsigned int & getModifiedCount(unsigned int contextID) const
         {
             // get the modified count for the current contextID.
             return _modifiedCount[contextID];
         }
 
-
         /** Sets the texture image, ignoring face. */
         virtual void setImage(unsigned int, Image* image) { setImage(image); }
 
         /** Gets the texture image, ignoring face. */
-        virtual Image* getImage(unsigned int) { return _image.get(); }
+        virtual Image* getImage(unsigned int) { return getImage(); }
 
         /** Gets the const texture image, ignoring face. */
-        virtual const Image* getImage(unsigned int) const { return _image.get(); }
+        virtual const Image* getImage(unsigned int) const { return getImage(); }
 
         /** Gets the number of images that can be assigned to the Texture. */
         virtual unsigned int getNumImages() const { return 1; }
@@ -80,58 +79,31 @@ class OSG_EXPORT TextureBuffer : public Texture
         virtual int getTextureHeight() const { return 1; }
         virtual int getTextureDepth() const { return 1; }
 
-        inline void setUsageHint( GLenum usageHint ) { _usageHint=usageHint; }
-        inline GLenum getUsageHint() const { return _usageHint; }
-
         virtual void allocateMipmap(State& /*state*/) const {};
 
         /** Bind the texture buffer.*/
         virtual void apply(State& state) const;
 
-        /** Bind buffer to different target. */
-        void bindBufferAs(unsigned int contextID, GLenum target);
-        void unbindBufferAs(unsigned int contextID, GLenum target);
+        /**  Set setBufferData attached */
+        void setBufferData(BufferData *bo);
 
+         /**  Set setBufferData attached */
+        const BufferData * getBufferData()const {return _bufferData.get();}
     protected :
 
         virtual ~TextureBuffer();
 
         virtual void computeInternalFormat() const;
 
-        ref_ptr<Image> _image;
+        ref_ptr< BufferData > _bufferData;
 
-        mutable GLsizei _textureWidth;
-        GLenum _usageHint;
+        GLsizei _textureWidth;
 
-        typedef buffered_value<unsigned int> ImageModifiedCount;
-        mutable ImageModifiedCount _modifiedCount;
+        typedef buffered_value< unsigned int > BufferDataModifiedCount;
+        mutable BufferDataModifiedCount _modifiedCount;
 
-        class TextureBufferObject : public osg::Referenced
-        {
-        public:
-            TextureBufferObject(unsigned int contextID, GLenum usageHint) :
-                _id(0),
-                _usageHint(usageHint)
-            {
-                _extensions = osg::GLExtensions::Get(contextID, true);
-            }
 
-            void bindBuffer(GLenum target);
-            void unbindBuffer(GLenum target);
-
-            void texBuffer(GLenum internalFormat);
-            void bufferData( osg::Image* image );
-            void bufferSubData( osg::Image* image );
-
-        public:
-            GLuint _id;
-            GLenum _usageHint;
-            osg::GLExtensions* _extensions;
-        };
-
-        typedef osg::buffered_object<osg::ref_ptr<TextureBufferObject> > TextureBufferObjectList;
-        mutable TextureBufferObjectList _textureBufferObjects;
-};
+      };
 
 }
 

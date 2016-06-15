@@ -31,21 +31,7 @@ matrix:
             - g++
             - cmake
 
-    # OSX build
-    - os: osx
-      language: cpp
-
-# script:
-#    - mkdir build
-#    - cd build
-#    - travis_wait 60 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../product -DBUILD_OSG_EXAMPLES=ON ..
-#    - make install -j 3
-
-script:
-    - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then mkdir build && cd build && travis_wait 60 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../product -DBUILD_OSG_EXAMPLES=ON ../ && make -j3 ; fi
-
-addons:
-    coverity_scan:
+      coverity_scan:
         # GitHub project metadata
         # ** specific to your project **
         project:
@@ -64,3 +50,16 @@ addons:
         # Take care in resource usage, and consider the build frequency allowances per
         #   https://scan.coverity.com/faq#frequency
         branch_pattern: coverity_scan
+
+    # OSX build
+    - os: osx
+      language: cpp
+
+# script:
+#    - mkdir build
+#    - cd build
+#    - travis_wait 60 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../product -DBUILD_OSG_EXAMPLES=ON ..
+#    - make install -j 3
+
+script:
+    - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then mkdir build && cd build && travis_wait 60 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../product -DBUILD_OSG_EXAMPLES=ON ../ && make -j3 ; fi

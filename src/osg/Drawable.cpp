@@ -583,7 +583,6 @@ void Drawable::setBound(const BoundingBox& bb) const
      _boundingBox = bb;
      _boundingSphere = computeBound();
      _boundingSphereComputed = true;
-<<<<<<< HEAD
 }
 
 
@@ -599,7 +598,4 @@ void TransformFeedbackDrawCallback::drawImplementation(osg::RenderInfo& renderIn
     ext->glBeginTransformFeedback(_type);
     drawable->drawImplementation(renderInfo);
     ext->glEndTransformFeedback();
-
-=======
->>>>>>> upstream/master
 }

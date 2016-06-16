@@ -639,7 +639,6 @@ void OutputStream::writeObjectFields( const osg::Object* obj, const std::string&
     // OSG_NOTICE<<"OutputStream::writeObjectFields("<<obj->className()<<", name="<<name<<")"<<std::endl;
 
     ObjectWrapper* wrapper = Registry::instance()->getObjectWrapperManager()->findWrapper( name );
-
     if ( !wrapper )
     {
         OSG_WARN << "OutputStream::writeObject(): Unsupported wrapper class "
@@ -647,19 +646,12 @@ void OutputStream::writeObjectFields( const osg::Object* obj, const std::string&
         return;
     }
     int outputVersion =  getFileVersion(wrapper->getDomain());
-<<<<<<< HEAD
-=======
 
->>>>>>> upstream/master
     const ObjectWrapper::RevisionAssociateList& associates = wrapper->getAssociates();
     for ( ObjectWrapper::RevisionAssociateList::const_iterator itr=associates.begin(); itr!=associates.end(); ++itr )
     {
         if ( itr->_firstVersion <= outputVersion &&
-<<<<<<< HEAD
-             outputVersion <= itr->_lastVersion)
-=======
                 outputVersion <= itr->_lastVersion)
->>>>>>> upstream/master
         {
             const std::string& assocName = itr->_name;
             ObjectWrapper* assocWrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(assocName);
@@ -689,16 +681,6 @@ void OutputStream::writeObjectFields( const osg::Object* obj, const std::string&
                     }
                 }
             }
-<<<<<<< HEAD
-
-            _fields.push_back( assocWrapper->getName() );
-
-            assocWrapper->write( *this, *obj );
-            if ( getException() ) return;
-
-            _fields.pop_back();
-        }
-=======
             _fields.push_back( assocWrapper->getName() );
 
             assocWrapper->write( *this, *obj );
@@ -711,7 +693,6 @@ void OutputStream::writeObjectFields( const osg::Object* obj, const std::string&
             /*OSG_INFO << "OutputStream::writeObject():"<<name<<" Ignoring associated class due to version mismatch "
                      << itr->_name<<"["<<itr->_firstVersion <<","<<itr->_lastVersion <<"]for output version "<<outputVersion<< std::endl;*/
         }
->>>>>>> upstream/master
     }
 }
 

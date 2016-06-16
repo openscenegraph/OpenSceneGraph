@@ -509,13 +509,8 @@ bool ClassInterface::getSupportedProperties(const osg::Object* object, PropertyM
 
     if (searchAssociates)
     {
-<<<<<<< HEAD
-        const osgDB::ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
-        for(osgDB::ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
-=======
         const ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
         for(ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
->>>>>>> upstream/master
             aitr != associates.end();
             ++aitr)
         {
@@ -565,13 +560,8 @@ bool ClassInterface::isObjectOfType(const osg::Object* object, const std::string
         return false;
     }
 
-<<<<<<< HEAD
-    const osgDB::ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
-    for(osgDB::ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
-=======
     const ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
     for(ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
->>>>>>> upstream/master
         aitr != associates.end();
         ++aitr)
     {
@@ -594,13 +584,8 @@ bool ClassInterface::run(void* objectPtr, const std::string& compoundClassName, 
         if (mo->run(objectPtr, inputParameters, outputParameters)) return true;
     }
 
-<<<<<<< HEAD
-    const osgDB::ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
-    for(osgDB::ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
-=======
     const ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
     for(ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
->>>>>>> upstream/master
         aitr != associates.end();
         ++aitr)
     {
@@ -635,13 +620,8 @@ bool ClassInterface::hasMethod(const std::string& compoundClassName, const std::
     ObjectWrapper::MethodObjectMap::const_iterator oitr = ow_methodObjectMap.find(methodName);
     if (oitr!=ow_methodObjectMap.end()) return true;
 
-<<<<<<< HEAD
-    const osgDB::ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
-    for(osgDB::ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
-=======
     const ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
     for(ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
->>>>>>> upstream/master
         aitr != associates.end();
         ++aitr)
     {

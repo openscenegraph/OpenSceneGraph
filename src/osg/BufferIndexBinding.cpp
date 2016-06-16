@@ -21,10 +21,7 @@
 #ifndef GL_DRAW_INDIRECT_BUFFER
     #define GL_DRAW_INDIRECT_BUFFER 0x8F3F
 #endif
-<<<<<<< HEAD
-=======
 
->>>>>>> upstream/master
 namespace osg {
 
 BufferBinding::BufferBinding(GLenum target)
@@ -228,11 +225,7 @@ ShaderStorageBufferBinding::ShaderStorageBufferBinding(const ShaderStorageBuffer
 
 
 DrawIndirectBufferBinding::DrawIndirectBufferBinding( )
-<<<<<<< HEAD
   : BufferBinding(GL_DRAW_INDIRECT_BUFFER)
-=======
-  : BufferIndexBinding(GL_DRAW_INDIRECT_BUFFER, 0)
->>>>>>> upstream/master
 {
 }
 void DrawIndirectBufferBinding::apply(State& state) const
@@ -243,27 +236,19 @@ void DrawIndirectBufferBinding::apply(State& state) const
             = _bufferObject->getOrCreateGLBufferObject(state.getContextID());
         if (!glObject->_extensions->isUniformBufferObjectSupported)
             return;
-      //  if (glObject->isDirty()) glObject->compileBuffer();
+        //  if (glObject->isDirty()) glObject->compileBuffer(); assuming buffer is GPU generated
         glObject->_extensions->glBindBuffer (_target, glObject->getGLObjectID());
     }
 }
 DrawIndirectBufferBinding::DrawIndirectBufferBinding(  BufferObject* bo)
-<<<<<<< HEAD
     : BufferBinding(GL_DRAW_INDIRECT_BUFFER, bo)
-=======
-    : BufferIndexBinding(GL_DRAW_INDIRECT_BUFFER, 0, bo, 0, 0)
->>>>>>> upstream/master
 {
 
 }
 
 DrawIndirectBufferBinding::DrawIndirectBufferBinding(const DrawIndirectBufferBinding& rhs,
                                            const CopyOp& copyop)
-<<<<<<< HEAD
     : BufferBinding(rhs, copyop)
-=======
-    : BufferIndexBinding(rhs, copyop)
->>>>>>> upstream/master
 {
 }
 

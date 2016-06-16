@@ -1,14 +1,14 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2014 Robert Osfield
  *  Copyright (C) 2014 Pawel Ksiezopolski
  *
- * This library is open source and may be redistributed and/or modified under
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
  *
 */
@@ -35,7 +35,6 @@ AggregateGeometryVisitor::AddObjectResult AggregateGeometryVisitor::addObject( o
     _currentLodNumber               = lodNumber;
     object->accept(*this);
     unsigned int currentVertexCount = _aggregatedGeometry->getVertexArray()->getNumElements() - currentVertexFirst;
-   // _aggregatedGeometry->setUseVertexArrayObject(true);
     _aggregatedGeometry->addPrimitiveSet( new osg::DrawArrays( osg::PrimitiveSet::TRIANGLES, currentVertexFirst, currentVertexCount ) );
     _matrixStack.clear();
     return AddObjectResult( currentVertexFirst, currentVertexCount, _aggregatedGeometry->getNumPrimitiveSets()-1 );
@@ -56,9 +55,9 @@ void AggregateGeometryVisitor::apply( osg::Transform& transform )
         matrix = _matrixStack.back();
     transform.computeLocalToWorldMatrix( matrix, this );
     _matrixStack.push_back( matrix );
-
-    traverse(transform);
-
+    
+    traverse(transform);    
+    
     _matrixStack.pop_back();
     if( pushed ) _ctOperator.popNode();
 }
@@ -66,7 +65,7 @@ void AggregateGeometryVisitor::apply( osg::Transform& transform )
 void AggregateGeometryVisitor::apply( osg::Geode& geode )
 {
     bool pushed = _ctOperator.pushNode(&geode);
-
+    
     osg::Matrix matrix;
     if(! _matrixStack.empty() )
         matrix = _matrixStack.back();
@@ -79,7 +78,7 @@ void AggregateGeometryVisitor::apply( osg::Geode& geode )
             geom->accept( _ctOperator );
         }
     }
-
+    
     traverse(geode);
     if( pushed ) _ctOperator.popNode();
 }

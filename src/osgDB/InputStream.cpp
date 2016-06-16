@@ -899,7 +899,6 @@ osg::ref_ptr<osg::Object> InputStream::readObject( osg::Object* existingObj )
 osg::ref_ptr<osg::Object> InputStream::readObjectFields( const std::string& className, unsigned int id, osg::Object* existingObj )
 {
     ObjectWrapper* wrapper = Registry::instance()->getObjectWrapperManager()->findWrapper( className );
-
     if ( !wrapper )
     {
         OSG_WARN << "InputStream::readObject(): Unsupported wrapper class "
@@ -907,10 +906,7 @@ osg::ref_ptr<osg::Object> InputStream::readObjectFields( const std::string& clas
         return NULL;
     }
     int inputVersion =  getFileVersion(wrapper->getDomain());
-<<<<<<< HEAD
-=======
 
->>>>>>> upstream/master
     osg::ref_ptr<osg::Object> obj = existingObj ? existingObj : wrapper->createInstance();
     _identifierMap[id] = obj;
     if ( obj.valid() )
@@ -919,11 +915,7 @@ osg::ref_ptr<osg::Object> InputStream::readObjectFields( const std::string& clas
         for ( ObjectWrapper::RevisionAssociateList::const_iterator itr=associates.begin(); itr!=associates.end(); ++itr )
         {
             if ( itr->_firstVersion <= inputVersion &&
-<<<<<<< HEAD
-                 inputVersion <= itr->_lastVersion)
-=======
                     inputVersion <= itr->_lastVersion)
->>>>>>> upstream/master
             {
                 ObjectWrapper* assocWrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(itr->_name);
                 if ( !assocWrapper )
@@ -938,14 +930,11 @@ osg::ref_ptr<osg::Object> InputStream::readObjectFields( const std::string& clas
 
                 _fields.pop_back();
             }
-<<<<<<< HEAD
-=======
             else
             {
                /* OSG_INFO << "InputStream::readObject():"<<className<<" Ignoring associated class due to version mismatch"
                          << itr->_name<<"["<<itr->_firstVersion <<","<<itr->_lastVersion <<"]for version "<<inputVersion<< std::endl;*/
             }
->>>>>>> upstream/master
         }
     }
     return obj;

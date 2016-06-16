@@ -107,15 +107,7 @@ ObjectWrapper::ObjectWrapper( CreateInstanceFunc* createInstanceFunc, const std:
 :   osg::Referenced(),
     _createInstanceFunc(createInstanceFunc), _name(name), _version(0),_isAssociatesRevisionsInheritanceDone(false)
 {
-<<<<<<< HEAD
-    StringList listassociates;
-    split( associates, listassociates );
-
-    for(StringList::const_iterator i=listassociates.begin();i!=listassociates.end();i++)
-        _associates.push_back(ObjectWrapperAssociate(*i));
-=======
     splitAssociates( associates, _associates );
->>>>>>> upstream/master
 }
 
 ObjectWrapper::ObjectWrapper( CreateInstanceFunc* createInstanceFunc, const std::string& domain, const std::string& name,
@@ -123,32 +115,6 @@ ObjectWrapper::ObjectWrapper( CreateInstanceFunc* createInstanceFunc, const std:
 :   osg::Referenced(),
     _createInstanceFunc(createInstanceFunc), _domain(domain), _name(name), _version(0),_isAssociatesRevisionsInheritanceDone(false)
 {
-<<<<<<< HEAD
-    StringList listassociates;
-    split( associates, listassociates );
-
-    for(StringList::const_iterator i=listassociates.begin();i!=listassociates.end();i++)
-        _associates.push_back(ObjectWrapperAssociate(*i));
-}
-
-void ObjectWrapper::associateAddedAtVersion(std::string name){
-   for ( ObjectWrapper::RevisionAssociateList:: iterator itr=_associates.begin(); itr!=_associates.end(); ++itr ){
-       if(itr->_name==name)
-       {
-           itr->_firstVersion=_version;
-           return;
-       }
-    }
-    OSG_NOTIFY(osg::WARN)<<"ObjectWrapper::associateAddedAtVersion: Associate class "<<name<<" not defined for wrapper "<<_name<<std::endl;
-}
-void ObjectWrapper::associateRemovedAtVersion(std::string name){
-   for ( ObjectWrapper::RevisionAssociateList:: iterator itr=_associates.begin(); itr!=_associates.end(); ++itr ){
-       if(itr->_name==name)
-       {
-           itr->_lastVersion = _version-1;
-           return;
-       }
-=======
     splitAssociates( associates, _associates );
 }
 
@@ -202,7 +168,6 @@ void ObjectWrapper::markAssociateAsRemoved(const std::string& name)
             itr->_lastVersion = _version-1;
             return;
         }
->>>>>>> upstream/master
     }
     OSG_NOTIFY(osg::WARN)<<"ObjectWrapper::associateRemovedAtVersion: Associate class "<<name<<" not defined for wrapper "<<_name<<std::endl;
 }
@@ -250,13 +215,13 @@ BaseSerializer* ObjectWrapper::getSerializer( const std::string& name )
             if ( (*aitr)->getName()==name )
                 return aitr->get();
         }
-
     }
     return NULL;
 }
 
 BaseSerializer* ObjectWrapper::getSerializer( const std::string& name, BaseSerializer::Type& type)
 {
+
     unsigned int i = 0;
     for (SerializerList::iterator itr=_serializers.begin();
          itr!=_serializers.end();

@@ -75,25 +75,14 @@ class OSG_EXPORT BufferIndexBinding : public BufferBinding
     // track the bindings for many different index targets.
     virtual unsigned getMember() const { return static_cast<unsigned int>(_index); }
 
-<<<<<<< HEAD
-=======
-    GLenum getTarget() const { return _target; }
-
->>>>>>> upstream/master
     /** Get the index target.
      */
     GLuint getIndex() const { return _index; }
     /** Set the index target. (and update parents StateSets)
      */
-<<<<<<< HEAD
+
     void setIndex(GLuint index);
-=======
-    void setBufferObject(BufferObject *bo) { _bufferObject = bo; }
-    /** Get the buffer object to be bound.
-     */
-    const BufferObject* getBufferObject() const { return _bufferObject.get(); }
-    BufferObject* getBufferObject(){ return _bufferObject.get(); }
->>>>>>> upstream/master
+
     /** Set the starting offset into the buffer object for data for
     the indexed target. Note: the required  alignment on the offset
     may be quite large (e.g., 256 bytes on NVidia 8600M). This
@@ -224,11 +213,8 @@ class OSG_EXPORT ShaderStorageBufferBinding : public BufferIndexBinding
     }
 };
 
-<<<<<<< HEAD
+ 
 class OSG_EXPORT DrawIndirectBufferBinding : public BufferBinding
-=======
-class OSG_EXPORT DrawIndirectBufferBinding : public BufferIndexBinding
->>>>>>> upstream/master
 {
  public:
     DrawIndirectBufferBinding();
@@ -236,18 +222,12 @@ class OSG_EXPORT DrawIndirectBufferBinding : public BufferIndexBinding
      *  @param bo associated buffer object
      */
     DrawIndirectBufferBinding( BufferObject* bo);
-<<<<<<< HEAD
+
     DrawIndirectBufferBinding(const DrawIndirectBufferBinding& rhs, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
     META_StateAttribute(osg, DrawIndirectBufferBinding, INDIRECTDRAWBUFFERBINDING);
 
     virtual void apply(State& state) const;
-=======
-    void apply(State& state) const;
-    DrawIndirectBufferBinding(const DrawIndirectBufferBinding& rhs, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
-    META_StateAttribute(osg, DrawIndirectBufferBinding, INDIRECTDRAWBUFFERBINDING);
-
->>>>>>> upstream/master
     virtual int compare(const StateAttribute& bb) const
     {
         COMPARE_StateAttribute_Types(DrawIndirectBufferBinding, bb)

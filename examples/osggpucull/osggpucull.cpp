@@ -46,7 +46,7 @@
 #endif
 
 // each instance type may have max 8 LODs ( if you change
-// this value, dont forget to change it in vertex shaders accordingly )
+// this value, don't forget to change it in vertex shaders accordingly )
 const unsigned int OSGGPUCULL_MAXIMUM_LOD_NUMBER = 8;
 // during culling each instance may be sent to max 4 indirect targets
 const unsigned int OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER = 4;
@@ -207,10 +207,7 @@ struct IndirectTarget
 
             for(unsigned int j=0;j<indirectCommands->getData().size(); ++j)
                 newPrimitiveSets.push_back( new DrawArraysIndirect( GL_TRIANGLES, j*sizeof( DrawArraysIndirectCommand ) ) );
-<<<<<<< HEAD
-=======
 
->>>>>>> upstream/master
             geometryAggregator->getAggregatedGeometry()->removePrimitiveSet(0,geometryAggregator->getAggregatedGeometry()->getNumPrimitiveSets() );
 
             for(unsigned int j=0;j<indirectCommands->getData().size(); ++j)
@@ -222,28 +219,17 @@ struct IndirectTarget
         {
             geometryAggregator->getAggregatedGeometry()->removePrimitiveSet(0,geometryAggregator->getAggregatedGeometry()->getNumPrimitiveSets() );
             geometryAggregator->getAggregatedGeometry()->addPrimitiveSet( new MultiDrawArraysIndirect( GL_TRIANGLES, 0, indirectCommands->getData().size(), 0 ) );
-<<<<<<< HEAD
+
 
 
         }
      ///attach a DrawIndirect buffer binding to the stateset
         osg::ref_ptr<osg::DrawIndirectBufferBinding> bb=new osg::DrawIndirectBufferBinding();
         bb->setBufferObject(indirectCommandImage->getBufferObject());
-       geometryAggregator->getAggregatedGeometry()->getOrCreateStateSet()->setAttribute(bb );
-   geometryAggregator->getAggregatedGeometry()->setUseDisplayList(false);
-         geometryAggregator->getAggregatedGeometry()->setUseVertexBufferObjects(true);
-        //  geometryAggregator->getAggregatedGeometry()->setUseVertexArrayObject(true);
-=======
-        }
-
-        ///attach a DrawIndirect buffer binding to the stateset
-        osg::ref_ptr<osg::DrawIndirectBufferBinding> bb=new osg::DrawIndirectBufferBinding();
-        bb->setBufferObject(indirectCommandImage->getBufferObject());
         geometryAggregator->getAggregatedGeometry()->getOrCreateStateSet()->setAttribute(bb );
         geometryAggregator->getAggregatedGeometry()->setUseDisplayList(false);
         geometryAggregator->getAggregatedGeometry()->setUseVertexBufferObjects(true);
->>>>>>> upstream/master
-
+        //  geometryAggregator->getAggregatedGeometry()->setUseVertexArrayObject(true);
 
         osg::Image* instanceTargetImage = new osg::Image;
         instanceTargetImage->allocateImage( maxTargetQuantity*rowsPerInstance, 1, 1, pixelFormat, type );
@@ -654,14 +640,11 @@ osg::Geometry* buildGPUCullGeometry( const std::vector<StaticInstance>& instance
 
     geom->setInitialBound( bbox );
 
-<<<<<<< HEAD
-  geom->setUseDisplayList(false);
-        geom->setUseVertexBufferObjects(true);
-        geom->setUseVertexArrayObject(true);
-=======
+
     geom->setUseDisplayList(false);
     geom->setUseVertexBufferObjects(true);
->>>>>>> upstream/master
+    //geom->setUseVertexArrayObject(true);
+
 
     return geom.release();
 }
@@ -691,10 +674,7 @@ osg::Node* createInstanceGraph(InstanceCell<T>* cell, const osg::BoundingBox& ob
         geode = new osg::Geode;
         geometry->setUseDisplayList(false);
         geometry->setUseVertexBufferObjects(true);
-<<<<<<< HEAD
-        geometry->setUseVertexArrayObject(true);
-=======
->>>>>>> upstream/master
+        //geometry->setUseVertexArrayObject(true);
 
         geode->addDrawable( geometry );
     }
@@ -726,7 +706,7 @@ osg::Node* createInstanceTree(const std::vector<T>& instances, const osg::Boundi
 }
 
 // Texture buffers holding information about the number of instances to render ( named "indirect command
-// texture buffers", or simply - indirect commands ) must reset instance number to 0 in the beggining of each frame.
+// texture buffers", or simply - indirect commands ) must reset instance number to 0 in the begining of each frame.
 // It is done by simple texture reload from osg::Image.
 // Moreover - texture buffers that use texture images ( i mean "images" as defined in ARB_shader_image_load_store extension )
 // should call glBindImageTexture() before every shader that uses imageLoad(), imageStore() and imageAtomic*() GLSL functions.
@@ -1150,8 +1130,8 @@ void createStaticRendering( osg::Group* root, GPUCullData& gpuData, const osg::V
     for(it=gpuData.targets.begin(), eit=gpuData.targets.end(); it!=eit; ++it)
     {
         osg::ref_ptr<osg::Geode> drawGeode = new osg::Geode;
-         it->second.geometryAggregator->getAggregatedGeometry() ->setUseVertexArrayObject(true);
-         it->second.geometryAggregator->getAggregatedGeometry()->setDrawCallback( new InvokeMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_COMMAND_BARRIER_BIT) );
+        it->second.geometryAggregator->getAggregatedGeometry()->setUseVertexArrayObject(true);
+        it->second.geometryAggregator->getAggregatedGeometry()->setDrawCallback( new InvokeMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_COMMAND_BARRIER_BIT) );
         drawGeode->addDrawable( it->second.geometryAggregator->getAggregatedGeometry() );
         drawGeode->setCullingActive(false);
 
@@ -1285,7 +1265,7 @@ struct AnimateObjectsCallback : public osg::DrawableUpdateCallback
     }
     void setRotationUsingRotSpeed( unsigned int index, unsigned int boneIndex, const osg::Matrix& zeroMatrix, double currentTime, double rotSpeed )
     {
-        // setRotationUsingRotSpeed() is a very unoptimally writen ( because it uses osg::Matrix::inverse() ),
+        // setRotationUsingRotSpeed() is a very unoptimally written ( because it uses osg::Matrix::inverse() ),
         // and that is done on purpose : in real life scenario functions making updates may take long time
         // to calculate new object positions due to sophisticated physics models, geometry intersections etc.
         osg::Matrix mRot = osg::Matrix::rotate( fmod( 2.0 * osg::PI * rotSpeed * currentTime,2.0*osg::PI) , osg::Vec3(0.0,0.0,1.0) );

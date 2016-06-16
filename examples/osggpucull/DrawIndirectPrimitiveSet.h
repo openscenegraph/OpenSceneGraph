@@ -34,7 +34,7 @@ public:
   virtual const char* libraryName() const { return "osg"; }
   virtual const char* className() const { return "DrawArraysIndirect"; }
 
-  virtual void draw(osg::State& state, bool useVertexBufferObjects) const;
+  virtual void draw(osg::State& state, bool useVertexBufferObjects,bool) const;
 protected:
   unsigned int _indirect;
 };
@@ -52,7 +52,7 @@ public:
   virtual const char* libraryName() const { return "osg"; }
   virtual const char* className() const { return "MultiDrawArraysIndirect"; }
 
-  virtual void draw(osg::State& state, bool useVertexBufferObjects) const;
+  virtual void draw(osg::State& state, bool useVertexBufferObjects,bool) const;
 protected:
   unsigned int _indirect;
   GLsizei _drawcount;

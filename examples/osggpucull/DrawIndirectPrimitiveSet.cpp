@@ -19,7 +19,7 @@
 #include <osg/GLExtensions>
 #include <osg/Drawable>
 
-void DrawArraysIndirect::draw(osg::State& state, bool useVertexBufferObjects) const
+void DrawArraysIndirect::draw(osg::State& state, bool useVertexBufferObjects,bool) const
 {
 // if you want to see how many primitives were rendered - uncomment code below, but
 // be warned : it is a serious performance killer ( because of GPU->CPU roundtrip )
@@ -34,7 +34,7 @@ void DrawArraysIndirect::draw(osg::State& state, bool useVertexBufferObjects) co
 
 }
 
-void MultiDrawArraysIndirect::draw(osg::State& state, bool useVertexBufferObjects) const
+void MultiDrawArraysIndirect::draw(osg::State& state, bool useVertexBufferObjects,bool) const
 {
    // DrawIndirectGLExtensions *ext = DrawIndirectGLExtensions::getExtensions( state.getContextID(),true );
     state.get<osg::GLExtensions>()->glMultiDrawArraysIndirect( _mode, reinterpret_cast<const void*>(_indirect), _drawcount, _stride );

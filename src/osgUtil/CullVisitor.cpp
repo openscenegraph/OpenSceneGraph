@@ -58,6 +58,7 @@ CullVisitor::CullVisitor():
 }
 
 CullVisitor::CullVisitor(const CullVisitor& rhs):
+    osg::Object(rhs),
     NodeVisitor(rhs),
     CullStack(rhs),
     _currentStateGraph(NULL),

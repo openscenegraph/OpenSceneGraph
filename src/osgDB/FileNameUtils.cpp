@@ -19,7 +19,9 @@
 #include <osgDB/FileUtils>
 
 #ifdef WIN32
+#if !defined(__MINGW32__)
     #define _WIN32_WINNT 0x0500
+#endif
     #include <windows.h>
 #endif
 
@@ -28,6 +30,10 @@
 #elif defined(__GNUC__) || !defined(WIN32) || defined(__MWERKS__)
     #include <cctype>
     using std::tolower;
+#endif
+
+#if defined(__GNU__) && !defined(PATH_MAX)
+#define PATH_MAX 4096
 #endif
 
 using namespace std;
@@ -436,6 +442,7 @@ bool osgDB::isAbsolutePath(const std::string& path) {
     if (path[0] == '/') return true;
     // Now test for Windows root
     if (path.length()<2) return false;
+    if (path[0] == '\\' && path[1] == '\\') return true;
     return path[1] == ':';        // We should check that path[0] is a letter, but as ':' is invalid in paths in other cases, that's not a problem.
 }
 

@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class ColorMask : public osg::ColorMask, public ReadWrite {
+class ColorMask : public osg::ColorMask {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

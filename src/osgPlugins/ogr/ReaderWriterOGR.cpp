@@ -71,7 +71,8 @@ struct TriangulizeFunctor
     osg::Vec3Array* _vertexes;
 
     // do nothing
-    void operator ()(const osg::Vec3& v1, const osg::Vec3& v2, const osg::Vec3& v3, bool treatVertexDataAsTemporary) {
+    void operator ()(const osg::Vec3& v1, const osg::Vec3& v2, const osg::Vec3& v3, bool /*treatVertexDataAsTemporary*/)
+    {
         _vertexes->push_back(v1);
         _vertexes->push_back(v2);
         _vertexes->push_back(v3);
@@ -145,9 +146,9 @@ public:
             GDALAllRegister();
 
         // Try to open data source
-        GDALDataset* file  = (GDALDataset*) GDALOpenEx( fileName.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL );        
+        GDALDataset* file  = (GDALDataset*) GDALOpenEx( fileName.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL );
 #endif
-        
+
         if (!file)
             return 0;
 
@@ -165,7 +166,7 @@ public:
 
         osg::Group* group = new osg::Group;
 
-#if GDAL_VERSION_MAJOR<2        
+#if GDAL_VERSION_MAJOR<2
         for (int i = 0; i < file->GetLayerCount(); i++)
         {
             osg::Group* node = readLayer(file->GetLayer(i), file->GetName(), useRandomColorByFeature, addGroupPerFeature);
@@ -176,18 +177,18 @@ public:
 #else
         for (int i = 0; i < GDALDatasetGetLayerCount(file); i++)
         {
-            OGRLayer* layer = (OGRLayer *)GDALDatasetGetLayer(file, i); 
+            OGRLayer* layer = (OGRLayer *)GDALDatasetGetLayer(file, i);
             osg::Group* node = readLayer(layer, layer->GetName(), useRandomColorByFeature, addGroupPerFeature);
             if (node)
                 group->addChild( node );
         }
         GDALClose( file );
-#endif        
-        
+#endif
+
         return group;
     }
 
-    osg::Group* readLayer(OGRLayer* ogrLayer, const std::string& name, bool useRandomColorByFeature, bool addGroupPerFeature) const
+    osg::Group* readLayer(OGRLayer* ogrLayer, const std::string& /*name*/, bool useRandomColorByFeature, bool addGroupPerFeature) const
     {
         if (!ogrLayer)
             return 0;

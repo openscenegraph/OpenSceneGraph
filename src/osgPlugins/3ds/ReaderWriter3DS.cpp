@@ -693,7 +693,7 @@ static size_t fileo_write_func(void *self, const void *buffer, size_t size)
     return f->fail() ? 0 : size;
 }
 
-static void fileio_log_func(void *self, Lib3dsLogLevel level, int indent, const char *msg)
+static void fileio_log_func(void* /*self*/, Lib3dsLogLevel level, int /*indent*/, const char *msg)
 {
     osg::NotifySeverity l = osg::INFO;
     // Intentionally NOT mapping 3DS levels with OSG levels
@@ -736,8 +736,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::doReadNode(std::istream& fin,  
     if (lib3ds_file_read(file3ds, &io) != 0)
     {
         result = constructFrom3dsFile(file3ds,fileNamelib3ds,options);
-        lib3ds_file_free(file3ds);
     }
+    lib3ds_file_free(file3ds);
 
     return(result);
 }

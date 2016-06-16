@@ -226,39 +226,19 @@ osg::ref_ptr<Node> osgDB::readRefNodeFiles(osg::ArgumentParser& arguments,const 
             // start the stream playing.
             imageStream->play();
 
-            osg::ref_ptr<osg::Geometry> pictureQuad = 0;
+            osg::ref_ptr<osg::Geometry> pictureQuad = osg::createTexturedQuadGeometry(osg::Vec3(0.0f,0.0f,0.0f),
+                                                                                      osg::Vec3(image->s(),0.0f,0.0f),
+                                                                                      osg::Vec3(0.0f,0.0f,image->t()),
+                                                                                      0.0f, flip ? 1.0f : 0.0f , 1.0f, flip ? 0.0f : 1.0f);
 
-            bool useTextureRectangle = true;
-            if (useTextureRectangle)
-            {
-                pictureQuad = osg::createTexturedQuadGeometry(osg::Vec3(0.0f,0.0f,0.0f),
-                                                   osg::Vec3(image->s(),0.0f,0.0f),
-                                                   osg::Vec3(0.0f,0.0f,image->t()),
-                                                   0.0f, flip ? image->t() : 0.0, image->s(), flip ? 0.0 : image->t());
+            pictureQuad->getOrCreateStateSet()->setTextureAttributeAndModes(0,
+                        new osg::Texture2D(image.get()),
+                        osg::StateAttribute::ON);
 
-                pictureQuad->getOrCreateStateSet()->setTextureAttributeAndModes(0,
-                            new osg::TextureRectangle(image.get()),
-                            osg::StateAttribute::ON);
-            }
-            else
-            {
-                pictureQuad = osg::createTexturedQuadGeometry(osg::Vec3(0.0f,0.0f,0.0f),
-                                                   osg::Vec3(image->s(),0.0f,0.0f),
-                                                   osg::Vec3(0.0f,0.0f,image->t()),
-                                                   0.0f, flip ? 1.0f : 0.0f , 1.0f, flip ? 0.0f : 1.0f);
 
-                pictureQuad->getOrCreateStateSet()->setTextureAttributeAndModes(0,
-                            new osg::Texture2D(image.get()),
-                            osg::StateAttribute::ON);
-            }
-
-            if (pictureQuad.valid())
-            {
-                osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-                geode->addDrawable(pictureQuad.get());
-                nodeList.push_back(geode.get());
-
-            }
+            osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+            geode->addDrawable(pictureQuad.get());
+            nodeList.push_back(geode.get());
         }
         else if (image.valid())
         {

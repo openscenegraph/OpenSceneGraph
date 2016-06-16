@@ -26,7 +26,7 @@ public:
         GeometryArrayList srcArrays(geometry);
 
         // clone but clear content
-        osg::Geometry* newGeometry = new osg::Geometry;
+        osg::ref_ptr<osg::Geometry> newGeometry = new osg::Geometry;
         GeometryArrayList dst = srcArrays.cloneType();
 
         for (unsigned int i = 0; i < geometry.getNumPrimitiveSets(); i++) {

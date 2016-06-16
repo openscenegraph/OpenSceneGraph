@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class TexGen : public osg::TexGen, public ReadWrite {
+class TexGen : public osg::TexGen {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

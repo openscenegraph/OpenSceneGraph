@@ -42,8 +42,8 @@ typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
 class SubloadCallback : public osg::Texture2DArray::SubloadCallback
 {
   public:
-    virtual void load(const osg::Texture2DArray& texture, osg::State& state) const   { }
-    virtual void subload(const osg::Texture2DArray& texture, osg::State& state) const   { }
+    virtual void load(const osg::Texture2DArray& /*texture*/, osg::State& /*state*/) const   { }
+    virtual void subload(const osg::Texture2DArray& /*texture*/, osg::State& /*state*/) const   { }
 };
 
 

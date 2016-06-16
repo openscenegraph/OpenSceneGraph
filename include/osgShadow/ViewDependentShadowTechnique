@@ -206,7 +206,7 @@ protected:
             */
             osg::observer_ptr< ViewDependentShadowTechnique > _st;
 
-            virtual void resizeGLObjectBuffers(unsigned int maxSize) {}
+            virtual void resizeGLObjectBuffers(unsigned int /*maxSize*/) {}
 
             /** If State is non-zero, this function releases any associated OpenGL objects for
             * the specified graphics context. Otherwise, releases OpenGL objects

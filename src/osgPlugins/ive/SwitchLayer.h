@@ -7,7 +7,7 @@
 namespace ive
 {
 
-class SwitchLayer : public osgTerrain::SwitchLayer, public ReadWrite
+class SwitchLayer : public osgTerrain::SwitchLayer
 {
 public:
 	void write(DataOutputStream* out);

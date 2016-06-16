@@ -113,7 +113,10 @@ public:
 class BSP_BIQUADRATIC_PATCH
 {
 public:
-    BSP_BIQUADRATIC_PATCH():m_vertices(32),m_indices(32)
+    BSP_BIQUADRATIC_PATCH():
+        m_tessellation(0),
+        m_vertices(32),
+        m_indices(32)
     {
     }
     ~BSP_BIQUADRATIC_PATCH()
@@ -142,9 +145,15 @@ class BSP_PATCH
 {
 public:
 
-    BSP_PATCH():m_quadraticPatches(32)
+    BSP_PATCH():
+        m_textureIndex(0),
+        m_lightmapIndex(0),
+        m_width(0), m_height(0),
+        m_numQuadraticPatches(0),
+        m_quadraticPatches(32)
     {
     }
+
     ~BSP_PATCH()
     {
     }
@@ -167,7 +176,7 @@ public:
 
 osg::Geode* Q3BSPReader::convertFromBSP(
                             Q3BSPLoad& aLoadData,
-                            const osgDB::ReaderWriter::Options* options) const
+                            const osgDB::ReaderWriter::Options* /*options*/) const
 {
 
   std::vector<osg::Texture2D*> texture_array;
@@ -180,9 +189,9 @@ osg::Geode* Q3BSPReader::convertFromBSP(
 
   // Convertir los vertices
   unsigned int num_load_vertices=aLoadData.m_loadVertices.size();
-  osg::Vec3Array* vertex_array = new osg::Vec3Array(num_load_vertices);
-  osg::Vec2Array* text_decal_array = new osg::Vec2Array(num_load_vertices);
-  osg::Vec2Array* text_lmap_array = new osg::Vec2Array(num_load_vertices);
+  osg::ref_ptr<osg::Vec3Array> vertex_array = new osg::Vec3Array(num_load_vertices);
+  osg::ref_ptr<osg::Vec2Array> text_decal_array = new osg::Vec2Array(num_load_vertices);
+  osg::ref_ptr<osg::Vec2Array> text_lmap_array = new osg::Vec2Array(num_load_vertices);
 
   float scale = 0.0254;
   unsigned int i;

@@ -104,7 +104,7 @@ public:
         label->addSize(20.0f, 20.0f);
         label->setShadow(0.08f);
         label->setCanFill(true);
-   
+
         addWidget(label);
         addWidget(_tabs->embed());
         addWidget(_windows->embed());
@@ -117,7 +117,8 @@ void bound(osg::Node* node) {
     osgWidget::warn() << "center: " << bs.center() << " radius: " << bs.radius() << std::endl;
 }
 
-int main(int argc, char** argv) {
+int main(int, char**)
+{
     osgViewer::Viewer viewer;
 
     osgWidget::WindowManager* wm = new osgWidget::WindowManager(

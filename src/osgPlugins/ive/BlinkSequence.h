@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class BlinkSequence : public osgSim::BlinkSequence, public ReadWrite {
+class BlinkSequence : public osgSim::BlinkSequence {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

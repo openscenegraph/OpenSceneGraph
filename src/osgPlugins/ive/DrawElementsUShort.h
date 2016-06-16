@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class DrawElementsUShort : public osg::DrawElementsUShort, public ReadWrite {
+class DrawElementsUShort : public osg::DrawElementsUShort {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

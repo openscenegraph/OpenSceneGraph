@@ -702,7 +702,7 @@ osg::Image* ReadVTFFile(std::istream& _istream)
 }
 
 
-bool WriteVTFFile(const osg::Image *img, std::ostream& fout)
+bool WriteVTFFile(const osg::Image* /*img*/, std::ostream& /*fout*/)
 {
     // Not supported
     return false;

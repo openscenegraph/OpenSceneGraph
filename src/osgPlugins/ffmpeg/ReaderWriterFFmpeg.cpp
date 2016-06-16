@@ -28,7 +28,7 @@
 
 extern "C" {
 
-static void log_to_osg(void *ptr, int level, const char *fmt, va_list vl)
+static void log_to_osg(void* /*ptr*/, int level, const char *fmt, va_list vl)
 {
     char logbuf[256];
     vsnprintf(logbuf, sizeof(logbuf), fmt, vl);

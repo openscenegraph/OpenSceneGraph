@@ -13,7 +13,7 @@ namespace bsp
 {
 
 
-class VBSPGeometry
+class VBSPGeometry : public osg::Referenced
 {
     protected:
 
@@ -37,10 +37,11 @@ class VBSPGeometry
                                         int firstVertex, int vertsPerEdge);
         void         createDispSurface(Face & face, DisplaceInfo & dispInfo);
 
-    public:
+        virtual ~VBSPGeometry();
+
+public:
 
         VBSPGeometry(VBSPData * bspData);
-        virtual ~VBSPGeometry();
 
         void                       addFace(int faceIndex);
         osg::ref_ptr<osg::Group>   createGeometry();

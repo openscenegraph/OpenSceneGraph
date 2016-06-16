@@ -1024,9 +1024,10 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
     }
     if (texture)
     {
-        float t(0), l(0);
-        float r = (texture->getTextureTarget() == GL_TEXTURE_RECTANGLE) ? image->s() : 1;
-        float b = (texture->getTextureTarget() == GL_TEXTURE_RECTANGLE) ? image->t() : 1;
+        float l = 0.0f;
+        float b = 0.0f;
+        float r = (texture->getTextureTarget() == GL_TEXTURE_RECTANGLE) ? static_cast<float>(image->s()) : 1.0f;
+        float t = (texture->getTextureTarget() == GL_TEXTURE_RECTANGLE) ? static_cast<float>(image->t()) : 1.0f;
 
         if (flipYAxis)
             std::swap(t,b);
@@ -1034,7 +1035,7 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
         pictureQuad = osg::createTexturedQuadGeometry(positionVec,
                                                widthVec,
                                                heightVec,
-                                               l, t, r, b);
+                                               l, b, r, t);
 
         stateset = pictureQuad->getOrCreateStateSet();
         stateset->setTextureAttributeAndModes(0,
@@ -1051,7 +1052,7 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
         OSG_INFO<<"Reading video "<<imageStream->getFileName()<<std::endl;
 #if USE_CLIENT_STORAGE_HINT
         // make sure that OSX uses the client storage extension to accelerate peformance where possible.
-        texture->setClientStorageHint(true);
+        if (texture) texture->setClientStorageHint(true);
 #endif
     }
 
@@ -2564,7 +2565,7 @@ struct VolumeSettingsCallback : public osgGA::GUIEventHandler
     int _saveKey;
     int _editKey;
 
-    bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object* object, osg::NodeVisitor* nv)
+    bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& /*aa*/, osg::Object* object, osg::NodeVisitor* /*nv*/)
     {
         if (ea.getHandled()) return false;
 

@@ -20,7 +20,7 @@
 namespace ive
 {
 
-class VolumeLayer : public osgVolume::Layer, public ReadWrite
+class VolumeLayer : public osgVolume::Layer
 {
     public:
     void write(DataOutputStream* out);

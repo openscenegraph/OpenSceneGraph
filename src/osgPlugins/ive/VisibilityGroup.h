@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class VisibilityGroup : public osgSim::VisibilityGroup, public ReadWrite {
+class VisibilityGroup : public osgSim::VisibilityGroup {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

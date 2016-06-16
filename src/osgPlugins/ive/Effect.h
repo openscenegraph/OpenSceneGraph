@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Effect : public osgFX::Effect, public ReadWrite {
+class Effect : public osgFX::Effect {
 public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

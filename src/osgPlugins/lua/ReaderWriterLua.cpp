@@ -160,7 +160,7 @@ class ReaderWriterLua : public osgDB::ReaderWriter
             return readNode(istream, local_opt.get());
         }
 
-        virtual ReadResult readScript(std::istream& fin,const osgDB::ReaderWriter::Options* options =NULL) const
+        virtual ReadResult readScript(std::istream& fin,const osgDB::ReaderWriter::Options* /*options*/ =NULL) const
         {
             osg::ref_ptr<osg::Script> script = new osg::Script;
             script->setLanguage("lua");

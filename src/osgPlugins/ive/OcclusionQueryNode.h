@@ -6,7 +6,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class OcclusionQueryNode : public osg::OcclusionQueryNode, public ReadWrite {
+class OcclusionQueryNode : public osg::OcclusionQueryNode {
 public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

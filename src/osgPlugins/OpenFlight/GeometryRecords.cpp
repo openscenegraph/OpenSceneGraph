@@ -474,6 +474,24 @@ protected:
         {
           _geometry->setUserValue("<UA:FID>", feature);
         }
+ 
+        // terrain 
+        if (document.getPreserveNonOsgAttrsAsUserData() && 0 != isTerrain())
+        {
+          _geometry->setUserValue("<UA:Terrain>", true);
+        }
+
+        // roofline 
+        if (document.getPreserveNonOsgAttrsAsUserData() && 0 != isRoofline())
+        {
+          _geometry->setUserValue("<UA:Roofline>", true);
+        }
+    
+        // footprint 
+        if (document.getPreserveNonOsgAttrsAsUserData() && 0 != isFootprint())
+        {
+          _geometry->setUserValue("<UA:Footprint>", true);
+        }
 
         // Shaders
         if (shaderIndex >= 0)
@@ -957,7 +975,7 @@ protected:
         int materialIndex = in.readInt16(-1);
         int16 surface = in.readInt16();
         int16 feature = in.readInt16();
-        /*int32 IRMaterial =*/ in.readInt32(-1);
+        int32 IRMaterial = in.readInt32(-1);
         _transparency = in.readUInt16(0);
         // version > 13
         /*uint8 influenceLOD =*/ in.readUInt8();
@@ -1048,6 +1066,12 @@ protected:
           _geode->setUserValue("<UA:IRC>", IRColor);
         }
 
+        // IR Material ID (IRM)
+        if (document.getPreserveNonOsgAttrsAsUserData() && 0 != IRMaterial)
+        {
+          _geode->setUserValue("<UA:IRM>", IRMaterial);
+        }
+
         // surface (SMC)
         if (document.getPreserveNonOsgAttrsAsUserData() && 0 != surface)
         {
@@ -1058,6 +1082,24 @@ protected:
         if (document.getPreserveNonOsgAttrsAsUserData() && 0 != feature)
         {
           _geode->setUserValue("<UA:FID>", feature);
+        }
+
+        // terrain
+        if (document.getPreserveNonOsgAttrsAsUserData() && 0 != isTerrain())
+        {
+          _geode->setUserValue("<UA:Terrain>", true);
+        }
+
+        // roofline 
+        if (document.getPreserveNonOsgAttrsAsUserData() && 0 != isRoofline())
+        {
+          _geode->setUserValue("<UA:Roofline>", true);
+        }
+
+        // footprint 
+        if (document.getPreserveNonOsgAttrsAsUserData() && 0 != isFootprint())
+        {
+          _geode->setUserValue("<UA:Footprint>", true);
         }
 
         // Shaders

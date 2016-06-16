@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-  class ClipPlane : public osg::ClipPlane, public ReadWrite {
+  class ClipPlane : public osg::ClipPlane {
   public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

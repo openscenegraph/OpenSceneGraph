@@ -11,7 +11,7 @@ bool colorWidgetEnter(osgWidget::Event& event) {
     event.getWidget()->addColor(0.5f, 0.2f, 0.3f, 0.0f);
 
     // osgWidget::warn() << "WIDGET mouseEnter " << event.getWidget()->getName() << std::endl;
-    
+
     return false;
 }
 
@@ -19,7 +19,7 @@ bool colorWidgetLeave(osgWidget::Event& event) {
     event.getWidget()->addColor(-0.5f, -0.2f, -0.3f, 0.0f);
 
     // osgWidget::warn() << "WIDGET mouseLeave" << std::endl;
-    
+
     return true;
 }
 
@@ -52,11 +52,12 @@ osgWidget::Widget* createWidget(
     widget->addCallback(new osgWidget::Callback(&widgetMouseOver, osgWidget::EVENT_MOUSE_OVER));
     widget->setColor(col, col, col, 0.5f);
     widget->setLayer(layer);
-    
+
     return widget;
 }
 
-int main(int argc, char** argv) {
+int main(int, char**)
+{
     osgViewer::Viewer viewer;
 
     osgWidget::WindowManager* wm = new osgWidget::WindowManager(
@@ -66,7 +67,7 @@ int main(int argc, char** argv) {
         MASK_2D,
         osgWidget::WindowManager::WM_PICK_DEBUG
     );
-    
+
     osgWidget::Canvas* canvas = new osgWidget::Canvas("canvas");
 
     canvas->addCallback(new osgWidget::Callback(&windowMouseOver, osgWidget::EVENT_MOUSE_OVER));
@@ -79,7 +80,7 @@ int main(int argc, char** argv) {
         0.0f,
         0.0f
     );
-    
+
     canvas->addWidget(
         createWidget("w2", 0.4f, osgWidget::Widget::LAYER_MIDDLE),
         200.0f,
@@ -103,7 +104,7 @@ int main(int argc, char** argv) {
     osgWidget::warn() << canvas->getWidth() << std::endl;
 
     canvas->addWidget(relWidget, 0.4f, 0.4f);
-    
+
     relWidget->addOrigin(0.1f, 0.1f);
     relWidget->addSize(0.2f, 0.2f);
 
@@ -126,7 +127,7 @@ int main(int argc, char** argv) {
         MASK_2D,
         osgWidget::WindowManager::WM_PICK_DEBUG
     );
-    
+
     osgWidget::Canvas* canvas = new osgWidget::Canvas("canvas");
 
     canvas->addWidget(new osgWidget::Widget("spacer", 2.0f, 300.0f), 1280.0f, 0.0f);

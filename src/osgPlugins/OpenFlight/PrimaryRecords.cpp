@@ -767,7 +767,7 @@ public:
 protected:
 
     virtual ~InstanceDefinition() {}
-    virtual void readRecord(RecordInputStream& in, Document& document)
+    virtual void readRecord(RecordInputStream& in, Document& /*document*/)
     {
         in.forward(2);
         _number = (int)in.readUInt16();

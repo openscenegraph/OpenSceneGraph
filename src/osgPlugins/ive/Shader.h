@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Shader : public osg::Shader, public ReadWrite {
+class Shader : public osg::Shader {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

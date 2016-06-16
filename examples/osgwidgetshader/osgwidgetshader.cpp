@@ -21,7 +21,8 @@ osgWidget::Widget* createWidget(
     return widget;
 }
 
-int main(int argc, char** argv) {
+int main(int, char**)
+{
     osgViewer::Viewer viewer;
 
     osgWidget::WindowManager* wm = new osgWidget::WindowManager(
@@ -30,7 +31,7 @@ int main(int argc, char** argv) {
         1024.0f,
         MASK_2D
     );
-    
+
     osgWidget::Canvas* canvas = new osgWidget::Canvas("canvas");
 
     canvas->attachMoveCallback();
@@ -41,7 +42,7 @@ int main(int argc, char** argv) {
         0.0f,
         0.0f
     );
-    
+
     canvas->addWidget(
         createWidget("w2", 0.4f, osgWidget::Widget::LAYER_MIDDLE),
         200.0f,
@@ -63,7 +64,7 @@ int main(int argc, char** argv) {
         osg::Shader::VERTEX,
         osgDB::findDataFile("osgWidget/osgwidgetshader-vert.glsl")
     ));
-    
+
     program->addShader(osg::Shader::readShaderFile(
         osg::Shader::FRAGMENT,
         osgDB::findDataFile("osgWidget/osgwidgetshader-frag.glsl")

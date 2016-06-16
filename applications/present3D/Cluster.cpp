@@ -33,13 +33,15 @@
 #if defined(__linux)
     #include <unistd.h>
     #include <linux/sockios.h>
-#elif defined(__FreeBSD__) || defined(__DragonFly__)
+#elif defined(__FreeBSD__) || defined(__DragonFly__) || defined(__FreeBSD_kernel__)
     #include <unistd.h>
     #include <sys/sockio.h>
 #elif defined(__sgi)
     #include <unistd.h>
     #include <net/soioctl.h>
 #elif defined(__CYGWIN__)
+    #include <unistd.h>
+#elif defined (__GNU__)
     #include <unistd.h>
 #elif defined(__sun)
     #include <unistd.h>
@@ -338,7 +340,7 @@ void Receiver::sync( void )
     }
 
 #if defined(__linux) || defined(__FreeBSD__) || defined( __APPLE__ ) || \
-    defined(__DragonFly__)
+    defined(__DragonFly__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
     socklen_t
 #else
     int

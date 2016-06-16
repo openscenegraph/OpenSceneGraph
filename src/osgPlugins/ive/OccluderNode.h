@@ -6,7 +6,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class OccluderNode : public osg::OccluderNode, public ReadWrite {
+class OccluderNode : public osg::OccluderNode {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

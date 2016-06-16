@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class PagedLOD : public osg::PagedLOD, public ReadWrite {
+class PagedLOD : public osg::PagedLOD {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

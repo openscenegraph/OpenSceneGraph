@@ -1250,9 +1250,9 @@ ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFun
     if (useObjectCache)
     {
         // search for entry in the object cache.
-        osg::ref_ptr<osg::Object> object = optionsCache ? optionsCache->getRefFromObjectCache(file) : 0;
+        osg::ref_ptr<osg::Object> object = optionsCache ? optionsCache->getRefFromObjectCache(file, options) : 0;
 
-        if (!object && _objectCache.valid()) object = _objectCache->getRefFromObjectCache(file);
+        if (!object && _objectCache.valid()) object = _objectCache->getRefFromObjectCache(file, options);
 
         if (object.valid())
         {
@@ -1264,7 +1264,7 @@ ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFun
         if (rr.validObject())
         {
             // search AGAIN for entry in the object cache.
-            object = _objectCache->getRefFromObjectCache(file);
+            object = _objectCache->getRefFromObjectCache(file, options);
             if (object.valid())
             {
                 if (readFunctor.isValid(object.get())) return ReaderWriter::ReadResult(object.get(), ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
@@ -1275,8 +1275,8 @@ ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFun
             }
 
             // update cache with new entry.
-            if (optionsCache) optionsCache->addEntryToObjectCache(file, rr.getObject(), 0.0);
-            else if (_objectCache.valid()) _objectCache->addEntryToObjectCache(file, rr.getObject(), 0.0);
+            if (optionsCache) optionsCache->addEntryToObjectCache(file, rr.getObject(), 0.0, options);
+            else if (_objectCache.valid()) _objectCache->addEntryToObjectCache(file, rr.getObject(), 0.0, options);
         }
         else
         {
@@ -1597,19 +1597,19 @@ ReaderWriter::WriteResult Registry::writeScriptImplementation(const Script& imag
     return result;
 }
 
-void Registry::addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp)
+void Registry::addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp, Options *options)
 {
-    if (_objectCache.valid()) _objectCache->addEntryToObjectCache(filename, object, timestamp);
+    if (_objectCache.valid()) _objectCache->addEntryToObjectCache(filename, object, timestamp, options);
 }
 
-osg::Object* Registry::getFromObjectCache(const std::string& filename)
+osg::Object* Registry::getFromObjectCache(const std::string& filename, Options *options)
 {
-    return _objectCache.valid() ? _objectCache->getFromObjectCache(filename) : 0;
+    return _objectCache.valid() ? _objectCache->getFromObjectCache(filename, options) : 0;
 }
 
-osg::ref_ptr<osg::Object> Registry::getRefFromObjectCache(const std::string& filename)
+osg::ref_ptr<osg::Object> Registry::getRefFromObjectCache(const std::string& filename, Options *options)
 {
-    return _objectCache.valid() ? _objectCache->getRefFromObjectCache(filename) : 0;
+    return _objectCache.valid() ? _objectCache->getRefFromObjectCache(filename, options) : 0;
 }
 
 void Registry::updateTimeStampOfObjectsInCacheWithExternalReferences(const osg::FrameStamp& frameStamp)
@@ -1623,9 +1623,9 @@ void Registry::removeExpiredObjectsInCache(const osg::FrameStamp& frameStamp)
     if (_objectCache.valid()) _objectCache->removeExpiredObjectsInCache(expiryTime);
 }
 
-void Registry::removeFromObjectCache(const std::string& filename)
+void Registry::removeFromObjectCache(const std::string& filename, Options *options)
 {
-    if (_objectCache.valid()) _objectCache->removeFromObjectCache(filename);
+    if (_objectCache.valid()) _objectCache->removeFromObjectCache(filename, options);
 }
 
 void Registry::clearObjectCache()

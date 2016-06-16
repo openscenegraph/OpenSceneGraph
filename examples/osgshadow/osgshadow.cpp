@@ -72,7 +72,7 @@ public:
     }
 
     /** Deprecated, Handle events, return true if handled, false otherwise. */
-    virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& /*aa*/)
     {
         if (ea.getEventType() == osgGA::GUIEventAdapter::KEYUP)
         {
@@ -122,7 +122,7 @@ public:
     void set( bool value ) { _value = value; }
 
     /** Deprecated, Handle events, return true if handled, false otherwise. */
-    virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& /*aa*/)
     {
         if (ea.getEventType() == osgGA::GUIEventAdapter::KEYUP)
         {
@@ -149,7 +149,7 @@ public:
     bool getAnimating() const { return _animating; }
 
     /** Deprecated, Handle events, return true if handled, false otherwise. */
-    virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& /*aa*/)
     {
         if (ea.getEventType() == osgGA::GUIEventAdapter::KEYUP)
         {
@@ -622,7 +622,7 @@ namespace ModelFive
         return apcb.release();
     }
 
-    osg::Group* createModel(osg::ArgumentParser& arguments)
+    osg::Group* createModel(osg::ArgumentParser& /*arguments*/)
     {
         // Set the ground (only receives shadow)
         osg::ref_ptr<osg::MatrixTransform> groundNode = new osg::MatrixTransform;

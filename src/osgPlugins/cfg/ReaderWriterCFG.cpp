@@ -91,7 +91,7 @@ static osg::GraphicsContext::Traits* buildTrait(RenderSurface& rs)
     return traits;
  }
 
-static osgViewer::View* load(const std::string& file, const osgDB::ReaderWriter::Options* option)
+static osgViewer::View* load(const std::string& file, const osgDB::ReaderWriter::Options* /*option*/)
 {
     osg::ref_ptr<CameraConfig> config = new CameraConfig;
     //std::cout << "Parse file " << file << std::endl;

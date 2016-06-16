@@ -185,7 +185,7 @@ ReaderWriter::ReadResult ReaderWriterATTR::readObject(const std::string& file, c
 
 
 ReaderWriter::WriteResult
-ReaderWriterATTR::writeObject(const osg::Object& object, const std::string& fileName, const Options* options) const
+ReaderWriterATTR::writeObject(const osg::Object& object, const std::string& fileName, const Options* /*options*/) const
 {
     using std::ios;
 

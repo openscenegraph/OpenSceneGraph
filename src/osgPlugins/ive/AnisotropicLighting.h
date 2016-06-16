@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class AnisotropicLighting : public osgFX::AnisotropicLighting, public ReadWrite {
+class AnisotropicLighting : public osgFX::AnisotropicLighting {
 public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

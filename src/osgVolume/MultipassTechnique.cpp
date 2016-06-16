@@ -161,7 +161,7 @@ class RTTCameraCullCallback : public osg::NodeCallback
             _tileData(tileData),
             _mt(mt) {}
 
-        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+        virtual void operator()(osg::Node* /*node*/, osg::NodeVisitor* nv)
         {
             osgUtil::CullVisitor* cv = nv->asCullVisitor();
 
@@ -935,7 +935,7 @@ class RTTBackfaceCameraCullCallback : public osg::NodeCallback
             _tileData(tileData),
             _mt(mt) {}
 
-        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+        virtual void operator()(osg::Node* /*node*/, osg::NodeVisitor* nv)
         {
             osgUtil::CullVisitor* cv = nv->asCullVisitor();
 
@@ -963,10 +963,10 @@ class ShadingModelVisitor : public osgVolume::PropertyVisitor
             _shadingModel(VolumeSettings::Standard),
             _usesTransferFunction(false) {}
 
-        virtual void apply(IsoSurfaceProperty& iso) { _shadingModel = VolumeSettings::Isosurface; }
-        virtual void apply(MaximumIntensityProjectionProperty& mip) { _shadingModel = VolumeSettings::MaximumIntensityProjection; }
-        virtual void apply(LightingProperty& lp) { _shadingModel = VolumeSettings::Light; }
-        virtual void apply(TransferFunctionProperty& tf) { _usesTransferFunction = true; }
+        virtual void apply(IsoSurfaceProperty& /*iso*/) { _shadingModel = VolumeSettings::Isosurface; }
+        virtual void apply(MaximumIntensityProjectionProperty& /*mip*/) { _shadingModel = VolumeSettings::MaximumIntensityProjection; }
+        virtual void apply(LightingProperty& /*lp*/) { _shadingModel = VolumeSettings::Light; }
+        virtual void apply(TransferFunctionProperty& /*tf*/) { _usesTransferFunction = true; }
         virtual void apply(VolumeSettings& vs) { _shadingModel = vs.getShadingModel(); }
 
         VolumeSettings::ShadingModel    _shadingModel;

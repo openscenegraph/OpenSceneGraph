@@ -1097,22 +1097,6 @@ public:
 
 };
 
+REGISTER_WINDOWINGSYSTEMINTERFACE(Carbon, CarbonWindowingSystemInterface)
 
 }
-
-#if 1
-REGISTER_WINDOWINGSYSTEMINTERFACE(Carbon, osgViewer::CarbonWindowingSystemInterface)
-#else
-
-#ifdef USE_DARWIN_CARBON_IMPLEMENTATION
-RegisterWindowingSystemInterfaceProxy<CarbonWindowingSystemInterface> createWindowingSystemInterfaceProxy;
-#endif
-
-// declare C entry point for static compilation.
-extern "C" void graphicswindow_Carbon(void)
-{
-    osg::GraphicsContext::setWindowingSystemInterface(new osgViewer::CarbonWindowingSystemInterface());
-}
-#endif
-
-#endif

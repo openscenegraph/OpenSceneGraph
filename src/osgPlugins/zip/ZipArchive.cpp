@@ -111,7 +111,7 @@ bool ZipArchive::getFileNames(osgDB::Archive::FileNameList& fileNameList) const
     }
 }
 
-bool ZipArchive::open(const std::string& file, ArchiveStatus status, const osgDB::ReaderWriter::Options* options)
+bool ZipArchive::open(const std::string& file, ArchiveStatus /*status*/, const osgDB::ReaderWriter::Options* options)
 {
     if ( !_zipLoaded )
     {
@@ -371,7 +371,7 @@ osgDB::ReaderWriter::WriteResult ZipArchive::writeShader(const osg::Shader& /*sh
 }
 
 
-osgDB::ReaderWriter* ZipArchive::ReadFromZipEntry(const ZIPENTRY* ze, const osgDB::ReaderWriter::Options* options, std::stringstream& buffer) const
+osgDB::ReaderWriter* ZipArchive::ReadFromZipEntry(const ZIPENTRY* ze, const osgDB::ReaderWriter::Options* /*options*/, std::stringstream& buffer) const
 {
     if (ze != 0)
     {
@@ -460,6 +460,11 @@ void ZipArchive::IndexZipFiles(HZIP hz)
             if(!name.empty())
             {
                 _zipIndex.insert(ZipEntryMapping(name, ze));
+            }
+            else
+            {
+                // ze isn't being used to delete it
+                delete ze;
             }
         }
     }

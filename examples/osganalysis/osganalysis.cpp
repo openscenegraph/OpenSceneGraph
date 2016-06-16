@@ -552,7 +552,7 @@ public:
         {
         }
 
-    virtual void operator () (osg::Object* object)
+    virtual void operator () (osg::Object* /*object*/)
     {
         osg::notify(osg::NOTICE)<<"LoadAndCompileOperation "<<_filename<<std::endl;
 
@@ -596,7 +596,7 @@ public:
         osg::notify(osg::NOTICE)<<"done LoadAndCompileOperation "<<_filename<<std::endl;
     }
 
-    virtual bool compileCompleted(osgUtil::IncrementalCompileOperation::CompileSet* compileSet)
+    virtual bool compileCompleted(osgUtil::IncrementalCompileOperation::CompileSet* /*compileSet*/)
     {
         OSG_NOTICE<<"compileCompleted"<<std::endl;
         _modelReadyToMerge = true;
@@ -614,7 +614,7 @@ public:
 class TexturePoolHandler : public osgGA::GUIEventHandler
 {
 public:
-    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
+    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& /*aa*/)
     {
         if (ea.getEventType() == osgGA::GUIEventAdapter::KEYUP)
         {

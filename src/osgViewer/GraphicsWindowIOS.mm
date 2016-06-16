@@ -1224,17 +1224,6 @@ public:
     }
 };
 
+REGISTER_WINDOWINGSYSTEMINTERFACE(IOS, ConcreteIOSWindowingSystemInterface)
+
 }//end namspace
-
-#if 1
-REGISTER_WINDOWINGSYSTEMINTERFACE(IOS, osgViewer::ConcreteIOSWindowingSystemInterface)
-#else
-RegisterWindowingSystemInterfaceProxy<osgViewer::ConcreteIOSWindowingSystemInterface> createWindowingSystemInterfaceProxy;
-
-
-// declare C entry point for static compilation.
-extern "C" void graphicswindow_IOS(void)
-{
-    osg::GraphicsContext::setWindowingSystemInterface(new osgViewer::ConcreteIOSWindowingSystemInterface());
-}
-#endif

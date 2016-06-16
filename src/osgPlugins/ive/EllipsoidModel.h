@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class EllipsoidModel : public osg::EllipsoidModel, public ReadWrite {
+class EllipsoidModel : public osg::EllipsoidModel {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

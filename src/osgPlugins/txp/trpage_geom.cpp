@@ -401,11 +401,17 @@ bool trpgGeometry::GetNumNormal(int32 &n) const
 {
     if (!isValid()) return false;
     if (normDataFloat.size() != 0)
-        n = normDataFloat.size();
+    {
+        n = normDataFloat.size() / 3;
+        return true;
+    }
     if (normDataDouble.size() != 0)
-        n = normDataDouble.size();
-    n = n / 3;
-    return true;
+    {
+        n = normDataDouble.size() / 3;
+        return true;
+    }
+    n = 0;
+    return false;
 }
 bool trpgGeometry::GetNormals(float32 *v) const
 {

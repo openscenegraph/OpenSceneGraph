@@ -436,7 +436,7 @@ void VBSPReader::processDispVerts(std::istream & str, int offset, int length)
 }
 
 
-void VBSPReader::processGameData(std::istream & str, int offset, int length)
+void VBSPReader::processGameData(std::istream & str, int offset, int /*length*/)
 {
     GameHeader    gameHeader;
     GameLump *    gameLumps;
@@ -467,7 +467,7 @@ void VBSPReader::processGameData(std::istream & str, int offset, int length)
 }
 
 
-void VBSPReader::processStaticProps(std::istream & str, int offset, int length,
+void VBSPReader::processStaticProps(std::istream & str, int offset, int /*length*/,
                                     int lumpVersion)
 {
     StaticPropModelNames    sprpModelNames;

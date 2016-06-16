@@ -144,7 +144,7 @@ private:
 
 inline bool operator==(const ReceivedBundleElementIterator& lhs,
         const ReceivedBundleElementIterator& rhs )
-{	
+{
 	return lhs.IsEqualTo( rhs );
 }
 
@@ -162,8 +162,8 @@ public:
 		, argument_( argument ) {}
 
     friend class ReceivedMessageArgumentIterator;
-    
-	const char TypeTag() const { return *typeTag_; }
+
+    char TypeTag() const { return *typeTag_; }
 
     // the unchecked methods below don't check whether the argument actually
     // is of the specified type. they should only be used if you've already
@@ -220,7 +220,7 @@ public:
     bool IsBlob() const { return *typeTag_ == BLOB_TYPE_TAG; }
     void AsBlob( const void*& data, unsigned long& size ) const;
     void AsBlobUnchecked( const void*& data, unsigned long& size ) const;
-    
+
 private:
 	const char *typeTag_;
 	const char *argument_;
@@ -265,13 +265,13 @@ private:
 
 inline bool operator==(const ReceivedMessageArgumentIterator& lhs,
         const ReceivedMessageArgumentIterator& rhs )
-{	
+{
 	return lhs.IsEqualTo( rhs );
 }
 
 inline bool operator!=(const ReceivedMessageArgumentIterator& lhs,
         const ReceivedMessageArgumentIterator& rhs )
-{	
+{
 	return !( lhs == rhs );
 }
 
@@ -284,7 +284,7 @@ class ReceivedMessageArgumentStream{
         , end_( end ) {}
 
     ReceivedMessageArgumentIterator p_, end_;
-    
+
 public:
 
     // end of stream
@@ -309,7 +309,7 @@ public:
 
         rhs = (*p_++).AsInt32();
         return *this;
-    }     
+    }
 
     ReceivedMessageArgumentStream& operator>>( float& rhs )
     {
@@ -355,7 +355,7 @@ public:
         rhs = (*p_++).AsInt64();
         return *this;
     }
-    
+
     ReceivedMessageArgumentStream& operator>>( TimeTag& rhs )
     {
         if( Eos() )
@@ -382,7 +382,7 @@ public:
         (*p_++).AsBlob( rhs.data, rhs.size );
         return *this;
     }
-    
+
     ReceivedMessageArgumentStream& operator>>( const char*& rhs )
     {
         if( Eos() )
@@ -391,7 +391,7 @@ public:
         rhs = (*p_++).AsString();
         return *this;
     }
-    
+
     ReceivedMessageArgumentStream& operator>>( Symbol& rhs )
     {
         if( Eos() )
@@ -401,7 +401,7 @@ public:
         return *this;
     }
 
-    ReceivedMessageArgumentStream& operator>>( MessageTerminator& rhs )
+    ReceivedMessageArgumentStream& operator>>( MessageTerminator& /*rhs*/ )
     {
         if( !Eos() )
             throw ExcessArgumentException();
@@ -429,12 +429,12 @@ public:
 
 
     typedef ReceivedMessageArgumentIterator const_iterator;
-    
+
 	ReceivedMessageArgumentIterator ArgumentsBegin() const
     {
         return ReceivedMessageArgumentIterator( typeTagsBegin_, arguments_ );
     }
-     
+
 	ReceivedMessageArgumentIterator ArgumentsEnd() const
     {
         return ReceivedMessageArgumentIterator( typeTagsEnd_, 0 );
@@ -464,12 +464,12 @@ public:
     unsigned long ElementCount() const { return elementCount_; }
 
     typedef ReceivedBundleElementIterator const_iterator;
-    
+
 	ReceivedBundleElementIterator ElementsBegin() const
     {
         return ReceivedBundleElementIterator( timeTag_ + 8 );
     }
-     
+
 	ReceivedBundleElementIterator ElementsEnd() const
     {
         return ReceivedBundleElementIterator( end_ );

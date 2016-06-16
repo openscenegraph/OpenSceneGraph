@@ -25,13 +25,13 @@ using namespace osg;
 using namespace osgDB;
 
 
-bool UpdateMaterial_readLocalData(Object& obj, Input& fr)
+bool UpdateMaterial_readLocalData(Object& /*obj*/, Input& /*fr*/)
 {
     bool iteratorAdvanced = false;
     return iteratorAdvanced;
 }
 
-bool UpdateMaterial_writeLocalData(const Object& obj, Output& fw)
+bool UpdateMaterial_writeLocalData(const Object& /*obj*/, Output& /*fw*/)
 {
     return true;
 }

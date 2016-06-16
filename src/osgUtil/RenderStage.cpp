@@ -653,6 +653,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                         traits->depth = 24;
                         depthAttached = true;
                         traits->stencil = 8;
+                        break;
                     }
                     case(osg::Camera::COLOR_BUFFER):
                     {

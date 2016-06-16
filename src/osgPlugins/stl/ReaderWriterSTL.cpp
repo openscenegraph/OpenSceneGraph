@@ -346,7 +346,7 @@ private:
             osg::Matrix m_mat;
             bool m_dontSaveNormals;
 
-            inline void operator () (const osg::Vec3& _v1, const osg::Vec3& _v2, const osg::Vec3& _v3, bool treatVertexDataAsTemporary)
+            inline void operator () (const osg::Vec3& _v1, const osg::Vec3& _v2, const osg::Vec3& _v3, bool /*treatVertexDataAsTemporary*/)
             {
                 osg::Vec3 v1 = _v1 * m_mat;
                 osg::Vec3 v2 = _v2 * m_mat;
@@ -475,11 +475,13 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
         return ReadResult::ERROR_IN_READING_FILE;
     }
 
+    std::string header_text(header.text, sizeof(header.text));
+
     if (stb.st_size == expectLen)
     {
         isBinary = true;
     }
-    else if (strstr(header.text, "solid") != 0)
+    else if (header_text.find("solid") != std::string::npos)
     {
         isBinary = false;
     }

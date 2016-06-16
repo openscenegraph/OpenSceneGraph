@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class DOFTransform : public osgSim::DOFTransform, public ReadWrite {
+class DOFTransform : public osgSim::DOFTransform {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

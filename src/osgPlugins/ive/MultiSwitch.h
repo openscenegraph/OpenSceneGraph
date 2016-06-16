@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class MultiSwitch : public osgSim::MultiSwitch, public ReadWrite {
+class MultiSwitch : public osgSim::MultiSwitch {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

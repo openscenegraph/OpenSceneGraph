@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Point : public osg::Point, public ReadWrite {
+class Point : public osg::Point {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

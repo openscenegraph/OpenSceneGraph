@@ -43,7 +43,9 @@
 #endif
 #if defined (__FreeBSD__) || defined (__APPLE__) || defined (__MACH__)
     #include <sys/types.h>
+#if !defined (__GNU__)
     #include <sys/sysctl.h>
+#endif
 #endif
 
 #if defined(__ANDROID__)
@@ -669,14 +671,15 @@ int Thread::start() {
     status = pthread_attr_setinheritsched( &thread_attr,
                        PTHREAD_EXPLICIT_SCHED );
 
-    pthread_attr_setscope(&thread_attr, PTHREAD_SCOPE_SYSTEM);
-
-#endif // ] ALLOW_PRIORITY_SCHEDULING
-
     if(status != 0)
     {
         return status;
     }
+
+    pthread_attr_setscope(&thread_attr, PTHREAD_SCOPE_SYSTEM);
+
+#endif // ] ALLOW_PRIORITY_SCHEDULING
+
 
     pd->threadStartedBlock.reset();
 
@@ -996,7 +999,7 @@ int Thread::microSleep(unsigned int microsec)
 //
 int OpenThreads::GetNumberOfProcessors()
 {
-#if defined(__linux__)
+#if defined(__linux__) || defined(__GNU__)
    long ret = sysconf(_SC_NPROCESSORS_ONLN);
    if (ret == -1)
       return 0;

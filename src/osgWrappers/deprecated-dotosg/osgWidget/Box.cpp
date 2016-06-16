@@ -7,7 +7,7 @@
 #include <osgDB/FileUtils>
 #include <osgWidget/Box>
 
-bool osgWidget_Box_readData(osg::Object& /*obj*/, osgDB::Input& fr)
+bool osgWidget_Box_readData(osg::Object& /*obj*/, osgDB::Input& /*fr*/)
 {
 	/*
 	osgWidget::Box& box = static_cast<osgWidgegt::Box&>(obj);

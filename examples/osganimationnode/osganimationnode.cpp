@@ -35,6 +35,7 @@ public:
     }
     AnimtkUpdateCallback(const AnimtkUpdateCallback& val, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY):
         osg::Object(val, copyop),
+        osg::Callback(val, copyop),
         osg::NodeCallback(val, copyop),
         _sampler(val._sampler),
         _startTime(val._startTime),
@@ -98,6 +99,7 @@ public:
 
     AnimtkStateSetUpdateCallback(const AnimtkStateSetUpdateCallback& val, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY):
         osg::Object(val, copyop),
+        osg::Callback(val, copyop),
         osg::StateSet::Callback(val, copyop),
         _sampler(val._sampler),
         _startTime(val._startTime),

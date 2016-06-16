@@ -142,7 +142,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
         template<class T> void addDevice(const osg::ref_ptr<T>& eventSource) { addDevice(eventSource.get()); }
 
-        /** Remove a Device. /*/
+        /** Remove a Device. */
         void removeDevice(osgGA::Device* eventSource);
 
         template<class T> void removeDevice(const osg::ref_ptr<T>& eventSource) { removeDevice(eventSource.get()); }

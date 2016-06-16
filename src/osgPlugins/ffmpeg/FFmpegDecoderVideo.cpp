@@ -71,7 +71,7 @@ void FFmpegDecoderVideo::open(AVStream * const stream)
     findAspectRatio();
 
     // Find out whether we support Alpha channel
-    m_alpha_channel = (m_context->pix_fmt == PIX_FMT_YUVA420P);
+    m_alpha_channel = (m_context->pix_fmt == AV_PIX_FMT_YUVA420P);
 
     // Find out the framerate
     #if LIBAVCODEC_VERSION_MAJOR >= 56
@@ -95,20 +95,19 @@ void FFmpegDecoderVideo::open(AVStream * const stream)
         throw std::runtime_error("avcodec_open() failed");
 
     // Allocate video frame
-    m_frame.reset(avcodec_alloc_frame());
+    m_frame.reset(av_frame_alloc());
 
     // Allocate converted RGB frame
-    m_frame_rgba.reset(avcodec_alloc_frame());
-    m_buffer_rgba[0].resize(avpicture_get_size(PIX_FMT_RGB24, width(), height()));
+    m_frame_rgba.reset(av_frame_alloc());
+    m_buffer_rgba[0].resize(avpicture_get_size(AV_PIX_FMT_RGB24, width(), height()));
     m_buffer_rgba[1].resize(m_buffer_rgba[0].size());
 
     // Assign appropriate parts of the buffer to image planes in m_frame_rgba
-    avpicture_fill((AVPicture *) (m_frame_rgba).get(), &(m_buffer_rgba[0])[0], PIX_FMT_RGB24, width(), height());
+    avpicture_fill((AVPicture *) (m_frame_rgba).get(), &(m_buffer_rgba[0])[0], AV_PIX_FMT_RGB24, width(), height());
 
     // Override get_buffer()/release_buffer() from codec context in order to retrieve the PTS of each frame.
     m_context->opaque = this;
-    m_context->get_buffer = getBuffer;
-    m_context->release_buffer = releaseBuffer;
+    m_context->get_buffer2 = getBuffer;
 }
 
 
@@ -267,8 +266,8 @@ int FFmpegDecoderVideo::convert(AVPicture *dst, int dst_pix_fmt, AVPicture *src,
 #ifdef USE_SWSCALE
     if (m_swscale_ctx==0)
     {
-        m_swscale_ctx = sws_getContext(src_width, src_height, (PixelFormat) src_pix_fmt,
-                                      src_width, src_height, (PixelFormat) dst_pix_fmt,
+        m_swscale_ctx = sws_getContext(src_width, src_height, (AVPixelFormat) src_pix_fmt,
+                                      src_width, src_height, (AVPixelFormat) dst_pix_fmt,
                                       /*SWS_BILINEAR*/ SWS_BICUBIC, NULL, NULL, NULL);
     }
 
@@ -315,14 +314,14 @@ void FFmpegDecoderVideo::publishFrame(const double delay, bool audio_disabled)
     AVPicture * const dst = (AVPicture *) m_frame_rgba.get();
 
     // Assign appropriate parts of the buffer to image planes in m_frame_rgba
-    avpicture_fill((AVPicture *) (m_frame_rgba).get(), &(m_buffer_rgba[m_writeBuffer])[0], PIX_FMT_RGB24, width(), height());
+    avpicture_fill((AVPicture *) (m_frame_rgba).get(), &(m_buffer_rgba[m_writeBuffer])[0], AV_PIX_FMT_RGB24, width(), height());
 
     // Convert YUVA420p (i.e. YUV420p plus alpha channel) using our own routine
 
-    if (m_context->pix_fmt == PIX_FMT_YUVA420P)
+    if (m_context->pix_fmt == AV_PIX_FMT_YUVA420P)
         yuva420pToRgba(dst, src, width(), height());
     else
-        convert(dst, PIX_FMT_RGB24, src, m_context->pix_fmt, width(), height());
+        convert(dst, AV_PIX_FMT_RGB24, src, m_context->pix_fmt, width(), height());
 
     // Wait 'delay' seconds before publishing the picture.
     int i_delay = static_cast<int>(delay * 1000000 + 0.5);
@@ -349,7 +348,7 @@ void FFmpegDecoderVideo::publishFrame(const double delay, bool audio_disabled)
 
 void FFmpegDecoderVideo::yuva420pToRgba(AVPicture * const dst, AVPicture * const src, int width, int height)
 {
-    convert(dst, PIX_FMT_RGB24, src, m_context->pix_fmt, width, height);
+    convert(dst, AV_PIX_FMT_RGB24, src, m_context->pix_fmt, width, height);
 
     const size_t bpp = 4;
 
@@ -367,31 +366,28 @@ void FFmpegDecoderVideo::yuva420pToRgba(AVPicture * const dst, AVPicture * const
     }
 }
 
-
-
-int FFmpegDecoderVideo::getBuffer(AVCodecContext * const context, AVFrame * const picture)
+int FFmpegDecoderVideo::getBuffer(AVCodecContext * const context, AVFrame * const picture, int flags)
 {
+    AVBufferRef *ref;
     const FFmpegDecoderVideo * const this_ = reinterpret_cast<const FFmpegDecoderVideo*>(context->opaque);
 
-    const int result = avcodec_default_get_buffer(context, picture);
+    const int result = avcodec_default_get_buffer2(context, picture, flags);
     int64_t * p_pts = reinterpret_cast<int64_t*>( av_malloc(sizeof(int64_t)) );
 
     *p_pts = this_->m_packet_pts;
     picture->opaque = p_pts;
 
+    ref = av_buffer_create((uint8_t *)picture->opaque, sizeof(int64_t), FFmpegDecoderVideo::freeBuffer, picture->buf[0], flags);
+    picture->buf[0] = ref;
+
     return result;
 }
 
-
-
-void FFmpegDecoderVideo::releaseBuffer(AVCodecContext * const context, AVFrame * const picture)
+void FFmpegDecoderVideo::freeBuffer(void *opaque, uint8_t *data)
 {
-    if (picture != 0)
-        av_freep(&picture->opaque);
-
-    avcodec_default_release_buffer(context, picture);
+    AVBufferRef *ref = (AVBufferRef *)opaque;
+    av_buffer_unref(&ref);
+    av_free(data);
 }
-
-
 
 } // namespace osgFFmpeg

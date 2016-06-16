@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class LightPoint : public osgSim::LightPoint, public ReadWrite {
+class LightPoint : public osgSim::LightPoint {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

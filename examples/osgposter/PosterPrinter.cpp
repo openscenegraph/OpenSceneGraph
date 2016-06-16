@@ -321,7 +321,7 @@ void PosterPrinter::frame( const osg::FrameStamp* fs, osg::Node* node )
     }
 }
 
-bool PosterPrinter::addCullCallbacks( const osg::FrameStamp* fs, osg::Node* node )
+bool PosterPrinter::addCullCallbacks( const osg::FrameStamp* fs, osg::Node* /*node*/ )
 {
     if ( !_visitor->inQueue() || done() )
         return false;
@@ -335,7 +335,7 @@ bool PosterPrinter::addCullCallbacks( const osg::FrameStamp* fs, osg::Node* node
     return true;
 }
 
-void PosterPrinter::removeCullCallbacks( osg::Node* node )
+void PosterPrinter::removeCullCallbacks( osg::Node* /*node*/ )
 {
     _visitor->setAddingCallbacks( false );
     _camera->accept( *_visitor );

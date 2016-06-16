@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class FragmentProgram : public osg::FragmentProgram, public ReadWrite {
+class FragmentProgram : public osg::FragmentProgram {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

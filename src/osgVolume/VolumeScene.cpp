@@ -67,7 +67,7 @@ void VolumeScene::ViewData::clearTiles()
     }
 }
 
-void VolumeScene::ViewData::visitTile(VolumeTile* tile)
+void VolumeScene::ViewData::visitTile(VolumeTile* /*tile*/)
 {
 }
 

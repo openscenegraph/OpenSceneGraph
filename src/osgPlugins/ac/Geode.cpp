@@ -659,7 +659,7 @@ void Geode::OutputPolygonDelsUInt(const int iCurrentMaterial, const unsigned int
 }
 
 
-const int Geode::ProcessMaterial(ostream& fout, const unsigned int igeode)
+int Geode::ProcessMaterial(ostream& fout, const unsigned int igeode)
 {
     // outputs materials from one geode
     // extended for multiple geode models, GWM 2003.

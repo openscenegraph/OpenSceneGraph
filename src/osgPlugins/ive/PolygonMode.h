@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class PolygonMode : public osg::PolygonMode, public ReadWrite {
+class PolygonMode : public osg::PolygonMode {
 public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

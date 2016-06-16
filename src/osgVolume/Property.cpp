@@ -403,6 +403,7 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
         case(osgGA::GUIEventAdapter::DRAG):
         {
             passOnUpdates = true;
+            break;
         }
         case(osgGA::GUIEventAdapter::KEYDOWN):
         {

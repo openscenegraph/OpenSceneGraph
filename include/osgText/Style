@@ -42,7 +42,7 @@ class OSGTEXT_EXPORT Bevel : public osg::Object
 
         void setSmoothConcaveJunctions(bool flag) { _smoothConcaveJunctions = flag; }
         bool getSmoothConcaveJunctions() const { return _smoothConcaveJunctions; }
-        
+
         void setBevelThickness(float thickness) { _thickness = thickness; }
         float getBevelThickness() const { return _thickness; }
 
@@ -75,7 +75,7 @@ class OSGTEXT_EXPORT Style : public osg::Object
         Style();
         Style(const Style& style, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-        META_Object(osgText, Style)
+        META_Object(osgText, Style);
 
         /// default Layout implementation used if no other is specified on TextNode
         static osg::ref_ptr<Style>& getDefaultStyle();

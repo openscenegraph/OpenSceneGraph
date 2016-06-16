@@ -7,7 +7,7 @@
 #include <osgDB/FileUtils>
 #include <osgWidget/WindowManager>
 
-bool osgWidget_WindowManager_readData(osg::Object& /*obj*/, osgDB::Input& fr)
+bool osgWidget_WindowManager_readData(osg::Object& /*obj*/, osgDB::Input& /*fr*/)
 {
 	osgWidget::warn() << "WindowManager read" << std::endl;
 

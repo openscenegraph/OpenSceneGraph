@@ -1843,7 +1843,7 @@ LuaScriptEngine::LuaScriptEngine():
     initialize();
 }
 
-LuaScriptEngine::LuaScriptEngine(const LuaScriptEngine& rhs, const osg::CopyOp&):
+LuaScriptEngine::LuaScriptEngine(const LuaScriptEngine&, const osg::CopyOp&):
     osg::ScriptEngine("lua"),
     _lua(0),
     _scriptCount(0)

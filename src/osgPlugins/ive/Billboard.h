@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Billboard : public osg::Billboard, public ReadWrite {
+class Billboard : public osg::Billboard {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

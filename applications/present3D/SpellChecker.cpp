@@ -86,7 +86,7 @@ bool SpellChecker::isCorrect(const std::string& word) const
     return true;
 }
 
-SpellChecker::WordList SpellChecker::suggest(const std::string& word) const
+SpellChecker::WordList SpellChecker::suggest(const std::string& /*word*/) const
 {
     return WordList();
 }

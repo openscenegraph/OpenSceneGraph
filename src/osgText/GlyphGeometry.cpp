@@ -486,7 +486,7 @@ public:
         }
     }
 
-    void addBoundaryToGeometry(osg::Geometry* geometry, float targetThickness, const std::string& faceName, const std::string& bevelName)
+    void addBoundaryToGeometry(osg::Geometry* geometry, float /*targetThickness*/, const std::string& faceName, const std::string& bevelName)
     {
         if (_segments.empty()) return;
 

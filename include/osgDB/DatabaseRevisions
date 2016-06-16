@@ -29,7 +29,7 @@ class OSGDB_EXPORT FileList : public osg::Object
         FileList();
         FileList(const FileList& fileList, const osg::CopyOp & copyop=osg::CopyOp::SHALLOW_COPY);
 
-        META_Object(osgDB, FileList)
+        META_Object(osgDB, FileList);
 
         typedef std::set<std::string> FileNames;
         FileNames& getFileNames() { return _files; }
@@ -101,7 +101,7 @@ class OSGDB_EXPORT DatabaseRevisions : public osg::Object
         DatabaseRevisions();
         DatabaseRevisions(const DatabaseRevisions& revisions, const osg::CopyOp & copyop=osg::CopyOp::SHALLOW_COPY);
 
-        META_Object(osgDB, DatabaseRevisions)
+        META_Object(osgDB, DatabaseRevisions);
 
         typedef std::vector< osg::ref_ptr<DatabaseRevision> > DatabaseRevisionList;
 

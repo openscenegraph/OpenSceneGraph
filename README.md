@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/openscenegraph/OpenSceneGraph.svg?branch=master)](https://travis-ci.org/openscenegraph/OpenSceneGraph)
+
+### Introduction
+
 Welcome to the OpenSceneGraph (OSG).
 
 For up-to-date information on the project, in-depth details on how to
@@ -23,12 +27,11 @@ more indepth instructions.
 
 Robert Osfield.
 Project Lead.
-12th August 2015.
+13th June 2016.
 
 --
 
-Section 1. How to build the OpenSceneGraph
-==========================================
+### Section 1. How to build the OpenSceneGraph
 
 The OpenSceneGraph uses the CMake build system to generate a
 platform-specific build environment.  CMake reads the CMakeLists.txt
@@ -81,8 +84,7 @@ information read "Getting Started" guide:
     http://www.openscenegraph.org/index.php/documentation/10-getting-started
 
 
-Section 2. Release notes on OSX build, by Eric Sokolowsky, August 5, 2008
-=========================================================================
+### Section 2. Release notes on OSX build, by Eric Sokolowsky, August 5, 2008
 
 There are several ways to compile OpenSceneGraph under OSX.  The
 recommended way is to use CMake 2.6 to generate Xcode projects, then use
@@ -155,8 +157,7 @@ still images, and a QTKit plugin will need to be developed to handle
 animations.
 
 
-Section 3. Release notes on iOS build, by Thomas Hoghart
-=========================================================
+### Section 3. Release notes on iOS build, by Thomas Hoghart
 
 * Run CMake with either OSG_BUILD_PLATFORM_IPHONE or OSG_BUILD_PLATFORM_IPHONE_SIMULATOR set:
   $ mkdir build-iOS ; cd build-iOS

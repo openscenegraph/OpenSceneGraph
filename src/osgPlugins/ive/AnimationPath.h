@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class AnimationPath : public osg::AnimationPath, public ReadWrite {
+class AnimationPath : public osg::AnimationPath {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

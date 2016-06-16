@@ -21,7 +21,7 @@
 namespace ive
 {
 
-class VolumeCompositeProperty : public osgVolume::CompositeProperty, public ReadWrite
+class VolumeCompositeProperty : public osgVolume::CompositeProperty
 {
 public:
 	void write(DataOutputStream* out);

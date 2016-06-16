@@ -118,9 +118,9 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
 
         /**
          * Get the layer value at position i,j.
-         * @param[in] i X-axis (or column) index.
-         * @param[in] j Y-axis (or row) index.
-         * @param[out] value Returned layer value.
+         * param i X-axis (or column) index.
+         * param j Y-axis (or row) index.
+         * param value Returned layer value.
          * @return true if value is valid, else false
          */
         virtual bool getValue(unsigned int /*i*/, unsigned int /*j*/, float& /*value*/) const { return false; }

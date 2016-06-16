@@ -812,7 +812,7 @@ void GeometryPool::applyLayers(osgTerrain::TerrainTile* tile, osg::StateSet* sta
     }
 }
 
-osg::StateSet* GeometryPool::getRootStateSetForTerrain(Terrain* terrain)
+osg::StateSet* GeometryPool::getRootStateSetForTerrain(Terrain* /*terrain*/)
 {
     //OSG_NOTICE<<"getRootStateSetForTerrain("<<terrain<<")"<<std::endl;
     return _rootStateSet.get();
@@ -957,27 +957,22 @@ void SharedGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
     GLenum primitiveType = computeDiagonals ? GL_LINES_ADJACENCY : GL_QUADS;
 
     osg::GLBufferObject* ebo = _drawElements->getOrCreateGLBufferObject(state.getContextID());
-    state.bindElementBufferObject(ebo);
 
-    glDrawElements(primitiveType, _drawElements->getNumIndices(), _drawElements->getDataType(), (const GLvoid *)(ebo->getOffset(_drawElements->getBufferIndex())));
-
-
-    // unbind the VBO's if any are used.
-    state.unbindVertexBufferObject();
-    state.unbindElementBufferObject();
-
-#if 0
-    if (computeDiagonals)
+    if (ebo)
     {
-        if (state.checkGLErrors("End of SharedGeometry::drawImplementation. computeDiagonals=TRUE")) {}
-        else OSG_NOTICE<<"SharedGeometry::drawImplementation. OK computeDiagonals=TRUE"<<std::endl;
+        state.bindElementBufferObject(ebo);
+
+        glDrawElements(primitiveType, _drawElements->getNumIndices(), _drawElements->getDataType(), (const GLvoid *)(ebo->getOffset(_drawElements->getBufferIndex())));
+
+        state.unbindElementBufferObject();
     }
     else
     {
-        if (state.checkGLErrors("End of SharedGeometry::drawImplementation. computeDiagonals=FALSE")) {}
-        else OSG_NOTICE<<"SharedGeometry::drawImplementation. OK computeDiagonals=FALSE"<<std::endl;
+        glDrawElements(primitiveType, _drawElements->getNumIndices(), _drawElements->getDataType(), _drawElements->getDataPointer());
     }
-#endif
+
+    // unbind the VBO's if any are used.
+    state.unbindVertexBufferObject();
 
     if (checkForGLErrors) state.checkGLErrors("end of SharedGeometry::drawImplementation().");
 }

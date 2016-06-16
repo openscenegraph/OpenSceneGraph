@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Uniform : public osg::Uniform, public ReadWrite {
+class Uniform : public osg::Uniform {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

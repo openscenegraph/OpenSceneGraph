@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-  class Fog : public osg::Fog, public ReadWrite {
+  class Fog : public osg::Fog {
   public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

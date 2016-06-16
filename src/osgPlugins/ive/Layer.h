@@ -33,7 +33,7 @@ class LayerHelper
         osgTerrain::Locator* readLocator(DataInputStream* in);
 };
 
-class Layer : public osgTerrain::Layer, public ReadWrite
+class Layer : public osgTerrain::Layer
 {
     public:
     void write(DataOutputStream* out);

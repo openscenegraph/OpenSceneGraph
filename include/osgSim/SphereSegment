@@ -89,7 +89,7 @@ public:
 
     /**
     Construct by angle ranges. Note that the azimuth 'zero' is the Y axis; specifying
-    an azimuth range from azMin -osg::PI/2.0f to azMax osg::PI/2.0f will cover the
+    an azimuth range from azMin -PI/2.0f to azMax PI/2.0f will cover the
     'top half' of the circle in the XY plane. The elev angles are 'out' of the 'zero'
     XY plane with +ve angles above the plane, and -ve angles below.
     @param centre       sphere centre

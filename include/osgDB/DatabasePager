@@ -219,7 +219,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Set whether newly loaded textures should have a PixelBufferObject assigned to them to aid download to the GPU.*/
         void setApplyPBOToImages(bool assignPBOToImages) { _assignPBOToImages = assignPBOToImages; }
 
-        /** Get whether newly loaded textures should have a PixelBufferObject assigned to them..*/
+        /** Get whether newly loaded textures should have a PixelBufferObject assigned to them.*/
         bool getApplyPBOToImages() const { return _assignPBOToImages; }
 
 

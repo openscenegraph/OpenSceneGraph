@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class DrawElementsUInt : public osg::DrawElementsUInt, public ReadWrite {
+class DrawElementsUInt : public osg::DrawElementsUInt {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

@@ -7,7 +7,7 @@
 #include <osgDB/FileUtils>
 #include <osgWidget/Label>
 
-bool osgWidget_Label_readData(osg::Object& /*obj*/, osgDB::Input& fr)
+bool osgWidget_Label_readData(osg::Object& /*obj*/, osgDB::Input& /*fr*/)
 {
 	osgWidget::warn() << "Label read" << std::endl;
 

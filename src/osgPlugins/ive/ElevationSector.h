@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class ElevationSector : public osgSim::ElevationSector, public ReadWrite {
+class ElevationSector : public osgSim::ElevationSector {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

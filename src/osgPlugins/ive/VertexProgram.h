@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class VertexProgram : public osg::VertexProgram, public ReadWrite {
+class VertexProgram : public osg::VertexProgram {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

@@ -123,6 +123,8 @@ std::ostream& operator<<( std::ostream & os,
                     s[ len - 1 ] = '\0';
 
                 os << " " << s;
+
+                delete s;
             }
             break;
 

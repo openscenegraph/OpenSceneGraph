@@ -20,8 +20,10 @@ ELSEIF(MSVC10)
     SET(FBX_LIBDIR "vs2010")
 ELSEIF(MSVC11)
     SET(FBX_LIBDIR "vs2012")
-ELSEIF(MSVC12 OR MSVC_VERSION>1800)
+ELSEIF(MSVC12 OR MSVC_VERSION==1800)
     SET(FBX_LIBDIR "vs2013")
+ELSEIF(MSVC14 OR MSVC_VERSION>1900)
+    SET(FBX_LIBDIR "vs2015")
 ENDIF()
 
 IF(APPLE)
@@ -48,15 +50,17 @@ SET(FBX_LIBNAME_DEBUG ${FBX_LIBNAME}d)
 
 SET( FBX_SEARCH_PATHS
     $ENV{FBX_DIR}
+    "$ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2016.1.1"
+    "$ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2016.1.1"
     "$ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2015.1"
     "$ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2015.1"
+    "/Applications/Autodesk/FBX/FBX SDK/2015.1"
     /Applications/Autodesk/FBXSDK20151
     "$ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2014.2"
     "$ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2014.2"
+    "/Applications/Autodesk/FBX/FBX SDK/2014.2"
     /Applications/Autodesk/FBXSDK20142
-    /Applications/Autodesk/FBXSDK20141
 )
-#I think the last line in the search path is an old typo, but let's search for 2014.1 anyway - LV
 
 # search for headers & debug/release libraries
 FIND_PATH(FBX_INCLUDE_DIR "fbxsdk.h"
@@ -96,8 +100,9 @@ IF(NOT FBX_FOUND)
 
     SET( FBX_SEARCH_PATHS
         $ENV{FBX_DIR}
-        $ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2014.1
-        $ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2014.1
+        "$ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2014.1"
+        "$ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2014.1"
+        "/Applications/Autodesk/FBX/FBX SDK/2014.1"
         /Applications/Autodesk/FBXSDK20141
     )
 
@@ -134,8 +139,9 @@ IF(NOT FBX_FOUND)
 
     SET( FBX_SEARCH_PATHS
         $ENV{FBX_DIR}
-        $ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2013.3
-        $ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2013.3
+        "$ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2013.3"
+        "$ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2013.3"
+        "/Applications/Autodesk/FBX/FBX SDK/2013.3"
         /Applications/Autodesk/FBXSDK20133
     )
 

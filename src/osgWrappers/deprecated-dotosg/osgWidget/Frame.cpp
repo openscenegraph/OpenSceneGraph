@@ -7,7 +7,7 @@
 #include <osgDB/FileUtils>
 #include <osgWidget/Frame>
 
-bool osgWidget_Frame_readData(osg::Object& /*obj*/, osgDB::Input& fr)
+bool osgWidget_Frame_readData(osg::Object& /*obj*/, osgDB::Input& /*fr*/)
 {
 	osgWidget::warn() << "Frame read" << std::endl;
 

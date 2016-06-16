@@ -7,7 +7,7 @@
 namespace ive
 {
 
-class VolumeCompositeLayer : public osgVolume::CompositeLayer, public ReadWrite
+class VolumeCompositeLayer : public osgVolume::CompositeLayer
 {
 public:
 	void write(DataOutputStream* out);

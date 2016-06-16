@@ -50,7 +50,7 @@ static unsigned int LAYER_7( 0x80000000 >> 6 );
 
 
 bool
-FltExportVisitor::isLit( const osg::Geometry& geom ) const
+FltExportVisitor::isLit( const osg::Geometry& /*geom*/ ) const
 {
     const osg::StateSet* ss = getCurrentStateSet();
     if ( ss->getMode( GL_LIGHTING ) & osg::StateAttribute::ON )

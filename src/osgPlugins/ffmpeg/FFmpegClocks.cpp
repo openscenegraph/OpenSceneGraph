@@ -15,9 +15,6 @@ namespace osgFFmpeg {
 namespace
 {
 
-    const double AV_SYNC_THRESHOLD = 0.01;
-    const double AV_NOSYNC_THRESHOLD = 10.0;
-
     inline double clamp(const double value, const double min, const double max)
     {
         return (std::min)((std::max)(value, min), max);

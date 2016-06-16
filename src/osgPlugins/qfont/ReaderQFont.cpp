@@ -33,7 +33,7 @@ class ReaderQFont : public osgDB::ReaderWriter
 
         virtual const char* className() const { return "QFont Font Reader"; }
 
-        virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* /*options*/) const
         {
             if (!acceptsExtension(osgDB::getLowerCaseFileExtension(file)))
                 return ReadResult::FILE_NOT_HANDLED;

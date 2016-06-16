@@ -34,6 +34,13 @@ SET(TARGET_H
     lib3ds/lib3ds.h
     lib3ds/lib3ds_impl.h
 )
+
+IF (MSVC)
+    #disable specific warning level 4 warnings:
+    #C4456 declaration of 'c' hides previous local declaration
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4456")
+ENDIF(MSVC)
+ 
 #### end var setup  ###
 SETUP_PLUGIN(3ds)
 ADD_DEFINITIONS( -DLIB3DS_STATIC )        # lib3ds is included, so we need the flag

@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Scribe : public osgFX::Scribe, public ReadWrite {
+class Scribe : public osgFX::Scribe {
 public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

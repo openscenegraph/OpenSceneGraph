@@ -140,17 +140,13 @@ namespace osgDot {
 
   }
 
-  void BaseDotVisitor::handle(osg::Node& node, int id) {
-  }
+  void BaseDotVisitor::handle(osg::Node&, int) {}
 
-  void BaseDotVisitor::handle(osg::Geode& node, int id) {
-  }
+  void BaseDotVisitor::handle(osg::Geode&, int) {}
 
-  void BaseDotVisitor::handle(osg::Group& node, int id) {
-  }
+  void BaseDotVisitor::handle(osg::Group&, int) {}
 
-  void BaseDotVisitor::handle(osg::Group& parent, osg::Node& child, int parentID, int childID ) {
-  }
+  void BaseDotVisitor::handle(osg::Group&, osg::Node&, int, int) {}
 
   void BaseDotVisitor::handleNodeAndTraverse(osg::Node& node, int id) {
     osg::StateSet* ss = node.getStateSet();
@@ -164,20 +160,15 @@ namespace osgDot {
     traverse(node);
   }
 
-  void BaseDotVisitor::handle(osg::StateSet& stateset, int id) {
-  }
+  void BaseDotVisitor::handle(osg::StateSet&, int) {}
 
-  void BaseDotVisitor::handle(osg::Node& node, osg::StateSet& stateset, int parentID, int childID) {
-  }
+  void BaseDotVisitor::handle(osg::Node&, osg::StateSet&, int, int) {}
 
-  void BaseDotVisitor::handle(osg::Drawable& drawable, int id) {
-  }
+  void BaseDotVisitor::handle(osg::Drawable&, int) {}
 
-  void BaseDotVisitor::handle(osg::Drawable& drawable, osg::StateSet& stateset, int parentID, int childID ) {
-  }
+  void BaseDotVisitor::handle(osg::Drawable&, osg::StateSet&, int, int) {}
 
-  void BaseDotVisitor::handle(osg::Geode& geode, osg::Drawable& drawable, int parentID, int childID ) {
-  }
+  void BaseDotVisitor::handle(osg::Geode&, osg::Drawable&, int, int) {}
 
   bool BaseDotVisitor::getOrCreateId( osg::Object* object, int &id ) {
     assert( object );

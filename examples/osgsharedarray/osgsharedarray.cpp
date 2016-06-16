@@ -52,7 +52,7 @@ public:
     }
 
     /** Copy ctor. */
-    MyArray(const MyArray& other, const osg::CopyOp& copyop) :
+    MyArray(const MyArray& other, const osg::CopyOp& /*copyop*/) :
         osg::Array(osg::Array::Vec3ArrayType,3,GL_FLOAT),
         _numElements(other._numElements),
         _ptr(other._ptr) {
@@ -125,8 +125,8 @@ public:
         return _numElements * sizeof(osg::Vec3);
     }
 
-    virtual void reserveArray(unsigned int num) { OSG_NOTICE<<"reserveArray() not supported"<<std::endl; }
-    virtual void resizeArray(unsigned int num) { OSG_NOTICE<<"resizeArray() not supported"<<std::endl; }
+    virtual void reserveArray(unsigned int /*num*/) { OSG_NOTICE<<"reserveArray() not supported"<<std::endl; }
+    virtual void resizeArray(unsigned int /*num*/) { OSG_NOTICE<<"resizeArray() not supported"<<std::endl; }
 
 private:
     unsigned int _numElements;

@@ -34,7 +34,7 @@ Dialog::Dialog(const osgUI::Dialog& dialog, const osg::CopyOp& copyop):
 {
 }
 
-bool Dialog::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
+bool Dialog::handleImplementation(osgGA::EventVisitor* /*ev*/, osgGA::Event* event)
 {
     osgGA::GUIEventAdapter* ea = event->asGUIEventAdapter();
     if (!ea) return false;

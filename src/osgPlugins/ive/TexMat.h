@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class TexMat : public osg::TexMat, public ReadWrite {
+class TexMat : public osg::TexMat {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

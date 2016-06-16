@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class ImageSequence : public osg::ImageSequence, public ReadWrite {
+class ImageSequence : public osg::ImageSequence {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

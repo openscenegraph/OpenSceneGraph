@@ -19,7 +19,7 @@ extern "C"
     #include <libavutil/pixdesc.h>
 }
 
-inline PixelFormat osg_av_get_pix_fmt(const char *name) { return av_get_pix_fmt(name); }
+inline AVPixelFormat osg_av_get_pix_fmt(const char *name) { return av_get_pix_fmt(name); }
 
 
 namespace osgFFmpeg {

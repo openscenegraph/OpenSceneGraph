@@ -80,9 +80,12 @@ public:
     const std::string& getName() const { return _name; }
 
     const RevisionAssociateList& getAssociates() const { return _associates; }
+<<<<<<< HEAD
 
     void associateAddedAtVersion(std::string name);
     void associateRemovedAtVersion(std::string name);
+=======
+>>>>>>> upstream/master
 
     SerializerList& getSerializerList() { return _serializers; }
     const SerializerList& getSerializerList() const { return _serializers; }
@@ -92,6 +95,10 @@ public:
 
     void addSerializer( BaseSerializer* s, BaseSerializer::Type t=BaseSerializer::RW_UNDEFINED );
     void markSerializerAsRemoved( const std::string& name );
+
+    void markAssociateAsRemoved(const std::string& name);
+    void markAssociateAsAdded(const std::string& name);
+
     BaseSerializer* getLastSerializer() { return _serializers.empty() ? 0 : _serializers.back().get(); }
     BaseSerializer* getSerializer( const std::string& name );
     BaseSerializer* getSerializer( const std::string& name, BaseSerializer::Type& type);
@@ -112,6 +119,8 @@ public:
     MethodObjectMap& getMethodObjectMap() { return _methodObjectMap; }
     const MethodObjectMap& getMethodObjectMap() const { return _methodObjectMap; }
 
+    void setupAssociatesRevisionsInheritanceIfRequired();
+
 protected:
     ObjectWrapper() : _version(0) {}
     virtual ~ObjectWrapper() {}
@@ -126,6 +135,9 @@ protected:
     FinishedObjectReadCallbackList _finishedObjectReadCallbacks;
     MethodObjectMap _methodObjectMap;
     int _version;  // Last updated version of the wrapper
+    //simulate associate revisions inheritance
+    bool _isAssociatesRevisionsInheritanceDone;
+    static void splitAssociates( const std::string& src, ObjectWrapper::RevisionAssociateList& list, char separator=' ' );
 };
 
 struct UpdateWrapperVersionProxy

@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class PointSprite : public osg::PointSprite, public ReadWrite {
+class PointSprite : public osg::PointSprite {
 public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

@@ -8,7 +8,7 @@
 ///////////////////////////////////////////////////////////////////////////
 // OSG reader plugin for the ".fbx" format.
 // See http://www.autodesk.com/fbx
-// This plugin requires the FBX SDK version 2013.3 or 2014.1
+// This plugin requires the FBX SDK version 2013.3 or 2014.1 or later
 
 #if FBXSDK_VERSION_MAJOR < 2013 || (FBXSDK_VERSION_MAJOR == 2013 && FBXSDK_VERSION_MINOR < 3)
 #error Wrong FBX SDK version

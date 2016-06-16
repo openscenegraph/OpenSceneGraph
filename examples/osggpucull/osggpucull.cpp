@@ -199,6 +199,7 @@ struct IndirectTarget
         indirectCommandTextureBuffer->bindToImageUnit(index, osg::Texture::READ_WRITE);
         indirectCommandTextureBuffer->setUnRefImageDataAfterApply(false);
 
+
         // add proper primitivesets to geometryAggregators
         if( !useMultiDrawArraysIndirect ) // use glDrawArraysIndirect()
         {
@@ -206,7 +207,12 @@ struct IndirectTarget
 
             for(unsigned int j=0;j<indirectCommands->getData().size(); ++j)
                 newPrimitiveSets.push_back( new DrawArraysIndirect( GL_TRIANGLES, j*sizeof( DrawArraysIndirectCommand ) ) );
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
             geometryAggregator->getAggregatedGeometry()->removePrimitiveSet(0,geometryAggregator->getAggregatedGeometry()->getNumPrimitiveSets() );
+
             for(unsigned int j=0;j<indirectCommands->getData().size(); ++j)
                 geometryAggregator->getAggregatedGeometry()->addPrimitiveSet( newPrimitiveSets[j] );
 
@@ -216,6 +222,7 @@ struct IndirectTarget
         {
             geometryAggregator->getAggregatedGeometry()->removePrimitiveSet(0,geometryAggregator->getAggregatedGeometry()->getNumPrimitiveSets() );
             geometryAggregator->getAggregatedGeometry()->addPrimitiveSet( new MultiDrawArraysIndirect( GL_TRIANGLES, 0, indirectCommands->getData().size(), 0 ) );
+<<<<<<< HEAD
 
 
         }
@@ -226,6 +233,16 @@ struct IndirectTarget
    geometryAggregator->getAggregatedGeometry()->setUseDisplayList(false);
          geometryAggregator->getAggregatedGeometry()->setUseVertexBufferObjects(true);
         //  geometryAggregator->getAggregatedGeometry()->setUseVertexArrayObject(true);
+=======
+        }
+
+        ///attach a DrawIndirect buffer binding to the stateset
+        osg::ref_ptr<osg::DrawIndirectBufferBinding> bb=new osg::DrawIndirectBufferBinding();
+        bb->setBufferObject(indirectCommandImage->getBufferObject());
+        geometryAggregator->getAggregatedGeometry()->getOrCreateStateSet()->setAttribute(bb );
+        geometryAggregator->getAggregatedGeometry()->setUseDisplayList(false);
+        geometryAggregator->getAggregatedGeometry()->setUseVertexBufferObjects(true);
+>>>>>>> upstream/master
 
 
         osg::Image* instanceTargetImage = new osg::Image;
@@ -637,9 +654,14 @@ osg::Geometry* buildGPUCullGeometry( const std::vector<StaticInstance>& instance
 
     geom->setInitialBound( bbox );
 
+<<<<<<< HEAD
   geom->setUseDisplayList(false);
         geom->setUseVertexBufferObjects(true);
         geom->setUseVertexArrayObject(true);
+=======
+    geom->setUseDisplayList(false);
+    geom->setUseVertexBufferObjects(true);
+>>>>>>> upstream/master
 
     return geom.release();
 }
@@ -669,7 +691,10 @@ osg::Node* createInstanceGraph(InstanceCell<T>* cell, const osg::BoundingBox& ob
         geode = new osg::Geode;
         geometry->setUseDisplayList(false);
         geometry->setUseVertexBufferObjects(true);
+<<<<<<< HEAD
         geometry->setUseVertexArrayObject(true);
+=======
+>>>>>>> upstream/master
 
         geode->addDrawable( geometry );
     }
@@ -720,7 +745,7 @@ struct ResetTexturesCallback : public osg::StateSet::Callback
         texUnitsDirtyParams.push_back(texUnit);
     }
 
-    virtual void operator() (osg::StateSet* stateset, osg::NodeVisitor* nv)
+    virtual void operator() (osg::StateSet* stateset, osg::NodeVisitor* /*nv*/)
     {
         std::vector<unsigned int>::iterator it,eit;
         for(it=texUnitsDirty.begin(), eit=texUnitsDirty.end(); it!=eit; ++it)

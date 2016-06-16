@@ -1,24 +1,24 @@
 /*
     Copyright (C) 1996-2008 by Jan Eric Kyprianidis <www.kyprianidis.com>
     All rights reserved.
-    
-    This program is free  software: you can redistribute it and/or modify 
-    it under the terms of the GNU Lesser General Public License as published 
-    by the Free Software Foundation, either version 2.1 of the License, or 
+
+    This program is free  software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation, either version 2.1 of the License, or
     (at your option) any later version.
 
-    Thisprogram  is  distributed in the hope that it will be useful, 
-    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+    Thisprogram  is  distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU Lesser General Public License for more details.
-    
+
     You should  have received a copy of the GNU Lesser General Public License
-    along with  this program; If not, see <http://www.gnu.org/licenses/>. 
+    along with  this program; If not, see <http://www.gnu.org/licenses/>.
 */
 #include "lib3ds_impl.h"
 
 
-Lib3dsTrack* 
+Lib3dsTrack*
 lib3ds_track_new(Lib3dsTrackType type, int nkeys) {
     Lib3dsTrack *track = (Lib3dsTrack*)calloc(sizeof(Lib3dsTrack), 1);
     track->type = type;
@@ -27,7 +27,7 @@ lib3ds_track_new(Lib3dsTrackType type, int nkeys) {
 }
 
 
-void 
+void
 lib3ds_track_free(Lib3dsTrack *track) {
     assert(track);
     lib3ds_track_resize(track, 0);
@@ -36,7 +36,7 @@ lib3ds_track_free(Lib3dsTrack *track) {
 }
 
 
-void 
+void
 lib3ds_track_resize(Lib3dsTrack *track, int nkeys) {
     char *p;
 
@@ -53,7 +53,7 @@ lib3ds_track_resize(Lib3dsTrack *track, int nkeys) {
 }
 
 
-static void 
+static void
 pos_key_setup(int n, Lib3dsKey *pp, Lib3dsKey *pc, Lib3dsKey *pn, float *dd, float *ds) {
     float tm, cm, cp, bm, bp, tmcm, tmcp, ksm, ksp, kdm, kdp, c;
     float dt, fp, fn;
@@ -104,7 +104,7 @@ pos_key_setup(int n, Lib3dsKey *pp, Lib3dsKey *pc, Lib3dsKey *pn, float *dd, flo
 }
 
 
-static void 
+static void
 rot_key_setup(Lib3dsKey *prev, Lib3dsKey *cur, Lib3dsKey *next, float a[4], float b[4]) {
     float tm, cm, cp, bm, bp, tmcm, tmcp, ksm, ksp, kdm, kdp, c;
     float dt, fp, fn;
@@ -112,6 +112,8 @@ rot_key_setup(Lib3dsKey *prev, Lib3dsKey *cur, Lib3dsKey *next, float a[4], floa
     int i;
 
     assert(cur);
+    assert(prev || next);
+
     if (prev) {
         if (cur->value[3] > LIB3DS_TWOPI - LIB3DS_EPSILON) {
             lib3ds_quat_axis_angle(qm, cur->value, 0.0f);
@@ -181,7 +183,7 @@ quat_for_index(Lib3dsTrack *track, int index, float q[4]) {
 }
 
 
-static int 
+static int
 find_index(Lib3dsTrack *track, float t, float *u) {
     int i;
     float nt;
@@ -189,10 +191,10 @@ find_index(Lib3dsTrack *track, float t, float *u) {
 
     assert(track);
     assert(track->nkeys > 0);
-    
+
     if (track->nkeys <= 1)
         return -1;
-    
+
     t0 = track->keys[0].frame;
     t1 = track->keys[track->nkeys-1].frame;
     if (track->flags & LIB3DS_TRACK_REPEAT) {
@@ -221,10 +223,10 @@ find_index(Lib3dsTrack *track, float t, float *u) {
 }
 
 
-static void 
+static void
 setup_segment(Lib3dsTrack *track, int index, Lib3dsKey *pp, Lib3dsKey *p0, Lib3dsKey *p1, Lib3dsKey *pn) {
     int ip, in;
-    
+
     pp->frame = pn->frame = -1;
     if (index >= 2) {
         ip = index - 2;
@@ -275,7 +277,7 @@ setup_segment(Lib3dsTrack *track, int index, Lib3dsKey *pp, Lib3dsKey *p0, Lib3d
 }
 
 
-void 
+void
 lib3ds_track_eval_bool(Lib3dsTrack *track, int *b, float t) {
     *b = FALSE;
     if (track) {
@@ -301,7 +303,7 @@ lib3ds_track_eval_bool(Lib3dsTrack *track, int *b, float t) {
 }
 
 
-static void 
+static void
 track_eval_linear(Lib3dsTrack *track, float *value, float t) {
     Lib3dsKey pp, p0, p1, pn;
     float u;
@@ -345,7 +347,7 @@ track_eval_linear(Lib3dsTrack *track, float *value, float t) {
 }
 
 
-void 
+void
 lib3ds_track_eval_float(Lib3dsTrack *track, float *f, float t) {
     *f = 0;
     if (track) {
@@ -355,7 +357,7 @@ lib3ds_track_eval_float(Lib3dsTrack *track, float *f, float t) {
 }
 
 
-void 
+void
 lib3ds_track_eval_vector(Lib3dsTrack *track, float v[3], float t) {
     lib3ds_vector_zero(v);
     if (track) {
@@ -365,7 +367,7 @@ lib3ds_track_eval_vector(Lib3dsTrack *track, float v[3], float t) {
 }
 
 
-void 
+void
 lib3ds_track_eval_quat(Lib3dsTrack *track, float q[4], float t) {
     lib3ds_quat_identity(q);
     if (track) {
@@ -384,7 +386,7 @@ lib3ds_track_eval_quat(Lib3dsTrack *track, float q[4], float t) {
             lib3ds_quat_axis_angle(q, track->keys[0].value, track->keys[0].value[3]);
             return;
         }
-        if (index >= track->nkeys) { 
+        if (index >= track->nkeys) {
             quat_for_index(track, track->nkeys - 1, q);
             return;
         }
@@ -399,7 +401,7 @@ lib3ds_track_eval_quat(Lib3dsTrack *track, float q[4], float t) {
 }
 
 
-static void 
+static void
 tcb_read(Lib3dsKey *key, Lib3dsIo *io) {
     key->flags = lib3ds_io_read_word(io);
     if (key->flags & LIB3DS_KEY_USE_TENS) {
@@ -420,7 +422,7 @@ tcb_read(Lib3dsKey *key, Lib3dsIo *io) {
 }
 
 
-void 
+void
 lib3ds_track_read(Lib3dsTrack *track, Lib3dsIo *io) {
     unsigned nkeys;
     unsigned i;

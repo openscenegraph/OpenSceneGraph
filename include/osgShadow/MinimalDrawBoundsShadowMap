@@ -83,7 +83,7 @@ class OSGSHADOW_EXPORT MinimalDrawBoundsShadowMap
 
         friend struct ViewData;
 
-        META_ViewDependentShadowTechniqueData( ThisClass, ThisClass::ViewData )
+        META_ViewDependentShadowTechniqueData( ThisClass, ThisClass::ViewData );
 
 
         struct CameraPostDrawCallback : public osg::Camera::DrawCallback {

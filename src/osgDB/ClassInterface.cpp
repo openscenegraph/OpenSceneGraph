@@ -59,8 +59,8 @@ public:
     virtual void writeFloat( float f ) { write(f); }
     virtual void writeDouble( double d ) { write(d); }
     virtual void writeString( const std::string& s ) { _str.insert(_str.end(), s.begin(), s.end()); }
-    virtual void writeStream( std::ostream& (*fn)(std::ostream&) ) {}
-    virtual void writeBase( std::ios_base& (*fn)(std::ios_base&) ) {}
+    virtual void writeStream( std::ostream& (*)(std::ostream&) ) {}
+    virtual void writeBase( std::ios_base& (*)(std::ios_base&) ) {}
     virtual void writeGLenum( const osgDB::ObjectGLenum& value ) { writeInt(value.get()); }
     virtual void writeProperty( const osgDB::ObjectProperty& prop ) { _propertyName = prop._name; }
     virtual void writeMark( const osgDB::ObjectMark& mark ) { _markName = mark._name; }
@@ -123,12 +123,12 @@ public:
     virtual void readDouble( double& d ) { read(d); }
     virtual void readString( std::string& s ) { s = std::string(_bufferData, _bufferSize); }
 
-    virtual void readStream( std::istream& (*fn)(std::istream&) ) {}
-    virtual void readBase( std::ios_base& (*fn)(std::ios_base&) ) {}
+    virtual void readStream( std::istream& (*)(std::istream&) ) {}
+    virtual void readBase( std::ios_base& (*)(std::ios_base&) ) {}
 
     virtual void readGLenum( ObjectGLenum& value ) { readUInt(value._value); }
-    virtual void readProperty( ObjectProperty& prop ) {}
-    virtual void readMark( ObjectMark& mark ) {}
+    virtual void readProperty( ObjectProperty& ) {}
+    virtual void readMark( ObjectMark&) {}
     virtual void readCharArray( char* s, unsigned int size ) { if ( size>0 ) _in->read( s, size ); }
     virtual void readWrappedString( std::string& str ) { readString(str); }
 
@@ -388,7 +388,7 @@ bool ClassInterface::copyPropertyDataToObject(osg::Object* object, const std::st
     }
 }
 
-bool ClassInterface::copyPropertyObjectFromObject(const osg::Object* object, const std::string& propertyName, void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
+bool ClassInterface::copyPropertyObjectFromObject(const osg::Object* object, const std::string& propertyName, void* valuePtr, unsigned int /*valueSize*/, osgDB::BaseSerializer::Type valueType)
 {
     osgDB::BaseSerializer::Type sourceType;
     osgDB::BaseSerializer* serializer = getSerializer(object, propertyName, sourceType);
@@ -411,7 +411,7 @@ bool ClassInterface::copyPropertyObjectFromObject(const osg::Object* object, con
     }
 }
 
-bool ClassInterface::copyPropertyObjectToObject(osg::Object* object, const std::string& propertyName, const void* valuePtr, unsigned int valueSize, osgDB::BaseSerializer::Type valueType)
+bool ClassInterface::copyPropertyObjectToObject(osg::Object* object, const std::string& propertyName, const void* valuePtr, unsigned int /*valueSize*/, osgDB::BaseSerializer::Type valueType)
 {
     osgDB::BaseSerializer::Type destinationType;
     osgDB::BaseSerializer* serializer = getSerializer(object, propertyName, destinationType);
@@ -509,8 +509,13 @@ bool ClassInterface::getSupportedProperties(const osg::Object* object, PropertyM
 
     if (searchAssociates)
     {
+<<<<<<< HEAD
         const osgDB::ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
         for(osgDB::ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
+=======
+        const ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
+        for(ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
+>>>>>>> upstream/master
             aitr != associates.end();
             ++aitr)
         {
@@ -560,8 +565,13 @@ bool ClassInterface::isObjectOfType(const osg::Object* object, const std::string
         return false;
     }
 
+<<<<<<< HEAD
     const osgDB::ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
     for(osgDB::ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
+=======
+    const ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
+    for(ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
+>>>>>>> upstream/master
         aitr != associates.end();
         ++aitr)
     {
@@ -584,8 +594,13 @@ bool ClassInterface::run(void* objectPtr, const std::string& compoundClassName, 
         if (mo->run(objectPtr, inputParameters, outputParameters)) return true;
     }
 
+<<<<<<< HEAD
     const osgDB::ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
     for(osgDB::ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
+=======
+    const ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
+    for(ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
+>>>>>>> upstream/master
         aitr != associates.end();
         ++aitr)
     {
@@ -620,8 +635,13 @@ bool ClassInterface::hasMethod(const std::string& compoundClassName, const std::
     ObjectWrapper::MethodObjectMap::const_iterator oitr = ow_methodObjectMap.find(methodName);
     if (oitr!=ow_methodObjectMap.end()) return true;
 
+<<<<<<< HEAD
     const osgDB::ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
     for(osgDB::ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
+=======
+    const ObjectWrapper::RevisionAssociateList& associates = ow->getAssociates();
+    for(ObjectWrapper::RevisionAssociateList::const_iterator aitr = associates.begin();
+>>>>>>> upstream/master
         aitr != associates.end();
         ++aitr)
     {

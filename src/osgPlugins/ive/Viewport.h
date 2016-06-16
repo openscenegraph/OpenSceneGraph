@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Viewport : public osg::Viewport, public ReadWrite {
+class Viewport : public osg::Viewport {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class LineWidth : public osg::LineWidth, public ReadWrite {
+class LineWidth : public osg::LineWidth {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

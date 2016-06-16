@@ -79,7 +79,7 @@ class EasyCurl : public osg::Referenced
         virtual ~EasyCurl();
 
         // disallow copying
-        EasyCurl(const EasyCurl& rhs):_curl(rhs._curl) {}
+        EasyCurl(const EasyCurl& rhs) : osg::Referenced(rhs), _curl(rhs._curl) {}
         EasyCurl& operator = (const EasyCurl&) { return *this; }
 
         void setOptions(const std::string& proxyAddress, const std::string& fileName, StreamObject& sp, const osgDB::ReaderWriter::Options *options);

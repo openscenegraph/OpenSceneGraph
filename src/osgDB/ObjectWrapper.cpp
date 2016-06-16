@@ -80,6 +80,24 @@ void osgDB::split( const std::string& src, StringList& list, char separator )
     }
 }
 
+void ObjectWrapper::splitAssociates( const std::string& src, ObjectWrapper::RevisionAssociateList& list, char separator )
+{
+    std::string::size_type start = src.find_first_not_of(separator);
+    while ( start!=std::string::npos )
+    {
+        std::string::size_type end = src.find_first_of(separator, start);
+        if ( end!=std::string::npos )
+        {
+            list.push_back( ObjectWrapperAssociate(std::string(src, start, end-start)) );
+            start = src.find_first_not_of(separator, end);
+        }
+        else
+        {
+            list.push_back( ObjectWrapperAssociate(std::string(src, start, src.size()-start)) );
+            start = end;
+        }
+    }
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // ObjectWrapper
@@ -87,20 +105,25 @@ void osgDB::split( const std::string& src, StringList& list, char separator )
 ObjectWrapper::ObjectWrapper( CreateInstanceFunc* createInstanceFunc, const std::string& name,
                               const std::string& associates )
 :   osg::Referenced(),
-    _createInstanceFunc(createInstanceFunc), _name(name), _version(0)
+    _createInstanceFunc(createInstanceFunc), _name(name), _version(0),_isAssociatesRevisionsInheritanceDone(false)
 {
+<<<<<<< HEAD
     StringList listassociates;
     split( associates, listassociates );
 
     for(StringList::const_iterator i=listassociates.begin();i!=listassociates.end();i++)
         _associates.push_back(ObjectWrapperAssociate(*i));
+=======
+    splitAssociates( associates, _associates );
+>>>>>>> upstream/master
 }
 
 ObjectWrapper::ObjectWrapper( CreateInstanceFunc* createInstanceFunc, const std::string& domain, const std::string& name,
                               const std::string& associates )
 :   osg::Referenced(),
-    _createInstanceFunc(createInstanceFunc), _domain(domain), _name(name), _version(0)
+    _createInstanceFunc(createInstanceFunc), _domain(domain), _name(name), _version(0),_isAssociatesRevisionsInheritanceDone(false)
 {
+<<<<<<< HEAD
     StringList listassociates;
     split( associates, listassociates );
 
@@ -125,6 +148,61 @@ void ObjectWrapper::associateRemovedAtVersion(std::string name){
            itr->_lastVersion = _version-1;
            return;
        }
+=======
+    splitAssociates( associates, _associates );
+}
+
+void ObjectWrapper::setupAssociatesRevisionsInheritanceIfRequired()
+{
+    if(!_isAssociatesRevisionsInheritanceDone)
+    {
+        ///for each associate wrapper
+        for ( ObjectWrapper::RevisionAssociateList::const_iterator itr=_associates.begin(); itr!=_associates.end(); ++itr )
+        {
+            ObjectWrapper* assocWrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(itr->_name);
+            if ( assocWrapper && assocWrapper != this )
+            {
+                ///crawl association revisions in associates
+                for ( ObjectWrapper::RevisionAssociateList::const_iterator itr2=assocWrapper->getAssociates().begin(); itr2!=assocWrapper->getAssociates().end(); ++itr2 )
+                {
+                    for ( ObjectWrapper::RevisionAssociateList::iterator itr3=_associates.begin(); itr3!=_associates.end(); ++itr3 )
+                    {
+                        ///they share associates
+                        if(itr3->_name==itr2->_name)
+                        {
+                            itr3->_firstVersion=itr3->_firstVersion>itr2->_firstVersion? itr3->_firstVersion:itr2->_firstVersion;
+                            itr3->_lastVersion=itr3->_lastVersion<itr2->_lastVersion? itr3->_lastVersion:itr2->_lastVersion;
+                        }
+                    }
+                }
+            }
+        }
+        _isAssociatesRevisionsInheritanceDone=true;
+    }
+
+}
+void ObjectWrapper::markAssociateAsAdded(const std::string& name)
+{
+    for ( ObjectWrapper::RevisionAssociateList:: iterator itr=_associates.begin(); itr!=_associates.end(); ++itr )
+    {
+        if(itr->_name==name)
+        {
+            itr->_firstVersion=_version;
+            return;
+        }
+    }
+    OSG_NOTIFY(osg::WARN)<<"ObjectWrapper::associateAddedAtVersion: Associate class "<<name<<" not defined for wrapper "<<_name<<std::endl;
+}
+void ObjectWrapper::markAssociateAsRemoved(const std::string& name)
+{
+    for ( ObjectWrapper::RevisionAssociateList:: iterator itr=_associates.begin(); itr!=_associates.end(); ++itr )
+    {
+        if(itr->_name==name)
+        {
+            itr->_lastVersion = _version-1;
+            return;
+        }
+>>>>>>> upstream/master
     }
     OSG_NOTIFY(osg::WARN)<<"ObjectWrapper::associateRemovedAtVersion: Associate class "<<name<<" not defined for wrapper "<<_name<<std::endl;
 }
@@ -709,17 +787,22 @@ ObjectWrapper* ObjectWrapperManager::findWrapper( const std::string& name )
     {
         std::string libName = std::string( name, 0, posDoubleColon );
 
+        ObjectWrapper* found=0;
         std::string nodeKitLib = osgDB::Registry::instance()->createLibraryNameForNodeKit(libName);
         if ( osgDB::Registry::instance()->loadLibrary(nodeKitLib)==osgDB::Registry::LOADED )
-            return findWrapper(name);
+            found= findWrapper(name);
 
         std::string pluginLib = osgDB::Registry::instance()->createLibraryNameForExtension(std::string("serializers_")+libName);
         if ( osgDB::Registry::instance()->loadLibrary(pluginLib)==osgDB::Registry::LOADED )
-            return findWrapper(name);
+            found= findWrapper(name);
 
         pluginLib = osgDB::Registry::instance()->createLibraryNameForExtension(libName);
         if ( osgDB::Registry::instance()->loadLibrary(pluginLib)==osgDB::Registry::LOADED )
-            return findWrapper(name);
+            found= findWrapper(name);
+
+        if (found) found->setupAssociatesRevisionsInheritanceIfRequired();
+
+        return found;
     }
     return NULL;
 }

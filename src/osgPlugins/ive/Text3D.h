@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Text3D : public osgText::Text3D, public ReadWrite {
+class Text3D : public osgText::Text3D {
 public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

@@ -258,7 +258,7 @@ int  RenderSurface::getScreenNum( void ) const
     return _screen;
 }
 
-void RenderSurface::setWindowRectangle( int x, int y, unsigned int width, unsigned int height, bool resize)
+void RenderSurface::setWindowRectangle( int x, int y, unsigned int width, unsigned int height, bool /*resize*/)
 {
     if( _useCustomFullScreen )
     {

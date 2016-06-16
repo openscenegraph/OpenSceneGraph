@@ -87,7 +87,7 @@ public:
         _incrementalCompileOperation(ico),
         _block(block) {}
 
-    virtual void operator () (osg::Object* object)
+    virtual void operator () (osg::Object* /*object*/)
     {
         // osg::notify(osg::NOTICE)<<"LoadAndCompileOperation "<<_filename<<std::endl;
 
@@ -481,7 +481,7 @@ public:
     FilterHandler(osgTerrain::GeometryTechnique* gt):
         _gt(gt) {}
 
-    bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& /*aa*/)
     {
         if (!_gt) return false;
 
@@ -555,7 +555,7 @@ public:
     LayerHandler(osgTerrain::Layer* layer):
         _layer(layer) {}
 
-    bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& /*aa*/)
     {
         if (!_layer) return false;
 

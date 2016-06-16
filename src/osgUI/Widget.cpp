@@ -299,7 +299,7 @@ bool Widget::handle(osgGA::EventVisitor* ev, osgGA::Event* event)
     return handleImplementation(ev, event);
 }
 
-bool Widget::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* event)
+bool Widget::handleImplementation(osgGA::EventVisitor* /*ev*/, osgGA::Event* /*event*/)
 {
     return false;
 }

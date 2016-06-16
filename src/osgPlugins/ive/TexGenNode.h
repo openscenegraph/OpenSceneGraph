@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class TexGenNode : public osg::TexGenNode, public ReadWrite {
+class TexGenNode : public osg::TexGenNode {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

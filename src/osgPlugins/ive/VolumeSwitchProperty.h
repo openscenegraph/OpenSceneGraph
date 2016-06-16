@@ -21,7 +21,7 @@
 namespace ive
 {
 
-class VolumeSwitchProperty : public osgVolume::SwitchProperty, public ReadWrite
+class VolumeSwitchProperty : public osgVolume::SwitchProperty
 {
 public:
 	void write(DataOutputStream* out);

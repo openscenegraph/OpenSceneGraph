@@ -7,7 +7,7 @@
 namespace ive
 {
 
-class CompositeLayer : public osgTerrain::CompositeLayer, public ReadWrite
+class CompositeLayer : public osgTerrain::CompositeLayer
 {
 public:
 	void write(DataOutputStream* out);

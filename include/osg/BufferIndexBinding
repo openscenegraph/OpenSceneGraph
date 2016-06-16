@@ -222,6 +222,7 @@ class OSG_EXPORT DrawIndirectBufferBinding : public BufferBinding
     DrawIndirectBufferBinding(const DrawIndirectBufferBinding& rhs, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
     META_StateAttribute(osg, DrawIndirectBufferBinding, INDIRECTDRAWBUFFERBINDING);
 
+    virtual void apply(State& state) const;
     virtual int compare(const StateAttribute& bb) const
     {
         COMPARE_StateAttribute_Types(DrawIndirectBufferBinding, bb)

@@ -15,9 +15,11 @@
 #define OSG_REF_PTR 1
 
 #include <osg/Config>
+
 #ifdef OSG_USE_REF_PTR_SAFE_DEREFERENCE
 #include <typeinfo>
 #include <stdexcept>
+#include <string>
 #endif
 
 namespace osg {

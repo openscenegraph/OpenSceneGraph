@@ -13,18 +13,20 @@
 #include <osg/TextureBuffer>
 #include <osg/State>
 #include <osg/PrimitiveSet>
-#ifndef GL_TEXTURE_BUFFER_ARB
-    #define GL_TEXTURE_BUFFER_ARB 0x8C2A
+
+#ifndef GL_TEXTURE_BUFFER
+    #define GL_TEXTURE_BUFFER 0x8C2A
 #endif
+
 using namespace osg;
 
 TextureBuffer::TextureBuffer():
-    _textureWidth(0),_bufferData(NULL)
+    _textureWidth(0)
 {
 }
 
 TextureBuffer::TextureBuffer(osg::BufferData* image):
-    _textureWidth(0),_bufferData(NULL)
+    _textureWidth(0)
 {
     setBufferData(image);
 }
@@ -33,7 +35,7 @@ TextureBuffer::TextureBuffer(const TextureBuffer& text,const CopyOp& copyop):
     Texture(text,copyop),
     _textureWidth(text._textureWidth)
 {
-    setBufferData(dynamic_cast<BufferData*>(copyop(text._bufferData)));
+    setBufferData(osg::clone(text._bufferData.get(), copyop));
 }
 
 TextureBuffer::~TextureBuffer()
@@ -194,7 +196,7 @@ void TextureBuffer::apply(State& state) const
         {
             const GLExtensions* extensions = state.get<GLExtensions>();
 
-            textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_BUFFER_ARB);
+            textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_BUFFER);
             textureObject->_profile._internalFormat=_internalFormat;
             textureObject->bind();
 
@@ -216,7 +218,7 @@ void TextureBuffer::apply(State& state) const
             extensions->glBindBuffer(_bufferData->getBufferObject()->getTarget(),0);
 
             textureObject->bind();
-            extensions->glTexBuffer(GL_TEXTURE_BUFFER_ARB, _internalFormat, glBufferObject->getGLObjectID());
+            extensions->glTexBuffer(GL_TEXTURE_BUFFER, _internalFormat, glBufferObject->getGLObjectID());
             _modifiedCount[contextID] = _bufferData->getModifiedCount();
         }
 

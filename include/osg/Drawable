@@ -624,8 +624,8 @@ public:
 
     /** Get the primitive type of the feedback.
      */
-    inline GLenum getFeedBackType() const      { return _type;      }
-    inline void  setFeedBackType(GLenum e)     { _type= e;          }
+    inline GLenum getFeedbackType() const      { return _type;      }
+    inline void  setFeedbackType(GLenum e)     { _type= e;          }
 
     /** do TransformFeedback draw code.*/
     virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable*  drawable ) const;

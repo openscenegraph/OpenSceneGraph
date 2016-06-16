@@ -33,6 +33,12 @@ const double PI_4 = 0.78539816339744830962;
 const double LN_2 = 0.69314718055994530942;
 const double INVLN_2 = 1.0 / LN_2;
 
+const float PIf   = 3.14159265358979323846f;
+const float PI_2f = 1.57079632679489661923f;
+const float PI_4f = 0.78539816339744830962f;
+const float LN_2f = 0.69314718055994530942f;
+const float INVLN_2f = 1.0f / LN_2f;
+
 
 template<typename T>
 inline T absolute(T v) { return v<(T)0?-v:v; }

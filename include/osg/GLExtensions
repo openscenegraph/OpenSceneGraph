@@ -571,6 +571,13 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glBlitFramebuffer) (GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum);
         void (GL_APIENTRY * glGetRenderbufferParameteriv) (GLenum, GLenum, GLint*);
 
+        //subroutine
+        GLint(GL_APIENTRY* glGetSubroutineUniformLocation)( GLuint program, GLenum shadertype, const GLchar *name);
+        void (GL_APIENTRY * glGetActiveSubroutineUniformName)( GLuint program,    GLenum shadertype, GLuint index, GLsizei bufsize, GLsizei *length, GLchar *name);
+        void (GL_APIENTRY * glGetActiveSubroutineUniformiv)( GLuint program, GLenum shadertype, GLuint index, GLenum pname, GLint *values);
+        GLuint (GL_APIENTRY *  glGetSubroutineIndex)( GLuint program, GLenum shadertype, const GLchar *name);
+        void (GL_APIENTRY * glGetActiveSubroutineName)( GLuint program,    GLenum shadertype, GLuint index, GLsizei bufsize, GLsizei *length, GLchar *name);
+        void (GL_APIENTRY * glGetProgramStageiv)( GLuint program,    GLenum shadertype, GLenum pname, GLint *values);
 
         // Sync
         GLsync (GL_APIENTRY * glFenceSync) (GLenum condition, GLbitfield flags);
@@ -584,7 +591,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glDrawArraysIndirect) (GLenum  mode,  const void * indirect);
         void (GL_APIENTRY * glMultiDrawArraysIndirect) (GLenum mode, const void *indirect, GLsizei drawcount, GLsizei stride);
         void (GL_APIENTRY * glDrawElementsIndirect) (GLenum mode,  GLenum type,  const void *indirect);
-        void (GL_APIENTRY * glMultiDrawElementsIndirect)( 	GLenum mode,  	GLenum type,  	const void *indirect,  	GLsizei drawcount,  	GLsizei stride);
+        void (GL_APIENTRY * glMultiDrawElementsIndirect)(     GLenum mode,      GLenum type,      const void *indirect,      GLsizei drawcount,      GLsizei stride);
 
 
         // Transform feedback

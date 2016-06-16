@@ -61,11 +61,11 @@ class OSG_EXPORT GraphicsObjectManager : public osg::Referenced
         unsigned int getContextID() const { return _contextID; }
 
         /** Signal that a new frame has started.*/
-        virtual void newFrame(osg::FrameStamp* fs) {}
+        virtual void newFrame(osg::FrameStamp* /*fs*/) {}
 
         virtual void resetStats() {}
-        virtual void reportStats(std::ostream& out)  {}
-        virtual void recomputeStats(std::ostream& out) const  {}
+        virtual void reportStats(std::ostream& /*out*/)  {}
+        virtual void recomputeStats(std::ostream& /*out*/) const  {}
 
 
         /** Flush all deleted OpenGL objects within the specified availableTime.

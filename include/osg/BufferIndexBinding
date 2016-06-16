@@ -30,13 +30,42 @@ namespace osg {
 
 class State;
 
+
+
+// Common implementation superclass
+class OSG_EXPORT BufferBinding : public StateAttribute
+{
+ protected:
+    BufferBinding(GLenum target);
+    BufferBinding(GLenum target, BufferObject* bo);
+    BufferBinding(const BufferBinding& rhs, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+ public:
+
+
+    GLenum getTarget() const { return _target; }
+
+    /** Set the buffer object that will be bound to the index target.
+     */
+    void setBufferObject(BufferObject *bo) { _bufferObject = bo; }
+    /** Get the buffer object to be bound.
+     */
+    const BufferObject* getBufferObject() const { return _bufferObject.get(); }
+    BufferObject* getBufferObject(){ return _bufferObject.get(); }
+
+    virtual void apply(State& state) const;
+
+ protected:
+    virtual ~BufferBinding();
+    const GLenum _target;
+    ref_ptr<BufferObject> _bufferObject;
+};
+
 /** Encapsulate binding buffer objects to index targets. This
  * specifically supports the uniform buffer and transform feedback
  * targets.
  */
 
-// Common implementation superclass
-class OSG_EXPORT BufferIndexBinding : public StateAttribute
+class OSG_EXPORT BufferIndexBinding : public BufferBinding
 {
  protected:
     BufferIndexBinding(GLenum target, GLuint index);
@@ -49,21 +78,13 @@ class OSG_EXPORT BufferIndexBinding : public StateAttribute
     // track the bindings for many different index targets.
     virtual unsigned getMember() const { return static_cast<unsigned int>(_index); }
 
-    GLenum getTarget() const { return _target; }
-
     /** Get the index target.
      */
     GLuint getIndex() const { return _index; }
-    /** Set the index target. (and update parents StateSets)
+    /** Set the index target.
      */
-    void setIndex(GLuint index);
-    /** Set the buffer object that will be bound to the index target.
-     */
-    void setBufferObject(BufferObject *bo) { _bufferObject = bo; }
-    /** Get the buffer object to be bound.
-     */
-    const BufferObject* getBufferObject() const { return _bufferObject.get(); }
-    BufferObject* getBufferObject(){ return _bufferObject.get(); }
+    void setIndex(GLuint);
+
     /** Set the starting offset into the buffer object for data for
     the indexed target. Note: the required  alignment on the offset
     may be quite large (e.g., 256 bytes on NVidia 8600M). This
@@ -79,9 +100,7 @@ class OSG_EXPORT BufferIndexBinding : public StateAttribute
 
  protected:
     virtual ~BufferIndexBinding();
-    const GLenum _target;
-    GLuint _index;
-    ref_ptr<BufferObject> _bufferObject;
+    /*const*/ GLuint _index;
     GLintptr _offset;
     GLsizeiptr _size;
 };
@@ -196,7 +215,7 @@ class OSG_EXPORT ShaderStorageBufferBinding : public BufferIndexBinding
     }
 };
 
-class OSG_EXPORT DrawIndirectBufferBinding : public BufferIndexBinding
+class OSG_EXPORT DrawIndirectBufferBinding : public BufferBinding
 {
  public:
     DrawIndirectBufferBinding();
@@ -206,6 +225,7 @@ class OSG_EXPORT DrawIndirectBufferBinding : public BufferIndexBinding
     DrawIndirectBufferBinding( BufferObject* bo);
     void apply(State& state) const;
     DrawIndirectBufferBinding(const DrawIndirectBufferBinding& rhs, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
     META_StateAttribute(osg, DrawIndirectBufferBinding, INDIRECTDRAWBUFFERBINDING);
 
     virtual int compare(const StateAttribute& bb) const

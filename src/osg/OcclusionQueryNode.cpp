@@ -101,12 +101,16 @@ struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
     typedef std::vector<osg::ref_ptr<osg::TestResult> > ResultsVector;
     ResultsVector _results;
 
-    RetrieveQueriesCallback( osg::GLExtensions* ext=NULL )
-      : _extensionsFallback( ext )
+    RetrieveQueriesCallback( osg::GLExtensions* ext=NULL )  :
+        _extensionsFallback( ext )
     {
     }
 
-    RetrieveQueriesCallback( const RetrieveQueriesCallback&, const osg::CopyOp& ) {}
+    RetrieveQueriesCallback( const RetrieveQueriesCallback& rqc, const osg::CopyOp& ) :
+        _extensionsFallback( rqc._extensionsFallback )
+    {
+    }
+
     META_Object( osgOQ, RetrieveQueriesCallback )
 
     virtual void operator() (const osg::Camera& camera) const
@@ -332,7 +336,7 @@ QueryGeometry::drawImplementation( osg::RenderInfo& renderInfo ) const
         OSG_FATAL << "osgOQ: QG: Invalid RQCB." << std::endl;
         return;
     }
-    rqcb->add( tr );
+    rqcb->add( tr.get() );
 
     OSG_DEBUG <<
         "osgOQ: QG: Querying for: " << _oqnName << std::endl;

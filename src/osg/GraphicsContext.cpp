@@ -54,18 +54,15 @@ void GraphicsContext::WindowingSystemInterfaces::addWindowingSystemInterface(Gra
 {
     if (std::find(_interfaces.begin(), _interfaces.end(), wsi)==_interfaces.end())
     {
-        OSG_NOTICE<<"GraphicsContext::WindowingSystemInterfaces::addWindowingSystemInterface("<<wsi<<") Name="<<wsi->getName()<<std::endl;
         _interfaces.push_back(wsi);
     }
 }
 
 void GraphicsContext::WindowingSystemInterfaces::removeWindowingSystemInterface(GraphicsContext::WindowingSystemInterface* wsi)
 {
-    printf("GraphicsContext::WindowingSystemInterfaces::removeWindowingSystemInterface()\n");
     Interfaces::iterator itr = std::find(_interfaces.begin(), _interfaces.end(), wsi);
     if (itr!=_interfaces.end())
     {
-        printf("    succeded GraphicsContext::WindowingSystemInterfaces::removeWindowingSystemInterface()\n");
         _interfaces.erase(itr);
     }
 }

@@ -30,7 +30,7 @@ class OSG_EXPORT ValueMap : public osg::Object
 
         ValueMap(const ValueMap& vm, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-        META_Object(osg, ValueMap)
+        META_Object(osg, ValueMap);
 
         typedef std::map< osg::ref_ptr<const osg::Referenced>, osg::ref_ptr<osg::Object>  > KeyValueMap;
 
@@ -50,16 +50,18 @@ class OSG_EXPORT ValueMap : public osg::Object
         {
             typedef TemplateValueObject<T> UserValueObject;
             KeyValueMap::iterator itr = _keyValueMap.find(key);
-            if (itr!=_keyValueMap.end() && typeid(*(itr->second))==typeid(UserValueObject))
+            if (itr!=_keyValueMap.end())
             {
-                UserValueObject* uvo = static_cast<UserValueObject*>(itr->second.get());
-                uvo->setValue(value);
-                return uvo;
+                osg::Object* obj = itr->second.get();
+                if (typeid(*(obj))==typeid(UserValueObject))
+                {
+                    UserValueObject* uvo = static_cast<UserValueObject*>(itr->second.get());
+                    uvo->setValue(value);
+                    return uvo;
+                }
             }
-            else
-            {
-                return (_keyValueMap[key] = new UserValueObject(value)).get();
-            }
+
+            return (_keyValueMap[key] = new UserValueObject(value)).get();
         }
 
 

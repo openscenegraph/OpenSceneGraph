@@ -13,7 +13,6 @@
 
 #include <osg/AudioStream>
 
-
 using namespace osg;
 
 AudioSink::AudioSink() :

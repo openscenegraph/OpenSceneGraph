@@ -207,7 +207,7 @@ class OSG_EXPORT State : public Referenced
         /** Get the unform list in which to inject any uniforms that StateAttribute::apply(State&) methods provide.*/
         StateSet::UniformList& getCurrentShaderCompositionUniformList() { return _currentShaderCompositionUniformList; }
 
-        /** Convenience method for StateAttribute:::apply(State&) methods to pass on their uniforms to osg::State so it can apply them at the appropriate point.*/
+        /** Convenience method for StateAttribute::apply(State&) methods to pass on their uniforms to osg::State so it can apply them at the appropriate point.*/
         void applyShaderCompositionUniform(const osg::Uniform* uniform, StateAttribute::OverrideValue value=StateAttribute::ON)
         {
             StateSet::RefUniformPair& up = _currentShaderCompositionUniformList[uniform->getName()];
@@ -1493,7 +1493,7 @@ class OSG_EXPORT State : public Referenced
         /** print out the internal details of osg::State - useful for debugging.*/
         void print(std::ostream& fout) const;
 
-        /** Initialize extension used by osg:::State.*/
+        /** Initialize extension used by osg::State.*/
         void initializeExtensionProcs();
 
         /** Get the GL adapter object used to map OpenGL 1.0 glBegin/glEnd usage to vertex arrays.*/

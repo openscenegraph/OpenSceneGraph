@@ -73,14 +73,14 @@ namespace DrawableDrawCallbackWrapper  {
     }
 }
 
-namespace TransformFeedBackDrawCallbackWrapper{
+namespace TransformFeedbackDrawCallbackWrapper{
     REGISTER_OBJECT_WRAPPER( TransformFeedbackDrawCallback,
                              new  osg::TransformFeedbackDrawCallback,
                              osg::TransformFeedbackDrawCallback,
                              "osg::Object osg::Drawable::DrawCallback osg::TransformFeedbackDrawCallback" )
     {
 
-        ADD_GLENUM_SERIALIZER( FeedBackType,GLenum, GL_POINTS);  // _type
+        ADD_GLENUM_SERIALIZER( FeedbackType,GLenum, GL_POINTS);  // _type
 
     }
 }

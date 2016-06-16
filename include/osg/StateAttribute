@@ -191,7 +191,6 @@ class OSG_EXPORT StateAttribute : public Object
 
             UNIFORMBUFFERBINDING,
             TRANSFORMFEEDBACKBUFFERBINDING,
-            INDIRECTDRAWBUFFERBINDING,
 
             ATOMICCOUNTERBUFFERBINDING,
 
@@ -202,6 +201,8 @@ class OSG_EXPORT StateAttribute : public Object
             VERTEX_ATTRIB_DIVISOR,
 
             SHADERSTORAGEBUFFERBINDING,
+
+            INDIRECTDRAWBUFFERBINDING,
 
             CAPABILITY = 100
         };

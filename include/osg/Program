@@ -128,7 +128,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
         /** Remove a uniform block binding. */
         void removeBindUniformBlock(const std::string& name);
 
-        /** Remove a TransformFeedBackVarying. */
+        /** Remove a TransformFeedbackVarying. */
         void removeTransformFeedbackVarying(const std::string& name)
         {
             for(std::vector<std::string>::iterator i=_feedbackout.begin(); i!=_feedbackout.end(); i++)
@@ -146,10 +146,10 @@ class OSG_EXPORT Program : public osg::StateAttribute
         /** Get number of TransformFeedback Varyings. */
         inline unsigned int getNumTransformFeedbackVaryings() const { return _feedbackout.size(); }
 
-        /** Get const TransformFeedBack Varying at index i. */
+        /** Get const TransformFeedback Varying at index i. */
         inline const std::string& getTransformFeedbackVarying(unsigned int i) const { return _feedbackout[i]; }
 
-        /** Set TransformFeedBack Mode. */
+        /** Set TransformFeedback Mode. */
         void setTransformFeedbackMode(GLenum e) {_feedbackmode=e;}
 
         /** Get TransformFeedback Mode. */
@@ -180,7 +180,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
 
                 META_Object(osg, ProgramBinary);
 
-                /** Allocated a data buffer of specified size/*/
+                /** Allocated a data buffer of specified size.*/
                 void allocate(unsigned int size);
 
                 /** Assign program binary data, copying the specified data into locally stored data buffer, the original data can then be deleted.*/
@@ -445,7 +445,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
         GLint _numGroupsY;
         GLint _numGroupsZ;
 
-        /**TransformFeedBack**/
+        /**TransformFeedback**/
         GLenum _feedbackmode;
         std::vector<std::string> _feedbackout;
 

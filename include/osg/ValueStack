@@ -28,7 +28,7 @@ class OSG_EXPORT ValueStack : public osg::Object
 
         ValueStack(const ValueStack& ps, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-        META_Object(osg, ValueStack)
+        META_Object(osg, ValueStack);
 
         typedef std::vector< osg::ref_ptr<Object> > Values;
         typedef std::map< osg::ref_ptr<const osg::Referenced>, Values> ValueStackMap;

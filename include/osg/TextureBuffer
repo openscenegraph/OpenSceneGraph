@@ -46,10 +46,10 @@ class OSG_EXPORT TextureBuffer : public Texture
         void setImage(Image* image);
 
         /** Gets the texture image. */
-        Image* getImage() { return _bufferData.valid() ?dynamic_cast<Image*>(_bufferData.get() ):0; }
+        Image* getImage() { return dynamic_cast<Image*>(_bufferData.get() ); }
 
         /** Gets the const texture image. */
-        inline const Image* getImage() const { return _bufferData.valid() ? dynamic_cast<Image*>(_bufferData.get() ):0; }
+        inline const Image* getImage() const { return dynamic_cast<Image*>(_bufferData.get() ); }
 
          inline unsigned int & getModifiedCount(unsigned int contextID) const
         {

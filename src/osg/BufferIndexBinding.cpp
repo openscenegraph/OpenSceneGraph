@@ -18,16 +18,21 @@
 
 #include <string.h> // for memcpy
 
-
+#ifndef GL_DRAW_INDIRECT_BUFFER
+    #define GL_DRAW_INDIRECT_BUFFER 0x8F3F
+#endif
 namespace osg {
+
 BufferBinding::BufferBinding(GLenum target)
-    : _target(target)
+    : _target(target), _bufferObject(0)
 {
 }
+
 BufferBinding::BufferBinding(GLenum target, BufferObject* bo)
-    : _target(target),  _bufferObject(bo)
+    : _target(target), _bufferObject(bo)
 {
 }
+
 BufferBinding::BufferBinding(const BufferBinding& rhs, const CopyOp& copyop)
     : StateAttribute(rhs, copyop),
       _target(rhs._target),
@@ -52,37 +57,8 @@ void BufferBinding::apply(State& state) const
     }
 }
 
-DrawIndirectBufferBinding::DrawIndirectBufferBinding( )
-  : BufferBinding(GL_DRAW_INDIRECT_BUFFER, 0)
-{
-}
-
-DrawIndirectBufferBinding::DrawIndirectBufferBinding(  BufferObject* bo)
-    : BufferBinding(GL_DRAW_INDIRECT_BUFFER, bo)
-{
-
-}
-
-DrawIndirectBufferBinding::DrawIndirectBufferBinding(const DrawIndirectBufferBinding& rhs,
-                                           const CopyOp& copyop)
-    : BufferBinding(rhs, copyop)
-{
-}
-void DrawIndirectBufferBinding::apply(State& state) const
-{
-    if (_bufferObject.valid())
-    {
-        GLBufferObject* glObject
-            = _bufferObject->getOrCreateGLBufferObject(state.getContextID());
-        if (!glObject->_extensions->isUniformBufferObjectSupported)
-            return;
-       // assume DrawIndirectBufferBinding bound buffer is not maintained CPU side        if (glObject->isDirty()) glObject->compileBuffer();
-        glObject->_extensions->glBindBuffer (_target, glObject->getGLObjectID());
-    }
-}
-
 BufferIndexBinding::BufferIndexBinding(GLenum target, GLuint index)
-    : BufferBinding(target,0), _index(index), _offset(0), _size(0)
+    :BufferBinding(target), _index(index), _offset(0), _size(0)
 {
 }
 
@@ -94,7 +70,7 @@ BufferIndexBinding::BufferIndexBinding(GLenum target, GLuint index, BufferObject
 
 BufferIndexBinding::BufferIndexBinding(const BufferIndexBinding& rhs, const CopyOp& copyop)
     : BufferBinding(rhs, copyop),
-       _index(rhs._index),
+      _index(rhs._index),
       _offset(rhs._offset),
       _size(rhs._size)
 {
@@ -105,16 +81,28 @@ BufferIndexBinding::~BufferIndexBinding()
 }
 
 void BufferIndexBinding::setIndex(GLuint index){
-    _index=index;
-    ///update parents because index is part of the key of this attribute
-    StateSet*parent;
-    for(unsigned int i=0;i<getNumParents();i++){
-        parent=getParent(i);
-        StateSet::AttributeList::const_iterator itr=parent->getAttributeList().find(getTypeMemberPair());
-        //parent->setAttributeAndModes(this,  itr->second.second);
-        parent->setAttribute(this,  itr->second.second);
 
+    StateSet**parents=new StateSet* [getNumParents()];
+    StateAttribute::GLModeValue *parentmodes =new StateAttribute::GLModeValue  [getNumParents()];
+    unsigned int numparent=getNumParents();
+    for(unsigned int i=0;i<numparent;i++)
+    {
+        parents[i]=getParent(i);
+        parentmodes[i]=parents[i]->getAttributeList().find(getTypeMemberPair())->second.second;
     }
+
+    ref_ptr<StateSet> dummy=new StateSet();
+    dummy->setAttributeAndModes(this,StateAttribute::ON);
+
+    for(unsigned int i=0;i<numparent;i++)parents[i]->removeAttribute(this);
+
+    _index=index;
+
+    for(unsigned int i=0;i<numparent;i++)
+        parents[i]->setAttributeAndModes(this,  parentmodes[i]);
+
+    dummy->removeAttribute(this);
+
 }
 void BufferIndexBinding::apply(State& state) const
 {
@@ -230,5 +218,38 @@ ShaderStorageBufferBinding::ShaderStorageBufferBinding(const ShaderStorageBuffer
     : BufferIndexBinding(rhs, copyop)
 {
 }
+
+
+
+
+
+DrawIndirectBufferBinding::DrawIndirectBufferBinding( )
+  : BufferBinding(GL_DRAW_INDIRECT_BUFFER)
+{
+}
+void DrawIndirectBufferBinding::apply(State& state) const
+{
+    if (_bufferObject.valid())
+    {
+        GLBufferObject* glObject
+            = _bufferObject->getOrCreateGLBufferObject(state.getContextID());
+        if (!glObject->_extensions->isUniformBufferObjectSupported)
+            return;
+      //  if (glObject->isDirty()) glObject->compileBuffer();
+        glObject->_extensions->glBindBuffer (_target, glObject->getGLObjectID());
+    }
+}
+DrawIndirectBufferBinding::DrawIndirectBufferBinding(  BufferObject* bo)
+    : BufferBinding(GL_DRAW_INDIRECT_BUFFER, bo)
+{
+
+}
+
+DrawIndirectBufferBinding::DrawIndirectBufferBinding(const DrawIndirectBufferBinding& rhs,
+                                           const CopyOp& copyop)
+    : BufferBinding(rhs, copyop)
+{
+}
+
 
 } // namespace osg

@@ -115,8 +115,9 @@ struct GeometryFinishedObjectReadCallback : public osgDB::FinishedObjectReadCall
     {
 #if 1
         osg::Geometry& geometry = static_cast<osg::Geometry&>(obj);
+
+        ///HACK to test VAO feature
         geometry.setUseDisplayList(false);
-        //geometry.setUseVertexBufferObjects(true);
         geometry.setUseVertexArrayObject(true);
 
         if (geometry.getUseVertexBufferObjects())

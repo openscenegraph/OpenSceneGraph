@@ -20,7 +20,7 @@
 #include <osg/Drawable>
 
 
-void DrawArraysIndirect::draw(osg::State& state, bool /*useVertexBufferObjects*/) const
+void DrawArraysIndirect::draw(osg::State& state, bool /*useVertexBufferObjects*/,bool) const
 {
 // if you want to see how many primitives were rendered - uncomment code below, but
 // be warned : it is a serious performance killer ( because of GPU->CPU roundtrip )

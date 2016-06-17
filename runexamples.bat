@@ -72,9 +72,6 @@ osghangglide
 echo osghud
 osghud dumptruck.osgt
 
-echo osgimpostor
-osgimpostor
-
 echo osgkeyboard
 osgkeyboard
 

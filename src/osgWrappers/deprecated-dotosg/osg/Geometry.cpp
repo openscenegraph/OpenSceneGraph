@@ -1376,8 +1376,8 @@ bool Geometry_matchBindingTypeStr(const char* str,osg::Array::Binding& mode)
 {
     if (strcmp(str,"OFF")==0) mode = osg::Array::BIND_OFF;
     else if (strcmp(str,"OVERALL")==0) mode = osg::Array::BIND_OVERALL;
-    else if (strcmp(str,"PER_PRIMITIVE")==0) mode = (osg::Array::Binding)3;
     else if (strcmp(str,"PER_PRIMITIVE_SET")==0) mode = osg::Array::BIND_PER_PRIMITIVE_SET;
+    else if (strcmp(str,"PER_PRIMITIVE")==0) mode = (osg::Array::Binding)3;
     else if (strcmp(str,"PER_VERTEX")==0) mode = osg::Array::BIND_PER_VERTEX;
     else return false;
     return true;

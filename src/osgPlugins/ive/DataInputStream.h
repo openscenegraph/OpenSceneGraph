@@ -71,7 +71,7 @@ public:
     osg::Quat readQuat();
     osg::Matrixf readMatrixf();
     osg::Matrixd readMatrixd();
-    deprecated_osg::Geometry::AttributeBinding readBinding();
+    osg::Array::Binding readBinding();
     osg::Array* readArray();
     osg::IntArray* readIntArray();
     osg::UByteArray* readUByteArray();

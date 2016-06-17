@@ -507,13 +507,12 @@ void DataOutputStream::writeQuat(const osg::Quat& q){
     if (_verboseOutput) std::cout<<"read/writeQuat() ["<<q<<"]"<<std::endl;
 }
 
-void DataOutputStream::writeBinding(deprecated_osg::Geometry::AttributeBinding b){
+void DataOutputStream::writeBinding(osg::Array::Binding b){
     switch(b){
-        case deprecated_osg::Geometry::BIND_OFF:                           writeChar((char) 0); break;
-        case deprecated_osg::Geometry::BIND_OVERALL:                       writeChar((char) 1); break;
-        case deprecated_osg::Geometry::BIND_PER_PRIMITIVE:                 writeChar((char) 2); break;
-        case deprecated_osg::Geometry::BIND_PER_PRIMITIVE_SET:             writeChar((char) 3); break;
-        case deprecated_osg::Geometry::BIND_PER_VERTEX:                    writeChar((char) 4); break;
+        case osg::Array::BIND_OFF:                           writeChar((char) 0); break;
+        case osg::Array::BIND_OVERALL:                       writeChar((char) 1); break;
+        case osg::Array::BIND_PER_PRIMITIVE_SET:             writeChar((char) 3); break;
+        case osg::Array::BIND_PER_VERTEX:                    writeChar((char) 4); break;
         default: throwException("Unknown binding in DataOutputStream::writeBinding()");
     }
 

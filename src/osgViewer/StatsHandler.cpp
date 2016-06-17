@@ -81,7 +81,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
         {
             if (ea.getKey()==_keyEventTogglesOnScreenStats)
             {
-                if (viewer->getViewerStats())
+                if (viewer && viewer->getViewerStats())
                 {
                     if (!_initialized)
                     {
@@ -199,7 +199,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
             }
             if (ea.getKey()==_keyEventPrintsOutStats)
             {
-                if (viewer->getViewerStats())
+                if (viewer && viewer->getViewerStats())
                 {
                     OSG_NOTICE<<std::endl<<"Stats report:"<<std::endl;
                     typedef std::vector<osg::Stats*> StatsList;
@@ -239,6 +239,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                 }
                 return true;
             }
+            break;
         }
         case(osgGA::GUIEventAdapter::RESIZE):
             setWindowSize(ea.getWindowWidth(), ea.getWindowHeight());

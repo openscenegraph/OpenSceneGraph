@@ -20,17 +20,16 @@ matrix:
           - $HOME/.ccache
       compiler:
           #- clang
-          - g++
+          - gcc
       addons:
         coverity_scan:
           project:
             name: "openscenegraph/OpenSceneGraph"
-            description: "OpenSceneGraph"
-            notification_email: robert@openscenegraph.com
-          build_command_prepend: "mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DOSG_USE_AGGRESSIVE_WARNINGS=0 .."
+            description: "OpenSceneGraph build"
+          notification_email: robert@openscenegraph.com
+          build_command_prepend: "cmake -DCMAKE_BUILD_TYPE=Release ."
           build_command:   "make -j 3"
           branch_pattern: coverity_scan
-
         apt:
           sources:
             #- llvm-toolchain-precise-3.8

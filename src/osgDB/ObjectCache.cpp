@@ -16,6 +16,11 @@
 
 using namespace osgDB;
 
+bool ObjectCache::ClassComp::operator() (const ObjectCache::FileNameOptionsPair& lhs, const ObjectCache::FileNameOptionsPair& rhs)
+{
+    return lhs.first < rhs.first || *lhs.second < *rhs.second;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
 // ObjectCache

@@ -68,9 +68,15 @@ class OSGDB_EXPORT ObjectCache : public osg::Referenced
 
         virtual ~ObjectCache();
 
-        typedef std::pair<osg::ref_ptr<osg::Object>, double >           ObjectTimeStampPair;
         typedef std::pair<std::string, osg::ref_ptr<const osgDB::Options> >   FileNameOptionsPair;
-        typedef std::map<FileNameOptionsPair, ObjectTimeStampPair >     ObjectCacheMap;
+
+        class ClassComp {
+        public:
+            bool operator() (const ObjectCache::FileNameOptionsPair& lhs, const ObjectCache::FileNameOptionsPair& rhs);
+        };
+
+        typedef std::pair<osg::ref_ptr<osg::Object>, double >           ObjectTimeStampPair;
+        typedef std::map<FileNameOptionsPair, ObjectTimeStampPair, ClassComp>     ObjectCacheMap;
 
         ObjectCacheMap                          _objectCache;
         OpenThreads::Mutex                      _objectCacheMutex;

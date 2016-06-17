@@ -149,7 +149,7 @@ bool XBaseParser::parse(int fd)
     std::vector<XBaseFieldDescriptor>::iterator it, end = _xBaseFieldDescriptorList.end();
     for (Integer i = 0; i < _xBaseHeader._numRecord; ++i)
     {
-        if ((nbytes = ::read( fd, record, _xBaseHeader._recordLength)) <= 0) return false;
+        if ((nbytes = ::read( fd, record, _xBaseHeader._recordLength)) <= 0) return break;
 
         char * recordPtr = record;
         osgSim::ShapeAttributeList * shapeAttributeList = new osgSim::ShapeAttributeList;

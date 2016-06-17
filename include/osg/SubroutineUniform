@@ -63,11 +63,12 @@ namespace osg
         }
 
         inline unsigned int getNumSubroutineNames() const{      return _subroutineNames.size(); }
+        inline const std::string &getSubroutineName(const unsigned int i) const{      return _subroutineNames[i]; }
 
         ///set the shader type whose subroutine names are from
         inline Shader::Type getShaderType() const{              return _shadertype;             }
 
-        inline void getShaderType( Shader::Type shadertype){    _shadertype=shadertype;         }
+        inline bool setShaderType( Shader::Type shadertype){    _shadertype=shadertype;  return true;       }
 
         virtual void apply(State& state) const;
 

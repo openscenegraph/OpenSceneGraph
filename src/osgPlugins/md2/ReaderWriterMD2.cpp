@@ -210,10 +210,7 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
 
     osg::ref_ptr<osg::Vec3Array> vertexCoords = NULL;
     osg::ref_ptr<osg::Vec2Array> texCoords = NULL;
-    osg::ref_ptr<osg::UIntArray> vertexIndices = NULL;
-    osg::ref_ptr<osg::UIntArray> texIndices = NULL;
     osg::ref_ptr<osg::Vec3Array> normalCoords = NULL;
-    osg::ref_ptr<osg::UIntArray> normalIndices = NULL;
 
     // load the texture skins
 
@@ -348,46 +345,32 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
         }
 
         if (curFrame == 0) {
-            vertexIndices = new osg::UIntArray;
-            normalIndices = new osg::UIntArray;
-
             texCoords = new osg::Vec2Array;
-            texIndices = new osg::UIntArray;
 
             for (int vi = 0; vi < md2_header->numTexcoords; vi++) {
                 texCoords->push_back
                     (osg::Vec2 ((float) md2_texcoords[vi].s / md2_header->skinWidth,
                                 1.0f - (float) md2_texcoords[vi].t / md2_header->skinHeight));
             }
-
-            for (int ti = 0; ti < md2_header->numTriangles; ti++) {
-                vertexIndices->push_back (md2_triangles[ti].vertexIndices[0]);
-                vertexIndices->push_back (md2_triangles[ti].vertexIndices[1]);
-                vertexIndices->push_back (md2_triangles[ti].vertexIndices[2]);
-
-                normalIndices->push_back (md2_triangles[ti].vertexIndices[0]);
-                normalIndices->push_back (md2_triangles[ti].vertexIndices[1]);
-                normalIndices->push_back (md2_triangles[ti].vertexIndices[2]);
-
-                texIndices->push_back (md2_triangles[ti].textureIndices[0]);
-                texIndices->push_back (md2_triangles[ti].textureIndices[1]);
-                texIndices->push_back (md2_triangles[ti].textureIndices[2]);
-            }
         }
 
-        osg::ref_ptr<deprecated_osg::Geometry> geom = new deprecated_osg::Geometry;
+        osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
 
         geom->setVertexArray (vertexCoords.get());
-        geom->setVertexIndices (vertexIndices.get());
-
         geom->setTexCoordArray (0, texCoords.get());
-        geom->setTexCoordIndices (0, texIndices.get());
 
-        geom->setNormalArray (normalCoords.get());
-        geom->setNormalIndices (normalIndices.get());
-        geom->setNormalBinding (deprecated_osg::Geometry::BIND_PER_VERTEX);
+        geom->setNormalArray (normalCoords.get(), osg::Array::BIND_PER_VERTEX);
 
-        geom->addPrimitiveSet (new osg::DrawArrays (osg::PrimitiveSet::TRIANGLES, 0, vertexIndices->size ()));
+        // set up triangles
+        osg::ref_ptr<osg::DrawElementsUShort> elements = new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLES);
+        for (int ti = 0; ti < md2_header->numTriangles; ti++)
+        {
+            elements->push_back (md2_triangles[ti].vertexIndices[0]);
+            elements->push_back (md2_triangles[ti].vertexIndices[1]);
+            elements->push_back (md2_triangles[ti].vertexIndices[2]);
+        }
+        geom->addPrimitiveSet (elements.get());
+
 
         osg::ref_ptr<osg::Geode> geode = new osg::Geode;
         geode->addDrawable (geom.get());

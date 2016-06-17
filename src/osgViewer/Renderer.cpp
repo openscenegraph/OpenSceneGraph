@@ -419,7 +419,7 @@ Renderer::Renderer(osg::Camera* camera):
     _sceneView[0]->setDefaults(sceneViewOptions);
     _sceneView[1]->setDefaults(sceneViewOptions);
 
-    if (ds->getUseSceneViewForStereoHint())
+    if (ds && ds->getUseSceneViewForStereoHint())
     {
         _sceneView[0]->setDisplaySettings(ds);
         _sceneView[1]->setDisplaySettings(ds);

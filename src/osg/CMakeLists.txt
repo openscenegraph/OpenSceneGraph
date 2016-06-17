@@ -162,6 +162,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Stats
     ${HEADER_PATH}/Stencil
     ${HEADER_PATH}/StencilTwoSided
+    ${HEADER_PATH}/SubroutineUniform
     ${HEADER_PATH}/Switch
     ${HEADER_PATH}/TemplatePrimitiveFunctor
     ${HEADER_PATH}/TexEnv
@@ -360,6 +361,7 @@ SET(TARGET_SRC
     Stats.cpp
     Stencil.cpp
     StencilTwoSided.cpp
+    SubroutineUniform.cpp
     Switch.cpp
     TexEnvCombine.cpp
     TexEnv.cpp

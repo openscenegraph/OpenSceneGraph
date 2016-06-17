@@ -1047,6 +1047,9 @@ GLExtensions::GLExtensions(unsigned int contextID)
     osg::setGLExtensionFuncPtr(glGetSubroutineIndex, "glGetSubroutineIndex");
     osg::setGLExtensionFuncPtr(glGetActiveSubroutineName, "glGetActiveSubroutineName");
     osg::setGLExtensionFuncPtr(glGetProgramStageiv, "glGetProgramStageiv");
+    osg::setGLExtensionFuncPtr(glUniformSubroutinesuiv, "glUniformSubroutinesuiv");
+    osg::setGLExtensionFuncPtr(glGetUniformSubroutineuiv, "glGetUniformSubroutineuiv");
+
 
     // Sync
     osg::setGLExtensionFuncPtr(glFenceSync, "glFenceSync");

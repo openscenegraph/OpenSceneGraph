@@ -41,7 +41,7 @@
 #include <osgViewer/Viewer>
 
 #include <osg/BufferIndexBinding>
-#include <osgDB/WriteFile>
+#include <osg/SubroutineUniform>
 
 #include <iostream>
 
@@ -83,13 +83,32 @@ static const char* RendervertSource =
 };
 static const char* fragSource =
 {
-    "#version 120\n"
+    "#version 400\n"
     "#extension GL_EXT_geometry_shader4 : enable\n"
+
     "uniform float u_anim1;\n"
     "varying vec4 v_color;\n"
+    "subroutine vec4 color_t();\n"
+
+"subroutine uniform color_t Color;\n"
+
+
+
+"subroutine(color_t)\n"
+"vec4 ColorNormal()\n"
+"{\n"
+"  return v_color;\n"
+"}\n"
+
+"subroutine(color_t)\n"
+"vec4 ColorYellow()\n"
+"{\n"
+"  return vec4(1, 1, 0, 1);\n"
+"}\n"
+
     "void main(void)\n"
     "{\n"
-    "    gl_FragColor =  v_color;\n"
+    "    gl_FragColor =  Color();\n"
     "}\n"
 };
 
@@ -200,6 +219,8 @@ int main( int , char** )
         somePointsGenerator->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
         somePointsGenerator->addPrimitiveSet( new osg::DrawArrays( GL_POINTS, 0, vAry->size() ) );
 
+
+
         osg::ref_ptr<osg::Program> _program=createGeneratorShader() ;
         sset->setAttribute(_program );
 
@@ -232,7 +253,9 @@ int main( int , char** )
         osg::StateSet* sset =   somePointsRenderer-> getOrCreateStateSet();
 
         sset->setAttribute( createRenderShader() );
-
+osg::SubroutineUniform * subroutineu=new osg::SubroutineUniform(osg::Shader::FRAGMENT);
+subroutineu->addSubroutineName("ColorNormal");
+        sset->setAttribute(subroutineu);
 
     }
 

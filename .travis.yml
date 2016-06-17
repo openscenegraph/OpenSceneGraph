@@ -2,7 +2,7 @@ env:
   global:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
    #   via the "travis encrypt" command using the project repo's public key
-   - secure: "Hs4uOpT5baqvud5Is0TShPzulK/DNsa8WkebyaIPsENT7q4+KGPYaVj9W0p8pWscp0xKWogzKjwmmfpWU7LJEtplXk1GLzSW9l7PoKmvN3dpWN5tvHdX5laHsudDrSlU/+62S4zq6t0FpiLGhmOp0bjffKeSSxprpTE9OwZyecaM12ADnNT1D+pPYe18jGC05Bs9R5Idt1oJq2N1Z+XYok5VdUML7O0qSBf/zq2IY0L+UhtGE056oSMe0st0gfLv0iN845SaNaY+F9GBZZlaEo0wKkqzpfqjjqMsQ96z+iWiovVkL07klmdiy7tbz8dOkpBjPaMDP9oYsKkhx/8HZWOYFelDJsUdOgdNkkSxMnq7H774TFplVU4mNn+nt4EFMN4IGjZzeoWuX6+3Ut/ew5h3v9dEiH9TF03bc5kzpEM+sBg9z1654PUOQGzPRaQXRqLuEFcj+O4jEdF1mAqvOwDg9fihY3P4c6SVaLTu0HfERT0nU9BDaRTAnOQVW3768oPR2WSSpYrG1MR1kHS6U8ODTkGAitbdmBJKorGzIfbjJW3XS5OVOnkodfMKJAt2qhG/8RY+vGpy5GJwJZMArigt4bXlvLNizCTSFhK3WYjxL/hqUrOWg7n1Jz4sHcOyXJ8jfTW1elO5KZweJbqpJibtGkOVE8KCtcOBJwQmU/4="
+   - secure: "0ROQiFbsZo33ce2v5VjBxNljemh/HU70ntSSPygYwaDFymubts/62SixXVkbKNIFdrs3uYD6qeA/eMmpqXxLcs+PXNq5NrH7eSWw9oDIKMhq3NQH/IZLdRfXwihHimZ1qEs/TXyWlT2aC4rpBi1py3cJeTh1aBMlz4V/nm16iRAgc596ThNTuPDHa0F9/gZnwccI/Rr9VpiYn7vEBbuY9lYr43D0G3NuuQyvvlHShroH09fh6KyFOWIY38AQtnuVGNC1fIiAUk7TUqDqSBwhIrUV5saHbP0kca6DP32REkv//h4JwM76UHv+ntVEoK/UiztJHMkrw71gXYTyvIvlDBpT+IDoeIwUW2QFNQ5zJZI7FM8k0+oeK+F7k/mkffDzr1zww/PQoxqFBF0PoxAni/L9qkA4X2o1A6mRDbe9besp2LQG6Vniwj3bHpCId2QiiMrANVg0EAqkcL2mVFEaqZsh90qCkr1UDq4WQoYbXh0Fy3UnQpbuxDvCME8u03lwuv6ds/SBxc5cgKv7oWXgezaDg7/OCR+0lIAGuLqmNRD8Xw7a0WZGmSbYCHIZmeyFja2KuUvMiVCt8+QsyZr3e523DwBwnSj1BIYFRstMaSEJgu9B8rfTRRllOOKJXCQtdFVuGu8VI6PniSAkI6c535yOWzsuS8HwIkN2ll+Wn7E="
 
 matrix:
   fast_finish: true
@@ -22,6 +22,15 @@ matrix:
           #- clang
           - g++
       addons:
+        coverity_scan:
+          project:
+            name: "openscenegraph/OpenSceneGraph"
+            description: "OpenSceneGraph"
+            notification_email: robert@openscenegraph.com
+          build_command_prepend: "mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DOSG_USE_AGGRESSIVE_WARNINGS=0 .."
+          build_command:   "make -j 3"
+          branch_pattern: coverity_scan
+
         apt:
           sources:
             #- llvm-toolchain-precise-3.8
@@ -30,26 +39,6 @@ matrix:
             #- clang-3.8
             - g++
             - cmake
-
-        coverity_scan:
-          # GitHub project metadata
-          # ** specific to your project **
-          project:
-              name: openscenegraph/osg
-              description: OpenSceneGraph
-              version: 3.5.x
-          # Where email notification of build analysis results will be sent
-          notification_email: robert@openscenegraph.com
-          # Commands to prepare for build_command
-          # ** likely specific to your build **
-          build_command_prepend: cmake -DCMAKE_BUILD_TYPE=Release -DOSG_USE_AGGRESSIVE_WARNINGS=0 .
-          # The command that will be added as an argument to "cov-build" to compile your project for analysis,
-          # ** likely specific to your build **
-          build_command: make -j 3
-          # Pattern to match selecting branches that will run analysis. We recommend leaving this set to 'coverity_scan'.
-          # Take care in resource usage, and consider the build frequency allowances per
-          #   https://scan.coverity.com/faq#frequency
-          branch_pattern: coverity_scan
 
     # OSX build
     - os: osx

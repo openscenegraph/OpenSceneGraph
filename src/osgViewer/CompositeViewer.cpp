@@ -778,7 +778,7 @@ void CompositeViewer::generateSlavePointerData(osg::Camera* camera, osgGA::GUIEv
         }
 
         // slave Camera tahnks to sharing the same View
-        osg::View::Slave* slave = view ? view->findSlaveForCamera(camera) : 0;
+        osg::View::Slave* slave = view->findSlaveForCamera(camera);
         if (slave)
         {
             if (camera->getReferenceFrame()==osg::Camera::RELATIVE_RF && slave->_useMastersSceneData)
@@ -872,7 +872,7 @@ void CompositeViewer::generatePointerData(osgGA::GUIEventAdapter& event)
         if (camera->getAllowEventFocus() &&
             camera->getRenderTargetImplementation()==osg::Camera::FRAME_BUFFER)
         {
-            osg::Viewport* viewport = camera ? camera->getViewport() : 0;
+            osg::Viewport* viewport = camera->getViewport();
             if (viewport &&
                 x >= viewport->x() && y >= viewport->y() &&
                 x <= (viewport->x()+viewport->width()) && y <= (viewport->y()+viewport->height()) )
@@ -888,7 +888,7 @@ void CompositeViewer::generatePointerData(osgGA::GUIEventAdapter& event)
 
     if (camera)
     {
-        osg::Viewport* viewport = camera ? camera->getViewport() : 0;
+        osg::Viewport* viewport = camera->getViewport();
 
         event.addPointerData(new osgGA::PointerData(camera, (x-viewport->x())/viewport->width()*2.0f-1.0f, -1.0, 1.0,
                                                             (y-viewport->y())/viewport->height()*2.0f-1.0f, -1.0, 1.0));

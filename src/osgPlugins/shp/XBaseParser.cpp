@@ -13,6 +13,7 @@
 #endif
 
 #include <fcntl.h>
+#include <errno.h>
 #include <osg/Notify>
 
 namespace ESRIShape
@@ -131,12 +132,22 @@ bool XBaseParser::parse(int fd)
         if (nullTerminator == 0x0D)
             fieldDescriptorDone = true;
         else
-            ::lseek( fd, -1, SEEK_CUR);
+        {
+            if (::lseek( fd, -1, SEEK_CUR)==-1)
+            {
+                OSG_WARN<<"File parsing failed, lseek return errno="<<errno<<std::endl;
+                return false;
+            }
+        }
     }
 
 
     // ** move to the end of the Header
-    ::lseek( fd, _xBaseHeader._headerLength + 1, SEEK_SET);
+    if (::lseek( fd, _xBaseHeader._headerLength + 1, SEEK_SET)==-1)
+    {
+        OSG_WARN<<"File parsing failed, lseek return errno="<<errno<<std::endl;
+        return false;
+    }
 
 
     // ** reserve AttributeListList
@@ -149,7 +160,7 @@ bool XBaseParser::parse(int fd)
     std::vector<XBaseFieldDescriptor>::iterator it, end = _xBaseFieldDescriptorList.end();
     for (Integer i = 0; i < _xBaseHeader._numRecord; ++i)
     {
-        if ((nbytes = ::read( fd, record, _xBaseHeader._recordLength)) <= 0) return false;
+        if ((nbytes = ::read( fd, record, _xBaseHeader._recordLength)) <= 0) break;
 
         char * recordPtr = record;
         osgSim::ShapeAttributeList * shapeAttributeList = new osgSim::ShapeAttributeList;

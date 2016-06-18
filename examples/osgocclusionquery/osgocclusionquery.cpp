@@ -561,14 +561,16 @@ createBox()
     osg::ref_ptr<osg::Geode> box = new osg::Geode;
 
     osg::StateSet* state = box->getOrCreateStateSet();
-    osg::PolygonMode* pm = new osg::PolygonMode(
-        osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::FILL );
-    state->setAttributeAndModes( pm,
-        osg::StateAttribute::ON | osg::StateAttribute::PROTECTED );
 
-    osg::ref_ptr<deprecated_osg::Geometry> geom = new deprecated_osg::Geometry;
+    osg::PolygonMode* pm = new osg::PolygonMode( osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::FILL );
+    state->setAttributeAndModes( pm, osg::StateAttribute::ON | osg::StateAttribute::PROTECTED );
+
+    osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
     osg::ref_ptr<osg::Vec3Array> v = new osg::Vec3Array;
     geom->setVertexArray( v.get() );
+
+    osg::ref_ptr<osg::Vec3Array> n = new osg::Vec3Array;
+    geom->setNormalArray( n.get(), osg::Array::BIND_PER_VERTEX );
 
     {
         const float x( 0.f );
@@ -581,40 +583,56 @@ createBox()
         v->push_back( osg::Vec3( x-r, y+r, z+r ) );
         v->push_back( osg::Vec3( x-r, y+r, z-r ) );
 
+        n->push_back( osg::Vec3( -1.f, 0.f, 0.f ) );
+        n->push_back( osg::Vec3( -1.f, 0.f, 0.f ) );
+        n->push_back( osg::Vec3( -1.f, 0.f, 0.f ) );
+        n->push_back( osg::Vec3( -1.f, 0.f, 0.f ) );
+
         v->push_back( osg::Vec3( x+r, y-r, z+r ) ); //right +X
         v->push_back( osg::Vec3( x+r, y-r, z-r ) );
         v->push_back( osg::Vec3( x+r, y+r, z-r ) );
         v->push_back( osg::Vec3( x+r, y+r, z+r ) );
+
+        n->push_back( osg::Vec3( 1.f, 0.f, 0.f ) );
+        n->push_back( osg::Vec3( 1.f, 0.f, 0.f ) );
+        n->push_back( osg::Vec3( 1.f, 0.f, 0.f ) );
+        n->push_back( osg::Vec3( 1.f, 0.f, 0.f ) );
 
         v->push_back( osg::Vec3( x-r, y-r, z-r ) ); // bottom -Z
         v->push_back( osg::Vec3( x-r, y+r, z-r ) );
         v->push_back( osg::Vec3( x+r, y+r, z-r ) );
         v->push_back( osg::Vec3( x+r, y-r, z-r ) );
 
+        n->push_back( osg::Vec3( 0.f, 0.f, -1.f ) );
+        n->push_back( osg::Vec3( 0.f, 0.f, -1.f ) );
+        n->push_back( osg::Vec3( 0.f, 0.f, -1.f ) );
+        n->push_back( osg::Vec3( 0.f, 0.f, -1.f ) );
+
         v->push_back( osg::Vec3( x-r, y-r, z+r ) ); // top +Z
         v->push_back( osg::Vec3( x+r, y-r, z+r ) );
         v->push_back( osg::Vec3( x+r, y+r, z+r ) );
         v->push_back( osg::Vec3( x-r, y+r, z+r ) );
 
+        n->push_back( osg::Vec3( 0.f, 0.f, 1.f ) );
+        n->push_back( osg::Vec3( 0.f, 0.f, 1.f ) );
+        n->push_back( osg::Vec3( 0.f, 0.f, 1.f ) );
+        n->push_back( osg::Vec3( 0.f, 0.f, 1.f ) );
+
         v->push_back( osg::Vec3( x-r, y+r, z-r ) ); // back +Y
         v->push_back( osg::Vec3( x-r, y+r, z+r ) );
         v->push_back( osg::Vec3( x+r, y+r, z+r ) );
         v->push_back( osg::Vec3( x+r, y+r, z-r ) );
+
+        n->push_back( osg::Vec3( 0.f, 1.f, 0.f ) );
+        n->push_back( osg::Vec3( 0.f, 1.f, 0.f ) );
+        n->push_back( osg::Vec3( 0.f, 1.f, 0.f ) );
+        n->push_back( osg::Vec3( 0.f, 1.f, 0.f ) );
     }
 
     osg::ref_ptr<osg::Vec4Array> c = new osg::Vec4Array;
-    geom->setColorArray( c.get() );
-    geom->setColorBinding( deprecated_osg::Geometry::BIND_OVERALL );
-    c->push_back( osg::Vec4( 0.f, 1.f, 1.f, 1.f ) );
+    geom->setColorArray( c.get(), osg::Array::BIND_OVERALL );
 
-    osg::ref_ptr<osg::Vec3Array> n = new osg::Vec3Array;
-    geom->setNormalArray( n.get() );
-    geom->setNormalBinding( deprecated_osg::Geometry::BIND_PER_PRIMITIVE );
-    n->push_back( osg::Vec3( -1.f, 0.f, 0.f ) );
-    n->push_back( osg::Vec3( 1.f, 0.f, 0.f ) );
-    n->push_back( osg::Vec3( 0.f, 0.f, -1.f ) );
-    n->push_back( osg::Vec3( 0.f, 0.f, 1.f ) );
-    n->push_back( osg::Vec3( 0.f, 1.f, 0.f ) );
+    c->push_back( osg::Vec4( 0.f, 1.f, 1.f, 1.f ) );
 
     geom->addPrimitiveSet( new osg::DrawArrays( GL_QUADS, 0, 20 ) );
     box->addDrawable( geom.get() );
@@ -630,32 +648,37 @@ createBox()
 //  * No vertex sharing
 //  * Draw the triangles as wireframe
 osg::ref_ptr<osg::Node>
-createRandomTriangles( unsigned int num )
+createRandomTriangles( unsigned int numTriangles )
 {
+    unsigned int numVertices = numTriangles*3;
+
     osg::ref_ptr<osg::Geode> tris = new osg::Geode;
 
     osg::StateSet* ss = tris->getOrCreateStateSet();
 
     // Force wireframe. Many gfx cards handle this poorly.
-    osg::PolygonMode* pm = new osg::PolygonMode(
-        osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::LINE );
-    ss->setAttributeAndModes( pm, osg::StateAttribute::ON |
-        osg::StateAttribute::PROTECTED);
-    ss->setMode( GL_LIGHTING, osg::StateAttribute::OFF |
-        osg::StateAttribute::PROTECTED);
+    osg::PolygonMode* pm = new osg::PolygonMode( osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::LINE );
+    ss->setAttributeAndModes( pm, osg::StateAttribute::ON | osg::StateAttribute::PROTECTED);
+    ss->setMode( GL_LIGHTING, osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED);
 
-    osg::ref_ptr<deprecated_osg::Geometry> geom = new deprecated_osg::Geometry;
+    osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
+
     // Disable display lists to decrease performance.
     geom->setUseDisplayList( false );
 
     osg::ref_ptr<osg::Vec3Array> v = new osg::Vec3Array;
     geom->setVertexArray( v.get() );
-    v->resize( num*3 );
+    v->resize( numVertices );
+
+    osg::ref_ptr<osg::Vec4Array> c = new osg::Vec4Array;
+    geom->setColorArray( c.get(),  osg::Array::BIND_PER_VERTEX);
+    c->resize( numVertices );
 
     unsigned int i;
     srand( 0 );
 #define RAND_NEG1_TO_1 ( ((rand()%20)-10)*.1 )
-    for (i=0; i<num; i++)
+#define RAND_0_TO_1 ( (rand()%10)*.1 )
+    for (i=0; i<numTriangles; i++)
     {
         osg::Vec3& v0 = (*v)[ i*3+0 ];
         osg::Vec3& v1 = (*v)[ i*3+1 ];
@@ -663,22 +686,17 @@ createRandomTriangles( unsigned int num )
         v0 = osg::Vec3( RAND_NEG1_TO_1, RAND_NEG1_TO_1, RAND_NEG1_TO_1 );
         v1 = osg::Vec3( RAND_NEG1_TO_1, RAND_NEG1_TO_1, RAND_NEG1_TO_1 );
         v2 = osg::Vec3( RAND_NEG1_TO_1, RAND_NEG1_TO_1, RAND_NEG1_TO_1 );
-    }
 
-    osg::ref_ptr<osg::Vec4Array> c = new osg::Vec4Array;
-    geom->setColorArray( c.get() );
-    // Bind per primitive to force slow glBegin/glEnd path.
-    geom->setColorBinding( deprecated_osg::Geometry::BIND_PER_PRIMITIVE );
-    c->resize( num );
-
-#define RAND_0_TO_1 ( (rand()%10)*.1 )
-    for (i=0; i<num; i++)
-    {
-        osg::Vec4& c0 = (*c)[ i ];
+        osg::Vec4& c0 = (*c)[ i*3+0 ];
+        osg::Vec4& c1 = (*c)[ i*3+1 ];
+        osg::Vec4& c2 = (*c)[ i*3+2 ];
         c0 = osg::Vec4( RAND_0_TO_1, RAND_0_TO_1, RAND_0_TO_1, 1. );
+        c1 = c0;
+        c2 = c0;
     }
 
-    geom->addPrimitiveSet( new osg::DrawArrays( GL_TRIANGLES, 0, num*3 ) );
+
+    geom->addPrimitiveSet( new osg::DrawArrays( GL_TRIANGLES, 0, numVertices ) );
     tris->addDrawable( geom.get() );
 
     return tris.get();

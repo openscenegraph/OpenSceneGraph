@@ -233,9 +233,12 @@ public:
         for(unsigned int i=0; i<stateset->getNumTextureAttributeLists(); ++i)
         {
             const osg::Texture* texture = dynamic_cast<const osg::Texture*>(stateset->getTextureAttribute(i, osg::StateAttribute::TEXTURE));
-            CostPair cost = _gce->estimateCompileCost(texture);
-            _costs.first += cost.first;
-            _costs.second += cost.second;
+            if (texture)
+            {
+                CostPair cost = _gce->estimateCompileCost(texture);
+                _costs.first += cost.first;
+                _costs.second += cost.second;
+            }
         }
     }
 

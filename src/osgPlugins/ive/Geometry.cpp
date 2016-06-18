@@ -64,11 +64,7 @@ void Geometry::write(DataOutputStream* out){
         out->writeArray(getVertexArray());
     }
     // Write vertex indices if any
-    out->writeBool(getVertexIndices()!=0);
-    if (getVertexIndices())
-    {
-        out->writeArray(getVertexIndices());
-    }
+    out->writeBool(false);
 
     // Write normal array if any
     if ( out->getVersion() < VERSION_0013 )
@@ -77,7 +73,7 @@ void Geometry::write(DataOutputStream* out){
         out->writeBool(normals!=0);
         if (normals)
         {
-            out->writeBinding(getNormalBinding());
+            out->writeBinding(normals->getBinding());
             out->writeVec3Array(normals);
         }
     }
@@ -86,49 +82,41 @@ void Geometry::write(DataOutputStream* out){
         out->writeBool(getNormalArray()!=0);
         if (getNormalArray()!=0)
         {
-            out->writeBinding(getNormalBinding());
+            out->writeBinding(getNormalArray()->getBinding());
             out->writeArray(getNormalArray());
         }
     }
 
     // Write normal indices if any
-    out->writeBool(getNormalIndices()!=0);
-    if (getNormalIndices()){
-        out->writeArray(getNormalIndices());
-    }
+    out->writeBool(false);
+
     // Write color array if any.
     out->writeBool(getColorArray()!=0);
     if (getColorArray()){
-        out->writeBinding(getColorBinding());
+        out->writeBinding(getColorArray()->getBinding());
         out->writeArray(getColorArray());
     }
     // Write color indices if any
-    out->writeBool(getColorIndices()!=0);
-    if (getColorIndices()){
-        out->writeArray(getColorIndices());
-    }
+    out->writeBool(false);
+
     // Write secondary color array if any
     out->writeBool(getSecondaryColorArray()!=0);
     if (getSecondaryColorArray()){
-        out->writeBinding(getSecondaryColorBinding());
+        out->writeBinding(getSecondaryColorArray()->getBinding());
         out->writeArray(getSecondaryColorArray());
     }
     // Write second color indices if any
-    out->writeBool(getSecondaryColorIndices()!=0);
-    if (getSecondaryColorIndices()){
-        out->writeArray(getSecondaryColorIndices());
-    }
+    out->writeBool(false);
+
     // Write fog coord array if any
     out->writeBool(getFogCoordArray()!=0);
     if (getFogCoordArray()){
-        out->writeBinding(getFogCoordBinding());
+        out->writeBinding(getFogCoordArray()->getBinding());
         out->writeArray(getFogCoordArray());
     }
     // Write fog coord indices if any
-    out->writeBool(getFogCoordIndices()!=0);
-    if (getFogCoordIndices()){
-        out->writeArray(getFogCoordIndices());
-    }
+    out->writeBool(false);
+
     // Write texture coord arrays
     Geometry::ArrayList& tcal = getTexCoordArrayList();
     out->writeInt(tcal.size());
@@ -142,11 +130,7 @@ void Geometry::write(DataOutputStream* out){
         }
 
         // Write indices if valid
-        const osg::IndexArray* indices = getTexCoordIndices(j);
-        out->writeBool(indices!=0);
-        if (indices!=0){
-            out->writeArray(indices);
-        }
+        out->writeBool(false);
     }
 
     // Write vertex attributes
@@ -158,21 +142,17 @@ void Geometry::write(DataOutputStream* out){
         const osg::Array* array = vaal[j].get();
         if (array)
         {
-            out->writeBinding(static_cast<deprecated_osg::Geometry::AttributeBinding>(array->getBinding()));
+            out->writeBinding(static_cast<osg::Array::Binding>(array->getBinding()));
             out->writeBool(array->getNormalize());
             out->writeBool(true);
             out->writeArray(array);
 
             // Write indices if valid
-            const osg::IndexArray* indices = getVertexAttribIndices(j);
-            out->writeBool(indices!=0);
-            if (indices!=0){
-                out->writeArray(indices);
-            }
+            out->writeBool(false);
         }
         else
         {
-            out->writeBinding(BIND_OFF);
+            out->writeBinding(osg::Array::BIND_OFF);
             out->writeBool(false);
             out->writeBool(false);
             out->writeBool(false);
@@ -180,7 +160,8 @@ void Geometry::write(DataOutputStream* out){
     }
 }
 
-void Geometry::read(DataInputStream* in){
+void Geometry::read(DataInputStream* in)
+{
     // Read Geometry's identification.
     int id = in->peekInt();
     if(id == IVEGEOMETRY){
@@ -235,70 +216,78 @@ void Geometry::read(DataInputStream* in){
 
         // Read vertex array if any
         bool va=in->readBool();
-        if (va){
+        if (va)
+        {
             setVertexArray(in->readArray());
         }
         // Read vertex indices if any
-        bool vi = in->readBool();
-        if (vi){
-            setVertexIndices(static_cast<osg::IndexArray*>(in->readArray()));
+        if (in->readBool())
+        {
+            osg::ref_ptr<osg::IndexArray> indices = (static_cast<osg::IndexArray*>(in->readArray()));
+            if (indices.valid() && getVertexArray()) getVertexArray()->setUserData(indices.get());
         }
 
         // Read normal array if any
         if ( in->getVersion() < VERSION_0013 )
         {
-            bool na =in->readBool();
-            if(na){
-                deprecated_osg::Geometry::AttributeBinding binding = in->readBinding();
-                setNormalArray(in->readVec3Array());
-                setNormalBinding(binding);
+            if(in->readBool())
+            {
+                osg::Array::Binding binding = in->readBinding();
+                setNormalArray(in->readVec3Array(), binding);
             }
         }
         else
         {
-            bool na =in->readBool();
-            if(na){
-                deprecated_osg::Geometry::AttributeBinding binding = in->readBinding();
-                setNormalArray(in->readArray());
-                setNormalBinding(binding);
+            if(in->readBool()){
+                osg::Array::Binding binding = in->readBinding();
+                setNormalArray(in->readArray(), binding);
             }
         }
 
         // Read normal indices if any
-        bool ni = in->readBool();
-        if(ni){
-            setNormalIndices(static_cast<osg::IndexArray*>(in->readArray()));
+        if (in->readBool())
+        {
+            osg::ref_ptr<osg::IndexArray> indices = static_cast<osg::IndexArray*>(in->readArray());
+            if (indices.valid() && getNormalArray()) getNormalArray()->setUserData(indices.get());
         }
+
         // Read color array if any.
-        if(in->readBool()){
-            deprecated_osg::Geometry::AttributeBinding binding = in->readBinding();
-            setColorArray(in->readArray());
-            setColorBinding(binding);
+        if(in->readBool())
+        {
+            osg::Array::Binding binding = in->readBinding();
+            setColorArray(in->readArray(), binding);
         }
         // Read color indices if any
-        if(in->readBool()){
-            setColorIndices(static_cast<osg::IndexArray*>(in->readArray()));
+        if(in->readBool())
+        {
+            osg::ref_ptr<osg::IndexArray> indices = (static_cast<osg::IndexArray*>(in->readArray()));
+            if (indices.valid() && getColorArray()) getColorArray()->setUserData(indices.get());
         }
+
         // Read secondary color array if any
         if(in->readBool()){
-            deprecated_osg::Geometry::AttributeBinding binding = in->readBinding();
-            setSecondaryColorArray(in->readArray());
-            setSecondaryColorBinding(binding);
+            osg::Array::Binding binding = in->readBinding();
+            setSecondaryColorArray(in->readArray(), binding);
         }
         // Read second color indices if any
-        if(in->readBool()){
-            setSecondaryColorIndices(static_cast<osg::IndexArray*>(in->readArray()));
+        if(in->readBool())
+        {
+            osg::ref_ptr<osg::IndexArray> indices = (static_cast<osg::IndexArray*>(in->readArray()));
+            if (indices.valid() && getSecondaryColorArray()) getSecondaryColorArray()->setUserData(indices.get());
         }
+
         // Read fog coord array if any
         if(in->readBool()){
-            deprecated_osg::Geometry::AttributeBinding binding = in->readBinding();
-            setFogCoordArray(in->readArray());
-            setFogCoordBinding(binding);
+            osg::Array::Binding binding = in->readBinding();
+            setFogCoordArray(in->readArray(), binding);
         }
         // Read fog coord indices if any
-        if(in->readBool()){
-            setFogCoordIndices(static_cast<osg::IndexArray*>(in->readArray()));
+        if(in->readBool())
+        {
+            osg::ref_ptr<osg::IndexArray> indices = (static_cast<osg::IndexArray*>(in->readArray()));
+            if (indices && getFogCoordArray()) getFogCoordArray()->setUserData(indices.get());
         }
+
         // Read texture coord arrays
         size = in->readInt();
         for(i =0;i<size;i++)
@@ -308,30 +297,33 @@ void Geometry::read(DataInputStream* in){
             if(coords_valid)
                 setTexCoordArray(i, in->readArray());
             // Read Indices if valid
-            bool indices_valid = in->readBool();
-            if(indices_valid)
-                setTexCoordIndices(i, static_cast<osg::IndexArray*>(in->readArray()));
+            if(in->readBool())
+            {
+                osg::ref_ptr<osg::IndexArray> indices = (static_cast<osg::IndexArray*>(in->readArray()));
+                if (indices && getTexCoordArray(i)) getTexCoordArray(i)->setUserData(indices.get());
+            }
         }
 
         // Read vertex attrib arrays
         size = in->readInt();
         for(i =0;i<size;i++)
         {
-            deprecated_osg::Geometry::AttributeBinding binding = in->readBinding();
+            osg::Array::Binding binding = in->readBinding();
             bool normalize = in->readBool();
 
             // Read coords if valid
             bool coords_valid = in->readBool();
             if(coords_valid) {
-                setVertexAttribArray(i, in->readArray());
+                setVertexAttribArray(i, in->readArray(), binding);
                 setVertexAttribNormalize(i,normalize);
-                setVertexAttribBinding(i,binding);
             }
 
             // Read Indices if valid
-            bool indices_valid = in->readBool();
-            if(indices_valid)
-                setVertexAttribIndices(i, static_cast<osg::IndexArray*>(in->readArray()));
+            if(in->readBool())
+            {
+                osg::ref_ptr<osg::IndexArray> indices = (static_cast<osg::IndexArray*>(in->readArray()));
+                if (indices && getVertexAttribArray(i)) getVertexAttribArray(i)->setUserData(indices.get());
+            }
         }
 
     }

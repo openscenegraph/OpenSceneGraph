@@ -40,7 +40,9 @@ struct NullStream : public std::ostream
 public:
     NullStream():
         std::ostream(new NullStreamBuffer)
-    { _buffer = dynamic_cast<NullStreamBuffer *>(rdbuf()); }
+    {
+        _buffer = static_cast<NullStreamBuffer *>(rdbuf());
+    }
 
     ~NullStream()
     {
@@ -96,7 +98,9 @@ struct NotifyStream : public std::ostream
 public:
     NotifyStream():
         std::ostream(new NotifyStreamBuffer)
-    { _buffer = dynamic_cast<NotifyStreamBuffer *>(rdbuf()); }
+    {
+        _buffer = static_cast<NotifyStreamBuffer *>(rdbuf());
+    }
 
     void setCurrentSeverity(osg::NotifySeverity severity)
     {

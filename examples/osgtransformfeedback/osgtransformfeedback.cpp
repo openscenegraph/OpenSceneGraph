@@ -41,7 +41,6 @@
 #include <osgViewer/Viewer>
 
 #include <osg/BufferIndexBinding>
-#include <osg/SubroutineUniform>
 
 #include <iostream>
 
@@ -88,27 +87,10 @@ static const char* fragSource =
 
     "uniform float u_anim1;\n"
     "varying vec4 v_color;\n"
-    "subroutine vec4 color_t();\n"
-
-"subroutine uniform color_t Color;\n"
-
-
-
-"subroutine(color_t)\n"
-"vec4 ColorNormal()\n"
-"{\n"
-"  return v_color;\n"
-"}\n"
-
-"subroutine(color_t)\n"
-"vec4 ColorYellow()\n"
-"{\n"
-"  return vec4(1, 1, 0, 1);\n"
-"}\n"
 
     "void main(void)\n"
     "{\n"
-    "    gl_FragColor =  Color();\n"
+    "    gl_FragColor =  v_color;\n"
     "}\n"
 };
 
@@ -219,8 +201,6 @@ int main( int , char** )
         somePointsGenerator->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
         somePointsGenerator->addPrimitiveSet( new osg::DrawArrays( GL_POINTS, 0, vAry->size() ) );
 
-
-
         osg::ref_ptr<osg::Program> _program=createGeneratorShader() ;
         sset->setAttribute(_program );
 
@@ -246,16 +226,11 @@ int main( int , char** )
         gencolorvAry->setVertexBufferObject(new osg::VertexBufferObject);
         somePointsRenderer->setColorArray(gencolorvAry);
         somePointsRenderer->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
-
-
         somePointsRenderer-> addPrimitiveSet( new osg::DrawArrays( GL_LINES, 0,numprimgen));
 
         osg::StateSet* sset =   somePointsRenderer-> getOrCreateStateSet();
-
         sset->setAttribute( createRenderShader() );
-osg::SubroutineUniform * subroutineu=new osg::SubroutineUniform(osg::Shader::FRAGMENT);
-subroutineu->addSubroutineName("ColorNormal");
-        sset->setAttribute(subroutineu);
+
 
     }
 
@@ -267,8 +242,6 @@ subroutineu->addSubroutineName("ColorNormal");
 
     tfbb->setSize(somePointsRenderer->getVertexArray()->getTotalDataSize());
     tfbb2->setSize(somePointsRenderer->getColorArray()->getTotalDataSize());
-
-
 
     somePointsGenerator->setDrawCallback(tr);
 

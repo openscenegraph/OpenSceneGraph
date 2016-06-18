@@ -117,8 +117,8 @@ struct GeometryFinishedObjectReadCallback : public osgDB::FinishedObjectReadCall
         osg::Geometry& geometry = static_cast<osg::Geometry&>(obj);
 
         ///HACK to test VAO feature
-        geometry.setUseDisplayList(false);
-        geometry.setUseVertexArrayObject(true);
+        //geometry.setUseDisplayList(false);
+        //geometry.setUseVertexArrayObject(true);
 
         if (geometry.getUseVertexBufferObjects())
         {
@@ -129,8 +129,8 @@ struct GeometryFinishedObjectReadCallback : public osgDB::FinishedObjectReadCall
             TESTARRAY(getNormalArray())
             TESTARRAY(getColorArray())
 
-            for(int i=0;i<geometry.getNumTexCoordArrays();i++)  TESTARRAY(getTexCoordArray(i))
-            for(int i=0;i<geometry.getNumVertexAttribArrays();i++)TESTARRAY(getVertexAttribArray(i))
+            for(unsigned int i=0;i<geometry.getNumTexCoordArrays();i++)  TESTARRAY(getTexCoordArray(i))
+            for(unsigned int i=0;i<geometry.getNumVertexAttribArrays();i++)TESTARRAY(getVertexAttribArray(i))
 
 
             if(!someBufferObjectDefined){
@@ -199,7 +199,9 @@ REGISTER_OBJECT_WRAPPER( Geometry,
         ADD_VECTOR_SERIALIZER( TexCoordArrayList, osg::Geometry::ArrayList, osgDB::BaseSerializer::RW_OBJECT, 0 );
         ADD_VECTOR_SERIALIZER( VertexAttribArrayList, osg::Geometry::ArrayList, osgDB::BaseSerializer::RW_OBJECT, 0 );
     }
-
-
+    {
+        UPDATE_TO_VERSION_SCOPED( 145 )
+        ADD_BOOL_SERIALIZER(UseVertexArrayObject,false);
+    }
     wrapper->addFinishedObjectReadCallback( new GeometryFinishedObjectReadCallback() );
 }

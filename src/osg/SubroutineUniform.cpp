@@ -37,7 +37,7 @@ void SubroutineUniform::apply(State& state) const
             _indicesSetted[contextID]=1;
         }
 
-        ext->glUniformSubroutinesuiv(_shadertype,_subroutineNames.size(),_indices[contextID].data());
+        ext->glUniformSubroutinesuiv(_shadertype,_subroutineNames.size(),&_indices[contextID].front());
     }
 }
 

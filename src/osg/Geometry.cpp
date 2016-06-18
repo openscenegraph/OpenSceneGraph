@@ -764,7 +764,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
             const BufferObject * ebo; GLBufferObject *glebo;
             for (unsigned int primitiveSetNum = 0; primitiveSetNum != _primitives.size(); ++primitiveSetNum)
             {
-                if (ebo = getPrimitiveSet(primitiveSetNum)->getBufferObject()){
+                if ( (ebo = getPrimitiveSet(primitiveSetNum)->getBufferObject()) != NULL){
                     glebo = ebo->getOrCreateGLBufferObject(contextID);
                     if (glebo){
                         if (glebo->isDirty())glebo->compileBuffer();
@@ -784,7 +784,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
                 drawVertexArraysImplementation(renderInfo);
                 for (unsigned int primitiveSetNum = 0; primitiveSetNum != _primitives.size(); ++primitiveSetNum)
                 {
-                    if (ebo = getPrimitiveSet(primitiveSetNum)->getBufferObject()){
+                    if ( (ebo = getPrimitiveSet(primitiveSetNum)->getBufferObject()) != NULL){
                         glebo = ebo->getGLBufferObject(contextID);
                         if (glebo){
                             glebo->bindBuffer();

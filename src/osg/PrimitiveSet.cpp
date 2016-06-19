@@ -454,12 +454,6 @@ void MultiDrawArrays::add(GLint first, GLsizei count)
 //
 
 #ifdef OSG_HAS_MULTIDRAWARRAYS
-void MultiDrawElementsUShort::setElementBufferObject(osg::ElementBufferObject* ebo)
-{
-    for(std::vector<ref_ptr<UShortArray> >::iterator it=_indicesholders.begin();it!=_indicesholders.end();it++)
-        (*it)->setBufferObject(ebo);
-    BufferData::setBufferObject(ebo);
-}
 
 void MultiDrawElementsUShort::draw(osg::State& state, bool, bool bindElementBuffer) const
 {
@@ -493,56 +487,25 @@ void MultiDrawElementsUShort::invalidateInnerIndices(){
         for(std::vector<ref_ptr<UShortArray> >::iterator it=_indicesholders.begin();it!=_indicesholders.end();it++)
             _counts.push_back((*it)->size());
 }
-void MultiDrawElementsUShort::accept(PrimitiveFunctor& functor) const
+unsigned int MultiDrawElementsUShort::index(unsigned int index) const
 {
-   /* unsigned int primcount = osg::minimum(_firsts.size(), _counts.size());
-    for(unsigned int i=0; i<primcount; ++i)
-    {
-        functor.drawArrays(_mode, _firsts[i], _counts[i]);
-    }*/
+    unsigned int globalindex=0, current=0;
+    while(current<getNumIndicesArrays() && globalindex+getIndicesArray(current)->getNumElements()<index  )
+        globalindex+=getIndicesArray(current++)->getNumElements();
+    return (*_indicesholders[current].get())[index-globalindex];
 }
 
-void MultiDrawElementsUShort::accept(PrimitiveIndexFunctor& functor) const
-{
-    /*unsigned int primcount = osg::minimum(_firsts.size(), _counts.size());
-    for(unsigned int i=0; i<primcount; ++i)
-    {
-        functor.drawArrays(_mode, _firsts[i], _counts[i]);
-    }*/
-}
-
-/*unsigned int MultiDrawElementsUShort::getNumIndices() const
-{
-    unsigned int total=0;
-    for(Counts::const_iterator itr = _counts.begin(); itr!=_counts.end(); ++itr)
-    {
-        total += *itr;
-    }
-    return total;
-}
-
-unsigned int MultiDrawElementsUShort::index(unsigned int pos) const
-{
-    unsigned int i;
-    for(i=0; i<_counts.size(); ++i)
-    {
-        unsigned int count = _counts[i];
-        if (pos<count) break;
-        pos -= count;
-    }
-    if (i>=_firsts.size()) return 0;
-
-    return _firsts[i] + pos;
-}
 
 void MultiDrawElementsUShort::offsetIndices(int offset)
 {
-    for(Firsts::iterator itr = _firsts.begin(); itr!=_firsts.end(); ++itr)
+    for(std::vector<ref_ptr<UShortArray> >::iterator it=_indicesholders.begin();it!=_indicesholders.end();it++)
     {
-        *itr += offset;
+        for(UShortArray::iterator itindex=(*(*it).get()).begin();itindex!=(*(*it).get()).end();itindex++ )
+            *itindex+=offset;
     }
+
 }
-*/
+
 unsigned int MultiDrawElementsUShort::getNumPrimitives() const
 {
     switch(_mode)
@@ -567,5 +530,23 @@ unsigned int MultiDrawElementsUShort::getNumPrimitives() const
     }
     return 0;
 }
+
+
+void MultiDrawElementsUShort::accept(PrimitiveFunctor& functor) const
+{
+    for(unsigned int i=0; i< _counts.size(); ++i)
+    {
+        functor.drawElements(_mode,_counts[i],&_indicesholders[i]->front());
+    }
+}
+
+void MultiDrawElementsUShort::accept(PrimitiveIndexFunctor& functor) const
+{
+    for(unsigned int i=0; i< _counts.size(); ++i)
+    {
+        functor.drawElements(_mode,_counts[i],&_indicesholders[i]->front());
+    }
+}
+
 
 #endif

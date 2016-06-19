@@ -447,3 +447,125 @@ void MultiDrawArrays::add(GLint first, GLsizei count)
     _counts.push_back(count);
 }
 #endif
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// MultiDrawElements
+//
+
+#ifdef OSG_HAS_MULTIDRAWARRAYS
+void MultiDrawElementsUShort::setElementBufferObject(osg::ElementBufferObject* ebo)
+{
+    for(std::vector<ref_ptr<UShortArray> >::iterator it=_indicesholders.begin();it!=_indicesholders.end();it++)
+        (*it)->setBufferObject(ebo);
+    BufferData::setBufferObject(ebo);
+}
+
+void MultiDrawElementsUShort::draw(osg::State& state, bool, bool bindElementBuffer) const
+{
+    // OSG_NOTICE<<"osg::MultiDrawArrays::draw"<<std::endl;
+
+    GLExtensions* ext = state.get<GLExtensions>();
+    if (ext->glMultiDrawElements&&!_indicesholders.empty())
+    {
+
+        GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
+
+        if(bindElementBuffer)
+            state.bindElementBufferObject(ebo);
+
+        if(_indices == NULL && ebo){ ///_indices invalidated
+            _indices=new GLushort*[_indicesholders.size()];
+            for (unsigned i =0; i <  _indicesholders.size(); i++)
+                _indices[i]=(GLushort*)(ebo->getOffset(_indicesholders[i]->getBufferIndex()));
+        }
+        ext->glMultiDrawElements(_mode, &_counts.front(), GL_UNSIGNED_SHORT, (const GLvoid *const*)_indices,_indicesholders.size());
+    }
+}
+
+void MultiDrawElementsUShort::invalidateInnerIndices(){
+        if(_indices != NULL){
+            delete [] _indices;
+
+            _indices=NULL;
+        }
+        _counts.clear();
+        for(std::vector<ref_ptr<UShortArray> >::iterator it=_indicesholders.begin();it!=_indicesholders.end();it++)
+            _counts.push_back((*it)->size());
+}
+void MultiDrawElementsUShort::accept(PrimitiveFunctor& functor) const
+{
+   /* unsigned int primcount = osg::minimum(_firsts.size(), _counts.size());
+    for(unsigned int i=0; i<primcount; ++i)
+    {
+        functor.drawArrays(_mode, _firsts[i], _counts[i]);
+    }*/
+}
+
+void MultiDrawElementsUShort::accept(PrimitiveIndexFunctor& functor) const
+{
+    /*unsigned int primcount = osg::minimum(_firsts.size(), _counts.size());
+    for(unsigned int i=0; i<primcount; ++i)
+    {
+        functor.drawArrays(_mode, _firsts[i], _counts[i]);
+    }*/
+}
+
+/*unsigned int MultiDrawElementsUShort::getNumIndices() const
+{
+    unsigned int total=0;
+    for(Counts::const_iterator itr = _counts.begin(); itr!=_counts.end(); ++itr)
+    {
+        total += *itr;
+    }
+    return total;
+}
+
+unsigned int MultiDrawElementsUShort::index(unsigned int pos) const
+{
+    unsigned int i;
+    for(i=0; i<_counts.size(); ++i)
+    {
+        unsigned int count = _counts[i];
+        if (pos<count) break;
+        pos -= count;
+    }
+    if (i>=_firsts.size()) return 0;
+
+    return _firsts[i] + pos;
+}
+
+void MultiDrawElementsUShort::offsetIndices(int offset)
+{
+    for(Firsts::iterator itr = _firsts.begin(); itr!=_firsts.end(); ++itr)
+    {
+        *itr += offset;
+    }
+}
+*/
+unsigned int MultiDrawElementsUShort::getNumPrimitives() const
+{
+    switch(_mode)
+    {
+        case(POINTS): return getNumIndices();
+        case(LINES): return getNumIndices()/2;
+        case(TRIANGLES): return getNumIndices()/3;
+        case(QUADS): return getNumIndices()/4;
+        case(LINE_STRIP):
+        case(LINE_LOOP):
+        case(TRIANGLE_STRIP):
+        case(TRIANGLE_FAN):
+        case(QUAD_STRIP):
+        case(PATCHES):
+        case(POLYGON):
+        {
+            unsigned int primcount = 0;
+            for(Counts::const_iterator itr = _counts.begin(); itr!=_counts.end(); ++itr)
+                primcount+=*itr;
+            return primcount;
+        }
+    }
+    return 0;
+}
+
+#endif

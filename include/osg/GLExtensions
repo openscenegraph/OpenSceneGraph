@@ -461,6 +461,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glTexParameterIuiv) (GLenum target, GLenum pname, const GLuint* data);
         void (GL_APIENTRY * glBindImageTexture) (GLuint unit, GLuint texture, GLint level, GLboolean layered, GLint layer, GLenum access, GLenum format);
 
+
         // Texture3D extensions
         bool isTexture3DSupported;
         bool isTexture3DFast;
@@ -473,6 +474,8 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glCopyTexSubImage3D) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
         void (GL_APIENTRY * glCompressedTexImage3D) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid *data);
         void (GL_APIENTRY * glCompressedTexSubImage3D) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const GLvoid *data );
+        void (GL_APIENTRY *glTexImage3DMultisample) (GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations);
+        void (GL_APIENTRY *glGetMultisamplefv) (GLenum pname, GLuint index, GLfloat *val);
 
         // Texture2DArray extensions
         bool isTexture2DArraySupported;
@@ -626,7 +629,21 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
 
         // MultiDrawArrays
         void (GL_APIENTRY * glMultiDrawArrays) (GLenum mode, const GLint * first, const GLsizei * count, GLsizei primcount);
+        void (GL_APIENTRY * glMultiDrawElements) (GLenum mode, const GLsizei *count, GLenum type, const void *const*indices, GLsizei drawcount);
+        void (GL_APIENTRY * glMultiDrawElementsBaseVertex) (GLenum mode, const GLsizei *count, GLenum type, const void *const*indices, GLsizei drawcount, const GLint *basevertex);
 
+
+        void (GL_APIENTRY * glDrawRangeElements) ( GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices );
+        void (GL_APIENTRY * glDrawElementsBaseVertex) (GLenum mode, GLsizei count, GLenum type, const void *indices, GLint basevertex);
+        void (GL_APIENTRY * glDrawRangeElementsBaseVertex) (GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices, GLint basevertex);
+        void (GL_APIENTRY * glProvokingVertex) (GLenum mode);
+
+        void (GL_APIENTRY * glBeginConditionalRender) (GLuint id, GLenum mode);
+        void (GL_APIENTRY * glEndConditionalRender) (void);
+
+        void (GL_APIENTRY *glDrawArraysInstancedBaseInstance) (GLenum mode, GLint first, GLsizei count, GLsizei instancecount, GLuint baseinstance);
+        void (GL_APIENTRY * glDrawElementsInstancedBaseInstance) (GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei instancecount, GLuint baseinstance);
+        void (GL_APIENTRY *glDrawElementsInstancedBaseVertexBaseInstance) (GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei instancecount, GLint basevertex, GLuint baseinstance);
 
 };
 

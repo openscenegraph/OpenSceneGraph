@@ -109,10 +109,57 @@ static const char* fragSource =
 int main( int , char** )
 {
     osg::Geode* root( new osg::Geode );
-    osg::ref_ptr<osg::Geometry >  geom= osg::createTexturedQuadGeometry(osg::Vec3f(-0.5,-0.5,-0.5),osg::Vec3f(1,0,0),osg::Vec3f(0,0,1));
+    osg::ref_ptr<osg::Geometry >  geom= new osg::Geometry();// osg::createTexturedQuadGeometry(osg::Vec3f(-0.5,-0.5,-0.5),osg::Vec3f(1,0,0),osg::Vec3f(0,0,1));
+
+    osg::Vec3Array * vary=new osg::Vec3Array();
+    vary->push_back(osg::Vec3(0,0,0));
+    vary->push_back(osg::Vec3(1,0,0));
+    vary->push_back(osg::Vec3(1,1,0));
+    vary->push_back(osg::Vec3(0,1,0));
+
+    vary->push_back(osg::Vec3(0,0,1));
+    vary->push_back(osg::Vec3(1,0,1));
+    vary->push_back(osg::Vec3(1,1,1));
+    vary->push_back(osg::Vec3(0,1,1));
+
+    geom->setVertexArray(vary);
+
+    osg::UShortArray * index1=new osg::UShortArray();
+    index1->push_back(0);
+    index1->push_back(1);
+    index1->push_back(2);
+    index1->push_back(3);
+
+    osg::UShortArray * index2=new osg::UShortArray();
+    index2->push_back(4);
+    index2->push_back(5);
+    index2->push_back(6);
+    index2->push_back(7);
+#if 1
+    osg::MultiDrawElementsUShort * pr=new osg::MultiDrawElementsUShort();
+    pr->setMode(GL_LINES);
+    pr->addIndicesArray(index1);
+    pr->addIndicesArray(index2);
+   // pr->setBufferObject(new osg::ElementBufferObject);
+#else
+    osg::DrawElementsUShort * pr=new osg::DrawElementsUShort();
+    pr->setMode(GL_LINES);
+      pr->push_back(0);
+    pr->push_back(1);
+    pr->push_back(2);
+    pr->push_back(3);
+  //  pr->setBufferObject(new osg::ElementBufferObject);
+
+
+#endif
+    geom->addPrimitiveSet(pr);
+
+
+
 
     geom->setUseVertexBufferObjects(true);
     geom->setUseDisplayList(false);
+   // geom->setUseVertexArrayObject(true);
 
     osg::StateSet* sset = geom->getOrCreateStateSet();
 

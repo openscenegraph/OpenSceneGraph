@@ -480,13 +480,13 @@ void MultiDrawElementsUShort::draw(osg::State& state, bool, bool bindElementBuff
 void MultiDrawElementsUShort::invalidateInnerIndices(){
         if(_indices != NULL){
             delete [] _indices;
-
             _indices=NULL;
         }
         _counts.clear();
         for(std::vector<ref_ptr<UShortArray> >::iterator it=_indicesholders.begin();it!=_indicesholders.end();it++)
             _counts.push_back((*it)->size());
 }
+
 unsigned int MultiDrawElementsUShort::index(unsigned int index) const
 {
     unsigned int globalindex=0, current=0;

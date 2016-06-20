@@ -147,26 +147,50 @@ bool trpgr_Archive::ReadSubArchive(int row, int col, trpgEndian cpuNess)
     // Look for a magic # and endianness
     int32 bmagic;
     if (fread(&bmagic,sizeof(int32),1,bfp) != 1)
+    {
+        //close the block archive
+        fclose(bfp);
         return false;
+    }
+
     // The block archive will always be the same endianness as the master
     if ( (bmagic != GetMagicNumber()) && (trpg_byteswap_int(bmagic) != GetMagicNumber()) )
+    {
+        //close the block archive
+        fclose(bfp);
         return false;
+    }
 
     int32 bheaderSize=0;
     if (fread(&bheaderSize,sizeof(int32),1,bfp) != 1)
+    {
+        //close the block archive
+        fclose(bfp);
         return false;
+    }
+
     if (ness != cpuNess)
         bheaderSize = trpg_byteswap_int(bheaderSize);
+
     int bheadLen = bheaderSize;
     if (bheadLen < 0)
+    {
+        //close the block archive
+        fclose(bfp);
         return false;
+    }
 
     // Read in the header whole
     trpgMemReadBuffer bbuf(ness);
     bbuf.SetLength(bheadLen);
     char *bdata = bbuf.GetDataPtr();
     if ((ret = GetHeaderData(bdata,bheadLen,bfp)) != bheadLen)
+    {
+        //close the block archive
+        fclose(bfp);
         return false;
+    }
+
     //keep track of where this came from in the master table.
     tileTable.SetCurrentBlock(row,col,true);
     texTable.SetCurrentBlock(row,col);

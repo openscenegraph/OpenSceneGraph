@@ -28,20 +28,24 @@ osg::Group* createObjectCache()
 
     if (osgDB::Registry::instance()->getOptions()==0)
         osgDB::Registry::instance()->setOptions(new osgDB::Options());
+
     osgDB::Registry::instance()->getOptions()->setObjectCacheHint(osgDB::Options::CACHE_ALL);
-    
+
     osg::ref_ptr<osgDB::Options> options1 = new osgDB::Options("a=1 b=2 c=3");
     options1->setObjectCacheHint(osgDB::Options::CACHE_ALL);
+
     osg::ref_ptr<osgDB::Options> options2 = new osgDB::Options("a=6 b=7 c=8");
     options2->setObjectCacheHint(osgDB::Options::CACHE_ALL);
+
     osg::ref_ptr<osgDB::Options> options3 = new osgDB::Options("b=7 a=6 c=8");
     options3->setObjectCacheHint(osgDB::Options::CACHE_ALL);
+
     osg::ref_ptr<osg::Node> node1 = osgDB::readRefNodeFile("cessna.osg");
-    osg::ref_ptr<osg::Node> node2 = osgDB::readRefNodeFile("cessna.osg", options1);
-    osg::ref_ptr<osg::Node> node3 = osgDB::readRefNodeFile("cessna.osg", options2);
-    osg::ref_ptr<osg::Node> node4 = osgDB::readRefNodeFile("cessna.osg", options1);
-    osg::ref_ptr<osg::Node> node5 = osgDB::readRefNodeFile("cessna.osg", options2);
-    osg::ref_ptr<osg::Node> node6 = osgDB::readRefNodeFile("cessna.osg", options3);
+    osg::ref_ptr<osg::Node> node2 = osgDB::readRefNodeFile("cessna.osg", options1.get());
+    osg::ref_ptr<osg::Node> node3 = osgDB::readRefNodeFile("cessna.osg", options2.get());
+    osg::ref_ptr<osg::Node> node4 = osgDB::readRefNodeFile("cessna.osg", options1.get());
+    osg::ref_ptr<osg::Node> node5 = osgDB::readRefNodeFile("cessna.osg", options2.get());
+    osg::ref_ptr<osg::Node> node6 = osgDB::readRefNodeFile("cessna.osg", options3.get());
 
     group->addChild(node1);
     group->addChild(node2);

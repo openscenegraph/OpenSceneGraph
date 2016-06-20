@@ -208,38 +208,37 @@ void VertexData::readTriangles( PlyFile* file, const int nFaces )
 
     ply_get_property( file, "face", &faceProps[0] );
 
-    //triangles.clear();
-    //triangles.reserve( nFaces );
     if(!_triangles.valid())
-        _triangles = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES, 0);
-    if(!_quads.valid())
-        _quads = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS, 0);
+        _triangles = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES);
 
+    if(!_quads.valid())
+        _quads = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS);
+
+
+    const char NUM_VERTICES_TRIANGLE(3);
+    const char NUM_VERTICES_QUAD(4);
 
     // read the faces, reversing the reading direction if _invertFaces is true
     for( int i = 0 ; i < nFaces; i++ )
     {
         ply_get_element( file, static_cast< void* >( &face ) );
-        MESHASSERT( face.vertices != 0 );
-        if( (unsigned int)(face.nVertices) > 4 )
+        if (face.vertices)
         {
+            if (face.nVertices == NUM_VERTICES_TRIANGLE ||  face.nVertices == NUM_VERTICES_QUAD)
+            {
+                unsigned short index;
+                for(int j = 0 ; j < face.nVertices ; j++)
+                {
+                    index = ( _invertFaces ? face.nVertices - 1 - j : j );
+                    if(face.nVertices == 4)
+                        _quads->push_back(face.vertices[index]);
+                    else
+                        _triangles->push_back(face.vertices[index]);
+                }
+            }
+            // free the memory that was allocated by ply_get_element
             free( face.vertices );
-            throw MeshException( "Error reading PLY file. Encountered a "
-                                 "face which does not have three or four vertices." );
         }
-
-        unsigned short index;
-        for(int j = 0 ; j < face.nVertices ; j++)
-        {
-            index = ( _invertFaces ? face.nVertices - 1 - j : j );
-            if(face.nVertices == 4)
-                _quads->push_back(face.vertices[index]);
-            else
-                _triangles->push_back(face.vertices[index]);
-        }
-
-        // free the memory that was allocated by ply_get_element
-        free( face.vertices );
     }
 }
 

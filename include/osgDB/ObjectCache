@@ -72,7 +72,7 @@ class OSGDB_EXPORT ObjectCache : public osg::Referenced
 
         class ClassComp {
         public:
-            bool operator() (const ObjectCache::FileNameOptionsPair& lhs, const ObjectCache::FileNameOptionsPair& rhs);
+            bool operator() (const ObjectCache::FileNameOptionsPair& lhs, const ObjectCache::FileNameOptionsPair& rhs) const;
         };
 
         typedef std::pair<osg::ref_ptr<osg::Object>, double >           ObjectTimeStampPair;

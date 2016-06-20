@@ -399,6 +399,10 @@ osgDB::ReaderWriter* ZipArchive::ReadFromZipEntry(const ZIPENTRY* ze, const osgD
                     return rw;
                 }
             }
+            else
+            {
+                delete[] ibuf;
+            }
         }
         else
         {

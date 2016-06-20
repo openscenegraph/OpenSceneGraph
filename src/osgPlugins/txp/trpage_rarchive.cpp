@@ -54,7 +54,7 @@ int32 trpgr_Archive::GetHeaderData(char *dataPtr, int length, FILE *filehandle)
 // Set the directory where the archive is
 void trpgr_Archive::SetDirectory(const char *in_dir)
 {
-    strncpy(dir,in_dir,1024);
+    strncpy(dir,in_dir,DIR_SIZE-1); dir[DIR_SIZE-1] = 0;
 }
 
 // Open File

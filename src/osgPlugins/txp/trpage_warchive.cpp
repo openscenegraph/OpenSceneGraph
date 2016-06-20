@@ -721,7 +721,9 @@ bool trpgwArchive::CheckpointHeader()
     }
 
     // Note: Not sure what this is
-    char space[40];
+    char space[4];
+    space[0] = space[1] = space[2] = space[3] = 0;
+
     if (fwrite(space,1,4,fp) != 4)
         return false;
 

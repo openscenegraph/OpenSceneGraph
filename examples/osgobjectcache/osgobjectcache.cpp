@@ -21,6 +21,7 @@
 
 #include <osgViewer/Viewer>
 
+#include <assert.h>
 
 osg::Group* createObjectCache()
 {
@@ -41,11 +42,38 @@ osg::Group* createObjectCache()
     options3->setObjectCacheHint(osgDB::Options::CACHE_ALL);
 
     osg::ref_ptr<osg::Node> node1 = osgDB::readRefNodeFile("cessna.osg");
-    osg::ref_ptr<osg::Node> node2 = osgDB::readRefNodeFile("cessna.osg", options1.get());
-    osg::ref_ptr<osg::Node> node3 = osgDB::readRefNodeFile("cessna.osg", options2.get());
-    osg::ref_ptr<osg::Node> node4 = osgDB::readRefNodeFile("cessna.osg", options1.get());
-    osg::ref_ptr<osg::Node> node5 = osgDB::readRefNodeFile("cessna.osg", options2.get());
-    osg::ref_ptr<osg::Node> node6 = osgDB::readRefNodeFile("cessna.osg", options3.get());
+    osg::ref_ptr<osg::Node> node2 = osgDB::readRefNodeFile("cessna.osg");
+    osg::ref_ptr<osg::Node> node3 = osgDB::readRefNodeFile("cessna.osg", options1.get());
+    osg::ref_ptr<osg::Node> node4 = osgDB::readRefNodeFile("cessna.osg", options2.get());
+    osg::ref_ptr<osg::Node> node5 = osgDB::readRefNodeFile("cessna.osg", options1.get());
+    osg::ref_ptr<osg::Node> node6 = osgDB::readRefNodeFile("cessna.osg", options2.get());
+    osg::ref_ptr<osg::Node> node7 = osgDB::readRefNodeFile("cessna.osg", options3.get());
+    osg::ref_ptr<osg::Node> node8 = osgDB::readRefNodeFile("cessna.osg", options3.get());
+
+    // check that we really get the correct nodes
+    if (node1 != node2)
+    {
+        fprintf(stderr, "error reading node from object cache using default options\n");
+        exit(1);
+    }
+
+    if (node3 != node5)
+    {
+        fprintf(stderr, "error reading node from object cache stored with options '%s'\n", options1.get()->getOptionString().c_str());
+        exit(1);
+    }
+
+    if (node4 != node6)
+    {
+        fprintf(stderr, "error reading node from object cache stored with options '%s'\n", options2.get()->getOptionString().c_str());
+        exit(1);
+    }
+
+    if (node7 != node8)
+    {
+        fprintf(stderr, "error reading node from object cache stored with options '%s'\n", options3.get()->getOptionString().c_str());
+        exit(1);
+    }
 
     group->addChild(node1);
     group->addChild(node2);

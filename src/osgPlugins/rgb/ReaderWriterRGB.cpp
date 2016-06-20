@@ -593,7 +593,11 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
             raw.min = 0;
             raw.max = 0xFF;
             raw.wasteBytes = 0;
-            strncpy( raw.name, name.c_str(), 80);
+
+            size_t name_size = sizeof(raw.name)-1;
+            strncpy( raw.name, name.c_str(), name_size);
+            raw.name[name_size] = 0;
+
             raw.colorMap = 0;
             raw.bpc = (img.getPixelSizeInBits()/raw.sizeZ)/8;
 

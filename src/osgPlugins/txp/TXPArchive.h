@@ -120,7 +120,7 @@ namespace txp
         };
         struct TileLocationInfo
         {
-            TileLocationInfo() : x( -1 ), y( -1 ), lod( -1 )
+            TileLocationInfo() : x( -1 ), y( -1 ), lod( -1 ), zmin(0.0f), zmax(0.0f)
             {}
             TileLocationInfo(int gx, int gy, int glod, const trpgwAppAddress& gaddr, float gzmin = 0.0f, float gzmax = 0.0f):
                     x( gx ), y( gy ), lod( glod ), addr( gaddr ), zmin( gzmin ), zmax( gzmax )

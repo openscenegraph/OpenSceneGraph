@@ -114,6 +114,8 @@ rot_key_setup(Lib3dsKey *prev, Lib3dsKey *cur, Lib3dsKey *next, float a[4], floa
     assert(cur);
     assert(prev || next);
 
+    if (!prev && !next) return;
+
     if (prev) {
         if (cur->value[3] > LIB3DS_TWOPI - LIB3DS_EPSILON) {
             lib3ds_quat_axis_angle(qm, cur->value, 0.0f);

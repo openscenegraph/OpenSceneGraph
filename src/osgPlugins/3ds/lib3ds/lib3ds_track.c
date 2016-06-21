@@ -314,8 +314,15 @@ track_eval_linear(Lib3dsTrack *track, float *value, float t) {
 
     assert(track);
     if (!track->nkeys) {
-        if (track->type==LIB3DS_TRACK_FLOAT) { *value = 0.0f; }
-        else { for (int i = 0; i < track->type; ++i) value[i] = 0.0f; }
+        if (track->type==LIB3DS_TRACK_FLOAT)
+        {
+            *value = 0.0f;
+        }
+        else
+        {
+            int i;
+            for (i = 0; i < track->type; ++i) value[i] = 0.0f;
+        }
         return;
     }
 

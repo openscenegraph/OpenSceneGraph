@@ -139,7 +139,7 @@ class OSG_EXPORT Geometry : public Drawable
         /** When set to true, ignore the setUseDisplayList() settings, and hints to the drawImplementation
             method to use OpenGL vertex buffer objects for rendering.*/
         virtual void setUseVertexBufferObjects(bool flag);
-
+        virtual void setUseDisplayList(bool flag);
         void setUseVertexArrayObject(bool flag);
         bool getUseVertexArrayObject()const{return _useVertexArrayObject;}
 
@@ -220,7 +220,6 @@ class OSG_EXPORT Geometry : public Drawable
         void addVertexBufferObjectIfRequired(osg::Array* array);
         void addElementBufferObjectIfRequired(osg::PrimitiveSet* primitiveSet);
 
-
         PrimitiveSetList                _primitives;
         osg::ref_ptr<Array>             _vertexArray;
         osg::ref_ptr<Array>             _normalArray;
@@ -233,7 +232,7 @@ class OSG_EXPORT Geometry : public Drawable
         bool                            _containsDeprecatedData;
 
 
-        typedef std::list<GLuint> VAOKey;
+        typedef std::pair< GLuint,std::list<BufferObject*> > VAOKey;
 
         ///VAO Encapsulation
         class VertexArrayObject: public Referenced{

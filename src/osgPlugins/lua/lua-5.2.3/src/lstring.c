@@ -104,8 +104,9 @@ static TString *createstrobj (lua_State *L, const char *str, size_t l,
   ts->tsv.len = l;
   ts->tsv.hash = h;
   ts->tsv.extra = 0;
-  memcpy(ts+1, str, l*sizeof(char));
-  ((char *)(ts+1))[l] = '\0';  /* ending 0 */
+  char* start_of_string = (char*)(ts)+sizeof(TString);
+  memcpy(start_of_string, str, l*sizeof(char));
+  start_of_string[l] = '\0';  /* ending 0 */
   return ts;
 }
 

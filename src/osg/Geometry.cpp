@@ -554,6 +554,8 @@ void Geometry::setUseVertexBufferObjects(bool flag)
 
     // OSG_NOTICE<<"Geometry::setUseVertexBufferObjects("<<flag<<")"<<std::endl;
 
+    if (_useVertexBufferObjects==flag) return;
+
     Drawable::setUseVertexBufferObjects(flag);
 
     ArrayList arrayList;

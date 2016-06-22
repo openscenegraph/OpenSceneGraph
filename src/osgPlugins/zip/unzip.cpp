@@ -4036,7 +4036,7 @@ ZRESULT TUnzip::Get(int index,ZIPENTRY *ze)
   MultiByteToWideChar(CP_UTF8,0,fn,-1,tfn,MAX_PATH);
 #else
 //  strcpy_s(tfn,MAX_PATH,fn);
-  strncpy(tfn,fn,MAX_PATH);
+  strncpy(tfn,fn,MAX_PATH-1); tfn[MAX_PATH-1] = 0;
 #endif
   // As a safety feature: if the zip filename had sneaky stuff
   // like "c:\windows\file.txt" or "\windows\file.txt" or "fred\..\..\..\windows\file.txt"
@@ -4295,7 +4295,7 @@ ZRESULT TUnzip::Unzip(int index,void *dst,unsigned int len,DWORD flags)
     TCHAR dir[MAX_PATH];
 
 #ifdef ZIP_STD
-  strncpy(dir,ufn,MAX_PATH);
+  strncpy(dir,ufn,MAX_PATH-1); dir[MAX_PATH-1] = 0;
 #else
   _tcsncpy_s(dir,MAX_PATH,ufn,MAX_PATH);
 #endif

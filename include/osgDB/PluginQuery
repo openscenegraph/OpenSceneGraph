@@ -32,7 +32,8 @@ class ReaderWriterInfo : public osg::Referenced
 {
     public:
 
-        ReaderWriterInfo() {}
+        ReaderWriterInfo():
+            features(ReaderWriter::FEATURE_NONE) {}
 
         std::string                         plugin;
         std::string                         description;

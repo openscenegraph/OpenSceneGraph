@@ -4036,7 +4036,7 @@ ZRESULT TUnzip::Get(int index,ZIPENTRY *ze)
   MultiByteToWideChar(CP_UTF8,0,fn,-1,tfn,MAX_PATH);
 #else
 //  strcpy_s(tfn,MAX_PATH,fn);
-  strncpy(tfn,fn,MAX_PATH);
+  strncpy(tfn,fn,MAX_PATH-1); tfn[MAX_PATH-1] = 0;
 #endif
   // As a safety feature: if the zip filename had sneaky stuff
   // like "c:\windows\file.txt" or "\windows\file.txt" or "fred\..\..\..\windows\file.txt"
@@ -4058,7 +4058,7 @@ ZRESULT TUnzip::Get(int index,ZIPENTRY *ze)
   }
 
 #ifdef ZIP_STD
-  strncpy(ze->name,sfn,MAX_PATH);
+  strncpy(ze->name,sfn,MAX_PATH-1); ze->name[MAX_PATH-1] = 0;
 #else
   _tcsncpy_s(ze->name,MAX_PATH, sfn,MAX_PATH);
 #endif
@@ -4147,7 +4147,7 @@ ZRESULT TUnzip::Find(const TCHAR *tname,bool ic,int *index,ZIPENTRY *ze)
   WideCharToMultiByte(CP_UTF8,0,tname,-1,name,MAX_PATH,0,0);
 #else
 //  strcpy_s(name,MAX_PATH,tname);
-  strncpy(name,tname, MAX_PATH);
+  strncpy(name,tname, MAX_PATH-1); name[MAX_PATH-1] = 0;
 #endif
   int res = unzLocateFile(uf,name,ic?CASE_INSENSITIVE:CASE_SENSITIVE);
   if (res!=UNZ_OK)
@@ -4295,7 +4295,7 @@ ZRESULT TUnzip::Unzip(int index,void *dst,unsigned int len,DWORD flags)
     TCHAR dir[MAX_PATH];
 
 #ifdef ZIP_STD
-  strncpy(dir,ufn,MAX_PATH);
+  strncpy(dir,ufn,MAX_PATH-1); dir[MAX_PATH-1] = 0;
 #else
   _tcsncpy_s(dir,MAX_PATH,ufn,MAX_PATH);
 #endif
@@ -4309,7 +4309,7 @@ ZRESULT TUnzip::Unzip(int index,void *dst,unsigned int len,DWORD flags)
 
 #ifdef ZIP_STD
 		size_t dirlen=_tcslen(dir);
-		strncpy(fn,dir,MAX_PATH);
+		strncpy(fn,dir,MAX_PATH-1); fn[MAX_PATH-1] = 0;
 		strncpy(fn+dirlen,name,MAX_PATH-dirlen);
 #else
 		_tsprintf(fn,MAX_PATH,_T("%s%s"),dir,name);

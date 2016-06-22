@@ -1006,6 +1006,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 _next(0),
                 _texture(texture),
                 _allocated(false),
+                _frameLastUsed(0),
                 _timeStamp(0) {}
 
             inline TextureObject(Texture* texture, GLuint id, const TextureProfile& profile):
@@ -1016,6 +1017,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 _next(0),
                 _texture(texture),
                 _allocated(false),
+                _frameLastUsed(0),
                 _timeStamp(0) {}
 
             inline TextureObject(Texture* texture,
@@ -1034,6 +1036,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 _next(0),
                 _texture(texture),
                 _allocated(false),
+                _frameLastUsed(0),
                 _timeStamp(0) {}
 
             inline bool match(GLenum    target,

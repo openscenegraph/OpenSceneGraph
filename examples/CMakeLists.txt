@@ -75,6 +75,7 @@ IF(DYNAMIC_OPENSCENEGRAPH)
     ADD_SUBDIRECTORY(osgmultitexturecontrol)
     ADD_SUBDIRECTORY(osgmultitouch)
     ADD_SUBDIRECTORY(osgmultiviewpaging)
+    ADD_SUBDIRECTORY(osgobjectcache)
     ADD_SUBDIRECTORY(osgoccluder)
     ADD_SUBDIRECTORY(osgocclusionquery)
     ADD_SUBDIRECTORY(osgoit)
@@ -188,10 +189,6 @@ IF(DYNAMIC_OPENSCENEGRAPH)
     ADD_SUBDIRECTORY(osgcomputeshaders)
 
     ADD_SUBDIRECTORY(osgpdf)
-
-    IF   (GLUT_FOUND)
-        ADD_SUBDIRECTORY(osgviewerGLUT)
-    ENDIF(GLUT_FOUND)
 
     IF   (SDL_FOUND)
         ADD_SUBDIRECTORY(osgviewerSDL)

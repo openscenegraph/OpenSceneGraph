@@ -266,6 +266,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
 
                 tileContent->setName("TileContent");
 
+                subtiles->setUserData(new TileIdentifier(loc.x, loc.y, loc.lod)); // is this really needed?
+
                 if(childrenChildLoc.size() > 0)
                 {
                     std::string childInfoStr;
@@ -280,6 +282,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
                         archive->getId(),
                         childInfoStr.c_str());
 
+
                     // there are tile sets which do not maintain the z extents in
                     // the tile table.  This attempt to address the issue by using
                     // the geometry bounding sphere.  The downside is that this is
@@ -293,7 +296,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
                     }
 
                     osg::ref_ptr<TXPPagedLOD> pagedLOD = new TXPPagedLOD;
-                            // note: use maximum(info.maxRange,1e7) as just maxRange would result in some corner tiles from being culled out.
+
+                    // note: use maximum(info.maxRange,1e7) as just maxRange would result in some corner tiles from being culled out.
                     pagedLOD->addChild(tileContent.get(),info.minRange,osg::maximum(info.maxRange,1e7));
                     pagedLOD->setFileName(1,pagedLODfile);
                     pagedLOD->setRange(1,0,info.minRange);
@@ -317,8 +321,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
                         subtiles->addChild(tform);
                     }
                     else
+                    {
                         subtiles->addChild(pagedLOD.get());
-                        subtiles->setUserData(new TileIdentifier(loc.x, loc.y, loc.lod)); // is this really needed?
+                    }
                 }
                 else
                 {
@@ -335,7 +340,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
                         subtiles->addChild(tform);
                     }
                     else
+                    {
                         subtiles->addChild(tileContent.get());
+                    }
                 }
             }
         }
@@ -391,7 +398,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
                         }
 
                         osg::ref_ptr<TXPPagedLOD> pagedLOD = new TXPPagedLOD;
-                                    // note: use maximum(info.maxRange,1e7) as just maxRange would result in some corner tiles from being culled out.
+
+                        // note: use maximum(info.maxRange,1e7) as just maxRange would result in some corner tiles from being culled out.
                         pagedLOD->addChild(tileContent.get(),info.minRange,osg::maximum(info.maxRange,1e7));
                         pagedLOD->setFileName(1,pagedLODfile);
                         pagedLOD->setRange(1,0,info.minRange);

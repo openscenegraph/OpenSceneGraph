@@ -11,7 +11,7 @@
 #include "lzio.h"
 
 
-#define FIRST_RESERVED	257
+#define FIRST_RESERVED	256
 
 
 

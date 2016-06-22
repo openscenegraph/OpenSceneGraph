@@ -330,6 +330,8 @@ public:
 
     SlideEventHandler(osgViewer::Viewer* viewer=0);
 
+    SlideEventHandler(const SlideEventHandler& seh,const osg::CopyOp& copyop);
+
     static SlideEventHandler* instance();
 
     META_Object(osgPresentation,SlideEventHandler);
@@ -411,7 +413,6 @@ public:
 protected:
 
     ~SlideEventHandler() {}
-    SlideEventHandler(const SlideEventHandler&,const osg::CopyOp&) {}
 
     bool home(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa);
 

@@ -94,6 +94,7 @@ class OSGPRESENTATION_EXPORT AnimationMaterialCallback : public osg::NodeCallbac
     public:
 
         AnimationMaterialCallback():
+            _useInverseMatrix(false),
             _timeOffset(0.0),
             _timeMultiplier(1.0),
             _firstTime(DBL_MAX),

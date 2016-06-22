@@ -159,24 +159,12 @@ class OSGWIDGET_EXPORT StyleManager: public osg::Object
         template<typename T>
         bool _applyStyles(T* t)
         {
-            if(!t)
-            {
-                warn()
-                    << "Cannot call StyleManager::applyStyle with a NULL object."
-                    << std::endl
-                ;
-
-                return false;
-            }
-
             osg::Object* obj = dynamic_cast<osg::Object*>(t);
-
             if(!obj)
             {
                 warn()
-                    << "Cannot coerce object into osg::Object in StyleManager:::applyStyle"
-                    << std::endl
-                ;
+                    << "Cannot call StyleManager::applyStyle with a NULL object or coerce object into osg::Object."
+                    << std::endl;
 
                 return false;
             }

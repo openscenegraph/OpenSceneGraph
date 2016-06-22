@@ -177,6 +177,8 @@ TX_EXDECL class TX_CLDECL trpgrImageHelper
     bool separateGeoTyp;
 };
 
+#define DIR_SIZE 1024
+
 /* Paging Archive (read version)
    This just reads the first bits of the file (and the header)
    and lets you parse from there.
@@ -229,7 +231,7 @@ protected:
     FILE *fp;
     int fid;
     // Header info
-    char dir[1024];
+    char dir[DIR_SIZE];
     trpgHeader header;
     trpgMatTable materialTable;
     trpgTexTable texTable;

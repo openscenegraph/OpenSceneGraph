@@ -1523,6 +1523,16 @@ yyFlexLexer::yyFlexLexer( std::istream* arg_yyin, std::ostream* arg_yyout )
 #else
 	yy_state_buf = 0;
 #endif
+
+        yy_hold_char = 0;
+        yy_n_chars = 0;
+        yy_last_accepting_state = 0;
+        yy_last_accepting_cpos = 0;
+
+        yy_state_ptr = 0;
+        yy_full_match = 0;
+        yy_full_state = 0;
+        yy_full_lp = 0;
 	}
 
 yyFlexLexer::~yyFlexLexer()

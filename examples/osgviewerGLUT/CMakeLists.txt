@@ -1,7 +1,0 @@
-SET(TARGET_SRC osgviewerGLUT.cpp )
-
-INCLUDE_DIRECTORIES( ${GLUT_INCLUDE_DIR} )
-SET(TARGET_LIBRARIES_VARS GLUT_glut_LIBRARY )
-
-#### end var setup  ###
-SETUP_EXAMPLE(osgviewerGLUT)

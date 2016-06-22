@@ -853,6 +853,7 @@ public:
 //
 SlideEventHandler::SlideEventHandler(osgViewer::Viewer* viewer):
     _viewer(viewer),
+    _activePresentation(0),
     _presentationSwitch(0),
     _activeSlide(0),
     _slideSwitch(0),
@@ -876,6 +877,38 @@ SlideEventHandler::SlideEventHandler(osgViewer::Viewer* viewer):
     _timeDelayOnNewSlideWithMovies(0.25f),
     _minimumTimeBetweenKeyPresses(0.25),
     _timeLastKeyPresses(-1.0),
+    _requestReload(false)
+{
+    s_seh = this;
+}
+
+SlideEventHandler::SlideEventHandler(const SlideEventHandler& seh,const osg::CopyOp& copyop):
+    osgGA::GUIEventHandler(seh,copyop),
+    _viewer(seh._viewer),
+    _activePresentation(seh._activePresentation),
+    _presentationSwitch(seh._presentationSwitch),
+    _activeSlide(seh._activeSlide),
+    _slideSwitch(seh._slideSwitch),
+    _activeLayer(seh._activeLayer),
+    _firstTraversal(true),
+    _referenceTime(seh._referenceTime),
+    _previousTime(seh._previousTime),
+    _timePerSlide(seh._timePerSlide),
+    _autoSteppingActive(seh._autoSteppingActive),
+    _loopPresentation(seh._loopPresentation),
+    _pause(seh._pause),
+    _hold(seh._hold),
+    _updateLightActive(seh._updateLightActive),
+    _updateOpacityActive(seh._updateOpacityActive),
+    _previousX(seh._previousX), _previousY(seh._previousY),
+    _cursorOn(seh._cursorOn),
+    _releaseAndCompileOnEachNewSlide(seh._releaseAndCompileOnEachNewSlide),
+    _firstSlideOrLayerChange(seh._firstSlideOrLayerChange),
+    _tickAtFirstSlideOrLayerChange(seh._tickAtFirstSlideOrLayerChange),
+    _tickAtLastSlideOrLayerChange(seh._tickAtLastSlideOrLayerChange),
+    _timeDelayOnNewSlideWithMovies(seh._timeDelayOnNewSlideWithMovies),
+    _minimumTimeBetweenKeyPresses(seh._minimumTimeBetweenKeyPresses),
+    _timeLastKeyPresses(seh._timeLastKeyPresses),
     _requestReload(false)
 {
     s_seh = this;

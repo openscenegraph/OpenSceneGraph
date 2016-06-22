@@ -55,7 +55,7 @@ namespace osg{
             {
                 OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_VertexArrayObject);
 
-                osg::get<osg::GLExtensions>(_contextID)->glDeleteVertexArrays(1,&globj->getGLID());
+                osg::get<osg::GLExtensions>(_contextID)->glDeleteVertexArrays(1,&globj->_GLID);
                 _vertexArrayObjectMap.erase(vaokey);
             }
         #else
@@ -426,7 +426,8 @@ void Geometry::setPrimitiveSetList(const PrimitiveSetList& primitives)
 
     }
     dirtyDisplayList();
-    dirtyVertexArrayObject(); dirtyBound();
+    dirtyVertexArrayObject();
+    dirtyBound();
 }
 
 bool Geometry::removePrimitiveSet(unsigned int i, unsigned int numElementsToRemove)
@@ -786,7 +787,7 @@ void Geometry::releaseGLObjects(State* state) const
             (*itr)->releaseGLObjects(state);
         }
     }
-    dirtyVertexArrayObject();
+    _vao.setAllElementsTo(NULL);
 
 }
 

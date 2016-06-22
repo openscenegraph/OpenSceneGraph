@@ -221,6 +221,10 @@ void VertexData::readTriangles( PlyFile* file, const int nFaces )
     // read the faces, reversing the reading direction if _invertFaces is true
     for( int i = 0 ; i < nFaces; i++ )
     {
+        // initialize face values
+        face.nVertices = 0;
+        face.vertices = 0;
+
         ply_get_element( file, static_cast< void* >( &face ) );
         if (face.vertices)
         {

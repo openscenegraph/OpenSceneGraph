@@ -111,8 +111,10 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
         {
             ImageRequest():
                 osg::Referenced(true),
+                _frameNumber(0),
                 _timeToMergeBy(0.0),
-                _attachmentIndex(-1) {}
+                _attachmentIndex(-1),
+                _requestQueue(0) {}
 
             unsigned int                        _frameNumber;
             double                              _timeToMergeBy;

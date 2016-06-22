@@ -786,9 +786,7 @@ void Geometry::releaseGLObjects(State* state) const
             (*itr)->releaseGLObjects(state);
         }
     }
-    ///unref VertexArrayObject
-    if(state)
-        _vao[state->getContextID()]=0;
+    dirtyVertexArrayObject();
 
 }
 
@@ -808,13 +806,12 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
         BufferObjects bufferObjects;
 
         VAOKey VAOkey;
-        //VAOkey.first=contextID;
 
-#define ADDINbufferObjectsANDVAOkey(ARRAY)  \
-    {\
-    bufferObjects.insert(ARRAY->getBufferObject());\
-    VAOkey.push_back(ARRAY->getBufferObject());\
-    }
+        #define ADDINbufferObjectsANDVAOkey(ARRAY)  \
+            {\
+            bufferObjects.insert(ARRAY->getBufferObject());\
+            VAOkey.push_back(ARRAY->getBufferObject());\
+            }
         // first collect all the active unique BufferObjects
         if (_vertexArray.valid() && _vertexArray->getBufferObject())                ADDINbufferObjectsANDVAOkey(_vertexArray);
         if (_normalArray.valid() && _normalArray->getBufferObject())                ADDINbufferObjectsANDVAOkey(_normalArray);
@@ -837,7 +834,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
         {
             if (itr->valid() && (*itr)->getBufferObject())                          ADDINbufferObjectsANDVAOkey(((*itr)));
         }
-#undef ADDINbufferObjectsANDVAOkey
+        #undef ADDINbufferObjectsANDVAOkey
 
         unsigned int numebo=0;
         for(PrimitiveSetList::const_iterator itr = _primitives.begin();
@@ -927,7 +924,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
         OSG_WARN<<"Geometry::drawImplementation() unable to render due to deprecated data, call geometry->fixDeprecatedData();"<<std::endl;
         return;
     }
-    //unsigned int contextID=renderInfo.getContextID();
+
     State& state = *renderInfo.getState();
 
     bool checkForGLErrors = state.getCheckForGLErrors()==osg::State::ONCE_PER_ATTRIBUTE;

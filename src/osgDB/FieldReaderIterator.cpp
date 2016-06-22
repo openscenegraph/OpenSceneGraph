@@ -80,6 +80,10 @@ void FieldReaderIterator::_copy(const FieldReaderIterator& ic)
     {
         _previousField = new Field(*ic._previousField);
     }
+    else
+    {
+        _previousField = NULL;
+    }
 
     if (ic._fieldQueue && ic._fieldQueueCapacity>0)
     {

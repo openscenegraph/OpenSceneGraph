@@ -58,7 +58,7 @@ public:
         if(_round++>100) {_round=0;
 
           OSG_WARN<<"subu->setUseVertexBufferObjects(true);"<<std::endl;
-            _subu->setUseVertexBufferObjects(true);//(_subu->getSubroutineName(0));
+            _subu->setUseVertexBufferObjects(!_subu->getUseVertexBufferObjects());//(_subu->getSubroutineName(0));
         }
     }
 

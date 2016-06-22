@@ -35,12 +35,6 @@ namespace osgDB
         return decoding[(int)value_in];
     }
 
-    void base64_init_decodestate(base64_decodestate* state_in)
-    {
-        state_in->step = step_a;
-        state_in->plainchar = 0;
-    }
-
     int base64_decode_block(const char* code_in, const int length_in, char* plaintext_out, base64_decodestate* state_in)
     {
         const char* codechar = code_in;

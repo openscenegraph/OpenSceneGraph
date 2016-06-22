@@ -444,7 +444,7 @@ lib3ds_node_eval(Lib3dsNode *node, float t) {
             lib3ds_track_eval_vector(&n->color_track, n->color, t);
             lib3ds_track_eval_float(&n->hotspot_track, &n->hotspot, t);
             lib3ds_track_eval_float(&n->falloff_track, &n->falloff, t);
-            lib3ds_track_eval_float(&n->roll_track, &n->roll, t); // COVERITY defect, n->roll, Out of bounds
+            lib3ds_track_eval_float(&n->roll_track, &n->roll, t);
             if (node->parent) {
                 lib3ds_matrix_copy(node->matrix, node->parent->matrix);
             } else {

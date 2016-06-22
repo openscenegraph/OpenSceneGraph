@@ -157,7 +157,7 @@ void FieldReaderIterator::insert(int pos,Field* field)
         _fieldQueueCapacity = newCapacity;
     }
 
-    for(i=_fieldQueueSize-1;i>=pos;++i)
+    for(i=_fieldQueueSize-1;i>=pos;--i)
     {
         _fieldQueue[i+1]=_fieldQueue[i];
     }

@@ -41,6 +41,19 @@ const float INVLN_2f = 1.0f / LN_2f;
 
 
 template<typename T>
+inline T default_value() { return T(); }
+
+template<> inline float default_value<float>() { return 0.0f; }
+template<> inline double default_value<double>() { return 0.0; }
+template<> inline char default_value<char>() { return 0; }
+template<> inline unsigned char default_value<unsigned char>() { return 0; }
+template<> inline short default_value<short>() { return 0; }
+template<> inline unsigned short default_value<unsigned short>() { return 0; }
+template<> inline int default_value<int>() { return 0; }
+template<> inline unsigned int default_value<unsigned int>() { return 0; }
+
+
+template<typename T>
 inline T absolute(T v) { return v<(T)0?-v:v; }
 
 /** return true if float lhs and rhs are equivalent,

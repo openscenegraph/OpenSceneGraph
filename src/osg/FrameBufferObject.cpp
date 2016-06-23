@@ -459,9 +459,9 @@ void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachmen
             tobj = _ximpl->textureTarget->getTextureObject(contextID);
 
         }
-        if (!tobj || tobj->id() == 0)
-            return;
     }
+    if (!tobj || tobj->id() == 0)
+        return;
 
     switch (_ximpl->targetType)
     {
@@ -480,23 +480,13 @@ void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachmen
         break;
     case Pimpl::TEXTURE3D:
         if (_ximpl->zoffset == Camera::FACE_CONTROLLED_BY_GEOMETRY_SHADER)
-        {
-            if (ext->glFramebufferTexture)
-            {
-                ext->glFramebufferTexture(target, attachment_point, tobj->id(), _ximpl->level);
-            }
-        }
+            ext->glFramebufferTexture(target, attachment_point, tobj->id(), _ximpl->level);
         else
             ext->glFramebufferTexture3D(target, attachment_point, GL_TEXTURE_3D, tobj->id(), _ximpl->level, _ximpl->zoffset);
         break;
     case Pimpl::TEXTURE2DARRAY:
         if (_ximpl->zoffset == Camera::FACE_CONTROLLED_BY_GEOMETRY_SHADER)
-        {
-            if (ext->glFramebufferTexture)
-            {
-                ext->glFramebufferTexture(target, attachment_point, tobj->id(), _ximpl->level);
-            }
-        }
+            ext->glFramebufferTexture(target, attachment_point, tobj->id(), _ximpl->level);
         else
             ext->glFramebufferTextureLayer(target, attachment_point, tobj->id(), _ximpl->level, _ximpl->zoffset);
         break;
@@ -505,12 +495,7 @@ void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachmen
         break;
     case Pimpl::TEXTURECUBE:
         if (_ximpl->cubeMapFace == Camera::FACE_CONTROLLED_BY_GEOMETRY_SHADER)
-        {
-            if (ext->glFramebufferTexture)
-            {
-                ext->glFramebufferTexture(target, attachment_point, tobj->id(), _ximpl->level);
-            }
-        }
+            ext->glFramebufferTexture(target, attachment_point, tobj->id(), _ximpl->level);
         else
             ext->glFramebufferTexture2D(target, attachment_point, GL_TEXTURE_CUBE_MAP_POSITIVE_X + _ximpl->cubeMapFace, tobj->id(), _ximpl->level);
         break;

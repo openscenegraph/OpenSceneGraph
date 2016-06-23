@@ -904,6 +904,7 @@ void GraphicsContext::resizedImplementation(int x, int y, int width, int height)
 SyncSwapBuffersCallback::SyncSwapBuffersCallback()
 {
     OSG_INFO<<"Created SyncSwapBuffersCallback."<<std::endl;
+    _previousSync = 0;
 }
 
 void SyncSwapBuffersCallback::swapBuffersImplementation(osg::GraphicsContext* gc)

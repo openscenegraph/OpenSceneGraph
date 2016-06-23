@@ -175,7 +175,7 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
         top_right = top_right * matrix;
 
         // if we have a geocentric database then transform into geocentric coords.
-        const osg::EllipsoidModel* em = locator->getEllipsoidModel();
+        const osg::EllipsoidModel* em = locator ? locator->getEllipsoidModel() : 0;
         if (em && locator->getCoordinateSystemType()==osgTerrain::Locator::GEOCENTRIC)
         {
             // note y axis maps to latitude, x axis to longitude
@@ -261,58 +261,6 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
         }
     }
 
-#if 0
-
-    bool smallTile = numVertices <= 16384;
-    osg::ref_ptr<osg::DrawElements> elements = smallTile ?
-        static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_TRIANGLE_STRIP)) :
-        static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_TRIANGLE_STRIP));
-
-    elements->reserveElements( (nx-1) * (ny-1) * 2 + (nx-1)*2*2 + (ny-1)*2*2 +(ny)*2);
-    geometry->addPrimitiveSet(elements.get());
-
-
-    // first row containing the skirt
-    int il = 0;
-    int iu = 0;
-    for(int c=0; c<nx; ++c)
-    {
-        il = c;
-        iu = il+nx+1;
-        elements->addElement(iu);
-        elements->addElement(il);
-    }
-    elements->addElement(il);
-
-    // center section
-    for(int r=0; r<ny-1; ++r)
-    {
-        il = nx+r*(nx+2);
-        iu = il+nx+2;
-        elements->addElement(iu);
-        for(int c=0; c<nx+2; ++c)
-        {
-            il = c+nx+r*(nx+2);
-            iu = il+nx+2;
-            elements->addElement(iu);
-            elements->addElement(il);
-        }
-        elements->addElement(il);
-    }
-
-    // top row containing skirt
-    il = nx+(ny-1)*(nx+2)+1;
-    iu = il+nx+1;
-    elements->addElement(iu);
-    for(int c=0; c<nx; ++c)
-    {
-        il = c+nx+(ny-1)*(nx+2)+1;
-        iu = il+nx+1;
-        elements->addElement(iu);
-        elements->addElement(il);
-    }
-
-#else
     bool smallTile = numVertices <= 16384;
 
     GLenum primitiveTypes = GL_QUADS;
@@ -361,7 +309,7 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
         elements->addElement(iu+1);
         elements->addElement(iu);
     }
-#endif
+
     if (locator)
     {
         matrix = locator->getTransform();
@@ -511,7 +459,7 @@ osg::ref_ptr<osg::MatrixTransform> GeometryPool::getTileSubgraph(osgTerrain::Ter
 
     osg::Vec3Array* shared_vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
     osg::Vec3Array* shared_normals = dynamic_cast<osg::Vec3Array*>(geometry->getNormalArray());
-    osg::FloatArray* heights = hf->getFloatArray();
+    osg::FloatArray* heights = hf ? hf->getFloatArray() : 0;
     const SharedGeometry::VertexToHeightFieldMapping& vthfm = geometry->getVertexToHeightFieldMapping();
 
     if (hf && shared_vertices && shared_normals && (shared_vertices->size()==shared_normals->size()))

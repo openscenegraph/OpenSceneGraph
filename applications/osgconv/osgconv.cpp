@@ -631,7 +631,10 @@ int main( int argc, char **argv )
     std::string libName;
     while (arguments.read("-l",libName))
     {
-        osgDB::Registry::instance()->loadLibrary(libName);
+        if (osgDB::Registry::instance()->loadLibrary(libName)==osgDB::Registry::NOT_LOADED)
+        {
+            OSG_NOTICE<<"Unable to load library : "<<libName<<std::endl;
+        }
     }
 
     while (arguments.read("-o",str))

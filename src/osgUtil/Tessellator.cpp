@@ -24,7 +24,9 @@ using namespace osgUtil;
 Tessellator::Tessellator() :
     _wtype(TESS_WINDING_ODD),
     _ttype(TESS_TYPE_POLYGONS),
-    _boundaryOnly(false), _numberVerts(0)
+    _boundaryOnly(false),
+    _numberVerts(0),
+    _extraPrimitives(0)
 {
     _tobj = gluNewTess();
     if (_tobj)

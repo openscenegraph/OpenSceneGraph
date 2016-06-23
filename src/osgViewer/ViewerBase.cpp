@@ -455,8 +455,11 @@ void ViewerBase::startThreading()
             if (_startRenderingBarrier.valid()) camera->getCameraThread()->add(_startRenderingBarrier.get());
 
             Renderer* renderer = dynamic_cast<Renderer*>(camera->getRenderer());
-            renderer->setGraphicsThreadDoesCull(false);
-            camera->getCameraThread()->add(renderer);
+            if (renderer)
+            {
+                renderer->setGraphicsThreadDoesCull(false);
+                camera->getCameraThread()->add(renderer);
+            }
 
             if (_endRenderingDispatchBarrier.valid())
             {

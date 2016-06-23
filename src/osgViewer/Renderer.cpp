@@ -546,7 +546,7 @@ void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
     osg::DisplaySettings* ds = _camera->getDisplaySettings() ?  _camera->getDisplaySettings() :
                                ((view &&view->getDisplaySettings()) ?  view->getDisplaySettings() :  osg::DisplaySettings::instance().get());
 
-    if (ds->getUseSceneViewForStereoHint())
+    if (ds && ds->getUseSceneViewForStereoHint())
     {
         sceneView->setDisplaySettings(ds);
     }

@@ -62,6 +62,7 @@ Sequence::Sequence(const Sequence& seq, const CopyOp& copyop) :
     _defaultTime(seq._defaultTime),
     _lastFrameTime(seq._lastFrameTime),
     _saveRealLastFrameTime(seq._saveRealLastFrameTime),
+    _saveRealLastFrameValue(seq._saveRealLastFrameValue),
     _mode(seq._mode),
     _sync(seq._sync),
     _clearOnStop(seq._clearOnStop)

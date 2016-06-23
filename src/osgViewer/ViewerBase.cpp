@@ -703,10 +703,10 @@ void ViewerBase::renderingTraversals()
     double beginRenderingTraversals = elapsedTime();
 
     osg::FrameStamp* frameStamp = getViewerFrameStamp();
+    unsigned int frameNumber = frameStamp ? frameStamp->getFrameNumber() : 0;
 
     if (getViewerStats() && getViewerStats()->collectStats("scene"))
     {
-        unsigned int frameNumber = frameStamp ? frameStamp->getFrameNumber() : 0;
 
         Views views;
         getViews(views);
@@ -857,10 +857,12 @@ void ViewerBase::renderingTraversals()
         ++sitr)
     {
         Scene* scene = *sitr;
-        osgDB::DatabasePager* dp = scene ? scene->getDatabasePager() : 0;
+        if (!scene) continue;
+
+        osgDB::DatabasePager* dp = scene->getDatabasePager();
         if (dp) dp->signalEndFrame();
 
-        osgDB::ImagePager* ip = scene ? scene->getImagePager() : 0;
+        osgDB::ImagePager* ip = scene->getImagePager();
         if (ip) ip->signalEndFrame();
     }
 
@@ -883,9 +885,9 @@ void ViewerBase::renderingTraversals()
         double endRenderingTraversals = elapsedTime();
 
         // update current frames stats
-        getViewerStats()->setAttribute(frameStamp->getFrameNumber(), "Rendering traversals begin time ", beginRenderingTraversals);
-        getViewerStats()->setAttribute(frameStamp->getFrameNumber(), "Rendering traversals end time ", endRenderingTraversals);
-        getViewerStats()->setAttribute(frameStamp->getFrameNumber(), "Rendering traversals time taken", endRenderingTraversals-beginRenderingTraversals);
+        getViewerStats()->setAttribute(frameNumber, "Rendering traversals begin time ", beginRenderingTraversals);
+        getViewerStats()->setAttribute(frameNumber, "Rendering traversals end time ", endRenderingTraversals);
+        getViewerStats()->setAttribute(frameNumber, "Rendering traversals time taken", endRenderingTraversals-beginRenderingTraversals);
     }
 
     _requestRedraw = false;

@@ -23,18 +23,20 @@ namespace triangle_stripper {
 class triangle
 {
 public:
-    triangle() { }
+    triangle()
+        : m_A(0), m_B(0), m_C(0), m_StripID(0) { }
+
     triangle(index A, index B, index C)
         : m_A(A), m_B(B), m_C(C), m_StripID(0) { }
 
     void ResetStripID()                            { m_StripID = 0; }
-    void SetStripID(size_t StripID)                { m_StripID = StripID; }    
+    void SetStripID(size_t StripID)                { m_StripID = StripID; }
     size_t StripID() const                        { return m_StripID; }
 
     index A() const                                { return m_A; }
     index B() const                                { return m_B; }
     index C() const                                { return m_C; }
-    
+
 private:
     index    m_A;
     index    m_B;

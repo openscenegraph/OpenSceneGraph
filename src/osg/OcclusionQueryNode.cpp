@@ -213,7 +213,7 @@ struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
 struct ClearQueriesCallback : public osg::Camera::DrawCallback
 {
     ClearQueriesCallback() : _rqcb( NULL ) {}
-    ClearQueriesCallback( const ClearQueriesCallback&, const osg::CopyOp& ) {}
+    ClearQueriesCallback( const ClearQueriesCallback& rhs, const osg::CopyOp& copyop) : osg::Camera::DrawCallback(rhs, copyop), _rqcb(rhs._rqcb) {}
     META_Object( osgOQ, ClearQueriesCallback )
 
     virtual void operator() (const osg::Camera&) const

@@ -30,10 +30,7 @@ namespace osgAnimation
     public:
         META_Object(osgAnimation, Animation)
 
-        Animation() :
-            _duration(0.0), _originalDuration(0.0),
-            _weight(0), _startTime(0), _playmode(LOOP) {}
-
+        Animation() : _duration(0), _weight(0), _startTime(0), _playmode(LOOP) {}
         Animation(const osgAnimation::Animation&, const osg::CopyOp&);
 
         enum PlayMode
@@ -46,6 +43,9 @@ namespace osgAnimation
 
         // addChannel insert the channel and call the computeDuration function
         void addChannel (Channel* pChannel);
+
+        // removeChannel remove the channel from channels list and call the computeDuration function
+        void removeChannel (Channel* pChannel);
 
         /** Those accessors let you add and remove channels
          *  if you modify something that can change the duration
@@ -61,13 +61,12 @@ namespace osgAnimation
          */
         void setDuration(double duration);
 
-
         /** Compute duration from channel and keyframes
          *  if the duration is not specified you should
          *  call this method before using it
          */
         void computeDuration();
-
+        double computeDurationFromChannels() const;
         double getDuration() const;
 
 
@@ -84,8 +83,6 @@ namespace osgAnimation
         double getStartTime() const { return _startTime;}
 
     protected:
-
-        double computeDurationFromChannels() const;
 
         ~Animation() {}
 

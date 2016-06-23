@@ -26,7 +26,7 @@ namespace osgAnimation
 
     class RigGeometry;
 
-    /// This class manage format for software skinning
+    /// This class manage format for hardware skinning
     class OSGANIMATION_EXPORT RigTransformSoftware : public RigTransform
     {
     public:
@@ -166,6 +166,7 @@ namespace osgAnimation
 
         bool _needInit;
 
+        std::map<std::string,bool> _invalidInfluence;
     };
 }
 

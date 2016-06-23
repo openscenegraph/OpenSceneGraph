@@ -34,6 +34,7 @@ namespace osgAnimation
         typedef osgAnimation::Bone BoneType;
         typedef std::vector<osg::ref_ptr<osg::Vec4Array> > BoneWeightAttribList;
         typedef std::vector<osg::ref_ptr<BoneType> > BonePalette;
+        typedef std::map<std::string, int> BoneNamePaletteIndex;
 
         typedef std::vector<osg::Matrix> MatrixPalette;
         struct IndexWeightEntry
@@ -63,6 +64,10 @@ namespace osgAnimation
         virtual void operator()(RigGeometry&);
         void setShader(osg::Shader*);
 
+        const BoneNamePaletteIndex& getBoneNameToPalette() {
+            return _boneNameToPalette;
+        }
+
     protected:
 
         bool init(RigGeometry&);
@@ -74,6 +79,7 @@ namespace osgAnimation
         int _nbVertexes;
         VertexIndexWeightList _vertexIndexMatrixWeightList;
         BonePalette _bonePalette;
+        BoneNamePaletteIndex _boneNameToPalette;
         BoneWeightAttribList _boneWeightAttribArrays;
         osg::ref_ptr<osg::Uniform> _uniformMatrixPalette;
         osg::ref_ptr<osg::Shader> _shader;

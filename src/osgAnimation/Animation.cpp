@@ -40,8 +40,27 @@ void Animation::addChannel(Channel* pChannel)
         _originalDuration = computeDurationFromChannels();
 }
 
+
+void Animation::removeChannel(Channel* pChannel)
+{
+    ChannelList::iterator it = _channels.begin();
+    while(it != _channels.end() && it->get() != pChannel)
+    {
+        ++ it;
+    }
+
+    if (it != _channels.end())
+    {
+        _channels.erase(it);
+    }
+    computeDuration();
+}
+
 double Animation::computeDurationFromChannels() const
 {
+    if(_channels.empty())
+        return 0;
+
     double tmin = 1e5;
     double tmax = -1e5;
     ChannelList::const_iterator chan;

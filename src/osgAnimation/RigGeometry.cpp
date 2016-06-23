@@ -24,7 +24,7 @@ osg::BoundingBox RigComputeBoundingBoxCallback::computeBound(const osg::Drawable
 {
     const osgAnimation::RigGeometry& rig = dynamic_cast<const osgAnimation::RigGeometry&>(drawable);
 
-    // if a valid initial bounding box is set we use it without asking more
+    // if a valid inital bounding box is set we use it without asking more
     if (rig.getInitialBound().valid())
         return rig.getInitialBound();
 
@@ -32,7 +32,7 @@ osg::BoundingBox RigComputeBoundingBoxCallback::computeBound(const osg::Drawable
         return _boundingBox;
 
     // if the computing of bb is invalid (like no geometry inside)
-    // then don't tag the bounding box as computed
+    // then dont tag the bounding box as computed
     osg::BoundingBox bb = rig.computeBoundingBox();
     if (!bb.valid())
         return bb;
@@ -70,8 +70,8 @@ RigGeometry::RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop) :
     _vertexInfluenceMap(b._vertexInfluenceMap),
     _needToComputeMatrix(b._needToComputeMatrix)
 {
-    // we don't copy the RigImplementation yet. because the RigImplementation need to be initialized in a valid graph, with a skeleton ...
-    // don't know yet what to do with a clone of a RigGeometry
+    // we dont copy the RigImplementation yet. because the RigImplementation need to be initialized in a valid graph, with a skeleton ...
+    // dont know yet what to do with a clone of a RigGeometry
 }
 
 

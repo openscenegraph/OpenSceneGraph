@@ -17,7 +17,7 @@
 #include <osg/Config>
 #include <osg/Export>
 #include <osg/Types>
- 
+
 #cmakedefine OSG_GL1_AVAILABLE
 #cmakedefine OSG_GL2_AVAILABLE
 #cmakedefine OSG_GL3_AVAILABLE
@@ -26,6 +26,7 @@
 #cmakedefine OSG_GLES3_AVAILABLE
 #cmakedefine OSG_GL_LIBRARY_STATIC
 #cmakedefine OSG_GL_DISPLAYLISTS_AVAILABLE
+#cmakedefine OSG_GL_VERTEX_ARRAY_OBJECTS_AVAILABLE
 #cmakedefine OSG_GL_MATRICES_AVAILABLE
 #cmakedefine OSG_GL_VERTEX_FUNCS_AVAILABLE
 #cmakedefine OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE

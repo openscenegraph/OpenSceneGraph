@@ -68,8 +68,8 @@ namespace osg{
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_VertexArrayObject);
             Geometry::VertexArrayObjectMap::iterator itr = _vertexArrayObjectMap.find(vaokey);// _vertexArrayObjectListMap.lower_bound(sizeHint);
             if (itr!=_vertexArrayObjectMap.end())return itr->second;
-            return NULL;
         #endif
+            return NULL;
         }
         Geometry::PerContextVertexArrayObject* generateVertexArrayObject(const Geometry::VAOKey & vaokey)
         {
@@ -623,11 +623,14 @@ void Geometry::setUseDisplayList(bool flag){
 }
 
 void Geometry::setUseVertexArrayObject(bool flag){
-
+#ifdef OSG_GL_VERTEX_ARRAY_OBJECTS_AVAILABLE
     if (_useVertexArrayObject == flag) return;
     if(!_useVertexBufferObjects&&flag)setUseVertexBufferObjects(true);
     _useVertexArrayObject=flag;
     dirtyVertexArrayObject();
+#else
+ OSG_INFO<<"Warning: Geometry::setUseVertexArrayObject(..) - not supported."<<std::endl;
+#endif
 }
 
 void Geometry::setUseVertexBufferObjects(bool flag)
@@ -731,8 +734,7 @@ void Geometry::dirtyDisplayList()
 void Geometry::dirtyVertexArrayObject()
 {
 #ifdef OSG_GL_VERTEX_ARRAY_OBJECTS_AVAILABLE
-_vao.setAllElementsTo(NULL);
-
+    _vao.setAllElementsTo(NULL);
 #endif
 }
 void Geometry::resizeGLObjectBuffers(unsigned int maxSize)

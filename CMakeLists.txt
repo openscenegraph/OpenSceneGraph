@@ -439,6 +439,8 @@ OPTION(OSG_GL_LIBRARY_STATIC "Set to ON to statically link with OpenGL/GLES libr
 SET(OPENGL_egl_LIBRARY CACHE STRING "Set the OpenGL egl library.")
 
 # Map the OSG_GL*_AVAILABLE settings to OSG_GL_* settings
+OPTION(OSG_GL_VERTEX_ARRAY_OBJECTS_AVAILABLE "Set to OFF to disable use of OpenGL vertex array objects." OFF)
+
 IF (OSG_GLES2_AVAILABLE OR OSG_GL3_AVAILABLE)
     OPTION(OSG_GL_DISPLAYLISTS_AVAILABLE "Set to OFF to disable use of OpenGL display lists." OFF)
     OPTION(OSG_GL_MATRICES_AVAILABLE "Set to OFF to disable use of OpenGL built-in matrices." OFF)

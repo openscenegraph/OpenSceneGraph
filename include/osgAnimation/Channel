@@ -25,10 +25,11 @@
 #include <osg/Referenced>
 #include <string>
 
+
 namespace osgAnimation
 {
 
-    class OSGANIMATION_EXPORT Channel : public osg::Referenced
+    class OSGANIMATION_EXPORT Channel : public osg::Object
     {
     public:
 
@@ -36,6 +37,10 @@ namespace osgAnimation
         Channel(const Channel& channel);
         virtual ~Channel();
         virtual Channel* clone() const = 0;
+
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Channel*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osgAnimation"; }
+        virtual const char* className() const { return "Channel"; }
 
         virtual void update(double time, float weight, int priority) = 0;
         virtual void reset() = 0;
@@ -74,7 +79,10 @@ namespace osgAnimation
         typedef typename SamplerType::UsingType UsingType;
         typedef TemplateTarget<UsingType> TargetType;
         typedef TemplateKeyframeContainer<typename SamplerType::KeyframeType> KeyframeContainerType;
-        Channel* clone() const { return new TemplateChannel<SamplerType>(*this); }
+
+        Object* cloneType() const { return new TemplateChannel(); }
+        Object* clone(const osg::CopyOp& copyop) const { return new TemplateChannel<SamplerType>(*this); }
+        Channel* clone() const { return dynamic_cast<osgAnimation::Channel*>(clone(osg::CopyOp::DEEP_COPY_ALL)); }
 
         TemplateChannel (const TemplateChannel& channel) :
             Channel(channel)
@@ -170,8 +178,10 @@ namespace osgAnimation
     typedef TemplateChannel<FloatLinearSampler> FloatLinearChannel;
     typedef TemplateChannel<Vec2LinearSampler> Vec2LinearChannel;
     typedef TemplateChannel<Vec3LinearSampler> Vec3LinearChannel;
+    typedef TemplateChannel<Vec3usLinearSampler> Vec3usLinearChannel;  // quantized Vec3LinearChannel
     typedef TemplateChannel<Vec4LinearSampler> Vec4LinearChannel;
     typedef TemplateChannel<QuatSphericalLinearSampler> QuatSphericalLinearChannel;
+    typedef TemplateChannel<Vec3usSphericalLinearSampler> Vec3usSphericalLinearChannel;  // quantized QuatSphericalLinearChannel
     typedef TemplateChannel<MatrixLinearSampler> MatrixLinearChannel;
 
     typedef TemplateChannel<FloatCubicBezierSampler> FloatCubicBezierChannel;

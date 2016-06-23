@@ -120,9 +120,12 @@ void RigTransformSoftware::initVertexSetFromBones(const BoneMap& map, const Vert
             const std::string& bname = inf.getBones()[b].getBoneName();
             float weight = inf.getBones()[b].getWeight();
             BoneMap::const_iterator it = map.find(bname);
-            if (it == map.end())
+            if (it == map.end() )
             {
-                OSG_WARN << "RigTransformSoftware Bone " << bname << " not found, skip the influence group " <<bname  << std::endl;
+                if (_invalidInfluence.find(bname) != _invalidInfluence.end()) {
+                    _invalidInfluence[bname] = true;
+                    OSG_WARN << "RigTransformSoftware Bone " << bname << " not found, skip the influence group " <<bname  << std::endl;
+                }
                 continue;
             }
             Bone* bone = it->second.get();

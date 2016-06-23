@@ -690,6 +690,8 @@ GLExtensions::GLExtensions(unsigned int contextID)
     isTBOSupported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_texture_buffer_object");
     isVAOSupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_vertex_array_object");
     isTransformFeedbackSupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_transform_feedback2");
+    isBufferObjectSupported = isPBOSupported && isVAOSupported;
+
 
     // BlendFunc extensions
     isBlendFuncSeparateSupported = validContext &&
@@ -722,6 +724,7 @@ GLExtensions::GLExtensions(unsigned int contextID)
     setGLExtensionFuncPtr(glMultiTexCoord3fv, "glMultiTexCoord3fv","glMultiTexCoord3fvARB", validContext);
     setGLExtensionFuncPtr(glMultiTexCoord4fv, "glMultiTexCoord4fv","glMultiTexCoord4fvARB", validContext);
     setGLExtensionFuncPtr(glMultiTexCoord1d, "glMultiTexCoord1d","glMultiTexCoorddfARB", validContext);
+    setGLExtensionFuncPtr(glMultiTexCoord1dv, "glMultiTexCoord1dv","glMultiTexCoord1dvARB", validContext);
     setGLExtensionFuncPtr(glMultiTexCoord2dv, "glMultiTexCoord2dv","glMultiTexCoord2dvARB", validContext);
     setGLExtensionFuncPtr(glMultiTexCoord3dv, "glMultiTexCoord3dv","glMultiTexCoord3dvARB", validContext);
     setGLExtensionFuncPtr(glMultiTexCoord4dv, "glMultiTexCoord4dv","glMultiTexCoord4dvARB", validContext);

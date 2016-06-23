@@ -115,6 +115,10 @@ State::State():
     _glDisableVertexAttribArray = 0;
     _glDrawArraysInstanced = 0;
     _glDrawElementsInstanced = 0;
+    _glMultiTexCoord4f = 0;
+    _glVertexAttrib4fv = 0;
+    _glVertexAttrib4f = 0;
+    _glBindBuffer = 0;
 
     _dynamicObjectCount  = 0;
 
@@ -133,6 +137,9 @@ State::State():
     _gpuTick = 0;
     _gpuTimestamp = 0;
     _timestampBits = 0;
+
+
+
 }
 
 State::~State()

@@ -573,7 +573,7 @@ bool RenderBin::getStats(Statistics& stats) const
             ++dw_itr)
         {
             const RenderLeaf* rl = dw_itr->get();
-            const Drawable* dw= rl->getDrawable();
+            const Drawable* dw = rl->getDrawable();
             stats.addDrawable(); // number of geosets
 
             const Geometry* geom = dw->asGeometry();
@@ -583,11 +583,9 @@ bool RenderBin::getStats(Statistics& stats) const
             }
 
             if (rl->_modelview.get()) stats.addMatrix(); // number of matrices
-            if (dw)
-            {
-                // then tot up the primitive types and no vertices.
-                dw->accept(stats); // use sub-class to find the stats for each drawable
-            }
+
+            // then tot up the primitive types and no vertices.
+            dw->accept(stats); // use sub-class to find the stats for each drawable
         }
         statsCollected = true;
     }

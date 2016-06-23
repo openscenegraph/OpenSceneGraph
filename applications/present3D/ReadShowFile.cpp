@@ -222,8 +222,8 @@ osg::ref_ptr<osg::Node> p3d::readShowFiles(osg::ArgumentParser& arguments,const 
     while (arguments.read("--movie",filename))
     {
         osg::ref_ptr<osg::Image> image = readRefImageFile(filename.c_str(), local_options.get());
-        osg::ref_ptr<osg::ImageStream> imageStream = dynamic_cast<osg::ImageStream*>(image.get());
-        if (image.valid())
+        osg::ImageStream* imageStream = dynamic_cast<osg::ImageStream*>(image.get());
+        if (imageStream)
         {
             imageStream->play();
             nodeList.push_back(osg::createGeodeForImage(imageStream));

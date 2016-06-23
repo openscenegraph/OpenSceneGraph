@@ -437,6 +437,7 @@ QueryGeometry::discardDeletedQueryObjects( unsigned int contextID )
 
 OcclusionQueryNode::OcclusionQueryNode()
   : _enabled( true ),
+    _passed(false),
     _visThreshold( 500 ),
     _queryFrameCount( 5 ),
     _debugBB( false )

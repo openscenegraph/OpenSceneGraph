@@ -493,8 +493,12 @@ public:
         unsigned int start = (*_elements)[0];
         unsigned int count = _elements->size();
 
-        if (geometry->getVertexArray()==0) geometry->setVertexArray(new osg::Vec3Array(*_vertices));
         osg::Vec3Array* new_vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+        if (!new_vertices)
+        {
+            new_vertices = new osg::Vec3Array(*_vertices);
+            geometry->setVertexArray(new_vertices);
+        }
 
         // allocate the primitive set to store the face geometry
         osg::ref_ptr<osg::DrawElementsUShort> face = new osg::DrawElementsUShort(GL_POLYGON);
@@ -1342,7 +1346,7 @@ OSGTEXT_EXPORT osg::Geometry* computeShellGeometry(osg::Geometry* glyphGeometry,
 
         osg::CopyOp copyop(osg::CopyOp::DEEP_COPY_ALL);
 
-        osg::DrawElementsUShort* front_strip = dynamic_cast<osg::DrawElementsUShort*>(copyop(strip));
+        osg::DrawElementsUShort* front_strip = new osg::DrawElementsUShort(*strip, copyop);
         text_geometry->addPrimitiveSet(front_strip);
         for(unsigned int i=0; i<front_strip->size(); ++i)
         {
@@ -1362,7 +1366,7 @@ OSGTEXT_EXPORT osg::Geometry* computeShellGeometry(osg::Geometry* glyphGeometry,
             std::swap(p1,p2);
         }
 
-        osg::DrawElementsUShort* back_strip = dynamic_cast<osg::DrawElementsUShort*>(copyop(strip));
+        osg::DrawElementsUShort* back_strip = new osg::DrawElementsUShort(*strip, copyop);
         text_geometry->addPrimitiveSet(back_strip);
         for(unsigned int i=0; i<back_strip->size(); ++i)
         {

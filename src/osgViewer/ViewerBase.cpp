@@ -674,25 +674,6 @@ void ViewerBase::frame(double simulationTime)
 
 void ViewerBase::renderingTraversals()
 {
-    bool _outputMasterCameraLocation = false;
-    if (_outputMasterCameraLocation)
-    {
-        Views views;
-        getViews(views);
-
-        for(Views::iterator itr = views.begin();
-            itr != views.end();
-            ++itr)
-        {
-            osgViewer::View* view = *itr;
-            if (view)
-            {
-                const osg::Matrixd& m = view->getCamera()->getInverseViewMatrix();
-                OSG_NOTICE<<"View "<<view<<", Master Camera position("<<m.getTrans()<<"), rotation("<<m.getRotate()<<")"<<std::endl;
-            }
-        }
-    }
-
     Contexts contexts;
     getContexts(contexts);
 

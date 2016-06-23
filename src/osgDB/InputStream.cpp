@@ -1033,8 +1033,8 @@ void InputStream::decompress()
         BaseCompressor* compressor = Registry::instance()->getObjectWrapperManager()->findCompressor(compressorName);
         if ( !compressor )
         {
-            OSG_WARN << "InputStream::decompress(): No such compressor "
-                                   << compressorName << std::endl;
+            throwException( "InputStream: Failed to decompress stream, No such compressor." );
+            return;
         }
 
         if ( !compressor->decompress(*(_in->getStream()), data) )

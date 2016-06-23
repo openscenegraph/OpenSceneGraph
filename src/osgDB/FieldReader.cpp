@@ -248,17 +248,8 @@ bool FieldReader::_readField(Field* fieldPtr)
                 c = ch;
                 if (ch=='\\' && !escape)
                 {
-                    if (escape)
-                    {
-                        escape = false;
-                        _fin->get(c);
-                        if (fieldPtr) fieldPtr->addChar(c);
-                    }
-                    else
-                    {
-                        escape = true;
-                        _fin->ignore(1);
-                    }
+                    escape = true;
+                    _fin->ignore(1);
                 }
                 else if (ch=='\'')
                 {

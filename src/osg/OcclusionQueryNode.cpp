@@ -213,7 +213,7 @@ struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
 struct ClearQueriesCallback : public osg::Camera::DrawCallback
 {
     ClearQueriesCallback() : _rqcb( NULL ) {}
-    ClearQueriesCallback( const ClearQueriesCallback&, const osg::CopyOp& ) {}
+    ClearQueriesCallback( const ClearQueriesCallback& rhs, const osg::CopyOp& copyop) : osg::Camera::DrawCallback(rhs, copyop), _rqcb(rhs._rqcb) {}
     META_Object( osgOQ, ClearQueriesCallback )
 
     virtual void operator() (const osg::Camera&) const
@@ -437,6 +437,7 @@ QueryGeometry::discardDeletedQueryObjects( unsigned int contextID )
 
 OcclusionQueryNode::OcclusionQueryNode()
   : _enabled( true ),
+    _passed(false),
     _visThreshold( 500 ),
     _queryFrameCount( 5 ),
     _debugBB( false )

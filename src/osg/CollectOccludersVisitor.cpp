@@ -63,8 +63,7 @@ float CollectOccludersVisitor::getDistanceFromEyePoint(const Vec3& pos, bool wit
     const Matrix& matrix = *_modelviewStack.back();
     float dist = -(pos[0]*matrix(0,2)+pos[1]*matrix(1,2)+pos[2]*matrix(2,2)+matrix(3,2));
 
-    if (withLODScale) return dist*getLODScale();
-    else return dist*getLODScale();
+    return withLODScale ? dist*getLODScale() : dist;
 }
 
 void CollectOccludersVisitor::apply(osg::Node& node)

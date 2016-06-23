@@ -41,7 +41,7 @@ void Box::_resizeImplementation(point_type w, point_type h) {
     // If we have any widgets that agree to fill and there has been an honest resize
     // request, handle it here. The first case handles resizes where we have AT LEAST
     // as many pixels to fill as we have objects.
-    if(numFill > 0.0f && (w != 0.0f || h != 0.0f)) {
+    if(inumFill>0 && (w != 0.0f || h != 0.0f)) {
         unsigned int cur = 0;
 
         for(Iterator i = begin(); i != end(); i++) if(i->valid() && i->get()->canFill()) {

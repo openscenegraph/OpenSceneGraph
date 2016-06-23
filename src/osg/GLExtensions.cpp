@@ -124,7 +124,7 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
 
                 typedef const GLubyte * GL_APIENTRY MYGLGETSTRINGIPROC( GLenum, GLuint );
                 MYGLGETSTRINGIPROC* glGetStringi = 0;
-                setGLExtensionFuncPtr( glGetStringi, "glGetStringi");
+                setGLExtensionFuncPtr( glGetStringi, "glGetStringi", true);
 
                 if( glGetStringi != NULL )
                 {
@@ -433,49 +433,52 @@ void GLExtensions::Set(unsigned int contextID, GLExtensions* extensions)
 
 GLExtensions::GLExtensions(unsigned int contextID)
 {
-    const char* version = (const char*) glGetString( GL_VERSION );
-    if (!version)
+    const char* versionString = (const char*) glGetString( GL_VERSION );
+    bool validContext = versionString!=0;
+    if (!validContext)
     {
         OSG_NOTIFY(osg::FATAL)<<"Error: OpenGL version test failed, requires valid graphics context."<<std::endl;
-        return;
     }
 
-    glVersion = findAsciiToFloat( version );
+    glVersion = validContext ? findAsciiToFloat( versionString ) : 0.0f;
     glslLanguageVersion = 0.0f;
 
     bool shadersBuiltIn = OSG_GLES2_FEATURES || OSG_GL3_FEATURES;
 
-    isShaderObjectsSupported = shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_shader_objects");
-    isVertexShaderSupported = shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_vertex_shader");
-    isFragmentShaderSupported = shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_fragment_shader");
-    isLanguage100Supported = shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_shading_language_100");
-    isGeometryShader4Supported = osg::isGLExtensionSupported(contextID,"GL_EXT_geometry_shader4");
-    isGpuShader4Supported = osg::isGLExtensionSupported(contextID,"GL_EXT_gpu_shader4");
-    areTessellationShadersSupported = osg::isGLExtensionSupported(contextID, "GL_ARB_tessellation_shader");
-    isUniformBufferObjectSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_uniform_buffer_object");
-    isGetProgramBinarySupported = osg::isGLExtensionSupported(contextID,"GL_ARB_get_program_binary");
-    isGpuShaderFp64Supported = osg::isGLExtensionSupported(contextID,"GL_ARB_gpu_shader_fp64");
-    isShaderAtomicCountersSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_shader_atomic_counters");
+    isShaderObjectsSupported = validContext && (shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_shader_objects"));
+    isVertexShaderSupported = validContext && (shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_vertex_shader"));
+    isFragmentShaderSupported = validContext && (shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_fragment_shader"));
+    isLanguage100Supported = validContext && (shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_shading_language_100"));
+    isGeometryShader4Supported = validContext && osg::isGLExtensionSupported(contextID,"GL_EXT_geometry_shader4");
+    isGpuShader4Supported = validContext && osg::isGLExtensionSupported(contextID,"GL_EXT_gpu_shader4");
+    areTessellationShadersSupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_tessellation_shader");
+    isUniformBufferObjectSupported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_uniform_buffer_object");
+    isGetProgramBinarySupported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_get_program_binary");
+    isGpuShaderFp64Supported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_gpu_shader_fp64");
+    isShaderAtomicCountersSupported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_shader_atomic_counters");
 
-    isRectangleSupported = OSG_GL3_FEATURES ||
+    isRectangleSupported = validContext &&
+                           (OSG_GL3_FEATURES ||
                            isGLExtensionSupported(contextID,"GL_ARB_texture_rectangle") ||
                            isGLExtensionSupported(contextID,"GL_EXT_texture_rectangle") ||
-                           isGLExtensionSupported(contextID,"GL_NV_texture_rectangle");
+                           isGLExtensionSupported(contextID,"GL_NV_texture_rectangle"));
 
-    isCubeMapSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
+    isCubeMapSupported = validContext &&
+                          (OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
                           isGLExtensionSupported(contextID,"GL_ARB_texture_cube_map") ||
                           isGLExtensionSupported(contextID,"GL_EXT_texture_cube_map") ||
-                          (glVersion >= 1.3f);
+                          (glVersion >= 1.3f));
 
     isClipControlSupported = isGLExtensionSupported(contextID,"GL_ARB_clip_control") ||
                              (glVersion >= 4.5f);
 
 
-    isGlslSupported = ( glVersion >= 2.0f ) ||
-                      ( isShaderObjectsSupported &&
+    isGlslSupported = validContext &&
+                      (( glVersion >= 2.0f ) ||
+                       (isShaderObjectsSupported &&
                         isVertexShaderSupported &&
                         isFragmentShaderSupported &&
-                        isLanguage100Supported );
+                        isLanguage100Supported ));
 
     if( isGlslSupported )
     {
@@ -498,301 +501,302 @@ GLExtensions::GLExtensions(unsigned int contextID)
             << std::endl;
 
 
-    setGLExtensionFuncPtr(glDrawBuffers, "glDrawBuffers", "glDrawBuffersARB");
-    setGLExtensionFuncPtr(glAttachShader, "glAttachShader", "glAttachObjectARB");
-    setGLExtensionFuncPtr(glBindAttribLocation, "glBindAttribLocation", "glBindAttribLocationARB");
-    setGLExtensionFuncPtr(glCompileShader, "glCompileShader", "glCompileShaderARB");
-    setGLExtensionFuncPtr(glCreateProgram, "glCreateProgram", "glCreateProgramObjectARB");
-    setGLExtensionFuncPtr(glCreateShader, "glCreateShader", "glCreateShaderObjectARB");
-    setGLExtensionFuncPtr(glDeleteProgram, "glDeleteProgram");
-    setGLExtensionFuncPtr(glDeleteShader, "glDeleteShader");
-    setGLExtensionFuncPtr(glDetachShader, "glDetachShader", "glDetachObjectARB");
-    setGLExtensionFuncPtr(glDisableVertexAttribArray, "glDisableVertexAttribArray");
-    setGLExtensionFuncPtr(glEnableVertexAttribArray, "glEnableVertexAttribArray");
-    setGLExtensionFuncPtr(glGetActiveAttrib, "glGetActiveAttrib", "glGetActiveAttribARB");
-    setGLExtensionFuncPtr(glGetActiveUniform, "glGetActiveUniform", "glGetActiveUniformARB");
-    setGLExtensionFuncPtr(glGetAttachedShaders, "glGetAttachedShaders", "glGetAttachedObjectsARB");
-    setGLExtensionFuncPtr(glGetAttribLocation, "glGetAttribLocation", "glGetAttribLocationARB");
-    setGLExtensionFuncPtr(glGetProgramiv, "glGetProgramiv");
-    setGLExtensionFuncPtr(glGetProgramInfoLog, "glGetProgramInfoLog");
-    setGLExtensionFuncPtr(glGetShaderiv, "glGetShaderiv");
-    setGLExtensionFuncPtr(glGetShaderInfoLog, "glGetShaderInfoLog");
-    setGLExtensionFuncPtr(glGetShaderSource, "glGetShaderSource", "glGetShaderSourceARB");
-    setGLExtensionFuncPtr(glGetUniformLocation, "glGetUniformLocation", "glGetUniformLocationARB");
-    setGLExtensionFuncPtr(glGetUniformfv, "glGetUniformfv", "glGetUniformfvARB");
-    setGLExtensionFuncPtr(glGetUniformiv, "glGetUniformiv", "glGetUniformivARB");
-    setGLExtensionFuncPtr(glGetVertexAttribdv, "glGetVertexAttribdv");
-    setGLExtensionFuncPtr(glGetVertexAttribfv, "glGetVertexAttribfv");
-    setGLExtensionFuncPtr(glGetVertexAttribiv, "glGetVertexAttribiv");
-    setGLExtensionFuncPtr(glGetVertexAttribPointerv, "glGetVertexAttribPointerv");
-    setGLExtensionFuncPtr(glIsProgram, "glIsProgram");
-    setGLExtensionFuncPtr(glIsShader, "glIsShader");
-    setGLExtensionFuncPtr(glLinkProgram, "glLinkProgram", "glLinkProgramARB");
-    setGLExtensionFuncPtr(glShaderSource, "glShaderSource", "glShaderSourceARB");
-    setGLExtensionFuncPtr(glUseProgram, "glUseProgram", "glUseProgramObjectARB");
-    setGLExtensionFuncPtr(glUniform1f, "glUniform1f", "glUniform1fARB");
-    setGLExtensionFuncPtr(glUniform2f, "glUniform2f", "glUniform2fARB");
-    setGLExtensionFuncPtr(glUniform3f, "glUniform3f", "glUniform3fARB");
-    setGLExtensionFuncPtr(glUniform4f, "glUniform4f", "glUniform4fARB");
-    setGLExtensionFuncPtr(glUniform1i, "glUniform1i", "glUniform1iARB");
-    setGLExtensionFuncPtr(glUniform2i, "glUniform2i", "glUniform2iARB");
-    setGLExtensionFuncPtr(glUniform3i, "glUniform3i", "glUniform3iARB");
-    setGLExtensionFuncPtr(glUniform4i, "glUniform4i", "glUniform4iARB");
-    setGLExtensionFuncPtr(glUniform1fv, "glUniform1fv", "glUniform1fvARB");
-    setGLExtensionFuncPtr(glUniform2fv, "glUniform2fv", "glUniform2fvARB");
-    setGLExtensionFuncPtr(glUniform3fv, "glUniform3fv", "glUniform3fvARB");
-    setGLExtensionFuncPtr(glUniform4fv, "glUniform4fv", "glUniform4fvARB");
-    setGLExtensionFuncPtr(glUniform1iv, "glUniform1iv", "glUniform1ivARB");
-    setGLExtensionFuncPtr(glUniform2iv, "glUniform2iv", "glUniform2ivARB");
-    setGLExtensionFuncPtr(glUniform3iv, "glUniform3iv", "glUniform3ivARB");
-    setGLExtensionFuncPtr(glUniform4iv, "glUniform4iv", "glUniform4ivARB");
-    setGLExtensionFuncPtr(glUniformMatrix2fv, "glUniformMatrix2fv", "glUniformMatrix2fvARB");
-    setGLExtensionFuncPtr(glUniformMatrix3fv, "glUniformMatrix3fv", "glUniformMatrix3fvARB");
-    setGLExtensionFuncPtr(glUniformMatrix4fv, "glUniformMatrix4fv", "glUniformMatrix4fvARB");
-    setGLExtensionFuncPtr(glValidateProgram, "glValidateProgram", "glValidateProgramARB");
-    setGLExtensionFuncPtr(glVertexAttrib1d, "glVertexAttrib1d");
-    setGLExtensionFuncPtr(glVertexAttrib1dv, "glVertexAttrib1dv");
-    setGLExtensionFuncPtr(glVertexAttrib1f, "glVertexAttrib1f");
-    setGLExtensionFuncPtr(glVertexAttrib1fv, "glVertexAttrib1fv");
-    setGLExtensionFuncPtr(glVertexAttrib1s, "glVertexAttrib1s");
-    setGLExtensionFuncPtr(glVertexAttrib1sv, "glVertexAttrib1sv");
-    setGLExtensionFuncPtr(glVertexAttrib2d, "glVertexAttrib2d");
-    setGLExtensionFuncPtr(glVertexAttrib2dv, "glVertexAttrib2dv");
-    setGLExtensionFuncPtr(glVertexAttrib2f, "glVertexAttrib2f");
-    setGLExtensionFuncPtr(glVertexAttrib2fv, "glVertexAttrib2fv");
-    setGLExtensionFuncPtr(glVertexAttrib2s, "glVertexAttrib2s");
-    setGLExtensionFuncPtr(glVertexAttrib2sv, "glVertexAttrib2sv");
-    setGLExtensionFuncPtr(glVertexAttrib3d, "glVertexAttrib3d");
-    setGLExtensionFuncPtr(glVertexAttrib3dv, "glVertexAttrib3dv");
-    setGLExtensionFuncPtr(glVertexAttrib3f, "glVertexAttrib3f");
-    setGLExtensionFuncPtr(glVertexAttrib3fv, "glVertexAttrib3fv");
-    setGLExtensionFuncPtr(glVertexAttrib3s, "glVertexAttrib3s");
-    setGLExtensionFuncPtr(glVertexAttrib3sv, "glVertexAttrib3sv");
-    setGLExtensionFuncPtr(glVertexAttrib4Nbv, "glVertexAttrib4Nbv");
-    setGLExtensionFuncPtr(glVertexAttrib4Niv, "glVertexAttrib4Niv");
-    setGLExtensionFuncPtr(glVertexAttrib4Nsv, "glVertexAttrib4Nsv");
-    setGLExtensionFuncPtr(glVertexAttrib4Nub, "glVertexAttrib4Nub");
-    setGLExtensionFuncPtr(glVertexAttrib4Nubv, "glVertexAttrib4Nubv");
-    setGLExtensionFuncPtr(glVertexAttrib4Nuiv, "glVertexAttrib4Nuiv");
-    setGLExtensionFuncPtr(glVertexAttrib4Nusv, "glVertexAttrib4Nusv");
-    setGLExtensionFuncPtr(glVertexAttrib4bv, "glVertexAttrib4bv");
-    setGLExtensionFuncPtr(glVertexAttrib4d, "glVertexAttrib4d");
-    setGLExtensionFuncPtr(glVertexAttrib4dv, "glVertexAttrib4dv");
-    setGLExtensionFuncPtr(glVertexAttrib4f, "glVertexAttrib4f");
-    setGLExtensionFuncPtr(glVertexAttrib4fv, "glVertexAttrib4fv");
-    setGLExtensionFuncPtr(glVertexAttrib4iv, "glVertexAttrib4iv");
-    setGLExtensionFuncPtr(glVertexAttrib4s, "glVertexAttrib4s");
-    setGLExtensionFuncPtr(glVertexAttrib4sv, "glVertexAttrib4sv");
-    setGLExtensionFuncPtr(glVertexAttrib4ubv, "glVertexAttrib4ubv");
-    setGLExtensionFuncPtr(glVertexAttrib4uiv, "glVertexAttrib4uiv");
-    setGLExtensionFuncPtr(glVertexAttrib4usv, "glVertexAttrib4usv");
-    setGLExtensionFuncPtr(glVertexAttribPointer, "glVertexAttribPointer");
-    setGLExtensionFuncPtr(glVertexAttribDivisor, "glVertexAttribDivisor");
+    setGLExtensionFuncPtr(glDrawBuffers, "glDrawBuffers", "glDrawBuffersARB", validContext);
+    setGLExtensionFuncPtr(glAttachShader, "glAttachShader", "glAttachObjectARB", validContext);
+    setGLExtensionFuncPtr(glBindAttribLocation, "glBindAttribLocation", "glBindAttribLocationARB", validContext);
+    setGLExtensionFuncPtr(glCompileShader, "glCompileShader", "glCompileShaderARB", validContext);
+    setGLExtensionFuncPtr(glCreateProgram, "glCreateProgram", "glCreateProgramObjectARB", validContext);
+    setGLExtensionFuncPtr(glCreateShader, "glCreateShader", "glCreateShaderObjectARB", validContext);
+    setGLExtensionFuncPtr(glDeleteProgram, "glDeleteProgram", validContext);
+    setGLExtensionFuncPtr(glDeleteShader, "glDeleteShader", validContext);
+    setGLExtensionFuncPtr(glDetachShader, "glDetachShader", "glDetachObjectARB", validContext);
+    setGLExtensionFuncPtr(glDisableVertexAttribArray, "glDisableVertexAttribArray", validContext);
+    setGLExtensionFuncPtr(glEnableVertexAttribArray, "glEnableVertexAttribArray", validContext);
+    setGLExtensionFuncPtr(glGetActiveAttrib, "glGetActiveAttrib", "glGetActiveAttribARB", validContext);
+    setGLExtensionFuncPtr(glGetActiveUniform, "glGetActiveUniform", "glGetActiveUniformARB", validContext);
+    setGLExtensionFuncPtr(glGetAttachedShaders, "glGetAttachedShaders", "glGetAttachedObjectsARB", validContext);
+    setGLExtensionFuncPtr(glGetAttribLocation, "glGetAttribLocation", "glGetAttribLocationARB", validContext);
+    setGLExtensionFuncPtr(glGetProgramiv, "glGetProgramiv", validContext);
+    setGLExtensionFuncPtr(glGetProgramInfoLog, "glGetProgramInfoLog", validContext);
+    setGLExtensionFuncPtr(glGetShaderiv, "glGetShaderiv", validContext);
+    setGLExtensionFuncPtr(glGetShaderInfoLog, "glGetShaderInfoLog", validContext);
+    setGLExtensionFuncPtr(glGetShaderSource, "glGetShaderSource", "glGetShaderSourceARB", validContext);
+    setGLExtensionFuncPtr(glGetUniformLocation, "glGetUniformLocation", "glGetUniformLocationARB", validContext);
+    setGLExtensionFuncPtr(glGetUniformfv, "glGetUniformfv", "glGetUniformfvARB", validContext);
+    setGLExtensionFuncPtr(glGetUniformiv, "glGetUniformiv", "glGetUniformivARB", validContext);
+    setGLExtensionFuncPtr(glGetVertexAttribdv, "glGetVertexAttribdv", validContext);
+    setGLExtensionFuncPtr(glGetVertexAttribfv, "glGetVertexAttribfv", validContext);
+    setGLExtensionFuncPtr(glGetVertexAttribiv, "glGetVertexAttribiv", validContext);
+    setGLExtensionFuncPtr(glGetVertexAttribPointerv, "glGetVertexAttribPointerv", validContext);
+    setGLExtensionFuncPtr(glIsProgram, "glIsProgram", validContext);
+    setGLExtensionFuncPtr(glIsShader, "glIsShader", validContext);
+    setGLExtensionFuncPtr(glLinkProgram, "glLinkProgram", "glLinkProgramARB", validContext);
+    setGLExtensionFuncPtr(glShaderSource, "glShaderSource", "glShaderSourceARB", validContext);
+    setGLExtensionFuncPtr(glUseProgram, "glUseProgram", "glUseProgramObjectARB", validContext);
+    setGLExtensionFuncPtr(glUniform1f, "glUniform1f", "glUniform1fARB", validContext);
+    setGLExtensionFuncPtr(glUniform2f, "glUniform2f", "glUniform2fARB", validContext);
+    setGLExtensionFuncPtr(glUniform3f, "glUniform3f", "glUniform3fARB", validContext);
+    setGLExtensionFuncPtr(glUniform4f, "glUniform4f", "glUniform4fARB", validContext);
+    setGLExtensionFuncPtr(glUniform1i, "glUniform1i", "glUniform1iARB", validContext);
+    setGLExtensionFuncPtr(glUniform2i, "glUniform2i", "glUniform2iARB", validContext);
+    setGLExtensionFuncPtr(glUniform3i, "glUniform3i", "glUniform3iARB", validContext);
+    setGLExtensionFuncPtr(glUniform4i, "glUniform4i", "glUniform4iARB", validContext);
+    setGLExtensionFuncPtr(glUniform1fv, "glUniform1fv", "glUniform1fvARB", validContext);
+    setGLExtensionFuncPtr(glUniform2fv, "glUniform2fv", "glUniform2fvARB", validContext);
+    setGLExtensionFuncPtr(glUniform3fv, "glUniform3fv", "glUniform3fvARB", validContext);
+    setGLExtensionFuncPtr(glUniform4fv, "glUniform4fv", "glUniform4fvARB", validContext);
+    setGLExtensionFuncPtr(glUniform1iv, "glUniform1iv", "glUniform1ivARB", validContext);
+    setGLExtensionFuncPtr(glUniform2iv, "glUniform2iv", "glUniform2ivARB", validContext);
+    setGLExtensionFuncPtr(glUniform3iv, "glUniform3iv", "glUniform3ivARB", validContext);
+    setGLExtensionFuncPtr(glUniform4iv, "glUniform4iv", "glUniform4ivARB", validContext);
+    setGLExtensionFuncPtr(glUniformMatrix2fv, "glUniformMatrix2fv", "glUniformMatrix2fvARB", validContext);
+    setGLExtensionFuncPtr(glUniformMatrix3fv, "glUniformMatrix3fv", "glUniformMatrix3fvARB", validContext);
+    setGLExtensionFuncPtr(glUniformMatrix4fv, "glUniformMatrix4fv", "glUniformMatrix4fvARB", validContext);
+    setGLExtensionFuncPtr(glValidateProgram, "glValidateProgram", "glValidateProgramARB", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib1d, "glVertexAttrib1d", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib1dv, "glVertexAttrib1dv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib1f, "glVertexAttrib1f", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib1fv, "glVertexAttrib1fv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib1s, "glVertexAttrib1s", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib1sv, "glVertexAttrib1sv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib2d, "glVertexAttrib2d", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib2dv, "glVertexAttrib2dv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib2f, "glVertexAttrib2f", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib2fv, "glVertexAttrib2fv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib2s, "glVertexAttrib2s", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib2sv, "glVertexAttrib2sv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib3d, "glVertexAttrib3d", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib3dv, "glVertexAttrib3dv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib3f, "glVertexAttrib3f", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib3fv, "glVertexAttrib3fv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib3s, "glVertexAttrib3s", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib3sv, "glVertexAttrib3sv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4Nbv, "glVertexAttrib4Nbv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4Niv, "glVertexAttrib4Niv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4Nsv, "glVertexAttrib4Nsv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4Nub, "glVertexAttrib4Nub", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4Nubv, "glVertexAttrib4Nubv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4Nuiv, "glVertexAttrib4Nuiv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4Nusv, "glVertexAttrib4Nusv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4bv, "glVertexAttrib4bv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4d, "glVertexAttrib4d", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4dv, "glVertexAttrib4dv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4f, "glVertexAttrib4f", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4fv, "glVertexAttrib4fv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4iv, "glVertexAttrib4iv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4s, "glVertexAttrib4s", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4sv, "glVertexAttrib4sv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4ubv, "glVertexAttrib4ubv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4uiv, "glVertexAttrib4uiv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4usv, "glVertexAttrib4usv", validContext);
+    setGLExtensionFuncPtr(glVertexAttribPointer, "glVertexAttribPointer", validContext);
+    setGLExtensionFuncPtr(glVertexAttribDivisor, "glVertexAttribDivisor", validContext);
 
     // v1.5-only ARB entry points, in case they're needed for fallback
-    setGLExtensionFuncPtr(glGetInfoLogARB, "glGetInfoLogARB");
-    setGLExtensionFuncPtr(glGetObjectParameterivARB, "glGetObjectParameterivARB");
-    setGLExtensionFuncPtr(glDeleteObjectARB, "glDeleteObjectARB");
-    setGLExtensionFuncPtr(glGetHandleARB, "glGetHandleARB");
+    setGLExtensionFuncPtr(glGetInfoLogARB, "glGetInfoLogARB", validContext);
+    setGLExtensionFuncPtr(glGetObjectParameterivARB, "glGetObjectParameterivARB", validContext);
+    setGLExtensionFuncPtr(glDeleteObjectARB, "glDeleteObjectARB", validContext);
+    setGLExtensionFuncPtr(glGetHandleARB, "glGetHandleARB", validContext);
 
     // GL 2.1
-    setGLExtensionFuncPtr(glUniformMatrix2x3fv,  "glUniformMatrix2x3fv" );
-    setGLExtensionFuncPtr(glUniformMatrix3x2fv,  "glUniformMatrix3x2fv" );
-    setGLExtensionFuncPtr(glUniformMatrix2x4fv,  "glUniformMatrix2x4fv" );
-    setGLExtensionFuncPtr(glUniformMatrix4x2fv,  "glUniformMatrix4x2fv" );
-    setGLExtensionFuncPtr(glUniformMatrix3x4fv,  "glUniformMatrix3x4fv" );
-    setGLExtensionFuncPtr(glUniformMatrix4x3fv,  "glUniformMatrix4x3fv" );
+    setGLExtensionFuncPtr(glUniformMatrix2x3fv, "glUniformMatrix2x3fv", validContext);
+    setGLExtensionFuncPtr(glUniformMatrix3x2fv, "glUniformMatrix3x2fv", validContext);
+    setGLExtensionFuncPtr(glUniformMatrix2x4fv, "glUniformMatrix2x4fv", validContext);
+    setGLExtensionFuncPtr(glUniformMatrix4x2fv, "glUniformMatrix4x2fv", validContext);
+    setGLExtensionFuncPtr(glUniformMatrix3x4fv, "glUniformMatrix3x4fv", validContext);
+    setGLExtensionFuncPtr(glUniformMatrix4x3fv, "glUniformMatrix4x3fv", validContext);
 
     // ARB_clip_control
-    setGLExtensionFuncPtr(glClipControl, "glClipControl");
+    setGLExtensionFuncPtr(glClipControl, "glClipControl", validContext);
 
     // EXT_geometry_shader4
-    setGLExtensionFuncPtr(glProgramParameteri,  "glProgramParameteri", "glProgramParameteriEXT" );
+    setGLExtensionFuncPtr(glProgramParameteri,  "glProgramParameteri", "glProgramParameteriEXT", validContext);
 
     // ARB_tesselation_shader
-    setGLExtensionFuncPtr(glPatchParameteri, "glPatchParameteri" );
-    setGLExtensionFuncPtr(glPatchParameterfv, "glPatchParameterfv");
+    setGLExtensionFuncPtr(glPatchParameteri, "glPatchParameteri", validContext);
+    setGLExtensionFuncPtr(glPatchParameterfv, "glPatchParameterfv", validContext);
 
     // EXT_gpu_shader4
-    setGLExtensionFuncPtr(glGetUniformuiv,  "glGetUniformuiv", "glGetUniformuivEXT" );
-    setGLExtensionFuncPtr(glBindFragDataLocation,  "glBindFragDataLocation", "glBindFragDataLocationEXT" );
-    setGLExtensionFuncPtr(glGetFragDataLocation,  "glGetFragDataLocation", "glGetFragDataLocationEXT" );
-    setGLExtensionFuncPtr(glUniform1ui,  "glUniform1ui", "glUniform1uiEXT" );
-    setGLExtensionFuncPtr(glUniform2ui,  "glUniform2ui", "glUniform2uiEXT" );
-    setGLExtensionFuncPtr(glUniform3ui,  "glUniform3ui", "glUniform3uiEXT" );
-    setGLExtensionFuncPtr(glUniform4ui,  "glUniform4ui", "glUniform4uiEXT" );
-    setGLExtensionFuncPtr(glUniform1uiv,  "glUniform1uiv", "glUniform1uivEXT" );
-    setGLExtensionFuncPtr(glUniform2uiv,  "glUniform2uiv", "glUniform2uivEXT" );
-    setGLExtensionFuncPtr(glUniform3uiv,  "glUniform3uiv", "glUniform3uivEXT" );
-    setGLExtensionFuncPtr(glUniform4uiv,  "glUniform4uiv", "glUniform4uivEXT" );
+    setGLExtensionFuncPtr(glGetUniformuiv,  "glGetUniformuiv", "glGetUniformuivEXT", validContext);
+    setGLExtensionFuncPtr(glBindFragDataLocation,  "glBindFragDataLocation", "glBindFragDataLocationEXT", validContext);
+    setGLExtensionFuncPtr(glGetFragDataLocation,  "glGetFragDataLocation", "glGetFragDataLocationEXT", validContext);
+    setGLExtensionFuncPtr(glUniform1ui,  "glUniform1ui", "glUniform1uiEXT", validContext);
+    setGLExtensionFuncPtr(glUniform2ui,  "glUniform2ui", "glUniform2uiEXT", validContext);
+    setGLExtensionFuncPtr(glUniform3ui,  "glUniform3ui", "glUniform3uiEXT", validContext);
+    setGLExtensionFuncPtr(glUniform4ui,  "glUniform4ui", "glUniform4uiEXT", validContext);
+    setGLExtensionFuncPtr(glUniform1uiv,  "glUniform1uiv", "glUniform1uivEXT", validContext);
+    setGLExtensionFuncPtr(glUniform2uiv,  "glUniform2uiv", "glUniform2uivEXT", validContext);
+    setGLExtensionFuncPtr(glUniform3uiv,  "glUniform3uiv", "glUniform3uivEXT", validContext);
+    setGLExtensionFuncPtr(glUniform4uiv,  "glUniform4uiv", "glUniform4uivEXT", validContext);
     // ARB_uniform_buffer_object
-    setGLExtensionFuncPtr(glGetUniformIndices, "glGetUniformIndices");
-    setGLExtensionFuncPtr(glGetActiveUniformsiv, "glGetActiveUniformsiv");
-    setGLExtensionFuncPtr(glGetActiveUniformName, "glGetActiveUniformName");
-    setGLExtensionFuncPtr(glGetUniformBlockIndex, "glGetUniformBlockIndex");
-    setGLExtensionFuncPtr(glGetActiveUniformBlockiv, "glGetActiveUniformBlockiv");
-    setGLExtensionFuncPtr(glGetActiveUniformBlockName, "glGetActiveUniformBlockName");
-    setGLExtensionFuncPtr(glUniformBlockBinding, "glUniformBlockBinding");
+    setGLExtensionFuncPtr(glGetUniformIndices, "glGetUniformIndices", validContext);
+    setGLExtensionFuncPtr(glGetActiveUniformsiv, "glGetActiveUniformsiv", validContext);
+    setGLExtensionFuncPtr(glGetActiveUniformName, "glGetActiveUniformName", validContext);
+    setGLExtensionFuncPtr(glGetUniformBlockIndex, "glGetUniformBlockIndex", validContext);
+    setGLExtensionFuncPtr(glGetActiveUniformBlockiv, "glGetActiveUniformBlockiv", validContext);
+    setGLExtensionFuncPtr(glGetActiveUniformBlockName, "glGetActiveUniformBlockName", validContext);
+    setGLExtensionFuncPtr(glUniformBlockBinding, "glUniformBlockBinding", validContext);
 
     // ARB_get_program_binary
-    setGLExtensionFuncPtr(glGetProgramBinary, "glGetProgramBinary");
-    setGLExtensionFuncPtr(glProgramBinary, "glProgramBinary");
+    setGLExtensionFuncPtr(glGetProgramBinary, "glGetProgramBinary", validContext);
+    setGLExtensionFuncPtr(glProgramBinary, "glProgramBinary", validContext);
 
     // ARB_gpu_shader_fp64
-    setGLExtensionFuncPtr(glUniform1d, "glUniform1d" );
-    setGLExtensionFuncPtr(glUniform2d, "glUniform2d" );
-    setGLExtensionFuncPtr(glUniform3d, "glUniform3d" );
-    setGLExtensionFuncPtr(glUniform4d, "glUniform4d" );
-    setGLExtensionFuncPtr(glUniform1dv, "glUniform1dv" );
-    setGLExtensionFuncPtr(glUniform2dv, "glUniform2dv" );
-    setGLExtensionFuncPtr(glUniform3dv, "glUniform3dv" );
-    setGLExtensionFuncPtr(glUniform4dv, "glUniform4dv" );
-    setGLExtensionFuncPtr(glUniformMatrix2dv, "glUniformMatrix2dv" );
-    setGLExtensionFuncPtr(glUniformMatrix3dv, "glUniformMatrix3dv" );
-    setGLExtensionFuncPtr(glUniformMatrix4dv, "glUniformMatrix4dv" );
-    setGLExtensionFuncPtr(glUniformMatrix2x3dv,  "glUniformMatrix2x3dv" );
-    setGLExtensionFuncPtr(glUniformMatrix3x2dv,  "glUniformMatrix3x2dv" );
-    setGLExtensionFuncPtr(glUniformMatrix2x4dv,  "glUniformMatrix2x4dv" );
-    setGLExtensionFuncPtr(glUniformMatrix4x2dv,  "glUniformMatrix4x2dv" );
-    setGLExtensionFuncPtr(glUniformMatrix3x4dv,  "glUniformMatrix3x4dv" );
-    setGLExtensionFuncPtr(glUniformMatrix4x3dv,  "glUniformMatrix4x3dv" );
+    setGLExtensionFuncPtr(glUniform1d, "glUniform1d" , validContext);
+    setGLExtensionFuncPtr(glUniform2d, "glUniform2d" , validContext);
+    setGLExtensionFuncPtr(glUniform3d, "glUniform3d" , validContext);
+    setGLExtensionFuncPtr(glUniform4d, "glUniform4d" , validContext);
+    setGLExtensionFuncPtr(glUniform1dv, "glUniform1dv" , validContext);
+    setGLExtensionFuncPtr(glUniform2dv, "glUniform2dv" , validContext);
+    setGLExtensionFuncPtr(glUniform3dv, "glUniform3dv" , validContext);
+    setGLExtensionFuncPtr(glUniform4dv, "glUniform4dv" , validContext);
+    setGLExtensionFuncPtr(glUniformMatrix2dv, "glUniformMatrix2dv" , validContext);
+    setGLExtensionFuncPtr(glUniformMatrix3dv, "glUniformMatrix3dv" , validContext);
+    setGLExtensionFuncPtr(glUniformMatrix4dv, "glUniformMatrix4dv" , validContext);
+    setGLExtensionFuncPtr(glUniformMatrix2x3dv,  "glUniformMatrix2x3dv" , validContext);
+    setGLExtensionFuncPtr(glUniformMatrix3x2dv,  "glUniformMatrix3x2dv" , validContext);
+    setGLExtensionFuncPtr(glUniformMatrix2x4dv,  "glUniformMatrix2x4dv" , validContext);
+    setGLExtensionFuncPtr(glUniformMatrix4x2dv,  "glUniformMatrix4x2dv" , validContext);
+    setGLExtensionFuncPtr(glUniformMatrix3x4dv,  "glUniformMatrix3x4dv" , validContext);
+    setGLExtensionFuncPtr(glUniformMatrix4x3dv,  "glUniformMatrix4x3dv" , validContext);
 
     // ARB_shader_atomic_counters
-    setGLExtensionFuncPtr(glGetActiveAtomicCounterBufferiv,  "glGetActiveAtomicCounterBufferiv" );
+    setGLExtensionFuncPtr(glGetActiveAtomicCounterBufferiv,  "glGetActiveAtomicCounterBufferiv" , validContext);
 
     // ARB_compute_shader
-    setGLExtensionFuncPtr(glDispatchCompute,  "glDispatchCompute" );
+    setGLExtensionFuncPtr(glDispatchCompute,  "glDispatchCompute" , validContext);
 
-    setGLExtensionFuncPtr(glMemoryBarrier,  "glMemoryBarrier", "glMemoryBarrierEXT" );
+    setGLExtensionFuncPtr(glMemoryBarrier,  "glMemoryBarrier", "glMemoryBarrierEXT" , validContext);
 
     // BufferObject extensions
-    setGLExtensionFuncPtr(glGenBuffers, "glGenBuffers","glGenBuffersARB");
-    setGLExtensionFuncPtr(glBindBuffer, "glBindBuffer","glBindBufferARB");
-    setGLExtensionFuncPtr(glBufferData, "glBufferData","glBufferDataARB");
-    setGLExtensionFuncPtr(glBufferSubData, "glBufferSubData","glBufferSubDataARB");
-    setGLExtensionFuncPtr(glDeleteBuffers, "glDeleteBuffers","glDeleteBuffersARB");
-    setGLExtensionFuncPtr(glIsBuffer, "glIsBuffer","glIsBufferARB");
-    setGLExtensionFuncPtr(glGetBufferSubData, "glGetBufferSubData","glGetBufferSubDataARB");
-    setGLExtensionFuncPtr(glMapBuffer, "glMapBuffer","glMapBufferARB");
-    setGLExtensionFuncPtr(glMapBufferRange,  "glMapBufferRange" );
-    setGLExtensionFuncPtr(glUnmapBuffer, "glUnmapBuffer","glUnmapBufferARB");
-    setGLExtensionFuncPtr(glGetBufferParameteriv, "glGetBufferParameteriv","glGetBufferParameterivARB");
-    setGLExtensionFuncPtr(glGetBufferPointerv, "glGetBufferPointerv","glGetBufferPointervARB");
-    setGLExtensionFuncPtr(glBindBufferRange, "glBindBufferRange");
-    setGLExtensionFuncPtr(glBindBufferBase,  "glBindBufferBase", "glBindBufferBaseEXT", "glBindBufferBaseNV" );
-    setGLExtensionFuncPtr(glTexBuffer, "glTexBuffer","glTexBufferARB" );
+    setGLExtensionFuncPtr(glGenBuffers, "glGenBuffers","glGenBuffersARB", validContext);
+    setGLExtensionFuncPtr(glBindBuffer, "glBindBuffer","glBindBufferARB", validContext);
+    setGLExtensionFuncPtr(glBufferData, "glBufferData","glBufferDataARB", validContext);
+    setGLExtensionFuncPtr(glBufferSubData, "glBufferSubData","glBufferSubDataARB", validContext);
+    setGLExtensionFuncPtr(glDeleteBuffers, "glDeleteBuffers","glDeleteBuffersARB", validContext);
+    setGLExtensionFuncPtr(glIsBuffer, "glIsBuffer","glIsBufferARB", validContext);
+    setGLExtensionFuncPtr(glGetBufferSubData, "glGetBufferSubData","glGetBufferSubDataARB", validContext);
+    setGLExtensionFuncPtr(glMapBuffer, "glMapBuffer","glMapBufferARB", validContext);
+    setGLExtensionFuncPtr(glMapBufferRange,  "glMapBufferRange" , validContext);
+    setGLExtensionFuncPtr(glUnmapBuffer, "glUnmapBuffer","glUnmapBufferARB", validContext);
+    setGLExtensionFuncPtr(glGetBufferParameteriv, "glGetBufferParameteriv","glGetBufferParameterivARB", validContext);
+    setGLExtensionFuncPtr(glGetBufferPointerv, "glGetBufferPointerv","glGetBufferPointervARB", validContext);
+    setGLExtensionFuncPtr(glBindBufferRange, "glBindBufferRange", validContext);
+    setGLExtensionFuncPtr(glBindBufferBase,  "glBindBufferBase", "glBindBufferBaseEXT", "glBindBufferBaseNV" , validContext);
+    setGLExtensionFuncPtr(glTexBuffer, "glTexBuffer","glTexBufferARB" , validContext);
 
-    isPBOSupported = OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_pixel_buffer_object");
-    isUniformBufferObjectSupported = osg::isGLExtensionSupported(contextID, "GL_ARB_uniform_buffer_object");
-    isTBOSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_texture_buffer_object");
-    isVAOSupported = osg::isGLExtensionSupported(contextID, "GL_ARB_vertex_array_object");
-    isTransformFeedbackSupported = osg::isGLExtensionSupported(contextID, "GL_ARB_transform_feedback2");
+    isPBOSupported = validContext && (OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_pixel_buffer_object"));
+    isUniformBufferObjectSupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_uniform_buffer_object");
+    isTBOSupported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_texture_buffer_object");
+    isVAOSupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_vertex_array_object");
+    isTransformFeedbackSupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_transform_feedback2");
 
     // BlendFunc extensions
-    isBlendFuncSeparateSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
+    isBlendFuncSeparateSupported = validContext &&
+                                    (OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
                                     osg::isGLExtensionSupported(contextID, "GL_EXT_blend_func_separate") ||
-                                    (glVersion >= 1.4f);
+                                    (glVersion >= 1.4f));
 
-    setGLExtensionFuncPtr(glBlendFuncSeparate, "glBlendFuncSeparate", "glBlendFuncSeparateEXT");
+    setGLExtensionFuncPtr(glBlendFuncSeparate, "glBlendFuncSeparate", "glBlendFuncSeparateEXT", validContext);
 
-    setGLExtensionFuncPtr(glBlendFunci, "glBlendFunci", "glBlendFunciARB");
-    setGLExtensionFuncPtr(glBlendFuncSeparatei, "glBlendFuncSeparatei", "glBlendFuncSeparateiARB");
+    setGLExtensionFuncPtr(glBlendFunci, "glBlendFunci", "glBlendFunciARB", validContext);
+    setGLExtensionFuncPtr(glBlendFuncSeparatei, "glBlendFuncSeparatei", "glBlendFuncSeparateiARB", validContext);
 
 
     // Vertex Array extensions
-    isSecondaryColorSupported = isGLExtensionSupported(contextID,"GL_EXT_secondary_color");
-    isFogCoordSupported = isGLExtensionSupported(contextID,"GL_EXT_fog_coord");
-    isMultiTexSupported = isGLExtensionSupported(contextID,"GL_ARB_multitexture");
-    isOcclusionQuerySupported = osg::isGLExtensionSupported(contextID, "GL_NV_occlusion_query" );
-    isARBOcclusionQuerySupported = OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID, "GL_ARB_occlusion_query" );
+    isSecondaryColorSupported = validContext && isGLExtensionSupported(contextID,"GL_EXT_secondary_color");
+    isFogCoordSupported = validContext && isGLExtensionSupported(contextID,"GL_EXT_fog_coord");
+    isMultiTexSupported = validContext && isGLExtensionSupported(contextID,"GL_ARB_multitexture");
+    isOcclusionQuerySupported = validContext && osg::isGLExtensionSupported(contextID, "GL_NV_occlusion_query");
+    isARBOcclusionQuerySupported = validContext && (OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID, "GL_ARB_occlusion_query"));
 
-    isTimerQuerySupported = osg::isGLExtensionSupported(contextID, "GL_EXT_timer_query" );
-    isARBTimerQuerySupported = osg::isGLExtensionSupported(contextID, "GL_ARB_timer_query");
+    isTimerQuerySupported = validContext && osg::isGLExtensionSupported(contextID, "GL_EXT_timer_query");
+    isARBTimerQuerySupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_timer_query");
 
-    setGLExtensionFuncPtr(glFogCoordfv, "glFogCoordfv","glFogCoordfvEXT");
-    setGLExtensionFuncPtr(glSecondaryColor3ubv, "glSecondaryColor3ubv","glSecondaryColor3ubvEXT");
-    setGLExtensionFuncPtr(glSecondaryColor3fv, "glSecondaryColor3fv","glSecondaryColor3fvEXT");
-    setGLExtensionFuncPtr(glMultiTexCoord1f, "glMultiTexCoord1f","glMultiTexCoord1fARB");
-    setGLExtensionFuncPtr(glMultiTexCoord1fv, "glMultiTexCoord1fv","glMultiTexCoord1fvARB");
-    setGLExtensionFuncPtr(glMultiTexCoord2fv, "glMultiTexCoord2fv","glMultiTexCoord2fvARB");
-    setGLExtensionFuncPtr(glMultiTexCoord3fv, "glMultiTexCoord3fv","glMultiTexCoord3fvARB");
-    setGLExtensionFuncPtr(glMultiTexCoord4fv, "glMultiTexCoord4fv","glMultiTexCoord4fvARB");
-    setGLExtensionFuncPtr(glMultiTexCoord1d, "glMultiTexCoord1d","glMultiTexCoorddfARB");
-    setGLExtensionFuncPtr(glMultiTexCoord2dv, "glMultiTexCoord2dv","glMultiTexCoord2dvARB");
-    setGLExtensionFuncPtr(glMultiTexCoord3dv, "glMultiTexCoord3dv","glMultiTexCoord3dvARB");
-    setGLExtensionFuncPtr(glMultiTexCoord4dv, "glMultiTexCoord4dv","glMultiTexCoord4dvARB");
+    setGLExtensionFuncPtr(glFogCoordfv, "glFogCoordfv","glFogCoordfvEXT", validContext);
+    setGLExtensionFuncPtr(glSecondaryColor3ubv, "glSecondaryColor3ubv","glSecondaryColor3ubvEXT", validContext);
+    setGLExtensionFuncPtr(glSecondaryColor3fv, "glSecondaryColor3fv","glSecondaryColor3fvEXT", validContext);
+    setGLExtensionFuncPtr(glMultiTexCoord1f, "glMultiTexCoord1f","glMultiTexCoord1fARB", validContext);
+    setGLExtensionFuncPtr(glMultiTexCoord1fv, "glMultiTexCoord1fv","glMultiTexCoord1fvARB", validContext);
+    setGLExtensionFuncPtr(glMultiTexCoord2fv, "glMultiTexCoord2fv","glMultiTexCoord2fvARB", validContext);
+    setGLExtensionFuncPtr(glMultiTexCoord3fv, "glMultiTexCoord3fv","glMultiTexCoord3fvARB", validContext);
+    setGLExtensionFuncPtr(glMultiTexCoord4fv, "glMultiTexCoord4fv","glMultiTexCoord4fvARB", validContext);
+    setGLExtensionFuncPtr(glMultiTexCoord1d, "glMultiTexCoord1d","glMultiTexCoorddfARB", validContext);
+    setGLExtensionFuncPtr(glMultiTexCoord2dv, "glMultiTexCoord2dv","glMultiTexCoord2dvARB", validContext);
+    setGLExtensionFuncPtr(glMultiTexCoord3dv, "glMultiTexCoord3dv","glMultiTexCoord3dvARB", validContext);
+    setGLExtensionFuncPtr(glMultiTexCoord4dv, "glMultiTexCoord4dv","glMultiTexCoord4dvARB", validContext);
 
-    setGLExtensionFuncPtr(glVertexAttrib1s, "glVertexAttrib1s","glVertexAttrib1sARB");
-    setGLExtensionFuncPtr(glVertexAttrib1f, "glVertexAttrib1f","glVertexAttrib1fARB");
-    setGLExtensionFuncPtr(glVertexAttrib1d, "glVertexAttrib1d","glVertexAttrib1dARB");
-    setGLExtensionFuncPtr(glVertexAttrib1fv, "glVertexAttrib1fv","glVertexAttrib1fvARB");
-    setGLExtensionFuncPtr(glVertexAttrib2fv, "glVertexAttrib2fv","glVertexAttrib2fvARB");
-    setGLExtensionFuncPtr(glVertexAttrib3fv, "glVertexAttrib3fv","glVertexAttrib3fvARB");
-    setGLExtensionFuncPtr(glVertexAttrib4fv, "glVertexAttrib4fv","glVertexAttrib4fvARB");
-    setGLExtensionFuncPtr(glVertexAttrib2dv, "glVertexAttrib2dv","glVertexAttrib2dvARB");
-    setGLExtensionFuncPtr(glVertexAttrib3dv, "glVertexAttrib3dv","glVertexAttrib3dvARB");
-    setGLExtensionFuncPtr(glVertexAttrib4dv, "glVertexAttrib4dv","glVertexAttrib4dvARB");
-    setGLExtensionFuncPtr(glVertexAttrib4ubv, "glVertexAttrib4ubv","glVertexAttrib4ubvARB");
-    setGLExtensionFuncPtr(glVertexAttrib4Nubv, "glVertexAttrib4Nubv","glVertexAttrib4NubvARB");
+    setGLExtensionFuncPtr(glVertexAttrib1s, "glVertexAttrib1s","glVertexAttrib1sARB", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib1f, "glVertexAttrib1f","glVertexAttrib1fARB", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib1d, "glVertexAttrib1d","glVertexAttrib1dARB", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib1fv, "glVertexAttrib1fv","glVertexAttrib1fvARB", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib2fv, "glVertexAttrib2fv","glVertexAttrib2fvARB", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib3fv, "glVertexAttrib3fv","glVertexAttrib3fvARB", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4fv, "glVertexAttrib4fv","glVertexAttrib4fvARB", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib2dv, "glVertexAttrib2dv","glVertexAttrib2dvARB", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib3dv, "glVertexAttrib3dv","glVertexAttrib3dvARB", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4dv, "glVertexAttrib4dv","glVertexAttrib4dvARB", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4ubv, "glVertexAttrib4ubv","glVertexAttrib4ubvARB", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4Nubv, "glVertexAttrib4Nubv","glVertexAttrib4NubvARB", validContext);
 
-    setGLExtensionFuncPtr(glGenBuffers, "glGenBuffers","glGenBuffersARB");
-    setGLExtensionFuncPtr(glBindBuffer, "glBindBuffer","glBindBufferARB");
-    setGLExtensionFuncPtr(glBufferData, "glBufferData","glBufferDataARB");
-    setGLExtensionFuncPtr(glBufferSubData, "glBufferSubData","glBufferSubDataARB");
-    setGLExtensionFuncPtr(glDeleteBuffers, "glDeleteBuffers","glDeleteBuffersARB");
-    setGLExtensionFuncPtr(glIsBuffer, "glIsBuffer","glIsBufferARB");
-    setGLExtensionFuncPtr(glGetBufferSubData, "glGetBufferSubData","glGetBufferSubDataARB");
-    setGLExtensionFuncPtr(glMapBuffer, "glMapBuffer","glMapBufferARB");
-    setGLExtensionFuncPtr(glUnmapBuffer, "glUnmapBuffer","glUnmapBufferARB");
-    setGLExtensionFuncPtr(glGetBufferParameteriv, "glGetBufferParameteriv","glGetBufferParameterivARB");
-    setGLExtensionFuncPtr(glGetBufferPointerv, "glGetBufferPointerv","glGetBufferPointervARB");
+    setGLExtensionFuncPtr(glGenBuffers, "glGenBuffers","glGenBuffersARB", validContext);
+    setGLExtensionFuncPtr(glBindBuffer, "glBindBuffer","glBindBufferARB", validContext);
+    setGLExtensionFuncPtr(glBufferData, "glBufferData","glBufferDataARB", validContext);
+    setGLExtensionFuncPtr(glBufferSubData, "glBufferSubData","glBufferSubDataARB", validContext);
+    setGLExtensionFuncPtr(glDeleteBuffers, "glDeleteBuffers","glDeleteBuffersARB", validContext);
+    setGLExtensionFuncPtr(glIsBuffer, "glIsBuffer","glIsBufferARB", validContext);
+    setGLExtensionFuncPtr(glGetBufferSubData, "glGetBufferSubData","glGetBufferSubDataARB", validContext);
+    setGLExtensionFuncPtr(glMapBuffer, "glMapBuffer","glMapBufferARB", validContext);
+    setGLExtensionFuncPtr(glUnmapBuffer, "glUnmapBuffer","glUnmapBufferARB", validContext);
+    setGLExtensionFuncPtr(glGetBufferParameteriv, "glGetBufferParameteriv","glGetBufferParameterivARB", validContext);
+    setGLExtensionFuncPtr(glGetBufferPointerv, "glGetBufferPointerv","glGetBufferPointervARB", validContext);
 
-    setGLExtensionFuncPtr(glGenOcclusionQueries, "glGenOcclusionQueries","glGenOcclusionQueriesNV");
-    setGLExtensionFuncPtr(glDeleteOcclusionQueries, "glDeleteOcclusionQueries","glDeleteOcclusionQueriesNV");
-    setGLExtensionFuncPtr(glIsOcclusionQuery, "glIsOcclusionQuery","_glIsOcclusionQueryNV");
-    setGLExtensionFuncPtr(glBeginOcclusionQuery, "glBeginOcclusionQuery","glBeginOcclusionQueryNV");
-    setGLExtensionFuncPtr(glEndOcclusionQuery, "glEndOcclusionQuery","glEndOcclusionQueryNV");
-    setGLExtensionFuncPtr(glGetOcclusionQueryiv, "glGetOcclusionQueryiv","glGetOcclusionQueryivNV");
-    setGLExtensionFuncPtr(glGetOcclusionQueryuiv, "glGetOcclusionQueryuiv","glGetOcclusionQueryuivNV");
+    setGLExtensionFuncPtr(glGenOcclusionQueries, "glGenOcclusionQueries","glGenOcclusionQueriesNV", validContext);
+    setGLExtensionFuncPtr(glDeleteOcclusionQueries, "glDeleteOcclusionQueries","glDeleteOcclusionQueriesNV", validContext);
+    setGLExtensionFuncPtr(glIsOcclusionQuery, "glIsOcclusionQuery","_glIsOcclusionQueryNV", validContext);
+    setGLExtensionFuncPtr(glBeginOcclusionQuery, "glBeginOcclusionQuery","glBeginOcclusionQueryNV", validContext);
+    setGLExtensionFuncPtr(glEndOcclusionQuery, "glEndOcclusionQuery","glEndOcclusionQueryNV", validContext);
+    setGLExtensionFuncPtr(glGetOcclusionQueryiv, "glGetOcclusionQueryiv","glGetOcclusionQueryivNV", validContext);
+    setGLExtensionFuncPtr(glGetOcclusionQueryuiv, "glGetOcclusionQueryuiv","glGetOcclusionQueryuivNV", validContext);
 
-    setGLExtensionFuncPtr(glGenQueries, "glGenQueries", "glGenQueriesARB");
-    setGLExtensionFuncPtr(glDeleteQueries, "glDeleteQueries", "glDeleteQueriesARB");
-    setGLExtensionFuncPtr(glIsQuery, "glIsQuery", "glIsQueryARB");
-    setGLExtensionFuncPtr(glBeginQuery, "glBeginQuery", "glBeginQueryARB");
-    setGLExtensionFuncPtr(glEndQuery, "glEndQuery", "glEndQueryARB");
-    setGLExtensionFuncPtr(glGetQueryiv, "glGetQueryiv", "glGetQueryivARB");
-    setGLExtensionFuncPtr(glGetQueryObjectiv, "glGetQueryObjectiv","glGetQueryObjectivARB");
-    setGLExtensionFuncPtr(glGetQueryObjectuiv, "glGetQueryObjectuiv","glGetQueryObjectuivARB");
-    setGLExtensionFuncPtr(glGetQueryObjectui64v, "glGetQueryObjectui64v","glGetQueryObjectui64vEXT");
-    setGLExtensionFuncPtr(glQueryCounter, "glQueryCounter");
-    setGLExtensionFuncPtr(glGetInteger64v, "glGetInteger64v");
+    setGLExtensionFuncPtr(glGenQueries, "glGenQueries", "glGenQueriesARB", validContext);
+    setGLExtensionFuncPtr(glDeleteQueries, "glDeleteQueries", "glDeleteQueriesARB", validContext);
+    setGLExtensionFuncPtr(glIsQuery, "glIsQuery", "glIsQueryARB", validContext);
+    setGLExtensionFuncPtr(glBeginQuery, "glBeginQuery", "glBeginQueryARB", validContext);
+    setGLExtensionFuncPtr(glEndQuery, "glEndQuery", "glEndQueryARB", validContext);
+    setGLExtensionFuncPtr(glGetQueryiv, "glGetQueryiv", "glGetQueryivARB", validContext);
+    setGLExtensionFuncPtr(glGetQueryObjectiv, "glGetQueryObjectiv","glGetQueryObjectivARB", validContext);
+    setGLExtensionFuncPtr(glGetQueryObjectuiv, "glGetQueryObjectuiv","glGetQueryObjectuivARB", validContext);
+    setGLExtensionFuncPtr(glGetQueryObjectui64v, "glGetQueryObjectui64v","glGetQueryObjectui64vEXT", validContext);
+    setGLExtensionFuncPtr(glQueryCounter, "glQueryCounter", validContext);
+    setGLExtensionFuncPtr(glGetInteger64v, "glGetInteger64v", validContext);
 
 
     // SampleMaski functionality
-    isTextureMultisampleSupported = isGLExtensionSupported(contextID, "GL_ARB_texture_multisample");
+    isTextureMultisampleSupported = validContext && isGLExtensionSupported(contextID, "GL_ARB_texture_multisample");
     isOpenGL32upported = (glVersion >= 3.2f);
 
     // function pointers
-    setGLExtensionFuncPtr(glSampleMaski, "glSampleMaski");
+    setGLExtensionFuncPtr(glSampleMaski, "glSampleMaski", validContext);
     // protect against buggy drivers (maybe not necessary)
     isSampleMaskiSupported = glSampleMaski!=0;
 
 
 
     // old styple Vertex/Fragment Programs
-    isVertexProgramSupported = isGLExtensionSupported(contextID,"GL_ARB_vertex_program");
-    isFragmentProgramSupported = isGLExtensionSupported(contextID,"GL_ARB_fragment_program");
+    isVertexProgramSupported = validContext && isGLExtensionSupported(contextID,"GL_ARB_vertex_program");
+    isFragmentProgramSupported = validContext && isGLExtensionSupported(contextID,"GL_ARB_fragment_program");
 
-    setGLExtensionFuncPtr(glBindProgram,"glBindProgramARB");
-    setGLExtensionFuncPtr(glGenPrograms, "glGenProgramsARB");
-    setGLExtensionFuncPtr(glDeletePrograms, "glDeleteProgramsARB");
-    setGLExtensionFuncPtr(glProgramString, "glProgramStringARB");
-    setGLExtensionFuncPtr(glProgramLocalParameter4fv, "glProgramLocalParameter4fvARB");
+    setGLExtensionFuncPtr(glBindProgram,"glBindProgramARB", validContext);
+    setGLExtensionFuncPtr(glGenPrograms, "glGenProgramsARB", validContext);
+    setGLExtensionFuncPtr(glDeletePrograms, "glDeleteProgramsARB", validContext);
+    setGLExtensionFuncPtr(glProgramString, "glProgramStringARB", validContext);
+    setGLExtensionFuncPtr(glProgramLocalParameter4fv, "glProgramLocalParameter4fvARB", validContext);
 
 
 
     // Texture extensions
-    const char* renderer = (const char*) glGetString(GL_RENDERER);
+    const char* renderer = validContext ? (const char*) glGetString(GL_RENDERER) : 0;
     std::string rendererString(renderer ? renderer : "");
 
     bool radeonHardwareDetected = (rendererString.find("Radeon")!=std::string::npos || rendererString.find("RADEON")!=std::string::npos);
@@ -800,15 +804,16 @@ GLExtensions::GLExtensions(unsigned int contextID)
 
     bool builtInSupport = OSG_GLES2_FEATURES || OSG_GL3_FEATURES;
 
-    isMultiTexturingSupported = builtInSupport || OSG_GLES1_FEATURES ||
+    isMultiTexturingSupported = validContext &&
+                                (builtInSupport || OSG_GLES1_FEATURES ||
                                  isGLExtensionOrVersionSupported( contextID,"GL_ARB_multitexture", 1.3f) ||
-                                 isGLExtensionOrVersionSupported(contextID,"GL_EXT_multitexture", 1.3f);
+                                 isGLExtensionOrVersionSupported(contextID,"GL_EXT_multitexture", 1.3f));
 
-    isTextureFilterAnisotropicSupported = isGLExtensionSupported(contextID,"GL_EXT_texture_filter_anisotropic");
-    isTextureSwizzleSupported = isGLExtensionSupported(contextID,"GL_ARB_texture_swizzle");
-    isTextureCompressionARBSupported = builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_compression", 1.3f);
-    isTextureCompressionS3TCSupported = isGLExtensionSupported(contextID,"GL_EXT_texture_compression_s3tc") || isGLExtensionSupported(contextID, "GL_S3_s3tc");
-    isTextureCompressionPVRTC2BPPSupported = isGLExtensionSupported(contextID,"GL_IMG_texture_compression_pvrtc");
+    isTextureFilterAnisotropicSupported = validContext && isGLExtensionSupported(contextID,"GL_EXT_texture_filter_anisotropic");
+    isTextureSwizzleSupported = validContext && isGLExtensionSupported(contextID,"GL_ARB_texture_swizzle");
+    isTextureCompressionARBSupported = validContext && (builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_compression", 1.3f));
+    isTextureCompressionS3TCSupported = validContext && (isGLExtensionSupported(contextID,"GL_EXT_texture_compression_s3tc") || isGLExtensionSupported(contextID, "GL_S3_s3tc"));
+    isTextureCompressionPVRTC2BPPSupported = validContext && isGLExtensionSupported(contextID,"GL_IMG_texture_compression_pvrtc");
     isTextureCompressionPVRTC4BPPSupported = isTextureCompressionPVRTC2BPPSupported;//covered by same extension
     isTextureCompressionETCSupported = isGLExtensionSupported(contextID,"GL_OES_compressed_ETC1_RGB8_texture");
     isTextureCompressionETC2Supported = isGLExtensionSupported(contextID,"GL_ARB_ES3_compatibility");
@@ -842,7 +847,7 @@ GLExtensions::GLExtensions(unsigned int contextID)
     }
 
     maxTextureSize=0;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE,&maxTextureSize);
+    if (validContext) glGetIntegerv(GL_MAX_TEXTURE_SIZE,&maxTextureSize);
 
     char *ptr;
     if( (ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)
@@ -856,20 +861,20 @@ GLExtensions::GLExtensions(unsigned int contextID)
         }
     }
 
-    setGLExtensionFuncPtr(glTexStorage2D,"glTexStorage2D","glTexStorage2DARB");
-    setGLExtensionFuncPtr(glCompressedTexImage2D,"glCompressedTexImage2D","glCompressedTexImage2DARB");
-    setGLExtensionFuncPtr(glCompressedTexSubImage2D,"glCompressedTexSubImage2D","glCompressedTexSubImage2DARB");
-    setGLExtensionFuncPtr(glGetCompressedTexImage,"glGetCompressedTexImage","glGetCompressedTexImageARB");;
-    setGLExtensionFuncPtr(glTexImage2DMultisample, "glTexImage2DMultisample", "glTexImage2DMultisampleARB");
+    setGLExtensionFuncPtr(glTexStorage2D,"glTexStorage2D","glTexStorage2DARB", validContext);
+    setGLExtensionFuncPtr(glCompressedTexImage2D,"glCompressedTexImage2D","glCompressedTexImage2DARB", validContext);
+    setGLExtensionFuncPtr(glCompressedTexSubImage2D,"glCompressedTexSubImage2D","glCompressedTexSubImage2DARB", validContext);
+    setGLExtensionFuncPtr(glGetCompressedTexImage,"glGetCompressedTexImage","glGetCompressedTexImageARB", validContext);;
+    setGLExtensionFuncPtr(glTexImage2DMultisample, "glTexImage2DMultisample", "glTexImage2DMultisampleARB", validContext);
 
-    setGLExtensionFuncPtr(glTexParameterIiv, "glTexParameterIiv", "glTexParameterIivARB");
-    setGLExtensionFuncPtr(glTexParameterIuiv, "glTexParameterIuiv", "glTexParameterIuivARB");
+    setGLExtensionFuncPtr(glTexParameterIiv, "glTexParameterIiv", "glTexParameterIivARB", validContext);
+    setGLExtensionFuncPtr(glTexParameterIuiv, "glTexParameterIuiv", "glTexParameterIuivARB", validContext);
 
 
-    if (glTexParameterIiv == NULL) setGLExtensionFuncPtr(glTexParameterIiv, "glTexParameterIivEXT");
-    if (glTexParameterIuiv == NULL) setGLExtensionFuncPtr(glTexParameterIuiv, "glTexParameterIuivEXT");
+    if (glTexParameterIiv == NULL) setGLExtensionFuncPtr(glTexParameterIiv, "glTexParameterIivEXT", validContext);
+    if (glTexParameterIuiv == NULL) setGLExtensionFuncPtr(glTexParameterIuiv, "glTexParameterIuivEXT", validContext);
 
-    setGLExtensionFuncPtr(glBindImageTexture, "glBindImageTexture", "glBindImageTextureARB");
+    setGLExtensionFuncPtr(glBindImageTexture, "glBindImageTexture", "glBindImageTextureARB", validContext);
 
     isTextureMaxLevelSupported = (glVersion >= 1.2f);
 
@@ -888,13 +893,13 @@ GLExtensions::GLExtensions(unsigned int contextID)
     else isTexture3DSupported = (glVersion >= 1.2f);
 
     maxTexture3DSize = 0;
-    glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &maxTexture3DSize);
+    if (validContext) glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &maxTexture3DSize);
 
-    setGLExtensionFuncPtr(glTexImage3D, "glTexImage3D","glTexImage3DEXT");
-    setGLExtensionFuncPtr(glTexSubImage3D, "glTexSubImage3D","glTexSubImage3DEXT");
-    setGLExtensionFuncPtr(glCompressedTexImage3D, "glCompressedTexImage3D","glCompressedTexImage3DARB");
-    setGLExtensionFuncPtr(glCompressedTexSubImage3D, "glCompressedTexSubImage3D","glCompressedTexSubImage3DARB");
-    setGLExtensionFuncPtr(glCopyTexSubImage3D, "glCopyTexSubImage3D","glCopyTexSubImage3DEXT");
+    setGLExtensionFuncPtr(glTexImage3D, "glTexImage3D","glTexImage3DEXT", validContext);
+    setGLExtensionFuncPtr(glTexSubImage3D, "glTexSubImage3D","glTexSubImage3DEXT", validContext);
+    setGLExtensionFuncPtr(glCompressedTexImage3D, "glCompressedTexImage3D","glCompressedTexImage3DARB", validContext);
+    setGLExtensionFuncPtr(glCompressedTexSubImage3D, "glCompressedTexSubImage3D","glCompressedTexSubImage3DARB", validContext);
+    setGLExtensionFuncPtr(glCopyTexSubImage3D, "glCopyTexSubImage3D","glCopyTexSubImage3DEXT", validContext);
     setGLExtensionFuncPtr(glBeginConditionalRender, "glTexImage3DMultisample", "glTexImage3DMultisampleEXT");
     setGLExtensionFuncPtr(glEndConditionalRender, "glGetMultisamplefv", "glGetMultisamplefvEXT");
 
@@ -902,16 +907,16 @@ GLExtensions::GLExtensions(unsigned int contextID)
     isTexture2DArraySupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_EXT_texture_array");
 
     max2DSize = 0;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max2DSize);
+    if (validContext) glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max2DSize);
     maxLayerCount = 0;
-    glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS_EXT, &maxLayerCount);
+    if (validContext) glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS_EXT, &maxLayerCount);
 
     // Blending
     isBlendColorSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
                             isGLExtensionSupported(contextID,"GL_EXT_blend_color") ||
                             (glVersion >= 1.2f);
 
-    setGLExtensionFuncPtr(glBlendColor, "glBlendColor", "glBlendColorEXT");
+    setGLExtensionFuncPtr(glBlendColor, "glBlendColor", "glBlendColorEXT", validContext);
 
     bool bultInSupport = OSG_GLES2_FEATURES || OSG_GL3_FEATURES;
     isBlendEquationSupported = bultInSupport ||
@@ -927,16 +932,16 @@ GLExtensions::GLExtensions(unsigned int contextID)
     isSGIXMinMaxSupported = isGLExtensionSupported(contextID, "GL_SGIX_blend_alpha_minmax");
     isLogicOpSupported = isGLExtensionSupported(contextID, "GL_EXT_blend_logic_op");
 
-    setGLExtensionFuncPtr(glBlendEquation, "glBlendEquation", "glBlendEquationEXT");
-    setGLExtensionFuncPtr(glBlendEquationSeparate, "glBlendEquationSeparate", "glBlendEquationSeparateEXT");
+    setGLExtensionFuncPtr(glBlendEquation, "glBlendEquation", "glBlendEquationEXT", validContext);
+    setGLExtensionFuncPtr(glBlendEquationSeparate, "glBlendEquationSeparate", "glBlendEquationSeparateEXT", validContext);
 
-    setGLExtensionFuncPtr(glBlendEquationi, "glBlendEquationi", "glBlendEquationiARB");
-    setGLExtensionFuncPtr(glBlendEquationSeparatei, "glBlendEquationSeparatei", "glBlendEquationSeparateiARB");
+    setGLExtensionFuncPtr(glBlendEquationi, "glBlendEquationi", "glBlendEquationiARB", validContext);
+    setGLExtensionFuncPtr(glBlendEquationSeparatei, "glBlendEquationSeparatei", "glBlendEquationSeparateiARB", validContext);
 
 
     // glEnablei/glDisabli
-    setGLExtensionFuncPtr(glEnablei, "glEnablei");
-    setGLExtensionFuncPtr(glDisablei, "glDisablei");
+    setGLExtensionFuncPtr(glEnablei, "glEnablei", validContext);
+    setGLExtensionFuncPtr(glDisablei, "glDisablei", validContext);
 
 
     // Stencil`
@@ -946,15 +951,15 @@ GLExtensions::GLExtensions(unsigned int contextID)
     isSeparateStencilSupported = isGLExtensionSupported(contextID, "GL_ATI_separate_stencil");
 
     // function pointers
-    setGLExtensionFuncPtr(glActiveStencilFace, "glActiveStencilFaceEXT");
-    setGLExtensionFuncPtr(glStencilOpSeparate, "glStencilOpSeparate", "glStencilOpSeparateATI");
-    setGLExtensionFuncPtr(glStencilMaskSeparate, "glStencilMaskSeparate");
-    setGLExtensionFuncPtr(glStencilFuncSeparate, "glStencilFuncSeparate", "glStencilFuncSeparateATI");
-    setGLExtensionFuncPtr(glStencilFuncSeparateATI, "glStencilFuncSeparateATI");
+    setGLExtensionFuncPtr(glActiveStencilFace, "glActiveStencilFaceEXT", validContext);
+    setGLExtensionFuncPtr(glStencilOpSeparate, "glStencilOpSeparate", "glStencilOpSeparateATI", validContext);
+    setGLExtensionFuncPtr(glStencilMaskSeparate, "glStencilMaskSeparate", validContext);
+    setGLExtensionFuncPtr(glStencilFuncSeparate, "glStencilFuncSeparate", "glStencilFuncSeparateATI", validContext);
+    setGLExtensionFuncPtr(glStencilFuncSeparateATI, "glStencilFuncSeparateATI", validContext);
 
 
     // Color Mask
-    setGLExtensionFuncPtr(glColorMaski, "glColorMaski", "glColorMaskiARB");
+    setGLExtensionFuncPtr(glColorMaski, "glColorMaski", "glColorMaskiARB", validContext);
 
 
     // ClampColor
@@ -962,11 +967,11 @@ GLExtensions::GLExtensions(unsigned int contextID)
                              isGLExtensionSupported(contextID,"GL_ARB_color_buffer_float") ||
                              (glVersion >= 2.0f);
 
-    setGLExtensionFuncPtr(glClampColor, "glClampColor", "glClampColorARB");
+    setGLExtensionFuncPtr(glClampColor, "glClampColor", "glClampColorARB", validContext);
 
 
     // PrimitiveRestartIndex
-    setGLExtensionFuncPtr(glPrimitiveRestartIndex, "glPrimitiveRestartIndex", "glPrimitiveRestartIndexNV");
+    setGLExtensionFuncPtr(glPrimitiveRestartIndex, "glPrimitiveRestartIndex", "glPrimitiveRestartIndexNV", validContext);
 
 
     // Point
@@ -980,46 +985,46 @@ GLExtensions::GLExtensions(unsigned int contextID)
     isPointSpriteCoordOriginSupported = OSG_GL3_FEATURES || (glVersion >= 2.0f);
 
 
-    setGLExtensionFuncPtr(glPointParameteri, "glPointParameteri", "glPointParameteriARB");
-    if (!glPointParameteri) setGLExtensionFuncPtr(glPointParameteri, "glPointParameteriEXT", "glPointParameteriSGIS");
+    setGLExtensionFuncPtr(glPointParameteri, "glPointParameteri", "glPointParameteriARB", validContext);
+    if (!glPointParameteri) setGLExtensionFuncPtr(glPointParameteri, "glPointParameteriEXT", "glPointParameteriSGIS", validContext);
 
-    setGLExtensionFuncPtr(glPointParameterf, "glPointParameterf", "glPointParameterfARB");
-    if (!glPointParameterf) setGLExtensionFuncPtr(glPointParameterf, "glPointParameterfEXT", "glPointParameterfSGIS");
+    setGLExtensionFuncPtr(glPointParameterf, "glPointParameterf", "glPointParameterfARB", validContext);
+    if (!glPointParameterf) setGLExtensionFuncPtr(glPointParameterf, "glPointParameterfEXT", "glPointParameterfSGIS", validContext);
 
-    setGLExtensionFuncPtr(glPointParameterfv, "glPointParameterfv", "glPointParameterfvARB");
-    if (!glPointParameterfv) setGLExtensionFuncPtr(glPointParameterfv, "glPointParameterfvEXT", "glPointParameterfvSGIS");
+    setGLExtensionFuncPtr(glPointParameterfv, "glPointParameterfv", "glPointParameterfvARB", validContext);
+    if (!glPointParameterfv) setGLExtensionFuncPtr(glPointParameterfv, "glPointParameterfvEXT", "glPointParameterfvSGIS", validContext);
 
 
     // Multisample
     isMultisampleSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_ARB_multisample");
     isMultisampleFilterHintSupported = isGLExtensionSupported(contextID, "GL_NV_multisample_filter_hint");
 
-    setGLExtensionFuncPtr(glSampleCoverage, "glSampleCoverageARB");
+    setGLExtensionFuncPtr(glSampleCoverage, "glSampleCoverageARB", validContext);
 
 
     // FrameBufferObject
-    setGLExtensionFuncPtr(glBindRenderbuffer, "glBindRenderbuffer", "glBindRenderbufferEXT", "glBindRenderbufferOES");
-    setGLExtensionFuncPtr(glDeleteRenderbuffers, "glDeleteRenderbuffers", "glDeleteRenderbuffersEXT", "glDeleteRenderbuffersOES");
-    setGLExtensionFuncPtr(glGenRenderbuffers, "glGenRenderbuffers", "glGenRenderbuffersEXT", "glGenRenderbuffersOES");
-    setGLExtensionFuncPtr(glRenderbufferStorage, "glRenderbufferStorage", "glRenderbufferStorageEXT", "glRenderbufferStorageOES");
-    setGLExtensionFuncPtr(glRenderbufferStorageMultisample, "glRenderbufferStorageMultisample", "glRenderbufferStorageMultisampleEXT", "glRenderbufferStorageMultisampleOES");
-    setGLExtensionFuncPtr(glRenderbufferStorageMultisampleCoverageNV, "glRenderbufferStorageMultisampleCoverageNV");
-    setGLExtensionFuncPtr(glBindFramebuffer, "glBindFramebuffer", "glBindFramebufferEXT", "glBindFramebufferOES");
-    setGLExtensionFuncPtr(glDeleteFramebuffers, "glDeleteFramebuffers", "glDeleteFramebuffersEXT", "glDeleteFramebuffersOES");
-    setGLExtensionFuncPtr(glGenFramebuffers, "glGenFramebuffers", "glGenFramebuffersEXT", "glGenFramebuffersOES");
-    setGLExtensionFuncPtr(glCheckFramebufferStatus, "glCheckFramebufferStatus", "glCheckFramebufferStatusEXT", "glCheckFramebufferStatusOES");
+    setGLExtensionFuncPtr(glBindRenderbuffer, "glBindRenderbuffer", "glBindRenderbufferEXT", "glBindRenderbufferOES", validContext);
+    setGLExtensionFuncPtr(glDeleteRenderbuffers, "glDeleteRenderbuffers", "glDeleteRenderbuffersEXT", "glDeleteRenderbuffersOES", validContext);
+    setGLExtensionFuncPtr(glGenRenderbuffers, "glGenRenderbuffers", "glGenRenderbuffersEXT", "glGenRenderbuffersOES", validContext);
+    setGLExtensionFuncPtr(glRenderbufferStorage, "glRenderbufferStorage", "glRenderbufferStorageEXT", "glRenderbufferStorageOES", validContext);
+    setGLExtensionFuncPtr(glRenderbufferStorageMultisample, "glRenderbufferStorageMultisample", "glRenderbufferStorageMultisampleEXT", "glRenderbufferStorageMultisampleOES", validContext);
+    setGLExtensionFuncPtr(glRenderbufferStorageMultisampleCoverageNV, "glRenderbufferStorageMultisampleCoverageNV", validContext);
+    setGLExtensionFuncPtr(glBindFramebuffer, "glBindFramebuffer", "glBindFramebufferEXT", "glBindFramebufferOES", validContext);
+    setGLExtensionFuncPtr(glDeleteFramebuffers, "glDeleteFramebuffers", "glDeleteFramebuffersEXT", "glDeleteFramebuffersOES", validContext);
+    setGLExtensionFuncPtr(glGenFramebuffers, "glGenFramebuffers", "glGenFramebuffersEXT", "glGenFramebuffersOES", validContext);
+    setGLExtensionFuncPtr(glCheckFramebufferStatus, "glCheckFramebufferStatus", "glCheckFramebufferStatusEXT", "glCheckFramebufferStatusOES", validContext);
 
-    setGLExtensionFuncPtr(glFramebufferTexture1D, "glFramebufferTexture1D", "glFramebufferTexture1DEXT", "glFramebufferTexture1DOES");
-    setGLExtensionFuncPtr(glFramebufferTexture2D, "glFramebufferTexture2D", "glFramebufferTexture2DEXT", "glFramebufferTexture2DOES");
-    setGLExtensionFuncPtr(glFramebufferTexture3D, "glFramebufferTexture3D", "glFramebufferTexture3DEXT", "glFramebufferTexture3DOES");
-    setGLExtensionFuncPtr(glFramebufferTexture, "glFramebufferTexture", "glFramebufferTextureEXT", "glFramebufferTextureOES");
-    setGLExtensionFuncPtr(glFramebufferTextureLayer, "glFramebufferTextureLayer", "glFramebufferTextureLayerEXT", "glFramebufferTextureLayerOES");
-    setGLExtensionFuncPtr(glFramebufferTextureFace,  "glFramebufferTextureFace", "glFramebufferTextureFaceEXT", "glFramebufferTextureFaceOES" );
-    setGLExtensionFuncPtr(glFramebufferRenderbuffer, "glFramebufferRenderbuffer", "glFramebufferRenderbufferEXT", "glFramebufferRenderbufferOES");
+    setGLExtensionFuncPtr(glFramebufferTexture1D, "glFramebufferTexture1D", "glFramebufferTexture1DEXT", "glFramebufferTexture1DOES", validContext);
+    setGLExtensionFuncPtr(glFramebufferTexture2D, "glFramebufferTexture2D", "glFramebufferTexture2DEXT", "glFramebufferTexture2DOES", validContext);
+    setGLExtensionFuncPtr(glFramebufferTexture3D, "glFramebufferTexture3D", "glFramebufferTexture3DEXT", "glFramebufferTexture3DOES", validContext);
+    setGLExtensionFuncPtr(glFramebufferTexture, "glFramebufferTexture", "glFramebufferTextureEXT", "glFramebufferTextureOES", validContext);
+    setGLExtensionFuncPtr(glFramebufferTextureLayer, "glFramebufferTextureLayer", "glFramebufferTextureLayerEXT", "glFramebufferTextureLayerOES", validContext);
+    setGLExtensionFuncPtr(glFramebufferTextureFace,  "glFramebufferTextureFace", "glFramebufferTextureFaceEXT", "glFramebufferTextureFaceOES" , validContext);
+    setGLExtensionFuncPtr(glFramebufferRenderbuffer, "glFramebufferRenderbuffer", "glFramebufferRenderbufferEXT", "glFramebufferRenderbufferOES", validContext);
 
-    setGLExtensionFuncPtr(glGenerateMipmap, "glGenerateMipmap", "glGenerateMipmapEXT", "glGenerateMipmapOES");
-    setGLExtensionFuncPtr(glBlitFramebuffer, "glBlitFramebuffer", "glBlitFramebufferEXT", "glBlitFramebufferOES");
-    setGLExtensionFuncPtr(glGetRenderbufferParameteriv, "glGetRenderbufferParameteriv", "glGetRenderbufferParameterivEXT", "glGetRenderbufferParameterivOES");
+    setGLExtensionFuncPtr(glGenerateMipmap, "glGenerateMipmap", "glGenerateMipmapEXT", "glGenerateMipmapOES", validContext);
+    setGLExtensionFuncPtr(glBlitFramebuffer, "glBlitFramebuffer", "glBlitFramebufferEXT", "glBlitFramebufferOES", validContext);
+    setGLExtensionFuncPtr(glGetRenderbufferParameteriv, "glGetRenderbufferParameteriv", "glGetRenderbufferParameterivEXT", "glGetRenderbufferParameterivOES", validContext);
 
     isFrameBufferObjectSupported =
         glBindRenderbuffer != 0 &&
@@ -1042,60 +1047,60 @@ GLExtensions::GLExtensions(unsigned int contextID)
         (isGLExtensionSupported(contextID, "GL_OES_packed_depth_stencil"));
 
     //subroutine
-    osg::setGLExtensionFuncPtr(glGetSubroutineUniformLocation, "glGetSubroutineUniformLocation");
-    osg::setGLExtensionFuncPtr(glGetActiveSubroutineUniformName, "glGetActiveSubroutineUniformName");
-    osg::setGLExtensionFuncPtr(glGetActiveSubroutineUniformiv, "glGetActiveSubroutineUniformiv");
-    osg::setGLExtensionFuncPtr(glGetSubroutineIndex, "glGetSubroutineIndex");
-    osg::setGLExtensionFuncPtr(glGetActiveSubroutineName, "glGetActiveSubroutineName");
-    osg::setGLExtensionFuncPtr(glGetProgramStageiv, "glGetProgramStageiv");
-    osg::setGLExtensionFuncPtr(glUniformSubroutinesuiv, "glUniformSubroutinesuiv");
-    osg::setGLExtensionFuncPtr(glGetUniformSubroutineuiv, "glGetUniformSubroutineuiv");
+    osg::setGLExtensionFuncPtr(glGetSubroutineUniformLocation, "glGetSubroutineUniformLocation", validContext);
+    osg::setGLExtensionFuncPtr(glGetActiveSubroutineUniformName, "glGetActiveSubroutineUniformName", validContext);
+    osg::setGLExtensionFuncPtr(glGetActiveSubroutineUniformiv, "glGetActiveSubroutineUniformiv", validContext);
+    osg::setGLExtensionFuncPtr(glGetSubroutineIndex, "glGetSubroutineIndex", validContext);
+    osg::setGLExtensionFuncPtr(glGetActiveSubroutineName, "glGetActiveSubroutineName", validContext);
+    osg::setGLExtensionFuncPtr(glGetProgramStageiv, "glGetProgramStageiv", validContext);
+    osg::setGLExtensionFuncPtr(glUniformSubroutinesuiv, "glUniformSubroutinesuiv", validContext);
+    osg::setGLExtensionFuncPtr(glGetUniformSubroutineuiv, "glGetUniformSubroutineuiv", validContext);
 
 
     // Sync
-    osg::setGLExtensionFuncPtr(glFenceSync, "glFenceSync");
-    osg::setGLExtensionFuncPtr(glIsSync, "glIsSync");
-    osg::setGLExtensionFuncPtr(glDeleteSync, "glDeleteSync");
-    osg::setGLExtensionFuncPtr(glClientWaitSync, "glClientWaitSync");
-    osg::setGLExtensionFuncPtr(glWaitSync, "glWaitSync");
-    osg::setGLExtensionFuncPtr(glGetSynciv, "glGetSynciv");
+    osg::setGLExtensionFuncPtr(glFenceSync, "glFenceSync", validContext);
+    osg::setGLExtensionFuncPtr(glIsSync, "glIsSync", validContext);
+    osg::setGLExtensionFuncPtr(glDeleteSync, "glDeleteSync", validContext);
+    osg::setGLExtensionFuncPtr(glClientWaitSync, "glClientWaitSync", validContext);
+    osg::setGLExtensionFuncPtr(glWaitSync, "glWaitSync", validContext);
+    osg::setGLExtensionFuncPtr(glGetSynciv, "glGetSynciv", validContext);
 
     // Indirect Rendering
-    osg::setGLExtensionFuncPtr(glDrawArraysIndirect, "glDrawArraysIndirect", "glDrawArraysIndirectEXT");
-    osg::setGLExtensionFuncPtr(glMultiDrawArraysIndirect, "glMultiDrawArraysIndirect", "glMultiDrawArraysIndirectEXT");
-    osg::setGLExtensionFuncPtr(glDrawElementsIndirect, "glDrawElementsIndirect", "glDrawElementsIndirectEXT");
-    osg::setGLExtensionFuncPtr(glMultiDrawElementsIndirect, "glMultiDrawElementsIndirect", "glMultiDrawElementsIndirectEXT");
+    osg::setGLExtensionFuncPtr(glDrawArraysIndirect, "glDrawArraysIndirect", "glDrawArraysIndirectEXT", validContext);
+    osg::setGLExtensionFuncPtr(glMultiDrawArraysIndirect, "glMultiDrawArraysIndirect", "glMultiDrawArraysIndirectEXT", validContext);
+    osg::setGLExtensionFuncPtr(glDrawElementsIndirect, "glDrawElementsIndirect", "glDrawElementsIndirectEXT", validContext);
+    osg::setGLExtensionFuncPtr(glMultiDrawElementsIndirect, "glMultiDrawElementsIndirect", "glMultiDrawElementsIndirectEXT", validContext);
 
     // Transform Feeedback
-    osg::setGLExtensionFuncPtr(glBeginTransformFeedback, "glBeginTransformFeedback", "glBeginTransformFeedbackEXT");
-    osg::setGLExtensionFuncPtr(glEndTransformFeedback, "glEndTransformFeedback", "glEndTransformFeedbackEXT");
-    osg::setGLExtensionFuncPtr(glTransformFeedbackVaryings, "glTransformFeedbackVaryings", "glTransformFeedbackVaryingsEXT");
-    osg::setGLExtensionFuncPtr(glGetTransformFeedbackVarying, "glGetTransformFeedbackVarying", "glGetTransformFeedbackVaryingEXT");
-    osg::setGLExtensionFuncPtr(glBindTransformFeedback, "glBindTransformFeedback");
-    osg::setGLExtensionFuncPtr(glDeleteTransformFeedbacks, "glDeleteTransformFeedbacks");
-    osg::setGLExtensionFuncPtr(glGenTransformFeedbacks, "glGenTransformFeedbacks");
-    osg::setGLExtensionFuncPtr(glIsTransformFeedback, "glIsTransformFeedback");
-    osg::setGLExtensionFuncPtr(glPauseTransformFeedback, "glPauseTransformFeedback");
-    osg::setGLExtensionFuncPtr(glResumeTransformFeedback, "glResumeTransformFeedback");
-    osg::setGLExtensionFuncPtr(glDrawTransformFeedback, "glDrawTransformFeedback");
-    osg::setGLExtensionFuncPtr(glDrawTransformFeedbackStream, "glDrawTransformFeedbackStream");
-    osg::setGLExtensionFuncPtr(glDrawTransformFeedbackInstanced, "glDrawTransformFeedbackInstanced");
-    osg::setGLExtensionFuncPtr(glDrawTransformFeedbackStreamInstanced, "glDrawTransformFeedbackStreamInstanced");
-    osg::setGLExtensionFuncPtr(glCreateTransformFeedbacks, "glCreateTransformFeedbacks");
-    osg::setGLExtensionFuncPtr(glTransformFeedbackBufferBase, "glTransformFeedbackBufferBase");
-    osg::setGLExtensionFuncPtr(glTransformFeedbackBufferRange, "glTransformFeedbackBufferRange");
-    osg::setGLExtensionFuncPtr(glGetTransformFeedbackiv, "glGetTransformFeedbackiv");
-    osg::setGLExtensionFuncPtr(glGetTransformFeedbacki_v, "glGetTransformFeedbacki_v");
-    osg::setGLExtensionFuncPtr(glGetTransformFeedbacki64_v, "glGetTransformFeedbacki64_v");
+    osg::setGLExtensionFuncPtr(glBeginTransformFeedback, "glBeginTransformFeedback", "glBeginTransformFeedbackEXT", validContext);
+    osg::setGLExtensionFuncPtr(glEndTransformFeedback, "glEndTransformFeedback", "glEndTransformFeedbackEXT", validContext);
+    osg::setGLExtensionFuncPtr(glTransformFeedbackVaryings, "glTransformFeedbackVaryings", "glTransformFeedbackVaryingsEXT", validContext);
+    osg::setGLExtensionFuncPtr(glGetTransformFeedbackVarying, "glGetTransformFeedbackVarying", "glGetTransformFeedbackVaryingEXT", validContext);
+    osg::setGLExtensionFuncPtr(glBindTransformFeedback, "glBindTransformFeedback", validContext);
+    osg::setGLExtensionFuncPtr(glDeleteTransformFeedbacks, "glDeleteTransformFeedbacks", validContext);
+    osg::setGLExtensionFuncPtr(glGenTransformFeedbacks, "glGenTransformFeedbacks", validContext);
+    osg::setGLExtensionFuncPtr(glIsTransformFeedback, "glIsTransformFeedback", validContext);
+    osg::setGLExtensionFuncPtr(glPauseTransformFeedback, "glPauseTransformFeedback", validContext);
+    osg::setGLExtensionFuncPtr(glResumeTransformFeedback, "glResumeTransformFeedback", validContext);
+    osg::setGLExtensionFuncPtr(glDrawTransformFeedback, "glDrawTransformFeedback", validContext);
+    osg::setGLExtensionFuncPtr(glDrawTransformFeedbackStream, "glDrawTransformFeedbackStream", validContext);
+    osg::setGLExtensionFuncPtr(glDrawTransformFeedbackInstanced, "glDrawTransformFeedbackInstanced", validContext);
+    osg::setGLExtensionFuncPtr(glDrawTransformFeedbackStreamInstanced, "glDrawTransformFeedbackStreamInstanced", validContext);
+    osg::setGLExtensionFuncPtr(glCreateTransformFeedbacks, "glCreateTransformFeedbacks", validContext);
+    osg::setGLExtensionFuncPtr(glTransformFeedbackBufferBase, "glTransformFeedbackBufferBase", validContext);
+    osg::setGLExtensionFuncPtr(glTransformFeedbackBufferRange, "glTransformFeedbackBufferRange", validContext);
+    osg::setGLExtensionFuncPtr(glGetTransformFeedbackiv, "glGetTransformFeedbackiv", validContext);
+    osg::setGLExtensionFuncPtr(glGetTransformFeedbacki_v, "glGetTransformFeedbacki_v", validContext);
+    osg::setGLExtensionFuncPtr(glGetTransformFeedbacki64_v, "glGetTransformFeedbacki64_v", validContext);
 
     //Vertex Array Object
-    osg::setGLExtensionFuncPtr(glGenVertexArrays,"glGenVertexArrays");
-    osg::setGLExtensionFuncPtr(glBindVertexArray,"glBindVertexArray");
-    osg::setGLExtensionFuncPtr(glDeleteVertexArrays,"glDeleteVertexArrays");
-    osg::setGLExtensionFuncPtr(glIsVertexArray,"glIsVertexArray");
+    osg::setGLExtensionFuncPtr(glGenVertexArrays,"glGenVertexArrays", validContext);
+    osg::setGLExtensionFuncPtr(glBindVertexArray,"glBindVertexArray", validContext);
+    osg::setGLExtensionFuncPtr(glDeleteVertexArrays,"glDeleteVertexArrays", validContext);
+    osg::setGLExtensionFuncPtr(glIsVertexArray,"glIsVertexArray", validContext);
 
     // MultiDrawArrays
-    setGLExtensionFuncPtr(glMultiDrawArrays, "glMultiDrawArrays", "glMultiDrawArraysEXT");
+    setGLExtensionFuncPtr(glMultiDrawArrays, "glMultiDrawArrays", "glMultiDrawArraysEXT", validContext);
     setGLExtensionFuncPtr(glMultiDrawElements, "glMultiDrawElements", "glMultiDrawElementsEXT");
     setGLExtensionFuncPtr(glDrawArraysInstancedBaseInstance, "glDrawArraysInstancedBaseInstance", "glDrawArraysInstancedBaseInstanceEXT");
     setGLExtensionFuncPtr(glDrawElementsInstancedBaseInstance, "glDrawElementsInstancedBaseInstance", "glDrawElementsInstancedBaseInstanceEXT");

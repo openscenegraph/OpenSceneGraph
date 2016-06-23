@@ -145,10 +145,7 @@ bool KeyboardHandler::handle(
 ) {
     osgGA::GUIEventAdapter::EventType ev = gea.getEventType();
 
-    if(
-        ev != osgGA::GUIEventAdapter::KEYDOWN &&
-        ev != osgGA::GUIEventAdapter::KEYUP
-    ) return false;
+    if(ev!=osgGA::GUIEventAdapter::KEYDOWN && ev!=osgGA::GUIEventAdapter::KEYUP) return false;
 
     int key     = gea.getKey();
     int keyMask = gea.getModKeyMask();
@@ -158,9 +155,8 @@ bool KeyboardHandler::handle(
 
     if(ev == osgGA::GUIEventAdapter::KEYDOWN) return _wm->keyDown(key, keyMask);
 
-    else if(ev == osgGA::GUIEventAdapter::KEYUP) return _wm->keyUp(key, keyMask);
-
-    return false;
+    // ev == osgGA::GUIEventAdapter::KEYUP
+    return _wm->keyUp(key, keyMask);
 }
 
 ResizeHandler::ResizeHandler(WindowManager* wm, osg::Camera* camera):

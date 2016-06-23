@@ -517,10 +517,14 @@ class OSG_EXPORT State : public Referenced
         const GLBufferObject* getCurrentVertexBufferObject() { return _currentVBO; }
         inline void bindVertexBufferObject(osg::GLBufferObject* vbo)
         {
-            if (vbo == _currentVBO) return;
-            if (vbo->isDirty()) vbo->compileBuffer();
-            else vbo->bindBuffer();
-            _currentVBO = vbo;
+            if (vbo)
+            {
+                if (vbo == _currentVBO) return;
+                if (vbo->isDirty()) vbo->compileBuffer();
+                else vbo->bindBuffer();
+                _currentVBO = vbo;
+            }
+            else unbindVertexBufferObject();
         }
 
         inline void unbindVertexBufferObject()
@@ -535,10 +539,14 @@ class OSG_EXPORT State : public Referenced
 
         inline void bindElementBufferObject(osg::GLBufferObject* ebo)
         {
-            if (ebo == _currentEBO) return;
-            if (ebo->isDirty()) ebo->compileBuffer();
-            else ebo->bindBuffer();
-            _currentEBO = ebo;
+            if (ebo)
+            {
+                if (ebo == _currentEBO) return;
+                if (ebo->isDirty()) ebo->compileBuffer();
+                else ebo->bindBuffer();
+                _currentEBO = ebo;
+            }
+            else unbindElementBufferObject();
         }
 
         inline void unbindElementBufferObject()
@@ -553,12 +561,19 @@ class OSG_EXPORT State : public Referenced
 
         inline void bindPixelBufferObject(osg::GLBufferObject* pbo)
         {
-            if (pbo == _currentPBO) return;
+            if (pbo)
+            {
+                if (pbo == _currentPBO) return;
 
-            if (pbo->isDirty()) pbo->compileBuffer();
-            else pbo->bindBuffer();
+                if (pbo->isDirty()) pbo->compileBuffer();
+                else pbo->bindBuffer();
 
-            _currentPBO = pbo;
+                _currentPBO = pbo;
+            }
+            else
+            {
+                unbindPixelBufferObject();
+            }
         }
 
         inline void unbindPixelBufferObject()

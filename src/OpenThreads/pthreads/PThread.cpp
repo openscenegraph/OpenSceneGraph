@@ -409,16 +409,6 @@ Thread::Thread()
     if(!s_isInitialized) Init();
 
     PThreadPrivateData *pd = new PThreadPrivateData();
-    pd->stackSize = 0;
-    pd->stackSizeLocked = false;
-    pd->idSet = false;
-    pd->setRunning(false);
-    pd->isCanceled = false;
-    pd->uniqueId = pd->nextId;
-    pd->nextId++;
-    pd->threadPriority = Thread::THREAD_PRIORITY_DEFAULT;
-    pd->threadPolicy = Thread::THREAD_SCHEDULE_DEFAULT;
-    pd->cpunum = -1;
 
     _prvData = static_cast<void *>(pd);
 
@@ -643,7 +633,7 @@ int Thread::start() {
         if(pd->stackSize < PTHREAD_STACK_MIN)
             pd->stackSize = PTHREAD_STACK_MIN;
 #endif
-        pthread_attr_setstacksize( &thread_attr, pd->stackSize);
+        status = pthread_attr_setstacksize( &thread_attr, pd->stackSize);
         if(status != 0)
         {
             return status;
@@ -654,7 +644,7 @@ int Thread::start() {
     // Now get what we actually have...
     //
     size_t size;
-    pthread_attr_getstacksize( &thread_attr, &size);
+    status = pthread_attr_getstacksize( &thread_attr, &size);
     if(status != 0)
     {
         return status;

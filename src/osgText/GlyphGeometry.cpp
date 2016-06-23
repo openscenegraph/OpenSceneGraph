@@ -493,8 +493,12 @@ public:
         unsigned int start = (*_elements)[0];
         unsigned int count = _elements->size();
 
-        if (geometry->getVertexArray()==0) geometry->setVertexArray(new osg::Vec3Array(*_vertices));
         osg::Vec3Array* new_vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+        if (!new_vertices)
+        {
+            new_vertices = new osg::Vec3Array(*_vertices);
+            geometry->setVertexArray(new_vertices);
+        }
 
         // allocate the primitive set to store the face geometry
         osg::ref_ptr<osg::DrawElementsUShort> face = new osg::DrawElementsUShort(GL_POLYGON);
@@ -1142,8 +1146,6 @@ OSGTEXT_EXPORT osg::Geometry* computeTextGeometry(osg::Geometry* glyphGeometry, 
         backFace->push_back(back_indices[p2]);
     }
 
-    bool shareVerticesWithFaces = true;
-
     // now build up the bevel
     for(osg::Geometry::PrimitiveSetList::iterator itr = bevelPrimitiveSets.begin();
         itr != bevelPrimitiveSets.end();
@@ -1170,42 +1172,29 @@ OSGTEXT_EXPORT osg::Geometry* computeTextGeometry(osg::Geometry* glyphGeometry, 
             osg::Vec3& base_vertex = (*orig_vertices)[ basei ];
             osg::Vec3 up = top_vertex-base_vertex;
 
-            if (shareVerticesWithFaces)
+            if (front_indices[basei]==NULL_VALUE)
             {
-                if (front_indices[basei]==NULL_VALUE)
-                {
-                    front_indices[basei] = vertices->size();
-                    vertices->push_back(base_vertex);
-                }
-
-                bevelIndices[i*no_vertices_on_bevel + 0] = front_indices[basei];
-
-                for(unsigned int j=1; j<no_vertices_on_bevel-1; ++j)
-                {
-                    const osg::Vec2& pv = profileVertices[j];
-                    osg::Vec3 pos( base_vertex + (forward * pv.x()) + (up * pv.y()) );
-                    bevelIndices[i*no_vertices_on_bevel + j] = vertices->size();
-                    vertices->push_back(pos);
-                }
-
-                if (back_indices[basei]==NULL_VALUE)
-                {
-                    back_indices[basei] = vertices->size();
-                    vertices->push_back(base_vertex + forward);
-                }
-
-                bevelIndices[i*no_vertices_on_bevel + no_vertices_on_bevel-1] = back_indices[basei];
+                front_indices[basei] = vertices->size();
+                vertices->push_back(base_vertex);
             }
-            else
+
+            bevelIndices[i*no_vertices_on_bevel + 0] = front_indices[basei];
+
+            for(unsigned int j=1; j<no_vertices_on_bevel-1; ++j)
             {
-                for(unsigned int j=0; j<no_vertices_on_bevel; ++j)
-                {
-                    const osg::Vec2& pv = profileVertices[j];
-                    osg::Vec3 pos( base_vertex + (forward * pv.x()) + (up * pv.y()) );
-                    bevelIndices[i*no_vertices_on_bevel + j] = vertices->size();
-                    vertices->push_back(pos);
-                }
+                const osg::Vec2& pv = profileVertices[j];
+                osg::Vec3 pos( base_vertex + (forward * pv.x()) + (up * pv.y()) );
+                bevelIndices[i*no_vertices_on_bevel + j] = vertices->size();
+                vertices->push_back(pos);
             }
+
+            if (back_indices[basei]==NULL_VALUE)
+            {
+                back_indices[basei] = vertices->size();
+                vertices->push_back(base_vertex + forward);
+            }
+
+            bevelIndices[i*no_vertices_on_bevel + no_vertices_on_bevel-1] = back_indices[basei];
         }
 
         osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(GL_TRIANGLES);
@@ -1342,7 +1331,7 @@ OSGTEXT_EXPORT osg::Geometry* computeShellGeometry(osg::Geometry* glyphGeometry,
 
         osg::CopyOp copyop(osg::CopyOp::DEEP_COPY_ALL);
 
-        osg::DrawElementsUShort* front_strip = dynamic_cast<osg::DrawElementsUShort*>(copyop(strip));
+        osg::DrawElementsUShort* front_strip = new osg::DrawElementsUShort(*strip, copyop);
         text_geometry->addPrimitiveSet(front_strip);
         for(unsigned int i=0; i<front_strip->size(); ++i)
         {
@@ -1362,7 +1351,7 @@ OSGTEXT_EXPORT osg::Geometry* computeShellGeometry(osg::Geometry* glyphGeometry,
             std::swap(p1,p2);
         }
 
-        osg::DrawElementsUShort* back_strip = dynamic_cast<osg::DrawElementsUShort*>(copyop(strip));
+        osg::DrawElementsUShort* back_strip = new osg::DrawElementsUShort(*strip, copyop);
         text_geometry->addPrimitiveSet(back_strip);
         for(unsigned int i=0; i<back_strip->size(); ++i)
         {

@@ -202,7 +202,7 @@ struct StatsGraph : public osg::MatrixTransform
                 // Create primitive set if none exists.
                 if (geometry->getNumPrimitiveSets() == 0)
                     geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP, 0, 0));
-                osg::DrawArrays* drawArrays = dynamic_cast<osg::DrawArrays*>(geometry->getPrimitiveSet(0));
+                osg::DrawArrays* drawArrays = static_cast<osg::DrawArrays*>(geometry->getPrimitiveSet(0));
                 drawArrays->setFirst(0);
                 drawArrays->setCount(vertices->size());
             }
@@ -287,7 +287,7 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
         std::string _name;
         osg::ref_ptr<osg::Group> _group;
         osg::ref_ptr<osg::Geode> _label;
-        osg::ref_ptr<osg::MatrixTransform> _graph;
+        osg::ref_ptr<StatsGraph> _graph;
         osg::ref_ptr<osgText::Text> _textLabel;
         osgAnimation::OutCubicMotion _fade;
 
@@ -445,7 +445,7 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
             }
 
             pos.y() -= backgroundMargin;
-            osg::Vec3Array* array = dynamic_cast<osg::Vec3Array*>(_background->getVertexArray());
+            osg::Vec3Array* array = static_cast<osg::Vec3Array*>(_background->getVertexArray());
             float y = (*array)[0][1];
             y = y - (pos.y() + backgroundMargin); //(2 * backgroundMargin + (size.size() * (characterSize + graphSpacing)));
             (*array)[1][1] = pos.y();
@@ -483,6 +483,9 @@ StatsHandler::StatsHandler():
     _keyEventPrintsOutStats('A'),
     _statsType(NO_STATS),
     _initialized(false),
+    _frameRateChildNum(0),
+    _numBlocks(0),
+    _blockMultiplier(double(1.0)),
     _statsWidth(1280.0f),
     _statsHeight(1024.0f)
 {
@@ -498,7 +501,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
 
     osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(myview->getViewerBase());
 
-    if (!viewer->getSceneData())
+    if (!viewer || !viewer->getSceneData())
         return false;
     if (ea.getHandled()) return false;
 
@@ -622,7 +625,8 @@ void StatsHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
     _camera->setAllowEventFocus(false);
     _camera->setCullMask(0x1);
     osgViewer::Viewer* v = dynamic_cast<osgViewer::Viewer*>(viewer);
-    v->getSceneData()->asGroup()->addChild(_camera.get());
+    if(v)
+        v->getSceneData()->asGroup()->addChild(_camera.get());
     _initialized = true;
 }
 
@@ -689,12 +693,11 @@ void StatAction::init(osg::Stats* stats, const std::string& name, const osg::Vec
 void StatAction::setAlpha(float v)
 {
     std::cout << this << " color alpha " << v << std::endl;
-    StatsGraph* gfx = dynamic_cast<StatsGraph*>(_graph.get());
     osg::Vec4 color = _textLabel->getColor();
     color[3] = v;
     _textLabel->setColor(color);
-    for (int i = 0; i < (int) gfx->_statsGraphGeode->getNumDrawables(); i++) {
-        StatsGraph::Graph* g = dynamic_cast<StatsGraph::Graph*>(gfx->_statsGraphGeode->getDrawable(0));
+    for (int i = 0; i < (int) _graph->_statsGraphGeode->getNumDrawables(); i++) {
+        StatsGraph::Graph* g = static_cast<StatsGraph::Graph*>(_graph->_statsGraphGeode->getDrawable(0));
         g->setColor(color);
     }
 }
@@ -702,11 +705,8 @@ void StatAction::setAlpha(float v)
 void StatAction::setPosition(const osg::Vec3& pos)
 {
     float characterSize = 20.0f;
-    StatsGraph* gfx = dynamic_cast<StatsGraph*>(_graph.get());
-    gfx->changeYposition(pos[1]);
+    _graph->changeYposition(pos[1]);
     _textLabel->setPosition(pos - osg::Vec3(0, characterSize,0));
-
-
 
 }
 

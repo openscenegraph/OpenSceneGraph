@@ -26,8 +26,8 @@ namespace osgAnimation
     class TemplateCubicBezier
     {
     public:
-        TemplateCubicBezier() {}
-
+        TemplateCubicBezier() : _position(osg::default_value<T>()), _controlPointIn(osg::default_value<T>()), _controlPointOut(osg::default_value<T>()) {}
+        
         TemplateCubicBezier(const T& p, const T& i, const T& o) : _position(p), _controlPointIn(i), _controlPointOut(o)
         {
         }

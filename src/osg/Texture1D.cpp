@@ -485,11 +485,8 @@ void Texture1D::allocateMipmap(State& state) const
         // we do not reallocate the level 0, since it was already allocated
         width >>= 1;
 
-        for( GLsizei k = 1; k < numMipmapLevels  && width; k++)
+        for( GLsizei k = 1; k < numMipmapLevels && width; k++)
         {
-            if (width == 0)
-                width = 1;
-
             glTexImage1D( GL_TEXTURE_1D, k, _internalFormat,
                      width, _borderWidth,
                      _sourceFormat ? _sourceFormat : _internalFormat,

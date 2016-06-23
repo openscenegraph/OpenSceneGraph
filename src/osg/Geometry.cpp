@@ -48,7 +48,7 @@ namespace osg{
             OSG_INFO<<"VertexArrayObjectManager::discardAllGLObjects() Not currently implementated"<<std::endl;
         }
 
-        void deleteVertexArrayObject(Geometry::PerContextVertexArrayObject* globj, const Geometry::VAOKey & vaokey)
+        void deleteVertexArrayObject(Geometry::PerContextVertexArrayObject* globj, Geometry::VertexArrayObjectMap::iterator vaokeyit)
         {
         #ifdef OSG_GL_VERTEX_ARRAY_OBJECTS_AVAILABLE
             if (globj!=0)
@@ -56,7 +56,7 @@ namespace osg{
                 OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_VertexArrayObject);
 
                 osg::get<osg::GLExtensions>(_contextID)->glDeleteVertexArrays(1,&globj->_GLID);
-                _vertexArrayObjectMap.erase(vaokey);
+                _vertexArrayObjectMap.erase(vaokeyit);
             }
         #else
             OSG_INFO<<"Warning: Geometry::deleteVertexArrayObject(..) - not supported."<<std::endl;
@@ -107,7 +107,7 @@ namespace osg{
 //////////////////////////////////////////////////////////////////
 
 Geometry::PerContextVertexArrayObject::~PerContextVertexArrayObject(){
-   osg::get<VertexArrayObjectManager>(_contextID)->deleteVertexArrayObject(const_cast<Geometry::PerContextVertexArrayObject*>(this),_itvao->first);
+   osg::get<VertexArrayObjectManager>(_contextID)->deleteVertexArrayObject(const_cast<Geometry::PerContextVertexArrayObject*>(this),_itvao);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -629,7 +629,7 @@ void Geometry::setUseVertexArrayObject(bool flag){
     _useVertexArrayObject=flag;
     dirtyVertexArrayObject();
 #else
- OSG_INFO<<"Warning: Geometry::setUseVertexArrayObject(..) - not supported."<<std::endl;
+    OSG_INFO<<"Warning: Geometry::setUseVertexArrayObject(..) - not supported."<<std::endl;
 #endif
 }
 

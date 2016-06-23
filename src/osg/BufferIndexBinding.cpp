@@ -92,8 +92,7 @@ void BufferIndexBinding::setIndex(GLuint index){
         parentmodes[i]=parents[i]->getAttributeList().find(getTypeMemberPair())->second.second;
     }
 
-    ref_ptr<StateSet> dummy=new StateSet();
-    dummy->setAttributeAndModes(this,StateAttribute::ON);
+    ref_ptr<StateAttribute> dummy=this;
 
     for(unsigned int i=0;i<numparent;i++)parents[i]->removeAttribute(this);
 
@@ -102,7 +101,8 @@ void BufferIndexBinding::setIndex(GLuint index){
     for(unsigned int i=0;i<numparent;i++)
         parents[i]->setAttributeAndModes(this,  parentmodes[i]);
 
-    dummy->removeAttribute(this);
+    delete [] parents;
+    delete [] parentmodes;
 
 }
 void BufferIndexBinding::apply(State& state) const
@@ -219,9 +219,6 @@ ShaderStorageBufferBinding::ShaderStorageBufferBinding(const ShaderStorageBuffer
     : BufferIndexBinding(rhs, copyop)
 {
 }
-
-
-
 
 
 DrawIndirectBufferBinding::DrawIndirectBufferBinding( )

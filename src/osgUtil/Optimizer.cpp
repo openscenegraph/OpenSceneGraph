@@ -3218,7 +3218,7 @@ void Optimizer::FlattenBillboardVisitor::process()
             mergeAcceptable = false;
         }
 
-        if (mergeAcceptable)
+        if (mergeAcceptable && mainGroup)
         {
             osg::Billboard* new_billboard = new osg::Billboard;
             new_billboard->setMode(billboard->getMode());

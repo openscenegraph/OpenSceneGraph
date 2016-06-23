@@ -773,10 +773,12 @@ void ViewerBase::renderingTraversals()
         ++sitr)
     {
         Scene* scene = *sitr;
-        osgDB::DatabasePager* dp = scene ? scene->getDatabasePager() : 0;
+        if (!scene) continue;
+
+        osgDB::DatabasePager* dp = scene->getDatabasePager();
         if (dp) dp->signalBeginFrame(frameStamp);
 
-        osgDB::ImagePager* ip = scene ? scene->getImagePager() : 0;
+        osgDB::ImagePager* ip = scene->getImagePager();
         if (ip) ip->signalBeginFrame(frameStamp);
 
         if (scene->getSceneData())

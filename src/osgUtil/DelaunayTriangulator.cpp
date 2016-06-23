@@ -415,7 +415,7 @@ int DelaunayTriangulator::getindex(const osg::Vec3 &pt,const osg::Vec3Array *poi
     return -1;
 }
 
-Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vindexlist)
+Triangle_list fillHole(osg::Vec3Array *points, const std::vector<int>& vindexlist)
 {
     // eg clockwise vertex neighbours around the hole made by the constraint
     Triangle_list triangles; // returned list
@@ -423,7 +423,7 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
     osg::ref_ptr<osg::Vec3Array> constraintverts=new osg::Vec3Array;
     osg::ref_ptr<osgUtil::Tessellator> tscx=new osgUtil::Tessellator; // this assembles all the constraints
 
-    for (std::vector<unsigned int>::iterator itint=vindexlist.begin(); itint!=vindexlist.end(); itint++)
+    for (std::vector<int>::const_iterator itint=vindexlist.begin(); itint!=vindexlist.end(); itint++)
     {
     //    OSG_WARN<< "add point " << (*itint) << " at " << (*points)[*itint].x() << ","<< (*points)[*itint].y() <<std::endl;
         constraintverts->push_back((*points)[*itint]);
@@ -934,11 +934,11 @@ bool DelaunayTriangulator::triangulate()
                 {
                     // loops or strips
                     // start with the last point on the loop
-                    unsigned int ip1=getindex((*vercon)[prset->index (prset->getNumIndices()-1)],points_.get());
-                    for (unsigned int i=0; i<prset->getNumIndices(); i++)
+                    int ip1=getindex((*vercon)[prset->index (prset->getNumIndices()-1)],points_.get());
+                    for (unsigned int i=0; i<prset->getNumIndices() && ip1>=0; i++)
                     {
-                        unsigned int ip2=getindex((*vercon)[prset->index(i)],points_.get());
-                        if (i>0 || prset->getMode()==osg::PrimitiveSet::LINE_LOOP)
+                        int ip2=getindex((*vercon)[prset->index(i)],points_.get());
+                        if (ip2>=0 && (i>0 || prset->getMode()==osg::PrimitiveSet::LINE_LOOP))
                         {
                             // don't check edge from end to start
                             // for strips
@@ -976,13 +976,13 @@ bool DelaunayTriangulator::triangulate()
                                     if (icut>0)
                                     {
                                         // triangle titr starts the constraint edge
-                                        std::vector<unsigned int> edgeRight, edgeLeft;
+                                        std::vector<int> edgeRight, edgeLeft;
                                         edgeRight.push_back(ip1);
                                         edgeLeft.push_back(ip1);
                                         //        OSG_WARN << "hole first " << edgeLeft.back()<<  " rt " << edgeRight.back()<< std::endl;
                                         trisToDelete.push_back(&(*titr));
                                         // now find the unique triangle that shares the defined edge
-                                        unsigned int e1, e2; // indices of ends of test triangle titr
+                                        int e1, e2; // indices of ends of test triangle titr
                                         if    (icut==1)
                                         {
                                             // icut=1 implies vertex a is not involved

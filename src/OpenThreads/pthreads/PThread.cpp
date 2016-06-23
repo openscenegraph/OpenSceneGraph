@@ -643,7 +643,7 @@ int Thread::start() {
         if(pd->stackSize < PTHREAD_STACK_MIN)
             pd->stackSize = PTHREAD_STACK_MIN;
 #endif
-        pthread_attr_setstacksize( &thread_attr, pd->stackSize);
+        status = pthread_attr_setstacksize( &thread_attr, pd->stackSize);
         if(status != 0)
         {
             return status;
@@ -654,7 +654,7 @@ int Thread::start() {
     // Now get what we actually have...
     //
     size_t size;
-    pthread_attr_getstacksize( &thread_attr, &size);
+    status = pthread_attr_getstacksize( &thread_attr, &size);
     if(status != 0)
     {
         return status;

@@ -41,7 +41,20 @@ class PThreadPrivateData {
 
 private:
 
-    PThreadPrivateData() {};
+    PThreadPrivateData()
+    {
+        stackSize = 0;
+        stackSizeLocked = false;
+        idSet = false;
+        setRunning(false);
+        isCanceled = false;
+        tid = 0;
+        uniqueId = nextId;
+        nextId++;
+        threadPriority = Thread::THREAD_PRIORITY_DEFAULT;
+        threadPolicy = Thread::THREAD_SCHEDULE_DEFAULT;
+        cpunum = -1;
+    };
 
     virtual ~PThreadPrivateData() {};
 

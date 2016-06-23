@@ -36,6 +36,7 @@ Sequence::Sequence() :
     _defaultTime(1.),
     _lastFrameTime(0.),
     _saveRealLastFrameTime(-1.),
+    _saveRealLastFrameValue(0),
     _mode(STOP),
     _sync(false),
     _clearOnStop(false)

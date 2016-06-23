@@ -106,21 +106,21 @@ T convertPointerType(R src)
 }
 
 template<typename T>
-bool setGLExtensionFuncPtr(T& t, const char* str1)
+bool setGLExtensionFuncPtr(T& t, const char* str1, bool validContext=true)
 {
-    return convertPointer(t, osg::getGLExtensionFuncPtr(str1));
+    return convertPointer(t, validContext ? osg::getGLExtensionFuncPtr(str1) : 0);
 }
 
 template<typename T>
-bool setGLExtensionFuncPtr(T& t, const char* str1, const char* str2)
+bool setGLExtensionFuncPtr(T& t, const char* str1, const char* str2, bool validContext=true)
 {
-    return convertPointer(t, osg::getGLExtensionFuncPtr(str1, str2));
+    return convertPointer(t, validContext ? osg::getGLExtensionFuncPtr(str1, str2) : 0);
 }
 
 template<typename T>
-bool setGLExtensionFuncPtr(T& t, const char* str1, const char* str2, const char* str3)
+bool setGLExtensionFuncPtr(T& t, const char* str1, const char* str2, const char* str3, bool validContext=true)
 {
-    return convertPointer(t, osg::getGLExtensionFuncPtr(str1, str2, str3));
+    return convertPointer(t, validContext ? osg::getGLExtensionFuncPtr(str1, str2, str3) : 0);
 }
 
 /** Main GLExtensions class for managing OpenGL extensions per graphics context.*/

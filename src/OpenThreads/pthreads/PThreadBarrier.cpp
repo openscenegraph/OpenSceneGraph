@@ -1,13 +1,13 @@
 /* -*-c++-*- OpenThreads library, Copyright (C) 2002 - 2007  The Open Thread Group
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -26,13 +26,13 @@ using namespace OpenThreads;
 
 //----------------------------------------------------------------------------
 // This cancel cleanup handler is necessary to ensure that the barrier's
-// mutex gets unlocked on cancel. Otherwise deadlocks could occur with 
+// mutex gets unlocked on cancel. Otherwise deadlocks could occur with
 // later joins.
 //
 void barrier_cleanup_handler(void *arg) {
 
     pthread_mutex_t *mutex = static_cast<pthread_mutex_t *>(arg);
-    
+
     pthread_mutex_unlock(mutex);
 
 }
@@ -45,11 +45,7 @@ void barrier_cleanup_handler(void *arg) {
 //
 Barrier::Barrier(int numThreads) {
 
-    PThreadBarrierPrivateData *pd = new PThreadBarrierPrivateData();
-
-    pd->cnt = 0;
-    pd->phase = 0;
-    pd->maxcnt = numThreads;
+    PThreadBarrierPrivateData *pd = new PThreadBarrierPrivateData(numThreads);
 
     _valid = true;
 
@@ -70,17 +66,17 @@ Barrier::Barrier(int numThreads) {
     // Initialization is a bit tricky, since we have to be able to be aware
     // that on many-to-many execution vehicle systems, we may run into
     // priority inversion deadlocks if a mutex is shared between threads
-    // of differing priorities.  Systems that do this should provide the 
+    // of differing priorities.  Systems that do this should provide the
     // following protocol attributes to prevent deadlocks.  Check at runtime.
     //
     //  PRIO_INHERIT causes any thread locking the mutex to temporarily become
-    //  the same priority as the highest thread also blocked on the mutex. 
+    //  the same priority as the highest thread also blocked on the mutex.
     //  Although more expensive, this is the preferred method.
     //
     //  PRIO_PROTECT causes any thread locking the mutex to assume the priority
     //  specified by setprioceiling.  pthread_mutex_lock will fail if
     //  the priority ceiling is lower than the thread's priority.  Therefore,
-    //  the priority ceiling must be set to the max priority in order to 
+    //  the priority ceiling must be set to the max priority in order to
     //  guarantee no deadlocks will occur.
     //
 #if defined (_POSIX_THREAD_PRIO_INHERIT) || defined (_POSIX_THREAD_PRIO_PROTECT) // [
@@ -139,7 +135,7 @@ Barrier::~Barrier() {
 // Use: public.
 //
 void Barrier::reset() {
-    
+
     PThreadBarrierPrivateData *pd =
         static_cast<PThreadBarrierPrivateData*>(_prvData);
 
@@ -168,7 +164,7 @@ void Barrier::block(unsigned int numThreads) {
     {
         my_phase = pd->phase;
         ++pd->cnt;
-    
+
         if (pd->cnt == pd->maxcnt) {             // I am the last one
             pd->cnt = 0;                         // reset for next use
             pd->phase = 1 - my_phase;            // toggle phase
@@ -216,7 +212,7 @@ void Barrier::release() {
 
     pthread_mutex_lock(&(pd->lock));
     my_phase = pd->phase;
-    
+
     pd->cnt = 0;                         // reset for next use
     pd->phase = 1 - my_phase;            // toggle phase
     pthread_cond_broadcast(&(pd->cond));
@@ -231,10 +227,10 @@ void Barrier::release() {
 // Use: public
 //
 int Barrier::numThreadsCurrentlyBlocked() {
-    
+
     PThreadBarrierPrivateData *pd = static_cast<PThreadBarrierPrivateData*>(_prvData);
-    
-    
+
+
     int numBlocked = -1;
     pthread_mutex_lock(&(pd->lock));
     numBlocked = pd->cnt;

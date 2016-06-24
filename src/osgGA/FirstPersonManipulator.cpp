@@ -263,6 +263,9 @@ bool FirstPersonManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIAct
         }
     }
 
+    FirstPersonAnimationData *ad = dynamic_cast< FirstPersonAnimationData*>( _animationData.get() );
+    if (!ad) return false;
+
     switch( sm )
     {
 
@@ -270,7 +273,7 @@ bool FirstPersonManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIAct
         case GUIEventAdapter::SCROLL_UP:
         {
             // move forward
-            moveForward( isAnimating() ? dynamic_cast< FirstPersonAnimationData* >( _animationData.get() )->_targetRot : _rotation,
+            moveForward( isAnimating() ? ad->_targetRot : _rotation,
                          -_wheelMovement * (getRelativeFlag( _wheelMovementFlagIndex ) ? _modelSize : 1. ));
             us.requestRedraw();
             us.requestContinuousUpdate( isAnimating() || _thrown );

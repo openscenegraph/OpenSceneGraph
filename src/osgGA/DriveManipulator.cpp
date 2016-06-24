@@ -48,9 +48,12 @@ DriveManipulator::DriveManipulator()
     _velocity = 0.0;
     _height = getHeightOfDriver();
     _buffer = _height*2.5;
-    _pitch = 0.0;
+
     //_speedMode = USE_MOUSE_Y_FOR_SPEED;
     _speedMode = USE_MOUSE_BUTTONS_FOR_SPEED;
+
+    _pitch = 0.0;
+    _distance = 0.0;
 
     _pitchUpKeyPressed = false;
     _pitchDownKeyPressed = false;

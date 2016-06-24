@@ -611,6 +611,27 @@ protected:
         Drawable::AttributeType             _type;
 };
 
+
+class OSG_EXPORT TransformFeedbackDrawCallback: public Drawable::DrawCallback
+{
+protected:
+    GLenum _type;
+public:
+    META_Object(osg,TransformFeedbackDrawCallback);
+
+    TransformFeedbackDrawCallback():Drawable::DrawCallback(),_type(GL_POINTS){}
+    TransformFeedbackDrawCallback(const TransformFeedbackDrawCallback&dc,const CopyOp&co);
+
+    /** Get the primitive type of the feedback.
+     */
+    inline GLenum getFeedbackType() const      { return _type;      }
+    inline void  setFeedbackType(GLenum e)     { _type= e;          }
+
+    /** do TransformFeedback draw code.*/
+    virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable*  drawable ) const;
+
+};
+
 }
 
 #endif

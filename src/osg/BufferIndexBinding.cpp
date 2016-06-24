@@ -24,21 +24,54 @@
 
 namespace osg {
 
+BufferBinding::BufferBinding(GLenum target)
+    : _target(target), _bufferObject(0)
+{
+}
+
+BufferBinding::BufferBinding(GLenum target, BufferObject* bo)
+    : _target(target), _bufferObject(bo)
+{
+}
+
+BufferBinding::BufferBinding(const BufferBinding& rhs, const CopyOp& copyop)
+    : StateAttribute(rhs, copyop),
+      _target(rhs._target),
+      _bufferObject(static_cast<BufferObject*>(copyop(rhs._bufferObject.get())))
+{
+}
+
+BufferBinding::~BufferBinding()
+{
+}
+
+void BufferBinding::apply(State& state) const
+{
+    if (_bufferObject.valid())
+    {
+        GLBufferObject* glObject
+            = _bufferObject->getOrCreateGLBufferObject(state.getContextID());
+        if (!glObject->_extensions->isUniformBufferObjectSupported)
+            return;
+        if (glObject->isDirty()) glObject->compileBuffer();
+        glObject->_extensions->glBindBuffer (_target, glObject->getGLObjectID());
+    }
+}
+
 BufferIndexBinding::BufferIndexBinding(GLenum target, GLuint index)
-    : _target(target), _index(index), _offset(0), _size(0)
+    :BufferBinding(target), _index(index), _offset(0), _size(0)
 {
 }
 
 BufferIndexBinding::BufferIndexBinding(GLenum target, GLuint index, BufferObject* bo,
                                        GLintptr offset, GLsizeiptr size)
-    : _target(target), _index(index), _bufferObject(bo), _offset(offset), _size(size)
+    : BufferBinding(target,bo), _index(index), _offset(offset), _size(size)
 {
 }
 
 BufferIndexBinding::BufferIndexBinding(const BufferIndexBinding& rhs, const CopyOp& copyop)
-    : StateAttribute(rhs, copyop),
-      _target(rhs._target), _index(rhs._index),
-      _bufferObject(static_cast<BufferObject*>(copyop(rhs._bufferObject.get()))),
+    : BufferBinding(rhs, copyop),
+      _index(rhs._index),
       _offset(rhs._offset),
       _size(rhs._size)
 {
@@ -48,6 +81,30 @@ BufferIndexBinding::~BufferIndexBinding()
 {
 }
 
+void BufferIndexBinding::setIndex(GLuint index){
+
+    StateSet**parents=new StateSet* [getNumParents()];
+    StateAttribute::GLModeValue *parentmodes =new StateAttribute::GLModeValue  [getNumParents()];
+    unsigned int numparent=getNumParents();
+    for(unsigned int i=0;i<numparent;i++)
+    {
+        parents[i]=getParent(i);
+        parentmodes[i]=parents[i]->getAttributeList().find(getTypeMemberPair())->second.second;
+    }
+
+    ref_ptr<StateAttribute> dummy=this;
+
+    for(unsigned int i=0;i<numparent;i++)parents[i]->removeAttribute(this);
+
+    _index=index;
+
+    for(unsigned int i=0;i<numparent;i++)
+        parents[i]->setAttributeAndModes(this,  parentmodes[i]);
+
+    delete [] parents;
+    delete [] parentmodes;
+
+}
 void BufferIndexBinding::apply(State& state) const
 {
     if (_bufferObject.valid())
@@ -164,11 +221,8 @@ ShaderStorageBufferBinding::ShaderStorageBufferBinding(const ShaderStorageBuffer
 }
 
 
-
-
-
 DrawIndirectBufferBinding::DrawIndirectBufferBinding( )
-  : BufferIndexBinding(GL_DRAW_INDIRECT_BUFFER, 0)
+  : BufferBinding(GL_DRAW_INDIRECT_BUFFER)
 {
 }
 void DrawIndirectBufferBinding::apply(State& state) const
@@ -179,19 +233,19 @@ void DrawIndirectBufferBinding::apply(State& state) const
             = _bufferObject->getOrCreateGLBufferObject(state.getContextID());
         if (!glObject->_extensions->isUniformBufferObjectSupported)
             return;
-      //  if (glObject->isDirty()) glObject->compileBuffer();
+        //  if (glObject->isDirty()) glObject->compileBuffer(); assuming buffer is GPU generated
         glObject->_extensions->glBindBuffer (_target, glObject->getGLObjectID());
     }
 }
 DrawIndirectBufferBinding::DrawIndirectBufferBinding(  BufferObject* bo)
-    : BufferIndexBinding(GL_DRAW_INDIRECT_BUFFER, 0, bo, 0, 0)
+    : BufferBinding(GL_DRAW_INDIRECT_BUFFER, bo)
 {
 
 }
 
 DrawIndirectBufferBinding::DrawIndirectBufferBinding(const DrawIndirectBufferBinding& rhs,
                                            const CopyOp& copyop)
-    : BufferIndexBinding(rhs, copyop)
+    : BufferBinding(rhs, copyop)
 {
 }
 

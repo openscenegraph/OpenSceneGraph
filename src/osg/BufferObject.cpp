@@ -1227,7 +1227,7 @@ BufferData::~BufferData()
     setBufferObject(0);
 }
 
-void BufferData::setBufferObject(BufferObject* bufferObject)
+void BufferData::setBufferObject(BufferObject* bufferObject,bool addtoBufferObject)
 {
     if (_bufferObject==bufferObject) return;
 
@@ -1237,7 +1237,7 @@ void BufferData::setBufferObject(BufferObject* bufferObject)
     }
 
     _bufferObject = bufferObject;
-    _bufferIndex = _bufferObject.valid() ? _bufferObject->addBufferData(this) : 0;
+    if(addtoBufferObject)_bufferIndex = _bufferObject.valid() ? _bufferObject->addBufferData(this) : 0;
 }
 
 void BufferData::resizeGLObjectBuffers(unsigned int maxSize)

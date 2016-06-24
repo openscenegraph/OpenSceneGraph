@@ -159,6 +159,7 @@ void UpdateActionVisitor::apply(ActionStripAnimation& action)
 
 ClearActionVisitor::ClearActionVisitor(ClearType type) : _clearType(type)
 {
+    _frame = 0;
 }
 
 void ClearActionVisitor::apply(Timeline& tm)

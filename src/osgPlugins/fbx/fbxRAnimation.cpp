@@ -25,7 +25,7 @@ osg::Quat makeQuat(const osg::Vec3& radians, EFbxRotationOrder fbxRotOrder)
 
 void readKeys(FbxAnimCurve* curveX, FbxAnimCurve* curveY, FbxAnimCurve* curveZ,
               const FbxDouble3& defaultValue,
-              std::vector<osgAnimation::TemplateKeyframe<osg::Vec3> >& keyFrameCntr, float scalar = 1.0f)
+              osgAnimation::TemplateKeyframeContainer<osg::Vec3f>& keyFrameCntr, float scalar = 1.0f)
 {
     FbxAnimCurve* curves[3] = {curveX, curveY, curveZ};
 
@@ -73,7 +73,7 @@ void readKeys(FbxAnimCurve* curveX, FbxAnimCurve* curveY, FbxAnimCurve* curveZ,
 
 void readKeys(FbxAnimCurve* curveX, FbxAnimCurve* curveY, FbxAnimCurve* curveZ,
               const FbxDouble3& defaultValue,
-              std::vector<osgAnimation::Vec3CubicBezierKeyframe>& keyFrameCntr, float scalar = 1.0f)
+              osgAnimation::TemplateKeyframeContainer<osgAnimation::TemplateCubicBezier<osg::Vec3f> >& keyFrameCntr, float scalar = 1.0f)
 {
     FbxAnimCurve* curves[3] = {curveX, curveY, curveZ};
 
@@ -257,7 +257,7 @@ osgAnimation::Channel* readFbxChannelsQuat(
     osgAnimation::QuatSphericalLinearChannel* pChannel = new osgAnimation::QuatSphericalLinearChannel;
     pChannel->setTargetName(targetName);
     pChannel->setName("quaternion");
-    typedef std::vector<osgAnimation::TemplateKeyframe<osg::Vec3> > KeyFrameCntr;
+    typedef osgAnimation::TemplateKeyframeContainer<osg::Vec3f> KeyFrameCntr;
     KeyFrameCntr eulerFrameCntr;
     readKeys(curveX, curveY, curveZ, defaultValue, eulerFrameCntr, static_cast<float>(osg::PI / 180.0));
 

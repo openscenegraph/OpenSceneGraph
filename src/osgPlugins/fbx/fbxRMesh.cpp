@@ -413,7 +413,7 @@ void readAnimation(FbxNode* pNode, FbxScene& fbxScene, const std::string& target
             }
 
             osgAnimation::FloatLinearChannel* pChannel = new osgAnimation::FloatLinearChannel;
-            std::vector<osgAnimation::TemplateKeyframe<float> >& keyFrameCntr = *pChannel->getOrCreateSampler()->getOrCreateKeyframeContainer();
+            osgAnimation::TemplateKeyframeContainer<float> & keyFrameCntr = *pChannel->getOrCreateSampler()->getOrCreateKeyframeContainer();
 
             for (int k = 0; k < nKeys; ++k)
             {

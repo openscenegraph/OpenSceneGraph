@@ -44,7 +44,7 @@ unsigned int PrimitiveSet::getNumPrimitives() const
 //
 // DrawArray
 //
-void DrawArrays::draw(State& state, bool) const
+void DrawArrays::draw(State& state, bool, bool) const
 {
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
     GLenum mode = _mode;
@@ -103,7 +103,7 @@ unsigned int DrawArrayLengths::getNumPrimitives() const
     return 0;
 }
 
-void DrawArrayLengths::draw(State& state, bool) const
+void DrawArrayLengths::draw(State& state, bool, bool) const
 {
     GLenum mode = _mode;
     #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
@@ -181,7 +181,7 @@ DrawElementsUByte::~DrawElementsUByte()
     releaseGLObjects();
 }
 
-void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const
+void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects, bool bindElementBuffer) const
 {
     GLenum mode = _mode;
     #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
@@ -192,7 +192,7 @@ void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
-        state.bindElementBufferObject(ebo);
+        if(bindElementBuffer)state.bindElementBufferObject(ebo);
         if (ebo)
         {
             if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_BYTE, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
@@ -241,7 +241,7 @@ DrawElementsUShort::~DrawElementsUShort()
     releaseGLObjects();
 }
 
-void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
+void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects, bool bindElementBuffer) const
 {
     GLenum mode = _mode;
     #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
@@ -252,7 +252,7 @@ void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
-        state.bindElementBufferObject(ebo);
+        if(bindElementBuffer)state.bindElementBufferObject(ebo);
         if (ebo)
         {
             if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_SHORT, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
@@ -300,7 +300,7 @@ DrawElementsUInt::~DrawElementsUInt()
     releaseGLObjects();
 }
 
-void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const
+void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects, bool bindElementBuffer) const
 {
     GLenum mode = _mode;
     #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
@@ -311,7 +311,7 @@ void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
-        state.bindElementBufferObject(ebo);
+        if(bindElementBuffer)state.bindElementBufferObject(ebo);
         if (ebo)
         {
             if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_INT, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
@@ -355,7 +355,7 @@ void DrawElementsUInt::offsetIndices(int offset)
 // MultiDrawArrays
 //
 #ifdef OSG_HAS_MULTIDRAWARRAYS
-void MultiDrawArrays::draw(osg::State& state, bool) const
+void MultiDrawArrays::draw(osg::State& state, bool, bool) const
 {
     // OSG_NOTICE<<"osg::MultiDrawArrays::draw"<<std::endl;
 
@@ -446,4 +446,107 @@ void MultiDrawArrays::add(GLint first, GLsizei count)
     _firsts.push_back(first);
     _counts.push_back(count);
 }
+#endif
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// MultiDrawElements
+//
+
+#ifdef OSG_HAS_MULTIDRAWARRAYS
+
+void MultiDrawElementsUShort::draw(osg::State& state, bool, bool bindElementBuffer) const
+{
+    // OSG_NOTICE<<"osg::MultiDrawArrays::draw"<<std::endl;
+
+    GLExtensions* ext = state.get<GLExtensions>();
+    if (ext->glMultiDrawElements&&!_indicesholders.empty())
+    {
+
+        GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
+
+        if(bindElementBuffer)
+            state.bindElementBufferObject(ebo);
+
+        if(_indices == NULL && ebo){ ///_indices invalidated
+            _indices=new GLushort*[_indicesholders.size()];
+            for (unsigned i =0; i <  _indicesholders.size(); i++)
+                _indices[i]=(GLushort*)(ebo->getOffset(_indicesholders[i]->getBufferIndex()));
+        }
+        ext->glMultiDrawElements(_mode, &_counts.front(), GL_UNSIGNED_SHORT, (const GLvoid *const*)_indices,_indicesholders.size());
+    }
+}
+
+void MultiDrawElementsUShort::invalidateInnerIndices(){
+        if(_indices != NULL){
+            delete [] _indices;
+            _indices=NULL;
+        }
+        _counts.clear();
+        for(std::vector<ref_ptr<UShortArray> >::iterator it=_indicesholders.begin();it!=_indicesholders.end();it++)
+            _counts.push_back((*it)->size());
+}
+
+unsigned int MultiDrawElementsUShort::index(unsigned int index) const
+{
+    unsigned int globalindex=0, current=0;
+    while(current<getNumIndicesArrays() && globalindex+getIndicesArray(current)->getNumElements()<index  )
+        globalindex+=getIndicesArray(current++)->getNumElements();
+    return (*_indicesholders[current].get())[index-globalindex];
+}
+
+
+void MultiDrawElementsUShort::offsetIndices(int offset)
+{
+    for(std::vector<ref_ptr<UShortArray> >::iterator it=_indicesholders.begin();it!=_indicesholders.end();it++)
+    {
+        for(UShortArray::iterator itindex=(*(*it).get()).begin();itindex!=(*(*it).get()).end();itindex++ )
+            *itindex+=offset;
+    }
+
+}
+
+unsigned int MultiDrawElementsUShort::getNumPrimitives() const
+{
+    switch(_mode)
+    {
+        case(POINTS): return getNumIndices();
+        case(LINES): return getNumIndices()/2;
+        case(TRIANGLES): return getNumIndices()/3;
+        case(QUADS): return getNumIndices()/4;
+        case(LINE_STRIP):
+        case(LINE_LOOP):
+        case(TRIANGLE_STRIP):
+        case(TRIANGLE_FAN):
+        case(QUAD_STRIP):
+        case(PATCHES):
+        case(POLYGON):
+        {
+            unsigned int primcount = 0;
+            for(Counts::const_iterator itr = _counts.begin(); itr!=_counts.end(); ++itr)
+                primcount+=*itr;
+            return primcount;
+        }
+    }
+    return 0;
+}
+
+
+void MultiDrawElementsUShort::accept(PrimitiveFunctor& functor) const
+{
+    for(unsigned int i=0; i< _counts.size(); ++i)
+    {
+        functor.drawElements(_mode,_counts[i],&_indicesholders[i]->front());
+    }
+}
+
+void MultiDrawElementsUShort::accept(PrimitiveIndexFunctor& functor) const
+{
+    for(unsigned int i=0; i< _counts.size(); ++i)
+    {
+        functor.drawElements(_mode,_counts[i],&_indicesholders[i]->front());
+    }
+}
+
+
 #endif

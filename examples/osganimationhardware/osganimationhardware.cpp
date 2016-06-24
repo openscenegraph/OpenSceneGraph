@@ -196,8 +196,8 @@ int main (int argc, char* argv[])
     while (psr.read("--software")) { hardware = false; }
     while (psr.read("--number", maxChar)) {}
 
-    osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFiles(psr);
-    osg::ref_ptr<osg::Group> root = dynamic_cast<osg::Group*>(node.get());
+
+    osg::ref_ptr<osg::Group> root = dynamic_cast<osg::Group*>(osgDB::readNodeFiles(psr));
     if (!root)
     {
         std::cout << psr.getApplicationName() <<": No data loaded" << std::endl;

@@ -18,10 +18,7 @@
 
 using namespace osgAnimation;
 
-UpdateMatrixTransform::UpdateMatrixTransform( const UpdateMatrixTransform& apc,const osg::CopyOp& copyop) :
-    osg::Object(apc,copyop),
-    osg::Callback(apc,copyop),
-    AnimationUpdateCallback<osg::NodeCallback>(apc, copyop)
+UpdateMatrixTransform::UpdateMatrixTransform( const UpdateMatrixTransform& apc,const osg::CopyOp& copyop) : osg::Object(apc,copyop), AnimationUpdateCallback<osg::NodeCallback>(apc, copyop)
 {
     _transforms = StackedTransform(apc.getStackedTransforms(), copyop);
 }

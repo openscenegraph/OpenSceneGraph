@@ -584,3 +584,18 @@ void Drawable::setBound(const BoundingBox& bb) const
      _boundingSphere = computeBound();
      _boundingSphereComputed = true;
 }
+
+
+TransformFeedbackDrawCallback::TransformFeedbackDrawCallback(const TransformFeedbackDrawCallback&dc,const CopyOp&co):osg::Drawable::DrawCallback(dc,co)
+{
+    _type=dc._type;
+}
+
+void TransformFeedbackDrawCallback::drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable*  drawable ) const
+{
+    osg::GLExtensions* ext = renderInfo.getState()->get<osg::GLExtensions>();
+
+    ext->glBeginTransformFeedback(_type);
+    drawable->drawImplementation(renderInfo);
+    ext->glEndTransformFeedback();
+}

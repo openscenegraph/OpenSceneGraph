@@ -519,7 +519,7 @@ class OSG_EXPORT BufferData : public Object
         virtual osg::Image* asImage() { return 0; }
         virtual const osg::Image* asImage() const { return 0; }
 
-        void setBufferObject(BufferObject* bufferObject);
+        void setBufferObject(BufferObject* bufferObject,bool addtoBufferObject=true);
         BufferObject* getBufferObject() { return _bufferObject.get(); }
         const BufferObject* getBufferObject() const { return _bufferObject.get(); }
 

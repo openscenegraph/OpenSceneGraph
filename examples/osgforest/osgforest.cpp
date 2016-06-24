@@ -478,6 +478,7 @@ osg::Geode* ForestTechniqueManager::createTerrain(const osg::Vec3& origin, const
         geometry->setTexCoordArray(0,&t);
         geometry->setUseDisplayList(false);
         geometry->setUseVertexBufferObjects(true);
+        geometry->setUseVertexArrayObject(true);
 
         for(r=0;r<numRows-1;++r)
         {

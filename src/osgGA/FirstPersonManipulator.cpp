@@ -358,7 +358,7 @@ void FirstPersonManipulator::moveUp( const double distance )
 void FirstPersonManipulator::applyAnimationStep( const double currentProgress, const double /*prevProgress*/ )
 {
    FirstPersonAnimationData *ad = dynamic_cast< FirstPersonAnimationData* >( _animationData.get() );
-   assert( ad );
+   if (!ad) return;
 
    // compute new rotation
    _rotation.slerp( currentProgress, ad->_startRot, ad->_targetRot );

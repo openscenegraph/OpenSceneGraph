@@ -83,31 +83,22 @@ namespace osgAnimation
         virtual void addMorphTarget( osg::Geometry *morphTarget, float weight = 1.0 ) { _morphTargets.push_back(MorphTarget(morphTarget, weight)); _dirty = true; }
 
         virtual void removeMorphTarget( osg::Geometry *morphTarget ) {
-            MorphTargetList::iterator target = _morphTargets.end();
             for(MorphTargetList::iterator iterator = _morphTargets.begin() ; iterator != _morphTargets.end() ; ++ iterator) {
                 if(iterator->getGeometry()  == morphTarget) {
-                    target = iterator ;
+                    _morphTargets.erase(iterator);
                     break;
                 }
-            }
-
-            if(target != _morphTargets.end()) {
-                _morphTargets.erase(target);
             }
         }
 
         virtual void removeMorphTarget( const std::string& name ) {
-            MorphTargetList::iterator target = _morphTargets.end();
             for(MorphTargetList::iterator iterator = _morphTargets.begin() ; iterator != _morphTargets.end() ; ++ iterator) {
                 if(iterator->getGeometry() && iterator->getGeometry()->getName() == name) {
-                    target = iterator ;
+                    _morphTargets.erase(iterator);
                     break;
                 }
             }
 
-            if(target != _morphTargets.end()) {
-                _morphTargets.erase(target);
-            }
         }
 
         void setWeight(unsigned int index, float morphWeight)

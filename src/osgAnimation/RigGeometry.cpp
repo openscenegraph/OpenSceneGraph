@@ -59,7 +59,7 @@ RigGeometry::RigGeometry()
     _matrixFromSkeletonToGeometry = _invMatrixFromSkeletonToGeometry = osg::Matrix::identity();
 
     // disable the computation of boundingbox for the rig mesh
-    setComputeBoundingBoxCallback(new RigComputeBoundingBoxCallback);
+    //setComputeBoundingBoxCallback(new RigComputeBoundingBoxCallback);
 }
 
 

@@ -26,6 +26,7 @@ using namespace osgGA;
 
 UFOManipulator::UFOManipulator():
             _t0(0.0),
+            _dt(0.0),
             _shift(false),
             _ctrl(false)
 {
@@ -34,6 +35,7 @@ UFOManipulator::UFOManipulator():
 
     _speedAccelerationFactor       = 0.4;
     _speedDecelerationFactor       = 0.90;
+    _decelerateUpSideRate          = false;
 
     _directionRotationRate         = 0.0;
     _directionRotationAcceleration = M_PI*0.00005;

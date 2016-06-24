@@ -68,6 +68,7 @@ const QImage::Format s_imageFormat = QImage::Format_ARGB32_Premultiplied;
 QGraphicsViewAdapter::QGraphicsViewAdapter(osg::Image* image, QWidget* widget):
     _image(image),
     _backgroundWidget(0),
+    _previousButtonMask(0),
     _previousMouseX(-1),
     _previousMouseY(-1),
     _previousQtMouseX(-1),

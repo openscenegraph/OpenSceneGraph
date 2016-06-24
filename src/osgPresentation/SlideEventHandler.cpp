@@ -1310,7 +1310,7 @@ bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
         slideNum = LAST_POSITION;
     }
 
-    if (slideNum==LAST_POSITION && _presentationSwitch->getNumChildren()>0)
+    if (slideNum<=LAST_POSITION && _presentationSwitch->getNumChildren()>0)
     {
         slideNum = _presentationSwitch->getNumChildren()-1;
     }
@@ -1408,7 +1408,7 @@ bool SlideEventHandler::selectLayer(int layerNum)
         layerNum = LAST_POSITION;
     }
 
-    if (layerNum==LAST_POSITION && _slideSwitch->getNumChildren()>0)
+    if (layerNum<=LAST_POSITION && _slideSwitch->getNumChildren()>0)
     {
         layerNum = _slideSwitch->getNumChildren()-1;
     }

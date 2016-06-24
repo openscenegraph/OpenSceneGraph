@@ -518,8 +518,9 @@ void UFOManipulator::_frame( const osgGA::GUIEventAdapter &ea, osgGA::GUIActionA
 
             if( fabs(_pitchOffset ) < 0.01 )
                 _pitchOffset = 0.0;
+
             if( fabs(_yawOffset ) < 0.01 )
-                _pitchOffset = 0.0;
+                _yawOffset = 0.0;
 
         }
         if( _pitchOffset == 0.0 && _yawOffset == 0.0 )

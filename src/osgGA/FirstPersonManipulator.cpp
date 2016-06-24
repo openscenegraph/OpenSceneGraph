@@ -383,7 +383,7 @@ bool FirstPersonManipulator::startAnimationByMousePointerIntersection(
       return false;
 
    FirstPersonAnimationData *ad = dynamic_cast< FirstPersonAnimationData*>( _animationData.get() );
-   assert( ad );
+   if (!ad) return false;
 
    // setup animation data and restore original transformation
    ad->start( prevRot, _rotation, ea.getTime() );

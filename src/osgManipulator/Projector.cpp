@@ -559,11 +559,14 @@ bool CylinderProjector::isPointInFront(const PointerInfo& pi, const osg::Matrix&
     return true;
 }
 
-CylinderPlaneProjector::CylinderPlaneProjector()
+CylinderPlaneProjector::CylinderPlaneProjector():
+    _parallelPlane(false)
 {
 }
 
-CylinderPlaneProjector::CylinderPlaneProjector(osg::Cylinder* cylinder) : CylinderProjector(cylinder), _parallelPlane(false)
+CylinderPlaneProjector::CylinderPlaneProjector(osg::Cylinder* cylinder):
+    CylinderProjector(cylinder),
+    _parallelPlane(false)
 {
 }
 

@@ -928,7 +928,8 @@ ShadowVolumeGeometry::ShadowVolumeGeometry():
 }
 
 ShadowVolumeGeometry::ShadowVolumeGeometry(const ShadowVolumeGeometry& oc, const osg::CopyOp& copyop):
-    osg::Drawable(oc,copyop)
+    osg::Drawable(oc,copyop),
+    _drawMode(oc._drawMode)
 {
 }
 

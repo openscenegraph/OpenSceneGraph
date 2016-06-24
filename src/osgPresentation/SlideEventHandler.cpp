@@ -1301,7 +1301,7 @@ osg::Node* SlideEventHandler::getLayer(int slideNum, int layerNum)
 
 bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
 {
-    if (!_presentationSwitch) return false;
+    if (!_presentationSwitch || _presentationSwitch->getNumChildren()==0) return false;
 
     OSG_INFO<<"selectSlide("<<slideNum<<","<<layerNum<<")"<<std::endl;
 
@@ -1398,7 +1398,7 @@ bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
 
 bool SlideEventHandler::selectLayer(int layerNum)
 {
-    if (!_slideSwitch) return false;
+    if (!_slideSwitch || _slideSwitch->getNumChildren()==0) return false;
 
     bool withinSlide = true;
 

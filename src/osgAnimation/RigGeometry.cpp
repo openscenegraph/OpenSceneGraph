@@ -58,8 +58,7 @@ RigGeometry::RigGeometry()
     _needToComputeMatrix = true;
     _matrixFromSkeletonToGeometry = _invMatrixFromSkeletonToGeometry = osg::Matrix::identity();
 
-    // disable the computation of boundingbox for the rig mesh
-    //setComputeBoundingBoxCallback(new RigComputeBoundingBoxCallback);
+
 }
 
 
@@ -113,7 +112,9 @@ void RigGeometry::computeMatrixFromRootSkeleton()
     osg::Matrix notRoot = _root->getMatrix();
     _matrixFromSkeletonToGeometry = mtxList[0] * osg::Matrix::inverse(notRoot);
     _invMatrixFromSkeletonToGeometry = osg::Matrix::inverse(_matrixFromSkeletonToGeometry);
-    _needToComputeMatrix = false;
+    _needToComputeMatrix = false;    
+    // disable the computation of boundingbox for the rig mesh
+    setComputeBoundingBoxCallback(new RigComputeBoundingBoxCallback);
 }
 
 void RigGeometry::update()

@@ -68,7 +68,6 @@ namespace osgAnimation
     public:
         KeyframeContainer() {}
         virtual unsigned int size() const = 0;
-        virtual unsigned int linearInterpolationDeduplicate() = 0;
     protected:
         ~KeyframeContainer() {}
         std::string _name;
@@ -83,41 +82,8 @@ namespace osgAnimation
         TemplateKeyframeContainer() {}
         typedef TemplateKeyframe<T> KeyType;
         typedef typename osg::MixinVector< TemplateKeyframe<T> > VectorType;
-
         virtual unsigned int size() const { return (unsigned int)osg::MixinVector<TemplateKeyframe<T> >::size(); }
-        virtual unsigned int linearInterpolationDeduplicate() {
-                if(size() <= 1) {
-                    return 0;
-                }
 
-                typename VectorType::iterator keyframe = VectorType::begin(),
-                                              previous = VectorType::begin();
-                // 1. find number of consecutives identical keyframes
-                std::vector<unsigned int> intervalSizes;
-                unsigned int intervalSize = 1;
-                for(++ keyframe ; keyframe != VectorType::end() ; ++ keyframe, ++ previous, ++ intervalSize) {
-                    if(!(previous->getValue() == keyframe->getValue())) {
-                        intervalSizes.push_back(intervalSize);
-                        intervalSize = 0;
-                    }
-                }
-                intervalSizes.push_back(intervalSize);
-
-                // 2. build deduplicated list of keyframes
-                unsigned int cumul = 0;
-                VectorType deduplicated;
-                for(std::vector<unsigned int>::iterator iterator = intervalSizes.begin() ; iterator != intervalSizes.end() ; ++ iterator) {
-                    deduplicated.push_back((*this)[cumul]);
-                    if(*iterator > 1) {
-                        deduplicated.push_back((*this)[cumul + (*iterator) - 1]);
-                    }
-                    cumul += *iterator;
-                }
-
-                unsigned int count = size() - deduplicated.size();
-                this->swap(deduplicated);
-                return count;
-        }
     };
 
     template <>

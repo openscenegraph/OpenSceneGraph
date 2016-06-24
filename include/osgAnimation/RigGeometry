@@ -52,7 +52,7 @@ namespace osgAnimation
     public:
 
         RigGeometry();
-//        RigGeometry(const osg::Geometry& b);
+
         RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
         META_Object(osgAnimation, RigGeometry);

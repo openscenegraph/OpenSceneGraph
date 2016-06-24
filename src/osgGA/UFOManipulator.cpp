@@ -419,7 +419,7 @@ void UFOManipulator::_keyDown( const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
                     _upSpeed *= _speedDecelerationFactor;
 
                     if( fabs( _upSpeed ) < _speedEpsilon )
-                        _sideSpeed = 0.0;
+                        _upSpeed = 0.0;
                 }
 
 

@@ -555,11 +555,9 @@ bool RenderBin::getStats(Statistics& stats) const
             stats.addMatrix(); // number of matrices
         }
 
-        if (dw)
-        {
-              // then tot up the primitive types and no vertices.
-              dw->accept(stats); // use sub-class to find the stats for each drawable
-        }
+        // then tot up the primitive types and no vertices.
+        dw->accept(stats); // use sub-class to find the stats for each drawable
+
         statsCollected = true;
     }
     stats.addStateGraphs(_stateGraphList.size());

@@ -29,7 +29,8 @@ ComboBox::ComboBox():
 
 ComboBox::ComboBox(const osgUI::ComboBox& combobox, const osg::CopyOp& copyop):
     Widget(combobox, copyop),
-    _items(combobox._items)
+    _items(combobox._items),
+    _currentIndex(combobox._currentIndex)
 {
 }
 

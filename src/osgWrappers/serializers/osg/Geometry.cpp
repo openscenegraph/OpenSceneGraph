@@ -113,12 +113,32 @@ struct GeometryFinishedObjectReadCallback : public osgDB::FinishedObjectReadCall
 {
     virtual void objectRead(osgDB::InputStream&, osg::Object& obj)
     {
+#if 1
         osg::Geometry& geometry = static_cast<osg::Geometry&>(obj);
+
+        ///HACK to test VAO feature
+        //geometry.setUseDisplayList(false);
+        //geometry.setUseVertexArrayObject(true);
+
         if (geometry.getUseVertexBufferObjects())
         {
-            geometry.setUseVertexBufferObjects(false);
-            geometry.setUseVertexBufferObjects(true);
+            bool someBufferObjectDefined=false;
+            ///if any BufferObject havent been serialized
+            #define TESTARRAY(XXX)if(geometry.XXX)if(geometry.XXX->getBufferObject())someBufferObjectDefined=true;
+            TESTARRAY(getVertexArray())
+            TESTARRAY(getNormalArray())
+            TESTARRAY(getColorArray())
+
+            for(unsigned int i=0;i<geometry.getNumTexCoordArrays();i++)  TESTARRAY(getTexCoordArray(i))
+            for(unsigned int i=0;i<geometry.getNumVertexAttribArrays();i++)TESTARRAY(getVertexAttribArray(i))
+
+
+            if(!someBufferObjectDefined){
+                geometry.setUseVertexBufferObjects(false);
+                geometry.setUseVertexBufferObjects(true);
+            }
         }
+#endif
     }
 };
 
@@ -144,7 +164,7 @@ static bool writeFastPathHint( osgDB::OutputStream& os, const osg::Geometry& geo
 REGISTER_OBJECT_WRAPPER( Geometry,
                          new osg::Geometry,
                          osg::Geometry,
-                         "osg::Object osg::Drawable osg::Geometry" )
+                         "osg::Object osg::Node osg::Drawable osg::Geometry" )
 {
     //ADD_LIST_SERIALIZER( PrimitiveSetList, osg::Geometry::PrimitiveSetList );  // _primitives
     ADD_VECTOR_SERIALIZER( PrimitiveSetList, osg::Geometry::PrimitiveSetList, osgDB::BaseSerializer::RW_OBJECT, 0 );
@@ -179,7 +199,9 @@ REGISTER_OBJECT_WRAPPER( Geometry,
         ADD_VECTOR_SERIALIZER( TexCoordArrayList, osg::Geometry::ArrayList, osgDB::BaseSerializer::RW_OBJECT, 0 );
         ADD_VECTOR_SERIALIZER( VertexAttribArrayList, osg::Geometry::ArrayList, osgDB::BaseSerializer::RW_OBJECT, 0 );
     }
-
-
+    {
+        UPDATE_TO_VERSION_SCOPED( 145 )
+        ADD_BOOL_SERIALIZER(UseVertexArrayObject,false);
+    }
     wrapper->addFinishedObjectReadCallback( new GeometryFinishedObjectReadCallback() );
 }

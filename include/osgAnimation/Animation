@@ -47,6 +47,9 @@ namespace osgAnimation
         // addChannel insert the channel and call the computeDuration function
         void addChannel (Channel* pChannel);
 
+        // removeChannel remove the channel from channels list and call the computeDuration function
+        void removeChannel (Channel* pChannel);
+
         /** Those accessors let you add and remove channels
          *  if you modify something that can change the duration
          *  you are supposed to call computeDuration or setDuration
@@ -61,15 +64,12 @@ namespace osgAnimation
          */
         void setDuration(double duration);
 
-
         /** Compute duration from channel and keyframes
          *  if the duration is not specified you should
          *  call this method before using it
          */
         void computeDuration();
-
         double getDuration() const;
-
 
         void setWeight (float weight);
         float getWeight() const;
@@ -85,9 +85,9 @@ namespace osgAnimation
 
     protected:
 
-        double computeDurationFromChannels() const;
-
         ~Animation() {}
+
+        double computeDurationFromChannels() const;
 
         double _duration;
         double _originalDuration;

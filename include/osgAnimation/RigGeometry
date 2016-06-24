@@ -52,7 +52,7 @@ namespace osgAnimation
     public:
 
         RigGeometry();
-//        RigGeometry(const osg::Geometry& b);
+
         RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
         META_Object(osgAnimation, RigGeometry);
@@ -123,7 +123,7 @@ namespace osgAnimation
    };
 
 
-    struct UpdateRigGeometry : public osg::DrawableUpdateCallback
+    struct UpdateRigGeometry : public osg::Drawable::UpdateCallback
     {
         UpdateRigGeometry() {}
 
@@ -131,7 +131,7 @@ namespace osgAnimation
 
         META_Object(osgAnimation, UpdateRigGeometry);
 
-        virtual void update(osg::NodeVisitor*, osg::Drawable* drw) {
+        virtual void update(osg::NodeVisitor* nv, osg::Drawable* drw) {
             RigGeometry* geom = dynamic_cast<RigGeometry*>(drw);
             if(!geom)
                 return;
@@ -156,6 +156,12 @@ namespace osgAnimation
 
             if(geom->getNeedToComputeMatrix())
                 geom->computeMatrixFromRootSkeleton();
+
+            if(geom->getSourceGeometry()) {
+                osg::Drawable::UpdateCallback * up = dynamic_cast<osg::Drawable::UpdateCallback*>(geom->getSourceGeometry()->getUpdateCallback());
+                if(up)
+                    up->update(nv, geom->getSourceGeometry());
+            }
 
             geom->update();
         }

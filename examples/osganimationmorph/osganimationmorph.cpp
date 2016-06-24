@@ -50,7 +50,7 @@ struct GeometryFinder : public osg::NodeVisitor
 
 osg::ref_ptr<osg::Geometry> getShape(const std::string& name)
 {
-    osg::ref_ptr<osg::Node> shape0 = osgDB::readRefNodeFile(name);
+    osg::ref_ptr<osg::Node> shape0 = osgDB::readNodeFile(name);
     if (shape0)
     {
         GeometryFinder finder;
@@ -107,7 +107,9 @@ int main (int argc, char* argv[])
 
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(morph);
-    geode->addUpdateCallback(new osgAnimation::UpdateMorph("MorphNodeCallback"));
+    osgAnimation::UpdateMorph* morphupdate=new osgAnimation::UpdateMorph("MorphNodeCallback");
+    morphupdate->addTarget("MorphNodeCallback");
+    geode->addUpdateCallback(morphupdate);
     scene->addChild(geode);
 
     viewer.addEventHandler(new osgViewer::StatsHandler());

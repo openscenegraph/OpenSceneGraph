@@ -166,6 +166,7 @@ namespace osgAnimation
 
         bool _needInit;
 
+        std::map<std::string,bool> _invalidInfluence;
     };
 }
 

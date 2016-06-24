@@ -136,6 +136,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Polytope
     ${HEADER_PATH}/PositionAttitudeTransform
     ${HEADER_PATH}/PrimitiveSet
+    ${HEADER_PATH}/PrimitiveSetIndirect
     ${HEADER_PATH}/PrimitiveRestartIndex
     ${HEADER_PATH}/Program
     ${HEADER_PATH}/Projection
@@ -162,6 +163,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Stats
     ${HEADER_PATH}/Stencil
     ${HEADER_PATH}/StencilTwoSided
+    ${HEADER_PATH}/SubroutineUniform
     ${HEADER_PATH}/Switch
     ${HEADER_PATH}/TemplatePrimitiveFunctor
     ${HEADER_PATH}/TexEnv
@@ -337,6 +339,7 @@ SET(TARGET_SRC
     PolygonStipple.cpp
     PositionAttitudeTransform.cpp
     PrimitiveSet.cpp
+    PrimitiveSetIndirect.cpp
     PrimitiveRestartIndex.cpp
     Program.cpp
     Projection.cpp
@@ -360,6 +363,7 @@ SET(TARGET_SRC
     Stats.cpp
     Stencil.cpp
     StencilTwoSided.cpp
+    SubroutineUniform.cpp
     Switch.cpp
     TexEnvCombine.cpp
     TexEnv.cpp

@@ -22,8 +22,16 @@ Action::Action()
     _fps = 25;
     _speed = 1.0;
     _loop = 1;
+    _state = Stop;
 }
-Action::Action(const Action&,const osg::CopyOp&) {}
+Action::Action(const Action&rhs,const osg::CopyOp&)
+{
+    _numberFrame = rhs._numberFrame;
+    _fps = rhs._fps;
+    _speed = rhs._speed;
+    _loop = rhs._loop;
+    _state = Stop;
+}
 Action::Callback* Action::getFrameCallback(unsigned int frame)
 {
     if (_framesCallback.find(frame) != _framesCallback.end())

@@ -184,7 +184,10 @@ struct TriangleCollector
 
     OccluderGeometry::Vec3List _tempoaryTriangleVertices;
 
-    TriangleCollector():_matrix(0) { }
+    TriangleCollector():
+        _vertices(0),
+        _triangleIndices(0),
+        _matrix(0) { }
 
     void set(OccluderGeometry::Vec3List* vertices, OccluderGeometry::UIntList* triangleIndices, osg::Matrix* matrix)
     {

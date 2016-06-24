@@ -372,11 +372,14 @@ bool SphereProjector::isPointInFront(const PointerInfo& pi, const osg::Matrix& l
 }
 
 
-SpherePlaneProjector::SpherePlaneProjector()
+SpherePlaneProjector::SpherePlaneProjector():
+    _onSphere(false)
 {
 }
 
-SpherePlaneProjector::SpherePlaneProjector(osg::Sphere* sphere) : SphereProjector(sphere)
+SpherePlaneProjector::SpherePlaneProjector(osg::Sphere* sphere) :
+    SphereProjector(sphere),
+    _onSphere(false)
 {
 }
 

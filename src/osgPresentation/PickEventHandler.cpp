@@ -53,6 +53,9 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
 {
     if (ea.getHandled()) return false;
 
+    osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
+    if (!viewer) return false;
+
     switch(ea.getEventType())
     {
         case(osgGA::GUIEventAdapter::MOVE):
@@ -64,7 +67,6 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
             {
                 _drawablesOnPush.clear();
             }
-            osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
             osgUtil::LineSegmentIntersector::Intersections intersections;
             if (viewer->computeIntersections(ea, nv->getNodePath(), intersections))
             {

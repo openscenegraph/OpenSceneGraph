@@ -747,7 +747,10 @@ osg::Camera* ScreenCaptureHandler::findAppropriateCameraForCallback(osgViewer::V
 // of that view's graphics contexts.
 bool ScreenCaptureHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
 {
-    osgViewer::ViewerBase* viewer = dynamic_cast<osgViewer::View*>(&aa)->getViewerBase();
+    osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+    if (!view) return false;
+
+    osgViewer::ViewerBase* viewer = view->getViewerBase();
     if (!viewer) return false;
 
     switch(ea.getEventType())

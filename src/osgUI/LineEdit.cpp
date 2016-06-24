@@ -172,7 +172,7 @@ void LineEdit::createGraphicsImplementation()
 
     osg::ref_ptr<Node> node = style->createText(extents, getAlignmentSettings(), getTextSettings(), _text);
     _textDrawable = dynamic_cast<osgText::Text*>(node.get());
-    _textDrawable->setDataVariance(osg::Object::DYNAMIC);
+    node->setDataVariance(osg::Object::DYNAMIC);
     group->addChild(node.get());
 
     style->setupClipStateSet(_extents, getOrCreateWidgetStateSet());

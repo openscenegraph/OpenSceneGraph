@@ -534,7 +534,7 @@ void ConvexPolyhedron::transformClip(const osg::Matrix& matrix, const osg::Matri
     }
 
     osg::Vec3d center( 0, 0, 0 );
-    unsigned count = 0;
+    unsigned int count = 0;
     for( Faces::iterator itr = _faces.begin();
         itr != _faces.end();
         ++itr )
@@ -548,7 +548,7 @@ void ConvexPolyhedron::transformClip(const osg::Matrix& matrix, const osg::Matri
         }
     }
 
-    center /= count;
+    if (count!=0) center /= count;
 
 
     if ( edges.size() > 1 ) //Ignore faces reduced to 0, 1, 2 points

@@ -1947,7 +1947,6 @@ struct RenderLeafBounds
 
     osg::Matrixd        light_mvp;
     osg::RefMatrix*     previous_modelview;
-    unsigned int        numLeaves;
 
     double clip_min_x, clip_max_x;
     double clip_min_y, clip_max_y;

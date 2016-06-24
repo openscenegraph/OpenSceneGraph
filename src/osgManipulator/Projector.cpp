@@ -372,11 +372,14 @@ bool SphereProjector::isPointInFront(const PointerInfo& pi, const osg::Matrix& l
 }
 
 
-SpherePlaneProjector::SpherePlaneProjector()
+SpherePlaneProjector::SpherePlaneProjector():
+    _onSphere(false)
 {
 }
 
-SpherePlaneProjector::SpherePlaneProjector(osg::Sphere* sphere) : SphereProjector(sphere)
+SpherePlaneProjector::SpherePlaneProjector(osg::Sphere* sphere) :
+    SphereProjector(sphere),
+    _onSphere(false)
 {
 }
 
@@ -556,11 +559,14 @@ bool CylinderProjector::isPointInFront(const PointerInfo& pi, const osg::Matrix&
     return true;
 }
 
-CylinderPlaneProjector::CylinderPlaneProjector()
+CylinderPlaneProjector::CylinderPlaneProjector():
+    _parallelPlane(false)
 {
 }
 
-CylinderPlaneProjector::CylinderPlaneProjector(osg::Cylinder* cylinder) : CylinderProjector(cylinder), _parallelPlane(false)
+CylinderPlaneProjector::CylinderPlaneProjector(osg::Cylinder* cylinder):
+    CylinderProjector(cylinder),
+    _parallelPlane(false)
 {
 }
 

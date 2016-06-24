@@ -135,7 +135,6 @@ class OSGGA_EXPORT UFOManipulator : public osgGA::CameraManipulator
         bool intersect(const osg::Vec3d& start, const osg::Vec3d& end, osg::Vec3d& intersection) const;
 
         osg::observer_ptr<osg::Node> _node;
-        float       _viewAngle;
         osg::Matrixd _matrix;
         osg::Matrixd _inverseMatrix;
         osg::Matrixd _offset;

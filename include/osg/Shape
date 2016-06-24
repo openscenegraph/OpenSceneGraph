@@ -412,6 +412,7 @@ class OSG_EXPORT Capsule : public Shape
         Quat    _rotation;
 };
 
+/** Deprecated. */
 class OSG_EXPORT InfinitePlane : public Shape, public Plane
 {
     public:
@@ -428,8 +429,7 @@ class OSG_EXPORT InfinitePlane : public Shape, public Plane
         virtual ~InfinitePlane();
 };
 
-/** Exists to support collision detection engines not for doing rendering, use \ref osg::Geometry instead.
- */
+/** Deprecated. */
 class OSG_EXPORT TriangleMesh : public Shape
 {
     public:
@@ -462,6 +462,7 @@ class OSG_EXPORT TriangleMesh : public Shape
 
 };
 
+/** Deprecated. */
 class OSG_EXPORT ConvexHull : public TriangleMesh
 {
     public:
@@ -585,6 +586,7 @@ class OSG_EXPORT HeightField : public Shape
 typedef HeightField Grid;
 
 
+/** Deprecated. */
 class OSG_EXPORT CompositeShape : public Shape
 {
     public:

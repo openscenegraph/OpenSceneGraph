@@ -654,7 +654,7 @@ void CompositeViewer::realize()
 
     if (osg::DisplaySettings::instance()->getCompileContextsHint())
     {
-        int numProcessors = OpenThreads::GetNumberOfProcessors();
+        int numProcessors = osg::minimum(1, OpenThreads::GetNumberOfProcessors());
         int processNum = 0;
 
         for(unsigned int i=0; i<= osg::GraphicsContext::getMaxContextID(); ++i)

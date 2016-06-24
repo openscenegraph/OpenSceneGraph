@@ -29,7 +29,8 @@ TabWidget::TabWidget():
 
 TabWidget::TabWidget(const osgUI::TabWidget& tabwidget, const osg::CopyOp& copyop):
     Widget(tabwidget, copyop),
-    _tabs(tabwidget._tabs)
+    _tabs(tabwidget._tabs),
+    _currentIndex(tabwidget._currentIndex)
 {
 }
 

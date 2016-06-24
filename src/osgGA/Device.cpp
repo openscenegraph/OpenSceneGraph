@@ -15,15 +15,16 @@
 
 using namespace osgGA;
 
-Device::Device()
-    : osg::Object()
-    , _capabilities(UNKNOWN)
+Device::Device():
+    osg::Object(),
+    _capabilities(UNKNOWN)
 {
     setEventQueue(new EventQueue);
 }
 
 Device::Device(const Device& es, const osg::CopyOp& copyop):
-    osg::Object(es,copyop)
+    osg::Object(es,copyop),
+    _capabilities(es._capabilities)
 {
     setEventQueue(new EventQueue);
 }

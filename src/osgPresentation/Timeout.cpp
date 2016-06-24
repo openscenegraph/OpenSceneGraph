@@ -147,7 +147,20 @@ Timeout::Timeout(HUDSettings* hudSettings):
 /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
 Timeout::Timeout(const Timeout& timeout,const osg::CopyOp& copyop):
     osg::Transform(timeout, copyop),
-    _hudSettings(timeout._hudSettings)
+    _hudSettings(timeout._hudSettings),
+    _previousFrameNumber(timeout._previousFrameNumber),
+    _timeOfLastEvent(timeout._timeOfLastEvent),
+    _displayTimeout(timeout._displayTimeout),
+    _idleDurationBeforeTimeoutDisplay(timeout._idleDurationBeforeTimeoutDisplay),
+    _idleDurationBeforeTimeoutAction(timeout._idleDurationBeforeTimeoutAction),
+    _keyStartsTimoutDisplay(timeout._keyStartsTimoutDisplay),
+    _keyDismissTimoutDisplay(timeout._keyDismissTimoutDisplay),
+    _keyRunTimeoutAction(timeout._keyRunTimeoutAction),
+    _displayBroadcastKeyPos(timeout._displayBroadcastKeyPos),
+    _dismissBroadcastKeyPos(timeout._dismissBroadcastKeyPos),
+    _actionKeyPos(timeout._actionKeyPos),
+    _actionBroadcastKeyPos(timeout._actionBroadcastKeyPos),
+    _actionJumpData(timeout._actionJumpData)
 {
     setDataVariance(osg::Object::DYNAMIC);
     setReferenceFrame(osg::Transform::ABSOLUTE_RF);

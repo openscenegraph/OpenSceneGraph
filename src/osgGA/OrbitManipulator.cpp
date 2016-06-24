@@ -356,7 +356,7 @@ bool OrbitManipulator::startAnimationByMousePointerIntersection(
         return false;
 
     OrbitAnimationData *ad = dynamic_cast< OrbitAnimationData*>( _animationData.get() );
-    assert( ad );
+    if (!ad) return false;
 
     // setup animation data and restore original transformation
     ad->start( osg::Vec3d(_center) - prevCenter, ea.getTime() );

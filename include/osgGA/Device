@@ -24,11 +24,12 @@ namespace osgGA {
 class OSGGA_EXPORT Device : public osg::Object
 {
     public:
-        enum {
+        enum Capabilities
+        {
             UNKNOWN         = 0,
             RECEIVE_EVENTS  = 1,
             SEND_EVENTS     = 2
-        } Capabilities;
+        };
 
         Device();
         Device(const Device& es, const osg::CopyOp& copyop);

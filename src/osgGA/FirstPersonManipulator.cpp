@@ -263,6 +263,9 @@ bool FirstPersonManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIAct
         }
     }
 
+    FirstPersonAnimationData *ad = dynamic_cast< FirstPersonAnimationData*>( _animationData.get() );
+    if (!ad) return false;
+
     switch( sm )
     {
 
@@ -270,7 +273,7 @@ bool FirstPersonManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIAct
         case GUIEventAdapter::SCROLL_UP:
         {
             // move forward
-            moveForward( isAnimating() ? dynamic_cast< FirstPersonAnimationData* >( _animationData.get() )->_targetRot : _rotation,
+            moveForward( isAnimating() ? ad->_targetRot : _rotation,
                          -_wheelMovement * (getRelativeFlag( _wheelMovementFlagIndex ) ? _modelSize : 1. ));
             us.requestRedraw();
             us.requestContinuousUpdate( isAnimating() || _thrown );
@@ -358,7 +361,7 @@ void FirstPersonManipulator::moveUp( const double distance )
 void FirstPersonManipulator::applyAnimationStep( const double currentProgress, const double /*prevProgress*/ )
 {
    FirstPersonAnimationData *ad = dynamic_cast< FirstPersonAnimationData* >( _animationData.get() );
-   assert( ad );
+   if (!ad) return;
 
    // compute new rotation
    _rotation.slerp( currentProgress, ad->_startRot, ad->_targetRot );
@@ -383,7 +386,7 @@ bool FirstPersonManipulator::startAnimationByMousePointerIntersection(
       return false;
 
    FirstPersonAnimationData *ad = dynamic_cast< FirstPersonAnimationData*>( _animationData.get() );
-   assert( ad );
+   if (!ad) return false;
 
    // setup animation data and restore original transformation
    ad->start( prevRot, _rotation, ea.getTime() );

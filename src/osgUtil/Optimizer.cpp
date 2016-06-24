@@ -809,7 +809,7 @@ class CollectLowestTransformsVisitor : public BaseOptimizerVisitor
         inline bool isOperationPermissibleForObject(const osg::Drawable* drawable) const
         {
             // disable if cannot apply transform functor.
-            if (drawable && !drawable->supports(_transformFunctor)) return false;
+            if (!drawable->supports(_transformFunctor)) return false;
             return BaseOptimizerVisitor::isOperationPermissibleForObject(drawable);
         }
 
@@ -3218,7 +3218,7 @@ void Optimizer::FlattenBillboardVisitor::process()
             mergeAcceptable = false;
         }
 
-        if (mergeAcceptable)
+        if (mergeAcceptable && mainGroup)
         {
             osg::Billboard* new_billboard = new osg::Billboard;
             new_billboard->setMode(billboard->getMode());
@@ -4507,17 +4507,16 @@ void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::apply(
     if(!_matrixStack.empty() && group.getNumParents() > 1 && nodepathsize > 1)
     {
         // copy this Group
-        osg::ref_ptr<osg::Object> new_obj = group.clone(osg::CopyOp::DEEP_COPY_NODES | osg::CopyOp::DEEP_COPY_DRAWABLES | osg::CopyOp::DEEP_COPY_ARRAYS);
-        osg::Group* new_group = dynamic_cast<osg::Group*>(new_obj.get());
+        osg::ref_ptr<osg::Group> new_group = osg::clone(&group, osg::CopyOp(osg::CopyOp::DEEP_COPY_NODES | osg::CopyOp::DEEP_COPY_DRAWABLES | osg::CopyOp::DEEP_COPY_ARRAYS));
 
         // New Group should only be added to parent through which this Group
         // was traversed, not to all parents of this Group.
         osg::Group* parent_group = dynamic_cast<osg::Group*>(_nodePath[nodepathsize-2]);
-        if(parent_group)
+        if(new_group && parent_group)
         {
-            parent_group->replaceChild(&group, new_group);
+            parent_group->replaceChild(&group, new_group.get());
             // also replace the node in the nodepath
-            _nodePath[nodepathsize-1] = new_group;
+            _nodePath[nodepathsize-1] = new_group.get();
             // traverse the new Group
             traverse(*(new_group));
         }

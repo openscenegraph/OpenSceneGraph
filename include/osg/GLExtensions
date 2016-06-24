@@ -434,7 +434,6 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         bool isShadowAmbientSupported;
         bool isTextureMaxLevelSupported;
         GLint maxTextureSize;
-        bool _isTextureStorageEnabled;
         bool isClientStorageSupported;
         bool isTextureIntegerEXTSupported;
         bool isTextureStorageEnabled;

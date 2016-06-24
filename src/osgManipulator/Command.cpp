@@ -89,7 +89,11 @@ MotionCommand* TranslateInPlaneCommand::createCommandInverse()
 // Scale 1D command.
 //
 
-Scale1DCommand::Scale1DCommand() : _scale(1.0)
+Scale1DCommand::Scale1DCommand():
+    _scale(1.0),
+    _scaleCenter(0.0),
+    _referencePoint(0.0),
+    _minScale(0.001)
 {
 }
 

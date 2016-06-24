@@ -152,6 +152,7 @@ class OSGGA_EXPORT StandardManipulator : public CameraManipulator
             bool _isAnimating;
             double _startTime;
             double _phase;
+
             AnimationData();
             void start( const double startTime );
         };

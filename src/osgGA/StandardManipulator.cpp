@@ -841,8 +841,11 @@ bool StandardManipulator::startAnimationByMousePointerIntersection(
 }
 
 
-StandardManipulator::AnimationData::AnimationData()
-    :_isAnimating( false )
+StandardManipulator::AnimationData::AnimationData():
+    _animationTime(0.0),
+    _isAnimating(false),
+    _startTime(0.0),
+    _phase(0.0)
 {
 }
 

@@ -49,8 +49,15 @@ namespace PolytopeIntersectorUtils
                 if (distance > _maxDistance) _maxDistance = distance;
                 if (_numPoints==MaxNumIntesections) break;
             }
-            center /= value_type(_numPoints);
-            _distance = referencePlane.distance( center );
+            if (_numPoints>0)
+            {
+                center /= value_type(_numPoints);
+                _distance = referencePlane.distance( center );
+            }
+            else
+            {
+                _distance = _maxDistance;
+            }
         }
         bool operator<(const PolytopeIntersection& rhs) const { return _distance < rhs._distance; }
 

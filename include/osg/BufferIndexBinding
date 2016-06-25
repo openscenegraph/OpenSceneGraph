@@ -56,7 +56,7 @@ class OSG_EXPORT BufferIndexBinding : public StateAttribute
 
     /** Get the index target.
      */
-    GLuint getIndex() const { return _index; }
+    unsigned int getIndex() const { return _index; }
 
     /** Set the buffer object that will be bound to the index target.
      */

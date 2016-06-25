@@ -18,7 +18,9 @@
 using namespace osgAnimation;
 
 BasicAnimationManager::BasicAnimationManager()
-: _lastUpdate(0.0)
+:  osg::Object(),
+    osg::Callback(),
+    _lastUpdate(0.0)
 {
 }
 

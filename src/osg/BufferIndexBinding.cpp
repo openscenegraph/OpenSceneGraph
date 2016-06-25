@@ -81,32 +81,6 @@ BufferIndexBinding::~BufferIndexBinding()
 {
 }
 
-<<<<<<< HEAD
-void BufferIndexBinding::setIndex(GLuint index){
-
-    StateSet**parents=new StateSet* [getNumParents()];
-    StateAttribute::GLModeValue *parentmodes =new StateAttribute::GLModeValue  [getNumParents()];
-    unsigned int numparent=getNumParents();
-    for(unsigned int i=0;i<numparent;i++)
-    {
-        parents[i]=getParent(i);
-        parentmodes[i]=parents[i]->getAttributeList().find(getTypeMemberPair())->second.second;
-    }
-
-    ref_ptr<StateAttribute> dummy=this;
-
-    for(unsigned int i=0;i<numparent;i++)parents[i]->removeAttribute(this);
-
-    _index=index;
-
-    for(unsigned int i=0;i<numparent;i++)
-        parents[i]->setAttributeAndModes(this,  parentmodes[i]);
-
-    delete [] parents;
-    delete [] parentmodes;
-
-}
-=======
 void BufferIndexBinding::setIndex(unsigned int index)
 {
     if (_index==index) return;
@@ -116,7 +90,6 @@ void BufferIndexBinding::setIndex(unsigned int index)
     _index = index;
 }
 
->>>>>>> upstream/master
 void BufferIndexBinding::apply(State& state) const
 {
     if (_bufferObject.valid())

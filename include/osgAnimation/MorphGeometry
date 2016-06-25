@@ -178,7 +178,7 @@ namespace osgAnimation
         TargetNames _targetNames;
     };
 
-    struct UpdateMorphGeometry : public osg::Drawable::UpdateCallback
+    struct UpdateMorphGeometry : public osg::DrawableUpdateCallback
     {
         UpdateMorphGeometry() {}
 

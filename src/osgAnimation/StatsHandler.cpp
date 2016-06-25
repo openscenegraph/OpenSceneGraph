@@ -90,7 +90,7 @@ struct StatsGraph : public osg::MatrixTransform
 
     void changeYposition(float y)
     {
-        osg::Vec3 _pos = getMatrix().getTrans();
+        _pos = getMatrix().getTrans();
         _pos[1] = y - _height;
         setMatrix(osg::Matrix::translate(_pos));
     }
@@ -106,7 +106,7 @@ struct StatsGraph : public osg::MatrixTransform
 
     osg::ref_ptr<osg::Geode> _statsGraphGeode;
 
-    struct NeverCull : public osg::Drawable::CullCallback
+    struct NeverCull : public osg::DrawableCullCallback
     {
         NeverCull() {}
         bool cull(osg::NodeVisitor* /*nv*/, osg::Drawable* /*drawable*/, osg::RenderInfo* /*renderInfo*/) const { return false;}
@@ -137,7 +137,7 @@ struct StatsGraph : public osg::MatrixTransform
     };
 
 
-    struct GraphUpdateCallback : public osg::Drawable::UpdateCallback
+    struct GraphUpdateCallback : public osg::DrawableUpdateCallback
     {
 
         const unsigned int      _width;

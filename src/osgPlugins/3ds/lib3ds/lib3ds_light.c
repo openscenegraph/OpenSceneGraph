@@ -1,19 +1,19 @@
 /*
     Copyright (C) 1996-2008 by Jan Eric Kyprianidis <www.kyprianidis.com>
     All rights reserved.
-    
-    This program is free  software: you can redistribute it and/or modify 
-    it under the terms of the GNU Lesser General Public License as published 
-    by the Free Software Foundation, either version 2.1 of the License, or 
+
+    This program is free  software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation, either version 2.1 of the License, or
     (at your option) any later version.
 
-    Thisprogram  is  distributed in the hope that it will be useful, 
-    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+    Thisprogram  is  distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU Lesser General Public License for more details.
-    
+
     You should  have received a copy of the GNU Lesser General Public License
-    along with  this program; If not, see <http://www.gnu.org/licenses/>. 
+    along with  this program; If not, see <http://www.gnu.org/licenses/>.
 */
 #include "lib3ds_impl.h"
 
@@ -29,7 +29,7 @@ lib3ds_light_new(const char *name) {
     if (!light) {
         return(0);
     }
-    strcpy(light->name, name);
+    stringcopyfixedsize(light->name, name);
     return(light);
 }
 
@@ -59,7 +59,7 @@ spotlight_read(Lib3dsLight *light, Lib3dsIo *io) {
 
     while ((chunk = lib3ds_chunk_read_next(&c, io)) != 0) {
         switch (chunk) {
-            case CHK_DL_SPOT_ROLL: 
+            case CHK_DL_SPOT_ROLL:
                 light->roll = lib3ds_io_read_float(io);
                 break;
 
@@ -145,19 +145,19 @@ lib3ds_light_read(Lib3dsLight *light, Lib3dsIo *io) {
                 break;
             }
 
-            case CHK_DL_OFF: 
+            case CHK_DL_OFF:
                 light->off = TRUE;
                 break;
 
-            case CHK_DL_OUTER_RANGE: 
+            case CHK_DL_OUTER_RANGE:
                 light->outer_range = lib3ds_io_read_float(io);
                 break;
 
-            case CHK_DL_INNER_RANGE: 
+            case CHK_DL_INNER_RANGE:
                 light->inner_range = lib3ds_io_read_float(io);
                 break;
 
-            case CHK_DL_MULTIPLIER: 
+            case CHK_DL_MULTIPLIER:
                 light->multiplier = lib3ds_io_read_float(io);
                 break;
 
@@ -167,7 +167,7 @@ lib3ds_light_read(Lib3dsLight *light, Lib3dsIo *io) {
                 break;
             }
 
-            case CHK_DL_ATTENUATE: 
+            case CHK_DL_ATTENUATE:
                 light->attenuation = lib3ds_io_read_float(io);
                 break;
 

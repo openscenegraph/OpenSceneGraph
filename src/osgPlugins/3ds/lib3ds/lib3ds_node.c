@@ -138,7 +138,7 @@ lib3ds_node_new_mesh_instance(Lib3dsMesh *mesh, const char *instance_name, float
 
     n = (Lib3dsMeshInstanceNode*)node;
     if (instance_name) {
-        strcpy(n->instance_name, instance_name);
+        stringcopyfixedsize(n->instance_name, instance_name);
     }
 
     lib3ds_track_resize(&n->pos_track, 1);

@@ -619,7 +619,7 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap& drawStateMap,
         {
             // add our geometry to group (where our children already are)
             // creates geometry under modifier node
-            processMesh(drawStateMap,meshTransform,mesh,meshAppliedMatPtr);
+            processMesh(drawStateMap,group,mesh,meshAppliedMatPtr);
             return group;
         }
         else

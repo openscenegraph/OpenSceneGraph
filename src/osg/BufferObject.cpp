@@ -1237,6 +1237,7 @@ void BufferData::setBufferObject(BufferObject* bufferObject,bool addtoBufferObje
     }
 
     _bufferObject = bufferObject;
+
     if(addtoBufferObject)_bufferIndex = _bufferObject.valid() ? _bufferObject->addBufferData(this) : 0;
 }
 

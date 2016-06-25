@@ -18,6 +18,7 @@
 
 #include <string>
 #include <vector>
+#include <string.h>
 
 namespace osgDB {
 
@@ -130,6 +131,11 @@ struct FileNameComparator
         return pos_lhs<pos_rhs;
     }
 };
+
+
+void stringcopy(char* dest, const char* src, size_t length);
+
+#define stringcopyfixedsize(DEST, SRC) stringcopy(DEST, SRC, sizeof(DEST));
 
 }
 

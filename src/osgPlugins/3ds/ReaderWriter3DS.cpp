@@ -851,7 +851,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::constructFrom3dsFile(Lib3dsFile
     }
     if (group && group->getName().empty()) group->setName(fileName);
 
-    if (osg::getNotifyLevel()>=osg::INFO)
+    if (group && osg::getNotifyLevel()>=osg::INFO)
     {
         OSG_INFO << "Final OSG node structure looks like this:"<< endl;
         PrintVisitor pv(osg::notify(osg::INFO));

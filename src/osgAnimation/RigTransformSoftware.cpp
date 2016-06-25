@@ -59,47 +59,53 @@ void RigTransformSoftware::operator()(RigGeometry& geom)
 
     osg::Vec3Array* positionSrc = dynamic_cast<osg::Vec3Array*>(source.getVertexArray());
     osg::Vec3Array* positionDst = dynamic_cast<osg::Vec3Array*>(destination.getVertexArray());
-    if (positionSrc && (!positionDst || (positionDst->size() != positionSrc->size()) ) )
+    if (positionSrc )
     {
-        if (!positionDst)
+        if (!positionDst || (positionDst->size() != positionSrc->size()) )
         {
-            positionDst = new osg::Vec3Array;
-            positionDst->setDataVariance(osg::Object::DYNAMIC);
-            destination.setVertexArray(positionDst);
+            if (!positionDst)
+            {
+                positionDst = new osg::Vec3Array;
+                positionDst->setDataVariance(osg::Object::DYNAMIC);
+                destination.setVertexArray(positionDst);
+            }
+            *positionDst = *positionSrc;
         }
-        *positionDst = *positionSrc;
+        if (positionDst && !positionDst->empty())
+        {
+            compute<osg::Vec3>(geom.getMatrixFromSkeletonToGeometry(),
+                               geom.getInvMatrixFromSkeletonToGeometry(),
+                               &positionSrc->front(),
+                               &positionDst->front());
+            positionDst->dirty();
+        }
+
     }
 
     osg::Vec3Array* normalSrc = dynamic_cast<osg::Vec3Array*>(source.getNormalArray());
     osg::Vec3Array* normalDst = dynamic_cast<osg::Vec3Array*>(destination.getNormalArray());
-    if (normalSrc && (!normalDst || (normalDst->size() != normalSrc->size()) ) )
+    if (normalSrc )
     {
-        if (!normalDst)
+        if (!normalDst || (normalDst->size() != normalSrc->size()) )
         {
-            normalDst = new osg::Vec3Array;
-            normalDst->setDataVariance(osg::Object::DYNAMIC);
-            destination.setNormalArray(normalDst, osg::Array::BIND_PER_VERTEX);
+            if (!normalDst)
+            {
+                normalDst = new osg::Vec3Array;
+                normalDst->setDataVariance(osg::Object::DYNAMIC);
+                destination.setNormalArray(normalDst, osg::Array::BIND_PER_VERTEX);
+            }
+            *normalDst = *normalSrc;
         }
-        *normalDst = *normalSrc;
+        if (normalDst && !normalDst->empty())
+        {
+            computeNormal<osg::Vec3>(geom.getMatrixFromSkeletonToGeometry(),
+                               geom.getInvMatrixFromSkeletonToGeometry(),
+                               &normalSrc->front(),
+                               &normalDst->front());
+            normalDst->dirty();
+        }
     }
 
-    if (positionDst && !positionDst->empty())
-    {
-        compute<osg::Vec3>(geom.getMatrixFromSkeletonToGeometry(),
-                           geom.getInvMatrixFromSkeletonToGeometry(),
-                           &positionSrc->front(),
-                           &positionDst->front());
-        positionDst->dirty();
-    }
-
-    if (normalDst && !normalDst->empty())
-    {
-        computeNormal<osg::Vec3>(geom.getMatrixFromSkeletonToGeometry(),
-                           geom.getInvMatrixFromSkeletonToGeometry(),
-                           &normalSrc->front(),
-                           &normalDst->front());
-        normalDst->dirty();
-    }
 }
 
 void RigTransformSoftware::initVertexSetFromBones(const BoneMap& map, const VertexInfluenceSet::UniqVertexSetToBoneSetList& influence)
@@ -120,9 +126,12 @@ void RigTransformSoftware::initVertexSetFromBones(const BoneMap& map, const Vert
             const std::string& bname = inf.getBones()[b].getBoneName();
             float weight = inf.getBones()[b].getWeight();
             BoneMap::const_iterator it = map.find(bname);
-            if (it == map.end())
+            if (it == map.end() )
             {
-                OSG_WARN << "RigTransformSoftware Bone " << bname << " not found, skip the influence group " <<bname  << std::endl;
+                if (_invalidInfluence.find(bname) != _invalidInfluence.end()) {
+                    _invalidInfluence[bname] = true;
+                    OSG_WARN << "RigTransformSoftware Bone " << bname << " not found, skip the influence group " <<bname  << std::endl;
+                }
                 continue;
             }
             Bone* bone = it->second.get();

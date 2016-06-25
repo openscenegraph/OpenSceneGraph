@@ -90,7 +90,7 @@ public:
     void setSupportBinaryBrackets( bool b ) { _supportBinaryBrackets = b; }
     bool getSupportBinaryBrackets() const { return _supportBinaryBrackets; }
 
-    void checkStream() const { if (_in->rdstate()&_in->failbit) _failed = true; }
+    void checkStream() const;
     bool isFailed() const { return _failed; }
 
     virtual bool isBinary() const = 0;

@@ -140,8 +140,8 @@ void UpdateActionVisitor::apply(ActionAnimation& action)
     {
         unsigned int frame = getLocalFrame();
         apply(static_cast<Action&>(action));
-		int pri = static_cast<int>(_currentAnimationPriority);
-		_currentAnimationPriority++;
+        int pri = static_cast<int>(_currentAnimationPriority);
+        _currentAnimationPriority++;
         action.updateAnimation(frame, -pri);
     }
 }
@@ -159,6 +159,7 @@ void UpdateActionVisitor::apply(ActionStripAnimation& action)
 
 ClearActionVisitor::ClearActionVisitor(ClearType type) : _clearType(type)
 {
+    _frame = 0;
 }
 
 void ClearActionVisitor::apply(Timeline& tm)

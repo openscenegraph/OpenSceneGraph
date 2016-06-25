@@ -62,41 +62,9 @@ void Light::setLightNum(int num)
 {
     if (_lightnum==num) return;
 
-    if (_parents.empty())
-    {
-        _lightnum = num;
-        return;
-    }
+    ReassignToParents needToReassingToParentsWhenMemberValueChanges(this);
 
-    // take a reference to this clip plane to prevent it from going out of scope
-    // when we remove it temporarily from its parents.
-    osg::ref_ptr<Light> lightRef = this;
-
-    // copy the parents as they _parents list will be changed by the subsequent removeAttributes.
-    ParentList parents = _parents;
-
-    // remove this attribute from its parents as its position is being changed
-    // and would no longer be valid.
-    ParentList::iterator itr;
-    for(itr = parents.begin();
-        itr != parents.end();
-        ++itr)
-    {
-        osg::StateSet* stateset = *itr;
-        stateset->removeAttribute(this);
-    }
-
-    // assign the hint target
     _lightnum = num;
-
-    // add this attribute back into its original parents with its new position
-    for(itr = parents.begin();
-        itr != parents.end();
-        ++itr)
-    {
-        osg::StateSet* stateset = *itr;
-        stateset->setAttribute(this);
-    }
 }
 
 void Light::captureLightState()

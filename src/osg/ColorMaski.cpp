@@ -25,6 +25,15 @@ ColorMaski::~ColorMaski()
 {
 }
 
+void ColorMaski::setIndex(unsigned int buf)
+{
+    if (_index==buf) return;
+
+    ReassignToParents needToReassingToParentsWhenMemberValueChanges(this);
+
+    _index = buf;
+}
+
 void ColorMaski::apply(State& state) const
 {
     const GLExtensions* extensions = state.get<GLExtensions>();

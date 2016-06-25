@@ -48,6 +48,15 @@ BufferIndexBinding::~BufferIndexBinding()
 {
 }
 
+void BufferIndexBinding::setIndex(unsigned int index)
+{
+    if (_index==index) return;
+
+    ReassignToParents needToReassingToParentsWhenMemberValueChanges(this);
+
+    _index = index;
+}
+
 void BufferIndexBinding::apply(State& state) const
 {
     if (_bufferObject.valid())

@@ -34,7 +34,7 @@ void DrawArraysIndirect::draw(osg::State& state, bool /*useVertexBufferObjects*/
 
 }
 
-void MultiDrawArraysIndirect::draw(osg::State& state, bool useVertexBufferObjects) const
+void MultiDrawArraysIndirect::draw(osg::State& state, bool /*useVertexBufferObjects*/) const
 {
    // DrawIndirectGLExtensions *ext = DrawIndirectGLExtensions::getExtensions( state.getContextID(),true );
     state.get<osg::GLExtensions>()->glMultiDrawArraysIndirect( _mode, reinterpret_cast<const void*>(_indirect), _drawcount, _stride );

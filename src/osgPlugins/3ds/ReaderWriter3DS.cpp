@@ -913,7 +913,7 @@ static void addVertex(
 {
     osg::Vec3Array* vertices = (osg::Vec3Array*)geometry->getVertexArray();
     osg::Vec3Array* normals = (osg::Vec3Array*)geometry->getNormalArray();
-    osg::Vec2Array* texCoords = (osg::Vec2Array*)geometry->getTexCoordArray(0);
+    osg::Vec2Array* texCoords = mesh->texcos ? (osg::Vec2Array*)geometry->getTexCoordArray(0) : 0;
 
     unsigned int index = remappedFace.face->index[i];
     if (origToNewMapping[index] == -1)

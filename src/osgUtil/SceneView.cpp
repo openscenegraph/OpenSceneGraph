@@ -108,6 +108,8 @@ static const GLubyte patternCheckerboard[] = {
 
 SceneView::SceneView(DisplaySettings* ds)
 {
+    _frameStamp = new osg::FrameStamp;
+
     _displaySettings = ds;
 
     _fusionDistanceMode = PROPORTIONAL_TO_SCREEN_DISTANCE;
@@ -146,6 +148,8 @@ SceneView::SceneView(const SceneView& rhs, const osg::CopyOp& copyop):
     osg::Object(rhs,copyop),
     osg::CullSettings(rhs)
 {
+    _frameStamp = new osg::FrameStamp;
+
     _displaySettings = rhs._displaySettings;
 
     _fusionDistanceMode = rhs._fusionDistanceMode;

@@ -56,7 +56,6 @@ MorphGeometry::MorphGeometry(const MorphGeometry& b, const osg::CopyOp& copyop) 
     setUseVertexBufferObjects(true);
 }
 
-
 void MorphGeometry::transformSoftwareMethod()
 {
     if (_dirty)
@@ -279,30 +278,4 @@ bool UpdateMorph::link(osgAnimation::Channel* channel)
         OSG_WARN << "Channel " << channel->getName() << " does not contain a valid symbolic name for this class" << std::endl;
     }
     return false;
-}
-
-int UpdateMorph::link(Animation* animation)
-{
-    if (getNumTarget() == 0)
-    {
-        osg::notify(osg::WARN) << "An update callback has no name, it means it could link only with \"\" named Target, often an error, discard" << std::endl;
-        return 0;
-    }
-
-    unsigned int nbLinks = 0;
-    for (ChannelList::iterator channel = animation->getChannels().begin();
-         channel != animation->getChannels().end();
-         ++channel)
-    {
-        std::string targetName = (*channel)->getTargetName();
-        for(int i = 0, num = getNumTarget(); i < num; ++i) {
-            if (targetName == getTargetName(i))
-            {
-                AnimationUpdateCallbackBase* a = this;
-                a->link((*channel).get());
-                nbLinks++;
-            }
-        }
-    }
-    return nbLinks;
 }

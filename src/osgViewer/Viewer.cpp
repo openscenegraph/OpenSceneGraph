@@ -596,7 +596,7 @@ void Viewer::realize()
 
     if (osg::DisplaySettings::instance()->getCompileContextsHint())
     {
-        int numProcessors = osg::minimum(1, OpenThreads::GetNumberOfProcessors());
+        int numProcessors = osg::maximum(1, OpenThreads::GetNumberOfProcessors());
         int processNum = 0;
 
         for(unsigned int i=0; i<= osg::GraphicsContext::getMaxContextID(); ++i)

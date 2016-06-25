@@ -16,6 +16,23 @@
 
 using namespace osgDB;
 
+static long long prev_tellg = 0;
+
+void InputIterator::checkStream() const
+{
+    if (_in->rdstate()&_in->failbit)
+    {
+        OSG_NOTICE<<"InputIterator::checkStream() : _in->rdstate() "<<_in->rdstate()<<", "<<_in->failbit<<std::endl;
+        OSG_NOTICE<<"                               _in->tellg() = "<<_in->tellg()<<std::endl;
+        OSG_NOTICE<<"                               prev_tellg = "<<prev_tellg<<std::endl;
+        _failed = true;
+    }
+    else
+    {
+        prev_tellg = _in->tellg();
+    }
+}
+
 void InputIterator::readComponentArray( char* s, unsigned int numElements, unsigned int numComponentsPerElements, unsigned int componentSizeInBytes)
 {
     unsigned int size = numElements * numComponentsPerElements * componentSizeInBytes;

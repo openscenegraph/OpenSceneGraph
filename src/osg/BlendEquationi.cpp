@@ -26,6 +26,15 @@ BlendEquationi::~BlendEquationi()
 {
 }
 
+void BlendEquationi::setIndex(unsigned int buf)
+{
+    if (_index==buf) return;
+
+    ReassignToParents needToReassingToParentsWhenMemberValueChanges(this);
+
+    _index = buf;
+}
+
 void BlendEquationi::apply(State& state) const
 {
     const GLExtensions* extensions = state.get<GLExtensions>();

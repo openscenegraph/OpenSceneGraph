@@ -47,7 +47,8 @@ Surface::Surface()
     translucency_(0),
     glossiness_(0.4f),
     sidedness_(FRONT_ONLY),
-    max_smoothing_angle_(0)
+    max_smoothing_angle_(0),
+    color_map_intensity_(1.0f)
 {
 }
 
@@ -61,7 +62,8 @@ Surface::Surface(const lwo2::FORM::SURF *surf, const Clip_map &clips)
     translucency_(0),
     glossiness_(0.4f),
     sidedness_(FRONT_ONLY),
-    max_smoothing_angle_(0)
+    max_smoothing_angle_(0),
+    color_map_intensity_(1.0f)
 {
     compile(surf, clips);
 }

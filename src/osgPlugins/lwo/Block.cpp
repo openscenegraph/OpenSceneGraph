@@ -15,7 +15,8 @@ using namespace lwosg;
 Block::Block(const lwo2::FORM::SURF::BLOK *blok)
 :    enabled_(true),
     opacity_type_(ADDITIVE),
-    opacity_amount_(1)
+    opacity_amount_(1),
+    displacement_axis_(X)
 {
     if (blok) {
         compile(blok);

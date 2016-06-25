@@ -81,6 +81,7 @@ BufferIndexBinding::~BufferIndexBinding()
 {
 }
 
+<<<<<<< HEAD
 void BufferIndexBinding::setIndex(GLuint index){
 
     StateSet**parents=new StateSet* [getNumParents()];
@@ -105,6 +106,17 @@ void BufferIndexBinding::setIndex(GLuint index){
     delete [] parentmodes;
 
 }
+=======
+void BufferIndexBinding::setIndex(unsigned int index)
+{
+    if (_index==index) return;
+
+    ReassignToParents needToReassingToParentsWhenMemberValueChanges(this);
+
+    _index = index;
+}
+
+>>>>>>> upstream/master
 void BufferIndexBinding::apply(State& state) const
 {
     if (_bufferObject.valid())

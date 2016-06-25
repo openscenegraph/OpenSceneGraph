@@ -91,3 +91,41 @@ void StateAttribute::setEventCallback(StateAttributeCallback* ec)
         }
     }
 }
+
+StateAttribute::ReassignToParents::ReassignToParents(osg::StateAttribute* attr)
+{
+    if (!attr->isTextureAttribute() && !attr->getParents().empty())
+    {
+        // take a reference to this clip plane to prevent it from going out of scope
+        // when we remove it temporarily from its parents.
+        attribute = attr;
+
+        // copy the parents as they _parents list will be changed by the subsequent removeAttributes.
+        parents = attr->getParents();
+
+        // remove this attribute from its parents as its position is being changed
+        // and would no longer be valid.
+        for(ParentList::iterator itr = parents.begin();
+            itr != parents.end();
+            ++itr)
+        {
+            osg::StateSet* stateset = *itr;
+            stateset->removeAttribute(attr);
+
+            OSG_NOTICE<<"  Removed from parent "<<stateset<<std::endl;
+        }
+    }
+}
+
+StateAttribute::ReassignToParents::~ReassignToParents()
+{
+    // add attribute back into its original parents with its new position
+    for(ParentList::iterator itr = parents.begin();
+        itr != parents.end();
+        ++itr)
+    {
+        osg::StateSet* stateset = *itr;
+        stateset->setAttribute(attribute.get());
+        OSG_NOTICE<<"   Added back to parent "<<stateset<<std::endl;
+    }
+}

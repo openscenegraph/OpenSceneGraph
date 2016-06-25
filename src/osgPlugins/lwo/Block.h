@@ -78,7 +78,10 @@ namespace lwosg
 		float texture_amplitude;
 
 		Image_map()
-			: image_map(-1),
+			:
+			  projection(PLANAR),
+			  axis(X),
+			  image_map(-1),
 			  clip(0),
 			  width_wrap(REPEAT),
 			  height_wrap(REPEAT),

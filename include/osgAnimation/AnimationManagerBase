@@ -42,9 +42,6 @@ namespace osgAnimation
         const AnimationList& getAnimationList() const { return _animations;}
         AnimationList& getAnimationList() { return _animations;}
 
-        Animation* getAnimation(unsigned int i) { return _animations[i];}
-        unsigned int getNumAnimations()const { return _animations.size();}
-
         /** Callback method called by the NodeVisitor when visiting a node.*/
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
 

@@ -4,30 +4,31 @@
 /*
     Copyright (C) 1996-2008 by Jan Eric Kyprianidis <www.kyprianidis.com>
     All rights reserved.
-    
-    This program is free  software: you can redistribute it and/or modify 
-    it under the terms of the GNU Lesser General Public License as published 
-    by the Free Software Foundation, either version 2.1 of the License, or 
+
+    This program is free  software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation, either version 2.1 of the License, or
     (at your option) any later version.
 
-    Thisprogram  is  distributed in the hope that it will be useful, 
-    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+    Thisprogram  is  distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU Lesser General Public License for more details.
-    
+
     You should  have received a copy of the GNU Lesser General Public License
-    along with  this program; If not, see <http://www.gnu.org/licenses/>. 
+    along with  this program; If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <stddef.h>
+#include <string.h>
 
 #ifndef LIB3DSAPI
     #if defined(_MSC_VER) && !defined(LIB3DS_STATIC)
         #ifdef LIB3DS_EXPORTS
             #define LIB3DSAPI __declspec(dllexport)
-        #else               
+        #else
             #define LIB3DSAPI __declspec(dllimport)
-        #endif           
+        #endif
     #else
         #define LIB3DSAPI
     #endif
@@ -39,6 +40,11 @@ extern "C" {
 
 /** @defgroup api API */
 /** @{ */
+
+extern void stringcopy(char* dest, const char* src, size_t length);
+
+#define stringcopyfixedsize(DEST, SRC) stringcopy(DEST, SRC, sizeof(DEST));
+
 
 typedef enum Lib3dsIoSeek {
     LIB3DS_SEEK_SET     = 0,
@@ -208,17 +214,17 @@ typedef struct Lib3dsTextureMap {
 typedef enum Lib3dsAutoReflMapFlags {
     LIB3DS_AUTOREFL_USE                     = 0x0001,
     LIB3DS_AUTOREFL_READ_FIRST_FRAME_ONLY   = 0x0004,
-    LIB3DS_AUTOREFL_FLAT_MIRROR             = 0x0008 
+    LIB3DS_AUTOREFL_FLAT_MIRROR             = 0x0008
 } Lib3dsAutoReflMapFlags;
 
 /* Material shading type */
 typedef enum Lib3dsShading {
     LIB3DS_SHADING_WIRE_FRAME = 0,
-    LIB3DS_SHADING_FLAT       = 1, 
-    LIB3DS_SHADING_GOURAUD    = 2, 
-    LIB3DS_SHADING_PHONG      = 3, 
+    LIB3DS_SHADING_FLAT       = 1,
+    LIB3DS_SHADING_GOURAUD    = 2,
+    LIB3DS_SHADING_PHONG      = 3,
     LIB3DS_SHADING_METAL      = 4
-} Lib3dsShading; 
+} Lib3dsShading;
 
 /** Material */
 typedef struct Lib3dsMaterial {
@@ -242,7 +248,7 @@ typedef struct Lib3dsMaterial {
     int                 soften;         /* bool */
     int                 face_map;       /* bool */
     int                 two_sided;      /* Material visible from back */
-    int                 transparency_falloff; /* Transparency falloff in/out */    
+    int                 transparency_falloff; /* Transparency falloff in/out */
     int                 map_decal;      /* bool */
     int                 use_wire;
     int                 use_wire_abs;
@@ -271,13 +277,13 @@ typedef struct Lib3dsMaterial {
 
 /** Object flags for cameras, lights and meshes */
 typedef enum Lib3dsObjectFlags {
-    LIB3DS_OBJECT_HIDDEN          = 0x01, 
-    LIB3DS_OBJECT_VIS_LOFTER      = 0x02, 
-    LIB3DS_OBJECT_DOESNT_CAST     = 0x04, 
-    LIB3DS_OBJECT_MATTE           = 0x08, 
-    LIB3DS_OBJECT_DONT_RCVSHADOW  = 0x10, 
-    LIB3DS_OBJECT_FAST            = 0x20, 
-    LIB3DS_OBJECT_FROZEN          = 0x40 
+    LIB3DS_OBJECT_HIDDEN          = 0x01,
+    LIB3DS_OBJECT_VIS_LOFTER      = 0x02,
+    LIB3DS_OBJECT_DOESNT_CAST     = 0x04,
+    LIB3DS_OBJECT_MATTE           = 0x08,
+    LIB3DS_OBJECT_DONT_RCVSHADOW  = 0x10,
+    LIB3DS_OBJECT_FAST            = 0x20,
+    LIB3DS_OBJECT_FROZEN          = 0x40
 } Lib3dsObjectFlags;
 
 /** Camera object */
@@ -285,7 +291,7 @@ typedef struct Lib3dsCamera {
     unsigned    user_id;
     void*       user_ptr;
     char        name[64];
-    unsigned    object_flags; /*< @see Lib3dsObjectFlags */ 
+    unsigned    object_flags; /*< @see Lib3dsObjectFlags */
     float       position[3];
     float       target[3];
     float       roll;
@@ -293,14 +299,14 @@ typedef struct Lib3dsCamera {
     int         see_cone;
     float       near_range;
     float       far_range;
-} Lib3dsCamera; 
+} Lib3dsCamera;
 
 /** Light object */
 typedef struct Lib3dsLight {
     unsigned    user_id;
     void*       user_ptr;
     char        name[64];
-    unsigned    object_flags; 
+    unsigned    object_flags;
     int         spot_light;     /* bool */
     int         see_cone;
     float       color[3];
@@ -326,7 +332,7 @@ typedef struct Lib3dsLight {
     float       ray_bias;
     float       hotspot;
     float       falloff;
-} Lib3dsLight; 
+} Lib3dsLight;
 
 /* Texture map projection */
 typedef enum {
@@ -336,7 +342,7 @@ typedef enum {
   LIB3DS_MAP_SPHERICAL      = 2
 } Lib3dsMapType;
 
-/**  Meaning of Lib3dsFace::flags. ABC are points of the current face 
+/**  Meaning of Lib3dsFace::flags. ABC are points of the current face
     (A: is 1st vertex, B is 2nd vertex, C is 3rd vertex) */
 typedef enum Lib3dsFaceFlags {
   LIB3DS_FACE_VIS_AC    = 0x01,       /**< Bit 0: Edge visibility AC */
@@ -354,14 +360,14 @@ typedef struct Lib3dsFace {
     unsigned short  flags;
     int             material;
     unsigned        smoothing_group;
-} Lib3dsFace; 
+} Lib3dsFace;
 
 /* Triangular mesh object */
 typedef struct Lib3dsMesh {
     unsigned        user_id;
     void*           user_ptr;
     char            name[64];            /**< Mesh name. Don't use more than 8 characters  */
-    unsigned        object_flags;        /**< @see Lib3dsObjectFlags */ 
+    unsigned        object_flags;        /**< @see Lib3dsObjectFlags */
     int             color;               /**< Index to editor palette [0..255] */
     float           matrix[4][4];        /**< Transformation matrix for mesh data */
     unsigned short  nvertices;           /**< Number of vertices in vertex array (max. 65535) */
@@ -369,7 +375,7 @@ typedef struct Lib3dsMesh {
     float           (*texcos)[2];
     unsigned short* vflags;
     unsigned short  nfaces;              /**< Number of faces in face array (max. 65535) */
-    Lib3dsFace*     faces;               
+    Lib3dsFace*     faces;
     char            box_front[64];
     char            box_back[64];
     char            box_left[64];
@@ -383,7 +389,7 @@ typedef struct Lib3dsMesh {
     float           map_tile[2];
     float           map_planar_size[2];
     float           map_cylinder_height;
-} Lib3dsMesh; 
+} Lib3dsMesh;
 
 typedef enum Lib3dsNodeType {
     LIB3DS_NODE_AMBIENT_COLOR   = 0,
@@ -455,9 +461,9 @@ typedef enum {
 
 typedef struct Lib3dsTrack {
     unsigned        flags;
-    Lib3dsTrackType type; 
+    Lib3dsTrackType type;
     int             nkeys;
-    Lib3dsKey*      keys;   
+    Lib3dsKey*      keys;
 } Lib3dsTrack;
 
 typedef struct Lib3dsAmbientColorNode {
@@ -541,19 +547,19 @@ typedef struct Lib3dsFile {
     int                 segment_to;
     int                 current_frame;
     int                 materials_size;
-    int                 nmaterials;         
-    Lib3dsMaterial**    materials;        
-    int                 cameras_size;  
-    int                 ncameras;                      
+    int                 nmaterials;
+    Lib3dsMaterial**    materials;
+    int                 cameras_size;
+    int                 ncameras;
     Lib3dsCamera**      cameras;
     int                 lights_size;
-    int                 nlights;                      
+    int                 nlights;
     Lib3dsLight**       lights;
     int                 meshes_size;
-    int                 nmeshes;                      
-    Lib3dsMesh**        meshes;                         
+    int                 nmeshes;
+    Lib3dsMesh**        meshes;
     Lib3dsNode*         nodes;
-} Lib3dsFile; 
+} Lib3dsFile;
 
 extern LIB3DSAPI Lib3dsFile* lib3ds_file_open(const char *filename);
 extern LIB3DSAPI int lib3ds_file_save(Lib3dsFile *file, const char *filename);
@@ -589,7 +595,7 @@ extern LIB3DSAPI void lib3ds_file_create_nodes_for_meshes(Lib3dsFile *file);
 
 
 /**
-    This function computes the bounding box of meshes, cameras 
+    This function computes the bounding box of meshes, cameras
     and lights defined in the 3D editor.
 
     \param file             The Lib3dsFile object to be examined.
@@ -600,17 +606,17 @@ extern LIB3DSAPI void lib3ds_file_create_nodes_for_meshes(Lib3dsFile *file);
     \param bmax             Returned maximum x,y,z values.
  */
 extern LIB3DSAPI void lib3ds_file_bounding_box_of_objects(
-    Lib3dsFile *file, 
-    int include_meshes, 
+    Lib3dsFile *file,
+    int include_meshes,
     int include_cameras,
     int include_lights,
     float bmin[3],
     float bmax[3]);
 
 /**
-    This function computes the bounding box of mesh, camera 
+    This function computes the bounding box of mesh, camera
     and light instances defined in the Keyframer.
-    
+
     \param file             The Lib3dsFile object to be examined.
     \param include_meshes   Include meshes in bounding box calculation.
     \param include_cameras  Include cameras in bounding box calculation.
@@ -621,12 +627,12 @@ extern LIB3DSAPI void lib3ds_file_bounding_box_of_objects(
                             calculate the bounding box in.
  */
 extern LIB3DSAPI void lib3ds_file_bounding_box_of_nodes(
-    Lib3dsFile *file, 
-    int include_meshes, 
-    int include_cameras, 
-    int include_lights, 
-    float bmin[3], 
-    float bmax[3], 
+    Lib3dsFile *file,
+    int include_meshes,
+    int include_cameras,
+    int include_lights,
+    float bmin[3],
+    float bmax[3],
     float matrix[4][4]);
 
 extern LIB3DSAPI Lib3dsMaterial* lib3ds_material_new(const char *name);
@@ -664,13 +670,13 @@ extern LIB3DSAPI void lib3ds_track_eval_float(Lib3dsTrack *track, float *f, floa
 extern LIB3DSAPI void lib3ds_track_eval_vector(Lib3dsTrack *track, float v[3], float t);
 extern LIB3DSAPI void lib3ds_track_eval_quat(Lib3dsTrack *track, float q[4], float t);
 
-/** 
-    Calculates the ease in/out function. See Lib3dsKey for details. 
-    
+/**
+    Calculates the ease in/out function. See Lib3dsKey for details.
+
     \param fp           Previous frame number.
     \param fc           Current frame number.
-    \param fn           Next frame number. 
-    \param ease_from    Ease in value [0, 1.0] 
+    \param fn           Next frame number.
+    \param ease_from    Ease in value [0, 1.0]
     \param ease_to      Ease out value [0, 1.0]
 */
 extern LIB3DSAPI float lib3ds_math_ease(
@@ -680,13 +686,13 @@ extern LIB3DSAPI float lib3ds_math_ease(
     float ease_from,
     float ease_to);
 
-/**  
-    Computes a point on a n-dimensional cubic hermite spline. 
-    \param v   
-        [out] Result 
+/**
+    Computes a point on a n-dimensional cubic hermite spline.
+    \param v
+        [out] Result
     \param a
         [in] First point of the spline.
-    \param p   
+    \param p
         [in] Tangent at the first point of the spline.
     \param q
         [in] Tangent at the second point of the spline.
@@ -695,10 +701,10 @@ extern LIB3DSAPI float lib3ds_math_ease(
     \param n
         [in] Dimension
     \param t
-        [in] Parameter value [0...1] 
+        [in] Parameter value [0...1]
 */
 extern LIB3DSAPI void lib3ds_math_cubic_interp(
-    float *v, 
+    float *v,
     float *a,
     float *p,
     float *q,
@@ -712,27 +718,27 @@ extern LIB3DSAPI void lib3ds_vector_make(
     float y,
     float z);
 
-/** 
-    Sets all components of a vector to zero. 
+/**
+    Sets all components of a vector to zero.
     \param c
         The Pointer to the vector.
 */
 extern LIB3DSAPI void lib3ds_vector_zero(
     float c[3]);
 
-/** 
-    Copies all components of a vector to another vector. 
+/**
+    Copies all components of a vector to another vector.
     \param dst
         [out] The destination vector.
     \param src
         [in] The source vector.
 */
-extern LIB3DSAPI void lib3ds_vector_copy( 
-    float dst[3],  
+extern LIB3DSAPI void lib3ds_vector_copy(
+    float dst[3],
     float src[3]);
 
-/** 
-    Negates all components of a vector. 
+/**
+    Negates all components of a vector.
     \param c
         The Pointer to the vector.
 */

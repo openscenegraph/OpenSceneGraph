@@ -131,6 +131,11 @@ struct FileNameComparator
     }
 };
 
+
+extern OSGDB_EXPORT void stringcopy(char* dest, const char* src, size_t length);
+
+#define stringcopyfixedsize(DEST, SRC) stringcopy(DEST, SRC, sizeof(DEST));
+
 }
 
 #endif

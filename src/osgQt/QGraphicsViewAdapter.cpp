@@ -444,22 +444,22 @@ bool QGraphicsViewAdapter::handleKeyEvent(int key, bool keyDown)
 
     OSG_INFO<<"sendKeyEvent("<<key<<", "<<keyDown<<")"<<std::endl;
 
-    if (key==osgGA::GUIEventAdapter::KEY_Shift_L || key==osgGA::GUIEventAdapter::KEY_Shift_R)
+    if (key==Qt::Key_Shift)
     {
         _qtKeyModifiers = (_qtKeyModifiers & ~Qt::ShiftModifier) | (keyDown ? Qt::ShiftModifier : Qt::NoModifier);
     }
 
-    if (key==osgGA::GUIEventAdapter::KEY_Control_L || key==osgGA::GUIEventAdapter::KEY_Control_R)
+    if (key==Qt::Key_Control)
     {
         _qtKeyModifiers = (_qtKeyModifiers & ~Qt::ControlModifier) | (keyDown ? Qt::ControlModifier : Qt::NoModifier);
     }
 
-    if (key==osgGA::GUIEventAdapter::KEY_Alt_L || key==osgGA::GUIEventAdapter::KEY_Alt_R)
+    if (key==Qt::Key_Alt || key==Qt::Key_AltGr)
     {
         _qtKeyModifiers = (_qtKeyModifiers & ~Qt::ControlModifier) | (keyDown ? Qt::ControlModifier : Qt::NoModifier);
     }
 
-    if (key==osgGA::GUIEventAdapter::KEY_Meta_L || key==osgGA::GUIEventAdapter::KEY_Meta_R)
+    if (key==Qt::Key_Meta)
     {
         _qtKeyModifiers = (_qtKeyModifiers & ~Qt::MetaModifier) | (keyDown ? Qt::MetaModifier : Qt::NoModifier);
     }

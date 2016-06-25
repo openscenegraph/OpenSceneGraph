@@ -19,6 +19,7 @@ using namespace osgGA;
 
 EventVisitor::EventVisitor()
 :    NodeVisitor(EVENT_VISITOR,TRAVERSE_ACTIVE_CHILDREN),
+    _actionAdapter(0),
     _handled(false)
 {
 }

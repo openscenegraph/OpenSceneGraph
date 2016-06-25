@@ -1,11 +1,9 @@
-SET(TARGET_SRC 
+SET(TARGET_SRC
     Block.cpp
     Clip.cpp
     Converter.cpp
     Object.cpp
     old_lw.cpp
-    old_Lwo2.cpp
-    old_Lwo2Layer.cpp
     Polygon.cpp
     ReaderWriterLWO.cpp
     Surface.cpp
@@ -26,8 +24,6 @@ SET(TARGET_H
     lwo2types.h
     Object.h
     old_lw.h
-    old_Lwo2.h
-    old_Lwo2Layer.h
     Polygon.h
     Surface.h
     Tessellator.h

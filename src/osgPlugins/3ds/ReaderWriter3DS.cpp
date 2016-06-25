@@ -619,7 +619,7 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap& drawStateMap,
         {
             // add our geometry to group (where our children already are)
             // creates geometry under modifier node
-            processMesh(drawStateMap,meshTransform,mesh,meshAppliedMatPtr);
+            processMesh(drawStateMap,group,mesh,meshAppliedMatPtr);
             return group;
         }
         else
@@ -851,7 +851,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::constructFrom3dsFile(Lib3dsFile
     }
     if (group && group->getName().empty()) group->setName(fileName);
 
-    if (osg::getNotifyLevel()>=osg::INFO)
+    if (group && osg::getNotifyLevel()>=osg::INFO)
     {
         OSG_INFO << "Final OSG node structure looks like this:"<< endl;
         PrintVisitor pv(osg::notify(osg::INFO));
@@ -913,7 +913,7 @@ static void addVertex(
 {
     osg::Vec3Array* vertices = (osg::Vec3Array*)geometry->getVertexArray();
     osg::Vec3Array* normals = (osg::Vec3Array*)geometry->getNormalArray();
-    osg::Vec2Array* texCoords = (osg::Vec2Array*)geometry->getTexCoordArray(0);
+    osg::Vec2Array* texCoords = mesh->texcos ? (osg::Vec2Array*)geometry->getTexCoordArray(0) : 0;
 
     unsigned int index = remappedFace.face->index[i];
     if (origToNewMapping[index] == -1)

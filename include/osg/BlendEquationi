@@ -33,7 +33,7 @@ class OSG_EXPORT BlendEquationi : public BlendEquation
         BlendEquationi(unsigned int buf, Equation equationRGB, Equation equationAlpha):
             BlendEquation(equationRGB, equationAlpha),
             _index(buf) {}
-            
+
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         BlendEquationi(const BlendEquationi& cm,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
@@ -58,7 +58,7 @@ class OSG_EXPORT BlendEquationi : public BlendEquation
         virtual unsigned int getMember() const { return _index; }
 
         /** Set the renderbuffer index of the BlendEquationi. */
-        void setIndex(unsigned int buf) { _index = buf; }
+        void setIndex(unsigned int buf);
 
         /** Get the renderbuffer index of the BlendEquationi. */
         unsigned int getIndex() const { return _index; }

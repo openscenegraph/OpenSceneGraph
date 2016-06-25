@@ -189,9 +189,11 @@ static void read_surf(FILE *f, gint nbytes, lwObject *lwo)
         if (!slash)
           slash = strrchr(name, '\\');
         if (slash)
-          strcpy(tex->name, slash+1);
+          strncpy(tex->name, slash+1, LW_MAX_NAME_LEN-1);
         else
-          strcpy(tex->name, name);
+          strncpy(tex->name, name, LW_MAX_NAME_LEN-1);
+
+        tex->name[LW_MAX_NAME_LEN-1] = '\0';
         //printf("tex name=%s\n", tex->name);
       }
     } break;

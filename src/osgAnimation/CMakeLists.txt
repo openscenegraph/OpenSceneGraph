@@ -51,7 +51,6 @@ SET(TARGET_H
     ${HEADER_PATH}/UpdateBone
     ${HEADER_PATH}/UpdateMaterial
     ${HEADER_PATH}/UpdateMatrixTransform
-    ${HEADER_PATH}/UpdateUniform
     ${HEADER_PATH}/Vec3Packed
     ${HEADER_PATH}/VertexInfluence
 )

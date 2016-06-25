@@ -81,7 +81,7 @@ namespace osgAnimation
         typedef TemplateKeyframeContainer<typename SamplerType::KeyframeType> KeyframeContainerType;
 
         Object* cloneType() const { return new TemplateChannel(); }
-        Object* clone(const osg::CopyOp&) const { return new TemplateChannel<SamplerType>(*this); }
+        Object* clone(const osg::CopyOp& copyop) const { return new TemplateChannel<SamplerType>(*this); }
         Channel* clone() const { return new TemplateChannel<SamplerType>(*this); }
 
         TemplateChannel (const TemplateChannel& channel) :

@@ -74,10 +74,10 @@ bool RigTransformHardware::createPalette(int nbVertexes, BoneMap boneMap, const 
     vertexIndexWeight.resize(nbVertexes);
 
     int maxBonePerVertex = 0;
-    for (VertexInfluenceSet::VertexIndexToBoneWeightMap::const_iterator vit = vertexIndexToBoneWeightMap.begin(); vit != vertexIndexToBoneWeightMap.end(); ++vit)
+    for (VertexInfluenceSet::VertexIndexToBoneWeightMap::const_iterator it = vertexIndexToBoneWeightMap.begin(); it != vertexIndexToBoneWeightMap.end(); ++it)
     {
-        int vertexIndex = vit->first;
-        const VertexInfluenceSet::BoneWeightList& boneWeightList = vit->second;
+        int vertexIndex = it->first;
+        const VertexInfluenceSet::BoneWeightList& boneWeightList = it->second;
         int bonesForThisVertex = 0;
         for (VertexInfluenceSet::BoneWeightList::const_iterator it = boneWeightList.begin(); it != boneWeightList.end(); ++it)
         {

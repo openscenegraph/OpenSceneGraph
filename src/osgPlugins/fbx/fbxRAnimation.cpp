@@ -67,8 +67,9 @@ void readKeys(FbxAnimCurve* curveX, FbxAnimCurve* curveY, FbxAnimCurve* curveZ,
             if (lb == curveTimeMap[i].end()) --lb;
             val[i] = lb->second;
         }
+
         keyFrameCntr.push_back(osgAnimation::Vec3Keyframe(fTime, val));
-    }
+      }
 }
 
 void readKeys(FbxAnimCurve* curveX, FbxAnimCurve* curveY, FbxAnimCurve* curveZ,

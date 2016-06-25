@@ -71,7 +71,7 @@ void RigTransformSoftware::operator()(RigGeometry& geom)
             }
             *positionDst = *positionSrc;
         }
-        if (!positionDst->empty())
+        if (positionDst && !positionDst->empty())
         {
             compute<osg::Vec3>(geom.getMatrixFromSkeletonToGeometry(),
                                geom.getInvMatrixFromSkeletonToGeometry(),
@@ -96,7 +96,7 @@ void RigTransformSoftware::operator()(RigGeometry& geom)
             }
             *normalDst = *normalSrc;
         }
-        if (!normalDst->empty())
+        if (normalDst && !normalDst->empty())
         {
             computeNormal<osg::Vec3>(geom.getMatrixFromSkeletonToGeometry(),
                                geom.getInvMatrixFromSkeletonToGeometry(),

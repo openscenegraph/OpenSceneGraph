@@ -26,7 +26,6 @@ Skeleton::UpdateSkeleton::UpdateSkeleton() : _needValidate(true) {}
 
 Skeleton::UpdateSkeleton::UpdateSkeleton(const UpdateSkeleton& us, const osg::CopyOp& copyop) :
     osg::Object(us, copyop),
-    osg::Callback(us, copyop),
     osg::NodeCallback(us, copyop)
 {
     _needValidate = true;

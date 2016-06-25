@@ -135,7 +135,7 @@ struct FileNameComparator
 
 void stringcopy(char* dest, const char* src, size_t length);
 
-#define stringcopyfixedsize(DEST, SRC) stringcopy(DEST, SRC, sizeof(DEST));
+#define stringcopyfixedsize(DEST, SRC) osgDB::stringcopy(DEST, SRC, sizeof(DEST));
 
 }
 

@@ -355,13 +355,10 @@ static void processDrawArrays( ostream& _fout, unsigned int &numTriangles,
             writeIndex( _fout, numTriangles, startIndex, i-1, i, numOnLine );
          break;
 
-      case GL_QUADS:
-      case GL_QUAD_STRIP:
-      case GL_POLYGON:
-         assert( 0 && "Not implemented yet." );
-
       default:
-         assert( false );
+
+         OSG_NOTICE<<"pov Plugin : processDrawArrays() can not handle GLenum mode="<<mode<<std::endl;
+         return;
    }
 
    // put new line when primitive set is over

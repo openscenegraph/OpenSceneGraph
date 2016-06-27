@@ -32,7 +32,8 @@ namespace osgAnimation
     public:
 
         RigTransformHardware();
-        RigTransformHardware(const RigTransformHardware&,const osg::CopyOp&);
+
+        RigTransformHardware(const RigTransformHardware& rth, const osg::CopyOp& copyop);
 
         META_Object(osgAnimation,RigTransformHardware)
 

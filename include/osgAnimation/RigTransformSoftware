@@ -31,7 +31,7 @@ namespace osgAnimation
     {
     public:
         RigTransformSoftware();
-        RigTransformSoftware(const RigTransformSoftware&,const osg::CopyOp&);
+        RigTransformSoftware(const RigTransformSoftware& rts,const osg::CopyOp& copyop);
 
         META_Object(osgAnimation,RigTransformSoftware)
 

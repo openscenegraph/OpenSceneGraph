@@ -24,9 +24,15 @@ RigTransformSoftware::RigTransformSoftware()
 {
     _needInit = true;
 }
-RigTransformSoftware::RigTransformSoftware(const RigTransformSoftware&rhs,const osg::CopyOp&){
-    _needInit = true;
+
+RigTransformSoftware::RigTransformSoftware(const RigTransformSoftware& rts,const osg::CopyOp& copyop):
+    RigTransform(rts, copyop),
+    _needInit(rts._needInit),
+    _invalidInfluence(rts._invalidInfluence)
+{
+
 }
+
 bool RigTransformSoftware::init(RigGeometry& geom)
 {
     if (!geom.getSkeleton())

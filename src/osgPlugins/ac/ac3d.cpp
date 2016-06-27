@@ -258,7 +258,8 @@ class MaterialData
   public:
     MaterialData() :
         mMaterial(new osg::Material),
-        mColorArray(new osg::Vec4Array(1))
+        mColorArray(new osg::Vec4Array(1)),
+        mTranslucent(false)
     {
         mMaterial->setDataVariance(osg::Object::STATIC);
         mColorArray->setDataVariance(osg::Object::STATIC);

@@ -27,6 +27,20 @@ RigTransformHardware::RigTransformHardware()
     _nbVertexes = 0;
 }
 
+RigTransformHardware::RigTransformHardware(const RigTransformHardware& rth, const osg::CopyOp& copyop):
+    RigTransform(rth, copyop),
+    _bonesPerVertex(rth._bonesPerVertex),
+    _nbVertexes(rth._nbVertexes),
+    _vertexIndexMatrixWeightList(rth._vertexIndexMatrixWeightList),
+    _bonePalette(rth._bonePalette),
+    _boneNameToPalette(rth._boneNameToPalette),
+    _boneWeightAttribArrays(rth._boneWeightAttribArrays),
+    _uniformMatrixPalette(rth._uniformMatrixPalette),
+    _shader(rth._shader),
+    _needInit(false)
+{
+}
+
 osg::Vec4Array* RigTransformHardware::getVertexAttrib(int index)
 {
     if (index >= (int)_boneWeightAttribArrays.size())

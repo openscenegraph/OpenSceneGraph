@@ -1,4 +1,4 @@
-/*  -*-c++-*-
+ /*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under
@@ -26,8 +26,14 @@ namespace osgAnimation
     {
     public:
         RigTransform() {}
-        virtual ~RigTransform() {}
+        RigTransform(const RigTransform&, const osg::CopyOp&) {}
+
+        META_Object(osgAnimation,RigTransform)
+
         virtual void operator()(RigGeometry&) {}
+
+    protected:
+        virtual ~RigTransform() {}
 
     };
 

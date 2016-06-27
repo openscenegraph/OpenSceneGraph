@@ -68,7 +68,9 @@ namespace osg
         ///set the shader type whose subroutine names are from
         inline Shader::Type getShaderType() const{              return _shadertype;             }
 
-        inline bool setShaderType( Shader::Type shadertype){    _shadertype=shadertype;  return true;       }
+        virtual unsigned int getMember() const { return _shadertype; }
+
+        bool setShaderType( Shader::Type shadertype);
 
         virtual void apply(State& state) const;
 

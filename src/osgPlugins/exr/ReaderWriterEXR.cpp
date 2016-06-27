@@ -146,6 +146,11 @@ unsigned char *exr_load(std::istream& fin,
     unsigned dataSize = (sizeof(half) * height * width * numComponents);
     //buffer = new unsigned char[dataSize];
     buffer = (unsigned char*)malloc(dataSize);
+    if (!buffer)
+    {
+        OSG_WARN<<"Warning: exr_load() out of memory"<<std::endl;
+        return 0;
+    }
     half* pOut = (half*) buffer;
 
     for (long i = height-1; i >= 0; i--)

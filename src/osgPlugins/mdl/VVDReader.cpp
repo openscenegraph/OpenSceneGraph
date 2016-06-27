@@ -25,7 +25,8 @@ using namespace osg;
 using namespace osgDB;
 
 
-VVDReader::VVDReader()
+VVDReader::VVDReader():
+    fixup_table(0)
 {
     // Initialize the vertex buffer arrays
     memset(vertex_buffer, 0, sizeof(vertex_buffer));

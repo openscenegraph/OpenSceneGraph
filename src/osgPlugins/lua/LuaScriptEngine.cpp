@@ -2131,34 +2131,35 @@ public:
     lua_State* _lua;
     int _index;
     int _numberToPop;
+    bool _success;
 
-    GetStackValueVisitor(const LuaScriptEngine* lse, int index) : _lse(lse), _lua(0), _index(index), _numberToPop(0) { _lua = const_cast<LuaScriptEngine*>(lse  )->getLuaState(); }
+    GetStackValueVisitor(const LuaScriptEngine* lse, int index) : _lse(lse), _lua(0), _index(index), _numberToPop(0), _success(false) { _lua = const_cast<LuaScriptEngine*>(lse  )->getLuaState(); }
 
 
-    virtual void apply(bool& value)             { if (lua_isboolean(_lua, _index)) { value = (lua_toboolean(_lua, _index)!=0); _numberToPop = 1; } }
-    virtual void apply(char& value)             { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _numberToPop = 1; } }
-    virtual void apply(unsigned char& value)    { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _numberToPop = 1; } }
-    virtual void apply(short& value)            { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _numberToPop = 1; } }
-    virtual void apply(unsigned short& value)   { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _numberToPop = 1; } }
-    virtual void apply(int& value)              { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _numberToPop = 1; } }
-    virtual void apply(unsigned int& value)     { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _numberToPop = 1; } }
-    virtual void apply(float& value)            { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _numberToPop = 1; } }
-    virtual void apply(double& value)           { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _numberToPop = 1; } }
+    virtual void apply(bool& value)             { if (lua_isboolean(_lua, _index)) { value = (lua_toboolean(_lua, _index)!=0); _success=true; _numberToPop = 1; } }
+    virtual void apply(char& value)             { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _success=true; _numberToPop = 1; } }
+    virtual void apply(unsigned char& value)    { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _success=true; _numberToPop = 1; } }
+    virtual void apply(short& value)            { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _success=true; _numberToPop = 1; } }
+    virtual void apply(unsigned short& value)   { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _success=true; _numberToPop = 1; } }
+    virtual void apply(int& value)              { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _success=true; _numberToPop = 1; } }
+    virtual void apply(unsigned int& value)     { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _success=true; _numberToPop = 1; } }
+    virtual void apply(float& value)            { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _success=true; _numberToPop = 1; } }
+    virtual void apply(double& value)           { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _success=true; _numberToPop = 1; } }
     virtual void apply(std::string& value)      { if (lua_isstring(_lua, _index)) { value = std::string(lua_tostring(_lua, _index), lua_rawlen(_lua, _index)); _numberToPop = 1; } }
-    virtual void apply(osg::Vec2f& value)       { _lse->getValue(_index, value); _numberToPop = 2;}
-    virtual void apply(osg::Vec3f& value)       { _lse->getValue(_index, value); _numberToPop = 2; }
-    virtual void apply(osg::Vec4f& value)       { _lse->getValue(_index, value); _numberToPop = 4; }
-    virtual void apply(osg::Vec2d& value)       { _lse->getValue(_index, value); _numberToPop = 2; }
-    virtual void apply(osg::Vec3d& value)       { _lse->getValue(_index, value); _numberToPop = 3; }
-    virtual void apply(osg::Vec4d& value)       { _lse->getValue(_index, value); _numberToPop = 4; }
-    virtual void apply(osg::Quat& value)        { _lse->getValue(_index, value); _numberToPop = 4; }
-    virtual void apply(osg::Plane& value)       { _lse->getValue(_index, value); _numberToPop = 4; }
-    virtual void apply(osg::Matrixf& value)     { _lse->getValue(_index, value); }
-    virtual void apply(osg::Matrixd& value)     { _lse->getValue(_index, value); }
-    virtual void apply(osg::BoundingBoxf& value) { _lse->getValue(_index, value); }
-    virtual void apply(osg::BoundingBoxd& value) { _lse->getValue(_index, value); }
-    virtual void apply(osg::BoundingSpheref& value) { _lse->getValue(_index, value); }
-    virtual void apply(osg::BoundingSphered& value) { _lse->getValue(_index, value); }
+    virtual void apply(osg::Vec2f& value)       { if (_lse->getValue(_index, value)) { _success=true; _numberToPop = 2;} }
+    virtual void apply(osg::Vec3f& value)       { if (_lse->getValue(_index, value)) { _success=true; _numberToPop = 2; } }
+    virtual void apply(osg::Vec4f& value)       { if (_lse->getValue(_index, value)) { _success=true; _numberToPop = 4; } }
+    virtual void apply(osg::Vec2d& value)       { if (_lse->getValue(_index, value)) { _success=true; _numberToPop = 2; } }
+    virtual void apply(osg::Vec3d& value)       { if (_lse->getValue(_index, value)) { _success=true; _numberToPop = 3; } }
+    virtual void apply(osg::Vec4d& value)       { if (_lse->getValue(_index, value)) { _success=true; _numberToPop = 4; } }
+    virtual void apply(osg::Quat& value)        { if (_lse->getValue(_index, value)) { _success=true; _numberToPop = 4; } }
+    virtual void apply(osg::Plane& value)       { if (_lse->getValue(_index, value)) { _success=true; _numberToPop = 4; } }
+    virtual void apply(osg::Matrixf& value)     { if (_lse->getValue(_index, value)) { _success=true; } }
+    virtual void apply(osg::Matrixd& value)     { if (_lse->getValue(_index, value)) { _success=true; } }
+    virtual void apply(osg::BoundingBoxf& value) { if (_lse->getValue(_index, value)) { _success=true; } }
+    virtual void apply(osg::BoundingBoxd& value) { if (_lse->getValue(_index, value)) { _success=true; } }
+    virtual void apply(osg::BoundingSpheref& value) { if (_lse->getValue(_index, value)) { _success=true; } }
+    virtual void apply(osg::BoundingSphered& value) { if (_lse->getValue(_index, value)) { _success=true; } }
 };
 
 int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string& propertyName) const
@@ -4111,21 +4112,6 @@ osg::Object* LuaScriptEngine::popParameterObject() const
 
     lua_pop(_lua, 1);
 
-    return object.release();
-
-#if 0
-    osg::ValueObject* vo = dynamic_cast<osg::ValueObject*>(object);
-    if (vo)
-    {
-        GetStackValueVisitor pvv(this, -1);
-        vo->set(pvv);
-        lua_pop(_lua, pvv._numberToPop);
-    }
-    else
-    {
-        lua_pop(_lua, 1);
-    }
-#endif
     return object.release();
 }
 

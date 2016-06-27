@@ -395,7 +395,7 @@ public:
         */
     virtual void Add(const char *);
     // Same as const char * version
-    virtual void Add(std::string &);
+    virtual void Add(const std::string &);
     // Add a 32 bit float to the buffer
     virtual void Add(float32);
     // Add a 64 bit float to the buffer

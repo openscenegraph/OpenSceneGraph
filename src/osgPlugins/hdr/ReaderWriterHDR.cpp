@@ -66,7 +66,8 @@ public:
         supportsOption("YFLIP","");
         supportsOption("NO_YFLIP","");
     }
-    virtual const char* className() { return "HDR Image Reader"; }
+
+    virtual const char* className() const { return "HDR Image Reader"; }
 
     virtual ReadResult readImage(const std::string &_file, const osgDB::ReaderWriter::Options *_opts) const
     {

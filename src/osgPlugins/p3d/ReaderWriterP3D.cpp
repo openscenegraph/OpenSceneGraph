@@ -328,10 +328,6 @@ std::string ReaderWriterP3DXML::expandEnvVarsInFileName(const std::string& filen
             }
             start_pos = argument.find("${",end_pos);
         }
-        else
-        {
-            start_pos = std::string::npos;
-        }
     }
 
     return argument;

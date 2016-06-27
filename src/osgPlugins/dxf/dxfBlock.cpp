@@ -35,18 +35,18 @@ dxfBlock::assign(dxfFile* dxf, codeValue& cv)
     } else if (_currentEntity) {
         _currentEntity->assign(dxf, cv);
     } else if (cv._groupCode != 0) {
-        double d = cv._double;
         switch (cv._groupCode) {
             case 2:
                 _name = s;
+                break;
             case 10:
-                _position.x() = d;
+                _position.x() = cv._double;
                 break;
             case 20:
-                _position.y() = d;
+                _position.y() = cv._double;
                 break;
             case 30:
-                _position.z() = d;
+                _position.z() = cv._double;
                 break;
             default:
                 // dxf garble

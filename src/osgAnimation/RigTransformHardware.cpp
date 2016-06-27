@@ -37,7 +37,7 @@ RigTransformHardware::RigTransformHardware(const RigTransformHardware& rth, cons
     _boneWeightAttribArrays(rth._boneWeightAttribArrays),
     _uniformMatrixPalette(rth._uniformMatrixPalette),
     _shader(rth._shader),
-    _needInit(false)
+    _needInit(rth._needInit)
 {
 }
 

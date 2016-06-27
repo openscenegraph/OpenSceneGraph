@@ -425,7 +425,9 @@ FltExportVisitor::apply( osg::Geode& node )
                 else if ( (prim->getType() == osg::PrimitiveSet::DrawElementsUBytePrimitiveType) ||
                         (prim->getType() == osg::PrimitiveSet::DrawElementsUShortPrimitiveType) ||
                         (prim->getType() == osg::PrimitiveSet::DrawElementsUIntPrimitiveType) )
+                {
                     handleDrawElements( dynamic_cast<osg::DrawElements*>( prim ), *geom, node );
+                }
                 else
                 {
                     std::string warning( "fltexp: Unknown PrimitiveSet type." );

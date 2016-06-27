@@ -167,9 +167,10 @@ class ReaderWriterAC : public osgDB::ReaderWriter
         virtual WriteResult writeNode(const osg::Node& node,std::ostream& fout, const Options* opts) const
         {
             // write ac file.
-            if(dynamic_cast<const osg::Group*>(&node))
+
+            const osg::Group *gp=node.asGroup();
+            if(gp)
             {
-                const osg::Group *gp=dynamic_cast<const osg::Group*>(&node);
                 const unsigned int nch=gp->getNumChildren();
                 for (unsigned int i=0; i<nch; i++)
                 {

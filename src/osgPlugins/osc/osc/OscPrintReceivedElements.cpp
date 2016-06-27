@@ -124,7 +124,7 @@ std::ostream& operator<<( std::ostream & os,
 
                 os << " " << s;
 
-                delete s;
+                delete [] s;
             }
             break;
 

@@ -107,7 +107,42 @@ class LightPoint : public PrimaryRecord
 
 public:
 
-    LightPoint() {}
+    LightPoint():
+        _material(0),
+        _feature(0),
+        _backColor(1.0f,1.0f,1.0f,1.0f),
+        _displayMode(0),
+        _intensityFront(0.0f),
+        _intensityBack(0.0f),
+        _minDefocus(0.0f),
+        _maxDefocus(0.0f),
+        _fadeMode(0),
+        _fogPunchMode(0),
+        _directionalMode(0),
+        _rangeMode(0),
+        _minPixelSize(0.0f),
+        _maxPixelSize(0.0f),
+        _actualPixelSize(0.0f),
+        _transparentFalloff(0.0f),
+        _transparentFalloffExponent(0.0f),
+        _transparentFalloffScalar(0.0f),
+        _transparentFalloffClamp(0.0f),
+        _fog(0.0f),
+        _sizeDifferenceThreshold(0.0f),
+        _directionality(0),
+        _lobeHorizontal(0.0f),
+        _lobeVertical(0.0f),
+        _lobeRoll(0.0f),
+        _falloff(0.0f),
+        _ambientIntensity(0.0f),
+        _animationPeriod(0.0f),
+        _animationPhaseDelay(0.0f),
+        _animationPeriodEnable(0.0f),
+        _significance(0.0f),
+        _drawOrder(0),
+        _flags(0),
+        _animationAxis(0.0f,0.0f,1.0f)
+    {}
 
     META_Record(LightPoint)
 

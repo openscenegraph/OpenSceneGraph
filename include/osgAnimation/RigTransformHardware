@@ -31,10 +31,9 @@ namespace osgAnimation
     {
     public:
 
-        RigTransformHardware();
-        RigTransformHardware(const RigTransformHardware&,const osg::CopyOp&){};
-
         META_Object(osgAnimation,RigTransformHardware)
+        RigTransformHardware();
+        RigTransformHardware(const RigTransformHardware&,const osg::CopyOp &op){};
 
         typedef osg::Matrix MatrixType;
         typedef osgAnimation::Bone BoneType;

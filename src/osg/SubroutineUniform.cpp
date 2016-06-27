@@ -40,5 +40,11 @@ void SubroutineUniform::apply(State& state) const
         ext->glUniformSubroutinesuiv(_shadertype,_subroutineNames.size(),&_indices[contextID].front());
     }
 }
+bool SubroutineUniform::setShaderType( Shader::Type shadertype){
+    if(shadertype == _shadertype)return true;
+    ReassignToParents needToReassingToParentsWhenMemberValueChanges(this);
+    _shadertype=shadertype;
+    return true;
+}
 
 SubroutineUniform::~SubroutineUniform() {}

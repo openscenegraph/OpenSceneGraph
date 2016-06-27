@@ -35,12 +35,9 @@ void DrawArraysIndirect::draw(osg::State& state, bool /*useVertexBufferObjects*/
 
 }
 
-<<<<<<< HEAD
 
-void MultiDrawArraysIndirect::draw(osg::State& state, bool useVertexBufferObjects,bool) const
-=======
-void MultiDrawArraysIndirect::draw(osg::State& state, bool /*useVertexBufferObjects*/) const
->>>>>>> upstream/master
+void MultiDrawArraysIndirect::draw(osg::State& state, bool /*useVertexBufferObjects*/,bool/*useVertexArrayObject*/) const
+
 {
     state.get<osg::GLExtensions>()->glMultiDrawArraysIndirect( _mode, reinterpret_cast<const void*>(_indirect), _drawcount, _stride );
 }

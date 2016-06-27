@@ -174,5 +174,8 @@ AttrData::AttrData(const AttrData& attr, const osg::CopyOp& copyop) :
     reserved10(attr.reserved10),
     numSubtextures(attr.numSubtextures)
 {
-
+    for(int i=0; i<8; ++i)
+    {
+        of_mips[i]=attr.of_mips[i];
+    }
 }

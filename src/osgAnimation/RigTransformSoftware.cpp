@@ -24,7 +24,9 @@ RigTransformSoftware::RigTransformSoftware()
 {
     _needInit = true;
 }
-
+RigTransformSoftware::RigTransformSoftware(const RigTransformSoftware&rhs,const osg::CopyOp&){
+    _needInit = true;
+}
 bool RigTransformSoftware::init(RigGeometry& geom)
 {
     if (!geom.getSkeleton())

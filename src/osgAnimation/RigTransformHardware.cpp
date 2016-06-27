@@ -26,7 +26,11 @@ RigTransformHardware::RigTransformHardware()
     _bonesPerVertex = 0;
     _nbVertexes = 0;
 }
-
+RigTransformHardware::RigTransformHardware(const RigTransformHardware&rhs,const osg::CopyOp&){
+    _needInit = true;
+    _bonesPerVertex = 0;
+    _nbVertexes = 0;
+}
 osg::Vec4Array* RigTransformHardware::getVertexAttrib(int index)
 {
     if (index >= (int)_boneWeightAttribArrays.size())

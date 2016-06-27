@@ -217,7 +217,14 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
         {
             int nbChild;
 
-            sscanf(name.c_str(),"subtiles%d_%dx%d_%u_%d",&lod,&x,&y,&id, &nbChild);
+            int numItemsRead = sscanf(name.c_str(),"subtiles%d_%dx%d_%u_%d",&lod,&x,&y,&id, &nbChild);
+            if (numItemsRead!=5)
+            {
+                ReaderWriterTXPERROR("ReaderWriterTXP::local_readNode()") << "'subtile' filename children parsing failed " << std::endl;
+                return ReadResult::ERROR_IN_READING_FILE;
+            }
+
+
             std::vector<TXPArchive::TileLocationInfo> locs;
             bool status = true;
             status = extractChildrenLocations(name, lod, locs, nbChild);

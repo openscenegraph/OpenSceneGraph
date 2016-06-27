@@ -57,7 +57,8 @@ RigGeometry::RigGeometry()
     setDataVariance(osg::Object::DYNAMIC);
     _needToComputeMatrix = true;
     _matrixFromSkeletonToGeometry = _invMatrixFromSkeletonToGeometry = osg::Matrix::identity();
-
+    // disable the computation of boundingbox for the rig mesh
+    setComputeBoundingBoxCallback(new RigComputeBoundingBoxCallback);
 
 }
 
@@ -68,9 +69,12 @@ RigGeometry::RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop) :
     _vertexInfluenceSet(b._vertexInfluenceSet),
     _vertexInfluenceMap(b._vertexInfluenceMap),
     _needToComputeMatrix(b._needToComputeMatrix)
-{
+{    
+    // disable the computation of boundingbox for the rig mesh
+    setComputeBoundingBoxCallback(new RigComputeBoundingBoxCallback);
     // we dont copy the RigImplementation yet. because the RigImplementation need to be initialized in a valid graph, with a skeleton ...
     // dont know yet what to do with a clone of a RigGeometry
+
 }
 
 
@@ -113,8 +117,6 @@ void RigGeometry::computeMatrixFromRootSkeleton()
     _matrixFromSkeletonToGeometry = mtxList[0] * osg::Matrix::inverse(notRoot);
     _invMatrixFromSkeletonToGeometry = osg::Matrix::inverse(_matrixFromSkeletonToGeometry);
     _needToComputeMatrix = false;    
-    // disable the computation of boundingbox for the rig mesh
-    setComputeBoundingBoxCallback(new RigComputeBoundingBoxCallback);
 }
 
 void RigGeometry::update()

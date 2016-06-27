@@ -797,7 +797,14 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
             {
                 int smoothingGroup=0;
                 if (strncmp(line+2,"off",3)==0) smoothingGroup = 0;
-                else sscanf(line+2,"%d",&smoothingGroup);
+                else
+                {
+                    int result = sscanf(line+2,"%d",&smoothingGroup);
+                    if (result!=1)
+                    {
+                        OSG_NOTICE <<"*** error reading smoothing group ***"<<std::endl;
+                    }
+                }
 
                 if (currentElementState.smoothingGroup != smoothingGroup)
                 {

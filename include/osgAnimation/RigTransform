@@ -15,14 +15,14 @@
 #ifndef OSGANIMATION_RIGTRANSFORM
 #define OSGANIMATION_RIGTRANSFORM 1
 
-#include <osg/Referenced>
+#include <osg/Object>
 
 namespace osgAnimation
 {
 
     class RigGeometry;
 
-    class RigTransform : public osg::Referenced
+    class RigTransform : public osg::Object
     {
     public:
         RigTransform() {}

@@ -92,13 +92,90 @@ AttrData::AttrData() :
     hemisphere(1),
     comments(""),
     attrVersion(0),
-    controlPoints(0)
-    // TODO:
+    controlPoints(0),
+    reserved10(0),
+    numSubtextures(0)
 {
     of_mips[0]=of_mips[1]=of_mips[2]=of_mips[3]=of_mips[4]=of_mips[5]=of_mips[6]=of_mips[7]=0.0f;
 }
 
 AttrData::AttrData(const AttrData& attr, const osg::CopyOp& copyop) :
-    osg::Object(attr,copyop)
-{}
+    osg::Object(attr,copyop),
+    texels_u(attr.texels_u),
+    texels_v(attr.texels_v),
+    direction_u(attr.direction_u),
+    direction_v(attr.direction_v),
+    x_up(attr.x_up),
+    y_up(attr.y_up),
+    fileFormat(attr.fileFormat),
+    minFilterMode(attr.minFilterMode),
+    magFilterMode(attr.magFilterMode),
+    wrapMode(attr.wrapMode),
+    wrapMode_u(attr.wrapMode_u),
+    wrapMode_v(attr.wrapMode_v),
+    modifyFlag(attr.modifyFlag),
+    pivot_x(attr.pivot_x),
+    pivot_y(attr.pivot_y),
+    texEnvMode(attr.texEnvMode),
+    intensityAsAlpha(attr.intensityAsAlpha),
+    size_u(attr.size_u),
+    size_v(attr.size_v),
+    originCode(attr.originCode),
+    kernelVersion(attr.kernelVersion),
+    intFormat(attr.intFormat),
+    extFormat(attr.extFormat),
 
+    useMips(attr.useMips),
+
+    useLodScale(attr.useLodScale),
+    lod0(attr.lod0),
+    scale0(attr.scale0),
+    lod1(attr.lod1),
+    scale1(attr.scale1),
+    lod2(attr.lod2),
+    scale2(attr.scale2),
+    lod3(attr.lod3),
+    scale3(attr.scale3),
+    lod4(attr.lod4),
+    scale4(attr.scale4),
+    lod5(attr.lod5),
+    scale5(attr.scale5),
+    lod6(attr.lod6),
+    scale6(attr.scale6),
+    lod7(attr.lod7),
+    scale7(attr.scale7),
+
+    clamp(attr.clamp),
+    magFilterAlpha(attr.magFilterAlpha),
+    magFilterColor(attr.magFilterColor),
+    lambertMeridian(attr.lambertMeridian),
+    lambertUpperLat(attr.lambertUpperLat),
+    lambertlowerLat(attr.lambertlowerLat),
+    useDetail(attr.useDetail),
+    txDetail_j(attr.txDetail_j),
+    txDetail_k(attr.txDetail_k),
+    txDetail_m(attr.txDetail_m),
+    txDetail_n(attr.txDetail_n),
+    txDetail_s(attr.txDetail_s),
+    useTile(attr.useTile),
+    txTile_ll_u(attr.txTile_ll_u),
+    txTile_ll_v(attr.txTile_ll_v),
+    txTile_ur_u(attr.txTile_ur_u),
+    txTile_ur_v(attr.txTile_ur_v),
+    projection(attr.projection),
+    earthModel(attr.earthModel),
+    utmZone(attr.utmZone),
+    imageOrigin(attr.imageOrigin),
+    geoUnits(attr.geoUnits),
+    hemisphere(attr.hemisphere),
+    comments(attr.comments),
+    attrVersion(attr.attrVersion),
+    controlPoints(attr.controlPoints),
+    reserved10(attr.reserved10),
+    numSubtextures(attr.numSubtextures)
+{
+    for(int i=0; i<8; ++i)
+    {
+        of_mips[i]=attr.of_mips[i];
+    }
+}

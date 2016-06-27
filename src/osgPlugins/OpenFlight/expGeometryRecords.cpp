@@ -1044,6 +1044,8 @@ FltExportVisitor::handleDrawArrayLengths( const osg::DrawArrayLengths* dal, cons
 void
 FltExportVisitor::handleDrawElements( const osg::DrawElements* de, const osg::Geometry& geom, const osg::Geode& geode )
 {
+    if (!de) return;
+
     GLenum mode = de->getMode();
 
     int n( 0 );

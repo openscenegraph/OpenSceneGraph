@@ -125,7 +125,7 @@ osg::Material* MaterialPool::getOrCreateMaterial(int index, const osg::Vec4& fac
     osg::Material* poolMaterial = get(index);
 
     // Create final material.
-    osg::Material* material = dynamic_cast<osg::Material*>(poolMaterial->clone(osg::CopyOp::SHALLOW_COPY));
+    osg::Material* material = osg::clone(poolMaterial, osg::CopyOp::SHALLOW_COPY);
     osg::Vec4 materialPaletteAmbient = poolMaterial->getAmbient(osg::Material::FRONT);
     osg::Vec4 materialPaletteDiffuse = poolMaterial->getDiffuse(osg::Material::FRONT);
 

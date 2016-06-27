@@ -589,7 +589,10 @@ class Switch : public PrimaryRecord
 
 public:
 
-    Switch() {}
+    Switch():
+        _currentMask(0),
+        _numberOfMasks(0),
+        _wordsInMask(0) {}
 
     META_Record(Switch)
 

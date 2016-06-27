@@ -38,7 +38,8 @@ public:
         supportsExtension("dxf","Autodesk DXF format");
     }
 
-    virtual const char* className() { return "Autodesk DXF Reader/Writer"; }
+    virtual const char* className() const { return "Autodesk DXF Reader/Writer"; }
+
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
 
 

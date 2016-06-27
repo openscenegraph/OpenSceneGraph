@@ -4113,21 +4113,6 @@ osg::Object* LuaScriptEngine::popParameterObject() const
     lua_pop(_lua, 1);
 
     return object.release();
-
-#if 0
-    osg::ValueObject* vo = dynamic_cast<osg::ValueObject*>(object);
-    if (vo)
-    {
-        GetStackValueVisitor pvv(this, -1);
-        vo->set(pvv);
-        lua_pop(_lua, pvv._numberToPop);
-    }
-    else
-    {
-        lua_pop(_lua, 1);
-    }
-#endif
-    return object.release();
 }
 
 void LuaScriptEngine::pushContainer(osg::Object* object, const std::string& propertyName) const

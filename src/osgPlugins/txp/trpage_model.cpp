@@ -89,7 +89,7 @@ void trpgModel::SetName(const char *nm)
 
     if (nm)
     {
-        name = new char[(nm ? strlen(nm) : 0)+1];
+        name = new char[strlen(nm)+1];
         strcpy(name,nm);
     }
 }

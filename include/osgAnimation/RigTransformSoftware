@@ -30,8 +30,10 @@ namespace osgAnimation
     class OSGANIMATION_EXPORT RigTransformSoftware : public RigTransform
     {
     public:
-
+        META_Object(osgAnimation,RigTransformSoftware)
         RigTransformSoftware();
+        RigTransformSoftware(const RigTransformSoftware&,const osg::CopyOp &op){};
+
         virtual void operator()(RigGeometry&);
 
 

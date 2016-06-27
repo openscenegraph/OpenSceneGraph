@@ -585,7 +585,9 @@ struct VertexIndex {
 
 class VertexSet : public osg::Referenced {
 public:
-    VertexSet() : _dirty(true)
+    VertexSet() :
+        _cosCreaseAngle(1.0f),
+        _dirty(true)
     { }
     void reserve(unsigned n)
     {
@@ -599,9 +601,9 @@ public:
     {
         _dirty = true;
         if (crease <= 0)
-            _cosCreaseAngle = 1;
+            _cosCreaseAngle = 1.0f;
         else if (180 <= crease)
-            _cosCreaseAngle = -1;
+            _cosCreaseAngle = -1.0f;
         else
             _cosCreaseAngle = cosf(osg::DegreesToRadians(crease));
     }

@@ -48,6 +48,39 @@ static void workOnRGBE(RGBE *scan, int len, float *cols);
 static bool decrunch(RGBE *scanline, int len, FILE *file);
 static bool oldDecrunch(RGBE *scanline, int len, FILE *file);
 
+
+inline char read_char(FILE* stream, int& error)
+{
+    if (error) return 0;
+
+    int value = fgetc(stream);
+    if (value>=0 && value<128)
+    {
+        return static_cast<char>(value);
+    }
+    else
+    {
+        error = value;
+        return 0;
+    }
+}
+
+inline unsigned char read_unsigned_char(FILE* stream, int& error)
+{
+    if (error) return 0;
+
+    int value = fgetc(stream);
+    if (value>=0 && value<256)
+    {
+        return static_cast<unsigned char>(value);
+    }
+    else
+    {
+        error = value;
+        return 0;
+    }
+}
+
 bool HDRLoader::isHDRFile(const char *_fileName)
 {
     FILE *file;
@@ -101,9 +134,10 @@ bool HDRLoader::load(const char *_fileName, const bool _rawRGBE, HDRLoaderResult
     //char cmd[2000];
     i = 0;
     char c = 0, oldc;
-    while(true) {
+    int error = 0;
+    while(!error) {
         oldc = c;
-        c = fgetc(file);
+        c = read_char(file, error);
         if (c == 0xa && oldc == 0xa)
             break;
         //cmd[i++] = c;
@@ -111,8 +145,8 @@ bool HDRLoader::load(const char *_fileName, const bool _rawRGBE, HDRLoaderResult
 
     char reso[2000];
     i = 0;
-    while(true) {
-        c = fgetc(file);
+    while(!error) {
+        c = read_char(file, error);
         reso[i++] = c;
         if (c == 0xa)
             break;
@@ -201,8 +235,10 @@ bool decrunch(RGBE *_scanline, int _len, FILE *_file)
         return oldDecrunch(_scanline, _len, _file);
     }
 
-    _scanline[0][G] = fgetc(_file);
-    _scanline[0][B] = fgetc(_file);
+    int error = 0;
+
+    _scanline[0][G] = read_unsigned_char(_file, error);
+    _scanline[0][B] = read_unsigned_char(_file, error);
     i = fgetc(_file);
 
     if (_scanline[0][G] != 2 || _scanline[0][B] & 128) {
@@ -214,16 +250,16 @@ bool decrunch(RGBE *_scanline, int _len, FILE *_file)
     // read each component
     for (i = 0; i < 4; i++) {
         for (j = 0; j < _len; ) {
-            unsigned char code = fgetc(_file);
+            unsigned char code = read_unsigned_char(_file, error);
             if (code > 128) { // run
                 code &= 127;
-                unsigned char val = fgetc(_file);
+                unsigned char val = read_unsigned_char(_file, error);
                 while (code--)
                     _scanline[j++][i] = val;
             }
             else  {    // non-run
                 while(code--)
-                    _scanline[j++][i] = fgetc(_file);
+                    _scanline[j++][i] = read_unsigned_char(_file, error);
             }
         }
     }
@@ -236,11 +272,13 @@ bool oldDecrunch(RGBE *_scanline, int _len, FILE *_file)
     int i;
     int rshift = 0;
 
-    while (_len > 0) {
-        _scanline[0][R] = fgetc(_file);
-        _scanline[0][G] = fgetc(_file);
-        _scanline[0][B] = fgetc(_file);
-        _scanline[0][E] = fgetc(_file);
+    int error = 0;
+
+    while (_len > 0 && !error) {
+        _scanline[0][R] = read_unsigned_char(_file, error);
+        _scanline[0][G] = read_unsigned_char(_file, error);
+        _scanline[0][B] = read_unsigned_char(_file, error);
+        _scanline[0][E] = read_unsigned_char(_file, error);
         if (feof(_file))
             return false;
 

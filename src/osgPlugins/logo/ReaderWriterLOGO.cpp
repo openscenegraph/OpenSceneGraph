@@ -37,28 +37,30 @@ class Logos: public osg::Drawable
         {
             virtual bool cull(osg::NodeVisitor *visitor, osg::Drawable* drawable, osg::State*) const
             {
-                Logos *logos = dynamic_cast <Logos *>(drawable);
+                Logos *logos = dynamic_cast<Logos *>(drawable);
+                if (!logos) return true;
+
+
                 osgUtil::CullVisitor *cv = visitor->asCullVisitor();
                 if (!cv) return true;
 
-                unsigned int contextID = cv->getState()!=0 ? cv->getState()->getContextID() : 0;
+                osg::State* state = cv->getState();
+
+                unsigned int contextID = state!=0 ? state->getContextID() : 0;
                 if(contextID != logos->getContextID())
                 {
                     // logo not appropriate for window assigned to the cull visitor so cull it.
                     return true;
                 }
 
-                if( logos != NULL && cv != NULL )
+                osg::Viewport *vp = cv->getViewport();
+                if( vp != NULL )
                 {
-                    osg::Viewport *vp = cv->getViewport();
-                    if( vp != NULL )
+                    if( vp->width() != logos->getViewport()->width() ||
+                        vp->height() != logos->getViewport()->height() )
                     {
-                        if( vp->width() != logos->getViewport()->width() ||
-                            vp->height() != logos->getViewport()->height() )
-                        {
-                            logos->getViewport()->setViewport( vp->x(), vp->y(), vp->width(), vp->height() );
-                            logos->dirtyDisplayList();
-                        }
+                        logos->getViewport()->setViewport( vp->x(), vp->y(), vp->width(), vp->height() );
+                        logos->dirtyDisplayList();
                     }
                 }
                 return false;
@@ -86,7 +88,9 @@ class Logos: public osg::Drawable
             _contextID = 0;
         }
 
-        Logos(const Logos& logo, const CopyOp& copyop=CopyOp::SHALLOW_COPY) :Drawable( logo, copyop ) {}
+        Logos(const Logos& logo, const CopyOp& copyop=CopyOp::SHALLOW_COPY) :
+            Drawable( logo, copyop ),
+            _contextID(0) {}
 
         virtual Object* cloneType() const { return new Logos(); }
         virtual Object* clone( const CopyOp& copyop) const { return new Logos(*this, copyop ); }

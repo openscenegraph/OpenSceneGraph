@@ -941,6 +941,9 @@ trpgwGeomHelper::trpgwGeomHelper()
 {
     buf = NULL;
     mode = trpgGeometry::Triangles;
+    dataType = 0;
+    zmin = 1e12;
+    zmax = -1e12;
 }
 trpgwGeomHelper::~trpgwGeomHelper()
 {
@@ -960,7 +963,7 @@ void trpgwGeomHelper::init(trpgWriteBuffer *ibuf,int dtype)
     dataType = dtype;
     zmin = 1e12;
     zmax = -1e12;
-    mode = 0;
+    mode = trpgGeometry::Triangles;
 }
 // Reset back to a clean state (except for the buffer)
 void trpgwGeomHelper::Reset()

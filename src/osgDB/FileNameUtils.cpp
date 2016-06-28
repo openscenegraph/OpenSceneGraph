@@ -491,7 +491,7 @@ void osgDB::stringcopy(char* dest, const char* src, size_t length)
 {
     strncpy(dest, src, length-1);
     dest[length-1] = '\0';
-    OSG_NOTICE<<"osgDB::stringcopy(["<<dest<<"], src=["<<src<<"], "<<length<<")"<<std::endl;
+//    OSG_NOTICE<<"osgDB::stringcopy(["<<dest<<"], src=["<<src<<"], "<<length<<")"<<std::endl;
 }
 
 

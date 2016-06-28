@@ -25,7 +25,6 @@ ESRIShapeParser::ESRIShapeParser( const std::string fileName, bool useDouble ):
         if( (fd = open( fileName.c_str(), O_RDONLY )) <= 0 )
 #endif
         {
-            if (fd) close ( fd );
             perror( fileName.c_str() );
             return ;
         }

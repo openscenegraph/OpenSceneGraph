@@ -20,6 +20,8 @@
 
 #include "ESRIShape.h"
 
+#include <float.h>
+
 using namespace ESRIShape ;
 
 #define SAFE_DELETE_ARRAY( ptr ) delete[] ptr; ptr = 0L;
@@ -177,7 +179,7 @@ bool Box::read( int fd )
     return true;
 }
 
-Range::Range() {}
+Range::Range():min(DBL_MAX), max(-DBL_MAX) {}
 Range::Range( const Range &r ): min(r.min), max(r.max) {}
 
 bool Range::read( int fd )

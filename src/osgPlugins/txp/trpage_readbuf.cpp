@@ -667,6 +667,12 @@ trpgrAppFile *trpgrAppFileCache::GetFile(trpgEndian ness,int id,int col,int row)
         }
     }
 
+    if (oldID<0)
+    {
+        // oldID hasn't been set so we haven't found one to reclaim
+        return 0;
+    }
+
 
     // Reclaim this one
     OpenFile &of = files[oldID];

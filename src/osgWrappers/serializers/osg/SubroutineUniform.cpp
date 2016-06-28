@@ -40,7 +40,6 @@ REGISTER_OBJECT_WRAPPER( SubroutineUniform,
 {
 
     ADD_USER_SERIALIZER( SubroutineName );
-    ADD_OBJECT_SERIALIZER( Program, osg::Program, NULL );
 
     {
         typedef osgDB::EnumSerializer<osg::SubroutineUniform, osg::Shader::Type, bool> ShaderTypeSerializer;

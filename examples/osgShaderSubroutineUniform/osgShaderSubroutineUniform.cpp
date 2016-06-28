@@ -117,16 +117,13 @@ int main( int , char** )
 
     osg::StateSet* sset = geom->getOrCreateStateSet();
 
+    osg::SubroutineUniform * subroutineu=new osg::SubroutineUniform(osg::Shader::FRAGMENT);
+    subroutineu->addSubroutineName("ColorRed");
+    sset->setAttribute(subroutineu);
     osg::Program* pgm = new osg::Program;
     pgm->setName( "osg shader subroutine uniform demo" );
     pgm->addShader( new osg::Shader( osg::Shader::FRAGMENT, fragSource ) );
     sset->setAttribute(pgm);
-
-    osg::SubroutineUniform * subroutineu=new osg::SubroutineUniform(osg::Shader::FRAGMENT);
-    subroutineu->setProgram(pgm);
-    subroutineu->addSubroutineName("ColorRed");
-    sset->setAttribute(subroutineu);
-
     sset->setUpdateCallback( new ShaderSubroutineSwaper(subroutineu));
 
 
@@ -135,3 +132,4 @@ int main( int , char** )
     viewer.setSceneData( root );
     return viewer.run();
 }
+

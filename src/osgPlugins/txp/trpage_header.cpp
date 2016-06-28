@@ -50,12 +50,12 @@ bool trpgHeader::isValid() const
     else {
         if (numLods <= 0)
         {
-            strcpy(errMess, "Number of LOD <= 0");
+            errMess.assign("Number of LOD <= 0");
             return false;
         }
         if (sw.x == ne.x && sw.y == ne.y)
         {
-            strcpy(errMess, "Mbr is invalid");
+            errMess.assign("Mbr is invalid");
 
             return false;
         }

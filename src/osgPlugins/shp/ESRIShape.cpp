@@ -62,6 +62,26 @@ inline bool readVal( int fd, T &val, ByteOrder bo = LittleEndian )
     return true;
 }
 
+
+template <class T>
+inline bool readPositiveVal( int fd, T &val, ByteOrder bo = LittleEndian )
+{
+    int nbytes = 0;
+    if( (nbytes = esri::read( fd, &val, sizeof(T))) <= 0 )
+        return false;
+
+    if( getByteOrder() != bo )
+        swapBytes<T>(val);
+
+    if (val<0)
+    {
+         val = 0;
+         return false;
+    }
+
+    return true;
+}
+
 inline void printType( ShapeType type )
 {
     printf( "%s",
@@ -286,7 +306,7 @@ bool MultiPoint::read( int fd )
     if( bbox.read(fd) == false )
         return false;
 
-    if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
 
     points = new struct Point[numPoints];
@@ -354,10 +374,10 @@ bool PolyLine::read( int fd )
     if( bbox.read(fd) == false )
         return false;
 
-    if( readVal<Integer>(fd, numParts, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numParts, LittleEndian ) == false )
         return false;
 
-    if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
 
     parts  = new Integer[numParts];
@@ -426,10 +446,10 @@ bool Polygon::read( int fd )
     if( bbox.read(fd) == false )
         return false;
 
-    if( readVal<Integer>(fd, numParts, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numParts, LittleEndian ) == false )
         return false;
 
-    if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
 
     parts  = new Integer[numParts];
@@ -544,7 +564,7 @@ bool MultiPointM::read( int fd )
     if( bbox.read(fd) == false )
         return false;
 
-    if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
 
     points = new struct Point[numPoints];
@@ -637,10 +657,10 @@ bool PolyLineM::read( int fd )
     if( bbox.read(fd) == false )
         return false;
 
-    if( readVal<Integer>(fd, numParts, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numParts, LittleEndian ) == false )
         return false;
 
-    if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
 
     parts  = new Integer[numParts];
@@ -735,10 +755,10 @@ bool PolygonM::read( int fd )
     if( bbox.read(fd) == false )
         return false;
 
-    if( readVal<Integer>(fd, numParts, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numParts, LittleEndian ) == false )
         return false;
 
-    if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
 
     parts  = new Integer[numParts];
@@ -883,7 +903,7 @@ bool MultiPointZ::read( int fd )
     if( bbox.read(fd) == false )
         return false;
 
-    if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
 
     points = new struct Point[numPoints];
@@ -1000,10 +1020,10 @@ bool PolyLineZ::read( int fd )
     if( bbox.read(fd) == false )
         return false;
 
-    if( readVal<Integer>(fd, numParts, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numParts, LittleEndian ) == false )
         return false;
 
-    if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
 
     parts  = new Integer[numParts];

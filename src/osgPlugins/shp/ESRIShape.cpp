@@ -162,7 +162,13 @@ bool NullRecord::read( int fd )
 }
 
 
-Box::Box() {}
+Box::Box():
+    Xmin(DBL_MAX),
+    Ymin(DBL_MAX),
+    Xmax(-DBL_MAX),
+    Ymax(-DBL_MAX)
+    {}
+
 Box::Box(const Box &b ):
     Xmin(b.Xmin),
     Ymin(b.Ymin),

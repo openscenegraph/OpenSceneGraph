@@ -960,6 +960,7 @@ void trpgwGeomHelper::init(trpgWriteBuffer *ibuf,int dtype)
     dataType = dtype;
     zmin = 1e12;
     zmax = -1e12;
+    mode = 0;
 }
 // Reset back to a clean state (except for the buffer)
 void trpgwGeomHelper::Reset()

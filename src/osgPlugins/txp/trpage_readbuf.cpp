@@ -691,8 +691,8 @@ trpgrAppFile *trpgrAppFileCache::GetFile(trpgEndian ness,int id,int col,int row)
         int len = strlen(baseName);
         while(--len > 0) {
             if(baseName[len]==PATHSEPERATOR[0]) {
-                strcpy(filebase,&baseName[len+1]);
-                strcpy(dir,baseName);
+                osgDB::stringcopyfixedsize(filebase,&baseName[len+1]);
+                osgDB::stringcopyfixedsize(dir,baseName);
                 dir[len]='\0';
                 break;
             }

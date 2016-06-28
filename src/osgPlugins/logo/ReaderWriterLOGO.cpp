@@ -255,17 +255,14 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
 
             Logos::RelativePosition pos = Logos::LowerRight;
 
-            FILE *fp;
-            if( (fp = osgDB::fopen( fileName.c_str(), "r")) == NULL )
-                return NULL;
-            while( !feof(fp))
+
+            std::ifstream fin(filePath.c_str());
+            if (!fin) return NULL;
+
+            while(fin)
             {
-                char buff[128];
-
-                if( fscanf( fp, "%s", buff ) != 1 )
-                    break;
-
-                std::string str(buff);
+                std::string str;
+                fin >> str;
 
                 if( str == "Center" )
                     pos = Logos::Center;
@@ -284,7 +281,8 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
                 else if( str == "Camera" )
                 {
                     int tn;
-                    if( (fscanf( fp, "%d", &tn )) != 1 )
+                    fin >> tn;
+                    if (fin.fail())
                     {
                         OSG_WARN << "Error... Camera requires an integer argument\n";
                         break;
@@ -316,7 +314,6 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
                     ld->addLogo( pos, str );
                 }
             }
-            fclose( fp );
 
             if( ld->hasLogos() )
                 geode->addDrawable( ld );

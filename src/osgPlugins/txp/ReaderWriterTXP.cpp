@@ -22,13 +22,6 @@
 
 #define ReaderWriterTXPERROR(s) OSG_NOTICE << "txp::ReaderWriterTXP::" << (s) << " error: "
 
-
-
-namespace
-{
-    char gbuf[2048];
-}
-
 using namespace txp;
 
 int ReaderWriterTXP::_archiveId = 0;
@@ -520,8 +513,8 @@ bool ReaderWriterTXP::extractChildrenLocations(const std::string& name, int pare
         return false;
 
     // Extract the data
-    strcpy(gbuf, name.substr(startOfList + 1, endOfList - startOfList - 1).c_str());
-    char *token = strtok( gbuf, "_" );
+    std::string gbuf(name.substr(startOfList + 1, endOfList - startOfList - 1));
+    char *token = gbuf.empty() ? 0: strtok( &gbuf[0], "_" );
 
     int nbTokenRead = 0;
     for(int idx = 0; idx < nbChild; idx++)

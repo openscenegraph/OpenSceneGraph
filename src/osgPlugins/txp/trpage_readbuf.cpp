@@ -14,6 +14,7 @@
    */
 
 #include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -593,8 +594,8 @@ trpgrAppFileCache::trpgrAppFileCache(const char *inPre,const char *inExt,int noF
 
 void trpgrAppFileCache::Init(const char *inPre,const char *inExt,int noFiles)
 {
-    strcpy(baseName,inPre);
-    strcpy(ext,inExt);
+    osgDB::stringcopyfixedsize(baseName,inPre);
+    osgDB::stringcopyfixedsize(ext,inExt);
 
     files.resize(noFiles);
     timeCount = 0;

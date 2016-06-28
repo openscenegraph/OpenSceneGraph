@@ -14,6 +14,7 @@
    */
 
 #include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -538,7 +539,8 @@ void trpgrImageHelper::Init(trpgEndian inNess,char *inDir,
                             const trpgMatTable &inMatTable,const trpgTexTable &inTexTable,bool sepGeoTyp)
 {
     ness = inNess;
-    strcpy(dir,inDir);
+    osgDB::stringcopyfixedsize(dir,inDir);
+
     separateGeoTyp = sepGeoTyp;
     matTable = &inMatTable;
     texTable = &inTexTable;

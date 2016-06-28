@@ -134,9 +134,9 @@ public:
           osg::PrimitiveIndexFunctor(),
           _drawable_n(drawable_n),
           _listTriangles(listTriangles),
+          _modeCache(0),
           _hasNormalCoords(geo->getNormalArray() != NULL),
           _hasTexCoords(geo->getTexCoordArray(0) != NULL),
-          _lastFaceIndex(0),
           _material(material)
       {
       }
@@ -152,6 +152,7 @@ public:
       virtual void setVertexArray(unsigned int,const osg::Vec2d*) {}
 
       virtual void setVertexArray(unsigned int ,const osg::Vec3d*) {}
+
       virtual void setVertexArray(unsigned int,const osg::Vec4d*) {}
 
 

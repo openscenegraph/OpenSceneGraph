@@ -40,7 +40,6 @@ class Logos: public osg::Drawable
                 Logos *logos = dynamic_cast<Logos *>(drawable);
                 if (!logos) return true;
 
-
                 osgUtil::CullVisitor *cv = visitor->asCullVisitor();
                 if (!cv) return true;
 

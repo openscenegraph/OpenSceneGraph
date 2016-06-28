@@ -133,16 +133,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
 
         if (asChildren)
         {
-            char pagedLODfile[1024];
-            sprintf(pagedLODfile,"%s\\subtiles%d_%dx%d_%d",
-            archive->getDir(),
-            lod,
-            x,
-            y,
-            archive->getId());
 
-            strcat(pagedLODfile, childrenInfoStr.c_str());
-            strcat(pagedLODfile, ".txp");
+            std::stringstream pagedLODfile;
+            pagedLODfile<<archive->getDir()<<"\\subtiles"<<lod<<"_"<<x<<"x"<<y<<"_"<<archive->getId()<<childrenInfoStr<<".txp";
 
 
             // there are tile sets which do not maintain the z extents in
@@ -161,7 +154,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
             osg::ref_ptr<TXPPagedLOD> pagedLOD = new TXPPagedLOD;
             // note: use maximum(info.maxRange,1e7) as just maxRange would result in some corner tiles from being culled out.
             pagedLOD->addChild(tileContent.get(),info.minRange,osg::maximum(info.maxRange,1e7));
-            pagedLOD->setFileName(1,pagedLODfile);
+            pagedLOD->setFileName(1,pagedLODfile.str());
             pagedLOD->setRange(1,0,info.minRange);
             pagedLOD->setCenter(info.center);
             pagedLOD->setRadius(info.radius);

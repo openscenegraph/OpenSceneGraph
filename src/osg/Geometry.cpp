@@ -128,7 +128,7 @@ Geometry::Geometry():
     _useVertexArrayObject=false;
     dirtyVertexArrayObject();
     // temporary test
-    // setSupportsDisplayList(false);
+     setUseVertexArrayObject(true);
 }
 
 Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
@@ -944,8 +944,44 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
         drawVertexArraysImplementation(renderInfo);
     else
     {
-        if(!_vao[state.getContextID()].valid())compileGLObjects(renderInfo);
-         state.get<GLExtensions>()->glBindVertexArray(_vao[state.getContextID()]->getGLID());
+        GLuint contextID=state.getContextID();
+        if(!_vao[contextID].valid())compileGLObjects(renderInfo);
+        ///check if BufferObjects have changed
+        GLBufferObject* glBufferObject=NULL;BufferObject*bo=NULL;
+        #define RECOMPILEIFREQUIRED(XXX) {  bo=(XXX)->getBufferObject();glBufferObject= bo->getOrCreateGLBufferObject(contextID);\
+            if (glBufferObject && glBufferObject->isDirty()) glBufferObject->compileBuffer(); }
+        if (_vertexArray.valid() && _vertexArray->getBufferObject())                RECOMPILEIFREQUIRED(_vertexArray);
+        if (_normalArray.valid() && _normalArray->getBufferObject())                RECOMPILEIFREQUIRED(_normalArray);
+        if (_colorArray.valid() && _colorArray->getBufferObject())                  RECOMPILEIFREQUIRED(_colorArray);
+        if (_secondaryColorArray.valid() && _secondaryColorArray->getBufferObject())RECOMPILEIFREQUIRED(_secondaryColorArray);
+        if (_fogCoordArray.valid() && _fogCoordArray->getBufferObject())            RECOMPILEIFREQUIRED(_fogCoordArray);
+        for(unsigned int unit=0;unit<_vertexAttribList.size();++unit)
+            if ( _vertexAttribList[unit].valid() &&  _vertexAttribList[unit]->getBufferObject())RECOMPILEIFREQUIRED(_vertexAttribList[unit])
+
+        for(ArrayList::const_iterator itr = _texCoordList.begin();
+            itr != _texCoordList.end();
+            ++itr)
+        {
+            if (itr->valid() && (*itr)->getBufferObject())                          RECOMPILEIFREQUIRED(((*itr)));
+        }
+
+        for(ArrayList::const_iterator itr = _vertexAttribList.begin();
+            itr != _vertexAttribList.end();
+            ++itr)
+        {
+            if (itr->valid() && (*itr)->getBufferObject())                          RECOMPILEIFREQUIRED(((*itr)));
+        }
+
+        for(PrimitiveSetList::const_iterator itr = _primitives.begin();
+            itr != _primitives.end();
+            ++itr)
+        {
+            if ((*itr)->getBufferObject())                                          RECOMPILEIFREQUIRED(*itr);
+
+        }
+        #undef RECOMPILEIFREQUIRED
+
+        state.get<GLExtensions>()->glBindVertexArray(_vao[contextID]->getGLID());
     }
 
     if (checkForGLErrors) state.checkGLErrors("Geometry::drawImplementation() after vertex arrays setup.");

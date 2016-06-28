@@ -17,7 +17,7 @@
 
 #include <osg/Export>
 #include <osg/StateAttribute>
-#include <osg/Shader>
+#include <osg/Program>
 
 
 namespace osg
@@ -25,19 +25,21 @@ namespace osg
 
     class State;
 
-    /** Subroutine uniform
-     * OpenGL4 required
+    /**  Subroutine uniform
+     *   OpenGL4 required
+     *   https://www.opengl.org/registry/specs/ARB/shader_subroutine.txt
      */
 
     class OSG_EXPORT SubroutineUniform : public StateAttribute
     {
     public:
-        SubroutineUniform():StateAttribute(),_shadertype(Shader::VERTEX){}
-        SubroutineUniform(Shader::Type shadertype ):StateAttribute(),_shadertype(shadertype){}
+        SubroutineUniform():StateAttribute(),_shadertype(Shader::VERTEX),_program(NULL){}
+        SubroutineUniform(Shader::Type shadertype ):StateAttribute(),_shadertype(shadertype),_program(NULL){}
         SubroutineUniform(const SubroutineUniform& rhs, const CopyOp& copyop=CopyOp::SHALLOW_COPY):StateAttribute(rhs,copyop)
         {
             _subroutineNames=rhs._subroutineNames;
             _shadertype=rhs._shadertype;
+            _program=rhs._program;
         };
 
         META_StateAttribute(osg, SubroutineUniform, SUBROUTINEUNIFORM);
@@ -68,17 +70,23 @@ namespace osg
         ///set the shader type whose subroutine names are from
         inline Shader::Type getShaderType() const{              return _shadertype;             }
 
+        bool setShaderType( Shader::Type shadertype);
+
         virtual unsigned int getMember() const { return _shadertype; }
 
-        bool setShaderType( Shader::Type shadertype);
+        //set the program
+        void setProgram(Program *po){_program=po;}
+        const Program* getProgram()const { return _program;}
 
         virtual void apply(State& state) const;
 
         virtual int compare(const StateAttribute& bb) const
         {
             COMPARE_StateAttribute_Types(SubroutineUniform, bb)
+            COMPARE_StateAttribute_Parameter(_program)
             COMPARE_StateAttribute_Parameter(_subroutineNames)
             COMPARE_StateAttribute_Parameter(_shadertype)
+
             return 0;
         }
 
@@ -86,8 +94,10 @@ namespace osg
         virtual ~SubroutineUniform();
         Shader::Type _shadertype;
         std::vector< std::string> _subroutineNames;
+        ref_ptr<Program> _program;
+
         mutable buffered_object< std::vector<GLuint> > _indices;
-        mutable buffered_object<GLuint> _indicesSetted;
+        mutable buffered_object<GLushort> _indicesSetted;
     };
 
 } // namespace osg

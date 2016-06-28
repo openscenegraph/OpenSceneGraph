@@ -19,30 +19,58 @@ using namespace osg;
 
 void SubroutineUniform::apply(State& state) const
 {
-    GLExtensions* ext=state.get<GLExtensions>();
-    GLuint contextID=state.getContextID();
+    GLExtensions* extensions = state.get<GLExtensions>();
+    GLuint contextID = state.getContextID();
 
-    ///update uniform index (assume program is the LastAppliedProgramObject)
-    if(!_subroutineNames.empty())
+    if(!_subroutineNames.empty()&&_program.valid())
     {
-        if(_indicesSetted[contextID]==0)
-        {
-            unsigned int cpt=0;
-            _indices[contextID].resize(_subroutineNames.size());
-            for(std::vector<std::string>::const_iterator it=_subroutineNames.begin(); it!=_subroutineNames.end(); it++,cpt++)
-            {
-                _indices[contextID][cpt]=
-                    ext->glGetSubroutineIndex(state.getLastAppliedProgramObject()->getHandle(),_shadertype,it->c_str());
-            }
-            _indicesSetted[contextID]=1;
-        }
+        Program::PerContextProgram* pcp = _program->getPCP( state );
 
-        ext->glUniformSubroutinesuiv(_shadertype,_subroutineNames.size(),&_indices[contextID].front());
+        if( pcp->needsLink() ) _program->compileGLObjects( state );
+        if( pcp->isLinked() )
+        {
+            if(pcp != state.getLastAppliedProgramObject()){///IMPORTANT that why I didn't use program->apply
+                if( osg::isNotifyEnabled(osg::INFO) )
+                    pcp->validateProgram();
+
+                pcp->useProgram();
+                state.setLastAppliedProgramObject(pcp);
+            }
+            ///else NOTHING: AVOID THE COST OF BINDING PROGRAM (OTHERWISE THERE NO GAIN IN USING SUBROUTINES)
+
+            if(_indicesSetted[contextID]==0)
+            {
+                ///update uniform index (assume program is the LastAppliedProgramObject)
+                _indices[contextID].resize(_subroutineNames.size());
+
+                {
+                    GLuint GLpo = pcp->getHandle();
+                    std::vector<GLuint>::iterator percontextroutineindexit=_indices[contextID].begin();
+                    for(std::vector<std::string>::const_iterator it=_subroutineNames.begin(); it!=_subroutineNames.end(); it++,percontextroutineindexit++)
+                    {
+                        *percontextroutineindexit=
+                            extensions->glGetSubroutineIndex(GLpo,_shadertype,it->c_str());
+                    }
+                    _indicesSetted[contextID]=1;
+                }
+            }
+
+            extensions->glUniformSubroutinesuiv(_shadertype,_subroutineNames.size(),&_indices[contextID].front());
+        }
+        else
+        {
+            // program not usable, fallback to fixed function.
+            extensions->glUseProgram( 0 );
+            state.setLastAppliedProgramObject(0);
+        }
     }
 }
-bool SubroutineUniform::setShaderType( Shader::Type shadertype){
-    if(shadertype == _shadertype)return true;
+bool SubroutineUniform::setShaderType( Shader::Type shadertype)
+{
+    if(shadertype == _shadertype) return true;
+
     ReassignToParents needToReassingToParentsWhenMemberValueChanges(this);
+
     _shadertype=shadertype;
     return true;
 }

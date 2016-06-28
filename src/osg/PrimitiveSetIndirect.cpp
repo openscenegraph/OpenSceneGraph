@@ -17,12 +17,29 @@
 
 using namespace osg;
 
+#define BINDINDIRECTCOMMAND \
+    if(_indirectCommand.valid())\
+    {\
+        GLBufferObject* glBufferObject = _indirectCommand->getBufferObject()->getOrCreateGLBufferObject(state.getContextID());\
+        if (glBufferObject && glBufferObject->isDirty())\
+        {\
+            OSG_WARN<<"Compiling IndirectDraw buffer in draw...Should not happens if GPU production would had happened earlier ..."<<glBufferObject<<std::endl;\
+            glBufferObject->compileBuffer();\
+        }\
+        state.get<GLExtensions>()->glBindBuffer(GL_DRAW_INDIRECT_BUFFER,glBufferObject->getGLObjectID());\
+    }\
+
+    //else
+    //{
+    //    ///No _indirectCommand assuming user have bound a DrawIndirectBufferBinding to the current stateset
+    //}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // DrawArrayIndirect
 //
 void DrawArraysIndirect::draw(State& state, bool, bool) const
 {
+BINDINDIRECTCOMMAND
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
     GLenum mode = _mode;
     if (_mode==GL_QUADS)
@@ -69,6 +86,7 @@ DrawElementsIndirectUByte::~DrawElementsIndirectUByte()
 
 void DrawElementsIndirectUByte::draw(State& state, bool useVertexBufferObjects, bool bindElementBuffer) const
 {
+BINDINDIRECTCOMMAND
     GLenum mode = _mode;
     #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
         if (mode==GL_POLYGON) mode = GL_TRIANGLE_FAN;
@@ -130,6 +148,7 @@ DrawElementsIndirectUShort::~DrawElementsIndirectUShort()
 
 void DrawElementsIndirectUShort::draw(State& state, bool useVertexBufferObjects, bool bindElementBuffer) const
 {
+BINDINDIRECTCOMMAND
     GLenum mode = _mode;
     #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
         if (mode==GL_POLYGON) mode = GL_TRIANGLE_FAN;
@@ -189,6 +208,7 @@ DrawElementsIndirectUInt::~DrawElementsIndirectUInt()
 
 void DrawElementsIndirectUInt::draw(State& state, bool useVertexBufferObjects, bool bindElementBuffer) const
 {
+BINDINDIRECTCOMMAND
     GLenum mode = _mode;
     #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
         if (mode==GL_POLYGON) mode = GL_TRIANGLE_FAN;
@@ -244,6 +264,7 @@ void DrawElementsIndirectUInt::offsetIndices(int offset)
 #ifdef OSG_HAS_MULTIDRAWARRAYS
 void MultiDrawArraysIndirect::draw(osg::State& state, bool, bool) const
 {
+BINDINDIRECTCOMMAND
     // OSG_NOTICE<<"osg::MultiDrawArraysIndirect::draw"<<std::endl;
 
     GLExtensions* ext = state.get<GLExtensions>();

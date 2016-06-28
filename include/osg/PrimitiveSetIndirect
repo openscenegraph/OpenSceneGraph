@@ -19,19 +19,36 @@
 
 namespace osg {
 
+/**    assuming this structure
+*   typedef  struct {
+*        uint  count;
+*        uint  instanceCount;
+*        uint  first;
+*        uint  baseInstance;
+*    } DrawArraysIndirectCommand;
+**/
+class DrawArraysIndirectCommand: public BufferData, public VectorGLuint
+{
+public:
+META_Object(osg,DrawArraysIndirectCommand)
+DrawArraysIndirectCommand();
+DrawArraysIndirectCommand(const DrawArraysIndirectCommand& copy,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+  virtual const GLvoid*   getDataPointer() const { return empty()?0:&front(); }
+  virtual unsigned int    getTotalDataSize() const { return static_cast<unsigned int>(size()); }
+};
 
 class OSG_EXPORT DrawArraysIndirect : public PrimitiveSet
 {
     public:
 
         DrawArraysIndirect(GLenum mode=0):
-            PrimitiveSet(DrawArraysIndirectPrimitiveType,mode){}
+            PrimitiveSet(DrawArraysIndirectPrimitiveType,mode),_indirect(0), _indirectCommand(0){}
 
         DrawArraysIndirect(GLenum mode, GLint first, GLsizei count):
-            PrimitiveSet(DrawArraysIndirectPrimitiveType, mode, 0){}
+            PrimitiveSet(DrawArraysIndirectPrimitiveType, mode, 0),_indirect(0), _indirectCommand(0){}
 
         DrawArraysIndirect(const DrawArraysIndirect& da,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            PrimitiveSet(da,copyop) {}
+            PrimitiveSet(da,copyop), _indirect(da._indirect), _indirectCommand(da._indirectCommand){}
 
         virtual Object* cloneType() const { return new DrawArraysIndirect(); }
         virtual Object* clone(const CopyOp& copyop) const { return new DrawArraysIndirect(*this,copyop); }
@@ -60,32 +77,62 @@ class OSG_EXPORT DrawArraysIndirect : public PrimitiveSet
         virtual unsigned int index(unsigned int pos) const { return 0; }
         virtual void offsetIndices(int offset) {}
 
+        inline void setIndirectCommand(DrawArraysIndirectCommand*idc){_indirectCommand = idc;    if(!_indirectCommand->getBufferObject())
+        _indirectCommand->setBufferObject(new osg::VertexBufferObject());}
+        inline DrawArraysIndirectCommand* getIndirectCommand()const{return _indirectCommand;}
+
     protected:
 
         virtual ~DrawArraysIndirect() {}
 
         void *  _indirect;
+        ref_ptr<DrawArraysIndirectCommand> _indirectCommand;
 };
 
+
+/** assuming this structure
+*   typedef  struct {
+*        uint  count;
+*        uint  primCount/instanceCount;
+*        uint  firstIndex;
+*        uint  baseVertex;
+*        uint  baseInstance;
+*    } DrawElementsIndirectCommand;
+**/
+
+class DrawElementsIndirectCommand: public BufferData, public VectorGLuint
+{
+public:
+META_Object(osg,DrawElementsIndirectCommand)
+DrawElementsIndirectCommand();
+DrawElementsIndirectCommand(const DrawElementsIndirectCommand& copy,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+  virtual const GLvoid*   getDataPointer() const { return empty()?0:&front(); }
+  virtual unsigned int    getTotalDataSize() const { return static_cast<unsigned int>(size()); }
+
+
+
+};
 
 class DrawElementsIndirect : public DrawElements
 {
     public:
 
         DrawElementsIndirect(Type primType=PrimitiveType, GLenum mode=0, void *  indirect=0):
-            DrawElements(primType,mode, 0),_indirect(indirect) {}
+            DrawElements(primType,mode, 0),_indirect(indirect),_indirectCommand(0) {}
 
-        DrawElementsIndirect(const DrawElementsIndirect& copy,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            DrawElements(copy,copyop) {}
+        DrawElementsIndirect(const DrawElementsIndirect& rhs,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            DrawElements(rhs,copyop) {_indirectCommand=rhs._indirectCommand;}
 
         void setIndirectOffset( void * i){_indirect=i;}
         void * getIndirectOffset()const{return _indirect;}
 
-
+        inline void setIndirectCommand(DrawElementsIndirectCommand*idc){_indirectCommand = idc;    if(!_indirectCommand->getBufferObject())
+        _indirectCommand->setBufferObject(new osg::VertexBufferObject());}
+        inline DrawElementsIndirectCommand* getIndirectCommand()const{return _indirectCommand;}
     protected:
-
         virtual ~DrawElementsIndirect() {}
         void *  _indirect;
+        ref_ptr<DrawElementsIndirectCommand> _indirectCommand;
 };
 class OSG_EXPORT DrawElementsIndirectUByte : public DrawElementsIndirect, public VectorGLubyte
 {
@@ -338,12 +385,18 @@ public:
     GLsizei getStride()const{return _stride;}
     void setDrawCount( GLsizei  i){_drawcount=i;}
     GLsizei getDrawCount()const{return _drawcount;}
+       inline void setIndirectCommand(DrawArraysIndirectCommand*idc){_indirectCommand = idc;    if(!_indirectCommand->getBufferObject())
+        _indirectCommand->setBufferObject(new osg::VertexBufferObject());}
+        inline DrawArraysIndirectCommand* getIndirectCommand()const{return _indirectCommand;}
+
+
 protected:
 
  //   Firsts _firsts;
  //   Counts _counts;
-    GLsizei _drawcount, _stride;
     void * _indirect;
+    GLsizei _drawcount, _stride;
+        ref_ptr<DrawArraysIndirectCommand> _indirectCommand;
 
 };
 #endif

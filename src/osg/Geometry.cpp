@@ -889,7 +889,6 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
                         glebo = ebo->getGLBufferObject(contextID);
                         if (glebo){
                             glebo->bindBuffer();
-                            //break;///assume core profile (all primset share the same ebo)
                             if(numebo++!=0 && uniqueebo!=glebo)
                             {
                                 OSG_WARN<<"Warning Geometry::compileGLObjects: Trying to compile VAO for a Geometry with multiple ElementBufferObjects"<<std::endl;

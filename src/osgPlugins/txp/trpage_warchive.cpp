@@ -1240,6 +1240,7 @@ optVert::optVert(int numMat, int vid, std::vector<trpg3dPoint> &iv, std::vector<
     n=in[vid];
     tex.resize(0);
     for (unsigned int loop=0; loop < (unsigned int)numMat; loop++) tex.push_back(itex[vid*numMat+loop]);
+    valid = true;
 }
 void trpgwGeomHelper::Optimize()
 {

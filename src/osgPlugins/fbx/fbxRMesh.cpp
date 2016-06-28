@@ -678,8 +678,8 @@ bool quadSplit02(const FbxMesh * fbxMesh, int i /*polygonIndex*/,
 
 struct PolygonRef
 {
-    PolygonRef(osg::Geometry* pGeometry, int numPoly, int nVertex)
-        : pGeometry(pGeometry), numPoly(numPoly), nVertex(nVertex)
+    PolygonRef(osg::Geometry* in_pGeometry, int in_numPoly, int in_nVertex)
+        : pGeometry(in_pGeometry), numPoly(in_numPoly), nVertex(in_nVertex)
     {}
     osg::Geometry* pGeometry;
     int numPoly;

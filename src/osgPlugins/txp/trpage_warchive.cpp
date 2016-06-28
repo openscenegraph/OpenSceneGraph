@@ -63,6 +63,7 @@ void trpgwArchive::Init(trpgEndian inNess, trpgwArchive::TileMode inTileMode,int
     tileFileCount = 0;
     isRegenerate = false;
     maxTileFileLen = -1;
+    numLod = 0;
 
     firstHeaderWrite = true;
 }

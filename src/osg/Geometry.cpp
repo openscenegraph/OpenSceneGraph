@@ -40,8 +40,10 @@ namespace osg{
 
         virtual void deleteAllGLObjects()
         {
-             OSG_INFO<<"VertexArrayObjectManager::deleteAllGLObjects() Not currently implementated"<<std::endl;
-        }
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_VertexArrayObject);
+            for(Geometry::VertexArrayObjectMap::iterator itr =_vertexArrayObjectMap.begin();itr!= _vertexArrayObjectMap.end();itr++)
+               osg::get<osg::GLExtensions>(_contextID)->glDeleteVertexArrays(1,&itr->second->_GLID);
+       }
 
         virtual void discardAllGLObjects()
         {
@@ -51,7 +53,12 @@ namespace osg{
         void deleteVertexArrayObject(Geometry::PerContextVertexArrayObject* globj, Geometry::VertexArrayObjectMap::iterator vaokeyit)
         {
         #ifdef OSG_GL_VERTEX_ARRAY_OBJECTS_AVAILABLE
-            if (globj!=0)
+            if (globj!=0
+                    ///Geometry deref is done after destruction of VertexArrayObjectManager
+                    ///so ~VertexArrayObject can recreate an empty one
+                    /// (not a problem because glDeleteVertexArrays is already done at previous destruction in deleteAllGLObjects)
+                    && !_vertexArrayObjectMap.empty()
+                    )
             {
                 OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_VertexArrayObject);
 

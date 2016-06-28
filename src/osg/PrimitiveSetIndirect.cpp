@@ -9,6 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
+ * Copyright (C) 2016 Julien Valentin
 */
 #include <osg/PrimitiveSetIndirect>
 #include <osg/BufferObject>

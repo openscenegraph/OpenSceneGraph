@@ -222,7 +222,6 @@ SET(TARGET_H
     ${HEADER_PATH}/VertexProgram
     ${HEADER_PATH}/View
     ${HEADER_PATH}/Viewport
-    ${HEADER_PATH}/ViewportIndexed
     ${OPENSCENEGRAPH_VERSION_HEADER}
     ${OPENSCENEGRAPH_CONFIG_HEADER}
     ${OPENSCENEGRAPH_OPENGL_HEADER}
@@ -389,7 +388,6 @@ SET(TARGET_SRC
     VertexProgram.cpp
     View.cpp
     Viewport.cpp
-    ViewportIndexed.cpp
 
     glu/libutil/error.cpp
     glu/libutil/mipmap.cpp

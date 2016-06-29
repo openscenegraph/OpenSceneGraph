@@ -39,7 +39,7 @@ void ColorMaski::apply(State& state) const
     const GLExtensions* extensions = state.get<GLExtensions>();
     if (extensions->glColorMaski)
     {
-        extensions->glColorMaski((GLuint)_index, (GLboolean)_red,(GLboolean)_green,(GLboolean)_blue,(GLboolean)_alpha);
+        extensions->glColorMaski((GLboolean)_index, (GLboolean)_red,(GLboolean)_green,(GLboolean)_blue,(GLboolean)_alpha);
     }
     else
     {

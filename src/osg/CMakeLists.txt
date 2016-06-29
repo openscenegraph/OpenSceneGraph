@@ -147,6 +147,7 @@ SET(TARGET_H
     ${HEADER_PATH}/RenderInfo
     ${HEADER_PATH}/SampleMaski
     ${HEADER_PATH}/Scissor
+    ${HEADER_PATH}/ScissorIndexed
     ${HEADER_PATH}/ScriptEngine
     ${HEADER_PATH}/Sequence
     ${HEADER_PATH}/ShadeModel
@@ -348,6 +349,7 @@ SET(TARGET_SRC
     Referenced.cpp
     SampleMaski.cpp
     Scissor.cpp
+    ScissorIndexed.cpp
     ScriptEngine.cpp
     Sequence.cpp
     ShadeModel.cpp

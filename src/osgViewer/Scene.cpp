@@ -19,7 +19,7 @@ using namespace osgViewer;
 
 namespace osgViewer
 {
-    
+
 
 struct SceneSingleton
 {
@@ -111,6 +111,20 @@ void Scene::setDatabasePager(osgDB::DatabasePager* dp)
 void Scene::setImagePager(osgDB::ImagePager* ip)
 {
     _imagePager = ip;
+}
+
+bool Scene::requiresUpdateSceneGraph() const
+{
+    // check if the database pager needs to update the scene
+    if (getDatabasePager()->requiresUpdateSceneGraph() || getDatabasePager()->getRequestsInProgress()) return true;
+
+    // check if the image pager needs to update the scene
+    if (getImagePager()->requiresUpdateSceneGraph()) return true;
+
+    // check if scene graph needs update traversal
+    if (_sceneData.valid() && (_sceneData->getUpdateCallback() || (_sceneData->getNumChildrenRequiringUpdateTraversal()>0))) return true;
+
+    return false;
 }
 
 void Scene::updateSceneGraph(osg::NodeVisitor& updateVisitor)

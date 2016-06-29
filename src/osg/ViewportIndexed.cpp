@@ -10,40 +10,44 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
-#include <osg/ColorMaski>
+#include <osg/ViewportIndexed>
 #include <osg/GLExtensions>
 #include <osg/State>
 
 using namespace osg;
 
-ColorMaski::ColorMaski():
+ViewportIndexed::ViewportIndexed():
     _index(0)
 {
 }
 
-ColorMaski::~ColorMaski()
+ViewportIndexed::~ViewportIndexed()
 {
 }
 
-void ColorMaski::setIndex(unsigned int buf)
+void ViewportIndexed::setIndex(unsigned int index)
 {
-    if (_index==buf) return;
+    if (_index==index) return;
 
     ReassignToParents needToReassingToParentsWhenMemberValueChanges(this);
 
-    _index = buf;
+    _index = index;
 }
 
-void ColorMaski::apply(State& state) const
+void ViewportIndexed::apply(State& state) const
 {
     const GLExtensions* extensions = state.get<GLExtensions>();
-    if (extensions->glColorMaski)
+    if (extensions->glViewportIndexedf)
     {
-        extensions->glColorMaski((GLuint)_index, (GLboolean)_red,(GLboolean)_green,(GLboolean)_blue,(GLboolean)_alpha);
+        extensions->glViewportIndexedf(static_cast<GLuint>(_index),
+                                       static_cast<GLfloat>(_x),
+                                       static_cast<GLfloat>(_y),
+                                       static_cast<GLfloat>(_width),
+                                       static_cast<GLfloat>(_height));
     }
     else
     {
-        OSG_WARN<<"Warning: ColorMaski::apply(..) failed, glColorMaski is not support by OpenGL driver."<<std::endl;
+        OSG_WARN<<"Warning: ViewportIndexed::apply(..) failed, glViewportIndexed is not support by OpenGL driver."<<std::endl;
     }
 }
 

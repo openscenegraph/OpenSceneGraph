@@ -10,40 +10,42 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
-#include <osg/ColorMaski>
+#include <osg/DepthRangeIndexed>
 #include <osg/GLExtensions>
 #include <osg/State>
 
 using namespace osg;
 
-ColorMaski::ColorMaski():
-    _index(0)
+DepthRangeIndexed::DepthRangeIndexed():
+    _index(0),
+    _zNear(0.0),
+    _zFar(1.0)
 {
 }
 
-ColorMaski::~ColorMaski()
+DepthRangeIndexed::~DepthRangeIndexed()
 {
 }
 
-void ColorMaski::setIndex(unsigned int buf)
+void DepthRangeIndexed::setIndex(unsigned int index)
 {
-    if (_index==buf) return;
+    if (_index==index) return;
 
     ReassignToParents needToReassingToParentsWhenMemberValueChanges(this);
 
-    _index = buf;
+    _index = index;
 }
 
-void ColorMaski::apply(State& state) const
+void DepthRangeIndexed::apply(State& state) const
 {
     const GLExtensions* extensions = state.get<GLExtensions>();
-    if (extensions->glColorMaski)
+    if (extensions->glDepthRangeIndexed)
     {
-        extensions->glColorMaski((GLuint)_index, (GLboolean)_red,(GLboolean)_green,(GLboolean)_blue,(GLboolean)_alpha);
+        extensions->glDepthRangeIndexed(static_cast<GLuint>(_index), static_cast<GLclampd>(_zNear), static_cast<GLclampd>(_zFar));
     }
     else
     {
-        OSG_WARN<<"Warning: ColorMaski::apply(..) failed, glColorMaski is not support by OpenGL driver."<<std::endl;
+        OSG_WARN<<"Warning: DepthRangeIndexed::apply(..) failed, glDepthRangeIndexed is not support by OpenGL driver."<<std::endl;
     }
 }
 

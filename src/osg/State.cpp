@@ -1826,30 +1826,23 @@ void State::frameCompleted()
 
 bool State::DefineMap::updateCurrentDefines()
 {
-    if (changed)
+    currentDefines.clear();
+    for(DefineStackMap::const_iterator itr = map.begin();
+        itr != map.end();
+        ++itr)
     {
-        currentDefines.clear();
-        for(DefineStackMap::const_iterator itr = map.begin();
-            itr != map.end();
-            ++itr)
+        const DefineStack::DefineVec& dv = itr->second.defineVec;
+        if (!dv.empty())
         {
-            const DefineStack::DefineVec& dv = itr->second.defineVec;
-            if (!dv.empty())
+            const StateSet::DefinePair& dp = dv.back();
+            if (dp.second & osg::StateAttribute::ON)
             {
-                const StateSet::DefinePair& dp = dv.back();
-                if (dp.second & osg::StateAttribute::ON)
-                {
-                    currentDefines[itr->first] = dp;
-                }
+                currentDefines[itr->first] = dp;
             }
         }
-        changed = false;
-        return true;
     }
-    else
-    {
-        return false;
-    }
+    changed = false;
+    return true;
 }
 
 std::string State::getDefineString(const osg::ShaderDefines& shaderDefines)

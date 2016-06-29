@@ -10,40 +10,48 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
-#include <osg/ColorMaski>
+#include <osg/ScissorIndexed>
 #include <osg/GLExtensions>
 #include <osg/State>
 
 using namespace osg;
 
-ColorMaski::ColorMaski():
-    _index(0)
+ScissorIndexed::ScissorIndexed():
+    _index(0),
+    _x(0.0f),
+    _y(0.0f),
+    _width(800.0f),
+    _height(600.0f) // defaults same as osg::Viewport and osg::Scissor
 {
 }
 
-ColorMaski::~ColorMaski()
+ScissorIndexed::~ScissorIndexed()
 {
 }
 
-void ColorMaski::setIndex(unsigned int buf)
+void ScissorIndexed::setIndex(unsigned int index)
 {
-    if (_index==buf) return;
+    if (_index==index) return;
 
     ReassignToParents needToReassingToParentsWhenMemberValueChanges(this);
 
-    _index = buf;
+    _index = index;
 }
 
-void ColorMaski::apply(State& state) const
+void ScissorIndexed::apply(State& state) const
 {
     const GLExtensions* extensions = state.get<GLExtensions>();
-    if (extensions->glColorMaski)
+    if (extensions->glScissorIndexed)
     {
-        extensions->glColorMaski((GLuint)_index, (GLboolean)_red,(GLboolean)_green,(GLboolean)_blue,(GLboolean)_alpha);
+        extensions->glScissorIndexed(static_cast<GLuint>(_index),
+                                     static_cast<GLfloat>(_x),
+                                     static_cast<GLfloat>(_y),
+                                     static_cast<GLfloat>(_width),
+                                     static_cast<GLfloat>(_height));
     }
     else
     {
-        OSG_WARN<<"Warning: ColorMaski::apply(..) failed, glColorMaski is not support by OpenGL driver."<<std::endl;
+        OSG_WARN<<"Warning: ScissorIndexed::apply(..) failed, glScissorIndexed is not support by OpenGL driver."<<std::endl;
     }
 }
 

@@ -18,7 +18,22 @@ using namespace osgDB;
 
 bool ObjectCache::ClassComp::operator() (const ObjectCache::FileNameOptionsPair& lhs, const ObjectCache::FileNameOptionsPair& rhs)
 {
-    return lhs.first < rhs.first || *lhs.second < *rhs.second;
+    // check if filename are the same
+    if (lhs.first < rhs.first) return true;
+    if (rhs.first < lhs.first) return false;
+
+    // check if Options pointers are the same.
+    if (lhs.second == rhs.second) return false;
+
+    // need to compare Options pointers
+    if (lhs.second.valid() && rhs.second.valid())
+    {
+        // lhs & rhs have valid Options objects
+        return *lhs.second < *rhs.second;
+    }
+
+    // finally use pointer comparison, expecting at least one will be NULL pointer
+    return lhs.second < rhs.second;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

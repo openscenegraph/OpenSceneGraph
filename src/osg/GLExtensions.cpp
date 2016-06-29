@@ -1103,6 +1103,25 @@ GLExtensions::GLExtensions(unsigned int contextID)
 
     // MultiDrawArrays
     setGLExtensionFuncPtr(glMultiDrawArrays, "glMultiDrawArrays", "glMultiDrawArraysEXT", validContext);
+
+    // ViewportArray
+    isViewportArraySupported = validContext && (isGLExtensionOrVersionSupported(contextID, "GL_ARB_viewport_array", 4.1f));
+
+    osg::setGLExtensionFuncPtr(glViewportArrayv, "glViewportArrayv", validContext);
+    osg::setGLExtensionFuncPtr(glViewportIndexedf, "glViewportIndexedf", validContext);
+    osg::setGLExtensionFuncPtr(glViewportIndexedfv, "glViewportIndexedfv", validContext);
+    osg::setGLExtensionFuncPtr(glScissorArrayv, "glScissorArrayv", validContext);
+    osg::setGLExtensionFuncPtr(glScissorIndexed, "glScissorIndexed", validContext);
+    osg::setGLExtensionFuncPtr(glScissorIndexedv, "glScissorIndexedv", validContext);
+    osg::setGLExtensionFuncPtr(glDepthRangeArrayv, "glDepthRangeArrayv", validContext);
+    osg::setGLExtensionFuncPtr(glDepthRangeIndexed, "glDepthRangeIndexed", validContext);
+    osg::setGLExtensionFuncPtr(glGetFloati_v, "glGetFloati_v", validContext);
+    osg::setGLExtensionFuncPtr(glGetDoublei_v, "glGetDoublei_v", validContext);
+    osg::setGLExtensionFuncPtr(glGetIntegerIndexedvEXT, "glGetIntegerIndexedvEXT", validContext);
+    osg::setGLExtensionFuncPtr(glEnableIndexedEXT, "glEnableIndexedEXT", validContext);
+    osg::setGLExtensionFuncPtr(glDisableIndexedEXT, "glDisableIndexedEXT", validContext);
+    osg::setGLExtensionFuncPtr(glIsEnabledIndexedEXT, "glIsEnabledIndexedEXT", validContext);
+
 }
 
 

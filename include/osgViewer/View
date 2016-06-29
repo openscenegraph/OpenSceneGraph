@@ -305,6 +305,8 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         virtual void requestContinuousUpdate(bool needed=true);
         virtual void requestWarpPointer(float x,float y);
 
+        /** Return true if there are pending updates to the scene graph that require an update. */
+        virtual bool requiresUpdateSceneGraph() const;
 
     public:
 

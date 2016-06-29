@@ -607,10 +607,10 @@ bool ZipArchive::CheckZipErrorCode(ZRESULT result) const
     {
         unsigned buf_size  = 1025;
         char* buf = new (std::nothrow) char[buf_size];
-        buf[buf_size - 1] = 0;
-
         if (buf)
         {
+            buf[buf_size - 1] = 0;
+
             FormatZipMessage(result, buf, buf_size - 1);
 
             //print error message

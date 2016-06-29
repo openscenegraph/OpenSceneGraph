@@ -162,6 +162,7 @@ DataInputStream::DataInputStream(std::istream* istream, const osgDB::ReaderWrite
     if(!istream)
     {
         throwException("DataInputStream::DataInputStream(): null pointer exception in argument.");
+        _version = 0;
         return;
     }
 

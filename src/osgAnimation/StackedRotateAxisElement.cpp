@@ -18,7 +18,7 @@ using namespace osgAnimation;
 
 StackedRotateAxisElement::StackedRotateAxisElement(const std::string& name, const osg::Vec3& axis, double angle) : StackedTransformElement(), _axis(axis), _angle(angle) { setName(name); }
 StackedRotateAxisElement::StackedRotateAxisElement(const osg::Vec3& axis, double angle) : _axis(axis), _angle(angle) { setName("rotateaxis"); }
-StackedRotateAxisElement::StackedRotateAxisElement() {}
+StackedRotateAxisElement::StackedRotateAxisElement() : _axis(osg::Vec3(1,0,0)), _angle(0) {}
 StackedRotateAxisElement::StackedRotateAxisElement(const StackedRotateAxisElement& rhs, const osg::CopyOp&) : StackedTransformElement(rhs), _axis(rhs._axis), _angle(rhs._angle)
 {
     if (rhs._target.valid())

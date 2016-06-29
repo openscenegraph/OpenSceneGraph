@@ -27,6 +27,20 @@ RigTransformHardware::RigTransformHardware()
     _nbVertexes = 0;
 }
 
+RigTransformHardware::RigTransformHardware(const RigTransformHardware& rth, const osg::CopyOp& copyop):
+    RigTransform(rth, copyop),
+    _bonesPerVertex(rth._bonesPerVertex),
+    _nbVertexes(rth._nbVertexes),
+    _vertexIndexMatrixWeightList(rth._vertexIndexMatrixWeightList),
+    _bonePalette(rth._bonePalette),
+    _boneNameToPalette(rth._boneNameToPalette),
+    _boneWeightAttribArrays(rth._boneWeightAttribArrays),
+    _uniformMatrixPalette(rth._uniformMatrixPalette),
+    _shader(rth._shader),
+    _needInit(rth._needInit)
+{
+}
+
 osg::Vec4Array* RigTransformHardware::getVertexAttrib(int index)
 {
     if (index >= (int)_boneWeightAttribArrays.size())
@@ -66,8 +80,6 @@ int RigTransformHardware::getNumVertexes() const { return _nbVertexes;}
 bool RigTransformHardware::createPalette(int nbVertexes, BoneMap boneMap, const VertexInfluenceSet::VertexIndexToBoneWeightMap& vertexIndexToBoneWeightMap)
 {
     typedef std::map<std::string, int> BoneNameCountMap;
-    typedef std::map<std::string, int> BoneNamePaletteIndex;
-    BoneNamePaletteIndex bname2palette;
     BonePalette palette;
     BoneNameCountMap boneNameCountMap;
 
@@ -76,32 +88,35 @@ bool RigTransformHardware::createPalette(int nbVertexes, BoneMap boneMap, const 
     vertexIndexWeight.resize(nbVertexes);
 
     int maxBonePerVertex = 0;
-    for (VertexInfluenceSet::VertexIndexToBoneWeightMap::const_iterator vis_itr = vertexIndexToBoneWeightMap.begin(); vis_itr != vertexIndexToBoneWeightMap.end(); ++vis_itr)
+    for (VertexInfluenceSet::VertexIndexToBoneWeightMap::const_iterator vit = vertexIndexToBoneWeightMap.begin(); vit != vertexIndexToBoneWeightMap.end(); ++vit)
     {
-        int vertexIndex = vis_itr->first;
-        const VertexInfluenceSet::BoneWeightList& boneWeightList = vis_itr->second;
+        int vertexIndex = vit->first;
+        const VertexInfluenceSet::BoneWeightList& boneWeightList = vit->second;
         int bonesForThisVertex = 0;
         for (VertexInfluenceSet::BoneWeightList::const_iterator it = boneWeightList.begin(); it != boneWeightList.end(); ++it)
         {
             const VertexInfluenceSet::BoneWeight& bw = *it;
-            if (boneNameCountMap.find(bw.getBoneName()) != boneNameCountMap.end())
+            if(fabs(bw.getWeight()) > 1e-2) // dont use bone with weight too small
             {
-                boneNameCountMap[bw.getBoneName()]++;
-                bonesForThisVertex++; // count max number of bones per vertexes
-                vertexIndexWeight[vertexIndex].push_back(IndexWeightEntry(bname2palette[bw.getBoneName()],bw.getWeight()));
-            }
-            else if (fabs(bw.getWeight()) > 1e-2) // don't use bone with weight too small
-            {
-                if (boneMap.find(bw.getBoneName()) == boneMap.end())
+                if (boneNameCountMap.find(bw.getBoneName()) != boneNameCountMap.end())
                 {
-                    OSG_INFO << "RigTransformHardware::createPalette can't find bone " << bw.getBoneName() << " skip this influence" << std::endl;
-                    continue;
+                    boneNameCountMap[bw.getBoneName()]++;
+                    bonesForThisVertex++; // count max number of bones per vertexes
+                    vertexIndexWeight[vertexIndex].push_back(IndexWeightEntry(_boneNameToPalette[bw.getBoneName()],bw.getWeight()));
                 }
-                boneNameCountMap[bw.getBoneName()] = 1; // for stats
-                bonesForThisVertex++;
-                palette.push_back(boneMap[bw.getBoneName()]);
-                bname2palette[bw.getBoneName()] = palette.size()-1;
-                vertexIndexWeight[vertexIndex].push_back(IndexWeightEntry(bname2palette[bw.getBoneName()],bw.getWeight()));
+                else
+                {
+                    if (boneMap.find(bw.getBoneName()) == boneMap.end())
+                    {
+                        OSG_INFO << "RigTransformHardware::createPalette can't find bone " << bw.getBoneName() << " skip this influence" << std::endl;
+                        continue;
+                    }
+                    boneNameCountMap[bw.getBoneName()] = 1; // for stats
+                    bonesForThisVertex++;
+                    palette.push_back(boneMap[bw.getBoneName()]);
+                    _boneNameToPalette[bw.getBoneName()] = palette.size()-1;
+                    vertexIndexWeight[vertexIndex].push_back(IndexWeightEntry(_boneNameToPalette[bw.getBoneName()],bw.getWeight()));
+                }
             }
             else
             {

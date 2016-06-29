@@ -320,7 +320,8 @@ osg::BoundingBox MinimalCullBoundsShadowMap::ViewData::ComputeRenderLeavesBounds
                 *ptrModelToWorld = NULL;
 
     // compute bounding boxes but skip old ones (placed at the end as NULLs)
-    for( RenderLeafList::iterator it = rll.begin(); it != rll.end(); ++it ) {
+    for( RenderLeafList::iterator it = rll.begin(); it != rll.end(); ++it )
+    {
         // we actually allow to pass one element behind end to flush bb queue
         osgUtil::RenderLeaf *rl = *it;
         if( !rl ) break;
@@ -335,8 +336,8 @@ osg::BoundingBox MinimalCullBoundsShadowMap::ViewData::ComputeRenderLeavesBounds
         if( !bb.valid() ) continue;
 
         // Stay as long as possible in model space to minimize matrix ops
-        if( rl->_modelview != modelview || rl->_projection != projection ) {
-
+        if( rl->_modelview != modelview || rl->_projection != projection )
+        {
             projection = rl->_projection;
             if( projection.valid() )
             {
@@ -346,7 +347,9 @@ osg::BoundingBox MinimalCullBoundsShadowMap::ViewData::ComputeRenderLeavesBounds
                    viewToWorld = *ptrProjection * projectionToWorld;
                }
                ptrViewToWorld = &viewToWorld;
-            } else {
+            }
+            else
+            {
                ptrViewToWorld = &projectionToWorld;
             }
 
@@ -355,12 +358,14 @@ osg::BoundingBox MinimalCullBoundsShadowMap::ViewData::ComputeRenderLeavesBounds
             {
                 modelToWorld = *modelview.get() * *ptrViewToWorld;
                 ptrModelToWorld = &modelToWorld;
-            } else {
+            }
+            else
+            {
                 ptrModelToWorld = ptrViewToWorld;
             }
         }
 
-        if( CheckAndMultiplyBoxIfWithinPolytope( bb, *ptrModelToWorld, p ) )
+        if( ptrModelToWorld && CheckAndMultiplyBoxIfWithinPolytope( bb, *ptrModelToWorld, p ) )
             bbResult.expandBy( bb );
     }
 

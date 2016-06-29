@@ -121,6 +121,8 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
     _keystones = vs._keystones;
 
     _OSXMenubarBehavior = vs._OSXMenubarBehavior;
+
+    _syncSwapBuffers = vs._syncSwapBuffers;
 }
 
 void DisplaySettings::merge(const DisplaySettings& vs)

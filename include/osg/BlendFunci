@@ -57,7 +57,7 @@ class OSG_EXPORT BlendFunci : public BlendFunc
         virtual unsigned int getMember() const { return _index; }
 
         /** Set the renderbuffer index of the BlendFunci. */
-        void setIndex(unsigned int buf) { _index = buf; }
+        void setIndex(unsigned int buf);
 
         /** Get the renderbuffer index of the BlendFunci. */
         unsigned int getIndex() const { return _index; }

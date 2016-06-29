@@ -31,41 +31,9 @@ void ClipPlane::setClipPlaneNum(unsigned int num)
 {
     if (_clipPlaneNum==num) return;
 
-    if (_parents.empty())
-    {
-        _clipPlaneNum = num;
-        return;
-    }
+    ReassignToParents needToReassingToParentsWhenMemberValueChanges(this);
 
-    // take a reference to this clip plane to prevent it from going out of scope
-    // when we remove it temporarily from its parents.
-    osg::ref_ptr<ClipPlane> clipPlaneRef = this;
-
-    // copy the parents as they _parents list will be changed by the subsequent removeAttributes.
-    ParentList parents = _parents;
-
-    // remove this attribute from its parents as its position is being changed
-    // and would no longer be valid.
-    ParentList::iterator itr;
-    for(itr = parents.begin();
-        itr != parents.end();
-        ++itr)
-    {
-        osg::StateSet* stateset = *itr;
-        stateset->removeAttribute(this);
-    }
-
-    // assign the clip plane number
     _clipPlaneNum = num;
-
-    // add this attribute back into its original parents with its new position
-    for(itr = parents.begin();
-        itr != parents.end();
-        ++itr)
-    {
-        osg::StateSet* stateset = *itr;
-        stateset->setAttribute(this);
-    }
 }
 
 unsigned int ClipPlane::getClipPlaneNum() const

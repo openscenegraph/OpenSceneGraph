@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <errno.h>
 
 #if !defined (WIN32) || defined(__CYGWIN__)
 #include <sys/ioctl.h>
@@ -290,13 +291,22 @@ bool Receiver::init( void )
         perror( "Socket" );
     return false;
     }
+
+    int result = 0;
+
 #if defined (WIN32) && !defined(__CYGWIN__)
 //    const BOOL on = TRUE;
 //    setsockopt( _so, SOL_SOCKET, SO_REUSEADDR, (const char*) &on, sizeof(int));
 #else
     int on = 1;
-    setsockopt( _so, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
+    result = setsockopt( _so, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
 #endif
+
+    if (result)
+    {
+        OSG_NOTICE<<"Warning: Reciever::init() setsockopt(..) failed, errno="<<errno<<std::endl;
+        return false;
+    }
 
 //    struct sockaddr_in saddr;
     saddr.sin_family = AF_INET;
@@ -357,10 +367,16 @@ void Receiver::sync( void )
 
 #if defined (WIN32) && !defined(__CYGWIN__)
 //    saddr.sin_port   = htons( _port );
-    recvfrom( _so, (char *)_buffer, _buffer_size, 0, (sockaddr*)&saddr, &size );
+    int result = recvfrom( _so, (char *)_buffer, _buffer_size, 0, (sockaddr*)&saddr, &size );
 //    recvfrom(sock_Receive, szMessage, 256, 0, (sockaddr*)&addr_Cli, &clilen)
     //int err = WSAGetLastError ();
     //int *dum = (int*) _buffer;
+
+    if (result<0)
+    {
+        OSG_NOTICE<<"Warning: Receiver::sync() recvfrom(..) failed, errno="<<errno<<std::endl;
+        return;
+    }
 
     while( select( _so+1, &fdset, 0L, 0L, &tv ) )
     {
@@ -370,7 +386,13 @@ void Receiver::sync( void )
         }
     }
 #else
-    recvfrom( _so, (caddr_t)_buffer, _buffer_size, 0, 0, &size );
+    int result = recvfrom( _so, (caddr_t)_buffer, _buffer_size, 0, 0, &size );
+    if (result<0)
+    {
+        OSG_NOTICE<<"Warning: Receiver::sync() recvfrom(..) failed, errno="<<errno<<std::endl;
+        return;
+    }
+
     while( select( _so+1, &fdset, 0L, 0L, &tv ) )
     {
         if( FD_ISSET( _so, &fdset ) )
@@ -429,21 +451,26 @@ bool Broadcaster::init( void )
     int on = 1;
 #endif
 
+    int result = 0;
+
 #if defined (WIN32) && !defined(__CYGWIN__)
-    setsockopt( _so, SOL_SOCKET, SO_REUSEADDR, (const char *) &on, sizeof(int));
+    result = setsockopt( _so, SOL_SOCKET, SO_REUSEADDR, (const char *) &on, sizeof(int));
 #else
-    setsockopt( _so, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
+    result = setsockopt( _so, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
 #endif
+
+    if (result) return false;
 
     saddr.sin_family = AF_INET;
     saddr.sin_port   = htons( _port );
     if( _address == 0 )
     {
 #if defined (WIN32) && !defined(__CYGWIN__)
-        setsockopt( _so, SOL_SOCKET, SO_BROADCAST, (const char *) &on, sizeof(int));
+        result = setsockopt( _so, SOL_SOCKET, SO_BROADCAST, (const char *) &on, sizeof(int));
 #else
-        setsockopt( _so, SOL_SOCKET, SO_BROADCAST, &on, sizeof(on));
+        result = setsockopt( _so, SOL_SOCKET, SO_BROADCAST, &on, sizeof(on));
 #endif
+        if (result) return false;
 
 #if !defined (WIN32) || defined(__CYGWIN__)
         struct ifreq ifr;
@@ -514,14 +541,19 @@ void Broadcaster::sync( void )
         return;
     }
 
+    int result = 0;
 #if defined (WIN32) && !defined(__CYGWIN__)
     unsigned int size = sizeof( SOCKADDR_IN );
-    sendto( _so, (const char *)_buffer, _buffer_size, 0, (struct sockaddr *)&saddr, size );
+    result = sendto( _so, (const char *)_buffer, _buffer_size, 0, (struct sockaddr *)&saddr, size );
     // int err = WSAGetLastError ();
     // int *dum = (int*) _buffer;
 #else
     unsigned int size = sizeof( struct sockaddr_in );
-    sendto( _so, (const void *)_buffer, _buffer_size, 0, (struct sockaddr *)&saddr, size );
+    result = sendto( _so, (const void *)_buffer, _buffer_size, 0, (struct sockaddr *)&saddr, size );
 #endif
 
+    if (result)
+    {
+        OSG_NOTICE<<"Warning: sentTo(...) failed : errno="<<errno<<std::endl;
+    }
 }

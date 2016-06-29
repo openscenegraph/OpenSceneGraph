@@ -349,6 +349,7 @@ struct ComputeNearFarFunctor
 {
 
     ComputeNearFarFunctor():
+        _znear(CullVisitor::value_type(0.0)),
         _planes(0) {}
 
     void set(CullVisitor::value_type znear, const osg::Matrix& matrix, const osg::Polytope::PlaneList* planes)

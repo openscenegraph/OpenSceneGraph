@@ -625,7 +625,6 @@ void ply_put_element(PlyFile *plyfile, void *elem_ptr)
   char *elem_data,*item;
   char **item_ptr;
   int list_count;
-  int item_size;
   int int_val;
   unsigned int uint_val;
   double double_val;
@@ -657,7 +656,7 @@ void ply_put_element(PlyFile *plyfile, void *elem_ptr)
         list_count = uint_val;
         item_ptr = (char **) (elem_data + prop->offset);
         item = item_ptr[0];
-       item_size = ply_type_size[prop->internal_type];
+        int item_size = ply_type_size[prop->internal_type];
         for (k = 0; k < list_count; k++) {
           get_stored_item ((void *) item, prop->internal_type,
                            &int_val, &uint_val, &double_val);
@@ -690,7 +689,7 @@ void ply_put_element(PlyFile *plyfile, void *elem_ptr)
         elem_data = (char *)elem_ptr;
       if (prop->is_list) {
         item = elem_data + prop->count_offset;
-        item_size = ply_type_size[prop->count_internal];
+        int item_size = ply_type_size[prop->count_internal];
         get_stored_item ((void *) item, prop->count_internal,
                          &int_val, &uint_val, &double_val);
         write_binary_item (plyfile, int_val, uint_val, double_val,
@@ -709,7 +708,6 @@ void ply_put_element(PlyFile *plyfile, void *elem_ptr)
       }
       else {
         item = elem_data + prop->offset;
-        item_size = ply_type_size[prop->internal_type];
         get_stored_item ((void *) item, prop->internal_type,
                          &int_val, &uint_val, &double_val);
         write_binary_item (plyfile, int_val, uint_val, double_val,

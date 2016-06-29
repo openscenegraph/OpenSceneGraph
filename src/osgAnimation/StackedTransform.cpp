@@ -19,7 +19,7 @@ using namespace osgAnimation;
 StackedTransform::StackedTransform() {}
 
 StackedTransform::StackedTransform(const StackedTransform& rhs, const osg::CopyOp& co):
-    inherited(rhs)
+    osg::MixinVector<osg::ref_ptr<StackedTransformElement> >()
 {
     reserve(rhs.size());
     for (StackedTransform::const_iterator it = rhs.begin(); it != rhs.end(); ++it)

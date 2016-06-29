@@ -50,12 +50,21 @@ struct FinishedObjectReadCallback : public osg::Referenced
     virtual void objectRead(osgDB::InputStream& is, osg::Object& obj) = 0;
 };
 
+struct OSGDB_EXPORT ObjectWrapperAssociate
+{
+    ObjectWrapperAssociate(std::string name):_firstVersion(0),_lastVersion(INT_MAX),_name(name){}
+    int _firstVersion;
+    int _lastVersion;
+    std::string _name;
+};
+
 class OSGDB_EXPORT ObjectWrapper : public osg::Referenced
 {
 public:
     typedef std::vector< BaseSerializer::Type > TypeList;
     typedef std::vector< osg::ref_ptr<BaseSerializer> > SerializerList;
     typedef std::vector< osg::ref_ptr<FinishedObjectReadCallback> > FinishedObjectReadCallbackList;
+    typedef std::list<ObjectWrapperAssociate>  RevisionAssociateList;
     typedef osg::Object* CreateInstanceFunc();
 
     ObjectWrapper( CreateInstanceFunc* createInstanceFunc, const std::string& name,
@@ -69,7 +78,8 @@ public:
     osg::Object* createInstance() const { return  _createInstanceFunc(); }
     const std::string& getDomain() const { return _domain; }
     const std::string& getName() const { return _name; }
-    const StringList& getAssociates() const { return _associates; }
+
+    const RevisionAssociateList& getAssociates() const { return _associates; }
 
     SerializerList& getSerializerList() { return _serializers; }
     const SerializerList& getSerializerList() const { return _serializers; }
@@ -79,6 +89,10 @@ public:
 
     void addSerializer( BaseSerializer* s, BaseSerializer::Type t=BaseSerializer::RW_UNDEFINED );
     void markSerializerAsRemoved( const std::string& name );
+
+    void markAssociateAsRemoved(const std::string& name);
+    void markAssociateAsAdded(const std::string& name);
+
     BaseSerializer* getLastSerializer() { return _serializers.empty() ? 0 : _serializers.back().get(); }
     BaseSerializer* getSerializer( const std::string& name );
     BaseSerializer* getSerializer( const std::string& name, BaseSerializer::Type& type);
@@ -99,6 +113,8 @@ public:
     MethodObjectMap& getMethodObjectMap() { return _methodObjectMap; }
     const MethodObjectMap& getMethodObjectMap() const { return _methodObjectMap; }
 
+    void setupAssociatesRevisionsInheritanceIfRequired();
+
 protected:
     ObjectWrapper() : _version(0) {}
     virtual ~ObjectWrapper() {}
@@ -106,13 +122,16 @@ protected:
     CreateInstanceFunc* _createInstanceFunc;
     std::string _domain;
     std::string _name;
-    StringList _associates;
+    RevisionAssociateList _associates;
     SerializerList _serializers;
     SerializerList _backupSerializers;
     TypeList _typeList;
     FinishedObjectReadCallbackList _finishedObjectReadCallbacks;
     MethodObjectMap _methodObjectMap;
     int _version;  // Last updated version of the wrapper
+    //simulate associate revisions inheritance
+    bool _isAssociatesRevisionsInheritanceDone;
+    static void splitAssociates( const std::string& src, ObjectWrapper::RevisionAssociateList& list, char separator=' ' );
 };
 
 struct UpdateWrapperVersionProxy

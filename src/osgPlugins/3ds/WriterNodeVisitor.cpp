@@ -134,9 +134,9 @@ public:
           osg::PrimitiveIndexFunctor(),
           _drawable_n(drawable_n),
           _listTriangles(listTriangles),
+          _modeCache(0),
           _hasNormalCoords(geo->getNormalArray() != NULL),
           _hasTexCoords(geo->getTexCoordArray(0) != NULL),
-          _lastFaceIndex(0),
           _material(material)
       {
       }
@@ -152,6 +152,7 @@ public:
       virtual void setVertexArray(unsigned int,const osg::Vec2d*) {}
 
       virtual void setVertexArray(unsigned int ,const osg::Vec3d*) {}
+
       virtual void setVertexArray(unsigned int,const osg::Vec4d*) {}
 
 
@@ -538,7 +539,7 @@ void WriterNodeVisitor::writeMaterials()
                 }
 
                 Lib3dsTextureMap & tex = mat3ds->texture1_map;
-                strcpy(tex.name, path.c_str());
+                osgDB::stringcopyfixedsize(tex.name, path.c_str());
                 // Here we don't assume anything about initial flags state (actually it is set to LIB3DS_TEXTURE_NO_TILE by lib3DS, but this is subject to change)
                 if (mat.texture_transparency) tex.flags |= LIB3DS_TEXTURE_ALPHA_SOURCE;
                 else tex.flags &= ~LIB3DS_TEXTURE_ALPHA_SOURCE;
@@ -546,7 +547,10 @@ void WriterNodeVisitor::writeMaterials()
                 else tex.flags &= ~LIB3DS_TEXTURE_NO_TILE;
             }
             if (!succeeded())
+            {
+                lib3ds_material_free(mat3ds);
                 return;
+            }
             lib3ds_file_insert_material(_file3ds, mat3ds, itr->second.index);
             break;        // Ugly thing (3)
         }

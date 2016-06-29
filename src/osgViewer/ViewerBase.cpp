@@ -328,7 +328,7 @@ void ViewerBase::startThreading()
         }
     }
 
-    int numProcessors = OpenThreads::GetNumberOfProcessors();
+    int numProcessors = osg::minimum(1, OpenThreads::GetNumberOfProcessors());
     bool affinity = numProcessors>1;
 
     Contexts::iterator citr;
@@ -455,8 +455,11 @@ void ViewerBase::startThreading()
             if (_startRenderingBarrier.valid()) camera->getCameraThread()->add(_startRenderingBarrier.get());
 
             Renderer* renderer = dynamic_cast<Renderer*>(camera->getRenderer());
-            renderer->setGraphicsThreadDoesCull(false);
-            camera->getCameraThread()->add(renderer);
+            if (renderer)
+            {
+                renderer->setGraphicsThreadDoesCull(false);
+                camera->getCameraThread()->add(renderer);
+            }
 
             if (_endRenderingDispatchBarrier.valid())
             {
@@ -671,25 +674,6 @@ void ViewerBase::frame(double simulationTime)
 
 void ViewerBase::renderingTraversals()
 {
-    bool _outputMasterCameraLocation = false;
-    if (_outputMasterCameraLocation)
-    {
-        Views views;
-        getViews(views);
-
-        for(Views::iterator itr = views.begin();
-            itr != views.end();
-            ++itr)
-        {
-            osgViewer::View* view = *itr;
-            if (view)
-            {
-                const osg::Matrixd& m = view->getCamera()->getInverseViewMatrix();
-                OSG_NOTICE<<"View "<<view<<", Master Camera position("<<m.getTrans()<<"), rotation("<<m.getRotate()<<")"<<std::endl;
-            }
-        }
-    }
-
     Contexts contexts;
     getContexts(contexts);
 
@@ -700,10 +684,10 @@ void ViewerBase::renderingTraversals()
     double beginRenderingTraversals = elapsedTime();
 
     osg::FrameStamp* frameStamp = getViewerFrameStamp();
+    unsigned int frameNumber = frameStamp ? frameStamp->getFrameNumber() : 0;
 
     if (getViewerStats() && getViewerStats()->collectStats("scene"))
     {
-        unsigned int frameNumber = frameStamp ? frameStamp->getFrameNumber() : 0;
 
         Views views;
         getViews(views);
@@ -770,10 +754,12 @@ void ViewerBase::renderingTraversals()
         ++sitr)
     {
         Scene* scene = *sitr;
-        osgDB::DatabasePager* dp = scene ? scene->getDatabasePager() : 0;
+        if (!scene) continue;
+
+        osgDB::DatabasePager* dp = scene->getDatabasePager();
         if (dp) dp->signalBeginFrame(frameStamp);
 
-        osgDB::ImagePager* ip = scene ? scene->getImagePager() : 0;
+        osgDB::ImagePager* ip = scene->getImagePager();
         if (ip) ip->signalBeginFrame(frameStamp);
 
         if (scene->getSceneData())
@@ -852,10 +838,12 @@ void ViewerBase::renderingTraversals()
         ++sitr)
     {
         Scene* scene = *sitr;
-        osgDB::DatabasePager* dp = scene ? scene->getDatabasePager() : 0;
+        if (!scene) continue;
+
+        osgDB::DatabasePager* dp = scene->getDatabasePager();
         if (dp) dp->signalEndFrame();
 
-        osgDB::ImagePager* ip = scene ? scene->getImagePager() : 0;
+        osgDB::ImagePager* ip = scene->getImagePager();
         if (ip) ip->signalEndFrame();
     }
 
@@ -878,9 +866,9 @@ void ViewerBase::renderingTraversals()
         double endRenderingTraversals = elapsedTime();
 
         // update current frames stats
-        getViewerStats()->setAttribute(frameStamp->getFrameNumber(), "Rendering traversals begin time ", beginRenderingTraversals);
-        getViewerStats()->setAttribute(frameStamp->getFrameNumber(), "Rendering traversals end time ", endRenderingTraversals);
-        getViewerStats()->setAttribute(frameStamp->getFrameNumber(), "Rendering traversals time taken", endRenderingTraversals-beginRenderingTraversals);
+        getViewerStats()->setAttribute(frameNumber, "Rendering traversals begin time ", beginRenderingTraversals);
+        getViewerStats()->setAttribute(frameNumber, "Rendering traversals end time ", endRenderingTraversals);
+        getViewerStats()->setAttribute(frameNumber, "Rendering traversals time taken", endRenderingTraversals-beginRenderingTraversals);
     }
 
     _requestRedraw = false;

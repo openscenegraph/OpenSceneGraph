@@ -26,7 +26,7 @@ namespace osgAnimation
     class TemplateCubicBezier
     {
     public:
-        TemplateCubicBezier() {}
+        TemplateCubicBezier() : _position(osg::default_value<T>()), _controlPointIn(osg::default_value<T>()), _controlPointOut(osg::default_value<T>()) {}
 
         TemplateCubicBezier(const T& p, const T& i, const T& o) : _position(p), _controlPointIn(i), _controlPointOut(o)
         {
@@ -48,6 +48,9 @@ namespace osgAnimation
         void setPosition(const T& v) {_position = v;}
         void setControlPointIn(const T& v) {_controlPointIn = v;}
         void setControlPointOut(const T& v) {_controlPointOut = v;}
+
+        bool operator==(const TemplateCubicBezier<T>& other) const
+        { return _position == other._position && _controlPointIn == other._controlPointIn && _controlPointOut == other._controlPointOut; }
 
         // steaming operators.
         friend std::ostream& operator << (std::ostream& output, const TemplateCubicBezier<T>& tcb)

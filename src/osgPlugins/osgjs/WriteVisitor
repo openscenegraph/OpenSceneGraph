@@ -211,24 +211,24 @@ public:
     }
 
     void applyCallback(osg::Node& node, JSONObject* json) {
-        JSONArray* updateCallbacks = new JSONArray;
-        osg::Callback* nc = node.getUpdateCallback();
+        osg::ref_ptr<JSONArray> updateCallbacks = new JSONArray;
+        osg::ref_ptr<osg::Callback> nc = node.getUpdateCallback();
         while (nc) {
-            osgAnimation::BasicAnimationManager* am = dynamic_cast<osgAnimation::BasicAnimationManager*>(nc);
+            osgAnimation::BasicAnimationManager* am = dynamic_cast<osgAnimation::BasicAnimationManager*>(nc.get());
             if (am) {
-                JSONArray* array = new JSONArray;
-                JSONObject* bam = new JSONObject;
+                osg::ref_ptr<JSONArray> array = new JSONArray;
+                osg::ref_ptr<JSONObject> bam = new JSONObject;
                 bam->getMaps()["Animations"] = array;
 
 
-                JSONObject* nodeCallbackObject = new JSONObject;
+                osg::ref_ptr<JSONObject> nodeCallbackObject = new JSONObject;
                 nodeCallbackObject->getMaps()["osgAnimation.BasicAnimationManager"] = bam;
                 updateCallbacks->getArray().push_back(nodeCallbackObject);
 
                 for ( unsigned int i = 0; i < am->getAnimationList().size(); i++) {
                     osg::ref_ptr<JSONObject> jsonAnim = createJSONAnimation(am->getAnimationList()[i].get());
                     if (jsonAnim) {
-                        JSONObject* obj = new JSONObject;
+                        osg::ref_ptr<JSONObject> obj = new JSONObject;
                         obj->getMaps()["osgAnimation.Animation"] = jsonAnim;
                         array->getArray().push_back(obj);
                         //std::stringstream ss;
@@ -237,7 +237,7 @@ public:
                     }
                 }
             } else {
-                osgAnimation::UpdateMatrixTransform* updateMT = dynamic_cast<osgAnimation::UpdateMatrixTransform*>(nc);
+                osgAnimation::UpdateMatrixTransform* updateMT = dynamic_cast<osgAnimation::UpdateMatrixTransform*>(nc.get());
                 if (updateMT) {
                     osg::ref_ptr<JSONObject> jsonCallback = createJSONUpdateMatrixTransform(*updateMT);
                     if (jsonCallback.valid()) {

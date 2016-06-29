@@ -149,7 +149,7 @@ void trpgMemWriteBuffer::Add(const char *val)
 }
 
 // Add(std::string)
-void trpgMemWriteBuffer::Add(std::string &val)
+void trpgMemWriteBuffer::Add(const std::string &val)
 {
     Add(val.c_str());
 }

@@ -1,22 +1,21 @@
 /*
     Copyright (C) 1996-2008 by Jan Eric Kyprianidis <www.kyprianidis.com>
     All rights reserved.
-    
-    This program is free  software: you can redistribute it and/or modify 
-    it under the terms of the GNU Lesser General Public License as published 
-    by the Free Software Foundation, either version 2.1 of the License, or 
+
+    This program is free  software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation, either version 2.1 of the License, or
     (at your option) any later version.
 
-    Thisprogram  is  distributed in the hope that it will be useful, 
-    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+    Thisprogram  is  distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU Lesser General Public License for more details.
-    
+
     You should  have received a copy of the GNU Lesser General Public License
-    along with  this program; If not, see <http://www.gnu.org/licenses/>. 
+    along with  this program; If not, see <http://www.gnu.org/licenses/>.
 */
 #include "lib3ds_impl.h"
-
 
 static void
 initialize_texture_map(Lib3dsTextureMap *map) {
@@ -45,7 +44,7 @@ lib3ds_material_new(const char* name) {
     }
 
     if (name) {
-        strcpy(mat->name, name);
+        stringcopyfixedsize(mat->name, name);
     }
     mat->ambient[0] = mat->ambient[1] = mat->ambient[2] = 0.588235f;
     mat->diffuse[0] = mat->diffuse[1] = mat->diffuse[2] = 0.588235f;
@@ -190,7 +189,7 @@ texture_map_read(Lib3dsTextureMap *map, Lib3dsIo *io) {
                 break;
             }
 
-            case CHK_MAT_MAP_TEXBLUR: 
+            case CHK_MAT_MAP_TEXBLUR:
                 map->blur = lib3ds_io_read_float(io);
                 break;
 
@@ -497,7 +496,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io) {
                 material->autorefl_map_frame_step = lib3ds_io_read_intd(io);
                 break;
             }
-            
+
             default:
                 lib3ds_chunk_unknown(chunk, io);
         }

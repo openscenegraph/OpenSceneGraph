@@ -45,8 +45,8 @@ struct Triangle
 
 struct VertexIndex
 {
-    VertexIndex(unsigned int vertexIndex, unsigned int drawableIndex, unsigned int normalIndex)
-        : vertexIndex(vertexIndex), drawableIndex(drawableIndex), normalIndex(normalIndex)
+    VertexIndex(unsigned int in_vertexIndex, unsigned int in_drawableIndex, unsigned int in_normalIndex)
+        : vertexIndex(in_vertexIndex), drawableIndex(in_drawableIndex), normalIndex(in_normalIndex)
     {}
     VertexIndex(const VertexIndex & v) : vertexIndex(v.vertexIndex), drawableIndex(v.drawableIndex), normalIndex(v.normalIndex) {}
 

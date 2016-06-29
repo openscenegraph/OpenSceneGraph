@@ -1,3 +1,8 @@
+[![Build Status](https://travis-ci.org/openscenegraph/OpenSceneGraph.svg?branch=master)](https://travis-ci.org/openscenegraph/OpenSceneGraph)
+[![Coverity Status](https://scan.coverity.com/projects/9159/badge.svg)](https://scan.coverity.com/projects/openscenegraph-openscenegraph)
+
+### Introduction
+
 Welcome to the OpenSceneGraph (OSG).
 
 For up-to-date information on the project, in-depth details on how to
@@ -23,12 +28,11 @@ more indepth instructions.
 
 Robert Osfield.
 Project Lead.
-12th August 2015.
+13th June 2016.
 
 --
 
-Section 1. How to build the OpenSceneGraph
-==========================================
+### Section 1. How to build the OpenSceneGraph
 
 The OpenSceneGraph uses the CMake build system to generate a
 platform-specific build environment.  CMake reads the CMakeLists.txt
@@ -81,8 +85,7 @@ information read "Getting Started" guide:
     http://www.openscenegraph.org/index.php/documentation/10-getting-started
 
 
-Section 2. Release notes on OSX build, by Eric Sokolowsky, August 5, 2008
-=========================================================================
+### Section 2. Release notes on OSX build, by Eric Sokolowsky, August 5, 2008
 
 There are several ways to compile OpenSceneGraph under OSX.  The
 recommended way is to use CMake 2.6 to generate Xcode projects, then use
@@ -155,8 +158,7 @@ still images, and a QTKit plugin will need to be developed to handle
 animations.
 
 
-Section 3. Release notes on iOS build, by Thomas Hoghart
-=========================================================
+### Section 3. Release notes on iOS build, by Thomas Hoghart
 
 * Run CMake with either OSG_BUILD_PLATFORM_IPHONE or OSG_BUILD_PLATFORM_IPHONE_SIMULATOR set:
   $ mkdir build-iOS ; cd build-iOS
@@ -178,27 +180,27 @@ Section 3. Release notes on iOS build, by Thomas Hoghart
   to source.cpp.objcpp
 
 Here's an example for the command-line:
-$ cmake -G Xcode \
--D OSG_BUILD_PLATFORM_IPHONE:BOOL=ON \
--D CMAKE_CXX_FLAGS:STRING="-ftree-vectorize -fvisibility-inlines-hidden -mno-thumb -arch armv6 -pipe -no-cpp-precomp -miphoneos-version-min=3.1 -mno-thumb" \
--D BUILD_OSG_APPLICATIONS:BOOL=OFF \
--D OSG_BUILD_FRAMEWORKS:BOOL=OFF \
--D OSG_WINDOWING_SYSTEM:STRING=IOS \
--D OSG_BUILD_PLATFORM_IPHONE:BOOL=ON \
--D CMAKE_OSX_ARCHITECTURES:STRING="armv6;armv7" \
--D CMAKE_OSX_SYSROOT:STRING=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk \
--D OSG_GL1_AVAILABLE:BOOL=OFF \
--D OSG_GL2_AVAILABLE:BOOL=OFF \
--D OSG_GLES1_AVAILABLE:BOOL=ON \
--D OSG_GL_DISPLAYLISTS_AVAILABLE:BOOL=OFF \
--D OSG_GL_FIXED_FUNCTION_AVAILABLE:BOOL=ON \
--D OSG_GL_LIBRARY_STATIC:BOOL=OFF \
--D OSG_GL_MATRICES_AVAILABLE:BOOL=ON \
--D OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE:BOOL=ON \
--D OSG_GL_VERTEX_FUNCS_AVAILABLE:BOOL=OFF \
--D DYNAMIC_OPENSCENEGRAPH:BOOL=OFF \
--D DYNAMIC_OPENTHREADS:BOOL=OFF .
 
+    $ cmake -G Xcode \
+    -D OSG_BUILD_PLATFORM_IPHONE:BOOL=ON \
+    -D CMAKE_CXX_FLAGS:STRING="-ftree-vectorize -fvisibility-inlines-hidden -mno-thumb -arch armv6 -pipe -no-cpp-precomp -miphoneos-version-min=3.1 -mno-thumb" \
+    -D BUILD_OSG_APPLICATIONS:BOOL=OFF \
+    -D OSG_BUILD_FRAMEWORKS:BOOL=OFF \
+    -D OSG_WINDOWING_SYSTEM:STRING=IOS \
+    -D OSG_BUILD_PLATFORM_IPHONE:BOOL=ON \
+    -D CMAKE_OSX_ARCHITECTURES:STRING="armv6;armv7" \
+    -D CMAKE_OSX_SYSROOT:STRING=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk \
+    -D OSG_GL1_AVAILABLE:BOOL=OFF \
+    -D OSG_GL2_AVAILABLE:BOOL=OFF \
+    -D OSG_GLES1_AVAILABLE:BOOL=ON \
+    -D OSG_GL_DISPLAYLISTS_AVAILABLE:BOOL=OFF \
+    -D OSG_GL_FIXED_FUNCTION_AVAILABLE:BOOL=ON \
+    -D OSG_GL_LIBRARY_STATIC:BOOL=OFF \
+    -D OSG_GL_MATRICES_AVAILABLE:BOOL=ON \
+    -D OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE:BOOL=ON \
+    -D OSG_GL_VERTEX_FUNCS_AVAILABLE:BOOL=OFF \
+    -D DYNAMIC_OPENSCENEGRAPH:BOOL=OFF \
+    -D DYNAMIC_OPENTHREADS:BOOL=OFF .
 
 Known issues:
 * When Linking final app against ive plugin, you need to add -lz to

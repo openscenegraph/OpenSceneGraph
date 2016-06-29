@@ -25,7 +25,8 @@ static OpenThreads::ReentrantMutex s_contextIDMapMutex;
 static ContextData::GraphicsContexts s_registeredContexts;
 
 ContextData::ContextData(unsigned int contextID):
-    GraphicsObjectManager("ContextData", contextID)
+    GraphicsObjectManager("ContextData", contextID),
+    _numContexts(0)
 {
 }
 

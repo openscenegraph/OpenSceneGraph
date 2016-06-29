@@ -369,7 +369,6 @@ ref_ptr<Group> VBSPEntity::createBrushGeometry()
 {
     int                 i;
     int                 numGeoms;
-    VBSPGeometry **     vbspGeomList;
     Model               currentModel;
     Face                currentFace;
     TexInfo             currentTexInfo;
@@ -387,11 +386,11 @@ ref_ptr<Group> VBSPEntity::createBrushGeometry()
     // convert them back into OSG geometry objects.  We potentially will need
     // one for each state set in the map
     numGeoms = bsp_data->getNumStateSets();
-    vbspGeomList = new VBSPGeometry *[numGeoms];
 
-    // Initialize the list to all NULL for now.  We'll create the geometry
-    // objects as we need them
-    memset(vbspGeomList, 0, sizeof(VBSPGeometry *) * numGeoms);
+    typedef std::vector< osg::ref_ptr<VBSPGeometry> > VBSPGeometryList;
+
+    VBSPGeometryList vbspGeomList;
+    vbspGeomList.resize(numGeoms);
 
     // Get this entity's internal model from the bsp data
     currentModel = bsp_data->getModel(entity_model_index);
@@ -408,9 +407,9 @@ ref_ptr<Group> VBSPEntity::createBrushGeometry()
         currentTexData = bsp_data->getTexData(currentTexInfo.texdata_index);
 
         // Get the texture name
-        texName = bsp_data->
-            getTexDataString(currentTexData.name_string_table_id).c_str();
-        strcpy(currentTexName, texName);
+        texName = bsp_data->getTexDataString(currentTexData.name_string_table_id).c_str();
+
+        osgDB::stringcopyfixedsize(currentTexName, texName);
 
         // See if this is a non-drawable surface
         if ((strcasecmp(currentTexName, "tools/toolsareaportal") != 0) &&
@@ -435,12 +434,13 @@ ref_ptr<Group> VBSPEntity::createBrushGeometry()
             // Get or create the corresponding VBSPGeometry object from the
             // list
             currentGeomIndex = currentTexInfo.texdata_index;
-            currentGeom = vbspGeomList[currentGeomIndex];
+            currentGeom = vbspGeomList[currentGeomIndex].get();
+
             if (currentGeom == NULL)
             {
                 // Create the geometry object
                 vbspGeomList[currentGeomIndex] = new VBSPGeometry(bsp_data);
-                currentGeom = vbspGeomList[currentGeomIndex];
+                currentGeom = vbspGeomList[currentGeomIndex].get();
             }
 
             // Add the face to the appropriate VBSPGeometry object
@@ -484,7 +484,7 @@ ref_ptr<Group> VBSPEntity::createBrushGeometry()
     for (i = 0; i < numGeoms; i++)
     {
         // Get the next geometry object (if any)
-        currentGeom = vbspGeomList[i];
+        currentGeom = vbspGeomList[i].get();
         if (currentGeom != NULL)
         {
             // Convert the BSP geometry to OSG geometry

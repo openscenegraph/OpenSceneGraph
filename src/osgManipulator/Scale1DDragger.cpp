@@ -35,7 +35,11 @@ double computeScale(const osg::Vec3d& startProjectedPoint,
 
 }
 
-Scale1DDragger::Scale1DDragger(ScaleMode scaleMode) : Dragger(), _minScale(0.001), _scaleMode(scaleMode)
+Scale1DDragger::Scale1DDragger(ScaleMode scaleMode):
+    Dragger(),
+    _scaleCenter(0.0),
+    _minScale(0.001),
+    _scaleMode(scaleMode)
 {
     _projector = new LineProjector(osg::Vec3d(-0.5,0.0,0.0),osg::Vec3d(0.5,0.0,0.0));
     setColor(osg::Vec4(0.0f, 1.0f, 0.0f, 1.0f));

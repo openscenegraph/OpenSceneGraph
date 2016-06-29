@@ -20,8 +20,8 @@ using namespace osgDB;
 bool Geometry_readLocalData(Object& obj, Input& fr);
 bool Geometry_writeLocalData(const Object& obj, Output& fw);
 
-bool Geometry_matchBindingTypeStr(const char* str,deprecated_osg::Geometry::AttributeBinding& mode);
-const char* Geometry_getBindingTypeStr(deprecated_osg::Geometry::AttributeBinding mode);
+bool Geometry_matchBindingTypeStr(const char* str,osg::Array::Binding& mode);
+const char* Geometry_getBindingTypeStr(const osg::Array* array);
 
 bool Geometry_matchPrimitiveModeStr(const char* str,GLenum& mode);
 const char* Geometry_getPrimitiveModeStr(GLenum mode);
@@ -45,7 +45,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
 {
     bool iteratorAdvanced = false;
 
-    deprecated_osg::Geometry& geom = static_cast<deprecated_osg::Geometry&>(obj);
+    osg::Geometry& geom = static_cast<osg::Geometry&>(obj);
 
     if (fr.matchSequence("Primitives %i {") || fr.matchSequence("PrimitiveSets %i {") )
     {
@@ -127,14 +127,14 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
         if (indices)
         {
-            geom.setVertexIndices(indices);
+            OSG_WARN<<"Warning: Geometry with vertex indices no longer supported."<<std::endl;
         }
 
         iteratorAdvanced = true;
     }
 
 
-    deprecated_osg::Geometry::AttributeBinding normalBinding = deprecated_osg::Geometry::BIND_OFF;
+    osg::Array::Binding normalBinding = osg::Array::BIND_OFF;
     if (fr[0].matchWord("NormalBinding") && Geometry_matchBindingTypeStr(fr[1].getStr(),normalBinding))
     {
         fr+=2;
@@ -170,7 +170,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
                 }
             }
 
-            geom.setNormalArray(normals);
+            geom.setNormalArray(normals, normalBinding);
 
             iteratorAdvanced = true;
             ++fr;
@@ -182,25 +182,24 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
             Array* normals = Array_readLocalData(fr);
             if (normals)
             {
-                geom.setNormalArray(normals);
+                geom.setNormalArray(normals, normalBinding);
             }
             iteratorAdvanced = true;
         }
-
-        geom.setNormalBinding(normalBinding);
     }
+
     if (fr[0].matchWord("NormalIndices"))
     {
         ++fr;
         IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
         if (indices)
         {
-            geom.setNormalIndices(indices);
+            OSG_WARN<<"Warning: Geometry with normal indices no longer supported."<<std::endl;
         }
         iteratorAdvanced = true;
     }
 
-    deprecated_osg::Geometry::AttributeBinding colorBinding = deprecated_osg::Geometry::BIND_OFF;
+    osg::Array::Binding colorBinding = osg::Array::BIND_OFF;
     if (fr[0].matchWord("ColorBinding") && Geometry_matchBindingTypeStr(fr[1].getStr(),colorBinding))
     {
         fr+=2;
@@ -213,8 +212,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         Array* colors = Array_readLocalData(fr);
         if (colors)
         {
-            geom.setColorArray(colors);
-            geom.setColorBinding(colorBinding);
+            geom.setColorArray(colors, colorBinding);
         }
         iteratorAdvanced = true;
     }
@@ -225,13 +223,13 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
         if (indices)
         {
-            geom.setColorIndices(indices);
+            OSG_WARN<<"Warning: Geometry with color indices no longer supported."<<std::endl;
         }
         iteratorAdvanced = true;
     }
 
 
-    deprecated_osg::Geometry::AttributeBinding secondaryColorBinding = deprecated_osg::Geometry::BIND_OFF;
+    osg::Array::Binding secondaryColorBinding = osg::Array::BIND_OFF;
     if (fr[0].matchWord("SecondaryColorBinding") && Geometry_matchBindingTypeStr(fr[1].getStr(),secondaryColorBinding))
     {
         fr+=2;
@@ -244,8 +242,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         Array* colors = Array_readLocalData(fr);
         if (colors)
         {
-            geom.setSecondaryColorArray(colors);
-            geom.setSecondaryColorBinding(secondaryColorBinding);
+            geom.setSecondaryColorArray(colors, secondaryColorBinding);
         }
         iteratorAdvanced = true;
     }
@@ -256,13 +253,13 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
         if (indices)
         {
-            geom.setSecondaryColorIndices(indices);
+            OSG_WARN<<"Warning: Geometry with secondary color indices no longer supported."<<std::endl;
         }
         iteratorAdvanced = true;
     }
 
 
-    deprecated_osg::Geometry::AttributeBinding fogCoordBinding = deprecated_osg::Geometry::BIND_OFF;
+    osg::Array::Binding fogCoordBinding = osg::Array::BIND_OFF;
     if (fr[0].matchWord("FogCoordBinding") && Geometry_matchBindingTypeStr(fr[1].getStr(),fogCoordBinding))
     {
         fr+=2;
@@ -275,8 +272,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         Array* fogcoords = Array_readLocalData(fr);
         if (fogcoords)
         {
-            geom.setFogCoordArray(fogcoords);
-            geom.setFogCoordBinding(fogCoordBinding);
+            geom.setFogCoordArray(fogcoords, fogCoordBinding);
         }
         iteratorAdvanced = true;
     }
@@ -287,7 +283,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
         if (indices)
         {
-            geom.setFogCoordIndices(indices);
+            OSG_WARN<<"Warning: Geometry with fog coord indices no longer supported."<<std::endl;
         }
         iteratorAdvanced = true;
     }
@@ -317,12 +313,12 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
         if (indices)
         {
-            geom.setTexCoordIndices(unit,indices);
+            OSG_WARN<<"Warning: Geometry with texture coord indices no longer supported."<<std::endl;
         }
         iteratorAdvanced = true;
     }
 
-    deprecated_osg::Geometry::AttributeBinding vertexAttribBinding = deprecated_osg::Geometry::BIND_OFF;
+    osg::Array::Binding vertexAttribBinding = osg::Array::BIND_OFF;
     if (fr.matchSequence("VertexAttribBinding %i %w") && Geometry_matchBindingTypeStr(fr[2].getStr(),vertexAttribBinding))
     {
         int unit=0;
@@ -353,9 +349,10 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         Array* vertexattrib = Array_readLocalData(fr);
         if (vertexattrib)
         {
+            vertexattrib->setBinding(vertexAttribBinding);
+            vertexattrib->setNormalize(vertexAttribNormalize);
+
             geom.setVertexAttribArray(unit,vertexattrib);
-            geom.setVertexAttribBinding(unit,vertexAttribBinding);
-            geom.setVertexAttribNormalize(unit,vertexAttribNormalize);
         }
         iteratorAdvanced = true;
 
@@ -370,7 +367,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
         if (indices)
         {
-            geom.setVertexAttribIndices(unit,indices);
+            OSG_WARN<<"Warning: Geometry with vertex attrib indices no longer supported."<<std::endl;
         }
         iteratorAdvanced = true;
     }
@@ -1276,7 +1273,7 @@ bool Primitive_writeLocalData(const PrimitiveSet& prim,Output& fw)
 
 bool Geometry_writeLocalData(const Object& obj, Output& fw)
 {
-    const deprecated_osg::Geometry& geom = static_cast<const deprecated_osg::Geometry&>(obj);
+    const osg::Geometry& geom = static_cast<const osg::Geometry&>(obj);
 
     const Geometry::PrimitiveSetList& primitives = geom.getPrimitiveSetList();
     if (!primitives.empty())
@@ -1305,16 +1302,11 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
         Array_writeLocalData(*geom.getVertexArray(),fw);
 
     }
-    if (geom.getVertexIndices())
-    {
-        fw.indent()<<"VertexIndices ";
-        Array_writeLocalData(*geom.getVertexIndices(),fw);
-    }
 
     if (geom.getNormalArray())
     {
 
-        fw.indent()<<"NormalBinding "<<Geometry_getBindingTypeStr(geom.getNormalBinding())<<std::endl;
+        fw.indent()<<"NormalBinding "<<Geometry_getBindingTypeStr(geom.getNormalArray())<<std::endl;
 
 //        const Vec3Array& normals = *geom.getNormalArray();
 //        fw.indent()<<"NormalArray "<<normals.size()<<std::endl;
@@ -1324,46 +1316,26 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
         Array_writeLocalData(*geom.getNormalArray(),fw);
 
     }
-    if (geom.getNormalIndices())
-    {
-        fw.indent()<<"NormalIndices ";
-        Array_writeLocalData(*geom.getNormalIndices(),fw);
-    }
 
     if (geom.getColorArray())
     {
-        fw.indent()<<"ColorBinding "<<Geometry_getBindingTypeStr(geom.getColorBinding())<<std::endl;
+        fw.indent()<<"ColorBinding "<<Geometry_getBindingTypeStr(geom.getColorArray())<<std::endl;
         fw.indent()<<"ColorArray ";
         Array_writeLocalData(*geom.getColorArray(),fw);
-    }
-    if (geom.getColorIndices())
-    {
-        fw.indent()<<"ColorIndices ";
-        Array_writeLocalData(*geom.getColorIndices(),fw);
     }
 
     if (geom.getSecondaryColorArray())
     {
-        fw.indent()<<"SecondaryColorBinding "<<Geometry_getBindingTypeStr(geom.getSecondaryColorBinding())<<std::endl;
+        fw.indent()<<"SecondaryColorBinding "<<Geometry_getBindingTypeStr(geom.getSecondaryColorArray())<<std::endl;
         fw.indent()<<"SecondaryColorArray ";
         Array_writeLocalData(*geom.getSecondaryColorArray(),fw);
-    }
-    if (geom.getSecondaryColorIndices())
-    {
-        fw.indent()<<"SecondayColorIndices ";
-        Array_writeLocalData(*geom.getSecondaryColorIndices(),fw);
     }
 
     if (geom.getFogCoordArray())
     {
-        fw.indent()<<"FogCoordBinding "<<Geometry_getBindingTypeStr(geom.getFogCoordBinding())<<std::endl;
+        fw.indent()<<"FogCoordBinding "<<Geometry_getBindingTypeStr(geom.getFogCoordArray())<<std::endl;
         fw.indent()<<"FogCoordArray ";
         Array_writeLocalData(*geom.getFogCoordArray(),fw);
-    }
-    if (geom.getFogCoordIndices())
-    {
-        fw.indent()<<"FogCoordIndices ";
-        Array_writeLocalData(*geom.getFogCoordIndices(),fw);
     }
 
     const Geometry::ArrayList& tcal=geom.getTexCoordArrayList();
@@ -1376,13 +1348,6 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
             fw.indent()<<"TexCoordArray "<<i<<" ";
             Array_writeLocalData(*array,fw);
         }
-
-        const osg::IndexArray* indices = (array!=0) ? dynamic_cast<const osg::IndexArray*>(array->getUserData()) : 0;
-        if (indices)
-        {
-            fw.indent()<<"TexCoordIndices "<<i<<" ";
-            Array_writeLocalData(*indices,fw);
-        }
     }
 
     const Geometry::ArrayList& vaal=geom.getVertexAttribArrayList();
@@ -1392,7 +1357,7 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
 
         if (array)
         {
-            fw.indent()<<"VertexAttribBinding "<<i<<" "<<Geometry_getBindingTypeStr(static_cast<deprecated_osg::Geometry::AttributeBinding>(array->getBinding()))<<std::endl;
+            fw.indent()<<"VertexAttribBinding "<<i<<" "<<Geometry_getBindingTypeStr(array)<<std::endl;
 
             if (array->getNormalize())
                 fw.indent()<<"VertexAttribNormalize "<<i<<" TRUE"<<std::endl;
@@ -1402,40 +1367,33 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
             fw.indent()<<"VertexAttribArray "<<i<<" ";
             Array_writeLocalData(*array,fw);
         }
-
-        const osg::IndexArray* indices = (array!=0) ? dynamic_cast<const osg::IndexArray*>(array->getUserData()) : 0;
-        if (indices)
-        {
-            fw.indent()<<"VertexAttribIndices "<<i<<" ";
-            Array_writeLocalData(*indices,fw);
-        }
     }
 
     return true;
 }
 
-bool Geometry_matchBindingTypeStr(const char* str,deprecated_osg::Geometry::AttributeBinding& mode)
+bool Geometry_matchBindingTypeStr(const char* str,osg::Array::Binding& mode)
 {
-    if (strcmp(str,"OFF")==0) mode = deprecated_osg::Geometry::BIND_OFF;
-    else if (strcmp(str,"OVERALL")==0) mode = deprecated_osg::Geometry::BIND_OVERALL;
-    else if (strcmp(str,"PER_PRIMITIVE")==0) mode = deprecated_osg::Geometry::BIND_PER_PRIMITIVE;
-    else if (strcmp(str,"PER_PRIMITIVE_SET")==0) mode = deprecated_osg::Geometry::BIND_PER_PRIMITIVE_SET;
-    else if (strcmp(str,"PER_VERTEX")==0) mode = deprecated_osg::Geometry::BIND_PER_VERTEX;
+    if (strcmp(str,"OFF")==0) mode = osg::Array::BIND_OFF;
+    else if (strcmp(str,"OVERALL")==0) mode = osg::Array::BIND_OVERALL;
+    else if (strcmp(str,"PER_PRIMITIVE_SET")==0) mode = osg::Array::BIND_PER_PRIMITIVE_SET;
+    else if (strcmp(str,"PER_PRIMITIVE")==0) mode = (osg::Array::Binding)3;
+    else if (strcmp(str,"PER_VERTEX")==0) mode = osg::Array::BIND_PER_VERTEX;
     else return false;
     return true;
 }
 
 
-const char* Geometry_getBindingTypeStr(deprecated_osg::Geometry::AttributeBinding mode)
+const char* Geometry_getBindingTypeStr(const osg::Array* array)
 {
-    switch(mode)
+    osg::Array::Binding binding = array ? array->getBinding() : osg::Array::BIND_OFF;
+    switch(binding)
     {
-        case (deprecated_osg::Geometry::BIND_OVERALL)           : return "OVERALL";
-        case (deprecated_osg::Geometry::BIND_PER_PRIMITIVE)     : return "PER_PRIMITIVE";
-        case (deprecated_osg::Geometry::BIND_PER_PRIMITIVE_SET) : return "PER_PRIMITIVE_SET";
-        case (deprecated_osg::Geometry::BIND_PER_VERTEX)        : return "PER_VERTEX";
-        case (deprecated_osg::Geometry::BIND_OFF)               :
-        default                                 : return "OFF";
+        case (osg::Array::BIND_OVERALL)             : return "OVERALL";
+        case (osg::Array::BIND_PER_PRIMITIVE_SET)   : return "PER_PRIMITIVE_SET";
+        case (osg::Array::BIND_PER_VERTEX)          : return "PER_VERTEX";
+        case (osg::Array::BIND_OFF)                 :
+        default                                     : return "OFF";
     }
 }
 

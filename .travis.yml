@@ -1,3 +1,9 @@
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "0ROQiFbsZo33ce2v5VjBxNljemh/HU70ntSSPygYwaDFymubts/62SixXVkbKNIFdrs3uYD6qeA/eMmpqXxLcs+PXNq5NrH7eSWw9oDIKMhq3NQH/IZLdRfXwihHimZ1qEs/TXyWlT2aC4rpBi1py3cJeTh1aBMlz4V/nm16iRAgc596ThNTuPDHa0F9/gZnwccI/Rr9VpiYn7vEBbuY9lYr43D0G3NuuQyvvlHShroH09fh6KyFOWIY38AQtnuVGNC1fIiAUk7TUqDqSBwhIrUV5saHbP0kca6DP32REkv//h4JwM76UHv+ntVEoK/UiztJHMkrw71gXYTyvIvlDBpT+IDoeIwUW2QFNQ5zJZI7FM8k0+oeK+F7k/mkffDzr1zww/PQoxqFBF0PoxAni/L9qkA4X2o1A6mRDbe9besp2LQG6Vniwj3bHpCId2QiiMrANVg0EAqkcL2mVFEaqZsh90qCkr1UDq4WQoYbXh0Fy3UnQpbuxDvCME8u03lwuv6ds/SBxc5cgKv7oWXgezaDg7/OCR+0lIAGuLqmNRD8Xw7a0WZGmSbYCHIZmeyFja2KuUvMiVCt8+QsyZr3e523DwBwnSj1BIYFRstMaSEJgu9B8rfTRRllOOKJXCQtdFVuGu8VI6PniSAkI6c535yOWzsuS8HwIkN2ll+Wn7E="
+
 matrix:
   fast_finish: true
   include:
@@ -12,10 +18,18 @@ matrix:
         apt: true
         directories:
           - $HOME/.ccache
-      compiler: 
-          #- clang 
-          - g++
+      compiler:
+          #- clang
+          - gcc
       addons:
+        coverity_scan:
+          project:
+            name: "openscenegraph/OpenSceneGraph"
+            description: "OpenSceneGraph build"
+          notification_email: robert@openscenegraph.com
+          build_command_prepend: "cmake -DCMAKE_BUILD_TYPE=Release ."
+          build_command:   "make -j 3"
+          branch_pattern: coverity_scan
         apt:
           sources:
             #- llvm-toolchain-precise-3.8
@@ -24,13 +38,16 @@ matrix:
             #- clang-3.8
             - g++
             - cmake
+
     # OSX build
     - os: osx
       language: cpp
 
-script:
-   - mkdir build
-   - cd build
-   - travis_wait 60 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../product -DBUILD_OSG_EXAMPLES=ON ..
-   - make install -j3
+# script:
+#    - mkdir build
+#    - cd build
+#    - travis_wait 60 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../product -DBUILD_OSG_EXAMPLES=ON ..
+#    - make install -j 3
 
+script:
+    - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then mkdir build && cd build && travis_wait 60 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../product -DBUILD_OSG_EXAMPLES=ON ../ && make -j3 ; fi

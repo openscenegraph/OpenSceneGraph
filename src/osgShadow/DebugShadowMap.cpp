@@ -699,6 +699,9 @@ void DebugShadowMap::ViewData::displayShadowTexelToPixelErrors
     osg::Vec3d vfe = computeShadowTexelToPixelError( mvpwMain, mvpwShadow, vf );
     osg::Vec3d vme = computeShadowTexelToPixelError( mvpwMain, mvpwShadow, vm );
 
+    // save format state
+    std::ios::fmtflags save_format_flags( std::cout.flags() );
+
     std::cout << std::setprecision( 3 ) << " "
         << "ne=(" << vne[0] << "," << vne[1] << "," << vne[2] << ")  "
         << "fe=(" << vfe[0] << "," << vfe[1] << "," << vfe[2] << ")  "
@@ -707,5 +710,8 @@ void DebugShadowMap::ViewData::displayShadowTexelToPixelErrors
         << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
         << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
         << std::flush;
+
+    // restore format state
+    std::cout.flags( save_format_flags );
 }
 

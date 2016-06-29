@@ -1,19 +1,19 @@
 /*
     Copyright (C) 1996-2008 by Jan Eric Kyprianidis <www.kyprianidis.com>
     All rights reserved.
-    
-    This program is free  software: you can redistribute it and/or modify 
-    it under the terms of the GNU Lesser General Public License as published 
-    by the Free Software Foundation, either version 2.1 of the License, or 
+
+    This program is free  software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation, either version 2.1 of the License, or
     (at your option) any later version.
 
-    Thisprogram  is  distributed in the hope that it will be useful, 
-    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+    Thisprogram  is  distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU Lesser General Public License for more details.
-    
+
     You should  have received a copy of the GNU Lesser General Public License
-    along with  this program; If not, see <http://www.gnu.org/licenses/>. 
+    along with  this program; If not, see <http://www.gnu.org/licenses/>.
 */
 #include "lib3ds_impl.h"
 
@@ -41,7 +41,7 @@ lib3ds_mesh_new(const char *name) {
     if (!mesh) {
         return (0);
     }
-    strcpy(mesh->name, name);
+    stringcopyfixedsize(mesh->name, name);
     lib3ds_matrix_identity(mesh->matrix);
     mesh->map_type = LIB3DS_MAP_NONE;
     return (mesh);
@@ -67,22 +67,22 @@ lib3ds_mesh_resize_vertices(Lib3dsMesh *mesh, int nvertices, int use_texcos, int
     assert(mesh);
     mesh->vertices = (float (*)[3])lib3ds_util_realloc_array(mesh->vertices, mesh->nvertices, nvertices, 3 * sizeof(float));
     mesh->texcos = (float (*)[2])lib3ds_util_realloc_array(
-        mesh->texcos, 
-        mesh->texcos? mesh->nvertices : 0, 
-        use_texcos? nvertices : 0, 
+        mesh->texcos,
+        mesh->texcos? mesh->nvertices : 0,
+        use_texcos? nvertices : 0,
         2 * sizeof(float)
     );
     mesh->vflags = (unsigned short*)lib3ds_util_realloc_array(
-        mesh->vflags, 
-        mesh->vflags? mesh->nvertices : 0, 
-        use_flags? nvertices : 0, 
+        mesh->vflags,
+        mesh->vflags? mesh->nvertices : 0,
+        use_flags? nvertices : 0,
         2 * sizeof(float)
     );
     mesh->nvertices = (unsigned short)nvertices;
 }
 
 
-void 
+void
 lib3ds_mesh_resize_faces(Lib3dsMesh *mesh, int nfaces) {
     int i;
     assert(mesh);
@@ -186,7 +186,7 @@ lib3ds_mesh_calculate_vertex_normals(Lib3dsMesh *mesh, float (*normals)[3]) {
             lib3ds_vector_sub(q, mesh->vertices[mesh->faces[i].index[j>0? j - 1 : 2]], mesh->vertices[mesh->faces[i].index[j]]);
             lib3ds_vector_cross(n, p, q);
             len = lib3ds_vector_length(n);
-            if (len > 0) {       
+            if (len > 0) {
                 weight = (float)atan2(len, lib3ds_vector_dot(p, q));
                 lib3ds_vector_scalar_mul(l->normal, n, weight / len);
             } else {
@@ -215,7 +215,7 @@ lib3ds_mesh_calculate_vertex_normals(Lib3dsMesh *mesh, float (*normals)[3]) {
                 }
 
                 for (p = fl[mesh->faces[i].index[j]]; p; p = p->next) {
-                    pf = &mesh->faces[p->index];                
+                    pf = &mesh->faces[p->index];
                     if (smoothing_group & pf->smoothing_group) {
                         lib3ds_vector_add(n, n, p->normal);
                     }
@@ -594,7 +594,7 @@ texco_array_write(Lib3dsMesh *mesh, Lib3dsIo *io) {
     if (!mesh->texcos) {
         return;
     }
-     
+
     c.chunk = CHK_TEX_VERTS;
     c.size = 8 + 8 * mesh->nvertices;
     lib3ds_chunk_write(&c, io);
@@ -669,7 +669,7 @@ lib3ds_mesh_write(Lib3dsFile *file, Lib3dsMesh *mesh, Lib3dsIo *io) {
         lib3ds_chunk_write(&c, io);
         lib3ds_io_write_byte(io, (uint8_t)mesh->color);
     }
-    
+
     face_array_write(file, mesh, io);
 
     lib3ds_chunk_write_end(&c, io);

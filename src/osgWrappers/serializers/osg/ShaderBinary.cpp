@@ -10,7 +10,7 @@ static bool checkData( const osg::ShaderBinary& sb )
 static bool readData( osgDB::InputStream& is, osg::ShaderBinary& sb )
 {
     unsigned int size; is >> size;
-    char* data = new char[size];
+    char* data = new char[size]();
     if ( is.isBinary() )
     {
         is.readCharArray( data, size );
@@ -24,7 +24,12 @@ static bool readData( osgDB::InputStream& is, osg::ShaderBinary& sb )
         }
         is >> is.END_BRACKET;
     }
-    sb.assign( size, (unsigned char*)data );
+
+    if (size>0)
+    {
+        sb.assign( size, (unsigned char*)data );
+    }
+
     delete [] data;
     return true;
 }

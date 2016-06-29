@@ -43,7 +43,6 @@
 #include "VertexMap.h"
 
 #include "old_lw.h"
-#include "old_Lwo2.h"
 
 class ReaderWriterLWO : public osgDB::ReaderWriter
 {
@@ -72,18 +71,12 @@ public:
         ReadResult result = readNode_LWO1(fileName,local_opt.get());
         if (result.success()) return result;
 
-        if (!options || options->getOptionString() != "USE_OLD_READER") {
-            result = readNode_LWO2(fileName, local_opt.get());
-            if (result.success()) return result;
-        }
-
-        return readNode_old_LWO2(fileName, local_opt.get());
+        return readNode_LWO2(fileName, local_opt.get());
     }
 
     lwosg::Converter::Options parse_options(const Options *options) const;
 
     virtual ReadResult readNode_LWO2(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
-    virtual ReadResult readNode_old_LWO2(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
     virtual ReadResult readNode_LWO1(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
 
 protected:
@@ -141,21 +134,6 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO2(const std::string
 
     return ReadResult::FILE_NOT_HANDLED;
 }
-
-
-osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_old_LWO2(const std::string& fileName, const osgDB::ReaderWriter::Options*) const
-{
-    std::auto_ptr<Lwo2> lwo2(new Lwo2());
-    if (lwo2->ReadFile(fileName))
-    {
-        osg::ref_ptr<Group> group = new osg::Group();
-        if (lwo2->GenerateGroup(*group)) return group.release();
-    }
-    return ReadResult::FILE_NOT_HANDLED;
-}
-
-
-
 
 
 // collect all the data relavent to a particular osg::Geometry being created.

@@ -341,7 +341,9 @@ StandardShadowMap::StandardShadowMap(const StandardShadowMap& copy, const osg::C
     _polygonOffsetUnits( copy._polygonOffsetUnits ),
     _textureSize( copy._textureSize ),
     _baseTextureUnit( copy._baseTextureUnit ),
-    _shadowTextureUnit( copy._shadowTextureUnit )
+    _shadowTextureUnit( copy._shadowTextureUnit ),
+    _baseTextureCoordIndex( copy._baseTextureCoordIndex ),
+    _shadowTextureCoordIndex( copy._shadowTextureCoordIndex )
 {
     if( copy._mainVertexShader.valid() )
         _mainVertexShader = dynamic_cast<osg::Shader*>

@@ -19,7 +19,7 @@ class NormalsReader: public osgDB::ReaderWriter
             supportsExtension("normals","Normals Pseudo loader");
         }
 
-        virtual const char* className() { return "Normals Pseudo Loader"; }
+        virtual const char* className() const { return "Normals Pseudo Loader"; }
 
         virtual bool acceptsExtension(const std::string& extension) const
         {

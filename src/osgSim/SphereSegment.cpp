@@ -205,7 +205,10 @@ public:
 
 protected:
 
-    Spoke():_ss(0)
+    Spoke():
+        _ss(0),
+        _azAngle(SphereSegment::MIN),
+        _elevAngle(SphereSegment::MIN)
     {
         init();
         OSG_WARN<<
@@ -215,7 +218,8 @@ protected:
     Spoke(const Spoke& rhs, const osg::CopyOp& co=osg:: CopyOp::SHALLOW_COPY):
         osg::Drawable(rhs,co),
         _ss(0),
-        _azAngle(rhs._azAngle), _elevAngle(rhs._elevAngle)
+        _azAngle(rhs._azAngle),
+        _elevAngle(rhs._elevAngle)
     {
         OSG_WARN<<
             "Warning: unexpected call to osgSim::SphereSegment::Spoke() copy constructor"<<std::endl;

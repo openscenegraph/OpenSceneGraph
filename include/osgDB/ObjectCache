@@ -50,16 +50,16 @@ class OSGDB_EXPORT ObjectCache : public osg::Referenced
         void addObjectCache(ObjectCache* object);
 
         /** Add a filename,object,timestamp triple to the Registry::ObjectCache.*/
-        void addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp = 0.0);
+        void addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp = 0.0, const Options *options = NULL);
 
         /** Remove Object from cache.*/
-        void removeFromObjectCache(const std::string& fileName);
+        void removeFromObjectCache(const std::string& fileName, const Options *options = NULL);
 
         /** Get an Object from the object cache*/
-        osg::Object* getFromObjectCache(const std::string& fileName);
+        osg::Object* getFromObjectCache(const std::string& fileName, const Options *options = NULL);
 
         /** Get an ref_ptr<Object> from the object cache*/
-        osg::ref_ptr<osg::Object> getRefFromObjectCache(const std::string& fileName);
+        osg::ref_ptr<osg::Object> getRefFromObjectCache(const std::string& fileName, const Options *options = NULL);
 
         /** call rleaseGLObjects on all objects attached to the object cache.*/
         void releaseGLObjects(osg::State* state);
@@ -68,8 +68,15 @@ class OSGDB_EXPORT ObjectCache : public osg::Referenced
 
         virtual ~ObjectCache();
 
+        typedef std::pair<std::string, osg::ref_ptr<const osgDB::Options> >   FileNameOptionsPair;
+
+        class ClassComp {
+        public:
+            bool operator() (const ObjectCache::FileNameOptionsPair& lhs, const ObjectCache::FileNameOptionsPair& rhs) const;
+        };
+
         typedef std::pair<osg::ref_ptr<osg::Object>, double >           ObjectTimeStampPair;
-        typedef std::map<std::string, ObjectTimeStampPair >             ObjectCacheMap;
+        typedef std::map<FileNameOptionsPair, ObjectTimeStampPair, ClassComp>     ObjectCacheMap;
 
         ObjectCacheMap                          _objectCache;
         OpenThreads::Mutex                      _objectCacheMutex;

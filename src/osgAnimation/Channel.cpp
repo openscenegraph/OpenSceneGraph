@@ -17,7 +17,7 @@ using namespace osgAnimation;
 
 Channel::Channel() {}
 Channel::~Channel() {}
-Channel::Channel(const Channel& channel) : osg::Referenced(channel),
+Channel::Channel(const Channel& channel) : osg::Object(channel),
                                            _targetName(channel._targetName),
                                            _name(channel._name)
 {

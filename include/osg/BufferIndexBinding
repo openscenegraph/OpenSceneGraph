@@ -50,15 +50,23 @@ class OSG_EXPORT BufferIndexBinding : public StateAttribute
     virtual unsigned getMember() const { return static_cast<unsigned int>(_index); }
 
     GLenum getTarget() const { return _target; }
+
+    /** Set the renderbuffer index of the BlendEquationi. */
+    void setIndex(unsigned int index);
+
     /** Get the index target.
      */
-    GLuint getIndex() const { return _index; }
+    unsigned int getIndex() const { return _index; }
+
     /** Set the buffer object that will be bound to the index target.
      */
     void setBufferObject(BufferObject *bo) { _bufferObject = bo; }
+
     /** Get the buffer object to be bound.
      */
-    BufferObject* getBufferObject() const { return _bufferObject.get(); }
+    const BufferObject* getBufferObject() const { return _bufferObject.get(); }
+    BufferObject* getBufferObject(){ return _bufferObject.get(); }
+
     /** Set the starting offset into the buffer object for data for
     the indexed target. Note: the required  alignment on the offset
     may be quite large (e.g., 256 bytes on NVidia 8600M). This
@@ -66,15 +74,18 @@ class OSG_EXPORT BufferIndexBinding : public StateAttribute
     */
     void setOffset(GLintptr offset) { _offset = offset; }
     GLintptr getOffset() const { return _offset; }
+
     /** Set the size of data for the indexed target.
      */
     void setSize(GLsizeiptr size) { _size = size; }
     GLsizeiptr getSize() const { return _size; }
+
     virtual void apply(State& state) const;
+
  protected:
     virtual ~BufferIndexBinding();
     const GLenum _target;
-    const GLuint _index;
+    GLuint _index;
     ref_ptr<BufferObject> _bufferObject;
     GLintptr _offset;
     GLsizeiptr _size;
@@ -190,7 +201,27 @@ class OSG_EXPORT ShaderStorageBufferBinding : public BufferIndexBinding
     }
 };
 
+class OSG_EXPORT DrawIndirectBufferBinding : public BufferIndexBinding
+{
+ public:
+    DrawIndirectBufferBinding();
+    /** Create a binding for a uniform buffer index target.
+     *  @param bo associated buffer object
+     */
+    DrawIndirectBufferBinding( BufferObject* bo);
+    void apply(State& state) const;
+    DrawIndirectBufferBinding(const DrawIndirectBufferBinding& rhs, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
+    META_StateAttribute(osg, DrawIndirectBufferBinding, INDIRECTDRAWBUFFERBINDING);
+
+    virtual int compare(const StateAttribute& bb) const
+    {
+        COMPARE_StateAttribute_Types(DrawIndirectBufferBinding, bb)
+        COMPARE_StateAttribute_Parameter(_target)
+        COMPARE_StateAttribute_Parameter(_bufferObject)
+        return 0;
+    }
+};
 
 
 } // namespace osg

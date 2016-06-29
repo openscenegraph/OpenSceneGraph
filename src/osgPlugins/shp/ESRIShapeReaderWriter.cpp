@@ -22,7 +22,7 @@ class ESRIShapeReaderWriter : public osgDB::ReaderWriter
             supportsOption("double","Read x,y,z data as double an stored as geometry in osg::Vec3dArray's.");
         }
 
-        virtual const char* className() { return "ESRI Shape ReaderWriter"; }
+        virtual const char* className() const { return "ESRI Shape ReaderWriter"; }
 
         virtual bool acceptsExtension(const std::string& extension) const
         {

@@ -37,28 +37,29 @@ class Logos: public osg::Drawable
         {
             virtual bool cull(osg::NodeVisitor *visitor, osg::Drawable* drawable, osg::State*) const
             {
-                Logos *logos = dynamic_cast <Logos *>(drawable);
+                Logos *logos = dynamic_cast<Logos *>(drawable);
+                if (!logos) return true;
+
                 osgUtil::CullVisitor *cv = visitor->asCullVisitor();
                 if (!cv) return true;
 
-                unsigned int contextID = cv->getState()!=0 ? cv->getState()->getContextID() : 0;
+                osg::State* state = cv->getState();
+
+                unsigned int contextID = state!=0 ? state->getContextID() : 0;
                 if(contextID != logos->getContextID())
                 {
                     // logo not appropriate for window assigned to the cull visitor so cull it.
                     return true;
                 }
 
-                if( logos != NULL && cv != NULL )
+                osg::Viewport *vp = cv->getViewport();
+                if( vp != NULL )
                 {
-                    osg::Viewport *vp = cv->getViewport();
-                    if( vp != NULL )
+                    if( vp->width() != logos->getViewport()->width() ||
+                        vp->height() != logos->getViewport()->height() )
                     {
-                        if( vp->width() != logos->getViewport()->width() ||
-                            vp->height() != logos->getViewport()->height() )
-                        {
-                            logos->getViewport()->setViewport( vp->x(), vp->y(), vp->width(), vp->height() );
-                            logos->dirtyDisplayList();
-                        }
+                        logos->getViewport()->setViewport( vp->x(), vp->y(), vp->width(), vp->height() );
+                        logos->dirtyDisplayList();
                     }
                 }
                 return false;
@@ -86,7 +87,9 @@ class Logos: public osg::Drawable
             _contextID = 0;
         }
 
-        Logos(const Logos& logo, const CopyOp& copyop=CopyOp::SHALLOW_COPY) :Drawable( logo, copyop ) {}
+        Logos(const Logos& logo, const CopyOp& copyop=CopyOp::SHALLOW_COPY) :
+            Drawable( logo, copyop ),
+            _contextID(0) {}
 
         virtual Object* cloneType() const { return new Logos(); }
         virtual Object* clone( const CopyOp& copyop) const { return new Logos(*this, copyop ); }
@@ -246,7 +249,7 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
             }
 
 
-            osg::Geode *geode = new osg::Geode;
+            osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
             unsigned int screen = 0;
 
@@ -255,17 +258,14 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
 
             Logos::RelativePosition pos = Logos::LowerRight;
 
-            FILE *fp;
-            if( (fp = osgDB::fopen( fileName.c_str(), "r")) == NULL )
-                return NULL;
-            while( !feof(fp))
+
+            std::ifstream fin(filePath.c_str());
+            if (!fin) return NULL;
+
+            while(fin)
             {
-                char buff[128];
-
-                if( fscanf( fp, "%s", buff ) != 1 )
-                    break;
-
-                std::string str(buff);
+                std::string str;
+                fin >> str;
 
                 if( str == "Center" )
                     pos = Logos::Center;
@@ -284,7 +284,8 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
                 else if( str == "Camera" )
                 {
                     int tn;
-                    if( (fscanf( fp, "%d", &tn )) != 1 )
+                    fin >> tn;
+                    if (fin.fail())
                     {
                         OSG_WARN << "Error... Camera requires an integer argument\n";
                         break;
@@ -316,7 +317,6 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
                     ld->addLogo( pos, str );
                 }
             }
-            fclose( fp );
 
             if( ld->hasLogos() )
                 geode->addDrawable( ld );

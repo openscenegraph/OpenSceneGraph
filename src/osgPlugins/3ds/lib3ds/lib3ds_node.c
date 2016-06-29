@@ -1,19 +1,19 @@
 /*
     Copyright (C) 1996-2008 by Jan Eric Kyprianidis <www.kyprianidis.com>
     All rights reserved.
-    
-    This program is free  software: you can redistribute it and/or modify 
-    it under the terms of the GNU Lesser General Public License as published 
-    by the Free Software Foundation, either version 2.1 of the License, or 
+
+    This program is free  software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation, either version 2.1 of the License, or
     (at your option) any later version.
 
-    Thisprogram  is  distributed in the hope that it will be useful, 
-    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+    Thisprogram  is  distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU Lesser General Public License for more details.
-    
+
     You should  have received a copy of the GNU Lesser General Public License
-    along with  this program; If not, see <http://www.gnu.org/licenses/>. 
+    along with  this program; If not, see <http://www.gnu.org/licenses/>.
 */
 #include "lib3ds_impl.h"
 
@@ -104,7 +104,7 @@ lib3ds_node_new(Lib3dsNodeType type) {
 }
 
 
-Lib3dsAmbientColorNode* 
+Lib3dsAmbientColorNode*
 lib3ds_node_new_ambient_color(float color0[3]) {
     Lib3dsNode *node;
     Lib3dsAmbientColorNode *n;
@@ -123,7 +123,7 @@ lib3ds_node_new_ambient_color(float color0[3]) {
 }
 
 
-Lib3dsMeshInstanceNode* 
+Lib3dsMeshInstanceNode*
 lib3ds_node_new_mesh_instance(Lib3dsMesh *mesh, const char *instance_name, float pos0[3], float scl0[3], float rot0[4]) {
     Lib3dsNode *node;
     Lib3dsMeshInstanceNode *n;
@@ -138,7 +138,7 @@ lib3ds_node_new_mesh_instance(Lib3dsMesh *mesh, const char *instance_name, float
 
     n = (Lib3dsMeshInstanceNode*)node;
     if (instance_name) {
-        strcpy(n->instance_name, instance_name);
+        stringcopyfixedsize(n->instance_name, instance_name);
     }
 
     lib3ds_track_resize(&n->pos_track, 1);
@@ -164,11 +164,11 @@ lib3ds_node_new_mesh_instance(Lib3dsMesh *mesh, const char *instance_name, float
 }
 
 
-Lib3dsCameraNode* 
+Lib3dsCameraNode*
 lib3ds_node_new_camera(Lib3dsCamera *camera) {
     Lib3dsNode *node;
     Lib3dsCameraNode *n;
-    
+
     assert(camera);
     node = lib3ds_node_new(LIB3DS_NODE_CAMERA);
     strcpy(node->name, camera->name);
@@ -187,11 +187,11 @@ lib3ds_node_new_camera(Lib3dsCamera *camera) {
 }
 
 
-Lib3dsTargetNode* 
+Lib3dsTargetNode*
 lib3ds_node_new_camera_target(Lib3dsCamera *camera) {
     Lib3dsNode *node;
     Lib3dsTargetNode *n;
-    
+
     assert(camera);
     node = lib3ds_node_new(LIB3DS_NODE_CAMERA_TARGET);
     strcpy(node->name, camera->name);
@@ -204,7 +204,7 @@ lib3ds_node_new_camera_target(Lib3dsCamera *camera) {
 }
 
 
-Lib3dsOmnilightNode* 
+Lib3dsOmnilightNode*
 lib3ds_node_new_omnilight(Lib3dsLight *light) {
     Lib3dsNode *node;
     Lib3dsOmnilightNode *n;
@@ -224,7 +224,7 @@ lib3ds_node_new_omnilight(Lib3dsLight *light) {
 }
 
 
-Lib3dsSpotlightNode* 
+Lib3dsSpotlightNode*
 lib3ds_node_new_spotlight(Lib3dsLight *light) {
     Lib3dsNode *node;
     Lib3dsSpotlightNode *n;
@@ -253,11 +253,11 @@ lib3ds_node_new_spotlight(Lib3dsLight *light) {
 }
 
 
-Lib3dsTargetNode* 
+Lib3dsTargetNode*
 lib3ds_node_new_spotligf_target(Lib3dsLight *light) {
     Lib3dsNode *node;
     Lib3dsTargetNode *n;
-    
+
     assert(light);
     node = lib3ds_node_new(LIB3DS_NODE_SPOTLIGHT_TARGET);
     strcpy(node->name, light->name);
@@ -325,7 +325,7 @@ free_node_and_childs(Lib3dsNode *node) {
             lib3ds_track_resize(&n->pos_track, 0);
             break;
         }
-    } 
+    }
     {
         Lib3dsNode *p, *q;
         for (p = node->childs; p; p = q) {
@@ -613,7 +613,7 @@ lib3ds_node_read(Lib3dsNode *node, Lib3dsIo *io) {
                         Lib3dsAmbientColorNode *n = (Lib3dsAmbientColorNode*)node;
                         track = &n->color_track;
                         break;
-                    }              
+                    }
                     case LIB3DS_NODE_OMNILIGHT: {
                         Lib3dsOmnilightNode *n = (Lib3dsOmnilightNode*)node;
                         track = &n->color_track;
@@ -830,7 +830,7 @@ lib3ds_node_write(Lib3dsNode *node, uint16_t node_id, uint16_t parent_id, Lib3ds
             assert(0);
             return;
     }
-    
+
     lib3ds_chunk_write_start(&c, io);
 
     { /*---- CHK_NODE_ID ----*/
@@ -1038,7 +1038,7 @@ lib3ds_node_write(Lib3dsNode *node, uint16_t node_id, uint16_t parent_id, Lib3ds
                 lib3ds_track_write(&n->roll_track, io);
                 lib3ds_chunk_write_end(&c, io);
             }
-            break; 
+            break;
         }
 
         case CHK_L_TARGET_NODE_TAG: {

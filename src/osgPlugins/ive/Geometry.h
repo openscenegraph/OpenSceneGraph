@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class Geometry : public deprecated_osg::Geometry {
+class Geometry : public osg::Geometry {
 public:
     void write(DataOutputStream* out);
     void read(DataInputStream* in);

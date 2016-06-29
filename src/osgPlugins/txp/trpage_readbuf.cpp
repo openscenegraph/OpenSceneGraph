@@ -14,6 +14,7 @@
    */
 
 #include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -593,8 +594,8 @@ trpgrAppFileCache::trpgrAppFileCache(const char *inPre,const char *inExt,int noF
 
 void trpgrAppFileCache::Init(const char *inPre,const char *inExt,int noFiles)
 {
-    strcpy(baseName,inPre);
-    strcpy(ext,inExt);
+    osgDB::stringcopyfixedsize(baseName,inPre);
+    osgDB::stringcopyfixedsize(ext,inExt);
 
     files.resize(noFiles);
     timeCount = 0;
@@ -667,6 +668,12 @@ trpgrAppFile *trpgrAppFileCache::GetFile(trpgEndian ness,int id,int col,int row)
         }
     }
 
+    if (oldID<0)
+    {
+        // oldID hasn't been set so we haven't found one to reclaim
+        return 0;
+    }
+
 
     // Reclaim this one
     OpenFile &of = files[oldID];
@@ -684,8 +691,8 @@ trpgrAppFile *trpgrAppFileCache::GetFile(trpgEndian ness,int id,int col,int row)
         int len = strlen(baseName);
         while(--len > 0) {
             if(baseName[len]==PATHSEPERATOR[0]) {
-                strcpy(filebase,&baseName[len+1]);
-                strcpy(dir,baseName);
+                osgDB::stringcopyfixedsize(filebase,&baseName[len+1]);
+                osgDB::stringcopyfixedsize(dir,baseName);
                 dir[len]='\0';
                 break;
             }

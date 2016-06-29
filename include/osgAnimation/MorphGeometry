@@ -18,6 +18,7 @@
 #include <osgAnimation/Export>
 #include <osgAnimation/AnimationUpdateCallback>
 #include <osg/Geometry>
+#include <algorithm>
 
 namespace osgAnimation
 {
@@ -81,6 +82,25 @@ namespace osgAnimation
         */
         virtual void addMorphTarget( osg::Geometry *morphTarget, float weight = 1.0 ) { _morphTargets.push_back(MorphTarget(morphTarget, weight)); _dirty = true; }
 
+        virtual void removeMorphTarget( osg::Geometry *morphTarget ) {
+            for(MorphTargetList::iterator iterator = _morphTargets.begin() ; iterator != _morphTargets.end() ; ++ iterator) {
+                if(iterator->getGeometry()  == morphTarget) {
+                    _morphTargets.erase(iterator);
+                    break;
+                }
+            }
+        }
+
+        virtual void removeMorphTarget( const std::string& name ) {
+            for(MorphTargetList::iterator iterator = _morphTargets.begin() ; iterator != _morphTargets.end() ; ++ iterator) {
+                if(iterator->getGeometry() && iterator->getGeometry()->getName() == name) {
+                    _morphTargets.erase(iterator);
+                    break;
+                }
+            }
+
+        }
+
         void setWeight(unsigned int index, float morphWeight)
         {
             if (index < _morphTargets.size())
@@ -121,20 +141,41 @@ namespace osgAnimation
 
     class OSGANIMATION_EXPORT UpdateMorph : public AnimationUpdateCallback<osg::NodeCallback>
     {
-    protected:
-        std::map<int, osg::ref_ptr<osgAnimation::FloatTarget> > _weightTargets;
-
     public:
+        typedef std::vector<std::string> TargetNames;
+        typedef std::map< int, osg::ref_ptr<osgAnimation::FloatTarget> > WeightTargets;
 
         META_Object(osgAnimation, UpdateMorph);
 
         UpdateMorph(const std::string& name = "");
         UpdateMorph(const UpdateMorph& apc,const osg::CopyOp& copyop);
 
+        void addTarget(const std::string& name) { _targetNames.push_back(name); }
+        unsigned int getNumTarget() const { return _targetNames.size(); }
+        const std::string& getTargetName(unsigned int index) { return _targetNames[index]; }
+        void removeTarget(const std::string& name) {
+            TargetNames::iterator found = std::find(_targetNames.begin(), _targetNames.end(), name);
+            if(found != _targetNames.end())
+                _targetNames.erase(found);
+        }
+
+        // for serialization
+        const std::vector<std::string>& getTargetNames() const { return _targetNames; }
+        std::vector<std::string>& getTargetNames() { return _targetNames; }
+
+        void setTargetNames(const TargetNames& targetNames) {
+            _targetNames.assign(targetNames.begin(), targetNames.end());
+        }
+
         /** Callback method called by the NodeVisitor when visiting a node.*/
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
         bool needLink() const;
         bool link(osgAnimation::Channel* channel);
+        int link(Animation* animation);
+
+    protected:
+        WeightTargets _weightTargets;
+        TargetNames _targetNames;
     };
 
     struct UpdateMorphGeometry : public osg::DrawableUpdateCallback

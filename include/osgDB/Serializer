@@ -1880,6 +1880,12 @@ protected:
 #define UPDATE_TO_VERSION_SCOPED(VER) \
     osgDB::UpdateWrapperVersionProxy uwvp(wrapper, (VER));
 
+#define ADDED_ASSOCIATE(STR) \
+    wrapper->markAssociateAsAdded( STR );
+
+#define REMOVED_ASSOCIATE(STR) \
+    wrapper->markAssociateAsRemoved( STR );
+
 #define REMOVE_SERIALIZER(PROP) \
     wrapper->markSerializerAsRemoved( #PROP );
 

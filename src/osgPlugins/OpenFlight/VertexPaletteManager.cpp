@@ -231,20 +231,12 @@ VertexPaletteManager::writeRecords( const osg::Vec3dArray* v, const osg::Vec4Arr
         break;
     case VERTEX_CN:
         opcode = VERTEX_CN_OP;
-        if (!n)
-            OSG_WARN << "fltexp: VPM::writeRecords: no normal array." << std::endl;
         break;
     case VERTEX_CNT:
         opcode = VERTEX_CNT_OP;
-        if (!n)
-            OSG_WARN << "fltexp: VPM::writeRecords: no normal array." << std::endl;
-        if (!t)
-            OSG_WARN << "fltexp: VPM::writeRecords: no tex coord array." << std::endl;
         break;
     case VERTEX_CT:
         opcode = VERTEX_CT_OP;
-        if (!t)
-            OSG_WARN << "fltexp: VPM::writeRecords: no tex coord array." << std::endl;
         break;
     }
 

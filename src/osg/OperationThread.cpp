@@ -143,7 +143,10 @@ void OperationQueue::remove(Operation* operation)
 
             itr = _operations.erase(itr);
 
-            if (needToResetCurrentIterator) _currentOperationIterator = itr;
+            if (needToResetCurrentIterator)
+            {
+                _currentOperationIterator = (itr==_operations.end()) ? _operations.begin() : itr;
+            }
 
         }
         else ++itr;
@@ -167,7 +170,10 @@ void OperationQueue::remove(const std::string& name)
 
             itr = _operations.erase(itr);
 
-            if (needToResetCurrentIterator) _currentOperationIterator = itr;
+            if (needToResetCurrentIterator)
+            {
+                _currentOperationIterator = (itr==_operations.end()) ? _operations.begin() : itr;
+            }
         }
         else ++itr;
     }

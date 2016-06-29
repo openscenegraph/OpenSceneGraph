@@ -22,6 +22,9 @@ SphericalManipulator::SphericalManipulator()
     _heading=0.0;
     _elevation=osg::PI_2;
 
+    _delta_frame_time = 0.0;
+    _last_frame_time = 0.0;
+
     _rotationMode = ELEVATION_HEADING;
 }
 //--------------------------------------------------------------------------------------------------

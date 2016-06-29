@@ -1313,9 +1313,9 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 
     // Get the necessary info out of the geom
     trpgGeometry::PrimType primType;
-    int numPrims;
-    int numVert;
-    int numNorm;
+    int numPrims = 0;
+    int numVert = 0;
+    int numNorm = 0;
     geom.GetPrimType(primType);
     geom.GetNumPrims(numPrims);
     geom.GetNumVertex(numVert);

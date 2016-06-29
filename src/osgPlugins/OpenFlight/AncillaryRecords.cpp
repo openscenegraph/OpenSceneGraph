@@ -276,20 +276,23 @@ class UVList : public Record
             uint32 mask = in.readUInt32(0);
 
             int numLayers = bitCount(mask);
-            int numVertices = (in.getRecordSize()-8) / (8 * numLayers);
-            for (int n=0; n < numVertices; ++n)
+            if (numLayers>0)
             {
-                for (unsigned int layer=1; layer<8; layer++)
+                int numVertices = (in.getRecordSize()-8) / (8 * numLayers);
+                for (int n=0; n < numVertices; ++n)
                 {
-                    uint32 layerBit = 0x80000000u >> (layer-1);
-                    if (mask & layerBit)
+                    for (unsigned int layer=1; layer<8; layer++)
                     {
-                        float32    u = in.readFloat32();
-                        float32    v = in.readFloat32();
+                        uint32 layerBit = 0x80000000u >> (layer-1);
+                        if (mask & layerBit)
+                        {
+                            float32    u = in.readFloat32();
+                            float32    v = in.readFloat32();
 
-                        // Add texture coordinates to geometry.
-                        if (_parent.valid())
-                            _parent->addVertexUV(layer,osg::Vec2(u,v));
+                            // Add texture coordinates to geometry.
+                            if (_parent.valid())
+                                _parent->addVertexUV(layer,osg::Vec2(u,v));
+                        }
                     }
                 }
             }

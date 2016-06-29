@@ -80,6 +80,10 @@ void FieldReaderIterator::_copy(const FieldReaderIterator& ic)
     {
         _previousField = new Field(*ic._previousField);
     }
+    else
+    {
+        _previousField = NULL;
+    }
 
     if (ic._fieldQueue && ic._fieldQueueCapacity>0)
     {
@@ -157,7 +161,7 @@ void FieldReaderIterator::insert(int pos,Field* field)
         _fieldQueueCapacity = newCapacity;
     }
 
-    for(i=_fieldQueueSize-1;i>=pos;++i)
+    for(i=_fieldQueueSize-1;i>=pos;--i)
     {
         _fieldQueue[i+1]=_fieldQueue[i];
     }

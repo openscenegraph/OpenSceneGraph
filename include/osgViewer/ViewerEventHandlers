@@ -304,7 +304,6 @@ protected:
         bool            _changeEndBarrierPosition;
 
         osg::Timer_t    _tickOrLastKeyPress;
-        bool            _done;
 };
 
 /**
@@ -533,7 +532,8 @@ protected:
 
     virtual ~InteractiveImageHandler() {}
 
-    InteractiveImageHandler() {}
+    InteractiveImageHandler():
+        _fullscreen(false) {}
 
     InteractiveImageHandler(const InteractiveImageHandler&,const osg::CopyOp& = osg::CopyOp::SHALLOW_COPY):
         osg::Object(), osg::Callback(), osgGA::GUIEventHandler(), osg::DrawableCullCallback(), _fullscreen(false) {}

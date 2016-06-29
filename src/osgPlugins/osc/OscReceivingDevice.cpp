@@ -825,6 +825,7 @@ public:
         for(ApplicationCursorMap::iterator i = _alive.begin(); i != _alive.end(); ++i)
         {
             const std::string& source(i->first);
+            CursorMap& cursormap = i->second;
 
             /*
             std::cout << source << ": ";
@@ -843,7 +844,7 @@ public:
 
             std::vector<unsigned int> to_delete;
 
-            for(CursorMap::iterator k = i->second.begin(); k != i->second.end(); ++k)
+            for(CursorMap::iterator k = cursormap.begin(); k != cursormap.end(); ++k)
             {
                 EndpointData& endpoint_data(_endpointData[k->second.end_point]);
                 /*if (!endpoint_data.mayClearUnhandledPointer)
@@ -872,7 +873,7 @@ public:
             // remove "dead" cursors
             for(std::vector<unsigned int>::iterator k = to_delete.begin(); k != to_delete.end(); ++k)
             {
-                _alive[source].erase(i->second.find(*k));
+                cursormap.erase(cursormap.find(*k));
             }
 
             if (i->second.size() == 0)

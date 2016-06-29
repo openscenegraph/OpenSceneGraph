@@ -16,7 +16,7 @@
 *  THE SOFTWARE.
 */
 
-#ifdef WIN32
+#if defined(WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
 /////////////////////////////////////////////////////////////////////////////
 // Disable unavoidable warning messages:
 

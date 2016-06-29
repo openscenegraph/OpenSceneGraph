@@ -108,7 +108,8 @@ DragCallback::DragCallback():
 DragCallback::DragCallback(const DragCallback& hc, const osg::CopyOp& copyop):
     osg::Object(hc, copyop),
     osg::Callback(hc, copyop),
-    HandleCallback(hc, copyop)
+    HandleCallback(hc, copyop),
+    _dragging(false)
 {
 }
 

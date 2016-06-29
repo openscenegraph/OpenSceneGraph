@@ -1629,14 +1629,14 @@ bool trpgTexTable::isValid() const
 {
     if (!textureMap.size())
     {
-        strcpy(errMess, "Texture table list is empty");
+        errMess.assign("Texture table list is empty");
         return false;
     }
 
     TextureMapType::const_iterator itr = textureMap.begin();
     for (  ; itr != textureMap.end( ); itr++) {
         if(!itr->second.isValid()) {
-            strcpy(errMess, "A texture in the texture table is invalid");
+            errMess.assign("A texture in the texture table is invalid");
             return false;
         }
     }

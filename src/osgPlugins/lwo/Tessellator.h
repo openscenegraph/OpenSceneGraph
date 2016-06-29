@@ -24,29 +24,35 @@
 namespace lwosg
 {
 
-	class Tessellator {
-	public:
-		bool tessellate(const Polygon &poly, const osg::Vec3Array *points, osg::DrawElementsUInt *out, const std::vector<int> *remap = 0);
+    class Tessellator {
+    public:
+        bool tessellate(const Polygon &poly, const osg::Vec3Array *points, osg::DrawElementsUInt *out, const std::vector<int> *remap = 0);
 
-		~Tessellator();
+        Tessellator():
+            prim_type_(0),
+            last_error_(0)
+        {
+        }
 
-	protected:
-		void finalize_primitive();
+        ~Tessellator();
 
-	private:
-		friend void CALLBACK cb_begin_data(GLenum, void *);
-		friend void CALLBACK cb_vertex_data(void *, void *);
-		friend void CALLBACK cb_end_data(void *);
-		friend void CALLBACK cb_error_data(GLenum, void *);
+    protected:
+        void finalize_primitive();
 
-		osg::ref_ptr<osg::DrawElementsUInt> out_;
+    private:
+        friend void CALLBACK cb_begin_data(GLenum, void *);
+        friend void CALLBACK cb_vertex_data(void *, void *);
+        friend void CALLBACK cb_end_data(void *);
+        friend void CALLBACK cb_error_data(GLenum, void *);
 
-		GLenum prim_type_;
-		GLenum last_error_;
+        osg::ref_ptr<osg::DrawElementsUInt> out_;
 
-		typedef std::vector<int> Index_list;
-		Index_list incoming_;
-	};
+        GLenum prim_type_;
+        GLenum last_error_;
+
+        typedef std::vector<int> Index_list;
+        Index_list incoming_;
+    };
 
 }
 

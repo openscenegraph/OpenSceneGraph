@@ -106,10 +106,12 @@ void PushButton::createGraphicsImplementation()
 
     // create label.
     osg::ref_ptr<Node> node = style->createText(extents, getAlignmentSettings(), getTextSettings(), _text);
-    _textDrawable = dynamic_cast<osgText::Text*>(node.get());
-    _textDrawable->setDataVariance(osg::Object::DYNAMIC);
 
-    group->addChild(_textDrawable.get());
+    _textDrawable = dynamic_cast<osgText::Text*>(node.get());
+
+    node->setDataVariance(osg::Object::DYNAMIC);
+
+    group->addChild(node.get());
 
     style->setupClipStateSet(_extents, getOrCreateWidgetStateSet());
 

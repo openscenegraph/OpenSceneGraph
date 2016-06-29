@@ -24,7 +24,7 @@ osg::BoundingBox RigComputeBoundingBoxCallback::computeBound(const osg::Drawable
 {
     const osgAnimation::RigGeometry& rig = dynamic_cast<const osgAnimation::RigGeometry&>(drawable);
 
-    // if a valid initial bounding box is set we use it without asking more
+    // if a valid inital bounding box is set we use it without asking more
     if (rig.getInitialBound().valid())
         return rig.getInitialBound();
 
@@ -32,7 +32,7 @@ osg::BoundingBox RigComputeBoundingBoxCallback::computeBound(const osg::Drawable
         return _boundingBox;
 
     // if the computing of bb is invalid (like no geometry inside)
-    // then don't tag the bounding box as computed
+    // then dont tag the bounding box as computed
     osg::BoundingBox bb = rig.computeBoundingBox();
     if (!bb.valid())
         return bb;
@@ -57,9 +57,9 @@ RigGeometry::RigGeometry()
     setDataVariance(osg::Object::DYNAMIC);
     _needToComputeMatrix = true;
     _matrixFromSkeletonToGeometry = _invMatrixFromSkeletonToGeometry = osg::Matrix::identity();
-
     // disable the computation of boundingbox for the rig mesh
     setComputeBoundingBoxCallback(new RigComputeBoundingBoxCallback);
+
 }
 
 
@@ -69,9 +69,12 @@ RigGeometry::RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop) :
     _vertexInfluenceSet(b._vertexInfluenceSet),
     _vertexInfluenceMap(b._vertexInfluenceMap),
     _needToComputeMatrix(b._needToComputeMatrix)
-{
-    // we don't copy the RigImplementation yet. because the RigImplementation need to be initialized in a valid graph, with a skeleton ...
-    // don't know yet what to do with a clone of a RigGeometry
+{    
+    // disable the computation of boundingbox for the rig mesh
+    setComputeBoundingBoxCallback(new RigComputeBoundingBoxCallback);
+    // we dont copy the RigImplementation yet. because the RigImplementation need to be initialized in a valid graph, with a skeleton ...
+    // dont know yet what to do with a clone of a RigGeometry
+
 }
 
 
@@ -113,7 +116,7 @@ void RigGeometry::computeMatrixFromRootSkeleton()
     osg::Matrix notRoot = _root->getMatrix();
     _matrixFromSkeletonToGeometry = mtxList[0] * osg::Matrix::inverse(notRoot);
     _invMatrixFromSkeletonToGeometry = osg::Matrix::inverse(_matrixFromSkeletonToGeometry);
-    _needToComputeMatrix = false;
+    _needToComputeMatrix = false;    
 }
 
 void RigGeometry::update()

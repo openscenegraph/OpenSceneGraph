@@ -413,7 +413,7 @@ void readAnimation(FbxNode* pNode, FbxScene& fbxScene, const std::string& target
             }
 
             osgAnimation::FloatLinearChannel* pChannel = new osgAnimation::FloatLinearChannel;
-            std::vector<osgAnimation::TemplateKeyframe<float> >& keyFrameCntr = *pChannel->getOrCreateSampler()->getOrCreateKeyframeContainer();
+            osgAnimation::TemplateKeyframeContainer<float> & keyFrameCntr = *pChannel->getOrCreateSampler()->getOrCreateKeyframeContainer();
 
             for (int k = 0; k < nKeys; ++k)
             {
@@ -678,8 +678,8 @@ bool quadSplit02(const FbxMesh * fbxMesh, int i /*polygonIndex*/,
 
 struct PolygonRef
 {
-    PolygonRef(osg::Geometry* pGeometry, int numPoly, int nVertex)
-        : pGeometry(pGeometry), numPoly(numPoly), nVertex(nVertex)
+    PolygonRef(osg::Geometry* in_pGeometry, int in_numPoly, int in_nVertex)
+        : pGeometry(in_pGeometry), numPoly(in_numPoly), nVertex(in_nVertex)
     {}
     osg::Geometry* pGeometry;
     int numPoly;

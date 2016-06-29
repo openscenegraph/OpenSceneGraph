@@ -113,7 +113,13 @@ int *numComponents_ret)
 
     picerror = ERROR_NO_ERROR;
 
-    fseek(fp, 2, SEEK_SET);
+    if (!fseek(fp, 2, SEEK_SET))
+    {
+        picerror = ERROR_READING_HEADER;
+        fclose(fp);
+        return NULL;
+    }
+
     if (!readint16(fp, &w))
     {
         picerror = ERROR_READING_HEADER;
@@ -121,7 +127,13 @@ int *numComponents_ret)
         return NULL;
     }
 
-    fseek(fp, 4, SEEK_SET);
+    if (!fseek(fp, 4, SEEK_SET))
+    {
+        picerror = ERROR_READING_HEADER;
+        fclose(fp);
+        return NULL;
+    }
+
     if (!readint16(fp, &h))
     {
         picerror = ERROR_READING_HEADER;
@@ -137,7 +149,13 @@ int *numComponents_ret)
         fclose(fp);
         return NULL;
     }
-    fseek(fp, 32, SEEK_SET);
+
+    if (!fseek(fp, 32, SEEK_SET))
+    {
+        picerror = ERROR_READING_HEADER;
+        fclose(fp);
+        return NULL;
+    }
 
     if (fread(&palette, 3, 256, fp) != 256)
     {

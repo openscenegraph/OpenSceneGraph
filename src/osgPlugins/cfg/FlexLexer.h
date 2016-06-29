@@ -174,7 +174,6 @@ protected:
 	int* yy_full_state;
 	int yy_full_lp;
 
-	int yy_lp;
 	int yy_looking_for_trail_begin;
 
 	int yy_more_flag;

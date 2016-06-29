@@ -24,7 +24,9 @@ using namespace osgUtil;
 Tessellator::Tessellator() :
     _wtype(TESS_WINDING_ODD),
     _ttype(TESS_TYPE_POLYGONS),
-    _boundaryOnly(false), _numberVerts(0)
+    _boundaryOnly(false),
+    _numberVerts(0),
+    _extraPrimitives(0)
 {
     _tobj = gluNewTess();
     if (_tobj)
@@ -436,8 +438,9 @@ void Tessellator::handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &ver
 {
     if (!_newVertexList.empty())
     {
-
         osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
+        if (!vertices) return;
+
         osg::Vec3Array* normals = NULL;
         if (osg::getBinding(geom.getNormalArray())==osg::Array::BIND_PER_VERTEX)
         {
@@ -583,29 +586,34 @@ void CALLBACK Tessellator::errorCallback(GLenum errorCode, void* userData)
 
 void Tessellator::reduceArray(osg::Array * cold, const unsigned int nnu)
 { // shrinks size of array to N
-    if (cold && cold->getNumElements()>nnu) {
+    if (cold && cold->getNumElements()>nnu)
+    {
         osg::Vec2Array* v2arr = NULL;
         osg::Vec3Array* v3arr = NULL;
         osg::Vec4Array* v4arr = NULL;
-        switch (cold->getType()) {
-        case osg::Array::Vec2ArrayType: {
-            v2arr = dynamic_cast<osg::Vec2Array*>(cold);
+        switch (cold->getType())
+        {
+        case osg::Array::Vec2ArrayType:
+        {
+            v2arr = static_cast<osg::Vec2Array*>(cold);
             osg::Vec2Array::iterator itr=v2arr->begin()+nnu;
             (*v2arr).erase(itr, v2arr->end());
-                                        }
-            break;
-        case osg::Array::Vec3ArrayType: {
-            v3arr = dynamic_cast<osg::Vec3Array*>(cold);
+        }
+        break;
+        case osg::Array::Vec3ArrayType:
+        {
+            v3arr = static_cast<osg::Vec3Array*>(cold);
             osg::Vec3Array::iterator itr=v3arr->begin()+nnu;
             (*v3arr).erase(itr, v3arr->end());
-                                        }
-            break;
-        case osg::Array::Vec4ArrayType: {
-            v4arr = dynamic_cast<osg::Vec4Array*>(cold);
+        }
+        break;
+        case osg::Array::Vec4ArrayType:
+        {
+            v4arr = static_cast<osg::Vec4Array*>(cold);
             osg::Vec4Array::iterator itr=v4arr->begin()+nnu;
             (*v4arr).erase(itr, v4arr->end());
-                                        }
-            break;
+        }
+        break;
         default: // should also handle:ArrayType' ByteArrayType' ShortArrayType' IntArrayType'
         // `UShortArrayType'  `UIntArrayType'  `Vec4ubArrayType'  `FloatArrayType'
             break;
@@ -618,6 +626,9 @@ void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int /*origin
     if (geom.containsDeprecatedData()) geom.fixDeprecatedData();
 
     osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
+    if (!vertices) return;
+
+
     VertexPtrToIndexMap vertexPtrToIndexMap;
 
     // populate the VertexPtrToIndexMap.

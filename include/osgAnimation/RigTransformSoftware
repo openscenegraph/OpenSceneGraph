@@ -30,10 +30,12 @@ namespace osgAnimation
     class OSGANIMATION_EXPORT RigTransformSoftware : public RigTransform
     {
     public:
-
         RigTransformSoftware();
-        virtual void operator()(RigGeometry&);
+        RigTransformSoftware(const RigTransformSoftware& rts,const osg::CopyOp& copyop);
 
+        META_Object(osgAnimation,RigTransformSoftware)
+
+        virtual void operator()(RigGeometry&);
 
         class BoneWeight
         {
@@ -166,6 +168,7 @@ namespace osgAnimation
 
         bool _needInit;
 
+        std::map<std::string,bool> _invalidInfluence;
     };
 }
 

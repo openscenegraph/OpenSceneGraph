@@ -399,6 +399,10 @@ osgDB::ReaderWriter* ZipArchive::ReadFromZipEntry(const ZIPENTRY* ze, const osgD
                     return rw;
                 }
             }
+            else
+            {
+                delete[] ibuf;
+            }
         }
         else
         {
@@ -460,6 +464,11 @@ void ZipArchive::IndexZipFiles(HZIP hz)
             if(!name.empty())
             {
                 _zipIndex.insert(ZipEntryMapping(name, ze));
+            }
+            else
+            {
+                // ze isn't being used to delete it
+                delete ze;
             }
         }
     }

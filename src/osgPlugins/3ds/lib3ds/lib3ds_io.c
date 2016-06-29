@@ -1,19 +1,19 @@
 /*
     Copyright (C) 1996-2008 by Jan Eric Kyprianidis <www.kyprianidis.com>
     All rights reserved.
-    
-    This program is free  software: you can redistribute it and/or modify 
-    it under the terms of the GNU Lesser General Public License as published 
-    by the Free Software Foundation, either version 2.1 of the License, or 
+
+    This program is free  software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation, either version 2.1 of the License, or
     (at your option) any later version.
 
-    Thisprogram  is  distributed in the hope that it will be useful, 
-    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+    Thisprogram  is  distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU Lesser General Public License for more details.
-    
+
     You should  have received a copy of the GNU Lesser General Public License
-    along with  this program; If not, see <http://www.gnu.org/licenses/>. 
+    along with  this program; If not, see <http://www.gnu.org/licenses/>.
 */
 #include "lib3ds_impl.h"
 
@@ -88,7 +88,7 @@ lib3ds_io_write(Lib3dsIo *io, const void *buffer, size_t size) {
 }
 
 
-static void 
+static void
 lib3ds_io_log_str(Lib3dsIo *io, Lib3dsLogLevel level, const char *str) {
     if (!io || !io->log_func)
         return;
@@ -96,18 +96,21 @@ lib3ds_io_log_str(Lib3dsIo *io, Lib3dsLogLevel level, const char *str) {
 }
 
 
-void 
+void
 lib3ds_io_log(Lib3dsIo *io, Lib3dsLogLevel level, const char *format, ...) {
-    va_list args;
-    /* FIXME */ char str[1024];
 
     assert(io);
     if (!io || !io->log_func)
         return;
 
+    va_list args;
     va_start(args, format);
-    /* FIXME: */ vsprintf(str, format, args); 
+
+    char str[1024];
+    vsprintf(str, format, args);
     lib3ds_io_log_str(io, level, str);
+
+    va_end(args);
 
     if (level == LIB3DS_LOG_ERROR) {
         longjmp(((Lib3dsIoImpl*)io->impl)->jmpbuf, 1);
@@ -115,7 +118,7 @@ lib3ds_io_log(Lib3dsIo *io, Lib3dsLogLevel level, const char *format, ...) {
 }
 
 
-void 
+void
 lib3ds_io_log_indent(Lib3dsIo *io, int indent) {
     assert(io);
     if (!io)
@@ -124,13 +127,13 @@ lib3ds_io_log_indent(Lib3dsIo *io, int indent) {
 }
 
 
-void 
+void
 lib3ds_io_read_error(Lib3dsIo *io) {
     lib3ds_io_log(io, LIB3DS_LOG_ERROR, "Reading from input stream failed.");
 }
 
 
-void 
+void
 lib3ds_io_write_error(Lib3dsIo *io) {
     lib3ds_io_log(io, LIB3DS_LOG_ERROR, "Writing to output stream failed.");
 }

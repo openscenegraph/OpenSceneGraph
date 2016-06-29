@@ -221,9 +221,11 @@ namespace osgAnimation
     typedef TemplateLinearInterpolator<float, float> FloatLinearInterpolator;
     typedef TemplateLinearInterpolator<osg::Vec2, osg::Vec2> Vec2LinearInterpolator;
     typedef TemplateLinearInterpolator<osg::Vec3, osg::Vec3> Vec3LinearInterpolator;
+    typedef TemplateLinearInterpolator<osg::Vec3us, osg::Vec3us> Vec3usLinearInterpolator;
     typedef TemplateLinearInterpolator<osg::Vec3, Vec3Packed> Vec3PackedLinearInterpolator;
     typedef TemplateLinearInterpolator<osg::Vec4, osg::Vec4> Vec4LinearInterpolator;
     typedef TemplateSphericalLinearInterpolator<osg::Quat, osg::Quat> QuatSphericalLinearInterpolator;
+    typedef TemplateSphericalLinearInterpolator<osg::Vec3us, osg::Vec3us> Vec3usSphericalLinearInterpolator;
     typedef TemplateLinearInterpolator<osg::Matrixf, osg::Matrixf> MatrixLinearInterpolator;
 
     typedef TemplateCubicBezierInterpolator<float, FloatCubicBezier > FloatCubicBezierInterpolator;

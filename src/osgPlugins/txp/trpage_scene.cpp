@@ -240,10 +240,13 @@ public:
             return NULL;
         }
         trpgReadGroupBase *top = parse->GetCurrTop();
-        if (top)
-            top->AddChild(geom);
-        else
+        if (!top)
+        {
             delete geom;
+            return NULL;
+        }
+
+        top->AddChild(geom);
 
         return geom;
     }
@@ -269,10 +272,14 @@ public:
             return NULL;
         }
         trpgReadGroupBase *top = parse->GetCurrTop();
-        if (top)
-            top->AddChild(group);
-        else
+        if (!top)
+        {
             delete group;
+            return NULL;
+        }
+
+        top->AddChild(group);
+
         // Add to the group map
         int id;
         data->GetID(id);
@@ -294,10 +301,14 @@ public:
             return NULL;
         }
         trpgReadGroupBase *top = parse->GetCurrTop();
-        if (top)
-            top->AddChild(group);
-        else
+        if (!top)
+        {
             delete group;
+            return NULL;
+        }
+
+        top->AddChild(group);
+
         // Add to the group map
         int id;
         data->GetID(id);
@@ -319,10 +330,14 @@ public:
             return NULL;
         }
         trpgReadGroupBase *top = parse->GetCurrTop();
-        if (top)
-            top->AddChild(attach);
-        else
+        if (!top)
+        {
             delete attach;
+            return NULL;
+        }
+
+        top->AddChild(attach);
+
         // Add to the group map
         int id;
         data->GetID(id);
@@ -345,12 +360,13 @@ public:
             return NULL;
         }
         trpgReadGroupBase *top = parse->GetCurrTop();
-        // NOTE: this is bad, we delete the pointer then we save it.
-      //       this is done everywhere and should be corrected
-      if (top)
-            top->AddChild(childRef);
-        else
+        if (!top)
+        {
             delete childRef;
+            return NULL;
+        }
+
+        top->AddChild(childRef);
 
         return childRef;
     }
@@ -368,10 +384,14 @@ public:
             return NULL;
         }
         trpgReadGroupBase *top = parse->GetCurrTop();
-        if (top)
-            top->AddChild(lod);
-        else
+        if (!top)
+        {
             delete lod;
+            return NULL;
+        }
+
+        top->AddChild(lod);
+
         // Add to the group map
         int id;
         data->GetID(id);
@@ -393,10 +413,13 @@ public:
             return NULL;
         }
         trpgReadGroupBase *top = parse->GetCurrTop();
-        if (top)
-            top->AddChild(mod);
-        else
+        if (!top)
+        {
             delete mod;
+            return NULL;
+        }
+        top->AddChild(mod);
+
         return mod;
     }
 protected:

@@ -290,7 +290,7 @@ public:
 //    virtual bool WriteModel(unsigned int,trpgMemWriteBuffer &);
 
     bool isValid(void) const;
-    const char *getErrMess() const;
+    const char* getErrMess() const;
     char* getDir(void){return dir;};
     virtual trpgwImageHelper* GetNewWImageHelper(trpgEndian ness,char *dir,trpgTexTable &);
     virtual trpgwAppFile* GetNewWAppFile(trpgEndian inNess,const char *fileName,bool reuse=false);
@@ -353,7 +353,7 @@ protected:
 
     bool firstHeaderWrite;
 
-    mutable char errMess[512];
+    mutable std::string errMess;
 };
 
 #endif

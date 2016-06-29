@@ -47,6 +47,8 @@ void Statistics::reset()
     numStateGraphs=0;
     numOrderedLeaves=0;
 
+    _binNo = 0;
+
     _vertexCount=0;
     _primitiveCount.clear();
 

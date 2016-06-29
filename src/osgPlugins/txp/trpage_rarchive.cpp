@@ -14,6 +14,7 @@
    */
 
 #include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -54,7 +55,7 @@ int32 trpgr_Archive::GetHeaderData(char *dataPtr, int length, FILE *filehandle)
 // Set the directory where the archive is
 void trpgr_Archive::SetDirectory(const char *in_dir)
 {
-    strncpy(dir,in_dir,1024);
+    strncpy(dir,in_dir,DIR_SIZE-1); dir[DIR_SIZE-1] = 0;
 }
 
 // Open File
@@ -147,26 +148,50 @@ bool trpgr_Archive::ReadSubArchive(int row, int col, trpgEndian cpuNess)
     // Look for a magic # and endianness
     int32 bmagic;
     if (fread(&bmagic,sizeof(int32),1,bfp) != 1)
+    {
+        //close the block archive
+        fclose(bfp);
         return false;
+    }
+
     // The block archive will always be the same endianness as the master
     if ( (bmagic != GetMagicNumber()) && (trpg_byteswap_int(bmagic) != GetMagicNumber()) )
+    {
+        //close the block archive
+        fclose(bfp);
         return false;
+    }
 
     int32 bheaderSize=0;
     if (fread(&bheaderSize,sizeof(int32),1,bfp) != 1)
+    {
+        //close the block archive
+        fclose(bfp);
         return false;
+    }
+
     if (ness != cpuNess)
         bheaderSize = trpg_byteswap_int(bheaderSize);
+
     int bheadLen = bheaderSize;
     if (bheadLen < 0)
+    {
+        //close the block archive
+        fclose(bfp);
         return false;
+    }
 
     // Read in the header whole
     trpgMemReadBuffer bbuf(ness);
     bbuf.SetLength(bheadLen);
     char *bdata = bbuf.GetDataPtr();
     if ((ret = GetHeaderData(bdata,bheadLen,bfp)) != bheadLen)
+    {
+        //close the block archive
+        fclose(bfp);
         return false;
+    }
+
     //keep track of where this came from in the master table.
     tileTable.SetCurrentBlock(row,col,true);
     texTable.SetCurrentBlock(row,col);
@@ -514,7 +539,8 @@ void trpgrImageHelper::Init(trpgEndian inNess,char *inDir,
                             const trpgMatTable &inMatTable,const trpgTexTable &inTexTable,bool sepGeoTyp)
 {
     ness = inNess;
-    strcpy(dir,inDir);
+    osgDB::stringcopyfixedsize(dir,inDir);
+
     separateGeoTyp = sepGeoTyp;
     matTable = &inMatTable;
     texTable = &inTexTable;

@@ -21,10 +21,6 @@
 
 void DrawArraysIndirect::draw(osg::State& state, bool /*useVertexBufferObjects*/) const
 {
-    if( !_buffer.valid() )
-        return;
-    _buffer->bindBufferAs( state.getContextID(), GL_DRAW_INDIRECT_BUFFER );
-
 // if you want to see how many primitives were rendered - uncomment code below, but
 // be warned : it is a serious performance killer ( because of GPU->CPU roundtrip )
 
@@ -34,106 +30,12 @@ void DrawArraysIndirect::draw(osg::State& state, bool /*useVertexBufferObjects*/
 // OSG_WARN<<"DrawArraysIndirect ("<<val<<"): "<< tab[val] << " " << tab[val+1] << " " << tab[val+2] << " " << tab[val+3] << std::endl;
 // dext->glUnmapBuffer(GL_DRAW_INDIRECT_BUFFER);
 
-    DrawIndirectGLExtensions *ext = DrawIndirectGLExtensions::getExtensions( state.getContextID(),true );
-    ext->glDrawArraysIndirect( _mode, reinterpret_cast<const void*>(_indirect) );
-    _buffer->unbindBufferAs( state.getContextID(), GL_DRAW_INDIRECT_BUFFER );
+   state.get<osg::GLExtensions>()->glDrawArraysIndirect( _mode, reinterpret_cast<const void*>(_indirect) );
+
 }
 
 void MultiDrawArraysIndirect::draw(osg::State& state, bool /*useVertexBufferObjects*/) const
 {
-    if( !_buffer.valid() )
-        return;
-    _buffer->bindBufferAs( state.getContextID(), GL_DRAW_INDIRECT_BUFFER );
-
-    DrawIndirectGLExtensions *ext = DrawIndirectGLExtensions::getExtensions( state.getContextID(),true );
-    ext->glMultiDrawArraysIndirect( _mode, reinterpret_cast<const void*>(_indirect), _drawcount, _stride );
-    _buffer->unbindBufferAs( state.getContextID(), GL_DRAW_INDIRECT_BUFFER );
-}
-
-DrawIndirectGLExtensions::DrawIndirectGLExtensions( unsigned int contextID )
-{
-    setupGLExtensions( contextID );
-}
-
-DrawIndirectGLExtensions::DrawIndirectGLExtensions( const DrawIndirectGLExtensions &rhs )
-  : Referenced()
-{
-    _glDrawArraysIndirect           = rhs._glDrawArraysIndirect;
-    _glMultiDrawArraysIndirect      = rhs._glMultiDrawArraysIndirect;
-    _glMemoryBarrier                = rhs._glMemoryBarrier;
-}
-
-
-void DrawIndirectGLExtensions::lowestCommonDenominator( const DrawIndirectGLExtensions &rhs )
-{
-    if ( !rhs._glDrawArraysIndirect )
-    {
-        _glDrawArraysIndirect = rhs._glDrawArraysIndirect;
-    }
-    if ( !rhs._glMultiDrawArraysIndirect )
-    {
-        _glMultiDrawArraysIndirect = rhs._glMultiDrawArraysIndirect;
-    }
-    if ( !rhs._glMemoryBarrier )
-    {
-        _glMemoryBarrier = rhs._glMemoryBarrier;
-    }
-}
-
-void DrawIndirectGLExtensions::setupGLExtensions( unsigned int /*contextID*/ )
-{
-    _glDrawArraysIndirect = 0;
-    _glMultiDrawArraysIndirect = 0;
-    osg::setGLExtensionFuncPtr( _glDrawArraysIndirect, "glDrawArraysIndirect" );
-    osg::setGLExtensionFuncPtr( _glMultiDrawArraysIndirect, "glMultiDrawArraysIndirect" );
-    osg::setGLExtensionFuncPtr( _glMemoryBarrier, "glMemoryBarrier" );
-}
-
-void DrawIndirectGLExtensions::glDrawArraysIndirect(GLenum  mode,  const void * indirect) const
-{
-    if ( _glDrawArraysIndirect )
-    {
-        _glDrawArraysIndirect( mode, indirect );
-    }
-    else
-    {
-        OSG_WARN<<"Error: glDrawArraysIndirect not supported by OpenGL driver"<<std::endl;
-    }
-}
-
-void DrawIndirectGLExtensions::glMultiDrawArraysIndirect(GLenum mode, const void *indirect, GLsizei drawcount, GLsizei stride)
-{
-    if ( _glMultiDrawArraysIndirect )
-    {
-        _glMultiDrawArraysIndirect( mode, indirect, drawcount, stride );
-    }
-    else
-    {
-        OSG_WARN<<"Error: glMultiDrawArraysIndirect not supported by OpenGL driver"<<std::endl;
-    }
-}
-
-void DrawIndirectGLExtensions::glMemoryBarrier(GLbitfield barriers)
-{
-    if ( _glMemoryBarrier )
-    {
-        _glMemoryBarrier( barriers );
-    }
-    else
-    {
-        OSG_WARN<<"Error: glMemoryBarrier not supported by OpenGL driver"<<std::endl;
-    }
-}
-
-
-typedef osg::buffered_value< osg::ref_ptr<DrawIndirectGLExtensions> > BufferedDrawIndirectGLExtensions;
-static BufferedDrawIndirectGLExtensions bdiExtensions;
-
-DrawIndirectGLExtensions* DrawIndirectGLExtensions::getExtensions( unsigned int contextID,bool createIfNotInitalized )
-{
-    if ( !bdiExtensions[contextID] && createIfNotInitalized )
-    {
-        bdiExtensions[contextID] = new DrawIndirectGLExtensions( contextID );
-    }
-    return bdiExtensions[contextID].get();
+   // DrawIndirectGLExtensions *ext = DrawIndirectGLExtensions::getExtensions( state.getContextID(),true );
+    state.get<osg::GLExtensions>()->glMultiDrawArraysIndirect( _mode, reinterpret_cast<const void*>(_indirect), _drawcount, _stride );
 }

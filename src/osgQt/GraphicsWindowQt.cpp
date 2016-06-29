@@ -444,7 +444,7 @@ bool GLWidget::gestureEvent( QGestureEvent* qevent )
         //We don't have absolute positions of the two touches, only a scale and rotation
         //Hence we create pseudo-coordinates which are reasonable, and centered around the
         //real position
-        const float radius = (width()+height())/4;
+        const float radius = float(width()+height())/4.0f;
         const osg::Vec2 vector( scale*cos(angle)*radius, scale*sin(angle)*radius);
         const osg::Vec2 p0 = pinchCenter+vector;
         const osg::Vec2 p1 = pinchCenter-vector;

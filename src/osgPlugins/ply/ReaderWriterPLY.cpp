@@ -44,7 +44,7 @@ public:
         supportsExtension("ply","Stanford Triangle Format");
     }
 
-    virtual const char* className() { return "ReaderWriterPLY"; }
+    virtual const char* className() const { return "ReaderWriterPLY"; }
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
 protected:
 };

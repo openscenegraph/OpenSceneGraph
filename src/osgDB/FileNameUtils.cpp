@@ -19,7 +19,9 @@
 #include <osgDB/FileUtils>
 
 #ifdef WIN32
+#if !defined(__MINGW32__)
     #define _WIN32_WINNT 0x0500
+#endif
     #include <windows.h>
 #endif
 
@@ -484,6 +486,14 @@ std::string osgDB::getPathRelative(const std::string& from, const std::string& t
     }
     return res;
 }
+
+void osgDB::stringcopy(char* dest, const char* src, size_t length)
+{
+    strncpy(dest, src, length-1);
+    dest[length-1] = '\0';
+//    OSG_NOTICE<<"osgDB::stringcopy(["<<dest<<"], src=["<<src<<"], "<<length<<")"<<std::endl;
+}
+
 
 //using namespace osgDB;
 //std::string testA = getPathRelative("C:\\a\\b", "C:\\a/b/d/f");       // d/f

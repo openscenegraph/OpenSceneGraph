@@ -26,6 +26,15 @@ BlendFunci::~BlendFunci()
 {
 }
 
+void BlendFunci::setIndex(unsigned int buf)
+{
+    if (_index==buf) return;
+
+    ReassignToParents needToReassingToParentsWhenMemberValueChanges(this);
+
+    _index = buf;
+}
+
 void BlendFunci::apply(State& state) const
 {
     const GLExtensions* extensions = state.get<GLExtensions>();

@@ -17,12 +17,14 @@
 
 #include <string>
 #include <osg/Referenced>
+#include <osg/MixinVector>
 #include <osgAnimation/Vec3Packed>
 #include <osgAnimation/CubicBezier>
 #include <osg/Quat>
 #include <osg/Vec4>
 #include <osg/Vec3>
 #include <osg/Vec2>
+#include <osg/Vec3us>
 #include <osg/Matrixf>
 
 namespace osgAnimation
@@ -45,6 +47,8 @@ namespace osgAnimation
     protected:
         T _value;
     public:
+        typedef T value_type;
+
         TemplateKeyframe () {}
         ~TemplateKeyframe () {}
 
@@ -71,19 +75,19 @@ namespace osgAnimation
 
 
     template <class T>
-    class TemplateKeyframeContainer : public std::vector<TemplateKeyframe<T> >, public KeyframeContainer
+    class TemplateKeyframeContainer : public osg::MixinVector<TemplateKeyframe<T> >, public KeyframeContainer
     {
     public:
         //    const char* getKeyframeType() { return #T ;}
         TemplateKeyframeContainer() {}
         typedef TemplateKeyframe<T> KeyType;
-
-        virtual unsigned int size() const { return (unsigned int)std::vector<TemplateKeyframe<T> >::size(); }
+        typedef typename osg::MixinVector< TemplateKeyframe<T> > VectorType;
+        virtual unsigned int size() const { return (unsigned int)osg::MixinVector<TemplateKeyframe<T> >::size(); }
 
     };
 
     template <>
-    class TemplateKeyframeContainer<Vec3Packed> : public std::vector<TemplateKeyframe<Vec3Packed> >, public KeyframeContainer
+    class TemplateKeyframeContainer<Vec3Packed> : public osg::MixinVector<TemplateKeyframe<Vec3Packed> >, public KeyframeContainer
     {
     public:
         typedef TemplateKeyframe<Vec3Packed> KeyType;
@@ -109,11 +113,17 @@ namespace osgAnimation
     typedef TemplateKeyframe<osg::Vec3> Vec3Keyframe;
     typedef TemplateKeyframeContainer<osg::Vec3> Vec3KeyframeContainer;
 
+    typedef TemplateKeyframe<osg::Vec3us> Vec3usKeyframe;
+    typedef TemplateKeyframeContainer<osg::Vec3us> Vec3usKeyframeContainer;
+
     typedef TemplateKeyframe<osg::Vec4> Vec4Keyframe;
     typedef TemplateKeyframeContainer<osg::Vec4> Vec4KeyframeContainer;
 
     typedef TemplateKeyframe<osg::Quat> QuatKeyframe;
     typedef TemplateKeyframeContainer<osg::Quat> QuatKeyframeContainer;
+
+    typedef TemplateKeyframe<osg::Vec3us> Vec3usKeyframe;
+    typedef TemplateKeyframeContainer<osg::Vec3us> Vec3usKeyframeContainer;
 
     typedef TemplateKeyframe<osg::Matrixf> MatrixKeyframe;
     typedef TemplateKeyframeContainer<osg::Matrixf> MatrixKeyframeContainer;

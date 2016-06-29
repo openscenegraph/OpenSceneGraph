@@ -596,7 +596,7 @@ void Viewer::realize()
 
     if (osg::DisplaySettings::instance()->getCompileContextsHint())
     {
-        int numProcessors = OpenThreads::GetNumberOfProcessors();
+        int numProcessors = osg::maximum(1, OpenThreads::GetNumberOfProcessors());
         int processNum = 0;
 
         for(unsigned int i=0; i<= osg::GraphicsContext::getMaxContextID(); ++i)
@@ -808,7 +808,7 @@ void Viewer::generatePointerData(osgGA::GUIEventAdapter& event)
             camera->getAllowEventFocus() &&
             camera->getRenderTargetImplementation()==osg::Camera::FRAME_BUFFER)
         {
-            osg::Viewport* viewport = camera ? camera->getViewport() : 0;
+            osg::Viewport* viewport = camera->getViewport();
             if (viewport &&
                 x >= viewport->x() && y >= viewport->y() &&
                 x <= (viewport->x()+viewport->width()) && y <= (viewport->y()+viewport->height()) )
@@ -824,7 +824,7 @@ void Viewer::generatePointerData(osgGA::GUIEventAdapter& event)
 
     if (camera)
     {
-        osg::Viewport* viewport = camera ? camera->getViewport() : 0;
+        osg::Viewport* viewport = camera->getViewport();
 
         event.addPointerData(new osgGA::PointerData(camera, (x-viewport->x())/viewport->width()*2.0f-1.0f, -1.0, 1.0,
                                                             (y-viewport->y())/viewport->height()*2.0f-1.0f, -1.0, 1.0));

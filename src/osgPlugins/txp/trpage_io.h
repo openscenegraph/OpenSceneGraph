@@ -395,7 +395,7 @@ public:
         */
     virtual void Add(const char *);
     // Same as const char * version
-    virtual void Add(std::string &);
+    virtual void Add(const std::string &);
     // Add a 32 bit float to the buffer
     virtual void Add(float32);
     // Add a 64 bit float to the buffer
@@ -618,11 +618,11 @@ public:
      */
     virtual bool        Print(trpgPrintBuffer &) const { return true; }
 
-    const char *getErrMess() const {if(errMess[0] == '\0') return 0;else return &errMess[0];}
+    const char *getErrMess() const { return errMess.empty() ? 0 : errMess.c_str();}
 
 protected:
 
-    mutable char errMess[512];
+    mutable std::string errMess;
 };
 
 /* Pointer into a trpgwAppFile.  The full name of the file

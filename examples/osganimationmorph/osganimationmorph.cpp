@@ -107,7 +107,9 @@ int main (int argc, char* argv[])
 
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(morph);
-    geode->addUpdateCallback(new osgAnimation::UpdateMorph("MorphNodeCallback"));
+    osgAnimation::UpdateMorph* morphupdate=new osgAnimation::UpdateMorph("MorphNodeCallback");
+    morphupdate->addTarget("MorphNodeCallback");
+    geode->addUpdateCallback(morphupdate);
     scene->addChild(geode);
 
     viewer.addEventHandler(new osgViewer::StatsHandler());

@@ -171,6 +171,7 @@ Dragger::Dragger() :
     _activationPermittedByModKeyMask(false),
     _activationPermittedByMouseButtonMask(false),
     _activationPermittedByKeyEvent(false),
+    _parentDragger(0),
     _intersectionMask(0xffffffff)
 {
     _parentDragger = this;
@@ -190,6 +191,7 @@ Dragger::Dragger(const Dragger& rhs, const osg::CopyOp& copyop):
     _activationPermittedByModKeyMask(false),
     _activationPermittedByMouseButtonMask(false),
     _activationPermittedByKeyEvent(false),
+    _parentDragger(0),
     _intersectionMask(0xffffffff)
 {
 }

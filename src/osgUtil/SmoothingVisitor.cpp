@@ -224,8 +224,10 @@ struct SmoothTriangleIndexFunctor
 struct FindSharpEdgesFunctor
 {
     FindSharpEdgesFunctor():
+        _geometry(0),
         _vertices(0),
         _normals(0),
+        _creaseAngle(osg::PI_2),
         _maxDeviationDotProduct(0.0f),
         _currentPrimitiveSetIndex(0)
     {

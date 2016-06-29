@@ -69,16 +69,22 @@ namespace
 }
 
 
-SceneLoader::SceneLoader()
-:    capture_obj_motion_(false),
-    capture_cam_motion_(false)
+SceneLoader::SceneLoader():
+    current_channel_(0),
+    channel_count_(0),
+    capture_obj_motion_(false),
+    capture_cam_motion_(false),
+    version_(0)
 {
 }
 
-SceneLoader::SceneLoader(const Options &options)
-:    capture_obj_motion_(false),
+SceneLoader::SceneLoader(const Options &options):
+    current_channel_(0),
+    channel_count_(0),
+    capture_obj_motion_(false),
     capture_cam_motion_(false),
-    options_(options)
+    options_(options),
+    version_(0)
 {
 }
 

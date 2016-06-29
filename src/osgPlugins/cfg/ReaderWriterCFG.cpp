@@ -266,7 +266,7 @@ public:
         supportsExtension("cfg","Producer camera configuration file");
     }
 
-    virtual const char* className() { return "Producer cfg object reader"; }
+    virtual const char* className() const { return "Producer cfg object reader"; }
 
 
     virtual ReadResult readObject(const std::string& fileName, const Options* options = NULL) const

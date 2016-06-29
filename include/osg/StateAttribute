@@ -202,6 +202,10 @@ class OSG_EXPORT StateAttribute : public Object
 
             SHADERSTORAGEBUFFERBINDING,
 
+            INDIRECTDRAWBUFFERBINDING,
+
+            DEPTHRANGEINDEXED,
+
             CAPABILITY = 100
         };
 
@@ -370,12 +374,26 @@ class OSG_EXPORT StateAttribute : public Object
         ParentList _parents;
         friend class osg::StateSet;
 
+        /** Helper class that make is easy to handle changes in a member value.*/
+        struct ReassignToParents
+        {
+            /** Constructor caches and then removes attribute for all of it's parents.*/
+            ReassignToParents(osg::StateAttribute* att);
+
+            /** Destructor then reassigns the attribute to all of the parents.*/
+            ~ReassignToParents();
+
+            ref_ptr<StateAttribute> attribute;
+            ParentList              parents;
+        };
+
+
         ref_ptr<ShaderComponent>          _shaderComponent;
 
         ref_ptr<StateAttributeCallback>   _updateCallback;
         ref_ptr<StateAttributeCallback>   _eventCallback;
 };
 
-}
 
+}
 #endif

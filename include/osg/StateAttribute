@@ -204,6 +204,8 @@ class OSG_EXPORT StateAttribute : public Object
 
             INDIRECTDRAWBUFFERBINDING,
 
+            DEPTHRANGEINDEXED,
+
             CAPABILITY = 100
         };
 

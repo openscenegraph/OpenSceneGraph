@@ -66,6 +66,7 @@ SET(TARGET_H
     ${HEADER_PATH}/CullStack
     ${HEADER_PATH}/DeleteHandler
     ${HEADER_PATH}/Depth
+    ${HEADER_PATH}/DepthRangeIndexed
     ${HEADER_PATH}/DisplaySettings
     ${HEADER_PATH}/Drawable
     ${HEADER_PATH}/DrawPixels
@@ -274,6 +275,7 @@ SET(TARGET_SRC
     CullStack.cpp
     DeleteHandler.cpp
     Depth.cpp
+    DepthRangeIndexed.cpp
     DisplaySettings.cpp
     Drawable.cpp
     DrawPixels.cpp

@@ -599,11 +599,16 @@ osgDB::ReaderWriter::WriteResult ReaderWriterFBX::writeNode(
 
         if (!exportVersion.empty() && !lExporter->SetFileExportVersion(FbxString(exportVersion.c_str()), FbxSceneRenamer::eNone)) {
             std::stringstream versionsStr;
+#if 0
 #if FBXSDK_VERSION_MAJOR < 2015
             char const * versions = lExporter->GetCurrentWritableVersions();
 #else
             char const * versions = *lExporter->GetCurrentWritableVersions();
 #endif
+#endif
+            char const * const * versions = lExporter->GetCurrentWritableVersions();
+
+
             if (versions) for(; *versions; ++versions) versionsStr << " " << *versions;
             OSG_WARN << "Can't set FBX export version to '" << exportVersion << "'. Using default. Available export versions are:" << versionsStr.str() << std::endl;
         }

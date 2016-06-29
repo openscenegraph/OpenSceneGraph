@@ -20,6 +20,8 @@
 
 #include "ESRIShape.h"
 
+#include <float.h>
+
 using namespace ESRIShape ;
 
 #define SAFE_DELETE_ARRAY( ptr ) delete[] ptr; ptr = 0L;
@@ -56,6 +58,26 @@ inline bool readVal( int fd, T &val, ByteOrder bo = LittleEndian )
 
     if( getByteOrder() != bo )
         swapBytes<T>(val);
+
+    return true;
+}
+
+
+template <class T>
+inline bool readPositiveVal( int fd, T &val, ByteOrder bo = LittleEndian )
+{
+    int nbytes = 0;
+    if( (nbytes = esri::read( fd, &val, sizeof(T))) <= 0 )
+        return false;
+
+    if( getByteOrder() != bo )
+        swapBytes<T>(val);
+
+    if (val<0)
+    {
+         val = 0;
+         return false;
+    }
 
     return true;
 }
@@ -160,7 +182,13 @@ bool NullRecord::read( int fd )
 }
 
 
-Box::Box() {}
+Box::Box():
+    Xmin(DBL_MAX),
+    Ymin(DBL_MAX),
+    Xmax(-DBL_MAX),
+    Ymax(-DBL_MAX)
+    {}
+
 Box::Box(const Box &b ):
     Xmin(b.Xmin),
     Ymin(b.Ymin),
@@ -177,7 +205,7 @@ bool Box::read( int fd )
     return true;
 }
 
-Range::Range() {}
+Range::Range():min(DBL_MAX), max(-DBL_MAX) {}
 Range::Range( const Range &r ): min(r.min), max(r.max) {}
 
 bool Range::read( int fd )
@@ -278,7 +306,7 @@ bool MultiPoint::read( int fd )
     if( bbox.read(fd) == false )
         return false;
 
-    if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
 
     points = new struct Point[numPoints];
@@ -346,10 +374,10 @@ bool PolyLine::read( int fd )
     if( bbox.read(fd) == false )
         return false;
 
-    if( readVal<Integer>(fd, numParts, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numParts, LittleEndian ) == false )
         return false;
 
-    if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
 
     parts  = new Integer[numParts];
@@ -418,10 +446,10 @@ bool Polygon::read( int fd )
     if( bbox.read(fd) == false )
         return false;
 
-    if( readVal<Integer>(fd, numParts, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numParts, LittleEndian ) == false )
         return false;
 
-    if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
 
     parts  = new Integer[numParts];
@@ -536,7 +564,7 @@ bool MultiPointM::read( int fd )
     if( bbox.read(fd) == false )
         return false;
 
-    if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
 
     points = new struct Point[numPoints];
@@ -629,10 +657,10 @@ bool PolyLineM::read( int fd )
     if( bbox.read(fd) == false )
         return false;
 
-    if( readVal<Integer>(fd, numParts, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numParts, LittleEndian ) == false )
         return false;
 
-    if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
 
     parts  = new Integer[numParts];
@@ -727,10 +755,10 @@ bool PolygonM::read( int fd )
     if( bbox.read(fd) == false )
         return false;
 
-    if( readVal<Integer>(fd, numParts, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numParts, LittleEndian ) == false )
         return false;
 
-    if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
 
     parts  = new Integer[numParts];
@@ -875,7 +903,7 @@ bool MultiPointZ::read( int fd )
     if( bbox.read(fd) == false )
         return false;
 
-    if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
 
     points = new struct Point[numPoints];
@@ -992,10 +1020,10 @@ bool PolyLineZ::read( int fd )
     if( bbox.read(fd) == false )
         return false;
 
-    if( readVal<Integer>(fd, numParts, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numParts, LittleEndian ) == false )
         return false;
 
-    if( readVal<Integer>(fd, numPoints, LittleEndian ) == false )
+    if( readPositiveVal<Integer>(fd, numPoints, LittleEndian ) == false )
         return false;
 
     parts  = new Integer[numParts];

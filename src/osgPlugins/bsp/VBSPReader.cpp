@@ -17,6 +17,7 @@
 #include <osg/TexEnvCombine>
 #include <osgDB/Registry>
 #include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
 #include <osgDB/ReadFile>
 #include <osg/io_utils>
 #include <iostream>
@@ -997,9 +998,10 @@ void VBSPReader::createScene()
     {
         // Get the texdata entry and texture name
         currentTexData = bsp_data->getTexData(i);
-        texName = bsp_data->
-            getTexDataString(currentTexData.name_string_table_id).c_str();
-        strcpy(currentTexName, texName);
+        texName = bsp_data->getTexDataString(currentTexData.name_string_table_id).c_str();
+
+        osgDB::stringcopyfixedsize(currentTexName, texName);
+
 
         // See if this is referring to an environment mapped material (we don't
         // handle this yet)
@@ -1015,7 +1017,7 @@ void VBSPReader::createScene()
 
             // Now, we're pointing at the path to the material itself, so copy
             // what we've got so far
-            strcpy(tempTex, mtlPtr);
+            osgDB::stringcopyfixedsize(tempTex, mtlPtr);
 
             // Now, we just need to trim the two or three cube map coordinates
             // from the end.

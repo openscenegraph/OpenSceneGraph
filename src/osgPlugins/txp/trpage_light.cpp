@@ -949,7 +949,7 @@ bool trpgLightTable::isValid() const
         if (!itr->second.isValid())
         {
             if(itr->second.getErrMess())
-                strcpy(errMess, itr->second.getErrMess());
+                errMess.assign(itr->second.getErrMess());
             return false;
         }
     }

@@ -161,8 +161,7 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
     }
 
     file_fd = open (filename, O_RDONLY);
-    if (file_fd <= 0) {
-        close (file_fd);
+    if (file_fd < 0) {
         return NULL;
     }
 

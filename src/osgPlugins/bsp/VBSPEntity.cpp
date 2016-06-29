@@ -407,9 +407,9 @@ ref_ptr<Group> VBSPEntity::createBrushGeometry()
         currentTexData = bsp_data->getTexData(currentTexInfo.texdata_index);
 
         // Get the texture name
-        texName = bsp_data->
-            getTexDataString(currentTexData.name_string_table_id).c_str();
-        strcpy(currentTexName, texName);
+        texName = bsp_data->getTexDataString(currentTexData.name_string_table_id).c_str();
+
+        osgDB::stringcopyfixedsize(currentTexName, texName);
 
         // See if this is a non-drawable surface
         if ((strcasecmp(currentTexName, "tools/toolsareaportal") != 0) &&

@@ -14,6 +14,7 @@
    */
 
 #include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -62,6 +63,7 @@ void trpgwArchive::Init(trpgEndian inNess, trpgwArchive::TileMode inTileMode,int
     tileFileCount = 0;
     isRegenerate = false;
     maxTileFileLen = -1;
+    numLod = 0;
 
     firstHeaderWrite = true;
 }
@@ -78,7 +80,7 @@ void trpgwArchive::Init(char *inDir,char *inFile,trpg2dPoint &sw, trpg2dPoint &n
     majorVersion = majorVer;
     minorVersion = minorVer;
     fp = NULL;
-    strcpy(dir,inDir);
+    osgDB::stringcopyfixedsize(dir,inDir);
     cpuNess = trpg_cpu_byte_order();
     tileFile = NULL;
     tileFileCount = 0;
@@ -288,19 +290,17 @@ bool trpgwArchive::isValid() const
 {
     if (!fp)
     {
-        strcpy(errMess, "File object do not exist");
+        errMess.assign("File object do not exist");
         return false;
     }
 
     return true;
 }
 
-const char *trpgwArchive::getErrMess() const
+const char* trpgwArchive::getErrMess() const
 {
-    if(errMess[0] == '\0')
-        return 0;
-    else
-        return &errMess[0];
+    if(errMess.empty()) return 0;
+    else return errMess.c_str();
 }
 
 // Set the maximum advised size for a tile file
@@ -460,7 +460,7 @@ bool trpgwArchive::CheckpointHeader()
     if (!header.isValid())
     {
         if(header.getErrMess())
-            strcpy(errMess, header.getErrMess());
+            errMess.assign(header.getErrMess());
         return false;
     }
 
@@ -590,11 +590,11 @@ bool trpgwArchive::CheckpointHeader()
         if(!header.GetIsMaster()||texTable.isValid()) {
             if(!texTable.Write(buf))
             {
-                strcpy(errMess, "Error writing texture table");
+                errMess.assign("Error writing texture table");
                 if(texTable.getErrMess())
                 {
-                    strcat(errMess, ": ");
-                    strcat(errMess, texTable.getErrMess());
+                    errMess.append(": ");
+                    errMess.append(texTable.getErrMess());
                     return false;
                 }
             }
@@ -603,11 +603,11 @@ bool trpgwArchive::CheckpointHeader()
         if(!header.GetIsMaster()) {
             if (!matTable.Write(buf))
             {
-                strcpy(errMess, "Error writing material table");
+                errMess.assign("Error writing material table");
                 if(matTable.getErrMess())
                 {
-                    strcat(errMess, ": ");
-                    strcat(errMess, matTable.getErrMess());
+                    errMess.append(": ");
+                    errMess.append(matTable.getErrMess());
                     return false;
                 }
             }
@@ -615,11 +615,11 @@ bool trpgwArchive::CheckpointHeader()
 
             if(!modelTable.Write(buf) )
             {
-                strcpy(errMess, "Error writing model table");
+                errMess.assign("Error writing model table");
                 if(modelTable.getErrMess())
                 {
-                    strcat(errMess, ": ");
-                    strcat(errMess, modelTable.getErrMess());
+                    errMess.append(": ");
+                    errMess.append(modelTable.getErrMess());
                     return false;
                 }
             }
@@ -627,62 +627,62 @@ bool trpgwArchive::CheckpointHeader()
         //always write the tile table, even if we are a master
         if(!tileTable.Write(buf))
         {
-            strcpy(errMess, "Error writing tile table");
+            errMess.assign("Error writing tile table");
             if(tileTable.getErrMess())
             {
-                strcat(errMess, ": ");
-                strcat(errMess, tileTable.getErrMess());
+                errMess.append(": ");
+                errMess.append(tileTable.getErrMess());
                 return false;
             }
         }
         if(!header.GetIsMaster()) {
             if(!lightTable.Write(buf))
             {
-                strcpy(errMess, "Error writing light table");
+                errMess.assign("Error writing light table");
                 if(lightTable.getErrMess())
                 {
-                    strcat(errMess, ": ");
-                    strcat(errMess, lightTable.getErrMess());
+                    errMess.append(": ");
+                    errMess.append(lightTable.getErrMess());
                     return false;
                 }
             }
             if(!rangeTable.Write(buf))
             {
-                strcpy(errMess, "Error writing range table");
+                errMess.assign("Error writing range table");
                 if(rangeTable.getErrMess())
                 {
-                    strcat(errMess, ": ");
-                    strcat(errMess, rangeTable.getErrMess());
+                    errMess.append(": ");
+                    errMess.append(rangeTable.getErrMess());
                     return false;
                 }
             }
             if (!textStyleTable.Write(buf))
             {
-                strcpy(errMess,"Error writing text style table");
+                errMess.assign("Error writing text style table");
                 if (textStyleTable.getErrMess())
                 {
-                    strcat(errMess, ": ");
-                    strcat(errMess, textStyleTable.getErrMess());
+                    errMess.append(": ");
+                    errMess.append(textStyleTable.getErrMess());
                     return false;
                 }
             }
             if (!supportStyleTable.Write(buf))
             {
-                strcpy(errMess,"Error writing support style table");
+                errMess.assign("Error writing support style table");
                 if (supportStyleTable.getErrMess())
                 {
-                    strcat(errMess, ": ");
-                    strcat(errMess, supportStyleTable.getErrMess());
+                    errMess.append(": ");
+                    errMess.append(supportStyleTable.getErrMess());
                     return false;
                 }
             }
             if (!labelPropertyTable.Write(buf))
             {
-                strcpy(errMess,"Error writing label property table");
+                errMess.assign("Error writing label property table");
                 if (labelPropertyTable.getErrMess())
                 {
-                    strcat(errMess, ": ");
-                    strcat(errMess, labelPropertyTable.getErrMess());
+                    errMess.append(": ");
+                    errMess.append(labelPropertyTable.getErrMess());
                     return false;
                 }
             }
@@ -696,7 +696,7 @@ bool trpgwArchive::CheckpointHeader()
         magic = trpg_byteswap_int(magic);
     if (fwrite(&magic,sizeof(int32),1,fp) != 1)
     {
-        strcpy(errMess, "Could not write the magic number");
+        errMess.assign("Could not write the magic number");
         return false;
     }
 
@@ -707,7 +707,7 @@ bool trpgwArchive::CheckpointHeader()
         headerSize = trpg_byteswap_int(headerSize);
     if (fwrite(&headerSize,1,sizeof(int32),fp) != sizeof(int32))
     {
-        strcpy(errMess, "Could not write the header size");
+        errMess.assign("Could not write the header size");
         return false;
     }
 
@@ -716,7 +716,7 @@ bool trpgwArchive::CheckpointHeader()
 
     if (WriteHeaderData(data,headLen,fp) != headLen)
     {
-        strcpy(errMess, "Could not write the buffer");
+        errMess.assign("Could not write the buffer");
         return false;
     }
 
@@ -941,6 +941,9 @@ trpgwGeomHelper::trpgwGeomHelper()
 {
     buf = NULL;
     mode = trpgGeometry::Triangles;
+    dataType = 0;
+    zmin = 1e12;
+    zmax = -1e12;
 }
 trpgwGeomHelper::~trpgwGeomHelper()
 {
@@ -960,6 +963,7 @@ void trpgwGeomHelper::init(trpgWriteBuffer *ibuf,int dtype)
     dataType = dtype;
     zmin = 1e12;
     zmax = -1e12;
+    mode = trpgGeometry::Triangles;
 }
 // Reset back to a clean state (except for the buffer)
 void trpgwGeomHelper::Reset()
@@ -1236,6 +1240,7 @@ optVert::optVert(int numMat, int vid, std::vector<trpg3dPoint> &iv, std::vector<
     n=in[vid];
     tex.resize(0);
     for (unsigned int loop=0; loop < (unsigned int)numMat; loop++) tex.push_back(itex[vid*numMat+loop]);
+    valid = true;
 }
 void trpgwGeomHelper::Optimize()
 {
@@ -1381,7 +1386,7 @@ trpgwImageHelper::trpgwImageHelper(trpgEndian inNess,char *inDir,trpgTexTable &i
 void trpgwImageHelper::Init(trpgEndian inNess,char *inDir,trpgTexTable &inTable,bool sepGeoTypical)
 {
     ness = inNess;
-    strcpy(dir,inDir);
+    osgDB::stringcopyfixedsize(dir,inDir);
     texTable = &inTable;
     texFile = NULL;
     geotypFile = NULL;

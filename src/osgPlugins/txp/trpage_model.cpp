@@ -111,7 +111,7 @@ bool trpgModel::isValid() const
 {
     if (type == External && !name)
     {
-        strcpy(errMess, "Model is external with no name");
+        errMess.assign("Model is external with no name");
         return false;
     }
 
@@ -375,7 +375,7 @@ bool trpgModelTable::isValid() const
     for (  ; itr != modelsMap.end( ); itr++) {
         if(!itr->second.isValid()) {
             if(itr->second.getErrMess())
-                strcpy(errMess, itr->second.getErrMess());
+                errMess.assign(itr->second.getErrMess());
             return false;
         }
     }

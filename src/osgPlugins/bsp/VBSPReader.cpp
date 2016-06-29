@@ -100,7 +100,9 @@ void VBSPReader::processEntities(std::istream & str, int offset,
     // Parse the entities
     startPtr = entities;
     endPtr = strchr(entities, '}');
-    for (i = 0; i < numEntities; i++)
+    for (i = 0;
+         (i<numEntities) && (endPtr!=NULL && startPtr!=NULL);
+         i++)
     {
         // Get the length of this entity
         entityLen = endPtr - startPtr + 1;

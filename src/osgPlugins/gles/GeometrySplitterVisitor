@@ -285,11 +285,13 @@ protected:
             return;
         }
 
-        for(unsigned int i = 0 ; i < lines.size() ; ++ i) {
+        for(unsigned int i = 0 ; i < lines.size() ; ++ i)
+        {
             const osg::DrawElementsUInt* line = dynamic_cast<osg::DrawElementsUInt*>(lines[i].get());
-            if(!line || line->getMode() != osg::PrimitiveSet::LINES) {
-                osg::notify(osg::INFO) << "Primitive with bad mode flagged as wireframe. Skipping."
-                                       << std::endl;
+            if(!line || line->getMode() != osg::PrimitiveSet::LINES)
+            {
+                osg::notify(osg::INFO) << "Primitive with bad mode flagged as wireframe. Skipping."<< std::endl;
+                continue;
             }
             osg::ref_ptr<osg::DrawElementsUInt> small = new osg::DrawElementsUInt(osg::PrimitiveSet::LINES);
             osg::ref_ptr<osg::DrawElementsUInt> large = new osg::DrawElementsUInt(osg::PrimitiveSet::LINES);

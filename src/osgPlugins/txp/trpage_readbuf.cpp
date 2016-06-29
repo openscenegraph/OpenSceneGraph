@@ -639,19 +639,21 @@ trpgrAppFile *trpgrAppFileCache::GetFile(trpgEndian ness,int id,int col,int row)
     }
 
     // Found it in cache, just return
-    if (foundID != -1) {
+    if (foundID != -1)
+    {
         OpenFile &of = files[foundID];
-
-        if (of.afile->isValid())
+        if (of.afile)
         {
-            of.lastUsed = timeCount;
-            return of.afile;
-        }
-        else
-        {
-            if (of.afile)
+            if (of.afile->isValid())
+            {
+                of.lastUsed = timeCount;
+                return of.afile;
+            }
+            else
+            {
                 delete of.afile;
-            of.afile = NULL;
+                of.afile = NULL;
+            }
         }
     }
 

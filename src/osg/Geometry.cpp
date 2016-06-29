@@ -30,20 +30,42 @@ namespace osg{
 
         virtual void flushDeletedGLObjects(double, double& availableTime)
         {
-             OSG_INFO<<"VertexArrayObjectManager::flushDeletedGLObjects() Not currently implementated"<<std::endl;
+        #ifdef OSG_GL_VERTEX_ARRAY_OBJECTS_AVAILABLE
+             flushAllDeletedGLObjects();
+        #else
+             OSG_INFO<<"VertexArrayObjectManager::flushAllDeletedGLObjects(double,double) Not supported"<<std::endl;
+        #endif
         }
 
         virtual void flushAllDeletedGLObjects()
         {
-             OSG_INFO<<"VertexArrayObjectManager::flushAllDeletedGLObjects() Not currently implementated"<<std::endl;
-        }
+        #ifdef OSG_GL_VERTEX_ARRAY_OBJECTS_AVAILABLE
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_VertexArrayObject);
+
+            for(std::vector<GLuint>::iterator ditr=_tobedeleted.begin();
+                ditr!=_tobedeleted.end();
+                ++ditr)
+            {
+                 osg::get<osg::GLExtensions>(_contextID)->glDeleteVertexArrays(1,&*ditr);
+            }
+
+            _tobedeleted.clear();
+        #else
+             OSG_INFO<<"VertexArrayObjectManager::flushAllDeletedGLObjects() Not supported"<<std::endl;
+        #endif
+             }
 
         virtual void deleteAllGLObjects()
         {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_VertexArrayObject);
-            for(Geometry::VertexArrayObjectMap::iterator itr =_vertexArrayObjectMap.begin();itr!= _vertexArrayObjectMap.end();itr++)
-               osg::get<osg::GLExtensions>(_contextID)->glDeleteVertexArrays(1,&itr->second->_GLID);
-       }
+            flushAllDeletedGLObjects();
+            {
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_VertexArrayObject);
+
+                for(Geometry::VertexArrayObjectMap::iterator itr =_vertexArrayObjectMap.begin();itr!= _vertexArrayObjectMap.end();itr++)
+                    osg::get<osg::GLExtensions>(_contextID)->glDeleteVertexArrays(1,&itr->second->_GLID);
+
+            }
+        }
 
         virtual void discardAllGLObjects()
         {
@@ -61,8 +83,8 @@ namespace osg{
                     )
             {
                 OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_VertexArrayObject);
+                _tobedeleted.push_back(globj->_GLID);
 
-                osg::get<osg::GLExtensions>(_contextID)->glDeleteVertexArrays(1,&globj->_GLID);
                 _vertexArrayObjectMap.erase(vaokeyit);
             }
         #else
@@ -107,6 +129,7 @@ namespace osg{
     protected:
         OpenThreads::Mutex _mutex_VertexArrayObject;
         Geometry::VertexArrayObjectMap _vertexArrayObjectMap;
+        std::vector<GLuint> _tobedeleted;
     };
 }
 //////////////////////////////////////////////////////////////////
@@ -128,6 +151,7 @@ Geometry::Geometry():
     _useVertexArrayObject=false;
     dirtyVertexArrayObject();
     // temporary test
+     setUseDisplayList(false);
      setUseVertexArrayObject(true);
 }
 
@@ -980,7 +1004,9 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
         }
         #undef RECOMPILEIFREQUIRED
-
+        // unbind the BufferObjects
+        state.get<GLExtensions>()->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
+        state.get<GLExtensions>()->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
         state.get<GLExtensions>()->glBindVertexArray(_vao[contextID]->getGLID());
     }
 

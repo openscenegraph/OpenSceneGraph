@@ -524,6 +524,8 @@ void Program::apply( osg::State& state ) const
 
             pcp->useProgram();
             state.setLastAppliedProgramObject(pcp);
+        }else{
+            OSG_WARN<<"WARNING: redondant useProgram pcp == state.getLastAppliedProgramObject()"<<std::endl;
         }
     }
     else

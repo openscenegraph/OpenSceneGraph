@@ -1132,17 +1132,11 @@ void View::removeDevice(osgGA::Device* eventSource)
 
 bool View::requiresUpdateSceneGraph() const
 {
-    // check if the database pager needs to update the scene
-    if (getDatabasePager()->requiresUpdateSceneGraph() || getDatabasePager()->getRequestsInProgress()) return true;
-
     // check if there are camera update callbacks
     if (_camera->getUpdateCallback()) return true;
 
-    // check if there are node update callbacks
-    if (getSceneData() != 0)
-    {
-        if (getSceneData()->getUpdateCallback() || (getSceneData()->getNumChildrenRequiringUpdateTraversal()>0)) return true;
-    }
+    // check if there scene requires an update traversal
+    if (_scene.valid() && _scene->requiresUpdateSceneGraph()) return true;
 
     return false;
 }

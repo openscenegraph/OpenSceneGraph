@@ -15,7 +15,7 @@ struct GeometryArrayList {
     class ArrayIndexAppendVisitor : public osg::ArrayVisitor
     {
     public:
-        ArrayIndexAppendVisitor(const IndexList& indexes, osg::Array* dst): _indexes(indexes), _dst(dst) 
+        ArrayIndexAppendVisitor(const IndexList& indexes, osg::Array* dst): _indexes(indexes), _dst(dst)
         {
         }
 
@@ -31,6 +31,11 @@ struct GeometryArrayList {
             }
 
             T* dstArray = dynamic_cast<T*>(_dst);
+            if (!dstArray) {
+                osg::notify(osg::WARN) << "Incompatible array types, cannot not append together." << std::endl;
+                return;
+            }
+
             for(IndexList::const_iterator it = _indexes.begin(); it != _indexes.end(); ++it)
             {
                 unsigned int idx = *it;
@@ -84,7 +89,7 @@ struct GeometryArrayList {
                 return true;
             }
             return false;
-        }        
+        }
 
         void operator()(osg::Array* src, unsigned int index, osg::Array* dst) {
 

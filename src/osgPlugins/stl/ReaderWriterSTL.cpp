@@ -250,7 +250,8 @@ private:
     public:
         CreateStlVisitor(std::string const & fout, const osgDB::ReaderWriter::Options* options = 0):
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN),
-            counter(0)
+            counter(0),
+            m_f(0)
         {
             m_localOptions = parseOptions(options);
             if (m_localOptions.separateFiles)

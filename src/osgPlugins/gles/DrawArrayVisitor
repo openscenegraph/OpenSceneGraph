@@ -35,11 +35,14 @@ public:
                 case osg::PrimitiveSet::DrawArraysPrimitiveType:
                     {
                         osg::DrawArrays* dw = dynamic_cast<osg::DrawArrays*>(ps);
-                        unsigned int start = dst.size();
-                        osg::DrawArrays* ndw = new osg::DrawArrays(dw->getMode(), start, dw->getNumIndices());
-                        newGeometry->getPrimitiveSetList().push_back(ndw);
-                        for ( unsigned int j = 0; j < dw->getNumIndices(); j++) {
-                            srcArrays.append(dw->getFirst()+j, dst);
+                        if (dw)
+                        {
+                            unsigned int start = dst.size();
+                            osg::DrawArrays* ndw = new osg::DrawArrays(dw->getMode(), start, dw->getNumIndices());
+                            newGeometry->getPrimitiveSetList().push_back(ndw);
+                            for ( unsigned int j = 0; j < dw->getNumIndices(); j++) {
+                                srcArrays.append(dw->getFirst()+j, dst);
+                            }
                         }
                     }
                     break;
@@ -60,17 +63,20 @@ public:
                 case osg::PrimitiveSet::DrawArrayLengthsPrimitiveType:
                     {
                         osg::DrawArrayLengths* dal = dynamic_cast<osg::DrawArrayLengths*>(ps);
-                        unsigned int start = dst.size();
-                        unsigned int offset = dal->getFirst();
-                        unsigned int totalDrawArraysVertexes = 0;
-                        for (unsigned int j = 0; j < dal->size(); j++) {
-                            totalDrawArraysVertexes += (*dal)[j];
-                        }
-                        osg::DrawArrays* ndw = new osg::DrawArrays(dal->getMode(), start, totalDrawArraysVertexes);
-                        newGeometry->getPrimitiveSetList().push_back(ndw);
+                        if (dal)
+                        {
+                            unsigned int start = dst.size();
+                            unsigned int offset = dal->getFirst();
+                            unsigned int totalDrawArraysVertexes = 0;
+                            for (unsigned int j = 0; j < dal->size(); j++) {
+                                totalDrawArraysVertexes += (*dal)[j];
+                            }
+                            osg::DrawArrays* ndw = new osg::DrawArrays(dal->getMode(), start, totalDrawArraysVertexes);
+                            newGeometry->getPrimitiveSetList().push_back(ndw);
 
-                        for (unsigned int v = 0; v < totalDrawArraysVertexes; v++) {
-                            srcArrays.append(offset + v, dst);
+                            for (unsigned int v = 0; v < totalDrawArraysVertexes; v++) {
+                                srcArrays.append(offset + v, dst);
+                            }
                         }
                     }
                     break;

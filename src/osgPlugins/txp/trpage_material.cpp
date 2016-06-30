@@ -1106,9 +1106,18 @@ bool trpgTexture::GetName(char *outName,int outLen) const
     if (!isValid())
         return false;
 
-    int len = (name) ? strlen(name) : 0;
-    strncpy(outName,name,MIN(len,outLen)+1);
+    if (!outName)
+        return false;
 
+    if (name)
+    {
+        int len = strlen(name);
+        strncpy(outName,name,MIN(len,outLen)+1);
+    }
+    else
+    {
+        outName[0] = '\0';
+    }
     return true;
 }
 

@@ -374,8 +374,12 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
         osg::ref_ptr<osg::Geode> geode = new osg::Geode;
         geode->addDrawable (geom.get());
 
-        current_sequence->addChild (geode.get());
-        current_sequence->setTime (sequence_frame, 0.2f);
+        if (current_sequence)
+        {
+            current_sequence->addChild (geode.get());
+            current_sequence->setTime (sequence_frame, 0.2f);
+        }
+
         sequence_frame++;
 
         last_frame_name = frame->name;

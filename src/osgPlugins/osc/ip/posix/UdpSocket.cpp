@@ -63,7 +63,7 @@ static void SockaddrFromIpEndpointName( struct sockaddr_in& sockAddr, const IpEn
     memset( (char *)&sockAddr, 0, sizeof(sockAddr ) );
     sockAddr.sin_family = AF_INET;
 
-    sockAddr.sin_addr.s_addr = 
+    sockAddr.sin_addr.s_addr =
         (endpoint.address == IpEndpointName::ANY_ADDRESS)
         ? INADDR_ANY
         : htonl( endpoint.address );
@@ -77,9 +77,9 @@ static void SockaddrFromIpEndpointName( struct sockaddr_in& sockAddr, const IpEn
 
 static IpEndpointName IpEndpointNameFromSockaddr( const struct sockaddr_in& sockAddr )
 {
-    return IpEndpointName( 
-        (sockAddr.sin_addr.s_addr == INADDR_ANY) 
-            ? IpEndpointName::ANY_ADDRESS 
+    return IpEndpointName(
+        (sockAddr.sin_addr.s_addr == INADDR_ANY)
+            ? IpEndpointName::ANY_ADDRESS
             : ntohl( sockAddr.sin_addr.s_addr ),
         (sockAddr.sin_port == 0)
             ? IpEndpointName::ANY_PORT
@@ -121,10 +121,10 @@ public:
         assert( isBound_ );
 
         // first connect the socket to the remote server
-        
+
         struct sockaddr_in connectSockAddr;
         SockaddrFromIpEndpointName( connectSockAddr, remoteEndpoint );
-       
+
         if (connect(socket_, (struct sockaddr *)&connectSockAddr, sizeof(connectSockAddr)) < 0) {
             throw std::runtime_error("unable to connect udp socket\n");
         }
@@ -137,17 +137,17 @@ public:
         if (getsockname(socket_, (struct sockaddr *)&sockAddr, &length) < 0) {
             throw std::runtime_error("unable to getsockname\n");
         }
-        
+
         if( isConnected_ ){
             // reconnect to the connected address
-            
+
             if (connect(socket_, (struct sockaddr *)&connectedAddr_, sizeof(connectedAddr_)) < 0) {
                 throw std::runtime_error("unable to connect udp socket\n");
             }
 
         }else{
             // unconnect from the remote address
-        
+
             struct sockaddr_in unconnectSockAddr;
             memset( (char *)&unconnectSockAddr, 0, sizeof(unconnectSockAddr ) );
             unconnectSockAddr.sin_family = AF_UNSPEC;
@@ -164,7 +164,7 @@ public:
     void Connect( const IpEndpointName& remoteEndpoint )
     {
         SockaddrFromIpEndpointName( connectedAddr_, remoteEndpoint );
-       
+
         if (connect(socket_, (struct sockaddr *)&connectedAddr_, sizeof(connectedAddr_)) < 0) {
             throw std::runtime_error("unable to connect udp socket\n");
         }
@@ -211,7 +211,7 @@ public:
 
         struct sockaddr_in fromAddr;
         socklen_t fromAddrLen = sizeof(fromAddr);
-                  
+
         int result = recvfrom(socket_, data, size, 0,
                     (struct sockaddr *) &fromAddr, (socklen_t*)&fromAddrLen);
         if( result < 0 )
@@ -283,7 +283,7 @@ struct AttachedTimerListener{
 };
 
 
-static bool CompareScheduledTimerCalls( 
+static bool CompareScheduledTimerCalls(
         const std::pair< double, AttachedTimerListener > & lhs, const std::pair< double, AttachedTimerListener > & rhs )
 {
     return lhs.first < rhs.first;
@@ -338,7 +338,7 @@ public:
 
     void DetachSocketListener( UdpSocket *socket, PacketListener *listener )
     {
-        std::vector< std::pair< PacketListener*, UdpSocket* > >::iterator i = 
+        std::vector< std::pair< PacketListener*, UdpSocket* > >::iterator i =
                 std::find( socketListeners_.begin(), socketListeners_.end(), std::make_pair(listener, socket) );
         assert( i != socketListeners_.end() );
 
@@ -378,12 +378,12 @@ public:
         fd_set masterfds, tempfds;
         FD_ZERO( &masterfds );
         FD_ZERO( &tempfds );
-        
+
         // in addition to listening to the inbound sockets we
         // also listen to the asynchronous break pipe, so that AsynchronousBreak()
         // can break us out of select() from another thread.
         FD_SET( breakPipe_[0], &masterfds );
-        int fdmax = breakPipe_[0];        
+        int fdmax = breakPipe_[0];
 
         for( std::vector< std::pair< PacketListener*, UdpSocket* > >::iterator i = socketListeners_.begin();
                 i != socketListeners_.end(); ++i ){
@@ -418,7 +418,7 @@ public:
                 double timeoutMs = timerQueue_.front().first - GetCurrentTimeMs();
                 if( timeoutMs < 0 )
                     timeoutMs = 0;
-            
+
                 // 1000000 microseconds in a second
                 timeout.tv_sec = (long)(timeoutMs * .001);
                 timeout.tv_usec = (long)((timeoutMs - (timeout.tv_sec * 1000)) * 1000);
@@ -434,7 +434,7 @@ public:
                 ssize_t result = read( breakPipe_[0], &c, 1 );
                 if (result==-1) throw std::runtime_error("read failed\n");
             }
-            
+
             if( break_ )
                 break;
 
@@ -494,7 +494,7 @@ SocketReceiveMultiplexer::SocketReceiveMultiplexer()
 }
 
 SocketReceiveMultiplexer::~SocketReceiveMultiplexer()
-{    
+{
     delete impl_;
 }
 

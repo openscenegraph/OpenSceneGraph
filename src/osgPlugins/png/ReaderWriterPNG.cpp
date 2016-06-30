@@ -126,7 +126,8 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
             }
 
             //wish there was a Image::computeComponentSizeInBits()
-            bitDepth = Image::computePixelSizeInBits(img.getPixelFormat(),img.getDataType())/Image::computeNumComponents(img.getPixelFormat());
+            unsigned int numComponents = Image::computeNumComponents(img.getPixelFormat());
+            bitDepth = (numComponents>0) ? (Image::computePixelSizeInBits(img.getPixelFormat(),img.getDataType())/numComponents) : 0;
             if(bitDepth!=8 && bitDepth!=16) return WriteResult::ERROR_IN_WRITING_FILE;
 
             //Create row data

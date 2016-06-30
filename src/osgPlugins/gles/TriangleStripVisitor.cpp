@@ -61,21 +61,24 @@ void TriangleStripVisitor::mergeTrianglesStrip(osg::Geometry& geometry)
                 else if (ps->getType() == osg::PrimitiveSet::DrawArraysPrimitiveType) {
                     // trip strip can generate drawarray of 5 elements we want to merge them too
                     osg::DrawArrays* da = dynamic_cast<osg::DrawArrays*> (ps);
-                    // if connection needed insert degenerate triangles
-                    if (ndw->getNumIndices() != 0 && ndw->back() != da->getFirst()) {
-                        // duplicate last vertex
-                        ndw->addElement(ndw->back());
-                        // insert first vertex of next strip
-                        ndw->addElement(da->getFirst());
-                    }
+                    if (da)
+                    {
+                        // if connection needed insert degenerate triangles
+                        if (ndw->getNumIndices() != 0 && ndw->back() != da->getFirst()) {
+                            // duplicate last vertex
+                            ndw->addElement(ndw->back());
+                            // insert first vertex of next strip
+                            ndw->addElement(da->getFirst());
+                        }
 
-                    if (ndw->getNumIndices() % 2 != 0 ) {
-                        // add a dummy vertex to reverse the strip
-                        ndw->addElement(da->getFirst());
-                    }
+                        if (ndw->getNumIndices() % 2 != 0 ) {
+                            // add a dummy vertex to reverse the strip
+                            ndw->addElement(da->getFirst());
+                        }
 
-                    for (unsigned int j = 0; j < da->getNumIndices(); j++) {
-                        ndw->addElement(da->getFirst() + j);
+                        for (unsigned int j = 0; j < da->getNumIndices(); j++) {
+                            ndw->addElement(da->getFirst() + j);
+                        }
                     }
                 }
             }

@@ -221,7 +221,7 @@ TXFFont::loadFont(std::istream& stream)
         return false;
     }
 
-    float coord_scale = 1.0f/float(computedmaxheight);
+    float coord_scale = (computedmaxheight>0.0f) ? (1.0f/float(computedmaxheight)) : 1.0f;
 
     {
         // insert a trivial blank character

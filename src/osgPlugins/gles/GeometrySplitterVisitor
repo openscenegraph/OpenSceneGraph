@@ -215,11 +215,14 @@ protected:
         if (!primitivesToFix.empty()) {
             // filter all indices > _maxIndexValue in primitives
             for (unsigned int i = 0; i < primitivesToFix.size(); i++) {
-                osg::DrawElements* source = primitivesToFix[i].get();
-                osg::DrawElements* large = removeLargeIndices(dynamic_cast<osg::DrawElementsUInt*>(source));
-                reportedPrimitives.push_back(large);
-                geomPrimitives.push_back(source);
-                setValidIndices(validIndices, source);
+                osg::DrawElementsUInt* source = dynamic_cast<osg::DrawElementsUInt*>(primitivesToFix[i].get());
+                if (source)
+                {
+                    osg::DrawElements* large = removeLargeIndices(source);
+                    reportedPrimitives.push_back(large);
+                    geomPrimitives.push_back(source);
+                    setValidIndices(validIndices, source);
+                }
             }
         }
 

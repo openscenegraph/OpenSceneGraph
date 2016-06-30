@@ -251,6 +251,14 @@ trpgPageManager::LodPageInfo::LodPageInfo()
     valid = false;
     pageDist = 0.0;
     cell.x = cell.y = -100;
+
+    lod = 0;
+    maxNumTiles = 0;
+    activeLoad = false;
+    activeUnload = false;
+    majorVersion = 0;
+    minorVersion = 0;
+    tileTable = 0;
 }
 
 trpgPageManager::LodPageInfo::~LodPageInfo()

@@ -61,7 +61,10 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
             sprintf( command,
                 "tar xfCz %s %s",
                 fileName.c_str(), dirname );
-            mkdir( dirname, 0700 );
+            if (mkdir( dirname, 0700 )<0)
+            {
+                return ReadResult::ERROR_IN_READING_FILE;
+            }
         #endif
 
         #ifdef __sgi

@@ -680,7 +680,10 @@ ReaderWriterSTL::ReaderObject::ReadResult ReaderWriterSTL::BinaryReaderObject::r
     bool comesFromMagics = fileComesFromMagics(fp, magicsHeaderColor);
 
     // seek to beginning of facets
-    ::fseek(fp, sizeof_StlHeader, SEEK_SET);
+    if (::fseek(fp, sizeof_StlHeader, SEEK_SET)!=0)
+    {
+        return ReadError;
+    }
 
     StlFacet facet;
     for (unsigned int i = 0; i < _expectNumFacets; ++i)

@@ -962,7 +962,7 @@ FltExportVisitor::handleDrawArrays( const osg::DrawArrays* da, const osg::Geomet
 void
 FltExportVisitor::handleDrawArrayLengths( const osg::DrawArrayLengths* dal, const osg::Geometry& geom, const osg::Geode& geode )
 {
-    if (!da;)
+    if (!dal)
     {
         OSG_WARN<<"fltexp: Invalid DrawArrayLengths pointer"<<std::endl;
         return;

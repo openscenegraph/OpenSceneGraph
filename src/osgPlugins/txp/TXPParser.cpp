@@ -74,7 +74,10 @@ public:
 TXPParser::TXPParser():
     _archive(0),
     _currentTop(0),
+    _currentNode(0),
     _root(0),
+    _materialMap(0),
+    _models(0),
     _underBillboardSubgraph(false),
     _numBillboardLevels(0),
     _underLayerSubgraph(false),

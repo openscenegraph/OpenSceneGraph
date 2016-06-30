@@ -71,8 +71,7 @@ public:
             osg::Vec4Array* normal = generator->getNormalArray();
             osg::Vec4Array* tangent = generator->getTangentArray();
             osg::Vec4Array* tangent2 = generator->getBinormalArray();
-            osg::Vec4Array* finalTangent = dynamic_cast<osg::Vec4Array*>(generator->getTangentArray()
-                                                                                  ->clone(osg::CopyOp::DEEP_COPY_ALL));
+            osg::Vec4Array* finalTangent = osg::clone(generator->getTangentArray(), osg::CopyOp::DEEP_COPY_ALL);
             for (unsigned int i = 0; i < tangent->size(); i++) {
                 osg::Vec3 n = osg::Vec3((*normal)[i][0],
                                         (*normal)[i][1],

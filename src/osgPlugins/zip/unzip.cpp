@@ -4188,7 +4188,14 @@ void EnsureDirectory(const TCHAR *rootdir, const TCHAR *dir)
     size_t len=_tcslen(rd);
     if (len>0 && (rd[len-1]=='/' || rd[len-1]=='\\')) rd[len-1]=0;
 #ifdef ZIP_STD
-    if (!FileExists(rd)) lumkdir(rd);
+    if (!FileExists(rd))
+    {
+        if (lumkdir(rd)<0)
+        {
+            // mkdir failed
+            return;
+        }
+    }
 #else
     if (!FileExists(rd)) CreateDirectory(rd,0);
 #endif

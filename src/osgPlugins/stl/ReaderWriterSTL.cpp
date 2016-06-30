@@ -495,7 +495,13 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     if (!isBinary)
     {
         fclose(fp);
+
         fp = osgDB::fopen(fileName.c_str(), "r");
+
+        if (!fp)
+        {
+            return ReadResult::FILE_NOT_FOUND;
+        }
     }
 
     osg::ref_ptr<osg::Group> group = new osg::Group;

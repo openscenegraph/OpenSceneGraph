@@ -197,7 +197,9 @@ typedef struct tm_unz_s
 // some windows<->linux portability things
 #ifdef ZIP_STD
 DWORD GetFilePosU(HANDLE hfout)
-{ struct stat st; fstat(FILENO(hfout),&st);
+{
+  struct stat st;
+  if (fstat(FILENO(hfout),&st)<0) return 0xFFFFFFFF;
   if ((st.st_mode&S_IFREG)==0) return 0xFFFFFFFF;
   return ftell(hfout);
 }

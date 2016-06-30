@@ -132,8 +132,10 @@ namespace osgDot {
         osg::Node* child = node.getChild( i );
         //handleNodeAndTraverse( *child );
         int id2;
-        getOrCreateId( child, id2 );
-        handle( node, *child, id, id2 );
+        if (getOrCreateId( child, id2 ))
+        {
+            handle( node, *child, id, id2 );
+        }
       }
 
     }

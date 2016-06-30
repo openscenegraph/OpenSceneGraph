@@ -4230,7 +4230,14 @@ void EnsureDirectory(const TCHAR *rootdir, const TCHAR *dir)
 
   cd[MAX_PATH-1]=0;
 #ifdef ZIP_STD
-  if (!FileExists(cd)) lumkdir(cd);
+  if (!FileExists(cd))
+  {
+    if (lumkdir(cd)<0)
+    {
+        // mkdir failed
+        return;
+    }
+  }
 #else
   if (!FileExists(cd))
   { CreateDirectory(cd,0);

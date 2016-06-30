@@ -172,7 +172,7 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
         return NULL;
     }
 
-    if (read(file_fd, mapbase, st.st_size)==0)
+    if (read(file_fd, mapbase, st.st_size) != st.st_size)
     {
         close (file_fd);
         if (mapbase) free(mapbase);

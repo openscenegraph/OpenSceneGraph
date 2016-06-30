@@ -407,7 +407,10 @@ bool fileComesFromMagics(FILE *fp, osg::Vec4& magicsColor)
     size_t bytes_read = fread((void*) &header, sizeof(header), 1, fp);
     if (bytes_read!=sizeof(header)) return false;
 
-    ::fseek(fp, sizeof_StlHeader, SEEK_SET);
+    if (::fseek(fp, sizeof_StlHeader, SEEK_SET)!=0)
+    {
+        return false;
+    }
 
     std::string magicsColorPattern ("COLOR=");
     std::string headerStr = std::string(header);

@@ -1026,6 +1026,13 @@ void ply_get_element_setup( PlyFile *plyfile, char *elem_name, int nprops,
 
     /* find information about the element */
     elem = find_element (plyfile, elem_name);
+    if (!elem)
+    {
+        fprintf ( stderr, "Warning:  Can't find in element '%s'\n", elem_name );
+        return;
+    }
+
+
     plyfile->which_elem = elem;
 
     /* deposit the property information into the element's description */

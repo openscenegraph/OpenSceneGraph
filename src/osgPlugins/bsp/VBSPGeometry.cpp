@@ -236,7 +236,7 @@ osg::Vec3 VBSPGeometry::getNormalFromEdges(int row, int col,
 
     // Scale the final normal according to how many triangle normals are
     // contributing
-    finalNormal *= (1.0f / (float)normalCount);
+    if (normalCount>0) finalNormal *= (1.0f / (float)normalCount);
 
     return finalNormal;
 }

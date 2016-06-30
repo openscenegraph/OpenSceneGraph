@@ -751,6 +751,13 @@ trpgPageManager::trpgPageManager()
     valid = false;
     // This should be sufficiently unlikely
     pagePt.x = -1e20;  pagePt.y = -1e20;
+
+    archive = 0;
+    lastLoad = None;
+    lastLod = 0;
+    lastTile = 0;
+    scale = 1.0;
+    majorVersion = minorVersion = 0;
 }
 
 trpgPageManager::~trpgPageManager()

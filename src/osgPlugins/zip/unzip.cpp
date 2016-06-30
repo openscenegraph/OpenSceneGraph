@@ -3155,6 +3155,10 @@ unzFile unzOpenInternal(LUFILE *fin)
   fin->initial_offset = 0; // since the zipfile itself is expected to handle this
 
   unz_s *s = (unz_s*)zmalloc(sizeof(unz_s));
+
+  // out of memory
+  if (!s) return NULL;
+
   *s=us;
   unzGoToFirstFile((unzFile)s);
   return (unzFile)s;

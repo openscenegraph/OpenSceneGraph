@@ -22,7 +22,7 @@ public:
     UnIndexMeshVisitor(): GeometryUniqueVisitor("UnIndexMeshVisitor")
     {}
 
-    void apply(osg::Geometry& geom);
+    void process(osg::Geometry& geom);
 };
 
 #endif

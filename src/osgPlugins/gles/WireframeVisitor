@@ -13,8 +13,6 @@
 #ifndef WIREFRAME_VISITOR
 #define WIREFRAME_VISITOR
 
-#include <set>
-
 #include <osg/ValueObject>
 #include <osg/Geode>
 #include <osg/Geometry>
@@ -38,36 +36,22 @@ public:
 
     void apply(osg::Geode& geode) {
         handleStateSet(geode);
-        for (unsigned int i = 0; i < geode.getNumDrawables(); i++) {
-            apply(*geode.getDrawable(i));
-        }
+        GeometryUniqueVisitor::apply(geode);
     }
 
-    void apply(osg::Drawable& drawable) {
-        osg::Geometry* geometry = drawable.asGeometry();
-        if (!geometry) {
-            return;
-        }
-        apply(*geometry);
-    }
-
-    void apply(osg::Geometry& geometry) {
-        if(_processed.find(&geometry) == _processed.end()) {
-            const unsigned int nbSourcePrimitives = geometry.getNumPrimitiveSets();
-            for(unsigned int i = 0 ; i < nbSourcePrimitives ; ++ i) {
-                osg::PrimitiveSet* primitive = geometry.getPrimitiveSet(i);
-                EdgeIndexor edges;
-                primitive->accept(edges);
-                if(!edges._indices.empty()) {
-                    osg::DrawElementsUInt* wireframe = new osg::DrawElementsUInt(osg::PrimitiveSet::LINES,
-                                                                                 edges._indices.begin(),
-                                                                                 edges._indices.end());
-                    wireframe->setUserValue("wireframe", true);
-                    geometry.getPrimitiveSetList().push_back(wireframe);
-                }
+    void process(osg::Geometry& geometry) {
+        const unsigned int nbSourcePrimitives = geometry.getNumPrimitiveSets();
+        for(unsigned int i = 0 ; i < nbSourcePrimitives ; ++ i) {
+            osg::PrimitiveSet* primitive = geometry.getPrimitiveSet(i);
+            EdgeIndexor edges;
+            primitive->accept(edges);
+            if(!edges._indices.empty()) {
+                osg::DrawElementsUInt* wireframe = new osg::DrawElementsUInt(osg::PrimitiveSet::LINES,
+                                                                             edges._indices.begin(),
+                                                                             edges._indices.end());
+                wireframe->setUserValue("wireframe", true);
+                geometry.getPrimitiveSetList().push_back(wireframe);
             }
-
-            _processed.insert(&geometry);
         }
     }
 
@@ -77,7 +61,6 @@ public:
         }
     }
 
-    std::set<osg::Geometry*> _processed;
     bool _inlined;
 };
 

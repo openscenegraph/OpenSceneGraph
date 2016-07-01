@@ -16,49 +16,66 @@
 #include <osg/Node>
 #include <algorithm> //std::max
 
-#include "AnimationVisitor"
+#include "AnimationCleanerVisitor"
+#include "RigAnimationVisitor"
+#include "AABBonBoneVisitor"
+#include "DisableAnimationVisitor"
 #include "BindPerVertexVisitor"
 #include "DetachPrimitiveVisitor"
 #include "DrawArrayVisitor"
 #include "GeometrySplitterVisitor"
 #include "IndexMeshVisitor"
 #include "PreTransformVisitor"
+#include "SmoothNormalVisitor"
 #include "TangentSpaceVisitor"
 #include "TriangleStripVisitor"
 #include "UnIndexMeshVisitor"
 #include "WireframeVisitor"
+#include "AABBonBoneVisitor"
+#include "AnimationCleanerVisitor"
+#include "MostInfluencedGeometryByBone"
+#include "LimitMorphTargetCount"
+#include "RigAttributesVisitor"
+#include "GeometryInspector"
 
 
 class OpenGLESGeometryOptimizer
 {
 public:
     OpenGLESGeometryOptimizer() :
+        _mode("all"),
         _useDrawArray(false),
         _disableTriStrip(false),
         _disableMergeTriStrip(false),
         _disablePreTransform(false),
-        _disablePostTransform(false),
+        _disableAnimation(false),
+        _enableAABBonBone(false),
         _triStripCacheSize(16),
         _triStripMinSize(2),
         _generateTangentSpace(false),
         _tangentUnit(0),
         _maxIndexValue(65535),
-        _wireframe("")
+        _wireframe(""),
+        _maxMorphTarget(0),
+        _exportNonGeometryDrawables(false)
     {}
 
     // run the optimizer
     osg::Node* optimize(osg::Node& node);
 
     // handle options
+    void setMode(const std::string& mode) { _mode = mode; }
     void setUseDrawArray(bool s) { _useDrawArray = s; }
 
     void setDisableTriStrip(bool s) { _disableTriStrip = s; }
     void setDisableMergeTriStrip(bool s) { _disableMergeTriStrip = s; }
     void setDisablePreTransform(bool s) { _disablePreTransform = s; }
-    void setDisablePostTransform(bool s) { _disablePostTransform = s; }
+    void setDisableAnimation(bool s) { _disableAnimation = s; }
+    void setDisableAnimationCleaning(bool s) { _disableAnimationCleaning = s; }
+    void setEnableAABBonBone(bool s)  { _enableAABBonBone = s; }
     void setTripStripCacheSize(unsigned int size) { _triStripCacheSize = size; }
     void setTripStripMinSize(unsigned int size) { _triStripMinSize = std::max<unsigned int>(size, 2); }
-
+    void setExportNonGeometryDrawables(bool value) { _exportNonGeometryDrawables = value; }
     void setTexCoordChannelForTangentSpace(int uv) {
         _tangentUnit = uv;
         _generateTangentSpace = true;
@@ -72,11 +89,64 @@ public:
             setDisableTriStrip(true);
         }
     }
+    void setMaxMorphTarget(unsigned int maxMorphTarget) {
+        _maxMorphTarget = maxMorphTarget;
+    }
 
 protected:
     void makeAnimation(osg::Node* node) {
-        AnimationVisitor anim;
+        makeRigAnimation(node);
+        if(_disableAnimation) {
+            makeDisableAnimation(node);
+        }
+        else {
+            if(!_disableAnimationCleaning) {
+                makeCleanAnimation(node);
+            }
+            makeLimitMorphTargetCount(node);
+            makeAABBonBone(node, _enableAABBonBone);
+            makeMostInfluencedGeometryByBone(node);
+        }
+    }
+
+    void makeDisableAnimation(osg::Node* node) {
+        DisableAnimationVisitor disabler;
+        node->accept(disabler);
+    }
+
+    void makeCleanAnimation(osg::Node* node) {
+        AnimationCleanerVisitor cleaner;
+        node->accept(cleaner);
+        cleaner.clean();
+    }
+
+    void makeRigAnimation(osg::Node* node) {
+        RigAnimationVisitor anim;
         node->accept(anim);
+    }
+
+    void makeAABBonBone(osg::Node* node, bool enableAABBonBone) {
+        FindSkeletons fs;
+        node->accept(fs);
+
+       for(unsigned int i = 0; i < fs._skls.size(); i++) {
+           osgAnimation::Skeleton * skl = fs._skls[i];
+           ComputeAABBOnBoneVisitor cabv(enableAABBonBone);
+           skl->accept(cabv);
+           cabv.computeBoundingBoxOnBones();
+       }
+    }
+
+    void makeMostInfluencedGeometryByBone(osg::Node *node) {
+        CollectBonesAndRigGeometriesVisitor collector;
+        node->accept(collector);
+        ComputeMostInfluencedGeometryByBone computor(collector.getRigGeometrySet(), collector.getBoneSet());
+        computor.compute();
+    }
+
+    void makeLimitMorphTargetCount(osg::Node* node) {
+        LimitMorphTargetCount limit(_maxMorphTarget);
+        node->accept(limit);
     }
 
     void makeWireframe(osg::Node* node) {
@@ -94,13 +164,18 @@ protected:
         node->accept(indexer);
     }
 
+    void makeSmoothNormal(osg::Node* node) {
+        SmoothNormalVisitor smoother(osg::PI / 4.f, true);
+        node->accept(smoother);
+    }
+
     void makeTangentSpace(osg::Node* node) {
         TangentSpaceVisitor tangent(_tangentUnit);
         node->accept(tangent);
     }
 
     void makeSplit(osg::Node* node) {
-        GeometrySplitterVisitor splitter(_maxIndexValue, _disablePostTransform);
+        GeometrySplitterVisitor splitter(_maxIndexValue, _exportNonGeometryDrawables );
         node->accept(splitter);
     }
 
@@ -124,12 +199,25 @@ protected:
         node->accept(detacher);
     }
 
-    bool _useDrawArray;
+    void makeBonesAndWeightOnRigGeometry(osg::Node* node) {
+        RigAttributesVisitor rigger;
+        node->accept(rigger);
+    }
 
+    void makeInspectGeometry(osg::Node* node) {
+        GeometryInspector inspector;
+        node->accept(inspector);
+    }
+
+
+    std::string _mode;
+    bool _useDrawArray;
     bool _disableTriStrip;
     bool _disableMergeTriStrip;
     bool _disablePreTransform;
-    bool _disablePostTransform;
+    bool _disableAnimation;
+    bool _disableAnimationCleaning;
+    bool _enableAABBonBone;
     unsigned int _triStripCacheSize;
     unsigned int _triStripMinSize;
 
@@ -138,6 +226,10 @@ protected:
 
     unsigned int _maxIndexValue;
     std::string _wireframe;
+
+    unsigned int _maxMorphTarget;
+
+    bool _exportNonGeometryDrawables;
 };
 
 #endif

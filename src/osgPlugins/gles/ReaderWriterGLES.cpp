@@ -36,32 +36,42 @@ class ReaderWriterGLES : public osgDB::ReaderWriter
 public:
 
      struct OptionsStruct {
+         std::string glesMode;
          std::string enableWireframe;
          bool generateTangentSpace;
          int tangentSpaceTextureUnit;
          bool disableTriStrip;
          bool disableMergeTriStrip;
          bool disablePreTransform;
-         bool disablePostTransform;
+         bool disableAnimation;
+         bool disableAnimationCleaning;
+         bool enableAABBonBone;
          unsigned int triStripCacheSize;
          unsigned int triStripMinSize;
          bool useDrawArray;
          bool disableIndex;
          unsigned int maxIndexValue;
+         unsigned int maxMorphTarget;
+         bool exportNonGeometryDrawables;
 
          OptionsStruct() {
+             glesMode = "all";
              enableWireframe = "";
              generateTangentSpace = false;
              tangentSpaceTextureUnit = 0;
              disableTriStrip = false;
              disableMergeTriStrip = false;
              disablePreTransform = false;
-             disablePostTransform = false;
+             disableAnimation = false;
+             disableAnimationCleaning = false;
+             enableAABBonBone = false;
              triStripCacheSize = 16;
              triStripMinSize = 2;
              useDrawArray = false;
              disableIndex = false;
              maxIndexValue = 0;
+             maxMorphTarget = 0;
+             exportNonGeometryDrawables = false;
          }
     };
 
@@ -70,6 +80,7 @@ public:
     {
         supportsExtension("gles","OpenGL ES optimized format");
 
+        supportsOption("glesMode[=all|animation|geometry]","run all optimizations (default) or simply animation/geometry.");
         supportsOption("enableWireframe[=inline]","create a wireframe geometry for each triangles geometry. The wire geometry will be stored along the solid geometry if 'inline' is specified.");
         supportsOption("generateTangentSpace","Build tangent space to each geometry");
         supportsOption("tangentSpaceTextureUnit=<unit>","Specify on which texture unit normal map is");
@@ -78,17 +89,21 @@ public:
         supportsOption("disableMergeTriStrip","disable the merge of all tristrip into one");
         supportsOption("disableTriStrip","disable generation of tristrip");
         supportsOption("disablePreTransform","disable pre-transform of geometries after split");
-        supportsOption("disablePostTransform","disable post-transform of geometries (called during geometry splitting)");
+        supportsOption("disableAnimation","disable animation support");
+        supportsOption("disableAnimationCleaning","disable animations/channels cleaning");
+        supportsOption("enableAABBonBone","Create AABB on bone for rigGeometry (Adds a Geometry in the graph)");
         supportsOption("useDrawArray","prefer drawArray instead of drawelement with split of geometry");
         supportsOption("disableIndex","Do not index the geometry");
         supportsOption("maxIndexValue=<int>","set the maximum index value (first index is 0)");
+        supportsOption("maxMorphTarget=<int>", "set the maximum morph target in morph geometry (no limit by default)");
+        supportsOption("exportNonGeometryDrawables", "export non geometry drawables, right now only text 2D supported" );
     }
 
     virtual const char* className() const { return "GLES Optimizer"; }
 
     virtual osg::Node* optimizeModel(const Node& node, const OptionsStruct& options) const
     {
-        osg::Node* model = osg::clone(&node);
+        osg::ref_ptr<osg::Node> model = osg::clone(&node);
 
         if (options.disableIndex) {
             UnIndexMeshVisitor unindex;
@@ -97,24 +112,29 @@ public:
         else {
             OpenGLESGeometryOptimizer optimizer;
 
+            optimizer.setMode(options.glesMode);
             optimizer.setUseDrawArray(options.useDrawArray);
             optimizer.setTripStripCacheSize(options.triStripCacheSize);
             optimizer.setTripStripMinSize(options.triStripMinSize);
             optimizer.setDisableTriStrip(options.disableTriStrip);
             optimizer.setDisableMergeTriStrip(options.disableMergeTriStrip);
             optimizer.setDisablePreTransform(options.disablePreTransform);
-            optimizer.setDisablePostTransform(options.disablePostTransform);
+            optimizer.setDisableAnimation(options.disableAnimation);
+            optimizer.setDisableAnimationCleaning(options.disableAnimationCleaning);
+            optimizer.setEnableAABBonBone(options.enableAABBonBone);
             optimizer.setWireframe(options.enableWireframe);
+            optimizer.setExportNonGeometryDrawables(options.exportNonGeometryDrawables);
             if (options.generateTangentSpace) {
                 optimizer.setTexCoordChannelForTangentSpace(options.tangentSpaceTextureUnit);
             }
             if(options.maxIndexValue) {
                 optimizer.setMaxIndexValue(options.maxIndexValue);
             }
+            optimizer.setMaxMorphTarget(options.maxMorphTarget);
 
             model = optimizer.optimize(*model);
         }
-        return model;
+        return model.release();
     }
 
 
@@ -201,6 +221,12 @@ public:
                     pre_equals = opt;
                 }
 
+                if (pre_equals == "glesMode")
+                {
+                    if(post_equals == "animation" || post_equals == "geometry") {
+                        localOptions.glesMode = post_equals;
+                    }
+                }
                 if (pre_equals == "enableWireframe")
                 {
                     if(post_equals == "inline") {
@@ -222,9 +248,17 @@ public:
                 {
                     localOptions.disablePreTransform = true;
                 }
-                if (pre_equals == "disablePostTransform")
+                if (pre_equals == "disableAnimation")
                 {
-                    localOptions.disablePostTransform = true;
+                    localOptions.disableAnimation = true;
+                }
+                if (pre_equals == "disableAnimationCleaning")
+                {
+                    localOptions.disableAnimationCleaning = true;
+                }
+                if (pre_equals == "enableAABBonBone")
+                {
+                    localOptions.enableAABBonBone = true;
                 }
                 if (pre_equals == "disableTriStrip")
                 {
@@ -238,7 +272,10 @@ public:
                 {
                     localOptions.disableIndex = true;
                 }
-
+                if (pre_equals == "exportNonGeometryDrawables")
+                {
+                    localOptions.exportNonGeometryDrawables = true;
+                }
                 if (post_equals.length() > 0) {
                     if (pre_equals == "tangentSpaceTextureUnit") {
                         localOptions.tangentSpaceTextureUnit = atoi(post_equals.c_str());
@@ -251,6 +288,9 @@ public:
                     }
                     if (pre_equals == "maxIndexValue") {
                         localOptions.maxIndexValue = atoi(post_equals.c_str());
+                    }
+                    if(pre_equals == "maxMorphTarget") {
+                        localOptions.maxMorphTarget = atoi(post_equals.c_str());
                     }
                 }
             }

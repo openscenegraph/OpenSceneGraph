@@ -22,7 +22,7 @@ public:
     BindPerVertexVisitor(): GeometryUniqueVisitor("BindPerVertexVisitor")
     {}
 
-    void apply(osg::Geometry& geometry) {
+    void process(osg::Geometry& geometry) {
         if (geometry.getNormalArray() && geometry.getNormalBinding() != osg::Geometry::BIND_PER_VERTEX) {
             bindPerVertex(geometry.getNormalArray(),
                           geometry.getNormalBinding(),
@@ -50,25 +50,90 @@ public:
                           geometry.getPrimitiveSetList());
             geometry.setFogCoordBinding(osg::Geometry::BIND_PER_VERTEX);
         }
-
-        setProcessed(&geometry);
     };
 
 protected:
     void bindPerVertex(osg::Array* src,
                        osg::Geometry::AttributeBinding fromBinding,
                        osg::Geometry::PrimitiveSetList& primitives) {
-        if (doConvert<osg::Vec3Array>(src, fromBinding, primitives))
+        if (doConvert<osg::ByteArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::ShortArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::IntArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::UByteArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::UShortArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::UIntArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::FloatArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::DoubleArray>(src, fromBinding, primitives))
             return;
 
         if (doConvert<osg::Vec2Array>(src, fromBinding, primitives))
             return;
-
+        if (doConvert<osg::Vec3Array>(src, fromBinding, primitives))
+            return;
         if (doConvert<osg::Vec4Array>(src, fromBinding, primitives))
             return;
 
+        if (doConvert<osg::Vec2bArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::Vec3bArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::Vec4bArray>(src, fromBinding, primitives))
+            return;
+
+        if (doConvert<osg::Vec2sArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::Vec3sArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::Vec4sArray>(src, fromBinding, primitives))
+            return;
+
+        if (doConvert<osg::Vec2iArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::Vec3iArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::Vec4iArray>(src, fromBinding, primitives))
+            return;
+
+        if (doConvert<osg::Vec2dArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::Vec3dArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::Vec4dArray>(src, fromBinding, primitives))
+            return;
+
+        if (doConvert<osg::Vec2ubArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::Vec3ubArray>(src, fromBinding, primitives))
+            return;
         if (doConvert<osg::Vec4ubArray>(src, fromBinding, primitives))
             return;
+
+        if (doConvert<osg::Vec2usArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::Vec3usArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::Vec4usArray>(src, fromBinding, primitives))
+            return;
+
+        if (doConvert<osg::Vec2uiArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::Vec3uiArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::Vec4uiArray>(src, fromBinding, primitives))
+            return;
+
+        if (doConvert<osg::MatrixfArray>(src, fromBinding, primitives))
+            return;
+        if (doConvert<osg::MatrixdArray>(src, fromBinding, primitives))
+            return;
+
     }
 
     template <class T>

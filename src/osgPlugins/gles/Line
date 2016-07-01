@@ -1,0 +1,29 @@
+#ifndef GLES_LINE
+#define GLES_LINE
+
+
+class Line {
+public:
+    Line(unsigned int a, unsigned int b) {
+        _a = std::min<unsigned int>(a, b);
+        _b = std::max<unsigned int>(a, b);
+    }
+
+    bool operator<(const Line& e) {
+        return _a < e._a || (_a == e._a && _b < e._b);
+    }
+
+    unsigned int _a, _b;
+};
+
+
+struct LineCompare {
+    bool operator()(const Line& lhs, const Line& rhs) const {
+        return lhs._a < rhs._a || (lhs._a == rhs._a && lhs._b < rhs._b);
+    }
+};
+
+
+typedef std::set<Line, LineCompare> LineSet;
+
+#endif

@@ -1,0 +1,340 @@
+#ifndef MESH_GRAPH
+#define MESH_GRAPH
+
+#include <vector>
+#include <deque>
+#include <set>
+#include <limits>
+#include <cmath>
+#include <algorithm>
+
+#include <osg/Array>
+#include <osg/TriangleIndexFunctor>
+#include <osg/Geometry>
+
+class Vertex;
+class Triangle;
+typedef std::vector<unsigned int> IndexVector;
+typedef std::deque<unsigned int> IndexDeque;
+typedef std::set<unsigned int> IndexSet;
+typedef std::set<Vertex>::const_iterator VertexIterator;
+typedef std::vector<Triangle> TriangleVector;
+typedef std::vector< osg::ref_ptr<osg::Array> > ArrayVector;
+
+
+inline float clamp(float value, float minValue, float maxValue) {
+    return std::min(maxValue, std::max(minValue, value));
+}
+
+
+class Triangle {
+public:
+    unsigned int _v[3];
+    osg::Vec3 _normal;
+    float _area;
+
+    Triangle(unsigned int v1, unsigned int v2, unsigned int v3, const osg::Vec3& normal)
+    {
+        _v[0] = v1; _v[1] = v2; _v[2] = v3;
+        _area = normal.length();
+        _normal = normal / _area;
+    }
+
+    Triangle unique(const std::vector<unsigned int>& toUnique) const {
+        return Triangle(toUnique[v1()], toUnique[v2()], toUnique[v3()], _normal);
+    }
+
+    bool operator==(const Triangle& other) const {
+        return v1() == other.v1() &&
+               v2() == other.v2() &&
+               v3() == other.v3();
+    }
+
+    inline unsigned int& v1() {
+        return _v[0];
+    }
+
+    inline unsigned int v1() const {
+        return _v[0];
+    }
+
+    inline unsigned int& v2() {
+        return _v[1];
+    }
+
+    inline unsigned int v2() const {
+        return _v[1];
+    }
+
+    inline unsigned int& v3() {
+        return _v[2];
+    }
+
+    inline unsigned int v3() const {
+        return _v[2];
+    }
+
+    inline unsigned int operator[](unsigned int i) const {
+        return _v[i];
+    }
+
+    bool hasEdge(unsigned int e1, unsigned int e2) const {
+        return hasVertex(e1) && hasVertex(e2);
+    }
+
+    inline bool hasVertex(unsigned int vertex) const {
+        return v1() == vertex || v2() == vertex || v3() == vertex;
+    }
+
+    bool intersect(const Triangle& other) const {
+        return other.hasEdge(v1(), v2()) ||
+                other.hasEdge(v1(), v3()) ||
+                other.hasEdge(v2(), v3());
+    }
+
+    inline float angleCosine(const Triangle& other) const {
+        // Triangle._normal is normalized so no need to divide by lengthes
+        return (_normal * other._normal);
+    }
+
+    inline float angle(const Triangle& other) const {
+        return acos(clamp(angleCosine(other), -1.f, 1.f));
+    }
+};
+
+
+class Edge {
+public:
+    unsigned int _v[2];
+
+    Edge(unsigned int e1, unsigned int e2) {
+        _v[0] = e1;
+        _v[1] = e2;
+    }
+
+    bool operator==(const Edge& other) const {
+        return v1() == other.v1() && v2() == other.v2();
+    }
+
+    unsigned int v1() const
+    { return _v[0]; }
+
+    unsigned int& v1()
+    { return _v[0]; }
+
+    unsigned int v2() const
+    { return _v[1]; }
+
+    unsigned int& v2()
+    { return _v[1]; }
+};
+
+
+class Vertex {
+public:
+    Vertex(const osg::Vec3 position): _position(position),
+                                      _index(std::numeric_limits<unsigned int>::max())
+    {}
+
+    bool operator<(const Vertex& other) const {
+        return _position < other._position;
+    }
+
+    const osg::Vec3 _position;
+    mutable unsigned int _index; // not used in operator<
+};
+
+
+class TriangleMeshGraph {
+protected:
+    class TriangleRegistror {
+    public:
+        void operator() (unsigned int p1, unsigned int p2, unsigned int p3) {
+            if (p1 == p2 || p2 == p3 || p1 == p3) {
+                return;
+            }
+            _graph->addTriangle(p1, p2, p3);
+        }
+
+        void setGraph(TriangleMeshGraph* graph) {
+            _graph = graph;
+        }
+
+    protected:
+        TriangleMeshGraph* _graph;
+    };
+
+
+public:
+    TriangleMeshGraph(const osg::Geometry& geometry, bool comparePosition=true):
+        _geometry(geometry),
+        _positions(dynamic_cast<const osg::Vec3Array*>(geometry.getVertexArray())),
+        _comparePosition(comparePosition)
+    {
+        unsigned int nbVertex = _positions->getNumElements();
+        _unique.resize(nbVertex, std::numeric_limits<unsigned int>::max());
+        _vertexTriangles.resize(nbVertex, IndexVector());
+        build();
+    }
+
+    VertexIterator begin() const {
+        return _vertices.begin();
+    }
+
+    VertexIterator end() const {
+        return _vertices.end();
+    }
+
+    void setComparePosition(bool use) {
+        _comparePosition = use;
+    }
+
+    unsigned int getNumTriangles() const {
+        return _triangles.size();
+    }
+
+    const Triangle& triangle(unsigned int index) const {
+        return _triangles[index];
+    }
+
+    Triangle& triangle(unsigned int index) {
+        return _triangles[index];
+    }
+
+    void addTriangle(unsigned int v1, unsigned int v2, unsigned int v3) {
+        osg::Vec3f p1 = (*_positions)[v1],
+                   p2 = (*_positions)[v2],
+                   p3 = (*_positions)[v3];
+
+        osg::Vec3f cross = (p2 - p1) ^ (p3 - p1);
+        if(cross.length()) {
+            registerTriangleForVertex(_triangles.size(), v1, unify(v1));
+            registerTriangleForVertex(_triangles.size(), v2, unify(v2));
+            registerTriangleForVertex(_triangles.size(), v3, unify(v3));
+            _triangles.push_back(Triangle(v1, v2, v3, cross));
+        }
+    }
+
+    unsigned int unify(unsigned int i) {
+        if(_unique[i] == std::numeric_limits<unsigned int>::max()) {
+            if(_comparePosition) {
+                std::pair<std::set<Vertex>::iterator, bool> result = _vertices.insert(Vertex((*_positions)[i]));
+                if(result.second) { // new element
+                    result.first->_index = i;
+                }
+                _unique[i] = result.first->_index;
+            }
+            else {
+                _unique[i] = i;
+            }
+        }
+        return _unique[i];
+    }
+
+    void add(unsigned int newIndex, unsigned int oldIndex) {
+        if(newIndex >= _unique.size()) {
+            _unique.resize(newIndex + 1);
+        }
+        _unique[newIndex] = _unique[oldIndex];
+    }
+
+    const IndexVector& triangles(unsigned int index) const {
+        return _vertexTriangles[index];
+    }
+
+    std::vector<IndexVector> vertexOneRing(unsigned int index, const float creaseAngle) const {
+        std::vector<IndexVector> oneRing;
+
+        IndexDeque triangles(_vertexTriangles[index].begin(), _vertexTriangles[index].end());
+
+        while(!triangles.empty()) {
+            IndexDeque cluster;
+            cluster.push_front(triangles.front());
+            triangles.pop_front();
+
+            IndexDeque::iterator neighbor;
+            // expand from front
+            while(!triangles.empty()) {
+                neighbor = findNeighbor(triangles, cluster.front(), creaseAngle);
+                if(neighbor == triangles.end()) {
+                    break;
+                }
+                cluster.push_front(*neighbor);
+                triangles.erase(neighbor);
+            }
+
+            // expand from back
+            while(!triangles.empty()) {
+                neighbor = findNeighbor(triangles, cluster.back(), creaseAngle);
+                if(neighbor == triangles.end()) {
+                    break;
+                }
+                cluster.push_back(*neighbor);
+                triangles.erase(neighbor);
+            }
+            oneRing.push_back(IndexVector(cluster.begin(), cluster.end()));
+        }
+        return oneRing;
+    }
+
+    IndexVector triangleNeighbors(unsigned int index) const {
+        IndexVector neighbors;
+        const Triangle& t = _triangles[index];
+
+        for(unsigned int i = 0 ; i < 3 ; ++ i) {
+            const IndexVector& others = triangles(t[i]);
+            for(IndexVector::const_iterator other = others.begin() ; other != others.end() ; ++ other) {
+                if(*other == index) {
+                    continue;
+                }
+                else if (t.intersect(_triangles[*other])){
+                    neighbors.push_back(*other);
+                }
+            }
+        }
+
+        return neighbors;
+    }
+
+protected:
+    void build() {
+        osg::TriangleIndexFunctor<TriangleRegistror> functor;
+        functor.setGraph(this);
+        _geometry.accept(functor);
+    }
+
+    inline void registerTriangleForVertex(unsigned int triangle, unsigned int vertex, unsigned int deduplicate) {
+        _vertexTriangles[vertex].push_back(triangle);
+        if(vertex != deduplicate) {
+            _vertexTriangles[deduplicate].push_back(triangle);
+        }
+    }
+
+    IndexDeque::iterator findNeighbor(IndexDeque& candidates, const unsigned int index, const float creaseAngle) const {
+        Triangle triangle = _triangles[index].unique(_unique);
+
+        for(IndexDeque::iterator candidate = candidates.begin() ; candidate != candidates.end() ; ++ candidate) {
+            Triangle other = _triangles[*candidate].unique(_unique);
+
+            if(triangle.intersect(other) && isSmoothEdge(triangle, other, creaseAngle)) {
+                return candidate;
+            }
+        }
+        return candidates.end();
+    }
+
+    inline bool isSmoothEdge(const Triangle& triangle1, const Triangle& triangle2, const float creaseAngle) const {
+        return (creaseAngle == 0.f ? true : triangle1.angle(triangle2) < creaseAngle);
+    }
+
+    const osg::Geometry& _geometry;
+    const osg::Vec3Array* _positions;
+    bool _comparePosition;
+    std::set<Vertex> _vertices;
+    IndexVector _unique;
+    std::vector<IndexVector> _vertexTriangles;
+    TriangleVector _triangles;
+};
+
+
+#endif

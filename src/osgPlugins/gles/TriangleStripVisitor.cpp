@@ -2,10 +2,11 @@
 #include "TriangleStripVisitor"
 
 
-void TriangleStripVisitor::apply(osg::Geometry& geometry) {
+void TriangleStripVisitor::process(osg::Geometry& geometry) {
     osgUtil::TriStripVisitor tristrip;
     tristrip.setCacheSize(_cacheSize);
     tristrip.setMinStripSize(_minSize);
+    tristrip.setIndexMesh(false);
     tristrip.stripify(geometry);
 
     // merge stritrip to one using degenerated triangles as glue

@@ -4152,17 +4152,17 @@ ZRESULT TUnzip::Get(int index,ZIPENTRY *ze)
     bool hasctime = (flags&4)!=0;
     epos+=5;
     if (hasmtime)
-    { lutime_t mtime = ((extra[epos+0])<<0) | ((extra[epos+1])<<8) |((extra[epos+2])<<16) | ((extra[epos+3])<<24);
+    { lutime_t mtime = ((static_cast<lutime_t>(extra[epos+0]))<<0) | ((static_cast<lutime_t>(extra[epos+1]))<<8) |((static_cast<lutime_t>(extra[epos+2]))<<16) | ((static_cast<lutime_t>(extra[epos+3]))<<24);
 	  epos+=4;
       ze->mtime = timet2filetime(mtime);
     }
     if (hasatime)
-    { lutime_t atime = ((extra[epos+0])<<0) | ((extra[epos+1])<<8) |((extra[epos+2])<<16) | ((extra[epos+3])<<24);
+    { lutime_t atime = ((static_cast<lutime_t>(extra[epos+0]))<<0) | ((static_cast<lutime_t>(extra[epos+1]))<<8) |((static_cast<lutime_t>(extra[epos+2]))<<16) | ((static_cast<lutime_t>(extra[epos+3]))<<24);
       epos+=4;
       ze->atime = timet2filetime(atime);
     }
     if (hasctime)
-    { lutime_t ctime = ((extra[epos+0])<<0) | ((extra[epos+1])<<8) |((extra[epos+2])<<16) | ((extra[epos+3])<<24);
+    { lutime_t ctime = ((static_cast<lutime_t>(extra[epos+0]))<<0) | ((static_cast<lutime_t>(extra[epos+1]))<<8) |((static_cast<lutime_t>(extra[epos+2]))<<16) | ((static_cast<lutime_t>(extra[epos+3]))<<24);
       epos+=4;
       ze->ctime = timet2filetime(ctime);
     }

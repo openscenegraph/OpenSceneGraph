@@ -80,7 +80,7 @@ namespace glesUtil {
         VertexList* vertices;
         TriangleList* triangles;
         int triIdx;
-        TriangleAddOperator() : vertices(0), triIdx(0) {}
+        TriangleAddOperator() : vertices(0), triangles(0), triIdx(0) {}
 
         void operator() (unsigned int p1, unsigned int p2, unsigned int p3)
         {

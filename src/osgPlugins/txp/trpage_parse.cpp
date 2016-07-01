@@ -40,6 +40,7 @@ trpgr_Token::trpgr_Token()
 {
     cb = NULL;
     destroy = true;
+    Token = 0;
 }
 trpgr_Token::~trpgr_Token()
 {

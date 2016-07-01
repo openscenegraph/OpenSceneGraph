@@ -208,7 +208,7 @@ static osg::ref_ptr<rawImageRec> RawImageOpen(std::istream& fin)
     raw->rowSize = 0;
     raw->bpc = (raw->type & 0x00FF);
 
-    raw->tmp = new unsigned char [raw->sizeX*256*raw->bpc];
+    raw->tmp = new unsigned char [static_cast<unsigned int>(raw->sizeX) * 256 * static_cast<unsigned int>(raw->bpc)];
     if (raw->tmp == NULL )
     {
         OSG_FATAL<< "Out of memory!"<< std::endl;
@@ -217,7 +217,7 @@ static osg::ref_ptr<rawImageRec> RawImageOpen(std::istream& fin)
 
     if( raw->sizeZ >= 1 )
     {
-        if( (raw->tmpR = new unsigned char [raw->sizeX*raw->bpc]) == NULL )
+        if( (raw->tmpR = new unsigned char [static_cast<unsigned int>(raw->sizeX) * static_cast<unsigned int>(raw->bpc)]) == NULL )
         {
             OSG_FATAL<< "Out of memory!"<< std::endl;
             return NULL;
@@ -225,7 +225,7 @@ static osg::ref_ptr<rawImageRec> RawImageOpen(std::istream& fin)
     }
     if( raw->sizeZ >= 2 )
     {
-        if( (raw->tmpG = new unsigned char [raw->sizeX*raw->bpc]) == NULL )
+        if( (raw->tmpG = new unsigned char [static_cast<unsigned int>(raw->sizeX) * static_cast<unsigned int>(raw->bpc)]) == NULL )
         {
             OSG_FATAL<< "Out of memory!"<< std::endl;
             return NULL;
@@ -233,7 +233,7 @@ static osg::ref_ptr<rawImageRec> RawImageOpen(std::istream& fin)
     }
     if( raw->sizeZ >= 3 )
     {
-        if( (raw->tmpB = new unsigned char [raw->sizeX*raw->bpc]) == NULL )
+        if( (raw->tmpB = new unsigned char [static_cast<unsigned int>(raw->sizeX) * static_cast<unsigned int>(raw->bpc)]) == NULL )
         {
             OSG_FATAL<< "Out of memory!"<< std::endl;
             return NULL;
@@ -241,7 +241,7 @@ static osg::ref_ptr<rawImageRec> RawImageOpen(std::istream& fin)
     }
     if (raw->sizeZ >= 4)
     {
-        if( (raw->tmpA = new unsigned char [raw->sizeX*raw->bpc]) == NULL )
+        if( (raw->tmpA = new unsigned char [static_cast<unsigned int>(raw->sizeX) * static_cast<unsigned int>(raw->bpc)]) == NULL )
         {
             OSG_FATAL<< "Out of memory!"<< std::endl;
             return NULL;
@@ -250,7 +250,7 @@ static osg::ref_ptr<rawImageRec> RawImageOpen(std::istream& fin)
 
     if ((raw->type & 0xFF00) == 0x0100)
     {
-        unsigned int ybyz = raw->sizeY * raw->sizeZ;
+        unsigned int ybyz = static_cast<unsigned int>(raw->sizeY) * static_cast<unsigned int>(raw->sizeZ);
         if ( (raw->rowStart = new GLuint [ybyz]) == NULL )
         {
             OSG_FATAL<< "Out of memory!"<< std::endl;

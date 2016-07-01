@@ -37,6 +37,7 @@
 
 using namespace osg;
 
+typedef unsigned int size_pos;
 
 struct rawImageRec : public osg::Referenced
 {
@@ -208,7 +209,7 @@ static osg::ref_ptr<rawImageRec> RawImageOpen(std::istream& fin)
     raw->rowSize = 0;
     raw->bpc = (raw->type & 0x00FF);
 
-    raw->tmp = new unsigned char [static_cast<unsigned int>(raw->sizeX) * 256 * static_cast<unsigned int>(raw->bpc)];
+    raw->tmp = new unsigned char [static_cast<size_pos>(raw->sizeX) * 256 * static_cast<size_pos>(raw->bpc)];
     if (raw->tmp == NULL )
     {
         OSG_FATAL<< "Out of memory!"<< std::endl;
@@ -217,7 +218,7 @@ static osg::ref_ptr<rawImageRec> RawImageOpen(std::istream& fin)
 
     if( raw->sizeZ >= 1 )
     {
-        if( (raw->tmpR = new unsigned char [static_cast<unsigned int>(raw->sizeX) * static_cast<unsigned int>(raw->bpc)]) == NULL )
+        if( (raw->tmpR = new unsigned char [static_cast<size_pos>(raw->sizeX) * static_cast<size_pos>(raw->bpc)]) == NULL )
         {
             OSG_FATAL<< "Out of memory!"<< std::endl;
             return NULL;
@@ -225,7 +226,7 @@ static osg::ref_ptr<rawImageRec> RawImageOpen(std::istream& fin)
     }
     if( raw->sizeZ >= 2 )
     {
-        if( (raw->tmpG = new unsigned char [static_cast<unsigned int>(raw->sizeX) * static_cast<unsigned int>(raw->bpc)]) == NULL )
+        if( (raw->tmpG = new unsigned char [static_cast<size_pos>(raw->sizeX) * static_cast<size_pos>(raw->bpc)]) == NULL )
         {
             OSG_FATAL<< "Out of memory!"<< std::endl;
             return NULL;
@@ -233,7 +234,7 @@ static osg::ref_ptr<rawImageRec> RawImageOpen(std::istream& fin)
     }
     if( raw->sizeZ >= 3 )
     {
-        if( (raw->tmpB = new unsigned char [static_cast<unsigned int>(raw->sizeX) * static_cast<unsigned int>(raw->bpc)]) == NULL )
+        if( (raw->tmpB = new unsigned char [static_cast<size_pos>(raw->sizeX) * static_cast<size_pos>(raw->bpc)]) == NULL )
         {
             OSG_FATAL<< "Out of memory!"<< std::endl;
             return NULL;
@@ -241,7 +242,7 @@ static osg::ref_ptr<rawImageRec> RawImageOpen(std::istream& fin)
     }
     if (raw->sizeZ >= 4)
     {
-        if( (raw->tmpA = new unsigned char [static_cast<unsigned int>(raw->sizeX) * static_cast<unsigned int>(raw->bpc)]) == NULL )
+        if( (raw->tmpA = new unsigned char [static_cast<size_pos>(raw->sizeX) * static_cast<size_pos>(raw->bpc)]) == NULL )
         {
             OSG_FATAL<< "Out of memory!"<< std::endl;
             return NULL;
@@ -250,7 +251,7 @@ static osg::ref_ptr<rawImageRec> RawImageOpen(std::istream& fin)
 
     if ((raw->type & 0xFF00) == 0x0100)
     {
-        unsigned int ybyz = static_cast<unsigned int>(raw->sizeY) * static_cast<unsigned int>(raw->sizeZ);
+        unsigned int ybyz = static_cast<size_pos>(raw->sizeY) * static_cast<size_pos>(raw->sizeZ);
         if ( (raw->rowStart = new GLuint [ybyz]) == NULL )
         {
             OSG_FATAL<< "Out of memory!"<< std::endl;
@@ -286,8 +287,12 @@ static void RawImageGetRow(rawImageRec *raw, unsigned char *buf, int y, int z)
 
     if ((raw->type & 0xFF00) == 0x0100)
     {
-        raw->file->seekg((long) raw->rowStart[y+z*raw->sizeY], std::ios::beg);
-        raw->file->read((char*)raw->tmp, (unsigned int)raw->rowSize[y+z*raw->sizeY]);
+        size_pos pos = raw->rowStart[static_cast<size_pos>(y)+static_cast<size_pos>(z)*static_cast<size_pos>(raw->sizeY)];
+
+        size_pos amount = raw->rowSize[static_cast<size_pos>(y)+static_cast<size_pos>(z)*static_cast<size_pos>(raw->sizeY)];
+
+        raw->file->seekg(pos, std::ios::beg);
+        raw->file->read((char*)raw->tmp, amount);
 
         iPtr = raw->tmp;
         oPtr = buf;
@@ -373,8 +378,14 @@ static void RawImageGetRow(rawImageRec *raw, unsigned char *buf, int y, int z)
     }
     else
     {
-        raw->file->seekg(512+(y*raw->sizeX*raw->bpc)+(z*raw->sizeX*raw->sizeY*raw->bpc),std::ios::beg);
-        raw->file->read((char*)buf, raw->sizeX*raw->bpc);
+        size_pos pos = static_cast<size_pos>(512)+
+                      (static_cast<size_pos>(y)*static_cast<size_pos>(raw->sizeX)*static_cast<size_pos>(raw->bpc))+
+                      (static_cast<size_pos>(z)*static_cast<size_pos>(raw->sizeX)*static_cast<size_pos>(raw->sizeY)*static_cast<size_pos>(raw->bpc));
+
+        size_pos amount = static_cast<size_pos>(raw->sizeX)*static_cast<size_pos>(raw->bpc);
+
+        raw->file->seekg(pos,std::ios::beg);
+        raw->file->read((char*)buf, amount);
         if(raw->swapFlag && raw->bpc != 1){
             ConvertShort(reinterpret_cast<unsigned short*>(buf), raw->sizeX);
         }

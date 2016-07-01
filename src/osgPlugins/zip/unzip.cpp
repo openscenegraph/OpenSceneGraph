@@ -182,14 +182,23 @@ void zfree(void *buf)
 */
 
 
-typedef struct tm_unz_s
-{ unsigned int tm_sec;            // seconds after the minute - [0,59]
+struct tm_unz
+{
+  tm_unz():
+    tm_sec(0),
+    tm_min(0),
+    tm_hour(0),
+    tm_mday(0),
+    tm_mon(0),
+    tm_year(0) {}
+
+  unsigned int tm_sec;            // seconds after the minute - [0,59]
   unsigned int tm_min;            // minutes after the hour - [0,59]
   unsigned int tm_hour;           // hours since midnight - [0,23]
   unsigned int tm_mday;           // day of the month - [1,31]
   unsigned int tm_mon;            // months since January - [0,11]
   unsigned int tm_year;           // years - [1980..2044]
-} tm_unz;
+} ;
 
 
 
@@ -280,8 +289,26 @@ typedef struct unz_global_info_s
 } unz_global_info;
 
 // unz_file_info contain information about a file in the zipfile
-typedef struct unz_file_info_s
-{ unsigned long version;              // version made by                 2 bytes
+struct  unz_file_info
+{
+   unz_file_info():
+    version(0),
+    version_needed(0),
+    flag(0),
+    compression_method(0),
+    dosDate(0),
+    crc(0),
+    compressed_size(0),
+    uncompressed_size(0),
+    size_filename(0),
+    size_file_extra(0),
+    size_file_comment(0),
+    disk_num_start(0),
+    internal_fa(0),
+    external_fa(0)
+    {}
+
+  unsigned long version;              // version made by                 2 bytes
   unsigned long version_needed;       // version needed to extract       2 bytes
   unsigned long flag;                 // general purpose bit flag        2 bytes
   unsigned long compression_method;   // compression method              2 bytes
@@ -296,7 +323,7 @@ typedef struct unz_file_info_s
   unsigned long internal_fa;          // internal file attributes        2 bytes
   unsigned long external_fa;          // external file attributes        4 bytes
   tm_unz tmu_date;
-} unz_file_info;
+};
 
 
 #define UNZ_OK                  (0)

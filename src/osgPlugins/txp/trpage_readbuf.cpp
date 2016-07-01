@@ -719,4 +719,7 @@ trpgrAppFileCache::OpenFile::OpenFile()
     afile = NULL;
     lastUsed = 0;
     id = -1;
+    row = 0;
+    col = 0;
+
 }

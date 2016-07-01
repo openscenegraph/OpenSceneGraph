@@ -198,7 +198,6 @@ class VisualChooser : public osg::Referenced
         void resetVisualInfo();
 
         std::vector <VisualAttribute> _visual_attributes;
-//         VisualInfo *_vinfo;
         unsigned int _visual_id;
         bool _strictAdherence;
 };

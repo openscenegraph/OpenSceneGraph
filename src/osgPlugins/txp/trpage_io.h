@@ -299,7 +299,7 @@ public:
 TX_EXDECL class TX_CLDECL trpgColor {
 public:
     trpgColor(float64 r,float64 g,float64 b) {red = r; green = g; blue = b;}
-    trpgColor(void) { };
+    trpgColor(void) : red(1.0), green(1.0), blue(1.0) { };
     bool operator==(const trpgColor& color) {
         if ( color.red != red )        return false;
         if ( color.green != green ) return false;

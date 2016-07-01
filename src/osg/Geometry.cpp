@@ -18,20 +18,52 @@
 
 using namespace osg;
 
+//////////////////////////////////////////////////////////////////
+//////////////////// VertexArrayObject  //////////////////////////
+//////////////////////////////////////////////////////////////////
+
+OpenThreads::Mutex Geometry::VertexArrayObject::_VAOSmutex;
+std::map<Geometry::VAOKey,Geometry::VertexArrayObject*> Geometry::VertexArrayObject::_VAOS;
+
+Geometry::VertexArrayObject::VertexArrayObject( VAOKey &key,GLExtensions* ext):_ext(ext){
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_VAOSmutex);
+    _ext->glGenVertexArrays(1,&_GLID);
+    //OSG_WARN<<"VertexArrayObject::VertexArrayObject"<<_GLID<<std::endl;
+    _VAOS[key]=this;
+    _itvao=_VAOS.find(key);
+}
+
+Geometry::VertexArrayObject::~VertexArrayObject(){
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_VAOSmutex);
+   // OSG_WARN<<"VertexArrayObject::~VertexArrayObject"<<_GLID<<std::endl;
+    _ext->glDeleteVertexArrays(1,&_GLID);
+    _VAOS.erase(_itvao);
+}
+
+Geometry::VertexArrayObject * Geometry::VertexArrayObject::getVertexArrayObject(VAOKey &key,GLExtensions* ext){
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_VAOSmutex);
+    std::map<VAOKey,VertexArrayObject*>::iterator itvao;
+    itvao=  _VAOS.find(key);
+    if(itvao!=_VAOS.end())return itvao->second;
+    return 0;
+}
+
+//////////////////////////////////////////////////////////////////
+////////////////////  Geometry  //////////////////////////////////
+//////////////////////////////////////////////////////////////////
 
 Geometry::Geometry():
     _containsDeprecatedData(false)
 {
     _supportsVertexBufferObjects = true;
+#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
+    _useVertexArrayObject=false;
+#else
+    _useVertexBufferObjects=true;
+    _useVertexArrayObject=true;
+#endif
     // temporary test
     // setSupportsDisplayList(false);
-    _glVaoId = 0;
-#ifndef OSG_GL_FIXED_FUNCTION_AVAILABLE
-    _useVertexBufferObjects = true;
-    _useVertexArrayObjects = true;
-#else
-    _useVertexArrayObjects = false;
-#endif
 }
 
 Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
@@ -42,18 +74,11 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
     _secondaryColorArray(copyop(geometry._secondaryColorArray.get())),
     _fogCoordArray(copyop(geometry._fogCoordArray.get())),
     _containsDeprecatedData(geometry._containsDeprecatedData),
-    _glVaoId(0)
+    _useVertexArrayObject(geometry._useVertexArrayObject)
 {
     _supportsVertexBufferObjects = true;
     // temporary test
     // setSupportsDisplayList(false);
-
-#ifndef OSG_GL_FIXED_FUNCTION_AVAILABLE
-    _useVertexBufferObjects = true;
-    _useVertexArrayObjects = true;
-#else
-    _useVertexArrayObjects = false;
-#endif
 
     for(PrimitiveSetList::const_iterator pitr=geometry._primitives.begin();
         pitr!=geometry._primitives.end();
@@ -95,11 +120,6 @@ Geometry::~Geometry()
 {
     // do dirty here to keep the getGLObjectSizeHint() estimate on the ball
     dirtyDisplayList();
-
-    if(_useVertexArrayObjects && _glVaoId !=0)
-    {
-        // TODO remove _glVaoId
-    }
 
     // no need to delete, all automatically handled by ref_ptr :-)
 }
@@ -520,6 +540,13 @@ osg::ElementBufferObject* Geometry::getOrCreateElementBufferObject()
     return new osg::ElementBufferObject;
 }
 
+void Geometry::setUseVertexArrayObject(bool flag){
+
+    if (_useVertexArrayObject==flag) return;
+    if(!_useVertexBufferObjects&&flag)setUseVertexBufferObjects(true);
+    _useVertexArrayObject=flag;
+}
+
 void Geometry::setUseVertexBufferObjects(bool flag)
 {
     // flag = true;
@@ -719,33 +746,77 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
 
         //osg::ElapsedTime timer;
 
+        VAOKey VAOkey;
+        VAOkey.push_back(contextID);
+
         // now compile any buffer objects that require it.
         for(BufferObjects::iterator itr = bufferObjects.begin();
             itr != bufferObjects.end();
             ++itr)
         {
-            if (_useVertexArrayObjects)
-            {
-                if (dynamic_cast<VertexBufferObject*>((*itr)) != 0)
-                {
-                    if (_glVaoId==0)
-                    {
-                        extensions->glGenVertexArrays(1, &_glVaoId);
-                    }
-                    extensions->glBindVertexArray( _glVaoId );
-                }
-            }
-
             GLBufferObject* glBufferObject = (*itr)->getOrCreateGLBufferObject(contextID);
             if (glBufferObject && glBufferObject->isDirty())
             {
                 // OSG_NOTICE<<"Compile buffer "<<glBufferObject<<std::endl;
                 glBufferObject->compileBuffer();
             }
+            if (glBufferObject) VAOkey.push_back(glBufferObject->getGLObjectID());
+        }
 
-            if (_useVertexArrayObjects)
+        if(_useVertexArrayObject){
+            const BufferObject * ebo; GLBufferObject *glebo;
+            for (unsigned int primitiveSetNum = 0; primitiveSetNum != _primitives.size(); ++primitiveSetNum)
             {
+                if ((ebo = getPrimitiveSet(primitiveSetNum)->getBufferObject())){
+                    glebo = ebo->getOrCreateGLBufferObject(contextID);
+                    if (glebo){
+                        if (glebo->isDirty())glebo->compileBuffer();
+                        VAOkey.push_back(glebo->getGLObjectID());
+                        break;///assume core profile (all primset share the same ebo)
+                    }
+                }
+            }
+            VertexArrayObject* vao=VertexArrayObject::getVertexArrayObject(VAOkey,extensions);
+            if(vao)
+                _vao[contextID]=vao;
+            else
+            {
+                ///VAO setup
+                _vao[contextID]=new VertexArrayObject(VAOkey,extensions);
+                extensions->glBindVertexArray(_vao[contextID]->getGLID());
+                drawVertexArraysImplementation(renderInfo);
+                for (unsigned int primitiveSetNum = 0; primitiveSetNum != _primitives.size(); ++primitiveSetNum)
+                {
+                    if ((ebo = getPrimitiveSet(primitiveSetNum)->getBufferObject())){
+                        glebo = ebo->getGLBufferObject(contextID);
+                        if (glebo){
+                            glebo->bindBuffer();
+                            break;///assume core profile (all primset share the same ebo)
+                        }
+                    }
+                }
+
                 extensions->glBindVertexArray(0);
+                state.disableVertexPointer();
+                state.disableNormalPointer();
+                state.disableColorPointer();
+                state.disableSecondaryColorPointer();
+                state.disableFogCoordPointer();
+                for(unsigned int unit=0;unit<_texCoordList.size();++unit)
+                    state.disableTexCoordPointer(unit);
+
+                bool handleVertexAttributes = !_vertexAttribList.empty();
+                if ( handleVertexAttributes )
+                {
+                    for(unsigned int index = 0; index < _vertexAttribList.size(); ++index)
+                    {
+                        const Array* array = _vertexAttribList[index].get();
+                        if (array && array->getBinding()==osg::Array::BIND_PER_VERTEX)
+                        {
+                            state.disableVertexAttribPointer(index);
+                        }
+                    }
+                }
             }
         }
 
@@ -754,6 +825,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
         // unbind the BufferObjects
         extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
         extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
+
     }
     else
     {
@@ -774,7 +846,11 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     bool checkForGLErrors = state.getCheckForGLErrors()==osg::State::ONCE_PER_ATTRIBUTE;
     if (checkForGLErrors) state.checkGLErrors("start of Geometry::drawImplementation()");
 
-    drawVertexArraysImplementation(renderInfo);
+
+    if(!_useVertexArrayObject)
+        drawVertexArraysImplementation(renderInfo);
+    else
+        state.get<GLExtensions>()->glBindVertexArray(_vao[state.getContextID()]->getGLID());
 
     if (checkForGLErrors) state.checkGLErrors("Geometry::drawImplementation() after vertex arrays setup.");
 
@@ -782,11 +858,19 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     //
     // draw the primitives themselves.
     //
-    drawPrimitivesImplementation(renderInfo);
+    if(!_useVertexArrayObject){
 
-    // unbind the VBO's if any are used.
-    state.unbindVertexBufferObject();
-    state.unbindElementBufferObject();
+        drawPrimitivesImplementation(renderInfo);
+        // unbind the VBO's if any are used.
+        state.unbindVertexBufferObject();
+        state.unbindElementBufferObject();
+    }
+    else{
+        /// drawPrimitivesImplementation(renderInfo) not used because there is no such all vertex attribute buffer binding in core profile are assumed to be BIND_PER_VERTEX
+        for (unsigned int primitiveSetNum = 0; primitiveSetNum != _primitives.size(); ++primitiveSetNum)
+            _primitives[primitiveSetNum]->draw(state, true, false);
+        state.get<GLExtensions>()->glBindVertexArray(0);
+    }
 
     if (checkForGLErrors) state.checkGLErrors("end of Geometry::drawImplementation().");
 }
@@ -794,14 +878,6 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
-    unsigned int contextID = state.getContextID();
-    GLExtensions* extensions = state.get<GLExtensions>();
-
-
-    if(_useVertexArrayObjects && extensions)
-    {
-        extensions->glBindVertexArray(_glVaoId);
-    }
 
     bool handleVertexAttributes = !_vertexAttribList.empty();
 
@@ -874,12 +950,6 @@ void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
             }
         }
     }
-
-//    TODO: unserstand when to unbind verstexArray (mathieu)
-//    if(_useVertexArrayObjects && extensions)
-//    {
-//        extensions->glBindVertexArray(0);
-//    }
 
     state.applyDisablingOfVertexAttributes();
 }
@@ -1115,15 +1185,14 @@ Geometry* osg::createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVe
 // Deprecated methods.
 //
 #define SET_BINDING(array, ab)\
-    osg::Array::Binding binding = static_cast<osg::Array::Binding>(ab); \
     if (!array) \
     { \
-        if (binding==osg::Array::BIND_OFF) return; \
+        if (ab==BIND_OFF) return; \
         OSG_NOTICE<<"Warning, can't assign attribute binding as no has been array assigned to set binding for."<<std::endl; \
         return; \
     } \
-    if (array->getBinding() == binding) return; \
-    array->setBinding(binding);\
+    if (array->getBinding() == static_cast<osg::Array::Binding>(ab)) return; \
+    array->setBinding(static_cast<osg::Array::Binding>(ab));\
     if (ab==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) _containsDeprecatedData = true; \
     dirtyDisplayList();
 
@@ -1155,12 +1224,11 @@ void Geometry::setFogCoordBinding(AttributeBinding ab)
 
 void Geometry::setVertexAttribBinding(unsigned int index,AttributeBinding ab)
 {
-    osg::Array::Binding binding = static_cast<osg::Array::Binding>(ab);
     if (index<_vertexAttribList.size() && _vertexAttribList[index].valid())
     {
-        if (_vertexAttribList[index]->getBinding()==binding) return;
+        if (_vertexAttribList[index]->getBinding()==static_cast<osg::Array::Binding>(ab)) return;
 
-        _vertexAttribList[index]->setBinding(binding);
+        _vertexAttribList[index]->setBinding(static_cast<osg::Array::Binding>(ab));
 
         dirtyDisplayList();
     }
@@ -1556,11 +1624,11 @@ void Geometry::fixDeprecatedData()
     // we start processing the primitive sets.
     int target_vindex = 0;
     int source_pindex = -1; // equals primitiveNum
-    for(PrimitiveSetList::iterator itr = _primitives.begin();
-        itr != _primitives.end();
-        ++itr)
+    for(PrimitiveSetList::iterator prim_itr = _primitives.begin();
+        prim_itr != _primitives.end();
+        ++prim_itr)
     {
-        osg::PrimitiveSet* primitiveset = itr->get();
+        osg::PrimitiveSet* primitiveset = prim_itr->get();
         GLenum mode=primitiveset->getMode();
 
         unsigned int primLength;
@@ -1812,3 +1880,140 @@ void Geometry::fixDeprecatedData()
 
     _containsDeprecatedData = false;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// deprecated_osg
+
+void deprecated_osg::Geometry::setNormalBinding(AttributeBinding ab) { SET_BINDING(_normalArray.get(), ab) }
+deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getNormalBinding() const { return static_cast<AttributeBinding>(osg::getBinding(getNormalArray())); }
+
+void deprecated_osg::Geometry::setColorBinding(deprecated_osg::Geometry::AttributeBinding ab) { SET_BINDING(_colorArray.get(), ab) }
+deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getColorBinding() const { return static_cast<AttributeBinding>(osg::getBinding(getColorArray())); }
+
+void deprecated_osg::Geometry::setSecondaryColorBinding(deprecated_osg::Geometry::AttributeBinding ab) { SET_BINDING(_secondaryColorArray.get(), ab) }
+deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getSecondaryColorBinding() const { return static_cast<AttributeBinding>(osg::getBinding(getSecondaryColorArray())); }
+
+void deprecated_osg::Geometry::setFogCoordBinding(deprecated_osg::Geometry::AttributeBinding ab) { SET_BINDING(_fogCoordArray.get(), ab) }
+deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getFogCoordBinding() const { return static_cast<AttributeBinding>(osg::getBinding(getFogCoordArray())); }
+
+
+void deprecated_osg::Geometry::setVertexAttribBinding(unsigned int index,AttributeBinding ab)
+{
+    if (index<_vertexAttribList.size() && _vertexAttribList[index].valid())
+    {
+        if (_vertexAttribList[index]->getBinding()==static_cast<osg::Array::Binding>(ab)) return;
+
+        _vertexAttribList[index]->setBinding(static_cast<osg::Array::Binding>(ab));
+
+        dirtyDisplayList();
+    }
+    else
+    {
+        OSG_NOTICE<<"Warning, can't assign attribute binding as no has been array assigned to set binding for."<<std::endl;
+    }
+}
+
+deprecated_osg::Geometry::AttributeBinding deprecated_osg::Geometry::getVertexAttribBinding(unsigned int index) const { return static_cast<AttributeBinding>(osg::getBinding(getVertexAttribArray(index))); }
+
+void deprecated_osg::Geometry::setVertexAttribNormalize(unsigned int index,GLboolean norm)
+{
+    if (index<_vertexAttribList.size() && _vertexAttribList[index].valid())
+    {
+        _vertexAttribList[index]->setNormalize(norm!=GL_FALSE);
+
+        dirtyDisplayList();
+    }
+}
+
+GLboolean deprecated_osg::Geometry::getVertexAttribNormalize(unsigned int index) const { return osg::getNormalize(getVertexAttribArray(index)); }
+
+void deprecated_osg::Geometry::setVertexIndices(osg::IndexArray* array)
+{
+    if (_vertexArray.valid()) { _vertexArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setVertexIndicies(..) function failed as there is no vertex array to associate inidices with."<<std::endl; }
+}
+
+const osg::IndexArray* deprecated_osg::Geometry::getVertexIndices() const
+{
+    if (_vertexArray.valid()) return dynamic_cast<osg::IndexArray*>(_vertexArray->getUserData());
+    else return 0;
+}
+
+void deprecated_osg::Geometry::setNormalIndices(osg::IndexArray* array)
+{
+    if (_normalArray.valid()) { _normalArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setNormalIndicies(..) function failed as there is no normal array to associate inidices with."<<std::endl; }
+}
+
+const osg::IndexArray* deprecated_osg::Geometry::getNormalIndices() const
+{
+    if (_normalArray.valid()) return dynamic_cast<osg::IndexArray*>(_normalArray->getUserData());
+    else return 0;
+}
+
+void deprecated_osg::Geometry::setColorIndices(osg::IndexArray* array)
+{
+    if (_colorArray.valid()) { _colorArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setColorIndicies(..) function failed as there is no color array to associate inidices with."<<std::endl; }
+}
+
+const osg::IndexArray* deprecated_osg::Geometry::getColorIndices() const
+{
+    if (_colorArray.valid()) return dynamic_cast<osg::IndexArray*>(_colorArray->getUserData());
+    else return 0;
+}
+
+void deprecated_osg::Geometry::setSecondaryColorIndices(osg::IndexArray* array)
+{
+    if (_secondaryColorArray.valid()) { _secondaryColorArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setSecondaryColorArray(..) function failed as there is no secondary color array to associate inidices with."<<std::endl; }
+}
+
+const osg::IndexArray* deprecated_osg::Geometry::getSecondaryColorIndices() const
+{
+    if (_secondaryColorArray.valid()) return dynamic_cast<osg::IndexArray*>(_secondaryColorArray->getUserData());
+    else return 0;
+}
+
+void deprecated_osg::Geometry::setFogCoordIndices(osg::IndexArray* array)
+{
+    if (_fogCoordArray.valid()) { _fogCoordArray->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setFogCoordIndicies(..) function failed as there is no fog coord array to associate inidices with."<<std::endl; }
+}
+
+const osg::IndexArray* deprecated_osg::Geometry::getFogCoordIndices() const
+{
+    if (_fogCoordArray.valid()) return dynamic_cast<osg::IndexArray*>(_fogCoordArray->getUserData());
+    else return 0;
+}
+
+void deprecated_osg::Geometry::setTexCoordIndices(unsigned int unit,osg::IndexArray* array)
+{
+    if (unit<_texCoordList.size() && _texCoordList[unit].valid()) { _texCoordList[unit]->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setTexCoordIndices(..) function failed as there is no texcoord array to associate inidices with."<<std::endl; }
+}
+
+const osg::IndexArray* deprecated_osg::Geometry::getTexCoordIndices(unsigned int unit) const
+{
+    if (unit<_texCoordList.size() && _texCoordList[unit].valid()) return dynamic_cast<osg::IndexArray*>(_texCoordList[unit]->getUserData());
+    else return 0;
+}
+
+void deprecated_osg::Geometry::setVertexAttribIndices(unsigned int index,osg::IndexArray* array)
+{
+    if (index<_vertexAttribList.size() && _vertexAttribList[index].valid()) { _vertexAttribList[index]->setUserData(array); if (array)  _containsDeprecatedData = true; }
+    else { OSG_WARN<<"Geometry::setVertexAttribIndices(..) function failed as there is no vertex attrib array to associate inidices with."<<std::endl; }
+}
+const osg::IndexArray* deprecated_osg::Geometry::getVertexAttribIndices(unsigned int index) const
+{
+    if (index<_vertexAttribList.size() && _vertexAttribList[index].valid()) return dynamic_cast<osg::IndexArray*>(_vertexAttribList[index]->getUserData());
+    else return 0;
+}
+
+
+
+
+
+
+

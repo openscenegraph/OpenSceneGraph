@@ -232,7 +232,7 @@ class OSG_EXPORT PrimitiveSet : public BufferData
         void setMode(GLenum mode) { _mode = mode; }
         GLenum getMode() const { return _mode; }
 
-        virtual void draw(State& state, bool useVertexBufferObjects) const = 0;
+        virtual void draw(State& state, bool useVertexBufferObjects, bool bindElementBuffer=true) const = 0;
 
         virtual void accept(PrimitiveFunctor& functor) const = 0;
         virtual void accept(PrimitiveIndexFunctor& functor) const = 0;
@@ -293,7 +293,7 @@ class OSG_EXPORT DrawArrays : public PrimitiveSet
         void setCount(GLsizei count) { _count = count; }
         GLsizei getCount() const { return _count; }
 
-        virtual void draw(State& state, bool useVertexBufferObjects) const;
+        virtual void draw(State& state, bool useVertexBufferObjects, bool bindElementBuffer=true) const;
 
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
@@ -351,7 +351,7 @@ class OSG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorGLsizei
         void setFirst(GLint first) { _first = first; }
         GLint getFirst() const { return _first; }
 
-        virtual void draw(State& state, bool useVertexBufferObjects) const;
+        virtual void draw(State& state, bool useVertexBufferObjects, bool bindElementBuffer=true) const;
 
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
@@ -418,17 +418,13 @@ class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
             vector_type(array) {}
 
         /**
-         * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
          * \param no Number of intended elements. This will be the size of the underlying vector.
-         * \param ptr Pointer to a GLubyte to copy index data from.
-         * \param numInstances When non zero passed as the number of draw instances to use re.
          */
         DrawElementsUByte(GLenum mode, unsigned int no, const GLubyte* ptr, int numInstances=0) :
             DrawElements(DrawElementsUBytePrimitiveType,mode,numInstances),
             vector_type(ptr,ptr+no) {}
 
         /**
-         * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
          * \param no Number of intended elements. This will be the size of the underlying vector.
          */
         DrawElementsUByte(GLenum mode, unsigned int no) :
@@ -445,7 +441,7 @@ class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
         virtual unsigned int    getTotalDataSize() const { return static_cast<unsigned int>(size()); }
         virtual bool            supportsBufferObject() const { return false; }
 
-        virtual void draw(State& state, bool useVertexBufferObjects) const ;
+        virtual void draw(State& state, bool useVertexBufferObjects, bool bindElementBuffer=true) const;
 
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
@@ -481,17 +477,13 @@ class OSG_EXPORT DrawElementsUShort : public DrawElements, public VectorGLushort
             vector_type(array) {}
 
         /**
-         * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
          * \param no Number of intended elements. This will be the size of the underlying vector.
-         * \param ptr Pointer to a GLushort to copy index data from.
-         * \param numInstances When non zero passed as the number of draw instances to use re.
          */
         DrawElementsUShort(GLenum mode, unsigned int no, const GLushort* ptr, int numInstances=0) :
             DrawElements(DrawElementsUShortPrimitiveType,mode,numInstances),
             vector_type(ptr,ptr+no) {}
 
         /**
-         * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
          * \param no Number of intended elements. This will be the size of the underlying vector.
          */
         DrawElementsUShort(GLenum mode, unsigned int no) :
@@ -513,7 +505,7 @@ class OSG_EXPORT DrawElementsUShort : public DrawElements, public VectorGLushort
         virtual unsigned int    getTotalDataSize() const { return 2u*static_cast<unsigned int>(size()); }
         virtual bool            supportsBufferObject() const { return false; }
 
-        virtual void draw(State& state, bool useVertexBufferObjects) const;
+        virtual void draw(State& state, bool useVertexBufferObjects, bool bindElementBuffer=true) const;
 
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
@@ -550,15 +542,12 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
         /**
          * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
          * \param no Number of intended elements. This will be the size of the underlying vector.
-         * \param ptr Pointer to a GLuint to copy index data from.
-         * \param numInstances When non zero passed as the number of draw instances to use re.
          */
         DrawElementsUInt(GLenum mode, unsigned int no, const GLuint* ptr, int numInstances=0) :
             DrawElements(DrawElementsUIntPrimitiveType,mode,numInstances),
             vector_type(ptr,ptr+no) {}
 
         /**
-         * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
          * \param no Number of intended elements. This will be the size of the underlying vector.
          */
         DrawElementsUInt(GLenum mode, unsigned int no) :
@@ -580,7 +569,7 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
         virtual unsigned int    getTotalDataSize() const { return 4u*static_cast<unsigned int>(size()); }
         virtual bool            supportsBufferObject() const { return false; }
 
-        virtual void draw(State& state, bool useVertexBufferObjects) const;
+        virtual void draw(State& state, bool useVertexBufferObjects, bool bindElementBuffer=true) const;
 
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
@@ -621,7 +610,7 @@ public:
     virtual const char* className() const { return "MultiDrawArrays"; }
 
 
-    virtual void draw(osg::State& state, bool useVertexBufferObjects) const;
+    virtual void draw(State& state, bool useVertexBufferObjects, bool bindElementBuffer=true) const;
 
     virtual void accept(PrimitiveFunctor& functor) const;
     virtual void accept(PrimitiveIndexFunctor& functor) const;

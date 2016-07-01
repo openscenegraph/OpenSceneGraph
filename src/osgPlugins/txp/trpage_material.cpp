@@ -1012,6 +1012,7 @@ trpgTexture::trpgTexture()
     addr.col = -1;
     addr.row = -1;
     isMipmap = false;
+    numMipMap = 0;
     writeHandle = false;
     handle = -1;
 }
@@ -1032,6 +1033,7 @@ trpgTexture::trpgTexture(const trpgTexture &in):
     addr.row = in.addr.row;
     addr.col = in.addr.col;
     isMipmap = in.isMipmap;
+    numMipMap = in.numMipMap;
     // storageSize + levelOffset
     handle = in.handle;
     writeHandle = in.writeHandle;

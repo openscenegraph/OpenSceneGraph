@@ -608,7 +608,7 @@ class proxy_streambuf : public std::streambuf
 public:
 
     proxy_streambuf(std::streambuf* streambuf, std::streamoff numChars):
-        _streambuf(streambuf),_curPos(0),_numChars(numChars)
+        _streambuf(streambuf),_oneChar(0), _curPos(0),_numChars(numChars)
     {
         _startPos = ARCHIVE_POS(_streambuf->pubseekoff(0, std::ios_base::cur, std::ios_base::in));
         setg(&_oneChar, (&_oneChar)+1, (&_oneChar)+1);
@@ -624,7 +624,7 @@ protected:
     char_type _oneChar;         // Single character buffer
     std::streamoff _curPos, _numChars;
     OSGA_Archive::pos_type _startPos;
-      
+
     // Set internal position pointer to relative position.  Virtual function called by the public
     // member function pubseekoff to alter the stream position.
 

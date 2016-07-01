@@ -316,7 +316,9 @@ void OSGA_Archive::IndexBlock::setPositionNextIndexBlock(pos_type position)
     _requiresWrite = true;
 }
 
-OSGA_Archive::OSGA_Archive()
+OSGA_Archive::OSGA_Archive():
+    _version(0.0f),
+    _status(READ)
 {
 }
 

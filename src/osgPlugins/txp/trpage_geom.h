@@ -540,7 +540,7 @@ public:
     ~trpgLightAttr(void);
 
     // Light Flags
-    enum
+    enum LightFlags
     {
         // Light flags
         trpg_Day =        0x0001,
@@ -562,33 +562,33 @@ public:
         trpg_ZBuffer =        0x4000,
         trpg_FogPunch =        0x8000,
         trpg_PerformerMask =    0xf000
-    } LightFlags;
+    };
 
     // Light Type
-    typedef enum
+    enum LightType
     {
         trpg_Raster,
         trpg_Calligraphic,
         trpg_RASCAL
-    } LightType;
+    };
 
     // Light Directionality
-    typedef enum
+    enum LightDirectionality
     {
         trpg_Omnidirectional,
         trpg_Bidirectional,
         trpg_Unidirectional
-    } LightDirectionality;
+    } ;
 
     // Light Quality
-    typedef enum
+    enum LightQuality
     {
         trpg_Off,
         trpg_Low,
         trpg_Medium,
         trpg_High,
         trpg_Undefined
-    } LightQuality;
+    };
 
     // Struct for Performer Lights
     struct PerformerAttr

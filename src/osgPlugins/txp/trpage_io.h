@@ -285,7 +285,7 @@ public:
 TX_EXDECL class TX_CLDECL trpg3dPoint {
 public:
     double x,y,z;
-    trpg3dPoint(void) { };
+    trpg3dPoint(void) : x(0.0),y(0.0),z(0.0) { };
     trpg3dPoint(double in_x,double in_y,double in_z) {x = in_x; y = in_y; z = in_z;}
     bool operator==(const trpg3dPoint& pt ) const {
         if ( x != pt.x ) return false;

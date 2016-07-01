@@ -1822,6 +1822,7 @@ bool trpgTexTable::Read(trpgReadBuffer &buf)
 
 trpgLocalMaterial::trpgLocalMaterial()
 {
+    baseMatTable = -1;
     baseMat = -1;
     sx = sy = ex = ey = destWidth = destHeight = 0;
     addr.resize(1);

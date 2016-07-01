@@ -107,6 +107,9 @@ public:
             throw std::runtime_error("unable to create udp socket\n");
         }
 
+        memset( &connectedAddr_, 0, sizeof(connectedAddr_) );
+        connectedAddr_.sin_family = AF_INET;
+
         memset( &sendToAddr_, 0, sizeof(sendToAddr_) );
         sendToAddr_.sin_family = AF_INET;
     }

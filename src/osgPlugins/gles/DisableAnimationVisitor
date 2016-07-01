@@ -1,0 +1,47 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab
+ *
+ * This application is open source and may be redistributed and/or modified
+ * freely and without restriction, both in commercial and non commercial
+ * applications, as long as this copyright notice is maintained.
+ *
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
+
+#ifndef DISABLE_ANIMATION_VISITOR
+#define DISABLE_ANIMATION_VISITOR
+
+#include "AnimationCleanerVisitor"
+
+
+// Derive from AnimationCleanerVisitor to only allow animation data removal
+class DisableAnimationVisitor : public AnimationCleanerVisitor
+{
+public:
+    DisableAnimationVisitor():
+        AnimationCleanerVisitor("DisableAnimationVisitor"),
+        _removeDone(false)
+    {}
+
+    ~DisableAnimationVisitor() {
+        // make sure removal has been done
+        remove();
+    }
+
+    void clean()
+    {}
+
+    void remove() {
+        if(!_removeDone) {
+            AnimationCleanerVisitor::removeAnimation();
+        }
+        _removeDone = true;
+    }
+
+protected:
+    bool _removeDone;
+};
+
+#endif

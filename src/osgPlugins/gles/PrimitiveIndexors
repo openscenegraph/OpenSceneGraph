@@ -3,9 +3,9 @@
 
 #include <vector>
 #include <osg/TriangleIndexFunctor>
+#include <osg/TriangleLinePointIndexFunctor>
 #include <osgUtil/MeshOptimizers>
 
-#include "TriangleLinePointIndexFunctor"
 #include "EdgeIndexFunctor"
 #include "LineIndexFunctor"
 #include "PointIndexFunctor"

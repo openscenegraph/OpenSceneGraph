@@ -17,6 +17,9 @@
 #include <osg/Geometry>
 #include <osg/Geode>
 
+#include <osgAnimation/RigGeometry>
+#include <osgAnimation/MorphGeometry>
+
 #include <set>
 #include <string>
 
@@ -37,14 +40,48 @@ public:
     }
 
     virtual void apply(osg::Drawable& drawable){
-        osg::Geometry* geometry = drawable.asGeometry();
-        if (!geometry || isProcessed(geometry)) {
-            return;
+        if (osg::Geometry* geometry = drawable.asGeometry()) {
+            // call overloaded geometry processing
+            apply(*geometry);
         }
-        apply(*geometry);
     }
 
-    virtual void apply(osg::Geometry& /*geometry*/) {} // to be implemented by actual visitors
+    virtual void apply(osg::Geometry& geometry) {
+        // skip already processed geometry
+        if (isProcessed(&geometry)) {
+            return;
+        }
+
+        if(osgAnimation::RigGeometry* rigGeometry = dynamic_cast<osgAnimation::RigGeometry*>(&geometry)) {
+            process(*rigGeometry);
+        }
+        else if(osgAnimation::MorphGeometry* morphGeometry = dynamic_cast<osgAnimation::MorphGeometry*>(&geometry)) {
+            process(*morphGeometry);
+        }
+        else {
+            process(geometry);
+        }
+
+        // flag geometry as processed
+        setProcessed(&geometry);
+    }
+
+    virtual void process(osg::Geometry& node) = 0;
+
+    virtual void process(osgAnimation::MorphGeometry& node) {
+        // by default process a MorphGeometry like a regular geometry. If a visitor updates
+        // vertices, it *has* to override this apply otherwise there might be a mismatch between the
+        // 'master' morph geometry and morph targets.
+        process(static_cast<osg::Geometry&>(node));
+    }
+
+    virtual void process(osgAnimation::RigGeometry& rigGeometry) {
+        // by default, consider RigGeometry is just considered as a "shell" and visitor
+        // processing should be performed on the rig source
+        if(rigGeometry.getSourceGeometry()) {
+            apply(*rigGeometry.getSourceGeometry());
+        }
+    }
 
 protected:
     bool isProcessed(osg::Geometry* node) {

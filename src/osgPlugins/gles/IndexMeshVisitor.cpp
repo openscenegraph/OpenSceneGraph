@@ -3,6 +3,7 @@
 #include <limits> // numeric_limits
 
 #include <osg/Geometry>
+#include <osgAnimation/MorphGeometry>
 #include <osg/PrimitiveSet>
 #include <osg/ValueObject>
 #include <osgUtil/MeshOptimizers>
@@ -14,7 +15,21 @@
 
 using namespace glesUtil;
 
-void IndexMeshVisitor::apply(osg::Geometry& geom) {
+void remapGeometryVertices(RemapArray ra, osg::Geometry& geom)
+{
+    osgAnimation::MorphGeometry *morphGeometry = dynamic_cast<osgAnimation::MorphGeometry*>(&geom);
+    if(morphGeometry) {
+        osgAnimation::MorphGeometry::MorphTargetList targetList = morphGeometry->getMorphTargetList();
+        for (osgAnimation::MorphGeometry::MorphTargetList::iterator ti = targetList.begin(); ti != targetList.end(); ++ti)  {
+            osgAnimation::MorphGeometry::MorphTarget *morphTarget = &(*ti);
+            osg::Geometry *target = morphTarget->getGeometry();
+            VertexAttribComparitor arrayComparitor(*target);
+            arrayComparitor.accept(ra);
+        }
+    }
+}
+
+void IndexMeshVisitor::process(osg::Geometry& geom) {
     // TODO: this is deprecated
     if (geom.getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
     if (geom.getColorBinding() == osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
@@ -22,7 +37,7 @@ void IndexMeshVisitor::apply(osg::Geometry& geom) {
     if (geom.getFogCoordBinding() == osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
 
     // no point optimizing if we don't have enough vertices.
-    if (!geom.getVertexArray() || geom.getVertexArray()->getNumElements() < 3) return;
+    if (!geom.getVertexArray() || geom.getVertexArray()->getNumElements() < 2) return;
 
 
     osgUtil::SharedArrayOptimizer deduplicator;
@@ -105,6 +120,9 @@ void IndexMeshVisitor::apply(osg::Geometry& geom) {
     RemapArray ra(copyMapping);
     arrayComparitor.accept(ra);
 
+    //Remap morphGeometry target
+    remapGeometryVertices(ra, geom);
+
     // triangulate faces
     {
         TriangleIndexor ti;
@@ -112,7 +130,10 @@ void IndexMeshVisitor::apply(osg::Geometry& geom) {
         ti._remapping = finalMapping;
 
         for(itr = primitives.begin() ; itr != primitives.end() ; ++ itr) {
-            (*itr)->accept(ti);
+            osg::PrimitiveSet* primitive = (*itr).get();
+            if(primitive && primitive->getMode() >= osg::PrimitiveSet::TRIANGLES) {
+                primitive->accept(ti);
+            }
         }
 
         addDrawElements(ti._indices, osg::PrimitiveSet::TRIANGLES, new_primitives);
@@ -127,12 +148,15 @@ void IndexMeshVisitor::apply(osg::Geometry& geom) {
         wi._remapping = finalMapping;
 
         for(itr = primitives.begin() ; itr != primitives.end() ; ++ itr) {
-            bool isWireframe = false;
-            if((*itr)->getUserValue("wireframe", isWireframe) && isWireframe) {
-                (*itr)->accept(wi);
-            }
-            else {
-                (*itr)->accept(li);
+            osg::PrimitiveSet* primitive = (*itr).get();
+            if(primitive && primitive->getMode() >= osg::PrimitiveSet::LINES && primitive->getMode() <= osg::PrimitiveSet::LINE_LOOP) {
+                bool isWireframe = false;
+                if(primitive->getUserValue("wireframe", isWireframe) && isWireframe) {
+                    primitive->accept(wi);
+                }
+                else {
+                    primitive->accept(li);
+                }
             }
         }
         addDrawElements(li._indices, osg::PrimitiveSet::LINES, new_primitives);
@@ -143,9 +167,10 @@ void IndexMeshVisitor::apply(osg::Geometry& geom) {
     {
         IndexList points;
         for(itr = primitives.begin() ; itr != primitives.end() ; ++ itr) {
-            if((*itr) && (*itr)->getMode() == osg::PrimitiveSet::POINTS) {
-                for(unsigned int k = 0 ; k < (*itr)->getNumIndices() ; ++ k) {
-                    points.push_back(finalMapping[(*itr)->index(k)]);
+            osg::PrimitiveSet* primitive = (*itr).get();
+            if(primitive && primitive->getMode() == osg::PrimitiveSet::POINTS) {
+                for(unsigned int k = 0 ; k < primitive->getNumIndices() ; ++ k) {
+                    points.push_back(finalMapping[primitive->index(k)]);
                 }
             }
         }
@@ -154,7 +179,6 @@ void IndexMeshVisitor::apply(osg::Geometry& geom) {
 
     geom.setPrimitiveSetList(new_primitives);
     deduplicator.deduplicateUVs(geom);
-    setProcessed(&geom);
 }
 
 

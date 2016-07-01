@@ -1,0 +1,46 @@
+#include <osgDB/ReaderWriter>
+#include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
+#include <osgDB/Registry>
+#include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
+
+#include <fstream>
+#include <sstream>
+
+
+inline void save_debug(osg::Node& node, const std::string& path) {
+    osg::ref_ptr<osgDB::Registry> registry = osgDB::Registry::instance();
+    std::string ext = osgDB::getLowerCaseFileExtension(path);
+    osgDB::ReaderWriter* writer = registry->getReaderWriterForExtension(ext);
+    if(writer) {
+        writer->writeNode(node, path.c_str());
+    }
+}
+
+inline void save_debug(osg::Geometry& geometry, const std::string& path) {
+    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+    geode->addDrawable(&geometry);
+    save_debug(*geode, path);
+}
+
+template<typename VV>
+std::string dump(const VV& v) {
+    std::ostringstream oss;
+    oss << "(" << v[0];
+    for(int i = 1 ; i < VV::num_components ; ++ i) {
+        oss << ", " << v[i];
+    }
+    oss << ")";
+    return oss.str();
+}
+
+template<typename VV>
+float length(const VV& v) {
+    float l = 0;
+    for(int i = 0 ; i < VV::num_components ; ++ i) {
+        l += v[i] * v[i];
+    }
+    return std::sqrt(l);
+}
+

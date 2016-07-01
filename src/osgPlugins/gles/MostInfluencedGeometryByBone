@@ -1,0 +1,229 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab
+ *
+ * This application is open source and may be redistributed and/or modified
+ * freely and without restriction, both in commercial and non commercial
+ * applications, as long as this copyright notice is maintained.
+ *
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+*/
+
+#ifndef MOST_INFLUENCED_GEOMETRY_BY_BONE_H
+#define MOST_INFLUENCED_GEOMETRY_BY_BONE_H
+
+#include <algorithm>
+
+#include <osg/NodeVisitor>
+#include <osg/Geometry>
+#include <osg/Array>
+
+#include <osgAnimation/RigGeometry>
+#include <osgAnimation/Bone>
+
+#include "StatLogger"
+
+
+class InfluenceAttribute;
+
+//{
+//    "Bone001": {
+//        Geom1: {
+//            numVertexInfluenced: (int),
+//            gloabalWeight: (float)
+//        },
+//        Geom2: {
+//            numVertexInfluenced: (int),
+//            gloabalWeight: (float)
+//        },
+//        ...
+//    },
+//    "Bone002": {
+//        Geom1: {
+//            numVertexInfluenced: (int),
+//            gloabalWeight: (float)
+//        },
+//        Geom4: {
+//            numVertexInfluenced: (int),
+//            gloabalWeight: (float)
+//        },
+//        ...
+//    },
+//    ...
+//}
+//
+//Here we store influences by bone, we will sort it and take the biggest one
+typedef std::map< osgAnimation::Bone*, std::map< osgAnimation::RigGeometry*, InfluenceAttribute > > RigGeometryInfluenceByBoneMap;
+
+typedef std::map< osgAnimation::RigGeometry*, InfluenceAttribute > BoneInfluenceMap;
+typedef std::pair< osgAnimation::RigGeometry*, InfluenceAttribute > BoneInfluence;
+typedef std::vector< BoneInfluence > BoneInfluences;
+
+
+typedef std::set< osgAnimation::RigGeometry* > RigGeometrySet;
+typedef std::set< osgAnimation::Bone* > BoneSet;
+
+//Here we simply collect all bones and all rigGeometries
+class CollectBonesAndRigGeometriesVisitor: public osg::NodeVisitor {
+
+public:
+    CollectBonesAndRigGeometriesVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
+    {}
+
+    void apply(osg::Geometry &geometry) {
+        osgAnimation::RigGeometry *rigGeometry = dynamic_cast<osgAnimation::RigGeometry*>(&geometry);
+        if(rigGeometry) {
+            _rigGeometrySet.insert(rigGeometry);
+        }
+        traverse(geometry);
+    }
+
+    void apply(osg::MatrixTransform &node) {
+        osgAnimation::Bone *bone = dynamic_cast<osgAnimation::Bone*>(&node);
+        if(bone) {
+            _boneSet.insert(bone);
+        }
+
+        traverse(node);
+    }
+
+    RigGeometrySet& getRigGeometrySet() {
+        return _rigGeometrySet;
+    }
+
+    BoneSet& getBoneSet() {
+        return _boneSet;
+    }
+
+protected:
+    RigGeometrySet _rigGeometrySet;
+    BoneSet _boneSet;
+};
+
+
+//Store and compute influence attributes i.e number of influenced vertex and accumulate weight
+class InfluenceAttribute {
+public:
+    InfluenceAttribute():
+        _accumulatedWeight(0),
+        _weightCount(0)
+    {}
+
+    void addWeight(float weight) {
+        _accumulatedWeight += weight;
+        _weightCount++;
+    }
+
+    unsigned int getNumInfluencedVertex() {
+        return _weightCount;
+    }
+
+    unsigned int getNumInfluencedVertex() const {
+        return _weightCount;
+    }
+
+    float getNormalizedWeight() const {
+        if(_weightCount == 0) return 0;
+        return _accumulatedWeight / _weightCount;
+    }
+
+protected:
+    float _accumulatedWeight;
+    unsigned int _weightCount;
+};
+
+typedef std::pair< std::string, osgAnimation::Bone* > StringBonePair;
+typedef std::pair< osgAnimation::RigGeometry*, unsigned int > RigGeometryIntPair;
+
+class BoneNameBoneMap : public std::map<std::string, osgAnimation::Bone*> {
+
+public:
+    BoneNameBoneMap(const BoneSet& bones) {
+        for(BoneSet::iterator bone = bones.begin(); bone != bones.end(); ++bone) {
+            insert(StringBonePair((*bone)->getName(), *bone));
+        }
+    }
+};
+
+
+class RigGeometryIndexMap : public std::map<osgAnimation::RigGeometry*, unsigned int> {
+
+public:
+    RigGeometryIndexMap(const RigGeometrySet& rigGeometrySet) {
+        unsigned int index = 0;
+        for(RigGeometrySet::iterator rigGeometry = rigGeometrySet.begin(); rigGeometry != rigGeometrySet.end(); ++rigGeometry, ++index) {
+            insert(RigGeometryIntPair(*rigGeometry, index));
+        }
+    }
+};
+
+
+class ComputeMostInfluencedGeometryByBone {
+
+public:
+    ComputeMostInfluencedGeometryByBone(RigGeometrySet &rigGeometrySet, BoneSet &boneSet):
+        _rigGeometrySet(rigGeometrySet),
+        _boneSet(boneSet),
+        _logger("ComputeMostInfluencedGeometryByBone::compute(...)")
+    {}
+
+    void compute() {
+        RigGeometryIndexMap rigGeometryIndexMap(_rigGeometrySet);
+
+        RigGeometryInfluenceByBoneMap ribbm;
+        computeInfluences(_boneSet, _rigGeometrySet, ribbm);
+        for(RigGeometryInfluenceByBoneMap::iterator boneInfluencePair = ribbm.begin(); boneInfluencePair != ribbm.end(); ++boneInfluencePair) {
+            osg::ref_ptr<osgAnimation::Bone> bone = boneInfluencePair->first;
+            BoneInfluenceMap boneInfluenceMap = boneInfluencePair->second;
+            BoneInfluences influences(boneInfluenceMap.begin(), boneInfluenceMap.end());
+
+            std::sort(influences.begin(), influences.end(), sort_influences());
+            bone->setUserValue("rigIndex", rigGeometryIndexMap [ influences.front().first ]);
+        }
+
+        RigGeometrySet &rigGeometrySet(_rigGeometrySet);
+        for(RigGeometrySet::iterator rigGeometry = rigGeometrySet.begin(); rigGeometry != rigGeometrySet.end(); ++rigGeometry) {
+            (*rigGeometry)->setUserValue("rigIndex", rigGeometryIndexMap[ *rigGeometry ]);
+        }
+    }
+
+protected:
+    void computeInfluences(const BoneSet& bones, const RigGeometrySet& rigGeometries, RigGeometryInfluenceByBoneMap& rigGeometryInfluenceByBoneMap) {
+        BoneNameBoneMap boneMap(bones);
+
+        for(RigGeometrySet::const_iterator rigGeometry = rigGeometries.begin(); rigGeometry != rigGeometries.end(); ++rigGeometry) {
+            osg::ref_ptr<osgAnimation::VertexInfluenceMap> vertexInfluenceMap = (*rigGeometry)->getInfluenceMap();
+
+            for(osgAnimation::VertexInfluenceMap::iterator vertexInfluencePair = vertexInfluenceMap->begin(); vertexInfluencePair != vertexInfluenceMap->end(); ++vertexInfluencePair) {
+                BoneNameBoneMap::iterator bone_it = boneMap.find(vertexInfluencePair->first);
+                if(bone_it == boneMap.end()) continue;
+                osg::ref_ptr<osgAnimation::Bone> bone = bone_it->second;
+                const osgAnimation::VertexInfluence& vertexInfluence = (*vertexInfluencePair).second;
+
+                for(osgAnimation::VertexInfluence::const_iterator vertexIndexWeight = vertexInfluence.begin(); vertexIndexWeight != vertexInfluence.end(); ++vertexIndexWeight) {
+                    rigGeometryInfluenceByBoneMap[bone.get()][*rigGeometry].addWeight((*vertexIndexWeight).second);
+                }
+            }
+        }
+    }
+
+    struct sort_influences {
+        //We sort influences by number of influenced vertex first and then by normalized weight (number_of_vertex_influence / accumulated_weight)
+        //i.e we choose to keep geometries with many vertex insted of geometries with high normalized weight, it makes more sense for geometry
+        //selection via bone influence box @see AABBonBoneVisitor class
+        bool operator()(const BoneInfluence &a, const BoneInfluence &b) {
+            return (a.second.getNumInfluencedVertex() > b.second.getNumInfluencedVertex()) ||
+                   (a.second.getNumInfluencedVertex() == b.second.getNumInfluencedVertex() && \
+                        a.second.getNormalizedWeight() > b.second.getNormalizedWeight());
+        }
+    };
+
+    RigGeometrySet &_rigGeometrySet;
+    BoneSet &_boneSet;
+    StatLogger _logger;
+};
+
+
+#endif // MOST_INFLUENCED_GEOMETRY_BY_BONE_H

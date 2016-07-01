@@ -22,7 +22,7 @@ public:
     DrawArrayVisitor(): GeometryUniqueVisitor("DrawArrayVisitor")
     {}
 
-    void apply(osg::Geometry& geometry) {
+    void process(osg::Geometry& geometry) {
         GeometryArrayList srcArrays(geometry);
 
         // clone but clear content
@@ -87,7 +87,6 @@ public:
 
         dst.setToGeometry(geometry);
         geometry.setPrimitiveSetList(newGeometry->getPrimitiveSetList());
-        setProcessed(&geometry);
     }
 };
 

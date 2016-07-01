@@ -23,37 +23,65 @@ public:
         _userValue(userValue), _keepGeometryAttributes(keepGeometryAttributes), _inlined(inlined)
     {}
 
-    void apply(osg::Geometry& geometry) {
-        if(shouldDetach(geometry)) {
-            osg::Geometry* detached = createDetachedGeometry(geometry);
+    void reparentDuplicatedGeometry(osg::Geometry& geometry, osg::Geometry& duplicated)
+    {
+        unsigned int nbParents = geometry.getNumParents();
+        for(unsigned int i = 0 ; i < nbParents ; ++ i) {
+            osg::Node* parent = geometry.getParent(i);
+            if(parent && parent->asGeode()) {
+                osg::Geode* geode = parent->asGeode();
+                geode->addDrawable(&duplicated);
 
-            unsigned int nbParents = geometry.getNumParents();
-            for(unsigned int i = 0 ; i < nbParents ; ++ i) {
-                osg::Node* parent = geometry.getParent(i);
-                // TODO: Geode will be soon deprecated
-                if(parent && parent->asGeode()) {
-                    osg::Geode* geode = parent->asGeode();
-                    geode->addDrawable(detached);
-                    if(!_inlined) {
-                        geode->removeDrawable(&geometry);
-                    }
+                if(!_inlined) {
+                    geode->removeDrawable(&duplicated);
                 }
             }
+        }
+    }
+
+    void process(osg::Geometry& geometry) {
+        if(shouldDetach(geometry)) {
+            osg::Geometry* detached = detachGeometry(geometry);
+            reparentDuplicatedGeometry(geometry, *detached);
             setProcessed(detached);
         }
-        setProcessed(&geometry);
+    }
+
+    void process(osgAnimation::RigGeometry& rigGeometry) {
+        return process(static_cast<osg::Geometry&>(rigGeometry));
     }
 
 protected:
-    bool shouldDetach(osg::Geometry& geometry) {
+    bool shouldDetach(const osg::Geometry& geometry) const {
+        if(const osgAnimation::RigGeometry* rigGeometry = dynamic_cast<const osgAnimation::RigGeometry*>(&geometry)) {
+            return shouldDetach(*rigGeometry->getSourceGeometry());
+        }
+
         bool detach = false;
         for(unsigned int i = 0 ; i < geometry.getNumPrimitiveSets() ; ++ i) {
-            osg::PrimitiveSet* primitive = geometry.getPrimitiveSet(i);
+            const osg::PrimitiveSet* primitive = geometry.getPrimitiveSet(i);
             if(primitive && primitive->getUserValue(_userValue, detach) && detach) {
                 return true;
             }
         }
         return false;
+    }
+
+    osg::Geometry* detachGeometry(osg::Geometry& source) {
+        // filter vertex buffers depending on geometry type
+        osg::Geometry* detached = makeDetachedGeometry(source);
+        detached->setUserValue(_userValue, true);
+        return detached;
+    }
+
+    osg::Geometry* makeDetachedGeometry(osg::Geometry& geometry) {
+        if(osgAnimation::RigGeometry* rigGeometry = dynamic_cast<osgAnimation::RigGeometry*>(&geometry)) {
+            return createDetachedGeometry(*rigGeometry);
+        }
+        if(osgAnimation::MorphGeometry* morphGeometry = dynamic_cast<osgAnimation::MorphGeometry*>(&geometry)) {
+            return createDetachedGeometry(*morphGeometry);
+        }
+        return createDetachedGeometry(geometry);
     }
 
     osg::Geometry* createDetachedGeometry(osg::Geometry& source) {
@@ -72,6 +100,11 @@ protected:
             detached->setUserDataContainer(0);
         }
 
+        detached->setPrimitiveSetList(createDetachedPrimitives(source));
+        return detached;
+    }
+
+    osg::Geometry::PrimitiveSetList createDetachedPrimitives(osg::Geometry& source) {
         // filter primitivesets
         osg::Geometry::PrimitiveSetList detachedPrimitives;
         for(int i = source.getNumPrimitiveSets() - 1 ; i >= 0 ; -- i) {
@@ -82,12 +115,47 @@ protected:
                 source.removePrimitiveSet(i);
             }
         }
+        return detachedPrimitives;
+    }
 
-        detached->setPrimitiveSetList(detachedPrimitives);
-        detached->setUserValue(_userValue, true);
+    osgAnimation::MorphGeometry* createDetachedGeometry(osgAnimation::MorphGeometry& source) {
+        osgAnimation::MorphGeometry* detached = new osgAnimation::MorphGeometry(*createDetachedGeometry(static_cast<osg::Geometry&>(source)));
+        detached->setVertexArray(source.getVertexArray());
+
+        osgAnimation::MorphGeometry::MorphTargetList& targets = source.getMorphTargetList();
+        for(osgAnimation::MorphGeometry::MorphTargetList::iterator target = targets.begin() ; target != targets.end() ; ++ target) {
+            detached->addMorphTarget(target->getGeometry(), target->getWeight());
+        }
         return detached;
     }
 
+    osg::Geometry* createDetachedGeometry(osgAnimation::RigGeometry& source) {
+        osgAnimation::RigGeometry* detached;
+        if(!_keepGeometryAttributes) {
+            detached = new osgAnimation::RigGeometry();
+            detached->setSourceGeometry(makeDetachedGeometry(*source.getSourceGeometry()));
+
+            // Only keep vertexes and Bones/Weights attrib arrays
+            detached->setVertexArray(source.getVertexArray());
+            for(unsigned int i = 0 ; i < source.getVertexAttribArrayList().size() ; ++ i) {
+                osg::Array* attribute = source.getVertexAttribArray(i);
+                if(attribute) {
+                    bool isBones = false;
+                    bool isWeights = false;
+                    attribute->getUserValue("bones", isBones);
+                    attribute->getUserValue("weights", isWeights);
+                    if (isBones || isWeights) {
+                        detached->setVertexAttribArray(i, source.getVertexAttribArray(i));
+                    }
+                }
+            }
+        }
+        else {
+            detached = new osgAnimation::RigGeometry(source, osg::CopyOp::SHALLOW_COPY);
+        }
+
+        return detached;
+    }
 
     std::string _userValue;
     bool _keepGeometryAttributes;

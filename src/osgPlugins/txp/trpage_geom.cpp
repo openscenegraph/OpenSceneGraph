@@ -217,6 +217,7 @@ void trpgGeometry::SetColors(int num,ColorType type,BindType bind,const trpgColo
 // Constructor
 trpgTexData::trpgTexData()
 {
+    bind = 0;
 }
 trpgTexData::~trpgTexData()
 {

@@ -86,6 +86,7 @@ class ObjPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
         ObjPrimitiveIndexWriter(std::ostream& fout,osg::Geometry* geo, unsigned int normalIndex, unsigned int lastVertexIndex, unsigned int  lastNormalIndex, unsigned int lastTexIndex) :
             osg::PrimitiveIndexFunctor(),
             _fout(fout),
+            _modeCache(0),
             _lastVertexIndex(lastVertexIndex),
             _lastNormalIndex(lastNormalIndex),
             _lastTexIndex(lastTexIndex),

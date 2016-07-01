@@ -193,6 +193,11 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         /** Get the graphics operation to call on realization of the viewers graphics windows.*/
         osg::Operation* getRealizeOperation() { return _realizeOperation.get(); }
 
+        /** Set the graphics operation to call before the viewers graphics contexts close.*/
+        void setCleanUpOperation(osg::Operation* op) { _cleanUpOperation = op; }
+
+        /** Get the graphics operation to call before the viewers graphics contexts close.*/
+        osg::Operation* getCleanUpOperation() { return _cleanUpOperation.get(); }
 
         /** Set the incremental compile operation.
           * Used to manage the OpenGL object compilation and merging of subgraphs in a way that avoids overloading
@@ -336,6 +341,7 @@ protected:
         osg::ref_ptr<osgUtil::UpdateVisitor>                _updateVisitor;
 
         osg::ref_ptr<osg::Operation>                        _realizeOperation;
+        osg::ref_ptr<osg::Operation>                        _cleanUpOperation;
         osg::ref_ptr<osgUtil::IncrementalCompileOperation>  _incrementalCompileOperation;
 
         osg::observer_ptr<osg::GraphicsContext>             _currentContext;

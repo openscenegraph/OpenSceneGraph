@@ -42,6 +42,7 @@
 #include <osg/Vec4d>
 #include <osg/Matrix>
 #include <osg/Matrixd>
+#include <osg/Quat>
 
 #include <osg/BufferObject>
 
@@ -109,7 +110,9 @@ class OSG_EXPORT Array : public BufferData
             Vec4dArrayType    = 32,
 
             MatrixArrayType   = 33,
-            MatrixdArrayType  = 34
+            MatrixdArrayType  = 34,
+
+            QuatArrayType     = 35
         };
 
         enum Binding
@@ -434,6 +437,8 @@ typedef TemplateArray<Vec4d,Array::Vec4dArrayType,4,GL_DOUBLE>                  
 typedef TemplateArray<Matrixf,Array::MatrixArrayType,16,GL_FLOAT>               MatrixfArray;
 typedef TemplateArray<Matrixd,Array::MatrixdArrayType,16,GL_DOUBLE>             MatrixdArray;
 
+typedef TemplateArray<Quat,Array::QuatArrayType,4,GL_DOUBLE>                    QuatArray;
+
 
 class ArrayVisitor
 {
@@ -600,6 +605,8 @@ class ValueVisitor
 
         virtual void apply(Matrixf&) {}
         virtual void apply(Matrixd&) {}
+
+        virtual void apply(Quat&) {}
 };
 
 class ConstValueVisitor
@@ -654,6 +661,8 @@ class ConstValueVisitor
 
         virtual void apply(const Matrixf&) {}
         virtual void apply(const Matrixd&) {}
+
+        virtual void apply(const Quat&) {}
 };
 
 template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>

@@ -35,6 +35,7 @@ trpgr_Archive::trpgr_Archive()
     ness = LittleEndian;
     strcpy(dir,".");
     tileCache = NULL;
+    headerRead = false;
 }
 
 // Destructor

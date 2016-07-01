@@ -1069,6 +1069,10 @@ trpgPageManageTester::trpgPageManageTester()
 {
     manager = NULL;
     archive = NULL;
+
+    printBuf = NULL;
+
+    majorVersion = minorVersion = 0;
 }
 
 trpgPageManageTester::~trpgPageManageTester()

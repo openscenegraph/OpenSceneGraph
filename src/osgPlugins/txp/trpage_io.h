@@ -265,7 +265,7 @@ typedef int trpgMatRef;
 TX_EXDECL class TX_CLDECL trpg2dPoint {
 public:
     double x, y;
-    trpg2dPoint (void) { };
+    trpg2dPoint (void) : x(0.0),y(0.0) { };
     trpg2dPoint (double in_x,double in_y) { x = in_x; y = in_y; };
     bool operator==(const trpg2dPoint& pt ) const {
         if ( x != pt.x ) return false;
@@ -278,7 +278,7 @@ public:
 TX_EXDECL class TX_CLDECL trpg2iPoint {
 public:
     int x,y;
-    trpg2iPoint (void) { };
+    trpg2iPoint (void) : x(0),y(0) { };
     trpg2iPoint (int in_x,int in_y) {x = in_x; y = in_y;};
 };
 /* Double precision 3 dimensional point. */

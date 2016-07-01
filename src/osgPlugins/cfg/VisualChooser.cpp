@@ -23,7 +23,7 @@ using namespace osgProducer;
 
 VisualChooser::VisualChooser( void )
 {
-     _visual_id = 0;
+    _visual_id = 0;
     _strictAdherence = false;
 }
 

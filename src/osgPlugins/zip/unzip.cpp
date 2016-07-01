@@ -2003,7 +2003,7 @@ uInt *v)               // working area: values in order of bit length
 
       // backup over finished tables
       mask = (1 << w) - 1;      // needed on HP, cc -O bug
-      while ((i & mask) != x[h])
+      while (((i & mask) != x[h]) && (w>=l))
       {
         h--;                    // don't need to update q
         w -= l;

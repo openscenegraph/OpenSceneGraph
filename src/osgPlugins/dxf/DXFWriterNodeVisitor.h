@@ -168,6 +168,7 @@ class DXFWriterNodeVisitor: public osg::NodeVisitor {
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
             _fout(fout),
             _currentStateSet(new osg::StateSet()),
+            _count(0),
             _firstPass(true),
             _writeTriangleAs3DFace(true)
         {

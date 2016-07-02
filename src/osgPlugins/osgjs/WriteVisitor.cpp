@@ -10,10 +10,14 @@
 #include <osg/Types>
 #include <osg/Material>
 #include <osg/BlendFunc>
+
 #include <osgSim/ShapeAttribute>
 
-#include "Base64"
+#include <osgText/Text>
 
+#include <osgAnimation/MorphGeometry>
+
+#include "Base64"
 
 
 osg::Array* getTangentSpaceArray(osg::Geometry& geometry) {
@@ -26,6 +30,51 @@ osg::Array* getTangentSpaceArray(osg::Geometry& geometry) {
     }
     return 0;
 }
+
+
+osg::Array* getAnimationBonesArray(osgAnimation::RigGeometry& rigGeometry) {
+    for(unsigned int i = 0 ; i < rigGeometry.getNumVertexAttribArrays() ; ++ i) {
+        osg::Array* attribute = rigGeometry.getVertexAttribArray(i);
+        bool isBones = false;
+        if(attribute && attribute->getUserValue("bones", isBones) && isBones) {
+            return attribute;
+        }
+    }
+    return 0;
+}
+
+
+osg::Array* getAnimationWeightsArray(osgAnimation::RigGeometry& rigGeometry) {
+    for(unsigned int i = 0 ; i < rigGeometry.getNumVertexAttribArrays() ; ++ i) {
+        osg::Array* attribute = rigGeometry.getVertexAttribArray(i);
+        bool isWeights = false;
+        if(attribute && attribute->getUserValue("weights", isWeights) && isWeights) {
+            return attribute;
+        }
+    }
+    return 0;
+}
+
+
+osg::ref_ptr<JSONObject> buildRigBoneMap(osgAnimation::RigGeometry& rigGeometry) {
+    osg::Array* bones = getAnimationBonesArray(rigGeometry);
+    osg::ref_ptr<JSONObject> boneMap = new JSONObject;
+
+    unsigned int paletteIndex = 0;
+    while(true) {
+        std::ostringstream oss;
+        oss << "animationBone_" << paletteIndex;
+        std::string boneName, palette = oss.str();
+        if(!bones->getUserValue(palette, boneName)) {
+            break;
+        }
+        boneMap->getMaps()[boneName] = new JSONValue<int>(paletteIndex);
+        ++ paletteIndex;
+    }
+
+    return boneMap;
+}
+
 
 void translateObject(JSONObject* json, osg::Object* osg)
 {
@@ -194,6 +243,44 @@ static JSONValue<std::string>* getJSONWrapMode(osg::Texture::WrapMode mode)
     return 0;
 }
 
+static JSONValue<std::string>* getJSONAlignmentType(osgText::Text::AlignmentType type)
+{
+    switch(type) {
+        case osgText::Text::LEFT_TOP:
+            return new JSONValue<std::string>("LEFT_TOP");
+        case osgText::Text::LEFT_CENTER:
+            return new JSONValue<std::string>("LEFT_CENTER");
+        case osgText::Text::LEFT_BOTTOM:
+            return new JSONValue<std::string>("LEFT_BOTTOM");
+        case osgText::Text::CENTER_TOP:
+            return new JSONValue<std::string>("CENTER_TOP");
+        case osgText::Text::CENTER_CENTER:
+            return new JSONValue<std::string>("CENTER_CENTER");
+        case osgText::Text::CENTER_BOTTOM:
+            return new JSONValue<std::string>("CENTER_BOTTOM");
+        case osgText::Text::RIGHT_TOP:
+            return new JSONValue<std::string>("RIGHT_TOP");
+        case osgText::Text::RIGHT_CENTER:
+            return new JSONValue<std::string>("RIGHT_CENTER");
+        case osgText::Text::RIGHT_BOTTOM:
+            return new JSONValue<std::string>("RIGHT_BOTTOM");
+        case osgText::Text::LEFT_BASE_LINE:
+            return new JSONValue<std::string>("LEFT_BASE_LINE");
+        case osgText::Text::CENTER_BASE_LINE:
+            return new JSONValue<std::string>("CENTER_BASE_LINE");
+        case osgText::Text::RIGHT_BASE_LINE:
+            return new JSONValue<std::string>("RIGHT_BASE_LINE");
+        case osgText::Text::LEFT_BOTTOM_BASE_LINE:
+            return new JSONValue<std::string>("LEFT_BOTTOM_BASE_LINE");
+        case osgText::Text::CENTER_BOTTOM_BASE_LINE:
+            return new JSONValue<std::string>("CENTER_BOTTOM_BASE_LINE");
+        case osgText::Text::RIGHT_BOTTOM_BASE_LINE:
+            return new JSONValue<std::string>("RIGHT_BOTTOM_BASE_LINE");
+        default:
+            return 0;
+    }
+    return 0;
+}
 
 JSONObject* createImage(osg::Image* image, bool inlineImages, int maxTextureDimension, const std::string &baseName)
 {
@@ -224,7 +311,8 @@ JSONObject* createImage(osg::Image* image, bool inlineImages, int maxTextureDime
         } else {
             // no image file so use this inline name image and create a file
             std::stringstream ss;
-            ss << osgDB::getFilePath(baseName) << osgDB::getNativePathSeparator();
+            if ( !osgDB::getFilePath(baseName).empty())
+                ss << osgDB::getFilePath(baseName) << osgDB::getNativePathSeparator();
             ss << (int64_t)image << ".inline_conv_generated.png"; // write the pointer location
             std::string filename = ss.str();
             if (osgDB::writeImageFile(*image, filename)) {
@@ -235,9 +323,18 @@ JSONObject* createImage(osg::Image* image, bool inlineImages, int maxTextureDime
         if (!image->getFileName().empty()) { // means that everything went ok
             if (inlineImages) {
 
-                std::ifstream in(osgDB::findDataFile(image->getFileName()).c_str());
-                if (in.is_open())
+                std::ifstream in(osgDB::findDataFile(image->getFileName()).c_str(), std::ifstream::in | std::ifstream::binary);
+                if (in.is_open() && in.good())
                 {
+                    // read file first to iterate
+                    in.seekg(0, std::ifstream::end);
+                    const std::ifstream::pos_type size = in.tellg();
+                    in.seekg(0, std::ifstream::beg);
+                    std::vector<unsigned char> rawData;
+                    rawData.resize(size);
+                    in.read(reinterpret_cast<char*>(rawData.data()),size);
+                    in.seekg(std::ios_base::beg);
+
                     std::stringstream out;
                     out << "data:image/" << osgDB::getLowerCaseFileExtension(image->getFileName()) << ";base64,";
                     base64::encode(std::istreambuf_iterator<char>(in),
@@ -255,64 +352,60 @@ JSONObject* createImage(osg::Image* image, bool inlineImages, int maxTextureDime
 }
 
 
-JSONObject* WriteVisitor::createJSONBufferArray(osg::Array* array, osg::Geometry* geom)
+JSONObject* WriteVisitor::createJSONBufferArray(osg::Array* array, osg::Object* parent)
 {
     if (_maps.find(array) != _maps.end())
         return _maps[array]->getShadowObject();
 
     osg::ref_ptr<JSONBufferArray> json = new JSONBufferArray(array);
-    json->addUniqueID();
     _maps[array] = json;
-    if(geom && _mergeAllBinaryFiles) {
-        setBufferName(json.get(), geom);
+    if(_mergeAllBinaryFiles) {
+        setBufferName(json.get(), parent, array);
     }
     return json.get();
 }
 
-JSONObject* WriteVisitor::createJSONDrawElementsUInt(osg::DrawElementsUInt* de, osg::Geometry* geom)
+JSONObject* WriteVisitor::createJSONDrawElementsUInt(osg::DrawElementsUInt* de, osg::Object* parent)
 {
     if (_maps.find(de) != _maps.end())
         return _maps[de]->getShadowObject();
 
     JSONDrawElements<osg::DrawElementsUInt>* json = new JSONDrawElements<osg::DrawElementsUInt>(*de);
-    json->addUniqueID();
     _maps[de] = json;
-    if(geom && _mergeAllBinaryFiles) {
-        setBufferName(json, geom);
+    if(_mergeAllBinaryFiles) {
+        setBufferName(json, parent, de);
     }
     return json;
 }
 
-JSONObject* WriteVisitor::createJSONDrawElementsUShort(osg::DrawElementsUShort* de, osg::Geometry* geom)
+JSONObject* WriteVisitor::createJSONDrawElementsUShort(osg::DrawElementsUShort* de, osg::Object* parent)
 {
     if (_maps.find(de) != _maps.end())
         return _maps[de]->getShadowObject();
 
     JSONDrawElements<osg::DrawElementsUShort>* json = new JSONDrawElements<osg::DrawElementsUShort>(*de);
-    json->addUniqueID();
     _maps[de] = json;
-    if(geom && _mergeAllBinaryFiles) {
-        setBufferName(json, geom);
+    if(_mergeAllBinaryFiles) {
+        setBufferName(json, parent, de);
     }
     return json;
 }
 
-JSONObject* WriteVisitor::createJSONDrawElementsUByte(osg::DrawElementsUByte* de, osg::Geometry* geom)
+JSONObject* WriteVisitor::createJSONDrawElementsUByte(osg::DrawElementsUByte* de, osg::Object* parent)
 {
     if (_maps.find(de) != _maps.end())
         return _maps[de]->getShadowObject();
 
     JSONDrawElements<osg::DrawElementsUByte>* json = new JSONDrawElements<osg::DrawElementsUByte>(*de);
-    json->addUniqueID();
     _maps[de] = json;
-    if(geom && _mergeAllBinaryFiles) {
-        setBufferName(json, geom);
+    if(_mergeAllBinaryFiles) {
+        setBufferName(json, parent, de);
     }
     return json;
 }
 
 // use to convert draw array quads to draw elements triangles
-JSONObject* WriteVisitor::createJSONDrawElements(osg::DrawArrays* drawArray, osg::Geometry* geom)
+JSONObject* WriteVisitor::createJSONDrawElements(osg::DrawArrays* drawArray, osg::Object* parent)
 {
     if (_maps.find(drawArray) != _maps.end())
         return _maps[drawArray]->getShadowObject();
@@ -335,79 +428,77 @@ JSONObject* WriteVisitor::createJSONDrawElements(osg::DrawArrays* drawArray, osg
         de->push_back(base + 3);
     }
     JSONDrawElements<osg::DrawElementsUShort>* json = new JSONDrawElements<osg::DrawElementsUShort>(*de);
-    json->addUniqueID();
     _maps[drawArray] = json;
-    if(geom && _mergeAllBinaryFiles) {
-        setBufferName(json, geom);
+    if(_mergeAllBinaryFiles) {
+        setBufferName(json, parent, drawArray);
     }
     return json;
 }
 
-JSONObject* WriteVisitor::createJSONDrawArray(osg::DrawArrays* da, osg::Geometry* geom)
+JSONObject* WriteVisitor::createJSONDrawArray(osg::DrawArrays* da, osg::Object* parent)
 {
     if (_maps.find(da) != _maps.end())
         return _maps[da]->getShadowObject();
 
     osg::ref_ptr<JSONDrawArray> json = new JSONDrawArray(*da);
-    json->addUniqueID();
     _maps[da] = json;
-    if(geom && _mergeAllBinaryFiles) {
-        setBufferName(json.get(), geom);
+    if(_mergeAllBinaryFiles) {
+        setBufferName(json.get(), parent, da);
     }
     return json.get();
 }
 
-JSONObject* WriteVisitor::createJSONDrawArrayLengths(osg::DrawArrayLengths* da, osg::Geometry* geom)
+JSONObject* WriteVisitor::createJSONDrawArrayLengths(osg::DrawArrayLengths* da, osg::Object* parent)
 {
     if (_maps.find(da) != _maps.end())
         return _maps[da]->getShadowObject();
 
     osg::ref_ptr<JSONDrawArrayLengths> json = new JSONDrawArrayLengths(*da);
-    json->addUniqueID();
     _maps[da] = json;
-    if(geom && _mergeAllBinaryFiles) {
-        setBufferName(json.get(), geom);
+    if(_mergeAllBinaryFiles) {
+        setBufferName(json.get(), parent, da);
     }
     return json.get();
 }
 
 
-JSONObject* WriteVisitor::createJSONGeometry(osg::Geometry* geom)
+JSONObject* WriteVisitor::createJSONGeometry(osg::Geometry* geometry, osg::Object* parent)
 {
-    if (_maps.find(geom) != _maps.end())
-        return _maps[geom]->getShadowObject();
+    if(!parent) {
+        parent = geometry;
+    }
 
-    //if (needToSplit(*geom))
-    //    error();
+    if (_maps.find(geometry) != _maps.end())
+        return _maps[geometry]->getShadowObject();
 
-    osg::ref_ptr<JSONObject> json = new JSONNode;
+    osg::ref_ptr<JSONObject> json = new JSONObject;
     json->addUniqueID();
-    _maps[geom] = json;
+    _maps[geometry] = json;
 
-    if (geom->getStateSet())
-        createJSONStateSet(json.get(), geom->getStateSet());
+    if (geometry->getStateSet())
+        createJSONStateSet(json.get(), geometry->getStateSet());
 
-    translateObject(json.get(), geom);
+    translateObject(json.get(), geometry);
 
     osg::ref_ptr<JSONObject> attributes = new JSONObject;
 
     int nbVertexes = 0;
 
-    if (geom->getVertexArray()) {
-        nbVertexes = geom->getVertexArray()->getNumElements();
-        attributes->getMaps()["Vertex"] = createJSONBufferArray(geom->getVertexArray(), geom);
+    if (geometry->getVertexArray()) {
+        nbVertexes = geometry->getVertexArray()->getNumElements();
+        attributes->getMaps()["Vertex"] = createJSONBufferArray(geometry->getVertexArray(), parent);
     }
-    if (geom->getNormalArray()) {
-        attributes->getMaps()["Normal"] = createJSONBufferArray(geom->getNormalArray(), geom);
-        int nb = geom->getNormalArray()->getNumElements();
+    if (geometry->getNormalArray()) {
+        attributes->getMaps()["Normal"] = createJSONBufferArray(geometry->getNormalArray(), parent);
+        int nb = geometry->getNormalArray()->getNumElements();
         if (nbVertexes != nb) {
             osg::notify(osg::FATAL) << "Fatal nb normals " << nb << " != " << nbVertexes << std::endl;
             error();
         }
     }
-    if (geom->getColorArray()) {
-        attributes->getMaps()["Color"] = createJSONBufferArray(geom->getColorArray(), geom);
-        int nb = geom->getColorArray()->getNumElements();
+    if (geometry->getColorArray()) {
+        attributes->getMaps()["Color"] = createJSONBufferArray(geometry->getColorArray(), parent);
+        int nb = geometry->getColorArray()->getNumElements();
         if (nbVertexes != nb) {
             osg::notify(osg::FATAL) << "Fatal nb colors " << nb << " != " << nbVertexes << std::endl;
             error();
@@ -419,9 +510,9 @@ JSONObject* WriteVisitor::createJSONGeometry(osg::Geometry* geom)
         ss.str("");
         ss << "TexCoord" << i;
         //osg::notify(osg::NOTICE) << ss.str() << std::endl;
-        if (geom->getTexCoordArray(i)) {
-            attributes->getMaps()[ss.str()] = createJSONBufferArray(geom->getTexCoordArray(i), geom);
-            int nb = geom->getTexCoordArray(i)->getNumElements();
+        if (geometry->getTexCoordArray(i)) {
+            attributes->getMaps()[ss.str()] = createJSONBufferArray(geometry->getTexCoordArray(i), parent);
+            int nb = geometry->getTexCoordArray(i)->getNumElements();
             if (nbVertexes != nb) {
                 osg::notify(osg::FATAL) << "Fatal nb tex coord " << i << " " << nb << " != " << nbVertexes << std::endl;
                 error();
@@ -429,9 +520,9 @@ JSONObject* WriteVisitor::createJSONGeometry(osg::Geometry* geom)
         }
     }
 
-    osg::Array* tangents = getTangentSpaceArray(*geom);
+    osg::Array* tangents = getTangentSpaceArray(*geometry);
     if (tangents) {
-        attributes->getMaps()["Tangent"] = createJSONBufferArray(tangents, geom);
+        attributes->getMaps()["Tangent"] = createJSONBufferArray(tangents, parent);
         int nb = tangents->getNumElements();
         if (nbVertexes != nb) {
             osg::notify(osg::FATAL) << "Fatal nb tangent " << nb << " != " << nbVertexes << std::endl;
@@ -441,11 +532,11 @@ JSONObject* WriteVisitor::createJSONGeometry(osg::Geometry* geom)
 
     json->getMaps()["VertexAttributeList"] = attributes;
 
-    if (!geom->getPrimitiveSetList().empty()) {
+    if (!geometry->getPrimitiveSetList().empty()) {
         osg::ref_ptr<JSONArray> primitives = new JSONArray();
-        for (unsigned int i = 0; i < geom->getNumPrimitiveSets(); ++i) {
+        for (unsigned int i = 0; i < geometry->getNumPrimitiveSets(); ++i) {
             osg::ref_ptr<JSONObject> obj = new JSONObject;
-            osg::PrimitiveSet* primitive = geom->getPrimitiveSet(i);
+            osg::PrimitiveSet* primitive = geometry->getPrimitiveSet(i);
             if(!primitive) continue;
 
             if (primitive->getType() == osg::PrimitiveSet::DrawArraysPrimitiveType) {
@@ -454,9 +545,9 @@ JSONObject* WriteVisitor::createJSONGeometry(osg::Geometry* geom)
                 {
                     primitives->getArray().push_back(obj);
                     if (da->getMode() == GL_QUADS) {
-                        obj->getMaps()["DrawElementsUShort"] = createJSONDrawElements(da, geom);
+                        obj->getMaps()["DrawElementsUShort"] = createJSONDrawElements(da, parent);
                     } else {
-                        obj->getMaps()["DrawArrays"] = createJSONDrawArray(da, geom);
+                        obj->getMaps()["DrawArrays"] = createJSONDrawArray(da, parent);
                     }
                 }
             } else if (primitive->getType() == osg::PrimitiveSet::DrawElementsUIntPrimitiveType) {
@@ -464,38 +555,112 @@ JSONObject* WriteVisitor::createJSONGeometry(osg::Geometry* geom)
                 if (da)
                 {
                     primitives->getArray().push_back(obj);
-                    obj->getMaps()["DrawElementsUInt"] = createJSONDrawElementsUInt(da, geom);
+                    obj->getMaps()["DrawElementsUInt"] = createJSONDrawElementsUInt(da, parent);
                 }
-
             }  else if (primitive->getType() == osg::PrimitiveSet::DrawElementsUShortPrimitiveType) {
                 osg::DrawElementsUShort* da = dynamic_cast<osg::DrawElementsUShort*>((primitive));
                 if (da)
                 {
                     primitives->getArray().push_back(obj);
-                    obj->getMaps()["DrawElementsUShort"] = createJSONDrawElementsUShort(da, geom);
+                    obj->getMaps()["DrawElementsUShort"] = createJSONDrawElementsUShort(da, parent);
                 }
             }  else if (primitive->getType() == osg::PrimitiveSet::DrawElementsUBytePrimitiveType) {
                 osg::DrawElementsUByte* da = dynamic_cast<osg::DrawElementsUByte*>((primitive));
                 if (da)
                 {
                     primitives->getArray().push_back(obj);
-                    obj->getMaps()["DrawElementsUByte"] = createJSONDrawElementsUByte(da, geom);
+                    obj->getMaps()["DrawElementsUByte"] = createJSONDrawElementsUByte(da, parent);
                 }
-
             }  else if (primitive->getType() == osg::PrimitiveSet::DrawArrayLengthsPrimitiveType) {
                 osg::DrawArrayLengths* dal = dynamic_cast<osg::DrawArrayLengths*>((primitive));
                 if (dal)
                 {
                     primitives->getArray().push_back(obj);
-                    obj->getMaps()["DrawArrayLengths"] = createJSONDrawArrayLengths(dal, geom);
+                    obj->getMaps()["DrawArrayLengths"] = createJSONDrawArrayLengths(dal, parent);
                 }
-            } else {
-                osg::notify(osg::WARN) << "Primitive Type " << geom->getPrimitiveSetList()[i]->getType() << " not supported, skipping" << std::endl;
+            }  else {
+                osg::notify(osg::WARN) << "Primitive Type " << geometry->getPrimitiveSetList()[i]->getType() << " not supported, skipping" << std::endl;
             }
         }
         json->getMaps()["PrimitiveSetList"] = primitives;
     }
+    if (geometry->getComputeBoundingBoxCallback()) {
+           osg::ref_ptr<JSONObject> jsonObj = new JSONObject;
+           jsonObj->addUniqueID();
+           json->getMaps()["osg.ComputeBoundingBoxCallback"] = jsonObj;
+    }
     return json.get();
+}
+
+JSONObject* WriteVisitor::createJSONRigGeometry(osgAnimation::RigGeometry* rigGeometry)
+{
+    //TODO : Convert data to JSONVertexArray "Float32Array"
+    osg::ref_ptr<JSONObject> json = new JSONObject;
+    json->addUniqueID();
+    osg::ref_ptr<JSONObject> sourceGeometry = new JSONObject;
+
+    if(osgAnimation::MorphGeometry *morphGeometry = dynamic_cast<osgAnimation::MorphGeometry*>(rigGeometry->getSourceGeometry())) {
+        sourceGeometry->getMaps()["osgAnimation.MorphGeometry"] = createJSONMorphGeometry(morphGeometry, rigGeometry);
+    }
+    else {
+        osg::Geometry *geometry  = dynamic_cast<osg::Geometry*>(rigGeometry->getSourceGeometry());
+        if(geometry) {
+            sourceGeometry->getMaps()["osg.Geometry"] = createJSONGeometry(geometry, rigGeometry);
+        }
+    }
+
+    json->getMaps()["SourceGeometry"] = sourceGeometry.get();
+
+    osg::Array* bones = getAnimationBonesArray(*rigGeometry);
+    osg::Array* weights = getAnimationWeightsArray(*rigGeometry);
+    if (bones && weights) {
+        json->getMaps()["BoneMap"] = buildRigBoneMap(*rigGeometry);
+
+        json->getMaps()["VertexAttributeList"] = new JSONObject;
+        osg::ref_ptr<JSONObject> attributes = json->getMaps()["VertexAttributeList"];
+        int nbVertexes = rigGeometry->getSourceGeometry()->getVertexArray()->getNumElements();
+
+        attributes->getMaps()["Bones"] = createJSONBufferArray(bones, rigGeometry);
+        attributes->getMaps()["Weights"] = createJSONBufferArray(weights, rigGeometry);
+        int nb = bones->getNumElements();
+        if (nbVertexes != nb) {
+            osg::notify(osg::FATAL) << "Fatal nb bones " << nb << " != " << nbVertexes << std::endl;
+            error();
+        }
+        nb = weights->getNumElements();
+        if (nbVertexes != nb) {
+            osg::notify(osg::FATAL) << "Fatal nb weights " << nb << " != " << nbVertexes << std::endl;
+            error();
+        }
+    }
+
+    return json.release();
+}
+
+JSONObject* WriteVisitor::createJSONMorphGeometry(osgAnimation::MorphGeometry* morphGeometry, osg::Object* parent)
+{
+    if(!parent) {
+        parent = morphGeometry;
+    }
+
+    JSONObject* jsonGeometry = createJSONGeometry(morphGeometry, parent);
+    JSONArray* targetList = new JSONArray;
+
+    osgAnimation::MorphGeometry::MorphTargetList mTargetList = morphGeometry->getMorphTargetList();
+    typedef osgAnimation::MorphGeometry::MorphTargetList::iterator TargetIterator;
+
+    for(TargetIterator ti = mTargetList.begin(); ti != mTargetList.end(); ti++) {
+        osgAnimation::MorphGeometry::MorphTarget *morphTarget = &(*ti);
+        JSONObject *jsonGeometryObject = new JSONObject;
+        if(osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(morphTarget->getGeometry())) {
+            geometry->setPrimitiveSetList(osg::Geometry::PrimitiveSetList()); //delete unused drawArray
+            jsonGeometryObject->getMaps()["osg.Geometry"] = createJSONGeometry(geometry);
+            targetList->asArray()->getArray().push_back(jsonGeometryObject);
+        }
+    }
+    jsonGeometry->getMaps()["MorphTargets"] = targetList;
+
+    return jsonGeometry;
 }
 
 JSONObject* WriteVisitor::createJSONBlendFunc(osg::BlendFunc* sa)
@@ -544,7 +709,7 @@ JSONObject* WriteVisitor::createJSONCullFace(osg::CullFace* sa)
 
     osg::ref_ptr<JSONValue<std::string> > mode = new JSONValue<std::string>("BACK");
     if (sa->getMode() == osg::CullFace::FRONT) {
-        mode = new JSONValue<std::string>("BACK");
+        mode = new JSONValue<std::string>("FRONT");
     }
     if (sa->getMode() == osg::CullFace::FRONT_AND_BACK) {
         mode = new JSONValue<std::string>("FRONT_AND_BACK");
@@ -555,14 +720,12 @@ JSONObject* WriteVisitor::createJSONCullFace(osg::CullFace* sa)
 
 
 
-
 JSONObject* WriteVisitor::createJSONMaterial(osg::Material* material)
 {
     if (_maps.find(material) != _maps.end())
         return _maps[material]->getShadowObject();
 
     osg::ref_ptr<JSONObject> jsonMaterial = new JSONMaterial;
-    jsonMaterial->addUniqueID();
     _maps[material] = jsonMaterial;
 
     translateObject(jsonMaterial.get(), material);
@@ -583,7 +746,6 @@ JSONObject* WriteVisitor::createJSONLight(osg::Light* light)
         return _maps[light]->getShadowObject();
 
     osg::ref_ptr<JSONObject> jsonLight = new JSONLight;
-    jsonLight->addUniqueID();
     _maps[light] = jsonLight;
 
     translateObject(jsonLight.get(), light);
@@ -617,6 +779,33 @@ template <class T> JSONObject* createImageFromTexture(osg::Texture* texture, JSO
     return 0;
 }
 
+JSONObject* WriteVisitor::createJSONText(osgText::Text* text)
+{
+    if (_maps.find(text) != _maps.end())
+        return _maps[text]->getShadowObject();
+
+    osg::ref_ptr<JSONObject> jsonText = new JSONObject;
+    jsonText->addUniqueID();
+    _maps[text] = jsonText;
+    jsonText->getMaps()["Text"] = new JSONValue<std::string>( text->getText().createUTF8EncodedString()  );
+    jsonText->getMaps()["Position"] = new JSONVec3Array(text->getPosition());
+    jsonText->getMaps()["Color"] = new JSONVec4Array(osg::Vec4(text->getColor().x(),text->getColor().y(),text->getColor().z(), text->getColor().w() ));
+    jsonText->getMaps()["CharacterSize"] = new JSONValue<float>(text->getCharacterHeight() );
+    jsonText->getMaps()["AutoRotateToScreen"] = new JSONValue<int>(text->getAutoRotateToScreen() );
+    jsonText->getMaps()["Alignment"] = getJSONAlignmentType(text->getAlignment());
+
+    osg::ref_ptr<JSONValue<std::string> > layout = new JSONValue<std::string>("LEFT_TO_RIGHT");
+    if (text->getLayout() == osgText::Text::RIGHT_TO_LEFT) {
+        layout = new JSONValue<std::string>("RIGHT_TO_LEFT");
+    }
+    if (text->getLayout() == osgText::Text::VERTICAL) {
+        layout = new JSONValue<std::string>("VERTICAL");
+    }
+    jsonText->getMaps()["Layout"] = layout;
+    return jsonText.release();
+}
+
+
 JSONObject* WriteVisitor::createJSONPagedLOD(osg::PagedLOD *plod)
 {
     if (!plod) { return 0; }
@@ -626,9 +815,7 @@ JSONObject* WriteVisitor::createJSONPagedLOD(osg::PagedLOD *plod)
     }
 
     osg::ref_ptr<JSONObject> jsonPlod = new JSONNode;
-    jsonPlod->addUniqueID();
     _maps[plod] = jsonPlod;
-
 
     // Center Mode
     osg::ref_ptr<JSONValue<std::string> > centerMode = new JSONValue<std::string>("USE_BOUNDING_SPHERE_CENTER");
@@ -649,8 +836,7 @@ JSONObject* WriteVisitor::createJSONPagedLOD(osg::PagedLOD *plod)
     }
     jsonPlod->getMaps()["RangeMode"] = rangeMode;
     // Range List
-    //osg::ref_ptr<JSONArray> rangeList = new JSONArray;
-    JSONObject* rangeObject = new JSONObject;
+    osg::ref_ptr<JSONObject> rangeObject = new JSONObject;
     for (unsigned int i =0; i< plod->getRangeList().size(); i++)
     {
         std::stringstream ss;
@@ -662,7 +848,7 @@ JSONObject* WriteVisitor::createJSONPagedLOD(osg::PagedLOD *plod)
     jsonPlod->getMaps()["RangeList"] = rangeObject;
     // File List
 
-    JSONObject* fileObject = new JSONObject;
+    osg::ref_ptr<JSONObject> fileObject = new JSONObject;
     for (unsigned int i =0; i< plod->getNumFileNames(); i++)
     {
         std::stringstream ss;
@@ -670,19 +856,28 @@ JSONObject* WriteVisitor::createJSONPagedLOD(osg::PagedLOD *plod)
         ss << i;
         std::string str = ss.str();
         // We need to convert first from osg format to osgjs format.
-        osg::ref_ptr<osg::Node> n = osgDB::readRefNodeFile(plod->getFileName(i)+".gles");
+        osg::ref_ptr<osg::Node> n = osgDB::readRefNodeFile(plod->getDatabasePath() + plod->getFileName(i)+".gles");
         if (n)
         {
-            std::string filename(osgDB::getStrippedName(plod->getFileName(i))+".osgjs");
-            osgDB::writeNodeFile(*n,filename);
-            fileObject->getMaps()[str] =  new JSONValue<std::string>(filename);
+            std::string filename(osgDB::getNameLessExtension(plod->getFileName(i))+".osgjs");
+
+            std::string fullFilePath(osgDB::getFilePath(_baseName) + osgDB::getNativePathSeparator() + filename);
+            fileObject->getMaps()[str] =  new JSONValue<std::string>(_baseLodURL + filename);
+            osgDB::makeDirectoryForFile(fullFilePath);
+            if (_baseLodURL.empty())
+                _baseLodURL = osgDB::getFilePath(filename) + osgDB::getNativePathSeparator() ;
+            osg::ref_ptr<osgDB::Options> options =  osgDB::Registry::instance()->getOptions()->cloneOptions();
+            options->setPluginStringData(std::string("baseLodURL"), _baseLodURL);
+
+            osgDB::writeNodeFile(*n, fullFilePath, options.get());
+
         }
         else
             fileObject->getMaps()[str] =  new JSONValue<std::string>("");
      }
     jsonPlod->getMaps()["RangeDataList"] = fileObject;
 
-    return jsonPlod.get();
+    return jsonPlod.release();
 }
 
 JSONObject* WriteVisitor::createJSONTexture(osg::Texture* texture)
@@ -742,7 +937,6 @@ JSONObject* WriteVisitor::createJSONStateSet(osg::StateSet* stateset)
 
     osg::ref_ptr<JSONObject> jsonStateSet = new JSONStateSet;
     _maps[stateset] = jsonStateSet;
-    jsonStateSet->addUniqueID();
 
     translateObject(jsonStateSet.get(), stateset);
 
@@ -826,15 +1020,8 @@ JSONObject* WriteVisitor::createJSONStateSet(osg::StateSet* stateset)
         attributeList->getArray().push_back(obj);
     }
 
-
     if (!attributeList->getArray().empty()) {
         jsonStateSet->getMaps()["AttributeList"] = attributeList;
-    }
-
-
-    osg::StateSet::ModeList modeList = stateset->getModeList();
-    for (unsigned int i = 0; i < modeList.size(); ++i) {
-        // add modes
     }
 
     if (jsonStateSet->getMaps().empty())

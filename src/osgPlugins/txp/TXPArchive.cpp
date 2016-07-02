@@ -152,7 +152,7 @@ bool TXPArchive::loadMaterial(int ix)
     if (GetStatesMapEntry(ix).get())
     return true;
 
-    osg::StateSet* osg_state_set = new osg::StateSet;
+    osg::ref_ptr<osg::StateSet> osg_state_set = new osg::StateSet;
 
     const trpgMaterial* mat = materialTable.GetMaterialRef(0,i);
     if (!mat)
@@ -172,7 +172,7 @@ bool TXPArchive::loadMaterial(int ix)
     //         materials per polygon.
     if( numMatTex )
     {
-        osg::Material *osg_material     = new osg::Material;
+        osg::ref_ptr<osg::Material> osg_material     = new osg::Material;
 
         float64 alpha;
         mat->GetAlpha(alpha);
@@ -197,7 +197,7 @@ bool TXPArchive::loadMaterial(int ix)
         osg_material->setShininess(osg::Material::FRONT_AND_BACK , (float)shinines);
 
         osg_material->setAlpha(osg::Material::FRONT_AND_BACK ,(float)alpha);
-        osg_state_set->setAttributeAndModes(osg_material, osg::StateAttribute::ON);
+        osg_state_set->setAttributeAndModes(osg_material.get(), osg::StateAttribute::ON);
 
         SetUserDataToMaterialAttributes(*osg_state_set, *mat);
 
@@ -225,7 +225,7 @@ bool TXPArchive::loadMaterial(int ix)
             mat->GetTexture(ntex,texId,texEnv);
 
             // Set up texture environment
-            osg::TexEnv       *osg_texenv       = new osg::TexEnv();
+            osg::ref_ptr<osg::TexEnv> osg_texenv       = new osg::TexEnv();
             int32 te_mode;
             texEnv.GetEnvMode(te_mode);
             switch( te_mode )
@@ -244,7 +244,7 @@ bool TXPArchive::loadMaterial(int ix)
                 break;
             }
 
-            osg_state_set->setTextureAttribute(ntex,osg_texenv);
+            osg_state_set->setTextureAttribute(ntex,osg_texenv.get());
 
             int wrap_s, wrap_t;
             texEnv.GetWrap(wrap_s, wrap_t);
@@ -323,7 +323,7 @@ bool TXPArchive::loadMaterial(int ix)
         // Culling mode in txp means opposite from osg i.e. Front-> show front face
         if( cullMode != trpgMaterial::FrontAndBack)
         {
-            osg::CullFace* cull_face = new osg::CullFace;
+            osg::ref_ptr<osg::CullFace> cull_face = new osg::CullFace;
             switch (cullMode)
             {
             case trpgMaterial::Front:
@@ -333,7 +333,7 @@ bool TXPArchive::loadMaterial(int ix)
                 cull_face->setMode(osg::CullFace::FRONT);
                 break;
             }
-            osg_state_set->setAttributeAndModes(cull_face, osg::StateAttribute::ON);
+            osg_state_set->setAttributeAndModes(cull_face.get(), osg::StateAttribute::ON);
         }
     }
     SetStatesMap(i,osg_state_set);

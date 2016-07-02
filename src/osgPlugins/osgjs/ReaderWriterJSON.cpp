@@ -48,7 +48,7 @@ public:
          bool varint;
          bool strictJson;
          std::vector<std::string> useSpecificBuffer;
-
+         std::string baseLodURL;
          OptionsStruct() {
              resizeTextureUpToPowerOf2 = 0;
              useExternalBinaryArray = false;
@@ -69,7 +69,7 @@ public:
         supportsOption("mergeAllBinaryFiles","merge all binary files into one to avoid multi request on a server");
         supportsOption("inlineImages","insert base64 encoded images instead of referring to them");
         supportsOption("varint","Use varint encoding to serialize integer buffers");
-        supportsOption("useSpecificBuffer=uservalue1,uservalue2","uses specific buffers for unshared buffers attached to geometries having a specified user value");
+        supportsOption("useSpecificBuffer=userkey1[=uservalue1][:buffername1],userkey2[=uservalue2][:buffername2]","uses specific buffers for unshared buffers attached to geometries having a specified user key/value. Buffer name *may* be specificed after ':' and will be set to uservalue by default. If no value is set then only the existence of a uservalue with key string is performed.");
         supportsOption("disableCompactBuffer","keep source types and do not try to optimize buffers size");
         supportsOption("disableStrictJson","do not clean string (to utf8) or floating point (should be finite) values");
     }
@@ -84,6 +84,7 @@ public:
     {
         std::string ext = osgDB::getFileExtension(fileName);
         if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+
 
         OptionsStruct _options = parseOptions(options);
         json_stream fout(fileName, _options.strictJson);
@@ -127,6 +128,7 @@ public:
             writer.inlineImages(options.inlineImages);
             writer.setMaxTextureDimension(options.resizeTextureUpToPowerOf2);
             writer.setVarint(options.varint);
+            writer.setBaseLodURL(options.baseLodURL);
             for(std::vector<std::string>::const_iterator specificBuffer = options.useSpecificBuffer.begin() ;
                 specificBuffer != options.useSpecificBuffer.end() ; ++ specificBuffer) {
                 writer.addSpecificBuffer(*specificBuffer);
@@ -214,6 +216,11 @@ public:
                     localOptions.useSpecificBuffer.push_back(post_equals.substr(start_pos,
                                                                                 post_equals.length() - start_pos));
                 }
+
+            }
+            if (!options->getPluginStringData( std::string ("baseLodURL" )).empty())
+            {
+                localOptions.baseLodURL = options->getPluginStringData( std::string ("baseLodURL" ));
             }
         }
         return localOptions;

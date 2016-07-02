@@ -22,6 +22,8 @@
 #include <osg/Geometry>
 #include <osg/Geode>
 
+#include <osgAnimation/RigGeometry>
+
 #include <map>
 
 
@@ -31,23 +33,17 @@ class CompactBufferVisitor : public osg::NodeVisitor {
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
         {}
 
-        void apply(osg::Geode& geode){
-            for (unsigned int i = 0; i < geode.getNumDrawables(); i++) {
-                apply(*geode.getDrawable(i));
-            }
-        }
-
-        void apply(osg::Drawable& drawable){
-            osg::Geometry* geometry = drawable.asGeometry();
-            if (!geometry || isProcessed(geometry)) {
-                return;
-            }
-            apply(*geometry);
-        }
-
         void apply(osg::Geometry& geometry) {
+            if(isProcessed(&geometry))
+                return;
+
             compactPrimitiveSets(geometry);
             setProcessed(&geometry);
+
+            osgAnimation::RigGeometry *rig = dynamic_cast<osgAnimation::RigGeometry*>(&geometry);
+            if(rig && rig->getSourceGeometry()) {
+                apply(*rig->getSourceGeometry());
+            }
         }
 
 

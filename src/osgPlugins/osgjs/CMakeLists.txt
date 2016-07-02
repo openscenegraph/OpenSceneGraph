@@ -6,12 +6,13 @@ SET(TARGET_SRC
     WriteVisitor.cpp)
 
 SET(TARGET_H
-    Adaptator
+    Adaptor
     Animation
     Base64
     CompactBufferVisitor
     JSON_Objects
     json_stream
+    utf8_string
     WriteVisitor
 )
 

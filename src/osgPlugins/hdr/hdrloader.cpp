@@ -240,7 +240,10 @@ bool decrunch(RGBE *_scanline, int _len, FILE *_file)
 
     i = fgetc(_file);
     if (i != 2) {
-        fseek(_file, -1, SEEK_CUR);
+        if (fseek(_file, -1, SEEK_CUR)!=0)
+        {
+            return false;
+        }
         return oldDecrunch(_scanline, _len, _file);
     }
 

@@ -188,6 +188,7 @@ void trpgGeometry::AddNormal(DataType type,trpg3dPoint &pt)
 // Constructor
 trpgColorInfo::trpgColorInfo()
 {
+    Reset();
 }
 trpgColorInfo::~trpgColorInfo()
 {
@@ -216,6 +217,7 @@ void trpgGeometry::SetColors(int num,ColorType type,BindType bind,const trpgColo
 // Constructor
 trpgTexData::trpgTexData()
 {
+    bind = 0;
 }
 trpgTexData::~trpgTexData()
 {

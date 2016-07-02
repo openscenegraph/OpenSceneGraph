@@ -216,7 +216,10 @@ void JSONObject::encodeArrayAsVarintBuffer(osg::Array const* array, std::vector<
 }
 
 template<typename T>
-void JSONObject::dumpVarintVector(std::vector<uint8_t>& oss, T const* buffer, bool isUnsigned) const {
+void JSONObject::dumpVarintVector(std::vector<uint8_t>& oss, T const* buffer, bool isUnsigned) const
+{
+    if (!buffer) return;
+
     unsigned int n = buffer->getDataSize();
     for(typename T::const_iterator it = buffer->begin() ; it != buffer->end() ; ++ it) {
         for(unsigned int i = 0 ; i < n ; ++ i) {
@@ -229,7 +232,10 @@ void JSONObject::dumpVarintVector(std::vector<uint8_t>& oss, T const* buffer, bo
 }
 
 template<typename T>
-void JSONObject::dumpVarintValue(std::vector<uint8_t>& oss, T const* buffer, bool isUnsigned) const {
+void JSONObject::dumpVarintValue(std::vector<uint8_t>& oss, T const* buffer, bool isUnsigned) const
+{
+    if (!buffer) return;
+
     for(typename T::const_iterator it = buffer->begin() ; it != buffer->end() ; ++ it) {
         unsigned int value = isUnsigned ? (*it) : JSONObject::toVarintUnsigned(*it);
 

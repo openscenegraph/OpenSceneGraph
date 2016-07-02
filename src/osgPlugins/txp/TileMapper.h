@@ -95,7 +95,8 @@ public:
 
 
     TileMapper():
-        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN) {}
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN),
+        _containsGeode(false) {}
 
 
     virtual osg::Vec3 getEyePoint() const

@@ -115,11 +115,17 @@ FT_Byte* FreeTypeLibrary::getFace(std::istream& fontstream, unsigned int index, 
 
     /* empty stream into memory, open that, and keep the pointer in a FreeTypeFont for cleanup */
     FT_Byte *buffer = new FT_Byte[static_cast<int>(length)];
+    if (!buffer)
+    {
+        OSG_WARN<<" .... the font file could not be read, out of memory"<<std::endl;
+        return 0;
+    }
+
     fontstream.read(reinterpret_cast<char*>(buffer), length);
     if (!fontstream || (static_cast<std::streampos>(fontstream.gcount()) != length))
     {
         OSG_WARN<<" .... the font file could not be read from its stream"<<std::endl;
-        if (buffer) delete [] buffer;
+        delete [] buffer;
         return 0;
     }
     args.flags = FT_OPEN_MEMORY;

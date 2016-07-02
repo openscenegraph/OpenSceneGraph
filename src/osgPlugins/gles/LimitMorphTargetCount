@@ -1,0 +1,31 @@
+#ifndef LIMIT_MORPH_TARGET_COUNT_VISITOR
+#define LIMIT_MORPH_TARGET_COUNT_VISITOR
+
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab */
+
+#include "GeometryUniqueVisitor"
+
+
+class LimitMorphTargetCount : public GeometryUniqueVisitor
+{
+public:
+    LimitMorphTargetCount(unsigned int maxMorphTarget=0) : _maxMorphTarget(maxMorphTarget) {}
+
+    void process(osgAnimation::MorphGeometry& node)
+    {
+        if(_maxMorphTarget) {
+            osgAnimation::MorphGeometry::MorphTargetList& morphTargetList = node.getMorphTargetList();
+            while(morphTargetList.size() > _maxMorphTarget) {
+                morphTargetList.pop_back();
+            }
+        }
+    }
+
+    void process(osg::Geometry& ) {}
+
+protected:
+    unsigned int _maxMorphTarget;
+};
+
+
+#endif // LIMIT_MORPH_TARGET_COUNT_VISITOR

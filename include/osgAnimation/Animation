@@ -70,6 +70,7 @@ namespace osgAnimation
          */
         void computeDuration();
         double getDuration() const;
+        double computeDurationFromChannels() const;
 
         void setWeight (float weight);
         float getWeight() const;
@@ -86,8 +87,6 @@ namespace osgAnimation
     protected:
 
         ~Animation() {}
-
-        double computeDurationFromChannels() const;
 
         double _duration;
         double _originalDuration;

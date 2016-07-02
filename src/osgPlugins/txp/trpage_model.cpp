@@ -218,9 +218,14 @@ bool trpgModel::GetType(int &t)
 }
 bool trpgModel::GetName(char *str,int strLen) const
 {
-    if (!isValid()) return false;
-    int len = (name ? strlen(name) : 0);
+    if (!isValid() || !name)
+    {
+        return false;
+    }
+
+    int len = strlen(name);
     strncpy(str,name,MIN(len,strLen)+1);
+
     return true;
 }
 bool trpgModel::GetNumTiles(int &ret) const

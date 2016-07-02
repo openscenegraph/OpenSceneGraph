@@ -139,7 +139,7 @@ using namespace std;
 
 DataInputStream::DataInputStream(std::istream* istream, const osgDB::ReaderWriter::Options* options)
 {
-    unsigned int endianType ;
+    _version = 0;
 
     _loadExternalReferenceFiles = false;
 
@@ -159,11 +159,13 @@ DataInputStream::DataInputStream(std::istream* istream, const osgDB::ReaderWrite
         OSG_DEBUG << "ive::DataInputStream.setLoadExternalReferenceFiles()=" << getLoadExternalReferenceFiles() << std::endl;
     }
 
-    if(!istream){
+    if(!istream)
+    {
         throwException("DataInputStream::DataInputStream(): null pointer exception in argument.");
+        return;
     }
 
-    endianType = readUInt() ;
+    unsigned int endianType = readUInt() ;
 
     if ( endianType != ENDIAN_TYPE) {
       // Make sure the file is simply swapped

@@ -11,6 +11,7 @@ REGISTER_OBJECT_WRAPPER( osgAnimation_UpdateMorph,
                          osgAnimation::UpdateMorph,
                          "osg::Object osg::Callback osg::NodeCallback osgAnimation::UpdateMorph" )
 {
+    ADD_VECTOR_SERIALIZER( TargetNames, osgAnimation::UpdateMorph::TargetNames, osgDB::BaseSerializer::RW_STRING, 1 );
 }
 
 #undef OBJECT_CAST

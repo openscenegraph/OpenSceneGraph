@@ -817,6 +817,8 @@ trpgChildRef::~trpgChildRef()
 // Reset
 void trpgChildRef::Reset()
 {
+    zmin = 0.0f;
+    zmax = 0.0f;
     x = -1;
     y = -1;
     lod = -1;

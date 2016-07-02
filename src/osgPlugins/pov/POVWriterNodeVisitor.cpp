@@ -473,8 +473,9 @@ public:
 template < class Type, class IterType >
 static void processDrawElements( const PrimitiveSet *pset, DrawElementsWriter *w )
 {
-   const Type *drawElements =
-         dynamic_cast< const Type* >( pset );
+   const Type *drawElements = dynamic_cast< const Type* >( pset );
+   if (!drawElements) return;
+
    for( IterType primItr = drawElements->begin();
          primItr != drawElements->end();
          ++primItr )
@@ -616,32 +617,33 @@ void POVWriterNodeVisitor::processGeometry( const Geometry *g,
          case PrimitiveSet::DrawArraysPrimitiveType:
          {
             const DrawArrays *drawArrays = dynamic_cast< const DrawArrays* >( pset );
+            if (drawArrays)
+            {
+                int startIndex = drawArrays->getFirst();
+                int stopIndex = startIndex + drawArrays->getCount();
 
-            int startIndex = drawArrays->getFirst();
-            int stopIndex = startIndex + drawArrays->getCount();
+                // FIXME: Am I using startIndex for all bundles that are PER_VERTEX?
 
-            // FIXME: Am I using startIndex for all bundles that are PER_VERTEX?
-
-            processDrawArrays( indicesStream, numTriangles,
-                               mode, startIndex, stopIndex );
-
+                processDrawArrays( indicesStream, numTriangles,
+                                mode, startIndex, stopIndex );
+            }
             break;
          }
 
          case PrimitiveSet::DrawArrayLengthsPrimitiveType:
          {
-            const DrawArrayLengths *drawArrayLengths =
-                  dynamic_cast< const DrawArrayLengths* >( pset );
+            const DrawArrayLengths *drawArrayLengths = dynamic_cast< const DrawArrayLengths* >( pset );
+            if (drawArrayLengths)
+            {
+                int startIndex = drawArrayLengths->getFirst();
+                DrawArrayLengths::vector_type::const_iterator itr = drawArrayLengths->begin();
 
-            int startIndex = drawArrayLengths->getFirst();
-            DrawArrayLengths::vector_type::const_iterator itr = drawArrayLengths->begin();
-
-            for( ; itr != drawArrayLengths->end(); itr++ ) {
-               processDrawArrays( indicesStream, numTriangles,
-                                  mode, startIndex, *itr );
-               startIndex += *itr;
+                for( ; itr != drawArrayLengths->end(); itr++ ) {
+                processDrawArrays( indicesStream, numTriangles,
+                                    mode, startIndex, *itr );
+                startIndex += *itr;
+                }
             }
-
             break;
          }
 
@@ -698,8 +700,7 @@ void POVWriterNodeVisitor::processGeometry( const Geometry *g,
       }
    }
 
-   const Texture *texture = dynamic_cast< const Texture* >(
-         ss->getTextureAttribute( 0, StateAttribute::TEXTURE ));
+   const Texture *texture = dynamic_cast< const Texture* >(ss->getTextureAttribute( 0, StateAttribute::TEXTURE ));
    const Image *image = ( texture ? texture->getImage( 0 ) : NULL );
    // TexEnv not used yet
    //const TexEnv *texEnv =  dynamic_cast< const TexEnv* >(

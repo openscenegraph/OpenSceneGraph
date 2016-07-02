@@ -889,6 +889,12 @@ FltExportVisitor::writeUVList( int numVerts, const osg::Geometry& geom, unsigned
 void
 FltExportVisitor::handleDrawArrays( const osg::DrawArrays* da, const osg::Geometry& geom, const osg::Geode& geode )
 {
+    if (!da)
+    {
+        OSG_WARN<<"fltexp: Invalid DrawArray pointer"<<std::endl;
+        return;
+    }
+
     GLint first = da->getFirst();
     GLsizei count = da->getCount();
     GLenum mode = da->getMode();
@@ -956,6 +962,12 @@ FltExportVisitor::handleDrawArrays( const osg::DrawArrays* da, const osg::Geomet
 void
 FltExportVisitor::handleDrawArrayLengths( const osg::DrawArrayLengths* dal, const osg::Geometry& geom, const osg::Geode& geode )
 {
+    if (!dal)
+    {
+        OSG_WARN<<"fltexp: Invalid DrawArrayLengths pointer"<<std::endl;
+        return;
+    }
+
     GLint first = dal->getFirst();
     GLenum mode = dal->getMode();
 

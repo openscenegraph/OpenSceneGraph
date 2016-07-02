@@ -33,7 +33,42 @@ public:
         _textureUnit(textureUnit)
     {}
 
-    void apply(osg::Geometry& geom) {
+    void process(osgAnimation::MorphGeometry& morphGeometry) {
+        process(static_cast<osg::Geometry&>(morphGeometry));
+
+        osgAnimation::MorphGeometry::MorphTargetList& targets = morphGeometry.getMorphTargetList();
+        for(osgAnimation::MorphGeometry::MorphTargetList::iterator target = targets.begin() ; target != targets.end() ; ++ target) {
+            osg::Geometry* geometry = target->getGeometry();
+            bool useParentMorphTexCoord = geometry->getTexCoordArrayList().empty();
+
+            if(useParentMorphTexCoord) {
+                // tangent space require tex coords; in case a target has no tex coords, we try to
+                // bind the parent geometry tex coords
+                geometry->setTexCoordArrayList(morphGeometry.getTexCoordArrayList());
+            }
+
+            process(*geometry);
+
+            if(useParentMorphTexCoord) {
+                // drop parent tex coords after tangent space computation
+                geometry->setTexCoordArrayList(osg::Geometry::ArrayList());
+            }
+        }
+    }
+
+    void process(osg::Geometry& geom) {
+        // We don't have to recompute the tangent space if we already have the data
+        int tangentIndex = -1;
+        if (geom.getUserValue(std::string("tangent"), tangentIndex) && tangentIndex != -1)
+        {
+            if(geom.getVertexAttribArray(tangentIndex)) {
+                OSG_INFO << "[TangentSpaceVisitor::apply] Geometry '" << geom.getName()
+                        << "' The tangent space is not recomputed as it was given within the original file" << std::endl;
+                geom.getVertexAttribArray(tangentIndex)->setUserValue("tangent", true);
+                return;
+            }
+        }
+
         if (!geom.getTexCoordArray(_textureUnit)){
             int texUnit = 0;
             bool found = false;
@@ -71,8 +106,7 @@ public:
             osg::Vec4Array* normal = generator->getNormalArray();
             osg::Vec4Array* tangent = generator->getTangentArray();
             osg::Vec4Array* tangent2 = generator->getBinormalArray();
-            osg::Vec4Array* finalTangent = dynamic_cast<osg::Vec4Array*>(generator->getTangentArray()
-                                                                                  ->clone(osg::CopyOp::DEEP_COPY_ALL));
+            osg::Vec4Array* finalTangent = osg::clone(generator->getTangentArray(), osg::CopyOp::DEEP_COPY_ALL);
             for (unsigned int i = 0; i < tangent->size(); i++) {
                 osg::Vec3 n = osg::Vec3((*normal)[i][0],
                                         (*normal)[i][1],
@@ -94,9 +128,9 @@ public:
                 // The bitangent vector B is then given by B = (N × T) · Tw
             }
             finalTangent->setUserValue("tangent", true);
-            geom.setVertexAttribArray(geom.getNumVertexAttribArrays(), finalTangent, osg::Array::BIND_PER_VERTEX);
+            tangentIndex = (tangentIndex >= 0 ? tangentIndex : geom.getNumVertexAttribArrays()) ;
+            geom.setVertexAttribArray(tangentIndex, finalTangent, osg::Array::BIND_PER_VERTEX);
         }
-        setProcessed(&geom);
     }
 
 protected:

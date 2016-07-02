@@ -482,7 +482,8 @@ public:
 
     virtual bool matchString( const std::string& str )
     {
-        prepareStream();
+        if (!prepareStream()) return false;
+
         std::string strInStream = osgDB::trimEnclosingSpaces(_sstream.str());
         if ( strInStream==str )
         {

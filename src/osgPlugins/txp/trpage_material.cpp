@@ -1012,6 +1012,7 @@ trpgTexture::trpgTexture()
     addr.col = -1;
     addr.row = -1;
     isMipmap = false;
+    numMipMap = 0;
     writeHandle = false;
     handle = -1;
 }
@@ -1032,6 +1033,7 @@ trpgTexture::trpgTexture(const trpgTexture &in):
     addr.row = in.addr.row;
     addr.col = in.addr.col;
     isMipmap = in.isMipmap;
+    numMipMap = in.numMipMap;
     // storageSize + levelOffset
     handle = in.handle;
     writeHandle = in.writeHandle;
@@ -1106,9 +1108,18 @@ bool trpgTexture::GetName(char *outName,int outLen) const
     if (!isValid())
         return false;
 
-    int len = (name) ? strlen(name) : 0;
-    strncpy(outName,name,MIN(len,outLen)+1);
+    if (!outName)
+        return false;
 
+    if (name)
+    {
+        int len = strlen(name);
+        strncpy(outName,name,MIN(len,outLen)+1);
+    }
+    else
+    {
+        outName[0] = '\0';
+    }
     return true;
 }
 
@@ -1813,6 +1824,7 @@ bool trpgTexTable::Read(trpgReadBuffer &buf)
 
 trpgLocalMaterial::trpgLocalMaterial()
 {
+    baseMatTable = -1;
     baseMat = -1;
     sx = sy = ex = ey = destWidth = destHeight = 0;
     addr.resize(1);

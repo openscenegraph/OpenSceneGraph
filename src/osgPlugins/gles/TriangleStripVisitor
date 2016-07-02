@@ -22,7 +22,7 @@ public:
         _cacheSize(cacheSize), _minSize(minSize), _merge(merge)
     {}
 
-    void apply(osg::Geometry& geometry);
+    void process(osg::Geometry& geometry);
 
 protected:
     void mergeTrianglesStrip(osg::Geometry& geometry);

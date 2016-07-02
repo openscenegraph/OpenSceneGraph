@@ -450,31 +450,45 @@ JSONObject* WriteVisitor::createJSONGeometry(osg::Geometry* geom)
 
             if (primitive->getType() == osg::PrimitiveSet::DrawArraysPrimitiveType) {
                 osg::DrawArrays* da = dynamic_cast<osg::DrawArrays*>((primitive));
-                primitives->getArray().push_back(obj);
-                if (da->getMode() == GL_QUADS) {
-                    obj->getMaps()["DrawElementsUShort"] = createJSONDrawElements(da, geom);
-                } else {
-                    obj->getMaps()["DrawArrays"] = createJSONDrawArray(da, geom);
+                if (da)
+                {
+                    primitives->getArray().push_back(obj);
+                    if (da->getMode() == GL_QUADS) {
+                        obj->getMaps()["DrawElementsUShort"] = createJSONDrawElements(da, geom);
+                    } else {
+                        obj->getMaps()["DrawArrays"] = createJSONDrawArray(da, geom);
+                    }
                 }
             } else if (primitive->getType() == osg::PrimitiveSet::DrawElementsUIntPrimitiveType) {
                 osg::DrawElementsUInt* da = dynamic_cast<osg::DrawElementsUInt*>((primitive));
-                primitives->getArray().push_back(obj);
-                obj->getMaps()["DrawElementsUInt"] = createJSONDrawElementsUInt(da, geom);
+                if (da)
+                {
+                    primitives->getArray().push_back(obj);
+                    obj->getMaps()["DrawElementsUInt"] = createJSONDrawElementsUInt(da, geom);
+                }
 
             }  else if (primitive->getType() == osg::PrimitiveSet::DrawElementsUShortPrimitiveType) {
                 osg::DrawElementsUShort* da = dynamic_cast<osg::DrawElementsUShort*>((primitive));
-                primitives->getArray().push_back(obj);
-                obj->getMaps()["DrawElementsUShort"] = createJSONDrawElementsUShort(da, geom);
-
+                if (da)
+                {
+                    primitives->getArray().push_back(obj);
+                    obj->getMaps()["DrawElementsUShort"] = createJSONDrawElementsUShort(da, geom);
+                }
             }  else if (primitive->getType() == osg::PrimitiveSet::DrawElementsUBytePrimitiveType) {
                 osg::DrawElementsUByte* da = dynamic_cast<osg::DrawElementsUByte*>((primitive));
-                primitives->getArray().push_back(obj);
-                obj->getMaps()["DrawElementsUByte"] = createJSONDrawElementsUByte(da, geom);
+                if (da)
+                {
+                    primitives->getArray().push_back(obj);
+                    obj->getMaps()["DrawElementsUByte"] = createJSONDrawElementsUByte(da, geom);
+                }
 
             }  else if (primitive->getType() == osg::PrimitiveSet::DrawArrayLengthsPrimitiveType) {
                 osg::DrawArrayLengths* dal = dynamic_cast<osg::DrawArrayLengths*>((primitive));
-                primitives->getArray().push_back(obj);
-                obj->getMaps()["DrawArrayLengths"] = createJSONDrawArrayLengths(dal, geom);
+                if (dal)
+                {
+                    primitives->getArray().push_back(obj);
+                    obj->getMaps()["DrawArrayLengths"] = createJSONDrawArrayLengths(dal, geom);
+                }
             } else {
                 osg::notify(osg::WARN) << "Primitive Type " << geom->getPrimitiveSetList()[i]->getType() << " not supported, skipping" << std::endl;
             }

@@ -85,14 +85,21 @@ void trpgRange::SetCategory(const char *cat,const char *subCat)
 
 void trpgRange::GetCategory(char *cat,int catLen,char *subCat,int subCatLen) const
 {
-    if (category && cat) {
-        strncpy(cat,category,catLen);
-    } else
-        *cat = 0;
-    if (subCategory && subCat) {
-        strncpy(subCat,subCategory,subCatLen);
-    } else
-        *subCat = 0;
+    if (cat)
+    {
+        if (category) {
+            strncpy(cat,category,catLen);
+        } else
+            *cat = 0;
+    }
+
+    if (subCat)
+    {
+        if (subCategory) {
+            strncpy(subCat,subCategory,subCatLen);
+        } else
+            *subCat = 0;
+    }
 }
 
 void trpgRange::SetLodInfo(double in,double out)

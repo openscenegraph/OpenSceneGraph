@@ -77,7 +77,11 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
     {
         int x,y,lod;
         unsigned int id;
-        sscanf(name.c_str(),"tile%d_%dx%d_%u",&lod,&x,&y,&id);
+        if (sscanf(name.c_str(),"tile%d_%dx%d_%u",&lod,&x,&y,&id)!=4)
+        {
+            return ReadResult::ERROR_IN_READING_FILE;
+        }
+
         osg::ref_ptr< TXPArchive > archive = getArchive(id,osgDB::getFilePath(file));
         if (archive == NULL)
             return ReadResult::ERROR_IN_READING_FILE;
@@ -185,10 +189,16 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
     {
         int x,y,lod;
         unsigned int id;
-        sscanf(name.c_str(),"subtiles%d_%dx%d_%u",&lod,&x,&y,&id);
+        if (sscanf(name.c_str(),"subtiles%d_%dx%d_%u",&lod,&x,&y,&id)!=4)
+        {
+            return ReadResult::ERROR_IN_READING_FILE;
+        }
+
         osg::ref_ptr< TXPArchive > archive = getArchive(id,osgDB::getFilePath(file));
         if (archive == NULL)
+        {
             return ReadResult::ERROR_IN_READING_FILE;
+        }
 
         int majorVersion, minorVersion;
         archive->GetVersion(majorVersion, minorVersion);

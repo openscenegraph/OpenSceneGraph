@@ -66,6 +66,7 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                                 const osg::Matrix& m = osg::Matrix::identity(),bool writeTriangleAs3DFace = true) :
             osg::PrimitiveIndexFunctor(),
             _fout(fout),
+            _modeCache(0),
             _geo(geo),
             _layer(layer),
             _acad(acad),

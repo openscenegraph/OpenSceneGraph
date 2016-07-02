@@ -182,14 +182,23 @@ void zfree(void *buf)
 */
 
 
-typedef struct tm_unz_s
-{ unsigned int tm_sec;            // seconds after the minute - [0,59]
+struct tm_unz
+{
+  tm_unz():
+    tm_sec(0),
+    tm_min(0),
+    tm_hour(0),
+    tm_mday(0),
+    tm_mon(0),
+    tm_year(0) {}
+
+  unsigned int tm_sec;            // seconds after the minute - [0,59]
   unsigned int tm_min;            // minutes after the hour - [0,59]
   unsigned int tm_hour;           // hours since midnight - [0,23]
   unsigned int tm_mday;           // day of the month - [1,31]
   unsigned int tm_mon;            // months since January - [0,11]
   unsigned int tm_year;           // years - [1980..2044]
-} tm_unz;
+} ;
 
 
 
@@ -197,7 +206,9 @@ typedef struct tm_unz_s
 // some windows<->linux portability things
 #ifdef ZIP_STD
 DWORD GetFilePosU(HANDLE hfout)
-{ struct stat st; fstat(FILENO(hfout),&st);
+{
+  struct stat st;
+  if (fstat(FILENO(hfout),&st)<0) return 0xFFFFFFFF;
   if ((st.st_mode&S_IFREG)==0) return 0xFFFFFFFF;
   return ftell(hfout);
 }
@@ -278,8 +289,26 @@ typedef struct unz_global_info_s
 } unz_global_info;
 
 // unz_file_info contain information about a file in the zipfile
-typedef struct unz_file_info_s
-{ unsigned long version;              // version made by                 2 bytes
+struct  unz_file_info
+{
+   unz_file_info():
+    version(0),
+    version_needed(0),
+    flag(0),
+    compression_method(0),
+    dosDate(0),
+    crc(0),
+    compressed_size(0),
+    uncompressed_size(0),
+    size_filename(0),
+    size_file_extra(0),
+    size_file_comment(0),
+    disk_num_start(0),
+    internal_fa(0),
+    external_fa(0)
+    {}
+
+  unsigned long version;              // version made by                 2 bytes
   unsigned long version_needed;       // version needed to extract       2 bytes
   unsigned long flag;                 // general purpose bit flag        2 bytes
   unsigned long compression_method;   // compression method              2 bytes
@@ -294,7 +323,7 @@ typedef struct unz_file_info_s
   unsigned long internal_fa;          // internal file attributes        2 bytes
   unsigned long external_fa;          // external file attributes        4 bytes
   tm_unz tmu_date;
-} unz_file_info;
+};
 
 
 #define UNZ_OK                  (0)
@@ -1974,7 +2003,7 @@ uInt *v)               // working area: values in order of bit length
 
       // backup over finished tables
       mask = (1 << w) - 1;      // needed on HP, cc -O bug
-      while ((i & mask) != x[h])
+      while (((i & mask) != x[h]) && (w>=l))
       {
         h--;                    // don't need to update q
         w -= l;
@@ -3155,6 +3184,10 @@ unzFile unzOpenInternal(LUFILE *fin)
   fin->initial_offset = 0; // since the zipfile itself is expected to handle this
 
   unz_s *s = (unz_s*)zmalloc(sizeof(unz_s));
+
+  // out of memory
+  if (!s) return NULL;
+
   *s=us;
   unzGoToFirstFile((unzFile)s);
   return (unzFile)s;
@@ -4119,17 +4152,17 @@ ZRESULT TUnzip::Get(int index,ZIPENTRY *ze)
     bool hasctime = (flags&4)!=0;
     epos+=5;
     if (hasmtime)
-    { lutime_t mtime = ((extra[epos+0])<<0) | ((extra[epos+1])<<8) |((extra[epos+2])<<16) | ((extra[epos+3])<<24);
+    { lutime_t mtime = ((static_cast<lutime_t>(extra[epos+0]))<<0) | ((static_cast<lutime_t>(extra[epos+1]))<<8) |((static_cast<lutime_t>(extra[epos+2]))<<16) | ((static_cast<lutime_t>(extra[epos+3]))<<24);
 	  epos+=4;
       ze->mtime = timet2filetime(mtime);
     }
     if (hasatime)
-    { lutime_t atime = ((extra[epos+0])<<0) | ((extra[epos+1])<<8) |((extra[epos+2])<<16) | ((extra[epos+3])<<24);
+    { lutime_t atime = ((static_cast<lutime_t>(extra[epos+0]))<<0) | ((static_cast<lutime_t>(extra[epos+1]))<<8) |((static_cast<lutime_t>(extra[epos+2]))<<16) | ((static_cast<lutime_t>(extra[epos+3]))<<24);
       epos+=4;
       ze->atime = timet2filetime(atime);
     }
     if (hasctime)
-    { lutime_t ctime = ((extra[epos+0])<<0) | ((extra[epos+1])<<8) |((extra[epos+2])<<16) | ((extra[epos+3])<<24);
+    { lutime_t ctime = ((static_cast<lutime_t>(extra[epos+0]))<<0) | ((static_cast<lutime_t>(extra[epos+1]))<<8) |((static_cast<lutime_t>(extra[epos+2]))<<16) | ((static_cast<lutime_t>(extra[epos+3]))<<24);
       epos+=4;
       ze->ctime = timet2filetime(ctime);
     }
@@ -4182,7 +4215,14 @@ void EnsureDirectory(const TCHAR *rootdir, const TCHAR *dir)
     size_t len=_tcslen(rd);
     if (len>0 && (rd[len-1]=='/' || rd[len-1]=='\\')) rd[len-1]=0;
 #ifdef ZIP_STD
-    if (!FileExists(rd)) lumkdir(rd);
+    if (!FileExists(rd))
+    {
+        if (lumkdir(rd)<0)
+        {
+            // mkdir failed
+            return;
+        }
+    }
 #else
     if (!FileExists(rd)) CreateDirectory(rd,0);
 #endif
@@ -4217,7 +4257,14 @@ void EnsureDirectory(const TCHAR *rootdir, const TCHAR *dir)
 
   cd[MAX_PATH-1]=0;
 #ifdef ZIP_STD
-  if (!FileExists(cd)) lumkdir(cd);
+  if (!FileExists(cd))
+  {
+    if (lumkdir(cd)<0)
+    {
+        // mkdir failed
+        return;
+    }
+  }
 #else
   if (!FileExists(cd))
   { CreateDirectory(cd,0);

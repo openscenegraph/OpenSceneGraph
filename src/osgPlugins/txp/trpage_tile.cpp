@@ -327,6 +327,7 @@ trpgTileHeader::trpgTileHeader()
 {
     col = -1;
     row = -1;
+    date = -1;
 }
 trpgTileHeader::~trpgTileHeader()
 {
@@ -339,6 +340,7 @@ void trpgTileHeader::Reset()
     locMats.resize(0);
     col = -1;
     row = -1;
+    date = -1;
 }
 
 // Set functions

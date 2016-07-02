@@ -265,7 +265,7 @@ typedef int trpgMatRef;
 TX_EXDECL class TX_CLDECL trpg2dPoint {
 public:
     double x, y;
-    trpg2dPoint (void) { };
+    trpg2dPoint (void) : x(0.0),y(0.0) { };
     trpg2dPoint (double in_x,double in_y) { x = in_x; y = in_y; };
     bool operator==(const trpg2dPoint& pt ) const {
         if ( x != pt.x ) return false;
@@ -278,14 +278,14 @@ public:
 TX_EXDECL class TX_CLDECL trpg2iPoint {
 public:
     int x,y;
-    trpg2iPoint (void) { };
+    trpg2iPoint (void) : x(0),y(0) { };
     trpg2iPoint (int in_x,int in_y) {x = in_x; y = in_y;};
 };
 /* Double precision 3 dimensional point. */
 TX_EXDECL class TX_CLDECL trpg3dPoint {
 public:
     double x,y,z;
-    trpg3dPoint(void) { };
+    trpg3dPoint(void) : x(0.0),y(0.0),z(0.0) { };
     trpg3dPoint(double in_x,double in_y,double in_z) {x = in_x; y = in_y; z = in_z;}
     bool operator==(const trpg3dPoint& pt ) const {
         if ( x != pt.x ) return false;
@@ -299,7 +299,7 @@ public:
 TX_EXDECL class TX_CLDECL trpgColor {
 public:
     trpgColor(float64 r,float64 g,float64 b) {red = r; green = g; blue = b;}
-    trpgColor(void) { };
+    trpgColor(void) : red(1.0), green(1.0), blue(1.0) { };
     bool operator==(const trpgColor& color) {
         if ( color.red != red )        return false;
         if ( color.green != green ) return false;

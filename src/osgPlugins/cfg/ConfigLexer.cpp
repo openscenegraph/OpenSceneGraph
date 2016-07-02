@@ -1942,7 +1942,10 @@ YY_BUFFER_STATE yyFlexLexer::yy_create_buffer( std::istream* file, int size )
 
 	b = (YY_BUFFER_STATE) yy_flex_alloc( sizeof( struct yy_buffer_state ) );
 	if ( ! b )
+        {
 		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
+		return 0;
+        }
 
 	b->yy_buf_size = size;
 

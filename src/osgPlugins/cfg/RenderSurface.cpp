@@ -49,7 +49,7 @@ RenderSurface::RenderSurface( void )
     _drawableType    = DrawableType_Window;
     _hostname        = "";
     _displayNum     = 0;
-//     _screen          = 0;
+    _screen          = 0;
     _mayFullScreen   = true;
     _isFullScreen    = true;
 

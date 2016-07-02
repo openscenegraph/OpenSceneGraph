@@ -35,6 +35,7 @@ trpgr_Archive::trpgr_Archive()
     ness = LittleEndian;
     strcpy(dir,".");
     tileCache = NULL;
+    headerRead = false;
 }
 
 // Destructor
@@ -413,15 +414,21 @@ bool trpgr_Archive::ReadExternalTile(uint32 x,uint32 y,uint32 lod,trpgMemReadBuf
         // Find the file end
         if (fseek(filep,0,SEEK_END))
             throw 1;
+
         // Note: This means tile is capped at 2 gigs
         long pos = ftell(filep);
+        if (pos<0)
+            throw 1;
+
         if (fseek(filep,0,SEEK_SET))
             throw 1;
+
         // Now we know the size.  Read the whole file
         buf.SetLength(pos);
         char *data = buf.GetDataPtr();
         if (fread(data,pos,1,filep) != 1)
             throw 1;
+
         fclose(filep);
         filep = NULL;
     }

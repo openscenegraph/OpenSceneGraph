@@ -1,0 +1,65 @@
+#ifndef GEOMETRY_INSPECTOR
+#define GEOMETRY_INSPECTOR
+
+#include <string>
+#include <sstream>
+
+#include "GeometryUniqueVisitor"
+
+#include <osg/Geode>
+#include <osgDB/ReaderWriter>
+#include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
+#include <osgDB/Registry>
+#include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
+
+
+class GeometryInspector : public GeometryUniqueVisitor {
+public:
+    void process(osg::Geometry& geometry) {}
+    void process(osgAnimation::RigGeometry& rigGeometry) {
+        osgAnimation::MorphGeometry* morph = dynamic_cast<osgAnimation::MorphGeometry*>(rigGeometry.getSourceGeometry());
+        if(morph) {
+            process(*morph);
+        }
+        else {
+            process(*rigGeometry.getSourceGeometry());
+        }
+    }
+    void process(osgAnimation::MorphGeometry& morphGeometry) {
+        osgAnimation::MorphGeometry::MorphTargetList targets = morphGeometry.getMorphTargetList();
+        unsigned int count = 0;
+        for(osgAnimation::MorphGeometry::MorphTargetList::iterator target = targets.begin() ; target != targets.end() ; ++ target, ++ count) {
+            osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry(*target->getGeometry());
+            geometry->setPrimitiveSetList(morphGeometry.getPrimitiveSetList());
+            std::ostringstream oss;
+            if(geometry->getName().empty()) {
+                 oss << "/tmp/noname_" << _processed.size();
+            }
+            else {
+                 oss << "/tmp/" << geometry->getName();
+            }
+            oss << "_" << count << ".osgt";
+            dump(*geometry, oss.str());
+        }
+    }
+
+protected:
+    void dump(osg::Geometry& geometry, const std::string& path) {
+        osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+        geode->addDrawable(&geometry);
+
+        osg::ref_ptr<osgDB::Registry> registry = osgDB::Registry::instance();
+        std::string ext = osgDB::getLowerCaseFileExtension(path);
+        osgDB::ReaderWriter* writer = registry->getReaderWriterForExtension(ext);
+
+        OSG_WARN << "extension: " << ext << std::flush;
+        OSG_WARN << "writer: " << writer << std::flush;
+        if(writer) {
+            writer->writeNode(*geode, path.c_str());
+        }
+    }
+};
+
+#endif

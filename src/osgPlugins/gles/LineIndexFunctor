@@ -16,29 +16,7 @@
 #include <osg/PrimitiveSet>
 #include <osg/Array>
 
-#include <algorithm>
-#include <set>
-
-
-class Line {
-public:
-    Line(unsigned int a, unsigned int b) {
-        _a = std::min<unsigned int>(a, b);
-        _b = std::max<unsigned int>(a, b);
-    }
-
-    bool operator<(const Line& e) {
-        return _a < e._a || (_a == e._a && _b < e._b);
-    }
-
-    unsigned int _a, _b;
-};
-
-struct LineCompare {
-    bool operator()(const Line& lhs, const Line& rhs) const {
-        return lhs._a < rhs._a || (lhs._a == rhs._a && lhs._b < rhs._b);
-    }
-};
+#include "Line"
 
 
 template<class T>
@@ -172,7 +150,7 @@ public:
 
     GLenum               _modeCache;
     std::vector<GLuint>  _indexCache;
-    std::set<Line, LineCompare> _lineCache;
+    LineSet              _lineCache;
 };
 
 #endif

@@ -75,14 +75,24 @@ DECLARE_HANDLE(HZIP);
 typedef DWORD ZRESULT;
 // return codes from any of the zip functions. Listed later.
 
-typedef struct
-{ int index;                 // index of this file within the zip
+struct ZIPENTRY
+{
+  ZIPENTRY():
+    index(0),
+    attr(0),
+    atime(0),
+    ctime(0),
+    mtime(0),
+    comp_size(0),
+    unc_size(0) {}
+
+  int index;                 // index of this file within the zip
   TCHAR name[MAX_PATH];      // filename within the zip
   DWORD attr;                // attributes, as in GetFileAttributes.
   FILETIME atime,ctime,mtime;// access, create, modify filetimes
   long comp_size;            // sizes of item, compressed and uncompressed. These
   long unc_size;             // may be -1 if not yet known (e.g. being streamed in)
-} ZIPENTRY;
+};
 
 HZIP OpenZip(const TCHAR *fn, const char *password);
 HZIP OpenZip(void *z,unsigned int len, const char *password);

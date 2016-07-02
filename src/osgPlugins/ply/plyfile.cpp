@@ -1026,6 +1026,13 @@ void ply_get_element_setup( PlyFile *plyfile, char *elem_name, int nprops,
 
     /* find information about the element */
     elem = find_element (plyfile, elem_name);
+    if (!elem)
+    {
+        fprintf ( stderr, "Warning:  Can't find in element '%s'\n", elem_name );
+        return;
+    }
+
+
     plyfile->which_elem = elem;
 
     /* deposit the property information into the element's description */
@@ -1108,16 +1115,20 @@ void ply_get_property(
   elem = find_element (plyfile, elem_name);
   plyfile->which_elem = elem;
 
-  /* deposit the property information into the element's description */
-  /* Properties may have several names, separated by | with no spaces */
-  std::vector<std::string> tokens;
-  tokenizeProperties(prop->name, tokens, "|");
-
-  for(std::vector<std::string>::iterator it_property = tokens.begin();
-      !prop_ptr && it_property != tokens.end();
-      ++it_property)
+  if (elem)
   {
-    prop_ptr = find_property(elem, it_property->c_str(), &index);
+
+    /* deposit the property information into the element's description */
+    /* Properties may have several names, separated by | with no spaces */
+    std::vector<std::string> tokens;
+    tokenizeProperties(prop->name, tokens, "|");
+
+    for(std::vector<std::string>::iterator it_property = tokens.begin();
+        !prop_ptr && it_property != tokens.end();
+        ++it_property)
+    {
+        prop_ptr = find_property(elem, it_property->c_str(), &index);
+    }
   }
 
   if(prop_ptr)

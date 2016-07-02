@@ -121,7 +121,12 @@ bool HDRLoader::load(const char *_fileName, const bool _rawRGBE, HDRLoaderResult
 
     if (memcmp(str, "#?RADIANCE", 10))
     {
-        fseek(file, 0, SEEK_SET);
+        if (fseek(file, 0, SEEK_SET)!=0)
+        {
+            fclose(file);
+            return false;
+        }
+
         numRead = fread(str, 6, 1, file);
         if (numRead<1 || memcmp(str, "#?RGBE", 6))
         {
@@ -129,7 +134,11 @@ bool HDRLoader::load(const char *_fileName, const bool _rawRGBE, HDRLoaderResult
             return false;
         }
     }
-    fseek(file, 1, SEEK_CUR);
+    if (fseek(file, 1, SEEK_CUR)!=0)
+    {
+        fclose(file);
+        return false;
+    }
 
     //char cmd[2000];
     i = 0;
@@ -231,7 +240,10 @@ bool decrunch(RGBE *_scanline, int _len, FILE *_file)
 
     i = fgetc(_file);
     if (i != 2) {
-        fseek(_file, -1, SEEK_CUR);
+        if (fseek(_file, -1, SEEK_CUR)!=0)
+        {
+            return false;
+        }
         return oldDecrunch(_scanline, _len, _file);
     }
 

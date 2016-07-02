@@ -457,6 +457,7 @@ protected:
 trpgSceneGraphParser::trpgSceneGraphParser()
 {
     top = currTop = NULL;
+    gmap = NULL;
 
     // Register the readers
     AddCallback(TRPG_GEOMETRY,new trpgReadGeometryHelper(this));

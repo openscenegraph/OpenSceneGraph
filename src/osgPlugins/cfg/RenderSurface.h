@@ -451,7 +451,6 @@ class RenderSurface : public osg::Referenced
         std::vector<int> &getPBufferUserAttributes();
 
     private :
-        unsigned int _refreshRate;
 #ifdef _X11_IMPLEMENTATION
         int (*__glxGetRefreshRateSGI)(unsigned int *);
         int (*__glxGetVideoSyncSGI)(unsigned int *);
@@ -467,6 +466,7 @@ class RenderSurface : public osg::Referenced
         void _setCursor(Cursor);
         void _setCursorToDefault();
         void _positionPointer(int x, int y);
+        unsigned int _refreshRate;
         void _resizeWindow();
 #endif
         bool _overrideRedirectFlag;
@@ -494,9 +494,9 @@ class RenderSurface : public osg::Referenced
         Display *          _dpy;
         Window             _win;
         Window             _parent;
+        unsigned int       _parentWindowHeight;
 #endif
         RenderSurface      *_readDrawableRenderSurface;
-        unsigned int       _parentWindowHeight;
         bool               _realized;
         osg::ref_ptr< VisualChooser >  _visualChooser;
 #if 0
@@ -507,11 +507,11 @@ class RenderSurface : public osg::Referenced
         Cursor             _currentCursor;
         Cursor             _nullCursor;
         Cursor             _defaultCursor;
+        unsigned int       _frameCount;
 #endif
         bool               _decorations;
         bool               _useCursorFlag;
         std::string        _windowName;
-        unsigned int       _frameCount;
         bool               _mayFullScreen;
         bool               _isFullScreen;
         bool               _bindInputRectangleToWindowSize;

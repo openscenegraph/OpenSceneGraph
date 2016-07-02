@@ -4,5 +4,10 @@ SET(TARGET_SRC ReaderWriterEXR.cpp )
 
 SET(TARGET_LIBRARIES_VARS ${OPENEXR_LIBRARIES_VARS} ZLIB_LIBRARY)
 
+IF(CMAKE_COMPILER_IS_GNUCXX)
+    # Remove -Wshadow flag as it barfs on ffmoeg headers
+   STRING(REGEX REPLACE "-Wshadow" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+ENDIF()
+
 #### end var setup  ###
 SETUP_PLUGIN(exr)

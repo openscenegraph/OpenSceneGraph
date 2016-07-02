@@ -137,6 +137,7 @@ public:
           _modeCache(0),
           _hasNormalCoords(geo->getNormalArray() != NULL),
           _hasTexCoords(geo->getTexCoordArray(0) != NULL),
+          _lastFaceIndex(0),
           _material(material)
       {
       }

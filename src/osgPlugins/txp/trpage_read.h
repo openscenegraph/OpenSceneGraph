@@ -229,7 +229,6 @@ protected:
     bool headerRead;
     trpgEndian ness;
     FILE *fp;
-    int fid;
     // Header info
     char dir[DIR_SIZE];
     trpgHeader header;

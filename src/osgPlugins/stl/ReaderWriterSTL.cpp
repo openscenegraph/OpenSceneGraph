@@ -250,7 +250,8 @@ private:
     public:
         CreateStlVisitor(std::string const & fout, const osgDB::ReaderWriter::Options* options = 0):
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN),
-            counter(0)
+            counter(0),
+            m_f(0)
         {
             m_localOptions = parseOptions(options);
             if (m_localOptions.separateFiles)
@@ -407,7 +408,10 @@ bool fileComesFromMagics(FILE *fp, osg::Vec4& magicsColor)
     size_t bytes_read = fread((void*) &header, sizeof(header), 1, fp);
     if (bytes_read!=sizeof(header)) return false;
 
-    ::fseek(fp, sizeof_StlHeader, SEEK_SET);
+    if (::fseek(fp, sizeof_StlHeader, SEEK_SET)!=0)
+    {
+        return false;
+    }
 
     std::string magicsColorPattern ("COLOR=");
     std::string headerStr = std::string(header);
@@ -495,7 +499,13 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     if (!isBinary)
     {
         fclose(fp);
+
         fp = osgDB::fopen(fileName.c_str(), "r");
+
+        if (!fp)
+        {
+            return ReadResult::FILE_NOT_FOUND;
+        }
     }
 
     osg::ref_ptr<osg::Group> group = new osg::Group;
@@ -674,7 +684,10 @@ ReaderWriterSTL::ReaderObject::ReadResult ReaderWriterSTL::BinaryReaderObject::r
     bool comesFromMagics = fileComesFromMagics(fp, magicsHeaderColor);
 
     // seek to beginning of facets
-    ::fseek(fp, sizeof_StlHeader, SEEK_SET);
+    if (::fseek(fp, sizeof_StlHeader, SEEK_SET)!=0)
+    {
+        return ReadError;
+    }
 
     StlFacet facet;
     for (unsigned int i = 0; i < _expectNumFacets; ++i)

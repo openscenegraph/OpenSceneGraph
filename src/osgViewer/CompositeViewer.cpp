@@ -126,7 +126,19 @@ CompositeViewer::~CompositeViewer()
         citr != contexts.end();
         ++citr)
     {
-        (*citr)->close();
+        osg::GraphicsContext* gc = *citr;
+
+        // Run destroy operation on each context before closing it
+        if (_cleanUpOperation.valid() && gc->valid())
+        {
+            gc->makeCurrent();
+
+            (*_cleanUpOperation)(gc);
+
+            gc->releaseContext();
+        }
+
+        gc->close();
     }
 
     OSG_INFO<<"finished CompositeViewer::~CompositeViewer()"<<std::endl;

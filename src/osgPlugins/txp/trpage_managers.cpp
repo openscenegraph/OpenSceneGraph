@@ -251,6 +251,14 @@ trpgPageManager::LodPageInfo::LodPageInfo()
     valid = false;
     pageDist = 0.0;
     cell.x = cell.y = -100;
+
+    lod = 0;
+    maxNumTiles = 0;
+    activeLoad = false;
+    activeUnload = false;
+    majorVersion = 0;
+    minorVersion = 0;
+    tileTable = 0;
 }
 
 trpgPageManager::LodPageInfo::~LodPageInfo()
@@ -743,6 +751,13 @@ trpgPageManager::trpgPageManager()
     valid = false;
     // This should be sufficiently unlikely
     pagePt.x = -1e20;  pagePt.y = -1e20;
+
+    archive = 0;
+    lastLoad = None;
+    lastLod = 0;
+    lastTile = 0;
+    scale = 1.0;
+    majorVersion = minorVersion = 0;
 }
 
 trpgPageManager::~trpgPageManager()
@@ -1054,6 +1069,10 @@ trpgPageManageTester::trpgPageManageTester()
 {
     manager = NULL;
     archive = NULL;
+
+    printBuf = NULL;
+
+    majorVersion = minorVersion = 0;
 }
 
 trpgPageManageTester::~trpgPageManageTester()

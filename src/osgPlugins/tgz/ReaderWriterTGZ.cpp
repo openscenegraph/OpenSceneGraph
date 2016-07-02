@@ -58,7 +58,10 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
                strcpy(dirname, "./");
             }
             strcat(dirname, ".osgdb_tgz");
-            mkdir( dirname);
+            if (mkdir( dirname)!=0)
+            {
+                return ReadResult::ERROR_IN_READING_FILE;
+            }
             // Using tar.exe from http://www.cygwin.com/
             // tar.exe must be in your path.  (PATH environment variable).
             sprintf( command,
@@ -68,14 +71,20 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
 
         #if defined(__linux) || defined(__CYGWIN__)
             sprintf( dirname, "/tmp/.tgz%06d", getpid());
-            mkdir( dirname, 0700 );
+            if (mkdir( dirname, 0700 )!=0)
+            {
+                return ReadResult::ERROR_IN_READING_FILE;
+            }
             sprintf( command,
                 "tar xfCz %s %s",
                 fileName.c_str(), dirname );
         #endif
         #ifdef __sgi
             sprintf( dirname, "/tmp/.tgz%06d", getpid());
-            mkdir( dirname, 0700 );
+            if (mkdir( dirname, 0700 )!=0)
+            {
+                return ReadResult::ERROR_IN_READING_FILE;
+            }
             sprintf( command,
                 "cp %s %s; cd %s;"
                 "gzcat %s | tar xf -",

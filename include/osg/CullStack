@@ -113,7 +113,7 @@ class OSG_EXPORT CullStack : public osg::CullSettings
             {
                 return getCurrentCullingSet().isCulled(node.getBound());
             }
-            else 
+            else
             {
                 getCurrentCullingSet().resetCullingMask();
                 return false;
@@ -145,7 +145,7 @@ class OSG_EXPORT CullStack : public osg::CullSettings
         inline osg::Viewport* getViewport();
         inline osg::RefMatrix* getModelViewMatrix();
         inline osg::RefMatrix* getProjectionMatrix();
-        inline osg::Matrix getWindowMatrix();
+        inline osg::Matrix getWindowMatrix() const;
         inline const osg::RefMatrix* getMVPW();
 
         inline const osg::Vec3& getReferenceViewPoint() const { return _referenceViewPoints.back(); }
@@ -249,7 +249,7 @@ inline osg::RefMatrix* CullStack::getProjectionMatrix()
     }
 }
 
-inline osg::Matrix CullStack::getWindowMatrix()
+inline osg::Matrix CullStack::getWindowMatrix() const
 {
     if (!_viewportStack.empty())
     {

@@ -1,8 +1,45 @@
 #include <osg/SubroutineUniform>
+
+
+#undef OBJECT_CAST
+#define OBJECT_CAST dynamic_cast
+
 #include <osgDB/ObjectWrapper>
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
 
+#include <osg/ScriptEngine>
+
+
+REGISTER_OBJECT_WRAPPER( ScriptNodeCallback,
+                         new osg::ScriptNodeCallback,
+                         osg::ScriptNodeCallback,
+                         "osg::Object osg::ScriptNodeCallback" )
+{
+//osg::Callback osg::NodeCallback
+    ADD_OBJECT_SERIALIZER( Script, osg::Script, NULL );  // _script
+    //ADD_STRING_SERIALIZER( EntryPoint, "" );  // _entrypoint
+}
+
+
+#undef OBJECT_CAST
+#define OBJECT_CAST static_cast
+
+namespace wrapperosgScript
+{
+REGISTER_OBJECT_WRAPPER( Script,
+                         new osg::Script,
+                         osg::Script,
+                         "osg::Object osg::Script" )
+{
+ADD_STRING_SERIALIZER( Script, "" );  // _script
+ADD_STRING_SERIALIZER( Language, "" );  // _script
+}
+
+
+}
+namespace wrapperosgSubroutineUniform
+{
 static bool checkSubroutineName( const osg::SubroutineUniform& attr )
 {
     return true;
@@ -56,4 +93,5 @@ REGISTER_OBJECT_WRAPPER( SubroutineUniform,
     }
 
 
+}
 }

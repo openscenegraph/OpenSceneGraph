@@ -248,7 +248,7 @@ public:
             return WriteResult::ERROR_IN_WRITING_FILE;
      }
 protected:
-    bool writeEXRStream(const osg::Image &img, std::ostream& fout, const std::string &fileName) const
+    bool writeEXRStream(const osg::Image &img, std::ostream& fout, const std::string& /*fileName*/) const
     {
         bool writeOK = true;
 

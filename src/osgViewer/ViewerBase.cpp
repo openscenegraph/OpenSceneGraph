@@ -328,7 +328,7 @@ void ViewerBase::startThreading()
         }
     }
 
-    int numProcessors = osg::minimum(1, OpenThreads::GetNumberOfProcessors());
+    int numProcessors = osg::maximum(1, OpenThreads::GetNumberOfProcessors());
     bool affinity = numProcessors>1;
 
     Contexts::iterator citr;

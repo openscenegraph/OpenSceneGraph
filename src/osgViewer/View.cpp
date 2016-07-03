@@ -1135,7 +1135,7 @@ bool View::requiresUpdateSceneGraph() const
     // check if there are camera update callbacks
     if (_camera->getUpdateCallback()) return true;
 
-    // check if there scene requires an update traversal
+    // check if the scene requires an update traversal
     if (_scene.valid() && _scene->requiresUpdateSceneGraph()) return true;
 
     return false;

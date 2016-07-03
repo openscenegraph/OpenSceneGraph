@@ -1371,10 +1371,7 @@ bool DatabasePager::getRequestsInProgress() const
 {
     if (getFileRequestListSize()>0) return true;
 
-    if (getDataToCompileListSize()>0)
-    {
-        return true;
-    }
+    if (getDataToCompileListSize()>0) return true;
 
     if (getDataToMergeListSize()>0) return true;
 
@@ -1595,7 +1592,11 @@ void DatabasePager::setDatabasePagerThreadPause(bool pause)
 
 bool DatabasePager::requiresUpdateSceneGraph() const
 {
-    return !(_dataToMergeList->empty());
+    if (getDataToCompileListSize()>0) return true;
+
+    if (getDataToMergeListSize()>0) return true;
+
+    return false;
 }
 
 void DatabasePager::updateSceneGraph(const osg::FrameStamp& frameStamp)

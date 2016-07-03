@@ -119,8 +119,8 @@ Geometry::Geometry():
     _useVertexArrayObject=false;
     dirtyVertexArrayObject();
     // temporary test
-     setUseDisplayList(false);
-     setUseVertexArrayObject(true);
+    // setUseDisplayList(false);
+     //setUseVertexArrayObject(true);
 }
 
 Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):

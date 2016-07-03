@@ -75,6 +75,12 @@ class OSG_EXPORT ScriptNodeCallback : public osg::NodeCallback
         /** Get the script to call.*/
         const osg::Script* getScript() const { return _script.get(); }
 
+        /** Set the entry point to call.*/
+        void setEntryPoint(const std::string& script) { _entryPoint  = script; }
+
+        /** Get the script to call.*/
+        const std::string& getEntryPoint() const { return _entryPoint; }
+
         /** find the ScriptEngine from looking at the UserDataContainers of nodes in scene graph above the ScriptCallback.*/
         osg::ScriptEngine* getScriptEngine(osg::NodePath& nodePath);
 

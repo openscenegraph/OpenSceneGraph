@@ -74,6 +74,16 @@ class Vec4ub
         inline value_type& operator [] (unsigned int i) { return _v[i]; }
         inline value_type operator [] (unsigned int i) const { return _v[i]; }
 
+        inline value_type& x() { return _v[0]; }
+        inline value_type& y() { return _v[1]; }
+        inline value_type& z() { return _v[2]; }
+        inline value_type& w() { return _v[3]; }
+
+        inline value_type x() const { return _v[0]; }
+        inline value_type y() const { return _v[1]; }
+        inline value_type z() const { return _v[2]; }
+        inline value_type w() const { return _v[3]; }
+
         inline value_type& r() { return _v[0]; }
         inline value_type& g() { return _v[1]; }
         inline value_type& b() { return _v[2]; }

@@ -147,13 +147,22 @@ class LuaScriptEngine : public osg::ScriptEngine
 
         void pushValue(osgDB::BaseSerializer::Type type, const void* ptr) const;
 
-        void pushValue(const osg::Vec2f& value) const;
-        void pushValue(const osg::Vec3f& value) const;
-        void pushValue(const osg::Vec4f& value) const;
+#define PUSHVECTORVALUE_DECLARE(LOWER) \
+        void pushValue(const osg::Vec2##LOWER& value) const;\
+        void pushValue(const osg::Vec3##LOWER& value) const;\
+        void pushValue(const osg::Vec4##LOWER& value) const;
 
-        void pushValue(const osg::Vec2d& value) const;
-        void pushValue(const osg::Vec3d& value) const;
-        void pushValue(const osg::Vec4d& value) const;
+        PUSHVECTORVALUE_DECLARE(f)
+        PUSHVECTORVALUE_DECLARE(d)
+        PUSHVECTORVALUE_DECLARE(s)
+        PUSHVECTORVALUE_DECLARE(b)
+        PUSHVECTORVALUE_DECLARE(i)
+        PUSHVECTORVALUE_DECLARE(us)
+        PUSHVECTORVALUE_DECLARE(ub)
+        PUSHVECTORVALUE_DECLARE(ui)
+
+ #undef PUSHVECTORVALUE_DECLARE
+
         void pushValue(const osg::Quat& value) const;
         void pushValue(const osg::Plane& value) const;
 

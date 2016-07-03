@@ -2306,9 +2306,48 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
             }
             break;
         }
-        case(osgDB::BaseSerializer::RW_VEC2F):
+#define VECCASE(UPPER,LOWER)      case(osgDB::BaseSerializer::RW_VEC2##UPPER):\
+        {\
+            osg::Vec2##LOWER value;\
+            if (_ci.getProperty(object, propertyName, value))\
+            {\
+                pushValue(value);\
+                return 1;\
+            }\
+            break;\
+        }\
+        case(osgDB::BaseSerializer::RW_VEC3##UPPER):\
+        {\
+            osg::Vec3##LOWER value;\
+            if (_ci.getProperty(object, propertyName, value))\
+            {\
+                pushValue(value);\
+                return 1;\
+            }\
+            break;\
+        }\
+        case(osgDB::BaseSerializer::RW_VEC4##UPPER):\
+        {\
+            osg::Vec4##LOWER value;\
+            if (_ci.getProperty(object, propertyName, value))\
+            {\
+                pushValue(value);\
+                return 1;\
+            }\
+            break;\
+        }
+        VECCASE(F,f)
+        VECCASE(D,d)
+        VECCASE(UI,ui)
+        VECCASE(US,us)
+        VECCASE(UB,ub)
+        VECCASE(S,s)
+        VECCASE(I,i)
+        VECCASE(B,b)
+#undef VECCASE
+        case(osgDB::BaseSerializer::RW_QUAT):
         {
-            osg::Vec2f value;
+            osg::Quat value;
             if (_ci.getProperty(object, propertyName, value))
             {
                 pushValue(value);
@@ -2316,56 +2355,7 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
             }
             break;
         }
-        case(osgDB::BaseSerializer::RW_VEC3F):
-        {
-            osg::Vec3f value;
-            if (_ci.getProperty(object, propertyName, value))
-            {
-                pushValue(value);
-                return 1;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC4F):
-        {
-            osg::Vec4f value;
-            if (_ci.getProperty(object, propertyName, value))
-            {
-                pushValue(value);
-                return 1;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC2D):
-        {
-            osg::Vec2d value;
-            if (_ci.getProperty(object, propertyName, value))
-            {
-                pushValue(value);
-                return 1;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC3D):
-        {
-            osg::Vec3d value;
-            if (_ci.getProperty(object, propertyName, value))
-            {
-                pushValue(value);
-                return 1;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC4D):
-        {
-            osg::Vec4d value;
-            if (_ci.getProperty(object, propertyName, value))
-            {
-                pushValue(value);
-                return 1;
-            }
-            break;
-        }
+
 #ifdef OSG_USE_FLOAT_MATRIX
         case(osgDB::BaseSerializer::RW_MATRIX):
 #endif
@@ -3772,33 +3762,44 @@ bool LuaScriptEngine::getValue(int pos, osg::BoundingSphered& value) const
     lua_pop(_lua, 4);
     return true;
 }
-
-void LuaScriptEngine::pushValue(const osg::Vec2f& value) const
-{
-    lua_newtable(_lua);
-    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
-    lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
-    lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
+#define PUSHVECTORVALUE(LOWER) \
+void LuaScriptEngine::pushValue(const osg::Vec2##LOWER& value) const\
+{\
+    lua_newtable(_lua);\
+    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);\
+    lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);\
+    lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);\
+}\
+\
+void LuaScriptEngine::pushValue(const osg::Vec3##LOWER& value) const\
+{\
+    lua_newtable(_lua);\
+    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);\
+    lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);\
+    lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);\
+    lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.z()); lua_settable(_lua, -3);\
+}\
+\
+void LuaScriptEngine::pushValue(const osg::Vec4##LOWER& value) const\
+{\
+    lua_newtable(_lua);\
+    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);\
+    lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);\
+    lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);\
+    lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.z()); lua_settable(_lua, -3);\
+    lua_pushstring(_lua, "w"); lua_pushnumber(_lua, value.w()); lua_settable(_lua, -3);\
 }
 
-void LuaScriptEngine::pushValue(const osg::Vec3f& value) const
-{
-    lua_newtable(_lua);
-    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
-    lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
-    lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
-    lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.z()); lua_settable(_lua, -3);
-}
+PUSHVECTORVALUE(f)
+PUSHVECTORVALUE(d)
+PUSHVECTORVALUE(i)
+PUSHVECTORVALUE(b)
+PUSHVECTORVALUE(s)
+PUSHVECTORVALUE(ui)
+PUSHVECTORVALUE(ub)
+PUSHVECTORVALUE(us)
 
-void LuaScriptEngine::pushValue(const osg::Vec4f& value) const
-{
-    lua_newtable(_lua);
-    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
-    lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
-    lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
-    lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.z()); lua_settable(_lua, -3);
-    lua_pushstring(_lua, "w"); lua_pushnumber(_lua, value.w()); lua_settable(_lua, -3);
-}
+#undef PUSHVECTORVALUE
 
 void LuaScriptEngine::pushValue(const osg::Matrixf& value) const
 {
@@ -3812,33 +3813,6 @@ void LuaScriptEngine::pushValue(const osg::Matrixf& value) const
             lua_pushnumber(_lua, r*4+c); lua_pushinteger(_lua, (lua_Integer) value(r,c)); lua_settable(_lua, -3);
         }
     }
-}
-
-void LuaScriptEngine::pushValue(const osg::Vec2d& value) const
-{
-    lua_newtable(_lua);
-    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
-    lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
-    lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
-}
-
-void LuaScriptEngine::pushValue(const osg::Vec3d& value) const
-{
-    lua_newtable(_lua);
-    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
-    lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
-    lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
-    lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.z()); lua_settable(_lua, -3);
-}
-
-void LuaScriptEngine::pushValue(const osg::Vec4d& value) const
-{
-    lua_newtable(_lua);
-    lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
-    lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
-    lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
-    lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.z()); lua_settable(_lua, -3);
-    lua_pushstring(_lua, "w"); lua_pushnumber(_lua, value.w()); lua_settable(_lua, -3);
 }
 
 void LuaScriptEngine::pushValue(const osg::Quat& value) const

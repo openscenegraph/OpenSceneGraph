@@ -18,7 +18,7 @@ REGISTER_OBJECT_WRAPPER( ScriptNodeCallback,
 {
 //osg::Callback osg::NodeCallback
     ADD_OBJECT_SERIALIZER( Script, osg::Script, NULL );  // _script
-    //ADD_STRING_SERIALIZER( EntryPoint, "" );  // _entrypoint
+    ADD_STRING_SERIALIZER( EntryPoint, "" );  // _entrypoint
 }
 
 

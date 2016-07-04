@@ -177,6 +177,30 @@ class LuaScriptEngine : public osg::ScriptEngine
             lua_pushstring(_lua, "w"); lua_pushnumber(_lua, value.w()); lua_settable(_lua, -3);
         }
 
+        void pushValue(const osg::Vec2b& value) const { pushVec2(value); }
+        void pushValue(const osg::Vec3b& value) const { pushVec3(value); }
+        void pushValue(const osg::Vec4b& value) const { pushVec4(value); }
+
+        void pushValue(const osg::Vec2ub& value) const { pushVec2(value); }
+        void pushValue(const osg::Vec3ub& value) const { pushVec3(value); }
+        void pushValue(const osg::Vec4ub& value) const { pushVec4(value); }
+
+        void pushValue(const osg::Vec2s& value) const { pushVec2(value); }
+        void pushValue(const osg::Vec3s& value) const { pushVec3(value); }
+        void pushValue(const osg::Vec4s& value) const { pushVec4(value); }
+
+        void pushValue(const osg::Vec2us& value) const { pushVec2(value); }
+        void pushValue(const osg::Vec3us& value) const { pushVec3(value); }
+        void pushValue(const osg::Vec4us& value) const { pushVec4(value); }
+
+        void pushValue(const osg::Vec2i& value) const { pushVec2(value); }
+        void pushValue(const osg::Vec3i& value) const { pushVec3(value); }
+        void pushValue(const osg::Vec4i& value) const { pushVec4(value); }
+
+        void pushValue(const osg::Vec2ui& value) const { pushVec2(value); }
+        void pushValue(const osg::Vec3ui& value) const { pushVec3(value); }
+        void pushValue(const osg::Vec4ui& value) const { pushVec4(value); }
+
         void pushValue(const osg::Vec2f& value) const { pushVec2(value); }
         void pushValue(const osg::Vec3f& value) const { pushVec3(value); }
         void pushValue(const osg::Vec4f& value) const { pushVec4(value); }

@@ -1138,6 +1138,10 @@ bool View::requiresUpdateSceneGraph() const
     // check if the scene requires an update traversal
     if (_scene.valid() && _scene->requiresUpdateSceneGraph()) return true;
 
+    // check if the scene requires a redraw
+    // FIXME...
+    if (_scene.valid() && _scene->requiresRedraw()) return true;
+
     return false;
 }
 

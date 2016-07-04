@@ -244,6 +244,9 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
           * Note, must only be called from single thread update phase. */
         virtual void updateSceneGraph(const osg::FrameStamp& frameStamp);
 
+        /** Return true if there are ... . */
+        bool requiresRedraw() const;
+
         /** Report how many items are in the _fileRequestList queue */
         unsigned int getFileRequestListSize() const { return static_cast<unsigned int>(_fileRequestQueue->size() + _httpRequestQueue->size()); }
 

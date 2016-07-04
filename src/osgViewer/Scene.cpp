@@ -150,6 +150,14 @@ void Scene::updateSceneGraph(osg::NodeVisitor& updateVisitor)
     }
 }
 
+bool Scene::requiresRedraw() const
+{
+    // check if the database pager needs a redraw
+    if (getDatabasePager()->requiresRedraw()) return true;
+
+    return false;
+}
+
 
 Scene* Scene::getScene(osg::Node* node)
 {

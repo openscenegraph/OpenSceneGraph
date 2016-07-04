@@ -101,7 +101,32 @@ class LuaScriptEngine : public osg::ScriptEngine
         osgDB::ClassInterface& getClassInterface() const { return _ci; }
 
         int pushDataToStack(SerializerScratchPad* ssp) const;
+
+        template<typename T>
+        bool pushValueToStack(SerializerScratchPad* ssp) const
+        {
+            T value;
+            if (ssp->get(value))
+            {
+                pushValue(value);
+                return true;
+            }
+            return false;
+        }
+
         int getDataFromStack(SerializerScratchPad* ssp, osgDB::BaseSerializer::Type type, int pos) const;
+
+        template<typename T>
+        bool getDataFromStack(SerializerScratchPad* ssp, int pos) const
+        {
+            T value;
+            if (getValue(pos, value))
+            {
+                ssp->set(value);
+                return true;
+            }
+            return false;
+        }
 
         int pushPropertyToStack(osg::Object* object, const std::string& propertyName) const;
         int setPropertyFromStack(osg::Object* object, const std::string& propertyName) const;
@@ -125,6 +150,9 @@ class LuaScriptEngine : public osg::ScriptEngine
         bool getmatrix(int pos) const;
         bool getboundingbox(int pos) const;
         bool getboundingsphere(int pos) const;
+
+
+
 
         template<typename T>
         bool getVec2(int pos, T& value) const
@@ -207,6 +235,27 @@ class LuaScriptEngine : public osg::ScriptEngine
             if (getValue(-1, value))
             {
                 _ci.setProperty(object, propertyName, value);
+                return true;
+            }
+            return false;
+        }
+
+        template<typename T>
+        osg::Object* getValueObject(int pos) const
+        {
+            T value;
+            if (getValue(pos, value)) return new osg::TemplateValueObject<T>("", value);
+            else return 0;
+        }
+
+
+        template<typename T>
+        bool getPropertyAndPushValue(const osg::Object* object, const std::string& propertyName) const
+        {
+            T value;
+            if (_ci.getProperty(object, propertyName, value))
+            {
+                pushValue(value);
                 return true;
             }
             return false;

@@ -2333,66 +2333,39 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
             }
             break;
         }
-        case(osgDB::BaseSerializer::RW_VEC2F):
-        {
-            osg::Vec2f value;
-            if (_ci.getProperty(object, propertyName, value))
-            {
-                pushValue(value);
-                return 1;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC3F):
-        {
-            osg::Vec3f value;
-            if (_ci.getProperty(object, propertyName, value))
-            {
-                pushValue(value);
-                return 1;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC4F):
-        {
-            osg::Vec4f value;
-            if (_ci.getProperty(object, propertyName, value))
-            {
-                pushValue(value);
-                return 1;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC2D):
-        {
-            osg::Vec2d value;
-            if (_ci.getProperty(object, propertyName, value))
-            {
-                pushValue(value);
-                return 1;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC3D):
-        {
-            osg::Vec3d value;
-            if (_ci.getProperty(object, propertyName, value))
-            {
-                pushValue(value);
-                return 1;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC4D):
-        {
-            osg::Vec4d value;
-            if (_ci.getProperty(object, propertyName, value))
-            {
-                pushValue(value);
-                return 1;
-            }
-            break;
-        }
+
+        case(osgDB::BaseSerializer::RW_VEC2B): if (getPropertyAndPushValue<osg::Vec2b>(object, propertyName)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC3B): if (getPropertyAndPushValue<osg::Vec3b>(object, propertyName)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC4B): if (getPropertyAndPushValue<osg::Vec4b>(object, propertyName)) return 1; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2UB): if (getPropertyAndPushValue<osg::Vec2ub>(object, propertyName)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC3UB): if (getPropertyAndPushValue<osg::Vec3ub>(object, propertyName)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC4UB): if (getPropertyAndPushValue<osg::Vec4ub>(object, propertyName)) return 1; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2S): if (getPropertyAndPushValue<osg::Vec2s>(object, propertyName)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC3S): if (getPropertyAndPushValue<osg::Vec3s>(object, propertyName)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC4S): if (getPropertyAndPushValue<osg::Vec4s>(object, propertyName)) return 1; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2US): if (getPropertyAndPushValue<osg::Vec2us>(object, propertyName)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC3US): if (getPropertyAndPushValue<osg::Vec3us>(object, propertyName)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC4US): if (getPropertyAndPushValue<osg::Vec4us>(object, propertyName)) return 1; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2I): if (getPropertyAndPushValue<osg::Vec2i>(object, propertyName)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC3I): if (getPropertyAndPushValue<osg::Vec3i>(object, propertyName)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC4I): if (getPropertyAndPushValue<osg::Vec4i>(object, propertyName)) return 1; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2UI): if (getPropertyAndPushValue<osg::Vec2ui>(object, propertyName)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC3UI): if (getPropertyAndPushValue<osg::Vec3ui>(object, propertyName)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC4UI): if (getPropertyAndPushValue<osg::Vec4ui>(object, propertyName)) return 1; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2F): if (getPropertyAndPushValue<osg::Vec2f>(object, propertyName)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC3F): if (getPropertyAndPushValue<osg::Vec3f>(object, propertyName)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC4F): if (getPropertyAndPushValue<osg::Vec4f>(object, propertyName)) return 1; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2D): if (getPropertyAndPushValue<osg::Vec2d>(object, propertyName)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC3D): if (getPropertyAndPushValue<osg::Vec3d>(object, propertyName)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC4D): if (getPropertyAndPushValue<osg::Vec4d>(object, propertyName)) return 1; break;
+
 #ifdef OSG_USE_FLOAT_MATRIX
         case(osgDB::BaseSerializer::RW_MATRIX):
 #endif
@@ -2641,66 +2614,42 @@ int LuaScriptEngine::pushDataToStack(SerializerScratchPad* ssp) const
             }
             break;
         }
-        case(osgDB::BaseSerializer::RW_VEC2F):
-        {
-            osg::Vec2f value;
-            if (ssp->get(value))
-            {
-                pushValue(value);
-                return 1;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC3F):
-        {
-            osg::Vec3f value;
-            if (ssp->get(value))
-            {
-                pushValue(value);
-                return 1;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC4F):
-        {
-            osg::Vec4f value;
-            if (ssp->get(value))
-            {
-                pushValue(value);
-                return 1;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC2D):
-        {
-            osg::Vec2d value;
-            if (ssp->get(value))
-            {
-                pushValue(value);
-                return 1;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC3D):
-        {
-            osg::Vec3d value;
-            if (ssp->get(value))
-            {
-                pushValue(value);
-                return 1;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC4D):
-        {
-            osg::Vec4d value;
-            if (ssp->get(value))
-            {
-                pushValue(value);
-                return 1;
-            }
-            break;
-        }
+
+        case(osgDB::BaseSerializer::RW_VEC2B): if (pushValueToStack<osg::Vec2b>(ssp)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC3B): if (pushValueToStack<osg::Vec3b>(ssp)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC4B): if (pushValueToStack<osg::Vec4b>(ssp)) return 1; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2UB): if (pushValueToStack<osg::Vec2ub>(ssp)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC3UB): if (pushValueToStack<osg::Vec3ub>(ssp)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC4UB): if (pushValueToStack<osg::Vec4ub>(ssp)) return 1; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2S): if (pushValueToStack<osg::Vec2s>(ssp)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC3S): if (pushValueToStack<osg::Vec3s>(ssp)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC4S): if (pushValueToStack<osg::Vec4s>(ssp)) return 1; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2US): if (pushValueToStack<osg::Vec2us>(ssp)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC3US): if (pushValueToStack<osg::Vec3us>(ssp)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC4US): if (pushValueToStack<osg::Vec4us>(ssp)) return 1; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2I): if (pushValueToStack<osg::Vec2i>(ssp)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC3I): if (pushValueToStack<osg::Vec3i>(ssp)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC4I): if (pushValueToStack<osg::Vec4i>(ssp)) return 1; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2UI): if (pushValueToStack<osg::Vec2ui>(ssp)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC3UI): if (pushValueToStack<osg::Vec3ui>(ssp)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC4UI): if (pushValueToStack<osg::Vec4ui>(ssp)) return 1; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2F): if (pushValueToStack<osg::Vec2f>(ssp)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC3F): if (pushValueToStack<osg::Vec3f>(ssp)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC4F): if (pushValueToStack<osg::Vec4f>(ssp)) return 1; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2D): if (pushValueToStack<osg::Vec2d>(ssp)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC3D): if (pushValueToStack<osg::Vec3d>(ssp)) return 1; break;
+        case(osgDB::BaseSerializer::RW_VEC4D): if (pushValueToStack<osg::Vec4d>(ssp)) return 1; break;
+
+        case(osgDB::BaseSerializer::RW_PLANE): if (pushValueToStack<osg::Plane>(ssp)) return 1; break;
+        case(osgDB::BaseSerializer::RW_QUAT): if (pushValueToStack<osg::Quat>(ssp)) return 1; break;
+
 #ifdef OSG_USE_FLOAT_MATRIX
         case(osgDB::BaseSerializer::RW_MATRIX):
 #endif
@@ -2911,87 +2860,44 @@ int LuaScriptEngine::getDataFromStack(SerializerScratchPad* ssp, osgDB::BaseSeri
             }
             break;
         }
-        case(osgDB::BaseSerializer::RW_VEC2F):
-        {
-            osg::Vec2f value;
-            if (getValue(pos, value))
-            {
-                ssp->set(value);
-                return 0;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC3F):
-        {
-            osg::Vec3f value;
-            if (getValue(pos, value))
-            {
-                ssp->set(value);
-                return 0;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC4F):
-        {
-            osg::Vec4f value;
-            if (getValue(pos, value))
-            {
-                ssp->set(value);
-                return 0;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC2D):
-        {
-            osg::Vec2d value;
-            if (getValue(pos, value))
-            {
-                ssp->set(value);
-                return 0;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC3D):
-        {
-            osg::Vec3d value;
-            if (getValue(pos, value))
-            {
-                ssp->set(value);
-                return 0;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC4D):
-        {
-            osg::Vec4d value;
-            if (getValue(pos, value))
-            {
-                ssp->set(value);
-                return 0;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_QUAT):
-        {
-            osg::Quat value;
-            if (getValue(pos, value))
-            {
-                ssp->set(value);
-                return 0;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_PLANE):
-        {
-            osg::Plane value;
-            if (getValue(pos, value))
-            {
-                ssp->set(value);
-                return 0;
-            }
-            break;
-        }
-#ifdef OSG_USE_FLOAT_MATRIX
+
+        case(osgDB::BaseSerializer::RW_VEC2B): if (getDataFromStack<osg::Vec2b>(ssp, pos)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC3B): if (getDataFromStack<osg::Vec3b>(ssp, pos)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC4B): if (getDataFromStack<osg::Vec4b>(ssp, pos)) return 0; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2UB): if (getDataFromStack<osg::Vec2ub>(ssp, pos)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC3UB): if (getDataFromStack<osg::Vec3ub>(ssp, pos)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC4UB): if (getDataFromStack<osg::Vec4ub>(ssp, pos)) return 0; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2S): if (getDataFromStack<osg::Vec2s>(ssp, pos)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC3S): if (getDataFromStack<osg::Vec3s>(ssp, pos)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC4S): if (getDataFromStack<osg::Vec4s>(ssp, pos)) return 0; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2US): if (getDataFromStack<osg::Vec2us>(ssp, pos)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC3US): if (getDataFromStack<osg::Vec3us>(ssp, pos)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC4US): if (getDataFromStack<osg::Vec4us>(ssp, pos)) return 0; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2I): if (getDataFromStack<osg::Vec2i>(ssp, pos)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC3I): if (getDataFromStack<osg::Vec3i>(ssp, pos)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC4I): if (getDataFromStack<osg::Vec4i>(ssp, pos)) return 0; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2UI): if (getDataFromStack<osg::Vec2ui>(ssp, pos)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC3UI): if (getDataFromStack<osg::Vec3ui>(ssp, pos)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC4UI): if (getDataFromStack<osg::Vec4ui>(ssp, pos)) return 0; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2F): if (getDataFromStack<osg::Vec2f>(ssp, pos)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC3F): if (getDataFromStack<osg::Vec3f>(ssp, pos)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC4F): if (getDataFromStack<osg::Vec4f>(ssp, pos)) return 0; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2D): if (getDataFromStack<osg::Vec2d>(ssp, pos)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC3D): if (getDataFromStack<osg::Vec3d>(ssp, pos)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC4D): if (getDataFromStack<osg::Vec4d>(ssp, pos)) return 0; break;
+
+        case(osgDB::BaseSerializer::RW_QUAT): if (getDataFromStack<osg::Quat>(ssp, pos)) return 0; break;
+
+        case(osgDB::BaseSerializer::RW_PLANE): if (getDataFromStack<osg::Plane>(ssp, pos)) return 0; break;
+
+        #ifdef OSG_USE_FLOAT_MATRIX
         case(osgDB::BaseSerializer::RW_MATRIX):
 #endif
         case(osgDB::BaseSerializer::RW_MATRIXF):
@@ -3257,6 +3163,14 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
             break;
         }
 
+        case(osgDB::BaseSerializer::RW_VEC2B): if (getValueAndSetProperty<osg::Vec2b>(object, propertyName)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC3B): if (getValueAndSetProperty<osg::Vec3b>(object, propertyName)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC4B): if (getValueAndSetProperty<osg::Vec4b>(object, propertyName)) return 0; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2UB): if (getValueAndSetProperty<osg::Vec2ub>(object, propertyName)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC3UB): if (getValueAndSetProperty<osg::Vec3ub>(object, propertyName)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC4UB): if (getValueAndSetProperty<osg::Vec4ub>(object, propertyName)) return 0; break;
+
         case(osgDB::BaseSerializer::RW_VEC2F): if (getValueAndSetProperty<osg::Vec2f>(object, propertyName)) return 0; break;
         case(osgDB::BaseSerializer::RW_VEC3F): if (getValueAndSetProperty<osg::Vec3f>(object, propertyName)) return 0; break;
         case(osgDB::BaseSerializer::RW_VEC4F): if (getValueAndSetProperty<osg::Vec4f>(object, propertyName)) return 0; break;
@@ -3266,6 +3180,7 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
         case(osgDB::BaseSerializer::RW_VEC4D): if (getValueAndSetProperty<osg::Vec4d>(object, propertyName)) return 0; break;
 
         case(osgDB::BaseSerializer::RW_QUAT): if (getValueAndSetProperty<osg::Quat>(object, propertyName)) return 0; break;
+
         case(osgDB::BaseSerializer::RW_PLANE): if (getValueAndSetProperty<osg::Plane>(object, propertyName)) return 0; break;
 
 #ifdef OSG_USE_FLOAT_MATRIX
@@ -3817,24 +3732,35 @@ osg::Object* LuaScriptEngine::popParameterObject() const
             if (lua_isnumber(_lua, -1)) object = new osg::DoubleValueObject("", static_cast<double>(lua_tonumber(_lua, -1)));
             break;
         }
-        case(osgDB::BaseSerializer::RW_VEC2F):
-        {
-            osg::Vec2f value;
-            if (getValue(-1, value)) object = new osg::Vec2fValueObject("", value);
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC3F):
-        {
-            osg::Vec3f value;
-            if (getValue(-1, value)) object = new osg::Vec3fValueObject("", value);
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC4F):
-        {
-            osg::Vec4f value;
-            if (getValue(-1, value)) object = new osg::Vec4fValueObject("", value);
-            break;
-        }
+
+        case(osgDB::BaseSerializer::RW_VEC2B): object = getValueObject<osg::Vec2b>(-1); break;
+        case(osgDB::BaseSerializer::RW_VEC3B): object = getValueObject<osg::Vec3b>(-1); break;
+        case(osgDB::BaseSerializer::RW_VEC4B): object = getValueObject<osg::Vec4b>(-1); break;
+
+        case(osgDB::BaseSerializer::RW_VEC2UB): object = getValueObject<osg::Vec2ub>(-1); break;
+        case(osgDB::BaseSerializer::RW_VEC3UB): object = getValueObject<osg::Vec3ub>(-1); break;
+        case(osgDB::BaseSerializer::RW_VEC4UB): object = getValueObject<osg::Vec4ub>(-1); break;
+
+        case(osgDB::BaseSerializer::RW_VEC2S): object = getValueObject<osg::Vec2s>(-1); break;
+        case(osgDB::BaseSerializer::RW_VEC3S): object = getValueObject<osg::Vec3s>(-1); break;
+        case(osgDB::BaseSerializer::RW_VEC4S): object = getValueObject<osg::Vec4s>(-1); break;
+
+        case(osgDB::BaseSerializer::RW_VEC2US): object = getValueObject<osg::Vec2us>(-1); break;
+        case(osgDB::BaseSerializer::RW_VEC3US): object = getValueObject<osg::Vec3us>(-1); break;
+        case(osgDB::BaseSerializer::RW_VEC4US): object = getValueObject<osg::Vec4us>(-1); break;
+
+        case(osgDB::BaseSerializer::RW_VEC2I): object = getValueObject<osg::Vec2i>(-1); break;
+        case(osgDB::BaseSerializer::RW_VEC3I): object = getValueObject<osg::Vec3i>(-1); break;
+        case(osgDB::BaseSerializer::RW_VEC4I): object = getValueObject<osg::Vec4i>(-1); break;
+
+        case(osgDB::BaseSerializer::RW_VEC2UI): object = getValueObject<osg::Vec2ui>(-1); break;
+        case(osgDB::BaseSerializer::RW_VEC3UI): object = getValueObject<osg::Vec3ui>(-1); break;
+        case(osgDB::BaseSerializer::RW_VEC4UI): object = getValueObject<osg::Vec4ui>(-1); break;
+
+        case(osgDB::BaseSerializer::RW_VEC2F): object = getValueObject<osg::Vec2f>(-1); break;
+        case(osgDB::BaseSerializer::RW_VEC3F): object = getValueObject<osg::Vec3f>(-1); break;
+        case(osgDB::BaseSerializer::RW_VEC4F): object = getValueObject<osg::Vec4f>(-1); break;
+
 #ifdef OSG_USE_FLOAT_MATRIX
         case(osgDB::BaseSerializer::RW_MATRIX):
 #endif
@@ -3844,37 +3770,15 @@ osg::Object* LuaScriptEngine::popParameterObject() const
             if (getValue(-1, value)) object = new osg::MatrixfValueObject("", value);
             break;
         }
-        case(osgDB::BaseSerializer::RW_VEC2D):
-        {
-            osg::Vec2d value;
-            if (getValue(-1, value)) object = new osg::Vec2dValueObject("", value);
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC3D):
-        {
-            osg::Vec3d value;
-            if (getValue(-1, value)) object = new osg::Vec3dValueObject("", value);
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC4D):
-        {
-            osg::Vec4d value;
-            if (getValue(-1, value)) object = new osg::Vec4dValueObject("", value);
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_QUAT):
-        {
-            osg::Quat value;
-            if (getValue(-1, value)) object = new osg::QuatValueObject("", value);
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_PLANE):
-        {
-            osg::Plane value;
-            if (getValue(-1, value)) object = new osg::PlaneValueObject("", value);
-            break;
-        }
-#ifndef OSG_USE_FLOAT_MATRIX
+
+        case(osgDB::BaseSerializer::RW_VEC2D): object = getValueObject<osg::Vec2d>(-1); break;
+        case(osgDB::BaseSerializer::RW_VEC3D): object = getValueObject<osg::Vec3d>(-1); break;
+        case(osgDB::BaseSerializer::RW_VEC4D): object = getValueObject<osg::Vec4d>(-1); break;
+
+        case(osgDB::BaseSerializer::RW_PLANE): object = getValueObject<osg::Plane>(-1); break;
+        case(osgDB::BaseSerializer::RW_QUAT): object = getValueObject<osg::Quat>(-1); break;
+
+    #ifndef OSG_USE_FLOAT_MATRIX
         case(osgDB::BaseSerializer::RW_MATRIX):
 #endif
         case(osgDB::BaseSerializer::RW_MATRIXD):

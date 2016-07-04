@@ -24,12 +24,35 @@
 namespace osg {
 
 // forward declare core OSG math classes
+class Vec2b;
+class Vec3b;
+class Vec4b;
+class Vec2ub;
+class Vec3ub;
+class Vec4ub;
+
+class Vec2s;
+class Vec3s;
+class Vec4s;
+class Vec2us;
+class Vec3us;
+class Vec4us;
+
+class Vec2i;
+class Vec3i;
+class Vec4i;
+class Vec2ui;
+class Vec3ui;
+class Vec4ui;
+
 class Vec2f;
 class Vec3f;
 class Vec4f;
+
 class Vec2d;
 class Vec3d;
 class Vec4d;
+
 class Quat;
 class Plane;
 class Matrixf;
@@ -59,12 +82,39 @@ class ValueObject : public Object
             virtual void apply(float /*value*/) {}
             virtual void apply(double /*value*/) {}
             virtual void apply(const std::string& /*value*/) {}
+
+            virtual void apply(const osg::Vec2b& /*value*/) {}
+            virtual void apply(const osg::Vec3b& /*value*/) {}
+            virtual void apply(const osg::Vec4b& /*value*/) {}
+
+            virtual void apply(const osg::Vec2ub& /*value*/) {}
+            virtual void apply(const osg::Vec3ub& /*value*/) {}
+            virtual void apply(const osg::Vec4ub& /*value*/) {}
+
+            virtual void apply(const osg::Vec2s& /*value*/) {}
+            virtual void apply(const osg::Vec3s& /*value*/) {}
+            virtual void apply(const osg::Vec4s& /*value*/) {}
+
+            virtual void apply(const osg::Vec2us& /*value*/) {}
+            virtual void apply(const osg::Vec3us& /*value*/) {}
+            virtual void apply(const osg::Vec4us& /*value*/) {}
+
+            virtual void apply(const osg::Vec2i& /*value*/) {}
+            virtual void apply(const osg::Vec3i& /*value*/) {}
+            virtual void apply(const osg::Vec4i& /*value*/) {}
+
+            virtual void apply(const osg::Vec2ui& /*value*/) {}
+            virtual void apply(const osg::Vec3ui& /*value*/) {}
+            virtual void apply(const osg::Vec4ui& /*value*/) {}
+
             virtual void apply(const osg::Vec2f& /*value*/) {}
             virtual void apply(const osg::Vec3f& /*value*/) {}
             virtual void apply(const osg::Vec4f& /*value*/) {}
+
             virtual void apply(const osg::Vec2d& /*value*/) {}
             virtual void apply(const osg::Vec3d& /*value*/) {}
             virtual void apply(const osg::Vec4d& /*value*/) {}
+
             virtual void apply(const osg::Quat& /*value*/) {}
             virtual void apply(const osg::Plane& /*value*/) {}
             virtual void apply(const osg::Matrixf& /*value*/) {}
@@ -89,12 +139,39 @@ class ValueObject : public Object
             virtual void apply(float& /*value*/) {}
             virtual void apply(double& /*value*/) {}
             virtual void apply(std::string& /*value*/) {}
+
+            virtual void apply(osg::Vec2b& /*value*/) {}
+            virtual void apply(osg::Vec3b& /*value*/) {}
+            virtual void apply(osg::Vec4b& /*value*/) {}
+
+            virtual void apply(osg::Vec2ub& /*value*/) {}
+            virtual void apply(osg::Vec3ub& /*value*/) {}
+            virtual void apply(osg::Vec4ub& /*value*/) {}
+
+            virtual void apply(osg::Vec2s& /*value*/) {}
+            virtual void apply(osg::Vec3s& /*value*/) {}
+            virtual void apply(osg::Vec4s& /*value*/) {}
+
+            virtual void apply(osg::Vec2us& /*value*/) {}
+            virtual void apply(osg::Vec3us& /*value*/) {}
+            virtual void apply(osg::Vec4us& /*value*/) {}
+
+            virtual void apply(osg::Vec2i& /*value*/) {}
+            virtual void apply(osg::Vec3i& /*value*/) {}
+            virtual void apply(osg::Vec4i& /*value*/) {}
+
+            virtual void apply(osg::Vec2ui& /*value*/) {}
+            virtual void apply(osg::Vec3ui& /*value*/) {}
+            virtual void apply(osg::Vec4ui& /*value*/) {}
+
             virtual void apply(osg::Vec2f& /*value*/) {}
             virtual void apply(osg::Vec3f& /*value*/) {}
             virtual void apply(osg::Vec4f& /*value*/) {}
+
             virtual void apply(osg::Vec2d& /*value*/) {}
             virtual void apply(osg::Vec3d& /*value*/) {}
             virtual void apply(osg::Vec4d& /*value*/) {}
+
             virtual void apply(osg::Quat& /*value*/) {}
             virtual void apply(osg::Plane& /*value*/) {}
             virtual void apply(osg::Matrixf& /*value*/) {}

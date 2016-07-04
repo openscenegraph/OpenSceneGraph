@@ -126,15 +126,45 @@ class LuaScriptEngine : public osg::ScriptEngine
         bool getboundingbox(int pos) const;
         bool getboundingsphere(int pos) const;
 
-        bool getValue(int pos, osg::Vec2f& value) const;
-        bool getValue(int pos, osg::Vec3f& value) const;
-        bool getValue(int pos, osg::Vec4f& value) const;
+        template<typename T>
+        bool getVec2(int pos, T& value) const
+        {
+            if (!getvec2(pos)) return false;
 
-        bool getValue(int pos, osg::Vec2d& value) const;
-        bool getValue(int pos, osg::Vec3d& value) const;
-        bool getValue(int pos, osg::Vec4d& value) const;
-        bool getValue(int pos, osg::Quat& value) const;
-        bool getValue(int pos, osg::Plane& value) const;
+            value.set(lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
+            lua_pop(_lua, 2);
+
+            return true;
+        }
+
+        template<typename T>
+        bool getVec3(int pos, T& value) const
+        {
+            if (!getvec3(pos)) return false;
+            value.set(lua_tonumber(_lua, -3), lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
+            lua_pop(_lua, 3);
+            return true;
+        }
+
+        template<typename T>
+        bool getVec4(int pos, T& value) const
+        {
+            if (!getvec4(pos)) return false;
+            value.set(lua_tonumber(_lua, -4), lua_tonumber(_lua, -3), lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
+            lua_pop(_lua, 4);
+            return true;
+        }
+
+        bool getValue(int pos, osg::Vec2f& value) const { return getVec2(pos, value); }
+        bool getValue(int pos, osg::Vec3f& value) const { return getVec3(pos, value); }
+        bool getValue(int pos, osg::Vec4f& value) const { return getVec4(pos, value); }
+
+        bool getValue(int pos, osg::Vec2d& value) const { return getVec2(pos, value); }
+        bool getValue(int pos, osg::Vec3d& value) const { return getVec3(pos, value); }
+        bool getValue(int pos, osg::Vec4d& value) const { return getVec4(pos, value); }
+
+        bool getValue(int pos, osg::Quat& value) const { return getVec4(pos, value); }
+        bool getValue(int pos, osg::Plane& value) const { return getVec4(pos, value); }
 
         bool getValue(int pos, osg::Matrixf& value) const;
         bool getValue(int pos, osg::Matrixd& value) const;

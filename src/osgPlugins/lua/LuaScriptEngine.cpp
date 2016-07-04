@@ -3672,32 +3672,6 @@ bool LuaScriptEngine::getboundingsphere(int pos) const
     return false;
 }
 
-bool LuaScriptEngine::getValue(int pos, osg::Vec2f& value) const
-{
-    if (!getvec2(pos)) return false;
-
-    value.set(lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
-    lua_pop(_lua, 2);
-
-    return true;
-}
-
-bool LuaScriptEngine::getValue(int pos, osg::Vec3f& value) const
-{
-    if (!getvec3(pos)) return false;
-    value.set(lua_tonumber(_lua, -3), lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
-    lua_pop(_lua, 3);
-    return true;
-}
-
-bool LuaScriptEngine::getValue(int pos, osg::Vec4f& value) const
-{
-    if (!getvec4(pos)) return false;
-    value.set(lua_tonumber(_lua, -4), lua_tonumber(_lua, -3), lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
-    lua_pop(_lua, 4);
-    return true;
-}
-
 bool LuaScriptEngine::getValue(int pos, osg::Matrixf& value) const
 {
     if (!getmatrix(pos)) return false;
@@ -3709,48 +3683,6 @@ bool LuaScriptEngine::getValue(int pos, osg::Matrixf& value) const
             value(r,c) = lua_tonumber(_lua, -16+(r*4+c));
         }
     }
-    return true;
-}
-
-bool LuaScriptEngine::getValue(int pos, osg::Vec2d& value) const
-{
-    if (!getvec2(pos)) return false;
-
-    value.set(lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
-    lua_pop(_lua, 2);
-
-    return true;
-}
-
-bool LuaScriptEngine::getValue(int pos, osg::Vec3d& value) const
-{
-    if (!getvec3(pos)) return false;
-    value.set(lua_tonumber(_lua, -3), lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
-    lua_pop(_lua, 3);
-    return true;
-}
-
-bool LuaScriptEngine::getValue(int pos, osg::Vec4d& value) const
-{
-    if (!getvec4(pos)) return false;
-    value.set(lua_tonumber(_lua, -4), lua_tonumber(_lua, -3), lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
-    lua_pop(_lua, 4);
-    return true;
-}
-
-bool LuaScriptEngine::getValue(int pos, osg::Quat& value) const
-{
-    if (!getvec4(pos)) return false;
-    value.set(lua_tonumber(_lua, -4), lua_tonumber(_lua, -3), lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
-    lua_pop(_lua, 4);
-    return true;
-}
-
-bool LuaScriptEngine::getValue(int pos, osg::Plane& value) const
-{
-    if (!getvec4(pos)) return false;
-    value.set(lua_tonumber(_lua, -4), lua_tonumber(_lua, -3), lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
-    lua_pop(_lua, 4);
     return true;
 }
 

@@ -2107,12 +2107,39 @@ public:
     virtual void apply(float value)                     { lua_pushnumber(_lua, value); }
     virtual void apply(double value)                    { lua_pushnumber(_lua, value); }
     virtual void apply(const std::string& value)        { lua_pushlstring(_lua, &value[0], value.size()); }
+
+    virtual void apply(const osg::Vec2b& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Vec3b& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Vec4b& value)         { _lse->pushValue(value); }
+
+    virtual void apply(const osg::Vec2ub& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Vec3ub& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Vec4ub& value)         { _lse->pushValue(value); }
+
+    virtual void apply(const osg::Vec2s& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Vec3s& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Vec4s& value)         { _lse->pushValue(value); }
+
+    virtual void apply(const osg::Vec2us& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Vec3us& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Vec4us& value)         { _lse->pushValue(value); }
+
+    virtual void apply(const osg::Vec2i& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Vec3i& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Vec4i& value)         { _lse->pushValue(value); }
+
+    virtual void apply(const osg::Vec2ui& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Vec3ui& value)         { _lse->pushValue(value); }
+    virtual void apply(const osg::Vec4ui& value)         { _lse->pushValue(value); }
+
     virtual void apply(const osg::Vec2f& value)         { _lse->pushValue(value); }
     virtual void apply(const osg::Vec3f& value)         { _lse->pushValue(value); }
     virtual void apply(const osg::Vec4f& value)         { _lse->pushValue(value); }
+
     virtual void apply(const osg::Vec2d& value)         { _lse->pushValue(value); }
     virtual void apply(const osg::Vec3d& value)         { _lse->pushValue(value); }
     virtual void apply(const osg::Vec4d& value)         { _lse->pushValue(value); }
+
     virtual void apply(const osg::Quat& value)          { _lse->pushValue(value); }
     virtual void apply(const osg::Plane& value)         { _lse->pushValue(value); }
     virtual void apply(const osg::Matrixf& value)       { _lse->pushValue(value); }

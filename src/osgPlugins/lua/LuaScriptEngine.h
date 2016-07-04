@@ -147,15 +147,46 @@ class LuaScriptEngine : public osg::ScriptEngine
 
         void pushValue(osgDB::BaseSerializer::Type type, const void* ptr) const;
 
-        void pushValue(const osg::Vec2f& value) const;
-        void pushValue(const osg::Vec3f& value) const;
-        void pushValue(const osg::Vec4f& value) const;
+        template<typename T>
+        void pushVec2(const T& value) const
+        {
+            lua_newtable(_lua);
+            lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
+            lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
+        }
 
-        void pushValue(const osg::Vec2d& value) const;
-        void pushValue(const osg::Vec3d& value) const;
-        void pushValue(const osg::Vec4d& value) const;
-        void pushValue(const osg::Quat& value) const;
-        void pushValue(const osg::Plane& value) const;
+        template<typename T>
+        void pushVec3(const T& value) const
+        {
+            lua_newtable(_lua);
+            lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
+            lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.z()); lua_settable(_lua, -3);
+        }
+
+        template<typename T>
+        void pushVec4(const T& value) const
+        {
+            lua_newtable(_lua);
+            lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
+            lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.z()); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "w"); lua_pushnumber(_lua, value.w()); lua_settable(_lua, -3);
+        }
+
+        void pushValue(const osg::Vec2f& value) const { pushVec2(value); }
+        void pushValue(const osg::Vec3f& value) const { pushVec3(value); }
+        void pushValue(const osg::Vec4f& value) const { pushVec4(value); }
+
+        void pushValue(const osg::Vec2d& value) const { pushVec2(value); }
+        void pushValue(const osg::Vec3d& value) const { pushVec3(value); }
+        void pushValue(const osg::Vec4d& value) const { pushVec4(value); }
+
+        void pushValue(const osg::Quat& value) const { pushVec4(value); }
+        void pushValue(const osg::Plane& value) const { pushVec4(value.asVec4()); }
 
         void pushValue(const osg::Matrixf& value) const;
         void pushValue(const osg::Matrixd& value) const;

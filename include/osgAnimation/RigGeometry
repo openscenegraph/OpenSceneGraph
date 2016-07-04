@@ -80,6 +80,7 @@ namespace osgAnimation
         // set implementation of rig method
         void setRigTransformImplementation(RigTransform*);
         RigTransform* getRigTransformImplementation();
+        const RigTransform* getRigTransformImplementation() const { return _rigTransformImplementation.get(); }
 
         virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
         void update();

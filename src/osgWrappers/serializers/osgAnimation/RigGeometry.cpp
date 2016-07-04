@@ -72,4 +72,5 @@ REGISTER_OBJECT_WRAPPER( osgAnimation_RigGeometry,
 {
     ADD_USER_SERIALIZER( InfluenceMap );  // _vertexInfluenceMap
     ADD_OBJECT_SERIALIZER( SourceGeometry, osg::Geometry, NULL );  // _geometry
+    ADD_OBJECT_SERIALIZER( RigTransformImplementation, osgAnimation::RigTransform, NULL );  // _geometry
 }

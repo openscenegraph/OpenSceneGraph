@@ -101,7 +101,32 @@ class LuaScriptEngine : public osg::ScriptEngine
         osgDB::ClassInterface& getClassInterface() const { return _ci; }
 
         int pushDataToStack(SerializerScratchPad* ssp) const;
+
+        template<typename T>
+        bool pushValueToStack(SerializerScratchPad* ssp) const
+        {
+            T value;
+            if (ssp->get(value))
+            {
+                pushValue(value);
+                return true;
+            }
+            return false;
+        }
+
         int getDataFromStack(SerializerScratchPad* ssp, osgDB::BaseSerializer::Type type, int pos) const;
+
+        template<typename T>
+        bool getDataFromStack(SerializerScratchPad* ssp, int pos) const
+        {
+            T value;
+            if (getValue(pos, value))
+            {
+                ssp->set(value);
+                return true;
+            }
+            return false;
+        }
 
         int pushPropertyToStack(osg::Object* object, const std::string& propertyName) const;
         int setPropertyFromStack(osg::Object* object, const std::string& propertyName) const;
@@ -126,15 +151,72 @@ class LuaScriptEngine : public osg::ScriptEngine
         bool getboundingbox(int pos) const;
         bool getboundingsphere(int pos) const;
 
-        bool getValue(int pos, osg::Vec2f& value) const;
-        bool getValue(int pos, osg::Vec3f& value) const;
-        bool getValue(int pos, osg::Vec4f& value) const;
 
-        bool getValue(int pos, osg::Vec2d& value) const;
-        bool getValue(int pos, osg::Vec3d& value) const;
-        bool getValue(int pos, osg::Vec4d& value) const;
-        bool getValue(int pos, osg::Quat& value) const;
-        bool getValue(int pos, osg::Plane& value) const;
+
+
+        template<typename T>
+        bool getVec2(int pos, T& value) const
+        {
+            if (!getvec2(pos)) return false;
+
+            value.set(lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
+            lua_pop(_lua, 2);
+
+            return true;
+        }
+
+        template<typename T>
+        bool getVec3(int pos, T& value) const
+        {
+            if (!getvec3(pos)) return false;
+            value.set(lua_tonumber(_lua, -3), lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
+            lua_pop(_lua, 3);
+            return true;
+        }
+
+        template<typename T>
+        bool getVec4(int pos, T& value) const
+        {
+            if (!getvec4(pos)) return false;
+            value.set(lua_tonumber(_lua, -4), lua_tonumber(_lua, -3), lua_tonumber(_lua, -2), lua_tonumber(_lua, -1));
+            lua_pop(_lua, 4);
+            return true;
+        }
+
+        bool getValue(int pos, osg::Vec2b& value) const { return getVec2(pos, value); }
+        bool getValue(int pos, osg::Vec3b& value) const { return getVec3(pos, value); }
+        bool getValue(int pos, osg::Vec4b& value) const { return getVec4(pos, value); }
+
+        bool getValue(int pos, osg::Vec2ub& value) const { return getVec2(pos, value); }
+        bool getValue(int pos, osg::Vec3ub& value) const { return getVec3(pos, value); }
+        bool getValue(int pos, osg::Vec4ub& value) const { return getVec4(pos, value); }
+
+        bool getValue(int pos, osg::Vec2s& value) const { return getVec2(pos, value); }
+        bool getValue(int pos, osg::Vec3s& value) const { return getVec3(pos, value); }
+        bool getValue(int pos, osg::Vec4s& value) const { return getVec4(pos, value); }
+
+        bool getValue(int pos, osg::Vec2us& value) const { return getVec2(pos, value); }
+        bool getValue(int pos, osg::Vec3us& value) const { return getVec3(pos, value); }
+        bool getValue(int pos, osg::Vec4us& value) const { return getVec4(pos, value); }
+
+        bool getValue(int pos, osg::Vec2i& value) const { return getVec2(pos, value); }
+        bool getValue(int pos, osg::Vec3i& value) const { return getVec3(pos, value); }
+        bool getValue(int pos, osg::Vec4i& value) const { return getVec4(pos, value); }
+
+        bool getValue(int pos, osg::Vec2ui& value) const { return getVec2(pos, value); }
+        bool getValue(int pos, osg::Vec3ui& value) const { return getVec3(pos, value); }
+        bool getValue(int pos, osg::Vec4ui& value) const { return getVec4(pos, value); }
+
+        bool getValue(int pos, osg::Vec2f& value) const { return getVec2(pos, value); }
+        bool getValue(int pos, osg::Vec3f& value) const { return getVec3(pos, value); }
+        bool getValue(int pos, osg::Vec4f& value) const { return getVec4(pos, value); }
+
+        bool getValue(int pos, osg::Vec2d& value) const { return getVec2(pos, value); }
+        bool getValue(int pos, osg::Vec3d& value) const { return getVec3(pos, value); }
+        bool getValue(int pos, osg::Vec4d& value) const { return getVec4(pos, value); }
+
+        bool getValue(int pos, osg::Quat& value) const { return getVec4(pos, value); }
+        bool getValue(int pos, osg::Plane& value) const { return getVec4(pos, value); }
 
         bool getValue(int pos, osg::Matrixf& value) const;
         bool getValue(int pos, osg::Matrixd& value) const;
@@ -145,17 +227,107 @@ class LuaScriptEngine : public osg::ScriptEngine
         bool getValue(int pos, osg::BoundingSpheref& value) const;
         bool getValue(int pos, osg::BoundingSphered& value) const;
 
+
+        template<typename T>
+        bool getValueAndSetProperty(osg::Object* object, const std::string& propertyName) const
+        {
+            T value;
+            if (getValue(-1, value))
+            {
+                _ci.setProperty(object, propertyName, value);
+                return true;
+            }
+            return false;
+        }
+
+        template<typename T>
+        osg::Object* getValueObject(int pos) const
+        {
+            T value;
+            if (getValue(pos, value)) return new osg::TemplateValueObject<T>("", value);
+            else return 0;
+        }
+
+
+        template<typename T>
+        bool getPropertyAndPushValue(const osg::Object* object, const std::string& propertyName) const
+        {
+            T value;
+            if (_ci.getProperty(object, propertyName, value))
+            {
+                pushValue(value);
+                return true;
+            }
+            return false;
+        }
+
+
         void pushValue(osgDB::BaseSerializer::Type type, const void* ptr) const;
 
-        void pushValue(const osg::Vec2f& value) const;
-        void pushValue(const osg::Vec3f& value) const;
-        void pushValue(const osg::Vec4f& value) const;
+        template<typename T>
+        void pushVec2(const T& value) const
+        {
+            lua_newtable(_lua);
+            lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
+            lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
+        }
 
-        void pushValue(const osg::Vec2d& value) const;
-        void pushValue(const osg::Vec3d& value) const;
-        void pushValue(const osg::Vec4d& value) const;
-        void pushValue(const osg::Quat& value) const;
-        void pushValue(const osg::Plane& value) const;
+        template<typename T>
+        void pushVec3(const T& value) const
+        {
+            lua_newtable(_lua);
+            lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
+            lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.z()); lua_settable(_lua, -3);
+        }
+
+        template<typename T>
+        void pushVec4(const T& value) const
+        {
+            lua_newtable(_lua);
+            lua_newtable(_lua); luaL_getmetatable(_lua, "LuaScriptEngine.Table"); lua_setmetatable(_lua, -2);
+            lua_pushstring(_lua, "x"); lua_pushnumber(_lua, value.x()); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "y"); lua_pushnumber(_lua, value.y()); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "z"); lua_pushnumber(_lua, value.z()); lua_settable(_lua, -3);
+            lua_pushstring(_lua, "w"); lua_pushnumber(_lua, value.w()); lua_settable(_lua, -3);
+        }
+
+        void pushValue(const osg::Vec2b& value) const { pushVec2(value); }
+        void pushValue(const osg::Vec3b& value) const { pushVec3(value); }
+        void pushValue(const osg::Vec4b& value) const { pushVec4(value); }
+
+        void pushValue(const osg::Vec2ub& value) const { pushVec2(value); }
+        void pushValue(const osg::Vec3ub& value) const { pushVec3(value); }
+        void pushValue(const osg::Vec4ub& value) const { pushVec4(value); }
+
+        void pushValue(const osg::Vec2s& value) const { pushVec2(value); }
+        void pushValue(const osg::Vec3s& value) const { pushVec3(value); }
+        void pushValue(const osg::Vec4s& value) const { pushVec4(value); }
+
+        void pushValue(const osg::Vec2us& value) const { pushVec2(value); }
+        void pushValue(const osg::Vec3us& value) const { pushVec3(value); }
+        void pushValue(const osg::Vec4us& value) const { pushVec4(value); }
+
+        void pushValue(const osg::Vec2i& value) const { pushVec2(value); }
+        void pushValue(const osg::Vec3i& value) const { pushVec3(value); }
+        void pushValue(const osg::Vec4i& value) const { pushVec4(value); }
+
+        void pushValue(const osg::Vec2ui& value) const { pushVec2(value); }
+        void pushValue(const osg::Vec3ui& value) const { pushVec3(value); }
+        void pushValue(const osg::Vec4ui& value) const { pushVec4(value); }
+
+        void pushValue(const osg::Vec2f& value) const { pushVec2(value); }
+        void pushValue(const osg::Vec3f& value) const { pushVec3(value); }
+        void pushValue(const osg::Vec4f& value) const { pushVec4(value); }
+
+        void pushValue(const osg::Vec2d& value) const { pushVec2(value); }
+        void pushValue(const osg::Vec3d& value) const { pushVec3(value); }
+        void pushValue(const osg::Vec4d& value) const { pushVec4(value); }
+
+        void pushValue(const osg::Quat& value) const { pushVec4(value); }
+        void pushValue(const osg::Plane& value) const { pushVec4(value.asVec4()); }
 
         void pushValue(const osg::Matrixf& value) const;
         void pushValue(const osg::Matrixd& value) const;

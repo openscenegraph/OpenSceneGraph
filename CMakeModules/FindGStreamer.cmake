@@ -65,7 +65,7 @@
 #    )
 #endmacro()
 
-if (WIN32)
+if (MSVC)
     macro(FIND_GSTREAMER_COMPONENT _component_prefix _pkgconfig_name _header _library)
         find_path(${_component_prefix}_INCLUDE_DIRS
             NAMES ${_header}

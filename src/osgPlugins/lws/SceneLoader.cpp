@@ -262,9 +262,8 @@ bool SceneLoader::parse_block(const std::string &name, const std::string &data)
 
                 OSG_NOTICE << "Loading object \"" << filename << "\"" << std::endl;
 
-                objnode = osgDB::readRefFile<osg::Group>(filename);
+                objnode = dynamic_cast<osg::Group*>(osgDB::readRefNodeFile(filename).get());
                 if (!objnode.valid()) return false;
-
                 objects_[filename] = objnode;
 
             } else {

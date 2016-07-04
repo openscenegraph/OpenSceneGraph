@@ -143,15 +143,11 @@ class OSG_EXPORT CullStack : public osg::CullSettings
         inline const CullingSet& getCurrentCullingSet() const { return *_back_modelviewCullingStack; }
 
         inline osg::Viewport* getViewport();
-<<<<<<< HEAD
-        inline osg::RefMatrix* getModelViewMatrix()const;
-        inline osg::RefMatrix* getProjectionMatrix()const;
-        inline osg::Matrix getWindowMatrix()const;
-=======
+
         inline osg::RefMatrix* getModelViewMatrix();
         inline osg::RefMatrix* getProjectionMatrix();
         inline osg::Matrix getWindowMatrix() const;
->>>>>>> upstream/master
+
         inline const osg::RefMatrix* getMVPW();
 
         inline const osg::Vec3& getReferenceViewPoint() const { return _referenceViewPoints.back(); }

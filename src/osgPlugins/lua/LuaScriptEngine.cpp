@@ -3256,86 +3256,18 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
             }
             break;
         }
-        case(osgDB::BaseSerializer::RW_VEC2F):
-        {
-            osg::Vec2f value;
-            if (getValue(-1, value))
-            {
-                _ci.setProperty(object, propertyName, value);
-                return 0;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC3F):
-        {
-            osg::Vec3f value;
-            if (getValue(-1, value))
-            {
-                _ci.setProperty(object, propertyName, value);
-                return 0;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC4F):
-        {
-            osg::Vec4f value;
-            if (getValue(-1, value))
-            {
-                _ci.setProperty(object, propertyName, value);
-                return 0;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC2D):
-        {
-            osg::Vec2d value;
-            if (getValue(-1, value))
-            {
-                _ci.setProperty(object, propertyName, value);
-                return 0;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC3D):
-        {
-            osg::Vec3d value;
-            if (getValue(-1, value))
-            {
-                _ci.setProperty(object, propertyName, value);
-                return 0;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_VEC4D):
-        {
-            osg::Vec4d value;
-            if (getValue(-1, value))
-            {
-                _ci.setProperty(object, propertyName, value);
-                return 0;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_QUAT):
-        {
-            osg::Quat value;
-            if (getValue(-1, value))
-            {
-                _ci.setProperty(object, propertyName, value);
-                return 0;
-            }
-            break;
-        }
-        case(osgDB::BaseSerializer::RW_PLANE):
-        {
-            osg::Plane value;
-            if (getValue(-1, value))
-            {
-                _ci.setProperty(object, propertyName, value);
-                return 0;
-            }
-            break;
-        }
+
+        case(osgDB::BaseSerializer::RW_VEC2F): if (getValueAndSetProperty<osg::Vec2f>(object, propertyName)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC3F): if (getValueAndSetProperty<osg::Vec3f>(object, propertyName)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC4F): if (getValueAndSetProperty<osg::Vec4f>(object, propertyName)) return 0; break;
+
+        case(osgDB::BaseSerializer::RW_VEC2D): if (getValueAndSetProperty<osg::Vec2d>(object, propertyName)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC3D): if (getValueAndSetProperty<osg::Vec3d>(object, propertyName)) return 0; break;
+        case(osgDB::BaseSerializer::RW_VEC4D): if (getValueAndSetProperty<osg::Vec4d>(object, propertyName)) return 0; break;
+
+        case(osgDB::BaseSerializer::RW_QUAT): if (getValueAndSetProperty<osg::Quat>(object, propertyName)) return 0; break;
+        case(osgDB::BaseSerializer::RW_PLANE): if (getValueAndSetProperty<osg::Plane>(object, propertyName)) return 0; break;
+
 #ifdef OSG_USE_FLOAT_MATRIX
         case(osgDB::BaseSerializer::RW_MATRIX):
 #endif

@@ -155,6 +155,30 @@ class LuaScriptEngine : public osg::ScriptEngine
             return true;
         }
 
+        bool getValue(int pos, osg::Vec2b& value) const { return getVec2(pos, value); }
+        bool getValue(int pos, osg::Vec3b& value) const { return getVec3(pos, value); }
+        bool getValue(int pos, osg::Vec4b& value) const { return getVec4(pos, value); }
+
+        bool getValue(int pos, osg::Vec2ub& value) const { return getVec2(pos, value); }
+        bool getValue(int pos, osg::Vec3ub& value) const { return getVec3(pos, value); }
+        bool getValue(int pos, osg::Vec4ub& value) const { return getVec4(pos, value); }
+
+        bool getValue(int pos, osg::Vec2s& value) const { return getVec2(pos, value); }
+        bool getValue(int pos, osg::Vec3s& value) const { return getVec3(pos, value); }
+        bool getValue(int pos, osg::Vec4s& value) const { return getVec4(pos, value); }
+
+        bool getValue(int pos, osg::Vec2us& value) const { return getVec2(pos, value); }
+        bool getValue(int pos, osg::Vec3us& value) const { return getVec3(pos, value); }
+        bool getValue(int pos, osg::Vec4us& value) const { return getVec4(pos, value); }
+
+        bool getValue(int pos, osg::Vec2i& value) const { return getVec2(pos, value); }
+        bool getValue(int pos, osg::Vec3i& value) const { return getVec3(pos, value); }
+        bool getValue(int pos, osg::Vec4i& value) const { return getVec4(pos, value); }
+
+        bool getValue(int pos, osg::Vec2ui& value) const { return getVec2(pos, value); }
+        bool getValue(int pos, osg::Vec3ui& value) const { return getVec3(pos, value); }
+        bool getValue(int pos, osg::Vec4ui& value) const { return getVec4(pos, value); }
+
         bool getValue(int pos, osg::Vec2f& value) const { return getVec2(pos, value); }
         bool getValue(int pos, osg::Vec3f& value) const { return getVec3(pos, value); }
         bool getValue(int pos, osg::Vec4f& value) const { return getVec4(pos, value); }
@@ -174,6 +198,20 @@ class LuaScriptEngine : public osg::ScriptEngine
 
         bool getValue(int pos, osg::BoundingSpheref& value) const;
         bool getValue(int pos, osg::BoundingSphered& value) const;
+
+
+        template<typename T>
+        bool getValueAndSetProperty(osg::Object* object, const std::string& propertyName) const
+        {
+            T value;
+            if (getValue(-1, value))
+            {
+                _ci.setProperty(object, propertyName, value);
+                return true;
+            }
+            return false;
+        }
+
 
         void pushValue(osgDB::BaseSerializer::Type type, const void* ptr) const;
 

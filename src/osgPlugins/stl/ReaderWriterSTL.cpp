@@ -481,8 +481,16 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
 
     std::string header_text(header.text, sizeof(header.text));
 
-    if (stb.st_size == expectLen)
+    if (header_text.find("solid") == std::string::npos || stb.st_size == expectLen)
     {
+        if(stb.st_size < expectLen)
+        {
+            unsigned int facets = (stb.st_size - sizeof_StlHeader) / sizeof_StlFacet;
+            OSG_WARN << "Warning: [[stl]] Incomplete file. "
+                     << "Attempting to read " << facets << " out of " << expectFacets << " facets expected."
+                     << std::endl;
+            expectFacets = facets;
+        }
         isBinary = true;
     }
     else if (header_text.find("solid") != std::string::npos)

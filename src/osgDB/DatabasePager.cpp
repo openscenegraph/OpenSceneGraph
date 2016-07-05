@@ -1592,9 +1592,7 @@ void DatabasePager::setDatabasePagerThreadPause(bool pause)
 
 bool DatabasePager::requiresUpdateSceneGraph() const
 {
-    if (getDataToMergeListSize()>0) return true;
-
-    return false;
+    return (getDataToMergeListSize()>0);
 }
 
 void DatabasePager::updateSceneGraph(const osg::FrameStamp& frameStamp)
@@ -1637,9 +1635,7 @@ void DatabasePager::updateSceneGraph(const osg::FrameStamp& frameStamp)
 
 bool DatabasePager::requiresRedraw() const
 {
-    if (getDataToCompileListSize()>0) return true;
-
-    return false;
+    return (getDataToCompileListSize()>0);
 }
 
 void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)

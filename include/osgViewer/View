@@ -308,7 +308,10 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Return true if there are pending updates to the scene graph that require an update. */
         virtual bool requiresUpdateSceneGraph() const;
 
-    public:
+        /** Return true if there are graphics operations that require a draw of the grpahics context. */
+        virtual bool requiresRedraw() const;
+
+public:
 
         osg::Texture* createDistortionTexture(int width, int height);
         osg::Camera* assignRenderToTextureCamera(osg::GraphicsContext* gc, int width, int height, osg::Texture* texture);

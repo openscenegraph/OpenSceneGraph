@@ -298,7 +298,7 @@ JSONObject* createJSONAnimation(osgAnimation::Animation* anim, WriteVisitor* wri
     return json.release();
 }
 
-JSONObject* createJSONUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform& acb, WriteVisitor* writer)
+JSONObject* createJSONUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform& acb, WriteVisitor* /*writer*/)
 {
     osg::ref_ptr<JSONObject> json = new JSONObject;
     json->addUniqueID();

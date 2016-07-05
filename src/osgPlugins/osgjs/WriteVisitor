@@ -290,7 +290,7 @@ public:
         }
     }
 
-    void applyCallback(osg::Node& node, JSONObject* json) {
+    void applyCallback(osg::Node& node, JSONObject* in_json) {
         osg::ref_ptr<JSONArray> updateCallbacks = new JSONArray;
         osg::ref_ptr<osg::Callback> nc = node.getUpdateCallback();
         while (nc) {
@@ -361,7 +361,7 @@ public:
         }
 
         if (!updateCallbacks->getArray().empty()) {
-            json->getMaps()["UpdateCallbacks"] = updateCallbacks;
+            in_json->getMaps()["UpdateCallbacks"] = updateCallbacks;
         }
     }
 

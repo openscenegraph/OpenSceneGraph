@@ -19,6 +19,7 @@
 int JSONObjectBase::level = 0;
 unsigned int JSONObject::uniqueID = 0;
 
+
 std::string JSONObjectBase::indent()
 {
     std::string str;
@@ -41,34 +42,27 @@ void JSONMatrix::write(json_stream& str, WriteVisitor& visitor)
 }
 
 
-void JSONNode::write(json_stream& str, WriteVisitor& visitor)
-{
-    std::vector<std::string> order;
-    order.push_back("UniqueID");
-    order.push_back("Name");
-    order.push_back("TargetName");
-    order.push_back("Matrix");
-    order.push_back("UpdateCallbacks");
-    order.push_back("StateSet");
-    writeOrder(str, order, visitor);
-}
-
 JSONObject::JSONObject(const unsigned int id, const std::string& bufferName)
 {
-    _uniqueID = id;
     _bufferName = bufferName;
     _maps["UniqueID"] = new JSONValue<unsigned int>(id);
 }
 
-JSONObject::JSONObject()
-{
-    _uniqueID = 0xffffffff;
-}
-
 void JSONObject::addUniqueID()
 {
-    _uniqueID = JSONObject::uniqueID++;
-    _maps["UniqueID"] = new JSONValue<unsigned int>(_uniqueID);
+    if(_maps.find("UniqueID") == _maps.end()) {
+        _maps["UniqueID"] = new JSONValue<unsigned int>(JSONObject::uniqueID ++);
+    }
+}
+
+unsigned int JSONObject::getUniqueID() const
+{
+    JSONMap::const_iterator iterator = _maps.find("UniqueID");
+    if(iterator == _maps.end()) {
+        return 0xffffffff;
+    }
+    const JSONValue<unsigned int>* uid = dynamic_cast<JSONValue<unsigned int>*>(iterator->second.get());
+    return uid->getValue();
 }
 
 void JSONObject::addChild(const std::string& type, JSONObject* child)
@@ -267,16 +261,15 @@ static void writeEntry(json_stream& str, const std::string& key, JSONObject::JSO
     if (key.empty())
         return;
 
-    if ( map.find(key) != map.end() &&
-         map[ key ].valid() ) {
+    JSONObject::JSONMap::iterator keyValue = map.find(key);
+    if ( keyValue != map.end() && keyValue->second.valid() ) {
 
         str << JSONObjectBase::indent() << '"' << key << '"' << ": ";
-        map[ key ]->write(str, visitor);
-        map.erase(key);
+        keyValue->second->write(str, visitor);
+        map.erase(keyValue);
 
         if (!map.empty()) {
-            str << ", ";
-            str << "\n";
+            str << ",\n";
         }
     }
 }
@@ -359,7 +352,7 @@ void JSONVertexArray::write(json_stream& str, WriteVisitor& visitor)
         if (visitor._mergeAllBinaryFiles)
             url << bufferName;
         else
-            url << basename << "_" << _uniqueID << ".bin";
+            url << basename << "_" << getUniqueID() << ".bin";
     }
 
     std::string type;
@@ -367,6 +360,20 @@ void JSONVertexArray::write(json_stream& str, WriteVisitor& visitor)
     osg::ref_ptr<const osg::Array> array = _arrayData;
 
     switch (array->getType()) {
+    case osg::Array::QuatArrayType:
+    {
+        osg::ref_ptr<osg::Vec4Array> converted = new osg::Vec4Array;
+        converted->reserve(array->getNumElements());
+        const osg::QuatArray* a = dynamic_cast<const osg::QuatArray*>(array.get());
+        for (unsigned int i = 0; i < array->getNumElements(); ++i) {
+            converted->push_back(osg::Vec4(static_cast<float>((*a)[i][0]),
+                                           static_cast<float>((*a)[i][1]),
+                                           static_cast<float>((*a)[i][2]),
+                                           static_cast<float>((*a)[i][3])));
+        }
+        array = converted;
+        type = "Float32Array";
+    }
     case osg::Array::FloatArrayType:
     case osg::Array::Vec2ArrayType:
     case osg::Array::Vec3ArrayType:
@@ -456,6 +463,7 @@ void JSONVertexArray::write(json_stream& str, WriteVisitor& visitor)
             case osg::Array::Vec2dArrayType:
             case osg::Array::Vec3dArrayType:
             case osg::Array::Vec4dArrayType:
+            case osg::Array::QuatArrayType:
             {
                 const double* a = static_cast<const double*>(array->getDataPointer());
                 unsigned int size = array->getNumElements() * array->getDataSize();
@@ -583,13 +591,6 @@ JSONVec4Array::JSONVec4Array(const osg::Vec4& v) : JSONVec3Array()
     }
 }
 
-JSONVec5Array::JSONVec5Array(const Vec5& v) : JSONVec3Array()
-{
-    for (int i = 0; i < 5; ++i) {
-        _array.push_back(new JSONValue<float>(v[i]));
-    }
-}
-
 JSONVec2Array::JSONVec2Array(const osg::Vec2& v) : JSONVec3Array()
 {
     for (int i = 0; i < 2; ++i) {
@@ -618,26 +619,6 @@ void JSONVec3Array::write(json_stream& str,WriteVisitor& visitor)
     }
     str << "]";
 }
-
-void JSONKeyframes::write(json_stream& str,WriteVisitor& visitor)
-{
-    JSONObjectBase::level++;
-    str << "[" << std::endl << JSONObjectBase::indent();
-    for (unsigned int i = 0; i < _array.size(); i++) {
-        if (_array[i].valid()) {
-            _array[i]->write(str, visitor);
-        } else {
-            str << "undefined";
-        }
-        if (i != _array.size() -1) {
-            str << ",";
-            str << "\n" << JSONObjectBase::indent();
-        }
-    }
-    str << " ]";
-    JSONObjectBase::level--;
-}
-
 
 void JSONArray::write(json_stream& str,WriteVisitor& visitor)
 {
@@ -696,24 +677,4 @@ JSONObject* getDrawMode(GLenum mode)
         break;
     }
     return result;
-}
-
-JSONDrawArray::JSONDrawArray(osg::DrawArrays& array)
-{
-    getMaps()["First"] = new JSONValue<int>(array.getFirst());
-    getMaps()["Count"] = new JSONValue<int>(array.getCount());
-    getMaps()["Mode"] = getDrawMode(array.getMode());
-}
-
-
-JSONDrawArrayLengths::JSONDrawArrayLengths(osg::DrawArrayLengths& array)
-{
-    getMaps()["First"] = new JSONValue<int>(array.getFirst());
-    getMaps()["Mode"] = getDrawMode(array.getMode());
-
-    JSONArray* jsonArray = new JSONArray;
-    for (unsigned int i = 0; i < array.size(); i++) {
-        jsonArray->getArray().push_back(new JSONValue<int>(array[i]));
-    }
-    getMaps()["ArrayLengths"] = jsonArray;
 }

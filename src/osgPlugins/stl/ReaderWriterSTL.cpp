@@ -405,8 +405,8 @@ bool fileComesFromMagics(FILE *fp, osg::Vec4& magicsColor)
 
     ::rewind(fp);
 
-    size_t bytes_read = fread((void*) &header, sizeof(header), 1, fp);
-    if (bytes_read!=sizeof(header)) return false;
+    if (fread((void*) &header, sizeof(header), 1, fp) != 1)
+        return false;
 
     if (::fseek(fp, sizeof_StlHeader, SEEK_SET)!=0)
     {
@@ -481,8 +481,16 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
 
     std::string header_text(header.text, sizeof(header.text));
 
-    if (stb.st_size == expectLen)
+    if (header_text.find("solid") == std::string::npos || stb.st_size == expectLen)
     {
+        if(stb.st_size < expectLen)
+        {
+            unsigned int facets = (stb.st_size - sizeof_StlHeader) / sizeof_StlFacet;
+            OSG_WARN << "Warning: [[stl]] Incomplete file. "
+                     << "Attempting to read " << facets << " out of " << expectFacets << " facets expected."
+                     << std::endl;
+            expectFacets = facets;
+        }
         isBinary = true;
     }
     else if (header_text.find("solid") != std::string::npos)

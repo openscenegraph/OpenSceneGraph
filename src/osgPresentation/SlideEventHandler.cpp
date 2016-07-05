@@ -1712,9 +1712,11 @@ bool SlideEventHandler::checkNeedToDoFrame()
         if (_viewer->getRequestRedraw()) return true;
         if (_viewer->getRequestContinousUpdate()) return true;
 
-        // If the database pager is going to update the scene the render flag is
-        // set so that the updates show up
-        if(_viewer->getDatabasePager()->requiresUpdateSceneGraph() || _viewer->getDatabasePager()->getRequestsInProgress()) return true;
+        // check if the database pager needs to update the scene
+        if (_viewer->getDatabasePager()->requiresUpdateSceneGraph()) return true;
+
+        // check if the image pager needs to update the scene
+        if (_viewer->getImagePager()->requiresUpdateSceneGraph()) return true;
 
         // if there update callbacks then we need to do frame.
         if (_viewer->getCamera()->getUpdateCallback()) return true;
@@ -1725,7 +1727,7 @@ bool SlideEventHandler::checkNeedToDoFrame()
             {
                 if (_slideSwitch->getChild(_activeLayer)->getNumChildrenRequiringUpdateTraversal()>0) return true;
             }
-            else if (_viewer->getSceneData()!=0 && _viewer->getSceneData()->getNumChildrenRequiringUpdateTraversal()>0) return true;
+            else if (_viewer->getSceneData()!=0 && (_viewer->getSceneData()->getUpdateCallback() || (_viewer->getSceneData()->getNumChildrenRequiringUpdateTraversal()>0))) return true;
 
             if (_autoSteppingActive)
             {
@@ -1753,4 +1755,3 @@ bool SlideEventHandler::checkNeedToDoFrame()
         return true;
     }
 }
-

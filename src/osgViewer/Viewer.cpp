@@ -379,7 +379,7 @@ bool Viewer::checkNeedToDoFrame()
     // check if the view needs to update the scene graph
     if (requiresUpdateSceneGraph()) return true;
 
-    // check if the view needs to be redraw
+    // check if the view needs to be redrawn
     if (requiresRedraw()) return true;
 
     // check if events are available and need processing

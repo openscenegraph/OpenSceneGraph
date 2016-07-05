@@ -65,7 +65,7 @@ public:
         geometry(false)
     {}
 
-    void apply(osg::Geometry& object) {
+    void apply(osg::Geometry& /*object*/) {
         geometry = true;
     }
 
@@ -266,18 +266,16 @@ public:
         // Replace rig geometries by static geometries if:
         //   * empty or inexistant vertex influence map
         //   * no *strictly* positive influence coefficient
-
-        RigGeometryList::iterator rigGeometry = _rigGeometries.begin();
-        while(rigGeometry != _rigGeometries.end()) {
-            if(rigGeometry->valid()) {
-                if(!hasPositiveWeights((*rigGeometry)->getSourceGeometry())) {
-                    OSG_WARN << "Monitor: animation.invalid_riggeometry" << std::endl;
-                    replaceRigGeometryBySource(*(rigGeometry->get()));
-                    _rigGeometries.erase(rigGeometry);
-                    continue; // skip iterator increment
-                }
+        for(RigGeometryList::iterator iterator = _rigGeometries.begin() ; iterator != _rigGeometries.end() ; ) {
+            osg::ref_ptr<osgAnimation::RigGeometry> rigGeometry = *iterator;
+            if(rigGeometry.valid() && !hasPositiveWeights(rigGeometry->getSourceGeometry())) {
+                OSG_WARN << "Monitor: animation.invalid_riggeometry" << std::endl;
+                replaceRigGeometryBySource(*rigGeometry.get());
+                _rigGeometries.erase(iterator);
             }
-            ++ rigGeometry;
+            else {
+                ++ iterator;
+            }
         }
     }
 

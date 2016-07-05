@@ -1,7 +1,7 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab */
+
 #ifndef LIMIT_MORPH_TARGET_COUNT_VISITOR
 #define LIMIT_MORPH_TARGET_COUNT_VISITOR
-
-/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab */
 
 #include "GeometryUniqueVisitor"
 

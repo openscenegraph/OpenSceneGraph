@@ -1,3 +1,5 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab */
+
 #include <vector>
 #include <list>
 #include <set>
@@ -197,7 +199,16 @@ protected:
         bool flipped = false;
 
         osg::Vec3Array* normals = dynamic_cast<osg::Vec3Array*>(_geometry.getNormalArray());
-        for(unsigned int index = 0 ; index < _geometry.getVertexArray()->getNumElements() ; ++ index) {
+        osg::Vec3Array* positions = dynamic_cast<osg::Vec3Array*>(_geometry.getVertexArray());
+
+        if(!positions || !normals || normals->getNumElements() != positions->getNumElements()) {
+            OSG_WARN << std::endl
+                     << "Warning: [smoothVertexNormals] [[normals]] Geometry '" << _geometry.getName()
+                     << "' has invalid positions/normals";
+            return;
+        }
+
+        for(unsigned int index = 0 ; index < positions->getNumElements() ; ++ index) {
             std::vector<IndexVector> oneRing = _graph->vertexOneRing(_graph->unify(index), _creaseAngle);
             osg::Vec3f smoothedNormal(0.f, 0.f, 0.f);
 

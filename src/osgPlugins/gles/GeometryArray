@@ -1,4 +1,5 @@
-/* -*-c++-*- */
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Cedric Pinson */
+
 #ifndef GEOMETRY_ARRAY_UTILS_H
 #define GEOMETRY_ARRAY_UTILS_H
 
@@ -98,7 +99,7 @@ struct GeometryArrayList {
         template <class T> bool arrayAppendElement(osg::Array* src, unsigned int index, osg::Array* dst)
         {
             T* array = dynamic_cast<T*>(src);
-            if (array) {
+            if (array && dst) {
                 T* arrayDst = dynamic_cast<T*>(dst);
                 arrayDst->push_back((*array)[index]);
                 return true;
@@ -129,15 +130,6 @@ struct GeometryArrayList {
                 return;
 
             if (arrayAppendElement<osg::DoubleArray>(src, index, dst))
-                return;
-
-            if (arrayAppendElement<osg::Vec2Array>(src, index, dst))
-                return;
-
-            if (arrayAppendElement<osg::Vec3Array>(src, index, dst))
-                return;
-
-            if (arrayAppendElement<osg::Vec4Array>(src, index, dst))
                 return;
 
             if (arrayAppendElement<osg::Vec2Array>(src, index, dst))
@@ -255,15 +247,6 @@ struct GeometryArrayList {
                 return;
 
             if (arraySetNumElements<osg::DoubleArray>(array, numElements))
-                return;
-
-            if (arraySetNumElements<osg::Vec2Array>(array, numElements))
-                return;
-
-            if (arraySetNumElements<osg::Vec3Array>(array, numElements))
-                return;
-
-            if (arraySetNumElements<osg::Vec4Array>(array, numElements))
                 return;
 
             if (arraySetNumElements<osg::Vec2Array>(array, numElements))

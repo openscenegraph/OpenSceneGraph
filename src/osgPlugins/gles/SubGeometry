@@ -1,3 +1,5 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab */
+
 #ifndef SUB_GEOMETRY
 #define SUB_GEOMETRY
 
@@ -49,11 +51,14 @@ public:
         if(const osgAnimation::MorphGeometry* morphSource = dynamic_cast<const osgAnimation::MorphGeometry*>(&source)) {
             osgAnimation::MorphGeometry* morph = dynamic_cast<osgAnimation::MorphGeometry*>(_geometry.get());
             const osgAnimation::MorphGeometry::MorphTargetList& morphTargetList = morphSource->getMorphTargetList();
-            for(osgAnimation::MorphGeometry::MorphTargetList::const_iterator targetSource = morphTargetList.begin() ;
-                targetSource != morphTargetList.end() ; ++ targetSource) {
-                osg::Geometry* target = new osg::Geometry;
-                addSourceBuffers(target, *targetSource->getGeometry());
-                morph->addMorphTarget(target, targetSource->getWeight());
+
+            osgAnimation::MorphGeometry::MorphTargetList::const_iterator targetSource;
+            for(targetSource = morphTargetList.begin() ; targetSource != morphTargetList.end() ; ++ targetSource) {
+                if(targetSource->getGeometry()) {
+                    osg::Geometry* target = new osg::Geometry;
+                    addSourceBuffers(target, *targetSource->getGeometry());
+                    morph->addMorphTarget(target, targetSource->getWeight());
+                }
             }
         }
 

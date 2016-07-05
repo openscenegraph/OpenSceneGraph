@@ -14,25 +14,37 @@
 #include <osg/PagedLOD>
 #include <osg/PositionAttitudeTransform>
 #include <osgAnimation/BasicAnimationManager>
+#include <osgAnimation/Skeleton>
 #include <osg/LightSource>
 #include <osg/CullFace>
 #include <osg/Material>
 #include <osg/BlendColor>
 #include <osg/BlendFunc>
 #include <osg/ValueObject>
+#include <osg/Array>
+#include <osgDB/FileNameUtils>
 
+#include <osgAnimation/RigGeometry>
+#include <osgAnimation/MorphGeometry>
+#include <osgAnimation/Bone>
+#include <osgAnimation/UpdateBone>
+
+#include <osgText/Text>
+#
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <map>
 #include <string>
+#include <algorithm>
+#include <sstream>
 
 #include "JSON_Objects"
 #include "Animation"
 #include "json_stream"
 
 
-#define WRITER_VERSION 7
+#define WRITER_VERSION 9
 
 
 osg::Array* getTangentSpaceArray(osg::Geometry& geometry);
@@ -46,18 +58,20 @@ class WriteVisitor : public osg::NodeVisitor
 {
 public:
     typedef std::vector<osg::ref_ptr<osg::StateSet> > StateSetStack;
+    typedef std::pair<std::string, std::string> KeyValue;
 
     std::map<osg::ref_ptr<osg::Object>, osg::ref_ptr<JSONObject> > _maps;
     std::vector<osg::ref_ptr<JSONObject> > _parents;
     osg::ref_ptr<JSONObject> _root;
     StateSetStack _stateset;
     std::string _baseName;
+    std::string _baseLodURL;
     bool _useExternalBinaryArray;
     bool _mergeAllBinaryFiles;
     bool _inlineImages;
-    bool _varint;
     int _maxTextureDimension;
-    std::vector<std::string> _specificBuffers;
+    bool _varint;
+    std::map<KeyValue, std::string> _specificBuffers;
     std::map<std::string, std::ofstream*> _buffers;
 
     std::ofstream& getBufferFile(const std::string& name) {
@@ -67,13 +81,14 @@ public:
         return *_buffers[name];
     }
 
-    WriteVisitor(): osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {
-        _mergeAllBinaryFiles = false;
-        _useExternalBinaryArray = false;
-        _inlineImages = false;
-        _maxTextureDimension = 0;
-        _varint = false;
-    }
+    WriteVisitor() :
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _useExternalBinaryArray(false),
+        _mergeAllBinaryFiles(false),
+        _inlineImages(false),
+        _maxTextureDimension(0),
+        _varint(false)
+    {}
 
     ~WriteVisitor() {
         for(std::map<std::string, std::ofstream*>::iterator buffer = _buffers.begin() ;
@@ -82,12 +97,20 @@ public:
         }
     }
 
-    std::string getBinaryFilename(const std::string& buffer = "") {
-        std::string suffix;
-        if(!buffer.empty()) {
-            suffix = "_" + buffer;
+    std::string getBinaryFilename(KeyValue flag=KeyValue()) const {
+        std::string suffix,
+                    prefix(_baseName);
+        std::map<KeyValue, std::string>::const_iterator it_buffer = _specificBuffers.find(flag);
+        if(it_buffer != _specificBuffers.end()) {
+            if(osgDB::isAbsolutePath(it_buffer->second)) {
+                // if output is explicit, do not change it
+                return it_buffer->second;
+            }
+            else {
+                suffix = "_" + it_buffer->second;
+            }
         }
-        return std::string(_baseName) + suffix + ".bin";
+        return prefix + suffix + ".bin";
     }
 
     void closeBuffers() {
@@ -97,9 +120,9 @@ public:
         }
     }
 
-    unsigned int getBuffersSize() {
+    unsigned int getBuffersSize() const {
         unsigned int size = 0;
-        for(std::map<std::string, std::ofstream*>::iterator buffer = _buffers.begin() ;
+        for(std::map<std::string, std::ofstream*>::const_iterator buffer = _buffers.begin() ;
             buffer != _buffers.end() ; ++ buffer) {
             size += buffer->second->tellp();
         }
@@ -130,12 +153,19 @@ public:
         throw "Error occur";
     }
 
-    void setBufferName(JSONObject *json, osg::Geometry* geometry) {
+    void setBufferName(JSONObject *json, osg::Object* parent=0, osg::Object* object=0) const {
         if(!_mergeAllBinaryFiles || _specificBuffers.empty())
             return;
-        std::string bufferName = getBufferName(geometry);
+
+        // try to fetch buffer name for object
+        std::string bufferName = getBufferName(object);
         std::string defaultBufferName = getBinaryFilename();
         std::string jsonBufferName = json->getBufferName();
+
+        if(bufferName == defaultBufferName) {
+            // in case none is set, fallback to parent buffer name
+            bufferName = getBufferName(parent);
+        }
         // if the buffer is shared we will always favor dumping it in the default
         // buffer and otherwise we keep the first buffer name set.
         if(!jsonBufferName.empty()) {
@@ -148,39 +178,89 @@ public:
         }
     }
 
-    std::string getBufferName(osg::Geometry* geometry) {
-        std::string name("");
-        bool isSpecific = false;
-        for(std::vector<std::string>::iterator it_flag = _specificBuffers.begin() ;
-            it_flag != _specificBuffers.end() ; ++ it_flag) {
-            if(geometry->getUserValue(*it_flag, isSpecific) && isSpecific) {
-                name = *it_flag;
-                break;
+    std::string getBufferName(osg::Object* object) const {
+        KeyValue flag;
+        if(object && object->getUserDataContainer() && object->getUserDataContainer()->getNumUserObjects()) {
+            for(std::map<KeyValue, std::string>::const_iterator it_flag = _specificBuffers.begin() ; it_flag != _specificBuffers.end() ; ++ it_flag) {
+                std::string key = it_flag->first.first,
+                            value = it_flag->first.second;
+
+                // only looking for existence of user value
+                if(value.empty()) {
+                    if(object->getUserDataContainer()->getUserObject(key)) {
+                        flag = it_flag->first;
+                        break;
+                    }
+                }
+                else {
+                    std::set<std::string> uservalues;
+
+                    bool boolValue;
+                    int numberValue;
+                    unsigned int uNumberValue;
+                    std::string stringValue;
+
+                    if(object->getUserValue(key, boolValue)) {
+                        std::ostringstream oss;
+                        if(boolValue) {
+                            uservalues.insert("1");
+                            uservalues.insert("true");
+                        }
+                        else {
+                            uservalues.insert("0");
+                            uservalues.insert("false");
+                        }
+                    }
+
+                    if(object->getUserValue(key, numberValue)) {
+                        std::ostringstream oss;
+                        oss << numberValue;
+                        uservalues.insert(oss.str());
+                    }
+
+                    if(object->getUserValue(key, uNumberValue)) {
+                        std::ostringstream oss;
+                        oss << uNumberValue;
+                        uservalues.insert(oss.str());
+                    }
+
+                    if(object->getUserValue(key, stringValue)) {
+                        uservalues.insert(stringValue);
+                    }
+
+                    if(uservalues.find(value) != uservalues.end()) {
+                        flag = it_flag->first;
+                        break;
+                    }
+                }
             }
         }
-        return getBinaryFilename(name);
+        return getBinaryFilename(flag);
     }
 
     JSONObject* createJSONPagedLOD(osg::PagedLOD* plod);
     JSONObject* createJSONStateSet(osg::StateSet* ss);
     JSONObject* createJSONTexture(osg::Texture* sa);
+    JSONObject* createJSONText(osgText::Text* text);
     JSONObject* createJSONMaterial(osg::Material* sa);
     JSONObject* createJSONLight(osg::Light* sa);
     JSONObject* createJSONCullFace(osg::CullFace* sa);
     JSONObject* createJSONBlendColor(osg::BlendColor* sa);
     JSONObject* createJSONBlendFunc(osg::BlendFunc* sa);
 
-    JSONObject* createJSONBufferArray(osg::Array* array, osg::Geometry* geom = 0);
-    JSONObject* createJSONDrawElements(osg::DrawArrays* drawArray, osg::Geometry* geom = 0);
+    JSONObject* createJSONBufferArray(osg::Array* array, osg::Object* parent = 0);
+    JSONObject* createJSONDrawElements(osg::DrawArrays* drawArray, osg::Object* parent = 0);
 
-    JSONObject* createJSONDrawElementsUInt(osg::DrawElementsUInt* de, osg::Geometry* geom = 0);
-    JSONObject* createJSONDrawElementsUShort(osg::DrawElementsUShort* de, osg::Geometry* geom = 0);
-    JSONObject* createJSONDrawElementsUByte(osg::DrawElementsUByte* de, osg::Geometry* geom = 0);
+    JSONObject* createJSONDrawElementsUInt(osg::DrawElementsUInt* de, osg::Object* parent = 0);
+    JSONObject* createJSONDrawElementsUShort(osg::DrawElementsUShort* de, osg::Object* parent = 0);
+    JSONObject* createJSONDrawElementsUByte(osg::DrawElementsUByte* de, osg::Object* parent = 0);
 
-    JSONObject* createJSONDrawArray(osg::DrawArrays* drawArray, osg::Geometry* geom = 0);
-    JSONObject* createJSONDrawArrayLengths(osg::DrawArrayLengths* drawArray, osg::Geometry* geom = 0);
+    JSONObject* createJSONDrawArray(osg::DrawArrays* drawArray, osg::Object* parent = 0);
+    JSONObject* createJSONDrawArrayLengths(osg::DrawArrayLengths* drawArray, osg::Object* parent = 0);
 
-    JSONObject* createJSONGeometry(osg::Geometry* geom);
+    JSONObject* createJSONGeometry(osg::Geometry* geometry, osg::Object* parent=0);
+    JSONObject* createJSONRigGeometry(osgAnimation::RigGeometry* rigGeometry);
+    JSONObject* createJSONMorphGeometry(osgAnimation::MorphGeometry* morphGeom, osg::Object* parent=0);
 
     JSONObject* getParent() {
         if (_parents.empty()) {
@@ -214,38 +294,68 @@ public:
         osg::ref_ptr<JSONArray> updateCallbacks = new JSONArray;
         osg::ref_ptr<osg::Callback> nc = node.getUpdateCallback();
         while (nc) {
-            osgAnimation::BasicAnimationManager* am = dynamic_cast<osgAnimation::BasicAnimationManager*>(nc.get());
-            if (am) {
+            if(osgAnimation::BasicAnimationManager* am = dynamic_cast<osgAnimation::BasicAnimationManager*>(nc.get())) {
                 osg::ref_ptr<JSONArray> array = new JSONArray;
                 osg::ref_ptr<JSONObject> bam = new JSONObject;
+                translateObject(bam.get(), am);
                 bam->getMaps()["Animations"] = array;
-
 
                 osg::ref_ptr<JSONObject> nodeCallbackObject = new JSONObject;
                 nodeCallbackObject->getMaps()["osgAnimation.BasicAnimationManager"] = bam;
                 updateCallbacks->getArray().push_back(nodeCallbackObject);
 
                 for ( unsigned int i = 0; i < am->getAnimationList().size(); i++) {
-                    osg::ref_ptr<JSONObject> jsonAnim = createJSONAnimation(am->getAnimationList()[i].get());
+                    osgAnimation::Animation* animation = am->getAnimationList()[i].get();
+                    osg::ref_ptr<JSONObject> jsonAnim = createJSONAnimation(animation, this);
                     if (jsonAnim) {
+                        translateObject(jsonAnim.get(), animation);
                         osg::ref_ptr<JSONObject> obj = new JSONObject;
                         obj->getMaps()["osgAnimation.Animation"] = jsonAnim;
                         array->getArray().push_back(obj);
-                        //std::stringstream ss;
-                        //jsonAnim->write(ss);
-                        //std::cout << ss.str() << std::endl;
                     }
                 }
-            } else {
-                osgAnimation::UpdateMatrixTransform* updateMT = dynamic_cast<osgAnimation::UpdateMatrixTransform*>(nc.get());
-                if (updateMT) {
-                    osg::ref_ptr<JSONObject> jsonCallback = createJSONUpdateMatrixTransform(*updateMT);
-                    if (jsonCallback.valid()) {
-                        osg::ref_ptr<JSONObject> jsonObject = new JSONObject;
-                        jsonObject->getMaps()["osgAnimation.UpdateMatrixTransform"] = jsonCallback;
-                        updateCallbacks->getArray().push_back(jsonObject);
-                    }
+            }
+            else if(osgAnimation::UpdateBone* upBone = dynamic_cast<osgAnimation::UpdateBone*>(nc.get())) {
+                osg::ref_ptr<JSONObject> jsonCallback = createJSONUpdateMatrixTransform(*upBone, this);
+                if (jsonCallback.valid()) {
+                    osg::ref_ptr<JSONObject> jsonObject = new JSONObject;
+                    jsonObject->getMaps()["osgAnimation.UpdateBone"] = jsonCallback;
+                    updateCallbacks->getArray().push_back(jsonObject);
                 }
+            }
+            else if(osgAnimation::UpdateMatrixTransform* updateMT = dynamic_cast<osgAnimation::UpdateMatrixTransform*>(nc.get())) {
+                osg::ref_ptr<JSONObject> jsonCallback = createJSONUpdateMatrixTransform(*updateMT, this);
+                if (jsonCallback.valid()) {
+                    osg::ref_ptr<JSONObject> jsonObject = new JSONObject;
+                    jsonObject->getMaps()["osgAnimation.UpdateMatrixTransform"] = jsonCallback;
+                    updateCallbacks->getArray().push_back(jsonObject);
+                }
+            }
+            else if(dynamic_cast<osgAnimation::Skeleton::UpdateSkeleton*>(nc.get())) {
+                osg::ref_ptr<JSONObject> json = new JSONNode;
+                osg::ref_ptr<JSONObject> jsonObject = new JSONObject;
+                _maps[&node] = json;
+                jsonObject->getMaps()["osgAnimation.UpdateSkeleton"] = json;
+                updateCallbacks->getArray().push_back(jsonObject);
+            }
+            else if(osgAnimation::UpdateMorph* updateMorph = dynamic_cast<osgAnimation::UpdateMorph*>(nc.get())) {
+                osg::ref_ptr<JSONObject> json = new JSONNode;
+                osg::ref_ptr<JSONObject> jsonObject = new JSONObject;
+                osg::ref_ptr<JSONObject> jsonTargetName = new JSONObject;
+                json->getMaps()["Name"] = new JSONValue<std::string>(updateMorph->getName());
+
+                unsigned int numTarget = updateMorph->getNumTarget();
+                for(unsigned int i = 0; i < numTarget; ++i) {
+                    std::ostringstream oss;
+                    oss << i;
+                    jsonTargetName->getMaps()[ oss.str() ] = new JSONValue<std::string>(updateMorph->getTargetName(i));
+                }
+                json->getMaps()["TargetMap"] = jsonTargetName;
+                json->getMaps()["TargetMap"] = jsonTargetName;
+
+                _maps[&node] = json;
+                jsonObject->getMaps()["osgAnimation.UpdateMorph"] = json;
+                updateCallbacks->getArray().push_back(jsonObject);
             }
             nc = nc->getNestedCallback();
         }
@@ -255,12 +365,27 @@ public:
         }
     }
 
-    void apply(osg::Drawable& drw) {
-        osg::Geometry* geom = dynamic_cast<osg::Geometry*>(&drw);
-        if (geom) {
-            JSONObject* json = createJSONGeometry(geom);
+    void apply(osg::Drawable& drawable) {
+        if(osgAnimation::RigGeometry * rigGeometry = dynamic_cast<osgAnimation::RigGeometry*>(&drawable)) {
+            JSONObject* json = createJSONRigGeometry(rigGeometry);
+            translateObject(json, rigGeometry);
+            JSONObject* parent = getParent();
+            parent->addChild("osgAnimation.RigGeometry", json);
+        }
+        else if(osgAnimation::MorphGeometry * morphGeometry = dynamic_cast<osgAnimation::MorphGeometry*>(&drawable)) {
+            JSONObject* json = createJSONMorphGeometry(morphGeometry);
+            JSONObject* parent = getParent();
+            parent->addChild("osgAnimation.MorphGeometry", json);
+        }
+        else if(osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(&drawable)) {
+            JSONObject* json = createJSONGeometry(geometry);
             JSONObject* parent = getParent();
             parent->addChild("osg.Geometry", json);
+        }
+        else if(osgText::Text* text = dynamic_cast<osgText::Text*>(&drawable)) {
+            JSONObject* json = createJSONText(text);
+            JSONObject* parent = getParent();
+            parent->addChild("osgText.Text", json);
         }
     }
 
@@ -273,7 +398,6 @@ public:
         }
 
         osg::ref_ptr<JSONObject> json = new JSONNode;
-        json->addUniqueID();
         _maps[&node] = json;
 
         applyCallback(node, json.get());
@@ -298,7 +422,6 @@ public:
         }
 
         osg::ref_ptr<JSONObject> json = new JSONNode;
-        json->addUniqueID();
         _maps[&node] = json;
         parent->addChild("osg.Node", json.get());
 
@@ -346,7 +469,6 @@ public:
         }
 
         osg::ref_ptr<JSONObject> json = new JSONNode;
-        json->addUniqueID();
         _maps[&node] = json;
 
         applyCallback(node, json.get());
@@ -375,7 +497,6 @@ public:
         }
 
         osg::ref_ptr<JSONObject> json = new JSONNode;
-        json->addUniqueID();
         _maps[&node] = json;
 
         applyCallback(node, json.get());
@@ -390,15 +511,54 @@ public:
         _parents.pop_back();
     }
 
+    void applyCommonMatrixTransform(const char * jsClassName, osg::ref_ptr<JSONObject> &json, osg::MatrixTransform &node, JSONObject* parent) {
+        json->addUniqueID();
+        _maps[&node] = json;
+
+        applyCallback(node, json.get());
+        createJSONStateSet(node, json.get());
+
+        parent->addChild(jsClassName, json.get());
+
+        initJsonObjectFromNode(node, *json);
+        json->getMaps()["Matrix"] = new JSONMatrix(node.getMatrix());
+    }
+
+    void apply(osgText::Text& node) {
+        JSONObject* parent = getParent();
+        if (_maps.find(&node) != _maps.end()) {
+            parent->addChild("osgText.Text", _maps[&node]->getShadowObject());
+            return;
+        }
+
+        osg::ref_ptr<JSONObject> json = createJSONText(&node);
+        json->addUniqueID();
+        _maps[&node] = json.get();
+        parent->addChild("osgText.Text", json.get());
+        applyCallback(node, json.get());
+        createJSONStateSet(node, json.get());
+        initJsonObjectFromNode(node, *json);
+        _parents.push_back(json);
+        traverse(node);
+        _parents.pop_back();
+    }
+
     void apply(osg::MatrixTransform& node) {
+        if (dynamic_cast<osgAnimation::Skeleton*>(&node)) {
+           apply(static_cast<osgAnimation::Skeleton&>(node));
+           return;
+        }
+        if (dynamic_cast<osgAnimation::Bone*>(&node)) {
+            apply(static_cast<osgAnimation::Bone&>(node));
+            return;
+        }
+
         JSONObject* parent = getParent();
         if (_maps.find(&node) != _maps.end()) {
             parent->addChild("osg.MatrixTransform", _maps[&node]->getShadowObject());
             return;
         }
-
         osg::ref_ptr<JSONObject> json = new JSONNode;
-        json->addUniqueID();
         _maps[&node] = json;
 
         applyCallback(node, json.get());
@@ -408,6 +568,58 @@ public:
 
         initJsonObjectFromNode(node, *json);
         json->getMaps()["Matrix"] = new JSONMatrix(node.getMatrix());
+
+        _parents.push_back(json);
+        traverse(node);
+        _parents.pop_back();
+
+    }
+
+    void apply(osgAnimation::Skeleton& node) {
+        JSONObject* parent = getParent();
+        if (_maps.find(&node) != _maps.end()) {
+            parent->addChild("osgAnimation.Skeleton", _maps[&node]->getShadowObject());
+            return;
+        }
+        osg::ref_ptr<JSONObject> json = new JSONNode;
+        applyCommonMatrixTransform("osgAnimation.Skeleton", json, node, parent);
+        _parents.push_back(json);
+        traverse(node);
+        _parents.pop_back();
+    }
+
+    void apply(osgAnimation::Bone &node) {
+        JSONObject* parent = getParent();
+        if (_maps.find(&node) != _maps.end()) {
+            parent->addChild("osgAnimation.Bone", _maps[&node]->getShadowObject());
+            return;
+        }
+
+        osg::ref_ptr<JSONObject> json = new JSONNode;
+
+        osg::Vec3 min(0,0,0), max(0,0,0);
+        JSONObject *bboxData = new JSONObject;
+        bool hasBoundindBox = ( node.getUserValue("AABBonBone_min", min) && node.getUserValue("AABBonBone_max", max) );
+
+        if (hasBoundindBox) {
+            unsigned int idxmin = node.getUserDataContainer()->getUserObjectIndex("AABBonBone_min");
+            node.getUserDataContainer()->removeUserObject(idxmin);
+            unsigned int idxmax = node.getUserDataContainer()->getUserObjectIndex("AABBonBone_max");
+            node.getUserDataContainer()->removeUserObject(idxmax);
+
+            if(node.getUserDataContainer() && node.getUserDataContainer()->getNumUserObjects() == 0)
+                node.setUserDataContainer(NULL);
+
+            bboxData->getMaps()["min"] = new JSONVec3Array(min);
+            bboxData->getMaps()["max"] = new JSONVec3Array(max);
+
+            json->getMaps()["BoundingBox"] = bboxData;
+        }
+
+        json->getMaps()["InvBindMatrixInSkeletonSpace"] = new JSONMatrix(node.getInvBindMatrixInSkeletonSpace());
+
+        applyCommonMatrixTransform("osgAnimation.Bone", json, node, parent);
+
         _parents.push_back(json);
         traverse(node);
         _parents.pop_back();
@@ -422,7 +634,6 @@ public:
         }
 
         osg::ref_ptr<JSONObject> json = new JSONNode;
-        json->addUniqueID();
         _maps[&node] = json;
 
         applyCallback(node, json.get());
@@ -445,7 +656,37 @@ public:
     void inlineImages(bool use) { _inlineImages = use; }
     void setVarint(bool use) { _varint = use; }
     void setMaxTextureDimension(int use) { _maxTextureDimension = use; }
-    void addSpecificBuffer(const std::string& bufferFlag) { _specificBuffers.push_back(bufferFlag); }
+    void addSpecificBuffer(const std::string& bufferFlag) {
+        if(bufferFlag.empty()) {
+            return;
+        }
+
+        std::string key, value, buffer;
+        size_t equal = bufferFlag.find("="),
+               colon = bufferFlag.find(":");
+
+        key = bufferFlag.substr(0, std::min(equal, colon));
+        if(equal != std::string::npos) {
+            if(colon == std::string::npos) {
+                value = bufferFlag.substr(equal + 1, std::string::npos);
+            }
+            else {
+                value = bufferFlag.substr(equal + 1, colon - equal - 1);
+            }
+        }
+
+        if(colon != std::string::npos) {
+            buffer = bufferFlag.substr(colon + 1, std::string::npos);
+        }
+        else {
+            buffer = key;
+        }
+
+        // buffer name should be lowercase
+        std::transform(buffer.begin(), buffer.end(), buffer.begin(), ::tolower);
+        _specificBuffers[KeyValue(key, value)] = buffer;
+    }
+    void setBaseLodURL(const std::string& baseLodURL) { _baseLodURL = baseLodURL; }
 };
 
 #endif

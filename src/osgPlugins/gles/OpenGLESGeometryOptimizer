@@ -49,6 +49,7 @@ public:
         _disableMergeTriStrip(false),
         _disablePreTransform(false),
         _disableAnimation(false),
+        _disableAnimationCleaning(false),
         _enableAABBonBone(false),
         _triStripCacheSize(16),
         _triStripMinSize(2),

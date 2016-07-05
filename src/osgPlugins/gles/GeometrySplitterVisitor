@@ -133,7 +133,8 @@ public:
                 setTriangleCluster(graph, cache.back(), cluster, clusters, cluster_vertices, remaining_triangles);
 
                 while(remaining_triangles && cluster_vertices.size() < _maxAllowedIndex) {
-                    unsigned int candidate;
+                    unsigned int candidate = std::numeric_limits<unsigned int>::max();
+
                     for(IndexCache::const_reverse_iterator cached = cache.rbegin() ; cached != cache.rend() ; ++ cached) {
                         candidate = findCandidate(graph.triangleNeighbors(*cached), clusters);
                         if(candidate != std::numeric_limits<unsigned int>::max()) break;

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) Cedric Pinson
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab
  *
  * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial
@@ -36,90 +36,6 @@ public:
     typedef std::vector<osgAnimation::RigGeometry*> RigGeometryList;
 
 
-    osg::Geometry* createBox(const osg::BoundingBox &bb, const osg::Matrix &transform,
-                             float ratio=1.0, osg::Vec4 color=osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f)) {
-        osg::Geometry *cube = new osg::Geometry;
-
-        osg::Vec3 center = bb.center();
-        double halfLenghtX = (bb._max.x() - bb._min.x()) * 0.50;
-        double halfLenghtY = (bb._max.y() - bb._min.y()) * 0.50;
-        double halfLenghtZ = (bb._max.z() - bb._min.z()) * 0.50;
-
-        halfLenghtX *= ratio;
-        halfLenghtY *= ratio;
-        halfLenghtZ *= ratio;
-
-        osg::Vec3Array *cubeVertices = new osg::Vec3Array;
-        cubeVertices->push_back(osg::Vec3(center.x() - halfLenghtX, center.y() + halfLenghtY, center.z() + halfLenghtZ) * transform);
-        cubeVertices->push_back(osg::Vec3(center.x() - halfLenghtX, center.y() + halfLenghtY, center.z() - halfLenghtZ) * transform);
-        cubeVertices->push_back(osg::Vec3(center.x() - halfLenghtX, center.y() - halfLenghtY, center.z() - halfLenghtZ) * transform);
-        cubeVertices->push_back(osg::Vec3(center.x() - halfLenghtX, center.y() - halfLenghtY, center.z() + halfLenghtZ) * transform);
-
-        cubeVertices->push_back(osg::Vec3(center.x() + halfLenghtX, center.y() + halfLenghtY, center.z() + halfLenghtZ) * transform);
-        cubeVertices->push_back(osg::Vec3(center.x() + halfLenghtX, center.y() + halfLenghtY, center.z() - halfLenghtZ) * transform);
-        cubeVertices->push_back(osg::Vec3(center.x() + halfLenghtX, center.y() - halfLenghtY, center.z() - halfLenghtZ) * transform);
-        cubeVertices->push_back(osg::Vec3(center.x() + halfLenghtX, center.y() - halfLenghtY, center.z() + halfLenghtZ) * transform);
-
-        cube->setVertexArray(cubeVertices);
-
-        osg::DrawElementsUInt* up = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS, 0);
-        up->push_back(4);
-        up->push_back(5);
-        up->push_back(1);
-        up->push_back(0);
-        cube->addPrimitiveSet(up);
-
-        osg::DrawElementsUInt* down = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS, 0);
-        down->push_back(2);
-        down->push_back(6);
-        down->push_back(7);
-        down->push_back(3);
-        cube->addPrimitiveSet(down);
-
-        osg::DrawElementsUInt* left = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS, 0);
-        left->push_back(2);
-        left->push_back(3);
-        left->push_back(0);
-        left->push_back(1);
-        cube->addPrimitiveSet(left);
-
-        osg::DrawElementsUInt* right = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS, 0);
-        right->push_back(7);
-        right->push_back(6);
-        right->push_back(5);
-        right->push_back(4);
-        cube->addPrimitiveSet(right);
-
-        osg::DrawElementsUInt* front = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS, 0);
-        front->push_back(3);
-        front->push_back(7);
-        front->push_back(4);
-        front->push_back(0);
-        cube->addPrimitiveSet(front);
-
-        osg::DrawElementsUInt* back = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS, 0);
-        back->push_back(6);
-        back->push_back(2);
-        back->push_back(1);
-        back->push_back(5);
-        cube->addPrimitiveSet(back);
-
-        osg::Vec4Array* colors = new osg::Vec4Array;
-        colors->push_back(color);
-        colors->push_back(color);
-        colors->push_back(color);
-        colors->push_back(color);
-        colors->push_back(color);
-        colors->push_back(color);
-        colors->push_back(color);
-        colors->push_back(color);
-
-        cube->setColorArray(colors);
-        cube->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
-
-        return cube;
-    }
-
     ComputeAABBOnBoneVisitor(bool createGeometry):
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
         _root(0),
@@ -149,59 +65,28 @@ public:
         _rigGeometries.push_back(&rig);
     }
 
-    void serializeBoundingBox(const osg::BoundingBox &bb, const osg::Matrix &transform, osgAnimation::Bone &b, float ratio = 1.0) {
-        osg::Vec3 center = bb.center();
-        double halfLenghtX = (bb._max.x() - bb._min.x()) * 0.50;
-        double halfLenghtY = (bb._max.y() - bb._min.y()) * 0.50;
-        double halfLenghtZ = (bb._max.z() - bb._min.z()) * 0.50;
-
-        halfLenghtX *= ratio;
-        halfLenghtY *= ratio;
-        halfLenghtZ *= ratio;
-
-        osg::BoundingBox serializedBB;
-
-        serializedBB.expandBy(osg::Vec3(center.x() - halfLenghtX, center.y() + halfLenghtY, center.z() + halfLenghtZ) * transform);
-        serializedBB.expandBy(osg::Vec3(center.x() - halfLenghtX, center.y() + halfLenghtY, center.z() - halfLenghtZ) * transform);
-        serializedBB.expandBy(osg::Vec3(center.x() - halfLenghtX, center.y() - halfLenghtY, center.z() - halfLenghtZ) * transform);
-        serializedBB.expandBy(osg::Vec3(center.x() - halfLenghtX, center.y() - halfLenghtY, center.z() + halfLenghtZ) * transform);
-        serializedBB.expandBy(osg::Vec3(center.x() + halfLenghtX, center.y() + halfLenghtY, center.z() + halfLenghtZ) * transform);
-        serializedBB.expandBy(osg::Vec3(center.x() + halfLenghtX, center.y() + halfLenghtY, center.z() - halfLenghtZ) * transform);
-        serializedBB.expandBy(osg::Vec3(center.x() + halfLenghtX, center.y() - halfLenghtY, center.z() - halfLenghtZ) * transform);
-        serializedBB.expandBy(osg::Vec3(center.x() + halfLenghtX, center.y() - halfLenghtY, center.z() + halfLenghtZ) * transform);
-
-        b.setUserValue("AABBonBone_min", serializedBB._min);
-        b.setUserValue("AABBonBone_max", serializedBB._max);
-    }
-
     void computeBoundingBoxOnBones() {
         //Perform Updates
-
-        //Update Bones
-        osgUtil::UpdateVisitor up;
-        _root->accept(up);
-
-        //Update rigGeometries
-        for (unsigned int i = 0, size = _rigGeometries.size(); i < size; i++) {
-            osgAnimation::RigGeometry * rig = _rigGeometries.at(i);
-            osg::Drawable::UpdateCallback * up = dynamic_cast<osg::Drawable::UpdateCallback*>(rig->getUpdateCallback());
-            if(up) up->update(0, rig);
-        }
+        updateBones();
+        updateRigGeometries();
 
         //We have our T pose, we can compute an AABB for each bone
         for (BoneList::iterator bone = _bones.begin(); bone != _bones.end(); ++ bone) {
             osg::BoundingBox bb;
             //For each geometry
-            for (RigGeometryList::iterator rigGeometry = _rigGeometries.begin(); rigGeometry != _rigGeometries.end(); ++ rigGeometry) {
-                osg::Matrix mtxLocalToSkl = (*rigGeometry)->getWorldMatrices(_root).at(0);
+            for (RigGeometryList::iterator iterator = _rigGeometries.begin(); iterator != _rigGeometries.end(); ++ iterator) {
+                osgAnimation::RigGeometry* rigGeometry = *iterator;
+                if(!rigGeometry) continue;
+
+                osg::Matrix mtxLocalToSkl = rigGeometry->getWorldMatrices(_root).at(0);
 
                 //For each Vertex influence
-                osgAnimation::VertexInfluenceMap * infMap = (*rigGeometry)->getInfluenceMap();
+                osgAnimation::VertexInfluenceMap * infMap = rigGeometry->getInfluenceMap();
                 osgAnimation::VertexInfluenceMap::iterator itMap = infMap->find((*bone)->getName());
                 if(itMap == infMap->end()) continue;
 
                 osgAnimation::VertexInfluence vxtInf = (*itMap).second;
-                osg::Vec3Array *vertices = dynamic_cast<osg::Vec3Array*>((*rigGeometry)->getVertexArray());
+                osg::Vec3Array *vertices = dynamic_cast<osg::Vec3Array*>(rigGeometry->getVertexArray());
 
                 //Expand the boundingBox with each vertex
                 for(unsigned int j = 0; j < vxtInf.size(); j++) {
@@ -230,14 +115,154 @@ public:
         }
 
         //Clear geometries
-        for (RigGeometryList::iterator rigGeometry = _rigGeometries.begin(); rigGeometry != _rigGeometries.end(); ++ rigGeometry) {
-            (*rigGeometry)->copyFrom(*(*rigGeometry)->getSourceGeometry());
-            (*rigGeometry)->setRigTransformImplementation(0);
+        for (RigGeometryList::iterator iterator = _rigGeometries.begin(); iterator != _rigGeometries.end(); ++ iterator) {
+            osgAnimation::RigGeometry* rigGeometry = *iterator;
+            if(rigGeometry) {
+                rigGeometry->copyFrom(*rigGeometry->getSourceGeometry());
+                rigGeometry->setRigTransformImplementation(0);
+            }
         }
     }
 
-    std::vector<osgAnimation::Bone*> _bones;
-    std::vector<osgAnimation::RigGeometry*> _rigGeometries;
+protected:
+    osg::Geometry* createBox(const osg::BoundingBox &bb, const osg::Matrix &transform,
+                             float ratio=1.0, osg::Vec4 color=osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f)) {
+        osg::Geometry *cube = new osg::Geometry;
+
+        osg::Vec3 center = bb.center();
+        double halfLenghtX = (bb._max.x() - bb._min.x()) * 0.50;
+        double halfLenghtY = (bb._max.y() - bb._min.y()) * 0.50;
+        double halfLenghtZ = (bb._max.z() - bb._min.z()) * 0.50;
+
+        halfLenghtX *= ratio;
+        halfLenghtY *= ratio;
+        halfLenghtZ *= ratio;
+
+        osg::Vec3Array *cubeVertices = new osg::Vec3Array;
+        cubeVertices->push_back(osg::Vec3(center.x() - halfLenghtX, center.y() + halfLenghtY, center.z() + halfLenghtZ) * transform);
+        cubeVertices->push_back(osg::Vec3(center.x() - halfLenghtX, center.y() + halfLenghtY, center.z() - halfLenghtZ) * transform);
+        cubeVertices->push_back(osg::Vec3(center.x() - halfLenghtX, center.y() - halfLenghtY, center.z() - halfLenghtZ) * transform);
+        cubeVertices->push_back(osg::Vec3(center.x() - halfLenghtX, center.y() - halfLenghtY, center.z() + halfLenghtZ) * transform);
+
+        cubeVertices->push_back(osg::Vec3(center.x() + halfLenghtX, center.y() + halfLenghtY, center.z() + halfLenghtZ) * transform);
+        cubeVertices->push_back(osg::Vec3(center.x() + halfLenghtX, center.y() + halfLenghtY, center.z() - halfLenghtZ) * transform);
+        cubeVertices->push_back(osg::Vec3(center.x() + halfLenghtX, center.y() - halfLenghtY, center.z() - halfLenghtZ) * transform);
+        cubeVertices->push_back(osg::Vec3(center.x() + halfLenghtX, center.y() - halfLenghtY, center.z() + halfLenghtZ) * transform);
+
+        cube->setVertexArray(cubeVertices);
+
+        {
+            osg::DrawElementsUInt* up = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS, 0);
+            up->push_back(4);
+            up->push_back(5);
+            up->push_back(1);
+            up->push_back(0);
+            cube->addPrimitiveSet(up);
+        }
+
+        {
+            osg::DrawElementsUInt* down = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS, 0);
+            down->push_back(2);
+            down->push_back(6);
+            down->push_back(7);
+            down->push_back(3);
+            cube->addPrimitiveSet(down);
+        }
+
+        {
+            osg::DrawElementsUInt* left = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS, 0);
+            left->push_back(2);
+            left->push_back(3);
+            left->push_back(0);
+            left->push_back(1);
+            cube->addPrimitiveSet(left);
+        }
+
+        {
+            osg::DrawElementsUInt* right = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS, 0);
+            right->push_back(7);
+            right->push_back(6);
+            right->push_back(5);
+            right->push_back(4);
+            cube->addPrimitiveSet(right);
+        }
+
+        {
+            osg::DrawElementsUInt* front = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS, 0);
+            front->push_back(3);
+            front->push_back(7);
+            front->push_back(4);
+            front->push_back(0);
+            cube->addPrimitiveSet(front);
+        }
+
+        {
+            osg::DrawElementsUInt* back = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS, 0);
+            back->push_back(6);
+            back->push_back(2);
+            back->push_back(1);
+            back->push_back(5);
+            cube->addPrimitiveSet(back);
+        }
+
+        osg::Vec4Array* colors = new osg::Vec4Array;
+        colors->push_back(color);
+        colors->push_back(color);
+        colors->push_back(color);
+        colors->push_back(color);
+        colors->push_back(color);
+        colors->push_back(color);
+        colors->push_back(color);
+        colors->push_back(color);
+
+        cube->setColorArray(colors);
+        cube->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+
+        return cube;
+    }
+
+    void serializeBoundingBox(const osg::BoundingBox &bb, const osg::Matrix &transform, osgAnimation::Bone &b, float ratio = 1.0) {
+        osg::Vec3 center = bb.center();
+        double halfLenghtX = (bb._max.x() - bb._min.x()) * 0.50;
+        double halfLenghtY = (bb._max.y() - bb._min.y()) * 0.50;
+        double halfLenghtZ = (bb._max.z() - bb._min.z()) * 0.50;
+
+        halfLenghtX *= ratio;
+        halfLenghtY *= ratio;
+        halfLenghtZ *= ratio;
+
+        osg::BoundingBox serializedBB;
+
+        serializedBB.expandBy(osg::Vec3(center.x() - halfLenghtX, center.y() + halfLenghtY, center.z() + halfLenghtZ) * transform);
+        serializedBB.expandBy(osg::Vec3(center.x() - halfLenghtX, center.y() + halfLenghtY, center.z() - halfLenghtZ) * transform);
+        serializedBB.expandBy(osg::Vec3(center.x() - halfLenghtX, center.y() - halfLenghtY, center.z() - halfLenghtZ) * transform);
+        serializedBB.expandBy(osg::Vec3(center.x() - halfLenghtX, center.y() - halfLenghtY, center.z() + halfLenghtZ) * transform);
+        serializedBB.expandBy(osg::Vec3(center.x() + halfLenghtX, center.y() + halfLenghtY, center.z() + halfLenghtZ) * transform);
+        serializedBB.expandBy(osg::Vec3(center.x() + halfLenghtX, center.y() + halfLenghtY, center.z() - halfLenghtZ) * transform);
+        serializedBB.expandBy(osg::Vec3(center.x() + halfLenghtX, center.y() - halfLenghtY, center.z() - halfLenghtZ) * transform);
+        serializedBB.expandBy(osg::Vec3(center.x() + halfLenghtX, center.y() - halfLenghtY, center.z() + halfLenghtZ) * transform);
+
+        b.setUserValue("AABBonBone_min", serializedBB._min);
+        b.setUserValue("AABBonBone_max", serializedBB._max);
+    }
+
+    void updateBones() {
+        osgUtil::UpdateVisitor update;
+        _root->accept(update);
+    }
+
+    void updateRigGeometries() {
+        for (unsigned int i = 0, size = _rigGeometries.size(); i < size; i++) {
+            osgAnimation::RigGeometry * rig = _rigGeometries.at(i);
+            osg::Drawable::UpdateCallback * callback = dynamic_cast<osg::Drawable::UpdateCallback*>(rig->getUpdateCallback());
+            if(callback) {
+                callback->update(0, rig);
+            }
+        }
+    }
+
+    BoneList _bones;
+    RigGeometryList _rigGeometries;
     osgAnimation::Skeleton *_root;
     bool _createGeometry;
 };

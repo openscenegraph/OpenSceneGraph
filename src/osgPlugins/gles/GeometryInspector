@@ -1,3 +1,5 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab */
+
 #ifndef GEOMETRY_INSPECTOR
 #define GEOMETRY_INSPECTOR
 
@@ -17,7 +19,8 @@
 
 class GeometryInspector : public GeometryUniqueVisitor {
 public:
-    void process(osg::Geometry& geometry) {}
+    void process(osg::Geometry& /*geometry*/) {}
+
     void process(osgAnimation::RigGeometry& rigGeometry) {
         osgAnimation::MorphGeometry* morph = dynamic_cast<osgAnimation::MorphGeometry*>(rigGeometry.getSourceGeometry());
         if(morph) {

@@ -271,7 +271,7 @@ public:
             if(rigGeometry.valid() && !hasPositiveWeights(rigGeometry->getSourceGeometry())) {
                 OSG_WARN << "Monitor: animation.invalid_riggeometry" << std::endl;
                 replaceRigGeometryBySource(*rigGeometry.get());
-                _rigGeometries.erase(iterator);
+                iterator = _rigGeometries.erase(iterator);
             }
             else {
                 ++ iterator;

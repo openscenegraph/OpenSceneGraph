@@ -218,8 +218,6 @@ TabPlaneDragger::~TabPlaneDragger()
 
 bool TabPlaneDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
 {
-    if (ea.getButtonMask() & osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON) return false;
-
     // Check if the dragger node is in the nodepath.
     if (!pointer.contains(this)) return false;
 

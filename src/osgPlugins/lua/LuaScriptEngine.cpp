@@ -25,7 +25,10 @@ using namespace lua;
 class LuaCallbackObject : public osg::CallbackObject
 {
 public:
-    LuaCallbackObject(const std::string& methodName, const LuaScriptEngine* lse, int ref):_lse(lse),_ref(ref) { setName(methodName); }
+    LuaCallbackObject(const std::string& methodName, const LuaScriptEngine* lse, int ref):_lse(lse),_ref(ref)
+    {
+        setName(methodName);
+    }
 
     virtual bool run(osg::Object* object, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
     {
@@ -3270,6 +3273,15 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
                 {
                     OSG_NOTICE<<"Error: lua type '"<<lua_typename(_lua,lua_type(_lua, -1))<<"' cannot be assigned to "<<object->className()<<"::"<<propertyName<<std::endl;
                 }
+            }
+            else if (lua_type(_lua,-1)==LUA_TFUNCTION)
+            {
+                int ref = luaL_ref(_lua, LUA_REGISTRYINDEX);
+                osg::ref_ptr<LuaCallbackObject> lco = new LuaCallbackObject(propertyName, this, ref);
+                osg::Object* value = lco.get();
+                _ci.setProperty(object, propertyName, value);
+
+                return 0;
             }
             else if (lua_isnil(_lua, -1))
             {

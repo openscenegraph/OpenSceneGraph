@@ -199,7 +199,6 @@ static JSONValue<std::string>* getBlendFuncMode(GLenum mode) {
     default:
         return new JSONValue<std::string>("ONE");
     }
-    return new JSONValue<std::string>("ONE");
 }
 
 static JSONValue<std::string>* getJSONFilterMode(osg::Texture::FilterMode mode)

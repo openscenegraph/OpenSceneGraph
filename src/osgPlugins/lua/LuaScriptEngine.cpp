@@ -2368,7 +2368,6 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
         case(osgDB::BaseSerializer::RW_VEC2D): if (getPropertyAndPushValue<osg::Vec2d>(object, propertyName)) return 1; break;
         case(osgDB::BaseSerializer::RW_VEC3D): if (getPropertyAndPushValue<osg::Vec3d>(object, propertyName)) return 1; break;
         case(osgDB::BaseSerializer::RW_VEC4D): if (getPropertyAndPushValue<osg::Vec4d>(object, propertyName)) return 1; break;
-        case(osgDB::BaseSerializer::RW_QUAT): if (getPropertyAndPushValue<osg::Quat>(object, propertyName)) return 1; break;
 
         case(osgDB::BaseSerializer::RW_QUAT): if (getPropertyAndPushValue<osg::Quat>(object, propertyName)) return 1; break;
         case(osgDB::BaseSerializer::RW_PLANE): if (getPropertyAndPushValue<osg::Plane>(object, propertyName)) return 1; break;
@@ -3923,12 +3922,10 @@ void LuaScriptEngine::createAndPushObject(const std::string& compoundName) const
     object.release();
 }
 
-void LuaScriptEngine::pushObject(osg::Object* object1) const
+void LuaScriptEngine::pushObject(osg::Object* object) const
 {
-    if (object1)
+    if (object)
     {
-        osg::Object*object= object1->asCallback();
-        if(!object)object=object1;
         lua_newtable(_lua);
 
         // set up objbect_ptr to handle ref/unref of the object

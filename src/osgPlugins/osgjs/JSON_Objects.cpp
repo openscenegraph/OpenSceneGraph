@@ -364,7 +364,7 @@ void JSONVertexArray::write(json_stream& str, WriteVisitor& visitor)
     {
         osg::ref_ptr<osg::Vec4Array> converted = new osg::Vec4Array;
         converted->reserve(array->getNumElements());
-        const osg::QuatArray* a = dynamic_cast<const osg::QuatArray*>(array.get());
+        const osg::QuatArray* a = static_cast<const osg::QuatArray*>(array.get());
         for (unsigned int i = 0; i < array->getNumElements(); ++i) {
             converted->push_back(osg::Vec4(static_cast<float>((*a)[i][0]),
                                            static_cast<float>((*a)[i][1]),
@@ -373,6 +373,7 @@ void JSONVertexArray::write(json_stream& str, WriteVisitor& visitor)
         }
         array = converted;
         type = "Float32Array";
+        break;
     }
     case osg::Array::FloatArrayType:
     case osg::Array::Vec2ArrayType:
@@ -385,7 +386,7 @@ void JSONVertexArray::write(json_stream& str, WriteVisitor& visitor)
         osg::ref_ptr<osg::Vec4Array> converted = new osg::Vec4Array;
         converted->reserve(array->getNumElements());
 
-        const osg::Vec4ubArray* a = dynamic_cast<const osg::Vec4ubArray*>(array.get());
+        const osg::Vec4ubArray* a = static_cast<const osg::Vec4ubArray*>(array.get());
         for (unsigned int i = 0; i < a->getNumElements(); ++i) {
             converted->push_back(osg::Vec4( (*a)[i][0]/255.0,
                                             (*a)[i][1]/255.0,

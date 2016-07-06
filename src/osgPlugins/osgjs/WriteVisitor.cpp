@@ -644,7 +644,7 @@ JSONObject* WriteVisitor::createJSONMorphGeometry(osgAnimation::MorphGeometry* m
     }
 
     JSONObject* jsonGeometry = createJSONGeometry(morphGeometry, parent);
-    JSONArray* targetList = new JSONArray;
+    osg::ref_ptr<JSONArray> targetList = new JSONArray;
 
     osgAnimation::MorphGeometry::MorphTargetList mTargetList = morphGeometry->getMorphTargetList();
     typedef osgAnimation::MorphGeometry::MorphTargetList::iterator TargetIterator;

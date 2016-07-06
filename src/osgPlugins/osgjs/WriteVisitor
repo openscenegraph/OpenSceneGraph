@@ -598,7 +598,7 @@ public:
         osg::ref_ptr<JSONObject> json = new JSONNode;
 
         osg::Vec3 min(0,0,0), max(0,0,0);
-        JSONObject *bboxData = new JSONObject;
+        osg::ref_ptr<JSONObject> bboxData = new JSONObject;
         bool hasBoundindBox = ( node.getUserValue("AABBonBone_min", min) && node.getUserValue("AABBonBone_max", max) );
 
         if (hasBoundindBox) {

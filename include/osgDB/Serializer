@@ -552,7 +552,7 @@ public:
     }
 
     virtual bool set(osg::Object& obj, void* value) { C& object = OBJECT_CAST<C&>(obj); (object.*_setter)( *(reinterpret_cast<P**>(value)) ); return true; }
-    virtual bool get(const osg::Object& obj, void* value) { const C& object = OBJECT_CAST<const C&>(obj);*(reinterpret_cast<const P**>(value )) = (object.*_getter)(); return true; }
+    virtual bool get(const osg::Object& obj, void* value) { const C& object = OBJECT_CAST<const C&>(obj);*(reinterpret_cast<const /*P*/osg::Object**>(value )) =dynamic_cast<const osg::Object*>( (object.*_getter)()); return true; }
 
     virtual bool read( InputStream& is, osg::Object& obj )
     {

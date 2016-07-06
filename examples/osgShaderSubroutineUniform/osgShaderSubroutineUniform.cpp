@@ -43,7 +43,28 @@
 #include <osg/SubroutineUniform>
 
 #include <iostream>
+/*
+#include <osg/ScriptEngine>
+#include <osgDB/ReadFile>
+const char*test=" function test (s)\n"
+                        "cb=s.UpdateCallback;\n"
+                    "end \n";
 
+int main( int , char** )
+{
+
+    osg::Group *root= new osg::Group();
+    root->getOrCreateUserDataContainer()->addUserObject(osgDB::readFile<osg::ScriptEngine>("ScriptEngine.lua"));
+    osg::Script *script=new osg::Script();
+    script->setLanguage("lua");
+    script->setScript(test);
+    osg::ScriptNodeCallback *scripten=new osg::ScriptNodeCallback(script,"test");
+    root->setUpdateCallback(scripten);
+
+    osgViewer::Viewer viewer;
+    viewer.setSceneData( root );
+    return viewer.run();
+}*/
 
 ///////////////////////////////////////////////////////////////////////////
 

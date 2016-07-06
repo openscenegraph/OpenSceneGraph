@@ -62,7 +62,7 @@ unsigned int JSONObject::getUniqueID() const
         return 0xffffffff;
     }
     const JSONValue<unsigned int>* uid = dynamic_cast<JSONValue<unsigned int>*>(iterator->second.get());
-    return uid->getValue();
+    return uid ? uid->getValue() : 0xffffffff;
 }
 
 void JSONObject::addChild(const std::string& type, JSONObject* child)

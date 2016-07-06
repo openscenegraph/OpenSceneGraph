@@ -116,7 +116,7 @@ void Scene::setImagePager(osgDB::ImagePager* ip)
 bool Scene::requiresUpdateSceneGraph() const
 {
     // check if the database pager needs to update the scene
-    if (getDatabasePager()->requiresUpdateSceneGraph() || getDatabasePager()->getRequestsInProgress()) return true;
+    if (getDatabasePager()->requiresUpdateSceneGraph()) return true;
 
     // check if the image pager needs to update the scene
     if (getImagePager()->requiresUpdateSceneGraph()) return true;
@@ -148,6 +148,14 @@ void Scene::updateSceneGraph(osg::NodeVisitor& updateVisitor)
         updateVisitor.setImageRequestHandler(getImagePager());
         getSceneData()->accept(updateVisitor);
     }
+}
+
+bool Scene::requiresRedraw() const
+{
+    // check if the database pager needs a redraw
+    if (getDatabasePager()->requiresRedraw()) return true;
+
+    return false;
 }
 
 

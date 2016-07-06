@@ -34,7 +34,12 @@ public:
         return osgDB::equalCaseInsensitive(extension, "lws");
     }
 
-    virtual ReadResult readNode(const std::string &file, const osgDB::ReaderWriter::Options *options) const
+    virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(file, options);
+    }
+
+    virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
         std::string ext = osgDB::getLowerCaseFileExtension(file);
         if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;

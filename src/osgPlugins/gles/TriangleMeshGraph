@@ -1,3 +1,5 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab */
+
 #ifndef MESH_GRAPH
 #define MESH_GRAPH
 
@@ -171,10 +173,12 @@ public:
         _positions(dynamic_cast<const osg::Vec3Array*>(geometry.getVertexArray())),
         _comparePosition(comparePosition)
     {
-        unsigned int nbVertex = _positions->getNumElements();
-        _unique.resize(nbVertex, std::numeric_limits<unsigned int>::max());
-        _vertexTriangles.resize(nbVertex, IndexVector());
-        build();
+        if(_positions) {
+            unsigned int nbVertex = _positions->getNumElements();
+            _unique.resize(nbVertex, std::numeric_limits<unsigned int>::max());
+            _vertexTriangles.resize(nbVertex, IndexVector());
+            build();
+        }
     }
 
     VertexIterator begin() const {

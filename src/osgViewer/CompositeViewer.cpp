@@ -267,7 +267,7 @@ bool CompositeViewer::checkNeedToDoFrame()
         ++itr)
     {
         osgViewer::View* view = itr->get();
-        if (view && view->requiresUpdateSceneGraph()) return true;
+        if (view && (view->requiresUpdateSceneGraph() || view->requiresRedraw())) return true;
     }
 
     // check if events are available and need processing

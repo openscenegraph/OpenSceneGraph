@@ -25,7 +25,10 @@ using namespace lua;
 class LuaCallbackObject : public osg::CallbackObject
 {
 public:
-    LuaCallbackObject(const std::string& methodName, const LuaScriptEngine* lse, int ref):_lse(lse),_ref(ref) { setName(methodName); }
+    LuaCallbackObject(const std::string& methodName, const LuaScriptEngine* lse, int ref):_lse(lse),_ref(ref)
+    {
+        setName(methodName);
+    }
 
     virtual bool run(osg::Object* object, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
     {
@@ -2367,7 +2370,10 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
         case(osgDB::BaseSerializer::RW_VEC4D): if (getPropertyAndPushValue<osg::Vec4d>(object, propertyName)) return 1; break;
         case(osgDB::BaseSerializer::RW_QUAT): if (getPropertyAndPushValue<osg::Quat>(object, propertyName)) return 1; break;
 
-#ifdef OSG_USE_FLOAT_MATRIX
+        case(osgDB::BaseSerializer::RW_QUAT): if (getPropertyAndPushValue<osg::Quat>(object, propertyName)) return 1; break;
+        case(osgDB::BaseSerializer::RW_PLANE): if (getPropertyAndPushValue<osg::Plane>(object, propertyName)) return 1; break;
+
+        #ifdef OSG_USE_FLOAT_MATRIX
         case(osgDB::BaseSerializer::RW_MATRIX):
 #endif
         case(osgDB::BaseSerializer::RW_MATRIXF):
@@ -2648,8 +2654,8 @@ int LuaScriptEngine::pushDataToStack(SerializerScratchPad* ssp) const
         case(osgDB::BaseSerializer::RW_VEC3D): if (pushValueToStack<osg::Vec3d>(ssp)) return 1; break;
         case(osgDB::BaseSerializer::RW_VEC4D): if (pushValueToStack<osg::Vec4d>(ssp)) return 1; break;
 
-        case(osgDB::BaseSerializer::RW_PLANE): if (pushValueToStack<osg::Plane>(ssp)) return 1; break;
         case(osgDB::BaseSerializer::RW_QUAT): if (pushValueToStack<osg::Quat>(ssp)) return 1; break;
+        case(osgDB::BaseSerializer::RW_PLANE): if (pushValueToStack<osg::Plane>(ssp)) return 1; break;
 
 #ifdef OSG_USE_FLOAT_MATRIX
         case(osgDB::BaseSerializer::RW_MATRIX):
@@ -2895,7 +2901,6 @@ int LuaScriptEngine::getDataFromStack(SerializerScratchPad* ssp, osgDB::BaseSeri
         case(osgDB::BaseSerializer::RW_VEC4D): if (getDataFromStack<osg::Vec4d>(ssp, pos)) return 0; break;
 
         case(osgDB::BaseSerializer::RW_QUAT): if (getDataFromStack<osg::Quat>(ssp, pos)) return 0; break;
-
         case(osgDB::BaseSerializer::RW_PLANE): if (getDataFromStack<osg::Plane>(ssp, pos)) return 0; break;
 
         #ifdef OSG_USE_FLOAT_MATRIX
@@ -3181,7 +3186,6 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
         case(osgDB::BaseSerializer::RW_VEC4D): if (getValueAndSetProperty<osg::Vec4d>(object, propertyName)) return 0; break;
 
         case(osgDB::BaseSerializer::RW_QUAT): if (getValueAndSetProperty<osg::Quat>(object, propertyName)) return 0; break;
-
         case(osgDB::BaseSerializer::RW_PLANE): if (getValueAndSetProperty<osg::Plane>(object, propertyName)) return 0; break;
 
 #ifdef OSG_USE_FLOAT_MATRIX
@@ -3270,6 +3274,15 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
                 {
                     OSG_NOTICE<<"Error: lua type '"<<lua_typename(_lua,lua_type(_lua, -1))<<"' cannot be assigned to "<<object->className()<<"::"<<propertyName<<std::endl;
                 }
+            }
+            else if (lua_type(_lua,-1)==LUA_TFUNCTION)
+            {
+                int ref = luaL_ref(_lua, LUA_REGISTRYINDEX);
+                osg::ref_ptr<LuaCallbackObject> lco = new LuaCallbackObject(propertyName, this, ref);
+                osg::Object* value = lco.get();
+                _ci.setProperty(object, propertyName, value);
+
+                return 0;
             }
             else if (lua_isnil(_lua, -1))
             {
@@ -3762,6 +3775,13 @@ osg::Object* LuaScriptEngine::popParameterObject() const
         case(osgDB::BaseSerializer::RW_VEC3F): object = getValueObject<osg::Vec3f>(-1); break;
         case(osgDB::BaseSerializer::RW_VEC4F): object = getValueObject<osg::Vec4f>(-1); break;
 
+        case(osgDB::BaseSerializer::RW_VEC2D): object = getValueObject<osg::Vec2d>(-1); break;
+        case(osgDB::BaseSerializer::RW_VEC3D): object = getValueObject<osg::Vec3d>(-1); break;
+        case(osgDB::BaseSerializer::RW_VEC4D): object = getValueObject<osg::Vec4d>(-1); break;
+
+        case(osgDB::BaseSerializer::RW_QUAT): object = getValueObject<osg::Quat>(-1); break;
+        case(osgDB::BaseSerializer::RW_PLANE): object = getValueObject<osg::Plane>(-1); break;
+
 #ifdef OSG_USE_FLOAT_MATRIX
         case(osgDB::BaseSerializer::RW_MATRIX):
 #endif
@@ -3772,14 +3792,7 @@ osg::Object* LuaScriptEngine::popParameterObject() const
             break;
         }
 
-        case(osgDB::BaseSerializer::RW_VEC2D): object = getValueObject<osg::Vec2d>(-1); break;
-        case(osgDB::BaseSerializer::RW_VEC3D): object = getValueObject<osg::Vec3d>(-1); break;
-        case(osgDB::BaseSerializer::RW_VEC4D): object = getValueObject<osg::Vec4d>(-1); break;
-
-        case(osgDB::BaseSerializer::RW_PLANE): object = getValueObject<osg::Plane>(-1); break;
-        case(osgDB::BaseSerializer::RW_QUAT): object = getValueObject<osg::Quat>(-1); break;
-
-    #ifndef OSG_USE_FLOAT_MATRIX
+#ifndef OSG_USE_FLOAT_MATRIX
         case(osgDB::BaseSerializer::RW_MATRIX):
 #endif
         case(osgDB::BaseSerializer::RW_MATRIXD):

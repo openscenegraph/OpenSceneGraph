@@ -1,3 +1,5 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab */
+
 #ifndef RIG_ATTRIBUTES_VISITOR
 #define RIG_ATTRIBUTES_VISITOR
 
@@ -31,7 +33,7 @@ public:
         }
     }
 
-    void process(osg::Geometry& geometry) {
+    void process(osg::Geometry& /*geometry*/) {
         return;
     }
 

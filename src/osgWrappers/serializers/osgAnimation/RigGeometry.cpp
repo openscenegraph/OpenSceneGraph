@@ -65,6 +65,7 @@ namespace wrap_osgAnimationRigGeometry{
         return true;
     }
 
+
     REGISTER_OBJECT_WRAPPER( osgAnimation_RigGeometry,
                              new osgAnimation::RigGeometry(),
                              osgAnimation::RigGeometry,
@@ -72,8 +73,11 @@ namespace wrap_osgAnimationRigGeometry{
     {
         ADD_USER_SERIALIZER( InfluenceMap );  // _vertexInfluenceMap
         ADD_OBJECT_SERIALIZER( SourceGeometry, osg::Geometry, NULL );  // _geometry
+{
+        UPDATE_TO_VERSION_SCOPED( 145 )
         ADD_OBJECT_SERIALIZER( RigTransformImplementation, osgAnimation::RigTransform, NULL );  // _geometry
-    }
+} 
+   }
 }
 
 

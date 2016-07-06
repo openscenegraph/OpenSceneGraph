@@ -50,14 +50,17 @@ public:
         // process morph targets if needed
         if(const osgAnimation::MorphGeometry* morphSource = dynamic_cast<const osgAnimation::MorphGeometry*>(&source)) {
             osgAnimation::MorphGeometry* morph = dynamic_cast<osgAnimation::MorphGeometry*>(_geometry.get());
-            const osgAnimation::MorphGeometry::MorphTargetList& morphTargetList = morphSource->getMorphTargetList();
+            if (morph)
+            {
+                const osgAnimation::MorphGeometry::MorphTargetList& morphTargetList = morphSource->getMorphTargetList();
 
-            osgAnimation::MorphGeometry::MorphTargetList::const_iterator targetSource;
-            for(targetSource = morphTargetList.begin() ; targetSource != morphTargetList.end() ; ++ targetSource) {
-                if(targetSource->getGeometry()) {
-                    osg::Geometry* target = new osg::Geometry;
-                    addSourceBuffers(target, *targetSource->getGeometry());
-                    morph->addMorphTarget(target, targetSource->getWeight());
+                osgAnimation::MorphGeometry::MorphTargetList::const_iterator targetSource;
+                for(targetSource = morphTargetList.begin() ; targetSource != morphTargetList.end() ; ++ targetSource) {
+                    if(targetSource->getGeometry()) {
+                        osg::Geometry* target = new osg::Geometry;
+                        addSourceBuffers(target, *targetSource->getGeometry());
+                        morph->addMorphTarget(target, targetSource->getWeight());
+                    }
                 }
             }
         }

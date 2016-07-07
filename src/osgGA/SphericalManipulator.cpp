@@ -284,7 +284,7 @@ bool SphericalManipulator::calcMovement()
 
     float dx=0.0f;
     float dy=0.0f;
-    unsigned int buttonMask=osgGA::GUIEventAdapter::NONE;
+    unsigned int buttonMask=0;
 
     if (_ga_t0->getEventType()==GUIEventAdapter::SCROLL)
     {

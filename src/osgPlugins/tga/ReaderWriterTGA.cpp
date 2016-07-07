@@ -331,15 +331,6 @@ int *numComponents_ret)
 
     switch(type)
     {
-        case 1:                  /* colormap, uncompressed */
-        {
-            /* FIXME: write code */
-            /* should never get here because simage_tga_identify returns 0 */
-            /* for this filetype */
-            /* I need example files in this format to write the code... */
-            tgaerror = ERR_UNSUPPORTED;
-        }
-        break;
         case 2:                  /* RGB, uncompressed */
         {
             int x, y;
@@ -357,15 +348,6 @@ int *numComponents_ret)
                 }
                 dest += lineoffset;
             }
-        }
-        break;
-        case 9:                  /* colormap, compressed */
-        {
-            /* FIXME: write code */
-            /* should never get here because simage_tga_identify returns 0 */
-            /* for this filetype */
-            /* I need example files in this format to write the code... */
-            tgaerror = ERR_UNSUPPORTED;
         }
         break;
         case 10:                 /* RGB, compressed */

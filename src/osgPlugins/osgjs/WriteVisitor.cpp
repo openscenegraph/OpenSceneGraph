@@ -651,8 +651,8 @@ JSONObject* WriteVisitor::createJSONMorphGeometry(osgAnimation::MorphGeometry* m
 
     for(TargetIterator ti = mTargetList.begin(); ti != mTargetList.end(); ti++) {
         osgAnimation::MorphGeometry::MorphTarget *morphTarget = &(*ti);
-        JSONObject *jsonGeometryObject = new JSONObject;
         if(osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(morphTarget->getGeometry())) {
+            osg::ref_ptr<JSONObject> jsonGeometryObject = new JSONObject;
             geometry->setPrimitiveSetList(osg::Geometry::PrimitiveSetList()); //delete unused drawArray
             jsonGeometryObject->getMaps()["osg.Geometry"] = createJSONGeometry(geometry);
             targetList->asArray()->getArray().push_back(jsonGeometryObject);

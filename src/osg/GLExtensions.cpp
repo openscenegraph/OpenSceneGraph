@@ -1112,6 +1112,7 @@ GLExtensions::GLExtensions(unsigned int contextID)
     setGLExtensionFuncPtr(glDrawRangeElements, "glDrawRangeElements");
     setGLExtensionFuncPtr(glDrawElementsBaseVertex, "glDrawElementsBaseVertex", "glDrawElementsBaseVertexEXT");
     setGLExtensionFuncPtr(glDrawRangeElementsBaseVertex, "glDrawRangeElementsBaseVertex", "glDrawRangeElementsBaseVertexEXT");
+    setGLExtensionFuncPtr(glDrawElementsInstancedBaseVertex, "glDrawElementsInstancedBaseVertex", "glDrawElementsInstancedBaseVertexEXT");
     setGLExtensionFuncPtr(glMultiDrawElementsBaseVertex, "glMultiDrawElementsBaseVertex", "glMultiDrawElementsBaseVertexEXT");
     setGLExtensionFuncPtr(glProvokingVertex, "glProvokingVertex", "glProvokingVertexEXT");
 

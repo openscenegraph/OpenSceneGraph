@@ -25,9 +25,11 @@
 #define OSG_DEPRECATED_GEOMETRY_BINDING 1
 
 namespace osg {
+class VertexArrayObjectManager;
 
 class OSG_EXPORT Geometry : public Drawable
 {
+    friend class osg::VertexArrayObjectManager;
     public:
 
         Geometry();
@@ -231,10 +233,38 @@ class OSG_EXPORT Geometry : public Drawable
 
         bool                            _containsDeprecatedData;
 
-        static void deleteVertexArrayObject(unsigned int contextID, unsigned int glvao);
-        unsigned int generateVertexArrayObject(unsigned int contextID, unsigned int glvao);
+        typedef   std::list< ref_ptr<BufferObject> >   VAOKey;
 
-        mutable buffered_object< GLuint > _glvaoList;
+        struct VAOKeyCompare
+        {
+            bool operator() (const Geometry::VAOKey& lhs, const Geometry::VAOKey& rhs) const
+            {
+                if(lhs.size()!=rhs.size())return lhs.size()<rhs.size();
+                Geometry::VAOKey::const_iterator itl=lhs.begin();
+                for(Geometry::VAOKey::const_iterator itr=rhs.begin(); itr != rhs.end();itr++,itl++)
+                    if( itl->get()!=itr->get() )
+                        return itl->get() < itr->get();
+                return false;
+            }
+        };
+        class PerContextVertexArrayObject;
+        typedef std::map<VAOKey,PerContextVertexArrayObject*,VAOKeyCompare> VertexArrayObjectMap;
+
+        class PerContextVertexArrayObject: public Referenced{
+            friend class osg::VertexArrayObjectManager;
+            public:
+                ///return OpenGL name of the vao encapsulated
+                inline const GLuint & getGLID(){return _GLID;}
+            protected:
+                PerContextVertexArrayObject(unsigned int contextID, GLuint GLID):_contextID(contextID),_GLID(GLID){}
+                ~PerContextVertexArrayObject();
+
+                unsigned int _contextID;
+                GLuint _GLID;
+                VertexArrayObjectMap::iterator _itvao;
+        };
+
+        mutable buffered_object< osg::ref_ptr<PerContextVertexArrayObject > > _vao;
         bool _useVertexArrayObject;
 
     public:

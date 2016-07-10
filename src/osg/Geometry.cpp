@@ -57,11 +57,14 @@ namespace osg{
 
         virtual void deleteAllGLObjects()
         {
-        #ifdef OSG_GL_VERTEX_ARRAY_OBJECTS_AVAILABLE
+            flushAllDeletedGLObjects();
+            {
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_VertexArrayObject);
 
-        #else
-             OSG_INFO<<"VertexArrayObjectManager::deleteAllGLObjects() Not supported"<<std::endl;
-        #endif
+                for(Geometry::VertexArrayObjectMap::iterator itr =_vertexArrayObjectMap.begin();itr!= _vertexArrayObjectMap.end();itr++)
+                    osg::get<osg::GLExtensions>(_contextID)->glDeleteVertexArrays(1,&itr->second->_GLID);
+
+            }
         }
 
         virtual void discardAllGLObjects()
@@ -69,24 +72,53 @@ namespace osg{
             OSG_INFO<<"VertexArrayObjectManager::discardAllGLObjects() Not currently implementated"<<std::endl;
         }
 
-        void deleteVertexArrayObject(GLuint vao)
+        void deleteVertexArrayObject(Geometry::PerContextVertexArrayObject* globj, Geometry::VertexArrayObjectMap::iterator vaokeyit)
         {
         #ifdef OSG_GL_VERTEX_ARRAY_OBJECTS_AVAILABLE
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_VertexArrayObject);
-            _tobedeleted.push_back(vao);
+            if (globj!=0
+                    ///Geometry deref is done after destruction of VertexArrayObjectManager
+                    ///so ~VertexArrayObject can recreate an empty one
+                    /// (not a problem because glDeleteVertexArrays is already done at previous destruction in deleteAllGLObjects)
+                    && !_vertexArrayObjectMap.empty()
+                    )
+            {
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_VertexArrayObject);
+                _tobedeleted.push_back(globj->_GLID);
+
+                _vertexArrayObjectMap.erase(vaokeyit);
+            }
         #else
             OSG_INFO<<"Warning: Geometry::deleteVertexArrayObject(..) - not supported."<<std::endl;
         #endif
         }
-
-        GLuint generateVertexArrayObject( )
+        Geometry::PerContextVertexArrayObject* getVertexArrayObject(const Geometry::VAOKey & vaokey)
+        {
+        #ifdef OSG_GL_VERTEX_ARRAY_OBJECTS_AVAILABLE
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_VertexArrayObject);
+            Geometry::VertexArrayObjectMap::iterator itr = _vertexArrayObjectMap.find(vaokey);// _vertexArrayObjectListMap.lower_bound(sizeHint);
+            if (itr!=_vertexArrayObjectMap.end())return itr->second;
+        #endif
+            return NULL;
+        }
+        Geometry::PerContextVertexArrayObject* generateVertexArrayObject(const Geometry::VAOKey & vaokey)
         {
         #ifdef OSG_GL_VERTEX_ARRAY_OBJECTS_AVAILABLE
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_VertexArrayObject);
 
-            GLuint newvao;
-            osg::get<osg::GLExtensions>(_contextID)->glGenVertexArrays(1,&newvao);
-            return newvao;
+            Geometry::VertexArrayObjectMap::iterator itr = _vertexArrayObjectMap.find(vaokey);// _vertexArrayObjectListMap.lower_bound(sizeHint);
+            if (itr!=_vertexArrayObjectMap.end())
+            {
+                return itr->second;
+            }
+            else
+            {
+                GLuint newvao;
+                osg::get<osg::GLExtensions>(_contextID)->glGenVertexArrays(1,&newvao);
+                Geometry::PerContextVertexArrayObject* ret=new Geometry::PerContextVertexArrayObject(_contextID,newvao);
+                _vertexArrayObjectMap[vaokey]=ret;
+                ret->_itvao=_vertexArrayObjectMap.insert(std::pair<Geometry::VAOKey,Geometry::PerContextVertexArrayObject*>(vaokey,ret)).first;
+                return ret;
+            }
 
         #else
             OSG_INFO<<"Warning: Geometry::generateVertexArrayObject(..) - not supported."<<std::endl;
@@ -96,21 +128,21 @@ namespace osg{
 
     protected:
         OpenThreads::Mutex _mutex_VertexArrayObject;
+        Geometry::VertexArrayObjectMap _vertexArrayObjectMap;
         std::vector<GLuint> _tobedeleted;
     };
 }
+//////////////////////////////////////////////////////////////////
+//////////////////// VertexArrayObject  //////////////////////////
+//////////////////////////////////////////////////////////////////
 
+Geometry::PerContextVertexArrayObject::~PerContextVertexArrayObject(){
+   osg::get<VertexArrayObjectManager>(_contextID)->deleteVertexArrayObject(const_cast<Geometry::PerContextVertexArrayObject*>(this),_itvao);
+}
 
 //////////////////////////////////////////////////////////////////
 ////////////////////  Geometry  //////////////////////////////////
 //////////////////////////////////////////////////////////////////
-void Geometry::deleteVertexArrayObject(unsigned int contextID, unsigned int glvao){
-    osg::get<VertexArrayObjectManager>(contextID)->deleteVertexArrayObject(glvao);
-}
-
-unsigned int Geometry::generateVertexArrayObject(unsigned int contextID, unsigned int glvao){
-    return osg::get<VertexArrayObjectManager>(contextID)->generateVertexArrayObject();
-}
 
 Geometry::Geometry():
     _containsDeprecatedData(false)
@@ -119,8 +151,8 @@ Geometry::Geometry():
     _useVertexArrayObject=false;
     dirtyVertexArrayObject();
     // temporary test
-    // setUseDisplayList(false);
-     //setUseVertexArrayObject(true);
+   //  setUseDisplayList(false);
+    // setUseVertexArrayObject(true);
 }
 
 Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
@@ -733,15 +765,7 @@ void Geometry::dirtyDisplayList()
 void Geometry::dirtyVertexArrayObject()
 {
 #ifdef OSG_GL_VERTEX_ARRAY_OBJECTS_AVAILABLE
-    unsigned int i;
-    for(i=0;i<_glvaoList.size();++i)
-    {
-        if (_glvaoList[i] != 0)
-        {
-            Geometry::deleteVertexArrayObject(i,_glvaoList[i]);
-            _glvaoList[i] = 0;
-        }
-    }
+    _vao.setAllElementsTo(NULL);
 #endif
 }
 void Geometry::resizeGLObjectBuffers(unsigned int maxSize)
@@ -796,26 +820,7 @@ void Geometry::releaseGLObjects(State* state) const
             (*itr)->releaseGLObjects(state);
         }
     }
-    if (state)
-    {
-        // get the contextID (user defined ID of 0 upwards) for the
-        // current OpenGL context.
-        unsigned int contextID = state->getContextID();
-
-        // get the globj for the current contextID.
-        GLuint& globj = _glvaoList[contextID];
-
-        // call the globj if already set otherwise compile and execute.
-        if( globj != 0 )
-        {
-            Geometry::deleteVertexArrayObject(contextID,globj);
-            globj = 0;
-        }
-    }
-    else
-    {
-        const_cast<Geometry*>(this)->dirtyVertexArrayObject();
-    }
+    _vao.setAllElementsTo(NULL);
 
 }
 
@@ -834,28 +839,36 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
         typedef std::set<BufferObject*> BufferObjects;
         BufferObjects bufferObjects;
 
+        VAOKey VAOkey;
+
+        #define ADDINbufferObjectsANDVAOkey(ARRAY)  \
+            {\
+            bufferObjects.insert(ARRAY->getBufferObject());\
+            VAOkey.push_back(ARRAY->getBufferObject());\
+            }
         // first collect all the active unique BufferObjects
-        if (_vertexArray.valid() && _vertexArray->getBufferObject())                bufferObjects.insert(_vertexArray->getBufferObject());
-        if (_normalArray.valid() && _normalArray->getBufferObject())                bufferObjects.insert(_normalArray->getBufferObject());
-        if (_colorArray.valid() && _colorArray->getBufferObject())                  bufferObjects.insert(_colorArray->getBufferObject());
-        if (_secondaryColorArray.valid() && _secondaryColorArray->getBufferObject())bufferObjects.insert(_secondaryColorArray->getBufferObject());
-        if (_fogCoordArray.valid() && _fogCoordArray->getBufferObject())            bufferObjects.insert(_fogCoordArray->getBufferObject());
+        if (_vertexArray.valid() && _vertexArray->getBufferObject())                ADDINbufferObjectsANDVAOkey(_vertexArray);
+        if (_normalArray.valid() && _normalArray->getBufferObject())                ADDINbufferObjectsANDVAOkey(_normalArray);
+        if (_colorArray.valid() && _colorArray->getBufferObject())                  ADDINbufferObjectsANDVAOkey(_colorArray);
+        if (_secondaryColorArray.valid() && _secondaryColorArray->getBufferObject())ADDINbufferObjectsANDVAOkey(_secondaryColorArray);
+        if (_fogCoordArray.valid() && _fogCoordArray->getBufferObject())            ADDINbufferObjectsANDVAOkey(_fogCoordArray);
         for(unsigned int unit=0;unit<_vertexAttribList.size();++unit)
-            if ( _vertexAttribList[unit].valid() &&  _vertexAttribList[unit]->getBufferObject())bufferObjects.insert(_vertexAttribList[unit]->getBufferObject());
+            if ( _vertexAttribList[unit].valid() &&  _vertexAttribList[unit]->getBufferObject())ADDINbufferObjectsANDVAOkey(_vertexAttribList[unit])
 
         for(ArrayList::const_iterator itr = _texCoordList.begin();
             itr != _texCoordList.end();
             ++itr)
         {
-            if (itr->valid() && (*itr)->getBufferObject())                          bufferObjects.insert((*itr)->getBufferObject());
+            if (itr->valid() && (*itr)->getBufferObject())                          ADDINbufferObjectsANDVAOkey(((*itr)));
         }
 
         for(ArrayList::const_iterator itr = _vertexAttribList.begin();
             itr != _vertexAttribList.end();
             ++itr)
         {
-            if (itr->valid() && (*itr)->getBufferObject())                          bufferObjects.insert((*itr)->getBufferObject());
+            if (itr->valid() && (*itr)->getBufferObject())                          ADDINbufferObjectsANDVAOkey(((*itr)));
         }
+        #undef ADDINbufferObjectsANDVAOkey
 
         unsigned int numebo=0;
         for(PrimitiveSetList::const_iterator itr = _primitives.begin();
@@ -864,6 +877,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
         {
             if ((*itr)->getBufferObject()) {
                 bufferObjects.insert((*itr)->getBufferObject());
+                if(numebo++==0)VAOkey.push_back((*itr)->getBufferObject());
             }
         }
 
@@ -884,39 +898,149 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
 
 
         if(_useVertexArrayObject){
-            GLuint& glvao = _glvaoList[contextID];
-            if(glvao == 0)
-                glvao= osg::get<VertexArrayObjectManager>(contextID)->generateVertexArrayObject();
 
-            const BufferObject * ebo;   GLBufferObject *glebo,*uniqueebo; numebo=0;
-            ///VAO setup
-            state.disableAllVertexArrays();
-            state.unbindElementBufferObject();
-            state.unbindVertexBufferObject();
-
-            extensions->glBindVertexArray(glvao);
-            drawVertexArraysImplementation(renderInfo);
-            for (unsigned int primitiveSetNum = 0; primitiveSetNum != _primitives.size(); ++primitiveSetNum)
+            PerContextVertexArrayObject* vao=  osg::get<VertexArrayObjectManager>(contextID)->getVertexArrayObject(VAOkey);
+            if(vao)
+                _vao[contextID]=vao;
+            else
             {
-                if ( (ebo = getPrimitiveSet(primitiveSetNum)->getBufferObject()) != NULL){
-                    glebo = ebo->getGLBufferObject(contextID);
-                    if (glebo){
-                        glebo->bindBuffer();
-                        if(numebo++!=0 && uniqueebo!=glebo)
-                        {
-                            OSG_WARN<<"Warning Geometry::compileGLObjects: Trying to compile VAO for a Geometry with multiple ElementBufferObjects"<<std::endl;
+
+                const BufferObject * ebo;   GLBufferObject *glebo,*uniqueebo; numebo=0;
+                ///VAO setup
+                state.disableAllVertexArrays();
+                state.unbindElementBufferObject();
+                state.unbindVertexBufferObject();
+
+                _vao[contextID]=osg::get<VertexArrayObjectManager>(contextID)->generateVertexArrayObject(VAOkey);
+                extensions->glBindVertexArray(_vao[contextID]->getGLID());
+                ///it would be too easy
+                 //drawVertexArraysImplementation(renderInfo);
+ArrayDispatchers& arrayDispatchers = state.getArrayDispatchers();
+
+    arrayDispatchers.reset();
+   /* arrayDispatchers.setUseVertexAttribAlias(state.getUseVertexAttributeAliasing());
+
+    arrayDispatchers.activateNormalArray(_normalArray.get());
+    arrayDispatchers.activateColorArray(_colorArray.get());
+    arrayDispatchers.activateSecondaryColorArray(_secondaryColorArray.get());
+    arrayDispatchers.activateFogCoordArray(_fogCoordArray.get());*/
+
+  /*  if (handleVertexAttributes)
+    {
+        for(unsigned int unit=0;unit<_vertexAttribList.size();++unit)
+        {
+            arrayDispatchers.activateVertexAttribArray(unit, _vertexAttribList[unit].get());
+        }
+    }
+
+    // dispatch any attributes that are bound overall
+    arrayDispatchers.dispatch(osg::Array::BIND_OVERALL,0);*/
+
+    state.lazyDisablingOfVertexAttributes();
+                 ///check if all arrays have the same offset and activate attribpointer
+
+             #define BASEVERTEXCHECK(ARRAYNAME)  if(basevertex==0)basevertex=vbo->getOffset(array->getBufferIndex());\
+                if( basevertex != vbo->getOffset(array->getBufferIndex())){\
+                OSG_INFO<<"Geometry::  ##ARRAYNAME basevertex is different from the others buffers Object : make sure you've properly set bufferobjects... continuing anyway assuming vertexdivisor is setted"<<std::endl;\
+                }
+
+                 Array* array;GLBufferObject* vbo;GLint basevertex=0;
+                 array=_vertexArray;
+                 if(array){
+                     vbo=array->getOrCreateGLBufferObject(contextID);
+                    state.bindVertexBufferObject(vbo);
+                    state. setVertexPointer( array->getDataSize(),array->getDataType(),0,(const GLvoid *)0,array->getNormalize());
+
+                    BASEVERTEXCHECK(VertexArray)
+                }
+
+                 array=_normalArray;
+                 if(array){
+                     vbo=array->getOrCreateGLBufferObject(contextID);
+                    state.bindVertexBufferObject(vbo);
+                    state. setNormalPointer( array->getDataType(),0,(const GLvoid *)0,array->getNormalize());
+                     BASEVERTEXCHECK(NormalArray)
+                }
+                 array=_colorArray;
+                 if(array){
+                     vbo=array->getOrCreateGLBufferObject(contextID);
+                    state.bindVertexBufferObject(vbo);
+                    state. setNormalPointer( array->getDataType(),0,(const GLvoid *)0,array->getNormalize());
+                     BASEVERTEXCHECK(ColorArray)
+                }
+                 array=_secondaryColorArray;
+                 if(array){
+                     vbo=array->getOrCreateGLBufferObject(contextID);
+                    state.bindVertexBufferObject(vbo);
+                    state. setNormalPointer( array->getDataType(),0,(const GLvoid *)0,array->getNormalize());
+                     BASEVERTEXCHECK(SecondaryColorArray)
+                }
+                 array=_fogCoordArray;
+                 if(array){
+                     vbo=array->getOrCreateGLBufferObject(contextID);
+                    state.bindVertexBufferObject(vbo);
+                    state. setNormalPointer( array->getDataType(),0,(const GLvoid *)0,array->getNormalize());
+                     BASEVERTEXCHECK(FogCoordArray)
+                }
+           int itex=0;
+                for(ArrayList::const_iterator itr = _texCoordList.begin();
+            itr != _texCoordList.end();
+            ++itr,++itex)
+        {
+                 array=*itr;
+                 vbo=array->getOrCreateGLBufferObject(contextID);
+                state.bindVertexBufferObject(vbo);
+                state. setTexCoordPointer(itex, array->getDataSize(),array->getDataType(),0,(const GLvoid *)0,array->getNormalize());//(vbo->getOffset(array->getBufferIndex())));
+ BASEVERTEXCHECK(TextureCoordinate)
+}
+itex=0;
+  for(ArrayList::const_iterator itr = _vertexAttribList.begin();
+            itr != _vertexAttribList.end();
+            ++itr)
+        {
+            array=*itr;
+                 vbo=array->getOrCreateGLBufferObject(contextID);
+                state.bindVertexBufferObject(vbo);
+                state. setVertexAttribPointer(itex, array->getDataSize(),array->getDataType(),array->getNormalize(),0,(const GLvoid *)0);//(vbo->getOffset(array->getBufferIndex())));
+ BASEVERTEXCHECK(VertexAttribs)
+
+        }
+    state.applyDisablingOfVertexAttributes();
+       // if (_normalArray.valid() && _normalArray->getBufferObject())
+                   /* GLBufferObject* vbo = isVertexBufferObjectSupported() ? array->getOrCreateGLBufferObject(_contextID) : 0;
+                if (vbo)
+                {
+                    state.bindVertexBufferObject(vbo);
+                   state. setVertexAttribPointer(unit, array->getDataSize(),array->getDataType(),array->getNormalize(),0,(const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
+                }
+                else
+                {
+                   state. unbindVertexBufferObject();
+                    state.setVertexAttribPointer(unit, array->getDataSize(),array->getDataType(),array->getNormalize(),0,array->getDataPointer());
+                }*/
+
+
+                for (unsigned int primitiveSetNum = 0; primitiveSetNum != _primitives.size(); ++primitiveSetNum)
+                {
+                    if ( (ebo = getPrimitiveSet(primitiveSetNum)->getBufferObject()) != NULL){
+                        glebo = ebo->getGLBufferObject(contextID);
+                        if (glebo){
+                            glebo->bindBuffer();
+                            if(numebo++!=0 && uniqueebo!=glebo)
+                            {
+                                OSG_WARN<<"Warning Geometry::compileGLObjects: Trying to compile VAO for a Geometry with multiple ElementBufferObjects"<<std::endl;
+                            }
+                            else uniqueebo=glebo;
                         }
-                        else uniqueebo=glebo;
                     }
                 }
+
+                extensions->glBindVertexArray(0);
+
+                state.disableAllVertexArrays();
+                state.unbindElementBufferObject();
+                state.unbindVertexBufferObject();
             }
-
-            extensions->glBindVertexArray(0);
-
-            state.disableAllVertexArrays();
-            state.unbindElementBufferObject();
-            state.unbindVertexBufferObject();
-
         }
 
         // OSG_NOTICE<<"Time to compile "<<timer.elapsedTime_m()<<"ms"<<std::endl;
@@ -941,6 +1065,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     }
 
     State& state = *renderInfo.getState();
+    GLuint contextID=state.getContextID();
 
     bool checkForGLErrors = state.getCheckForGLErrors()==osg::State::ONCE_PER_ATTRIBUTE;
     if (checkForGLErrors) state.checkGLErrors("start of Geometry::drawImplementation()");
@@ -950,9 +1075,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
         drawVertexArraysImplementation(renderInfo);
     else
     {
-        GLuint contextID=state.getContextID();
-        GLuint &glvao=_glvaoList[contextID];
-        if(glvao == 0)compileGLObjects(renderInfo);
+        if(!_vao[contextID].valid())compileGLObjects(renderInfo);
         ///check if BufferObjects have changed
         GLBufferObject* glBufferObject=NULL;BufferObject*bo=NULL;
         #define RECOMPILEIFREQUIRED(XXX) {  bo=(XXX)->getBufferObject();glBufferObject= bo->getOrCreateGLBufferObject(contextID);\
@@ -990,7 +1113,9 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
         // unbind the BufferObjects
         state.get<GLExtensions>()->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
         state.get<GLExtensions>()->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
-        state.get<GLExtensions>()->glBindVertexArray(glvao);
+                        state.unbindElementBufferObject();
+                state.unbindVertexBufferObject();
+        state.get<GLExtensions>()->glBindVertexArray(_vao[contextID]->getGLID());
     }
 
     if (checkForGLErrors) state.checkGLErrors("Geometry::drawImplementation() after vertex arrays setup.");
@@ -1008,8 +1133,17 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     }
     else{
         /// drawPrimitivesImplementation(renderInfo) not used because there is no such all vertex attribute buffer binding in core profile are assumed to be BIND_PER_VERTEX
+        const Array * array=_vertexArray.get();
+        if(!array)array=getVertexAttribArray(0);
+        GLBufferObject* globj=array->getOrCreateGLBufferObject(contextID);
+
+        GLint vertexbase=
+        globj->getOffset(array->getBufferIndex())/
+        (array->getElementSize());
+
+        //OSG_WARN<<vertexbase<<std::endl;
         for (unsigned int primitiveSetNum = 0; primitiveSetNum != _primitives.size(); ++primitiveSetNum)
-            _primitives[primitiveSetNum]->draw(state, true, false);
+            _primitives[primitiveSetNum]->draw(state, true, vertexbase,true);
         state.get<GLExtensions>()->glBindVertexArray(0);
     }
 

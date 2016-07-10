@@ -323,7 +323,7 @@ void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects, GLint ver
         if (ebo)
         {
 
-            DRAWELEMENTS(GL_UNSIGNED_BYTE)
+            DRAWELEMENTS(GL_UNSIGNED_INT)
         }
         else
         {

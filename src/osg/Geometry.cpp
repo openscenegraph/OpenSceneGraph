@@ -20,6 +20,154 @@
 using namespace osg;
 
 namespace osg{
+
+
+class VAOBufferObjectAffector{
+
+typedef std::vector< osg::ref_ptr<osg::BufferObject> > BuffSet;
+
+typedef struct VecBuffSetAndLastNotEmpty{
+    VecBuffSetAndLastNotEmpty():lastempty(0){}
+    std::vector<BuffSet> vecBuffSet;
+    unsigned int lastempty;
+}VecBuffSetLastnotempty;
+
+std::map<unsigned int,VecBuffSetLastnotempty > _store;
+
+unsigned int _hardMaxbuffsize;///prohibit bufferdata concatenation in bufferobject
+unsigned int _softMaxbuffsize;///hint a bufferobject is full (and increment lastempty)
+OpenThreads::Mutex _muter;
+typedef std::vector< BufferData*> BufferDatas;
+void getBufferDatas(Geometry*g,BufferDatas&out){
+
+unsigned int totalSize = 0;
+    if (g->getVertexArray()) out.push_back( g->getVertexArray());
+
+    if (g->getNormalArray())  out.push_back( g->getNormalArray());
+
+    if (g->getColorArray())  out.push_back( g->getColorArray());
+
+    if (g->getSecondaryColorArray())  out.push_back( g->getSecondaryColorArray());
+
+    if (g->getFogCoordArray()) out.push_back( g->getFogCoordArray());
+
+
+    unsigned int unit;
+    for(unit=0;unit<g->getNumTexCoordArrays();++unit)
+    {
+        Array* array = g->getTexCoordArray(unit);
+        if (array)  out.push_back( array);
+
+    }
+
+    unsigned int index;
+    for( index = 0; index < g->getNumVertexAttribArrays(); ++index )
+    {
+          Array* array = g->getVertexAttribArray(index);
+        if (array)  out.push_back( array);
+    }
+
+
+
+}
+public:
+VAOBufferObjectAffector(){
+    _hardMaxbuffsize=1000000;
+    _softMaxbuffsize=1000000;
+}
+void  populateBufferObjects(Geometry* g){
+
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_muter);
+   BufferDatas bdlist;
+    getBufferDatas(g,bdlist);
+    unsigned int nbborequired=bdlist.size(),nbdrawelmt=0;
+    for(unsigned index=0;index< g->getNumPrimitiveSets();index++)
+       {
+        if(dynamic_cast<DrawElements*>(g->getPrimitiveSet(index)))
+       {if(nbborequired==bdlist.size())nbborequired++;
+            nbdrawelmt++;}
+       }
+
+    VecBuffSetLastnotempty& vecBuffSet=_store[nbborequired];
+
+    std::vector<BuffSet>::iterator itbuffset=  vecBuffSet.vecBuffSet.begin()+vecBuffSet.lastempty;
+
+    unsigned int * buffSize=new unsigned int [nbborequired+nbdrawelmt],*ptrbuffsize=buffSize;
+
+    //while !itbuffset.canGuest(bdlist)
+    bool canGuest=false;
+    BufferDatas::iterator arit;
+    while(!canGuest && itbuffset!=vecBuffSet.vecBuffSet.end()){
+        canGuest=true;
+        ;BuffSet::iterator itbo=(*itbuffset).begin();
+        for(arit=bdlist.begin();arit!=bdlist.end();itbo++,arit++,ptrbuffsize++){
+            *ptrbuffsize=(*itbo)->computeRequiredBufferSize()+(*arit)->getTotalDataSize();
+            if(*ptrbuffsize>_hardMaxbuffsize)canGuest=false;
+        }
+        for(unsigned index=0;index< g->getNumPrimitiveSets();index++,ptrbuffsize++)
+           {
+            if(dynamic_cast<DrawElements*>(g->getPrimitiveSet(index))){
+                *ptrbuffsize=(*itbo)->computeRequiredBufferSize()+g->getPrimitiveSet(index)->getTotalDataSize();
+                if(*ptrbuffsize>_hardMaxbuffsize)canGuest=false;
+            }
+            }
+
+        ptrbuffsize=buffSize;
+        if(!canGuest)itbuffset++;
+
+    }
+
+    if(itbuffset!=vecBuffSet.vecBuffSet.end()){
+        unsigned buffSetMaxSize=0;
+        BuffSet::iterator itbo= itbuffset->begin();
+        ptrbuffsize=buffSize;
+        for( arit=bdlist.begin();arit!=bdlist.end();itbo++,arit++,ptrbuffsize++){
+            (*arit)->setBufferObject(*itbo);
+            buffSetMaxSize=buffSetMaxSize<*ptrbuffsize?*ptrbuffsize:buffSetMaxSize;
+        }
+        for(unsigned index=0;index< g->getNumPrimitiveSets();index++,ptrbuffsize++)
+           {
+            if(dynamic_cast<DrawElements*>(g->getPrimitiveSet(index))){
+                g->getPrimitiveSet(index)->setBufferObject(*itbo);
+                buffSetMaxSize=buffSetMaxSize<*ptrbuffsize?*ptrbuffsize:buffSetMaxSize;
+            }
+        }
+        ///check if bufferobject is full
+        if(++itbuffset!=vecBuffSet.vecBuffSet.end()){
+            ///can increment
+            if( buffSetMaxSize>_softMaxbuffsize)vecBuffSet.lastempty++;
+        }
+        delete [] buffSize;
+        return;
+    }
+
+
+    ///new BuffSetis required
+    BuffSet newBuffSet;ElementBufferObject *ebo=0;
+    for( arit=bdlist.begin();arit!=bdlist.end();arit++){
+
+        { newBuffSet.push_back(new VertexBufferObject());
+            (*arit)->setBufferObject(newBuffSet.back());}
+
+    }
+    for(unsigned index=0;index< g->getNumPrimitiveSets();index++)
+       {
+        if(dynamic_cast<DrawElements*>(g->getPrimitiveSet(index) )){
+            if(!ebo){
+                ebo=new ElementBufferObject();
+                newBuffSet.push_back(ebo);
+            }
+             g->getPrimitiveSet(index)->setBufferObject(ebo);
+        }
+    }
+    ///if not a newone increment lastempty
+    if(!vecBuffSet.vecBuffSet.empty()) vecBuffSet.lastempty++;
+
+    vecBuffSet.vecBuffSet.push_back(newBuffSet);
+    delete [] buffSize;
+}
+};
+static VAOBufferObjectAffector VaoBufferObjectAffector;
     class VertexArrayObjectManager : public GraphicsObjectManager
     {
     public:
@@ -656,8 +804,13 @@ void Geometry::setUseDisplayList(bool flag){
 void Geometry::setUseVertexArrayObject(bool flag){
 #ifdef OSG_GL_VERTEX_ARRAY_OBJECTS_AVAILABLE
     if (_useVertexArrayObject == flag) return;
-    if(!_useVertexBufferObjects&&flag)setUseVertexBufferObjects(true);
+
     _useVertexArrayObject=flag;
+    setUseVertexBufferObjects(false);
+    _useVertexArrayObject=flag;
+    if(flag){ _useVertexBufferObjects=true;
+    VaoBufferObjectAffector.populateBufferObjects(this);
+}else  setUseVertexBufferObjects(_useVertexBufferObjects);
     dirtyVertexArrayObject();
 #else
     OSG_INFO<<"Warning: Geometry::setUseVertexArrayObject(..) - not supported."<<std::endl;
@@ -1141,7 +1294,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
         globj->getOffset(array->getBufferIndex())/
         (array->getElementSize());
 
-        //OSG_WARN<<vertexbase<<std::endl;
+        OSG_WARN<<vertexbase<<std::endl;
         for (unsigned int primitiveSetNum = 0; primitiveSetNum != _primitives.size(); ++primitiveSetNum)
             _primitives[primitiveSetNum]->draw(state, true, vertexbase,true);
         state.get<GLExtensions>()->glBindVertexArray(0);

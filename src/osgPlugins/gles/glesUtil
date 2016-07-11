@@ -9,6 +9,7 @@
 #include <algorithm>
 
 #include <osg/Array>
+#include <osg/ValueObject>
 #include <osg/ref_ptr>
 #include <osgUtil/MeshOptimizers>
 #include <osg/TriangleIndexFunctor>
@@ -24,6 +25,33 @@ namespace glesUtil {
     using namespace std;
     using namespace osg;
     typedef std::vector<unsigned int> IndexList;
+
+
+    inline bool hasPositiveWeights(const osg::Geometry* geometry) {
+        const osg::Vec4Array* weights = 0;
+
+        for(unsigned int i = 0 ; i < geometry->getNumVertexAttribArrays() ; ++ i) {
+            const osg::Array* attribute = geometry->getVertexAttribArray(i);
+            bool isWeights = false;
+            if(attribute && attribute->getUserValue("weights", isWeights) && isWeights) {
+                weights = dynamic_cast<const osg::Vec4Array*>(attribute);
+                break;
+            }
+        }
+
+        if(weights) {
+            for(osg::Vec4Array::const_iterator weight = weights->begin() ; weight != weights->end() ; ++ weight) {
+                const osg::Vec4& value = *weight;
+                // weights are sorted in decreasing order
+                if(value[0] != 0.f) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
 
     // A helper class that gathers up all the attribute arrays of an
     // osg::Geometry object that are BIND_PER_VERTEX and runs an

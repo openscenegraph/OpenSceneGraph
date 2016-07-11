@@ -1,6 +1,17 @@
 SET(TARGET_SRC
     ReaderWriterGLES.cpp
+    AABBonBoneVisitor.cpp
+    AnimationCleanerVisitor.cpp
+    BindPerVertexVisitor.cpp
+    DetachPrimitiveVisitor.cpp
+    GeometryIndexSplitter.cpp
+    GeometrySplitterVisitor.cpp
+    SubGeometry.cpp
     OpenGLESGeometryOptimizer.cpp
+    RigAnimationVisitor.cpp
+    RigAttributesVisitor.cpp
+    TriangleMeshSmoother.cpp
+    TangentSpaceVisitor.cpp
     TriangleStripVisitor.cpp
     IndexMeshVisitor.cpp
     UnIndexMeshVisitor.cpp)
@@ -15,6 +26,7 @@ SET(TARGET_H
     DrawArrayVisitor
     EdgeIndexFunctor
     GeometryArray
+    GeometryIndexSplitter
     GeometryInspector
     GeometrySplitterVisitor
     GeometryUniqueVisitor
@@ -35,6 +47,7 @@ SET(TARGET_H
     SubGeometry
     TangentSpaceVisitor
     TriangleMeshGraph
+    TriangleMeshSmoother
     TriangleStripVisitor
     UnIndexMeshVisitor
     WireframeVisitor

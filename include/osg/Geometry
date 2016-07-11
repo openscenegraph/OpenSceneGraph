@@ -233,15 +233,16 @@ class OSG_EXPORT Geometry : public Drawable
 
         bool                            _containsDeprecatedData;
 
-        typedef   std::list< ref_ptr<BufferObject> >   VAOKey;
+        typedef   std::pair<unsigned int ,std::list< ref_ptr<BufferObject> > >  VAOKey; //attribpointer hash and buffer list
 
         struct VAOKeyCompare
         {
             bool operator() (const Geometry::VAOKey& lhs, const Geometry::VAOKey& rhs) const
             {
-                if(lhs.size()!=rhs.size())return lhs.size()<rhs.size();
-                Geometry::VAOKey::const_iterator itl=lhs.begin();
-                for(Geometry::VAOKey::const_iterator itr=rhs.begin(); itr != rhs.end();itr++,itl++)
+                if(lhs.first!=rhs.first)return lhs.first<rhs.first;
+                if(lhs.second.size()!=rhs.second.size())return lhs.second.size()<rhs.second.size();
+                std::list< ref_ptr<BufferObject> >::const_iterator itl=lhs.second.begin();
+                for(std::list< ref_ptr<BufferObject> >::const_iterator itr=rhs.second.begin(); itr != rhs.second.end();itr++,itl++)
                     if( itl->get()!=itr->get() )
                         return itl->get() < itr->get();
                 return false;

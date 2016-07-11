@@ -119,7 +119,10 @@ struct GeometryFinishedObjectReadCallback : public osgDB::FinishedObjectReadCall
         ///HACK to test VAO feature
         //geometry.setUseDisplayList(false);
         //geometry.setUseVertexArrayObject(true);
-
+if(geometry.getUseVertexArrayObject() ){
+           //     geometry.setUseVertexArrayObject(false);
+             //    geometry.setUseVertexBufferObjects(false);geometry.setUseVertexArrayObject(true);
+                }
         if (geometry.getUseVertexBufferObjects())
         {
             bool someBufferObjectDefined=false;

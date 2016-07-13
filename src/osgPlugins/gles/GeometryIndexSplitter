@@ -1,0 +1,78 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab
+ *
+ * This application is open source and may be redistributed and/or modified
+ * freely and without restriction, both in commercial and non commercial
+ * applications, as long as this copyright notice is maintained.
+ *
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+*/
+
+#ifndef GEOMETRY_INDEX_SPLITTER
+#define GEOMETRY_INDEX_SPLITTER
+
+#include <limits>
+#include <algorithm>
+
+#include <osg/ref_ptr>
+#include <osg/Geometry>
+#include <osg/PrimitiveSet>
+#include <osg/ValueObject>
+#include <osgUtil/MeshOptimizers>
+
+#include <osgAnimation/RigGeometry>
+
+#include "glesUtil"
+#include "GeometryArray"
+#include "TriangleMeshGraph"
+#include "SubGeometry"
+#include "Line"
+
+
+class GeometryIndexSplitter
+{
+protected:
+    class IndexCache : public IndexDeque {
+    public:
+        IndexCache(unsigned int size=64) : _size(size)
+        {}
+
+        void push_back(unsigned int value) {
+            IndexDeque::push_back(value);
+            if(size() > _size) pop_front();
+        }
+    protected:
+        unsigned int _size;
+    };
+
+public:
+    typedef std::vector< osg::ref_ptr<osg::Geometry> > GeometryList;
+
+    GeometryIndexSplitter(unsigned int maxAllowedIndex):
+        _maxAllowedIndex(maxAllowedIndex)
+    {}
+
+    bool split(osg::Geometry&);
+
+    unsigned int findCandidate(const IndexVector&);
+    unsigned int findCandidate(const IndexVector&, const IndexVector&);
+    void setTriangleCluster(const TriangleMeshGraph&, unsigned int, unsigned int, IndexVector&, IndexSet&, unsigned int&);
+    void extract_primitives(const IndexSet&, const osg::DrawElements*, IndexVector&, unsigned int);
+
+protected:
+    bool needToSplit(const osg::Geometry&) const;
+    bool needToSplit(const osg::DrawElements&) const;
+    void attachBufferBoundingBox(osg::Geometry&) const;
+
+    template<typename T>
+    void setBufferBoundingBox(T*) const;
+    void setValidIndices(std::set<unsigned int>&, const osg::DrawElements*) const;
+
+public:
+    const unsigned int _maxAllowedIndex;
+    GeometryList _geometryList;
+};
+
+#endif

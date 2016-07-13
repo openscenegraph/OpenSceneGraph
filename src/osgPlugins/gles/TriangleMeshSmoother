@@ -1,0 +1,134 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab */
+
+#include <vector>
+#include <list>
+#include <set>
+#include <limits>
+#include <algorithm>
+#include <cmath>
+#include <cassert>
+
+#include <osg/Geometry>
+#include <osg/Array>
+#include <osg/Notify>
+#include <osgAnimation/MorphGeometry>
+#include <osgUtil/MeshOptimizers>
+
+#include "GeometryUniqueVisitor"
+#include "TriangleMeshGraph"
+
+
+// Smoothing steps:
+//
+// 1. compute the vertex/triangles graph
+// 2. compute triangle normals (vertexTriangles::addTriangle)
+// 3. determine *piecewise* one-ring for each *unique* vertex (TriangleMeshGraph::vertexOneRing)
+//    Each piece of the one-ring contains triangles that are neighbors and do not share a sharp edge
+// 4. for each one-ring piece sum the triangle normals (TriangleMeshSmoother::computeVertexNormals)
+// 5. if the vertex has been processed already: duplicate and update triangles
+//    otherwise set the normal
+//
+// **triangle normals are normalized but weighted by their area when cumulated over the ring**
+
+class TriangleMeshSmoother {
+public:
+    enum SmoothingMode {
+        recompute      = 1 << 0,
+        diagnose       = 1 << 1,
+        smooth_flipped = 1 << 2,
+        smooth_all     = 1 << 3
+    };
+
+
+    class DuplicateVertex : public osg::ArrayVisitor {
+    public:
+        unsigned int _i;
+        unsigned int _end;
+
+        DuplicateVertex(unsigned int i): _i(i), _end(i)
+        {}
+
+        template <class ARRAY>
+        void apply_imp(ARRAY& array) {
+            _end = array.size();
+            array.push_back(array[_i]);
+        }
+
+        virtual void apply(osg::ByteArray& array) { apply_imp(array); }
+        virtual void apply(osg::ShortArray& array) { apply_imp(array); }
+        virtual void apply(osg::IntArray& array) { apply_imp(array); }
+        virtual void apply(osg::UByteArray& array) { apply_imp(array); }
+        virtual void apply(osg::UShortArray& array) { apply_imp(array); }
+        virtual void apply(osg::UIntArray& array) { apply_imp(array); }
+        virtual void apply(osg::FloatArray& array) { apply_imp(array); }
+        virtual void apply(osg::DoubleArray& array) { apply_imp(array); }
+
+        virtual void apply(osg::Vec2Array& array) { apply_imp(array); }
+        virtual void apply(osg::Vec3Array& array) { apply_imp(array); }
+        virtual void apply(osg::Vec4Array& array) { apply_imp(array); }
+
+        virtual void apply(osg::Vec2bArray& array) { apply_imp(array); }
+        virtual void apply(osg::Vec3bArray& array) { apply_imp(array); }
+        virtual void apply(osg::Vec4bArray& array) { apply_imp(array); }
+
+        virtual void apply(osg::Vec2sArray& array) { apply_imp(array); }
+        virtual void apply(osg::Vec3sArray& array) { apply_imp(array); }
+        virtual void apply(osg::Vec4sArray& array) { apply_imp(array); }
+
+        virtual void apply(osg::Vec2iArray& array) { apply_imp(array); }
+        virtual void apply(osg::Vec3iArray& array) { apply_imp(array); }
+        virtual void apply(osg::Vec4iArray& array) { apply_imp(array); }
+
+        virtual void apply(osg::Vec2dArray& array) { apply_imp(array); }
+        virtual void apply(osg::Vec3dArray& array) { apply_imp(array); }
+        virtual void apply(osg::Vec4dArray& array) { apply_imp(array); }
+
+        virtual void apply(osg::Vec2ubArray& array) { apply_imp(array); }
+        virtual void apply(osg::Vec3ubArray& array) { apply_imp(array); }
+        virtual void apply(osg::Vec4ubArray& array) { apply_imp(array); }
+
+        virtual void apply(osg::Vec2usArray& array) { apply_imp(array); }
+        virtual void apply(osg::Vec3usArray& array) { apply_imp(array); }
+        virtual void apply(osg::Vec4usArray& array) { apply_imp(array); }
+
+        virtual void apply(osg::Vec2uiArray& array) { apply_imp(array); }
+        virtual void apply(osg::Vec3uiArray& array) { apply_imp(array); }
+        virtual void apply(osg::Vec4uiArray& array) { apply_imp(array); }
+
+        virtual void apply(osg::MatrixfArray& array) { apply_imp(array); }
+        virtual void apply(osg::MatrixdArray& array) { apply_imp(array); }
+    };
+
+public:
+    TriangleMeshSmoother(osg::Geometry& geometry, float creaseAngle, bool /*comparePosition*/=false, int /*mode*/=diagnose);
+
+    ~TriangleMeshSmoother() {
+        if(_graph) {
+            delete _graph;
+        }
+    }
+
+protected:
+    unsigned int duplicateVertex(unsigned int);
+
+    void smoothVertexNormals(bool /*fix*/=true, bool /*force*/=false);
+
+    void computeVertexNormals();
+
+    osg::Vec3f cumulateTriangleNormals(const IndexVector&) const;
+
+    void replaceVertexIndexInTriangles(const IndexVector&, unsigned int, unsigned int);
+
+    void addArray(osg::Array*);
+
+    void updateGeometryPrimitives();
+
+
+protected:
+    osg::Geometry& _geometry;
+    float _creaseAngle;
+    TriangleMeshGraph* _graph;
+    TriangleVector _triangles;
+    ArrayVector _vertexArrays;
+    int _mode; // smooth or recompute normals
+};

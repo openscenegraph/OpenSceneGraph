@@ -10,15 +10,19 @@
 class StatLogger
 {
 public:
-    StatLogger(const std::string& label): _label(label)
+    StatLogger(const std::string& label):
+        _label(label)
     {
         _start = _stop = getTick();
     }
+
+
     ~StatLogger() {
         _stop = getTick();
-        OSG_INFO << std::flush
+
+        OSG_INFO << std::endl
                  << "Info: " << _label << " timing: " << getElapsedSeconds() << "s"
-                 << std::endl << std::flush;
+                 << std::endl;
     }
 
 protected:

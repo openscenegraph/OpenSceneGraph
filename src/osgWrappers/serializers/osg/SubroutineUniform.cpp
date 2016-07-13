@@ -9,12 +9,26 @@
 #include <osgDB/OutputStream>
 
 #include <osg/ScriptEngine>
+#if 0
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
 
+#include "../../../osgPlugins/lua/LuaScriptEngine.h"
+namespace wrapperluaosgEngineScript
+{
+REGISTER_OBJECT_WRAPPER( LuaScriptengine,
+                         new lua::LuaScriptEngine,
+                         lua::LuaScriptEngine,
+                         "osg::Object osg::ScriptEngine lua::LuaScriptEngine" )
+{}
+}
+#endif
 
 REGISTER_OBJECT_WRAPPER( ScriptNodeCallback,
                          new osg::ScriptNodeCallback,
                          osg::ScriptNodeCallback,
-                         "osg::Object osg::ScriptNodeCallback" )
+                         "osg::Object osg::Callback osg::ScriptNodeCallback" )
 {
 //osg::Callback osg::NodeCallback
     ADD_OBJECT_SERIALIZER( Script, osg::Script, NULL );  // _script
@@ -22,8 +36,17 @@ REGISTER_OBJECT_WRAPPER( ScriptNodeCallback,
 }
 
 
+
 #undef OBJECT_CAST
 #define OBJECT_CAST static_cast
+namespace wrapperosgEngineScript
+{
+REGISTER_OBJECT_WRAPPER( Scriptengine,
+                         NULL,
+                         osg::ScriptEngine,
+                         "osg::Object osg::ScriptEngine" )
+{}
+}
 
 namespace wrapperosgScript
 {

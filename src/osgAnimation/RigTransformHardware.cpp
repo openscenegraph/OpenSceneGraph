@@ -273,7 +273,7 @@ bool RigTransformHardware::init(RigGeometry& geom)
     osg::ref_ptr<osg::StateSet> ss = geom.getOrCreateStateSet();
     ss->addUniform(getMatrixPaletteUniform());
     ss->addUniform(new osg::Uniform("nbBonesPerVertex", getNumBonesPerVertex()));
-    ss->setAttributeAndModes(program.get());
+    if(!ss->getAttribute(osg::StateAttribute::PROGRAM))ss->setAttributeAndModes(program.get());
 
     _needInit = false;
     return true;

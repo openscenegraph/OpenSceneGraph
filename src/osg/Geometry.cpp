@@ -127,6 +127,13 @@ return hash;
 
 
         }
+        ///check bufferobject already guesting the bd
+        bool isGuesting(const BufferObject&bo,const BufferData*bd){
+                            for(unsigned int i=0;i<bo.getNumBufferData();i++)
+                               if(bo.getBufferData(i)==bd)return true;
+                            return false;
+        }
+
 
         void  populateBufferObjects(Geometry* g)
         {
@@ -153,17 +160,21 @@ return hash;
             unsigned int * buffSize=new unsigned int [nbborequired+nbdrawelmt],*ptrbuffsize=buffSize;
 
             //while !itbuffset.canGuest(bdlist)
-            bool canGuest=false;
+            bool canGuest=false;bool alreadyGuesting=true;
             Geometry::ArrayList::iterator arit;
             while(!canGuest && itbuffset!=vecBuffSet.vecBuffSet.end())
             {
-                canGuest=true;
+                canGuest=true;alreadyGuesting=true;
 
                 BuffSet::iterator itbo=(*itbuffset).begin();
                 for(arit=bdlist.begin(); arit!=bdlist.end(); itbo++,arit++,ptrbuffsize++)
                 {
                     *ptrbuffsize=(*itbo)->computeRequiredBufferSize()+(*arit)->getTotalDataSize();
                     if(*ptrbuffsize>_hardMaxbuffsize)canGuest=false;
+
+                    ///check bufferobject already guesting the bd
+                    if(!isGuesting(*itbo->get(),(*arit)))alreadyGuesting=false;
+
                 }
                 for(unsigned index=0; index< g->getNumPrimitiveSets(); index++)
                 {
@@ -171,10 +182,14 @@ return hash;
                     {
                         *ptrbuffsize=(*itbo)->computeRequiredBufferSize()+g->getPrimitiveSet(index)->getTotalDataSize();
                         if(*ptrbuffsize++>_hardMaxbuffsize)canGuest=false;
+                        ///check bufferobject already guesting the bd
+                        if(!isGuesting(*itbo->get(),g->getPrimitiveSet(index)))alreadyGuesting=false;
                     }
                 }
 
                 ptrbuffsize=buffSize;
+                if(alreadyGuesting)
+                    return;
                 if(!canGuest)itbuffset++;
 
             }

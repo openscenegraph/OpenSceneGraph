@@ -311,7 +311,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         osg::Timer_t startTick = osg::Timer::instance()->tick();
 
         MergeGeometryVisitor mgv(this);
-        mgv.setTargetMaximumNumberOfVertices(10000);
+        mgv.setTargetMaximumNumberOfVertices(100000);
         node->accept(mgv);
 
         osg::Timer_t endTick = osg::Timer::instance()->tick();

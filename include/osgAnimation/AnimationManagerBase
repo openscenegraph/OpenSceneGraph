@@ -43,7 +43,7 @@ namespace osgAnimation
         AnimationList& getAnimationList() { return _animations;}
 
         //uniformisation of the API
-        inline Animation * getRegisteredAnimation(unsigned int i){return _animations[i];}
+        inline Animation * getRegisteredAnimation(unsigned int i){return _animations[i].get();}
         inline unsigned int getNumRegisteredAnimations()const{return _animations.size();}
         inline void addRegisteredAnimation(Animation* animation){
             _needToLink = true;

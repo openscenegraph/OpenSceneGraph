@@ -221,6 +221,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Vec4ui
     ${HEADER_PATH}/Vec4us
     ${HEADER_PATH}/VertexAttribDivisor
+    ${HEADER_PATH}/VertexArrayState
     ${HEADER_PATH}/VertexProgram
     ${HEADER_PATH}/View
     ${HEADER_PATH}/Viewport
@@ -390,6 +391,7 @@ SET(TARGET_SRC
     ValueStack.cpp
     Version.cpp
     VertexAttribDivisor.cpp
+    VertexArrayState.cpp
     VertexProgram.cpp
     View.cpp
     Viewport.cpp

@@ -1,0 +1,222 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_VertexArrayState
+#define OSG_VertexArrayState 1
+
+#include <osg/Referenced>
+#include <osg/GLExtensions>
+#include <osg/Array>
+#include <osg/ArrayDispatchers>
+
+namespace osg {
+
+
+
+class VertexArrayState : public osg::Referenced
+{
+public:
+
+        VertexArrayState(osg::GLExtensions* ext);
+
+        struct ArrayDispatch : public osg::Referenced
+        {
+            ArrayDispatch(Array* in_array):
+                array(in_array),
+                modifiedCount(0xffffffff) {}
+
+            inline void dispatchIfDirty(osg::State& state, unsigned int index=0)
+            {
+                if (modifiedCount!=array->getModifiedCount()) dispatch(state, index);
+            }
+
+            virtual void dispatch(osg::State& state, unsigned int index=0) = 0;
+
+            virtual void dispatchDeprecated(osg::State& state, unsigned int index=0);
+
+            osg::Array*  array;
+            unsigned int modifiedCount;
+        };
+
+        typedef std::vector< ref_ptr<ArrayDispatch> >       ArrayDispatchList;
+
+        ArrayDispatchList& getArrayDispatchList(Array::Binding binding)
+        {
+            switch(binding)
+            {
+                case(osg::Array::BIND_PER_VERTEX):          return _dispatchArrays;
+                case(osg::Array::BIND_PER_PRIMITIVE_SET):   return _dispatchPerPrimitiveSet;
+                default:                                    return _dispatchOverall;
+            }
+        }
+
+
+        enum VertexArrayIdentifier
+        {
+            VERTEX_ARRAY,
+            NORMAL_ARRAY,
+            COLOR_ARRAY,
+            SECONDARY_COLOR_ARRAY,
+            FOG_COORD_ARRAY,
+            TEX_COORD_ARRAY,
+            VERTEX_ATTRIB_ARRAY=TEX_COORD_ARRAY+32
+        };
+
+
+        void assignVertexArray(osg::Array* array);
+        void assignColorArray(osg::Array* array);
+        void assignNormalArray(osg::Array* array);
+
+        void assignSecondaryColorArray(osg::Array* array);
+        void assignFogCoordArray(osg::Array* array);
+
+        void assignTexCoordArray(unsigned int unit, osg::Array* array);
+        void assignVertexAttribArray(unsigned int unit, osg::Array* array);
+
+        inline void dispatchOverall(osg::State& state)
+        {
+            for(ArrayDispatchList::iterator itr = _dispatchOverall.begin();
+                itr != _dispatchOverall.end();
+                ++itr)
+            {
+                (*(*itr)).dispatch(state);
+            }
+        }
+
+        void dispatchPerPrimitveSet(osg::State& state, unsigned int index)
+        {
+            for(ArrayDispatchList::iterator itr = _dispatchPerPrimitiveSet.begin();
+                itr != _dispatchPerPrimitiveSet.end();
+                ++itr)
+            {
+                (*(*itr)).dispatch(state, index);
+            }
+        }
+
+        inline void dispatchArrays(osg::State& state)
+        {
+            // need to check previous enabled/disabled mode
+
+            if (_vertexArrayObject)
+            {
+                for(ArrayDispatchList::iterator itr = _dispatchArrays.begin();
+                    itr != _dispatchArrays.end();
+                    ++itr)
+                {
+                    (*(*itr)).dispatch(state);
+                }
+            }
+            else
+            {
+                for(ArrayDispatchList::iterator itr = _dispatchArrays.begin();
+                    itr != _dispatchArrays.end();
+                    ++itr)
+                {
+                    (*(*itr)).dispatchDeprecated(state);
+                }
+            }
+        }
+
+        inline void dispatchArraysIfDirty(osg::State& state)
+        {
+            // need to check previous enabled/disabled mode
+
+            for(ArrayDispatchList::iterator itr = _dispatchArrays.begin();
+                itr != _dispatchArrays.end();
+                ++itr)
+            {
+                (*(*itr)).dispatchIfDirty(state);
+            }
+        }
+
+
+
+        // Verex Array Object methods.
+        void generateVretexArrayObject();
+
+        void bindVertexArrayObject() const;
+
+        void unbindVertexArrayObject() const;
+
+        GLint getVertexArrayObject() const { return _vertexArrayObject; }
+
+        void releaseGLObjects();
+
+
+
+        void setCurrentVertexBufferObject(osg::GLBufferObject* vbo) { _currentVBO = vbo; }
+        const GLBufferObject* getCurrentVertexBufferObject() { return _currentVBO; }
+        inline void bindVertexBufferObject(osg::GLBufferObject* vbo)
+        {
+            if (vbo)
+            {
+                if (vbo == _currentVBO) return;
+                if (vbo->isDirty()) vbo->compileBuffer();
+                else vbo->bindBuffer();
+                _currentVBO = vbo;
+            }
+            else unbindVertexBufferObject();
+        }
+
+        inline void unbindVertexBufferObject()
+        {
+            if (!_currentVBO) return;
+            _ext->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
+            _currentVBO = 0;
+        }
+
+
+        void setCurrentElementBufferObject(osg::GLBufferObject* ebo) { _currentEBO = ebo; }
+        const GLBufferObject* getCurrentElementBufferObject() { return _currentEBO; }
+
+        inline void bindElementBufferObject(osg::GLBufferObject* ebo)
+        {
+            if (ebo)
+            {
+                if (ebo == _currentEBO) return;
+                if (ebo->isDirty()) ebo->compileBuffer();
+                else ebo->bindBuffer();
+                _currentEBO = ebo;
+            }
+            else unbindElementBufferObject();
+        }
+
+        inline void unbindElementBufferObject()
+        {
+            if (!_currentEBO) return;
+            _ext->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
+            _currentEBO = 0;
+        }
+
+
+public:
+
+
+        osg::GLBufferObject* getGLBufferObject(osg::Array* array);
+
+        osg::ref_ptr<osg::GLExtensions> _ext;
+
+        GLuint                          _vertexArrayObject;
+
+        GLBufferObject*                 _currentVBO;
+        GLBufferObject*                 _currentEBO;
+
+        ArrayDispatchList               _dispatchOverall;
+        ArrayDispatchList               _dispatchPerPrimitiveSet;
+        ArrayDispatchList               _dispatchArrays;
+};
+
+
+}
+
+#endif

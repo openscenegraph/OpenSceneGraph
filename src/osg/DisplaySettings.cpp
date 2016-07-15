@@ -116,6 +116,8 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
     _glContextProfileMask = vs._glContextProfileMask;
     _swapMethod = vs._swapMethod;
 
+    _geometryImplementation = vs._geometryImplementation;
+
     _keystoneHint = vs._keystoneHint;
     _keystoneFileNames = vs._keystoneFileNames;
     _keystones = vs._keystones;
@@ -241,6 +243,8 @@ void DisplaySettings::setDefaults()
     _swapMethod = SWAP_DEFAULT;
     _syncSwapBuffers = 0;
 
+    _geometryImplementation = VERTEX_ARRAY_OBJECT;
+
     _keystoneHint = false;
 
     _OSXMenubarBehavior = MENUBAR_AUTO_HIDE;
@@ -361,6 +365,9 @@ static ApplicationUsageProxy DisplaySetting_e30(ApplicationUsage::ENVIRONMENTAL_
 static ApplicationUsageProxy DisplaySetting_e31(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_NvOptimusEnablement <value>",
         "Set the hint to NvOptimus of whether to enable it or not, set 1 to enable, 0 to disable");
+static ApplicationUsageProxy DisplaySetting_e32(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+        "OSG_GEOMETRY_IMPLEMENTATION <value>",
+        "Set the hint to what backend osg::Geometry implementation to use. OLD | NEW | VERTEX_ARRAY_OBJECT");
 
 void DisplaySettings::readEnvironmentalVariables()
 {
@@ -670,6 +677,24 @@ void DisplaySettings::readEnvironmentalVariables()
             _syncSwapBuffers = atoi(ptr);
         }
     }
+
+
+    if ((ptr = getenv("OSG_GEOMETRY_IMPLEMENTATION")) != 0)
+    {
+        if (strcmp(ptr,"OLD")==0)
+        {
+            _geometryImplementation = OLD_GEOMETRY_IMPLEMENTATION;
+        }
+        else if (strcmp(ptr,"NEW")==0 )
+        {
+            _geometryImplementation = NEW_GEOMETRY_IMPLEMENTATION;
+        }
+        else if (strcmp(ptr,"VERTEX_ARRAY_OBJECT")==0 || strcmp(ptr,"VAO")==0)
+        {
+            _geometryImplementation =  VERTEX_ARRAY_OBJECT;
+        }
+    }
+
 
     if( (ptr = getenv("OSG_KEYSTONE")) != 0)
     {

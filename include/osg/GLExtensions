@@ -20,11 +20,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
+#include <vector>
+#include <map>
 
 
 namespace osg {
 
-/** Return floating-point OpenGL version number.
+/** Return floating-point OpenGL/GLES version number.
   * Note: Must only be called within a valid OpenGL context,
   * undefined behavior may occur otherwise.
 */
@@ -34,19 +36,25 @@ extern OSG_EXPORT float getGLVersionNumber();
 */
 extern OSG_EXPORT bool isExtensionInExtensionString(const char *extension, const char *extensionString);
 
-/** Return true if OpenGL "extension" is supported.
+/** Return true if OpenGL/GLES "extension" is supported.
   * Note: Must only be called within a valid OpenGL context,
   * undefined behavior may occur otherwise.
 */
 extern OSG_EXPORT bool isGLExtensionSupported(unsigned int contextID, const char *extension);
 
-/** Return true if OpenGL "extension" or minimum OpenGL version number is supported.
+/** Return true if either OpenGL/GLES "extension1" or "extension2" is supported.
+  * Note: Must only be called within a valid OpenGL context,
+  * undefined behavior may occur otherwise.
+*/
+extern OSG_EXPORT bool isGLExtensionSupported(unsigned int contextID, const char *extension1, const char *extension2);
+
+/** Return true if OpenGL/GLES "extension" or minimum OpenGL version number is supported.
   * Note: Must only be called within a valid OpenGL context,
   * undefined behavior may occur otherwise.
 */
 extern OSG_EXPORT bool isGLExtensionOrVersionSupported(unsigned int contextID, const char *extension, float requiredGlVersion);
 
-/** Return the address of the specified OpenGL function.
+/** Return the address of the specified OpenGL/GLES function.
   * Return NULL if function not supported by OpenGL library.
   * Note, glGLExtensionFuncPtr is declared inline so that the code
   * is compiled locally to the calling code.  This should get by Windows'
@@ -123,11 +131,35 @@ bool setGLExtensionFuncPtr(T& t, const char* str1, const char* str2, const char*
     return convertPointer(t, validContext ? osg::getGLExtensionFuncPtr(str1, str2, str3) : 0);
 }
 
+class VertexAttribAlias
+{
+    public:
+        VertexAttribAlias():
+            _location(0) {}
+
+        VertexAttribAlias(const VertexAttribAlias& rhs):
+            _location(rhs._location),
+            _glName(rhs._glName),
+            _osgName(rhs._osgName),
+            _declaration(rhs._declaration) {}
+
+        VertexAttribAlias(GLuint location, const std::string glName, const std::string osgName, const std::string& declaration):
+            _location(location),
+            _glName(glName),
+            _osgName(osgName),
+            _declaration(declaration) {}
+
+        GLuint      _location;
+        std::string _glName;
+        std::string _osgName;
+        std::string _declaration;
+};
+
 /** Main GLExtensions class for managing OpenGL extensions per graphics context.*/
 class OSG_EXPORT GLExtensions : public osg::Referenced
 {
     public:
-        GLExtensions(unsigned int contextID);
+        GLExtensions(unsigned int in_contextID);
 
         /** Function to call to get the extension of a specified context.
           * If the Exentsion object for that context has not yet been created then
@@ -135,12 +167,12 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
           * If 'createIfNotInitalized' is true then the Extensions object is
           * automatically created.  However, in this case the extension object
           * only be created with the graphics context associated with ContextID..*/
-        static GLExtensions* Get(unsigned int contextID,bool createIfNotInitalized);
+        static GLExtensions* Get(unsigned int in_contextID,bool createIfNotInitalized);
 
         /** allows users to override the extensions across graphics contexts.
           * typically used when you have different extensions supported across graphics pipes
           * but need to ensure that they all use the same low common denominator extensions.*/
-        static void Set(unsigned int contextID, GLExtensions* extensions);
+        static void Set(unsigned int in_contextID, GLExtensions* extensions);
 
         // C++-friendly convenience wrapper methods
         GLuint getCurrentProgram() const;
@@ -149,6 +181,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         bool getAttribLocation( const char* attribName, GLuint& slot ) const;
         bool getFragDataLocation( const char* fragDataName, GLuint& slot) const;
 
+        unsigned int contextID;
 
         float glVersion;
         float glslLanguageVersion;
@@ -260,8 +293,11 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glVertexAttrib4ubv)(GLuint index, const GLubyte *v);
         void (GL_APIENTRY * glVertexAttrib4uiv)(GLuint index, const GLuint *v);
         void (GL_APIENTRY * glVertexAttrib4usv)(GLuint index, const GLushort *v);
-        void (GL_APIENTRY * glVertexAttribPointer)(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
+        void (GL_APIENTRY * glVertexAttribPointer) (unsigned int, GLint, GLenum, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
+        void (GL_APIENTRY * glVertexAttribIPointer) (unsigned int, GLint, GLenum, GLsizei stride, const GLvoid *pointer);
+        void (GL_APIENTRY * glVertexAttribLPointer) (unsigned int, GLint, GLenum, GLsizei stride, const GLvoid *pointer);
         void (GL_APIENTRY * glVertexAttribDivisor)(GLuint index, GLuint divisor);
+
         void (GL_APIENTRY * glUniformMatrix2x3fv)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
         void (GL_APIENTRY * glUniformMatrix3x2fv)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
         void (GL_APIENTRY * glUniformMatrix2x4fv)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
@@ -313,8 +349,10 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glGetActiveAtomicCounterBufferiv)( GLuint program, GLuint bufferIndex, GLenum pname, GLint* params );
         void (GL_APIENTRY * glDispatchCompute)( GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ );
 
+
         // Buffer Object extensions
         bool isBufferObjectSupported;
+        bool isVBOSupported;
         bool isPBOSupported;
         bool isTBOSupported;
         bool isVAOSupported;
@@ -355,12 +393,19 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         bool isTimerQuerySupported;
         bool isARBTimerQuerySupported;
 
+
+
+        void (GL_APIENTRY * glDrawArraysInstanced)( GLenum mode, GLint first, GLsizei count, GLsizei primcount );
+        void (GL_APIENTRY * glDrawElementsInstanced)( GLenum mode, GLsizei count, GLenum type, const GLvoid *indices, GLsizei primcount );
+
         void (GL_APIENTRY * glSecondaryColor3ubv) (const GLubyte* coord);
         void (GL_APIENTRY * glSecondaryColor3fv) (const GLfloat* coord);
 
         void (GL_APIENTRY * glFogCoordfv) (const GLfloat* coord);
 
         void (GL_APIENTRY * glMultiTexCoord1f) (GLenum target,GLfloat coord);
+        void (GL_APIENTRY * glMultiTexCoord4f) (GLenum target, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+
         void (GL_APIENTRY * glMultiTexCoord1fv) (GLenum target,const GLfloat* coord);
         void (GL_APIENTRY * glMultiTexCoord2fv) (GLenum target,const GLfloat* coord);
         void (GL_APIENTRY * glMultiTexCoord3fv) (GLenum target,const GLfloat* coord);
@@ -645,6 +690,67 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glEnableIndexedEXT) (GLenum target, GLuint index);
         void (GL_APIENTRY * glDisableIndexedEXT) (GLenum target, GLuint index);
         GLboolean (GL_APIENTRY * glIsEnabledIndexedEXT) (GLenum target, GLuint index);
+
+        void (GL_APIENTRY * glClientActiveTexture) (GLenum texture);
+        void (GL_APIENTRY * glActiveTexture) (GLenum texture);
+        void (GL_APIENTRY * glFogCoordPointer) (GLenum type, GLsizei stride, const GLvoid *pointer);
+        void (GL_APIENTRY * glSecondaryColorPointer) (GLint size, GLenum type, GLsizei stride, const GLvoid *pointer);
+
+        GLint  glMaxTextureCoords;
+        GLint  glMaxTextureUnits;
+public:
+
+
+        void setUseVertexAttributeAliasing(bool flag) { _useVertexAttributeAliasing = flag; }
+        bool getUseVertexAttributeAliasing() const { return _useVertexAttributeAliasing ; }
+
+        typedef std::vector<VertexAttribAlias> VertexAttribAliasList;
+        typedef std::map<std::string,GLuint> AttribBindingList;
+
+        void setUpVertexAttribAlias(VertexAttribAlias& alias, GLuint location, const std::string glName, const std::string osgName, const std::string& declaration);
+
+        /** Reset the vertex attribute aliasing to osg's default. This method needs to be called before render anything unless you really know what you're doing !*/
+        void resetVertexAttributeAlias(bool compactAliasing=true, unsigned int numTextureUnits=8);
+
+        /** Set the vertex attribute aliasing for "vertex". This method needs to be called before render anything unless you really know what you're doing !*/
+        void setVertexAlias(const VertexAttribAlias& alias) { _vertexAlias = alias; }
+        const VertexAttribAlias& getVertexAlias() { return _vertexAlias; }
+
+        /** Set the vertex attribute aliasing for "normal". This method needs to be called before render anything unless you really know what you're doing !*/
+        void setNormalAlias(const VertexAttribAlias& alias) { _normalAlias = alias; }
+        const VertexAttribAlias& getNormalAlias() { return _normalAlias; }
+
+        /** Set the vertex attribute aliasing for "color". This method needs to be called before render anything unless you really know what you're doing !*/
+        void setColorAlias(const VertexAttribAlias& alias) { _colorAlias = alias; }
+        const VertexAttribAlias& getColorAlias() { return _colorAlias; }
+
+        /** Set the vertex attribute aliasing for "secondary color". This method needs to be called before render anything unless you really know what you're doing !*/
+        void setSecondaryColorAlias(const VertexAttribAlias& alias) { _secondaryColorAlias = alias; }
+        const VertexAttribAlias& getSecondaryColorAlias() { return _secondaryColorAlias; }
+
+        /** Set the vertex attribute aliasing for "fog coord". This method needs to be called before render anything unless you really know what you're doing !*/
+        void setFogCoordAlias(const VertexAttribAlias& alias) { _fogCoordAlias = alias; }
+        const VertexAttribAlias& getFogCoordAlias() { return _fogCoordAlias; }
+
+        /** Set the vertex attribute aliasing list for texture coordinates. This method needs to be called before render anything unless you really know what you're doing !*/
+        void setTexCoordAliasList(const VertexAttribAliasList& aliasList) { _texCoordAliasList = aliasList; }
+        const VertexAttribAliasList& getTexCoordAliasList() { return _texCoordAliasList; }
+
+        /** Set the vertex attribute binding list. This method needs to be called before render anything unless you really know what you're doing !*/
+        void  setAttributeBindingList(const AttribBindingList& attribBindingList) { _attributeBindingList = attribBindingList; }
+        const AttribBindingList&  getAttributeBindingList() { return _attributeBindingList; }
+
+
+        bool                        _useVertexAttributeAliasing;
+        VertexAttribAlias           _vertexAlias;
+        VertexAttribAlias           _normalAlias;
+        VertexAttribAlias           _colorAlias;
+        VertexAttribAlias           _secondaryColorAlias;
+        VertexAttribAlias           _fogCoordAlias;
+        VertexAttribAliasList       _texCoordAliasList;
+
+        AttribBindingList           _attributeBindingList;
+
 };
 
 

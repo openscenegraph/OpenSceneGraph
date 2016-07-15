@@ -246,6 +246,8 @@ void GLBeginEndAdapter::End()
     }
 
     _state->lazyDisablingOfVertexAttributes();
+    _state->unbindVertexBufferObject();
+    _state->unbindElementBufferObject();
 
     if (_colorAssigned)
     {
@@ -285,6 +287,8 @@ void GLBeginEndAdapter::End()
     _state->setVertexPointer(_vertices.get());
 
     _state->applyDisablingOfVertexAttributes();
+
+
 
     if (_primitiveMode==GL_QUADS)
     {

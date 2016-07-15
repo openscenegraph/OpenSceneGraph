@@ -14,6 +14,7 @@
 
 #include <osg/Geometry>
 #include <osg/ArrayDispatchers>
+#include <osg/VertexArrayState>
 #include <osg/Notify>
 
 using namespace osg;
@@ -603,6 +604,8 @@ void Geometry::resizeGLObjectBuffers(unsigned int maxSize)
 {
     Drawable::resizeGLObjectBuffers(maxSize);
 
+    _vertexArrayStateList.resize(maxSize);
+
     ArrayList arrays;
     if (getArrayList(arrays))
     {
@@ -629,6 +632,9 @@ void Geometry::resizeGLObjectBuffers(unsigned int maxSize)
 void Geometry::releaseGLObjects(State* state) const
 {
     Drawable::releaseGLObjects(state);
+
+    if (state) _vertexArrayStateList[state->getContextID()];
+    else _vertexArrayStateList.clear();
 
     ArrayList arrays;
     if (getArrayList(arrays))
@@ -734,28 +740,41 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     }
 
     State& state = *renderInfo.getState();
+    const DisplaySettings* ds = state.getDisplaySettings() ? state.getDisplaySettings() : osg::DisplaySettings::instance();
 
     bool checkForGLErrors = state.getCheckForGLErrors()==osg::State::ONCE_PER_ATTRIBUTE;
     if (checkForGLErrors) state.checkGLErrors("start of Geometry::drawImplementation()");
 
-    drawVertexArraysImplementation(renderInfo);
 
-    if (checkForGLErrors) state.checkGLErrors("Geometry::drawImplementation() after vertex arrays setup.");
+    bool useNewImplementation = (ds->getGeometryImplementation()!=DisplaySettings::OLD_GEOMETRY_IMPLEMENTATION);
+    if (useNewImplementation)
+    {
+        new_drawImplementation(renderInfo);
+    }
+    else
+    {
+        // OSG_NOTICE<<"Old implementation"<<std::endl;
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // draw the primitives themselves.
-    //
-    drawPrimitivesImplementation(renderInfo);
+        old_drawVertexArraysImplementation(renderInfo);
 
-    // unbind the VBO's if any are used.
-    state.unbindVertexBufferObject();
-    state.unbindElementBufferObject();
+        if (checkForGLErrors) state.checkGLErrors("Geometry::drawImplementation() after vertex arrays setup.");
 
-    if (checkForGLErrors) state.checkGLErrors("end of Geometry::drawImplementation().");
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //
+        // draw the primitives themselves.
+        //
+
+        old_drawPrimitivesImplementation(renderInfo);
+
+        // unbind the VBO's if any are used.
+        state.unbindVertexBufferObject();
+        state.unbindElementBufferObject();
+
+        if (checkForGLErrors) state.checkGLErrors("end of Geometry::drawImplementation().");
+    }
 }
 
-void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
+void Geometry::old_drawVertexArraysImplementation(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
 
@@ -834,7 +853,7 @@ void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
     state.applyDisablingOfVertexAttributes();
 }
 
-void Geometry::drawPrimitivesImplementation(RenderInfo& renderInfo) const
+void Geometry::old_drawPrimitivesImplementation(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
     ArrayDispatchers& arrayDispatchers = state.getArrayDispatchers();
@@ -851,6 +870,112 @@ void Geometry::drawPrimitivesImplementation(RenderInfo& renderInfo) const
         primitiveset->draw(state, usingVertexBufferObjects);
     }
 }
+
+
+void Geometry::new_drawImplementation(RenderInfo& renderInfo) const
+{
+    State& state = *renderInfo.getState();
+    const DisplaySettings* ds = state.getDisplaySettings() ? state.getDisplaySettings() : osg::DisplaySettings::instance();
+
+    unsigned int contextID = state.getContextID();
+
+    bool usingVertexBufferObjects = _useVertexBufferObjects && state.isVertexBufferObjectSupported();
+    bool useVAO = usingVertexBufferObjects && (ds->getGeometryImplementation()==DisplaySettings::VERTEX_ARRAY_OBJECT);
+    bool dispatchIfDirty = useVAO;
+
+    VertexArrayState* vas = _vertexArrayStateList[contextID].get();
+
+    bool checkForGLErrors = state.getCheckForGLErrors()==osg::State::ONCE_PER_ATTRIBUTE;
+
+    if (checkForGLErrors) state.checkGLErrors("Geometry::new_drawImplementation() before vertex arrays setup.");
+
+    if (!useVAO)
+    {
+        state.lazyDisablingOfVertexAttributes();
+    }
+
+    if (!vas)
+    {
+        OSG_NOTICE<<"Creating new osg::VertexArrayState"<<std::endl;
+        _vertexArrayStateList[contextID] = vas = new osg::VertexArrayState(state.get<GLExtensions>());
+
+        if (_vertexArray.valid()) vas->assignVertexArray(_vertexArray.get());
+        if (_colorArray.valid()) vas->assignColorArray(_colorArray.get());
+        if (_normalArray.valid()) vas->assignNormalArray(_normalArray.get());
+        if (_secondaryColorArray.valid()) vas->assignSecondaryColorArray(_secondaryColorArray.get());
+        if (_fogCoordArray.valid()) vas->assignFogCoordArray(_fogCoordArray.get());
+
+        for(unsigned int i=0; i<_texCoordList.size(); ++i)
+        {
+            if (_texCoordList[i].valid()) vas->assignTexCoordArray(i, _texCoordList[i].get());
+        }
+
+        for(unsigned int i=0; i<_vertexAttribList.size(); ++i)
+        {
+            if (_vertexAttribList[i].valid()) vas->assignVertexAttribArray(i, _vertexAttribList[i].get());
+        }
+
+        if (useVAO)
+        {
+            OSG_NOTICE<<"  Setup VertexArrayState to use VAO"<<std::endl;
+
+            vas->generateVretexArrayObject();
+            dispatchIfDirty = false;
+        }
+        else
+        {
+            OSG_NOTICE<<"  Setup VertexArrayState to wihtout using VAO"<<std::endl;
+        }
+
+    }
+
+    if (useVAO)
+    {
+        vas->bindVertexArrayObject();
+    }
+
+    osg::ref_ptr<VertexArrayState> previous_vas = state.getCurrentVertexArrayState();
+
+    state.setCurrentVertexArrayState(vas);
+
+    vas->dispatchOverall(state);
+
+
+    if (dispatchIfDirty)
+    {
+        vas->dispatchArraysIfDirty(state);
+    }
+    else
+    {
+        vas->dispatchArrays(state);
+    }
+
+    if (!useVAO)
+    {
+        state.applyDisablingOfVertexAttributes();
+    }
+
+    for(unsigned int primitiveSetNum=0; primitiveSetNum<_primitives.size(); ++primitiveSetNum)
+    {
+        // dispatch any attributes that are bound per primitive
+        vas->dispatchPerPrimitveSet(state, primitiveSetNum);
+
+        // disaptch the primitives
+        _primitives[primitiveSetNum]->draw(state, usingVertexBufferObjects);
+    }
+
+    state.setCurrentVertexArrayState(previous_vas);
+
+    if (!useVAO && usingVertexBufferObjects)
+    {
+        // unbind the VBO's if any are used.
+        state.unbindVertexBufferObject();
+        state.unbindElementBufferObject();
+    }
+
+    if (checkForGLErrors) state.checkGLErrors("Geometry::new_drawImplementation() after primitive dispatch.");
+}
+
 
 void Geometry::accept(AttributeFunctor& af)
 {

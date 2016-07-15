@@ -226,9 +226,14 @@ Drawable::Drawable()
     _useDisplayList = false;
 #endif
 
+#if 0
     _supportsVertexBufferObjects = false;
+    //_useVertexBufferObjects = false;
     _useVertexBufferObjects = false;
-    // _useVertexBufferObjects = true;
+#else
+    _supportsVertexBufferObjects = true;
+    _useVertexBufferObjects = false;
+#endif
 }
 
 Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):

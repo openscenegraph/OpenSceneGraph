@@ -113,6 +113,10 @@ public:
         return _ptr;
     }
 
+    virtual const GLvoid* getDataPointer(unsigned int index) const {
+        return &((*_ptr)[index]);
+    }
+
     /** Returns the number of elements in the array. */
     virtual unsigned int getNumElements() const {
         return _numElements;

@@ -22,6 +22,7 @@
 #include <osg/BufferObject>
 #include <osg/Observer>
 #include <osg/Timer>
+#include <osg/VertexArrayState>
 
 #include <osg/ShaderComposer>
 #include <osg/FrameStamp>
@@ -72,30 +73,19 @@ namespace osg {
 // forward declare GraphicsContext, View and State
 class GraphicsContext;
 
-class VertexAttribAlias
+struct EnabledArrayPair
 {
-    public:
-        VertexAttribAlias():
-            _location(0) {}
+    EnabledArrayPair():_arrayType(0), _lazy_disable(false),_dirty(true),_enabled(false),_normalized(0),_pointer(0) {}
+    EnabledArrayPair(const EnabledArrayPair& eap):_arrayType(0), _lazy_disable(eap._lazy_disable),_dirty(eap._dirty), _enabled(eap._enabled),_normalized(eap._normalized),_pointer(eap._pointer) {}
+    EnabledArrayPair& operator = (const EnabledArrayPair& eap) { _arrayType = eap._arrayType; _lazy_disable = eap._lazy_disable;_dirty=eap._dirty; _enabled=eap._enabled; _normalized=eap._normalized;_pointer=eap._pointer; return *this; }
 
-        VertexAttribAlias(const VertexAttribAlias& rhs):
-            _location(rhs._location),
-            _glName(rhs._glName),
-            _osgName(rhs._osgName),
-            _declaration(rhs._declaration) {}
-
-        VertexAttribAlias(GLuint location, const std::string glName, const std::string osgName, const std::string& declaration):
-            _location(location),
-            _glName(glName),
-            _osgName(osgName),
-            _declaration(declaration) {}
-
-        GLuint      _location;
-        std::string _glName;
-        std::string _osgName;
-        std::string _declaration;
+    GLenum          _arrayType;
+    bool            _lazy_disable;
+    bool            _dirty;
+    bool            _enabled;
+    GLboolean       _normalized;
+    const GLvoid*   _pointer;
 };
-
 
 /** Encapsulates the current applied OpenGL modes, attributes and vertex arrays settings,
   * implements lazy state updating and provides accessors for querying the current state.
@@ -500,17 +490,31 @@ class OSG_EXPORT State : public Referenced
         const StateAttribute* getLastAppliedTextureAttribute(unsigned int unit, StateAttribute::Type type, unsigned int member=0) const;
 
 
+
+
+
         /** Dirty the modes previously applied in osg::State.*/
         void dirtyAllModes();
 
         /** Dirty the modes attributes previously applied in osg::State.*/
         void dirtyAllAttributes();
 
+
+
+        /** Set the CurrentVetexArrayState object that take which vertex arrays are bound.*/
+        void setCurrentVertexArrayState(VertexArrayState* vas) { _currentVertexArrayState = vas; }
+
+        /** Get the CurrentVetexArrayState object that take which vertex arrays are bound.*/
+        VertexArrayState* getCurrentVertexArrayState() const { return _currentVertexArrayState.get(); }
+
+
         /** disable the vertex, normal, color, tex coords, secondary color, fog coord and index arrays.*/
         void disableAllVertexArrays();
 
         /** dirty the vertex, normal, color, tex coords, secondary color, fog coord and index arrays.*/
         void dirtyAllVertexArrays();
+
+
 
 
         void setCurrentVertexBufferObject(osg::GLBufferObject* vbo) { _currentVBO = vbo; }
@@ -551,7 +555,7 @@ class OSG_EXPORT State : public Referenced
 
         inline void unbindElementBufferObject()
         {
-            if (!_currentEBO) return;
+            //if (!_currentEBO) return;
             _glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
             _currentEBO = 0;
         }
@@ -1667,6 +1671,8 @@ class OSG_EXPORT State : public Referenced
         GraphicsContext*            _graphicsContext;
         unsigned int                _contextID;
 
+        osg::ref_ptr<VertexArrayState> _currentVertexArrayState;
+
         bool                            _shaderCompositionEnabled;
         bool                            _shaderCompositionDirty;
         osg::ref_ptr<ShaderComposer>    _shaderComposer;
@@ -1706,6 +1712,7 @@ class OSG_EXPORT State : public Referenced
         Program::AttribBindingList  _attributeBindingList;
 
         void setUpVertexAttribAlias(VertexAttribAlias& alias, GLuint location, const std::string glName, const std::string osgName, const std::string& declaration);
+
         /** Apply an OpenGL mode if required, passing in mode, enable flag and
           * appropriate mode stack. This is a wrapper around \c glEnable() and
           * \c glDisable(), that just actually calls these functions if the

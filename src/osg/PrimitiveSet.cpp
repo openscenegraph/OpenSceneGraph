@@ -172,6 +172,7 @@ unsigned int DrawArrayLengths::getNumIndices() const
     return count;
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // DrawElementsUByte
@@ -192,7 +193,10 @@ void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
-        state.bindElementBufferObject(ebo);
+
+        if (state.getCurrentVertexArrayState()) state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
+        else state.bindElementBufferObject(ebo);
+
         if (ebo)
         {
             if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_BYTE, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
@@ -252,7 +256,19 @@ void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
-        state.bindElementBufferObject(ebo);
+
+
+        if (state.getCurrentVertexArrayState())
+        {
+            OSG_NOTICE<<"   DrawElementsUShort::draw() size="<<size()<<" A bind="<<ebo<<std::endl;
+            state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
+        }
+        else
+        {
+            OSG_NOTICE<<"   DrawElementsUShort::draw() size="<<size()<<" B bind="<<ebo<<std::endl;
+            state.bindElementBufferObject(ebo);
+        }
+
         if (ebo)
         {
             if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_SHORT, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
@@ -311,7 +327,10 @@ void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
-        state.bindElementBufferObject(ebo);
+
+        if (state.getCurrentVertexArrayState()) state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
+        else state.bindElementBufferObject(ebo);
+
         if (ebo)
         {
             if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_INT, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);

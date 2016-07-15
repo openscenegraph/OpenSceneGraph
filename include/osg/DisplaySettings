@@ -299,6 +299,17 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         int getNvOptimusEnablement() const;
 
 
+        enum GeometryImplementation
+        {
+            OLD_GEOMETRY_IMPLEMENTATION,
+            NEW_GEOMETRY_IMPLEMENTATION,
+            VERTEX_ARRAY_OBJECT
+        };
+
+        void setGeometryImplementation(GeometryImplementation gi) { _geometryImplementation = gi; }
+        GeometryImplementation getGeometryImplementation() const { return _geometryImplementation; }
+
+
         void setKeystoneHint(bool enabled) { _keystoneHint = enabled; }
         bool getKeystoneHint() const { return _keystoneHint; }
 
@@ -387,6 +398,8 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
 
         SwapMethod                      _swapMethod;
         unsigned int                    _syncSwapBuffers;
+
+        GeometryImplementation          _geometryImplementation;
 
         bool                            _keystoneHint;
         FileNames                       _keystoneFileNames;

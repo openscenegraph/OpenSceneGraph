@@ -23,9 +23,14 @@ using namespace osg;
 Geometry::Geometry():
     _containsDeprecatedData(false)
 {
+#if 0
     _supportsVertexBufferObjects = true;
     // temporary test
     // setSupportsDisplayList(false);
+#else
+    _supportsVertexBufferObjects = true;
+    _useVertexBufferObjects = true;
+#endif
 }
 
 Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
@@ -660,14 +665,56 @@ void Geometry::releaseGLObjects(State* state) const
 
 }
 
+VertexArrayState* Geometry::setUpVertexArrayState(RenderInfo& renderInfo, bool usingVBOs) const
+{
+    OSG_NOTICE<<"Creating new osg::VertexArrayState"<<std::endl;
+    State& state = *renderInfo.getState();
+    const DisplaySettings* ds = state.getDisplaySettings() ? state.getDisplaySettings() : osg::DisplaySettings::instance();
+
+    VertexArrayState* vas = 0;
+
+    _vertexArrayStateList[state.getContextID()] = vas = new osg::VertexArrayState(state.get<GLExtensions>());
+
+    if (_vertexArray.valid()) vas->assignVertexArray(_vertexArray.get());
+    if (_colorArray.valid()) vas->assignColorArray(_colorArray.get());
+    if (_normalArray.valid()) vas->assignNormalArray(_normalArray.get());
+    if (_secondaryColorArray.valid()) vas->assignSecondaryColorArray(_secondaryColorArray.get());
+    if (_fogCoordArray.valid()) vas->assignFogCoordArray(_fogCoordArray.get());
+
+    for(unsigned int i=0; i<_texCoordList.size(); ++i)
+    {
+        if (_texCoordList[i].valid()) vas->assignTexCoordArray(i, _texCoordList[i].get());
+    }
+
+    for(unsigned int i=0; i<_vertexAttribList.size(); ++i)
+    {
+        if (_vertexAttribList[i].valid()) vas->assignVertexAttribArray(i, _vertexAttribList[i].get());
+    }
+
+    if (usingVBOs && ds->getGeometryImplementation()==DisplaySettings::VERTEX_ARRAY_OBJECT)
+    {
+        OSG_NOTICE<<"  Setup VertexArrayState to use VAO"<<std::endl;
+
+        vas->generateVretexArrayObject();
+    }
+    else
+    {
+        OSG_NOTICE<<"  Setup VertexArrayState to without using VAO"<<std::endl;
+    }
+
+    return vas;
+}
+
 void Geometry::compileGLObjects(RenderInfo& renderInfo) const
 {
+    State& state = *renderInfo.getState();
+    const DisplaySettings* ds = state.getDisplaySettings() ? state.getDisplaySettings() : osg::DisplaySettings::instance();
+
     bool useVertexArrays = _supportsVertexBufferObjects &&
                            _useVertexBufferObjects &&
                            renderInfo.getState()->isVertexBufferObjectSupported();
     if (useVertexArrays)
     {
-        State& state = *renderInfo.getState();
         unsigned int contextID = state.getContextID();
         GLExtensions* extensions = state.get<GLExtensions>();
         if (!extensions) return;
@@ -724,9 +771,18 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
         extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
         extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
 
+        if (ds->getGeometryImplementation()!=DisplaySettings::OLD_GEOMETRY_IMPLEMENTATION)
+        {
+            setUpVertexArrayState(renderInfo, !bufferObjects.empty());
+        }
     }
     else
     {
+        if (ds->getGeometryImplementation()!=DisplaySettings::OLD_GEOMETRY_IMPLEMENTATION)
+        {
+            setUpVertexArrayState(renderInfo, false);
+        }
+
         Drawable::compileGLObjects(renderInfo);
     }
 }
@@ -879,11 +935,15 @@ void Geometry::new_drawImplementation(RenderInfo& renderInfo) const
 
     unsigned int contextID = state.getContextID();
 
-    bool usingVertexBufferObjects = _useVertexBufferObjects && state.isVertexBufferObjectSupported();
+    bool usingVertexBufferObjects = _supportsVertexBufferObjects && _useVertexBufferObjects && state.isVertexBufferObjectSupported();
     bool useVAO = usingVertexBufferObjects && (ds->getGeometryImplementation()==DisplaySettings::VERTEX_ARRAY_OBJECT);
     bool dispatchIfDirty = useVAO;
 
+
     VertexArrayState* vas = _vertexArrayStateList[contextID].get();
+
+    OSG_NOTICE<<"Geometry::new_drawImplementation() "<<this<<" _vertexArray.get()="<<_vertexArray.get()<<std::endl;
+
 
     bool checkForGLErrors = state.getCheckForGLErrors()==osg::State::ONCE_PER_ATTRIBUTE;
 
@@ -896,37 +956,7 @@ void Geometry::new_drawImplementation(RenderInfo& renderInfo) const
 
     if (!vas)
     {
-        OSG_NOTICE<<"Creating new osg::VertexArrayState"<<std::endl;
-        _vertexArrayStateList[contextID] = vas = new osg::VertexArrayState(state.get<GLExtensions>());
-
-        if (_vertexArray.valid()) vas->assignVertexArray(_vertexArray.get());
-        if (_colorArray.valid()) vas->assignColorArray(_colorArray.get());
-        if (_normalArray.valid()) vas->assignNormalArray(_normalArray.get());
-        if (_secondaryColorArray.valid()) vas->assignSecondaryColorArray(_secondaryColorArray.get());
-        if (_fogCoordArray.valid()) vas->assignFogCoordArray(_fogCoordArray.get());
-
-        for(unsigned int i=0; i<_texCoordList.size(); ++i)
-        {
-            if (_texCoordList[i].valid()) vas->assignTexCoordArray(i, _texCoordList[i].get());
-        }
-
-        for(unsigned int i=0; i<_vertexAttribList.size(); ++i)
-        {
-            if (_vertexAttribList[i].valid()) vas->assignVertexAttribArray(i, _vertexAttribList[i].get());
-        }
-
-        if (useVAO)
-        {
-            OSG_NOTICE<<"  Setup VertexArrayState to use VAO"<<std::endl;
-
-            vas->generateVretexArrayObject();
-            dispatchIfDirty = false;
-        }
-        else
-        {
-            OSG_NOTICE<<"  Setup VertexArrayState to wihtout using VAO"<<std::endl;
-        }
-
+        vas = setUpVertexArrayState(renderInfo, usingVertexBufferObjects);
     }
 
     if (useVAO)
@@ -968,6 +998,18 @@ void Geometry::new_drawImplementation(RenderInfo& renderInfo) const
 
     if (!useVAO && usingVertexBufferObjects)
     {
+        // unbind the VBO's if any are used.
+        state.unbindVertexBufferObject();
+        state.unbindElementBufferObject();
+    }
+
+    if (useVAO)
+    {
+        vas->unbindVertexArrayObject();
+
+        state.setCurrentVertexBufferObject(vas->getCurrentVertexBufferObject());
+        state.setCurrentElementBufferObject(vas->getCurrentElementBufferObject());
+
         // unbind the VBO's if any are used.
         state.unbindVertexBufferObject();
         state.unbindElementBufferObject();

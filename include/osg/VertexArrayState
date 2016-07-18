@@ -155,7 +155,7 @@ public:
 
 
         void setCurrentVertexBufferObject(osg::GLBufferObject* vbo) { _currentVBO = vbo; }
-        const GLBufferObject* getCurrentVertexBufferObject() { return _currentVBO; }
+        GLBufferObject* getCurrentVertexBufferObject() { return _currentVBO; }
         inline void bindVertexBufferObject(osg::GLBufferObject* vbo)
         {
             if (vbo)
@@ -177,13 +177,13 @@ public:
 
 
         void setCurrentElementBufferObject(osg::GLBufferObject* ebo) { _currentEBO = ebo; }
-        const GLBufferObject* getCurrentElementBufferObject() { return _currentEBO; }
+        GLBufferObject* getCurrentElementBufferObject() { return _currentEBO; }
 
         inline void bindElementBufferObject(osg::GLBufferObject* ebo)
         {
             if (ebo)
             {
-                if (ebo == _currentEBO) return;
+                //if (ebo == _currentEBO) return;
                 if (ebo->isDirty()) ebo->compileBuffer();
                 else ebo->bindBuffer();
                 _currentEBO = ebo;
@@ -193,7 +193,7 @@ public:
 
         inline void unbindElementBufferObject()
         {
-            if (!_currentEBO) return;
+            //if (!_currentEBO) return;
             _ext->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
             _currentEBO = 0;
         }

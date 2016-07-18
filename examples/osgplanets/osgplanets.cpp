@@ -120,15 +120,15 @@ osg::Image* createBillboardImage(const osg::Vec4& centerColour, unsigned int siz
 
     float mid = (float(size)-1)*0.5f;
     float div = 2.0f/float(size);
-    for(unsigned int r=0;r<size;++r)
+    for(unsigned int row=0;row<size;++row)
     {
-        unsigned char* ptr = image->data(0,r,0);
-        for(unsigned int c=0;c<size;++c)
+        unsigned char* ptr = image->data(0,row,0);
+        for(unsigned int col=0;col<size;++col)
         {
-            float dx = (float(c) - mid)*div;
-            float dy = (float(r) - mid)*div;
+            float dx = (float(col) - mid)*div;
+            float dy = (float(row) - mid)*div;
             float pr = powf(1.0f-sqrtf(dx*dx+dy*dy),power);
-            if (pr<0.0f) r=0.0f;
+            if (pr<0.0f) pr=0.0f;
             osg::Vec4 color = centerColour*pr+backgroundColour*(1.0f-pr);
             // color.set(1.0f,1.0f,1.0f,0.5f);
             *ptr++ = (unsigned char)((color[0])*255.0f);
@@ -902,7 +902,7 @@ int main( int argc, char **argv )
 
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
-    optimzer.optimize( root );
+    // optimzer.optimize( root );
 
     // set the scene to render
     viewer.setSceneData( root );

@@ -385,7 +385,7 @@ void SphereSegment::dirtyAllDrawableDisplayLists()
     for(unsigned int i=0; i<getNumDrawables(); ++i)
     {
         osg::Drawable* drawable = getDrawable(i);
-        if (drawable) drawable->dirtyDisplayList();
+        if (drawable) drawable->dirtyGLObjects();
     }
 }
 
@@ -907,7 +907,7 @@ struct ActivateTransparencyOnType
             ss->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK),osg::StateAttribute::ON);
             ss->setMode(GL_BLEND,osg::StateAttribute::ON);
 
-            drawable->dirtyDisplayList();
+            drawable->dirtyGLObjects();
         }
     }
 
@@ -931,7 +931,7 @@ struct DeactivateTransparencyOnType
             osg::StateSet* ss = drawable->getOrCreateStateSet();
             if(ss) ss->setRenderingHint(osg::StateSet::OPAQUE_BIN);
 
-            drawable->dirtyDisplayList();
+            drawable->dirtyGLObjects();
         }
     }
 

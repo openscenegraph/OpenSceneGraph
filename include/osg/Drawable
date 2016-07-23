@@ -66,14 +66,6 @@ class Geometry;
 class NodeVisitor;
 class ArrayDispatchers;
 
-// this is defined to alter the way display lists are compiled inside the
-// the draw method, it has been found that the NVidia drivers fail completely
-// to optimize COMPILE_AND_EXECUTE in fact make it go slower than for no display
-// lists, but optimize a separate COMPILE very well?!  Define it as default
-// the use of a separate COMPILE, then glCallList rather than use COMPILE_AND_EXECUTE.
-
-#define USE_SEPARATE_COMPILE_AND_EXECUTE
-
 /** Pure virtual base class for drawable geometry. In OSG, everything that can
  *  be rendered is implemented as a class derived from \c Drawable. The
  *  \c Drawable class contains no drawing primitives, since these are provided
@@ -235,8 +227,18 @@ class OSG_EXPORT Drawable : public Node
         inline bool getUseVertexBufferObjects() const { return _useVertexBufferObjects; }
 
 
-        /** Force a recompile on next draw() of any OpenGL display list associated with this geoset.*/
+        /** Set whether to use a local VertexArrayObject for this Drawable.*/
+        void setUseVertexArrayObject(bool flag);
+
+        /** Return whether to use a local VertexArrayObject for this Drawable.*/
+        bool getUseVertexArrayObject() const { return _useVertexArrayObject; }
+
+
+        /** Deprecated, use dirtyGLObjects() instead. */
         virtual void dirtyDisplayList();
+
+        /** Force a recompile on next draw() of any OpenGL objects associated with this geoset.*/
+        virtual void dirtyGLObjects();
 
 
         /** Return the estimated size of GLObjects (display lists/vertex buffer objects) that are associated with this drawable.
@@ -254,12 +256,28 @@ class OSG_EXPORT Drawable : public Node
           *       \c virtual). Subclasses should override
           *       \c drawImplementation() instead.
           */
+#if 0
         inline void draw(RenderInfo& renderInfo) const;
+#else
+        void draw(RenderInfo& renderInfo) const;
+#endif
+
+        inline void drawInner(RenderInfo& renderInfo) const
+        {
+            if (_drawCallback.valid())
+                _drawCallback->drawImplementation(renderInfo,this);
+            else
+                drawImplementation(renderInfo);
+        }
+
 
         /** Immediately compile this \c Drawable into an OpenGL Display List/VertexBufferObjects.
           * @note Operation is ignored if \c _useDisplayList is \c false or VertexBufferObjects are not used.
         */
         virtual void compileGLObjects(RenderInfo& renderInfo) const;
+
+        virtual VertexArrayState* setUpVertexArrayState(RenderInfo& renderInfo, bool usingVBOs) const;
+
 
         /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
         virtual void setThreadSafeRefUnref(bool threadSafe);
@@ -466,14 +484,18 @@ class OSG_EXPORT Drawable : public Node
         bool                    _useDisplayList;
         bool                    _supportsVertexBufferObjects;
         bool                    _useVertexBufferObjects;
+        bool                    _useVertexArrayObject;
 
         typedef osg::buffered_value<GLuint> GLObjectList;
         mutable GLObjectList    _globjList;
 
+        typedef buffered_object< osg::ref_ptr<VertexArrayState> > VertexArrayStateList;
+        mutable VertexArrayStateList    _vertexArrayStateList;
+
         ref_ptr<DrawCallback>   _drawCallback;
 };
 
-
+#if 0
 inline void Drawable::draw(RenderInfo& renderInfo) const
 {
 #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
@@ -486,36 +508,24 @@ inline void Drawable::draw(RenderInfo& renderInfo) const
         // get the globj for the current contextID.
         GLuint& globj = _globjList[contextID];
 
-        // call the globj if already set otherwise compile and execute.
-        if( globj != 0 )
+        if( globj == 0 )
         {
-            glCallList( globj );
-        }
-        else if (_useDisplayList)
-        {
-#ifdef USE_SEPARATE_COMPILE_AND_EXECUTE
+            // compile the display list
             globj = generateDisplayList(contextID, getGLObjectSizeHint());
             glNewList( globj, GL_COMPILE );
-            if (_drawCallback.valid())
-                _drawCallback->drawImplementation(renderInfo,this);
-            else
-                drawImplementation(renderInfo);
-            glEndList();
 
-            glCallList( globj);
-#else
-            globj = generateDisplayList(contextID, getGLObjectSizeHint());
-            glNewList( globj, GL_COMPILE_AND_EXECUTE );
             if (_drawCallback.valid())
                 _drawCallback->drawImplementation(renderInfo,this);
             else
                 drawImplementation(renderInfo);
+
             glEndList();
-#endif
         }
 
-        return;
+        // call the display list
+        glCallList( globj);
 
+        return;
     }
 #endif
 
@@ -525,6 +535,7 @@ inline void Drawable::draw(RenderInfo& renderInfo) const
     else
         drawImplementation(renderInfo);
 }
+#endif
 
 class AttributeFunctorArrayVisitor : public ArrayVisitor
 {

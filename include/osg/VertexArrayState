@@ -21,8 +21,6 @@
 
 namespace osg {
 
-
-
 class VertexArrayState : public osg::Referenced
 {
 public:
@@ -31,113 +29,109 @@ public:
 
         struct ArrayDispatch : public osg::Referenced
         {
-            ArrayDispatch(Array* in_array):
-                array(in_array),
-                modifiedCount(0xffffffff) {}
+            ArrayDispatch():
+                array(0),
+                modifiedCount(0xffffffff),
+                active(false) {}
 
-            inline void dispatchIfDirty(osg::State& state, unsigned int index=0)
-            {
-                if (modifiedCount!=array->getModifiedCount()) dispatch(state, index);
-            }
+            virtual void enable_and_dispatch(osg::State& /*state*/, const osg::Array* /*new_array*/) {} // = 0;
 
-            virtual void dispatch(osg::State& state, unsigned int index=0) = 0;
+            virtual void enable_and_dispatch(osg::State& /*state*/, const osg::Array* /*new_array*/, const osg::GLBufferObject* /*vbo*/) {} // = 0;
 
-            virtual void dispatchDeprecated(osg::State& state, unsigned int index=0);
+            virtual void dispatch(osg::State& /*state*/, const osg::Array* /*new_array*/) {} // = 0;
 
-            osg::Array*  array;
-            unsigned int modifiedCount;
+            virtual void dispatch(osg::State& /*state*/, const osg::Array* /*new_array*/, const osg::GLBufferObject* /*vbo*/) {} // = 0;
+
+            virtual void disable(osg::State& /*state*/) {} // = 0;
+
+            const osg::Array*   array;
+            unsigned int        modifiedCount;
+            bool                active;
         };
 
         typedef std::vector< ref_ptr<ArrayDispatch> >       ArrayDispatchList;
 
-        ArrayDispatchList& getArrayDispatchList(Array::Binding binding)
+        void setCurrentVertexBufferObject(osg::GLBufferObject* vbo) { _currentVBO = vbo; }
+        GLBufferObject* getCurrentVertexBufferObject() { return _currentVBO; }
+
+        inline void bindVertexBufferObject(osg::GLBufferObject* vbo)
         {
-            switch(binding)
-            {
-                case(osg::Array::BIND_PER_VERTEX):          return _dispatchArrays;
-                case(osg::Array::BIND_PER_PRIMITIVE_SET):   return _dispatchPerPrimitiveSet;
-                default:                                    return _dispatchOverall;
-            }
+            if (vbo == _currentVBO) return;
+            if (vbo->isDirty()) vbo->compileBuffer();
+            else vbo->bindBuffer();
+            _currentVBO = vbo;
+        }
+
+        inline void unbindVertexBufferObject()
+        {
+            if (!_currentVBO) return;
+            _ext->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
+            _currentVBO = 0;
         }
 
 
-        enum VertexArrayIdentifier
+        void setCurrentElementBufferObject(osg::GLBufferObject* ebo) { _currentEBO = ebo; }
+        GLBufferObject* getCurrentElementBufferObject() { return _currentEBO; }
+
+        inline void bindElementBufferObject(osg::GLBufferObject* ebo)
         {
-            VERTEX_ARRAY,
-            NORMAL_ARRAY,
-            COLOR_ARRAY,
-            SECONDARY_COLOR_ARRAY,
-            FOG_COORD_ARRAY,
-            TEX_COORD_ARRAY,
-            VERTEX_ATTRIB_ARRAY=TEX_COORD_ARRAY+32
-        };
-
-
-        void assignVertexArray(osg::Array* array);
-        void assignColorArray(osg::Array* array);
-        void assignNormalArray(osg::Array* array);
-
-        void assignSecondaryColorArray(osg::Array* array);
-        void assignFogCoordArray(osg::Array* array);
-
-        void assignTexCoordArray(unsigned int unit, osg::Array* array);
-        void assignVertexAttribArray(unsigned int unit, osg::Array* array);
-
-        inline void dispatchOverall(osg::State& state)
-        {
-            for(ArrayDispatchList::iterator itr = _dispatchOverall.begin();
-                itr != _dispatchOverall.end();
-                ++itr)
-            {
-                (*(*itr)).dispatch(state);
-            }
+            if (ebo == _currentEBO) return;
+            if (ebo->isDirty()) ebo->compileBuffer();
+            else ebo->bindBuffer();
+            _currentEBO = ebo;
         }
 
-        void dispatchPerPrimitveSet(osg::State& state, unsigned int index)
+        inline void unbindElementBufferObject()
         {
-            for(ArrayDispatchList::iterator itr = _dispatchPerPrimitiveSet.begin();
-                itr != _dispatchPerPrimitiveSet.end();
-                ++itr)
-            {
-                (*(*itr)).dispatch(state, index);
-            }
+            if (!_currentEBO) return;
+            _ext->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
+            _currentEBO = 0;
         }
 
-        inline void dispatchArrays(osg::State& state)
-        {
-            // need to check previous enabled/disabled mode
+        void assignAllDispatchers();
 
-            if (_vertexArrayObject)
-            {
-                for(ArrayDispatchList::iterator itr = _dispatchArrays.begin();
-                    itr != _dispatchArrays.end();
-                    ++itr)
-                {
-                    (*(*itr)).dispatch(state);
-                }
-            }
-            else
-            {
-                for(ArrayDispatchList::iterator itr = _dispatchArrays.begin();
-                    itr != _dispatchArrays.end();
-                    ++itr)
-                {
-                    (*(*itr)).dispatchDeprecated(state);
-                }
-            }
-        }
+        virtual void assignVertexArrayDispatcher();
+        virtual void assignNormalArrayDispatcher();
+        virtual void assignColorArrayDispatcher();
+        virtual void assignSecondaryColorArrayDispatcher();
+        virtual void assignFogCoordArrayDispatcher();
+        virtual void assignTexCoordArrayDispatcher(unsigned int numUnits);
+        virtual void assignVertexAttribArrayDispatcher(unsigned int numUnits);
 
-        inline void dispatchArraysIfDirty(osg::State& state)
-        {
-            // need to check previous enabled/disabled mode
+        inline bool isVertexBufferObjectSupported() const { return true; }
 
-            for(ArrayDispatchList::iterator itr = _dispatchArrays.begin();
-                itr != _dispatchArrays.end();
-                ++itr)
-            {
-                (*(*itr)).dispatchIfDirty(state);
-            }
-        }
+        void setArray(ArrayDispatch* vad, osg::State& state, const osg::Array* new_array);
+        void disable(ArrayDispatch* vad, osg::State& state) { vad->disable(state); vad->array=0; vad->modifiedCount=0xffffffff; vad->active=false; }
+
+        inline void setVertexArray(osg::State& state, const osg::Array* array) { setArray(_vertexArray.get(), state, array); }
+        inline void disableVertexArray(osg::State& state) { disable(_vertexArray.get(), state); }
+
+        inline void setNormalArray(osg::State& state, const osg::Array* array) { setArray(_normalArray.get(), state, array); }
+        inline void disableNormalArray(osg::State& state) { disable(_normalArray.get(), state); }
+
+        inline void setColorArray(osg::State& state, const osg::Array* array) { setArray(_colorArray.get(), state, array); }
+        inline void disableColorArray(osg::State& state) { disable(_colorArray.get(), state); }
+
+        inline void setSecondaryColorArray(osg::State& state, const osg::Array* array) { setArray(_secondaryColorArray.get(), state, array); }
+        inline void disableSecondaryColorArray(osg::State& state) { disable(_secondaryColorArray.get(), state); }
+
+        inline void setFogCoordArray(osg::State& state, const osg::Array* array) { setArray(_fogCoordArray.get(), state, array); }
+        inline void disableFogCoordArray(osg::State& state) { disable(_fogCoordArray.get(), state); }
+
+        inline void setTexCoordArray(osg::State& state, unsigned int unit, const osg::Array* array) { setArray(_texCoordArrays[unit].get(), state, array); }
+        inline void disableTexCoordArray(osg::State& state, unsigned int unit) { disable(_texCoordArrays[unit].get(),state); }
+        void disableTexCoordArrayAboveAndIncluding(osg::State& state, unsigned int index);
+
+        inline void setVertexAttribArray(osg::State& state, unsigned int unit, const osg::Array* array) { setArray(_vertexAttribArrays[unit].get(), state, array); }
+        inline void disableVertexAttribArray(osg::State& state, unsigned int unit) { disable(_vertexAttribArrays[unit].get(), state); }
+        void disableVertexAttribArrayAboveAndIncluding(osg::State& state, unsigned int index);
+
+        /** Mark all the vertex attributes as being disabled but leave the disabling till a later call to applyDisablingOfVertexAttributes.*/
+        void lazyDisablingOfVertexAttributes();
+
+        /** Disable all the vertex attributes that have been marked as to be disabled.*/
+        void applyDisablingOfVertexAttributes(osg::State& state);
+
 
 
 
@@ -154,49 +148,6 @@ public:
 
 
 
-        void setCurrentVertexBufferObject(osg::GLBufferObject* vbo) { _currentVBO = vbo; }
-        GLBufferObject* getCurrentVertexBufferObject() { return _currentVBO; }
-        inline void bindVertexBufferObject(osg::GLBufferObject* vbo)
-        {
-            if (vbo)
-            {
-                if (vbo == _currentVBO) return;
-                if (vbo->isDirty()) vbo->compileBuffer();
-                else vbo->bindBuffer();
-                _currentVBO = vbo;
-            }
-            else unbindVertexBufferObject();
-        }
-
-        inline void unbindVertexBufferObject()
-        {
-            if (!_currentVBO) return;
-            _ext->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
-            _currentVBO = 0;
-        }
-
-
-        void setCurrentElementBufferObject(osg::GLBufferObject* ebo) { _currentEBO = ebo; }
-        GLBufferObject* getCurrentElementBufferObject() { return _currentEBO; }
-
-        inline void bindElementBufferObject(osg::GLBufferObject* ebo)
-        {
-            if (ebo)
-            {
-                //if (ebo == _currentEBO) return;
-                if (ebo->isDirty()) ebo->compileBuffer();
-                else ebo->bindBuffer();
-                _currentEBO = ebo;
-            }
-            else unbindElementBufferObject();
-        }
-
-        inline void unbindElementBufferObject()
-        {
-            //if (!_currentEBO) return;
-            _ext->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
-            _currentEBO = 0;
-        }
 
 
 public:
@@ -208,12 +159,21 @@ public:
 
         GLuint                          _vertexArrayObject;
 
+
+        osg::ref_ptr<ArrayDispatch>     _vertexArray;
+        osg::ref_ptr<ArrayDispatch>     _normalArray;
+        osg::ref_ptr<ArrayDispatch>     _colorArray;
+        osg::ref_ptr<ArrayDispatch>     _secondaryColorArray;
+        osg::ref_ptr<ArrayDispatch>     _fogCoordArray;
+        ArrayDispatchList               _texCoordArrays;
+        ArrayDispatchList               _vertexAttribArrays;
+
+        typedef std::vector<ArrayDispatch*> ActiveDispatchers;
+        ActiveDispatchers               _activeDispatchers;
+        ActiveDispatchers               _previous_activeDispatchers;
+
         GLBufferObject*                 _currentVBO;
         GLBufferObject*                 _currentEBO;
-
-        ArrayDispatchList               _dispatchOverall;
-        ArrayDispatchList               _dispatchPerPrimitiveSet;
-        ArrayDispatchList               _dispatchArrays;
 };
 
 

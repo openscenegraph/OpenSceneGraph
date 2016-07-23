@@ -183,13 +183,13 @@ void GLBeginEndAdapter::Begin(GLenum mode)
 
     // reset geometry
     _primitiveMode = mode;
-    if (_vertices.valid()) _vertices->clear();
+    if (_vertices.valid()) { _vertices->clear(); _vertices->dirty(); }
 
     _normalAssigned = false;
-    if (_normals.valid()) _normals->clear();
+    if (_normals.valid()) { _normals->clear(); _normals->dirty(); }
 
     _colorAssigned = false;
-    if (_colors.valid()) _colors->clear();
+    if (_colors.valid()) { _colors->clear(); _colors->dirty(); }
 
     _texCoordAssignedList.clear();
     _texCoordList.clear();
@@ -197,7 +197,7 @@ void GLBeginEndAdapter::Begin(GLenum mode)
         itr != _texCoordsList.end();
         ++itr)
     {
-        if (itr->valid()) (*itr)->clear();
+        if (itr->valid()) { (*itr)->clear(); (*itr)->dirty(); }
     }
 
     _vertexAttribAssignedList.clear();

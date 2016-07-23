@@ -1945,7 +1945,7 @@ void ShapeDrawable::setColor(const Vec4& color)
 {
     if (_color!=color)
     {
-        _color = color; dirtyDisplayList();
+        _color = color; dirtyGLObjects();
     }
 }
 
@@ -1954,7 +1954,7 @@ void ShapeDrawable::setTessellationHints(TessellationHints* hints)
     if (_tessellationHints!=hints)
     {
         _tessellationHints = hints;
-        dirtyDisplayList();
+        dirtyGLObjects();
     }
 }
 

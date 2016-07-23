@@ -243,7 +243,8 @@ void DisplaySettings::setDefaults()
     _swapMethod = SWAP_DEFAULT;
     _syncSwapBuffers = 0;
 
-    _geometryImplementation = VERTEX_ARRAY_OBJECT;
+    // _geometryImplementation = VERTEX_ARRAY_OBJECT;
+    _geometryImplementation = OLD_GEOMETRY_IMPLEMENTATION;
 
     _keystoneHint = false;
 

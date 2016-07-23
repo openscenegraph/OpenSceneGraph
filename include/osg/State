@@ -517,8 +517,17 @@ class OSG_EXPORT State : public Referenced
 
 
 
+
+#if 1
+        void setCurrentVertexBufferObject(osg::GLBufferObject* vbo);
+        const GLBufferObject* getCurrentVertexBufferObject();
+
+        void bindVertexBufferObject(osg::GLBufferObject* vbo);
+        void unbindVertexBufferObject();
+#else
         void setCurrentVertexBufferObject(osg::GLBufferObject* vbo) { _currentVBO = vbo; }
         const GLBufferObject* getCurrentVertexBufferObject() { return _currentVBO; }
+
         inline void bindVertexBufferObject(osg::GLBufferObject* vbo)
         {
             if (vbo)
@@ -537,7 +546,15 @@ class OSG_EXPORT State : public Referenced
             _glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
             _currentVBO = 0;
         }
+#endif
 
+#if 1
+        void setCurrentElementBufferObject(osg::GLBufferObject* ebo);
+        const GLBufferObject* getCurrentElementBufferObject();
+
+        void bindElementBufferObject(osg::GLBufferObject* ebo);
+        void unbindElementBufferObject();
+#else
         void setCurrentElementBufferObject(osg::GLBufferObject* ebo) { _currentEBO = ebo; }
         const GLBufferObject* getCurrentElementBufferObject() { return _currentEBO; }
 
@@ -559,6 +576,7 @@ class OSG_EXPORT State : public Referenced
             _glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
             _currentEBO = 0;
         }
+#endif
 
         void setCurrentPixelBufferObject(osg::GLBufferObject* pbo) { _currentPBO = pbo; }
         const GLBufferObject* getCurrentPixelBufferObject() { return _currentPBO; }
@@ -681,6 +699,9 @@ class OSG_EXPORT State : public Referenced
         void setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* pointer);
 
         /** Set the vertex pointer using an osg::Array, and manage any VBO that are required.*/
+#if 1
+        void setVertexPointer(const Array* array);
+#else
         inline void setVertexPointer(const Array* array)
         {
             if (array)
@@ -698,7 +719,7 @@ class OSG_EXPORT State : public Referenced
                 }
             }
         }
-
+#endif
         /** wrapper around glEnableClientState(GL_VERTEX_ARRAY);glVertexPointer(..);
           * note, only updates values that change.*/
         inline void setVertexPointer( GLint size, GLenum type,
@@ -730,6 +751,9 @@ class OSG_EXPORT State : public Referenced
         #endif
         }
 
+#if 1
+        void disableVertexPointer();
+#else
         /** wrapper around glDisableClientState(GL_VERTEX_ARRAY).
           * note, only updates values that change.*/
         inline void disableVertexPointer()
@@ -753,7 +777,11 @@ class OSG_EXPORT State : public Referenced
             disableVertexAttribPointer(_vertexAlias._location);
         #endif
         }
+#endif
 
+#if 1
+        void dirtyVertexPointer();
+#else
         inline void dirtyVertexPointer()
         {
         #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
@@ -770,8 +798,12 @@ class OSG_EXPORT State : public Referenced
             dirtyVertexAttribPointer(_vertexAlias._location);
         #endif
         }
+#endif
 
 
+#if 1
+        void setNormalPointer(const Array* array);
+#else
         /** Set the normal pointer using an osg::Array, and manage any VBO that are required.*/
         inline void setNormalPointer(const Array* array)
         {
@@ -790,7 +822,7 @@ class OSG_EXPORT State : public Referenced
                 }
             }
         }
-
+#endif
         /** wrapper around glEnableClientState(GL_NORMAL_ARRAY);glNormalPointer(..);
           * note, only updates values that change.*/
         inline void setNormalPointer( GLenum type, GLsizei stride,
@@ -822,6 +854,9 @@ class OSG_EXPORT State : public Referenced
         #endif
         }
 
+#if 1
+        void disableNormalPointer();
+#else
         /** wrapper around glDisableClientState(GL_NORMAL_ARRAY);
           * note, only updates values that change.*/
         inline void disableNormalPointer()
@@ -845,7 +880,11 @@ class OSG_EXPORT State : public Referenced
             disableVertexAttribPointer(_normalAlias._location);
         #endif
         }
+#endif
 
+#if 1
+        void dirtyNormalPointer();
+#else
         inline void dirtyNormalPointer()
         {
         #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
@@ -862,7 +901,11 @@ class OSG_EXPORT State : public Referenced
             dirtyVertexAttribPointer(_normalAlias._location);
         #endif
         }
+#endif
 
+#if 1
+        void setColorPointer(const Array* array);
+#else
         /** Set the color pointer using an osg::Array, and manage any VBO that are required.*/
         inline void setColorPointer(const Array* array)
         {
@@ -881,7 +924,7 @@ class OSG_EXPORT State : public Referenced
                 }
             }
         }
-
+#endif
 
         /** wrapper around glEnableClientState(GL_COLOR_ARRAY);glColorPointer(..);
           * note, only updates values that change.*/
@@ -914,6 +957,9 @@ class OSG_EXPORT State : public Referenced
         #endif
         }
 
+#if 1
+        void disableColorPointer();
+#else
         /** wrapper around glDisableClientState(GL_COLOR_ARRAY);
           * note, only updates values that change.*/
         inline void disableColorPointer()
@@ -937,7 +983,11 @@ class OSG_EXPORT State : public Referenced
             disableVertexAttribPointer(_colorAlias._location);
         #endif
         }
+#endif
 
+#if 1
+        void dirtyColorPointer();
+#else
         inline void dirtyColorPointer()
         {
         #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
@@ -954,11 +1004,14 @@ class OSG_EXPORT State : public Referenced
             dirtyVertexAttribPointer(_colorAlias._location);
         #endif
         }
-
+#endif
 
         inline bool isSecondaryColorSupported() const { return _isSecondaryColorSupportResolved?_isSecondaryColorSupported:computeSecondaryColorSupported(); }
 
 
+#if 1
+        void setSecondaryColorPointer(const Array* array);
+#else
         /** Set the secondary color pointer using an osg::Array, and manage any VBO that are required.*/
         inline void setSecondaryColorPointer(const Array* array)
         {
@@ -977,11 +1030,15 @@ class OSG_EXPORT State : public Referenced
                 }
             }
         }
+#endif
 
         /** wrapper around glEnableClientState(GL_SECONDARY_COLOR_ARRAY);glSecondayColorPointer(..);
           * note, only updates values that change.*/
         void setSecondaryColorPointer( GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean normalized=GL_TRUE );
 
+#if 1
+        void disableSecondaryColorPointer();
+#else
         /** wrapper around glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
           * note, only updates values that change.*/
         inline void disableSecondaryColorPointer()
@@ -1005,7 +1062,11 @@ class OSG_EXPORT State : public Referenced
             disableVertexAttribPointer(_secondaryColorAlias._location);
         #endif
         }
+#endif
 
+#if 1
+        inline void dirtySecondaryColorPointer();
+#else
         inline void dirtySecondaryColorPointer()
         {
         #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
@@ -1022,10 +1083,14 @@ class OSG_EXPORT State : public Referenced
             dirtyVertexAttribPointer(_secondaryColorAlias._location);
         #endif
         }
+#endif
 
         inline bool isFogCoordSupported() const { return _isFogCoordSupportResolved?_isFogCoordSupported:computeFogCoordSupported(); }
 
 
+#if 1
+        void setFogCoordPointer(const Array* array);
+#else
         /** Set the fog coord pointer using an osg::Array, and manage any VBO that are required.*/
         inline void setFogCoordPointer(const Array* array)
         {
@@ -1044,12 +1109,15 @@ class OSG_EXPORT State : public Referenced
                 }
             }
         }
-
+#endif
 
         /** wrapper around glEnableClientState(GL_FOG_COORDINATE_ARRAY);glFogCoordPointer(..);
           * note, only updates values that change.*/
         void setFogCoordPointer( GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean normalized=GL_FALSE );
 
+#if 1
+        void disableFogCoordPointer();
+#else
         /** wrapper around glDisableClientState(GL_FOG_COORDINATE_ARRAY);
           * note, only updates values that change.*/
         inline void disableFogCoordPointer()
@@ -1073,7 +1141,11 @@ class OSG_EXPORT State : public Referenced
             disableVertexAttribPointer(_fogCoordAlias._location);
         #endif
         }
+#endif
 
+#if 1
+        void dirtyFogCoordPointer();
+#else
         inline void dirtyFogCoordPointer()
         {
         #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
@@ -1090,9 +1162,12 @@ class OSG_EXPORT State : public Referenced
             dirtyVertexAttribPointer(_fogCoordAlias._location);
         #endif
         }
+#endif
 
 
-
+#if 1
+        void setTexCoordPointer(unsigned int unit, const Array* array);
+#else
         /** Set the tex coord pointer using an osg::Array, and manage any VBO that are required.*/
         inline void setTexCoordPointer(unsigned int unit, const Array* array)
         {
@@ -1111,7 +1186,7 @@ class OSG_EXPORT State : public Referenced
                 }
             }
         }
-
+#endif
         /** wrapper around glEnableClientState(GL_TEXTURE_COORD_ARRAY);glTexCoordPointer(..);
           * note, only updates values that change.*/
         inline void setTexCoordPointer( unsigned int unit,
@@ -1150,6 +1225,9 @@ class OSG_EXPORT State : public Referenced
         #endif
         }
 
+#if 1
+        void disableTexCoordPointer( unsigned int unit );
+#else
         /** wrapper around glDisableClientState(GL_TEXTURE_COORD_ARRAY);
           * note, only updates values that change.*/
         inline void disableTexCoordPointer( unsigned int unit )
@@ -1179,7 +1257,11 @@ class OSG_EXPORT State : public Referenced
             disableVertexAttribPointer(_texCoordAliasList[unit]._location);
         #endif
         }
+#endif
 
+#if 1
+        void dirtyTexCoordPointer( unsigned int unit );
+#else
         inline void dirtyTexCoordPointer( unsigned int unit )
         {
         #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
@@ -1198,8 +1280,11 @@ class OSG_EXPORT State : public Referenced
             dirtyVertexAttribPointer(_texCoordAliasList[unit]._location);
         #endif
         }
+#endif
 
-
+#if 1
+        void disableTexCoordPointersAboveAndIncluding( unsigned int unit );
+#else
         inline void disableTexCoordPointersAboveAndIncluding( unsigned int unit )
         {
         #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
@@ -1229,7 +1314,11 @@ class OSG_EXPORT State : public Referenced
             disableVertexAttribPointersAboveAndIncluding(_texCoordAliasList[unit]._location);
         #endif
         }
+#endif
 
+#if 1
+        void dirtyTexCoordPointersAboveAndIncluding( unsigned int unit );
+#else
         inline void dirtyTexCoordPointersAboveAndIncluding( unsigned int unit )
         {
         #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
@@ -1251,7 +1340,7 @@ class OSG_EXPORT State : public Referenced
             dirtyVertexAttribPointersAboveAndIncluding(_texCoordAliasList[unit]._location);
         #endif
         }
-
+#endif
 
         /// For GL>=2.0 uses GL_MAX_TEXTURE_COORDS, for GL<2 uses GL_MAX_TEXTURE_UNITS
         inline GLint getMaxTextureCoords() const { return _glMaxTextureCoords; }
@@ -1274,8 +1363,11 @@ class OSG_EXPORT State : public Referenced
         bool setClientActiveTextureUnit( unsigned int unit );
 
         /** Get the current tex coord array texture unit.*/
-        unsigned int getClientActiveTextureUnit() const { return _currentClientActiveTextureUnit; }
+        unsigned int getClientActiveTextureUnit() const;
 
+#if 1
+        void setVertexAttribPointer(unsigned int unit, const Array* array);
+#else
         /** Set the vertex attrib pointer using an osg::Array, and manage any VBO that are required.*/
         inline void setVertexAttribPointer(unsigned int unit, const Array* array)
         {
@@ -1294,7 +1386,11 @@ class OSG_EXPORT State : public Referenced
                 }
             }
         }
+#endif
 
+#if 1
+        void setVertexAttribLPointer(unsigned int unit, const Array* array);
+#else
         /** Set the vertex attrib pointer using an osg::Array, and manage any VBO that are required.*/
         inline void setVertexAttribLPointer(unsigned int unit, const Array* array)
         {
@@ -1313,7 +1409,11 @@ class OSG_EXPORT State : public Referenced
                 }
             }
         }
+#endif
 
+#if 1
+        void setVertexAttribIPointer(unsigned int unit, const Array* array);
+#else
         /** Set the vertex attrib pointer using an osg::Array, and manage any VBO that are required.*/
         inline void setVertexAttribIPointer(unsigned int unit, const Array* array)
         {
@@ -1332,6 +1432,7 @@ class OSG_EXPORT State : public Referenced
                 }
             }
         }
+#endif
 
         /** wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribPointerARB(..);
           * note, only updates values that change.*/
@@ -1357,6 +1458,9 @@ class OSG_EXPORT State : public Referenced
 
         void disableVertexAttribPointersAboveAndIncluding( unsigned int index );
 
+#if 1
+        void dirtyVertexAttribPointer( unsigned int index );
+#else
         inline void dirtyVertexAttribPointer( unsigned int index )
         {
             if (index<_vertexAttribArrayList.size())
@@ -1366,7 +1470,11 @@ class OSG_EXPORT State : public Referenced
                 eap._dirty = true;
             }
         }
+#endif
 
+#if 1
+        void dirtyVertexAttribPointersAboveAndIncluding( unsigned int index );
+#else
         inline void dirtyVertexAttribPointersAboveAndIncluding( unsigned int index )
         {
             while (index<_vertexAttribArrayList.size())
@@ -1377,6 +1485,7 @@ class OSG_EXPORT State : public Referenced
                 ++index;
             }
         }
+#endif
 
         bool isVertexBufferObjectSupported() const { return _isVertexBufferObjectSupportResolved?_isVertexBufferObjectSupported:computeVertexBufferObjectSupported(); }
 

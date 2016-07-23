@@ -17,6 +17,9 @@
 
 using namespace osg;
 
+#define VOA_NOTICE OSG_INFO
+//#define VOA_NOTICE OSG_NOTICE
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // PrimitiveSet
@@ -260,12 +263,12 @@ void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
 
         if (state.getCurrentVertexArrayState())
         {
-            OSG_NOTICE<<"   DrawElementsUShort::draw() size="<<size()<<" A bind="<<ebo<<std::endl;
+            VOA_NOTICE<<"   DrawElementsUShort::draw() size="<<size()<<" A bind="<<ebo<<std::endl;
             state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
         }
         else
         {
-            OSG_NOTICE<<"   DrawElementsUShort::draw() size="<<size()<<" B bind="<<ebo<<std::endl;
+            VOA_NOTICE<<"   DrawElementsUShort::draw() size="<<size()<<" B bind="<<ebo<<std::endl;
             state.bindElementBufferObject(ebo);
         }
 
@@ -376,7 +379,7 @@ void DrawElementsUInt::offsetIndices(int offset)
 #ifdef OSG_HAS_MULTIDRAWARRAYS
 void MultiDrawArrays::draw(osg::State& state, bool) const
 {
-    // OSG_NOTICE<<"osg::MultiDrawArrays::draw"<<std::endl;
+    // VOA_NOTICE<<"osg::MultiDrawArrays::draw"<<std::endl;
 
     GLExtensions* ext = state.get<GLExtensions>();
     if (ext->glMultiDrawArrays)

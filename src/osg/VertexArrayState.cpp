@@ -16,10 +16,322 @@
 
 using namespace osg;
 
-void VertexArrayState::ArrayDispatch::dispatchDeprecated(osg::State&, unsigned int)
+#define VAS_NOTICE OSG_INFO
+//#define VAS_NOTICE OSG_NOTICE
+
+#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
+///////////////////////////////////////////////////////////////////////////////////
+//
+//  VertexArrayDispatch
+//
+struct VertexArrayDispatch : public VertexArrayState::ArrayDispatch
 {
-    OSG_INFO<<typeid(*this).name()<<"::dispatchDeprecated(..) Not implementation yet"<<std::endl;
-}
+    VertexArrayDispatch() {}
+
+    virtual void enable_and_dispatch(osg::State&, const osg::Array* new_array)
+    {
+        VAS_NOTICE<<"    VertexArrayDispatch::enable_and_dispatch("<<new_array->getNumElements()<<")"<<std::endl;
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glVertexPointer(new_array->getDataSize(), new_array->getDataType(), 0, new_array->getDataPointer());
+    }
+
+    virtual void enable_and_dispatch(osg::State&, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    {
+        VAS_NOTICE<<"    VertexArrayDispatch::enable_and_dispatch("<<new_array->getNumElements()<<", vbo="<<vbo<<")"<<std::endl;
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glVertexPointer(new_array->getDataSize(), new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+    }
+
+    virtual void dispatch(osg::State& state, const osg::Array* new_array)
+    {
+        VAS_NOTICE<<"    VertexArrayDispatch::dispatch("<<new_array->getNumElements()<<")"<<std::endl;
+        glVertexPointer(new_array->getDataSize(), new_array->getDataType(), 0, new_array->getDataPointer());
+    }
+
+    virtual void dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    {
+        VAS_NOTICE<<"    VertexArrayDispatch::dispatch("<<new_array->getNumElements()<<", vbo"<<vbo<<")"<<std::endl;
+        glVertexPointer(new_array->getDataSize(), new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+    }
+
+    virtual void disable(osg::State& state)
+    {
+        VAS_NOTICE<<"    VertexArrayDispatch::disable()"<<std::endl;
+        glDisableClientState(GL_VERTEX_ARRAY);
+    }
+};
+
+
+///////////////////////////////////////////////////////////////////////////////////
+//
+//  ColorArrayDispatch
+//
+struct ColorArrayDispatch : public VertexArrayState::ArrayDispatch
+{
+    ColorArrayDispatch() {}
+
+    virtual void enable_and_dispatch(osg::State&, const osg::Array* new_array)
+    {
+        VAS_NOTICE<<"    ColorArrayDispatch::enable_and_dispatch("<<new_array->getNumElements()<<")"<<std::endl;
+        glEnableClientState(GL_COLOR_ARRAY);
+        glColorPointer(new_array->getDataSize(), new_array->getDataType(), 0, new_array->getDataPointer());
+    }
+
+    virtual void enable_and_dispatch(osg::State&, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    {
+        VAS_NOTICE<<"    ColorArrayDispatch::enable_and_dispatch("<<new_array->getNumElements()<<", vbo="<<vbo<<")"<<std::endl;
+
+        glEnableClientState(GL_COLOR_ARRAY);
+        glColorPointer(new_array->getDataSize(), new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+    }
+
+    virtual void dispatch(osg::State& state, const osg::Array* new_array)
+    {
+        VAS_NOTICE<<"    ColorArrayDispatch::dispatch("<<new_array->getNumElements()<<")"<<std::endl;
+        glColorPointer(new_array->getDataSize(), new_array->getDataType(), 0, new_array->getDataPointer());
+    }
+
+    virtual void dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    {
+        VAS_NOTICE<<"    ColorArrayDispatch::dispatch("<<new_array->getNumElements()<<", vbo="<<vbo<<")"<<std::endl;
+        glColorPointer(new_array->getDataSize(), new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+    }
+
+    virtual void disable(osg::State& state)
+    {
+        VAS_NOTICE<<"    ColorArrayDispatch::disable()"<<std::endl;
+        glDisableClientState(GL_COLOR_ARRAY);
+    }
+
+};
+///////////////////////////////////////////////////////////////////////////////////
+//
+//  NormalArrayDispatch
+//
+struct NormalArrayDispatch : public VertexArrayState::ArrayDispatch
+{
+    NormalArrayDispatch() {}
+
+    virtual void enable_and_dispatch(osg::State&, const osg::Array* new_array)
+    {
+        VAS_NOTICE<<"    NormalArrayDispatch::enable_and_dispatch("<<new_array->getNumElements()<<")"<<std::endl;
+        glEnableClientState(GL_NORMAL_ARRAY);
+        glNormalPointer(new_array->getDataType(), 0, new_array->getDataPointer());
+    }
+
+    virtual void enable_and_dispatch(osg::State&, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    {
+        VAS_NOTICE<<"    NormalArrayDispatch::enable_and_dispatch("<<new_array->getNumElements()<<", vbo="<<vbo<<")"<<std::endl;
+        glEnableClientState(GL_NORMAL_ARRAY);
+        glNormalPointer(new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+    }
+
+    virtual void dispatch(osg::State& state, const osg::Array* new_array)
+    {
+        VAS_NOTICE<<"    NormalArrayDispatch::dispatch("<<new_array->getNumElements()<<")"<<std::endl;
+        glNormalPointer(new_array->getDataType(), 0, new_array->getDataPointer());
+    }
+
+    virtual void dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    {
+        VAS_NOTICE<<"    NormalArrayDispatch::dispatch("<<new_array->getNumElements()<<", vbo="<<vbo<<")"<<std::endl;
+        glNormalPointer(new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+    }
+
+    virtual void disable(osg::State& state)
+    {
+        VAS_NOTICE<<"    NormalArrayDispatch::disable()"<<std::endl;
+        glDisableClientState(GL_NORMAL_ARRAY);
+    }
+};
+///////////////////////////////////////////////////////////////////////////////////
+//
+//  SecondaryColorArrayDispatch
+//
+struct SecondaryColorArrayDispatch : public VertexArrayState::ArrayDispatch
+{
+    SecondaryColorArrayDispatch() {}
+
+    virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array)
+    {
+        glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
+        state.get<GLExtensions>()->glSecondaryColorPointer(new_array->getDataSize(), new_array->getDataType(), 0, new_array->getDataPointer());
+    }
+
+    virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    {
+        glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
+        state.get<GLExtensions>()->glSecondaryColorPointer(new_array->getDataSize(), new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+    }
+
+    virtual void dispatch(osg::State& state, const osg::Array* new_array)
+    {
+        state.get<GLExtensions>()->glSecondaryColorPointer(new_array->getDataSize(), new_array->getDataType(), 0, new_array->getDataPointer());
+    }
+
+    virtual void dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    {
+        state.get<GLExtensions>()->glSecondaryColorPointer(new_array->getDataSize(), new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+    }
+
+    virtual void disable(osg::State& state)
+    {
+        glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
+    }
+};
+
+
+///////////////////////////////////////////////////////////////////////////////////
+//
+//  FogCoordArrayDispatch
+//
+struct FogCoordArrayDispatch : public VertexArrayState::ArrayDispatch
+{
+    FogCoordArrayDispatch() {}
+
+    virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array)
+    {
+        glEnableClientState(GL_FOG_COORD_ARRAY);
+        state.get<GLExtensions>()->glFogCoordPointer(new_array->getDataType(), 0, new_array->getDataPointer());
+    }
+
+    virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    {
+        glEnableClientState(GL_FOG_COORD_ARRAY);
+        state.get<GLExtensions>()->glFogCoordPointer(new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+    }
+
+    virtual void dispatch(osg::State& state, const osg::Array* new_array)
+    {
+        state.get<GLExtensions>()->glFogCoordPointer(new_array->getDataType(), 0, new_array->getDataPointer());
+    }
+
+    virtual void dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    {
+        state.get<GLExtensions>()->glFogCoordPointer(new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+    }
+
+    virtual void disable(osg::State& state)
+    {
+        glDisableClientState(GL_FOG_COORD_ARRAY);
+    }
+};
+
+///////////////////////////////////////////////////////////////////////////////////
+//
+//  TexCoordArrayDispatch
+//
+struct TexCoordArrayDispatch : public VertexArrayState::ArrayDispatch
+{
+    TexCoordArrayDispatch(unsigned int in_unit) : unit(in_unit) {}
+
+    virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array)
+    {
+        VAS_NOTICE<<"    TexCoordArrayDispatch::enable_and_dispatch("<<new_array->getNumElements()<<") unit="<<unit<<std::endl;
+
+        glClientActiveTexture(static_cast<GLenum>(GL_TEXTURE0+unit));
+        //state.setClientActiveTextureUnit(unit);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glTexCoordPointer(new_array->getDataSize(), new_array->getDataType(), 0, new_array->getDataPointer());
+    }
+
+    virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    {
+        VAS_NOTICE<<"    TexCoordArrayDispatch::enable_and_dispatch("<<new_array->getNumElements()<<", vbo="<<vbo<<") unit="<<unit<<std::endl;
+
+        //glClientActiveTexture(static_cast<GLenum>(GL_TEXTURE0+unit));
+        state.setClientActiveTextureUnit(unit);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glTexCoordPointer(new_array->getDataSize(), new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+    }
+
+    virtual void dispatch(osg::State& state, const osg::Array* new_array)
+    {
+        VAS_NOTICE<<"    TexCoordArrayDispatch::dispatch("<<new_array->getNumElements()<<") unit="<<unit<<std::endl;
+
+        //glClientActiveTexture(static_cast<GLenum>(GL_TEXTURE0+unit));
+        state.setClientActiveTextureUnit(unit);
+        glTexCoordPointer(new_array->getDataSize(), new_array->getDataType(), 0, new_array->getDataPointer());
+    }
+
+    virtual void dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    {
+        VAS_NOTICE<<"    TexCoordArrayDispatch::dispatch("<<new_array->getNumElements()<<", vbo="<<vbo<<") unit="<<unit<<std::endl;
+
+        //glClientActiveTexture(static_cast<GLenum>(GL_TEXTURE0+unit));
+        state.setClientActiveTextureUnit(unit);
+        glTexCoordPointer(new_array->getDataSize(), new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+    }
+
+    virtual void disable(osg::State& state)
+    {
+        VAS_NOTICE<<"    TexCoordArrayDispatch::disable() unit="<<unit<<std::endl;
+
+        //state.glClientActiveTexture(static_cast<GLenum>(GL_TEXTURE0+unit));
+        state.setClientActiveTextureUnit(unit);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    }
+
+    unsigned int unit;
+};
+#endif
+
+///////////////////////////////////////////////////////////////////////////////////
+//
+//  VertexAttribArrayDispatch
+//
+
+struct VertexAttribArrayDispatch : public VertexArrayState::ArrayDispatch
+{
+    VertexAttribArrayDispatch(unsigned int in_unit) : unit(in_unit) {}
+
+    inline void callVertexAttribPointer(GLExtensions* ext, const osg::Array* new_array, const GLvoid * ptr)
+    {
+        if (new_array->getDataType()==GL_FLOAT)
+            ext->glVertexAttribPointer(static_cast<GLuint>(unit), new_array->getDataSize(), new_array->getDataType(), new_array->getNormalize(), 0, ptr);
+        else if (array->getDataType()==GL_DOUBLE)
+            ext->glVertexAttribLPointer(static_cast<GLuint>(unit), new_array->getDataSize(), new_array->getDataType(), 0, ptr);
+        else
+            ext->glVertexAttribIPointer(static_cast<GLuint>(unit), new_array->getDataSize(), new_array->getDataType(), 0, ptr);
+    }
+
+    virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array)
+    {
+        GLExtensions* ext = state.get<GLExtensions>();
+
+        ext->glEnableVertexAttribArray( unit );
+        callVertexAttribPointer(ext, new_array, new_array->getDataPointer());
+    }
+
+    virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    {
+        GLExtensions* ext = state.get<GLExtensions>();
+
+        ext->glEnableVertexAttribArray( unit );
+        callVertexAttribPointer(ext, new_array, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+    }
+
+    virtual void dispatch(osg::State& state, const osg::Array* new_array)
+    {
+        GLExtensions* ext = state.get<GLExtensions>();
+        callVertexAttribPointer(ext, new_array, new_array->getDataPointer());
+    }
+
+    virtual void dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    {
+        GLExtensions* ext = state.get<GLExtensions>();
+        callVertexAttribPointer(ext, new_array, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+    }
+
+    virtual void disable(osg::State& state)
+    {
+        GLExtensions* ext = state.get<GLExtensions>();
+        ext->glDisableVertexAttribArray( unit );
+    }
+
+    unsigned int unit;
+};
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -45,1069 +357,6 @@ osg::GLBufferObject* VertexArrayState::getGLBufferObject(osg::Array* array)
     }
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-//
-//  VertexArrayDispatch
-//
-#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-struct VertexArrayDispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexArrayDispatch(Array* in_array) : ArrayDispatch(in_array) {}
-
-    virtual void dispatch(osg::State&, unsigned int)
-    {
-        OSG_INFO<<"VertexArrayDispatch::dispatch() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(array->getDataSize(), array->getDataType(), 0, array->getDataPointer());
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    virtual void dispatchDeprecated(osg::State& state, unsigned int)
-    {
-        OSG_INFO<<"VertexArrayDispatch::dispatchDeprecated() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-        state.setVertexPointer(array);
-
-        modifiedCount = array->getModifiedCount();
-    }
-};
-
-struct VertexArrayWithVBODispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexArrayWithVBODispatch(Array* in_array, GLBufferObject* in_vbo) : ArrayDispatch(in_array), vbo(in_vbo) {}
-
-    virtual void dispatch(osg::State& state, unsigned int)
-    {
-        OSG_NOTICE<<"VertexArrayWithVBODispatch::dispatch() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-#if 1
-        state.getCurrentVertexArrayState()->bindVertexBufferObject(vbo);
-#else
-
-        if (vbo->isDirty()) vbo->compileBuffer();
-        else vbo->bindBuffer();
-#endif
-
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(array->getDataSize(), array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    virtual void dispatchDeprecated(osg::State& state, unsigned int)
-    {
-        OSG_NOTICE<<"VertexArrayWithVBODispatch::dispatchDeprecated() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-        state.setVertexPointer(array);
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    GLBufferObject* vbo;
-};
-
-struct VertexVec2fDispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexVec2fDispatch(Array* in_array) : ArrayDispatch(in_array) {}
-
-    virtual void dispatch(osg::State&, unsigned int index)
-    {
-        // OSG_INFO<<"VertexVec2fDispatch::dispatch()"<<std::endl;
-        glVertex2fv(static_cast<const GLfloat*>(array->getDataPointer(index)));
-    }
-};
-
-struct VertexVec3fDispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexVec3fDispatch(Array* in_array) : ArrayDispatch(in_array) {}
-
-    virtual void dispatch(osg::State&, unsigned int index)
-    {
-        // OSG_INFO<<"VertexVec3fDispatch::dispatch()"<<std::endl;
-        glVertex3fv(static_cast<const GLfloat*>(array->getDataPointer(index)));
-    }
-};
-
-struct VertexVec4fDispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexVec4fDispatch(Array* in_array) : ArrayDispatch(in_array) {}
-
-    virtual void dispatch(osg::State&, unsigned int index)
-    {
-        // OSG_INFO<<"VertexVec4fDispatch::dispatch()"<<std::endl;
-        glVertex4fv(static_cast<const GLfloat*>(array->getDataPointer(index)));
-    }
-};
-#endif
-
-void VertexArrayState::assignVertexArray(osg::Array* array)
-{
-#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-    if (!_ext->getUseVertexAttributeAliasing())
-    {
-        if (array->getBinding()==osg::Array::BIND_PER_VERTEX)
-        {
-            GLBufferObject* vbo = getGLBufferObject(array);
-            osg::ref_ptr<ArrayDispatch> dispatcher;
-            if (vbo) dispatcher = new VertexArrayWithVBODispatch(array, vbo);
-            else dispatcher = new VertexArrayDispatch(array);
-            _dispatchArrays.push_back(dispatcher.get());
-        }
-        else
-        {
-            osg::ref_ptr<ArrayDispatch> dispatcher;
-            switch(array->getType())
-            {
-                case(Array::Vec2ArrayType): dispatcher = new VertexVec2fDispatch(array); break;
-                case(Array::Vec3ArrayType): dispatcher = new VertexVec3fDispatch(array); break;
-                case(Array::Vec4ArrayType): dispatcher = new VertexVec4fDispatch(array); break;
-                default: break; // unsupported type
-            }
-
-            if (dispatcher)
-            {
-                getArrayDispatchList(array->getBinding()).push_back(dispatcher);
-            }
-        }
-    }
-    else
-#endif
-    {
-        assignVertexAttribArray(_ext->getVertexAlias()._location, array);
-    }
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////
-//
-//  ColorArrayDispatch
-//
-#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-struct ColorArrayDispatch : public VertexArrayState::ArrayDispatch
-{
-    ColorArrayDispatch(Array* in_array) : ArrayDispatch(in_array) {}
-
-    virtual void dispatch(osg::State&, unsigned int)
-    {
-        OSG_INFO<<"ColorArrayDispatch::dispatch() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-        glEnableClientState(GL_COLOR_ARRAY);
-        glColorPointer(array->getDataSize(), array->getDataType(), 0, array->getDataPointer());
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    virtual void dispatchDeprecated(osg::State& state, unsigned int)
-    {
-        OSG_INFO<<"ColorArrayDispatch::dispatchDeprecated() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-        state.setColorPointer(array);
-
-        modifiedCount = array->getModifiedCount();
-    }
-};
-
-struct ColorArrayWithVBODispatch : public VertexArrayState::ArrayDispatch
-{
-    ColorArrayWithVBODispatch(Array* in_array, GLBufferObject* in_vbo) : ArrayDispatch(in_array), vbo(in_vbo) {}
-
-    virtual void dispatch(osg::State& state, unsigned int)
-    {
-        // OSG_INFO<<"ColorArrayWithVBODispatch::dispatch()"<<std::endl;
-#if 1
-        state.getCurrentVertexArrayState()->bindVertexBufferObject(vbo);
-#else
-        if (vbo->isDirty()) vbo->compileBuffer();
-        else vbo->bindBuffer();
-#endif
-        glEnableClientState(GL_COLOR_ARRAY);
-        glColorPointer(array->getDataSize(), array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    virtual void dispatchDeprecated(osg::State& state, unsigned int)
-    {
-        OSG_INFO<<"ColorArrayDispatchWitVBO::dispatchDeprecated() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-        state.setColorPointer(array);
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    GLBufferObject* vbo;
-};
-
-struct ColorVec3fDispatch : public VertexArrayState::ArrayDispatch
-{
-    ColorVec3fDispatch(Array* in_array) : ArrayDispatch(in_array) {}
-
-    virtual void dispatch(osg::State&, unsigned int index)
-    {
-        OSG_INFO<<"ColorVec3fDispatch::dispatch()"<<std::endl;
-        glColor3fv(static_cast<const GLfloat*>(array->getDataPointer(index)));
-    }
-};
-
-struct ColorVec4fDispatch : public VertexArrayState::ArrayDispatch
-{
-    ColorVec4fDispatch(Array* in_array) : ArrayDispatch(in_array) {}
-
-    virtual void dispatch(osg::State&, unsigned int index)
-    {
-        OSG_INFO<<"ColorVec4fDispatch::dispatch()"<<std::endl;
-        glColor4fv(static_cast<const GLfloat*>(array->getDataPointer(index)));
-    }
-};
-
-struct ColorVec4ubDispatch : public VertexArrayState::ArrayDispatch
-{
-    ColorVec4ubDispatch(Array* in_array) : ArrayDispatch(in_array) {}
-
-    virtual void dispatch(osg::State&, unsigned int index)
-    {
-        // OSG_INFO<<"ColorVec4ubDispatch::dispatch()"<<std::endl;
-        glColor4ubv(static_cast<const GLubyte*>(array->getDataPointer(index)));
-    }
-};
-#endif
-
-void VertexArrayState::assignColorArray(osg::Array* array)
-{
-#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-    if (!_ext->getUseVertexAttributeAliasing())
-    {
-        if (array->getBinding()==osg::Array::BIND_PER_VERTEX)
-        {
-            GLBufferObject* vbo = getGLBufferObject(array);
-            osg::ref_ptr<ArrayDispatch> dispatcher;
-            if (vbo) dispatcher = new ColorArrayWithVBODispatch(array, vbo);
-            else dispatcher = new ColorArrayDispatch(array);
-            _dispatchArrays.push_back(dispatcher.get());
-        }
-        else
-        {
-            osg::ref_ptr<ArrayDispatch> dispatcher;
-            switch(array->getType())
-            {
-                case(Array::Vec3ArrayType): dispatcher = new ColorVec3fDispatch(array); break;
-                case(Array::Vec4ArrayType): dispatcher = new ColorVec4fDispatch(array); break;
-                case(Array::Vec4ubArrayType): dispatcher = new ColorVec4ubDispatch(array); break;
-                default: break; // unsupported type
-            }
-
-            if (dispatcher)
-            {
-                getArrayDispatchList(array->getBinding()).push_back(dispatcher);
-            }
-        }
-    }
-    else
-#endif
-    {
-        assignVertexAttribArray(_ext->getColorAlias()._location, array);
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-//
-//  NormalArrayDispatch
-//
-#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-struct NormalArrayDispatch : public VertexArrayState::ArrayDispatch
-{
-    NormalArrayDispatch(Array* in_array) : ArrayDispatch(in_array) {}
-
-    virtual void dispatch(osg::State&, unsigned int)
-    {
-        OSG_INFO<<"NormalArrayDispatch::dispatch() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-        glEnableClientState(GL_NORMAL_ARRAY);
-        glNormalPointer(array->getDataType(), 0, array->getDataPointer());
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    virtual void dispatchDeprecated(osg::State& state, unsigned int)
-    {
-        OSG_INFO<<"NormalArrayDispatch::dispatchDeprecated() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-        state.setNormalPointer(array);
-
-        modifiedCount = array->getModifiedCount();
-    }
-};
-
-struct NormalArrayWithVBODispatch : public VertexArrayState::ArrayDispatch
-{
-    NormalArrayWithVBODispatch(Array* in_array, GLBufferObject* in_vbo) : ArrayDispatch(in_array), vbo(in_vbo) {}
-
-    virtual void dispatch(osg::State& state, unsigned int)
-    {
-        OSG_INFO<<"NormalArrayWithVBODispatch::dispatch()"<<std::endl;
-
-#if 1
-        state.getCurrentVertexArrayState()->bindVertexBufferObject(vbo);
-#else
-        if (vbo->isDirty()) vbo->compileBuffer();
-        else vbo->bindBuffer();
-#endif
-
-        glEnableClientState(GL_NORMAL_ARRAY);
-        glNormalPointer(array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    virtual void dispatchDeprecated(osg::State& state, unsigned int)
-    {
-        OSG_INFO<<"NormalArrayDispatchWithVBO::dispatchDeprecated() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-        state.setNormalPointer(array);
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    GLBufferObject* vbo;
-};
-
-struct NormalVec3fDispatch : public VertexArrayState::ArrayDispatch
-{
-    NormalVec3fDispatch(Array* in_array) : ArrayDispatch(in_array) {}
-
-    virtual void dispatch(osg::State&, unsigned int index)
-    {
-        glNormal3fv(static_cast<const GLfloat*>(array->getDataPointer(index)));
-    }
-};
-#endif
-
-void VertexArrayState::assignNormalArray(osg::Array* array)
-{
-#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-    if (!_ext->getUseVertexAttributeAliasing())
-    {
-        if (array->getBinding()==osg::Array::BIND_PER_VERTEX)
-        {
-            GLBufferObject* vbo = getGLBufferObject(array);
-            osg::ref_ptr<ArrayDispatch> dispatcher;
-            if (vbo) dispatcher = new NormalArrayWithVBODispatch(array, vbo);
-            else dispatcher = new NormalArrayDispatch(array);
-            _dispatchArrays.push_back(dispatcher.get());
-        }
-        else
-        {
-            osg::ref_ptr<ArrayDispatch> dispatcher;
-            switch(array->getType())
-            {
-                case(Array::Vec3ArrayType): dispatcher = new NormalVec3fDispatch(array); break;
-                default: break; // unsupported type
-            }
-
-            if (dispatcher)
-            {
-                getArrayDispatchList(array->getBinding()).push_back(dispatcher);
-            }
-        }
-    }
-    else
-#endif
-    {
-        assignVertexAttribArray(_ext->getNormalAlias()._location, array);
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-//
-//  SecondaryColorArrayDispatch
-//
-#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-struct SecondaryColorArrayDispatch : public VertexArrayState::ArrayDispatch
-{
-    SecondaryColorArrayDispatch(Array* in_array) : ArrayDispatch(in_array) {}
-
-    virtual void dispatch(osg::State& state, unsigned int)
-    {
-        OSG_INFO<<"SecondaryColorArrayDispatch::dispatch() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-        glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
-        state.get<GLExtensions>()->glSecondaryColorPointer(array->getDataSize(), array->getDataType(), 0, (const GLvoid *)(array->getDataPointer()));
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    virtual void dispatchDeprecated(osg::State& state, unsigned int)
-    {
-        OSG_INFO<<"SecondaryColorArrayDispatch::dispatchDeprecated() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-        state.setSecondaryColorPointer(array);
-
-        modifiedCount = array->getModifiedCount();
-    }
-};
-
-struct SecondaryColorArrayWithVBODispatch : public VertexArrayState::ArrayDispatch
-{
-    SecondaryColorArrayWithVBODispatch(Array* in_array, GLBufferObject* in_vbo) : ArrayDispatch(in_array), vbo(in_vbo) {}
-
-    virtual void dispatch(osg::State& state, unsigned int)
-    {
-        OSG_INFO<<"SecondaryColorArrayWithVBODispatch::dispatch()"<<std::endl;
-
-#if 1
-        state.getCurrentVertexArrayState()->bindVertexBufferObject(vbo);
-#else
-        if (vbo->isDirty()) vbo->compileBuffer();
-        else vbo->bindBuffer();
-#endif
-
-        glEnableClientState(GL_FOG_COORDINATE_ARRAY);
-        state.get<GLExtensions>()->glSecondaryColorPointer(array->getDataSize(), array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    virtual void dispatchDeprecated(osg::State& state, unsigned int)
-    {
-        OSG_INFO<<"SecondaryColorArrayDispatchWithVBO::dispatchDeprecated() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-        state.setSecondaryColorPointer(array);
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    GLBufferObject* vbo;
-};
-
-struct SecondaryColor3fDispatch : public VertexArrayState::ArrayDispatch
-{
-    SecondaryColor3fDispatch(Array* in_array) : ArrayDispatch(in_array) {}
-
-    virtual void dispatch(osg::State& state, unsigned int index)
-    {
-        state.get<GLExtensions>()->glSecondaryColor3fv(static_cast<const GLfloat*>(array->getDataPointer(index)));
-    }
-};
-#endif
-
-void VertexArrayState::assignSecondaryColorArray(osg::Array* array)
-{
-    if (!_ext->isSecondaryColorSupported)
-    {
-        OSG_WARN<<"VertexArrayState::assignSecondaryColorArray() glSeconaryColor* not support by OpenGL driver."<<std::endl;
-        return;
-    }
-
-#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-    if (!_ext->getUseVertexAttributeAliasing())
-    {
-        if (array->getBinding()==osg::Array::BIND_PER_VERTEX)
-        {
-            GLBufferObject* vbo = getGLBufferObject(array);
-            osg::ref_ptr<ArrayDispatch> dispatcher;
-            if (vbo) dispatcher = new SecondaryColorArrayWithVBODispatch(array, vbo);
-            else dispatcher = new SecondaryColorArrayDispatch(array);
-            _dispatchArrays.push_back(dispatcher.get());
-        }
-        else
-        {
-            osg::ref_ptr<ArrayDispatch> dispatcher;
-            switch(array->getType())
-            {
-                case(Array::Vec3ArrayType): dispatcher = new SecondaryColor3fDispatch(array); break;
-                default: break; // unsupported type
-            }
-
-            if (dispatcher)
-            {
-                getArrayDispatchList(array->getBinding()).push_back(dispatcher);
-            }
-        }
-    }
-    else
-#endif
-    {
-        assignVertexAttribArray(_ext->getSecondaryColorAlias()._location, array);
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-//
-//  FogCoordArrayDispatch
-//
-#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-struct FogCoordArrayDispatch : public VertexArrayState::ArrayDispatch
-{
-    FogCoordArrayDispatch(Array* in_array) : ArrayDispatch(in_array) {}
-
-    virtual void dispatch(osg::State& state, unsigned int)
-    {
-        OSG_INFO<<"FogCoordArrayDispatch::dispatch() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-        glEnableClientState(GL_FOG_COORDINATE_ARRAY);
-        state.get<GLExtensions>()->glFogCoordPointer(array->getDataType(), 0, (const GLvoid *)(array->getDataPointer()));
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    virtual void dispatchDeprecated(osg::State& state, unsigned int)
-    {
-        OSG_INFO<<"FogCoordArrayDispatch::dispatchDeprecated() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-        state.setFogCoordPointer(array);
-
-        modifiedCount = array->getModifiedCount();
-    }
-};
-
-struct FogCoordArrayWithVBODispatch : public VertexArrayState::ArrayDispatch
-{
-    FogCoordArrayWithVBODispatch(Array* in_array, GLBufferObject* in_vbo) : ArrayDispatch(in_array), vbo(in_vbo) {}
-
-    virtual void dispatch(osg::State& state, unsigned int)
-    {
-        OSG_INFO<<"FogCoordArrayWithVBODispatch::dispatch()"<<std::endl;
-
-#if 1
-        state.getCurrentVertexArrayState()->bindVertexBufferObject(vbo);
-#else
-        if (vbo->isDirty()) vbo->compileBuffer();
-        else vbo->bindBuffer();
-#endif
-
-        glEnableClientState(GL_FOG_COORDINATE_ARRAY);
-        state.get<GLExtensions>()->glFogCoordPointer(array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    virtual void dispatchDeprecated(osg::State& state, unsigned int)
-    {
-        OSG_INFO<<"FogCoordArrayDispatchWithVBO::dispatchDeprecated() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-        state.setFogCoordPointer(array);
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    GLBufferObject* vbo;
-};
-
-struct FogCoordfDispatch : public VertexArrayState::ArrayDispatch
-{
-    FogCoordfDispatch(Array* in_array) : ArrayDispatch(in_array) {}
-
-    virtual void dispatch(osg::State& state, unsigned int index)
-    {
-        state.get<GLExtensions>()->glFogCoordfv(static_cast<const GLfloat*>(array->getDataPointer(index)));
-    }
-};
-#endif
-
-void VertexArrayState::assignFogCoordArray(osg::Array* array)
-{
-    if (!_ext->isFogCoordSupported)
-    {
-        OSG_WARN<<"VertexArrayState::assignFogCoordArray() glFogCoord* not support by OpenGL driver."<<std::endl;
-        return;
-    }
-
-
-#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-    if (!_ext->getUseVertexAttributeAliasing())
-    {
-        if (array->getBinding()==osg::Array::BIND_PER_VERTEX)
-        {
-            GLBufferObject* vbo = getGLBufferObject(array);
-            osg::ref_ptr<ArrayDispatch> dispatcher;
-            if (vbo) dispatcher = new FogCoordArrayWithVBODispatch(array, vbo);
-            else dispatcher = new FogCoordArrayDispatch(array);
-            _dispatchArrays.push_back(dispatcher.get());
-        }
-        else
-        {
-            osg::ref_ptr<ArrayDispatch> dispatcher;
-            switch(array->getType())
-            {
-                case(Array::FloatArrayType): dispatcher = new FogCoordfDispatch(array); break;
-                default: break; // unsupported type
-            }
-
-            if (dispatcher)
-            {
-                getArrayDispatchList(array->getBinding()).push_back(dispatcher);
-            }
-        }
-    }
-    else
-#endif
-    {
-        assignVertexAttribArray(_ext->getFogCoordAlias()._location, array);
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-//
-//  TexCoordArrayDispatch
-//
-#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-struct TexCoordArrayDispatch : public VertexArrayState::ArrayDispatch
-{
-    TexCoordArrayDispatch(unsigned int in_unit, Array* in_array) : ArrayDispatch(in_array), unit(in_unit) {}
-
-    virtual void dispatch(osg::State&, unsigned int)
-    {
-        OSG_INFO<<"TexCoordArrayDispatch::dispatch() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-        glClientActiveTexture(static_cast<GLenum>(GL_TEXTURE0+unit));
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glTexCoordPointer(array->getDataSize(), array->getDataType(), 0, array->getDataPointer());
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    virtual void dispatchDeprecated(osg::State& state, unsigned int)
-    {
-        OSG_INFO<<"TexCoordArrayDispatch::dispatchDeprecated() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-        state.setTexCoordPointer(unit, array);
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    unsigned int unit;
-};
-
-struct TexCoordArrayWithVBODispatch : public VertexArrayState::ArrayDispatch
-{
-    TexCoordArrayWithVBODispatch(unsigned int in_unit, Array* in_array, GLBufferObject* in_vbo) : ArrayDispatch(in_array), unit(in_unit), vbo(in_vbo) {}
-
-    virtual void dispatch(osg::State& state, unsigned int)
-    {
-        OSG_INFO<<"TexCoordArrayWithVBODispatch::dispatch()"<<std::endl;
-
-#if 1
-        state.getCurrentVertexArrayState()->bindVertexBufferObject(vbo);
-#else
-        if (vbo->isDirty()) vbo->compileBuffer();
-        else vbo->bindBuffer();
-#endif
-
-        glClientActiveTexture(static_cast<GLenum>(GL_TEXTURE0+unit));
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glTexCoordPointer(array->getDataSize(), array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    virtual void dispatchDeprecated(osg::State& state, unsigned int)
-    {
-        OSG_INFO<<"TexCoordArrayDispatchWithVBO::dispatchDeprecated() "<<array->getNumElements()<<", "<<array->getDataPointer()<<std::endl;
-
-        state.setTexCoordPointer(unit, array);
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    unsigned int unit;
-    GLBufferObject* vbo;
-};
-
-struct TexCoordVec2fDispatch : public VertexArrayState::ArrayDispatch
-{
-    TexCoordVec2fDispatch(unsigned int in_unit, Array* in_array) : ArrayDispatch(in_array), unit(in_unit) {}
-
-    virtual void dispatch(osg::State&, unsigned int index)
-    {
-        glMultiTexCoord2fv(static_cast<GLenum>(GL_TEXTURE0+unit), static_cast<const GLfloat*>(array->getDataPointer(index)));
-    }
-
-    unsigned int unit;
-};
-
-struct TexCoordVec3fDispatch : public VertexArrayState::ArrayDispatch
-{
-    TexCoordVec3fDispatch(unsigned int in_unit, Array* in_array) : ArrayDispatch(in_array), unit(in_unit) {}
-
-    virtual void dispatch(osg::State&, unsigned int index)
-    {
-        glMultiTexCoord3fv(static_cast<GLenum>(GL_TEXTURE0+unit), static_cast<const GLfloat*>(array->getDataPointer(index)));
-    }
-
-    unsigned int unit;
-};
-
-struct TexCoordVec4fDispatch : public VertexArrayState::ArrayDispatch
-{
-    TexCoordVec4fDispatch(unsigned int in_unit, Array* in_array) : ArrayDispatch(in_array), unit(in_unit) {}
-
-    virtual void dispatch(osg::State&, unsigned int index)
-    {
-        glMultiTexCoord4fv(static_cast<GLenum>(GL_TEXTURE0+unit), static_cast<const GLfloat*>(array->getDataPointer(index)));
-    }
-
-    unsigned int unit;
-};
-#endif
-
-void VertexArrayState::assignTexCoordArray(unsigned int unit, osg::Array* array)
-{
-#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-    if (!_ext->getUseVertexAttributeAliasing())
-    {
-        if (array->getBinding()==osg::Array::BIND_PER_VERTEX)
-        {
-            GLBufferObject* vbo = getGLBufferObject(array);
-            osg::ref_ptr<ArrayDispatch> dispatcher;
-            if (vbo) dispatcher = new TexCoordArrayWithVBODispatch(unit, array, vbo);
-            else dispatcher = new TexCoordArrayDispatch(unit, array);
-            _dispatchArrays.push_back(dispatcher.get());
-        }
-        else
-        {
-            osg::ref_ptr<ArrayDispatch> dispatcher;
-            switch(array->getType())
-            {
-                case(Array::Vec2ArrayType): dispatcher = new TexCoordVec2fDispatch(unit, array); break;
-                case(Array::Vec3ArrayType): dispatcher = new TexCoordVec3fDispatch(unit, array); break;
-                case(Array::Vec4ArrayType): dispatcher = new TexCoordVec4fDispatch(unit, array); break;
-                default: break; // unsupported type
-            }
-
-            if (dispatcher)
-            {
-                getArrayDispatchList(array->getBinding()).push_back(dispatcher);
-            }
-        }
-    }
-    else
-#endif
-    {
-        if (unit<_ext->getTexCoordAliasList().size())
-        {
-            assignVertexAttribArray(_ext->getTexCoordAliasList()[unit]._location, array);
-        }
-        // else no slot assigned...
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-//
-//  VertexAttribArrayDispatch
-//
-
-struct VertexAttribArrayDispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexAttribArrayDispatch(unsigned int in_unit, Array* in_array) : ArrayDispatch(in_array), unit(in_unit) {}
-
-    virtual void dispatch(osg::State& state, unsigned int)
-    {
-        GLExtensions* ext = state.get<GLExtensions>();
-
-        ext->glEnableVertexAttribArray( unit );
-        ext->glVertexAttribPointer(static_cast<GLuint>(unit), array->getDataSize(), array->getDataType(), array->getNormalize(), 0, array->getDataPointer());
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    virtual void dispatchDeprecated(osg::State& state, unsigned int)
-    {
-        state.setVertexAttribPointer(unit, array);
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    unsigned int unit;
-};
-
-struct VertexAttribArrayWithVBODispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexAttribArrayWithVBODispatch(unsigned int in_unit, Array* in_array, GLBufferObject* in_vbo) : ArrayDispatch(in_array), unit(in_unit), vbo(in_vbo) {}
-
-    virtual void dispatch(osg::State& state, unsigned int)
-    {
-#if 1
-        state.getCurrentVertexArrayState()->bindVertexBufferObject(vbo);
-#else
-        if (vbo->isDirty()) vbo->compileBuffer();
-        else vbo->bindBuffer();
-#endif
-
-        GLExtensions* ext = state.get<GLExtensions>();
-        ext->glEnableVertexAttribArray( unit );
-        ext->glVertexAttribPointer(static_cast<GLuint>(unit), array->getDataSize(), array->getDataType(), array->getNormalize(), 0, (const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    virtual void dispatchDeprecated(osg::State& state, unsigned int)
-    {
-        state.setVertexAttribPointer(unit, array);
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    unsigned int unit;
-    GLBufferObject* vbo;
-};
-
-struct VertexAttribLArrayDispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexAttribLArrayDispatch(unsigned int in_unit, Array* in_array) : ArrayDispatch(in_array), unit(in_unit) {}
-
-    virtual void dispatch(osg::State& state, unsigned int)
-    {
-        GLExtensions* ext = state.get<GLExtensions>();
-
-        ext->glEnableVertexAttribArray( unit );
-        ext->glVertexAttribLPointer(static_cast<GLuint>(unit), array->getDataSize(), array->getDataType(), 0, array->getDataPointer());
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    virtual void dispatchDeprecated(osg::State& state, unsigned int)
-    {
-        state.setVertexAttribLPointer(unit, array);
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    unsigned int unit;
-};
-
-struct VertexAttribLArrayWithVBODispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexAttribLArrayWithVBODispatch(unsigned int in_unit, Array* in_array, GLBufferObject* in_vbo) : ArrayDispatch(in_array), unit(in_unit), vbo(in_vbo) {}
-
-    virtual void dispatch(osg::State& state, unsigned int)
-    {
-#if 1
-        state.getCurrentVertexArrayState()->bindVertexBufferObject(vbo);
-#else
-        if (vbo->isDirty()) vbo->compileBuffer();
-        else vbo->bindBuffer();
-#endif
-
-        GLExtensions* ext = state.get<GLExtensions>();
-        ext->glEnableVertexAttribArray( unit );
-        ext->glVertexAttribLPointer(static_cast<GLuint>(unit), array->getDataSize(), array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    virtual void dispatchDeprecated(osg::State& state, unsigned int)
-    {
-        state.setVertexAttribLPointer(unit, array);
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    unsigned int unit;
-    GLBufferObject* vbo;
-};
-
-struct VertexAttribIArrayDispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexAttribIArrayDispatch(unsigned int in_unit, Array* in_array) : ArrayDispatch(in_array), unit(in_unit) {}
-
-    virtual void dispatch(osg::State& state, unsigned int)
-    {
-        GLExtensions* ext = state.get<GLExtensions>();
-
-        ext->glEnableVertexAttribArray( unit );
-        ext->glVertexAttribIPointer(static_cast<GLuint>(unit), array->getDataSize(), array->getDataType(), 0, array->getDataPointer());
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    virtual void dispatchDeprecated(osg::State& state, unsigned int)
-    {
-        state.setVertexAttribIPointer(unit, array);
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    unsigned int unit;
-};
-
-struct VertexAttribIArrayWithVBODispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexAttribIArrayWithVBODispatch(unsigned int in_unit, Array* in_array, GLBufferObject* in_vbo) : ArrayDispatch(in_array), unit(in_unit), vbo(in_vbo) {}
-
-    virtual void dispatch(osg::State& state, unsigned int)
-    {
-#if 1
-        state.getCurrentVertexArrayState()->bindVertexBufferObject(vbo);
-#else
-        if (vbo->isDirty()) vbo->compileBuffer();
-        else vbo->bindBuffer();
-#endif
-
-        GLExtensions* ext = state.get<GLExtensions>();
-        ext->glEnableVertexAttribArray( unit );
-        ext->glVertexAttribIPointer(static_cast<GLuint>(unit), array->getDataSize(), array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    virtual void dispatchDeprecated(osg::State& state, unsigned int)
-    {
-        state.setVertexAttribIPointer(unit, array);
-
-        modifiedCount = array->getModifiedCount();
-    }
-
-    unsigned int unit;
-    GLBufferObject* vbo;
-};
-
-struct VertexAttribFloatDispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexAttribFloatDispatch(unsigned int in_unit, Array* in_array) : ArrayDispatch(in_array), unit(in_unit) {}
-
-    virtual void dispatch(osg::State& state, unsigned int index)
-    {
-        state.get<GLExtensions>()->glVertexAttrib1fv(static_cast<GLuint>(unit), static_cast<const GLfloat*>(array->getDataPointer(index)));
-    }
-
-    unsigned int unit;
-};
-
-struct VertexAttribVec2fDispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexAttribVec2fDispatch(unsigned int in_unit, Array* in_array) : ArrayDispatch(in_array), unit(in_unit) {}
-
-    virtual void dispatch(osg::State& state, unsigned int index)
-    {
-        state.get<GLExtensions>()->glVertexAttrib2fv(static_cast<GLuint>(unit), static_cast<const GLfloat*>(array->getDataPointer(index)));
-    }
-
-    unsigned int unit;
-};
-
-struct VertexAttribVec3fDispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexAttribVec3fDispatch(unsigned int in_unit, Array* in_array) : ArrayDispatch(in_array), unit(in_unit) {}
-
-    virtual void dispatch(osg::State& state, unsigned int index)
-    {
-        state.get<GLExtensions>()->glVertexAttrib3fv(static_cast<GLuint>(unit), static_cast<const GLfloat*>(array->getDataPointer(index)));
-    }
-
-    unsigned int unit;
-};
-
-struct VertexAttribVec4fDispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexAttribVec4fDispatch(unsigned int in_unit, Array* in_array) : ArrayDispatch(in_array), unit(in_unit) {}
-
-    virtual void dispatch(osg::State& state, unsigned int index)
-    {
-        state.get<GLExtensions>()->glVertexAttrib4fv(static_cast<GLuint>(unit), static_cast<const GLfloat*>(array->getDataPointer(index)));
-    }
-
-    unsigned int unit;
-};
-
-
-struct VertexAttribDoubleDispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexAttribDoubleDispatch(unsigned int in_unit, Array* in_array) : ArrayDispatch(in_array), unit(in_unit) {}
-
-    virtual void dispatch(osg::State& state, unsigned int index)
-    {
-        state.get<GLExtensions>()->glVertexAttrib1dv(static_cast<GLuint>(unit), static_cast<const GLdouble*>(array->getDataPointer(index)));
-    }
-
-    unsigned int unit;
-};
-
-struct VertexAttribVec2dDispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexAttribVec2dDispatch(unsigned int in_unit, Array* in_array) : ArrayDispatch(in_array), unit(in_unit) {}
-
-    virtual void dispatch(osg::State& state, unsigned int index)
-    {
-        state.get<GLExtensions>()->glVertexAttrib2dv(static_cast<GLuint>(unit), static_cast<const GLdouble*>(array->getDataPointer(index)));
-    }
-
-    unsigned int unit;
-};
-
-struct VertexAttribVec3dDispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexAttribVec3dDispatch(unsigned int in_unit, Array* in_array) : ArrayDispatch(in_array), unit(in_unit) {}
-
-    virtual void dispatch(osg::State& state, unsigned int index)
-    {
-        state.get<GLExtensions>()->glVertexAttrib3dv(static_cast<GLuint>(unit), static_cast<const GLdouble*>(array->getDataPointer(index)));
-    }
-
-    unsigned int unit;
-};
-
-struct VertexAttribVec4dDispatch : public VertexArrayState::ArrayDispatch
-{
-    VertexAttribVec4dDispatch(unsigned int in_unit, Array* in_array) : ArrayDispatch(in_array), unit(in_unit) {}
-
-    virtual void dispatch(osg::State& state, unsigned int index)
-    {
-        state.get<GLExtensions>()->glVertexAttrib4dv(static_cast<GLuint>(unit), static_cast<const GLdouble*>(array->getDataPointer(index)));
-    }
-
-    unsigned int unit;
-};
-
-
-void VertexArrayState::assignVertexAttribArray(unsigned int unit, osg::Array* array)
-{
-    if (array->getBinding()==osg::Array::BIND_PER_VERTEX)
-    {
-        GLBufferObject* vbo = getGLBufferObject(array);
-        osg::ref_ptr<ArrayDispatch> dispatcher;
-        if (array->getDataType()==GL_FLOAT)
-        {
-            if (vbo) dispatcher = new VertexAttribArrayWithVBODispatch(unit, array, vbo);
-            else dispatcher = new VertexAttribArrayDispatch(unit, array);
-        }
-        else if (array->getDataType()==GL_DOUBLE)
-        {
-            if (vbo) dispatcher = new VertexAttribLArrayWithVBODispatch(unit, array, vbo);
-            else dispatcher = new VertexAttribLArrayDispatch(unit, array);
-        }
-        else
-        {
-            if (vbo) dispatcher = new VertexAttribIArrayWithVBODispatch(unit, array, vbo);
-            else dispatcher = new VertexAttribIArrayDispatch(unit, array);
-        }
-
-        _dispatchArrays.push_back(dispatcher.get());
-    }
-    else
-    {
-        osg::ref_ptr<ArrayDispatch> dispatcher;
-        switch(array->getType())
-        {
-            case(Array::FloatArrayType): dispatcher = new VertexAttribFloatDispatch(unit, array); break;
-            case(Array::Vec2ArrayType): dispatcher = new VertexAttribVec2fDispatch(unit, array); break;
-            case(Array::Vec3ArrayType): dispatcher = new VertexAttribVec3fDispatch(unit, array); break;
-            case(Array::Vec4ArrayType): dispatcher = new VertexAttribVec4fDispatch(unit, array); break;
-            case(Array::DoubleArrayType): dispatcher = new VertexAttribFloatDispatch(unit, array); break;
-            case(Array::Vec2dArrayType): dispatcher = new VertexAttribVec2dDispatch(unit, array); break;
-            case(Array::Vec3dArrayType): dispatcher = new VertexAttribVec3dDispatch(unit, array); break;
-            case(Array::Vec4dArrayType): dispatcher = new VertexAttribVec4dDispatch(unit, array); break;
-            default: break; // unsupported type
-        }
-
-        if (dispatcher)
-        {
-            getArrayDispatchList(array->getBinding()).push_back(dispatcher);
-        }
-    }
-}
-
 void VertexArrayState::generateVretexArrayObject()
 {
     _ext->glGenVertexArrays(1, &_vertexArrayObject);
@@ -1115,6 +364,8 @@ void VertexArrayState::generateVretexArrayObject()
 
 void VertexArrayState::bindVertexArrayObject() const
 {
+    VAS_NOTICE<<"glBindVertexArray() _vertexArrayObject="<<_vertexArrayObject<<std::endl;
+
     _ext->glBindVertexArray (_vertexArrayObject);
 }
 
@@ -1128,5 +379,243 @@ void VertexArrayState::releaseGLObjects()
     if (_vertexArrayObject)
     {
         _ext->glDeleteVertexArrays(1, &_vertexArrayObject);
+    }
+}
+
+
+void VertexArrayState::assignVertexArrayDispatcher()
+{
+#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
+    if (!_ext->getUseVertexAttributeAliasing())
+    {
+        _vertexArray = new VertexArrayDispatch();
+    }
+    else
+#endif
+    {
+        _vertexArray = new VertexAttribArrayDispatch(_ext->getVertexAlias()._location);
+    }
+}
+
+void VertexArrayState::assignNormalArrayDispatcher()
+{
+#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
+    if (!_ext->getUseVertexAttributeAliasing())
+    {
+        _normalArray = new NormalArrayDispatch();
+    }
+    else
+#endif
+    {
+        _normalArray = new VertexAttribArrayDispatch(_ext->getNormalAlias()._location);
+    }
+}
+
+void VertexArrayState::assignColorArrayDispatcher()
+{
+#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
+    if (!_ext->getUseVertexAttributeAliasing())
+    {
+        _colorArray = new ColorArrayDispatch();
+    }
+    else
+#endif
+    {
+        _colorArray = new VertexAttribArrayDispatch(_ext->getColorAlias()._location);
+    }
+}
+
+void VertexArrayState::assignSecondaryColorArrayDispatcher()
+{
+#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
+    if (!_ext->getUseVertexAttributeAliasing())
+    {
+        _secondaryColorArray = new SecondaryColorArrayDispatch();
+    }
+    else
+#endif
+    {
+        _secondaryColorArray = new VertexAttribArrayDispatch(_ext->getSecondaryColorAlias()._location);
+    }
+}
+
+void VertexArrayState::assignFogCoordArrayDispatcher()
+{
+#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
+    if (!_ext->getUseVertexAttributeAliasing())
+    {
+        _fogCoordArray = new FogCoordArrayDispatch();
+    }
+    else
+#endif
+    {
+        _fogCoordArray = new VertexAttribArrayDispatch(_ext->getFogCoordAlias()._location);
+    }
+}
+
+void VertexArrayState::assignTexCoordArrayDispatcher(unsigned int numUnits)
+{
+#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
+    if (!_ext->getUseVertexAttributeAliasing())
+    {
+        _texCoordArrays.clear();
+        for(unsigned int i=0; i<numUnits; ++i)
+        {
+            _texCoordArrays.push_back( new TexCoordArrayDispatch(i) );
+        }
+    }
+    else
+#endif
+    {
+        _texCoordArrays.clear();
+        for(unsigned int i=0; i<numUnits; ++i)
+        {
+            _texCoordArrays.push_back( new VertexAttribArrayDispatch(_ext->getTexCoordAliasList()[i]._location) );
+        }
+    }
+}
+
+void VertexArrayState::assignVertexAttribArrayDispatcher(unsigned int numUnits)
+{
+    _vertexAttribArrays.clear();
+    for(unsigned int i=0; i<numUnits; ++i)
+    {
+        _vertexAttribArrays.push_back( new VertexAttribArrayDispatch(i) );
+    }
+}
+
+void VertexArrayState::assignAllDispatchers()
+{
+    unsigned int numUnits = 8;
+    unsigned int numVertexAttrib = 16;
+
+    assignVertexArrayDispatcher();
+    assignNormalArrayDispatcher();
+    assignColorArrayDispatcher();
+    assignSecondaryColorArrayDispatcher();
+    assignFogCoordArrayDispatcher();
+    assignTexCoordArrayDispatcher(numUnits);
+    assignVertexAttribArrayDispatcher(numVertexAttrib);
+}
+
+void VertexArrayState::lazyDisablingOfVertexAttributes()
+{
+    VAS_NOTICE<<"  VertexArrayState<"<<this<<">::lazyDisablingOfVertexAttributes() _activeDispatchers.size()="<<_activeDispatchers.size()<<", _previous_activeDispatchers.size()="<<_previous_activeDispatchers.size()<<std::endl;
+
+    _activeDispatchers.swap(_previous_activeDispatchers);
+    _activeDispatchers.clear();
+
+    for(ActiveDispatchers::iterator itr = _previous_activeDispatchers.begin();
+        itr != _previous_activeDispatchers.end();
+        ++itr)
+    {
+        ArrayDispatch* ad = (*itr);
+        // ad->array = 0;
+        ad->active = false;
+    }
+}
+
+void VertexArrayState::applyDisablingOfVertexAttributes(osg::State& state)
+{
+    VAS_NOTICE<<"  VertexArrayState<"<<this<<">::applyDisablingOfVertexAttributes() _activeDispatchers.size()="<<_activeDispatchers.size()<<", _previous_activeDispatchers.size()="<<_previous_activeDispatchers.size()<<std::endl;
+
+    for(ActiveDispatchers::iterator itr = _previous_activeDispatchers.begin();
+        itr != _previous_activeDispatchers.end();
+        ++itr)
+    {
+        ArrayDispatch* ad = (*itr);
+        if (!ad->active)
+        {
+            ad->disable(state);
+            ad->array = 0;
+            ad->modifiedCount = 0xffffffff;
+        }
+    }
+    _previous_activeDispatchers.clear();
+}
+
+void VertexArrayState::setArray(ArrayDispatch* vad, osg::State& state, const osg::Array* new_array)
+{
+    if (new_array)
+    {
+        VAS_NOTICE<<"  VertexArrayState<"<<this<<">::setArray() "<<typeid(*vad).name()<<" new_array="<<new_array<<", size()="<<new_array->getNumElements()<<std::endl;
+
+        if (!vad->active)
+        {
+            vad->active = true;
+            _activeDispatchers.push_back(vad);
+        }
+
+#define LAZY_UPDATE
+#define CHECK_IF_UPDATE
+
+#ifdef LAZY_UPDATE
+        if (vad->array==0)
+#endif
+        {
+            GLBufferObject* vbo = isVertexBufferObjectSupported() ? new_array->getOrCreateGLBufferObject(state.getContextID()) : 0;
+            if (vbo)
+            {
+                bindVertexBufferObject(vbo);
+                vad->enable_and_dispatch(state, new_array, vbo);
+            }
+            else
+            {
+                unbindVertexBufferObject();
+                vad->enable_and_dispatch(state, new_array);
+            }
+        }
+#ifdef LAZY_UPDATE
+        else
+#ifdef CHECK_IF_UPDATE
+        if (new_array!=vad->array || new_array->getModifiedCount()!=vad->modifiedCount)
+#endif
+        {
+            GLBufferObject* vbo = isVertexBufferObjectSupported() ? new_array->getOrCreateGLBufferObject(state.getContextID()) : 0;
+            if (vbo)
+            {
+                bindVertexBufferObject(vbo);
+                vad->dispatch(state, new_array, vbo);
+            }
+            else
+            {
+                unbindVertexBufferObject();
+                vad->dispatch(state, new_array);
+            }
+        }
+#ifdef CHECK_IF_UPDATE
+        else
+        {
+            VAS_NOTICE<<"**************** No need to update *************************"<<std::endl;
+            return;
+        }
+#endif
+#endif
+
+        vad->array = new_array;
+        vad->modifiedCount = new_array->getModifiedCount();
+
+    }
+    else if (vad->array)
+    {
+        VAS_NOTICE<<"  VertexArrayState::setArray() need to disable "<<typeid(*vad).name()<<std::endl;
+
+        disable(vad, state);
+    }
+}
+
+void VertexArrayState::disableTexCoordArrayAboveAndIncluding(osg::State& state, unsigned int index)
+{
+    for(unsigned int i=index; i<_texCoordArrays.size(); ++i)
+    {
+        disable(_texCoordArrays[i].get(), state);
+    }
+}
+
+void VertexArrayState::disableVertexAttribArrayAboveAndIncluding(osg::State& state, unsigned int index)
+{
+    for(unsigned int i=index; i<_vertexAttribArrays.size(); ++i)
+    {
+        disable(_vertexAttribArrays[i].get(), state);
     }
 }

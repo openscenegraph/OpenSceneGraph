@@ -140,8 +140,7 @@ State::State():
     _gpuTimestamp = 0;
     _timestampBits = 0;
 
-
-
+    _currentVertexArrayState = 0;
 }
 
 State::~State()
@@ -986,8 +985,9 @@ void State::initializeExtensionProcs()
     GLExtensions::Set(_contextID, _glExtensions.get());
 
 #ifdef USE_VERTEXARRAYSTATE
-    _currentVertexArrayState = new VertexArrayState(_glExtensions.get());
-    _currentVertexArrayState->assignAllDispatchers();
+    _globalVertexArrayState = new VertexArrayState(_glExtensions.get());
+    _globalVertexArrayState->assignAllDispatchers();
+    setCurrentToGloabalVertexArrayState();
 #endif
 
     setGLExtensionFuncPtr(_glClientActiveTexture,"glClientActiveTexture","glClientActiveTextureARB");

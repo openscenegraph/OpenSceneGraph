@@ -629,17 +629,11 @@ void Drawable::draw(RenderInfo& renderInfo) const
             _vertexArrayStateList[contextID] = vas = setUpVertexArrayState(renderInfo, true);
         }
 
-        //state.pushVAO(localVAO);
-        osg::ref_ptr<VertexArrayState> previous_vas = state.getCurrentVertexArrayState();
-
-        state.setCurrentVertexArrayState(vas);
+        State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 
         vas->bindVertexArrayObject();
 
         drawInner(renderInfo);
-
-        // state.popVAO();
-        state.setCurrentVertexArrayState(previous_vas);
 
         return;
     }

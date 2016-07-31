@@ -444,7 +444,7 @@ osgText::Glyph3D * FreeTypeFont::getGlyph3D(unsigned int charcode)
         }
     }
 
-    FT_Error error = FT_Load_Char( _face, charindex, FT_LOAD_DEFAULT|_flags );
+    FT_Error error = FT_Load_Char( _face, charindex, FT_LOAD_DEFAULT | FT_LOAD_NO_HINTING |  _flags );
     if (error)
     {
         OSG_WARN << "FT_Load_Char(...) error 0x"<<std::hex<<error<<std::dec<<std::endl;

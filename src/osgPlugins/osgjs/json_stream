@@ -28,8 +28,6 @@
 
 #include <osgDB/fstream>
 
-using namespace std;
-
 // A simple class wrapping ofstream calls to enable generic cleaning of json data.
 // Especially 'standard' json should:
 // * have utf-8 encoded string
@@ -37,8 +35,11 @@ using namespace std;
 // * does not support inf or nan values
 
 #if defined(WIN32) && !defined(__MINGW32__) && (!defined(_MSC_VER) || _MSC_VER<=1700)
-inline int isfinite( double x ) { return _finite( x ); }
-inline int isinf( double x ) { return !_finite( x ) && !_isnan( x ); }
+namespace std
+{
+    inline int isfinite( double x ) { return _finite( x ); }
+    inline int isinf( double x ) { return !_finite( x ) && !_isnan( x ); }
+}
 #endif
 
 
@@ -91,11 +92,11 @@ class json_stream : public osgDB::ofstream {
         }
 
         double to_valid_float(const double d) {
-            if(isfinite(d)) {
+            if(std::isfinite(d)) {
                 return d;
             }
             else {
-                if(isinf(d)) {
+                if(std::isinf(d)) {
                     return std::numeric_limits<double>::max();
                 }
                 // no much way to do better than replace invalid float NaN by 0

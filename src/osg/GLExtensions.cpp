@@ -1180,6 +1180,14 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
         glMaxTextureUnits = 0;
         glMaxTextureCoords = 0;
     }
+
+    #if !defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
+        _useVertexAttributeAliasing = true;
+    #else
+        _useVertexAttributeAliasing = false;
+    #endif
+
+
 }
 
 

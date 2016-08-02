@@ -341,7 +341,8 @@ VertexArrayState::VertexArrayState(osg::GLExtensions* ext):
     _ext(ext),
     _vertexArrayObject(0),
     _currentVBO(0),
-    _currentEBO(0)
+    _currentEBO(0),
+    _requiresSetArrays(true)
 {
 }
 

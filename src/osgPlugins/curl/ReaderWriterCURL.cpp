@@ -142,6 +142,7 @@ EasyCurl::EasyCurl()
     _previousHttpAuthentication = 0;
     _connectTimeout = 0; // no timeout by default.
     _timeout = 0;
+    _sslVerifyPeer = 1L;
 
     _curl = curl_easy_init();
 
@@ -251,6 +252,9 @@ void EasyCurl::setOptions(const std::string& proxyAddress, const std::string& fi
         OSG_INFO<<"Setting proxy: "<<proxyAddress<<std::endl;
         curl_easy_setopt(_curl, CURLOPT_PROXY, proxyAddress.c_str()); //Sets proxy address and port on libcurl
     }
+
+    // setting ssl verify peer (default is enabled)
+    curl_easy_setopt(_curl, CURLOPT_SSL_VERIFYPEER, _sslVerifyPeer);
 
     const osgDB::AuthenticationDetails* details = authenticationMap ?
         authenticationMap->getAuthenticationDetails(fileName) :
@@ -385,6 +389,7 @@ ReaderWriterCURL::ReaderWriterCURL()
     supportsOption("OSG_CURL_PROXYPORT","Specify the http proxy port.");
     supportsOption("OSG_CURL_CONNECTTIMEOUT","Specify the connection timeout duration in seconds [default = 0 = not set].");
     supportsOption("OSG_CURL_TIMEOUT","Specify the timeout duration of the whole transfer in seconds [default = 0 = not set].");
+    supportsOption("OSG_CURL_SSL_VERIFYPEER","Specify ssl verification peer [default = 1 = set].");
 }
 
 ReaderWriterCURL::~ReaderWriterCURL()
@@ -428,11 +433,13 @@ osgDB::ReaderWriter::WriteResult ReaderWriterCURL::writeFile(const osg::Object& 
     std::string proxyAddress;
     long connectTimeout = 0;
     long timeout = 0;
-    getConnectionOptions(options, proxyAddress, connectTimeout, timeout);
+    long sslVerifyPeer = 1;
+    getConnectionOptions(options, proxyAddress, connectTimeout, timeout, sslVerifyPeer);
     EasyCurl::StreamObject sp(&responseBuffer, &requestBuffer, std::string());
     EasyCurl& easyCurl = getEasyCurl();
     easyCurl.setConnectionTimeout(connectTimeout);
     easyCurl.setTimeout(timeout);
+    easyCurl.setSSLVerifyPeer(sslVerifyPeer);
 
     // Output requestBuffer via curl, and return responseBuffer in message of result.
     return easyCurl.write(proxyAddress, fullFileName, sp, options);
@@ -452,7 +459,11 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
     return ReadResult::FILE_NOT_HANDLED;
 }
 
-void ReaderWriterCURL::getConnectionOptions(const osgDB::ReaderWriter::Options *options, std::string& proxyAddress, long& connectTimeout, long& timeout) const
+void ReaderWriterCURL::getConnectionOptions(const osgDB::ReaderWriter::Options *options,
+    std::string& proxyAddress,
+    long& connectTimeout,
+    long& timeout,
+    long& sslVerifyPeer) const
 {
     if (options)
     {
@@ -469,7 +480,10 @@ void ReaderWriterCURL::getConnectionOptions(const osgDB::ReaderWriter::Options *
                 connectTimeout = atol(opt.substr( index+1 ).c_str()); // this will return 0 in case of improper format.
             else if( opt.substr( 0, index ) == "OSG_CURL_TIMEOUT" )
                 timeout = atol(opt.substr( index+1 ).c_str()); // this will return 0 in case of improper format.
+            else if( opt.substr(0, index) == "OSG_CURL_SSL_VERIFYPEER" )
+                sslVerifyPeer = atol(opt.substr( index+1 ).c_str()); // this will return 0 in case of improper format.
         }
+
 
         //Setting Proxy by OSG Options
         if(!optProxy.empty())
@@ -529,7 +543,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
     std::string proxyAddress;
     long connectTimeout = 0;
     long timeout = 0;
-    getConnectionOptions(options, proxyAddress, connectTimeout, timeout);
+    long sslVerifyPeer = 1;
+    getConnectionOptions(options, proxyAddress, connectTimeout, timeout, sslVerifyPeer);
 
     bool uncompress = false;
 
@@ -568,6 +583,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
     // setup the timeouts:
     easyCurl.setConnectionTimeout(connectTimeout);
     easyCurl.setTimeout(timeout);
+    easyCurl.setSSLVerifyPeer(sslVerifyPeer);
 
     ReadResult curlResult = easyCurl.read(proxyAddress, fileName, sp, options);
 

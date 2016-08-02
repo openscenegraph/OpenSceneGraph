@@ -449,6 +449,13 @@ void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachmen
 {
     unsigned int contextID = state.getContextID();
 
+    if (_ximpl->targetType == Pimpl::RENDERBUFFER)
+    {
+        ext->glFramebufferRenderbuffer(target, attachment_point, GL_RENDERBUFFER_EXT, _ximpl->renderbufferTarget->getObjectID(contextID, ext));
+        return;
+    }
+
+    // targetType must be a texture, make sure we have a valid texture object
     Texture::TextureObject *tobj = 0;
     if (_ximpl->textureTarget.valid())
     {
@@ -465,10 +472,8 @@ void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachmen
 
     switch (_ximpl->targetType)
     {
-    default:
     case Pimpl::RENDERBUFFER:
-        ext->glFramebufferRenderbuffer(target, attachment_point, GL_RENDERBUFFER_EXT, _ximpl->renderbufferTarget->getObjectID(contextID, ext));
-        break;
+        break; // already handled above. case should never be hit, just here to quieten compiler warning.
     case Pimpl::TEXTURE1D:
         ext->glFramebufferTexture1D(target, attachment_point, GL_TEXTURE_1D, tobj->id(), _ximpl->level);
         break;

@@ -147,7 +147,8 @@ public:
         void releaseGLObjects();
 
 
-
+        void setRequiresSetArrays(bool flag) { _requiresSetArrays = flag; }
+        bool getRequiresSetArrays() const { return _requiresSetArrays; }
 
 
 public:
@@ -174,6 +175,8 @@ public:
 
         GLBufferObject*                 _currentVBO;
         GLBufferObject*                 _currentEBO;
+
+        bool                            _requiresSetArrays;
 };
 
 

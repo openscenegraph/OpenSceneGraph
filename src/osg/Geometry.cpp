@@ -800,9 +800,15 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
     drawPrimitivesImplementation(renderInfo);
 
-    // unbind the VBO's if any are used.
-    state.unbindVertexBufferObject();
-    state.unbindElementBufferObject();
+    const DisplaySettings* ds = state.getDisplaySettings() ? state.getDisplaySettings() : osg::DisplaySettings::instance();
+    bool useVertexArrayObject = _useVertexBufferObjects &&  (ds->getGeometryImplementation()==DisplaySettings::VERTEX_ARRAY_OBJECT);
+    unsigned int contextID = renderInfo.getContextID();
+    if (!useVertexArrayObject || _vertexArrayStateList[contextID]->getRequiresSetArrays())
+    {
+        // unbind the VBO's if any are used.
+        state.unbindVertexBufferObject();
+        state.unbindElementBufferObject();
+    }
 
     if (checkForGLErrors) state.checkGLErrors("end of Geometry::drawImplementation().");
 }
@@ -818,11 +824,6 @@ void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
     arrayDispatchers.reset();
     arrayDispatchers.setUseVertexAttribAlias(state.getUseVertexAttributeAliasing());
 
-    arrayDispatchers.activateNormalArray(_normalArray.get());
-    arrayDispatchers.activateColorArray(_colorArray.get());
-    arrayDispatchers.activateSecondaryColorArray(_secondaryColorArray.get());
-    arrayDispatchers.activateFogCoordArray(_fogCoordArray.get());
-
     if (handleVertexAttributes)
     {
         for(unsigned int unit=0;unit<_vertexAttribList.size();++unit)
@@ -831,8 +832,22 @@ void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
         }
     }
 
+    arrayDispatchers.activateNormalArray(_normalArray.get());
+    arrayDispatchers.activateColorArray(_colorArray.get());
+    arrayDispatchers.activateSecondaryColorArray(_secondaryColorArray.get());
+    arrayDispatchers.activateFogCoordArray(_fogCoordArray.get());
+
     // dispatch any attributes that are bound overall
     arrayDispatchers.dispatch(osg::Array::BIND_OVERALL,0);
+
+
+    const DisplaySettings* ds = state.getDisplaySettings() ? state.getDisplaySettings() : osg::DisplaySettings::instance();
+    bool useVertexArrayObject = _useVertexBufferObjects &&  (ds->getGeometryImplementation()==DisplaySettings::VERTEX_ARRAY_OBJECT);
+    unsigned int contextID = renderInfo.getContextID();
+    if (useVertexArrayObject)
+    {
+        if (!_vertexArrayStateList[contextID]->getRequiresSetArrays()) return;
+    }
 
     state.lazyDisablingOfVertexAttributes();
 

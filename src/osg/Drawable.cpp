@@ -628,14 +628,21 @@ void Drawable::draw(RenderInfo& renderInfo) const
         {
             _vertexArrayStateList[contextID] = vas = setUpVertexArrayState(renderInfo, true);
         }
+        else
+        {
+            vas->setRequiresSetArrays(getDataVariance()==osg::Object::DYNAMIC);
+        }
+
+        if (vas->getRequiresSetArrays())
+        {
+            vas->resetBufferObjectPointers();
+        }
 
         State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 
         vas->bindVertexArrayObject();
 
         drawInner(renderInfo);
-
-        vas->setRequiresSetArrays(getDataVariance()==osg::Object::DYNAMIC);
 
         return;
     }

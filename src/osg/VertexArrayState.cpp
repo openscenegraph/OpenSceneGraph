@@ -13,11 +13,99 @@
 
 #include <osg/VertexArrayState>
 #include <osg/State>
+#include <osg/ContextData>
 
 using namespace osg;
 
 #define VAS_NOTICE OSG_INFO
 //#define VAS_NOTICE OSG_NOTICE
+
+
+class VertexArrayStateManager : public GraphicsObjectManager
+{
+public:
+    VertexArrayStateManager(unsigned int contextID):
+        GraphicsObjectManager("VertexArrayStateManager", contextID)
+    {
+    }
+
+    virtual void flushDeletedGLObjects(double, double& availableTime)
+    {
+        // if no time available don't try to flush objects.
+        if (availableTime<=0.0) return;
+
+        VAS_NOTICE<<"VertexArrayStateManager::flushDeletedGLObjects()"<<std::endl;
+
+        const osg::Timer& timer = *osg::Timer::instance();
+        osg::Timer_t start_tick = timer.tick();
+        double elapsedTime = 0.0;
+
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_vertexArrayStateList);
+
+            // trim from front
+            VertexArrayStateList::iterator ditr=_vertexArrayStateList.begin();
+            for(;
+                ditr!=_vertexArrayStateList.end() && elapsedTime<availableTime;
+                ++ditr)
+            {
+                VertexArrayState* vas = ditr->get();
+                vas->deleteVertexArrayObject();
+
+                elapsedTime = timer.delta_s(start_tick,timer.tick());
+            }
+
+            if (ditr!=_vertexArrayStateList.begin()) _vertexArrayStateList.erase(_vertexArrayStateList.begin(),ditr);
+
+        }
+
+        elapsedTime = timer.delta_s(start_tick,timer.tick());
+
+        availableTime -= elapsedTime;
+    }
+
+    virtual void flushAllDeletedGLObjects()
+    {
+        VAS_NOTICE<<"VertexArrayStateManager::flushAllDeletedGLObjects()"<<std::endl;
+
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_vertexArrayStateList);
+        for(VertexArrayStateList::iterator itr = _vertexArrayStateList.begin();
+            itr != _vertexArrayStateList.end();
+            ++itr)
+        {
+            VertexArrayState* vas = itr->get();
+            vas->deleteVertexArrayObject();
+        }
+        _vertexArrayStateList.clear();
+    }
+
+    virtual void deleteAllGLObjects()
+    {
+         OSG_INFO<<"VertexArrayStateManager::deleteAllGLObjects() Not currently implementated"<<std::endl;
+    }
+
+    virtual void discardAllGLObjects()
+    {
+        VAS_NOTICE<<"VertexArrayStateManager::flushAllDeletedGLObjects()"<<std::endl;
+
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_vertexArrayStateList);
+        _vertexArrayStateList.clear();
+    }
+
+    void release(VertexArrayState* vas)
+    {
+        VAS_NOTICE<<"VertexArrayStateManager::release("<<this<<")"<<std::endl;
+
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_vertexArrayStateList);
+        _vertexArrayStateList.push_back(vas);
+    }
+
+protected:
+
+    typedef std::list< osg::ref_ptr<VertexArrayState> > VertexArrayStateList;
+    OpenThreads::Mutex _mutex_vertexArrayStateList;
+    VertexArrayStateList _vertexArrayStateList;
+};
 
 #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
 ///////////////////////////////////////////////////////////////////////////////////
@@ -363,14 +451,16 @@ void VertexArrayState::unbindVertexArrayObject() const
      _ext->glBindVertexArray (0);
 }
 
-void VertexArrayState::releaseGLObjects()
+void VertexArrayState::deleteVertexArrayObject()
 {
     if (_vertexArrayObject)
     {
+        VAS_NOTICE<<"  VertexArrayState::deleteVertexArrayObject() "<<_vertexArrayObject<<std::endl;
+
         _ext->glDeleteVertexArrays(1, &_vertexArrayObject);
+        _vertexArrayObject = 0;
     }
 }
-
 
 void VertexArrayState::assignVertexArrayDispatcher()
 {
@@ -607,4 +697,11 @@ void VertexArrayState::disableVertexAttribArrayAboveAndIncluding(osg::State& sta
     {
         disable(_vertexAttribArrays[i].get(), state);
     }
+}
+
+void VertexArrayState::release()
+{
+    VAS_NOTICE<<"VertexArrayState::release() "<<this<<std::endl;
+
+    osg::get<VertexArrayStateManager>(_ext->contextID)->release(this);
 }

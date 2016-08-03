@@ -88,6 +88,8 @@ public:
             _currentEBO = 0;
         }
 
+        void resetBufferObjectPointers() { _currentVBO = 0; _currentEBO = 0; }
+
         void assignAllDispatchers();
 
         virtual void assignVertexArrayDispatcher();

@@ -699,8 +699,6 @@ VertexArrayState* Geometry::setUpVertexArrayState(RenderInfo& renderInfo, bool u
 void Geometry::compileGLObjects(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
-    const DisplaySettings* ds = state.getDisplaySettings() ? state.getDisplaySettings() : osg::DisplaySettings::instance();
-
     bool useVertexArrays = _supportsVertexBufferObjects &&
                            _useVertexBufferObjects &&
                            renderInfo.getState()->isVertexBufferObjectSupported();
@@ -762,9 +760,19 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
         extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
         extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
 
+        const DisplaySettings* ds = state.getDisplaySettings() ? state.getDisplaySettings() : osg::DisplaySettings::instance();
         if (ds->getGeometryImplementation()==DisplaySettings::VERTEX_ARRAY_OBJECT && !bufferObjects.empty())
         {
-            setUpVertexArrayState(renderInfo, true);
+            VertexArrayState* vas = 0;
+
+            _vertexArrayStateList[contextID] = vas = setUpVertexArrayState(renderInfo, true);
+
+            State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
+
+            vas->bindVertexArrayObject();
+
+
+            drawVertexArraysImplementation(renderInfo);
         }
     }
     else

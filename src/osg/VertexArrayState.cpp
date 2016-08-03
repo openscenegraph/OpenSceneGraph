@@ -346,20 +346,6 @@ VertexArrayState::VertexArrayState(osg::GLExtensions* ext):
 {
 }
 
-#if 0
-osg::GLBufferObject* VertexArrayState::getGLBufferObject(osg::Array* array)
-{
-    if (_ext->isBufferObjectSupported && array->getBufferObject())
-    {
-        return array->getBufferObject()->getOrCreateGLBufferObject(_ext->contextID);
-    }
-    else
-    {
-        return 0;
-    }
-}
-#endif
-
 void VertexArrayState::generateVretexArrayObject()
 {
     _ext->glGenVertexArrays(1, &_vertexArrayObject);

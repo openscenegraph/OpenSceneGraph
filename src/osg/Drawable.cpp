@@ -312,31 +312,36 @@ void Drawable::releaseGLObjects(State* state) const
 
     if (_drawCallback.valid()) _drawCallback->releaseGLObjects(state);
 
-    if (!_useDisplayList) return;
-
     if (state)
     {
         // get the contextID (user defined ID of 0 upwards) for the
         // current OpenGL context.
         unsigned int contextID = state->getContextID();
 
-        // get the globj for the current contextID.
-        GLuint& globj = _globjList[contextID];
-
-        // call the globj if already set otherwise compile and execute.
-        if( globj != 0 )
+        if (_useDisplayList)
         {
-            Drawable::deleteDisplayList(contextID,globj, getGLObjectSizeHint());
-            globj = 0;
+            // get the globj for the current contextID.
+            GLuint& globj = _globjList[contextID];
+
+            // call the globj if already set otherwise compile and execute.
+            if( globj != 0 )
+            {
+                Drawable::deleteDisplayList(contextID,globj, getGLObjectSizeHint());
+                globj = 0;
+            }
+        }
+
+        VertexArrayState* vas = contextID <_vertexArrayStateList.size() ? _vertexArrayStateList[contextID] : 0;
+        if (vas)
+        {
+            vas->release();
+            _vertexArrayStateList[contextID] = 0;
         }
     }
     else
     {
-        const_cast<Drawable*>(this)->dirtyDisplayList();
+        const_cast<Drawable*>(this)->dirtyGLObjects();
     }
-
-
-    // TODO release VAO's..
 }
 
 void Drawable::setSupportsDisplayList(bool flag)
@@ -371,6 +376,7 @@ void Drawable::setUseDisplayList(bool flag)
 
 #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     // if was previously set to true, remove display list.
+
     if (_useDisplayList)
     {
         dirtyDisplayList();
@@ -444,6 +450,16 @@ void Drawable::dirtyGLObjects()
         }
     }
 #endif
+
+    for(i=0; i<_vertexArrayStateList.size(); ++i)
+    {
+        VertexArrayState* vas = _vertexArrayStateList[i].get();
+        if (vas)
+        {
+            vas->release();
+            _vertexArrayStateList[i] = 0;
+        }
+    }
 }
 
 

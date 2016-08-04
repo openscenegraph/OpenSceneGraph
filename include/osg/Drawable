@@ -276,7 +276,7 @@ class OSG_EXPORT Drawable : public Node
         */
         virtual void compileGLObjects(RenderInfo& renderInfo) const;
 
-        virtual VertexArrayState* setUpVertexArrayState(RenderInfo& renderInfo, bool usingVBOs) const;
+        virtual VertexArrayState* createVertexArrayState(RenderInfo& renderInfo, bool usingVBOs) const;
 
 
         /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/

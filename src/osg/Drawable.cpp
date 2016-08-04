@@ -648,16 +648,13 @@ void Drawable::draw(RenderInfo& renderInfo) const
             vas->setRequiresSetArrays(getDataVariance()==osg::Object::DYNAMIC);
         }
 
-        if (vas->getRequiresSetArrays())
-        {
-            vas->resetBufferObjectPointers();
-        }
-
         State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 
         vas->bindVertexArrayObject();
 
         drawInner(renderInfo);
+
+        // vas->setRequiresSetArrays(getDataVariance()==osg::Object::DYNAMIC);
 
         return;
     }

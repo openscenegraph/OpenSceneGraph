@@ -103,6 +103,9 @@ State::State():
     _isVertexBufferObjectSupportResolved = false;
     _isVertexBufferObjectSupported = false;
 
+    _isVertexArrayObjectSupported = false;
+    _useVertexArrayObject = false;
+
     _lastAppliedProgramObject = 0;
 
     _extensionProcsInitialized = false;
@@ -155,6 +158,113 @@ State::~State()
     //_texCoordArrayList.clear();
 
     //_vertexAttribArrayList.clear();
+}
+
+void State::initializeExtensionProcs()
+{
+    if (_extensionProcsInitialized) return;
+
+    const char* vendor = (const char*) glGetString( GL_VENDOR );
+    if (vendor)
+    {
+        std::string str_vendor(vendor);
+        std::replace(str_vendor.begin(), str_vendor.end(), ' ', '_');
+        OSG_INFO<<"GL_VENDOR = ["<<str_vendor<<"]"<<std::endl;
+        _defineMap.map[str_vendor].defineVec.push_back(osg::StateSet::DefinePair("1",osg::StateAttribute::ON));
+        _defineMap.map[str_vendor].changed = true;
+        _defineMap.changed = true;
+    }
+
+    _glExtensions = new GLExtensions(_contextID);
+    GLExtensions::Set(_contextID, _glExtensions.get());
+
+
+    computeSecondaryColorSupported();
+    computeFogCoordSupported();
+    computeVertexBufferObjectSupported();
+
+    const DisplaySettings* ds = getDisplaySettings() ? getDisplaySettings() : osg::DisplaySettings::instance();
+
+    _isVertexArrayObjectSupported = _glExtensions->isVAOSupported;
+    _useVertexArrayObject = _isVertexArrayObjectSupported &&  (ds->getGeometryImplementation()==DisplaySettings::VERTEX_ARRAY_OBJECT);
+
+
+#ifdef USE_VERTEXARRAYSTATE
+    _globalVertexArrayState = new VertexArrayState(_glExtensions.get());
+    _globalVertexArrayState->assignAllDispatchers();
+    setCurrentToGloabalVertexArrayState();
+#endif
+
+    setGLExtensionFuncPtr(_glClientActiveTexture,"glClientActiveTexture","glClientActiveTextureARB");
+    setGLExtensionFuncPtr(_glActiveTexture, "glActiveTexture","glActiveTextureARB");
+    setGLExtensionFuncPtr(_glFogCoordPointer, "glFogCoordPointer","glFogCoordPointerEXT");
+    setGLExtensionFuncPtr(_glSecondaryColorPointer, "glSecondaryColorPointer","glSecondaryColorPointerEXT");
+    setGLExtensionFuncPtr(_glVertexAttribPointer, "glVertexAttribPointer","glVertexAttribPointerARB");
+    setGLExtensionFuncPtr(_glVertexAttribIPointer, "glVertexAttribIPointer");
+    setGLExtensionFuncPtr(_glVertexAttribLPointer, "glVertexAttribLPointer","glVertexAttribPointerARB");
+    setGLExtensionFuncPtr(_glEnableVertexAttribArray, "glEnableVertexAttribArray","glEnableVertexAttribArrayARB");
+    setGLExtensionFuncPtr(_glMultiTexCoord4f, "glMultiTexCoord4f","glMultiTexCoord4fARB");
+    setGLExtensionFuncPtr(_glVertexAttrib4f, "glVertexAttrib4f");
+    setGLExtensionFuncPtr(_glVertexAttrib4fv, "glVertexAttrib4fv");
+    setGLExtensionFuncPtr(_glDisableVertexAttribArray, "glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
+    setGLExtensionFuncPtr(_glBindBuffer, "glBindBuffer","glBindBufferARB");
+
+    setGLExtensionFuncPtr(_glDrawArraysInstanced, "glDrawArraysInstanced","glDrawArraysInstancedARB","glDrawArraysInstancedEXT");
+    setGLExtensionFuncPtr(_glDrawElementsInstanced, "glDrawElementsInstanced","glDrawElementsInstancedARB","glDrawElementsInstancedEXT");
+
+    if (osg::getGLVersionNumber() >= 2.0 || osg::isGLExtensionSupported(_contextID, "GL_ARB_vertex_shader") || OSG_GLES2_FEATURES || OSG_GL3_FEATURES)
+    {
+        glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&_glMaxTextureUnits);
+        #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
+            glGetIntegerv(GL_MAX_TEXTURE_COORDS, &_glMaxTextureCoords);
+        #else
+            _glMaxTextureCoords = _glMaxTextureUnits;
+        #endif
+    }
+    else if ( osg::getGLVersionNumber() >= 1.3 ||
+                                 osg::isGLExtensionSupported(_contextID,"GL_ARB_multitexture") ||
+                                 osg::isGLExtensionSupported(_contextID,"GL_EXT_multitexture") ||
+                                 OSG_GLES1_FEATURES)
+    {
+        GLint maxTextureUnits = 0;
+        glGetIntegerv(GL_MAX_TEXTURE_UNITS,&maxTextureUnits);
+        _glMaxTextureUnits = maxTextureUnits;
+        _glMaxTextureCoords = maxTextureUnits;
+    }
+    else
+    {
+        _glMaxTextureUnits = 1;
+        _glMaxTextureCoords = 1;
+    }
+
+    if (_glExtensions->isARBTimerQuerySupported)
+    {
+        const GLubyte* renderer = glGetString(GL_RENDERER);
+        std::string rendererString = renderer ? (const char*)renderer : "";
+        if (rendererString.find("Radeon")!=std::string::npos || rendererString.find("RADEON")!=std::string::npos || rendererString.find("FirePro")!=std::string::npos)
+        {
+            // AMD/ATI drivers are producing an invalid enumerate error on the
+            // glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS_ARB, &bits);
+            // call so work around it by assuming 64 bits for counter.
+            setTimestampBits(64);
+            //setTimestampBits(0);
+        }
+        else
+        {
+            GLint bits = 0;
+            _glExtensions->glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS_ARB, &bits);
+            setTimestampBits(bits);
+        }
+    }
+
+
+    _extensionProcsInitialized = true;
+
+    if (_graphicsCostEstimator.valid())
+    {
+        RenderInfo renderInfo(this,0);
+        _graphicsCostEstimator->calibrate(renderInfo);
+    }
 }
 
 void State::releaseGLObjects()
@@ -966,101 +1076,6 @@ void State::setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* p
     dirtyAllVertexArrays();
 }
 
-void State::initializeExtensionProcs()
-{
-    if (_extensionProcsInitialized) return;
-
-    const char* vendor = (const char*) glGetString( GL_VENDOR );
-    if (vendor)
-    {
-        std::string str_vendor(vendor);
-        std::replace(str_vendor.begin(), str_vendor.end(), ' ', '_');
-        OSG_INFO<<"GL_VENDOR = ["<<str_vendor<<"]"<<std::endl;
-        _defineMap.map[str_vendor].defineVec.push_back(osg::StateSet::DefinePair("1",osg::StateAttribute::ON));
-        _defineMap.map[str_vendor].changed = true;
-        _defineMap.changed = true;
-    }
-
-    _glExtensions = new GLExtensions(_contextID);
-    GLExtensions::Set(_contextID, _glExtensions.get());
-
-#ifdef USE_VERTEXARRAYSTATE
-    _globalVertexArrayState = new VertexArrayState(_glExtensions.get());
-    _globalVertexArrayState->assignAllDispatchers();
-    setCurrentToGloabalVertexArrayState();
-#endif
-
-    setGLExtensionFuncPtr(_glClientActiveTexture,"glClientActiveTexture","glClientActiveTextureARB");
-    setGLExtensionFuncPtr(_glActiveTexture, "glActiveTexture","glActiveTextureARB");
-    setGLExtensionFuncPtr(_glFogCoordPointer, "glFogCoordPointer","glFogCoordPointerEXT");
-    setGLExtensionFuncPtr(_glSecondaryColorPointer, "glSecondaryColorPointer","glSecondaryColorPointerEXT");
-    setGLExtensionFuncPtr(_glVertexAttribPointer, "glVertexAttribPointer","glVertexAttribPointerARB");
-    setGLExtensionFuncPtr(_glVertexAttribIPointer, "glVertexAttribIPointer");
-    setGLExtensionFuncPtr(_glVertexAttribLPointer, "glVertexAttribLPointer","glVertexAttribPointerARB");
-    setGLExtensionFuncPtr(_glEnableVertexAttribArray, "glEnableVertexAttribArray","glEnableVertexAttribArrayARB");
-    setGLExtensionFuncPtr(_glMultiTexCoord4f, "glMultiTexCoord4f","glMultiTexCoord4fARB");
-    setGLExtensionFuncPtr(_glVertexAttrib4f, "glVertexAttrib4f");
-    setGLExtensionFuncPtr(_glVertexAttrib4fv, "glVertexAttrib4fv");
-    setGLExtensionFuncPtr(_glDisableVertexAttribArray, "glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
-    setGLExtensionFuncPtr(_glBindBuffer, "glBindBuffer","glBindBufferARB");
-
-    setGLExtensionFuncPtr(_glDrawArraysInstanced, "glDrawArraysInstanced","glDrawArraysInstancedARB","glDrawArraysInstancedEXT");
-    setGLExtensionFuncPtr(_glDrawElementsInstanced, "glDrawElementsInstanced","glDrawElementsInstancedARB","glDrawElementsInstancedEXT");
-
-    if (osg::getGLVersionNumber() >= 2.0 || osg::isGLExtensionSupported(_contextID, "GL_ARB_vertex_shader") || OSG_GLES2_FEATURES || OSG_GL3_FEATURES)
-    {
-        glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&_glMaxTextureUnits);
-        #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
-            glGetIntegerv(GL_MAX_TEXTURE_COORDS, &_glMaxTextureCoords);
-        #else
-            _glMaxTextureCoords = _glMaxTextureUnits;
-        #endif
-    }
-    else if ( osg::getGLVersionNumber() >= 1.3 ||
-                                 osg::isGLExtensionSupported(_contextID,"GL_ARB_multitexture") ||
-                                 osg::isGLExtensionSupported(_contextID,"GL_EXT_multitexture") ||
-                                 OSG_GLES1_FEATURES)
-    {
-        GLint maxTextureUnits = 0;
-        glGetIntegerv(GL_MAX_TEXTURE_UNITS,&maxTextureUnits);
-        _glMaxTextureUnits = maxTextureUnits;
-        _glMaxTextureCoords = maxTextureUnits;
-    }
-    else
-    {
-        _glMaxTextureUnits = 1;
-        _glMaxTextureCoords = 1;
-    }
-
-    if (_glExtensions->isARBTimerQuerySupported)
-    {
-        const GLubyte* renderer = glGetString(GL_RENDERER);
-        std::string rendererString = renderer ? (const char*)renderer : "";
-        if (rendererString.find("Radeon")!=std::string::npos || rendererString.find("RADEON")!=std::string::npos || rendererString.find("FirePro")!=std::string::npos)
-        {
-            // AMD/ATI drivers are producing an invalid enumerate error on the
-            // glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS_ARB, &bits);
-            // call so work around it by assuming 64 bits for counter.
-            setTimestampBits(64);
-            //setTimestampBits(0);
-        }
-        else
-        {
-            GLint bits = 0;
-            _glExtensions->glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS_ARB, &bits);
-            setTimestampBits(bits);
-        }
-    }
-
-
-    _extensionProcsInitialized = true;
-
-    if (_graphicsCostEstimator.valid())
-    {
-        RenderInfo renderInfo(this,0);
-        _graphicsCostEstimator->calibrate(renderInfo);
-    }
-}
 
 #if USE_VERTEXARRAYSTATE
 /////////////////////////////////////////////////////////////////////////

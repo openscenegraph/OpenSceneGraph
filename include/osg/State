@@ -1499,6 +1499,9 @@ class OSG_EXPORT State : public Referenced
 
         bool isVertexBufferObjectSupported() const { return _isVertexBufferObjectSupportResolved?_isVertexBufferObjectSupported:computeVertexBufferObjectSupported(); }
 
+        bool isVertexArrayObjectSupported() const { return _isVertexArrayObjectSupported; }
+
+        bool useVertexArrayObject() const { return _useVertexArrayObject; }
 
         inline void setLastAppliedProgramObject(const Program::PerContextProgram* program)
         {
@@ -2092,6 +2095,9 @@ class OSG_EXPORT State : public Referenced
         mutable bool _isVertexBufferObjectSupportResolved;
         mutable bool _isVertexBufferObjectSupported;
         bool computeVertexBufferObjectSupported() const;
+
+        bool _isVertexArrayObjectSupported;
+        bool _useVertexArrayObject;
 
         typedef void (GL_APIENTRY * ActiveTextureProc) (GLenum texture);
         typedef void (GL_APIENTRY * FogCoordPointerProc) (GLenum type, GLsizei stride, const GLvoid *pointer);

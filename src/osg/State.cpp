@@ -1050,16 +1050,6 @@ void State::disableAllVertexArrays()
     disableVertexAttribPointersAboveAndIncluding(0);
 }
 
-void State::dirtyAllVertexArrays()
-{
-    dirtyVertexPointer();
-    dirtyColorPointer();
-    dirtyFogCoordPointer();
-    dirtyNormalPointer();
-    dirtySecondaryColorPointer();
-    dirtyTexCoordPointersAboveAndIncluding(0);
-    dirtyVertexAttribPointersAboveAndIncluding(0);
-}
 
 void State::setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* pointer)
 {
@@ -1078,6 +1068,8 @@ void State::setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* p
 
 
 #if USE_VERTEXARRAYSTATE
+
+#if 0
 /////////////////////////////////////////////////////////////////////////
 //
 // New VertexArrayState version
@@ -1092,11 +1084,6 @@ void State::disableVertexPointer()
     _currentVertexArrayState->disableVertexArray(*this);
 }
 
-void State::dirtyVertexPointer()
-{
-    OSG_NOTICE<<"NOT IMPLEMENTED YET, dirtyVertexPointer() "<<__LINE__<<std::endl;
-}
-
 void State::setNormalPointer(const Array* array)
 {
     _currentVertexArrayState->setNormalArray(*this, array);
@@ -1105,11 +1092,6 @@ void State::setNormalPointer(const Array* array)
 void State::disableNormalPointer()
 {
     _currentVertexArrayState->disableNormalArray(*this);
-}
-
-void State::dirtyNormalPointer()
-{
-    OSG_NOTICE<<"NOT IMPLEMENTED YET, dirtyNormalPointer() "<<__LINE__<<std::endl;
 }
 
 
@@ -1123,17 +1105,7 @@ void State::disableColorPointer()
     _currentVertexArrayState->disableColorArray(*this);
 }
 
-void State::dirtyColorPointer()
-{
-    OSG_NOTICE<<"NOT IMPLEMENTED YET, dirtyColorPointer() "<<__LINE__<<std::endl;
-}
 
-
-void State::setSecondaryColorPointer( GLint size, GLenum type,
-                                      GLsizei stride, const GLvoid *ptr, GLboolean normalized )
-{
-    OSG_NOTICE<<"NOT IMPLEMENTED YET, setSecondaryColorPointer() "<<__LINE__<<std::endl;
-}
 
 void State::setSecondaryColorPointer(const Array* array)
 {
@@ -1145,29 +1117,16 @@ void State::disableSecondaryColorPointer()
     _currentVertexArrayState->disableSecondaryColorArray(*this);
 }
 
-void State::dirtySecondaryColorPointer()
-{
-    OSG_NOTICE<<"NOT IMPLEMENTED YET, dirtySecondaryColorPointer() "<<__LINE__<<std::endl;
-}
 
 void State::setFogCoordPointer(const Array* array)
 {
     _currentVertexArrayState->setFogCoordArray(*this, array);
 }
 
-void State::setFogCoordPointer(GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean normalized)
-{
-    OSG_NOTICE<<"NOT IMPLEMENTED YET, setFogCoordPointer "<<__LINE__<<std::endl;
-}
 
 void State::disableFogCoordPointer()
 {
     _currentVertexArrayState->disableFogCoordArray(*this);
-}
-
-void State::dirtyFogCoordPointer()
-{
-    OSG_NOTICE<<"NOT IMPLEMENTED YET, dirtyFogCoordPointer() "<<__LINE__<<std::endl;
 }
 
 void State::setTexCoordPointer(unsigned int unit, const Array* array)
@@ -1184,12 +1143,75 @@ void State::disableTexCoordPointersAboveAndIncluding( unsigned int unit )
 {
     _currentVertexArrayState->disableTexCoordArrayAboveAndIncluding(*this, unit);
 }
+#endif
+
+#if 0
+void State::dirtyVertexPointer()
+{
+    OSG_NOTICE<<"NOT IMPLEMENTED YET, dirtyVertexPointer() "<<__LINE__<<std::endl;
+}
+
+void State::dirtyNormalPointer()
+{
+    OSG_NOTICE<<"NOT IMPLEMENTED YET, dirtyNormalPointer() "<<__LINE__<<std::endl;
+}
+
+void State::dirtyColorPointer()
+{
+    OSG_NOTICE<<"NOT IMPLEMENTED YET, dirtyColorPointer() "<<__LINE__<<std::endl;
+}
+
+void State::setSecondaryColorPointer( GLint size, GLenum type,
+                                      GLsizei stride, const GLvoid *ptr, GLboolean normalized )
+{
+    OSG_NOTICE<<"NOT IMPLEMENTED YET, setSecondaryColorPointer() "<<__LINE__<<std::endl;
+}
+
+void State::dirtySecondaryColorPointer()
+{
+    OSG_NOTICE<<"NOT IMPLEMENTED YET, dirtySecondaryColorPointer() "<<__LINE__<<std::endl;
+}
+
+void State::setFogCoordPointer(GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean normalized)
+{
+    OSG_NOTICE<<"NOT IMPLEMENTED YET, setFogCoordPointer "<<__LINE__<<std::endl;
+}
+
+void State::dirtyFogCoordPointer()
+{
+    OSG_NOTICE<<"NOT IMPLEMENTED YET, dirtyFogCoordPointer() "<<__LINE__<<std::endl;
+}
 
 void State::dirtyTexCoordPointersAboveAndIncluding( unsigned int unit )
 {
     OSG_NOTICE<<"NOT IMPLEMENTED YET "<<__LINE__<<std::endl;
 }
+void State::dirtyVertexAttribPointersAboveAndIncluding( unsigned int index )
+{
+    OSG_NOTICE<<"NOT IMPLEMENTED YET, dirtyVertexAttribPointersAboveAndIncluding "<<__LINE__<<std::endl;
+}
 
+void State::dirtyVertexAttribPointer( unsigned int index )
+{
+    OSG_NOTICE<<"NOT IMPLEMENTED YET, dirtyVertexAttribPointer() "<<__LINE__<<std::endl;
+}
+
+void State::dirtyAllVertexArrays()
+{
+    dirtyVertexPointer();
+    dirtyColorPointer();
+    dirtyFogCoordPointer();
+    dirtyNormalPointer();
+    dirtySecondaryColorPointer();
+    dirtyTexCoordPointersAboveAndIncluding(0);
+    dirtyVertexAttribPointersAboveAndIncluding(0);
+}
+#endif
+
+void State::dirtyAllVertexArrays()
+{
+    OSG_INFO<<"State::dirtyAllVertexArrays()"<<std::endl;
+}
 
 bool State::setClientActiveTextureUnit( unsigned int unit )
 {
@@ -1252,11 +1274,6 @@ void State::setVertexAttribLPointer( unsigned int index,
     OSG_NOTICE<<"NOT IMPLEMENTED YET "<<__LINE__<<std::endl;
 }
 
-void State::dirtyVertexAttribPointersAboveAndIncluding( unsigned int index )
-{
-    OSG_NOTICE<<"NOT IMPLEMENTED YET, dirtyVertexAttribPointersAboveAndIncluding "<<__LINE__<<std::endl;
-}
-
 void State::disableVertexAttribPointer( unsigned int index )
 {
     _currentVertexArrayState->disableVertexAttribArray(*this, index);
@@ -1267,10 +1284,6 @@ void State::disableVertexAttribPointersAboveAndIncluding( unsigned int index )
     _currentVertexArrayState->disableVertexAttribArrayAboveAndIncluding(*this, index);
 }
 
-void State::dirtyVertexAttribPointer( unsigned int index )
-{
-    OSG_NOTICE<<"NOT IMPLEMENTED YET, dirtyVertexAttribPointer() "<<__LINE__<<std::endl;
-}
 
 void State::lazyDisablingOfVertexAttributes()
 {

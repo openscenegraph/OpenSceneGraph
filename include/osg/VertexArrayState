@@ -92,17 +92,18 @@ public:
 
         void assignAllDispatchers();
 
-        virtual void assignVertexArrayDispatcher();
-        virtual void assignNormalArrayDispatcher();
-        virtual void assignColorArrayDispatcher();
-        virtual void assignSecondaryColorArrayDispatcher();
-        virtual void assignFogCoordArrayDispatcher();
-        virtual void assignTexCoordArrayDispatcher(unsigned int numUnits);
-        virtual void assignVertexAttribArrayDispatcher(unsigned int numUnits);
+        void assignVertexArrayDispatcher();
+        void assignNormalArrayDispatcher();
+        void assignColorArrayDispatcher();
+        void assignSecondaryColorArrayDispatcher();
+        void assignFogCoordArrayDispatcher();
+        void assignTexCoordArrayDispatcher(unsigned int numUnits);
+        void assignVertexAttribArrayDispatcher(unsigned int numUnits);
 
         inline bool isVertexBufferObjectSupported() const { return true; }
 
         void setArray(ArrayDispatch* vad, osg::State& state, const osg::Array* new_array);
+
         void disable(ArrayDispatch* vad, osg::State& state) { vad->disable(state); vad->array=0; vad->modifiedCount=0xffffffff; vad->active=false; }
 
         inline void setVertexArray(osg::State& state, const osg::Array* array) { setArray(_vertexArray.get(), state, array); }
@@ -122,26 +123,26 @@ public:
 
         inline void setTexCoordArray(osg::State& state, unsigned int unit, const osg::Array* array) { setArray(_texCoordArrays[unit].get(), state, array); }
         inline void disableTexCoordArray(osg::State& state, unsigned int unit) { disable(_texCoordArrays[unit].get(),state); }
-        void disableTexCoordArrayAboveAndIncluding(osg::State& state, unsigned int index);
+        inline void disableTexCoordArrayAboveAndIncluding(osg::State& state, unsigned int index);
 
         inline void setVertexAttribArray(osg::State& state, unsigned int unit, const osg::Array* array) { setArray(_vertexAttribArrays[unit].get(), state, array); }
         inline void disableVertexAttribArray(osg::State& state, unsigned int unit) { disable(_vertexAttribArrays[unit].get(), state); }
-        void disableVertexAttribArrayAboveAndIncluding(osg::State& state, unsigned int index);
+        inline void disableVertexAttribArrayAboveAndIncluding(osg::State& state, unsigned int index);
 
         /** Mark all the vertex attributes as being disabled but leave the disabling till a later call to applyDisablingOfVertexAttributes.*/
-        void lazyDisablingOfVertexAttributes();
+        inline void lazyDisablingOfVertexAttributes();
 
         /** Disable all the vertex attributes that have been marked as to be disabled.*/
-        void applyDisablingOfVertexAttributes(osg::State& state);
+        inline void applyDisablingOfVertexAttributes(osg::State& state);
 
         // Verex Array Object methods.
         void generateVretexArrayObject();
 
-        void bindVertexArrayObject() const;
-
-        void unbindVertexArrayObject() const;
-
         void deleteVertexArrayObject();
+
+        inline void bindVertexArrayObject() const { _ext->glBindVertexArray (_vertexArrayObject); }
+
+        inline void unbindVertexArrayObject() const { _ext->glBindVertexArray (0); }
 
         GLint getVertexArrayObject() const { return _vertexArrayObject; }
 
@@ -178,6 +179,56 @@ public:
 
         bool                            _requiresSetArrays;
 };
+
+
+inline void VertexArrayState::lazyDisablingOfVertexAttributes()
+{
+    _activeDispatchers.swap(_previous_activeDispatchers);
+    _activeDispatchers.clear();
+
+    for(ActiveDispatchers::iterator itr = _previous_activeDispatchers.begin();
+        itr != _previous_activeDispatchers.end();
+        ++itr)
+    {
+        ArrayDispatch* ad = (*itr);
+        // ad->array = 0;
+        ad->active = false;
+    }
+}
+
+inline void VertexArrayState::applyDisablingOfVertexAttributes(osg::State& state)
+{
+    for(ActiveDispatchers::iterator itr = _previous_activeDispatchers.begin();
+        itr != _previous_activeDispatchers.end();
+        ++itr)
+    {
+        ArrayDispatch* ad = (*itr);
+        if (!ad->active)
+        {
+            ad->disable(state);
+            ad->array = 0;
+            ad->modifiedCount = 0xffffffff;
+        }
+    }
+    _previous_activeDispatchers.clear();
+}
+
+inline void VertexArrayState::disableTexCoordArrayAboveAndIncluding(osg::State& state, unsigned int index)
+{
+    for(unsigned int i=index; i<_texCoordArrays.size(); ++i)
+    {
+        disable(_texCoordArrays[i].get(), state);
+    }
+}
+
+inline void VertexArrayState::disableVertexAttribArrayAboveAndIncluding(osg::State& state, unsigned int index)
+{
+    for(unsigned int i=index; i<_vertexAttribArrays.size(); ++i)
+    {
+        disable(_vertexAttribArrays[i].get(), state);
+    }
+}
+
 
 
 }

@@ -641,7 +641,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
         VertexArrayState* vas = _vertexArrayStateList[contextID].get();
         if (!vas)
         {
-            _vertexArrayStateList[contextID] = vas = setUpVertexArrayState(renderInfo, true);
+            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo, true);
         }
         else
         {
@@ -699,7 +699,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
     }
 }
 
-VertexArrayState* Drawable::setUpVertexArrayState(RenderInfo& renderInfo, bool usingVBOs) const
+VertexArrayState* Drawable::createVertexArrayState(RenderInfo& renderInfo, bool usingVBOs) const
 {
     osg::State* state = renderInfo.getState();
     return new osg::VertexArrayState(state->get<GLExtensions>());

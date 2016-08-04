@@ -663,7 +663,7 @@ void Geometry::releaseGLObjects(State* state) const
 
 }
 
-VertexArrayState* Geometry::setUpVertexArrayState(RenderInfo& renderInfo, bool usingVBOs) const
+VertexArrayState* Geometry::createVertexArrayState(RenderInfo& renderInfo, bool usingVBOs) const
 {
     OSG_NOTICE<<"Creating new osg::VertexArrayState"<<std::endl;
     State& state = *renderInfo.getState();
@@ -764,7 +764,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
         {
             VertexArrayState* vas = 0;
 
-            _vertexArrayStateList[contextID] = vas = setUpVertexArrayState(renderInfo, true);
+            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo, true);
 
             State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 

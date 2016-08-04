@@ -770,7 +770,6 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
 
             vas->bindVertexArrayObject();
 
-
             drawVertexArraysImplementation(renderInfo);
         }
     }

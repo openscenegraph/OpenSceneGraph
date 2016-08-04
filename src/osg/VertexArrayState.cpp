@@ -439,18 +439,6 @@ void VertexArrayState::generateVretexArrayObject()
     _ext->glGenVertexArrays(1, &_vertexArrayObject);
 }
 
-void VertexArrayState::bindVertexArrayObject() const
-{
-    VAS_NOTICE<<"glBindVertexArray() _vertexArrayObject="<<_vertexArrayObject<<std::endl;
-
-    _ext->glBindVertexArray (_vertexArrayObject);
-}
-
-void VertexArrayState::unbindVertexArrayObject() const
-{
-     _ext->glBindVertexArray (0);
-}
-
 void VertexArrayState::deleteVertexArrayObject()
 {
     if (_vertexArrayObject)
@@ -577,60 +565,24 @@ void VertexArrayState::assignAllDispatchers()
     assignVertexAttribArrayDispatcher(numVertexAttrib);
 }
 
-void VertexArrayState::lazyDisablingOfVertexAttributes()
+void VertexArrayState::release()
 {
-    VAS_NOTICE<<"  VertexArrayState<"<<this<<">::lazyDisablingOfVertexAttributes() _activeDispatchers.size()="<<_activeDispatchers.size()<<", _previous_activeDispatchers.size()="<<_previous_activeDispatchers.size()<<std::endl;
+    VAS_NOTICE<<"VertexArrayState::release() "<<this<<std::endl;
 
-    _activeDispatchers.swap(_previous_activeDispatchers);
-    _activeDispatchers.clear();
-
-    for(ActiveDispatchers::iterator itr = _previous_activeDispatchers.begin();
-        itr != _previous_activeDispatchers.end();
-        ++itr)
-    {
-        ArrayDispatch* ad = (*itr);
-        // ad->array = 0;
-        ad->active = false;
-    }
-}
-
-void VertexArrayState::applyDisablingOfVertexAttributes(osg::State& state)
-{
-    VAS_NOTICE<<"  VertexArrayState<"<<this<<">::applyDisablingOfVertexAttributes() _activeDispatchers.size()="<<_activeDispatchers.size()<<", _previous_activeDispatchers.size()="<<_previous_activeDispatchers.size()<<std::endl;
-
-    for(ActiveDispatchers::iterator itr = _previous_activeDispatchers.begin();
-        itr != _previous_activeDispatchers.end();
-        ++itr)
-    {
-        ArrayDispatch* ad = (*itr);
-        if (!ad->active)
-        {
-            ad->disable(state);
-            ad->array = 0;
-            ad->modifiedCount = 0xffffffff;
-        }
-    }
-    _previous_activeDispatchers.clear();
+    osg::get<VertexArrayStateManager>(_ext->contextID)->release(this);
 }
 
 void VertexArrayState::setArray(ArrayDispatch* vad, osg::State& state, const osg::Array* new_array)
 {
     if (new_array)
     {
-        VAS_NOTICE<<"  VertexArrayState<"<<this<<">::setArray() "<<typeid(*vad).name()<<" new_array="<<new_array<<", size()="<<new_array->getNumElements()<<std::endl;
-
         if (!vad->active)
         {
             vad->active = true;
             _activeDispatchers.push_back(vad);
         }
 
-#define LAZY_UPDATE
-#define CHECK_IF_UPDATE
-
-#ifdef LAZY_UPDATE
         if (vad->array==0)
-#endif
         {
             GLBufferObject* vbo = isVertexBufferObjectSupported() ? new_array->getOrCreateGLBufferObject(state.getContextID()) : 0;
             if (vbo)
@@ -644,11 +596,7 @@ void VertexArrayState::setArray(ArrayDispatch* vad, osg::State& state, const osg
                 vad->enable_and_dispatch(state, new_array);
             }
         }
-#ifdef LAZY_UPDATE
-        else
-#ifdef CHECK_IF_UPDATE
-        if (new_array!=vad->array || new_array->getModifiedCount()!=vad->modifiedCount)
-#endif
+        else if (new_array!=vad->array || new_array->getModifiedCount()!=vad->modifiedCount)
         {
             GLBufferObject* vbo = isVertexBufferObjectSupported() ? new_array->getOrCreateGLBufferObject(state.getContextID()) : 0;
             if (vbo)
@@ -662,14 +610,6 @@ void VertexArrayState::setArray(ArrayDispatch* vad, osg::State& state, const osg
                 vad->dispatch(state, new_array);
             }
         }
-#ifdef CHECK_IF_UPDATE
-        else
-        {
-            VAS_NOTICE<<"**************** No need to update *************************"<<std::endl;
-            return;
-        }
-#endif
-#endif
 
         vad->array = new_array;
         vad->modifiedCount = new_array->getModifiedCount();
@@ -677,31 +617,6 @@ void VertexArrayState::setArray(ArrayDispatch* vad, osg::State& state, const osg
     }
     else if (vad->array)
     {
-        VAS_NOTICE<<"  VertexArrayState::setArray() need to disable "<<typeid(*vad).name()<<std::endl;
-
         disable(vad, state);
     }
-}
-
-void VertexArrayState::disableTexCoordArrayAboveAndIncluding(osg::State& state, unsigned int index)
-{
-    for(unsigned int i=index; i<_texCoordArrays.size(); ++i)
-    {
-        disable(_texCoordArrays[i].get(), state);
-    }
-}
-
-void VertexArrayState::disableVertexAttribArrayAboveAndIncluding(osg::State& state, unsigned int index)
-{
-    for(unsigned int i=index; i<_vertexAttribArrays.size(); ++i)
-    {
-        disable(_vertexAttribArrays[i].get(), state);
-    }
-}
-
-void VertexArrayState::release()
-{
-    VAS_NOTICE<<"VertexArrayState::release() "<<this<<std::endl;
-
-    osg::get<VertexArrayStateManager>(_ext->contextID)->release(this);
 }

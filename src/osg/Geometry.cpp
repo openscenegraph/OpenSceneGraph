@@ -760,8 +760,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
         extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
         extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
 
-        const DisplaySettings* ds = state.getDisplaySettings() ? state.getDisplaySettings() : osg::DisplaySettings::instance();
-        if (ds->getGeometryImplementation()==DisplaySettings::VERTEX_ARRAY_OBJECT && !bufferObjects.empty())
+        if (state.useVertexArrayObject() && !bufferObjects.empty())
         {
             VertexArrayState* vas = 0;
 
@@ -808,8 +807,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
     drawPrimitivesImplementation(renderInfo);
 
-    const DisplaySettings* ds = state.getDisplaySettings() ? state.getDisplaySettings() : osg::DisplaySettings::instance();
-    bool useVertexArrayObject = _useVertexBufferObjects &&  (ds->getGeometryImplementation()==DisplaySettings::VERTEX_ARRAY_OBJECT);
+    bool useVertexArrayObject = _useVertexBufferObjects && state.useVertexArrayObject();
     unsigned int contextID = renderInfo.getContextID();
     if (!useVertexArrayObject || _vertexArrayStateList[contextID]->getRequiresSetArrays())
     {
@@ -849,8 +847,7 @@ void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
     arrayDispatchers.dispatch(osg::Array::BIND_OVERALL,0);
 
 
-    const DisplaySettings* ds = state.getDisplaySettings() ? state.getDisplaySettings() : osg::DisplaySettings::instance();
-    bool useVertexArrayObject = _useVertexBufferObjects &&  (ds->getGeometryImplementation()==DisplaySettings::VERTEX_ARRAY_OBJECT);
+    bool useVertexArrayObject = _useVertexBufferObjects &&  state.useVertexArrayObject();
     unsigned int contextID = renderInfo.getContextID();
     if (useVertexArrayObject)
     {

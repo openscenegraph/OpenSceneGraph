@@ -632,10 +632,9 @@ void Drawable::draw(RenderInfo& renderInfo) const
 #if 1
 
     State& state = *renderInfo.getState();
-    const DisplaySettings* ds = state.getDisplaySettings() ? state.getDisplaySettings() : osg::DisplaySettings::instance();
-    bool useVertexArrayObject = _useVertexBufferObjects &&  (ds->getGeometryImplementation()==DisplaySettings::VERTEX_ARRAY_OBJECT);
+    bool useVertexArrayObject = _useVertexBufferObjects && state.useVertexArrayObject();
 
-    if (useVertexArrayObject /*&& state.VAOSupported*/)
+    if (useVertexArrayObject)
     {
         unsigned int contextID = renderInfo.getContextID();
 

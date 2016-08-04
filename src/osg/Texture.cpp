@@ -1669,6 +1669,14 @@ void Texture::computeInternalFormatType() const
         case GL_RGB16UI_EXT:
         case GL_RGB8UI_EXT:
 
+        case GL_RG32UI:
+        case GL_RG16UI:
+        case GL_RG8UI:
+
+        case GL_R32UI:
+        case GL_R16UI:
+        case GL_R8UI:
+
         case GL_LUMINANCE32UI_EXT:
         case GL_LUMINANCE16UI_EXT:
         case GL_LUMINANCE8UI_EXT:
@@ -1691,6 +1699,14 @@ void Texture::computeInternalFormatType() const
         case GL_RGB16I_EXT:
         case GL_RGB8I_EXT:
 
+        case GL_RG32I:
+        case GL_RG16I:
+        case GL_RG8I:
+
+        case GL_R32I:
+        case GL_R16I:
+        case GL_R8I:
+
         case GL_LUMINANCE32I_EXT:
         case GL_LUMINANCE16I_EXT:
         case GL_LUMINANCE8I_EXT:
@@ -1710,6 +1726,12 @@ void Texture::computeInternalFormatType() const
 
         case GL_RGB32F_ARB:
         case GL_RGB16F_ARB:
+
+        case GL_RG32F:
+        case GL_RG16F:
+
+        case GL_R32F:
+        case GL_R16F:
 
         case GL_LUMINANCE32F_ARB:
         case GL_LUMINANCE16F_ARB:

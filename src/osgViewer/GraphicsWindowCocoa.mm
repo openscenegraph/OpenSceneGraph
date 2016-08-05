@@ -1202,6 +1202,11 @@ bool GraphicsWindowCocoa::realizeImplementation()
         attr[i++] = static_cast<NSOpenGLPixelFormatAttribute>(_traits->samples);
     }
 
+#ifdef OSG_GL3_AVAILABLE
+    attr[i++] = NSOpenGLPFAOpenGLProfile;
+    attr[i++] = NSOpenGLProfileVersion3_2Core;
+    OSG_DEBUG << "GraphicsWindowCocoa::realizeImplementation :: set up for GL3 Core Profile"<< std::endl;
+#endif
 
     attr[i++] = NSOpenGLPFAAccelerated;
     attr[i] = static_cast<NSOpenGLPixelFormatAttribute>(0);

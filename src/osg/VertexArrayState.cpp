@@ -17,9 +17,11 @@
 
 using namespace osg;
 
+#if 1
 #define VAS_NOTICE OSG_INFO
-//#define VAS_NOTICE OSG_NOTICE
-
+#else
+#define VAS_NOTICE OSG_NOTICE
+#endif
 
 class VertexArrayStateManager : public GraphicsObjectManager
 {
@@ -425,13 +427,14 @@ struct VertexAttribArrayDispatch : public VertexArrayState::ArrayDispatch
 //
 // VertexArrayState
 //
-VertexArrayState::VertexArrayState(osg::GLExtensions* ext):
-    _ext(ext),
+VertexArrayState::VertexArrayState(osg::State* state):
+    _state(state),
     _vertexArrayObject(0),
     _currentVBO(0),
     _currentEBO(0),
     _requiresSetArrays(true)
 {
+    _ext = _state->get<GLExtensions>();
 }
 
 void VertexArrayState::generateVretexArrayObject()
@@ -452,78 +455,83 @@ void VertexArrayState::deleteVertexArrayObject()
 
 void VertexArrayState::assignVertexArrayDispatcher()
 {
+    OSG_NOTICE<<"VertexArrayState::assignVertexArrayDispatcher() _state->getUseVertexAttributeAliasing()="<<_state->getUseVertexAttributeAliasing()<<std::endl;
+
 #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-    if (!_ext->getUseVertexAttributeAliasing())
+    if (!_state->getUseVertexAttributeAliasing())
     {
         _vertexArray = new VertexArrayDispatch();
     }
     else
 #endif
     {
-        _vertexArray = new VertexAttribArrayDispatch(_ext->getVertexAlias()._location);
+        VAS_NOTICE<<"VertexArrayState::assignNormalArrayDispatcher() _state->getVertexAlias()._location="<<_state->getVertexAlias()._location<<std::endl;
+        _vertexArray = new VertexAttribArrayDispatch(_state->getVertexAlias()._location);
     }
 }
 
 void VertexArrayState::assignNormalArrayDispatcher()
 {
 #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-    if (!_ext->getUseVertexAttributeAliasing())
+    if (!_state->getUseVertexAttributeAliasing())
     {
         _normalArray = new NormalArrayDispatch();
     }
     else
 #endif
     {
-        _normalArray = new VertexAttribArrayDispatch(_ext->getNormalAlias()._location);
+        VAS_NOTICE<<"VertexArrayState::assignNormalArrayDispatcher() _state->getNormalAlias()._location="<<_state->getNormalAlias()._location<<std::endl;
+        _normalArray = new VertexAttribArrayDispatch(_state->getNormalAlias()._location);
     }
 }
 
 void VertexArrayState::assignColorArrayDispatcher()
 {
 #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-    if (!_ext->getUseVertexAttributeAliasing())
+    if (!_state->getUseVertexAttributeAliasing())
     {
         _colorArray = new ColorArrayDispatch();
     }
     else
 #endif
     {
-        _colorArray = new VertexAttribArrayDispatch(_ext->getColorAlias()._location);
+        VAS_NOTICE<<"VertexArrayState::assignColorArrayDispatcher() _state->getColorAlias()._location="<<_state->getColorAlias()._location<<std::endl;
+        _colorArray = new VertexAttribArrayDispatch(_state->getColorAlias()._location);
     }
 }
 
 void VertexArrayState::assignSecondaryColorArrayDispatcher()
 {
 #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-    if (!_ext->getUseVertexAttributeAliasing())
+    if (!_state->getUseVertexAttributeAliasing())
     {
         _secondaryColorArray = new SecondaryColorArrayDispatch();
     }
     else
 #endif
     {
-        _secondaryColorArray = new VertexAttribArrayDispatch(_ext->getSecondaryColorAlias()._location);
+        _secondaryColorArray = new VertexAttribArrayDispatch(_state->getSecondaryColorAlias()._location);
     }
 }
 
 void VertexArrayState::assignFogCoordArrayDispatcher()
 {
 #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-    if (!_ext->getUseVertexAttributeAliasing())
+    if (!_state->getUseVertexAttributeAliasing())
     {
         _fogCoordArray = new FogCoordArrayDispatch();
     }
     else
 #endif
     {
-        _fogCoordArray = new VertexAttribArrayDispatch(_ext->getFogCoordAlias()._location);
+        _fogCoordArray = new VertexAttribArrayDispatch(_state->getFogCoordAlias()._location);
     }
 }
 
 void VertexArrayState::assignTexCoordArrayDispatcher(unsigned int numUnits)
 {
 #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-    if (!_ext->getUseVertexAttributeAliasing())
+    if (!_state->getUseVertexAttributeAliasing())
     {
         _texCoordArrays.clear();
         for(unsigned int i=0; i<numUnits; ++i)
@@ -537,7 +545,8 @@ void VertexArrayState::assignTexCoordArrayDispatcher(unsigned int numUnits)
         _texCoordArrays.clear();
         for(unsigned int i=0; i<numUnits; ++i)
         {
-            _texCoordArrays.push_back( new VertexAttribArrayDispatch(_ext->getTexCoordAliasList()[i]._location) );
+            VAS_NOTICE<<"VertexArrayState::VertexArrayState::assignTexCoordArrayDispatcher() _state->getTexCoordAliasList()[i]._location="<<_state->getTexCoordAliasList()[i]._location<<std::endl;
+            _texCoordArrays.push_back( new VertexAttribArrayDispatch(_state->getTexCoordAliasList()[i]._location) );
         }
     }
 }

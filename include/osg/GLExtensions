@@ -698,58 +698,6 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
 
         GLint  glMaxTextureCoords;
         GLint  glMaxTextureUnits;
-public:
-
-
-        void setUseVertexAttributeAliasing(bool flag) { _useVertexAttributeAliasing = flag; }
-        bool getUseVertexAttributeAliasing() const { return _useVertexAttributeAliasing ; }
-
-        typedef std::vector<VertexAttribAlias> VertexAttribAliasList;
-        typedef std::map<std::string,GLuint> AttribBindingList;
-
-        void setUpVertexAttribAlias(VertexAttribAlias& alias, GLuint location, const std::string glName, const std::string osgName, const std::string& declaration);
-
-        /** Reset the vertex attribute aliasing to osg's default. This method needs to be called before render anything unless you really know what you're doing !*/
-        void resetVertexAttributeAlias(bool compactAliasing=true, unsigned int numTextureUnits=8);
-
-        /** Set the vertex attribute aliasing for "vertex". This method needs to be called before render anything unless you really know what you're doing !*/
-        void setVertexAlias(const VertexAttribAlias& alias) { _vertexAlias = alias; }
-        const VertexAttribAlias& getVertexAlias() { return _vertexAlias; }
-
-        /** Set the vertex attribute aliasing for "normal". This method needs to be called before render anything unless you really know what you're doing !*/
-        void setNormalAlias(const VertexAttribAlias& alias) { _normalAlias = alias; }
-        const VertexAttribAlias& getNormalAlias() { return _normalAlias; }
-
-        /** Set the vertex attribute aliasing for "color". This method needs to be called before render anything unless you really know what you're doing !*/
-        void setColorAlias(const VertexAttribAlias& alias) { _colorAlias = alias; }
-        const VertexAttribAlias& getColorAlias() { return _colorAlias; }
-
-        /** Set the vertex attribute aliasing for "secondary color". This method needs to be called before render anything unless you really know what you're doing !*/
-        void setSecondaryColorAlias(const VertexAttribAlias& alias) { _secondaryColorAlias = alias; }
-        const VertexAttribAlias& getSecondaryColorAlias() { return _secondaryColorAlias; }
-
-        /** Set the vertex attribute aliasing for "fog coord". This method needs to be called before render anything unless you really know what you're doing !*/
-        void setFogCoordAlias(const VertexAttribAlias& alias) { _fogCoordAlias = alias; }
-        const VertexAttribAlias& getFogCoordAlias() { return _fogCoordAlias; }
-
-        /** Set the vertex attribute aliasing list for texture coordinates. This method needs to be called before render anything unless you really know what you're doing !*/
-        void setTexCoordAliasList(const VertexAttribAliasList& aliasList) { _texCoordAliasList = aliasList; }
-        const VertexAttribAliasList& getTexCoordAliasList() { return _texCoordAliasList; }
-
-        /** Set the vertex attribute binding list. This method needs to be called before render anything unless you really know what you're doing !*/
-        void  setAttributeBindingList(const AttribBindingList& attribBindingList) { _attributeBindingList = attribBindingList; }
-        const AttribBindingList&  getAttributeBindingList() { return _attributeBindingList; }
-
-
-        bool                        _useVertexAttributeAliasing;
-        VertexAttribAlias           _vertexAlias;
-        VertexAttribAlias           _normalAlias;
-        VertexAttribAlias           _colorAlias;
-        VertexAttribAlias           _secondaryColorAlias;
-        VertexAttribAlias           _fogCoordAlias;
-        VertexAttribAliasList       _texCoordAliasList;
-
-        AttribBindingList           _attributeBindingList;
 
 };
 

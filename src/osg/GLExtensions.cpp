@@ -1180,14 +1180,6 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
         glMaxTextureUnits = 0;
         glMaxTextureCoords = 0;
     }
-
-    #if !defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
-        _useVertexAttributeAliasing = true;
-    #else
-        _useVertexAttributeAliasing = false;
-    #endif
-
-
 }
 
 
@@ -1294,64 +1286,4 @@ bool GLExtensions::getFragDataLocation( const char* fragDataName, GLuint& locati
 
     location = loc;
     return true;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//  Vertex Attrib Aliasing
-//
-void GLExtensions::setUpVertexAttribAlias(VertexAttribAlias& alias, GLuint location, const std::string glName, const std::string osgName, const std::string& declaration)
-{
-    alias = VertexAttribAlias(location, glName, osgName, declaration);
-    _attributeBindingList[osgName] = location;
-    // OSG_NOTICE<<"State::setUpVertexAttribAlias("<<location<<" "<<glName<<" "<<osgName<<")"<<std::endl;
-}
-
-void GLExtensions::resetVertexAttributeAlias(bool compactAliasing, unsigned int numTextureUnits)
-{
-    _texCoordAliasList.clear();
-    _attributeBindingList.clear();
-
-    if (compactAliasing)
-    {
-        unsigned int slot = 0;
-        setUpVertexAttribAlias(_vertexAlias, slot++, "gl_Vertex","osg_Vertex","attribute vec4 ");
-        setUpVertexAttribAlias(_normalAlias, slot++, "gl_Normal","osg_Normal","attribute vec3 ");
-        setUpVertexAttribAlias(_colorAlias, slot++, "gl_Color","osg_Color","attribute vec4 ");
-
-        _texCoordAliasList.resize(numTextureUnits);
-        for(unsigned int i=0; i<_texCoordAliasList.size(); i++)
-        {
-            std::stringstream gl_MultiTexCoord;
-            std::stringstream osg_MultiTexCoord;
-            gl_MultiTexCoord<<"gl_MultiTexCoord"<<i;
-            osg_MultiTexCoord<<"osg_MultiTexCoord"<<i;
-
-            setUpVertexAttribAlias(_texCoordAliasList[i], slot++, gl_MultiTexCoord.str(), osg_MultiTexCoord.str(), "attribute vec4 ");
-        }
-
-        setUpVertexAttribAlias(_secondaryColorAlias, slot++, "gl_SecondaryColor","osg_SecondaryColor","attribute vec4 ");
-        setUpVertexAttribAlias(_fogCoordAlias, slot++, "gl_FogCoord","osg_FogCoord","attribute float ");
-
-    }
-    else
-    {
-        setUpVertexAttribAlias(_vertexAlias,0, "gl_Vertex","osg_Vertex","attribute vec4 ");
-        setUpVertexAttribAlias(_normalAlias, 2, "gl_Normal","osg_Normal","attribute vec3 ");
-        setUpVertexAttribAlias(_colorAlias, 3, "gl_Color","osg_Color","attribute vec4 ");
-        setUpVertexAttribAlias(_secondaryColorAlias, 4, "gl_SecondaryColor","osg_SecondaryColor","attribute vec4 ");
-        setUpVertexAttribAlias(_fogCoordAlias, 5, "gl_FogCoord","osg_FogCoord","attribute float ");
-
-        unsigned int base = 8;
-        _texCoordAliasList.resize(numTextureUnits);
-        for(unsigned int i=0; i<_texCoordAliasList.size(); i++)
-        {
-            std::stringstream gl_MultiTexCoord;
-            std::stringstream osg_MultiTexCoord;
-            gl_MultiTexCoord<<"gl_MultiTexCoord"<<i;
-            osg_MultiTexCoord<<"osg_MultiTexCoord"<<i;
-
-            setUpVertexAttribAlias(_texCoordAliasList[i], base+i, gl_MultiTexCoord.str(), osg_MultiTexCoord.str(), "attribute vec4 ");
-        }
-    }
 }

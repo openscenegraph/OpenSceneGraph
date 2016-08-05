@@ -626,6 +626,5 @@ void Drawable::compileGLObjects(RenderInfo& renderInfo) const
 
 VertexArrayState* Drawable::createVertexArrayState(RenderInfo& renderInfo, bool usingVBOs) const
 {
-    osg::State* state = renderInfo.getState();
-    return new osg::VertexArrayState(state->get<GLExtensions>());
+    return new osg::VertexArrayState(renderInfo.getState());
 }

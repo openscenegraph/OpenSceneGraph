@@ -671,7 +671,7 @@ VertexArrayState* Geometry::createVertexArrayState(RenderInfo& renderInfo, bool 
 
     VertexArrayState* vas = 0;
 
-    _vertexArrayStateList[state.getContextID()] = vas = new osg::VertexArrayState(state.get<GLExtensions>());
+    _vertexArrayStateList[state.getContextID()] = vas = new osg::VertexArrayState(&state);
 
     if (_vertexArray.valid()) vas->assignVertexArrayDispatcher();
     if (_colorArray.valid()) vas->assignColorArrayDispatcher();

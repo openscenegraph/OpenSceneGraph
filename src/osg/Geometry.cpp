@@ -686,7 +686,7 @@ VertexArrayState* Geometry::createVertexArrayState(RenderInfo& renderInfo, bool 
     {
         OSG_NOTICE<<"  Setup VertexArrayState to use VAO"<<std::endl;
 
-        vas->generateVretexArrayObject();
+        vas->generateVertexArrayObject();
     }
     else
     {

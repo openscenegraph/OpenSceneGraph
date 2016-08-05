@@ -178,7 +178,6 @@ void State::initializeExtensionProcs()
     _glExtensions = new GLExtensions(_contextID);
     GLExtensions::Set(_contextID, _glExtensions.get());
 
-
     computeSecondaryColorSupported();
     computeFogCoordSupported();
     computeVertexBufferObjectSupported();
@@ -190,7 +189,7 @@ void State::initializeExtensionProcs()
 
 
 #ifdef USE_VERTEXARRAYSTATE
-    _globalVertexArrayState = new VertexArrayState(_glExtensions.get());
+    _globalVertexArrayState = new VertexArrayState(this);
     _globalVertexArrayState->assignAllDispatchers();
     setCurrentToGloabalVertexArrayState();
 #endif

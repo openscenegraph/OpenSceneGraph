@@ -25,7 +25,7 @@ class VertexArrayState : public osg::Referenced
 {
 public:
 
-        VertexArrayState(osg::GLExtensions* ext);
+        VertexArrayState(osg::State* state);
 
         struct ArrayDispatch : public osg::Referenced
         {
@@ -157,6 +157,7 @@ public:
 
         // osg::GLBufferObject* getGLBufferObject(osg::Array* array);
 
+        osg::State*                     _state;
         osg::ref_ptr<osg::GLExtensions> _ext;
 
         GLuint                          _vertexArrayObject;

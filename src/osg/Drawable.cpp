@@ -439,8 +439,8 @@ void Drawable::dirtyDisplayList()
 
 void Drawable::dirtyGLObjects()
 {
-#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     unsigned int i;
+#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     for(i=0;i<_globjList.size();++i)
     {
         if (_globjList[i] != 0)

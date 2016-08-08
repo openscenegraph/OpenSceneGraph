@@ -1156,7 +1156,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
             #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
                 glGetIntegerv(GL_MAX_TEXTURE_COORDS, &glMaxTextureCoords);
             #else
-                glMaxTextureCoords = _glMaxTextureUnits;
+                glMaxTextureCoords = glMaxTextureUnits;
             #endif
         }
         else if ( osg::getGLVersionNumber() >= 1.3 ||

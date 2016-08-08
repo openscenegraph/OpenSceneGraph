@@ -196,9 +196,7 @@ void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
-
-        if (state.getCurrentVertexArrayState()) state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
-        else state.bindElementBufferObject(ebo);
+        state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
 
         if (ebo)
         {
@@ -259,18 +257,7 @@ void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
-
-
-        if (state.getCurrentVertexArrayState())
-        {
-            VOA_NOTICE<<"   DrawElementsUShort::draw() size="<<size()<<" A bind="<<ebo<<std::endl;
-            state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
-        }
-        else
-        {
-            VOA_NOTICE<<"   DrawElementsUShort::draw() size="<<size()<<" B bind="<<ebo<<std::endl;
-            state.bindElementBufferObject(ebo);
-        }
+        state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
 
         if (ebo)
         {
@@ -330,9 +317,7 @@ void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
-
-        if (state.getCurrentVertexArrayState()) state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
-        else state.bindElementBufferObject(ebo);
+        state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
 
         if (ebo)
         {

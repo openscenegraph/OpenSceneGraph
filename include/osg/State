@@ -715,7 +715,7 @@ class OSG_EXPORT State : public Referenced
         void dirtyAllVertexArrays();
 
 
-        inline bool isVertexBufferObjectSupported() const { return _isVertexBufferObjectSupportResolved?_isVertexBufferObjectSupported:computeVertexBufferObjectSupported(); }
+        inline bool isVertexBufferObjectSupported() const { return _isVertexBufferObjectSupported; }
 
         inline bool isVertexArrayObjectSupported() const { return _isVertexArrayObjectSupported; }
 
@@ -1302,19 +1302,11 @@ class OSG_EXPORT State : public Referenced
         void loadModelViewMatrix();
 
 
-        mutable bool _isSecondaryColorSupportResolved;
-        mutable bool _isSecondaryColorSupported;
-        bool computeSecondaryColorSupported() const;
-
-        mutable bool _isFogCoordSupportResolved;
-        mutable bool _isFogCoordSupported;
-        bool computeFogCoordSupported() const;
-
-        mutable bool _isVertexBufferObjectSupportResolved;
-        mutable bool _isVertexBufferObjectSupported;
-        bool computeVertexBufferObjectSupported() const;
-
+        bool _isSecondaryColorSupported;
+        bool _isFogCoordSupported;
+        bool _isVertexBufferObjectSupported;
         bool _isVertexArrayObjectSupported;
+
         bool _useVertexArrayObject;
 
         typedef void (GL_APIENTRY * ActiveTextureProc) (GLenum texture);

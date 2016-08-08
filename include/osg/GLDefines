@@ -45,8 +45,10 @@
 typedef char GLchar;
 #endif
 
-#if !defined(GL_VERSION_2_0)
+#if !defined(GL_VERTEX_PROGRAM_POINT_SIZE)
     #define GL_VERTEX_PROGRAM_POINT_SIZE      0x8642
+#endif
+#if !defined(GL_VERTEX_PROGRAM_TWO_SIDE)
     #define GL_VERTEX_PROGRAM_TWO_SIDE        0x8643
 #endif
 
@@ -615,13 +617,13 @@ namespace osg
     //all ES versions except GL_OES_VERSION_1_0 provide these types for OpenGL ES
     #if !defined(GL_VERSION_1_5) && !defined(GL_ARB_vertex_buffer_object) \
     && !defined(GL_ES_VERSION_2_0) && !defined(OPENGLES_1_1_FOUND)
-    
+
         #if 1
             // experimental defination.
             typedef ptrdiff_t GLsizeiptr;
             typedef ptrdiff_t GLintptr;
         #else
-    
+
             #if defined(_WIN64)
                 typedef __int64 GLintptr;
                 typedef __int64 GLsizeiptr;

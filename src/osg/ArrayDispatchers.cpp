@@ -282,7 +282,6 @@ void ArrayDispatchers::assignTexCoordDispatchers(unsigned int unit)
 {
     #if defined(OSG_GL_VERTEX_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
     GLExtensions* extensions = _state->get<GLExtensions>();
-    #endif
 
     for(unsigned int i=_texCoordDispatchers.size(); i<=unit; ++i)
     {
@@ -290,23 +289,20 @@ void ArrayDispatchers::assignTexCoordDispatchers(unsigned int unit)
         AttributeDispatchMap& texCoordDispatcher = *_texCoordDispatchers[i];
         if (i==0)
         {
-            #if defined(OSG_GL_VERTEX_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
             texCoordDispatcher.assign<GLfloat>(Array::FloatArrayType, glTexCoord1fv, 1);
             texCoordDispatcher.assign<GLfloat>(Array::Vec2ArrayType, glTexCoord2fv, 2);
             texCoordDispatcher.assign<GLfloat>(Array::Vec3ArrayType, glTexCoord3fv, 3);
             texCoordDispatcher.assign<GLfloat>(Array::Vec4ArrayType, glTexCoord4fv, 4);
-            #endif
         }
         else
         {
-            #if defined(OSG_GL_VERTEX_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
             texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::FloatArrayType, extensions->glMultiTexCoord1fv, 1);
             texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec2ArrayType, extensions->glMultiTexCoord2fv, 2);
             texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec3ArrayType, extensions->glMultiTexCoord3fv, 3);
             texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec4ArrayType, extensions->glMultiTexCoord4fv, 4);
-            #endif
         }
     }
+    #endif
 
 }
 

@@ -446,13 +446,13 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         virtual GLenum getTextureTarget() const = 0;
 
+        #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
         virtual bool getModeUsage(StateAttribute::ModeUsage& usage) const
         {
-            #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
                 usage.usesTextureMode(getTextureTarget());
-            #endif
             return true;
         }
+        #endif
 
         virtual int getTextureWidth() const { return 0; }
         virtual int getTextureHeight() const { return 0; }

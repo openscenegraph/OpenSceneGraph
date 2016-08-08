@@ -92,15 +92,9 @@ State::State():
     _currentEBO = 0;
     _currentPBO = 0;
 
-    _isSecondaryColorSupportResolved = false;
     _isSecondaryColorSupported = false;
-
-    _isFogCoordSupportResolved = false;
     _isFogCoordSupported = false;
-
-    _isVertexBufferObjectSupportResolved = false;
     _isVertexBufferObjectSupported = false;
-
     _isVertexArrayObjectSupported = false;
     _useVertexArrayObject = false;
 
@@ -176,13 +170,12 @@ void State::initializeExtensionProcs()
     _glExtensions = new GLExtensions(_contextID);
     GLExtensions::Set(_contextID, _glExtensions.get());
 
-    computeSecondaryColorSupported();
-    computeFogCoordSupported();
-    computeVertexBufferObjectSupported();
+    _isSecondaryColorSupported = osg::isGLExtensionSupported(_contextID,"GL_EXT_secondary_color");
+    _isFogCoordSupported = osg::isGLExtensionSupported(_contextID,"GL_EXT_fog_coord");
+    _isVertexBufferObjectSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(_contextID,"GL_ARB_vertex_buffer_object");
+    _isVertexArrayObjectSupported = _glExtensions->isVAOSupported;
 
     const DisplaySettings* ds = getDisplaySettings() ? getDisplaySettings() : osg::DisplaySettings::instance();
-
-    _isVertexArrayObjectSupported = _glExtensions->isVAOSupported;
     _useVertexArrayObject = _isVertexArrayObjectSupported &&  (ds->getGeometryImplementation()==DisplaySettings::VERTEX_ARRAY_OBJECT);
 
 
@@ -1078,33 +1071,6 @@ unsigned int State::getClientActiveTextureUnit() const
     return _currentClientActiveTextureUnit;
 }
 
-
-
-/////////////////////////////////////////////////////////////////////////
-//
-// End of Moved from State header
-//
-
-bool State::computeSecondaryColorSupported() const
-{
-    _isSecondaryColorSupportResolved = true;
-    _isSecondaryColorSupported = osg::isGLExtensionSupported(_contextID,"GL_EXT_secondary_color");
-    return _isSecondaryColorSupported;
-}
-
-bool State::computeFogCoordSupported() const
-{
-    _isFogCoordSupportResolved = true;
-    _isFogCoordSupported = osg::isGLExtensionSupported(_contextID,"GL_EXT_fog_coord");
-    return _isFogCoordSupported;
-}
-
-bool State::computeVertexBufferObjectSupported() const
-{
-    _isVertexBufferObjectSupportResolved = true;
-    _isVertexBufferObjectSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(_contextID,"GL_ARB_vertex_buffer_object");
-    return _isVertexBufferObjectSupported;
-}
 
 bool State::checkGLErrors(const char* str) const
 {

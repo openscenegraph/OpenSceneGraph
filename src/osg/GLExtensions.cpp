@@ -1159,6 +1159,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
                 glMaxTextureCoords = glMaxTextureUnits;
             #endif
         }
+        #ifdef GL_MAX_TEXTURE_UNITS
         else if ( osg::getGLVersionNumber() >= 1.3 ||
                                     osg::isGLExtensionSupported(contextID,"GL_ARB_multitexture") ||
                                     osg::isGLExtensionSupported(contextID,"GL_EXT_multitexture") ||
@@ -1169,6 +1170,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
             glMaxTextureUnits = maxTextureUnits;
             glMaxTextureCoords = maxTextureUnits;
         }
+        #endif
         else
         {
             glMaxTextureUnits = 1;

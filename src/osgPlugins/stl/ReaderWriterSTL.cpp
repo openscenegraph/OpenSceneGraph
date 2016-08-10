@@ -588,9 +588,11 @@ ReaderWriterSTL::ReaderObject::ReadResult ReaderWriterSTL::AsciiReaderObject::re
 
     while (fgets(buf, sizeof(buf), fp))
     {
-        // strip '\n' or '\r\n' and trailing whitespace
-        unsigned int len = strlen(buf) - 1;
+        unsigned int len = strlen(buf);
+        if (len==0) continue;
 
+        // strip '\n' or '\r\n' and trailing whitespace
+        --len;
         while (len && (buf[len] == '\n' || buf[len] == '\r' || isspace(buf[len])))
         {
             buf[len--] = '\0';

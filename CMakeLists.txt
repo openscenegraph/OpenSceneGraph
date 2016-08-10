@@ -49,6 +49,82 @@ if(COMMAND cmake_policy)
 
 endif()
 
+IF(APPLE)
+  # Get OSX version in MAJOR.MINOR format
+  EXECUTE_PROCESS(COMMAND sw_vers -productVersion
+    OUTPUT_VARIABLE OSG_OSX_VERSION
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+  STRING(REGEX REPLACE "^([0-9]+\\.[0-9]+).*$" "\\1"
+    OSG_OSX_VERSION "${OSG_OSX_VERSION}")
+ENDIF()
+
+# Set OSX architecture flags here, since they must be specified before
+# creating the actual OSG project.
+# Note that the CMAKE_OSX_* variables are not well documented in
+# CMake 2.8, but they do officially exist.
+# See https://cmake.org/Bug/view.php?id=14695#c34953
+# Additionally, OSG_WINDOWING_SYSTEM is set here for OSX since its
+# value is needed to find the correct version of OpenGL (X11 or Cocoa).
+IF(APPLE AND NOT ANDROID)
+
+  # Here we check if the user specified IPhone SDK
+  # These options are formally defined later, but can also be specified
+  # by the user at the command line using the cmake -D switch
+  # Note that FORCE is used since the user will likely enable IPhone
+  # build via CMake GUI after already having configured once
+  IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
+    SET(OSG_WINDOWING_SYSTEM "IOS" CACHE STRING "Windowing system type for graphics window creation, options only IOS.")
+
+    #set iphone arch and flags taken from http://sites.google.com/site/michaelsafyan/coding/resources/how-to-guides/cross-compile-for-the-iphone/how-to-cross-compile-for-the-iphone-using-cmake
+    IF(OSG_BUILD_PLATFORM_IPHONE)
+      IF(${IPHONE_VERSION_MIN} LESS "7.0")
+	SET(CMAKE_OSX_ARCHITECTURES "armv6;armv7" CACHE STRING "Build architectures for iOS" FORCE)
+      ELSE()
+	SET(CMAKE_OSX_ARCHITECTURES "armv7;armv7s;arm64" CACHE STRING "Build architectures for iOS" FORCE)
+      ENDIF()
+
+    ELSE()
+      #simulator uses i386 architectures
+      SET(CMAKE_OSX_ARCHITECTURES "i386" CACHE STRING "Build architectures for iOS Simulator" FORCE)
+    ENDIF()
+
+    #here we set the specific iphone sdk version. We can only set either device or simulator sdk. So if you want both you currently have to have two seperate projects
+    SET(CMAKE_OSX_SYSROOT "${IPHONE_SDKROOT}" CACHE STRING "System root for iOS" FORCE)
+
+  ELSE()
+    # OSX >= 10.5 uses Cocoa windowing system, otherwise Carbon
+    IF(OSG_OSX_VERSION VERSION_LESS 10.5)
+      SET(OSG_WINDOWING_SYSTEM "Carbon" CACHE STRING "Windowing system type for graphics window creation, options Carbon, Cocoa or X11.")
+    ELSE()
+      SET(OSG_WINDOWING_SYSTEM "Cocoa" CACHE STRING "Windowing system type for graphics window creation, options Carbon, Cocoa or X11.")
+    ENDIF()
+
+    # Set defaults for Universal Binaries. We want 32-bit Intel/PPC on 10.4
+    # and 32/64-bit Intel/PPC on >= 10.5. Anything <= 10.3 doesn't support.
+    # These are set the first time CMake is run, and can be changed by
+    # the user at any time.
+    IF(OSG_OSX_VERSION VERSION_GREATER 10.7)
+      # 64 Bit Works, i386,ppc is not supported any more
+      SET(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX")
+      SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.8" CACHE STRING "Target OSX version")
+    ELSEIF(OSG_OSX_VERSION VERSION_EQUAL 10.7)
+      # 64 Bit Works, PPC is not supported any more
+      SET(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for OSX")
+    ELSEIF(OSG_OSX_VERSION VERSION_GREATER 10.4)
+      # 64-bit compiles are not supported with Carbon.
+      SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX")
+      SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.5" CACHE STRING "Target OSX version")
+    ELSEIF(OSG_OSX_VERSION VERSION_EQUAL 10.4)
+      # 64-bit compiles are not supported with Carbon.
+      SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX")
+    ELSE()
+      # No Universal Binary support and SDK detection is too unreliable.
+      # Warn user and continue at their own peril.
+      MESSAGE(WARNING "OSX 10.3 and earlier not supported.")
+    ENDIF()
+  ENDIF()
+ENDIF()
+
 PROJECT(OpenSceneGraph)
 
 SET(OPENSCENEGRAPH_MAJOR_VERSION 3)
@@ -168,16 +244,6 @@ ENDIF(OSG_MAINTAINER)
 
 IF(NOT ANDROID)
 IF(APPLE)
-    # Determine the canonical name of the selected Platform SDK
-    EXECUTE_PROCESS(COMMAND "/usr/bin/sw_vers" "-productVersion"
-                    OUTPUT_VARIABLE OSG_OSX_SDK_NAME
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
-    STRING(REPLACE "." ";" MACOS_VERSION_LIST ${OSG_OSX_SDK_NAME})
-    LIST(GET MACOS_VERSION_LIST 0 MACOS_VERSION_MAJOR)
-    LIST(GET MACOS_VERSION_LIST 1 MACOS_VERSION_MINOR)
-
-    SET(OSG_OSX_SDK_NAME "macosx${MACOS_VERSION_MAJOR}.${MACOS_VERSION_MINOR}")
-
     # Trying to get CMake to generate an XCode IPhone project, current efforts are to get iphoneos sdk 3.1 working
     # Added option which needs manually setting to select the IPhone SDK for building. We can only have one of the below
     # set to true. Should realy have an OSG_BUILD_PLATFORM variable that we set to our desired platform
@@ -214,9 +280,33 @@ IF(APPLE)
         FIND_LIBRARY(CARBON_LIBRARY Carbon)
         FIND_LIBRARY(COCOA_LIBRARY Cocoa)
 
-        # Apple OS X: Find OpenGL and AGL
+        # Apple OS X: Find OpenGL and AGL based on OSG_WINDOWING_SYSTEM
+        # This is the accepted way of finding X11/OpenGL on OSX, as
+        # documented in CMake's FindOpenGL module.
+        # Note that without this check, libosg would use Cocoa/OpenGL but
+        # libosgViewer would use X11/OpenGL, which causes compatibility
+        # issues for applications using OSG.
+        UNSET(OPENGL_gl_LIBRARY CACHE)
+        UNSET(OPENGL_glu_LIBRARY CACHE)
+        UNSET(OPENGL_INCLUDE_DIR CACHE)
+        IF(OSG_WINDOWING_SYSTEM STREQUAL "X11")
+          FIND_PACKAGE(X11)
+          IF(NOT X11_FOUND)
+            MESSAGE(FATAL_ERROR "OSG_WINDOWING_SYSTEM is X11, but no X11 installation was found. Please make sure X11 is properly installed.")
+          ENDIF()
+
+          # Use X11 version of OpenGL as seed for CMake FindOpenGL
+          GET_FILENAME_COMPONENT(X11LIBDIR ${X11_X11_LIB} DIRECTORY)
+          FIND_LIBRARY(OPENGL_gl_LIBRARY GL PATHS ${X11LIBDIR} DOC "OpenGL lib for OSX" NO_DEFAULT_PATH)
+          FIND_LIBRARY(OPENGL_glu_LIBRARY GLU PATHS ${X11LIBDIR} DOC "GLU lib for OSX" NO_DEFAULT_PATH)
+          SET(OPENGL_INCLUDE_DIR ${X11_INCLUDE_DIR} CACHE PATH "Include for OpenGL on OSX" FORCE)
+
+        ELSEIF(OSG_WINDOWING_SYSTEM STREQUAL "Carbon")
+          # AGL needed for Carbon windowing systems
+          FIND_LIBRARY(AGL_LIBRARY AGL)
+        ENDIF()
+
         FIND_PACKAGE(OpenGL)
-        FIND_LIBRARY(AGL_LIBRARY AGL)
     ENDIF ()
 
     OPTION(OSG_COMPILE_FRAMEWORKS "compile frameworks instead of dylibs (experimental)" OFF)
@@ -1108,30 +1198,19 @@ IF(APPLE AND NOT ANDROID)
         # FORCE is used because the options are not reflected in the UI otherwise.
         # Seems like a good place to add version specific compiler flags too.
         IF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
-            IF(${MACOS_VERSION_MAJOR} EQUAL 10 AND ${MACOS_VERSION_MINOR} GREATER 7)
-                SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio" CACHE STRING "Forced imageio default image plugin for OSX" FORCE)
-                # 64 Bit Works, i386,ppc is not supported any more
-                SET(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX" FORCE)
-                SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.8 -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
-            ELSEIF(${OSG_OSX_SDK_NAME} STREQUAL "macosx10.7")
-                SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio" CACHE STRING "Forced imageio default image plugin for OSX" FORCE)
-                # 64 Bit Works, PPC is not supported any more
-                SET(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for OSX" FORCE)
-                SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.7 -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
-            ELSEIF(${OSG_OSX_SDK_NAME} STREQUAL "macosx10.6" OR ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.5")
-                SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio" CACHE STRING "Forced imageio default image plugin for OSX" FORCE)
-                # 64-bit compiles are not supported with Carbon.
-                SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
-                SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.5 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
-            ELSEIF(${OSG_OSX_SDK_NAME} STREQUAL "macosx10.4")
-                SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "quicktime" CACHE STRING "Forced imageio default image plugin for OSX" FORCE)
-                SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
-                SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.4 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
-            ELSE()
-                # No Universal Binary support
-                # Should break down further to set the -mmacosx-version-min,
-                # but the SDK detection is too unreliable here.
-            ENDIF()
+          IF(OSG_OSX_VERSION VERSION_GREATER 10.7)
+            SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio" CACHE STRING "Forced imageio default image plugin for OSX" FORCE)
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+          ELSEIF(OSG_OSX_VERSION VERSION_EQUAL 10.7)
+            SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio" CACHE STRING "Forced imageio default image plugin for OSX" FORCE)
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+          ELSEIF(OSG_OSX_VERSION VERSION_GREATER 10.4)
+            SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio" CACHE STRING "Forced imageio default image plugin for OSX" FORCE)
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+          ELSEIF(OSG_OSX_VERSION VERSION_EQUAL 10.4)
+            SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "quicktime" CACHE STRING "Forced imageio default image plugin for OSX" FORCE)
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+          ENDIF()
         ENDIF()
 
         OPTION(OSG_BUILD_APPLICATION_BUNDLES "Enable the building of applications and examples as OSX Bundles" OFF)

@@ -199,7 +199,6 @@ static JSONValue<std::string>* getBlendFuncMode(GLenum mode) {
     default:
         return new JSONValue<std::string>("ONE");
     }
-    return new JSONValue<std::string>("ONE");
 }
 
 static JSONValue<std::string>* getJSONFilterMode(osg::Texture::FilterMode mode)
@@ -645,15 +644,15 @@ JSONObject* WriteVisitor::createJSONMorphGeometry(osgAnimation::MorphGeometry* m
     }
 
     JSONObject* jsonGeometry = createJSONGeometry(morphGeometry, parent);
-    JSONArray* targetList = new JSONArray;
+    osg::ref_ptr<JSONArray> targetList = new JSONArray;
 
     osgAnimation::MorphGeometry::MorphTargetList mTargetList = morphGeometry->getMorphTargetList();
     typedef osgAnimation::MorphGeometry::MorphTargetList::iterator TargetIterator;
 
     for(TargetIterator ti = mTargetList.begin(); ti != mTargetList.end(); ti++) {
         osgAnimation::MorphGeometry::MorphTarget *morphTarget = &(*ti);
-        JSONObject *jsonGeometryObject = new JSONObject;
         if(osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(morphTarget->getGeometry())) {
+            osg::ref_ptr<JSONObject> jsonGeometryObject = new JSONObject;
             geometry->setPrimitiveSetList(osg::Geometry::PrimitiveSetList()); //delete unused drawArray
             jsonGeometryObject->getMaps()["osg.Geometry"] = createJSONGeometry(geometry);
             targetList->asArray()->getArray().push_back(jsonGeometryObject);

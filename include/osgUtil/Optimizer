@@ -88,6 +88,7 @@ class OSGUTIL_EXPORT Optimizer
             INDEX_MESH =                (1 << 18),
             VERTEX_POSTTRANSFORM =      (1 << 19),
             VERTEX_PRETRANSFORM =       (1 << 20),
+            BUFFER_OBJECT_SETTINGS =    (1 << 21),
             DEFAULT_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
                                 REMOVE_LOADED_PROXY_NODES |
@@ -112,7 +113,8 @@ class OSGUTIL_EXPORT Optimizer
                                 TRISTRIP_GEOMETRY |
                                 OPTIMIZE_TEXTURE_SETTINGS |
                                 TEXTURE_ATLAS_BUILDER |
-                                STATIC_OBJECT_DETECTION
+                                STATIC_OBJECT_DETECTION |
+                                BUFFER_OBJECT_SETTINGS
         };
 
         /** Reset internal data to initial state - the getPermissibleOptionsMap is cleared.*/
@@ -856,6 +858,28 @@ class OSGUTIL_EXPORT Optimizer
                 void applyStateSet(osg::StateSet& stateset);
 
                 void applyDrawable(osg::Drawable& drawable);
+
+        };
+
+        /** For all geometry apply settings.*/
+        class OSGUTIL_EXPORT BufferObjectVisitor : public BaseOptimizerVisitor
+        {
+            public:
+
+                BufferObjectVisitor(bool changeVBO, bool valueVBO,
+                                    bool changeVertexArrayObject, bool valueVertexArrayObject,
+                                    bool changeDisplayList, bool valueDisplayList,
+                                    Optimizer* optimizer=0):
+                        BaseOptimizerVisitor(optimizer, BUFFER_OBJECT_SETTINGS),
+                        _changeVertexBufferObject(changeVBO), _valueVertexBufferObject(valueVBO),
+                        _changeVertexArrayObject(changeVertexArrayObject), _valueVertexArrayObject(valueVertexArrayObject),
+                        _changeDisplayList(changeDisplayList), _valueDisplayList(valueDisplayList) {}
+
+                virtual void apply(osg::Geometry& geometry);
+
+                bool _changeVertexBufferObject, _valueVertexBufferObject;
+                bool _changeVertexArrayObject, _valueVertexArrayObject;
+                bool _changeDisplayList, _valueDisplayList;
 
         };
 };

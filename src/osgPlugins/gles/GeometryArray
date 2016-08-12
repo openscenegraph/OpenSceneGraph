@@ -98,10 +98,10 @@ struct GeometryArrayList {
 
         template <class T> bool arrayAppendElement(osg::Array* src, unsigned int index, osg::Array* dst)
         {
-            T* array = dynamic_cast<T*>(src);
-            if (array && dst) {
-                T* arrayDst = dynamic_cast<T*>(dst);
-                arrayDst->push_back((*array)[index]);
+            T* arraySrc = dynamic_cast<T*>(src);
+            T* arrayDst = dynamic_cast<T*>(dst);
+            if (arraySrc && arrayDst) {
+                arrayDst->push_back((*arraySrc)[index]);
                 return true;
             }
             return false;

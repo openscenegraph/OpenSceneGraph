@@ -81,27 +81,10 @@ IF(WIN32 AND NOT ANDROID)
         PixelBufferWin32.cpp
     )
 ELSE()
-    IF(APPLE AND NOT ANDROID)
-
-        IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
-            SET(OSG_WINDOWING_SYSTEM "IOS" CACHE STRING "Windowing system type for graphics window creation, options only IOS.")
-        ELSE()
-            IF(${OSG_OSX_SDK_NAME} STREQUAL "macosx10.4" OR
-               ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.3" OR
-               ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.2" OR
-               ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.1")
-                SET(OSG_WINDOWING_SYSTEM "Carbon" CACHE STRING "Windowing system type for graphics window creation, options Carbon, Cocoa or X11.")
-            ELSE()
-                SET(OSG_WINDOWING_SYSTEM "Cocoa" CACHE STRING "Windowing system type for graphics window creation, options Carbon, Cocoa or X11.")
-            ENDIF()
-        ENDIF()
-
+    IF(ANDROID)
+      SET(OSG_WINDOWING_SYSTEM "None" CACHE STRING "None Windowing system type for graphics window creation.")
     ELSE()
-        IF(ANDROID)
-            SET(OSG_WINDOWING_SYSTEM "None" CACHE STRING "None Windowing system type for graphics window creation.")
-        ELSE()
-            SET(OSG_WINDOWING_SYSTEM "X11" CACHE STRING "Windowing system type for graphics window creation. options only X11")
-        ENDIF()
+      SET(OSG_WINDOWING_SYSTEM "X11" CACHE STRING "Windowing system type for graphics window creation. options only X11")
     ENDIF()
 
     IF(${OSG_WINDOWING_SYSTEM} STREQUAL "Cocoa")
@@ -222,30 +205,18 @@ ELSE()
             ENDIF()
         ENDIF()
 
-        # X11 on Apple requires X11 library plus OpenGL linking hack on Leopard
         IF(APPLE)
             # hack for finding the iphone opengl es lib
             IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
-                SET(OPENGL_INCLUDE_DIR ${IPHONE_SDKROOT}System/Library/Frameworks)
-                SET(OPENGL_LIBRARIES ${IPHONE_SDKROOT}System/Library/Frameworks/OpenGLES)
+              SET(OPENGL_INCLUDE_DIR ${IPHONE_SDKROOT}/System/Library/Frameworks)
+              SET(OPENGL_LIBRARIES ${IPHONE_SDKROOT}/System/Library/Frameworks/OpenGLES)
             ELSE()
-                # Find GL/glx.h
-                IF(EXISTS ${CMAKE_OSX_SYSROOT}/usr/X11/include/GL/glx.h)
-                    SET(OPENGL_INCLUDE_DIR /usr/X11/include)
-                    SET(OPENGL_LIBRARIES /usr/X11/lib/libGL.dylib)
-                ELSEIF(EXISTS ${CMAKE_OSX_SYSROOT}/usr/X11R6/include/GL/glx.h)
-                    SET(OPENGL_INCLUDE_DIR /usr/X11R6/include)
-                    SET(OPENGL_LIBRARIES /usr/X11R6/lib/libGL.dylib)
-                ENDIF()
-                INCLUDE_DIRECTORIES(BEFORE SYSTEM ${OPENGL_INCLUDE_DIR})
-
-                SET(LIB_EXTRA_LIBS ${X11_X11_LIB} ${OPENGL_LIBRARIES} ${LIB_EXTRA_LIBS})
-                SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-dylib_file,/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:${CMAKE_OSX_SYSROOT}/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib")
+              SET(LIB_EXTRA_LIBS ${X11_X11_LIB} ${LIB_EXTRA_LIBS})
             ENDIF()
 
         ELSE(APPLE)
 
-            SET(LIB_EXTRA_LIBS ${X11_X11_LIB} ${LIB_EXTRA_LIBS})
+          SET(LIB_EXTRA_LIBS ${X11_X11_LIB} ${LIB_EXTRA_LIBS})
         ENDIF(APPLE)
     ELSE()
         MESSAGE(STATUS "Windowing system not supported")

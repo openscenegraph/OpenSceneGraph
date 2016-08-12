@@ -61,6 +61,8 @@ class EasyCurl : public osg::Referenced
         // the timeout variable is used to limit the whole transfer duration instead of the connection phase only.
         inline void setTimeout(long val) { _timeout = val; }
 
+        inline void setSSLVerifyPeer(long verifyPeer) { _sslVerifyPeer = verifyPeer; }
+
         // Perform HTTP GET to download data from web server.
         osgDB::ReaderWriter::ReadResult read(const std::string& proxyAddress, const std::string& fileName, StreamObject& sp, const osgDB::ReaderWriter::Options *options);
 
@@ -91,6 +93,7 @@ class EasyCurl : public osg::Referenced
         long            _previousHttpAuthentication;
         long            _connectTimeout;
         long            _timeout;
+        long            _sslVerifyPeer;
 };
 
 
@@ -171,7 +174,7 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
         bool read(std::istream& fin, std::string& destination) const;
 
     protected:
-        void getConnectionOptions(const osgDB::ReaderWriter::Options *options, std::string& proxyAddress, long& connectTimeout, long& timeout) const;
+        void getConnectionOptions(const osgDB::ReaderWriter::Options *options, std::string& proxyAddress, long& connectTimeout, long& timeout, long& sslVerifyPeer) const;
 
         typedef std::map< OpenThreads::Thread*, osg::ref_ptr<EasyCurl> >    ThreadCurlMap;
 

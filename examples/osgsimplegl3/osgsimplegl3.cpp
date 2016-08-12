@@ -16,7 +16,7 @@
 #include <osg/StateSet>
 #include <osg/Program>
 #include <osg/Shader>
-
+#include <osgUtil/Optimizer>
 
 void configureShaders( osg::StateSet* stateSet )
 {
@@ -75,6 +75,10 @@ int main( int argc, char** argv )
         osg::notify( osg::FATAL ) << "Unable to load model from command line." << std::endl;
         return( 1 );
     }
+
+    osgUtil::Optimizer optimizer;
+    optimizer.optimize(root.get(), osgUtil::Optimizer::ALL_OPTIMIZATIONS  | osgUtil::Optimizer::TESSELLATE_GEOMETRY);
+
     configureShaders( root->getOrCreateStateSet() );
 
     const int width( 800 ), height( 450 );

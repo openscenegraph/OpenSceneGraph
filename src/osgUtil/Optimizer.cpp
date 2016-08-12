@@ -56,7 +56,7 @@ void Optimizer::reset()
 {
 }
 
-static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","OFF | DEFAULT | FLATTEN_STATIC_TRANSFORMS | FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | MERGE_GEODES | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS | REMOVE_LOADED_PROXY_NODES | TESSELLATE_GEOMETRY | CHECK_GEOMETRY |  FLATTEN_BILLBOARDS | TEXTURE_ATLAS_BUILDER | STATIC_OBJECT_DETECTION | INDEX_MESH | VERTEX_POSTTRANSFORM | VERTEX_PRETRANSFORM");
+static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","OFF | DEFAULT | FLATTEN_STATIC_TRANSFORMS | FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | MERGE_GEODES | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS | REMOVE_LOADED_PROXY_NODES | TESSELLATE_GEOMETRY | CHECK_GEOMETRY |  FLATTEN_BILLBOARDS | TEXTURE_ATLAS_BUILDER | STATIC_OBJECT_DETECTION | INDEX_MESH | VERTEX_POSTTRANSFORM | VERTEX_PRETRANSFORM | BUFFER_OBJECT_SETTINGS");
 
 void Optimizer::optimize(osg::Node* node)
 {
@@ -136,6 +136,8 @@ void Optimizer::optimize(osg::Node* node)
         if(str.find("~VERTEX_PRETRANSFORM")!=std::string::npos) options ^= VERTEX_PRETRANSFORM;
         else if(str.find("VERTEX_PRETRANSFORM")!=std::string::npos) options |= VERTEX_PRETRANSFORM;
 
+        if(str.find("~BUFFER_OBJECT_SETTINGS")!=std::string::npos) options ^= BUFFER_OBJECT_SETTINGS;
+        else if(str.find("BUFFER_OBJECT_SETTINGS")!=std::string::npos) options |= BUFFER_OBJECT_SETTINGS;
     }
     else
     {
@@ -380,6 +382,13 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         VertexAccessOrderVisitor vaov;
         node->accept(vaov);
         vaov.optimizeOrder();
+    }
+
+    if (options & BUFFER_OBJECT_SETTINGS)
+    {
+        OSG_INFO<<"Optimizer::optimize() doing BUFFER_OBJECT_SETTINGS"<<std::endl;
+        BufferObjectVisitor bov(true, true, true, true, true, false);
+        node->accept(bov);
     }
 
     if (osg::getNotifyLevel()>=osg::INFO)
@@ -4763,3 +4772,30 @@ void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::transf
 
 
 
+////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  Set the attributes of BufferObjects up.
+//
+
+void Optimizer::BufferObjectVisitor::apply(osg::Geometry& geometry)
+{
+    if (!isOperationPermissibleForObject(&geometry)) return;
+
+    if (_changeVertexBufferObject)
+    {
+        OSG_NOTICE<<"geometry.setUseVertexBufferObjects("<<_valueVertexBufferObject<<")"<<std::endl;
+        geometry.setUseVertexBufferObjects(_valueVertexBufferObject);
+    }
+#if 0
+    if (_changeVertexArrayObject)
+    {
+        OSG_NOTICE<<"geometry.setUseVertexArrayObjects("<<_valueVertexArrayObject<<")"<<std::endl;
+        geometry.setUseVertexArrayObjects(_valueVertexArrayObject);
+    }
+#endif
+    if (_changeDisplayList)
+    {
+        OSG_NOTICE<<"geometry.setUseDisplayList("<<_valueDisplayList<<")"<<std::endl;
+        geometry.setUseDisplayList(_valueDisplayList);
+    }
+}

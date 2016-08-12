@@ -671,6 +671,8 @@ struct BlockDrawCallback : public virtual osg::Drawable::DrawCallback
             }
         }
 
+        vertices->dirty();
+
         osg::DrawArrays* drawArrays = static_cast<osg::DrawArrays*>(geom->getPrimitiveSet(0));
         drawArrays->setCount(vi);
 
@@ -841,6 +843,8 @@ protected:
                 }
             }
 
+            vertices->dirty();
+
             _curX++;
             GraphUpdateCallback::_frameNumber = frameNumber;
 
@@ -928,6 +932,8 @@ struct FrameMarkerDrawCallback : public virtual osg::Drawable::DrawCallback
                 (*vertices)[vi++].x() = _xPos + (currentReferenceTime - referenceTime) * _statsHandler->getBlockMultiplier();
             }
         }
+
+        vertices->dirty();
 
         drawable->drawImplementation(renderInfo);
     }

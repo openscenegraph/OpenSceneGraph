@@ -751,6 +751,7 @@ protected:
               const osg::Vec4& color, float max, const std::string& nameBegin, const std::string& nameEnd = "")
         {
             setUseDisplayList(false);
+            setDataVariance(osg::Object::DYNAMIC);
 
             setVertexArray(new osg::Vec3Array);
 
@@ -758,26 +759,25 @@ protected:
             colors->push_back(color);
             setColorArray(colors, osg::Array::BIND_OVERALL);
 
-            setDrawCallback(new GraphUpdateCallback(pos, width, height, viewerStats, stats, max, nameBegin, nameEnd));
+            addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP, 0, 0));
+
+            setDrawCallback(new GraphUpdateCallback(this, pos, width, height, viewerStats, stats, max, nameBegin, nameEnd));
         }
     };
 
     struct GraphUpdateCallback : public osg::Drawable::DrawCallback
     {
-        GraphUpdateCallback(const osg::Vec3& pos, float width, float height, osg::Stats* viewerStats, osg::Stats* stats,
+        GraphUpdateCallback(osg::Geometry* geometry, const osg::Vec3& pos, float width, float height, osg::Stats* viewerStats, osg::Stats* stats,
                             float max, const std::string& nameBegin, const std::string& nameEnd = "")
             : _pos(pos), _width((unsigned int)width), _height((unsigned int)height), _curX(0),
               _viewerStats(viewerStats), _stats(stats), _max(max), _nameBegin(nameBegin), _nameEnd(nameEnd)
         {
+            _vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+            _drawArrays = dynamic_cast<osg::DrawArrays*>(geometry->getPrimitiveSet(0));
         }
 
         virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
         {
-            osg::Geometry* geometry = const_cast<osg::Geometry*>(drawable->asGeometry());
-            if (!geometry) return;
-            osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
-            if (!vertices) return;
-
             unsigned int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
 
             // Get stats
@@ -805,24 +805,18 @@ protected:
 
             // Add new vertex for this frame.
             value = osg::clampTo(value, 0.0, double(_max));
-            vertices->push_back(osg::Vec3(float(_curX), float(_height) / _max * value, 0));
+            _vertices->push_back(osg::Vec3(float(_curX), float(_height) / _max * value, 0));
 
             // One vertex per pixel in X.
-            int excedent = vertices->size() - _width;
+            int excedent = _vertices->size() - _width;
             if (excedent > 0)
             {
-                vertices->erase(vertices->begin(), vertices->begin() + excedent);
+                _vertices->erase(_vertices->begin(), _vertices->begin() + excedent);
             }
 
-            // Create primitive set if none exists.
-            if (geometry->getNumPrimitiveSets() == 0)
-                geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP, 0, 0));
-
             // Update primitive set.
-            osg::DrawArrays* drawArrays = dynamic_cast<osg::DrawArrays*>(geometry->getPrimitiveSet(0));
-            if (!drawArrays) return;
-            drawArrays->setFirst(0);
-            drawArrays->setCount(vertices->size());
+            _drawArrays->setFirst(0);
+            _drawArrays->setCount(_vertices->size());
 
             // Make the graph scroll when there is enough data.
             // Note: We check the frame number so that even if we have
@@ -833,26 +827,25 @@ protected:
             {
                 // We know the exact layout of this part of the scene
                 // graph, so this is OK...
-                osg::MatrixTransform* transform =
-                    geometry->getParent(0)->getParent(0)->asTransform()->asMatrixTransform();
+                osg::MatrixTransform* transform = const_cast<osg::MatrixTransform*>(drawable->getParent(0)->getParent(0)->asTransform()->asMatrixTransform());
                 if (transform)
                 {
                     //osg::Matrix matrix = transform->getMatrix();
                     //matrix.setTrans(-(*vertices)[0].x(), matrix.getTrans().y(), matrix.getTrans().z());
-                    transform->setMatrix(osg::Matrix::translate(_pos + osg::Vec3(-(*vertices)[0].x(), 0, 0)));
+                    transform->setMatrix(osg::Matrix::translate(_pos + osg::Vec3(-(*_vertices)[0].x(), 0, 0)));
                 }
             }
 
-            vertices->dirty();
+            _vertices->dirty();
 
             _curX++;
             GraphUpdateCallback::_frameNumber = frameNumber;
 
-            geometry->dirtyBound();
-
             drawable->drawImplementation(renderInfo);
         }
 
+        osg::ref_ptr<osg::Vec3Array>    _vertices;
+        osg::ref_ptr<osg::DrawArrays>   _drawArrays;
         const osg::Vec3         _pos;
         const unsigned int      _width;
         const unsigned int      _height;
@@ -874,6 +867,7 @@ osg::Geometry* StatsHandler::createGeometry(const osg::Vec3& pos, float height, 
     osg::Geometry* geometry = new osg::Geometry;
 
     geometry->setUseDisplayList(false);
+    geometry->setDataVariance(osg::Object::DYNAMIC);
 
     osg::Vec3Array* vertices = new osg::Vec3Array;
     geometry->setVertexArray(vertices);
@@ -1031,6 +1025,7 @@ osg::Geometry* StatsHandler::createFrameMarkers(const osg::Vec3& pos, float heig
     osg::Geometry* geometry = new osg::Geometry;
 
     geometry->setUseDisplayList(false);
+    geometry->setDataVariance(osg::Object::DYNAMIC);
 
     osg::Vec3Array* vertices = new osg::Vec3Array;
     geometry->setVertexArray(vertices);
@@ -1056,6 +1051,7 @@ osg::Geometry* StatsHandler::createTick(const osg::Vec3& pos, float height, cons
     osg::Geometry* geometry = new osg::Geometry;
 
     geometry->setUseDisplayList(false);
+    geometry->setDataVariance(osg::Object::DYNAMIC);
 
     osg::Vec3Array* vertices = new osg::Vec3Array;
     geometry->setVertexArray(vertices);

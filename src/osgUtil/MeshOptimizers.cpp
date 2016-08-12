@@ -266,7 +266,8 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
     }
 
     // nothing to index
-    if (!numSurfacePrimitives || !numNonIndexedPrimitives) return;
+    if(!getIsForcedReindexationEnabled())
+        if (!numSurfacePrimitives || !numNonIndexedPrimitives) return;
 
     // duplicate shared arrays as it isn't safe to rearrange vertices when arrays are shared.
     if (geom.containsSharedArrays()) geom.duplicateSharedArrays();

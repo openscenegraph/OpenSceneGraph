@@ -719,3 +719,9 @@ void VertexArrayState::setInterleavedArrays( osg::State& state, GLenum format, G
     dirtyAllVertexArrays();
 #endif
 }
+
+void VertexArrayState::dirty()
+{
+    setRequiresSetArrays(true);
+}
+

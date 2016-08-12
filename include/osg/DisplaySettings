@@ -299,15 +299,15 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         int getNvOptimusEnablement() const;
 
 
-        enum GeometryImplementation
+        enum VertexBufferHint
         {
-            OLD_GEOMETRY_IMPLEMENTATION,
-            NEW_GEOMETRY_IMPLEMENTATION,
+            NO_PREFERENCE,
+            VERTEX_BUFFER_OBJECT,
             VERTEX_ARRAY_OBJECT
         };
 
-        void setGeometryImplementation(GeometryImplementation gi) { _geometryImplementation = gi; }
-        GeometryImplementation getGeometryImplementation() const { return _geometryImplementation; }
+        void setVertexBufferHint(VertexBufferHint gi) { _vertexBufferHint = gi; }
+        VertexBufferHint getVertexBufferHint() const { return _vertexBufferHint; }
 
 
         void setKeystoneHint(bool enabled) { _keystoneHint = enabled; }
@@ -399,7 +399,7 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         SwapMethod                      _swapMethod;
         unsigned int                    _syncSwapBuffers;
 
-        GeometryImplementation          _geometryImplementation;
+        VertexBufferHint                _vertexBufferHint;
 
         bool                            _keystoneHint;
         FileNames                       _keystoneFileNames;

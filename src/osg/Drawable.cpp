@@ -232,7 +232,7 @@ Drawable::Drawable()
     _useVertexBufferObjects = false;
 #else
     _supportsVertexBufferObjects = true;
-    _useVertexBufferObjects = false;
+    _useVertexBufferObjects = true;
 #endif
 
     _useVertexArrayObject = false;
@@ -426,7 +426,7 @@ void Drawable::setUseVertexBufferObjects(bool flag)
     // if was previously set to true, remove display list.
     if (_useVertexBufferObjects)
     {
-        dirtyDisplayList();
+        dirtyGLObjects();
     }
 
     _useVertexBufferObjects = flag;
@@ -454,11 +454,7 @@ void Drawable::dirtyGLObjects()
     for(i=0; i<_vertexArrayStateList.size(); ++i)
     {
         VertexArrayState* vas = _vertexArrayStateList[i].get();
-        if (vas)
-        {
-            vas->release();
-            _vertexArrayStateList[i] = 0;
-        }
+        if (vas) vas->dirty();
     }
 }
 
@@ -624,7 +620,86 @@ void Drawable::compileGLObjects(RenderInfo& renderInfo) const
 #endif
 }
 
+#ifndef INLINE_DRAWABLE_DRAW
+
+void Drawable::draw(RenderInfo& renderInfo) const
+{
+    // OSG_NOTICE<<"Geometry::draw() "<<this<<std::endl;
+
+    State& state = *renderInfo.getState();
+    bool useVertexArrayObject = state.useVertexArrayObject(_useVertexArrayObject);
+    if (useVertexArrayObject)
+    {
+        unsigned int contextID = renderInfo.getContextID();
+
+        VertexArrayState* vas = _vertexArrayStateList[contextID].get();
+        if (!vas)
+        {
+            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo, true);
+            // OSG_NOTICE<<"  Geometry::draw() "<<this<<", assigned _vertexArrayStateList[renderInfo.getContextID()]="<<_vertexArrayStateList[renderInfo.getContextID()].get()<<", vas="<<vas<< std::endl;
+        }
+        else
+        {
+            // vas->setRequiresSetArrays(getDataVariance()==osg::Object::DYNAMIC);
+            // OSG_NOTICE<<"  Geometry::draw() "<<this<<", reusing _vertexArrayStateList[renderInfo.getContextID()]="<<_vertexArrayStateList[renderInfo.getContextID()].get()<<", vas="<<vas<< std::endl;
+        }
+
+
+        State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
+
+        vas->bindVertexArrayObject();
+
+        drawInner(renderInfo);
+
+        vas->setRequiresSetArrays(getDataVariance()==osg::Object::DYNAMIC);
+
+        return;
+    }
+
+    // TODO, add check against whether VOA is active and supported
+    if (state.getCurrentVertexArrayState()) state.getCurrentVertexArrayState()->bindVertexArrayObject();
+
+
+#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
+    if (_useDisplayList)
+    {
+        // get the contextID (user defined ID of 0 upwards) for the
+        // current OpenGL context.
+        unsigned int contextID = renderInfo.getContextID();
+
+        // get the globj for the current contextID.
+        GLuint& globj = _globjList[contextID];
+
+        if( globj == 0 )
+        {
+            // compile the display list
+            globj = generateDisplayList(contextID, getGLObjectSizeHint());
+            glNewList( globj, GL_COMPILE );
+
+            drawInner(renderInfo);
+
+            glEndList();
+        }
+
+        // call the display list
+        glCallList( globj);
+    }
+    else
+#endif
+    {
+        // if state.previousVertexArrayState() is different than currentVertexArrayState bind current
+
+        // OSG_NOTICE<<"Fallback drawInner()........................"<<std::endl;
+
+        drawInner(renderInfo);
+    }
+}
+
+#endif
+
 VertexArrayState* Drawable::createVertexArrayState(RenderInfo& renderInfo, bool usingVBOs) const
 {
-    return new osg::VertexArrayState(renderInfo.getState());
+    VertexArrayState* vos = new osg::VertexArrayState(renderInfo.getState());
+    vos->assignAllDispatchers();
+    return vos;
 }

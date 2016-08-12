@@ -161,6 +161,8 @@ public:
         void setRequiresSetArrays(bool flag) { _requiresSetArrays = flag; }
         bool getRequiresSetArrays() const { return _requiresSetArrays; }
 
+        void dirty();
+
         void release();
 
 public:

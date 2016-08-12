@@ -96,7 +96,9 @@ State::State():
     _isFogCoordSupported = false;
     _isVertexBufferObjectSupported = false;
     _isVertexArrayObjectSupported = false;
-    _useVertexArrayObject = false;
+
+    _forceVertexBufferObject = false;
+    _forceVertexArrayObject = false;
 
     _lastAppliedProgramObject = 0;
 
@@ -176,7 +178,8 @@ void State::initializeExtensionProcs()
     _isVertexArrayObjectSupported = _glExtensions->isVAOSupported;
 
     const DisplaySettings* ds = getDisplaySettings() ? getDisplaySettings() : osg::DisplaySettings::instance();
-    _useVertexArrayObject = _isVertexArrayObjectSupported &&  (ds->getGeometryImplementation()==DisplaySettings::VERTEX_ARRAY_OBJECT);
+    _forceVertexArrayObject = _isVertexArrayObjectSupported && (ds->getVertexBufferHint()==DisplaySettings::VERTEX_ARRAY_OBJECT);
+    _forceVertexBufferObject = _forceVertexArrayObject || (_isVertexBufferObjectSupported && (ds->getVertexBufferHint()==DisplaySettings::VERTEX_BUFFER_OBJECT));
 
 
     // Set up up global VertexArrayState object

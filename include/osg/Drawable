@@ -55,6 +55,8 @@
 #endif
 
 
+#define INLINE_DRAWABLE_DRAW
+
 namespace osg {
 
 
@@ -256,7 +258,11 @@ class OSG_EXPORT Drawable : public Node
           *       \c virtual). Subclasses should override
           *       \c drawImplementation() instead.
           */
+#ifdef INLINE_DRAWABLE_DRAW
         inline void draw(RenderInfo& renderInfo) const;
+#else
+        void draw(RenderInfo& renderInfo) const;
+#endif
 
         inline void drawInner(RenderInfo& renderInfo) const
         {
@@ -491,12 +497,11 @@ class OSG_EXPORT Drawable : public Node
         ref_ptr<DrawCallback>   _drawCallback;
 };
 
-#if 1
+#ifdef INLINE_DRAWABLE_DRAW
 inline void Drawable::draw(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
-    bool useVertexArrayObject = _useVertexBufferObjects && state.useVertexArrayObject();
-
+    bool useVertexArrayObject = state.useVertexArrayObject(_useVertexArrayObject);
     if (useVertexArrayObject)
     {
         unsigned int contextID = renderInfo.getContextID();
@@ -559,46 +564,6 @@ inline void Drawable::draw(RenderInfo& renderInfo) const
 
         drawInner(renderInfo);
     }
-}
-#else
-inline void Drawable::draw(RenderInfo& renderInfo) const
-{
-#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
-    if (_useDisplayList && !(_supportsVertexBufferObjects && _useVertexBufferObjects && renderInfo.getState()->isVertexBufferObjectSupported()))
-    {
-        // get the contextID (user defined ID of 0 upwards) for the
-        // current OpenGL context.
-        unsigned int contextID = renderInfo.getContextID();
-
-        // get the globj for the current contextID.
-        GLuint& globj = _globjList[contextID];
-
-        if( globj == 0 )
-        {
-            // compile the display list
-            globj = generateDisplayList(contextID, getGLObjectSizeHint());
-            glNewList( globj, GL_COMPILE );
-
-            if (_drawCallback.valid())
-                _drawCallback->drawImplementation(renderInfo,this);
-            else
-                drawImplementation(renderInfo);
-
-            glEndList();
-        }
-
-        // call the display list
-        glCallList( globj);
-
-        return;
-    }
-#endif
-
-    // draw object as nature intended..
-    if (_drawCallback.valid())
-        _drawCallback->drawImplementation(renderInfo,this);
-    else
-        drawImplementation(renderInfo);
 }
 #endif
 

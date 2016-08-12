@@ -716,10 +716,11 @@ class OSG_EXPORT State : public Referenced
 
 
         inline bool isVertexBufferObjectSupported() const { return _isVertexBufferObjectSupported; }
+        inline bool useVertexBufferObject(bool useVBO) const { return _forceVertexBufferObject || (_isVertexBufferObjectSupported && useVBO); }
 
         inline bool isVertexArrayObjectSupported() const { return _isVertexArrayObjectSupported; }
+        inline bool useVertexArrayObject(bool useVAO) const { return _forceVertexArrayObject || (_isVertexArrayObjectSupported && useVAO); }
 
-        inline bool useVertexArrayObject() const { return _useVertexArrayObject; }
 
         inline void setLastAppliedProgramObject(const Program::PerContextProgram* program)
         {
@@ -1306,8 +1307,8 @@ class OSG_EXPORT State : public Referenced
         bool _isFogCoordSupported;
         bool _isVertexBufferObjectSupported;
         bool _isVertexArrayObjectSupported;
-
-        bool _useVertexArrayObject;
+        bool _forceVertexBufferObject;
+        bool _forceVertexArrayObject;
 
         typedef void (GL_APIENTRY * ActiveTextureProc) (GLenum texture);
         typedef void (GL_APIENTRY * FogCoordPointerProc) (GLenum type, GLsizei stride, const GLvoid *pointer);

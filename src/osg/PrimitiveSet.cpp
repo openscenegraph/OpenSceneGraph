@@ -196,15 +196,16 @@ void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
-        state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
 
         if (ebo)
         {
+            state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
             if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_BYTE, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
             else glDrawElements(mode, size(), GL_UNSIGNED_BYTE, (const GLvoid *)(ebo->getOffset(getBufferIndex())));
         }
         else
         {
+            state.getCurrentVertexArrayState()->unbindElementBufferObject();
             if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_BYTE, &front(), _numInstances);
             else glDrawElements(mode, size(), GL_UNSIGNED_BYTE, &front());
         }
@@ -257,15 +258,16 @@ void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
-        state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
 
         if (ebo)
         {
+            state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
             if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_SHORT, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
             else glDrawElements(mode, size(), GL_UNSIGNED_SHORT, (const GLvoid *)(ebo->getOffset(getBufferIndex())));
         }
         else
         {
+            state.getCurrentVertexArrayState()->unbindElementBufferObject();
             if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_SHORT, &front(), _numInstances);
             else glDrawElements(mode, size(), GL_UNSIGNED_SHORT, &front());
         }
@@ -317,15 +319,16 @@ void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
-        state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
 
         if (ebo)
         {
+            state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
             if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_INT, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
             else glDrawElements(mode, size(), GL_UNSIGNED_INT, (const GLvoid *)(ebo->getOffset(getBufferIndex())));
         }
         else
         {
+            state.getCurrentVertexArrayState()->unbindElementBufferObject();
             if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_INT, &front(), _numInstances);
             else glDrawElements(mode, size(), GL_UNSIGNED_INT, &front());
         }

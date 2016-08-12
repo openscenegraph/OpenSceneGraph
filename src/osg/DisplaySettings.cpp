@@ -116,7 +116,7 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
     _glContextProfileMask = vs._glContextProfileMask;
     _swapMethod = vs._swapMethod;
 
-    _geometryImplementation = vs._geometryImplementation;
+    _vertexBufferHint = vs._vertexBufferHint;
 
     _keystoneHint = vs._keystoneHint;
     _keystoneFileNames = vs._keystoneFileNames;
@@ -243,8 +243,9 @@ void DisplaySettings::setDefaults()
     _swapMethod = SWAP_DEFAULT;
     _syncSwapBuffers = 0;
 
-    // _geometryImplementation = VERTEX_ARRAY_OBJECT;
-    _geometryImplementation = OLD_GEOMETRY_IMPLEMENTATION;
+    _vertexBufferHint = NO_PREFERENCE;
+    // _vertexBufferHint = VERTEX_BUFFER_OBJECT;
+    // _vertexBufferHint = VERTEX_ARRAY_OBJECT;
 
     _keystoneHint = false;
 
@@ -367,8 +368,8 @@ static ApplicationUsageProxy DisplaySetting_e31(ApplicationUsage::ENVIRONMENTAL_
         "OSG_NvOptimusEnablement <value>",
         "Set the hint to NvOptimus of whether to enable it or not, set 1 to enable, 0 to disable");
 static ApplicationUsageProxy DisplaySetting_e32(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
-        "OSG_GEOMETRY_IMPLEMENTATION <value>",
-        "Set the hint to what backend osg::Geometry implementation to use. OLD | NEW | VERTEX_ARRAY_OBJECT");
+        "OSG_VERTEX_BUFFER_HINT <value>",
+        "Set the hint to what backend osg::Geometry implementation to use. NO_PREFERENCE | VERTEX_BUFFER_OBJECT | VERTEX_ARRAY_OBJECT");
 
 void DisplaySettings::readEnvironmentalVariables()
 {
@@ -680,19 +681,22 @@ void DisplaySettings::readEnvironmentalVariables()
     }
 
 
-    if ((ptr = getenv("OSG_GEOMETRY_IMPLEMENTATION")) != 0)
+    if ((ptr = getenv("OSG_VERTEX_BUFFER_HINT")) != 0)
     {
-        if (strcmp(ptr,"OLD")==0)
+        if (strcmp(ptr,"VERTEX_BUFFER_OBJECT")==0 || strcmp(ptr,"VBO")==0)
         {
-            _geometryImplementation = OLD_GEOMETRY_IMPLEMENTATION;
-        }
-        else if (strcmp(ptr,"NEW")==0 )
-        {
-            _geometryImplementation = NEW_GEOMETRY_IMPLEMENTATION;
+            OSG_NOTICE<<"OSG_VERTEX_BUFFER_HINT set to VERTEX_BUFFER_OBJECT"<<std::endl;
+            _vertexBufferHint = VERTEX_BUFFER_OBJECT;
         }
         else if (strcmp(ptr,"VERTEX_ARRAY_OBJECT")==0 || strcmp(ptr,"VAO")==0)
         {
-            _geometryImplementation =  VERTEX_ARRAY_OBJECT;
+            OSG_NOTICE<<"OSG_VERTEX_BUFFER_HINT set to VERTEX_ARRAY_OBJECT"<<std::endl;
+            _vertexBufferHint = VERTEX_ARRAY_OBJECT;
+        }
+        else
+        {
+            OSG_NOTICE<<"OSG_VERTEX_BUFFER_HINT set to NO_PREFERENCE"<<std::endl;
+            _vertexBufferHint = NO_PREFERENCE;
         }
     }
 

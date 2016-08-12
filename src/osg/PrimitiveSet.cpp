@@ -65,8 +65,20 @@ void DrawArrays::draw(State& state, bool, GLint vertexbase, bool useVAO) const
     if (_numInstances>=1) state.glDrawArraysInstanced(mode,_first,_count, _numInstances);
     else glDrawArrays(mode,_first,_count);
 #else
-    if (_numInstances>=1) state.glDrawArraysInstanced(_mode,_first,_count, _numInstances);
-    else glDrawArrays(_mode,_first,_count);
+    if (_numInstances>=1) state.glDrawArraysInstanced(_mode,_first+vertexbase,_count, _numInstances);
+    else glDrawArrays(_mode,_first+vertexbase,_count);
+
+     /*if(useVAO){
+                if (_numInstances>=1)    state.get<GLExtensions>()->glDrawArraysInstancedBaseVertex(mode, size(), TYPE, (const GLvoid *)(ebo->getOffset(getBufferIndex())) , _numInstances ,vertexbase );\
+                else
+                state.get<GLExtensions>()->glDrawArraysBaseVertex(mode, size(), TYPE, (const GLvoid *)(ebo->getOffset(getBufferIndex())) , vertexbase );
+            }else {
+                if (_numInstances>=1) state.glDrawArraysInstanced(mode, _first,TYPE, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
+                else
+                glDrawArrays(mode, _first, TYPE, (const GLvoid *)(ebo->getOffset(getBufferIndex())));
+            }
+*/
+
 #endif
 }
 

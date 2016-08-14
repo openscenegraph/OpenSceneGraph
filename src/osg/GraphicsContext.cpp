@@ -767,7 +767,7 @@ void GraphicsContext::removeCamera(osg::Camera* camera)
             nitr != nodes.end();
             ++nitr)
         {
-            const_cast<osg::Node*>(*nitr)->releaseGLObjects(_state.get());
+            (*nitr)->releaseGLObjects(_state.get());
         }
 
         // release the context of the any RenderingCache that the Camera has.

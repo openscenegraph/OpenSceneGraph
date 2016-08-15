@@ -77,7 +77,7 @@ void StateToCompile::apply(osg::Drawable& drawable)
 
     _drawablesHandled.insert(&drawable);
 
-    if (_markerObject.get()!=drawable.getUserData())
+    if (!_markerObject || _markerObject.get()!=drawable.getUserData())
     {
         if (drawable.getDataVariance()!=osg::Object::STATIC)
         {
@@ -114,7 +114,7 @@ void StateToCompile::apply(osg::Drawable& drawable)
         }
 
         // mark the drawable as visited
-        if (drawable.getUserData()==0) drawable.setUserData(_markerObject.get());
+        if (_markerObject.valid() && drawable.getUserData()==0) drawable.setUserData(_markerObject.get());
     }
 }
 
@@ -125,15 +125,15 @@ void StateToCompile::apply(osg::StateSet& stateset)
     _statesetsHandled.insert(&stateset);
 
     if ((_mode & GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES)!=0 &&
-        _markerObject.get()!=stateset.getUserData())
+        (!_markerObject || _markerObject.get()!=stateset.getUserData()))
     {
         osg::Program* program = dynamic_cast<osg::Program*>(stateset.getAttribute(osg::StateAttribute::PROGRAM));
-        if (program && _markerObject.get()!=program->getUserData())
+        if (program && (!_markerObject || _markerObject.get()!=program->getUserData()))
         {
             _programs.insert(program);
 
             // mark the stateset as visited
-            if (program->getUserData()==0) program->setUserData(_markerObject.get());
+            if (_markerObject.valid() && program->getUserData()==0) program->setUserData(_markerObject.get());
         }
 
         const osg::StateSet::TextureAttributeList& tal = stateset.getTextureAttributeList();
@@ -159,14 +159,14 @@ void StateToCompile::apply(osg::StateSet& stateset)
         }
 
         // mark the stateset as visited
-        if (stateset.getUserData()==0) stateset.setUserData(_markerObject.get());
+        if (_markerObject.valid() && stateset.getUserData()==0) stateset.setUserData(_markerObject.get());
     }
 }
 
 void StateToCompile::apply(osg::Texture& texture)
 {
     // don't make any changes if Texture already processed
-    if (_markerObject.get()==texture.getUserData()) return;
+    if (_markerObject.valid() && _markerObject.get()==texture.getUserData()) return;
 
     if (_assignPBOToImages)
     {
@@ -213,7 +213,7 @@ void StateToCompile::apply(osg::Texture& texture)
         }
     }
 
-    if (texture.getUserData()==0) texture.setUserData(_markerObject.get());
+    if (_markerObject.valid() && texture.getUserData()==0) texture.setUserData(_markerObject.get());
 
     _textures.insert(&texture);
 }

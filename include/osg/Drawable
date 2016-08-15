@@ -532,7 +532,7 @@ inline void Drawable::draw(RenderInfo& renderInfo) const
 
 
 #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
-    if (_useDisplayList)
+    if (!state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects) && _useDisplayList)
     {
         // get the contextID (user defined ID of 0 upwards) for the
         // current OpenGL context.

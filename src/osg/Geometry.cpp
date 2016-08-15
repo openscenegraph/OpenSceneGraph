@@ -785,7 +785,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
 
 void Geometry::drawImplementation(RenderInfo& renderInfo) const
 {
-    // OSG_NOTICE<<" Geometry::drawImplementation()"<<std::endl;
+    // OSG_NOTICE<<"Geometry::drawImplementation() "<<this<<std::endl;
 
     if (_containsDeprecatedData)
     {

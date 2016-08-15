@@ -181,6 +181,9 @@ void State::initializeExtensionProcs()
     _forceVertexArrayObject = _isVertexArrayObjectSupported && (ds->getVertexBufferHint()==DisplaySettings::VERTEX_ARRAY_OBJECT);
     _forceVertexBufferObject = _forceVertexArrayObject || (_isVertexBufferObjectSupported && (ds->getVertexBufferHint()==DisplaySettings::VERTEX_BUFFER_OBJECT));
 
+    OSG_NOTICE<<"_forceVertexArrayObject = "<<_forceVertexArrayObject<<std::endl;
+    OSG_NOTICE<<"_forceVertexBufferObject = "<<_forceVertexBufferObject<<std::endl;
+
 
     // Set up up global VertexArrayState object
     _globalVertexArrayState = new VertexArrayState(this);

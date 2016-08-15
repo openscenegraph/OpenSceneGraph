@@ -24,7 +24,7 @@ class OSGUTIL_EXPORT StateToCompile : public osg::NodeVisitor
 {
     public:
 
-        StateToCompile(GLObjectsVisitor::Mode mode, osg::Object* markerObject=0);
+        StateToCompile(GLObjectsVisitor::Mode mode, osg::Object* markerObject);
 
         typedef std::set<osg::Drawable*> DrawableSet;
         typedef std::set<osg::StateSet*> StateSetSet;

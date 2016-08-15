@@ -266,7 +266,7 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
             typedef std::map<osg::GraphicsContext*, CompileList >  CompileMap;
             CompileMap                              _compileMap;
 
-            osg::ref_ptr<osg::Object>           _markerObject;
+            osg::ref_ptr<osg::Object>               _markerObject;
 
         protected:
 

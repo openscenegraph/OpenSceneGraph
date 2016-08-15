@@ -420,7 +420,8 @@ void IncrementalCompileOperation::CompileSet::buildCompileMap(ContextSet& contex
 {
     if (contexts.empty() || !_subgraphToCompile) return;
 
-    StateToCompile stc(mode);
+    StateToCompile stc(mode, _markerObject.get());
+
     _subgraphToCompile->accept(stc);
 
     buildCompileMap(contexts, stc);
@@ -578,6 +579,9 @@ void IncrementalCompileOperation::add(osg::Group* attachmentPoint, osg::Node* su
 void IncrementalCompileOperation::add(CompileSet* compileSet, bool callBuildCompileMap)
 {
     if (!compileSet) return;
+
+    // pass on the markerObject to the CompileSet
+    compileSet->_markerObject = _markerObject;
 
     if (compileSet->_subgraphToCompile.valid())
     {

@@ -595,7 +595,7 @@ void Drawable::compileGLObjects(RenderInfo& renderInfo) const
 {
 
 #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
-    if (_useDisplayList)
+    if (!renderInfo.getState()->useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects) && _useDisplayList)
     {
         // get the contextID (user defined ID of 0 upwards) for the
         // current OpenGL context.
@@ -624,7 +624,6 @@ void Drawable::compileGLObjects(RenderInfo& renderInfo) const
 
 void Drawable::draw(RenderInfo& renderInfo) const
 {
-    // OSG_NOTICE<<"Geometry::draw() "<<this<<std::endl;
 
     State& state = *renderInfo.getState();
     bool useVertexArrayObject = state.useVertexArrayObject(_useVertexArrayObject);
@@ -661,7 +660,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
 
 
 #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
-    if (_useDisplayList)
+    if (!state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects) && _useDisplayList)
     {
         // get the contextID (user defined ID of 0 upwards) for the
         // current OpenGL context.

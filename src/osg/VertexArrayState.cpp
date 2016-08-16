@@ -729,20 +729,13 @@ void VertexArrayState::setArray(ArrayDispatch* vad, osg::State& state, GLint siz
 
 void VertexArrayState::setInterleavedArrays( osg::State& state, GLenum format, GLsizei stride, const GLvoid* pointer)
 {
-    OSG_NOTICE<<"Warning: VertexArrayState::setInterleavedArrays() NOT IMPLEMENTATED YET"<<std::endl;
-
-#if 0
-    disableAllVertexArrays();
-
 #if defined(OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
+    lazyDisablingOfVertexAttributes();
+    applyDisablingOfVertexAttributes(state);
+
     glInterleavedArrays( format, stride, pointer);
 #else
     OSG_NOTICE<<"Warning: State::setInterleavedArrays(..) not implemented."<<std::endl;
-#endif
-
-    // the crude way, assume that all arrays have been affected so dirty them and
-    // disable them...
-    dirtyAllVertexArrays();
 #endif
 }
 

@@ -438,7 +438,7 @@ struct VertexAttribArrayDispatch : public VertexArrayState::ArrayDispatch
 
     inline void callVertexAttribPointer(GLExtensions* ext, const osg::Array* new_array, const GLvoid * ptr)
     {
-        if (array->getPreserveDataType())
+        if (new_array->getPreserveDataType())
         {
             if (new_array->getDataType()==GL_FLOAT)
                 ext->glVertexAttribPointer(static_cast<GLuint>(unit), new_array->getDataSize(), new_array->getDataType(), new_array->getNormalize(), 0, ptr);

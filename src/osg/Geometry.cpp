@@ -823,6 +823,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
+    VertexArrayState* vas = state.getCurrentVertexArrayState();
 
     bool handleVertexAttributes = !_vertexAttribList.empty();
 
@@ -850,33 +851,33 @@ void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
 
     if (state.useVertexArrayObject(_useVertexArrayObject))
     {
-        if (!state.getCurrentVertexArrayState()->getRequiresSetArrays()) return;
+        if (!vas->getRequiresSetArrays()) return;
     }
 
-    state.lazyDisablingOfVertexAttributes();
+    vas->lazyDisablingOfVertexAttributes();
 
     // set up arrays
     if( _vertexArray.valid() )
-        state.setVertexPointer(_vertexArray.get());
+        vas->setVertexArray(state, _vertexArray.get());
 
     if (_normalArray.valid() && _normalArray->getBinding()==osg::Array::BIND_PER_VERTEX)
-        state.setNormalPointer(_normalArray.get());
+        vas->setNormalArray(state, _normalArray.get());
 
     if (_colorArray.valid() && _colorArray->getBinding()==osg::Array::BIND_PER_VERTEX)
-        state.setColorPointer(_colorArray.get());
+        vas->setColorArray(state, _colorArray.get());
 
     if (_secondaryColorArray.valid() && _secondaryColorArray->getBinding()==osg::Array::BIND_PER_VERTEX)
-        state.setSecondaryColorPointer(_secondaryColorArray.get());
+        vas->setSecondaryColorArray(state, _secondaryColorArray.get());
 
     if (_fogCoordArray.valid() && _fogCoordArray->getBinding()==osg::Array::BIND_PER_VERTEX)
-        state.setFogCoordPointer(_fogCoordArray.get());
+        vas->setFogCoordArray(state, _fogCoordArray.get());
 
     for(unsigned int unit=0;unit<_texCoordList.size();++unit)
     {
         const Array* array = _texCoordList[unit].get();
         if (array)
         {
-            state.setTexCoordPointer(unit,array);
+            vas->setTexCoordArray(state, unit,array);
         }
     }
 
@@ -887,22 +888,12 @@ void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
             const Array* array = _vertexAttribList[index].get();
             if (array && array->getBinding()==osg::Array::BIND_PER_VERTEX)
             {
-                if (array->getPreserveDataType())
-                {
-                    GLenum dataType = array->getDataType();
-                    if (dataType==GL_FLOAT) state.setVertexAttribPointer( index, array );
-                    else if (dataType==GL_DOUBLE) state.setVertexAttribLPointer( index, array );
-                    else state.setVertexAttribIPointer( index, array );
-                }
-                else
-                {
-                    state.setVertexAttribPointer( index, array );
-                }
+                vas->setVertexAttribArray(state, index, array);
             }
         }
     }
 
-    state.applyDisablingOfVertexAttributes();
+    vas->applyDisablingOfVertexAttributes(state);
 }
 
 void Geometry::drawPrimitivesImplementation(RenderInfo& renderInfo) const

@@ -1196,8 +1196,6 @@ class OSG_EXPORT State : public Referenced
 
         unsigned int                    _currentActiveTextureUnit;
         unsigned int                    _currentClientActiveTextureUnit;
-        GLBufferObject*                 _currentVBO;
-        GLBufferObject*                 _currentEBO;
         GLBufferObject*                 _currentPBO;
 
 

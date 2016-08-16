@@ -419,12 +419,19 @@ struct VertexAttribArrayDispatch : public VertexArrayState::ArrayDispatch
 
     inline void callVertexAttribPointer(GLExtensions* ext, const osg::Array* new_array, const GLvoid * ptr)
     {
-        if (new_array->getDataType()==GL_FLOAT)
-            ext->glVertexAttribPointer(static_cast<GLuint>(unit), new_array->getDataSize(), new_array->getDataType(), new_array->getNormalize(), 0, ptr);
-        else if (array->getDataType()==GL_DOUBLE)
-            ext->glVertexAttribLPointer(static_cast<GLuint>(unit), new_array->getDataSize(), new_array->getDataType(), 0, ptr);
+        if (array->getPreserveDataType())
+        {
+            if (new_array->getDataType()==GL_FLOAT)
+                ext->glVertexAttribPointer(static_cast<GLuint>(unit), new_array->getDataSize(), new_array->getDataType(), new_array->getNormalize(), 0, ptr);
+            else if (array->getDataType()==GL_DOUBLE)
+                ext->glVertexAttribLPointer(static_cast<GLuint>(unit), new_array->getDataSize(), new_array->getDataType(), 0, ptr);
+            else
+                ext->glVertexAttribIPointer(static_cast<GLuint>(unit), new_array->getDataSize(), new_array->getDataType(), 0, ptr);
+        }
         else
-            ext->glVertexAttribIPointer(static_cast<GLuint>(unit), new_array->getDataSize(), new_array->getDataType(), 0, ptr);
+        {
+            ext->glVertexAttribPointer(static_cast<GLuint>(unit), new_array->getDataSize(), new_array->getDataType(), new_array->getNormalize(), 0, ptr);
+        }
     }
 
     virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array)

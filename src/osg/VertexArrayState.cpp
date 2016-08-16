@@ -216,6 +216,7 @@ struct ColorArrayDispatch : public VertexArrayState::ArrayDispatch
     }
 
 };
+
 ///////////////////////////////////////////////////////////////////////////////////
 //
 //  NormalArrayDispatch
@@ -267,6 +268,16 @@ struct NormalArrayDispatch : public VertexArrayState::ArrayDispatch
         glDisableClientState(GL_NORMAL_ARRAY);
     }
 };
+
+
+#ifndef GL_SECONDARY_COLOR_ARRAY
+    #ifdef GL_SECONDARY_COLOR_ARRAY_EXT
+        #define GL_SECONDARY_COLOR_ARRAY GL_SECONDARY_COLOR_ARRAY_EXT
+    #else
+        #define GL_SECONDARY_COLOR_ARRAY 0x845E
+    #endif
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////////
 //
 //  SecondaryColorArrayDispatch
@@ -304,6 +315,14 @@ struct SecondaryColorArrayDispatch : public VertexArrayState::ArrayDispatch
 };
 
 
+#ifndef GL_FOG_COORDINATE_ARRAY
+    #ifdef GL_FOG_COORDINATE_ARRAY_EXT
+        #define GL_FOG_COORDINATE_ARRAY GL_FOG_COORDINATE_ARRAY_EXT
+    #else
+        #define GL_FOG_COORDINATE_ARRAY 0x8457
+    #endif
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////////
 //
 //  FogCoordArrayDispatch
@@ -314,13 +333,13 @@ struct FogCoordArrayDispatch : public VertexArrayState::ArrayDispatch
 
     virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array)
     {
-        glEnableClientState(GL_FOG_COORD_ARRAY);
+        glEnableClientState(GL_FOG_COORDINATE_ARRAY);
         state.get<GLExtensions>()->glFogCoordPointer(new_array->getDataType(), 0, new_array->getDataPointer());
     }
 
     virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
     {
-        glEnableClientState(GL_FOG_COORD_ARRAY);
+        glEnableClientState(GL_FOG_COORDINATE_ARRAY);
         state.get<GLExtensions>()->glFogCoordPointer(new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
     }
 
@@ -336,7 +355,7 @@ struct FogCoordArrayDispatch : public VertexArrayState::ArrayDispatch
 
     virtual void disable(osg::State& state)
     {
-        glDisableClientState(GL_FOG_COORD_ARRAY);
+        glDisableClientState(GL_FOG_COORDINATE_ARRAY);
     }
 };
 

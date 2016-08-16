@@ -39,22 +39,6 @@
 #include <set>
 #include <string>
 
-#ifndef GL_FOG_COORDINATE_ARRAY
-    #ifdef GL_FOG_COORDINATE_ARRAY_EXT
-        #define GL_FOG_COORDINATE_ARRAY GL_FOG_COORDINATE_ARRAY_EXT
-    #else
-        #define GL_FOG_COORDINATE_ARRAY 0x8457
-    #endif
-#endif
-
-#ifndef GL_SECONDARY_COLOR_ARRAY
-    #ifdef GL_SECONDARY_COLOR_ARRAY_EXT
-        #define GL_SECONDARY_COLOR_ARRAY GL_SECONDARY_COLOR_ARRAY_EXT
-    #else
-        #define GL_SECONDARY_COLOR_ARRAY 0x845E
-    #endif
-#endif
-
 namespace osg {
 
 /** macro for use with osg::StateAttribute::apply methods for detecting and

@@ -57,20 +57,6 @@ namespace osg {
 // forward declare GraphicsContext, View and State
 class GraphicsContext;
 
-struct EnabledArrayPair
-{
-    EnabledArrayPair():_arrayType(0), _lazy_disable(false),_dirty(true),_enabled(false),_normalized(0),_pointer(0) {}
-    EnabledArrayPair(const EnabledArrayPair& eap):_arrayType(0), _lazy_disable(eap._lazy_disable),_dirty(eap._dirty), _enabled(eap._enabled),_normalized(eap._normalized),_pointer(eap._pointer) {}
-    EnabledArrayPair& operator = (const EnabledArrayPair& eap) { _arrayType = eap._arrayType; _lazy_disable = eap._lazy_disable;_dirty=eap._dirty; _enabled=eap._enabled; _normalized=eap._normalized;_pointer=eap._pointer; return *this; }
-
-    GLenum          _arrayType;
-    bool            _lazy_disable;
-    bool            _dirty;
-    bool            _enabled;
-    GLboolean       _normalized;
-    const GLvoid*   _pointer;
-};
-
 /** Encapsulates the current applied OpenGL modes, attributes and vertex arrays settings,
   * implements lazy state updating and provides accessors for querying the current state.
   * The venerable Red Book says that "OpenGL is a state machine", and this class
@@ -1207,30 +1193,6 @@ class OSG_EXPORT State : public Referenced
         unsigned int                                                    _maxTexturePoolSize;
         unsigned int                                                    _maxBufferObjectPoolSize;
 
-
-        struct EnabledArrayPair
-        {
-            EnabledArrayPair():_lazy_disable(false),_dirty(true),_enabled(false),_normalized(0),_pointer(0) {}
-            EnabledArrayPair(const EnabledArrayPair& eap):_lazy_disable(eap._lazy_disable),_dirty(eap._dirty), _enabled(eap._enabled),_normalized(eap._normalized),_pointer(eap._pointer) {}
-            EnabledArrayPair& operator = (const EnabledArrayPair& eap) { _lazy_disable = eap._lazy_disable;_dirty=eap._dirty; _enabled=eap._enabled; _normalized=eap._normalized;_pointer=eap._pointer; return *this; }
-
-            bool            _lazy_disable;
-            bool            _dirty;
-            bool            _enabled;
-            GLboolean       _normalized;
-            const GLvoid*   _pointer;
-        };
-
-        typedef std::vector<EnabledArrayPair>                   EnabledTexCoordArrayList;
-        typedef std::vector<EnabledArrayPair>                   EnabledVertexAttribArrayList;
-
-        EnabledArrayPair                _vertexArray;
-        EnabledArrayPair                _normalArray;
-        EnabledArrayPair                _colorArray;
-        EnabledArrayPair                _secondaryColorArray;
-        EnabledArrayPair                _fogArray;
-        EnabledTexCoordArrayList        _texCoordArrayList;
-        EnabledVertexAttribArrayList    _vertexAttribArrayList;
 
         unsigned int                    _currentActiveTextureUnit;
         unsigned int                    _currentClientActiveTextureUnit;

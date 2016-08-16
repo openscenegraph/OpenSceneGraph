@@ -25,6 +25,34 @@
 
 namespace osgUtil
 {
+/** Affect BufferObjects to BufferDatas in a way Geometries arrays share their index in bufferobjets (hence it can be draw with basevertex primitive set for example).*/
+/** if BufferObjects already setted it will be overrided unless it fits the same booffset criteria*/
+/** management policy is based on two threshold (if bosize>soft: BuffSet removed from managed/if(newbosize>_hard):don't use this BuffSet to store data)*/
+class OSGUTIL_EXPORT MakeSharedBufferObjectsVisitor : public osg::NodeVisitor
+{
+    public:
+
+    MakeSharedBufferObjectsVisitor(Optimizer* optimizer=0);
+
+    //virtual void apply(osg::Geode& transform);
+    virtual void apply(osg::Geometry& transform);
+
+    void setHardBufferSize(unsigned int i){_hardMaxbuffsize=i;}
+    unsigned int getHardBufferSize()const {return _hardMaxbuffsize;}
+    void setSoftBufferSize(unsigned int i){_softMaxbuffsize=i;}
+    unsigned int getSoftBufferSize()const {return _softMaxbuffsize;}
+    unsigned int getNumBufferSetGenerated()const {return _numVAOsInUsed;}
+
+    protected:
+
+    void  treatBufferObjects(osg::Geometry* g);
+    typedef std::vector< osg::ref_ptr<osg::BufferObject> > BuffSet;
+    std::map<unsigned int,std::vector<BuffSet> > _store;
+
+    unsigned int _hardMaxbuffsize;///prohibit bufferdata concatenation in bufferobject
+    unsigned int _softMaxbuffsize;///hint a bufferobject is full (and increment lastempty)
+    unsigned int _numVAOsInUsed;///for stats
+};
 // Helper that collects all the unique Geometry objects in a subgraph.
 class OSGUTIL_EXPORT GeometryCollector : public BaseOptimizerVisitor
 {

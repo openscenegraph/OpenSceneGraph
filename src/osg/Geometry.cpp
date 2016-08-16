@@ -34,7 +34,7 @@ class VAOBufferObjectAffector
         unsigned int lastempty;
     } VecBuffSetLastnotempty;
 
-    std::map<unsigned int,VecBuffSetLastnotempty > _store;
+    std::map<unsigned int,std::vector<BuffSet> > _store;
 
     unsigned int _hardMaxbuffsize;///prohibit bufferdata concatenation in bufferobject
     unsigned int _softMaxbuffsize;///hint a bufferobject is full (and increment lastempty)
@@ -44,13 +44,13 @@ class VAOBufferObjectAffector
 public:
     VAOBufferObjectAffector()
     {
-        _hardMaxbuffsize=100000;
-        _softMaxbuffsize=90000;
+        _hardMaxbuffsize=1000000;
+        _softMaxbuffsize=900000;
         _numVAOsInUsed=0;
     }
     ///return Hash without lastbit (index array bit)
 #define MAX_TEX_COORD 8
-#define MAX_VERTEX_ATTRIB 8
+#define MAX_VERTEX_ATTRIB 16
     unsigned int getArrayList(Geometry*g,Geometry::ArrayList &arrayList)
     {
         unsigned int hash=0;
@@ -139,13 +139,13 @@ public:
             }
         }
 
-        VecBuffSetLastnotempty& vecBuffSet=_store[hash];
+        std::vector<BuffSet>& vecBuffSet=_store[hash];
 
         std::vector<BuffSet>::iterator found;
         BuffSet &foundv=buffsettofind;
         unsigned int cpt=0;
         bool allbosame=true;
-        for(found=vecBuffSet.vecBuffSet.begin(); found!=vecBuffSet.vecBuffSet.end(); found++,cpt++)
+        for(found=vecBuffSet.begin(); found!=vecBuffSet.end(); found++,cpt++)
         {
             BuffSet::iterator itb1=buffsettofind.begin();
             allbosame=true;
@@ -154,15 +154,15 @@ public:
                     allbosame=false;
             if(allbosame)break;
         }
-        if(found==vecBuffSet.vecBuffSet.end())
+        if(found==vecBuffSet.end())
         {
 
             OSG_WARN<<"unpopulateBufferObjects::vecBuffSet not found assume buffset miss registration but constitute however a vao and add in managed"<<std::endl;
 
-            vecBuffSet.vecBuffSet.push_back(buffsettofind);
-            found=vecBuffSet.vecBuffSet.begin();
+            vecBuffSet.push_back(buffsettofind);
+            found=vecBuffSet.begin();
             cpt=0;
-            for(found=vecBuffSet.vecBuffSet.begin(); found!=vecBuffSet.vecBuffSet.end()&&*found!=buffsettofind; found++,cpt++);
+            for(found=vecBuffSet.begin(); found!=vecBuffSet.end()&&*found!=buffsettofind; found++,cpt++);
         }
 
 
@@ -175,7 +175,7 @@ public:
 
             if(todelete)
             {
-                vecBuffSet.vecBuffSet.erase(found);//if(vecBuffSet.lastempty!=0)vecBuffSet.lastempty--;
+                vecBuffSet.erase(found);//if(vecBuffSet.lastempty!=0)vecBuffSet.lastempty--;
                 OSG_WARN<<"unpopulateBufferObjects::vecBuffSet deleted from manager"<<std::endl;
                 _numVAOsInUsed--;
 
@@ -219,9 +219,9 @@ public:
             }
         }
 
-        VecBuffSetLastnotempty& vecBuffSet=_store[hash];
+        std::vector<BuffSet>& vecBuffSet=_store[hash];
 
-        std::vector<BuffSet>::iterator itbuffset=  vecBuffSet.vecBuffSet.begin();//+vecBuffSet.lastempty;
+        std::vector<BuffSet>::iterator itbuffset=  vecBuffSet.begin();//+vecBuffSet.lastempty;
 
         unsigned int * buffSize=new unsigned int [nbborequired+nbdrawelmt],*ptrbuffsize=buffSize;
 
@@ -229,7 +229,7 @@ public:
         bool canGuest=false;
         bool alreadyGuesting=true;
         Geometry::ArrayList::iterator arit;
-        while(!canGuest && itbuffset!=vecBuffSet.vecBuffSet.end())
+        while(!canGuest && itbuffset!=vecBuffSet.end())
         {
             canGuest=true;
             alreadyGuesting=true;
@@ -246,7 +246,7 @@ public:
             }
             for(unsigned index=0; index< g->getNumPrimitiveSets(); index++)
             {
-                if(dynamic_cast<DrawElements*>(g->getPrimitiveSet(index)))
+                if( g->getPrimitiveSet(index)->getDrawElements())
                 {
                     *ptrbuffsize=(*itbo)->computeRequiredBufferSize()+g->getPrimitiveSet(index)->getTotalDataSize();
                     if(*ptrbuffsize++>_hardMaxbuffsize)canGuest=false;
@@ -262,7 +262,7 @@ public:
 
         }
 
-        if(itbuffset!=vecBuffSet.vecBuffSet.end())
+        if(itbuffset!=vecBuffSet.end())
         {
             unsigned buffSetMaxSize=0;
             BuffSet::iterator itbo= itbuffset->begin();
@@ -292,7 +292,7 @@ public:
             ///postule no more can be added
             ///so remove from managed  (care take of this assumption in unpopulate method)
             if( buffSetMaxSize>_softMaxbuffsize)
-                vecBuffSet.vecBuffSet.erase(itbuffset);
+                vecBuffSet.erase(itbuffset);
 
             delete [] buffSize;
             return;
@@ -300,9 +300,44 @@ public:
 
 
         _numVAOsInUsed++;
-        OSG_WARN<<"create new vao buffset, num vao currently in used:"<<_numVAOsInUsed<<std::endl;
-        ///new BuffSetis required
+          ///new BuffSetis required
         BuffSet newBuffSet;
+        /// Check if buffer object configuration is good for vao
+        int commonoffset=0;
+        bool ready2go=true;
+        bool canbereused=true;
+        arit=bdlist.begin();
+                for(int i=0;i<(*arit)->getBufferIndex();i++)commonoffset+=(*arit)->getBufferObject()->getBufferData(i)->getTotalDataSize();
+                newBuffSet.push_back((*arit)->getBufferObject());
+        for( arit++; arit!=bdlist.end()&&ready2go; arit++)
+        {
+                int offset=0;
+                for(int i=0;i<(*arit)->getBufferIndex();i++)offset+=(*arit)->getBufferObject()->getBufferData(i)->getTotalDataSize();
+                if(offset!=commonoffset)ready2go=false;
+                if((*arit)->getBufferObject()->computeRequiredBufferSize()>_softMaxbuffsize)canbereused=false;
+                newBuffSet.push_back((*arit)->getBufferObject());
+        }
+        for(unsigned index=0; index< g->getNumPrimitiveSets()&&ready2go; index++)
+            {
+            if(g->getPrimitiveSet(index)->getDrawElements())
+                {
+
+                if(g->getPrimitiveSet(index)->getBufferObject()->computeRequiredBufferSize()>_softMaxbuffsize)canbereused=false;
+                    newBuffSet.push_back(g->getPrimitiveSet(index)->getBufferObject());
+                    break;
+                }
+            }
+
+        ///if configuration is good assume bo set is ready to be used as it is
+        if(ready2go){
+
+          if(canbereused) vecBuffSet.push_back(newBuffSet);
+          delete [] buffSize;
+          return;
+        }
+        newBuffSet.clear();
+        OSG_WARN<<"create new vao buffset, num vao currently in used:"<<_numVAOsInUsed<<std::endl;
+
         ElementBufferObject *ebo=0;
         for( arit=bdlist.begin(); arit!=bdlist.end(); arit++)
         {
@@ -326,9 +361,9 @@ public:
             }
         }
         ///if not a newone increment lastempty
-        //if(!vecBuffSet.vecBuffSet.empty()) vecBuffSet.lastempty++;
+        //if(!vecBuffSet.empty()) vecBuffSet.lastempty++;
 
-        vecBuffSet.vecBuffSet.push_back(newBuffSet);
+        vecBuffSet.push_back(newBuffSet);
         delete [] buffSize;
     }
 };
@@ -419,17 +454,19 @@ public:
 #ifdef OSG_GL_VERTEX_ARRAY_OBJECTS_AVAILABLE
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_VertexArrayObject);
 
-        Geometry::VertexArrayObjectMap::iterator itr = _vertexArrayObjectMap.find(vaokey);// _vertexArrayObjectListMap.lower_bound(sizeHint);
+      /*  Geometry::VertexArrayObjectMap::iterator itr = _vertexArrayObjectMap.find(vaokey);// _vertexArrayObjectListMap.lower_bound(sizeHint);
         if (itr!=_vertexArrayObjectMap.end())
         {
+
+        OSG_WARN<<"Warning: Geometry::generateVertexArrayObject:  this code shouldn't be reach in normal use"<<std::endl;
             return itr->second;
         }
         else
-        {
+        */{
             GLuint newvao;
             osg::get<osg::GLExtensions>(_contextID)->glGenVertexArrays(1,&newvao);
             Geometry::PerContextVertexArrayObject* ret=new Geometry::PerContextVertexArrayObject(_contextID,newvao);
-            _vertexArrayObjectMap[vaokey]=ret;
+            //_vertexArrayObjectMap[vaokey]=ret;
             ret->_itvao=_vertexArrayObjectMap.insert(std::pair<Geometry::VAOKey,Geometry::PerContextVertexArrayObject*>(vaokey,ret)).first;
             return ret;
         }
@@ -1187,15 +1224,12 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
         if (_colorArray.valid() && _colorArray->getBufferObject())                  ADDINbufferObjectsANDVAOkey(_colorArray);
         if (_secondaryColorArray.valid() && _secondaryColorArray->getBufferObject())ADDINbufferObjectsANDVAOkey(_secondaryColorArray);
         if (_fogCoordArray.valid() && _fogCoordArray->getBufferObject())            ADDINbufferObjectsANDVAOkey(_fogCoordArray);
-        for(unsigned int unit=0; unit<_vertexAttribList.size(); ++unit)
-            if ( _vertexAttribList[unit].valid() &&  _vertexAttribList[unit]->getBufferObject())ADDINbufferObjectsANDVAOkey(_vertexAttribList[unit])
-
-                for(ArrayList::const_iterator itr = _texCoordList.begin();
-                        itr != _texCoordList.end();
-                        ++itr)
-                {
-                    if (itr->valid() && (*itr)->getBufferObject())                          ADDINbufferObjectsANDVAOkey(((*itr)));
-                }
+        for(ArrayList::const_iterator itr = _texCoordList.begin();
+                itr != _texCoordList.end();
+                ++itr)
+        {
+            if (itr->valid() && (*itr)->getBufferObject())                          ADDINbufferObjectsANDVAOkey(((*itr)));
+        }
 
         for(ArrayList::const_iterator itr = _vertexAttribList.begin();
                 itr != _vertexAttribList.end();
@@ -1236,7 +1270,8 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
         if(_useVertexArrayObject)
         {
 
-            PerContextVertexArrayObject* vao=  osg::get<VertexArrayObjectManager>(contextID)->getVertexArrayObject(VAOkey);
+            PerContextVertexArrayObject* vao= 0;///DON'T FACTORIZE VAO: 1 vao/ 1 geometry//
+            vao=osg::get<VertexArrayObjectManager>(contextID)->getVertexArrayObject(VAOkey);
             if(vao)
                 _vao[contextID]=vao;
             else
@@ -1277,9 +1312,9 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
                 state.lazyDisablingOfVertexAttributes();
                 ///check if all arrays have the same offset and activate attribpointer
 
-#define BASEVERTEXCHECK(ARRAYNAME)  if(basevertex==0)basevertex=vbo->getOffset(array->getBufferIndex());\
-                if( basevertex != vbo->getOffset(array->getBufferIndex())){\
-                OSG_WARN<<"Geometry::  "<<#ARRAYNAME<<" basevertex is different from the others buffers Object : make sure you've properly set bufferobjects... continuing anyway assuming vertexdivisor is setted"<<std::endl;\
+#define BASEVERTEXCHECK(ARRAYNAME)  if(basevertex==0)basevertex=vbo->getOffset(array->getBufferIndex())/(array->getElementSize());\
+                if( basevertex != vbo->getOffset(array->getBufferIndex())/(array->getElementSize())){\
+                OSG_WARN<<"Geometry::  "<<#ARRAYNAME<<" basevertex "<<vbo->getOffset(array->getBufferIndex())/(array->getElementSize())<<"is different from the others buffers Object"<<basevertex<<" : make sure you've properly set bufferobjects... continuing anyway assuming vertexdivisor is setted"<<std::endl;\
                 }
 
                 Array* array;
@@ -1291,7 +1326,6 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
                     vbo=array->getOrCreateGLBufferObject(contextID);
                     state.bindVertexBufferObject(vbo);
                     state. setVertexPointer( array->getDataSize(),array->getDataType(),0,(const GLvoid *)0,array->getNormalize());
-
                     BASEVERTEXCHECK(VertexArray)
                 }
 

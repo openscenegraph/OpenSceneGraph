@@ -89,6 +89,7 @@ class OSGUTIL_EXPORT Optimizer
             VERTEX_POSTTRANSFORM =      (1 << 19),
             VERTEX_PRETRANSFORM =       (1 << 20),
             BUFFER_OBJECT_SETTINGS =    (1 << 21),
+            MAKE_DRAW_ARRAYS =          (1 << 22),
             DEFAULT_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
                                 REMOVE_LOADED_PROXY_NODES |

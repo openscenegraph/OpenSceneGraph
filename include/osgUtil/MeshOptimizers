@@ -62,6 +62,7 @@ public:
         : BaseOptimizerVisitor(optimizer, options) {}
     void reset();
     void apply(osg::Geode& geode);
+    //void apply(osg::Geometry& geode){_geometryList.insert(&geode);}
     typedef std::set<osg::Geometry*> GeometryList;
     GeometryList& getGeometryList() { return _geometryList; };
 protected:
@@ -75,6 +76,23 @@ class OSGUTIL_EXPORT IndexMeshVisitor : public GeometryCollector
 public:
     IndexMeshVisitor(Optimizer* optimizer = 0)
         : GeometryCollector(optimizer, Optimizer::INDEX_MESH),_forcedreindexation(false)
+    {
+    }
+    void makeMesh(osg::Geometry& geom);
+    void makeMesh();
+
+    inline void setIsForcedReindexationEnabled(bool b){_forcedreindexation=b;}
+    inline bool getIsForcedReindexationEnabled()const{return _forcedreindexation;}
+protected:
+    bool _forcedreindexation;
+};
+// Convert geometry that uses DrawElements to DrawArrays(GL_TRIANGLES) i.e.,
+// apply a triangle functor on all arrays.
+class OSGUTIL_EXPORT MakeDrawArraysVisitor : public GeometryCollector
+{
+public:
+    MakeDrawArraysVisitor(Optimizer* optimizer = 0)
+        : GeometryCollector(optimizer, Optimizer::MAKE_DRAW_ARRAYS)
     {
     }
     void makeMesh(osg::Geometry& geom);

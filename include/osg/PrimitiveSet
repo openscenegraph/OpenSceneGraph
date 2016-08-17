@@ -123,12 +123,7 @@ public:
     /// Mimics the OpenGL \c glEnd() function.
     virtual void end() = 0;
 
-    void useVertexCacheAsVertexArray()
-    {
-        setVertexArray(_vertexCache.size(),&_vertexCache.front());
-    }
-
-    std::vector<Vec3>   _vertexCache;
+    virtual void useVertexCacheAsVertexArray()=0;
     bool                _treatVertexDataAsTemporary;
 };
 

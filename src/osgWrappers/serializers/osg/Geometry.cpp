@@ -108,7 +108,7 @@ ADD_ARRAYDATA_FUNCTIONS( FogCoordData, FogCoordArray )
 
 ADD_ARRAYLIST_FUNCTIONS( TexCoordData, TexCoordArray, TexCoordArrayList )
 ADD_ARRAYLIST_FUNCTIONS( VertexAttribData, VertexAttribArray, VertexAttribArrayList )
-
+#include <osgUtil/MeshOptimizers>
 struct GeometryFinishedObjectReadCallback : public osgDB::FinishedObjectReadCallback
 {
     virtual void objectRead(osgDB::InputStream&, osg::Object& obj)
@@ -116,9 +116,12 @@ struct GeometryFinishedObjectReadCallback : public osgDB::FinishedObjectReadCall
 #if 1
         osg::Geometry& geometry = static_cast<osg::Geometry&>(obj);
 
-        ///HACK to test VAO feature
-        geometry.setUseDisplayList(false);geometry.setUseVertexBufferObjects(true);
-       //geometry.setUseVertexArrayObject(true);
+       /* osgUtil::MakeDrawArraysVisitor v;
+        //geometry.accept(v);
+        v.getGeometryList().insert(&geometry);
+        v.makeMesh();
+        ///HACK to test VAO feature*/
+        geometry.setUseDisplayList(false);geometry.setUseVertexBufferObjects(true);          geometry.setUseVertexArrayObject(true);
 if(geometry.getUseVertexArrayObject() ){
            //     geometry.setUseVertexArrayObject(false);
              //    geometry.setUseVertexBufferObjects(false);geometry.setUseVertexArrayObject(true);

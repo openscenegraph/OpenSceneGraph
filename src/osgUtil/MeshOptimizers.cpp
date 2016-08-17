@@ -27,6 +27,7 @@
 #include <osg/TriangleLinePointIndexFunctor>
 
 #include <osgUtil/MeshOptimizers>
+#include <osg/TriangleFunctor>
 
 using namespace osg;
 
@@ -529,6 +530,99 @@ struct MyTriangleOperator
 
 };
 typedef osg::TriangleIndexFunctor<MyTriangleOperator> MyTriangleIndexFunctor;
+}
+
+template<class T,class Container>
+struct CrawlTriangleFunctor
+{
+
+    osg::ref_ptr<Container> _out;
+
+
+    CrawlTriangleFunctor(){_out=new Container;}
+
+
+
+    inline void operator() ( const T &v1, const T &v2, const T &v3, bool treatVertexDataAsTemporary )
+    {
+
+_out->push_back(v1);
+_out->push_back(v2);
+_out->push_back(v3);
+    }
+};
+void MakeDrawArraysVisitor::makeMesh(Geometry& geom){
+
+#define MTriangleFunctor(XXX,CON) osg::BaseTriangleFunctor<CrawlTriangleFunctor< XXX,CON> ,XXX> c;c.setVertexArray(array->getNumElements(),(XXX*)array->getDataPointer());\
+for(int i=0;i<geom.getNumPrimitiveSets();i++)geom.getPrimitiveSet(i)->accept(c);array=c._out;
+#define SWARRAYTYPECASES if(array && array->getBinding()==osg::Array::BIND_PER_VERTEX){switch (array->getType()){ \
+    case Array::Vec2ArrayType: {MTriangleFunctor(Vec2,Vec2Array) }break;\
+    case Array::Vec3ArrayType: {MTriangleFunctor(Vec3,Vec3Array) }break;\
+    case Array::Vec4ArrayType: {MTriangleFunctor(Vec4,Vec4Array) }break;\
+    case Array::Vec2sArrayType: {MTriangleFunctor(Vec2s,Vec2sArray) }break;\
+    case Array::Vec3sArrayType: {MTriangleFunctor(Vec3s,Vec3sArray) }break;\
+    case Array::Vec4sArrayType: {MTriangleFunctor(Vec4s,Vec4sArray) }break;\
+    case Array::Vec2bArrayType: {MTriangleFunctor(Vec2b,Vec2bArray) }break;\
+    case Array::Vec3bArrayType: {MTriangleFunctor(Vec3b,Vec3bArray) }break;\
+    case Array::Vec4bArrayType: {MTriangleFunctor(Vec4b,Vec4bArray) }break;\
+    case Array::Vec2iArrayType: {MTriangleFunctor(Vec2i,Vec2iArray) }break;\
+    case Array::Vec3iArrayType: {MTriangleFunctor(Vec3i,Vec3iArray) }break;\
+    case Array::Vec4iArrayType: {MTriangleFunctor(Vec4i,Vec4iArray) }break;\
+    case Array::Vec2usArrayType: {MTriangleFunctor(Vec2us,Vec2usArray) }break;\
+    case Array::Vec3usArrayType: {MTriangleFunctor(Vec3us,Vec3usArray) }break;\
+    case Array::Vec4usArrayType: {MTriangleFunctor(Vec4us,Vec4usArray) }break;\
+    case Array::Vec2ubArrayType: {MTriangleFunctor(Vec2ub,Vec2ubArray) }break;\
+    case Array::Vec3ubArrayType: {MTriangleFunctor(Vec3ub,Vec3ubArray) }break;\
+    case Array::Vec4ubArrayType: {MTriangleFunctor(Vec4ub,Vec4ubArray) }break;\
+    case Array::Vec2uiArrayType: {MTriangleFunctor(Vec2ui,Vec2uiArray) }break;\
+    case Array::Vec3uiArrayType: {MTriangleFunctor(Vec3ui,Vec3uiArray) }break;\
+    case Array::Vec4uiArrayType: {MTriangleFunctor(Vec4ui,Vec4uiArray) }break;\
+}}
+
+
+    osg::ref_ptr<osg::Array> array=geom.getVertexArray();
+    SWARRAYTYPECASES
+    geom.setVertexArray(array);
+
+    array=geom.getNormalArray();
+    SWARRAYTYPECASES
+    geom.setNormalArray(array);
+
+    array=geom.getColorArray();
+    SWARRAYTYPECASES
+    geom.setColorArray(array);
+
+    array=geom.getSecondaryColorArray();
+    SWARRAYTYPECASES
+    geom.setSecondaryColorArray(array);
+
+    array=geom.getFogCoordArray();
+    SWARRAYTYPECASES
+    geom.setFogCoordArray(array);
+
+    for(int i=0;i<geom.getNumTexCoordArrays();i++){
+        array=geom.getTexCoordArray(i);
+        SWARRAYTYPECASES
+        geom.setTexCoordArray(i,array);
+    }
+    for(int i=0;i<geom.getNumVertexAttribArrays();i++){
+        array=geom.getVertexAttribArray(i);
+        SWARRAYTYPECASES
+        geom.setVertexAttribArray(i,array);
+    }
+geom.removePrimitiveSet(0,geom.getNumPrimitiveSets());
+
+geom.addPrimitiveSet(new osg::DrawArrays(GL_TRIANGLES,0,geom.getVertexArray()->getNumElements()));
+
+}
+void MakeDrawArraysVisitor::makeMesh()
+{
+    for(GeometryList::iterator itr=_geometryList.begin();
+            itr!=_geometryList.end();
+            ++itr)
+    {
+        makeMesh(*(*itr));
+    }
 }
 
 void IndexMeshVisitor::makeMesh(Geometry& geom)

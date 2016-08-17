@@ -306,6 +306,7 @@ public:
         int commonoffset=0;
         bool ready2go=true;
         bool canbereused=true;
+        if(!bdlist.empty()){
         arit=bdlist.begin();
                 for(int i=0;i<(*arit)->getBufferIndex();i++)commonoffset+=(*arit)->getBufferObject()->getBufferData(i)->getTotalDataSize();
                 newBuffSet.push_back((*arit)->getBufferObject());
@@ -327,7 +328,8 @@ public:
                     break;
                 }
             }
-
+}
+        OSG_WARN<<"num vao currently in used:"<<_numVAOsInUsed<<std::endl;
         ///if configuration is good assume bo set is ready to be used as it is
         if(ready2go){
 
@@ -336,7 +338,7 @@ public:
           return;
         }
         newBuffSet.clear();
-        OSG_WARN<<"create new vao buffset, num vao currently in used:"<<_numVAOsInUsed<<std::endl;
+        OSG_WARN<<"create new vao buffset,"<<std::endl;
 
         ElementBufferObject *ebo=0;
         for( arit=bdlist.begin(); arit!=bdlist.end(); arit++)
@@ -454,7 +456,7 @@ public:
 #ifdef OSG_GL_VERTEX_ARRAY_OBJECTS_AVAILABLE
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_VertexArrayObject);
 
-      /*  Geometry::VertexArrayObjectMap::iterator itr = _vertexArrayObjectMap.find(vaokey);// _vertexArrayObjectListMap.lower_bound(sizeHint);
+         Geometry::VertexArrayObjectMap::iterator itr = _vertexArrayObjectMap.find(vaokey);// _vertexArrayObjectListMap.lower_bound(sizeHint);
         if (itr!=_vertexArrayObjectMap.end())
         {
 
@@ -462,7 +464,7 @@ public:
             return itr->second;
         }
         else
-        */{
+        {
             GLuint newvao;
             osg::get<osg::GLExtensions>(_contextID)->glGenVertexArrays(1,&newvao);
             Geometry::PerContextVertexArrayObject* ret=new Geometry::PerContextVertexArrayObject(_contextID,newvao);
@@ -1024,7 +1026,7 @@ void Geometry::setUseVertexArrayObject(bool flag)
     else  setUseVertexBufferObjects(_useVertexBufferObjects);
     dirtyVertexArrayObject();
 #else
-    OSG_INFO<<"Warning: Geometry::setUseVertexArrayObject(..) - not supported."<<std::endl;
+    OSG_WARN<<"Warning: Geometry::setUseVertexArrayObject(..) - not supported."<<std::endl;
 #endif
 }
 

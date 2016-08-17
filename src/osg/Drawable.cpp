@@ -455,7 +455,12 @@ void Drawable::dirtyDisplayList()
 
 
 struct ComputeBound : public PrimitiveFunctor
-{
+{    virtual void useVertexCacheAsVertexArray()
+    {
+        setVertexArray(_vertexCache.size(),&_vertexCache.front());
+    }
+
+    std::vector<osg::Vec3>   _vertexCache;
         ComputeBound()
         {
             _vertices2f = 0;

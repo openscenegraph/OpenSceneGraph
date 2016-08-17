@@ -130,6 +130,9 @@ void Optimizer::optimize(osg::Node* node)
         if(str.find("~INDEX_MESH")!=std::string::npos) options ^= INDEX_MESH;
         else if(str.find("INDEX_MESH")!=std::string::npos) options |= INDEX_MESH;
 
+        if(str.find("~MAKE_DRAW_ARRAYS")!=std::string::npos) options ^= MAKE_DRAW_ARRAYS;
+        else if(str.find("MAKE_DRAW_ARRAYS")!=std::string::npos) options |= MAKE_DRAW_ARRAYS;
+
         if(str.find("~VERTEX_POSTTRANSFORM")!=std::string::npos) options ^= VERTEX_POSTTRANSFORM;
         else if(str.find("VERTEX_POSTTRANSFORM")!=std::string::npos) options |= VERTEX_POSTTRANSFORM;
 
@@ -364,6 +367,13 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     {
         OSG_INFO<<"Optimizer::optimize() doing INDEX_MESH"<<std::endl;
         IndexMeshVisitor imv(this);
+        node->accept(imv);
+        imv.makeMesh();
+    }
+    if (options & MAKE_DRAW_ARRAYS)
+    {
+        OSG_INFO<<"Optimizer::optimize() doing MAKE_DRAW_ARRAYS"<<std::endl;
+        MakeDrawArraysVisitor imv(this);
         node->accept(imv);
         imv.makeMesh();
     }

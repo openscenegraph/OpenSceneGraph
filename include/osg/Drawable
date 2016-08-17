@@ -185,7 +185,7 @@ class OSG_EXPORT Drawable : public Node
          *  geometry generation.
          * @see osg::Shape.
         */
-        inline void setShape(Shape* shape) { _shape = shape; }
+        virtual void setShape(Shape* shape) { _shape = shape; }
 
         template<class T> void setShape(const ref_ptr<T>& shape) { setShape(shape.get()); }
 

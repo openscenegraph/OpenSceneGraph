@@ -102,7 +102,7 @@ ScalarProperty::ScalarProperty(const std::string& scalarName, float value)
 ScalarProperty::ScalarProperty(const ScalarProperty& sp, const osg::CopyOp& copyop):
     Property(sp,copyop)
 {
-    _uniform = new osg::Uniform(sp._uniform->getName().c_str(), getValue());
+    _uniform = new osg::Uniform(*sp._uniform.get(), copyop);
 
 }
 

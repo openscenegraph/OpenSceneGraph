@@ -16,7 +16,6 @@
 #define SHAPE_TO_GEOMETRY 1
 #include <osg/Geometry>
 #include <osg/Geode>
-#include <osg/ShapeDrawable>
 #include <osg/NodeVisitor>
 
 

@@ -70,7 +70,7 @@ HeightField::HeightField():
     _skirtHeight(0.0f),
     _borderWidth(0)
 {
-    _heights = new osg::FloatArray;
+    _heights = new FloatArray;
 }
 
 HeightField::HeightField(const HeightField& mesh,const CopyOp& copyop):
@@ -82,7 +82,7 @@ HeightField::HeightField(const HeightField& mesh,const CopyOp& copyop):
     _dy(mesh._dy),
     _skirtHeight(mesh._skirtHeight),
     _borderWidth(mesh._borderWidth),
-    _heights(new osg::FloatArray(*mesh._heights))
+    _heights(new FloatArray(*mesh._heights))
 {
 }
 
@@ -184,13 +184,13 @@ CompositeShape::~CompositeShape()
 const unsigned int MIN_NUM_ROWS = 3;
 const unsigned int MIN_NUM_SEGMENTS = 5;
 
-BuildShapeGeometryVisitor::BuildShapeGeometryVisitor(Geometry* geometry, TessellationHints* hints):
+BuildShapeGeometryVisitor::BuildShapeGeometryVisitor(Geometry* geometry, const TessellationHints* hints):
     _geometry(geometry),
     _hints(hints)
 {
-    _vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
-    _normals = dynamic_cast<osg::Vec3Array*>(geometry->getNormalArray());
-    _texcoords = dynamic_cast<osg::Vec2Array*>(geometry->getTexCoordArray(0));
+    _vertices = dynamic_cast<Vec3Array*>(geometry->getVertexArray());
+    _normals = dynamic_cast<Vec3Array*>(geometry->getNormalArray());
+    _texcoords = dynamic_cast<Vec2Array*>(geometry->getTexCoordArray(0));
 
     bool requiresClearOfPrimitiveSets = false;
 
@@ -225,7 +225,7 @@ BuildShapeGeometryVisitor::BuildShapeGeometryVisitor(Geometry* geometry, Tessell
     _start_index = 0;
 }
 
-void BuildShapeGeometryVisitor::setMatrix(const osg::Matrixd& m)
+void BuildShapeGeometryVisitor::setMatrix(const Matrixd& m)
 {
     _matrix = m;
 
@@ -247,10 +247,10 @@ void BuildShapeGeometryVisitor::End()
 
     for(unsigned int i=_start_index; i<_vertices->size(); ++i)
     {
-        osg::Vec3& v = (*_vertices)[i];
+        Vec3& v = (*_vertices)[i];
         v = v * _matrix;
 
-        osg::Vec3& n = (*_normals)[i];
+        Vec3& n = (*_normals)[i];
         n = _inverse * n;
         n.normalize();
     }
@@ -265,7 +265,7 @@ void BuildShapeGeometryVisitor::End()
 
 void BuildShapeGeometryVisitor::drawCylinderBody(unsigned int numSegments, float radius, float height)
 {
-    const float angleDelta = 2.0f*osg::PIf/(float)numSegments;
+    const float angleDelta = 2.0f*PIf/(float)numSegments;
     const float texCoordDelta = 1.0f/(float)numSegments;
 
     const float r = radius;
@@ -295,7 +295,7 @@ void BuildShapeGeometryVisitor::drawCylinderBody(unsigned int numSegments, float
         {
             float c = cosf(angle);
             float s = sinf(angle);
-            osg::Vec3 n(c,s,0.0f);
+            Vec3 n(c,s,0.0f);
 
             Normal(n);
             TexCoord2f(texCoord,1.0f);
@@ -307,7 +307,7 @@ void BuildShapeGeometryVisitor::drawCylinderBody(unsigned int numSegments, float
         }
 
         // do last point by hand to ensure no round off errors.
-        osg::Vec3 n(1.0f,0.0f,0.0f);
+        Vec3 n(1.0f,0.0f,0.0f);
 
         Normal(n);
         TexCoord2f(1.0f,1.0f);
@@ -326,7 +326,7 @@ void BuildShapeGeometryVisitor::drawCylinderBody(unsigned int numSegments, float
         {
             float c = cosf(angle);
             float s = sinf(angle);
-            osg::Vec3 n(-c,-s,0.0f);
+            Vec3 n(-c,-s,0.0f);
 
             Normal(n);
             TexCoord2f(texCoord,0.0f);
@@ -338,7 +338,7 @@ void BuildShapeGeometryVisitor::drawCylinderBody(unsigned int numSegments, float
         }
 
         // do last point by hand to ensure no round off errors.
-        osg::Vec3 n(-1.0f,0.0f,0.0f);
+        Vec3 n(-1.0f,0.0f,0.0f);
 
         Normal(n);
         TexCoord2f(1.0f,0.0f);
@@ -355,7 +355,7 @@ void BuildShapeGeometryVisitor::drawCylinderBody(unsigned int numSegments, float
 
 void BuildShapeGeometryVisitor::drawHalfSphere(unsigned int numSegments, unsigned int numRows, float radius, SphereHalf which, float zOffset)
 {
-    float lDelta = osg::PIf/(float)numRows;
+    float lDelta = PIf/(float)numRows;
     float vDelta = 1.0f/(float)numRows;
 
     bool top = (which==SphereTopHalf);
@@ -363,10 +363,10 @@ void BuildShapeGeometryVisitor::drawHalfSphere(unsigned int numSegments, unsigne
     bool drawFrontFace = _hints ? _hints->getCreateFrontFace() : true;
     bool drawBackFace = _hints ? _hints->getCreateBackFace() : false;
 
-    float angleDelta = osg::PIf*2.0f/(float)numSegments;
+    float angleDelta = PIf*2.0f/(float)numSegments;
     float texCoordHorzDelta = 1.0f/(float)numSegments;
 
-    float lBase=-osg::PIf*0.5f + (top?(lDelta*(numRows/2)):0.0f);
+    float lBase=-PIf*0.5f + (top?(lDelta*(numRows/2)):0.0f);
     float rBase=(top?(cosf(lBase)*radius):0.0f);
     float zBase=(top?(sinf(lBase)*radius):-radius);
     float vBase=(top?(vDelta*(numRows/2)):0.0f);
@@ -470,7 +470,7 @@ void BuildShapeGeometryVisitor::apply(const Sphere& sphere)
     bool drawFrontFace = _hints ? _hints->getCreateFrontFace() : true;
     bool drawBackFace = _hints ? _hints->getCreateBackFace() : false;
 
-    setMatrix(osg::Matrixd::translate(sphere.getCenter().x(),sphere.getCenter().y(),sphere.getCenter().z()));
+    setMatrix(Matrixd::translate(sphere.getCenter().x(),sphere.getCenter().y(),sphere.getCenter().z()));
 
     unsigned int numSegments = 40;
     unsigned int numRows = 20;
@@ -484,15 +484,15 @@ void BuildShapeGeometryVisitor::apply(const Sphere& sphere)
             numSegments = MIN_NUM_SEGMENTS;
     }
 
-    float lDelta = osg::PIf/(float)numRows;
+    float lDelta = PIf/(float)numRows;
     float vDelta = 1.0f/(float)numRows;
 
-    float angleDelta = osg::PIf*2.0f/(float)numSegments;
+    float angleDelta = PIf*2.0f/(float)numSegments;
     float texCoordHorzDelta = 1.0f/(float)numSegments;
 
     if (drawBackFace)
     {
-        float lBase=-osg::PIf*0.5f;
+        float lBase=-PIf*0.5f;
         float rBase=0.0f;
         float zBase=-sphere.getRadius();
         float vBase=0.0f;
@@ -559,7 +559,7 @@ void BuildShapeGeometryVisitor::apply(const Sphere& sphere)
 
     if (drawFrontFace)
     {
-        float lBase=-osg::PIf*0.5f;
+        float lBase=-PIf*0.5f;
         float rBase=0.0f;
         float zBase=-sphere.getRadius();
         float vBase=0.0f;
@@ -774,7 +774,7 @@ void BuildShapeGeometryVisitor::apply(const Cone& cone)
     float normalRatio = 1.0f/(sqrtf(1.0f+normalz*normalz));
     normalz *= normalRatio;
 
-    float angleDelta = 2.0f*osg::PIf/(float)numSegments;
+    float angleDelta = 2.0f*PIf/(float)numSegments;
     float texCoordHorzDelta = 1.0/(float)numSegments;
     float texCoordRowDelta = 1.0/(float)numRows;
     float hDelta = cone.getHeight()/(float)numRows;
@@ -830,7 +830,7 @@ void BuildShapeGeometryVisitor::apply(const Cone& cone)
     if (createBottom) {
         Begin(GL_TRIANGLE_FAN);
 
-        angle = osg::PIf*2.0f;
+        angle = PIf*2.0f;
         texCoord = 1.0f;
         basez = cone.getBaseOffset();
 
@@ -880,7 +880,7 @@ void BuildShapeGeometryVisitor::apply(const Cylinder& cylinder)
     if (createBody)
         drawCylinderBody(numSegments, cylinder.getRadius(), cylinder.getHeight());
 
-    float angleDelta = 2.0f*osg::PIf/(float)numSegments;
+    float angleDelta = 2.0f*PIf/(float)numSegments;
     float texCoordDelta = 1.0f/(float)numSegments;
 
     float r = cylinder.getRadius();
@@ -933,7 +933,7 @@ void BuildShapeGeometryVisitor::apply(const Cylinder& cylinder)
         TexCoord2f(0.5f,0.5f);
         Vertex3f(0.0f,0.0f,basez);
 
-        angle = osg::PIf*2.0f;
+        angle = PIf*2.0f;
         texCoord = 1.0f;
         for(unsigned int bottomi=0;
             bottomi<numSegments;
@@ -1009,9 +1009,9 @@ void BuildShapeGeometryVisitor::apply(const TriangleMesh& mesh)
 
         for(unsigned int i=0;i+2<indices->getNumElements();i+=3)
         {
-            const osg::Vec3& v1=(*vertices)[indices->index(i)];
-            const osg::Vec3& v2=(*vertices)[indices->index(i+1)];
-            const osg::Vec3& v3=(*vertices)[indices->index(i+2)];
+            const Vec3& v1=(*vertices)[indices->index(i)];
+            const Vec3& v2=(*vertices)[indices->index(i+1)];
+            const Vec3& v3=(*vertices)[indices->index(i+2)];
             Vec3 normal = (v2-v1)^(v3-v2);
             normal.normalize();
 
@@ -1186,4 +1186,41 @@ void BuildShapeGeometryVisitor::apply(const CompositeShape& group)
     {
         group.getChild(i)->accept(*this);
     }
+}
+
+Geometry* osg::convertShapeToGeometry(const Shape& shape, const TessellationHints* hints)
+{
+    ref_ptr<Geometry> geometry = new Geometry;
+
+    BuildShapeGeometryVisitor buildGeometry(geometry.get(), hints);
+    shape.accept( buildGeometry );
+
+    return geometry.release();
+}
+
+Geometry* osg::convertShapeToGeometry(const Shape& shape, const TessellationHints* hints, const Vec4& color, Array::Binding colorBinding)
+{
+    ref_ptr<Geometry> geometry = convertShapeToGeometry(shape, hints);
+
+    unsigned int numColors = 0;
+    switch(colorBinding)
+    {
+        case(Array::BIND_OVERALL): numColors = 1; break;
+        case(Array::BIND_PER_VERTEX): numColors = geometry->getVertexArray()->getNumElements(); break;
+        case(Array::BIND_PER_PRIMITIVE_SET): numColors = geometry->getPrimitiveSetList().size(); break;
+        default: break;
+    }
+
+    if (numColors>0)
+    {
+        ref_ptr<Vec4Array> colors = new Vec4Array(colorBinding);
+        geometry->setColorArray(colors);
+
+        for(unsigned int i=0; i<numColors; ++i)
+        {
+            colors->push_back(color);
+        }
+    }
+
+    return geometry.release();
 }

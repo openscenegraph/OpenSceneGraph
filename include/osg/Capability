@@ -124,7 +124,7 @@ class OSG_EXPORT Enablei : public Capabilityi
         Enablei(const Enablei& ei,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Capabilityi(ei,copyop) {}
 
-        META_Object(osg, Capabilityi);
+        META_Object(osg, Enablei);
 
         virtual void apply(State&) const;
 
@@ -147,7 +147,7 @@ class OSG_EXPORT Disablei : public Capabilityi
         Disablei(const Disablei& ei,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Capabilityi(ei,copyop) {}
 
-        META_Object(osg, Capabilityi);
+        META_Object(osg, Disablei);
 
         virtual void apply(State&) const;
 

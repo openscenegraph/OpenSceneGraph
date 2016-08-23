@@ -925,7 +925,7 @@ osg::Group* createCar( float detailRatio, const osg::Vec4& hullColor, const osg:
 
     osg::ref_ptr<osg::Group> root           = new osg::Group;
     osg::ref_ptr<osg::Cylinder> wheel       = new osg::Cylinder( osg::Vec3( 0.0, 0.0, 0.0 ), 1.0, 0.6 );
-    osg::ref_ptr<osg::Geometry> wheelGeom   = convertShapeToGeometry( *wheel.get(), tessHints.get(), wheelColor );
+    osg::ref_ptr<osg::Geometry> wheelGeom   = osg::convertShapeToGeometry( *wheel.get(), tessHints.get(), wheelColor, osg::Array::BIND_PER_VERTEX );
     // one random triangle on every wheel will use black color to show that wheel is rotating
     osg::Vec4Array* colorArray = dynamic_cast<osg::Vec4Array*>( wheelGeom->getColorArray() );
     if(colorArray!=NULL)

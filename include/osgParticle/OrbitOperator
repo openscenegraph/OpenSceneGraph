@@ -26,7 +26,7 @@ namespace osgParticle
 /** An orbit operator forces particles in the orbit around a point.
     Refer to David McAllister's Particle System API (http://www.particlesystems.org)
 */
-class OrbitOperator : public Operator
+class OSGPARTICLE_EXPORT OrbitOperator : public Operator
 {
 public:
     OrbitOperator()

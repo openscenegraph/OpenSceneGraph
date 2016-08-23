@@ -29,7 +29,7 @@ namespace osgParticle {
         when an emitter requests a <CODE>SegmentPlacer</CODE> to place a particle, the position is chosen randomly
         within that segment.
     */
-    class SegmentPlacer: public Placer {
+    class OSGPARTICLE_EXPORT SegmentPlacer: public Placer {
     public:
         inline SegmentPlacer();
         inline SegmentPlacer(const SegmentPlacer& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);

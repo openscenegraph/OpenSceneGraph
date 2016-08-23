@@ -25,7 +25,7 @@ namespace osgSim {
     class as UserData to the corresponding osgLLGroup node.
 */
 
-class ObjectRecordData : public osg::Object
+class OSGSIM_EXPORT ObjectRecordData : public osg::Object
 {
     public:
 

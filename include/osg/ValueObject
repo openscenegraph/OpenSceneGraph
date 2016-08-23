@@ -58,7 +58,7 @@ class Plane;
 class Matrixf;
 class Matrixd;
 
-class ValueObject : public Object
+class OSG_EXPORT ValueObject : public Object
 {
     public:
 

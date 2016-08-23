@@ -25,7 +25,7 @@
 namespace osgPresentation
 {
 
-class PropertyManager : protected osg::Object
+class OSGPRESENTATION_EXPORT PropertyManager : protected osg::Object
 {
 public:
 

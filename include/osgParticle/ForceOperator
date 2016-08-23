@@ -30,7 +30,7 @@ namespace osgParticle
       * Remember that if the mass of particles is expressed in kg and the lengths are
       * expressed in meters, then the force should be expressed in Newtons.
     */
-    class ForceOperator: public Operator {
+    class OSGPARTICLE_EXPORT ForceOperator: public Operator {
     public:
         inline ForceOperator();
         inline ForceOperator(const ForceOperator& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);

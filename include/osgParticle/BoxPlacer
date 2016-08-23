@@ -33,7 +33,7 @@ namespace osgParticle
         which is inherited directly from <CODE>osgParticle::CenteredPlacer</CODE>, and three ranges of values
     for the valid <I>X</I>, <I>Y</I>, and <I>Z</I> coordinates.
     */
-    class BoxPlacer: public CenteredPlacer {
+    class OSGPARTICLE_EXPORT BoxPlacer: public CenteredPlacer {
     public:
         inline BoxPlacer();
         inline BoxPlacer(const BoxPlacer& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);

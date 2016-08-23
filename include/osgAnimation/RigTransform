@@ -22,7 +22,7 @@ namespace osgAnimation
 
     class RigGeometry;
 
-    class RigTransform : public osg::Object
+    class OSGANIMATION_EXPORT RigTransform : public osg::Object
     {
     public:
         RigTransform() {}

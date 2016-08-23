@@ -22,7 +22,7 @@
 namespace osgParticle
 {
 
-    class ConstantRateCounter: public Counter {
+    class OSGPARTICLE_EXPORT ConstantRateCounter: public Counter {
     public:
         ConstantRateCounter():
             Counter(),

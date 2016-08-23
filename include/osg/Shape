@@ -33,13 +33,13 @@ class ConstShapeVisitor;
   * the standard pure virtual methods which are required for all Object
   * subclasses.*/
 #define META_Shape(library,name) \
-        virtual osg::Object* cloneType() const { return new name(); } \
-        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new name (*this,copyop); } \
-        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
+        virtual Object* cloneType() const { return new name(); } \
+        virtual Object* clone(const CopyOp& copyop) const { return new name (*this,copyop); } \
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
         virtual const char* libraryName() const { return #library; } \
         virtual const char* className() const { return #name; } \
-        virtual void accept(osg::ShapeVisitor& sv) { sv.apply(*this); } \
-        virtual void accept(osg::ConstShapeVisitor& csv) const { csv.apply(*this); }
+        virtual void accept(ShapeVisitor& sv) { sv.apply(*this); } \
+        virtual void accept(ConstShapeVisitor& csv) const { csv.apply(*this); }
 
 /** Base class for all shape types.
   * Shapes are used to either for culling and collision detection or
@@ -151,7 +151,7 @@ class OSG_EXPORT Sphere : public Shape
             _center(0.0f,0.0f,0.0f),
             _radius(1.0f) {}
 
-        Sphere(const osg::Vec3& center,float radius):
+        Sphere(const Vec3& center,float radius):
             _center(center),
             _radius(radius) {}
 
@@ -193,11 +193,11 @@ class OSG_EXPORT Box : public Shape
             _center(0.0f,0.0f,0.0f),
             _halfLengths(0.5f,0.5f,0.5f) {}
 
-        Box(const osg::Vec3& center,float width):
+        Box(const Vec3& center,float width):
             _center(center),
             _halfLengths(width*0.5f,width*0.5f,width*0.5f) {}
 
-        Box(const osg::Vec3& center,float lengthX,float lengthY, float lengthZ):
+        Box(const Vec3& center,float lengthX,float lengthY, float lengthZ):
             _center(center),
             _halfLengths(lengthX*0.5f,lengthY*0.5f,lengthZ*0.5f) {}
 
@@ -249,7 +249,7 @@ class OSG_EXPORT Cone : public Shape
             _radius(1.0f),
             _height(1.0f) {}
 
-        Cone(const osg::Vec3& center,float radius,float height):
+        Cone(const Vec3& center,float radius,float height):
             _center(center),
             _radius(radius),
             _height(height) {}
@@ -309,7 +309,7 @@ class OSG_EXPORT Cylinder : public Shape
             _radius(1.0f),
             _height(1.0f) {}
 
-        Cylinder(const osg::Vec3& center,float radius,float height):
+        Cylinder(const Vec3& center,float radius,float height):
             _center(center),
             _radius(radius),
             _height(height) {}
@@ -365,7 +365,7 @@ class OSG_EXPORT Capsule : public Shape
             _radius(1.0f),
             _height(1.0f) {}
 
-        Capsule(const osg::Vec3& center,float radius,float height):
+        Capsule(const Vec3& center,float radius,float height):
             _center(center),
             _radius(radius),
             _height(height) {}
@@ -496,8 +496,8 @@ class OSG_EXPORT HeightField : public Shape
         inline unsigned int getNumColumns() const { return _columns; }
         inline unsigned int getNumRows() const { return _rows; }
 
-        inline void setOrigin(const osg::Vec3& origin) { _origin = origin; }
-        inline const osg::Vec3& getOrigin() const { return _origin; }
+        inline void setOrigin(const Vec3& origin) { _origin = origin; }
+        inline const Vec3& getOrigin() const { return _origin; }
 
         inline void setXInterval(float dx) { _dx = dx; }
         inline float getXInterval() const { return _dx; }
@@ -506,10 +506,10 @@ class OSG_EXPORT HeightField : public Shape
         inline float getYInterval() const { return _dy; }
 
         /** Get the FloatArray height data.*/
-        osg::FloatArray* getFloatArray() { return _heights.get(); }
+        FloatArray* getFloatArray() { return _heights.get(); }
 
         /** Get the const FloatArray height data.*/
-        const osg::FloatArray* getFloatArray() const { return _heights.get(); }
+        const FloatArray* getFloatArray() const { return _heights.get(); }
 
         HeightList& getHeightList() { return _heights->asVector(); }
 
@@ -571,7 +571,7 @@ class OSG_EXPORT HeightField : public Shape
 
         unsigned int                    _columns,_rows;
 
-        osg::Vec3                       _origin; // _origin is the min value of the X and Y coordinates.
+        Vec3                       _origin; // _origin is the min value of the X and Y coordinates.
         float                           _dx;
         float                           _dy;
 
@@ -579,7 +579,7 @@ class OSG_EXPORT HeightField : public Shape
         unsigned int                    _borderWidth;
 
         Quat                            _rotation;
-        osg::ref_ptr<osg::FloatArray>   _heights;
+        ref_ptr<FloatArray>   _heights;
 
 };
 
@@ -747,12 +747,12 @@ class TessellationHints : public Object
 // forward declare;
 class Geometry;
 
-/** Convinience class for populating an osg::Geomtry with vertex, normals, texture coords and primitives that can render a Shape. */
+/** Convinience class for populating an Geomtry with vertex, normals, texture coords and primitives that can render a Shape. */
 class OSG_EXPORT BuildShapeGeometryVisitor : public ConstShapeVisitor
 {
     public:
 
-        BuildShapeGeometryVisitor(Geometry* geometry, TessellationHints* hints);
+        BuildShapeGeometryVisitor(Geometry* geometry, const TessellationHints* hints);
 
         virtual void apply(const Sphere&);
         virtual void apply(const Box&);
@@ -773,7 +773,7 @@ class OSG_EXPORT BuildShapeGeometryVisitor : public ConstShapeVisitor
         void Vertex(const Vec3f& v) { _vertices->push_back(v); }
         void Vertex3f(float x, float y, float z) { _vertices->push_back(Vec3(x,y,z)); }
 
-        void setMatrix(const osg::Matrixd& m);
+        void setMatrix(const Matrixd& m);
 
         void Begin(GLenum mode);
         void End();
@@ -800,6 +800,10 @@ protected:
         Matrixd         _matrix;
         Matrixd         _inverse;
 };
+
+extern OSG_EXPORT Geometry* convertShapeToGeometry(const Shape& shape, const TessellationHints* hints);
+
+extern OSG_EXPORT Geometry* convertShapeToGeometry(const Shape& shape, const TessellationHints* hints, const Vec4& color, Array::Binding colorBinding=Array::BIND_OVERALL);
 
 }
 

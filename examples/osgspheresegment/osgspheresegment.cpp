@@ -17,6 +17,7 @@
 */
 
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
 
 #include <osg/Group>
 #include <osg/Geode>
@@ -713,6 +714,9 @@ int main(int argc, char **argv)
 
     osg::Group *root = new osg::Group;
     build_world(root, testCase, useOverlay, technique);
+
+
+    viewer.addEventHandler(new osgViewer::StatsHandler);
 
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData(root);

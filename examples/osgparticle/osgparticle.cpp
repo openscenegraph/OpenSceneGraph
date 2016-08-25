@@ -44,7 +44,7 @@
 // for more details.
 class VortexOperator: public osgParticle::Operator {
 public:
-    VortexOperator() 
+    VortexOperator()
         : osgParticle::Operator(), center_(0, 0, 0), axis_(0, 0, 1), intensity_(0.1f) {}
 
     VortexOperator(const VortexOperator &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY)
@@ -63,7 +63,7 @@ public:
     }
 
     // this method is called by ModularProgram before applying
-    // operators on the particle set via the operate() method.    
+    // operators on the particle set via the operate() method.
     void beginOperate(osgParticle::Program *prg)
     {
         // we have to check whether the reference frame is RELATIVE_RF to parents
@@ -96,7 +96,7 @@ public:
         // velocity vector (this is unusual, normally you should call
         // the Particle::setVelocity() or Particle::addVelocity()
         // methods).
-        P->setPosition(newpos);    
+        P->setPosition(newpos);
     }
 
 protected:
@@ -141,7 +141,7 @@ osgParticle::ParticleSystem *create_simple_particle_system(osg::Group *root)
     ps->setDefaultAttributes("", true, false);
 
     // Now that our particle system is set we have to create an emitter, that is
-    // an object (actually a Node descendant) that generate new particles at 
+    // an object (actually a Node descendant) that generate new particles at
     // each frame. The best choice is to use a ModularEmitter, which allow us to
     // achieve a wide variety of emitting styles by composing the emitter using
     // three objects: a "counter", a "placer" and a "shooter". The counter must
@@ -168,7 +168,7 @@ osgParticle::ParticleSystem *create_simple_particle_system(osg::Group *root)
     // but since the default counter is already a RandomRateCounter, we
     // just get a pointer to it and change a value.
 
-    osgParticle::RandomRateCounter *rrc = 
+    osgParticle::RandomRateCounter *rrc =
         static_cast<osgParticle::RandomRateCounter *>(emitter->getCounter());
 
     // Now set the rate range to a better value. The actual rate at each frame
@@ -182,12 +182,12 @@ osgParticle::ParticleSystem *create_simple_particle_system(osg::Group *root)
 
     root->addChild(emitter);
 
-    // Ok folks, we have almost finished. We don't add any particle modifier 
+    // Ok folks, we have almost finished. We don't add any particle modifier
     // here (see ModularProgram and Operator classes), so all we still need is
     // to create a Geode and add the particle system to it, so it can be
     // displayed.
 
-    osg::Geode *geode = new osg::Geode;    
+    osg::Geode *geode = new osg::Geode;
     geode->addDrawable(ps);
 
     // add the geode to the scene graph
@@ -222,12 +222,12 @@ osgParticle::ParticleSystem *create_complex_particle_system(osg::Group *root)
 
     ptemplate.setLifeTime(3);        // 3 seconds of life
 
-    // the following ranges set the envelope of the respective 
+    // the following ranges set the envelope of the respective
     // graphical properties in time.
     ptemplate.setSizeRange(osgParticle::rangef(0.75f, 3.0f));
     ptemplate.setAlphaRange(osgParticle::rangef(0.0f, 1.5f));
     ptemplate.setColorRange(osgParticle::rangev4(
-        osg::Vec4(1, 0.5f, 0.3f, 1.5f), 
+        osg::Vec4(1, 0.5f, 0.3f, 1.5f),
         osg::Vec4(0, 0.7f, 1.0f, 0.0f)));
 
     // these are physical properties of the particle
@@ -332,7 +332,7 @@ osgParticle::ParticleSystem *create_complex_particle_system(osg::Group *root)
 osgParticle::ParticleSystem *create_animated_particle_system(osg::Group *root)
 {
 
-    // Now we will create a particle system that uses two emitters to 
+    // Now we will create a particle system that uses two emitters to
     // display two animated particles, one showing an explosion, the other
     // a smoke cloud. A particle system can only use one texture, so
     // the animations for both particles are stored in a single bitmap.
@@ -345,7 +345,7 @@ osgParticle::ParticleSystem *create_animated_particle_system(osg::Group *root)
     osgParticle::Particle pexplosion;
 
     // The frames of the explosion particle are played from birth to
-    // death of the particle. So if lifetime is one second, all 16 images 
+    // death of the particle. So if lifetime is one second, all 16 images
     // of the particle are shown in this second.
     pexplosion.setLifeTime(1);
 
@@ -353,7 +353,7 @@ osgParticle::ParticleSystem *create_animated_particle_system(osg::Group *root)
     pexplosion.setSizeRange(osgParticle::rangef(0.75f, 3.0f));
     pexplosion.setAlphaRange(osgParticle::rangef(0.5f, 1.0f));
     pexplosion.setColorRange(osgParticle::rangev4(
-        osg::Vec4(1, 1, 1, 1), 
+        osg::Vec4(1, 1, 1, 1),
         osg::Vec4(1, 1, 1, 1)));
     pexplosion.setRadius(0.05f);
     pexplosion.setMass(0.05f);
@@ -361,7 +361,7 @@ osgParticle::ParticleSystem *create_animated_particle_system(osg::Group *root)
     // This command sets the animation tiles to be shown for the particle.
     // The first two parameters define the tile layout of the texture image.
     // 8, 8 means the texture has eight rows of tiles with eight columns each.
-    // 0, 15 defines the start and end tile 
+    // 0, 15 defines the start and end tile
     pexplosion.setTextureTileRange(8, 8, 0, 15);
 
     // The smoke particle is just the same, only plays another tile range.
@@ -415,7 +415,7 @@ osgParticle::ParticleSystem *create_animated_particle_system(osg::Group *root)
     // add both emitters to the scene graph
     root->addChild(emitter1);
     root->addChild(emitter2);
-   
+
     // create a program, just as before
     osgParticle::ModularProgram *program = new osgParticle::ModularProgram;
     program->setParticleSystem(ps);
@@ -423,7 +423,7 @@ osgParticle::ParticleSystem *create_animated_particle_system(osg::Group *root)
     // create an operator that moves the particles upwards
     osgParticle::AccelOperator *op1 = new osgParticle::AccelOperator;
     op1->setAcceleration(osg::Vec3(0, 0, 2.0f));
-    program->addOperator(op1);  
+    program->addOperator(op1);
 
     // add the program to the scene graph
     root->addChild(program);
@@ -482,15 +482,15 @@ int main(int, char **)
 {
     // construct the viewer.
     osgViewer::Viewer viewer;
-    
+
     osg::Group *root = new osg::Group;
     build_world(root);
-   
+
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
 
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData(root);
-        
+
     return viewer.run();
 }

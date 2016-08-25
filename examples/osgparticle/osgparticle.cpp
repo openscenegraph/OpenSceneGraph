@@ -187,11 +187,8 @@ osgParticle::ParticleSystem *create_simple_particle_system(osg::Group *root)
     // to create a Geode and add the particle system to it, so it can be
     // displayed.
 
-    osg::Geode *geode = new osg::Geode;
-    geode->addDrawable(ps);
-
-    // add the geode to the scene graph
-    root->addChild(geode);
+    // add the ParticleSystem to the scene graph
+    root->addChild(ps);
 
     return ps;
 
@@ -261,7 +258,7 @@ osgParticle::ParticleSystem *create_complex_particle_system(osg::Group *root)
     osgParticle::SectorPlacer *placer = new osgParticle::SectorPlacer;
     placer->setCenter(8, 0, 10);
     placer->setRadiusRange(2.5, 5);
-    placer->setPhiRange(0, 2 * osg::PI);    // 360° angle to make a circle
+    placer->setPhiRange(0, 2 * osg::PI);    // 360 angle to make a circle
     emitter->setPlacer(placer);
 
     // now let's setup the shooter; we use a RadialShooter but we set the
@@ -312,12 +309,8 @@ osgParticle::ParticleSystem *create_complex_particle_system(osg::Group *root)
     // add the program to the scene graph
     root->addChild(program);
 
-    // create a Geode to contain our particle system.
-    osg::Geode *geode = new osg::Geode;
-    geode->addDrawable(ps);
-
-    // add the geode to the scene graph.
-    root->addChild(geode);
+    // add the particle system to the scene graph.
+    root->addChild(ps);
 
     return ps;
 }
@@ -397,7 +390,7 @@ osgParticle::ParticleSystem *create_animated_particle_system(osg::Group *root)
     osgParticle::SectorPlacer *placer = new osgParticle::SectorPlacer;
     placer->setCenter(-8, 0, 0);
     placer->setRadiusRange(2.5, 5);
-    placer->setPhiRange(0, 2 * osg::PI);    // 360° angle to make a circle
+    placer->setPhiRange(0, 2 * osg::PI);    // 360 angle to make a circle
     emitter1->setPlacer(placer);
     emitter2->setPlacer(placer);
 

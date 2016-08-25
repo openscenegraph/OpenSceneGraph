@@ -366,7 +366,6 @@ public:
         float azRange, elevRange;
         ss->getArea(direction_vec, azRange, elevRange);
 
-        OSG_NOTICE<<std::endl<<"AdjustSphereSegmentCallback : scaling azRange"<<azRange<<", scale="<<scale<<std::endl;
         ss->setArea(direction_vec, azRange*scale, elevRange*scale);
     }
 

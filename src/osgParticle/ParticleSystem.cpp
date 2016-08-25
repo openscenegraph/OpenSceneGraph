@@ -410,16 +410,9 @@ void osgParticle::ParticleSystem::single_pass_render(osg::RenderInfo& renderInfo
 
     bool requiresEndRender = false;
     const Particle* startParticle = &_particles[0];
-    if (startParticle->getShape() != Particle::USER)
-    {
-        startParticle->beginRender(gl);
-        requiresEndRender = true;
-    }
-    else
-    {
-        // Enable writing depth mask when drawing user-defined particles
-        glDepthMask(GL_TRUE);
-    }
+
+    startParticle->beginRender(gl);
+    requiresEndRender = true;
 
     for(unsigned int i=0; i<_particles.size(); i+=_detail)
     {
@@ -435,27 +428,12 @@ void osgParticle::ParticleSystem::single_pass_render(osg::RenderInfo& renderInfo
             {
                 startParticle->endRender(gl);
                 startParticle = currentParticle;
-                if (currentParticle->getShape() != Particle::USER)
-                {
-                    currentParticle->beginRender(gl);
-                    requiresEndRender = true;
-                    glDepthMask(GL_FALSE);
-                }
-                else
-                    glDepthMask(GL_TRUE);
+
+                currentParticle->beginRender(gl);
+                requiresEndRender = true;
+                glDepthMask(GL_FALSE);
             }
             ++_draw_count;
-
-            if (currentParticle->getShape() == Particle::USER)
-            {
-                if (requiresEndRender)
-                {
-                    startParticle->endRender(gl);
-                    requiresEndRender = false;
-                }
-                currentParticle->render(renderInfo, currentParticle->getPosition(), currentParticle->getAngle());
-                continue;
-            }
 
             const osg::Vec3& angle = currentParticle->getAngle();
             bool requiresRotation = (angle.x()!=0.0f || angle.y()!=0.0f || angle.z()!=0.0f);

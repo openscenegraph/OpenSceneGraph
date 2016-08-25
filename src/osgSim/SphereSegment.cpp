@@ -70,7 +70,6 @@ SphereSegment::SphereSegment(const osg::Vec3& centre, float radius, const osg::V
 
 void SphereSegment::traverse(osg::NodeVisitor& nv)
 {
-    // OSG_NOTICE<<"SphereSegment::traverse() "<<nv.className()<<std::endl;
     osg::Geode::traverse(nv);
 
     if ((_drawMask & SURFACE)!=0)

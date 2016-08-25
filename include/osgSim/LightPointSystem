@@ -15,7 +15,7 @@
 #define OSGSIM_LIGHTPOINTSYSTEM 1
 
 #include <osg/Object>
-
+#include <osgSim/Export>
 
 namespace osgSim {
 

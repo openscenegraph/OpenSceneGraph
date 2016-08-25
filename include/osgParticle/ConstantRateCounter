@@ -15,6 +15,7 @@
 #define OSGPARTICLE_CONSTANTRATECOUNTER 1
 
 #include <osgParticle/Counter>
+#include <osgParticle/Export>
 
 #include <osg/Object>
 #include <osg/Math>

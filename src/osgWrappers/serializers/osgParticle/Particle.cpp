@@ -69,15 +69,19 @@ bool readParticle( osgDB::InputStream& is, osgParticle::Particle& p )
     p.setAngularVelocity( angleV );
     p.setTextureTile( s, t, num );
 
-    bool hasObject = false; is >> is.PROPERTY("Drawable") >> hasObject;
-    if ( hasObject )
+    if (is.getFileVersion()<145)
     {
-        is >> is.BEGIN_BRACKET;
-        p.setDrawable( is.readObjectOfType<osg::Drawable>() );
+        bool hasObject = false; is >> is.PROPERTY("Drawable") >> hasObject;
+        if ( hasObject )
+        {
+            is >> is.BEGIN_BRACKET;
+            osg::ref_ptr<osg::Drawable> drawable = is.readObjectOfType<osg::Drawable>();
+            OSG_NOTICE<<"Warning: read osgParticle::Particle with USER defined Drawable which is no longer supported."<<std::endl;
+            is >> is.END_BRACKET;
+        }
+
         is >> is.END_BRACKET;
     }
-
-    is >> is.END_BRACKET;
     return true;
 }
 
@@ -110,15 +114,6 @@ bool writeParticle( osgDB::OutputStream& os, const osgParticle::Particle& p )
     os << os.PROPERTY("Angle") << osg::Vec3d(p.getAngle()) << std::endl;
     os << os.PROPERTY("AngularVelocity") << osg::Vec3d(p.getAngularVelocity()) << std::endl;
     os << os.PROPERTY("TextureTile") << p.getTileS() << p.getTileT() << p.getNumTiles() << std::endl;
-
-    os << os.PROPERTY("Drawable") << (p.getDrawable()!=NULL);
-    if ( p.getDrawable()!=NULL )
-    {
-        os << os.BEGIN_BRACKET << std::endl;
-        os.writeObject( p.getDrawable() );
-        os << os.END_BRACKET;
-    }
-    os << std::endl;
 
     os << os.END_BRACKET << std::endl;
     return true;

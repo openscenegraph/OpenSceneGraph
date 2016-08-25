@@ -61,12 +61,12 @@ namespace osgParticle
          NOTE: the LINE shape should be used in conjunction with FIXED alignment mode (see ParticleSystem).
         */
         enum Shape {
-            POINT,            // uses GL_POINTS as primitive
-            QUAD,            // uses GL_QUADS as primitive
-            QUAD_TRIANGLESTRIP,    // uses GL_TRI_angleSTRIP as primitive, but each particle needs a glBegin/glEnd pair
-            HEXAGON,            // may save some filling time, but uses more triangles
+            POINT,              // uses GL_POINTS as primitive
+            QUAD,               // uses GL_QUADS as primitive
+            QUAD_TRIANGLESTRIP, // no longer supported, falls back to QUAD
+            HEXAGON,            // no longer supported, falls back to QUAD
             LINE,               // uses GL_LINES to draw line segments that point to the direction of motion
-            USER               // uses a user-defined drawable as primitive
+            USER                // no longer supported, falls back to QUAD
         };
 
         Particle();
@@ -246,9 +246,6 @@ namespace osgParticle
         /// Render the particle. Called automatically by particle systems.
         void render(osg::GLBeginEndAdapter* gl, const osg::Vec3& xpos, const osg::Vec3& px, const osg::Vec3& py, float scale = 1.0f) const;
 
-        /// Render the particle with user-defined drawable
-        void render(osg::RenderInfo& renderInfo, const osg::Vec3& xpos, const osg::Vec3& xrot) const;
-
         /// Perform some post-rendering tasks. Called automatically by particle systems.
         inline void endRender(osg::GLBeginEndAdapter* gl) const;
 
@@ -284,13 +281,6 @@ namespace osgParticle
 
         /// Get the depth of the particle
         inline double getDepth() const { return _depth; }
-
-        /// Set the user-defined particle drawable
-        inline void setDrawable(osg::Drawable* d) { _drawable = d; }
-        template<class T> void setDrawable(const osg::ref_ptr<T>& ri) { setDrawable(ri.get()); }
-
-        /// Get the user-defined particle drawable
-        inline osg::Drawable* getDrawable() const { return _drawable.get(); }
 
         /// Sorting operator
         bool operator<(const Particle &P) const { return _depth < P._depth; }
@@ -346,9 +336,6 @@ namespace osgParticle
 
         // the depth of the particle is used only when sorting is enabled
         double _depth;
-
-        // the particle drawable is used only when USER shape is enabled
-        osg::ref_ptr<osg::Drawable> _drawable;
     };
 
     // INLINE FUNCTIONS

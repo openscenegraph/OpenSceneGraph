@@ -41,11 +41,12 @@ ImpostorSprite::ImpostorSprite():
 {
     // don't use display list since we will be updating the geometry.
     setUseDisplayList(false);
-    _color.set(1.0f, 1.0f, 1.0f, 1.0f );
+
+    init();
 }
 
 ImpostorSprite::ImpostorSprite(const ImpostorSprite&):
-    osg::Drawable(),
+    osg::Geometry(),
     _parent(0),
     _ism(0),
     _previous(0),
@@ -56,7 +57,8 @@ ImpostorSprite::ImpostorSprite(const ImpostorSprite&):
     _t(0)
 {
     setUseDisplayList(false);
-    _color.set(1.0f, 1.0f, 1.0f, 1.0f );
+
+    init();
 }
 
 ImpostorSprite::~ImpostorSprite()
@@ -67,6 +69,30 @@ ImpostorSprite::~ImpostorSprite()
     }
 }
 
+void ImpostorSprite::init()
+{
+    _coords = new osg::Vec3Array(osg::Array::BIND_PER_VERTEX, 4);
+    _texcoords = new osg::Vec2Array(osg::Array::BIND_PER_VERTEX, 4);
+
+    osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array(osg::Array::BIND_OVERALL);
+    colors->push_back(osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+    setVertexArray(_coords.get());
+    setColorArray(colors);
+    setTexCoordArray(0, _texcoords.get());
+
+    addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, 4));
+}
+
+void ImpostorSprite::dirty()
+{
+    _coords->dirty();
+    _texcoords->dirty();
+
+    dirtyGLObjects();
+    dirtyBound();
+}
+
 float ImpostorSprite::calcPixelError(const osg::Matrix& MVPW) const
 {
     // find the maximum screen space pixel error between the control coords and the quad coners.
@@ -75,7 +101,7 @@ float ImpostorSprite::calcPixelError(const osg::Matrix& MVPW) const
     for(int i=0;i<4;++i)
     {
 
-        osg::Vec3 projected_coord = _coords[i]*MVPW;
+        osg::Vec3 projected_coord = (*_coords)[i]*MVPW;
         osg::Vec3 projected_control = _controlcoords[i]*MVPW;
 
         float dx = (projected_coord.x()-projected_control.x());
@@ -89,72 +115,12 @@ float ImpostorSprite::calcPixelError(const osg::Matrix& MVPW) const
 
     return sqrtf(max_error_sqrd);
 }
-void ImpostorSprite::drawImplementation(osg::RenderInfo& renderInfo) const
-{
-    osg::GLBeginEndAdapter& gl = (renderInfo.getState()->getGLBeginEndAdapter());
-
-    // when the tex env is set to REPLACE, and the
-    // texture is set up correctly the color has no effect.
-    gl.Color4fv( _color.ptr() );
-
-    gl.Begin( GL_QUADS );
-
-    gl.TexCoord2fv( (GLfloat *)&_texcoords[0] );
-    gl.Vertex3fv( (GLfloat *)&_coords[0] );
-
-    gl.TexCoord2fv( (GLfloat *)&_texcoords[1] );
-    gl.Vertex3fv( (GLfloat *)&_coords[1] );
-
-    gl.TexCoord2fv( (GLfloat *)&_texcoords[2] );
-    gl.Vertex3fv( (GLfloat *)&_coords[2] );
-
-    gl.TexCoord2fv( (GLfloat *)&_texcoords[3] );
-    gl.Vertex3fv( (GLfloat *)&_coords[3] );
-
-    gl.End();
-}
-
-osg::BoundingBox ImpostorSprite::computeBoundingBox() const
-{
-    osg::BoundingBox bbox;
-    bbox.expandBy(_coords[0]);
-    bbox.expandBy(_coords[1]);
-    bbox.expandBy(_coords[2]);
-    bbox.expandBy(_coords[3]);
-
-    if (!bbox.valid())
-    {
-        OSG_WARN << "******* ImpostorSprite::computeBound() problem"<<std::endl;
-    }
-
-    return bbox;
-}
 
 void ImpostorSprite::setTexture(osg::Texture2D* tex,int s,int t)
 {
     _texture = tex;
     _s = s;
     _t = t;
-}
-
-
-void ImpostorSprite::accept(AttributeFunctor& af)
-{
-    af.apply(VERTICES,4,_coords);
-    af.apply(TEXTURE_COORDS_0,4,_texcoords);
-}
-
-void ImpostorSprite::accept(ConstAttributeFunctor& af) const
-{
-    af.apply(VERTICES,4,_coords);
-    af.apply(TEXTURE_COORDS_0,4,_texcoords);
-}
-
-void ImpostorSprite::accept(osg::PrimitiveFunctor& functor) const
-{
-    functor.setVertexArray(4,_coords);
-    functor.drawArrays( GL_QUADS, 0, 4);
-
 }
 
 

@@ -471,16 +471,22 @@ void build_world(osg::Group *root)
 //////////////////////////////////////////////////////////////////////////////
 
 
-int main(int, char **)
+int main(int argc, char** argv)
 {
+    // use an ArgumentParser object to manage the program arguments.
+    osg::ArgumentParser arguments(&argc,argv);
+
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
 
     osg::Group *root = new osg::Group;
     build_world(root);
 
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
+
+    // add the window size toggle handler
+    viewer.addEventHandler(new osgViewer::WindowSizeHandler);
 
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData(root);

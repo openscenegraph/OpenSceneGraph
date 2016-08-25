@@ -27,230 +27,31 @@
 
 using namespace osgSim;
 
-// Define the collection of nested classes, all Drawables, which make
-// up the parts of the sphere segment.
-
-/**
-SphereSegment::Surface is the Drawable which represents the specified area of the
-sphere's surface.
- */
-class SphereSegment::Surface: public osg::Drawable
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// SphereSegment
+//
+SphereSegment::SphereSegment(const osg::Vec3& centre, float radius, float azMin, float azMax,
+                float elevMin, float elevMax, int density):
+    osg::Geode(),
+    _centre(centre), _radius(radius),
+    _azMin(azMin), _azMax(azMax),
+    _elevMin(elevMin), _elevMax(elevMax),
+    _density(density),
+    _drawMask(DrawMask(ALL))
 {
-public:
-    Surface(SphereSegment* ss): osg::Drawable(), _ss(ss) {}
-
-    Surface():_ss(0)
-    {
-        OSG_WARN<<
-            "Warning: unexpected call to osgSim::SphereSegment::Surface() default constructor"<<std::endl;
-    }
-
-    Surface(const Surface& rhs, const osg::CopyOp& co=osg::CopyOp::SHALLOW_COPY):osg::Drawable(rhs,co), _ss(0)
-    {
-        OSG_WARN<<
-            "Warning: unexpected call to osgSim::SphereSegment::Surface() copy constructor"<<std::endl;
-    }
-
-    META_Object(osgSim,Surface)
-
-    void drawImplementation(osg::RenderInfo& renderInfo) const;
-
-    virtual osg::BoundingBox computeBoundingBox() const;
-
-protected:
-
-private:
-
-    SphereSegment* _ss;
-};
-
-void SphereSegment::Surface::drawImplementation(osg::RenderInfo& renderInfo) const
-{
-    _ss->Surface_drawImplementation(*renderInfo.getState());
+    init();
 }
 
-osg:: BoundingBox SphereSegment::Surface::computeBoundingBox() const
+SphereSegment::SphereSegment(const SphereSegment& rhs, const osg::CopyOp& co):
+    osg::Geode(rhs,co),
+    _centre(rhs._centre), _radius(rhs._radius),
+    _azMin(rhs._azMin), _azMax(rhs._azMax),
+    _elevMin(rhs._elevMin), _elevMax(rhs._elevMax),
+    _density(rhs._density),
+    _drawMask(rhs._drawMask)
 {
-    osg:: BoundingBox bbox;
-    _ss->Surface_computeBound(bbox);
-    return bbox;
-}
-
-
-/**
-SphereSegment::EdgeLine is the Drawable which represents the line around the edge
-of the specified area of the sphere's EdgeLine.
- */
-class SphereSegment::EdgeLine: public osg::Drawable
-{
-public:
-    EdgeLine(SphereSegment* ss): osg::Drawable(), _ss(ss) { init(); }
-
-    EdgeLine():_ss(0)
-    {
-        init();
-        OSG_WARN<<
-            "Warning: unexpected call to osgSim::SphereSegment::EdgeLine() default constructor"<<std::endl;
-    }
-
-    EdgeLine(const EdgeLine& rhs, const osg::CopyOp& co=osg::CopyOp::SHALLOW_COPY):osg::Drawable(rhs,co), _ss(0)
-    {
-        OSG_WARN<<
-            "Warning: unexpected call to osgSim::SphereSegment::EdgeLine() copy constructor"<<std::endl;
-    }
-
-    META_Object(osgSim,EdgeLine)
-
-    void drawImplementation(osg::RenderInfo& renderInfo) const;
-
-protected:
-
-    void init()
-    {
-        // switch off lighting.
-        getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-
-        //getOrCreateStateSet()->setAttributeAndModes(new osg::LineWidth(2.0),osg::StateAttribute::OFF);
-    }
-
-
-    virtual osg::BoundingBox computeBoundingBox() const;
-
-private:
-
-    SphereSegment* _ss;
-};
-
-void SphereSegment::EdgeLine::drawImplementation(osg::RenderInfo& renderInfo) const
-{
-    _ss->EdgeLine_drawImplementation(*renderInfo.getState());
-}
-
-osg::BoundingBox SphereSegment::EdgeLine::computeBoundingBox() const
-{
-    osg::BoundingBox bbox;
-    _ss->EdgeLine_computeBound(bbox);
-    return bbox;
-}
-
-
-
-/**
-SphereSegment::Side is a Drawable which represents one of the
-planar areas, at either the minimum or maximum azimuth.
- */
-class SphereSegment::Side: public osg::Drawable
-{
-public:
-    Side(SphereSegment* ss, SphereSegment::SideOrientation po, SphereSegment::BoundaryAngle pa):
-            osg::Drawable(), _ss(ss), _planeOrientation(po), _BoundaryAngle(pa) {}
-
-    META_Object(osgSim,Side)
-
-    void drawImplementation(osg::RenderInfo& renderInfo) const;
-
-protected:
-
-    Side():_ss(0), _planeOrientation(SphereSegment::AZIM), _BoundaryAngle(SphereSegment::MIN)
-    {
-        OSG_WARN<<
-            "Warning: unexpected call to osgSim::SphereSegment::Side() default constructor"<<std::endl;
-    }
-
-    Side(const Side& rhs, const osg::CopyOp& co=osg:: CopyOp::SHALLOW_COPY):
-        osg::Drawable(rhs,co),
-        _ss(0),
-        _planeOrientation(rhs._planeOrientation),
-        _BoundaryAngle(rhs._BoundaryAngle)
-    {
-        OSG_WARN<<
-            "Warning: unexpected call to osgSim::SphereSegment::Side() copy constructor"<<std::endl;
-    }
-
-    virtual osg::BoundingBox computeBoundingBox() const;
-
-private:
-    SphereSegment* _ss;
-    SphereSegment::SideOrientation _planeOrientation;
-    SphereSegment::BoundaryAngle _BoundaryAngle;
-};
-
-
-void SphereSegment::Side::drawImplementation(osg::RenderInfo& renderInfo) const
-{
-    _ss->Side_drawImplementation(*renderInfo.getState(), _planeOrientation, _BoundaryAngle);
-}
-
-osg::BoundingBox SphereSegment::Side::computeBoundingBox() const
-{
-    osg::BoundingBox bbox;
-    _ss->Side_computeBound(bbox, _planeOrientation, _BoundaryAngle);
-    return bbox;
-}
-
-
-
-/**
-SphereSegment::Spoke is a Drawable which represents a spoke.
- */
-class SphereSegment::Spoke: public osg::Drawable
-{
-public:
-    Spoke(SphereSegment* ss, SphereSegment::BoundaryAngle azAngle, SphereSegment::BoundaryAngle elevAngle):
-            osg::Drawable(), _ss(ss), _azAngle(azAngle), _elevAngle(elevAngle) { init(); }
-
-    META_Object(osgSim,Spoke)
-
-    void drawImplementation(osg::RenderInfo& renderInfo) const;
-
-protected:
-
-    Spoke():
-        _ss(0),
-        _azAngle(SphereSegment::MIN),
-        _elevAngle(SphereSegment::MIN)
-    {
-        init();
-        OSG_WARN<<
-            "Warning: unexpected call to osgSim::SphereSegment::Spoke() default constructor"<<std::endl;
-    }
-
-    Spoke(const Spoke& rhs, const osg::CopyOp& co=osg:: CopyOp::SHALLOW_COPY):
-        osg::Drawable(rhs,co),
-        _ss(0),
-        _azAngle(rhs._azAngle),
-        _elevAngle(rhs._elevAngle)
-    {
-        OSG_WARN<<
-            "Warning: unexpected call to osgSim::SphereSegment::Spoke() copy constructor"<<std::endl;
-    }
-
-
-    void init()
-    {
-        // switch off lighting.
-        getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-
-        //getOrCreateStateSet()->setAttributeAndModes(new osg::LineWidth(2.0),osg::StateAttribute::OFF);
-    }
-
-    virtual osg::BoundingBox computeBoundingBox() const;
-
-private:
-    SphereSegment* _ss;
-    SphereSegment::BoundaryAngle _azAngle, _elevAngle;
-};
-
-void SphereSegment::Spoke::drawImplementation(osg::RenderInfo& renderInfo) const
-{
-    _ss->Spoke_drawImplementation(*renderInfo.getState(), _azAngle, _elevAngle);
-}
-
-osg::BoundingBox SphereSegment::Spoke::computeBoundingBox() const
-{
-    osg::BoundingBox bbox;
-    _ss->Spoke_computeBound(bbox, _azAngle, _elevAngle);
-    return bbox;
+    init();
 }
 
 SphereSegment::SphereSegment(const osg::Vec3& centre, float radius, const osg::Vec3& vec, float azRange,
@@ -267,12 +68,48 @@ SphereSegment::SphereSegment(const osg::Vec3& centre, float radius, const osg::V
     init();
 }
 
+void SphereSegment::traverse(osg::NodeVisitor& nv)
+{
+    // OSG_NOTICE<<"SphereSegment::traverse() "<<nv.className()<<std::endl;
+    osg::Geode::traverse(nv);
+
+    if ((_drawMask & SURFACE)!=0)
+    {
+        _surfaceGeometry->accept(nv);
+    }
+
+    if ((_drawMask & SPOKES)!=0)
+    {
+        _spokesGeometry->accept(nv);
+    }
+
+    if ((_drawMask & EDGELINE)!=0)
+    {
+        _edgeLineGeometry->accept(nv);
+    }
+
+    if ((_drawMask & SIDES)!=0)
+    {
+        _sidesGeometry->accept(nv);
+    }
+}
+
+osg::BoundingSphere SphereSegment::computeBound() const
+{
+    _bbox.init();
+
+    _bbox.expandBy(_surfaceGeometry->getBoundingBox());
+    _bbox.expandBy(_centre);
+
+    return osg::BoundingSphere(_centre, _radius);
+}
+
+
 void SphereSegment::setCentre(const osg::Vec3& c)
 {
     _centre = c;
-    dirtyAllDrawableDisplayLists();
-    dirtyAllDrawableBounds();
-    dirtyBound();
+
+    updatePositions();
 }
 
 const osg::Vec3& SphereSegment::getCentre() const
@@ -283,9 +120,8 @@ const osg::Vec3& SphereSegment::getCentre() const
 void SphereSegment::setRadius(float r)
 {
     _radius = r;
-    dirtyAllDrawableDisplayLists();
-    dirtyAllDrawableBounds();
-    dirtyBound();
+
+    updatePositions();
 }
 
 float SphereSegment::getRadius() const
@@ -315,9 +151,7 @@ void SphereSegment::setArea(const osg::Vec3& v, float azRange, float elevRange)
     _azMin = az - azRange;
     _azMax = az + azRange;
 
-    dirtyAllDrawableDisplayLists();
-    dirtyAllDrawableBounds();
-    dirtyBound();
+    updatePositions();
 }
 
 void SphereSegment::getArea(osg::Vec3& vec, float& azRange, float& elevRange) const
@@ -325,8 +159,8 @@ void SphereSegment::getArea(osg::Vec3& vec, float& azRange, float& elevRange) co
     azRange = _azMax - _azMin;
     elevRange = _elevMax - _elevMin;
 
-    float az = azRange/2.0f;
-    float elev = elevRange/2.0f;
+    float az = (_azMax+_azMin)/2.0f;
+    float elev = (_elevMax+_elevMin)/2.0f;
     vec.set(cos(elev)*sin(az), cos(elev)*cos(az), sin(elev));
 }
 
@@ -338,9 +172,7 @@ void SphereSegment::setArea(float azMin, float azMax,
     _elevMin=elevMin;
     _elevMax=elevMax;
 
-    dirtyAllDrawableDisplayLists();
-    dirtyAllDrawableBounds();
-    dirtyBound();
+    updatePositions();
 }
 
 void SphereSegment::getArea(float &azMin, float &azMax,
@@ -355,7 +187,9 @@ void SphereSegment::getArea(float &azMin, float &azMax,
 void SphereSegment::setDensity(int density)
 {
     _density = density;
-    dirtyAllDrawableDisplayLists();
+
+    updatePositions();
+    updatePrimitives();
 }
 
 int SphereSegment::getDensity() const
@@ -365,613 +199,106 @@ int SphereSegment::getDensity() const
 
 void SphereSegment::init()
 {
-    addDrawable(new Surface(this));
+    // set up state
+    _litOpaqueState = new osg::StateSet;
 
-    addDrawable(new EdgeLine(this));
+    _unlitOpaqueState = new osg::StateSet(*_litOpaqueState);
+    _unlitOpaqueState->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
 
-    addDrawable(new Side(this,AZIM,MIN));
-    addDrawable(new Side(this,AZIM,MAX));
-    addDrawable(new Side(this,ELEV,MIN));
-    addDrawable(new Side(this,ELEV,MAX));
+    _litTransparentState = new osg::StateSet;
+    _litTransparentState->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+    _litTransparentState->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK),osg::StateAttribute::ON);
+    _litTransparentState->setMode(GL_BLEND,osg::StateAttribute::ON);
 
-    addDrawable(new Spoke(this,MIN,MIN));
-    addDrawable(new Spoke(this,MIN,MAX));
-    addDrawable(new Spoke(this,MAX,MIN));
-    addDrawable(new Spoke(this,MAX,MAX));
-}
+    _unlitTransparentState = new osg::StateSet(*_litTransparentState);
+    _unlitTransparentState->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
 
-void SphereSegment::dirtyAllDrawableDisplayLists()
-{
-    for(unsigned int i=0; i<getNumDrawables(); ++i)
-    {
-        osg::Drawable* drawable = getDrawable(i);
-        if (drawable) drawable->dirtyGLObjects();
-    }
-}
 
-void SphereSegment::dirtyAllDrawableBounds()
-{
-    for(unsigned int i=0; i<getNumDrawables(); ++i)
-    {
-        osg::Drawable* drawable = getDrawable(i);
-        if (drawable) drawable->dirtyBound();
-    }
-}
+    // set up colors
+    _surfaceColor = new osg::Vec4Array(osg::Array::BIND_OVERALL,1);
+    (*_surfaceColor)[0].set(1.0f,1.0,1.0f,0.5f);
 
-void SphereSegment::Surface_drawImplementation(osg::State& state) const
-{
-    const float azIncr = (_azMax - _azMin)/_density;
-    const float elevIncr = (_elevMax - _elevMin)/_density;
+    _spokeColor = new osg::Vec4Array(osg::Array::BIND_OVERALL,1);
+    (*_spokeColor)[0].set(1.0f,1.0,1.0f,0.5f);
 
-    // Draw the area on the sphere surface if needed
-    // ---------------------------------------------
-    if(_drawMask & SURFACE)
-    {
-        osg::GLBeginEndAdapter& gl = (state.getGLBeginEndAdapter());
+    _edgeLineColor = new osg::Vec4Array(osg::Array::BIND_OVERALL,1);
+    (*_edgeLineColor)[0].set(1.0f,1.0,1.0f,0.5f);
 
-        gl.Color4fv(_surfaceColor.ptr());
+    _sideColor = new osg::Vec4Array(osg::Array::BIND_OVERALL,1);
+    (*_sideColor)[0].set(1.0f,1.0,1.0f,0.5f);
 
-        bool drawBackSide = true;
-        bool drawFrontSide = true;
 
-        // draw back side.
-        if (drawBackSide)
-        {
-            for(int i=0; i+1<=_density; i++)
-            {
-                // Because we're drawing quad strips, we need to work out
-                // two azimuth values, to form each edge of the (z-vertical)
-                // strips
-                float az1 = _azMin + (i*azIncr);
-                float az2 = _azMin + ((i+1)*azIncr);
+    // set up vertices
+    unsigned int numVertices = (_density+1)*(_density+1)+1;
+    _vertices = new osg::Vec3Array(osg::Array::BIND_OVERALL,numVertices);
+    _normals = new osg::Vec3Array(osg::Array::BIND_PER_VERTEX, numVertices);
 
-                gl.Begin(GL_QUAD_STRIP);
-                for (int j=0; j<=_density; j++)
-                {
-                    float elev = _elevMin + (j*elevIncr);
+    osg::ref_ptr<osg::VertexBufferObject> vbo = new osg::VertexBufferObject;
+    _vertices->setBufferObject(vbo.get());
+    _normals->setBufferObject(vbo.get());
 
-                    // QuadStrip Edge formed at az1
-                    // ----------------------------
 
-                    // Work out the sphere normal
-                    float x = cos(elev)*sin(az1);
-                    float y = cos(elev)*cos(az1);
-                    float z = sin(elev);
+    // set up all the geometries that will render the various parts of the sphere segment
+    _surfaceGeometry = new osg::Geometry;
+    _surfaceGeometry->setVertexArray(_vertices.get());
+    _surfaceGeometry->setNormalArray(_normals.get());
+    _surfaceGeometry->setColorArray(_surfaceColor.get());
+    _surfaceGeometry->setStateSet(getLitStateSet((*_surfaceColor)[0]));
 
-                    gl.Normal3f(-x, -y, -z);
-                    gl.Vertex3f(_centre.x() + _radius*x,
-                            _centre.y() + _radius*y,
-                            _centre.z() + _radius*z);
+    _spokesGeometry = new osg::Geometry;
+    _spokesGeometry->setVertexArray(_vertices.get());
+    _spokesGeometry->setNormalArray(_normals.get());
+    _spokesGeometry->setColorArray(_spokeColor.get());
+    _spokesGeometry->setStateSet(getUnlitStateSet((*_spokeColor)[0]));
 
-                    // QuadStrip Edge formed at az2
-                    // ----------------------------
+    _edgeLineGeometry = new osg::Geometry;
+    _edgeLineGeometry->setVertexArray(_vertices.get());
+    _edgeLineGeometry->setNormalArray(_normals.get());
+    _edgeLineGeometry->setColorArray(_edgeLineColor.get());
+    _edgeLineGeometry->setStateSet(getUnlitStateSet((*_edgeLineColor)[0]));
 
-                    // Work out the sphere normal
-                    x = cos(elev)*sin(az2);
-                    y = cos(elev)*cos(az2);
-                    // z = sin(elev);   z doesn't change
+    _sidesGeometry = new osg::Geometry;
+    _sidesGeometry->setVertexArray(_vertices.get());
+    _sidesGeometry->setNormalArray(_normals.get());
+    _sidesGeometry->setColorArray(_sideColor.get());
+    _sidesGeometry->setStateSet(getUnlitStateSet((*_sideColor)[0]));
 
-                    gl.Normal3f(-x, -y, -z);
-                    gl.Vertex3f(_centre.x() + _radius*x,
-                            _centre.y() + _radius*y,
-                            _centre.z() + _radius*z);
-                }
-                gl.End();
-            }
-        }
+    updatePositions();
 
-        // draw front side
-        if (drawFrontSide)
-        {
-            for(int i=0; i+1<=_density; i++)
-            {
-                // Because we're drawing quad strips, we need to work out
-                // two azimuth values, to form each edge of the (z-vertical)
-                // strips
-                float az1 = _azMin + (i*azIncr);
-                float az2 = _azMin + ((i+1)*azIncr);
-
-                gl.Begin(GL_QUAD_STRIP);
-                for (int j=0; j<=_density; j++)
-                {
-                    float elev = _elevMin + (j*elevIncr);
-
-                    // QuadStrip Edge formed at az1
-                    // ----------------------------
-
-                    // Work out the sphere normal
-                    float x = cos(elev)*sin(az2);
-                    float y = cos(elev)*cos(az2);
-                    float z = sin(elev);
-
-                    gl.Normal3f(x, y, z);
-                    gl.Vertex3f(_centre.x() + _radius*x,
-                            _centre.y() + _radius*y,
-                            _centre.z() + _radius*z);
-
-                    // QuadStrip Edge formed at az2
-                    // ----------------------------
-
-                    // Work out the sphere normal
-                    // z = sin(elev);   z doesn't change
-
-                    x = cos(elev)*sin(az1);
-                    y = cos(elev)*cos(az1);
-
-                    gl.Normal3f(x, y, z);
-                    gl.Vertex3f(_centre.x() + _radius*x,
-                            _centre.y() + _radius*y,
-                            _centre.z() + _radius*z);
-                }
-                gl.End();
-            }
-        }
-    }
-}
-
-bool SphereSegment::Surface_computeBound(osg::BoundingBox& bbox) const
-{
-    bbox.init();
-
-    float azIncr = (_azMax - _azMin)/_density;
-    float elevIncr = (_elevMax - _elevMin)/_density;
-
-    for(int i=0; i<=_density; i++){
-
-        float az = _azMin + (i*azIncr);
-
-        for(int j=0; j<=_density; j++){
-
-            float elev = _elevMin + (j*elevIncr);
-
-            bbox.expandBy(
-                osg::Vec3(_centre.x() + _radius*cos(elev)*sin(az),
-                        _centre.y() + _radius*cos(elev)*cos(az),
-                        _centre.z() + _radius*sin(elev))
-            );
-        }
-    }
-    return true;
-}
-
-void SphereSegment::EdgeLine_drawImplementation(osg::State& state) const
-{
-    const float azIncr = (_azMax - _azMin)/_density;
-    const float elevIncr = (_elevMax - _elevMin)/_density;
-
-    // Draw the edgeline if necessary
-    // ------------------------------
-    if(_drawMask & EDGELINE)
-    {
-        osg::GLBeginEndAdapter& gl = (state.getGLBeginEndAdapter());
-
-        gl.Color4fv(_edgeLineColor.ptr());
-
-        // Top edge
-        gl.Begin(GL_LINE_STRIP);
-        int i;
-        for(i=0; i<=_density; i++)
-        {
-            float az = _azMin + (i*azIncr);
-            gl.Vertex3f(
-                _centre.x() + _radius*cos(_elevMax)*sin(az),
-                _centre.y() + _radius*cos(_elevMax)*cos(az),
-                _centre.z() + _radius*sin(_elevMax));
-        }
-        gl.End();
-
-        // Bottom edge
-        gl.Begin(GL_LINE_STRIP);
-        for(i=0; i<=_density; i++)
-        {
-            float az = _azMin + (i*azIncr);
-            gl.Vertex3f(
-                _centre.x() + _radius*cos(_elevMin)*sin(az),
-                _centre.y() + _radius*cos(_elevMin)*cos(az),
-                _centre.z() + _radius*sin(_elevMin));
-        }
-        gl.End();
-
-        // Left edge
-        gl.Begin(GL_LINE_STRIP);
-        int j;
-        for(j=0; j<=_density; j++)
-        {
-            float elev = _elevMin + (j*elevIncr);
-            gl.Vertex3f(
-                _centre.x() + _radius*cos(elev)*sin(_azMin),
-                _centre.y() + _radius*cos(elev)*cos(_azMin),
-                _centre.z() + _radius*sin(elev));
-        }
-        gl.End();
-
-        // Right edge
-        gl.Begin(GL_LINE_STRIP);
-        for(j=0; j<=_density; j++)
-        {
-            float elev = _elevMin + (j*elevIncr);
-            gl.Vertex3f(
-                _centre.x() + _radius*cos(elev)*sin(_azMax),
-                _centre.y() + _radius*cos(elev)*cos(_azMax),
-                _centre.z() + _radius*sin(elev));
-        }
-        gl.End();
-    }
-}
-
-bool SphereSegment::EdgeLine_computeBound(osg::BoundingBox& bbox) const
-{
-    bbox.init();
-
-    float azIncr = (_azMax - _azMin)/_density;
-    float elevIncr = (_elevMax - _elevMin)/_density;
-
-    // Top edge
-    int i;
-    for(i=0; i<=_density; i++)
-    {
-        float az = _azMin + (i*azIncr);
-        bbox.expandBy(
-            _centre.x() + _radius*cos(_elevMax)*sin(az),
-            _centre.y() + _radius*cos(_elevMax)*cos(az),
-            _centre.z() + _radius*sin(_elevMax));
-    }
-
-    // Bottom edge
-    for(i=0; i<=_density; i++)
-    {
-        float az = _azMin + (i*azIncr);
-        bbox.expandBy(
-            _centre.x() + _radius*cos(_elevMin)*sin(az),
-            _centre.y() + _radius*cos(_elevMin)*cos(az),
-            _centre.z() + _radius*sin(_elevMin));
-    }
-
-    // Left edge
-    int j;
-    for(j=0; j<=_density; j++)
-    {
-        float elev = _elevMin + (j*elevIncr);
-        bbox.expandBy(
-            _centre.x() + _radius*cos(elev)*sin(_azMin),
-            _centre.y() + _radius*cos(elev)*cos(_azMin),
-            _centre.z() + _radius*sin(elev));
-    }
-
-    // Right edge
-    for(j=0; j<=_density; j++)
-    {
-        float elev = _elevMin + (j*elevIncr);
-        bbox.expandBy(
-            _centre.x() + _radius*cos(elev)*sin(_azMax),
-            _centre.y() + _radius*cos(elev)*cos(_azMax),
-            _centre.z() + _radius*sin(elev));
-    }
-
-    return true;
-}
-
-void SphereSegment::Side_drawImplementation(osg::State& state,
-                                SphereSegment::SideOrientation orientation,
-                                SphereSegment::BoundaryAngle boundaryAngle) const
-{
-    // Draw the planes if necessary
-    // ----------------------------
-    if(_drawMask & SIDES)
-    {
-        osg::GLBeginEndAdapter& gl = (state.getGLBeginEndAdapter());
-
-        bool drawBackSide = true;
-        bool drawFrontSide = true;
-        int start, end, delta;
-
-        gl.Color4fv(_planeColor.ptr());
-
-        // draw back side.
-        if (drawBackSide)
-        {
-
-            if(orientation == AZIM)      // This is a plane at a given azimuth
-            {
-                const float az = (boundaryAngle==MIN?_azMin:_azMax);
-                const float elevIncr = (_elevMax - _elevMin)/_density;
-
-                // Normal
-                osg::Vec3 normal = osg::Vec3(cos(_elevMin)*sin(az), cos(_elevMin)*cos(az), sin(_elevMin))
-                                    ^ osg::Vec3(cos(_elevMax)*sin(az), cos(_elevMax)*cos(az), sin(_elevMax));
-
-                if (boundaryAngle==MIN)
-                {
-                    start = _density;
-                    end = 0;
-                }
-                else
-                {
-                    start = 0;
-                    end = _density;
-                    normal = -normal;   // Make sure normals oriented 'outwards'
-                }
-                delta = end>start?1:-1;
-
-                if (drawBackSide)
-                {
-                    // Tri fan
-                    gl.Normal3f(-normal.x(),-normal.y(),-normal.z());
-                    gl.Begin(GL_TRIANGLE_FAN);
-                    gl.Vertex3fv(_centre.ptr());
-                    for (int j=start; j!=end+delta; j+=delta)
-                    {
-                        float elev = _elevMin + (j*elevIncr);
-                        gl.Vertex3f( _centre.x() + _radius*cos(elev)*sin(az),
-                                    _centre.y() + _radius*cos(elev)*cos(az),
-                                    _centre.z() + _radius*sin(elev));
-                    }
-                    gl.End();
-                }
-
-                if (boundaryAngle==MIN)
-                {
-                    start = 0;
-                    end = _density;
-                }
-                else
-                {
-                    start = _density;
-                    end = 0;
-                }
-                delta = end>start?1:-1;
-
-                if (drawFrontSide)
-                {
-                    gl.Normal3fv(normal.ptr());
-                    gl.Begin(GL_TRIANGLE_FAN);
-                    gl.Vertex3fv(_centre.ptr());
-                    for (int j=start; j!=end+delta; j+=delta)
-                    {
-                        float elev = _elevMin + (j*elevIncr);
-                        gl.Vertex3f( _centre.x() + _radius*cos(elev)*sin(az),
-                                    _centre.y() + _radius*cos(elev)*cos(az),
-                                    _centre.z() + _radius*sin(elev));
-                    }
-                    gl.End();
-                }
-
-            }
-            else if(orientation == ELEV) // This is a plane at a given elevation
-            {
-                const float elev = (boundaryAngle==MIN?_elevMin:_elevMax);
-                const float azIncr = (_azMax - _azMin)/_density;
-
-                // Normal
-                osg::Vec3 normal = osg::Vec3(cos(elev)*sin(_azMax), cos(elev)*cos(_azMax), sin(elev))
-                                    ^ osg::Vec3(cos(elev)*sin(_azMin), cos(elev)*cos(_azMin), sin(elev));
-
-
-                if (boundaryAngle==MIN)
-                {
-                    start = _density;
-                    end = 0;
-                    normal = -normal;   // Make sure normals orientated 'outwards'
-                }
-                else
-                {
-                    start = 0;
-                    end = _density;
-                }
-                delta = end>start?1:-1;
-
-                if (drawBackSide)
-                {
-                    gl.Normal3f(-normal.x(),-normal.y(),-normal.z());
-
-                    // Tri fan
-                    gl.Begin(GL_TRIANGLE_FAN);
-                    gl.Vertex3fv(_centre.ptr());
-                    for (int j=start; j!=end+delta; j+=delta)
-                    {
-                        float az = _azMin + (j*azIncr);
-                        gl.Vertex3f( _centre.x() + _radius*cos(elev)*sin(az),
-                                    _centre.y() + _radius*cos(elev)*cos(az),
-                                    _centre.z() + _radius*sin(elev));
-                    }
-                    gl.End();
-                }
-
-                if (boundaryAngle==MIN)
-                {
-                    start = 0;
-                    end = _density;
-                }
-                else
-                {
-                    start = _density;
-                    end = 0;
-                }
-                delta = end>start?1:-1;
-
-                if (drawFrontSide)
-                {
-                    gl.Normal3fv(normal.ptr());
-
-                    // Tri fan
-                    gl.Begin(GL_TRIANGLE_FAN);
-                    gl.Vertex3fv(_centre.ptr());
-                    for (int j=start; j!=end+delta; j+=delta)
-                    {
-                        float az = _azMin + (j*azIncr);
-                        gl.Vertex3f( _centre.x() + _radius*cos(elev)*sin(az),
-                                    _centre.y() + _radius*cos(elev)*cos(az),
-                                    _centre.z() + _radius*sin(elev));
-                    }
-                    gl.End();
-                }
-
-            }
-        }
-    }
-}
-
-bool SphereSegment::Side_computeBound(osg::BoundingBox& bbox,
-                                SphereSegment::SideOrientation orientation,
-                                SphereSegment::BoundaryAngle boundaryAngle) const
-{
-    bbox.init();
-    bbox.expandBy(_centre);
-
-    if(orientation == AZIM)      // This is a plane at a given azimuth
-    {
-        const float az = (boundaryAngle==MIN?_azMin:_azMax);
-        const float elevIncr = (_elevMax - _elevMin)/_density;
-
-        for (int j=0; j<=_density; j++)
-        {
-            float elev = _elevMin + (j*elevIncr);
-            bbox.expandBy(
-                _centre.x() + _radius*cos(elev)*sin(az),
-                _centre.y() + _radius*cos(elev)*cos(az),
-                _centre.z() + _radius*sin(elev));
-        }
-    }
-    else if(orientation == ELEV) // This is a plane at a given elevation
-    {
-        const float elev = (boundaryAngle==MIN?_elevMin:_elevMax);
-        const float azIncr = (_azMax - _azMin)/_density;
-
-        for(int i=0; i<=_density; i++)
-        {
-            float az = _azMin + (i*azIncr);
-            bbox.expandBy(
-                _centre.x() + _radius*cos(elev)*sin(az),
-                _centre.y() + _radius*cos(elev)*cos(az),
-                _centre.z() + _radius*sin(elev));
-        }
-    }
-
-    return true;
-}
-
-void SphereSegment::Spoke_drawImplementation(osg::State& state, BoundaryAngle azAngle, BoundaryAngle elevAngle) const
-{
-    if(_drawMask & SPOKES)
-    {
-        osg::GLBeginEndAdapter& gl = (state.getGLBeginEndAdapter());
-
-        gl.Color4fv(_spokeColor.ptr());
-
-        const float az = (azAngle==MIN?_azMin:_azMax);
-        const float elev = (elevAngle==MIN?_elevMin:_elevMax);
-
-        gl.Begin(GL_LINES);
-            gl.Vertex3fv(_centre.ptr());
-            gl.Vertex3f( _centre.x() + _radius*cos(elev)*sin(az),
-                        _centre.y() + _radius*cos(elev)*cos(az),
-                        _centre.z() + _radius*sin(elev));
-        gl.End();
-    }
-}
-
-bool SphereSegment::Spoke_computeBound(osg::BoundingBox& bbox, BoundaryAngle azAngle, BoundaryAngle elevAngle) const
-{
-    const float az = (azAngle==MIN?_azMin:_azMax);
-    const float elev = (elevAngle==MIN?_elevMin:_elevMax);
-
-    bbox.expandBy(_centre);
-    bbox.expandBy(  _centre.x() + _radius*cos(elev)*sin(az),
-                    _centre.y() + _radius*cos(elev)*cos(az),
-                    _centre.z() + _radius*sin(elev));
-
-    return true;
+    updatePrimitives();
 }
 
 void SphereSegment::setDrawMask(int dm)
 {
     _drawMask=dm;
-    dirtyAllDrawableDisplayLists();
-    dirtyAllDrawableBounds();
-    dirtyBound();
 }
-
-struct ActivateTransparencyOnType
-{
-    ActivateTransparencyOnType(const std::type_info& t): _t(t) {}
-
-    void operator()(osg::ref_ptr<osg::Node>& nptr) const
-    {
-        const osg::Node* ptr = nptr.get();
-        if(typeid(*ptr)==_t)
-        {
-            osg::Drawable* drawable = nptr->asDrawable();
-            osg::StateSet* ss = drawable->getOrCreateStateSet();
-            ss->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-
-            ss->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK),osg::StateAttribute::ON);
-            ss->setMode(GL_BLEND,osg::StateAttribute::ON);
-
-            drawable->dirtyGLObjects();
-        }
-    }
-
-    const std::type_info&  _t;
-
-protected:
-
-    ActivateTransparencyOnType& operator = (const ActivateTransparencyOnType&) { return *this; }
-};
-
-struct DeactivateTransparencyOnType
-{
-    DeactivateTransparencyOnType(const std::type_info& t): _t(t) {}
-
-    void operator()(osg::ref_ptr<osg::Node>& nptr) const
-    {
-        const osg::Node* ptr = nptr.get();
-        if(typeid(*ptr)==_t)
-        {
-            osg::Drawable* drawable = nptr->asDrawable();
-            osg::StateSet* ss = drawable->getOrCreateStateSet();
-            if(ss) ss->setRenderingHint(osg::StateSet::OPAQUE_BIN);
-
-            drawable->dirtyGLObjects();
-        }
-    }
-
-    const std::type_info&  _t;
-
-protected:
-
-    DeactivateTransparencyOnType& operator = (const DeactivateTransparencyOnType&) { return *this; }
-};
 
 void SphereSegment::setSurfaceColor(const osg::Vec4& c)
 {
-    _surfaceColor=c;
+    (*_surfaceColor)[0]=c;
 
-    if(c.w() != 1.0) std::for_each(_children.begin(), _children.end(), ActivateTransparencyOnType(typeid(Surface)));
-    else std::for_each(_children.begin(), _children.end(), DeactivateTransparencyOnType(typeid(Surface)));
+    _surfaceGeometry->setStateSet(getLitStateSet((*_surfaceColor)[0]));
 }
 
 void SphereSegment::setSpokeColor(const osg::Vec4& c)
 {
-    _spokeColor=c;
+    (*_spokeColor)[0]=c;
 
-    if(c.w() != 1.0) std::for_each(_children.begin(), _children.end(), ActivateTransparencyOnType(typeid(Spoke)));
-    else std::for_each(_children.begin(), _children.end(), DeactivateTransparencyOnType(typeid(Spoke)));
+    _spokesGeometry->setStateSet(getUnlitStateSet((*_spokeColor)[0]));
 }
 
 void SphereSegment::setEdgeLineColor(const osg::Vec4& c)
 {
-    _edgeLineColor=c;
+    (*_edgeLineColor)[0]=c;
 
-    if(c.w() != 1.0) std::for_each(_children.begin(), _children.end(), ActivateTransparencyOnType(typeid(EdgeLine)));
-    else std::for_each(_children.begin(), _children.end(), DeactivateTransparencyOnType(typeid(EdgeLine)));
+    _edgeLineGeometry->setStateSet(getUnlitStateSet((*_edgeLineColor)[0]));
 }
 
 void SphereSegment::setSideColor(const osg::Vec4& c)
 {
-    _planeColor=c;
+    (*_sideColor)[0]=c;
 
-    if(c.w() != 1.0) std::for_each(_children.begin(), _children.end(), ActivateTransparencyOnType(typeid(Side)));
-    else std::for_each(_children.begin(), _children.end(), DeactivateTransparencyOnType(typeid(Side)));
+    _sidesGeometry->setStateSet(getUnlitStateSet((*_sideColor)[0]));
 }
 
 void SphereSegment::setAllColors(const osg::Vec4& c)
@@ -1049,20 +376,11 @@ class PolytopeVisitor : public osg::NodeVisitor
             }
         }
 
-        void apply(osg::Geode& node)
+        void apply(osg::Drawable& drawable)
         {
-            if (_polytopeStack.back().second.contains(node.getBound()))
+            if (_polytopeStack.back().second.contains(drawable.getBoundingBox()))
             {
-                for(unsigned int i=0; i<node.getNumDrawables(); ++i)
-                {
-                    if (_polytopeStack.back().second.contains(node.getDrawable(i)->getBoundingBox()))
-                    {
-                        _hits.push_back(Hit(_polytopeStack.back().first,getNodePath(),node.getDrawable(i)));
-                    }
-
-                }
-
-                traverse(node);
+                _hits.push_back(Hit(_polytopeStack.back().first,getNodePath(),&drawable));
             }
         }
 
@@ -3055,4 +2373,284 @@ osg::Node* SphereSegment::computeIntersectionSubgraph(const osg::Matrixd& matrix
 #endif
 
     return geode;
+}
+
+void SphereSegment::dirty()
+{
+    if (_surfaceGeometry.valid())
+    {
+        _surfaceGeometry->dirtyGLObjects();
+        _surfaceGeometry->dirtyBound();
+    }
+
+    if (_spokesGeometry.valid())
+    {
+        _spokesGeometry->dirtyGLObjects();
+        _spokesGeometry->dirtyBound();
+    }
+
+    if (_edgeLineGeometry.valid())
+    {
+        _edgeLineGeometry->dirtyGLObjects();
+        _edgeLineGeometry->dirtyBound();
+    }
+
+    if (_sidesGeometry.valid())
+    {
+        _sidesGeometry->dirtyGLObjects();
+        _sidesGeometry->dirtyBound();
+    }
+
+    dirtyBound();
+}
+
+
+void SphereSegment::updatePositions()
+{
+    unsigned int rowSize = _density+1;
+    unsigned int numSurfaceVertices = rowSize*rowSize;
+    unsigned int numVertices = 1+numSurfaceVertices;
+    const float azIncr = (_azMax - _azMin)/static_cast<float>(_density);
+    const float elevIncr = (_elevMax - _elevMin)/static_cast<float>(_density);
+
+    _vertices->resize(numVertices);
+    _vertices->dirty();
+
+    _normals->resize(numVertices);
+    _normals->dirty();
+
+    unsigned int pos = 0;
+
+    // assigne center vertex
+    (*_vertices)[pos] = _centre;
+    (*_normals)[pos].set(0.0f,0.0f,1.0f);
+    pos++;
+
+    for(unsigned int i=0; i<rowSize; i++)
+    {
+        // Because we're drawing quad strips, we need to work out
+        // two azimuth values, to form each edge of the (z-vertical)
+        // strips
+
+        float elev = _elevMin + (static_cast<float>(i)*elevIncr);
+
+        for (unsigned int j=0; j<rowSize; j++)
+        {
+            float azim = _azMin + (static_cast<float>(j)*azIncr);
+
+            // QuadStrip Edge formed at az1
+            // ----------------------------
+
+            // Work out the sphere normal
+            float x = cos(elev)*sin(azim);
+            float y = cos(elev)*cos(azim);
+            float z = sin(elev);
+
+            (*_vertices)[pos].set(_centre.x() + _radius*x,
+                                _centre.y() + _radius*y,
+                                _centre.z() + _radius*z);
+
+            (*_normals)[pos].set(x,y,z);
+            (*_normals)[pos].normalize();
+
+            pos++;
+        }
+    }
+
+    dirty();
+}
+
+void SphereSegment::updatePrimitives()
+{
+    // surface
+    {
+        unsigned int rowSize = _density+1;
+
+        // add primitve set
+        osg::ref_ptr<osg::DrawElementsUShort> elements = new osg::DrawElementsUShort(GL_TRIANGLES);
+        elements->reserve(2*rowSize*rowSize);
+        _surfaceGeometry->getPrimitiveSetList().clear();
+        _surfaceGeometry->addPrimitiveSet(elements.get());
+
+        // back side first
+        unsigned int currRow = 1;
+        unsigned int nextRow = currRow+rowSize;
+
+        for(unsigned int i=0; i+1<rowSize; i++)
+        {
+            unsigned int currPos = currRow;
+            unsigned int nextPos = nextRow;
+
+            for (unsigned int j=0; j+1<rowSize; j++)
+            {
+                elements->push_back(currPos);
+                elements->push_back(nextPos);
+                elements->push_back(currPos+1);
+
+                elements->push_back(nextPos);
+                elements->push_back(nextPos+1);
+                elements->push_back(currPos+1);
+
+                ++currPos;
+                ++nextPos;
+            }
+
+            // shift to next row.
+            currRow = nextRow;
+            nextRow += rowSize;
+        }
+
+        // front side second
+        currRow = 1;
+        nextRow = currRow+rowSize;
+        for(unsigned int i=0; i+1<rowSize; i++)
+        {
+            unsigned int currPos = currRow;
+            unsigned int nextPos = nextRow;
+
+            for (unsigned int j=0; j+1<rowSize; j++)
+            {
+                elements->push_back(currPos);
+                elements->push_back(currPos+1);
+                elements->push_back(nextPos);
+
+                elements->push_back(nextPos);
+                elements->push_back(currPos+1);
+                elements->push_back(nextPos+1);
+
+                ++currPos;
+                ++nextPos;
+            }
+
+            // shift to next row.
+            currRow = nextRow;
+            nextRow += rowSize;
+        }
+    }
+
+    // spokes
+    {
+        unsigned int rowSize = _density+1;
+
+        // add primitve set
+        osg::ref_ptr<osg::DrawElementsUShort> elements = new osg::DrawElementsUShort(GL_LINES);
+        elements->reserve(8);
+        _spokesGeometry->getPrimitiveSetList().clear();
+        _spokesGeometry->addPrimitiveSet(elements.get());
+
+        elements->push_back(0);
+        elements->push_back(1);
+
+        elements->push_back(0);
+        elements->push_back(1+(rowSize-1));
+
+        elements->push_back(0);
+        elements->push_back(1+(rowSize*(rowSize-1)));
+
+        elements->push_back(0);
+        elements->push_back(1+(rowSize*rowSize-1));
+    }
+
+
+    // edge line
+    {
+        unsigned int rowSize = _density+1;
+
+        // add primitve set
+        osg::ref_ptr<osg::DrawElementsUShort> elements = new osg::DrawElementsUShort(GL_LINE_STRIP);
+        elements->reserve((rowSize-1)*4+1);
+        _edgeLineGeometry->getPrimitiveSetList().clear();
+        _edgeLineGeometry->addPrimitiveSet(elements.get());
+
+        unsigned int base = 1;
+        for(unsigned int i=0; i<rowSize; ++i)
+        {
+            elements->push_back(base+i);
+        }
+
+        base = rowSize;
+        for(unsigned int i=1; i<rowSize; ++i)
+        {
+            elements->push_back(base+i*rowSize);
+        }
+
+        base = rowSize*rowSize;
+        for(unsigned int i=1; i<rowSize; ++i)
+        {
+            elements->push_back(base-i);
+        }
+
+        base = 1+(rowSize-1)*rowSize;
+        for(unsigned int i=1; i<rowSize; ++i)
+        {
+            elements->push_back(base-i*rowSize);
+        }
+
+    }
+
+
+    // edge line
+    {
+        unsigned int rowSize = _density+1;
+
+        // add primitve set
+        osg::ref_ptr<osg::DrawElementsUShort> elements = new osg::DrawElementsUShort(GL_TRIANGLE_FAN);
+        elements->reserve((rowSize-1)*4+2);
+        _sidesGeometry->getPrimitiveSetList().clear();
+        _sidesGeometry->addPrimitiveSet(elements.get());
+
+        elements->push_back(0);
+
+        // back face
+        unsigned int base = 1;
+        for(unsigned int i=0; i<rowSize; ++i)
+        {
+            elements->push_back(base+i*rowSize);
+        }
+
+        base = 1+(rowSize-1)*rowSize;
+        for(unsigned int i=1; i<rowSize; ++i)
+        {
+            elements->push_back(base+i);
+        }
+
+        base = rowSize*rowSize;
+        for(unsigned int i=1; i<rowSize; ++i)
+        {
+            elements->push_back(base-i*rowSize);
+        }
+
+        base = rowSize;
+        for(unsigned int i=1; i<rowSize; ++i)
+        {
+            elements->push_back(base-i);
+        }
+
+        // front face
+        base = 1;
+        for(unsigned int i=1; i<rowSize; ++i)
+        {
+            elements->push_back(base+i);
+        }
+
+        base = rowSize;
+        for(unsigned int i=1; i<rowSize; ++i)
+        {
+            elements->push_back(base+i*rowSize);
+        }
+
+        base = rowSize*rowSize;
+        for(unsigned int i=1; i<rowSize; ++i)
+        {
+            elements->push_back(base-i);
+        }
+
+        base = 1+(rowSize-1)*rowSize;
+        for(unsigned int i=1; i<rowSize; ++i)
+        {
+            elements->push_back(base-i*rowSize);
+        }
+
+    }
+
 }

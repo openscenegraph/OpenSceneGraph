@@ -146,9 +146,9 @@ void osgParticle::Particle::render(osg::GLBeginEndAdapter* gl, const osg::Vec3& 
         break;
 
     case USER:
-    case QUAD:
     case QUAD_TRIANGLESTRIP:
     case HEXAGON:
+    case QUAD:
         gl->TexCoord2f(_s_coord, _t_coord);
         gl->Vertex3fv((xpos-(p1+p2)).ptr());
         gl->TexCoord2f(_s_coord+_s_tile, _t_coord);

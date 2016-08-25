@@ -29,8 +29,9 @@ namespace osgParticle
     /** An operator that applies a constant force to the particles.
       * Remember that if the mass of particles is expressed in kg and the lengths are
       * expressed in meters, then the force should be expressed in Newtons.
+      * no OSGPARTICLE_EXPORT as the class is header only
     */
-    class OSGPARTICLE_EXPORT ForceOperator: public Operator {
+    class ForceOperator: public Operator {
     public:
         inline ForceOperator();
         inline ForceOperator(const ForceOperator& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);

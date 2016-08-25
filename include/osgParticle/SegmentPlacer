@@ -28,8 +28,9 @@ namespace osgParticle {
         To use this placer you have to define a segment, by setting its two vertices (<B>A</B> and <B>B</B>);
         when an emitter requests a <CODE>SegmentPlacer</CODE> to place a particle, the position is chosen randomly
         within that segment.
+        no OSGPARTICLE_EXPORT as the class is header only
     */
-    class OSGPARTICLE_EXPORT SegmentPlacer: public Placer {
+    class SegmentPlacer: public Placer {
     public:
         inline SegmentPlacer();
         inline SegmentPlacer(const SegmentPlacer& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);

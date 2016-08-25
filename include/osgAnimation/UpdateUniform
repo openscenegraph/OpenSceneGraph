@@ -56,9 +56,10 @@ namespace osgAnimation
         }
 
     };
+    // no OSGANIMATION_EXPORT as the class is header only
 
     // float
-    struct OSGANIMATION_EXPORT UpdateFloatUniform : public UpdateUniform<float>
+    struct UpdateFloatUniform : public UpdateUniform<float>
     {
         UpdateFloatUniform(const std::string& aName = "") : UpdateUniform<float>(aName) { }
         UpdateFloatUniform(const UpdateFloatUniform& ufu,
@@ -70,7 +71,7 @@ namespace osgAnimation
     };
 
     // Vec2f
-    struct OSGANIMATION_EXPORT UpdateVec2fUniform : public UpdateUniform<osg::Vec2f>
+    struct UpdateVec2fUniform : public UpdateUniform<osg::Vec2f>
     {
         UpdateVec2fUniform(const std::string& aName = "") : UpdateUniform<osg::Vec2f>(aName) { }
         UpdateVec2fUniform(const UpdateVec2fUniform& uv2fu,
@@ -82,7 +83,7 @@ namespace osgAnimation
     };
 
     // Vec3f
-    struct OSGANIMATION_EXPORT UpdateVec3fUniform : public UpdateUniform<osg::Vec3f>
+    struct UpdateVec3fUniform : public UpdateUniform<osg::Vec3f>
     {
         UpdateVec3fUniform(const std::string& aName = "") : UpdateUniform<osg::Vec3f>(aName) { }
         UpdateVec3fUniform(const UpdateVec3fUniform& uv3fu,
@@ -94,7 +95,7 @@ namespace osgAnimation
     };
 
     // Vec4f
-    struct OSGANIMATION_EXPORT UpdateVec4fUniform : public UpdateUniform<osg::Vec4f>
+    struct UpdateVec4fUniform : public UpdateUniform<osg::Vec4f>
     {
         UpdateVec4fUniform(const std::string& aName = "") : UpdateUniform<osg::Vec4f>(aName) { }
         UpdateVec4fUniform(const UpdateVec4fUniform& uv4fu,
@@ -106,7 +107,7 @@ namespace osgAnimation
     };
 
     // Matrixf
-    struct OSGANIMATION_EXPORT UpdateMatrixfUniform : public UpdateUniform<osg::Matrixf>
+    struct UpdateMatrixfUniform : public UpdateUniform<osg::Matrixf>
     {
         UpdateMatrixfUniform(const std::string& aName = "") : UpdateUniform<osg::Matrixf>(aName) { }
         UpdateMatrixfUniform(const UpdateMatrixfUniform& umfu,

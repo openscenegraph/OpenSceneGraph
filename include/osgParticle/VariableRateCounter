@@ -23,7 +23,7 @@
 
 namespace osgParticle
 {
-
+    /*no OSGPARTICLE_EXPORT as the class is header only */
     class VariableRateCounter: public Counter {
     public:
         inline VariableRateCounter();

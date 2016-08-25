@@ -23,9 +23,10 @@ namespace osgSim {
 /** When the OpenFlight importer encounters an Object record, it stores
     the data in one of these classes, and attaches the instance of the
     class as UserData to the corresponding osgLLGroup node.
+    no OSGSIM_EXPORT as the class is header only
 */
 
-class OSGSIM_EXPORT ObjectRecordData : public osg::Object
+class ObjectRecordData : public osg::Object
 {
     public:
 

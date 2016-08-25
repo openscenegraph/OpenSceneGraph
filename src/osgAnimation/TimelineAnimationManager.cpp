@@ -27,9 +27,12 @@ TimelineAnimationManager::TimelineAnimationManager(const AnimationManagerBase& m
     _timeline = new Timeline;
 }
 
-TimelineAnimationManager::TimelineAnimationManager(const TimelineAnimationManager& nc,const osg::CopyOp& co) : AnimationManagerBase(nc, co)
+TimelineAnimationManager::TimelineAnimationManager(const TimelineAnimationManager& nc,const osg::CopyOp& co):
+    osg::Object(nc,co),
+    osg::Callback(nc,co),
+    AnimationManagerBase(nc, co)
 {
-    _timeline = new Timeline(*nc.getTimeline());
+    _timeline = new Timeline(*nc.getTimeline(), co);
 }
 
 void TimelineAnimationManager::update(double time)

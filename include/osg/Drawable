@@ -168,7 +168,8 @@ class OSG_EXPORT Drawable : public Node
         {
             ComputeBoundingBoxCallback() {}
 
-            ComputeBoundingBoxCallback(const ComputeBoundingBoxCallback&,const CopyOp&) {}
+            ComputeBoundingBoxCallback(const ComputeBoundingBoxCallback& org,const CopyOp& copyop):
+                Object(org, copyop) {}
 
             META_Object(osg,ComputeBoundingBoxCallback);
 
@@ -285,7 +286,8 @@ class OSG_EXPORT Drawable : public Node
         {
             DrawCallback() {}
 
-            DrawCallback(const DrawCallback&,const CopyOp&) {}
+            DrawCallback(const DrawCallback& org,const CopyOp& copyop):
+                Object(org, copyop) {}
 
             META_Object(osg,DrawCallback);
 

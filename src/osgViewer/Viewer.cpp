@@ -194,7 +194,7 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
 }
 
 Viewer::Viewer(const osgViewer::Viewer& viewer, const osg::CopyOp& copyop):
-    osg::Object(true),
+    osg::Object(viewer, copyop),
     ViewerBase(viewer),
     View(viewer,copyop)
 {

@@ -367,7 +367,9 @@ class OSG_EXPORT DummyObject : public osg::Object
 {
 public:
     DummyObject() {}
-    DummyObject(const DummyObject&, const osg::CopyOp&) {}
+    DummyObject(const DummyObject& org, const CopyOp& copyop) :
+        Object(org, copyop) {}
+
     META_Object(osg, DummyObject)
 protected:
     virtual ~DummyObject() {}

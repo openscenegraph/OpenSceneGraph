@@ -143,7 +143,7 @@ Referenced::Referenced():
 
 }
 
-Referenced::Referenced(bool threadSafeRefUnref):
+Referenced::Referenced(bool /*threadSafeRefUnref*/):
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
     _observerSet(0),
     _refCount(0)
@@ -154,10 +154,7 @@ Referenced::Referenced(bool threadSafeRefUnref):
 #endif
 {
 #if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
-#ifndef ENFORCE_THREADSAFE
-    if (threadSafeRefUnref)
-#endif
-        _refMutex = new OpenThreads::Mutex;
+    _refMutex = new OpenThreads::Mutex;
 #endif
 
 #ifdef DEBUG_OBJECT_ALLOCATION_DESTRUCTION

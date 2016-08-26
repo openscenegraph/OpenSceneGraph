@@ -97,31 +97,8 @@ struct InitGlobalMutexes
 };
 static InitGlobalMutexes s_initGlobalMutexes;
 
-
-#if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
-static bool s_useThreadSafeReferenceCounting = getenv("OSG_THREAD_SAFE_REF_UNREF")!=0;
-#endif
 // static std::auto_ptr<DeleteHandler> s_deleteHandler(0);
 static DeleteHandlerPointer s_deleteHandler(0);
-
-static ApplicationUsageProxy Referenced_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_THREAD_SAFE_REF_UNREF","");
-
-void Referenced::setThreadSafeReferenceCounting(bool enableThreadSafeReferenceCounting)
-{
-#if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
-    s_useThreadSafeReferenceCounting = enableThreadSafeReferenceCounting;
-#endif
-}
-
-bool Referenced::getThreadSafeReferenceCounting()
-{
-#if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
-    return true;
-#else
-    return s_useThreadSafeReferenceCounting;
-#endif
-}
-
 
 void Referenced::setDeleteHandler(DeleteHandler* handler)
 {
@@ -153,10 +130,7 @@ Referenced::Referenced():
 #endif
 {
 #if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
-#ifndef ENFORCE_THREADSAFE
-    if (s_useThreadSafeReferenceCounting)
-#endif
-        _refMutex = new OpenThreads::Mutex;
+    _refMutex = new OpenThreads::Mutex;
 #endif
 
 #ifdef DEBUG_OBJECT_ALLOCATION_DESTRUCTION
@@ -206,10 +180,7 @@ Referenced::Referenced(const Referenced&):
 #endif
 {
 #if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
-#ifndef ENFORCE_THREADSAFE
-    if (s_useThreadSafeReferenceCounting)
-#endif
-        _refMutex = new OpenThreads::Mutex;
+    _refMutex = new OpenThreads::Mutex;
 #endif
 
 #ifdef DEBUG_OBJECT_ALLOCATION_DESTRUCTION

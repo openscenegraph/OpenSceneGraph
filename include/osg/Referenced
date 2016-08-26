@@ -117,12 +117,6 @@ class OSG_EXPORT Referenced
 
     public:
 
-        /** Set whether reference counting should use a mutex for thread safe reference counting.*/
-        static void setThreadSafeReferenceCounting(bool enableThreadSafeReferenceCounting);
-
-        /** Get whether reference counting is active.*/
-        static bool getThreadSafeReferenceCounting();
-
         friend class DeleteHandler;
 
         /** Set a DeleteHandler to which deletion of all referenced counted objects

@@ -21,7 +21,7 @@
 
 namespace osg {
 
-class VertexArrayState : public osg::Referenced
+class OSG_EXPORT VertexArrayState : public osg::Referenced
 {
 public:
 

@@ -47,6 +47,7 @@ class OSG_EXPORT Referenced
 
         Referenced();
 
+        /// deprecated, Referenced is now always uses thread safe ref/unref, use default Refernced() constructor instead
         explicit Referenced(bool threadSafeRefUnref);
 
         Referenced(const Referenced&);
@@ -116,12 +117,6 @@ class OSG_EXPORT Referenced
         void removeObserver(Observer* observer) const;
 
     public:
-
-        /** Set whether reference counting should use a mutex for thread safe reference counting.*/
-        static void setThreadSafeReferenceCounting(bool enableThreadSafeReferenceCounting);
-
-        /** Get whether reference counting is active.*/
-        static bool getThreadSafeReferenceCounting();
 
         friend class DeleteHandler;
 

@@ -307,9 +307,6 @@ void ViewerBase::startThreading()
             return;
     }
 
-    // using multi-threading so make sure that new objects are allocated with thread safe ref/unref
-    osg::Referenced::setThreadSafeReferenceCounting(true);
-
     Scenes scenes;
     getScenes(scenes);
     for(Scenes::iterator scitr = scenes.begin();

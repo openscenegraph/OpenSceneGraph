@@ -94,6 +94,29 @@ osgParticle::ParticleSystem::~ParticleSystem()
 {
 }
 
+osgParticle::Particle* osgParticle::ParticleSystem::createParticle(const osgParticle::Particle* ptemplate)
+{
+    // is there any dead particle?
+    if (!_deadparts.empty()) {
+
+        // retrieve a pointer to the last dead particle
+        Particle* P = _deadparts.top();
+
+        // create a new (alive) particle in the same place
+        *P = ptemplate? *ptemplate: _def_ptemp;
+
+        // remove the pointer from the death stack
+        _deadparts.pop();
+        return P;
+
+    } else {
+
+        // add a new particle to the vector
+        _particles.push_back(ptemplate? *ptemplate: _def_ptemp);
+        return &_particles.back();
+    }
+}
+
 void osgParticle::ParticleSystem::update(double dt, osg::NodeVisitor& nv)
 {
     // reset bounds
@@ -517,3 +540,113 @@ osg::BoundingBox osgParticle::ParticleSystem::computeBoundingBox() const
     }
 }
 
+
+void osgParticle::ParticleSystem::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    _bufferedArrayData.resize(maxSize);
+    for(unsigned int i=0; i<_bufferedArrayData.size(); ++i)
+    {
+        _bufferedArrayData[i].resizeGLObjectBuffers(maxSize);
+    }
+}
+
+void osgParticle::ParticleSystem::releaseGLObjects(osg::State* state) const
+{
+    if (state)
+    {
+        _bufferedArrayData[state->getContextID()].releaseGLObjects(state);
+    }
+    else
+    {
+        for(unsigned int i=0; i<_bufferedArrayData.size(); ++i)
+        {
+            _bufferedArrayData[i].releaseGLObjects(0);
+        }
+    }
+}
+
+osg::VertexArrayState* osgParticle::ParticleSystem::createVertexArrayState(osg::RenderInfo& renderInfo, bool usingVBOs) const
+{
+    OSG_NOTICE<<"osgParticle::ParticleSystem::createVertexArrayState() "<<this<<std::endl;
+#if 0
+    return osg::Drawable::createVertexArrayState(renderInfo, usingVBOs);
+#else
+    osg::State& state = *renderInfo.getState();
+
+    ArrayData& ad = _bufferedArrayData[state.getContextID()];
+
+    osg::VertexArrayState* vas = new osg::VertexArrayState(&state);
+
+    OSG_NOTICE<<"  Creating new osg::VertexArrayState "<< vas<<std::endl;
+
+    if (ad.vertices.valid()) vas->assignVertexArrayDispatcher();
+    if (ad.colors.valid()) vas->assignColorArrayDispatcher();
+    if (ad.texcoords.valid()) vas->assignTexCoordArrayDispatcher(1);
+
+    if (state.useVertexArrayObject(_useVertexArrayObject))
+    {
+        OSG_NOTICE<<"    Setup VertexArrayState to use VAO "<<vas<<std::endl;
+
+        vas->generateVertexArrayObject();
+    }
+    else
+    {
+        OSG_NOTICE<<"    Setup VertexArrayState to without using VAO "<<vas<<std::endl;
+    }
+
+    return vas;
+#endif
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+//
+// ArrayData
+//
+osgParticle::ParticleSystem::ArrayData::ArrayData()
+{
+    OSG_NOTICE<<"osgParticle::ParticleSystem::ArrayData() "<<this<<std::endl;
+    vertexBufferObject = new osg::VertexBufferObject;
+    vertices = new osg::Vec3Array;
+    vertices->setBufferObject(vertexBufferObject.get());
+
+    colors = new osg::Vec4Array;
+    colors->setBufferObject(vertexBufferObject.get());
+
+    texcoords = new osg::Vec2Array;
+    texcoords->setBufferObject(vertexBufferObject.get());
+}
+
+void osgParticle::ParticleSystem::ArrayData::reserve(unsigned int numVertices)
+{
+    vertices->reserve(numVertices);
+    colors->reserve(numVertices);
+    texcoords->reserve(numVertices);
+}
+
+void osgParticle::ParticleSystem::ArrayData::resize(unsigned int numVertices)
+{
+    vertices->resize(numVertices);
+    colors->resize(numVertices);
+    texcoords->resize(numVertices);
+}
+
+void osgParticle::ParticleSystem::ArrayData::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    OSG_NOTICE<<"osgParticle::ParticleSystem::resizeGLObjectBuffers("<<maxSize<<") "<<this<<std::endl;
+
+    vertexBufferObject->resizeGLObjectBuffers(maxSize);
+    vertices->resizeGLObjectBuffers(maxSize);
+    colors->resizeGLObjectBuffers(maxSize);
+    texcoords->resizeGLObjectBuffers(maxSize);
+}
+
+void osgParticle::ParticleSystem::ArrayData::releaseGLObjects(osg::State* state)
+{
+    OSG_NOTICE<<"osgParticle::ParticleSystem::releaseGLObjects("<<state<<") "<<this<<std::endl;
+
+    vertexBufferObject->releaseGLObjects(state);
+    vertices->releaseGLObjects(state);
+    colors->releaseGLObjects(state);
+    texcoords->releaseGLObjects(state);
+}

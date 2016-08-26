@@ -167,7 +167,7 @@ namespace osgParticle
         inline const Particle* getParticle(int i) const;
 
         /// Create a new particle from the specified template (or the default one if <CODE>ptemplate</CODE> is null).
-        inline virtual Particle* createParticle(const Particle* ptemplate);
+        virtual Particle* createParticle(const Particle* ptemplate);
 
         /// Destroy the i-th particle.
         inline virtual void destroyParticle(int i);
@@ -257,6 +257,16 @@ namespace osgParticle
 
         ReadWriterMutex* getReadWriteMutex() const { return &_readWriteMutex; }
 
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
+        /** If State is non-zero, this function releases OpenGL objects for
+          * the specified graphics context. Otherwise, releases OpenGL objects
+          * for all graphics contexts. */
+        virtual void releaseGLObjects(osg::State* state=0) const;
+
+        virtual osg::VertexArrayState* createVertexArrayState(osg::RenderInfo& renderInfo, bool usingVBOs) const;
+
     protected:
 
         virtual ~ParticleSystem();
@@ -308,6 +318,24 @@ namespace osgParticle
         mutable int _draw_count;
 
         mutable ReadWriterMutex _readWriteMutex;
+
+        struct ArrayData
+        {
+            ArrayData();
+
+            void reserve(unsigned int numVertices);
+            void resize(unsigned int numVertices);
+            void resizeGLObjectBuffers(unsigned int maxSize);
+            void releaseGLObjects(osg::State* state);
+
+            osg::ref_ptr<osg::BufferObject> vertexBufferObject;
+            osg::ref_ptr<osg::Vec3Array>    vertices;
+            osg::ref_ptr<osg::Vec4Array>    colors;
+            osg::ref_ptr<osg::Vec2Array>    texcoords;
+        };
+
+        typedef osg::buffered_object< ArrayData > BufferedArrayData;
+        mutable BufferedArrayData _bufferedArrayData;
     };
 
     // INLINE FUNCTIONS
@@ -495,32 +523,6 @@ namespace osgParticle
         _visibilityDistance = distance;
         if (_useShaders) _dirty_uniforms = true;
     }
-
-    // I'm not sure this function should be inlined...
-
-    inline Particle* ParticleSystem::createParticle(const Particle* ptemplate)
-    {
-        // is there any dead particle?
-        if (!_deadparts.empty()) {
-
-            // retrieve a pointer to the last dead particle
-            Particle* P = _deadparts.top();
-
-            // create a new (alive) particle in the same place
-            *P = ptemplate? *ptemplate: _def_ptemp;
-
-            // remove the pointer from the death stack
-            _deadparts.pop();
-            return P;
-
-        } else {
-
-            // add a new particle to the vector
-            _particles.push_back(ptemplate? *ptemplate: _def_ptemp);
-            return &_particles.back();
-        }
-    }
-
 
 }
 

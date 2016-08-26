@@ -55,19 +55,20 @@ ELSE()
       #Quicktime is not supported under 64bit OSX build so we need to detect it and disable it.
       #First check to see if we are running with a native 64-bit compiler (10.6 default) and implicit arch
       IF(NOT CMAKE_OSX_ARCHITECTURES AND CMAKE_SIZEOF_VOID_P EQUAL 8)
-          SET(QUICKTIME_FOUND "NO")
+        MESSAGE("Disabling QuickTime on 64-bit architectures")
+        SET(QUICKTIME_FOUND "NO")
+      ELSEIF(OSG_OSX_VERSION VERSION_GREATER 10.6)
+        # Quicktime officially deprecated starting 10.7
+        MESSAGE("Disabling QuickTime because it's not supported by the selected SDK ${OSG_OSX_VERSION}")
+        SET(QUICKTIME_FOUND "NO")
       ELSE()
-          #Otherwise check to see if 64-bit is explicitly called for.
-          LIST(FIND CMAKE_OSX_ARCHITECTURES "x86_64" has64Compile)
-          IF(NOT has64Compile EQUAL -1)
-              SET(QUICKTIME_FOUND "NO")
-          ENDIF()
-      ENDIF()
-      # Disable quicktime for >= 10.7, as it's officially deprecated
-
-      IF(${OSG_OSX_SDK_NAME} STREQUAL "macosx10.7" OR ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.8" OR ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.9" OR ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.10")
-          MESSAGE("disabling quicktime because it's not supported by the selected SDK ${OSG_OSX_SDK_NAME}")
+        #Otherwise check to see if 64-bit is explicitly called for.
+        LIST(FIND CMAKE_OSX_ARCHITECTURES "x86_64" has64Compile)
+        IF(NOT has64Compile EQUAL -1)
+          MESSAGE("Disabling QuickTime on 64-bit architectures")
           SET(QUICKTIME_FOUND "NO")
+        ENDIF()
       ENDIF()
+
   ENDIF()
 ENDIF()

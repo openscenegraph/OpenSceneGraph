@@ -26,6 +26,7 @@
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
@@ -146,7 +147,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
         float size = radius/bs.radius()*0.3f;
         osg::MatrixTransform* positioned = new osg::MatrixTransform;
         positioned->setDataVariance(osg::Object::STATIC);
-        positioned->setMatrix(osg::Matrix::translate(-bs.center())*
+        positioned  ->setMatrix(osg::Matrix::translate(-bs.center())*
                                      osg::Matrix::scale(size,size,size)*
                                      osg::Matrix::rotate(osg::inDegrees(-90.0f),0.0f,0.0f,1.0f));
 
@@ -179,6 +180,10 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
 
         model->addChild(xform);
     }
+
+    #ifndef OSG_GLES2_AVAILABLE
+    model->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
+    #endif
 
     return model.release();
 }
@@ -246,6 +251,13 @@ int main( int argc, char **argv )
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
     optimzer.optimize(rootnode);
+
+    std::string filename;
+    if (arguments.read("-o",filename))
+    {
+        osgDB::writeNodeFile(*rootnode, filename);
+        return 1;
+    }
 
     // set the scene to render
     viewer.setSceneData(rootnode);

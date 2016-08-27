@@ -164,11 +164,12 @@ class OSG_EXPORT Drawable : public Node
         virtual BoundingBox computeBoundingBox() const;
 
         /** Callback to allow users to override the default computation of bounding volume. */
-        struct ComputeBoundingBoxCallback : public osg::Object
+        struct OSG_EXPORT ComputeBoundingBoxCallback : public osg::Object
         {
             ComputeBoundingBoxCallback() {}
 
-            ComputeBoundingBoxCallback(const ComputeBoundingBoxCallback&,const CopyOp&) {}
+            ComputeBoundingBoxCallback(const ComputeBoundingBoxCallback& org,const CopyOp& copyop):
+                Object(org, copyop) {}
 
             META_Object(osg,ComputeBoundingBoxCallback);
 
@@ -281,11 +282,12 @@ class OSG_EXPORT Drawable : public Node
           * the user intends to decorate the existing draw code then simple call the drawable->drawImplementation() from
           * with the callbacks drawImplementation() method. This allows the users to do both pre and post callbacks
           * without fuss and can even disable the inner draw if required.*/
-        struct DrawCallback : public virtual osg::Object
+        struct OSG_EXPORT DrawCallback : public virtual osg::Object
         {
             DrawCallback() {}
 
-            DrawCallback(const DrawCallback&,const CopyOp&) {}
+            DrawCallback(const DrawCallback& org,const CopyOp& copyop):
+                Object(org, copyop) {}
 
             META_Object(osg,DrawCallback);
 

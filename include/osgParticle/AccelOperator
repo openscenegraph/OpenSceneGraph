@@ -28,7 +28,7 @@ namespace osgParticle
 
     /**    An operator class that applies a constant acceleration to the particles.
     */
-    class AccelOperator: public Operator {
+    class OSGPARTICLE_EXPORT AccelOperator: public Operator {
     public:
         inline AccelOperator();
         inline AccelOperator(const AccelOperator& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);

@@ -124,11 +124,14 @@ namespace osgAnimation
    };
 
 
-    struct UpdateRigGeometry : public osg::Drawable::UpdateCallback
+    struct OSGANIMATION_EXPORT UpdateRigGeometry : public osg::Drawable::UpdateCallback
     {
         UpdateRigGeometry() {}
 
-        UpdateRigGeometry(const UpdateRigGeometry&, const osg::CopyOp&) {}
+        UpdateRigGeometry(const UpdateRigGeometry& org, const osg::CopyOp& copyop):
+            osg::Object(org, copyop),
+            osg::Callback(org, copyop),
+            osg::DrawableUpdateCallback(org, copyop) {}
 
         META_Object(osgAnimation, UpdateRigGeometry);
 

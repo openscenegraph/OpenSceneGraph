@@ -26,7 +26,7 @@ namespace osg
 class ScriptEngine;
 
 /* Script class for wrapping a script and the language used in the script.*/
-class Script : public osg::Object
+class OSG_EXPORT Script : public osg::Object
 {
     public:
         Script():_modifiedCount(0) {}

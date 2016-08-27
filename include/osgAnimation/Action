@@ -41,7 +41,8 @@ namespace osgAnimation
         {
         public:
             Callback(){}
-            Callback(const Callback& nc,const osg::CopyOp&) :
+            Callback(const Callback& nc,const osg::CopyOp& copyop) :
+                osg::Object(nc, copyop),
                 _nestedCallback(nc._nestedCallback) {}
 
             META_Object(osgAnimation,Callback);

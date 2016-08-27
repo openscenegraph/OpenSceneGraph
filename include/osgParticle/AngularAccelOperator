@@ -27,7 +27,7 @@ namespace osgParticle
 {
 
     /**    An operator class that applies a constant angular acceleration to
-     *     the particles.
+     *     the particles. no OSGPARTICLE_EXPORT because the class is header only
      */
     class AngularAccelOperator: public Operator {
     public:

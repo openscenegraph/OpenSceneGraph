@@ -26,7 +26,7 @@ namespace osgParticle
 {
 
     /// A linear interpolator.
-    class LinearInterpolator: public Interpolator
+    class OSGPARTICLE_EXPORT LinearInterpolator: public Interpolator
     {
     public:
         LinearInterpolator()

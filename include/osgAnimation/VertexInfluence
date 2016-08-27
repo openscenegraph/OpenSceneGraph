@@ -38,13 +38,16 @@ namespace osgAnimation
         std::string _name;
     };
 
-    class VertexInfluenceMap : public std::map<std::string, VertexInfluence> , public osg::Object
+    class OSGANIMATION_EXPORT VertexInfluenceMap : public std::map<std::string, VertexInfluence> , public osg::Object
     {
     public:
         META_Object(osgAnimation, VertexInfluenceMap);
 
         VertexInfluenceMap() {}
-        VertexInfluenceMap(const osgAnimation::VertexInfluenceMap&, const osg::CopyOp&) {}
+        VertexInfluenceMap(const osgAnimation::VertexInfluenceMap& org, const osg::CopyOp& copyop):
+            std::map<std::string, VertexInfluence>(org),
+            osg::Object(org, copyop)
+        {}
     };
 
 

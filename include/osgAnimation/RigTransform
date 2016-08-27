@@ -22,11 +22,12 @@ namespace osgAnimation
 
     class RigGeometry;
 
-    class RigTransform : public osg::Object
+    class OSGANIMATION_EXPORT RigTransform : public osg::Object
     {
     public:
         RigTransform() {}
-        RigTransform(const RigTransform&, const osg::CopyOp&) {}
+        RigTransform(const RigTransform& org, const osg::CopyOp& copyop):
+            osg::Object(org, copyop) {}
 
         META_Object(osgAnimation,RigTransform)
 

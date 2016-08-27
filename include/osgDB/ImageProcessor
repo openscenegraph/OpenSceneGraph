@@ -18,7 +18,7 @@
 
 namespace osgDB {
 
-class ImageProcessor : public osg::Object
+class OSGDB_EXPORT ImageProcessor : public osg::Object
 {
     public:
 

@@ -32,14 +32,14 @@ class ScaleUniformCommand;
 class Rotate3DCommand;
 
 
-class DraggerCallback : virtual public osg::Object
+class OSGMANIPULATOR_EXPORT DraggerCallback : virtual public osg::Object
 {
     public:
         DraggerCallback():
             osg::Object(true) {}
 
-        DraggerCallback(const DraggerCallback&, const osg::CopyOp& /*copyop*/ = osg::CopyOp::SHALLOW_COPY):
-            osg::Object(true) {}
+        DraggerCallback(const DraggerCallback& org, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY):
+            osg::Object(org, copyop) {}
 
         META_Object(osgManipulator, DraggerCallback);
 

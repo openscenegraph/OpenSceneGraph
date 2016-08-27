@@ -178,11 +178,14 @@ namespace osgAnimation
         TargetNames _targetNames;
     };
 
-    struct UpdateMorphGeometry : public osg::DrawableUpdateCallback
+    struct OSGANIMATION_EXPORT UpdateMorphGeometry : public osg::DrawableUpdateCallback
     {
         UpdateMorphGeometry() {}
 
-        UpdateMorphGeometry(const UpdateMorphGeometry&, const osg::CopyOp&) {}
+        UpdateMorphGeometry(const UpdateMorphGeometry& org, const osg::CopyOp& copyop):
+            osg::Object(org, copyop),
+            osg::Callback(org, copyop),
+            osg::DrawableUpdateCallback(org, copyop) {}
 
         META_Object(osgAnimation, UpdateMorphGeometry);
 

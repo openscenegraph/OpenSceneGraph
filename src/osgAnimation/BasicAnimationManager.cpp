@@ -25,7 +25,7 @@ BasicAnimationManager::BasicAnimationManager()
 BasicAnimationManager::BasicAnimationManager(const BasicAnimationManager& b, const osg::CopyOp& copyop) : 
     osg::Object(b, copyop),
     osg::Callback(b, copyop),
-    AnimationManagerBase(b,copyop,
+    AnimationManagerBase(b,copyop),
     _lastUpdate(0.0)
 {
 }

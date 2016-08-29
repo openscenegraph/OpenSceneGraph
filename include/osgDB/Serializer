@@ -1184,7 +1184,7 @@ public:
     unsigned int        _numElementsOnRow;
 };
 
-class MapIteratorObject : public osg::Object
+class OSGDB_EXPORT MapIteratorObject : public osg::Object
 {
 public:
     MapIteratorObject():

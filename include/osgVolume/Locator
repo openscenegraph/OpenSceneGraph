@@ -69,7 +69,7 @@ class OSGVOLUME_EXPORT Locator : public osg::Object
 
 
         /** Callback interface for enabling the monitoring of changes to the Locator.*/
-        class LocatorCallback : virtual public osg::Object
+        class OSGVOLUME_EXPORT LocatorCallback : virtual public osg::Object
         {
             public:
                 LocatorCallback() {}

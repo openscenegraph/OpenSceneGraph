@@ -443,7 +443,7 @@ class OSG_EXPORT Node : public Object
         virtual BoundingSphere computeBound() const;
 
         /** Callback to allow users to override the default computation of bounding volume.*/
-        struct ComputeBoundingSphereCallback : public osg::Object
+        struct OSG_EXPORT ComputeBoundingSphereCallback : public osg::Object
         {
             ComputeBoundingSphereCallback() {}
 

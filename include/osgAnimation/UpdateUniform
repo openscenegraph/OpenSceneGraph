@@ -56,6 +56,7 @@ namespace osgAnimation
         }
 
     };
+    // no OSGANIMATION_EXPORT as the class is header only
 
     // float
     struct UpdateFloatUniform : public UpdateUniform<float>

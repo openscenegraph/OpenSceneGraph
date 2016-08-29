@@ -22,7 +22,9 @@ namespace osgParticle
 {
 
 
-/** A composite particle placer which allows particles to be generated from a union of placers. */
+/** A composite particle placer which allows particles to be generated from a union of placers. 
+* no OSGPARTICLE_EXPORT as the class is header only
+*/
 class CompositePlacer : public Placer
 {
 public:

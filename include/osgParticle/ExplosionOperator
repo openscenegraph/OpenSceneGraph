@@ -25,6 +25,7 @@ namespace osgParticle
 
 /** An explosion operator exerts force on each particle away from the explosion center.
     Refer to David McAllister's Particle System API (http://www.particlesystems.org)
+    no OSGPARTICLE_EXPORT as the class is header only
 */
 class ExplosionOperator : public Operator
 {

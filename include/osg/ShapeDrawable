@@ -26,7 +26,7 @@ namespace osg {
 /** Describe several hints that can be passed to a Tessellator (like the one used
  *  by \c ShapeDrawable) as a mean to try to influence the way it works.
  */
-class TessellationHints : public Object
+class OSG_EXPORT TessellationHints : public Object
 {
     public:
 

@@ -529,7 +529,7 @@ class OSG_EXPORT BufferData : public Object
         GLBufferObject* getGLBufferObject(unsigned int contextID) const { return _bufferObject.valid() ? _bufferObject->getGLBufferObject(contextID) : 0; }
         GLBufferObject* getOrCreateGLBufferObject(unsigned int contextID) const { return _bufferObject.valid() ? _bufferObject->getOrCreateGLBufferObject(contextID) : 0; }
 
-        struct ModifiedCallback : public virtual osg::Object
+        struct OSG_EXPORT ModifiedCallback : public virtual osg::Object
         {
             ModifiedCallback() {}
 

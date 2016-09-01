@@ -115,8 +115,6 @@ int main( int argc, char** argv )
     }
     else
     {
-        // The default methods uses glBegin()/glEnd() pairs. Fortunately the GLBeginEndAdapter does improve the
-        // process, which mimics the immediate mode with glDrawArrays().
         ps->setDefaultAttributes( textureFile, true, false, 0 );
 
         // Without the help of shaders, we have to sort particles to make the visibility distance work. Sorting is

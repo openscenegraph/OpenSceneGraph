@@ -655,7 +655,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
         return;
     }
 
-    // TODO, add check against whether VOA is active and supported
+    // TODO, add check against whether VAO is active and supported
     if (state.getCurrentVertexArrayState()) state.getCurrentVertexArrayState()->bindVertexArrayObject();
 
 

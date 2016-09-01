@@ -5,7 +5,6 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 #include <osg/Matrix>
-#include <osg/GL>
 #include <osg/Notify>
 
 namespace
@@ -127,57 +126,6 @@ bool osgParticle::Particle::update(double dt, bool onlyTimeStamp)
     if (_angle.z() < -osg::PI*2) _angle.z() += osg::PI*2;
 
     return true;
-}
-
-void osgParticle::Particle::render(osg::GLBeginEndAdapter* gl, const osg::Vec3& xpos, const osg::Vec3& px, const osg::Vec3& py, float scale) const
-{
-    gl->Color4f( _current_color.x(),
-                _current_color.y(),
-                _current_color.z(),
-                _current_color.w() * _current_alpha);
-
-    osg::Vec3 p1(px * _current_size * scale);
-    osg::Vec3 p2(py * _current_size * scale);
-
-    switch (_shape)
-    {
-    case POINT:
-        gl->Vertex3f(xpos.x(), xpos.y(), xpos.z());
-        break;
-
-    case USER:
-    case QUAD_TRIANGLESTRIP:
-    case HEXAGON:
-    case QUAD:
-        gl->TexCoord2f(_s_coord, _t_coord);
-        gl->Vertex3fv((xpos-(p1+p2)).ptr());
-        gl->TexCoord2f(_s_coord+_s_tile, _t_coord);
-        gl->Vertex3fv((xpos+(p1-p2)).ptr());
-        gl->TexCoord2f(_s_coord+_s_tile, _t_coord+_t_tile);
-        gl->Vertex3fv((xpos+(p1+p2)).ptr());
-        gl->TexCoord2f(_s_coord, _t_coord+_t_tile);
-        gl->Vertex3fv((xpos-(p1-p2)).ptr());
-        break;
-
-    case LINE:
-        {
-            // Get the normalized direction of the particle, to be used in the
-            // calculation of one of the linesegment endpoints.
-            float vl = _velocity.length();
-            if (vl != 0) {
-                osg::Vec3 v = _velocity * _current_size * scale / vl;
-
-                gl->TexCoord1f(0);
-                gl->Vertex3f(xpos.x(), xpos.y(), xpos.z());
-                gl->TexCoord1f(1);
-                gl->Vertex3f(xpos.x() + v.x(), xpos.y() + v.y(), xpos.z() + v.z());
-            }
-        }
-        break;
-
-    default:
-        OSG_WARN << "Invalid shape for particles\n";
-    }
 }
 
 void osgParticle::Particle::setUpTexCoordsAsPartOfConnectedParticleSystem(ParticleSystem* ps)

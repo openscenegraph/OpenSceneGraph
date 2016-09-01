@@ -19,6 +19,7 @@
 
 #include <osgDB/FileUtils>
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 #include <osgUtil/CullVisitor>
 
 #define USE_LOCAL_SHADERS
@@ -54,7 +55,7 @@ osgParticle::ParticleSystem::ParticleSystem()
     _detail(1),
     _sortMode(NO_SORT),
     _visibilityDistance(-1.0),
-    _draw_count(0)
+    _estimatedMaxNumOfParticles(0)
 {
     // we don't support display lists because particle systems
     // are dynamic, and they always changes between frames
@@ -86,18 +87,20 @@ osgParticle::ParticleSystem::ParticleSystem(const ParticleSystem& copy, const os
     _detail(copy._detail),
     _sortMode(copy._sortMode),
     _visibilityDistance(copy._visibilityDistance),
-    _draw_count(0)
+    _estimatedMaxNumOfParticles(0)
 {
 }
 
 osgParticle::ParticleSystem::~ParticleSystem()
 {
+//    OSG_NOTICE<<"ParticleSystem::~ParticleSystem() "<<std::dec<<this<<std::dec<<" _particles.size()="<<_particles.size()<<", _particles.capacity()="<<_particles.capacity()<<" _estimatedMaxNumOfParticles="<<_estimatedMaxNumOfParticles<<std::endl;
 }
 
 osgParticle::Particle* osgParticle::ParticleSystem::createParticle(const osgParticle::Particle* ptemplate)
 {
     // is there any dead particle?
-    if (!_deadparts.empty()) {
+    if (!_deadparts.empty())
+    {
 
         // retrieve a pointer to the last dead particle
         Particle* P = _deadparts.top();
@@ -109,7 +112,17 @@ osgParticle::Particle* osgParticle::ParticleSystem::createParticle(const osgPart
         _deadparts.pop();
         return P;
 
-    } else {
+    }
+    else
+    {
+
+        if (_particles.size()==_particles.capacity())
+        {
+            if (_estimatedMaxNumOfParticles > static_cast<int>(_particles.capacity()))
+            {
+                _particles.reserve(_estimatedMaxNumOfParticles);
+            }
+        }
 
         // add a new particle to the vector
         _particles.push_back(ptemplate? *ptemplate: _def_ptemp);
@@ -198,9 +211,11 @@ void osgParticle::ParticleSystem::update(double dt, osg::NodeVisitor& nv)
 
 void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) const
 {
-    osg::State& state = *renderInfo.getState();
+    if (_particles.size() <= 0) return;
 
     ScopedReadLock lock(_readWriteMutex);
+
+    osg::State& state = *renderInfo.getState();
 
     // update the frame count, so other objects can detect when
     // this particle system is culled
@@ -213,6 +228,237 @@ void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo
     // get the current modelview matrix
     osg::Matrix modelview = state.getModelViewMatrix();
 
+    ArrayData& ad = _bufferedArrayData[state.getContextID()];
+
+    if (_useVertexArray)
+    {
+        // note from Robert Osfield, September 2016, this block implementated for backwards compatibility but is pretty way vertex array/shaders were hacked into osgParticle
+
+        // set up arrays and primitives ready to fill in
+        if (!ad.vertices.valid())
+        {
+            ad.init3();
+            ad.reserve(_particles.capacity());
+        }
+
+        ad.clear();
+        ad.dirty();
+
+        osg::Vec3Array& vertices = *ad.vertices;
+        osg::Vec3Array& normals = *ad.normals;
+        osg::Vec4Array& colors = *ad.colors;
+        osg::Vec3Array& texcoords = *ad.texcoords3;
+        ArrayData::Primitives& primitives = ad.primitives;
+
+        for(unsigned int i=0; i<_particles.size(); i+=_detail)
+        {
+            const Particle* particle = &_particles[i];
+            const osg::Vec4& color = particle->getCurrentColor();
+            const osg::Vec3& pos = particle->getPosition();
+            const osg::Vec3& vel = particle->getVelocity();
+            colors.push_back( color );
+            texcoords.push_back( osg::Vec3(particle->_alive, particle->_current_size, particle->_current_alpha) );
+            normals.push_back(vel);
+            vertices.push_back(pos);
+        }
+
+        primitives.push_back(ArrayData::ModeCount(GL_POINTS, vertices.size()));
+
+    }
+    else
+    {
+        // set up arrays and primitives ready to fill in
+        if (!ad.vertices.valid())
+        {
+            ad.init();
+            ad.reserve(_particles.capacity()*4);
+        }
+
+        ad.clear();
+        ad.dirty();
+
+        osg::Vec3Array& vertices = *ad.vertices;
+        osg::Vec4Array& colors = *ad.colors;
+        osg::Vec2Array& texcoords = *ad.texcoords2;
+        ArrayData::Primitives& primitives = ad.primitives;
+
+        float scale = sqrtf(static_cast<float>(_detail));
+
+        osg::Vec3 xAxis = _align_X_axis;
+        osg::Vec3 yAxis = _align_Y_axis;
+
+        osg::Vec3 scaled_aligned_xAxis = _align_X_axis;
+        osg::Vec3 scaled_aligned_yAxis = _align_Y_axis;
+
+        float xScale = 1.0f;
+        float yScale = 1.0f;
+
+        if (_alignment==BILLBOARD)
+        {
+            xAxis = osg::Matrix::transform3x3(modelview,_align_X_axis);
+            yAxis = osg::Matrix::transform3x3(modelview,_align_Y_axis);
+
+            float lengthX2 = xAxis.length2();
+            float lengthY2 = yAxis.length2();
+
+            if (_particleScaleReferenceFrame==LOCAL_COORDINATES)
+            {
+                xScale = 1.0f/sqrtf(lengthX2);
+                yScale = 1.0f/sqrtf(lengthY2);
+            }
+            else
+            {
+                xScale = 1.0f/lengthX2;
+                yScale = 1.0f/lengthY2;
+            }
+
+            scaled_aligned_xAxis *= xScale;
+            scaled_aligned_yAxis *= yScale;
+
+            xAxis *= xScale;
+            yAxis *= yScale;
+        }
+
+        for(unsigned int i=0; i<_particles.size(); i+=_detail)
+        {
+            const Particle* currentParticle = &_particles[i];
+
+            bool insideDistance = true;
+            if (_sortMode != NO_SORT && _visibilityDistance>0.0)
+            {
+                insideDistance = (currentParticle->getDepth()>=0.0 && currentParticle->getDepth()<=_visibilityDistance);
+            }
+
+            if (currentParticle->isAlive() && insideDistance)
+            {
+                const osg::Vec3& angle = currentParticle->getAngle();
+                bool requiresRotation = (angle.x()!=0.0f || angle.y()!=0.0f || angle.z()!=0.0f);
+                if (requiresRotation)
+                {
+                    osg::Matrix R;
+                    R.makeRotate(
+                        angle.x(), osg::Vec3(1, 0, 0),
+                        angle.y(), osg::Vec3(0, 1, 0),
+                        angle.z(), osg::Vec3(0, 0, 1));
+
+                    if (_alignment==BILLBOARD)
+                    {
+                        xAxis = osg::Matrix::transform3x3(R,scaled_aligned_xAxis);
+                        xAxis = osg::Matrix::transform3x3(modelview,xAxis);
+
+                        yAxis = osg::Matrix::transform3x3(R,scaled_aligned_yAxis);
+                        yAxis = osg::Matrix::transform3x3(modelview,yAxis);
+                    }
+                    else
+                    {
+                        xAxis = osg::Matrix::transform3x3(R, scaled_aligned_xAxis);
+                        yAxis = osg::Matrix::transform3x3(R, scaled_aligned_yAxis);
+                    }
+                }
+
+                osg::Vec4 color = currentParticle->getCurrentColor();
+                color.a() *= currentParticle->getCurrentAlpha();
+
+                float currentSize = currentParticle->getCurrentSize();
+
+                const osg::Vec3& xpos = currentParticle->getPosition();
+                const float s_coord = currentParticle->getSTexCoord();
+                const float t_coord = currentParticle->getTTexCoord();
+                const float s_tile = currentParticle->getSTexTile();
+                const float t_tile = currentParticle->getTTexTile();
+
+                osg::Vec3 p1(xAxis * currentSize * scale);
+                osg::Vec3 p2(yAxis * currentSize * scale);
+
+                switch (currentParticle->getShape())
+                {
+                    case osgParticle::Particle::POINT:
+                    {
+                        vertices.push_back(currentParticle->getPosition());
+                        colors.push_back(color);
+                        texcoords.push_back(osg::Vec2(0.5f,0.5f));
+
+                        if (!primitives.empty() && primitives.back().first==GL_POINTS)
+                        {
+                            primitives.back().second++;
+                        }
+                        else
+                        {
+                            primitives.push_back(ArrayData::ModeCount(GL_POINTS,1));
+                        }
+
+                        break;
+                    }
+                    case osgParticle::Particle::USER:
+                    case osgParticle::Particle::QUAD_TRIANGLESTRIP:
+                    case osgParticle::Particle::HEXAGON:
+                    case osgParticle::Particle::QUAD:
+                    {
+                        vertices.push_back(xpos-p1-p2);
+                        colors.push_back(color);
+                        texcoords.push_back(osg::Vec2(s_coord, t_coord));
+
+                        vertices.push_back(xpos+p1-p2);
+                        colors.push_back(color);
+                        texcoords.push_back(osg::Vec2(s_coord+s_tile, t_coord));
+
+                        vertices.push_back(xpos+p1+p2);
+                        colors.push_back(color);
+                        texcoords.push_back(osg::Vec2(s_coord+s_tile, t_coord+t_tile));
+
+                        vertices.push_back(xpos-p1+p2);
+                        colors.push_back(color);
+                        texcoords.push_back(osg::Vec2(s_coord, t_coord+t_tile));
+
+                        if (!primitives.empty() && primitives.back().first==GL_QUADS)
+                        {
+                            primitives.back().second+=4;
+                        }
+                        else
+                        {
+                            primitives.push_back(ArrayData::ModeCount(GL_QUADS,4));
+                        }
+
+                        break;
+                    }
+                    case osgParticle::Particle::LINE:
+                    {
+                        // Get the normalized direction of the particle, to be used in the
+                        // calculation of one of the linesegment endpoints.
+                        const osg::Vec3& velocity = currentParticle->getVelocity();
+                        float vl = velocity.length();
+                        if (vl != 0)
+                        {
+                            osg::Vec3 v = velocity * currentSize * scale / vl;
+
+                            vertices.push_back(currentParticle->getPosition());
+                            colors.push_back(color);
+                            texcoords.push_back(osg::Vec2(0.0f,0.0f));
+
+                            vertices.push_back(currentParticle->getPosition()+v);
+                            colors.push_back(color);
+                            texcoords.push_back(osg::Vec2(1.0f,1.0f));
+
+                            if (!primitives.empty() && primitives.back().first==GL_LINES)
+                            {
+                                primitives.back().second+=2;
+                            }
+                            else
+                            {
+                                primitives.push_back(ArrayData::ModeCount(GL_LINES,2));
+                            }
+                        }
+                        break;
+                    }
+
+                    default:
+                        OSG_WARN << "Invalid shape for particles\n";
+                }
+            }
+        }
+
+    }
+
     // set up depth mask for first rendering pass
 #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
     glPushAttrib(GL_DEPTH_BUFFER_BIT);
@@ -220,11 +466,8 @@ void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo
 
     glDepthMask(GL_FALSE);
 
-    // render, first pass
-    if (_useVertexArray)
-        render_vertex_array(renderInfo);
-    else
-        single_pass_render(renderInfo, modelview);
+    ad.dispatchArrays(state);
+    ad.dispatchPrimitives();
 
 #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
     // restore depth mask settings
@@ -232,29 +475,21 @@ void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo
 #endif
 
     // render, second pass
-    if (_doublepass) {
+    if (_doublepass)
+    {
         // set up color mask for second rendering pass
 #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
         glPushAttrib(GL_COLOR_BUFFER_BIT);
 #endif
         glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 
-        // render the particles onto the depth buffer
-        if (_useVertexArray)
-            render_vertex_array(renderInfo);
-        else
-            single_pass_render(renderInfo, modelview);
+        ad.dispatchPrimitives();
 
 #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
         // restore color mask settings
         glPopAttrib();
 #endif
     }
-
-#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
-    OSG_NOTICE<<"Warning: ParticleSystem::drawImplementation(..) not fully implemented."<<std::endl;
-#endif
-
 }
 
 void osgParticle::ParticleSystem::setDefaultAttributes(const std::string& texturefile, bool emissive_particles, bool lighting, int texture_unit)
@@ -386,149 +621,6 @@ void osgParticle::ParticleSystem::setDefaultAttributesUsingShaders(const std::st
     setUseShaders(true);
 }
 
-
-void osgParticle::ParticleSystem::single_pass_render(osg::RenderInfo& renderInfo, const osg::Matrix& modelview) const
-{
-    _draw_count = 0;
-    if (_particles.size() <= 0) return;
-
-    osg::GLBeginEndAdapter* gl = &(renderInfo.getState()->getGLBeginEndAdapter());
-
-    float scale = sqrtf(static_cast<float>(_detail));
-
-    osg::Vec3 xAxis = _align_X_axis;
-    osg::Vec3 yAxis = _align_Y_axis;
-
-    osg::Vec3 scaled_aligned_xAxis = _align_X_axis;
-    osg::Vec3 scaled_aligned_yAxis = _align_Y_axis;
-
-    float xScale = 1.0f;
-    float yScale = 1.0f;
-
-    if (_alignment==BILLBOARD)
-    {
-        xAxis = osg::Matrix::transform3x3(modelview,_align_X_axis);
-        yAxis = osg::Matrix::transform3x3(modelview,_align_Y_axis);
-
-        float lengthX2 = xAxis.length2();
-        float lengthY2 = yAxis.length2();
-
-        if (_particleScaleReferenceFrame==LOCAL_COORDINATES)
-        {
-            xScale = 1.0f/sqrtf(lengthX2);
-            yScale = 1.0f/sqrtf(lengthY2);
-        }
-        else
-        {
-            xScale = 1.0f/lengthX2;
-            yScale = 1.0f/lengthY2;
-        }
-
-        scaled_aligned_xAxis *= xScale;
-        scaled_aligned_yAxis *= yScale;
-
-        xAxis *= xScale;
-        yAxis *= yScale;
-    }
-
-    bool requiresEndRender = false;
-    const Particle* startParticle = &_particles[0];
-
-    startParticle->beginRender(gl);
-    requiresEndRender = true;
-
-    for(unsigned int i=0; i<_particles.size(); i+=_detail)
-    {
-        const Particle* currentParticle = &_particles[i];
-
-        bool insideDistance = true;
-        if (_sortMode != NO_SORT && _visibilityDistance>0.0)
-            insideDistance = (currentParticle->getDepth()>=0.0 && currentParticle->getDepth()<=_visibilityDistance);
-
-        if (currentParticle->isAlive() && insideDistance)
-        {
-            if (currentParticle->getShape() != startParticle->getShape())
-            {
-                startParticle->endRender(gl);
-                startParticle = currentParticle;
-
-                currentParticle->beginRender(gl);
-                requiresEndRender = true;
-                glDepthMask(GL_FALSE);
-            }
-            ++_draw_count;
-
-            const osg::Vec3& angle = currentParticle->getAngle();
-            bool requiresRotation = (angle.x()!=0.0f || angle.y()!=0.0f || angle.z()!=0.0f);
-            if (requiresRotation)
-            {
-                osg::Matrix R;
-                R.makeRotate(
-                    angle.x(), osg::Vec3(1, 0, 0),
-                    angle.y(), osg::Vec3(0, 1, 0),
-                    angle.z(), osg::Vec3(0, 0, 1));
-
-                if (_alignment==BILLBOARD)
-                {
-                    xAxis = osg::Matrix::transform3x3(R,scaled_aligned_xAxis);
-                    xAxis = osg::Matrix::transform3x3(modelview,xAxis);
-
-                    yAxis = osg::Matrix::transform3x3(R,scaled_aligned_yAxis);
-                    yAxis = osg::Matrix::transform3x3(modelview,yAxis);
-
-                    currentParticle->render(gl,currentParticle->getPosition(), xAxis, yAxis, scale);
-                }
-                else
-                {
-                    xAxis = osg::Matrix::transform3x3(R, scaled_aligned_xAxis);
-                    yAxis = osg::Matrix::transform3x3(R, scaled_aligned_yAxis);
-
-                    currentParticle->render(gl,currentParticle->getPosition(), xAxis, yAxis, scale);
-                }
-            }
-            else
-            {
-                currentParticle->render(gl,currentParticle->getPosition(), xAxis, yAxis, scale);
-            }
-        }
-    }
-
-    if (requiresEndRender)
-        startParticle->endRender(gl);
-}
-
-void osgParticle::ParticleSystem::render_vertex_array(osg::RenderInfo& renderInfo) const
-{
-    if (_particles.size() <= 0) return;
-
-    // Compute the pointer and offsets
-    Particle_vector::const_iterator itr = _particles.begin();
-    float* ptr = (float*)(&(*itr));
-    GLsizei stride = 0;
-    if (_particles.size() > 1)
-    {
-        float* ptr1 = (float*)(&(*(itr+1)));
-        stride = ptr1 - ptr;
-    }
-    GLsizei posOffset = (float*)(&(itr->_position)) - ptr;         // Position
-    GLsizei colorOffset = (float*)(&(itr->_current_color)) - ptr;  // Color
-    GLsizei velOffset = (float*)(&(itr->_velocity)) - ptr;         // Velocity
-    GLsizei propOffset = (float*)(&(itr->_alive)) - ptr;       // Alive, size & alpha
-
-    // Draw particles as arrays
-    osg::State& state = *renderInfo.getState();
-    state.lazyDisablingOfVertexAttributes();
-    state.setColorPointer(4, GL_FLOAT, stride * sizeof(float), ptr + colorOffset);
-    state.setVertexPointer(3, GL_FLOAT, stride * sizeof(float), ptr + posOffset);
-    if (_useShaders)
-    {
-        state.setNormalPointer(GL_FLOAT, stride * sizeof(float), ptr + velOffset);
-        state.setTexCoordPointer(0, 3, GL_FLOAT, stride * sizeof(float), ptr + propOffset);
-    }
-    state.applyDisablingOfVertexAttributes();
-    glDrawArrays(GL_POINTS, 0, _particles.size());
-}
-
 osg::BoundingBox osgParticle::ParticleSystem::computeBoundingBox() const
 {
     if (!_bounds_computed)
@@ -567,35 +659,21 @@ void osgParticle::ParticleSystem::releaseGLObjects(osg::State* state) const
 
 osg::VertexArrayState* osgParticle::ParticleSystem::createVertexArrayState(osg::RenderInfo& renderInfo, bool usingVBOs) const
 {
-    OSG_NOTICE<<"osgParticle::ParticleSystem::createVertexArrayState() "<<this<<std::endl;
-#if 0
-    return osg::Drawable::createVertexArrayState(renderInfo, usingVBOs);
-#else
     osg::State& state = *renderInfo.getState();
-
-    ArrayData& ad = _bufferedArrayData[state.getContextID()];
 
     osg::VertexArrayState* vas = new osg::VertexArrayState(&state);
 
-    OSG_NOTICE<<"  Creating new osg::VertexArrayState "<< vas<<std::endl;
-
-    if (ad.vertices.valid()) vas->assignVertexArrayDispatcher();
-    if (ad.colors.valid()) vas->assignColorArrayDispatcher();
-    if (ad.texcoords.valid()) vas->assignTexCoordArrayDispatcher(1);
+    vas->assignVertexArrayDispatcher();
+    vas->assignNormalArrayDispatcher();
+    vas->assignColorArrayDispatcher();
+    vas->assignTexCoordArrayDispatcher(1);
 
     if (state.useVertexArrayObject(_useVertexArrayObject))
     {
-        OSG_NOTICE<<"    Setup VertexArrayState to use VAO "<<vas<<std::endl;
-
         vas->generateVertexArrayObject();
-    }
-    else
-    {
-        OSG_NOTICE<<"    Setup VertexArrayState to without using VAO "<<vas<<std::endl;
     }
 
     return vas;
-#endif
 }
 
 
@@ -605,48 +683,139 @@ osg::VertexArrayState* osgParticle::ParticleSystem::createVertexArrayState(osg::
 //
 osgParticle::ParticleSystem::ArrayData::ArrayData()
 {
-    OSG_NOTICE<<"osgParticle::ParticleSystem::ArrayData() "<<this<<std::endl;
+}
+
+void osgParticle::ParticleSystem::ArrayData::init()
+{
     vertexBufferObject = new osg::VertexBufferObject;
-    vertices = new osg::Vec3Array;
+    vertexBufferObject->setUsage(GL_DYNAMIC_DRAW);
+
+    vertices = new osg::Vec3Array(osg::Array::BIND_PER_VERTEX);
     vertices->setBufferObject(vertexBufferObject.get());
+    vertices->setDataVariance(osg::Object::DYNAMIC);
 
-    colors = new osg::Vec4Array;
+    colors = new osg::Vec4Array(osg::Array::BIND_PER_VERTEX);
     colors->setBufferObject(vertexBufferObject.get());
+    colors->setDataVariance(osg::Object::DYNAMIC);
 
-    texcoords = new osg::Vec2Array;
-    texcoords->setBufferObject(vertexBufferObject.get());
+    texcoords2 = new osg::Vec2Array(osg::Array::BIND_PER_VERTEX);
+    texcoords2->setBufferObject(vertexBufferObject.get());
+    texcoords2->setDataVariance(osg::Object::DYNAMIC);
+}
+
+void osgParticle::ParticleSystem::ArrayData::init3()
+{
+    vertexBufferObject = new osg::VertexBufferObject;
+    vertexBufferObject->setUsage(GL_DYNAMIC_DRAW);
+
+    vertices = new osg::Vec3Array(osg::Array::BIND_PER_VERTEX);
+    vertices->setBufferObject(vertexBufferObject.get());
+    vertices->setDataVariance(osg::Object::DYNAMIC);
+
+    normals = new osg::Vec3Array(osg::Array::BIND_PER_VERTEX);
+    normals->setBufferObject(vertexBufferObject.get());
+    normals->setDataVariance(osg::Object::DYNAMIC);
+
+    colors = new osg::Vec4Array(osg::Array::BIND_PER_VERTEX);
+    colors->setBufferObject(vertexBufferObject.get());
+    colors->setDataVariance(osg::Object::DYNAMIC);
+
+    texcoords3 = new osg::Vec3Array(osg::Array::BIND_PER_VERTEX);
+    texcoords3->setBufferObject(vertexBufferObject.get());
+    texcoords3->setDataVariance(osg::Object::DYNAMIC);
 }
 
 void osgParticle::ParticleSystem::ArrayData::reserve(unsigned int numVertices)
 {
-    vertices->reserve(numVertices);
-    colors->reserve(numVertices);
-    texcoords->reserve(numVertices);
+    unsigned int vertex_size = 0;
+
+    if (vertices.valid()) { vertices->reserve(numVertices); vertex_size += 12; }
+    if (normals.valid()) { normals->reserve(numVertices); vertex_size += 12; }
+    if (colors.valid()) { colors->reserve(numVertices); vertex_size += 16; }
+    if (texcoords2.valid()) { texcoords2->reserve(numVertices); vertex_size += 8; }
+    if (texcoords3.valid()) { texcoords3->reserve(numVertices); vertex_size += 12; }
+
+    vertexBufferObject->getProfile()._size = numVertices * vertex_size;
 }
 
 void osgParticle::ParticleSystem::ArrayData::resize(unsigned int numVertices)
 {
-    vertices->resize(numVertices);
-    colors->resize(numVertices);
-    texcoords->resize(numVertices);
+    if (vertices.valid()) vertices->resize(numVertices);
+    if (normals.valid()) normals->resize(numVertices);
+    if (colors.valid()) colors->resize(numVertices);
+    if (texcoords2.valid()) texcoords2->resize(numVertices);
+    if (texcoords3.valid()) texcoords3->resize(numVertices);
 }
 
 void osgParticle::ParticleSystem::ArrayData::resizeGLObjectBuffers(unsigned int maxSize)
 {
-    OSG_NOTICE<<"osgParticle::ParticleSystem::resizeGLObjectBuffers("<<maxSize<<") "<<this<<std::endl;
+    // OSG_NOTICE<<"osgParticle::ParticleSystem::resizeGLObjectBuffers("<<maxSize<<") "<<this<<std::endl;
 
-    vertexBufferObject->resizeGLObjectBuffers(maxSize);
-    vertices->resizeGLObjectBuffers(maxSize);
-    colors->resizeGLObjectBuffers(maxSize);
-    texcoords->resizeGLObjectBuffers(maxSize);
+    if (vertexBufferObject.valid()) vertexBufferObject->resizeGLObjectBuffers(maxSize);
+
+    if (vertices.valid()) vertices->resizeGLObjectBuffers(maxSize);
+    if (normals.valid()) normals->resizeGLObjectBuffers(maxSize);
+    if (colors.valid()) colors->resizeGLObjectBuffers(maxSize);
+    if (texcoords2.valid()) texcoords2->resizeGLObjectBuffers(maxSize);
+    if (texcoords3.valid()) texcoords3->resizeGLObjectBuffers(maxSize);
 }
 
 void osgParticle::ParticleSystem::ArrayData::releaseGLObjects(osg::State* state)
 {
-    OSG_NOTICE<<"osgParticle::ParticleSystem::releaseGLObjects("<<state<<") "<<this<<std::endl;
+    // OSG_NOTICE<<"osgParticle::ParticleSystem::releaseGLObjects("<<state<<") "<<this<<std::endl;
 
-    vertexBufferObject->releaseGLObjects(state);
-    vertices->releaseGLObjects(state);
-    colors->releaseGLObjects(state);
-    texcoords->releaseGLObjects(state);
+    if (vertexBufferObject.valid()) vertexBufferObject->releaseGLObjects(state);
+
+    if (vertices.valid()) vertices->releaseGLObjects(state);
+    if (normals.valid()) normals->releaseGLObjects(state);
+    if (colors.valid()) colors->releaseGLObjects(state);
+    if (texcoords2.valid()) texcoords2->releaseGLObjects(state);
+    if (texcoords3.valid()) texcoords3->releaseGLObjects(state);
+}
+
+void osgParticle::ParticleSystem::ArrayData::clear()
+{
+    if (vertices.valid()) vertices->clear();
+    if (normals.valid()) normals->clear();
+    if (colors.valid()) colors->clear();
+    if (texcoords2.valid()) texcoords2->clear();
+    if (texcoords3.valid()) texcoords3->clear();
+    primitives.clear();
+}
+
+void osgParticle::ParticleSystem::ArrayData::dirty()
+{
+    if (vertices.valid()) vertices->dirty();
+    if (normals.valid()) normals->dirty();
+    if (colors.valid()) colors->dirty();
+    if (texcoords2.valid()) texcoords2->dirty();
+    if (texcoords3.valid()) texcoords3->dirty();
+}
+
+void osgParticle::ParticleSystem::ArrayData::dispatchArrays(osg::State& state)
+{
+    osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
+
+    vas->lazyDisablingOfVertexAttributes();
+
+    if (vertices.valid()) vas->setVertexArray(state, vertices.get());
+    if (normals.valid()) vas->setNormalArray(state, normals.get());
+    if (colors.valid()) vas->setColorArray(state, colors.get());
+    if (texcoords2.valid()) vas->setTexCoordArray(state, 0, texcoords2.get());
+    if (texcoords3.valid()) vas->setTexCoordArray(state, 0, texcoords3.get());
+
+    vas->applyDisablingOfVertexAttributes(state);
+}
+
+void osgParticle::ParticleSystem::ArrayData::dispatchPrimitives()
+{
+    unsigned int base = 0;
+    for(ArrayData::Primitives::iterator itr = primitives.begin();
+        itr != primitives.end();
+        ++itr)
+    {
+        ArrayData::ModeCount& mc = *itr;
+        glDrawArrays(mc.first, base, mc.second);
+        base += mc.second;
+    }
 }

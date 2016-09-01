@@ -42,6 +42,12 @@ namespace osgParticle
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Emitter*>(obj) != 0; }
         virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) { nv.pushOntoNodePath(this); nv.apply(*this); nv.popFromNodePath(); } }
 
+        void setParticleSystem(ParticleSystem* ps);
+
+        void setEstimatedMaxNumOfParticles(int num);
+        int getEstimatedMaxNumOfParticles() const { return _estimatedMaxNumOfParticles; }
+
+
         /// Get the particle template.
         inline const Particle& getParticleTemplate() const;
 
@@ -67,6 +73,8 @@ namespace osgParticle
 
         bool _usedeftemp;
         Particle _ptemp;
+
+        int _estimatedMaxNumOfParticles;
     };
 
     // INLINE FUNCTIONS

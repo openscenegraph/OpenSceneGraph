@@ -753,7 +753,15 @@ protected:
             setUseDisplayList(false);
             setDataVariance(osg::Object::DYNAMIC);
 
-            setVertexArray(new osg::Vec3Array);
+            osg::ref_ptr<osg::BufferObject> vbo = new osg::VertexBufferObject;
+            vbo->setUsage(GL_DYNAMIC_DRAW);
+            vbo->getProfile()._size = (width)*12;
+
+            osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+            vertices->setBufferObject(vbo.get());
+            vertices->reserve(width);
+
+            setVertexArray(vertices.get());
 
             osg::Vec4Array* colors = new osg::Vec4Array;
             colors->push_back(color);

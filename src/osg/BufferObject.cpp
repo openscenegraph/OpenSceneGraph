@@ -208,6 +208,7 @@ void GLBufferObject::compileBuffer()
     if (_allocatedSize != _profile._size)
     {
         _allocatedSize = _profile._size;
+        OSG_INFO<<"    Allocating new glBufferData(), _allocatedSize="<<_allocatedSize<<std::endl;
         _extensions->glBufferData(_profile._target, _profile._size, NULL, _profile._usage);
         compileAll = true;
     }
@@ -229,7 +230,6 @@ void GLBufferObject::compileBuffer()
                 unsigned int offset = entry.offset;
                 for(osg::Image::DataIterator img_itr(image); img_itr.valid(); ++img_itr)
                 {
-                    //OSG_NOTICE<<"Copying to buffer object using DataIterator, offset="<<offset<<", size="<<img_itr.size()<<", data="<<(void*)img_itr.data()<<std::endl;
                     _extensions->glBufferSubData(_profile._target, (GLintptr)offset, (GLsizeiptr)img_itr.size(), img_itr.data());
                     offset += img_itr.size();
                 }
@@ -661,7 +661,7 @@ osg::ref_ptr<GLBufferObject> GLBufferObjectSet::takeOrGenerate(BufferObject* buf
 
         moveToBack(glbo.get());
 
-        // assign to new texture
+        // assign
         glbo->setBufferObject(bufferObject);
         glbo->setProfile(_profile);
 
@@ -902,9 +902,11 @@ osg::ref_ptr<GLBufferObject> GLBufferObjectManager::generateGLBufferObject(const
     ElapsedTime elapsedTime(&(getGenerateTime()));
     ++getNumberGenerated();
 
-    BufferObjectProfile profile(bufferObject->getTarget(), bufferObject->getUsage(), bufferObject->computeRequiredBufferSize());
+    unsigned int requiredBufferSize = osg::maximum(bufferObject->computeRequiredBufferSize(), bufferObject->getProfile()._size);
 
-    // OSG_NOTICE<<"GLBufferObjectManager::generateGLBufferObject size="<<bufferObject->computeRequiredBufferSize()<<std::endl;
+    BufferObjectProfile profile(bufferObject->getTarget(), bufferObject->getUsage(), requiredBufferSize);
+
+    // OSG_NOTICE<<"GLBufferObjectManager::generateGLBufferObject size="<<requiredBufferSize<<std::endl;
 
     GLBufferObjectSet* glbos = getGLBufferObjectSet(profile);
     return glbos->takeOrGenerate(const_cast<BufferObject*>(bufferObject));
@@ -1070,6 +1072,9 @@ BufferObject::~BufferObject()
 GLBufferObject* BufferObject::getOrCreateGLBufferObject(unsigned int contextID) const
 {
     if (!_glBufferObjects[contextID]) _glBufferObjects[contextID] = osg::get<GLBufferObjectManager>(contextID)->generateGLBufferObject(this);
+
+    // OSG_NOTICE<<"BufferObject::getOrCreateGLBufferObject() _glBufferObjects[contextID]->getProfile()._size() = "<<_glBufferObjects[contextID]->getProfile()._size<<std::endl;
+
     return _glBufferObjects[contextID].get();
 }
 
@@ -1083,7 +1088,10 @@ void BufferObject::dirty()
 {
     for(unsigned int i=0; i<_glBufferObjects.size(); ++i)
     {
-        if (_glBufferObjects[i].valid()) _glBufferObjects[i]->dirty();
+        if (_glBufferObjects[i].valid())
+        {
+            _glBufferObjects[i]->dirty();
+        }
     }
 }
 

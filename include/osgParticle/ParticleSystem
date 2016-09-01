@@ -326,7 +326,7 @@ namespace osgParticle
 
         int _estimatedMaxNumOfParticles;
 
-        struct ArrayData
+        struct OSGPARTICLE_EXPORT ArrayData
         {
             ArrayData();
 

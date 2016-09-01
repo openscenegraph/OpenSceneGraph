@@ -60,10 +60,16 @@ public:
 
         inline void bindVertexBufferObject(osg::GLBufferObject* vbo)
         {
-            if (vbo == _currentVBO) return;
-            if (vbo->isDirty()) vbo->compileBuffer();
-            else vbo->bindBuffer();
-            _currentVBO = vbo;
+            if (vbo->isDirty())
+            {
+                vbo->compileBuffer();
+                _currentVBO = vbo;
+            }
+            else if (vbo != _currentVBO)
+            {
+                vbo->bindBuffer();
+                _currentVBO = vbo;
+            }
         }
 
         inline void unbindVertexBufferObject()
@@ -79,10 +85,16 @@ public:
 
         inline void bindElementBufferObject(osg::GLBufferObject* ebo)
         {
-            if (ebo == _currentEBO) return;
-            if (ebo->isDirty()) ebo->compileBuffer();
-            else ebo->bindBuffer();
-            _currentEBO = ebo;
+            if (ebo->isDirty())
+            {
+                ebo->compileBuffer();
+                _currentEBO = ebo;
+            }
+            else if (ebo != _currentEBO)
+            {
+                ebo->bindBuffer();
+                _currentEBO = ebo;
+            }
         }
 
         inline void unbindElementBufferObject()
@@ -104,7 +116,8 @@ public:
         void assignTexCoordArrayDispatcher(unsigned int numUnits);
         void assignVertexAttribArrayDispatcher(unsigned int numUnits);
 
-        inline bool isVertexBufferObjectSupported() const { return true; }
+        inline void setVertexBufferObjectSupported(bool flag) { _isVertexBufferObjectSupported = flag; }
+        inline bool isVertexBufferObjectSupported() const { return _isVertexBufferObjectSupported; }
 
         void setArray(ArrayDispatch* vad, osg::State& state, const osg::Array* new_array);
         void setArray(ArrayDispatch* vad, osg::State& state, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean normalized);
@@ -172,6 +185,8 @@ public:
 
         osg::State*                     _state;
         osg::ref_ptr<osg::GLExtensions> _ext;
+
+        bool                            _isVertexBufferObjectSupported;
 
         GLuint                          _vertexArrayObject;
 

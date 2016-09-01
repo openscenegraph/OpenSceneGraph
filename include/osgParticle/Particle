@@ -23,9 +23,6 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 #include <osg/Matrix>
-#include <osg/Drawable>
-#include <osg/GL>
-#include <osg/GLBeginEndAdapter>
 
 namespace osgParticle
 {
@@ -150,6 +147,13 @@ namespace osgParticle
         /// Get the t texture coordinate of the bottom left of the particle
         inline float getTTexCoord() const { return _t_coord; }
 
+        /// Get the texture coordinate width of the particle
+        inline float getSTexTile() const { return _s_tile; }
+
+        /// Get the texture coordinate height of the particle
+        inline float getTTexTile() const { return _t_tile; }
+
+
         /// Get width of texture tile
         inline int getTileS() const;
 
@@ -239,15 +243,6 @@ namespace osgParticle
             by computing <I>P = P + V * dt</I> (where <I>P</I> is the position and <I>V</I> is the velocity).
         */
         bool update(double dt, bool onlyTimeStamp);
-
-        /// Perform some pre-rendering tasks. Called automatically by particle systems.
-        inline void beginRender(osg::GLBeginEndAdapter* gl) const;
-
-        /// Render the particle. Called automatically by particle systems.
-        void render(osg::GLBeginEndAdapter* gl, const osg::Vec3& xpos, const osg::Vec3& px, const osg::Vec3& py, float scale = 1.0f) const;
-
-        /// Perform some post-rendering tasks. Called automatically by particle systems.
-        inline void endRender(osg::GLBeginEndAdapter* gl) const;
 
         /// Get the current (interpolated) polygon size. Valid only after the first call to update().
         inline float getCurrentSize() const;
@@ -558,36 +553,6 @@ namespace osgParticle
     {
         _mass = m;
         _massinv = 1 / m;
-    }
-
-    inline void Particle::beginRender(osg::GLBeginEndAdapter* gl) const
-    {
-        switch (_shape)
-        {
-        case POINT:
-            gl->Begin(GL_POINTS);
-            break;
-        case QUAD:
-            gl->Begin(GL_QUADS);
-            break;
-        case LINE:
-            gl->Begin(GL_LINES);
-            break;
-        default: ;
-        }
-    }
-
-    inline void Particle::endRender(osg::GLBeginEndAdapter* gl) const
-    {
-        switch (_shape)
-        {
-        case POINT:
-        case QUAD:
-        case LINE:
-            gl->End();
-            break;
-        default: ;
-        }
     }
 
     inline float Particle::getCurrentSize() const

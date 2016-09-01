@@ -114,13 +114,28 @@ void ConnectedParticleSystem::reuseParticle(int particleIndex)
 
 void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) const
 {
-    osg::State& state = *renderInfo.getState();
-    osg::GLBeginEndAdapter& gl = state.getGLBeginEndAdapter();
-
     ScopedReadLock lock(_readWriteMutex);
+
+    osg::State& state = *renderInfo.getState();
 
     const Particle* particle = (_startParticle != Particle::INVALID_INDEX) ? &_particles[_startParticle] : 0;
     if (!particle) return;
+
+    ArrayData& ad = _bufferedArrayData[state.getContextID()];
+    if (!ad.vertices.valid())
+    {
+        ad.init();
+        ad.reserve(_particles.capacity()*2);
+    }
+
+    ad.clear();
+    ad.dirty();
+
+    // set up arrays and primitives ready to fill in
+    osg::Vec3Array& vertices = *ad.vertices;
+    osg::Vec4Array& colors = *ad.colors;
+    osg::Vec2Array& texcoords = *ad.texcoords2;
+    ArrayData::Primitives& primitives = ad.primitives;
 
 
     osg::Vec4 pixelSizeVector = osg::CullingSet::computePixelSizeVector(*state.getCurrentViewport(),state.getProjectionMatrix(),state.getModelViewMatrix());
@@ -134,15 +149,14 @@ void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) co
     if (pixelSizeOfFirstParticle<1.0)
     {
         // draw the connected particles as a line
-        gl.Begin(GL_LINE_STRIP);
         while(particle != 0)
         {
 
             const osg::Vec4& color = particle->getCurrentColor();
             const osg::Vec3& pos = particle->getPosition();
-            gl.Color4f( color.r(), color.g(), color.b(), color.a() * particle->getCurrentAlpha());
-            gl.TexCoord2f( particle->getSTexCoord(), 0.5f );
-            gl.Vertex3fv(pos.ptr());
+            colors.push_back(osg::Vec4( color.r(), color.g(), color.b(), color.a() * particle->getCurrentAlpha()));
+            texcoords.push_back(osg::Vec2( particle->getSTexCoord(), 0.5f ));
+            vertices.push_back(pos);
 
             const Particle* nextParticle = (particle->getNextParticle() != Particle::INVALID_INDEX) ? &_particles[particle->getNextParticle()] : 0;
             if (nextParticle)
@@ -163,11 +177,11 @@ void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) co
             }
             particle = nextParticle;
         }
-        gl.End();
+
+        primitives.push_back(ArrayData::ModeCount(GL_LINE_STRIP, vertices.size()));
     }
     else
     {
-
         // draw the connected particles as a quad stripped aligned to be orthogonal to the eye
         osg::Matrix eyeToLocalTransform;
         eyeToLocalTransform.invert(state.getModelViewMatrix());
@@ -175,7 +189,6 @@ void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) co
 
         osg::Vec3 delta(0.0f,0.0f,1.0f);
 
-        gl.Begin(GL_QUAD_STRIP);
         while(particle != 0)
         {
             const osg::Vec4& color = particle->getCurrentColor();
@@ -209,17 +222,20 @@ void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) co
             osg::Vec3 bottom(pos-normal);
             osg::Vec3 top(pos+normal);
 
-            gl.Color4f( color.r(), color.g(), color.b(), color.a() * particle->getCurrentAlpha());
+            colors.push_back(osg::Vec4( color.r(), color.g(), color.b(), color.a() * particle->getCurrentAlpha()));
+            texcoords.push_back( osg::Vec2( particle->getSTexCoord(), 0.0f ));
+            vertices.push_back(bottom);
 
-            gl.TexCoord2f( particle->getSTexCoord(), 0.0f );
-            gl.Vertex3fv(bottom.ptr());
-
-            gl.TexCoord2f( particle->getSTexCoord(), 1.0f );
-            gl.Vertex3fv(top.ptr());
+            colors.push_back(colors.back());
+            texcoords.push_back( osg::Vec2( particle->getSTexCoord(), 1.0f ));
+            vertices.push_back(top);
 
             particle = nextParticle;
         }
-        gl.End();
-    }
-}
 
+        primitives.push_back(ArrayData::ModeCount(GL_QUAD_STRIP, vertices.size()));
+    }
+
+    ad.dispatchArrays(state);
+    ad.dispatchPrimitives();
+}

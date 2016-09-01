@@ -33,6 +33,15 @@ void osgParticle::ModularEmitter::emitParticles(double dt)
         worldToPs = osg::Matrix::inverse(psToWorld);
     }
 
+    const Particle& particleTemplate = getUseDefaultTemplate() ? getParticleSystem()->getDefaultParticleTemplate() : getParticleTemplate();
+
+    double duration = particleTemplate.getLifeTime();
+    if (!getEndless() && getLifeTime()<duration) duration = getLifeTime();
+    // duration += 5.0f/60.0f;
+
+    unsigned int num_before_end_of_lifetime = _counter->getEstimatedMaxNumOfParticles(duration);
+    float esimateMaxNumScale = 1.1f;
+
     if (getReferenceFrame() == RELATIVE_RF)
     {
         const osg::Matrix& ltw = getLocalToWorldMatrix();
@@ -45,26 +54,41 @@ void osgParticle::ModularEmitter::emitParticles(double dt)
         if (_numParticleToCreateMovementCompensationRatio>0.0f)
         {
             // compute the distance moved between frames
-            const osg::Vec3d controlPosition
-                = osg::Vec3d(_placer->getControlPosition());
+            const osg::Vec3d controlPosition = osg::Vec3d(_placer->getControlPosition());
             osg::Vec3d previousPosition = controlPosition * previous_ltw;
             osg::Vec3d currentPosition = controlPosition * ltw;
             float distance = (currentPosition-previousPosition).length();
 
-            float size = getUseDefaultTemplate() ?
-                        getParticleSystem()->getDefaultParticleTemplate().getSizeRange().minimum :
-                        getParticleTemplate().getSizeRange().minimum;
+            float size = particleTemplate.getSizeRange().minimum;
 
             float num_extra_samples = _numParticleToCreateMovementCompensationRatio*distance/size;
             float rounded_down = floor(num_extra_samples);
             float remainder = num_extra_samples-rounded_down;
 
             n = osg::maximum(n, int(rounded_down) +  (((float) rand() < remainder * (float)RAND_MAX) ? 1 : 0));
+
+            unsigned int num_for_duration = static_cast<unsigned int>((num_extra_samples/dt) * duration);
+            if (num_for_duration>num_before_end_of_lifetime)
+            {
+                num_before_end_of_lifetime = num_for_duration;
+            }
+
+
         }
+
+        num_before_end_of_lifetime = static_cast<unsigned int>( ceilf(static_cast<float>(num_before_end_of_lifetime) * esimateMaxNumScale));
+
+        setEstimatedMaxNumOfParticles(num_before_end_of_lifetime);
+
+
+        // double num_per_second = (static_cast<double>(n)/dt);
+        // OSG_NOTICE<<"emitParticle count="<<_counter->className()<<" ps="<<std::hex<<getParticleSystem()<<std::dec<<", n="<<n<<", num_per_second="<<num_per_second<<", num_before_end_of_lifetime="<<num_before_end_of_lifetime<<std::endl;
+        // if (getEndless()) { OSG_NOTICE<<"    Emitter::getLifeTime()=ENDLESS particle.getLifeTime()="<<particleTemplate.getLifeTime()<<" duration="<<duration<<std::endl; }
+        // else { OSG_NOTICE<<"    Emitter::getLifeTime()="<<getLifeTime()<<" particle.getLifeTime()="<<particleTemplate.getLifeTime()<<" duration="<<duration<<std::endl; }
 
         for (int i=0; i<n; ++i)
         {
-            Particle* P = getParticleSystem()->createParticle(getUseDefaultTemplate()? 0: &getParticleTemplate());
+            Particle* P = getParticleSystem()->createParticle(&particleTemplate);
             if (P)
             {
                 _placer->place(P);
@@ -87,9 +111,19 @@ void osgParticle::ModularEmitter::emitParticles(double dt)
     else
     {
         int n = _counter->numParticlesToCreate(dt);
+
+        num_before_end_of_lifetime = static_cast<unsigned int>( ceilf(static_cast<float>(num_before_end_of_lifetime) * esimateMaxNumScale));
+
+        setEstimatedMaxNumOfParticles(num_before_end_of_lifetime);
+
+        // double num_per_second = (static_cast<double>(n)/dt);
+        // OSG_NOTICE<<"emitParticle ps="<<std::hex<<getParticleSystem()<<std::dec<<", num_per_second="<<num_per_second<<", num_before_end_of_lifetime="<<num_before_end_of_lifetime<<std::endl;
+        // if (getEndless()) { OSG_NOTICE<<"    Emitter::getLifeTime()=ENDLESS particle.getLifeTime()="<<particleTemplate.getLifeTime()<<" duration="<<duration<<std::endl; }
+        // else { OSG_NOTICE<<"    Emitter::getLifeTime()="<<getLifeTime()<<" particle.getLifeTime()="<<particleTemplate.getLifeTime()<<" duration="<<duration<<std::endl; }
+
         for (int i=0; i<n; ++i)
         {
-            Particle* P = getParticleSystem()->createParticle(getUseDefaultTemplate()? 0: &getParticleTemplate());
+            Particle* P = getParticleSystem()->createParticle(&particleTemplate);
             if (P)
             {
                 _placer->place(P);

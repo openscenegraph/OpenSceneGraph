@@ -267,6 +267,11 @@ namespace osgParticle
 
         virtual osg::VertexArrayState* createVertexArrayState(osg::RenderInfo& renderInfo, bool usingVBOs) const;
 
+        void adjustEstimatedMaxNumOfParticles(int delta) {  _estimatedMaxNumOfParticles += delta; }
+
+        void setEstimatedMaxNumOfParticles(int num) { _estimatedMaxNumOfParticles = num; }
+        int getEstimatedMaxNumOfParticles() const { return _estimatedMaxNumOfParticles; }
+
     protected:
 
         virtual ~ParticleSystem();
@@ -276,6 +281,8 @@ namespace osgParticle
         inline void update_bounds(const osg::Vec3& p, float r);
         void single_pass_render(osg::RenderInfo& renderInfo, const osg::Matrix& modelview) const;
         void render_vertex_array(osg::RenderInfo& renderInfo) const;
+
+        void new_drawImplementation(osg::RenderInfo& renderInfo) const;
 
         typedef std::vector<Particle> Particle_vector;
         typedef std::stack<Particle*> Death_stack;
@@ -315,23 +322,38 @@ namespace osgParticle
         SortMode _sortMode;
         double _visibilityDistance;
 
-        mutable int _draw_count;
-
         mutable ReadWriterMutex _readWriteMutex;
+
+        int _estimatedMaxNumOfParticles;
 
         struct ArrayData
         {
             ArrayData();
+
+            void init();
+            void init3();
 
             void reserve(unsigned int numVertices);
             void resize(unsigned int numVertices);
             void resizeGLObjectBuffers(unsigned int maxSize);
             void releaseGLObjects(osg::State* state);
 
+            void clear();
+            void dirty();
+
+            void dispatchArrays(osg::State& state);
+            void dispatchPrimitives();
+
             osg::ref_ptr<osg::BufferObject> vertexBufferObject;
             osg::ref_ptr<osg::Vec3Array>    vertices;
+            osg::ref_ptr<osg::Vec3Array>    normals;
             osg::ref_ptr<osg::Vec4Array>    colors;
-            osg::ref_ptr<osg::Vec2Array>    texcoords;
+            osg::ref_ptr<osg::Vec2Array>    texcoords2;
+            osg::ref_ptr<osg::Vec3Array>    texcoords3;
+
+            typedef std::pair<GLenum, unsigned int> ModeCount;
+            typedef std::vector<ModeCount> Primitives;
+            Primitives primitives;
         };
 
         typedef osg::buffered_object< ArrayData > BufferedArrayData;

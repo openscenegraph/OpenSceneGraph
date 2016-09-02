@@ -83,7 +83,6 @@ SET(TARGET_H
     ${HEADER_PATH}/GL2Extensions
     ${HEADER_PATH}/GLDefines
     ${HEADER_PATH}/GLExtensions
-    ${HEADER_PATH}/GLBeginEndAdapter
     ${HEADER_PATH}/GLObjects
     ${HEADER_PATH}/GLU
     ${HEADER_PATH}/GraphicsCostEstimator
@@ -291,7 +290,6 @@ SET(TARGET_SRC
     Geode.cpp
     Geometry.cpp
     GLExtensions.cpp
-    GLBeginEndAdapter.cpp
     GLObjects.cpp
     GLStaticLibrary.h
     GLStaticLibrary.cpp

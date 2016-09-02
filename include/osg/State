@@ -29,7 +29,6 @@
 #include <osg/DisplaySettings>
 #include <osg/Polytope>
 #include <osg/Viewport>
-#include <osg/GLBeginEndAdapter>
 #include <osg/ArrayDispatchers>
 #include <osg/GraphicsCostEstimator>
 
@@ -877,9 +876,6 @@ class OSG_EXPORT State : public Referenced
         /** Initialize extension used by osg::State.*/
         void initializeExtensionProcs();
 
-        /** Get the GL adapter object used to map OpenGL 1.0 glBegin/glEnd usage to vertex arrays.*/
-        inline GLBeginEndAdapter& getGLBeginEndAdapter() { return _glBeginEndAdapter; }
-
         /** Get the helper class for dispatching osg::Arrays as OpenGL attribute data.*/
         inline ArrayDispatchers& getArrayDispatchers() { return _arrayDispatchers; }
 
@@ -1345,7 +1341,6 @@ class OSG_EXPORT State : public Referenced
         unsigned int                                            _dynamicObjectCount;
         osg::ref_ptr<DynamicObjectRenderingCompletedCallback>   _completeDynamicObjectRenderingCallback;
 
-        GLBeginEndAdapter           _glBeginEndAdapter;
         ArrayDispatchers            _arrayDispatchers;
 
         osg::ref_ptr<GraphicsCostEstimator> _graphicsCostEstimator;

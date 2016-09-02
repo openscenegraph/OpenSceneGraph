@@ -125,7 +125,6 @@ State::State():
     _maxTexturePoolSize = 0;
     _maxBufferObjectPoolSize = 0;
 
-    _glBeginEndAdapter.setState(this);
     _arrayDispatchers.setState(this);
 
     _graphicsCostEstimator = new GraphicsCostEstimator;

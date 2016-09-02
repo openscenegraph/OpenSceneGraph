@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGUI_COMBOBOX
-#define OSGUI_COMBOBOX
+#ifndef OSGUI_TABWIDGET
+#define OSGUI_TABWIDGET
 
 #include <osgUI/Popup>
 #include <osg/Switch>

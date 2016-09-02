@@ -265,7 +265,7 @@ namespace osgParticle
           * for all graphics contexts. */
         virtual void releaseGLObjects(osg::State* state=0) const;
 
-        virtual osg::VertexArrayState* createVertexArrayState(osg::RenderInfo& renderInfo, bool usingVBOs) const;
+        virtual osg::VertexArrayState* createVertexArrayState(osg::RenderInfo& renderInfo) const;
 
         void adjustEstimatedMaxNumOfParticles(int delta) {  _estimatedMaxNumOfParticles += delta; }
 

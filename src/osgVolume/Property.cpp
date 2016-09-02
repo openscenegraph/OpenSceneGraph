@@ -372,8 +372,8 @@ PropertyAdjustmentCallback::PropertyAdjustmentCallback():
 PropertyAdjustmentCallback::PropertyAdjustmentCallback(const PropertyAdjustmentCallback& pac,const osg::CopyOp& copyop):
     osg::Object(pac, copyop),
     osg::Callback(pac, copyop),
+    osgGA::GUIEventHandler(pac, copyop),
     osg::StateSet::Callback(pac, copyop),
-    osgGA::GUIEventHandler(pac, copyop), 
     _cyleForwardKey(pac._cyleForwardKey),
     _cyleBackwardKey(pac._cyleBackwardKey),
     _transparencyKey(pac._transparencyKey),

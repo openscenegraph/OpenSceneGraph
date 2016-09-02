@@ -590,7 +590,8 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         {
             DrawCallback() {}
 
-            DrawCallback(const DrawCallback&,const CopyOp&) {}
+            DrawCallback(const DrawCallback& org,const CopyOp& copyop):
+                Object(org, copyop) {}
 
             META_Object(osg, DrawCallback);
 

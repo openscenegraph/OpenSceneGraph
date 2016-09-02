@@ -352,6 +352,26 @@ class OSG_EXPORT State : public Referenced
             bool        _need_to_apply_value;
         };
 
+        struct ApplyTextureModeProxy
+        {
+            inline ApplyTextureModeProxy(osg::State& state, unsigned int unit, GLenum mode, bool value):_state(state), _unit(unit), _mode(mode)
+            {
+                _previous_value = _state.getLastAppliedTextureModeValue(_unit, _mode);
+                _need_to_apply_value = (_previous_value!=value);
+                if (_need_to_apply_value) _state.applyTextureMode(_unit, _mode, value);
+            }
+            inline ~ApplyTextureModeProxy()
+            {
+                if (_need_to_apply_value) _state.applyTextureMode(_unit, _mode, _previous_value);
+            }
+
+            osg::State&     _state;
+            unsigned int    _unit;
+            GLenum          _mode;
+            bool            _previous_value;
+            bool            _need_to_apply_value;
+        };
+
         /** Apply an OpenGL mode if required. This is a wrapper around
           * \c glEnable() and \c glDisable(), that just actually calls these
           * functions if the \c enabled flag is different than the current

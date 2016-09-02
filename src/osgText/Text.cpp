@@ -538,6 +538,9 @@ void Text::computeGlyphRepresentation()
     computeBackdropBoundingBox();
     computeBoundingBoxMargin();
     computeColorGradients();
+
+    // set up the vertices for any boundinbox or alignment decoration
+    setupDecoration();
 }
 
 // Returns false if there are no glyphs and the width/height values are invalid.
@@ -1311,71 +1314,89 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
         }
     }
 
-    osg::GLBeginEndAdapter& gl = (state.getGLBeginEndAdapter());
 
     state.Normal(_normal.x(), _normal.y(), _normal.z());
 
-    if (_drawMode & FILLEDBOUNDINGBOX)
+    if ((_drawMode&(~TEXT))!=0)
     {
-        if (_textBB.valid())
+
+        // ** save the previous modelview matrix
+        osg::Matrix previous(state.getModelViewMatrix());
+
+        // ** get the modelview for this context
+        osg::Matrix modelview(_autoTransformCache[contextID]._matrix);
+
+        // ** mult previous by the modelview for this context
+        modelview.postMult(previous);
+
+        // ** apply this new modelview matrix
+        state.applyModelViewMatrix(modelview);
+
+        state.disableNormalPointer();
+
+        state.Color(colorMultiplier.r()*_textBBColor.r(),colorMultiplier.g()*_textBBColor.g(),colorMultiplier.b()*_textBBColor.b(),colorMultiplier.a()*_textBBColor.a());
+
+        if (_decorationVertices.valid() && !_decorationVertices->empty())
         {
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
-            state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
+            osg::State::ApplyModeProxy applyMode(state, GL_LIGHTING, false);
+            osg::State::ApplyTextureModeProxy applyTextureMode(state, 0, GL_TEXTURE_2D, false);
 
-            const osg::Matrix& matrix = _autoTransformCache[contextID]._matrix;
+            state.setVertexPointer(_decorationVertices.get());
 
-            osg::Vec3 c00(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
-            osg::Vec3 c10(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMin())*matrix);
-            osg::Vec3 c11(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMin())*matrix);
-            osg::Vec3 c01(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*matrix);
-
-            switch(_backdropImplementation)
+            unsigned int start_index = 0;
+            if ((_drawMode & FILLEDBOUNDINGBOX)!=0 && _textBB.valid())
             {
-                case NO_DEPTH_BUFFER:
-                    // Do nothing.  The bounding box will be rendered before the text and that's all that matters.
-                    break;
-                case DEPTH_RANGE:
-                    glPushAttrib(GL_DEPTH_BUFFER_BIT);
-                    //unsigned int backdrop_index = 0;
-                    //unsigned int max_backdrop_index = 8;
-                    //const double offset = double(max_backdrop_index - backdrop_index) * 0.003;
-                    glDepthRange(0.001, 1.001);
-                    break;
-                /*case STENCIL_BUFFER:
-                    break;*/
-                default:
-                    glPushAttrib(GL_POLYGON_OFFSET_FILL);
-                    glEnable(GL_POLYGON_OFFSET_FILL);
-                    glPolygonOffset(0.1f * osg::PolygonOffset::getFactorMultiplier(), 10.0f * osg::PolygonOffset::getUnitsMultiplier() );
+            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+                switch(_backdropImplementation)
+                {
+                    case NO_DEPTH_BUFFER:
+                        // Do nothing.  The bounding box will be rendered before the text and that's all that matters.
+                        break;
+                    case DEPTH_RANGE:
+                        glPushAttrib(GL_DEPTH_BUFFER_BIT);
+                        //unsigned int backdrop_index = 0;
+                        //unsigned int max_backdrop_index = 8;
+                        //const double offset = double(max_backdrop_index - backdrop_index) * 0.003;
+                        glDepthRange(0.001, 1.001);
+                        break;
+                    /*case STENCIL_BUFFER:
+                        break;*/
+                    default:
+                        glPushAttrib(GL_POLYGON_OFFSET_FILL);
+                        glEnable(GL_POLYGON_OFFSET_FILL);
+                        glPolygonOffset(0.1f * osg::PolygonOffset::getFactorMultiplier(), 10.0f * osg::PolygonOffset::getUnitsMultiplier() );
+                }
+
+                glDrawArrays(GL_QUADS, 0, 4);
+                start_index += 4;
+
+                switch(_backdropImplementation)
+                {
+                    case NO_DEPTH_BUFFER:
+                        // Do nothing.
+                        break;
+                    case DEPTH_RANGE:
+                        glDepthRange(0.0, 1.0);
+                        glPopAttrib();
+                        break;
+                    /*case STENCIL_BUFFER:
+                        break;*/
+                    default:
+                        glDisable(GL_POLYGON_OFFSET_FILL);
+                        glPopAttrib();
+                }
+            #endif
             }
 
-            gl.Color4f(colorMultiplier.r()*_textBBColor.r(),colorMultiplier.g()*_textBBColor.g(),colorMultiplier.b()*_textBBColor.b(),colorMultiplier.a()*_textBBColor.a());
-            gl.Begin(GL_QUADS);
-                gl.Vertex3fv(c00.ptr());
-                gl.Vertex3fv(c10.ptr());
-                gl.Vertex3fv(c11.ptr());
-                gl.Vertex3fv(c01.ptr());
-            gl.End();
-
-            switch(_backdropImplementation)
+            if (start_index<_decorationVertices->size())
             {
-                case NO_DEPTH_BUFFER:
-                    // Do nothing.
-                    break;
-                case DEPTH_RANGE:
-                    glDepthRange(0.0, 1.0);
-                    glPopAttrib();
-                    break;
-                /*case STENCIL_BUFFER:
-                    break;*/
-                default:
-                    glDisable(GL_POLYGON_OFFSET_FILL);
-                    glPopAttrib();
+                state.Color(colorMultiplier.r(),colorMultiplier.g(),colorMultiplier.b(),colorMultiplier.a());
+                glDrawArrays(GL_LINES, start_index, _decorationVertices->size());
             }
-        #else
-            OSG_NOTICE<<"Warning: Text::drawImplementation() fillMode FILLEDBOUNDINGBOX not supported"<<std::endl;
-        #endif
         }
+
+        // restore the previous modelview matrix
+        state.applyModelViewMatrix(previous);
     }
 
 #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
@@ -1423,54 +1444,6 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
         state.unbindElementBufferObject();
     }
 
-    if (_drawMode & BOUNDINGBOX)
-    {
-
-        if (_textBB.valid())
-        {
-            state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
-
-            const osg::Matrix& matrix = _autoTransformCache[contextID]._matrix;
-
-            osg::Vec3 c00(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
-            osg::Vec3 c10(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMin())*matrix);
-            osg::Vec3 c11(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMin())*matrix);
-            osg::Vec3 c01(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*matrix);
-
-
-            gl.Color4f(colorMultiplier.r()*_textBBColor.r(),colorMultiplier.g()*_textBBColor.g(),colorMultiplier.b()*_textBBColor.b(),colorMultiplier.a()*_textBBColor.a());
-            gl.Begin(GL_LINE_LOOP);
-                gl.Vertex3fv(c00.ptr());
-                gl.Vertex3fv(c10.ptr());
-                gl.Vertex3fv(c11.ptr());
-                gl.Vertex3fv(c01.ptr());
-            gl.End();
-        }
-    }
-
-    if (_drawMode & ALIGNMENT)
-    {
-        gl.Color4fv(colorMultiplier.ptr());
-
-        float cursorsize = _characterHeight*0.5f;
-
-        const osg::Matrix& matrix = _autoTransformCache[contextID]._matrix;
-
-        osg::Vec3 hl(osg::Vec3(_offset.x()-cursorsize,_offset.y(),_offset.z())*matrix);
-        osg::Vec3 hr(osg::Vec3(_offset.x()+cursorsize,_offset.y(),_offset.z())*matrix);
-        osg::Vec3 vt(osg::Vec3(_offset.x(),_offset.y()-cursorsize,_offset.z())*matrix);
-        osg::Vec3 vb(osg::Vec3(_offset.x(),_offset.y()+cursorsize,_offset.z())*matrix);
-
-        state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
-
-        gl.Begin(GL_LINES);
-            gl.Vertex3fv(hl.ptr());
-            gl.Vertex3fv(hr.ptr());
-            gl.Vertex3fv(vt.ptr());
-            gl.Vertex3fv(vb.ptr());
-        gl.End();
-
-    }
 }
 
 void Text::accept(osg::Drawable::ConstAttributeFunctor& af) const

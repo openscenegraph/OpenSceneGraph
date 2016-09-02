@@ -696,7 +696,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
 
 #endif
 
-VertexArrayState* Drawable::createVertexArrayState(RenderInfo& renderInfo, bool usingVBOs) const
+VertexArrayState* Drawable::createVertexArrayState(RenderInfo& renderInfo) const
 {
     VertexArrayState* vos = new osg::VertexArrayState(renderInfo.getState());
     vos->assignAllDispatchers();

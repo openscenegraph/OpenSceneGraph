@@ -11,15 +11,13 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGUI_WIDGET
-#define OSGUI_WIDGET
+#ifndef OSGGA_WIDGET
+#define OSGGA_WIDGET
 
 #include <osg/Group>
 #include <osg/BoundingBox>
 #include <osgGA/Event>
 #include <osgGA/EventVisitor>
-
-#define OSGUI_EXPORT
 
 namespace osgGA
 {

@@ -149,6 +149,10 @@ class OSGTEXT_EXPORT Text3D : public osgText::TextBase
 
         osg::ref_ptr<osg::StateSet> _wallStateSet;
         osg::ref_ptr<osg::StateSet> _backStateSet;
+
+        void setupDecoration();
+
+        osg::ref_ptr<osg::Vec3Array> _decorationVertices;
 };
 
 }

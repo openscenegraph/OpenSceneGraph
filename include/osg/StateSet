@@ -438,7 +438,9 @@ class OSG_EXPORT StateSet : public Object
         {
             Callback() {}
 
-            Callback(const Callback&,const CopyOp&) {}
+            Callback(const Callback& org,const CopyOp& copyop):
+                osg::Object(org, copyop),
+                osg::Callback(org, copyop) {}
 
             META_Object(osg,Callback);
 

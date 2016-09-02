@@ -23,7 +23,7 @@ UpdateBone::UpdateBone(const std::string& name) : UpdateMatrixTransform(name)
 {
 }
 
-UpdateBone::UpdateBone(const UpdateBone& apc,const osg::CopyOp& copyop) : osg::Object(apc,copyop), UpdateMatrixTransform(apc, copyop)
+UpdateBone::UpdateBone(const UpdateBone& apc,const osg::CopyOp& copyop) : osg::Object(apc,copyop), osg::Callback(apc, copyop), UpdateMatrixTransform(apc, copyop)
 {
 }
 

@@ -182,7 +182,10 @@ namespace osgAnimation
     {
         UpdateMorphGeometry() {}
 
-        UpdateMorphGeometry(const UpdateMorphGeometry&, const osg::CopyOp&) {}
+        UpdateMorphGeometry(const UpdateMorphGeometry& org, const osg::CopyOp& copyop):
+            osg::Object(org, copyop),
+            osg::Callback(org, copyop),
+            osg::DrawableUpdateCallback(org, copyop) {}
 
         META_Object(osgAnimation, UpdateMorphGeometry);
 

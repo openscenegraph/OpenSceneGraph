@@ -198,6 +198,7 @@ void MorphGeometry::transformSoftwareMethod()
 
 UpdateMorph::UpdateMorph(const UpdateMorph& apc,const osg::CopyOp& copyop) :
     osg::Object(apc, copyop),
+    osg::Callback(apc, copyop),
     AnimationUpdateCallback<osg::NodeCallback>(apc, copyop)
 {
 }

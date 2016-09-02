@@ -229,7 +229,9 @@ class OSG_EXPORT AnimationPathCallback : public NodeCallback
             _pauseTime(0.0) {}
 
         AnimationPathCallback(const AnimationPathCallback& apc,const CopyOp& copyop):
-            NodeCallback(apc,copyop),
+            Object(apc, copyop),
+            Callback(apc, copyop),
+            NodeCallback(apc, copyop),
             _animationPath(apc._animationPath),
             _pivotPoint(apc._pivotPoint),
             _useInverseMatrix(apc._useInverseMatrix),

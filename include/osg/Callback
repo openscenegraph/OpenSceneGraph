@@ -213,7 +213,8 @@ class OSG_EXPORT NodeCallback : public virtual Callback {
         NodeCallback(){}
 
         NodeCallback(const NodeCallback& nc,const CopyOp& copyop):
-            Callback(nc,copyop) {}
+            Object(nc, copyop),
+            Callback(nc, copyop) {}
 
         META_Object(osg,NodeCallback);
 
@@ -240,7 +241,9 @@ class OSG_EXPORT StateAttributeCallback : public virtual osg::Callback
     public:
         StateAttributeCallback() {}
 
-        StateAttributeCallback(const StateAttributeCallback&,const CopyOp&) {}
+        StateAttributeCallback(const StateAttributeCallback& org,const CopyOp& copyop) :
+            Object(org, copyop),
+            Callback(org, copyop) {}
 
         META_Object(osg,StateAttributeCallback);
 
@@ -263,7 +266,9 @@ class OSG_EXPORT UniformCallback : public virtual osg::Callback
 public:
     UniformCallback() {}
 
-    UniformCallback(const UniformCallback&, const CopyOp&) {}
+    UniformCallback(const UniformCallback& org, const CopyOp& copyop) :
+        Object(org, copyop),
+        Callback(org, copyop) {}
 
     META_Object(osg, UniformCallback);
 
@@ -288,7 +293,9 @@ class OSG_EXPORT DrawableUpdateCallback : public virtual Callback
 public:
     DrawableUpdateCallback() {}
 
-    DrawableUpdateCallback(const DrawableUpdateCallback&,const CopyOp&) {}
+    DrawableUpdateCallback(const DrawableUpdateCallback& org,const CopyOp& copyop):
+    Object(org, copyop),
+    Callback(org, copyop) {}
 
     META_Object(osg,DrawableUpdateCallback);
 
@@ -308,7 +315,9 @@ class OSG_EXPORT DrawableEventCallback : public virtual Callback
 public:
     DrawableEventCallback() {}
 
-    DrawableEventCallback(const DrawableEventCallback&,const CopyOp&) {}
+    DrawableEventCallback(const DrawableEventCallback& org, const CopyOp& copyop) :
+        Object(org, copyop),
+        Callback(org, copyop) {}
 
     META_Object(osg,DrawableEventCallback);
 
@@ -327,7 +336,9 @@ class OSG_EXPORT DrawableCullCallback : public virtual Callback
 public:
     DrawableCullCallback() {}
 
-    DrawableCullCallback(const DrawableCullCallback&,const CopyOp&) {}
+    DrawableCullCallback(const DrawableCullCallback& org, const CopyOp& copyop) :
+        Object(org, copyop),
+        Callback(org, copyop) {}
 
     META_Object(osg,DrawableCullCallback);
 

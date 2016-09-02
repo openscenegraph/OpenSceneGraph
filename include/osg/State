@@ -327,6 +327,30 @@ class OSG_EXPORT State : public Referenced
             return _modeMap[mode].global_default_value;
         }
 
+        inline bool getLastAppliedModeValue(StateAttribute::GLMode mode)
+        {
+            return _modeMap[mode].last_applied_value;
+        }
+
+        /** Proxy helper class for applyig a model in a local scope, with the preivous value being resotred automatically on leaving the scope that proxy was created.*/
+        struct ApplyModeProxy
+        {
+            inline ApplyModeProxy(osg::State& state, GLenum mode, bool value):_state(state), _mode(mode)
+            {
+                _previous_value = _state.getLastAppliedModeValue(mode);
+                _need_to_apply_value = (_previous_value!=value);
+                if (_need_to_apply_value) _state.applyMode(_mode, value);
+            }
+            inline ~ApplyModeProxy()
+            {
+                if (_need_to_apply_value) _state.applyMode(_mode, _previous_value);
+            }
+
+            osg::State& _state;
+            GLenum      _mode;
+            bool        _previous_value;
+            bool        _need_to_apply_value;
+        };
 
         /** Apply an OpenGL mode if required. This is a wrapper around
           * \c glEnable() and \c glDisable(), that just actually calls these
@@ -364,6 +388,13 @@ class OSG_EXPORT State : public Referenced
             ModeStack& ms = modeMap[mode];
             ms.changed = true;
             return applyModeOnTexUnit(unit,mode,enabled,ms);
+        }
+
+        inline bool getLastAppliedTextureModeValue(unsigned int unit, StateAttribute::GLMode mode)
+        {
+            ModeMap& modeMap = getOrCreateTextureModeMap(unit);
+            ModeStack& ms = modeMap[mode];
+            return ms.last_applied_value;
         }
 
         inline void setGlobalDefaultAttribute(const StateAttribute* attribute)
@@ -470,13 +501,13 @@ class OSG_EXPORT State : public Referenced
         void dirtyAllAttributes();
 
 
+        /** Proxy helper class for applyig a VertexArrayState in a local scope, with the preivous value being resotred automatically on leaving the scope that proxy was created.*/
         struct SetCurrentVertexArrayStateProxy
         {
             SetCurrentVertexArrayStateProxy(osg::State& state, VertexArrayState* vas):_state(state) { _state.setCurrentVertexArrayState(vas); }
             ~SetCurrentVertexArrayStateProxy() { _state.setCurrentToGloabalVertexArrayState(); }
             osg::State& _state;
         };
-
 
         /** Set the CurrentVetexArrayState object that take which vertex arrays are bound.*/
         void setCurrentVertexArrayState(VertexArrayState* vas) { _vas = vas; }

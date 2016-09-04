@@ -249,7 +249,7 @@ void osgArray2ivMField_template(const osg::Array *array, fieldClass &field, int 
 
 
 template<typename ivType, typename osgType, int shift>
-void osgArray2ivMField_composite_template_worker(ivType *dest, osgType *src, int num, int numItemsUntilMinusOne = 0)
+void osgArray2ivMField_composite_template_worker(ivType *dest, osgType *src, int num, int /*numItemsUntilMinusOne*/ = 0)
 {
   for (int i=0; i<num; i++, src+=shift)
     dest[i] = ivType(src);
@@ -257,7 +257,7 @@ void osgArray2ivMField_composite_template_worker(ivType *dest, osgType *src, int
 
 
 template<>
-void osgArray2ivMField_composite_template_worker<SbColor, GLubyte, 4>(SbColor *dest, GLubyte *src, int num, int numItemsUntilMinusOne)
+void osgArray2ivMField_composite_template_worker<SbColor, GLubyte, 4>(SbColor *dest, GLubyte *src, int num, int /*numItemsUntilMinusOne*/)
 {
   for (int i=0; i<num; i++, src+=4)
     dest[i].setValue(src[0]/255.f, src[1]/255.f, src[2]/255.f);
@@ -265,7 +265,7 @@ void osgArray2ivMField_composite_template_worker<SbColor, GLubyte, 4>(SbColor *d
 
 
 template<>
-void osgArray2ivMField_composite_template_worker<SbVec3f, float, 2>(SbVec3f *dest, float *src, int num, int numItemsUntilMinusOne)
+void osgArray2ivMField_composite_template_worker<SbVec3f, float, 2>(SbVec3f *dest, float *src, int num, int /*numItemsUntilMinusOne*/)
 {
   for (int i=0; i<num; i++, src+=2)
     dest[i].setValue(src[0], src[1], 0.f);
@@ -273,7 +273,7 @@ void osgArray2ivMField_composite_template_worker<SbVec3f, float, 2>(SbVec3f *des
 
 
 template<typename fieldClass, typename ivType, typename osgType, int shift>
-void osgArray2ivMField_composite_template(const osg::Array *array, fieldClass &field, int startIndex = 0, int stopIndex = 0, int numItemsUntilMinusOne = 0)
+void osgArray2ivMField_composite_template(const osg::Array *array, fieldClass &field, int startIndex = 0, int stopIndex = 0, int /*numItemsUntilMinusOne*/ = 0)
 {
   int num = array->getNumElements();
   if (startIndex!=0 || stopIndex!=0) {
@@ -296,7 +296,7 @@ void osgArray2ivMField_composite_template(const osg::Array *array, fieldClass &f
 template<typename fieldClass, typename ivType, typename osgType, int numComponents>
 void osgArray2ivMField_pack_template(const osg::Array *array, fieldClass &field,
                                             osgType mul, osgType max, osgType min,
-                                            int startIndex = 0, int stopIndex = 0, int numItemsUntilMinusOne = 0)
+                                            int startIndex = 0, int stopIndex = 0, int /*numItemsUntilMinusOne*/ = 0)
 {
   int i,num = array->getNumElements();
   if (startIndex!=0 || stopIndex!=0) {
@@ -1292,11 +1292,11 @@ static bool processPrimitiveSet(const deprecated_osg::Geometry *g, const osg::Pr
       case GL_LINE_STRIP:
           if (drawArrayLengths) {
             ((SoLineSet*)shape)->numVertices.setNum(drawArrayLengthsElems);
-            int i=0;
+            int li=0;
             for (osg::DrawArrayLengths::const_iterator primItr=drawArrayLengths->begin();
                 primItr!=drawArrayLengths->end();
-                ++primItr, i++)
-              ((SoLineSet*)shape)->numVertices.set1Value(i, *primItr);
+                ++primItr, li++)
+              ((SoLineSet*)shape)->numVertices.set1Value(li, *primItr);
           } else {
             ((SoLineSet*)shape)->numVertices.setNum(1);
             ((SoLineSet*)shape)->numVertices.set1Value(0, elementsCount);
@@ -1320,11 +1320,11 @@ static bool processPrimitiveSet(const deprecated_osg::Geometry *g, const osg::Pr
       case GL_TRIANGLE_STRIP:
           if (drawArrayLengths) {
             ((SoTriangleStripSet*)shape)->numVertices.setNum(drawArrayLengthsElems);
-            int i=0;
+            int li=0;
             for (osg::DrawArrayLengths::const_iterator primItr=drawArrayLengths->begin();
                 primItr!=drawArrayLengths->end();
-                ++primItr, i++)
-              ((SoTriangleStripSet*)shape)->numVertices.set1Value(i, *primItr);
+                ++primItr, li++)
+              ((SoTriangleStripSet*)shape)->numVertices.set1Value(li, *primItr);
           } else {
             ((SoTriangleStripSet*)shape)->numVertices.setNum(1);
             ((SoTriangleStripSet*)shape)->numVertices.set1Value(0, elementsCount);
@@ -1339,11 +1339,11 @@ static bool processPrimitiveSet(const deprecated_osg::Geometry *g, const osg::Pr
           assert(elementsCount % 2 == 0 && "elementsCount is not multiple of 2.");
           if (drawArrayLengths) {
             ((SoTriangleStripSet*)shape)->numVertices.setNum(drawArrayLengthsElems);
-            int i=0;
+            int li=0;
             for (osg::DrawArrayLengths::const_iterator primItr=drawArrayLengths->begin();
                 primItr!=drawArrayLengths->end();
-                ++primItr, i++)
-              ((SoTriangleStripSet*)shape)->numVertices.set1Value(i, *primItr);
+                ++primItr, li++)
+              ((SoTriangleStripSet*)shape)->numVertices.set1Value(li, *primItr);
           } else {
             ((SoTriangleStripSet*)shape)->numVertices.setNum(1);
             ((SoTriangleStripSet*)shape)->numVertices.set1Value(0, elementsCount);
@@ -1367,11 +1367,11 @@ static bool processPrimitiveSet(const deprecated_osg::Geometry *g, const osg::Pr
       case GL_POLYGON:
           if (drawArrayLengths) {
             ((SoFaceSet*)shape)->numVertices.setNum(drawArrayLengthsElems);
-            int i=0;
+            int li=0;
             for (osg::DrawArrayLengths::const_iterator primItr=drawArrayLengths->begin();
                 primItr!=drawArrayLengths->end();
-                ++primItr, i++)
-              ((SoFaceSet*)shape)->numVertices.set1Value(i, *primItr);
+                ++primItr, li++)
+              ((SoFaceSet*)shape)->numVertices.set1Value(li, *primItr);
           } else {
             ((SoFaceSet*)shape)->numVertices.setNum(1);
             ((SoFaceSet*)shape)->numVertices.set1Value(0, elementsCount);
@@ -1507,12 +1507,16 @@ void ConvertToInventor::processGeometry(const deprecated_osg::Geometry *g, Inven
     if (ivState->osgMaterial == NULL ||
         ivState->osgMaterial->getColorMode() == osg::Material::DIFFUSE ||
         ivState->osgMaterial->getColorMode() == osg::Material::AMBIENT_AND_DIFFUSE)
+    {
       osgArray2ivMField(g->getColorArray(), *colorField);
-    else; // FIXME: implement some workaround for non-diffuse cases?
+    }
+    else
+    {     // FIXME: implement some workaround for non-diffuse cases?
           // note: Warning was already shown in createInventorState().
           // note2: There is no effect to convert SoMaterial::[ambient|specular|emissive]color
           // here because Inventor does not set them per-vertex (performance reasons). See
           // Inventor documentation for more details.
+    }
   }
 
 
@@ -1797,7 +1801,7 @@ void ConvertToInventor::processShapeDrawable(const osg::ShapeDrawable *d, Invent
     virtual void apply(const osg::CompositeShape&) { warnNonSupported(); }
 
     InventorState *ivState;
-    MyShapeVisitor(InventorState *ivState) { this->ivState = ivState; }
+    MyShapeVisitor(InventorState * in_ivState) { ivState = in_ivState; }
   } shapeVisitor(ivState);
 
   // convert ShapeDrawable

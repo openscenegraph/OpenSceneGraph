@@ -31,6 +31,8 @@
 #include <osg/CullFace>
 #include <osg/FrontFace>
 
+#include "DeprecatedGeometry.h"
+
 class SoSeparator;
 
 namespace osg {

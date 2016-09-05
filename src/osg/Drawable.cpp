@@ -331,7 +331,7 @@ void Drawable::releaseGLObjects(State* state) const
             }
         }
 
-        VertexArrayState* vas = contextID <_vertexArrayStateList.size() ? _vertexArrayStateList[contextID] : 0;
+        VertexArrayState* vas = contextID <_vertexArrayStateList.size() ? _vertexArrayStateList[contextID].get() : 0;
         if (vas)
         {
             vas->release();

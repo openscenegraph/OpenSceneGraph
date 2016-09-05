@@ -452,9 +452,9 @@ class OSG_EXPORT GraphicsContext : public Object
         const SwapCallback* getSwapCallback() const { return _swapCallback.get(); }
 
         /** Convenience method for handling whether to call swapbuffers callback or the standard context swapBuffersImplementation.
-          * swapBuffersCallbackOrImplemenation() is called by swapBuffers() and osg::SwapBuffersOperation, end users should normally
-          * call swapBuffers() rather than swapBuffersCallbackOrImplemenation(). */
-        void swapBuffersCallbackOrImplemenation()
+          * swapBuffersCallbackOrImplementation() is called by swapBuffers() and osg::SwapBuffersOperation, end users should normally
+          * call swapBuffers() rather than swapBuffersCallbackOrImplementation(). */
+        void swapBuffersCallbackOrImplementation()
         {
             if (_state.valid()) _state->frameCompleted();
 

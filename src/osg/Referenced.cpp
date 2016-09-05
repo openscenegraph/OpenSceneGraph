@@ -293,31 +293,6 @@ void Referenced::signalObserversAndDelete(bool signalDelete, bool doDelete) cons
     }
 }
 
-
-void Referenced::setThreadSafeRefUnref(bool threadSafe)
-{
-#if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
-    if (threadSafe)
-    {
-        if (!_refMutex)
-        {
-            // we want thread safe ref()/unref() so assign a mutex
-            _refMutex = new OpenThreads::Mutex;
-        }
-    }
-    else
-    {
-        if (_refMutex)
-        {
-            // we don't want thread safe ref()/unref() so remove any assigned mutex
-            OpenThreads::Mutex* tmpMutexPtr = _refMutex;
-            _refMutex = 0;
-            delete tmpMutexPtr;
-        }
-    }
-#endif
-}
-
 int Referenced::unref_nodelete() const
 {
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)

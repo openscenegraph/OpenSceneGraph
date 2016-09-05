@@ -21,6 +21,8 @@ CameraManipulator::CameraManipulator()
 
 
 CameraManipulator::CameraManipulator(const CameraManipulator& mm, const CopyOp& copyOp):
+     osg::Object(mm,copyOp),
+     osg::Callback(mm,copyOp),
      inherited(mm, copyOp),
      _intersectTraversalMask(mm._intersectTraversalMask),
      _autoComputeHomePosition(mm._autoComputeHomePosition),

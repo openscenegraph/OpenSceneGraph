@@ -1,3 +1,2700 @@
+Mon, 5 Sep 2016 15:35:54 +0100
+Checked in by : Robert Osfield
+Fixed warnings, deprecated another out of date method
+
+Mon, 5 Sep 2016 13:44:59 +0100
+Checked in by : Robert Osfield
+Fixed warnings
+
+Mon, 5 Sep 2016 12:18:46 +0100
+Checked in by : Stuart Mentzer
+Final version of FindFreetype.cmake that is based on the now-accepted CMake patches. This supports the new freetype include path structure and fixes the failure to find the debug library on Windows due to its name having a 'd' suffix.
+
+Mon, 5 Sep 2016 07:59:15 +0100
+Checked in by : Robert Osfield
+Fixed typo
+
+Sun, 4 Sep 2016 19:50:28 +0100
+Checked in by : Robert Osfield
+Fixed warnings
+
+Sun, 4 Sep 2016 18:31:13 +0100
+Checked in by : Robert Osfield
+Added local deprecated_osg::Geometry implementation from OpenSceneGraph-3.4 to keep build working now that deprecated_osg::Geometry has been removed from the core OSG.
+
+Fri, 2 Sep 2016 19:09:13 +0100
+Checked in by : Robert Osfield
+Fixed warning
+
+Fri, 2 Sep 2016 18:26:37 +0100
+Checked in by : Robert Osfield
+Merge branch 'LaurensVoerman-Submissions2e'
+
+Fri, 2 Sep 2016 18:26:11 +0100
+Checked in by : Robert Osfield
+Merge branch 'Submissions2e' of https://github.com/LaurensVoerman/OpenSceneGraph into LaurensVoerman-Submissions2e
+
+Fri, 2 Sep 2016 17:47:37 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #119 from LaurensVoerman/Submissions2cFixed clone osgVolume::Scalarproperty and osg::TextureBuffer crash
+
+Fri, 2 Sep 2016 17:44:57 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #123 from LaurensVoerman/Submissions2fSubmissions2f
+
+Fri, 2 Sep 2016 17:35:47 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #117 from LaurensVoerman/Submissions2abugfix: wrong class name in META_Object macro for osg::Enablei /disable
+
+Fri, 2 Sep 2016 17:34:20 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #118 from LaurensVoerman/Submissions2bfix colliding include guards and spurious #define OSGUI_EXPORT
+
+Fri, 2 Sep 2016 17:28:40 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #124 from LaurensVoerman/Submissions3RigTransformHardware fix: warn; don't crash if MAX_MATRIX not found
+
+Mon, 29 Aug 2016 17:00:00 +0200
+Checked in by : Laurens Voerman
+fix the missing ")" in BasicAnimationManager copy constuctor
+
+Mon, 29 Aug 2016 13:03:36 +0200
+Checked in by : Laurens Voerman
+added copyconstructor for osgAnimation::BasicAnimationManager
+
+Mon, 29 Aug 2016 10:41:40 +0200
+Checked in by : Laurens Voerman
+added call to copy constructor for virtual base classes in copy constructor of derived classes, removed these for abstract classes
+
+Tue, 23 Aug 2016 14:33:24 +0200
+Checked in by : Laurens Voerman
+bugfix: osg::TextureBuffer::clone() crash
+
+Tue, 23 Aug 2016 14:35:47 +0200
+Checked in by : Laurens Voerman
+bugfix: osgVolume::ScalarProperty clone crash
+
+Tue, 23 Aug 2016 14:32:48 +0200
+Checked in by : Laurens Voerman
+fix colliding include guards and spurious #define OSGUI_EXPORT
+
+Tue, 23 Aug 2016 14:31:50 +0200
+Checked in by : Laurens Voerman
+bugfix: wrong class name in META_Object macro for osg::Enablei osg::Disablei
+
+Fri, 26 Aug 2016 19:28:36 +0100
+Checked in by : Robert Osfield
+Quitened unused parameter warnings
+
+Fri, 26 Aug 2016 19:18:00 +0100
+Checked in by : Robert Osfield
+Fixed unused variable warnings
+
+Fri, 26 Aug 2016 18:00:52 +0100
+Checked in by : Robert Osfield
+Merge branch 'master' of https://github.com/openscenegraph/OpenSceneGraph
+
+Fri, 26 Aug 2016 17:59:30 +0100
+Checked in by : Robert Osfield
+Removed redundent Referenced::s/getThreadSafeReferenceCounting() and associated static and env vars as there are now inapprorpiate and no longer supported
+
+Wed, 25 May 2016 13:27:06 +0200
+Checked in by : Laurens Voerman
+RigTransformHardware fix: warn; don't crash if MAX_MATRIX not found
+
+Tue, 16 Aug 2016 12:40:35 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #114 from scrawl/const-castRemove an unneeded const_cast
+
+Tue, 16 Aug 2016 12:39:57 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #115 from zakalawe/masterAttempt to fix broken DLL exports from osgDB
+
+Fri, 5 Aug 2016 13:16:07 +0100
+Checked in by : James Turner
+Attempt to fix broken DLL exports from osgDBOnly export the osgDB method implementations, instead of the entire
+class, and hence avoid exporting symbols from the base class, which
+then conflict with other compilation units when linking.
+
+This avoids the need for /FORCE:MULTIPLE linker option with MSVC.
+
+Mon, 15 Aug 2016 12:56:57 +0100
+Checked in by : Robert Osfield
+Fixed handling in osgUtil::IncrementalCompileOperation/CompileSet/StateToCompile when the _markerObject is NULL.
+
+Mon, 15 Aug 2016 12:13:07 +0100
+Checked in by : Robert Osfield
+Changed the default paramter for the osgUtil::StateToCompile to retain the OSG-3.4 ABI and fixed indentation.
+
+Mon, 15 Aug 2016 11:45:58 +0100
+Checked in by : Robert Osfield
+Added automatic assignment of _markerObject to CompileSet.
+
+Sun, 14 Aug 2016 19:30:55 +0200
+Checked in by : scrawl
+Remove an unneeded const_cast
+
+Wed, 10 Aug 2016 14:30:28 +0100
+Checked in by : Ravi Mathur
+Updates to the CMake build system for Mac OSX
+
+Wed, 10 Aug 2016 14:12:27 +0100
+Checked in by : Anish Thomas
+GLSL 1.3 support for vertex-attrib aliasing
+
+Wed, 10 Aug 2016 12:58:38 +0100
+Checked in by : Konstantin S. Matveyev
+Fixed filename encoding bug
+
+Wed, 10 Aug 2016 12:00:18 +0100
+Checked in by : Robert Osfield
+Fixed handlinge of fgets returning a 0 length string
+
+Wed, 10 Aug 2016 11:32:15 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #111 from hernando/masterAdded missing GL enums to Texture::computeInternalFormatType
+
+Fri, 5 Aug 2016 09:07:23 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #112 from mathieu/feature/macOS_CoreProfilemacOS CoreProfile, contains requested parts of #92 previous PR concerning the osgsimplegl3 sample and the selection of the correct GL Profile when compiling with GL3 or Core Profile in GraphicsWindowCocoa.mm
+
+Fri, 5 Aug 2016 07:51:33 +0200
+Checked in by : Mathieu MARACHE
+Added usage of osgUtil::Optimizer to tessellate input geometry
+
+Fri, 5 Aug 2016 07:49:22 +0200
+Checked in by : Mathieu MARACHE
+Added CoreProfile selection if OSG_GL3_AVAILABLE defined
+
+Thu, 4 Aug 2016 17:03:51 +0200
+Checked in by : Juan Hernando Vieites
+Added missing GL enums to Texture::computeInternalFormatType
+
+Tue, 2 Aug 2016 17:52:45 +0100
+Checked in by : Robert Osfield
+Added GL_NORMALIZE usage to handle the case of the FlattenStaticTransform visitor not being applied to the scaled subgraphs causing lighting problems
+
+Tue, 2 Aug 2016 15:45:49 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #106 from rafagaitan/osgdb_curlAdded OSG_CURL_SSL_VERIFYPEER option to the curl plugin
+
+Tue, 2 Aug 2016 15:27:39 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #109 from scrawl/renderbuffer_fixFix RenderBuffer not being attached
+
+Mon, 1 Aug 2016 17:47:32 +0200
+Checked in by : scrawl
+Fix RenderBuffer not being attached (bug introduced with commit 55b3becb7c0ceecf26b0dae2c6db80f9f2a8a6d4 )
+
+Sun, 31 Jul 2016 14:00:30 +0100
+Checked in by : Robert Osfield
+Added FT_LOAD_NO_HINTING
+
+Sun, 31 Jul 2016 11:06:51 +0100
+Checked in by : Robert Osfield
+Fixed build error reported on gcc 4.6.4/Ubuntu 12.04 32bit, issue #108
+
+Sun, 31 Jul 2016 10:49:23 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #107 from marchelbling/fix_tangentspacegenerator_regressionOsgUtil::TangentSpaceGenerator, merge tangent space for index array
+
+Thu, 31 Jan 2013 02:16:34 +0100
+Checked in by : Cedric Pinson
+OsgUtil::TangentSpaceGenerator, merge tangent space for index array
+
+Tue, 19 Jul 2016 13:40:19 +0200
+Checked in by : Rafael Gaitán
+Added OSG_CURL_SSL_VERIFYPEER option to the curl plugin to allow connecting to secure servers without the certificate
+
+Mon, 18 Jul 2016 20:04:45 +0100
+Checked in by : Robert Osfield
+Fixed bug in setting the ratio value
+
+Wed, 13 Jul 2016 09:46:19 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #105 from marchelbling/compiler-friendly-glesMoves gles visitors implementation in cpp files
+
+Mon, 11 Jul 2016 14:38:13 +0200
+Checked in by : Marc Helbling
+Moves gles visitors implementation in cpp files
+
+Mon, 11 Jul 2016 09:52:07 +0100
+Checked in by : Robert Osfield
+Added Optimizer::BufferObjectVisitor and associated BUFFER_OBJECT_SETTINGS value to enable it via the OSG_OPTIMZIER env var.The BufferObjectVisitor enbales vertex buffer objects usage on Drawable in the scene graph.
+
+
+Mon, 11 Jul 2016 09:46:50 +0100
+Checked in by : Robert Osfield
+Added dirty of the vertex arrays to make sure they are uploaded when using VBO + VAO's
+
+Thu, 7 Jul 2016 07:31:15 +0100
+Checked in by : Robert Osfield
+Fixed coverity issue
+
+Thu, 7 Jul 2016 07:27:37 +0100
+Checked in by : Robert Osfield
+Removed dead code
+
+Thu, 7 Jul 2016 07:16:56 +0100
+Checked in by : Robert Osfield
+Fixed potential memory leak
+
+Wed, 6 Jul 2016 20:57:53 +0100
+Checked in by : Robert Osfield
+Added ref_ptr<> to quieten down Coverity
+
+Wed, 6 Jul 2016 20:36:50 +0100
+Checked in by : Robert Osfield
+Removed dead code
+
+Wed, 6 Jul 2016 20:34:41 +0100
+Checked in by : Robert Osfield
+Fixed possible memory leak
+
+Wed, 6 Jul 2016 20:23:34 +0100
+Checked in by : Robert Osfield
+Added handling of null
+
+Wed, 6 Jul 2016 20:21:53 +0100
+Checked in by : Robert Osfield
+Changed dynamic_cast<> to static_cast<> as type is known based on getType() query.Added missing break statement.
+
+
+Wed, 6 Jul 2016 20:15:49 +0100
+Checked in by : Robert Osfield
+Added null pointer check
+
+Wed, 6 Jul 2016 20:13:36 +0100
+Checked in by : Robert Osfield
+Fixed null pointer check
+
+Wed, 6 Jul 2016 20:08:03 +0100
+Checked in by : Robert Osfield
+Added null pointer check
+
+Wed, 6 Jul 2016 20:04:13 +0100
+Checked in by : Robert Osfield
+Fixed use of invalidated iterator
+
+Wed, 6 Jul 2016 19:58:23 +0100
+Checked in by : Robert Osfield
+Added null pointer check
+
+Wed, 6 Jul 2016 19:45:02 +0100
+Checked in by : Robert Osfield
+Fixed TabPlaneDragger's handling of pressing the right mouse button whilst holding the left mouse button down, then releasing hte left mouse button.
+
+Wed, 6 Jul 2016 11:36:47 +0100
+Checked in by : Robert Osfield
+Improved casting to address crashes when handling classes that use virtual inheritance.
+
+Wed, 6 Jul 2016 11:36:25 +0100
+Checked in by : Robert Osfield
+Added ability to assign callbacks from lua scripts
+
+Tue, 5 Jul 2016 19:22:15 +0100
+Checked in by : Robert Osfield
+Uodate README date
+
+Tue, 5 Jul 2016 18:11:31 +0100
+Checked in by : Robert Osfield
+Merge branch 'master' of https://github.com/openscenegraph/OpenSceneGraph
+
+Tue, 5 Jul 2016 18:10:51 +0100
+Checked in by : Robert Osfield
+Added readObject() implementation.
+
+Tue, 5 Jul 2016 18:04:50 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #103 from marchelbling/update_stlUpdate stl.
+
+    fixes magics color parsing
+    adds support for incomplete binary stl files
+
+
+Tue, 5 Jul 2016 17:57:28 +0100
+Checked in by : Robert Osfield
+Fixed warnings
+
+Tue, 5 Jul 2016 17:49:03 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #102 from marchelbling/update_gles+osgjsUpdate gles+osgjs.
+
+
+
+This PR
+
+    cleans some gles coverity defects (remaining should only be false positive that need to be sorted out cleanly)
+    updates osgjs plugin to support serialization; the history of changes is squashed; details can still be found on cedricpinson fork if needed
+
+As compressed animation channels are no longer part of the main repo, I added a compilation flag for the osgjs plugin. The commit is isolated and the flag is not activated by default.
+I am yet to find a better solution to make this plugin entirely free from our specific code.
+
+Note: this PR will not change the gles compilation issues. We only compile on OSX/ubuntu and did not encounter any issue with the plugin.
+
+
+Tue, 5 Jul 2016 17:08:08 +0200
+Checked in by : Marc Helbling
+Adds support for incomplete stl binary filesThe logic is
+* if a file is not ascii
+* if its sizeis less than the expected binary size
+then we can assume that the data is incomplete but still try to load it.
+
+
+Tue, 5 Jul 2016 17:01:42 +0200
+Checked in by : Marc Helbling
+Fixes magics color parsing`fread` returns the number of objects read, not a byte-size.
+
+
+Tue, 5 Jul 2016 16:37:46 +0200
+Checked in by : Marc Helbling
+Adds specific flag for compressed animation buffers
+
+Tue, 5 Jul 2016 16:37:12 +0200
+Checked in by : Marc Helbling
+Updates osgjs plugin for animation serialization
+
+Tue, 5 Jul 2016 16:32:00 +0200
+Checked in by : Marc Helbling
+Fixes gles coverity defects
+
+Tue, 5 Jul 2016 12:57:41 +0100
+Checked in by : Robert Osfield
+Fixed typo
+
+Tue, 5 Jul 2016 11:54:31 +0100
+Checked in by : Robert Osfield
+Seperated out the scene->requiresRedraw() method into a osgViewer::Viewer::requiresRedraw() method to make the functionality clearer and easier to override.
+
+Tue, 5 Jul 2016 11:42:03 +0100
+Checked in by : Robert Osfield
+Simplified DatabasePager::requires*() methods
+
+Tue, 5 Jul 2016 11:27:44 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #100 from filnet/checkneedtodoframestreamline DatabasePager::requiresUpdateSceneGraph()
+
+Tue, 5 Jul 2016 07:41:23 +0100
+Checked in by : Robert Osfield
+Added missing Plane and Quat handling
+
+Mon, 4 Jul 2016 23:19:20 +0200
+Checked in by : Philippe Renon
+split requiresUpdateSceneGraph() into requires update and requires redraw (wip)
+
+Sun, 3 Jul 2016 17:31:07 +0200
+Checked in by : Philippe Renon
+streamline DatabasePager::requiresUpdateSceneGraph()would trigger unnecessary redraws when there were pending file requests or active database threads
+
+tested ok with and without IncrementalCompileOperation
+
+
+Mon, 4 Jul 2016 20:26:28 +0100
+Checked in by : Robert Osfield
+Added version guard around new parameter serializer
+
+Mon, 4 Jul 2016 20:19:58 +0100
+Checked in by : Julien Valentin
+Added serializer support for RigTransforms
+
+Mon, 4 Jul 2016 13:37:29 +0100
+Checked in by : Robert Osfield
+Added templte methods and implementations for Vec2,3,4 for b,ub,s,us,i and ui.
+
+Mon, 4 Jul 2016 13:36:28 +0100
+Checked in by : Robert Osfield
+Added Vec2,3,4 for b, ub, s, us, i, ui.
+
+Mon, 4 Jul 2016 11:02:58 +0100
+Checked in by : Robert Osfield
+Replaced seperate implementations with template implementations
+
+Mon, 4 Jul 2016 10:53:06 +0100
+Checked in by : Robert Osfield
+Replaced seperate getValue(Vec*) implementations with template based implementation
+
+Mon, 4 Jul 2016 10:34:03 +0100
+Checked in by : Robert Osfield
+Added ValueObject pushValue handling for Vec2*, Vec3*, Vec4 for b,ub,s,us,i and ui.
+
+Mon, 4 Jul 2016 10:14:47 +0100
+Checked in by : Robert Osfield
+Added Vec*b, Vec*s, Vec*i getValue(..) implementations
+
+Mon, 4 Jul 2016 10:11:34 +0100
+Checked in by : Robert Osfield
+Replaced pushVec(Vec2f etc.) implementations with template implementations.
+
+Mon, 4 Jul 2016 10:01:17 +0100
+Checked in by : Julien Valentin
+Added missing xzyw accessor to Vec4ub
+
+Mon, 4 Jul 2016 09:06:50 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #99 from filnet/gstreamerfix FindGStreamer.cmake for msys2 mingw
+
+Sun, 3 Jul 2016 17:43:39 +0200
+Checked in by : Philippe Renon
+fix FindGStreamer.cmake for msys2 mingw
+
+Sat, 2 Jul 2016 14:45:10 +0100
+Checked in by : Robert Osfield
+Added const
+
+Sat, 2 Jul 2016 12:54:48 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Sat, 2 Jul 2016 12:52:20 +0100
+Checked in by : Robert Osfield
+Introduced ref_ptr<> usage to avoid potential memory leaks
+
+Sat, 2 Jul 2016 12:39:06 +0100
+Checked in by : Robert Osfield
+Added handling of return type
+
+Sat, 2 Jul 2016 12:37:22 +0100
+Checked in by : Robert Osfield
+Added handling of return type
+
+Sat, 2 Jul 2016 12:33:31 +0100
+Checked in by : Robert Osfield
+Fixed types
+
+Sat, 2 Jul 2016 12:31:08 +0100
+Checked in by : Robert Osfield
+Added handling of return type
+
+Sat, 2 Jul 2016 12:29:07 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Sat, 2 Jul 2016 12:27:48 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Sat, 2 Jul 2016 12:13:08 +0100
+Checked in by : Robert Osfield
+Fixed warning and quitened ones caused by 3rd party headers.
+
+Sat, 2 Jul 2016 11:09:12 +0100
+Checked in by : Robert Osfield
+Changed to an int comparison
+
+Sat, 2 Jul 2016 10:44:40 +0100
+Checked in by : Robert Osfield
+Removed inappropriate use of Vec3us in osgAnimation as this relies upon nonexistant functionality in Vec3us and in general just doesn't make sense to attempt to use float point maths with a unsigned short.
+
+Sat, 2 Jul 2016 10:14:06 +0100
+Checked in by : Robert Osfield
+Fixed number of processors setting
+
+Fri, 1 Jul 2016 18:07:16 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #95 from marchelbling/tristripvisitor_index_optionAdds an indexMesh option to disable mesh reindexation
+
+Fri, 1 Jul 2016 18:03:29 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #94 from marchelbling/gles_plugin_updateUpdates gles plugin.
+
+This PR updates the GLES plugin with latest Sketchfab changes:
+
+    improves geometry splitting
+    processes/cleans animation (for subsequent osgjs serialization)
+    adds (yet another) normal smoother
+
+
+
+
+Fri, 1 Jul 2016 17:57:44 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #93 from marchelbling/osganimationUpdates to osgAnimation is mainly for the gles plugint to work correctly.
+
+    adds Quaternion array
+    reintroduces KeyframeContainer::linearInterpolationDeduplicate
+    fixes MorphGeometry OSG serialization (target names)
+
+Fri, 1 Jul 2016 18:12:32 +0200
+Checked in by : Marc Helbling
+Adds an indexMesh option to disable mesh reindexationThis mainly breaks gles/osgjs when stripifying a MorphGeometry. It also
+usually doesn't make sense to reindex an already indexed mesh.
+
+
+Fri, 1 Jul 2016 17:28:01 +0200
+Checked in by : Marc Helbling
+Updates gles plugin
+
+Fri, 1 Jul 2016 17:04:09 +0200
+Checked in by : Marc Helbling
+Updates osgAnimationThis updates is mainly for the gles plugint to work correctly.
+
+* adds Quaternion array
+* reintroduces `KeyframeContainer::linearInterpolationDeduplicate`
+* fixes MorphGeometry OSG serialization (target names)
+
+
+Fri, 1 Jul 2016 11:08:29 +0100
+Checked in by : Robert Osfield
+Addd loop guard to prevent negative bit shift
+
+Fri, 1 Jul 2016 10:57:31 +0100
+Checked in by : Robert Osfield
+Fixed types
+
+Fri, 1 Jul 2016 10:38:58 +0100
+Checked in by : Robert Osfield
+Fixed types
+
+Fri, 1 Jul 2016 10:35:18 +0100
+Checked in by : Robert Osfield
+Fixed type
+
+Fri, 1 Jul 2016 10:21:55 +0100
+Checked in by : Robert Osfield
+Added intializers
+
+Fri, 1 Jul 2016 10:13:14 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Fri, 1 Jul 2016 09:59:21 +0100
+Checked in by : Robert Osfield
+Moved initializers
+
+Fri, 1 Jul 2016 09:56:01 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Fri, 1 Jul 2016 09:54:58 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Fri, 1 Jul 2016 09:52:35 +0100
+Checked in by : Robert Osfield
+Moved unused member variables to #if 0 blocks. Added initiliazer
+
+Fri, 1 Jul 2016 09:15:36 +0100
+Checked in by : Robert Osfield
+Fixed indentation
+
+Fri, 1 Jul 2016 09:14:59 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 1 Jul 2016 09:13:21 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 1 Jul 2016 09:09:35 +0100
+Checked in by : Robert Osfield
+Added intializer
+
+Fri, 1 Jul 2016 08:52:43 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Fri, 1 Jul 2016 08:49:55 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 1 Jul 2016 08:48:49 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 1 Jul 2016 08:43:32 +0100
+Checked in by : Robert Osfield
+Added initiaizer
+
+Fri, 1 Jul 2016 08:41:54 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 1 Jul 2016 08:40:25 +0100
+Checked in by : Robert Osfield
+Added initialziers
+
+Fri, 1 Jul 2016 08:37:48 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 1 Jul 2016 08:36:54 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 1 Jul 2016 08:35:08 +0100
+Checked in by : Robert Osfield
+Replaced the old c style declaration of enum's as it was confusing Coverity
+
+Fri, 1 Jul 2016 08:19:51 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Fri, 1 Jul 2016 08:16:39 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 1 Jul 2016 08:15:01 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Fri, 1 Jul 2016 08:08:39 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 1 Jul 2016 08:06:42 +0100
+Checked in by : Robert Osfield
+Removed unused member variable and adding initializer
+
+Fri, 1 Jul 2016 08:03:03 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Fri, 1 Jul 2016 08:00:49 +0100
+Checked in by : Robert Osfield
+Addded initializer
+
+Fri, 1 Jul 2016 07:58:04 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 1 Jul 2016 06:40:52 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #91 from bjornblissing/feature/DestructionOperationCleanUpOperation added to Viewer
+
+Thu, 30 Jun 2016 22:09:22 +0200
+Checked in by : Björn Blissing
+CleanUpOperation added to ViewerSometimes there is need to do cleanup with valid graphic contexts
+before closing these contexts. The added operation runs a graphics
+operation on each context before closing them.
+
+
+Thu, 30 Jun 2016 14:17:51 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Thu, 30 Jun 2016 14:16:14 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Thu, 30 Jun 2016 14:12:01 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Thu, 30 Jun 2016 14:04:52 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Thu, 30 Jun 2016 13:58:54 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Thu, 30 Jun 2016 11:31:02 +0100
+Checked in by : Robert Osfield
+Added handling of error condition
+
+Thu, 30 Jun 2016 11:28:59 +0100
+Checked in by : Robert Osfield
+Added handling of error condition
+
+Thu, 30 Jun 2016 11:26:21 +0100
+Checked in by : Robert Osfield
+Added handling of error return value
+
+Thu, 30 Jun 2016 11:24:50 +0100
+Checked in by : Robert Osfield
+Added handling of error value
+
+Thu, 30 Jun 2016 11:19:53 +0100
+Checked in by : Robert Osfield
+Fixed handling of return values
+
+Thu, 30 Jun 2016 11:19:24 +0100
+Checked in by : Robert Osfield
+Fixed line endings
+
+Thu, 30 Jun 2016 11:12:45 +0100
+Checked in by : Robert Osfield
+Added handling of return value
+
+Thu, 30 Jun 2016 11:11:00 +0100
+Checked in by : Robert Osfield
+Added handling of return value
+
+Thu, 30 Jun 2016 11:03:40 +0100
+Checked in by : Robert Osfield
+Added handling of return value
+
+Thu, 30 Jun 2016 11:00:38 +0100
+Checked in by : Robert Osfield
+Added handling of return value
+
+Thu, 30 Jun 2016 10:58:17 +0100
+Checked in by : Robert Osfield
+Added handling of false return
+
+Thu, 30 Jun 2016 10:55:34 +0100
+Checked in by : Robert Osfield
+Added handling of false return
+
+Thu, 30 Jun 2016 10:50:11 +0100
+Checked in by : Robert Osfield
+Fixed typo
+
+Thu, 30 Jun 2016 10:17:23 +0100
+Checked in by : Robert Osfield
+Added handling of null dynamic_cast
+
+Thu, 30 Jun 2016 10:08:29 +0100
+Checked in by : Robert Osfield
+Added handling of null dynamic_cast
+
+Thu, 30 Jun 2016 10:03:51 +0100
+Checked in by : Robert Osfield
+Clean up clone
+
+Thu, 30 Jun 2016 10:01:18 +0100
+Checked in by : Robert Osfield
+Added handling of null pointer
+
+Thu, 30 Jun 2016 09:59:27 +0100
+Checked in by : Robert Osfield
+Added handling of null dynamic_cast
+
+Thu, 30 Jun 2016 09:54:13 +0100
+Checked in by : Robert Osfield
+Added handling of null dynamic_cast.
+
+Thu, 30 Jun 2016 09:52:10 +0100
+Checked in by : Robert Osfield
+Added handlng of null dynamic_cast
+
+Thu, 30 Jun 2016 09:48:44 +0100
+Checked in by : Robert Osfield
+Added null pointer handling
+
+Thu, 30 Jun 2016 09:46:27 +0100
+Checked in by : Robert Osfield
+Added better null pointer handling
+
+Thu, 30 Jun 2016 09:38:41 +0100
+Checked in by : Robert Osfield
+Improved error handling
+
+Thu, 30 Jun 2016 09:29:32 +0100
+Checked in by : Robert Osfield
+Added handling of error return type
+
+Thu, 30 Jun 2016 09:09:54 +0100
+Checked in by : Robert Osfield
+Removed no longer used code
+
+Thu, 30 Jun 2016 08:27:49 +0100
+Checked in by : Robert Osfield
+Improved check against number of bytes read
+
+Thu, 30 Jun 2016 08:23:51 +0100
+Checked in by : Robert Osfield
+Added handling of NULL pointer case
+
+Thu, 30 Jun 2016 08:20:31 +0100
+Checked in by : Robert Osfield
+Added handling of possible zero divisor
+
+Thu, 30 Jun 2016 08:16:29 +0100
+Checked in by : Robert Osfield
+Added handling of possible zero divisor
+
+Thu, 30 Jun 2016 08:14:48 +0100
+Checked in by : Robert Osfield
+Added handling of potential zero divisor
+
+Thu, 30 Jun 2016 08:13:01 +0100
+Checked in by : Robert Osfield
+Added handling of NULL
+
+Thu, 30 Jun 2016 08:02:29 +0100
+Checked in by : Robert Osfield
+Addd handling of NULL
+
+Thu, 30 Jun 2016 07:59:51 +0100
+Checked in by : Robert Osfield
+Added handling of NULL
+
+Thu, 30 Jun 2016 07:59:37 +0100
+Checked in by : Robert Osfield
+Added handling of NULL
+
+Thu, 30 Jun 2016 07:50:40 +0100
+Checked in by : Robert Osfield
+Added handling of out of memory
+
+Thu, 30 Jun 2016 07:50:14 +0100
+Checked in by : Robert Osfield
+Added better handling of nulls
+
+Wed, 29 Jun 2016 19:59:56 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Wed, 29 Jun 2016 18:01:29 +0100
+Checked in by : Robert Osfield
+Fixed handling of null pointer
+
+Wed, 29 Jun 2016 17:58:03 +0100
+Checked in by : Robert Osfield
+Cleaned up null pointer handling
+
+Wed, 29 Jun 2016 17:56:11 +0100
+Checked in by : Robert Osfield
+Moved assignment to within safe block
+
+Wed, 29 Jun 2016 17:51:32 +0100
+Checked in by : Robert Osfield
+Added hanlding of null value
+
+Wed, 29 Jun 2016 17:47:32 +0100
+Checked in by : Robert Osfield
+Added null pointer handling
+
+Wed, 29 Jun 2016 17:43:37 +0100
+Checked in by : Robert Osfield
+Added null pointer handling
+
+Wed, 29 Jun 2016 17:35:20 +0100
+Checked in by : Robert Osfield
+Added handling of null pointer
+
+Wed, 29 Jun 2016 17:33:45 +0100
+Checked in by : Robert Osfield
+Added null pointer check
+
+Wed, 29 Jun 2016 17:31:16 +0100
+Checked in by : Robert Osfield
+Added better handling of null istream
+
+Wed, 29 Jun 2016 17:29:28 +0100
+Checked in by : Robert Osfield
+Added null pointer handling
+
+Wed, 29 Jun 2016 17:06:48 +0100
+Checked in by : Robert Osfield
+Added handling of the possibility of null Options pointers
+
+Wed, 29 Jun 2016 16:07:39 +0100
+Checked in by : Robert Osfield
+Removed check against changed flag as check is aleady done outside the method so no need for a duplicate check
+
+Wed, 29 Jun 2016 16:53:26 +0200
+Checked in by : Julien Valentin
+fix in StateSet.cpp the State::DefineMap::changed flag is not resetted to false after currentDefines are updated
+
+Wed, 29 Jun 2016 15:34:11 +0100
+Checked in by : Robert Osfield
+Moved the scene related requiresUpdateSceneGraph() implementation details from View into Scene. Added check against the ImagePager.
+
+Wed, 29 Jun 2016 15:15:31 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #81 from filnet/checkneedtodoframe refactor common code from CompositeViewer::checkNeedToDoFrame() and Viewer::checkNeedToDoFrame() into View
+
+Wed, 29 Jun 2016 15:11:02 +0100
+Checked in by : Robert Osfield
+Added osg::ScissorIndexed that wraps up glScissorIndexed function
+
+Wed, 29 Jun 2016 12:28:28 +0100
+Checked in by : Robert Osfield
+Added osg::DepthRangeIndexed class to wrap up glDepthRangeIndexed functionality.
+
+Wed, 29 Jun 2016 11:39:44 +0100
+Checked in by : Laurens Voerman
+Added osgshadermultiviewport example to test and demonstrate the new osg::ViewportIndexed class
+
+Wed, 29 Jun 2016 11:36:44 +0100
+Checked in by : Robert Osfield
+Fixed cast
+
+Wed, 29 Jun 2016 11:35:56 +0100
+Checked in by : Robert Osfield
+Added build of new osg::ViewportIndexed
+
+Wed, 29 Jun 2016 11:34:20 +0100
+Checked in by : Robert Osfield
+Revert "Fixed incorrect cast" as commit contained more changes than intended.This reverts commit 2897ab13cb14aee914d32fa3e393f4c58bf80816.
+
+
+Wed, 29 Jun 2016 11:26:54 +0100
+Checked in by : Robert Osfield
+Added osg::ViewportIndexed that adds support for glViewportIndexed
+
+Wed, 29 Jun 2016 11:25:08 +0100
+Checked in by : Robert Osfield
+Fixed incorrect cast
+
+Wed, 29 Jun 2016 09:53:04 +0100
+Checked in by : Laurens Voerman
+Added glViewerArray, glSissorArray, glDepthRangeArray etc. GL extension support
+
+Tue, 28 Jun 2016 19:49:48 +0100
+Checked in by : Robert Osfield
+Fixed warnings
+
+Tue, 28 Jun 2016 19:46:14 +0100
+Checked in by : Robert Osfield
+Disabled -Wextra compile option for GCC + CLang as FBX headers generate lots of warnings we can't fix
+
+Tue, 28 Jun 2016 18:39:12 +0100
+Checked in by : Robert Osfield
+Revert "corrected syntax error in src/osgPlugins/fbx/ReaderWriterFBX.cpp"This reverts commit 7a1324800ffe3e4ddd9d7fb475f0323da6fe2f43.
+
+
+Tue, 28 Jun 2016 16:49:08 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Tue, 28 Jun 2016 16:47:11 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Tue, 28 Jun 2016 16:44:24 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Tue, 28 Jun 2016 16:42:33 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Tue, 28 Jun 2016 16:40:57 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Tue, 28 Jun 2016 16:37:58 +0100
+Checked in by : Robert Osfield
+Replaced unsafe strcpy
+
+Tue, 28 Jun 2016 16:34:30 +0100
+Checked in by : Robert Osfield
+Replaced usage c string usage
+
+Tue, 28 Jun 2016 16:33:13 +0100
+Checked in by : Robert Osfield
+Replaced unsafe string usage
+
+Tue, 28 Jun 2016 16:30:06 +0100
+Checked in by : Robert Osfield
+Replaced unsafe c string usage with std::stringstream
+
+Tue, 28 Jun 2016 16:25:21 +0100
+Checked in by : Robert Osfield
+Removed debug message
+
+Tue, 28 Jun 2016 16:11:14 +0100
+Checked in by : Robert Osfield
+Replaced unsafe c string usage with std::string
+
+Tue, 28 Jun 2016 16:03:01 +0100
+Checked in by : Robert Osfield
+Replaced unsafe c string usage with std::string
+
+Tue, 28 Jun 2016 15:56:39 +0100
+Checked in by : Robert Osfield
+Replaced unsafe strcpy
+
+Tue, 28 Jun 2016 15:52:35 +0100
+Checked in by : Robert Osfield
+Replaced unsafe c string usage with std::string
+
+Tue, 28 Jun 2016 15:33:06 +0100
+Checked in by : Robert Osfield
+Fixed leak when open returns 0
+
+Tue, 28 Jun 2016 15:31:55 +0100
+Checked in by : Robert Osfield
+Fixed leak when open returns 0
+
+Tue, 28 Jun 2016 13:44:20 +0100
+Checked in by : Robert Osfield
+Removed line space
+
+Tue, 28 Jun 2016 13:44:00 +0100
+Checked in by : Robert Osfield
+Cleaned up pointer checks
+
+Tue, 28 Jun 2016 13:38:35 +0100
+Checked in by : Robert Osfield
+Repplaced fscanf usage with ifstream to avoid safety issues
+
+Tue, 28 Jun 2016 09:32:38 +0100
+Checked in by : Robert Osfield
+Added handling of failure to reclaim file
+
+Tue, 28 Jun 2016 09:21:30 +0100
+Checked in by : Robert Osfield
+Removed unneccessary close
+
+Tue, 28 Jun 2016 09:11:39 +0100
+Checked in by : Robert Osfield
+Added better handling of reading of sizes
+
+Tue, 28 Jun 2016 08:34:02 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Tue, 28 Jun 2016 08:32:35 +0100
+Checked in by : Robert Osfield
+Fixed initializer
+
+Mon, 27 Jun 2016 17:38:32 +0100
+Checked in by : Robert Osfield
+Removed dead code
+
+Mon, 27 Jun 2016 17:37:11 +0100
+Checked in by : Robert Osfield
+Added missing break
+
+Mon, 27 Jun 2016 17:18:21 +0100
+Checked in by : Robert Osfield
+Added message for unhandled mode types
+
+Mon, 27 Jun 2016 17:15:28 +0100
+Checked in by : Robert Osfield
+Fixed incorrect value
+
+Mon, 27 Jun 2016 17:12:43 +0100
+Checked in by : Robert Osfield
+Removed logically dead code
+
+Mon, 27 Jun 2016 17:09:41 +0100
+Checked in by : Robert Osfield
+Removed logicaly dead code
+
+Mon, 27 Jun 2016 17:00:12 +0100
+Checked in by : Robert Osfield
+Replaced fgetc usage with custom handling that handles type and error values
+
+Mon, 27 Jun 2016 16:31:11 +0100
+Checked in by : Robert Osfield
+Fixed delete type
+
+Mon, 27 Jun 2016 16:29:14 +0100
+Checked in by : Robert Osfield
+Removed unused local variable and move declaration to make it more readable.
+
+Mon, 27 Jun 2016 16:25:40 +0100
+Checked in by : Robert Osfield
+Fixed override method inconsistency
+
+Mon, 27 Jun 2016 16:21:48 +0100
+Checked in by : Robert Osfield
+Fixed override method inconsistency
+
+Mon, 27 Jun 2016 16:20:56 +0100
+Checked in by : Robert Osfield
+Fixed override method inconsistency
+
+Mon, 27 Jun 2016 16:18:28 +0100
+Checked in by : Robert Osfield
+Fixed override method inconsistency
+
+Mon, 27 Jun 2016 16:18:01 +0100
+Checked in by : Robert Osfield
+Fixed override method inconsistency
+
+Mon, 27 Jun 2016 16:17:34 +0100
+Checked in by : Robert Osfield
+Fixed override method inconsistency
+
+Mon, 27 Jun 2016 16:16:03 +0100
+Checked in by : Robert Osfield
+Fixed override method inconsistency
+
+Mon, 27 Jun 2016 16:14:32 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Mon, 27 Jun 2016 16:08:25 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Mon, 27 Jun 2016 15:59:42 +0100
+Checked in by : Robert Osfield
+Removed dead code
+
+Mon, 27 Jun 2016 15:59:04 +0100
+Checked in by : Robert Osfield
+Added handling of return values
+
+Mon, 27 Jun 2016 15:22:55 +0100
+Checked in by : Robert Osfield
+Added handling of null malloc
+
+Mon, 27 Jun 2016 15:22:46 +0100
+Checked in by : Robert Osfield
+Added hanlding of return type
+
+Mon, 27 Jun 2016 15:22:10 +0100
+Checked in by : Robert Osfield
+Added handling of return value
+
+Mon, 27 Jun 2016 15:06:54 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Mon, 27 Jun 2016 14:53:32 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Mon, 27 Jun 2016 11:51:32 +0100
+Checked in by : Julien Valentin
+Rolbacked RigGeometry with the hackyfix (I just add the compute boundcallback in the copy consturctor) Modified headers of RigTransforms to comply with osg metamodel
+
+Mon, 27 Jun 2016 11:38:30 +0100
+Checked in by : Robert Osfield
+Added initializers and fixed float setting
+
+Mon, 27 Jun 2016 11:35:46 +0100
+Checked in by : Robert Osfield
+Added intializer
+
+Mon, 27 Jun 2016 11:33:55 +0100
+Checked in by : Robert Osfield
+Restructed the cast
+
+Mon, 27 Jun 2016 11:14:53 +0100
+Checked in by : Robert Osfield
+Removed redundent checks
+
+Mon, 27 Jun 2016 11:08:49 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Mon, 27 Jun 2016 10:51:56 +0100
+Checked in by : Robert Osfield
+Cleaned up clone
+
+Mon, 27 Jun 2016 10:39:58 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Mon, 27 Jun 2016 10:30:15 +0100
+Checked in by : Robert Osfield
+Added check against null
+
+Mon, 27 Jun 2016 10:10:20 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Mon, 27 Jun 2016 09:49:45 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Mon, 27 Jun 2016 09:49:04 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Mon, 27 Jun 2016 09:40:48 +0100
+Checked in by : Robert Osfield
+Added missing initializers
+
+Sat, 25 Jun 2016 18:15:57 +0100
+Checked in by : Julien Valentin
+MorphGeometry fixes
+
+Sat, 25 Jun 2016 17:19:00 +0100
+Checked in by : Robert Osfield
+Fixed warnings
+
+Sat, 25 Jun 2016 16:33:09 +0100
+Checked in by : Robert Osfield
+Fixed unsafe string handling
+
+Sat, 25 Jun 2016 16:32:58 +0100
+Checked in by : Robert Osfield
+Added extern and export
+
+Sat, 25 Jun 2016 16:13:56 +0100
+Checked in by : Robert Osfield
+Changed back to requiring osgDB namespace so it's clearer where function comes from.
+
+Sat, 25 Jun 2016 16:12:32 +0100
+Checked in by : Robert Osfield
+Replaced strcpy with more robust osgDB::stringcopyfixedsize() usage.
+
+Sat, 25 Jun 2016 16:10:56 +0100
+Checked in by : Robert Osfield
+Added namespace prefix
+
+Sat, 25 Jun 2016 16:08:15 +0100
+Checked in by : Robert Osfield
+Added osgDB::stringcopy and stringcopyfixedsize
+
+Sat, 25 Jun 2016 15:42:34 +0100
+Checked in by : Robert Osfield
+Added null pointer check
+
+Sat, 25 Jun 2016 15:40:30 +0100
+Checked in by : Robert Osfield
+Added handling of when mesh->texcos is NULL
+
+Sat, 25 Jun 2016 15:28:50 +0100
+Checked in by : Robert Osfield
+FIxed copy and paste error
+
+Sat, 25 Jun 2016 14:26:05 +0100
+Checked in by : Robert Osfield
+Added strncopy usage to avoid buffer overflow
+
+Sat, 25 Jun 2016 14:19:52 +0100
+Checked in by : Robert Osfield
+Removed no longer used code
+
+Sat, 25 Jun 2016 13:42:49 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Sat, 25 Jun 2016 13:36:18 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Sat, 25 Jun 2016 13:33:27 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Sat, 25 Jun 2016 12:39:50 +0100
+Checked in by : Robert Osfield
+Removed redundent pointer check
+
+Sat, 25 Jun 2016 12:35:34 +0100
+Checked in by : Robert Osfield
+Changed return type to unsigned int to make it more compatible with serialization
+
+Sat, 25 Jun 2016 12:24:19 +0100
+Checked in by : Robert Osfield
+Refactored handling of StateAttiribute's that override the StateAttiribute::getMember() so that when they change their Member value they update the StateSet parents that own them to keep the StateSet's maps coherent.
+
+Sat, 25 Jun 2016 11:05:04 +0100
+Checked in by : Robert Osfield
+Changed key handling to use Qt enums rather than osgGA ones
+
+Sat, 25 Jun 2016 08:00:18 +0100
+Checked in by : Robert Osfield
+Fixed warning
+
+Sat, 25 Jun 2016 07:58:58 +0100
+Checked in by : Robert Osfield
+Fixed warning
+
+Sat, 25 Jun 2016 07:57:56 +0100
+Checked in by : Robert Osfield
+Fixed warning
+
+Sat, 25 Jun 2016 07:49:56 +0100
+Checked in by : Cedric Pinson
+Submitted with fixes by Julian Valentin
+
+Fri, 24 Jun 2016 16:05:07 +0100
+Checked in by : Robert Osfield
+Fixed compute of numProcessors
+
+Fri, 24 Jun 2016 15:40:39 +0100
+Checked in by : Robert Osfield
+Added default assingment of FrameStamp
+
+Fri, 24 Jun 2016 15:36:00 +0100
+Checked in by : Robert Osfield
+Removed unneccessary pointer check
+
+Fri, 24 Jun 2016 15:34:52 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 24 Jun 2016 15:33:24 +0100
+Checked in by : Robert Osfield
+Restructed handling of LAST_POSITION
+
+Fri, 24 Jun 2016 15:23:57 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 24 Jun 2016 12:38:31 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Fri, 24 Jun 2016 12:34:20 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Fri, 24 Jun 2016 12:28:36 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 24 Jun 2016 12:26:16 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 24 Jun 2016 12:24:28 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 24 Jun 2016 12:14:37 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Fri, 24 Jun 2016 12:12:50 +0100
+Checked in by : Robert Osfield
+Removed unused member variable
+
+Fri, 24 Jun 2016 12:11:09 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Fri, 24 Jun 2016 12:10:53 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Fri, 24 Jun 2016 12:10:31 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Fri, 24 Jun 2016 12:00:54 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Fri, 24 Jun 2016 11:58:38 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Fri, 24 Jun 2016 11:52:54 +0100
+Checked in by : Robert Osfield
+Added handling of null dynamic_cast
+
+Fri, 24 Jun 2016 11:50:54 +0100
+Checked in by : Robert Osfield
+Added handling of null dynamic_cast<>
+
+Fri, 24 Jun 2016 11:50:07 +0100
+Checked in by : Robert Osfield
+Added handling null dynamic_cast
+
+Fri, 24 Jun 2016 11:49:14 +0100
+Checked in by : Robert Osfield
+Added handling or null dynamic_cast
+
+Fri, 24 Jun 2016 11:39:22 +0100
+Checked in by : Robert Osfield
+Fixed copy and paste error
+
+Fri, 24 Jun 2016 11:38:28 +0100
+Checked in by : Robert Osfield
+Fixed copy and paste error.
+
+Fri, 24 Jun 2016 11:31:15 +0100
+Checked in by : Robert Osfield
+Added handling of dynamic_cast<> returning NULL
+
+Fri, 24 Jun 2016 11:29:25 +0100
+Checked in by : Robert Osfield
+Added handling of empty slides and layers
+
+Fri, 24 Jun 2016 11:26:07 +0100
+Checked in by : Robert Osfield
+Added better handling of negative slideNum and layerNum values
+
+Fri, 24 Jun 2016 11:20:55 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Fri, 24 Jun 2016 10:51:34 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 24 Jun 2016 10:49:51 +0100
+Checked in by : Robert Osfield
+Fixed float handling
+
+Fri, 24 Jun 2016 10:46:51 +0100
+Checked in by : Robert Osfield
+Added handling of zero divisor
+
+Fri, 24 Jun 2016 10:45:24 +0100
+Checked in by : Robert Osfield
+Fixed indentation and added check against NULL
+
+Fri, 24 Jun 2016 10:32:11 +0100
+Checked in by : Robert Osfield
+Added restoring of std::cout format state
+
+Fri, 24 Jun 2016 10:25:17 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 24 Jun 2016 10:24:27 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Fri, 24 Jun 2016 10:22:45 +0100
+Checked in by : Robert Osfield
+Removed unused member variable
+
+Fri, 24 Jun 2016 10:21:05 +0100
+Checked in by : Robert Osfield
+Added intializer
+
+Fri, 24 Jun 2016 10:13:26 +0100
+Checked in by : Robert Osfield
+Fixed handling of when dynamic_cast<> returns NULL
+
+Fri, 24 Jun 2016 10:09:59 +0100
+Checked in by : Robert Osfield
+Restructed to handle dyanmic_cast<> being NULL
+
+Fri, 24 Jun 2016 10:06:31 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 24 Jun 2016 10:05:30 +0100
+Checked in by : Robert Osfield
+Added missing initializer
+
+Fri, 24 Jun 2016 10:04:31 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Fri, 24 Jun 2016 10:02:39 +0100
+Checked in by : Robert Osfield
+Added handling of zero points
+
+Fri, 24 Jun 2016 10:02:18 +0100
+Checked in by : Robert Osfield
+Cleaned up pointer usage
+
+Fri, 24 Jun 2016 09:46:19 +0100
+Checked in by : Robert Osfield
+Added depecated message to redundent shape classes
+
+Thu, 23 Jun 2016 17:58:35 +0100
+Checked in by : Robert Osfield
+Added check against null
+
+Thu, 23 Jun 2016 17:28:40 +0100
+Checked in by : Robert Osfield
+Fixed erronous type changes and inappropriate vector copy vs vector reference usage
+
+Thu, 23 Jun 2016 17:19:20 +0100
+Checked in by : Robert Osfield
+Removed redundent check
+
+Thu, 23 Jun 2016 17:17:05 +0100
+Checked in by : Robert Osfield
+Adde initializer
+
+Thu, 23 Jun 2016 17:14:03 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Thu, 23 Jun 2016 17:13:06 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Thu, 23 Jun 2016 17:10:18 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Thu, 23 Jun 2016 17:08:04 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Thu, 23 Jun 2016 17:04:30 +0100
+Checked in by : Robert Osfield
+Removed dead code
+
+Thu, 23 Jun 2016 16:53:12 +0100
+Checked in by : Robert Osfield
+Added minimum of 1 to make sure numProcessors is always valid
+
+Thu, 23 Jun 2016 16:52:16 +0100
+Checked in by : Robert Osfield
+Added minimum of 1 to make sure numProcessors is always valid
+
+Thu, 23 Jun 2016 16:50:35 +0100
+Checked in by : Robert Osfield
+Added minimum usage to make sure that numProcessers is always 1 or greater
+
+Thu, 23 Jun 2016 16:48:00 +0100
+Checked in by : Robert Osfield
+Added check for null
+
+Thu, 23 Jun 2016 16:45:22 +0100
+Checked in by : Robert Osfield
+Restructed use of frameNumber to avoid multiple queries
+
+Thu, 23 Jun 2016 16:42:54 +0100
+Checked in by : Robert Osfield
+Restructed check against null
+
+Thu, 23 Jun 2016 16:40:58 +0100
+Checked in by : Robert Osfield
+Added check for valid pointer
+
+Thu, 23 Jun 2016 16:39:36 +0100
+Checked in by : Robert Osfield
+Added check before using pointer
+
+Thu, 23 Jun 2016 16:32:45 +0100
+Checked in by : Robert Osfield
+Removed unused variable
+
+Thu, 23 Jun 2016 16:32:30 +0100
+Checked in by : Robert Osfield
+Added handling of return value
+
+Thu, 23 Jun 2016 16:32:02 +0100
+Checked in by : Robert Osfield
+Fixed unitialized variables
+
+Thu, 23 Jun 2016 12:35:07 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Thu, 23 Jun 2016 12:34:08 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Thu, 23 Jun 2016 12:32:15 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Thu, 23 Jun 2016 12:30:36 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Thu, 23 Jun 2016 12:25:27 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Thu, 23 Jun 2016 12:23:31 +0100
+Checked in by : Robert Osfield
+Added copying of _syncSwapBuffers
+
+Thu, 23 Jun 2016 12:19:59 +0100
+Checked in by : Robert Osfield
+Restructed the GLExtensions(..) constructor so that it now intializes all the variables to NULL if there is not a valid graphics context present
+
+Thu, 23 Jun 2016 11:03:38 +0100
+Checked in by : Robert Osfield
+Added initializers and handling of null case
+
+Thu, 23 Jun 2016 10:52:16 +0100
+Checked in by : Robert Osfield
+Fixed return value
+
+Thu, 23 Jun 2016 10:50:25 +0100
+Checked in by : Robert Osfield
+Restructured to avoid NULL reference
+
+Thu, 23 Jun 2016 10:45:48 +0100
+Checked in by : Robert Osfield
+Removed dead code
+
+Thu, 23 Jun 2016 10:41:58 +0100
+Checked in by : Robert Osfield
+Removed dead code
+
+Thu, 23 Jun 2016 10:06:12 +0100
+Checked in by : Robert Osfield
+Added handling of return value
+
+Thu, 23 Jun 2016 10:05:50 +0100
+Checked in by : Robert Osfield
+Fixed check against null
+
+Thu, 23 Jun 2016 10:01:19 +0100
+Checked in by : Robert Osfield
+Added handling of return values
+
+Thu, 23 Jun 2016 09:05:51 +0100
+Checked in by : Robert Osfield
+Restructed the handling of a null compressor
+
+Thu, 23 Jun 2016 08:55:52 +0100
+Checked in by : Robert Osfield
+Removed dead code
+
+Thu, 23 Jun 2016 08:53:46 +0100
+Checked in by : Robert Osfield
+Moved initializer to constructors
+
+Thu, 23 Jun 2016 08:53:14 +0100
+Checked in by : Robert Osfield
+Added handling of return value
+
+Thu, 23 Jun 2016 08:41:47 +0100
+Checked in by : Robert Osfield
+Moved intializers into constructor.
+
+Thu, 23 Jun 2016 08:28:25 +0100
+Checked in by : Robert Osfield
+Added missing handling of return value
+
+Thu, 23 Jun 2016 08:23:32 +0100
+Checked in by : Robert Osfield
+Fixed possible divide by zero
+
+Thu, 23 Jun 2016 08:20:27 +0100
+Checked in by : Robert Osfield
+Removed dead code
+
+Thu, 23 Jun 2016 07:52:14 +0100
+Checked in by : Robert Osfield
+Removed dead code
+
+Thu, 23 Jun 2016 07:47:40 +0100
+Checked in by : Robert Osfield
+Restructed setting of vertex array to avoid possible reference of null
+
+Thu, 23 Jun 2016 06:56:22 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Thu, 23 Jun 2016 06:51:34 +0100
+Checked in by : Robert Osfield
+Added checks against null pointers and removed #if 0 block.
+
+Wed, 22 Jun 2016 15:53:37 +0100
+Checked in by : Robert Osfield
+Fixed typo
+
+Wed, 22 Jun 2016 12:28:58 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #87 from aluaces/patch-1Fixed indentation for code snippet
+
+Wed, 22 Jun 2016 12:24:23 +0100
+Checked in by : Robert Osfield
+Added missing initializer
+
+Wed, 22 Jun 2016 12:22:19 +0100
+Checked in by : Robert Osfield
+Fixed loop for the wrong counter increment
+
+Wed, 22 Jun 2016 12:10:49 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Wed, 22 Jun 2016 12:08:10 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Wed, 22 Jun 2016 12:03:10 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Wed, 22 Jun 2016 11:58:45 +0100
+Checked in by : Robert Osfield
+Removed dead code
+
+Wed, 22 Jun 2016 11:51:04 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Wed, 22 Jun 2016 11:48:30 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Wed, 22 Jun 2016 11:41:58 +0100
+Checked in by : Robert Osfield
+Added initializer
+
+Wed, 22 Jun 2016 11:39:11 +0100
+Checked in by : Robert Osfield
+Added missing initializers
+
+Wed, 22 Jun 2016 11:27:15 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Wed, 22 Jun 2016 11:26:11 +0100
+Checked in by : Robert Osfield
+Added default_value() template to help with creating templates that need to initialize members that are floats etc.
+
+Wed, 22 Jun 2016 10:35:37 +0100
+Checked in by : Robert Osfield
+Added intializers
+
+Wed, 22 Jun 2016 09:49:27 +0100
+Checked in by : Robert Osfield
+Added initializers
+
+Wed, 22 Jun 2016 09:37:51 +0100
+Checked in by : Robert Osfield
+Removed info comment
+
+Wed, 22 Jun 2016 09:33:18 +0100
+Checked in by : Robert Osfield
+Fixed null termination
+
+Wed, 22 Jun 2016 09:24:44 +0100
+Checked in by : Robert Osfield
+Added initializers in case ply_get_element() doesn't overwrite the values.
+
+Tue, 21 Jun 2016 17:04:22 +0100
+Checked in by : Robert Osfield
+Fixed memory leak.
+
+Tue, 21 Jun 2016 17:03:33 +0100
+Checked in by : Robert Osfield
+Fixed line endings
+
+Tue, 21 Jun 2016 11:45:19 +0100
+Checked in by : Robert Osfield
+Changed the pointer arithmetic to be more explict and readable.
+
+Tue, 21 Jun 2016 11:23:33 +0200
+Checked in by : Alberto Luaces
+Fixed indentation for code snippetDue to incorrect indentation, the code snippet was not being formatted correctly as code.
+
+Tue, 21 Jun 2016 09:21:45 +0100
+Checked in by : Robert Osfield
+Removed the osgviewerGLUT as GLUT is terrible example of how to build a modern 3D graphics application.
+
+Tue, 21 Jun 2016 08:14:00 +0100
+Checked in by : Robert Osfield
+Reverted to C style for loop initialization
+
+Mon, 20 Jun 2016 19:06:01 +0100
+Checked in by : Robert Osfield
+Fixed COVERITY reported overflow defect.
+
+Mon, 20 Jun 2016 17:59:52 +0100
+Checked in by : Robert Osfield
+Restructed copy to avoid pointer artithmetic when only single float is being used to avoid Coverity reported defect.
+
+Mon, 20 Jun 2016 17:57:41 +0100
+Checked in by : Robert Osfield
+Fixed line endings
+
+Mon, 20 Jun 2016 17:39:57 +0100
+Checked in by : Robert Osfield
+Added string termination
+
+Mon, 20 Jun 2016 17:35:25 +0100
+Checked in by : Robert Osfield
+Fixed string null termination defects
+
+Mon, 20 Jun 2016 17:05:10 +0100
+Checked in by : Robert Osfield
+Addd explict setting of 0 string termination.
+
+Mon, 20 Jun 2016 16:50:21 +0100
+Checked in by : Robert Osfield
+Introduced local cursormap variable to make it clearer which containers are being worked upon.
+
+Mon, 20 Jun 2016 14:06:21 +0100
+Checked in by : Robert Osfield
+Removed no longer used Designer Workbench plugin.It's code quality is poor and as there has been no sign that it's used in the community decided to remove it
+rather than spend time trying to fix the mess it's in.
+
+
+Mon, 20 Jun 2016 14:04:38 +0100
+Checked in by : Robert Osfield
+Fixed potential memory leak
+
+Mon, 20 Jun 2016 14:00:47 +0100
+Checked in by : Robert Osfield
+Fixed potential memory leaks
+
+Mon, 20 Jun 2016 13:37:59 +0100
+Checked in by : Robert Osfield
+Fixed potential memory leak
+
+Mon, 20 Jun 2016 12:52:49 +0100
+Checked in by : Robert Osfield
+Moved the setUserData(new TileIdentifier(..)) so that all branches can utilize it.
+
+Mon, 20 Jun 2016 12:46:00 +0100
+Checked in by : Robert Osfield
+Added missing initializers
+
+Mon, 20 Jun 2016 12:40:46 +0100
+Checked in by : Robert Osfield
+Added missing initializers
+
+Mon, 20 Jun 2016 12:27:47 +0100
+Checked in by : Robert Osfield
+Added check to make sure undefined condition happens due to unitialized variables.
+
+Mon, 20 Jun 2016 12:20:44 +0100
+Checked in by : Robert Osfield
+Added intializer for char[] to squash Coverity "defect".
+
+Mon, 20 Jun 2016 12:25:43 +0200
+Checked in by : Ralf Habacker
+example_osgobjectcache: Add a check that we really get the correct nodes.
+
+Mon, 20 Jun 2016 08:14:53 +0200
+Checked in by : Ralf Habacker
+clang 6.0 compile fixes.
+
+Fri, 17 Jun 2016 17:48:31 +0200
+Checked in by : Ralf Habacker
+Fix finding object cache entries.
+
+Mon, 20 Jun 2016 10:23:05 +0100
+Checked in by : Robert Osfield
+Build fixes for building with OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION set to OFF. Added spacing to make code more readable.
+
+Fri, 17 Jun 2016 17:45:06 +0200
+Checked in by : Ralf Habacker
+Add osgobjectcache example.
+
+Mon, 20 Jun 2016 06:42:34 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #86 from spthaolt/mastercorrected syntax error in src/osgPlugins/fbx/ReaderWriterFBX.cpp
+
+Sun, 19 Jun 2016 21:07:37 +0700
+Checked in by : Thao Le
+corrected syntax error in src/osgPlugins/fbx/ReaderWriterFBX.cpp
+
+Fri, 17 Jun 2016 15:39:19 +0100
+Checked in by : Robert Osfield
+Replaced old slow path deprecated_osg::Geometry code
+
+Fri, 17 Jun 2016 14:13:35 +0100
+Checked in by : Robert Osfield
+Replaced deprecated_osg::Geometry usage
+
+Fri, 17 Jun 2016 13:04:41 +0100
+Checked in by : Robert Osfield
+Converted code across to using non deprecated version of osg::Geometry
+
+Fri, 17 Jun 2016 12:52:04 +0100
+Checked in by : Robert Osfield
+Removed pfb plugin as the Perform dependency it relies upon has long since disappeared
+
+Fri, 17 Jun 2016 12:49:44 +0100
+Checked in by : Robert Osfield
+Build fixes to reflect removal of deprecated_osg::Geometry
+
+Fri, 17 Jun 2016 11:53:34 +0100
+Checked in by : Robert Osfield
+Removed old examples that relied upon deprecated functionality
+
+Fri, 17 Jun 2016 10:57:17 +0100
+Checked in by : Robert Osfield
+Fixed coverity detected defect: Incorrect values read from a different memory region will cause incorrect computations. In osgDB::​base64_decode_value(char): Out-of-bounds read from a buffer
+
+Fri, 17 Jun 2016 10:51:53 +0100
+Checked in by : Robert Osfield
+Fixed coverity defects, two missing checks for error condition and resource leak.
+
+Fri, 17 Jun 2016 10:42:02 +0100
+Checked in by : Robert Osfield
+Fixed memory leak
+
+Fri, 17 Jun 2016 10:32:01 +0100
+Checked in by : Julien Valentin
+Added OpenGL extensions related to shader subroutine
+
+Fri, 17 Jun 2016 10:17:18 +0100
+Checked in by : Robert Osfield
+Merge branch 'coverity_scan'
+
+Fri, 17 Jun 2016 10:12:11 +0100
+Checked in by : Robert Osfield
+Removed deprecated_osg::Geometry and cleaned up the deprecated Geometry::set*Binding() calls
+
+Fri, 17 Jun 2016 09:48:21 +0100
+Checked in by : Robert Osfield
+Fixed indentation, replaced dynamic_cast<> with static_cast<> as we know the type and add check against null pointers
+
+Fri, 17 Jun 2016 09:40:35 +0100
+Checked in by : Robert Osfield
+Added missing check against null
+
+Fri, 17 Jun 2016 09:33:56 +0100
+Checked in by : Robert Osfield
+Added missing checks against viewer being valid and added missing break.
+
+Fri, 17 Jun 2016 09:24:13 +0100
+Checked in by : Robert Osfield
+Added if (texture) to fix bug when the dynamic_cast<> returns NULL.
+
+Fri, 17 Jun 2016 09:15:37 +0100
+Checked in by : Robert Osfield
+Merge branch 'coverity_scan'
+
+Fri, 17 Jun 2016 08:53:38 +0100
+Checked in by : Robert Osfield
+Changed dyanmic_cast<> to static_cast<> as code is written in a way that the type is always known.
+
+Fri, 17 Jun 2016 07:52:41 +0100
+Checked in by : Robert Osfield
+Fixed logically dead code detected by Coverity
+
+Fri, 17 Jun 2016 07:46:39 +0100
+Checked in by : Robert Osfield
+Removed logically dead code detected by Coverity
+
+Thu, 16 Jun 2016 14:15:37 +0200
+Checked in by : Jordi Torres
+Add coverity scan badge
+
+Thu, 16 Jun 2016 12:55:27 +0200
+Checked in by : Jordi Torres
+Modified coverity build command to avoid creating dirs
+
+Wed, 15 Jun 2016 19:05:35 +0100
+Checked in by : Julien Valentin
+Refactored osg::TextureBuffer to support assigning any type of osg::BufferData rather than just osg::Image as was previously required.Refactored osgforest and osggpucull examples to take account of changes to TextureBuffer.
+
+Added osg::DrawIndirectBufferBinding.
+
+
+Wed, 15 Jun 2016 18:35:25 +0200
+Checked in by : Jordi Torres
+Changes to travis.yml with the new token for coverity scan
+
+Wed, 15 Jun 2016 15:38:52 +0100
+Checked in by : Robert Osfield
+Fixed indentation
+
+Wed, 15 Jun 2016 11:42:01 +0100
+Checked in by : Robert Osfield
+Another attempt to resovle coverity_scan build issue
+
+Wed, 15 Jun 2016 10:49:55 +0100
+Checked in by : Robert Osfield
+Another rev of .travis.yml to see if we can tease Coverity scan into action.
+
+Tue, 14 Jun 2016 18:27:27 +0100
+Checked in by : Robert Osfield
+Removed redundent _boundingBoxComputed
+
+Tue, 14 Jun 2016 17:18:22 +0100
+Checked in by : Robert Osfield
+How to debug tavis script when documentation is so spartan?
+
+Tue, 14 Jun 2016 17:13:39 +0100
+Checked in by : Robert Osfield
+Another rev of .travis.yml to try and get things working
+
+Tue, 14 Jun 2016 16:51:07 +0100
+Checked in by : Robert Osfield
+As an experiment moved the coverity_scan code into the linux addons: block
+
+Tue, 14 Jun 2016 16:42:06 +0100
+Checked in by : Robert Osfield
+Added {} brackets around OSG_DEBUG usage to avoid issues with marco's expanding if else.
+
+Tue, 14 Jun 2016 16:40:15 +0100
+Checked in by : Robert Osfield
+Removed deprecated register keyword usage
+
+Tue, 14 Jun 2016 16:39:29 +0100
+Checked in by : Robert Osfield
+Fixed line endings
+
+Tue, 14 Jun 2016 16:37:31 +0100
+Checked in by : Robert Osfield
+Removed use of deprecated register keyword
+
+Fri, 27 May 2016 14:57:55 +0200
+Checked in by : Ralf Habacker
+Fix 'Non-static class member "yy_lp" is not initialized in this constructor nor in any functions that it calls".Coverity CID 126893:  Uninitialized members  (UNINIT_CTOR)
+
+
+Wed, 15 Jan 2014 15:33:42 +0100
+Checked in by : Ralf Habacker
+Identify files in object cache by filename and optional provided options.Objects with the same filename may be different from others based on the provided
+plugin options. Using filename *and* the provided options as object cache key
+helps to avoid fetching the wrong object.
+
+
+Tue, 14 Jun 2016 12:00:36 +0100
+Checked in by : Robert Osfield
+Updated SO version number to reflect changes to API
+
+Tue, 14 Jun 2016 11:43:45 +0100
+Checked in by : Julien Valentin
+osgDB Wrapper Associates Revision Tagging
+
+Tue, 14 Jun 2016 09:44:50 +0100
+Checked in by : Robert Osfield
+Changed the build to run on 3 cores.
+
+Tue, 14 Jun 2016 09:30:00 +0100
+Checked in by : Robert Osfield
+Added first cut of Coverity Scan support
+
+Tue, 14 Jun 2016 08:52:54 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #83 from filnet/warningsFixed various compilation warnings on msys2
+
+Tue, 14 Jun 2016 08:50:14 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #82 from filnet/ffmpegmsys2: fix ffmpeg pluging compilation error due to spurious stdint re…
+
+Mon, 13 Jun 2016 17:10:47 +0100
+Checked in by : Robert Osfield
+Updated date.
+
+Mon, 13 Jun 2016 16:24:01 +0100
+Checked in by : Robert Osfield
+Added #include <string> in case other headers don't include it.
+
+Sat, 11 Jun 2016 17:44:41 +0200
+Checked in by : Philippe Renon
+msys2: fixed ignoring #pragma warning
+
+Sat, 11 Jun 2016 17:43:49 +0200
+Checked in by : Philippe Renon
+msys2: fixed redefined include warnings
+
+Sat, 11 Jun 2016 17:43:07 +0200
+Checked in by : Philippe Renon
+msys2: fixed converting to non-pointer type 'long long int' from NULL
+
+Sat, 11 Jun 2016 17:42:19 +0200
+Checked in by : Philippe Renon
+msys2: fixed uninitialized variable
+
+Sat, 11 Jun 2016 17:39:52 +0200
+Checked in by : Philippe Renon
+msys2: fix ffmpeg pluging compilation error due to spurious stdint related includes
+
+Sat, 11 Jun 2016 17:05:00 +0200
+Checked in by : Philippe Renon
+make osgViewer::View::requiresUpdateSceneGraph() virtual
+
+Sat, 11 Jun 2016 16:58:51 +0200
+Checked in by : Philippe Renon
+refactor common code from CompositeViewer::checkNeedToDoFrame() and Viewer::checkNeedToDoFrame() into View
+
+Fri, 10 Jun 2016 19:40:15 +0100
+Checked in by : Robert Osfield
+Fixed unitialized member variable
+
+Fri, 10 Jun 2016 19:35:44 +0100
+Checked in by : Robert Osfield
+Fixed unitialized member variable
+
+Fri, 10 Jun 2016 19:33:47 +0100
+Checked in by : Robert Osfield
+FIxed unitialized member variables
+
+Fri, 10 Jun 2016 19:27:46 +0100
+Checked in by : Robert Osfield
+Fixed memory leak
+
+Fri, 10 Jun 2016 19:25:07 +0100
+Checked in by : Robert Osfield
+Fixed memory leak
+
+Fri, 10 Jun 2016 18:03:18 +0100
+Checked in by : Robert Osfield
+Updated version number of to 3.5.4
+
+Fri, 10 Jun 2016 17:24:03 +0100
+Checked in by : Robert Osfield
+Fixed memory leak
+
+Fri, 10 Jun 2016 17:19:41 +0100
+Checked in by : Robert Osfield
+Fixed memory leak
+
+Fri, 10 Jun 2016 17:09:34 +0100
+Checked in by : Robert Osfield
+Fixed memory leak
+
+Fri, 10 Jun 2016 17:06:04 +0100
+Checked in by : Robert Osfield
+Fixed memory leak
+
+Fri, 10 Jun 2016 17:01:42 +0100
+Checked in by : Robert Osfield
+Fixed memory leak
+
+Fri, 10 Jun 2016 16:59:19 +0100
+Checked in by : Robert Osfield
+Added use of ref_ptr<> to fix memory leak
+
+Fri, 10 Jun 2016 16:54:46 +0100
+Checked in by : Robert Osfield
+Fixed memory leak
+
+Fri, 10 Jun 2016 16:44:50 +0100
+Checked in by : Robert Osfield
+Added use of ref_ptr<> to fix memory leak
+
+Fri, 10 Jun 2016 16:41:13 +0100
+Checked in by : Robert Osfield
+Restructed to fix memory leak
+
+Fri, 10 Jun 2016 16:36:13 +0100
+Checked in by : Robert Osfield
+Added use of ref_ptr<> to fix memory leak
+
+Fri, 10 Jun 2016 16:34:36 +0100
+Checked in by : Robert Osfield
+Added ref_ptr<> usage to address memory leaks
+
+Fri, 10 Jun 2016 16:30:21 +0100
+Checked in by : Robert Osfield
+Added missing intializers to address Coverity issue
+
+Fri, 10 Jun 2016 16:16:29 +0100
+Checked in by : Robert Osfield
+Added assert() to make it clear to Coverity that both prev and next won't be null
+
+Fri, 10 Jun 2016 15:53:58 +0100
+Checked in by : Robert Osfield
+Fixed memory leak detected by Coverity
+
+Fri, 10 Jun 2016 15:49:24 +0100
+Checked in by : Robert Osfield
+Fixed memory leak detected by Coverity
+
+Fri, 10 Jun 2016 15:24:19 +0100
+Checked in by : Robert Osfield
+Fixed "User after free" bugs reported by Coverity.
+
+Fri, 10 Jun 2016 14:58:42 +0100
+Checked in by : Robert Osfield
+Fixed potential memory leak by introducing ref counting.
+
+Fri, 10 Jun 2016 14:36:50 +0100
+Checked in by : Robert Osfield
+Introduced use of local std::string to work around issue of the read header.text not being null terminated and causing a problem with the strstr call.
+
+Fri, 10 Jun 2016 14:16:49 +0100
+Checked in by : Robert Osfield
+Fixed uninitialized member variable.
+
+Fri, 10 Jun 2016 14:09:43 +0100
+Checked in by : Robert Osfield
+Restructed variable ordering and added missing va_end().
+
+Fri, 10 Jun 2016 14:09:03 +0100
+Checked in by : Robert Osfield
+Fixed line endings
+
+Fri, 10 Jun 2016 14:02:55 +0100
+Checked in by : Robert Osfield
+Restructed fgetc usage.
+
+Fri, 10 Jun 2016 13:42:13 +0100
+Checked in by : Robert Osfield
+Fixing some of the more glaring coding errors in DW plugin.
+
+Fri, 10 Jun 2016 13:31:51 +0100
+Checked in by : Robert Osfield
+Reordered paramter usage to fix coverity warning about parameter names not matching
+
+Fri, 10 Jun 2016 12:44:26 +0100
+Checked in by : Robert Osfield
+Fixed invalidated iterator bug pick up by Coverity.
+
+Fri, 10 Jun 2016 12:03:48 +0100
+Checked in by : Robert Osfield
+Fixed iterator invalidation bug picked by Covertiy scan.
+
+Thu, 9 Jun 2016 12:08:47 +0100
+Checked in by : Robert Osfield
+Rewrote Window::setNextFocusable() to address a bug in the management of the search iterator. Covertiy reported bug "Undefined behavior may result; the program may crash or subtly misbehave. In osgWidget::​Window::​setNextFocusable(): An invalid or past-the-end iterator is being used."
+
+Thu, 9 Jun 2016 11:41:14 +0100
+Checked in by : Robert Osfield
+Fixed "Using invalid iterator" bug in getTile() methods, detected by Covertity.
+
+Thu, 9 Jun 2016 11:29:03 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #80 from jtorresfabra/changeReadmeToMDChanged Readme file to markdown
+
+Thu, 9 Jun 2016 12:14:35 +0200
+Checked in by : Jordi Torres
+Changed Readme file to markdown
+
+Thu, 9 Jun 2016 10:59:44 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #79 from jtorresfabra/addTravisStatusAdded travis CI status label to github
+
+Thu, 9 Jun 2016 11:50:12 +0200
+Checked in by : Jordi Torres
+Added travis CI status label to github
+
+Thu, 9 Jun 2016 10:48:05 +0100
+Checked in by : Julien Valentin
+Shader subroutine related funcs added
+
+Thu, 9 Jun 2016 10:15:38 +0100
+Checked in by : Sebastian Messerschmidt
+OpenFlight-plugin with extended attributes. Added the addtional properties (terrain, roofline and footprint) alongside with the SMC/FID attributes. Also I added the newly added IRMaterial to the per-geode properties. Added the Texture-EffectId and the mapping index as a user-value to the texture object. Naming scheme is the same as for the per-vertex/geode attributes.
+
+Wed, 8 Jun 2016 16:48:29 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #78 from LaurensVoerman/mastervisual studio 2015 warning fixes:
+
+Wed, 8 Jun 2016 16:10:48 +0100
+Checked in by : Robert Osfield
+Merge branch 'master' of https://github.com/openscenegraph/OpenSceneGraph
+
+Wed, 8 Jun 2016 16:10:39 +0100
+Checked in by : OpenSceneGraph git repository
+Merge pull request #76 from jtorresfabra/travis-addinitial travis file, support for ubuntu trusty and osx builds
+
+Wed, 8 Jun 2016 16:16:48 +0200
+Checked in by : Laurens Voerman
+Merge remote-tracking branch 'upstream/master'
+
+Wed, 8 Jun 2016 13:50:20 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 13:40:02 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 13:38:40 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 13:37:17 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 13:36:18 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 13:35:46 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 13:34:55 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 13:34:33 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 13:32:14 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 13:30:09 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 13:28:18 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 13:26:00 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 13:25:02 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 13:22:54 +0100
+Checked in by : Robert Osfield
+Disabled -Wextra as the warning it generates is bengin and fixing it would introduce warnings on other platforms
+
+Wed, 8 Jun 2016 14:22:14 +0200
+Checked in by : Laurens Voerman
+visual studio 2015 warning fixes: OpenSceneGraph\src\osgPlugins\dae\daeRAnimations.cpp(470): warning C4456: declaration of 'kfCntr' hides previous local declaration   OpenSceneGraph\src\osgPlugins\dae\daeRAnimations.cpp(452): note: see declaration of 'kfCntr' OpenSceneGraph\src\osgPlugins\dae\daeReader.cpp(202): warning C4456: declaration of 'i' hides previous local declaration   OpenSceneGraph\src\osgPlugins\dae\daeReader.cpp(188): note: see declaration of 'i' OpenSceneGraph\src\osgPlugins\dae\daeReader.cpp(226): warning C4456: declaration of 'i' hides previous local declaration   OpenSceneGraph\src\osgPlugins\dae\daeReader.cpp(188): note: see declaration of 'i' OpenSceneGraph\src\osgPlugins\dae\daeReader.cpp(243): warning C4456: declaration of 'i' hides previous local declaration   OpenSceneGraph\src\osgPlugins\dae\daeReader.cpp(188): note: see declaration of 'i' OpenSceneGraph\src\osgPlugins\dae\daeReader.cpp(253): warning C4456: declaration of 'i' hides previous local declaration   OpenSceneGraph\src\osgPlugins\dae\daeReader.cpp(188): note: see declaration of 'i'
+
+Wed, 8 Jun 2016 13:20:07 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 12:26:40 +0100
+Checked in by : Robert Osfield
+Fixed -Wextra warnings
+
+Wed, 8 Jun 2016 12:24:46 +0100
+Checked in by : Robert Osfield
+Fixed -Wextra warnings
+
+Wed, 8 Jun 2016 12:22:27 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 12:22:12 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 12:21:51 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 12:21:29 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 12:19:53 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 12:16:58 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 12:15:51 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 12:14:35 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 12:10:00 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 12:09:00 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 12:07:14 +0100
+Checked in by : Robert Osfield
+Fixed -Wextra warnings
+
+Wed, 8 Jun 2016 11:50:18 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 11:48:02 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 11:41:54 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 11:40:51 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 11:39:47 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 11:38:40 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 11:35:21 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 11:34:06 +0100
+Checked in by : Robert Osfield
+Fixed -Wextra warnings
+
+Wed, 8 Jun 2016 11:31:11 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 11:30:35 +0100
+Checked in by : Robert Osfield
+Fixed -Wextra warnings
+
+Wed, 8 Jun 2016 11:18:20 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 11:07:56 +0100
+Checked in by : Robert Osfield
+Fixed ignored qualifiers warning
+
+Wed, 8 Jun 2016 11:06:52 +0100
+Checked in by : Robert Osfield
+Fixed ignored qualifiers warning
+
+Wed, 8 Jun 2016 11:05:29 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 11:04:24 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 11:02:51 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 10:59:55 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 10:58:14 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 10:55:22 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 10:54:36 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 10:52:40 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 10:51:45 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 10:46:45 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 10:45:32 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 10:43:57 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 10:42:00 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 10:34:40 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 10:21:57 +0100
+Checked in by : Robert Osfield
+Added -Wmaybe-uninitialized -Wextra warnings to GNU CXX build.
+
+Wed, 8 Jun 2016 10:19:57 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 10:18:23 +0100
+Checked in by : Robert Osfield
+Fixed -Wextra warnings
+
+Wed, 8 Jun 2016 10:17:47 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 10:16:20 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 10:15:51 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 10:14:56 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 10:00:18 +0100
+Checked in by : Robert Osfield
+Fixed -Wextra warning
+
+Wed, 8 Jun 2016 09:59:33 +0100
+Checked in by : Robert Osfield
+Disabled -Wextra for dae build as warnings in COLLADA_DOM headers can't be fixed
+
+Wed, 8 Jun 2016 09:57:57 +0100
+Checked in by : Robert Osfield
+Fixed -Wextra warning
+
+Wed, 8 Jun 2016 09:57:30 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 09:57:02 +0100
+Checked in by : Robert Osfield
+Fixed -Wextra warnings
+
+Wed, 8 Jun 2016 09:56:35 +0100
+Checked in by : Robert Osfield
+Fixed -Wextra warning
+
+Wed, 8 Jun 2016 09:55:33 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 09:55:15 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 09:54:10 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 09:52:09 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 09:51:50 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 09:50:38 +0100
+Checked in by : Robert Osfield
+Fixed -Wextra warnings
+
+Wed, 8 Jun 2016 09:49:58 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 09:49:29 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 09:49:10 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 09:48:39 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 09:48:14 +0100
+Checked in by : Robert Osfield
+Fixed -Wextra warnings
+
+Wed, 8 Jun 2016 09:47:30 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 09:46:58 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 09:46:09 +0100
+Checked in by : Robert Osfield
+Fixed -Wextra warnings
+
+Wed, 8 Jun 2016 09:44:39 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 09:43:40 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warnings
+
+Wed, 8 Jun 2016 09:43:05 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 09:38:22 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 09:37:43 +0100
+Checked in by : Robert Osfield
+Disabled the -Wextra warnin the warnings that can't be fixed due to optional code paths.
+
+Wed, 8 Jun 2016 09:34:34 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 09:33:56 +0100
+Checked in by : Robert Osfield
+Disabled the -Wextra warning as resolve the warnings will create other warnings under other compilers
+
+Wed, 8 Jun 2016 09:20:16 +0100
+Checked in by : Robert Osfield
+Fixed -Wextra warnings
+
+Wed, 8 Jun 2016 09:07:32 +0100
+Checked in by : Robert Osfield
+Fixed -Wextra warnings
+
+Wed, 8 Jun 2016 09:06:42 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 09:05:34 +0100
+Checked in by : Robert Osfield
+Fixed -Wextra warningsw
+
+Wed, 8 Jun 2016 09:04:01 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 09:01:47 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Wed, 8 Jun 2016 08:54:43 +0100
+Checked in by : Robert Osfield
+Fixed -Wextra warnings
+
+Wed, 8 Jun 2016 08:52:30 +0100
+Checked in by : Robert Osfield
+Fixed unused parameter warning.
+
+Tue, 7 Jun 2016 09:43:36 +0100
+Checked in by : Robert Osfield
+Fixed shadows warnings
+
+Tue, 7 Jun 2016 08:53:42 +0100
+Checked in by : Robert Osfield
+Fixed "unreferenced formal parameter" warnings
+
+Mon, 6 Jun 2016 17:54:29 +0100
+Checked in by : Laurens Voerman
+Build and warning fixes
+
+Mon, 6 Jun 2016 14:38:15 +0100
+Checked in by : Robert Osfield
+Removed shadowing declaration
+
+Mon, 6 Jun 2016 14:37:33 +0100
+Checked in by : Robert Osfield
+Fixed line endings
+
+Mon, 6 Jun 2016 14:28:41 +0100
+Checked in by : Robert Osfield
+Added disabling of the C4702 as changing the code would introduce it's own warning.
+
+Mon, 6 Jun 2016 14:28:12 +0100
+Checked in by : Robert Osfield
+Fixed shadowing warning
+
+Mon, 6 Jun 2016 14:18:43 +0100
+Checked in by : Robert Osfield
+Fixed VS2015 warning
+
+Mon, 6 Jun 2016 13:12:43 +0100
+Checked in by : Björn Blissing
+Quitened down VS warnings
+
+Mon, 6 Jun 2016 12:05:28 +0100
+Checked in by : Robert Osfield
+Removed redundent _EXT
+
+Mon, 6 Jun 2016 11:59:56 +0100
+Checked in by : Jethro Leevers
+Added support for GL_LINE_STRIP_ADJACENCY_EXT
+
+Sat, 4 Jun 2016 18:40:37 +0100
+Checked in by : Robert Osfield
+Removed the use of register hint and cleaned up indentation
+
+Sat, 4 Jun 2016 18:36:36 +0100
+Checked in by : Robert Osfield
+Added "" around the CMAKE_CXX_FLAGS setting to fix build error
+
+Fri, 3 Jun 2016 18:53:24 +0100
+Checked in by : Robert Osfield
+Updated AUTHORS file
+
+Fri, 3 Jun 2016 18:24:53 +0100
+Checked in by : Robert Osfield
+Updated ChangeLog
+
 Fri, 3 Jun 2016 17:57:04 +0100
 Checked in by : Julien Valentin
 Fixed little bug in DrawArraysLength (instancing not supported). Corrected PrimitiveSet.cpp in order DrawArraysLength can be instanced. It's the only pr missing code if (_numInstances>=1)      glDrawXXXInstanced(...,_numInstances); else glDrawXXX();
@@ -18,6 +2715,10 @@ fix for the rest of the VS2015 virtual inheritance warnings. Same as for issues 
 Fri, 3 Jun 2016 17:22:28 +0100
 Checked in by : Björn Blissing
 VS2015 build fix
+
+Fri, 3 Jun 2016 13:41:19 +0200
+Checked in by : Jordi Torres
+initial travis file, support for ubuntu trusty and osx builds
 
 Fri, 3 Jun 2016 11:30:48 +0100
 Checked in by : Björn Blissing

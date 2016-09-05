@@ -568,7 +568,7 @@ void GraphicsContext::swapBuffers()
 {
     if (isCurrent())
     {
-        swapBuffersCallbackOrImplemenation();
+        swapBuffersCallbackOrImplementation();
         clear();
     }
     else if (_graphicsThread.valid() &&
@@ -579,7 +579,7 @@ void GraphicsContext::swapBuffers()
     else
     {
         makeCurrent();
-        swapBuffersCallbackOrImplemenation();
+        swapBuffersCallbackOrImplementation();
         clear();
     }
 }

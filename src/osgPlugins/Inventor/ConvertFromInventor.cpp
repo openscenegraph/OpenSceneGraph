@@ -195,8 +195,8 @@ ConvertFromInventor::restructure(void* data, SoCallbackAction* action,
 }
 ///////////////////////////////////////////////////////////
 SoCallbackAction::Response
-ConvertFromInventor::restructurePreNode(void* data, SoCallbackAction* action,
-                             const SoNode* node)
+ConvertFromInventor::restructurePreNode(void* data, SoCallbackAction* /*action*/,
+                             const SoNode* /*node*/)
 {
     std::vector<std::vector<int> > &stack = *((std::vector<std::vector<int> >*)data);
 
@@ -206,7 +206,7 @@ ConvertFromInventor::restructurePreNode(void* data, SoCallbackAction* action,
 }
 ////////////////////////////////////////////////////////////////////
 SoCallbackAction::Response
-ConvertFromInventor::restructurePostNode(void* data, SoCallbackAction* action,
+ConvertFromInventor::restructurePostNode(void* data, SoCallbackAction* /*action*/,
                               const SoNode* node)
 {
     std::vector<std::vector<int> > &stack = *((std::vector<std::vector<int> >*)data);
@@ -507,7 +507,7 @@ ConvertFromInventor::ivPushState(const SoCallbackAction *action,
 ///////////////////////////////////////////////////////////////////
 void
 ConvertFromInventor::ivPopState(const SoCallbackAction *action,
-                                const SoNode *initiator)
+                                const SoNode * /*initiator*/)
 {
     bool multipop;
     do {
@@ -1117,14 +1117,14 @@ SbBool SoTexture2Osg::readInstance(SoInput *in, unsigned short flags)
     {
         // create options and read the file
         osgDB::ReaderWriter::Options *options = createOptions();
-        osg::ref_ptr<osg::Image> image = loadImage(filename.getValue().getString(), options);
+        osg::ref_ptr<osg::Image> limage = loadImage(filename.getValue().getString(), options);
 
-        if (image.valid())
+        if (limage.valid())
         {
             // get image dimensions and data
-            int nc = osg::Image::computeNumComponents(image->getPixelFormat());
-            SbVec2s size(image->s(), image->t());
-            unsigned char *bytes = image->data();
+            int nc = osg::Image::computeNumComponents(limage->getPixelFormat());
+            SbVec2s size(limage->s(), limage->t());
+            unsigned char *bytes = limage->data();
 
             // disable notification on image while setting data from filename
             // as a notify will cause a filename.setDefault(TRUE)
@@ -1325,9 +1325,9 @@ ConvertFromInventor::postTexture(void* data, SoCallbackAction *,
         SoTexture2 *t = (SoTexture2*)node;
         SbVec2s size;
         int nc;
-        const unsigned char *data = t->image.getValue(size, nc);
+        const unsigned char *ldata = t->image.getValue(size, nc);
         texturingEnabled = t->filename.getValue().getLength() ||
-                           (data && size != SbVec2s(0,0));
+                           (ldata && size != SbVec2s(0,0));
     }
 
 #ifdef __COIN__
@@ -1509,7 +1509,7 @@ ConvertFromInventor::preLight(void* data, SoCallbackAction* action,
 }
 ///////////////////////////////////////////////////////////////////
 SoCallbackAction::Response
-ConvertFromInventor::preEnvironment(void* data, SoCallbackAction* action,
+ConvertFromInventor::preEnvironment(void* data, SoCallbackAction* /*action*/,
                                     const SoNode* node)
 {
 #ifdef DEBUG_IV_PLUGIN
@@ -1557,7 +1557,7 @@ convertShader(osg::Shader::Type osgShaderType,
 #endif // INVENTOR_SHADERS_AVAILABLE
 ///////////////////////////////////////////////////////////////////
 SoCallbackAction::Response
-ConvertFromInventor::preShaderProgram(void* data, SoCallbackAction* action,
+ConvertFromInventor::preShaderProgram(void* data, SoCallbackAction* /*action*/,
                               const SoNode* node)
 {
 #ifdef DEBUG_IV_PLUGIN
@@ -1980,7 +1980,7 @@ ConvertFromInventor::convertIVTexToOSGTex(const SoNode* soNode,
 }
 ///////////////////////////////////////////////////////////////////
 SoCallbackAction::Response
-ConvertFromInventor::preInfo(void* data, SoCallbackAction* action,
+ConvertFromInventor::preInfo(void* /*data*/, SoCallbackAction* /*action*/,
                              const SoNode* node)
 {
 #ifdef DEBUG_IV_PLUGIN

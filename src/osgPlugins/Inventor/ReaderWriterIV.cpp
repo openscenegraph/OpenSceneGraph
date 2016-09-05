@@ -72,7 +72,7 @@ void ReaderWriterIV::initInventor() const
 }
 
 
-static void errorCallback(const SoError *error, void *data)
+static void errorCallback(const SoError *error, void * /*data*/)
 {
     // note: Coin and SGI Inventor puts "Inventor read error..." or "Coin warning..."
     // introduction string to the error message, so we do not prepend the error message
@@ -260,7 +260,7 @@ ReaderWriterIV::readNode(std::istream& fin,
 
 osgDB::ReaderWriter::WriteResult
 ReaderWriterIV::writeNode(const osg::Node& node, const std::string& fileName,
-                          const osgDB::ReaderWriter::Options* options) const
+                          const osgDB::ReaderWriter::Options* /*options*/) const
 {
     // accept extension
     std::string ext = osgDB::getLowerCaseFileExtension(fileName);

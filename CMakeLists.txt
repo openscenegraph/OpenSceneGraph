@@ -233,7 +233,7 @@ IF (OSG_MAINTAINER)
     #
     # Provide target for generating ChangeLog
     #
-    SET(GITLOGFORMAT "%aD%nChecked in by : %an%n%s%b%n")
+    SET(GITLOGFORMAT "%aD%nAuthor : %an%n%s%b%n")
     SET(GENERATELOGS git log --pretty=format:${GITLOGFORMAT})
 
     ADD_CUSTOM_TARGET(ChangeLog

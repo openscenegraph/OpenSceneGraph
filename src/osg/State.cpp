@@ -174,7 +174,7 @@ void State::initializeExtensionProcs()
     _isVertexBufferObjectSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(_contextID,"GL_ARB_vertex_buffer_object");
     _isVertexArrayObjectSupported = _glExtensions->isVAOSupported;
 
-    const DisplaySettings* ds = getDisplaySettings() ? getDisplaySettings() : osg::DisplaySettings::instance();
+    const DisplaySettings* ds = getDisplaySettings() ? getDisplaySettings() : osg::DisplaySettings::instance().get();
     _forceVertexArrayObject = _isVertexArrayObjectSupported && (ds->getVertexBufferHint()==DisplaySettings::VERTEX_ARRAY_OBJECT);
     _forceVertexBufferObject = _forceVertexArrayObject || (_isVertexBufferObjectSupported && (ds->getVertexBufferHint()==DisplaySettings::VERTEX_BUFFER_OBJECT));
 

@@ -78,7 +78,7 @@ void ImpostorSprite::init()
     colors->push_back(osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
     setVertexArray(_coords.get());
-    setColorArray(colors);
+    setColorArray(colors.get());
     setTexCoordArray(0, _texcoords.get());
 
     addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, 4));

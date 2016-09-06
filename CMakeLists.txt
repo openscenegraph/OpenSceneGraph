@@ -129,7 +129,7 @@ PROJECT(OpenSceneGraph)
 
 SET(OPENSCENEGRAPH_MAJOR_VERSION 3)
 SET(OPENSCENEGRAPH_MINOR_VERSION 5)
-SET(OPENSCENEGRAPH_PATCH_VERSION 4)
+SET(OPENSCENEGRAPH_PATCH_VERSION 5)
 SET(OPENSCENEGRAPH_SOVERSION 145)
 
 # set to 0 when not a release candidate, non zero means that any generated
@@ -233,7 +233,7 @@ IF (OSG_MAINTAINER)
     #
     # Provide target for generating ChangeLog
     #
-    SET(GITLOGFORMAT "%aD%nChecked in by : %an%n%s%b%n")
+    SET(GITLOGFORMAT "%aD%nAuthor : %an%n%s%b%n")
     SET(GENERATELOGS git log --pretty=format:${GITLOGFORMAT})
 
     ADD_CUSTOM_TARGET(ChangeLog

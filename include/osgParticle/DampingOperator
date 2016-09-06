@@ -24,6 +24,7 @@ namespace osgParticle
 
 /** A damping operator applies damping constant to particle's velocity.
     Refer to David McAllister's Particle System API (http://www.particlesystems.org)
+    no OSGPARTICLE_EXPORT as the class is header only
 */
 class DampingOperator : public Operator
 {

@@ -33,7 +33,7 @@ namespace osgParticle
         is the angle between the velocity vector and the Z axis, and <B>phi</B>, which is
         the angle between the X axis and the velocity vector projected onto the X-Y plane.
     */
-    class RadialShooter: public Shooter {
+    class OSGPARTICLE_EXPORT RadialShooter: public Shooter {
     public:
         inline RadialShooter();
         inline RadialShooter(const RadialShooter& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);

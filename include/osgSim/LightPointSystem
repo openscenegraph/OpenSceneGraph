@@ -15,7 +15,7 @@
 #define OSGSIM_LIGHTPOINTSYSTEM 1
 
 #include <osg/Object>
-
+#include <osgSim/Export>
 
 namespace osgSim {
 
@@ -26,7 +26,7 @@ namespace osgSim {
  *   application to efficiently control the animation/intensity state of
  *   several LightPointNodes.
  */
-class LightPointSystem : public osg::Object
+class OSGSIM_EXPORT LightPointSystem : public osg::Object
 {
     public :
         LightPointSystem() : _intensity( 1.f ), _animationState( ANIMATION_ON )

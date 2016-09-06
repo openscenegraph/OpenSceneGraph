@@ -32,7 +32,7 @@ class ScaleUniformCommand;
 class Rotate3DCommand;
 
 
-class DraggerCallback : virtual public osg::Object
+class OSGMANIPULATOR_EXPORT DraggerCallback : virtual public osg::Object
 {
     public:
         DraggerCallback():

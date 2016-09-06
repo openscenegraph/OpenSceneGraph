@@ -29,6 +29,7 @@ namespace osgParticle
     /** An operator that applies a constant force to the particles.
       * Remember that if the mass of particles is expressed in kg and the lengths are
       * expressed in meters, then the force should be expressed in Newtons.
+      * no OSGPARTICLE_EXPORT as the class is header only
     */
     class ForceOperator: public Operator {
     public:

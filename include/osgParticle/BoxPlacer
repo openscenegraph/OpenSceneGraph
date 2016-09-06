@@ -32,6 +32,7 @@ namespace osgParticle
         within the volume of a box; this placer is defined by four parameters: a <I>center point</I>,
         which is inherited directly from <CODE>osgParticle::CenteredPlacer</CODE>, and three ranges of values
     for the valid <I>X</I>, <I>Y</I>, and <I>Z</I> coordinates.
+    no OSGPARTICLE_EXPORT as the class is header only
     */
     class BoxPlacer: public CenteredPlacer {
     public:

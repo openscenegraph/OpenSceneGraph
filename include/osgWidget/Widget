@@ -513,7 +513,7 @@ public:
 typedef std::list<osg::observer_ptr<Widget> > WidgetList;
 
 // A Widget subclass that prints stuff using osg::notify(). :)
-struct NotifyWidget: public Widget {
+struct OSGWIDGET_EXPORT NotifyWidget: public Widget {
         META_Object(osgWidget, NotifyWidget);
 
         NotifyWidget(const std::string& n = "", point_type w = 0.0f, point_type h = 0.0f):
@@ -593,7 +593,7 @@ struct NotifyWidget: public Widget {
 };
 
 // A Widget that eats all events and returns true.
-struct NullWidget: public Widget {
+struct OSGWIDGET_EXPORT NullWidget: public Widget {
         META_Object(osgWidget, NullWidget);
 
         NullWidget(const std::string& n = "", point_type w = 0.0f, point_type h = 0.0f):

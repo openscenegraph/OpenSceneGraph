@@ -41,7 +41,7 @@ enum Operation
     FORWARD_TOUCH_EVENT
 };
 
-struct JumpData : public osg::Object
+struct OSGPRESENTATION_EXPORT JumpData : public osg::Object
 {
     JumpData():
         relativeJump(true),
@@ -113,7 +113,7 @@ struct JumpData : public osg::Object
 };
 
 
-struct HomePosition : public osg::Object
+struct OSGPRESENTATION_EXPORT HomePosition : public osg::Object
 {
     HomePosition():
         eye(0.0, -1.0, 0.0),
@@ -156,7 +156,7 @@ struct HomePosition : public osg::Object
     osg::Vec3d   up;
 };
 
-struct KeyPosition : public osg::Object
+struct OSGPRESENTATION_EXPORT KeyPosition : public osg::Object
 {
     KeyPosition(unsigned int key=0, float x=FLT_MAX, float y=FLT_MAX, bool forward_to_devices = false):
         _key((osgGA::GUIEventAdapter::KeySymbol)key),

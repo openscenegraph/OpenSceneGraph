@@ -124,7 +124,7 @@ namespace osgAnimation
    };
 
 
-    struct UpdateRigGeometry : public osg::Drawable::UpdateCallback
+    struct OSGANIMATION_EXPORT UpdateRigGeometry : public osg::Drawable::UpdateCallback
     {
         UpdateRigGeometry() {}
 

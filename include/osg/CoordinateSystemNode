@@ -27,7 +27,7 @@ const double WGS_84_RADIUS_POLAR = 6356752.3142;
  * such as sun, planets, moon etc.
  * All distance quantities (i.e. heights + radius) are in meters,
  * and latitude and longitude are in radians.*/
-class EllipsoidModel : public Object
+class OSG_EXPORT EllipsoidModel : public Object
 {
     public:
 

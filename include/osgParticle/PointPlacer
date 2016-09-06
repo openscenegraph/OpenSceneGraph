@@ -28,7 +28,7 @@ namespace osgParticle
         This placer class uses the center point defined in its base class <CODE>CenteredPlacer</CODE>
         to place there all incoming particles.
     */
-    class PointPlacer: public CenteredPlacer {
+    class OSGPARTICLE_EXPORT PointPlacer: public CenteredPlacer {
     public:
         inline PointPlacer();
         inline PointPlacer(const PointPlacer& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);

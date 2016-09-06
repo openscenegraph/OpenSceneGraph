@@ -23,7 +23,7 @@
 namespace osgParticle
 {
 
-    class RandomRateCounter: public VariableRateCounter {
+    class OSGPARTICLE_EXPORT RandomRateCounter: public VariableRateCounter {
     public:
         inline RandomRateCounter();
         inline RandomRateCounter(const RandomRateCounter& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);

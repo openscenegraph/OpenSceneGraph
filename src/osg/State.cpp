@@ -1265,6 +1265,7 @@ void State::disableVertexAttribPointersAboveAndIncluding( unsigned int index )
 void State::lazyDisablingOfVertexAttributes()
 {
     // OSG_NOTICE<<"lazyDisablingOfVertexAttributes()"<<std::endl;
+    #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
     if (!_useVertexAttributeAliasing)
     {
         _vertexArray._lazy_disable = true;
@@ -1279,7 +1280,7 @@ void State::lazyDisablingOfVertexAttributes()
             itr->_lazy_disable = true;
         }
     }
-
+    #endif
     for(EnabledVertexAttribArrayList::iterator itr = _vertexAttribArrayList.begin();
         itr != _vertexAttribArrayList.end();
         ++itr)
@@ -1291,6 +1292,7 @@ void State::lazyDisablingOfVertexAttributes()
 void State::applyDisablingOfVertexAttributes()
 {
     //OSG_NOTICE<<"start of applyDisablingOfVertexAttributes()"<<std::endl;
+    #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
     if (!_useVertexAttributeAliasing)
     {
         if (_vertexArray._lazy_disable) disableVertexPointer();
@@ -1303,6 +1305,7 @@ void State::applyDisablingOfVertexAttributes()
             if (_texCoordArrayList[i]._lazy_disable) disableTexCoordPointer(i);
         }
     }
+    #endif
     for(unsigned int i=0; i<_vertexAttribArrayList.size(); ++i)
     {
         if (_vertexAttribArrayList[i]._lazy_disable) disableVertexAttribPointer(i);

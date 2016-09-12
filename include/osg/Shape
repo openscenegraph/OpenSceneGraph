@@ -472,7 +472,7 @@ class OSG_EXPORT ConvexHull : public TriangleMesh
         ConvexHull(const ConvexHull& hull,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             TriangleMesh(hull,copyop) {}
 
-        META_Shape(osg, TriangleMesh);
+        META_Shape(osg, ConvexHull);
 
     protected:
 

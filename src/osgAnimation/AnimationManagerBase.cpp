@@ -63,8 +63,6 @@ void AnimationManagerBase::operator()(osg::Node* node, osg::NodeVisitor* nv)
 
 
 AnimationManagerBase::AnimationManagerBase(const AnimationManagerBase& b, const osg::CopyOp& copyop) :
-    osg::Object(b, copyop),
-    osg::Callback(b, copyop),
     osg::NodeCallback(b,copyop) // TODO check this
 {
     const AnimationList& animationList = b.getAnimationList();

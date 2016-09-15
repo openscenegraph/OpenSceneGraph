@@ -175,12 +175,12 @@ void daeWriter::writeRigGeometry(osgAnimation::RigGeometry *pOsgRigGeometry)
             int size = 0; // TODO number of animated joints
 
             osgAnimation::VertexInfluenceMap* vim = pOsgRigGeometry->getInfluenceMap();
-            osgAnimation::VertexInfluenceMap::iterator iter =    vim->begin();
-            while (iter != vim->end())
+            osgAnimation::VertexInfluenceMap::iterator vim_iter =    vim->begin();
+            while (vim_iter != vim->end())
             {
-                jointNames.append(iter->first.c_str());
-                //iter->second.getn
-                ++iter;
+                jointNames.append(vim_iter->first.c_str());
+                //vim_iter->second.getn
+                ++vim_iter;
             }
 
             domName_array* pDomJointsNameArray = daeSafeCast< domName_array >(pDomJointsSource->add(COLLADA_ELEMENT_NAME_ARRAY));
@@ -192,7 +192,7 @@ void daeWriter::writeRigGeometry(osgAnimation::RigGeometry *pOsgRigGeometry)
                 domSource::domTechnique_common* pDomSourceTechniqueCommon = daeSafeCast< domSource::domTechnique_common >(pDomJointsSource->add(COLLADA_ELEMENT_TECHNIQUE_COMMON));
 
                 domAccessor* pDomAccessor = daeSafeCast< domAccessor >(pDomSourceTechniqueCommon->add(COLLADA_ELEMENT_ACCESSOR));
-                std::string url = "#" + jointsNameArrayName;
+                url = "#" + jointsNameArrayName;
                 pDomAccessor->setSource(url.c_str());
                 pDomAccessor->setCount(size);
 
@@ -215,7 +215,7 @@ void daeWriter::writeRigGeometry(osgAnimation::RigGeometry *pOsgRigGeometry)
                 domSource::domTechnique_common* pDomSourceTechniqueCommon = daeSafeCast< domSource::domTechnique_common >(pDomSkinBindPoseSource->add(COLLADA_ELEMENT_TECHNIQUE_COMMON));
 
                 domAccessor* pDomAccessor = daeSafeCast< domAccessor >(pDomSourceTechniqueCommon->add(COLLADA_ELEMENT_ACCESSOR));
-                std::string url = "#" + matricesArrayName;
+                url = "#" + matricesArrayName;
                 pDomAccessor->setSource(url.c_str());
                 pDomAccessor->setCount(size);
                 pDomAccessor->setStride(16);
@@ -239,7 +239,7 @@ void daeWriter::writeRigGeometry(osgAnimation::RigGeometry *pOsgRigGeometry)
                 domSource::domTechnique_common* pDomSourceTechniqueCommon = daeSafeCast< domSource::domTechnique_common >(pDomSkinWeightsSource->add(COLLADA_ELEMENT_TECHNIQUE_COMMON));
 
                 domAccessor* pDomAccessor = daeSafeCast< domAccessor >(pDomSourceTechniqueCommon->add(COLLADA_ELEMENT_ACCESSOR));
-                std::string url = "#" + weightsArrayName;
+                url = "#" + weightsArrayName;
                 pDomAccessor->setSource(url.c_str());
                 pDomAccessor->setCount(size);
 
@@ -345,8 +345,8 @@ void daeWriter::writeMorphGeometry(osgAnimation::MorphGeometry *pOsgMorphGeometr
             osgAnimation::MorphGeometry::MorphTargetList morphTargetList = pOsgMorphGeometry->getMorphTargetList();
             for (unsigned int i=0; i < morphTargetList.size(); i++)
             {
-                domGeometry* pDomGeometry = getOrCreateDomGeometry(morphTargetList[i].getGeometry());
-                idrefs.append(pDomGeometry->getId());
+                domGeometry* pRefDomGeometry = getOrCreateDomGeometry(morphTargetList[i].getGeometry());
+                idrefs.append(pRefDomGeometry->getId());
             }
             pDomIDREFArray->setValue(idrefs);
             std::string targetsArrayName = targetsName + "_array";

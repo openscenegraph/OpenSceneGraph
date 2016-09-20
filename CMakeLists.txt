@@ -1044,30 +1044,17 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
     # to be the workaround.
     SET(OSG_AGGRESSIVE_WARNING_FLAGS -Wall -Wparentheses -Wno-long-long -Wno-import -pedantic -Wreturn-type -Wmissing-braces -Wunknown-pragmas -Wunused)
 
-    IF(${CMAKE_MAJOR_VERSION} GREATER 2 OR
-        (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 6) OR
-        (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 6 AND ${CMAKE_PATCH_VERSION} GREATER 2))
-        #cmake 2.6.1 introduces version check macro's needed to do something with the compiler version string
-        IF("${CMAKE_VERSION}" VERSION_LESS 2.8.8)
-            execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE CMAKE_CXX_COMPILER_VERSION)
+    MESSAGE( STATUS "g++ version ${CMAKE_CXX_COMPILER_VERSION} ")
+    IF(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.6)
+        SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wmaybe-uninitialized -Wextra)
+        IF(CMAKE_CXX_COMPILER_VERSIO VERSION_GREATER 4.9)
+            SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wshadow)
+            IF(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 6.0)
+                # -Wmisleading-indentation (in -Wall) generates less warnings when interpreting tab as 4 spaces instead of the default of 8
+                # SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -ftabstop=4)
+                SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wno-misleading-indentation)
+            ENDIF()
         ENDIF()
-        MESSAGE( STATUS "g++ version ${CMAKE_CXX_COMPILER_VERSION} ")
-        
-        IF(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.9)
-            SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wshadow -Wmaybe-uninitialized -Wextra)
-        ELSE()
-          IF(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.6)
-            SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wmaybe-uninitialized -Wextra)
-        ENDIF()
-        ENDIF()
-
-        IF(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 6.0)
-            # -Wmisleading-indentation (in -Wall) generates less warnings when interpreting tab as 4 spaces instead of the default of 8
-            #SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -ftabstop=4)
-            SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wno-misleading-indentation)
-        ENDIF()
-    ELSE()
-        MESSAGE( STATUS "cmake version < 2.6.2 missing VERSION_LESS and VERSION_GREATER macros - ignoring g++ version")
     ENDIF()
 
     # Previous included -Wformat=2 in OSG_AGGRESSIVE_WARNING_FLAGS but had to remove it due to standard library errors

@@ -193,6 +193,10 @@ class OSG_EXPORT StateSet : public Object
 
         /** Get specified RefAttributePair for specified type.
           * Returns NULL if no type is contained within StateSet.*/
+        RefAttributePair* getAttributePair(StateAttribute::Type type, unsigned int member = 0);
+
+        /** Get specified RefAttributePair for specified type.
+          * Returns NULL if no type is contained within StateSet.*/
         const RefAttributePair* getAttributePair(StateAttribute::Type type, unsigned int member = 0) const;
 
         /** set the list of all StateAttributes contained in this StateSet.*/
@@ -258,15 +262,19 @@ class OSG_EXPORT StateSet : public Object
 
         /** Get specified Texture related StateAttribute for specified type.
           * Returns NULL if no type is contained within StateSet.*/
-        StateAttribute* getTextureAttribute(unsigned int unit,StateAttribute::Type type);
+        StateAttribute* getTextureAttribute(unsigned int unit, StateAttribute::Type type);
 
         /** Get specified Texture related const StateAttribute for specified type.
           * Returns NULL if no type is contained within const StateSet.*/
-        const StateAttribute* getTextureAttribute(unsigned int unit,StateAttribute::Type type) const;
+        const StateAttribute* getTextureAttribute(unsigned int unit, StateAttribute::Type type) const;
 
         /** Get specified Texture related RefAttributePair for specified type.
           * Returns NULL if no type is contained within StateSet.*/
-        const RefAttributePair* getTextureAttributePair(unsigned int unit,StateAttribute::Type type) const;
+        RefAttributePair* getTextureAttributePair(unsigned int unit, StateAttribute::Type type);
+
+        /** Get specified Texture related RefAttributePair for specified type.
+          * Returns NULL if no type is contained within StateSet.*/
+        const RefAttributePair* getTextureAttributePair(unsigned int unit, StateAttribute::Type type) const;
 
         /** Set the list of all Texture related StateAttributes contained in this StateSet.*/
         inline void setTextureAttributeList(TextureAttributeList& tal) { _textureAttributeList=tal; }
@@ -284,8 +292,8 @@ class OSG_EXPORT StateSet : public Object
         void setAssociatedModes(const StateAttribute* attribute, StateAttribute::GLModeValue value);
         void removeAssociatedModes(const StateAttribute* attribute);
 
-        void setAssociatedTextureModes(unsigned int unit,const StateAttribute* attribute, StateAttribute::GLModeValue value);
-        void removeAssociatedTextureModes(unsigned int unit,const StateAttribute* attribute);
+        void setAssociatedTextureModes(unsigned int unit, const StateAttribute* attribute, StateAttribute::GLModeValue value);
+        void removeAssociatedTextureModes(unsigned int unit, const StateAttribute* attribute);
 
 
 
@@ -548,19 +556,21 @@ class OSG_EXPORT StateSet : public Object
             return _textureAttributeList[unit];
         }
 
-        int compareModes(const ModeList& lhs,const ModeList& rhs);
-        int compareAttributePtrs(const AttributeList& lhs,const AttributeList& rhs);
-        int compareAttributeContents(const AttributeList& lhs,const AttributeList& rhs);
+        int compareModes(const ModeList& lhs, const ModeList& rhs);
+        int compareAttributePtrs(const AttributeList& lhs, const AttributeList& rhs);
+        int compareAttributeContents(const AttributeList& lhs, const AttributeList& rhs);
 
         void setMode(ModeList& modeList,StateAttribute::GLMode mode, StateAttribute::GLModeValue value);
-        void setModeToInherit(ModeList& modeList,StateAttribute::GLMode mode);
-        StateAttribute::GLModeValue getMode(const ModeList& modeList,StateAttribute::GLMode mode) const;
+        void setModeToInherit(ModeList& modeList, StateAttribute::GLMode mode);
+        StateAttribute::GLModeValue getMode(const ModeList& modeList, StateAttribute::GLMode mode) const;
 
-        void setAttribute(AttributeList& attributeList,StateAttribute *attribute, const StateAttribute::OverrideValue value=StateAttribute::OFF);
+        void setAttribute(AttributeList& attributeList,StateAttribute *attribute, StateAttribute::OverrideValue value=StateAttribute::OFF);
 
-        StateAttribute* getAttribute(AttributeList& attributeList,const StateAttribute::Type type, unsigned int member);
-        const StateAttribute* getAttribute(const AttributeList& attributeList,const StateAttribute::Type type, unsigned int member) const;
-        const RefAttributePair* getAttributePair(const AttributeList& attributeList,const StateAttribute::Type type, unsigned int member) const;
+        StateAttribute* getAttribute(AttributeList& attributeList, StateAttribute::Type type, unsigned int member);
+        const StateAttribute* getAttribute(const AttributeList& attributeList, StateAttribute::Type type, unsigned int member) const;
+
+        RefAttributePair* getAttributePair(AttributeList& attributeList, StateAttribute::Type type, unsigned int member);
+        const RefAttributePair* getAttributePair(const AttributeList& attributeList, StateAttribute::Type type, unsigned int member) const;
 
         int                                 _renderingHint;
 

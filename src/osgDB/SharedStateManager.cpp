@@ -175,7 +175,11 @@ void SharedStateManager::shareTextures(osg::StateSet* ss)
     const osg::StateSet::TextureAttributeList& texAttributes = ss->getTextureAttributeList();
     for(unsigned int unit=0;unit<texAttributes.size();++unit)
     {
-        osg::StateAttribute *texture = ss->getTextureAttribute(unit, osg::StateAttribute::TEXTURE);
+        const osg::StateSet::RefAttributePair* pair = ss->getTextureAttributePair(unit, osg::StateAttribute::TEXTURE);
+        if (!pair)
+            continue;
+        osg::StateAttribute* texture = pair->first;
+        osg::StateAttribute::OverrideValue overrideValue = pair->second;
 
         // Valid Texture to be shared
         if(texture && shareTexture(texture->getDataVariance()))
@@ -191,7 +195,7 @@ void SharedStateManager::shareTextures(osg::StateSet* ss)
                     // Texture is in sharedAttributeList:
                     // Share now. Required to be shared all next times
                     if(_mutex) _mutex->lock();
-                    ss->setTextureAttributeAndModes(unit, textureFromSharedList, osg::StateAttribute::ON);
+                    ss->setTextureAttribute(unit, textureFromSharedList, overrideValue);
                     if(_mutex) _mutex->unlock();
                     tmpSharedTextureList[texture] = TextureSharePair(textureFromSharedList, true);
                 }
@@ -210,7 +214,7 @@ void SharedStateManager::shareTextures(osg::StateSet* ss)
                 // Texture is in tmpSharedAttributeList and share flag is on:
                 // It should be shared
                 if(_mutex) _mutex->lock();
-                ss->setTextureAttributeAndModes(unit, titr->second.first, osg::StateAttribute::ON);
+                ss->setTextureAttribute(unit, titr->second.first, overrideValue);
                 if(_mutex) _mutex->unlock();
             }
         }

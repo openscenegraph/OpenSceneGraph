@@ -1047,8 +1047,17 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
     # to be the workaround.
     SET(OSG_AGGRESSIVE_WARNING_FLAGS -Wall -Wparentheses -Wno-long-long -Wno-import -pedantic -Wreturn-type -Wmissing-braces -Wunknown-pragmas -Wunused)
 
-    IF(${CMAKE_MAJOR_VERSION} GREATER 2 AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.9)
-        SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wshadow -Wmaybe-uninitialized -Wextra)
+    MESSAGE( STATUS "g++ version ${CMAKE_CXX_COMPILER_VERSION} ")
+    IF(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.6)
+        SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wmaybe-uninitialized -Wextra)
+        IF(CMAKE_CXX_COMPILER_VERSIO VERSION_GREATER 4.9)
+            SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wshadow)
+            IF(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 6.0)
+                # -Wmisleading-indentation (in -Wall) generates less warnings when interpreting tab as 4 spaces instead of the default of 8
+                # SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -ftabstop=4)
+                SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wno-misleading-indentation)
+            ENDIF()
+        ENDIF()
     ENDIF()
 
     # Previous included -Wformat=2 in OSG_AGGRESSIVE_WARNING_FLAGS but had to remove it due to standard library errors

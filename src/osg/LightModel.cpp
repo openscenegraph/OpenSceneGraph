@@ -16,6 +16,7 @@
 #include <osg/GL>
 #include <osg/LightModel>
 #include <osg/Notify>
+#include <osg/State>
 
 using namespace osg;
 
@@ -34,6 +35,8 @@ LightModel::~LightModel()
 {
 }
 
+#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
+
 // need to define if gl.h version < 1.2.
 #ifndef GL_LIGHT_MODEL_COLOR_CONTROL
 #define GL_LIGHT_MODEL_COLOR_CONTROL 0x81F8
@@ -47,10 +50,8 @@ LightModel::~LightModel()
 #define GL_SEPARATE_SPECULAR_COLOR 0x81FA
 #endif
 
-
-void LightModel::apply(State&) const
+void LightModel::apply(State& state) const
 {
-#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
 
     #ifdef OSG_GLES1_AVAILABLE
     #define glLightModeli glLightModelx
@@ -58,8 +59,7 @@ void LightModel::apply(State&) const
 
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT,_ambient.ptr());
 
-    static bool s_separateSpecularSupported = strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;
-    if (s_separateSpecularSupported)
+    if (state.get<GLExtensions>()->glVersion>=1.2)
     {
         if (_colorControl==SEPARATE_SPECULAR_COLOR)
         {
@@ -76,8 +76,14 @@ void LightModel::apply(State&) const
     #endif
 
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,_twoSided);
-#else
-    OSG_NOTICE<<"Warning: LightModel::apply(State&) - not supported."<<std::endl;
-#endif
 }
+
+#else
+
+void LightModel::apply(State&) const
+{
+    OSG_NOTICE<<"Warning: LightModel::apply(State&) - not supported."<<std::endl;
+}
+
+#endif
 

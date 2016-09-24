@@ -442,7 +442,7 @@ struct VertexAttribArrayDispatch : public VertexArrayState::ArrayDispatch
         {
             if (new_array->getDataType()==GL_FLOAT)
                 ext->glVertexAttribPointer(static_cast<GLuint>(unit), new_array->getDataSize(), new_array->getDataType(), new_array->getNormalize(), 0, ptr);
-            else if (array->getDataType()==GL_DOUBLE)
+            else if (new_array->getDataType()==GL_DOUBLE)
                 ext->glVertexAttribLPointer(static_cast<GLuint>(unit), new_array->getDataSize(), new_array->getDataType(), 0, ptr);
             else
                 ext->glVertexAttribIPointer(static_cast<GLuint>(unit), new_array->getDataSize(), new_array->getDataType(), 0, ptr);

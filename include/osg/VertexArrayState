@@ -164,7 +164,7 @@ public:
 
         void deleteVertexArrayObject();
 
-        inline void bindVertexArrayObject() const { _ext->glBindVertexArray (_vertexArrayObject); }
+        inline void bindVertexArrayObject() const { if (_vertexArrayObject != 0) _ext->glBindVertexArray (_vertexArrayObject); }
 
         inline void unbindVertexArrayObject() const { _ext->glBindVertexArray (0); }
 
@@ -187,7 +187,6 @@ public:
         osg::ref_ptr<osg::GLExtensions> _ext;
 
         bool                            _isVertexBufferObjectSupported;
-
         GLuint                          _vertexArrayObject;
 
 

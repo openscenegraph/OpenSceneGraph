@@ -168,7 +168,7 @@ public:
 
         inline void unbindVertexArrayObject() const { _ext->glBindVertexArray (0); }
 
-        GLint getVertexArrayObject() const { return _vertexArrayObject; }
+        GLuint getVertexArrayObject() const { return _vertexArrayObject; }
 
 
         void setRequiresSetArrays(bool flag) { _requiresSetArrays = flag; }

@@ -108,6 +108,23 @@ void thread_cleanup_handler(void *arg)
 namespace OpenThreads
 {
 
+static void setCPUMask(cpu_set_t* cpumask, unsigned long in_cpumask)
+{
+    CPU_ZERO( cpumask );
+    unsigned int numprocessors = OpenThreads::GetNumberOfProcessors();
+    unsigned int cpunum=0;
+    while(in_cpumask!=0 && cpunum<numprocessors)
+    {
+        if ((in_cpumask&1)!=0)
+        {
+            CPU_SET( cpunum, cpumask );
+        }
+        in_cpumask>>=1;
+        ++cpunum;
+    }
+}
+
+
 class ThreadPrivateActions
 {
 
@@ -129,13 +146,11 @@ private:
         PThreadPrivateData *pd =
         static_cast<PThreadPrivateData *>(thread->_prvData);
 
-
-        if (pd->cpunum>=0)
+        if (pd->cpumask>=0)
         {
 #if defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
             cpu_set_t cpumask;
-            CPU_ZERO( &cpumask );
-            CPU_SET( pd->cpunum, &cpumask );
+            setCPUMask( &cpumask, pd->cpumask );
 
 #if defined(HAVE_PTHREAD_SETAFFINITY_NP)
             pthread_setaffinity_np( pthread_self(), sizeof(cpumask), &cpumask);
@@ -533,25 +548,56 @@ size_t Thread::getProcessId()
     return (size_t)(pd->tid);
 }
 
+int OpenThreads::SetProcessorAffinityMaskOfCurrentThread(unsigned long in_cpumask)
+{
+    Thread::Init();
+
+    Thread* thread = Thread::CurrentThread();
+    if (thread)
+    {
+        return thread->setProcessorAffinityMask(in_cpumask);
+    }
+    else
+    {
+#if defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
+        cpu_set_t cpumask;
+        setCPUMask(&cpumask, in_cpumask);
+
+#if defined(HAVE_PTHREAD_SETAFFINITY_NP)
+        pthread_setaffinity_np( pthread_self(), sizeof(cpumask), &cpumask);
+        return 0;
+#elif defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY)
+        sched_setaffinity( 0, sizeof(cpumask), &cpumask );
+        return 0;
+#elif defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
+        sched_setaffinity( 0, &cpumask );
+        return 0;
+#endif
+#endif
+    }
+
+    return -1;
+}
+
 //-----------------------------------------------------------------------------
 //
 // Description: Set the thread's processor affinity
 //
 // Use: public
 //
-int Thread::setProcessorAffinity(unsigned int cpunum)
+int Thread::setProcessorAffinityMask(unsigned long in_cpumask)
 {
     PThreadPrivateData *pd = static_cast<PThreadPrivateData *> (_prvData);
-    pd->cpunum = cpunum;
-    if (pd->cpunum<0) return -1;
+    pd->cpumask = in_cpumask;
+    if (pd->cpumask==0) return -1;
 
 #if defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
 
     if (pd->isRunning() && Thread::CurrentThread()==this)
     {
         cpu_set_t cpumask;
-        CPU_ZERO( &cpumask );
-        CPU_SET( pd->cpunum, &cpumask );
+        setCPUMask(&cpumask, in_cpumask);
+
 #if defined(HAVE_PTHREAD_SETAFFINITY_NP)
         return pthread_setaffinity_np (pthread_self(), sizeof(cpumask), &cpumask);
 #elif defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY)
@@ -995,33 +1041,3 @@ int OpenThreads::GetNumberOfProcessors()
 #endif
 }
 
-int OpenThreads::SetProcessorAffinityOfCurrentThread(unsigned int cpunum)
-{
-    Thread::Init();
-
-    Thread* thread = Thread::CurrentThread();
-    if (thread)
-    {
-        return thread->setProcessorAffinity(cpunum);
-    }
-    else
-    {
-#if defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
-        cpu_set_t cpumask;
-        CPU_ZERO( &cpumask );
-        CPU_SET( cpunum, &cpumask );
-#if defined(HAVE_PTHREAD_SETAFFINITY_NP)
-        pthread_setaffinity_np( pthread_self(), sizeof(cpumask), &cpumask);
-        return 0;
-#elif defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY)
-        sched_setaffinity( 0, sizeof(cpumask), &cpumask );
-        return 0;
-#elif defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
-        sched_setaffinity( 0, &cpumask );
-        return 0;
-#endif
-#endif
-    }
-
-    return -1;
-}

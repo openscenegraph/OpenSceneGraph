@@ -35,12 +35,18 @@ namespace OpenThreads {
 extern OPENTHREAD_EXPORT_DIRECTIVE int GetNumberOfProcessors();
 
 /**
- *  Set the processor affinity of current thread.
- *
- *  Note, systems where no support exists no affinity will be set, and -1 will be returned.
- *
+ *  Set the processor affinity mask of current thread.  If you want to allow thread to run on any processor core use ~0ul for the cpumask
  */
-extern OPENTHREAD_EXPORT_DIRECTIVE int SetProcessorAffinityOfCurrentThread(unsigned int cpunum);
+extern OPENTHREAD_EXPORT_DIRECTIVE int SetProcessorAffinityMaskOfCurrentThread(unsigned long cpumask);
+
+/**
+ *  Set the processor affinity of current thread.
+ */
+inline int SetProcessorAffinityOfCurrentThread(unsigned int cpunum)
+{
+    unsigned long cpumask = 1ul << cpunum;
+    return SetProcessorAffinityMaskOfCurrentThread(cpumask);
+}
 
 /**
  *  @class Thread
@@ -332,15 +338,28 @@ public:
 
     void* getImplementation(){ return _prvData;	};
 
-    /** Thread's processor affinity method.  This binds a thread to a
-      * processor whenever possible.   This call must be made before
+    /** Set the Thread's processor affinity to a single CPU.
+      * This call must be made before
       * start() or startThread() and has no effect after the thread
-      * has been running.  In the pthreads implementation, this is only
-      * implemented on sgi, through a pthread extension.  On other pthread
-      * platforms this is ignored.  Returns 0 on success, implementation's
+      * has been running. Returns 0 on success, implementation's
       * error on failure, or -1 if ignored.
       */
-    int setProcessorAffinity( unsigned int cpunum );
+    int setProcessorAffinity( unsigned int cpunum )
+    {
+        unsigned long cpumask = 1ul << cpunum;
+        return setProcessorAffinityMask(cpumask);
+    }
+
+
+    /** Set the Thread's processor affinity to a one or more CPU's using mask.
+      * If you want this threadd to run on any processor core then use a cpumask of ~0ul
+      * This call must be made before
+      * start() or startThread() and has no effect after the thread
+      * has been running. Returns 0 on success, implementation's
+      * error on failure, or -1 if ignored.
+      */
+    int setProcessorAffinityMask( unsigned long cpumask);
+
 
     /** microSleep method, equivalent to the posix usleep(microsec).
       *  This is not strictly thread API but is used

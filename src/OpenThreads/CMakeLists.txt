@@ -85,8 +85,6 @@ ENDIF()
 # Maybe we should be using the FindThreads.cmake module?
 IF(ANDROID)
     SUBDIRS(pthreads)
-ELSEIF((QT4_FOUND OR Qt5Widgets_FOUND) AND BUILD_OPENTHREADS_WITH_QT)
-    SUBDIRS(qt)
 ELSEIF(WIN32)
     # So I think Cygwin wants to use pthreads
     IF(CYGWIN)

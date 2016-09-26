@@ -60,7 +60,7 @@
 /*ARGSUSED*/ static void GLAPIENTRY noVertex( void * /*data*/ ) {}
 /*ARGSUSED*/ static void GLAPIENTRY noEnd( void ) {}
 /*ARGSUSED*/ static void GLAPIENTRY noError( GLenum /*errnum*/ ) {}
-/*ARGSUSED*/ static void GLAPIENTRY noCombine( GLdouble /*coords*/[3], void */*data*/[4], GLfloat /*weight*/[4], void ** /*dataOut*/ ) {}
+/*ARGSUSED*/ static void GLAPIENTRY noCombine( GLdouble /*coords*/[3], void * /*data*/[4], GLfloat /*weight*/[4], void ** /*dataOut*/ ) {}
 /*ARGSUSED*/ static void GLAPIENTRY noMesh( GLUmesh * /*mesh*/ ) {}
 
 
@@ -69,7 +69,7 @@
 /*ARGSUSED*/ void GLAPIENTRY __gl_noVertexData( void * /*data*/, void * /*polygonData*/ ) {}
 /*ARGSUSED*/ void GLAPIENTRY __gl_noEndData( void * /*polygonData*/ ) {}
 /*ARGSUSED*/ void GLAPIENTRY __gl_noErrorData( GLenum /*errnum*/, void * /*polygonData*/ ) {}
-/*ARGSUSED*/ void GLAPIENTRY __gl_noCombineData( GLdouble /*coords*/[3], void */*data*/[4], GLfloat /*weight*/[4], void ** /*outData*/, void * /*polygonData*/ ) {}
+/*ARGSUSED*/ void GLAPIENTRY __gl_noCombineData( GLdouble /*coords*/[3], void * /*data*/[4], GLfloat /*weight*/[4], void ** /*outData*/, void * /*polygonData*/ ) {}
 
 /* Half-edges are allocated in pairs (see mesh.c) */
 typedef struct { GLUhalfEdge e, eSym; } EdgePair;

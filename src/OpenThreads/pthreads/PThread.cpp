@@ -31,9 +31,6 @@
     #include <sys/unistd.h>
 #endif
 #endif
-#if defined(__sgi)
-#include <unistd.h>
-#endif
 #if defined(__hpux)
 #include <sys/mpctl.h>
 #endif
@@ -135,9 +132,7 @@ private:
 
         if (pd->cpunum>=0)
         {
-#if defined(__sgi)
-            pthread_setrunon_np( pd->cpunum );
-#elif defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
+#if defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
             cpu_set_t cpumask;
             CPU_ZERO( &cpumask );
             CPU_SET( pd->cpunum, &cpumask );
@@ -304,11 +299,7 @@ private:
                 break;
 
                 default:
-#ifdef __sgi
-                th_policy = SCHED_RR;
-#else
                 th_policy = SCHED_FIFO;
-#endif
                 break;
             };
 
@@ -554,21 +545,7 @@ int Thread::setProcessorAffinity(unsigned int cpunum)
     pd->cpunum = cpunum;
     if (pd->cpunum<0) return -1;
 
-#ifdef __sgi
-
-    int status;
-    pthread_attr_t thread_attr;
-
-    status = pthread_attr_init( &thread_attr );
-    if(status != 0)
-    {
-        return status;
-    }
-
-    status = pthread_attr_setscope( &thread_attr, PTHREAD_SCOPE_BOUND_NP );
-    return status;
-
-#elif defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
+#if defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
 
     if (pd->isRunning() && Thread::CurrentThread()==this)
     {
@@ -996,11 +973,6 @@ int OpenThreads::GetNumberOfProcessors()
    return ret;
 #elif defined(__sun__)
    long ret = sysconf(_SC_NPROCESSORS_ONLN);
-   if (ret == -1)
-      return 0;
-   return ret;
-#elif defined(__sgi)
-   long ret = sysconf(_SC_NPROC_ONLN);
    if (ret == -1)
       return 0;
    return ret;

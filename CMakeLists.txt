@@ -28,12 +28,6 @@ if(COMMAND cmake_policy)
         cmake_policy(SET CMP0008 OLD)
     endif()
 
-    # disable autolinking to qtmain as we have our own main() functions (new in Qt 5.1)
-    if(${CMAKE_MAJOR_VERSION} GREATER 2 OR
-        (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 8) OR
-        (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 8 AND ${CMAKE_PATCH_VERSION} GREATER 10))
-        cmake_policy(SET CMP0020 OLD)
-    endif()
     # nicer version check - but needs at least CMake 2.6.2? Worth upgrading the requirements?
     #if("${CMAKE_VERSION}" VERSION_GREATER 2.8.10)
     # or even easier (available in cmake-2.6)
@@ -769,61 +763,6 @@ ENDIF()
 # Include macro utilities here
 INCLUDE(OsgMacroUtils)
 
-OPTION(OSG_USE_QT "Enable to use Qt (build Qt-dependent libraries, plugins and examples)" ON)
-
-IF(OSG_USE_QT AND NOT ANDROID)
-# To select a specific version of QT define DESIRED_QT_VERSION
-# via cmake -DDESIRED_QT_VERSION=5
-# QUIET option disables messages if the package cannot be found.
-
-    IF  (DESIRED_QT_VERSION)
-        IF  (DESIRED_QT_VERSION MATCHES 5)
-            FIND_PACKAGE(Qt5Widgets)
-        ELSEIF (DESIRED_QT_VERSION MATCHES 4)
-            FIND_PACKAGE(Qt4)
-        ELSE()
-            FIND_PACKAGE(Qt3)
-        ENDIF()
-
-    ELSE()
-
-        FIND_PACKAGE(Qt5Widgets QUIET)
-
-        IF ( Qt5Widgets_FOUND )
-            # CMake 2.8.8 or greater required
-            BUILDER_VERSION_GREATER(2 8 7)
-            IF(NOT VALID_BUILDER_VERSION)
-                MESSAGE(
-                SEND_ERROR
-                "Qt5 requires CMake version 2.8.8 or greater!\n"
-                "Update CMake or set DESIRED_QT_VERSION to less than 5
-                or disable OSG_USE_QT."
-                )
-            ENDIF( )
-        ENDIF( )
-
-        IF ( NOT Qt5Widgets_FOUND )
-            FIND_PACKAGE(Qt4)
-
-            IF (NOT QT4_FOUND)
-                FIND_PACKAGE(Qt3)
-            ENDIF()
-        ENDIF()
-    ENDIF()
-
-    #If we have found Qt5, let's try to top off by getting the webkit as well
-    IF ( Qt5Widgets_FOUND )
-        FIND_PACKAGE(Qt5WebKitWidgets QUIET)
-
-        IF(COMMAND cmake_policy)
-            IF(${CMAKE_MAJOR_VERSION} GREATER 2)
-                # Qt5 qt5_use_modules usage was causing "Policy CMP0043 is not set: Ignore COMPILE_DEFINITIONS_<Config> properties." warnings
-                cmake_policy(SET CMP0043 NEW)
-            ENDIF()
-        ENDIF()
-    ENDIF()
-
-ENDIF()
 
 #optional example related dependencies
 IF   (BUILD_OSG_EXAMPLES AND NOT ANDROID)
@@ -1326,10 +1265,6 @@ SET(PKGCONFIG_FILES
   openscenegraph-osgAnimation
   openscenegraph-osgVolume
 )
-
-IF(QT4_FOUND OR Qt5Widgets_FOUND )
-  SET(PKGCONFIG_FILES ${PKGCONFIG_FILES} openscenegraph-osgQt)
-ENDIF()
 
 FOREACH(PKGCONFIG_FILE ${PKGCONFIG_FILES})
   CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/pkgconfig/${PKGCONFIG_FILE}.pc.in

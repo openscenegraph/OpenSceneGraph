@@ -106,8 +106,7 @@ namespace OpenThreads {
             // release the thread that created this thread.
             pd->threadStartedBlock.release();
 
-            if (0 <= pd->cpunum)
-                thread->setProcessorAffinity(pd->cpunum);
+            thread->setProcessorAffinity(pd->affinity);
 
             try{
                 thread->run();
@@ -241,7 +240,6 @@ Win32ThreadPrivateData::Win32ThreadPrivateData()
     threadPolicy = Thread::THREAD_SCHEDULE_DEFAULT;
     detached = false;
     cancelEvent.set(CreateEvent(NULL,TRUE,FALSE,NULL));
-    cpunum = -1;
 }
 
 //----------------------------------------------------------------------------
@@ -575,10 +573,10 @@ size_t Thread::getStackSize() {
 //
 // Use: public
 //
-int Thread::setProcessorAffinity( unsigned int cpunum )
+int Thread::setProcessorAffinity( const Affinity& affinity )
 {
     Win32ThreadPrivateData *pd = static_cast<Win32ThreadPrivateData *> (_prvData);
-    pd->cpunum = cpunum;
+    pd->affinity = affinity;
     if (!pd->isRunning)
        return 0;
 
@@ -586,7 +584,34 @@ int Thread::setProcessorAffinity( unsigned int cpunum )
        return -1;
 
 
-    DWORD affinityMask  = 0x1 << cpunum ; // thread affinity mask
+    unsigned int numprocessors = OpenThreads::GetNumberOfProcessors();
+
+    DWORD affinityMask  = 0x0;
+    if (affinity)
+    {
+        for(Affinity::ActiveCPUs::const_iterator itr = affinity.activeCPUs.begin();
+            itr != affinity.activeCPUs.end();
+            ++itr)
+        {
+            unsigned int cpunum = *itr;
+            if (cpunum<numprocessors)
+            {
+                std::cout<<"   setting CPU : "<< *itr<<std::endl;
+                affinityMask |= (0x1<<cpunum);
+            }
+        }
+    }
+    else
+    {
+        for (unsigned int cpunum = 0; cpunum < numprocessors; ++cpunum)
+        {
+            std::cout<<"   Fallback setting CPU : "<< cpunum<<std::endl;
+
+            affinityMask |= (0x1<<cpunum);
+        }
+    }
+
+
     DWORD_PTR res =
         SetThreadAffinityMask
         (
@@ -682,14 +707,14 @@ int OpenThreads::GetNumberOfProcessors()
     return sysInfo.dwNumberOfProcessors;
 }
 
-int OpenThreads::SetProcessorAffinityOfCurrentThread(unsigned int cpunum)
+int OpenThreads::SetProcessorAffinityOfCurrentThread(const Affinity& affinity)
 {
     Thread::Init();
 
     Thread* thread = Thread::CurrentThread();
     if (thread)
     {
-        return thread->setProcessorAffinity(cpunum);
+        return thread->setProcessorAffinity(affinity);
     }
     else
     {

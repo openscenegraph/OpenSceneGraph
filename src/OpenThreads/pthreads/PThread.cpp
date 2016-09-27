@@ -108,6 +108,39 @@ void thread_cleanup_handler(void *arg)
 namespace OpenThreads
 {
 
+static void setCPUMask(cpu_set_t* cpumask, const Affinity& affinity)
+{
+    std::cout<<"setCPUMask : "<< affinity.activeCPUs.size() <<std::endl;
+    CPU_ZERO( cpumask );
+    unsigned int numprocessors = OpenThreads::GetNumberOfProcessors();
+    if (affinity)
+    {
+        for(Affinity::ActiveCPUs::const_iterator itr = affinity.activeCPUs.begin();
+            itr != affinity.activeCPUs.end();
+            ++itr)
+        {
+            if (*itr<numprocessors)
+            {
+                std::cout<<"   setting CPU : "<< *itr<<std::endl;
+                CPU_SET( *itr, cpumask );
+            }
+        }
+    }
+    else
+    {
+        // BUG-fix for linux:
+        // Each thread inherits the processor affinity mask from its parent thread.
+        // We need to explicitly set it to all CPUs, if no affinity was specified.
+        for (unsigned int i = 0; i < numprocessors; ++i)
+        {
+            std::cout<<"   Fallback setting CPU : "<< i<<std::endl;
+
+            CPU_SET( i, cpumask );
+        }
+    }
+}
+
+
 class ThreadPrivateActions
 {
 
@@ -129,47 +162,18 @@ private:
         PThreadPrivateData *pd =
         static_cast<PThreadPrivateData *>(thread->_prvData);
 
-
-        if (pd->cpunum>=0)
-        {
-#if defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
-            cpu_set_t cpumask;
-            CPU_ZERO( &cpumask );
-            CPU_SET( pd->cpunum, &cpumask );
+        // set up processor affinity
+        cpu_set_t cpumask;
+        setCPUMask( &cpumask, pd->affinity );
 
 #if defined(HAVE_PTHREAD_SETAFFINITY_NP)
-            pthread_setaffinity_np( pthread_self(), sizeof(cpumask), &cpumask);
+        pthread_setaffinity_np( pthread_self(), sizeof(cpumask), &cpumask);
 #elif defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY)
-            sched_setaffinity( 0, sizeof(cpumask), &cpumask );
+        sched_setaffinity( 0, sizeof(cpumask), &cpumask );
 #elif defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
-            sched_setaffinity( 0, &cpumask );
+        sched_setaffinity( 0, &cpumask );
 #endif
-#endif
-        }
-#if defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
-        else
-        {
-            // BUG-fix for linux:
-            // Each thread inherits the processor affinity mask from its parent thread.
-            // We need to explicitly set it to all CPUs, if no affinity was specified.
 
-            cpu_set_t cpumask;
-            CPU_ZERO( &cpumask );
-
-            for (int i = 0; i < OpenThreads::GetNumberOfProcessors(); ++i)
-            {
-                CPU_SET( i, &cpumask );
-            }
-
-#if defined(HAVE_PTHREAD_SETAFFINITY_NP)
-            pthread_setaffinity_np( pthread_self(), sizeof(cpumask), &cpumask);
-#elif defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY)
-            sched_setaffinity( 0, sizeof(cpumask), &cpumask );
-#elif defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
-            sched_setaffinity( 0, &cpumask );
-#endif
-        }
-#endif
 
         ThreadCleanupStruct tcs;
         tcs.thread = thread;
@@ -533,25 +537,52 @@ size_t Thread::getProcessId()
     return (size_t)(pd->tid);
 }
 
+int OpenThreads::SetProcessorAffinityOfCurrentThread(const Affinity& affinity)
+{
+    Thread::Init();
+
+    Thread* thread = Thread::CurrentThread();
+    if (thread)
+    {
+        return thread->setProcessorAffinity(affinity);
+    }
+    else
+    {
+        // set up processor affinity
+        cpu_set_t cpumask;
+        setCPUMask( &cpumask, affinity );
+
+#if defined(HAVE_PTHREAD_SETAFFINITY_NP)
+        pthread_setaffinity_np( pthread_self(), sizeof(cpumask), &cpumask);
+        return 0;
+#elif defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY)
+        sched_setaffinity( 0, sizeof(cpumask), &cpumask );
+        return 0;
+#elif defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
+        sched_setaffinity( 0, &cpumask );
+        return 0;
+#endif
+    }
+
+    return -1;
+}
+
 //-----------------------------------------------------------------------------
 //
 // Description: Set the thread's processor affinity
 //
 // Use: public
 //
-int Thread::setProcessorAffinity(unsigned int cpunum)
+int Thread::setProcessorAffinity(const Affinity& affinity)
 {
     PThreadPrivateData *pd = static_cast<PThreadPrivateData *> (_prvData);
-    pd->cpunum = cpunum;
-    if (pd->cpunum<0) return -1;
-
-#if defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
+    pd->affinity = affinity;
 
     if (pd->isRunning() && Thread::CurrentThread()==this)
     {
         cpu_set_t cpumask;
-        CPU_ZERO( &cpumask );
-        CPU_SET( pd->cpunum, &cpumask );
+        setCPUMask(&cpumask, affinity);
+
 #if defined(HAVE_PTHREAD_SETAFFINITY_NP)
         return pthread_setaffinity_np (pthread_self(), sizeof(cpumask), &cpumask);
 #elif defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY)
@@ -562,9 +593,6 @@ int Thread::setProcessorAffinity(unsigned int cpunum)
     }
 
     return -1;
-#else
-    return -1;
-#endif
 
 }
 
@@ -995,33 +1023,3 @@ int OpenThreads::GetNumberOfProcessors()
 #endif
 }
 
-int OpenThreads::SetProcessorAffinityOfCurrentThread(unsigned int cpunum)
-{
-    Thread::Init();
-
-    Thread* thread = Thread::CurrentThread();
-    if (thread)
-    {
-        return thread->setProcessorAffinity(cpunum);
-    }
-    else
-    {
-#if defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
-        cpu_set_t cpumask;
-        CPU_ZERO( &cpumask );
-        CPU_SET( cpunum, &cpumask );
-#if defined(HAVE_PTHREAD_SETAFFINITY_NP)
-        pthread_setaffinity_np( pthread_self(), sizeof(cpumask), &cpumask);
-        return 0;
-#elif defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY)
-        sched_setaffinity( 0, sizeof(cpumask), &cpumask );
-        return 0;
-#elif defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
-        sched_setaffinity( 0, &cpumask );
-        return 0;
-#endif
-#endif
-    }
-
-    return -1;
-}

@@ -1,13 +1,13 @@
 /* -*-c++-*- OpenThreads library, Copyright (C) 2002 - 2007  The Open Thread Group
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -29,7 +29,7 @@ namespace OpenThreads {
     //
     friend class Thread;
     //-------------------------------------------------------------------------
-    // We're friendly to Win32PrivateActions, so it can get at some 
+    // We're friendly to Win32PrivateActions, so it can get at some
     // variables.
     //
     friend class ThreadPrivateActions;
@@ -44,7 +44,7 @@ private:
 
     Block threadStartedBlock;
 
-    int  cancelMode; // 0 - deffered (default) 1-asynch 2-disabled  
+    int  cancelMode; // 0 - deffered (default) 1-asynch 2-disabled
 
     bool detached;
 
@@ -56,7 +56,7 @@ private:
 
     int uniqueId;
 
-    int cpunum;
+    Affinity affinity;
 
 public:
 

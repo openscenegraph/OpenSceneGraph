@@ -108,19 +108,35 @@ void thread_cleanup_handler(void *arg)
 namespace OpenThreads
 {
 
-static void setCPUMask(cpu_set_t* cpumask, unsigned long in_cpumask)
+static void setCPUMask(cpu_set_t* cpumask, const Affinity& affinity)
 {
+    std::cout<<"setCPUMask : "<< affinity.activeCPUs.size() <<std::endl;
     CPU_ZERO( cpumask );
     unsigned int numprocessors = OpenThreads::GetNumberOfProcessors();
-    unsigned int cpunum=0;
-    while(in_cpumask!=0 && cpunum<numprocessors)
+    if (affinity)
     {
-        if ((in_cpumask&1)!=0)
+        for(Affinity::ActiveCPUs::const_iterator itr = affinity.activeCPUs.begin();
+            itr != affinity.activeCPUs.end();
+            ++itr)
         {
-            CPU_SET( cpunum, cpumask );
+            if (*itr<numprocessors)
+            {
+                std::cout<<"   setting CPU : "<< *itr<<std::endl;
+                CPU_SET( *itr, cpumask );
+            }
         }
-        in_cpumask>>=1;
-        ++cpunum;
+    }
+    else
+    {
+        // BUG-fix for linux:
+        // Each thread inherits the processor affinity mask from its parent thread.
+        // We need to explicitly set it to all CPUs, if no affinity was specified.
+        for (unsigned int i = 0; i < numprocessors; ++i)
+        {
+            std::cout<<"   Fallback setting CPU : "<< i<<std::endl;
+
+            CPU_SET( i, cpumask );
+        }
     }
 }
 
@@ -146,45 +162,18 @@ private:
         PThreadPrivateData *pd =
         static_cast<PThreadPrivateData *>(thread->_prvData);
 
-        if (pd->cpumask>=0)
-        {
-#if defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
-            cpu_set_t cpumask;
-            setCPUMask( &cpumask, pd->cpumask );
+        // set up processor affinity
+        cpu_set_t cpumask;
+        setCPUMask( &cpumask, pd->affinity );
 
 #if defined(HAVE_PTHREAD_SETAFFINITY_NP)
-            pthread_setaffinity_np( pthread_self(), sizeof(cpumask), &cpumask);
+        pthread_setaffinity_np( pthread_self(), sizeof(cpumask), &cpumask);
 #elif defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY)
-            sched_setaffinity( 0, sizeof(cpumask), &cpumask );
+        sched_setaffinity( 0, sizeof(cpumask), &cpumask );
 #elif defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
-            sched_setaffinity( 0, &cpumask );
+        sched_setaffinity( 0, &cpumask );
 #endif
-#endif
-        }
-#if defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
-        else
-        {
-            // BUG-fix for linux:
-            // Each thread inherits the processor affinity mask from its parent thread.
-            // We need to explicitly set it to all CPUs, if no affinity was specified.
 
-            cpu_set_t cpumask;
-            CPU_ZERO( &cpumask );
-
-            for (int i = 0; i < OpenThreads::GetNumberOfProcessors(); ++i)
-            {
-                CPU_SET( i, &cpumask );
-            }
-
-#if defined(HAVE_PTHREAD_SETAFFINITY_NP)
-            pthread_setaffinity_np( pthread_self(), sizeof(cpumask), &cpumask);
-#elif defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY)
-            sched_setaffinity( 0, sizeof(cpumask), &cpumask );
-#elif defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
-            sched_setaffinity( 0, &cpumask );
-#endif
-        }
-#endif
 
         ThreadCleanupStruct tcs;
         tcs.thread = thread;
@@ -548,20 +537,20 @@ size_t Thread::getProcessId()
     return (size_t)(pd->tid);
 }
 
-int OpenThreads::SetProcessorAffinityMaskOfCurrentThread(unsigned long in_cpumask)
+int OpenThreads::SetProcessorAffinityOfCurrentThread(const Affinity& affinity)
 {
     Thread::Init();
 
     Thread* thread = Thread::CurrentThread();
     if (thread)
     {
-        return thread->setProcessorAffinityMask(in_cpumask);
+        return thread->setProcessorAffinity(affinity);
     }
     else
     {
-#if defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
+        // set up processor affinity
         cpu_set_t cpumask;
-        setCPUMask(&cpumask, in_cpumask);
+        setCPUMask( &cpumask, affinity );
 
 #if defined(HAVE_PTHREAD_SETAFFINITY_NP)
         pthread_setaffinity_np( pthread_self(), sizeof(cpumask), &cpumask);
@@ -572,7 +561,6 @@ int OpenThreads::SetProcessorAffinityMaskOfCurrentThread(unsigned long in_cpumas
 #elif defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
         sched_setaffinity( 0, &cpumask );
         return 0;
-#endif
 #endif
     }
 
@@ -585,18 +573,15 @@ int OpenThreads::SetProcessorAffinityMaskOfCurrentThread(unsigned long in_cpumas
 //
 // Use: public
 //
-int Thread::setProcessorAffinityMask(unsigned long in_cpumask)
+int Thread::setProcessorAffinity(const Affinity& affinity)
 {
     PThreadPrivateData *pd = static_cast<PThreadPrivateData *> (_prvData);
-    pd->cpumask = in_cpumask;
-    if (pd->cpumask==0) return -1;
-
-#if defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
+    pd->affinity = affinity;
 
     if (pd->isRunning() && Thread::CurrentThread()==this)
     {
         cpu_set_t cpumask;
-        setCPUMask(&cpumask, in_cpumask);
+        setCPUMask(&cpumask, affinity);
 
 #if defined(HAVE_PTHREAD_SETAFFINITY_NP)
         return pthread_setaffinity_np (pthread_self(), sizeof(cpumask), &cpumask);
@@ -608,9 +593,6 @@ int Thread::setProcessorAffinityMask(unsigned long in_cpumask)
     }
 
     return -1;
-#else
-    return -1;
-#endif
 
 }
 

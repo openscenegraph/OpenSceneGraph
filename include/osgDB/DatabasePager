@@ -126,6 +126,10 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         };
 
+        virtual void setProcessorAffinty(const OpenThreads::Affinity& affinity);
+        OpenThreads::Affinity& getProcessorAffinty() { return _affinity; }
+        const OpenThreads::Affinity& getProcessorAffinty() const { return _affinity; }
+
         void setUpThreads(unsigned int totalNumThreads=2, unsigned int numHttpThreads=1);
 
         virtual unsigned int addDatabaseThread(DatabaseThread::Mode mode, const std::string& name);
@@ -437,6 +441,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Add the loaded data to the scene graph.*/
         void addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp);
 
+
+        OpenThreads::Affinity           _affinity;
 
         bool                            _done;
         bool                            _acceptNewRequests;

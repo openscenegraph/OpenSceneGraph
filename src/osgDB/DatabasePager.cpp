@@ -1107,6 +1107,9 @@ DatabasePager::DatabasePager()
     _dataToCompileList = new RequestQueue(this);
     _dataToMergeList = new RequestQueue(this);
 
+    // test of setting the database threads affinity.
+    // _affinity = OpenThreads::Affinity(4,4);
+
     setUpThreads(
         osg::DisplaySettings::instance()->getNumOfDatabaseThreadsHint(),
         osg::DisplaySettings::instance()->getNumOfHttpDatabaseThreadsHint());
@@ -1187,6 +1190,8 @@ DatabasePager::DatabasePager(const DatabasePager& rhs)
         _databaseThreads.push_back(new DatabaseThread(**dt_itr,this));
     }
 
+    setProcessorAffinty(rhs.getProcessorAffinty());
+
     _activePagedLODList = rhs._activePagedLODList->clone();
 
 #if 1
@@ -1244,6 +1249,18 @@ DatabasePager* DatabasePager::create()
            new DatabasePager;
 }
 
+void DatabasePager::setProcessorAffinty(const OpenThreads::Affinity& affinity)
+{
+    _affinity = affinity;
+
+    for(DatabaseThreadList::iterator itr=_databaseThreads.begin();
+        itr != _databaseThreads.end();
+        ++itr)
+    {
+        (*itr)->setProcessorAffinity(_affinity);
+    }
+}
+
 void DatabasePager::setUpThreads(unsigned int totalNumThreads, unsigned int numHttpThreads)
 {
     _databaseThreads.clear();
@@ -1280,6 +1297,9 @@ unsigned int DatabasePager::addDatabaseThread(DatabaseThread::Mode mode, const s
     unsigned int pos = _databaseThreads.size();
 
     DatabaseThread* thread = new DatabaseThread(this, mode,name);
+
+    thread->setProcessorAffinity(_affinity);
+
     _databaseThreads.push_back(thread);
 
     if (_startThreadCalled)

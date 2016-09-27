@@ -567,6 +567,45 @@ size_t Thread::getStackSize() {
     return pd->stackSize;
 }
 
+static int SetThreadAffinity(HANDLE tid, const Affinity& affinity)
+{
+	unsigned int numprocessors = OpenThreads::GetNumberOfProcessors();
+	std::cout << "setProcessorAffinity() : affinity.activeCPUs.size()=" << affinity.activeCPUs.size() << ", numprocessors=" << numprocessors << std::endl;
+
+	DWORD affinityMask = 0x0;
+	if (affinity)
+	{
+		for (Affinity::ActiveCPUs::const_iterator itr = affinity.activeCPUs.begin();
+			itr != affinity.activeCPUs.end();
+			++itr)
+		{
+			unsigned int cpunum = *itr;
+			if (cpunum<numprocessors)
+			{
+				std::cout << "   setting CPU : " << *itr << std::endl;
+				affinityMask |= (0x1 << cpunum);
+			}
+		}
+	}
+	else
+	{
+		for (unsigned int cpunum = 0; cpunum < numprocessors; ++cpunum)
+		{
+			std::cout << "   Fallback setting CPU : " << cpunum << std::endl;
+
+			affinityMask |= (0x1 << cpunum);
+		}
+	}
+	std::cout << "affinityMask = " << affinityMask << std::endl;
+
+	DWORD_PTR res = SetThreadAffinityMask ( tid, affinityMask );
+
+	// return value 1 means call is ignored ( 9x/ME/SE )
+	if (res == 1) return -1;
+	// return value 0 is failure
+	return (res == 0) ? GetLastError() : 0;
+}
+
 //-----------------------------------------------------------------------------
 //
 // Description:  set processor affinity for the thread
@@ -575,7 +614,7 @@ size_t Thread::getStackSize() {
 //
 int Thread::setProcessorAffinity( const Affinity& affinity )
 {
-    Win32ThreadPrivateData *pd = static_cast<Win32ThreadPrivateData *> (_prvData);
+	Win32ThreadPrivateData *pd = static_cast<Win32ThreadPrivateData *> (_prvData);
     pd->affinity = affinity;
     if (!pd->isRunning)
        return 0;
@@ -583,55 +622,7 @@ int Thread::setProcessorAffinity( const Affinity& affinity )
     if (pd->tid.get() == INVALID_HANDLE_VALUE)
        return -1;
 
-
-    unsigned int numprocessors = OpenThreads::GetNumberOfProcessors();
-
-    DWORD affinityMask  = 0x0;
-    if (affinity)
-    {
-        for(Affinity::ActiveCPUs::const_iterator itr = affinity.activeCPUs.begin();
-            itr != affinity.activeCPUs.end();
-            ++itr)
-        {
-            unsigned int cpunum = *itr;
-            if (cpunum<numprocessors)
-            {
-                std::cout<<"   setting CPU : "<< *itr<<std::endl;
-                affinityMask |= (0x1<<cpunum);
-            }
-        }
-    }
-    else
-    {
-        for (unsigned int cpunum = 0; cpunum < numprocessors; ++cpunum)
-        {
-            std::cout<<"   Fallback setting CPU : "<< cpunum<<std::endl;
-
-            affinityMask |= (0x1<<cpunum);
-        }
-    }
-
-
-    DWORD_PTR res =
-        SetThreadAffinityMask
-        (
-            pd->tid.get(),                  // handle to thread
-            affinityMask                    // thread affinity mask
-        );
-/*
-    This one is funny.
-    This is "non-mandatory" affinity , windows will try to use dwIdealProcessor
-    whenever possible ( when Bill's account is over 50B, maybe :-) ).
-
-    DWORD SetThreadIdealProcessor(
-      HANDLE hThread,         // handle to the thread
-       DWORD dwIdealProcessor  // ideal processor number
-    );
-*/
-    // return value 1 means call is ignored ( 9x/ME/SE )
-    if( res == 1 ) return -1;
-    // return value 0 is failure
-    return (res == 0) ? GetLastError() : 0 ;
+	return SetThreadAffinity(pd->tid.get(), affinity);
 }
 
 //-----------------------------------------------------------------------------
@@ -718,7 +709,6 @@ int OpenThreads::SetProcessorAffinityOfCurrentThread(const Affinity& affinity)
     }
     else
     {
-        // non op right now, needs implementation.
-        return -1;
+		return SetThreadAffinity(GetCurrentThread(), affinity);
     }
 }

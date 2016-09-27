@@ -38,7 +38,7 @@ extern OPENTHREAD_EXPORT_DIRECTIVE int GetNumberOfProcessors();
 /**
  *  Set the processor affinity of current thread.
  */
-int SetProcessorAffinityOfCurrentThread(const Affinity& affinity);
+extern OPENTHREAD_EXPORT_DIRECTIVE int SetProcessorAffinityOfCurrentThread(const Affinity& affinity);
 
 
 /**

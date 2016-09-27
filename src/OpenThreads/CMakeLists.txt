@@ -59,6 +59,7 @@ ENDIF()
 SET(HEADER_PATH ${OpenThreads_SOURCE_DIR}/include/OpenThreads)
 SET(OpenThreads_PUBLIC_HEADERS
     ${HEADER_PATH}/Atomic
+    ${HEADER_PATH}/Affinity
     ${HEADER_PATH}/Barrier
     ${HEADER_PATH}/Block
     ${HEADER_PATH}/Condition

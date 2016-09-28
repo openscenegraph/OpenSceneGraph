@@ -1190,7 +1190,7 @@ DatabasePager::DatabasePager(const DatabasePager& rhs)
         _databaseThreads.push_back(new DatabaseThread(**dt_itr,this));
     }
 
-    setProcessorAffinty(rhs.getProcessorAffinty());
+    setProcessorAffinity(rhs.getProcessorAffinity());
 
     _activePagedLODList = rhs._activePagedLODList->clone();
 
@@ -1249,7 +1249,7 @@ DatabasePager* DatabasePager::create()
            new DatabasePager;
 }
 
-void DatabasePager::setProcessorAffinty(const OpenThreads::Affinity& affinity)
+void DatabasePager::setProcessorAffinity(const OpenThreads::Affinity& affinity)
 {
     _affinity = affinity;
 

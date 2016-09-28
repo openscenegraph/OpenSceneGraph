@@ -126,9 +126,9 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         };
 
-        virtual void setProcessorAffinty(const OpenThreads::Affinity& affinity);
-        OpenThreads::Affinity& getProcessorAffinty() { return _affinity; }
-        const OpenThreads::Affinity& getProcessorAffinty() const { return _affinity; }
+        virtual void setProcessorAffinity(const OpenThreads::Affinity& affinity);
+        OpenThreads::Affinity& getProcessorAffinity() { return _affinity; }
+        const OpenThreads::Affinity& getProcessorAffinity() const { return _affinity; }
 
         void setUpThreads(unsigned int totalNumThreads=2, unsigned int numHttpThreads=1);
 

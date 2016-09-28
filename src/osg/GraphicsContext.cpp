@@ -589,6 +589,11 @@ void GraphicsContext::createGraphicsThread()
     if (!_graphicsThread)
     {
         setGraphicsThread(new GraphicsThread);
+
+        if (_traits.valid())
+        {
+            _graphicsThread->setProcessorAffinity(_traits->affinity);
+        }
     }
 }
 

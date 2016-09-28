@@ -627,7 +627,6 @@ void CompositeViewer::realize()
     // attach contexts to _incrementalCompileOperation if attached.
     if (_incrementalCompileOperation) _incrementalCompileOperation->assignContexts(contexts);
 
-
     bool grabFocus = true;
     if (grabFocus)
     {
@@ -655,9 +654,6 @@ void CompositeViewer::realize()
 
     if (osg::DisplaySettings::instance()->getCompileContextsHint())
     {
-        int numProcessors = osg::maximum(1, OpenThreads::GetNumberOfProcessors());
-        int processNum = 0;
-
         for(unsigned int i=0; i<= osg::GraphicsContext::getMaxContextID(); ++i)
         {
             osg::GraphicsContext* gc = osg::GraphicsContext::getOrCreateCompileContext(i);
@@ -665,10 +661,7 @@ void CompositeViewer::realize()
             if (gc)
             {
                 gc->createGraphicsThread();
-                gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
                 gc->getGraphicsThread()->startThread();
-
-                ++processNum;
             }
         }
     }

@@ -57,6 +57,7 @@ void ViewerBase::viewerBaseInit()
     _keyEventSetsDone = osgGA::GUIEventAdapter::KEY_Escape;
     _quitEventSetsDone = true;
     _releaseContextAtEndOfFrameHint = true;
+
     _threadingModel = AutomaticSelection;
     _threadsRunning = false;
     _endBarrierPosition = AfterSwapBuffers;
@@ -78,6 +79,95 @@ void ViewerBase::viewerBaseInit()
     if (str)
     {
         _runMaxFrameRate = osg::asciiToDouble(str);
+    }
+}
+
+void ViewerBase::configureAffinity()
+{
+    unsigned int numProcessors = OpenThreads::GetNumberOfProcessors();
+    OSG_NOTICE<<"ViewerBase::configureAffinity() numProcessors="<<numProcessors<<std::endl;
+    if (numProcessors==1) return;
+
+    bool requiresCameraThreads = false;
+    bool requiresDrawThreads = false;
+
+    switch(_threadingModel)
+    {
+        case(CullDrawThreadPerContext):
+            requiresDrawThreads = true;
+            break;
+
+        case(DrawThreadPerContext):
+            requiresDrawThreads = true;
+            break;
+
+        case(CullThreadPerCameraDrawThreadPerContext):
+            requiresCameraThreads = true;
+            requiresDrawThreads = true;
+            break;
+
+        default:
+            break;
+    };
+
+
+    unsigned int availableProcessor = 0;
+
+    _affinity = OpenThreads::Affinity(availableProcessor++);
+
+    if (requiresCameraThreads)
+    {
+        Cameras cameras;
+        getCameras(cameras);
+
+        for(Cameras::iterator itr = cameras.begin();
+            itr != cameras.end();
+            ++itr)
+        {
+            (*itr)->setProcessorAffinity(OpenThreads::Affinity((availableProcessor++)%numProcessors));
+        }
+    }
+
+    if (requiresDrawThreads)
+    {
+        Contexts contexts;
+        getContexts(contexts);
+
+        for(Contexts::iterator itr = contexts.begin();
+            itr != contexts.end();
+            ++itr)
+        {
+            if ((*itr)->getTraits())
+            {
+                osg::GraphicsContext::Traits* traits = const_cast<osg::GraphicsContext::Traits*>((*itr)->getTraits());
+                traits->affinity = OpenThreads::Affinity((availableProcessor++)%numProcessors);
+            }
+        }
+    }
+
+    if (availableProcessor<numProcessors)
+    {
+        Scenes scenes;
+        getScenes(scenes);
+
+        typedef std::list<osgDB::DatabasePager*> DatabasePagers;
+        DatabasePagers databasePagers;
+
+        for(Scenes::iterator itr = scenes.begin();
+            itr != scenes.end();
+            ++itr)
+        {
+            if ((*itr)->getDatabasePager()) databasePagers.push_back((*itr)->getDatabasePager());
+        }
+
+        OSG_NOTICE<<"  databasePagers = "<<databasePagers.size()<<std::endl;
+
+        for(DatabasePagers::iterator itr = databasePagers.begin();
+            itr != databasePagers.end();
+            ++itr)
+        {
+            (*itr)->setProcessorAffinity(OpenThreads::Affinity(availableProcessor, numProcessors-availableProcessor));
+        }
     }
 }
 
@@ -140,37 +230,40 @@ ViewerBase::ThreadingModel ViewerBase::suggestBestThreadingModel()
 
 void ViewerBase::setUpThreading()
 {
+    if (_threadingModel==AutomaticSelection)
+    {
+        _threadingModel = suggestBestThreadingModel();
+    }
+
+    // configure affinity before we start threads
+    configureAffinity();
+
     Contexts contexts;
     getContexts(contexts);
+
+    // set up affinity of main thread
+    OpenThreads::SetProcessorAffinityOfCurrentThread(_affinity);
+
+    // set up the number of graphics contexts.
+    {
+        Scenes scenes;
+        getScenes(scenes);
+
+        for(Scenes::iterator scitr = scenes.begin();
+            scitr != scenes.end();
+            ++scitr)
+        {
+            if ((*scitr)->getSceneData())
+            {
+                // update the scene graph so that it has enough GL object buffer memory for the graphics contexts that will be using it.
+                (*scitr)->getSceneData()->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
+            }
+        }
+    }
 
     if (_threadingModel==SingleThreaded)
     {
         if (_threadsRunning) stopThreading();
-        else
-        {
-            // we'll set processor affinity here to help single threaded apps
-            // with multiple processor cores, and using the database pager.
-            int numProcessors = OpenThreads::GetNumberOfProcessors();
-            bool affinity = numProcessors>1;
-            if (affinity)
-            {
-                OpenThreads::SetProcessorAffinityOfCurrentThread(0);
-
-                Scenes scenes;
-                getScenes(scenes);
-
-                for(Scenes::iterator scitr = scenes.begin();
-                    scitr != scenes.end();
-                    ++scitr)
-                {
-                    if ((*scitr)->getSceneData())
-                    {
-                        // update the scene graph so that it has enough GL object buffer memory for the graphics contexts that will be using it.
-                        (*scitr)->getSceneData()->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
-                    }
-                }
-            }
-        }
     }
     else
     {
@@ -272,8 +365,6 @@ void ViewerBase::startThreading()
     // release any context held by the main thread.
     releaseContext();
 
-    _threadingModel = _threadingModel==AutomaticSelection ? suggestBestThreadingModel() : _threadingModel;
-
     Contexts contexts;
     getContexts(contexts);
 
@@ -324,9 +415,6 @@ void ViewerBase::startThreading()
             (*scitr)->getSceneData()->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
         }
     }
-
-    int numProcessors = osg::maximum(1, OpenThreads::GetNumberOfProcessors());
-    bool affinity = numProcessors>1;
 
     Contexts::iterator citr;
 
@@ -383,13 +471,9 @@ void ViewerBase::startThreading()
 
     osg::ref_ptr<osg::SwapBuffersOperation> swapOp = new osg::SwapBuffersOperation();
 
-    typedef std::map<OpenThreads::Thread*, int> ThreadAffinityMap;
-    ThreadAffinityMap threadAffinityMap;
-
-    unsigned int processNum = 1;
     for(citr = contexts.begin();
         citr != contexts.end();
-        ++citr, ++processNum)
+        ++citr)
     {
         osg::GraphicsContext* gc = (*citr);
 
@@ -403,9 +487,6 @@ void ViewerBase::startThreading()
 
         // create the a graphics thread for this context
         gc->createGraphicsThread();
-
-        if (affinity) gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
-        threadAffinityMap[gc->getGraphicsThread()] = processNum % numProcessors;
 
         // add the startRenderingBarrier
         if (_threadingModel==CullDrawThreadPerContext && _startRenderingBarrier.valid()) gc->getGraphicsThread()->add(_startRenderingBarrier.get());
@@ -438,13 +519,10 @@ void ViewerBase::startThreading()
 
         for(camItr = cameras.begin();
             camItr != cameras.end();
-            ++camItr, ++processNum)
+            ++camItr)
         {
             osg::Camera* camera = *camItr;
             camera->createCameraThread();
-
-            if (affinity) camera->getCameraThread()->setProcessorAffinity(processNum % numProcessors);
-            threadAffinityMap[camera->getCameraThread()] = processNum % numProcessors;
 
             osg::GraphicsContext* gc = camera->getGraphicsContext();
 
@@ -478,34 +556,6 @@ void ViewerBase::startThreading()
             }
         }
     }
-
-#if 0
-    if (affinity)
-    {
-        OpenThreads::SetProcessorAffinityOfCurrentThread(0);
-        if (_scene.valid() && _scene->getDatabasePager())
-        {
-#if 0
-            _scene->getDatabasePager()->setProcessorAffinity(1);
-#else
-            _scene->getDatabasePager()->setProcessorAffinity(0);
-#endif
-        }
-    }
-#endif
-
-#if 0
-    if (affinity)
-    {
-        for(ThreadAffinityMap::iterator titr = threadAffinityMap.begin();
-            titr != threadAffinityMap.end();
-            ++titr)
-        {
-            titr->first->setProcessorAffinity(titr->second);
-        }
-    }
-#endif
-
 
     for(citr = contexts.begin();
         citr != contexts.end();

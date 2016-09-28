@@ -171,12 +171,12 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
 
         if (ss3d)
         {
-            setThreadingModel(SingleThreaded);
+            //setThreadingModel(SingleThreaded);
             setUpViewFor3DSphericalDisplay(radius, collar, screenNum, intensityMap.get());
         }
         else
         {
-            setThreadingModel(SingleThreaded);
+            //setThreadingModel(SingleThreaded);
             setUpViewForPanoramicSphericalDisplay(radius, collar, screenNum, intensityMap.get());
         }
     }
@@ -604,9 +604,6 @@ void Viewer::realize()
 
     if (osg::DisplaySettings::instance()->getCompileContextsHint())
     {
-        int numProcessors = osg::maximum(1, OpenThreads::GetNumberOfProcessors());
-        int processNum = 0;
-
         for(unsigned int i=0; i<= osg::GraphicsContext::getMaxContextID(); ++i)
         {
             osg::GraphicsContext* gc = osg::GraphicsContext::getOrCreateCompileContext(i);
@@ -614,10 +611,7 @@ void Viewer::realize()
             if (gc)
             {
                 gc->createGraphicsThread();
-                gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
                 gc->getGraphicsThread()->startThread();
-
-                ++processNum;
             }
         }
     }

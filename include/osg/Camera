@@ -541,6 +541,11 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
             }
         }
 
+        /** Set the process affinity hint for any Camera Threads that are/will be assigned to this Camera.*/
+        void setProcessorAffinity(const OpenThreads::Affinity& affinity);
+        OpenThreads::Affinity& getProcessorAffinity() { return _affinity; }
+        const OpenThreads::Affinity& getProcessorAffinity() const { return _affinity; }
+
         /** Create a operation thread for this camera.*/
         void createCameraThread();
 
@@ -707,6 +712,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         unsigned int                        _attachmentMapModifiedCount;
 
+        OpenThreads::Affinity               _affinity;
         ref_ptr<OperationThread>            _cameraThread;
 
         ref_ptr<GraphicsContext>            _graphicsContext;

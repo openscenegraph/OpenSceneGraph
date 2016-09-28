@@ -145,6 +145,9 @@ class OSG_EXPORT GraphicsContext : public Object
             bool overrideRedirect;
 
             DisplaySettings::SwapMethod swapMethod;
+
+            // hint of what affinity to use for any thrads associated with the graphics context created using these Traits
+            OpenThreads::Affinity affinity;
         };
 
         /** Simple resolution structure used by WindowingSystemInterface to get and set screen resolution.

@@ -60,6 +60,12 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         virtual void realize() = 0;
 
 
+        /** Set whether the setUpThreading() method should call configureAffinity() to set up up the processor affinity of viewer threads.*/
+        void setUseConfigureAffinity(bool flag) { _useConfigureAffinity = flag; }
+
+        /** get whether the setUpThreading() method should call configureAffinity() to set up up the processor affinity of viewer threads.*/
+        bool getUseConfigureAffinity() const { return _useConfigureAffinity; }
+
         /** analyse the viewer configuration and select an appropriate Affinity for main thread, and any graphics, camera threads and database pagers that are required.*/
         virtual void configureAffinity();
 
@@ -327,6 +333,7 @@ protected:
         bool                                                _quitEventSetsDone;
         bool                                                _releaseContextAtEndOfFrameHint;
 
+        bool                                                _useConfigureAffinity;
         OpenThreads::Affinity                               _affinity;
         ThreadingModel                                      _threadingModel;
         bool                                                _threadsRunning;

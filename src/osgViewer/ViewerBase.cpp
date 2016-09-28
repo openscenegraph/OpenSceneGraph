@@ -80,6 +80,8 @@ void ViewerBase::viewerBaseInit()
     {
         _runMaxFrameRate = osg::asciiToDouble(str);
     }
+
+    _useConfigureAffinity = true;
 }
 
 void ViewerBase::configureAffinity()
@@ -235,8 +237,8 @@ void ViewerBase::setUpThreading()
         _threadingModel = suggestBestThreadingModel();
     }
 
-    // configure affinity before we start threads
-    configureAffinity();
+    // if required configure affinity before we start threads
+    if (_useConfigureAffinity) configureAffinity();
 
     Contexts contexts;
     getContexts(contexts);

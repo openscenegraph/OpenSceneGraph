@@ -839,7 +839,7 @@ GLExtensions::GLExtensions(unsigned int contextID)
     isShadowSupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_ARB_shadow");
     isShadowAmbientSupported = isGLExtensionSupported(contextID,"GL_ARB_shadow_ambient");
     isClientStorageSupported = isGLExtensionSupported(contextID,"GL_APPLE_client_storage");
-    isNonPowerOfTwoTextureNonMipMappedSupported = builtInSupport  || isGLExtensionSupported(contextID,"GL_EOS_texture_npot") || isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_non_power_of_two", 2.0) || isGLExtensionSupported(contextID,"GL_APPLE_texture_2D_limited_npot");
+    isNonPowerOfTwoTextureNonMipMappedSupported = builtInSupport  || isGLExtensionSupported(contextID,"GL_OES_texture_npot") || isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_non_power_of_two", 2.0) || isGLExtensionSupported(contextID,"GL_APPLE_texture_2D_limited_npot");
     isNonPowerOfTwoTextureMipMappedSupported = builtInSupport || isNonPowerOfTwoTextureNonMipMappedSupported;
     isTextureIntegerEXTSupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID, "GL_EXT_texture_integer");
 

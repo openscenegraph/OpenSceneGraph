@@ -20,7 +20,6 @@ SET(TARGET_H
     AABBonBoneVisitor
     AnimationCleanerVisitor
     BindPerVertexVisitor
-    debug
     DetachPrimitiveVisitor
     DisableAnimationVisitor
     DrawArrayVisitor

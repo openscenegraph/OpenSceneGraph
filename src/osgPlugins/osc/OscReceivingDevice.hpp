@@ -26,7 +26,7 @@
  *    /my_user_event/value_1 23
  *    /my_user_event/value_2 42
  *
- * this will result in one osgGA:Event (when both messages are bundled) witht the name "/my_user_event",
+ * this will result in one osgGA:Event (when both messages are bundled) with the name "/my_user_event",
  * and two user-values (value_1 and value_2)
  * To get value_1 you'll do something like event->getUserValue("value_1", my_int);
  *

@@ -310,7 +310,7 @@ public:
     float64 red,green,blue;
 };
 
-// Used to specify machine endianess
+// Used to specify machine endianness
 typedef enum {LittleEndian,BigEndian} trpgEndian;
 
 /*     This is a base class for an abstract buffer type.
@@ -444,7 +444,7 @@ protected:
 };
 
 /* This is a virtual base class for reading data from a device.
-    The device implementation is left as an excercise to the sub class.
+    The device implementation is left as an exercise to the sub class.
     This class contains methods for getting data that must be filled in
     as well as helper methods that call those.
     {group:Low Level I/O}
@@ -518,7 +518,7 @@ protected:
     /* This virtual method must be filled in by the subclass so that SkipToLimit
         will work correctly. */
     virtual bool Skip(int) = 0;
-    /* Utility function that must be called after a successfull read to update
+    /* Utility function that must be called after a successful read to update
         the outside imposed read limits. */
     virtual void UpdateLimits(int);
     std::vector<int> limits;

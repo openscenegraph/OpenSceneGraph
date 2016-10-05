@@ -62,7 +62,7 @@ IF(WIN32 AND NOT ANDROID)
     # Enable workaround for OpenGL driver issues when used in multithreaded/multiscreen with NVidia drivers on Windows XP
     # For example: osgviewer dumptruck.osg was showing total garbage (screen looked like shattered, splashed hedgehog)
     # There were also serious issues with render to texture cameras.
-    # Workaround repeats makeCurrentContext call as it was found that this causes the problems to dissapear.
+    # Workaround repeats makeCurrentContext call as it was found that this causes the problems to disappear.
     #
     OPTION(OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND "Set to ON if you have NVidia board and drivers earlier than 177.92 ver" OFF)
     MARK_AS_ADVANCED(OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND)
@@ -250,7 +250,7 @@ SETUP_LIBRARY(${LIB_NAME})
 # install these headers manually since setup_library and moduleinstall
 # wouldn't keep the structure, e.g. api/X11/xyz.h
 FOREACH(HEADERFILE ${TARGET_H_NO_MODULE_INSTALL} ${CONFIG_HEADER_FILES})
-  # get relative path to graphics system dependant header
+  # get relative path to graphics system dependent header
   FILE(RELATIVE_PATH REL_INCLUDEFILE ${HEADER_PATH} ${HEADERFILE})
   GET_FILENAME_COMPONENT(REL_INCLUDE_PATH ${REL_INCLUDEFILE} PATH)
 

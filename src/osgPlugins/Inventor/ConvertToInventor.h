@@ -7,7 +7,7 @@
 //  SGI Inventor , or TGS Inventor.
 //
 //
-//  Autor: PCJohn (peciva _at fit.vutbr.cz)
+//  Author: PCJohn (peciva _at fit.vutbr.cz)
 //
 //  License: public domain
 //

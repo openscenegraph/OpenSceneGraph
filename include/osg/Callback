@@ -17,6 +17,9 @@
 #include <osg/Object>
 #include <osg/UserDataContainer>
 
+// forward declare
+namespace osgGA { class EventHandler; }
+
 namespace osg {
 
 // forward declare
@@ -63,6 +66,9 @@ class OSG_EXPORT Callback : public virtual Object {
 
         virtual DrawableCullCallback* asDrawableCullCallback() { return 0; }
         virtual const DrawableCullCallback* asDrawableCullCallback() const { return 0; }
+
+        virtual osgGA::EventHandler* asEventHandler() { return 0; }
+        virtual const osgGA::EventHandler* asEventHandler() const { return 0; }
 
         /** Invoke the callback, first parameter is the Object that the callback is attached to,
          *  the second parameter, the data, is typically the NodeVisitor that is invoking the callback.

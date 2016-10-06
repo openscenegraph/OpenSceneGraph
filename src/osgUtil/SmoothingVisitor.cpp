@@ -657,14 +657,16 @@ static void smooth_new(osg::Geometry& geom, double creaseAngle)
         // fsef.listProblemVertices();
         fsef.updateGeometry();
 
+        vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
+        normals = dynamic_cast<osg::Vec3Array*>(geom.getNormalArray());
         osg::TriangleIndexFunctor<SmoothTriangleIndexFunctor> stif2;
         if (stif2.set(vertices, normals))
         {
             // accumulate all the normals
-            geom.accept(stif);
+            geom.accept(stif2);
 
             // normalize the normals
-            stif.normalize();
+            stif2.normalize();
         }
 
     }

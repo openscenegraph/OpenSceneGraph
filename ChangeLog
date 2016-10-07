@@ -1,3 +1,19 @@
+Fri, 7 Oct 2016 16:54:36 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #151 from LaurensVoerman/pdbInstallfix error on pdb files building the install target in visual studio
+
+Thu, 6 Oct 2016 17:15:25 +0200
+Author : Laurens Voerman
+remove CMAKE_BUILD_TYPE STREQUAL "Release" (cmake configure time varable) to select pdb install - select CONFIGURATIONS RelWithDebInfo Debug
+
+Fri, 7 Oct 2016 16:15:28 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #150 from LaurensVoerman/Readmeosg now requires cmake 2.8.0
+
+Fri, 7 Oct 2016 15:58:11 +0100
+Author : Robert Osfield
+Updated ChangeLog
+
 Fri, 7 Oct 2016 15:57:01 +0100
 Author : Robert Osfield
 Restructed how CPU affinity is set to fix build problems when local pthreads doesn't support setting affinity
@@ -5,6 +21,10 @@ Restructed how CPU affinity is set to fix build problems when local pthreads doe
 Fri, 7 Oct 2016 15:40:50 +0100
 Author : Robert Osfield
 UPdated ChangeLog for release
+
+Fri, 7 Oct 2016 16:36:40 +0200
+Author : Laurens Voerman
+osg now requires cmake 2.8.0
 
 Fri, 7 Oct 2016 14:51:39 +0100
 Author : Robert Osfield

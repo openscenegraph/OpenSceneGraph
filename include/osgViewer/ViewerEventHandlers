@@ -512,6 +512,8 @@ public:
 
     META_Object(osgViewer, InteractiveImageHandler);
 
+    virtual const EventHandler* asEventHandler() const { return osgGA::EventHandler::asEventHandler(); }
+
     virtual NodeCallback* asNodeCallback() { return osg::NodeCallback::asNodeCallback(); }
     virtual const NodeCallback* asNodeCallback() const { return osg::NodeCallback::asNodeCallback(); }
 

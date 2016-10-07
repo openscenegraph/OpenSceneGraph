@@ -261,7 +261,9 @@ const char* invalidNames[] =
     "RayIntersector",
     "OpenSceneGraph-Data",
     "Node",
-    "AlphaFunc"
+    "AlphaFunc",
+    "CompositeViewer",
+    "OpenSceneGraph-3"
 };
 
 
@@ -498,6 +500,14 @@ struct NameCorrection
 
 NameCorrection nameCorrections[] =
 {
+    {"LaurensVoerman","Meta_Shape",
+     "Laurens", "Voerman"},
+    {"LaurensVoerman","Fri",
+     "Laurens", "Voerman"},
+    {"LaurensVoerman","",
+     "Laurens", "Voerman"},
+    {"Laurens","Loerman",
+     "Laurens", "Voerman"},
     {"FrancoisTigeot","",
      "Francois", "Tigeot"},
     {"Juan","Manuel",

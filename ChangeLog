@@ -1,3 +1,11 @@
+Fri, 7 Oct 2016 15:57:01 +0100
+Author : Robert Osfield
+Restructed how CPU affinity is set to fix build problems when local pthreads doesn't support setting affinity
+
+Fri, 7 Oct 2016 15:40:50 +0100
+Author : Robert Osfield
+UPdated ChangeLog for release
+
 Fri, 7 Oct 2016 14:51:39 +0100
 Author : Robert Osfield
 Fixed VisualStudio warningAdded local implementation of asEventHandler()

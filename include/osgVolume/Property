@@ -493,6 +493,9 @@ class OSGVOLUME_EXPORT PropertyAdjustmentCallback : public osgGA::GUIEventHandle
         virtual DrawableEventCallback* asDrawableEventCallback() { return osg::DrawableEventCallback::asDrawableEventCallback(); }
         virtual const DrawableEventCallback* asDrawableEventCallback() const { return osg::DrawableEventCallback::asDrawableEventCallback(); }
 
+        virtual osgGA::EventHandler* asEventHandler() { return osgGA::EventHandler::asEventHandler(); }
+        virtual const osgGA::EventHandler* asEventHandler() const { return osgGA::EventHandler::asEventHandler(); }
+
         virtual bool run(osg::Object* object, osg::Object* data) { return osgGA::GUIEventHandler::run(object, data); }
 
         void setKeyEventCycleForward(int key) { _cyleForwardKey = key; }

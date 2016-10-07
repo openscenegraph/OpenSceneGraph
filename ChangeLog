@@ -1,3 +1,11 @@
+Fri, 7 Oct 2016 17:05:58 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #152 from aluaces/spelling2Some spelling fixes in comments.
+
+Fri, 7 Oct 2016 16:55:35 +0100
+Author : Robert Osfield
+Updated ChangeLog for release
+
 Fri, 7 Oct 2016 16:54:36 +0100
 Author : OpenSceneGraph git repository
 Merge pull request #151 from LaurensVoerman/pdbInstallfix error on pdb files building the install target in visual studio
@@ -126,6 +134,10 @@ Added GL_OES_geometry_shader and GL_OES_tessellation_shader checks
 Fri, 30 Sep 2016 14:59:51 +0200
 Author : Laurens Voerman
 adaptations for cmake changes mid 2015 (SelectLibraryConfigurations.cmake) with SelectLibraryConfigurations.cmake collada zlib debug library linking added
+
+Wed, 5 Oct 2016 18:10:46 +0200
+Author : Alberto Luaces
+Some spelling fixes in comments.
 
 Wed, 5 Oct 2016 16:31:23 +0100
 Author : René Molenaar

@@ -1,3 +1,21 @@
+Fri, 7 Oct 2016 14:51:39 +0100
+Author : Robert Osfield
+Fixed VisualStudio warningAdded local implementation of asEventHandler()
+
+
+Fri, 7 Oct 2016 14:45:33 +0100
+Author : Robert Osfield
+Fixed VisualStudio warningAdded local implementation of asEventHandler()
+
+
+Fri, 7 Oct 2016 13:57:42 +0100
+Author : Robert Osfield
+Updated README for 3.5.5
+
+Fri, 7 Oct 2016 13:56:46 +0100
+Author : Robert Osfield
+Update ChangeLog and AUTHORS file for 3.5.5 dev release
+
 Thu, 29 Sep 2016 14:56:54 +0100
 Author : Robert Osfield
 Fixed extension string typo

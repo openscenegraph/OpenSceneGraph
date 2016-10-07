@@ -96,7 +96,7 @@ bool RigTransformHardware::createPalette(int nbVertexes, BoneMap boneMap, const 
         for (VertexInfluenceSet::BoneWeightList::const_iterator it = boneWeightList.begin(); it != boneWeightList.end(); ++it)
         {
             const VertexInfluenceSet::BoneWeight& bw = *it;
-            if(fabs(bw.getWeight()) > 1e-2) // dont use bone with weight too small
+            if(fabs(bw.getWeight()) > 1e-2) // don't use bone with weight too small
             {
                 if (boneNameCountMap.find(bw.getBoneName()) != boneNameCountMap.end())
                 {

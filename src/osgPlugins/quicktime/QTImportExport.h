@@ -32,7 +32,7 @@ class QuicktimeImportExport {
         /** get the last error-message */
         const std::string getLastErrorString() { return _lastError; }
 
-        /** return true if no error occured */
+        /** return true if no error occurred */
         bool success() { return (_error == false); }
 
     protected:

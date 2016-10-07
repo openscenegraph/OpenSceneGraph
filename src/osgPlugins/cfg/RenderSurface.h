@@ -240,7 +240,7 @@ class RenderSurface : public osg::Referenced
 
 #if 0
         /** Set the current window cursor.  Producer provides no functionality to create
-          * cursors.  It is the application's responsiblity to create a Cursor using the
+          * cursors.  It is the application's responsibility to create a Cursor using the
           * windowing system of choice.  setCursor() will simply set a predefined cursor
           * as the current Cursor */
         void setCursor( Cursor );

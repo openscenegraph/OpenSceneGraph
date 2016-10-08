@@ -550,10 +550,9 @@ void Camera::setCameraThread(OperationThread* gt)
 
     _cameraThread = gt;
 
-    _cameraThread->setProcessorAffinity(_affinity);
-
     if (_cameraThread.valid())
     {
+        _cameraThread->setProcessorAffinity(_affinity);
         _cameraThread->setParent(this);
     }
 }

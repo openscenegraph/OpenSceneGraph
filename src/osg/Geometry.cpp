@@ -840,14 +840,11 @@ void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
         }
     }
 
+    // activate or dispatch any attributes that are bound overall
     arrayDispatchers.activateNormalArray(_normalArray.get());
     arrayDispatchers.activateColorArray(_colorArray.get());
     arrayDispatchers.activateSecondaryColorArray(_secondaryColorArray.get());
     arrayDispatchers.activateFogCoordArray(_fogCoordArray.get());
-
-    // dispatch any attributes that are bound overall
-    arrayDispatchers.dispatch(osg::Array::BIND_OVERALL,0);
-
 
     if (state.useVertexArrayObject(_useVertexArrayObject))
     {
@@ -902,11 +899,11 @@ void Geometry::drawPrimitivesImplementation(RenderInfo& renderInfo) const
     ArrayDispatchers& arrayDispatchers = state.getArrayDispatchers();
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
 
-    bool bindPerPrimitiveSetActive = arrayDispatchers.active(osg::Array::BIND_PER_PRIMITIVE_SET);
+    bool bindPerPrimitiveSetActive = arrayDispatchers.active();
     for(unsigned int primitiveSetNum=0; primitiveSetNum!=_primitives.size(); ++primitiveSetNum)
     {
         // dispatch any attributes that are bound per primitive
-        if (bindPerPrimitiveSetActive) arrayDispatchers.dispatch(osg::Array::BIND_PER_PRIMITIVE_SET, primitiveSetNum);
+        if (bindPerPrimitiveSetActive) arrayDispatchers.dispatch(primitiveSetNum);
 
         const PrimitiveSet* primitiveset = _primitives[primitiveSetNum].get();
 

@@ -876,9 +876,6 @@ void SharedGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
     arrayDispatchers.activateNormalArray(_normalArray.get());
     arrayDispatchers.activateColorArray(_colorArray.get());
 
-    // dispatch any attributes that are bound overall
-    arrayDispatchers.dispatch(osg::Array::BIND_OVERALL,0);
-
     state.lazyDisablingOfVertexAttributes();
 
     // set up arrays

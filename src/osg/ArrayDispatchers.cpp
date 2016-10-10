@@ -268,12 +268,7 @@ void ArrayDispatchers::reset()
 
     _useVertexAttribAlias = false;
 
-    for(ActiveDispatchList::iterator itr = _activeDispatchList.begin();
-        itr != _activeDispatchList.end();
-        ++itr)
-    {
-        (*itr).clear();
-    }
+    _activeDispatchList.clear();
 }
 
 }

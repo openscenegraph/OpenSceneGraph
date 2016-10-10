@@ -50,20 +50,16 @@ class OSG_EXPORT ArrayDispatchers : public osg::Referenced
             if (at) _activeDispatchList[binding].push_back(at);
         }
 
-        void activateVertexArray(osg::Array* array) { if (array && array->getBinding()>osg::Array::BIND_OFF) activate(array->getBinding(), vertexDispatcher(array)); }
         void activateColorArray(osg::Array* array) { if (array && array->getBinding()>osg::Array::BIND_OFF) activate(array->getBinding(), colorDispatcher(array)); }
         void activateNormalArray(osg::Array* array) { if (array && array->getBinding()>osg::Array::BIND_OFF) activate(array->getBinding(), normalDispatcher(array)); }
         void activateSecondaryColorArray(osg::Array* array) { if (array && array->getBinding()>osg::Array::BIND_OFF) activate(array->getBinding(), secondaryColorDispatcher(array)); }
         void activateFogCoordArray(osg::Array* array) { if (array && array->getBinding()>osg::Array::BIND_OFF) activate(array->getBinding(), fogCoordDispatcher(array)); }
-        void activateTexCoordArray(unsigned int unit, osg::Array* array) { if (array && array->getBinding()>osg::Array::BIND_OFF) activate(array->getBinding(), texCoordDispatcher(unit, array)); }
         void activateVertexAttribArray(unsigned int unit, osg::Array* array) { if (array && array->getBinding()>osg::Array::BIND_OFF) activate(array->getBinding(), vertexAttribDispatcher(unit, array)); }
 
-        AttributeDispatch* vertexDispatcher(Array* array);
         AttributeDispatch* normalDispatcher(Array* array);
         AttributeDispatch* colorDispatcher(Array* array);
         AttributeDispatch* secondaryColorDispatcher(Array* array);
         AttributeDispatch* fogCoordDispatcher(Array* array);
-        AttributeDispatch* texCoordDispatcher(unsigned int unit, Array* array);
         AttributeDispatch* vertexAttribDispatcher(unsigned int unit, Array* array);
 
         void dispatch(unsigned int binding, unsigned int index)
@@ -89,14 +85,12 @@ class OSG_EXPORT ArrayDispatchers : public osg::Referenced
         bool                  _initialized;
         State*                _state;
 
-        AttributeDispatchMap* _vertexDispatchers;
         AttributeDispatchMap* _normalDispatchers;
         AttributeDispatchMap* _colorDispatchers;
         AttributeDispatchMap* _secondaryColorDispatchers;
         AttributeDispatchMap* _fogCoordDispatchers;
 
         typedef std::vector<AttributeDispatchMap*> AttributeDispatchMapList;
-        AttributeDispatchMapList _texCoordDispatchers;
         AttributeDispatchMapList _vertexAttribDispatchers;
 
         typedef std::vector<AttributeDispatch*> AttributeDispatchList;

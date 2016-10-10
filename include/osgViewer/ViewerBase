@@ -70,9 +70,9 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         virtual void configureAffinity();
 
         /** Set the processor affinity of main thread.*/
-        virtual void setProcessorAffinty(const OpenThreads::Affinity& affinity) { _affinity = affinity; }
-        OpenThreads::Affinity& getProcessorAffinty() { return _affinity; }
-        const OpenThreads::Affinity& getProcessorAffinty() const { return _affinity; }
+        virtual void setProcessorAffinity(const OpenThreads::Affinity& affinity) { _affinity = affinity; }
+        OpenThreads::Affinity& getProcessorAffinity() { return _affinity; }
+        const OpenThreads::Affinity& getProcessorAffinity() const { return _affinity; }
 
         enum ThreadingModel
         {

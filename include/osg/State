@@ -29,7 +29,7 @@
 #include <osg/DisplaySettings>
 #include <osg/Polytope>
 #include <osg/Viewport>
-#include <osg/ArrayDispatchers>
+#include <osg/AttributeDispatchers>
 #include <osg/GraphicsCostEstimator>
 
 #include <iosfwd>
@@ -877,7 +877,7 @@ class OSG_EXPORT State : public Referenced
         void initializeExtensionProcs();
 
         /** Get the helper class for dispatching osg::Arrays as OpenGL attribute data.*/
-        inline ArrayDispatchers& getArrayDispatchers() { return _arrayDispatchers; }
+        inline AttributeDispatchers& getAttributeDispatchers() { return _arrayDispatchers; }
 
 
         /** Set the helper class that provides applications with estimate on how much different graphics operations will cost.*/
@@ -1341,7 +1341,7 @@ class OSG_EXPORT State : public Referenced
         unsigned int                                            _dynamicObjectCount;
         osg::ref_ptr<DynamicObjectRenderingCompletedCallback>   _completeDynamicObjectRenderingCallback;
 
-        ArrayDispatchers            _arrayDispatchers;
+        AttributeDispatchers            _arrayDispatchers;
 
         osg::ref_ptr<GraphicsCostEstimator> _graphicsCostEstimator;
 

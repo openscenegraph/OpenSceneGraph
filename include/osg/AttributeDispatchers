@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_ArrayDispatchers
-#define OSG_ArrayDispatchers 1
+#ifndef OSG_ATTRIBUTEDISPATCHERS
+#define OSG_ATTRIBUTEDISPATCHERS 1
 
 #include <osg/ref_ptr>
 #include <osg/Array>
@@ -31,12 +31,12 @@ struct AttributeDispatch : public osg::Referenced
 };
 
 /** Helper class for managing the dispatch to OpenGL of various attribute arrays such as stored in osg::Geometry.*/
-class OSG_EXPORT ArrayDispatchers : public osg::Referenced
+class OSG_EXPORT AttributeDispatchers : public osg::Referenced
 {
     public:
 
-        ArrayDispatchers();
-        ~ArrayDispatchers();
+        AttributeDispatchers();
+        ~AttributeDispatchers();
 
         void setState(osg::State* state);
 

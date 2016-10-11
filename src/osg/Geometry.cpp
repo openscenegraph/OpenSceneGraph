@@ -13,7 +13,7 @@
 #include <stdlib.h>
 
 #include <osg/Geometry>
-#include <osg/ArrayDispatchers>
+#include <osg/AttributeDispatchers>
 #include <osg/VertexArrayState>
 #include <osg/Notify>
 
@@ -827,24 +827,24 @@ void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
 
     bool handleVertexAttributes = !_vertexAttribList.empty();
 
-    ArrayDispatchers& arrayDispatchers = state.getArrayDispatchers();
+    AttributeDispatchers& attributeDispatchers = state.getAttributeDispatchers();
 
-    arrayDispatchers.reset();
-    arrayDispatchers.setUseVertexAttribAlias(state.getUseVertexAttributeAliasing());
+    attributeDispatchers.reset();
+    attributeDispatchers.setUseVertexAttribAlias(state.getUseVertexAttributeAliasing());
 
     if (handleVertexAttributes)
     {
         for(unsigned int unit=0;unit<_vertexAttribList.size();++unit)
         {
-            arrayDispatchers.activateVertexAttribArray(unit, _vertexAttribList[unit].get());
+            attributeDispatchers.activateVertexAttribArray(unit, _vertexAttribList[unit].get());
         }
     }
 
     // activate or dispatch any attributes that are bound overall
-    arrayDispatchers.activateNormalArray(_normalArray.get());
-    arrayDispatchers.activateColorArray(_colorArray.get());
-    arrayDispatchers.activateSecondaryColorArray(_secondaryColorArray.get());
-    arrayDispatchers.activateFogCoordArray(_fogCoordArray.get());
+    attributeDispatchers.activateNormalArray(_normalArray.get());
+    attributeDispatchers.activateColorArray(_colorArray.get());
+    attributeDispatchers.activateSecondaryColorArray(_secondaryColorArray.get());
+    attributeDispatchers.activateFogCoordArray(_fogCoordArray.get());
 
     if (state.useVertexArrayObject(_useVertexArrayObject))
     {
@@ -896,14 +896,14 @@ void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
 void Geometry::drawPrimitivesImplementation(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
-    ArrayDispatchers& arrayDispatchers = state.getArrayDispatchers();
+    AttributeDispatchers& attributeDispatchers = state.getAttributeDispatchers();
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
 
-    bool bindPerPrimitiveSetActive = arrayDispatchers.active();
+    bool bindPerPrimitiveSetActive = attributeDispatchers.active();
     for(unsigned int primitiveSetNum=0; primitiveSetNum!=_primitives.size(); ++primitiveSetNum)
     {
         // dispatch any attributes that are bound per primitive
-        if (bindPerPrimitiveSetActive) arrayDispatchers.dispatch(primitiveSetNum);
+        if (bindPerPrimitiveSetActive) attributeDispatchers.dispatch(primitiveSetNum);
 
         const PrimitiveSet* primitiveset = _primitives[primitiveSetNum].get();
 

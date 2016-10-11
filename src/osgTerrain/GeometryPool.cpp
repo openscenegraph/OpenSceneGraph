@@ -868,13 +868,13 @@ void SharedGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
     bool checkForGLErrors = state.getCheckForGLErrors()==osg::State::ONCE_PER_ATTRIBUTE;
     if (checkForGLErrors) state.checkGLErrors("start of SharedGeometry::drawImplementation()");
 
-    osg::ArrayDispatchers& arrayDispatchers = state.getArrayDispatchers();
+    osg::AttributeDispatchers& attributeDispatchers = state.getAttributeDispatchers();
 
-    arrayDispatchers.reset();
-    arrayDispatchers.setUseVertexAttribAlias(state.getUseVertexAttributeAliasing());
+    attributeDispatchers.reset();
+    attributeDispatchers.setUseVertexAttribAlias(state.getUseVertexAttributeAliasing());
 
-    arrayDispatchers.activateNormalArray(_normalArray.get());
-    arrayDispatchers.activateColorArray(_colorArray.get());
+    attributeDispatchers.activateNormalArray(_normalArray.get());
+    attributeDispatchers.activateColorArray(_colorArray.get());
 
     state.lazyDisablingOfVertexAttributes();
 

@@ -17,7 +17,7 @@
 #include <osg/Referenced>
 #include <osg/GLExtensions>
 #include <osg/Array>
-#include <osg/ArrayDispatchers>
+#include <osg/AttributeDispatchers>
 
 namespace osg {
 

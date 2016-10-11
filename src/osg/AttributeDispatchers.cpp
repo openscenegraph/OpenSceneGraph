@@ -10,7 +10,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
-#include <osg/ArrayDispatchers>
+#include <osg/AttributeDispatchers>
 #include <osg/State>
 #include <osg/Drawable>
 
@@ -141,7 +141,7 @@ public:
     AttributeDispatchList               _attributeDispatchList;
 };
 
-ArrayDispatchers::ArrayDispatchers():
+AttributeDispatchers::AttributeDispatchers():
     _initialized(false),
     _state(0),
     _normalDispatchers(0),
@@ -153,7 +153,7 @@ ArrayDispatchers::ArrayDispatchers():
 
 }
 
-ArrayDispatchers::~ArrayDispatchers()
+AttributeDispatchers::~AttributeDispatchers()
 {
     delete _normalDispatchers;
     delete _colorDispatchers;
@@ -168,12 +168,12 @@ ArrayDispatchers::~ArrayDispatchers()
     }
 }
 
-void ArrayDispatchers::setState(osg::State* state)
+void AttributeDispatchers::setState(osg::State* state)
 {
     _state = state;
 }
 
-void ArrayDispatchers::init()
+void AttributeDispatchers::init()
 {
     if (_initialized) return;
 
@@ -213,41 +213,41 @@ void ArrayDispatchers::init()
 //  With inidices
 //
 
-AttributeDispatch* ArrayDispatchers::normalDispatcher(Array* array)
+AttributeDispatch* AttributeDispatchers::normalDispatcher(Array* array)
 {
     return _useVertexAttribAlias ?
            vertexAttribDispatcher(_state->getNormalAlias()._location, array) :
            _normalDispatchers->dispatcher(array);
 }
 
-AttributeDispatch* ArrayDispatchers::colorDispatcher(Array* array)
+AttributeDispatch* AttributeDispatchers::colorDispatcher(Array* array)
 {
     return _useVertexAttribAlias ?
            vertexAttribDispatcher(_state->getColorAlias()._location, array) :
            _colorDispatchers->dispatcher(array);
 }
 
-AttributeDispatch* ArrayDispatchers::secondaryColorDispatcher(Array* array)
+AttributeDispatch* AttributeDispatchers::secondaryColorDispatcher(Array* array)
 {
     return _useVertexAttribAlias ?
            vertexAttribDispatcher(_state->getSecondaryColorAlias()._location, array) :
            _secondaryColorDispatchers->dispatcher(array);
 }
 
-AttributeDispatch* ArrayDispatchers::fogCoordDispatcher(Array* array)
+AttributeDispatch* AttributeDispatchers::fogCoordDispatcher(Array* array)
 {
     return _useVertexAttribAlias ?
            vertexAttribDispatcher(_state->getFogCoordAlias()._location, array) :
            _fogCoordDispatchers->dispatcher(array);
 }
 
-AttributeDispatch* ArrayDispatchers::vertexAttribDispatcher(unsigned int unit, Array* array)
+AttributeDispatch* AttributeDispatchers::vertexAttribDispatcher(unsigned int unit, Array* array)
 {
     if (unit>=_vertexAttribDispatchers.size()) assignVertexAttribDispatchers(unit);
     return _vertexAttribDispatchers[unit]->dispatcher(array);
 }
 
-void ArrayDispatchers::assignVertexAttribDispatchers(unsigned int unit)
+void AttributeDispatchers::assignVertexAttribDispatchers(unsigned int unit)
 {
     GLExtensions* extensions = _state->get<GLExtensions>();
 
@@ -262,7 +262,7 @@ void ArrayDispatchers::assignVertexAttribDispatchers(unsigned int unit)
     }
 }
 
-void ArrayDispatchers::reset()
+void AttributeDispatchers::reset()
 {
     if (!_initialized) init();
 

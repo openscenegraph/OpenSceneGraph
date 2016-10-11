@@ -24,7 +24,7 @@ SET(TARGET_H
     ${HEADER_PATH}/ApplicationUsage
     ${HEADER_PATH}/ArgumentParser
     ${HEADER_PATH}/Array
-    ${HEADER_PATH}/ArrayDispatchers
+    ${HEADER_PATH}/AttributeDispatchers
     ${HEADER_PATH}/AudioStream
     ${HEADER_PATH}/AutoTransform
     ${HEADER_PATH}/Billboard
@@ -239,7 +239,7 @@ SET(TARGET_SRC
     ApplicationUsage.cpp
     ArgumentParser.cpp
     Array.cpp
-    ArrayDispatchers.cpp
+    AttributeDispatchers.cpp
     AudioStream.cpp
     AutoTransform.cpp
     Billboard.cpp

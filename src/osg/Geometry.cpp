@@ -13,8 +13,6 @@
 #include <stdlib.h>
 
 #include <osg/Geometry>
-#include <osg/AttributeDispatchers>
-#include <osg/VertexArrayState>
 #include <osg/Notify>
 
 using namespace osg;

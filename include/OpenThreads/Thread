@@ -33,7 +33,14 @@ namespace OpenThreads {
  *  Note, systems where no support exists for querying the number of processors, 1 is returned.
  *
  */
-extern OPENTHREAD_EXPORT_DIRECTIVE int GetNumberOfProcessors();
+extern OPENTHREAD_EXPORT_DIRECTIVE unsigned int GetNumberOfProcessors();
+/**
+ *  Get the number of pysical processor cores and the number of threads per processor
+ *
+ *  Note, systems where no support exists for querying the number threads, GetNumberOfProcessors() and 1 is returned.
+ *
+ */
+extern OPENTHREAD_EXPORT_DIRECTIVE unsigned int GetNumberOfHtProcessors(unsigned int *HtCount);
 
 /**
  *  Set the processor affinity of current thread.

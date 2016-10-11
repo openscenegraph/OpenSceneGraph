@@ -979,7 +979,7 @@ int Thread::microSleep(unsigned int microsec)
 //
 // Description:  Get the number of processors
 //
-int OpenThreads::GetNumberOfProcessors()
+unsigned int OpenThreads::GetNumberOfProcessors()
 {
 #if defined(__linux__) || defined(__GNU__)
    long ret = sysconf(_SC_NPROCESSORS_ONLN);
@@ -1010,3 +1010,7 @@ int OpenThreads::GetNumberOfProcessors()
 #endif
 }
 
+unsigned int OpenThreads::GetNumberOfHtProcessors(unsigned int *HtCount) {
+    *HtCount = 1;//assume no hyperthreading
+    return GetNumberOfProcessors();
+}

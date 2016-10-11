@@ -569,41 +569,43 @@ size_t Thread::getStackSize() {
 
 static int SetThreadAffinity(HANDLE tid, const Affinity& affinity)
 {
-	unsigned int numprocessors = OpenThreads::GetNumberOfProcessors();
-	std::cout << "setProcessorAffinity() : affinity.activeCPUs.size()=" << affinity.activeCPUs.size() << ", numprocessors=" << numprocessors << std::endl;
+    unsigned int HtCount;
+    unsigned int numprocessors = GetNumberOfHtProcessors(&HtCount);
+    std::cout << "setProcessorAffinity() : affinity.activeCPUs.size()=" << affinity.activeCPUs.size() << ", numprocessors=" << numprocessors << std::endl;
 
-	DWORD affinityMask = 0x0;
-	if (affinity)
-	{
-		for (Affinity::ActiveCPUs::const_iterator itr = affinity.activeCPUs.begin();
-			itr != affinity.activeCPUs.end();
-			++itr)
-		{
-			unsigned int cpunum = *itr;
-			if (cpunum<numprocessors)
-			{
-				std::cout << "   setting CPU : " << *itr << std::endl;
-				affinityMask |= (0x1 << cpunum);
-			}
-		}
-	}
-	else
-	{
-		for (unsigned int cpunum = 0; cpunum < numprocessors; ++cpunum)
-		{
-			std::cout << "   Fallback setting CPU : " << cpunum << std::endl;
+    DWORD_PTR affinityMask = 0x0;
+    DWORD_PTR HtMask = (0x1 << HtCount) -1;
+    if (affinity)
+    {
+        for (Affinity::ActiveCPUs::const_iterator itr = affinity.activeCPUs.begin();
+            itr != affinity.activeCPUs.end();
+            ++itr)
+        {
+            unsigned int cpunum = *itr;
+            if (cpunum<numprocessors)
+            {
+                std::cout << "   setting CPU : " << *itr << std::endl;
+                affinityMask |= (HtMask << (cpunum * HtCount));
+            }
+        }
+    }
+    else
+    {
+        for (unsigned int cpunum = 0; cpunum < numprocessors; ++cpunum)
+        {
+            std::cout << "   Fallback setting CPU : " << cpunum << std::endl;
 
-			affinityMask |= (0x1 << cpunum);
-		}
-	}
-	std::cout << "affinityMask = " << affinityMask << std::endl;
+            affinityMask |= (HtMask << (cpunum * HtCount));
+        }
+    }
+    std::cout << "affinityMask = " << affinityMask << std::endl;
 
-	DWORD_PTR res = SetThreadAffinityMask ( tid, affinityMask );
+    DWORD_PTR res = SetThreadAffinityMask ( tid, affinityMask );
 
-	// return value 1 means call is ignored ( 9x/ME/SE )
-	if (res == 1) return -1;
-	// return value 0 is failure
-	return (res == 0) ? GetLastError() : 0;
+    // return value 1 means call is ignored ( 9x/ME/SE )
+    if (res == 1) return -1;
+    // return value 0 is failure
+    return (res == 0) ? GetLastError() : 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -614,7 +616,7 @@ static int SetThreadAffinity(HANDLE tid, const Affinity& affinity)
 //
 int Thread::setProcessorAffinity( const Affinity& affinity )
 {
-	Win32ThreadPrivateData *pd = static_cast<Win32ThreadPrivateData *> (_prvData);
+    Win32ThreadPrivateData *pd = static_cast<Win32ThreadPrivateData *> (_prvData);
     pd->affinity = affinity;
     if (!pd->isRunning)
        return 0;
@@ -622,7 +624,7 @@ int Thread::setProcessorAffinity( const Affinity& affinity )
     if (pd->tid.get() == INVALID_HANDLE_VALUE)
        return -1;
 
-	return SetThreadAffinity(pd->tid.get(), affinity);
+    return SetThreadAffinity(pd->tid.get(), affinity);
 }
 
 //-----------------------------------------------------------------------------
@@ -690,12 +692,10 @@ int Thread::microSleep(unsigned int microsec)
 //
 // Description:  Get the number of processors
 //
-int OpenThreads::GetNumberOfProcessors()
+unsigned int OpenThreads::GetNumberOfProcessors()
 {
-    SYSTEM_INFO sysInfo;
-    GetSystemInfo(&sysInfo);
-
-    return sysInfo.dwNumberOfProcessors;
+    unsigned int HtCount;
+    return GetNumberOfHtProcessors(&HtCount);
 }
 
 int OpenThreads::SetProcessorAffinityOfCurrentThread(const Affinity& affinity)
@@ -709,6 +709,93 @@ int OpenThreads::SetProcessorAffinityOfCurrentThread(const Affinity& affinity)
     }
     else
     {
-		return SetThreadAffinity(GetCurrentThread(), affinity);
+        return SetThreadAffinity(GetCurrentThread(), affinity);
     }
+}
+
+//detect Hyperthreading
+typedef BOOL(WINAPI *LPFN_GLPI)( PSYSTEM_LOGICAL_PROCESSOR_INFORMATION, PDWORD);
+unsigned int OpenThreads::GetNumberOfHtProcessors(unsigned int *HtCount) {
+    *HtCount = 1;//assume no hyperthreading
+    LPFN_GLPI glpi;
+    glpi = (LPFN_GLPI)GetProcAddress(GetModuleHandle(TEXT("kernel32")), "GetLogicalProcessorInformation");
+    if (NULL == glpi)
+    {
+        SYSTEM_INFO sysInfo;
+        GetSystemInfo(&sysInfo);
+        return sysInfo.dwNumberOfProcessors;
+    }
+    PSYSTEM_LOGICAL_PROCESSOR_INFORMATION buffer = NULL;
+    DWORD returnLength = 0;
+    DWORD rc = glpi(buffer, &returnLength);//query return length
+    if (FALSE == rc)
+    {
+        if (GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+        {
+            buffer = (PSYSTEM_LOGICAL_PROCESSOR_INFORMATION)malloc(returnLength);
+        }
+    }
+    if (NULL == buffer)
+    {
+        SYSTEM_INFO sysInfo;
+        GetSystemInfo(&sysInfo);
+        return sysInfo.dwNumberOfProcessors;
+    }
+    rc = glpi(buffer, &returnLength);//fill buffer
+    if (FALSE == rc)
+    {
+        free(buffer);
+        SYSTEM_INFO sysInfo;
+        GetSystemInfo(&sysInfo);
+        return sysInfo.dwNumberOfProcessors;
+    }
+    unsigned int processorCoreCount = 0;
+    unsigned int HtCores = 0;//invalid value
+    for (unsigned int record = 0; (record + 1) * sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION) <= returnLength; ++record)
+    {
+        PSYSTEM_LOGICAL_PROCESSOR_INFORMATION ptr = &buffer[record];
+        switch (ptr->Relationship)
+        {
+        case RelationProcessorCore:
+        {
+            ++processorCoreCount;
+            ULONG_PTR mask = ptr->ProcessorMask;
+            while ((mask & 0x1) == 0) mask >>= 1;//shift bits to the right
+            unsigned int hyperthreads = 0;
+            while ((mask & 0x1) == 1)
+            {
+                ++hyperthreads;
+                mask >>= 1;//shift bits to the right & count bits set
+            }
+            if (HtCores == 0)
+            {
+                HtCores = hyperthreads;
+            }
+            else
+            {
+                if (HtCores != hyperthreads)
+                {
+                    std::cout << "Unexpected hyperthread count on core #" << processorCoreCount << "; " << hyperthreads << " different from previous value " << HtCores << std::endl;
+                    if (HtCores > hyperthreads) HtCores = hyperthreads;//use minimum
+                }
+            }
+            if (mask != 0)
+            {
+                std::cout << "Unexpected hyperthread mask on core #" << processorCoreCount << "; " << std::hex << ptr->ProcessorMask << " has hole in bitset." << HtCores << std::endl;
+            }
+        }
+        default:
+            break;
+        }
+    }
+    if (processorCoreCount == 0)
+    {//total failure
+        free(buffer);
+        SYSTEM_INFO sysInfo;
+        GetSystemInfo(&sysInfo);
+        return sysInfo.dwNumberOfProcessors;
+    }
+    if (HtCores != 0) *HtCount = HtCores;
+    free(buffer);
+    return processorCoreCount;
 }

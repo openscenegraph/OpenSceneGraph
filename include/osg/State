@@ -38,6 +38,10 @@
 #include <set>
 #include <string>
 
+#ifndef GL_TEXTURE0
+#define GL_TEXTURE0 0x84C0
+#endif
+
 namespace osg {
 
 /** macro for use with osg::StateAttribute::apply methods for detecting and

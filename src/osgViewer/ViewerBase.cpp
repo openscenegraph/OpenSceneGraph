@@ -87,8 +87,28 @@ void ViewerBase::viewerBaseInit()
 void ViewerBase::configureAffinity()
 {
     unsigned int numProcessors = OpenThreads::GetNumberOfProcessors();
+
     OSG_NOTICE<<"ViewerBase::configureAffinity() numProcessors="<<numProcessors<<std::endl;
     if (numProcessors==1) return;
+
+    typedef std::vector<unsigned int> AvailableProcessors;
+    AvailableProcessors availableProcessors;
+#if 1
+    // for hyper-threaed processors we want to place the threads on preferentiallly on 0,2,4,6
+    for(unsigned int i=0; i<numProcessors; i+=2)
+    {
+        availableProcessors.push_back(i);
+    }
+    for(unsigned int i=1; i<numProcessors; i+=2)
+    {
+        availableProcessors.push_back(i);
+    }
+#else
+    for(unsigned int i=0; i<numProcessors; i+=1)
+    {
+        availableProcessors.push_back(i);
+    }
+#endif
 
     bool requiresCameraThreads = false;
     bool requiresDrawThreads = false;
@@ -115,7 +135,7 @@ void ViewerBase::configureAffinity()
 
     unsigned int availableProcessor = 0;
 
-    _affinity = OpenThreads::Affinity(availableProcessor++);
+    _affinity = OpenThreads::Affinity(availableProcessors[availableProcessor++]);
 
     if (requiresCameraThreads)
     {
@@ -126,7 +146,7 @@ void ViewerBase::configureAffinity()
             itr != cameras.end();
             ++itr)
         {
-            (*itr)->setProcessorAffinity(OpenThreads::Affinity((availableProcessor++)%numProcessors));
+            (*itr)->setProcessorAffinity(OpenThreads::Affinity(availableProcessors[availableProcessor++ % availableProcessors.size()]));
         }
     }
 
@@ -142,7 +162,7 @@ void ViewerBase::configureAffinity()
             if ((*itr)->getTraits())
             {
                 osg::GraphicsContext::Traits* traits = const_cast<osg::GraphicsContext::Traits*>((*itr)->getTraits());
-                traits->affinity = OpenThreads::Affinity((availableProcessor++)%numProcessors);
+                traits->affinity = OpenThreads::Affinity(availableProcessors[availableProcessor++ % availableProcessors.size()]);
             }
         }
     }
@@ -164,6 +184,9 @@ void ViewerBase::configureAffinity()
 
         OSG_NOTICE<<"  databasePagers = "<<databasePagers.size()<<std::endl;
 
+        availableProcessor = availableProcessors[availableProcessor % availableProcessors.size()];
+
+        OpenThreads::Affinity databasePagerAffinity;
         for(DatabasePagers::iterator itr = databasePagers.begin();
             itr != databasePagers.end();
             ++itr)

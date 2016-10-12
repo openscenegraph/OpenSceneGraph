@@ -1117,10 +1117,10 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     osg::setGLExtensionFuncPtr(glGetTransformFeedbacki64_v, "glGetTransformFeedbacki64_v", validContext);
 
     //Vertex Array Object
-    osg::setGLExtensionFuncPtr(glGenVertexArrays,"glGenVertexArrays", validContext);
-    osg::setGLExtensionFuncPtr(glBindVertexArray,"glBindVertexArray", validContext);
-    osg::setGLExtensionFuncPtr(glDeleteVertexArrays,"glDeleteVertexArrays", validContext);
-    osg::setGLExtensionFuncPtr(glIsVertexArray,"glIsVertexArray", validContext);
+    osg::setGLExtensionFuncPtr(glGenVertexArrays, "glGenVertexArrays", "glGenVertexArraysOES", validContext);
+    osg::setGLExtensionFuncPtr(glBindVertexArray, "glBindVertexArray", "glBindVertexArrayOES", validContext);
+    osg::setGLExtensionFuncPtr(glDeleteVertexArrays, "glDeleteVertexArrays", "glDeleteVertexArraysOES", validContext);
+    osg::setGLExtensionFuncPtr(glIsVertexArray, "glIsVertexArray", "glIsVertexArrayOES", validContext);
 
     // MultiDrawArrays
     setGLExtensionFuncPtr(glMultiDrawArrays, "glMultiDrawArrays", "glMultiDrawArraysEXT", validContext);

@@ -115,8 +115,8 @@ PROJECT(OpenSceneGraph)
 
 SET(OPENSCENEGRAPH_MAJOR_VERSION 3)
 SET(OPENSCENEGRAPH_MINOR_VERSION 5)
-SET(OPENSCENEGRAPH_PATCH_VERSION 5)
-SET(OPENSCENEGRAPH_SOVERSION 145)
+SET(OPENSCENEGRAPH_PATCH_VERSION 6)
+SET(OPENSCENEGRAPH_SOVERSION 146)
 
 # set to 0 when not a release candidate, non zero means that any generated
 # git tags will be treated as release candidates of given number

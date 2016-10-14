@@ -26,9 +26,10 @@ ShapeDrawable::ShapeDrawable(Shape* shape,TessellationHints* hints):
     setShape(shape);
 }
 
-ShapeDrawable::ShapeDrawable(const ShapeDrawable& pg,const CopyOp& copyop):
-    Geometry(pg,copyop),
-    _tessellationHints(pg._tessellationHints)
+ShapeDrawable::ShapeDrawable(const ShapeDrawable& sd,const CopyOp& copyop):
+    Geometry(sd,copyop),
+    _color(sd._color),
+    _tessellationHints(sd._tessellationHints)
 {
 }
 

@@ -570,9 +570,10 @@ size_t Thread::getStackSize() {
 static int SetThreadAffinity(HANDLE tid, const Affinity& affinity)
 {
 	unsigned int numprocessors = OpenThreads::GetNumberOfProcessors();
-	std::cout << "setProcessorAffinity() : affinity.activeCPUs.size()=" << affinity.activeCPUs.size() << ", numprocessors=" << numprocessors << std::endl;
+	std::cout << "SetThreadAffinity() : affinity.activeCPUs.size()=" << affinity.activeCPUs.size() << ", numprocessors=" << numprocessors << std::endl;
 
-	DWORD affinityMask = 0x0;
+    DWORD_PTR affinityMask = 0x0;
+    DWORD_PTR maskBit = 0x1;
 	if (affinity)
 	{
 		for (Affinity::ActiveCPUs::const_iterator itr = affinity.activeCPUs.begin();
@@ -582,21 +583,20 @@ static int SetThreadAffinity(HANDLE tid, const Affinity& affinity)
 			unsigned int cpunum = *itr;
 			if (cpunum<numprocessors)
 			{
-				std::cout << "   setting CPU : " << *itr << std::endl;
-				affinityMask |= (0x1 << cpunum);
+				affinityMask |= (maskBit << cpunum);
 			}
 		}
+        std::cout << "   Setting affinityMask : 0x" << std::hex << affinityMask << std::dec << std::endl;
 	}
 	else
 	{
 		for (unsigned int cpunum = 0; cpunum < numprocessors; ++cpunum)
 		{
-			std::cout << "   Fallback setting CPU : " << cpunum << std::endl;
 
-			affinityMask |= (0x1 << cpunum);
+			affinityMask |= (maskBit << cpunum);
 		}
+		std::cout << "   Fallback setting affinityMask : 0x" << std::hex << affinityMask << std::dec << std::endl;
 	}
-	std::cout << "affinityMask = " << affinityMask << std::endl;
 
 	DWORD_PTR res = SetThreadAffinityMask ( tid, affinityMask );
 

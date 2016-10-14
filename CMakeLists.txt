@@ -273,7 +273,6 @@ IF(APPLE)
         # libosgViewer would use X11/OpenGL, which causes compatibility
         # issues for applications using OSG.
         UNSET(OPENGL_gl_LIBRARY CACHE)
-        UNSET(OPENGL_glu_LIBRARY CACHE)
         UNSET(OPENGL_INCLUDE_DIR CACHE)
         IF(OSG_WINDOWING_SYSTEM STREQUAL "X11")
           FIND_PACKAGE(X11)
@@ -284,7 +283,6 @@ IF(APPLE)
           # Use X11 version of OpenGL as seed for CMake FindOpenGL
           GET_FILENAME_COMPONENT(X11LIBDIR ${X11_X11_LIB} DIRECTORY)
           FIND_LIBRARY(OPENGL_gl_LIBRARY GL PATHS ${X11LIBDIR} DOC "OpenGL lib for OSX" NO_DEFAULT_PATH)
-          FIND_LIBRARY(OPENGL_glu_LIBRARY GLU PATHS ${X11LIBDIR} DOC "GLU lib for OSX" NO_DEFAULT_PATH)
           SET(OPENGL_INCLUDE_DIR ${X11_INCLUDE_DIR} CACHE PATH "Include for OpenGL on OSX" FORCE)
 
         ELSEIF(OSG_WINDOWING_SYSTEM STREQUAL "Carbon")
@@ -293,6 +291,7 @@ IF(APPLE)
         ENDIF()
 
         FIND_PACKAGE(OpenGL)
+        FIND_PACKAGE(EGL)
     ENDIF ()
 
     OPTION(OSG_COMPILE_FRAMEWORKS "compile frameworks instead of dylibs (experimental)" OFF)
@@ -300,6 +299,7 @@ IF(APPLE)
 ELSE()
     # Non-Apple: Find OpenGL
     FIND_PACKAGE(OpenGL)
+    FIND_PACKAGE(EGL)
 ENDIF()
 ENDIF()
 
@@ -508,8 +508,6 @@ ENDIF()
 
 
 OPTION(OSG_GL_LIBRARY_STATIC "Set to ON to statically link with OpenGL/GLES library." OFF)
-
-SET(OPENGL_egl_LIBRARY CACHE STRING "Set the OpenGL egl library.")
 
 # Map the OSG_GL*_AVAILABLE settings to OSG_GL_* settings
 IF (OSG_GLES2_AVAILABLE OR OSG_GL3_AVAILABLE)

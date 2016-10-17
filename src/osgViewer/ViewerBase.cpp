@@ -204,7 +204,7 @@ void ViewerBase::setThreadingModel(ThreadingModel threadingModel)
 
     _threadingModel = threadingModel;
 
-    if (isRealized() && _threadingModel!=SingleThreaded) startThreading();
+    setUpThreading();
 }
 
 ViewerBase::ThreadingModel ViewerBase::suggestBestThreadingModel()

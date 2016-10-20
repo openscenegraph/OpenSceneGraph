@@ -88,7 +88,7 @@ int main(int argc, char** argv)
 
     if (!fragmentShadersAssigned)
     {
-        fragmentShaderFilename = "shaders/shaderpipeline.vert";
+        fragmentShaderFilename = "shaders/shaderpipeline.frag";
         osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(fragmentShaderFilename);
         if (fragmentShader)
         {

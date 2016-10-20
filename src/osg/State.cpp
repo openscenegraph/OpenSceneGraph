@@ -279,6 +279,19 @@ void State::initializeExtensionProcs()
         RenderInfo renderInfo(this,0);
         _graphicsCostEstimator->calibrate(renderInfo);
     }
+
+
+    #define ADDMODE(MODE) _stringModeMap[#MODE] = MODE;
+    ADDMODE(GL_LIGHTING)
+    ADDMODE(GL_LIGHT0)
+    ADDMODE(GL_LIGHT1)
+    ADDMODE(GL_LIGHT2)
+    ADDMODE(GL_LIGHT3)
+    ADDMODE(GL_LIGHT4)
+    ADDMODE(GL_LIGHT5)
+    ADDMODE(GL_LIGHT6)
+    ADDMODE(GL_LIGHT7)
+
 }
 
 void State::releaseGLObjects()
@@ -622,6 +635,8 @@ void State::captureCurrentState(StateSet& stateset) const
 
 void State::apply(const StateSet* dstate)
 {
+    OSG_NOTICE<<__PRETTY_FUNCTION__<<std::endl;
+
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("start of State::apply(StateSet*)");
 
     // equivalent to:
@@ -714,6 +729,9 @@ void State::apply(const StateSet* dstate)
 
 void State::apply()
 {
+    OSG_NOTICE<<__PRETTY_FUNCTION__<<std::endl;
+
+
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("start of State::apply()");
 
     _currentShaderCompositionUniformList.clear();
@@ -1625,16 +1643,18 @@ bool State::DefineMap::updateCurrentDefines()
     return true;
 }
 
-std::string State::getDefineString(const osg::ShaderDefines& shaderDefines)
-{
-    if (_defineMap.changed) _defineMap.updateCurrentDefines();
+#ifdef WIN32
+    const char* s_LineEnding = "\r\n";
+#else
+    const char* s_LineEnding = "\n";
+#endif
 
+void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderDefines& shaderDefines)
+{
     const StateSet::DefineList& currentDefines = _defineMap.currentDefines;
 
     ShaderDefines::const_iterator sd_itr = shaderDefines.begin();
     StateSet::DefineList::const_iterator cd_itr = currentDefines.begin();
-
-    std::string shaderDefineStr;
 
     while(sd_itr != shaderDefines.end() && cd_itr != currentDefines.end())
     {
@@ -1650,28 +1670,66 @@ std::string State::getDefineString(const osg::ShaderDefines& shaderDefines)
                 if (dp.first[0]!='(') shaderDefineStr += " ";
                 shaderDefineStr += dp.first;
             }
-#ifdef WIN32
-            shaderDefineStr += "\r\n";
-#else
-            shaderDefineStr += "\n";
-#endif
+
+            shaderDefineStr += s_LineEnding;
 
             ++sd_itr;
             ++cd_itr;
         }
     }
-    return shaderDefineStr;
 }
 
-bool State::supportsShaderRequirements(const osg::ShaderDefines& shaderRequirements)
+void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragmas& shaderPragmas)
 {
-    if (shaderRequirements.empty()) return true;
+    if (_defineMap.changed) _defineMap.updateCurrentDefines();
+
+    if (!shaderPragmas.defines.empty()) getDefineString(shaderDefineStr, shaderPragmas.defines);
+    if (!shaderPragmas.requirements.empty()) getDefineString(shaderDefineStr, shaderPragmas.requirements);
+
+    if (!shaderPragmas.modes.empty())
+    {
+        for(ShaderDefines::iterator itr = shaderPragmas.modes.begin();
+            itr != shaderPragmas.modes.end();
+            ++itr)
+        {
+             const std::string& modeStr = *itr;
+             StringModeMap::iterator m_itr = _stringModeMap.find(modeStr);
+             if (m_itr!=_stringModeMap.end())
+             {
+                OSG_NOTICE<<"Need to look up mode ["<<modeStr<<"]"<<std::endl;
+                StateAttribute::GLMode mode = m_itr->second;
+                ModeMap::const_iterator mm_itr = _modeMap.find(mode);
+                if (mm_itr!=_modeMap.end())
+                {
+                    bool mode_enabled = mm_itr->second.last_applied_value;
+                    if (mode_enabled)
+                    {
+                        OSG_NOTICE<<"  mapping mode to #define "<<modeStr<<std::endl;
+                        shaderDefineStr += "#define ";
+                        shaderDefineStr += modeStr;
+                        shaderDefineStr += s_LineEnding;
+                    }
+                }
+
+             }
+             else
+             {
+                OSG_NOTICE<<"Need to look up mode ["<<modeStr<<"]"<<std::endl;
+             }
+        }
+    }
+    OSG_NOTICE<<"State::getDefineString(..) "<<shaderDefineStr<<std::endl;
+}
+
+bool State::supportsShaderRequirements(const osg::ShaderPragmas& shaderPragmas)
+{
+    if (shaderPragmas.requirements.empty()) return true;
 
     if (_defineMap.changed) _defineMap.updateCurrentDefines();
 
     const StateSet::DefineList& currentDefines = _defineMap.currentDefines;
-    for(ShaderDefines::const_iterator sr_itr = shaderRequirements.begin();
-        sr_itr != shaderRequirements.end();
+    for(ShaderDefines::const_iterator sr_itr = shaderPragmas.requirements.begin();
+        sr_itr != shaderPragmas.requirements.end();
         ++sr_itr)
     {
         if (currentDefines.find(*sr_itr)==currentDefines.end()) return false;

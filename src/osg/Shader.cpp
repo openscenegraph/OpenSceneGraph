@@ -223,13 +223,13 @@ ShaderBinary* ShaderBinary::readShaderBinaryFile(const std::string& fileName)
 
 Shader::Shader(Type type) :
     _type(type),
-    _shaderDefinesMode(USE_SHADER_PRAGMA)
+    _shaderPragmaMode(USE_SHADER_PRAGMA)
 {
 }
 
 Shader::Shader(Type type, const std::string& source) :
     _type(type),
-    _shaderDefinesMode(USE_SHADER_PRAGMA)
+    _shaderPragmaMode(USE_SHADER_PRAGMA)
 {
     setShaderSource( source);
 }
@@ -237,7 +237,7 @@ Shader::Shader(Type type, const std::string& source) :
 Shader::Shader(Type type, ShaderBinary* shaderBinary) :
     _type(type),
     _shaderBinary(shaderBinary),
-    _shaderDefinesMode(USE_SHADER_PRAGMA)
+    _shaderPragmaMode(USE_SHADER_PRAGMA)
 {
 }
 
@@ -249,7 +249,7 @@ Shader::Shader(const Shader& rhs, const osg::CopyOp& copyop):
     _shaderSource(rhs._shaderSource),
     _shaderBinary(rhs._shaderBinary),
     _codeInjectionMap(rhs._codeInjectionMap),
-    _shaderDefinesMode(rhs._shaderDefinesMode)
+    _shaderPragmaMode(rhs._shaderPragmaMode)
 {
 }
 
@@ -436,7 +436,7 @@ Shader::PerContextShader* Shader::getPCS(osg::State& state) const
         return 0;
     }
 
-    if (!state.supportsShaderRequirements(_shaderRequirements))
+    if (!state.supportsShaderRequirements(_shaderPragmas))
     {
         // OSG_NOTICE<<"Shader not supported "<<_shaderRequirements.size()<<std::endl;
         return 0;
@@ -448,11 +448,12 @@ Shader::PerContextShader* Shader::getPCS(osg::State& state) const
         _pcsList[contextID] = new ShaderObjects( this, contextID );
     }
 
-    const std::string defineStr = state.getDefineString(getShaderDefines());
+    std::string defineStr;
+    state.getDefineString(defineStr, _shaderPragmas);
     PerContextShader* pcs = _pcsList[contextID]->getPCS(defineStr);
     if (pcs) return pcs;
 
-    if (state.supportsShaderRequirements(_shaderRequirements))
+    if (state.supportsShaderRequirements(_shaderPragmas))
     {
         pcs = _pcsList[contextID]->createPerContextShader(defineStr);
     }
@@ -775,12 +776,11 @@ void Shader::_parseShaderDefines(const std::string& str, ShaderDefines& defines)
 
 void Shader::_computeShaderDefines()
 {
-    if (_shaderDefinesMode==USE_MANUAL_SETTINGS) return;
+    if (_shaderPragmaMode==USE_MANUAL_SETTINGS) return;
 
     std::string::size_type pos = 0;
 
-    _shaderDefines.clear();
-    _shaderRequirements.clear();
+    _shaderPragmas.clear();
 
     while ((pos = _shaderSource.find("#pragma", pos))!=std::string::npos)
     {
@@ -790,7 +790,7 @@ void Shader::_computeShaderDefines()
 
         std::string::size_type first_chararcter = find_first(_shaderSource, NoneOf(" \t"), pos, eol);
 
-        OSG_INFO<<"\nFound pragma line ["<<_shaderSource.substr(first_chararcter, eol-first_chararcter)<<"]"<<std::endl;
+        OSG_NOTICE<<"\nFound pragma line ["<<_shaderSource.substr(first_chararcter, eol-first_chararcter)<<"]"<<std::endl;
 
         if (first_chararcter<eol)
         {
@@ -804,25 +804,32 @@ void Shader::_computeShaderDefines()
                 std::string str(_shaderSource, open_brackets+1, eol-open_brackets-1);
 
                 // OSG_NOTICE<<"    parameter str = ["<<str<<"]"<<std::endl;
-                if (keyword == "import_defines") _parseShaderDefines(str, _shaderDefines);
-                else if (keyword == "requires") _parseShaderDefines(str, _shaderRequirements);
+                if (keyword == "import_defines") _parseShaderDefines(str, _shaderPragmas.defines);
+                else if (keyword == "import_modes") _parseShaderDefines(str, _shaderPragmas.modes);
+                else if (keyword == "requires") _parseShaderDefines(str, _shaderPragmas.requirements);
                 else {
-                    //OSG_NOTICE<<"  keyword not matched ["<<keyword<<"]"<<std::endl;
-                    _parseShaderDefines(str, _shaderDefines);
+                    OSG_NOTICE<<"  keyword not matched ["<<keyword<<"]"<<std::endl;
                 }
 #if 1
-                for(ShaderDefines::iterator itr = _shaderDefines.begin();
-                    itr != _shaderDefines.end();
+                for(ShaderDefines::iterator itr = _shaderPragmas.defines.begin();
+                    itr != _shaderPragmas.defines.end();
                     ++itr)
                 {
-                    OSG_INFO<<"      define ["<<*itr<<"]"<<std::endl;
+                    OSG_NOTICE<<"      define ["<<*itr<<"]"<<std::endl;
                 }
 
-                for(ShaderDefines::iterator itr = _shaderRequirements.begin();
-                    itr != _shaderRequirements.end();
+                for(ShaderDefines::iterator itr = _shaderPragmas.requirements.begin();
+                    itr != _shaderPragmas.requirements.end();
                     ++itr)
                 {
-                    OSG_INFO<<"      requirements ["<<*itr<<"]"<<std::endl;
+                    OSG_NOTICE<<"      requirements ["<<*itr<<"]"<<std::endl;
+                }
+
+                for(ShaderDefines::iterator itr = _shaderPragmas.modes.begin();
+                    itr != _shaderPragmas.modes.end();
+                    ++itr)
+                {
+                    OSG_NOTICE<<"      modes ["<<*itr<<"]"<<std::endl;
                 }
 #endif
 

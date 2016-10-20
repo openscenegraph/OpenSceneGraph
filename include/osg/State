@@ -1014,6 +1014,8 @@ class OSG_EXPORT State : public Referenced
 
         };
 
+        typedef std::map<std::string, GLenum>                           StringModeMap;
+
         typedef std::map<StateAttribute::GLMode,ModeStack>              ModeMap;
         typedef std::vector<ModeMap>                                    TextureModeMapList;
 
@@ -1022,8 +1024,7 @@ class OSG_EXPORT State : public Referenced
 
         typedef std::map<std::string, UniformStack>                     UniformMap;
 
-
-        typedef std::vector< ref_ptr<const Matrix> >                     MatrixStack;
+        typedef std::vector< ref_ptr<const Matrix> >                    MatrixStack;
 
         inline const ModeMap&                                           getModeMap() const {return _modeMap;}
         inline const AttributeMap&                                      getAttributeMap() const {return _attributeMap;}
@@ -1033,8 +1034,9 @@ class OSG_EXPORT State : public Referenced
         inline const TextureModeMapList&                                getTextureModeMapList() const {return _textureModeMapList;}
         inline const TextureAttributeMapList&                           getTextureAttributeMapList() const {return _textureAttributeMapList;}
 
-        std::string getDefineString(const osg::ShaderDefines& shaderDefines);
-        bool supportsShaderRequirements(const osg::ShaderDefines& shaderRequirements);
+        void getDefineString(std::string& shaderDefineStr, const osg::ShaderDefines& shaderDefines);
+        void getDefineString(std::string& shaderDefineStr, const osg::ShaderPragmas& shaderPragmas);
+        bool supportsShaderRequirements(const osg::ShaderPragmas& shaderPragmas);
         bool supportsShaderRequirement(const std::string& shaderRequirement);
 
     protected:
@@ -1239,6 +1241,8 @@ class OSG_EXPORT State : public Referenced
             else
                 return false;
         }
+
+        StringModeMap                                                   _stringModeMap;
 
         ModeMap                                                         _modeMap;
         AttributeMap                                                    _attributeMap;

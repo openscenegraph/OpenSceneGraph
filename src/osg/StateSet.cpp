@@ -1517,7 +1517,7 @@ const StateSet::RefAttributePair* StateSet::getTextureAttributePair(unsigned int
 
 bool StateSet::checkValidityOfAssociatedModes(osg::State& state) const
 {
-
+    OSG_NOTICE<<__PRETTY_FUNCTION__<<std::endl;
 
     bool modesValid = true;
     for(AttributeList::const_iterator itr = _attributeList.begin();

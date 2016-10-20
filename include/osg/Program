@@ -156,9 +156,9 @@ class OSG_EXPORT Program : public osg::StateAttribute
         GLenum getTransformFeedBackMode() const {return _feedbackmode;}
 
         /** Experimental. */
-        void setShaderDefines(const ShaderDefines& shaderDefs) { _shaderDefines = shaderDefs; }
-        ShaderDefines& getShaderDefines() { return _shaderDefines; }
-        const ShaderDefines& getShaderDefines() const { return _shaderDefines; }
+        void setShaderPragmas(const ShaderPragmas& shaderPragmas) { _shaderPragmas = shaderPragmas; }
+        ShaderPragmas& getShaderPragmas() { return _shaderPragmas; }
+        const ShaderPragmas& getShaderPragmas() const { return _shaderPragmas; }
 
 
 
@@ -449,7 +449,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
         GLenum _feedbackmode;
         std::vector<std::string> _feedbackout;
 
-        ShaderDefines _shaderDefines;
+        ShaderPragmas _shaderPragmas;
 
 
     private:

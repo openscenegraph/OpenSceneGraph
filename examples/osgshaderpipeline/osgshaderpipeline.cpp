@@ -19,6 +19,40 @@
 #include <iostream>
 
 
+bool readShaderArguments(osg::ArgumentParser& arguments, const std::string& option, osg::Program* program, const std::string& fallbackShaderFilename)
+{
+    bool shaderAssigned = false;
+    std::string shaderFilename;
+    while(arguments.read(option, shaderFilename))
+    {
+        osg::ref_ptr<osg::Shader> shader = osgDB::readRefShaderFile(shaderFilename);
+        if (shader)
+        {
+            shaderAssigned = true;
+            program->addShader(shader);
+        }
+        else
+        {
+            OSG_NOTICE<<"Unable to load shader file : "<<shaderFilename<<std::endl;
+        }
+    }
+
+    if (shaderAssigned) return true;
+
+    osg::ref_ptr<osg::Shader> shader = osgDB::readRefShaderFile(fallbackShaderFilename);
+    if (shader)
+    {
+        shaderAssigned = true;
+        program->addShader(shader);
+        return true;
+    }
+    else
+    {
+        OSG_NOTICE<<"Unable to load shader file : "<<fallbackShaderFilename<<std::endl;
+        return false;
+    }
+}
+
 int main(int argc, char** argv)
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -36,70 +70,14 @@ int main(int argc, char** argv)
     osg::ref_ptr<osg::Program> program = new osg::Program;
 
 
-    bool vertexShadersAssigned = false;
-    std::string vertexShaderFilename;
-    while(arguments.read("--vert", vertexShaderFilename))
+    if (!readShaderArguments(arguments, "--vert", program, "shaders/shaderpipeline.vert"))
     {
-        osg::ref_ptr<osg::Shader> vertexShader = osgDB::readRefShaderFile(vertexShaderFilename);
-        if (vertexShader)
-        {
-            vertexShadersAssigned = true;
-            program->addShader(vertexShader);
-        }
-        else
-        {
-            OSG_NOTICE<<"Unable to load vertex shader file : "<<vertexShaderFilename<<std::endl;
-        }
+        return 1;
     }
 
-    if (!vertexShadersAssigned)
+    if (!readShaderArguments(arguments, "--frag", program, "shaders/shaderpipeline.frag"))
     {
-        vertexShaderFilename = "shaders/shaderpipeline.vert";
-        osg::ref_ptr<osg::Shader> vertexShader = osgDB::readRefShaderFile(vertexShaderFilename);
-        if (vertexShader)
-        {
-            vertexShadersAssigned = true;
-            program->addShader(vertexShader);
-        }
-        else
-        {
-            OSG_NOTICE<<"Unable to load vertex shader file : "<<vertexShaderFilename<<std::endl;
-            return 1;
-        }
-    }
-
-
-
-    bool fragmentShadersAssigned = false;
-    std::string fragmentShaderFilename;
-    while(arguments.read("--frag", fragmentShaderFilename))
-    {
-        osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(fragmentShaderFilename);
-        if (fragmentShader)
-        {
-            fragmentShadersAssigned = true;
-            program->addShader(fragmentShader);
-        }
-        else
-        {
-            OSG_NOTICE<<"Unable to load fragment shader file : "<<fragmentShaderFilename<<std::endl;
-        }
-    }
-
-    if (!fragmentShadersAssigned)
-    {
-        fragmentShaderFilename = "shaders/shaderpipeline.frag";
-        osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile(fragmentShaderFilename);
-        if (fragmentShader)
-        {
-            fragmentShadersAssigned = true;
-            program->addShader(fragmentShader);
-        }
-        else
-        {
-            OSG_NOTICE<<"Unable to load fragment shader file : "<<fragmentShaderFilename<<std::endl;
-            return 1;
-        }
+        return 1;
     }
 
     // assign program to topmost StateSet

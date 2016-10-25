@@ -35,18 +35,21 @@ class Program;
 
 // set of shader define strings that the shader is dependent upon.
 typedef std::set<std::string> ShaderDefines;
+typedef std::vector<ShaderDefines> ShaderDefinesVector;
 
 struct ShaderPragmas
 {
     ShaderDefines defines;
     ShaderDefines requirements;
     ShaderDefines modes;
+    ShaderDefinesVector textureModes;
 
     void clear()
     {
         defines.clear();
         requirements.clear();
         modes.clear();
+        textureModes.clear();
     }
 
     void merge(const ShaderPragmas& rhs)
@@ -54,6 +57,16 @@ struct ShaderPragmas
         defines.insert(rhs.defines.begin(), rhs.defines.end());
         requirements.insert(rhs.requirements.begin(), rhs.requirements.end());
         modes.insert(rhs.modes.begin(), rhs.modes.end());
+
+        // rseize textureModes vector if required
+        unsigned int rhs_rds_size = rhs.textureModes.size();
+        if (rhs_rds_size>textureModes.size()) textureModes.resize(rhs_rds_size);
+
+        for(unsigned int i=0; i<rhs_rds_size; ++i)
+        {
+            const ShaderDefines& rhs_tsd = rhs.textureModes[i];
+            textureModes[i].insert(rhs_tsd.begin(), rhs_tsd.end());
+        }
     }
 };
 
@@ -317,7 +330,7 @@ class OSG_EXPORT Shader : public osg::Object
         bool removeProgramRef( osg::Program* program );
 
         void _computeShaderDefines();
-        void _parseShaderDefines(const std::string& str, ShaderDefines& defines);
+        bool _parseShaderDefines(const std::string& str, ShaderDefines& defines, unsigned int& index);
 
 
         protected:        /*data*/

@@ -27,12 +27,12 @@
     #define GL_TEXTURE_GEN_Q    0x0C63
 #endif
 
-#ifndef GL_NORMAL_MAP_ARB
-    #define GL_NORMAL_MAP_ARB                   0x8511
+#ifndef GL_NORMAL_MAP
+    #define GL_NORMAL_MAP       0x8511
 #endif
 
-#ifndef GL_REFLECTION_MAP_ARB
-    #define GL_REFLECTION_MAP_ARB               0x8512
+#ifndef GL_REFLECTION_MAP
+    #define GL_REFLECTION_MAP   0x8512
 #endif
 
 namespace osg {
@@ -101,8 +101,8 @@ class OSG_EXPORT TexGen : public StateAttribute
             OBJECT_LINEAR  = GL_OBJECT_LINEAR,
             EYE_LINEAR     = GL_EYE_LINEAR,
             SPHERE_MAP     = GL_SPHERE_MAP,
-            NORMAL_MAP     = GL_NORMAL_MAP_ARB,
-            REFLECTION_MAP = GL_REFLECTION_MAP_ARB
+            NORMAL_MAP     = GL_NORMAL_MAP,
+            REFLECTION_MAP = GL_REFLECTION_MAP
         };
 
         inline void setMode( Mode mode ) { _mode = mode; }

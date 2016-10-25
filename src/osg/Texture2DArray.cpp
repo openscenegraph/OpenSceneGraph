@@ -262,7 +262,7 @@ void Texture2DArray::apply(State& state) const
             // compute the dimensions of the texture.
             computeRequiredTextureDimensions(state, *image, new_width, new_height, new_numMipmapLevels);
 
-            if (!textureObject->match(GL_TEXTURE_2D_ARRAY_EXT, new_numMipmapLevels, _internalFormat, new_width, new_height, textureDepth, _borderWidth))
+            if (!textureObject->match(GL_TEXTURE_2D_ARRAY, new_numMipmapLevels, _internalFormat, new_width, new_height, textureDepth, _borderWidth))
             {
                 _textureObjectBuffer[contextID]->release();
                 _textureObjectBuffer[contextID] = 0;
@@ -278,7 +278,7 @@ void Texture2DArray::apply(State& state) const
         textureObject->bind();
 
         // if texture parameters changed, then reset them
-        if (getTextureParameterDirty(state.getContextID())) applyTexParameters(GL_TEXTURE_2D_ARRAY_EXT,state);
+        if (getTextureParameterDirty(state.getContextID())) applyTexParameters(GL_TEXTURE_2D_ARRAY,state);
 
         // if subload is specified, then use it to subload the images to GPU memory
         if (_subloadCallback.valid())
@@ -311,9 +311,9 @@ void Texture2DArray::apply(State& state) const
     else if (_subloadCallback.valid())
     {
         // generate texture (i.e. glGenTexture) and apply parameters
-        textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_2D_ARRAY_EXT);
+        textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_2D_ARRAY);
         textureObject->bind();
-        applyTexParameters(GL_TEXTURE_2D_ARRAY_EXT, state);
+        applyTexParameters(GL_TEXTURE_2D_ARRAY, state);
         _subloadCallback->load(*this,state);
     }
 
@@ -330,11 +330,11 @@ void Texture2DArray::apply(State& state) const
 
         // create texture object
         textureObject = generateAndAssignTextureObject(
-                    contextID, GL_TEXTURE_2D_ARRAY_EXT,_numMipmapLevels, _internalFormat, _textureWidth, _textureHeight, textureDepth,0);
+                    contextID, GL_TEXTURE_2D_ARRAY,_numMipmapLevels, _internalFormat, _textureWidth, _textureHeight, textureDepth,0);
 
         // bind texture
         textureObject->bind();
-        applyTexParameters(GL_TEXTURE_2D_ARRAY_EXT, state);
+        applyTexParameters(GL_TEXTURE_2D_ARRAY, state);
 
         // First we need to allocate the texture memory
         int sourceFormat = _sourceFormat ? _sourceFormat : _internalFormat;
@@ -343,7 +343,7 @@ void Texture2DArray::apply(State& state) const
             sourceFormat == _internalFormat &&
             extensions->isCompressedTexImage3DSupported() )
         {
-            extensions->glCompressedTexImage3D( GL_TEXTURE_2D_ARRAY_EXT, 0, _internalFormat,
+            extensions->glCompressedTexImage3D( GL_TEXTURE_2D_ARRAY, 0, _internalFormat,
                      _textureWidth, _textureHeight, textureDepth, _borderWidth,
                      _images[0]->getImageSizeInBytes() * textureDepth,
                      0);
@@ -355,7 +355,7 @@ void Texture2DArray::apply(State& state) const
             if( isCompressedInternalFormat( sourceFormat ) )
                 sourceFormat = GL_RGBA;
 
-            extensions->glTexImage3D( GL_TEXTURE_2D_ARRAY_EXT, 0, _internalFormat,
+            extensions->glTexImage3D( GL_TEXTURE_2D_ARRAY, 0, _internalFormat,
                      _textureWidth, _textureHeight, textureDepth, _borderWidth,
                      sourceFormat, _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
                      0);
@@ -420,12 +420,12 @@ void Texture2DArray::apply(State& state) const
     {
         // generate texture
         textureObject = generateAndAssignTextureObject(
-                contextID, GL_TEXTURE_2D_ARRAY_EXT,_numMipmapLevels,_internalFormat, _textureWidth, _textureHeight, _textureDepth,0);
+                contextID, GL_TEXTURE_2D_ARRAY,_numMipmapLevels,_internalFormat, _textureWidth, _textureHeight, _textureDepth,0);
 
         textureObject->bind();
-        applyTexParameters(GL_TEXTURE_2D_ARRAY_EXT,state);
+        applyTexParameters(GL_TEXTURE_2D_ARRAY,state);
 
-        extensions->glTexImage3D( GL_TEXTURE_2D_ARRAY_EXT, 0, _internalFormat,
+        extensions->glTexImage3D( GL_TEXTURE_2D_ARRAY, 0, _internalFormat,
                      _textureWidth, _textureHeight, _textureDepth,
                      _borderWidth,
                      _sourceFormat ? _sourceFormat : _internalFormat,
@@ -437,7 +437,7 @@ void Texture2DArray::apply(State& state) const
     // nothing before, so just unbind the texture target
     else
     {
-        glBindTexture( GL_TEXTURE_2D_ARRAY_EXT, 0 );
+        glBindTexture( GL_TEXTURE_2D_ARRAY, 0 );
     }
 
     // if texture object is now valid and we have to allocate mipmap levels, then
@@ -457,7 +457,7 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
     // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
     const GLExtensions* extensions = state.get<GLExtensions>();
-    GLenum target = GL_TEXTURE_2D_ARRAY_EXT;
+    GLenum target = GL_TEXTURE_2D_ARRAY;
 
     // compute the internal texture format, this set the _internalFormat to an appropriate value.
     computeInternalFormat();
@@ -616,8 +616,8 @@ void Texture2DArray::copyTexSubImage2DArray(State& state, int xoffset, int yoffs
     {
         textureObject->bind();
 
-        applyTexParameters(GL_TEXTURE_2D_ARRAY_EXT,state);
-        extensions->glCopyTexSubImage3D( GL_TEXTURE_2D_ARRAY_EXT, 0, xoffset,yoffset,zoffset, x, y, width, height);
+        applyTexParameters(GL_TEXTURE_2D_ARRAY,state);
+        extensions->glCopyTexSubImage3D( GL_TEXTURE_2D_ARRAY, 0, xoffset,yoffset,zoffset, x, y, width, height);
 
         // inform state that this texture is the current one bound.
         state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);
@@ -677,14 +677,14 @@ void Texture2DArray::allocateMipmap(State& state) const
 
                 getCompressedSize( _internalFormat, width, height, textureDepth, blockSize, size);
 
-                extensions->glCompressedTexImage3D( GL_TEXTURE_2D_ARRAY_EXT, k, _internalFormat,
+                extensions->glCompressedTexImage3D( GL_TEXTURE_2D_ARRAY, k, _internalFormat,
                                                     width, height, _textureDepth, _borderWidth,
                                                     size,
                                                     NULL);
             }
             else
             {
-                extensions->glTexImage3D( GL_TEXTURE_2D_ARRAY_EXT, k, _internalFormat,
+                extensions->glTexImage3D( GL_TEXTURE_2D_ARRAY, k, _internalFormat,
                      width, height, textureDepth, _borderWidth,
                      safeSourceFormat, _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
                      NULL);

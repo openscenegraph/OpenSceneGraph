@@ -19,6 +19,14 @@
 #include <osg/ApplicationUsage>
 #include <osg/ContextData>
 
+// for includes for GLES
+#include <osg/Fog>
+#include <osg/Material>
+#include <osg/ClipPlane>
+#include <osg/TexGen>
+#include <osg/Texture1D>
+#include <osg/GLDefines>
+
 #include <sstream>
 #include <algorithm>
 
@@ -670,7 +678,7 @@ void State::captureCurrentState(StateSet& stateset) const
 
 void State::apply(const StateSet* dstate)
 {
-    OSG_NOTICE<<__PRETTY_FUNCTION__<<std::endl;
+    // OSG_NOTICE<<__PRETTY_FUNCTION__<<std::endl;
 
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("start of State::apply(StateSet*)");
 
@@ -764,7 +772,7 @@ void State::apply(const StateSet* dstate)
 
 void State::apply()
 {
-    OSG_NOTICE<<__PRETTY_FUNCTION__<<std::endl;
+    // OSG_NOTICE<<__PRETTY_FUNCTION__<<std::endl;
 
 
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("start of State::apply()");
@@ -1731,27 +1739,68 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragm
              StringModeMap::iterator m_itr = _stringModeMap.find(modeStr);
              if (m_itr!=_stringModeMap.end())
              {
-                OSG_NOTICE<<"Need to look up mode ["<<modeStr<<"]"<<std::endl;
+                OSG_NOTICE<<"Look up mode ["<<modeStr<<"]"<<std::endl;
                 StateAttribute::GLMode mode = m_itr->second;
-                ModeMap::const_iterator mm_itr = _modeMap.find(mode);
-                if (mm_itr!=_modeMap.end())
+
+                if (mode>=GL_TEXTURE0 && mode<=(GL_TEXTURE0+15))
                 {
-                    bool mode_enabled = mm_itr->second.last_applied_value;
-                    if (mode_enabled)
+                    OSG_NOTICE<<"  Need to map GL_TEXTUREi"<<std::endl;
+                }
+                else
+                {
+                    ModeMap::const_iterator mm_itr = _modeMap.find(mode);
+                    if (mm_itr!=_modeMap.end())
                     {
-                        OSG_NOTICE<<"  mapping mode to #define "<<modeStr<<std::endl;
-                        shaderDefineStr += "#define ";
-                        shaderDefineStr += modeStr;
-                        shaderDefineStr += s_LineEnding;
+                        bool mode_enabled = mm_itr->second.last_applied_value;
+                        if (mode_enabled)
+                        {
+                            OSG_NOTICE<<"  mapping mode to #define "<<modeStr<<std::endl;
+                            shaderDefineStr += "#define ";
+                            shaderDefineStr += modeStr;
+                            shaderDefineStr += s_LineEnding;
+                        }
                     }
                 }
-
-             }
-             else
-             {
-                OSG_NOTICE<<"Need to look up mode ["<<modeStr<<"]"<<std::endl;
              }
         }
+
+        for(unsigned int i=0; i<shaderPragmas.textureModes.size(); ++i)
+        {
+            if (i<_textureModeMapList.size())
+            {
+                const ShaderDefines& sd = shaderPragmas.textureModes[i];
+                const ModeMap& modeMap = _textureModeMapList[i];
+
+                for(ShaderDefines::iterator itr = sd.begin();
+                    itr != sd.end();
+                    ++itr)
+                {
+                    const std::string& modeStr = *itr;
+                    StringModeMap::iterator m_itr = _stringModeMap.find(modeStr);
+                    if (m_itr!=_stringModeMap.end())
+                    {
+                        OSG_NOTICE<<"Need to look up mode ["<<modeStr<<"]"<<std::endl;
+                        StateAttribute::GLMode mode = m_itr->second;
+                        ModeMap::const_iterator mm_itr = modeMap.find(mode);
+                        if (mm_itr!=modeMap.end())
+                        {
+                            bool mode_enabled = mm_itr->second.last_applied_value;
+                            if (mode_enabled)
+                            {
+                                OSG_NOTICE<<"  mapping mode to #define "<<modeStr<<std::endl;
+                                shaderDefineStr += "#define ";
+                                shaderDefineStr += modeStr;
+                                shaderDefineStr += s_LineEnding;
+                            }
+                        }
+
+                    }
+                }
+            }
+
+        }
+
+
     }
     OSG_NOTICE<<"State::getDefineString(..) "<<shaderDefineStr<<std::endl;
 }

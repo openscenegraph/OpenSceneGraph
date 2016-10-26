@@ -9,6 +9,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
+#include <osg/TexGen>
 #include <osgDB/ReadFile>
 
 #include <osgGA/StateSetManipulator>
@@ -92,6 +93,61 @@ int main(int argc, char** argv)
     }
 
     viewer.setSceneData(loadedModel);
+
+    osg::ref_ptr<osg::StateSet> stateset = viewer.getCamera()->getOrCreateStateSet();
+
+    unsigned int maxTextureUnits = 1;
+    std::stringstream sstream;
+    sstream<<maxTextureUnits;
+    stateset->setDefine("GL_MAX_TEXTURE_UNITS", sstream.str());
+
+    #define ADD_DEFINE(DEF) \
+        sstream.str(""); \
+        sstream<<DEF; \
+        stateset->setDefine(#DEF, sstream.str());
+
+    if (maxTextureUnits>0)
+    {
+        ADD_DEFINE(GL_EYE_LINEAR);
+        ADD_DEFINE(GL_OBJECT_LINEAR);
+        ADD_DEFINE(GL_SPHERE_MAP);
+        ADD_DEFINE(GL_NORMAL_MAP);
+        ADD_DEFINE(GL_REFLECTION_MAP);
+        ADD_DEFINE(GL_MODULATE);
+        ADD_DEFINE(GL_REPLACE);
+        ADD_DEFINE(GL_DECAL);
+        ADD_DEFINE(GL_BLEND);
+        ADD_DEFINE(GL_ADD);
+
+
+        osg::ref_ptr<osg::Uniform> ACTIVE_TEXTURE = new osg::Uniform(osg::Uniform::BOOL, "GL_ACTIVE_TEXTURE", maxTextureUnits);
+        osg::ref_ptr<osg::Uniform> TEXTURE_GEN_S = new osg::Uniform(osg::Uniform::BOOL, "GL_TEXTURE_GEN_S", maxTextureUnits);
+        osg::ref_ptr<osg::Uniform> TEXTURE_GEN_T = new osg::Uniform(osg::Uniform::BOOL, "GL_TEXTURE_GEN_T", maxTextureUnits);
+
+        osg::ref_ptr<osg::Uniform> TEXTURE_GEN_MODE = new osg::Uniform(osg::Uniform::INT, "GL_TEXTURE_GEN_MODE", maxTextureUnits);
+        osg::ref_ptr<osg::Uniform> TEXTURE_ENV_MODE = new osg::Uniform(osg::Uniform::INT, "GL_TEXTURE_ENV_MODE", maxTextureUnits);
+
+
+        for(unsigned int i=0; i<maxTextureUnits;++i)
+        {
+            ACTIVE_TEXTURE->setElement(i, false);
+            TEXTURE_GEN_MODE->setElement(i, 0);
+            TEXTURE_GEN_S->setElement(i, false);
+            TEXTURE_GEN_T->setElement(i, false);
+        }
+
+        ACTIVE_TEXTURE->setElement(0, true);
+        //TEXTURE_GEN_MODE->setElement(0, 0);
+        TEXTURE_GEN_MODE->setElement(0, GL_SPHERE_MAP);
+        TEXTURE_GEN_S->setElement(0, true);
+        TEXTURE_GEN_T->setElement(0, true);
+
+        stateset->addUniform(ACTIVE_TEXTURE.get());
+        stateset->addUniform(TEXTURE_GEN_S.get());
+        stateset->addUniform(TEXTURE_GEN_T.get());
+        stateset->addUniform(TEXTURE_GEN_MODE.get());
+        stateset->addUniform(TEXTURE_ENV_MODE.get());
+    }
 
     viewer.realize();
 

@@ -11,6 +11,7 @@
 
 #include <osg/TexGen>
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 
 #include <osgGA/StateSetManipulator>
 
@@ -137,8 +138,8 @@ int main(int argc, char** argv)
         }
 
         ACTIVE_TEXTURE->setElement(0, true);
-        //TEXTURE_GEN_MODE->setElement(0, 0);
-        TEXTURE_GEN_MODE->setElement(0, GL_SPHERE_MAP);
+        TEXTURE_GEN_MODE->setElement(0, 0);
+        //TEXTURE_GEN_MODE->setElement(0, GL_SPHERE_MAP);
         TEXTURE_GEN_S->setElement(0, true);
         TEXTURE_GEN_T->setElement(0, true);
 
@@ -147,7 +148,68 @@ int main(int argc, char** argv)
         stateset->addUniform(TEXTURE_GEN_T.get());
         stateset->addUniform(TEXTURE_GEN_MODE.get());
         stateset->addUniform(TEXTURE_ENV_MODE.get());
+
+
+        for(unsigned int i=0; i<maxTextureUnits;++i)
+        {
+            sstream.str("");
+            sstream<<"sampler"<<i;
+            OSG_NOTICE<<"****** texture unit : "<<sstream.str()<<std::endl;
+            stateset->addUniform(new osg::Uniform(sstream.str().c_str(), i));
+
+
+            // fragment shader texture defines
+            sstream.str("");
+            sstream<<"TEXTURE_VERT_DECLARE"<<i;
+            std::string textureVertDeclareDefine = sstream.str();
+
+            sstream.str("");
+            sstream<<"varying vec4 TexCoord"<<i<<";";
+
+            stateset->setDefine(textureVertDeclareDefine, sstream.str());
+
+
+            sstream.str("");
+            sstream<<"TEXTURE_VERT_BODY"<<i;
+            std::string textureVertBodyDefine = sstream.str();
+
+            sstream.str("");
+            sstream<<"{ TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<"; }";
+
+            stateset->setDefine(textureVertBodyDefine, sstream.str());
+
+
+            // fragment shader texture defines
+            sstream.str("");
+            sstream<<"TEXTURE_FRAG_DECLARE"<<i;
+            std::string textureFragDeclareDefine = sstream.str();
+
+            sstream.str("");
+            sstream<<"uniform ";
+            sstream<<"sampler2D ";
+            sstream<<"sampler"<<i<<"; ";
+            sstream<<"varying vec4 TexCoord"<<i<<";";
+
+            stateset->setDefine(textureFragDeclareDefine, sstream.str());
+
+
+            sstream.str("");
+            sstream<<"TEXTURE_FRAG_BODY"<<i;
+            std::string textureFragBodyDefine = sstream.str();
+
+            sstream.str("");
+            sstream<<"(color) { color = texenv(color, ";
+            sstream<<"texture2D( sampler"<<i<<", TexCoord"<<i<<".st)";
+            sstream<<", "<<i<<"); }";
+
+            stateset->setDefine(textureFragBodyDefine, sstream.str());
+
+        }
+
     }
+
+    osgDB::writeObjectFile(*stateset, "stateset.osgt");
+
 
     viewer.realize();
 

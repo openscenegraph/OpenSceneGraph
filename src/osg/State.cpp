@@ -1872,7 +1872,7 @@ std::string State::getDefineString(const osg::ShaderDefines& shaderDefines)
             shaderDefineStr += cd_itr->first;
             if (!dp.first.empty())
             {
-                shaderDefineStr += " ";
+                if (dp.first[0]!='(') shaderDefineStr += " ";
                 shaderDefineStr += dp.first;
             }
 #ifdef WIN32

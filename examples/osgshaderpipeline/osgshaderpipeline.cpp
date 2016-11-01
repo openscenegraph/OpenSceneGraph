@@ -10,6 +10,7 @@
 */
 
 #include <osg/TexGen>
+
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 
@@ -55,6 +56,15 @@ bool readShaderArguments(osg::ArgumentParser& arguments, const std::string& opti
     }
 }
 
+osg::Image* createFallbackImage()
+{
+    osg::Image* image = new osg::Image;
+    image->allocateImage(1,1,1,GL_RGBA, GL_UNSIGNED_BYTE);
+    //image->setColor(osg::Vec4(1.0,1.0,0.0,1.0), 0, 0, 0);
+    *(reinterpret_cast<unsigned int*>(image->data())) = 0xffffffff;
+    return image;
+}
+
 int main(int argc, char** argv)
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -82,6 +92,9 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    unsigned int maxTextureUnits = 1;
+    while(arguments.read("--units", maxTextureUnits)) {}
+
     // assign program to topmost StateSet
     viewer.getCamera()->getOrCreateStateSet()->setAttribute(program);
 
@@ -97,7 +110,6 @@ int main(int argc, char** argv)
 
     osg::ref_ptr<osg::StateSet> stateset = viewer.getCamera()->getOrCreateStateSet();
 
-    unsigned int maxTextureUnits = 1;
     std::stringstream sstream;
     sstream<<maxTextureUnits;
     stateset->setDefine("GL_MAX_TEXTURE_UNITS", sstream.str());
@@ -109,6 +121,18 @@ int main(int argc, char** argv)
 
     if (maxTextureUnits>0)
     {
+        osg::ref_ptr<osg::Texture2D> fallbackTexture = new osg::Texture2D(createFallbackImage());
+        fallbackTexture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::CLAMP_TO_EDGE);
+        fallbackTexture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::CLAMP_TO_EDGE);
+        fallbackTexture->setWrap(osg::Texture2D::WRAP_R, osg::Texture2D::CLAMP_TO_EDGE);
+        fallbackTexture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
+        fallbackTexture->setFilter(osg::Texture2D::MAG_FILTER, osg::Texture2D::LINEAR);
+        for(unsigned int i=0; i<maxTextureUnits;++i)
+        {
+            stateset->setTextureAttribute(i, fallbackTexture.get());
+        }
+
+
         ADD_DEFINE(GL_EYE_LINEAR);
         ADD_DEFINE(GL_OBJECT_LINEAR);
         ADD_DEFINE(GL_SPHERE_MAP);
@@ -155,7 +179,7 @@ int main(int argc, char** argv)
             sstream.str("");
             sstream<<"sampler"<<i;
             OSG_NOTICE<<"****** texture unit : "<<sstream.str()<<std::endl;
-            stateset->addUniform(new osg::Uniform(sstream.str().c_str(), i));
+            stateset->addUniform(new osg::Uniform(sstream.str().c_str(), static_cast<int>(i)));
 
 
             // fragment shader texture defines

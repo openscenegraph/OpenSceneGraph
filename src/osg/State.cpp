@@ -738,6 +738,8 @@ void State::apply(const StateSet* dstate)
             }
         }
 
+        if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("after attributes State::apply()");
+
         if (dstate->getUniformList().empty())
         {
             if (_currentShaderCompositionUniformList.empty()) applyUniformMap(_uniformMap);
@@ -810,11 +812,94 @@ void State::apply()
         applyShaderComposition();
     }
 
+    if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("after attributes State::apply()");
+
     if (_currentShaderCompositionUniformList.empty()) applyUniformMap(_uniformMap);
     else applyUniformList(_uniformMap, _currentShaderCompositionUniformList);
 
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("end of State::apply()");
 }
+
+#if 1
+void State::applyUniformList(UniformMap& uniformMap,const StateSet::UniformList& uniformList)
+{
+    if (!_lastAppliedProgramObject) return;
+
+    StateSet::UniformList::const_iterator ds_aitr=uniformList.begin();
+
+    UniformMap::iterator this_aitr=uniformMap.begin();
+
+    if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("start of State::applyUniformList(UniformMap& uniformMap,const StateSet::UniformList& uniformList)");
+
+    while (this_aitr!=uniformMap.end() && ds_aitr!=uniformList.end())
+    {
+        if (this_aitr->first<ds_aitr->first)
+        {
+            // note attribute type = this_aitr->first
+            UniformStack& as = this_aitr->second;
+            if (!as.uniformVec.empty())
+            {
+                _lastAppliedProgramObject->apply(*as.uniformVec.back().first);
+            }
+
+            ++this_aitr;
+
+        }
+        else if (ds_aitr->first<this_aitr->first)
+        {
+            _lastAppliedProgramObject->apply(*(ds_aitr->second.first.get()));
+
+            ++ds_aitr;
+        }
+        else
+        {
+            // this_mitr & ds_mitr refer to the same attribute, check the override
+            // if any otherwise just apply the incoming attribute
+
+            UniformStack& as = this_aitr->second;
+
+            if (!as.uniformVec.empty() && (as.uniformVec.back().second & StateAttribute::OVERRIDE) && !(ds_aitr->second.second & StateAttribute::PROTECTED))
+            {
+                // override is on, just treat as a normal apply on uniform.
+                _lastAppliedProgramObject->apply(*as.uniformVec.back().first);
+            }
+            else
+            {
+                // no override on or no previous entry, therefore consider incoming attribute.
+                _lastAppliedProgramObject->apply(*(ds_aitr->second.first.get()));
+            }
+
+            ++this_aitr;
+            ++ds_aitr;
+        }
+    }
+
+    // iterator over the remaining state attributes to apply any previous changes.
+    for(;
+        this_aitr!=uniformMap.end();
+        ++this_aitr)
+    {
+        // note attribute type = this_aitr->first
+        UniformStack& as = this_aitr->second;
+        if (!as.uniformVec.empty())
+        {
+            _lastAppliedProgramObject->apply(*as.uniformVec.back().first);
+            if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors(as.uniformVec.back().first->getName());
+        }
+    }
+
+    // iterator over the remaining incoming attribute to apply any new attribute.
+    for(;
+        ds_aitr!=uniformList.end();
+        ++ds_aitr)
+    {
+        _lastAppliedProgramObject->apply(*(ds_aitr->second.first.get()));
+        if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors(ds_aitr->second.first->getName());
+    }
+
+    if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("after of State::applyUniformList(UniformMap& uniformMap,const StateSet::UniformList& uniformList)");
+}
+#endif
 
 void State::applyShaderComposition()
 {
@@ -1154,6 +1239,10 @@ unsigned int State::getClientActiveTextureUnit() const
     return _currentClientActiveTextureUnit;
 }
 
+bool State::checkGLErrors(const std::string& str) const
+{
+    return checkGLErrors(str.c_str());
+}
 
 bool State::checkGLErrors(const char* str1, const char* str2) const
 {
@@ -1739,12 +1828,12 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragm
              StringModeMap::iterator m_itr = _stringModeMap.find(modeStr);
              if (m_itr!=_stringModeMap.end())
              {
-                OSG_NOTICE<<"Look up mode ["<<modeStr<<"]"<<std::endl;
+                // OSG_NOTICE<<"Look up mode ["<<modeStr<<"]"<<std::endl;
                 StateAttribute::GLMode mode = m_itr->second;
 
                 if (mode>=GL_TEXTURE0 && mode<=(GL_TEXTURE0+15))
                 {
-                    OSG_NOTICE<<"  Need to map GL_TEXTUREi"<<std::endl;
+                    // OSG_NOTICE<<"  Need to map GL_TEXTUREi"<<std::endl;
                 }
                 else
                 {
@@ -1754,7 +1843,7 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragm
                         bool mode_enabled = mm_itr->second.last_applied_value;
                         if (mode_enabled)
                         {
-                            OSG_NOTICE<<"  mapping mode to #define "<<modeStr<<std::endl;
+                            // OSG_NOTICE<<"  mapping mode to #define "<<modeStr<<std::endl;
                             shaderDefineStr += "#define ";
                             shaderDefineStr += modeStr;
                             shaderDefineStr += s_LineEnding;
@@ -1779,7 +1868,7 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragm
                     StringModeMap::iterator m_itr = _stringModeMap.find(modeStr);
                     if (m_itr!=_stringModeMap.end())
                     {
-                        OSG_NOTICE<<"Need to look up mode ["<<modeStr<<"]"<<std::endl;
+                        // OSG_NOTICE<<"Need to look up mode ["<<modeStr<<"]"<<std::endl;
                         StateAttribute::GLMode mode = m_itr->second;
                         ModeMap::const_iterator mm_itr = modeMap.find(mode);
                         if (mm_itr!=modeMap.end())
@@ -1787,7 +1876,7 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragm
                             bool mode_enabled = mm_itr->second.last_applied_value;
                             if (mode_enabled)
                             {
-                                OSG_NOTICE<<"  mapping mode to #define "<<modeStr<<std::endl;
+                                // OSG_NOTICE<<"  mapping mode to #define "<<modeStr<<std::endl;
                                 shaderDefineStr += "#define ";
                                 shaderDefineStr += modeStr;
                                 shaderDefineStr += s_LineEnding;
@@ -1802,7 +1891,7 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragm
 
 
     }
-    OSG_NOTICE<<"State::getDefineString(..) "<<shaderDefineStr<<std::endl;
+    // OSG_NOTICE<<"State::getDefineString(..) "<<shaderDefineStr<<std::endl;
 }
 
 bool State::supportsShaderRequirements(const osg::ShaderPragmas& shaderPragmas)

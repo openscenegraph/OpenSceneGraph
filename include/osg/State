@@ -2044,7 +2044,6 @@ inline void State::applyAttributeListOnTexUnit(unsigned int unit,AttributeMap& a
 
 }
 
-#if 0
 inline void State::applyUniformList(UniformMap& uniformMap,const StateSet::UniformList& uniformList)
 {
     if (!_lastAppliedProgramObject) return;
@@ -2118,7 +2117,6 @@ inline void State::applyUniformList(UniformMap& uniformMap,const StateSet::Unifo
     }
 
 }
-#endif
 
 inline void State::applyDefineList(DefineMap& defineMap, const StateSet::DefineList& defineList)
 {

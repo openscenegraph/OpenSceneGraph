@@ -65,50 +65,25 @@ osg::Image* createFallbackImage()
     return image;
 }
 
-int main(int argc, char** argv)
+bool setUpStateSet(osg::ArgumentParser& arguments, osg::StateSet* stateset)
 {
-    // use an ArgumentParser object to manage the program arguments.
-    osg::ArgumentParser arguments(&argc,argv);
-
-    osgViewer::Viewer viewer(arguments);
-
-    // add the state manipulator
-    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
-
-    // add the stats handler
-    viewer.addEventHandler(new osgViewer::StatsHandler);
-
-
     osg::ref_ptr<osg::Program> program = new osg::Program;
 
 
     if (!readShaderArguments(arguments, "--vert", program, "shaders/shaderpipeline.vert"))
     {
-        return 1;
+        return false;
     }
 
     if (!readShaderArguments(arguments, "--frag", program, "shaders/shaderpipeline.frag"))
     {
-        return 1;
+        return false;
     }
 
     unsigned int maxTextureUnits = 1;
     while(arguments.read("--units", maxTextureUnits)) {}
 
-    // assign program to topmost StateSet
-    viewer.getCamera()->getOrCreateStateSet()->setAttribute(program);
-
-    // load the data
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
-    if (!loadedModel)
-    {
-        std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
-        return 1;
-    }
-
-    viewer.setSceneData(loadedModel);
-
-    osg::ref_ptr<osg::StateSet> stateset = viewer.getCamera()->getOrCreateStateSet();
+    stateset->setAttribute(program);
 
     std::stringstream sstream;
     sstream<<maxTextureUnits;
@@ -138,11 +113,20 @@ int main(int argc, char** argv)
         ADD_DEFINE(GL_SPHERE_MAP);
         ADD_DEFINE(GL_NORMAL_MAP);
         ADD_DEFINE(GL_REFLECTION_MAP);
+
         ADD_DEFINE(GL_MODULATE);
         ADD_DEFINE(GL_REPLACE);
         ADD_DEFINE(GL_DECAL);
         ADD_DEFINE(GL_BLEND);
         ADD_DEFINE(GL_ADD);
+
+        ADD_DEFINE(GL_ALPHA);
+        ADD_DEFINE(GL_INTENSITY);
+        ADD_DEFINE(GL_LUMINANCE);
+        ADD_DEFINE(GL_RED);
+        ADD_DEFINE(GL_RG);
+        ADD_DEFINE(GL_RGB);
+        ADD_DEFINE(GL_RGBA);
 
 
         osg::ref_ptr<osg::Uniform> ACTIVE_TEXTURE = new osg::Uniform(osg::Uniform::BOOL, "GL_ACTIVE_TEXTURE", maxTextureUnits);
@@ -151,6 +135,7 @@ int main(int argc, char** argv)
 
         osg::ref_ptr<osg::Uniform> TEXTURE_GEN_MODE = new osg::Uniform(osg::Uniform::INT, "GL_TEXTURE_GEN_MODE", maxTextureUnits);
         osg::ref_ptr<osg::Uniform> TEXTURE_ENV_MODE = new osg::Uniform(osg::Uniform::INT, "GL_TEXTURE_ENV_MODE", maxTextureUnits);
+        osg::ref_ptr<osg::Uniform> TEXTURE_FORMAT = new osg::Uniform(osg::Uniform::INT, "GL_TEXTURE_FORMAT", maxTextureUnits);
 
 
         for(unsigned int i=0; i<maxTextureUnits;++i)
@@ -159,6 +144,8 @@ int main(int argc, char** argv)
             TEXTURE_GEN_MODE->setElement(i, 0);
             TEXTURE_GEN_S->setElement(i, false);
             TEXTURE_GEN_T->setElement(i, false);
+            TEXTURE_ENV_MODE->setElement(i, GL_MODULATE);
+            TEXTURE_FORMAT->setElement(i, GL_RGBA);
         }
 
         ACTIVE_TEXTURE->setElement(0, true);
@@ -166,12 +153,14 @@ int main(int argc, char** argv)
         //TEXTURE_GEN_MODE->setElement(0, GL_SPHERE_MAP);
         TEXTURE_GEN_S->setElement(0, true);
         TEXTURE_GEN_T->setElement(0, true);
+        //TEXTURE_FORMAT->setElement(0, GL_ALPHA);
 
         stateset->addUniform(ACTIVE_TEXTURE.get());
         stateset->addUniform(TEXTURE_GEN_S.get());
         stateset->addUniform(TEXTURE_GEN_T.get());
         stateset->addUniform(TEXTURE_GEN_MODE.get());
         stateset->addUniform(TEXTURE_ENV_MODE.get());
+        stateset->addUniform(TEXTURE_FORMAT.get());
 
 
         for(unsigned int i=0; i<maxTextureUnits;++i)
@@ -198,7 +187,7 @@ int main(int argc, char** argv)
             std::string textureVertBodyDefine = sstream.str();
 
             sstream.str("");
-            sstream<<"{ TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<"; }";
+            sstream<<"{ TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<"; if (GL_TEXTURE_GEN_MODE["<<i<<"]!=0) TexCoord0 = texgen(TexCoord"<<i<<", "<<i<<"); }";
 
             stateset->setDefine(textureVertBodyDefine, sstream.str());
 
@@ -234,8 +223,70 @@ int main(int argc, char** argv)
 
     osgDB::writeObjectFile(*stateset, "stateset.osgt");
 
+    return true;
+}
+
+struct RealizeOperation : public osg::GraphicsOperation
+{
+    RealizeOperation(osg::StateSet* stateset) :
+        osg::GraphicsOperation("RealizeOperation",false),
+        _stateset(stateset)
+    {
+    }
+
+    virtual void operator () (osg::GraphicsContext* gc)
+    {
+        OSG_NOTICE<<std::endl<<"---------- RealizeOperation() : Pushing StateSet on to GraphicsContext's State. -----"<<std::endl<<std::endl;;
+        //gc->getState()->pushStateSet(_stateset.get());
+        gc->getState()->setRootStateSet(_stateset.get());
+    }
+
+    osg::ref_ptr<osg::StateSet> _stateset;
+};
+
+int main(int argc, char** argv)
+{
+    // use an ArgumentParser object to manage the program arguments.
+    osg::ArgumentParser arguments(&argc,argv);
+
+    osgViewer::Viewer viewer(arguments);
+
+    // add the state manipulator
+    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
+
+    // add the stats handler
+    viewer.addEventHandler(new osgViewer::StatsHandler);
+
+    osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
+    stateset->setGlobalDefaults();
+
+    // set up the topmost StateSet with the shader pipeline settings.
+    setUpStateSet(arguments, stateset);
+
+    if (arguments.read("--state"))
+    {
+        OSG_NOTICE<<"Assigning RealizerOperation"<<std::endl;
+        viewer.setRealizeOperation(new RealizeOperation(stateset.get()));
+    }
+    else
+    {
+        viewer.getCamera()->setStateSet(stateset.get());
+    }
+
 
     viewer.realize();
+
+
+
+    // load the data
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
+    if (!loadedModel)
+    {
+        std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
+        return 1;
+    }
+
+    viewer.setSceneData(loadedModel);
 
     return viewer.run();
 

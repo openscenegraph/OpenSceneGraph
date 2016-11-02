@@ -806,6 +806,12 @@ class OSG_EXPORT State : public Referenced
         inline const DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
 
+        /** Set the root StateSet this is applied above all StateSet that are pushed and popped during the draw traversal.*/
+        void setRootStateSet(osg::StateSet* stateset);
+
+        /** Get the root StateSet.*/
+        osg::StateSet* getRootStateSet() { return _rootStateSet.get(); }
+
 
         /** Set flag for early termination of the draw traversal.*/
         void setAbortRenderingPtr(bool* abortPtr) { _abortRenderingPtr = abortPtr; }
@@ -1046,6 +1052,8 @@ class OSG_EXPORT State : public Referenced
 
         GraphicsContext*            _graphicsContext;
         unsigned int                _contextID;
+
+        osg::ref_ptr<osg::StateSet>     _rootStateSet;
 
         osg::ref_ptr<VertexArrayState>  _globalVertexArrayState;
         VertexArrayState*               _vas;

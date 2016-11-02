@@ -507,9 +507,36 @@ void State::setMaxBufferObjectPoolSize(unsigned int size)
     OSG_INFO<<"osg::State::_maxBufferObjectPoolSize="<<_maxBufferObjectPoolSize<<std::endl;
 }
 
+void State::setRootStateSet(osg::StateSet* stateset)
+{
+    if (_rootStateSet == stateset) return;
+
+    _rootStateSet = stateset;
+
+    if (_stateStateStack.empty())
+    {
+        if (stateset) pushStateSet(stateset);
+    }
+    else
+    {
+        StateSetStack previousStateSetStack = _stateStateStack;
+
+        // we want to reset all the various state stacks, inserting the new root StateSet as the topmost one automatically (popeAllStateSet() does this.)
+        popAllStateSets();
+
+        // now we have to add back in all the StateSet's to make sure the state is consistent
+        for(StateSetStack::iterator itr = previousStateSetStack.begin();
+            itr != previousStateSetStack.end();
+            ++itr)
+        {
+            pushStateSet(*itr);
+        }
+    }
+}
+
+
 void State::pushStateSet(const StateSet* dstate)
 {
-
     _stateStateStack.push_back(dstate);
     if (dstate)
     {
@@ -551,6 +578,8 @@ void State::popAllStateSets()
     applyModelViewMatrix(0);
 
     _lastAppliedProgramObject = 0;
+
+    if (_rootStateSet.valid()) pushStateSet(_rootStateSet.get());
 }
 
 void State::popStateSet()
@@ -678,7 +707,7 @@ void State::captureCurrentState(StateSet& stateset) const
 
 void State::apply(const StateSet* dstate)
 {
-    // OSG_NOTICE<<__PRETTY_FUNCTION__<<std::endl;
+    // OSG_NOTICE<<__PRETTY_FUNCTION__<<" _stateStateStack.size()="<<_stateStateStack.size()<<std::endl;
 
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("start of State::apply(StateSet*)");
 
@@ -774,7 +803,7 @@ void State::apply(const StateSet* dstate)
 
 void State::apply()
 {
-    // OSG_NOTICE<<__PRETTY_FUNCTION__<<std::endl;
+    // OSG_NOTICE<<__PRETTY_FUNCTION__<<" _stateStateStack.size()="<<_stateStateStack.size()<<std::endl;
 
 
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("start of State::apply()");

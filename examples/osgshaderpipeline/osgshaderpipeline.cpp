@@ -228,20 +228,27 @@ bool setUpStateSet(osg::ArgumentParser& arguments, osg::StateSet* stateset)
 
 struct RealizeOperation : public osg::GraphicsOperation
 {
-    RealizeOperation(osg::StateSet* stateset) :
-        osg::GraphicsOperation("RealizeOperation",false),
-        _stateset(stateset)
+    RealizeOperation(osg::ArgumentParser& arguments, osg::StateSet* stateset) :
+        osg::GraphicsOperation("RealizeOperation",false)
     {
+        _stateset = stateset;
+        _useModelViewAndProjectionUniforms = arguments.read("--mv");
+        _useVertexAttributeAliasing = arguments.read("--va");
     }
 
     virtual void operator () (osg::GraphicsContext* gc)
     {
         OSG_NOTICE<<std::endl<<"---------- RealizeOperation() : Pushing StateSet on to GraphicsContext's State. -----"<<std::endl<<std::endl;;
-        //gc->getState()->pushStateSet(_stateset.get());
-        gc->getState()->setRootStateSet(_stateset.get());
+
+        gc->getState()->setUseModelViewAndProjectionUniforms(_useModelViewAndProjectionUniforms);
+        gc->getState()->setUseVertexAttributeAliasing(_useVertexAttributeAliasing);
+
+        if (_stateset.valid()) gc->getState()->setRootStateSet(_stateset.get());
     }
 
     osg::ref_ptr<osg::StateSet> _stateset;
+    bool _useModelViewAndProjectionUniforms;
+    bool _useVertexAttributeAliasing;
 };
 
 int main(int argc, char** argv)
@@ -263,12 +270,12 @@ int main(int argc, char** argv)
     // set up the topmost StateSet with the shader pipeline settings.
     setUpStateSet(arguments, stateset);
 
-    if (arguments.read("--state"))
-    {
-        OSG_NOTICE<<"Assigning RealizerOperation"<<std::endl;
-        viewer.setRealizeOperation(new RealizeOperation(stateset.get()));
-    }
-    else
+
+    bool useRootStateSet = arguments.read("--state");
+
+    viewer.setRealizeOperation(new RealizeOperation(arguments, useRootStateSet ? stateset.get() : 0));
+
+    if (!useRootStateSet)
     {
         viewer.getCamera()->setStateSet(stateset.get());
     }

@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/openscenegraph/OpenSceneGraph.svg?branch=master)](https://travis-ci.org/openscenegraph/OpenSceneGraph)
 [![Coverity Status](https://scan.coverity.com/projects/9159/badge.svg)](https://scan.coverity.com/projects/openscenegraph-openscenegraph)
+[![Documentation](https://codedocs.xyz/openscenegraph/OpenSceneGraph.svg)](https://codedocs.xyz/openscenegraph/OpenSceneGraph/)
 
 ### Introduction
 

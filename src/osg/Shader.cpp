@@ -628,12 +628,13 @@ void Shader::PerContextShader::compileShader(osg::State& state)
     GLint compiled = GL_FALSE;
 
     // OSG_NOTICE<<"Compiling PerContextShader "<<this<<" ShaderDefine="<<getDefineString()<<std::endl;
+    bool printOutShaders = osg::getNotifyLevel()>=osg::INFO;//NOTICE;
 
     if (_defineStr.empty())
     {
         const GLchar* sourceText = reinterpret_cast<const GLchar*>(source.c_str());
 
-        if (osg::getNotifyLevel()>=osg::INFO)
+        if (printOutShaders)
         {
             std::string sourceToCompile;
             if (!_defineStr.empty()) sourceToCompile += _defineStr;
@@ -643,8 +644,6 @@ void Shader::PerContextShader::compileShader(osg::State& state)
             OSG_INFO << "\nCompiling " << _shader->getTypename()
                     << " source:\n" << sourceWithLineNumbers << std::endl;
         }
-
-
 
         _extensions->glShaderSource( _glShaderHandle, 1, &sourceText, NULL );
     }
@@ -683,11 +682,11 @@ void Shader::PerContextShader::compileShader(osg::State& state)
 
         if (!versionLine.empty())
         {
-            if (osg::getNotifyLevel()>=osg::INFO)
+            if (printOutShaders)
             {
                 std::string sourceWithLineNumbers = insertLineNumbers(versionLine + _defineStr + source);
-                OSG_INFO << "\nCompiling " << _shader->getTypename()
-                        << " source:\n" << sourceWithLineNumbers << std::endl;
+                OSG_NOTICE << "\nCompiling " << _shader->getTypename()
+                           << " source:\n" << sourceWithLineNumbers << std::endl;
             }
 
             // OSG_NOTICE<<"Shader::PerContextShader::compileShader() : Found #version,  lineNum = "<<lineNum<<" ["<<versionLine<<"] new source = ["<<source<<"]"<<std::endl;
@@ -700,11 +699,11 @@ void Shader::PerContextShader::compileShader(osg::State& state)
         }
         else
         {
-            if (osg::getNotifyLevel()>=osg::INFO)
+            if (printOutShaders)
             {
                 std::string sourceWithLineNumbers = insertLineNumbers(_defineStr + source);
-                OSG_INFO << "\nCompiling " << _shader->getTypename()
-                        << " source:\n" << sourceWithLineNumbers << std::endl;
+                OSG_NOTICE << "\nCompiling " << _shader->getTypename()
+                           << " source:\n" << sourceWithLineNumbers << std::endl;
             }
 
             const GLchar* sourceText[2];

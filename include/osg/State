@@ -236,7 +236,7 @@ class OSG_EXPORT State : public Referenced
 
         const osg::Matrix& getModelViewMatrix() const { return *_modelView; }
 
-        void setUseModelViewAndProjectionUniforms(bool flag) { _useModelViewAndProjectionUniforms = flag; }
+        void setUseModelViewAndProjectionUniforms(bool flag);
         bool getUseModelViewAndProjectionUniforms() const { return _useModelViewAndProjectionUniforms; }
 
         void updateModelViewAndProjectionMatrixUniforms();
@@ -252,7 +252,7 @@ class OSG_EXPORT State : public Referenced
         Polytope getViewFrustum() const;
 
 
-        void setUseVertexAttributeAliasing(bool flag) { _useVertexAttributeAliasing = flag; }
+        void setUseVertexAttributeAliasing(bool flag);
         bool getUseVertexAttributeAliasing() const { return _useVertexAttributeAliasing ; }
 
         typedef std::vector<VertexAttribAlias> VertexAttribAliasList;

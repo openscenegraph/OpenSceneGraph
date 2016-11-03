@@ -170,6 +170,17 @@ State::~State()
     //_vertexAttribArrayList.clear();
 }
 
+void State::setUseModelViewAndProjectionUniforms(bool flag)
+{
+    _useModelViewAndProjectionUniforms = flag;
+}
+
+void State::setUseVertexAttributeAliasing(bool flag)
+{
+    _useVertexAttributeAliasing = flag;
+    if (_globalVertexArrayState.valid()) _globalVertexArrayState->assignAllDispatchers();
+}
+
 void State::initializeExtensionProcs()
 {
     if (_extensionProcsInitialized) return;
@@ -572,14 +583,19 @@ void State::popAllStateSets()
 {
     // OSG_NOTICE<<"State::popAllStateSets()"<<_stateStateStack.size()<<std::endl;
 
-    while (!_stateStateStack.empty()) popStateSet();
+    if (_rootStateSet.valid())
+    {
+        while (_stateStateStack.size()>2) popStateSet();
+    }
+    else
+    {
+        while (!_stateStateStack.empty()) popStateSet();
+    }
 
     applyProjectionMatrix(0);
     applyModelViewMatrix(0);
 
     _lastAppliedProgramObject = 0;
-
-    if (_rootStateSet.valid()) pushStateSet(_rootStateSet.get());
 }
 
 void State::popStateSet()
@@ -1840,6 +1856,12 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragm
 
 
     }
+
+    if (getUseVertexAttributeAliasing() || getUseModelViewAndProjectionUniforms())
+    {
+        convertVertexShaderSourceToOsgBuiltIns(shaderDefineStr);
+    }
+
     // OSG_NOTICE<<"State::getDefineString(..) "<<shaderDefineStr<<std::endl;
 }
 

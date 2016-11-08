@@ -59,6 +59,7 @@ void RenderLeaf::render(osg::RenderInfo& renderInfo,RenderLeaf* previous)
         // modelview and projection matrices then apply them now.
         if (state.getUseModelViewAndProjectionUniforms()) state.applyModelViewAndProjectionUniformsIfRequired();
 
+
         // draw the drawable
         _drawable->draw(renderInfo);
     }

@@ -896,7 +896,7 @@ class OSG_EXPORT State : public Referenced
         void print(std::ostream& fout) const;
 
         /** Initialize extension used by osg::State.*/
-        void initializeExtensionProcs();
+        virtual void initializeExtensionProcs();
 
         /** Get the helper class for dispatching osg::Arrays as OpenGL attribute data.*/
         inline AttributeDispatchers& getAttributeDispatchers() { return _arrayDispatchers; }
@@ -1022,6 +1022,8 @@ class OSG_EXPORT State : public Referenced
         };
 
         typedef std::map<std::string, GLenum>                           StringModeMap;
+        typedef std::map<GLenum, std::string>                           ModeDefineMap;
+        typedef std::vector<ModeDefineMap>                              TextureModeDefineMapList;
 
         typedef std::map<StateAttribute::GLMode,ModeStack>              ModeMap;
         typedef std::vector<ModeMap>                                    TextureModeMapList;
@@ -1251,7 +1253,13 @@ class OSG_EXPORT State : public Referenced
                 return false;
         }
 
+        /** Initialize ModeDefineMaps used in fixed function modes to shader defines.  Called by initializeExtensionProcs().*/
+        virtual void initUpModeDefineMaps();
+
         StringModeMap                                                   _stringModeMap;
+        TextureModeDefineMapList                                        _textureModeDefineMapList;
+        TextureModeDefineMapList                                        _texenvModeDefineMapList;
+        TextureModeDefineMapList                                        _texgenModeDefineMapList;
 
         ModeMap                                                         _modeMap;
         AttributeMap                                                    _attributeMap;

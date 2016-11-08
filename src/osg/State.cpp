@@ -27,6 +27,8 @@
 #include <osg/Texture1D>
 #include <osg/GLDefines>
 
+#include <osg/io_utils>
+
 #include <sstream>
 #include <algorithm>
 
@@ -44,6 +46,13 @@
 
 using namespace std;
 using namespace osg;
+
+
+#ifdef WIN32
+    const char* s_LineEnding = "\r\n";
+#else
+    const char* s_LineEnding = "\n";
+#endif
 
 static ApplicationUsageProxy State_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_GL_ERROR_CHECKING <type>","ONCE_PER_ATTRIBUTE | ON | on enables fine grained checking,  ONCE_PER_FRAME enables coarse grained checking");
 
@@ -299,6 +308,11 @@ void State::initializeExtensionProcs()
         _graphicsCostEstimator->calibrate(renderInfo);
     }
 
+    initUpModeDefineMaps();
+}
+
+void State::initUpModeDefineMaps()
+{
 
     #define ADDMODE(MODE) _stringModeMap[#MODE] = MODE;
     ADDMODE(GL_LIGHTING)
@@ -345,6 +359,24 @@ void State::initializeExtensionProcs()
 
     ADDMODE(GL_COLOR_MATERIAL)
 
+    unsigned int maxNumTextureUnits = 16;
+    std::stringstream sstream;
+    _textureModeDefineMapList.resize(maxNumTextureUnits);
+    for(unsigned int i=0; i<maxNumTextureUnits; ++i)
+    {
+        std::string samplerString("sampler2D");
+        std::string textureString("texture2D");
+        std::string textureSuffixString("st");
+
+        // fragment shader texture defines
+        sstream.str("");
+        sstream<<"#define TEXTURE_VERT_DECLARE"<<i<<" varying vec4 TexCoord"<<i<<";"<<s_LineEnding;
+        sstream<<"#define TEXTURE_VERT_BODY"<<i<<" { TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<"; if (GL_TEXTURE_GEN_MODE["<<i<<"]!=0) TexCoord0 = texgen(TexCoord"<<i<<", "<<i<<"); }"<<s_LineEnding;
+        sstream<<"#define TEXTURE_FRAG_DECLARE"<<i<<" uniform sampler2D sampler"<<i<<"; varying vec4 TexCoord"<<i<<";"<<s_LineEnding;
+        sstream<<"#define TEXTURE_FRAG_BODY"<<i<<"(color) { color = texenv(color, texture2D( sampler"<<i<<", TexCoord"<<i<<".st)"<<", "<<i<<"); }"<<s_LineEnding;
+
+        _textureModeDefineMapList[i][GL_TEXTURE_2D] = sstream.str();
+    }
 
 }
 
@@ -1738,11 +1770,6 @@ bool State::DefineMap::updateCurrentDefines()
     return true;
 }
 
-#ifdef WIN32
-    const char* s_LineEnding = "\r\n";
-#else
-    const char* s_LineEnding = "\n";
-#endif
 
 void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderDefines& shaderDefines)
 {
@@ -1773,6 +1800,8 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderDefin
         }
     }
 }
+
+inline std::stringstream& str_reset(std::stringstream& sstream) { sstream.str(""); return sstream; }
 
 void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragmas& shaderPragmas)
 {
@@ -1814,6 +1843,52 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragm
                     }
                 }
              }
+        }
+
+        for(unsigned int i=0; i<_textureModeMapList.size(); ++i)
+        {
+            OSG_NOTICE<<" texture unit ="<<i<<std::endl;
+            const ModeMap& modeMap = _textureModeMapList[i];
+
+            bool enableTexGen = false;
+            Vec4 texgen_multiplier(0.0f,0.0f,0.f,0.0f);
+            GLenum textureMode = 0;
+
+            for(ModeMap::const_iterator tm_itr = modeMap.begin();
+                tm_itr != modeMap.end();
+                ++tm_itr)
+            {
+                GLenum mode = tm_itr->first;
+                if (tm_itr->second.last_applied_value)
+                {
+                    if (mode>=GL_TEXTURE_GEN_S && mode<=GL_TEXTURE_GEN_Q)
+                    {
+                        enableTexGen = true;
+                        texgen_multiplier[mode-GL_TEXTURE_GEN_S] = 1.0f;
+                    }
+                    else
+                    {
+                        textureMode = mode;
+                    }
+                    OSG_NOTICE<<"   enabled mode="<<std::hex<<mode<<std::dec<<std::endl;
+                }
+                else
+                {
+                    OSG_NOTICE<<"   disabled mode="<<std::hex<<mode<<std::dec<<std::endl;
+                }
+            }
+            std::stringstream sstream;
+
+            if (textureMode)
+            {
+                shaderDefineStr += _textureModeDefineMapList[i][textureMode];
+
+                if (enableTexGen)
+                {
+                    // Need to get the TexGen mode.
+                    OSG_NOTICE<<"   enabled TexGen "<<texgen_multiplier<<std::endl;
+                }
+            }
         }
 
         for(unsigned int i=0; i<shaderPragmas.textureModes.size(); ++i)
@@ -1860,7 +1935,7 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragm
         convertVertexShaderSourceToOsgBuiltIns(shaderDefineStr);
     }
 
-    // OSG_NOTICE<<"State::getDefineString(..) "<<shaderDefineStr<<std::endl;
+    OSG_NOTICE<<"State::getDefineString(..) "<<shaderDefineStr<<std::endl;
 }
 
 bool State::supportsShaderRequirements(const osg::ShaderPragmas& shaderPragmas)

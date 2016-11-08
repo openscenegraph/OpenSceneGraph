@@ -170,7 +170,7 @@ bool setUpStateSet(osg::ArgumentParser& arguments, osg::StateSet* stateset)
             OSG_NOTICE<<"****** texture unit : "<<sstream.str()<<std::endl;
             stateset->addUniform(new osg::Uniform(sstream.str().c_str(), static_cast<int>(i)));
 
-
+#if 0
             // fragment shader texture defines
             sstream.str("");
             sstream<<"TEXTURE_VERT_DECLARE"<<i;
@@ -216,6 +216,7 @@ bool setUpStateSet(osg::ArgumentParser& arguments, osg::StateSet* stateset)
             sstream<<", "<<i<<"); }";
 
             stateset->setDefine(textureFragBodyDefine, sstream.str());
+#endif
 
         }
 

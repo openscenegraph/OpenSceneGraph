@@ -70,6 +70,12 @@ GLBufferObject::GLBufferObject(unsigned int contextID, BufferObject* bufferObjec
     if (glObjectID==0)
     {
         _extensions->glGenBuffers(1, &_glObjectID);
+
+        if (bufferObject->getName().length() && _extensions->glObjectLabel){
+           _extensions->glBindBuffer(_profile._target, _glObjectID);
+           _extensions->glObjectLabel(GL_BUFFER, _glObjectID, bufferObject->getName().length(), bufferObject->getName().c_str());
+           _extensions->glBindBuffer(_profile._target, 0);
+        }
     }
 
     // OSG_NOTICE<<"Constructing BufferObject "<<this<<std::endl;

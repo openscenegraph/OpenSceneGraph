@@ -715,7 +715,7 @@ osg::ref_ptr<Texture::TextureObject> TextureObjectSet::takeFromOrphans(Texture* 
 
 osg::ref_ptr<Texture::TextureObject> TextureObjectSet::takeOrGenerate(Texture* texture)
 {
-    // see if we can recyle TextureObject from the orphan list
+    // see if we can recycle TextureObject from the orphan list
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
         if (!_pendingOrphanedTextureObjects.empty())
@@ -729,6 +729,10 @@ osg::ref_ptr<Texture::TextureObject> TextureObjectSet::takeOrGenerate(Texture* t
     {
         return takeFromOrphans(texture);
     }
+
+    // is there a better solution?
+    const unsigned int contextID = 0; // state.getContextID();  // set to 0 right now, assume same parameters for each graphics context...
+    const GLExtensions* extensions = GLExtensions::Get(contextID, true);
 
     unsigned int minFrameNumber = _parent->getFrameNumber();
 
@@ -761,6 +765,10 @@ osg::ref_ptr<Texture::TextureObject> TextureObjectSet::takeOrGenerate(Texture* t
         // assign to new texture
         to->setTexture(texture);
 
+        if (extensions->glObjectLabel){
+           to->bind();
+           extensions->glObjectLabel(GL_TEXTURE, to->id(), -1, texture->getName().c_str());
+        }
         return to;
     }
 
@@ -781,6 +789,10 @@ osg::ref_ptr<Texture::TextureObject> TextureObjectSet::takeOrGenerate(Texture* t
     addToBack(to.get());
 
     OSG_INFO<<"Created new " << this << " TextureObject, _numOfTextureObjects "<<_numOfTextureObjects<<std::endl;
+    if (extensions->glObjectLabel){
+       to->bind();
+       extensions->glObjectLabel(GL_TEXTURE, to->id(), -1, texture->getName().c_str());
+    }
 
     return to;
 }

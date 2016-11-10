@@ -984,7 +984,7 @@ class OSG_EXPORT State : public Referenced
 
         struct UniformStack
         {
-            typedef std::pair<const Uniform*,StateAttribute::OverrideValue>         UniformPair;
+            typedef std::pair<const UniformBase*, StateAttribute::OverrideValue>    UniformPair;
             typedef std::vector<UniformPair>                                        UniformVec;
 
             UniformStack() {}

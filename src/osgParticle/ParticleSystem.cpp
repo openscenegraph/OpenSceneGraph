@@ -146,8 +146,8 @@ void osgParticle::ParticleSystem::update(double dt, osg::NodeVisitor& nv)
 
         if (_dirty_uniforms)
         {
-            osg::Uniform* u_vd = stateset->getUniform("visibilityDistance");
-            if (u_vd) u_vd->set((float)_visibilityDistance);
+            osg::FloatUniform* u_vd = stateset->getOrCreateUniform<osg::FloatUniform>("visibilityDistance");
+            if (u_vd) u_vd->setValue(_visibilityDistance);
             _dirty_uniforms = false;
         }
     }
@@ -613,8 +613,8 @@ void osgParticle::ParticleSystem::setDefaultAttributesUsingShaders(const std::st
 #endif
     stateset->setAttributeAndModes(program, osg::StateAttribute::ON);
 
-    stateset->addUniform(new osg::Uniform("visibilityDistance", (float)_visibilityDistance));
-    stateset->addUniform(new osg::Uniform("baseTexture", texture_unit));
+    stateset->addUniform(new osg::FloatUniform("visibilityDistance", _visibilityDistance));
+    stateset->addUniform(new osg::IntUniform("baseTexture", texture_unit));
     setStateSet(stateset);
 
     setUseVertexArray(true);

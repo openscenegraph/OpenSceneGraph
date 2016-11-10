@@ -56,13 +56,6 @@ public:
         return unit < _textureAttributeMapList.size() ? getAttribute(_textureAttributeMapList[unit], type, 0) : 0;
     }
 
-    osg::Uniform *getUniform(const std::string& name) const
-    {
-        UniformMap::const_iterator it = _uniformMap.find(name);
-        return it != _uniformMap.end() ?
-            const_cast<osg::Uniform *>(it->second.uniformVec.back().first) : 0;
-    }
-
 protected:
 
     osg::StateAttribute::GLModeValue getMode(const ModeMap &modeMap,

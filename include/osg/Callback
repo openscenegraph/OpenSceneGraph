@@ -264,6 +264,7 @@ class OSG_EXPORT StateAttributeCallback : public virtual osg::Callback
 };
 
 // forward declare
+class UniformBase;
 class Uniform;
 
 /** Deprecated. */
@@ -285,7 +286,10 @@ public:
     virtual bool run(osg::Object* object, osg::Object* data);
 
     /** do customized update code.*/
+    virtual void operator () (UniformBase*, NodeVisitor*) {}
+
     virtual void operator () (Uniform*, NodeVisitor*) {}
+
 };
 
 

@@ -244,7 +244,7 @@ static bool readUniformList( osgDB::InputStream& is, osg::StateSet& ss )
     unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        osg::ref_ptr<osg::Uniform> uniform = is.readObjectOfType<osg::Uniform>();
+        osg::ref_ptr<osg::UniformBase> uniform = is.readObjectOfType<osg::UniformBase>();
         is >> is.PROPERTY("Value");
         int value = readValue( is );
         if ( uniform )

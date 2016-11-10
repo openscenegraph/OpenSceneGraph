@@ -110,6 +110,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Matrix
     ${HEADER_PATH}/Matrixd
     ${HEADER_PATH}/Matrixf
+    ${HEADER_PATH}/MatrixTemplate
     ${HEADER_PATH}/MatrixTransform
     ${HEADER_PATH}/MixinVector
     ${HEADER_PATH}/Multisample

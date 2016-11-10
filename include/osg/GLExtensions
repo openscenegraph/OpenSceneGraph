@@ -699,6 +699,9 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         GLint  glMaxTextureCoords;
         GLint  glMaxTextureUnits;
 
+        // debug extensions
+        void (GL_APIENTRY * glObjectLabel) (GLenum identifier, GLuint name, GLsizei length, const GLchar* label);
+
 };
 
 

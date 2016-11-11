@@ -229,7 +229,7 @@ bool Locator::inverted() const
     osg::Vec3d xAxis(_transform(0,0), _transform(1,0), _transform(2,0));
     osg::Vec3d yAxis(_transform(0,1), _transform(1,1), _transform(2,1));
     osg::Vec3d zAxis(_transform(0,2), _transform(1,2), _transform(2,2));
-    float volume = (xAxis^yAxis)*zAxis;
+    double volume = (xAxis^yAxis)*zAxis;
     return volume<0.0;
 }
 

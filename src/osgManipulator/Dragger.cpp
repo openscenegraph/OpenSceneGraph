@@ -15,6 +15,7 @@
 #include <osgManipulator/Dragger>
 #include <osgManipulator/Command>
 #include <osg/Material>
+#include <osg/FrontFace>
 #include <osgGA/EventVisitor>
 #include <osgViewer/View>
 #include <osg/io_utils>
@@ -196,6 +197,27 @@ Dragger::Dragger(const Dragger& rhs, const osg::CopyOp& copyop):
 
 Dragger::~Dragger()
 {
+}
+
+bool Dragger::inverted() const
+{
+    osg::Vec3d xAxis(_matrix(0,0), _matrix(1,0), _matrix(2,0));
+    osg::Vec3d yAxis(_matrix(0,1), _matrix(1,1), _matrix(2,1));
+    osg::Vec3d zAxis(_matrix(0,2), _matrix(1,2), _matrix(2,2));
+    double volume = (xAxis^yAxis)*zAxis;
+    return volume<0.0;
+}
+
+void Dragger::applyAppropriateFrontFace(osg::StateSet* ss) const
+{
+    osg::StateAttribute* sa = ss->getAttribute(osg::StateAttribute::FRONTFACE);
+    osg::FrontFace* ff = dynamic_cast<osg::FrontFace*>(sa);
+    if (!ff)
+    {
+        ff = new osg::FrontFace;
+        ss->setAttribute(ff);
+    }
+    ff->setMode( inverted() ? osg::FrontFace::CLOCKWISE : osg::FrontFace::COUNTER_CLOCKWISE);
 }
 
 void Dragger::setHandleEvents(bool flag)

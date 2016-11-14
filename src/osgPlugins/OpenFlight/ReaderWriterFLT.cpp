@@ -328,6 +328,12 @@ class FLTReaderWriter : public ReaderWriter
                 }
             }
 
+            if (rr.getNode())
+            {
+                osg::ConfigureBufferObjectsVisitor cbov;
+                rr.getNode()->accept(cbov);
+            }
+
             // clear local cache.
             if (nestedExternalsLevel==0)
                 flt::Registry::instance()->clearLocalCache();

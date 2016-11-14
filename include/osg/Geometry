@@ -129,6 +129,9 @@ class OSG_EXPORT Geometry : public Drawable
         unsigned int getPrimitiveSetIndex(const PrimitiveSet* primitiveset) const;
 
 
+        /** Convinience method that checks all the vertex arrays to make sure that the buffer objects are all assigned appropriate.*/
+        void configureBufferObjects();
+
         /** return true if any arrays are shared.*/
         bool containsSharedArrays() const;
 
@@ -275,6 +278,21 @@ class OSG_EXPORT Geometry : public Drawable
         GLboolean getVertexAttribNormalize(unsigned int index) const;
 #endif
 };
+
+/** Convinience visitor for making sure that any BufferObjects that might be required are set up in the scene graph.*/
+class ConfigureBufferObjectsVisitor : public osg::NodeVisitor
+{
+public:
+    ConfigureBufferObjectsVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+    void apply(osg::Geometry& geometry)
+    {
+        geometry.configureBufferObjects();
+    }
+};
+
+
 
 /** Convenience function to be used for creating quad geometry with texture coords.
   * Tex coords go from left bottom (l,b) to right top (r,t).

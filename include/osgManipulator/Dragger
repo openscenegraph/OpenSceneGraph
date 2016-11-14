@@ -276,7 +276,13 @@ class OSGMANIPULATOR_EXPORT Dragger : public osg::MatrixTransform
         virtual void setIntersectionMask(osg::Node::NodeMask intersectionMask) { _intersectionMask = intersectionMask; }
         osg::Node::NodeMask getIntersectionMask() const { return _intersectionMask; }
 
-    protected:
+        /** Return true if the axis of the Locator are inverted requiring the faces of any cubes used from rendering to be flipped to ensure the correct front/back face is used.*/
+        bool inverted() const;
+
+        /** apply the appropriate FrontFace setting to provided StateSet to ensure that the rendering of hull of the volume is the correct orientation.*/
+        void applyAppropriateFrontFace(osg::StateSet* ss) const;
+
+protected:
 
         Dragger();
         Dragger(const Dragger& rhs, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);

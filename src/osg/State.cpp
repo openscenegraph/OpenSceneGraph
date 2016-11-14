@@ -1075,7 +1075,7 @@ unsigned int State::getClientActiveTextureUnit() const
 }
 
 
-bool State::checkGLErrors(const char* str) const
+bool State::checkGLErrors(const char* str1, const char* str2) const
 {
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
@@ -1091,14 +1091,18 @@ bool State::checkGLErrors(const char* str) const
             OSG_NOTIFY(notifyLevel)<<"Warning: detected OpenGL error number 0x" << std::hex << errorNo << std::dec;
         }
 
-        if (str)
+        if (str1 || str2)
         {
-            OSG_NOTIFY(notifyLevel)<<" at "<<str<< std::endl;
+            OSG_NOTIFY(notifyLevel)<<" at";
+            if (str1) { OSG_NOTIFY(notifyLevel)<<" "<<str1; }
+            if (str2) { OSG_NOTIFY(notifyLevel)<<" "<<str2; }
         }
         else
         {
-            OSG_NOTIFY(notifyLevel)<<" in osg::State."<< std::endl;
+            OSG_NOTIFY(notifyLevel)<<" in osg::State.";
         }
+
+        OSG_NOTIFY(notifyLevel)<< std::endl;
 
         return true;
     }

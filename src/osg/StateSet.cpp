@@ -1443,15 +1443,14 @@ void StateSet::setThreadSafeRefUnref(bool threadSafe)
 void StateSet::compileGLObjects(State& state) const
 {
     bool checkForGLErrors = state.getCheckForGLErrors()==osg::State::ONCE_PER_ATTRIBUTE;
+    if (checkForGLErrors && state.checkGLErrors("before StateSet::compileGLObejcts()"))
+
     for(AttributeList::const_iterator itr = _attributeList.begin();
         itr!=_attributeList.end();
         ++itr)
     {
         itr->second.first->compileGLObjects(state);
-        if (checkForGLErrors && state.checkGLErrors("StateSet::compileGLObejcts() compiling attribute"))
-        {
-            OSG_NOTICE<<"    GL Error when compiling "<<itr->second.first->className()<<std::endl;
-        }
+        if (checkForGLErrors) state.checkGLErrors("StateSet::compileGLObejcts() compiling ", itr->second.first->className());
     }
 
     for(TextureAttributeList::const_iterator taitr=_textureAttributeList.begin();
@@ -1463,10 +1462,7 @@ void StateSet::compileGLObjects(State& state) const
             ++itr)
         {
             itr->second.first->compileGLObjects(state);
-            if (checkForGLErrors && state.checkGLErrors("StateSet::compileGLObejcts() compiling texture attribute"))
-            {
-                OSG_NOTICE<<"    GL Error when compiling "<<itr->second.first->className()<<std::endl;
-            }
+            if (checkForGLErrors) state.checkGLErrors("StateSet::compileGLObejcts() compiling texture attribute", itr->second.first->className());
         }
     }
 }

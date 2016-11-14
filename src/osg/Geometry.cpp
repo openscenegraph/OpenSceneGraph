@@ -103,6 +103,56 @@ bool Geometry::empty() const
     return true;
 }
 
+void Geometry::configureBufferObjects()
+{
+    osg::Array* vertices = getVertexArray();
+    if (!vertices) return;
+
+    osg::BufferObject* vbo = vertices->getBufferObject();
+    unsigned int numVertices = vertices->getNumElements();
+
+    typedef std::vector< osg::ref_ptr<osg::Array> > Arrays;
+    Arrays arrays;
+
+    if (getNormalArray()) arrays.push_back(getNormalArray());
+    if (getColorArray()) arrays.push_back(getColorArray());
+    if (getSecondaryColorArray()) arrays.push_back(getSecondaryColorArray());
+    if (getFogCoordArray()) arrays.push_back(getFogCoordArray());
+
+    for(unsigned int i=0; i<getNumTexCoordArrays(); ++i)
+    {
+        if (getTexCoordArray(i)) arrays.push_back(getTexCoordArray(i));
+    }
+
+    for(unsigned int i=0; i<getNumVertexAttribArrays(); ++i)
+    {
+        if (getVertexAttribArray(i)) arrays.push_back(getVertexAttribArray(i));
+    }
+
+    for(Arrays::iterator itr = arrays.begin();
+        itr != arrays.end();
+        ++itr)
+    {
+        osg::Array* array = *itr;
+        if (array->getBinding()==osg::Array::BIND_PER_VERTEX)
+        {
+            if (array->getNumElements()==numVertices)
+            {
+                if (!array->getBufferObject()) array->setBufferObject(vbo);
+            }
+            else if (array->getNumElements()>=1)
+            {
+                array->setBinding(osg::Array::BIND_OVERALL);
+            }
+            else
+            {
+                array->setBinding(osg::Array::BIND_OFF);
+            }
+        }
+    }
+}
+
+
 void Geometry::setVertexArray(Array* array)
 {
     if (array && array->getBinding()==osg::Array::BIND_UNDEFINED) array->setBinding(osg::Array::BIND_PER_VERTEX);

@@ -113,6 +113,13 @@ void ViewerBase::configureAffinity()
     bool requiresCameraThreads = false;
     bool requiresDrawThreads = false;
 
+    unsigned int availableProcessor = 0;
+
+    // set affinity for first processor
+    _affinity = OpenThreads::Affinity(availableProcessors[availableProcessor]);
+
+    // all threading models except DrawThreadPerContext can share the first cull or culldraw threads with thread with the main thread,
+    // so only increment the availableProcessor for DrawThreadPerContext to prevent draw threads sitting on the same thread as main thread that does cull
     switch(_threadingModel)
     {
         case(CullDrawThreadPerContext):
@@ -121,6 +128,7 @@ void ViewerBase::configureAffinity()
 
         case(DrawThreadPerContext):
             requiresDrawThreads = true;
+            ++availableProcessor;
             break;
 
         case(CullThreadPerCameraDrawThreadPerContext):
@@ -133,9 +141,7 @@ void ViewerBase::configureAffinity()
     };
 
 
-    unsigned int availableProcessor = 0;
 
-    _affinity = OpenThreads::Affinity(availableProcessors[availableProcessor++]);
 
     if (requiresCameraThreads)
     {

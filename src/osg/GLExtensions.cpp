@@ -1182,6 +1182,8 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
         glMaxTextureUnits = 0;
         glMaxTextureCoords = 0;
     }
+
+    osg::setGLExtensionFuncPtr(glObjectLabel, "glObjectLabel", validContext);
 }
 
 

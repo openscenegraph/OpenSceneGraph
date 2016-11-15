@@ -716,6 +716,8 @@ void Shader::PerContextShader::compileShader(osg::State& state)
             OSG_INFO << _shader->getTypename() << " Shader \""
                 << _shader->getName() << "\" infolog:\n" << infoLog << std::endl;
         }
+
+        _extensions->debugObjectLabel(GL_SHADER, _glShaderHandle, _shader->getName());
     }
 
 }

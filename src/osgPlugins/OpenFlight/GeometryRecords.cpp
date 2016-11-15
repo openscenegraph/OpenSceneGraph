@@ -406,6 +406,7 @@ protected:
         _geode->setName(id);
 
         _geometry = new osg::Geometry;
+        _geometry->setName(id);
         _geometry->setDataVariance(osg::Object::STATIC);
         _geode->addDrawable(_geometry.get());
 

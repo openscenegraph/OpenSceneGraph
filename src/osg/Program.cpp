@@ -824,6 +824,10 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
             OSG_INFO << "Program \""<< _program->getName() << "\" "<<
                                       "link succeeded, infolog:\n" << infoLog << std::endl;
         }
+
+        if (_extensions->glObjectLabel){
+           _extensions->glObjectLabel(GL_PROGRAM, _glProgramHandle, _program->getName().length(), _program->getName().c_str());
+        }
     }
 
     if (_extensions->isUniformBufferObjectSupported)

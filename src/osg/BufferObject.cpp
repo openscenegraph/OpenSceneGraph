@@ -190,6 +190,8 @@ void GLBufferObject::compileBuffer()
 
     _extensions->glBindBuffer(_profile._target, _glObjectID);
 
+    _extensions->debugObjectLabel(GL_BUFFER, _glObjectID, _bufferObject->getName());
+
     if (newTotalSize > _profile._size)
     {
         OSG_INFO<<"newTotalSize="<<newTotalSize<<", _profile._size="<<_profile._size<<std::endl;

@@ -438,12 +438,14 @@ bool StandardManipulator::performMovement()
 
     // call appropriate methods
     unsigned int buttonMask = _ga_t1->getButtonMask();
+    unsigned int modKeyMask = _ga_t1->getModKeyMask();
     if( buttonMask == GUIEventAdapter::LEFT_MOUSE_BUTTON )
     {
         return performMovementLeftMouseButton( eventTimeDelta, dx, dy );
     }
-    else if( buttonMask == GUIEventAdapter::MIDDLE_MOUSE_BUTTON ||
-            buttonMask == (GUIEventAdapter::LEFT_MOUSE_BUTTON | GUIEventAdapter::RIGHT_MOUSE_BUTTON) )
+    else if( ( buttonMask == GUIEventAdapter::MIDDLE_MOUSE_BUTTON ) ||
+             ( buttonMask == GUIEventAdapter::RIGHT_MOUSE_BUTTON && modKeyMask & GUIEventAdapter::MODKEY_CTRL ) ||
+             ( buttonMask == (GUIEventAdapter::LEFT_MOUSE_BUTTON | GUIEventAdapter::RIGHT_MOUSE_BUTTON) ) )
     {
         return performMovementMiddleMouseButton( eventTimeDelta, dx, dy );
     }

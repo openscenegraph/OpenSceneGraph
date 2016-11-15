@@ -248,7 +248,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
           * Note, must only be called from single thread update phase. */
         virtual void updateSceneGraph(const osg::FrameStamp& frameStamp);
 
-        /** Return true if there are ... . */
+        /** Return true if there are GL objects that need to be compiled by a draw traversal. */
         bool requiresRedraw() const;
 
         /** Report how many items are in the _fileRequestList queue */

@@ -202,7 +202,7 @@ bool RayIntersector::intersectAndClip(Vec3d& s, const Vec3d& d, Vec3d& e, const 
             // trivial reject of segment wholly outside
             if (s[i] > bb_max[i]) return false;
 
-            if (s[i] < bb_min[i])
+            if ((d[i] > epsilon) && (s[i] < bb_min[i]))
             {
                 // clip s to xMin
                 double t = (bb_min[i]-s[i])/d[i] - epsilon;
@@ -214,7 +214,7 @@ bool RayIntersector::intersectAndClip(Vec3d& s, const Vec3d& d, Vec3d& e, const 
             // trivial reject of segment wholly outside
             if (s[i] < bb_min[i]) return false;
 
-            if (s[i] > bb_max[i])
+            if ((d[i] < -epsilon) && (s[i] > bb_max[i]))
             {
                 // clip s to xMax
                 double t = (bb_max[i]-s[i])/d[i] - epsilon;
@@ -231,14 +231,14 @@ bool RayIntersector::intersectAndClip(Vec3d& s, const Vec3d& d, Vec3d& e, const 
     for (int i=0; i<3; i++)
     {
         // test direction
-        if (d[i] >= 0.)
+        if (d[i] >= epsilon)
         {
             // compute end_t based on xMax
             double t = (bb_max[i]-s[i])/d[i] + epsilon;
             if (t < end_t)
                 end_t = t;
         }
-        else
+        else if (d[i] <= -epsilon)
         {
             // compute end_t based on xMin
             double t = (bb_min[i]-s[i])/d[i] + epsilon;
@@ -246,6 +246,9 @@ bool RayIntersector::intersectAndClip(Vec3d& s, const Vec3d& d, Vec3d& e, const 
                 end_t = t;
         }
     }
+
+    // if we failed to clamp the end point return false
+    if (end_t==std::numeric_limits<double>::infinity()) return false;
 
     // compute e
     e = s + d*end_t;

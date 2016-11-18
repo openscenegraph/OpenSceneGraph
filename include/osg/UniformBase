@@ -36,6 +36,9 @@ class OSG_EXPORT UniformBase : public Object
         /** Set the name of the glUniform, ensuring it is only set once.*/
         virtual void setName( const std::string& name );
 
+        /** Set the name of the glUniform appending [unit] such as osg_Light[0].*/
+        void setName(const std::string& baseName, unsigned int unit);
+
         inline unsigned int getNameID() const { return _nameID; }
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */

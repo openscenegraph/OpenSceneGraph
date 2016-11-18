@@ -73,14 +73,46 @@ int UniformBase::compareData(const UniformBase&) const
 
 void UniformBase::setName( const std::string& name )
 {
-    if( _name != "" )
-    {
-        OSG_WARN << "cannot change Uniform name" << std::endl;
-        return;
-    }
+    if (_name==name) return;
+
+    std::string previousName = _name;
+
     Object::setName(name);
 
+    // need to copy parents list before iterating through it as addUniform/removeUniform will modify the _parents list and invalidate the iterators.
+    ParentList parents = _parents;
+
+    for(ParentList::iterator itr = parents.begin();
+        itr != parents.end();
+        ++itr)
+    {
+        StateSet* stateset = *itr;
+
+        StateAttribute::OverrideValue overrideValue = osg::StateAttribute::ON;
+        const StateSet::RefUniformPair* rup = stateset->getUniformPair(previousName);
+        if (rup) overrideValue = rup->second;
+
+
+        stateset->addUniform(this, overrideValue);
+        stateset->removeUniform(previousName);
+    }
+
     _nameID = Uniform::getNameID(_name);
+}
+
+void UniformBase::setName(const std::string& baseName, unsigned int unit)
+{
+    std::string name(baseName);
+    name += '[';
+    if (unit>=10)
+    {
+        unsigned int tens = (unit / 10);
+        name += char('0'+tens);
+    }
+    name += char('0'+(unit%10));
+    name += ']';
+
+    setName(name);
 }
 
 

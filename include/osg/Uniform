@@ -35,6 +35,7 @@
 #include <osg/Vec2d>
 #include <osg/Vec3d>
 #include <osg/Vec4d>
+#include <osg/Plane>
 #include <osg/GLExtensions>
 
 namespace osg {
@@ -55,6 +56,8 @@ class TemplateUniform : public osg::UniformBase
         TemplateUniform() {}
 
         TemplateUniform(const std::string& name) : osg::UniformBase(name) {}
+
+        TemplateUniform(const value_type& value) : _value(value) {}
 
         TemplateUniform(const std::string& name, const value_type& value) : osg::UniformBase(name), _value(value) {}
 
@@ -102,6 +105,7 @@ META_Uniform(osg::Vec4, Vec4Uniform)
 META_Uniform(osg::Vec2d, Vec2dUniform)
 META_Uniform(osg::Vec3d, Vec3dUniform)
 META_Uniform(osg::Vec4d, Vec4dUniform)
+META_Uniform(osg::Plane, PlaneUniform)
 META_Uniform(osg::Matrixf, MatrixfUniform)
 META_Uniform(osg::Matrixd, MatrixdUniform)
 

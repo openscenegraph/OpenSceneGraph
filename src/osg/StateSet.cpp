@@ -1393,6 +1393,9 @@ void StateSet::setTextureAttribute(unsigned int unit,StateAttribute *attribute, 
         if (attribute->isTextureAttribute())
         {
             setAttribute(getOrCreateTextureAttributeList(unit),attribute,value);
+
+            TextureAttribute* ta = dynamic_cast<TextureAttribute*>(attribute);
+            if (ta) ta->setTextureUnit(unit);
         }
         else
         {
@@ -1420,6 +1423,9 @@ void StateSet::setTextureAttributeAndModes(unsigned int unit,StateAttribute *att
             {
                 setAttribute(getOrCreateTextureAttributeList(unit),attribute,value);
                 setAssociatedTextureModes(unit,attribute,value);
+
+                TextureAttribute* ta = dynamic_cast<TextureAttribute*>(attribute);
+                if (ta) ta->setTextureUnit(unit);
             }
         }
         else

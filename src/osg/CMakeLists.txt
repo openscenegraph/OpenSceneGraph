@@ -166,6 +166,7 @@ SET(TARGET_H
     ${HEADER_PATH}/StencilTwoSided
     ${HEADER_PATH}/Switch
     ${HEADER_PATH}/TemplatePrimitiveFunctor
+    ${HEADER_PATH}/TextureAttribute
     ${HEADER_PATH}/TexEnv
     ${HEADER_PATH}/TexEnvCombine
     ${HEADER_PATH}/TexEnvFilter

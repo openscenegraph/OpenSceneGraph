@@ -1,0 +1,61 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_TEXTURETRIBUTE
+#define OSG_TEXTURETRIBUTE 1
+
+#include <osg/StateAttribute>
+
+namespace osg {
+
+// forward declare
+class StateSet;
+
+class TextureAttribute : public StateAttribute
+{
+    public:
+        TextureAttribute():
+            _textureUnit(0) {}
+
+        TextureAttribute(const TextureAttribute& ta, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(ta, copyop) {}
+
+        virtual bool isTextureAttribute() const { return true; }
+
+        virtual unsigned int getMember() const { return _textureUnit; }
+
+    protected:
+        virtual ~TextureAttribute() {}
+
+        // called when the TextureAttribute is assigned to a StateSet;
+        virtual void setTextureUnit(unsigned int unit)
+        {
+            if (unit!=_textureUnit)
+            {
+                _textureUnit = unit;
+
+                // configure the uniform names to reflect new texture unit value
+                configureUniformNames();
+            }
+        }
+
+        // TextureAttribute subclasses that manage uniforms will need to override configureUniformNames() and adjust uniform names to reflect texture unit that the attribute is assigned to.
+        virtual void configureUniformNames() {}
+
+        friend class StateSet;
+
+        unsigned int _textureUnit;
+};
+
+}
+#endif

@@ -1025,6 +1025,10 @@ class OSG_EXPORT State : public Referenced
         typedef std::map<GLenum, std::string>                           ModeDefineMap;
         typedef std::vector<ModeDefineMap>                              TextureModeDefineMapList;
 
+        inline StringModeMap& getStringModeMap() { return _stringModeMap; }
+        inline TextureModeDefineMapList& getTextureModeDefineMapList() { return _textureModeDefineMapList; }
+        inline ModeDefineMap& getTextureModeDefineMap(unsigned int i) { return _textureModeDefineMapList[i]; }
+
         typedef std::map<StateAttribute::GLMode,ModeStack>              ModeMap;
         typedef std::vector<ModeMap>                                    TextureModeMapList;
 
@@ -1258,8 +1262,6 @@ class OSG_EXPORT State : public Referenced
 
         StringModeMap                                                   _stringModeMap;
         TextureModeDefineMapList                                        _textureModeDefineMapList;
-        TextureModeDefineMapList                                        _texenvModeDefineMapList;
-        TextureModeDefineMapList                                        _texgenModeDefineMapList;
 
         ModeMap                                                         _modeMap;
         AttributeMap                                                    _attributeMap;

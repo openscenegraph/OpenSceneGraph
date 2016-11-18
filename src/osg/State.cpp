@@ -360,7 +360,8 @@ void State::initUpModeDefineMaps()
     ADDMODE(GL_COLOR_MATERIAL)
 
     unsigned int maxNumTextureUnits = 16;
-    std::stringstream sstream;
+    MakeString str;
+
     _textureModeDefineMapList.resize(maxNumTextureUnits);
     for(unsigned int i=0; i<maxNumTextureUnits; ++i)
     {
@@ -369,13 +370,13 @@ void State::initUpModeDefineMaps()
         std::string textureSuffixString("st");
 
         // fragment shader texture defines
-        sstream.str("");
-        sstream<<"#define TEXTURE_VERT_DECLARE"<<i<<" varying vec4 TexCoord"<<i<<";"<<s_LineEnding;
-        sstream<<"#define TEXTURE_VERT_BODY"<<i<<" { TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<"; if (GL_TEXTURE_GEN_MODE["<<i<<"]!=0) TexCoord0 = texgen(TexCoord"<<i<<", "<<i<<"); }"<<s_LineEnding;
-        sstream<<"#define TEXTURE_FRAG_DECLARE"<<i<<" uniform sampler2D sampler"<<i<<"; varying vec4 TexCoord"<<i<<";"<<s_LineEnding;
-        sstream<<"#define TEXTURE_FRAG_BODY"<<i<<"(color) { color = texenv(color, texture2D( sampler"<<i<<", TexCoord"<<i<<".st)"<<", "<<i<<"); }"<<s_LineEnding;
+        str.clear();
+        str<<"#define TEXTURE_VERT_DECLARE"<<i<<" varying vec4 TexCoord"<<i<<";"<<std::endl;
+        str<<"#define TEXTURE_VERT_BODY"<<i<<" TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<";"<<std::endl;
+        str<<"#define TEXTURE_FRAG_DECLARE"<<i<<" uniform sampler2D sampler"<<i<<"; varying vec4 TexCoord"<<i<<";"<<std::endl;
+        str<<"#define TEXTURE_FRAG_BODY"<<i<<"(color) { color = texenv(color, texture2D( sampler"<<i<<", TexCoord"<<i<<".st)"<<", "<<i<<"); }"<<std::endl;
 
-        _textureModeDefineMapList[i][GL_TEXTURE_2D] = sstream.str();
+        _textureModeDefineMapList[i][GL_TEXTURE_2D] = str;
     }
 
 }
@@ -1847,13 +1848,7 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragm
 
         for(unsigned int i=0; i<_textureModeMapList.size(); ++i)
         {
-            OSG_NOTICE<<" texture unit ="<<i<<std::endl;
             const ModeMap& modeMap = _textureModeMapList[i];
-
-            bool enableTexGen = false;
-            Vec4 texgen_multiplier(0.0f,0.0f,0.f,0.0f);
-            GLenum textureMode = 0;
-
             for(ModeMap::const_iterator tm_itr = modeMap.begin();
                 tm_itr != modeMap.end();
                 ++tm_itr)
@@ -1861,32 +1856,7 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragm
                 GLenum mode = tm_itr->first;
                 if (tm_itr->second.last_applied_value)
                 {
-                    if (mode>=GL_TEXTURE_GEN_S && mode<=GL_TEXTURE_GEN_Q)
-                    {
-                        enableTexGen = true;
-                        texgen_multiplier[mode-GL_TEXTURE_GEN_S] = 1.0f;
-                    }
-                    else
-                    {
-                        textureMode = mode;
-                    }
-                    OSG_NOTICE<<"   enabled mode="<<std::hex<<mode<<std::dec<<std::endl;
-                }
-                else
-                {
-                    OSG_NOTICE<<"   disabled mode="<<std::hex<<mode<<std::dec<<std::endl;
-                }
-            }
-            std::stringstream sstream;
-
-            if (textureMode)
-            {
-                shaderDefineStr += _textureModeDefineMapList[i][textureMode];
-
-                if (enableTexGen)
-                {
-                    // Need to get the TexGen mode.
-                    OSG_NOTICE<<"   enabled TexGen "<<texgen_multiplier<<std::endl;
+                    shaderDefineStr += _textureModeDefineMapList[i][mode];
                 }
             }
         }

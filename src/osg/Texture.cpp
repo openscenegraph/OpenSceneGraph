@@ -245,10 +245,12 @@ Texture::TextureObject::~TextureObject()
     // OSG_NOTICE<<"Texture::TextureObject::~TextureObject() "<<this<<std::endl;
 }
 
-void Texture::TextureObject::bind()
+void Texture::TextureObject::bind(osg::State& state)
 {
     glBindTexture( _profile._target, _id);
     if (_set) _set->moveToBack(this);
+
+    if (state.getUseStateAttributeShaders()) state.setCurrentTextureFormat(_profile._internalFormat);
 }
 
 void Texture::TextureObject::release()
@@ -1248,7 +1250,7 @@ Texture::Texture():
 }
 
 Texture::Texture(const Texture& text,const CopyOp& copyop):
-            StateAttribute(text,copyop),
+            TextureAttribute(text,copyop),
             _wrap_s(text._wrap_s),
             _wrap_t(text._wrap_t),
             _wrap_r(text._wrap_r),
@@ -2768,7 +2770,7 @@ void Texture::generateMipmap(State& state) const
     // FrameBufferObjects are required for glGenerateMipmap
     if (ext->isFrameBufferObjectSupported && ext->glGenerateMipmap)
     {
-        textureObject->bind();
+        textureObject->bind(state);
         ext->glGenerateMipmap(textureObject->target());
 
         // inform state that this texture is the current one bound.

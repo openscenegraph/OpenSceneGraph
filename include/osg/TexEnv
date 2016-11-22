@@ -14,9 +14,9 @@
 #ifndef OSG_TEXENV
 #define OSG_TEXENV 1
 
-#include <osg/GL>
-#include <osg/StateAttribute>
-#include <osg/Vec4>
+#include <osg/TextureAttribute>
+#include <osg/Uniform>
+#include <osg/StateSet>
 
 #ifndef OSG_GL_FIXED_FUNCTION_AVAILABLE
     #define GL_MODULATE         0x2100
@@ -29,7 +29,7 @@ namespace osg {
 
 /** TexEnv encapsulates the OpenGL glTexEnv (texture environment) state.
 */
-class OSG_EXPORT TexEnv : public StateAttribute
+class OSG_EXPORT TexEnv : public TextureAttribute
 {
     public :
 
@@ -44,15 +44,10 @@ class OSG_EXPORT TexEnv : public StateAttribute
         TexEnv(Mode mode=MODULATE);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
-        TexEnv(const TexEnv& texenv,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            StateAttribute(texenv,copyop),
-            _mode(texenv._mode),
-            _color(texenv._color) {}
+        TexEnv(const TexEnv& texenv,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
 
         META_StateAttribute(osg, TexEnv, TEXENV);
-
-        virtual bool isTextureAttribute() const { return true; }
 
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
@@ -69,15 +64,16 @@ class OSG_EXPORT TexEnv : public StateAttribute
         }
 
 
-        void setMode( Mode mode ) { _mode = mode; }
+        void setMode( Mode mode );
 
         Mode getMode() const { return _mode; }
 
-        void setColor( const Vec4& color ) { _color = color; }
 
-        Vec4& getColor() { return _color; }
+        void setColor( const Vec4& color ) { _color->setValue(color); }
 
-        const Vec4& getColor() const { return _color; }
+        Vec4& getColor() { return _color->getValue(); }
+
+        const Vec4& getColor() const { return _color->getValue(); }
 
 
         virtual void apply(State& state) const;
@@ -86,8 +82,11 @@ class OSG_EXPORT TexEnv : public StateAttribute
 
         virtual ~TexEnv( void );
 
-        Mode        _mode;
-        osg::Vec4   _color;
+        void configureUniformNames();
+
+        Mode                    _mode;
+        ref_ptr<Vec4Uniform>    _color;
+        StateSet::DefineList    _defineList;
 };
 
 }

@@ -74,9 +74,13 @@ State::State():
     _modelViewCache = new osg::RefMatrix;
 
     #if !defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
+        _useStateAttributeShaders = true;
+        _useStateAttributeFixedFunction = false;
         _useModelViewAndProjectionUniforms = true;
         _useVertexAttributeAliasing = true;
     #else
+        _useStateAttributeShaders = false;
+        _useStateAttributeFixedFunction = true;
         _useModelViewAndProjectionUniforms = false;
         _useVertexAttributeAliasing = false;
     #endif
@@ -177,6 +181,17 @@ State::~State()
     //_texCoordArrayList.clear();
 
     //_vertexAttribArrayList.clear();
+}
+
+
+void State::setUseStateAttributeShaders(bool flag)
+{
+    _useStateAttributeShaders = flag;
+}
+
+void State::setUseStateAttributeFixedFunction(bool flag)
+{
+    _useStateAttributeFixedFunction = flag;
 }
 
 void State::setUseModelViewAndProjectionUniforms(bool flag)
@@ -313,7 +328,6 @@ void State::initializeExtensionProcs()
 
 void State::initUpModeDefineMaps()
 {
-
     #define ADDMODE(MODE) _stringModeMap[#MODE] = MODE;
     ADDMODE(GL_LIGHTING)
     ADDMODE(GL_LIGHT0)
@@ -359,26 +373,56 @@ void State::initUpModeDefineMaps()
 
     ADDMODE(GL_COLOR_MATERIAL)
 
+    ADDMODE(GL_RED)
+    ADDMODE(GL_RG)
+    ADDMODE(GL_RGB)
+    ADDMODE(GL_RGBA)
+    ADDMODE(GL_ALPHA)
+
     unsigned int maxNumTextureUnits = 16;
     MakeString str;
+
+    _textureFormat = new IntArrayUniform("osg_TextureFormat",maxNumTextureUnits);
 
     _textureModeDefineMapList.resize(maxNumTextureUnits);
     for(unsigned int i=0; i<maxNumTextureUnits; ++i)
     {
-        std::string samplerString("sampler2D");
-        std::string textureString("texture2D");
-        std::string textureSuffixString("st");
+        _textureModeDefineMapList[i][GL_TEXTURE_1D] = str.clear()
+            <<"#define TEXTURE_VERT_DECLARE"<<i<<" varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_VERT_BODY"<<i<<" TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FRAG_DECLARE"<<i<<" uniform sampler1D sampler"<<i<<"; varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FUNCTION"<<i<<"() texture1D( sampler"<<i<<", TexCoord"<<i<<".s)"<<std::endl;
 
-        // fragment shader texture defines
-        str.clear();
-        str<<"#define TEXTURE_VERT_DECLARE"<<i<<" varying vec4 TexCoord"<<i<<";"<<std::endl;
-        str<<"#define TEXTURE_VERT_BODY"<<i<<" TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<";"<<std::endl;
-        str<<"#define TEXTURE_FRAG_DECLARE"<<i<<" uniform sampler2D sampler"<<i<<"; varying vec4 TexCoord"<<i<<";"<<std::endl;
-        str<<"#define TEXTURE_FRAG_BODY"<<i<<"(color) { color = texenv(color, texture2D( sampler"<<i<<", TexCoord"<<i<<".st)"<<", "<<i<<"); }"<<std::endl;
+        _textureModeDefineMapList[i][GL_TEXTURE_2D] = str.clear()
+            <<"#define TEXTURE_VERT_DECLARE"<<i<<" varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_VERT_BODY"<<i<<" TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FRAG_DECLARE"<<i<<" uniform sampler2D sampler"<<i<<"; varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FUNCTION"<<i<<"() texture2D( sampler"<<i<<", TexCoord"<<i<<".st)"<<std::endl;
 
-        _textureModeDefineMapList[i][GL_TEXTURE_2D] = str;
+        _textureModeDefineMapList[i][GL_TEXTURE_RECTANGLE] = str.clear()
+            <<"#define TEXTURE_VERT_DECLARE"<<i<<" varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_VERT_BODY"<<i<<" TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FRAG_DECLARE"<<i<<" uniform samplerRectangle sampler"<<i<<"; varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FUNCTION"<<i<<"() textureRectangle( sampler"<<i<<", TexCoord"<<i<<".st)"<<std::endl;
+
+        _textureModeDefineMapList[i][GL_TEXTURE_3D] = str.clear()
+            <<"#define TEXTURE_VERT_DECLARE"<<i<<" varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_VERT_BODY"<<i<<" TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FRAG_DECLARE"<<i<<" uniform sampler3D sampler"<<i<<"; varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FUNCTION"<<i<<"() texture3D( sampler"<<i<<", TexCoord"<<i<<".str)"<<std::endl;
+
+        _textureModeDefineMapList[i][GL_TEXTURE_CUBE_MAP] = str.clear()
+            <<"#define TEXTURE_VERT_DECLARE"<<i<<" varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_VERT_BODY"<<i<<" TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FRAG_DECLARE"<<i<<" uniform samplerCubeMap sampler"<<i<<"; varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FUNCTION"<<i<<"() textureCubeMap( sampler"<<i<<", TexCoord"<<i<<".str)"<<std::endl;
+
+        _textureModeDefineMapList[i][GL_TEXTURE_2D_ARRAY] = str.clear()
+            <<"#define TEXTURE_VERT_DECLARE"<<i<<" varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_VERT_BODY"<<i<<" TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FRAG_DECLARE"<<i<<" uniform sampler2DArray sampler"<<i<<"; varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FUNCTION"<<i<<"() texture2DArray( sampler"<<i<<", TexCoord"<<i<<".str)"<<std::endl;
     }
-
 }
 
 void State::releaseGLObjects()
@@ -1772,10 +1816,8 @@ bool State::DefineMap::updateCurrentDefines()
 }
 
 
-void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderDefines& shaderDefines)
+void State::getDefineString(std::string& shaderDefineStr, const StateSet::DefineList& currentDefines, const osg::ShaderDefines& shaderDefines)
 {
-    const StateSet::DefineList& currentDefines = _defineMap.currentDefines;
-
     ShaderDefines::const_iterator sd_itr = shaderDefines.begin();
     StateSet::DefineList::const_iterator cd_itr = currentDefines.begin();
 
@@ -1802,14 +1844,20 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderDefin
     }
 }
 
-inline std::stringstream& str_reset(std::stringstream& sstream) { sstream.str(""); return sstream; }
-
 void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragmas& shaderPragmas)
 {
     if (_defineMap.changed) _defineMap.updateCurrentDefines();
 
-    if (!shaderPragmas.defines.empty()) getDefineString(shaderDefineStr, shaderPragmas.defines);
-    if (!shaderPragmas.requirements.empty()) getDefineString(shaderDefineStr, shaderPragmas.requirements);
+    if (!shaderPragmas.defines.empty())
+    {
+        getDefineString(shaderDefineStr, _defineMap.currentDefines, shaderPragmas.defines);
+        getDefineString(shaderDefineStr, _currentShaderCompositionDefines, shaderPragmas.defines);
+    }
+    if (!shaderPragmas.requirements.empty())
+    {
+        getDefineString(shaderDefineStr, _defineMap.currentDefines, shaderPragmas.requirements);
+        getDefineString(shaderDefineStr, _currentShaderCompositionDefines, shaderPragmas.requirements);
+    }
 
     if (!shaderPragmas.modes.empty())
     {
@@ -1831,17 +1879,13 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragm
                 else
                 {
                     ModeMap::const_iterator mm_itr = _modeMap.find(mode);
-                    if (mm_itr!=_modeMap.end())
-                    {
-                        bool mode_enabled = mm_itr->second.last_applied_value;
-                        if (mode_enabled)
-                        {
-                            // OSG_NOTICE<<"  mapping mode to #define "<<modeStr<<std::endl;
-                            shaderDefineStr += "#define ";
-                            shaderDefineStr += modeStr;
-                            shaderDefineStr += s_LineEnding;
-                        }
-                    }
+                    bool mode_enabled = (mm_itr!=_modeMap.end() && mm_itr->second.last_applied_value);
+
+                    shaderDefineStr += "#define ";
+                    shaderDefineStr += modeStr;
+                    if (mode_enabled) shaderDefineStr += " 1";
+                    else shaderDefineStr += " 0";
+                    shaderDefineStr += s_LineEnding;
                 }
              }
         }
@@ -1849,6 +1893,7 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragm
         for(unsigned int i=0; i<_textureModeMapList.size(); ++i)
         {
             const ModeMap& modeMap = _textureModeMapList[i];
+            const ModeDefineMap& modeDefineMap = _textureModeDefineMapList[i];
             for(ModeMap::const_iterator tm_itr = modeMap.begin();
                 tm_itr != modeMap.end();
                 ++tm_itr)
@@ -1856,7 +1901,8 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragm
                 GLenum mode = tm_itr->first;
                 if (tm_itr->second.last_applied_value)
                 {
-                    shaderDefineStr += _textureModeDefineMapList[i][mode];
+                    ModeDefineMap::const_iterator mdm_itr = modeDefineMap.find(mode);
+                    if (mdm_itr!=modeDefineMap.end()) shaderDefineStr += mdm_itr->second;
                 }
             }
         }
@@ -1877,19 +1923,17 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragm
                     if (m_itr!=_stringModeMap.end())
                     {
                         // OSG_NOTICE<<"Need to look up mode ["<<modeStr<<"]"<<std::endl;
+
                         StateAttribute::GLMode mode = m_itr->second;
                         ModeMap::const_iterator mm_itr = modeMap.find(mode);
-                        if (mm_itr!=modeMap.end())
-                        {
-                            bool mode_enabled = mm_itr->second.last_applied_value;
-                            if (mode_enabled)
-                            {
-                                // OSG_NOTICE<<"  mapping mode to #define "<<modeStr<<std::endl;
-                                shaderDefineStr += "#define ";
-                                shaderDefineStr += modeStr;
-                                shaderDefineStr += s_LineEnding;
-                            }
-                        }
+                        bool mode_enabled = mm_itr!=modeMap.end() && mm_itr->second.last_applied_value;
+
+                        shaderDefineStr += "#define ";
+                        shaderDefineStr += modeStr;
+                        shaderDefineStr += char('0'+char(i));
+                        if (mode_enabled) shaderDefineStr += " 1";
+                        else shaderDefineStr += " 0";
+                        shaderDefineStr += s_LineEnding;
 
                     }
                 }
@@ -1905,7 +1949,7 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragm
         convertVertexShaderSourceToOsgBuiltIns(shaderDefineStr);
     }
 
-    OSG_NOTICE<<"State::getDefineString(..) "<<shaderDefineStr<<std::endl;
+    OSG_NOTICE<<"State::getDefineString(..)\n"<<shaderDefineStr<<std::endl;
 }
 
 bool State::supportsShaderRequirements(const osg::ShaderPragmas& shaderPragmas)

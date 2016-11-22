@@ -171,12 +171,20 @@ class OSG_EXPORT State : public Referenced
         StateSet::UniformList& getCurrentShaderCompositionUniformList() { return _currentShaderCompositionUniformList; }
 
         /** Convenience method for StateAttribute::apply(State&) methods to pass on their uniforms to osg::State so it can apply them at the appropriate point.*/
-        void applyShaderCompositionUniform(const osg::Uniform* uniform, StateAttribute::OverrideValue value=StateAttribute::ON)
+        void applyShaderCompositionUniform(const osg::UniformBase* uniform, StateAttribute::OverrideValue value=StateAttribute::ON)
         {
             StateSet::RefUniformPair& up = _currentShaderCompositionUniformList[uniform->getName()];
-            up.first = const_cast<Uniform*>(uniform);
+            up.first = const_cast<UniformBase*>(uniform);
             up.second = value;
         }
+
+
+        /** Convenience method for StateAttribute::apply(State&) methods to pass on their defines to osg::State so it can apply them at the appropriate point.*/
+        void applyShaderCompositionDefines(const StateSet::DefineList& defineList)
+        {
+            _currentShaderCompositionDefines.insert(defineList.begin(), defineList.end());
+        }
+
 
 
         /** Push stateset onto state stack.*/
@@ -222,6 +230,20 @@ class OSG_EXPORT State : public Referenced
         }
 
 
+        void setUseStateAttributeShaders(bool flag);
+        bool getUseStateAttributeShaders() const { return _useStateAttributeShaders; }
+
+        void setUseStateAttributeFixedFunction(bool flag);
+        bool getUseStateAttributeFixedFunction() const { return _useStateAttributeFixedFunction; }
+
+        void setUseModelViewAndProjectionUniforms(bool flag);
+        bool getUseModelViewAndProjectionUniforms() const { return _useModelViewAndProjectionUniforms; }
+
+        void setUseVertexAttributeAliasing(bool flag);
+        bool getUseVertexAttributeAliasing() const { return _useVertexAttributeAliasing ; }
+
+
+
         void setInitialViewMatrix(const osg::RefMatrix* matrix);
 
         inline const osg::Matrix& getInitialViewMatrix() const { return *_initialViewMatrix; }
@@ -236,9 +258,6 @@ class OSG_EXPORT State : public Referenced
 
         const osg::Matrix& getModelViewMatrix() const { return *_modelView; }
 
-        void setUseModelViewAndProjectionUniforms(bool flag);
-        bool getUseModelViewAndProjectionUniforms() const { return _useModelViewAndProjectionUniforms; }
-
         void updateModelViewAndProjectionMatrixUniforms();
 
         void applyModelViewAndProjectionUniformsIfRequired();
@@ -251,9 +270,6 @@ class OSG_EXPORT State : public Referenced
 
         Polytope getViewFrustum() const;
 
-
-        void setUseVertexAttributeAliasing(bool flag);
-        bool getUseVertexAttributeAliasing() const { return _useVertexAttributeAliasing ; }
 
         typedef std::vector<VertexAttribAlias> VertexAttribAliasList;
 
@@ -730,6 +746,11 @@ class OSG_EXPORT State : public Referenced
         /** Get the current texture unit.*/
         unsigned int getActiveTextureUnit() const { return _currentActiveTextureUnit; }
 
+
+        /** Set the current texture format uniform.*/
+        void setCurrentTextureFormat(GLenum format) { _textureFormat->setElement(_currentActiveTextureUnit, format); applyShaderCompositionUniform(_textureFormat.get()); }
+
+
         /** Set the current tex coord array texture unit, return true if selected,
           * false if selection failed such as when multi texturing is not supported.
           * note, only updates values that change.*/
@@ -1046,8 +1067,11 @@ class OSG_EXPORT State : public Referenced
         inline const DefineMap&                                         getDefineMap() const {return _defineMap;}
         inline const TextureModeMapList&                                getTextureModeMapList() const {return _textureModeMapList;}
         inline const TextureAttributeMapList&                           getTextureAttributeMapList() const {return _textureAttributeMapList;}
+        inline StateSet::DefineList&                                    getCurrentShaderCompositionDefines() { return _currentShaderCompositionDefines; }
+        inline const StateSet::DefineList&                              getCurrentShaderCompositionDefines() const { return _currentShaderCompositionDefines; }
 
-        void getDefineString(std::string& shaderDefineStr, const osg::ShaderDefines& shaderDefines);
+
+        void getDefineString(std::string& shaderDefineStr, const StateSet::DefineList& currentDefines, const osg::ShaderDefines& shaderDefines);
         void getDefineString(std::string& shaderDefineStr, const osg::ShaderPragmas& shaderPragmas);
         bool supportsShaderRequirements(const osg::ShaderPragmas& shaderPragmas);
         bool supportsShaderRequirement(const std::string& shaderRequirement);
@@ -1059,6 +1083,11 @@ class OSG_EXPORT State : public Referenced
         GraphicsContext*            _graphicsContext;
         unsigned int                _contextID;
 
+        bool                        _useStateAttributeShaders;
+        bool                        _useStateAttributeFixedFunction;
+        bool                        _useModelViewAndProjectionUniforms;
+        bool                        _useVertexAttributeAliasing;
+
         osg::ref_ptr<osg::StateSet>     _rootStateSet;
 
         osg::ref_ptr<VertexArrayState>  _globalVertexArrayState;
@@ -1069,6 +1098,7 @@ class OSG_EXPORT State : public Referenced
         osg::ref_ptr<ShaderComposer>    _shaderComposer;
         osg::Program*                   _currentShaderCompositionProgram;
         StateSet::UniformList           _currentShaderCompositionUniformList;
+        StateSet::DefineList            _currentShaderCompositionDefines;
 
         ref_ptr<FrameStamp>         _frameStamp;
 
@@ -1078,7 +1108,7 @@ class OSG_EXPORT State : public Referenced
         ref_ptr<const RefMatrix>    _modelView;
         ref_ptr<RefMatrix>          _modelViewCache;
 
-        bool                        _useModelViewAndProjectionUniforms;
+
         ref_ptr<Uniform>            _modelViewMatrixUniform;
         ref_ptr<Uniform>            _projectionMatrixUniform;
         ref_ptr<Uniform>            _modelViewProjectionMatrixUniform;
@@ -1092,7 +1122,6 @@ class OSG_EXPORT State : public Referenced
         CheckForGLErrors            _checkGLErrors;
 
 
-        bool                        _useVertexAttributeAliasing;
         VertexAttribAlias           _vertexAlias;
         VertexAttribAlias           _normalAlias;
         VertexAttribAlias           _colorAlias;
@@ -1279,10 +1308,11 @@ class OSG_EXPORT State : public Referenced
         unsigned int                                                    _maxBufferObjectPoolSize;
 
 
-        unsigned int                    _currentActiveTextureUnit;
-        unsigned int                    _currentClientActiveTextureUnit;
-        GLBufferObject*                 _currentPBO;
-        GLuint                          _currentVAO;
+        unsigned int                            _currentActiveTextureUnit;
+        unsigned int                            _currentClientActiveTextureUnit;
+        GLBufferObject*                         _currentPBO;
+        GLuint                                  _currentVAO;
+        osg::ref_ptr<osg::IntArrayUniform>      _textureFormat;
 
 
         inline ModeMap& getOrCreateTextureModeMap(unsigned int unit)

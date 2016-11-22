@@ -107,19 +107,6 @@ bool setUpStateSet(osg::ArgumentParser& arguments, osg::StateSet* stateset)
             stateset->setTextureAttribute(i, fallbackTexture.get());
         }
 
-
-        ADD_DEFINE(GL_EYE_LINEAR);
-        ADD_DEFINE(GL_OBJECT_LINEAR);
-        ADD_DEFINE(GL_SPHERE_MAP);
-        ADD_DEFINE(GL_NORMAL_MAP);
-        ADD_DEFINE(GL_REFLECTION_MAP);
-
-        ADD_DEFINE(GL_MODULATE);
-        ADD_DEFINE(GL_REPLACE);
-        ADD_DEFINE(GL_DECAL);
-        ADD_DEFINE(GL_BLEND);
-        ADD_DEFINE(GL_ADD);
-
         ADD_DEFINE(GL_ALPHA);
         ADD_DEFINE(GL_INTENSITY);
         ADD_DEFINE(GL_LUMINANCE);
@@ -127,98 +114,6 @@ bool setUpStateSet(osg::ArgumentParser& arguments, osg::StateSet* stateset)
         ADD_DEFINE(GL_RG);
         ADD_DEFINE(GL_RGB);
         ADD_DEFINE(GL_RGBA);
-
-
-        osg::ref_ptr<osg::Uniform> ACTIVE_TEXTURE = new osg::Uniform(osg::Uniform::BOOL, "GL_ACTIVE_TEXTURE", maxTextureUnits);
-        osg::ref_ptr<osg::Uniform> TEXTURE_GEN_S = new osg::Uniform(osg::Uniform::BOOL, "GL_TEXTURE_GEN_S", maxTextureUnits);
-        osg::ref_ptr<osg::Uniform> TEXTURE_GEN_T = new osg::Uniform(osg::Uniform::BOOL, "GL_TEXTURE_GEN_T", maxTextureUnits);
-
-        osg::ref_ptr<osg::Uniform> TEXTURE_GEN_MODE = new osg::Uniform(osg::Uniform::INT, "GL_TEXTURE_GEN_MODE", maxTextureUnits);
-        osg::ref_ptr<osg::Uniform> TEXTURE_ENV_MODE = new osg::Uniform(osg::Uniform::INT, "GL_TEXTURE_ENV_MODE", maxTextureUnits);
-        osg::ref_ptr<osg::Uniform> TEXTURE_FORMAT = new osg::Uniform(osg::Uniform::INT, "GL_TEXTURE_FORMAT", maxTextureUnits);
-
-
-        for(unsigned int i=0; i<maxTextureUnits;++i)
-        {
-            ACTIVE_TEXTURE->setElement(i, false);
-            TEXTURE_GEN_MODE->setElement(i, 0);
-            TEXTURE_GEN_S->setElement(i, false);
-            TEXTURE_GEN_T->setElement(i, false);
-            TEXTURE_ENV_MODE->setElement(i, GL_MODULATE);
-            TEXTURE_FORMAT->setElement(i, GL_RGBA);
-        }
-
-        ACTIVE_TEXTURE->setElement(0, true);
-        TEXTURE_GEN_MODE->setElement(0, 0);
-        //TEXTURE_GEN_MODE->setElement(0, GL_SPHERE_MAP);
-        TEXTURE_GEN_S->setElement(0, true);
-        TEXTURE_GEN_T->setElement(0, true);
-        //TEXTURE_FORMAT->setElement(0, GL_ALPHA);
-
-        stateset->addUniform(ACTIVE_TEXTURE.get());
-        stateset->addUniform(TEXTURE_GEN_S.get());
-        stateset->addUniform(TEXTURE_GEN_T.get());
-        stateset->addUniform(TEXTURE_GEN_MODE.get());
-        stateset->addUniform(TEXTURE_ENV_MODE.get());
-        stateset->addUniform(TEXTURE_FORMAT.get());
-
-
-        for(unsigned int i=0; i<maxTextureUnits;++i)
-        {
-            sstream.str("");
-            sstream<<"sampler"<<i;
-            OSG_NOTICE<<"****** texture unit : "<<sstream.str()<<std::endl;
-            stateset->addUniform(new osg::Uniform(sstream.str().c_str(), static_cast<int>(i)));
-
-#if 0
-            // fragment shader texture defines
-            sstream.str("");
-            sstream<<"TEXTURE_VERT_DECLARE"<<i;
-            std::string textureVertDeclareDefine = sstream.str();
-
-            sstream.str("");
-            sstream<<"varying vec4 TexCoord"<<i<<";";
-
-            stateset->setDefine(textureVertDeclareDefine, sstream.str());
-
-
-            sstream.str("");
-            sstream<<"TEXTURE_VERT_BODY"<<i;
-            std::string textureVertBodyDefine = sstream.str();
-
-            sstream.str("");
-            sstream<<"{ TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<"; if (GL_TEXTURE_GEN_MODE["<<i<<"]!=0) TexCoord0 = texgen(TexCoord"<<i<<", "<<i<<"); }";
-
-            stateset->setDefine(textureVertBodyDefine, sstream.str());
-
-
-            // fragment shader texture defines
-            sstream.str("");
-            sstream<<"TEXTURE_FRAG_DECLARE"<<i;
-            std::string textureFragDeclareDefine = sstream.str();
-
-            sstream.str("");
-            sstream<<"uniform ";
-            sstream<<"sampler2D ";
-            sstream<<"sampler"<<i<<"; ";
-            sstream<<"varying vec4 TexCoord"<<i<<";";
-
-            stateset->setDefine(textureFragDeclareDefine, sstream.str());
-
-
-            sstream.str("");
-            sstream<<"TEXTURE_FRAG_BODY"<<i;
-            std::string textureFragBodyDefine = sstream.str();
-
-            sstream.str("");
-            sstream<<"(color) { color = texenv(color, ";
-            sstream<<"texture2D( sampler"<<i<<", TexCoord"<<i<<".st)";
-            sstream<<", "<<i<<"); }";
-
-            stateset->setDefine(textureFragBodyDefine, sstream.str());
-#endif
-
-        }
 
     }
 
@@ -243,6 +138,10 @@ struct RealizeOperation : public osg::GraphicsOperation
 
         gc->getState()->setUseModelViewAndProjectionUniforms(_useModelViewAndProjectionUniforms);
         gc->getState()->setUseVertexAttributeAliasing(_useVertexAttributeAliasing);
+
+
+        gc->getState()->setUseStateAttributeShaders(true);
+        gc->getState()->setUseStateAttributeFixedFunction(true);
 
         if (_stateset.valid()) gc->getState()->setRootStateSet(_stateset.get());
     }

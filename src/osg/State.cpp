@@ -1949,7 +1949,7 @@ void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragm
         convertVertexShaderSourceToOsgBuiltIns(shaderDefineStr);
     }
 
-    OSG_NOTICE<<"State::getDefineString(..)\n"<<shaderDefineStr<<std::endl;
+    //OSG_NOTICE<<"State::getDefineString(..)\n"<<shaderDefineStr<<std::endl;
 }
 
 bool State::supportsShaderRequirements(const osg::ShaderPragmas& shaderPragmas)

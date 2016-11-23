@@ -990,6 +990,10 @@ void CullVisitor::apply(osg::Drawable& drawable)
         {
             if( dcb->cull( this, &drawable, &_renderInfo ) == true ) return;
         }
+        else
+        {
+            drawable.getCullCallback()->run(&drawable,this);
+        }
     }
 
     if (drawable.isCullingActive() && isCulled(bb)) return;

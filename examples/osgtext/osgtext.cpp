@@ -693,9 +693,19 @@ int main(int argc, char** argv)
 
     Threads operationThreads;
     osg::ref_ptr<UpdateTextOperation> updateOperation;
-
     unsigned int numThreads = 0;
-    if (arguments.read("--mt", numThreads) || arguments.read("--mt"))
+
+    if (arguments.read("--simple"))
+    {
+        osg::ref_ptr<osgText::Text> text = new osgText::Text;
+        text->setFont("fonts/times.ttf");
+        text->setAxisAlignment(osgText::Text::XZ_PLANE);
+        text->setDrawMode(osgText::Text::TEXT|osgText::Text::ALIGNMENT|osgText::Text::BOUNDINGBOX|osgText::Text::FILLEDBOUNDINGBOX);
+        text->setText("This is a simple test");
+
+        viewer.setSceneData(text.get());
+    }
+    else if (arguments.read("--mt", numThreads) || arguments.read("--mt"))
     {
         // construct a multi-threaded text updating test.
         if (numThreads==0) numThreads = 1;

@@ -22,8 +22,8 @@
 #include <float.h>
 
 #include <string>
-#include <vector>
 #include <set>
+#include <sstream>
 
 #if defined(WIN32)
     #ifndef WIN32_LEAN_AND_MEAN
@@ -90,6 +90,12 @@ bool osg::isExtensionInExtensionString(const char *extension, const char *extens
 bool osg::isGLExtensionSupported(unsigned int contextID, const char *extension)
 {
     return osg::isGLExtensionOrVersionSupported(contextID, extension, FLT_MAX);
+}
+
+bool osg::isGLExtensionSupported(unsigned int contextID, const char *extension1, const char *extension2)
+{
+    return osg::isGLExtensionOrVersionSupported(contextID, extension1, FLT_MAX) ||
+           osg::isGLExtensionOrVersionSupported(contextID, extension2, FLT_MAX);
 }
 
 bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *extension, float requiredGLVersion)
@@ -415,17 +421,17 @@ OSG_INIT_SINGLETON_PROXY(GLExtensionDisableStringInitializationProxy, osg::getGL
 typedef osg::buffered_object< osg::ref_ptr<GLExtensions> > BufferedExtensions;
 static BufferedExtensions s_extensions;
 
-GLExtensions* GLExtensions::Get(unsigned int contextID, bool createIfNotInitalized)
+GLExtensions* GLExtensions::Get(unsigned int in_contextID, bool createIfNotInitalized)
 {
-    if (!s_extensions[contextID] && createIfNotInitalized)
-            s_extensions[contextID] = new GLExtensions(contextID);
+    if (!s_extensions[in_contextID] && createIfNotInitalized)
+            s_extensions[in_contextID] = new GLExtensions(in_contextID);
 
-    return s_extensions[contextID].get();
+    return s_extensions[in_contextID].get();
 }
 
-void GLExtensions::Set(unsigned int contextID, GLExtensions* extensions)
+void GLExtensions::Set(unsigned int in_contextID, GLExtensions* extensions)
 {
-    s_extensions[contextID] = extensions;
+    s_extensions[in_contextID] = extensions;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -451,9 +457,9 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     isVertexShaderSupported = validContext && (shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_vertex_shader"));
     isFragmentShaderSupported = validContext && (shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_fragment_shader"));
     isLanguage100Supported = validContext && (shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_shading_language_100"));
-    isGeometryShader4Supported = validContext && osg::isGLExtensionSupported(contextID,"GL_EXT_geometry_shader4");
+    isGeometryShader4Supported = validContext && (osg::isGLExtensionSupported(contextID,"GL_EXT_geometry_shader4") || osg::isGLExtensionSupported(contextID,"GL_OES_geometry_shader"));
     isGpuShader4Supported = validContext && osg::isGLExtensionSupported(contextID,"GL_EXT_gpu_shader4");
-    areTessellationShadersSupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_tessellation_shader");
+    areTessellationShadersSupported = validContext && (osg::isGLExtensionSupported(contextID, "GL_ARB_tessellation_shader") || osg::isGLExtensionSupported(contextID,"GL_OES_tessellation_shader"));
     isUniformBufferObjectSupported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_uniform_buffer_object");
     isGetProgramBinarySupported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_get_program_binary");
     isGpuShaderFp64Supported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_gpu_shader_fp64");
@@ -670,6 +676,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     // ARB_compute_shader
     setGLExtensionFuncPtr(glDispatchCompute,  "glDispatchCompute" , validContext);
 
+
     setGLExtensionFuncPtr(glMemoryBarrier,  "glMemoryBarrier", "glMemoryBarrierEXT" , validContext);
 
     // BufferObject extensions
@@ -689,12 +696,13 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glBindBufferBase,  "glBindBufferBase", "glBindBufferBaseEXT", "glBindBufferBaseNV" , validContext);
     setGLExtensionFuncPtr(glTexBuffer, "glTexBuffer","glTexBufferARB" , validContext);
 
-    isPBOSupported = validContext && (OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_pixel_buffer_object"));
+    isVBOSupported = validContext && (OSG_GLES2_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_vertex_buffer_object"));
+    isPBOSupported = validContext && (OSG_GLES2_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_pixel_buffer_object"));
     isUniformBufferObjectSupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_uniform_buffer_object");
     isTBOSupported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_texture_buffer_object");
-    isVAOSupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_vertex_array_object");
+    isVAOSupported = validContext && (OSG_GL3_FEATURES  || osg::isGLExtensionSupported(contextID, "GL_ARB_vertex_array_object", "GL_OES_vertex_array_object"));
     isTransformFeedbackSupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_transform_feedback2");
-    isBufferObjectSupported = isPBOSupported && isVAOSupported;
+    isBufferObjectSupported = isVBOSupported && isPBOSupported;
 
 
     // BlendFunc extensions
@@ -719,14 +727,24 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     isTimerQuerySupported = validContext && osg::isGLExtensionSupported(contextID, "GL_EXT_timer_query");
     isARBTimerQuerySupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_timer_query");
 
+
+    setGLExtensionFuncPtr(glDrawArraysInstanced, "glDrawArraysInstanced","glDrawArraysInstancedARB","glDrawArraysInstancedEXT", validContext);
+    setGLExtensionFuncPtr(glDrawElementsInstanced, "glDrawElementsInstanced","glDrawElementsInstancedARB","glDrawElementsInstancedEXT", validContext);
+
+
     setGLExtensionFuncPtr(glFogCoordfv, "glFogCoordfv","glFogCoordfvEXT", validContext);
     setGLExtensionFuncPtr(glSecondaryColor3ubv, "glSecondaryColor3ubv","glSecondaryColor3ubvEXT", validContext);
     setGLExtensionFuncPtr(glSecondaryColor3fv, "glSecondaryColor3fv","glSecondaryColor3fvEXT", validContext);
+
     setGLExtensionFuncPtr(glMultiTexCoord1f, "glMultiTexCoord1f","glMultiTexCoord1fARB", validContext);
+    setGLExtensionFuncPtr(glMultiTexCoord4f, "glMultiTexCoord4f","glMultiTexCoord4fARB", validContext);
+
     setGLExtensionFuncPtr(glMultiTexCoord1fv, "glMultiTexCoord1fv","glMultiTexCoord1fvARB", validContext);
     setGLExtensionFuncPtr(glMultiTexCoord2fv, "glMultiTexCoord2fv","glMultiTexCoord2fvARB", validContext);
     setGLExtensionFuncPtr(glMultiTexCoord3fv, "glMultiTexCoord3fv","glMultiTexCoord3fvARB", validContext);
     setGLExtensionFuncPtr(glMultiTexCoord4fv, "glMultiTexCoord4fv","glMultiTexCoord4fvARB", validContext);
+
+
     setGLExtensionFuncPtr(glMultiTexCoord1d, "glMultiTexCoord1d","glMultiTexCoorddfARB", validContext);
     setGLExtensionFuncPtr(glMultiTexCoord1dv, "glMultiTexCoord1dv","glMultiTexCoord1dvARB", validContext);
     setGLExtensionFuncPtr(glMultiTexCoord2dv, "glMultiTexCoord2dv","glMultiTexCoord2dvARB", validContext);
@@ -843,7 +861,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     isShadowSupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_ARB_shadow");
     isShadowAmbientSupported = isGLExtensionSupported(contextID,"GL_ARB_shadow_ambient");
     isClientStorageSupported = isGLExtensionSupported(contextID,"GL_APPLE_client_storage");
-    isNonPowerOfTwoTextureNonMipMappedSupported = builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_non_power_of_two", 2.0) || isGLExtensionSupported(contextID,"GL_APPLE_texture_2D_limited_npot");
+    isNonPowerOfTwoTextureNonMipMappedSupported = builtInSupport  || isGLExtensionSupported(contextID,"GL_OES_texture_npot") || isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_non_power_of_two", 2.0) || isGLExtensionSupported(contextID,"GL_APPLE_texture_2D_limited_npot");
     isNonPowerOfTwoTextureMipMappedSupported = builtInSupport || isNonPowerOfTwoTextureNonMipMappedSupported;
     isTextureIntegerEXTSupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID, "GL_EXT_texture_integer");
 
@@ -1101,10 +1119,10 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     osg::setGLExtensionFuncPtr(glGetTransformFeedbacki64_v, "glGetTransformFeedbacki64_v", validContext);
 
     //Vertex Array Object
-    osg::setGLExtensionFuncPtr(glGenVertexArrays,"glGenVertexArrays", validContext);
-    osg::setGLExtensionFuncPtr(glBindVertexArray,"glBindVertexArray", validContext);
-    osg::setGLExtensionFuncPtr(glDeleteVertexArrays,"glDeleteVertexArrays", validContext);
-    osg::setGLExtensionFuncPtr(glIsVertexArray,"glIsVertexArray", validContext);
+    osg::setGLExtensionFuncPtr(glGenVertexArrays, "glGenVertexArrays", "glGenVertexArraysOES", validContext);
+    osg::setGLExtensionFuncPtr(glBindVertexArray, "glBindVertexArray", "glBindVertexArrayOES", validContext);
+    osg::setGLExtensionFuncPtr(glDeleteVertexArrays, "glDeleteVertexArrays", "glDeleteVertexArraysOES", validContext);
+    osg::setGLExtensionFuncPtr(glIsVertexArray, "glIsVertexArray", "glIsVertexArrayOES", validContext);
 
     // MultiDrawArrays
     setGLExtensionFuncPtr(glMultiDrawArrays, "glMultiDrawArrays", "glMultiDrawArraysEXT", validContext);
@@ -1145,6 +1163,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glActiveTexture, "glActiveTexture","glActiveTextureARB", validContext);
     setGLExtensionFuncPtr(glFogCoordPointer, "glFogCoordPointer","glFogCoordPointerEXT", validContext);
     setGLExtensionFuncPtr(glSecondaryColorPointer, "glSecondaryColorPointer","glSecondaryColorPointerEXT", validContext);
+<<<<<<< HEAD
 
     if (validContext)
     {
@@ -1182,8 +1201,8 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     }
 
     osg::setGLExtensionFuncPtr(glObjectLabel, "glObjectLabel", validContext);
-}
 
+}
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1289,4 +1308,3 @@ bool GLExtensions::getFragDataLocation( const char* fragDataName, GLuint& locati
     location = loc;
     return true;
 }
-

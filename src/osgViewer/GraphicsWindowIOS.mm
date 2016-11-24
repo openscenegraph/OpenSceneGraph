@@ -296,7 +296,7 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
 }
 
 //
-//Implement dealloc to destory our frame buffer
+//Implement dealloc to destroy our frame buffer
 //
 - (void) dealloc
 {

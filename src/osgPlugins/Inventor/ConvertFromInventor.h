@@ -12,6 +12,8 @@
 #include <stack>
 #include <assert.h>
 
+#include "DeprecatedGeometry.h"
+
 class ConvertFromInventor
 {
     public:

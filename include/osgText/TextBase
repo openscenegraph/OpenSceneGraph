@@ -327,6 +327,11 @@ protected:
     mutable osg::Vec3                                   _offset;
     mutable osg::Vec3                                   _normal;
     mutable osg::BoundingBox                            _textBB;
+
+    void setupDecoration();
+
+    osg::ref_ptr<osg::Vec3Array> _decorationVertices;
+
 };
 
 }

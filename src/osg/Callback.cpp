@@ -54,7 +54,7 @@ bool CallbackObject::run(osg::Object* object, osg::Object* data)
     return run(object,inputParameters, outputParameters);
 }
 
-bool CallbackObject::run(osg::Object* object, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+bool CallbackObject::run(osg::Object* object, osg::Parameters& /*inputParameters*/, osg::Parameters& /*outputParameters*/) const
 {
     OSG_NOTICE<<"CallbackObject::run(object="<<object<<")"<<std::endl;
     return false;

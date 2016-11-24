@@ -84,26 +84,23 @@ extern OSGDB_EXPORT DirectoryContents getSortedDirectoryContents(const std::stri
   * still work unchanged. */
 extern OSGDB_EXPORT DirectoryContents expandWildcardsInFilename(const std::string& filename);
 
-namespace FileOpResult {
-    enum Value
-    {
-        OK,                          /**< Operation done. */
-        SOURCE_EQUALS_DESTINATION,   /**< Operation is useless (source == destination). */
-        BAD_ARGUMENT,
-        SOURCE_MISSING,              /**< Source file doesn't exist. */
-        SOURCE_NOT_OPENED,           /**< Error opening source file. */
-        DESTINATION_NOT_OPENED,      /**< Error opening destination file. */
-        READ_ERROR,
-        WRITE_ERROR
-    };
-}
+enum CopyFileResult
+{
+    COPY_FILE_OK,                          /**< Operation done. */
+    COPY_FILE_SOURCE_EQUALS_DESTINATION,   /**< Operation is useless (source == destination). */
+    COPY_FILE_BAD_ARGUMENT,
+    COPY_FILE_SOURCE_MISSING,              /**< Source file doesn't exist. */
+    COPY_FILE_SOURCE_NOT_OPENED,           /**< Error opening source file. */
+    COPY_FILE_DESTINATION_NOT_OPENED,      /**< Error opening destination file. */
+    COPY_FILE_READ_ERROR,
+    COPY_FILE_WRITE_ERROR
+};
 
 /** Copy a file to another location, overwriting if necessary.
   * You must provide full path for both source and destination.
   * \return true on success, or if source and destination are the same.
-  * \todo Replace the implementation with filesystem functions from TR2 when available.
 */
-extern OSGDB_EXPORT FileOpResult::Value copyFile(const std::string & source, const std::string & destination);
+extern OSGDB_EXPORT CopyFileResult copyFile(const std::string & source, const std::string & destination);
 
 
 

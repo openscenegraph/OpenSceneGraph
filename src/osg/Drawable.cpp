@@ -226,9 +226,16 @@ Drawable::Drawable()
     _useDisplayList = false;
 #endif
 
+#if 0
     _supportsVertexBufferObjects = false;
+    //_useVertexBufferObjects = false;
     _useVertexBufferObjects = false;
-    // _useVertexBufferObjects = true;
+#else
+    _supportsVertexBufferObjects = true;
+    _useVertexBufferObjects = true;
+#endif
+
+    _useVertexArrayObject = false;
 }
 
 Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
@@ -241,6 +248,7 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     _useDisplayList(drawable._useDisplayList),
     _supportsVertexBufferObjects(drawable._supportsVertexBufferObjects),
     _useVertexBufferObjects(drawable._useVertexBufferObjects),
+    _useVertexArrayObject(drawable._useVertexArrayObject),
     _drawCallback(drawable._drawCallback)
 {
     setStateSet(copyop(drawable._stateset.get()));
@@ -280,38 +288,6 @@ void Drawable::computeDataVariance()
     setDataVariance(dynamic ? DYNAMIC : STATIC);
 }
 
-void Drawable::compileGLObjects(RenderInfo& renderInfo) const
-{
-    if (!_useDisplayList) return;
-
-#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
-    // get the contextID (user defined ID of 0 upwards) for the
-    // current OpenGL context.
-    unsigned int contextID = renderInfo.getContextID();
-
-    // get the globj for the current contextID.
-    GLuint& globj = _globjList[contextID];
-
-    // call the globj if already set otherwise compile and execute.
-    if( globj != 0 )
-    {
-        glDeleteLists( globj, 1 );
-    }
-
-    globj = generateDisplayList(contextID, getGLObjectSizeHint());
-    glNewList( globj, GL_COMPILE );
-
-    if (_drawCallback.valid())
-        _drawCallback->drawImplementation(renderInfo,this);
-    else
-        drawImplementation(renderInfo);
-
-    glEndList();
-#else
-    OSG_NOTICE<<"Warning: Drawable::compileGLObjects(RenderInfo&) - not supported."<<std::endl;
-#endif
-}
-
 void Drawable::setThreadSafeRefUnref(bool threadSafe)
 {
     Object::setThreadSafeRefUnref(threadSafe);
@@ -326,6 +302,8 @@ void Drawable::resizeGLObjectBuffers(unsigned int maxSize)
     if (_drawCallback.valid()) _drawCallback->resizeGLObjectBuffers(maxSize);
 
     _globjList.resize(maxSize);
+
+    _vertexArrayStateList.resize(maxSize);
 }
 
 void Drawable::releaseGLObjects(State* state) const
@@ -334,27 +312,35 @@ void Drawable::releaseGLObjects(State* state) const
 
     if (_drawCallback.valid()) _drawCallback->releaseGLObjects(state);
 
-    if (!_useDisplayList) return;
-
     if (state)
     {
         // get the contextID (user defined ID of 0 upwards) for the
         // current OpenGL context.
         unsigned int contextID = state->getContextID();
 
-        // get the globj for the current contextID.
-        GLuint& globj = _globjList[contextID];
-
-        // call the globj if already set otherwise compile and execute.
-        if( globj != 0 )
+        if (_useDisplayList)
         {
-            Drawable::deleteDisplayList(contextID,globj, getGLObjectSizeHint());
-            globj = 0;
+            // get the globj for the current contextID.
+            GLuint& globj = _globjList[contextID];
+
+            // call the globj if already set otherwise compile and execute.
+            if( globj != 0 )
+            {
+                Drawable::deleteDisplayList(contextID,globj, getGLObjectSizeHint());
+                globj = 0;
+            }
+        }
+
+        VertexArrayState* vas = contextID <_vertexArrayStateList.size() ? _vertexArrayStateList[contextID].get() : 0;
+        if (vas)
+        {
+            vas->release();
+            _vertexArrayStateList[contextID] = 0;
         }
     }
     else
     {
-        const_cast<Drawable*>(this)->dirtyDisplayList();
+        const_cast<Drawable*>(this)->dirtyGLObjects();
     }
 }
 
@@ -390,6 +376,7 @@ void Drawable::setUseDisplayList(bool flag)
 
 #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     // if was previously set to true, remove display list.
+
     if (_useDisplayList)
     {
         dirtyDisplayList();
@@ -420,6 +407,13 @@ void Drawable::setUseDisplayList(bool flag)
 }
 
 
+void Drawable::setUseVertexArrayObject(bool flag)
+{
+    _useVertexArrayObject = flag;
+}
+
+
+
 void Drawable::setUseVertexBufferObjects(bool flag)
 {
     // _useVertexBufferObjects = true;
@@ -432,7 +426,7 @@ void Drawable::setUseVertexBufferObjects(bool flag)
     // if was previously set to true, remove display list.
     if (_useVertexBufferObjects)
     {
-        dirtyDisplayList();
+        dirtyGLObjects();
     }
 
     _useVertexBufferObjects = flag;
@@ -440,8 +434,13 @@ void Drawable::setUseVertexBufferObjects(bool flag)
 
 void Drawable::dirtyDisplayList()
 {
-#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
+    dirtyGLObjects();
+}
+
+void Drawable::dirtyGLObjects()
+{
     unsigned int i;
+#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     for(i=0;i<_globjList.size();++i)
     {
         if (_globjList[i] != 0)
@@ -451,6 +450,12 @@ void Drawable::dirtyDisplayList()
         }
     }
 #endif
+
+    for(i=0; i<_vertexArrayStateList.size(); ++i)
+    {
+        VertexArrayState* vas = _vertexArrayStateList[i].get();
+        if (vas) vas->dirty();
+    }
 }
 
 
@@ -591,6 +596,7 @@ void Drawable::setBound(const BoundingBox& bb) const
 }
 
 
+<<<<<<< HEAD
 TransformFeedbackDrawCallback::TransformFeedbackDrawCallback(const TransformFeedbackDrawCallback&dc,const CopyOp&co):osg::Drawable::DrawCallback(dc,co)
 {
     _type=dc._type;
@@ -603,4 +609,116 @@ void TransformFeedbackDrawCallback::drawImplementation(osg::RenderInfo& renderIn
     ext->glBeginTransformFeedback(_type);
     drawable->drawImplementation(renderInfo);
     ext->glEndTransformFeedback();
+=======
+void Drawable::compileGLObjects(RenderInfo& renderInfo) const
+{
+
+#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
+    if (!renderInfo.getState()->useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects) && _useDisplayList)
+    {
+        // get the contextID (user defined ID of 0 upwards) for the
+        // current OpenGL context.
+        unsigned int contextID = renderInfo.getContextID();
+
+        // get the globj for the current contextID.
+        GLuint& globj = _globjList[contextID];
+
+        // call the globj if already set otherwise compile and execute.
+        if( globj != 0 )
+        {
+            glDeleteLists( globj, 1 );
+        }
+
+        globj = generateDisplayList(contextID, getGLObjectSizeHint());
+        glNewList( globj, GL_COMPILE );
+
+        drawInner(renderInfo);
+
+        glEndList();
+    }
+#endif
+}
+
+#ifndef INLINE_DRAWABLE_DRAW
+
+void Drawable::draw(RenderInfo& renderInfo) const
+{
+
+    State& state = *renderInfo.getState();
+    bool useVertexArrayObject = state.useVertexArrayObject(_useVertexArrayObject);
+    if (useVertexArrayObject)
+    {
+        unsigned int contextID = renderInfo.getContextID();
+
+        VertexArrayState* vas = _vertexArrayStateList[contextID].get();
+        if (!vas)
+        {
+            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo, true);
+            // OSG_NOTICE<<"  Geometry::draw() "<<this<<", assigned _vertexArrayStateList[renderInfo.getContextID()]="<<_vertexArrayStateList[renderInfo.getContextID()].get()<<", vas="<<vas<< std::endl;
+        }
+        else
+        {
+            // vas->setRequiresSetArrays(getDataVariance()==osg::Object::DYNAMIC);
+            // OSG_NOTICE<<"  Geometry::draw() "<<this<<", reusing _vertexArrayStateList[renderInfo.getContextID()]="<<_vertexArrayStateList[renderInfo.getContextID()].get()<<", vas="<<vas<< std::endl;
+        }
+
+
+        State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
+
+        vas->bindVertexArrayObject();
+
+        drawInner(renderInfo);
+
+        vas->setRequiresSetArrays(getDataVariance()==osg::Object::DYNAMIC);
+
+        return;
+    }
+
+    // TODO, add check against whether VAO is active and supported
+    if (state.getCurrentVertexArrayState()) state.getCurrentVertexArrayState()->bindVertexArrayObject();
+
+
+#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
+    if (!state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects) && _useDisplayList)
+    {
+        // get the contextID (user defined ID of 0 upwards) for the
+        // current OpenGL context.
+        unsigned int contextID = renderInfo.getContextID();
+
+        // get the globj for the current contextID.
+        GLuint& globj = _globjList[contextID];
+
+        if( globj == 0 )
+        {
+            // compile the display list
+            globj = generateDisplayList(contextID, getGLObjectSizeHint());
+            glNewList( globj, GL_COMPILE );
+
+            drawInner(renderInfo);
+
+            glEndList();
+        }
+
+        // call the display list
+        glCallList( globj);
+    }
+    else
+#endif
+    {
+        // if state.previousVertexArrayState() is different than currentVertexArrayState bind current
+
+        // OSG_NOTICE<<"Fallback drawInner()........................"<<std::endl;
+
+        drawInner(renderInfo);
+    }
+}
+
+#endif
+
+VertexArrayState* Drawable::createVertexArrayState(RenderInfo& renderInfo) const
+{
+    VertexArrayState* vos = new osg::VertexArrayState(renderInfo.getState());
+    vos->assignAllDispatchers();
+    return vos;
+>>>>>>> upstream/master
 }

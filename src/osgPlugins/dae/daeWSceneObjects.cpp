@@ -436,7 +436,7 @@ void daeWriter::apply( osg::LightSource &node )
     if ((ambientColor.r() != 0) || (ambientColor.g() != 0) || (ambientColor.b() != 0))
     {
         domInstance_light *ambientDomInstanceLight = daeSafeCast< domInstance_light >(currentNode->add( COLLADA_ELEMENT_INSTANCE_LIGHT ));
-        std::string name = node.getName();
+        name = node.getName();
         if (name.empty())
         {
             name = uniquify( "light-ambient" );
@@ -445,7 +445,7 @@ void daeWriter::apply( osg::LightSource &node )
         {
             name += "-ambient";
         }
-        std::string url = "#" + name;
+        url = "#" + name;
         ambientDomInstanceLight->setUrl( url.c_str() );
 
         domLight *ambientDomLight = daeSafeCast< domLight >( lib_lights->add( COLLADA_ELEMENT_LIGHT ) );

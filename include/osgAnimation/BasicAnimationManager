@@ -29,6 +29,7 @@ namespace osgAnimation
         META_Object(osgAnimation, BasicAnimationManager);
 
         BasicAnimationManager();
+        BasicAnimationManager(const BasicAnimationManager& b, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
         BasicAnimationManager(const AnimationManagerBase& b, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
         virtual ~BasicAnimationManager();
 

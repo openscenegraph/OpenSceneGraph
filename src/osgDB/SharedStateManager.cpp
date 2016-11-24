@@ -175,7 +175,10 @@ void SharedStateManager::shareTextures(osg::StateSet* ss)
     const osg::StateSet::TextureAttributeList& texAttributes = ss->getTextureAttributeList();
     for(unsigned int unit=0;unit<texAttributes.size();++unit)
     {
-        osg::StateAttribute *texture = ss->getTextureAttribute(unit, osg::StateAttribute::TEXTURE);
+        osg::StateSet::RefAttributePair* pair = ss->getTextureAttributePair(unit, osg::StateAttribute::TEXTURE);
+        if (!pair) continue;
+
+        osg::StateAttribute* texture = pair->first.get();
 
         // Valid Texture to be shared
         if(texture && shareTexture(texture->getDataVariance()))
@@ -185,13 +188,13 @@ void SharedStateManager::shareTextures(osg::StateSet* ss)
             {
                 // Texture is not in tmp list:
                 // First time it appears in this file, search Texture in sharedAttributeList
-                osg::StateAttribute *textureFromSharedList = find(texture);
+                osg::StateAttribute* textureFromSharedList = find(texture);
                 if(textureFromSharedList)
                 {
                     // Texture is in sharedAttributeList:
                     // Share now. Required to be shared all next times
                     if(_mutex) _mutex->lock();
-                    ss->setTextureAttributeAndModes(unit, textureFromSharedList, osg::StateAttribute::ON);
+                    pair->first = textureFromSharedList;
                     if(_mutex) _mutex->unlock();
                     tmpSharedTextureList[texture] = TextureSharePair(textureFromSharedList, true);
                 }
@@ -210,7 +213,7 @@ void SharedStateManager::shareTextures(osg::StateSet* ss)
                 // Texture is in tmpSharedAttributeList and share flag is on:
                 // It should be shared
                 if(_mutex) _mutex->lock();
-                ss->setTextureAttributeAndModes(unit, titr->second.first, osg::StateAttribute::ON);
+                pair->first = titr->second.first;
                 if(_mutex) _mutex->unlock();
             }
         }

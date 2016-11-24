@@ -164,6 +164,7 @@ class OSG_EXPORT Array : public BufferData
 
         virtual unsigned int getElementSize() const = 0;
         virtual const GLvoid* getDataPointer() const = 0;
+        virtual const GLvoid* getDataPointer(unsigned int index) const = 0;
         virtual unsigned int getTotalDataSize() const = 0;
         virtual unsigned int getNumElements() const = 0;
         virtual void reserveArray(unsigned int num) = 0;
@@ -285,8 +286,9 @@ class TemplateArray : public Array, public MixinVector<T>
             MixinVector<T>( *this ).swap( *this );
         }
 
-        virtual unsigned int getElementSize() const { return sizeof(ElementDataType); }
+        virtual unsigned int    getElementSize() const { return sizeof(ElementDataType); }
         virtual const GLvoid*   getDataPointer() const { if (!this->empty()) return &this->front(); else return 0; }
+        virtual const GLvoid*   getDataPointer(unsigned int index) const { if (!this->empty()) return &((*this)[index]); else return 0; }
         virtual unsigned int    getTotalDataSize() const { return static_cast<unsigned int>(this->size()*sizeof(ElementDataType)); }
         virtual unsigned int    getNumElements() const { return static_cast<unsigned int>(this->size()); }
         virtual void reserveArray(unsigned int num) { this->reserve(num); }
@@ -376,6 +378,7 @@ class TemplateIndexArray : public IndexArray, public MixinVector<T>
 
         virtual unsigned int getElementSize() const { return sizeof(ElementDataType); }
         virtual const GLvoid*   getDataPointer() const { if (!this->empty()) return &this->front(); else return 0; }
+        virtual const GLvoid*   getDataPointer(unsigned int index) const { if (!this->empty()) return &((*this)[index]); else return 0; }
         virtual unsigned int    getTotalDataSize() const { return static_cast<unsigned int>(this->size()*sizeof(T)); }
         virtual unsigned int    getNumElements() const { return static_cast<unsigned int>(this->size()); }
         virtual void reserveArray(unsigned int num) { this->reserve(num); }

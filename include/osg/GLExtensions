@@ -20,11 +20,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
+#include <vector>
+#include <map>
 
 
 namespace osg {
 
-/** Return floating-point OpenGL version number.
+/** Return floating-point OpenGL/GLES version number.
   * Note: Must only be called within a valid OpenGL context,
   * undefined behavior may occur otherwise.
 */
@@ -34,19 +36,25 @@ extern OSG_EXPORT float getGLVersionNumber();
 */
 extern OSG_EXPORT bool isExtensionInExtensionString(const char *extension, const char *extensionString);
 
-/** Return true if OpenGL "extension" is supported.
+/** Return true if OpenGL/GLES "extension" is supported.
   * Note: Must only be called within a valid OpenGL context,
   * undefined behavior may occur otherwise.
 */
 extern OSG_EXPORT bool isGLExtensionSupported(unsigned int contextID, const char *extension);
 
-/** Return true if OpenGL "extension" or minimum OpenGL version number is supported.
+/** Return true if either OpenGL/GLES "extension1" or "extension2" is supported.
+  * Note: Must only be called within a valid OpenGL context,
+  * undefined behavior may occur otherwise.
+*/
+extern OSG_EXPORT bool isGLExtensionSupported(unsigned int contextID, const char *extension1, const char *extension2);
+
+/** Return true if OpenGL/GLES "extension" or minimum OpenGL version number is supported.
   * Note: Must only be called within a valid OpenGL context,
   * undefined behavior may occur otherwise.
 */
 extern OSG_EXPORT bool isGLExtensionOrVersionSupported(unsigned int contextID, const char *extension, float requiredGlVersion);
 
-/** Return the address of the specified OpenGL function.
+/** Return the address of the specified OpenGL/GLES function.
   * Return NULL if function not supported by OpenGL library.
   * Note, glGLExtensionFuncPtr is declared inline so that the code
   * is compiled locally to the calling code.  This should get by Windows'
@@ -151,7 +159,7 @@ class VertexAttribAlias
 class OSG_EXPORT GLExtensions : public osg::Referenced
 {
     public:
-        GLExtensions(unsigned int contextID);
+        GLExtensions(unsigned int in_contextID);
 
         /** Function to call to get the extension of a specified context.
           * If the Exentsion object for that context has not yet been created then
@@ -159,12 +167,12 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
           * If 'createIfNotInitalized' is true then the Extensions object is
           * automatically created.  However, in this case the extension object
           * only be created with the graphics context associated with ContextID..*/
-        static GLExtensions* Get(unsigned int contextID,bool createIfNotInitalized);
+        static GLExtensions* Get(unsigned int in_contextID,bool createIfNotInitalized);
 
         /** allows users to override the extensions across graphics contexts.
           * typically used when you have different extensions supported across graphics pipes
           * but need to ensure that they all use the same low common denominator extensions.*/
-        static void Set(unsigned int contextID, GLExtensions* extensions);
+        static void Set(unsigned int in_contextID, GLExtensions* extensions);
 
         // C++-friendly convenience wrapper methods
         GLuint getCurrentProgram() const;
@@ -173,6 +181,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         bool getAttribLocation( const char* attribName, GLuint& slot ) const;
         bool getFragDataLocation( const char* fragDataName, GLuint& slot) const;
 
+        unsigned int contextID;
 
         unsigned int contextID;
         float glVersion;
@@ -341,8 +350,10 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glGetActiveAtomicCounterBufferiv)( GLuint program, GLuint bufferIndex, GLenum pname, GLint* params );
         void (GL_APIENTRY * glDispatchCompute)( GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ );
 
+
         // Buffer Object extensions
         bool isBufferObjectSupported;
+        bool isVBOSupported;
         bool isPBOSupported;
         bool isTBOSupported;
         bool isVAOSupported;
@@ -383,12 +394,19 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         bool isTimerQuerySupported;
         bool isARBTimerQuerySupported;
 
+
+
+        void (GL_APIENTRY * glDrawArraysInstanced)( GLenum mode, GLint first, GLsizei count, GLsizei primcount );
+        void (GL_APIENTRY * glDrawElementsInstanced)( GLenum mode, GLsizei count, GLenum type, const GLvoid *indices, GLsizei primcount );
+
         void (GL_APIENTRY * glSecondaryColor3ubv) (const GLubyte* coord);
         void (GL_APIENTRY * glSecondaryColor3fv) (const GLfloat* coord);
 
         void (GL_APIENTRY * glFogCoordfv) (const GLfloat* coord);
 
         void (GL_APIENTRY * glMultiTexCoord1f) (GLenum target,GLfloat coord);
+        void (GL_APIENTRY * glMultiTexCoord4f) (GLenum target, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+
         void (GL_APIENTRY * glMultiTexCoord1fv) (GLenum target,const GLfloat* coord);
         void (GL_APIENTRY * glMultiTexCoord2fv) (GLenum target,const GLfloat* coord);
         void (GL_APIENTRY * glMultiTexCoord3fv) (GLenum target,const GLfloat* coord);
@@ -696,6 +714,10 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glDisableIndexedEXT) (GLenum target, GLuint index);
         GLboolean (GL_APIENTRY * glIsEnabledIndexedEXT) (GLenum target, GLuint index);
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> e4cad929fc472b78561358c74d18050f770d0db3
         void (GL_APIENTRY * glClientActiveTexture) (GLenum texture);
         void (GL_APIENTRY * glActiveTexture) (GLenum texture);
         void (GL_APIENTRY * glFogCoordPointer) (GLenum type, GLsizei stride, const GLvoid *pointer);
@@ -709,6 +731,10 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
 
         /** convinience wrapper around glObjectLabel that calls glObjectLabel if it's supported and using std::string as a label parameter.*/
         void debugObjectLabel(GLenum identifier, GLuint name, const std::string& label) const { if (glObjectLabel && !label.empty()) glObjectLabel(identifier, name, label.size(), label.c_str()); }
+<<<<<<< HEAD
+=======
+
+>>>>>>> e4cad929fc472b78561358c74d18050f770d0db3
 };
 
 

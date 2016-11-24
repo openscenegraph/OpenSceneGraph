@@ -405,6 +405,9 @@ void Text3D::computeGlyphRepresentation()
     float thickness = _style.valid() ? _style->getThicknessRatio() : 0.1f;
     _textBB.zMin() = -thickness;
 
+    // set up the vertices for any boundinbox or alignment decoration
+    setupDecoration();
+
     TextBase::computePositions();
 }
 
@@ -493,80 +496,37 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
     // ** apply this new modelview matrix
     state.applyModelViewMatrix(modelview);
 
-    osg::GLBeginEndAdapter& gl = (state.getGLBeginEndAdapter());
+    state.disableAllVertexArrays();
 
-    if (_drawMode & BOUNDINGBOX)
+    if ((_drawMode&(~TEXT))!=0)
     {
-        if (_textBB.valid())
+
+        if (_decorationVertices.valid() && !_decorationVertices->empty())
         {
-            gl.Color4fv(_color.ptr());
+            osg::State::ApplyModeProxy applyMode(state, GL_LIGHTING, false);
+            osg::State::ApplyTextureModeProxy applyTextureMode(state, 0, GL_TEXTURE_2D, false);
 
-            osg::Vec3 c000(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMax()));
-            osg::Vec3 c100(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMax()));
-            osg::Vec3 c110(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMax()));
-            osg::Vec3 c010(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMax()));
+            state.setVertexPointer(_decorationVertices.get());
 
-            osg::Vec3 c001(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin()));
-            osg::Vec3 c101(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMin()));
-            osg::Vec3 c111(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMin()));
-            osg::Vec3 c011(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin()));
+            unsigned int start_index = 0;
+            if ((_drawMode & FILLEDBOUNDINGBOX)!=0 && _textBB.valid())
+            {
+                state.Color(_textBBColor.r(),_textBBColor.g(),_textBBColor.b(),_textBBColor.a());
+                glDrawArrays(GL_QUADS, 0, 4);
+                start_index += 4;
+            }
 
-            gl.Begin(GL_LINE_LOOP);
-                gl.Vertex3fv(c000.ptr());
-                gl.Vertex3fv(c100.ptr());
-                gl.Vertex3fv(c110.ptr());
-                gl.Vertex3fv(c010.ptr());
-            gl.End();
-
-            gl.Begin(GL_LINE_LOOP);
-                gl.Vertex3fv(c001.ptr());
-                gl.Vertex3fv(c011.ptr());
-                gl.Vertex3fv(c111.ptr());
-                gl.Vertex3fv(c101.ptr());
-            gl.End();
-
-            gl.Begin(GL_LINES);
-                gl.Vertex3fv(c000.ptr());
-                gl.Vertex3fv(c001.ptr());
-
-                gl.Vertex3fv(c100.ptr());
-                gl.Vertex3fv(c101.ptr());
-
-                gl.Vertex3fv(c110.ptr());
-                gl.Vertex3fv(c111.ptr());
-
-                gl.Vertex3fv(c010.ptr());
-                gl.Vertex3fv(c011.ptr());
-            gl.End();
+            if (start_index<_decorationVertices->size())
+            {
+            state.Color(_color.r(),_color.g(),_color.b(),_color.a());
+                glDrawArrays(GL_LINES, start_index, _decorationVertices->size());
+            }
         }
-    }
-
-    if (_drawMode & ALIGNMENT)
-    {
-        float cursorsize = _characterHeight*0.5f;
-
-        osg::Vec3 hl(osg::Vec3(_offset.x()-cursorsize,_offset.y(),_offset.z()));
-        osg::Vec3 hr(osg::Vec3(_offset.x()+cursorsize,_offset.y(),_offset.z()));
-        osg::Vec3 vt(osg::Vec3(_offset.x(),_offset.y()-cursorsize,_offset.z()));
-        osg::Vec3 vb(osg::Vec3(_offset.x(),_offset.y()+cursorsize,_offset.z()));
-
-        gl.Color4fv(_color.ptr());
-
-        gl.Begin(GL_LINES);
-            gl.Vertex3fv(hl.ptr());
-            gl.Vertex3fv(hr.ptr());
-            gl.Vertex3fv(vt.ptr());
-            gl.Vertex3fv(vb.ptr());
-        gl.End();
-
     }
 
     if (_drawMode & TEXT)
     {
-        state.disableColorPointer();
         state.Color(_color.r(),_color.g(),_color.b(),_color.a());
-
-        renderInfo.getState()->disableAllVertexArrays();
 
         #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
             renderInfo.getState()->applyMode(GL_NORMALIZE, true);
@@ -579,7 +539,6 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
             default:        renderPerGlyph(*renderInfo.getState());  break;
         }
     }
-
 
     // restore the previous modelview matrix
     state.applyModelViewMatrix(previous);
@@ -660,10 +619,6 @@ void Text3D::renderPerGlyph(osg::State & state) const
 void Text3D::renderPerFace(osg::State & state) const
 {
     osg::Matrix original_modelview = state.getModelViewMatrix();
-#if 0
-    // ** render all front faces
-    state.Normal(0.0f,0.0f,1.0f);
-#endif
 
     const osg::StateSet* frontStateSet = getStateSet();
     const osg::StateSet* wallStateSet = getWallStateSet();
@@ -723,12 +678,6 @@ void Text3D::renderPerFace(osg::State & state) const
             }
         }
     }
-#if 0
-    state.disableNormalPointer();
-
-    // ** render all back face of the text
-    state.Normal(0.0f,0.0f,-1.0f);
-#endif
 
     if (backStateSet!=wallStateSet)
     {
@@ -787,3 +736,4 @@ void Text3D::releaseGLObjects(osg::State* state) const
 }
 
 }
+

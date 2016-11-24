@@ -134,6 +134,7 @@ void RayTracedTechnique::init()
     {
         geometryMatrix = masterLocator->getTransform();
         _transform->setMatrix(geometryMatrix);
+        masterLocator->applyAppropriateFrontFace(_transform->getOrCreateStateSet());
         masterLocator->addCallback(new TransformLocatorCallback(_transform.get()));
     }
 

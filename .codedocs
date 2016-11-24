@@ -1,0 +1,11 @@
+# CodeDocs.xyz Configuration File
+
+DOXYFILE = doc/Doxyfiles/doxyfile.cmake
+
+PROJECT_NUMBER         =
+PROJECT_LOGO           = examples/osgAndroidExampleGLES1/res/drawable-hdpi/osg.png
+INPUT                  = include
+STRIP_FROM_PATH        = include/
+HTML_FOOTER            =
+SEARCHENGINE           = YES
+

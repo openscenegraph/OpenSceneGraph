@@ -883,6 +883,8 @@ SlideEventHandler::SlideEventHandler(osgViewer::Viewer* viewer):
 }
 
 SlideEventHandler::SlideEventHandler(const SlideEventHandler& seh,const osg::CopyOp& copyop):
+    osg::Object(seh, copyop),
+    osg::Callback(seh, copyop),
     osgGA::GUIEventHandler(seh,copyop),
     _viewer(seh._viewer),
     _activePresentation(seh._activePresentation),

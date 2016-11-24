@@ -1186,7 +1186,7 @@ int main( int argc, char **argv )
             dragger->setActivationModKeyMask(osgGA::GUIEventAdapter::MODKEY_SHIFT);
             dragger->addDraggerCallback(new DraggerVolumeTileCallback(tile.get(), tile->getLocator()));
             dragger->setMatrix(osg::Matrix::translate(0.5,0.5,0.5)*tile->getLocator()->getTransform());
-
+            dragger->applyAppropriateFrontFace(dragger->getOrCreateStateSet());
 
             group->addChild(dragger.get());
 

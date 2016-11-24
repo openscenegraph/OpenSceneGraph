@@ -49,10 +49,13 @@ public:
         virtual DrawableEventCallback* asDrawableEventCallback() { return osg::DrawableEventCallback::asDrawableEventCallback(); }
         virtual const DrawableEventCallback* asDrawableEventCallback() const { return osg::DrawableEventCallback::asDrawableEventCallback(); }
 
+        virtual EventHandler* asEventHandler() { return this; }
+        virtual const EventHandler* asEventHandler() const { return this; }
+
         virtual bool run(osg::Object* object, osg::Object* data)
         {
-            osg::Node* node = dynamic_cast<osg::Node*>(object);
-            osg::NodeVisitor* nv = dynamic_cast<osg::NodeVisitor*>(data);
+            osg::Node* node = object->asNode();
+            osg::NodeVisitor* nv = data->asNodeVisitor();
             operator()(node, nv);
             return true;
         }

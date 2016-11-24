@@ -20,7 +20,7 @@
 
 
     /**
-     * the class MovieData encapsulates all quicktime-related stuff, so it doesn't polute the namespaces
+     * the class MovieData encapsulates all quicktime-related stuff, so it doesn't pollute the namespaces
      * it handles all calls to quicktime etc... It is mainly used by the QuicktimeImageStream, it is
      * rarely needed in other contexts
      */

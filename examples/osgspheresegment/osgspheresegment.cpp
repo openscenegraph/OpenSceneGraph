@@ -17,6 +17,7 @@
 */
 
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
 
 #include <osg/Group>
 #include <osg/Geode>
@@ -353,6 +354,50 @@ osg::Vec3 computeTerrainIntersection(osg::Node* subgraph,float x,float y)
 }
 
 
+class AdjustSphereSegmentCallback : public osgGA::GUIEventHandler
+{
+public:
+    void scaleSphereSegment(osgSim::SphereSegment* ss, float scale)
+    {
+        if (!ss) return;
+
+
+        osg::Vec3 direction_vec;
+        float azRange, elevRange;
+        ss->getArea(direction_vec, azRange, elevRange);
+
+        ss->setArea(direction_vec, azRange*scale, elevRange*scale);
+    }
+
+    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& /*aa*/, osg::Object* object, osg::NodeVisitor* /*nv*/)
+    {
+        if (ea.getHandled()) return false;
+
+        switch(ea.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYDOWN):
+            {
+                if (ea.getKey()=='>')
+                {
+                    scaleSphereSegment(dynamic_cast<osgSim::SphereSegment*>(object), 1.1f);
+                    return true;
+                }
+                else if (ea.getKey()=='<')
+                {
+                    scaleSphereSegment(dynamic_cast<osgSim::SphereSegment*>(object), 1.0f/1.1f);
+                }
+                break;
+            }
+            default:
+                break;
+        }
+        return false;
+    }
+
+
+};
+
+
 //////////////////////////////////////////////////////////////////////////////
 // MAIN SCENE GRAPH BUILDING FUNCTION
 //////////////////////////////////////////////////////////////////////////////
@@ -604,6 +649,8 @@ void build_world(osg::Group *root, unsigned int testCase, bool useOverlay, osgSi
                 ss->getParent(0)->addChild(ss->computeIntersectionSubgraph(terrainToSS, terrainGeode.get()));
             }
 
+            ss->setEventCallback(new AdjustSphereSegmentCallback);
+
         }
     }
 
@@ -713,6 +760,9 @@ int main(int argc, char **argv)
 
     osg::Group *root = new osg::Group;
     build_world(root, testCase, useOverlay, technique);
+
+
+    viewer.addEventHandler(new osgViewer::StatsHandler);
 
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData(root);

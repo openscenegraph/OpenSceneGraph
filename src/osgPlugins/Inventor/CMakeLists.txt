@@ -1,6 +1,7 @@
 INCLUDE(OsgMacroUtils)
 
 SET(TARGET_SRC
+    DeprecatedGeometry.cpp
     ConvertToInventor.cpp
     ConvertFromInventor.cpp
     PendulumCallback.cpp
@@ -8,6 +9,7 @@ SET(TARGET_SRC
     ShuttleCallback.cpp
 )
 SET(TARGET_HDRS
+    DeprecatedGeometry.h
     ConvertToInventor.h
     ConvertFromInventor.h
     PendulumCallback.h

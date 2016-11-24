@@ -24,7 +24,8 @@ Action::Action()
     _loop = 1;
     _state = Stop;
 }
-Action::Action(const Action&rhs,const osg::CopyOp&)
+Action::Action(const Action&rhs,const osg::CopyOp& copyop):
+    osg::Object(rhs, copyop)
 {
     _numberFrame = rhs._numberFrame;
     _fps = rhs._fps;

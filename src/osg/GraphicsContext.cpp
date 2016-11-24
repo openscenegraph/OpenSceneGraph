@@ -568,7 +568,7 @@ void GraphicsContext::swapBuffers()
 {
     if (isCurrent())
     {
-        swapBuffersCallbackOrImplemenation();
+        swapBuffersCallbackOrImplementation();
         clear();
     }
     else if (_graphicsThread.valid() &&
@@ -579,7 +579,7 @@ void GraphicsContext::swapBuffers()
     else
     {
         makeCurrent();
-        swapBuffersCallbackOrImplemenation();
+        swapBuffersCallbackOrImplementation();
         clear();
     }
 }
@@ -589,6 +589,11 @@ void GraphicsContext::createGraphicsThread()
     if (!_graphicsThread)
     {
         setGraphicsThread(new GraphicsThread);
+
+        if (_traits.valid())
+        {
+            _graphicsThread->setProcessorAffinity(_traits->affinity);
+        }
     }
 }
 
@@ -767,7 +772,7 @@ void GraphicsContext::removeCamera(osg::Camera* camera)
             nitr != nodes.end();
             ++nitr)
         {
-            const_cast<osg::Node*>(*nitr)->releaseGLObjects(_state.get());
+            (*nitr)->releaseGLObjects(_state.get());
         }
 
         // release the context of the any RenderingCache that the Camera has.

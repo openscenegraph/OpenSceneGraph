@@ -58,6 +58,11 @@ REGISTER_OBJECT_WRAPPER( Drawable,
         UPDATE_TO_VERSION_SCOPED( 142 )
         ADD_HEXINT_SERIALIZER( NodeMask, 0xffffffff );  // _nodeMask
     }
+
+    {
+        UPDATE_TO_VERSION_SCOPED( 145 )
+        ADD_BOOL_SERIALIZER( CullingActive, true );  // _cullingActive
+    }
 }
 
 

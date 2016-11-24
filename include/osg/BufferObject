@@ -533,7 +533,8 @@ class OSG_EXPORT BufferData : public Object
         {
             ModifiedCallback() {}
 
-            ModifiedCallback(const ModifiedCallback&,const CopyOp&) {}
+            ModifiedCallback(const ModifiedCallback& org, const CopyOp& copyop) :
+                Object(org, copyop) {}
 
             META_Object(osg,ModifiedCallback);
 

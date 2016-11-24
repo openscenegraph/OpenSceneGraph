@@ -44,7 +44,7 @@
 
 #ifndef WIN32
 
-    // Required for compatibility with glext.h sytle function definitions of
+    // Required for compatibility with glext.h style function definitions of
     // OpenGL extensions, such as in src/osg/Point.cpp.
     #ifndef APIENTRY
         #define APIENTRY

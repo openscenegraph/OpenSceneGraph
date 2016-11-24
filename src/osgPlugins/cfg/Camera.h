@@ -87,10 +87,10 @@ class Camera : public osg::Referenced
                                  viewing frustum.
                          farClip   - Distance from the viewer to the far plane of the
                                  viewing frustum.
-                         xshear- Assymetrical shear in viewing frustum in the horizontal
+                         xshear- Asymmetrical shear in viewing frustum in the horizontal
                                  direction.  Value given in normalized device coordinates
                                  (see setShear() below).
-                         yshear- Assymetrical shear in viewing frustum in the vertical
+                         yshear- Asymmetrical shear in viewing frustum in the vertical
                                  direction.  Value given in normalized device coordinates
                                  (see setShear() below).
                  */
@@ -100,10 +100,10 @@ class Camera : public osg::Referenced
                 /** Set the Projection type to be of Perspective and provide
                     the dimensions of the left, right, bottom, top, nearClip and farClip
                     extents of the viewing frustum as indicated.
-                         xshear- Assymetrical shear in viewing frustum in the horizontal
+                         xshear- Asymmetrical shear in viewing frustum in the horizontal
                                  direction.  Value given in normalized device coordinates
                                  (see setShear() below).
-                         yshear- Assymetrical shear in viewing frustum in the vertical
+                         yshear- Asymmetrical shear in viewing frustum in the vertical
                                  direction.  Value given in normalized device coordinates
                                  (see setShear() below).
                  */

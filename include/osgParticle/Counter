@@ -30,7 +30,11 @@ namespace osgParticle
         virtual const char* className() const { return "Counter"; }
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Counter* >(obj) != 0; }
 
+        /** get the number of particle of create for current frame.*/
         virtual int numParticlesToCreate(double dt) const = 0;
+
+        /** get the esimated maximum number of particles that would be generated duration the lifetime of a particle before it expires.*/
+        virtual int getEstimatedMaxNumOfParticles(double lifeTime) const = 0;
 
     protected:
         ~Counter() {}

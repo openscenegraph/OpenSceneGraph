@@ -99,12 +99,13 @@ static TString *createstrobj (lua_State *L, const char *str, size_t l,
                               int tag, unsigned int h, GCObject **list) {
   TString *ts;
   size_t totalsize;  /* total size of TString object */
+  char* start_of_string;
   totalsize = sizeof(TString) + ((l + 1) * sizeof(char));
   ts = &luaC_newobj(L, tag, totalsize, list, 0)->ts;
   ts->tsv.len = l;
   ts->tsv.hash = h;
   ts->tsv.extra = 0;
-  char* start_of_string = (char*)(ts)+sizeof(TString);
+  start_of_string = (char*)(ts)+sizeof(TString);
   memcpy(start_of_string, str, l*sizeof(char));
   start_of_string[l] = '\0';  /* ending 0 */
   return ts;

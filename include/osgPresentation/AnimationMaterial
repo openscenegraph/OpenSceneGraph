@@ -104,6 +104,8 @@ class OSGPRESENTATION_EXPORT AnimationMaterialCallback : public osg::NodeCallbac
 
 
         AnimationMaterialCallback(const AnimationMaterialCallback& apc,const osg::CopyOp& copyop):
+            osg::Object(apc, copyop),
+            osg::Callback(apc, copyop),
             osg::NodeCallback(apc,copyop),
             _animationMaterial(apc._animationMaterial),
             _useInverseMatrix(apc._useInverseMatrix),

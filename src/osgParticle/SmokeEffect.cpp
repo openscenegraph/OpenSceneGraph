@@ -132,7 +132,7 @@ void SmokeEffect::setUpEmitterAndProgram()
         osgParticle::RandomRateCounter* counter = dynamic_cast<osgParticle::RandomRateCounter*>(_emitter->getCounter());
         if (counter)
         {
-            counter->setRateRange(3*_intensity,5*_intensity);
+            counter->setRateRange(3.0f*_intensity,5.0f*_intensity);
         }
 
         osgParticle::SectorPlacer* placer = dynamic_cast<osgParticle::SectorPlacer*>(_emitter->getPlacer());

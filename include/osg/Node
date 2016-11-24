@@ -447,7 +447,8 @@ class OSG_EXPORT Node : public Object
         {
             ComputeBoundingSphereCallback() {}
 
-            ComputeBoundingSphereCallback(const ComputeBoundingSphereCallback&,const CopyOp&) {}
+            ComputeBoundingSphereCallback(const ComputeBoundingSphereCallback& org,const CopyOp& copyop):
+                Object(org, copyop) {}
 
             META_Object(osg,ComputeBoundingSphereCallback);
 

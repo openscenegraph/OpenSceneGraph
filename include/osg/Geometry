@@ -130,6 +130,9 @@ class OSG_EXPORT Geometry : public Drawable
         unsigned int getPrimitiveSetIndex(const PrimitiveSet* primitiveset) const;
 
 
+        /** Convinience method that checks all the vertex arrays to make sure that the buffer objects are all assigned appropriate.*/
+        void configureBufferObjects();
+
         /** return true if any arrays are shared.*/
         bool containsSharedArrays() const;
 
@@ -144,8 +147,8 @@ class OSG_EXPORT Geometry : public Drawable
         void setUseVertexArrayObject(bool flag);
         bool getUseVertexArrayObject()const{return _useVertexArrayObject;}
 
-        /** Force a recompile on next draw() of any OpenGL display list associated with this geoset.*/
-        virtual void dirtyDisplayList();
+        /** Force a recompile on next draw() of any OpenGL objects associated with this geoset.*/
+        virtual void dirtyGLObjects();
 
         /** Force a recompile on next draw() of any OpenGL VAO associated with this geoset.*/
         virtual void dirtyVertexArrayObject();
@@ -181,6 +184,7 @@ class OSG_EXPORT Geometry : public Drawable
           * and is the method to override when deriving from Geometry for user-drawn objects.
         */
         virtual void drawImplementation(RenderInfo& renderInfo) const;
+
 
         /** Set up the vertex arrays for the purpose of rendering, called by drawImplemtation() prior to it calling drawPrimitivesImplementation().*/
         void drawVertexArraysImplementation(RenderInfo& renderInfo) const;
@@ -233,6 +237,7 @@ class OSG_EXPORT Geometry : public Drawable
 
         bool                            _containsDeprecatedData;
 
+/** HEAD
         typedef   std::pair<unsigned int ,std::list< ref_ptr<BufferObject> > >  VAOKey; //attribpointer hash and buffer list
 
         struct VAOKeyCompare
@@ -267,6 +272,8 @@ class OSG_EXPORT Geometry : public Drawable
 
         mutable buffered_object< osg::ref_ptr<PerContextVertexArrayObject > > _vao;
         bool _useVertexArrayObject;
+=======*/
+        virtual VertexArrayState* createVertexArrayState(RenderInfo& renderInfo) const;
 
     public:
 
@@ -311,6 +318,21 @@ class OSG_EXPORT Geometry : public Drawable
         GLboolean getVertexAttribNormalize(unsigned int index) const;
 #endif
 };
+
+/** Convinience visitor for making sure that any BufferObjects that might be required are set up in the scene graph.*/
+class ConfigureBufferObjectsVisitor : public osg::NodeVisitor
+{
+public:
+    ConfigureBufferObjectsVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+    void apply(osg::Geometry& geometry)
+    {
+        geometry.configureBufferObjects();
+    }
+};
+
+
 
 /** Convenience function to be used for creating quad geometry with texture coords.
   * Tex coords go from left bottom (l,b) to right top (r,t).

@@ -7,7 +7,7 @@
 //  SGI Inventor , or TGS Inventor.
 //
 //
-//  Autor: PCJohn (peciva _at fit.vutbr.cz)
+//  Author: PCJohn (peciva _at fit.vutbr.cz)
 //
 //  License: public domain
 //
@@ -30,6 +30,8 @@
 #include <stack>
 #include <osg/CullFace>
 #include <osg/FrontFace>
+
+#include "DeprecatedGeometry.h"
 
 class SoSeparator;
 

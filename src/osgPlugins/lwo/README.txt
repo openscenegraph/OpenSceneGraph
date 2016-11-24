@@ -6,7 +6,7 @@ features (and drawbacks) of the original converter but it doesn't replace
 it completely.
   I'm planning to further enhance the stand-alone converter by adding osgNV 
 compatibility and I can't do this on the plugin version because I'm not going
-to introduce a dependancy to osgNV into OSG.
+to introduce a dependency to osgNV into OSG.
   There is also a LWS plugin which reads Lightwave scene files; make sure you
 only read scene files that point to LWO2 (not LWO1) objects, otherwise you may
 experience problems (the LWO1 plugin doesn't convert the coordinate system

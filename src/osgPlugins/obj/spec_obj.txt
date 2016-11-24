@@ -859,7 +859,7 @@ surf  s0  s1  t0  t1  v1/vt1/vn1   v2/vt2/vn2 . . .
 
     For a non-rational surface, the control vertices are 3D.  For a
     rational surface the control vertices can be 3D or 4D.  The fourth
-    coordinate (weight) defaults to 1.0 if ommitted.
+    coordinate (weight) defaults to 1.0 if omitted.
 
     NOTE: For more information on the ordering of control points for
     survaces, refer to the section on surfaces and control points in
@@ -1636,7 +1636,7 @@ Grouping
 There are four statements in the .obj file to help you manipulate groups
 of elements:
 
-o	Gropu name statements are used to organize collections of
+o	Group name statements are used to organize collections of
 	elements and simplify data manipulation for operations in
 	Model.
 

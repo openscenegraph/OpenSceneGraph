@@ -1,0 +1,265 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_VertexArrayState
+#define OSG_VertexArrayState 1
+
+#include <osg/Referenced>
+#include <osg/GLExtensions>
+#include <osg/Array>
+#include <osg/AttributeDispatchers>
+
+namespace osg {
+
+class OSG_EXPORT VertexArrayState : public osg::Referenced
+{
+public:
+
+        VertexArrayState(osg::State* state);
+
+        struct ArrayDispatch : public osg::Referenced
+        {
+            ArrayDispatch():
+                array(0),
+                modifiedCount(0xffffffff),
+                active(false) {}
+
+            virtual void enable_and_dispatch(osg::State& /*state*/, const osg::Array* /*new_array*/) {} // = 0;
+
+            virtual void enable_and_dispatch(osg::State& /*state*/, const osg::Array* /*new_array*/, const osg::GLBufferObject* /*vbo*/) {} // = 0;
+
+            virtual void enable_and_dispatch(osg::State& /*state*/, GLint /*size*/, GLenum /*type*/, GLsizei /*stride*/, const GLvoid * /*ptr*/, GLboolean /*normalized*/) {} // = 0;
+
+            virtual void dispatch(osg::State& /*state*/, const osg::Array* /*new_array*/) {} // = 0;
+
+            virtual void dispatch(osg::State& /*state*/, const osg::Array* /*new_array*/, const osg::GLBufferObject* /*vbo*/) {} // = 0;
+
+            virtual void dispatch(osg::State& /*state*/, GLint /*size*/, GLenum /*type*/, GLsizei /*stride*/, const GLvoid * /*ptr*/, GLboolean /*normalized*/) {} // = 0;
+
+            virtual void disable(osg::State& /*state*/) {} // = 0;
+
+            const osg::Array*   array;
+            unsigned int        modifiedCount;
+            bool                active;
+        };
+
+        typedef std::vector< ref_ptr<ArrayDispatch> >       ArrayDispatchList;
+
+        void setCurrentVertexBufferObject(osg::GLBufferObject* vbo) { _currentVBO = vbo; }
+        GLBufferObject* getCurrentVertexBufferObject() { return _currentVBO; }
+
+        inline void bindVertexBufferObject(osg::GLBufferObject* vbo)
+        {
+            if (vbo->isDirty())
+            {
+                vbo->compileBuffer();
+                _currentVBO = vbo;
+            }
+            else if (vbo != _currentVBO)
+            {
+                vbo->bindBuffer();
+                _currentVBO = vbo;
+            }
+        }
+
+        inline void unbindVertexBufferObject()
+        {
+            if (!_currentVBO) return;
+            _ext->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
+            _currentVBO = 0;
+        }
+
+
+        void setCurrentElementBufferObject(osg::GLBufferObject* ebo) { _currentEBO = ebo; }
+        GLBufferObject* getCurrentElementBufferObject() { return _currentEBO; }
+
+        inline void bindElementBufferObject(osg::GLBufferObject* ebo)
+        {
+            if (ebo->isDirty())
+            {
+                ebo->compileBuffer();
+                _currentEBO = ebo;
+            }
+            else if (ebo != _currentEBO)
+            {
+                ebo->bindBuffer();
+                _currentEBO = ebo;
+            }
+        }
+
+        inline void unbindElementBufferObject()
+        {
+            if (!_currentEBO) return;
+            _ext->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
+            _currentEBO = 0;
+        }
+
+        void resetBufferObjectPointers() { _currentVBO = 0; _currentEBO = 0; }
+
+        void assignAllDispatchers();
+
+        void assignVertexArrayDispatcher();
+        void assignNormalArrayDispatcher();
+        void assignColorArrayDispatcher();
+        void assignSecondaryColorArrayDispatcher();
+        void assignFogCoordArrayDispatcher();
+        void assignTexCoordArrayDispatcher(unsigned int numUnits);
+        void assignVertexAttribArrayDispatcher(unsigned int numUnits);
+
+        inline void setVertexBufferObjectSupported(bool flag) { _isVertexBufferObjectSupported = flag; }
+        inline bool isVertexBufferObjectSupported() const { return _isVertexBufferObjectSupported; }
+
+        void setArray(ArrayDispatch* vad, osg::State& state, const osg::Array* new_array);
+        void setArray(ArrayDispatch* vad, osg::State& state, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean normalized);
+
+        inline void disable(ArrayDispatch* vad, osg::State& state) { vad->disable(state); vad->array=0; vad->modifiedCount=0xffffffff; vad->active=false; }
+
+        void setInterleavedArrays( osg::State& state, GLenum format, GLsizei stride, const GLvoid* pointer);
+
+        inline void setVertexArray(osg::State& state, const osg::Array* array) { setArray(_vertexArray.get(), state, array); }
+        inline void setVertexArray(osg::State& state, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean normalized=GL_FALSE) { setArray(_vertexArray.get(), state, size, type, stride, ptr, normalized); }
+        inline void disableVertexArray(osg::State& state) { disable(_vertexArray.get(), state); }
+
+        inline void setNormalArray(osg::State& state, const osg::Array* array) { setArray(_normalArray.get(), state, array); }
+        inline void setNormalArray(osg::State& state, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean normalized=GL_FALSE ) { setArray(_normalArray.get(), state, 3, type, stride, ptr, normalized); }
+        inline void disableNormalArray(osg::State& state) { disable(_normalArray.get(), state); }
+
+        inline void setColorArray(osg::State& state, const osg::Array* array) { setArray(_colorArray.get(), state, array); }
+        inline void setColorArray(osg::State& state, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean normalized=GL_TRUE ) { setArray(_colorArray.get(), state, size, type, stride, ptr, normalized); }
+        inline void disableColorArray(osg::State& state) { disable(_colorArray.get(), state); }
+
+        inline void setSecondaryColorArray(osg::State& state, const osg::Array* array) { setArray(_secondaryColorArray.get(), state, array); }
+        inline void disableSecondaryColorArray(osg::State& state) { disable(_secondaryColorArray.get(), state); }
+
+        inline void setFogCoordArray(osg::State& state, const osg::Array* array) { setArray(_fogCoordArray.get(), state, array); }
+        inline void disableFogCoordArray(osg::State& state) { disable(_fogCoordArray.get(), state); }
+
+        inline void setTexCoordArray(osg::State& state, unsigned int unit, const osg::Array* array) { setArray(_texCoordArrays[unit].get(), state, array); }
+        inline void setTexCoordArray(osg::State& state, unsigned int unit, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean normalized=GL_FALSE ) { setArray(_texCoordArrays[unit].get(), state, size, type, stride, ptr, normalized); }
+        inline void disableTexCoordArray(osg::State& state, unsigned int unit) { disable(_texCoordArrays[unit].get(),state); }
+        inline void disableTexCoordArrayAboveAndIncluding(osg::State& state, unsigned int index);
+
+        inline void setVertexAttribArray(osg::State& state, unsigned int unit, const osg::Array* array) { setArray(_vertexAttribArrays[unit].get(), state, array); }
+        inline void disableVertexAttribArray(osg::State& state, unsigned int unit) { disable(_vertexAttribArrays[unit].get(), state); }
+        inline void disableVertexAttribArrayAboveAndIncluding(osg::State& state, unsigned int index);
+
+        /** Mark all the vertex attributes as being disabled but leave the disabling till a later call to applyDisablingOfVertexAttributes.*/
+        inline void lazyDisablingOfVertexAttributes();
+
+        /** Disable all the vertex attributes that have been marked as to be disabled.*/
+        inline void applyDisablingOfVertexAttributes(osg::State& state);
+
+        // Verex Array Object methods.
+        void generateVertexArrayObject();
+
+        void deleteVertexArrayObject();
+
+        inline void bindVertexArrayObject() const { _ext->glBindVertexArray (_vertexArrayObject); }
+
+        inline void unbindVertexArrayObject() const { _ext->glBindVertexArray (0); }
+
+        GLuint getVertexArrayObject() const { return _vertexArrayObject; }
+
+
+        void setRequiresSetArrays(bool flag) { _requiresSetArrays = flag; }
+        bool getRequiresSetArrays() const { return _requiresSetArrays; }
+
+        void dirty();
+
+        void release();
+
+public:
+
+
+        // osg::GLBufferObject* getGLBufferObject(osg::Array* array);
+
+        osg::State*                     _state;
+        osg::ref_ptr<osg::GLExtensions> _ext;
+
+        bool                            _isVertexBufferObjectSupported;
+
+        GLuint                          _vertexArrayObject;
+
+
+        osg::ref_ptr<ArrayDispatch>     _vertexArray;
+        osg::ref_ptr<ArrayDispatch>     _normalArray;
+        osg::ref_ptr<ArrayDispatch>     _colorArray;
+        osg::ref_ptr<ArrayDispatch>     _secondaryColorArray;
+        osg::ref_ptr<ArrayDispatch>     _fogCoordArray;
+        ArrayDispatchList               _texCoordArrays;
+        ArrayDispatchList               _vertexAttribArrays;
+
+        typedef std::vector<ArrayDispatch*> ActiveDispatchers;
+        ActiveDispatchers               _activeDispatchers;
+        ActiveDispatchers               _previous_activeDispatchers;
+
+        GLBufferObject*                 _currentVBO;
+        GLBufferObject*                 _currentEBO;
+
+        bool                            _requiresSetArrays;
+};
+
+
+inline void VertexArrayState::lazyDisablingOfVertexAttributes()
+{
+    _activeDispatchers.swap(_previous_activeDispatchers);
+    _activeDispatchers.clear();
+
+    for(ActiveDispatchers::iterator itr = _previous_activeDispatchers.begin();
+        itr != _previous_activeDispatchers.end();
+        ++itr)
+    {
+        ArrayDispatch* ad = (*itr);
+        // ad->array = 0;
+        ad->active = false;
+    }
+}
+
+inline void VertexArrayState::applyDisablingOfVertexAttributes(osg::State& state)
+{
+    for(ActiveDispatchers::iterator itr = _previous_activeDispatchers.begin();
+        itr != _previous_activeDispatchers.end();
+        ++itr)
+    {
+        ArrayDispatch* ad = (*itr);
+        if (!ad->active)
+        {
+            ad->disable(state);
+            ad->array = 0;
+            ad->modifiedCount = 0xffffffff;
+        }
+    }
+    _previous_activeDispatchers.clear();
+}
+
+inline void VertexArrayState::disableTexCoordArrayAboveAndIncluding(osg::State& state, unsigned int index)
+{
+    for(unsigned int i=index; i<_texCoordArrays.size(); ++i)
+    {
+        disable(_texCoordArrays[i].get(), state);
+    }
+}
+
+inline void VertexArrayState::disableVertexAttribArrayAboveAndIncluding(osg::State& state, unsigned int index)
+{
+    for(unsigned int i=index; i<_vertexAttribArrays.size(); ++i)
+    {
+        disable(_vertexAttribArrays[i].get(), state);
+    }
+}
+
+
+
+}
+
+#endif

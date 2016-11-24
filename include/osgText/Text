@@ -422,6 +422,7 @@ protected:
     osg::Vec4 _colorGradientBottomRight;
     osg::Vec4 _colorGradientTopRight;
 
+
     // Helper function for color interpolation
     float bilinearInterpolate(float x1, float x2, float y1, float y2, float x, float y, float q11, float q12, float q21, float q22) const;
 };

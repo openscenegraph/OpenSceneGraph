@@ -38,7 +38,6 @@ namespace osgDB
     ///          Writing with    'keepRelativePaths': /somePath/newmodel.osg and /somePath/images/img1.jpg
     ///          Writing without 'keepRelativePaths': /somePath/newmodel.osg and /somePath/img1.jpg
     ///\author Sukender
-    ///\todo Handling of naming constraints (such as "8.3" names in 3DS)
     class OSGDB_EXPORT ExternalFileWriter
     {
     public:

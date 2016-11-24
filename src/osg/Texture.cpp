@@ -715,7 +715,7 @@ osg::ref_ptr<Texture::TextureObject> TextureObjectSet::takeFromOrphans(Texture* 
 
 osg::ref_ptr<Texture::TextureObject> TextureObjectSet::takeOrGenerate(Texture* texture)
 {
-    // see if we can recyle TextureObject from the orphan list
+    // see if we can recycle TextureObject from the orphan list
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
         if (!_pendingOrphanedTextureObjects.empty())
@@ -1863,6 +1863,13 @@ void Texture::applyTexParameters(GLenum target, State& state) const
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
     const GLExtensions* extensions = state.get<GLExtensions>();
+
+    TextureObject* to = getTextureObject(contextID);
+    if (to)
+    {
+        extensions->debugObjectLabel(GL_TEXTURE, to->id(), getName());
+    }
+
 
     WrapMode ws = _wrap_s, wt = _wrap_t, wr = _wrap_r;
 

@@ -17,6 +17,9 @@
 
 using namespace osg;
 
+#define VOA_NOTICE OSG_INFO
+//#define VOA_NOTICE OSG_NOTICE
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // PrimitiveSet
@@ -184,6 +187,7 @@ unsigned int DrawArrayLengths::getNumIndices() const
     return count;
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // DrawElementsUByte
@@ -214,13 +218,23 @@ void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects, GLint ve
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
+<<<<<<< HEAD
         if(!useVAO)state.bindElementBufferObject(ebo);
         if (ebo)
         {
             DRAWELEMENTS(GL_UNSIGNED_BYTE)
+=======
+
+        if (ebo)
+        {
+            state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
+            if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_BYTE, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
+            else glDrawElements(mode, size(), GL_UNSIGNED_BYTE, (const GLvoid *)(ebo->getOffset(getBufferIndex())));
+>>>>>>> upstream/master
         }
         else
         {
+            state.getCurrentVertexArrayState()->unbindElementBufferObject();
             if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_BYTE, &front(), _numInstances);
             else glDrawElements(mode, size(), GL_UNSIGNED_BYTE, &front());
         }
@@ -273,13 +287,23 @@ void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects, GLint v
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
+<<<<<<< HEAD
         if(!useVAO)state.bindElementBufferObject(ebo);
         if (ebo)
         {
            DRAWELEMENTS(GL_UNSIGNED_SHORT)
+=======
+
+        if (ebo)
+        {
+            state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
+            if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_SHORT, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
+            else glDrawElements(mode, size(), GL_UNSIGNED_SHORT, (const GLvoid *)(ebo->getOffset(getBufferIndex())));
+>>>>>>> upstream/master
         }
         else
         {
+            state.getCurrentVertexArrayState()->unbindElementBufferObject();
             if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_SHORT, &front(), _numInstances);
             else glDrawElements(mode, size(), GL_UNSIGNED_SHORT, &front());
         }
@@ -331,14 +355,24 @@ void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects, GLint ver
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
+<<<<<<< HEAD
         if(!useVAO)state.bindElementBufferObject(ebo);
         if (ebo)
         {
 
             DRAWELEMENTS(GL_UNSIGNED_INT)
+=======
+
+        if (ebo)
+        {
+            state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
+            if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_INT, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
+            else glDrawElements(mode, size(), GL_UNSIGNED_INT, (const GLvoid *)(ebo->getOffset(getBufferIndex())));
+>>>>>>> upstream/master
         }
         else
         {
+            state.getCurrentVertexArrayState()->unbindElementBufferObject();
             if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_INT, &front(), _numInstances);
             else glDrawElements(mode, size(), GL_UNSIGNED_INT, &front());
         }
@@ -377,7 +411,7 @@ void DrawElementsUInt::offsetIndices(int offset)
 #ifdef OSG_HAS_MULTIDRAWARRAYS
 void MultiDrawArrays::draw(osg::State& state, bool, GLint vertexbase, bool useVAO) const
 {
-    // OSG_NOTICE<<"osg::MultiDrawArrays::draw"<<std::endl;
+    // VOA_NOTICE<<"osg::MultiDrawArrays::draw"<<std::endl;
 
     GLExtensions* ext = state.get<GLExtensions>();
     if (ext->glMultiDrawArrays)

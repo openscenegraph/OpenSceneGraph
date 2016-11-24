@@ -88,18 +88,15 @@ State::State():
     _currentActiveTextureUnit=0;
     _currentClientActiveTextureUnit=0;
 
-    _currentVBO = 0;
-    _currentEBO = 0;
     _currentPBO = 0;
 
-    _isSecondaryColorSupportResolved = false;
     _isSecondaryColorSupported = false;
-
-    _isFogCoordSupportResolved = false;
     _isFogCoordSupported = false;
-
-    _isVertexBufferObjectSupportResolved = false;
     _isVertexBufferObjectSupported = false;
+    _isVertexArrayObjectSupported = false;
+
+    _forceVertexBufferObject = false;
+    _forceVertexArrayObject = false;
 
     _lastAppliedProgramObject = 0;
 
@@ -128,7 +125,6 @@ State::State():
     _maxTexturePoolSize = 0;
     _maxBufferObjectPoolSize = 0;
 
-    _glBeginEndAdapter.setState(this);
     _arrayDispatchers.setState(this);
 
     _graphicsCostEstimator = new GraphicsCostEstimator;
@@ -138,8 +134,7 @@ State::State():
     _gpuTimestamp = 0;
     _timestampBits = 0;
 
-
-
+    _vas = 0;
 }
 
 State::~State()
@@ -154,6 +149,117 @@ State::~State()
     //_texCoordArrayList.clear();
 
     //_vertexAttribArrayList.clear();
+}
+
+void State::initializeExtensionProcs()
+{
+    if (_extensionProcsInitialized) return;
+
+    const char* vendor = (const char*) glGetString( GL_VENDOR );
+    if (vendor)
+    {
+        std::string str_vendor(vendor);
+        std::replace(str_vendor.begin(), str_vendor.end(), ' ', '_');
+        OSG_INFO<<"GL_VENDOR = ["<<str_vendor<<"]"<<std::endl;
+        _defineMap.map[str_vendor].defineVec.push_back(osg::StateSet::DefinePair("1",osg::StateAttribute::ON));
+        _defineMap.map[str_vendor].changed = true;
+        _defineMap.changed = true;
+    }
+
+    _glExtensions = new GLExtensions(_contextID);
+    GLExtensions::Set(_contextID, _glExtensions.get());
+
+    _isSecondaryColorSupported = osg::isGLExtensionSupported(_contextID,"GL_EXT_secondary_color");
+    _isFogCoordSupported = osg::isGLExtensionSupported(_contextID,"GL_EXT_fog_coord");
+    _isVertexBufferObjectSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(_contextID,"GL_ARB_vertex_buffer_object");
+    _isVertexArrayObjectSupported = _glExtensions->isVAOSupported;
+
+    const DisplaySettings* ds = getDisplaySettings() ? getDisplaySettings() : osg::DisplaySettings::instance().get();
+    _forceVertexArrayObject = _isVertexArrayObjectSupported && (ds->getVertexBufferHint()==DisplaySettings::VERTEX_ARRAY_OBJECT);
+    _forceVertexBufferObject = _forceVertexArrayObject || (_isVertexBufferObjectSupported && (ds->getVertexBufferHint()==DisplaySettings::VERTEX_BUFFER_OBJECT));
+
+    OSG_NOTICE<<"_forceVertexArrayObject = "<<_forceVertexArrayObject<<std::endl;
+    OSG_NOTICE<<"_forceVertexBufferObject = "<<_forceVertexBufferObject<<std::endl;
+
+
+    // Set up up global VertexArrayState object
+    _globalVertexArrayState = new VertexArrayState(this);
+    _globalVertexArrayState->assignAllDispatchers();
+    // if (_useVertexArrayObject) _globalVertexArrayState->generateVertexArrayObject();
+
+    setCurrentToGloabalVertexArrayState();
+
+
+    setGLExtensionFuncPtr(_glClientActiveTexture,"glClientActiveTexture","glClientActiveTextureARB");
+    setGLExtensionFuncPtr(_glActiveTexture, "glActiveTexture","glActiveTextureARB");
+    setGLExtensionFuncPtr(_glFogCoordPointer, "glFogCoordPointer","glFogCoordPointerEXT");
+    setGLExtensionFuncPtr(_glSecondaryColorPointer, "glSecondaryColorPointer","glSecondaryColorPointerEXT");
+    setGLExtensionFuncPtr(_glVertexAttribPointer, "glVertexAttribPointer","glVertexAttribPointerARB");
+    setGLExtensionFuncPtr(_glVertexAttribIPointer, "glVertexAttribIPointer");
+    setGLExtensionFuncPtr(_glVertexAttribLPointer, "glVertexAttribLPointer","glVertexAttribPointerARB");
+    setGLExtensionFuncPtr(_glEnableVertexAttribArray, "glEnableVertexAttribArray","glEnableVertexAttribArrayARB");
+    setGLExtensionFuncPtr(_glMultiTexCoord4f, "glMultiTexCoord4f","glMultiTexCoord4fARB");
+    setGLExtensionFuncPtr(_glVertexAttrib4f, "glVertexAttrib4f");
+    setGLExtensionFuncPtr(_glVertexAttrib4fv, "glVertexAttrib4fv");
+    setGLExtensionFuncPtr(_glDisableVertexAttribArray, "glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
+    setGLExtensionFuncPtr(_glBindBuffer, "glBindBuffer","glBindBufferARB");
+
+    setGLExtensionFuncPtr(_glDrawArraysInstanced, "glDrawArraysInstanced","glDrawArraysInstancedARB","glDrawArraysInstancedEXT");
+    setGLExtensionFuncPtr(_glDrawElementsInstanced, "glDrawElementsInstanced","glDrawElementsInstancedARB","glDrawElementsInstancedEXT");
+
+    if (osg::getGLVersionNumber() >= 2.0 || osg::isGLExtensionSupported(_contextID, "GL_ARB_vertex_shader") || OSG_GLES2_FEATURES || OSG_GL3_FEATURES)
+    {
+        glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&_glMaxTextureUnits);
+        #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
+            glGetIntegerv(GL_MAX_TEXTURE_COORDS, &_glMaxTextureCoords);
+        #else
+            _glMaxTextureCoords = _glMaxTextureUnits;
+        #endif
+    }
+    else if ( osg::getGLVersionNumber() >= 1.3 ||
+                                 osg::isGLExtensionSupported(_contextID,"GL_ARB_multitexture") ||
+                                 osg::isGLExtensionSupported(_contextID,"GL_EXT_multitexture") ||
+                                 OSG_GLES1_FEATURES)
+    {
+        GLint maxTextureUnits = 0;
+        glGetIntegerv(GL_MAX_TEXTURE_UNITS,&maxTextureUnits);
+        _glMaxTextureUnits = maxTextureUnits;
+        _glMaxTextureCoords = maxTextureUnits;
+    }
+    else
+    {
+        _glMaxTextureUnits = 1;
+        _glMaxTextureCoords = 1;
+    }
+
+    if (_glExtensions->isARBTimerQuerySupported)
+    {
+        const GLubyte* renderer = glGetString(GL_RENDERER);
+        std::string rendererString = renderer ? (const char*)renderer : "";
+        if (rendererString.find("Radeon")!=std::string::npos || rendererString.find("RADEON")!=std::string::npos || rendererString.find("FirePro")!=std::string::npos)
+        {
+            // AMD/ATI drivers are producing an invalid enumerate error on the
+            // glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS_ARB, &bits);
+            // call so work around it by assuming 64 bits for counter.
+            setTimestampBits(64);
+            //setTimestampBits(0);
+        }
+        else
+        {
+            GLint bits = 0;
+            _glExtensions->glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS_ARB, &bits);
+            setTimestampBits(bits);
+        }
+    }
+
+
+    _extensionProcsInitialized = true;
+
+    if (_graphicsCostEstimator.valid())
+    {
+        RenderInfo renderInfo(this,0);
+        _graphicsCostEstimator->calibrate(renderInfo);
+    }
 }
 
 void State::releaseGLObjects()
@@ -208,6 +314,8 @@ void State::releaseGLObjects()
 
 void State::reset()
 {
+    OSG_NOTICE<<std::endl<<"State::reset() *************************** "<<std::endl;
+
 #if 1
     for(ModeMap::iterator mitr=_modeMap.begin();
         mitr!=_modeMap.end();
@@ -272,7 +380,7 @@ void State::reset()
 
     dirtyAllVertexArrays();
 
-#if 0
+#if 1
     // reset active texture unit values and call OpenGL
     // note, this OpenGL op precludes the use of State::reset() without a
     // valid graphics context, therefore the new implementation below
@@ -929,410 +1037,45 @@ void State::resetVertexAttributeAlias(bool compactAliasing, unsigned int numText
 void State::disableAllVertexArrays()
 {
     disableVertexPointer();
-    disableTexCoordPointersAboveAndIncluding(0);
-    disableVertexAttribPointersAboveAndIncluding(0);
     disableColorPointer();
     disableFogCoordPointer();
     disableNormalPointer();
     disableSecondaryColorPointer();
+    disableTexCoordPointersAboveAndIncluding(0);
+    disableVertexAttribPointersAboveAndIncluding(0);
 }
 
 void State::dirtyAllVertexArrays()
 {
-    dirtyVertexPointer();
-    dirtyTexCoordPointersAboveAndIncluding(0);
-    dirtyVertexAttribPointersAboveAndIncluding(0);
-    dirtyColorPointer();
-    dirtyFogCoordPointer();
-    dirtyNormalPointer();
-    dirtySecondaryColorPointer();
-}
-
-void State::setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* pointer)
-{
-    disableAllVertexArrays();
-
-#if defined(OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
-    glInterleavedArrays( format, stride, pointer);
-#else
-    OSG_NOTICE<<"Warning: State::setInterleavedArrays(..) not implemented."<<std::endl;
-#endif
-
-    // the crude way, assume that all arrays have been affected so dirty them and
-    // disable them...
-    dirtyAllVertexArrays();
-}
-
-void State::initializeExtensionProcs()
-{
-    if (_extensionProcsInitialized) return;
-
-    const char* vendor = (const char*) glGetString( GL_VENDOR );
-    if (vendor)
-    {
-        std::string str_vendor(vendor);
-        std::replace(str_vendor.begin(), str_vendor.end(), ' ', '_');
-        OSG_INFO<<"GL_VENDOR = ["<<str_vendor<<"]"<<std::endl;
-        _defineMap.map[str_vendor].defineVec.push_back(osg::StateSet::DefinePair("1",osg::StateAttribute::ON));
-        _defineMap.map[str_vendor].changed = true;
-        _defineMap.changed = true;
-    }
-
-    _glExtensions = new GLExtensions(_contextID);
-    GLExtensions::Set(_contextID, _glExtensions.get());
-
-    setGLExtensionFuncPtr(_glClientActiveTexture,"glClientActiveTexture","glClientActiveTextureARB");
-    setGLExtensionFuncPtr(_glActiveTexture, "glActiveTexture","glActiveTextureARB");
-    setGLExtensionFuncPtr(_glFogCoordPointer, "glFogCoordPointer","glFogCoordPointerEXT");
-    setGLExtensionFuncPtr(_glSecondaryColorPointer, "glSecondaryColorPointer","glSecondaryColorPointerEXT");
-    setGLExtensionFuncPtr(_glVertexAttribPointer, "glVertexAttribPointer","glVertexAttribPointerARB");
-    setGLExtensionFuncPtr(_glVertexAttribIPointer, "glVertexAttribIPointer");
-    setGLExtensionFuncPtr(_glVertexAttribLPointer, "glVertexAttribLPointer","glVertexAttribPointerARB");
-    setGLExtensionFuncPtr(_glEnableVertexAttribArray, "glEnableVertexAttribArray","glEnableVertexAttribArrayARB");
-    setGLExtensionFuncPtr(_glMultiTexCoord4f, "glMultiTexCoord4f","glMultiTexCoord4fARB");
-    setGLExtensionFuncPtr(_glVertexAttrib4f, "glVertexAttrib4f");
-    setGLExtensionFuncPtr(_glVertexAttrib4fv, "glVertexAttrib4fv");
-    setGLExtensionFuncPtr(_glDisableVertexAttribArray, "glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
-    setGLExtensionFuncPtr(_glBindBuffer, "glBindBuffer","glBindBufferARB");
-
-    setGLExtensionFuncPtr(_glDrawArraysInstanced, "glDrawArraysInstanced","glDrawArraysInstancedARB","glDrawArraysInstancedEXT");
-    setGLExtensionFuncPtr(_glDrawElementsInstanced, "glDrawElementsInstanced","glDrawElementsInstancedARB","glDrawElementsInstancedEXT");
-
-    if (osg::getGLVersionNumber() >= 2.0 || osg::isGLExtensionSupported(_contextID, "GL_ARB_vertex_shader") || OSG_GLES2_FEATURES || OSG_GL3_FEATURES)
-    {
-        glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&_glMaxTextureUnits);
-        #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
-            glGetIntegerv(GL_MAX_TEXTURE_COORDS, &_glMaxTextureCoords);
-        #else
-            _glMaxTextureCoords = _glMaxTextureUnits;
-        #endif
-    }
-    else if ( osg::getGLVersionNumber() >= 1.3 ||
-                                 osg::isGLExtensionSupported(_contextID,"GL_ARB_multitexture") ||
-                                 osg::isGLExtensionSupported(_contextID,"GL_EXT_multitexture") ||
-                                 OSG_GLES1_FEATURES)
-    {
-        GLint maxTextureUnits = 0;
-        glGetIntegerv(GL_MAX_TEXTURE_UNITS,&maxTextureUnits);
-        _glMaxTextureUnits = maxTextureUnits;
-        _glMaxTextureCoords = maxTextureUnits;
-    }
-    else
-    {
-        _glMaxTextureUnits = 1;
-        _glMaxTextureCoords = 1;
-    }
-
-    if (_glExtensions->isARBTimerQuerySupported)
-    {
-        const GLubyte* renderer = glGetString(GL_RENDERER);
-        std::string rendererString = renderer ? (const char*)renderer : "";
-        if (rendererString.find("Radeon")!=std::string::npos || rendererString.find("RADEON")!=std::string::npos || rendererString.find("FirePro")!=std::string::npos)
-        {
-            // AMD/ATI drivers are producing an invalid enumerate error on the
-            // glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS_ARB, &bits);
-            // call so work around it by assuming 64 bits for counter.
-            setTimestampBits(64);
-            //setTimestampBits(0);
-        }
-        else
-        {
-            GLint bits = 0;
-            _glExtensions->glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS_ARB, &bits);
-            setTimestampBits(bits);
-        }
-    }
-
-
-    _extensionProcsInitialized = true;
-
-    if (_graphicsCostEstimator.valid())
-    {
-        RenderInfo renderInfo(this,0);
-        _graphicsCostEstimator->calibrate(renderInfo);
-    }
+    OSG_INFO<<"State::dirtyAllVertexArrays()"<<std::endl;
 }
 
 bool State::setClientActiveTextureUnit( unsigned int unit )
 {
-    if (unit!=_currentClientActiveTextureUnit)
+    // if (true)
+    if (_currentClientActiveTextureUnit!=unit)
     {
-        if (_glClientActiveTexture && unit < (unsigned int)_glMaxTextureCoords)
-        {
-            _glClientActiveTexture(GL_TEXTURE0+unit);
-            _currentClientActiveTextureUnit = unit;
-        }
-        else
-        {
-            return unit==0;
-        }
+        // OSG_NOTICE<<"State::setClientActiveTextureUnit( "<<unit<<") done"<<std::endl;
+
+        _glClientActiveTexture(GL_TEXTURE0+unit);
+
+        _currentClientActiveTextureUnit = unit;
+    }
+    else
+    {
+        //OSG_NOTICE<<"State::setClientActiveTextureUnit( "<<unit<<") not required."<<std::endl;
     }
     return true;
 }
 
-void State::setFogCoordPointer(GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean normalized)
+
+unsigned int State::getClientActiveTextureUnit() const
 {
-#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-    if (_useVertexAttributeAliasing)
-    {
-        setVertexAttribPointer(_fogCoordAlias._location, 1, type, normalized, stride, ptr);
-    }
-    else
-    {
-        if (_glFogCoordPointer)
-        {
-
-            if (!_fogArray._enabled || _fogArray._dirty)
-            {
-                _fogArray._enabled = true;
-                glEnableClientState(GL_FOG_COORDINATE_ARRAY);
-            }
-            //if (_fogArray._pointer!=ptr || _fogArray._dirty)
-            {
-                _fogArray._pointer=ptr;
-                _glFogCoordPointer( type, stride, ptr );
-            }
-            _fogArray._lazy_disable = false;
-            _fogArray._dirty = false;
-        }
-    }
-#else
-        setVertexAttribPointer(_fogCoordAlias._location, 1, type, normalized, stride, ptr);
-#endif
-}
-
-void State::setSecondaryColorPointer( GLint size, GLenum type,
-                                      GLsizei stride, const GLvoid *ptr, GLboolean normalized )
-{
-#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-    if (_useVertexAttributeAliasing)
-    {
-        setVertexAttribPointer(_secondaryColorAlias._location, size, type, normalized, stride, ptr);
-    }
-    else
-    {
-        if (_glSecondaryColorPointer)
-        {
-            if (!_secondaryColorArray._enabled || _secondaryColorArray._dirty)
-            {
-                _secondaryColorArray._enabled = true;
-                glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
-            }
-            //if (_secondaryColorArray._pointer!=ptr || _secondaryColorArray._dirty)
-            {
-                _secondaryColorArray._pointer=ptr;
-                _glSecondaryColorPointer( size, type, stride, ptr );
-            }
-            _secondaryColorArray._lazy_disable = false;
-            _secondaryColorArray._dirty = false;
-            _secondaryColorArray._normalized = normalized;
-        }
-    }
-#else
-        setVertexAttribPointer(_secondaryColorAlias._location, size, type, normalized, stride, ptr);
-#endif
-}
-
-/** wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribPointerARB(..);
-* note, only updates values that change.*/
-void State::setVertexAttribPointer( unsigned int index,
-                                      GLint size, GLenum type, GLboolean normalized,
-                                    GLsizei stride, const GLvoid *ptr )
-{
-    if (_glVertexAttribPointer)
-    {
-        // OSG_NOTICE<<"State::setVertexAttribPointer("<<index<<",...)"<<std::endl;
-
-        if ( index >= _vertexAttribArrayList.size()) _vertexAttribArrayList.resize(index+1);
-        EnabledArrayPair& eap = _vertexAttribArrayList[index];
-
-        if (!eap._enabled || eap._dirty)
-        {
-            eap._enabled = true;
-            // OSG_NOTICE<<"    _glEnableVertexAttribArray( "<<index<<" )"<<std::endl;
-            _glEnableVertexAttribArray( index );
-        }
-        //if (eap._pointer != ptr || eap._normalized!=normalized || eap._dirty)
-        {
-            // OSG_NOTICE<<"    _glVertexAttribPointer( "<<index<<" )"<<std::endl;
-            _glVertexAttribPointer( index, size, type, normalized, stride, ptr );
-            eap._pointer = ptr;
-            eap._normalized = normalized;
-        }
-        eap._lazy_disable = false;
-        eap._dirty = false;
-    }
-}
-
-/** wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribIPointer(..);
-* note, only updates values that change.*/
-void State::setVertexAttribIPointer( unsigned int index,
-                                     GLint size, GLenum type,
-                                     GLsizei stride, const GLvoid *ptr )
-{
-    if (_glVertexAttribIPointer)
-    {
-        // OSG_NOTICE<<"State::setVertexAttribIPointer("<<index<<",...)"<<std::endl;
-
-        if ( index >= _vertexAttribArrayList.size()) _vertexAttribArrayList.resize(index+1);
-        EnabledArrayPair& eap = _vertexAttribArrayList[index];
-
-        if (!eap._enabled || eap._dirty)
-        {
-            eap._enabled = true;
-            // OSG_NOTICE<<"    _glEnableVertexAttribArray( "<<index<<" )"<<std::endl;
-            _glEnableVertexAttribArray( index );
-        }
-        //if (eap._pointer != ptr || eap._dirty)
-        {
-            // OSG_NOTICE<<"    _glVertexAttribIPointer( "<<index<<" )"<<std::endl;
-            _glVertexAttribIPointer( index, size, type, stride, ptr );
-            eap._pointer = ptr;
-            eap._normalized = false;
-        }
-        eap._lazy_disable = false;
-        eap._dirty = false;
-    }
-}
-/** wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribLPointer(..);
-* note, only updates values that change.*/
-void State::setVertexAttribLPointer( unsigned int index,
-                                     GLint size, GLenum type,
-                                     GLsizei stride, const GLvoid *ptr )
-{
-    if (_glVertexAttribLPointer)
-    {
-        // OSG_NOTICE<<"State::setVertexAttribLPointer("<<index<<",...)"<<std::endl;
-
-        if ( index >= _vertexAttribArrayList.size()) _vertexAttribArrayList.resize(index+1);
-        EnabledArrayPair& eap = _vertexAttribArrayList[index];
-
-        if (!eap._enabled || eap._dirty)
-        {
-            eap._enabled = true;
-            // OSG_NOTICE<<"    _glEnableVertexAttribArray( "<<index<<" )"<<std::endl;
-            _glEnableVertexAttribArray( index );
-        }
-        //if (eap._pointer != ptr || eap._dirty)
-        {
-            // OSG_NOTICE<<"    _glVertexAttribLPointer( "<<index<<" )"<<std::endl;
-            _glVertexAttribLPointer( index, size, type, stride, ptr );
-            eap._pointer = ptr;
-            eap._normalized = false;
-        }
-        eap._lazy_disable = false;
-        eap._dirty = false;
-    }
-}
-/** wrapper around DisableVertexAttribArrayARB(index);
-* note, only updates values that change.*/
-void State::disableVertexAttribPointer( unsigned int index )
-{
-    if (_glDisableVertexAttribArray)
-    {
-        if ( index >= _vertexAttribArrayList.size()) _vertexAttribArrayList.resize(index+1);
-        EnabledArrayPair& eap = _vertexAttribArrayList[index];
-
-        if (eap._enabled || eap._dirty)
-        {
-            eap._enabled = false;
-            eap._dirty = false;
-            // OSG_NOTICE<<"    _glDisableVertexAttribArray( "<<index<<" )"<<std::endl;
-            _glDisableVertexAttribArray( index );
-        }
-    }
-}
-
-void State::disableVertexAttribPointersAboveAndIncluding( unsigned int index )
-{
-    if (_glDisableVertexAttribArray)
-    {
-        while (index<_vertexAttribArrayList.size())
-        {
-            EnabledArrayPair& eap = _vertexAttribArrayList[index];
-            if (eap._enabled || eap._dirty)
-            {
-                eap._enabled = false;
-                eap._dirty = false;
-                // OSG_NOTICE<<"    State::disableVertexAttribPointersAboveAndIncluding(): _glDisableVertexAttribArray( "<<index<<" )"<<std::endl;
-                _glDisableVertexAttribArray( index );
-            }
-            ++index;
-        }
-    }
-}
-
-void State::lazyDisablingOfVertexAttributes()
-{
-    // OSG_NOTICE<<"lazyDisablingOfVertexAttributes()"<<std::endl;
-    if (!_useVertexAttributeAliasing)
-    {
-        _vertexArray._lazy_disable = true;
-        _normalArray._lazy_disable = true;
-        _colorArray._lazy_disable = true;
-        _secondaryColorArray._lazy_disable = true;
-        _fogArray._lazy_disable = true;
-        for(EnabledTexCoordArrayList::iterator itr = _texCoordArrayList.begin();
-            itr != _texCoordArrayList.end();
-            ++itr)
-        {
-            itr->_lazy_disable = true;
-        }
-    }
-
-    for(EnabledVertexAttribArrayList::iterator itr = _vertexAttribArrayList.begin();
-        itr != _vertexAttribArrayList.end();
-        ++itr)
-    {
-        itr->_lazy_disable = true;
-    }
-}
-
-void State::applyDisablingOfVertexAttributes()
-{
-    //OSG_NOTICE<<"start of applyDisablingOfVertexAttributes()"<<std::endl;
-    if (!_useVertexAttributeAliasing)
-    {
-        if (_vertexArray._lazy_disable) disableVertexPointer();
-        if (_normalArray._lazy_disable) disableNormalPointer();
-        if (_colorArray._lazy_disable) disableColorPointer();
-        if (_secondaryColorArray._lazy_disable) disableSecondaryColorPointer();
-        if (_fogArray._lazy_disable) disableFogCoordPointer();
-        for(unsigned int i=0; i<_texCoordArrayList.size(); ++i)
-        {
-            if (_texCoordArrayList[i]._lazy_disable) disableTexCoordPointer(i);
-        }
-    }
-    for(unsigned int i=0; i<_vertexAttribArrayList.size(); ++i)
-    {
-        if (_vertexAttribArrayList[i]._lazy_disable) disableVertexAttribPointer(i);
-    }
-    // OSG_NOTICE<<"end of applyDisablingOfVertexAttributes()"<<std::endl;
+    return _currentClientActiveTextureUnit;
 }
 
 
-bool State::computeSecondaryColorSupported() const
-{
-    _isSecondaryColorSupportResolved = true;
-    _isSecondaryColorSupported = osg::isGLExtensionSupported(_contextID,"GL_EXT_secondary_color");
-    return _isSecondaryColorSupported;
-}
-
-bool State::computeFogCoordSupported() const
-{
-    _isFogCoordSupportResolved = true;
-    _isFogCoordSupported = osg::isGLExtensionSupported(_contextID,"GL_EXT_fog_coord");
-    return _isFogCoordSupported;
-}
-
-bool State::computeVertexBufferObjectSupported() const
-{
-    _isVertexBufferObjectSupportResolved = true;
-    _isVertexBufferObjectSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(_contextID,"GL_ARB_vertex_buffer_object");
-    return _isVertexBufferObjectSupported;
-}
-
-bool State::checkGLErrors(const char* str) const
+bool State::checkGLErrors(const char* str1, const char* str2) const
 {
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
@@ -1348,14 +1091,18 @@ bool State::checkGLErrors(const char* str) const
             OSG_NOTIFY(notifyLevel)<<"Warning: detected OpenGL error number 0x" << std::hex << errorNo << std::dec;
         }
 
-        if (str)
+        if (str1 || str2)
         {
-            OSG_NOTIFY(notifyLevel)<<" at "<<str<< std::endl;
+            OSG_NOTIFY(notifyLevel)<<" at";
+            if (str1) { OSG_NOTIFY(notifyLevel)<<" "<<str1; }
+            if (str2) { OSG_NOTIFY(notifyLevel)<<" "<<str2; }
         }
         else
         {
-            OSG_NOTIFY(notifyLevel)<<" in osg::State."<< std::endl;
+            OSG_NOTIFY(notifyLevel)<<" in osg::State.";
         }
+
+        OSG_NOTIFY(notifyLevel)<< std::endl;
 
         return true;
     }

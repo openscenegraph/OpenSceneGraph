@@ -165,15 +165,6 @@ bool  read_particle(osgDB::Input &fr, osgParticle::Particle &P)
                 }
                 ++fr;
             }
-            if (fr[0].matchWord("drawable") && fr[1].matchString("{")) {
-                fr += 2;
-                itAdvanced = true;
-                osg::Drawable *drawable = dynamic_cast<osg::Drawable *>(fr.readObject());
-                if (drawable) {
-                    P.setDrawable(drawable);
-                }
-                ++fr;
-            }
         }
         return true;
     }
@@ -249,14 +240,6 @@ void  write_particle(const osgParticle::Particle &P, osgDB::Output &fw)
     fw.writeObject(*P.getColorInterpolator());
     fw.moveOut();
     fw.indent() << "}" << std::endl;
-
-    if ( P.getDrawable() != NULL ) {
-        fw.indent() << "drawable {" << std::endl;
-        fw.moveIn();
-        fw.writeObject(*P.getDrawable());
-        fw.moveOut();
-        fw.indent() << "}" << std::endl;
-    }
 
     fw.moveOut();
     fw.indent() << "}" << std::endl;

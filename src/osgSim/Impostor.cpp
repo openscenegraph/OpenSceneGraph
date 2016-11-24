@@ -351,7 +351,7 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
     coords[3] = c11;
     texcoords[3].set(1.0f,1.0f);
 
-    impostorSprite->dirtyBound();
+    impostorSprite->dirty();
 
     Vec3* controlcoords = impostorSprite->getControlCoords();
 

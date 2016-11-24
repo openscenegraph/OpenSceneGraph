@@ -37,6 +37,8 @@ namespace osgParticle
         inline void setRateRange(const rangef& r);
         inline void setRateRange(float minrange, float maxrange);
 
+        virtual int getEstimatedMaxNumOfParticles(double lifeTime) const { return static_cast<int>(_rate_range.maximum * lifeTime); }
+
     protected:
         virtual ~VariableRateCounter() {}
 

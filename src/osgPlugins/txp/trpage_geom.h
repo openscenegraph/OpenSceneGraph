@@ -1518,7 +1518,7 @@ protected:
    more like tile terrain geometry.  In that case there is scene node type data (LODs,
    groups, geometry, etc...) associated with it.
 
-   trpgModel objects live within a trpgModelTable.  They are indexed there and refered
+   trpgModel objects live within a trpgModelTable.  They are indexed there and referred
    to by trpgModelRef objects.  Those model references are the only things that explicitly
    use trpgModel objects.
 
@@ -2320,7 +2320,7 @@ protected:
    deep they may be) then a pop.
 
    All groups have IDs.  These IDs are unique among groups and group-like things
-   (i.e. LODs) and are used to hook trpgAttach geometry into a scene graph hierachy
+   (i.e. LODs) and are used to hook trpgAttach geometry into a scene graph hierarchy
    as you page in higher terrain levels of detail.
 
    If you're doing a TerraPage reader, the group tells you to put together

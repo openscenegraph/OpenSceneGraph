@@ -63,6 +63,15 @@ namespace osgParticle
             return osg::maximum(_minimumNumberOfParticlesToCreate, i);
         }
 
+
+        virtual int getEstimatedMaxNumOfParticles(double lifeTime) const
+        {
+            int minNumParticles =  static_cast<int>(_minimumNumberOfParticlesToCreate*60.0f*lifeTime);
+            int baseNumPartciles = static_cast<int>(_numberOfParticlesPerSecondToCreate * lifeTime);
+            return osg::maximum(minNumParticles, baseNumPartciles);
+        }
+
+
     protected:
         virtual ~ConstantRateCounter() {}
 

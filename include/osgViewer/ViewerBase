@@ -59,6 +59,21 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         /** set up windows and associated threads.*/
         virtual void realize() = 0;
 
+
+        /** Set whether the setUpThreading() method should call configureAffinity() to set up up the processor affinity of viewer threads.*/
+        void setUseConfigureAffinity(bool flag) { _useConfigureAffinity = flag; }
+
+        /** get whether the setUpThreading() method should call configureAffinity() to set up up the processor affinity of viewer threads.*/
+        bool getUseConfigureAffinity() const { return _useConfigureAffinity; }
+
+        /** analyse the viewer configuration and select an appropriate Affinity for main thread, and any graphics, camera threads and database pagers that are required.*/
+        virtual void configureAffinity();
+
+        /** Set the processor affinity of main thread.*/
+        virtual void setProcessorAffinity(const OpenThreads::Affinity& affinity) { _affinity = affinity; }
+        OpenThreads::Affinity& getProcessorAffinity() { return _affinity; }
+        const OpenThreads::Affinity& getProcessorAffinity() const { return _affinity; }
+
         enum ThreadingModel
         {
             SingleThreaded,
@@ -283,7 +298,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         virtual void getUsage(osg::ApplicationUsage& usage) const = 0;
 
         bool getRequestRedraw() const { return _requestRedraw; }
-        
+
         bool getRequestContinousUpdate() const { return _requestContinousUpdate; }
 
 protected:
@@ -318,6 +333,8 @@ protected:
         bool                                                _quitEventSetsDone;
         bool                                                _releaseContextAtEndOfFrameHint;
 
+        bool                                                _useConfigureAffinity;
+        OpenThreads::Affinity                               _affinity;
         ThreadingModel                                      _threadingModel;
         bool                                                _threadsRunning;
 

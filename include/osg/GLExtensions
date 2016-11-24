@@ -182,8 +182,6 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         bool getFragDataLocation( const char* fragDataName, GLuint& slot) const;
 
         unsigned int contextID;
-
-        unsigned int contextID;
         float glVersion;
         float glslLanguageVersion;
 
@@ -714,10 +712,6 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glDisableIndexedEXT) (GLenum target, GLuint index);
         GLboolean (GL_APIENTRY * glIsEnabledIndexedEXT) (GLenum target, GLuint index);
 
-<<<<<<< HEAD
-=======
-
->>>>>>> e4cad929fc472b78561358c74d18050f770d0db3
         void (GL_APIENTRY * glClientActiveTexture) (GLenum texture);
         void (GL_APIENTRY * glActiveTexture) (GLenum texture);
         void (GL_APIENTRY * glFogCoordPointer) (GLenum type, GLsizei stride, const GLvoid *pointer);
@@ -731,10 +725,6 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
 
         /** convinience wrapper around glObjectLabel that calls glObjectLabel if it's supported and using std::string as a label parameter.*/
         void debugObjectLabel(GLenum identifier, GLuint name, const std::string& label) const { if (glObjectLabel && !label.empty()) glObjectLabel(identifier, name, label.size(), label.c_str()); }
-<<<<<<< HEAD
-=======
-
->>>>>>> e4cad929fc472b78561358c74d18050f770d0db3
 };
 
 

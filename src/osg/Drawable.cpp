@@ -596,20 +596,7 @@ void Drawable::setBound(const BoundingBox& bb) const
 }
 
 
-<<<<<<< HEAD
-TransformFeedbackDrawCallback::TransformFeedbackDrawCallback(const TransformFeedbackDrawCallback&dc,const CopyOp&co):osg::Drawable::DrawCallback(dc,co)
-{
-    _type=dc._type;
-}
 
-void TransformFeedbackDrawCallback::drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable*  drawable ) const
-{
-    osg::GLExtensions* ext = renderInfo.getState()->get<osg::GLExtensions>();
-
-    ext->glBeginTransformFeedback(_type);
-    drawable->drawImplementation(renderInfo);
-    ext->glEndTransformFeedback();
-=======
 void Drawable::compileGLObjects(RenderInfo& renderInfo) const
 {
 
@@ -720,5 +707,19 @@ VertexArrayState* Drawable::createVertexArrayState(RenderInfo& renderInfo) const
     VertexArrayState* vos = new osg::VertexArrayState(renderInfo.getState());
     vos->assignAllDispatchers();
     return vos;
->>>>>>> upstream/master
+
+}
+
+TransformFeedbackDrawCallback::TransformFeedbackDrawCallback(const TransformFeedbackDrawCallback&dc,const CopyOp&co):osg::Drawable::DrawCallback(dc,co)
+{
+    _type=dc._type;
+}
+
+void TransformFeedbackDrawCallback::drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable*  drawable ) const
+{
+    osg::GLExtensions* ext = renderInfo.getState()->get<osg::GLExtensions>();
+
+    ext->glBeginTransformFeedback(_type);
+    drawable->drawImplementation(renderInfo);
+    ext->glEndTransformFeedback();
 }

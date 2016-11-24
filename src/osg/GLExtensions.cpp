@@ -1163,7 +1163,6 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glActiveTexture, "glActiveTexture","glActiveTextureARB", validContext);
     setGLExtensionFuncPtr(glFogCoordPointer, "glFogCoordPointer","glFogCoordPointerEXT", validContext);
     setGLExtensionFuncPtr(glSecondaryColorPointer, "glSecondaryColorPointer","glSecondaryColorPointerEXT", validContext);
-<<<<<<< HEAD
 
     if (validContext)
     {

@@ -725,7 +725,15 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
         }
     }
 
-    //glFush();
+    osg::State* state = context->getState();
+    if (state->getLastAppliedProgramObject())
+    {
+        osg::GLExtensions* extensions = state->get<osg::GLExtensions>();
+        extensions->glUseProgram(0);
+        state->setLastAppliedProgramObject(0);
+    }
+
+    //glFlush();
     //glFinish();
 }
 

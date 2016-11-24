@@ -299,6 +299,17 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         int getNvOptimusEnablement() const;
 
 
+        enum VertexBufferHint
+        {
+            NO_PREFERENCE,
+            VERTEX_BUFFER_OBJECT,
+            VERTEX_ARRAY_OBJECT
+        };
+
+        void setVertexBufferHint(VertexBufferHint gi) { _vertexBufferHint = gi; }
+        VertexBufferHint getVertexBufferHint() const { return _vertexBufferHint; }
+
+
         void setKeystoneHint(bool enabled) { _keystoneHint = enabled; }
         bool getKeystoneHint() const { return _keystoneHint; }
 
@@ -387,6 +398,8 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
 
         SwapMethod                      _swapMethod;
         unsigned int                    _syncSwapBuffers;
+
+        VertexBufferHint                _vertexBufferHint;
 
         bool                            _keystoneHint;
         FileNames                       _keystoneFileNames;

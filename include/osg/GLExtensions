@@ -123,6 +123,30 @@ bool setGLExtensionFuncPtr(T& t, const char* str1, const char* str2, const char*
     return convertPointer(t, validContext ? osg::getGLExtensionFuncPtr(str1, str2, str3) : 0);
 }
 
+class VertexAttribAlias
+{
+    public:
+        VertexAttribAlias():
+            _location(0) {}
+
+        VertexAttribAlias(const VertexAttribAlias& rhs):
+            _location(rhs._location),
+            _glName(rhs._glName),
+            _osgName(rhs._osgName),
+            _declaration(rhs._declaration) {}
+
+        VertexAttribAlias(GLuint location, const std::string glName, const std::string osgName, const std::string& declaration):
+            _location(location),
+            _glName(glName),
+            _osgName(osgName),
+            _declaration(declaration) {}
+
+        GLuint      _location;
+        std::string _glName;
+        std::string _osgName;
+        std::string _declaration;
+};
+
 /** Main GLExtensions class for managing OpenGL extensions per graphics context.*/
 class OSG_EXPORT GLExtensions : public osg::Referenced
 {
@@ -150,6 +174,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         bool getFragDataLocation( const char* fragDataName, GLuint& slot) const;
 
 
+        unsigned int contextID;
         float glVersion;
         float glslLanguageVersion;
 
@@ -260,8 +285,11 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glVertexAttrib4ubv)(GLuint index, const GLubyte *v);
         void (GL_APIENTRY * glVertexAttrib4uiv)(GLuint index, const GLuint *v);
         void (GL_APIENTRY * glVertexAttrib4usv)(GLuint index, const GLushort *v);
-        void (GL_APIENTRY * glVertexAttribPointer)(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
+        void (GL_APIENTRY * glVertexAttribPointer) (unsigned int, GLint, GLenum, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
+        void (GL_APIENTRY * glVertexAttribIPointer) (unsigned int, GLint, GLenum, GLsizei stride, const GLvoid *pointer);
+        void (GL_APIENTRY * glVertexAttribLPointer) (unsigned int, GLint, GLenum, GLsizei stride, const GLvoid *pointer);
         void (GL_APIENTRY * glVertexAttribDivisor)(GLuint index, GLuint divisor);
+
         void (GL_APIENTRY * glUniformMatrix2x3fv)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
         void (GL_APIENTRY * glUniformMatrix3x2fv)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
         void (GL_APIENTRY * glUniformMatrix2x4fv)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
@@ -668,6 +696,19 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glDisableIndexedEXT) (GLenum target, GLuint index);
         GLboolean (GL_APIENTRY * glIsEnabledIndexedEXT) (GLenum target, GLuint index);
 
+        void (GL_APIENTRY * glClientActiveTexture) (GLenum texture);
+        void (GL_APIENTRY * glActiveTexture) (GLenum texture);
+        void (GL_APIENTRY * glFogCoordPointer) (GLenum type, GLsizei stride, const GLvoid *pointer);
+        void (GL_APIENTRY * glSecondaryColorPointer) (GLint size, GLenum type, GLsizei stride, const GLvoid *pointer);
+
+        GLint  glMaxTextureCoords;
+        GLint  glMaxTextureUnits;
+
+        // debug extensions
+        void (GL_APIENTRY * glObjectLabel) (GLenum identifier, GLuint name, GLsizei length, const GLchar* label);
+
+        /** convinience wrapper around glObjectLabel that calls glObjectLabel if it's supported and using std::string as a label parameter.*/
+        void debugObjectLabel(GLenum identifier, GLuint name, const std::string& label) const { if (glObjectLabel && !label.empty()) glObjectLabel(identifier, name, label.size(), label.c_str()); }
 };
 
 

@@ -431,7 +431,9 @@ void GLExtensions::Set(unsigned int contextID, GLExtensions* extensions)
 ///////////////////////////////////////////////////////////////////////////
 // Extension function pointers for OpenGL v2.x
 
-GLExtensions::GLExtensions(unsigned int contextID)
+
+GLExtensions::GLExtensions(unsigned int in_contextID):
+    contextID(in_contextID)
 {
     const char* versionString = (const char*) glGetString( GL_VERSION );
     bool validContext = versionString!=0;
@@ -589,7 +591,9 @@ GLExtensions::GLExtensions(unsigned int contextID)
     setGLExtensionFuncPtr(glVertexAttrib4ubv, "glVertexAttrib4ubv", validContext);
     setGLExtensionFuncPtr(glVertexAttrib4uiv, "glVertexAttrib4uiv", validContext);
     setGLExtensionFuncPtr(glVertexAttrib4usv, "glVertexAttrib4usv", validContext);
-    setGLExtensionFuncPtr(glVertexAttribPointer, "glVertexAttribPointer", validContext);
+    setGLExtensionFuncPtr(glVertexAttribPointer, "glVertexAttribPointer","glVertexAttribPointerARB", validContext);
+    setGLExtensionFuncPtr(glVertexAttribIPointer, "glVertexAttribIPointer","glVertexAttribIPointerARB", validContext);
+    setGLExtensionFuncPtr(glVertexAttribLPointer, "glVertexAttribLPointer","glVertexAttribPointerARB", validContext);
     setGLExtensionFuncPtr(glVertexAttribDivisor, "glVertexAttribDivisor", validContext);
 
     // v1.5-only ARB entry points, in case they're needed for fallback
@@ -1137,7 +1141,47 @@ GLExtensions::GLExtensions(unsigned int contextID)
     osg::setGLExtensionFuncPtr(glDisableIndexedEXT, "glDisableIndexedEXT", validContext);
     osg::setGLExtensionFuncPtr(glIsEnabledIndexedEXT, "glIsEnabledIndexedEXT", validContext);
 
+    setGLExtensionFuncPtr(glClientActiveTexture,"glClientActiveTexture","glClientActiveTextureARB", validContext);
+    setGLExtensionFuncPtr(glActiveTexture, "glActiveTexture","glActiveTextureARB", validContext);
+    setGLExtensionFuncPtr(glFogCoordPointer, "glFogCoordPointer","glFogCoordPointerEXT", validContext);
+    setGLExtensionFuncPtr(glSecondaryColorPointer, "glSecondaryColorPointer","glSecondaryColorPointerEXT", validContext);
 
+    if (validContext)
+    {
+        if (osg::getGLVersionNumber() >= 2.0 || osg::isGLExtensionSupported(contextID, "GL_ARB_vertex_shader") || OSG_GLES2_FEATURES || OSG_GL3_FEATURES)
+        {
+            glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&glMaxTextureUnits);
+            #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
+                glGetIntegerv(GL_MAX_TEXTURE_COORDS, &glMaxTextureCoords);
+            #else
+                glMaxTextureCoords = glMaxTextureUnits;
+            #endif
+        }
+        #ifdef GL_MAX_TEXTURE_UNITS
+        else if ( osg::getGLVersionNumber() >= 1.3 ||
+                                    osg::isGLExtensionSupported(contextID,"GL_ARB_multitexture") ||
+                                    osg::isGLExtensionSupported(contextID,"GL_EXT_multitexture") ||
+                                    OSG_GLES1_FEATURES)
+        {
+            GLint maxTextureUnits = 0;
+            glGetIntegerv(GL_MAX_TEXTURE_UNITS,&maxTextureUnits);
+            glMaxTextureUnits = maxTextureUnits;
+            glMaxTextureCoords = maxTextureUnits;
+        }
+        #endif
+        else
+        {
+            glMaxTextureUnits = 1;
+            glMaxTextureCoords = 1;
+        }
+    }
+    else
+    {
+        glMaxTextureUnits = 0;
+        glMaxTextureCoords = 0;
+    }
+
+    osg::setGLExtensionFuncPtr(glObjectLabel, "glObjectLabel", validContext);
 }
 
 

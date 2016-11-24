@@ -153,10 +153,16 @@ osg::Program* createGeneratorShader()
     pgm->setParameter( GL_GEOMETRY_OUTPUT_TYPE_EXT, GL_POINTS );
     pgm->addShader( new osg::Shader( osg::Shader::GEOMETRY, geomSource ) );
 
+#ifdef SEPARATED
     pgm->addTransformFeedbackVarying(std::string("out1"));
     pgm->addTransformFeedbackVarying(std::string("out2"));
     pgm->setTransformFeedbackMode(GL_SEPARATE_ATTRIBS);
-
+#else //Advanced interleaving
+    pgm->addTransformFeedbackVarying(std::string("out1"));
+    pgm->addTransformFeedbackVarying(std::string("gl_NextBuffer"));
+    pgm->addTransformFeedbackVarying(std::string("out2"));
+    pgm->setTransformFeedbackMode(GL_INTERLEAVED_ATTRIBS);
+#endif
     return pgm;
 }
 
@@ -168,8 +174,84 @@ osg::Program* createRenderShader()
     pgm->addShader( new osg::Shader( osg::Shader::FRAGMENT, fragSource ) );
     return pgm;
 }
-
+class QueryBufferObjectIndexBinding:public osg::BufferIndexBinding{
+public:
+QueryBufferObjectIndexBinding(int index=0):osg::BufferIndexBinding(GL_QUERY_BUFFER, index){
+setBufferObject(new osg::VertexBufferObject());}
+};
 ///////////////////////////////////////////////////////////////////////////
+#define BUFFER_OFFSET(i)    ((void*)NULL + (i))
+
+struct QueryStuff{
+QueryStuff():_queryinit(false),
+		_queryavailable(false){}
+ GLuint _queries[10];
+GLint _queryresult,
+_queryavailable;
+bool _queryinit;
+};
+class TransformFeedbackDrawCallback: public osg::Drawable::DrawCallback
+{
+	public:
+unsigned int _nbstreamout;
+	 
+	//mutable osg::buffered_value<QueryStuff> _querystuff;
+mutable QueryStuff _querystuff[10];///MAXGRAPHICALCONTEXT
+	osg::ref_ptr<osg::BufferObject > _queryBufferObjectBinding;
+	TransformFeedbackDrawCallback(unsigned int nbstreamout):osg::Drawable::DrawCallback(),
+_nbstreamout(nbstreamout){
+
+	}
+
+	void setQueryBufferObject(osg::BufferObject*buff){
+	_queryBufferObjectBinding=buff;
+	}
+	const osg::BufferObject * getQueryBufferObject()const{return _queryBufferObjectBinding;}
+
+	void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable*  drawable ) const
+	{
+const GLuint &contextID=renderInfo.getState()->getContextID();
+	  	osg::GLExtensions* ext = renderInfo.getState()->get<osg::GLExtensions>();
+		if(!_querystuff[contextID]._queryinit){
+		ext->glGenQueries(_nbstreamout,_querystuff[contextID]._queries);
+		_querystuff[contextID]._queryinit=true;
+		}
+
+		// Perform  query for each stream (TODO retrieve _nbstreamout automatiquelly :
+///1)via state.getPCP.getProgram().getTransormFeedBackVaryings 
+///!!!-ignoring specials varyings ~gl_Next_Buffer and gl_SkipCompopents !!! 
+//2)via  retrieving the number of TransformFeedbackBufferBinding applied on the state (don't know how)
+for(int streamid=0;streamid<_nbstreamout;streamid++)
+		glBeginQueryIndexed(GL_PRIMITIVES_GENERATED,streamid, _querystuff[contextID]._queries[streamid]);
+
+		ext->glBeginTransformFeedback(GL_POINTS);
+		drawable->drawImplementation(renderInfo);
+		ext->glEndTransformFeedback();
+
+for(int streamid=0;streamid<_nbstreamout;streamid++)
+		glEndQueryIndexed(GL_PRIMITIVES_GENERATED,streamid);
+
+		// Get query results to buffer object
+///		glBindBuffer(GL_QUERY_BUFFER, _queryBufferObjectBinding);
+//_queryBufferObjectBinding->apply(*renderInfo.getState());
+ 	osg::GLBufferObject* glObject
+            = _queryBufferObjectBinding->getOrCreateGLBufferObject(renderInfo.getState()->getContextID());
+        if (!glObject->_extensions->isUniformBufferObjectSupported)
+            return;
+        if (glObject->isDirty()) glObject->compileBuffer();
+        glObject->_extensions->glBindBuffer(GL_QUERY_BUFFER,
+                                                 glObject->getGLObjectID());
+
+for(GLuint streamid=0;streamid<_nbstreamout;streamid++)	{	
+std::cerr<<"retrieving result for query no"<<streamid<<std::endl;
+glGetQueryObjectuiv(_querystuff[contextID]._queries[streamid], GL_QUERY_RESULT, (( GLuint *)( NULL+sizeof(GLuint)* streamid )));		
+}
+
+
+		// Bind query result buffer as uniform buffer
+		//glBindBufferBase(GL_UNIFORM_BUFFER, 0, queryBuffer);
+ 	}
+};
 
 int main( int , char** )
 {
@@ -234,7 +316,17 @@ int main( int , char** )
 
     }
 
-    osg::TransformFeedbackDrawCallback *tr=new  osg::TransformFeedbackDrawCallback();
+    TransformFeedbackDrawCallback *tr=new  TransformFeedbackDrawCallback(2);
+osg::VertexBufferObject * querybuffer=new osg::VertexBufferObject;
+osg::Vec4iArray * fakeresult=new osg::Vec4iArray();
+fakeresult->push_back(osg::Vec4i(0,0,0,0));
+fakeresult->push_back(osg::Vec4i(0,0,0,0));
+fakeresult->push_back(osg::Vec4i(0,0,0,0));
+fakeresult->push_back(osg::Vec4i(0,0,0,0));
+fakeresult->push_back(osg::Vec4i(0,0,0,0));
+fakeresult->setBufferObject(querybuffer);
+tr->setQueryBufferObject(querybuffer);
+
     osg::TransformFeedbackBufferBinding *tfbb=new   osg::TransformFeedbackBufferBinding (0);
     tfbb->setBufferObject(somePointsRenderer->getVertexArray()->getVertexBufferObject());
     osg::TransformFeedbackBufferBinding *tfbb2=new   osg::TransformFeedbackBufferBinding (1);

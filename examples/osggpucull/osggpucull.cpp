@@ -17,6 +17,7 @@
 #include <osg/Quat>
 #include <osg/Geometry>
 #include <osg/CullFace>
+#include <osg/VertexAttribDivisor>
 #include <osg/Image>
 #include <osg/Texture>
 #include <osg/TextureBuffer>
@@ -1433,6 +1434,7 @@ void createDynamicRendering( osg::Group* root, GPUCullData& gpuData, osg::Buffer
         drawGeode->addDrawable( it->second.geometryAggregator->getAggregatedGeometry() );
         drawGeode->setCullingActive(false);
 
+        //drawGeode->getOrCreateStateSet()->setAttribute(new osg::VertexAttribDivisor(9,100000));
         drawGeode->getOrCreateStateSet()->setTextureAttribute( 8, instancesTextureBuffer );
         drawGeode->getOrCreateStateSet()->addUniform( dynamicInstancesDataUniform );
         drawGeode->getOrCreateStateSet()->addUniform( dynamicInstancesDataSize );

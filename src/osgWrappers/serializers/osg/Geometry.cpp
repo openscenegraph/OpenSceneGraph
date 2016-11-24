@@ -121,7 +121,7 @@ struct GeometryFinishedObjectReadCallback : public osgDB::FinishedObjectReadCall
         v.getGeometryList().insert(&geometry);
         v.makeMesh();
         ///HACK to test VAO feature*/
-        geometry.setUseDisplayList(false);geometry.setUseVertexBufferObjects(true);          geometry.setUseVertexArrayObject(true);
+        //geometry.setUseDisplayList(false);geometry.setUseVertexBufferObjects(true);          geometry.setUseVertexArrayObject(true);
 if(geometry.getUseVertexArrayObject() ){
            //     geometry.setUseVertexArrayObject(false);
              //    geometry.setUseVertexBufferObjects(false);geometry.setUseVertexArrayObject(true);

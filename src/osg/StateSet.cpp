@@ -1432,6 +1432,8 @@ void StateSet::setThreadSafeRefUnref(bool threadSafe)
 void StateSet::compileGLObjects(State& state) const
 {
     bool checkForGLErrors = state.getCheckForGLErrors()==osg::State::ONCE_PER_ATTRIBUTE;
+    if (checkForGLErrors) state.checkGLErrors("before StateSet::compileGLObejcts()");
+
     for(AttributeList::const_iterator itr = _attributeList.begin();
         itr!=_attributeList.end();
         ++itr)

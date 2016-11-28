@@ -482,7 +482,8 @@ char SHADER_DYNAMIC_CULL_FRAGMENT[] =
 
 
 char SHADER_DYNAMIC_DRAW_0_VERTEX[] =
-    "#version 420 compatibility\n"
+    "#version 430 compatibility\n"
+    "#extension GL_ARB_shader_draw_parameters : enable\n"
     "\n"
     "uniform samplerBuffer dynamicInstancesData;\n"
     "uniform int dynamicInstancesDataSize; // = sizeof(DynamicInstance) / sizeof(osg::Vec4f)\n"
@@ -529,6 +530,7 @@ char SHADER_DYNAMIC_DRAW_0_VERTEX[] =
     "   // every vertex has its type coded on VertexTexCoord1.x,\n"
     "   // its lodNumber coded in VertexTexCoord1.y\n"
     "   // and bone index coded in VertexTexCoord1.z\n"
+    "int fok=gl_DrawIDARB;///test ze feature #extension GL_ARB_shader_draw_parameters : enable required\n"
     "   int instanceTypeIndex = int(VertexTexCoord1.x);\n"
     "   int instanceLodNumber = int(VertexTexCoord1.y);\n"
     "   int boneIndex = int(VertexTexCoord1.z);\n"

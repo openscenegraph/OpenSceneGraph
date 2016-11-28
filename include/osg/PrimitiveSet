@@ -24,8 +24,8 @@
 #include <osg/Vec3d>
 #include <osg/Vec4d>
 #include <osg/MixinVector>
-
 #include <osg/Array>
+
 #include <osg/BufferObject>
 
 #include <vector>
@@ -123,7 +123,12 @@ public:
     /// Mimics the OpenGL \c glEnd() function.
     virtual void end() = 0;
 
-    virtual void useVertexCacheAsVertexArray()=0;
+    void useVertexCacheAsVertexArray()
+    {
+        setVertexArray(_vertexCache.size(),&_vertexCache.front());
+    }
+
+    std::vector<Vec3>   _vertexCache;
     bool                _treatVertexDataAsTemporary;
 };
 
@@ -160,6 +165,7 @@ public:
 };
 
 class DrawElements;
+
 class MultiDrawElements;
 
 class OSG_EXPORT PrimitiveSet : public BufferData
@@ -187,8 +193,7 @@ class OSG_EXPORT PrimitiveSet : public BufferData
             MultiDrawArraysIndirectPrimitiveType,
             MultiDrawElementsUByteIndirectPrimitiveType,
             MultiDrawElementsUShortIndirectPrimitiveType,
-            MultiDrawElementsUIntIndirectPrimitiveType
-
+MultiDrawElementsUIntIndirectPrimitiveType
         };
 
         enum Mode
@@ -246,7 +251,7 @@ class OSG_EXPORT PrimitiveSet : public BufferData
         void setMode(GLenum mode) { _mode = mode; }
         GLenum getMode() const { return _mode; }
 
-        virtual void draw(State& state, bool useVertexBufferObjects, GLint vertexbase=0, bool useVAO=false) const = 0;
+        virtual void draw(State& state, bool useVertexBufferObjects) const = 0;
 
         virtual void accept(PrimitiveFunctor& functor) const = 0;
         virtual void accept(PrimitiveIndexFunctor& functor) const = 0;
@@ -307,7 +312,7 @@ class OSG_EXPORT DrawArrays : public PrimitiveSet
         void setCount(GLsizei count) { _count = count; }
         GLsizei getCount() const { return _count; }
 
-        virtual void draw(State& state, bool useVertexBufferObjects, GLint vertexbase=0, bool useVAO=false) const;
+        virtual void draw(State& state, bool useVertexBufferObjects) const;
 
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
@@ -365,7 +370,7 @@ class OSG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorGLsizei
         void setFirst(GLint first) { _first = first; }
         GLint getFirst() const { return _first; }
 
-        virtual void draw(State& state, bool useVertexBufferObjects, GLint vertexbase=0, bool useVAO=false) const;
+        virtual void draw(State& state, bool useVertexBufferObjects) const;
 
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
@@ -398,7 +403,7 @@ class DrawElements : public PrimitiveSet
         virtual const DrawElements* getDrawElements() const { return this; }
 
         /** Set the ElementBufferObject.*/
-        virtual void setElementBufferObject(osg::ElementBufferObject* ebo) { setBufferObject(ebo); }
+        inline void setElementBufferObject(osg::ElementBufferObject* ebo) { setBufferObject(ebo); }
 
         /** Get the ElementBufferObject. If no EBO is assigned returns NULL*/
         inline osg::ElementBufferObject* getElementBufferObject() { return dynamic_cast<osg::ElementBufferObject*>(_bufferObject.get()); }
@@ -459,7 +464,7 @@ class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
         virtual unsigned int    getTotalDataSize() const { return static_cast<unsigned int>(size()); }
         virtual bool            supportsBufferObject() const { return false; }
 
-        virtual void draw(State& state, bool useVertexBufferObjects, GLint vertexbase=0, bool useVAO=false) const;
+        virtual void draw(State& state, bool useVertexBufferObjects) const ;
 
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
@@ -527,7 +532,7 @@ class OSG_EXPORT DrawElementsUShort : public DrawElements, public VectorGLushort
         virtual unsigned int    getTotalDataSize() const { return 2u*static_cast<unsigned int>(size()); }
         virtual bool            supportsBufferObject() const { return false; }
 
-        virtual void draw(State& state, bool useVertexBufferObjects, GLint vertexbase=0, bool useVAO=false) const;
+        virtual void draw(State& state, bool useVertexBufferObjects) const;
 
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
@@ -594,7 +599,7 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
         virtual unsigned int    getTotalDataSize() const { return 4u*static_cast<unsigned int>(size()); }
         virtual bool            supportsBufferObject() const { return false; }
 
-        virtual void draw(State& state, bool useVertexBufferObjects, GLint vertexbase=0, bool useVAO=false) const;
+        virtual void draw(State& state, bool useVertexBufferObjects) const;
 
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
@@ -635,7 +640,7 @@ public:
     virtual const char* className() const { return "MultiDrawArrays"; }
 
 
-    virtual void draw(State& state, bool useVertexBufferObjects, GLint vertexbase=0, bool useVAO=false) const;
+    virtual void draw(osg::State& state, bool useVertexBufferObjects) const;
 
     virtual void accept(PrimitiveFunctor& functor) const;
     virtual void accept(PrimitiveIndexFunctor& functor) const;
@@ -663,6 +668,7 @@ protected:
     Firsts _firsts;
     Counts _counts;
 };
+
 
 class MultiDrawElements : public PrimitiveSet
 {
@@ -726,7 +732,7 @@ public:
     virtual const char* className() const { return "MultiDrawElementsUShort"; }
 
 
-    virtual void draw(State& state, bool useVertexBufferObjects, GLint vertexbase=0, bool useVAO=false) const;
+    virtual void draw(State& state, bool useVertexBufferObjects) const;
 
     virtual void accept(PrimitiveFunctor& functor) const;
     virtual void accept(PrimitiveIndexFunctor& functor) const;

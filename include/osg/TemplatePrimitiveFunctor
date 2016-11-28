@@ -51,12 +51,7 @@ namespace osg {
         }
 
         virtual ~TemplatePrimitiveFunctor() {}
-  virtual void useVertexCacheAsVertexArray()
-    {
-        setVertexArray(_vertexCache.size(),&_vertexCache.front());
-    }
 
-    std::vector<osg::Vec3>   _vertexCache;
         void setTreatVertexDataAsTemporary(bool treatVertexDataAsTemporary) { _treatVertexDataAsTemporary=treatVertexDataAsTemporary; }
         bool getTreatVertexDataAsTemporary() const { return _treatVertexDataAsTemporary; }
 

@@ -47,7 +47,7 @@ unsigned int PrimitiveSet::getNumPrimitives() const
 //
 // DrawArray
 //
-void DrawArrays::draw(State& state, bool, GLint vertexbase, bool useVAO) const
+void DrawArrays::draw(State& state, bool) const
 {
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
     GLenum mode = _mode;
@@ -68,20 +68,8 @@ void DrawArrays::draw(State& state, bool, GLint vertexbase, bool useVAO) const
     if (_numInstances>=1) state.glDrawArraysInstanced(mode,_first,_count, _numInstances);
     else glDrawArrays(mode,_first,_count);
 #else
-    if (_numInstances>=1) state.glDrawArraysInstanced(_mode,_first+vertexbase,_count, _numInstances);
-    else glDrawArrays(_mode,_first+vertexbase,_count);
-
-     /*if(useVAO){
-                if (_numInstances>=1)    state.get<GLExtensions>()->glDrawArraysInstancedBaseVertex(mode, size(), TYPE, (const GLvoid *)(ebo->getOffset(getBufferIndex())) , _numInstances ,vertexbase );\
-                else
-                state.get<GLExtensions>()->glDrawArraysBaseVertex(mode, size(), TYPE, (const GLvoid *)(ebo->getOffset(getBufferIndex())) , vertexbase );
-            }else {
-                if (_numInstances>=1) state.glDrawArraysInstanced(mode, _first,TYPE, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
-                else
-                glDrawArrays(mode, _first, TYPE, (const GLvoid *)(ebo->getOffset(getBufferIndex())));
-            }
-*/
-
+    if (_numInstances>=1) state.glDrawArraysInstanced(_mode,_first,_count, _numInstances);
+    else glDrawArrays(_mode,_first,_count);
 #endif
 }
 
@@ -118,7 +106,7 @@ unsigned int DrawArrayLengths::getNumPrimitives() const
     return 0;
 }
 
-void DrawArrayLengths::draw(State& state, bool, GLint vertexbase, bool useVAO) const
+void DrawArrayLengths::draw(State& state, bool) const
 {
     GLenum mode = _mode;
     #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
@@ -196,18 +184,8 @@ DrawElementsUByte::~DrawElementsUByte()
 {
     releaseGLObjects();
 }
-#define DRAWELEMENTS(TYPE) \
- if(useVAO){\
-                if (_numInstances>=1)    state.get<GLExtensions>()->glDrawElementsInstancedBaseVertex(mode, size(), TYPE, (const GLvoid *)(ebo->getOffset(getBufferIndex())) , _numInstances ,vertexbase );\
-                else \
-                state.get<GLExtensions>()->glDrawElementsBaseVertex(mode, size(), TYPE, (const GLvoid *)(ebo->getOffset(getBufferIndex())) , vertexbase );\
-            }else {\
-                if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(),TYPE, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);\
-                else\
-                glDrawElements(mode, size(), TYPE, (const GLvoid *)(ebo->getOffset(getBufferIndex())));\
-            }
 
-void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects, GLint vertexbase, bool useVAO) const
+void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const
 {
     GLenum mode = _mode;
     #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
@@ -218,19 +196,12 @@ void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects, GLint ve
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
-#if 0
-        if(!useVAO)state.bindElementBufferObject(ebo);
-        if (ebo)
-        {
-            DRAWELEMENTS(GL_UNSIGNED_BYTE)
-#else
 
         if (ebo)
         {
             state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
             if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_BYTE, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
             else glDrawElements(mode, size(), GL_UNSIGNED_BYTE, (const GLvoid *)(ebo->getOffset(getBufferIndex())));
-#endif
         }
         else
         {
@@ -276,7 +247,7 @@ DrawElementsUShort::~DrawElementsUShort()
     releaseGLObjects();
 }
 
-void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects, GLint vertexbase, bool useVAO) const
+void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
 {
     GLenum mode = _mode;
     #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
@@ -287,19 +258,12 @@ void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects, GLint v
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
-#if 0
-        if(!useVAO)state.bindElementBufferObject(ebo);
-        if (ebo)
-        {
-           DRAWELEMENTS(GL_UNSIGNED_SHORT)
-#else
 
         if (ebo)
         {
             state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
             if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_SHORT, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
             else glDrawElements(mode, size(), GL_UNSIGNED_SHORT, (const GLvoid *)(ebo->getOffset(getBufferIndex())));
-#endif
         }
         else
         {
@@ -344,7 +308,7 @@ DrawElementsUInt::~DrawElementsUInt()
     releaseGLObjects();
 }
 
-void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects, GLint vertexbase, bool useVAO) const
+void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const
 {
     GLenum mode = _mode;
     #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
@@ -355,20 +319,12 @@ void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects, GLint ver
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
-#if 0
-        if(!useVAO)state.bindElementBufferObject(ebo);
-        if (ebo)
-        {
-
-            DRAWELEMENTS(GL_UNSIGNED_INT)
-#else
 
         if (ebo)
         {
             state.getCurrentVertexArrayState()->bindElementBufferObject(ebo);
             if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_INT, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
             else glDrawElements(mode, size(), GL_UNSIGNED_INT, (const GLvoid *)(ebo->getOffset(getBufferIndex())));
-#endif
         }
         else
         {
@@ -409,7 +365,7 @@ void DrawElementsUInt::offsetIndices(int offset)
 // MultiDrawArrays
 //
 #ifdef OSG_HAS_MULTIDRAWARRAYS
-void MultiDrawArrays::draw(osg::State& state, bool, GLint vertexbase, bool useVAO) const
+void MultiDrawArrays::draw(osg::State& state, bool) const
 {
     // VOA_NOTICE<<"osg::MultiDrawArrays::draw"<<std::endl;
 
@@ -500,6 +456,7 @@ void MultiDrawArrays::add(GLint first, GLsizei count)
     _firsts.push_back(first);
     _counts.push_back(count);
 }
+
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -509,7 +466,7 @@ void MultiDrawArrays::add(GLint first, GLsizei count)
 
 #ifdef OSG_HAS_MULTIDRAWARRAYS
 
-void MultiDrawElementsUShort::draw(osg::State& state, bool, GLint vertexbase, bool useVAO) const
+void MultiDrawElementsUShort::draw(osg::State& state, bool) const
 {
     // OSG_NOTICE<<"osg::MultiDrawArrays::draw"<<std::endl;
 
@@ -519,16 +476,16 @@ void MultiDrawElementsUShort::draw(osg::State& state, bool, GLint vertexbase, bo
 
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
 
-        if(!useVAO)
-            state.bindElementBufferObject(ebo);
+        state.bindElementBufferObject(ebo);
 
         if(_indices == NULL && ebo){ ///_indices invalidated
             _indices=new GLushort*[_indicesholders.size()];
             for (unsigned i =0; i <  _indicesholders.size(); i++)
                 _indices[i]=(GLushort*)(ebo->getOffset(_indicesholders[i]->getBufferIndex()));
         }
-         if(useVAO){/**TODO*/}//  ext->glMultiDrawElementsBaseVertex(_mode, &_counts.front(), GL_UNSIGNED_SHORT, (const GLvoid *const*)_indices,_indicesholders.size(),vertexbase);
-       else ext->glMultiDrawElements(_mode, &_counts.front(), GL_UNSIGNED_SHORT, (const GLvoid *const*)_indices,_indicesholders.size());
+        // if(useVAO){/**TODO*/}//  ext->glMultiDrawElementsBaseVertex(_mode, &_counts.front(), GL_UNSIGNED_SHORT, (const GLvoid *const*)_indices,_indicesholders.size(),vertexbase);
+       //else
+       ext->glMultiDrawElements(_mode, &_counts.front(), GL_UNSIGNED_SHORT, (const GLvoid *const*)_indices,_indicesholders.size());
     }
 }
 

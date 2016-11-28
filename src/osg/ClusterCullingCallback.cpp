@@ -29,10 +29,7 @@ ClusterCullingCallback::ClusterCullingCallback():
 }
 
 ClusterCullingCallback::ClusterCullingCallback(const ClusterCullingCallback& ccc,const CopyOp& copyop):
-    Object(ccc, copyop),
-    Callback(ccc, copyop),
-    DrawableCullCallback(ccc, copyop),
-    NodeCallback(ccc, copyop),
+    DrawableCullCallback(ccc,copyop),
     _controlPoint(ccc._controlPoint),
     _normal(ccc._normal),
     _radius(ccc._radius),

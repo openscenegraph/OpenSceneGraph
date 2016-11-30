@@ -824,7 +824,10 @@ GLExtensions::GLExtensions(unsigned int contextID)
                                    isGLExtensionOrVersionSupported(contextID,"GL_SGIS_texture_edge_clamp", 1.2f);
 
 
-    isTextureBorderClampSupported = OSG_GL3_FEATURES || ((OSG_GL1_FEATURES || OSG_GL2_FEATURES) && isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_border_clamp", 1.3f));
+    isTextureBorderClampSupported = OSG_GL3_FEATURES ||
+                                    ((OSG_GL1_FEATURES || OSG_GL2_FEATURES) && isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_border_clamp", 1.3f)) ||
+                                    (OSG_GLES2_FEATURES && isGLExtensionSupported(contextID,"GL_EXT_texture_border_clamp"));
+
     isGenerateMipMapSupported = builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_SGIS_generate_mipmap", 1.4f);
     preferGenerateMipmapSGISForPowerOfTwo = (radeonHardwareDetected||fireGLHardwareDetected) ? false : true;
     isTextureMultisampledSupported = isGLExtensionSupported(contextID,"GL_ARB_texture_multisample");

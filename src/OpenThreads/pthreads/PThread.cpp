@@ -52,17 +52,19 @@
 #endif
 
 #include <OpenThreads/Thread>
+#include <osg/Notify>
 #include "PThreadPrivateData.h"
 
 #include <iostream>
 
 using namespace OpenThreads;
-
+/*
 #ifdef DEBUG
 # define DPRINTF(arg) printf arg
 #else
 # define DPRINTF(arg)
 #endif
+*/
 
 //-----------------------------------------------------------------------------
 // Initialize the static unique ids.
@@ -191,7 +193,8 @@ private:
         int status = pthread_setspecific(PThreadPrivateData::s_tls_key, thread);
         if (status)
         {
-            printf("Error: pthread_setspecific(,) returned error status, status = %d\n",status);
+            OSG_NOTICE<<"pthread_setspecific(,) returned error status: "<<status<<std::endl;
+           // printf("Error: pthread_setspecific(,) returned error status, status = %d\n",status);
         }
 
         pthread_cleanup_push(thread_cleanup_handler, &tcs);
@@ -238,35 +241,46 @@ private:
                            &my_param);
 
             if(status != 0) {
-            printf("THREAD INFO (%d) : Get sched: %s\n",
-                   thread->getProcessId(),
-                   strerror(status));
+                OSG_NOTICE<<"THREAD INFO - ID("<<thread->getProcessId()<<") :  Get sched: "<<strerror(status)<<std::endl;
+/*            printf("THREAD INFO (%d) : Get sched: %s\n",
+                   (int)thread->getProcessId(),
+                   strerror(status));*/
             } else {
-            printf(
+                OSG_NOTICE<<"THREAD INFO - ID("<<thread->getProcessId()<<") :\
+                Thread running at "<<(my_policy == SCHED_FIFO ? "SCHEDULE_FIFO"
+                                   : (my_policy == SCHED_RR ? "SCHEDULE_ROUND_ROBIN"
+                                   : (my_policy == SCHED_OTHER ? "SCHEDULE_OTHER"
+                                   : "UNKNOWN")))<<"/ Priority: "<<\
+                                   my_param.sched_priority<<std::endl;
+            /*printf(
                 "THREAD INFO (%d) : Thread running at %s / Priority: %d\n",
-                thread->getProcessId(),
+                (int)thread->getProcessId(),
                 (my_policy == SCHED_FIFO ? "SCHEDULE_FIFO"
                  : (my_policy == SCHED_RR ? "SCHEDULE_ROUND_ROBIN"
                 : (my_policy == SCHED_OTHER ? "SCHEDULE_OTHER"
                    : "UNKNOWN"))),
-                my_param.sched_priority);
+                my_param.sched_priority);*/
 
             max_priority = sched_get_priority_max(my_policy);
             min_priority = sched_get_priority_min(my_policy);
 
-            printf(
+            OSG_NOTICE<<"THREAD INFO - ID("<<thread->getProcessId()<<") :\
+            Max priority: "<<max_priority<<", Min priority: "<<min_priority<<std::endl;
+            /*printf(
                 "THREAD INFO (%d) : Max priority: %d, Min priority: %d\n",
-                thread->getProcessId(),
-                max_priority, min_priority);
+                (int)thread->getProcessId(),
+                max_priority, min_priority);*/
 
             }
 
         }
         else
         {
-            printf(
+            OSG_NOTICE<<"THREAD INFO - ID("<<thread->getProcessId()<<") :\
+            POSIX Priority scheduling not available"<<std::endl;
+            /*printf(
             "THREAD INFO (%d) POSIX Priority scheduling not available\n",
-            thread->getProcessId());
+            (int)thread->getProcessId());*/
         }
 
         fflush(stdout);
@@ -472,7 +486,8 @@ void Thread::Init()
     int status = pthread_key_create(&PThreadPrivateData::s_tls_key, NULL);
     if (status)
     {
-        printf("Error: pthread_key_create(,) returned error status, status = %d\n",status);
+        OSG_NOTICE<<"pthread_key_create() returned error status: "<<status<<std::endl;
+        //printf("Error: pthread_key_create(,) returned error status, status = %d\n",status);
     }
 
 #ifdef ALLOW_PRIORITY_SCHEDULING
@@ -829,7 +844,7 @@ int Thread::setSchedulePriority(ThreadPriority priority) {
 
     pd->threadPriority = priority;
 
-    if(pd->isRunning)
+    if(pd->isRunning())
         return ThreadPrivateActions::SetThreadSchedulingParams(this);
     else
         return 0;
@@ -869,7 +884,7 @@ int Thread::setSchedulePolicy(ThreadPolicy policy)
 
     pd->threadPolicy = policy;
 
-    if(pd->isRunning)
+    if(pd->isRunning())
     return ThreadPrivateActions::SetThreadSchedulingParams(this);
     else
     return 0;

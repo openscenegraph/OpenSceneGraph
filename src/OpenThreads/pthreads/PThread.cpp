@@ -57,13 +57,13 @@
 #include <iostream>
 
 using namespace OpenThreads;
-/*
+
 #ifdef DEBUG
 # define DPRINTF(arg) printf arg
 #else
 # define DPRINTF(arg)
 #endif
-*/
+
 
 //-----------------------------------------------------------------------------
 // Initialize the static unique ids.

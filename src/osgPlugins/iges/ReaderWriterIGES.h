@@ -24,9 +24,11 @@
 /// \brief header file for creating osgdb plugin for IGES format
 /// \author Abhishek Bansal, Engineer Graphics, vizExperts India Pvt. Ltd. 
 
+#ifdef WIN32
 /// \brief preproccessor macro required for compilation with open cascade
 /// \todo not sure what it does
 #define WNT
+#endif
 
 #include <TDF_LabelSequence.hxx>
 

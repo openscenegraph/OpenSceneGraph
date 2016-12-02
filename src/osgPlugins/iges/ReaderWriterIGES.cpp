@@ -66,7 +66,6 @@
 #include <TDF_LabelSequence.hxx>
 #include <TDF_ChildIterator.hxx>
 
-#include <XSDRAW.hxx>
 #include <Quantity_Color.hxx>
 
 // osg headers

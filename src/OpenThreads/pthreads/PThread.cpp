@@ -52,7 +52,6 @@
 #endif
 
 #include <OpenThreads/Thread>
-#include <osg/Notify>
 #include "PThreadPrivateData.h"
 
 #include <iostream>
@@ -193,8 +192,7 @@ private:
         int status = pthread_setspecific(PThreadPrivateData::s_tls_key, thread);
         if (status)
         {
-            OSG_NOTICE<<"pthread_setspecific(,) returned error status: "<<status<<std::endl;
-           // printf("Error: pthread_setspecific(,) returned error status, status = %d\n",status);
+           printf("Error: pthread_setspecific(,) returned error status, status = %d\n",status);
         }
 
         pthread_cleanup_push(thread_cleanup_handler, &tcs);
@@ -241,46 +239,34 @@ private:
                            &my_param);
 
             if(status != 0) {
-                OSG_NOTICE<<"THREAD INFO - ID("<<thread->getProcessId()<<") :  Get sched: "<<strerror(status)<<std::endl;
-/*            printf("THREAD INFO (%d) : Get sched: %s\n",
+            printf("THREAD INFO (%d) : Get sched: %s\n",
                    (int)thread->getProcessId(),
-                   strerror(status));*/
+                   strerror(status));
             } else {
-                OSG_NOTICE<<"THREAD INFO - ID("<<thread->getProcessId()<<") :\
-                Thread running at "<<(my_policy == SCHED_FIFO ? "SCHEDULE_FIFO"
-                                   : (my_policy == SCHED_RR ? "SCHEDULE_ROUND_ROBIN"
-                                   : (my_policy == SCHED_OTHER ? "SCHEDULE_OTHER"
-                                   : "UNKNOWN")))<<"/ Priority: "<<\
-                                   my_param.sched_priority<<std::endl;
-            /*printf(
+            printf(
                 "THREAD INFO (%d) : Thread running at %s / Priority: %d\n",
                 (int)thread->getProcessId(),
                 (my_policy == SCHED_FIFO ? "SCHEDULE_FIFO"
                  : (my_policy == SCHED_RR ? "SCHEDULE_ROUND_ROBIN"
                 : (my_policy == SCHED_OTHER ? "SCHEDULE_OTHER"
                    : "UNKNOWN"))),
-                my_param.sched_priority);*/
+                my_param.sched_priority);
 
             max_priority = sched_get_priority_max(my_policy);
             min_priority = sched_get_priority_min(my_policy);
 
-            OSG_NOTICE<<"THREAD INFO - ID("<<thread->getProcessId()<<") :\
-            Max priority: "<<max_priority<<", Min priority: "<<min_priority<<std::endl;
-            /*printf(
+            printf(
                 "THREAD INFO (%d) : Max priority: %d, Min priority: %d\n",
                 (int)thread->getProcessId(),
-                max_priority, min_priority);*/
-
+                max_priority, min_priority);
             }
 
         }
         else
         {
-            OSG_NOTICE<<"THREAD INFO - ID("<<thread->getProcessId()<<") :\
-            POSIX Priority scheduling not available"<<std::endl;
-            /*printf(
+            printf(
             "THREAD INFO (%d) POSIX Priority scheduling not available\n",
-            (int)thread->getProcessId());*/
+            (int)thread->getProcessId());
         }
 
         fflush(stdout);
@@ -486,8 +472,7 @@ void Thread::Init()
     int status = pthread_key_create(&PThreadPrivateData::s_tls_key, NULL);
     if (status)
     {
-        OSG_NOTICE<<"pthread_key_create() returned error status: "<<status<<std::endl;
-        //printf("Error: pthread_key_create(,) returned error status, status = %d\n",status);
+        printf("Error: pthread_key_create(,) returned error status, status = %d\n",status);
     }
 
 #ifdef ALLOW_PRIORITY_SCHEDULING

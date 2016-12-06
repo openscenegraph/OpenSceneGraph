@@ -23,6 +23,7 @@
 #include <sys/types.h>
 
 #include <OpenThreads/Mutex>
+#include <OpenThreads/Affinity>
 
 namespace OpenThreads {
 
@@ -36,11 +37,9 @@ extern OPENTHREAD_EXPORT_DIRECTIVE int GetNumberOfProcessors();
 
 /**
  *  Set the processor affinity of current thread.
- *
- *  Note, systems where no support exists no affinity will be set, and -1 will be returned.
- *
  */
-extern OPENTHREAD_EXPORT_DIRECTIVE int SetProcessorAffinityOfCurrentThread(unsigned int cpunum);
+extern OPENTHREAD_EXPORT_DIRECTIVE int SetProcessorAffinityOfCurrentThread(const Affinity& affinity);
+
 
 /**
  *  @class Thread
@@ -332,15 +331,14 @@ public:
 
     void* getImplementation(){ return _prvData;	};
 
-    /** Thread's processor affinity method.  This binds a thread to a
-      * processor whenever possible.   This call must be made before
+    /** Set the Thread's processor affinity to all, a single CPU or multiple CPU's
+      * This call must be made before
       * start() or startThread() and has no effect after the thread
-      * has been running.  In the pthreads implementation, this is only
-      * implemented on sgi, through a pthread extension.  On other pthread
-      * platforms this is ignored.  Returns 0 on success, implementation's
+      * has been running. Returns 0 on success, implementation's
       * error on failure, or -1 if ignored.
       */
-    int setProcessorAffinity( unsigned int cpunum );
+    int setProcessorAffinity( const Affinity& affinity);
+
 
     /** microSleep method, equivalent to the posix usleep(microsec).
       *  This is not strictly thread API but is used

@@ -25,11 +25,10 @@
 #define OSG_DEPRECATED_GEOMETRY_BINDING 1
 
 namespace osg {
-class VertexArrayObjectManager;
+
 
 class OSG_EXPORT Geometry : public Drawable
 {
-    friend class osg::VertexArrayObjectManager;
     public:
 
         Geometry();
@@ -130,6 +129,9 @@ class OSG_EXPORT Geometry : public Drawable
         unsigned int getPrimitiveSetIndex(const PrimitiveSet* primitiveset) const;
 
 
+        /** Convinience method that checks all the vertex arrays to make sure that the buffer objects are all assigned appropriate.*/
+        void configureBufferObjects();
+
         /** return true if any arrays are shared.*/
         bool containsSharedArrays() const;
 
@@ -140,15 +142,10 @@ class OSG_EXPORT Geometry : public Drawable
         /** When set to true, ignore the setUseDisplayList() settings, and hints to the drawImplementation
             method to use OpenGL vertex buffer objects for rendering.*/
         virtual void setUseVertexBufferObjects(bool flag);
-        virtual void setUseDisplayList(bool flag);
-        void setUseVertexArrayObject(bool flag);
-        bool getUseVertexArrayObject()const{return _useVertexArrayObject;}
 
-        /** Force a recompile on next draw() of any OpenGL display list associated with this geoset.*/
-        virtual void dirtyDisplayList();
+        /** Force a recompile on next draw() of any OpenGL objects associated with this geoset.*/
+        virtual void dirtyGLObjects();
 
-        /** Force a recompile on next draw() of any OpenGL VAO associated with this geoset.*/
-        virtual void dirtyVertexArrayObject();
 
         /** Resize any per context GLObject buffers to specified size. */
         virtual void resizeGLObjectBuffers(unsigned int maxSize);
@@ -182,23 +179,25 @@ class OSG_EXPORT Geometry : public Drawable
         */
         virtual void drawImplementation(RenderInfo& renderInfo) const;
 
+
         /** Set up the vertex arrays for the purpose of rendering, called by drawImplemtation() prior to it calling drawPrimitivesImplementation().*/
         void drawVertexArraysImplementation(RenderInfo& renderInfo) const;
 
         /** dispatch the primitives to OpenGL, called by drawImplemtation() after calling drawVertexArraysImplementation().*/
         void drawPrimitivesImplementation(RenderInfo& renderInfo) const;
 
-        /** Return true, osg::Geometry does support accept(Geometry::AttributeFunctor&). */
-        virtual bool supports(const Geometry::AttributeFunctor&) const { return true; }
 
-        /** Accept an Geometry::AttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has. */
-        virtual void accept(Geometry::AttributeFunctor& af);
+        /** Return true, osg::Geometry does support accept(Drawable::AttributeFunctor&). */
+        virtual bool supports(const Drawable::AttributeFunctor&) const { return true; }
 
-        /** Return true, osg::Geometry does support accept(Geometry::ConstAttributeFunctor&). */
-        virtual bool supports(const Geometry::ConstAttributeFunctor&) const { return true; }
+        /** Accept an Drawable::AttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has. */
+        virtual void accept(Drawable::AttributeFunctor& af);
 
-        /** Accept a Geometry::ConstAttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has. */
-        virtual void accept(Geometry::ConstAttributeFunctor& af) const;
+        /** Return true, osg::Geometry does support accept(Drawable::ConstAttributeFunctor&). */
+        virtual bool supports(const Drawable::ConstAttributeFunctor&) const { return true; }
+
+        /** Accept a Drawable::ConstAttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has. */
+        virtual void accept(Drawable::ConstAttributeFunctor& af) const;
 
         /** Return true, osg::Geometry does support accept(PrimitiveFunctor&). */
         virtual bool supports(const PrimitiveFunctor&) const { return true; }
@@ -211,6 +210,7 @@ class OSG_EXPORT Geometry : public Drawable
 
         /** Accept a PrimitiveFunctor and call its methods to tell it about the internal primitives that this Drawable has. */
         virtual void accept(PrimitiveIndexFunctor& pf) const;
+
 
     protected:
 
@@ -233,40 +233,7 @@ class OSG_EXPORT Geometry : public Drawable
 
         bool                            _containsDeprecatedData;
 
-        typedef   std::pair<unsigned int ,std::list< ref_ptr<BufferObject> > >  VAOKey; //attribpointer hash and buffer list
-
-        struct VAOKeyCompare
-        {
-            bool operator() (const Geometry::VAOKey& lhs, const Geometry::VAOKey& rhs) const
-            {
-                if(lhs.first!=rhs.first)return lhs.first<rhs.first;
-                if(lhs.second.size()!=rhs.second.size())return lhs.second.size()<rhs.second.size();
-                std::list< ref_ptr<BufferObject> >::const_iterator itl=lhs.second.begin();
-                for(std::list< ref_ptr<BufferObject> >::const_iterator itr=rhs.second.begin(); itr != rhs.second.end();itr++,itl++)
-                    if( itl->get()!=itr->get() )
-                        return itl->get() < itr->get();
-                return false;
-            }
-        };
-        class PerContextVertexArrayObject;
-        typedef std::map<VAOKey,PerContextVertexArrayObject*,VAOKeyCompare> VertexArrayObjectMap;
-
-        class PerContextVertexArrayObject: public Referenced{
-            friend class osg::VertexArrayObjectManager;
-            public:
-                ///return OpenGL name of the vao encapsulated
-                inline const GLuint & getGLID(){return _GLID;}
-            protected:
-                PerContextVertexArrayObject(unsigned int contextID, GLuint GLID):_contextID(contextID),_GLID(GLID){}
-                ~PerContextVertexArrayObject();
-
-                unsigned int _contextID;
-                GLuint _GLID;
-                VertexArrayObjectMap::iterator _itvao;
-        };
-
-        mutable buffered_object< osg::ref_ptr<PerContextVertexArrayObject > > _vao;
-        bool _useVertexArrayObject;
+        virtual VertexArrayState* createVertexArrayState(RenderInfo& renderInfo) const;
 
     public:
 
@@ -311,6 +278,21 @@ class OSG_EXPORT Geometry : public Drawable
         GLboolean getVertexAttribNormalize(unsigned int index) const;
 #endif
 };
+
+/** Convinience visitor for making sure that any BufferObjects that might be required are set up in the scene graph.*/
+class ConfigureBufferObjectsVisitor : public osg::NodeVisitor
+{
+public:
+    ConfigureBufferObjectsVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+    void apply(osg::Geometry& geometry)
+    {
+        geometry.configureBufferObjects();
+    }
+};
+
+
 
 /** Convenience function to be used for creating quad geometry with texture coords.
   * Tex coords go from left bottom (l,b) to right top (r,t).

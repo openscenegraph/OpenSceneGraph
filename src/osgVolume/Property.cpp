@@ -102,7 +102,7 @@ ScalarProperty::ScalarProperty(const std::string& scalarName, float value)
 ScalarProperty::ScalarProperty(const ScalarProperty& sp, const osg::CopyOp& copyop):
     Property(sp,copyop)
 {
-    _uniform = new osg::Uniform(sp._uniform->getName().c_str(), getValue());
+    _uniform = new osg::Uniform(*sp._uniform.get(), copyop);
 
 }
 
@@ -369,7 +369,11 @@ PropertyAdjustmentCallback::PropertyAdjustmentCallback():
 {
 }
 
-PropertyAdjustmentCallback::PropertyAdjustmentCallback(const PropertyAdjustmentCallback& pac,const osg::CopyOp&):
+PropertyAdjustmentCallback::PropertyAdjustmentCallback(const PropertyAdjustmentCallback& pac,const osg::CopyOp& copyop):
+    osg::Object(pac, copyop),
+    osg::Callback(pac, copyop),
+    osgGA::GUIEventHandler(pac, copyop),
+    osg::StateSet::Callback(pac, copyop),
     _cyleForwardKey(pac._cyleForwardKey),
     _cyleBackwardKey(pac._cyleBackwardKey),
     _transparencyKey(pac._transparencyKey),

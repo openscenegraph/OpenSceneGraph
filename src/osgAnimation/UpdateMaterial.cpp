@@ -19,6 +19,7 @@ using namespace osgAnimation;
 
 UpdateMaterial::UpdateMaterial(const UpdateMaterial& apc,const osg::CopyOp& copyop)
     : osg::Object(apc, copyop),
+    osg::Callback(apc,copyop),
       AnimationUpdateCallback<osg::StateAttributeCallback>(apc, copyop)
 {
     _diffuse = new osgAnimation::Vec4Target(apc._diffuse->getValue());

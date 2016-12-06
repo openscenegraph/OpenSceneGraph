@@ -55,30 +55,21 @@
 #endif
 
 
-/*ARGSUSED*/ static void GLAPIENTRY noBegin( GLenum type ) {}
-/*ARGSUSED*/ static void GLAPIENTRY noEdgeFlag( GLboolean boundaryEdge ) {}
-/*ARGSUSED*/ static void GLAPIENTRY noVertex( void *data ) {}
+/*ARGSUSED*/ static void GLAPIENTRY noBegin( GLenum /*type*/ ) {}
+/*ARGSUSED*/ static void GLAPIENTRY noEdgeFlag( GLboolean /*boundaryEdge*/ ) {}
+/*ARGSUSED*/ static void GLAPIENTRY noVertex( void * /*data*/ ) {}
 /*ARGSUSED*/ static void GLAPIENTRY noEnd( void ) {}
-/*ARGSUSED*/ static void GLAPIENTRY noError( GLenum errnum ) {}
-/*ARGSUSED*/ static void GLAPIENTRY noCombine( GLdouble coords[3], void *data[4],
-				    GLfloat weight[4], void **dataOut ) {}
-/*ARGSUSED*/ static void GLAPIENTRY noMesh( GLUmesh *mesh ) {}
+/*ARGSUSED*/ static void GLAPIENTRY noError( GLenum /*errnum*/ ) {}
+/*ARGSUSED*/ static void GLAPIENTRY noCombine( GLdouble /*coords*/[3], void * /*data*/[4], GLfloat /*weight*/[4], void ** /*dataOut*/ ) {}
+/*ARGSUSED*/ static void GLAPIENTRY noMesh( GLUmesh * /*mesh*/ ) {}
 
 
-/*ARGSUSED*/ void GLAPIENTRY __gl_noBeginData( GLenum type,
-					     void *polygonData ) {}
-/*ARGSUSED*/ void GLAPIENTRY __gl_noEdgeFlagData( GLboolean boundaryEdge,
-				       void *polygonData ) {}
-/*ARGSUSED*/ void GLAPIENTRY __gl_noVertexData( void *data,
-					      void *polygonData ) {}
-/*ARGSUSED*/ void GLAPIENTRY __gl_noEndData( void *polygonData ) {}
-/*ARGSUSED*/ void GLAPIENTRY __gl_noErrorData( GLenum errnum,
-					     void *polygonData ) {}
-/*ARGSUSED*/ void GLAPIENTRY __gl_noCombineData( GLdouble coords[3],
-					       void *data[4],
-					       GLfloat weight[4],
-					       void **outData,
-					       void *polygonData ) {}
+/*ARGSUSED*/ void GLAPIENTRY __gl_noBeginData( GLenum /*type*/, void * /*polygonData*/ ) {}
+/*ARGSUSED*/ void GLAPIENTRY __gl_noEdgeFlagData( GLboolean /*boundaryEdge*/, void * /*polygonData*/ ) {}
+/*ARGSUSED*/ void GLAPIENTRY __gl_noVertexData( void * /*data*/, void * /*polygonData*/ ) {}
+/*ARGSUSED*/ void GLAPIENTRY __gl_noEndData( void * /*polygonData*/ ) {}
+/*ARGSUSED*/ void GLAPIENTRY __gl_noErrorData( GLenum /*errnum*/, void * /*polygonData*/ ) {}
+/*ARGSUSED*/ void GLAPIENTRY __gl_noCombineData( GLdouble /*coords*/[3], void * /*data*/[4], GLfloat /*weight*/[4], void ** /*outData*/, void * /*polygonData*/ ) {}
 
 /* Half-edges are allocated in pairs (see mesh.c) */
 typedef struct { GLUhalfEdge e, eSym; } EdgePair;
@@ -502,7 +493,7 @@ osg::gluTessEndPolygon( GLUtesselator *tess )
 {
   GLUmesh *mesh;
 
-  if (setjmp(tess->env) != 0) { 
+  if (setjmp(tess->env) != 0) {
      /* come back here if out of memory */
      CALL_ERROR_OR_ERROR_DATA( GLU_OUT_OF_MEMORY );
      return;

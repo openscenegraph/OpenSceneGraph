@@ -71,7 +71,7 @@ namespace osgParticle
         inline const ParticleSystem* getParticleSystem() const;
 
         /// Set the destination particle system.
-        inline void setParticleSystem(ParticleSystem* ps);
+        virtual void setParticleSystem(ParticleSystem* ps);
 
         /// Set the endless flag of this processor.
         inline void setEndless(bool type);
@@ -148,7 +148,6 @@ namespace osgParticle
 
         virtual void process(double dt) = 0;
 
-    private:
         ReferenceFrame _rf;
         bool _enabled;
         double _t0;
@@ -211,10 +210,6 @@ namespace osgParticle
         return _ps.get();
     }
 
-    inline void ParticleProcessor::setParticleSystem(ParticleSystem* ps)
-    {
-        _ps = ps;
-    }
 
     inline void ParticleProcessor::setEndless(bool type)
     {

@@ -61,7 +61,7 @@ namespace base64
   extern const char* to_table;
   extern const char* to_table_end;
 
-  extern const char* from_table;
+  extern const signed char* from_table;
 
 
   template <class InputIterator, class OutputIterator>

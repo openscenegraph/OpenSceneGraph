@@ -6,7 +6,7 @@
 #include <osgAnimation/Animation>
 #include <osgAnimation/UpdateMatrixTransform>
 
-struct WriteVisitor;
+class WriteVisitor;
 
 JSONObject* createJSONAnimation(osgAnimation::Animation* anim, WriteVisitor* writer);
 JSONObject* createJSONUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform& acb, WriteVisitor* writer);

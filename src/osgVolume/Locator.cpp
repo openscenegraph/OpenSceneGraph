@@ -14,6 +14,7 @@
 #include <osgVolume/Locator>
 #include <osg/io_utils>
 #include <osg/Notify>
+#include <osg/FrontFace>
 
 #include <list>
 
@@ -223,6 +224,28 @@ void Locator::locatorModified()
 
 }
 
+bool Locator::inverted() const
+{
+    osg::Vec3d xAxis(_transform(0,0), _transform(1,0), _transform(2,0));
+    osg::Vec3d yAxis(_transform(0,1), _transform(1,1), _transform(2,1));
+    osg::Vec3d zAxis(_transform(0,2), _transform(1,2), _transform(2,2));
+    double volume = (xAxis^yAxis)*zAxis;
+    return volume<0.0;
+}
+
+void Locator::applyAppropriateFrontFace(osg::StateSet* ss) const
+{
+    osg::StateAttribute* sa = ss->getAttribute(osg::StateAttribute::FRONTFACE);
+    osg::FrontFace* ff = dynamic_cast<osg::FrontFace*>(sa);
+    if (!ff)
+    {
+        ff = new osg::FrontFace;
+        ss->setAttribute(ff);
+    }
+    ff->setMode( inverted() ? osg::FrontFace::CLOCKWISE : osg::FrontFace::COUNTER_CLOCKWISE);
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TransformLocatorCallback
@@ -233,7 +256,12 @@ TransformLocatorCallback::TransformLocatorCallback(osg::MatrixTransform* transfo
 
 void TransformLocatorCallback::locatorModified(Locator* locator)
 {
-    if (_transform.valid()) _transform->setMatrix(locator->getTransform());
+    if (_transform.valid())
+    {
+        locator->applyAppropriateFrontFace(_transform->getOrCreateStateSet());
+
+        _transform->setMatrix(locator->getTransform());
+    }
 }
 
 

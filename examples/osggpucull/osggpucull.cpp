@@ -17,6 +17,7 @@
 #include <osg/Quat>
 #include <osg/Geometry>
 #include <osg/CullFace>
+#include <osg/VertexAttribDivisor>
 #include <osg/Image>
 #include <osg/Texture>
 #include <osg/TextureBuffer>
@@ -931,7 +932,7 @@ osg::Group* createCar( float detailRatio, const osg::Vec4& hullColor, const osg:
 
     osg::ref_ptr<osg::Group> root           = new osg::Group;
     osg::ref_ptr<osg::Cylinder> wheel       = new osg::Cylinder( osg::Vec3( 0.0, 0.0, 0.0 ), 1.0, 0.6 );
-    osg::ref_ptr<osg::Geometry> wheelGeom   = convertShapeToGeometry( *wheel.get(), tessHints.get(), wheelColor );
+    osg::ref_ptr<osg::Geometry> wheelGeom   = osg::convertShapeToGeometry( *wheel.get(), tessHints.get(), wheelColor, osg::Array::BIND_PER_VERTEX );
     // one random triangle on every wheel will use black color to show that wheel is rotating
     osg::Vec4Array* colorArray = dynamic_cast<osg::Vec4Array*>( wheelGeom->getColorArray() );
     if(colorArray!=NULL)
@@ -1130,7 +1131,7 @@ void createStaticRendering( osg::Group* root, GPUCullData& gpuData, const osg::V
     for(it=gpuData.targets.begin(), eit=gpuData.targets.end(); it!=eit; ++it)
     {
         osg::ref_ptr<osg::Geode> drawGeode = new osg::Geode;
-        it->second.geometryAggregator->getAggregatedGeometry()->setUseVertexArrayObject(true);
+       //it->second.geometryAggregator->getAggregatedGeometry()->setUseVertexArrayObject(true);
         it->second.geometryAggregator->getAggregatedGeometry()->setDrawCallback( new InvokeMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_COMMAND_BARRIER_BIT) );
         drawGeode->addDrawable( it->second.geometryAggregator->getAggregatedGeometry() );
         drawGeode->setCullingActive(false);
@@ -1433,6 +1434,7 @@ void createDynamicRendering( osg::Group* root, GPUCullData& gpuData, osg::Buffer
         drawGeode->addDrawable( it->second.geometryAggregator->getAggregatedGeometry() );
         drawGeode->setCullingActive(false);
 
+       drawGeode->getOrCreateStateSet()->setAttribute(new osg::VertexAttribDivisor(9,10000000));
         drawGeode->getOrCreateStateSet()->setTextureAttribute( 8, instancesTextureBuffer );
         drawGeode->getOrCreateStateSet()->addUniform( dynamicInstancesDataUniform );
         drawGeode->getOrCreateStateSet()->addUniform( dynamicInstancesDataSize );

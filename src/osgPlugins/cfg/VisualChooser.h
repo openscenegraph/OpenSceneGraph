@@ -131,7 +131,7 @@ class VisualChooser : public osg::Referenced
 #if 0
         //-------------------------------------------------------------------------
         // Chooses visual based on previously selected attributes and parameters
-        //     dpy              = Conection to Xserver as returned by XOpenDisplay()
+        //     dpy              = Connection to Xserver as returned by XOpenDisplay()
         //     screen           = XServer screen (Could be DefaultScreen(dpy))
         //     strict_adherence = If true, return NULL visual info if the set of
         //                        parameters is not matched verbatim.  If set to

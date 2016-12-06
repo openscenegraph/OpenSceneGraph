@@ -74,6 +74,7 @@ Camera::Camera(const Camera& camera,const CopyOp& copyop):
     _implicitBufferAttachmentRenderMask(camera._implicitBufferAttachmentRenderMask),
     _implicitBufferAttachmentResolveMask(camera._implicitBufferAttachmentResolveMask),
     _attachmentMapModifiedCount(camera._attachmentMapModifiedCount),
+    _affinity(camera._affinity),
     _initialDrawCallback(camera._initialDrawCallback),
     _preDrawCallback(camera._preDrawCallback),
     _postDrawCallback(camera._postDrawCallback),
@@ -521,6 +522,12 @@ void Camera::resize(int width, int height, int resizeMask)
     }
 }
 
+void Camera::setProcessorAffinity(const OpenThreads::Affinity& affinity)
+{
+    _affinity = affinity;
+
+    if (_cameraThread.valid()) _cameraThread->setProcessorAffinity(affinity);
+}
 
 void Camera::createCameraThread()
 {
@@ -545,6 +552,7 @@ void Camera::setCameraThread(OperationThread* gt)
 
     if (_cameraThread.valid())
     {
+        _cameraThread->setProcessorAffinity(_affinity);
         _cameraThread->setParent(this);
     }
 }

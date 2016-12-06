@@ -55,6 +55,8 @@
 #endif
 
 
+#define INLINE_DRAWABLE_DRAW
+
 namespace osg {
 
 
@@ -65,14 +67,6 @@ class Vec4ub;
 class Geometry;
 class NodeVisitor;
 class ArrayDispatchers;
-
-// this is defined to alter the way display lists are compiled inside the
-// the draw method, it has been found that the NVidia drivers fail completely
-// to optimize COMPILE_AND_EXECUTE in fact make it go slower than for no display
-// lists, but optimize a separate COMPILE very well?!  Define it as default
-// the use of a separate COMPILE, then glCallList rather than use COMPILE_AND_EXECUTE.
-
-#define USE_SEPARATE_COMPILE_AND_EXECUTE
 
 /** Pure virtual base class for drawable geometry. In OSG, everything that can
  *  be rendered is implemented as a class derived from \c Drawable. The
@@ -168,7 +162,8 @@ class OSG_EXPORT Drawable : public Node
         {
             ComputeBoundingBoxCallback() {}
 
-            ComputeBoundingBoxCallback(const ComputeBoundingBoxCallback&,const CopyOp&) {}
+            ComputeBoundingBoxCallback(const ComputeBoundingBoxCallback& org,const CopyOp& copyop):
+                Object(org, copyop) {}
 
             META_Object(osg,ComputeBoundingBoxCallback);
 
@@ -190,7 +185,7 @@ class OSG_EXPORT Drawable : public Node
          *  geometry generation.
          * @see osg::Shape.
         */
-        inline void setShape(Shape* shape) { _shape = shape; }
+        virtual void setShape(Shape* shape) { _shape = shape; }
 
         template<class T> void setShape(const ref_ptr<T>& shape) { setShape(shape.get()); }
 
@@ -234,8 +229,18 @@ class OSG_EXPORT Drawable : public Node
         inline bool getUseVertexBufferObjects() const { return _useVertexBufferObjects; }
 
 
-        /** Force a recompile on next draw() of any OpenGL display list associated with this geoset.*/
+        /** Set whether to use a local VertexArrayObject for this Drawable.*/
+        void setUseVertexArrayObject(bool flag);
+
+        /** Return whether to use a local VertexArrayObject for this Drawable.*/
+        bool getUseVertexArrayObject() const { return _useVertexArrayObject; }
+
+
+        /** Deprecated, use dirtyGLObjects() instead. */
         virtual void dirtyDisplayList();
+
+        /** Force a recompile on next draw() of any OpenGL objects associated with this geoset.*/
+        virtual void dirtyGLObjects();
 
 
         /** Return the estimated size of GLObjects (display lists/vertex buffer objects) that are associated with this drawable.
@@ -253,12 +258,28 @@ class OSG_EXPORT Drawable : public Node
           *       \c virtual). Subclasses should override
           *       \c drawImplementation() instead.
           */
+#ifdef INLINE_DRAWABLE_DRAW
         inline void draw(RenderInfo& renderInfo) const;
+#else
+        void draw(RenderInfo& renderInfo) const;
+#endif
+
+        inline void drawInner(RenderInfo& renderInfo) const
+        {
+            if (_drawCallback.valid())
+                _drawCallback->drawImplementation(renderInfo,this);
+            else
+                drawImplementation(renderInfo);
+        }
+
 
         /** Immediately compile this \c Drawable into an OpenGL Display List/VertexBufferObjects.
           * @note Operation is ignored if \c _useDisplayList is \c false or VertexBufferObjects are not used.
         */
         virtual void compileGLObjects(RenderInfo& renderInfo) const;
+
+        virtual VertexArrayState* createVertexArrayState(RenderInfo& renderInfo) const;
+
 
         /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
         virtual void setThreadSafeRefUnref(bool threadSafe);
@@ -285,7 +306,8 @@ class OSG_EXPORT Drawable : public Node
         {
             DrawCallback() {}
 
-            DrawCallback(const DrawCallback&,const CopyOp&) {}
+            DrawCallback(const DrawCallback& org,const CopyOp& copyop):
+                Object(org, copyop) {}
 
             META_Object(osg,DrawCallback);
 
@@ -464,18 +486,53 @@ class OSG_EXPORT Drawable : public Node
         bool                    _useDisplayList;
         bool                    _supportsVertexBufferObjects;
         bool                    _useVertexBufferObjects;
+        bool                    _useVertexArrayObject;
 
         typedef osg::buffered_value<GLuint> GLObjectList;
         mutable GLObjectList    _globjList;
 
+        typedef buffered_object< osg::ref_ptr<VertexArrayState> > VertexArrayStateList;
+        mutable VertexArrayStateList    _vertexArrayStateList;
+
         ref_ptr<DrawCallback>   _drawCallback;
 };
 
-
+#ifdef INLINE_DRAWABLE_DRAW
 inline void Drawable::draw(RenderInfo& renderInfo) const
 {
+    State& state = *renderInfo.getState();
+    bool useVertexArrayObject = state.useVertexArrayObject(_useVertexArrayObject);
+    if (useVertexArrayObject)
+    {
+        unsigned int contextID = renderInfo.getContextID();
+
+        VertexArrayState* vas = _vertexArrayStateList[contextID].get();
+        if (!vas)
+        {
+            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
+        }
+        else
+        {
+            // vas->setRequiresSetArrays(getDataVariance()==osg::Object::DYNAMIC);
+        }
+
+        State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
+
+        vas->bindVertexArrayObject();
+
+        drawInner(renderInfo);
+
+        vas->setRequiresSetArrays(getDataVariance()==osg::Object::DYNAMIC);
+
+        return;
+    }
+
+    // TODO, add check against whether VAO is active and supported
+    if (state.getCurrentVertexArrayState()) state.getCurrentVertexArrayState()->bindVertexArrayObject();
+
+
 #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
-    if (_useDisplayList && !(_supportsVertexBufferObjects && _useVertexBufferObjects && renderInfo.getState()->isVertexBufferObjectSupported()))
+    if (!state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects) && _useDisplayList)
     {
         // get the contextID (user defined ID of 0 upwards) for the
         // current OpenGL context.
@@ -484,45 +541,31 @@ inline void Drawable::draw(RenderInfo& renderInfo) const
         // get the globj for the current contextID.
         GLuint& globj = _globjList[contextID];
 
-        // call the globj if already set otherwise compile and execute.
-        if( globj != 0 )
+        if( globj == 0 )
         {
-            glCallList( globj );
-        }
-        else if (_useDisplayList)
-        {
-#ifdef USE_SEPARATE_COMPILE_AND_EXECUTE
+            // compile the display list
             globj = generateDisplayList(contextID, getGLObjectSizeHint());
             glNewList( globj, GL_COMPILE );
-            if (_drawCallback.valid())
-                _drawCallback->drawImplementation(renderInfo,this);
-            else
-                drawImplementation(renderInfo);
-            glEndList();
 
-            glCallList( globj);
-#else
-            globj = generateDisplayList(contextID, getGLObjectSizeHint());
-            glNewList( globj, GL_COMPILE_AND_EXECUTE );
-            if (_drawCallback.valid())
-                _drawCallback->drawImplementation(renderInfo,this);
-            else
-                drawImplementation(renderInfo);
+            drawInner(renderInfo);
+
             glEndList();
-#endif
         }
 
-        return;
-
+        // call the display list
+        glCallList( globj);
     }
-#endif
-
-    // draw object as nature intended..
-    if (_drawCallback.valid())
-        _drawCallback->drawImplementation(renderInfo,this);
     else
-        drawImplementation(renderInfo);
+#endif
+    {
+        // if state.previousVertexArrayState() is different than currentVertexArrayState bind current
+
+        // OSG_NOTICE<<"Fallback drawInner()........................"<<std::endl;
+
+        drawInner(renderInfo);
+    }
 }
+#endif
 
 class AttributeFunctorArrayVisitor : public ArrayVisitor
 {

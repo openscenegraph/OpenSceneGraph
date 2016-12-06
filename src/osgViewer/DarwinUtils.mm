@@ -372,7 +372,7 @@ static double getDictDouble (CFDictionaryRef refDict, CFStringRef key)
     CFNumberRef number_value = (CFNumberRef) CFDictionaryGetValue(refDict, key);
     if (!number_value) // if can't get a number for the dictionary
         return -1;  // fail
-    if (!CFNumberGetValue(number_value, kCFNumberDoubleType, &value)) // or if cant convert it
+    if (!CFNumberGetValue(number_value, kCFNumberDoubleType, &value)) // or if can't convert it
         return -1; // fail
     return value; // otherwise return the long value
 }
@@ -384,7 +384,7 @@ static long getDictLong(CFDictionaryRef refDict, CFStringRef key)        // cons
     CFNumberRef number_value = (CFNumberRef)CFDictionaryGetValue(refDict, key); 
     if (!number_value) // if can't get a number for the dictionary
         return -1;  // fail
-    if (!CFNumberGetValue(number_value, kCFNumberLongType, &value)) // or if cant convert it
+    if (!CFNumberGetValue(number_value, kCFNumberLongType, &value)) // or if can't convert it
         return -1; // fail
     return value;
 }

@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/openscenegraph/OpenSceneGraph.svg?branch=master)](https://travis-ci.org/openscenegraph/OpenSceneGraph)
 [![Coverity Status](https://scan.coverity.com/projects/9159/badge.svg)](https://scan.coverity.com/projects/openscenegraph-openscenegraph)
+[![Documentation](https://codedocs.xyz/openscenegraph/OpenSceneGraph.svg)](https://codedocs.xyz/openscenegraph/OpenSceneGraph/)
 
 ### Introduction
 
@@ -28,7 +29,7 @@ more indepth instructions.
 
 Robert Osfield.
 Project Lead.
-5th July 2016.
+7th October 2016.
 
 --
 
@@ -41,7 +42,7 @@ checks for installed dependenciesand then generates the appropriate
 build system.
 
 If you don't already have CMake installed on your system you can grab
-it from http://www.cmake.org, use version 2.4.6 or later.  Details on the
+it from http://www.cmake.org, use version 2.8.0 or later.  Details on the
 OpenSceneGraph's CMake build can be found at:
 
     http://www.openscenegraph.org/projects/osg/wiki/Build/CMake

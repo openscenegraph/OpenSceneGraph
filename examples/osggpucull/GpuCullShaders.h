@@ -1,21 +1,21 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2014 Robert Osfield
  *  Copyright (C) 2014 Pawel Ksiezopolski
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
  *
 */
 #ifndef GPU_CULL_SHADERS
 #define GPU_CULL_SHADERS 1
 
-char SHADER_STATIC_CULL_VERTEX[] = 
+char SHADER_STATIC_CULL_VERTEX[] =
     "#version 420 compatibility\n"
     "\n"
     "uniform mat4 osg_ViewMatrixInverse;\n"
@@ -140,7 +140,7 @@ char SHADER_STATIC_CULL_VERTEX[] =
     "}\n";
 
 
-char SHADER_STATIC_CULL_FRAGMENT[] = 
+char SHADER_STATIC_CULL_FRAGMENT[] =
     "#version 420 compatibility\n"
     "\n"
     "layout(location = 0, index = 0) out vec4 FragmentColor;\n"
@@ -153,7 +153,7 @@ char SHADER_STATIC_CULL_FRAGMENT[] =
     "}\n";
 
 
-char SHADER_STATIC_DRAW_0_VERTEX[] = 
+char SHADER_STATIC_DRAW_0_VERTEX[] =
     "#version 420 compatibility\n"
     "\n"
     "layout(location = 0) in vec4 VertexPosition;\n"
@@ -225,7 +225,7 @@ char SHADER_STATIC_DRAW_0_VERTEX[] =
     "}\n";
 
 
-char SHADER_STATIC_DRAW_0_FRAGMENT[] = 
+char SHADER_STATIC_DRAW_0_FRAGMENT[] =
     "#version 420 compatibility\n"
     "\n"
     "in vec3 ecPosition3;\n"
@@ -248,7 +248,7 @@ char SHADER_STATIC_DRAW_0_FRAGMENT[] =
     "}\n";
 
 
-char SHADER_STATIC_DRAW_1_VERTEX[] = 
+char SHADER_STATIC_DRAW_1_VERTEX[] =
     "#version 420 compatibility\n"
     "\n"
     "layout(location = 0) in vec4 VertexPosition;\n"
@@ -328,7 +328,7 @@ char SHADER_STATIC_DRAW_1_VERTEX[] =
     "}\n";
 
 
-char SHADER_STATIC_DRAW_1_FRAGMENT[] = 
+char SHADER_STATIC_DRAW_1_FRAGMENT[] =
     "#version 420 compatibility\n"
     "\n"
     "in vec3 ecPosition3;\n"
@@ -351,7 +351,7 @@ char SHADER_STATIC_DRAW_1_FRAGMENT[] =
     "}\n";
 
 
-char SHADER_DYNAMIC_CULL_VERTEX[] = 
+char SHADER_DYNAMIC_CULL_VERTEX[] =
     "#version 420 compatibility\n"
     "\n"
     "uniform mat4 osg_ViewMatrixInverse;\n"
@@ -457,15 +457,20 @@ char SHADER_DYNAMIC_CULL_VERTEX[] =
     "                int indirectCommandAddress = instanceTypes[instanceTypeIndex].lods[i].indirectTargetParams.y;\n"
     "                int objectIndex            = imageAtomicAdd( getIndirectCommand( indirectCommandIndex ), indirectCommandAddress*indirectCommandSize+1, 1 );\n"
     "                int indirectTargetAddress  = instanceTypes[instanceTypeIndex].lods[i].indirectTargetParams.z + objectIndex;\n"
+    #define IMAGESTORE 1
+    #ifdef IMAGESTORE
     "                ivec4 indirectCommandData  = ivec4( instanceTypeIndex, instanceIndex, sampleMask, 0 );\n"
     "                imageStore( getIndirectTarget(indirectCommandIndex), indirectTargetAddress, indirectCommandData );\n"
+    #else ///MIMIC THIS OUTPUT with a geom shader stream out?
+    ///PROBLEM: arrangement mather for glMultiDrawIndirectInstanced
+    #endif
     "            }\n"
     "        }\n"
     "    }\n"
     "}\n";
 
 
-char SHADER_DYNAMIC_CULL_FRAGMENT[] = 
+char SHADER_DYNAMIC_CULL_FRAGMENT[] =
     "#version 420 compatibility\n"
     "\n"
     "layout(location = 0, index = 0) out vec4 FragmentColor;\n"
@@ -476,8 +481,9 @@ char SHADER_DYNAMIC_CULL_FRAGMENT[] =
     "}\n";
 
 
-char SHADER_DYNAMIC_DRAW_0_VERTEX[] = 
-    "#version 420 compatibility\n"
+char SHADER_DYNAMIC_DRAW_0_VERTEX[] =
+    "#version 430 compatibility\n"
+    "#extension GL_ARB_shader_draw_parameters : enable\n"
     "\n"
     "uniform samplerBuffer dynamicInstancesData;\n"
     "uniform int dynamicInstancesDataSize; // = sizeof(DynamicInstance) / sizeof(osg::Vec4f)\n"
@@ -524,6 +530,7 @@ char SHADER_DYNAMIC_DRAW_0_VERTEX[] =
     "   // every vertex has its type coded on VertexTexCoord1.x,\n"
     "   // its lodNumber coded in VertexTexCoord1.y\n"
     "   // and bone index coded in VertexTexCoord1.z\n"
+    "int fok=gl_DrawIDARB;///test ze feature #extension GL_ARB_shader_draw_parameters : enable required\n"
     "   int instanceTypeIndex = int(VertexTexCoord1.x);\n"
     "   int instanceLodNumber = int(VertexTexCoord1.y);\n"
     "   int boneIndex = int(VertexTexCoord1.z);\n"
@@ -565,7 +572,7 @@ char SHADER_DYNAMIC_DRAW_0_VERTEX[] =
     "}\n";
 
 
-char SHADER_DYNAMIC_DRAW_0_FRAGMENT[] = 
+char SHADER_DYNAMIC_DRAW_0_FRAGMENT[] =
     "#version 420 compatibility\n"
     "\n"
     "in vec3 ecPosition3;\n"

@@ -14,7 +14,7 @@
 #ifndef OSG_VEC4UB
 #define OSG_VEC4UB 1
 
-#include <osg/Vec3>
+#include <osg/Vec4f>
 
 namespace osg {
 
@@ -165,6 +165,24 @@ class Vec4ub
         }
 
 };    // end of class Vec4ub
+
+inline Vec4ub convertToRGBA8(const Vec4f& color)
+{
+    return Vec4ub(static_cast<unsigned char>(color.r()*255.0f),
+                  static_cast<unsigned char>(color.g()*255.0f),
+                  static_cast<unsigned char>(color.b()*255.0f),
+                  static_cast<unsigned char>(color.a()*255.0f));
+
+}
+
+inline Vec4ub convertToRGBA8(float r, float g, float b, float a)
+{
+    return Vec4ub(static_cast<unsigned char>(r*255.0f),
+                  static_cast<unsigned char>(g*255.0f),
+                  static_cast<unsigned char>(b*255.0f),
+                  static_cast<unsigned char>(a*255.0f));
+
+}
 
 }    // end of namespace osg
 

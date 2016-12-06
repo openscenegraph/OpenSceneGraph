@@ -1,6 +1,6 @@
-OpenSceneGraph Library 3.5.3
+OpenSceneGraph Library 3.5.5
 
-584 Contributors:
+583 Contributors:
 
 Firstname Surname
 -----------------
@@ -15,13 +15,13 @@ Mike Weiblen
 Ulrich Hertlein
 Marco Jez
 Sukender
+Laurens Voerman
 Eric Wing
 Cedric Pinson
 Brede Johansen
 Bob Kuehne
 Wojciech Lewandowski
 Michael Platings
-Laurens Voerman
 Geoff Michel
 Eric Sokolowsky
 David Callu
@@ -465,7 +465,6 @@ Louis Hamilton
 Likasz Izebski
 Lewis Harmon
 Leigh Stivers
-Laurens Loerman
 Laurence Muller
 Laura Cerritelli
 Kyle Centers

@@ -601,26 +601,26 @@ osgDB::DirectoryContents osgDB::expandWildcardsInFilename(const std::string& fil
     return contents;
 }
 
-osgDB::FileOpResult::Value osgDB::copyFile(const std::string & source, const std::string & destination)
+osgDB::CopyFileResult osgDB::copyFile(const std::string & source, const std::string & destination)
 {
     if (source.empty() || destination.empty())
     {
         OSG_INFO << "copyFile(): Empty file name." << std::endl;
-        return FileOpResult::BAD_ARGUMENT;
+        return COPY_FILE_BAD_ARGUMENT;
     }
 
     // Check if source and destination are the same
     if (source == destination || osgDB::getRealPath(source) == osgDB::getRealPath(destination))
     {
         OSG_INFO << "copyFile(): Source and destination point to the same file: source=" << source << ", destination=" << destination << std::endl;
-        return FileOpResult::SOURCE_EQUALS_DESTINATION;
+        return COPY_FILE_SOURCE_EQUALS_DESTINATION;
     }
 
     // Check if source file exists
     if (!osgDB::fileExists(source))
     {
         OSG_INFO << "copyFile(): Source file does not exist: " << source << std::endl;
-        return FileOpResult::SOURCE_MISSING;
+        return COPY_FILE_SOURCE_MISSING;
     }
 
     // Open source file
@@ -628,7 +628,7 @@ osgDB::FileOpResult::Value osgDB::copyFile(const std::string & source, const std
     if (!fin)
     {
         OSG_NOTICE << "copyFile(): Can't read source file: " << source << std::endl;
-        return FileOpResult::SOURCE_NOT_OPENED;        // Return success since it's not an output error.
+        return COPY_FILE_SOURCE_NOT_OPENED;        // Return success since it's not an output error.
     }
 
     // Ensure the directory exists or else the FBX SDK will fail
@@ -642,7 +642,7 @@ osgDB::FileOpResult::Value osgDB::copyFile(const std::string & source, const std
     if (!fout)
     {
         OSG_NOTICE << "copyFile(): Can't write destination file: " << destination << std::endl;
-        return FileOpResult::DESTINATION_NOT_OPENED;
+        return COPY_FILE_DESTINATION_NOT_OPENED;
     }
 
     // Copy file
@@ -657,16 +657,16 @@ osgDB::FileOpResult::Value osgDB::copyFile(const std::string & source, const std
     if (!fout.good())
     {
         OSG_NOTICE << "copyFile(): Error writing destination file: " << destination << std::endl;
-        return FileOpResult::WRITE_ERROR;
+        return COPY_FILE_WRITE_ERROR;
     }
 
     if (!fin.eof())
     {
         OSG_NOTICE << "copyFile(): Error reading source file: " << source << std::endl;
-        return FileOpResult::READ_ERROR;
+        return COPY_FILE_READ_ERROR;
     }
 
-    return FileOpResult::OK;
+    return COPY_FILE_OK;
 }
 
 

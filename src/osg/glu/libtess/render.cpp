@@ -235,12 +235,12 @@ static struct FaceCount MaximumStrip( GLUhalfEdge *eOrig )
 }
 
 
-static void RenderTriangle( GLUtesselator *tess, GLUhalfEdge *e, long size )
+static void RenderTriangle( GLUtesselator *tess, GLUhalfEdge *e, long /*size*/ )
 {
   /* Just add the triangle to a triangle list, so we can render all
    * the separate triangles at once.
    */
-  assert( size == 1 );
+  // assert( size == 1 );
   AddToTrail( e->Lface, tess->lonelyTriList );
 }
 
@@ -286,15 +286,15 @@ static void RenderFan( GLUtesselator *tess, GLUhalfEdge *e, long size )
    * edge "e".  The fan *should* contain exactly "size" triangles
    * (otherwise we've goofed up somewhere).
    */
-  CALL_BEGIN_OR_BEGIN_DATA( GL_TRIANGLE_FAN ); 
-  CALL_VERTEX_OR_VERTEX_DATA( e->Org->data ); 
-  CALL_VERTEX_OR_VERTEX_DATA( e->Dst->data ); 
+  CALL_BEGIN_OR_BEGIN_DATA( GL_TRIANGLE_FAN );
+  CALL_VERTEX_OR_VERTEX_DATA( e->Org->data );
+  CALL_VERTEX_OR_VERTEX_DATA( e->Dst->data );
 
   while( ! Marked( e->Lface )) {
     e->Lface->marked = TRUE;
     --size;
     e = e->Onext;
-    CALL_VERTEX_OR_VERTEX_DATA( e->Dst->data ); 
+    CALL_VERTEX_OR_VERTEX_DATA( e->Dst->data );
   }
 
   assert( size == 0 );
@@ -309,20 +309,20 @@ static void RenderStrip( GLUtesselator *tess, GLUhalfEdge *e, long size )
    * (otherwise we've goofed up somewhere).
    */
   CALL_BEGIN_OR_BEGIN_DATA( GL_TRIANGLE_STRIP );
-  CALL_VERTEX_OR_VERTEX_DATA( e->Org->data ); 
-  CALL_VERTEX_OR_VERTEX_DATA( e->Dst->data ); 
+  CALL_VERTEX_OR_VERTEX_DATA( e->Org->data );
+  CALL_VERTEX_OR_VERTEX_DATA( e->Dst->data );
 
   while( ! Marked( e->Lface )) {
     e->Lface->marked = TRUE;
     --size;
     e = e->Dprev;
-    CALL_VERTEX_OR_VERTEX_DATA( e->Org->data ); 
+    CALL_VERTEX_OR_VERTEX_DATA( e->Org->data );
     if( Marked( e->Lface )) break;
 
     e->Lface->marked = TRUE;
     --size;
     e = e->Onext;
-    CALL_VERTEX_OR_VERTEX_DATA( e->Dst->data ); 
+    CALL_VERTEX_OR_VERTEX_DATA( e->Dst->data );
   }
 
   assert( size == 0 );
@@ -346,7 +346,7 @@ void __gl_renderBoundary( GLUtesselator *tess, GLUmesh *mesh )
       CALL_BEGIN_OR_BEGIN_DATA( GL_LINE_LOOP );
       e = f->anEdge;
       do {
-        CALL_VERTEX_OR_VERTEX_DATA( e->Org->data ); 
+        CALL_VERTEX_OR_VERTEX_DATA( e->Org->data );
 	e = e->Lnext;
       } while( e != f->anEdge );
       CALL_END_OR_END_DATA();
@@ -487,14 +487,14 @@ GLboolean __gl_renderCache( GLUtesselator *tess )
 			  : (tess->cacheCount > 3) ? GL_TRIANGLE_FAN
 			  : GL_TRIANGLES );
 
-  CALL_VERTEX_OR_VERTEX_DATA( v0->data ); 
+  CALL_VERTEX_OR_VERTEX_DATA( v0->data );
   if( sign > 0 ) {
     for( vc = v0+1; vc < vn; ++vc ) {
-      CALL_VERTEX_OR_VERTEX_DATA( vc->data ); 
+      CALL_VERTEX_OR_VERTEX_DATA( vc->data );
     }
   } else {
     for( vc = vn-1; vc > v0; --vc ) {
-      CALL_VERTEX_OR_VERTEX_DATA( vc->data ); 
+      CALL_VERTEX_OR_VERTEX_DATA( vc->data );
     }
   }
   CALL_END_OR_END_DATA();

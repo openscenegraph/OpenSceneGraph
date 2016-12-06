@@ -53,7 +53,6 @@ private:
         nextId++;
         threadPriority = Thread::THREAD_PRIORITY_DEFAULT;
         threadPolicy = Thread::THREAD_SCHEDULE_DEFAULT;
-        cpunum = -1;
     };
 
     virtual ~PThreadPrivateData() {};
@@ -81,8 +80,7 @@ private:
 
     volatile int uniqueId;
 
-    volatile int cpunum;
-
+    Affinity affinity;
 
     static int nextId;
 

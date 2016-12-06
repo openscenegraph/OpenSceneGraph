@@ -35,7 +35,9 @@ TextureBuffer::TextureBuffer(const TextureBuffer& text,const CopyOp& copyop):
     Texture(text,copyop),
     _textureWidth(text._textureWidth)
 {
-    setBufferData(osg::clone(text._bufferData.get(), copyop));
+    if (text._bufferData.valid()) {
+        setBufferData(osg::clone(text._bufferData.get(), copyop));
+    }
 }
 
 TextureBuffer::~TextureBuffer()
@@ -136,7 +138,7 @@ void TextureBuffer::apply(State& state) const
 
     TextureObject* textureObject = getTextureObject(contextID);
 
-///This code could be usefull but would require to watch BufferData changes
+///This code could be useful but would require to watch BufferData changes
 ///perhaps a mutable percontext dirtyflag (all reset to true onTextureObjectChanged) would do the trick
 #if 0
    if (textureObject)

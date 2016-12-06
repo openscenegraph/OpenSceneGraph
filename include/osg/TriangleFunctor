@@ -435,3 +435,4 @@ template<class T> class TriangleFunctor :public BaseTriangleFunctor<T,osg::Vec3>
 }
 
 #endif
+

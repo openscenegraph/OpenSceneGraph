@@ -24,7 +24,7 @@ SET(TARGET_H
     ${HEADER_PATH}/ApplicationUsage
     ${HEADER_PATH}/ArgumentParser
     ${HEADER_PATH}/Array
-    ${HEADER_PATH}/ArrayDispatchers
+    ${HEADER_PATH}/AttributeDispatchers
     ${HEADER_PATH}/AudioStream
     ${HEADER_PATH}/AutoTransform
     ${HEADER_PATH}/Billboard
@@ -83,7 +83,6 @@ SET(TARGET_H
     ${HEADER_PATH}/GL2Extensions
     ${HEADER_PATH}/GLDefines
     ${HEADER_PATH}/GLExtensions
-    ${HEADER_PATH}/GLBeginEndAdapter
     ${HEADER_PATH}/GLObjects
     ${HEADER_PATH}/GLU
     ${HEADER_PATH}/GraphicsCostEstimator
@@ -224,6 +223,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Vec4us
     ${HEADER_PATH}/VertexArrayState
     ${HEADER_PATH}/VertexAttribDivisor
+    ${HEADER_PATH}/VertexArrayState
     ${HEADER_PATH}/VertexProgram
     ${HEADER_PATH}/View
     ${HEADER_PATH}/Viewport
@@ -242,7 +242,7 @@ SET(TARGET_SRC
     ApplicationUsage.cpp
     ArgumentParser.cpp
     Array.cpp
-    ArrayDispatchers.cpp
+    AttributeDispatchers.cpp
     AudioStream.cpp
     AutoTransform.cpp
     Billboard.cpp
@@ -293,7 +293,6 @@ SET(TARGET_SRC
     Geode.cpp
     Geometry.cpp
     GLExtensions.cpp
-    GLBeginEndAdapter.cpp
     GLObjects.cpp
     GLStaticLibrary.h
     GLStaticLibrary.cpp
@@ -396,6 +395,7 @@ SET(TARGET_SRC
     Version.cpp
     #VertexArrayState.cpp
     VertexAttribDivisor.cpp
+    VertexArrayState.cpp
     VertexProgram.cpp
     View.cpp
     Viewport.cpp
@@ -432,15 +432,6 @@ SET(TARGET_SRC
 
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
-
-################################################################################
-## Quieten warnings that a due to optional code paths
-
-IF(CMAKE_COMPILER_IS_GNUCXX)
-    # Remove -Wextra flag as it barfs on ffmoeg headers
-   STRING(REGEX REPLACE "-Wextra" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-ENDIF()
-
 
 
 SET(TARGET_LIBRARIES OpenThreads)

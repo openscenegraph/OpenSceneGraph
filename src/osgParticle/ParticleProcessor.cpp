@@ -52,6 +52,11 @@ osgParticle::ParticleProcessor::ParticleProcessor(const ParticleProcessor& copy,
 {
 }
 
+void osgParticle::ParticleProcessor::setParticleSystem(ParticleSystem* ps)
+{
+    _ps = ps;
+}
+
 void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
 {
     // typecast the NodeVisitor to CullVisitor

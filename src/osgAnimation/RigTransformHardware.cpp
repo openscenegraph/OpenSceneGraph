@@ -96,7 +96,7 @@ bool RigTransformHardware::createPalette(int nbVertexes, BoneMap boneMap, const 
         for (VertexInfluenceSet::BoneWeightList::const_iterator it = boneWeightList.begin(); it != boneWeightList.end(); ++it)
         {
             const VertexInfluenceSet::BoneWeight& bw = *it;
-            if(fabs(bw.getWeight()) > 1e-2) // dont use bone with weight too small
+            if(fabs(bw.getWeight()) > 1e-2) // don't use bone with weight too small
             {
                 if (boneNameCountMap.find(bw.getBoneName()) != boneNameCountMap.end())
                 {
@@ -251,10 +251,16 @@ bool RigTransformHardware::init(RigGeometry& geom)
     std::string str = _shader->getShaderSource();
     std::string toreplace = std::string("MAX_MATRIX");
     std::size_t start = str.find(toreplace);
-    std::stringstream ss;
-    ss << getMatrixPaletteUniform()->getNumElements();
-    str.replace(start, toreplace.size(), ss.str());
-    _shader->setShaderSource(str);
+    if (std::string::npos != start) {
+        std::stringstream ss;
+        ss << getMatrixPaletteUniform()->getNumElements();
+        str.replace(start, toreplace.size(), ss.str());
+        _shader->setShaderSource(str);
+    }
+    else
+    {
+        OSG_WARN << "MAX_MATRIX not found in Shader! " << str << std::endl;
+    }
     OSG_INFO << "Shader " << str << std::endl;
     }
 

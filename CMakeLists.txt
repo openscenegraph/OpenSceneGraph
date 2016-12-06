@@ -1,15 +1,7 @@
 set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS TRUE)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-IF(WIN32)
-    CMAKE_MINIMUM_REQUIRED(VERSION 2.4.6 FATAL_ERROR)
-ELSE(WIN32)
-    IF(APPLE)
-        CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0 FATAL_ERROR)
-    ELSE(APPLE)
-        CMAKE_MINIMUM_REQUIRED(VERSION 2.4.4 FATAL_ERROR)
-    ENDIF(APPLE)
-ENDIF(WIN32)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.0 FATAL_ERROR)
 
 if(COMMAND cmake_policy)
     # Works around warnings libraries linked against that don't
@@ -36,12 +28,6 @@ if(COMMAND cmake_policy)
         cmake_policy(SET CMP0008 OLD)
     endif()
 
-    # disable autolinking to qtmain as we have our own main() functions (new in Qt 5.1)
-    if(${CMAKE_MAJOR_VERSION} GREATER 2 OR
-        (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 8) OR
-        (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 8 AND ${CMAKE_PATCH_VERSION} GREATER 10))
-        cmake_policy(SET CMP0020 OLD)
-    endif()
     # nicer version check - but needs at least CMake 2.6.2? Worth upgrading the requirements?
     #if("${CMAKE_VERSION}" VERSION_GREATER 2.8.10)
     # or even easier (available in cmake-2.6)
@@ -129,8 +115,8 @@ PROJECT(OpenSceneGraph)
 
 SET(OPENSCENEGRAPH_MAJOR_VERSION 3)
 SET(OPENSCENEGRAPH_MINOR_VERSION 5)
-SET(OPENSCENEGRAPH_PATCH_VERSION 4)
-SET(OPENSCENEGRAPH_SOVERSION 145)
+SET(OPENSCENEGRAPH_PATCH_VERSION 6)
+SET(OPENSCENEGRAPH_SOVERSION 146)
 
 # set to 0 when not a release candidate, non zero means that any generated
 # git tags will be treated as release candidates of given number
@@ -233,7 +219,7 @@ IF (OSG_MAINTAINER)
     #
     # Provide target for generating ChangeLog
     #
-    SET(GITLOGFORMAT "%aD%nChecked in by : %an%n%s%b%n")
+    SET(GITLOGFORMAT "%aD%nAuthor : %an%n%s%b%n")
     SET(GENERATELOGS git log --pretty=format:${GITLOGFORMAT})
 
     ADD_CUSTOM_TARGET(ChangeLog
@@ -287,7 +273,6 @@ IF(APPLE)
         # libosgViewer would use X11/OpenGL, which causes compatibility
         # issues for applications using OSG.
         UNSET(OPENGL_gl_LIBRARY CACHE)
-        UNSET(OPENGL_glu_LIBRARY CACHE)
         UNSET(OPENGL_INCLUDE_DIR CACHE)
         IF(OSG_WINDOWING_SYSTEM STREQUAL "X11")
           FIND_PACKAGE(X11)
@@ -298,7 +283,6 @@ IF(APPLE)
           # Use X11 version of OpenGL as seed for CMake FindOpenGL
           GET_FILENAME_COMPONENT(X11LIBDIR ${X11_X11_LIB} DIRECTORY)
           FIND_LIBRARY(OPENGL_gl_LIBRARY GL PATHS ${X11LIBDIR} DOC "OpenGL lib for OSX" NO_DEFAULT_PATH)
-          FIND_LIBRARY(OPENGL_glu_LIBRARY GLU PATHS ${X11LIBDIR} DOC "GLU lib for OSX" NO_DEFAULT_PATH)
           SET(OPENGL_INCLUDE_DIR ${X11_INCLUDE_DIR} CACHE PATH "Include for OpenGL on OSX" FORCE)
 
         ELSEIF(OSG_WINDOWING_SYSTEM STREQUAL "Carbon")
@@ -307,6 +291,7 @@ IF(APPLE)
         ENDIF()
 
         FIND_PACKAGE(OpenGL)
+        FIND_PACKAGE(EGL)
     ENDIF ()
 
     OPTION(OSG_COMPILE_FRAMEWORKS "compile frameworks instead of dylibs (experimental)" OFF)
@@ -314,6 +299,7 @@ IF(APPLE)
 ELSE()
     # Non-Apple: Find OpenGL
     FIND_PACKAGE(OpenGL)
+    FIND_PACKAGE(EGL)
 ENDIF()
 ENDIF()
 
@@ -423,21 +409,15 @@ IF(WIN32 AND NOT ANDROID)
 ##########################################################################################################
 
     IF(MSVC)
-        IF(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4 AND ${CMAKE_PATCH_VERSION} LESS 7)
-            MESSAGE("Warning:  disabling versioned options 2.4.6 exibits inconsintencies in .pdb naming, at least under MSVC, suggested upgrading at least to 2.4.7")
-            SET(OSG_MSVC_VERSIONED_DLL OFF)
-            SET(OSG_MSVC_DEBUG_INCREMENTAL_LINK ON)
-        ELSE()
-            OPTION(OSG_MSVC_VERSIONED_DLL "Set to ON to build OpenSceneGraph with versioned dll names" ON)
-            MARK_AS_ADVANCED(OSG_MSVC_VERSIONED_DLL)
-            OPTION(OSG_MSVC_DEBUG_INCREMENTAL_LINK "Set to OFF to build OpenSceneGraph without incremental linking in debug (release is off by default)" ON)
-            MARK_AS_ADVANCED(OSG_MSVC_DEBUG_INCREMENTAL_LINK)
-            IF(NOT OSG_MSVC_DEBUG_INCREMENTAL_LINK)
-                SET(CMAKE_MODULE_LINKER_FLAGS_DEBUG "/debug /INCREMENTAL:NO")
-                SET(CMAKE_SHARED_LINKER_FLAGS_DEBUG "/debug /INCREMENTAL:NO")
-                SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "/debug /INCREMENTAL:NO")
-            ENDIF(NOT OSG_MSVC_DEBUG_INCREMENTAL_LINK)
-        ENDIF()
+        OPTION(OSG_MSVC_VERSIONED_DLL "Set to ON to build OpenSceneGraph with versioned dll names" ON)
+        MARK_AS_ADVANCED(OSG_MSVC_VERSIONED_DLL)
+        OPTION(OSG_MSVC_DEBUG_INCREMENTAL_LINK "Set to OFF to build OpenSceneGraph without incremental linking in debug (release is off by default)" ON)
+        MARK_AS_ADVANCED(OSG_MSVC_DEBUG_INCREMENTAL_LINK)
+        IF(NOT OSG_MSVC_DEBUG_INCREMENTAL_LINK)
+            SET(CMAKE_MODULE_LINKER_FLAGS_DEBUG "/debug /INCREMENTAL:NO")
+            SET(CMAKE_SHARED_LINKER_FLAGS_DEBUG "/debug /INCREMENTAL:NO")
+            SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "/debug /INCREMENTAL:NO")
+        ENDIF(NOT OSG_MSVC_DEBUG_INCREMENTAL_LINK)
     ENDIF(MSVC)
 ENDIF(WIN32 AND NOT ANDROID)
 
@@ -503,6 +483,9 @@ ENDIF()
 
 IF ((OPENGL_PROFILE STREQUAL "GL3") OR (OPENGL_PROFILE STREQUAL "GLCORE"))
     OPTION(OSG_GL3_AVAILABLE "Set to OFF to disable use of OpenGL 3.x functions library." ON )
+    if(APPLE)
+        add_definitions(-DGL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED)
+    endif()
 ELSE()
     OPTION(OSG_GL3_AVAILABLE "Set to OFF to disable use of OpenGL 3.x functions library." OFF )
 ENDIF()
@@ -525,8 +508,6 @@ ENDIF()
 
 
 OPTION(OSG_GL_LIBRARY_STATIC "Set to ON to statically link with OpenGL/GLES library." OFF)
-
-SET(OPENGL_egl_LIBRARY CACHE STRING "Set the OpenGL egl library.")
 
 # Map the OSG_GL*_AVAILABLE settings to OSG_GL_* settings
 OPTION(OSG_GL_VERTEX_ARRAY_OBJECTS_AVAILABLE "Set to OFF to disable use of OpenGL vertex array objects." OFF)
@@ -747,7 +728,6 @@ ELSE()
     FIND_PACKAGE(ZLIB)
     FIND_PACKAGE(Xine)
     FIND_PACKAGE(OpenVRML)
-    FIND_PACKAGE(Performer)
     FIND_PACKAGE(GDAL)
     FIND_PACKAGE(GTA)
     FIND_PACKAGE(CURL)
@@ -783,68 +763,9 @@ ELSE()
     # FIND_PACKAGE(PythonLibs)
 ENDIF()
 
-IF(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION LESS 8)
-    FIND_PACKAGE(ITK)
-ENDIF()
-
 # Include macro utilities here
 INCLUDE(OsgMacroUtils)
 
-OPTION(OSG_USE_QT "Enable to use Qt (build Qt-dependent libraries, plugins and examples)" ON)
-
-IF(OSG_USE_QT AND NOT ANDROID)
-# To select a specific version of QT define DESIRED_QT_VERSION
-# via cmake -DDESIRED_QT_VERSION=5
-# QUIET option disables messages if the package cannot be found.
-
-    IF  (DESIRED_QT_VERSION)
-        IF  (DESIRED_QT_VERSION MATCHES 5)
-            FIND_PACKAGE(Qt5Widgets)
-        ELSEIF (DESIRED_QT_VERSION MATCHES 4)
-            FIND_PACKAGE(Qt4)
-        ELSE()
-            FIND_PACKAGE(Qt3)
-        ENDIF()
-
-    ELSE()
-
-        FIND_PACKAGE(Qt5Widgets QUIET)
-
-        IF ( Qt5Widgets_FOUND )
-            # CMake 2.8.8 or greater required
-            BUILDER_VERSION_GREATER(2 8 7)
-            IF(NOT VALID_BUILDER_VERSION)
-                MESSAGE(
-                SEND_ERROR
-                "Qt5 requires CMake version 2.8.8 or greater!\n"
-                "Update CMake or set DESIRED_QT_VERSION to less than 5
-                or disable OSG_USE_QT."
-                )
-            ENDIF( )
-        ENDIF( )
-
-        IF ( NOT Qt5Widgets_FOUND )
-            FIND_PACKAGE(Qt4)
-
-            IF (NOT QT4_FOUND)
-                FIND_PACKAGE(Qt3)
-            ENDIF()
-        ENDIF()
-    ENDIF()
-
-    #If we have found Qt5, let's try to top off by getting the webkit as well
-    IF ( Qt5Widgets_FOUND )
-        FIND_PACKAGE(Qt5WebKitWidgets QUIET)
-
-        IF(COMMAND cmake_policy)
-            IF(${CMAKE_MAJOR_VERSION} GREATER 2)
-                # Qt5 qt5_use_modules usage was causing "Policy CMP0043 is not set: Ignore COMPILE_DEFINITIONS_<Config> properties." warnings
-                cmake_policy(SET CMP0043 NEW)
-            ENDIF()
-        ENDIF()
-    ENDIF()
-
-ENDIF()
 
 #optional example related dependencies
 IF   (BUILD_OSG_EXAMPLES AND NOT ANDROID)
@@ -961,45 +882,32 @@ IF(NOT MSVC OR MSVC_IDE)
     MAKE_DIRECTORY(${OUTPUT_LIBDIR}/${OSG_PLUGINS})
 ENDIF(NOT MSVC OR MSVC_IDE)
 
-# On CMake 2.4.x use EXECUTABLE_OUTPUT_PATH and LIBRARY_OUTPUT_PATH and later
-# we work around the DLL placement by use of the PREFIX target property hack
-#
-# On CMake 2.6.x use the newly minted CMAKE_LIBRARY_OUTPUT_DIRECTORY,
-# CMAKE_ARCHIVE_OUTPUT_DIRECTORY & CMAKE_RUNTIME_OUTPUT_DIRECTORY
-#
 # CMake >= 2.8.1 changed the output directory algorithm (See doc).
 # Here we also set per-configuration directories (CMAKE_*_OUTPUT_DIRECTORY_<CONFIG>), or else binaries are generated in /bin/Debug and /bin/Release, etc. with MSVC and Xcode.
 # (Doc reads "multi-configuration generators (VS, Xcode) do NOT append a per-configuration subdirectory to the specified directory").
 # The workaround for 2.6.x (adding "../" as an output prefix for each target) seem to have no effect in >=2.8.1, so there is no need to change this.
-IF(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION LESS 5)
-    # If CMake < 2.6.0
-    SET(EXECUTABLE_OUTPUT_PATH ${OUTPUT_BINDIR})
-    SET(LIBRARY_OUTPUT_PATH    ${OUTPUT_LIBDIR})
-ELSE()
-    # If CMake >= 2.6.0
-    SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_LIBDIR})
-    SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_BINDIR})
-    IF(WIN32)
-        SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_BINDIR})
-    ELSE(WIN32)
-        SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_LIBDIR})
-    ENDIF(WIN32)
+SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_LIBDIR})
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_BINDIR})
+IF(WIN32)
+    SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_BINDIR})
+ELSE(WIN32)
+    SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_LIBDIR})
+ENDIF(WIN32)
 
-    # Testing CMAKE_VERSION is possible in >= 2.6.4 only
-    BUILDER_VERSION_GREATER(2 8 0)
-    IF(VALID_BUILDER_VERSION)  # If CMake >= 2.8.1
-        FOREACH(CONF ${CMAKE_CONFIGURATION_TYPES})        # For each configuration (Debug, Release, MinSizeRel... and/or anything the user chooses)
-            STRING(TOUPPER "${CONF}" CONF)                # Go uppercase (DEBUG, RELEASE...)
-            SET("CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CONF}" "${OUTPUT_LIBDIR}")
-            SET("CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CONF}" "${OUTPUT_BINDIR}")
-            IF(WIN32)
-                SET("CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CONF}" "${OUTPUT_BINDIR}")
-            ELSE()
-                SET("CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CONF}" "${OUTPUT_LIBDIR}")
-            ENDIF()
-        ENDFOREACH()
-    ENDIF(VALID_BUILDER_VERSION)
-ENDIF()
+# Testing CMAKE_VERSION is possible in >= 2.6.4 only
+BUILDER_VERSION_GREATER(2 8 0)
+IF(VALID_BUILDER_VERSION)  # If CMake >= 2.8.1
+    FOREACH(CONF ${CMAKE_CONFIGURATION_TYPES})        # For each configuration (Debug, Release, MinSizeRel... and/or anything the user chooses)
+        STRING(TOUPPER "${CONF}" CONF)                # Go uppercase (DEBUG, RELEASE...)
+        SET("CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CONF}" "${OUTPUT_LIBDIR}")
+        SET("CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CONF}" "${OUTPUT_BINDIR}")
+        IF(WIN32)
+            SET("CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CONF}" "${OUTPUT_BINDIR}")
+        ELSE()
+            SET("CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CONF}" "${OUTPUT_LIBDIR}")
+        ENDIF()
+    ENDFOREACH()
+ENDIF(VALID_BUILDER_VERSION)
 
 #SET(INSTALL_BINDIR OpenSceneGraph/bin)
 #SET(INSTALL_INCDIR OpenSceneGraph/include)
@@ -1047,8 +955,17 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
     # to be the workaround.
     SET(OSG_AGGRESSIVE_WARNING_FLAGS -Wall -Wparentheses -Wno-long-long -Wno-import -pedantic -Wreturn-type -Wmissing-braces -Wunknown-pragmas -Wunused)
 
-    IF(${CMAKE_MAJOR_VERSION} GREATER 2 AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.9)
-        SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wshadow -Wmaybe-uninitialized -Wextra)
+    MESSAGE( STATUS "g++ version ${CMAKE_CXX_COMPILER_VERSION} ")
+    IF(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.6)
+        SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wmaybe-uninitialized -Wextra)
+        IF(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.9)
+            SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wshadow)
+            IF(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 6.0)
+                # -Wmisleading-indentation (in -Wall) generates less warnings when interpreting tab as 4 spaces instead of the default of 8
+                # SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -ftabstop=4)
+                SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wno-misleading-indentation)
+            ENDIF()
+        ENDIF()
     ENDIF()
 
     # Previous included -Wformat=2 in OSG_AGGRESSIVE_WARNING_FLAGS but had to remove it due to standard library errors
@@ -1059,7 +976,8 @@ ELSEIF(MSVC)
         #C4100 'identifier' : unreferenced formal parameter
         #C4127 Error Message conditional expression is constant
         #C4706 assignment within conditional expression
-        SET(OSG_AGGRESSIVE_WARNING_FLAGS /W4 /wd4706 /wd4127 /wd4100)
+        #C4589: Constructor of abstract class 'osgGA::CameraManipulator' ignores initializer for virtual base class 'osg::Object'
+        SET(OSG_AGGRESSIVE_WARNING_FLAGS /W4 /wd4589 /wd4706 /wd4127 /wd4100)
 ELSEIF(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         SET(OSG_AGGRESSIVE_WARNING_FLAGS  -Wall -Wparentheses -Wno-long-long -Wno-import -pedantic -Wreturn-type -Wmissing-braces -Wunknown-pragmas -Wunused -Wno-overloaded-virtual)
 
@@ -1350,10 +1268,6 @@ SET(PKGCONFIG_FILES
   openscenegraph-osgAnimation
   openscenegraph-osgVolume
 )
-
-IF(QT4_FOUND OR Qt5Widgets_FOUND )
-  SET(PKGCONFIG_FILES ${PKGCONFIG_FILES} openscenegraph-osgQt)
-ENDIF()
 
 FOREACH(PKGCONFIG_FILE ${PKGCONFIG_FILES})
   CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/pkgconfig/${PKGCONFIG_FILE}.pc.in

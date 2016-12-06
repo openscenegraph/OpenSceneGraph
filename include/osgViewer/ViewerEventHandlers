@@ -521,7 +521,10 @@ public:
     virtual DrawableCullCallback* asDrawableCullCallback() { return osg::DrawableCullCallback::asDrawableCullCallback(); }
     virtual const DrawableCullCallback* asDrawableCullCallback() const { return osg::DrawableCullCallback::asDrawableCullCallback(); }
 
-    // use the osgGA::GUIEventHandler implementation of run.
+    virtual osgGA::EventHandler* asEventHandler() { return osgGA::EventHandler::asEventHandler(); }
+    virtual const osgGA::EventHandler* asEventHandler() const { return osgGA::EventHandler::asEventHandler(); }
+
+	// use the osgGA::GUIEventHandler implementation of run.
     virtual bool run(osg::Object* object, osg::Object* data) { return osgGA::GUIEventHandler::run(object, data); }
 
     virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object*, osg::NodeVisitor* nv);

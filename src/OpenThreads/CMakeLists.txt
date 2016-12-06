@@ -4,8 +4,8 @@ ADD_DEFINITIONS(-DOPENTHREADS_EXPORTS)
 
 SET(OPENTHREADS_MAJOR_VERSION 3)
 SET(OPENTHREADS_MINOR_VERSION 3)
-SET(OPENTHREADS_PATCH_VERSION 0)
-SET(OPENTHREADS_SOVERSION 20)
+SET(OPENTHREADS_PATCH_VERSION 1)
+SET(OPENTHREADS_SOVERSION 21)
 
 SET(OPENTHREADS_VERSION ${OPENTHREADS_MAJOR_VERSION}.${OPENTHREADS_MINOR_VERSION}.${OPENTHREADS_PATCH_VERSION})
 
@@ -59,6 +59,7 @@ ENDIF()
 SET(HEADER_PATH ${OpenThreads_SOURCE_DIR}/include/OpenThreads)
 SET(OpenThreads_PUBLIC_HEADERS
     ${HEADER_PATH}/Atomic
+    ${HEADER_PATH}/Affinity
     ${HEADER_PATH}/Barrier
     ${HEADER_PATH}/Block
     ${HEADER_PATH}/Condition
@@ -76,17 +77,6 @@ IF(NOT ANDROID)
 # Use our modified version of FindThreads.cmake which has Sproc hacks.
     FIND_PACKAGE(Threads)
 ENDIF()
-# Do we have sproc?
-IF(CMAKE_SYSTEM MATCHES IRIX)
-    IF(CMAKE_USE_SPROC_INIT)
-        # In this case, only Sproc exists, so no option.
-        SET(OPENTHREADS_USE_SPROC_INSTEAD_OF_PTHREADS 1)
-    ELSE()
-        IF(CMAKE_HAVE_SPROC_H)
-            OPTION(OPENTHREADS_USE_SPROC_INSTEAD_OF_PTHREADS "Set to ON to build OpenThreads against sproc instead of pthreads" OFF)
-        ENDIF()
-    ENDIF()
-ENDIF(CMAKE_SYSTEM MATCHES IRIX)
 
 # Add support for using Qt threads
 IF(QT4_FOUND OR Qt5Widgets_FOUND)
@@ -96,8 +86,6 @@ ENDIF()
 # Maybe we should be using the FindThreads.cmake module?
 IF(ANDROID)
     SUBDIRS(pthreads)
-ELSEIF((QT4_FOUND OR Qt5Widgets_FOUND) AND BUILD_OPENTHREADS_WITH_QT)
-    SUBDIRS(qt)
 ELSEIF(WIN32)
     # So I think Cygwin wants to use pthreads
     IF(CYGWIN)
@@ -109,11 +97,7 @@ ELSEIF(WIN32)
     ENDIF()
 ELSE()
     IF(UNIX)
-        IF(OPENTHREADS_USE_SPROC_INSTEAD_OF_PTHREADS)
-            SUBDIRS(sproc)
-        ELSE()
-            SUBDIRS(pthreads)
-        ENDIF()
+        SUBDIRS(pthreads)
     ELSE()
         MESSAGE("Sorry, OpenThreads may not support your platform")
     ENDIF()

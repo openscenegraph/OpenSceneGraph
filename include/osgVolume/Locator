@@ -67,6 +67,12 @@ class OSGVOLUME_EXPORT Locator : public osg::Object
         bool computeLocalBounds(osg::Vec3d& bottomLeft, osg::Vec3d& topRight) const;
         bool computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::Vec3d& topRight) const;
 
+        /** Return true if the axis of the Locator are inverted requiring the faces of any cubes used from rendering to be flipped to ensure the correct front/back face is used.*/
+        bool inverted() const;
+
+        /** apply the appropriate FrontFace setting to provided StateSet to ensure that the rendering of hull of the volume is the correct orientation.*/
+        void applyAppropriateFrontFace(osg::StateSet* ss) const;
+
 
         /** Callback interface for enabling the monitoring of changes to the Locator.*/
         class LocatorCallback : virtual public osg::Object

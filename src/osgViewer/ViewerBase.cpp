@@ -57,6 +57,7 @@ void ViewerBase::viewerBaseInit()
     _keyEventSetsDone = osgGA::GUIEventAdapter::KEY_Escape;
     _quitEventSetsDone = true;
     _releaseContextAtEndOfFrameHint = true;
+
     _threadingModel = AutomaticSelection;
     _threadsRunning = false;
     _endBarrierPosition = AfterSwapBuffers;
@@ -79,6 +80,126 @@ void ViewerBase::viewerBaseInit()
     {
         _runMaxFrameRate = osg::asciiToDouble(str);
     }
+
+    _useConfigureAffinity = true;
+}
+
+void ViewerBase::configureAffinity()
+{
+    unsigned int numProcessors = OpenThreads::GetNumberOfProcessors();
+
+    OSG_NOTICE<<"ViewerBase::configureAffinity() numProcessors="<<numProcessors<<std::endl;
+    if (numProcessors==1) return;
+
+    typedef std::vector<unsigned int> AvailableProcessors;
+    AvailableProcessors availableProcessors;
+#if 1
+    // for hyper-threaed processors we want to place the threads on preferentiallly on 0,2,4,6
+    for(unsigned int i=0; i<numProcessors; i+=2)
+    {
+        availableProcessors.push_back(i);
+    }
+    for(unsigned int i=1; i<numProcessors; i+=2)
+    {
+        availableProcessors.push_back(i);
+    }
+#else
+    for(unsigned int i=0; i<numProcessors; i+=1)
+    {
+        availableProcessors.push_back(i);
+    }
+#endif
+
+    bool requiresCameraThreads = false;
+    bool requiresDrawThreads = false;
+
+    unsigned int availableProcessor = 0;
+
+    // set affinity for first processor
+    _affinity = OpenThreads::Affinity(availableProcessors[availableProcessor]);
+
+    // all threading models except DrawThreadPerContext can share the first cull or culldraw threads with thread with the main thread,
+    // so only increment the availableProcessor for DrawThreadPerContext to prevent draw threads sitting on the same thread as main thread that does cull
+    switch(_threadingModel)
+    {
+        case(CullDrawThreadPerContext):
+            requiresDrawThreads = true;
+            break;
+
+        case(DrawThreadPerContext):
+            requiresDrawThreads = true;
+            ++availableProcessor;
+            break;
+
+        case(CullThreadPerCameraDrawThreadPerContext):
+            requiresCameraThreads = true;
+            requiresDrawThreads = true;
+            break;
+
+        default:
+            break;
+    };
+
+
+
+
+    if (requiresCameraThreads)
+    {
+        Cameras cameras;
+        getCameras(cameras);
+
+        for(Cameras::iterator itr = cameras.begin();
+            itr != cameras.end();
+            ++itr)
+        {
+            (*itr)->setProcessorAffinity(OpenThreads::Affinity(availableProcessors[availableProcessor++ % availableProcessors.size()]));
+        }
+    }
+
+    if (requiresDrawThreads)
+    {
+        Contexts contexts;
+        getContexts(contexts);
+
+        for(Contexts::iterator itr = contexts.begin();
+            itr != contexts.end();
+            ++itr)
+        {
+            if ((*itr)->getTraits())
+            {
+                osg::GraphicsContext::Traits* traits = const_cast<osg::GraphicsContext::Traits*>((*itr)->getTraits());
+                traits->affinity = OpenThreads::Affinity(availableProcessors[availableProcessor++ % availableProcessors.size()]);
+            }
+        }
+    }
+
+    if (availableProcessor<numProcessors)
+    {
+        Scenes scenes;
+        getScenes(scenes);
+
+        typedef std::list<osgDB::DatabasePager*> DatabasePagers;
+        DatabasePagers databasePagers;
+
+        for(Scenes::iterator itr = scenes.begin();
+            itr != scenes.end();
+            ++itr)
+        {
+            if ((*itr)->getDatabasePager()) databasePagers.push_back((*itr)->getDatabasePager());
+        }
+
+        OSG_NOTICE<<"  databasePagers = "<<databasePagers.size()<<std::endl;
+
+        availableProcessor = availableProcessors[availableProcessor % availableProcessors.size()];
+
+        OpenThreads::Affinity databasePagerAffinity;
+        for(DatabasePagers::iterator itr = databasePagers.begin();
+            itr != databasePagers.end();
+            ++itr)
+        {
+            (*itr)->setProcessorAffinity(OpenThreads::Affinity(availableProcessor, numProcessors-availableProcessor));
+        }
+    }
 }
 
 void ViewerBase::setThreadingModel(ThreadingModel threadingModel)
@@ -89,7 +210,7 @@ void ViewerBase::setThreadingModel(ThreadingModel threadingModel)
 
     _threadingModel = threadingModel;
 
-    if (isRealized() && _threadingModel!=SingleThreaded) startThreading();
+    setUpThreading();
 }
 
 ViewerBase::ThreadingModel ViewerBase::suggestBestThreadingModel()
@@ -140,37 +261,40 @@ ViewerBase::ThreadingModel ViewerBase::suggestBestThreadingModel()
 
 void ViewerBase::setUpThreading()
 {
+    if (_threadingModel==AutomaticSelection)
+    {
+        _threadingModel = suggestBestThreadingModel();
+    }
+
+    // if required configure affinity before we start threads
+    if (_useConfigureAffinity) configureAffinity();
+
     Contexts contexts;
     getContexts(contexts);
+
+    // set up affinity of main thread
+    OpenThreads::SetProcessorAffinityOfCurrentThread(_affinity);
+
+    // set up the number of graphics contexts.
+    {
+        Scenes scenes;
+        getScenes(scenes);
+
+        for(Scenes::iterator scitr = scenes.begin();
+            scitr != scenes.end();
+            ++scitr)
+        {
+            if ((*scitr)->getSceneData())
+            {
+                // update the scene graph so that it has enough GL object buffer memory for the graphics contexts that will be using it.
+                (*scitr)->getSceneData()->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
+            }
+        }
+    }
 
     if (_threadingModel==SingleThreaded)
     {
         if (_threadsRunning) stopThreading();
-        else
-        {
-            // we'll set processor affinity here to help single threaded apps
-            // with multiple processor cores, and using the database pager.
-            int numProcessors = OpenThreads::GetNumberOfProcessors();
-            bool affinity = numProcessors>1;
-            if (affinity)
-            {
-                OpenThreads::SetProcessorAffinityOfCurrentThread(0);
-
-                Scenes scenes;
-                getScenes(scenes);
-
-                for(Scenes::iterator scitr = scenes.begin();
-                    scitr != scenes.end();
-                    ++scitr)
-                {
-                    if ((*scitr)->getSceneData())
-                    {
-                        // update the scene graph so that it has enough GL object buffer memory for the graphics contexts that will be using it.
-                        (*scitr)->getSceneData()->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
-                    }
-                }
-            }
-        }
     }
     else
     {
@@ -272,8 +396,6 @@ void ViewerBase::startThreading()
     // release any context held by the main thread.
     releaseContext();
 
-    _threadingModel = _threadingModel==AutomaticSelection ? suggestBestThreadingModel() : _threadingModel;
-
     Contexts contexts;
     getContexts(contexts);
 
@@ -307,9 +429,6 @@ void ViewerBase::startThreading()
             return;
     }
 
-    // using multi-threading so make sure that new objects are allocated with thread safe ref/unref
-    osg::Referenced::setThreadSafeReferenceCounting(true);
-
     Scenes scenes;
     getScenes(scenes);
     for(Scenes::iterator scitr = scenes.begin();
@@ -327,9 +446,6 @@ void ViewerBase::startThreading()
             (*scitr)->getSceneData()->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
         }
     }
-
-    int numProcessors = osg::maximum(1, OpenThreads::GetNumberOfProcessors());
-    bool affinity = numProcessors>1;
 
     Contexts::iterator citr;
 
@@ -386,13 +502,9 @@ void ViewerBase::startThreading()
 
     osg::ref_ptr<osg::SwapBuffersOperation> swapOp = new osg::SwapBuffersOperation();
 
-    typedef std::map<OpenThreads::Thread*, int> ThreadAffinityMap;
-    ThreadAffinityMap threadAffinityMap;
-
-    unsigned int processNum = 1;
     for(citr = contexts.begin();
         citr != contexts.end();
-        ++citr, ++processNum)
+        ++citr)
     {
         osg::GraphicsContext* gc = (*citr);
 
@@ -406,9 +518,6 @@ void ViewerBase::startThreading()
 
         // create the a graphics thread for this context
         gc->createGraphicsThread();
-
-        if (affinity) gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
-        threadAffinityMap[gc->getGraphicsThread()] = processNum % numProcessors;
 
         // add the startRenderingBarrier
         if (_threadingModel==CullDrawThreadPerContext && _startRenderingBarrier.valid()) gc->getGraphicsThread()->add(_startRenderingBarrier.get());
@@ -441,13 +550,10 @@ void ViewerBase::startThreading()
 
         for(camItr = cameras.begin();
             camItr != cameras.end();
-            ++camItr, ++processNum)
+            ++camItr)
         {
             osg::Camera* camera = *camItr;
             camera->createCameraThread();
-
-            if (affinity) camera->getCameraThread()->setProcessorAffinity(processNum % numProcessors);
-            threadAffinityMap[camera->getCameraThread()] = processNum % numProcessors;
 
             osg::GraphicsContext* gc = camera->getGraphicsContext();
 
@@ -481,34 +587,6 @@ void ViewerBase::startThreading()
             }
         }
     }
-
-#if 0
-    if (affinity)
-    {
-        OpenThreads::SetProcessorAffinityOfCurrentThread(0);
-        if (_scene.valid() && _scene->getDatabasePager())
-        {
-#if 0
-            _scene->getDatabasePager()->setProcessorAffinity(1);
-#else
-            _scene->getDatabasePager()->setProcessorAffinity(0);
-#endif
-        }
-    }
-#endif
-
-#if 0
-    if (affinity)
-    {
-        for(ThreadAffinityMap::iterator titr = threadAffinityMap.begin();
-            titr != threadAffinityMap.end();
-            ++titr)
-        {
-            titr->first->setProcessorAffinity(titr->second);
-        }
-    }
-#endif
-
 
     for(citr = contexts.begin();
         citr != contexts.end();

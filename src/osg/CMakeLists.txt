@@ -394,7 +394,7 @@ SET(TARGET_SRC
     ValueMap.cpp
     ValueStack.cpp
     Version.cpp
-    VertexArrayState.cpp
+    #VertexArrayState.cpp
     VertexAttribDivisor.cpp
     VertexProgram.cpp
     View.cpp

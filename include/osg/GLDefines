@@ -597,7 +597,11 @@ typedef char GLchar;
 #endif
 
 #ifndef GL_RASTERIZER_DISCARD
-#define GL_RASTERIZER_DISCARD           0x8C89
+	#define GL_RASTERIZER_DISCARD           0x8C89
+#endif
+
+#ifndef GL_PRIMITIVES_GENERATED
+	#define GL_PRIMITIVES_GENERATED 0x8C87
 #endif
 
 #ifndef GL_ALPHA_TEST

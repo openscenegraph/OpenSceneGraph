@@ -118,7 +118,7 @@ class OSGMANIPULATOR_EXPORT TranslateInLineCommand : public MotionCommand
         inline const osg::LineSegment::vec_type& getLineStart() const { return _line->start(); }
         inline const osg::LineSegment::vec_type& getLineEnd() const { return _line->end(); }
 
-        inline void setTranslation(const osg::Vec3& t) { _translation = t; }
+        inline void setTranslation(const osg::Vec3d& t) { _translation = t; }
         inline const osg::Vec3d& getTranslation() const { return _translation; }
 
         virtual osg::Matrix getMotionMatrix() const

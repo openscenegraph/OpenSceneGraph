@@ -61,16 +61,10 @@ namespace IGES
     {
         public:
             /// \brief constructor
-            ReaderWriterIGES()
-            {
-                supportsExtension("IGES","IGES file format");
-                supportsExtension("iges","IGES file format");
-                supportsExtension("IGS","IGS file format");
-                supportsExtension("igs","IGS file format");
-            }
+            ReaderWriterIGES();
 
             /// \brief returns class name 
-            virtual const char* className() const { return "IGES Reader"; }
+            virtual const char* className() const { return "STEP/IGES Reader"; }
 
             virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
 

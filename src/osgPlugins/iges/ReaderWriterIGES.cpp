@@ -52,6 +52,8 @@
 #include <IGESControl_Writer.hxx>
 #include <IGESControl_Controller.hxx>
 
+#include <STEPCAFControl_Reader.hxx>
+
 #include <TDocStd_Document.hxx>
 #include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
@@ -80,6 +82,18 @@
 namespace IGES
 {
     REGISTER_OSGPLUGIN(iges, ReaderWriterIGES)
+
+    ReaderWriterIGES::ReaderWriterIGES()
+    {
+        OSG_NOTICE<<"ReaderWriterIGES::ReaderWriterIGES()"<<std::endl;
+
+        supportsExtension("IGES","IGES file format");
+        supportsExtension("iges","IGES file format");
+        supportsExtension("IGS","IGS file format");
+        supportsExtension("igs","IGS file format");
+        supportsExtension("stp","STEP file format");
+        supportsExtension("STP","STEP file format");
+    }
 
     osgDB::ReaderWriter::ReadResult ReaderWriterIGES::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
     {
@@ -253,18 +267,40 @@ namespace IGES
         Handle(TDocStd_Document) doc;
         XCAFApp_Application::GetApplication()->NewDocument("MDTV-XCAF", doc);
 
-        IGESCAFControl_Reader reader; 
-        reader.SetColorMode(true);
-        reader.SetNameMode(true);
-        reader.SetLayerMode(true);
-
-        //IGESControl_Reader Reader;
-        reader.ReadFile( (Standard_CString)filePath.c_str() );
-        /// transfer data from reader to doc
-        if(!reader.Transfer(doc))
+        std::string ext = osgDB::getLowerCaseFileExtension(filePath);
+        if (ext=="stp" || ext=="step")
         {
-            cout << "Cannot read any relevant data from the IGES file" << endl;
-            return NULL;
+            OSG_NOTICE<<"Using STEPCAFControl_Reader to read file : "<<filePath<<std::endl;
+            STEPCAFControl_Reader reader;
+            reader.SetColorMode(true);
+            reader.SetNameMode(true);
+            reader.SetLayerMode(true);
+
+            //IGESControl_Reader Reader;
+            reader.ReadFile( (Standard_CString)filePath.c_str() );
+            /// transfer data from reader to doc
+            if(!reader.Transfer(doc))
+            {
+                cout << "Cannot read any relevant data from the STEP file" << endl;
+                return NULL;
+            }
+        }
+        else
+        {
+            OSG_NOTICE<<"Using IGESCAFControl_Reader to read file : "<<filePath<<std::endl;
+            IGESCAFControl_Reader reader;
+            reader.SetColorMode(true);
+            reader.SetNameMode(true);
+            reader.SetLayerMode(true);
+
+            //IGESControl_Reader Reader;
+            reader.ReadFile( (Standard_CString)filePath.c_str() );
+            /// transfer data from reader to doc
+            if(!reader.Transfer(doc))
+            {
+                cout << "Cannot read any relevant data from the IGES file" << endl;
+                return NULL;
+            }
         }
         
         // To get a node considered as an Assembly from an XDE structure, you can use the Label of the node.

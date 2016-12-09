@@ -444,6 +444,11 @@ Registry::Registry()
     addFileExtensionAlias("modified", "revisions");
 
 
+    // STEP/IGES file mappings
+    addFileExtensionAlias("stp",  "opencascade");
+    addFileExtensionAlias("step", "opencascade");
+    addFileExtensionAlias("igs",  "opencascade");
+    addFileExtensionAlias("iges", "opencascade");
 
 
     // add built-in mime-type extension mappings

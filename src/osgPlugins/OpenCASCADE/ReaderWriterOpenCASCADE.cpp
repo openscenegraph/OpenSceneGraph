@@ -156,14 +156,26 @@ osg::ref_ptr<osg::Geometry> ReaderWritterOpenCASCADE::OCCTKReader::_createGeomet
 {
     // vector to save vertices
     osg::ref_ptr<osg::Vec3Array> vertexList = new osg::Vec3Array();
+
+
+    osg::Array::Binding colorBinding = osg::Array::BIND_OVERALL;
+
     // vector to save _colorTool
     osg::ref_ptr<osg::Vec3Array> colorList = new osg::Vec3Array();
+    if (colorBinding==osg::Array::BIND_OVERALL)
+    {
+        colorList->push_back(geomColor);
+    }
 
     // create one osg primitive set
     osg::ref_ptr<osg::DrawElementsUInt> triangleStrip = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES, 0);
     unsigned int noOfTriangles = 0;
 
     osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
+
+    // large vertex datasets work best with VBO.
+    geom->setUseVertexBufferObjects(true);
+
     if(!shape.IsNull())
     {
         // clean any previous triangulation
@@ -204,7 +216,10 @@ osg::ref_ptr<osg::Geometry> ReaderWritterOpenCASCADE::OCCTKReader::_createGeomet
                     vertexList->push_back(osg::Vec3(pt.X(), pt.Y(), pt.Z()));
 
                     // populate color list
-                    colorList->push_back(geomColor);
+                    if (colorBinding==osg::Array::BIND_PER_VERTEX)
+                    {
+                        colorList->push_back(geomColor);
+                    }
                 }
 
                 /// now we need to get face indices for triangles
@@ -241,8 +256,7 @@ osg::ref_ptr<osg::Geometry> ReaderWritterOpenCASCADE::OCCTKReader::_createGeomet
 
         geom->setVertexArray(vertexList.get());
 
-        geom->setColorArray(colorList.get());
-        geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+        geom->setColorArray(colorList.get(), colorBinding);
 
         #ifdef _LOG_DEBUG_
             std::cout << "Adding Primitive set" << std::endl;
@@ -344,6 +358,7 @@ osg::ref_ptr<osg::Geode> ReaderWritterOpenCASCADE::OCCTKReader::igesToOSGGeode(c
     #endif
 
     osgUtil::SmoothingVisitor sv;
+    sv.setCreaseAngle(osg::DegreesToRadians(20.0));
     _modelGeode->accept(sv);
 
     return _modelGeode;

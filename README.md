@@ -66,7 +66,7 @@ directory alongside the OpenSceneGraph use:
 
     mkdir build
     cd build
-    cmake ../
+    cmake ..
     make
     sudo make install
 

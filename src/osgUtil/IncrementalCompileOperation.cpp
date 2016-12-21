@@ -297,7 +297,7 @@ double IncrementalCompileOperation::CompileProgramOp::estimatedTimeForCompile(Co
 bool IncrementalCompileOperation::CompileProgramOp::compile(CompileInfo& compileInfo)
 {
     //OSG_NOTICE<<"CompileProgramOp::compile(..)"<<std::endl;
-    _program->apply(*compileInfo.getState());
+    _program->compileGLObjects(*compileInfo.getState());
     return true;
 }
 

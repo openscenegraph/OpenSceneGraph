@@ -1162,8 +1162,14 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         frameRateLabel->setFont(_font);
         frameRateLabel->setCharacterSize(_characterSize);
         frameRateLabel->setPosition(pos);
+#ifdef _DEBUG
+        osg::Vec4 colorDFR(1.0f, 0.0f, 0.0f, 1.0f);
+        frameRateLabel->setColor(colorDFR);
+        frameRateLabel->setText("DEBUG Frame Rate: ");
+#else
+        frameRateLabel->setColor(colorFR);
         frameRateLabel->setText("Frame Rate: ");
-
+#endif
         pos.x() = frameRateLabel->getBoundingBox().xMax();
 
         osg::ref_ptr<osgText::Text> frameRateValue = new osgText::Text;

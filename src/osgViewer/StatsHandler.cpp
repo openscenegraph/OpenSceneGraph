@@ -668,6 +668,7 @@ struct BlockDrawCallback : public virtual osg::Drawable::DrawCallback
                 (*vertices)[vi++].x() = _xPos + (beginValue - referenceTime) * _statsHandler->getBlockMultiplier();
                 (*vertices)[vi++].x() = _xPos + (beginValue - referenceTime) * _statsHandler->getBlockMultiplier();
                 (*vertices)[vi++].x() = _xPos + (endValue - referenceTime) * _statsHandler->getBlockMultiplier();
+                if (endValue - beginValue < .0005) endValue = beginValue + .0005;
                 (*vertices)[vi++].x() = _xPos + (endValue - referenceTime) * _statsHandler->getBlockMultiplier();
             }
         }

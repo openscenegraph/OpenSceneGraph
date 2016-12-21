@@ -660,6 +660,7 @@ struct BlockDrawCallback : public virtual osg::Drawable::DrawCallback
 
         unsigned int vi = 0;
         double beginValue, endValue;
+        double minWidth = .0002;
         for(int i = startFrame; i <= endFrame; ++i)
         {
             if (_stats->getAttribute( i, _beginName, beginValue) &&
@@ -668,7 +669,9 @@ struct BlockDrawCallback : public virtual osg::Drawable::DrawCallback
                 (*vertices)[vi++].x() = _xPos + (beginValue - referenceTime) * _statsHandler->getBlockMultiplier();
                 (*vertices)[vi++].x() = _xPos + (beginValue - referenceTime) * _statsHandler->getBlockMultiplier();
                 (*vertices)[vi++].x() = _xPos + (endValue - referenceTime) * _statsHandler->getBlockMultiplier();
-                if (endValue - beginValue < .0005) endValue = beginValue + .0005;
+
+
+                if (endValue - beginValue < minWidth) endValue = beginValue + minWidth;
                 (*vertices)[vi++].x() = _xPos + (endValue - referenceTime) * _statsHandler->getBlockMultiplier();
             }
         }

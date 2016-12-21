@@ -50,8 +50,6 @@ MACRO(FIND_OPENCASCADE_LIBRARY MYLIBRARY MYLIBRARYNAME)
         /usr/freeware/lib64
         )
 
-        MESSAGE("#Foundlibrary " ${${MYLIBRARY}})
-
 ENDMACRO()
 
 

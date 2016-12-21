@@ -810,7 +810,7 @@ bool PointZ::read( int fd )
         return false;
 
     // Sometimes, M field is not supplied
-    if( rh.contentLength >= 18 )
+    if( rh.contentLength*2 >= 18 )
         if( readVal<Double>( fd, m, LittleEndian ) == false )
             return false;
 

@@ -9,7 +9,7 @@ ScalarsToColors::ScalarsToColors(float scalarMin, float scalarMax): _min(scalarM
 osg::Vec4 ScalarsToColors::getColor(float scalar) const
 {
     if(scalar<_min) return osg::Vec4(0.0f,0.0f,0.0f,0.0f);
-    if(scalar>_max) return osg::Vec4(0.0f,0.0f,0.0f,0.0f);
+    if(scalar>_max) return osg::Vec4(1.0f,1.0f,1.0f,1.0f);
 
     float c = (_min+scalar)/(_max-_min);
     return osg::Vec4(c,c,c,1.0);

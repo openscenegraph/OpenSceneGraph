@@ -329,11 +329,11 @@ class VertexNormalGenerator
             osg::Vec3 zero(0.0f,0.0f,0.0f);
             if (left_valid)
             {
-                dx = center-left;
+                dx += center-left;
             }
             if (right_valid)
             {
-                dx = right-center;
+                dx += right-center;
             }
             if (bottom_valid)
             {

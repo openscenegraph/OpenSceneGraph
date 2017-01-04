@@ -218,14 +218,17 @@ float ConeSector::operator() (const osg::Vec3& eyeLocal) const
 //
 // DirectionalSector
 //
-DirectionalSector::DirectionalSector(const osg::Vec3& direction,float horizLobeAngle, float vertLobeAngle, float lobeRollAngle, float fadeAngle):
+DirectionalSector::DirectionalSector(const osg::Vec3& direction, float horizLobeAngle, float vertLobeAngle, float lobeRollAngle, float fadeAngle):
             Sector()
 {
-    setDirection(direction);
-    setHorizLobeAngle(horizLobeAngle);
-    setVertLobeAngle(vertLobeAngle);
-    setLobeRollAngle(lobeRollAngle);
+    _direction = direction;
+    _cosHorizAngle = cos(horizLobeAngle*0.5);
+    _cosVertAngle = cos(vertLobeAngle*0.5);
+    _rollAngle = lobeRollAngle;
+
     setFadeAngle(fadeAngle);
+
+    computeMatrix();
 }
 
 void DirectionalSector::computeMatrix()

@@ -994,7 +994,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
     // populate the primitive data
     //
     bool swapOrientation = !(masterLocator->orientationOpenGL());
-    bool smallTile = numVertices <= 16384;
+    bool smallTile = numVertices < 65536;
 
     // OSG_NOTICE<<"smallTile = "<<smallTile<<std::endl;
 

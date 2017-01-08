@@ -24,6 +24,18 @@ class OSG_EXPORT PagedLOD : public LOD
 {
     public :
 
+        /** Default constructor
+          * The default constructor sets
+          *  - the center mode to USER_DEFINED_CENTER and
+          *  - enables the paging of external children.
+          * @warning The center mode setting of the default constructor differs
+          *          from the setting of LOD's default constructor! Therefore,
+          *          the PagedLOD and LOD nodes may show different behaviour with
+          *          their default settings when using them with the same subgraph.
+          *          This is a result of the differences in determining the node's center.
+          * @note Though the bounding spheres of both nodes with their default settings
+          *       will not differ if they have same subgraph.
+          * @sa LOD::setCenter, LOD::setRadius */
         PagedLOD();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/

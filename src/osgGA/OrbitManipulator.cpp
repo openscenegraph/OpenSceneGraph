@@ -277,6 +277,9 @@ bool OrbitManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIActionAda
 // doc in parent
 bool OrbitManipulator::performMovementLeftMouseButton( const double eventTimeDelta, const double dx, const double dy )
 {
+   if ( _flags == 0 )
+      return false;
+
     // rotate camera
     if( getVerticalAxisFixed() )
         rotateWithFixedVertical( dx, dy );
@@ -291,6 +294,9 @@ bool OrbitManipulator::performMovementLeftMouseButton( const double eventTimeDel
 // doc in parent
 bool OrbitManipulator::performMovementMiddleMouseButton( const double eventTimeDelta, const double dx, const double dy )
 {
+   if ( _flags == 0 )
+      return false;
+
     // pan model
     float scale = -0.3f * _distance * getThrowScale( eventTimeDelta );
     panModel( dx*scale, dy*scale );
@@ -301,6 +307,9 @@ bool OrbitManipulator::performMovementMiddleMouseButton( const double eventTimeD
 // doc in parent
 bool OrbitManipulator::performMovementRightMouseButton( const double eventTimeDelta, const double /*dx*/, const double dy )
 {
+   if ( _flags == 0 )
+      return false;
+
     // zoom model
     zoomModel( dy * getThrowScale( eventTimeDelta ), true );
     return true;
@@ -309,6 +318,9 @@ bool OrbitManipulator::performMovementRightMouseButton( const double eventTimeDe
 
 bool OrbitManipulator::performMouseDeltaMovement( const float dx, const float dy )
 {
+   if ( _flags == 0 )
+      return false;
+
     // rotate camera
     if( getVerticalAxisFixed() )
         rotateWithFixedVertical( dx, dy );

@@ -1226,6 +1226,13 @@ bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
         declPos = 0;
     }
 
+    std::string::size_type extPos = source.rfind( "#extension " );
+    if ( extPos != std::string::npos )
+    {
+        // found the string, now find the next linefeed and set the insertion point after it.
+        declPos = source.find( '\n', extPos );
+        declPos = declPos != std::string::npos ? declPos+1 : source.length();
+    }
     if (_useModelViewAndProjectionUniforms)
     {
         // replace ftransform as it only works with built-ins

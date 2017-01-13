@@ -112,7 +112,10 @@ class OSG_EXPORT Array : public BufferData
             MatrixArrayType   = 33,
             MatrixdArrayType  = 34,
 
-            QuatArrayType     = 35
+            QuatArrayType     = 35,
+
+            UInt64ArrayType   = 36,
+            Int64ArrayType    = 37
         };
 
         enum Binding
@@ -442,7 +445,8 @@ typedef TemplateArray<Matrixd,Array::MatrixdArrayType,16,GL_DOUBLE>             
 
 typedef TemplateArray<Quat,Array::QuatArrayType,4,GL_DOUBLE>                    QuatArray;
 
-
+typedef TemplateIndexArray<GLuint64,Array::UInt64ArrayType,1,GL_UNSIGNED_INT64_ARB> UInt64Array;
+typedef TemplateIndexArray<GLint64,Array::Int64ArrayType,1,GL_INT64_ARB>            Int64Array;
 class ArrayVisitor
 {
     public:
@@ -497,6 +501,9 @@ class ArrayVisitor
 
         virtual void apply(MatrixfArray&) {}
         virtual void apply(MatrixdArray&) {}
+
+        virtual void apply(UInt64Array&) {}
+        virtual void apply(Int64Array&)  {}
 };
 
 class ConstArrayVisitor
@@ -553,6 +560,9 @@ class ConstArrayVisitor
 
         virtual void apply(const MatrixfArray&) {}
         virtual void apply(const MatrixdArray&) {}
+
+        virtual void apply(const UInt64Array&) {}
+        virtual void apply(const Int64Array&)  {}
 };
 
 
@@ -610,6 +620,9 @@ class ValueVisitor
         virtual void apply(Matrixd&) {}
 
         virtual void apply(Quat&) {}
+
+        virtual void apply(GLuint64&){}
+        virtual void apply(GLint64&){}
 };
 
 class ConstValueVisitor
@@ -666,6 +679,9 @@ class ConstValueVisitor
         virtual void apply(const Matrixd&) {}
 
         virtual void apply(const Quat&) {}
+
+        virtual void apply(const GLuint64&){}
+        virtual void apply(const GLint64&){}
 };
 
 template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>

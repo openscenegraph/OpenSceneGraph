@@ -497,6 +497,34 @@ void DataOutputStream::writeVec4b(const osg::Vec4b& v){
 
     if (_verboseOutput) std::cout<<"read/writeVec4b() ["<<v<<"]"<<std::endl;
 }
+void DataOutputStream::writeUInt64(unsigned long long ull){
+    _ostream->write((char*)&ull, INT64SIZE);
+
+    if (_verboseOutput) std::cout<<"read/writeUInt64() ["<<ull<<"]"<<std::endl;
+}
+void DataOutputStream::writeInt64(long long ll){
+    _ostream->write((char*)&ll, INT64SIZE);
+
+    if (_verboseOutput) std::cout<<"read/writeInt64() ["<<ll<<"]"<<std::endl;
+}
+void DataOutputStream::writeUInt64Array(const osg::UInt64Array* a){
+    int size = a->getNumElements();
+    writeUInt64(size);
+    for(int i =0; i<size ;i++){
+        writeInt((*a)[i]);
+    }
+
+    if (_verboseOutput) std::cout<<"read/writeUInt64Array() ["<<size<<"]"<<std::endl;
+}
+void DataOutputStream::writeInt64Array(const osg::Int64Array* a){
+    int size = a->getNumElements();
+    writeInt64(size);
+    for(int i =0; i<size ;i++){
+        writeInt((*a)[i]);
+    }
+
+    if (_verboseOutput) std::cout<<"read/writeInt64Array() ["<<size<<"]"<<std::endl;
+}
 
 void DataOutputStream::writeQuat(const osg::Quat& q){
     writeFloat(q.x());
@@ -589,9 +617,13 @@ void DataOutputStream::writeArray(const osg::Array* a){
              writeChar((char)16);
              writeVec3dArray(static_cast<const osg::Vec3dArray*>(a));
              break;
-          case osg::Array::Vec4dArrayType:
+         case osg::Array::Vec4dArrayType:
              writeChar((char)17);
              writeVec4dArray(static_cast<const osg::Vec4dArray*>(a));
+             break;
+         case osg::Array::UInt64ArrayType:
+             writeChar((char)18);
+             writeUInt64Array(static_cast<const osg::UInt64Array*>(a));
              break;
         default: throwException("Unknown array type in DataOutputStream::writeArray()");
     }

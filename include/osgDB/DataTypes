@@ -33,6 +33,7 @@ const int CHAR_SIZE =   1;
 const int SHORT_SIZE =  2;
 const int INT_SIZE =    4;
 const int LONG_SIZE =   4;
+const int INT64_SIZE =  8;
 const int FLOAT_SIZE =  4;
 const int DOUBLE_SIZE = 8;
 const int GLENUM_SIZE = 4;
@@ -70,6 +71,9 @@ const int ID_VEC4I_ARRAY = 28;
 const int ID_VEC2UI_ARRAY = 29;
 const int ID_VEC3UI_ARRAY = 30;
 const int ID_VEC4UI_ARRAY = 31;
+
+const int ID_UINT64_ARRAY = 32;
+const int ID_INT64_ARRAY  = 33;
 
 const int ID_DRAWARRAYS = 50;
 const int ID_DRAWARRAY_LENGTH = 51;

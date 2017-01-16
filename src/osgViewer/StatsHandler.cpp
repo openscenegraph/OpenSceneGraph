@@ -50,6 +50,7 @@ StatsHandler::StatsHandler():
     _lineHeight(1.5f)
 {
     _camera = new osg::Camera;
+    _camera->getOrCreateStateSet()->setGlobalDefaults();
     _camera->setRenderer(new Renderer(_camera.get()));
     _camera->setProjectionResizePolicy(osg::Camera::FIXED);
 }
@@ -659,6 +660,7 @@ struct BlockDrawCallback : public virtual osg::Drawable::DrawCallback
 
         unsigned int vi = 0;
         double beginValue, endValue;
+        double minWidth = .0002;
         for(int i = startFrame; i <= endFrame; ++i)
         {
             if (_stats->getAttribute( i, _beginName, beginValue) &&
@@ -667,6 +669,9 @@ struct BlockDrawCallback : public virtual osg::Drawable::DrawCallback
                 (*vertices)[vi++].x() = _xPos + (beginValue - referenceTime) * _statsHandler->getBlockMultiplier();
                 (*vertices)[vi++].x() = _xPos + (beginValue - referenceTime) * _statsHandler->getBlockMultiplier();
                 (*vertices)[vi++].x() = _xPos + (endValue - referenceTime) * _statsHandler->getBlockMultiplier();
+
+
+                if (endValue - beginValue < minWidth) endValue = beginValue + minWidth;
                 (*vertices)[vi++].x() = _xPos + (endValue - referenceTime) * _statsHandler->getBlockMultiplier();
             }
         }
@@ -1161,8 +1166,14 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         frameRateLabel->setFont(_font);
         frameRateLabel->setCharacterSize(_characterSize);
         frameRateLabel->setPosition(pos);
+#ifdef _DEBUG
+        osg::Vec4 colorDFR(1.0f, 0.0f, 0.0f, 1.0f);
+        frameRateLabel->setColor(colorDFR);
+        frameRateLabel->setText("DEBUG Frame Rate: ");
+#else
+        frameRateLabel->setColor(colorFR);
         frameRateLabel->setText("Frame Rate: ");
-
+#endif
         pos.x() = frameRateLabel->getBoundingBox().xMax();
 
         osg::ref_ptr<osgText::Text> frameRateValue = new osgText::Text;

@@ -366,7 +366,8 @@ void MenubarController::update()
 
 
 /** Helper method to get a double value out of a CFDictionary */
-static double getDictDouble (CFDictionaryRef refDict, CFStringRef key)
+#if (MAC_OS_X_VERSION_MAX_ALLOWED < 1060)
+	static double getDictDouble (CFDictionaryRef refDict, CFStringRef key)
 {
     double value;
     CFNumberRef number_value = (CFNumberRef) CFDictionaryGetValue(refDict, key);
@@ -376,7 +377,7 @@ static double getDictDouble (CFDictionaryRef refDict, CFStringRef key)
         return -1; // fail
     return value; // otherwise return the long value
 }
-
+	
 /** Helper method to get a long value out of a CFDictionary */
 static long getDictLong(CFDictionaryRef refDict, CFStringRef key)        // const void* key?
 {
@@ -388,7 +389,7 @@ static long getDictLong(CFDictionaryRef refDict, CFStringRef key)        // cons
         return -1; // fail
     return value;
 }
-
+#endif
 
 
 /** ctor, get a list of all attached displays */

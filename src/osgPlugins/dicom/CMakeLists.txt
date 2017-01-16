@@ -10,7 +10,7 @@ IF  (DCMTK_FOUND)
     ADD_DEFINITIONS(-DUSE_DCMTK)
 
     IF (WIN32)
-        SET(TARGET_EXTERNAL_LIBRARIES wsock32.lib)
+        SET(TARGET_EXTERNAL_LIBRARIES wsock32.lib ws2_32.lib)
     ENDIF()
 
 ELSEIF(ITK_FOUND)
@@ -29,7 +29,7 @@ ENDIF()
 SET(TARGET_ADDED_LIBRARIES osgVolume )
 
 IF(CMAKE_COMPILER_IS_GNUCXX)
-    # Remove -pedantic flag as it barfs on ffmoeg headers
+    # Remove -pedantic flag as it barfs on ffmpeg headers
    STRING(REGEX REPLACE "-pedantic" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 ENDIF()
 

@@ -461,38 +461,6 @@ void Optimizer::StateVisitor::apply(osg::Node& node)
     traverse(node);
 }
 
-void Optimizer::StateVisitor::apply(osg::Geode& geode)
-{
-    if (!isOperationPermissibleForObject(&geode)) return;
-
-    osg::StateSet* ss = geode.getStateSet();
-
-
-    if (ss && ss->getDataVariance()==osg::Object::STATIC)
-    {
-        if (isOperationPermissibleForObject(ss))
-        {
-            addStateSet(ss,&geode);
-        }
-    }
-    for(unsigned int i=0;i<geode.getNumDrawables();++i)
-    {
-        osg::Drawable* drawable = geode.getDrawable(i);
-        if (drawable)
-        {
-            ss = drawable->getStateSet();
-            if (ss && ss->getDataVariance()==osg::Object::STATIC)
-            {
-                if (isOperationPermissibleForObject(drawable) &&
-                    isOperationPermissibleForObject(ss))
-                {
-                    addStateSet(ss,drawable);
-                }
-            }
-        }
-    }
-}
-
 void Optimizer::StateVisitor::optimize()
 {
     OSG_INFO << "Num of StateSet="<<_statesets.size()<< std::endl;

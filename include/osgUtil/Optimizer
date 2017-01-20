@@ -460,8 +460,6 @@ class OSGUTIL_EXPORT Optimizer
 
                 virtual void apply(osg::Node& node);
 
-                virtual void apply(osg::Geode& geode);
-
                 void optimize();
 
             protected:

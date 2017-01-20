@@ -50,8 +50,6 @@
 
 using namespace osgUtil;
 
-// #define GEOMETRYDEPRECATED
-
 void Optimizer::reset()
 {
 }
@@ -288,14 +286,6 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         osg::Timer_t endTick = osg::Timer::instance()->tick();
 
         OSG_INFO<<"MERGE_GEODES took "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
-    }
-
-    if (options & CHECK_GEOMETRY)
-    {
-        OSG_INFO<<"Optimizer::optimize() doing CHECK_GEOMETRY"<<std::endl;
-
-        CheckGeometryVisitor mgv(this);
-        node->accept(mgv);
     }
 
     if (options & MAKE_FAST_GEOMETRY)
@@ -1732,20 +1722,8 @@ struct LessGeometryPrimitiveType
     }
 };
 
-void Optimizer::CheckGeometryVisitor::apply(osg::Geometry& geom)
-{
-    if (isOperationPermissibleForObject(&geom))
-    {
-#ifdef GEOMETRYDEPRECATED
-        geom
-        .computeCorrectBindingsAndArraySizes();
-#endif
-    }
-}
-
 void Optimizer::MakeFastGeometryVisitor::apply(osg::Geometry& geom)
 {
-    // GeometryDeprecated CAN REMOVED
     if (isOperationPermissibleForObject(&geom))
     {
         if (geom.checkForDeprecatedData())

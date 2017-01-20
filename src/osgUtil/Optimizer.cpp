@@ -4093,56 +4093,31 @@ void Optimizer::TextureAtlasVisitor::apply(osg::Node& node)
     if (pushedStateState) popStateSet();
 }
 
-void Optimizer::TextureAtlasVisitor::apply(osg::Geode& geode)
+void Optimizer::TextureAtlasVisitor::apply(osg::Drawable& node)
 {
-    if (!isOperationPermissibleForObject(&geode)) return;
+    bool pushedStateState = false;
 
-    osg::StateSet* ss = geode.getStateSet();
-
-
-    bool pushedGeodeStateState = false;
-
+    osg::StateSet* ss = node.getStateSet();
     if (ss && ss->getDataVariance()==osg::Object::STATIC)
     {
-        if (isOperationPermissibleForObject(ss))
+        if (isOperationPermissibleForObject(&node) &&
+            isOperationPermissibleForObject(ss))
         {
-            pushedGeodeStateState = pushStateSet(ss);
+            pushedStateState = pushStateSet(ss);
         }
     }
-    for(unsigned int i=0;i<geode.getNumDrawables();++i)
+
+    if (!_statesetStack.empty())
     {
-
-        osg::Drawable* drawable = geode.getDrawable(i);
-        if (drawable)
+        for(StateSetStack::iterator ssitr = _statesetStack.begin();
+            ssitr != _statesetStack.end();
+            ++ssitr)
         {
-            bool pushedDrawableStateState = false;
-
-            ss = drawable->getStateSet();
-            if (ss && ss->getDataVariance()==osg::Object::STATIC)
-            {
-                if (isOperationPermissibleForObject(drawable) &&
-                    isOperationPermissibleForObject(ss))
-                {
-                    pushedDrawableStateState = pushStateSet(ss);
-                }
-            }
-
-            if (!_statesetStack.empty())
-            {
-                for(StateSetStack::iterator ssitr = _statesetStack.begin();
-                    ssitr != _statesetStack.end();
-                    ++ssitr)
-                {
-                    _statesetMap[*ssitr].insert(drawable);
-                }
-            }
-
-            if (pushedDrawableStateState) popStateSet();
+            _statesetMap[*ssitr].insert(&node);
         }
-
     }
 
-    if (pushedGeodeStateState) popStateSet();
+    if (pushedStateState) popStateSet();
 }
 
 void Optimizer::TextureAtlasVisitor::optimize()

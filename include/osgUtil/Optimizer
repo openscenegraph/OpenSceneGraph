@@ -814,8 +814,7 @@ class OSGUTIL_EXPORT Optimizer
                 virtual void reset();
 
                 virtual void apply(osg::Node& node);
-
-                virtual void apply(osg::Geode& geode);
+                virtual void apply(osg::Drawable& node);
 
                 void optimize();
 

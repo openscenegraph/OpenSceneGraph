@@ -238,7 +238,7 @@ void GLBufferObject::compileBuffer()
 
 void GLBufferObject::deleteGLObject()
 {
-    OSG_INFO<<"GLBufferObject::deleteGLObject() "<<_glObjectID<<std::endl;
+    OSG_DEBUG<<"GLBufferObject::deleteGLObject() "<<_glObjectID<<std::endl;
     if (_glObjectID!=0)
     {
         _extensions->glDeleteBuffers(1, &_glObjectID);

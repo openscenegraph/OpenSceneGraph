@@ -16,26 +16,32 @@
 #include <osg/Node>
 #include <algorithm> //std::max
 
-#include "AnimationCleanerVisitor"
-#include "RigAnimationVisitor"
+//animation:
 #include "AABBonBoneVisitor"
+#include "AnimationCleanerVisitor"
 #include "DisableAnimationVisitor"
+#include "LimitMorphTargetCount"
+#include "MostInfluencedGeometryByBone"
+#include "RigAnimationVisitor"
+#include "RigAttributesVisitor"
+
+// geometry:
 #include "BindPerVertexVisitor"
 #include "DetachPrimitiveVisitor"
 #include "DrawArrayVisitor"
-#include "GeometrySplitterVisitor"
 #include "IndexMeshVisitor"
 #include "PreTransformVisitor"
+#include "RemapGeometryVisitor"
 #include "SmoothNormalVisitor"
 #include "TangentSpaceVisitor"
 #include "TriangleStripVisitor"
 #include "UnIndexMeshVisitor"
 #include "WireframeVisitor"
-#include "AABBonBoneVisitor"
-#include "AnimationCleanerVisitor"
-#include "MostInfluencedGeometryByBone"
-#include "LimitMorphTargetCount"
-#include "RigAttributesVisitor"
+
+#include "GeometryIndexSplitter"
+#include "GeometryCleaner"
+
+// debug
 #include "GeometryInspector"
 
 
@@ -165,6 +171,12 @@ protected:
         node->accept(indexer);
     }
 
+    void makeCleanGeometry(osg::Node* node) {
+        GeometryCleaner cleaner;
+        RemapGeometryVisitor remapper(cleaner, _exportNonGeometryDrawables);
+        node->accept(remapper);
+    }
+
     void makeSmoothNormal(osg::Node* node) {
         SmoothNormalVisitor smoother(osg::PI / 4.f, true);
         node->accept(smoother);
@@ -176,8 +188,9 @@ protected:
     }
 
     void makeSplit(osg::Node* node) {
-        GeometrySplitterVisitor splitter(_maxIndexValue, _exportNonGeometryDrawables );
-        node->accept(splitter);
+        GeometryIndexSplitter splitter(_maxIndexValue);
+        RemapGeometryVisitor remapper(splitter, _exportNonGeometryDrawables);
+        node->accept(remapper);
     }
 
     void makeTriStrip(osg::Node* node) {

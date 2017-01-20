@@ -1,26 +1,13 @@
 #include "TangentSpaceVisitor"
-
+#include "glesUtil"
 
 void TangentSpaceVisitor::process(osgAnimation::MorphGeometry& morphGeometry) {
     process(static_cast<osg::Geometry&>(morphGeometry));
 
     osgAnimation::MorphGeometry::MorphTargetList& targets = morphGeometry.getMorphTargetList();
     for(osgAnimation::MorphGeometry::MorphTargetList::iterator target = targets.begin() ; target != targets.end() ; ++ target) {
-        osg::Geometry* geometry = target->getGeometry();
-        bool useParentMorphTexCoord = geometry->getTexCoordArrayList().empty();
-
-        if(useParentMorphTexCoord) {
-            // tangent space require tex coords; in case a target has no tex coords, we try to
-            // bind the parent geometry tex coords
-            geometry->setTexCoordArrayList(morphGeometry.getTexCoordArrayList());
-        }
-
+        glesUtil::TargetGeometry geometry(*target, morphGeometry);
         process(*geometry);
-
-        if(useParentMorphTexCoord) {
-            // drop parent tex coords after tangent space computation
-            geometry->setTexCoordArrayList(osg::Geometry::ArrayList());
-        }
     }
 }
 
@@ -35,6 +22,9 @@ void TangentSpaceVisitor::process(osg::Geometry& geometry) {
                     << "' The tangent space is not recomputed as it was given within the original file" << std::endl;
             geometry.getVertexAttribArray(tangentIndex)->setUserValue("tangent", true);
             return;
+        }
+        else {
+            OSG_WARN << "Anomaly: [TangentSpaceVisitor] Missing tangent array at specificied index." << std::endl;
         }
     }
 
@@ -55,21 +45,6 @@ void TangentSpaceVisitor::process(osg::Geometry& geometry) {
 
     osg::ref_ptr<osgUtil::TangentSpaceGenerator> generator = new osgUtil::TangentSpaceGenerator;
     generator->generate(&geometry, _textureUnit);
-
-    // keep original normal array
-    if (!geometry.getNormalArray()) {
-        if (generator->getNormalArray()) {
-            osg::Vec3Array* vec3Normals = new osg::Vec3Array();
-            osg::Vec4Array* vec4Normals = generator->getNormalArray();
-            for (unsigned int i = 0; i < vec4Normals->size(); i++) {
-                osg::Vec3 n = osg::Vec3((*vec4Normals)[i][0],
-                                        (*vec4Normals)[i][1],
-                                        (*vec4Normals)[i][2]);
-                vec3Normals->push_back(n);
-            }
-            geometry.setNormalArray(vec3Normals, osg::Array::BIND_PER_VERTEX);
-        }
-    }
 
     if (generator->getTangentArray()) {
         osg::Vec4Array* normal = generator->getNormalArray();

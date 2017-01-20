@@ -45,7 +45,7 @@ bool addJSONChannel(const std::string& channelType, T* channel, bool packByCoord
         osg::ref_ptr<JSONObject> json = new JSONObject;
         std::string jsonType = channelType + (packByCoords ? "Packed" : "");
 
-        translateObject(json.get(), channel);
+        writer->translateObject(json.get(), channel);
 
         json->getMaps()["Name"] = new JSONValue<std::string>(channel->getName());
         json->getMaps()["TargetName"] = new JSONValue<std::string>(channel->getTargetName());

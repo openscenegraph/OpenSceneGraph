@@ -209,10 +209,10 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
                     pinfo->Depth  = depth;
                 }
 
-                OSG_INFO<<"width="<<width<<" height="<<height<<" depth="<<depth<<std::endl;
-                if ( color == PNG_COLOR_TYPE_RGB) { OSG_INFO << "color == PNG_COLOR_TYPE_RGB "<<std::endl; }
-                if ( color == PNG_COLOR_TYPE_GRAY) { OSG_INFO << "color == PNG_COLOR_TYPE_GRAY "<<std::endl; }
-                if ( color == PNG_COLOR_TYPE_GRAY_ALPHA) { OSG_INFO << "color ==  PNG_COLOR_TYPE_GRAY_ALPHA"<<std::endl; }
+                OSG_DEBUG<<"width="<<width<<" height="<<height<<" depth="<<depth<<std::endl;
+                if ( color == PNG_COLOR_TYPE_RGB) { OSG_DEBUG << "color == PNG_COLOR_TYPE_RGB "<<std::endl; }
+                if ( color == PNG_COLOR_TYPE_GRAY) { OSG_DEBUG << "color == PNG_COLOR_TYPE_GRAY "<<std::endl; }
+                if ( color == PNG_COLOR_TYPE_GRAY_ALPHA) { OSG_DEBUG << "color ==  PNG_COLOR_TYPE_GRAY_ALPHA"<<std::endl; }
 
                 // png default to big endian, so we'll need to swap bytes if on a little endian machine.
                 if (depth>8 && getCpuByteOrder()==osg::LittleEndian)

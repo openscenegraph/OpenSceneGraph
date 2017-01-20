@@ -1173,26 +1173,19 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::PagedLOD& node)
     traverse(node);
 }
 
-
-void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Geode& geode)
+void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Drawable& drawable)
 {
-    if (!_transformStack.empty())
+    osg::Geometry *geometry = drawable.asGeometry();
+    if((geometry) && (isOperationPermissibleForObject(&drawable)))
     {
-        for(unsigned int i=0;i<geode.getNumDrawables();++i)
-        {
-            osg::Geometry *geometry = geode.getDrawable(i)->asGeometry();
-            if((geometry) && (isOperationPermissibleForObject(&geode)) && (isOperationPermissibleForObject(geometry)))
-            {
-                if(geometry->getVertexArray() && geometry->getVertexArray()->referenceCount() > 1) {
-                    geometry->setVertexArray(dynamic_cast<osg::Array*>(geometry->getVertexArray()->clone(osg::CopyOp::DEEP_COPY_ALL)));
-                }
-                if(geometry->getNormalArray() && geometry->getNormalArray()->referenceCount() > 1) {
-                    geometry->setNormalArray(dynamic_cast<osg::Array*>(geometry->getNormalArray()->clone(osg::CopyOp::DEEP_COPY_ALL)));
-                }
-            }
-            _drawableSet.insert(geode.getDrawable(i));
+        if(geometry->getVertexArray() && geometry->getVertexArray()->referenceCount() > 1) {
+            geometry->setVertexArray(dynamic_cast<osg::Array*>(geometry->getVertexArray()->clone(osg::CopyOp::DEEP_COPY_ALL)));
+        }
+        if(geometry->getNormalArray() && geometry->getNormalArray()->referenceCount() > 1) {
+            geometry->setNormalArray(dynamic_cast<osg::Array*>(geometry->getNormalArray()->clone(osg::CopyOp::DEEP_COPY_ALL)));
         }
     }
+    _drawableSet.insert(&drawable);
 }
 
 void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Billboard& billboard)

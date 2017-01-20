@@ -275,7 +275,7 @@ class OSGUTIL_EXPORT Optimizer
                     BaseOptimizerVisitor(optimizer, FLATTEN_STATIC_TRANSFORMS) {}
 
                 virtual void apply(osg::Node& geode);
-                virtual void apply(osg::Geode& geode);
+                virtual void apply(osg::Drawable& drawable);
                 virtual void apply(osg::Billboard& geode);
                 virtual void apply(osg::ProxyNode& node);
                 virtual void apply(osg::PagedLOD& node);

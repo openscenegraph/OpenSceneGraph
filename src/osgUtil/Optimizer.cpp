@@ -405,17 +405,10 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 ////////////////////////////////////////////////////////////////////////////
 // Tessellate geometry - eg break complex POLYGONS into triangles, strips, fans..
 ////////////////////////////////////////////////////////////////////////////
-void Optimizer::TessellateVisitor::apply(osg::Geode& geode)
+void Optimizer::TessellateVisitor::apply(osg::Geometry &geom)
 {
-    for(unsigned int i=0;i<geode.getNumDrawables();++i)
-    {
-        osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
-        if (geom) {
-            osgUtil::Tessellator Tessellator;
-            Tessellator.retessellatePolygons(*geom);
-        }
-    }
-    traverse(geode);
+    osgUtil::Tessellator Tessellator;
+    Tessellator.retessellatePolygons(geom);
 }
 
 

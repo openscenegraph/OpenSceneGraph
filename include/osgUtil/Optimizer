@@ -403,7 +403,7 @@ class OSGUTIL_EXPORT Optimizer
 
         };
 
-        /** Tessellate all geodes, to remove POLYGONS.*/
+        /** Tessellate all Geometries, to remove POLYGONS.*/
         class OSGUTIL_EXPORT TessellateVisitor : public BaseOptimizerVisitor
         {
             public:
@@ -414,7 +414,7 @@ class OSGUTIL_EXPORT Optimizer
                 TessellateVisitor(Optimizer* optimizer=0):
                     BaseOptimizerVisitor(optimizer, TESSELLATE_GEOMETRY) {}
 
-                virtual void apply(osg::Geode& geode);
+                virtual void apply(osg::Geometry& geom);
 
         };
 

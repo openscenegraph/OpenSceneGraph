@@ -1372,7 +1372,7 @@ void Optimizer::RemoveEmptyNodesVisitor::removeEmptyNodes()
                     strcmp(parent->className(),"MultiSwitch")!=0)
                 {
                     parent->removeChild(nodeToRemove.get());
-                    if (parent->getNumChildren()==0) newEmptyGroups.insert(*pitr);
+                    if (parent->getNumChildren()==0 && isOperationPermissibleForObject(parent)) newEmptyGroups.insert(parent);
                 }
             }
         }

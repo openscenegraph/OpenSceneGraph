@@ -847,14 +847,11 @@ class OSGUTIL_EXPORT Optimizer
                     BaseOptimizerVisitor(optimizer, STATIC_OBJECT_DETECTION) {}
 
                 virtual void apply(osg::Node& node);
-
-                virtual void apply(osg::Geode& geode);
+                virtual void apply(osg::Drawable& drawable);
 
             protected:
 
                 void applyStateSet(osg::StateSet& stateset);
-
-                void applyDrawable(osg::Drawable& drawable);
 
         };
 

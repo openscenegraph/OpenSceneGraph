@@ -4405,28 +4405,16 @@ void Optimizer::StaticObjectDetectionVisitor::apply(osg::Node& node)
     traverse(node);
 }
 
-void Optimizer::StaticObjectDetectionVisitor::apply(osg::Geode& geode)
+void Optimizer::StaticObjectDetectionVisitor::apply(osg::Drawable& drawable)
 {
-    if (geode.getStateSet()) applyStateSet(*geode.getStateSet());
+    if (drawable.getStateSet()) applyStateSet(*drawable.getStateSet());
 
-    for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
-    {
-        applyDrawable(*geode.getDrawable(i));
-    }
+    drawable.computeDataVariance();
 }
 
 void Optimizer::StaticObjectDetectionVisitor::applyStateSet(osg::StateSet& stateset)
 {
     stateset.computeDataVariance();
-}
-
-
-void Optimizer::StaticObjectDetectionVisitor::applyDrawable(osg::Drawable& drawable)
-{
-
-    if (drawable.getStateSet()) applyStateSet(*drawable.getStateSet());
-
-    drawable.computeDataVariance();
 }
 
 

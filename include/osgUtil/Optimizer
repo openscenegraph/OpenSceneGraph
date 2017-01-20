@@ -509,7 +509,7 @@ class OSGUTIL_EXPORT Optimizer
                 CheckGeometryVisitor(Optimizer* optimizer=0):
                     BaseOptimizerVisitor(optimizer, CHECK_GEOMETRY) {}
 
-                virtual void apply(osg::Geode& geode) { checkGeode(geode); }
+                virtual void apply(osg::Geometry& geom);
 
                 void checkGeode(osg::Geode& geode);
 
@@ -523,9 +523,7 @@ class OSGUTIL_EXPORT Optimizer
                 MakeFastGeometryVisitor(Optimizer* optimizer=0):
                     BaseOptimizerVisitor(optimizer, MAKE_FAST_GEOMETRY) {}
 
-                virtual void apply(osg::Geode& geode) { checkGeode(geode); }
-
-                void checkGeode(osg::Geode& geode);
+                virtual void apply(osg::Geometry& geom);
 
         };
 

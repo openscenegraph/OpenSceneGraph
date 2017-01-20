@@ -1732,39 +1732,25 @@ struct LessGeometryPrimitiveType
     }
 };
 
-void Optimizer::CheckGeometryVisitor::checkGeode(osg::Geode& geode)
+void Optimizer::CheckGeometryVisitor::apply(osg::Geometry& geom)
 {
-    if (isOperationPermissibleForObject(&geode))
+    if (isOperationPermissibleForObject(&geom))
     {
-        for(unsigned int i=0;i<geode.getNumDrawables();++i)
-        {
-            osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
-            if (geom && isOperationPermissibleForObject(geom))
-            {
 #ifdef GEOMETRYDEPRECATED
-                geom1829
-                ->computeCorrectBindingsAndArraySizes();
+        geom
+        .computeCorrectBindingsAndArraySizes();
 #endif
-            }
-        }
     }
 }
 
-void Optimizer::MakeFastGeometryVisitor::checkGeode(osg::Geode& geode)
+void Optimizer::MakeFastGeometryVisitor::apply(osg::Geometry& geom)
 {
     // GeometryDeprecated CAN REMOVED
-    if (isOperationPermissibleForObject(&geode))
+    if (isOperationPermissibleForObject(&geom))
     {
-        for(unsigned int i=0;i<geode.getNumDrawables();++i)
+        if (geom.checkForDeprecatedData())
         {
-            osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
-            if (geom && isOperationPermissibleForObject(geom))
-            {
-                if (geom->checkForDeprecatedData())
-                {
-                    geom->fixDeprecatedData();
-                }
-            }
+            geom.fixDeprecatedData();
         }
     }
 }

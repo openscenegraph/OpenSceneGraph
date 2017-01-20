@@ -360,7 +360,6 @@ class OSGUTIL_EXPORT Optimizer
                 RemoveEmptyNodesVisitor(Optimizer* optimizer=0):
                     BaseOptimizerVisitor(optimizer, REMOVE_REDUNDANT_NODES) {}
 
-                virtual void apply(osg::Geode& geode);
                 virtual void apply(osg::Group& group);
 
                 void removeEmptyNodes();

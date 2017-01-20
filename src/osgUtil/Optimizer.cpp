@@ -2968,33 +2968,6 @@ void Optimizer::TextureVisitor::apply(osg::Node& node)
     traverse(node);
 }
 
-void Optimizer::TextureVisitor::apply(osg::Geode& geode)
-{
-    if (!isOperationPermissibleForObject(&geode)) return;
-
-    osg::StateSet* ss = geode.getStateSet();
-
-    if (ss && isOperationPermissibleForObject(ss))
-    {
-        apply(*ss);
-    }
-
-    for(unsigned int i=0;i<geode.getNumDrawables();++i)
-    {
-        osg::Drawable* drawable = geode.getDrawable(i);
-        if (drawable)
-        {
-            ss = drawable->getStateSet();
-            if (ss &&
-               isOperationPermissibleForObject(drawable) &&
-               isOperationPermissibleForObject(ss))
-            {
-                apply(*ss);
-            }
-        }
-    }
-}
-
 void Optimizer::TextureVisitor::apply(osg::StateSet& stateset)
 {
     for(unsigned int i=0;i<stateset.getTextureAttributeList().size();++i)

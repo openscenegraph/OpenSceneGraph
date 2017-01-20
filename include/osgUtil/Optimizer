@@ -626,7 +626,6 @@ class OSGUTIL_EXPORT Optimizer
                         _changeClientImageStorage(changeClientImageStorage), _valueClientImageStorage(valueClientImageStorage),
                         _changeAnisotropy(changeAnisotropy), _valueAnisotropy(valueAnisotropy) {}
 
-                virtual void apply(osg::Geode& node);
                 virtual void apply(osg::Node& node);
 
                 void apply(osg::StateSet& stateset);

@@ -11,8 +11,6 @@
 #include <osg/Material>
 #include <osg/BlendFunc>
 
-#include <osgSim/ShapeAttribute>
-
 #include <osgText/Text>
 
 #include <osgAnimation/MorphGeometry>
@@ -73,82 +71,6 @@ osg::ref_ptr<JSONObject> buildRigBoneMap(osgAnimation::RigGeometry& rigGeometry)
     }
 
     return boneMap;
-}
-
-
-void translateObject(JSONObject* json, osg::Object* osg)
-{
-    if (!osg->getName().empty()) {
-        json->getMaps()["Name"] = new JSONValue<std::string>(osg->getName());
-    }
-
-    osgSim::ShapeAttributeList* osgSim_userdata = dynamic_cast<osgSim::ShapeAttributeList* >(osg->getUserData());
-    if (osgSim_userdata) {
-        JSONObject* jsonUDC = new JSONObject();
-        jsonUDC->addUniqueID();
-
-        JSONArray* jsonUDCArray = new JSONArray();
-        jsonUDC->getMaps()["Values"] = jsonUDCArray;
-        for (unsigned int i = 0; i < osgSim_userdata->size(); i++) {
-            const osgSim::ShapeAttribute& attr = (*osgSim_userdata)[i];
-            JSONObject* jsonEntry = new JSONObject();
-            jsonEntry->getMaps()["Name"] = new JSONValue<std::string>(attr.getName());
-            osg::ref_ptr<JSONValue<std::string> > value;
-            switch(attr.getType()) {
-            case osgSim::ShapeAttribute::INTEGER:
-            {
-                std::stringstream ss;
-                ss << attr.getInt();
-                value = new JSONValue<std::string>(ss.str());
-            }
-            break;
-            case osgSim::ShapeAttribute::DOUBLE:
-            {
-                std::stringstream ss;
-                ss << attr.getDouble();
-                value = new JSONValue<std::string>(ss.str());
-            }
-            break;
-            case osgSim::ShapeAttribute::STRING:
-            {
-                std::stringstream ss;
-                ss << attr.getString();
-                value = new JSONValue<std::string>(ss.str());
-            }
-            break;
-            case osgSim::ShapeAttribute::UNKNOWN:
-            default:
-                break;
-            }
-            jsonEntry->getMaps()["Value"] = value;
-            jsonUDCArray->getArray().push_back(jsonEntry);
-        }
-        json->getMaps()["UserDataContainer"] = jsonUDC;
-
-    } else if (osg->getUserDataContainer()) {
-        JSONObject* jsonUDC = new JSONObject();
-        jsonUDC->addUniqueID();
-
-        if (!osg->getUserDataContainer()->getName().empty()) {
-            jsonUDC->getMaps()["Name"] = new JSONValue<std::string>(osg->getUserDataContainer()->getName());
-        }
-        JSONArray* jsonUDCArray = new JSONArray();
-        jsonUDC->getMaps()["Values"] = jsonUDCArray;
-        for (unsigned int i = 0; i < osg->getUserDataContainer()->getNumUserObjects(); i++) {
-            osg::Object* o = osg->getUserDataContainer()->getUserObject(i);
-            std::string name, value;
-            getStringifiedUserValue(o, name, value);
-            if(!name.empty() && !value.empty())
-            {
-                JSONObject* jsonEntry = new JSONObject();
-                jsonEntry->getMaps()["Name"] = new JSONValue<std::string>(name);
-                jsonEntry->getMaps()["Value"] = new JSONValue<std::string>(value);
-                jsonUDCArray->getArray().push_back(jsonEntry);
-            }
-
-        }
-        json->getMaps()["UserDataContainer"] = jsonUDC;
-    }
 }
 
 
@@ -350,6 +272,108 @@ JSONObject* createImage(osg::Image* image, bool inlineImages, int maxTextureDime
     }
     return 0;
 }
+
+
+
+JSONObject* WriteVisitor::createJSONOsgSimUserData(osgSim::ShapeAttributeList* osgSimData) {
+    JSONObject* jsonUDC = new JSONObject();
+    jsonUDC->addUniqueID();
+
+    JSONArray* jsonUDCArray = new JSONArray();
+    jsonUDC->getMaps()["Values"] = jsonUDCArray;
+    for (unsigned int i = 0; i < osgSimData->size(); i++) {
+        const osgSim::ShapeAttribute& attr = (*osgSimData)[i];
+        JSONObject* jsonEntry = new JSONObject();
+        jsonEntry->getMaps()["Name"] = new JSONValue<std::string>(attr.getName());
+        osg::ref_ptr<JSONValue<std::string> > value;
+        switch(attr.getType()) {
+        case osgSim::ShapeAttribute::INTEGER:
+        {
+            std::stringstream ss;
+            ss << attr.getInt();
+            value = new JSONValue<std::string>(ss.str());
+        }
+        break;
+        case osgSim::ShapeAttribute::DOUBLE:
+        {
+            std::stringstream ss;
+            ss << attr.getDouble();
+            value = new JSONValue<std::string>(ss.str());
+        }
+        break;
+        case osgSim::ShapeAttribute::STRING:
+        {
+            std::stringstream ss;
+            ss << attr.getString();
+            value = new JSONValue<std::string>(ss.str());
+        }
+        break;
+        case osgSim::ShapeAttribute::UNKNOWN:
+        default:
+            break;
+        }
+        jsonEntry->getMaps()["Value"] = value;
+        jsonUDCArray->getArray().push_back(jsonEntry);
+    }
+    return jsonUDC;
+}
+
+
+JSONObject* WriteVisitor::createJSONUserDataContainer(osg::UserDataContainer* container) {
+    JSONObject* jsonUDC = new JSONObject();
+    jsonUDC->addUniqueID();
+
+    if (!container->getName().empty()) {
+        jsonUDC->getMaps()["Name"] = new JSONValue<std::string>(container->getName());
+    }
+    JSONArray* jsonUDCArray = new JSONArray();
+    jsonUDC->getMaps()["Values"] = jsonUDCArray;
+    for (unsigned int i = 0; i < container->getNumUserObjects(); i++) {
+        osg::Object* o = container->getUserObject(i);
+        std::string name, value;
+        getStringifiedUserValue(o, name, value);
+        if(!name.empty() && !value.empty())
+        {
+            JSONObject* jsonEntry = new JSONObject();
+            jsonEntry->getMaps()["Name"] = new JSONValue<std::string>(name);
+            jsonEntry->getMaps()["Value"] = new JSONValue<std::string>(value);
+            jsonUDCArray->getArray().push_back(jsonEntry);
+        }
+    }
+    return jsonUDC;
+}
+
+
+void WriteVisitor::translateObject(JSONObject* json, osg::Object* osg)
+{
+    if (!osg->getName().empty()) {
+        json->getMaps()["Name"] = new JSONValue<std::string>(osg->getName());
+    }
+
+    JSONObject* jsonUDC = 0;
+
+    osgSim::ShapeAttributeList* osgSimData = dynamic_cast<osgSim::ShapeAttributeList* >(osg->getUserData());
+    if (osgSimData) {
+        jsonUDC = this->getJSON(osgSimData);
+        if(!jsonUDC) {
+            jsonUDC = createJSONOsgSimUserData(osgSimData);
+            this->setJSON(osgSimData, jsonUDC);
+        }
+    }
+    else if (osg::UserDataContainer* container = osg->getUserDataContainer()) {
+        jsonUDC = this->getJSON(container);
+        if(!jsonUDC) {
+            jsonUDC = createJSONUserDataContainer(container);
+            this->setJSON(container, jsonUDC);
+        }
+    }
+
+    if(jsonUDC) {
+        json->getMaps()["UserDataContainer"] = jsonUDC;
+    }
+}
+
+
 
 
 JSONObject* WriteVisitor::createJSONBufferArray(osg::Array* array, osg::Object* parent)
@@ -765,12 +789,16 @@ JSONObject* WriteVisitor::createJSONLight(osg::Light* light)
     return jsonLight.release();
 }
 
-template <class T> JSONObject* createImageFromTexture(osg::Texture* texture, JSONObject* jsonTexture, bool inlineImages,
-                                                      int maxTextureDimension, const std::string &baseName = "")
+template <class T>
+JSONObject* createImageFromTexture(osg::Texture* texture, JSONObject* jsonTexture, WriteVisitor* writer)
 {
+    bool inlineImages = writer->getInlineImages();
+    int maxTextureDimension = writer->getMaxTextureDimension();
+    const std::string baseName = writer->getBaseName();
+
     T* text = dynamic_cast<T*>( texture);
     if (text) {
-        translateObject(jsonTexture,text);
+        writer->translateObject(jsonTexture,text);
         JSONObject* image = createImage(text->getImage(), inlineImages, maxTextureDimension, baseName);
         if (image)
             jsonTexture->getMaps()["File"] = image;
@@ -902,24 +930,21 @@ JSONObject* WriteVisitor::createJSONTexture(osg::Texture* texture)
 
 
     {
-        JSONObject* obj = createImageFromTexture<osg::Texture1D>(texture, jsonTexture.get(), this->_inlineImages,
-                                                                 this->_maxTextureDimension, this->_baseName);
+        JSONObject* obj = createImageFromTexture<osg::Texture1D>(texture, jsonTexture.get(), this);
         if (obj) {
             return obj;
         }
     }
 
     {
-        JSONObject* obj = createImageFromTexture<osg::Texture2D>(texture, jsonTexture.get(), this->_inlineImages,
-                                                                 this->_maxTextureDimension, this->_baseName);
+        JSONObject* obj = createImageFromTexture<osg::Texture2D>(texture, jsonTexture.get(), this);
         if (obj) {
             return obj;
         }
     }
 
     {
-        JSONObject* obj = createImageFromTexture<osg::TextureRectangle>(texture, jsonTexture.get(), this->_inlineImages,
-                                                                        this->_maxTextureDimension, this->_baseName);
+        JSONObject* obj = createImageFromTexture<osg::TextureRectangle>(texture, jsonTexture.get(), this);
         if (obj) {
             return obj;
         }

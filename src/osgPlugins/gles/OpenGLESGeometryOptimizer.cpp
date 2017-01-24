@@ -26,6 +26,12 @@ osg::Node* OpenGLESGeometryOptimizer::optimize(osg::Node& node) {
         // index (merge exact duplicates + uses simple triangles & lines i.e. no strip/fan/loop)
         makeIndexMesh(model.get());
 
+        // clean (remove degenerated data)
+        std::string authoringTool;
+        if(model->getUserValue("authoring_tool", authoringTool) && authoringTool == "Tilt Brush") {
+            makeCleanGeometry(model.get());
+        }
+
         // smooth vertex normals (if geometry has no normal compute smooth normals)
         makeSmoothNormal(model.get());
 

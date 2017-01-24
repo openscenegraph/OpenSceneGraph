@@ -29,8 +29,10 @@
 #include <osgAnimation/Bone>
 #include <osgAnimation/UpdateBone>
 
+#include <osgSim/ShapeAttribute>
+
 #include <osgText/Text>
-#
+
 #include <fstream>
 #include <sstream>
 #include <vector>
@@ -47,8 +49,9 @@
 #define WRITER_VERSION 9
 
 
+class WriteVisitor;
+
 osg::Array* getTangentSpaceArray(osg::Geometry& geometry);
-void translateObject(JSONObject* json, osg::Object* osg);
 void getStringifiedUserValue(osg::Object* o, std::string& name, std::string& value);
 template<typename T>
 bool getStringifiedUserValue(osg::Object* o, std::string& name, std::string& value);
@@ -59,8 +62,9 @@ class WriteVisitor : public osg::NodeVisitor
 public:
     typedef std::vector<osg::ref_ptr<osg::StateSet> > StateSetStack;
     typedef std::pair<std::string, std::string> KeyValue;
+    typedef std::map<osg::ref_ptr<osg::Object>, osg::ref_ptr<JSONObject> > OsgObjectToJSONObject;
 
-    std::map<osg::ref_ptr<osg::Object>, osg::ref_ptr<JSONObject> > _maps;
+    OsgObjectToJSONObject _maps;
     std::vector<osg::ref_ptr<JSONObject> > _parents;
     osg::ref_ptr<JSONObject> _root;
     StateSetStack _stateset;
@@ -73,6 +77,20 @@ public:
     bool _varint;
     std::map<KeyValue, std::string> _specificBuffers;
     std::map<std::string, std::ofstream*> _buffers;
+
+    JSONObject* getJSON(osg::Object* object) const {
+        OsgObjectToJSONObject::const_iterator lookup = _maps.find(object);
+        if(lookup != _maps.end()) {
+            return lookup->second->getShadowObject();
+        }
+        return 0;
+    }
+
+    void setJSON(osg::Object* object, JSONObject* json) {
+        if(json) {
+            _maps[object] = json;
+        }
+    }
 
     std::ofstream& getBufferFile(const std::string& name) {
         if(_buffers.find(name) == _buffers.end()) {
@@ -237,6 +255,10 @@ public:
         }
         return getBinaryFilename(flag);
     }
+
+    void translateObject(JSONObject* json, osg::Object* osg);
+    JSONObject* createJSONOsgSimUserData(osgSim::ShapeAttributeList*);
+    JSONObject* createJSONUserDataContainer(osg::UserDataContainer*);
 
     JSONObject* createJSONPagedLOD(osg::PagedLOD* plod);
     JSONObject* createJSONStateSet(osg::StateSet* ss);
@@ -650,10 +672,14 @@ public:
         _parents.pop_back();
     }
 
+    std::string getBaseName() const { return _baseName; }
+    bool getInlineImages() const { return _inlineImages; }
+    int getMaxTextureDimension() const { return _maxTextureDimension; }
+
     void setBaseName(const std::string& basename) { _baseName = basename; }
     void useExternalBinaryArray(bool use) { _useExternalBinaryArray = use; }
     void mergeAllBinaryFiles(bool use) { _mergeAllBinaryFiles = use; }
-    void inlineImages(bool use) { _inlineImages = use; }
+    void setInlineImages(bool use) { _inlineImages = use; }
     void setVarint(bool use) { _varint = use; }
     void setMaxTextureDimension(int use) { _maxTextureDimension = use; }
     void addSpecificBuffer(const std::string& bufferFlag) {

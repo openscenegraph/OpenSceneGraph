@@ -776,26 +776,42 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
 
     if (!_loadedBinary)
     {
-        // Detach removed shaders
-        for( unsigned int i=0; i < _shadersToDetach.size(); ++i )
+        const GLsizei shaderMaxCount = 20;
+        GLsizei shadersCount;
+        GLuint shaderObjectHandle[shaderMaxCount];
+        _extensions->glGetAttachedShaders(_glProgramHandle, shaderMaxCount, &shadersCount, shaderObjectHandle);
+
+        typedef std::map<GLuint, int> ShaderSet;
+        ShaderSet shadersRequired;
+
+        for(GLsizei i=0; i<shadersCount; ++i)
         {
-            Shader::PerContextShader* pcs = _shadersToDetach[i]->getPCS(state);
-            if (pcs) _extensions->glDetachShader( _glProgramHandle, pcs->getHandle() );
+            shadersRequired[shaderObjectHandle[i]]--;
         }
+
+        for(unsigned int i=0; i < getProgram()->getNumShaders(); ++i)
+        {
+            const Shader* shader = getProgram()->getShader( i );
+            Shader::PerContextShader* pcs = shader->getPCS(state);
+            if (pcs) shadersRequired[ pcs->getHandle() ]++;
+        }
+
+        for(ShaderSet::iterator itr = shadersRequired.begin();
+            itr != shadersRequired.end();
+            ++itr)
+        {
+            if (itr->second>0)
+            {
+                _extensions->glAttachShader( _glProgramHandle, itr->first );
+            }
+            else if (itr->second<0)
+            {
+                _extensions->glDetachShader( _glProgramHandle, itr->first );
+            }
+        }
+
     }
     _shadersToDetach.clear();
-
-    if (!_loadedBinary)
-    {
-        // Attach new shaders
-        for( unsigned int i=0; i < _shadersToAttach.size(); ++i )
-        {
-            Shader::PerContextShader* pcs = _shadersToAttach[i]->getPCS(state);
-            if (pcs) _extensions->glAttachShader( _glProgramHandle, pcs->getHandle() );
-        }
-    }
-    //state.checkGLErrors("After attaching shaders.");
-
     _shadersToAttach.clear();
 
     _uniformInfoMap.clear();
@@ -849,12 +865,12 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
 
     if( ! _isLinked )
     {
-        OSG_WARN << "glLinkProgram \""<< _program->getName() << "\" FAILED" << std::endl;
+        OSG_NOTICE << "glLinkProgram "<<this<<"\""<< _program->getName() << "\" FAILED" << std::endl;
 
         std::string infoLog;
         if( getInfoLog(infoLog) )
         {
-            OSG_WARN << "Program \""<< _program->getName() << "\" "
+            OSG_NOTICE << "Program \""<< _program->getName() << "\" "
                                       "infolog:\n" << infoLog << std::endl;
         }
 

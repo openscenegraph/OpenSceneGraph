@@ -33,7 +33,7 @@ public:
                       Optimizer::OptimizationOptions options)
         : BaseOptimizerVisitor(optimizer, options) {}
     void reset();
-    void apply(osg::Geode& geode);
+    void apply(osg::Geometry& geom);
     typedef std::set<osg::Geometry*> GeometryList;
     GeometryList& getGeometryList() { return _geometryList; };
 protected:
@@ -77,7 +77,7 @@ class OSGUTIL_EXPORT VertexCacheMissVisitor : public osg::NodeVisitor
 public:
     VertexCacheMissVisitor(unsigned cacheSize = 16);
     void reset();
-    virtual void apply(osg::Geode& geode);
+    virtual void apply(osg::Geometry& geom);
     void doGeometry(osg::Geometry& geom);
     unsigned misses;
     unsigned triangles;

@@ -53,28 +53,6 @@ void GLObjectsVisitor::apply(osg::Node& node)
     }
 }
 
-void GLObjectsVisitor::apply(osg::Geode& node)
-{
-    bool programSetBefore = _lastCompiledProgram.valid();
-
-    if (node.getStateSet())
-    {
-        apply(*(node.getStateSet()));
-    }
-
-    traverse(node);
-
-    bool programSetAfter = _lastCompiledProgram.valid();
-    if (!programSetBefore && programSetAfter)
-    {
-        osg::State* state = _renderInfo.getState();
-        osg::GLExtensions* extensions = state->get<osg::GLExtensions>();
-        extensions->glUseProgram(0);
-        state->setLastAppliedProgramObject(0);
-        _lastCompiledProgram = 0;
-    }
-}
-
 void GLObjectsVisitor::apply(osg::Drawable& drawable)
 {
     if (_drawablesAppliedSet.count(&drawable)!=0) return;

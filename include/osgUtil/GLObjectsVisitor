@@ -94,11 +94,6 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
         /** Simply traverse using standard NodeVisitor traverse method.*/
         virtual void apply(osg::Node& node);
 
-        /** For each Geode visited set the display list usage according to the
-          * _displayListMode.
-          */
-        virtual void apply(osg::Geode& node);
-
         void apply(osg::Drawable& drawable);
         void apply(osg::StateSet& stateset);
 

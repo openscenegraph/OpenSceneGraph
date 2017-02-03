@@ -53,7 +53,7 @@ class OSGUTIL_EXPORT TriStripVisitor : public BaseOptimizerVisitor
         void stripify();
 
         /// Accumulate the Geometry drawables to make into strips.
-        virtual void apply(osg::Geode& geode);
+        virtual void apply(osg::Geometry& geom);
 
         inline void setCacheSize( unsigned int size )
         {

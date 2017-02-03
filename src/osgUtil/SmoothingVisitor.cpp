@@ -702,11 +702,7 @@ void SmoothingVisitor::smooth(osg::Geometry& geom, double creaseAngle)
 }
 
 
-void SmoothingVisitor::apply(osg::Geode& geode)
+void SmoothingVisitor::apply(osg::Geometry& geom)
 {
-    for(unsigned int i = 0; i < geode.getNumDrawables(); i++ )
-    {
-        osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
-        if (geom) smooth(*geom, _creaseAngle);
-    }
+    smooth(geom, _creaseAngle);
 }

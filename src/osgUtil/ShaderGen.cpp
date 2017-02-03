@@ -322,24 +322,13 @@ void ShaderGenVisitor::apply(osg::Node &node)
         _state->popStateSet();
 }
 
-void ShaderGenVisitor::apply(osg::Geode &geode)
+void ShaderGenVisitor::apply(osg::Drawable &drawable)
 {
-    osg::StateSet *stateSet = geode.getStateSet();
+    osg::StateSet *stateSet = drawable.getStateSet();
     if (stateSet)
         _state->pushStateSet(stateSet);
 
-    for (unsigned int i=0; i<geode.getNumDrawables(); ++i)
-    {
-        osg::Drawable *drawable = geode.getDrawable(i);
-        osg::StateSet *ss = drawable->getStateSet();
-        if (ss)
-            _state->pushStateSet(ss);
-
-        update(drawable);
-
-        if (ss)
-            _state->popStateSet();
-    }
+    update(&drawable);
 
     if (stateSet)
         _state->popStateSet();

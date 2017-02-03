@@ -629,11 +629,7 @@ void TriStripVisitor::stripify()
     }
 }
 
-void TriStripVisitor::apply(Geode& geode)
+void TriStripVisitor::apply(Geometry& geom)
 {
-    for(unsigned int i = 0; i < geode.getNumDrawables(); ++i )
-    {
-        osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
-        if (geom) _geometryList.insert(geom);
-    }
+    _geometryList.insert(&geom);
 }

@@ -36,8 +36,8 @@ class OSGUTIL_EXPORT SmoothingVisitor : public osg::NodeVisitor
         /// smooth geoset by creating per vertex normals.
         static void smooth(osg::Geometry& geoset, double creaseAngle=osg::PI);
 
-        /// apply smoothing method to all geode geosets.
-        virtual void apply(osg::Geode& geode);
+        /// apply smoothing method to all geometries.
+        virtual void apply(osg::Geometry& geom);
 
         /// set the maximum angle, in radians, at which angle between adjacent triangles that normals are smoothed
         /// for edges that greater the shared vertices are duplicated

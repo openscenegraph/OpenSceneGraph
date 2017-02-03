@@ -93,20 +93,6 @@ void SharedStateManager::apply(osg::Node& node)
     if(ss) process(ss, &node);
     traverse(node);
 }
-void SharedStateManager::apply(osg::Geode& geode)
-{
-    osg::StateSet* ss = geode.getStateSet();
-    if(ss) process(ss, &geode);
-    for(unsigned int i=0;i<geode.getNumDrawables();++i)
-    {
-        osg::Drawable* drawable = geode.getDrawable(i);
-        if(drawable)
-        {
-            ss = drawable->getStateSet();
-            if(ss) process(ss, drawable);
-        }
-    }
-}
 
 bool SharedStateManager::isShared(osg::StateSet* ss)
 {

@@ -700,6 +700,9 @@ OPTION(BUILD_OSG_APPLICATIONS "Enable to build OSG Applications (e.g. osgviewer)
 # OSG Examples
 OPTION(BUILD_OSG_EXAMPLES "Enable to build OSG Examples" OFF)
 
+# OSG Plugins disable option for apple build on travis ci test - full build job runs over time limit of 50 min.
+OPTION(BUILD_OSG_PLUGINS "Build OSG Plugins - Disable for compile testing examples on a time limit" ON)
+mark_as_advanced(BUILD_OSG_PLUGINS)
 ################################################################################
 # 3rd Party Dependency Stuff
 IF(WIN32 AND NOT ANDROID)

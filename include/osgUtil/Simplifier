@@ -97,16 +97,9 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
             return getSampleRatio()<1.0;
         }
 
-        virtual void apply(osg::Geode& geode)
+        virtual void apply(osg::Geometry& geom)
         {
-            for(unsigned int i=0;i<geode.getNumDrawables();++i)
-            {
-                osg::Geometry* geometry = geode.getDrawable(i)->asGeometry();
-                if (geometry)
-                {
-                    simplify(*geometry);
-                }
-            }
+            simplify(geom);
         }
 
         /** simply the geometry.*/

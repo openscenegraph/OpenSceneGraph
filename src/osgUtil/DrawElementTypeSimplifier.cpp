@@ -66,18 +66,10 @@ void DrawElementTypeSimplifier::simplify(osg::Geometry & geometry) const
     }
 }
 
-void DrawElementTypeSimplifierVisitor::apply(osg::Geode& node)
+void DrawElementTypeSimplifierVisitor::apply(osg::Geometry& geom)
 {
     DrawElementTypeSimplifier dets;
-
-    unsigned int numDrawables = node.getNumDrawables();
-    for (unsigned int i = 0; i != numDrawables; ++i)
-    {
-        osg::Geometry * geom = dynamic_cast<osg::Geometry*>(node.getDrawable(i));
-        if (geom) dets.simplify(*geom);
-    }
-
-    osg::NodeVisitor::apply((osg::Node&)node);
+    dets.simplify(geom);
 }
 
 }

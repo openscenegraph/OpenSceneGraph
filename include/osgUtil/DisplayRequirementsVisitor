@@ -48,8 +48,6 @@ class OSGUTIL_EXPORT DisplayRequirementsVisitor : public osg::NodeVisitor
 
         virtual void apply(osg::Node& node);
 
-        virtual void apply(osg::Geode& geode);
-
     protected:
 
         osg::ref_ptr<osg::DisplaySettings> _ds;

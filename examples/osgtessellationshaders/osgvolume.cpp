@@ -808,10 +808,11 @@ int mainosgVolume( osg::ArgumentParser&arguments,osgVolume::VolumeTile *tile,osg
     if (images.empty())
     {
         std::cout<<"No model loaded, please specify a volumetric image file on the command line."<<std::endl;
-        return 1;
+ 
+       // return 1;
     }
 
-
+/*
     Images::iterator sizeItr = images.begin();
     int image_s = (*sizeItr)->s();
     int image_t = (*sizeItr)->t();
@@ -975,17 +976,24 @@ int mainosgVolume( osg::ArgumentParser&arguments,osgVolume::VolumeTile *tile,osg
         imageSequence->play();
     }
 
-    osg::ref_ptr<osgVolume::Volume> volume = new osgVolume::Volume;
-   // osg::ref_ptr<osgVolume::VolumeTile> tile = new osgVolume::VolumeTile;
-    volume->addChild(tile);
+
 
     osg::ref_ptr<osgVolume::ImageLayer> layer = new osgVolume::ImageLayer(image_3d.get());
+*/    osg::ref_ptr<osgVolume::Volume> volume = new osgVolume::Volume;
+   // osg::ref_ptr<osgVolume::VolumeTile> tile = new osgVolume::VolumeTile;
+  osgVolume::ImageLayer* layer=(osgVolume::ImageLayer*)tile->getLayer();
+    volume->addChild(tile);
 
-    if (details)
+osg::RefMatrix*   matrix = new osg::RefMatrix(128, 0.0,   0.0,   0.0,
+                                    0.0,   128, 0.0,   0.0,
+                                    0.0,   0.0,   128, 0.0,
+                                    0.0,   0.0,   0.0,   1.0);
+
+   /* if (details)
     {
         layer->setTexelOffset(details->getTexelOffset());
         layer->setTexelScale(details->getTexelScale());
-    }
+    }*/
 
     switch(rescaleOperation)
     {
@@ -1018,10 +1026,9 @@ int mainosgVolume( osg::ArgumentParser&arguments,osgVolume::VolumeTile *tile,osg
     }
     tile->setLocator(new osgVolume::Locator(*matrix));
 
-    tile->setLayer(layer.get());
+    //tile->setLayer(layer.get());
 
     tile->setEventCallback(new osgVolume::PropertyAdjustmentCallback());
-
     if (useShader)
     {
 
@@ -1135,7 +1142,7 @@ int mainosgVolume( osg::ArgumentParser&arguments,osgVolume::VolumeTile *tile,osg
         tile->setVolumeTechnique(new osgVolume::FixedFunctionTechnique);
     }
 
-    if (!outputFile.empty())
+   /* if (!outputFile.empty())
     {
         std::string ext = osgDB::getFileExtension(outputFile);
         std::string name_no_ext = osgDB::getNameLessExtension(outputFile);
@@ -1165,7 +1172,7 @@ int mainosgVolume( osg::ArgumentParser&arguments,osgVolume::VolumeTile *tile,osg
         }
 
         return 0;
-    }
+    }*/
 
     if (volume.valid())
     {
@@ -1203,6 +1210,7 @@ int mainosgVolume( osg::ArgumentParser&arguments,osgVolume::VolumeTile *tile,osg
         }
 
         // add add models into the scene alongside the volume
+models=camera;
         if (models.get())
         {
             osg::ref_ptr<osg::Group> group = new osg::Group;
@@ -1220,8 +1228,7 @@ int mainosgVolume( osg::ArgumentParser&arguments,osgVolume::VolumeTile *tile,osg
             loadedModel = volumeScene.get();
         }
 
-
-
+ 
         // set the scene to render
         viewer.setSceneData(loadedModel.get());
 

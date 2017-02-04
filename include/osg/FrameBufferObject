@@ -365,7 +365,7 @@ class OSG_EXPORT FrameBufferObject: public StateAttribute
            * the specified graphics context. Otherwise, releases OpenGL objexts
            * for all graphics contexts. */
         virtual void releaseGLObjects(osg::State* = 0) const;
-
+        inline void clearAttachments(){_attachments.clear();dirtyAll();}
     protected:
         virtual ~FrameBufferObject();
         FrameBufferObject& operator = (const FrameBufferObject&) { return *this; }

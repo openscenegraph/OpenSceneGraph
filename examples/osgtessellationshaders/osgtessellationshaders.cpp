@@ -94,15 +94,20 @@ void ImageReadBackNode::setTexture(osg::Texture3D*tex)
 
         //virtual void operator () (osg::RenderInfo& renderInfo) const
         {
+
+ 
+if (osg::isGLExtensionSupported(renderInfo.getContextID(),"GL_NV_conservative_raster"))
+std::cout<<"yeah::Fermi"<<std::endl;
+else std::cout<<"no::Fermi"<<std::endl;
         _texture->apply(*renderInfo.getState());
             osg::Image *texim=_texture->getImage();
 
             texim->readImageFromCurrentTexture(renderInfo.getContextID(),	 true,texim->getDataType () );//_texture->getSourceType());
              texim->dirty();
             std::list<osg::Group*> gr;
-            for (int i = 0; i < _n->getNumParents(); i++)gr.push_back((_n->getParent(i)));
+            for (int i = 0; i < _n->getNumParents(); i++)if(_n->getParent(i))gr.push_back((_n->getParent(i)));
             int cpt=0;
-            for (std::list<osg::Group*>::iterator it = gr.begin(); it != gr.end(); it++)
+        /*    for (std::list<osg::Group*>::iterator it = gr.begin(); it != gr.end(); it++)
             {
 ///THREADSAFE?
                 (*it)->removeChild(_n);
@@ -117,7 +122,7 @@ void ImageReadBackNode::setTexture(osg::Texture3D*tex)
                     options->setOptionString(options->getOptionString() + " compressed=1");
                     (*it)->addUpdateCallback(new ImageWriterCallback(texim,options));
                 }
-            }
+            }*/
         }
     };
 
@@ -738,7 +743,8 @@ cam->addChild(geode);
 
 im->setFileName("outvox.ive");
 cam->addChild(new ImageReadBackNode(_voxels));
-
+//  CONSERVATIVE_RASTERIZATION_NV                   0x9346
+cam->getOrCreateStateSet()->setMode( 0x9346,osg::StateAttribute::ON);
 
  osg::ref_ptr<osg::Uniform> tessInnerU = new osg::Uniform("TessLevelInner", 1.0f);
     osg::ref_ptr<osg::Uniform> tessOuterU = new osg::Uniform("TessLevelOuter", float(_resolution.z()));

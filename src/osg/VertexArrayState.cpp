@@ -18,7 +18,7 @@
 using namespace osg;
 
 #if 1
-#define VAS_NOTICE OSG_INFO
+#define VAS_NOTICE OSG_DEBUG
 #else
 #define VAS_NOTICE OSG_NOTICE
 #endif

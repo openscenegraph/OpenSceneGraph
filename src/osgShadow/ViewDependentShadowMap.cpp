@@ -274,20 +274,14 @@ public:
         popCurrentMask();
     }
 
-    void apply(osg::Geode& node)
+    void apply(osg::Drawable& drawable)
     {
-        if (isCulled(node)) return;
+        if (isCulled(drawable)) return;
 
         // push the culling mode.
         pushCurrentMask();
 
-        for(unsigned int i=0; i<node.getNumDrawables();++i)
-        {
-            if (node.getDrawable(i))
-            {
-                updateBound(node.getDrawable(i)->getBoundingBox());
-            }
-        }
+        updateBound(drawable.getBoundingBox());
 
         // pop the culling mode.
         popCurrentMask();

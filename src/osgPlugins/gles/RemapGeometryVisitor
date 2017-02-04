@@ -1,0 +1,51 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab
+ *
+ * This application is open source and may be redistributed and/or modified
+ * freely and without restriction, both in commercial and non commercial
+ * applications, as long as this copyright notice is maintained.
+ *
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+*/
+
+#ifndef REMAP_GEOMETRY_VISITOR
+#define REMAP_GEOMETRY_VISITOR
+
+#include <map>
+
+#include <osg/ref_ptr>
+#include <osg/Geometry>
+#include <osgAnimation/RigGeometry>
+
+#include "GeometryUniqueVisitor"
+#include "GeometryMapper"
+
+
+class RemapGeometryVisitor : public GeometryUniqueVisitor {
+public:
+    typedef std::vector< osg::ref_ptr<osg::Geometry> > GeometryList;
+    typedef std::vector< osg::ref_ptr<osg::Drawable> > DrawableList;
+    typedef std::map<osg::Geometry*, GeometryList> GeometryMap;
+
+    RemapGeometryVisitor(GeometryMapper& mapper, bool exportNonGeometryDrawables=false):
+        GeometryUniqueVisitor("RemapGeometryVisitor"),
+        _mapper(mapper),
+        _exportNonGeometryDrawables(exportNonGeometryDrawables)
+    {}
+
+    void apply(osg::Geode&);
+    void process(osg::Geometry&);
+
+protected:
+    bool isProcessed(osg::Geometry*);
+    void setProcessed(osg::Geometry*, const GeometryList&);
+
+protected:
+    GeometryMapper& _mapper;
+    std::map<osg::Geometry*, GeometryList> _remap;
+    bool _exportNonGeometryDrawables;
+};
+
+#endif

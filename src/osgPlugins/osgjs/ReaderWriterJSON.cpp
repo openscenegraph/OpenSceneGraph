@@ -125,7 +125,7 @@ public:
             writer.setBaseName(basename);
             writer.useExternalBinaryArray(options.useExternalBinaryArray);
             writer.mergeAllBinaryFiles(options.mergeAllBinaryFiles);
-            writer.inlineImages(options.inlineImages);
+            writer.setInlineImages(options.inlineImages);
             writer.setMaxTextureDimension(options.resizeTextureUpToPowerOf2);
             writer.setVarint(options.varint);
             writer.setBaseLodURL(options.baseLodURL);

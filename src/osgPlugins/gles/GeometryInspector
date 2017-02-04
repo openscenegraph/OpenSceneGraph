@@ -7,6 +7,7 @@
 #include <sstream>
 
 #include "GeometryUniqueVisitor"
+#include "glesUtil"
 
 #include <osg/Geode>
 #include <osgDB/ReaderWriter>
@@ -34,8 +35,7 @@ public:
         osgAnimation::MorphGeometry::MorphTargetList targets = morphGeometry.getMorphTargetList();
         unsigned int count = 0;
         for(osgAnimation::MorphGeometry::MorphTargetList::iterator target = targets.begin() ; target != targets.end() ; ++ target, ++ count) {
-            osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry(*target->getGeometry());
-            geometry->setPrimitiveSetList(morphGeometry.getPrimitiveSetList());
+            glesUtil::TargetGeometry geometry(*target, morphGeometry);
             std::ostringstream oss;
             if(geometry->getName().empty()) {
                  oss << "/tmp/noname_" << _processed.size();

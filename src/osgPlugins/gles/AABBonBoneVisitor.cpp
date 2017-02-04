@@ -62,7 +62,7 @@ void ComputeAABBOnBoneVisitor::computeBoundingBoxOnBones() {
             }
 
             // Compare initial and actual boundingBox if (no change) => no box on bone
-            if(bb == osg::BoundingBox() || bb._min.x() == bb._max.x() || bb._min.y() == bb._max.y() || bb._min.z() == bb._max.z()) {
+            if(bb == osg::BoundingBox() || (bb._min.x() == bb._max.x() && bb._min.y() == bb._max.y() && bb._min.z() == bb._max.z())) {
                 continue;
             }
 

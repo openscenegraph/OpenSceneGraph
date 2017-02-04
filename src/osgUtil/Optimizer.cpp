@@ -50,8 +50,6 @@
 
 using namespace osgUtil;
 
-// #define GEOMETRYDEPRECATED
-
 void Optimizer::reset()
 {
 }
@@ -293,14 +291,6 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         OSG_INFO<<"MERGE_GEODES took "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
     }
 
-    if (options & CHECK_GEOMETRY)
-    {
-        OSG_INFO<<"Optimizer::optimize() doing CHECK_GEOMETRY"<<std::endl;
-
-        CheckGeometryVisitor mgv(this);
-        node->accept(mgv);
-    }
-
     if (options & MAKE_FAST_GEOMETRY)
     {
         OSG_INFO<<"Optimizer::optimize() doing MAKE_FAST_GEOMETRY"<<std::endl;
@@ -415,17 +405,10 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 ////////////////////////////////////////////////////////////////////////////
 // Tessellate geometry - eg break complex POLYGONS into triangles, strips, fans..
 ////////////////////////////////////////////////////////////////////////////
-void Optimizer::TessellateVisitor::apply(osg::Geode& geode)
+void Optimizer::TessellateVisitor::apply(osg::Geometry &geom)
 {
-    for(unsigned int i=0;i<geode.getNumDrawables();++i)
-    {
-        osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
-        if (geom) {
-            osgUtil::Tessellator Tessellator;
-            Tessellator.retessellatePolygons(*geom);
-        }
-    }
-    traverse(geode);
+    osgUtil::Tessellator Tessellator;
+    Tessellator.retessellatePolygons(geom);
 }
 
 
@@ -476,38 +459,6 @@ void Optimizer::StateVisitor::apply(osg::Node& node)
     }
 
     traverse(node);
-}
-
-void Optimizer::StateVisitor::apply(osg::Geode& geode)
-{
-    if (!isOperationPermissibleForObject(&geode)) return;
-
-    osg::StateSet* ss = geode.getStateSet();
-
-
-    if (ss && ss->getDataVariance()==osg::Object::STATIC)
-    {
-        if (isOperationPermissibleForObject(ss))
-        {
-            addStateSet(ss,&geode);
-        }
-    }
-    for(unsigned int i=0;i<geode.getNumDrawables();++i)
-    {
-        osg::Drawable* drawable = geode.getDrawable(i);
-        if (drawable)
-        {
-            ss = drawable->getStateSet();
-            if (ss && ss->getDataVariance()==osg::Object::STATIC)
-            {
-                if (isOperationPermissibleForObject(drawable) &&
-                    isOperationPermissibleForObject(ss))
-                {
-                    addStateSet(ss,drawable);
-                }
-            }
-        }
-    }
 }
 
 void Optimizer::StateVisitor::optimize()
@@ -1183,26 +1134,19 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::PagedLOD& node)
     traverse(node);
 }
 
-
-void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Geode& geode)
+void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Drawable& drawable)
 {
-    if (!_transformStack.empty())
+    osg::Geometry *geometry = drawable.asGeometry();
+    if((geometry) && (isOperationPermissibleForObject(&drawable)))
     {
-        for(unsigned int i=0;i<geode.getNumDrawables();++i)
-        {
-            osg::Geometry *geometry = geode.getDrawable(i)->asGeometry();
-            if((geometry) && (isOperationPermissibleForObject(&geode)) && (isOperationPermissibleForObject(geometry)))
-            {
-                if(geometry->getVertexArray() && geometry->getVertexArray()->referenceCount() > 1) {
-                    geometry->setVertexArray(dynamic_cast<osg::Array*>(geometry->getVertexArray()->clone(osg::CopyOp::DEEP_COPY_ALL)));
-                }
-                if(geometry->getNormalArray() && geometry->getNormalArray()->referenceCount() > 1) {
-                    geometry->setNormalArray(dynamic_cast<osg::Array*>(geometry->getNormalArray()->clone(osg::CopyOp::DEEP_COPY_ALL)));
-                }
-            }
-            _drawableSet.insert(geode.getDrawable(i));
+        if(geometry->getVertexArray() && geometry->getVertexArray()->referenceCount() > 1) {
+            geometry->setVertexArray(dynamic_cast<osg::Array*>(geometry->getVertexArray()->clone(osg::CopyOp::DEEP_COPY_ALL)));
+        }
+        if(geometry->getNormalArray() && geometry->getNormalArray()->referenceCount() > 1) {
+            geometry->setNormalArray(dynamic_cast<osg::Array*>(geometry->getNormalArray()->clone(osg::CopyOp::DEEP_COPY_ALL)));
         }
     }
+    _drawableSet.insert(&drawable);
 }
 
 void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Billboard& billboard)
@@ -1339,23 +1283,6 @@ bool Optimizer::CombineStaticTransformsVisitor::removeTransforms(osg::Node* node
 // RemoveEmptyNodes.
 ////////////////////////////////////////////////////////////////////////////
 
-void Optimizer::RemoveEmptyNodesVisitor::apply(osg::Geode& geode)
-{
-    for(int i=geode.getNumDrawables()-1;i>=0;--i)
-    {
-        osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
-        if (geom && geom->empty() && isOperationPermissibleForObject(geom))
-        {
-           geode.removeDrawables(i,1);
-        }
-    }
-
-    if (geode.getNumParents()>0)
-    {
-        if (geode.getNumDrawables()==0 && isOperationPermissibleForObject(&geode)) _redundantNodeList.insert(&geode);
-    }
-}
-
 void Optimizer::RemoveEmptyNodesVisitor::apply(osg::Group& group)
 {
     if (group.getNumParents()>0)
@@ -1399,7 +1326,7 @@ void Optimizer::RemoveEmptyNodesVisitor::removeEmptyNodes()
                     strcmp(parent->className(),"MultiSwitch")!=0)
                 {
                     parent->removeChild(nodeToRemove.get());
-                    if (parent->getNumChildren()==0) newEmptyGroups.insert(*pitr);
+                    if (parent->getNumChildren()==0 && isOperationPermissibleForObject(parent)) newEmptyGroups.insert(parent);
                 }
             }
         }
@@ -1805,39 +1732,13 @@ struct LessGeometryPrimitiveType
     }
 };
 
-void Optimizer::CheckGeometryVisitor::checkGeode(osg::Geode& geode)
+void Optimizer::MakeFastGeometryVisitor::apply(osg::Geometry& geom)
 {
-    if (isOperationPermissibleForObject(&geode))
+    if (isOperationPermissibleForObject(&geom))
     {
-        for(unsigned int i=0;i<geode.getNumDrawables();++i)
+        if (geom.checkForDeprecatedData())
         {
-            osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
-            if (geom && isOperationPermissibleForObject(geom))
-            {
-#ifdef GEOMETRYDEPRECATED
-                geom1829
-                ->computeCorrectBindingsAndArraySizes();
-#endif
-            }
-        }
-    }
-}
-
-void Optimizer::MakeFastGeometryVisitor::checkGeode(osg::Geode& geode)
-{
-    // GeometryDeprecated CAN REMOVED
-    if (isOperationPermissibleForObject(&geode))
-    {
-        for(unsigned int i=0;i<geode.getNumDrawables();++i)
-        {
-            osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
-            if (geom && isOperationPermissibleForObject(geom))
-            {
-                if (geom->checkForDeprecatedData())
-                {
-                    geom->fixDeprecatedData();
-                }
-            }
+            geom.fixDeprecatedData();
         }
     }
 }
@@ -2995,33 +2896,6 @@ void Optimizer::TextureVisitor::apply(osg::Node& node)
     traverse(node);
 }
 
-void Optimizer::TextureVisitor::apply(osg::Geode& geode)
-{
-    if (!isOperationPermissibleForObject(&geode)) return;
-
-    osg::StateSet* ss = geode.getStateSet();
-
-    if (ss && isOperationPermissibleForObject(ss))
-    {
-        apply(*ss);
-    }
-
-    for(unsigned int i=0;i<geode.getNumDrawables();++i)
-    {
-        osg::Drawable* drawable = geode.getDrawable(i);
-        if (drawable)
-        {
-            ss = drawable->getStateSet();
-            if (ss &&
-               isOperationPermissibleForObject(drawable) &&
-               isOperationPermissibleForObject(ss))
-            {
-                apply(*ss);
-            }
-        }
-    }
-}
-
 void Optimizer::TextureVisitor::apply(osg::StateSet& stateset)
 {
     for(unsigned int i=0;i<stateset.getTextureAttributeList().size();++i)
@@ -4147,56 +4021,31 @@ void Optimizer::TextureAtlasVisitor::apply(osg::Node& node)
     if (pushedStateState) popStateSet();
 }
 
-void Optimizer::TextureAtlasVisitor::apply(osg::Geode& geode)
+void Optimizer::TextureAtlasVisitor::apply(osg::Drawable& node)
 {
-    if (!isOperationPermissibleForObject(&geode)) return;
+    bool pushedStateState = false;
 
-    osg::StateSet* ss = geode.getStateSet();
-
-
-    bool pushedGeodeStateState = false;
-
+    osg::StateSet* ss = node.getStateSet();
     if (ss && ss->getDataVariance()==osg::Object::STATIC)
     {
-        if (isOperationPermissibleForObject(ss))
+        if (isOperationPermissibleForObject(&node) &&
+            isOperationPermissibleForObject(ss))
         {
-            pushedGeodeStateState = pushStateSet(ss);
+            pushedStateState = pushStateSet(ss);
         }
     }
-    for(unsigned int i=0;i<geode.getNumDrawables();++i)
+
+    if (!_statesetStack.empty())
     {
-
-        osg::Drawable* drawable = geode.getDrawable(i);
-        if (drawable)
+        for(StateSetStack::iterator ssitr = _statesetStack.begin();
+            ssitr != _statesetStack.end();
+            ++ssitr)
         {
-            bool pushedDrawableStateState = false;
-
-            ss = drawable->getStateSet();
-            if (ss && ss->getDataVariance()==osg::Object::STATIC)
-            {
-                if (isOperationPermissibleForObject(drawable) &&
-                    isOperationPermissibleForObject(ss))
-                {
-                    pushedDrawableStateState = pushStateSet(ss);
-                }
-            }
-
-            if (!_statesetStack.empty())
-            {
-                for(StateSetStack::iterator ssitr = _statesetStack.begin();
-                    ssitr != _statesetStack.end();
-                    ++ssitr)
-                {
-                    _statesetMap[*ssitr].insert(drawable);
-                }
-            }
-
-            if (pushedDrawableStateState) popStateSet();
+            _statesetMap[*ssitr].insert(&node);
         }
-
     }
 
-    if (pushedGeodeStateState) popStateSet();
+    if (pushedStateState) popStateSet();
 }
 
 void Optimizer::TextureAtlasVisitor::optimize()
@@ -4484,28 +4333,16 @@ void Optimizer::StaticObjectDetectionVisitor::apply(osg::Node& node)
     traverse(node);
 }
 
-void Optimizer::StaticObjectDetectionVisitor::apply(osg::Geode& geode)
+void Optimizer::StaticObjectDetectionVisitor::apply(osg::Drawable& drawable)
 {
-    if (geode.getStateSet()) applyStateSet(*geode.getStateSet());
+    if (drawable.getStateSet()) applyStateSet(*drawable.getStateSet());
 
-    for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
-    {
-        applyDrawable(*geode.getDrawable(i));
-    }
+    drawable.computeDataVariance();
 }
 
 void Optimizer::StaticObjectDetectionVisitor::applyStateSet(osg::StateSet& stateset)
 {
     stateset.computeDataVariance();
-}
-
-
-void Optimizer::StaticObjectDetectionVisitor::applyDrawable(osg::Drawable& drawable)
-{
-
-    if (drawable.getStateSet()) applyStateSet(*drawable.getStateSet());
-
-    drawable.computeDataVariance();
 }
 
 

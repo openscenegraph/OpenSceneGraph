@@ -477,8 +477,9 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
                           isGLExtensionSupported(contextID,"GL_EXT_texture_cube_map") ||
                           (glVersion >= 1.3f));
 
-    isClipControlSupported = isGLExtensionSupported(contextID,"GL_ARB_clip_control") ||
-                             (glVersion >= 4.5f);
+    isClipControlSupported = validContext &&
+                             (isGLExtensionSupported(contextID,"GL_ARB_clip_control") ||
+                             (glVersion >= 4.5f));
 
 
     isGlslSupported = validContext &&
@@ -561,45 +562,47 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glUniformMatrix3fv, "glUniformMatrix3fv", "glUniformMatrix3fvARB", validContext);
     setGLExtensionFuncPtr(glUniformMatrix4fv, "glUniformMatrix4fv", "glUniformMatrix4fvARB", validContext);
     setGLExtensionFuncPtr(glValidateProgram, "glValidateProgram", "glValidateProgramARB", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib1d, "glVertexAttrib1d", validContext);
+
+    setGLExtensionFuncPtr(glVertexAttrib1d, "glVertexAttrib1d", "glVertexAttrib1dARB", validContext);
     setGLExtensionFuncPtr(glVertexAttrib1dv, "glVertexAttrib1dv", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib1f, "glVertexAttrib1f", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib1fv, "glVertexAttrib1fv", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib1s, "glVertexAttrib1s", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib1f, "glVertexAttrib1f", "glVertexAttrib1fARB", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib1fv, "glVertexAttrib1fv", "glVertexAttrib1fvARB", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib1s, "glVertexAttrib1s", "glVertexAttrib1sARB", validContext);
     setGLExtensionFuncPtr(glVertexAttrib1sv, "glVertexAttrib1sv", validContext);
     setGLExtensionFuncPtr(glVertexAttrib2d, "glVertexAttrib2d", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib2dv, "glVertexAttrib2dv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib2dv, "glVertexAttrib2dv", "glVertexAttrib2dvARB", validContext);
     setGLExtensionFuncPtr(glVertexAttrib2f, "glVertexAttrib2f", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib2fv, "glVertexAttrib2fv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib2fv, "glVertexAttrib2fv", "glVertexAttrib2fvARB", validContext);
     setGLExtensionFuncPtr(glVertexAttrib2s, "glVertexAttrib2s", validContext);
     setGLExtensionFuncPtr(glVertexAttrib2sv, "glVertexAttrib2sv", validContext);
     setGLExtensionFuncPtr(glVertexAttrib3d, "glVertexAttrib3d", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib3dv, "glVertexAttrib3dv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib3dv, "glVertexAttrib3dv", "glVertexAttrib3dvARB", validContext);
     setGLExtensionFuncPtr(glVertexAttrib3f, "glVertexAttrib3f", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib3fv, "glVertexAttrib3fv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib3fv, "glVertexAttrib3fv", "glVertexAttrib3fvARB", validContext);
     setGLExtensionFuncPtr(glVertexAttrib3s, "glVertexAttrib3s", validContext);
     setGLExtensionFuncPtr(glVertexAttrib3sv, "glVertexAttrib3sv", validContext);
     setGLExtensionFuncPtr(glVertexAttrib4Nbv, "glVertexAttrib4Nbv", validContext);
     setGLExtensionFuncPtr(glVertexAttrib4Niv, "glVertexAttrib4Niv", validContext);
     setGLExtensionFuncPtr(glVertexAttrib4Nsv, "glVertexAttrib4Nsv", validContext);
     setGLExtensionFuncPtr(glVertexAttrib4Nub, "glVertexAttrib4Nub", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib4Nubv, "glVertexAttrib4Nubv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4Nubv, "glVertexAttrib4Nubv", "glVertexAttrib4NubvARB", validContext);
     setGLExtensionFuncPtr(glVertexAttrib4Nuiv, "glVertexAttrib4Nuiv", validContext);
     setGLExtensionFuncPtr(glVertexAttrib4Nusv, "glVertexAttrib4Nusv", validContext);
     setGLExtensionFuncPtr(glVertexAttrib4bv, "glVertexAttrib4bv", validContext);
     setGLExtensionFuncPtr(glVertexAttrib4d, "glVertexAttrib4d", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib4dv, "glVertexAttrib4dv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4dv, "glVertexAttrib4dv", "glVertexAttrib4dvARB", validContext);
     setGLExtensionFuncPtr(glVertexAttrib4f, "glVertexAttrib4f", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib4fv, "glVertexAttrib4fv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4fv, "glVertexAttrib4fv", "glVertexAttrib4fvARB", validContext);
     setGLExtensionFuncPtr(glVertexAttrib4iv, "glVertexAttrib4iv", validContext);
     setGLExtensionFuncPtr(glVertexAttrib4s, "glVertexAttrib4s", validContext);
     setGLExtensionFuncPtr(glVertexAttrib4sv, "glVertexAttrib4sv", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib4ubv, "glVertexAttrib4ubv", validContext);
+    setGLExtensionFuncPtr(glVertexAttrib4ubv, "glVertexAttrib4ubv", "glVertexAttrib4ubvARB", validContext);
     setGLExtensionFuncPtr(glVertexAttrib4uiv, "glVertexAttrib4uiv", validContext);
     setGLExtensionFuncPtr(glVertexAttrib4usv, "glVertexAttrib4usv", validContext);
+
     setGLExtensionFuncPtr(glVertexAttribPointer, "glVertexAttribPointer","glVertexAttribPointerARB", validContext);
     setGLExtensionFuncPtr(glVertexAttribIPointer, "glVertexAttribIPointer","glVertexAttribIPointerARB", validContext);
-    setGLExtensionFuncPtr(glVertexAttribLPointer, "glVertexAttribLPointer","glVertexAttribPointerARB", validContext);
+    setGLExtensionFuncPtr(glVertexAttribLPointer, "glVertexAttribLPointer","glVertexAttribLPointerARB", validContext);
     setGLExtensionFuncPtr(glVertexAttribDivisor, "glVertexAttribDivisor", validContext);
 
     // v1.5-only ARB entry points, in case they're needed for fallback
@@ -698,7 +701,6 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
     isVBOSupported = validContext && (OSG_GLES2_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_vertex_buffer_object"));
     isPBOSupported = validContext && (OSG_GLES2_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_pixel_buffer_object"));
-    isUniformBufferObjectSupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_uniform_buffer_object");
     isTBOSupported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_texture_buffer_object");
     isVAOSupported = validContext && (OSG_GL3_FEATURES  || osg::isGLExtensionSupported(contextID, "GL_ARB_vertex_array_object", "GL_OES_vertex_array_object"));
     isTransformFeedbackSupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_transform_feedback2");
@@ -717,7 +719,6 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glBlendFuncSeparatei, "glBlendFuncSeparatei", "glBlendFuncSeparateiARB", validContext);
 
 
-    // Vertex Array extensions
     isSecondaryColorSupported = validContext && isGLExtensionSupported(contextID,"GL_EXT_secondary_color");
     isFogCoordSupported = validContext && isGLExtensionSupported(contextID,"GL_EXT_fog_coord");
     isMultiTexSupported = validContext && isGLExtensionSupported(contextID,"GL_ARB_multitexture");
@@ -745,40 +746,15 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glMultiTexCoord4fv, "glMultiTexCoord4fv","glMultiTexCoord4fvARB", validContext);
 
 
-    setGLExtensionFuncPtr(glMultiTexCoord1d, "glMultiTexCoord1d","glMultiTexCoorddfARB", validContext);
+    setGLExtensionFuncPtr(glMultiTexCoord1d, "glMultiTexCoord1d","glMultiTexCoord1dARB", validContext);
     setGLExtensionFuncPtr(glMultiTexCoord1dv, "glMultiTexCoord1dv","glMultiTexCoord1dvARB", validContext);
     setGLExtensionFuncPtr(glMultiTexCoord2dv, "glMultiTexCoord2dv","glMultiTexCoord2dvARB", validContext);
     setGLExtensionFuncPtr(glMultiTexCoord3dv, "glMultiTexCoord3dv","glMultiTexCoord3dvARB", validContext);
     setGLExtensionFuncPtr(glMultiTexCoord4dv, "glMultiTexCoord4dv","glMultiTexCoord4dvARB", validContext);
 
-    setGLExtensionFuncPtr(glVertexAttrib1s, "glVertexAttrib1s","glVertexAttrib1sARB", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib1f, "glVertexAttrib1f","glVertexAttrib1fARB", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib1d, "glVertexAttrib1d","glVertexAttrib1dARB", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib1fv, "glVertexAttrib1fv","glVertexAttrib1fvARB", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib2fv, "glVertexAttrib2fv","glVertexAttrib2fvARB", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib3fv, "glVertexAttrib3fv","glVertexAttrib3fvARB", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib4fv, "glVertexAttrib4fv","glVertexAttrib4fvARB", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib2dv, "glVertexAttrib2dv","glVertexAttrib2dvARB", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib3dv, "glVertexAttrib3dv","glVertexAttrib3dvARB", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib4dv, "glVertexAttrib4dv","glVertexAttrib4dvARB", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib4ubv, "glVertexAttrib4ubv","glVertexAttrib4ubvARB", validContext);
-    setGLExtensionFuncPtr(glVertexAttrib4Nubv, "glVertexAttrib4Nubv","glVertexAttrib4NubvARB", validContext);
-
-    setGLExtensionFuncPtr(glGenBuffers, "glGenBuffers","glGenBuffersARB", validContext);
-    setGLExtensionFuncPtr(glBindBuffer, "glBindBuffer","glBindBufferARB", validContext);
-    setGLExtensionFuncPtr(glBufferData, "glBufferData","glBufferDataARB", validContext);
-    setGLExtensionFuncPtr(glBufferSubData, "glBufferSubData","glBufferSubDataARB", validContext);
-    setGLExtensionFuncPtr(glDeleteBuffers, "glDeleteBuffers","glDeleteBuffersARB", validContext);
-    setGLExtensionFuncPtr(glIsBuffer, "glIsBuffer","glIsBufferARB", validContext);
-    setGLExtensionFuncPtr(glGetBufferSubData, "glGetBufferSubData","glGetBufferSubDataARB", validContext);
-    setGLExtensionFuncPtr(glMapBuffer, "glMapBuffer","glMapBufferARB", validContext);
-    setGLExtensionFuncPtr(glUnmapBuffer, "glUnmapBuffer","glUnmapBufferARB", validContext);
-    setGLExtensionFuncPtr(glGetBufferParameteriv, "glGetBufferParameteriv","glGetBufferParameterivARB", validContext);
-    setGLExtensionFuncPtr(glGetBufferPointerv, "glGetBufferPointerv","glGetBufferPointervARB", validContext);
-
     setGLExtensionFuncPtr(glGenOcclusionQueries, "glGenOcclusionQueries","glGenOcclusionQueriesNV", validContext);
     setGLExtensionFuncPtr(glDeleteOcclusionQueries, "glDeleteOcclusionQueries","glDeleteOcclusionQueriesNV", validContext);
-    setGLExtensionFuncPtr(glIsOcclusionQuery, "glIsOcclusionQuery","_glIsOcclusionQueryNV", validContext);
+    setGLExtensionFuncPtr(glIsOcclusionQuery, "glIsOcclusionQuery","glIsOcclusionQueryNV", validContext);
     setGLExtensionFuncPtr(glBeginOcclusionQuery, "glBeginOcclusionQuery","glBeginOcclusionQueryNV", validContext);
     setGLExtensionFuncPtr(glEndOcclusionQuery, "glEndOcclusionQuery","glEndOcclusionQueryNV", validContext);
     setGLExtensionFuncPtr(glGetOcclusionQueryiv, "glGetOcclusionQueryiv","glGetOcclusionQueryivNV", validContext);
@@ -803,9 +779,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
     // function pointers
     setGLExtensionFuncPtr(glSampleMaski, "glSampleMaski", validContext);
-    // protect against buggy drivers (maybe not necessary)
-    isSampleMaskiSupported = glSampleMaski!=0;
-
+    isSampleMaskiSupported = validContext && (isOpenGL32upported || isGLExtensionSupported(contextID,"ARB_texture_multisample"));
 
 
     // old styple Vertex/Fragment Programs
@@ -840,33 +814,36 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     isTextureCompressionS3TCSupported = validContext && (isGLExtensionSupported(contextID,"GL_EXT_texture_compression_s3tc") || isGLExtensionSupported(contextID, "GL_S3_s3tc"));
     isTextureCompressionPVRTC2BPPSupported = validContext && isGLExtensionSupported(contextID,"GL_IMG_texture_compression_pvrtc");
     isTextureCompressionPVRTC4BPPSupported = isTextureCompressionPVRTC2BPPSupported;//covered by same extension
-    isTextureCompressionETCSupported = isGLExtensionSupported(contextID,"GL_OES_compressed_ETC1_RGB8_texture");
-    isTextureCompressionETC2Supported = isGLExtensionSupported(contextID,"GL_ARB_ES3_compatibility");
-    isTextureCompressionRGTCSupported = isGLExtensionSupported(contextID,"GL_EXT_texture_compression_rgtc");
-    isTextureCompressionPVRTCSupported = isGLExtensionSupported(contextID,"GL_IMG_texture_compression_pvrtc");
+    isTextureCompressionETCSupported = validContext && isGLExtensionSupported(contextID,"GL_OES_compressed_ETC1_RGB8_texture");
+    isTextureCompressionETC2Supported = validContext && isGLExtensionSupported(contextID,"GL_ARB_ES3_compatibility");
+    isTextureCompressionRGTCSupported = validContext && isGLExtensionSupported(contextID,"GL_EXT_texture_compression_rgtc");
+    isTextureCompressionPVRTCSupported = validContext && isGLExtensionSupported(contextID,"GL_IMG_texture_compression_pvrtc");
 
-    isTextureMirroredRepeatSupported = builtInSupport ||
-                                       isGLExtensionOrVersionSupported(contextID,"GL_IBM_texture_mirrored_repeat", 1.4f) ||
-                                       isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_mirrored_repeat", 1.4f);
+    isTextureMirroredRepeatSupported = validContext && 
+                                       (builtInSupport ||
+                                        isGLExtensionOrVersionSupported(contextID,"GL_IBM_texture_mirrored_repeat", 1.4f) ||
+                                        isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_mirrored_repeat", 1.4f));
 
-    isTextureEdgeClampSupported = builtInSupport ||
+    isTextureEdgeClampSupported = validContext && 
+                                  (builtInSupport ||
                                    isGLExtensionOrVersionSupported(contextID,"GL_EXT_texture_edge_clamp", 1.2f) ||
-                                   isGLExtensionOrVersionSupported(contextID,"GL_SGIS_texture_edge_clamp", 1.2f);
+                                   isGLExtensionOrVersionSupported(contextID,"GL_SGIS_texture_edge_clamp", 1.2f));
 
 
-    isTextureBorderClampSupported = OSG_GL3_FEATURES ||
-                                    ((OSG_GL1_FEATURES || OSG_GL2_FEATURES) && isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_border_clamp", 1.3f)) ||
-                                    (OSG_GLES2_FEATURES && isGLExtensionSupported(contextID,"GL_EXT_texture_border_clamp"));
+    isTextureBorderClampSupported = validContext && 
+                                    (OSG_GL3_FEATURES ||
+                                     ((OSG_GL1_FEATURES || OSG_GL2_FEATURES) && isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_border_clamp", 1.3f)) ||
+                                     (OSG_GLES2_FEATURES && isGLExtensionSupported(contextID,"GL_EXT_texture_border_clamp")));
 
-    isGenerateMipMapSupported = builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_SGIS_generate_mipmap", 1.4f);
+    isGenerateMipMapSupported = validContext && (builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_SGIS_generate_mipmap", 1.4f));
     preferGenerateMipmapSGISForPowerOfTwo = (radeonHardwareDetected||fireGLHardwareDetected) ? false : true;
-    isTextureMultisampledSupported = isGLExtensionSupported(contextID,"GL_ARB_texture_multisample");
-    isShadowSupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_ARB_shadow");
-    isShadowAmbientSupported = isGLExtensionSupported(contextID,"GL_ARB_shadow_ambient");
-    isClientStorageSupported = isGLExtensionSupported(contextID,"GL_APPLE_client_storage");
-    isNonPowerOfTwoTextureNonMipMappedSupported = builtInSupport  || isGLExtensionSupported(contextID,"GL_OES_texture_npot") || isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_non_power_of_two", 2.0) || isGLExtensionSupported(contextID,"GL_APPLE_texture_2D_limited_npot");
-    isNonPowerOfTwoTextureMipMappedSupported = builtInSupport || isNonPowerOfTwoTextureNonMipMappedSupported;
-    isTextureIntegerEXTSupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID, "GL_EXT_texture_integer");
+    isTextureMultisampledSupported = validContext && (isGLExtensionSupported(contextID,"GL_ARB_texture_multisample"));
+    isShadowSupported = validContext && (OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_ARB_shadow"));
+    isShadowAmbientSupported = validContext && (isGLExtensionSupported(contextID,"GL_ARB_shadow_ambient"));
+    isClientStorageSupported = validContext && (isGLExtensionSupported(contextID,"GL_APPLE_client_storage"));
+    isNonPowerOfTwoTextureMipMappedSupported = validContext && (builtInSupport || isGLExtensionSupported(contextID, "GL_OES_texture_npot") || isGLExtensionOrVersionSupported(contextID, "GL_ARB_texture_non_power_of_two", 2.0));
+    isNonPowerOfTwoTextureNonMipMappedSupported = validContext && (isNonPowerOfTwoTextureMipMappedSupported || isGLExtensionSupported(contextID, "GL_APPLE_texture_2D_limited_npot"));
+    isTextureIntegerEXTSupported = validContext && (OSG_GL3_FEATURES || isGLExtensionSupported(contextID, "GL_EXT_texture_integer"));
 
     if (rendererString.find("GeForce FX")!=std::string::npos)
     {
@@ -895,19 +872,15 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glGetCompressedTexImage,"glGetCompressedTexImage","glGetCompressedTexImageARB", validContext);;
     setGLExtensionFuncPtr(glTexImage2DMultisample, "glTexImage2DMultisample", "glTexImage2DMultisampleARB", validContext);
 
-    setGLExtensionFuncPtr(glTexParameterIiv, "glTexParameterIiv", "glTexParameterIivARB", validContext);
-    setGLExtensionFuncPtr(glTexParameterIuiv, "glTexParameterIuiv", "glTexParameterIuivARB", validContext);
-
-
-    if (glTexParameterIiv == NULL) setGLExtensionFuncPtr(glTexParameterIiv, "glTexParameterIivEXT", validContext);
-    if (glTexParameterIuiv == NULL) setGLExtensionFuncPtr(glTexParameterIuiv, "glTexParameterIuivEXT", validContext);
+    setGLExtensionFuncPtr(glTexParameterIiv, "glTexParameterIiv", "glTexParameterIivARB", "glTexParameterIivEXT", validContext);
+    setGLExtensionFuncPtr(glTexParameterIuiv, "glTexParameterIuiv", "glTexParameterIuivARB", "glTexParameterIuivEXT", validContext);
 
     setGLExtensionFuncPtr(glBindImageTexture, "glBindImageTexture", "glBindImageTextureARB", validContext);
 
     isTextureMaxLevelSupported = (glVersion >= 1.2f);
 
-    isTextureStorageEnabled = isTexStorage2DSupported();
-    if ( (ptr = getenv("OSG_GL_TEXTURE_STORAGE"))  != 0 && isTexStorage2DSupported())
+    isTextureStorageEnabled = validContext && ((glVersion >= 4.2f) || isGLExtensionSupported(contextID, "GL_ARB_texture_storage"));
+    if ( (ptr = getenv("OSG_GL_TEXTURE_STORAGE"))  != 0 && isTextureStorageEnabled)
     {
         if (strcmp(ptr,"OFF")==0 || strcmp(ptr,"DISABLE")==0 ) isTextureStorageEnabled = false;
         else isTextureStorageEnabled = true;
@@ -915,10 +888,10 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
 
     // Texture3D extensions
-    isTexture3DFast = OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_EXT_texture3D");
+    isTexture3DFast = validContext && (OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_EXT_texture3D"));
 
     if (isTexture3DFast) isTexture3DSupported = true;
-    else isTexture3DSupported = (glVersion >= 1.2f);
+    else isTexture3DSupported = validContext && (glVersion >= 1.2f);
 
     maxTexture3DSize = 0;
     if (validContext) glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &maxTexture3DSize);
@@ -932,7 +905,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glEndConditionalRender, "glGetMultisamplefv", "glGetMultisamplefvEXT");
 
     // Texture2DArray extensions
-    isTexture2DArraySupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_EXT_texture_array");
+    isTexture2DArraySupported = validContext && (OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_EXT_texture_array"));
 
     max2DSize = 0;
     if (validContext) glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max2DSize);
@@ -940,25 +913,28 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     if (validContext) glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS_EXT, &maxLayerCount);
 
     // Blending
-    isBlendColorSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
-                            isGLExtensionSupported(contextID,"GL_EXT_blend_color") ||
-                            (glVersion >= 1.2f);
+    isBlendColorSupported = validContext && 
+                            (OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
+                             isGLExtensionSupported(contextID,"GL_EXT_blend_color") ||
+                             (glVersion >= 1.2f));
 
     setGLExtensionFuncPtr(glBlendColor, "glBlendColor", "glBlendColorEXT", validContext);
 
     bool bultInSupport = OSG_GLES2_FEATURES || OSG_GL3_FEATURES;
-    isBlendEquationSupported = bultInSupport ||
-        isGLExtensionSupported(contextID, "GL_EXT_blend_equation") ||
-        (glVersion >= 1.2f);
+    isBlendEquationSupported = validContext && 
+                               (bultInSupport ||
+                                isGLExtensionSupported(contextID, "GL_EXT_blend_equation") ||
+                                (glVersion >= 1.2f));
 
 
-    isBlendEquationSeparateSupported = bultInSupport ||
-        isGLExtensionSupported(contextID, "GL_EXT_blend_equation_separate") ||
-        (glVersion >= 2.0f);
+    isBlendEquationSeparateSupported = validContext && 
+                                       (bultInSupport ||
+                                        isGLExtensionSupported(contextID, "GL_EXT_blend_equation_separate") ||
+                                        (glVersion >= 2.0f));
 
 
-    isSGIXMinMaxSupported = isGLExtensionSupported(contextID, "GL_SGIX_blend_alpha_minmax");
-    isLogicOpSupported = isGLExtensionSupported(contextID, "GL_EXT_blend_logic_op");
+    isSGIXMinMaxSupported = validContext && isGLExtensionSupported(contextID, "GL_SGIX_blend_alpha_minmax");
+    isLogicOpSupported = validContext && isGLExtensionSupported(contextID, "GL_EXT_blend_logic_op");
 
     setGLExtensionFuncPtr(glBlendEquation, "glBlendEquation", "glBlendEquationEXT", validContext);
     setGLExtensionFuncPtr(glBlendEquationSeparate, "glBlendEquationSeparate", "glBlendEquationSeparateEXT", validContext);
@@ -973,10 +949,10 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
 
     // Stencil`
-    isStencilWrapSupported = isGLExtensionOrVersionSupported(contextID, "GL_EXT_stencil_wrap", 1.4f);
-    isStencilTwoSidedSupported = isGLExtensionSupported(contextID, "GL_EXT_stencil_two_side");
-    isOpenGL20Supported = (glVersion >= 2.0f);
-    isSeparateStencilSupported = isGLExtensionSupported(contextID, "GL_ATI_separate_stencil");
+    isStencilWrapSupported = validContext && isGLExtensionOrVersionSupported(contextID, "GL_EXT_stencil_wrap", 1.4f);
+    isStencilTwoSidedSupported = validContext && isGLExtensionSupported(contextID, "GL_EXT_stencil_two_side");
+    isOpenGL20Supported = validContext && (glVersion >= 2.0f);
+    isSeparateStencilSupported = validContext && isGLExtensionSupported(contextID, "GL_ATI_separate_stencil");
 
     // function pointers
     setGLExtensionFuncPtr(glActiveStencilFace, "glActiveStencilFaceEXT", validContext);
@@ -991,9 +967,10 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
 
     // ClampColor
-    isClampColorSupported = OSG_GL3_FEATURES ||
+    isClampColorSupported = validContext &&
+                            (OSG_GL3_FEATURES ||
                              isGLExtensionSupported(contextID,"GL_ARB_color_buffer_float") ||
-                             (glVersion >= 2.0f);
+                             (glVersion >= 2.0f));
 
     setGLExtensionFuncPtr(glClampColor, "glClampColor", "glClampColorARB", validContext);
 
@@ -1003,14 +980,15 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
 
     // Point
-    isPointParametersSupported = OSG_GL3_FEATURES || (glVersion >= 1.4f)  ||
+    isPointParametersSupported = validContext &&
+                                 (OSG_GL3_FEATURES || (glVersion >= 1.4f)  ||
                                   isGLExtensionSupported(contextID,"GL_ARB_point_parameters") ||
                                   isGLExtensionSupported(contextID,"GL_EXT_point_parameters") ||
-                                  isGLExtensionSupported(contextID,"GL_SGIS_point_parameters");
+                                  isGLExtensionSupported(contextID,"GL_SGIS_point_parameters"));
 
 
-    isPointSpriteSupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID, "GL_ARB_point_sprite") || isGLExtensionSupported(contextID, "GL_OES_point_sprite") || isGLExtensionSupported(contextID, "GL_NV_point_sprite");
-    isPointSpriteCoordOriginSupported = OSG_GL3_FEATURES || (glVersion >= 2.0f);
+    isPointSpriteSupported = validContext && (OSG_GL3_FEATURES || isGLExtensionSupported(contextID, "GL_ARB_point_sprite") || isGLExtensionSupported(contextID, "GL_OES_point_sprite") || isGLExtensionSupported(contextID, "GL_NV_point_sprite"));
+    isPointSpriteCoordOriginSupported = validContext && (OSG_GL3_FEATURES || (glVersion >= 2.0f));
 
 
     setGLExtensionFuncPtr(glPointParameteri, "glPointParameteri", "glPointParameteriARB", validContext);
@@ -1024,10 +1002,10 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
 
     // Multisample
-    isMultisampleSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_ARB_multisample");
-    isMultisampleFilterHintSupported = isGLExtensionSupported(contextID, "GL_NV_multisample_filter_hint");
+    isMultisampleSupported = validContext && (OSG_GLES2_FEATURES || OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_ARB_multisample"));
+    isMultisampleFilterHintSupported = validContext && isGLExtensionSupported(contextID, "GL_NV_multisample_filter_hint");
 
-    setGLExtensionFuncPtr(glSampleCoverage, "glSampleCoverageARB", validContext);
+    setGLExtensionFuncPtr(glSampleCoverage, "glSampleCoverage", "glSampleCoverageARB", validContext);
 
 
     // FrameBufferObject
@@ -1070,9 +1048,10 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     ( OSG_GLES1_FEATURES || isGLExtensionOrVersionSupported(contextID, "GL_EXT_framebuffer_object",3.0f) );
 
 
-    isPackedDepthStencilSupported = OSG_GL3_FEATURES ||
-        (isGLExtensionSupported(contextID, "GL_EXT_packed_depth_stencil")) ||
-        (isGLExtensionSupported(contextID, "GL_OES_packed_depth_stencil"));
+    isPackedDepthStencilSupported = validContext &&
+                                    (OSG_GL3_FEATURES ||
+                                     (isGLExtensionSupported(contextID, "GL_EXT_packed_depth_stencil")) ||
+                                     (isGLExtensionSupported(contextID, "GL_OES_packed_depth_stencil")));
 
     //subroutine
     osg::setGLExtensionFuncPtr(glGetSubroutineUniformLocation, "glGetSubroutineUniformLocation", validContext);

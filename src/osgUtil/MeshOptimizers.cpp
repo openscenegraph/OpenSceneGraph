@@ -277,13 +277,9 @@ void GeometryCollector::reset()
     _geometryList.clear();
 }
 
-void GeometryCollector::apply(Geode& geode)
+void GeometryCollector::apply(Geometry& geom)
 {
-    for(unsigned int i = 0; i < geode.getNumDrawables(); ++i )
-    {
-        osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
-        if (geom) _geometryList.insert(geom);
-    }
+    _geometryList.insert(&geom);
 }
 
 namespace
@@ -1295,14 +1291,9 @@ void VertexCacheMissVisitor::reset()
     triangles = 0;
 }
 
-void VertexCacheMissVisitor::apply(Geode& geode)
+void VertexCacheMissVisitor::apply(Geometry& geom)
 {
-    for(unsigned int i = 0; i < geode.getNumDrawables(); ++i )
-    {
-        osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
-        if (geom)
-            doGeometry(*geom);
-    }
+    doGeometry(geom);
 }
 
 namespace

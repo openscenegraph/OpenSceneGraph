@@ -5,9 +5,9 @@ SET(TARGET_SRC
     BindPerVertexVisitor.cpp
     DetachPrimitiveVisitor.cpp
     GeometryIndexSplitter.cpp
-    GeometrySplitterVisitor.cpp
     SubGeometry.cpp
     OpenGLESGeometryOptimizer.cpp
+    RemapGeometryVisitor.cpp
     RigAnimationVisitor.cpp
     RigAttributesVisitor.cpp
     TriangleMeshSmoother.cpp
@@ -25,9 +25,11 @@ SET(TARGET_H
     DrawArrayVisitor
     EdgeIndexFunctor
     GeometryArray
+    GeometryCleaner
     GeometryIndexSplitter
     GeometryInspector
-    GeometrySplitterVisitor
+    GeometryMapper
+    RemapGeometryVisitor
     GeometryUniqueVisitor
     glesUtil
     IndexMeshVisitor

@@ -44,9 +44,15 @@ public:
 
     virtual const char* className() const;
     virtual ReadResult readImage(std::istream& fin,const osgDB::ReaderWriter::Options* =NULL) const;
-    virtual ReadResult readKTXStream(std::istream& fin) const;
     virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const;
 
+    virtual WriteResult writeObject(const osg::Object& object, const std::string& file, const osgDB::ReaderWriter::Options* options) const;
+    virtual WriteResult writeObject(const osg::Object& object, std::ostream& fout, const Options* options) const;
+    virtual WriteResult writeImage(const osg::Image &image, const std::string& file, const osgDB::ReaderWriter::Options* options) const;
+    virtual WriteResult writeImage(const osg::Image& image, std::ostream& fout, const Options* options) const;
+
+    ReadResult readKTXStream(std::istream& fin) const;
+    bool writeKTXStream(const osg::Image *img, std::ostream& fout) const;
 private:
     bool correctByteOrder(KTXTexHeader& header) const;
 };

@@ -36,6 +36,11 @@ class OSG_EXPORT LOD : public Group
 {
     public :
 
+        /** Default constructor
+          * The default constructor sets
+          *  - the center mode to USE_BOUNDING_SPHERE,
+          *  - the radius to a value smaller than zero and
+          *  - the range mode to DISTANCE_FROM_EYE_POINT. */
         LOD();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
@@ -61,12 +66,13 @@ class OSG_EXPORT LOD : public Group
         typedef std::pair<float,float>  MinMaxPair;
         typedef std::vector<MinMaxPair> RangeList;
 
-        /** Modes which control how the center of object should be determined when computing which child is active.*/
+        /** Modes which control how the center of object should be determined when computing which child is active.
+          * Furthermore it determines how the bounding sphere is calculated. */
         enum CenterMode
         {
-            USE_BOUNDING_SPHERE_CENTER,
-            USER_DEFINED_CENTER,
-            UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED
+            USE_BOUNDING_SPHERE_CENTER, ///< Uses the bounding sphere's center as the center of object and the geometrical bounding sphere of the node's children
+            USER_DEFINED_CENTER, ///< Uses the user defined center as the center of object; the bounding sphere is determined by the user defined center and user defined radius
+            UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED ///< Uses the user defined center as the center of object; the bounding sphere is the user defined bounding sphere expanded by the geometrical bounding sphere of the node's children
         };
 
         /** Set how the center of object should be determined when computing which child is active.*/
@@ -76,7 +82,10 @@ class OSG_EXPORT LOD : public Group
         CenterMode getCenterMode() const { return _centerMode; }
 
         /** Sets the object-space point which defines the center of the osg::LOD.
-            center is affected by any transforms in the hierarchy above the osg::LOD.*/
+          * center is affected by any transforms in the hierarchy above the osg::LOD.
+          * @note This method also changes the center mode to USER_DEFINED_CENTER
+          *       if the current center mode does not use a user defined center!
+          * @sa setRadius */
         inline void setCenter(const vec_type& center) { if (_centerMode!=UNION_OF_BOUNDING_SPHERE_AND_USER_DEFINED) { _centerMode=USER_DEFINED_CENTER; } _userDefinedCenter = center; }
 
         /** return the LOD center point. */
@@ -84,7 +93,10 @@ class OSG_EXPORT LOD : public Group
 
 
         /** Set the object-space reference radius of the volume enclosed by the LOD.
-          * Used to determine the bounding sphere of the LOD in the absence of any children.*/
+          * @param radius Radius must be larger or equal to zero. If the radius is smaller than zero the geometrical bounding sphere
+          *               of the node's children is used as the LOD's bounding sphere regardless of the center mode setting.
+          * @remark The radius is only used to calculate the bounding sphere.
+          * @sa setCenter */
         inline void setRadius(value_type radius) { _radius = radius; }
 
         /** Get the object-space radius of the volume enclosed by the LOD.*/

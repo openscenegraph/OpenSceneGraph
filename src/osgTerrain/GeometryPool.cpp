@@ -262,7 +262,7 @@ osg::ref_ptr<SharedGeometry> GeometryPool::getOrCreateGeometry(osgTerrain::Terra
         }
     }
 
-    bool smallTile = numVertices <= 16384;
+    bool smallTile = numVertices < 65536;
 
     GLenum primitiveTypes = GL_QUADS;
 

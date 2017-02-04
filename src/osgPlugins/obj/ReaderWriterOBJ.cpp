@@ -21,6 +21,7 @@
 #endif
 
 #include <stdlib.h>
+#include <limits>
 #include <string>
 
 #include <osg/Notify>
@@ -72,6 +73,7 @@ public:
         supportsOption("DISPLACEMENT=<unit>", "Set texture unit for displacement texture");
         supportsOption("REFLECTION=<unit>", "Set texture unit for reflection texture");
 
+        supportsOption("precision=<digits>","Set the floating point precision when writing out files");
     }
 
     virtual const char* className() const { return "Wavefront OBJ Reader"; }
@@ -89,12 +91,16 @@ public:
             return WriteResult(WriteResult::FILE_NOT_HANDLED);
     }
 
-    virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* /*options*/ =NULL) const
+    virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options=NULL) const
     {
         if (!acceptsExtension(osgDB::getFileExtension(fileName)))
             return WriteResult(WriteResult::FILE_NOT_HANDLED);
 
+        ObjOptionsStruct localOptions = parseOptions(options);
+
         osgDB::ofstream f(fileName.c_str());
+        f.precision(localOptions.precision);
+
         std::string materialFile = osgDB::getNameLessExtension(fileName) + ".mtl";
         OBJWriterNodeVisitor nv(f, osgDB::getSimpleFileName(materialFile));
 
@@ -117,8 +123,11 @@ public:
             return WriteResult(WriteResult::FILE_NOT_HANDLED);
     }
 
-    virtual WriteResult writeNode(const osg::Node& node,std::ostream& fout,const Options* =NULL) const
+    virtual WriteResult writeNode(const osg::Node& node,std::ostream& fout,const Options* options=NULL) const
     {
+        ObjOptionsStruct localOptions = parseOptions(options);
+        fout.precision(localOptions.precision);
+
         // writing to a stream does not support materials
 
         OBJWriterNodeVisitor nv(fout);
@@ -144,6 +153,8 @@ protected:
         // otherwise overriden
         typedef std::vector< std::pair<int,obj::Material::Map::TextureMapType> > TextureAllocationMap;
         TextureAllocationMap textureUnitAllocation;
+        /// Coordinates precision.
+        int precision;
     };
 
     typedef std::map< std::string, osg::ref_ptr<osg::StateSet> > MaterialToStateSetMap;
@@ -826,6 +837,7 @@ ReaderWriterOBJ::ObjOptionsStruct ReaderWriterOBJ::parseOptions(const osgDB::Rea
     localOptions.generateFacetNormals = false;
     localOptions.fixBlackMaterials = true;
     localOptions.noReverseFaces = false;
+    localOptions.precision = std::numeric_limits<double>::digits10 + 2;
 
     if (options!=NULL)
     {
@@ -867,6 +879,16 @@ ReaderWriterOBJ::ObjOptionsStruct ReaderWriterOBJ::parseOptions(const osgDB::Rea
             else if (pre_equals == "noReverseFaces")
             {
                 localOptions.noReverseFaces = true;
+            }
+            else if (pre_equals == "precision")
+            {
+                int val = std::atoi(post_equals.c_str());
+                if (val <= 0) {
+                    OSG_NOTICE << "Warning: invalid precision value: " << post_equals << std::endl;
+                }
+                else {
+                    localOptions.precision = val;
+                }
             }
             else if (post_equals.length()>0)
             {

@@ -317,16 +317,42 @@ void StatsVisitor::print(std::ostream& out)
         instanced_primitives += pcmitr->second;
     }
 
-
-    out << std::setw(12) << "Object Type" << std::setw(10) << "Unique"                  << std::setw(10) << "Instanced" << std::endl;
-    out << std::setw(12) << "-----------" << std::setw(10) << "------"                  << std::setw(10) << "---------" << std::endl;
-    out << std::setw(12) << "StateSet   " << std::setw(10) << _statesetSet.size()       << std::setw(10) << _numInstancedStateSet << std::endl;
-    out << std::setw(12) << "Group      " << std::setw(10) << _groupSet.size()          << std::setw(10) << _numInstancedGroup << std::endl;
+    unsigned int dynamic_statesets = 0;
+    unsigned int non_default_renderbin_statesets = 0;
+    unsigned int bin10_statesets = 0;
+    for (StateSetSet::iterator statsetitr = _statesetSet.begin();
+        statsetitr != _statesetSet.end();
+        ++statsetitr)
+    {
+        if ((*statsetitr)->getDataVariance() == osg::Object::DYNAMIC) ++dynamic_statesets;
+        if ((*statsetitr)->getRenderBinMode() != osg::StateSet::INHERIT_RENDERBIN_DETAILS) {
+            ++non_default_renderbin_statesets;
+            if ((*statsetitr)->getBinNumber() == 10) ++bin10_statesets;
+        }
+    }
+    unsigned int dynamic_drawables = 0;
+    for (DrawableSet::iterator drawableitr = _drawableSet.begin();
+        drawableitr != _drawableSet.end();
+        ++drawableitr)
+    {
+        if ((*drawableitr)->getDataVariance() == osg::Object::DYNAMIC) ++dynamic_drawables;
+    }
+    if (dynamic_drawables != 0 || dynamic_statesets != 0) {
+        out << std::setw(12) << "Object Type" << std::setw(10) << "Unique"                  << std::setw(10) << "Instanced" << std::setw(10) << "Dynamic" << std::endl;
+        out << std::setw(12) << "-----------" << std::setw(10) << "------"                  << std::setw(10) << "---------" << std::setw(10) << "---------" << std::endl;
+    } else {
+        out << std::setw(12) << "Object Type" << std::setw(10) << "Unique" << std::setw(10) << "Instanced" << std::endl;
+        out << std::setw(12) << "-----------" << std::setw(10) << "------" << std::setw(10) << "---------" << std::endl;
+    }
+    out << std::setw(12) << "StateSet   " << std::setw(10) << _statesetSet.size() << std::setw(10) << _numInstancedStateSet << std::setw(10) << dynamic_statesets << std::endl;
+    if (bin10_statesets != 0) out << std::setw(12) << "  bin 10   " << std::setw(10) << bin10_statesets << std::endl;
+    if (non_default_renderbin_statesets != 0) out << std::setw(12) << "  other bin" << std::setw(10) << non_default_renderbin_statesets - bin10_statesets << std::endl;
+    out << std::setw(12) << "Group      " << std::setw(10) << _groupSet.size() << std::setw(10) << _numInstancedGroup << std::endl;
     out << std::setw(12) << "Transform  " << std::setw(10) << _transformSet.size()      << std::setw(10) << _numInstancedTransform << std::endl;
     out << std::setw(12) << "LOD        " << std::setw(10) << _lodSet.size()            << std::setw(10) << _numInstancedLOD << std::endl;
     out << std::setw(12) << "Switch     " << std::setw(10) << _switchSet.size()         << std::setw(10) << _numInstancedSwitch << std::endl;
     out << std::setw(12) << "Geode      " << std::setw(10) << _geodeSet.size()          << std::setw(10) << _numInstancedGeode << std::endl;
-    out << std::setw(12) << "Drawable   " << std::setw(10) << _drawableSet.size()       << std::setw(10) << _numInstancedDrawable << std::endl;
+    out << std::setw(12) << "Drawable   " << std::setw(10) << _drawableSet.size()       << std::setw(10) << _numInstancedDrawable << std::setw(10) << dynamic_drawables << std::endl;
     out << std::setw(12) << "Geometry   " << std::setw(10) << _geometrySet.size()       << std::setw(10) << _numInstancedGeometry << std::endl;
     out << std::setw(12) << "Fast geom. " << std::setw(10) << _fastGeometrySet.size()   << std::setw(10) << _numInstancedFastGeometry << std::endl;
     out << std::setw(12) << "Vertices   " << std::setw(10) << _uniqueStats._vertexCount << std::setw(10) << _instancedStats._vertexCount << std::endl;

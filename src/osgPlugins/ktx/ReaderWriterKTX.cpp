@@ -17,6 +17,24 @@
 #include <osgDB/FileUtils>
 #include <istream>
 
+// Macro similar to what's in FLT/TRP plugins (except it uses wide char under Windows if OSG_USE_UTF8_FILENAME)
+#if defined(_WIN32)
+#include <windows.h>
+#include <osg/Config>
+#include <osgDB/ConvertUTF>
+#ifdef OSG_USE_UTF8_FILENAME
+#define DELETEFILE(file) DeleteFileW(osgDB::convertUTF8toUTF16((file)).c_str())
+#else
+#define DELETEFILE(file) DeleteFileA((file))
+#endif
+
+#else   // Unix
+
+#include <stdio.h>
+#define DELETEFILE(file) remove((file))
+
+#endif
+
 const unsigned char ReaderWriterKTX::FileSignature[12] = {
     0xAB, 0x4B, 0x54, 0x58, 0x20, 0x31, 0x31, 0xBB, 0x0D, 0x0A, 0x1A, 0x0A
 };
@@ -127,6 +145,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriterKTX::readKTXStream(std::istream& fin
         if (header.endianness != MyEndian)
             osg::swapBytes4(reinterpret_cast<char*>(&imageSize));
 
+        if (totalOffset + imageSize > totalImageSize) {
+            OSG_WARN << "Failed to read mipmap: " << mipmapLevel << " not enough bytes in file." << std::endl;
+            delete[] totalImageData;
+            return ReadResult::ERROR_IN_READING_FILE;
+        }
+
         fin.read(imageData, imageSize);
         if(!fin.good())
         {
@@ -192,7 +216,64 @@ osgDB::ReaderWriter::ReadResult ReaderWriterKTX::readKTXStream(std::istream& fin
     return image.get();
 }
 
+bool ReaderWriterKTX::writeKTXStream(const osg::Image *img, std::ostream& fout) const {
+    KTXTexHeader header;
+    memcpy(header.identifier, FileSignature, sizeof(FileSignature));
+    header.endianness = MyEndian;
+    header.glType = img->getDataType();
+    header.glTypeSize = 1;
+    if (!img->isCompressed()) {
+        header.glTypeSize = img->getPixelSizeInBits() / 8;
+    }
+    header.glFormat = img->getPixelFormat();
+    header.glInternalFormat = img->getInternalTextureFormat();
+    header.glBaseInternalFormat = img->computePixelFormat(header.glType);
+    header.pixelWidth =img->s();
+    header.pixelHeight = img->t() > 1 ? img->t() : 0;
+    header.pixelDepth = img->r() > 1 ? img->r() : 0;
+    header.numberOfArrayElements = 0;
+    header.numberOfFaces = 1;
+    header.numberOfMipmapLevels = img->getNumMipmapLevels();
+    header.bytesOfKeyValueData = 0;
 
+    fout.write(reinterpret_cast<char*>(&header), sizeof(header)); /* write file header */
+    uint32_t imageSize;
+    int s = img->s();
+    int t = img->t();
+    int r = img->r();
+
+    osg::Image::DataIterator imgData(img);
+    unsigned int imgDataOffset = 0;
+    //write main image: imageSize bytes
+    for (uint32_t mipmapLevel = 0; mipmapLevel < header.numberOfMipmapLevels; mipmapLevel++)
+    {
+        imageSize = osg::Image::computeImageSizeInBytes(s, t, r, img->getPixelFormat(), img->getDataType(), img->getPacking());
+        fout.write(reinterpret_cast<char*>(&imageSize), sizeof(imageSize));
+        {
+            unsigned int bytesWritten = 0;
+            unsigned int bytesToWrite = imageSize - bytesWritten;
+            while (imgData.valid() && (bytesWritten < imageSize)) {
+                unsigned int blockSize = osg::minimum(imgData.size() - imgDataOffset, bytesToWrite);
+                fout.write(reinterpret_cast<const char*>(imgData.data()), blockSize);
+                bytesWritten += blockSize;
+                imgDataOffset += blockSize;
+                if (imgData.size() == imgDataOffset) {
+                    ++imgData;
+                    imgDataOffset = 0;
+                }
+            }
+        }
+        if (s > 1) s >>= 1;
+        if (t > 1) t >>= 1;
+        if (r > 1) r >>= 1;
+    }
+    // Check for correct saving
+    if (fout.fail())
+        return false;//report failure
+
+    // If we get that far the file was saved properly
+    return true;
+}
 osgDB::ReaderWriter::ReadResult ReaderWriterKTX::readImage(std::istream& fin,const osgDB::ReaderWriter::Options*) const
 {
     return readKTXStream(fin);
@@ -219,7 +300,53 @@ osgDB::ReaderWriter::ReadResult ReaderWriterKTX::readImage(const std::string& fi
 
     return rr;
 }
+///////////////////
+osgDB::ReaderWriter::WriteResult ReaderWriterKTX::writeObject(const osg::Object& object, const std::string& file, const osgDB::ReaderWriter::Options* options) const
+{
+    const osg::Image* image = dynamic_cast<const osg::Image*>(&object);
+    if (!image) return WriteResult::FILE_NOT_HANDLED;
 
+    return writeImage(*image, file, options);
+}
+
+osgDB::ReaderWriter::WriteResult ReaderWriterKTX::writeObject(const osg::Object& object, std::ostream& fout, const Options* options) const
+{
+    const osg::Image* image = dynamic_cast<const osg::Image*>(&object);
+    if (!image) return WriteResult::FILE_NOT_HANDLED;
+
+    return writeImage(*image, fout, options);
+}
+
+
+osgDB::ReaderWriter::WriteResult ReaderWriterKTX::writeImage(const osg::Image &image, const std::string& file, const osgDB::ReaderWriter::Options* options) const
+{
+    std::string ext = osgDB::getFileExtension(file);
+    if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+
+    osgDB::ofstream fout(file.c_str(), std::ios::out | std::ios::binary);
+    if (!fout) return WriteResult::ERROR_IN_WRITING_FILE;
+
+    WriteResult res(writeImage(image, fout, options));
+    if (!res.success()) {
+        // Remove file on failure
+        fout.close();
+        DELETEFILE(file.c_str());
+        OSG_WARN << "ReaderWriterKTX::writeImage Failed to write " << file << "." << std::endl;
+    }
+    OSG_INFO << "ReaderWriterKTX::writeImage write " << file << " sucess;" << image.s() << "x" << image.t() << "x" << image.r() << std::endl;
+    return res;
+}
+
+osgDB::ReaderWriter::WriteResult ReaderWriterKTX::writeImage(const osg::Image& image, std::ostream& fout, const Options* options) const
+{
+//    bool noAutoFlipDDSWrite = options && options->getOptionString().find("ddsNoAutoFlipWrite") != std::string::npos; //maybe for ktx too?
+    bool success = writeKTXStream(&image, fout);
+
+    if (success)
+        return WriteResult::FILE_SAVED;
+    else
+        return WriteResult::ERROR_IN_WRITING_FILE;
+}
 // now register with Registry to instantiate the above
 // reader/writer.
 REGISTER_OSGPLUGIN(ktx, ReaderWriterKTX)

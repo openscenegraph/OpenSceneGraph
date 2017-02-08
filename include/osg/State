@@ -565,6 +565,16 @@ class OSG_EXPORT State : public Referenced
         void setCurrentPixelBufferObject(osg::GLBufferObject* pbo) { _currentPBO = pbo; }
         const GLBufferObject* getCurrentPixelBufferObject() { return _currentPBO; }
 
+        inline void bindVertexArrayObject()
+        {
+            GLuint vao = _vas->getVertexArrayObject();
+            if (vao != _currentVAO)
+            {
+                _glExtensions->glBindVertexArray(vao);
+                _currentVAO = vao;
+            }
+        }
+
         inline void bindPixelBufferObject(osg::GLBufferObject* pbo)
         {
             if (pbo)
@@ -1248,6 +1258,7 @@ class OSG_EXPORT State : public Referenced
         unsigned int                    _currentActiveTextureUnit;
         unsigned int                    _currentClientActiveTextureUnit;
         GLBufferObject*                 _currentPBO;
+        GLuint                          _currentVAO;
 
 
         inline ModeMap& getOrCreateTextureModeMap(unsigned int unit)

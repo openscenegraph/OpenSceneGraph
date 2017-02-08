@@ -861,7 +861,7 @@ void SharedGeometry::compileGLObjects(osg::RenderInfo& renderInfo) const
 
             osg::State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 
-            vas->bindVertexArrayObject();
+            state.bindVertexArrayObject();
 
             if (vbo_glBufferObject) vas->bindVertexBufferObject(vbo_glBufferObject);
             if (ebo_glBufferObject) vas->bindElementBufferObject(ebo_glBufferObject);

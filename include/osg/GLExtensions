@@ -429,6 +429,8 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glGenQueries) (GLsizei n, GLuint *ids);
         void (GL_APIENTRY * glBeginQuery) (GLenum target, GLuint id);
         void (GL_APIENTRY * glEndQuery) (GLenum target);
+		void (GL_APIENTRY * glBeginQueryIndexed) (GLenum target, GLuint index, GLuint id);
+		void (GL_APIENTRY * glEndQueryIndexed) (GLenum target, GLuint index);
         void (GL_APIENTRY * glQueryCounter) (GLuint id, GLenum target);
         GLboolean (GL_APIENTRY * glIsQuery) (GLuint id);
         void (GL_APIENTRY * glDeleteQueries) (GLsizei n, const GLuint *ids);

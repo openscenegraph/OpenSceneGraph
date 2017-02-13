@@ -872,7 +872,10 @@ void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
     VertexArrayState* vas = state.getCurrentVertexArrayState();
-
+    if (state.useVertexArrayObject(_useVertexArrayObject))
+    {
+        if (!vas->getRequiresSetArrays()) return;
+    }
     bool handleVertexAttributes = !_vertexAttribList.empty();
 
     AttributeDispatchers& attributeDispatchers = state.getAttributeDispatchers();
@@ -894,10 +897,7 @@ void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
     attributeDispatchers.activateSecondaryColorArray(_secondaryColorArray.get());
     attributeDispatchers.activateFogCoordArray(_fogCoordArray.get());
 
-    if (state.useVertexArrayObject(_useVertexArrayObject))
-    {
-        if (!vas->getRequiresSetArrays()) return;
-    }
+
 
     vas->lazyDisablingOfVertexAttributes();
 

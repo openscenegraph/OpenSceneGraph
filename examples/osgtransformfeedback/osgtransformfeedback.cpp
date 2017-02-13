@@ -222,14 +222,14 @@ const GLuint &contextID=renderInfo.getState()->getContextID();
 ///!!!-ignoring specials varyings ~gl_Next_Buffer and gl_SkipCompopents !!! 
 //2)via  retrieving the number of TransformFeedbackBufferBinding applied on the state (don't know how)
 for(int streamid=0;streamid<_nbstreamout;streamid++)
-		glBeginQueryIndexed(GL_PRIMITIVES_GENERATED,streamid, _querystuff[contextID]._queries[streamid]);
+		ext->glBeginQueryIndexed(GL_PRIMITIVES_GENERATED,streamid, _querystuff[contextID]._queries[streamid]);
 
 		ext->glBeginTransformFeedback(GL_POINTS);
 		drawable->drawImplementation(renderInfo);
 		ext->glEndTransformFeedback();
 
 for(int streamid=0;streamid<_nbstreamout;streamid++)
-		glEndQueryIndexed(GL_PRIMITIVES_GENERATED,streamid);
+		ext->glEndQueryIndexed(GL_PRIMITIVES_GENERATED,streamid);
 
 		// Get query results to buffer object
 ///		glBindBuffer(GL_QUERY_BUFFER, _queryBufferObjectBinding);
@@ -244,7 +244,7 @@ for(int streamid=0;streamid<_nbstreamout;streamid++)
 
 for(GLuint streamid=0;streamid<_nbstreamout;streamid++)	{	
 std::cerr<<"retrieving result for query no"<<streamid<<std::endl;
-glGetQueryObjectuiv(_querystuff[contextID]._queries[streamid], GL_QUERY_RESULT, (( GLuint *)( NULL+sizeof(GLuint)* streamid )));		
+ext->glGetQueryObjectuiv(_querystuff[contextID]._queries[streamid], GL_QUERY_RESULT, (( GLuint *)( NULL+sizeof(GLuint)* streamid )));		
 }
 
 

@@ -164,9 +164,9 @@ public:
 
         void deleteVertexArrayObject();
 
-        inline void bindVertexArrayObject() const { _ext->glBindVertexArray (_vertexArrayObject); }
+        void bindVertexArrayObject() const;
 
-        inline void unbindVertexArrayObject() const { _ext->glBindVertexArray (0); }
+        void unbindVertexArrayObject() const;
 
         GLuint getVertexArrayObject() const { return _vertexArrayObject; }
 

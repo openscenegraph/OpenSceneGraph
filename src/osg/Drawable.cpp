@@ -235,7 +235,11 @@ Drawable::Drawable()
     _useVertexBufferObjects = true;
 #endif
 
-    _useVertexArrayObject = false;
+#ifndef OSG_GL_VERTEX_ARRAY_OBJECTS_AS_DEFAULT
+     _useVertexArrayObject = false;
+#else
+     _useVertexArrayObject = true;
+#endif
 }
 
 Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
@@ -640,7 +644,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
         VertexArrayState* vas = _vertexArrayStateList[contextID].get();
         if (!vas)
         {
-            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo, true);
+            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
             // OSG_NOTICE<<"  Geometry::draw() "<<this<<", assigned _vertexArrayStateList[renderInfo.getContextID()]="<<_vertexArrayStateList[renderInfo.getContextID()].get()<<", vas="<<vas<< std::endl;
         }
         else
@@ -662,7 +666,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
     }
 
     // TODO, add check against whether VAO is active and supported
-    if (state.getCurrentVertexArrayState()) state.getCurrentVertexArrayState()->bindVertexArrayObject();
+    //if (state.getCurrentVertexArrayState()) state.getCurrentVertexArrayState()->bindVertexArrayObject();
 
 
 #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE

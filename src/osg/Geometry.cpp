@@ -814,13 +814,16 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
 
         if (state.useVertexArrayObject(_useVertexArrayObject) && !bufferObjects.empty())
         {
-            VertexArrayState* vas = 0;
+            VertexArrayState* curvas,*vas = 0;
 
             _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
 
+           // curvas=state.getCurrentVertexArrayState();
             State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 
-            vas->bindVertexArrayObject();
+            ///bind the VAO only if state VAS previously bound
+           //if(curvas!=state.getGlobalVertexArrayState())
+               vas->bindVertexArrayObject();
 
             drawVertexArraysImplementation(renderInfo);
         }
@@ -948,14 +951,13 @@ void Geometry::drawPrimitivesImplementation(RenderInfo& renderInfo) const
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
 
     bool bindPerPrimitiveSetActive = attributeDispatchers.active();
-    for(unsigned int primitiveSetNum=0; primitiveSetNum!=_primitives.size(); ++primitiveSetNum)
+    unsigned int primitiveSetNum=0;
+    for( PrimitiveSetList::const_iterator itpr = _primitives.begin(); itpr != _primitives.end(); itpr++, primitiveSetNum++)
     {
         // dispatch any attributes that are bound per primitive
         if (bindPerPrimitiveSetActive) attributeDispatchers.dispatch(primitiveSetNum);
 
-        const PrimitiveSet* primitiveset = _primitives[primitiveSetNum].get();
-
-        primitiveset->draw(state, usingVertexBufferObjects);
+        (*itpr).get()->draw(state, usingVertexBufferObjects);
     }
 }
 

@@ -38,7 +38,7 @@ public:
     {
         _hardMaxbuffsize=1000000000;///min of all glbuffermaxsize
         _softMaxbuffsize=900000000;///ofline: keep all boset during traversal
-        _numVAOsInUsed=0;
+        _numVAOsInUsed=0;_hack=true;
     }
     virtual void apply(osg::Geode& transform);
     // virtual void apply(osg::Geometry& transform);
@@ -48,6 +48,9 @@ public:
     unsigned int getSoftBufferSize()const    {        return _softMaxbuffsize;    }
     unsigned int getNumBufferSetGenerated()const    {        return _numVAOsInUsed;    }
 
+    bool isHackActivated()const    {        return _hack;    }
+    void setIsHackActivated(bool i)    {        _hack=i;    }
+   
 protected:
 
     void treatBufferObjects(SharedVAOGeometry* g);
@@ -58,6 +61,7 @@ protected:
     unsigned int _hardMaxbuffsize;///prohibit bufferdata concatenation in bufferobject
     unsigned int _softMaxbuffsize;///hint a bufferobject is full (and increment lastempty)
     unsigned int _numVAOsInUsed;///for stats
+    bool _hack;
 };
 
 
@@ -109,8 +113,13 @@ void MakeSharedBufferObjectsVisitor::apply(osg::Geode&g)
     for(int i=0; i<g.getNumDrawables(); i++)
     {
         geom=g.getChild(i)->asGeometry();
-        if(geom &&geom->getVertexArray())
+        if(geom &&geom->getVertexArray()){
+///DEBUG remove stateset 
+geom->setStateSet(0);
+if(_hack)
             gr->addDrawable(new SharedVAOGeometry(*(osg::Geometry*)g.getDrawable(i),osg::CopyOp(osg::CopyOp::DEEP_COPY_ALL)));
+else gr->addDrawable(geom);
+}
     }
     g.removeDrawables(0,g.getNumDrawables());
 
@@ -124,8 +133,8 @@ void MakeSharedBufferObjectsVisitor::apply(osg::Geode&g)
         geom->setUseVertexArrayObject(true);
 
 
-        treatBufferObjects( (SharedVAOGeometry*) geom);
-        g.addDrawable((SharedVAOGeometry    *)geom);
+       if(_hack) treatBufferObjects( (SharedVAOGeometry*) geom);
+         g.addDrawable(geom);
     }
 }
 ///return Hash without lastbit (index array bit)
@@ -415,7 +424,8 @@ int main(int argc, char **argv)
     args.getApplicationUsage()->setDescription(args.getApplicationName()+" is an example on how to use  bufferobject factorization+basevertex drawing in order to minimize state changes.");
     args.getApplicationUsage()->setCommandLineUsage(args.getApplicationName()+" [options] filename ...");
     args.getApplicationUsage()->addCommandLineOption("--Hmaxsize <factor>","max bufferobject size allowed (hard limit)");
-    args.getApplicationUsage()->addCommandLineOption("--Smaxsize <factor>","max bufferobject size allowed (soft limit)");
+    args.getApplicationUsage()->addCommandLineOption("--Smaxsize <factor>","max bufferobject size allowed (soft limit)");  
+  args.getApplicationUsage()->addCommandLineOption("--classic","don't use basevertex");
        MakeSharedBufferObjectsVisitor vaovis;
        GLuint maxsize;
        while(args.read("--Hmaxsize",maxsize) ) {
@@ -424,6 +434,9 @@ int main(int argc, char **argv)
        while(args.read("--Smaxsize",maxsize) ) {
            vaovis.setSoftBufferSize(maxsize);
        }
+ if(args.read("--classic") ) {
+           vaovis.setIsHackActivated(false);
+ } else  vaovis.setIsHackActivated(true);
     // create the model
     if(loaded)
     {

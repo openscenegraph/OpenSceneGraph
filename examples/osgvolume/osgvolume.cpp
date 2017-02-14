@@ -481,9 +481,10 @@ int main( int argc, char **argv )
     while(arguments.read("--test"))
     {
         transferFunction = new osg::TransferFunction1D;
-        transferFunction->setColor(0.0, osg::Vec4(1.0,0.0,0.0,0.0));
-        transferFunction->setColor(0.5, osg::Vec4(1.0,1.0,0.0,0.5));
-        transferFunction->setColor(1.0, osg::Vec4(0.0,0.0,1.0,1.0));
+        transferFunction->setColor(0.0, osg::Vec4(0.0,0.0,1.0,0.0));
+        transferFunction->setColor(.43166, osg::Vec4(0.0,1.0,0.0,0.02));
+        transferFunction->setColor(0.743166, osg::Vec4(1.0,0.0,0.0,0.03));
+        transferFunction->setColor(10.0, osg::Vec4(1.0,0.0,0.0,0.00));
     }
 
     while(arguments.read("--test2"))

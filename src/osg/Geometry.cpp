@@ -814,16 +814,13 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
 
         if (state.useVertexArrayObject(_useVertexArrayObject) && !bufferObjects.empty())
         {
-            VertexArrayState* curvas,*vas = 0;
+            VertexArrayState* vas = 0;
 
             _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
 
-           // curvas=state.getCurrentVertexArrayState();
             State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 
-            ///bind the VAO only if state VAS previously bound
-           //if(curvas!=state.getGlobalVertexArrayState())
-               vas->bindVertexArrayObject();
+            vas->bindVertexArrayObject();
 
             drawVertexArraysImplementation(renderInfo);
         }
@@ -875,10 +872,7 @@ void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
     VertexArrayState* vas = state.getCurrentVertexArrayState();
-    if (state.useVertexArrayObject(_useVertexArrayObject))
-    {
-        if (!vas->getRequiresSetArrays()) return;
-    }
+
     bool handleVertexAttributes = !_vertexAttribList.empty();
 
     AttributeDispatchers& attributeDispatchers = state.getAttributeDispatchers();
@@ -900,7 +894,10 @@ void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
     attributeDispatchers.activateSecondaryColorArray(_secondaryColorArray.get());
     attributeDispatchers.activateFogCoordArray(_fogCoordArray.get());
 
-
+    if (state.useVertexArrayObject(_useVertexArrayObject))
+    {
+        if (!vas->getRequiresSetArrays()) return;
+    }
 
     vas->lazyDisablingOfVertexAttributes();
 
@@ -951,13 +948,14 @@ void Geometry::drawPrimitivesImplementation(RenderInfo& renderInfo) const
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
 
     bool bindPerPrimitiveSetActive = attributeDispatchers.active();
-    unsigned int primitiveSetNum=0;
-    for( PrimitiveSetList::const_iterator itpr = _primitives.begin(); itpr != _primitives.end(); itpr++, primitiveSetNum++)
+    for(unsigned int primitiveSetNum=0; primitiveSetNum!=_primitives.size(); ++primitiveSetNum)
     {
         // dispatch any attributes that are bound per primitive
         if (bindPerPrimitiveSetActive) attributeDispatchers.dispatch(primitiveSetNum);
 
-        (*itpr).get()->draw(state, usingVertexBufferObjects);
+        const PrimitiveSet* primitiveset = _primitives[primitiveSetNum].get();
+
+        primitiveset->draw(state, usingVertexBufferObjects);
     }
 }
 

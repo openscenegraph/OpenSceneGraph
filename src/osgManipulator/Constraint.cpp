@@ -33,7 +33,7 @@ osg::Vec3d snap_point_to_grid(const osg::Vec3d& point, const osg::Vec3d& origin,
     scale[1] = spacing[1] ? round_to_nearest_int((point[1] - origin[1]) / spacing[1]) : 1.0;
     scale[2] = spacing[2] ? round_to_nearest_int((point[2] - origin[2]) / spacing[2]) : 1.0;
     osg::Vec3d snappedPoint = origin;
-    snappedPoint += osg::Vec3(scale[0]*spacing[0],scale[1]*spacing[1],scale[2]*spacing[2]);
+    snappedPoint += osg::Vec3d(scale[0]*spacing[0],scale[1]*spacing[1],scale[2]*spacing[2]);
     return snappedPoint;
 }
 

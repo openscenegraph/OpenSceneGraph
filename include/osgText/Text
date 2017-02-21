@@ -306,11 +306,24 @@ public:
 
         Glyphs                          _glyphs;
         Coords2                         _coords;
+
+
+#ifdef NEW_APPROACH
+        Coords3                         _transformedCoords;
+#else
         osg::buffered_object<Coords3>   _transformedCoords;
+#endif
+
+
         TexCoords                       _texcoords;
         LineNumbers                     _lineNumbers;
 
+#ifdef NEW_APPROACH
+        Coords3                         _transformedBackdropCoords[8];
+#else
         osg::buffered_object<Coords3>   _transformedBackdropCoords[8];
+#endif
+
         ColorCoords    _colorCoords;
 
         osg::ref_ptr<osg::DrawElementsUShort> _quadIndices;
@@ -328,6 +341,7 @@ public:
         Coords2& getCoords() { return _coords; }
         const Coords2& getCoords() const { return _coords; }
 
+#ifndef NEW_APPROACH
         Coords3& getTransformedCoords(unsigned int contexID) { return _transformedCoords[contexID]; }
         const Coords3& getTransformedCoords(unsigned int contexID) const { return _transformedCoords[contexID]; }
 
@@ -336,6 +350,7 @@ public:
 
         LineNumbers& getLineNumbers() { return _lineNumbers; }
         const LineNumbers& getLineNumbers() const { return _lineNumbers; }
+#endif
 
         /** Resize any per context GLObject buffers to specified size. */
         void resizeGLObjectBuffers(unsigned int maxSize);
@@ -370,6 +385,8 @@ public:
 protected:
 
     virtual ~Text();
+
+    bool computeMatrix(osg::State& state, osg::Matrix& matrix) const;
 
     Font* getActiveFont();
     const Font* getActiveFont() const;

@@ -304,30 +304,15 @@ public:
         typedef osg::ref_ptr<osg::Vec2Array> TexCoords;
         typedef osg::ref_ptr<osg::Vec4Array> ColorCoords;
 
-#ifdef NEW_APPROACH
         typedef Coords3 Coords;
-#else
-        typedef Coords2 Coords;
-#endif
 
         Glyphs                          _glyphs;
         Coords                          _coords;
 
-#ifdef NEW_APPROACH
-//        Coords3                         _transformedCoords;
-#else
-        osg::buffered_object<Coords3>   _transformedCoords;
-#endif
-
-
         TexCoords                       _texcoords;
         LineNumbers                     _lineNumbers;
 
-#ifdef NEW_APPROACH
         Coords3                         _transformedBackdropCoords[8];
-#else
-        osg::buffered_object<Coords3>   _transformedBackdropCoords[8];
-#endif
 
         ColorCoords    _colorCoords;
 
@@ -343,8 +328,6 @@ public:
         Glyphs& getGlyphs() { return _glyphs; }
         const Glyphs& getGlyphs() const { return _glyphs; }
 
-#ifdef NEW_APPROACH
-
         void addCoord(const osg::Vec2& c) { _coords->push_back(osg::Vec3(c.x(), c.y(), 0.0f)); }
 
         void getCoord(unsigned int i, osg::Vec2& c) const { c.set((*_coords)[i].x(), (*_coords)[i].y()); }
@@ -352,28 +335,8 @@ public:
 
         Coords3& getCoords() { return _coords; }
         const Coords3& getCoords() const { return _coords; }
-#else
-        void addCoord(const osg::Vec2& c) { _coords->push_back(c); }
-
-        void getCoord(unsigned int i, osg::Vec2& c) const { c = (*_coords)[i]; }
-        void getCoord(unsigned int i, osg::Vec3& c) const { c.set((*_coords)[i].x(), (*_coords)[i].y(), 0.0f); }
-
-        Coords2& getCoords() { return _coords; }
-        const Coords2& getCoords() const { return _coords; }
-#endif
 
         void addTexCoord(const osg::Vec2& tc) { _texcoords->push_back(tc); }
-
-#ifndef NEW_APPROACH
-        Coords3& getTransformedCoords(unsigned int contexID) { return _transformedCoords[contexID]; }
-        const Coords3& getTransformedCoords(unsigned int contexID) const { return _transformedCoords[contexID]; }
-
-        TexCoords& getTexCoords() { return _texcoords; }
-        const TexCoords& getTexCoords() const { return _texcoords; }
-
-        LineNumbers& getLineNumbers() { return _lineNumbers; }
-        const LineNumbers& getLineNumbers() const { return _lineNumbers; }
-#endif
 
         /** Resize any per context GLObject buffers to specified size. */
         void resizeGLObjectBuffers(unsigned int maxSize);

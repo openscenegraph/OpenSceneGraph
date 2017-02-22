@@ -393,17 +393,9 @@ void FadeText::drawImplementation(osg::RenderInfo& renderInfo) const
         userData->_fadeTextInView.clear();
     }
 
-
-
-#ifdef NEW_APPROACH
     osg::Matrix lmv = state.getModelViewMatrix();
     computeMatrix(state, lmv);
     lmv.postMult(state.getModelViewMatrix());
-#else
-    osgText::Text::AutoTransformCache& atc = _autoTransformCache[renderInfo.getContextID()];
-    osg::Matrix lmv = atc._matrix;
-    lmv.postMult(state.getModelViewMatrix());
-#endif
 
     if (renderInfo.getView() && renderInfo.getView()->getCamera())
     {

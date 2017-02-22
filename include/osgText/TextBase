@@ -20,8 +20,6 @@
 #include <osgText/KerningType>
 #include <osgText/Font>
 
-#define NEW_APPROACH
-
 namespace osgText {
 
 
@@ -320,10 +318,6 @@ protected:
         int         _width;
         int         _height;
         osg::Vec3   _transformedPosition;
-#ifndef NEW_APPROACH
-        osg::Matrix _modelview;
-        osg::Matrix _projection;
-#endif
         osg::Matrix _matrix;
     };
 

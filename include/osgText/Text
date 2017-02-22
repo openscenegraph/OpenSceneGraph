@@ -314,7 +314,7 @@ public:
         Coords                          _coords;
 
 #ifdef NEW_APPROACH
-        Coords3                         _transformedCoords;
+//        Coords3                         _transformedCoords;
 #else
         osg::buffered_object<Coords3>   _transformedCoords;
 #endif

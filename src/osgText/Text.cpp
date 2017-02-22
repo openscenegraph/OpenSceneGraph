@@ -835,6 +835,7 @@ void Text::computePositions(unsigned int contextID) const
     }
 #endif
 
+#ifndef NEW_APPROACH
     // now apply matrix to the glyphs.
     for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
@@ -844,17 +845,12 @@ void Text::computePositions(unsigned int contextID) const
         //OSG_NOTICE<<"Text::computePositions("<<contextID<<") glyphquad= "<<&glyphquad<<std::endl;
         GlyphQuads::Coords& coords = glyphquad._coords;
 
-#ifdef NEW_APPROACH
-        GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords;
-#else
         if (contextID>=glyphquad._transformedCoords.size())
         {
             // contextID exceeds one setup for glyphquad._transformedCoords, ignore this request.
             continue;
         }
         GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords[contextID];
-#endif
-
         if (!transformedCoords) transformedCoords = new osg::Vec3Array;
 
         unsigned int numCoords = coords->size();
@@ -865,14 +861,11 @@ void Text::computePositions(unsigned int contextID) const
 
         for(unsigned int i=0;i<numCoords;++i)
         {
-#ifdef NEW_APPROACH
-            (*transformedCoords)[i] = (*coords)[i];
-#else
             (*transformedCoords)[i] = osg::Vec3((*coords)[i].x(), (*coords)[i].y(), 0.0f)*matrix;
-#endif
         }
         transformedCoords->dirty();
     }
+#endif
 
     computeBackdropPositions(contextID);
 
@@ -1454,7 +1447,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
     {
         const GlyphQuads& glyphquad = (_textureGlyphQuadMap.begin())->second;
 #ifdef NEW_APPROACH
-        if (!glyphquad._transformedCoords.valid() || glyphquad._transformedCoords->empty() )
+        if (!glyphquad._coords.valid() || glyphquad._coords->empty() )
         {
             computePositions(contextID);
         }
@@ -1644,9 +1637,9 @@ void Text::accept(osg::Drawable::ConstAttributeFunctor& af) const
     {
         const GlyphQuads& glyphquad = titr->second;
 #ifdef NEW_APPROACH
-        if (glyphquad._transformedCoords.valid() )
+        if (glyphquad._coords.valid() )
         {
-            af.apply(osg::Drawable::VERTICES, glyphquad._transformedCoords->size(), &(glyphquad._transformedCoords->front()));
+            af.apply(osg::Drawable::VERTICES, glyphquad._coords->size(), &(glyphquad._coords->front()));
             af.apply(osg::Drawable::TEXTURE_COORDS_0, glyphquad._texcoords->size(), &(glyphquad._texcoords->front()));
         }
 #else
@@ -1667,10 +1660,10 @@ void Text::accept(osg::PrimitiveFunctor& pf) const
     {
         const GlyphQuads& glyphquad = titr->second;
 #ifdef NEW_APPROACH
-        if (glyphquad._transformedCoords.valid())
+        if (glyphquad._coords.valid())
         {
-            pf.setVertexArray(glyphquad._transformedCoords->size(), &(glyphquad._transformedCoords->front()));
-            pf.drawArrays(GL_QUADS, 0, glyphquad._transformedCoords->size());
+            pf.setVertexArray(glyphquad._coords->size(), &(glyphquad._coords->front()));
+            pf.drawArrays(GL_QUADS, 0, glyphquad._coords->size());
         }
 #else
         if (!glyphquad._transformedCoords.empty() && glyphquad._transformedCoords[0].valid())
@@ -1789,7 +1782,7 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
 {
 
 #ifdef NEW_APPROACH
-    const GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords;
+    const GlyphQuads::Coords3& transformedCoords = glyphquad._coords;
 #else
     unsigned int contextID = state.getContextID();
     const GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords[contextID];
@@ -2202,7 +2195,7 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
 
         // Draw the foreground text
 #ifdef NEW_APPROACH
-        const GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords;
+        const GlyphQuads::Coords3& transformedCoords = glyphquad._coords;
 #else
         const GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords[contextID];
 #endif
@@ -2302,7 +2295,6 @@ void Text::GlyphQuads::initGlyphQuads()
     _coords = new osg::Vec3Array();
     _texcoords = new osg::Vec2Array();
     _colorCoords = new osg::Vec4Array();
-    _transformedCoords = new osg::Vec3Array();
 
     for (int j = 0; j < 8; j++)
     {
@@ -2360,11 +2352,6 @@ void Text::GlyphQuads::initGPUBufferObjects()
     _colorCoords->setBinding(osg::Array::BIND_PER_VERTEX);
     _colorCoords->setVertexBufferObject(vbo);
 #ifdef NEW_APPROACH
-    if (_transformedCoords.valid())
-    {
-        _transformedCoords->setBinding(osg::Array::BIND_PER_VERTEX);
-        _transformedCoords->setVertexBufferObject(vbo);
-    }
     for (int j = 0; j < 8; j++)
     {
         if (_transformedBackdropCoords[j].valid())
@@ -2402,7 +2389,7 @@ void Text::GlyphQuads::initGPUBufferObjects()
 void Text::GlyphQuads::resizeGLObjectBuffers(unsigned int maxSize)
 {
 #ifdef NEW_APPROACH
-    _transformedCoords->resizeGLObjectBuffers(maxSize);
+    _coords->resizeGLObjectBuffers(maxSize);
 
     for (int j = 0; j < 8; j++)
     {
@@ -2434,7 +2421,7 @@ void Text::GlyphQuads::resizeGLObjectBuffers(unsigned int maxSize)
 void Text::GlyphQuads::releaseGLObjects(osg::State* state) const
 {
 #ifdef NEW_APPROACH
-    _transformedCoords->releaseGLObjects(state);;
+    _coords->releaseGLObjects(state);;
 
     for (int j = 0; j < 8; j++)
     {

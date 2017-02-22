@@ -445,16 +445,16 @@ void Text::computeGlyphRepresentation()
                     osg::Vec2 lowLeft = local+osg::Vec2(0.0f-fHorizQuadMargin,0.0f-fVertQuadMargin);
                     osg::Vec2 lowRight = local+osg::Vec2(width+fHorizQuadMargin,0.0f-fVertQuadMargin);
                     osg::Vec2 upRight = local+osg::Vec2(width+fHorizQuadMargin,height+fVertQuadMargin);
-                    glyphquad._coords->push_back(upLeft);
-                    glyphquad._coords->push_back(lowLeft);
-                    glyphquad._coords->push_back(lowRight);
-                    glyphquad._coords->push_back(upRight);
+                    glyphquad.addCoord(upLeft);
+                    glyphquad.addCoord(lowLeft);
+                    glyphquad.addCoord(lowRight);
+                    glyphquad.addCoord(upRight);
 
                     // set up the tex coords of the quad
-                    glyphquad._texcoords->push_back(osg::Vec2(mintc.x(), maxtc.y()));
-                    glyphquad._texcoords->push_back(osg::Vec2(mintc.x(), mintc.y()));
-                    glyphquad._texcoords->push_back(osg::Vec2(maxtc.x(), mintc.y()));
-                    glyphquad._texcoords->push_back(osg::Vec2(maxtc.x(), maxtc.y()));
+                    glyphquad.addTexCoord(osg::Vec2(mintc.x(), maxtc.y()));
+                    glyphquad.addTexCoord(osg::Vec2(mintc.x(), mintc.y()));
+                    glyphquad.addTexCoord(osg::Vec2(maxtc.x(), mintc.y()));
+                    glyphquad.addTexCoord(osg::Vec2(maxtc.x(), maxtc.y()));
 
                     // move the cursor onto the next character.
                     // also expand bounding box
@@ -573,11 +573,11 @@ bool Text::computeAverageGlyphWidthAndHeight(float& avg_width, float& avg_height
         ++const_titr)
     {
         const GlyphQuads& glyphquad = const_titr->second;
-        const GlyphQuads::Coords2& coords2 = glyphquad._coords;
-        for (i = 0; i < coords2->size(); i += 4)
+        const GlyphQuads::Coords& coords = glyphquad._coords;
+        for (i = 0; i < coords->size(); i += 4)
         {
-            width = (*coords2)[i + 2].x() - (*coords2)[i].x();
-            height = (*coords2)[i].y() - (*coords2)[i + 1].y();
+            width = (*coords)[i + 2].x() - (*coords)[i].x();
+            height = (*coords)[i].y() - (*coords)[i + 1].y();
 
             running_width += width;
             running_height += height;
@@ -842,7 +842,7 @@ void Text::computePositions(unsigned int contextID) const
     {
         GlyphQuads& glyphquad = titr->second;
         //OSG_NOTICE<<"Text::computePositions("<<contextID<<") glyphquad= "<<&glyphquad<<std::endl;
-        GlyphQuads::Coords2& coords2 = glyphquad._coords;
+        GlyphQuads::Coords& coords = glyphquad._coords;
 
 #ifdef NEW_APPROACH
         GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords;
@@ -857,7 +857,7 @@ void Text::computePositions(unsigned int contextID) const
 
         if (!transformedCoords) transformedCoords = new osg::Vec3Array;
 
-        unsigned int numCoords = coords2->size();
+        unsigned int numCoords = coords->size();
         if (numCoords != transformedCoords->size())
         {
             transformedCoords->resize(numCoords);
@@ -866,9 +866,9 @@ void Text::computePositions(unsigned int contextID) const
         for(unsigned int i=0;i<numCoords;++i)
         {
 #ifdef NEW_APPROACH
-            (*transformedCoords)[i] = osg::Vec3((*coords2)[i].x(), (*coords2)[i].y(), 0.0f);
+            (*transformedCoords)[i] = (*coords)[i];
 #else
-            (*transformedCoords)[i] = osg::Vec3((*coords2)[i].x(), (*coords2)[i].y(), 0.0f)*matrix;
+            (*transformedCoords)[i] = osg::Vec3((*coords)[i].x(), (*coords)[i].y(), 0.0f)*matrix;
 #endif
         }
         transformedCoords->dirty();
@@ -921,7 +921,7 @@ void Text::computeBackdropPositions(unsigned int contextID) const
         ++titr)
     {
         GlyphQuads& glyphquad = titr->second;
-        GlyphQuads::Coords2& coords2 = glyphquad._coords;
+        GlyphQuads::Coords& coords = glyphquad._coords;
 
         unsigned int backdrop_index;
         unsigned int max_backdrop_index;
@@ -962,7 +962,7 @@ void Text::computeBackdropPositions(unsigned int contextID) const
 
             if (!transformedCoords) transformedCoords = new osg::Vec3Array();
 
-            unsigned int numCoords = coords2->size();
+            unsigned int numCoords = coords->size();
             if (numCoords!=transformedCoords->size())
             {
                 transformedCoords->resize(numCoords);
@@ -1029,9 +1029,9 @@ void Text::computeBackdropPositions(unsigned int contextID) const
                         }
                 }
 #ifdef NEW_APPROACH
-                (*transformedCoords)[i] = osg::Vec3(horizontal_shift_direction * _backdropHorizontalOffset * avg_width + (*coords2)[i].x(), vertical_shift_direction * _backdropVerticalOffset * avg_height + (*coords2)[i].y(), 0.0f);
+                (*transformedCoords)[i] = osg::Vec3(horizontal_shift_direction * _backdropHorizontalOffset * avg_width + (*coords)[i].x(), vertical_shift_direction * _backdropVerticalOffset * avg_height + (*coords)[i].y(), 0.0f);
 #else
-                (*transformedCoords)[i] = osg::Vec3(horizontal_shift_direction * _backdropHorizontalOffset * avg_width + (*coords2)[i].x(), vertical_shift_direction * _backdropVerticalOffset * avg_height + (*coords2)[i].y(), 0.0f)*matrix;
+                (*transformedCoords)[i] = osg::Vec3(horizontal_shift_direction * _backdropHorizontalOffset * avg_width + (*coords)[i].x(), vertical_shift_direction * _backdropVerticalOffset * avg_height + (*coords)[i].y(), 0.0f)*matrix;
 #endif
                 transformedCoords->dirty();
             }
@@ -1231,26 +1231,26 @@ void Text::computeColorGradientsOverall() const
         ++const_titr)
     {
         const GlyphQuads& glyphquad = const_titr->second;
-        const GlyphQuads::Coords2& coords2 = glyphquad._coords;
+        const GlyphQuads::Coords& coords = glyphquad._coords;
 
-        for(i=0;i<coords2->size();++i)
+        for(i=0;i<coords->size();++i)
         {
             // Min and Max are needed for color gradients
-            if((*coords2)[i].x() > max_x)
+            if((*coords)[i].x() > max_x)
             {
-                max_x = (*coords2)[i].x();
+                max_x = (*coords)[i].x();
             }
-            if ((*coords2)[i].x() < min_x)
+            if ((*coords)[i].x() < min_x)
             {
-                min_x = (*coords2)[i].x();
+                min_x = (*coords)[i].x();
             }
-            if ((*coords2)[i].y() > max_y)
+            if ((*coords)[i].y() > max_y)
             {
-                max_y = (*coords2)[i].y();
+                max_y = (*coords)[i].y();
             }
-            if ((*coords2)[i].y() < min_y)
+            if ((*coords)[i].y() < min_y)
             {
-                min_y = (*coords2)[i].y();
+                min_y = (*coords)[i].y();
             }
 
         }
@@ -1261,10 +1261,10 @@ void Text::computeColorGradientsOverall() const
         ++titr)
     {
         GlyphQuads& glyphquad = titr->second;
-        GlyphQuads::Coords2& coords2 = glyphquad._coords;
+        GlyphQuads::Coords& coords = glyphquad._coords;
         GlyphQuads::ColorCoords& colorCoords = glyphquad._colorCoords;
 
-        unsigned int numCoords = coords2->size();
+        unsigned int numCoords = coords->size();
         if (numCoords!=colorCoords->size())
         {
             colorCoords->resize(numCoords);
@@ -1277,8 +1277,8 @@ void Text::computeColorGradientsOverall() const
                 max_x,
                 min_y,
                 max_y,
-                (*coords2)[i].x(),
-                (*coords2)[i].y(),
+                (*coords)[i].x(),
+                (*coords)[i].y(),
                 _colorGradientBottomLeft[0],
                 _colorGradientTopLeft[0],
                 _colorGradientBottomRight[0],
@@ -1290,8 +1290,8 @@ void Text::computeColorGradientsOverall() const
                 max_x,
                 min_y,
                 max_y,
-                (*coords2)[i].x(),
-                (*coords2)[i].y(),
+                (*coords)[i].x(),
+                (*coords)[i].y(),
                 _colorGradientBottomLeft[1],
                 _colorGradientTopLeft[1],
                 _colorGradientBottomRight[1],
@@ -1303,8 +1303,8 @@ void Text::computeColorGradientsOverall() const
                 max_x,
                 min_y,
                 max_y,
-                (*coords2)[i].x(),
-                (*coords2)[i].y(),
+                (*coords)[i].x(),
+                (*coords)[i].y(),
                 _colorGradientBottomLeft[2],
                 _colorGradientTopLeft[2],
                 _colorGradientBottomRight[2],
@@ -1316,8 +1316,8 @@ void Text::computeColorGradientsOverall() const
                 max_x,
                 min_y,
                 max_y,
-                (*coords2)[i].x(),
-                (*coords2)[i].y(),
+                (*coords)[i].x(),
+                (*coords)[i].y(),
                 _colorGradientBottomLeft[3],
                 _colorGradientTopLeft[3],
                 _colorGradientBottomRight[3],
@@ -1336,10 +1336,10 @@ void Text::computeColorGradientsPerCharacter() const
         ++titr)
     {
         GlyphQuads& glyphquad = titr->second;
-        GlyphQuads::Coords2& coords2 = glyphquad._coords;
+        GlyphQuads::Coords& coords = glyphquad._coords;
         GlyphQuads::ColorCoords& colorCoords = glyphquad._colorCoords;
 
-        unsigned int numCoords = coords2->size();
+        unsigned int numCoords = coords->size();
         if (numCoords!=colorCoords->size())
         {
             colorCoords->resize(numCoords);
@@ -2297,11 +2297,11 @@ Text::GlyphQuads::GlyphQuads(const GlyphQuads&)
 
 void Text::GlyphQuads::initGlyphQuads()
 {
-    _coords = new osg::Vec2Array();
-    _texcoords = new osg::Vec2Array();
-    _colorCoords = new osg::Vec4Array();
 
 #ifdef NEW_APPROACH
+    _coords = new osg::Vec3Array();
+    _texcoords = new osg::Vec2Array();
+    _colorCoords = new osg::Vec4Array();
     _transformedCoords = new osg::Vec3Array();
 
     for (int j = 0; j < 8; j++)
@@ -2309,6 +2309,10 @@ void Text::GlyphQuads::initGlyphQuads()
         _transformedBackdropCoords[j] = new osg::Vec3Array();
     }
 #else
+    _coords = new osg::Vec2Array();
+    _texcoords = new osg::Vec2Array();
+    _colorCoords = new osg::Vec4Array();
+
     for (size_t i = 0; i < _transformedCoords.size(); i++)
     {
         _transformedCoords[i] = new osg::Vec3Array();

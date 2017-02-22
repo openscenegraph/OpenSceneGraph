@@ -116,14 +116,19 @@ void Input::_calculateCursorOffsets() {
     osgText::Text::TextureGlyphQuadMap& tgqm = const_cast<osgText::Text::TextureGlyphQuadMap&>(_text->getTextureGlyphQuadMap());
     osgText::Text::TextureGlyphQuadMap::iterator tgqmi = tgqm.begin();
 
-    std::vector<osg::Vec2>                coords;
+    std::vector<osg::Vec2>          coords;
     std::vector<osgText::Glyph*>    glyphs;
     for ( ; tgqmi != tgqm.end(); tgqmi++ )
     {
         const osgText::Text::GlyphQuads& gq = tgqmi->second;
 
         //coords.insert(coords.end(),gq.getTransformedCoords(0).begin(),gq.getTransformedCoords(0).end());
-        coords.insert(coords.end(),gq.getCoords()->begin(),gq.getCoords()->end());
+        unsigned int numCoords = gq.getCoords()->size();
+        for(unsigned int i=0; i<numCoords; ++i)
+        {
+            osg::Vec2 c; gq.getCoord(i, c); coords.push_back(c);
+        }
+
         for (unsigned int i=0; i<gq.getGlyphs().size(); ++i)
         {
             glyphs.push_back(gq.getGlyphs().at(i));

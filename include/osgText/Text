@@ -299,12 +299,9 @@ public:
     {
         typedef std::vector<Glyph*> Glyphs;
         typedef std::vector<unsigned int> LineNumbers;
-        typedef osg::ref_ptr<osg::Vec2Array> Coords2;
-        typedef osg::ref_ptr<osg::Vec3Array> Coords3;
+        typedef osg::ref_ptr<osg::Vec3Array> Coords;
         typedef osg::ref_ptr<osg::Vec2Array> TexCoords;
         typedef osg::ref_ptr<osg::Vec4Array> ColorCoords;
-
-        typedef Coords3 Coords;
 
         Glyphs                          _glyphs;
         Coords                          _coords;
@@ -312,7 +309,7 @@ public:
         TexCoords                       _texcoords;
         LineNumbers                     _lineNumbers;
 
-        Coords3                         _transformedBackdropCoords[8];
+        Coords                          _transformedBackdropCoords[8];
 
         ColorCoords    _colorCoords;
 
@@ -329,12 +326,13 @@ public:
         const Glyphs& getGlyphs() const { return _glyphs; }
 
         void addCoord(const osg::Vec2& c) { _coords->push_back(osg::Vec3(c.x(), c.y(), 0.0f)); }
+        void addCoord(const osg::Vec3& c) { _coords->push_back(c); }
 
         void getCoord(unsigned int i, osg::Vec2& c) const { c.set((*_coords)[i].x(), (*_coords)[i].y()); }
         void getCoord(unsigned int i, osg::Vec3& c) const { c = (*_coords)[i]; }
 
-        Coords3& getCoords() { return _coords; }
-        const Coords3& getCoords() const { return _coords; }
+        Coords& getCoords() { return _coords; }
+        const Coords& getCoords() const { return _coords; }
 
         void addTexCoord(const osg::Vec2& tc) { _texcoords->push_back(tc); }
 

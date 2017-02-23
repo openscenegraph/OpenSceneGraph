@@ -1519,9 +1519,9 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
             const GlyphQuads::Coords& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index];
             if (transformedBackdropCoords.valid() && !transformedBackdropCoords->empty())
             {
+                glPolygonOffset(0.1f * osg::PolygonOffset::getFactorMultiplier(), osg::PolygonOffset::getUnitsMultiplier() * (max_backdrop_index-backdrop_index) );
+
                 state.setVertexPointer( transformedBackdropCoords.get());
-                glPolygonOffset(0.1f * osg::PolygonOffset::getFactorMultiplier(),
-                                osg::PolygonOffset::getUnitsMultiplier() * (max_backdrop_index-backdrop_index) );
                 state.drawQuads(0,transformedBackdropCoords->size());
             }
         }
@@ -1632,10 +1632,10 @@ void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultipl
             const GlyphQuads::Coords& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index];
             if (transformedBackdropCoords.valid() && !transformedBackdropCoords->empty())
             {
-                state.setVertexPointer( transformedBackdropCoords.get());
                 double offset = double(max_backdrop_index-backdrop_index)*0.0001;
                 glDepthRange( offset, 1.0+offset);
 
+                state.setVertexPointer( transformedBackdropCoords.get());
                 state.drawQuads(0,transformedBackdropCoords->size());
             }
         }
@@ -1881,6 +1881,8 @@ void Text::GlyphQuads::initGPUBufferObjects()
 void Text::GlyphQuads::resizeGLObjectBuffers(unsigned int maxSize)
 {
     _coords->resizeGLObjectBuffers(maxSize);
+    _texcoords->resizeGLObjectBuffers(maxSize);
+    _colorCoords->resizeGLObjectBuffers(maxSize);
 
     for (int j = 0; j < 8; j++)
     {
@@ -1898,6 +1900,8 @@ void Text::GlyphQuads::resizeGLObjectBuffers(unsigned int maxSize)
 void Text::GlyphQuads::releaseGLObjects(osg::State* state) const
 {
     _coords->releaseGLObjects(state);;
+    _texcoords->releaseGLObjects(state);
+    _colorCoords->releaseGLObjects(state);
 
     for (int j = 0; j < 8; j++)
     {

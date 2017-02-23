@@ -20,6 +20,7 @@
 #include <osg/Notify>
 #include <osg/PolygonOffset>
 #include <osg/TexEnv>
+#include <osg/io_utils>
 
 #include <osgUtil/CullVisitor>
 
@@ -191,7 +192,8 @@ void TextBase::setAlignment(AlignmentType alignment)
     if (_alignment==alignment) return;
 
     _alignment = alignment;
-    computeGlyphRepresentation();
+    computePositions();
+    // computeGlyphRepresentation();
 }
 
 void TextBase::setAxisAlignment(AxisAlignment axis)
@@ -282,26 +284,22 @@ void TextBase::setBoundingBoxMargin(float margin)
 osg::BoundingBox TextBase::computeBoundingBox() const
 {
     osg::BoundingBox  bbox;
+#if 0
+    return bbox;
+#endif
 
     if (_textBB.valid())
     {
-        for(unsigned int i=0;i<_autoTransformCache.size();++i)
-        {
-            if (_autoTransformCache[i]._traversalNumber>=0)
-            {
-                osg::Matrix& matrix = _autoTransformCache[i]._matrix;
-                bbox.expandBy(_textBB.corner(0)*matrix);
-                bbox.expandBy(_textBB.corner(1)*matrix);
-                bbox.expandBy(_textBB.corner(2)*matrix);
-                bbox.expandBy(_textBB.corner(3)*matrix);
-                bbox.expandBy(_textBB.corner(4)*matrix);
-                bbox.expandBy(_textBB.corner(5)*matrix);
-                bbox.expandBy(_textBB.corner(6)*matrix);
-                bbox.expandBy(_textBB.corner(7)*matrix);
-            }
-        }
+        bbox.expandBy(_textBB.corner(0)*_matrix);
+        bbox.expandBy(_textBB.corner(1)*_matrix);
+        bbox.expandBy(_textBB.corner(2)*_matrix);
+        bbox.expandBy(_textBB.corner(3)*_matrix);
+        bbox.expandBy(_textBB.corner(4)*_matrix);
+        bbox.expandBy(_textBB.corner(5)*_matrix);
+        bbox.expandBy(_textBB.corner(6)*_matrix);
+        bbox.expandBy(_textBB.corner(7)*_matrix);
 
-
+#if 0
         if (!bbox.valid())
         {
             // Provide a fallback in cases where no bounding box has been been setup so far.
@@ -322,16 +320,17 @@ osg::BoundingBox TextBase::computeBoundingBox() const
                 matrix.makeTranslate(-_offset);
                 matrix.postMultRotate(_rotation);
                 matrix.postMultTranslate(_position);
-                bbox.expandBy(_textBB.corner(0)*matrix);
-                bbox.expandBy(_textBB.corner(1)*matrix);
-                bbox.expandBy(_textBB.corner(2)*matrix);
-                bbox.expandBy(_textBB.corner(3)*matrix);
-                bbox.expandBy(_textBB.corner(4)*matrix);
-                bbox.expandBy(_textBB.corner(5)*matrix);
-                bbox.expandBy(_textBB.corner(6)*matrix);
-                bbox.expandBy(_textBB.corner(7)*matrix);
+                bbox.expandBy(_textBB.corner(0)*_matrix);
+                bbox.expandBy(_textBB.corner(1)*_matrix);
+                bbox.expandBy(_textBB.corner(2)*_matrix);
+                bbox.expandBy(_textBB.corner(3)*_matrix);
+                bbox.expandBy(_textBB.corner(4)*_matrix);
+                bbox.expandBy(_textBB.corner(5)*_matrix);
+                bbox.expandBy(_textBB.corner(6)*_matrix);
+                bbox.expandBy(_textBB.corner(7)*_matrix);
             }
         }
+#endif
     }
 
     return bbox;
@@ -339,19 +338,157 @@ osg::BoundingBox TextBase::computeBoundingBox() const
 
 void TextBase::computePositions()
 {
-    unsigned int size = osg::maximum(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),_autoTransformCache.size());
+    computePositionsImplementation();
 
-    // FIXME: OPTIMIZE: This would be one of the ideal locations to
-    // call computeAverageGlyphWidthAndHeight(). It is out of the contextID loop
-    // so the value would be computed fewer times. But the code will need changes
-    // to get the value down to the locations it is needed. (Either pass through parameters
-    // or member variables, but we would need a system to know if the values are stale.)
+    osg::Matrix matrix;
+    computeMatrix(matrix, 0);
 
+    const_cast<TextBase*>(this)->dirtyBound();
+}
 
-    for(unsigned int i=0;i<size;++i)
+void TextBase::computePositionsImplementation()
+{
+    switch(_alignment)
     {
-        computePositions(i);
+        case LEFT_TOP:      _offset.set(_textBB.xMin(),_textBB.yMax(),_textBB.zMin()); break;
+        case LEFT_CENTER:   _offset.set(_textBB.xMin(),(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
+        case LEFT_BOTTOM:   _offset.set(_textBB.xMin(),_textBB.yMin(),_textBB.zMin()); break;
+
+        case CENTER_TOP:    _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,_textBB.yMax(),_textBB.zMin()); break;
+        case CENTER_CENTER: _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
+        case CENTER_BOTTOM: _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,_textBB.yMin(),_textBB.zMin()); break;
+
+        case RIGHT_TOP:     _offset.set(_textBB.xMax(),_textBB.yMax(),_textBB.zMin()); break;
+        case RIGHT_CENTER:  _offset.set(_textBB.xMax(),(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
+        case RIGHT_BOTTOM:  _offset.set(_textBB.xMax(),_textBB.yMin(),_textBB.zMin()); break;
+
+        case LEFT_BASE_LINE:  _offset.set(0.0f,0.0f,0.0f); break;
+        case CENTER_BASE_LINE:  _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,0.0f,0.0f); break;
+        case RIGHT_BASE_LINE:  _offset.set(_textBB.xMax(),0.0f,0.0f); break;
+
+        case LEFT_BOTTOM_BASE_LINE:  _offset.set(0.0f,-_characterHeight*(1.0 + _lineSpacing)*(_lineCount-1),0.0f); break;
+        case CENTER_BOTTOM_BASE_LINE:  _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,-_characterHeight*(1.0 + _lineSpacing)*(_lineCount-1),0.0f); break;
+        case RIGHT_BOTTOM_BASE_LINE:  _offset.set(_textBB.xMax(),-_characterHeight*(1.0 + _lineSpacing)*(_lineCount-1),0.0f); break;
     }
+
+    _normal = osg::Vec3(0.0f,0.0f,1.0f);
+}
+
+bool TextBase::computeMatrix(osg::Matrix& matrix, osg::State* state) const
+{
+    if (state && (_characterSizeMode!=OBJECT_COORDS || _autoRotateToScreen))
+    {
+        osg::Matrix modelview = state->getModelViewMatrix();
+        osg::Matrix projection = state->getProjectionMatrix();
+
+        matrix.makeTranslate(-_offset);
+
+        osg::Matrix rotate_matrix;
+        if (_autoRotateToScreen)
+        {
+            osg::Matrix temp_matrix(modelview);
+            temp_matrix.setTrans(0.0f,0.0f,0.0f);
+
+            rotate_matrix.invert(temp_matrix);
+        }
+
+        matrix.postMultRotate(_rotation);
+
+        if (_characterSizeMode!=OBJECT_COORDS)
+        {
+            osg::Matrix M(rotate_matrix);
+            M.postMultTranslate(_position);
+            M.postMult(modelview);
+            osg::Matrix& P = projection;
+
+            // compute the pixel size vector.
+
+            // pre adjust P00,P20,P23,P33 by multiplying them by the viewport window matrix.
+            // here we do it in short hand with the knowledge of how the window matrix is formed
+            // note P23,P33 are multiplied by an implicit 1 which would come from the window matrix.
+            // Robert Osfield, June 2002.
+
+            int width = 1280;
+            int height = 1024;
+
+            const osg::Viewport* viewport = state->getCurrentViewport();
+            if (viewport)
+            {
+                width = static_cast<int>(viewport->width());
+                height = static_cast<int>(viewport->height());
+            }
+
+            // scaling for horizontal pixels
+            float P00 = P(0,0)*width*0.5f;
+            float P20_00 = P(2,0)*width*0.5f + P(2,3)*width*0.5f;
+            osg::Vec3 scale_00(M(0,0)*P00 + M(0,2)*P20_00,
+                               M(1,0)*P00 + M(1,2)*P20_00,
+                               M(2,0)*P00 + M(2,2)*P20_00);
+
+            // scaling for vertical pixels
+            float P10 = P(1,1)*height*0.5f;
+            float P20_10 = P(2,1)*height*0.5f + P(2,3)*height*0.5f;
+            osg::Vec3 scale_10(M(0,1)*P10 + M(0,2)*P20_10,
+                               M(1,1)*P10 + M(1,2)*P20_10,
+                               M(2,1)*P10 + M(2,2)*P20_10);
+
+            float P23 = P(2,3);
+            float P33 = P(3,3);
+
+            float pixelSizeVector_w = M(3,2)*P23 + M(3,3)*P33;
+
+            float pixelSizeVert=(_characterHeight*sqrtf(scale_10.length2()))/(pixelSizeVector_w*0.701f);
+            float pixelSizeHori=(_characterHeight/getCharacterAspectRatio()*sqrtf(scale_00.length2()))/(pixelSizeVector_w*0.701f);
+
+            // avoid nasty math by preventing a divide by zero
+            if (pixelSizeVert == 0.0f)
+               pixelSizeVert= 1.0f;
+            if (pixelSizeHori == 0.0f)
+               pixelSizeHori= 1.0f;
+
+            if (_characterSizeMode==SCREEN_COORDS)
+            {
+                float scale_font_vert=_characterHeight/pixelSizeVert;
+                float scale_font_hori=_characterHeight/getCharacterAspectRatio()/pixelSizeHori;
+
+                if (P10<0)
+                   scale_font_vert=-scale_font_vert;
+                matrix.postMultScale(osg::Vec3f(scale_font_hori, scale_font_vert,1.0f));
+            }
+            else if (pixelSizeVert>getFontHeight())
+            {
+                float scale_font = getFontHeight()/pixelSizeVert;
+                matrix.postMultScale(osg::Vec3f(scale_font, scale_font,1.0f));
+            }
+
+        }
+
+        if (_autoRotateToScreen)
+        {
+            matrix.postMult(rotate_matrix);
+        }
+
+        matrix.postMultTranslate(_position);
+    }
+    else if (!_rotation.zeroRotation())
+    {
+        matrix.makeRotate(_rotation);
+        matrix.preMultTranslate(-_offset);
+        matrix.postMultTranslate(_position);
+        // OSG_NOTICE<<"New Need to rotate "<<matrix<<std::endl;
+    }
+    else
+    {
+        matrix.makeTranslate(_position-_offset);
+    }
+
+    if (_matrix!=matrix)
+    {
+        _matrix = matrix;
+        const_cast<TextBase*>(this)->dirtyBound();
+    }
+
+    return true;
 }
 
 void TextBase::setThreadSafeRefUnref(bool threadSafe)
@@ -362,8 +499,6 @@ void TextBase::setThreadSafeRefUnref(bool threadSafe)
 void TextBase::resizeGLObjectBuffers(unsigned int maxSize)
 {
     Drawable::resizeGLObjectBuffers(maxSize);
-
-    _autoTransformCache.resize(maxSize);
 }
 
 

@@ -77,7 +77,7 @@ void Text3D::accept(osg::PrimitiveFunctor& pf) const
             //////////////////////////////////////////////////////////////////////////
             // now apply matrix to the glyphs.
             osg::ref_ptr<osg::Vec3Array> transformedVertices = new osg::Vec3Array;
-            osg::Matrix matrix = _autoTransformCache[0]._matrix;//osg::Matrix();
+            osg::Matrix matrix = _matrix;;
             matrix.preMultTranslate(it->_position);
             transformedVertices->reserve(vertices->size());
             for (osg::Vec3Array::iterator itr=vertices->begin(); itr!=vertices->end(); itr++)
@@ -408,7 +408,7 @@ void Text3D::computeGlyphRepresentation()
     // set up the vertices for any boundinbox or alignment decoration
     setupDecoration();
 
-    TextBase::computePositions();
+    computePositions();
 }
 
 osg::BoundingBox Text3D::computeBoundingBox() const
@@ -417,84 +417,44 @@ osg::BoundingBox Text3D::computeBoundingBox() const
 
     if (_textBB.valid())
     {
-        for(unsigned int i=0;i<_autoTransformCache.size();++i)
-        {
-            osg::Matrix& matrix = _autoTransformCache[i]._matrix;
-            bbox.expandBy(_textBB.corner(0)*matrix);
-            bbox.expandBy(_textBB.corner(1)*matrix);
-            bbox.expandBy(_textBB.corner(2)*matrix);
-            bbox.expandBy(_textBB.corner(3)*matrix);
-            bbox.expandBy(_textBB.corner(4)*matrix);
-            bbox.expandBy(_textBB.corner(5)*matrix);
-            bbox.expandBy(_textBB.corner(6)*matrix);
-            bbox.expandBy(_textBB.corner(7)*matrix);
-        }
+        bbox.expandBy(_textBB.corner(0)*_matrix);
+        bbox.expandBy(_textBB.corner(1)*_matrix);
+        bbox.expandBy(_textBB.corner(2)*_matrix);
+        bbox.expandBy(_textBB.corner(3)*_matrix);
+        bbox.expandBy(_textBB.corner(4)*_matrix);
+        bbox.expandBy(_textBB.corner(5)*_matrix);
+        bbox.expandBy(_textBB.corner(6)*_matrix);
+        bbox.expandBy(_textBB.corner(7)*_matrix);
     }
 
     return bbox;
 }
 
-void Text3D::computePositions(unsigned int contextID) const
-{
-    if (_font.valid() == false) return;
-
-    switch(_alignment)
-    {
-    case LEFT_TOP:      _offset.set(_textBB.xMin(),_textBB.yMax(),0.0f); break;
-    case LEFT_CENTER:   _offset.set(_textBB.xMin(),(_textBB.yMax()+_textBB.yMin())*0.5f,0.0f); break;
-    case LEFT_BOTTOM:   _offset.set(_textBB.xMin(),_textBB.yMin(),0.0f); break;
-
-    case CENTER_TOP:    _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,_textBB.yMax(),0.0f); break;
-    case CENTER_CENTER: _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,(_textBB.yMax()+_textBB.yMin())*0.5f,0.0f); break;
-    case CENTER_BOTTOM: _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,_textBB.yMin(),0.0f); break;
-
-    case RIGHT_TOP:     _offset.set(_textBB.xMax(),_textBB.yMax(),0.0f); break;
-    case RIGHT_CENTER:  _offset.set(_textBB.xMax(),(_textBB.yMax()+_textBB.yMin())*0.5f,0.0f); break;
-    case RIGHT_BOTTOM:  _offset.set(_textBB.xMax(),_textBB.yMin(),0.0f); break;
-
-    case LEFT_BASE_LINE:  _offset.set(0.0f,0.0f,0.0f); break;
-    case CENTER_BASE_LINE:  _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,0.0f,0.0f); break;
-    case RIGHT_BASE_LINE:  _offset.set(_textBB.xMax(),0.0f,0.0f); break;
-
-    case LEFT_BOTTOM_BASE_LINE:  _offset.set(0.0f,-_characterHeight*(1.0 + _lineSpacing)*(_lineCount-1),0.0f); break;
-    case CENTER_BOTTOM_BASE_LINE:  _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,-_characterHeight*(1.0 + _lineSpacing)*(_lineCount-1),0.0f); break;
-    case RIGHT_BOTTOM_BASE_LINE:  _offset.set(_textBB.xMax(),-_characterHeight*(1.0 + _lineSpacing)*(_lineCount-1),0.0f); break;
-    }
-
-    AutoTransformCache& atc = _autoTransformCache[contextID];
-    osg::Matrix& matrix = atc._matrix;
-
-
-    osg::Vec3 scaleVec(_characterHeight / getCharacterAspectRatio(), _characterHeight , _characterHeight);
-
-    matrix.makeTranslate(-_offset);
-    matrix.postMultScale(scaleVec);
-    matrix.postMultRotate(_rotation);
-    matrix.postMultTranslate(_position);
-
-
-    _normal = osg::Matrix::transform3x3(osg::Vec3(0.0f,0.0f,1.0f),matrix);
-    _normal.normalize();
-
-    const_cast<Text3D*>(this)->dirtyBound();
-}
-
 void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
 {
     osg::State & state = *renderInfo.getState();
-    unsigned int contextID = state.getContextID();
 
     // ** save the previous modelview matrix
-    osg::Matrix previous(state.getModelViewMatrix());
+    osg::Matrix previous_modelview(state.getModelViewMatrix());
 
-    // ** get the modelview for this context
-    osg::Matrix modelview(_autoTransformCache[contextID]._matrix);
+    // set up the new modelview matrix
+    osg::Matrix modelview;
+    bool needToApplyMatrix = computeMatrix(modelview, &state);
 
-    // ** mult previous by the modelview for this context
-    modelview.postMult(previous);
+    if (needToApplyMatrix)
+    {
+        // ** mult previous by the modelview for this context
+        modelview.postMult(previous_modelview);
 
-    // ** apply this new modelview matrix
-    state.applyModelViewMatrix(modelview);
+        // ** apply this new modelview matrix
+        state.applyModelViewMatrix(modelview);
+
+        // OSG_NOTICE<<"New state.applyModelViewMatrix() "<<modelview<<std::endl;
+    }
+    else
+    {
+        // OSG_NOTICE<<"No need to apply matrix "<<std::endl;
+    }
 
     state.disableAllVertexArrays();
 
@@ -540,8 +500,11 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
         }
     }
 
-    // restore the previous modelview matrix
-    state.applyModelViewMatrix(previous);
+    if (needToApplyMatrix)
+    {
+        // restore the previous modelview matrix
+        state.applyModelViewMatrix(previous_modelview);
+    }
 }
 
 void Text3D::renderPerGlyph(osg::State & state) const
@@ -724,8 +687,6 @@ void Text3D::resizeGLObjectBuffers(unsigned int maxSize)
     TextBase::resizeGLObjectBuffers(maxSize);
 
     if (_font.valid()) _font->resizeGLObjectBuffers(maxSize);
-
-    TextBase::computePositions();
 }
 
 void Text3D::releaseGLObjects(osg::State* state) const

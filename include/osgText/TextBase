@@ -270,12 +270,13 @@ protected:
 
     virtual ~TextBase();
 
+    bool computeMatrix(osg::Matrix& matrix, osg::State* state=0) const;
+
     void positionCursor(const osg::Vec2 & endOfLine_coords, osg::Vec2 & cursor, unsigned int linelength);
-    void computePositions();
     String::iterator computeLastCharacterOnLine(osg::Vec2& cursor, String::iterator first,String::iterator last);
+    void computePositions();
+    virtual void computePositionsImplementation();
 
-
-    virtual void computePositions(unsigned int contextID) const = 0;
     virtual void computeGlyphRepresentation() = 0;
 
 
@@ -303,28 +304,12 @@ protected:
     KerningType                             _kerningType;
     unsigned int                            _lineCount;
 
+    osg::Vec3                               _offset;
+    osg::Vec3                               _normal;
+    osg::BoundingBox                        _textBB;
 
 
-    // internal caches of the positioning of the text.
-
-    struct AutoTransformCache
-    {
-        AutoTransformCache():
-            _traversalNumber(-1),
-            _width(0),
-            _height(0) {}
-
-        int         _traversalNumber;
-        int         _width;
-        int         _height;
-        osg::Vec3   _transformedPosition;
-        osg::Matrix _matrix;
-    };
-
-    mutable osg::buffered_object<AutoTransformCache>    _autoTransformCache;
-    mutable osg::Vec3                                   _offset;
-    mutable osg::Vec3                                   _normal;
-    mutable osg::BoundingBox                            _textBB;
+    mutable osg::Matrix                     _matrix;
 
     void setupDecoration();
 

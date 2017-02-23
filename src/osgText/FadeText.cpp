@@ -394,7 +394,7 @@ void FadeText::drawImplementation(osg::RenderInfo& renderInfo) const
     }
 
     osg::Matrix lmv = state.getModelViewMatrix();
-    computeMatrix(state, lmv);
+    computeMatrix(lmv, &state);
     lmv.postMult(state.getModelViewMatrix());
 
     if (renderInfo.getView() && renderInfo.getView()->getCamera())

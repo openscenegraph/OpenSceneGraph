@@ -236,7 +236,7 @@ void Text::computeGlyphRepresentation()
     if (_text.empty())
     {
         _textBB.set(0,0,0,0,0,0);//no size text
-        TextBase::computePositions(); //to reset the origin
+        computePositions(); //to reset the origin
         return;
     }
 
@@ -535,9 +535,7 @@ void Text::computeGlyphRepresentation()
         }
     }
 
-    TextBase::computePositions();
-    computeBackdropBoundingBox();
-    computeBoundingBoxMargin();
+    computePositions();
     computeColorGradients();
 
     // set up the vertices for any boundinbox or alignment decoration
@@ -596,151 +594,17 @@ bool Text::computeAverageGlyphWidthAndHeight(float& avg_width, float& avg_height
     return is_valid_size;
 }
 
-bool Text::computeMatrix(osg::State& state, osg::Matrix& matrix) const
+void Text::computePositionsImplementation()
 {
-    osg::Matrix modelview = state.getModelViewMatrix();
-    osg::Matrix projection = state.getProjectionMatrix();
+    TextBase::computePositionsImplementation();
 
-    if (_characterSizeMode!=OBJECT_COORDS || _autoRotateToScreen)
-    {
-
-        matrix.makeTranslate(-_offset);
-
-        osg::Matrix rotate_matrix;
-        if (_autoRotateToScreen)
-        {
-            osg::Matrix temp_matrix(modelview);
-            temp_matrix.setTrans(0.0f,0.0f,0.0f);
-
-            rotate_matrix.invert(temp_matrix);
-        }
-
-        matrix.postMultRotate(_rotation);
-
-        if (_characterSizeMode!=OBJECT_COORDS)
-        {
-            osg::Matrix M(rotate_matrix);
-            M.postMultTranslate(_position);
-            M.postMult(modelview);
-            osg::Matrix& P = projection;
-
-            // compute the pixel size vector.
-
-            // pre adjust P00,P20,P23,P33 by multiplying them by the viewport window matrix.
-            // here we do it in short hand with the knowledge of how the window matrix is formed
-            // note P23,P33 are multiplied by an implicit 1 which would come from the window matrix.
-            // Robert Osfield, June 2002.
-
-            int width = 1280;
-            int height = 1024;
-
-            const osg::Viewport* viewport = state.getCurrentViewport();
-            if (viewport)
-            {
-                width = static_cast<int>(viewport->width());
-                height = static_cast<int>(viewport->height());
-            }
-
-            // scaling for horizontal pixels
-            float P00 = P(0,0)*width*0.5f;
-            float P20_00 = P(2,0)*width*0.5f + P(2,3)*width*0.5f;
-            osg::Vec3 scale_00(M(0,0)*P00 + M(0,2)*P20_00,
-                               M(1,0)*P00 + M(1,2)*P20_00,
-                               M(2,0)*P00 + M(2,2)*P20_00);
-
-            // scaling for vertical pixels
-            float P10 = P(1,1)*height*0.5f;
-            float P20_10 = P(2,1)*height*0.5f + P(2,3)*height*0.5f;
-            osg::Vec3 scale_10(M(0,1)*P10 + M(0,2)*P20_10,
-                               M(1,1)*P10 + M(1,2)*P20_10,
-                               M(2,1)*P10 + M(2,2)*P20_10);
-
-            float P23 = P(2,3);
-            float P33 = P(3,3);
-
-            float pixelSizeVector_w = M(3,2)*P23 + M(3,3)*P33;
-
-            float pixelSizeVert=(_characterHeight*sqrtf(scale_10.length2()))/(pixelSizeVector_w*0.701f);
-            float pixelSizeHori=(_characterHeight/getCharacterAspectRatio()*sqrtf(scale_00.length2()))/(pixelSizeVector_w*0.701f);
-
-            // avoid nasty math by preventing a divide by zero
-            if (pixelSizeVert == 0.0f)
-               pixelSizeVert= 1.0f;
-            if (pixelSizeHori == 0.0f)
-               pixelSizeHori= 1.0f;
-
-            if (_characterSizeMode==SCREEN_COORDS)
-            {
-                float scale_font_vert=_characterHeight/pixelSizeVert;
-                float scale_font_hori=_characterHeight/getCharacterAspectRatio()/pixelSizeHori;
-
-                if (P10<0)
-                   scale_font_vert=-scale_font_vert;
-                matrix.postMultScale(osg::Vec3f(scale_font_hori, scale_font_vert,1.0f));
-            }
-            else if (pixelSizeVert>getFontHeight())
-            {
-                float scale_font = getFontHeight()/pixelSizeVert;
-                matrix.postMultScale(osg::Vec3f(scale_font, scale_font,1.0f));
-            }
-
-        }
-
-        if (_autoRotateToScreen)
-        {
-            matrix.postMult(rotate_matrix);
-        }
-
-        matrix.postMultTranslate(_position);
-    }
-    else if (!_rotation.zeroRotation())
-    {
-        matrix.makeRotate(_rotation);
-        matrix.preMultTranslate(-_offset);
-        matrix.postMultTranslate(_position);
-        // OSG_NOTICE<<"New Need to rotate "<<matrix<<std::endl;
-    }
-    else
-    {
-        matrix.makeTranslate(_position-_offset);
-    }
-    return true;
- }
-
-void Text::computePositions(unsigned int contextID) const
-{
-    switch(_alignment)
-    {
-    case LEFT_TOP:      _offset.set(_textBB.xMin(),_textBB.yMax(),_textBB.zMin()); break;
-    case LEFT_CENTER:   _offset.set(_textBB.xMin(),(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
-    case LEFT_BOTTOM:   _offset.set(_textBB.xMin(),_textBB.yMin(),_textBB.zMin()); break;
-
-    case CENTER_TOP:    _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,_textBB.yMax(),_textBB.zMin()); break;
-    case CENTER_CENTER: _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
-    case CENTER_BOTTOM: _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,_textBB.yMin(),_textBB.zMin()); break;
-
-    case RIGHT_TOP:     _offset.set(_textBB.xMax(),_textBB.yMax(),_textBB.zMin()); break;
-    case RIGHT_CENTER:  _offset.set(_textBB.xMax(),(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
-    case RIGHT_BOTTOM:  _offset.set(_textBB.xMax(),_textBB.yMin(),_textBB.zMin()); break;
-
-    case LEFT_BASE_LINE:  _offset.set(0.0f,0.0f,0.0f); break;
-    case CENTER_BASE_LINE:  _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,0.0f,0.0f); break;
-    case RIGHT_BASE_LINE:  _offset.set(_textBB.xMax(),0.0f,0.0f); break;
-
-    case LEFT_BOTTOM_BASE_LINE:  _offset.set(0.0f,-_characterHeight*(1.0 + _lineSpacing)*(_lineCount-1),0.0f); break;
-    case CENTER_BOTTOM_BASE_LINE:  _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,-_characterHeight*(1.0 + _lineSpacing)*(_lineCount-1),0.0f); break;
-    case RIGHT_BOTTOM_BASE_LINE:  _offset.set(_textBB.xMax(),-_characterHeight*(1.0 + _lineSpacing)*(_lineCount-1),0.0f); break;
-    }
-
-    computeBackdropPositions(contextID);
-
-    _normal = osg::Vec3(0.0f,0.0f,1.0f);
-
-    const_cast<Text*>(this)->dirtyBound();
+    computeBackdropPositions();
+    computeBackdropBoundingBox();
+    computeBoundingBoxMargin();
 }
 
 // Presumes the atc matrix is already up-to-date
-void Text::computeBackdropPositions(unsigned int contextID) const
+void Text::computeBackdropPositions()
 {
     if(_backdropType == NONE)
     {
@@ -871,7 +735,7 @@ void Text::computeBackdropPositions(unsigned int contextID) const
 
 // This method adjusts the bounding box to account for the expanded area caused by the backdrop.
 // This assumes that the bounding box has already been computed for the text without the backdrop.
-void Text::computeBackdropBoundingBox() const
+void Text::computeBackdropBoundingBox()
 {
     if(_backdropType == NONE)
     {
@@ -1014,7 +878,7 @@ void Text::computeBackdropBoundingBox() const
 }
 
 // This method expands the bounding box to a settable margin when a bounding box drawing mode is active.
-void Text::computeBoundingBoxMargin() const
+void Text::computeBoundingBoxMargin()
 {
     if(_drawMode & (BOUNDINGBOX | FILLEDBOUNDINGBOX)){
         _textBB.set(
@@ -1028,7 +892,7 @@ void Text::computeBoundingBoxMargin() const
     }
 }
 
-void Text::computeColorGradients() const
+void Text::computeColorGradients()
 {
     switch(_colorGradientMode)
     {
@@ -1046,7 +910,7 @@ void Text::computeColorGradients() const
     }
 }
 
-void Text::computeColorGradientsOverall() const
+void Text::computeColorGradientsOverall()
 {
 
     float min_x = FLT_MAX;
@@ -1159,7 +1023,7 @@ void Text::computeColorGradientsOverall() const
     }
 }
 
-void Text::computeColorGradientsPerCharacter() const
+void Text::computeColorGradientsPerCharacter()
 {
     for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
@@ -1215,37 +1079,21 @@ void Text::drawImplementation(osg::RenderInfo& renderInfo) const
 
 void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
-    unsigned int contextID = state.getContextID();
-
     state.applyMode(GL_BLEND,true);
 #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
     state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
     state.applyTextureAttribute(0,getActiveFont()->getTexEnv());
 #endif
 
-
-    // Ensure that the glyph coordinates have been transformed for
-    // this context id.
-
-    if ( !_textureGlyphQuadMap.empty() )
-    {
-        const GlyphQuads& glyphquad = (_textureGlyphQuadMap.begin())->second;
-        if (!glyphquad._coords.valid() || glyphquad._coords->empty() )
-        {
-            computePositions(contextID);
-        }
-    }
-
     // save the previous modelview matrix
     osg::Matrix previous_modelview = state.getModelViewMatrix();
 
     // set up the new modelview matrix
-    osg::Matrix modelview = previous_modelview;
-    bool needToApplyMatrix = computeMatrix(state, modelview);
+    osg::Matrix modelview;
+    bool needToApplyMatrix = computeMatrix(modelview, &state);
 
     if (needToApplyMatrix)
     {
-
         // ** mult previous by the modelview for this context
         modelview.postMult(previous_modelview);
 

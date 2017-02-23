@@ -372,8 +372,6 @@ protected:
 
     virtual ~Text();
 
-    bool computeMatrix(osg::State& state, osg::Matrix& matrix) const;
-
     Font* getActiveFont();
     const Font* getActiveFont() const;
 
@@ -390,15 +388,15 @@ protected:
 
     bool computeAverageGlyphWidthAndHeight(float& avg_width, float& avg_height) const;
 
-    virtual void computePositions(unsigned int contextID) const;
+    virtual void computePositionsImplementation();
 
-    void computeBackdropPositions(unsigned int contextID) const;
-    void computeBackdropBoundingBox() const;
-    void computeBoundingBoxMargin() const;
+    void computeBackdropPositions();
+    void computeBackdropBoundingBox();
+    void computeBoundingBoxMargin();
 
-    void computeColorGradients() const;
-    void computeColorGradientsOverall() const;
-    void computeColorGradientsPerCharacter() const;
+    void computeColorGradients();
+    void computeColorGradientsOverall();
+    void computeColorGradientsPerCharacter();
 
     void drawImplementation(osg::State& state, const osg::Vec4& colorMultiplier) const;
     void drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, const osg::Vec4& colorMultiplier) const;

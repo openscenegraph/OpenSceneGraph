@@ -264,19 +264,19 @@ void Text::computeGlyphRepresentation()
         )
     {
         // record the start of the current line
-            String::iterator startOfLine_itr = itr;
+        String::iterator startOfLine_itr = itr;
 
-            // find the end of the current line.
-            osg::Vec2 endOfLine_coords(cursor);
-            String::iterator endOfLine_itr = computeLastCharacterOnLine(endOfLine_coords, itr,_text.end());
+        // find the end of the current line.
+        osg::Vec2 endOfLine_coords(cursor);
+        String::iterator endOfLine_itr = computeLastCharacterOnLine(endOfLine_coords, itr,_text.end());
 
-            linelength = endOfLine_itr - startOfLine_itr;
+        linelength = endOfLine_itr - startOfLine_itr;
 
-            // Set line position to correct alignment.
-            switch(_layout)
-            {
-            case LEFT_TO_RIGHT:
-            {
+        // Set line position to correct alignment.
+        switch(_layout)
+        {
+          case LEFT_TO_RIGHT:
+          {
             switch(_alignment)
             {
               // nothing to be done for these

@@ -254,8 +254,6 @@ void Text::computeGlyphRepresentation()
     bool horizontal = _layout!=VERTICAL;
     bool kerning = true;
 
-    unsigned int lineNumber = 0;
-
     float hr = _characterHeight;
     float wr = hr/getCharacterAspectRatio();
 
@@ -445,7 +443,6 @@ void Text::computeGlyphRepresentation()
                     GlyphQuads& glyphquad = _textureGlyphQuadMap[glyph->getTexture()];
 
                     glyphquad._glyphs.push_back(glyph);
-                    glyphquad._lineNumbers.push_back(lineNumber);
 
                     glyphquad.addCoord(upLeft);
                     glyphquad.addCoord(lowLeft);
@@ -521,9 +518,6 @@ void Text::computeGlyphRepresentation()
           }
           break;
         }
-
-        ++lineNumber;
-
     }
 
     for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();

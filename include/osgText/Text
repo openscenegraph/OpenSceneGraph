@@ -23,7 +23,6 @@
 
 namespace osgText {
 
-
 class OSGTEXT_EXPORT Text : public osgText::TextBase
 {
 public:
@@ -309,7 +308,6 @@ public:
         ColorCoords                     _colorCoords;
 
         TexCoords                       _texcoords;
-        LineNumbers                     _lineNumbers;
 
         Coords                          _transformedBackdropCoords[8];
 

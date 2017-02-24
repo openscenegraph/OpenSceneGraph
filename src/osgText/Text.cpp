@@ -241,26 +241,6 @@ void Text::addGlyphQuad(Glyph* glyph, const osg::Vec2& minc, const osg::Vec2& ma
     glyphquad.addTexCoord(osg::Vec2(mintc.x(), mintc.y()));
     glyphquad.addTexCoord(osg::Vec2(maxtc.x(), mintc.y()));
     glyphquad.addTexCoord(osg::Vec2(maxtc.x(), maxtc.y()));
-
-    // move the cursor onto the next character.
-    // also expand bounding box
-    switch(_layout)
-    {
-        case LEFT_TO_RIGHT:
-            cursor.x() += glyph->getHorizontalAdvance() * wr;
-            _textBB.expandBy(osg::Vec3(lowLeft.x(), lowLeft.y(), 0.0f)); //lower left corner
-            _textBB.expandBy(osg::Vec3(upRight.x(), upRight.y(), 0.0f)); //upper right corner
-            break;
-        case VERTICAL:
-            cursor.y() -= glyph->getVerticalAdvance() * hr;
-            _textBB.expandBy(osg::Vec3(upLeft.x(),upLeft.y(),0.0f)); //upper left corner
-            _textBB.expandBy(osg::Vec3(lowRight.x(),lowRight.y(),0.0f)); //lower right corner
-            break;
-        case RIGHT_TO_LEFT:
-            _textBB.expandBy(osg::Vec3(lowRight.x(),lowRight.y(),0.0f)); //lower right corner
-            _textBB.expandBy(osg::Vec3(upLeft.x(),upLeft.y(),0.0f)); //upper left corner
-            break;
-    }
 }
 
 void Text::computeGlyphRepresentation()
@@ -476,6 +456,26 @@ void Text::computeGlyphRepresentation()
 
                     addGlyphQuad(glyph, minc, maxc, mintc, maxtc);
 
+                    // move the cursor onto the next character.
+                    // also expand bounding box
+                    switch(_layout)
+                    {
+                        case LEFT_TO_RIGHT:
+                            cursor.x() += glyph->getHorizontalAdvance() * wr;
+                            _textBB.expandBy(osg::Vec3(minc.x(), minc.y(), 0.0f)); //lower left corner
+                            _textBB.expandBy(osg::Vec3(maxc.x(), maxc.y(), 0.0f)); //upper right corner
+                            break;
+                        case VERTICAL:
+                            cursor.y() -= glyph->getVerticalAdvance() * hr;
+                            _textBB.expandBy(osg::Vec3(minc.x(),maxc.y(),0.0f)); //upper left corner
+                            _textBB.expandBy(osg::Vec3(maxc.x(),minc.y(),0.0f)); //lower right corner
+                            break;
+                        case RIGHT_TO_LEFT:
+                            _textBB.expandBy(osg::Vec3(maxc.x(),minc.y(),0.0f)); //lower right corner
+                            _textBB.expandBy(osg::Vec3(minc.x(),maxc.y(),0.0f)); //upper left corner
+                            break;
+                    }
+
                     previous_charcode = charcode;
                 }
             }
@@ -525,7 +525,7 @@ void Text::computeGlyphRepresentation()
         titr!=_textureGlyphQuadMap.end();
         ++titr)
     {
-        titr->second.updatePrimitives();
+        titr->second.setupPrimitives(_backdropType);
         if (_useVertexBufferObjects)
         {
             titr->second.initGPUBufferObjects();
@@ -1824,8 +1824,6 @@ void Text::GlyphQuads::initGlyphQuads()
     _texcoords = new osg::Vec2Array();
     _colorCoords = new osg::Vec4Array();
 
-    _primitives.push_back(new DrawElementsUShort(PrimitiveSet::TRIANGLES));
-
     for (int j = 0; j < 8; j++)
     {
         _transformedBackdropCoords[j] = new osg::Vec3Array();
@@ -1834,8 +1832,19 @@ void Text::GlyphQuads::initGlyphQuads()
 
 }
 
-void Text::GlyphQuads::updatePrimitives()
+void Text::GlyphQuads::setupPrimitives(BackdropType backdropType)
 {
+    _primitives.clear();
+
+    unsigned int numPrimtives = 1;
+    if (backdropType==Text::OUTLINE) numPrimtives += 8;
+    if (backdropType!=Text::NONE) numPrimtives += 1;
+
+    for(unsigned int i=0; i<numPrimtives; ++i)
+    {
+        _primitives.push_back(new DrawElementsUShort(PrimitiveSet::TRIANGLES));
+    }
+
     for(Primitives::iterator itr = _primitives.begin();
         itr != _primitives.end();
         ++itr)

@@ -23,6 +23,8 @@
 
 namespace osgText {
 
+// #define NEW_APPROACH
+
 class OSGTEXT_EXPORT Text : public osgText::TextBase
 {
 public:
@@ -313,13 +315,14 @@ public:
 
         Primitives                      _primitives;
 
-        void updatePrimitives();
 
         GlyphQuads();
         GlyphQuads(const GlyphQuads& gq);
 
         void initGlyphQuads();
         void initGPUBufferObjects();
+
+        void setupPrimitives(Text::BackdropType backdropType);
 
         Glyphs& getGlyphs() { return _glyphs; }
         const Glyphs& getGlyphs() const { return _glyphs; }

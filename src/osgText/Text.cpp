@@ -419,10 +419,6 @@ void Text::computeGlyphRepresentation()
                     local.x() += bearing.x() * wr;
                     local.y() += bearing.y() * hr;
 
-                    GlyphQuads& glyphquad = _textureGlyphQuadMap[glyph->getTexture()];
-
-                    glyphquad._glyphs.push_back(glyph);
-                    glyphquad._lineNumbers.push_back(lineNumber);
 
                     // Adjust coordinates and texture coordinates to avoid
                     // clipping the edges of antialiased characters.
@@ -445,6 +441,12 @@ void Text::computeGlyphRepresentation()
                     osg::Vec2 lowLeft = local+osg::Vec2(0.0f-fHorizQuadMargin,0.0f-fVertQuadMargin);
                     osg::Vec2 lowRight = local+osg::Vec2(width+fHorizQuadMargin,0.0f-fVertQuadMargin);
                     osg::Vec2 upRight = local+osg::Vec2(width+fHorizQuadMargin,height+fVertQuadMargin);
+
+                    GlyphQuads& glyphquad = _textureGlyphQuadMap[glyph->getTexture()];
+
+                    glyphquad._glyphs.push_back(glyph);
+                    glyphquad._lineNumbers.push_back(lineNumber);
+
                     glyphquad.addCoord(upLeft);
                     glyphquad.addCoord(lowLeft);
                     glyphquad.addCoord(lowRight);

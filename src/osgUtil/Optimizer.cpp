@@ -274,6 +274,20 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     }
 
+    if (options & REMOVE_REDUNDANT_NODES)
+    {
+        OSG_INFO<<"Optimizer::optimize() doing REMOVE_REDUNDANT_NODES"<<std::endl;
+
+        RemoveEmptyNodesVisitor renv(this);
+        node->accept(renv);
+        renv.removeEmptyNodes();
+
+        RemoveRedundantNodesVisitor rrnv(this);
+        node->accept(rrnv);
+        rrnv.removeRedundantNodes();
+
+    }
+
     if (options & MERGE_GEODES)
     {
         OSG_INFO<<"Optimizer::optimize() doing MERGE_GEODES"<<std::endl;
@@ -318,20 +332,6 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         TriStripVisitor tsv(this);
         node->accept(tsv);
         tsv.stripify();
-    }
-
-    if (options & REMOVE_REDUNDANT_NODES)
-    {
-        OSG_INFO<<"Optimizer::optimize() doing REMOVE_REDUNDANT_NODES"<<std::endl;
-
-        RemoveEmptyNodesVisitor renv(this);
-        node->accept(renv);
-        renv.removeEmptyNodes();
-
-        RemoveRedundantNodesVisitor rrnv(this);
-        node->accept(rrnv);
-        rrnv.removeRedundantNodes();
-
     }
 
     if (options & FLATTEN_BILLBOARDS)

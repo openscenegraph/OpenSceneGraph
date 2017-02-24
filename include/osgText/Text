@@ -302,19 +302,20 @@ public:
         typedef osg::ref_ptr<osg::Vec3Array> Coords;
         typedef osg::ref_ptr<osg::Vec2Array> TexCoords;
         typedef osg::ref_ptr<osg::Vec4Array> ColorCoords;
+        typedef std::vector< osg::ref_ptr<osg::DrawElementsUShort> > Primitives;
 
         Glyphs                          _glyphs;
         Coords                          _coords;
+        ColorCoords                     _colorCoords;
 
         TexCoords                       _texcoords;
         LineNumbers                     _lineNumbers;
 
         Coords                          _transformedBackdropCoords[8];
 
-        ColorCoords    _colorCoords;
+        Primitives                      _primitives;
 
-        osg::ref_ptr<osg::DrawElementsUShort> _quadIndices;
-        void updateQuadIndices();
+        void updatePrimitives();
 
         GlyphQuads();
         GlyphQuads(const GlyphQuads& gq);

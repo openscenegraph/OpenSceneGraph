@@ -528,7 +528,7 @@ void Text::computeGlyphRepresentation()
         titr!=_textureGlyphQuadMap.end();
         ++titr)
     {
-        titr->second.updateQuadIndices();
+        titr->second.updatePrimitives();
         if (_useVertexBufferObjects)
         {
             titr->second.initGPUBufferObjects();
@@ -1382,7 +1382,7 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
             state.setColorPointer(glyphquad._colorCoords.get());
         }
 
-        glyphquad._quadIndices->draw(state, _useVertexBufferObjects);
+        glyphquad._primitives[0]->draw(state, _useVertexBufferObjects);
     }
 }
 
@@ -1465,7 +1465,7 @@ void Text::drawTextWithBackdrop(osg::State& state, const osg::Vec4& colorMultipl
                 if (transformedBackdropCoords.valid() && !transformedBackdropCoords->empty())
                 {
                     state.setVertexPointer(transformedBackdropCoords.get());
-                    state.drawQuads(0,transformedBackdropCoords->size());
+                    glyphquad._primitives[backdrop_index+1]->draw(state, _useVertexBufferObjects);
                 }
             }
         }
@@ -1522,7 +1522,7 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
                 glPolygonOffset(0.1f * osg::PolygonOffset::getFactorMultiplier(), osg::PolygonOffset::getUnitsMultiplier() * (max_backdrop_index-backdrop_index) );
 
                 state.setVertexPointer( transformedBackdropCoords.get());
-                state.drawQuads(0,transformedBackdropCoords->size());
+                glyphquad._primitives[backdrop_index+1]->draw(state, _useVertexBufferObjects);
             }
         }
 
@@ -1578,7 +1578,7 @@ void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMult
             if (transformedBackdropCoords.valid() && !transformedBackdropCoords->empty())
             {
                 state.setVertexPointer( transformedBackdropCoords.get());
-                state.drawQuads(0,transformedBackdropCoords->size());
+                glyphquad._primitives[backdrop_index+1]->draw(state, _useVertexBufferObjects);
             }
         }
 
@@ -1827,31 +1827,34 @@ void Text::GlyphQuads::initGlyphQuads()
     _texcoords = new osg::Vec2Array();
     _colorCoords = new osg::Vec4Array();
 
+    _primitives.push_back(new DrawElementsUShort(PrimitiveSet::TRIANGLES));
+
     for (int j = 0; j < 8; j++)
     {
         _transformedBackdropCoords[j] = new osg::Vec3Array();
+        _primitives.push_back(new DrawElementsUShort(PrimitiveSet::TRIANGLES));
     }
 
-    _quadIndices = new DrawElementsUShort(PrimitiveSet::TRIANGLES);
 }
 
-void Text::GlyphQuads::updateQuadIndices()
+void Text::GlyphQuads::updatePrimitives()
 {
-    _quadIndices->clear();
-    if (_coords->size() % 4 != 0)
+    for(Primitives::iterator itr = _primitives.begin();
+        itr != _primitives.end();
+        ++itr)
     {
-        OSG_WARN << "size of _coords is not divisible by 4.";
-    }
+        DrawElementsUShort* indices = itr->get();
+        indices->clear();
+        for (unsigned short i = 0; i < (unsigned short)_coords->size(); i += 4)
+        {
+            indices->push_back(i);
+            indices->push_back(i + 1);
+            indices->push_back(i + 3);
 
-    for (unsigned short i = 0; i < (unsigned short)_coords->size(); i += 4)
-    {
-        _quadIndices->push_back(i);
-        _quadIndices->push_back(i + 1);
-        _quadIndices->push_back(i + 3);
-
-        _quadIndices->push_back(i + 1);
-        _quadIndices->push_back(i + 2);
-        _quadIndices->push_back(i + 3);
+            indices->push_back(i + 1);
+            indices->push_back(i + 2);
+            indices->push_back(i + 3);
+        }
     }
 }
 
@@ -1874,7 +1877,14 @@ void Text::GlyphQuads::initGPUBufferObjects()
         }
     }
 
-    _quadIndices->setElementBufferObject(new osg::ElementBufferObject());
+    osg::ref_ptr<osg::ElementBufferObject> ebo = new osg::ElementBufferObject();
+    for(Primitives::iterator itr = _primitives.begin();
+        itr != _primitives.end();
+        ++itr)
+    {
+        (*itr)->setElementBufferObject(ebo.get());
+    }
+
 }
 
 
@@ -1892,7 +1902,12 @@ void Text::GlyphQuads::resizeGLObjectBuffers(unsigned int maxSize)
         }
     }
 
-    _quadIndices->resizeGLObjectBuffers(maxSize);
+    for(Primitives::iterator itr = _primitives.begin();
+        itr != _primitives.end();
+        ++itr)
+    {
+        (*itr)->resizeGLObjectBuffers(maxSize);
+    }
 
     initGPUBufferObjects();
 }
@@ -1911,5 +1926,10 @@ void Text::GlyphQuads::releaseGLObjects(osg::State* state) const
         }
     }
 
-    _quadIndices->releaseGLObjects(state);
+    for(Primitives::const_iterator itr = _primitives.begin();
+        itr != _primitives.end();
+        ++itr)
+    {
+        (*itr)->releaseGLObjects(state);
+    }
 }

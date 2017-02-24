@@ -364,6 +364,7 @@ public:
         return _textureGlyphQuadMap;
     }
 
+    void addGlyphQuad(Glyph* glyph, const osg::Vec2& minc, const osg::Vec2& maxc, const osg::Vec2& mintc, const osg::Vec2& maxtc);
 
 protected:
 

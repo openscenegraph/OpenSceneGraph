@@ -224,6 +224,44 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
     return lastChar;
 }
 
+void Text::addGlyphQuad(Glyph* glyph, const osg::Vec2& minc, const osg::Vec2& maxc, const osg::Vec2& mintc, const osg::Vec2& maxtc)
+{
+    // set up the coords of the quad
+    GlyphQuads& glyphquad = _textureGlyphQuadMap[glyph->getTexture()];
+
+    glyphquad._glyphs.push_back(glyph);
+
+    glyphquad.addCoord(osg::Vec2(minc.x(), maxc.y()));
+    glyphquad.addCoord(osg::Vec2(minc.x(), minc.y()));
+    glyphquad.addCoord(osg::Vec2(maxc.x(), minc.y()));
+    glyphquad.addCoord(osg::Vec2(maxc.x(), maxc.y()));
+
+    // set up the tex coords of the quad
+    glyphquad.addTexCoord(osg::Vec2(mintc.x(), maxtc.y()));
+    glyphquad.addTexCoord(osg::Vec2(mintc.x(), mintc.y()));
+    glyphquad.addTexCoord(osg::Vec2(maxtc.x(), mintc.y()));
+    glyphquad.addTexCoord(osg::Vec2(maxtc.x(), maxtc.y()));
+
+    // move the cursor onto the next character.
+    // also expand bounding box
+    switch(_layout)
+    {
+        case LEFT_TO_RIGHT:
+            cursor.x() += glyph->getHorizontalAdvance() * wr;
+            _textBB.expandBy(osg::Vec3(lowLeft.x(), lowLeft.y(), 0.0f)); //lower left corner
+            _textBB.expandBy(osg::Vec3(upRight.x(), upRight.y(), 0.0f)); //upper right corner
+            break;
+        case VERTICAL:
+            cursor.y() -= glyph->getVerticalAdvance() * hr;
+            _textBB.expandBy(osg::Vec3(upLeft.x(),upLeft.y(),0.0f)); //upper left corner
+            _textBB.expandBy(osg::Vec3(lowRight.x(),lowRight.y(),0.0f)); //lower right corner
+            break;
+        case RIGHT_TO_LEFT:
+            _textBB.expandBy(osg::Vec3(lowRight.x(),lowRight.y(),0.0f)); //lower right corner
+            _textBB.expandBy(osg::Vec3(upLeft.x(),upLeft.y(),0.0f)); //upper left corner
+            break;
+    }
+}
 
 void Text::computeGlyphRepresentation()
 {
@@ -433,49 +471,12 @@ void Text::computeGlyphRepresentation()
                     mintc.y() -= fVertTCMargin;
                     maxtc.x() += fHorizTCMargin;
                     maxtc.y() += fVertTCMargin;
+                    osg::Vec2 minc = local+osg::Vec2(0.0f-fHorizQuadMargin,0.0f-fVertQuadMargin);
+                    osg::Vec2 maxc = local+osg::Vec2(width+fHorizQuadMargin,height+fVertQuadMargin);
 
-                    // set up the coords of the quad
-                    osg::Vec2 upLeft = local+osg::Vec2(0.0f-fHorizQuadMargin,height+fVertQuadMargin);
-                    osg::Vec2 lowLeft = local+osg::Vec2(0.0f-fHorizQuadMargin,0.0f-fVertQuadMargin);
-                    osg::Vec2 lowRight = local+osg::Vec2(width+fHorizQuadMargin,0.0f-fVertQuadMargin);
-                    osg::Vec2 upRight = local+osg::Vec2(width+fHorizQuadMargin,height+fVertQuadMargin);
+                    addGlyphQuad(glyph, minc, maxc, mintc, maxtc);
 
-                    GlyphQuads& glyphquad = _textureGlyphQuadMap[glyph->getTexture()];
-
-                    glyphquad._glyphs.push_back(glyph);
-
-                    glyphquad.addCoord(upLeft);
-                    glyphquad.addCoord(lowLeft);
-                    glyphquad.addCoord(lowRight);
-                    glyphquad.addCoord(upRight);
-
-                    // set up the tex coords of the quad
-                    glyphquad.addTexCoord(osg::Vec2(mintc.x(), maxtc.y()));
-                    glyphquad.addTexCoord(osg::Vec2(mintc.x(), mintc.y()));
-                    glyphquad.addTexCoord(osg::Vec2(maxtc.x(), mintc.y()));
-                    glyphquad.addTexCoord(osg::Vec2(maxtc.x(), maxtc.y()));
-
-                    // move the cursor onto the next character.
-                    // also expand bounding box
-                    switch(_layout)
-                    {
-                      case LEFT_TO_RIGHT:
-                          cursor.x() += glyph->getHorizontalAdvance() * wr;
-                          _textBB.expandBy(osg::Vec3(lowLeft.x(), lowLeft.y(), 0.0f)); //lower left corner
-                          _textBB.expandBy(osg::Vec3(upRight.x(), upRight.y(), 0.0f)); //upper right corner
-                          break;
-                      case VERTICAL:
-                          cursor.y() -= glyph->getVerticalAdvance() * hr;
-                          _textBB.expandBy(osg::Vec3(upLeft.x(),upLeft.y(),0.0f)); //upper left corner
-                          _textBB.expandBy(osg::Vec3(lowRight.x(),lowRight.y(),0.0f)); //lower right corner
-                          break;
-                      case RIGHT_TO_LEFT:
-                          _textBB.expandBy(osg::Vec3(lowRight.x(),lowRight.y(),0.0f)); //lower right corner
-                          _textBB.expandBy(osg::Vec3(upLeft.x(),upLeft.y(),0.0f)); //upper left corner
-                          break;
-                    }
                     previous_charcode = charcode;
-
                 }
             }
 

@@ -1102,7 +1102,48 @@ void createStaticRendering( osg::Group* root, GPUCullData& gpuData, const osg::V
     {
         osg::ref_ptr<ResetTexturesCallback> resetTexturesCallback = new ResetTexturesCallback;
 
+#ifndef JUVAL
         osg::ref_ptr<osg::Program> cullProgram = createProgram( "static_cull", SHADER_STATIC_CULL_VERTEX, SHADER_STATIC_CULL_FRAGMENT );
+
+
+#else
+        osg::ref_ptr<osg::Program> cullProgram=new osg::Program;
+        cullProgram->addShader( new osg::Shader( osg::Shader::VERTEX,   MYSHADER_STATIC_CULL_VERTEX ) );
+        cullProgram->setParameter( GL_GEOMETRY_VERTICES_OUT_EXT, 4 );
+        cullProgram->setParameter( GL_GEOMETRY_INPUT_TYPE_EXT, GL_POINTS );
+        cullProgram->setParameter( GL_GEOMETRY_OUTPUT_TYPE_EXT, GL_POINTS );
+        cullProgram->addShader( new osg::Shader( osg::Shader::GEOMETRY,MYSHADER_STATIC_CULL_GEOMETRY ) );
+        // interleaving in one buffer
+        cullProgram->addTransformFeedbackVarying(std::string("outM0"));
+        cullProgram->addTransformFeedbackVarying(std::string("outM1"));
+        cullProgram->addTransformFeedbackVarying(std::string("outM2"));
+        cullProgram->addTransformFeedbackVarying(std::string("outM3"));
+        cullProgram->addTransformFeedbackVarying(std::string("outExtraParams"));
+        cullProgram->addTransformFeedbackVarying(std::string("outIdParams"));
+       // cullProgram->addTransformFeedbackVarying(std::string("gl_NextBuffer"));
+        cullProgram->setTransformFeedbackMode(GL_INTERLEAVED_ATTRIBS);
+
+        ///stride The different Feedback
+
+        ///readback instancesTree lod offset
+        osg::Geode * ge=dynamic_cast<osg::Geode*>(instancesTree);
+        if(ge){
+            for(int c=0;c<ge->getNumChildren();c++){
+                osg::Vec4Array* arr=((osg::Vec4Array*)                ((osg::Geometry*)getChild(c))->getVertexAttribArray(15));
+                std::cerr<<"typeInstance: "<<(*arr)[0].x <<std::endl;
+            }
+        }
+        gpuData.instanceTypesUBB->getBufferObject()->getBufferData(0);
+        int nblod=instancesTree->getAttribute
+
+        osg::TransformFeedbackBufferBinding * tfbb;
+        for(int i=0;i< nblod;i++){
+            tfbb=new osg::TransformFeedbackBufferBinding(i);
+            //    tfbb->setOffset( )
+            instancesTree->getOrCreateStateSet()->setAttribute(tfbb);
+
+            }
+#endif
         cullProgram->addBindUniformBlock("instanceTypesData", 1);
         instancesTree->getOrCreateStateSet()->setAttributeAndModes( cullProgram.get(), osg::StateAttribute::ON );
         instancesTree->getOrCreateStateSet()->setAttributeAndModes( gpuData.instanceTypesUBB.get() );

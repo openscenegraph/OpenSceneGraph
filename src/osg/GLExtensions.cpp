@@ -632,6 +632,8 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     // EXT_gpu_shader4
     setGLExtensionFuncPtr(glGetUniformuiv,  "glGetUniformuiv", "glGetUniformuivEXT", validContext);
     setGLExtensionFuncPtr(glBindFragDataLocation,  "glBindFragDataLocation", "glBindFragDataLocationEXT", validContext);
+    setGLExtensionFuncPtr(glBindFragDataLocationIndexed,  "glBindFragDataLocationIndexed", "glBindFragDataLocationIndexedEXT", validContext);
+    setGLExtensionFuncPtr(glGetFragDataIndex,  "glGetFragDataIndex", "glGetFragDataIndexEXT", validContext);
     setGLExtensionFuncPtr(glGetFragDataLocation,  "glGetFragDataLocation", "glGetFragDataLocationEXT", validContext);
     setGLExtensionFuncPtr(glUniform1ui,  "glUniform1ui", "glUniform1uiEXT", validContext);
     setGLExtensionFuncPtr(glUniform2ui,  "glUniform2ui", "glUniform2uiEXT", validContext);

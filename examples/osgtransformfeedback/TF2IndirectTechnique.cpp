@@ -26,6 +26,7 @@
 #include <osg/LightSource>
 #include <osg/PolygonMode>
 #include <osg/Geometry>
+#include <osg/MatrixTransform>
 #include <osgDB/ReadFile>
 #include <osgText/Text>
 
@@ -34,7 +35,45 @@
 //////////////////////////////////////////////////////////////////
 // fragment shader
 //
-static const char fragmentShaderSource_noBaseTexture[] =
+///store dc buffer offset at pos.w and dc size at extents.w
+static const char vertexShaderSource_Cull[] =
+        "layout(index=0) vec4 position;\n"
+        "layout(index=1) vec4 rotation;\n"
+    "layout(index=2) vec4 extents;\n"
+    "bool boundingBoxInViewFrustum( in mat4 matrix, in vec3 bbMin, in vec3 bbMax )\n"
+    "{\n"
+    "    vec4 BoundingBox[8];\n"
+    "    BoundingBox[0] = matrix * vec4( bbMax.x, bbMax.y, bbMax.z, 1.0);\n"
+    "    BoundingBox[1] = matrix * vec4( bbMin.x, bbMax.y, bbMax.z, 1.0);\n"
+    "    BoundingBox[2] = matrix * vec4( bbMax.x, bbMin.y, bbMax.z, 1.0);\n"
+    "    BoundingBox[3] = matrix * vec4( bbMin.x, bbMin.y, bbMax.z, 1.0);\n"
+    "    BoundingBox[4] = matrix * vec4( bbMax.x, bbMax.y, bbMin.z, 1.0);\n"
+    "    BoundingBox[5] = matrix * vec4( bbMin.x, bbMax.y, bbMin.z, 1.0);\n"
+    "    BoundingBox[6] = matrix * vec4( bbMax.x, bbMin.y, bbMin.z, 1.0);\n"
+    "    BoundingBox[7] = matrix * vec4( bbMin.x, bbMin.y, bbMin.z, 1.0);\n"
+    "\n"
+    "    int outOfBound[6] = int[6]( 0, 0, 0, 0, 0, 0 );\n"
+    "    for (int i=0; i<8; i++)\n"
+    "    {\n"
+    "        outOfBound[0] += int( BoundingBox[i].x >  BoundingBox[i].w );\n"
+    "        outOfBound[1] += int( BoundingBox[i].x < -BoundingBox[i].w );\n"
+    "        outOfBound[2] += int( BoundingBox[i].y >  BoundingBox[i].w );\n"
+    "        outOfBound[3] += int( BoundingBox[i].y < -BoundingBox[i].w );\n"
+    "        outOfBound[4] += int( BoundingBox[i].z >  BoundingBox[i].w );\n"
+    "        outOfBound[5] += int( BoundingBox[i].z < -BoundingBox[i].w );\n"
+    "    }\n"
+    "    return (outOfBound[0] < 8 ) && ( outOfBound[1] < 8 ) && ( outOfBound[2] < 8 ) && ( outOfBound[3] < 8 ) && ( outOfBound[4] < 8 ) && ( outOfBound[5] < 8 );\n"
+    "}\n"
+
+    "\n"
+    "void main(void) \n"
+    "{ \n"
+        "gl_ModelViewProjectionMatrix"
+    "    gl_FragColor = gl_Color * (osgShadow_ambientBias.x + shadow2DProj( osgShadow_shadowTexture, gl_TexCoord[0] ) * osgShadow_ambientBias.y); \n"
+
+    "}\n";
+
+static const char geometryShaderSource_Cull[] =
     "uniform sampler2DShadow osgShadow_shadowTexture; \n"
     "uniform vec2 osgShadow_ambientBias; \n"
     "\n"
@@ -95,7 +134,7 @@ void TF2IndirectTechnique::resizeGLObjectBuffers(unsigned int maxSize)
     osg::resizeGLObjectBuffers(_texgen, maxSize);
     osg::resizeGLObjectBuffers(_texture, maxSize);
     osg::resizeGLObjectBuffers(_stateset, maxSize);
-    osg::resizeGLObjectBuffers(_program, maxSize);
+    osg::resizeGLObjectBuffers(_cullProgram, maxSize);
 
     osg::resizeGLObjectBuffers(_ls, maxSize);
 
@@ -113,7 +152,7 @@ void TF2IndirectTechnique::releaseGLObjects(osg::State* state) const
     osg::releaseGLObjects(_texgen, state);
     osg::releaseGLObjects(_texture, state);
     osg::releaseGLObjects(_stateset, state);
-    osg::releaseGLObjects(_program, state);
+    osg::releaseGLObjects(_cullProgram, state);
 
     osg::releaseGLObjects(_ls, state);
 
@@ -124,7 +163,7 @@ void TF2IndirectTechnique::releaseGLObjects(osg::State* state) const
         osg::releaseGLObjects(*itr, state);
     }
 }
-
+/*
 void TF2IndirectTechnique::setTextureUnit(unsigned int unit)
 {
     _shadowTextureUnit = unit;
@@ -158,7 +197,7 @@ void TF2IndirectTechnique::setLight(osg::LightSource* ls)
     _ls = ls;
     _light = _ls->getLight();
 }
-
+*/
 void TF2IndirectTechnique::createUniforms()
 {
     _uniformList.clear();
@@ -179,116 +218,94 @@ void TF2IndirectTechnique::createShaders()
     // if we are not given shaders, use the default
     if( _shaderList.empty() )
     {
-        if (_shadowTextureUnit==0)
-        {
-            osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource_noBaseTexture);
-            _shaderList.push_back(fragment_shader);
-        }
-        else
-        {
-            osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource_withBaseTexture);
+
+            osg::Shader* fragment_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource_Cull);
             _shaderList.push_back(fragment_shader);
 
-        }
+            osg::Shader* geometry_shader = new osg::Shader(osg::Shader::GEOMETRY, geometryShaderSource_Cull);
+            _shaderList.push_back(geometry_shader);
+
+
     }
 }
+
+
+
+///Parse ScebnGRaph count geom and add in position
+class TF2IndirectTechnique::UpdaterTraversalVisitor : public osg::NodeVisitor{
+public:
+    UpdaterTraversalVisitor( osg::Geometry *t):osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN){
+        _geomcounter=0;
+        _target=t;
+       targetpos=(osg::Vec4Array * )_target->getVertexAttribArray(0);
+    targetextents=(osg::Vec4Array * )_target->getVertexAttribArray(1);
+    }
+
+    virtual void apply(osg::MatrixTransform &ge){
+
+        //push_matrix
+        if(_matrixstack.empty())_matrixstack.push_back(ge.getMatrix());
+        else {
+            _matrixstack.push_back(_matrixstack.back()*ge.getMatrix());
+        }
+
+      ge.osg::Group::accept(*this);
+        //popmatrix
+        _matrixstack.pop_back();
+
+
+    }
+    virtual void apply(osg::PositionAttitudeTransform &ge){
+    ///TODO
+    }
+
+    virtual void apply(osg::Geode &ge){ osg::Vec3 v;
+   for(unsigned int i=0;i<ge.getNumChildren();i++){
+
+       if(check=dynamic_cast<osg::Geometry*>(ge.getChild(i))){
+        _geomcounter++;
+
+ osg::Matrix m=_matrixstack.back();
+ m.translate(check->getBoundingBox().center() );
+v=m.getTrans();
+      targetpos ->push_back(osg::Vec4(v[0],v[1],v[2],1) );
+      v=(check->getBoundingBox()._max-check->getBoundingBox()._min)*0.5 ;
+       targetextents->push_back( osg::Vec4(v[0],v[1],v[2],1));
+}
+        //
+
+       }
+
+            }
+    unsigned int _geomcounter;
+    osg::Geometry * check,*_target;
+
+    osg::Vec4Array * targetpos;
+    osg::Vec4Array * targetextents;
+    std::list<osg::Matrix> _matrixstack;
+    //osg::Matrix _current;
+};
 
 void TF2IndirectTechnique::init()
 {
     if (!_GPUScene) return;
 
-    _texture = new osg::Texture2D;
-    _texture->setTextureSize(_textureSize.x(), _textureSize.y());
-    _texture->setInternalFormat(GL_DEPTH_COMPONENT);
-    _texture->setShadowComparison(true);
-    _texture->setShadowTextureMode(osg::Texture2D::LUMINANCE);
-    _texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
-    _texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
 
-    // the shadow comparison should fail if object is outside the texture
-    _texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
-    _texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
-    _texture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+  _cullingData=new osg::Geometry();
+_indirectGeometry=new osg::Geometry();
 
-    // set up the render to texture camera.
-    {
-        // create the camera
-        _camera = new osg::Camera;
+    ///arrays (and so on BO) setted as the first traversed geometry(ensure bos shared)
+    ///primset as DrawIndirectpate
+ ///cardinality set on update traversal
+    _cullingData->addPrimitiveSet(new osg::DrawArrays(GL_POINTS));
+    _cullingData->setVertexAttribArray(0,new osg::Vec4Array());
+    _cullingData->setVertexAttribArray(1,new osg::Vec4Array());
 
-        _camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF_INHERIT_VIEWPOINT);
-
-        _camera->setCullCallback(new CameraCullCallback(this));
-
-        _camera->setClearMask(GL_DEPTH_BUFFER_BIT);
-        //_camera->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-        _camera->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-        _camera->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);
-
-        // set viewport
-        _camera->setViewport(0,0,_textureSize.x(),_textureSize.y());
-
-        // set the camera to render before the main camera.
-        _camera->setRenderOrder(osg::Camera::PRE_RENDER);
-
-        // tell the camera to use OpenGL frame buffer object where supported.
-        _camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
-        //_camera->setRenderTargetImplementation(osg::Camera::SEPERATE_WINDOW);
-
-        // attach the texture and use it as the color buffer.
-        _camera->attach(osg::Camera::DEPTH_BUFFER, _texture.get());
-
-        osg::StateSet* stateset = _camera->getOrCreateStateSet();
-
-
-#if 1
-        // cull front faces so that only backfaces contribute to depth map
-
-
-        osg::ref_ptr<osg::CullFace> cull_face = new osg::CullFace;
-        cull_face->setMode(osg::CullFace::FRONT);
-        stateset->setAttribute(cull_face.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-        stateset->setMode(GL_CULL_FACE, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-
-        // negative polygonoffset - move the backface nearer to the eye point so that backfaces
-        // shadow themselves
-        float factor = -_polyOffset[0];
-        float units =  -_polyOffset[1];
-
-        osg::ref_ptr<osg::PolygonOffset> polygon_offset = new osg::PolygonOffset;
-        polygon_offset->setFactor(factor);
-        polygon_offset->setUnits(units);
-        stateset->setAttribute(polygon_offset.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-        stateset->setMode(GL_POLYGON_OFFSET_FILL, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-#else
-        // disabling cull faces so that only front and backfaces contribute to depth map
-        stateset->setMode(GL_CULL_FACE, osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);
-
-        // negative polygonoffset - move the backface nearer to the eye point
-        // so that front faces do not shadow themselves.
-        float factor = _polyOffset[0];
-        float units =  _polyOffset[1];
-
-        osg::ref_ptr<osg::PolygonOffset> polygon_offset = new osg::PolygonOffset;
-        polygon_offset->setFactor(factor);
-        polygon_offset->setUnits(units);
-        stateset->setAttribute(polygon_offset.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-        stateset->setMode(GL_POLYGON_OFFSET_FILL, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-#endif
-    }
-
-    {
-        _stateset = new osg::StateSet;
-        _stateset->setTextureAttributeAndModes(_shadowTextureUnit,_texture.get(),osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-        _stateset->setTextureMode(_shadowTextureUnit,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
-        _stateset->setTextureMode(_shadowTextureUnit,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
-        _stateset->setTextureMode(_shadowTextureUnit,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
-        _stateset->setTextureMode(_shadowTextureUnit,GL_TEXTURE_GEN_Q,osg::StateAttribute::ON);
-
-        _texgen = new osg::TexGen;
+        _stateset = _cullingData->getOrCreateStateSet();
 
         // add Program, when empty of Shaders then we are using fixed functionality
-        _program = new osg::Program;
-        _stateset->setAttribute(_program.get());
+        _cullProgram = new osg::Program;
+        _stateset->setAttribute(_cullProgram.get());
 
         // create default shaders if needed
         createShaders();
@@ -298,7 +315,7 @@ void TF2IndirectTechnique::init()
             itr!=_shaderList.end();
             ++itr)
         {
-            _program->addShader(itr->get());
+            _cullProgram->addShader(itr->get());
         }
 
         // create own uniforms
@@ -312,48 +329,17 @@ void TF2IndirectTechnique::init()
             _stateset->addUniform(itr->get());
         }
 
-        {
-            // fake texture for baseTexture, add a fake texture
-            // we support by default at least one texture layer
-            // without this fake texture we can not support
-            // textured and not textured scene
 
-            // TODO: at the moment the PSSM supports just one texture layer in the GLSL shader, multitexture are
-            //       not yet supported !
 
-            osg::Image* image = new osg::Image;
-            // allocate the image data, noPixels x 1 x 1 with 4 rgba floats - equivalent to a Vec4!
-            int noPixels = 1;
-            image->allocateImage(noPixels,1,1,GL_RGBA,GL_FLOAT);
-            image->setInternalTextureFormat(GL_RGBA);
-            // fill in the image data.
-            osg::Vec4* dataPtr = (osg::Vec4*)image->data();
-            osg::Vec4 color(1,1,1,1);
-            *dataPtr = color;
-            // make fake texture
-            osg::Texture2D* fakeTex = new osg::Texture2D;
-            fakeTex->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_EDGE);
-            fakeTex->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_EDGE);
-            fakeTex->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
-            fakeTex->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
-            fakeTex->setImage(image);
-            // add fake texture
-            _stateset->setTextureAttribute(_baseTextureUnit,fakeTex,osg::StateAttribute::ON);
-            _stateset->setTextureMode(_baseTextureUnit,GL_TEXTURE_2D,osg::StateAttribute::ON);
-            _stateset->setTextureMode(_baseTextureUnit,GL_TEXTURE_3D,osg::StateAttribute::OFF);
-            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
-                _stateset->setTextureMode(_baseTextureUnit,GL_TEXTURE_1D,osg::StateAttribute::OFF);
-            #endif
-        }
-    }
-
+_updateTraverser=new TF2IndirectTechnique::UpdaterTraversalVisitor(_cullingData);
     _dirty = false;
 }
 
 
 void TF2IndirectTechnique::update(osg::NodeVisitor& nv)
 {
-    _GPUScene->osg::Group::traverse(nv);
+   // _GPUScene->osg::Group::traverse(nv);
+
 }
 
 void TF2IndirectTechnique::cull(osgUtil::CullVisitor& cv)

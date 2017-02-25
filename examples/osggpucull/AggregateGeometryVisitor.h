@@ -185,7 +185,7 @@ struct ConvertTrianglesOperatorClassic : public ConvertTrianglesOperator
             for(unsigned int i=0; i<3; ++i)
                 _outputTexCoord0->push_back( osg::Vec2(0.0,0.0) );
         }
-//if(_outputTexCoord1->empty())
+
         for(unsigned int i=0; i<3; ++i)
             _outputTexCoord1->push_back( osg::Vec3( _typeID, _lodNumber, _boneIndices.back() ) );
     }

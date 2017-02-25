@@ -167,7 +167,7 @@ struct SetupRigGeometry : public osg::NodeVisitor
         if (_hardware) {
             osgAnimation::RigGeometry* rig = dynamic_cast<osgAnimation::RigGeometry*>(&geom);
             if (rig)
-                rig->setRigTransformImplementation(new osgAnimation::RigTransformHardware);
+                rig->setRigTransformImplementation(new MyRigTransformHardware());
         }
 
 #if 0

@@ -25,8 +25,9 @@
 #include <osg/GL>
 
 #include <string>
-
-
+#ifndef GL_MAX_DUAL_SOURCE_DRAW_BUFFERS
+    #define GL_MAX_DUAL_SOURCE_DRAW_BUFFERS   0x88FC
+#endif
 // identify GLES 1.1
 #if (defined(GL_VERSION_ES_CM_1_0) && GL_VERSION_ES_CM_1_0 > 0) || \
     (defined(GL_VERSION_ES_CM_1_1) && GL_VERSION_ES_CM_1_1 > 0)

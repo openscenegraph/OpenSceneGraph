@@ -551,7 +551,6 @@ public:
         ParentType::setUsage( _getter!=0, _setter!=0);
     }
 
-
     virtual bool set(osg::Object& obj, void* value) { C& object = OBJECT_CAST<C&>(obj); (object.*_setter)( dynamic_cast<P*>(*(reinterpret_cast<osg::Object**>(value))) ); return true; }
     virtual bool get(const osg::Object& obj, void* value) { const C& object = OBJECT_CAST<const C&>(obj);*(reinterpret_cast<const osg::Object**>(value )) = dynamic_cast<const osg::Object*>((object.*_getter)()); return true; }
 

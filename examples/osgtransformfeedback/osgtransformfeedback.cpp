@@ -242,9 +242,10 @@ for(int streamid=0;streamid<_nbstreamout;streamid++)
         glObject->_extensions->glBindBuffer(GL_QUERY_BUFFER,
                                                  glObject->getGLObjectID());
 
+        GLshort stride=1;///in case of TFB target is also the Query Object target (indirectdraw command)
 for(GLuint streamid=0;streamid<_nbstreamout;streamid++)	{	
 std::cerr<<"retrieving result for query no"<<streamid<<std::endl;
-ext->glGetQueryObjectuiv(_querystuff[contextID]._queries[streamid], GL_QUERY_RESULT, (( GLuint *)( NULL+sizeof(GLuint)* streamid )));		
+ext->glGetQueryObjectuiv(_querystuff[contextID]._queries[streamid], GL_QUERY_RESULT, (( GLuint *)( NULL+sizeof(GLuint)* (streamid*stride) )));
 }
 
 

@@ -23,7 +23,7 @@
 
 namespace osgText {
 
-// #define NEW_APPROACH
+#define NEW_APPROACH
 
 class OSGTEXT_EXPORT Text : public osgText::TextBase
 {
@@ -310,8 +310,9 @@ public:
         ColorCoords                     _colorCoords;
 
         TexCoords                       _texcoords;
-
+#ifndef NEW_APPROACH
         Coords                          _transformedBackdropCoords[8];
+#endif
 
         Primitives                      _primitives;
 

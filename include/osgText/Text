@@ -308,11 +308,7 @@ public:
         Glyphs                          _glyphs;
         Coords                          _coords;
         ColorCoords                     _colorCoords;
-
         TexCoords                       _texcoords;
-#ifndef NEW_APPROACH
-        Coords                          _transformedBackdropCoords[8];
-#endif
 
         Primitives                      _primitives;
 

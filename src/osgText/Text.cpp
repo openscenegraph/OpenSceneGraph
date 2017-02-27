@@ -629,10 +629,8 @@ void Text::computeBackdropPositions()
         unsigned int numCoords = glyphquad._glyphs.size()*4;
 
         GlyphQuads::Coords& coords = glyphquad._coords;
-
-#ifdef NEW_APPROACH
         GlyphQuads::TexCoords& texcoords = glyphquad._texcoords;
-#endif
+
         unsigned int backdrop_index;
         unsigned int max_backdrop_index;
         if(_backdropType == OUTLINE)
@@ -658,12 +656,7 @@ void Text::computeBackdropPositions()
         }
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
-#ifdef NEW_APPROACH
             GlyphQuads::Coords& transformedCoords = glyphquad._coords;
-#else
-            GlyphQuads::Coords& transformedCoords = glyphquad._transformedBackdropCoords[backdrop_index];
-            if (!transformedCoords) transformedCoords = new osg::Vec3Array();
-#endif
             for(i=0;i<numCoords;++i)
             {
                 float horizontal_shift_direction;
@@ -724,11 +717,9 @@ void Text::computeBackdropPositions()
                             vertical_shift_direction = -1.0f;
                         }
                 }
-#ifdef NEW_APPROACH
+                osg::Vec3 v(horizontal_shift_direction * _backdropHorizontalOffset * avg_width + (*coords)[i].x(), vertical_shift_direction * _backdropVerticalOffset * avg_height + (*coords)[i].y(), 0.0f);
+                (*transformedCoords).push_back(v);
                 (*texcoords).push_back((*texcoords)[i]);
-#endif
-                (*transformedCoords).push_back(osg::Vec3(horizontal_shift_direction * _backdropHorizontalOffset * avg_width + (*coords)[i].x(), vertical_shift_direction * _backdropVerticalOffset * avg_height + (*coords)[i].y(), 0.0f));
-                transformedCoords->dirty();
             }
         }
     }
@@ -1456,25 +1447,14 @@ void Text::drawTextWithBackdrop(osg::State& state, const osg::Vec4& colorMultipl
                 max_backdrop_index = _backdropType+1;
             }
 
-#ifdef NEW_APPROACH
             state.setVertexPointer(glyphquad._coords.get());
-#endif
             state.setTexCoordPointer(0, glyphquad._texcoords.get());
             state.disableColorPointer();
             state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
             for( ; backdrop_index < max_backdrop_index; backdrop_index++)
             {
-#ifdef NEW_APPROACH
                 glyphquad._primitives[backdrop_index+1]->draw(state, _useVertexBufferObjects);
-#else
-                const GlyphQuads::Coords& transformedCoords = glyphquad._transformedBackdropCoords[backdrop_index];
-                if (transformedCoords.valid() && !transformedCoords->empty())
-                {
-                    state.setVertexPointer(transformedCoords.get());
-                    glyphquad._primitives[backdrop_index+1]->draw(state, _useVertexBufferObjects);
-                }
-#endif
             }
         }
 
@@ -1518,27 +1498,15 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
             max_backdrop_index = _backdropType+1;
         }
 
-#ifdef NEW_APPROACH
         state.setVertexPointer(glyphquad._coords.get());
-#endif
         state.setTexCoordPointer( 0, glyphquad._texcoords.get());
         state.disableColorPointer();
         state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
-#ifdef NEW_APPROACH
             glPolygonOffset(0.1f * osg::PolygonOffset::getFactorMultiplier(), osg::PolygonOffset::getUnitsMultiplier() * (max_backdrop_index-backdrop_index) );
             glyphquad._primitives[backdrop_index+1]->draw(state, _useVertexBufferObjects);
-#else
-            const GlyphQuads::Coords& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index];
-            if (transformedBackdropCoords.valid() && !transformedBackdropCoords->empty())
-            {
-                glPolygonOffset(0.1f * osg::PolygonOffset::getFactorMultiplier(), osg::PolygonOffset::getUnitsMultiplier() * (max_backdrop_index-backdrop_index) );
-                state.setVertexPointer( transformedBackdropCoords.get());
-                glyphquad._primitives[backdrop_index+1]->draw(state, _useVertexBufferObjects);
-            }
-#endif
         }
 
         // Reset the polygon offset so the foreground text is on top
@@ -1583,25 +1551,14 @@ void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMult
             max_backdrop_index = _backdropType+1;
         }
 
-#ifdef NEW_APPROACH
         state.setVertexPointer(glyphquad._coords.get());
-#endif
         state.setTexCoordPointer( 0, glyphquad._texcoords.get());
         state.disableColorPointer();
         state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
-#ifdef NEW_APPROACH
             glyphquad._primitives[backdrop_index+1]->draw(state, _useVertexBufferObjects);
-#else
-            const GlyphQuads::Coords& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index];
-            if (transformedBackdropCoords.valid() && !transformedBackdropCoords->empty())
-            {
-                state.setVertexPointer( transformedBackdropCoords.get());
-                glyphquad._primitives[backdrop_index+1]->draw(state, _useVertexBufferObjects);
-            }
-#endif
         }
 
         drawForegroundText(state, glyphquad, colorMultiplier);
@@ -1645,30 +1602,16 @@ void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultipl
             max_backdrop_index = _backdropType+1;
         }
 
-#ifdef NEW_APPROACH
         state.setVertexPointer(glyphquad._coords.get());
-#endif
         state.setTexCoordPointer( 0, glyphquad._texcoords.get());
         state.disableColorPointer();
         state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
-#ifdef NEW_APPROACH
             double offset = double(max_backdrop_index-backdrop_index)*0.0001;
             glDepthRange( offset, 1.0+offset);
             glyphquad._primitives[backdrop_index+1]->draw(state, _useVertexBufferObjects);
-#else
-            const GlyphQuads::Coords& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index];
-            if (transformedBackdropCoords.valid() && !transformedBackdropCoords->empty())
-            {
-                double offset = double(max_backdrop_index-backdrop_index)*0.0001;
-                glDepthRange( offset, 1.0+offset);
-
-                state.setVertexPointer( transformedBackdropCoords.get());
-                glyphquad._primitives[backdrop_index+1]->draw(state, _useVertexBufferObjects);
-            }
-#endif
         }
 
         glDepthRange(0.0, 1.0);
@@ -1752,24 +1695,13 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
             max_backdrop_index = _backdropType+1;
         }
 
-#ifdef NEW_APPROACH
         state.setVertexPointer(glyphquad._coords.get());
-#endif
         state.setTexCoordPointer( 0, glyphquad._texcoords.get());
         state.disableColorPointer();
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
-#ifdef NEW_APPROACH
             glyphquad._primitives[backdrop_index+1]->draw(state, _useVertexBufferObjects);
-#else
-            const GlyphQuads::Coords& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index];
-            if (transformedBackdropCoords.valid() && !transformedBackdropCoords->empty())
-            {
-                state.setVertexPointer( transformedBackdropCoords.get());
-                glyphquad._primitives[backdrop_index+1]->draw(state, _useVertexBufferObjects);
-            }
-#endif
         }
 
         // Draw the foreground text
@@ -1822,25 +1754,14 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
             max_backdrop_index = _backdropType+1;
         }
 
-#ifdef NEW_APPROACH
         state.setVertexPointer(glyphquad._coords.get());
-#endif
         state.setTexCoordPointer( 0, glyphquad._texcoords.get());
         state.disableColorPointer();
         state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
-#ifdef NEW_APPROACH
             glyphquad._primitives[backdrop_index+1]->draw(state, _useVertexBufferObjects);
-#else
-            const GlyphQuads::Coords& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index];
-            if (transformedBackdropCoords.valid() && !transformedBackdropCoords->empty())
-            {
-                state.setVertexPointer( transformedBackdropCoords.get());
-                glyphquad._primitives[backdrop_index+1]->draw(state, _useVertexBufferObjects);
-            }
-#endif
         }
 
         drawForegroundText(state, glyphquad, colorMultiplier);
@@ -1867,14 +1788,6 @@ void Text::GlyphQuads::initGlyphQuads()
     _coords = new osg::Vec3Array();
     _texcoords = new osg::Vec2Array();
     _colorCoords = new osg::Vec4Array();
-
-#ifndef NEW_APPROACH
-    for (int j = 0; j < 8; j++)
-    {
-        _transformedBackdropCoords[j] = new osg::Vec3Array();
-        _primitives.push_back(new DrawElementsUShort(PrimitiveSet::TRIANGLES));
-    }
-#endif
 }
 
 void Text::GlyphQuads::setupPrimitives(BackdropType backdropType)
@@ -1902,9 +1815,6 @@ void Text::GlyphQuads::setupPrimitives(BackdropType backdropType)
         DrawElementsUShort* indices = itr->get();
         indices->clear();
 
-#ifndef NEW_APPROACH
-        baseIndex = 0;
-#endif
         unsigned int endIndex = baseIndex + numCoords;
         for (unsigned short i = baseIndex; i < endIndex; i += 4)
         {
@@ -1930,16 +1840,6 @@ void Text::GlyphQuads::initGPUBufferObjects()
     _colorCoords->setBinding(osg::Array::BIND_PER_VERTEX);
     _colorCoords->setVertexBufferObject(vbo);
 
-#ifndef NEW_APPROACH
-    for (int j = 0; j < 8; j++)
-    {
-        if (_transformedBackdropCoords[j].valid())
-        {
-            _transformedBackdropCoords[j]->setBinding(osg::Array::BIND_PER_VERTEX);
-            _transformedBackdropCoords[j]->setVertexBufferObject(vbo);
-        }
-    }
-#endif
     osg::ref_ptr<osg::ElementBufferObject> ebo = new osg::ElementBufferObject();
     for(Primitives::iterator itr = _primitives.begin();
         itr != _primitives.end();
@@ -1957,15 +1857,6 @@ void Text::GlyphQuads::resizeGLObjectBuffers(unsigned int maxSize)
     _texcoords->resizeGLObjectBuffers(maxSize);
     _colorCoords->resizeGLObjectBuffers(maxSize);
 
-#ifndef NEW_APPROACH
-    for (int j = 0; j < 8; j++)
-    {
-        if (_transformedBackdropCoords[j].valid())
-        {
-            _transformedBackdropCoords[j]->resizeGLObjectBuffers(maxSize);
-        }
-    }
-#endif
     for(Primitives::iterator itr = _primitives.begin();
         itr != _primitives.end();
         ++itr)
@@ -1981,16 +1872,6 @@ void Text::GlyphQuads::releaseGLObjects(osg::State* state) const
     _coords->releaseGLObjects(state);;
     _texcoords->releaseGLObjects(state);
     _colorCoords->releaseGLObjects(state);
-
-#ifndef NEW_APPROACH
-    for (int j = 0; j < 8; j++)
-    {
-        if (_transformedBackdropCoords[j].valid())
-        {
-            _transformedBackdropCoords[j]->releaseGLObjects(state);
-        }
-    }
-#endif
 
     for(Primitives::const_iterator itr = _primitives.begin();
         itr != _primitives.end();

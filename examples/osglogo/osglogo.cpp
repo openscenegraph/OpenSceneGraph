@@ -33,6 +33,7 @@
 #include <osgText/Text>
 
 #include <osgGA/TrackballManipulator>
+#include <osgGA/StateSetManipulator>
 
 #include <osgViewer/Viewer>
 
@@ -463,6 +464,9 @@ int main( int argc, char **argv )
 
     // construct the viewer.
     osgViewer::Viewer viewer;
+
+    // add the state manipulator
+    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))

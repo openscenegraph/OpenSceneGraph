@@ -16,7 +16,6 @@ void textInfo(osgText::Text* text)
 
     osgText::String& s = text->getText();
 
-#ifdef NEW_APPROACH
     for(unsigned int i = 0; i < s.size(); i++)
     {
         osg::Vec2 ul; text->getCoord(0 + (i * 4), ul); // upperLeft
@@ -35,27 +34,6 @@ void textInfo(osgText::Text* text)
             << std::endl
         ;
     }
-#else
-    const osgText::Text::GlyphQuads& gq = tgqmi->second;
-    for(unsigned int i = 0; i < s.size(); i++)
-    {
-        osg::Vec2 ul; gq.getCoord(0 + (i * 4), ul); // upperLeft
-        osg::Vec2 ll; gq.getCoord(1 + (i * 4), ll); // lowerLeft
-        osg::Vec2 lr; gq.getCoord(2 + (i * 4), lr); // lowerRight
-        osg::Vec2 ur; gq.getCoord(3 + (i * 4), ur); // upperRight
-
-        osg::notify(osg::NOTICE)
-            << "'" << static_cast<char>(s[i]) << "':"
-            << " width(" << lr.x() - ll.x() << ")"
-            << " height(" << ul.y() - ll.y() << ")" << std::endl << "\t"
-            << "ul(" << ul << "), "
-            << "ll(" << ll << "), "
-            << "lr(" << lr << "), "
-            << "ur(" << ur << ")"
-            << std::endl
-        ;
-    }
-#endif
 }
 
 osg::Camera* createOrthoCamera(double width, double height)

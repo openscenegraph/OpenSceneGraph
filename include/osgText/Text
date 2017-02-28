@@ -299,7 +299,6 @@ public:
     typedef osg::ref_ptr<osg::Vec2Array> TexCoords;
     typedef osg::ref_ptr<osg::Vec4Array> ColorCoords;
 
-#ifdef NEW_APPROACH
     Coords                          _coords;
     ColorCoords                     _colorCoords;
     TexCoords                       _texcoords;
@@ -314,7 +313,7 @@ public:
     const Coords& getCoords() const { return _coords; }
 
     void addTexCoord(const osg::Vec2& tc) { _texcoords->push_back(tc); }
-#endif
+
     // internal structures, variable and methods used for rendering of characters.
     struct OSGTEXT_EXPORT GlyphQuads
     {
@@ -323,11 +322,6 @@ public:
         typedef std::vector< osg::ref_ptr<osg::DrawElementsUShort> > Primitives;
 
         Glyphs                          _glyphs;
-#ifndef NEW_APPROACH
-        Coords                          _coords;
-        ColorCoords                     _colorCoords;
-        TexCoords                       _texcoords;
-#endif
 
         unsigned int                    _coordBase;
 
@@ -345,19 +339,6 @@ public:
 
         Glyphs& getGlyphs() { return _glyphs; }
         const Glyphs& getGlyphs() const { return _glyphs; }
-
-#ifndef NEW_APPROACH
-        unsigned int addCoord(const osg::Vec2& c) { unsigned int s = _coords->size(); _coords->push_back(osg::Vec3(c.x(), c.y(), 0.0f)); return s; }
-        unsigned int addCoord(const osg::Vec3& c) { unsigned int s = _coords->size(); _coords->push_back(c); return s; }
-
-        void getCoord(unsigned int i, osg::Vec2& c) const { c.set((*_coords)[i].x(), (*_coords)[i].y()); }
-        void getCoord(unsigned int i, osg::Vec3& c) const { c = (*_coords)[i]; }
-
-        Coords& getCoords() { return _coords; }
-        const Coords& getCoords() const { return _coords; }
-
-        void addTexCoord(const osg::Vec2& tc) { _texcoords->push_back(tc); }
-#endif
 
         /** Resize any per context GLObject buffers to specified size. */
         void resizeGLObjectBuffers(unsigned int maxSize);

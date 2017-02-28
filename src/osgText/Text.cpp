@@ -232,7 +232,6 @@ void Text::addGlyphQuad(Glyph* glyph, const osg::Vec2& minc, const osg::Vec2& ma
     glyphquad._glyphs.push_back(glyph);
     osg::DrawElementsUShort* primitives = glyphquad._primitives[0].get();
 
-#ifdef NEW_APPROACH
 
     unsigned int lt = addCoord(osg::Vec2(minc.x(), maxc.y()));
     unsigned int lb = addCoord(osg::Vec2(minc.x(), minc.y()));
@@ -252,27 +251,6 @@ void Text::addGlyphQuad(Glyph* glyph, const osg::Vec2& minc, const osg::Vec2& ma
     primitives->push_back(lt);
     primitives->push_back(rb);
     primitives->push_back(rt);
-
-#else
-    unsigned int lt = glyphquad.addCoord(osg::Vec2(minc.x(), maxc.y()));
-    unsigned int lb = glyphquad.addCoord(osg::Vec2(minc.x(), minc.y()));
-    unsigned int rb = glyphquad.addCoord(osg::Vec2(maxc.x(), minc.y()));
-    unsigned int rt = glyphquad.addCoord(osg::Vec2(maxc.x(), maxc.y()));
-
-    // set up the tex coords of the quad
-    glyphquad.addTexCoord(osg::Vec2(mintc.x(), maxtc.y()));
-    glyphquad.addTexCoord(osg::Vec2(mintc.x(), mintc.y()));
-    glyphquad.addTexCoord(osg::Vec2(maxtc.x(), mintc.y()));
-    glyphquad.addTexCoord(osg::Vec2(maxtc.x(), maxtc.y()));
-
-    primitives->push_back(lt);
-    primitives->push_back(lb);
-    primitives->push_back(rb);
-
-    primitives->push_back(lt);
-    primitives->push_back(rb);
-    primitives->push_back(rt);
-#endif
 }
 
 void Text::computeGlyphRepresentation()
@@ -280,12 +258,9 @@ void Text::computeGlyphRepresentation()
     Font* activefont = getActiveFont();
     if (!activefont) return;
 
-#ifdef NEW_APPROACH
     _coords = new osg::Vec3Array(osg::Array::BIND_PER_VERTEX);
     _colorCoords = new osg::Vec4Array(osg::Array::BIND_PER_VERTEX);
     _texcoords = new osg::Vec2Array(osg::Array::BIND_PER_VERTEX);
-#endif
-
 
     _textureGlyphQuadMap.clear();
     _lineCount = 0;
@@ -564,7 +539,6 @@ void Text::computeGlyphRepresentation()
         titr!=_textureGlyphQuadMap.end();
         ++titr)
     {
-        titr->second.setupPrimitives(_backdropType);
         if (_useVertexBufferObjects)
         {
             titr->second.initGPUBufferObjects();
@@ -594,7 +568,6 @@ bool Text::computeAverageGlyphWidthAndHeight(float& avg_width, float& avg_height
     unsigned int i;
     bool is_valid_size = true;
 
-#ifdef NEW_APPROACH
     for (i = 0; i < _coords->size(); i += 4)
     {
         width = (*_coords)[i + 2].x() - (*_coords)[i].x();
@@ -604,33 +577,7 @@ bool Text::computeAverageGlyphWidthAndHeight(float& avg_width, float& avg_height
         running_height += height;
         counter++;
     }
-#else
-    // This section is going to try to compute the average width and height
-    // for a character among the text. The reason I shift by an
-    // average amount per-character instead of shifting each character
-    // by its per-instance amount is because it may look strange to see
-    // the individual backdrop text letters not space themselves the same
-    // way the foreground text does. Using one value gives uniformity.
-    // Note: This loop is repeated for each context. I think it may produce
-    // the same values regardless of context. This code be optimized by moving
-    // this loop outside the loop.
-    for(TextureGlyphQuadMap::const_iterator const_titr=_textureGlyphQuadMap.begin();
-        const_titr!=_textureGlyphQuadMap.end();
-        ++const_titr)
-    {
-        const GlyphQuads& glyphquad = const_titr->second;
-        const Coords& coords = glyphquad._coords;
-        for (i = 0; i < coords->size(); i += 4)
-        {
-            width = (*coords)[i + 2].x() - (*coords)[i].x();
-            height = (*coords)[i].y() - (*coords)[i + 1].y();
 
-            running_width += width;
-            running_height += height;
-            counter++;
-        }
-    }
-#endif
     if(0 == counter)
     {
         is_valid_size = false;
@@ -769,19 +716,11 @@ void Text::computeBackdropPositions()
 
             unsigned int numCoords = src_primitives->size();
 
-#ifdef NEW_APPROACH
             Coords& src_coords = _coords;
             TexCoords& src_texcoords = _texcoords;
 
             Coords& dst_coords = _coords;
             TexCoords& dst_texcoords = _texcoords;
-#else
-            Coords& src_coords = glyphquad._coords;
-            TexCoords& src_texcoords = glyphquad._texcoords;
-
-            Coords& dst_coords = glyphquad._coords;
-            TexCoords& dst_texcoords = glyphquad._texcoords;
-#endif
 
             for(i=0;i<numCoords;++i)
             {
@@ -983,173 +922,136 @@ void Text::computeColorGradientsOverall()
 
     unsigned int i;
 
-#ifndef NEW_APPROACH
-    for(TextureGlyphQuadMap::const_iterator const_titr=_textureGlyphQuadMap.begin();
-        const_titr!=_textureGlyphQuadMap.end();
-        ++const_titr)
+    const Coords& coords = _coords;
+    for(i=0;i<coords->size();++i)
     {
-        const GlyphQuads& glyphquad = const_titr->second;
-        const Coords& coords = glyphquad._coords;
-#else
-        const Coords& coords = _coords;
-#endif
-        for(i=0;i<coords->size();++i)
+        // Min and Max are needed for color gradients
+        if((*coords)[i].x() > max_x)
         {
-            // Min and Max are needed for color gradients
-            if((*coords)[i].x() > max_x)
-            {
-                max_x = (*coords)[i].x();
-            }
-            if ((*coords)[i].x() < min_x)
-            {
-                min_x = (*coords)[i].x();
-            }
-            if ((*coords)[i].y() > max_y)
-            {
-                max_y = (*coords)[i].y();
-            }
-            if ((*coords)[i].y() < min_y)
-            {
-                min_y = (*coords)[i].y();
-            }
-
+            max_x = (*coords)[i].x();
         }
-#ifndef NEW_APPROACH
-    }
-#endif
+        if ((*coords)[i].x() < min_x)
+        {
+            min_x = (*coords)[i].x();
+        }
+        if ((*coords)[i].y() > max_y)
+        {
+            max_y = (*coords)[i].y();
+        }
+        if ((*coords)[i].y() < min_y)
+        {
+            min_y = (*coords)[i].y();
+        }
 
-#ifndef NEW_APPROACH
-    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
-        titr!=_textureGlyphQuadMap.end();
-        ++titr)
+    }
+
+    const ColorCoords& colorCoords = _colorCoords;
+
+    unsigned int numCoords = coords->size();
+    if (numCoords!=colorCoords->size())
     {
-        GlyphQuads& glyphquad = titr->second;
-        const Coords& coords = glyphquad._coords;
-        const ColorCoords& colorCoords = glyphquad._colorCoords;
-#else
-        const ColorCoords& colorCoords = _colorCoords;
-#endif
-
-        unsigned int numCoords = coords->size();
-        if (numCoords!=colorCoords->size())
-        {
-            colorCoords->resize(numCoords);
-        }
-
-        for(i=0;i<numCoords;++i)
-        {
-            float red = bilinearInterpolate(
-                min_x,
-                max_x,
-                min_y,
-                max_y,
-                (*coords)[i].x(),
-                (*coords)[i].y(),
-                _colorGradientBottomLeft[0],
-                _colorGradientTopLeft[0],
-                _colorGradientBottomRight[0],
-                _colorGradientTopRight[0]
-            );
-
-            float green = bilinearInterpolate(
-                min_x,
-                max_x,
-                min_y,
-                max_y,
-                (*coords)[i].x(),
-                (*coords)[i].y(),
-                _colorGradientBottomLeft[1],
-                _colorGradientTopLeft[1],
-                _colorGradientBottomRight[1],
-                _colorGradientTopRight[1]
-            );
-
-            float blue = bilinearInterpolate(
-                min_x,
-                max_x,
-                min_y,
-                max_y,
-                (*coords)[i].x(),
-                (*coords)[i].y(),
-                _colorGradientBottomLeft[2],
-                _colorGradientTopLeft[2],
-                _colorGradientBottomRight[2],
-                _colorGradientTopRight[2]
-            );
-            // Alpha does not convert to HSV
-            float alpha = bilinearInterpolate(
-                min_x,
-                max_x,
-                min_y,
-                max_y,
-                (*coords)[i].x(),
-                (*coords)[i].y(),
-                _colorGradientBottomLeft[3],
-                _colorGradientTopLeft[3],
-                _colorGradientBottomRight[3],
-                _colorGradientTopRight[3]
-            );
-
-            (*colorCoords)[i] = osg::Vec4(red,green,blue,alpha);
-        }
-#ifndef NEW_APPROACH
+        colorCoords->resize(numCoords);
     }
-#endif
+
+    for(i=0;i<numCoords;++i)
+    {
+        float red = bilinearInterpolate(
+            min_x,
+            max_x,
+            min_y,
+            max_y,
+            (*coords)[i].x(),
+            (*coords)[i].y(),
+            _colorGradientBottomLeft[0],
+            _colorGradientTopLeft[0],
+            _colorGradientBottomRight[0],
+            _colorGradientTopRight[0]
+        );
+
+        float green = bilinearInterpolate(
+            min_x,
+            max_x,
+            min_y,
+            max_y,
+            (*coords)[i].x(),
+            (*coords)[i].y(),
+            _colorGradientBottomLeft[1],
+            _colorGradientTopLeft[1],
+            _colorGradientBottomRight[1],
+            _colorGradientTopRight[1]
+        );
+
+        float blue = bilinearInterpolate(
+            min_x,
+            max_x,
+            min_y,
+            max_y,
+            (*coords)[i].x(),
+            (*coords)[i].y(),
+            _colorGradientBottomLeft[2],
+            _colorGradientTopLeft[2],
+            _colorGradientBottomRight[2],
+            _colorGradientTopRight[2]
+        );
+        // Alpha does not convert to HSV
+        float alpha = bilinearInterpolate(
+            min_x,
+            max_x,
+            min_y,
+            max_y,
+            (*coords)[i].x(),
+            (*coords)[i].y(),
+            _colorGradientBottomLeft[3],
+            _colorGradientTopLeft[3],
+            _colorGradientBottomRight[3],
+            _colorGradientTopRight[3]
+        );
+
+        (*colorCoords)[i] = osg::Vec4(red,green,blue,alpha);
+    }
 }
 
 void Text::computeColorGradientsPerCharacter()
 {
-#ifndef NEW_APPROACH
-    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
-        titr!=_textureGlyphQuadMap.end();
-        ++titr)
-    {
-        GlyphQuads& glyphquad = titr->second;
-        Coords& coords = glyphquad._coords;
-        ColorCoords& colorCoords = glyphquad._colorCoords;
-#else
-        Coords& coords = _coords;
-        ColorCoords& colorCoords = _colorCoords;
-#endif
-        unsigned int numCoords = coords->size();
-        if (numCoords!=colorCoords->size())
-        {
-            colorCoords->resize(numCoords);
-        }
+    Coords& coords = _coords;
+    ColorCoords& colorCoords = _colorCoords;
 
-        for(unsigned int i=0;i<numCoords;++i)
-        {
-            switch(i%4)
-            {
-                case 0: // top-left
-                    {
-                        (*colorCoords)[i] = _colorGradientTopLeft;
-                        break;
-                    }
-                case 1: // bottom-left
-                    {
-                        (*colorCoords)[i] = _colorGradientBottomLeft;
-                        break;
-                    }
-                case 2: // bottom-right
-                    {
-                        (*colorCoords)[i] = _colorGradientBottomRight;
-                        break;
-                    }
-                case 3: // top-right
-                    {
-                        (*colorCoords)[i] = _colorGradientTopRight;
-                        break;
-                    }
-                default: // error
-                    {
-                        (*colorCoords)[i] = osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f);
-                    }
-            }
-        }
-#ifndef NEW_APPROACH
+    unsigned int numCoords = coords->size();
+    if (numCoords!=colorCoords->size())
+    {
+        colorCoords->resize(numCoords);
     }
-#endif
+
+    for(unsigned int i=0;i<numCoords;++i)
+    {
+        switch(i%4)
+        {
+            case 0: // top-left
+                {
+                    (*colorCoords)[i] = _colorGradientTopLeft;
+                    break;
+                }
+            case 1: // bottom-left
+                {
+                    (*colorCoords)[i] = _colorGradientBottomLeft;
+                    break;
+                }
+            case 2: // bottom-right
+                {
+                    (*colorCoords)[i] = _colorGradientBottomRight;
+                    break;
+                }
+            case 3: // top-right
+                {
+                    (*colorCoords)[i] = _colorGradientTopRight;
+                    break;
+                }
+            default: // error
+                {
+                    (*colorCoords)[i] = osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+                }
+        }
+    }
 }
 
 void Text::drawImplementation(osg::RenderInfo& renderInfo) const
@@ -1311,31 +1213,15 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
 
 void Text::accept(osg::Drawable::ConstAttributeFunctor& af) const
 {
-#ifdef NEW_APPROACH
     if (_coords.valid() )
     {
         af.apply(osg::Drawable::VERTICES, _coords->size(), &(_coords->front()));
         af.apply(osg::Drawable::TEXTURE_COORDS_0, _texcoords->size(), &(_texcoords->front()));
     }
-#else
-    // TODO what to do about local transforms?
-    for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
-        titr!=_textureGlyphQuadMap.end();
-        ++titr)
-    {
-        const GlyphQuads& glyphquad = titr->second;
-        if (glyphquad._coords.valid() )
-        {
-            af.apply(osg::Drawable::VERTICES, glyphquad._coords->size(), &(glyphquad._coords->front()));
-            af.apply(osg::Drawable::TEXTURE_COORDS_0, glyphquad._texcoords->size(), &(glyphquad._texcoords->front()));
-        }
-    }
-#endif
 }
 
 void Text::accept(osg::PrimitiveFunctor& pf) const
 {
-#ifdef NEW_APPROACH
     pf.setVertexArray(_coords->size(), &(_coords->front()));
     for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
@@ -1344,20 +1230,6 @@ void Text::accept(osg::PrimitiveFunctor& pf) const
         const GlyphQuads& glyphquad = titr->second;
         pf.drawElements(GL_TRIANGLES, glyphquad._primitives[0]->size(), &(glyphquad._primitives[0]->front()));
     }
-#else
-    // TODO what to do about local transforms?
-    for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
-        titr!=_textureGlyphQuadMap.end();
-        ++titr)
-    {
-        const GlyphQuads& glyphquad = titr->second;
-        if (glyphquad._coords.valid())
-        {
-            pf.setVertexArray(glyphquad._coords->size(), &(glyphquad._coords->front()));
-            pf.drawArrays(GL_QUADS, 0, glyphquad._coords->size());
-        }
-    }
-#endif
 }
 
 
@@ -1464,15 +1336,9 @@ float Text::bilinearInterpolate(float x1, float x2, float y1, float y2, float x,
 
 void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, const osg::Vec4& colorMultiplier) const
 {
-#ifdef NEW_APPROACH
     const Coords& coords = _coords;
     const TexCoords& texcoords = _texcoords;
     const ColorCoords& colors = _colorCoords;
-#else
-    const Coords& coords = glyphquad._coords;
-    const TexCoords& texcoords = glyphquad._texcoords;
-    const ColorCoords& colors = glyphquad._colorCoords;
-#endif
 
     if (coords.valid() && !coords->empty())
     {
@@ -1538,10 +1404,8 @@ void Text::renderWithDelayedDepthWrites(osg::State& state, const osg::Vec4& colo
 
 void Text::drawTextWithBackdrop(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
-#ifdef NEW_APPROACH
     state.setVertexPointer(_coords.get());
     state.setTexCoordPointer( 0, _texcoords.get());
-#endif
 
     for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
@@ -1569,10 +1433,6 @@ void Text::drawTextWithBackdrop(osg::State& state, const osg::Vec4& colorMultipl
 
             if (max_backdrop_index>glyphquad._primitives.size()) max_backdrop_index=glyphquad._primitives.size();
 
-#ifndef NEW_APPROACH
-            state.setVertexPointer(glyphquad._coords.get());
-            state.setTexCoordPointer( 0, glyphquad._texcoords.get());
-#endif
             state.disableColorPointer();
             state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
@@ -1596,10 +1456,8 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
         osg::PolygonOffset::setFactorAndUnitsMultipliersUsingBestGuessForDriver();
     }
 
-#ifdef NEW_APPROACH
     state.setVertexPointer(_coords.get());
     state.setTexCoordPointer( 0, _texcoords.get());
-#endif
 
     // Do I really need to do this for glPolygonOffset?
     glPushAttrib(GL_POLYGON_OFFSET_FILL);
@@ -1629,10 +1487,6 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
 
         if (max_backdrop_index>glyphquad._primitives.size()) max_backdrop_index=glyphquad._primitives.size();
 
-#ifndef NEW_APPROACH
-        state.setVertexPointer(glyphquad._coords.get());
-        state.setTexCoordPointer( 0, glyphquad._texcoords.get());
-#endif
         state.disableColorPointer();
         state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
@@ -1662,10 +1516,8 @@ void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMult
     glPushAttrib(GL_DEPTH_BUFFER_BIT);
     glDisable(GL_DEPTH_TEST);
 
-#ifdef NEW_APPROACH
     state.setVertexPointer(_coords.get());
     state.setTexCoordPointer( 0, _texcoords.get());
-#endif
 
     for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
@@ -1691,10 +1543,7 @@ void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMult
 
         if (max_backdrop_index>glyphquad._primitives.size()) max_backdrop_index=glyphquad._primitives.size();
 
-#ifndef NEW_APPROACH
-        state.setVertexPointer(glyphquad._coords.get());
-        state.setTexCoordPointer( 0, glyphquad._texcoords.get());
-#endif
+
         state.disableColorPointer();
         state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
@@ -1722,10 +1571,8 @@ void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultipl
 //    glPushAttrib(GL_VIEWPORT_BIT);
     glPushAttrib(GL_DEPTH_BUFFER_BIT);
 
-#ifdef NEW_APPROACH
     state.setVertexPointer(_coords.get());
     state.setTexCoordPointer( 0, _texcoords.get());
-#endif
 
     for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
@@ -1751,10 +1598,6 @@ void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultipl
 
         if (max_backdrop_index>glyphquad._primitives.size()) max_backdrop_index=glyphquad._primitives.size();
 
-#ifndef NEW_APPROACH
-        state.setVertexPointer(glyphquad._coords.get());
-        state.setTexCoordPointer( 0, glyphquad._texcoords.get());
-#endif
         state.disableColorPointer();
         state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
@@ -1820,10 +1663,8 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
     // Arrrgh! Why does the code only seem to work correctly if I call this?
     glDepthMask(GL_FALSE);
 
-#ifdef NEW_APPROACH
     state.setVertexPointer(_coords.get());
     state.setTexCoordPointer( 0, _texcoords.get());
-#endif
 
     // Draw all the text to the stencil buffer to mark out the region
     // that we can write too.
@@ -1852,10 +1693,6 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
 
         if (max_backdrop_index>glyphquad._primitives.size()) max_backdrop_index=glyphquad._primitives.size();
 
-#ifndef NEW_APPROACH
-        state.setVertexPointer(glyphquad._coords.get());
-        state.setTexCoordPointer( 0, glyphquad._texcoords.get());
-#endif
         state.disableColorPointer();
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
@@ -1886,10 +1723,8 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
     // Re-enable writing to the color buffer so we can see the results
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
-#ifdef NEW_APPROACH
     state.setVertexPointer(_coords.get());
     state.setTexCoordPointer( 0, _texcoords.get());
-#endif
 
     // Draw all the text again
 
@@ -1917,10 +1752,6 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
 
         if (max_backdrop_index>glyphquad._primitives.size()) max_backdrop_index=glyphquad._primitives.size();
 
-#ifndef NEW_APPROACH
-        state.setVertexPointer(glyphquad._coords.get());
-        state.setTexCoordPointer( 0, glyphquad._texcoords.get());
-#endif
         state.disableColorPointer();
         state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
@@ -1951,67 +1782,11 @@ Text::GlyphQuads::GlyphQuads(const GlyphQuads&)
 void Text::GlyphQuads::initGlyphQuads()
 {
     _coordBase = 0;
-#ifndef NEW_APPROACH
-    _coords = new osg::Vec3Array();
-    _texcoords = new osg::Vec2Array();
-    _colorCoords = new osg::Vec4Array();
-#endif
     _primitives.push_back(new DrawElementsUShort(PrimitiveSet::TRIANGLES));
-}
-
-void Text::GlyphQuads::setupPrimitives(BackdropType backdropType)
-{
-    OSG_NOTICE<<"Text::GlyphQuads::setupPrimitives() _glyphs.size()="<<_glyphs.size()<<std::endl;
-
-    // _primitives.clear();
-
-    return;
-
-    unsigned int numCoords = _glyphs.size()*4;
-
-    unsigned int numBackdrops = 0;
-    if (backdropType==Text::OUTLINE) numBackdrops += 8;
-    if (backdropType!=Text::NONE) numBackdrops += 1;
-
-    for(unsigned int i=0; i<numBackdrops; ++i)
-    {
-        _primitives.push_back(new DrawElementsUShort(PrimitiveSet::TRIANGLES));
-    }
-
-    unsigned int baseIndex = _coordBase;
-    for(Primitives::iterator itr = _primitives.begin();
-        itr != _primitives.end();
-        ++itr)
-    {
-        DrawElementsUShort* indices = itr->get();
-        indices->clear();
-
-        unsigned int endIndex = baseIndex + numCoords;
-        for (unsigned short i = baseIndex; i < endIndex; i += 4)
-        {
-            indices->push_back(i);
-            indices->push_back(i + 1);
-            indices->push_back(i + 3);
-
-            indices->push_back(i + 1);
-            indices->push_back(i + 2);
-            indices->push_back(i + 3);
-        }
-        baseIndex = endIndex;
-    }
 }
 
 void Text::GlyphQuads::initGPUBufferObjects()
 {
-#ifndef NEW_APPROACH
-    osg::VertexBufferObject* vbo = new osg::VertexBufferObject();
-    _coords->setBinding(osg::Array::BIND_PER_VERTEX);
-    _coords->setVertexBufferObject(vbo);
-    _texcoords->setBinding(osg::Array::BIND_PER_VERTEX);
-    _texcoords->setVertexBufferObject(vbo);
-    _colorCoords->setBinding(osg::Array::BIND_PER_VERTEX);
-    _colorCoords->setVertexBufferObject(vbo);
-#endif
     osg::ref_ptr<osg::ElementBufferObject> ebo = new osg::ElementBufferObject();
     for(Primitives::iterator itr = _primitives.begin();
         itr != _primitives.end();
@@ -2025,12 +1800,6 @@ void Text::GlyphQuads::initGPUBufferObjects()
 
 void Text::GlyphQuads::resizeGLObjectBuffers(unsigned int maxSize)
 {
-#ifndef NEW_APPROACH
-    _coords->resizeGLObjectBuffers(maxSize);
-    _texcoords->resizeGLObjectBuffers(maxSize);
-    _colorCoords->resizeGLObjectBuffers(maxSize);
-#endif
-
     for(Primitives::iterator itr = _primitives.begin();
         itr != _primitives.end();
         ++itr)
@@ -2043,12 +1812,6 @@ void Text::GlyphQuads::resizeGLObjectBuffers(unsigned int maxSize)
 
 void Text::GlyphQuads::releaseGLObjects(osg::State* state) const
 {
-#ifndef NEW_APPROACH
-    _coords->releaseGLObjects(state);;
-    _texcoords->releaseGLObjects(state);
-    _colorCoords->releaseGLObjects(state);
-#endif
-
     for(Primitives::const_iterator itr = _primitives.begin();
         itr != _primitives.end();
         ++itr)

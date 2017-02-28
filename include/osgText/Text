@@ -318,16 +318,10 @@ public:
     struct OSGTEXT_EXPORT GlyphQuads
     {
         typedef std::vector<Glyph*> Glyphs;
-        typedef std::vector<unsigned int> LineNumbers;
         typedef std::vector< osg::ref_ptr<osg::DrawElementsUShort> > Primitives;
 
         Glyphs                          _glyphs;
-
-        unsigned int                    _coordBase;
-
-
         Primitives                      _primitives;
-
 
         GlyphQuads();
         GlyphQuads(const GlyphQuads& gq);

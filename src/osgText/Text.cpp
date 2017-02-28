@@ -1781,7 +1781,6 @@ Text::GlyphQuads::GlyphQuads(const GlyphQuads&)
 
 void Text::GlyphQuads::initGlyphQuads()
 {
-    _coordBase = 0;
     _primitives.push_back(new DrawElementsUShort(PrimitiveSet::TRIANGLES));
 }
 

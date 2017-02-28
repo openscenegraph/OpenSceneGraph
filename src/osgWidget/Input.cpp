@@ -123,17 +123,26 @@ void Input::_calculateCursorOffsets() {
         const osgText::Text::GlyphQuads& gq = tgqmi->second;
 
         //coords.insert(coords.end(),gq.getTransformedCoords(0).begin(),gq.getTransformedCoords(0).end());
+#ifndef NEW_APPROACH
         unsigned int numCoords = gq.getCoords()->size();
         for(unsigned int i=0; i<numCoords; ++i)
         {
             osg::Vec2 c; gq.getCoord(i, c); coords.push_back(c);
         }
-
+#endif
         for (unsigned int i=0; i<gq.getGlyphs().size(); ++i)
         {
             glyphs.push_back(gq.getGlyphs().at(i));
         }
     }
+
+#ifdef NEW_APPROACH
+    unsigned int numCoords = _text->getCoords()->size();
+    for(unsigned int i=0; i<numCoords; ++i)
+    {
+        osg::Vec2 c; _text->getCoord(i, c); coords.push_back(c);
+    }
+#endif
 
     std::list<unsigned int> keys;
     for (unsigned int i=0; i<_text->getText().size(); ++i)

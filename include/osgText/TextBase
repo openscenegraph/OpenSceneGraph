@@ -22,7 +22,6 @@
 
 namespace osgText {
 
-
 class OSGTEXT_EXPORT TextBase : public osg::Drawable
 {
 public:
@@ -266,6 +265,13 @@ public:
 
     virtual osg::BoundingBox computeBoundingBox() const;
 
+    typedef osg::ref_ptr<osg::Vec3Array> Coords;
+    Coords& getCoords() { return _coords; }
+    const Coords& getCoords() const { return _coords; }
+
+    void getCoord(unsigned int i, osg::Vec2& c) const { c.set((*_coords)[i].x(), (*_coords)[i].y()); }
+    void getCoord(unsigned int i, osg::Vec3& c) const { c = (*_coords)[i]; }
+
 protected:
 
     virtual ~TextBase();
@@ -279,10 +285,10 @@ protected:
 
     virtual void computeGlyphRepresentation() = 0;
 
-    typedef osg::ref_ptr<osg::Vec3Array> Coords;
     typedef osg::ref_ptr<osg::Vec2Array> TexCoords;
     typedef osg::ref_ptr<osg::Vec4Array> ColorCoords;
     typedef std::vector< osg::ref_ptr<osg::DrawElementsUShort> > Primitives;
+
 
     // members which have public access.
     osg::Vec4                               _color;
@@ -315,13 +321,19 @@ protected:
 
     mutable osg::Matrix                     _matrix;
 
-    Coords                                  _decorationVertices;
     Primitives                              _decorationPrimitives;
 
     void setupDecoration();
 
+    Coords                                  _coords;
+    ColorCoords                             _colorCoords;
+    TexCoords                               _texcoords;
+
+    unsigned int addCoord(const osg::Vec2& c) { unsigned int s = _coords->size(); _coords->push_back(osg::Vec3(c.x(), c.y(), 0.0f)); return s; }
+    unsigned int addCoord(const osg::Vec3& c) { unsigned int s = _coords->size(); _coords->push_back(c); return s; }
 
 
+    void addTexCoord(const osg::Vec2& tc) { _texcoords->push_back(tc); }
 
 };
 

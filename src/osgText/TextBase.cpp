@@ -617,20 +617,16 @@ void TextBase::setupDecoration()
     if (_drawMode & BOUNDINGBOX) numVerticesRequired += 8;
     if (_drawMode & ALIGNMENT) numVerticesRequired += 4;
 
-    if (numVerticesRequired==0)
-    {
-        _decorationVertices = 0;
-        return;
-    }
-
-    if (!_decorationVertices)
-    {
-        _decorationVertices = new osg::Vec3Array;
-        _decorationVertices->resize(numVerticesRequired);
-    }
-
-    _decorationVertices->clear();
     _decorationPrimitives.clear();
+
+    if (numVerticesRequired==0) return;
+
+    Coords& coords = _coords;
+    if (!coords)
+    {
+        coords = new osg::Vec3Array;
+        coords->resize(numVerticesRequired);
+    }
 
     if ((_drawMode & FILLEDBOUNDINGBOX)!=0 && _textBB.valid())
     {
@@ -639,12 +635,12 @@ void TextBase::setupDecoration()
         osg::Vec3 c110(_textBB.xMax(),_textBB.yMax(),_textBB.zMin());
         osg::Vec3 c010(_textBB.xMin(),_textBB.yMax(),_textBB.zMin());
 
-        unsigned int base = _decorationVertices->size();
+        unsigned int base = coords->size();
 
-        _decorationVertices->push_back(c000);
-        _decorationVertices->push_back(c100);
-        _decorationVertices->push_back(c110);
-        _decorationVertices->push_back(c010);
+        coords->push_back(c000);
+        coords->push_back(c100);
+        coords->push_back(c110);
+        coords->push_back(c010);
 
         osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
         _decorationPrimitives.push_back(primitives);
@@ -666,12 +662,12 @@ void TextBase::setupDecoration()
             osg::Vec3 c110(_textBB.xMax(),_textBB.yMax(),_textBB.zMin());
             osg::Vec3 c010(_textBB.xMin(),_textBB.yMax(),_textBB.zMin());
 
-            unsigned int base = _decorationVertices->size();
+            unsigned int base = coords->size();
 
-            _decorationVertices->push_back(c000);
-            _decorationVertices->push_back(c100);
-            _decorationVertices->push_back(c110);
-            _decorationVertices->push_back(c010);
+            coords->push_back(c000);
+            coords->push_back(c100);
+            coords->push_back(c110);
+            coords->push_back(c010);
 
             osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_LINE_LOOP);
             _decorationPrimitives.push_back(primitives);
@@ -693,17 +689,17 @@ void TextBase::setupDecoration()
             osg::Vec3 c111(_textBB.xMax(),_textBB.yMax(),_textBB.zMax());
             osg::Vec3 c011(_textBB.xMin(),_textBB.yMax(),_textBB.zMax());
 
-            unsigned int base = _decorationVertices->size();
+            unsigned int base = coords->size();
 
-            _decorationVertices->push_back(c000); // +0
-            _decorationVertices->push_back(c100); // +1
-            _decorationVertices->push_back(c110); // +2
-            _decorationVertices->push_back(c010); // +3
+            coords->push_back(c000); // +0
+            coords->push_back(c100); // +1
+            coords->push_back(c110); // +2
+            coords->push_back(c010); // +3
 
-            _decorationVertices->push_back(c001); // +4
-            _decorationVertices->push_back(c101); // +5
-            _decorationVertices->push_back(c111); // +6
-            _decorationVertices->push_back(c011); // +7
+            coords->push_back(c001); // +4
+            coords->push_back(c101); // +5
+            coords->push_back(c111); // +6
+            coords->push_back(c011); // +7
 
 
             osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_LINES);
@@ -760,12 +756,12 @@ void TextBase::setupDecoration()
         osg::Vec3 vt(osg::Vec3(_offset.x(),_offset.y()-cursorsize,_offset.z()));
         osg::Vec3 vb(osg::Vec3(_offset.x(),_offset.y()+cursorsize,_offset.z()));
 
-        unsigned int base = _decorationVertices->size();
+        unsigned int base = coords->size();
 
-        _decorationVertices->push_back(hl);
-        _decorationVertices->push_back(hr);
-        _decorationVertices->push_back(vt);
-        _decorationVertices->push_back(vb);
+        coords->push_back(hl);
+        coords->push_back(hr);
+        coords->push_back(vt);
+        coords->push_back(vb);
 
         osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_LINES);
         _decorationPrimitives.push_back(primitives);
@@ -774,7 +770,7 @@ void TextBase::setupDecoration()
         primitives->push_back(base+0);
         primitives->push_back(base+1);
 
-        primitives->push_back(base+1);
         primitives->push_back(base+2);
+        primitives->push_back(base+3);
     }
 }

@@ -23,8 +23,6 @@
 
 namespace osgText {
 
-#define NEW_APPROACH
-
 class OSGTEXT_EXPORT Text : public osgText::TextBase
 {
 public:
@@ -295,20 +293,6 @@ public:
 
 public:
 
-    Coords                          _coords;
-    ColorCoords                     _colorCoords;
-    TexCoords                       _texcoords;
-
-    unsigned int addCoord(const osg::Vec2& c) { unsigned int s = _coords->size(); _coords->push_back(osg::Vec3(c.x(), c.y(), 0.0f)); return s; }
-    unsigned int addCoord(const osg::Vec3& c) { unsigned int s = _coords->size(); _coords->push_back(c); return s; }
-
-    void getCoord(unsigned int i, osg::Vec2& c) const { c.set((*_coords)[i].x(), (*_coords)[i].y()); }
-    void getCoord(unsigned int i, osg::Vec3& c) const { c = (*_coords)[i]; }
-
-    Coords& getCoords() { return _coords; }
-    const Coords& getCoords() const { return _coords; }
-
-    void addTexCoord(const osg::Vec2& tc) { _texcoords->push_back(tc); }
 
     // internal structures, variable and methods used for rendering of characters.
     struct OSGTEXT_EXPORT GlyphQuads

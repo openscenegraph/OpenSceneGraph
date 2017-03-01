@@ -461,12 +461,12 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
     if ((_drawMode&(~TEXT))!=0)
     {
 
-        if (_decorationVertices.valid() && !_decorationVertices->empty())
+        if (!_decorationPrimitives.empty())
         {
             osg::State::ApplyModeProxy applyMode(state, GL_LIGHTING, false);
             osg::State::ApplyTextureModeProxy applyTextureMode(state, 0, GL_TEXTURE_2D, false);
 
-            state.setVertexPointer(_decorationVertices.get());
+            state.setVertexPointer(_coords.get());
 
             for(Primitives::const_iterator itr = _decorationPrimitives.begin();
                 itr != _decorationPrimitives.end();

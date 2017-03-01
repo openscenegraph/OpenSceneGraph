@@ -1094,7 +1094,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
     if ((_drawMode&(~TEXT))!=0)
     {
 
-        if (_decorationVertices.valid() && !_decorationVertices->empty())
+        if (!_decorationPrimitives.empty())
         {
             state.disableNormalPointer();
 
@@ -1102,7 +1102,8 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
             osg::State::ApplyTextureModeProxy applyTextureMode(state, 0, GL_TEXTURE_2D, false);
 
             state.disableAllVertexArrays();
-            state.setVertexPointer(_decorationVertices.get());
+
+            state.setVertexPointer(_coords.get());
 
         #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
             switch(_backdropImplementation)

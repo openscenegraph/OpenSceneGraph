@@ -1,0 +1,138 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab
+ *
+ * This application is open source and may be redistributed and/or modified
+ * freely and without restriction, both in commercial and non commercial
+ * applications, as long as this copyright notice is maintained.
+ *
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+*/
+
+#ifndef GEOMETRY_CLEANER
+#define GEOMETRY_CLEANER
+
+#include <osg/Geometry>
+#include <osgAnimation/RigGeometry>
+#include <osgAnimation/MorphGeometry>
+
+#include "GeometryMapper"
+#include "SubGeometry"
+
+
+class GeometryCleaner : public GeometryMapper
+{
+public:
+
+    const GeometryList& process(osg::Geometry& geometry) {
+        _clean.clear();
+
+        if(dynamic_cast<osgAnimation::MorphGeometry*>(&geometry)) {
+            // a morph geometry may have a degenerated primitive in one target but not all targets
+            // let's leave them unmodified
+            _clean.push_back(&geometry);
+        }
+        else if(dynamic_cast<osgAnimation::RigGeometry*>(&geometry)) {
+                // skipping rigged geometry for now
+            _clean.push_back(&geometry);
+        }
+        else {
+            osg::Vec3Array* positions = dynamic_cast<osg::Vec3Array*>(geometry.getVertexArray());
+            SubGeometry cleaned(geometry,
+                                clean(*positions, getTriangles(geometry), 3),
+                                clean(*positions, getLines(geometry), 2),
+                                clean(*positions, getWireframe(geometry), 2),
+                                clean(*positions, getPoints(geometry), 1));
+            _clean.push_back(cleaned.geometry());
+        }
+
+        return _clean;
+    }
+
+    osg::DrawElements* getTriangles(osg::Geometry& geometry) {
+        for(unsigned int i = 0 ; i < geometry.getNumPrimitiveSets() ; ++ i) {
+            osg::DrawElements* primitive = geometry.getPrimitiveSet(i)->getDrawElements();
+            if(primitive && primitive->getMode() == osg::PrimitiveSet::TRIANGLES) {
+                return primitive;
+            }
+        }
+        return 0;
+    }
+
+    osg::DrawElements* getLines(osg::Geometry& geometry) {
+        for(unsigned int i = 0 ; i < geometry.getNumPrimitiveSets() ; ++ i) {
+            osg::DrawElements* primitive = geometry.getPrimitiveSet(i)->getDrawElements();
+            if(primitive && primitive->getMode() == osg::PrimitiveSet::LINES) {
+                bool wireframe(false);
+                if(!primitive->getUserValue("wireframe", wireframe) || !wireframe)
+                    return primitive;
+            }
+        }
+        return 0;
+    }
+
+    osg::DrawElements* getWireframe(osg::Geometry& geometry) {
+        for(unsigned int i = 0 ; i < geometry.getNumPrimitiveSets() ; ++ i) {
+            osg::DrawElements* primitive = geometry.getPrimitiveSet(i)->getDrawElements();
+            if(primitive && primitive->getMode() == osg::PrimitiveSet::LINES) {
+                bool wireframe(false);
+                if(primitive->getUserValue("wireframe", wireframe) && wireframe)
+                    return primitive;
+            }
+        }
+        return 0;
+    }
+
+    osg::DrawElements* getPoints(osg::Geometry& geometry) {
+        for(unsigned int i = 0 ; i < geometry.getNumPrimitiveSets() ; ++ i) {
+            osg::DrawElements* primitive = geometry.getPrimitiveSet(i)->getDrawElements();
+            if(primitive && primitive->getMode() == osg::PrimitiveSet::POINTS) {
+                return primitive;
+            }
+        }
+        return 0;
+    }
+
+    std::vector<unsigned int> clean(const osg::Vec3Array& positions, osg::DrawElements* elements, const unsigned int size) {
+        std::vector<unsigned int> indices;
+
+        if(!elements) return indices;
+
+        for(unsigned int i = 0 ; i < elements->getNumIndices() ; i += size) {
+            if(size == 3) {
+                unsigned int v1 = elements->index(i),
+                             v2 = elements->index(i + 1),
+                             v3 = elements->index(i + 2);
+                osg::Vec3 p1 = positions[v1],
+                          p2 = positions[v2],
+                          p3 = positions[v3];
+
+                osg::Vec3f cross = (p2 - p1) ^ (p3 - p1);
+                if(cross.length()) {
+                    indices.push_back(v1);
+                    indices.push_back(v2);
+                    indices.push_back(v3);
+                }
+            }
+            else if (size == 2) {
+                unsigned int v1 = elements->index(i),
+                             v2 = elements->index(i + 1);
+                if(!(positions[v1] == positions[v2])) {
+                    indices.push_back(v1);
+                    indices.push_back(v2);
+                }
+            }
+            else {
+                indices.push_back(elements->index(i));
+            }
+        }
+
+        return indices;
+    }
+
+
+    GeometryList _clean;
+};
+
+#endif

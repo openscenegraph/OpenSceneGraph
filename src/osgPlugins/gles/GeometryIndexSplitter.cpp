@@ -11,8 +11,8 @@ bool GeometryIndexSplitter::split(osg::Geometry& geometry) {
     attachBufferBoundingBox(geometry);
 
     osg::DrawElements *wire_primitive = 0,
-                        *line_primitive = 0,
-                        *point_primitive = 0;
+                      *line_primitive = 0,
+                      *point_primitive = 0;
     for(unsigned int i = 0 ; i < geometry.getNumPrimitiveSets() ; ++ i) {
         osg::DrawElements* primitive = (geometry.getPrimitiveSet(i) ? geometry.getPrimitiveSet(i)->getDrawElements() : 0);
         if(primitive) {
@@ -31,28 +31,33 @@ bool GeometryIndexSplitter::split(osg::Geometry& geometry) {
         }
     }
 
+    TriangleMeshGraph graph(geometry, false);
+
     // only wireframe can be processed directly as they simply "duplicate" triangle or edge data;
     // lines/points may reference points not used for triangles so we keep a set of primitives
     // that remain to process
-    LineSet source_lines;
-    IndexSet source_points;
+    IndexSet triangles;
+    LineSet lines, wires;
+    IndexSet points;
 
+    for(unsigned int i = 0 ; i < graph.getNumTriangles() ; ++ i) {
+        triangles.insert(i);
+    }
     if(line_primitive) {
         for(unsigned int i = 0 ; i < line_primitive->getNumIndices() ; i += 2) {
-            source_lines.insert(Line(line_primitive->index(i), line_primitive->index(i + 1)));
+            lines.insert(Line(line_primitive->index(i), line_primitive->index(i + 1)));
+        }
+    }
+    if(wire_primitive) {
+        for(unsigned int i = 0 ; i < wire_primitive->getNumIndices() ; i += 2) {
+            wires.insert(Line(wire_primitive->index(i), wire_primitive->index(i + 1)));
         }
     }
     if(point_primitive) {
         for(unsigned int i = 0 ; i < point_primitive->getNumIndices() ; ++ i) {
-            source_points.insert(point_primitive->index(i));
+            points.insert(point_primitive->index(i));
         }
     }
-
-    TriangleMeshGraph graph(geometry, false);
-    unsigned int remaining_triangles = graph.getNumTriangles(),
-                    cluster = 0;
-    IndexVector clusters(remaining_triangles, 0);
-    IndexCache cache;
 
     // assign a cluster id for each triangle
     // 1. bootstrap cluster by selecting first remaining triangle
@@ -64,95 +69,75 @@ bool GeometryIndexSplitter::split(osg::Geometry& geometry) {
     // 3. insert wireframe edges corresponding to selected triangles
     // 4. extract subgeometry
 
-    while(remaining_triangles || !source_lines.empty() || !source_points.empty()) {
-        IndexVector subtriangles, subwireframe, sublines, subpoints;
-        IndexSet cluster_vertices;
+    while(triangles.size() || lines.size() || points.size()) {
+        Cluster cluster(_maxAllowedIndex);
+        IndexCache cache;
+        unsigned int candidate = std::numeric_limits<unsigned int>::max();
 
-        ++ cluster;
+        // let's consider that every insert needs the place for a full new primitive for simplicity
+        while(!cluster.fullOfTriangles() &&
+              (candidate = findCandidate(triangles, cache, graph)) != std::numeric_limits<unsigned int>::max()) {
+            cache.push_back(candidate);
+            Triangle t = graph.triangle(candidate);
+            cluster.addTriangle(t.v1(), t.v2(), t.v3());
+        }
 
-        if(remaining_triangles) {
-            // find first unmarked triangle (as remaining_triangles > 0 there *must* be at least one)
-            cache.push_back(findCandidate(clusters));
-            setTriangleCluster(graph, cache.back(), cluster, clusters, cluster_vertices, remaining_triangles);
+        while(!cluster.fullOfLines() && lines.size()) {
+            Line line = getNext(lines, Line(std::numeric_limits<unsigned int>::max(), std::numeric_limits<unsigned int>::max()));
+            cluster.addLine(line._a, line._b);
+        }
 
-            while(remaining_triangles && cluster_vertices.size() < _maxAllowedIndex) {
-                unsigned int candidate = std::numeric_limits<unsigned int>::max();
+        while(!cluster.full() && points.size()) {
+            unsigned int point = getNext(points, std::numeric_limits<unsigned int>::max());
+            cluster.addPoint(point);
+        }
 
-                for(IndexCache::const_reverse_iterator cached = cache.rbegin() ; cached != cache.rend() ; ++ cached) {
-                    candidate = findCandidate(graph.triangleNeighbors(*cached), clusters);
-                    if(candidate != std::numeric_limits<unsigned int>::max()) break;
+        // update lines/points: if all vertices referenced by a point/line primitive are
+        // already extracted, let's insert it in the subgeometry and update the set of
+        // primitives still remaining Lines may e.g. reference one vertex in cluster A and
+        // the other in cluster B hence need specific care
+        if(line_primitive) {
+            for(LineSet::iterator line = lines.begin() ; line != lines.end() ; ) {
+                if(cluster.contains(line->_a, line->_b)) {
+                    cluster.addLine(line->_a, line->_b);
+                    lines.erase(line ++);
                 }
-
-                if(candidate == std::numeric_limits<unsigned int>::max()) {
-                    // do we have room for a triangle having all vertices not in the cluster?
-                    if(!(cluster_vertices.size() + 2 < _maxAllowedIndex)) {
-                        break;
-                    }
-
-                    candidate = findCandidate(clusters);
-                }
-
-                cache.push_back(candidate);
-                setTriangleCluster(graph, candidate, cluster, clusters, cluster_vertices, remaining_triangles);
-            }
-
-            // build list of cluster triangles
-            for(unsigned int triangle = 0 ; triangle < clusters.size() ; ++ triangle) {
-                if(clusters[triangle] == cluster) {
-                    const Triangle& t = graph.triangle(triangle);
-                    subtriangles.push_back(t.v1());
-                    subtriangles.push_back(t.v2());
-                    subtriangles.push_back(t.v3());
-                }
-            }
-
-            // update lines/points: if all vertices referenced by a point/line primitive are
-            // already extracted, let's insert it in the subgeometry and update the set of
-            // primitives still remaining Lines may e.g. reference one vertex in cluster A and
-            // the other in cluster B hence need specific care
-            if(line_primitive) {
-                extract_primitives(cluster_vertices, line_primitive, sublines, 2);
-                for(unsigned int i = 0 ; i < sublines.size() / 2 ; i += 2) {
-                    source_lines.erase(Line(sublines[i], sublines[i + 1]));
-                }
-            }
-
-            if(point_primitive) {
-                extract_primitives(cluster_vertices, point_primitive, subpoints, 1);
-                for(unsigned int i = 0 ; i < subpoints.size() ; ++ i) {
-                    source_points.erase(subpoints[i]);
+                else {
+                    ++ line;
                 }
             }
         }
 
-        // let's consider that every new lines adds 2 vertices for simplicity
-        while(!source_lines.empty() && cluster_vertices.size() - 1 < _maxAllowedIndex) {
-            Line line = *source_lines.begin();
-            source_lines.erase(source_lines.begin());
-            cluster_vertices.insert(line._a);
-            cluster_vertices.insert(line._b);
-            sublines.push_back(line._a);
-            sublines.push_back(line._b);
-        }
-
-        while(!source_points.empty() && cluster_vertices.size() < _maxAllowedIndex) {
-            unsigned int point = *source_points.begin();
-            source_points.erase(source_points.begin());
-            cluster_vertices.insert(point);
-            subpoints.push_back(point);
+        if(point_primitive) {
+            // find all cluster vertices that should also have a point primitive
+            for(IndexSet::iterator subvertex = cluster.subvertices.begin() ; subvertex != cluster.subvertices.end() ; ++ subvertex) {
+                unsigned int index = *subvertex;
+                if(points.find(index) != points.end()) {
+                    cluster.addPoint(index);
+                    points.erase(index);
+                }
+            }
         }
 
         // finally extract wireframe (may originate from triangles or lines but necessarily have
         // to reference vertices that are *all* in the geometry)
         if(wire_primitive) {
-            extract_primitives(cluster_vertices, wire_primitive, subwireframe, 2);
+            for(LineSet::iterator wire = wires.begin() ; wire != wires.end() ; ) {
+                if(cluster.contains(wire->_a, wire->_b)) {
+                    cluster.addWire(wire->_a, wire->_b);
+                    wires.erase(wire ++);
+                }
+                else {
+                    ++ wire;
+                }
+            }
         }
 
         _geometryList.push_back(SubGeometry(geometry,
-                                            subtriangles,
-                                            sublines,
-                                            subwireframe,
-                                            subpoints).geometry());
+                                            cluster.subtriangles,
+                                            cluster.sublines,
+                                            cluster.subwireframe,
+                                            cluster.subpoints).geometry());
     }
 
     osg::notify(osg::NOTICE) << "geometry " << &geometry << " " << geometry.getName()
@@ -164,60 +149,20 @@ bool GeometryIndexSplitter::split(osg::Geometry& geometry) {
 }
 
 
-unsigned int GeometryIndexSplitter::findCandidate(const IndexVector& clusters) {
-    for(unsigned int i = 0 ; i < clusters.size() ; ++ i) {
-        if(!clusters[i]) {
-            return i;
-        }
-    }
-    return std::numeric_limits<unsigned int>::max();
-}
-
-
-unsigned int GeometryIndexSplitter::findCandidate(const IndexVector& candidates, const IndexVector& clusters) {
-    for(IndexVector::const_iterator candidate = candidates.begin() ; candidate != candidates.end() ; ++ candidate) {
-        if(!clusters[*candidate]) {
-            return *candidate;
-        }
-    }
-    return std::numeric_limits<unsigned int>::max();
-}
-
-
-void GeometryIndexSplitter::setTriangleCluster(const TriangleMeshGraph& graph,
-                                               unsigned int triangle,
-                                               unsigned int cluster,
-                                               IndexVector& clusters,
-                                               IndexSet& cluster_vertices,
-                                               unsigned int& remaining) {
-    clusters[triangle] = cluster;
-    const Triangle& t = graph.triangle(triangle);
-    cluster_vertices.insert(t.v1());
-    cluster_vertices.insert(t.v2());
-    cluster_vertices.insert(t.v3());
-    remaining --;
-}
-
-
-void GeometryIndexSplitter::extract_primitives(const IndexSet& vertices,
-                                               const osg::DrawElements* elements,
-                                               IndexVector& indices,
-                                               unsigned int primitive_size) {
-    for(unsigned int i = 0 ; i < elements->getNumIndices() ; i += primitive_size) {
-        bool is_included = true;
-        for(unsigned int j = 0 ; j < primitive_size ; ++ j) {
-            if(!vertices.count(elements->index(i + j))) {
-                is_included = false;
-                break;
-            }
-        }
-
-        if(is_included) {
-            for(unsigned int j = 0 ; j < primitive_size ; ++ j) {
-                indices.push_back(elements->index(i + j));
+unsigned int GeometryIndexSplitter::findCandidate(IndexSet& triangles, const IndexCache& cache, const TriangleMeshGraph& graph) {
+    // look for unclustered neighboring triangles
+    for(IndexCache::const_reverse_iterator cached = cache.rbegin() ; cached != cache.rend() ; ++ cached) {
+        IndexVector candidates = graph.triangleNeighbors(*cached);
+        for(IndexVector::const_iterator candidate = candidates.begin() ; candidate != candidates.end() ; ++ candidate) {
+            if(triangles.count(*candidate)) {
+                triangles.erase(*candidate);
+                return *candidate;
             }
         }
     }
+
+    //fallback on any unclustered triangle
+    return getNext(triangles, std::numeric_limits<unsigned int>::max());
 }
 
 
@@ -274,12 +219,5 @@ void GeometryIndexSplitter::setBufferBoundingBox(T* buffer) const {
 
         buffer->setUserValue("bbl", bbl);
         buffer->setUserValue("ufr", ufr);
-    }
-}
-
-
-void GeometryIndexSplitter::setValidIndices(std::set<unsigned int>& indices, const osg::DrawElements* primitive) const {
-    for(unsigned int j = 0 ; j < primitive->getNumIndices() ; ++ j) {
-        indices.insert(primitive->index(j));
     }
 }

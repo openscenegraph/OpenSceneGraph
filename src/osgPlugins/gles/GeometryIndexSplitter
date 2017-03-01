@@ -25,15 +25,81 @@
 #include <osgAnimation/RigGeometry>
 
 #include "glesUtil"
+#include "GeometryMapper"
 #include "GeometryArray"
 #include "TriangleMeshGraph"
 #include "SubGeometry"
 #include "Line"
 
 
-class GeometryIndexSplitter
+class GeometryIndexSplitter : public GeometryMapper
 {
 protected:
+    class Cluster {
+    public:
+        Cluster(unsigned int maxAllowedIndex):
+            maxIndex(maxAllowedIndex)
+        {
+        }
+
+        bool full() const {
+            return subvertices.size() >= maxIndex;
+        }
+
+        bool fullOfTriangles() const {
+            // consider worse case i.e. no triangle vertex is already in the cluster
+            // so need room for 3 indices
+            return subvertices.size() + 3 >= maxIndex;
+        }
+
+        bool fullOfLines() const {
+            return subvertices.size() + 2 >= maxIndex;
+        }
+
+        bool contains(unsigned int v1, unsigned int v2) const {
+            return contains(v1) && contains(v2);
+        }
+
+        bool contains(unsigned int v1) const {
+            return subvertices.count(v1);
+        }
+
+        void addTriangle(unsigned int v1, unsigned int v2, unsigned v3) {
+            subtriangles.push_back(v1);
+            subtriangles.push_back(v2);
+            subtriangles.push_back(v3);
+
+            subvertices.insert(v1);
+            subvertices.insert(v2);
+            subvertices.insert(v3);
+        }
+
+        void addLine(unsigned int v1, unsigned int v2) {
+            sublines.push_back(v1);
+            sublines.push_back(v2);
+
+            subvertices.insert(v1);
+            subvertices.insert(v2);
+        }
+
+        void addPoint(unsigned int v1) {
+            subpoints.push_back(v1);
+
+            subvertices.insert(v1);
+        }
+
+        void addWire(unsigned int v1, unsigned int v2) {
+            subwireframe.push_back(v1);
+            subwireframe.push_back(v2);
+        }
+
+    public:
+        const unsigned int maxIndex;
+        IndexVector subtriangles, subwireframe, sublines, subpoints;
+        IndexSet subvertices;
+    };
+
+
     class IndexCache : public IndexDeque {
     public:
         IndexCache(unsigned int size=64) : _size(size)
@@ -48,18 +114,29 @@ protected:
     };
 
 public:
-    typedef std::vector< osg::ref_ptr<osg::Geometry> > GeometryList;
-
     GeometryIndexSplitter(unsigned int maxAllowedIndex):
         _maxAllowedIndex(maxAllowedIndex)
     {}
 
+    const GeometryList& process(osg::Geometry& geometry) {
+        _geometryList.clear();
+        split(geometry);
+        return _geometryList;
+    }
+
     bool split(osg::Geometry&);
 
-    unsigned int findCandidate(const IndexVector&);
-    unsigned int findCandidate(const IndexVector&, const IndexVector&);
-    void setTriangleCluster(const TriangleMeshGraph&, unsigned int, unsigned int, IndexVector&, IndexSet&, unsigned int&);
-    void extract_primitives(const IndexSet&, const osg::DrawElements*, IndexVector&, unsigned int);
+    template<typename C>
+    typename C::value_type getNext(C& primitives, typename C::value_type default_value) {
+        if(primitives.empty()) {
+            return default_value;
+        }
+        typename C::value_type next = *primitives.begin();
+        primitives.erase(primitives.begin());
+        return next;
+    }
+
+    unsigned int findCandidate(IndexSet&, const IndexCache&, const TriangleMeshGraph&);
 
 protected:
     bool needToSplit(const osg::Geometry&) const;
@@ -68,7 +145,6 @@ protected:
 
     template<typename T>
     void setBufferBoundingBox(T*) const;
-    void setValidIndices(std::set<unsigned int>&, const osg::DrawElements*) const;
 
 public:
     const unsigned int _maxAllowedIndex;

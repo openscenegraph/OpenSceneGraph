@@ -1,0 +1,31 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab
+ *
+ * This application is open source and may be redistributed and/or modified
+ * freely and without restriction, both in commercial and non commercial
+ * applications, as long as this copyright notice is maintained.
+ *
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+*/
+
+#ifndef GEOMETRY_MAPPER
+#define GEOMETRY_MAPPER
+
+#include <vector>
+
+#include <osg/ref_ptr>
+#include <osg/Geometry>
+
+typedef std::vector< osg::ref_ptr<osg::Geometry> > GeometryList;
+
+class GeometryMapper {
+public:
+
+    // map one geometry to a list of geometries
+    // to be used with RemapGeometryVisitor
+    virtual const GeometryList& process(osg::Geometry&) = 0;
+};
+
+#endif

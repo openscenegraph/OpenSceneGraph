@@ -244,14 +244,16 @@ void TriangleMeshSmoother::updateGeometryPrimitives() {
         }
     }
 
-    osg::DrawElementsUInt* triangles = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES);
-    for(unsigned int i = 0 ; i < _graph->getNumTriangles() ; ++ i) {
-        const Triangle& triangle = _graph->triangle(i);
-        triangles->push_back(triangle.v1());
-        triangles->push_back(triangle.v2());
-        triangles->push_back(triangle.v3());
+    if(_graph->getNumTriangles()) {
+        osg::DrawElementsUInt* triangles = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES);
+        for(unsigned int i = 0 ; i < _graph->getNumTriangles() ; ++ i) {
+            const Triangle& triangle = _graph->triangle(i);
+            triangles->push_back(triangle.v1());
+            triangles->push_back(triangle.v2());
+            triangles->push_back(triangle.v3());
+        }
+        primitives.push_back(triangles);
     }
-    primitives.push_back(triangles);
 
     _geometry.setPrimitiveSetList(primitives);
 }

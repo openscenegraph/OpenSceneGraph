@@ -73,7 +73,7 @@ class OSGUTIL_EXPORT Optimizer
             COMBINE_ADJACENT_LODS =     (1 << 3),
             SHARE_DUPLICATE_STATE =     (1 << 4),
             MERGE_GEOMETRY =            (1 << 5),
-            CHECK_GEOMETRY =            (1 << 6),
+            CHECK_GEOMETRY =            (1 << 6), // deprecated, currently no-op
             MAKE_FAST_GEOMETRY =        (1 << 7),
             SPATIALIZE_GROUPS =         (1 << 8),
             COPY_SHARED_NODES =         (1 << 9),
@@ -275,7 +275,7 @@ class OSGUTIL_EXPORT Optimizer
                     BaseOptimizerVisitor(optimizer, FLATTEN_STATIC_TRANSFORMS) {}
 
                 virtual void apply(osg::Node& geode);
-                virtual void apply(osg::Geode& geode);
+                virtual void apply(osg::Drawable& drawable);
                 virtual void apply(osg::Billboard& geode);
                 virtual void apply(osg::ProxyNode& node);
                 virtual void apply(osg::PagedLOD& node);
@@ -360,7 +360,6 @@ class OSGUTIL_EXPORT Optimizer
                 RemoveEmptyNodesVisitor(Optimizer* optimizer=0):
                     BaseOptimizerVisitor(optimizer, REMOVE_REDUNDANT_NODES) {}
 
-                virtual void apply(osg::Geode& geode);
                 virtual void apply(osg::Group& group);
 
                 void removeEmptyNodes();
@@ -404,7 +403,7 @@ class OSGUTIL_EXPORT Optimizer
 
         };
 
-        /** Tessellate all geodes, to remove POLYGONS.*/
+        /** Tessellate all Geometries, to remove POLYGONS.*/
         class OSGUTIL_EXPORT TessellateVisitor : public BaseOptimizerVisitor
         {
             public:
@@ -415,7 +414,7 @@ class OSGUTIL_EXPORT Optimizer
                 TessellateVisitor(Optimizer* optimizer=0):
                     BaseOptimizerVisitor(optimizer, TESSELLATE_GEOMETRY) {}
 
-                virtual void apply(osg::Geode& geode);
+                virtual void apply(osg::Geometry& geom);
 
         };
 
@@ -461,8 +460,6 @@ class OSGUTIL_EXPORT Optimizer
 
                 virtual void apply(osg::Node& node);
 
-                virtual void apply(osg::Geode& geode);
-
                 void optimize();
 
             protected:
@@ -504,20 +501,6 @@ class OSGUTIL_EXPORT Optimizer
 
         };
 
-        class OSGUTIL_EXPORT CheckGeometryVisitor : public BaseOptimizerVisitor
-        {
-            public:
-
-                /// default to traversing all children.
-                CheckGeometryVisitor(Optimizer* optimizer=0):
-                    BaseOptimizerVisitor(optimizer, CHECK_GEOMETRY) {}
-
-                virtual void apply(osg::Geode& geode) { checkGeode(geode); }
-
-                void checkGeode(osg::Geode& geode);
-
-        };
-
         class OSGUTIL_EXPORT MakeFastGeometryVisitor : public BaseOptimizerVisitor
         {
             public:
@@ -526,9 +509,7 @@ class OSGUTIL_EXPORT Optimizer
                 MakeFastGeometryVisitor(Optimizer* optimizer=0):
                     BaseOptimizerVisitor(optimizer, MAKE_FAST_GEOMETRY) {}
 
-                virtual void apply(osg::Geode& geode) { checkGeode(geode); }
-
-                void checkGeode(osg::Geode& geode);
+                virtual void apply(osg::Geometry& geom);
 
         };
 
@@ -627,7 +608,6 @@ class OSGUTIL_EXPORT Optimizer
                         _changeClientImageStorage(changeClientImageStorage), _valueClientImageStorage(valueClientImageStorage),
                         _changeAnisotropy(changeAnisotropy), _valueAnisotropy(valueAnisotropy) {}
 
-                virtual void apply(osg::Geode& node);
                 virtual void apply(osg::Node& node);
 
                 void apply(osg::StateSet& stateset);
@@ -816,8 +796,7 @@ class OSGUTIL_EXPORT Optimizer
                 virtual void reset();
 
                 virtual void apply(osg::Node& node);
-
-                virtual void apply(osg::Geode& geode);
+                virtual void apply(osg::Drawable& node);
 
                 void optimize();
 
@@ -850,14 +829,11 @@ class OSGUTIL_EXPORT Optimizer
                     BaseOptimizerVisitor(optimizer, STATIC_OBJECT_DETECTION) {}
 
                 virtual void apply(osg::Node& node);
-
-                virtual void apply(osg::Geode& geode);
+                virtual void apply(osg::Drawable& drawable);
 
             protected:
 
                 void applyStateSet(osg::StateSet& stateset);
-
-                void applyDrawable(osg::Drawable& drawable);
 
         };
 

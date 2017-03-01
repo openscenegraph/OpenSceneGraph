@@ -25,7 +25,7 @@ namespace glesUtil {
     using namespace std;
     using namespace osg;
     typedef std::vector<unsigned int> IndexList;
-
+    typedef osgAnimation::MorphGeometry::MorphTargetList MorphTargetList;
 
     inline bool hasPositiveWeights(const osg::Geometry* geometry) {
         const osg::Vec4Array* weights = 0;
@@ -53,6 +53,52 @@ namespace glesUtil {
     }
 
 
+    class TargetGeometry {
+        public:
+            TargetGeometry(osgAnimation::MorphGeometry::MorphTarget& target,
+                           osgAnimation::MorphGeometry& morph):
+                _geometry(0)
+            {
+                _geometry = target.getGeometry();
+                _geometry->setPrimitiveSetList(morph.getPrimitiveSetList());
+
+                _hasTexCoord = _geometry->getTexCoordArrayList().size();
+                if(!_hasTexCoord) {
+                    _geometry->setTexCoordArrayList(morph.getTexCoordArrayList());
+                }
+            }
+
+            osg::Geometry* operator->() {
+                return _geometry;
+            }
+
+            operator osg::Geometry*() {
+                return _geometry;
+            }
+
+            operator osg::Geometry&() {
+                return *_geometry;
+            }
+
+            operator bool() {
+                return _geometry != 0;
+            }
+
+            ~TargetGeometry() {
+                if(!_hasTexCoord) {
+                    // drop parent tex coords after tangent space computation
+                    _geometry->setTexCoordArrayList(osg::Geometry::ArrayList());
+                }
+                _geometry->setPrimitiveSetList(osg::Geometry::PrimitiveSetList());
+            }
+
+        protected:
+            osg::Geometry* _geometry;
+            bool _hasTexCoord;
+    };
+
+
+
     // A helper class that gathers up all the attribute arrays of an
     // osg::Geometry object that are BIND_PER_VERTEX and runs an
     // ArrayVisitor on them.
@@ -61,6 +107,20 @@ namespace glesUtil {
         typedef std::vector<osg::Array*> ArrayList;
 
         GeometryArrayGatherer(osg::Geometry& geometry) {
+            addGeometryVertexAttributes(geometry);
+            _targetAttributesIndex = _arrayList.size();
+
+            if(osgAnimation::MorphGeometry* morphGeometry = dynamic_cast<osgAnimation::MorphGeometry*>(&geometry)) {
+                MorphTargetList targets = morphGeometry->getMorphTargetList();
+                for (MorphTargetList::iterator iterator = targets.begin(); iterator != targets.end(); ++ iterator)  {
+                    if(iterator->getGeometry()) {
+                        addTargetVertexAttributes(*iterator->getGeometry());
+                    }
+                }
+            }
+        }
+
+        void addGeometryVertexAttributes(osg::Geometry& geometry) {
             add(geometry.getVertexArray());
             add(geometry.getNormalArray());
             add(geometry.getColorArray());
@@ -74,6 +134,10 @@ namespace glesUtil {
             }
         }
 
+        void addTargetVertexAttributes(osg::Geometry& target) {
+            add(target.getVertexArray());
+        }
+
         void add(osg::Array* array) {
             if (array) {
                 _arrayList.push_back(array);
@@ -81,12 +145,16 @@ namespace glesUtil {
         }
 
         void accept(osg::ArrayVisitor& av) {
-            for(ArrayList::iterator itr = _arrayList.begin() ; itr != _arrayList.end(); ++ itr) {
+            unsigned int geometryAttributesIndex = 0;
+            for(ArrayList::iterator itr = _arrayList.begin() ;
+                geometryAttributesIndex < _targetAttributesIndex && itr != _arrayList.end();
+                ++ geometryAttributesIndex, ++ itr) {
                 (*itr)->accept(av);
             }
         }
 
         ArrayList _arrayList;
+        unsigned int _targetAttributesIndex;
     };
 
 
@@ -349,8 +417,8 @@ namespace glesUtil {
         void remapTargetVertices(Remapper remapper, Geometry& geom)
         {
             if(osgAnimation::MorphGeometry *morphGeometry = dynamic_cast<osgAnimation::MorphGeometry*>(&geom)) {
-                osgAnimation::MorphGeometry::MorphTargetList targetList = morphGeometry->getMorphTargetList();
-                for (osgAnimation::MorphGeometry::MorphTargetList::iterator ti = targetList.begin(); ti != targetList.end(); ++ti)  {
+                MorphTargetList targetList = morphGeometry->getMorphTargetList();
+                for (MorphTargetList::iterator ti = targetList.begin(); ti != targetList.end(); ++ti)  {
                     osgAnimation::MorphGeometry::MorphTarget *morphTarget = &(*ti);
                     osg::Geometry *target = morphTarget->getGeometry();
                     GeometryArrayGatherer gatherer(*target);

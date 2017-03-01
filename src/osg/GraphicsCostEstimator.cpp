@@ -205,15 +205,10 @@ public:
         traverse(node);
     }
 
-    virtual void apply(osg::Geode& geode)
+    virtual void apply(osg::Geometry& geom)
     {
-        apply(geode.getStateSet());
-        for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
-        {
-            apply(geode.getDrawable(i)->getStateSet());
-            osg::Geometry* geometry = geode.getDrawable(i)->asGeometry();
-            if (geometry) apply(geometry);
-        }
+        apply(geom.getStateSet());
+        apply(&geom);
     }
 
     void apply(osg::StateSet* stateset)
@@ -282,15 +277,10 @@ public:
         traverse(node);
     }
 
-    virtual void apply(osg::Geode& geode)
+    virtual void apply(osg::Geometry& geom)
     {
-        apply(geode.getStateSet());
-        for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
-        {
-            apply(geode.getDrawable(i)->getStateSet());
-            osg::Geometry* geometry = geode.getDrawable(i)->asGeometry();
-            if (geometry) apply(geometry);
-        }
+        apply(geom.getStateSet());
+        apply(&geom);
     }
 
     void apply(osg::StateSet* stateset)

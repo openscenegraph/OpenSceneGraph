@@ -431,6 +431,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--sd <num>","Short hand for --sequence-length");
     arguments.getApplicationUsage()->addCommandLineOption("--sdwm <num>","Set the SampleDensityWhenMovingProperty to specified value");
     arguments.getApplicationUsage()->addCommandLineOption("--lod","Enable techniques to reduce the level of detail when moving.");
+    arguments.getApplicationUsage()->addCommandLineOption("--bg r g b a","Set the window background color(r,g,b,a) with each component the 0 to 1.0 range");
 //    arguments.getApplicationUsage()->addCommandLineOption("--raw <sizeX> <sizeY> <sizeZ> <numberBytesPerComponent> <numberOfComponents> <endian> <filename>","read a raw image data");
 
     // construct the viewer.
@@ -457,7 +458,6 @@ int main( int argc, char **argv )
     // add stateset manipulator
     viewer.addEventHandler(new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()));
 
-    viewer.getCamera()->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -469,6 +469,10 @@ int main( int argc, char **argv )
     std::string outputFile;
     while (arguments.read("-o",outputFile)) {}
 
+
+    osg::Vec4 bgColor(0.0f,0.0f, 0.0f, 0.0f);
+    while(arguments.read("--bg", bgColor.r(), bgColor.g(), bgColor.b(), bgColor.a())) {}
+    viewer.getCamera()->setClearColor(bgColor);
 
 
     osg::ref_ptr<osg::TransferFunction1D> transferFunction;

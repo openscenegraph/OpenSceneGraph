@@ -67,7 +67,7 @@ public:
     osg::StateSet *getRootStateSet() const { return _rootStateSet.get(); }
 
     void apply(osg::Node &node);
-    void apply(osg::Geode &geode);
+    void apply(osg::Drawable &drawable);
 
     void reset();
 

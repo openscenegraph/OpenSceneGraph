@@ -44,7 +44,7 @@ void StateAttribute::removeParent(osg::StateSet* object)
 
 void StateAttribute::setUpdateCallback(StateAttributeCallback* uc)
 {
-    OSG_INFO<<"StateAttribute::Setting Update callbacks"<<std::endl;
+    OSG_DEBUG<<"StateAttribute::Setting Update callbacks"<<std::endl;
 
     if (_updateCallback==uc) return;
 
@@ -56,14 +56,10 @@ void StateAttribute::setUpdateCallback(StateAttributeCallback* uc)
 
     if (delta!=0)
     {
-        OSG_INFO<<"Going to set StateAttribute parents"<<std::endl;
-
         for(ParentList::iterator itr=_parents.begin();
             itr!=_parents.end();
             ++itr)
         {
-            OSG_INFO<<"   Setting StateAttribute parent"<<std::endl;
-
             (*itr)->setNumChildrenRequiringUpdateTraversal((*itr)->getNumChildrenRequiringUpdateTraversal()+delta);
         }
     }
@@ -71,7 +67,7 @@ void StateAttribute::setUpdateCallback(StateAttributeCallback* uc)
 
 void StateAttribute::setEventCallback(StateAttributeCallback* ec)
 {
-    OSG_INFO<<"StateAttribute::Setting Event callbacks"<<std::endl;
+    OSG_DEBUG<<"StateAttribute::Setting Event callbacks"<<std::endl;
 
     if (_eventCallback==ec) return;
 

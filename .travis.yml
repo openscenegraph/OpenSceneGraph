@@ -12,6 +12,7 @@ matrix:
       dist: trusty
       language: cpp
       env:
+          - CMAKECMD_ARGS="-DBUILD_OSG_EXAMPLES=ON -DBUILD_OSG_PLUGINS=ON -DBUILD_OSG_APPLICATIONS=ON"
          #- LLVM_VERSION=3.8
       sudo: false
       cache:
@@ -42,6 +43,12 @@ matrix:
     # OSX build
     - os: osx
       language: cpp
+      env:
+         - CMAKECMD_ARGS="-DBUILD_OSG_EXAMPLES=OFF -DBUILD_OSG_PLUGINS=ON -DBUILD_OSG_APPLICATIONS=ON"
+    - os: osx
+      language: cpp
+      env:
+         - CMAKECMD_ARGS="-DBUILD_OSG_EXAMPLES=ON -DBUILD_OSG_PLUGINS=OFF -DBUILD_OSG_APPLICATIONS=OFF"
 
 # script:
 #    - mkdir build
@@ -50,4 +57,5 @@ matrix:
 #    - make install -j 3
 
 script:
-    - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then mkdir build && cd build && travis_wait 60 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../product -DBUILD_OSG_EXAMPLES=ON ../ && make -j3 ; fi
+    - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then mkdir build && cd build && travis_wait 60 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../product $CMAKECMD_ARGS ../ ; fi
+    - if [ -f CMakeCache.txt ]; then make -j3 ; fi

@@ -246,7 +246,7 @@ void GLBufferObject::compileBuffer()
 
 void GLBufferObject::deleteGLObject()
 {
-    OSG_INFO<<"GLBufferObject::deleteGLObject() "<<_glObjectID<<std::endl;
+    OSG_DEBUG<<"GLBufferObject::deleteGLObject() "<<_glObjectID<<std::endl;
     if (_glObjectID!=0)
     {
         _extensions->glDeleteBuffers(1, &_glObjectID);
@@ -1104,7 +1104,7 @@ void BufferObject::resizeGLObjectBuffers(unsigned int maxSize)
 
 void BufferObject::releaseGLObjects(State* state) const
 {
-    OSG_INFO<<"BufferObject::releaseGLObjects("<<state<<")"<<std::endl;
+    OSG_DEBUG<<"BufferObject::releaseGLObjects("<<state<<")"<<std::endl;
     if (state)
     {
         unsigned int contextID = state->getContextID();
@@ -1260,7 +1260,7 @@ void BufferData::resizeGLObjectBuffers(unsigned int maxSize)
 
 void BufferData::releaseGLObjects(State* state) const
 {
-    OSG_INFO<<"BufferData::releaseGLObjects("<<state<<")"<<std::endl;
+    OSG_DEBUG<<"BufferData::releaseGLObjects("<<state<<")"<<std::endl;
     if (_bufferObject.valid())
     {
         _bufferObject->releaseGLObjects(state);
@@ -1369,7 +1369,7 @@ PixelBufferObject::PixelBufferObject(osg::Image* image):
     setTarget(GL_PIXEL_UNPACK_BUFFER_ARB);
     setUsage(GL_STREAM_DRAW_ARB);
 
-    OSG_INFO<<"Constructing PixelBufferObject for image="<<image<<std::endl;
+    OSG_DEBUG<<"Constructing PixelBufferObject for image="<<image<<std::endl;
 
     if (image) setBufferData(0, image);
 }

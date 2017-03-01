@@ -142,8 +142,12 @@ State::~State()
     // delete the GLExtensions object associated with this osg::State.
     if (_glExtensions)
     {
-        GLExtensions::Set(_contextID, 0);
         _glExtensions = 0;
+        GLExtensions* glExtensions = GLExtensions::Get(_contextID, false);
+        if (glExtensions && glExtensions->referenceCount() == 1) {
+            // the only reference left to the extension is in the static map itself, so we clean it up now
+            GLExtensions::Set(_contextID, 0);
+        }
     }
 
     //_texCoordArrayList.clear();
@@ -166,8 +170,7 @@ void State::initializeExtensionProcs()
         _defineMap.changed = true;
     }
 
-    _glExtensions = new GLExtensions(_contextID);
-    GLExtensions::Set(_contextID, _glExtensions.get());
+    _glExtensions = GLExtensions::Get(_contextID, true);
 
     _isSecondaryColorSupported = osg::isGLExtensionSupported(_contextID,"GL_EXT_secondary_color");
     _isFogCoordSupported = osg::isGLExtensionSupported(_contextID,"GL_EXT_fog_coord");

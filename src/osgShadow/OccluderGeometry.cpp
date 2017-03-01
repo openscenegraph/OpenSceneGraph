@@ -77,22 +77,13 @@ public:
         if (transform.getStateSet()) popState();
     }
 
-    void apply(osg::Geode& geode)
+    void apply(osg::Drawable& drawable)
     {
-        if (geode.getStateSet()) pushState(geode.getStateSet());
+        if (drawable.getStateSet()) pushState(drawable.getStateSet());
 
-        for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
-        {
-            osg::Drawable* drawable = geode.getDrawable(i);
+        apply(&drawable);
 
-            if (drawable->getStateSet()) pushState(drawable->getStateSet());
-
-            apply(geode.getDrawable(i));
-
-            if (drawable->getStateSet()) popState();
-        }
-
-        if (geode.getStateSet()) popState();
+        if (drawable.getStateSet()) popState();
     }
 
     void pushState(osg::StateSet* stateset)

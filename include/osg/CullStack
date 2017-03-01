@@ -168,13 +168,22 @@ class OSG_EXPORT CullStack : public osg::CullSettings
             return osg::Vec3(-matrix(0,2),-matrix(1,2),-matrix(2,2));
         }
 
+        typedef fast_back_stack< ref_ptr<RefMatrix> > MatrixStack;
+
+        MatrixStack& getProjectionStack() { return _projectionStack; }
+        const MatrixStack& getProjectionStack() const { return _projectionStack; }
+
+        MatrixStack& getModelViewStack() { return _modelviewStack; }
+        const MatrixStack& getModelViewStack() const { return _modelviewStack; }
+
+        MatrixStack& getMVPWStack() { return _MVPW_Stack; }
+        const MatrixStack& getMVPWStack() const { return _MVPW_Stack; }
 
     protected:
 
         // base set of shadow volume occluder to use in culling.
         ShadowVolumeOccluderList                                    _occluderList;
 
-        typedef fast_back_stack< ref_ptr<RefMatrix> >                  MatrixStack;
 
         MatrixStack                                                 _projectionStack;
 

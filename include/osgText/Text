@@ -295,10 +295,6 @@ public:
 
 public:
 
-    typedef osg::ref_ptr<osg::Vec3Array> Coords;
-    typedef osg::ref_ptr<osg::Vec2Array> TexCoords;
-    typedef osg::ref_ptr<osg::Vec4Array> ColorCoords;
-
     Coords                          _coords;
     ColorCoords                     _colorCoords;
     TexCoords                       _texcoords;
@@ -318,7 +314,6 @@ public:
     struct OSGTEXT_EXPORT GlyphQuads
     {
         typedef std::vector<Glyph*> Glyphs;
-        typedef std::vector< osg::ref_ptr<osg::DrawElementsUShort> > Primitives;
 
         Glyphs                          _glyphs;
         Primitives                      _primitives;

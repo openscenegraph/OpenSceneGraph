@@ -279,6 +279,10 @@ protected:
 
     virtual void computeGlyphRepresentation() = 0;
 
+    typedef osg::ref_ptr<osg::Vec3Array> Coords;
+    typedef osg::ref_ptr<osg::Vec2Array> TexCoords;
+    typedef osg::ref_ptr<osg::Vec4Array> ColorCoords;
+    typedef std::vector< osg::ref_ptr<osg::DrawElementsUShort> > Primitives;
 
     // members which have public access.
     osg::Vec4                               _color;
@@ -311,9 +315,13 @@ protected:
 
     mutable osg::Matrix                     _matrix;
 
+    Coords                                  _decorationVertices;
+    Primitives                              _decorationPrimitives;
+
     void setupDecoration();
 
-    osg::ref_ptr<osg::Vec3Array> _decorationVertices;
+
+
 
 };
 

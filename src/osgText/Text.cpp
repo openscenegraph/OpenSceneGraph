@@ -1094,68 +1094,65 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
     if ((_drawMode&(~TEXT))!=0)
     {
 
-        state.disableNormalPointer();
-
-        state.Color(colorMultiplier.r()*_textBBColor.r(),colorMultiplier.g()*_textBBColor.g(),colorMultiplier.b()*_textBBColor.b(),colorMultiplier.a()*_textBBColor.a());
-
         if (_decorationVertices.valid() && !_decorationVertices->empty())
         {
+            state.disableNormalPointer();
+
             osg::State::ApplyModeProxy applyMode(state, GL_LIGHTING, false);
             osg::State::ApplyTextureModeProxy applyTextureMode(state, 0, GL_TEXTURE_2D, false);
 
             state.disableAllVertexArrays();
             state.setVertexPointer(_decorationVertices.get());
 
-            unsigned int start_index = 0;
-            if ((_drawMode & FILLEDBOUNDINGBOX)!=0 && _textBB.valid())
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+            switch(_backdropImplementation)
             {
-            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
-                switch(_backdropImplementation)
-                {
-                    case NO_DEPTH_BUFFER:
-                        // Do nothing.  The bounding box will be rendered before the text and that's all that matters.
-                        break;
-                    case DEPTH_RANGE:
-                        glPushAttrib(GL_DEPTH_BUFFER_BIT);
-                        //unsigned int backdrop_index = 0;
-                        //unsigned int max_backdrop_index = 8;
-                        //const double offset = double(max_backdrop_index - backdrop_index) * 0.003;
-                        glDepthRange(0.001, 1.001);
-                        break;
-                    /*case STENCIL_BUFFER:
-                        break;*/
-                    default:
-                        glPushAttrib(GL_POLYGON_OFFSET_FILL);
-                        glEnable(GL_POLYGON_OFFSET_FILL);
-                        glPolygonOffset(0.1f * osg::PolygonOffset::getFactorMultiplier(), 10.0f * osg::PolygonOffset::getUnitsMultiplier() );
-                }
+                case NO_DEPTH_BUFFER:
+                    // Do nothing.  The bounding box will be rendered before the text and that's all that matters.
+                    break;
+                case DEPTH_RANGE:
+                    glPushAttrib(GL_DEPTH_BUFFER_BIT);
+                    //unsigned int backdrop_index = 0;
+                    //unsigned int max_backdrop_index = 8;
+                    //const double offset = double(max_backdrop_index - backdrop_index) * 0.003;
+                    glDepthRange(0.001, 1.001);
+                    break;
+                /*case STENCIL_BUFFER:
+                    break;*/
+                default:
+                    glPushAttrib(GL_POLYGON_OFFSET_FILL);
+                    glEnable(GL_POLYGON_OFFSET_FILL);
+                    glPolygonOffset(0.1f * osg::PolygonOffset::getFactorMultiplier(), 10.0f * osg::PolygonOffset::getUnitsMultiplier() );
+            }
+        #endif
 
-                glDrawArrays(GL_QUADS, 0, 4);
-                start_index += 4;
+            for(Primitives::const_iterator itr = _decorationPrimitives.begin();
+                itr != _decorationPrimitives.end();
+                ++itr)
+            {
+                if ((*itr)->getMode()==GL_TRIANGLES) state.Color(colorMultiplier.r()*_textBBColor.r(), colorMultiplier.g()*_textBBColor.g(), colorMultiplier.b()*_textBBColor.b(), colorMultiplier.a()*_textBBColor.a());
+                else state.Color(colorMultiplier.r(), colorMultiplier.g(), colorMultiplier.b(), colorMultiplier.a());
 
-                switch(_backdropImplementation)
-                {
-                    case NO_DEPTH_BUFFER:
-                        // Do nothing.
-                        break;
-                    case DEPTH_RANGE:
-                        glDepthRange(0.0, 1.0);
-                        glPopAttrib();
-                        break;
-                    /*case STENCIL_BUFFER:
-                        break;*/
-                    default:
-                        glDisable(GL_POLYGON_OFFSET_FILL);
-                        glPopAttrib();
-                }
-            #endif
+                (*itr)->draw(state, _useVertexBufferObjects);
             }
 
-            if (start_index<_decorationVertices->size())
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+            switch(_backdropImplementation)
             {
-                state.Color(colorMultiplier.r(),colorMultiplier.g(),colorMultiplier.b(),colorMultiplier.a());
-                glDrawArrays(GL_LINES, start_index, _decorationVertices->size());
+                case NO_DEPTH_BUFFER:
+                    // Do nothing.
+                    break;
+                case DEPTH_RANGE:
+                    glDepthRange(0.0, 1.0);
+                    glPopAttrib();
+                    break;
+                /*case STENCIL_BUFFER:
+                    break;*/
+                default:
+                    glDisable(GL_POLYGON_OFFSET_FILL);
+                    glPopAttrib();
             }
+        #endif
         }
     }
 

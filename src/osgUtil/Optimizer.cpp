@@ -2269,21 +2269,18 @@ class MergeArrayVisitor : public osg::ArrayVisitor
 {
     protected:
         osg::Array* _lhs;
-        int         _offset;
     public:
         MergeArrayVisitor() :
-            _lhs(0),
-            _offset(0) {}
+            _lhs(0) {}
 
 
         /// try to merge the content of two arrays.
-        bool merge(osg::Array* lhs,osg::Array* rhs, int offset=0)
+        bool merge(osg::Array* lhs,osg::Array* rhs)
         {
             if (lhs==0 || rhs==0) return true;
             if (lhs->getType()!=rhs->getType()) return false;
 
             _lhs = lhs;
-            _offset = offset;
 
             rhs->accept(*this);
             return true;
@@ -2296,28 +2293,14 @@ class MergeArrayVisitor : public osg::ArrayVisitor
             lhs->insert(lhs->end(),rhs.begin(),rhs.end());
         }
 
-        template<typename T>
-        void _mergeAndOffset(T& rhs)
-        {
-            T* lhs = static_cast<T*>(_lhs);
-
-            typename T::iterator itr;
-            for(itr = rhs.begin();
-                itr != rhs.end();
-                ++itr)
-            {
-                lhs->push_back(*itr + _offset);
-            }
-        }
-
         virtual void apply(osg::Array&) { OSG_WARN << "Warning: Optimizer's MergeArrayVisitor cannot merge Array type." << std::endl; }
 
-        virtual void apply(osg::ByteArray& rhs) { if (_offset) _mergeAndOffset(rhs); else  _merge(rhs); }
-        virtual void apply(osg::ShortArray& rhs) { if (_offset) _mergeAndOffset(rhs); else  _merge(rhs); }
-        virtual void apply(osg::IntArray& rhs) { if (_offset) _mergeAndOffset(rhs); else  _merge(rhs); }
-        virtual void apply(osg::UByteArray& rhs) { if (_offset) _mergeAndOffset(rhs); else  _merge(rhs); }
-        virtual void apply(osg::UShortArray& rhs) { if (_offset) _mergeAndOffset(rhs); else  _merge(rhs); }
-        virtual void apply(osg::UIntArray& rhs) { if (_offset) _mergeAndOffset(rhs); else  _merge(rhs); }
+        virtual void apply(osg::ByteArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::ShortArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::IntArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::UByteArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::UShortArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::UIntArray& rhs) { _merge(rhs); }
 
         virtual void apply(osg::Vec4ubArray& rhs) { _merge(rhs); }
         virtual void apply(osg::Vec3ubArray& rhs) { _merge(rhs); }

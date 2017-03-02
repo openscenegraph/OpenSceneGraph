@@ -2320,6 +2320,13 @@ class MergeArrayVisitor : public osg::ArrayVisitor
         virtual void apply(osg::UIntArray& rhs) { if (_offset) _mergeAndOffset(rhs); else  _merge(rhs); }
 
         virtual void apply(osg::Vec4ubArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::Vec3ubArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::Vec2ubArray& rhs) { _merge(rhs); }
+
+        virtual void apply(osg::Vec4usArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::Vec3usArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::Vec2usArray& rhs) { _merge(rhs); }
+
         virtual void apply(osg::FloatArray& rhs) { _merge(rhs); }
         virtual void apply(osg::Vec2Array& rhs) { _merge(rhs); }
         virtual void apply(osg::Vec3Array& rhs) { _merge(rhs); }
@@ -2333,6 +2340,7 @@ class MergeArrayVisitor : public osg::ArrayVisitor
         virtual void apply(osg::Vec2bArray&  rhs) { _merge(rhs); }
         virtual void apply(osg::Vec3bArray&  rhs) { _merge(rhs); }
         virtual void apply(osg::Vec4bArray&  rhs) { _merge(rhs); }
+
         virtual void apply(osg::Vec2sArray& rhs) { _merge(rhs); }
         virtual void apply(osg::Vec3sArray& rhs) { _merge(rhs); }
         virtual void apply(osg::Vec4sArray& rhs) { _merge(rhs); }

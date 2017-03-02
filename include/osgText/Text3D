@@ -25,13 +25,7 @@ class OSGTEXT_EXPORT Text3D : public osgText::TextBase
 {
     public:
 
-        /** Reder mode used to render the Text.
-         * PER_FACE : render all front face with the default StateSet
-         *                   all wall face with the wall StateSet
-         *                   all back face with the back StateSet (back face of the character, no the OpenGL back face)
-         *
-         * PER_GLYPH : render all Charactere with the default StateSet
-         */
+        /** Deprecated.*/
         enum RenderMode
         {
             PER_FACE,
@@ -49,10 +43,10 @@ class OSGTEXT_EXPORT Text3D : public osgText::TextBase
         /** Set the Charactere Depth of text. */
         void setCharacterDepth(float characterDepth);
 
-        /** Get the render mode used to render the text. */
+        /** Deprecated, value is now ignored. */
         RenderMode getRenderMode() const { return _renderMode; }
-        /** Set the render mode used to render the text. */
-        void setRenderMode(RenderMode renderMode) { _renderMode = renderMode; computeGlyphRepresentation(); }
+        /** Deprecated, value is now ignored. */
+        void setRenderMode(RenderMode renderMode) { _renderMode = renderMode; }
 
 
         /** Get the wall StateSet */
@@ -120,12 +114,11 @@ class OSGTEXT_EXPORT Text3D : public osgText::TextBase
 
         virtual ~Text3D() {}
 
-        void renderPerGlyph(osg::State & state) const;
-        void renderPerFace(osg::State & state) const;
-
         String::iterator computeLastCharacterOnLine(osg::Vec2& cursor, String::iterator first,String::iterator last);
 
         void computeGlyphRepresentation();
+
+        void copyAndOffsetPrimitiveSets(osg::Geometry::PrimitiveSetList& dest_PrimitiveSetList, osg::Geometry::PrimitiveSetList& src_PrimitiveSetList, unsigned int offset);
 
         osg::Geometry::PrimitiveSetList _frontPrimitiveSetList;
         osg::Geometry::PrimitiveSetList _wallPrimitiveSetList;
@@ -147,7 +140,7 @@ class OSGTEXT_EXPORT Text3D : public osgText::TextBase
 
         TextRenderInfo _textRenderInfo;
 
-
+        // deprecated value no longer used.
         RenderMode _renderMode;
 
         osg::ref_ptr<osg::StateSet> _wallStateSet;

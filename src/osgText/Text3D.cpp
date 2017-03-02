@@ -245,7 +245,7 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
     return lastChar;
 }
 
-inline void copyAndOffsetPrimitiveSets(osg::Geometry::PrimitiveSetList& dest_PrimitiveSetList, osg::Geometry::PrimitiveSetList& src_PrimitiveSetList, unsigned int offset)
+void Text3D::copyAndOffsetPrimitiveSets(osg::Geometry::PrimitiveSetList& dest_PrimitiveSetList, osg::Geometry::PrimitiveSetList& src_PrimitiveSetList, unsigned int offset)
 {
 
     for(osg::Geometry::PrimitiveSetList::const_iterator pitr = src_PrimitiveSetList.begin();
@@ -422,8 +422,6 @@ void Text3D::computeGlyphRepresentation()
     computePositions();
 
 
-#ifdef NEW_APPROACH
-
     if (!_coords) _coords = new osg::Vec3Array;
     if (!_normals) _normals = new osg::Vec3Array;
 
@@ -462,12 +460,6 @@ void Text3D::computeGlyphRepresentation()
         }
     }
 
-    OSG_NOTICE<<"_coords.size()=="<<_coords->size()<<std::endl;
-    OSG_NOTICE<<"_frontPrimitiveSetList.size()=="<<_frontPrimitiveSetList.size()<<std::endl;
-    OSG_NOTICE<<"_wallPrimitiveSetList.size()=="<<_wallPrimitiveSetList.size()<<std::endl;
-    OSG_NOTICE<<"_backPrimitiveSetList.size()=="<<_backPrimitiveSetList.size()<<std::endl;
-
-#endif
 
     // set up the vertices for any boundinbox or alignment decoration
     setupDecoration();
@@ -548,11 +540,37 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
             renderInfo.getState()->applyMode(GL_NORMALIZE, true);
         #endif
 
-        switch(_renderMode)
+        const osg::StateSet* frontStateSet = getStateSet();
+        const osg::StateSet* wallStateSet = getWallStateSet();
+        const osg::StateSet* backStateSet = getBackStateSet();
+
+        if (wallStateSet==0) wallStateSet = frontStateSet;
+        if (backStateSet==0) backStateSet = frontStateSet;
+
+        state.lazyDisablingOfVertexAttributes();
+
+        state.setVertexPointer(_coords.get());
+        state.setNormalPointer(_normals.get());
+
+        state.applyDisablingOfVertexAttributes();
+
+        for(osg::Geometry::PrimitiveSetList::const_iterator itr=_frontPrimitiveSetList.begin(), end = _frontPrimitiveSetList.end(); itr!=end; ++itr)
         {
-            case PER_FACE:  renderPerFace(*renderInfo.getState());   break;
-            case PER_GLYPH:
-            default:        renderPerGlyph(*renderInfo.getState());  break;
+            (*itr)->draw(state, false);
+        }
+
+        if (wallStateSet!=frontStateSet) state.apply(wallStateSet);
+
+        for(osg::Geometry::PrimitiveSetList::const_iterator itr=_wallPrimitiveSetList.begin(), end = _wallPrimitiveSetList.end(); itr!=end; ++itr)
+        {
+            (*itr)->draw(state, false);
+        }
+
+        if (backStateSet!=wallStateSet) state.apply(backStateSet);
+
+        for(osg::Geometry::PrimitiveSetList::const_iterator itr=_backPrimitiveSetList.begin(), end = _backPrimitiveSetList.end(); itr!=end; ++itr)
+        {
+            (*itr)->draw(state, false);
         }
     }
 
@@ -562,220 +580,6 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
         state.applyModelViewMatrix(previous_modelview);
     }
 }
-
-void Text3D::renderPerGlyph(osg::State & state) const
-{
-    osg::Matrix original_modelview = state.getModelViewMatrix();
-
-    const osg::StateSet* frontStateSet = getStateSet();
-    const osg::StateSet* wallStateSet = getWallStateSet();
-    const osg::StateSet* backStateSet = getBackStateSet();
-
-    if (wallStateSet==0) wallStateSet = frontStateSet;
-    if (backStateSet==0) backStateSet = frontStateSet;
-
-    state.Color(_color.r(),_color.g(),_color.b(),_color.a());
-
-#ifdef NEW_APPROACH
-
-    // OSG_NOTICE<<"Text3D::renderPerGlyph"<<std::endl;
-
-    state.lazyDisablingOfVertexAttributes();
-
-    state.setVertexPointer(_coords.get());
-    state.setNormalPointer(_normals.get());
-
-    state.applyDisablingOfVertexAttributes();
-
-    for(osg::Geometry::PrimitiveSetList::const_iterator itr=_frontPrimitiveSetList.begin(), end = _frontPrimitiveSetList.end(); itr!=end; ++itr)
-    {
-        (*itr)->draw(state, false);
-    }
-
-    if (wallStateSet!=frontStateSet) state.apply(wallStateSet);
-
-    for(osg::Geometry::PrimitiveSetList::const_iterator itr=_wallPrimitiveSetList.begin(), end = _wallPrimitiveSetList.end(); itr!=end; ++itr)
-    {
-        (*itr)->draw(state, false);
-    }
-
-    if (backStateSet!=wallStateSet) state.apply(backStateSet);
-
-    for(osg::Geometry::PrimitiveSetList::const_iterator itr=_backPrimitiveSetList.begin(), end = _backPrimitiveSetList.end(); itr!=end; ++itr)
-    {
-        (*itr)->draw(state, false);
-    }
-
-#else
-
-    // ** for each line, do ...
-    TextRenderInfo::const_iterator itLine, endText = _textRenderInfo.end();
-    for (itLine = _textRenderInfo.begin(); itLine!=endText; ++itLine)
-    {
-        // ** for each glyph in the line, do ...
-        LineRenderInfo::const_iterator it, endLine = itLine->end();
-        for (it = itLine->begin(); it!=endLine; ++it)
-        {
-
-            osg::Matrix matrix(original_modelview);
-            matrix.preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
-            state.applyModelViewMatrix(matrix);
-
-
-            state.lazyDisablingOfVertexAttributes();
-
-            // ** apply the vertex array
-            state.setVertexPointer(it->_glyphGeometry->getVertexArray());
-            state.setNormalPointer(it->_glyphGeometry->getNormalArray());
-
-            state.applyDisablingOfVertexAttributes();
-
-            if (frontStateSet!=backStateSet) state.apply(frontStateSet);
-
-            osg::Geometry::PrimitiveSetList & pslFront = it->_glyphGeometry->getFrontPrimitiveSetList();
-            for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslFront.begin(), end = pslFront.end(); itr!=end; ++itr)
-            {
-                (*itr)->draw(state, false);
-            }
-
-            if (wallStateSet!=frontStateSet) state.apply(wallStateSet);
-
-            // ** render the wall face of the glyph
-            osg::Geometry::PrimitiveSetList & pslWall = it->_glyphGeometry->getWallPrimitiveSetList();
-            for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslWall.begin(), end=pslWall.end(); itr!=end; ++itr)
-            {
-                (*itr)->draw(state, false);
-            }
-
-            if (backStateSet!=wallStateSet) state.apply(backStateSet);
-
-            osg::Geometry::PrimitiveSetList & pslBack = it->_glyphGeometry->getBackPrimitiveSetList();
-            for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslBack.begin(), end=pslBack.end(); itr!=end; ++itr)
-            {
-                (*itr)->draw(state, false);
-            }
-        }
-    }
-#endif
-}
-
-void Text3D::renderPerFace(osg::State & state) const
-{
-    osg::Matrix original_modelview = state.getModelViewMatrix();
-
-    const osg::StateSet* frontStateSet = getStateSet();
-    const osg::StateSet* wallStateSet = getWallStateSet();
-    const osg::StateSet* backStateSet = getBackStateSet();
-
-    if (wallStateSet==0) wallStateSet = frontStateSet;
-    if (backStateSet==0) backStateSet = frontStateSet;
-
-#ifdef NEW_APPROACH
-
-    // OSG_NOTICE<<"Text3D::renderPerFace"<<std::endl;
-
-    state.lazyDisablingOfVertexAttributes();
-
-    state.setVertexPointer(_coords.get());
-    state.setNormalPointer(_normals.get());
-
-    state.applyDisablingOfVertexAttributes();
-
-    for(osg::Geometry::PrimitiveSetList::const_iterator itr=_frontPrimitiveSetList.begin(), end = _frontPrimitiveSetList.end(); itr!=end; ++itr)
-    {
-        (*itr)->draw(state, false);
-    }
-
-    if (wallStateSet!=frontStateSet) state.apply(wallStateSet);
-
-    for(osg::Geometry::PrimitiveSetList::const_iterator itr=_wallPrimitiveSetList.begin(), end = _wallPrimitiveSetList.end(); itr!=end; ++itr)
-    {
-        (*itr)->draw(state, false);
-    }
-
-    if (backStateSet!=wallStateSet) state.apply(backStateSet);
-
-    for(osg::Geometry::PrimitiveSetList::const_iterator itr=_backPrimitiveSetList.begin(), end = _backPrimitiveSetList.end(); itr!=end; ++itr)
-    {
-        (*itr)->draw(state, false);
-    }
-
-#else
-
-    TextRenderInfo::const_iterator itLine, endText = _textRenderInfo.end();
-    for (itLine = _textRenderInfo.begin(); itLine!=endText; ++itLine)
-    {
-        // ** for each glyph in the line, do ...
-        LineRenderInfo::const_iterator it, endLine = itLine->end();
-        for (it = itLine->begin(); it!=endLine; ++it)
-        {
-            state.setVertexPointer(it->_glyphGeometry->getVertexArray());
-            state.setNormalPointer(it->_glyphGeometry->getNormalArray());
-
-            osg::Matrix matrix(original_modelview);
-            matrix.preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
-            state.applyModelViewMatrix(matrix);
-
-            // ** render the front face of the glyph
-            osg::Geometry::PrimitiveSetList & psl = it->_glyphGeometry->getFrontPrimitiveSetList();
-            for(osg::Geometry::PrimitiveSetList::const_iterator itr=psl.begin(), end=psl.end(); itr!=end; ++itr)
-            {
-                (*itr)->draw(state, false);
-            }
-        }
-    }
-
-    if (wallStateSet!=frontStateSet) state.apply(wallStateSet);
-
-    // ** render all wall face of the text
-    for (itLine = _textRenderInfo.begin(); itLine!=endText; ++itLine)
-    {
-        // ** for each glyph in the line, do ...
-        LineRenderInfo::const_iterator it, endLine = itLine->end();
-        for (it = itLine->begin(); it!=endLine; ++it)
-        {
-            state.setVertexPointer(it->_glyphGeometry->getVertexArray());
-            state.setNormalPointer(it->_glyphGeometry->getNormalArray());
-
-            osg::Matrix matrix(original_modelview);
-            matrix.preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
-            state.applyModelViewMatrix(matrix);
-
-            const osg::Geometry::PrimitiveSetList & psl = it->_glyphGeometry->getWallPrimitiveSetList();
-            for(osg::Geometry::PrimitiveSetList::const_iterator itr=psl.begin(), end=psl.end(); itr!=end; ++itr)
-            {
-                (*itr)->draw(state, false);
-            }
-        }
-    }
-
-    if (backStateSet!=wallStateSet) state.apply(backStateSet);
-
-    for (itLine = _textRenderInfo.begin(); itLine!=endText; ++itLine)
-    {
-        // ** for each glyph in the line, do ...
-        LineRenderInfo::const_iterator it, endLine = itLine->end();
-        for (it = itLine->begin(); it!=endLine; ++it)
-        {
-            state.setVertexPointer(it->_glyphGeometry->getVertexArray());
-            state.setNormalPointer(it->_glyphGeometry->getNormalArray());
-
-            osg::Matrix matrix(original_modelview);
-            matrix.preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
-            state.applyModelViewMatrix(matrix);
-
-            // ** render the back face of the glyph
-            const osg::Geometry::PrimitiveSetList & psl = it->_glyphGeometry->getBackPrimitiveSetList();
-            for(osg::Geometry::PrimitiveSetList::const_iterator itr=psl.begin(), end=psl.end(); itr!=end; ++itr)
-            {
-                (*itr)->draw(state, false);
-            }
-        }
-    }
-#endif
-}
-
-
 
 void Text3D::setThreadSafeRefUnref(bool threadSafe)
 {

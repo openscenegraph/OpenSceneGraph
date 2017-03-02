@@ -45,69 +45,36 @@ void Text3D::setCharacterDepth(float characterDepth)
 
 void Text3D::accept(osg::Drawable::ConstAttributeFunctor& af) const
 {
-    // ** for each line, do ...
-    TextRenderInfo::const_iterator itLine, endLine = _textRenderInfo.end();
-    for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
-    {
-        // ** for each glyph in the line, do ...
-        LineRenderInfo::const_iterator it, end = itLine->end();
-        for (it = itLine->begin(); it!=end; ++it)
-        {
-            // ** apply the vertex array
-            af.apply(osg::Drawable::VERTICES, it->_glyphGeometry->getVertexArray()->size(), &(it->_glyphGeometry->getVertexArray()->front()));
-        }
-    }
+    if (!_coords || _coords->empty()) return;
+
+    af.apply(osg::Drawable::VERTICES, _coords->size(), &(_coords->front()));
 }
+
 void Text3D::accept(osg::PrimitiveFunctor& pf) const
 {
-    // ** for each line, do ...
-    TextRenderInfo::const_iterator itLine, endLine = _textRenderInfo.end();
-    for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
+    if (!_coords || _coords->empty()) return;
+
+    pf.setVertexArray(_coords->size(), &(_coords->front()));
+
+    for(osg::Geometry::PrimitiveSetList::const_iterator itr = _frontPrimitiveSetList.begin();
+        itr != _frontPrimitiveSetList.end();
+        ++itr)
     {
-        // ** for each glyph in the line, do ...
-        LineRenderInfo::const_iterator it, line_end = itLine->end();
-        for (it = itLine->begin(); it!=line_end; ++it)
-        {
-            osg::Vec3Array* vertices = it->_glyphGeometry->getVertexArray();
+        (*itr)->accept(pf);
+    }
 
-            if (!vertices || vertices->empty())
-              continue; //skip over spaces
+    for(osg::Geometry::PrimitiveSetList::const_iterator itr = _wallPrimitiveSetList.begin();
+        itr != _wallPrimitiveSetList.end();
+        ++itr)
+    {
+        (*itr)->accept(pf);
+    }
 
-            //pf.setVertexArray(it->_glyph->getVertexArray()->size(),&(it->_glyph->getVertexArray()->front()));
-            //////////////////////////////////////////////////////////////////////////
-            // now apply matrix to the glyphs.
-            osg::ref_ptr<osg::Vec3Array> transformedVertices = new osg::Vec3Array;
-            osg::Matrix matrix = _matrix;;
-            matrix.preMultTranslate(it->_position);
-            transformedVertices->reserve(vertices->size());
-            for (osg::Vec3Array::iterator itr=vertices->begin(); itr!=vertices->end(); itr++)
-            {
-              transformedVertices->push_back((*itr)*matrix);
-            }
-            //////////////////////////////////////////////////////////////////////////
-            pf.setVertexArray(transformedVertices->size(),&(transformedVertices->front()));
-
-            // ** render the front face of the glyph
-            osg::Geometry::PrimitiveSetList & pslFront = it->_glyphGeometry->getFrontPrimitiveSetList();
-            for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslFront.begin(), end = pslFront.end(); itr!=end; ++itr)
-            {
-                (*itr)->accept(pf);
-            }
-
-            // ** render the wall face of the glyph
-            osg::Geometry::PrimitiveSetList & pslWall = it->_glyphGeometry->getWallPrimitiveSetList();
-            for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslWall.begin(), end=pslWall.end(); itr!=end; ++itr)
-            {
-                (*itr)->accept(pf);
-            }
-
-            // ** render the back face of the glyph
-            osg::Geometry::PrimitiveSetList & pslBack = it->_glyphGeometry->getBackPrimitiveSetList();
-            for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslBack.begin(), end=pslBack.end(); itr!=end; ++itr)
-            {
-                (*itr)->accept(pf);
-            }
-        }
+    for(osg::Geometry::PrimitiveSetList::const_iterator itr = _backPrimitiveSetList.begin();
+        itr != _backPrimitiveSetList.end();
+        ++itr)
+    {
+        (*itr)->accept(pf);
     }
 }
 

@@ -22,6 +22,8 @@
 
 namespace osgText {
 
+#define NEW_APPROACH
+
 class OSGTEXT_EXPORT TextBase : public osg::Drawable
 {
 public:
@@ -326,6 +328,7 @@ protected:
     void setupDecoration();
 
     Coords                                  _coords;
+    Coords                                  _normals;
     ColorCoords                             _colorCoords;
     TexCoords                               _texcoords;
 

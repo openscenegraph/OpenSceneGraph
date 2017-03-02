@@ -1259,7 +1259,7 @@ void Text::releaseGLObjects(osg::State* state) const
 
     getActiveFont()->releaseGLObjects(state);
 
-    for(TextureGlyphQuadMap::iterator itr = _textureGlyphQuadMap.begin();
+    for(TextureGlyphQuadMap::const_iterator itr = _textureGlyphQuadMap.begin();
         itr != _textureGlyphQuadMap.end();
         ++itr)
     {
@@ -1359,7 +1359,7 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
 
 void Text::renderOnlyForegroundText(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
-    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+    for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
         ++titr)
     {
@@ -1405,7 +1405,7 @@ void Text::drawTextWithBackdrop(osg::State& state, const osg::Vec4& colorMultipl
     state.setVertexPointer(_coords.get());
     state.setTexCoordPointer( 0, _texcoords.get());
 
-    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+    for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
         ++titr)
     {
@@ -1461,7 +1461,7 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
     glPushAttrib(GL_POLYGON_OFFSET_FILL);
     glEnable(GL_POLYGON_OFFSET_FILL);
 
-    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+    for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
         ++titr)
     {
@@ -1517,7 +1517,7 @@ void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMult
     state.setVertexPointer(_coords.get());
     state.setTexCoordPointer( 0, _texcoords.get());
 
-    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+    for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
         ++titr)
     {
@@ -1572,7 +1572,7 @@ void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultipl
     state.setVertexPointer(_coords.get());
     state.setTexCoordPointer( 0, _texcoords.get());
 
-    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+    for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
         ++titr)
     {
@@ -1633,8 +1633,6 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
      * 7c) If priority levels are different, then make sure the foreground
      * text has the higher priority.
      */
-    TextureGlyphQuadMap::iterator titr; // Moved up here for VC6
-
     glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_STENCIL_TEST);
 
     // It seems I can get away without calling this here
@@ -1667,7 +1665,7 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
     // Draw all the text to the stencil buffer to mark out the region
     // that we can write too.
 
-    for(titr=_textureGlyphQuadMap.begin();
+    for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
         ++titr)
     {
@@ -1726,7 +1724,7 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
 
     // Draw all the text again
 
-    for(titr=_textureGlyphQuadMap.begin();
+    for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
         ++titr)
     {

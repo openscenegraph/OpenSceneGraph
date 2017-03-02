@@ -331,7 +331,7 @@ public:
     /** Direct Access to GlyphQuads */
     const GlyphQuads* getGlyphQuads(GlyphTexture* texture) const
     {
-        TextureGlyphQuadMap::iterator itGlyphQuad = _textureGlyphQuadMap.find(texture);
+        TextureGlyphQuadMap::const_iterator itGlyphQuad = _textureGlyphQuadMap.find(texture);
         if (itGlyphQuad == _textureGlyphQuadMap.end()) return NULL;
 
         return &itGlyphQuad->second;
@@ -356,7 +356,7 @@ protected:
     // members which have public access.
 
     // iternal map used for rendering. Set up by the computeGlyphRepresentation() method.
-    mutable TextureGlyphQuadMap            _textureGlyphQuadMap;
+    TextureGlyphQuadMap            _textureGlyphQuadMap;
 
     void computeGlyphRepresentation();
 

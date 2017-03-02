@@ -577,7 +577,7 @@ osg::Group* CreateScene(){
  }
 int main(int argc, char** argv)
 {
-    // construct the viewer
+    // set command line options
     osg::ArgumentParser arguments(&argc,argv);
 
     // construct the viewer.
@@ -588,11 +588,8 @@ int main(int argc, char** argv)
     
     // add model to viewer.
     viewer.setSceneData( CreateScene() );
-    viewer.setUpViewOnSingleScreen(2);
+    
     viewer.getCamera()->getGraphicsContext()->getState()->setUseModelViewAndProjectionUniforms(true);
-
-    double fovy;double aspectRatio;
-    double zNear;double zFar;
 
     return viewer.run();
 }

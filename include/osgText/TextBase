@@ -253,8 +253,10 @@ public:
     /** Get the number of wrapped lines - only valid after computeGlyphRepresentation() has been called, returns 0 otherwise */
     unsigned int getLineCount() const { return _lineCount; }
 
-    /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
-    virtual void setThreadSafeRefUnref(bool threadSafe);
+    /** Immediately compile this \c Drawable into an OpenGL Display List/VertexBufferObjects.
+        * @note Operation is ignored if \c _useDisplayList is \c false or VertexBufferObjects are not used.
+    */
+    virtual void compileGLObjects(osg::RenderInfo& renderInfo) const;
 
     /** Resize any per context GLObject buffers to specified size. */
     virtual void resizeGLObjectBuffers(unsigned int maxSize);
@@ -277,6 +279,12 @@ public:
 protected:
 
     virtual ~TextBase();
+
+    void initArraysAndBuffers();
+
+#ifdef NEW_APPROACH
+    osg::VertexArrayState* createVertexArrayState(osg::RenderInfo& renderInfo) const;
+#endif
 
     bool computeMatrix(osg::Matrix& matrix, osg::State* state=0) const;
 
@@ -326,6 +334,9 @@ protected:
     Primitives                              _decorationPrimitives;
 
     void setupDecoration();
+
+    osg::ref_ptr<osg::VertexBufferObject>   _vbo;
+    osg::ref_ptr<osg::ElementBufferObject>  _ebo;
 
     Coords                                  _coords;
     Coords                                  _normals;

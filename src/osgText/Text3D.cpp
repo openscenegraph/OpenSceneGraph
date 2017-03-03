@@ -214,7 +214,6 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
 
 void Text3D::copyAndOffsetPrimitiveSets(osg::Geometry::PrimitiveSetList& dest_PrimitiveSetList, osg::Geometry::PrimitiveSetList& src_PrimitiveSetList, unsigned int offset)
 {
-
     for(osg::Geometry::PrimitiveSetList::const_iterator pitr = src_PrimitiveSetList.begin();
         pitr != src_PrimitiveSetList.end();
         ++pitr)
@@ -222,6 +221,7 @@ void Text3D::copyAndOffsetPrimitiveSets(osg::Geometry::PrimitiveSetList& dest_Pr
         const osg::PrimitiveSet* src_primset = pitr->get();
         osg::PrimitiveSet* dst_primset = osg::clone(src_primset, osg::CopyOp::DEEP_COPY_ALL);
         dst_primset->offsetIndices(offset);
+        dst_primset->setBufferObject(_ebo.get());
         dest_PrimitiveSetList.push_back(dst_primset);
     }
 }
@@ -389,8 +389,27 @@ void Text3D::computeGlyphRepresentation()
     computePositions();
 
 
-    if (!_coords) _coords = new osg::Vec3Array;
-    if (!_normals) _normals = new osg::Vec3Array;
+    if (!_coords)
+    {
+        OSG_NOTICE<<"void Text3D::computeGlyphRepresentation() _coords = new osg::Vec3Array;"<<std::endl;
+        _coords = new osg::Vec3Array;
+        _coords->setVertexBufferObject(_vbo.get());
+    }
+    else
+    {
+        _coords->clear();
+    }
+
+    if (!_normals)
+    {
+        OSG_NOTICE<<"void Text3D::computeGlyphRepresentation() _normals = new osg::Vec3Array;"<<std::endl;
+        _normals = new osg::Vec3Array;
+        _normals->setVertexBufferObject(_vbo.get());
+    }
+    else
+    {
+        _normals->clear();
+    }
 
     _frontPrimitiveSetList.clear();
     _wallPrimitiveSetList.clear();
@@ -456,6 +475,8 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
 {
     osg::State & state = *renderInfo.getState();
 
+    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
+
     // ** save the previous modelview matrix
     osg::Matrix previous_modelview(state.getModelViewMatrix());
 
@@ -494,7 +515,7 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
                 itr != _decorationPrimitives.end();
                 ++itr)
             {
-                (*itr)->draw(state, _useVertexBufferObjects);
+                (*itr)->draw(state, usingVertexBufferObjects);
             }
         }
     }
@@ -523,21 +544,21 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
 
         for(osg::Geometry::PrimitiveSetList::const_iterator itr=_frontPrimitiveSetList.begin(), end = _frontPrimitiveSetList.end(); itr!=end; ++itr)
         {
-            (*itr)->draw(state, false);
+            (*itr)->draw(state, usingVertexBufferObjects);
         }
 
         if (wallStateSet!=frontStateSet) state.apply(wallStateSet);
 
         for(osg::Geometry::PrimitiveSetList::const_iterator itr=_wallPrimitiveSetList.begin(), end = _wallPrimitiveSetList.end(); itr!=end; ++itr)
         {
-            (*itr)->draw(state, false);
+            (*itr)->draw(state, usingVertexBufferObjects);
         }
 
         if (backStateSet!=wallStateSet) state.apply(backStateSet);
 
         for(osg::Geometry::PrimitiveSetList::const_iterator itr=_backPrimitiveSetList.begin(), end = _backPrimitiveSetList.end(); itr!=end; ++itr)
         {
-            (*itr)->draw(state, false);
+            (*itr)->draw(state, usingVertexBufferObjects);
         }
     }
 
@@ -548,27 +569,44 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
     }
 }
 
-void Text3D::setThreadSafeRefUnref(bool threadSafe)
-{
-    TextBase::setThreadSafeRefUnref(threadSafe);
-
-    if (_font.valid()) _font->setThreadSafeRefUnref(threadSafe);
-}
-
 void Text3D::resizeGLObjectBuffers(unsigned int maxSize)
 {
-    OSG_INFO<<"Text3D::resizeGLObjectBuffers("<<maxSize<<")"<<std::endl;
-
     TextBase::resizeGLObjectBuffers(maxSize);
 
-    if (_font.valid()) _font->resizeGLObjectBuffers(maxSize);
+    for(osg::Geometry::PrimitiveSetList::const_iterator itr=_frontPrimitiveSetList.begin(), end = _frontPrimitiveSetList.end(); itr!=end; ++itr)
+    {
+        (*itr)->resizeGLObjectBuffers(maxSize);
+    }
+
+    for(osg::Geometry::PrimitiveSetList::const_iterator itr=_wallPrimitiveSetList.begin(), end = _wallPrimitiveSetList.end(); itr!=end; ++itr)
+    {
+        (*itr)->resizeGLObjectBuffers(maxSize);
+    }
+
+    for(osg::Geometry::PrimitiveSetList::const_iterator itr=_backPrimitiveSetList.begin(), end = _backPrimitiveSetList.end(); itr!=end; ++itr)
+    {
+        (*itr)->resizeGLObjectBuffers(maxSize);
+    }
 }
 
 void Text3D::releaseGLObjects(osg::State* state) const
 {
     TextBase::releaseGLObjects(state);
 
-    if (_font.valid()) _font->releaseGLObjects(state);
+    for(osg::Geometry::PrimitiveSetList::const_iterator itr=_frontPrimitiveSetList.begin(), end = _frontPrimitiveSetList.end(); itr!=end; ++itr)
+    {
+        (*itr)->releaseGLObjects(state);
+    }
+
+    for(osg::Geometry::PrimitiveSetList::const_iterator itr=_wallPrimitiveSetList.begin(), end = _wallPrimitiveSetList.end(); itr!=end; ++itr)
+    {
+        (*itr)->releaseGLObjects(state);
+    }
+
+    for(osg::Geometry::PrimitiveSetList::const_iterator itr=_backPrimitiveSetList.begin(), end = _backPrimitiveSetList.end(); itr!=end; ++itr)
+    {
+        (*itr)->releaseGLObjects(state);
+    }
 }
 
 }

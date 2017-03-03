@@ -91,10 +91,6 @@ class OSGTEXT_EXPORT Text3D : public osgText::TextBase
         /** accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has.*/
         virtual void accept(osg::PrimitiveFunctor& pf) const;
 
-
-        /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
-        virtual void setThreadSafeRefUnref(bool threadSafe);
-
         /** Resize any per context GLObject buffers to specified size. */
         virtual void resizeGLObjectBuffers(unsigned int maxSize);
 

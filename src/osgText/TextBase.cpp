@@ -52,6 +52,8 @@ TextBase::TextBase():
     setStateSet(Font::getDefaultFont()->getStateSet());
     setUseDisplayList(false);
     setSupportsDisplayList(false);
+
+    initArraysAndBuffers();
 }
 
 TextBase::TextBase(const TextBase& textBase,const osg::CopyOp& copyop):
@@ -78,10 +80,103 @@ TextBase::TextBase(const TextBase& textBase,const osg::CopyOp& copyop):
     _kerningType(textBase._kerningType),
     _lineCount(textBase._lineCount)
 {
+    initArraysAndBuffers();
 }
 
 TextBase::~TextBase()
 {
+}
+
+void TextBase::initArraysAndBuffers()
+{
+     _vbo = new osg::VertexBufferObject;
+     _ebo = new osg::ElementBufferObject;
+
+    _coords = new osg::Vec3Array(osg::Array::BIND_PER_VERTEX);
+    _normals = new osg::Vec3Array(osg::Array::BIND_PER_VERTEX);
+    _colorCoords = new osg::Vec4Array(osg::Array::BIND_PER_VERTEX);
+    _texcoords = new osg::Vec2Array(osg::Array::BIND_PER_VERTEX);
+
+    _coords->setBufferObject(_vbo.get());
+    _normals->setBufferObject(_vbo.get());
+    _colorCoords->setBufferObject(_vbo.get());
+    _texcoords->setBufferObject(_vbo.get());
+}
+
+#ifdef NEW_APPROACH
+osg::VertexArrayState* TextBase::createVertexArrayState(osg::RenderInfo& renderInfo) const
+{
+    OSG_NOTICE<<"TextBase::createVertexArrayState()"<<std::endl;
+
+    State& state = *renderInfo.getState();
+
+    VertexArrayState* vas = new osg::VertexArrayState(&state);
+
+    // OSG_NOTICE<<"Creating new osg::VertexArrayState "<< vas<<std::endl;
+
+    if (_coords.valid()) vas->assignVertexArrayDispatcher();
+    if (_colorCoords.valid()) vas->assignColorArrayDispatcher();
+    if (_normals.valid()) vas->assignNormalArrayDispatcher();
+
+    if (_texcoords.valid()) vas->assignTexCoordArrayDispatcher(1);
+
+    if (state.useVertexArrayObject(_useVertexArrayObject))
+    {
+        OSG_NOTICE<<"  Setup VertexArrayState to use VAO "<<vas<<std::endl;
+
+        vas->generateVertexArrayObject();
+    }
+    else
+    {
+        // OSG_NOTICE<<"  Setup VertexArrayState to without using VAO "<<vas<<std::endl;
+    }
+
+    return vas;
+}
+#endif
+
+void TextBase::compileGLObjects(osg::RenderInfo& renderInfo) const
+{
+    Drawable::compileGLObjects(renderInfo);
+}
+
+void TextBase::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    if (_font.valid()) _font->resizeGLObjectBuffers(maxSize);
+
+    if (_coords.valid()) _coords->resizeGLObjectBuffers(maxSize);
+    if (_normals.valid()) _normals->resizeGLObjectBuffers(maxSize);
+    if (_colorCoords.valid()) _colorCoords->resizeGLObjectBuffers(maxSize);
+    if (_texcoords.valid()) _texcoords->resizeGLObjectBuffers(maxSize);
+
+    for(Primitives::const_iterator itr = _decorationPrimitives.begin();
+        itr != _decorationPrimitives.end();
+        ++itr)
+    {
+        (*itr)->resizeGLObjectBuffers(maxSize);
+    }
+
+    Drawable::resizeGLObjectBuffers(maxSize);
+}
+
+
+void TextBase::releaseGLObjects(osg::State* state) const
+{
+    if (_font.valid()) _font->releaseGLObjects(state);
+
+    if (_coords.valid()) _coords->releaseGLObjects(state);
+    if (_normals.valid()) _normals->releaseGLObjects(state);
+    if (_colorCoords.valid()) _colorCoords->releaseGLObjects(state);
+    if (_texcoords.valid()) _texcoords->releaseGLObjects(state);
+
+    for(Primitives::const_iterator itr = _decorationPrimitives.begin();
+        itr != _decorationPrimitives.end();
+        ++itr)
+    {
+        (*itr)->releaseGLObjects(state);
+    }
+
+    Drawable::releaseGLObjects(state);
 }
 
 void TextBase::setColor(const osg::Vec4& color)
@@ -491,22 +586,6 @@ bool TextBase::computeMatrix(osg::Matrix& matrix, osg::State* state) const
     return true;
 }
 
-void TextBase::setThreadSafeRefUnref(bool threadSafe)
-{
-    Drawable::setThreadSafeRefUnref(threadSafe);
-}
-
-void TextBase::resizeGLObjectBuffers(unsigned int maxSize)
-{
-    Drawable::resizeGLObjectBuffers(maxSize);
-}
-
-
-void TextBase::releaseGLObjects(osg::State* state) const
-{
-    Drawable::releaseGLObjects(state);
-}
-
 void TextBase::positionCursor(const osg::Vec2 & endOfLine_coords, osg::Vec2 & cursor, unsigned int linelength)
 {
     switch(_layout)
@@ -643,6 +722,7 @@ void TextBase::setupDecoration()
         coords->push_back(c010);
 
         osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
+        primitives->setBufferObject(_ebo.get());
         _decorationPrimitives.push_back(primitives);
 
         primitives->push_back(base);
@@ -670,6 +750,7 @@ void TextBase::setupDecoration()
             coords->push_back(c010);
 
             osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_LINE_LOOP);
+            primitives->setBufferObject(_ebo.get());
             _decorationPrimitives.push_back(primitives);
 
             primitives->push_back(base);
@@ -703,6 +784,7 @@ void TextBase::setupDecoration()
 
 
             osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_LINES);
+            primitives->setBufferObject(_ebo.get());
             _decorationPrimitives.push_back(primitives);
 
             // front loop
@@ -764,6 +846,7 @@ void TextBase::setupDecoration()
         coords->push_back(vb);
 
         osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_LINES);
+        primitives->setBufferObject(_ebo.get());
         _decorationPrimitives.push_back(primitives);
 
         // front loop

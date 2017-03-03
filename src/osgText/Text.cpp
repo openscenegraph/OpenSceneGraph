@@ -1230,19 +1230,9 @@ void Text::accept(osg::PrimitiveFunctor& pf) const
     }
 }
 
-
-void Text::setThreadSafeRefUnref(bool threadSafe)
-{
-    TextBase::setThreadSafeRefUnref(threadSafe);
-
-    getActiveFont()->setThreadSafeRefUnref(threadSafe);
-}
-
 void Text::resizeGLObjectBuffers(unsigned int maxSize)
 {
     TextBase::resizeGLObjectBuffers(maxSize);
-
-    getActiveFont()->resizeGLObjectBuffers(maxSize);
 
     for(TextureGlyphQuadMap::iterator itr = _textureGlyphQuadMap.begin();
         itr != _textureGlyphQuadMap.end();
@@ -1252,12 +1242,9 @@ void Text::resizeGLObjectBuffers(unsigned int maxSize)
     }
 }
 
-
 void Text::releaseGLObjects(osg::State* state) const
 {
     TextBase::releaseGLObjects(state);
-
-    getActiveFont()->releaseGLObjects(state);
 
     for(TextureGlyphQuadMap::const_iterator itr = _textureGlyphQuadMap.begin();
         itr != _textureGlyphQuadMap.end();
@@ -1338,6 +1325,8 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
     const TexCoords& texcoords = _texcoords;
     const ColorCoords& colors = _colorCoords;
 
+    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
+
     if (coords.valid() && !coords->empty())
     {
         state.setVertexPointer(coords.get());
@@ -1353,7 +1342,7 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
             state.setColorPointer(colors.get());
         }
 
-        glyphquad._primitives[0]->draw(state, _useVertexBufferObjects);
+        glyphquad._primitives[0]->draw(state, usingVertexBufferObjects);
     }
 }
 
@@ -1405,6 +1394,8 @@ void Text::drawTextWithBackdrop(osg::State& state, const osg::Vec4& colorMultipl
     state.setVertexPointer(_coords.get());
     state.setTexCoordPointer( 0, _texcoords.get());
 
+    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
+
     for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
         ++titr)
@@ -1436,7 +1427,7 @@ void Text::drawTextWithBackdrop(osg::State& state, const osg::Vec4& colorMultipl
 
             for( ; backdrop_index < max_backdrop_index; backdrop_index++)
             {
-                glyphquad._primitives[backdrop_index]->draw(state, _useVertexBufferObjects);
+                glyphquad._primitives[backdrop_index]->draw(state, usingVertexBufferObjects);
             }
         }
 
@@ -1448,6 +1439,8 @@ void Text::drawTextWithBackdrop(osg::State& state, const osg::Vec4& colorMultipl
 void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
 #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+
+    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
 
     if (!osg::PolygonOffset::areFactorAndUnitsMultipliersSet())
     {
@@ -1491,7 +1484,7 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
             glPolygonOffset(0.1f * osg::PolygonOffset::getFactorMultiplier(), osg::PolygonOffset::getUnitsMultiplier() * (max_backdrop_index-backdrop_index) );
-            glyphquad._primitives[backdrop_index]->draw(state, _useVertexBufferObjects);
+            glyphquad._primitives[backdrop_index]->draw(state, usingVertexBufferObjects);
         }
 
         // Reset the polygon offset so the foreground text is on top
@@ -1510,6 +1503,8 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
 void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
 #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+
+    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
 
     glPushAttrib(GL_DEPTH_BUFFER_BIT);
     glDisable(GL_DEPTH_TEST);
@@ -1547,7 +1542,7 @@ void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMult
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
-            glyphquad._primitives[backdrop_index]->draw(state, _useVertexBufferObjects);
+            glyphquad._primitives[backdrop_index]->draw(state, usingVertexBufferObjects);
         }
 
         drawForegroundText(state, glyphquad, colorMultiplier);
@@ -1563,6 +1558,8 @@ void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMult
 void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
 #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+
+    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
 
     // Hmmm, the man page says GL_VIEWPORT_BIT for Depth range (near and far)
     // but experimentally, GL_DEPTH_BUFFER_BIT for glDepthRange.
@@ -1603,7 +1600,7 @@ void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultipl
         {
             double offset = double(max_backdrop_index-backdrop_index)*0.0001;
             glDepthRange( offset, 1.0+offset);
-            glyphquad._primitives[backdrop_index]->draw(state, _useVertexBufferObjects);
+            glyphquad._primitives[backdrop_index]->draw(state, usingVertexBufferObjects);
         }
 
         glDepthRange(0.0, 1.0);
@@ -1620,6 +1617,9 @@ void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultipl
 void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
 #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+
+    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
+
     /* Here are the steps:
      * 1) Disable drawing color
      * 2) Enable the stencil buffer
@@ -1693,11 +1693,11 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
-            glyphquad._primitives[backdrop_index]->draw(state, _useVertexBufferObjects);
+            glyphquad._primitives[backdrop_index]->draw(state, usingVertexBufferObjects);
         }
 
         // Draw the foreground text
-        glyphquad._primitives[0]->draw(state, _useVertexBufferObjects);
+        glyphquad._primitives[0]->draw(state, usingVertexBufferObjects);
     }
 
 
@@ -1753,7 +1753,7 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
-            glyphquad._primitives[backdrop_index]->draw(state, _useVertexBufferObjects);
+            glyphquad._primitives[backdrop_index]->draw(state, usingVertexBufferObjects);
         }
 
         drawForegroundText(state, glyphquad, colorMultiplier);

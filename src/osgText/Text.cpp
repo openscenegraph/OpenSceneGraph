@@ -1091,19 +1091,20 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
 
     state.Normal(_normal.x(), _normal.y(), _normal.z());
 
+    state.lazyDisablingOfVertexAttributes();
+
+    state.setVertexPointer(_coords.get());
+    state.setTexCoordPointer( 0, _texcoords.get());
+
+    state.applyDisablingOfVertexAttributes();
+
     if ((_drawMode&(~TEXT))!=0)
     {
 
         if (!_decorationPrimitives.empty())
         {
-            state.disableNormalPointer();
-
             osg::State::ApplyModeProxy applyMode(state, GL_LIGHTING, false);
             osg::State::ApplyTextureModeProxy applyTextureMode(state, 0, GL_TEXTURE_2D, false);
-
-            state.disableAllVertexArrays();
-
-            state.setVertexPointer(_coords.get());
 
         #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
             switch(_backdropImplementation)
@@ -1164,8 +1165,6 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
 
     if (_drawMode & TEXT)
     {
-
-        state.disableAllVertexArrays();
 
         // Okay, since ATI's cards/drivers are not working correctly,
         // we need alternative solutions to glPolygonOffset.
@@ -1322,16 +1321,12 @@ float Text::bilinearInterpolate(float x1, float x2, float y1, float y2, float x,
 void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, const osg::Vec4& colorMultiplier) const
 {
     const Coords& coords = _coords;
-    const TexCoords& texcoords = _texcoords;
     const ColorCoords& colors = _colorCoords;
 
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
 
     if (coords.valid() && !coords->empty())
     {
-        state.setVertexPointer(coords.get());
-        state.setTexCoordPointer(0, texcoords.get());
-
         if(_colorGradientMode == SOLID)
         {
             state.disableColorPointer();
@@ -1391,9 +1386,6 @@ void Text::renderWithDelayedDepthWrites(osg::State& state, const osg::Vec4& colo
 
 void Text::drawTextWithBackdrop(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
-    state.setVertexPointer(_coords.get());
-    state.setTexCoordPointer( 0, _texcoords.get());
-
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
 
     for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
@@ -1446,9 +1438,6 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
     {
         osg::PolygonOffset::setFactorAndUnitsMultipliersUsingBestGuessForDriver();
     }
-
-    state.setVertexPointer(_coords.get());
-    state.setTexCoordPointer( 0, _texcoords.get());
 
     // Do I really need to do this for glPolygonOffset?
     glPushAttrib(GL_POLYGON_OFFSET_FILL);
@@ -1509,9 +1498,6 @@ void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMult
     glPushAttrib(GL_DEPTH_BUFFER_BIT);
     glDisable(GL_DEPTH_TEST);
 
-    state.setVertexPointer(_coords.get());
-    state.setTexCoordPointer( 0, _texcoords.get());
-
     for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
         ++titr)
@@ -1565,9 +1551,6 @@ void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultipl
     // but experimentally, GL_DEPTH_BUFFER_BIT for glDepthRange.
 //    glPushAttrib(GL_VIEWPORT_BIT);
     glPushAttrib(GL_DEPTH_BUFFER_BIT);
-
-    state.setVertexPointer(_coords.get());
-    state.setTexCoordPointer( 0, _texcoords.get());
 
     for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
@@ -1659,9 +1642,6 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
     // Arrrgh! Why does the code only seem to work correctly if I call this?
     glDepthMask(GL_FALSE);
 
-    state.setVertexPointer(_coords.get());
-    state.setTexCoordPointer( 0, _texcoords.get());
-
     // Draw all the text to the stencil buffer to mark out the region
     // that we can write too.
 
@@ -1718,9 +1698,6 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
 
     // Re-enable writing to the color buffer so we can see the results
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-
-    state.setVertexPointer(_coords.get());
-    state.setTexCoordPointer( 0, _texcoords.get());
 
     // Draw all the text again
 

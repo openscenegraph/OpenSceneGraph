@@ -499,7 +499,13 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
         // OSG_NOTICE<<"No need to apply matrix "<<std::endl;
     }
 
-    state.disableAllVertexArrays();
+
+    state.lazyDisablingOfVertexAttributes();
+
+    state.setVertexPointer(_coords.get());
+    state.setNormalPointer(_normals.get());
+
+    state.applyDisablingOfVertexAttributes();
 
     if ((_drawMode&(~TEXT))!=0)
     {
@@ -508,8 +514,6 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
         {
             osg::State::ApplyModeProxy applyMode(state, GL_LIGHTING, false);
             osg::State::ApplyTextureModeProxy applyTextureMode(state, 0, GL_TEXTURE_2D, false);
-
-            state.setVertexPointer(_coords.get());
 
             for(Primitives::const_iterator itr = _decorationPrimitives.begin();
                 itr != _decorationPrimitives.end();
@@ -534,13 +538,6 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
 
         if (wallStateSet==0) wallStateSet = frontStateSet;
         if (backStateSet==0) backStateSet = frontStateSet;
-
-        state.lazyDisablingOfVertexAttributes();
-
-        state.setVertexPointer(_coords.get());
-        state.setNormalPointer(_normals.get());
-
-        state.applyDisablingOfVertexAttributes();
 
         for(osg::Geometry::PrimitiveSetList::const_iterator itr=_frontPrimitiveSetList.begin(), end = _frontPrimitiveSetList.end(); itr!=end; ++itr)
         {

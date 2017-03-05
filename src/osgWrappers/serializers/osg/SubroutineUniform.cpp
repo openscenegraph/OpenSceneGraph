@@ -23,7 +23,6 @@ REGISTER_OBJECT_WRAPPER( LuaScriptengine,
                          "osg::Object osg::ScriptEngine lua::LuaScriptEngine" )
 {}
 }
-#endif
 
 REGISTER_OBJECT_WRAPPER( ScriptNodeCallback,
                          new osg::ScriptNodeCallback,
@@ -61,6 +60,7 @@ ADD_STRING_SERIALIZER( Language, "" );  // _script
 
 
 }
+#endif
 namespace wrapperosgSubroutineUniform
 {
 static bool checkSubroutineName( const osg::SubroutineUniform& attr )

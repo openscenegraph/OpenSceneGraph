@@ -3362,21 +3362,12 @@ bool LuaScriptEngine::getelements(int pos, int numElements, int type) const
 {
 	int i = 0;
     int abs_pos = getAbsolutePos(pos);
-	std::cerr << abs_pos << std::endl;
     for( i=0; i<numElements; ++i)
     {
         lua_pushinteger(_lua, i+1);
         lua_gettable(_lua, abs_pos);
-       // if (lua_type(_lua, -1)!=type) { lua_pop(_lua, i+1); return false; }
+       if (lua_type(_lua, -1)!=type) { lua_pop(_lua, i+1); return false; }
     }
-	/*
-for ( i = 0; i<numElements; ++i)
-	{
-	if (lua_type(_lua, -i ) != type) { 
-	lua_pop(_lua, numElements); 
-	return false; }
-	}*/
-
     return true;
 }
 

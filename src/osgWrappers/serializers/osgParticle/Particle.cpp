@@ -81,8 +81,8 @@ bool readParticle( osgDB::InputStream& is, osgParticle::Particle& p )
             is >> is.END_BRACKET;
         }
 
-        is >> is.END_BRACKET;
     }
+    is >> is.END_BRACKET;
     return true;
 }
 

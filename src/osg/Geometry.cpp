@@ -133,7 +133,7 @@ void Geometry::configureBufferObjects()
         itr != arrays.end();
         ++itr)
     {
-        osg::Array* array = *itr;
+        osg::Array* array = itr->get();
         if (array->getBinding()==osg::Array::BIND_PER_VERTEX)
         {
             if (array->getNumElements()==numVertices)

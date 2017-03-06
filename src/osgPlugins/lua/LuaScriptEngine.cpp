@@ -3568,9 +3568,6 @@ bool LuaScriptEngine::getValue(int pos, osg::Matrixd& value) const
             value(r,c) = lua_tonumber(_lua, -16+(r*4+c));
         }
     }
-	if (value.isIdentity())
-		std::cerr << "identity" << std::endl;
-	std::cerr << value << std::endl;
 	lua_pop(_lua, 16);
     return true;
 }

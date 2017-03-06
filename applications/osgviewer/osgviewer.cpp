@@ -174,6 +174,7 @@ int main(int argc, char** argv)
     osgUtil::Optimizer optimizer;
     optimizer.optimize(loadedModel);
 
+	loadedModel ->getOrCreateUserDataContainer()->addUserObject(osgDB::readFile<osg::ScriptEngine>("ScriptEngine.lua"));
     viewer.setSceneData(loadedModel);
 
     viewer.realize();

@@ -729,7 +729,7 @@ void TextBase::setupDecoration()
         primitives->push_back(base+1);
         primitives->push_back(base+2);
         primitives->push_back(base);
-        primitives->push_back(base+1);
+        primitives->push_back(base+2);
         primitives->push_back(base+3);
     }
 

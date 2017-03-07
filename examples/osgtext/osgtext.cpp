@@ -705,6 +705,15 @@ int main(int argc, char** argv)
 
         viewer.setSceneData(text.get());
     }
+    else if (arguments.read("--plain"))
+    {
+        osg::ref_ptr<osgText::Text> text = new osgText::Text;
+        text->setFont("fonts/times.ttf");
+        text->setAxisAlignment(osgText::Text::XZ_PLANE);
+        text->setText("This is a plain test");
+
+        viewer.setSceneData(text.get());
+    }
     else if (arguments.read("--mt", numThreads) || arguments.read("--mt"))
     {
         // construct a multi-threaded text updating test.

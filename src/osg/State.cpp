@@ -208,7 +208,7 @@ void State::initializeExtensionProcs()
     setGLExtensionFuncPtr(_glVertexAttrib4fv, "glVertexAttrib4fv");
     setGLExtensionFuncPtr(_glDisableVertexAttribArray, "glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
     setGLExtensionFuncPtr(_glBindBuffer, "glBindBuffer","glBindBufferARB");
-    setGLExtensionFuncPtr(_glBindVertexArrayObject, "glBindVertexArrayObject","glBindVertexArrayObjectARB");
+    setGLExtensionFuncPtr(_glBindVertexArrayObject, "glBindVertexArray","glBindVertexArrayARB");
 
     setGLExtensionFuncPtr(_glDrawArraysInstanced, "glDrawArraysInstanced","glDrawArraysInstancedARB","glDrawArraysInstancedEXT");
     setGLExtensionFuncPtr(_glDrawElementsInstanced, "glDrawElementsInstanced","glDrawElementsInstancedARB","glDrawElementsInstancedEXT");

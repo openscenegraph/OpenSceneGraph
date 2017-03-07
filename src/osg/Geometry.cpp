@@ -1870,4 +1870,3 @@ void Geometry::fixDeprecatedData()
 
     _containsDeprecatedData = false;
 }
-

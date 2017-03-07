@@ -2184,8 +2184,8 @@ public:
     virtual void apply(osg::Vec4d& value)       { if (_lse->getValue(_index, value)) { _success=true; _numberToPop = 4; } }
     virtual void apply(osg::Quat& value)        { if (_lse->getValue(_index, value)) { _success=true; _numberToPop = 4; } }
     virtual void apply(osg::Plane& value)       { if (_lse->getValue(_index, value)) { _success=true; _numberToPop = 4; } }
-    virtual void apply(osg::Matrixf& value)     { if (_lse->getValue(_index, value)) { _success=true; } }
-    virtual void apply(osg::Matrixd& value)     { if (_lse->getValue(_index, value)) { _success=true; } }
+	virtual void apply(osg::Matrixf& value)     { if (_lse->getValue(_index, value)) { _success = true; _numberToPop = 16; } }
+	virtual void apply(osg::Matrixd& value)     { if (_lse->getValue(_index, value)) { _success = true; _numberToPop = 16; } }
     virtual void apply(osg::BoundingBoxf& value) { if (_lse->getValue(_index, value)) { _success=true; } }
     virtual void apply(osg::BoundingBoxd& value) { if (_lse->getValue(_index, value)) { _success=true; } }
     virtual void apply(osg::BoundingSpheref& value) { if (_lse->getValue(_index, value)) { _success=true; } }
@@ -2751,7 +2751,7 @@ int LuaScriptEngine::pushDataToStack(SerializerScratchPad* ssp) const
 
 int LuaScriptEngine::getDataFromStack(SerializerScratchPad* ssp, osgDB::BaseSerializer::Type type, int pos) const
 {
-    pos = getAbsolutePos(pos);
+	int abs_pos =  getAbsolutePos(pos);
 
     if (type==osgDB::BaseSerializer::RW_UNDEFINED) type = LuaScriptEngine::getType(pos);
 
@@ -2759,37 +2759,37 @@ int LuaScriptEngine::getDataFromStack(SerializerScratchPad* ssp, osgDB::BaseSeri
     {
         case(osgDB::BaseSerializer::RW_BOOL):
         {
-            if (lua_isboolean(_lua, pos))
+			if (lua_isboolean(_lua, abs_pos))
             {
-                ssp->set(static_cast<bool>(lua_toboolean(_lua, pos)!=0));
+				ssp->set(static_cast<bool>(lua_toboolean(_lua, abs_pos) != 0));
                 return 0;
             }
-            else if (lua_isnumber(_lua, pos))
+			else if (lua_isnumber(_lua, abs_pos))
             {
-                ssp->set(static_cast<bool>(lua_tonumber(_lua, pos)!=0));
+				ssp->set(static_cast<bool>(lua_tonumber(_lua, abs_pos) != 0));
                 return 0;
             }
             break;
         }
         case(osgDB::BaseSerializer::RW_STRING):
         {
-            if (lua_isstring(_lua, pos))
+			if (lua_isstring(_lua, abs_pos))
             {
-                ssp->set(std::string(lua_tostring(_lua, pos)));
+				ssp->set(std::string(lua_tostring(_lua, abs_pos)));
                 return 0;
             }
             break;
         }
         case(osgDB::BaseSerializer::RW_GLENUM):
         {
-            if (lua_isnumber(_lua, pos))
+			if (lua_isnumber(_lua, abs_pos))
             {
-                ssp->set(static_cast<GLenum>(lua_tonumber(_lua, pos)));
+				ssp->set(static_cast<GLenum>(lua_tonumber(_lua, abs_pos)));
                 return 0;
             }
-            else if (lua_isstring(_lua, pos))
+			else if (lua_isstring(_lua, abs_pos))
             {
-                const char* enumString = lua_tostring(_lua, pos);
+				const char* enumString = lua_tostring(_lua, abs_pos);
                 GLenum value = lookUpGLenumValue(enumString); //getValue("GL",enumString);
 
                 ssp->set(value);
@@ -2800,12 +2800,12 @@ int LuaScriptEngine::getDataFromStack(SerializerScratchPad* ssp, osgDB::BaseSeri
         }
         case(osgDB::BaseSerializer::RW_ENUM):
         {
-            if (lua_isnumber(_lua, pos))
+			if (lua_isnumber(_lua, abs_pos))
             {
-                ssp->set(static_cast<int>(lua_tonumber(_lua, pos)));
+				ssp->set(static_cast<int>(lua_tonumber(_lua, abs_pos)));
                 return 0;
             }
-            else if (lua_isstring(_lua, pos))
+			else if (lua_isstring(_lua, abs_pos))
             {
                 OSG_NOTICE<<"LuaScriptEngine::getDataFromStack() osgDB::BaseSerializer::RW_ENUM Failed to convert string"<<std::endl;
                 return 0;
@@ -2814,62 +2814,62 @@ int LuaScriptEngine::getDataFromStack(SerializerScratchPad* ssp, osgDB::BaseSeri
         }
         case(osgDB::BaseSerializer::RW_SHORT):
         {
-            if (lua_isnumber(_lua, pos))
+			if (lua_isnumber(_lua, abs_pos))
             {
-                ssp->set(static_cast<short>(lua_tonumber(_lua, pos)));
+				ssp->set(static_cast<short>(lua_tonumber(_lua, abs_pos)));
                 return 0;
             }
             break;
         }
         case(osgDB::BaseSerializer::RW_USHORT):
         {
-            if (lua_isnumber(_lua, pos))
+			if (lua_isnumber(_lua, abs_pos))
             {
-                ssp->set(static_cast<unsigned short>(lua_tonumber(_lua, pos)));
+				ssp->set(static_cast<unsigned short>(lua_tonumber(_lua, abs_pos)));
                 return 0;
             }
             break;
         }
         case(osgDB::BaseSerializer::RW_INT):
         {
-            if (lua_isnumber(_lua, pos))
+			if (lua_isnumber(_lua, abs_pos))
             {
-                ssp->set(static_cast<int>(lua_tonumber(_lua, pos)));
+				ssp->set(static_cast<int>(lua_tonumber(_lua, abs_pos)));
                 return 0;
             }
             break;
         }
         case(osgDB::BaseSerializer::RW_UINT):
         {
-            if (lua_isnumber(_lua, pos))
+			if (lua_isnumber(_lua, abs_pos))
             {
-                ssp->set(static_cast<unsigned int>(lua_tonumber(_lua, pos)));
+				ssp->set(static_cast<unsigned int>(lua_tonumber(_lua, abs_pos)));
                 return 0;
             }
             break;
         }
         case(osgDB::BaseSerializer::RW_FLOAT):
         {
-            if (lua_isnumber(_lua, pos))
+			if (lua_isnumber(_lua, abs_pos))
             {
-                ssp->set(static_cast<float>(lua_tonumber(_lua, pos)));
+				ssp->set(static_cast<float>(lua_tonumber(_lua, abs_pos)));
                 return 0;
             }
             break;
         }
         case(osgDB::BaseSerializer::RW_DOUBLE):
         {
-            if (lua_isnumber(_lua, pos))
+			if (lua_isnumber(_lua, abs_pos))
             {
-                ssp->set(static_cast<double>(lua_tonumber(_lua, pos)));
+				ssp->set(static_cast<double>(lua_tonumber(_lua, abs_pos)));
                 return 0;
             }
             break;
         }
 
-        case(osgDB::BaseSerializer::RW_VEC2B): if (getDataFromStack<osg::Vec2b>(ssp, pos)) return 0; break;
-        case(osgDB::BaseSerializer::RW_VEC3B): if (getDataFromStack<osg::Vec3b>(ssp, pos)) return 0; break;
-        case(osgDB::BaseSerializer::RW_VEC4B): if (getDataFromStack<osg::Vec4b>(ssp, pos)) return 0; break;
+		case(osgDB::BaseSerializer::RW_VEC2B) : if (getDataFromStack<osg::Vec2b>(ssp, pos)) return 0; break;
+		case(osgDB::BaseSerializer::RW_VEC3B) : if (getDataFromStack<osg::Vec3b>(ssp, pos)) return 0; break;
+		case(osgDB::BaseSerializer::RW_VEC4B) : if (getDataFromStack<osg::Vec4b>(ssp, pos)) return 0; break;
 
         case(osgDB::BaseSerializer::RW_VEC2UB): if (getDataFromStack<osg::Vec2ub>(ssp, pos)) return 0; break;
         case(osgDB::BaseSerializer::RW_VEC3UB): if (getDataFromStack<osg::Vec3ub>(ssp, pos)) return 0; break;
@@ -2976,11 +2976,11 @@ int LuaScriptEngine::getDataFromStack(SerializerScratchPad* ssp, osgDB::BaseSeri
         case(osgDB::BaseSerializer::RW_IMAGE):
         case(osgDB::BaseSerializer::RW_OBJECT):
         {
-            if (lua_istable(_lua, pos))
+			if (lua_istable(_lua, abs_pos))
             {
                 osg::Object* value = 0;
                 lua_pushstring(_lua, "object_ptr");
-                lua_rawget(_lua, pos);
+				lua_rawget(_lua, abs_pos);
                 if (lua_type(_lua, -1)==LUA_TUSERDATA) value = *const_cast<osg::Object**>(reinterpret_cast<const osg::Object**>(lua_touserdata(_lua,-1)));
                 lua_pop(_lua, 1);
 
@@ -2991,10 +2991,10 @@ int LuaScriptEngine::getDataFromStack(SerializerScratchPad* ssp, osgDB::BaseSeri
                 }
                 else
                 {
-                    OSG_NOTICE<<"Error: lua type '"<<lua_typename(_lua,lua_type(_lua, pos))<<"' cannot be assigned." <<std::endl;
+					OSG_NOTICE << "Error: lua type '" << lua_typename(_lua, lua_type(_lua, abs_pos)) << "' cannot be assigned." << std::endl;
                 }
             }
-            else if (lua_isnil(_lua, pos))
+			else if (lua_isnil(_lua, abs_pos))
             {
                 OSG_NOTICE<<"Assigning property object (nil) to to object"<<std::endl;
                 osg::Object* value = 0;
@@ -3003,7 +3003,7 @@ int LuaScriptEngine::getDataFromStack(SerializerScratchPad* ssp, osgDB::BaseSeri
             }
             else
             {
-                OSG_NOTICE<<"Error: lua type '"<<lua_typename(_lua,lua_type(_lua, pos))<<"' cannot be assigned."<<std::endl;
+				OSG_NOTICE << "Error: lua type '" << lua_typename(_lua, lua_type(_lua, abs_pos)) << "' cannot be assigned." << std::endl;
                 return 0;
             }
             break;
@@ -3360,12 +3360,13 @@ bool LuaScriptEngine::getfields(int pos, const char* f1, const char* f2, const c
 
 bool LuaScriptEngine::getelements(int pos, int numElements, int type) const
 {
+	int i = 0;
     int abs_pos = getAbsolutePos(pos);
-    for(int i=0; i<numElements; ++i)
+    for( i=0; i<numElements; ++i)
     {
-        lua_pushinteger(_lua, i);
+        lua_pushinteger(_lua, i+1);
         lua_gettable(_lua, abs_pos);
-        if (lua_type(_lua, -1)!=type) { lua_pop(_lua, i+1); return false; }
+       if (lua_type(_lua, -1)!=type) { lua_pop(_lua, i+1); return false; }
     }
     return true;
 }
@@ -3543,6 +3544,7 @@ bool LuaScriptEngine::getValue(int pos, osg::Matrixf& value) const
             value(r,c) = lua_tonumber(_lua, -16+(r*4+c));
         }
     }
+	lua_pop(_lua, 16);
     return true;
 }
 
@@ -3557,6 +3559,7 @@ bool LuaScriptEngine::getValue(int pos, osg::Matrixd& value) const
             value(r,c) = lua_tonumber(_lua, -16+(r*4+c));
         }
     }
+	lua_pop(_lua, 16);
     return true;
 }
 
@@ -3601,7 +3604,7 @@ void LuaScriptEngine::pushValue(const osg::Matrixf& value) const
     {
         for(unsigned int c=0; c<4; ++c)
         {
-            lua_pushnumber(_lua, r*4+c); lua_pushinteger(_lua, (lua_Integer) value(r,c)); lua_settable(_lua, -3);
+			lua_pushinteger(_lua,1+ r * 4 + c); lua_pushnumber(_lua, (lua_Integer)value(r, c)); lua_settable(_lua, -3);
         }
     }
 }
@@ -3615,7 +3618,7 @@ void LuaScriptEngine::pushValue(const osg::Matrixd& value) const
     {
         for(unsigned int c=0; c<4; ++c)
         {
-            lua_pushinteger(_lua, r*4+c); lua_pushnumber(_lua, value(r,c)); lua_settable(_lua, -3);
+            lua_pushinteger(_lua,1+ r*4+c); lua_pushnumber(_lua, value(r,c)); lua_settable(_lua, -3);
         }
     }
 }

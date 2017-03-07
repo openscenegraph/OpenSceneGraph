@@ -128,6 +128,54 @@ struct GroupRemoveChild : public osgDB::MethodObject
     }
 };
 
+#define CHECKPARAMS(INPARAMRETRIV) \
+{static char in[] = #INPARAMRETRIV;\
+static short l = strlen(##INPARAMRETRIV);\
+char  *inptr = &in[0];\
+int i = 0; int j = 0; \
+while (inptr < &in[l - 1])if (**inptr++ == ',') j++;\
+}
+
+#define CHECKPARAMS2(XXX) \
+{const char* in = #XXX;\
+}
+
+#define  WRAP_VALUEOBJECT_METHOD2(OSGVALUEOBJECTTYPE,CLASS,GETTERMETHODNAME,INPARAMSCALL,INPARAMRETRIVE) \
+struct wrap_##GETTERMETHODNAME : public osgDB::MethodObject{\
+virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const\
+{\
+CLASS* group = reinterpret_cast<CLASS*>(objectPtr); \
+	CHECKPARAMS2(##INPARAMRETRIVE);\
+	##INPARAMRETRIVE;\
+outputParameters.push_back(new OSGVALUEOBJECTTYPE("return", group->GETTERMETHODNAME(INPARAMSCALL))); \
+return true; \
+}\
+};
+
+
+
+#define  WRAP_VALUEOBJECT_METHOD(OSGVALUEOBJECTTYPE,CLASS,GETTERMETHODNAME) \
+struct wrap_##GETTERMETHODNAME : public osgDB::MethodObject{\
+virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const\
+{\
+CLASS* group = reinterpret_cast<CLASS*>(objectPtr); \
+	\
+outputParameters.push_back(new OSGVALUEOBJECTTYPE("return", group->GETTERMETHODNAME())); \
+return true; \
+}\
+};
+
+#define STR(XXX) (#XXX)
+
+#define XSTR(XXX) STR(#XXX)
+
+
+#define DUMMYSTUFF
+WRAP_VALUEOBJECT_METHOD(osg::UIntValueObject, osg::Group, getNumChildren);
+//WRAP_VALUEOBJECT_METHOD2(osg::UIntValueObject, osg::Group, insertChild, XSTR(p1, p2), STR(p1, p2));
+//ADD_METHOD_OBJECT(##GETTERMETHODNAME, wrap_##GETTERMETHODNAME);
+
+
 REGISTER_OBJECT_WRAPPER( Group,
                          new osg::Group,
                          osg::Group,
@@ -135,7 +183,7 @@ REGISTER_OBJECT_WRAPPER( Group,
 {
     ADD_USER_SERIALIZER( Children );  // _children
 
-    ADD_METHOD_OBJECT( "getNumChildren", GroupGetNumChildren );
+	ADD_METHOD_OBJECT("getNumChildren", wrap_getNumChildren);
     ADD_METHOD_OBJECT( "getChild", GroupGetChild );
     ADD_METHOD_OBJECT( "setChild", GroupSetChild );
     ADD_METHOD_OBJECT( "addChild", GroupAddChild );

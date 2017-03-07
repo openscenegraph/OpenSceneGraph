@@ -757,6 +757,8 @@ cam->getOrCreateStateSet()->setMode( 0x9346,osg::StateAttribute::ON);
 state->setAttributeAndModes(new osg::LineWidth(10), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
 state->setMode(GL_POLYGON_SMOOTH, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
 state->setMode(GL_MULTISAMPLE, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+
+
     state->addUniform(tessInnerU.get());
     state->addUniform(tessOuterU.get());
     state->setAttribute(new osg::PatchParameter(3));

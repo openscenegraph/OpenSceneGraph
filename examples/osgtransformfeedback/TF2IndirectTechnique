@@ -11,19 +11,22 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGSHADOW_SHADOWEMAP
-#define OSGSHADOW_SHADOWEMAP 1
+#ifndef OSGGPUSCENE_TF2Indrirect
+#define OSGGPUSCENE_TF2Indrirect 1
 
 #include <osg/Camera>
 #include <osg/Material>
 #include <osg/MatrixTransform>
-#include <osg/LightSource>
+#include <osg/Program>
 
 #include "GPUDrawTechnique"
 
 //namespace osgShadow {
 
-/** ShadowedTexture provides an implementation of shadow textures.*/
+/** TF2IndirectTechnique provides an implementation of GPUDrawTechnique: .*/
+/** based on TransformFeedback Culling 2 Indirect Draw Command .*/
+/** fill arrays with geometries absolute position and AABB (extents) then gpu cull 2 TFB buffer*/
+/** then bind TFB buffer as IndirectDrawCommand 4 glMultiDrawXXXIndirect */
 class  TF2IndirectTechnique : public GPUDrawTechnique
 {
     public :
@@ -31,56 +34,54 @@ class  TF2IndirectTechnique : public GPUDrawTechnique
 
         TF2IndirectTechnique(const TF2IndirectTechnique& es, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-        META_Object(osgShadow, TF2IndirectTechnique);
+        META_Object(osgGPU, TF2IndirectTechnique);
 
-        /** Set the texture unit that the shadow texture will be applied on.*/
+        /** Set the texture unit that the shadow texture will be applied on.* /
         void setTextureUnit(unsigned int unit);
 
-        /** Get the texture unit that the shadow texture will be applied on.*/
+        /** Get the texture unit that the shadow texture will be applied on.* /
         unsigned int getTextureUnit() const { return _shadowTextureUnit; }
 
-        /** set the polygon offset used initially */
+        /** set the polygon offset used initially * /
         void setPolygonOffset(const osg::Vec2& polyOffset);
 
-        /** get the used polygon offset */
+        /** get the used polygon offset * /
         const osg::Vec2& getPolygonOffset() const { return _polyOffset; }
 
-        /** Set the values for the ambient bias the shader will use.*/
+        /** Set the values for the ambient bias the shader will use.* /
         void setAmbientBias(const osg::Vec2& ambientBias );
 
-        /** Get the values that are used for the ambient bias in the shader.*/
+        /** Get the values that are used for the ambient bias in the shader.* /
         const osg::Vec2& getAmbientBias() const { return _ambientBias; }
 
-        /** set the size in pixels x / y for the shadow texture.*/
+        /** set the size in pixels x / y for the shadow texture.* /
         void setTextureSize(const osg::Vec2s& textureSize);
 
-        /** Get the values that are used for the ambient bias in the shader.*/
+        /** Get the values that are used for the ambient bias in the shader.* /
         const osg::Vec2s& getTextureSize() const { return _textureSize; }
 
-        /** Set the Light that will cast shadows */
+        /** Set the Light that will cast shadows * /
         void setLight(osg::Light* light);
         void setLight(osg::LightSource* ls);
 
-        typedef std::vector< osg::ref_ptr<osg::Uniform> > UniformList;
 
-        typedef std::vector< osg::ref_ptr<osg::Shader> > ShaderList;
-
-        /** Add a shader to internal list, will be used instead of the default ones */
+        /** Add a shader to internal list, will be used instead of the default ones * /
         inline void addShader(osg::Shader* shader) { _shaderList.push_back(shader); }
 
-        /** Reset internal shader list */
+        /** Reset internal shader list * /
         inline void clearShaderList() { _shaderList.clear(); }
 
         /** initialize the GPUScene and local cached data structures.*/
         virtual void init();
 
-        /** run the update traversal of the GPUScene and update any loca chached data structures.*/
+        /** run the update traversal of the GPUScene and update culling data.*/
+        /** TODO and check if BufferObject are shared (with MakeSharedBOVisitor?:TODO ensure first reusability check is not buggy)*/
         virtual void update(osg::NodeVisitor& nv);
 
-        /** run the cull traversal of the GPUScene and set up the rendering for this GPUDrawTechnique.*/
+        /** DO NOTHING run the cull traversal of the GPUScene and set up the rendering for this GPUDrawTechnique.*/
         virtual void cull(osgUtil::CullVisitor& cv);
 
-        /** Clean scene graph from any shadow technique specific nodes, state and drawables.*/
+        /** THEORICALLY NOTHING TO DO Clean scene graph from any gpudraw technique specific nodes, state and drawables.*/
         virtual void cleanSceneGraph();
 
 
@@ -97,8 +98,24 @@ class  TF2IndirectTechnique : public GPUDrawTechnique
 
         osg::ref_ptr<osg::Camera> makeDebugHUD();
 
+        typedef std::vector< osg::ref_ptr<osg::Uniform> > UniformList;
+
+        typedef std::vector< osg::ref_ptr<osg::Shader> > ShaderList;
     protected:
         virtual ~TF2IndirectTechnique(void) {};
+class UpdaterTraversalVisitor;
+UpdaterTraversalVisitor * _updateTraverser;
+        ///VertexAttrib0 is position ///VertexAttrib1 is boundingbox
+        ///prim set as DrawArraysPOINTS
+        osg::ref_ptr<osg::Geometry> _cullingData;
+
+
+        ///arrays (and so on BO) setted as the first traversed geometry(ensure bos shared)
+        ///primset as DrawIndirectpate
+        osg::ref_ptr<osg::Geometry> _indirectGeometry;
+
+
+
 
         /** Create the managed Uniforms */
         virtual void createUniforms();
@@ -112,7 +129,7 @@ class  TF2IndirectTechnique : public GPUDrawTechnique
         osg::ref_ptr<osg::TexGen>       _texgen;
         osg::ref_ptr<osg::Texture2D>    _texture;
         osg::ref_ptr<osg::StateSet>     _stateset;
-        osg::ref_ptr<osg::Program>      _program;
+        osg::ref_ptr<osg::Program>      _cullProgram;
         osg::ref_ptr<osg::Light>        _light;
 
         osg::ref_ptr<osg::LightSource>  _ls;

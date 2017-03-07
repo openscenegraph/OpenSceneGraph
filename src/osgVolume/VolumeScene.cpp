@@ -391,7 +391,7 @@ void VolumeScene::traverse(osg::NodeVisitor& nv)
     //OSG_NOTICE<<"  new after RTT near ="<<cv->getCalculatedNearPlane()<<std::endl;
     //OSG_NOTICE<<"  new after RTT far ="<<cv->getCalculatedFarPlane()<<std::endl;
 
-    viewData->_backdropSubgraph->accept(*cv);
+   // viewData->_backdropSubgraph->accept(*cv);
 
     osg::NodePath nodePathPriorToTraversingSubgraph = cv->getNodePath();
     cv->setUserValue("VolumeSceneTraversal",std::string("Post"));

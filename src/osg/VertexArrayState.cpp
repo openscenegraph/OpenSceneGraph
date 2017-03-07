@@ -22,6 +22,10 @@ using namespace osg;
 #else
 #define VAS_NOTICE OSG_NOTICE
 #endif
+
+
+#if 0
+///DEPORTED TO STATE FOR INLINING
 void VertexArrayState::bindVertexArrayObject() const {
     if(_state->getCurrentBoundVAO()!=_vertexArrayObject){
         _state->setCurrentBoundVAO(_vertexArrayObject);
@@ -35,6 +39,7 @@ void VertexArrayState::unbindVertexArrayObject() const {
          _ext->glBindVertexArray (0);
     }
  }
+#endif
 
 class VertexArrayStateManager : public GraphicsObjectManager
 {

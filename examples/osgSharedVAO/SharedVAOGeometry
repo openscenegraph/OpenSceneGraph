@@ -8,7 +8,8 @@ public:
 
     //set geometry responsible of the shared vas and compute primset basevertices
     void setMaster(SharedVAOGeometry*m);
-
+#if 0
+/// nothing have to be modified in fact
     virtual void compileGLObjects(osg::RenderInfo& renderInfo) const
     {
         osg::State& state = *renderInfo.getState();
@@ -83,12 +84,12 @@ public:
                 drawVertexArraysImplementation(renderInfo);
 
                 ///MY embed EBO in VAO
-                osg::Geometry::DrawElementsList drawelmts;
+              /*  osg::Geometry::DrawElementsList drawelmts;
                 this->getDrawElementsList(drawelmts);
                 ///assume all drawelmt have the same bo
                 if(!drawelmts.empty())     vas->bindElementBufferObject((*drawelmts.begin())->getBufferObject()->getGLBufferObject(contextID));
                 vas->unbindVertexArrayObject();
-                vas->setRequiresSetArrays(getDataVariance()==osg::Object::DYNAMIC);
+                vas->setRequiresSetArrays(getDataVariance()==osg::Object::DYNAMIC);*/
                 ///END MY
             }
         }
@@ -97,6 +98,7 @@ public:
             Drawable::compileGLObjects(renderInfo);
         }
     }
+#endif
     inline osg::VertexArrayState*  newcreateVertexArrayState(osg::RenderInfo&renderInfo)const
     {
         ///MY

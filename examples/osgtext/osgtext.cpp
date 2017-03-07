@@ -682,6 +682,31 @@ public:
 };
 
 
+struct TextCounterCallback : public osg::NodeCallback
+{
+    unsigned int _textCounter;
+
+    TextCounterCallback():
+        _textCounter(100000) {}
+
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+    {
+        osgText::Text* text = dynamic_cast<osgText::Text*>(node);
+        if (text)
+        {
+
+            std::stringstream str;
+            str <<"Text Counter "<<_textCounter<<std::endl;
+            OSG_NOTICE<<"Udating text"<<str.str()<<std::endl;
+
+            text->setText(str.str());
+
+            ++_textCounter;
+        }
+    }
+};
+
+
 int main(int argc, char** argv)
 {
     osg::ArgumentParser arguments(&argc, argv);
@@ -711,6 +736,16 @@ int main(int argc, char** argv)
         text->setFont("fonts/times.ttf");
         text->setAxisAlignment(osgText::Text::XZ_PLANE);
         text->setText("This is a plain test");
+
+        viewer.setSceneData(text.get());
+    }
+    else if (arguments.read("--counter"))
+    {
+        osg::ref_ptr<osgText::Text> text = new osgText::Text;
+        text->setUpdateCallback(new TextCounterCallback());
+        text->setFont("fonts/times.ttf");
+        text->setAxisAlignment(osgText::Text::XZ_PLANE);
+        text->setText("This is a counter test");
 
         viewer.setSceneData(text.get());
     }

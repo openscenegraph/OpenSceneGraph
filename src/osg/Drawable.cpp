@@ -624,7 +624,6 @@ void Drawable::compileGLObjects(RenderInfo& renderInfo) const
 
 void Drawable::draw(RenderInfo& renderInfo) const
 {
-
     State& state = *renderInfo.getState();
     bool useVertexArrayObject = state.useVertexArrayObject(_useVertexArrayObject);
     if (useVertexArrayObject)
@@ -634,15 +633,12 @@ void Drawable::draw(RenderInfo& renderInfo) const
         VertexArrayState* vas = _vertexArrayStateList[contextID].get();
         if (!vas)
         {
-            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo, true);
-            // OSG_NOTICE<<"  Geometry::draw() "<<this<<", assigned _vertexArrayStateList[renderInfo.getContextID()]="<<_vertexArrayStateList[renderInfo.getContextID()].get()<<", vas="<<vas<< std::endl;
+            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
         }
         else
         {
             // vas->setRequiresSetArrays(getDataVariance()==osg::Object::DYNAMIC);
-            // OSG_NOTICE<<"  Geometry::draw() "<<this<<", reusing _vertexArrayStateList[renderInfo.getContextID()]="<<_vertexArrayStateList[renderInfo.getContextID()].get()<<", vas="<<vas<< std::endl;
         }
-
 
         State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 

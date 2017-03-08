@@ -858,7 +858,8 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
     drawPrimitivesImplementation(renderInfo);
 
-    if (!state.useVertexArrayObject(_useVertexArrayObject) || state.getCurrentVertexArrayState()->getRequiresSetArrays())
+    if (renderInfo.getState()->useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects) &&
+       (!state.useVertexArrayObject(_useVertexArrayObject) || state.getCurrentVertexArrayState()->getRequiresSetArrays()))
     {
         // unbind the VBO's if any are used.
         state.unbindVertexBufferObject();

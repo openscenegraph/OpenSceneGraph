@@ -230,7 +230,18 @@ void Text::addGlyphQuad(Glyph* glyph, const osg::Vec2& minc, const osg::Vec2& ma
     GlyphQuads& glyphquad = _textureGlyphQuadMap[glyph->getTexture()];
 
     glyphquad._glyphs.push_back(glyph);
-    osg::DrawElementsUShort* primitives = glyphquad._primitives[0].get();
+
+    osg::DrawElementsUShort* primitives = 0;
+    if (glyphquad._primitives.empty())
+    {
+        primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
+        primitives->setBufferObject(_ebo.get());
+        glyphquad._primitives.push_back(primitives);
+    }
+    else
+    {
+        primitives = glyphquad._primitives[0].get();
+    }
 
 
     unsigned int lt = addCoord(osg::Vec2(minc.x(), maxc.y()));
@@ -251,6 +262,8 @@ void Text::addGlyphQuad(Glyph* glyph, const osg::Vec2& minc, const osg::Vec2& ma
     primitives->push_back(lt);
     primitives->push_back(rb);
     primitives->push_back(rt);
+
+    primitives->dirty();
 }
 
 void Text::computeGlyphRepresentation()
@@ -258,9 +271,14 @@ void Text::computeGlyphRepresentation()
     Font* activefont = getActiveFont();
     if (!activefont) return;
 
-    _coords = new osg::Vec3Array(osg::Array::BIND_PER_VERTEX);
-    _colorCoords = new osg::Vec4Array(osg::Array::BIND_PER_VERTEX);
-    _texcoords = new osg::Vec2Array(osg::Array::BIND_PER_VERTEX);
+    if (!_coords) { _coords = new osg::Vec3Array(osg::Array::BIND_PER_VERTEX); _coords->setBufferObject(_vbo.get()); }
+    else _coords->clear();
+
+    if (!_colorCoords) { _colorCoords = new osg::Vec4Array(osg::Array::BIND_PER_VERTEX); _colorCoords->setBufferObject(_vbo.get()); }
+    else _colorCoords->clear();
+
+    if (!_texcoords) { _texcoords = new osg::Vec2Array(osg::Array::BIND_PER_VERTEX); _texcoords->setBufferObject(_vbo.get()); }
+    else _texcoords->clear();
 
     _textureGlyphQuadMap.clear();
     _lineCount = 0;
@@ -712,6 +730,7 @@ void Text::computeBackdropPositions()
             GlyphQuads& glyphquad = titr->second;
             osg::DrawElementsUShort* src_primitives = glyphquad._primitives[0].get();
             osg::DrawElementsUShort* dst_primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
+            dst_primitives->setBufferObject(src_primitives->getBufferObject());
             glyphquad._primitives.push_back(dst_primitives);
 
             unsigned int numCoords = src_primitives->size();
@@ -1061,6 +1080,8 @@ void Text::drawImplementation(osg::RenderInfo& renderInfo) const
 
 void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
+    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
+
     state.applyMode(GL_BLEND,true);
 #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
     state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
@@ -1091,12 +1112,27 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
 
     state.Normal(_normal.x(), _normal.y(), _normal.z());
 
+#ifdef NEW_APPROACH
+    bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
+
+    VertexArrayState* vas = state.getCurrentVertexArrayState();
+
+    bool requiresSetArrays = !usingVertexArrayObjects || vas->getRequiresSetArrays();
+    if (requiresSetArrays)
+    {
+        vas->lazyDisablingOfVertexAttributes();
+        vas->setVertexArray(state, _coords.get());
+        vas->setTexCoordArray(state, 0, _texcoords.get());
+        vas->applyDisablingOfVertexAttributes(state);
+    }
+#else
     state.lazyDisablingOfVertexAttributes();
 
     state.setVertexPointer(_coords.get());
     state.setTexCoordPointer( 0, _texcoords.get());
 
     state.applyDisablingOfVertexAttributes();
+#endif
 
     if ((_drawMode&(~TEXT))!=0)
     {
@@ -1135,7 +1171,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
                 if ((*itr)->getMode()==GL_TRIANGLES) state.Color(colorMultiplier.r()*_textBBColor.r(), colorMultiplier.g()*_textBBColor.g(), colorMultiplier.b()*_textBBColor.b(), colorMultiplier.a()*_textBBColor.a());
                 else state.Color(colorMultiplier.r(), colorMultiplier.g(), colorMultiplier.b(), colorMultiplier.a());
 
-                (*itr)->draw(state, _useVertexBufferObjects);
+                (*itr)->draw(state, usingVertexBufferObjects);
             }
 
         #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
@@ -1196,9 +1232,18 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
             renderWithDelayedDepthWrites(state,colorMultiplier);
         }
 
-        // unbind buffers if necessary
+#ifdef NEW_APPROACH
+        if (!usingVertexArrayObjects && !requiresSetArrays)
+        {
+            // unbind the VBO's if any are used.
+            state.unbindVertexBufferObject();
+            state.unbindElementBufferObject();
+        }
+#else
+        // unbind the VBO's if any are used.
         state.unbindVertexBufferObject();
         state.unbindElementBufferObject();
+#endif
     }
 
     if (needToApplyMatrix)
@@ -1225,7 +1270,10 @@ void Text::accept(osg::PrimitiveFunctor& pf) const
         ++titr)
     {
         const GlyphQuads& glyphquad = titr->second;
-        pf.drawElements(GL_TRIANGLES, glyphquad._primitives[0]->size(), &(glyphquad._primitives[0]->front()));
+        if (!glyphquad._primitives.empty())
+        {
+            pf.drawElements(GL_TRIANGLES, glyphquad._primitives[0]->size(), &(glyphquad._primitives[0]->front()));
+        }
     }
 }
 
@@ -1320,6 +1368,8 @@ float Text::bilinearInterpolate(float x1, float x2, float y1, float y2, float x,
 
 void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, const osg::Vec4& colorMultiplier) const
 {
+    if (glyphquad._primitives.empty()) return;
+
     const Coords& coords = _coords;
     const ColorCoords& colors = _colorCoords;
 
@@ -1327,6 +1377,28 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
 
     if (coords.valid() && !coords->empty())
     {
+#ifdef NEW_APPROACH
+        bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
+
+        VertexArrayState* vas = state.getCurrentVertexArrayState();
+
+        if(_colorGradientMode == SOLID)
+        {
+            OSG_NOTICE<<"   Text::drawForegroundText() vas->disableColorArray(state);"<<std::endl;
+            vas->disableColorArray(state);
+            state.Color(colorMultiplier.r()*_color.r(),colorMultiplier.g()*_color.g(),colorMultiplier.b()*_color.b(),colorMultiplier.a()*_color.a());
+        }
+        else
+        {
+            bool requiresSetArrays = !usingVertexArrayObjects || vas->getRequiresSetArrays();
+            OSG_NOTICE<<"   Text::drawForegroundText() "<<requiresSetArrays<<"vas->setColorArray(state, colors.get())"<<std::endl;
+            if (requiresSetArrays)
+            {
+                vas->setColorArray(state, colors.get());
+            }
+        }
+
+#else
         if(_colorGradientMode == SOLID)
         {
             state.disableColorPointer();
@@ -1336,6 +1408,7 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
         {
             state.setColorPointer(colors.get());
         }
+#endif
 
         glyphquad._primitives[0]->draw(state, usingVertexBufferObjects);
     }
@@ -1645,14 +1718,18 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
     // Draw all the text to the stencil buffer to mark out the region
     // that we can write too.
 
+    state.disableColorPointer();
+
     for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
         ++titr)
     {
-        // need to set the texture here...
-        state.applyTextureAttribute(0,titr->first.get());
-
         const GlyphQuads& glyphquad = titr->second;
+        if (glyphquad._primitives.empty()) continue;
+
+        // need to set the texture here...
+        state.applyTextureAttribute(0, titr->first.get());
+
 
         unsigned int backdrop_index;
         unsigned int max_backdrop_index;
@@ -1668,8 +1745,6 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
         }
 
         if (max_backdrop_index>glyphquad._primitives.size()) max_backdrop_index=glyphquad._primitives.size();
-
-        state.disableColorPointer();
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
@@ -1754,11 +1829,15 @@ Text::GlyphQuads::GlyphQuads(const GlyphQuads&)
 
 void Text::GlyphQuads::initGlyphQuads()
 {
+#ifndef NEW_APPROACH
     _primitives.push_back(new DrawElementsUShort(PrimitiveSet::TRIANGLES));
+#endif
 }
 
 void Text::GlyphQuads::initGPUBufferObjects()
 {
+#ifndef NEW_APPROACH
+    // TODO... Need to set up to shade EBO's correctly.
     osg::ref_ptr<osg::ElementBufferObject> ebo = new osg::ElementBufferObject();
     for(Primitives::iterator itr = _primitives.begin();
         itr != _primitives.end();
@@ -1766,7 +1845,7 @@ void Text::GlyphQuads::initGPUBufferObjects()
     {
         (*itr)->setElementBufferObject(ebo.get());
     }
-
+#endif
 }
 
 
@@ -1779,7 +1858,7 @@ void Text::GlyphQuads::resizeGLObjectBuffers(unsigned int maxSize)
         (*itr)->resizeGLObjectBuffers(maxSize);
     }
 
-    initGPUBufferObjects();
+    // initGPUBufferObjects();
 }
 
 void Text::GlyphQuads::releaseGLObjects(osg::State* state) const

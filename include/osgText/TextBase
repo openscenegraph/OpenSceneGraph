@@ -22,7 +22,7 @@
 
 namespace osgText {
 
-#define NEW_APPROACH
+//#define NEW_APPROACH
 
 class OSGTEXT_EXPORT TextBase : public osg::Drawable
 {
@@ -343,11 +343,11 @@ protected:
     ColorCoords                             _colorCoords;
     TexCoords                               _texcoords;
 
-    unsigned int addCoord(const osg::Vec2& c) { unsigned int s = _coords->size(); _coords->push_back(osg::Vec3(c.x(), c.y(), 0.0f)); return s; }
-    unsigned int addCoord(const osg::Vec3& c) { unsigned int s = _coords->size(); _coords->push_back(c); return s; }
+    unsigned int addCoord(const osg::Vec2& c) { unsigned int s = _coords->size(); _coords->push_back(osg::Vec3(c.x(), c.y(), 0.0f)); _coords->dirty(); return s; }
+    unsigned int addCoord(const osg::Vec3& c) { unsigned int s = _coords->size(); _coords->push_back(c); _coords->dirty(); return s; }
 
 
-    void addTexCoord(const osg::Vec2& tc) { _texcoords->push_back(tc); }
+    void addTexCoord(const osg::Vec2& tc) { _texcoords->push_back(tc); _texcoords->dirty(); }
 
 };
 

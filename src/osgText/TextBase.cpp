@@ -704,6 +704,7 @@ void TextBase::setupDecoration()
     if (!coords)
     {
         coords = new osg::Vec3Array;
+        coords->setBufferObject(_vbo.get());
         coords->resize(numVerticesRequired);
     }
 
@@ -731,6 +732,9 @@ void TextBase::setupDecoration()
         primitives->push_back(base);
         primitives->push_back(base+2);
         primitives->push_back(base+3);
+
+        coords->dirty();
+        primitives->dirty();
     }
 
     if ((_drawMode & BOUNDINGBOX)!=0 && _textBB.valid())
@@ -757,6 +761,9 @@ void TextBase::setupDecoration()
             primitives->push_back(base+1);
             primitives->push_back(base+2);
             primitives->push_back(base+3);
+
+            coords->dirty();
+            primitives->dirty();
         }
         else
         {
@@ -826,6 +833,8 @@ void TextBase::setupDecoration()
             primitives->push_back(base+3);
             primitives->push_back(base+7);
 
+            coords->dirty();
+            primitives->dirty();
         }
     }
 
@@ -855,5 +864,8 @@ void TextBase::setupDecoration()
 
         primitives->push_back(base+2);
         primitives->push_back(base+3);
+
+        coords->dirty();
+        primitives->dirty();
     }
 }

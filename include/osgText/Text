@@ -302,9 +302,6 @@ public:
         GlyphQuads();
         GlyphQuads(const GlyphQuads& gq);
 
-        void initGlyphQuads();
-        void initGPUBufferObjects();
-
         void setupPrimitives(Text::BackdropType backdropType);
 
         Glyphs& getGlyphs() { return _glyphs; }

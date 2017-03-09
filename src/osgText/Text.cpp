@@ -573,16 +573,6 @@ void Text::computeGlyphRepresentation()
         }
     }
 
-    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
-        titr!=_textureGlyphQuadMap.end();
-        ++titr)
-    {
-        if (_useVertexBufferObjects)
-        {
-            titr->second.initGPUBufferObjects();
-        }
-    }
-
     computePositions();
     computeColorGradients();
 
@@ -1132,8 +1122,6 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
 
     state.Normal(_normal.x(), _normal.y(), _normal.z());
 
-#ifdef NEW_APPROACH
-
     VertexArrayState* vas = state.getCurrentVertexArrayState();
     bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
     bool requiresSetArrays = !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();
@@ -1145,14 +1133,6 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
         vas->setTexCoordArray(state, 0, _texcoords.get());
         vas->applyDisablingOfVertexAttributes(state);
     }
-#else
-    state.lazyDisablingOfVertexAttributes();
-
-    state.setVertexPointer(_coords.get());
-    state.setTexCoordPointer( 0, _texcoords.get());
-
-    state.applyDisablingOfVertexAttributes();
-#endif
 
     if ((_drawMode&(~TEXT))!=0)
     {
@@ -1252,18 +1232,12 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
             renderWithDelayedDepthWrites(state,colorMultiplier);
         }
 
-#ifdef NEW_APPROACH
         if (!usingVertexArrayObjects)
         {
             // unbind the VBO's if any are used.
             vas->unbindVertexBufferObject();
             vas->unbindElementBufferObject();
         }
-#else
-        // unbind the VBO's if any are used.
-        state.unbindVertexBufferObject();
-        state.unbindElementBufferObject();
-#endif
     }
 
     if (needToApplyMatrix)
@@ -1397,7 +1371,6 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
 
     if (coords.valid() && !coords->empty())
     {
-#ifdef NEW_APPROACH
         VertexArrayState* vas = state.getCurrentVertexArrayState();
         bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
         bool requiresSetArrays = !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();
@@ -1414,19 +1387,6 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
                 vas->setColorArray(state, colors.get());
             }
         }
-
-#else
-        if(_colorGradientMode == SOLID)
-        {
-            state.disableColorPointer();
-            state.Color(colorMultiplier.r()*_color.r(),colorMultiplier.g()*_color.g(),colorMultiplier.b()*_color.b(),colorMultiplier.a()*_color.a());
-        }
-        else
-        {
-            state.setColorPointer(colors.get());
-        }
-#endif
-
         glyphquad._primitives[0]->draw(state, usingVertexBufferObjects);
     }
 }
@@ -1836,35 +1796,11 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
 
 Text::GlyphQuads::GlyphQuads()
 {
-    initGlyphQuads();
 }
 
 Text::GlyphQuads::GlyphQuads(const GlyphQuads&)
 {
-    initGlyphQuads();
 }
-
-void Text::GlyphQuads::initGlyphQuads()
-{
-#ifndef NEW_APPROACH
-    _primitives.push_back(new DrawElementsUShort(PrimitiveSet::TRIANGLES));
-#endif
-}
-
-void Text::GlyphQuads::initGPUBufferObjects()
-{
-#ifndef NEW_APPROACH
-    // TODO... Need to set up to shade EBO's correctly.
-    osg::ref_ptr<osg::ElementBufferObject> ebo = new osg::ElementBufferObject();
-    for(Primitives::iterator itr = _primitives.begin();
-        itr != _primitives.end();
-        ++itr)
-    {
-        (*itr)->setElementBufferObject(ebo.get());
-    }
-#endif
-}
-
 
 void Text::GlyphQuads::resizeGLObjectBuffers(unsigned int maxSize)
 {
@@ -1874,8 +1810,6 @@ void Text::GlyphQuads::resizeGLObjectBuffers(unsigned int maxSize)
     {
         (*itr)->resizeGLObjectBuffers(maxSize);
     }
-
-    // initGPUBufferObjects();
 }
 
 void Text::GlyphQuads::releaseGLObjects(osg::State* state) const

@@ -282,9 +282,7 @@ protected:
 
     void initArraysAndBuffers();
 
-#ifdef NEW_APPROACH
     osg::VertexArrayState* createVertexArrayState(osg::RenderInfo& renderInfo) const;
-#endif
 
     bool computeMatrix(osg::Matrix& matrix, osg::State* state=0) const;
 

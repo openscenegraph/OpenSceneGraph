@@ -103,11 +103,8 @@ void TextBase::initArraysAndBuffers()
     _texcoords->setBufferObject(_vbo.get());
 }
 
-#ifdef NEW_APPROACH
 osg::VertexArrayState* TextBase::createVertexArrayState(osg::RenderInfo& renderInfo) const
 {
-    OSG_NOTICE<<"TextBase::createVertexArrayState()"<<std::endl;
-
     State& state = *renderInfo.getState();
 
     VertexArrayState* vas = new osg::VertexArrayState(&state);
@@ -122,18 +119,17 @@ osg::VertexArrayState* TextBase::createVertexArrayState(osg::RenderInfo& renderI
 
     if (state.useVertexArrayObject(_useVertexArrayObject))
     {
-        OSG_NOTICE<<"  Setup VertexArrayState to use VAO "<<vas<<std::endl;
+        OSG_INFO<<"TextBase::createVertexArrayState() Setup VertexArrayState to use VAO "<<vas<<std::endl;
 
         vas->generateVertexArrayObject();
     }
     else
     {
-        OSG_NOTICE<<"  Setup VertexArrayState to without using VAO "<<vas<<std::endl;
+        OSG_INFO<<"TextBase::createVertexArrayState() Setup VertexArrayState to without using VAO "<<vas<<std::endl;
     }
 
     return vas;
 }
-#endif
 
 void TextBase::compileGLObjects(osg::RenderInfo& renderInfo) const
 {

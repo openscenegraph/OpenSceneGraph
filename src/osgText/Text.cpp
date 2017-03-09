@@ -1122,7 +1122,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
 
     state.Normal(_normal.x(), _normal.y(), _normal.z());
 
-    VertexArrayState* vas = state.getCurrentVertexArrayState();
+    osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
     bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
     bool requiresSetArrays = !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();
 
@@ -1232,12 +1232,13 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
             renderWithDelayedDepthWrites(state,colorMultiplier);
         }
 
-        if (!usingVertexArrayObjects)
-        {
-            // unbind the VBO's if any are used.
-            vas->unbindVertexBufferObject();
-            vas->unbindElementBufferObject();
-        }
+    }
+
+    if (!usingVertexArrayObjects)
+    {
+        // unbind the VBO's if any are used.
+        vas->unbindVertexBufferObject();
+        vas->unbindElementBufferObject();
     }
 
     if (needToApplyMatrix)

@@ -858,12 +858,15 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
     drawPrimitivesImplementation(renderInfo);
 
-    if (renderInfo.getState()->useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects) &&
-       (!state.useVertexArrayObject(_useVertexArrayObject) || state.getCurrentVertexArrayState()->getRequiresSetArrays()))
+    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
+    bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
+
+    if (usingVertexBufferObjects && !usingVertexArrayObjects)
     {
         // unbind the VBO's if any are used.
-        state.unbindVertexBufferObject();
-        state.unbindElementBufferObject();
+        osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
+        vas->unbindVertexBufferObject();
+        vas->unbindElementBufferObject();
     }
 
     if (checkForGLErrors) state.checkGLErrors("end of Geometry::drawImplementation().");

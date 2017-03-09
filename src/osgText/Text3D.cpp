@@ -499,13 +499,17 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
         // OSG_NOTICE<<"No need to apply matrix "<<std::endl;
     }
 
+    osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
+    bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
+    bool requiresSetArrays = !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();
 
-    state.lazyDisablingOfVertexAttributes();
-
-    state.setVertexPointer(_coords.get());
-    state.setNormalPointer(_normals.get());
-
-    state.applyDisablingOfVertexAttributes();
+    if (requiresSetArrays)
+    {
+        vas->lazyDisablingOfVertexAttributes();
+        vas->setVertexArray(state, _coords.get());
+        vas->setNormalArray(state, _normals.get());
+        vas->applyDisablingOfVertexAttributes(state);
+    }
 
     if ((_drawMode&(~TEXT))!=0)
     {
@@ -557,6 +561,13 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
         {
             (*itr)->draw(state, usingVertexBufferObjects);
         }
+    }
+
+    if (!usingVertexArrayObjects)
+    {
+        // unbind the VBO's if any are used.
+        vas->unbindVertexBufferObject();
+        vas->unbindElementBufferObject();
     }
 
     if (needToApplyMatrix)

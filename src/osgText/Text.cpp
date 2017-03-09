@@ -280,7 +280,27 @@ void Text::computeGlyphRepresentation()
     if (!_texcoords) { _texcoords = new osg::Vec2Array(osg::Array::BIND_PER_VERTEX); _texcoords->setBufferObject(_vbo.get()); }
     else _texcoords->clear();
 
+#if 0
     _textureGlyphQuadMap.clear();
+#else
+    for(TextureGlyphQuadMap::iterator itr = _textureGlyphQuadMap.begin();
+        itr != _textureGlyphQuadMap.end();
+        ++itr)
+    {
+        GlyphQuads& glyphquads = itr->second;
+        glyphquads._glyphs.clear();
+        for(Primitives::iterator pitr = glyphquads._primitives.begin();
+            pitr != glyphquads._primitives.end();
+            ++pitr)
+        {
+            (*pitr)->clear();
+            (*pitr)->dirty();
+        }
+    }
+#endif
+
+
+
     _lineCount = 0;
 
     if (_text.empty())
@@ -1113,11 +1133,11 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
     state.Normal(_normal.x(), _normal.y(), _normal.z());
 
 #ifdef NEW_APPROACH
-    bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
 
     VertexArrayState* vas = state.getCurrentVertexArrayState();
+    bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
+    bool requiresSetArrays = !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();
 
-    bool requiresSetArrays = !usingVertexArrayObjects || vas->getRequiresSetArrays();
     if (requiresSetArrays)
     {
         vas->lazyDisablingOfVertexAttributes();
@@ -1233,11 +1253,11 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
         }
 
 #ifdef NEW_APPROACH
-        if (!usingVertexArrayObjects && !requiresSetArrays)
+        if (!usingVertexArrayObjects)
         {
             // unbind the VBO's if any are used.
-            state.unbindVertexBufferObject();
-            state.unbindElementBufferObject();
+            vas->unbindVertexBufferObject();
+            vas->unbindElementBufferObject();
         }
 #else
         // unbind the VBO's if any are used.
@@ -1378,20 +1398,17 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
     if (coords.valid() && !coords->empty())
     {
 #ifdef NEW_APPROACH
-        bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
-
         VertexArrayState* vas = state.getCurrentVertexArrayState();
+        bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
+        bool requiresSetArrays = !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();
 
         if(_colorGradientMode == SOLID)
         {
-            OSG_NOTICE<<"   Text::drawForegroundText() vas->disableColorArray(state);"<<std::endl;
             vas->disableColorArray(state);
             state.Color(colorMultiplier.r()*_color.r(),colorMultiplier.g()*_color.g(),colorMultiplier.b()*_color.b(),colorMultiplier.a()*_color.a());
         }
         else
         {
-            bool requiresSetArrays = !usingVertexArrayObjects || vas->getRequiresSetArrays();
-            OSG_NOTICE<<"   Text::drawForegroundText() "<<requiresSetArrays<<"vas->setColorArray(state, colors.get())"<<std::endl;
             if (requiresSetArrays)
             {
                 vas->setColorArray(state, colors.get());

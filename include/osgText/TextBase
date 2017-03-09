@@ -22,7 +22,7 @@
 
 namespace osgText {
 
-//#define NEW_APPROACH
+#define NEW_APPROACH
 
 class OSGTEXT_EXPORT TextBase : public osg::Drawable
 {

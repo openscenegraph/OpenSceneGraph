@@ -128,7 +128,7 @@ osg::VertexArrayState* TextBase::createVertexArrayState(osg::RenderInfo& renderI
     }
     else
     {
-        // OSG_NOTICE<<"  Setup VertexArrayState to without using VAO "<<vas<<std::endl;
+        OSG_NOTICE<<"  Setup VertexArrayState to without using VAO "<<vas<<std::endl;
     }
 
     return vas;

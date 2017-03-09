@@ -1184,6 +1184,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         frameRateValue->setCharacterSize(_characterSize);
         frameRateValue->setPosition(pos);
         frameRateValue->setText("0.0");
+        frameRateValue->setDataVariance(osg::Object::DYNAMIC);
 
         frameRateValue->setDrawCallback(new AveragedValueTextDrawCallback(viewer->getViewerStats(),"Frame rate",-1, true, 1.0));
 
@@ -1382,6 +1383,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 averageValue->setCharacterSize(_characterSize);
                 averageValue->setPosition(pos);
                 averageValue->setText("1000");
+                averageValue->setDataVariance(osg::Object::DYNAMIC);
 
                 pos.x() = averageValue->getBoundingBox().xMax() + 2.0f*_characterSize;
 
@@ -1405,6 +1407,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 minValue->setCharacterSize(_characterSize);
                 minValue->setPosition(pos);
                 minValue->setText("1000");
+                minValue->setDataVariance(osg::Object::DYNAMIC);
 
                 pos.x() = minValue->getBoundingBox().xMax() + 2.0f*_characterSize;
 
@@ -1427,6 +1430,8 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 maxValue->setCharacterSize(_characterSize);
                 maxValue->setPosition(pos);
                 maxValue->setText("1000");
+                maxValue->setDataVariance(osg::Object::DYNAMIC);
+
 
                 pos.x() = maxValue->getBoundingBox().xMax();
 
@@ -1449,6 +1454,8 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 requestList->setCharacterSize(_characterSize);
                 requestList->setPosition(pos);
                 requestList->setText("0");
+                requestList->setDataVariance(osg::Object::DYNAMIC);
+
 
                 pos.x() = requestList->getBoundingBox().xMax() + 2.0f*_characterSize;;
 
@@ -1471,6 +1478,8 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 compileList->setCharacterSize(_characterSize);
                 compileList->setPosition(pos);
                 compileList->setText("0");
+                compileList->setDataVariance(osg::Object::DYNAMIC);
+
 
                 pos.x() = maxLabel->getBoundingBox().xMax();
 
@@ -1555,6 +1564,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             camStatsText->setCharacterSize(_characterSize);
             camStatsText->setPosition(pos);
             camStatsText->setText("");
+            camStatsText->setDataVariance(osg::Object::DYNAMIC);
             camStatsText->setDrawCallback(new CameraSceneStatsTextDrawCallback(*citr, cameraCounter));
 
             // Move camera block to the right
@@ -1628,6 +1638,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             text->setFont(_font);
             text->setCharacterSize(_characterSize);
             text->setPosition(pos);
+            text->setDataVariance(osg::Object::DYNAMIC);
             text->setDrawCallback(new ViewSceneStatsTextDrawCallback(*it, viewCounter));
 
             pos.x() += 10 * _characterSize + 2 * backgroundMargin + backgroundSpacing;
@@ -1661,6 +1672,7 @@ void StatsHandler::createTimeStatsLine(const std::string& lineLabel,
     value->setCharacterSize(_characterSize);
     value->setPosition(pos);
     value->setText("0.0");
+    value->setDataVariance(osg::Object::DYNAMIC);
 
     if (!timeTakenName.empty())
     {

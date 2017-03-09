@@ -475,7 +475,6 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
 {
     osg::State & state = *renderInfo.getState();
 
-    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
 
     // ** save the previous modelview matrix
     osg::Matrix previous_modelview(state.getModelViewMatrix());
@@ -500,6 +499,7 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
     }
 
     osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
+    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
     bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
     bool requiresSetArrays = !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();
 

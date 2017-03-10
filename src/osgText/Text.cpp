@@ -637,14 +637,11 @@ void Text::computeBackdropPositions()
 
     float avg_width = 0.0f;
     float avg_height = 0.0f;
-    unsigned int i;
-    bool is_valid_size;
 
     // FIXME: OPTIMIZE: This function produces the same value regardless of contextID.
     // Since we tend to loop over contextID, we should cache this value some how
     // instead of recomputing it each time.
-    is_valid_size = computeAverageGlyphWidthAndHeight(avg_width, avg_height);
-
+    bool is_valid_size = computeAverageGlyphWidthAndHeight(avg_width, avg_height);
     if (!is_valid_size) return;
 
     unsigned int backdrop_index;
@@ -652,8 +649,8 @@ void Text::computeBackdropPositions()
     if(_backdropType == OUTLINE)
     {
         // For outline, we want to draw the in every direction
-        backdrop_index = 0;
-        max_backdrop_index = 8;
+        backdrop_index = 1;
+        max_backdrop_index = backdrop_index+8;
     }
     else
     {
@@ -667,8 +664,8 @@ void Text::computeBackdropPositions()
         // the index in the array I want to store the coordinates
         // in. So I'll just setup the for-loop so it only does
         // the one direction I'm interested in.
-        backdrop_index = _backdropType;
-        max_backdrop_index = _backdropType+1;
+        backdrop_index = _backdropType+1;
+        max_backdrop_index = backdrop_index+1;
     }
 
     for( ; backdrop_index < max_backdrop_index; backdrop_index++)
@@ -738,10 +735,18 @@ void Text::computeBackdropPositions()
             ++titr)
         {
             GlyphQuads& glyphquad = titr->second;
+
             osg::DrawElementsUShort* src_primitives = glyphquad._primitives[0].get();
-            osg::DrawElementsUShort* dst_primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
-            dst_primitives->setBufferObject(src_primitives->getBufferObject());
-            glyphquad._primitives.push_back(dst_primitives);
+
+            for(unsigned int i=glyphquad._primitives.size(); i<=backdrop_index; ++i)
+            {
+                osg::DrawElementsUShort* dst_primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
+                dst_primitives->setBufferObject(src_primitives->getBufferObject());
+                glyphquad._primitives.push_back(dst_primitives);
+            }
+
+            osg::DrawElementsUShort* dst_primitives = glyphquad._primitives[backdrop_index].get();
+            dst_primitives->clear();
 
             unsigned int numCoords = src_primitives->size();
 
@@ -751,7 +756,7 @@ void Text::computeBackdropPositions()
             Coords& dst_coords = _coords;
             TexCoords& dst_texcoords = _texcoords;
 
-            for(i=0;i<numCoords;++i)
+            for(unsigned int i=0;i<numCoords;++i)
             {
                 unsigned int si = (*src_primitives)[i];
                 osg::Vec3 v(horizontal_shift_direction * _backdropHorizontalOffset * avg_width + (*src_coords)[si].x(), vertical_shift_direction * _backdropVerticalOffset * avg_height + (*src_coords)[si].y(), 0.0f);
@@ -1388,6 +1393,7 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
                 vas->setColorArray(state, colors.get());
             }
         }
+
         glyphquad._primitives[0]->draw(state, usingVertexBufferObjects);
     }
 }
@@ -1484,6 +1490,7 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
 #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
 
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
+    VertexArrayState* vas = state.getCurrentVertexArrayState();
 
     if (!osg::PolygonOffset::areFactorAndUnitsMultipliersSet())
     {
@@ -1518,12 +1525,15 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
 
         if (max_backdrop_index>glyphquad._primitives.size()) max_backdrop_index=glyphquad._primitives.size();
 
-        state.disableColorPointer();
+        vas->disableColorArray(state);
         state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
-            glPolygonOffset(0.1f * osg::PolygonOffset::getFactorMultiplier(), osg::PolygonOffset::getUnitsMultiplier() * (max_backdrop_index-backdrop_index) );
+            float factor = 0.1f * osg::PolygonOffset::getFactorMultiplier();
+            float units = 10.0f * float((max_backdrop_index-backdrop_index)) * osg::PolygonOffset::getUnitsMultiplier();
+            glPolygonOffset(factor, units);
+
             glyphquad._primitives[backdrop_index]->draw(state, usingVertexBufferObjects);
         }
 

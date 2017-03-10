@@ -1379,7 +1379,6 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
     {
         VertexArrayState* vas = state.getCurrentVertexArrayState();
         bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
-        bool requiresSetArrays = !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();
 
         if(_colorGradientMode == SOLID)
         {
@@ -1388,6 +1387,7 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
         }
         else
         {
+            bool requiresSetArrays = (_backdropType!=NONE) || !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();
             if (requiresSetArrays)
             {
                 vas->setColorArray(state, colors.get());

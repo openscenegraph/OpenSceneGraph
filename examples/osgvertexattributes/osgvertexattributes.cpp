@@ -98,7 +98,7 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
 
 #if 1
             // replace built in uniform
-            replaceBuiltInUniform(source, "gl_ModelViewMatrix", "osg_ModeViewMatrix", "uniform mat4 ");
+            replaceBuiltInUniform(source, "gl_ModelViewMatrix", "osg_ModelViewMatrix", "uniform mat4 ");
             replaceBuiltInUniform(source, "gl_ModelViewProjectionMatrix", "osg_ModelViewProjectionMatrix", "uniform mat4 ");
             replaceBuiltInUniform(source, "gl_ProjectionMatrix", "osg_ProjectionMatrix", "uniform mat4 ");
 #endif

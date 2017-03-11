@@ -820,7 +820,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
 
             State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 
-            vas->bindVertexArrayObject();
+            state.bindVertexArrayObject();
 
             drawVertexArraysImplementation(renderInfo);
         }

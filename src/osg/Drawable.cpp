@@ -642,7 +642,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
 
         State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 
-        vas->bindVertexArrayObject();
+        state.bindVertexArrayObject();
 
         drawInner(renderInfo);
 
@@ -652,7 +652,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
     }
 
     // TODO, add check against whether VAO is active and supported
-    if (state.getCurrentVertexArrayState()) state.getCurrentVertexArrayState()->bindVertexArrayObject();
+    if (state.getCurrentVertexArrayState()) state.bindVertexArrayObject();
 
 
 #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE

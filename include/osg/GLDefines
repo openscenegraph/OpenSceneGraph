@@ -660,10 +660,6 @@ typedef char GLchar;
     #define GL_ALPHA_TEST 0x0BC0
 #endif
 
-#ifndef GLuint64EXT
-    typedef uint64_t GLuint64EXT;
-#endif
-
 namespace osg
 {
     #ifndef GL_VERSION_3_2

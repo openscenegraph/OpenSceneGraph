@@ -364,11 +364,11 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glUniformMatrix4x3dv)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
         void (GL_APIENTRY * glGetActiveAtomicCounterBufferiv)( GLuint program, GLuint bufferIndex, GLenum pname, GLint* params );
         void (GL_APIENTRY * glDispatchCompute)( GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ );
-        GLuint64EXT (GL_APIENTRY* glGetTextureHandle)(GLint texture);
-        void        (GL_APIENTRY* glMakeTextureHandleResident)(GLuint64EXT handle);
-        void        (GL_APIENTRY* glMakeTextureHandleNonResident)(GLuint64EXT handle);
-        void        (GL_APIENTRY* glUniformHandleui64)(GLint location, GLuint64EXT handle);
-        GLboolean   (GL_APIENTRY* glIsTextureHandleResident)(GLuint64EXT handle);
+        GLuint64 (GL_APIENTRY* glGetTextureHandle)(GLint texture);
+        void        (GL_APIENTRY* glMakeTextureHandleResident)(GLuint64 handle);
+        void        (GL_APIENTRY* glMakeTextureHandleNonResident)(GLuint64 handle);
+        void        (GL_APIENTRY* glUniformHandleui64)(GLint location, GLuint64 handle);
+        GLboolean   (GL_APIENTRY* glIsTextureHandleResident)(GLuint64 handle);
 
         // Buffer Object extensions
         bool isBufferObjectSupported;

@@ -16,41 +16,42 @@ IF(PKG_CONFIG_FOUND)
 
     PKG_CHECK_MODULES(GTA gta)
 
-ELSE(PKG_CONFIG_FOUND)
-
-FIND_PATH(GTA_INCLUDE_DIRS gta/gta.hpp
-    $ENV{GTA_DIR}/include
-    $ENV{GTA_DIR}
-    ~/Library/Frameworks
-    /Library/Frameworks
-    /usr/local/include
-    /usr/include
-    /sw/include # Fink
-    /opt/local/include # DarwinPorts
-    /opt/csw/include # Blastwave
-    /opt/include
-    /usr/freeware/include
-)
-
-FIND_LIBRARY(GTA_LIBRARIES 
-    NAMES gta libgta
-    PATHS
-    $ENV{GTA_DIR}/lib
-    $ENV{GTA_DIR}
-    ~/Library/Frameworks
-    /Library/Frameworks
-    /usr/local/lib
-    /usr/lib
-    /sw/lib
-    /opt/local/lib
-    /opt/csw/lib
-    /opt/lib
-    /usr/freeware/lib64
-)
-
-SET(GTA_FOUND "NO")
-IF(GTA_LIBRARIES AND GTA_INCLUDE_DIRS)
-    SET(GTA_FOUND "YES")
-ENDIF(GTA_LIBRARIES AND GTA_INCLUDE_DIRS)
-
 ENDIF(PKG_CONFIG_FOUND)
+
+IF(NOT GTA_FOUND)
+    FIND_PATH(GTA_INCLUDE_DIRS gta/gta.hpp
+        $ENV{GTA_DIR}/include
+        $ENV{GTA_DIR}
+        ~/Library/Frameworks
+        /Library/Frameworks
+        /usr/local/include
+        /usr/include
+        /sw/include # Fink
+        /opt/local/include # DarwinPorts
+        /opt/csw/include # Blastwave
+        /opt/include
+        /usr/freeware/include
+    )
+    
+    FIND_LIBRARY(GTA_LIBRARY
+        NAMES gta libgta
+        PATHS
+        $ENV{GTA_DIR}/lib
+        $ENV{GTA_DIR}
+        ~/Library/Frameworks
+        /Library/Frameworks
+        /usr/local/lib
+        /usr/lib
+        /sw/lib
+        /opt/local/lib
+        /opt/csw/lib
+        /opt/lib
+        /usr/freeware/lib64
+    )
+    
+    SET(GTA_FOUND "NO")
+    IF(GTA_LIBRARY AND GTA_INCLUDE_DIRS)
+        SET(GTA_FOUND "YES")
+    ENDIF(GTA_LIBRARY AND GTA_INCLUDE_DIRS)
+
+ENDIF(NOT GTA_FOUND)

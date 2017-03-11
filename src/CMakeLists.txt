@@ -26,15 +26,16 @@ FOREACH( mylibfolder
         osgTerrain
         osgWidget
         osgPresentation
+        osgWrappers/serializers
+        osgPlugins
     )
 
     ADD_SUBDIRECTORY(${mylibfolder})
 
 ENDFOREACH()
 
-IF(BUILD_OSG_PLUGINS)
-    ADD_SUBDIRECTORY(osgWrappers/serializers)
-    ADD_SUBDIRECTORY(osgWrappers/deprecated-dotosg)
-    ADD_SUBDIRECTORY(osgPlugins)
-ENDIF(BUILD_OSG_PLUGINS)
+OPTION(BUILD_OSG_DEPRECATED_SERIALIZERS "Build deprecated .osg serializers" ON)
 
+if(BUILD_OSG_DEPRECATED_SERIALIZERS)
+    ADD_SUBDIRECTORY(osgWrappers/deprecated-dotosg)
+endif()

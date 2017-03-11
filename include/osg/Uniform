@@ -439,6 +439,9 @@ class OSG_EXPORT Uniform : public Object
             BOOL_VEC3 = GL_BOOL_VEC3,
             BOOL_VEC4 = GL_BOOL_VEC4,
 
+            INT64            = GL_INT64_ARB,
+            UNSIGNED_INT64   = GL_UNSIGNED_INT64_ARB,
+
             FLOAT_MAT2   = GL_FLOAT_MAT2,
             FLOAT_MAT3   = GL_FLOAT_MAT3,
             FLOAT_MAT4   = GL_FLOAT_MAT4,
@@ -603,6 +606,8 @@ class OSG_EXPORT Uniform : public Object
         explicit Uniform( const char* name, int i );
         explicit Uniform( const char* name, unsigned int ui );
         explicit Uniform( const char* name, bool b );
+        explicit Uniform( const char* name, unsigned long long ull);
+        explicit Uniform( const char* name, long long ll );
         Uniform( const char* name, const osg::Vec2& v2 );
         Uniform( const char* name, const osg::Vec3& v3 );
         Uniform( const char* name, const osg::Vec4& v4 );
@@ -679,6 +684,8 @@ class OSG_EXPORT Uniform : public Object
         bool set( int i );
         bool set( unsigned int ui );
         bool set( bool b );
+        bool set( unsigned long long ull );
+        bool set( long long ll );
         bool set( const osg::Vec2& v2 );
         bool set( const osg::Vec3& v3 );
         bool set( const osg::Vec4& v4 );
@@ -719,6 +726,8 @@ class OSG_EXPORT Uniform : public Object
         bool get( int& i ) const;
         bool get( unsigned int& ui ) const;
         bool get( bool& b ) const;
+        bool get( unsigned long long & ull ) const;
+        bool get( long long& ll ) const;
         bool get( osg::Vec2& v2 ) const;
         bool get( osg::Vec3& v3 ) const;
         bool get( osg::Vec4& v4 ) const;
@@ -759,6 +768,8 @@ class OSG_EXPORT Uniform : public Object
         bool setElement( unsigned int index, int i );
         bool setElement( unsigned int index, unsigned int ui );
         bool setElement( unsigned int index, bool b );
+        bool setElement( unsigned int index, unsigned long long  ull );
+        bool setElement( unsigned int index, long long ll );
         bool setElement( unsigned int index, const osg::Vec2& v2 );
         bool setElement( unsigned int index, const osg::Vec3& v3 );
         bool setElement( unsigned int index, const osg::Vec4& v4 );
@@ -799,6 +810,8 @@ class OSG_EXPORT Uniform : public Object
         bool getElement( unsigned int index, int& i ) const;
         bool getElement( unsigned int index, unsigned int& ui ) const;
         bool getElement( unsigned int index, bool& b ) const;
+        bool getElement( unsigned int index, unsigned long long & ull ) const;
+        bool getElement( unsigned int index, long long& ll ) const;
         bool getElement( unsigned int index, osg::Vec2& v2 ) const;
         bool getElement( unsigned int index, osg::Vec3& v3 ) const;
         bool getElement( unsigned int index, osg::Vec4& v4 ) const;
@@ -866,7 +879,8 @@ class OSG_EXPORT Uniform : public Object
         bool setArray( DoubleArray* array );
         bool setArray( IntArray* array );
         bool setArray( UIntArray* array );
-
+        bool setArray( UInt64Array* array );
+        bool setArray( Int64Array* array );
         /** Get the internal data array for a float osg::Uniform. */
         FloatArray* getFloatArray() { return _floatArray.get(); }
         const FloatArray* getFloatArray() const { return _floatArray.get(); }
@@ -882,6 +896,14 @@ class OSG_EXPORT Uniform : public Object
         /** Get the internal data array for an unsigned int osg::Uniform. */
         UIntArray* getUIntArray() { return _uintArray.get(); }
         const UIntArray* getUIntArray() const { return _uintArray.get(); }
+
+        /** Get the internal data array for an unsigned int osg::Uniform. */
+        UInt64Array* getUInt64Array() { return _uint64Array.get(); }
+        const UInt64Array* getUInt64Array() const { return _uint64Array.get(); }
+
+        /** Get the internal data array for an unsigned int osg::Uniform. */
+        Int64Array* getInt64Array() { return _int64Array.get(); }
+        const Int64Array* getInt64Array() const { return _int64Array.get(); }
 
         inline void setModifiedCount(unsigned int mc) { _modifiedCount = mc; }
         inline unsigned int getModifiedCount() const { return _modifiedCount; }
@@ -922,6 +944,8 @@ class OSG_EXPORT Uniform : public Object
         ref_ptr<DoubleArray> _doubleArray;
         ref_ptr<IntArray>    _intArray;
         ref_ptr<UIntArray>   _uintArray;
+        ref_ptr<Int64Array>  _int64Array;
+        ref_ptr<UInt64Array> _uint64Array;
 
         ref_ptr<UniformCallback> _updateCallback;
         ref_ptr<UniformCallback> _eventCallback;

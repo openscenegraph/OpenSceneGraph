@@ -102,6 +102,8 @@ public:
     OutputStream& operator<<( unsigned long l ) { _out->writeULong(l); return *this; }
     OutputStream& operator<<( float f ) { _out->writeFloat(f); return *this; }
     OutputStream& operator<<( double d ) { _out->writeDouble(d); return *this; }
+    OutputStream& operator<<( long long ll ) { _out->writeInt64(ll); return *this; }
+    OutputStream& operator<<( unsigned long long ull ) { _out->writeUInt64(ull); return *this; }
     OutputStream& operator<<( const std::string& s ) { _out->writeString(s); return *this; }
     OutputStream& operator<<( const char* s ) { _out->writeString(s); return *this; }
     OutputStream& operator<<( std::ostream& (*fn)(std::ostream&) ) { _out->writeStream(fn); return *this; }

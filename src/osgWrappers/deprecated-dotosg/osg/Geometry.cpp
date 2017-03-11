@@ -995,6 +995,21 @@ bool Array_writeLocalData(const Array& array,Output& fw)
                 return true;
             }
             break;
+        case(Array::UInt64ArrayType):
+            {
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const UInt64Array::ElementDataType* base = static_cast<const UInt64Array::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()]);
+                return true;
+            }
+        case(Array::Int64ArrayType):
+            {
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const Int64Array::ElementDataType* base = static_cast<const Int64Array::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()]);
+                return true;
+            }
+            break;
         case(Array::ArrayType):
         default:
             return false;

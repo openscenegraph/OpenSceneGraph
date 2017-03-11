@@ -556,6 +556,14 @@ typedef char GLchar;
 #define GL_MAP_UNSYNCHRONIZED_BIT 0x0020
 #endif
 
+#define GL_INT64_ARB               0x140E 
+#define GL_UNSIGNED_INT64_ARB      0x140F 
+#define GL_INT64_VEC2_ARB          0x8FE9 
+#define GL_INT64_VEC3_ARB          0x8FEA 
+#define GL_INT64_VEC4_ARB          0x8FEB 
+#define GL_UNSIGNED_INT64_VEC2_ARB 0x8FF5 
+#define GL_UNSIGNED_INT64_VEC3_ARB 0x8FF6 
+#define GL_UNSIGNED_INT64_VEC4_ARB 0x8FF7 
 /* ------------------------------ GL_KHR_debug ----------------------------- */
 #ifndef GL_KHR_debug
 #define GL_KHR_debug 1
@@ -602,7 +610,6 @@ typedef char GLchar;
 #define GL_DEBUG_OUTPUT 0x92E0
 
 #endif /* GL_KHR_debug */
-
 #ifndef GL_ARB_sync
 #define GL_MAX_SERVER_WAIT_TIMEOUT        0x9111
 #define GL_OBJECT_TYPE                    0x9112
@@ -651,6 +658,10 @@ typedef char GLchar;
 
 #ifndef GL_ALPHA_TEST
     #define GL_ALPHA_TEST 0x0BC0
+#endif
+
+#ifndef GLuint64EXT
+    typedef uint64_t GLuint64EXT;
 #endif
 
 namespace osg

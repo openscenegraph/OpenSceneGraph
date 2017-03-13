@@ -886,19 +886,28 @@ osg::Geometry* StatsHandler::createGeometry(const osg::Vec3& pos, float height, 
     geometry->setVertexArray(vertices);
     vertices->reserve(numBlocks*4);
 
+    osg::DrawElementsUShort* primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
     for(unsigned int i=0; i<numBlocks; ++i)
     {
+        unsigned int vi = vertices->size();
         vertices->push_back(pos+osg::Vec3(i*20, height, 0.0));
         vertices->push_back(pos+osg::Vec3(i*20, 0.0, 0.0));
         vertices->push_back(pos+osg::Vec3(i*20+10.0, 0.0, 0.0));
         vertices->push_back(pos+osg::Vec3(i*20+10.0, height, 0.0));
+
+        primitives->push_back(vi);
+        primitives->push_back(vi+1);
+        primitives->push_back(vi+2);
+        primitives->push_back(vi);
+        primitives->push_back(vi+2);
+        primitives->push_back(vi+3);
     }
 
     osg::Vec4Array* colours = new osg::Vec4Array;
     colours->push_back(colour);
     geometry->setColorArray(colours, osg::Array::BIND_OVERALL);
 
-    geometry->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, numBlocks*4));
+    geometry->addPrimitiveSet(primitives);
 
     return geometry;
 }

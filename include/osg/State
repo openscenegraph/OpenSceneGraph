@@ -563,7 +563,7 @@ class OSG_EXPORT State : public Referenced
 
 
         void setCurrentPixelBufferObject(osg::GLBufferObject* pbo) { _currentPBO = pbo; }
-        const GLBufferObject* getCurrentPixelBufferObject() { return _currentPBO; }
+        const GLBufferObject* getCurrentPixelBufferObject() const { return _currentPBO; }
 
         inline void bindPixelBufferObject(osg::GLBufferObject* pbo)
         {
@@ -589,6 +589,17 @@ class OSG_EXPORT State : public Referenced
             _glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB,0);
             _currentPBO = 0;
         }
+
+
+        void setCurrentVertexArrayObject(GLuint vao) { _currentVAO = vao; }
+        GLuint getCurrentVertexArrayObject() const { return _currentVAO; }
+
+        inline void bindVertexArrayObject(const VertexArrayState* vas) { bindVertexArrayObject(vas->getVertexArrayObject()); }
+
+        inline void bindVertexArrayObject(GLuint vao) { if (_currentVAO!=vao) { _glExtensions->glBindVertexArray(vao); _currentVAO = vao; } }
+
+        inline void unbindVertexArrayObject() { if (_currentVAO!=0) { _glExtensions->glBindVertexArray(0); _currentVAO = 0; } }
+
 
         typedef std::vector<GLushort> IndicesGLushort;
         IndicesGLushort _quadIndicesGLushort[4];
@@ -1248,6 +1259,7 @@ class OSG_EXPORT State : public Referenced
         unsigned int                    _currentActiveTextureUnit;
         unsigned int                    _currentClientActiveTextureUnit;
         GLBufferObject*                 _currentPBO;
+        GLuint                          _currentVAO;
 
 
         inline ModeMap& getOrCreateTextureModeMap(unsigned int unit)

@@ -70,6 +70,27 @@ static const char *gl3TextFragmentShader = {
 #endif
 
 
+static const char* vertexShader = {
+    "varying vec2 texCoord;\n"
+    "varying vec4 vertexColor;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+    "    texCoord = gl_MultiTexCoord0.xy;\n"
+    "    vertexColor = gl_Color; \n"
+    "}\n"
+};
+
+static const char* fragmentShader = {
+    "uniform sampler2D glyphTexture;\n"
+    "varying vec2 texCoord;\n"
+    "varying vec4 vertexColor;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_FragColor = vertexColor * texture(glyphTexture, texCoord).aaaa;\n"
+    "}\n"
+};
+
 osg::Group* createHUDText()
 {
 
@@ -832,6 +853,21 @@ int main(int argc, char** argv)
         // set the scene to render
         viewer.setSceneData(group);
     }
+
+    if (arguments.read("--shaders"))
+    {
+        osg::ref_ptr<osg::Program> program = new osg::Program;
+        program->addShader(new osg::Shader(osg::Shader::VERTEX, vertexShader));
+        program->addShader(new osg::Shader(osg::Shader::FRAGMENT, fragmentShader));
+
+        osg::ref_ptr<osg::Node> root = viewer.getSceneData();
+        osg::ref_ptr<osg::StateSet> ss = root->getOrCreateStateSet();
+
+        ss->setAttribute(program.get());
+        ss->addUniform(new osg::Uniform("glyphTexture", 0));
+
+    }
+
 
     std::string filename;
     if (arguments.read("-o",filename))

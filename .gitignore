@@ -78,3 +78,9 @@ PlatformSpecifics/Windows/*.rc
 # Visual Studio - Browsing Database File
 *.sdf
 *.opensdf
+
+#osx xcode
+DerivedData/
+*.DS_Store
+*.build
+*.xcodeproj

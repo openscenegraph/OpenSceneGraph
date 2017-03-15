@@ -172,13 +172,13 @@
     #define GL_NONE 0x0
 #endif
 
-#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
     //GLES defines (OES)
     #define GL_RGB8_OES                                             0x8051
     #define GL_RGBA8_OES                                            0x8058
 #endif
 
-#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GL3_AVAILABLE)
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE) || defined(OSG_GL3_AVAILABLE)
     #define GL_POLYGON                         0x0009
     #define GL_QUADS                           0x0007
     #define GL_QUAD_STRIP                      0x0008

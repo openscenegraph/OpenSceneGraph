@@ -519,7 +519,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             {
                 setDrawBuffer( GL_NONE, true );
                 setReadBuffer( GL_NONE, true );
-                #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+                #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
                     glDrawBuffer( GL_NONE );
                     glReadBuffer( GL_NONE );
                 #endif
@@ -911,7 +911,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
 
     if (!using_multiple_render_targets)
     {
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
 
             if( getDrawBufferApplyMask() )
                 glDrawBuffer(_drawBuffer);
@@ -997,7 +997,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
                 blitMask, GL_NEAREST);
         }
 
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
         if (needToBlitColorBuffers)
         {
             for (FrameBufferObject::AttachmentMap::const_iterator
@@ -1349,7 +1349,7 @@ void RenderStage::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& pr
 
     if (_clearMask & GL_DEPTH_BUFFER_BIT)
     {
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
             glClearDepth( _clearDepth);
         #else
             glClearDepthf( _clearDepth);
@@ -1366,7 +1366,7 @@ void RenderStage::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& pr
         state.haveAppliedAttribute( osg::StateAttribute::STENCIL );
     }
 
-    #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+    #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
         if (_clearMask & GL_ACCUM_BUFFER_BIT)
         {
             glClearAccum( _clearAccum[0], _clearAccum[1], _clearAccum[2], _clearAccum[3]);

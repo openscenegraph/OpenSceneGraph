@@ -129,7 +129,7 @@ void Texture1D::setImage(Image* image)
 
 void Texture1D::apply(State& state) const
 {
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
     // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
@@ -267,7 +267,7 @@ void Texture1D::computeInternalFormat() const
 
 void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& numMipmapLevels) const
 {
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
     // if we don't have a valid image we can't create a texture!
     if (!image || !image->data())
         return;
@@ -378,7 +378,7 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
 
 void Texture1D::copyTexImage1D(State& state, int x, int y, int width)
 {
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
     const unsigned int contextID = state.getContextID();
 
     // get the texture object for the current contextID.
@@ -435,7 +435,7 @@ void Texture1D::copyTexImage1D(State& state, int x, int y, int width)
 
 void Texture1D::copyTexSubImage1D(State& state, int xoffset, int x, int y, int width)
 {
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
     const unsigned int contextID = state.getContextID();
 
     // get the texture object for the current contextID.
@@ -467,7 +467,7 @@ void Texture1D::copyTexSubImage1D(State& state, int xoffset, int x, int y, int w
 
 void Texture1D::allocateMipmap(State& state) const
 {
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
     const unsigned int contextID = state.getContextID();
 
     // get the texture object for the current contextID.

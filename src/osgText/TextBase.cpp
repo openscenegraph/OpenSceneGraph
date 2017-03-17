@@ -696,13 +696,21 @@ void TextBase::setupDecoration()
 
     if (numVerticesRequired==0) return;
 
-    Coords& coords = _coords;
-    if (!coords)
+    if (!_coords)
     {
-        coords = new osg::Vec3Array;
-        coords->setBufferObject(_vbo.get());
-        coords->resize(numVerticesRequired);
+        _coords = new osg::Vec3Array;
+        _coords->setBufferObject(_vbo.get());
+        _coords->resize(numVerticesRequired);
     }
+
+    if (!_texcoords)
+    {
+        _texcoords = new osg::Vec2Array;
+        _texcoords->setBufferObject(_vbo.get());
+        _texcoords->resize(numVerticesRequired);
+    }
+
+    osg::Vec2 default_texcoord(-1.0, -1.0);
 
     if ((_drawMode & FILLEDBOUNDINGBOX)!=0 && _textBB.valid())
     {
@@ -711,12 +719,17 @@ void TextBase::setupDecoration()
         osg::Vec3 c110(_textBB.xMax(),_textBB.yMax(),_textBB.zMin());
         osg::Vec3 c010(_textBB.xMin(),_textBB.yMax(),_textBB.zMin());
 
-        unsigned int base = coords->size();
+        unsigned int base = _coords->size();
 
-        coords->push_back(c000);
-        coords->push_back(c100);
-        coords->push_back(c110);
-        coords->push_back(c010);
+        _coords->push_back(c000);
+        _coords->push_back(c100);
+        _coords->push_back(c110);
+        _coords->push_back(c010);
+
+        _texcoords->push_back(default_texcoord);
+        _texcoords->push_back(default_texcoord);
+        _texcoords->push_back(default_texcoord);
+        _texcoords->push_back(default_texcoord);
 
         osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
         primitives->setBufferObject(_ebo.get());
@@ -729,7 +742,7 @@ void TextBase::setupDecoration()
         primitives->push_back(base+2);
         primitives->push_back(base+3);
 
-        coords->dirty();
+        _coords->dirty();
         primitives->dirty();
     }
 
@@ -742,12 +755,18 @@ void TextBase::setupDecoration()
             osg::Vec3 c110(_textBB.xMax(),_textBB.yMax(),_textBB.zMin());
             osg::Vec3 c010(_textBB.xMin(),_textBB.yMax(),_textBB.zMin());
 
-            unsigned int base = coords->size();
+            unsigned int base = _coords->size();
 
-            coords->push_back(c000);
-            coords->push_back(c100);
-            coords->push_back(c110);
-            coords->push_back(c010);
+            _coords->push_back(c000);
+            _coords->push_back(c100);
+            _coords->push_back(c110);
+            _coords->push_back(c010);
+
+
+            _texcoords->push_back(default_texcoord);
+            _texcoords->push_back(default_texcoord);
+            _texcoords->push_back(default_texcoord);
+            _texcoords->push_back(default_texcoord);
 
             osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_LINE_LOOP);
             primitives->setBufferObject(_ebo.get());
@@ -758,7 +777,7 @@ void TextBase::setupDecoration()
             primitives->push_back(base+2);
             primitives->push_back(base+3);
 
-            coords->dirty();
+            _coords->dirty();
             primitives->dirty();
         }
         else
@@ -773,18 +792,27 @@ void TextBase::setupDecoration()
             osg::Vec3 c111(_textBB.xMax(),_textBB.yMax(),_textBB.zMax());
             osg::Vec3 c011(_textBB.xMin(),_textBB.yMax(),_textBB.zMax());
 
-            unsigned int base = coords->size();
+            unsigned int base = _coords->size();
 
-            coords->push_back(c000); // +0
-            coords->push_back(c100); // +1
-            coords->push_back(c110); // +2
-            coords->push_back(c010); // +3
+            _coords->push_back(c000); // +0
+            _coords->push_back(c100); // +1
+            _coords->push_back(c110); // +2
+            _coords->push_back(c010); // +3
 
-            coords->push_back(c001); // +4
-            coords->push_back(c101); // +5
-            coords->push_back(c111); // +6
-            coords->push_back(c011); // +7
+            _texcoords->push_back(default_texcoord);
+            _texcoords->push_back(default_texcoord);
+            _texcoords->push_back(default_texcoord);
+            _texcoords->push_back(default_texcoord);
 
+            _coords->push_back(c001); // +4
+            _coords->push_back(c101); // +5
+            _coords->push_back(c111); // +6
+            _coords->push_back(c011); // +7
+
+            _texcoords->push_back(default_texcoord);
+            _texcoords->push_back(default_texcoord);
+            _texcoords->push_back(default_texcoord);
+            _texcoords->push_back(default_texcoord);
 
             osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_LINES);
             primitives->setBufferObject(_ebo.get());
@@ -829,7 +857,7 @@ void TextBase::setupDecoration()
             primitives->push_back(base+3);
             primitives->push_back(base+7);
 
-            coords->dirty();
+            _coords->dirty();
             primitives->dirty();
         }
     }
@@ -843,12 +871,17 @@ void TextBase::setupDecoration()
         osg::Vec3 vt(osg::Vec3(_offset.x(),_offset.y()-cursorsize,_offset.z()));
         osg::Vec3 vb(osg::Vec3(_offset.x(),_offset.y()+cursorsize,_offset.z()));
 
-        unsigned int base = coords->size();
+        unsigned int base = _coords->size();
 
-        coords->push_back(hl);
-        coords->push_back(hr);
-        coords->push_back(vt);
-        coords->push_back(vb);
+        _coords->push_back(hl);
+        _coords->push_back(hr);
+        _coords->push_back(vt);
+        _coords->push_back(vb);
+
+        _texcoords->push_back(default_texcoord);
+        _texcoords->push_back(default_texcoord);
+        _texcoords->push_back(default_texcoord);
+        _texcoords->push_back(default_texcoord);
 
         osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_LINES);
         primitives->setBufferObject(_ebo.get());
@@ -861,7 +894,7 @@ void TextBase::setupDecoration()
         primitives->push_back(base+2);
         primitives->push_back(base+3);
 
-        coords->dirty();
+        _coords->dirty();
         primitives->dirty();
     }
 }

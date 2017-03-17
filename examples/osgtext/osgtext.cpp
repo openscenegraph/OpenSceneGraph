@@ -87,7 +87,8 @@ static const char* fragmentShader = {
     "varying vec4 vertexColor;\n"
     "void main(void)\n"
     "{\n"
-    "    gl_FragColor = vertexColor * texture(glyphTexture, texCoord).aaaa;\n"
+    "    if (texCoord.x>=0.0) gl_FragColor = vertexColor * vec4(1.0, 1.0, 1.0, texture(glyphTexture, texCoord).a);\n"
+    "    else gl_FragColor = vertexColor;\n"
     "}\n"
 };
 
@@ -710,12 +711,11 @@ struct TextCounterCallback : public osg::NodeCallback
     TextCounterCallback():
         _textCounter(100000) {}
 
-    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+    virtual void operator()(osg::Node* node, osg::NodeVisitor*)
     {
         osgText::Text* text = dynamic_cast<osgText::Text*>(node);
         if (text)
         {
-
             std::stringstream str;
             str <<"Text Counter "<<_textCounter<<std::endl;
             OSG_NOTICE<<"Udating text"<<str.str()<<std::endl;

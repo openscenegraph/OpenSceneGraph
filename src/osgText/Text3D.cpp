@@ -563,7 +563,7 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
         }
     }
 
-    if (!usingVertexArrayObjects)
+    if (usingVertexBufferObjects && !usingVertexArrayObjects)
     {
         // unbind the VBO's if any are used.
         vas->unbindVertexBufferObject();

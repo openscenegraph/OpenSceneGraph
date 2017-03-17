@@ -369,6 +369,9 @@ protected:
     void computeColorGradientsPerCharacter();
 
     void drawImplementation(osg::State& state, const osg::Vec4& colorMultiplier) const;
+
+    void drawImplementationSinglePass(osg::State& state, const osg::Vec4& colorMultiplier) const;
+
     void drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, const osg::Vec4& colorMultiplier) const;
     void drawTextWithBackdrop(osg::State& state, const osg::Vec4& colorMultiplier) const;
     void renderOnlyForegroundText(osg::State& state, const osg::Vec4& colorMultiplier) const;

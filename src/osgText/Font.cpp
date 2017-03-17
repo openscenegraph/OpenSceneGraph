@@ -241,6 +241,12 @@ Font::Font(FontImplementation* implementation):
     _texenv = new osg::TexEnv;
     _stateset = new osg::StateSet;
     _stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+    _stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    _stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+
+#if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
+    _stateset->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::ON);
+#endif
 
     char *ptr;
     if( (ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)

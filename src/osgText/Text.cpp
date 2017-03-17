@@ -1093,6 +1093,171 @@ void Text::drawImplementation(osg::RenderInfo& renderInfo) const
     drawImplementation(*renderInfo.getState(), osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 }
 
+void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colorMultiplier) const
+{
+    osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
+    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
+    bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
+    bool requiresSetArrays = !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();
+
+    if ((_drawMode&(~TEXT))!=0 && !_decorationPrimitives.empty())
+    {
+        state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
+        vas->disableColorArray(state);
+        for(Primitives::const_iterator itr = _decorationPrimitives.begin();
+            itr != _decorationPrimitives.end();
+            ++itr)
+        {
+            if ((*itr)->getMode()==GL_TRIANGLES) state.Color(colorMultiplier.r()*_textBBColor.r(), colorMultiplier.g()*_textBBColor.g(), colorMultiplier.b()*_textBBColor.b(), colorMultiplier.a()*_textBBColor.a());
+            else state.Color(colorMultiplier.r(), colorMultiplier.g(), colorMultiplier.b(), colorMultiplier.a());
+
+            (*itr)->draw(state, usingVertexBufferObjects);
+        }
+        state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
+    }
+
+    if (_drawMode & TEXT)
+//    if (false)
+    {
+        for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
+            titr!=_textureGlyphQuadMap.end();
+            ++titr)
+        {
+            // need to set the texture here...
+            state.applyTextureAttribute(0,titr->first.get());
+
+            const GlyphQuads& glyphquad = titr->second;
+
+#if 1
+            if(_backdropType != NONE)
+            {
+                unsigned int backdrop_index;
+                unsigned int max_backdrop_index;
+                if(_backdropType == OUTLINE)
+                {
+                    backdrop_index = 1;
+                    max_backdrop_index = 8;
+                }
+                else
+                {
+                    backdrop_index = _backdropType+1;
+                    max_backdrop_index = backdrop_index+1;
+                }
+
+                if (max_backdrop_index>glyphquad._primitives.size()) max_backdrop_index=glyphquad._primitives.size();
+
+                state.disableColorPointer();
+                state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
+
+                for( ; backdrop_index < max_backdrop_index; backdrop_index++)
+                {
+                    glyphquad._primitives[backdrop_index]->draw(state, usingVertexBufferObjects);
+                }
+            }
+#endif
+            if(_colorGradientMode == SOLID)
+            {
+                vas->disableColorArray(state);
+                state.Color(colorMultiplier.r()*_color.r(),colorMultiplier.g()*_color.g(),colorMultiplier.b()*_color.b(),colorMultiplier.a()*_color.a());
+            }
+            else
+            {
+                if (requiresSetArrays)
+                {
+                    vas->setColorArray(state, _colorCoords.get());
+                }
+            }
+
+            glyphquad._primitives[0]->draw(state, usingVertexBufferObjects);
+        }
+    }
+}
+
+
+#ifdef NEW_APPROACH
+
+void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplier) const
+{
+    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
+
+
+    // save the previous modelview matrix
+    osg::Matrix previous_modelview = state.getModelViewMatrix();
+
+    // set up the new modelview matrix
+    osg::Matrix modelview;
+    bool needToApplyMatrix = computeMatrix(modelview, &state);
+
+    if (needToApplyMatrix)
+    {
+        // ** mult previous by the modelview for this context
+        modelview.postMult(previous_modelview);
+
+        // ** apply this new modelview matrix
+        state.applyModelViewMatrix(modelview);
+
+        // workaround for GL3/GL2
+        if (state.getUseModelViewAndProjectionUniforms()) state.applyModelViewAndProjectionUniformsIfRequired();
+
+        // OSG_NOTICE<<"New state.applyModelViewMatrix() "<<modelview<<std::endl;
+    }
+    else
+    {
+        // OSG_NOTICE<<"No need to apply matrix "<<std::endl;
+    }
+
+    state.Normal(_normal.x(), _normal.y(), _normal.z());
+
+    osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
+    bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
+    bool requiresSetArrays = !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();
+
+    if (requiresSetArrays)
+    {
+        vas->lazyDisablingOfVertexAttributes();
+        vas->setVertexArray(state, _coords.get());
+        vas->setTexCoordArray(state, 0, _texcoords.get());
+        vas->applyDisablingOfVertexAttributes(state);
+    }
+
+#if 0
+    drawImplementationSinglePass(state, colorMultiplier);
+#else
+    glDepthMask(GL_FALSE);
+
+    drawImplementationSinglePass(state, colorMultiplier);
+
+    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+    glDepthMask(GL_TRUE);
+
+    drawImplementationSinglePass(state, colorMultiplier);
+
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+    state.haveAppliedAttribute(osg::StateAttribute::DEPTH);
+    state.haveAppliedAttribute(osg::StateAttribute::COLORMASK);
+#endif
+
+    if (usingVertexBufferObjects && !usingVertexArrayObjects)
+    {
+        // unbind the VBO's if any are used.
+        vas->unbindVertexBufferObject();
+        vas->unbindElementBufferObject();
+    }
+
+    if (needToApplyMatrix)
+    {
+        // apply this new modelview matrix
+        state.applyModelViewMatrix(previous_modelview);
+
+        // workaround for GL3/GL2
+        if (state.getUseModelViewAndProjectionUniforms()) state.applyModelViewAndProjectionUniformsIfRequired();
+    }
+}
+
+
+
+#else
 void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
@@ -1141,6 +1306,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
         vas->setTexCoordArray(state, 0, _texcoords.get());
         vas->applyDisablingOfVertexAttributes(state);
     }
+
 
     if ((_drawMode&(~TEXT))!=0)
     {
@@ -1257,6 +1423,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
         if (state.getUseModelViewAndProjectionUniforms()) state.applyModelViewAndProjectionUniformsIfRequired();
     }
 }
+#endif
 
 void Text::accept(osg::Drawable::ConstAttributeFunctor& af) const
 {

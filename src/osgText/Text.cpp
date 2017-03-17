@@ -1150,7 +1150,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
             osg::State::ApplyModeProxy applyMode(state, GL_LIGHTING, false);
             osg::State::ApplyTextureModeProxy applyTextureMode(state, 0, GL_TEXTURE_2D, false);
 
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
             switch(_backdropImplementation)
             {
                 case NO_DEPTH_BUFFER:
@@ -1182,7 +1182,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
                 (*itr)->draw(state, usingVertexBufferObjects);
             }
 
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
             switch(_backdropImplementation)
             {
                 case NO_DEPTH_BUFFER:
@@ -1492,7 +1492,7 @@ void Text::drawTextWithBackdrop(osg::State& state, const osg::Vec4& colorMultipl
 
 void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
 
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
     VertexArrayState* vas = state.getCurrentVertexArrayState();
@@ -1557,7 +1557,7 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
 
 void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)&& !defined(OSG_GLES3_AVAILABLE)  && !defined(OSG_GL3_AVAILABLE)
 
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
 
@@ -1609,7 +1609,7 @@ void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMult
 // This idea comes from Paul Martz's OpenGL FAQ: 13.050
 void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
 
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
 
@@ -1665,7 +1665,7 @@ void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultipl
 
 void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)  && !defined(OSG_GL3_AVAILABLE)
 
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
 

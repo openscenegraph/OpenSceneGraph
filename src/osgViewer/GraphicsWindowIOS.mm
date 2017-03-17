@@ -9,8 +9,9 @@
 #if OSG_GLES1_FEATURES
     #import <OpenGLES/ES1/glext.h>
 #else
-    #import <OpenGLES/ES2/glext.h>
-    #if defined(OSG_GLES3_FEATURES)
+    #if defined(OSG_GLES2_FEATURES)
+        #import <OpenGLES/ES2/glext.h>
+    #elif defined(OSG_GLES3_FEATURES)
         #import <OpenGLES/ES3/glext.h>
     #endif
 

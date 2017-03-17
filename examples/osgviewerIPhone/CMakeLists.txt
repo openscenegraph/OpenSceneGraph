@@ -6,7 +6,7 @@ SET(TARGET_SRC
     osgIPhoneViewer-Info.plist
 )
 
-SET(TARGET_ADDED_LIBRARIES osgdb_osg osgdb_imageio osgdb_avfoundation)
+SET(TARGET_ADDED_LIBRARIES osgdb_osg osgdb_imageio) # osgdb_avfoundation doesn't seem to get added on iOS?
 
 #backup setting
 SET(TMP_OSG_BUILD_APPLICATION_BUNDLES {$OSG_BUILD_APPLICATION_BUNDLES})

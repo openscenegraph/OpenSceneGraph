@@ -64,7 +64,8 @@ static const char *gl3TextFragmentShader = {
     "out vec4 color;\n"
     "void main(void)\n"
     "{\n"
-    "    color = vertexColor * texture(glyphTexture, texCoord).rrrr;\n"
+    "    if (texCoord.x>=0.0) color = vertexColor * vec4(1.0, 1.0, 1.0, texture(glyphTexture, texCoord).r);\n"
+    "    else color = vertexColor;\n"
     "}\n"
 };
 #endif
@@ -87,7 +88,7 @@ static const char* fragmentShader = {
     "varying vec4 vertexColor;\n"
     "void main(void)\n"
     "{\n"
-    "    if (texCoord.x>=0.0) gl_FragColor = vertexColor * vec4(1.0, 1.0, 1.0, texture(glyphTexture, texCoord).a);\n"
+    "    if (texCoord.x>=0.0) gl_FragColor = vertexColor * vec4(1.0, 1.0, 1.0, texture(glyphTexture, texCoord).r);\n"
     "    else gl_FragColor = vertexColor;\n"
     "}\n"
 };
@@ -110,7 +111,7 @@ osg::Group* createHUDText()
     osg::Program* program = new osg::Program;
     program->addShader(new osg::Shader(osg::Shader::VERTEX, gl3TextVertexShader));
     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl3TextFragmentShader));
-    geode->getOrCreateStateSet()->setAttributeAndModes(program, osg::StateAttribute::ON);
+    rootNode->getOrCreateStateSet()->setAttributeAndModes(program, osg::StateAttribute::ON);
 #endif
 
     float windowHeight = 1024.0f;

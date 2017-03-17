@@ -1176,9 +1176,6 @@ void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colo
 
 void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
-    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
-
-
     // save the previous modelview matrix
     osg::Matrix previous_modelview = state.getModelViewMatrix();
 
@@ -1207,6 +1204,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
     state.Normal(_normal.x(), _normal.y(), _normal.z());
 
     osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
+    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
     bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
     bool requiresSetArrays = !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();
 

@@ -84,11 +84,10 @@ osg::Camera* createHUD(unsigned int w, unsigned int h)
             text->setFont(0);//"fonts/arial.ttf");
             text->setPosition(position);
             text->setText("A simple multi-touch-example\n1 touch = rotate, \n2 touches = drag + scale, \n3 touches = home");
-            
+            text->setColor(osg::Vec4(0.9,0.1,0.1,1.0));
 #if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
             text->getOrCreateStateSet()->setAttributeAndModes(_textProgram, osg::StateAttribute::ON);
             text->getOrCreateStateSet()->addUniform(new osg::Uniform("glyphTexture",0));
-            text->getOrCreateStateSet()->addUniform(new osg::Uniform("color", osg::Vec4(1.0f,1.0f,1.0f,1.0f)));
 #endif
             geode->addDrawable( text );
         }
@@ -124,11 +123,9 @@ private:
             drawable->setDataVariance(osg::Object::DYNAMIC);
 #if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
             drawable->getOrCreateStateSet()->setAttributeAndModes(_vertColorProgram, osg::StateAttribute::ON);
-            drawable->getOrCreateStateSet()->addUniform(new osg::Uniform("color", osg::Vec4(0.5, 0.5, 0.5,1)));
             optimizeNode(drawable);
-#else
-            drawable->setColor(osg::Vec4(0.5, 0.5, 0.5,1));
 #endif
+            drawable->setColor(osg::Vec4(0.5, 0.5, 0.5,1));
             
             geode->addDrawable(drawable);
             
@@ -143,7 +140,6 @@ private:
 #if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
             text->getOrCreateStateSet()->setAttributeAndModes(_textProgram, osg::StateAttribute::ON);
             text->getOrCreateStateSet()->addUniform(new osg::Uniform("glyphTexture",0));
-            text->getOrCreateStateSet()->addUniform(new osg::Uniform("color", osg::Vec4(1.0f,1.0f,1.0f,1.0f)));
 #endif
             
             geode->addDrawable( text );
@@ -199,40 +195,32 @@ private:
                     ss << "Touch " << tp.id;
                     _texts[j]->setText(ss.str());
                     
-                    osg::Vec4 color;
-                    
                     switch (tp.phase)
                     {
                         case osgGA::GUIEventAdapter::TOUCH_BEGAN:
-                            color = osg::Vec4(0,1,0,1);
-                            
+                            _drawables[j]->setColor(osg::Vec4(0,1,0,1));
                             OSG_INFO << "touch began: " << ss.str() << std::endl;
                             break;
                             
                         case osgGA::GUIEventAdapter::TOUCH_MOVED:
                             //OSG_INFO << "touch moved: " << ss.str() << std::endl;
-                            color = osg::Vec4(1,1,1,1);
+                            _drawables[j]->setColor(osg::Vec4(1,1,1,1));
                             break;
                             
                         case osgGA::GUIEventAdapter::TOUCH_ENDED:
-                            color = osg::Vec4(1,0,0,1);
+                            _drawables[j]->setColor(osg::Vec4(1,0,0,1));
                             OSG_INFO << "touch ended: " << ss.str() << std::endl;
                             ++num_touch_ended;
                             break;
                             
                         case osgGA::GUIEventAdapter::TOUCH_STATIONERY:
-                            color = osg::Vec4(0.5,0.5,0.5,1);
+                            _drawables[j]->setColor(osg::Vec4(0.5,0.5,0.5,1));
                             break;
                             
                         default:
                             break;
                             
                     }
-#if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
-                    _drawables[j]->getOrCreateStateSet()->addUniform(new osg::Uniform("color", color));
-#else
-                    _drawables[j]->setColor(color);
-#endif
 
                 }
                 
@@ -358,6 +346,7 @@ private:
     if (!model) {
         osg::Geode* geode = new osg::Geode();
         osg::ShapeDrawable* drawable = new osg::ShapeDrawable(new osg::Box(osg::Vec3(0,0,0), 1));
+        drawable->setColor(osg::Vec4(0.1,0.1,0.9,1.0));
         geode->addDrawable(drawable);
         model = geode;
     }
@@ -365,7 +354,6 @@ private:
     // attach shader program if needed
 #if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
     model->getOrCreateStateSet()->setAttributeAndModes(_vertColorProgram, osg::StateAttribute::ON);
-    model->getOrCreateStateSet()->addUniform(new osg::Uniform("color", osg::Vec4(0.1f,0.4f,0.8f,1.0f)));
     optimizeNode(model);
 #endif
 

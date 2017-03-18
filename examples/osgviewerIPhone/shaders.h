@@ -44,7 +44,7 @@ const char* ColorShaderFrag =
 "    gl_FragColor = color;\n"
 "}\n";
 
-#elif
+#else
 
 const char* ColorShaderVert = NULL;
 const char* ColorShaderFrag = NULL;
@@ -105,7 +105,7 @@ const char* TextShaderFrag =
 "    gl_FragColor = color * texture2D(glyphTexture, texCoord.xy).a;\n"
 "}\n";
 
-#elif
+#else
 
 const char* TextShaderVert = NULL;
 const char* TextShaderFrag = NULL;

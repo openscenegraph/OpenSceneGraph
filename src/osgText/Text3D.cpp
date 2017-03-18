@@ -491,6 +491,9 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
         // ** apply this new modelview matrix
         state.applyModelViewMatrix(modelview);
 
+        // workaround for GL3/GL2
+        if (state.getUseModelViewAndProjectionUniforms()) state.applyModelViewAndProjectionUniformsIfRequired();
+
         // OSG_NOTICE<<"New state.applyModelViewMatrix() "<<modelview<<std::endl;
     }
     else
@@ -516,8 +519,10 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
 
         if (!_decorationPrimitives.empty())
         {
-            osg::State::ApplyModeProxy applyMode(state, GL_LIGHTING, false);
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+            osg::State::ApplyModeProxy applyLightingMode(state, GL_LIGHTING, false);
             osg::State::ApplyTextureModeProxy applyTextureMode(state, 0, GL_TEXTURE_2D, false);
+        #endif
 
             for(Primitives::const_iterator itr = _decorationPrimitives.begin();
                 itr != _decorationPrimitives.end();
@@ -533,8 +538,10 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
         state.Color(_color.r(),_color.g(),_color.b(),_color.a());
 
         #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
-            renderInfo.getState()->applyMode(GL_NORMALIZE, true);
+        osg::State::ApplyModeProxy applyNormalizeMode(state, GL_NORMALIZE, true);
+        osg::State::ApplyModeProxy applyLightingMode(state, GL_LIGHTING, true);
         #endif
+
 
         const osg::StateSet* frontStateSet = getStateSet();
         const osg::StateSet* wallStateSet = getWallStateSet();
@@ -574,6 +581,9 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
     {
         // restore the previous modelview matrix
         state.applyModelViewMatrix(previous_modelview);
+
+        // workaround for GL3/GL2
+        if (state.getUseModelViewAndProjectionUniforms()) state.applyModelViewAndProjectionUniformsIfRequired();
     }
 }
 

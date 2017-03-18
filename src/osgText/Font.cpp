@@ -34,6 +34,67 @@ using namespace std;
 
 static osg::ApplicationUsageProxy Font_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_TEXT_INCREMENTAL_SUBLOADING <type>","ON | OFF");
 
+#define FIXED_FUNCTION defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
+#define SHADERS_GL3 (defined(OSG_GL3_AVAILABLE) || defined(OSG_GLES3_AVAILABLE))
+#define SHADERS_GL2 !FIXED_FUNCTION && !SHADERS_GL3
+
+
+#if SHADERS_GL3
+static const char* gl3_TextVertexShader = {
+    "#version 330 core\n"
+    "in vec4 osg_Vertex;\n"
+    "in vec4 osg_Color;\n"
+    "in vec4 osg_MultiTexCoord0;\n"
+    "uniform mat4 osg_ModelViewProjectionMatrix;\n"
+    "out vec2 texCoord;\n"
+    "out vec4 vertexColor;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_Position = osg_ModelViewProjectionMatrix * osg_Vertex;\n"
+    "    texCoord = osg_MultiTexCoord0.xy;\n"
+    "    vertexColor = osg_Color; \n"
+    "}\n"
+};
+
+static const char* gl3_TextFragmentShader = {
+    "#version 330 core\n"
+    "uniform sampler2D glyphTexture;\n"
+    "in vec2 texCoord;\n"
+    "in vec4 vertexColor;\n"
+    "out vec4 color;\n"
+    "void main(void)\n"
+    "{\n"
+    "    if (texCoord.x>=0.0) color = vertexColor * vec4(1.0, 1.0, 1.0, texture(glyphTexture, texCoord).r);\n"
+    "    else color = vertexColor;\n"
+    "}\n"
+};
+
+#endif
+
+
+#if SHADERS_GL2
+static const char* gl2_TextVertexShader = {
+    "varying vec2 texCoord;\n"
+    "varying vec4 vertexColor;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+    "    texCoord = gl_MultiTexCoord0.xy;\n"
+    "    vertexColor = gl_Color; \n"
+    "}\n"
+};
+
+static const char* gl2_TextFragmentShader = {
+    "uniform sampler2D glyphTexture;\n"
+    "varying vec2 texCoord;\n"
+    "varying vec4 vertexColor;\n"
+    "void main(void)\n"
+    "{\n"
+    "    if (texCoord.x>=0.0) gl_FragColor = vertexColor * vec4(1.0, 1.0, 1.0, texture2D(glyphTexture, texCoord).a);\n"
+    "    else gl_FragColor = vertexColor;\n"
+    "}\n"
+};
+#endif
 
 osg::ref_ptr<Font>& Font::getDefaultFont()
 {
@@ -240,12 +301,38 @@ Font::Font(FontImplementation* implementation):
 
     _texenv = new osg::TexEnv;
     _stateset = new osg::StateSet;
+
     _stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     _stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     _stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
 
-#if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
+#if FIXED_FUNCTION
+
+    OSG_NOTICE<<"Font::Font() Fixed function pipeline"<<std::endl;
+
     _stateset->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::ON);
+#endif
+
+#if SHADERS_GL3
+
+    OSG_NOTICE<<"Font::Font() Setting up GL3 compatible shaders"<<std::endl;
+
+    osg::ref_ptr<osg::Program> program = new osg::Program;
+    program->addShader(new osg::Shader(osg::Shader::VERTEX, gl3_TextVertexShader));
+    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl3_TextFragmentShader));
+    _stateset->setAttributeAndModes(program.get());
+    _stateset->addUniform(new osg::Uniform("glyphTexture", 0));
+
+#elif SHADERS_GL2
+
+    OSG_NOTICE<<"Font::Font() Setting up GL2 compatible shaders"<<std::endl;
+
+    osg::ref_ptr<osg::Program> program = new osg::Program;
+    program->addShader(new osg::Shader(osg::Shader::VERTEX, gl2_TextVertexShader));
+    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl2_TextFragmentShader));
+    _stateset->setAttributeAndModes(program.get());
+    _stateset->addUniform(new osg::Uniform("glyphTexture", 0));
+
 #endif
 
     char *ptr;

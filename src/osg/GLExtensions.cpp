@@ -451,7 +451,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     glVersion = validContext ? findAsciiToFloat( versionString ) : 0.0f;
     glslLanguageVersion = 0.0f;
 
-    bool shadersBuiltIn = OSG_GLES2_FEATURES || OSG_GL3_FEATURES;
+    bool shadersBuiltIn = OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES;
 
     isShaderObjectsSupported = validContext && (shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_shader_objects"));
     isVertexShaderSupported = validContext && (shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_vertex_shader"));
@@ -472,7 +472,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
                            isGLExtensionSupported(contextID,"GL_NV_texture_rectangle"));
 
     isCubeMapSupported = validContext &&
-                          (OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
+                          (OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES ||
                           isGLExtensionSupported(contextID,"GL_ARB_texture_cube_map") ||
                           isGLExtensionSupported(contextID,"GL_EXT_texture_cube_map") ||
                           (glVersion >= 1.3f));
@@ -718,17 +718,17 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glBindBufferBase,  "glBindBufferBase", "glBindBufferBaseEXT", "glBindBufferBaseNV" , validContext);
     setGLExtensionFuncPtr(glTexBuffer, "glTexBuffer","glTexBufferARB" , validContext);
 
-    isVBOSupported = validContext && (OSG_GLES2_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_vertex_buffer_object"));
-    isPBOSupported = validContext && (OSG_GLES2_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_pixel_buffer_object"));
+    isVBOSupported = validContext && (OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_vertex_buffer_object"));
+    isPBOSupported = validContext && (OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_pixel_buffer_object"));
     isTBOSupported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_texture_buffer_object");
-    isVAOSupported = validContext && (OSG_GL3_FEATURES  || osg::isGLExtensionSupported(contextID, "GL_ARB_vertex_array_object", "GL_OES_vertex_array_object"));
+    isVAOSupported = validContext && (OSG_GLES3_FEATURES || OSG_GL3_FEATURES  || osg::isGLExtensionSupported(contextID, "GL_ARB_vertex_array_object", "GL_OES_vertex_array_object"));
     isTransformFeedbackSupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_transform_feedback2");
     isBufferObjectSupported = isVBOSupported && isPBOSupported;
 
 
     // BlendFunc extensions
     isBlendFuncSeparateSupported = validContext &&
-                                    (OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
+                                    (OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES ||
                                     osg::isGLExtensionSupported(contextID, "GL_EXT_blend_func_separate") ||
                                     (glVersion >= 1.4f));
 
@@ -820,7 +820,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     bool radeonHardwareDetected = (rendererString.find("Radeon")!=std::string::npos || rendererString.find("RADEON")!=std::string::npos);
     bool fireGLHardwareDetected = (rendererString.find("FireGL")!=std::string::npos || rendererString.find("FIREGL")!=std::string::npos);
 
-    bool builtInSupport = OSG_GLES2_FEATURES || OSG_GL3_FEATURES;
+    bool builtInSupport = OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES;
 
     isMultiTexturingSupported = validContext &&
                                 (builtInSupport || OSG_GLES1_FEATURES ||
@@ -852,7 +852,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     isTextureBorderClampSupported = validContext && 
                                     (OSG_GL3_FEATURES ||
                                      ((OSG_GL1_FEATURES || OSG_GL2_FEATURES) && isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_border_clamp", 1.3f)) ||
-                                     (OSG_GLES2_FEATURES && isGLExtensionSupported(contextID,"GL_EXT_texture_border_clamp")));
+                                     ((OSG_GLES2_FEATURES || OSG_GLES3_FEATURES) && isGLExtensionSupported(contextID,"GL_EXT_texture_border_clamp")));
 
     isGenerateMipMapSupported = validContext && (builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_SGIS_generate_mipmap", 1.4f));
     preferGenerateMipmapSGISForPowerOfTwo = (radeonHardwareDetected||fireGLHardwareDetected) ? false : true;
@@ -939,13 +939,13 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
     // Blending
     isBlendColorSupported = validContext && 
-                            (OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
+                            (OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES ||
                              isGLExtensionSupported(contextID,"GL_EXT_blend_color") ||
                              (glVersion >= 1.2f));
 
     setGLExtensionFuncPtr(glBlendColor, "glBlendColor", "glBlendColorEXT", validContext);
 
-    bool bultInSupport = OSG_GLES2_FEATURES || OSG_GL3_FEATURES;
+    bool bultInSupport = OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES;
     isBlendEquationSupported = validContext && 
                                (bultInSupport ||
                                 isGLExtensionSupported(contextID, "GL_EXT_blend_equation") ||
@@ -1012,7 +1012,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
                                   isGLExtensionSupported(contextID,"GL_SGIS_point_parameters"));
 
 
-    isPointSpriteSupported = validContext && (OSG_GL3_FEATURES || isGLExtensionSupported(contextID, "GL_ARB_point_sprite") || isGLExtensionSupported(contextID, "GL_OES_point_sprite") || isGLExtensionSupported(contextID, "GL_NV_point_sprite"));
+    isPointSpriteSupported = validContext && (OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES || isGLExtensionSupported(contextID, "GL_ARB_point_sprite") || isGLExtensionSupported(contextID, "GL_OES_point_sprite") || isGLExtensionSupported(contextID, "GL_NV_point_sprite"));
     isPointSpriteCoordOriginSupported = validContext && (OSG_GL3_FEATURES || (glVersion >= 2.0f));
 
 
@@ -1027,7 +1027,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
 
     // Multisample
-    isMultisampleSupported = validContext && (OSG_GLES2_FEATURES || OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_ARB_multisample"));
+    isMultisampleSupported = validContext && (OSG_GLES2_FEATURES || OSG_GLES2_FEATURES || OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_ARB_multisample"));
     isMultisampleFilterHintSupported = validContext && isGLExtensionSupported(contextID, "GL_NV_multisample_filter_hint");
 
     setGLExtensionFuncPtr(glSampleCoverage, "glSampleCoverage", "glSampleCoverageARB", validContext);
@@ -1159,7 +1159,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
     if (validContext)
     {
-        if (osg::getGLVersionNumber() >= 2.0 || osg::isGLExtensionSupported(contextID, "GL_ARB_vertex_shader") || OSG_GLES2_FEATURES || OSG_GL3_FEATURES)
+        if (osg::getGLVersionNumber() >= 2.0 || osg::isGLExtensionSupported(contextID, "GL_ARB_vertex_shader") || OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES)
         {
             glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&glMaxTextureUnits);
             #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE

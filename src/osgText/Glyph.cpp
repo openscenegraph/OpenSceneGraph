@@ -155,7 +155,7 @@ void GlyphTexture::apply(osg::State& state) const
 
     bool newTextureObject = (textureObject == 0);
 
-    #if defined(OSG_GLES2_AVAILABLE)
+    #if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
     bool requiresGenerateMipmapCall = false;
 
     // need to look to see generate mip map call is required.
@@ -203,7 +203,7 @@ void GlyphTexture::apply(osg::State& state) const
         case LINEAR_MIPMAP_LINEAR:
             if (generateMipMapSupported)
             {
-            #if !defined(OSG_GLES2_AVAILABLE)
+            #if !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
                 glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
             #endif
             }
@@ -223,7 +223,7 @@ void GlyphTexture::apply(osg::State& state) const
 
         glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
         glPixelStorei(GL_UNPACK_ROW_LENGTH,getTextureWidth());
         #endif
 
@@ -299,7 +299,7 @@ void GlyphTexture::apply(osg::State& state) const
 
         bool subloadAllGlyphsTogether = s_subloadAllGlyphsTogether;
 
-        #if defined(OSG_GLES2_AVAILABLE)
+        #if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
         if (requiresGenerateMipmapCall) subloadAllGlyphsTogether = true;
         #endif
 
@@ -374,7 +374,7 @@ void GlyphTexture::apply(osg::State& state) const
 
             glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 
-            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
             glPixelStorei(GL_UNPACK_ROW_LENGTH,getTextureWidth());
             #endif
 
@@ -384,7 +384,7 @@ void GlyphTexture::apply(osg::State& state) const
                     getTextureHeight(),
                     OSGTEXT_GLYPH_FORMAT, GL_UNSIGNED_BYTE, local_data);
 
-            #if defined(OSG_GLES2_AVAILABLE)
+            #if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
             if (requiresGenerateMipmapCall) glGenerateMipmap(GL_TEXTURE_2D);
             #endif
 

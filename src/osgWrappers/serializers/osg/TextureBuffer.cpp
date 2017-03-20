@@ -48,7 +48,7 @@ static bool writeImage( osgDB::OutputStream& os, const osg::TextureBuffer& textu
 
 static bool checkBufferData( const osg::TextureBuffer& texture )
 {
-    return texture.getBufferData()->asArray() != NULL;
+    return texture.getBufferData() != NULL && texture.getBufferData()->asArray() != NULL;
 }
 
 static bool readBufferData( osgDB::InputStream& is, osg::TextureBuffer& texture )

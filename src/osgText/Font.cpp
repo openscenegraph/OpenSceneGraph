@@ -308,14 +308,14 @@ Font::Font(FontImplementation* implementation):
 
 #if FIXED_FUNCTION
 
-    OSG_NOTICE<<"Font::Font() Fixed function pipeline"<<std::endl;
+    OSG_INFO<<"Font::Font() Fixed function pipeline"<<std::endl;
 
     _stateset->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::ON);
 #endif
 
 #if SHADERS_GL3
 
-    OSG_NOTICE<<"Font::Font() Setting up GL3 compatible shaders"<<std::endl;
+    OSG_INFO<<"Font::Font() Setting up GL3 compatible shaders"<<std::endl;
 
     osg::ref_ptr<osg::Program> program = new osg::Program;
     program->addShader(new osg::Shader(osg::Shader::VERTEX, gl3_TextVertexShader));
@@ -325,7 +325,7 @@ Font::Font(FontImplementation* implementation):
 
 #elif SHADERS_GL2
 
-    OSG_NOTICE<<"Font::Font() Setting up GL2 compatible shaders"<<std::endl;
+    OSG_INFO<<"Font::Font() Setting up GL2 compatible shaders"<<std::endl;
 
     osg::ref_ptr<osg::Program> program = new osg::Program;
     program->addShader(new osg::Shader(osg::Shader::VERTEX, gl2_TextVertexShader));

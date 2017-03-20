@@ -35,13 +35,17 @@ using namespace std;
 static osg::ApplicationUsageProxy Font_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_TEXT_INCREMENTAL_SUBLOADING <type>","ON | OFF");
 
 #define FIXED_FUNCTION defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
-#define SHADERS_GL3 (defined(OSG_GL3_AVAILABLE) || defined(OSG_GLES3_AVAILABLE))
+#define SHADERS_GL3 (defined(OSG_GL3_AVAILABLE))
 #define SHADERS_GL2 !FIXED_FUNCTION && !SHADERS_GL3
 
 
 #if SHADERS_GL3
 static const char* gl3_TextVertexShader = {
     "#version 330 core\n"
+    "// gl3_TextVertexShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
     "in vec4 osg_Vertex;\n"
     "in vec4 osg_Color;\n"
     "in vec4 osg_MultiTexCoord0;\n"
@@ -58,6 +62,10 @@ static const char* gl3_TextVertexShader = {
 
 static const char* gl3_TextFragmentShader = {
     "#version 330 core\n"
+    "// gl3_TextFragmentShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
     "uniform sampler2D glyphTexture;\n"
     "in vec2 texCoord;\n"
     "in vec4 vertexColor;\n"
@@ -74,6 +82,10 @@ static const char* gl3_TextFragmentShader = {
 
 #if SHADERS_GL2
 static const char* gl2_TextVertexShader = {
+    "// gl2_TextVertexShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
     "varying vec2 texCoord;\n"
     "varying vec4 vertexColor;\n"
     "void main(void)\n"
@@ -85,6 +97,10 @@ static const char* gl2_TextVertexShader = {
 };
 
 static const char* gl2_TextFragmentShader = {
+    "// gl2_TextFragmentShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
     "uniform sampler2D glyphTexture;\n"
     "varying vec2 texCoord;\n"
     "varying vec4 vertexColor;\n"

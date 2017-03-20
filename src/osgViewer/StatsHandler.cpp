@@ -29,12 +29,16 @@ namespace osgViewer
 {
 
 #define FIXED_FUNCTION defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
-#define SHADERS_GL3 (defined(OSG_GL3_AVAILABLE) || defined(OSG_GLES3_AVAILABLE))
+#define SHADERS_GL3 (defined(OSG_GL3_AVAILABLE))
 #define SHADERS_GL2 !FIXED_FUNCTION && !SHADERS_GL3
 
 #if SHADERS_GL3
 static const char* gl3_StatsVertexShader = {
     "#version 330 core\n"
+    "// gl3_StatsVertexShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
     "in vec4 osg_Vertex;\n"
     "in vec4 osg_Color;\n"
     "uniform mat4 osg_ModelViewProjectionMatrix;\n"
@@ -48,11 +52,15 @@ static const char* gl3_StatsVertexShader = {
 
 static const char* gl3_StatsFragmentShader = {
     "#version 330 core\n"
+    "// gl3_StatsFragmentShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
     "in vec4 vertexColor;\n"
     "out vec4 color;\n"
     "void main(void)\n"
     "{\n"
-    "    gl_FragColor = vertexColor;\n"
+    "    color = vertexColor;\n"
     "}\n"
 };
 
@@ -61,6 +69,10 @@ static const char* gl3_StatsFragmentShader = {
 
 #if SHADERS_GL2
 static const char* gl2_StatsVertexShader = {
+    "// gl2_StatsVertexShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
     "varying vec4 vertexColor;\n"
     "void main(void)\n"
     "{\n"
@@ -70,6 +82,10 @@ static const char* gl2_StatsVertexShader = {
 };
 
 static const char* gl2_StatsFragmentShader = {
+    "// gl2_StatsFragmentShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
     "varying vec4 vertexColor;\n"
     "void main(void)\n"
     "{\n"
@@ -98,7 +114,7 @@ StatsHandler::StatsHandler():
     _characterSize(20.0f),
     _lineHeight(1.5f)
 {
-    OSG_NOTICE<<"StatsHandler::StatsHandler()"<<std::endl;
+    OSG_INFO<<"StatsHandler::StatsHandler()"<<std::endl;
 
     _camera = new osg::Camera;
     _camera->getOrCreateStateSet()->setGlobalDefaults();

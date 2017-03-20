@@ -18,7 +18,6 @@
 
 // global programs
 osg::ref_ptr<osg::Program> _vertColorProgram;
-osg::ref_ptr<osg::Program> _textProgram;
 
 
 @interface MyViewController : UIViewController
@@ -85,10 +84,7 @@ osg::Camera* createHUD(unsigned int w, unsigned int h)
             text->setPosition(position);
             text->setText("A simple multi-touch-example\n1 touch = rotate, \n2 touches = drag + scale, \n3 touches = home");
             text->setColor(osg::Vec4(0.9,0.1,0.1,1.0));
-#if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
-            text->getOrCreateStateSet()->setAttributeAndModes(_textProgram, osg::StateAttribute::ON);
-            text->getOrCreateStateSet()->addUniform(new osg::Uniform("glyphTexture",0));
-#endif
+
             geode->addDrawable( text );
         }
         
@@ -137,10 +133,6 @@ private:
             text->setPosition(osg::Vec3(110,0,0));
             text->setDataVariance(osg::Object::DYNAMIC);
             text->setText(ss.str());
-#if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
-            text->getOrCreateStateSet()->setAttributeAndModes(_textProgram, osg::StateAttribute::ON);
-            text->getOrCreateStateSet()->addUniform(new osg::Uniform("glyphTexture",0));
-#endif
             
             geode->addDrawable( text );
             
@@ -328,10 +320,6 @@ private:
     
     // create our default programs
 #if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
-    _textProgram = new osg::Program();
-    _textProgram->addShader( new osg::Shader(osg::Shader::VERTEX, TextShaderVert));
-    _textProgram->addShader( new osg::Shader(osg::Shader::FRAGMENT, TextShaderFrag));
-
     _vertColorProgram = new osg::Program();
     _vertColorProgram->addShader( new osg::Shader(osg::Shader::VERTEX, ColorShaderVert));
     _vertColorProgram->addShader( new osg::Shader(osg::Shader::FRAGMENT, ColorShaderFrag));

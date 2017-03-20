@@ -28,6 +28,55 @@
 namespace osgViewer
 {
 
+#define FIXED_FUNCTION defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
+#define SHADERS_GL3 (defined(OSG_GL3_AVAILABLE) || defined(OSG_GLES3_AVAILABLE))
+#define SHADERS_GL2 !FIXED_FUNCTION && !SHADERS_GL3
+
+#if SHADERS_GL3
+static const char* gl3_StatsVertexShader = {
+    "#version 330 core\n"
+    "in vec4 osg_Vertex;\n"
+    "in vec4 osg_Color;\n"
+    "uniform mat4 osg_ModelViewProjectionMatrix;\n"
+    "out vec4 vertexColor;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_Position = osg_ModelViewProjectionMatrix * osg_Vertex;\n"
+    "    vertexColor = osg_Color; \n"
+    "}\n"
+};
+
+static const char* gl3_StatsFragmentShader = {
+    "#version 330 core\n"
+    "in vec4 vertexColor;\n"
+    "out vec4 color;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_FragColor = vertexColor;\n"
+    "}\n"
+};
+
+#endif
+
+
+#if SHADERS_GL2
+static const char* gl2_StatsVertexShader = {
+    "varying vec4 vertexColor;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+    "    vertexColor = gl_Color;\n"
+    "}\n"
+};
+
+static const char* gl2_StatsFragmentShader = {
+    "varying vec4 vertexColor;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_FragColor = vertexColor;\n"
+    "}\n"
+};
+#endif
 
 StatsHandler::StatsHandler():
     _keyEventTogglesOnScreenStats('s'),
@@ -49,10 +98,33 @@ StatsHandler::StatsHandler():
     _characterSize(20.0f),
     _lineHeight(1.5f)
 {
+    OSG_NOTICE<<"StatsHandler::StatsHandler()"<<std::endl;
+
     _camera = new osg::Camera;
     _camera->getOrCreateStateSet()->setGlobalDefaults();
     _camera->setRenderer(new Renderer(_camera.get()));
     _camera->setProjectionResizePolicy(osg::Camera::FIXED);
+
+#if SHADERS_GL3
+
+    OSG_INFO<<"StatsHandler::StatsHandler() Setting up GL3 compatible shaders"<<std::endl;
+
+    osg::ref_ptr<osg::Program> program = new osg::Program;
+    program->addShader(new osg::Shader(osg::Shader::VERTEX, gl3_StatsVertexShader));
+    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl3_StatsFragmentShader));
+    _camera->getOrCreateStateSet()->setAttributeAndModes(program.get());
+
+#elif SHADERS_GL2
+
+    OSG_INFO<<"StatsHandler::StatsHandler() Setting up GL2 compatible shaders"<<std::endl;
+
+    osg::ref_ptr<osg::Program> program = new osg::Program;
+    program->addShader(new osg::Shader(osg::Shader::VERTEX, gl2_StatsVertexShader));
+    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl2_StatsFragmentShader));
+    _camera->getOrCreateStateSet()->setAttributeAndModes(program.get());
+#else
+    OSG_INFO<<"StatsHandler::StatsHandler() Fixed pipeline"<<std::endl;
+#endif
 }
 
 void StatsHandler::collectWhichCamerasToRenderStatsFor(osgViewer::ViewerBase* viewer, osgViewer::ViewerBase::Cameras& cameras)

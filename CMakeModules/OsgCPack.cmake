@@ -57,7 +57,7 @@ ENDIF()
 SET(CPACK_SOURCE_GENERATOR "TGZ")
 
 
-# for ms visual studio we use it's internally defined variable to get the configuration (debug,release, ...) 
+# for ms visual studio we use it's internally defined variable to get the configuration (debug,release, ...)
 IF(MSVC_IDE)
     SET(OSG_CPACK_CONFIGURATION "$(OutDir)")
     SET(PACKAGE_TARGET_PREFIX "Package ")
@@ -84,8 +84,86 @@ ENDIF()
 SET(PACKAGE_ALL_TARGETNAME "${PACKAGE_TARGET_PREFIX}ALL")
 ADD_CUSTOM_TARGET(${PACKAGE_ALL_TARGETNAME})
 
+ # cpack configuration for debian packages
+IF(${CPACK_GENERATOR} STREQUAL "DEB")
+    SET(OPENSCENEGRAPH_PACKAGE_MAINTAINER
+        ""
+        CACHE STRING
+        "Name and email address of the package maintainer, e.g., 'Jon Doe <jon.doe@superawesomemail.com>'"
+    )
+    SET(CPACK_LIBOPENSCENEGRAPH_DEPENDENCIES
+        "libopenthreads"
+        CACHE STRING
+        "Dependend packages for the openscenegraph library package (uses deb dependecy format), e.g., 'libc6, libcurl3-gnutls, libgif4, libjpeg8, libpng12-0'"
+    )
+    SET(CPACK_LIBOPENSCENEGRAPH-DEV_DEPENDENCIES
+        "libopenscenegraph"
+        CACHE STRING
+        "Dependend packages for the openscenegraph development package (uses deb dependecy format), e.g., 'libc6, libcurl3-gnutls, libgif4, libjpeg8, libpng12-0'"
+    )
+    SET(CPACK_LIBOPENTHREADS_DEPENDENCIES
+        ""
+        CACHE STRING
+        "Dependend packages for the openthreads library package (uses deb dependecy format), e.g., 'libc6, libcurl3-gnutls, libgif4, libjpeg8, libpng12-0'"
+    )
+    SET(CPACK_LIBOPENTHREADS-DEV_DEPENDENCIES
+        "libopenthreads"
+        CACHE STRING
+        "Dependend packages for the openthreads development package (uses deb dependecy format), e.g., 'libc6, libcurl3-gnutls, libgif4, libjpeg8, libpng12-0'"
+    )
+    SET(CPACK_OPENSCENEGRAPH_DEPENDENCIES
+        "libopenscenegraph"
+        CACHE STRING
+        "Dependend packages for the openscenegraph main package (uses deb dependecy format), e.g., 'libc6, libcurl3-gnutls, libgif4, libjpeg8, libpng12-0'"
+    )
+    SET(CPACK_OPENSCENEGRAPH-ALL_DEPENDENCIES
+        ""
+        CACHE STRING
+        "Dependend packages for the openscenegraph package with all components (uses deb dependecy format), e.g., 'libc6, libcurl3-gnutls, libgif4, libjpeg8, libpng12-0'"
+    )
+
+    SET(CPACK_LIBOPENSCENEGRAPH_CONFLICTS
+        ""
+        CACHE STRING
+        "Conflicting packages for the openscenegraph library package (uses deb dependecy format), e.g., 'libc6, libcurl3-gnutls, libgif4, libjpeg8, libpng12-0'"
+    )
+    SET(CPACK_LIBOPENSCENEGRAPH-DEV_CONFLICTS
+        ""
+        CACHE STRING
+        "Conflicting packages for the openscenegraph development package (uses deb dependecy format), e.g., 'libc6, libcurl3-gnutls, libgif4, libjpeg8, libpng12-0'"
+    )
+    SET(CPACK_LIBOPENTHREADS_CONFLICTS
+        ""
+        CACHE STRING
+        "Conflicting packages for the openthreads library package (uses deb dependecy format), e.g., 'libc6, libcurl3-gnutls, libgif4, libjpeg8, libpng12-0'"
+    )
+    SET(CPACK_LIBOPENTHREADS-DEV_CONFLICTS
+        ""
+        CACHE STRING
+        "Conflicting packages for the openthreads development package (uses deb dependecy format), e.g., 'libc6, libcurl3-gnutls, libgif4, libjpeg8, libpng12-0'"
+    )
+    SET(CPACK_OPENSCENEGRAPH_CONFLICTS
+        ""
+        CACHE STRING
+        "Conflicting packages for the openscenegraph main package (uses deb dependecy format), e.g., 'libc6, libcurl3-gnutls, libgif4, libjpeg8, libpng12-0'"
+    )
+    SET(CPACK_OPENSCENEGRAPH-ALL_CONFLICTS
+        ""
+        CACHE STRING
+        "Conflicting packages for the openscenegraph package with all components (uses deb dependecy format), e.g., 'libc6, libcurl3-gnutls, libgif4, libjpeg8, libpng12-0'"
+    )
+ENDIF()
+
 MACRO(GENERATE_PACKAGING_TARGET package_name)
     SET(CPACK_PACKAGE_NAME ${package_name})
+
+    # set debian dependencies AND conflicts
+    IF(${CPACK_GENERATOR} STREQUAL "DEB")
+        STRING(TOUPPER CPACK_${package_name}_DEPENDENCIES DEPENDENCIES_VAR)
+        STRING(TOUPPER CPACK_${package_name}_CONFLICTS CONFLICTS_VAR)
+        SET(OSG_PACKAGE_DEPENDS "${${DEPENDENCIES_VAR}}")
+        SET(OSG_PACKAGE_CONFLICTS "${${CONFLICTS_VAR}}")
+    ENDIF()
 
     # the doc packages don't need a system-arch specification
     IF(${package} MATCHES -doc)
@@ -114,7 +192,7 @@ MACRO(GENERATE_PACKAGING_TARGET package_name)
     ELSE()
         SET(ARCHIVE_EXT "tar.gz")
     ENDIF()
-    
+
     # Create a target that creates the current package
     # and rename the package to give it proper filename
     ADD_CUSTOM_TARGET(${PACKAGE_TARGETNAME})
@@ -124,7 +202,7 @@ MACRO(GENERATE_PACKAGING_TARGET package_name)
         COMMAND ${CMAKE_CPACK_COMMAND} -C ${OSG_CPACK_CONFIGURATION} --config ${OpenSceneGraph_BINARY_DIR}/CPackConfig-${package_name}.cmake
         COMMENT "Run CPack packaging for ${package_name}..."
     )
-    # Add the exact same custom command to the all package generating target. 
+    # Add the exact same custom command to the all package generating target.
     # I can't use add_dependencies to do this because it would allow parallell building of packages so am going brute here
     ADD_CUSTOM_COMMAND(TARGET ${PACKAGE_ALL_TARGETNAME}
         COMMAND ${CMAKE_CPACK_COMMAND} -C ${OSG_CPACK_CONFIGURATION} --config ${OpenSceneGraph_BINARY_DIR}/CPackConfig-${package_name}.cmake

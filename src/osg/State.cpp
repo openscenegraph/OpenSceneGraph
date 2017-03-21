@@ -96,8 +96,14 @@ State::State():
     _isVertexBufferObjectSupported = false;
     _isVertexArrayObjectSupported = false;
 
+#if OSG_GL3_FEATURES
+    _forceVertexBufferObject = true;
+    _forceVertexArrayObject = true;
+#else
     _forceVertexBufferObject = false;
     _forceVertexArrayObject = false;
+#endif
+
 
     _lastAppliedProgramObject = 0;
 
@@ -179,8 +185,17 @@ void State::initializeExtensionProcs()
     _isVertexArrayObjectSupported = _glExtensions->isVAOSupported;
 
     const DisplaySettings* ds = getDisplaySettings() ? getDisplaySettings() : osg::DisplaySettings::instance().get();
-    _forceVertexArrayObject = _isVertexArrayObjectSupported && (ds->getVertexBufferHint()==DisplaySettings::VERTEX_ARRAY_OBJECT);
-    _forceVertexBufferObject = _forceVertexArrayObject || (_isVertexBufferObjectSupported && (ds->getVertexBufferHint()==DisplaySettings::VERTEX_BUFFER_OBJECT));
+
+    if (ds->getVertexBufferHint()==DisplaySettings::VERTEX_BUFFER_OBJECT)
+    {
+        _forceVertexBufferObject = true;
+        _forceVertexArrayObject = false;
+    }
+    else if (ds->getVertexBufferHint()==DisplaySettings::VERTEX_ARRAY_OBJECT)
+    {
+        _forceVertexBufferObject = true;
+        _forceVertexArrayObject = true;
+    }
 
     OSG_NOTICE<<"_forceVertexArrayObject = "<<_forceVertexArrayObject<<std::endl;
     OSG_NOTICE<<"_forceVertexBufferObject = "<<_forceVertexBufferObject<<std::endl;

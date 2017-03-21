@@ -103,11 +103,9 @@ void GlyphTexture::addGlyph(Glyph* glyph, int posX, int posY)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
+    if (!_image.valid()) createImage();
+
     _glyphs.push_back(glyph);
-    for(unsigned int i=0;i<_glyphsToSubload.size();++i)
-    {
-        _glyphsToSubload[i].push_back(glyph);
-    }
 
     // set up the details of where to place glyph's image in the texture.
     glyph->setTexture(this);
@@ -117,294 +115,9 @@ void GlyphTexture::addGlyph(Glyph* glyph, int posX, int posY)
                                       static_cast<float>(posY)/static_cast<float>(getTextureHeight()) ) );
     glyph->setMaxTexCoord( osg::Vec2( static_cast<float>(posX+glyph->s())/static_cast<float>(getTextureWidth()),
                                       static_cast<float>(posY+glyph->t())/static_cast<float>(getTextureHeight()) ) );
-}
 
-void GlyphTexture::apply(osg::State& state) const
-{
-    // get the contextID (user defined ID of 0 upwards) for the
-    // current OpenGL context.
-    const unsigned int contextID = state.getContextID();
-
-    if (contextID>=_glyphsToSubload.size())
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-
-        // graphics context is beyond the number of glyphsToSubloads, so
-        // we must now copy the glyph list across, this is a potential
-        // threading issue though is multiple applies are happening the
-        // same time on this object - to avoid this condition number of
-        // graphics contexts should be set before create text.
-        for(unsigned int i=_glyphsToSubload.size();i<=contextID;++i)
-        {
-            GlyphPtrList& glyphPtrs = _glyphsToSubload[i];
-            for(GlyphRefList::const_iterator itr=_glyphs.begin();
-                itr!=_glyphs.end();
-                ++itr)
-            {
-                glyphPtrs.push_back(itr->get());
-            }
-        }
-    }
-
-
-    const osg::GLExtensions* extensions = state.get<osg::GLExtensions>();
-    bool generateMipMapSupported = extensions->isGenerateMipMapSupported;
-
-    // get the texture object for the current contextID.
-    TextureObject* textureObject = getTextureObject(contextID);
-
-    bool newTextureObject = (textureObject == 0);
-
-    #if defined(OSG_GLES2_AVAILABLE)
-    bool requiresGenerateMipmapCall = false;
-
-    // need to look to see generate mip map call is required.
-    switch(_min_filter)
-    {
-    case NEAREST_MIPMAP_NEAREST:
-    case NEAREST_MIPMAP_LINEAR:
-    case LINEAR_MIPMAP_NEAREST:
-    case LINEAR_MIPMAP_LINEAR:
-        requiresGenerateMipmapCall = generateMipMapSupported;
-        break;
-    default:
-        break;
-    }
-    #endif
-
-    if (newTextureObject)
-    {
-        GLint maxTextureSize = 256;
-        glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
-        if (maxTextureSize < getTextureWidth() || maxTextureSize < getTextureHeight())
-        {
-            OSG_WARN<<"Warning: osgText::Font texture size of ("<<getTextureWidth()<<", "<<getTextureHeight()<<") too large, unable to create font texture."<<std::endl;
-            OSG_WARN<<"         Maximum supported by hardward by native OpenGL implementation is ("<<maxTextureSize<<","<<maxTextureSize<<")."<<std::endl;
-            OSG_WARN<<"         Please set OSG_MAX_TEXTURE_SIZE lenvironment variable to "<<maxTextureSize<<" and re-run application."<<std::endl;
-            return;
-        }
-
-        // being bound for the first time, need to allocate the texture
-
-        textureObject = osg::Texture::generateAndAssignTextureObject(
-            contextID, GL_TEXTURE_2D, 1, OSGTEXT_GLYPH_INTERNALFORMAT, getTextureWidth(), getTextureHeight(), 1, 0);
-
-        textureObject->bind();
-
-
-        applyTexParameters(GL_TEXTURE_2D,state);
-
-        // need to look at generate mip map extension if mip mapping required.
-        switch(_min_filter)
-        {
-        case NEAREST_MIPMAP_NEAREST:
-        case NEAREST_MIPMAP_LINEAR:
-        case LINEAR_MIPMAP_NEAREST:
-        case LINEAR_MIPMAP_LINEAR:
-            if (generateMipMapSupported)
-            {
-            #if !defined(OSG_GLES2_AVAILABLE)
-                glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
-            #endif
-            }
-            else glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, LINEAR);
-            break;
-        default:
-            // not mip mapping so no problems.
-            break;
-        }
-
-        unsigned int imageDataSize = getTextureHeight()*getTextureWidth();
-        unsigned char* imageData = new unsigned char[imageDataSize];
-        for(unsigned int i=0; i<imageDataSize; ++i)
-        {
-            imageData[i] = 0;
-        }
-
-        glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
-        glPixelStorei(GL_UNPACK_ROW_LENGTH,getTextureWidth());
-        #endif
-
-        // allocate the texture memory.
-        glTexImage2D(GL_TEXTURE_2D, 0, OSGTEXT_GLYPH_INTERNALFORMAT,
-                getTextureWidth(), getTextureHeight(), 0,
-                OSGTEXT_GLYPH_FORMAT,
-                GL_UNSIGNED_BYTE,
-                imageData );
-
-        delete [] imageData;
-
-    }
-    else
-    {
-        // reuse texture by binding.
-        textureObject->bind();
-
-        if (getTextureParameterDirty(contextID))
-        {
-            applyTexParameters(GL_TEXTURE_2D,state);
-        }
-
-
-    }
-
-    static const GLubyte* s_renderer = 0;
-    static bool s_subloadAllGlyphsTogether = false;
-    if (!s_renderer)
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-
-        s_renderer = glGetString(GL_RENDERER);
-        OSG_INFO<<"glGetString(GL_RENDERER)=="<<s_renderer<<std::endl;
-        if (s_renderer && strstr((const char*)s_renderer,"IMPACT")!=0)
-        {
-            // we're running on an Octane, so need to work around its
-            // subloading bugs by loading all at once.
-            s_subloadAllGlyphsTogether = true;
-        }
-
-        if (s_renderer &&
-            ((strstr((const char*)s_renderer,"Radeon")!=0) ||
-            (strstr((const char*)s_renderer,"RADEON")!=0) ||
-            (strstr((const char*)s_renderer,"ALL-IN-WONDER")!=0)))
-        {
-            // we're running on an ATI, so need to work around its
-            // subloading bugs by loading all at once.
-            s_subloadAllGlyphsTogether = true;
-        }
-
-        if (s_renderer && strstr((const char*)s_renderer,"Sun")!=0)
-        {
-            // we're running on an solaris x server, so need to work around its
-            // subloading bugs by loading all at once.
-            s_subloadAllGlyphsTogether = true;
-        }
-
-        const char* str = getenv("OSG_TEXT_INCREMENTAL_SUBLOADING");
-        if (str)
-        {
-            s_subloadAllGlyphsTogether = strcmp(str,"OFF")==0 || strcmp(str,"Off")==0 || strcmp(str,"off")==0;
-        }
-    }
-
-
-    // now subload the glyphs that are outstanding for this graphics context.
-    GlyphPtrList& glyphsWereSubloading = _glyphsToSubload[contextID];
-
-    if (!glyphsWereSubloading.empty() || newTextureObject)
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-
-        bool subloadAllGlyphsTogether = s_subloadAllGlyphsTogether;
-
-        #if defined(OSG_GLES2_AVAILABLE)
-        if (requiresGenerateMipmapCall) subloadAllGlyphsTogether = true;
-        #endif
-
-        if (!subloadAllGlyphsTogether)
-        {
-            if (newTextureObject)
-            {
-                for(GlyphRefList::const_iterator itr=_glyphs.begin();
-                    itr!=_glyphs.end();
-                    ++itr)
-                {
-                    (*itr)->subload();
-                }
-            }
-            else // just subload the new entries.
-            {
-                // default way of subloading as required.
-                //std::cout<<"subloading"<<std::endl;
-                for(GlyphPtrList::iterator itr=glyphsWereSubloading.begin();
-                    itr!=glyphsWereSubloading.end();
-                    ++itr)
-                {
-                    (*itr)->subload();
-                }
-            }
-
-            // clear the list since we have now subloaded them.
-            glyphsWereSubloading.clear();
-
-        }
-        else
-        {
-            OSG_INFO<<"osgText::Font loading all glyphs as a single subload."<<std::endl;
-
-            // Octane has bugs in OGL driver which mean that subloads smaller
-            // than 32x32 produce errors, and also cannot handle general alignment,
-            // so to get round this copy all glyphs into a temporary image and
-            // then subload the whole lot in one go.
-
-            int tsize = getTextureHeight() * getTextureWidth();
-            unsigned char *local_data = new unsigned char[tsize];
-            memset( local_data, 0L, tsize);
-
-            for(GlyphRefList::const_iterator itr=_glyphs.begin();
-                itr!=_glyphs.end();
-                ++itr)
-            {
-                //(*itr)->subload();
-
-                // Rather than subloading to graphics, we'll write the values
-                // of the glyphs into some intermediate data and subload the
-                // whole thing at the end
-                for( int t = 0; t < (*itr)->t(); t++ )
-                {
-                    for( int s = 0; s < (*itr)->s(); s++ )
-                    {
-                        int sindex = (t*(*itr)->s()+s);
-                        int dindex =
-                            ((((*itr)->getTexturePositionY()+t) * getTextureWidth()) +
-                            ((*itr)->getTexturePositionX()+s));
-
-                        const unsigned char *sptr = &(*itr)->data()[sindex];
-                        unsigned char *dptr       = &local_data[dindex];
-
-                        (*dptr)   = (*sptr);
-                    }
-                }
-            }
-
-            // clear the list since we have now subloaded them.
-            glyphsWereSubloading.clear();
-
-            glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-
-            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
-            glPixelStorei(GL_UNPACK_ROW_LENGTH,getTextureWidth());
-            #endif
-
-            // Subload the image once
-            glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0,
-                    getTextureWidth(),
-                    getTextureHeight(),
-                    OSGTEXT_GLYPH_FORMAT, GL_UNSIGNED_BYTE, local_data);
-
-            #if defined(OSG_GLES2_AVAILABLE)
-            if (requiresGenerateMipmapCall) glGenerateMipmap(GL_TEXTURE_2D);
-            #endif
-
-            delete [] local_data;
-
-        }
-    }
-    else
-    {
-//        OSG_INFO << "no need to subload "<<std::endl;
-    }
-
-
-
-//     if (generateMipMapTurnedOn)
-//     {
-//         glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
-//     }
-
-
+    _image->copySubImage(glyph->getTexturePositionX(), glyph->getTexturePositionY(), 0, glyph);
+    _image->dirty();
 }
 
 void GlyphTexture::setThreadSafeRefUnref(bool threadSafe)
@@ -432,19 +145,22 @@ void GlyphTexture::resizeGLObjectBuffers(unsigned int maxSize)
 
 osg::Image* GlyphTexture::createImage()
 {
-    osg::ref_ptr<osg::Image> image = new osg::Image;
-    image->allocateImage(getTextureWidth(), getTextureHeight(), 1, OSGTEXT_GLYPH_FORMAT, GL_UNSIGNED_BYTE);
-    memset(image->data(), 0, image->getTotalSizeInBytes());
-
-    for(GlyphRefList::iterator itr = _glyphs.begin();
-        itr != _glyphs.end();
-        ++itr)
+    if (!_image)
     {
-        Glyph* glyph = itr->get();
-        image->copySubImage(glyph->getTexturePositionX(), glyph->getTexturePositionY(), 0, glyph);
+        _image = new osg::Image;
+        _image->allocateImage(getTextureWidth(), getTextureHeight(), 1, OSGTEXT_GLYPH_FORMAT, GL_UNSIGNED_BYTE);
+        memset(_image->data(), 0, _image->getTotalSizeInBytes());
+
+        for(GlyphRefList::iterator itr = _glyphs.begin();
+            itr != _glyphs.end();
+            ++itr)
+        {
+            Glyph* glyph = itr->get();
+            _image->copySubImage(glyph->getTexturePositionX(), glyph->getTexturePositionY(), 0, glyph);
+        }
     }
 
-    return image.release();
+    return _image.get();
 }
 
 // all the methods in Font::Glyph have been made non inline because VisualStudio6.0 is STUPID, STUPID, STUPID PILE OF JUNK.

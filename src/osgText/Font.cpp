@@ -32,12 +32,9 @@
 using namespace osgText;
 using namespace std;
 
-static osg::ApplicationUsageProxy Font_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_TEXT_INCREMENTAL_SUBLOADING <type>","ON | OFF");
-
 #define FIXED_FUNCTION defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
 #define SHADERS_GL3 (defined(OSG_GL3_AVAILABLE))
 #define SHADERS_GL2 !FIXED_FUNCTION && !SHADERS_GL3
-
 
 #if SHADERS_GL3
 static const char* gl3_TextVertexShader = {

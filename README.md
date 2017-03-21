@@ -159,54 +159,48 @@ still images, and a QTKit plugin will need to be developed to handle
 animations.
 
 
-### Section 3. Release notes on iOS build, by Thomas Hoghart
+### Section 3. Release notes on iOS build, by Thomas Hogarth
 
-* Run CMake with either OSG_BUILD_PLATFORM_IPHONE or OSG_BUILD_PLATFORM_IPHONE_SIMULATOR set:
-  $ mkdir build-iOS ; cd build-iOS
-  $ ccmake -DOSG_BUILD_PLATFORM_IPHONE_SIMULATOR=YES -G Xcode ..
-* Check that CMAKE_OSX_ARCHITECTURE is i386 for the simulator or armv6;armv7 for the device
-* Disable DYNAMIC_OPENSCENEGRAPH, DYNAMIC_OPENTHREADS
-  This will give us the static build we need for iPhone.
-* Disable OSG_GL1_AVAILABLE, OSG_GL2_AVAILABLE, OSG_GL3_AVAILABLE,
-  OSG_GL_DISPLAYLISTS_AVAILABLE, OSG_GL_VERTEX_FUNCS_AVAILABLE
-* Enable OSG_GLES1_AVAILABLE *OR* OSG_GLES2_AVAILABLE *OR* OSG_GLES3_AVAILABLE (GLES3 will enable GLES2 features)
-* Ensure OSG_WINDOWING_SYSTEM is set to IOS
-* Change FREETYPE include and library paths to an iPhone version
-  (OpenFrameworks has one bundled with its distribution)
-* Ensure that CMake_OSX_SYSROOT points to your iOS SDK.
-* Generate the Xcode project
-* Open the Xcode project
-  $ open OpenSceneGraph.xcodeproj
-* Under Sources -> osgDB, select FileUtils.cpp and open the 'Get Info' panel, change File Type
-  to source.cpp.objcpp
+With CMake, XCode and the iOS sdk installed you can generate an iOS XCode 
+project using the following command line
 
-Here's an example for the command-line:
 
-    $ cmake -G Xcode \
-    -D OSG_BUILD_PLATFORM_IPHONE:BOOL=ON \
-    -D CMAKE_CXX_FLAGS:STRING="-ftree-vectorize -fvisibility-inlines-hidden -mno-thumb -arch armv6 -pipe -no-cpp-precomp -miphoneos-version-min=3.1 -mno-thumb" \
-    -D BUILD_OSG_APPLICATIONS:BOOL=OFF \
-    -D OSG_BUILD_FRAMEWORKS:BOOL=OFF \
-    -D OSG_WINDOWING_SYSTEM:STRING=IOS \
-    -D OSG_BUILD_PLATFORM_IPHONE:BOOL=ON \
-    -D CMAKE_OSX_ARCHITECTURES:STRING="armv6;armv7" \
-    -D CMAKE_OSX_SYSROOT:STRING=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk \
-    -D OSG_GL1_AVAILABLE:BOOL=OFF \
-    -D OSG_GL2_AVAILABLE:BOOL=OFF \
-    -D OSG_GLES1_AVAILABLE:BOOL=ON \
-    -D OSG_GL_DISPLAYLISTS_AVAILABLE:BOOL=OFF \
-    -D OSG_GL_FIXED_FUNCTION_AVAILABLE:BOOL=ON \
-    -D OSG_GL_LIBRARY_STATIC:BOOL=OFF \
-    -D OSG_GL_MATRICES_AVAILABLE:BOOL=ON \
-    -D OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE:BOOL=ON \
-    -D OSG_GL_VERTEX_FUNCS_AVAILABLE:BOOL=OFF \
-    -D DYNAMIC_OPENSCENEGRAPH:BOOL=OFF \
-    -D DYNAMIC_OPENTHREADS:BOOL=OFF .
+export THIRDPARTY_PATH=/path/to/my/3rdParty
+cmake ./ -G Xcode -DOSG_BUILD_PLATFORM_IPHONE:BOOL=ON \
+-DIPHONE_SDKVER="10.2" \
+-DIPHONE_VERSION_MIN="8.0" \
+-DOPENGL_PROFILE:STRING=GLES2 \
+-DBUILD_OSG_APPLICATIONS:BOOL=OFF \
+-DBUILD_OSG_EXAMPLES:BOOL=ON \
+-DOSG_WINDOWING_SYSTEM:STRING=IOS \
+-DOSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX="imageio" \
+-DDYNAMIC_OPENSCENEGRAPH:BOOL=OFF \
+-DDYNAMIC_OPENTHREADS:BOOL=OFF \
+-DCURL_INCLUDE_DIR:PATH="$THIRDPARTY_PATH/curl-ios-device/include" \
+-DCURL_LIBRARY:PATH="$THIRDPARTY_PATH/curl-ios-device/lib/libcurl.a" \
+-DFREETYPE_INCLUDE_DIR_freetype2:PATH="$THIRDPARTY_PATH/freetype-ios-universal/include/freetype" \
+-DFREETYPE_INCLUDE_DIR_ft2build:PATH="$THIRDPARTY_PATH/freetype-ios-universal/include" \
+-DFREETYPE_LIBRARY:PATH="$THIRDPARTY_PATH/freetype-ios-universal/lib/libFreeType_iphone_universal.a" \
+-DTIFF_INCLUDE_DIR:PATH="$THIRDPARTY_PATH/tiff-ios-device/include" \
+-DTIFF_LIBRARY:PATH="$THIRDPARTY_PATH/tiff-ios-device/lib/libtiff.a" \
+-DGDAL_INCLUDE_DIR:PATH="$THIRDPARTY_PATH/gdal-ios-device/include" \
+-DGDAL_LIBRARY:PATH="$THIRDPARTY_PATH/gdal-ios-device/lib/libgdal.a"
 
-Known issues:
-* When Linking final app against ive plugin, you need to add -lz to
-  the 'Other linker flags' list.
-* Apps and exes don't get created
-* You can only select Simulator, or Device projects. In the XCode
-  project you will see both types but the sdk they link will
-  be the same.
+
+Be sure to set the THIRDPARTY_PATH to the path containing your thirdparty 
+dependancies. Set IPHONE_SDKVER to the version of the iOS sdk you have 
+installed, in this instance 10.2. IPHONE_VERSION_MIN controls the base sdk 
+used by xcode, and lastly set OPENGL_PROFILE to the version of GLES you want 
+to use.
+
+Once this completes an XCode project will have been generated in the osg root 
+folder. Open the generated Xcode project, select the example_osgViewerIPhone 
+target. In 'General' tab set a development team. In the 'Build Settings' tab 
+search for 'Other Linker Flags', then for each target type (debug, release etc) 
+that you want to use open the list of arguments and delete the 'OpenGL' line
+and the '-framework' line above it. This is because cmake has tried to add the 
+desktop OpenGL library which we don't want.
+
+Once this is done you should be able to build and deploy the example_osgViewerIPhone
+target on your device.
+

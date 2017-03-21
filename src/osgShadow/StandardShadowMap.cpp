@@ -560,7 +560,7 @@ void StandardShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv 
         _stateset->setTextureAttribute(st->_baseTextureUnit,fakeTex,osg::StateAttribute::ON);
         _stateset->setTextureMode(st->_baseTextureUnit,GL_TEXTURE_2D,osg::StateAttribute::ON);
         _stateset->setTextureMode(st->_baseTextureUnit,GL_TEXTURE_3D,osg::StateAttribute::OFF);
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
             _stateset->setTextureMode(st->_baseTextureUnit,GL_TEXTURE_1D,osg::StateAttribute::OFF);
         #endif
     }
@@ -664,7 +664,7 @@ void StandardShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv 
 
         for( unsigned stage = 1; stage < 4; stage ++ )
         {
-            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
                 stateset->setTextureMode( stage, GL_TEXTURE_1D, osg::StateAttribute::OVERRIDE | osg::StateAttribute::OFF );
             #endif
             stateset->setTextureMode( stage, GL_TEXTURE_2D, osg::StateAttribute::OVERRIDE | osg::StateAttribute::OFF );

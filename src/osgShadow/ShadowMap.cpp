@@ -341,7 +341,7 @@ void ShadowMap::init()
             _stateset->setTextureAttribute(_baseTextureUnit,fakeTex,osg::StateAttribute::ON);
             _stateset->setTextureMode(_baseTextureUnit,GL_TEXTURE_2D,osg::StateAttribute::ON);
             _stateset->setTextureMode(_baseTextureUnit,GL_TEXTURE_3D,osg::StateAttribute::OFF);
-            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
                 _stateset->setTextureMode(_baseTextureUnit,GL_TEXTURE_1D,osg::StateAttribute::OFF);
             #endif
         }

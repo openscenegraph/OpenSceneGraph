@@ -33,12 +33,22 @@ using namespace osgText;
 using namespace std;
 
 #define FIXED_FUNCTION defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
-#define SHADERS_GL3 (defined(OSG_GL3_AVAILABLE))
+#define SHADERS_GL3 (defined(OSG_GL3_AVAILABLE) || defined(OSG_GLES3_AVAILABLE))
 #define SHADERS_GL2 !FIXED_FUNCTION && !SHADERS_GL3
+#define IS_ES (defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE))
 
 #if SHADERS_GL3
+
+#if !IS_ES
+    #define GLSL_VERSION_STR "330 core"
+    #define GLYPH_CMP "r"
+#else 
+    #define GLSL_VERSION_STR "300 es"
+    #define GLYPH_CMP "a"
+#endif
+
 static const char* gl3_TextVertexShader = {
-    "#version 330 core\n"
+    "#version " GLSL_VERSION_STR "\n"
     "// gl3_TextVertexShader\n"
     "#ifdef GL_ES\n"
     "    precision highp float;\n"
@@ -58,7 +68,7 @@ static const char* gl3_TextVertexShader = {
 };
 
 static const char* gl3_TextFragmentShader = {
-    "#version 330 core\n"
+    "#version " GLSL_VERSION_STR "\n"
     "// gl3_TextFragmentShader\n"
     "#ifdef GL_ES\n"
     "    precision highp float;\n"
@@ -69,7 +79,7 @@ static const char* gl3_TextFragmentShader = {
     "out vec4 color;\n"
     "void main(void)\n"
     "{\n"
-    "    if (texCoord.x>=0.0) color = vertexColor * vec4(1.0, 1.0, 1.0, texture(glyphTexture, texCoord).r);\n"
+    "    if (texCoord.x>=0.0) color = vertexColor * vec4(1.0, 1.0, 1.0, texture(glyphTexture, texCoord)." GLYPH_CMP ");\n"
     "    else color = vertexColor;\n"
     "}\n"
 };

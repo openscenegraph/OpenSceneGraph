@@ -1,16 +1,23 @@
 // Created by Thomas Hogarth 2009
-// cleaned up by Stephan Huber 2013
+// Cleaned up by Stephan Huber 2013
+// Added gles3 support 2017 TH
 //
 
-// this example will create a fullscreen window showing a grey box. You can interact with it via
+// this example will create a fullscreen window showing a box. You can interact with it via
 // multi-touch gestures.
 
 #import "iphoneViewerAppDelegate.h"
 #include <osgGA/MultiTouchTrackballManipulator>
 #include <osg/ShapeDrawable>
+#include <osgUtil/Optimizer>
 
 //include the iphone specific windowing stuff
 #include <osgViewer/api/IOS/GraphicsWindowIOS> 
+
+#include "shaders.h"
+
+// global programs
+osg::ref_ptr<osg::Program> _vertColorProgram;
 
 
 @interface MyViewController : UIViewController
@@ -33,10 +40,19 @@
 
 @synthesize _window;
 
+//
+// Shape drawables sometimes use gl_quads so use this function to convert
+//
+void optimizeNode(osg::Node* node) {
+    osgUtil::Optimizer optimizer;
+    optimizer.optimize(node, osgUtil::Optimizer::TRISTRIP_GEOMETRY);
+}
 
+//
+// create a camera to set up the projection and model view matrices, and the subgraph to draw in the HUD
+//
 osg::Camera* createHUD(unsigned int w, unsigned int h)
 {
-    // create a camera to set up the projection and model view matrices, and the subgraph to draw in the HUD
     osg::Camera* camera = new osg::Camera;
     
     // set the projection matrix
@@ -55,28 +71,21 @@ osg::Camera* createHUD(unsigned int w, unsigned int h)
     // we don't want the camera to grab event focus from the viewers main camera(s).
     camera->setAllowEventFocus(false);
     
-    
-    
     // add to this camera a subgraph to render
     {
-        
         osg::Geode* geode = new osg::Geode();
-        
-        std::string timesFont("fonts/arial.ttf");
-        
-        // turn lighting off for the text and disable depth test to ensure it's always ontop.
-        osg::StateSet* stateset = geode->getOrCreateStateSet();
-        stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
         
         osg::Vec3 position(50.0f,h-50,0.0f);
         
         {
-            osgText::Text* text = new  osgText::Text;
-            geode->addDrawable( text );
-            
-            text->setFont(timesFont);
+            osgText::Text* text = new  osgText::Text();
+            text->setUseVertexBufferObjects(true);
+            text->setFont(0);//"fonts/arial.ttf");
             text->setPosition(position);
             text->setText("A simple multi-touch-example\n1 touch = rotate, \n2 touches = drag + scale, \n3 touches = home");
+            text->setColor(osg::Vec4(0.9,0.1,0.1,1.0));
+
+            geode->addDrawable( text );
         }
         
         camera->addChild(geode);
@@ -106,24 +115,29 @@ private:
             osg::Geode* geode = new osg::Geode();
             
             osg::ShapeDrawable* drawable = new osg::ShapeDrawable(new osg::Box(osg::Vec3(0,0,0), 100));
+            drawable->setUseVertexBufferObjects(true);
+            drawable->setDataVariance(osg::Object::DYNAMIC);
+#if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
+            drawable->getOrCreateStateSet()->setAttributeAndModes(_vertColorProgram, osg::StateAttribute::ON);
+            optimizeNode(drawable);
+#endif
             drawable->setColor(osg::Vec4(0.5, 0.5, 0.5,1));
+            
             geode->addDrawable(drawable);
             
             ss << "Touch " << i;
             
             osgText::Text* text = new  osgText::Text;
-            geode->addDrawable( text );
-            drawable->setDataVariance(osg::Object::DYNAMIC);
-            _drawables.push_back(drawable);
-            
-            
-            text->setFont("fonts/arial.ttf");
+            text->setUseVertexBufferObjects(true);
+            text->setFont(0); //"fonts/arial.ttf");
             text->setPosition(osg::Vec3(110,0,0));
-            text->setText(ss.str());
-            _texts.push_back(text);
             text->setDataVariance(osg::Object::DYNAMIC);
+            text->setText(ss.str());
             
+            geode->addDrawable( text );
             
+            _drawables.push_back(drawable);
+            _texts.push_back(text);
             
             osg::MatrixTransform* mat = new osg::MatrixTransform();
             mat->addChild(geode);
@@ -133,8 +147,6 @@ private:
             
             parent_group->addChild(mat);
         }
-        
-        parent_group->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     }
     
     virtual bool handle (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, osg::Object *, osg::NodeVisitor *)
@@ -179,28 +191,29 @@ private:
                     {
                         case osgGA::GUIEventAdapter::TOUCH_BEGAN:
                             _drawables[j]->setColor(osg::Vec4(0,1,0,1));
-                            std::cout << "touch began: " << ss.str() << std::endl;
+                            OSG_INFO << "touch began: " << ss.str() << std::endl;
                             break;
                             
                         case osgGA::GUIEventAdapter::TOUCH_MOVED:
-                            //std::cout << "touch moved: " << ss.str() << std::endl;
+                            //OSG_INFO << "touch moved: " << ss.str() << std::endl;
                             _drawables[j]->setColor(osg::Vec4(1,1,1,1));
                             break;
                             
                         case osgGA::GUIEventAdapter::TOUCH_ENDED:
                             _drawables[j]->setColor(osg::Vec4(1,0,0,1));
-                            std::cout << "touch ended: " << ss.str() << std::endl;
+                            OSG_INFO << "touch ended: " << ss.str() << std::endl;
                             ++num_touch_ended;
                             break;
                             
                         case osgGA::GUIEventAdapter::TOUCH_STATIONERY:
-                            _drawables[j]->setColor(osg::Vec4(0.8,0.8,0.8,1));
+                            _drawables[j]->setColor(osg::Vec4(0.5,0.5,0.5,1));
                             break;
                             
                         default:
                             break;
                             
                     }
+
                 }
                 
                 // hide unused geometry
@@ -279,11 +292,11 @@ private:
         osg::ref_ptr<osg::Referenced> windata = new osgViewer::GraphicsWindowIOS::WindowData(parent_view);
         
         // Setup the traits parameters
-        traits->x = 50;
-        traits->y = 50;
-        traits->width = w-100;
-        traits->height = h-100;
-        traits->depth = 16; //keep memory down, default is currently 24
+        traits->x = 0;
+        traits->y = 0;
+        traits->width = w;
+        traits->height = h;
+        traits->depth = 16; //can be 16 or 24
         traits->windowDecoration = false;
         traits->doubleBuffer = true;
         traits->sharedContext = 0;
@@ -301,43 +314,60 @@ private:
         {
             _viewer->getCamera()->setGraphicsContext(graphicsContext);
             _viewer->getCamera()->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
+            _viewer->getCamera()->setProjectionMatrixAsPerspective(60.0, (double)traits->width/(double)traits->height, 0.1, 1000.0);
         }
     }
-        
+    
+    // create our default programs
+#if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
+    _vertColorProgram = new osg::Program();
+    _vertColorProgram->addShader( new osg::Shader(osg::Shader::VERTEX, ColorShaderVert));
+    _vertColorProgram->addShader( new osg::Shader(osg::Shader::FRAGMENT, ColorShaderFrag));
+#endif
     
     //create root
-    _root = new osg::MatrixTransform();    
+    _root = new osg::MatrixTransform();
+    _root->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);
     
     //load and attach scene model
-    osg::ref_ptr<osg::Node> model = (osgDB::readNodeFile("hog.osg"));
-    if (model) {
-        _root->addChild(model);
-    }
-    else {
+    osg::ref_ptr<osg::Node> model = osgDB::readNodeFile("hog.osg");
+    if (!model) {
         osg::Geode* geode = new osg::Geode();
-        osg::ShapeDrawable* drawable = new osg::ShapeDrawable(new osg::Box(osg::Vec3(1,1,1), 1));
+        osg::ShapeDrawable* drawable = new osg::ShapeDrawable(new osg::Box(osg::Vec3(0,0,0), 1));
+        drawable->setColor(osg::Vec4(0.1,0.1,0.9,1.0));
         geode->addDrawable(drawable);
-        _root->addChild(geode);
+        model = geode;
     }
     
+    // attach shader program if needed
+#if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
+    model->getOrCreateStateSet()->setAttributeAndModes(_vertColorProgram, osg::StateAttribute::ON);
+    optimizeNode(model);
+#endif
+
+    _root->addChild(model);
+
+    // create text hud
     osg::Camera* hud_camera = createHUD(w,h);
     _root->addChild(hud_camera);
     
-        
+    
+    // attach root to viewer and add event handlers
     _viewer->setSceneData(_root.get());
     _viewer->setCameraManipulator(new osgGA::MultiTouchTrackballManipulator());
-    
     _viewer->addEventHandler(new TestMultiTouchEventHandler(hud_camera));
 
-    
-    // sun single-threaded
+    // run single-threaded
     _viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
+    
+    osg::setNotifyLevel(osg::INFO);
     
     _viewer->realize();
     
     // render a frame so the window-manager shows some content and not only an empty + black window
     _viewer->frame();
     
+    osg::setNotifyLevel(osg::WARN);
     
     // create a display link, which will update our scene on every screen-refresh
     _displayLink = [application.keyWindow.screen displayLinkWithTarget:self selector:@selector(updateScene)];

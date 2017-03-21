@@ -264,8 +264,6 @@ public:
 
     void addGlyph(Glyph* glyph,int posX, int posY);
 
-    virtual void apply(osg::State& state) const;
-
     /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
     virtual void setThreadSafeRefUnref(bool threadSafe);
 

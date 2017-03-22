@@ -61,6 +61,9 @@ class OSG_EXPORT Texture2DMultisample : public Texture
         inline void setNumSamples( int samples ) { _numSamples = samples; }
         GLsizei getNumSamples() const { return _numSamples; }
 
+        inline void setFixedSampleLocations( GLboolean fixedSampleLocations ) { _fixedsamplelocations = fixedSampleLocations; }
+        inline GLboolean getFixedSampleLocations() const { return _fixedsamplelocations; }
+ 
         // unnecessary for Texture2DMultisample
         virtual void setImage(unsigned int /*face*/, Image* /*image*/) {}
 

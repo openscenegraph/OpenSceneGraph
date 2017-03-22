@@ -243,7 +243,53 @@ void BuildShapeGeometryVisitor::End()
 {
     if (_start_index>=_vertices->size()) return;
 
-    _geometry->addPrimitiveSet(new DrawArrays(_mode, _start_index, _vertices->size()-_start_index));
+
+    if (_mode==GL_QUADS)
+    {
+        osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
+        _geometry->addPrimitiveSet(primitives.get());
+
+        for(unsigned int i=_start_index; i<_vertices->size(); i+=4)
+        {
+            unsigned int p0 = i;
+            unsigned int p1 = i+1;
+            unsigned int p2 = i+2;
+            unsigned int p3 = i+3;
+
+            primitives->push_back(p0);
+            primitives->push_back(p3);
+            primitives->push_back(p1);
+
+            primitives->push_back(p1);
+            primitives->push_back(p3);
+            primitives->push_back(p2);
+        }
+    }
+    else if (_mode==GL_QUAD_STRIP)
+    {
+        osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
+        _geometry->addPrimitiveSet(primitives.get());
+
+        for(unsigned int i=_start_index; i<_vertices->size()-2; i+=2)
+        {
+            unsigned int p0 = i;
+            unsigned int p1 = i+1;
+            unsigned int p2 = i+2;
+            unsigned int p3 = i+3;
+
+            primitives->push_back(p0);
+            primitives->push_back(p2);
+            primitives->push_back(p1);
+
+            primitives->push_back(p1);
+            primitives->push_back(p2);
+            primitives->push_back(p3);
+        }
+    }
+    else
+    {
+        _geometry->addPrimitiveSet(new DrawArrays(_mode, _start_index, _vertices->size()-_start_index));
+    }
 
     for(unsigned int i=_start_index; i<_vertices->size(); ++i)
     {

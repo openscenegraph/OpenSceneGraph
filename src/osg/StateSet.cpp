@@ -29,6 +29,7 @@
 
 #include <osg/TexGen>
 #include <osg/Texture1D>
+#include <osg/Texture2D>
 #include <osg/TextureCubeMap>
 #include <osg/TextureRectangle>
 #include <osg/Texture2DArray>
@@ -37,6 +38,102 @@
 #include <algorithm>
 
 using namespace osg;
+
+
+#define FIXED_FUNCTION defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
+#define SHADERS_GL3 (defined(OSG_GL3_AVAILABLE) || defined(OSG_GLES3_AVAILABLE))
+#define SHADERS_GL2 !FIXED_FUNCTION && !SHADERS_GL3
+#define IS_ES (defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE))
+
+#if SHADERS_GL3
+
+#if !IS_ES
+    #define GLSL_VERSION_STR "330 core"
+#else
+    #define GLSL_VERSION_STR "300 es"
+#endif
+
+static const char* gl3_VertexShader = {
+    "#version " GLSL_VERSION_STR "\n"
+    "// gl3_VertexShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
+    "in vec4 osg_Vertex;\n"
+    "in vec4 osg_Color;\n"
+    "in vec4 osg_MultiTexCoord0;\n"
+    "uniform mat4 osg_ModelViewProjectionMatrix;\n"
+    "out vec2 texCoord;\n"
+    "out vec4 vertexColor;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_Position = osg_ModelViewProjectionMatrix * osg_Vertex;\n"
+    "    texCoord = osg_MultiTexCoord0.xy;\n"
+    "    vertexColor = osg_Color; \n"
+    "}\n"
+};
+
+static const char* gl3_FragmentShader = {
+    "#version " GLSL_VERSION_STR "\n"
+    "// gl3_FragmentShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
+    "uniform sampler2D baseTexture;\n"
+    "in vec2 texCoord;\n"
+    "in vec4 vertexColor;\n"
+    "out vec4 color;\n"
+    "void main(void)\n"
+    "{\n"
+    "    color = vertexColor * texture2D(baseTexture, texCoord);\n"
+    "}\n"
+};
+
+#endif
+
+
+#if SHADERS_GL2
+static const char* gl2_VertexShader = {
+    "// gl2_VertexShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
+    "varying vec2 texCoord;\n"
+    "varying vec4 vertexColor;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+    "    texCoord = gl_MultiTexCoord0.xy;\n"
+    "    vertexColor = gl_Color; \n"
+    "}\n"
+};
+
+static const char* gl2_FragmentShader = {
+    "// gl2_FragmentShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
+    "uniform sampler2D baseTexture;\n"
+    "varying vec2 texCoord;\n"
+    "varying vec4 vertexColor;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_FragColor = vertexColor * texture2D(baseTexture, texCoord);\n"
+    "}\n"
+};
+#endif
+
+
+extern osg::Texture2D* createDefaultTexture()
+{
+    osg::ref_ptr<osg::Image> image = new osg::Image;
+    image->allocateImage(1, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE);
+    image->setColor(osg::Vec4(1.0,1.0,1.0,1.0), 0, 0, 0);
+
+    osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D(image.get());
+    return texture.release();
+}
+
 
 // local class to help porting from OSG0.8.x to 0.9.x
 class TextureGLModeSet
@@ -602,6 +699,35 @@ void StateSet::setGlobalDefaults()
         setAttributeAndModes(material,StateAttribute::ON);
 
     #endif
+
+
+    OSG_INFO<<"void StateSet::setGlobalDefaults()"<<std::endl;
+
+#if SHADERS_GL3
+
+    OSG_INFO<<"   StateSet::setGlobalDefaults() Setting up GL3 compatible shaders"<<std::endl;
+
+    osg::ref_ptr<osg::Program> program = new osg::Program;
+    program->addShader(new osg::Shader(osg::Shader::VERTEX, gl3_VertexShader));
+    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl3_FragmentShader));
+    setAttributeAndModes(program.get());
+    setTextureAttribute(0, createDefaultTexture());
+    addUniform(new osg::Uniform("baseTexture", 0));
+
+#elif SHADERS_GL2
+
+    OSG_INFO<<"   StateSet::setGlobalDefaults() Setting up GL2 compatible shaders"<<std::endl;
+
+    osg::ref_ptr<osg::Program> program = new osg::Program;
+    program->addShader(new osg::Shader(osg::Shader::VERTEX, gl2_VertexShader));
+    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl2_FragmentShader));
+    setAttributeAndModes(program.get());
+    setTextureAttribute(0, createDefaultTexture());
+    addUniform(new osg::Uniform("baseTexture", 0));
+
+#endif
+
+
 }
 
 

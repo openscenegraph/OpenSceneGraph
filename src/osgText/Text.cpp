@@ -28,8 +28,6 @@
 using namespace osg;
 using namespace osgText;
 
-//#define TREES_CODE_FOR_MAKING_SPACES_EDITABLE
-
 Text::Text():
     _enableDepthWrites(true),
     _backdropType(NONE),

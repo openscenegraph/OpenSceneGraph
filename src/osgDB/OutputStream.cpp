@@ -456,7 +456,7 @@ void OutputStream::writeImage( const osg::Image* img )
         default:
             if ( img->getWriteHint()==osg::Image::EXTERNAL_FILE )
                 decision = IMAGE_EXTERNAL;
-            else if ( isBinary() )
+            else
                 decision = IMAGE_INLINE_DATA;
             break;
         }

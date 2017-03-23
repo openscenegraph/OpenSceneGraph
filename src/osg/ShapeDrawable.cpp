@@ -16,11 +16,13 @@
 
 using namespace osg;
 
-ShapeDrawable::ShapeDrawable()
+ShapeDrawable::ShapeDrawable():
+    _color(1.0f, 1.0f, 1.0f, 1.0f)
 {
 }
 
 ShapeDrawable::ShapeDrawable(Shape* shape,TessellationHints* hints):
+    _color(1.0f, 1.0f, 1.0f, 1.0f),
     _tessellationHints(hints)
 {
     setShape(shape);
@@ -49,8 +51,6 @@ void ShapeDrawable::setShape(Shape* shape)
 
 void ShapeDrawable::setColor(const Vec4& color)
 {
-    if (color==_color) return;
-
     _color = color;
 
     Vec4Array* colors = dynamic_cast<Vec4Array*>(_colorArray.get());
@@ -91,4 +91,6 @@ void ShapeDrawable::build()
         BuildShapeGeometryVisitor dsv(this, _tessellationHints.get());
         _shape->accept(dsv);
     }
+
+    setColor(_color);
 }

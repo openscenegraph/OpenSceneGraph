@@ -58,19 +58,19 @@ void TexEnv::configureUniformNames()
     switch(_mode)
     {
         case(DECAL):
-            _defineList[TEXTURE_ENV_FUNCTION] = StateSet::DefinePair("(color, texture_color) texenv_DECAL(color, texture_color)", osg::StateAttribute::ON);
+            _defineList[TEXTURE_ENV_FUNCTION] = StateSet::DefinePair(str.clear()<<"(color, texture_color, unit) texenv_DECAL(color, texture_color, "<<_textureUnit<<")", osg::StateAttribute::ON);
             break;
         case(MODULATE):
-            _defineList[TEXTURE_ENV_FUNCTION] = StateSet::DefinePair("(color, texture_color) texenv_MODULATE(color, texture_color)", osg::StateAttribute::ON);
+            _defineList[TEXTURE_ENV_FUNCTION] = StateSet::DefinePair(str.clear()<<"(color, texture_color, unit) texenv_MODULATE(color, texture_color, "<<_textureUnit<<")", osg::StateAttribute::ON);
             break;
         case(BLEND):
-            _defineList[TEXTURE_ENV_FUNCTION] = StateSet::DefinePair(str.clear()<<"(color, texture_color) texenv_MODULATE(color, texture_color, "<<_textureUnit<<")", osg::StateAttribute::ON);
+            _defineList[TEXTURE_ENV_FUNCTION] = StateSet::DefinePair(str.clear()<<"(color, texture_color, unit) texenv_MODULATE(color, texture_color, "<<_textureUnit<<")", osg::StateAttribute::ON);
             break;
         case(REPLACE):
-            _defineList[TEXTURE_ENV_FUNCTION] = StateSet::DefinePair("(color, texture_color) texenv_REPLACE(color, texture_color)", osg::StateAttribute::ON);
+            _defineList[TEXTURE_ENV_FUNCTION] = StateSet::DefinePair(str.clear()<<"(color, texture_color, unit) texenv_REPLACE(color, texture_color), "<<_textureUnit<<")", osg::StateAttribute::ON);
             break;
         case(ADD):
-            _defineList[TEXTURE_ENV_FUNCTION] = StateSet::DefinePair("(color, texture_color) texenv_ADD(color, texture_color)", osg::StateAttribute::ON);
+            _defineList[TEXTURE_ENV_FUNCTION] = StateSet::DefinePair(str.clear()<<"(color, texture_color, unit) texenv_ADD(color, texture_color), "<<_textureUnit<<")", osg::StateAttribute::ON);
             break;
     }
 }

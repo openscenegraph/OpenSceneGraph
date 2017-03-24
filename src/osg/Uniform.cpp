@@ -184,7 +184,7 @@ void UniformBase::setEventCallback(UniformCallback* ec)
 
 void UniformBase::apply(const GLExtensions*, GLint) const
 {
-    OSG_NOTICE<<__PRETTY_FUNCTION__<<std::endl;
+    OSG_NOTICE<<"Unimplemented : UniformBase::apply(const GLExtensions*, GLint)"<<std::endl;
 }
 
 

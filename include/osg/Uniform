@@ -142,7 +142,6 @@ class TemplateArrayUniform : public osg::UniformBase
 
         virtual void apply(const osg::GLExtensions* ext, GLint location) const
         {
-            OSG_NOTICE<<__PRETTY_FUNCTION__<<" uniform Name "<<getName()<<std::endl;
             ext->glUniform(location, _array);
         }
 

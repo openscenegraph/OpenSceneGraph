@@ -250,6 +250,11 @@ void DisplaySettings::setDefaults()
     _keystoneHint = false;
 
     _OSXMenubarBehavior = MENUBAR_AUTO_HIDE;
+
+    _shaderPipeline = false;
+    _shaderPipelineNumTextureUnits = 4;
+
+
 }
 
 void DisplaySettings::setMaxNumberOfGraphicsContexts(unsigned int num)
@@ -370,6 +375,16 @@ static ApplicationUsageProxy DisplaySetting_e31(ApplicationUsage::ENVIRONMENTAL_
 static ApplicationUsageProxy DisplaySetting_e32(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_VERTEX_BUFFER_HINT <value>",
         "Set the hint to what backend osg::Geometry implementation to use. NO_PREFERENCE | VERTEX_BUFFER_OBJECT | VERTEX_ARRAY_OBJECT");
+static ApplicationUsageProxy DisplaySetting_e33(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+        "OSG_SHADER_PIPELINE <enable>",
+        "ON|IFF");
+static ApplicationUsageProxy DisplaySetting_e34(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+        "OSG_SHADER_PIPELINE_FILES",
+        "Specify the shader files to use for when Shader Pipeline is enabled");
+static ApplicationUsageProxy DisplaySetting_e35(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+        "OSG_SHADER_PIPELINE_NUM_TEXTURE_UNITS <value>",
+        "Specifiy number of texture units Shader Pipeline shaders support");
+
 
 void DisplaySettings::readEnvironmentalVariables()
 {
@@ -762,6 +777,55 @@ void DisplaySettings::readEnvironmentalVariables()
     {
         setNvOptimusEnablement(atoi(ptr));
     }
+
+
+    if( (ptr = getenv("OSG_SHADER_PIPELINE")) != 0)
+    {
+        if (strcmp(ptr,"OFF")==0)
+        {
+            _shaderPipeline = false;
+        }
+        else
+        if (strcmp(ptr,"ON")==0)
+        {
+            _shaderPipeline = true;
+        }
+    }
+
+
+    if ((ptr = getenv("OSG_SHADER_PIPELINE_FILES")) != 0)
+    {
+    #if defined(WIN32) && !defined(__CYGWIN__)
+        char delimitor = ';';
+    #else
+        char delimitor = ':';
+    #endif
+
+        _shaderPipelineFiles.clear();
+
+        std::string paths(ptr);
+        if (!paths.empty())
+        {
+            std::string::size_type start = 0;
+            std::string::size_type end;
+            while ((end = paths.find_first_of(delimitor,start))!=std::string::npos)
+            {
+                _shaderPipelineFiles.push_back(std::string(paths,start,end-start));
+                start = end+1;
+            }
+
+            std::string lastPath(paths,start,std::string::npos);
+            if (!lastPath.empty())
+                _shaderPipelineFiles.push_back(lastPath);
+        }
+    }
+
+    if( (ptr = getenv("OSG_SHADER_PIPELINE_NUM_TEXTURE_UNITS")) != 0)
+    {
+        _shaderPipelineNumTextureUnits = atoi(ptr);
+
+    }
+    OSG_NOTICE<<"_shaderPipelineNumTextureUnits = "<<_shaderPipelineNumTextureUnits<<std::endl;
 }
 
 void DisplaySettings::readCommandLine(ArgumentParser& arguments)

@@ -243,6 +243,12 @@ void State::initializeExtensionProcs()
     OSG_NOTICE<<"_forceVertexArrayObject = "<<_forceVertexArrayObject<<std::endl;
     OSG_NOTICE<<"_forceVertexBufferObject = "<<_forceVertexBufferObject<<std::endl;
 
+    if (DisplaySettings::instance()->getShaderPipeline())
+    {
+        setUseStateAttributeShaders(true);
+        setUseStateAttributeFixedFunction(true);
+    }
+
 
     // Set up up global VertexArrayState object
     _globalVertexArrayState = new VertexArrayState(this);

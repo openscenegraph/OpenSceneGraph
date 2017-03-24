@@ -344,7 +344,19 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         /** helper function for computing the right eye view matrix.*/
         virtual osg::Matrixd computeRightEyeViewImplementation(const osg::Matrixd& view, double eyeSeperationScale=1.0) const;
 
-    protected:
+
+        typedef std::vector< std::string > Filenames;
+
+        void setShaderPipeline(bool flag) { _shaderPipeline = flag; }
+        bool getShaderPipeline() const { return _shaderPipeline; }
+
+        void setShaderPipelineFiles(const Filenames& filename) { _shaderPipelineFiles = filename; }
+        const Filenames& getShaderPipelineFiles() const { return _shaderPipelineFiles; }
+
+        void setShaderPipelineNumTextureUnits(unsigned int units) { _shaderPipelineNumTextureUnits = units; }
+        unsigned int getShaderPipelineNumTextureUnits() const { return _shaderPipelineNumTextureUnits; }
+
+protected:
 
         virtual ~DisplaySettings();
 
@@ -406,6 +418,10 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         Objects                         _keystones;
 
         OSXMenubarBehavior              _OSXMenubarBehavior;
+
+        bool                            _shaderPipeline;
+        Filenames                       _shaderPipelineFiles;
+        unsigned int                    _shaderPipelineNumTextureUnits;
 
 };
 

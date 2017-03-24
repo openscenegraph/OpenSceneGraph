@@ -36,6 +36,7 @@
 
 #include <set>
 #include <algorithm>
+#include <sstream>
 
 using namespace osg;
 
@@ -703,31 +704,115 @@ void StateSet::setGlobalDefaults()
 
     OSG_INFO<<"void StateSet::setGlobalDefaults()"<<std::endl;
 
-#if SHADERS_GL3
+    if (DisplaySettings::instance()->getShaderPipeline())
+    {
+        osg::ref_ptr<osg::Program> program = new osg::Program;
 
-    OSG_INFO<<"   StateSet::setGlobalDefaults() Setting up GL3 compatible shaders"<<std::endl;
+        const DisplaySettings::Filenames& files = DisplaySettings::instance()->getShaderPipelineFiles();
+        if (!files.empty())
+        {
+            for(DisplaySettings::Filenames::const_iterator itr = files.begin();
+                itr != files.end();
+                ++itr)
+            {
+                std::string fileName = *itr;
+                std::string ext;
+                std::string::size_type dot = fileName.find_last_of('.');
+                if (dot!=std::string::npos) ext = std::string(fileName.begin()+dot+1,fileName.end());
+                OSG_NOTICE<<"    filename "<<*itr<<", "<<ext<<std::endl;
 
-    osg::ref_ptr<osg::Program> program = new osg::Program;
-    program->addShader(new osg::Shader(osg::Shader::VERTEX, gl3_VertexShader));
-    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl3_FragmentShader));
-    setAttributeAndModes(program.get());
-    setTextureAttribute(0, createDefaultTexture());
-    addUniform(new osg::Uniform("baseTexture", 0));
+                if (ext=="vert")
+                {
+                    OSG_NOTICE<<"vertex shader: "<<*itr<<std::endl;
+                    program->addShader(Shader::readShaderFile( Shader::VERTEX, fileName));
+                }
+                else if (ext=="frag")
+                {
+                    OSG_NOTICE<<"fragment shader: "<<*itr<<std::endl;
+                    program->addShader(Shader::readShaderFile( Shader::FRAGMENT, fileName));
+                }
 
-#elif SHADERS_GL2
+            }
+        }
+        else
+        {
+            OSG_NOTICE<<"void StateSet::setGlobalDefaults() ShaderPipeline enabled, numTextUnits = "<<DisplaySettings::instance()->getShaderPipelineNumTextureUnits()<<std::endl;
 
-    OSG_INFO<<"   StateSet::setGlobalDefaults() Setting up GL2 compatible shaders"<<std::endl;
-
-    osg::ref_ptr<osg::Program> program = new osg::Program;
-    program->addShader(new osg::Shader(osg::Shader::VERTEX, gl2_VertexShader));
-    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl2_FragmentShader));
-    setAttributeAndModes(program.get());
-    setTextureAttribute(0, createDefaultTexture());
-    addUniform(new osg::Uniform("baseTexture", 0));
-
-#endif
+            #include "shaders/shaderpipeline_vert.cpp"
+            program->addShader( new osg::Shader(osg::Shader::VERTEX, shaderpipeline_vert) );
 
 
+            #include "shaders/shaderpipeline_frag.cpp"
+            program->addShader( new osg::Shader(osg::Shader::FRAGMENT, shaderpipeline_frag) );
+        }
+
+        if (program->getNumShaders()!=0)
+        {
+            unsigned int maxTextureUnits = DisplaySettings::instance()->getShaderPipelineNumTextureUnits();
+
+            std::stringstream sstream;
+            sstream<<maxTextureUnits;
+            setDefine("GL_MAX_TEXTURE_UNITS", sstream.str());
+
+            #define ADD_DEFINE(DEF) \
+                sstream.str(""); \
+                sstream<<DEF; \
+                setDefine(#DEF, sstream.str());
+
+            if (maxTextureUnits>0)
+            {
+                osg::ref_ptr<osg::Texture2D> fallbackTexture = createDefaultTexture();
+                fallbackTexture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::CLAMP_TO_EDGE);
+                fallbackTexture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::CLAMP_TO_EDGE);
+                fallbackTexture->setWrap(osg::Texture2D::WRAP_R, osg::Texture2D::CLAMP_TO_EDGE);
+                fallbackTexture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
+                fallbackTexture->setFilter(osg::Texture2D::MAG_FILTER, osg::Texture2D::LINEAR);
+                for(unsigned int i=0; i<maxTextureUnits;++i)
+                {
+                    setTextureAttribute(i, fallbackTexture.get());
+                }
+
+                ADD_DEFINE(GL_ALPHA);
+                ADD_DEFINE(GL_INTENSITY);
+                ADD_DEFINE(GL_LUMINANCE);
+                ADD_DEFINE(GL_RED);
+                ADD_DEFINE(GL_RG);
+                ADD_DEFINE(GL_RGB);
+                ADD_DEFINE(GL_RGBA);
+
+            }
+
+            setAttribute(program.get());
+        }
+    }
+    else
+    {
+        OSG_NOTICE<<"void StateSet::setGlobalDefaults() ShaderPipeline disabled."<<std::endl;
+
+    #if SHADERS_GL3
+
+        OSG_INFO<<"   StateSet::setGlobalDefaults() Setting up GL3 compatible shaders"<<std::endl;
+
+        osg::ref_ptr<osg::Program> program = new osg::Program;
+        program->addShader(new osg::Shader(osg::Shader::VERTEX, gl3_VertexShader));
+        program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl3_FragmentShader));
+        setAttributeAndModes(program.get());
+        setTextureAttribute(0, createDefaultTexture());
+        addUniform(new osg::Uniform("baseTexture", 0));
+
+    #elif SHADERS_GL2
+
+        OSG_INFO<<"   StateSet::setGlobalDefaults() Setting up GL2 compatible shaders"<<std::endl;
+
+        osg::ref_ptr<osg::Program> program = new osg::Program;
+        program->addShader(new osg::Shader(osg::Shader::VERTEX, gl2_VertexShader));
+        program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl2_FragmentShader));
+        setAttributeAndModes(program.get());
+        setTextureAttribute(0, createDefaultTexture());
+        addUniform(new osg::Uniform("baseTexture", 0));
+
+    #endif
+    }
 }
 
 

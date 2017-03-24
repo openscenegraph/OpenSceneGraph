@@ -87,7 +87,7 @@ static const char* gl3_TextFragmentShader = {
 #endif
 
 
-#if SHADERS_GL2
+#if !SHADERS_GL3
 static const char* gl2_TextVertexShader = {
     "// gl2_TextVertexShader\n"
     "#ifdef GL_ES\n"
@@ -336,6 +336,7 @@ Font::Font(FontImplementation* implementation):
     _stateset->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::ON);
 #endif
 
+
 #if SHADERS_GL3
 
     OSG_INFO<<"Font::Font() Setting up GL3 compatible shaders"<<std::endl;
@@ -346,15 +347,25 @@ Font::Font(FontImplementation* implementation):
     _stateset->setAttributeAndModes(program.get());
     _stateset->addUniform(new osg::Uniform("glyphTexture", 0));
 
-#elif SHADERS_GL2
+#else
 
-    OSG_INFO<<"Font::Font() Setting up GL2 compatible shaders"<<std::endl;
 
-    osg::ref_ptr<osg::Program> program = new osg::Program;
-    program->addShader(new osg::Shader(osg::Shader::VERTEX, gl2_TextVertexShader));
-    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl2_TextFragmentShader));
-    _stateset->setAttributeAndModes(program.get());
-    _stateset->addUniform(new osg::Uniform("glyphTexture", 0));
+    bool useShaders = (osg::DisplaySettings::instance()->getShaderPipeline());
+    #if SHADERS_GL2
+        useShaders = true;
+    #endif
+
+    if (useShaders)
+    {
+
+        OSG_INFO<<"Font::Font() Setting up GL2 compatible shaders"<<std::endl;
+
+        osg::ref_ptr<osg::Program> program = new osg::Program;
+        program->addShader(new osg::Shader(osg::Shader::VERTEX, gl2_TextVertexShader));
+        program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl2_TextFragmentShader));
+        _stateset->setAttributeAndModes(program.get());
+        _stateset->addUniform(new osg::Uniform("glyphTexture", 0));
+    }
 
 #endif
 

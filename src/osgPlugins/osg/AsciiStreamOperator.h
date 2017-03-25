@@ -49,6 +49,12 @@ public:
     virtual void writeULong( unsigned long l )
     { indentIfRequired(); *_out << l << ' '; }
 
+    virtual void writeInt64( GLint64 ll )
+    { indentIfRequired(); *_out << ll << ' '; }
+
+    virtual void writeUInt64( GLuint64 ull )
+    { indentIfRequired(); *_out << ull << ' '; }
+
     virtual void writeFloat( float f )
     { indentIfRequired(); *_out << f << ' '; }
 

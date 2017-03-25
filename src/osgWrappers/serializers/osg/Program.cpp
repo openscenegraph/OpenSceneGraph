@@ -77,48 +77,48 @@ static bool writeShaders( osgDB::OutputStream& os, const osg::Program& attr )
     return true;
 }
 // feedBackVaryings
-static bool checkFeedbackVaryingsName( const osg::Program& attr )
+static bool checkFeedBackVaryingsName( const osg::Program& attr )
 {
 	return true;
 }
-static bool readFeedbackVaryingsName( osgDB::InputStream& is, osg::Program& attr )
+static bool readFeedBackVaryingsName( osgDB::InputStream& is, osg::Program& attr )
 {
 	unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
 	for ( unsigned int i=0; i<size; ++i )
 	{
 		std::string str;
 		is>> str;
-		attr.addTransformFeedbackVarying(str);
+		attr.addTransformFeedBackVarying(str);
 	}
 	is >> is.END_BRACKET;
 	return true;
 }
-static bool writeFeedbackVaryingsName( osgDB::OutputStream& os, const osg::Program& attr )
+static bool writeFeedBackVaryingsName( osgDB::OutputStream& os, const osg::Program& attr )
 {
-	unsigned int size = attr.getNumTransformFeedbackVaryings();
+	unsigned int size = attr.getNumTransformFeedBackVaryings();
 	os.writeSize(size); os << os.BEGIN_BRACKET << std::endl;
 	for ( unsigned int i=0; i<size; ++i )
 	{
-		os << attr.getTransformFeedbackVarying(i)<< std::endl;
+		os << attr.getTransformFeedBackVarying(i)<< std::endl;
 	}
 	os << os.END_BRACKET << std::endl;
 	return true;
 }
 // feedBack mode
-static bool checkFeedbackMode( const osg::Program& attr )
+static bool checkFeedBackMode( const osg::Program& attr )
 {
 	return true;
 }
-static bool readFeedbackMode( osgDB::InputStream& is, osg::Program& attr )
+static bool readFeedBackMode( osgDB::InputStream& is, osg::Program& attr )
 {
 	unsigned int size ;
 	is>>size;
-	attr.setTransformFeedbackMode(size);
+	attr.setTransformFeedBackMode(size);
 	return true;
 }
-static bool writeFeedbackMode( osgDB::OutputStream& os, const osg::Program& attr )
+static bool writeFeedBackMode( osgDB::OutputStream& os, const osg::Program& attr )
 {
-	os << attr.getTransformFeedbackMode()<< std::endl;
+	os << attr.getTransformFeedBackMode()<< std::endl;
 	return true;
 }
 // _numGroupsX/Y/Z
@@ -164,7 +164,7 @@ REGISTER_OBJECT_WRAPPER( Program,
 
     {
         UPDATE_TO_VERSION_SCOPED( 116 )
-        ADD_USER_SERIALIZER( FeedbackVaryingsName );
-        ADD_USER_SERIALIZER( FeedbackMode );
+        ADD_USER_SERIALIZER( FeedBackVaryingsName );
+        ADD_USER_SERIALIZER( FeedBackMode );
     }
 }

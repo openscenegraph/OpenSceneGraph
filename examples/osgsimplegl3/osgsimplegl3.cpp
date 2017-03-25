@@ -28,8 +28,6 @@ void configureShaders( osg::StateSet* stateSet )
         "uniform vec3 ecLightDir; \n"
         " \n"
         "in vec4 osg_Vertex; \n"
-
-        "in vec4 osg_Color; \n"
         "in vec3 osg_Normal; \n"
         "out vec4 color; \n"
         " \n"
@@ -37,7 +35,7 @@ void configureShaders( osg::StateSet* stateSet )
         "{ \n"
         "    vec3 ecNormal = normalize( osg_NormalMatrix * osg_Normal ); \n"
         "    float diffuse = max( dot( ecLightDir, ecNormal ), 0. ); \n"
-        "    color = osg_Color*vec4( vec3( diffuse ), 1. ); \n"
+        "    color = vec4( vec3( diffuse ), 1. ); \n"
         " \n"
         "    gl_Position = osg_ModelViewProjectionMatrix * osg_Vertex; \n"
         "} \n";

@@ -136,7 +136,6 @@ SET(TARGET_H
     ${HEADER_PATH}/Polytope
     ${HEADER_PATH}/PositionAttitudeTransform
     ${HEADER_PATH}/PrimitiveSet
-   # ${HEADER_PATH}/PrimitiveSetIndirect
     ${HEADER_PATH}/PrimitiveRestartIndex
     ${HEADER_PATH}/Program
     ${HEADER_PATH}/Projection
@@ -164,7 +163,6 @@ SET(TARGET_H
     ${HEADER_PATH}/Stats
     ${HEADER_PATH}/Stencil
     ${HEADER_PATH}/StencilTwoSided
-    ${HEADER_PATH}/SubroutineUniform
     ${HEADER_PATH}/Switch
     ${HEADER_PATH}/TemplatePrimitiveFunctor
     ${HEADER_PATH}/TexEnv
@@ -221,7 +219,6 @@ SET(TARGET_H
     ${HEADER_PATH}/Vec4ub
     ${HEADER_PATH}/Vec4ui
     ${HEADER_PATH}/Vec4us
-    ${HEADER_PATH}/VertexArrayState
     ${HEADER_PATH}/VertexAttribDivisor
     ${HEADER_PATH}/VertexArrayState
     ${HEADER_PATH}/VertexProgram
@@ -343,7 +340,6 @@ SET(TARGET_SRC
     PolygonStipple.cpp
     PositionAttitudeTransform.cpp
     PrimitiveSet.cpp
-  #  PrimitiveSetIndirect.cpp
     PrimitiveRestartIndex.cpp
     Program.cpp
     Projection.cpp
@@ -368,7 +364,6 @@ SET(TARGET_SRC
     Stats.cpp
     Stencil.cpp
     StencilTwoSided.cpp
-    SubroutineUniform.cpp
     Switch.cpp
     TexEnvCombine.cpp
     TexEnv.cpp
@@ -393,7 +388,6 @@ SET(TARGET_SRC
     ValueMap.cpp
     ValueStack.cpp
     Version.cpp
-    #VertexArrayState.cpp
     VertexAttribDivisor.cpp
     VertexArrayState.cpp
     VertexProgram.cpp

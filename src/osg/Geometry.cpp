@@ -133,7 +133,7 @@ void Geometry::configureBufferObjects()
         itr != arrays.end();
         ++itr)
     {
-        osg::Array* array = *itr;
+        osg::Array* array = itr->get();
         if (array->getBinding()==osg::Array::BIND_PER_VERTEX)
         {
             if (array->getNumElements()==numVertices)
@@ -820,9 +820,11 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
 
             State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 
-            state.bindVertexArrayObject();
+            state.bindVertexArrayObject(vas);
 
             drawVertexArraysImplementation(renderInfo);
+
+            state.unbindVertexArrayObject();
         }
     }
     else
@@ -858,11 +860,15 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
     drawPrimitivesImplementation(renderInfo);
 
-    if (!state.useVertexArrayObject(_useVertexArrayObject) || state.getCurrentVertexArrayState()->getRequiresSetArrays())
+    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
+    bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
+
+    if (usingVertexBufferObjects && !usingVertexArrayObjects)
     {
         // unbind the VBO's if any are used.
-        state.unbindVertexBufferObject();
-        state.unbindElementBufferObject();
+        osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
+        vas->unbindVertexBufferObject();
+        vas->unbindElementBufferObject();
     }
 
     if (checkForGLErrors) state.checkGLErrors("end of Geometry::drawImplementation().");

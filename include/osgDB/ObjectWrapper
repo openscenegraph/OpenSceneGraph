@@ -17,6 +17,7 @@
 
 #include <OpenThreads/ReentrantMutex>
 #include <osgDB/Serializer>
+#include <osg/ScriptEngine>
 
 namespace osgDB
 {

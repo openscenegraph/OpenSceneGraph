@@ -50,7 +50,7 @@ struct GeometryFinder : public osg::NodeVisitor
 
 osg::ref_ptr<osg::Geometry> getShape(const std::string& name)
 {
-    osg::ref_ptr<osg::Node> shape0 = osgDB::readNodeFile(name);
+    osg::ref_ptr<osg::Node> shape0 = osgDB::readRefNodeFile(name);
     if (shape0)
     {
         GeometryFinder finder;

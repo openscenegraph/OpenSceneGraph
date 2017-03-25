@@ -337,7 +337,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriterKTX::writeImage(const osg::Image &i
     return res;
 }
 
-osgDB::ReaderWriter::WriteResult ReaderWriterKTX::writeImage(const osg::Image& image, std::ostream& fout, const Options* options) const
+osgDB::ReaderWriter::WriteResult ReaderWriterKTX::writeImage(const osg::Image& image, std::ostream& fout, const Options* /*options*/) const
 {
 //    bool noAutoFlipDDSWrite = options && options->getOptionString().find("ddsNoAutoFlipWrite") != std::string::npos; //maybe for ktx too?
     bool success = writeKTXStream(&image, fout);

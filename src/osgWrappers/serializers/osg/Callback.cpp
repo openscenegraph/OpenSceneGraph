@@ -14,6 +14,5 @@ REGISTER_OBJECT_WRAPPER( Callback,
     ADD_OBJECT_SERIALIZER( NestedCallback, osg::Callback, NULL );  // _nestedCallback
 }
 
-//MY
 #undef OBJECT_CAST
 #define OBJECT_CAST static_cast

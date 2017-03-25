@@ -53,7 +53,7 @@
     #define GL_PERSPECTIVE_CORRECTION_HINT      0x0C50
 #endif
 
-#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
     #define GL_POLYGON_SMOOTH_HINT              0x0C53
     #define GL_LINE_SMOOTH_HINT                 0x0C52
     #define GL_FRAGMENT_SHADER_DERIVATIVE_HINT  0x8B8B

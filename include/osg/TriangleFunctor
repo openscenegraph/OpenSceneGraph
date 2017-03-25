@@ -34,16 +34,33 @@ namespace osg {
  *  TriangleFunctor from some other geometry representation.
  *  @see \c PrimitiveFunctor for general usage hints.
  */
- class PrimitiveFunctorImpl :public PrimitiveFunctor{
- public:
-   virtual void setVertexArray(unsigned int,const Vec2*)
+template<class T>
+class TriangleFunctor : public PrimitiveFunctor, public T
+{
+public:
+
+    TriangleFunctor()
+    {
+        _vertexArraySize=0;
+        _vertexArrayPtr=0;
+        _modeCache=0;
+        _treatVertexDataAsTemporary=false;
+    }
+
+    virtual ~TriangleFunctor() {}
+
+    void setTreatVertexDataAsTemporary(bool treatVertexDataAsTemporary) { _treatVertexDataAsTemporary=treatVertexDataAsTemporary; }
+    bool getTreatVertexDataAsTemporary() const { return _treatVertexDataAsTemporary; }
+
+    virtual void setVertexArray(unsigned int,const Vec2*)
     {
         notify(WARN)<<"Triangle Functor does not support Vec2* vertex arrays"<<std::endl;
     }
 
     virtual void setVertexArray(unsigned int count,const Vec3* vertices)
     {
-        notify(WARN)<<"Triangle Functor does not support Vec3* vertex arrays"<<std::endl;
+        _vertexArraySize = count;
+        _vertexArrayPtr = vertices;
     }
 
     virtual void setVertexArray(unsigned int,const Vec4* )
@@ -65,58 +82,6 @@ namespace osg {
     {
         notify(WARN)<<"Triangle Functor does not support Vec4d* vertex arrays"<<std::endl;
     }
-      /// Mimics the OpenGL \c glVertex() "family of functions".
-    virtual void vertex(const Vec2& vert)  {
-        notify(WARN)<<"Triangle Functor  vertex() not implemented"<<std::endl;
-    }
-    /// Mimics the OpenGL \c glVertex() "family of functions".
-    virtual void vertex(const Vec3& vert)  {
-        notify(WARN)<<"Triangle Functor  vertex() not implemented"<<std::endl;
-    }
-
-    /// Mimics the OpenGL \c glVertex() "family of functions".
-    virtual void vertex(const Vec4& vert)  {
-        notify(WARN)<<"Triangle Functor  vertex() not implemented"<<std::endl;
-    }
-
-    /// Mimics the OpenGL \c glVertex() "family of functions".
-    virtual void vertex(float x,float y)  {
-        notify(WARN)<<"Triangle Functor  vertex() not implemented"<<std::endl;
-    }
-
-    /// Mimics the OpenGL \c glVertex() "family of functions".
-    virtual void vertex(float x,float y,float z)  {
-        notify(WARN)<<"Triangle Functor  vertex() not implemented"<<std::endl;
-    }
-
-    /// Mimics the OpenGL \c glVertex() "family of functions".
-    virtual void vertex(float x,float y,float z,float w)  {
-        notify(WARN)<<"Triangle Functor  vertex() not implemented"<<std::endl;
-    }
- };
-template<class T,class B>
-class BaseTriangleFunctor : public PrimitiveFunctorImpl, public T
-{
-public:
-
-    BaseTriangleFunctor()
-    {
-        _vertexArraySize=0;
-        _vertexArrayPtr=0;
-        _modeCache=0;
-        _treatVertexDataAsTemporary=false;
-    }
-
-    virtual ~BaseTriangleFunctor() {}
-    virtual void setVertexArray(unsigned int count,const B* vertices)
-    {
-        _vertexArraySize = count;
-        _vertexArrayPtr = vertices;
-    }
-    void setTreatVertexDataAsTemporary(bool treatVertexDataAsTemporary) { _treatVertexDataAsTemporary=treatVertexDataAsTemporary; }
-    bool getTreatVertexDataAsTemporary() const { return _treatVertexDataAsTemporary; }
-
-
 
     virtual void drawArrays(GLenum mode,GLint first,GLsizei count)
     {
@@ -126,14 +91,14 @@ public:
         {
             case(GL_TRIANGLES):
             {
-                const B* vlast = &_vertexArrayPtr[first+count];
-                for(const B* vptr=&_vertexArrayPtr[first];vptr<vlast;vptr+=3)
+                const Vec3* vlast = &_vertexArrayPtr[first+count];
+                for(const Vec3* vptr=&_vertexArrayPtr[first];vptr<vlast;vptr+=3)
                     this->operator()(*(vptr),*(vptr+1),*(vptr+2),_treatVertexDataAsTemporary);
                 break;
             }
             case(GL_TRIANGLE_STRIP):
             {
-                const B* vptr = &_vertexArrayPtr[first];
+                const Vec3* vptr = &_vertexArrayPtr[first];
                 for(GLsizei i=2;i<count;++i,++vptr)
                 {
                     if ((i%2)) this->operator()(*(vptr),*(vptr+2),*(vptr+1),_treatVertexDataAsTemporary);
@@ -143,7 +108,7 @@ public:
             }
             case(GL_QUADS):
             {
-                const B* vptr = &_vertexArrayPtr[first];
+                const Vec3* vptr = &_vertexArrayPtr[first];
                 for(GLsizei i=3;i<count;i+=4,vptr+=4)
                 {
                     this->operator()(*(vptr),*(vptr+1),*(vptr+2),_treatVertexDataAsTemporary);
@@ -153,7 +118,7 @@ public:
             }
             case(GL_QUAD_STRIP):
             {
-                const B* vptr = &_vertexArrayPtr[first];
+                const Vec3* vptr = &_vertexArrayPtr[first];
                 for(GLsizei i=3;i<count;i+=2,vptr+=2)
                 {
                     this->operator()(*(vptr),*(vptr+1),*(vptr+2),_treatVertexDataAsTemporary);
@@ -164,8 +129,8 @@ public:
             case(GL_POLYGON): // treat polygons as GL_TRIANGLE_FAN
             case(GL_TRIANGLE_FAN):
             {
-                const B* vfirst = &_vertexArrayPtr[first];
-                const B* vptr = vfirst+1;
+                const Vec3* vfirst = &_vertexArrayPtr[first];
+                const Vec3* vptr = vfirst+1;
                 for(GLsizei i=2;i<count;++i,++vptr)
                 {
                     this->operator()(*(vfirst),*(vptr),*(vptr+1),_treatVertexDataAsTemporary);
@@ -231,7 +196,7 @@ public:
             case(GL_TRIANGLE_FAN):
             {
                 IndexPointer iptr = indices;
-                const B& vfirst = _vertexArrayPtr[*iptr];
+                const Vec3& vfirst = _vertexArrayPtr[*iptr];
                 ++iptr;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
@@ -300,7 +265,7 @@ public:
             case(GL_TRIANGLE_FAN):
             {
                 IndexPointer iptr = indices;
-                const B& vfirst = _vertexArrayPtr[*iptr];
+                const Vec3& vfirst = _vertexArrayPtr[*iptr];
                 ++iptr;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
@@ -367,7 +332,7 @@ public:
             case(GL_TRIANGLE_FAN):
             {
                 IndexPointer iptr = indices;
-                const B& vfirst = _vertexArrayPtr[*iptr];
+                const Vec3& vfirst = _vertexArrayPtr[*iptr];
                 ++iptr;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
@@ -398,24 +363,18 @@ public:
         _modeCache = mode;
         _vertexCache.clear();
     }
-    virtual void useVertexCacheAsVertexArray()
-    {
-        setVertexArray(_vertexCache.size(),&_vertexCache.front());
-    }
 
-    std::vector<B>   _vertexCache;
-   // virtual void vertex(const Vec2& vert) { _vertexCache.push_back(osg::Vec3(vert[0],vert[1],0.0f)); }
-    //virtual void vertex(const Vec3& vert) { _vertexCache.push_back(vert); }
-    //virtual void vertex(const Vec4& vert) { _vertexCache.push_back(osg::Vec3(vert[0],vert[1],vert[2])/vert[3]); }
-   // virtual void vertex(float x,float y) { _vertexCache.push_back(osg::Vec3(x,y,0.0f)); }
-   // virtual void vertex(float x,float y,float z) { _vertexCache.push_back(osg::Vec3(x,y,z)); }
-    //virtual void vertex(float x,float y,float z,float w) { _vertexCache.push_back(osg::Vec3(x,y,z)/w); }
-    virtual void vertex(const B& vert) { _vertexCache.push_back(vert); }
+    virtual void vertex(const Vec2& vert) { _vertexCache.push_back(osg::Vec3(vert[0],vert[1],0.0f)); }
+    virtual void vertex(const Vec3& vert) { _vertexCache.push_back(vert); }
+    virtual void vertex(const Vec4& vert) { _vertexCache.push_back(osg::Vec3(vert[0],vert[1],vert[2])/vert[3]); }
+    virtual void vertex(float x,float y) { _vertexCache.push_back(osg::Vec3(x,y,0.0f)); }
+    virtual void vertex(float x,float y,float z) { _vertexCache.push_back(osg::Vec3(x,y,z)); }
+    virtual void vertex(float x,float y,float z,float w) { _vertexCache.push_back(osg::Vec3(x,y,z)/w); }
     virtual void end()
     {
         if (!_vertexCache.empty())
         {
-            setVertexArray(_vertexCache.size(),(B*)&_vertexCache.front());
+            setVertexArray(_vertexCache.size(),&_vertexCache.front());
             _treatVertexDataAsTemporary = true;
             drawArrays(_modeCache,0,_vertexCache.size());
         }
@@ -425,14 +384,12 @@ protected:
 
 
     unsigned int        _vertexArraySize;
-    const B*         _vertexArrayPtr;
+    const Vec3*         _vertexArrayPtr;
 
     GLenum              _modeCache;
 };
 
 
-template<class T> class TriangleFunctor :public BaseTriangleFunctor<T,osg::Vec3>{};
 }
 
 #endif
-

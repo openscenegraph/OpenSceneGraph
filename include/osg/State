@@ -17,12 +17,12 @@
 #include <osg/Export>
 #include <osg/GLExtensions>
 #include <osg/StateSet>
-#include <osg/VertexArrayState>
 #include <osg/Matrix>
 #include <osg/Uniform>
 #include <osg/BufferObject>
 #include <osg/Observer>
 #include <osg/Timer>
+#include <osg/VertexArrayState>
 
 #include <osg/ShaderComposer>
 #include <osg/FrameStamp>
@@ -528,31 +528,18 @@ class OSG_EXPORT State : public Referenced
         struct SetCurrentVertexArrayStateProxy
         {
             SetCurrentVertexArrayStateProxy(osg::State& state, VertexArrayState* vas):_state(state) { _state.setCurrentVertexArrayState(vas); }
-            ~SetCurrentVertexArrayStateProxy() { _state.setCurrentToGlobalVertexArrayState(); }
+            ~SetCurrentVertexArrayStateProxy() { _state.setCurrentToGloabalVertexArrayState(); }
             osg::State& _state;
         };
 
         /** Set the CurrentVetexArrayState object that take which vertex arrays are bound.*/
         void setCurrentVertexArrayState(VertexArrayState* vas) { _vas = vas; }
 
-        inline void bindVertexArrayObject() const {
-            if(_current_bound_vao==_vas->getVertexArrayObject())return;
-            _current_bound_vao = _vas->getVertexArrayObject();
-            _glBindVertexArrayObject (_current_bound_vao);
-        }
-
-        inline void unbindVertexArrayObject() const {
-         //  if(_state->getCurrentBoundVAO()!=0){
-           _current_bound_vao=0;
-           _glBindVertexArrayObject (0);
-         // }
-        }
-
         /** Get the CurrentVetexArrayState object that take which vertex arrays are bound.*/
-        inline VertexArrayState* getCurrentVertexArrayState() const { return _vas; }
+        VertexArrayState* getCurrentVertexArrayState() const { return _vas; }
 
         /** Set the getCurrentVertexArrayState to the GloabalVertexArrayState.*/
-        void setCurrentToGlobalVertexArrayState() { _vas = _globalVertexArrayState.get(); }
+        void setCurrentToGloabalVertexArrayState() { _vas = _globalVertexArrayState.get(); }
 
 
         /** disable the vertex, normal, color, tex coords, secondary color, fog coord and index arrays.*/
@@ -576,7 +563,7 @@ class OSG_EXPORT State : public Referenced
 
 
         void setCurrentPixelBufferObject(osg::GLBufferObject* pbo) { _currentPBO = pbo; }
-        const GLBufferObject* getCurrentPixelBufferObject() { return _currentPBO; }
+        const GLBufferObject* getCurrentPixelBufferObject() const { return _currentPBO; }
 
         inline void bindPixelBufferObject(osg::GLBufferObject* pbo)
         {
@@ -602,6 +589,17 @@ class OSG_EXPORT State : public Referenced
             _glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB,0);
             _currentPBO = 0;
         }
+
+
+        void setCurrentVertexArrayObject(GLuint vao) { _currentVAO = vao; }
+        GLuint getCurrentVertexArrayObject() const { return _currentVAO; }
+
+        inline void bindVertexArrayObject(const VertexArrayState* vas) { bindVertexArrayObject(vas->getVertexArrayObject()); }
+
+        inline void bindVertexArrayObject(GLuint vao) { if (_currentVAO!=vao) { _glExtensions->glBindVertexArray(vao); _currentVAO = vao; } }
+
+        inline void unbindVertexArrayObject() { if (_currentVAO!=0) { _glExtensions->glBindVertexArray(0); _currentVAO = 0; } }
+
 
         typedef std::vector<GLushort> IndicesGLushort;
         IndicesGLushort _quadIndicesGLushort[4];
@@ -1048,7 +1046,6 @@ class OSG_EXPORT State : public Referenced
 
         osg::ref_ptr<VertexArrayState>  _globalVertexArrayState;
         VertexArrayState*               _vas;
-        mutable GLuint                  _current_bound_vao;
 
         bool                            _shaderCompositionEnabled;
         bool                            _shaderCompositionDirty;
@@ -1262,6 +1259,7 @@ class OSG_EXPORT State : public Referenced
         unsigned int                    _currentActiveTextureUnit;
         unsigned int                    _currentClientActiveTextureUnit;
         GLBufferObject*                 _currentPBO;
+        GLuint                          _currentVAO;
 
 
         inline ModeMap& getOrCreateTextureModeMap(unsigned int unit)
@@ -1331,7 +1329,6 @@ class OSG_EXPORT State : public Referenced
         typedef void (GL_APIENTRY * EnableVertexAttribProc) (unsigned int);
         typedef void (GL_APIENTRY * DisableVertexAttribProc) (unsigned int);
         typedef void (GL_APIENTRY * BindBufferProc) (GLenum target, GLuint buffer);
-        typedef void (GL_APIENTRY * BindVertexArrayObjectProc) (GLuint vao);
 
         typedef void (GL_APIENTRY * DrawArraysInstancedProc)( GLenum mode, GLint first, GLsizei count, GLsizei primcount );
         typedef void (GL_APIENTRY * DrawElementsInstancedProc)( GLenum mode, GLsizei count, GLenum type, const GLvoid *indices, GLsizei primcount );
@@ -1352,7 +1349,6 @@ class OSG_EXPORT State : public Referenced
         EnableVertexAttribProc      _glEnableVertexAttribArray;
         DisableVertexAttribProc     _glDisableVertexAttribArray;
         BindBufferProc              _glBindBuffer;
-        BindVertexArrayObjectProc   _glBindVertexArrayObject;
         DrawArraysInstancedProc     _glDrawArraysInstanced;
         DrawElementsInstancedProc   _glDrawElementsInstanced;
 

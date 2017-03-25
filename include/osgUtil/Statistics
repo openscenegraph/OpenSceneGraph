@@ -47,12 +47,7 @@ namespace osgUtil {
 class OSGUTIL_EXPORT Statistics : public osg::PrimitiveFunctor
 {
     public:
-  virtual void useVertexCacheAsVertexArray()
-    {
-        setVertexArray(_vertexCache.size(),&_vertexCache.front());
-    }
 
-    std::vector<osg::Vec3>   _vertexCache;
         typedef std::pair<unsigned int,unsigned int>    PrimitivePair;
         typedef std::map<GLenum,PrimitivePair>          PrimitiveValueMap;
         typedef std::map<GLenum, unsigned int>          PrimitiveCountMap;

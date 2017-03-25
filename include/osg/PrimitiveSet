@@ -24,7 +24,6 @@
 #include <osg/Vec3d>
 #include <osg/Vec4d>
 #include <osg/MixinVector>
-#include <osg/Array>
 
 #include <osg/BufferObject>
 
@@ -166,8 +165,6 @@ public:
 
 class DrawElements;
 
-class MultiDrawElements;
-
 class OSG_EXPORT PrimitiveSet : public BufferData
 {
     public:
@@ -180,20 +177,7 @@ class OSG_EXPORT PrimitiveSet : public BufferData
             DrawElementsUBytePrimitiveType,
             DrawElementsUShortPrimitiveType,
             DrawElementsUIntPrimitiveType,
-            MultiDrawArraysPrimitiveType,
-            MultiDrawElementsUBytePrimitiveType,
-            MultiDrawElementsUShortPrimitiveType,
-            MultiDrawElementsUIntPrimitiveType,
-
-            DrawArraysIndirectPrimitiveType,
-            DrawArrayLengthsIndirectPrimitiveType,
-            DrawElementsUByteIndirectPrimitiveType,
-            DrawElementsUShortIndirectPrimitiveType,
-            DrawElementsUIntIndirectPrimitiveType,
-            MultiDrawArraysIndirectPrimitiveType,
-            MultiDrawElementsUByteIndirectPrimitiveType,
-            MultiDrawElementsUShortIndirectPrimitiveType,
-MultiDrawElementsUIntIndirectPrimitiveType
+            MultiDrawArraysPrimitiveType
         };
 
         enum Mode
@@ -241,9 +225,6 @@ MultiDrawElementsUIntIndirectPrimitiveType
 
         virtual DrawElements* getDrawElements() { return 0; }
         virtual const DrawElements* getDrawElements() const { return 0; }
-
-        virtual MultiDrawElements* getMultiDrawElements() { return 0; }
-        virtual const MultiDrawElements* getMultiDrawElements() const { return 0; }
 
         void setNumInstances(int n) { _numInstances = n; }
         int getNumInstances() const { return _numInstances; }
@@ -667,106 +648,6 @@ protected:
 
     Firsts _firsts;
     Counts _counts;
-};
-
-
-class MultiDrawElements : public PrimitiveSet
-{
-    public:
-
-        MultiDrawElements(Type primType=PrimitiveType, GLenum mode=0, int numInstances=0):
-            PrimitiveSet(primType,mode, numInstances) {}
-
-        MultiDrawElements(const MultiDrawElements& copy,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            PrimitiveSet(copy,copyop) {}
-
-
-        virtual MultiDrawElements* getMultiDrawElements() { return this; }
-        virtual const MultiDrawElements* getMultiDrawElements() const { return this; }
-
-        /** Set the ElementBufferObject.*/
-        inline void setElementBufferObject(osg::ElementBufferObject* ebo){
-        for(unsigned int i=0;i<getNumIndicesArrays();i++)getIndicesArray(i)->setBufferObject(ebo);
-        setBufferObject(ebo);
-        }
-
-        /** Get the ElementBufferObject. If no EBO is assigned returns NULL*/
-        inline osg::ElementBufferObject* getElementBufferObject() { return dynamic_cast<osg::ElementBufferObject*>(_bufferObject.get()); }
-
-        /** Get the const ElementBufferObject. If no EBO is assigned returns NULL*/
-        inline const osg::ElementBufferObject* getElementBufferObject() const { return dynamic_cast<const osg::ElementBufferObject*>(_bufferObject.get()); }
-
-        virtual GLenum getDataType() = 0;
-        virtual void addIndicesArray(osg::IndexArray* arr)=0;
-        virtual void removeIndicesArray(osg::IndexArray*arr)=0;
-        virtual unsigned int getNumIndicesArrays()const=0;
-        virtual IndexArray* getIndicesArray(unsigned int i)=0;
-        virtual IndexArray* getIndicesArray(unsigned int i)const=0;
-
-        virtual unsigned int getNumIndices() const{
-            unsigned int total=0;
-            for(unsigned int i=0;i<getNumIndicesArrays();i++)total+=getIndicesArray(i)->getNumElements();
-            return total;
-        }
-    protected:
-
-        virtual ~MultiDrawElements() {}
-};
-
-class OSG_EXPORT MultiDrawElementsUShort : public osg::MultiDrawElements
-{
-public:
-
-    MultiDrawElementsUShort(GLenum mode=0):
-        osg::MultiDrawElements(Type(MultiDrawElementsUShortPrimitiveType), mode),_indices(NULL) {        }
-
-    MultiDrawElementsUShort(const MultiDrawElementsUShort& dal,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-        osg::MultiDrawElements(dal,copyop),
-       _indicesholders(dal._indicesholders), _counts(dal._counts),_indices(NULL) {}
-
-
-    virtual osg::Object* cloneType() const { return new MultiDrawElementsUShort(); }
-    virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new MultiDrawElementsUShort(*this,copyop); }
-    virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const MultiDrawElementsUShort*>(obj)!=NULL; }
-    virtual const char* libraryName() const { return "osg"; }
-    virtual const char* className() const { return "MultiDrawElementsUShort"; }
-
-
-    virtual void draw(State& state, bool useVertexBufferObjects) const;
-
-    virtual void accept(PrimitiveFunctor& functor) const;
-    virtual void accept(PrimitiveIndexFunctor& functor) const;
-
-    virtual unsigned int getNumPrimitives() const;
-
-    virtual GLenum getDataType() { return GL_UNSIGNED_SHORT; }
-
-    virtual void addIndicesArray(osg::IndexArray* arr){
-        if(dynamic_cast<UShortArray*>(arr)){
-            _indicesholders.push_back(dynamic_cast<UShortArray*>(arr));
-            if(getBufferObject())arr->setBufferObject(getBufferObject());
-            invalidateInnerIndices();
-        }
-    }
-    virtual void removeIndicesArray(osg::IndexArray*arr){
-        if(dynamic_cast<UShortArray*>(arr))
-            for(std::vector<ref_ptr<UShortArray> >::iterator it=_indicesholders.begin();it!=_indicesholders.end();it++){if(*it==dynamic_cast<UShortArray*>(arr)){_indicesholders.erase(it);break;}}
-            invalidateInnerIndices();
-    }
-    virtual unsigned int getNumIndicesArrays()const{return _indicesholders.size();}
-    virtual IndexArray* getIndicesArray(unsigned int i)const{return _indicesholders[i];}
-    virtual IndexArray* getIndicesArray(unsigned int i){return _indicesholders[i];}
-
-    virtual unsigned int index(unsigned int) const;
-    virtual void offsetIndices(int offset);
-protected:
-
-    void invalidateInnerIndices();
-
-    std::vector<ref_ptr<UShortArray> > _indicesholders;
-    typedef std::vector<GLsizei> Counts;
-    Counts _counts;
-    mutable GLushort ** _indices;
 };
 #endif
 

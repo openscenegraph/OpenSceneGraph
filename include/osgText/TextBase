@@ -22,6 +22,7 @@
 
 namespace osgText {
 
+#define NEW_APPROACH
 
 class OSGTEXT_EXPORT TextBase : public osg::Drawable
 {
@@ -252,8 +253,10 @@ public:
     /** Get the number of wrapped lines - only valid after computeGlyphRepresentation() has been called, returns 0 otherwise */
     unsigned int getLineCount() const { return _lineCount; }
 
-    /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
-    virtual void setThreadSafeRefUnref(bool threadSafe);
+    /** Immediately compile this \c Drawable into an OpenGL Display List/VertexBufferObjects.
+        * @note Operation is ignored if \c _useDisplayList is \c false or VertexBufferObjects are not used.
+    */
+    virtual void compileGLObjects(osg::RenderInfo& renderInfo) const;
 
     /** Resize any per context GLObject buffers to specified size. */
     virtual void resizeGLObjectBuffers(unsigned int maxSize);
@@ -266,17 +269,33 @@ public:
 
     virtual osg::BoundingBox computeBoundingBox() const;
 
+    typedef osg::ref_ptr<osg::Vec3Array> Coords;
+    Coords& getCoords() { return _coords; }
+    const Coords& getCoords() const { return _coords; }
+
+    void getCoord(unsigned int i, osg::Vec2& c) const { c.set((*_coords)[i].x(), (*_coords)[i].y()); }
+    void getCoord(unsigned int i, osg::Vec3& c) const { c = (*_coords)[i]; }
+
 protected:
 
     virtual ~TextBase();
 
+    void initArraysAndBuffers();
+
+    osg::VertexArrayState* createVertexArrayState(osg::RenderInfo& renderInfo) const;
+
+    bool computeMatrix(osg::Matrix& matrix, osg::State* state=0) const;
+
     void positionCursor(const osg::Vec2 & endOfLine_coords, osg::Vec2 & cursor, unsigned int linelength);
-    void computePositions();
     String::iterator computeLastCharacterOnLine(osg::Vec2& cursor, String::iterator first,String::iterator last);
+    void computePositions();
+    virtual void computePositionsImplementation();
 
-
-    virtual void computePositions(unsigned int contextID) const = 0;
     virtual void computeGlyphRepresentation() = 0;
+
+    typedef osg::ref_ptr<osg::Vec2Array> TexCoords;
+    typedef osg::ref_ptr<osg::Vec4Array> ColorCoords;
+    typedef std::vector< osg::ref_ptr<osg::DrawElementsUShort> > Primitives;
 
 
     // members which have public access.
@@ -303,34 +322,30 @@ protected:
     KerningType                             _kerningType;
     unsigned int                            _lineCount;
 
+    osg::Vec3                               _offset;
+    osg::Vec3                               _normal;
+    osg::BoundingBox                        _textBB;
 
 
-    // internal caches of the positioning of the text.
+    mutable osg::Matrix                     _matrix;
 
-    struct AutoTransformCache
-    {
-        AutoTransformCache():
-            _traversalNumber(-1),
-            _width(0),
-            _height(0) {}
-
-        int         _traversalNumber;
-        int         _width;
-        int         _height;
-        osg::Vec3   _transformedPosition;
-        osg::Matrix _modelview;
-        osg::Matrix _projection;
-        osg::Matrix _matrix;
-    };
-
-    mutable osg::buffered_object<AutoTransformCache>    _autoTransformCache;
-    mutable osg::Vec3                                   _offset;
-    mutable osg::Vec3                                   _normal;
-    mutable osg::BoundingBox                            _textBB;
+    Primitives                              _decorationPrimitives;
 
     void setupDecoration();
 
-    osg::ref_ptr<osg::Vec3Array> _decorationVertices;
+    osg::ref_ptr<osg::VertexBufferObject>   _vbo;
+    osg::ref_ptr<osg::ElementBufferObject>  _ebo;
+
+    Coords                                  _coords;
+    Coords                                  _normals;
+    ColorCoords                             _colorCoords;
+    TexCoords                               _texcoords;
+
+    unsigned int addCoord(const osg::Vec2& c) { unsigned int s = _coords->size(); _coords->push_back(osg::Vec3(c.x(), c.y(), 0.0f)); _coords->dirty(); return s; }
+    unsigned int addCoord(const osg::Vec3& c) { unsigned int s = _coords->size(); _coords->push_back(c); _coords->dirty(); return s; }
+
+
+    void addTexCoord(const osg::Vec2& tc) { _texcoords->push_back(tc); _texcoords->dirty(); }
 
 };
 

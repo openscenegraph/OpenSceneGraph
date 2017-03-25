@@ -1,21 +1,21 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2014 Robert Osfield
  *  Copyright (C) 2014 Pawel Ksiezopolski
  *
- * This library is open source and may be redistributed and/or modified under
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
  *
 */
 #ifndef GPU_CULL_SHADERS
 #define GPU_CULL_SHADERS 1
 
-char SHADER_STATIC_CULL_VERTEX[] =
+char SHADER_STATIC_CULL_VERTEX[] = 
     "#version 420 compatibility\n"
     "\n"
     "uniform mat4 osg_ViewMatrixInverse;\n"
@@ -140,120 +140,7 @@ char SHADER_STATIC_CULL_VERTEX[] =
     "}\n";
 
 
-char MYSHADER_STATIC_CULL_VERTEX[] =   "#version 420 compatibility\n"
-   "\n"
-   "uniform mat4 osg_ViewMatrixInverse;\n"
-   "\n"
-   "struct InstanceLOD\n"
-  "{\n"
-  "    vec4 bbMin;\n"
-  "    vec4 bbMax;\n"
-  "    ivec4 indirectTargetParams;    // x=targetID, y=indexInTarget, z=offsetInTarget, w=lodMaxQuantity\n"
-  "    vec4 distances;               // x=minDistance, y=minFadeDistance, z=maxFadeDistance, w=maxDistance\n"
-  "};\n"
-  "\n"
-  "const int OSGGPUCULL_MAXIMUM_LOD_NUMBER = 8;\n"
-  "\n"
-  "struct InstanceType\n"
-  "{\n"
-  "    vec4 bbMin;\n"
-  "    vec4 bbMax;\n"
-  "    ivec4 params;\n"
-  "    InstanceLOD lods[OSGGPUCULL_MAXIMUM_LOD_NUMBER];\n"
-  "};\n"
-  "\n"
-  "layout(std140) uniform instanceTypesData\n"
-  "{\n"
-  "    InstanceType instanceTypes[32];\n"
-  "};\n"
-  "\n"
-  "// StaticInstance params are stored in vertex attributes\n"
-  "layout(location = 0) in vec3 VertexPosition;\n"
-  "layout(location = 10) in vec4 M0;\n"
-  "layout(location = 11) in vec4 M1;\n"
-  "layout(location = 12) in vec4 M2;\n"
-  "layout(location = 13) in vec4 M3;\n"
-  "layout(location = 14) in vec4 ExtraParams;\n"
-  "layout(location = 15) in vec4 IdParams;\n"
-
-                                       "out vec4 vM0;\n"
-                                       "out vec4 vM1;\n"
-                                       "out vec4 vM2;\n"
-                                       "out vec4 vM3;\n"
-                                       "out vec4 vExtra;\n"
-                                       "out vec4 vParams;\n"
-        ///DO NOTHING
-  "void main(void) \n"
-      "{\n"
-               //"    mat4 instanceMatrix = mat4(M0,M1,M2,M3); \n"
-               "vM0=M0;vM1=M1;vM2=M2;vM3=M3;vExtra=ExtraParams;vParams=IdParams;\n"
-               //"    mat4 mvpoMatrix = gl_ModelViewProjectionMatrix * instanceMatrix;\n"
-               //"\n"
-               //"    // gl_Position is created only for debugging purposes\n"
-               //"    gl_Position = mvpoMatrix * vec4(0.0,0.0,0.0,1.0);\n"
-        "}\n";
-
-char MYSHADER_STATIC_CULL_GEOMETRY[] =
-    "#version 420 compatibility\n"
-    "\n"
-  //  "layout(location = 0, index = 0) out vec4 FragmentColor;\n"
-    "\n"
-
-    " in vec4 vM0;\n"
-    " in vec4 vM1;\n"
-    " in vec4 vM2;\n"
-    " in vec4 vM3;\n"
-    " in vec4 vExtra;\n"
-    " in vec4 vParams;\n"
-
-    "out vec4 outM0;\n"
-    "out vec4 outM1;\n"
-    "out vec4 outM2;\n"
-    "out vec4 outM3;\n"
-    "out vec4 outExtraParams;\n"
-    "out vec4 outIdParams;\n"
-
-    "\n"
-    "void main()\n"
-    "{\n"
-    "    if( boundingBoxInViewFrustum( mvpoMatrix, instanceTypes[instanceTypeIndex].bbMin.xyz, instanceTypes[instanceTypeIndex].bbMax.xyz ) )\n"
-    "    {\n"
-    "        fColor = vec4(1.0,0.0,0.0,1.0);\n"
-    "        float distanceToObject = distance(osg_ViewMatrixInverse[3].xyz / osg_ViewMatrixInverse[3].w, instanceMatrix[3].xyz / instanceMatrix[3].w );\n"
-    "        for(int i=0;i<instanceTypes[instanceTypeIndex].params.x;++i)\n"
-    "        {\n"
-    "            if( boundingBoxInViewFrustum( mvpoMatrix, instanceTypes[instanceTypeIndex].lods[i].bbMin.xyz, instanceTypes[instanceTypeIndex].lods[i].bbMax.xyz ) &&\n"
-    "                ( distanceToObject >= instanceTypes[instanceTypeIndex].lods[i].distances.x ) && ( distanceToObject < instanceTypes[instanceTypeIndex].lods[i].distances.w ) )\n"
-    "            {\n"
-        ///emit only instance data IndirectCommand feed via query buffer object
-    "                fColor = vec4(1.0,1.0,0.0,1.0);\n"
-    "                float fadeAlpha  = 4.0 * ( clamp( (distanceToObject-instanceTypes[instanceTypeIndex].lods[i].distances.x)/( instanceTypes[instanceTypeIndex].lods[i].distances.y - instanceTypes[instanceTypeIndex].lods[i].distances.x), 0.0, 1.0 ) \n"
-    "                    +  clamp( (distanceToObject- instanceTypes[instanceTypeIndex].lods[i].distances.z)/( instanceTypes[instanceTypeIndex].lods[i].distances.w - instanceTypes[instanceTypeIndex].lods[i].distances.z), 0.0, 1.0 ) );\n"
-    "                int sampleMask = ( 0xF0 >> int(fadeAlpha) ) & 0xF;\n"
-    "                int indirectCommandIndex   = instanceTypes[instanceTypeIndex].lods[i].indirectTargetParams.x;\n"
-    "                int indirectCommandAddress = instanceTypes[instanceTypeIndex].lods[i].indirectTargetParams.y;\n"
-    "                int objectIndex            = imageAtomicAdd( getIndirectCommand( indirectCommandIndex ), indirectCommandAddress*indirectCommandSize+1, 1 );\n"
-    "                int indirectTargetAddress  = 6*(instanceTypes[instanceTypeIndex].lods[i].indirectTargetParams.z + objectIndex);\n"
-  /**  "                imageStore( getIndirectTarget(indirectCommandIndex), indirectTargetAddress+0, M0 );\n"
-    "                imageStore( getIndirectTarget(indirectCommandIndex), indirectTargetAddress+1, M1 );\n"
-    "                imageStore( getIndirectTarget(indirectCommandIndex), indirectTargetAddress+2, M2 );\n"
-    "                imageStore( getIndirectTarget(indirectCommandIndex), indirectTargetAddress+3, M3 );\n"
-    "                imageStore( getIndirectTarget(indirectCommandIndex), indirectTargetAddress+4, ExtraParams );\n"
-    "                imageStore( getIndirectTarget(indirectCommandIndex), indirectTargetAddress+5, vec4(IdParams.x,IdParams.y,float(sampleMask),0.0) );\n"*/
-        "outM0=vM0;\n"
-        "outM1=vM1;\n"
-        "outM2=vM2;\n"
-        "outM3=vM3;\n"
-
-        "outExtraParams=vExtra;\n"
-        "outIdParams=vec4(vParams.x,vParams.y,float(sampleMask),0.0);\n"
-
-    "            }\n"
-    "        }\n"
-    "    }\n"
-    "}\n";
-
-char SHADER_STATIC_CULL_FRAGMENT[] =
+char SHADER_STATIC_CULL_FRAGMENT[] = 
     "#version 420 compatibility\n"
     "\n"
     "layout(location = 0, index = 0) out vec4 FragmentColor;\n"
@@ -266,7 +153,7 @@ char SHADER_STATIC_CULL_FRAGMENT[] =
     "}\n";
 
 
-char SHADER_STATIC_DRAW_0_VERTEX[] =
+char SHADER_STATIC_DRAW_0_VERTEX[] = 
     "#version 420 compatibility\n"
     "\n"
     "layout(location = 0) in vec4 VertexPosition;\n"
@@ -338,7 +225,7 @@ char SHADER_STATIC_DRAW_0_VERTEX[] =
     "}\n";
 
 
-char SHADER_STATIC_DRAW_0_FRAGMENT[] =
+char SHADER_STATIC_DRAW_0_FRAGMENT[] = 
     "#version 420 compatibility\n"
     "\n"
     "in vec3 ecPosition3;\n"
@@ -361,7 +248,7 @@ char SHADER_STATIC_DRAW_0_FRAGMENT[] =
     "}\n";
 
 
-char SHADER_STATIC_DRAW_1_VERTEX[] =
+char SHADER_STATIC_DRAW_1_VERTEX[] = 
     "#version 420 compatibility\n"
     "\n"
     "layout(location = 0) in vec4 VertexPosition;\n"
@@ -441,7 +328,7 @@ char SHADER_STATIC_DRAW_1_VERTEX[] =
     "}\n";
 
 
-char SHADER_STATIC_DRAW_1_FRAGMENT[] =
+char SHADER_STATIC_DRAW_1_FRAGMENT[] = 
     "#version 420 compatibility\n"
     "\n"
     "in vec3 ecPosition3;\n"
@@ -464,7 +351,7 @@ char SHADER_STATIC_DRAW_1_FRAGMENT[] =
     "}\n";
 
 
-char SHADER_DYNAMIC_CULL_VERTEX[] =
+char SHADER_DYNAMIC_CULL_VERTEX[] = 
     "#version 420 compatibility\n"
     "\n"
     "uniform mat4 osg_ViewMatrixInverse;\n"
@@ -570,20 +457,15 @@ char SHADER_DYNAMIC_CULL_VERTEX[] =
     "                int indirectCommandAddress = instanceTypes[instanceTypeIndex].lods[i].indirectTargetParams.y;\n"
     "                int objectIndex            = imageAtomicAdd( getIndirectCommand( indirectCommandIndex ), indirectCommandAddress*indirectCommandSize+1, 1 );\n"
     "                int indirectTargetAddress  = instanceTypes[instanceTypeIndex].lods[i].indirectTargetParams.z + objectIndex;\n"
-    #define IMAGESTORE 1
-    #ifdef IMAGESTORE
     "                ivec4 indirectCommandData  = ivec4( instanceTypeIndex, instanceIndex, sampleMask, 0 );\n"
     "                imageStore( getIndirectTarget(indirectCommandIndex), indirectTargetAddress, indirectCommandData );\n"
-    #else ///MIMIC THIS OUTPUT with a geom shader stream out?
-    ///PROBLEM: arrangement mather for glMultiDrawIndirectInstanced
-    #endif
     "            }\n"
     "        }\n"
     "    }\n"
     "}\n";
 
 
-char SHADER_DYNAMIC_CULL_FRAGMENT[] =
+char SHADER_DYNAMIC_CULL_FRAGMENT[] = 
     "#version 420 compatibility\n"
     "\n"
     "layout(location = 0, index = 0) out vec4 FragmentColor;\n"
@@ -594,9 +476,8 @@ char SHADER_DYNAMIC_CULL_FRAGMENT[] =
     "}\n";
 
 
-char SHADER_DYNAMIC_DRAW_0_VERTEX[] =
-    "#version 430 compatibility\n"
-    "#extension GL_ARB_shader_draw_parameters : enable\n"
+char SHADER_DYNAMIC_DRAW_0_VERTEX[] = 
+    "#version 420 compatibility\n"
     "\n"
     "uniform samplerBuffer dynamicInstancesData;\n"
     "uniform int dynamicInstancesDataSize; // = sizeof(DynamicInstance) / sizeof(osg::Vec4f)\n"
@@ -643,7 +524,6 @@ char SHADER_DYNAMIC_DRAW_0_VERTEX[] =
     "   // every vertex has its type coded on VertexTexCoord1.x,\n"
     "   // its lodNumber coded in VertexTexCoord1.y\n"
     "   // and bone index coded in VertexTexCoord1.z\n"
-    "int fok=gl_DrawIDARB;///test ze feature #extension GL_ARB_shader_draw_parameters : enable required\n"
     "   int instanceTypeIndex = int(VertexTexCoord1.x);\n"
     "   int instanceLodNumber = int(VertexTexCoord1.y);\n"
     "   int boneIndex = int(VertexTexCoord1.z);\n"
@@ -685,7 +565,7 @@ char SHADER_DYNAMIC_DRAW_0_VERTEX[] =
     "}\n";
 
 
-char SHADER_DYNAMIC_DRAW_0_FRAGMENT[] =
+char SHADER_DYNAMIC_DRAW_0_FRAGMENT[] = 
     "#version 420 compatibility\n"
     "\n"
     "in vec3 ecPosition3;\n"

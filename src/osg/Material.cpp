@@ -12,6 +12,7 @@
 */
 #include <osg/Material>
 #include <osg/BoundsChecking>
+#include <osg/State>
 #include <osg/Notify>
 
 using namespace osg;
@@ -350,9 +351,9 @@ void Material::setAlpha(Face face,float alpha)
     }
 }
 
+#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
 void Material::apply(State&) const
 {
-#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
 
 #ifdef OSG_GL1_AVAILABLE
     if (_colorMode==OFF)
@@ -438,7 +439,12 @@ void Material::apply(State&) const
         glMaterialf( GL_FRONT, GL_SHININESS, _shininessFront );
         glMaterialf( GL_BACK, GL_SHININESS, _shininessBack );
     }
-#else
-    OSG_NOTICE<<"Warning: Material::apply(State&) - not supported."<<std::endl;
-#endif
 }
+#else
+void Material::apply(State& state) const
+{
+    OSG_NOTICE<<"Warning: Material::apply(State&) - not supported."<<std::endl;
+
+    state.Color(_diffuseFront.r(), _diffuseFront.g(), _diffuseFront.b(), _diffuseFront.a());
+}
+#endif

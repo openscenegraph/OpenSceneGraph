@@ -20,7 +20,6 @@ ELSE(ANDROID)
 
 IF(DYNAMIC_OPENSCENEGRAPH)
 
-    ADD_SUBDIRECTORY(osgSharedVAO)
     ADD_SUBDIRECTORY(osg2cpp)
     ADD_SUBDIRECTORY(osganalysis)
     ADD_SUBDIRECTORY(osganimate)
@@ -99,7 +98,6 @@ IF(DYNAMIC_OPENSCENEGRAPH)
     ADD_SUBDIRECTORY(osgreflect)
     ADD_SUBDIRECTORY(osgrobot)
     ADD_SUBDIRECTORY(osgSSBO)
-    ADD_SUBDIRECTORY(osgShaderSubroutineUniform)
     ADD_SUBDIRECTORY(osgscalarbar)
     ADD_SUBDIRECTORY(osgscribe)
     ADD_SUBDIRECTORY(osgsequence)
@@ -168,10 +166,9 @@ IF(DYNAMIC_OPENSCENEGRAPH)
     ADD_SUBDIRECTORY(osgwidgettable)
     ADD_SUBDIRECTORY(osgwidgetwindow)
     ADD_SUBDIRECTORY(osguserdata)
-
     # GL3/GL4 example
     ADD_SUBDIRECTORY(osgsimplegl3)
-
+    ADD_SUBDIRECTORY(osgbindlesstext)
     IF(OSG_CPP_EXCEPTIONS_AVAILABLE)
         ADD_SUBDIRECTORY(osgunittests)
         ADD_SUBDIRECTORY(osgmemorytest)

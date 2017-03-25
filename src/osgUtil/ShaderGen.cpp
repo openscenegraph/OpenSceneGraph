@@ -116,27 +116,37 @@ osg::StateSet *ShaderGenCache::createStateSet(int stateMask) const
     osg::Program *program = new osg::Program;
     stateSet->setAttribute(program);
 
-    std::ostringstream vert;
-    std::ostringstream frag;
+    std::ostringstream vert_frag;
+
+    vert_frag << "// ShaderGen shader\n";
+    vert_frag << "#ifdef GL_ES\n"
+                 "    precision highp float;\n"
+                 "#endif\n";
 
     // write varyings
     if ((stateMask & LIGHTING) && !(stateMask & NORMAL_MAP))
     {
-        vert << "varying vec3 normalDir;\n";
+        vert_frag << "varying vec3 normalDir;\n";
     }
 
     if (stateMask & (LIGHTING | NORMAL_MAP))
     {
-        vert << "varying vec3 lightDir;\n";
+        vert_frag << "varying vec3 lightDir;\n";
     }
 
     if (stateMask & (LIGHTING | NORMAL_MAP | FOG))
     {
-        vert << "varying vec3 viewDir;\n";
+        vert_frag << "varying vec3 viewDir;\n";
     }
 
-    // copy varying to fragment shader
-    frag << vert.str();
+    vert_frag << "varying vec4 vertexColor;\n";
+
+    std::ostringstream vert;
+    std::ostringstream frag;
+
+    // copy varying to vertex ad fragment shader
+    vert << vert_frag.str();
+    frag << vert_frag.str();
 
     // write uniforms and attributes
     int unit = 0;
@@ -185,6 +195,7 @@ osg::StateSet *ShaderGenCache::createStateSet(int stateMask) const
             "  lightDir.y = dot(dir, b);\n"\
             "  lightDir.z = dot(dir, n);\n";
     }
+#if !OSG_GLES2_FEATURES && !OSG_GLES3_FEATURES && !OSG_GL2_FEATURES
     else if (stateMask & LIGHTING)
     {
         vert <<
@@ -201,11 +212,12 @@ osg::StateSet *ShaderGenCache::createStateSet(int stateMask) const
     {
         vert <<
             "  viewDir = -vec3(gl_ModelViewMatrix * gl_Vertex);\n"\
-            "  gl_FrontColor = gl_Color;\n";
+            "  vertexColor = gl_Color;\n";
     }
+#endif
     else
     {
-        vert << "  gl_FrontColor = gl_Color;\n";
+        vert << "  vertexColor = gl_Color;\n";
     }
 
     vert << "}\n";
@@ -216,11 +228,11 @@ osg::StateSet *ShaderGenCache::createStateSet(int stateMask) const
 
     if (stateMask & DIFFUSE_MAP)
     {
-        frag << "  vec4 base = texture2D(diffuseMap, gl_TexCoord[0].st);\n";
+        frag << "  vec4 base = vertexColor * texture2D(diffuseMap, gl_TexCoord[0].st);\n";
     }
     else
     {
-        frag << "  vec4 base = vec4(1.0);\n";
+        frag << "  vec4 base = vertexColor;\n";
     }
 
     if (stateMask & NORMAL_MAP)
@@ -228,6 +240,7 @@ osg::StateSet *ShaderGenCache::createStateSet(int stateMask) const
         frag << "  vec3 normalDir = texture2D(normalMap, gl_TexCoord[0].st).xyz*2.0-1.0;\n";
     }
 
+#if !OSG_GLES2_FEATURES && !OSG_GLES3_FEATURES && !OSG_GL2_FEATURES
     if (stateMask & (LIGHTING | NORMAL_MAP))
     {
         frag <<
@@ -247,15 +260,13 @@ osg::StateSet *ShaderGenCache::createStateSet(int stateMask) const
             "  }\n";
     }
     else
+#endif
     {
         frag << "  vec4 color = base;\n";
     }
 
-    if (!(stateMask & LIGHTING))
-    {
-        frag << "  color *= gl_Color;\n";
-    }
 
+#if !OSG_GLES2_FEATURES && !OSG_GLES3_FEATURES && !OSG_GL2_FEATURES
     if (stateMask & FOG)
     {
         frag <<
@@ -263,6 +274,7 @@ osg::StateSet *ShaderGenCache::createStateSet(int stateMask) const
             "  float f = exp2(-1.442695*gl_Fog.density*gl_Fog.density*d2);\n"\
             "  color.rgb = mix(gl_Fog.color.rgb, color.rgb, clamp(f, 0.0, 1.0));\n";
     }
+#endif
 
     frag << "  gl_FragColor = color;\n";
     frag << "}\n";

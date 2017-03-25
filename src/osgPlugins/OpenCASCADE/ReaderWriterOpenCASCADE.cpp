@@ -262,7 +262,7 @@ osg::ref_ptr<osg::Geometry> ReaderWritterOpenCASCADE::OCCTKReader::_createGeomet
             std::cout << "Adding Primitive set" << std::endl;
         #endif
 
-        geom->addPrimitiveSet(triangleStrip);
+        geom->addPrimitiveSet(triangleStrip.get());
     }
 
     return geom;

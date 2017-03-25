@@ -28,6 +28,71 @@
 namespace osgViewer
 {
 
+#define FIXED_FUNCTION defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
+#define SHADERS_GL3 (defined(OSG_GL3_AVAILABLE))
+#define SHADERS_GL2 !FIXED_FUNCTION && !SHADERS_GL3
+
+#if SHADERS_GL3
+static const char* gl3_StatsVertexShader = {
+    "#version 330 core\n"
+    "// gl3_StatsVertexShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
+    "in vec4 osg_Vertex;\n"
+    "in vec4 osg_Color;\n"
+    "uniform mat4 osg_ModelViewProjectionMatrix;\n"
+    "out vec4 vertexColor;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_Position = osg_ModelViewProjectionMatrix * osg_Vertex;\n"
+    "    vertexColor = osg_Color; \n"
+    "}\n"
+};
+
+static const char* gl3_StatsFragmentShader = {
+    "#version 330 core\n"
+    "// gl3_StatsFragmentShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
+    "in vec4 vertexColor;\n"
+    "out vec4 color;\n"
+    "void main(void)\n"
+    "{\n"
+    "    color = vertexColor;\n"
+    "}\n"
+};
+
+#endif
+
+
+#if SHADERS_GL2
+static const char* gl2_StatsVertexShader = {
+    "// gl2_StatsVertexShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
+    "varying vec4 vertexColor;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+    "    vertexColor = gl_Color;\n"
+    "}\n"
+};
+
+static const char* gl2_StatsFragmentShader = {
+    "// gl2_StatsFragmentShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
+    "varying vec4 vertexColor;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_FragColor = vertexColor;\n"
+    "}\n"
+};
+#endif
 
 StatsHandler::StatsHandler():
     _keyEventTogglesOnScreenStats('s'),
@@ -49,10 +114,33 @@ StatsHandler::StatsHandler():
     _characterSize(20.0f),
     _lineHeight(1.5f)
 {
+    OSG_INFO<<"StatsHandler::StatsHandler()"<<std::endl;
+
     _camera = new osg::Camera;
     _camera->getOrCreateStateSet()->setGlobalDefaults();
     _camera->setRenderer(new Renderer(_camera.get()));
     _camera->setProjectionResizePolicy(osg::Camera::FIXED);
+
+#if SHADERS_GL3
+
+    OSG_INFO<<"StatsHandler::StatsHandler() Setting up GL3 compatible shaders"<<std::endl;
+
+    osg::ref_ptr<osg::Program> program = new osg::Program;
+    program->addShader(new osg::Shader(osg::Shader::VERTEX, gl3_StatsVertexShader));
+    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl3_StatsFragmentShader));
+    _camera->getOrCreateStateSet()->setAttributeAndModes(program.get());
+
+#elif SHADERS_GL2
+
+    OSG_INFO<<"StatsHandler::StatsHandler() Setting up GL2 compatible shaders"<<std::endl;
+
+    osg::ref_ptr<osg::Program> program = new osg::Program;
+    program->addShader(new osg::Shader(osg::Shader::VERTEX, gl2_StatsVertexShader));
+    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl2_StatsFragmentShader));
+    _camera->getOrCreateStateSet()->setAttributeAndModes(program.get());
+#else
+    OSG_INFO<<"StatsHandler::StatsHandler() Fixed pipeline"<<std::endl;
+#endif
 }
 
 void StatsHandler::collectWhichCamerasToRenderStatsFor(osgViewer::ViewerBase* viewer, osgViewer::ViewerBase::Cameras& cameras)
@@ -886,19 +974,28 @@ osg::Geometry* StatsHandler::createGeometry(const osg::Vec3& pos, float height, 
     geometry->setVertexArray(vertices);
     vertices->reserve(numBlocks*4);
 
+    osg::DrawElementsUShort* primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
     for(unsigned int i=0; i<numBlocks; ++i)
     {
+        unsigned int vi = vertices->size();
         vertices->push_back(pos+osg::Vec3(i*20, height, 0.0));
         vertices->push_back(pos+osg::Vec3(i*20, 0.0, 0.0));
         vertices->push_back(pos+osg::Vec3(i*20+10.0, 0.0, 0.0));
         vertices->push_back(pos+osg::Vec3(i*20+10.0, height, 0.0));
+
+        primitives->push_back(vi);
+        primitives->push_back(vi+1);
+        primitives->push_back(vi+2);
+        primitives->push_back(vi);
+        primitives->push_back(vi+2);
+        primitives->push_back(vi+3);
     }
 
     osg::Vec4Array* colours = new osg::Vec4Array;
     colours->push_back(colour);
     geometry->setColorArray(colours, osg::Array::BIND_OVERALL);
 
-    geometry->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, numBlocks*4));
+    geometry->addPrimitiveSet(primitives);
 
     return geometry;
 }
@@ -1184,6 +1281,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         frameRateValue->setCharacterSize(_characterSize);
         frameRateValue->setPosition(pos);
         frameRateValue->setText("0.0");
+        frameRateValue->setDataVariance(osg::Object::DYNAMIC);
 
         frameRateValue->setDrawCallback(new AveragedValueTextDrawCallback(viewer->getViewerStats(),"Frame rate",-1, true, 1.0));
 
@@ -1382,6 +1480,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 averageValue->setCharacterSize(_characterSize);
                 averageValue->setPosition(pos);
                 averageValue->setText("1000");
+                averageValue->setDataVariance(osg::Object::DYNAMIC);
 
                 pos.x() = averageValue->getBoundingBox().xMax() + 2.0f*_characterSize;
 
@@ -1405,6 +1504,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 minValue->setCharacterSize(_characterSize);
                 minValue->setPosition(pos);
                 minValue->setText("1000");
+                minValue->setDataVariance(osg::Object::DYNAMIC);
 
                 pos.x() = minValue->getBoundingBox().xMax() + 2.0f*_characterSize;
 
@@ -1427,6 +1527,8 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 maxValue->setCharacterSize(_characterSize);
                 maxValue->setPosition(pos);
                 maxValue->setText("1000");
+                maxValue->setDataVariance(osg::Object::DYNAMIC);
+
 
                 pos.x() = maxValue->getBoundingBox().xMax();
 
@@ -1449,6 +1551,8 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 requestList->setCharacterSize(_characterSize);
                 requestList->setPosition(pos);
                 requestList->setText("0");
+                requestList->setDataVariance(osg::Object::DYNAMIC);
+
 
                 pos.x() = requestList->getBoundingBox().xMax() + 2.0f*_characterSize;;
 
@@ -1471,6 +1575,8 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 compileList->setCharacterSize(_characterSize);
                 compileList->setPosition(pos);
                 compileList->setText("0");
+                compileList->setDataVariance(osg::Object::DYNAMIC);
+
 
                 pos.x() = maxLabel->getBoundingBox().xMax();
 
@@ -1555,6 +1661,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             camStatsText->setCharacterSize(_characterSize);
             camStatsText->setPosition(pos);
             camStatsText->setText("");
+            camStatsText->setDataVariance(osg::Object::DYNAMIC);
             camStatsText->setDrawCallback(new CameraSceneStatsTextDrawCallback(*citr, cameraCounter));
 
             // Move camera block to the right
@@ -1628,6 +1735,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             text->setFont(_font);
             text->setCharacterSize(_characterSize);
             text->setPosition(pos);
+            text->setDataVariance(osg::Object::DYNAMIC);
             text->setDrawCallback(new ViewSceneStatsTextDrawCallback(*it, viewCounter));
 
             pos.x() += 10 * _characterSize + 2 * backgroundMargin + backgroundSpacing;
@@ -1661,6 +1769,7 @@ void StatsHandler::createTimeStatsLine(const std::string& lineLabel,
     value->setCharacterSize(_characterSize);
     value->setPosition(pos);
     value->setText("0.0");
+    value->setDataVariance(osg::Object::DYNAMIC);
 
     if (!timeTakenName.empty())
     {

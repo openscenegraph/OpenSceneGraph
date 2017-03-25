@@ -13,16 +13,15 @@ void textInfo(osgText::Text* text)
 
     const osgText::Text::TextureGlyphQuadMap::const_iterator tgqmi = tgqm.begin();
 
-    const osgText::Text::GlyphQuads& gq = tgqmi->second;
 
     osgText::String& s = text->getText();
 
     for(unsigned int i = 0; i < s.size(); i++)
     {
-        osg::Vec2 ul = (*gq.getCoords())[0 + (i * 4)]; // upperLeft
-        osg::Vec2 ll = (*gq.getCoords())[1 + (i * 4)]; // lowerLeft
-        osg::Vec2 lr = (*gq.getCoords())[2 + (i * 4)]; // lowerRight
-        osg::Vec2 ur = (*gq.getCoords())[3 + (i * 4)]; // upperRight
+        osg::Vec2 ul; text->getCoord(0 + (i * 4), ul); // upperLeft
+        osg::Vec2 ll; text->getCoord(1 + (i * 4), ll); // lowerLeft
+        osg::Vec2 lr; text->getCoord(2 + (i * 4), lr); // lowerRight
+        osg::Vec2 ur; text->getCoord(3 + (i * 4), ur); // upperRight
 
         osg::notify(osg::NOTICE)
             << "'" << static_cast<char>(s[i]) << "':"

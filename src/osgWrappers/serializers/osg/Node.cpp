@@ -63,15 +63,7 @@ static bool writeDescriptions( osgDB::OutputStream& os, const osg::Node& node )
     os << os.END_BRACKET << std::endl;
     return true;
 }
-struct NodeFinishedObjectReadCallback : public osgDB::FinishedObjectReadCallback
-{
-    virtual void objectRead(osgDB::InputStream&, osg::Object& obj)
-    {
 
-        osg::Node& node = static_cast<osg::Node&>(obj);
-      //  node.setDataVariance(osg::Object::UNSPECIFIED);
-}
-};
 REGISTER_OBJECT_WRAPPER( Node,
                          new osg::Node,
                          osg::Node,
@@ -93,5 +85,4 @@ REGISTER_OBJECT_WRAPPER( Node,
     }
 
     ADD_OBJECT_SERIALIZER( StateSet, osg::StateSet, NULL );  // _stateset
-    //wrapper->addFinishedObjectReadCallback( new NodeFinishedObjectReadCallback() );
 }

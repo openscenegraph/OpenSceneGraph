@@ -27,250 +27,11 @@
 #include <osg/TriangleLinePointIndexFunctor>
 
 #include <osgUtil/MeshOptimizers>
-#include <osg/TriangleFunctor>
 
 using namespace osg;
 
 namespace osgUtil
 {
-
-MakeSharedBufferObjectsVisitor::MakeSharedBufferObjectsVisitor(Optimizer* optimizer):
-    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
-{
-    _hardMaxbuffsize=1000000;///min of all glbuffermaxsize
-    _softMaxbuffsize=90000000000;///ofline: keep all boset during traversal
-    _numVAOsInUsed=0;
-}
-void MakeSharedBufferObjectsVisitor::apply(osg::Geometry&g)
-{
-    treatBufferObjects(&g);
-}
-///return Hash without lastbit (index array bit)
-#define MAX_TEX_COORD 8
-#define MAX_VERTEX_ATTRIB 16
-unsigned int getArrayList(Geometry*g,Geometry::ArrayList &arrayList)
-{
-    unsigned int hash=0;
-
-    if (g->getVertexArray())
-    {
-        hash++;
-        arrayList.push_back(g->getVertexArray());
-    }
-    hash<<=1;
-    if (g->getNormalArray())
-    {
-        hash++;
-        arrayList.push_back(g->getNormalArray());
-    }
-    hash<<=1;
-    if (g->getColorArray())
-    {
-        hash++;
-        arrayList.push_back(g->getColorArray());
-    }
-    hash<<=1;
-    if (g->getSecondaryColorArray())
-    {
-        hash++;
-        arrayList.push_back(g->getSecondaryColorArray());
-    }
-    hash<<=1;
-    if (g->getFogCoordArray())
-    {
-        hash++;
-        arrayList.push_back(g->getFogCoordArray());
-    }
-    hash<<=1;
-    for(unsigned int unit=0; unit<g->getNumTexCoordArrays(); ++unit)
-    {
-        Array* array = g->getTexCoordArray(unit);
-        if (array)
-        {
-            hash++;
-            arrayList.push_back(array);
-        }
-        hash<<=1;
-    }
-    hash<<=MAX_TEX_COORD-g->getNumTexCoordArrays();
-    for(unsigned int  index = 0; index <g->getNumVertexAttribArrays(); ++index )
-    {
-        Array* array =g->getVertexAttribArray(index);
-        if (array)
-        {
-            hash++;
-            arrayList.push_back(array);
-        }
-        hash<<=1;
-    }
-    hash<<=MAX_VERTEX_ATTRIB-g->getNumVertexAttribArrays();
-    return hash;
-}
-
-
-///check bufferobject already guesting the bd
-bool isGuesting(const BufferObject&bo,const BufferData*bd)
-{
-    for(unsigned int i=0; i<bo.getNumBufferData(); i++)
-        if(bo.getBufferData(i)==bd)return true;
-    return false;
-}
-
-
-void  MakeSharedBufferObjectsVisitor::treatBufferObjects(osg::Geometry* g)
-{
-
-
-    osg::Geometry::ArrayList  bdlist;
-
-    unsigned int hash= getArrayList(g,bdlist),hasht;
-    osg::Geometry::DrawElementsList drawelmts;
-    g->getDrawElementsList(drawelmts);
-    hasht=hash;
-    unsigned int nbborequired=bdlist.size(),nbdrawelmt=0;
-
-    if(drawelmts.size()>1){
-    ///TODO do parse on Geode in order to add one copy per drawelemnts and keep drawarrays on the first one
-    /// OR  try to replace drawelements to multidrawelements
-    OSG_WARN<<"Multiple DrawElements detected: not fitted for base vertex drawing"<<std::endl;
-    return;
-    }
-    for(unsigned index=0; index< drawelmts.size(); index++)
-    {
-
-            if(nbborequired==bdlist.size())
-            {
-                nbborequired++;
-                hash=hasht+1;
-            }
-            nbdrawelmt++;
-
-    }
-
-    std::vector<BuffSet>& vecBuffSet=_store[hash];
-
-    std::vector<BuffSet>::iterator itbuffset=  vecBuffSet.begin();//+vecBuffSet.lastempty;
-
-    unsigned int * buffSize=new unsigned int [nbborequired+nbdrawelmt],*ptrbuffsize=buffSize;
-
-    //while !itbuffset.canGuest(bdlist)
-    bool canGuest=false;
-    bool alreadyGuesting=true;
-    Geometry::ArrayList::iterator arit;
-    while(!canGuest && itbuffset!=vecBuffSet.end())
-    {
-        canGuest=true;
-        alreadyGuesting=true;
-
-        BuffSet::iterator itbo=(*itbuffset).begin();
-        for(arit=bdlist.begin(); arit!=bdlist.end(); itbo++,arit++,ptrbuffsize++)
-        {
-            *ptrbuffsize=(*itbo)->computeRequiredBufferSize()+(*arit)->getTotalDataSize();
-            if(*ptrbuffsize>_hardMaxbuffsize)canGuest=false;
-
-            ///check bufferobject already guesting the bd
-            if(!isGuesting(*itbo->get(),(*arit)))alreadyGuesting=false;
-
-        }
-        for(unsigned index=0; index< drawelmts.size(); index++)
-        {
-
-                *ptrbuffsize=(*itbo)->computeRequiredBufferSize()+drawelmts[index]->getTotalDataSize();
-                if(*ptrbuffsize++>_hardMaxbuffsize)canGuest=false;
-                ///check bufferobject already guesting the bd
-                if(!isGuesting(*itbo->get(),drawelmts[index]))alreadyGuesting=false;
-
-        }
-
-        ptrbuffsize=buffSize;
-        if(alreadyGuesting){
-                    delete [] buffSize;
-                    return;
-                    }
-        if(!canGuest)itbuffset++;
-
-    }
-
-    if(itbuffset!=vecBuffSet.end())
-    {
-        unsigned buffSetMaxSize=0;
-        BuffSet::iterator itbo= itbuffset->begin();
-        ptrbuffsize=buffSize;
-        for( arit=bdlist.begin(); arit!=bdlist.end(); itbo++,arit++,ptrbuffsize++)
-        {
-            (*arit)->setBufferObject(*itbo);
-            buffSetMaxSize=buffSetMaxSize<*ptrbuffsize?*ptrbuffsize:buffSetMaxSize;
-        }
-        for(unsigned index=0; index< drawelmts.size(); index++)
-        {
-                drawelmts[index]->setBufferObject(*itbo);
-                buffSetMaxSize=buffSetMaxSize<*ptrbuffsize?*ptrbuffsize:buffSetMaxSize;
-                ptrbuffsize++;
-        }
-        ///check if bufferobject is full against soft limit
-        if( buffSetMaxSize>_softMaxbuffsize)
-            vecBuffSet.erase(itbuffset);
-
-        delete [] buffSize;
-        return;
-    }
-
-
-    _numVAOsInUsed++;
-    ///new BuffSetis required
-    BuffSet newBuffSet;
-    /// Check if buffer object set offsets configuration is compatible with base vertex draw
-    int commonoffset=0;
-    bool ready2go=true;
-    bool canbereused=true;
-    arit=bdlist.begin();
-    for(int i=0; i<(*arit)->getBufferIndex(); i++)commonoffset+=(*arit)->getBufferObject()->getBufferData(i)->getTotalDataSize();
-    newBuffSet.push_back((*arit)->getBufferObject());
-    for( arit++; arit!=bdlist.end()&&ready2go; arit++)
-    {
-        int offset=0;
-        for(int i=0; i<(*arit)->getBufferIndex(); i++)offset+=(*arit)->getBufferObject()->getBufferData(i)->getTotalDataSize();
-        if(offset!=commonoffset)ready2go=false;
-        if((*arit)->getBufferObject()->computeRequiredBufferSize()>_softMaxbuffsize)canbereused=false;
-        newBuffSet.push_back((*arit)->getBufferObject());
-    }
-    for(unsigned index=0; index< drawelmts.size()&&ready2go; index++)
-    {
-            if(drawelmts[index]->getBufferObject()->computeRequiredBufferSize()>_softMaxbuffsize)canbereused=false;
-            newBuffSet.push_back(drawelmts[index]->getBufferObject());
-            break;
-    }
-
-    ///if configuration is good assume bo set is ready to be used as it is
-    if(ready2go)
-    {
-        if(canbereused) vecBuffSet.push_back(newBuffSet);
-        delete [] buffSize;
-        return;
-    }
-
-    newBuffSet.clear();
-    OSG_WARN<<"create new vao buffset, num vao currently in used:"<<_numVAOsInUsed<<std::endl;
-
-    ElementBufferObject *ebo=0;
-    for( arit=bdlist.begin(); arit!=bdlist.end(); arit++)
-    {
-        newBuffSet.push_back(new VertexBufferObject());
-        (*arit)->setBufferObject(newBuffSet.back());
-    }
-    for(unsigned index=0; index<drawelmts.size(); index++)
-    {
-        if(!ebo)
-        {
-            ebo=new ElementBufferObject();
-            newBuffSet.push_back(ebo);
-        }
-        g->getPrimitiveSet(index)->setBufferObject(ebo);
-    }
-
-    vecBuffSet.push_back(newBuffSet);
-    delete [] buffSize;
-}
 
 void GeometryCollector::reset()
 {
@@ -301,11 +62,11 @@ struct GeometryArrayGatherer
         add(geometry.getSecondaryColorArray());
         add(geometry.getFogCoordArray());
         unsigned int i;
-        for(i=0; i<geometry.getNumTexCoordArrays(); ++i)
+        for(i=0;i<geometry.getNumTexCoordArrays();++i)
         {
             add(geometry.getTexCoordArray(i));
         }
-        for(i=0; i<geometry.getNumVertexAttribArrays(); ++i)
+        for(i=0;i<geometry.getNumVertexAttribArrays();++i)
         {
             add(geometry.getVertexAttribArray(i));
         }
@@ -322,8 +83,8 @@ struct GeometryArrayGatherer
     void accept(osg::ArrayVisitor& av)
     {
         for(ArrayList::iterator itr=_arrayList.begin();
-                itr!=_arrayList.end();
-                ++itr)
+            itr!=_arrayList.end();
+            ++itr)
         {
             (*itr)->accept(av);
         }
@@ -344,8 +105,8 @@ struct VertexAttribComparitor : public GeometryArrayGatherer
     bool operator() (unsigned int lhs, unsigned int rhs) const
     {
         for(ArrayList::const_iterator itr=_arrayList.begin();
-                itr!=_arrayList.end();
-                ++itr)
+            itr!=_arrayList.end();
+            ++itr)
         {
             int compare = (*itr)->compare(lhs,rhs);
             if (compare==-1) return true;
@@ -357,8 +118,8 @@ struct VertexAttribComparitor : public GeometryArrayGatherer
     int compare(unsigned int lhs, unsigned int rhs)
     {
         for(ArrayList::iterator itr=_arrayList.begin();
-                itr!=_arrayList.end();
-                ++itr)
+            itr!=_arrayList.end();
+            ++itr)
         {
             int compare = (*itr)->compare(lhs,rhs);
             if (compare==-1) return -1;
@@ -368,135 +129,63 @@ struct VertexAttribComparitor : public GeometryArrayGatherer
     }
 
 protected:
-    VertexAttribComparitor& operator = (const VertexAttribComparitor&)
-    {
-        return *this;
-    }
+    VertexAttribComparitor& operator = (const VertexAttribComparitor&) { return *this; }
 
 };
 
 // Compact the vertex attribute arrays. Also stolen from TriStripVisitor
 class RemapArray : public osg::ArrayVisitor
 {
-public:
-    RemapArray(const IndexList& remapping):_remapping(remapping) {}
+    public:
+        RemapArray(const IndexList& remapping):_remapping(remapping) {}
 
-    const IndexList& _remapping;
+        const IndexList& _remapping;
 
-    template<class T>
-    inline void remap(T& array)
-    {
-        for(unsigned int i=0; i<_remapping.size(); ++i)
+        template<class T>
+        inline void remap(T& array)
         {
-            if (i!=_remapping[i])
+            for(unsigned int i=0;i<_remapping.size();++i)
             {
-                array[i] = array[_remapping[i]];
+                if (i!=_remapping[i])
+                {
+                    array[i] = array[_remapping[i]];
+                }
             }
+            array.erase(array.begin()+_remapping.size(),array.end());
         }
-        array.erase(array.begin()+_remapping.size(),array.end());
-    }
 
-    virtual void apply(osg::Array&) {}
-    virtual void apply(osg::ByteArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::ShortArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::IntArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::UByteArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::UShortArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::UIntArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::FloatArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::DoubleArray& array)
-    {
-        remap(array);
-    }
+        virtual void apply(osg::Array&) {}
+        virtual void apply(osg::ByteArray& array) { remap(array); }
+        virtual void apply(osg::ShortArray& array) { remap(array); }
+        virtual void apply(osg::IntArray& array) { remap(array); }
+        virtual void apply(osg::UByteArray& array) { remap(array); }
+        virtual void apply(osg::UShortArray& array) { remap(array); }
+        virtual void apply(osg::UIntArray& array) { remap(array); }
+        virtual void apply(osg::FloatArray& array) { remap(array); }
+        virtual void apply(osg::DoubleArray& array) { remap(array); }
 
-    virtual void apply(osg::Vec2Array& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::Vec3Array& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::Vec4Array& array)
-    {
-        remap(array);
-    }
+        virtual void apply(osg::Vec2Array& array) { remap(array); }
+        virtual void apply(osg::Vec3Array& array) { remap(array); }
+        virtual void apply(osg::Vec4Array& array) { remap(array); }
 
-    virtual void apply(osg::Vec4ubArray& array)
-    {
-        remap(array);
-    }
+        virtual void apply(osg::Vec4ubArray& array) { remap(array); }
 
-    virtual void apply(osg::Vec2bArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::Vec3bArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::Vec4bArray& array)
-    {
-        remap(array);
-    }
+        virtual void apply(osg::Vec2bArray& array) { remap(array); }
+        virtual void apply(osg::Vec3bArray& array) { remap(array); }
+        virtual void apply(osg::Vec4bArray& array) { remap(array); }
 
-    virtual void apply(osg::Vec2sArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::Vec3sArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::Vec4sArray& array)
-    {
-        remap(array);
-    }
+        virtual void apply(osg::Vec2sArray& array) { remap(array); }
+        virtual void apply(osg::Vec3sArray& array) { remap(array); }
+        virtual void apply(osg::Vec4sArray& array) { remap(array); }
 
-    virtual void apply(osg::Vec2dArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::Vec3dArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::Vec4dArray& array)
-    {
-        remap(array);
-    }
+        virtual void apply(osg::Vec2dArray& array) { remap(array); }
+        virtual void apply(osg::Vec3dArray& array) { remap(array); }
+        virtual void apply(osg::Vec4dArray& array) { remap(array); }
 
-    virtual void apply(osg::MatrixfArray& array)
-    {
-        remap(array);
-    }
+        virtual void apply(osg::MatrixfArray& array) { remap(array); }
 protected:
 
-    RemapArray& operator = (const RemapArray&)
-    {
-        return *this;
-    }
+        RemapArray& operator = (const RemapArray&) { return *this; }
 };
 
 
@@ -528,99 +217,6 @@ struct MyTriangleOperator
 typedef osg::TriangleIndexFunctor<MyTriangleOperator> MyTriangleIndexFunctor;
 }
 
-template<class T,class Container>
-struct CrawlTriangleFunctor
-{
-
-    osg::ref_ptr<Container> _out;
-
-
-    CrawlTriangleFunctor(){_out=new Container;}
-
-
-
-    inline void operator() ( const T &v1, const T &v2, const T &v3, bool treatVertexDataAsTemporary )
-    {
-
-_out->push_back(v1);
-_out->push_back(v2);
-_out->push_back(v3);
-    }
-};
-void MakeDrawArraysVisitor::makeMesh(Geometry& geom){
-
-#define MTriangleFunctor(XXX,CON) osg::BaseTriangleFunctor<CrawlTriangleFunctor< XXX,CON> ,XXX> c;c.setVertexArray(array->getNumElements(),(XXX*)array->getDataPointer());\
-for(int i=0;i<geom.getNumPrimitiveSets();i++)geom.getPrimitiveSet(i)->accept(c);array=c._out;
-#define SWARRAYTYPECASES if(array && array->getBinding()==osg::Array::BIND_PER_VERTEX){switch (array->getType()){ \
-    case Array::Vec2ArrayType: {MTriangleFunctor(Vec2,Vec2Array) }break;\
-    case Array::Vec3ArrayType: {MTriangleFunctor(Vec3,Vec3Array) }break;\
-    case Array::Vec4ArrayType: {MTriangleFunctor(Vec4,Vec4Array) }break;\
-    case Array::Vec2sArrayType: {MTriangleFunctor(Vec2s,Vec2sArray) }break;\
-    case Array::Vec3sArrayType: {MTriangleFunctor(Vec3s,Vec3sArray) }break;\
-    case Array::Vec4sArrayType: {MTriangleFunctor(Vec4s,Vec4sArray) }break;\
-    case Array::Vec2bArrayType: {MTriangleFunctor(Vec2b,Vec2bArray) }break;\
-    case Array::Vec3bArrayType: {MTriangleFunctor(Vec3b,Vec3bArray) }break;\
-    case Array::Vec4bArrayType: {MTriangleFunctor(Vec4b,Vec4bArray) }break;\
-    case Array::Vec2iArrayType: {MTriangleFunctor(Vec2i,Vec2iArray) }break;\
-    case Array::Vec3iArrayType: {MTriangleFunctor(Vec3i,Vec3iArray) }break;\
-    case Array::Vec4iArrayType: {MTriangleFunctor(Vec4i,Vec4iArray) }break;\
-    case Array::Vec2usArrayType: {MTriangleFunctor(Vec2us,Vec2usArray) }break;\
-    case Array::Vec3usArrayType: {MTriangleFunctor(Vec3us,Vec3usArray) }break;\
-    case Array::Vec4usArrayType: {MTriangleFunctor(Vec4us,Vec4usArray) }break;\
-    case Array::Vec2ubArrayType: {MTriangleFunctor(Vec2ub,Vec2ubArray) }break;\
-    case Array::Vec3ubArrayType: {MTriangleFunctor(Vec3ub,Vec3ubArray) }break;\
-    case Array::Vec4ubArrayType: {MTriangleFunctor(Vec4ub,Vec4ubArray) }break;\
-    case Array::Vec2uiArrayType: {MTriangleFunctor(Vec2ui,Vec2uiArray) }break;\
-    case Array::Vec3uiArrayType: {MTriangleFunctor(Vec3ui,Vec3uiArray) }break;\
-    case Array::Vec4uiArrayType: {MTriangleFunctor(Vec4ui,Vec4uiArray) }break;\
-}}
-
-
-    osg::ref_ptr<osg::Array> array=geom.getVertexArray();
-    SWARRAYTYPECASES
-    geom.setVertexArray(array);
-
-    array=geom.getNormalArray();
-    SWARRAYTYPECASES
-    geom.setNormalArray(array);
-
-    array=geom.getColorArray();
-    SWARRAYTYPECASES
-    geom.setColorArray(array);
-
-    array=geom.getSecondaryColorArray();
-    SWARRAYTYPECASES
-    geom.setSecondaryColorArray(array);
-
-    array=geom.getFogCoordArray();
-    SWARRAYTYPECASES
-    geom.setFogCoordArray(array);
-
-    for(int i=0;i<geom.getNumTexCoordArrays();i++){
-        array=geom.getTexCoordArray(i);
-        SWARRAYTYPECASES
-        geom.setTexCoordArray(i,array);
-    }
-    for(int i=0;i<geom.getNumVertexAttribArrays();i++){
-        array=geom.getVertexAttribArray(i);
-        SWARRAYTYPECASES
-        geom.setVertexAttribArray(i,array);
-    }
-geom.removePrimitiveSet(0,geom.getNumPrimitiveSets());
-
-geom.addPrimitiveSet(new osg::DrawArrays(GL_TRIANGLES,0,geom.getVertexArray()->getNumElements()));
-
-}
-void MakeDrawArraysVisitor::makeMesh()
-{
-    for(GeometryList::iterator itr=_geometryList.begin();
-            itr!=_geometryList.end();
-            ++itr)
-    {
-        makeMesh(*(*itr));
-    }
-}
-
 void IndexMeshVisitor::makeMesh(Geometry& geom)
 {
     if (geom.containsDeprecatedData()) geom.fixDeprecatedData();
@@ -641,33 +237,32 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
     unsigned int numNonIndexedPrimitives = 0;
     Geometry::PrimitiveSetList& primitives = geom.getPrimitiveSetList();
     for(Geometry::PrimitiveSetList::iterator itr=primitives.begin();
-            itr!=primitives.end();
-            ++itr)
+        itr!=primitives.end();
+        ++itr)
     {
         switch((*itr)->getMode())
         {
-        case(PrimitiveSet::TRIANGLES):
-        case(PrimitiveSet::TRIANGLE_STRIP):
-        case(PrimitiveSet::TRIANGLE_FAN):
-        case(PrimitiveSet::QUADS):
-        case(PrimitiveSet::QUAD_STRIP):
-        case(PrimitiveSet::POLYGON):
-            ++numSurfacePrimitives;
-            break;
-        default:
-            // For now, only deal with polygons
-            return;
+            case(PrimitiveSet::TRIANGLES):
+            case(PrimitiveSet::TRIANGLE_STRIP):
+            case(PrimitiveSet::TRIANGLE_FAN):
+            case(PrimitiveSet::QUADS):
+            case(PrimitiveSet::QUAD_STRIP):
+            case(PrimitiveSet::POLYGON):
+                ++numSurfacePrimitives;
+                break;
+            default:
+                // For now, only deal with polygons
+                return;
         }
         PrimitiveSet::Type type = (*itr)->getType();
         if (!(type == PrimitiveSet::DrawElementsUBytePrimitiveType
-                || type == PrimitiveSet::DrawElementsUShortPrimitiveType
-                || type == PrimitiveSet::DrawElementsUIntPrimitiveType))
+              || type == PrimitiveSet::DrawElementsUShortPrimitiveType
+              || type == PrimitiveSet::DrawElementsUIntPrimitiveType))
             numNonIndexedPrimitives++;
     }
 
     // nothing to index
-    if(!getIsForcedReindexationEnabled())
-        if (!numSurfacePrimitives || !numNonIndexedPrimitives) return;
+    if (!numSurfacePrimitives || !numNonIndexedPrimitives) return;
 
     // duplicate shared arrays as it isn't safe to rearrange vertices when arrays are shared.
     if (geom.containsSharedArrays()) geom.duplicateSharedArrays();
@@ -677,7 +272,7 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
     unsigned int numVertices = geom.getVertexArray()->getNumElements();
     IndexList indices(numVertices);
     unsigned int i,j;
-    for(i=0; i<numVertices; ++i)
+    for(i=0;i<numVertices;++i)
     {
         indices[i] = i;
     }
@@ -687,7 +282,7 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
 
     unsigned int lastUnique = 0;
     unsigned int numUnique = 1;
-    for(i=1; i<numVertices; ++i)
+    for(i=1;i<numVertices;++i)
     {
         if (arrayComparitor.compare(indices[lastUnique],indices[i]) != 0)
         {
@@ -698,18 +293,18 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
     }
     IndexList remapDuplicatesToOrignals(numVertices);
     lastUnique = 0;
-    for(i=1; i<numVertices; ++i)
+    for(i=1;i<numVertices;++i)
     {
         if (arrayComparitor.compare(indices[lastUnique],indices[i])!=0)
         {
             // found a new vertex entry, so previous run of duplicates needs
             // to be put together.
             unsigned int min_index = indices[lastUnique];
-            for(j=lastUnique+1; j<i; ++j)
+            for(j=lastUnique+1;j<i;++j)
             {
                 min_index = osg::minimum(min_index,indices[j]);
             }
-            for(j=lastUnique; j<i; ++j)
+            for(j=lastUnique;j<i;++j)
             {
                 remapDuplicatesToOrignals[indices[j]]=min_index;
             }
@@ -718,11 +313,11 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
 
     }
     unsigned int min_index = indices[lastUnique];
-    for(j=lastUnique+1; j<i; ++j)
+    for(j=lastUnique+1;j<i;++j)
     {
         min_index = osg::minimum(min_index,indices[j]);
     }
-    for(j=lastUnique; j<i; ++j)
+    for(j=lastUnique;j<i;++j)
     {
         remapDuplicatesToOrignals[indices[j]]=min_index;
     }
@@ -733,7 +328,7 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
     IndexList copyMapping;
     copyMapping.reserve(numUnique);
     unsigned int currentIndex=0;
-    for(i=0; i<numVertices; ++i)
+    for(i=0;i<numVertices;++i)
     {
         if (remapDuplicatesToOrignals[i]==i)
         {
@@ -743,7 +338,7 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
         }
     }
 
-    for(i=0; i<numVertices; ++i)
+    for(i=0;i<numVertices;++i)
     {
         if (remapDuplicatesToOrignals[i]!=i)
         {
@@ -759,8 +354,8 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
     new_primitives.reserve(primitives.size());
 
     for(Geometry::PrimitiveSetList::iterator itr=primitives.begin();
-            itr!=primitives.end();
-            ++itr)
+        itr!=primitives.end();
+        ++itr)
     {
         // For now we only have primitive sets that play nicely with
         // the TriangleIndexFunctor.
@@ -774,9 +369,9 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
     {
         osg::DrawElementsUShort* elements = new DrawElementsUShort(GL_TRIANGLES);
         for (IndexList::iterator itr = taf._in_indices.begin(),
-                end = taf._in_indices.end();
-                itr != end;
-                ++itr)
+                 end = taf._in_indices.end();
+             itr != end;
+            ++itr)
         {
             elements->push_back((GLushort)(*itr));
         }
@@ -795,8 +390,8 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
 void IndexMeshVisitor::makeMesh()
 {
     for(GeometryList::iterator itr=_geometryList.begin();
-            itr!=_geometryList.end();
-            ++itr)
+        itr!=_geometryList.end();
+        ++itr)
     {
         makeMesh(*(*itr));
     }
@@ -956,12 +551,12 @@ TriangleScore computeTriScores(Vertex& vert, const VertexList& vertices,
     float bestScore = 0.0;
     unsigned bestTri = 0;
     for (size_t i = vert.triList;
-            i < vert.triList + vert.numActiveTris;
-            ++i)
+         i < vert.triList + vert.numActiveTris;
+         ++i)
     {
         unsigned tri = triStore[i];
         float score = triangles[tri].score = findTriangleScore(triangles[tri],
-                                             vertices);
+                                                               vertices);
         if (score > bestScore)
         {
             bestScore = score;
@@ -1066,9 +661,9 @@ void VertexCacheVisitor::optimizeVertices(Geometry& geom)
         return;
     Geometry::PrimitiveSetList& primSets = geom.getPrimitiveSetList();
     for (Geometry::PrimitiveSetList::iterator itr = primSets.begin(),
-            end = primSets.end();
-            itr != end;
-            ++itr)
+             end = primSets.end();
+         itr != end;
+         ++itr)
     {
         // Can only deal with polygons.
         switch ((*itr)->getMode())
@@ -1085,8 +680,8 @@ void VertexCacheVisitor::optimizeVertices(Geometry& geom)
         }
         PrimitiveSet::Type type = (*itr)->getType();
         if (type != PrimitiveSet::DrawElementsUBytePrimitiveType
-                && type != PrimitiveSet::DrawElementsUShortPrimitiveType
-                && type != PrimitiveSet::DrawElementsUIntPrimitiveType)
+            && type != PrimitiveSet::DrawElementsUShortPrimitiveType
+            && type != PrimitiveSet::DrawElementsUIntPrimitiveType)
             return;
     }
 #if 0
@@ -1108,9 +703,9 @@ void VertexCacheVisitor::optimizeVertices(Geometry& geom)
         osg::DrawElementsUShort* elements = new DrawElementsUShort(GL_TRIANGLES);
         elements->reserve(newVertList.size());
         for (std::vector<unsigned>::iterator itr = newVertList.begin(),
-                end = newVertList.end();
-                itr != end;
-                ++itr)
+                 end = newVertList.end();
+             itr != end;
+             ++itr)
             elements->push_back((GLushort)*itr);
         if (geom.getUseVertexBufferObjects())
         {
@@ -1145,7 +740,7 @@ void VertexCacheVisitor::optimizeVertices(Geometry& geom)
 
 // The main optimization loop
 void VertexCacheVisitor::doVertexOptimization(Geometry& geom,
-        std::vector<unsigned>& vertDrawList)
+                                              std::vector<unsigned>& vertDrawList)
 {
     Geometry::PrimitiveSetList& primSets = geom.getPrimitiveSetList();
     // lists for all the vertices and triangles
@@ -1153,16 +748,16 @@ void VertexCacheVisitor::doVertexOptimization(Geometry& geom,
     TriangleList triangles;
     TriangleCounter triCounter(&vertices);
     for (Geometry::PrimitiveSetList::iterator itr = primSets.begin(),
-            end = primSets.end();
-            itr != end;
-            ++itr)
+             end = primSets.end();
+         itr != end;
+         ++itr)
         (*itr)->accept(triCounter);
     triangles.resize(triCounter.triangleCount);
     // Get total of triangles used by all the vertices
     size_t vertTrisSize = 0;
     for (VertexList::iterator itr = vertices.begin(), end = vertices.end();
-            itr != end;
-            ++itr)
+         itr != end;
+         ++itr)
     {
         itr->triList = vertTrisSize;
         vertTrisSize += itr->trisUsing;
@@ -1171,18 +766,18 @@ void VertexCacheVisitor::doVertexOptimization(Geometry& geom,
     std::vector<unsigned> vertTriListStore(vertTrisSize);
     TriangleAdder triAdder(&vertices, &vertTriListStore, &triangles);
     for (Geometry::PrimitiveSetList::iterator itr = primSets.begin(),
-            end = primSets.end();
-            itr != end;
-            ++itr)
+             end = primSets.end();
+         itr != end;
+         ++itr)
         (*itr)->accept(triAdder);
     // Set up initial scores for vertices and triangles
     for (VertexList::iterator itr = vertices.begin(), end = vertices.end();
-            itr != end;
-            ++itr)
+         itr != end;
+         ++itr)
         itr->score = findVertexScore(*itr);
     for (TriangleList::iterator itr = triangles.begin(), end = triangles.end();
-            itr != end;
-            ++itr)
+         itr != end;
+         ++itr)
     {
         itr->score = 0.0f;
         for (int i = 0; i < 3; ++i)
@@ -1197,12 +792,12 @@ void VertexCacheVisitor::doVertexOptimization(Geometry& geom,
         Triangle* triToAdd = 0;
         float bestScore = 0.0;
         for (std::vector<unsigned>::const_iterator itr = cache.entries.begin(),
-                end = cache.entries.end();
-                itr != end;
-                ++itr)
+                 end = cache.entries.end();
+             itr != end;
+             ++itr)
         {
             TriangleScore tscore =  computeTriScores(vertices[*itr], vertices,
-                                    triangles, vertTriListStore);
+                                                     triangles, vertTriListStore);
             if (tscore.second > bestScore)
             {
                 bestScore = tscore.second;
@@ -1216,7 +811,7 @@ void VertexCacheVisitor::doVertexOptimization(Geometry& geom,
             OSG_DEBUG << "VertexCacheVisitor searching all triangles" << std::endl;
             TriangleList::iterator maxItr
                 = std::max_element(triangles.begin(), triangles.end(),
-                                   CompareTriangle());
+                              CompareTriangle());
             triToAdd = &(*maxItr);
         }
         assert(triToAdd != 0 && triToAdd->score > 0.0);
@@ -1230,9 +825,9 @@ void VertexCacheVisitor::doVertexOptimization(Geometry& geom,
             Vertex* vert = &vertices[vertIdx];
             vertDrawList.push_back(vertIdx);
             std::remove(vertTriListStore.begin() + vert->triList,
-                        vertTriListStore.begin() + vert->triList
-                        + vert->numActiveTris,
-                        triToAddIdx);
+                   vertTriListStore.begin() + vert->triList
+                   + vert->numActiveTris,
+                   triToAddIdx);
             vert->numActiveTris--;
         }
         // Assume that the three oldest cache entries will get kicked
@@ -1242,38 +837,38 @@ void VertexCacheVisitor::doVertexOptimization(Geometry& geom,
         if (cache.maxSize - cache.entries.size() < 3)
         {
             for (std::vector<unsigned>::iterator itr = cache.entries.end() - 3,
-                    end = cache.entries.end();
-                    itr != end;
-                    ++itr)
+                     end = cache.entries.end();
+                 itr != end;
+                ++itr)
             {
                 vertices[*itr].cachePosition = -1;
                 vertices[*itr].score = findVertexScore(vertices[*itr]);
             }
             for (std::vector<unsigned>::iterator itr = cache.entries.end() - 3,
-                    end = cache.entries.end();
-                    itr != end;
-                    ++itr)
+                     end = cache.entries.end();
+                 itr != end;
+                ++itr)
                 computeTriScores(vertices[*itr], vertices, triangles,
                                  vertTriListStore);
         }
         cache.addEntries(&triToAdd->verts[0], &triToAdd->verts[3]);
         for (std::vector<unsigned>::const_iterator itr = cache.entries.begin(),
-                end = cache.entries.end();
-                itr != end;
-                ++itr)
+                 end = cache.entries.end();
+             itr != end;
+             ++itr)
         {
             unsigned vertIdx = *itr;
             vertices[vertIdx].cachePosition = itr - cache.entries.begin();
             vertices[vertIdx].score = findVertexScore(vertices[vertIdx]);
         }
-    }
+     }
 }
 
 void VertexCacheVisitor::optimizeVertices()
 {
     for(GeometryList::iterator itr=_geometryList.begin();
-            itr!=_geometryList.end();
-            ++itr)
+        itr!=_geometryList.end();
+        ++itr)
     {
         optimizeVertices(*(*itr));
     }
@@ -1345,7 +940,7 @@ struct CacheRecordOperator
         for (int i = 0; i < 3; ++i)
         {
             if (std::find(cache->entries.begin(), cache->entries.end(), verts[i])
-                    == cache->entries.end())
+                == cache->entries.end())
                 misses++;
         }
         cache->addEntries(&verts[0], &verts[3]);
@@ -1374,9 +969,9 @@ void VertexCacheMissVisitor::doGeometry(Geometry& geom)
     Geometry::PrimitiveSetList& primSets = geom.getPrimitiveSetList();
     CacheRecorder recorder(_cacheSize);
     for (Geometry::PrimitiveSetList::iterator itr = primSets.begin(),
-            end = primSets.end();
-            itr != end;
-            ++itr)
+             end = primSets.end();
+         itr != end;
+         ++itr)
     {
         (*itr)->accept(recorder);
     }
@@ -1398,9 +993,9 @@ public:
         : _remapping(remapping), _newsize(0)
     {
         for (std::vector<unsigned>::const_iterator itr = _remapping.begin(),
-                end = _remapping.end();
-                itr != end;
-                ++itr)
+                 end = _remapping.end();
+             itr != end;
+             ++itr)
             if (*itr != invalidIndex)
                 ++_newsize;
     }
@@ -1421,100 +1016,34 @@ public:
     }
 
     virtual void apply(osg::Array&) {}
-    virtual void apply(osg::ByteArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::ShortArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::IntArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::UByteArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::UShortArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::UIntArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::FloatArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::DoubleArray& array)
-    {
-        remap(array);
-    }
+    virtual void apply(osg::ByteArray& array) { remap(array); }
+    virtual void apply(osg::ShortArray& array) { remap(array); }
+    virtual void apply(osg::IntArray& array) { remap(array); }
+    virtual void apply(osg::UByteArray& array) { remap(array); }
+    virtual void apply(osg::UShortArray& array) { remap(array); }
+    virtual void apply(osg::UIntArray& array) { remap(array); }
+    virtual void apply(osg::FloatArray& array) { remap(array); }
+    virtual void apply(osg::DoubleArray& array) { remap(array); }
 
-    virtual void apply(osg::Vec2Array& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::Vec3Array& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::Vec4Array& array)
-    {
-        remap(array);
-    }
+    virtual void apply(osg::Vec2Array& array) { remap(array); }
+    virtual void apply(osg::Vec3Array& array) { remap(array); }
+    virtual void apply(osg::Vec4Array& array) { remap(array); }
 
-    virtual void apply(osg::Vec4ubArray& array)
-    {
-        remap(array);
-    }
+    virtual void apply(osg::Vec4ubArray& array) { remap(array); }
 
-    virtual void apply(osg::Vec2bArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::Vec3bArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::Vec4bArray& array)
-    {
-        remap(array);
-    }
+    virtual void apply(osg::Vec2bArray& array) { remap(array); }
+    virtual void apply(osg::Vec3bArray& array) { remap(array); }
+    virtual void apply(osg::Vec4bArray& array) { remap(array); }
 
-    virtual void apply(osg::Vec2sArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::Vec3sArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::Vec4sArray& array)
-    {
-        remap(array);
-    }
+    virtual void apply(osg::Vec2sArray& array) { remap(array); }
+    virtual void apply(osg::Vec3sArray& array) { remap(array); }
+    virtual void apply(osg::Vec4sArray& array) { remap(array); }
 
-    virtual void apply(osg::Vec2dArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::Vec3dArray& array)
-    {
-        remap(array);
-    }
-    virtual void apply(osg::Vec4dArray& array)
-    {
-        remap(array);
-    }
+    virtual void apply(osg::Vec2dArray& array) { remap(array); }
+    virtual void apply(osg::Vec3dArray& array) { remap(array); }
+    virtual void apply(osg::Vec4dArray& array) { remap(array); }
 
-    virtual void apply(osg::MatrixfArray& array)
-    {
-        remap(array);
-    }
+    virtual void apply(osg::MatrixfArray& array) { remap(array); }
 };
 
 const unsigned Remapper::invalidIndex = std::numeric_limits<unsigned>::max();
@@ -1531,8 +1060,7 @@ struct VertexReorderOperator
 
     void inline doVertex(unsigned v)
     {
-        if (remap[v] == Remapper::invalidIndex)
-        {
+        if (remap[v] == Remapper::invalidIndex) {
             remap[v] = seq ++;
         }
     }
@@ -1568,8 +1096,8 @@ struct VertexReorder : public TriangleLinePointIndexFunctor<osgUtil::VertexReord
 void VertexAccessOrderVisitor::optimizeOrder()
 {
     for (GeometryList::iterator itr = _geometryList.begin(), end = _geometryList.end();
-            itr != end;
-            ++itr)
+         itr != end;
+         ++itr)
     {
         optimizeOrder(*(*itr));
     }
@@ -1580,8 +1108,8 @@ inline void reorderDrawElements(DE& drawElements,
                                 const std::vector<unsigned>& reorder)
 {
     for (typename DE::iterator itr = drawElements.begin(), end = drawElements.end();
-            itr != end;
-            ++itr)
+         itr != end;
+         ++itr)
     {
         *itr = static_cast<typename DE::value_type>(reorder[*itr]);
     }
@@ -1600,15 +1128,15 @@ void VertexAccessOrderVisitor::optimizeOrder(Geometry& geom)
 
     VertexReorder vr(vertArray->getNumElements());
     for (Geometry::PrimitiveSetList::iterator itr = primSets.begin(),
-            end = primSets.end();
-            itr != end;
-            ++itr)
+             end = primSets.end();
+         itr != end;
+         ++itr)
     {
         PrimitiveSet* ps = itr->get();
         PrimitiveSet::Type type = ps->getType();
         if (type != PrimitiveSet::DrawElementsUBytePrimitiveType
-                && type != PrimitiveSet::DrawElementsUShortPrimitiveType
-                && type != PrimitiveSet::DrawElementsUIntPrimitiveType)
+            && type != PrimitiveSet::DrawElementsUShortPrimitiveType
+            && type != PrimitiveSet::DrawElementsUIntPrimitiveType)
             return;
         ps->accept(vr);
     }
@@ -1624,9 +1152,9 @@ void VertexAccessOrderVisitor::optimizeOrder(Geometry& geom)
     Remapper remapper(vr.remap);
     gatherer.accept(remapper);
     for (Geometry::PrimitiveSetList::iterator itr = primSets.begin(),
-            end = primSets.end();
-            itr != end;
-            ++itr)
+             end = primSets.end();
+         itr != end;
+         ++itr)
     {
         PrimitiveSet* ps = itr->get();
         switch (ps->getType())
@@ -1698,7 +1226,7 @@ void SharedArrayOptimizer::findDuplicatedUVs(const osg::Geometry& geometry)
 void SharedArrayOptimizer::deduplicateUVs(osg::Geometry& geometry)
 {
     for(std::map<unsigned int, unsigned int>::const_iterator it_duplicate = _deduplicateUvs.begin() ;
-            it_duplicate != _deduplicateUvs.end() ; ++ it_duplicate)
+        it_duplicate != _deduplicateUvs.end() ; ++ it_duplicate)
     {
         osg::Array* original = geometry.getTexCoordArray(it_duplicate->second);
         geometry.setTexCoordArray(it_duplicate->first,

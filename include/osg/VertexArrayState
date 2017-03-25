@@ -163,14 +163,8 @@ public:
         void generateVertexArrayObject();
 
         void deleteVertexArrayObject();
-#if 0
-        ///DEPORTED TO THE STATE
-        void bindVertexArrayObject() const;
 
-        void unbindVertexArrayObject() const;
-#endif
-
-       inline GLuint getVertexArrayObject() const { return _vertexArrayObject; }
+        GLuint getVertexArrayObject() const { return _vertexArrayObject; }
 
 
         void setRequiresSetArrays(bool flag) { _requiresSetArrays = flag; }

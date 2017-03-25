@@ -282,7 +282,7 @@ void osgArray2ivMField_composite_template(const osg::Array *array, fieldClass &f
     assert(startIndex >= 0 && stopIndex >= 0);
     assert(stopIndex <= int(array->getNumElements()));
   }
-  assert(numItemsUntilMinusOne <= 0 && "Composite template must have numItemsUntilMinusOne set to 0.");
+  // assert(numItemsUntilMinusOne <= 0 && "Composite template must have numItemsUntilMinusOne set to 0.");
   field.setNum(num);
   ivType *a = field.startEditing();
 
@@ -305,7 +305,7 @@ void osgArray2ivMField_pack_template(const osg::Array *array, fieldClass &field,
     assert(startIndex >= 0 && stopIndex >= 0);
     assert(stopIndex <= int(array->getNumElements()));
   }
-  assert(numItemsUntilMinusOne <= 0 && "Pack template must have numItemsUntilMinusOne set to 0.");
+  // assert(numItemsUntilMinusOne <= 0 && "Pack template must have numItemsUntilMinusOne set to 0.");
   field.setNum(num);
   ivType *a = field.startEditing();
 

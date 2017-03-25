@@ -514,19 +514,14 @@ void Program::apply( osg::State& state ) const
     if( pcp->needsLink() ) compileGLObjects( state );
     if( pcp->isLinked() )
     {
-        if( pcp != state.getLastAppliedProgramObject())
-        {
-            // for shader debugging: to minimize performance impact,
-            // optionally validate based on notify level.
-            // TODO: enable this using notify level, or perhaps its own getenv()?
-            if( osg::isNotifyEnabled(osg::INFO) )
-                pcp->validateProgram();
+        // for shader debugging: to minimize performance impact,
+        // optionally validate based on notify level.
+        // TODO: enable this using notify level, or perhaps its own getenv()?
+        if( osg::isNotifyEnabled(osg::INFO) )
+            pcp->validateProgram();
 
-            pcp->useProgram();
-            state.setLastAppliedProgramObject(pcp);
-        }else{
-            OSG_WARN<<"WARNING: redondant useProgram pcp == state.getLastAppliedProgramObject()"<<std::endl;
-        }
+        pcp->useProgram();
+        state.setLastAppliedProgramObject(pcp);
     }
     else
     {

@@ -96,7 +96,7 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
                    (_stateset->getTextureMode(0,GL_TEXTURE_RECTANGLE)&mode)!=0 ||
                    (_stateset->getTextureMode(0,GL_TEXTURE_CUBE_MAP)&mode)!=0;
 
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
             _texture |= ((_stateset->getTextureMode(0,GL_TEXTURE_1D)&mode)!=0);
         #endif
     }
@@ -181,7 +181,7 @@ void StateSetManipulator::setTextureEnabled(bool newtexture)
     if ( _texture ) mode = osg::StateAttribute::INHERIT|osg::StateAttribute::ON;
     for( unsigned int ii=0; ii<_maxNumOfTextureUnits; ii++ )
     {
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
             _stateset->setTextureMode( ii, GL_TEXTURE_1D, mode );
         #endif
         _stateset->setTextureMode( ii, GL_TEXTURE_2D, mode );

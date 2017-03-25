@@ -24,54 +24,21 @@
 
 namespace osg {
 
-BufferBinding::BufferBinding(GLenum target)
-    : _target(target), _bufferObject(0)
-{
-}
-
-BufferBinding::BufferBinding(GLenum target, BufferObject* bo)
-    : _target(target), _bufferObject(bo)
-{
-}
-
-BufferBinding::BufferBinding(const BufferBinding& rhs, const CopyOp& copyop)
-    : StateAttribute(rhs, copyop),
-      _target(rhs._target),
-      _bufferObject(static_cast<BufferObject*>(copyop(rhs._bufferObject.get())))
-{
-}
-
-BufferBinding::~BufferBinding()
-{
-}
-
-void BufferBinding::apply(State& state) const
-{
-    if (_bufferObject.valid())
-    {
-        GLBufferObject* glObject
-            = _bufferObject->getOrCreateGLBufferObject(state.getContextID());
-        if (!glObject->_extensions->isUniformBufferObjectSupported)
-            return;
-        if (glObject->isDirty()) glObject->compileBuffer();
-        glObject->_extensions->glBindBuffer (_target, glObject->getGLObjectID());
-    }
-}
-
 BufferIndexBinding::BufferIndexBinding(GLenum target, GLuint index)
-    :BufferBinding(target), _index(index), _offset(0), _size(0)
+    : _target(target), _index(index), _offset(0), _size(0)
 {
 }
 
 BufferIndexBinding::BufferIndexBinding(GLenum target, GLuint index, BufferObject* bo,
                                        GLintptr offset, GLsizeiptr size)
-    : BufferBinding(target,bo), _index(index), _offset(offset), _size(size)
+    : _target(target), _index(index), _bufferObject(bo), _offset(offset), _size(size)
 {
 }
 
 BufferIndexBinding::BufferIndexBinding(const BufferIndexBinding& rhs, const CopyOp& copyop)
-    : BufferBinding(rhs, copyop),
-      _index(rhs._index),
+    : StateAttribute(rhs, copyop),
+      _target(rhs._target), _index(rhs._index),
+      _bufferObject(static_cast<BufferObject*>(copyop(rhs._bufferObject.get()))),
       _offset(rhs._offset),
       _size(rhs._size)
 {
@@ -206,8 +173,11 @@ ShaderStorageBufferBinding::ShaderStorageBufferBinding(const ShaderStorageBuffer
 }
 
 
+
+
+
 DrawIndirectBufferBinding::DrawIndirectBufferBinding( )
-  : BufferBinding(GL_DRAW_INDIRECT_BUFFER)
+  : BufferIndexBinding(GL_DRAW_INDIRECT_BUFFER, 0)
 {
 }
 void DrawIndirectBufferBinding::apply(State& state) const
@@ -218,19 +188,19 @@ void DrawIndirectBufferBinding::apply(State& state) const
             = _bufferObject->getOrCreateGLBufferObject(state.getContextID());
         if (!glObject->_extensions->isUniformBufferObjectSupported)
             return;
-        //  if (glObject->isDirty()) glObject->compileBuffer(); assuming buffer is GPU generated
+      //  if (glObject->isDirty()) glObject->compileBuffer();
         glObject->_extensions->glBindBuffer (_target, glObject->getGLObjectID());
     }
 }
 DrawIndirectBufferBinding::DrawIndirectBufferBinding(  BufferObject* bo)
-    : BufferBinding(GL_DRAW_INDIRECT_BUFFER, bo)
+    : BufferIndexBinding(GL_DRAW_INDIRECT_BUFFER, 0, bo, 0, 0)
 {
 
 }
 
 DrawIndirectBufferBinding::DrawIndirectBufferBinding(const DrawIndirectBufferBinding& rhs,
                                            const CopyOp& copyop)
-    : BufferBinding(rhs, copyop)
+    : BufferIndexBinding(rhs, copyop)
 {
 }
 

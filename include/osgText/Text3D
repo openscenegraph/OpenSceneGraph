@@ -25,13 +25,7 @@ class OSGTEXT_EXPORT Text3D : public osgText::TextBase
 {
     public:
 
-        /** Reder mode used to render the Text.
-         * PER_FACE : render all front face with the default StateSet
-         *                   all wall face with the wall StateSet
-         *                   all back face with the back StateSet (back face of the character, no the OpenGL back face)
-         *
-         * PER_GLYPH : render all Charactere with the default StateSet
-         */
+        /** Deprecated.*/
         enum RenderMode
         {
             PER_FACE,
@@ -49,10 +43,10 @@ class OSGTEXT_EXPORT Text3D : public osgText::TextBase
         /** Set the Charactere Depth of text. */
         void setCharacterDepth(float characterDepth);
 
-        /** Get the render mode used to render the text. */
+        /** Deprecated, value is now ignored. */
         RenderMode getRenderMode() const { return _renderMode; }
-        /** Set the render mode used to render the text. */
-        void setRenderMode(RenderMode renderMode) { _renderMode = renderMode; computeGlyphRepresentation(); }
+        /** Deprecated, value is now ignored. */
+        void setRenderMode(RenderMode renderMode) { _renderMode = renderMode; }
 
 
         /** Get the wall StateSet */
@@ -97,10 +91,6 @@ class OSGTEXT_EXPORT Text3D : public osgText::TextBase
         /** accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has.*/
         virtual void accept(osg::PrimitiveFunctor& pf) const;
 
-
-        /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
-        virtual void setThreadSafeRefUnref(bool threadSafe);
-
         /** Resize any per context GLObject buffers to specified size. */
         virtual void resizeGLObjectBuffers(unsigned int maxSize);
 
@@ -109,8 +99,8 @@ class OSGTEXT_EXPORT Text3D : public osgText::TextBase
           * for all graphics contexts. */
         virtual void releaseGLObjects(osg::State* state=0) const;
 
-    //    // make Font a friend to allow it set the _font to 0 if the font is
-    //    // forcefully unloaded.
+        // make Font a friend to allow it set the _font to 0 if the font is
+        // forcefully unloaded.
         friend class Font;
 
         virtual osg::BoundingBox computeBoundingBox() const;
@@ -120,13 +110,15 @@ class OSGTEXT_EXPORT Text3D : public osgText::TextBase
 
         virtual ~Text3D() {}
 
-        void renderPerGlyph(osg::State & state) const;
-        void renderPerFace(osg::State & state) const;
-
         String::iterator computeLastCharacterOnLine(osg::Vec2& cursor, String::iterator first,String::iterator last);
 
         void computeGlyphRepresentation();
-        void computePositions(unsigned int contextID) const;
+
+        void copyAndOffsetPrimitiveSets(osg::Geometry::PrimitiveSetList& dest_PrimitiveSetList, osg::Geometry::PrimitiveSetList& src_PrimitiveSetList, unsigned int offset);
+
+        osg::Geometry::PrimitiveSetList _frontPrimitiveSetList;
+        osg::Geometry::PrimitiveSetList _wallPrimitiveSetList;
+        osg::Geometry::PrimitiveSetList _backPrimitiveSetList;
 
         // ** glyph and other information to render the glyph
         struct GlyphRenderInfo
@@ -144,7 +136,7 @@ class OSGTEXT_EXPORT Text3D : public osgText::TextBase
 
         TextRenderInfo _textRenderInfo;
 
-
+        // deprecated value no longer used.
         RenderMode _renderMode;
 
         osg::ref_ptr<osg::StateSet> _wallStateSet;

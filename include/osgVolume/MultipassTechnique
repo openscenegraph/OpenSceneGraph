@@ -15,7 +15,6 @@
 #define OSGVOLUME_MULTIPASSTECHNIQUE 1
 
 #include <osgVolume/VolumeTechnique>
-#include <osg/Texture2D>
 #include <osg/MatrixTransform>
 
 namespace osgVolume {

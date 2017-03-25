@@ -30,7 +30,7 @@ void Depth::apply(State&) const
 {
     glDepthFunc((GLenum)_func);
     glDepthMask((GLboolean)_depthWriteMask);
-#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
     glDepthRangef(_zNear,_zFar);
 #else
     glDepthRange(_zNear,_zFar);

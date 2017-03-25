@@ -49,6 +49,18 @@ public:
         _out->write( (char*)&value, osgDB::LONG_SIZE );
     }
 
+    virtual void writeInt64( int64_t ll )
+    {_out->write( (char*)&ll, osgDB::INT64_SIZE );}
+
+    virtual void writeUInt64( uint64_t ull )
+    {_out->write( (char*)&ull, osgDB::INT64_SIZE );}
+
+    virtual void writeInt( long long ll )
+    { _out->write( (char*)&ll, osgDB::INT64_SIZE ); }
+
+    virtual void writeUInt( unsigned long long ull )
+    { _out->write( (char*)&ull, osgDB::INT64_SIZE ); }
+
     virtual void writeFloat( float f )
     { _out->write( (char*)&f, osgDB::FLOAT_SIZE ); }
 

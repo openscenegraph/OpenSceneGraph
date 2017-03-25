@@ -24,6 +24,7 @@
 #include <osg/Transform>
 #include <osg/Projection>
 #include <osg/OccluderNode>
+#include <osg/ScriptEngine>
 
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/GUIEventHandler>

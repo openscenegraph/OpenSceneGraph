@@ -128,8 +128,8 @@ class OSG_EXPORT Program : public osg::StateAttribute
         /** Remove a uniform block binding. */
         void removeBindUniformBlock(const std::string& name);
 
-        /** Remove a TransformFeedbackVarying. */
-        void removeTransformFeedbackVarying(const std::string& name)
+        /** Remove a TransformFeedBackVarying. */
+        void removeTransformFeedBackVarying(const std::string& name)
         {
             for(std::vector<std::string>::iterator i=_feedbackout.begin(); i!=_feedbackout.end(); i++)
             {
@@ -137,23 +137,23 @@ class OSG_EXPORT Program : public osg::StateAttribute
             }
         }
 
-        /** Add a TransformFeedback Varying Name. */
-        void addTransformFeedbackVarying(const std::string& outname)
+        /** Add a TransformFeedBack Varying Name. */
+        void addTransformFeedBackVarying(const std::string& outname)
         {
             _feedbackout.push_back(outname);
         }
 
-        /** Get number of TransformFeedback Varyings. */
-        inline unsigned int getNumTransformFeedbackVaryings() const { return _feedbackout.size(); }
+        /** Get number of TransformFeedBack Varyings. */
+        inline unsigned int getNumTransformFeedBackVaryings() const { return _feedbackout.size(); }
 
-        /** Get const TransformFeedback Varying at index i. */
-        inline const std::string& getTransformFeedbackVarying(unsigned int i) const { return _feedbackout[i]; }
+        /** Get const TransformFeedBack Varying at index i. */
+        inline const std::string& getTransformFeedBackVarying(unsigned int i) const { return _feedbackout[i]; }
 
-        /** Set TransformFeedback Mode. */
-        void setTransformFeedbackMode(GLenum e) {_feedbackmode=e;}
+        /** Set TransformFeedBack Mode. */
+        void setTransformFeedBackMode(GLenum e) {_feedbackmode=e;}
 
-        /** Get TransformFeedback Mode. */
-        GLenum getTransformFeedbackMode() const {return _feedbackmode;}
+        /** Get TransformFeedBack Mode. */
+        GLenum getTransformFeedBackMode() const {return _feedbackmode;}
 
         /** Experimental. */
         void setShaderDefines(const ShaderDefines& shaderDefs) { _shaderDefines = shaderDefs; }
@@ -445,7 +445,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
         GLint _numGroupsY;
         GLint _numGroupsZ;
 
-        /**TransformFeedback**/
+        /**TransformFeedBack**/
         GLenum _feedbackmode;
         std::vector<std::string> _feedbackout;
 

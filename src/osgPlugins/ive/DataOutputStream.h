@@ -72,7 +72,11 @@ public:
     void writeVec2b(const osg::Vec2b& v);
     void writeVec3b(const osg::Vec3b& v);
     void writeVec4b(const osg::Vec4b& v);
-
+    
+    void writeUInt64(unsigned long long ull);
+    void writeInt64(long long ll);
+    void writeUInt64Array(const osg::UInt64Array* a);
+    void writeInt64Array(const osg::Int64Array* a);
     void writePackedFloatArray(const osg::FloatArray* a, float maxError);
 
     void writeFloatArray(const osg::FloatArray* a);

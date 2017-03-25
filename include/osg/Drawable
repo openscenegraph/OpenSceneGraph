@@ -55,7 +55,7 @@
 #endif
 
 
-#define INLINE_DRAWABLE_DRAW
+// #define INLINE_DRAWABLE_DRAW
 
 namespace osg {
 
@@ -518,7 +518,7 @@ inline void Drawable::draw(RenderInfo& renderInfo) const
 
         State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 
-        state.bindVertexArrayObject();
+        vas->bindVertexArrayObject();
 
         drawInner(renderInfo);
 
@@ -528,7 +528,7 @@ inline void Drawable::draw(RenderInfo& renderInfo) const
     }
 
     // TODO, add check against whether VAO is active and supported
-    if (state.getCurrentVertexArrayState()) state.bindVertexArrayObject();
+    if (state.getCurrentVertexArrayState()) state.getCurrentVertexArrayState()->bindVertexArrayObject();
 
 
 #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
@@ -652,27 +652,6 @@ protected:
 
         Drawable::ConstAttributeFunctor&    _af;
         Drawable::AttributeType             _type;
-};
-
-
-class OSG_EXPORT TransformFeedbackDrawCallback: public Drawable::DrawCallback
-{
-protected:
-    GLenum _type;
-public:
-    META_Object(osg,TransformFeedbackDrawCallback);
-
-    TransformFeedbackDrawCallback():Drawable::DrawCallback(),_type(GL_POINTS){}
-    TransformFeedbackDrawCallback(const TransformFeedbackDrawCallback&dc,const CopyOp&co);
-
-    /** Get the primitive type of the feedback.
-     */
-    inline GLenum getFeedbackType() const      { return _type;      }
-    inline void  setFeedbackType(GLenum e)     { _type= e;          }
-
-    /** do TransformFeedback draw code.*/
-    virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable*  drawable ) const;
-
 };
 
 }

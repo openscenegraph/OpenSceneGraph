@@ -1,5 +1,3 @@
-#undef OBJECT_CAST
-#define OBJECT_CAST dynamic_cast
 #include <osg/Drawable>
 #include <osgDB/ObjectWrapper>
 #include <osgDB/InputStream>
@@ -35,12 +33,8 @@ static bool writeInitialBound( osgDB::OutputStream& os, const osg::Drawable& dra
 REGISTER_OBJECT_WRAPPER( Drawable,
                          /*new osg::Drawable*/NULL,
                          osg::Drawable,
-                         "osg::Object osg::Node osg::Drawable" )
+                         "osg::Object osg::Drawable" )
 {
-    {
-            UPDATE_TO_VERSION_SCOPED( 145 )
-            ADDED_ASSOCIATE("osg::Node")
-    }
     ADD_OBJECT_SERIALIZER( StateSet, osg::StateSet, NULL );  // _stateset
     ADD_USER_SERIALIZER( InitialBound );  // _initialBound
     ADD_OBJECT_SERIALIZER( ComputeBoundingBoxCallback,
@@ -64,30 +58,3 @@ REGISTER_OBJECT_WRAPPER( Drawable,
         ADD_BOOL_SERIALIZER( CullingActive, true );  // _cullingActive
     }
 }
-
-
-
-
-namespace DrawableDrawCallbackWrapper  {
-    REGISTER_OBJECT_WRAPPER( DrawableDrawCallback,
-                             /*new osg::Drawable::DrawCallback*/NULL,
-                            osg::Drawable::DrawCallback,
-                             "osg::Object osg::Drawable::DrawCallback" )
-    {
-
-    }
-}
-
-namespace TransformFeedbackDrawCallbackWrapper{
-    REGISTER_OBJECT_WRAPPER( TransformFeedbackDrawCallback,
-                             new  osg::TransformFeedbackDrawCallback,
-                             osg::TransformFeedbackDrawCallback,
-                             "osg::Object osg::Drawable::DrawCallback osg::TransformFeedbackDrawCallback" )
-    {
-
-        ADD_GLENUM_SERIALIZER( FeedbackType,GLenum, GL_POINTS);  // _type
-
-    }
-}
-#undef OBJECT_CAST
-#define OBJECT_CAST static_cast

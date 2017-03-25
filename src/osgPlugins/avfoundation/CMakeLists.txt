@@ -1,6 +1,6 @@
 # AVFoundation plugin only works with OSX/Cocoa (not X11 or Carbon)
-IF(NOT OSG_WINDOWING_SYSTEM STREQUAL "Cocoa")
-  MESSAGE(WARNING "Disabling AVFoundation plugin because it requires OSG_WINDOWING_SYSTEM to be Cocoa")
+IF(NOT OSG_WINDOWING_SYSTEM STREQUAL "Cocoa" AND NOT OSG_WINDOWING_SYSTEM STREQUAL "IOS")
+  MESSAGE(WARNING "Disabling AVFoundation plugin because it requires OSG_WINDOWING_SYSTEM to be Cocoa or IOS")
   RETURN()
 ENDIF()
 

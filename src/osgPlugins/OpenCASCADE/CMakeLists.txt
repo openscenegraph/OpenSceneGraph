@@ -13,5 +13,9 @@ SET(TARGET_LIBRARIES_VARS OPENCASCADE_LIBRARY)
 # requires CMake 3.1 to do the following:
 set (CMAKE_CXX_STANDARD 11)
 
+if (NOT "${OPENCASCADE_LIBRARY_TYPE}" STREQUAL "Shared")
+ADD_DEFINITIONS(-DHAVE_NO_DLL)
+endif (NOT "${OPENCASCADE_LIBRARY_TYPE}" STREQUAL "Shared")
+
 #### end var setup  ###
 SETUP_PLUGIN(opencascade)

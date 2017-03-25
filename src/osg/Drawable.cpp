@@ -235,11 +235,7 @@ Drawable::Drawable()
     _useVertexBufferObjects = true;
 #endif
 
-#ifndef OSG_GL_VERTEX_ARRAY_OBJECTS_AS_DEFAULT
-     _useVertexArrayObject = false;
-#else
-     _useVertexArrayObject = true;
-#endif
+    _useVertexArrayObject = false;
 }
 
 Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
@@ -464,12 +460,7 @@ void Drawable::dirtyGLObjects()
 
 
 struct ComputeBound : public PrimitiveFunctor
-{    virtual void useVertexCacheAsVertexArray()
-    {
-        setVertexArray(_vertexCache.size(),&_vertexCache.front());
-    }
-
-    std::vector<osg::Vec3>   _vertexCache;
+{
         ComputeBound()
         {
             _vertices2f = 0;
@@ -600,7 +591,6 @@ void Drawable::setBound(const BoundingBox& bb) const
 }
 
 
-
 void Drawable::compileGLObjects(RenderInfo& renderInfo) const
 {
 
@@ -634,7 +624,6 @@ void Drawable::compileGLObjects(RenderInfo& renderInfo) const
 
 void Drawable::draw(RenderInfo& renderInfo) const
 {
-
     State& state = *renderInfo.getState();
     bool useVertexArrayObject = state.useVertexArrayObject(_useVertexArrayObject);
     if (useVertexArrayObject)
@@ -645,18 +634,15 @@ void Drawable::draw(RenderInfo& renderInfo) const
         if (!vas)
         {
             _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
-            // OSG_NOTICE<<"  Geometry::draw() "<<this<<", assigned _vertexArrayStateList[renderInfo.getContextID()]="<<_vertexArrayStateList[renderInfo.getContextID()].get()<<", vas="<<vas<< std::endl;
         }
         else
         {
             // vas->setRequiresSetArrays(getDataVariance()==osg::Object::DYNAMIC);
-            // OSG_NOTICE<<"  Geometry::draw() "<<this<<", reusing _vertexArrayStateList[renderInfo.getContextID()]="<<_vertexArrayStateList[renderInfo.getContextID()].get()<<", vas="<<vas<< std::endl;
         }
-
 
         State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 
-        vas->bindVertexArrayObject();
+        state.bindVertexArrayObject(vas);
 
         drawInner(renderInfo);
 
@@ -666,7 +652,11 @@ void Drawable::draw(RenderInfo& renderInfo) const
     }
 
     // TODO, add check against whether VAO is active and supported
-    if (state.getCurrentVertexArrayState()) state.getCurrentVertexArrayState()->bindVertexArrayObject();
+    if (state.getCurrentVertexArrayState())
+    {
+        //OSG_NOTICE<<"state.getCurrentVertexArrayState()->getVertexArrayObject()="<< state.getCurrentVertexArrayState()->getVertexArrayObject()<<std::endl;
+        state.bindVertexArrayObject(state.getCurrentVertexArrayState());
+    }
 
 
 #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
@@ -711,19 +701,4 @@ VertexArrayState* Drawable::createVertexArrayState(RenderInfo& renderInfo) const
     VertexArrayState* vos = new osg::VertexArrayState(renderInfo.getState());
     vos->assignAllDispatchers();
     return vos;
-
-}
-
-TransformFeedbackDrawCallback::TransformFeedbackDrawCallback(const TransformFeedbackDrawCallback&dc,const CopyOp&co):osg::Drawable::DrawCallback(dc,co)
-{
-    _type=dc._type;
-}
-
-void TransformFeedbackDrawCallback::drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable*  drawable ) const
-{
-    osg::GLExtensions* ext = renderInfo.getState()->get<osg::GLExtensions>();
-
-    ext->glBeginTransformFeedback(_type);
-    drawable->drawImplementation(renderInfo);
-    ext->glEndTransformFeedback();
 }

@@ -253,7 +253,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
         {
 #if FBXSDK_VERSION_MAJOR < 2014
             return std::string(lImporter->GetLastErrorString());
-#else
+#else 
             return std::string(lImporter->GetStatus().GetErrorString());
 #endif
         }
@@ -375,7 +375,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
                 }
 
                 FbxAxisSystem fbxAxis = pScene->GetGlobalSettings().GetAxisSystem();
-                // some reminder: http://www.realtimerendering.com/blog/left-handed-vs-right-handed-world-coordinates/
+                // some reminder: http://www.realtimerendering.com/blog/left-handed-vs-right-handed-world-coordinates/                
                 int upSign;
                 FbxAxisSystem::EUpVector eUp = fbxAxis.GetUpVector(upSign);
                 bool bLeftHanded = fbxAxis.GetCoorSystem() == FbxAxisSystem::eLeftHanded;
@@ -384,11 +384,11 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
 
                 bool refCoordSysChange = false;
                 osg::Matrix mat;
-
+               
                 if (zUp)
                 {
                     if (eUp != FbxAxisSystem::eZAxis || fSign != 1.0  || upSign != 1.0)
-                    {
+                    {                    
                         switch (eUp)
                         {
                         case FbxAxisSystem::eXAxis:
@@ -403,7 +403,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
                         }
                         refCoordSysChange = true;
                     }
-                }
+                } 
                 else if (fbxAxis != FbxAxisSystem::OpenGL)
                 {
                     switch (eUp)
@@ -417,7 +417,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
                     case FbxAxisSystem::eZAxis:
                         mat.set(1,0,0,0,0,0,-fSign*HorizSign,0,0,fSign,0,0,0,0,0,1);
                         break;
-                    }
+                    } 
                     refCoordSysChange = true;
                 }
                 if (refCoordSysChange)

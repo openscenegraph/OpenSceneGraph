@@ -25,49 +25,64 @@ class ReaderWriterLAS : public osgDB::ReaderWriter
 
         ReaderWriterLAS()
         {
-            supportsExtension("las","LAS point cloud format");
-            supportsOption("v","Verbose output");
+            supportsExtension("las", "LAS point cloud format");
+            supportsExtension("laz", "compressed LAS point cloud format");
+            supportsOption("v", "Verbose output");
+            supportsOption("noScale", "don't scale vertices according to las haeder - put schale in matixTransform");
+            supportsOption("noReCenter", "don't transform vertex coords to re-center the pointcloud");
         }
 
         virtual const char* className() const { return "LAS point cloud reader"; }
 
-        virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const 
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            std::string fileName = osgDB::findDataFile( file, options );
+            std::string fileName = osgDB::findDataFile(file, options);
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            OSG_INFO << "Reading file "<<fileName<<std::endl;
+            OSG_INFO << "Reading file " << fileName << std::endl;
+            std::ifstream ifs;
+            if (!liblas::Open(ifs, file))
+            {
+                return ReadResult::ERROR_IN_READING_FILE;
+            }
+            return readNode(ifs, options);
+        }
 
+        virtual ReadResult readNode(std::istream& ifs, const Options* options) const {
             // Reading options
-            bool verbose = false;
+            bool _verbose = false;
+            bool _scale = true;
+            bool _recenter = true;
             if (options)
             {
                 std::istringstream iss(options->getOptionString());
                 std::string opt;
                 while (iss >> opt)
                 {
-                    if(opt=="v")
+                    if (opt == "v")
                     {
-                        verbose = true;
+                        _verbose = true;
+                    }
+                    if (opt == "noScale")
+                    {
+                        _scale = false;
+                    }
+                    if (opt == "noReCenter")
+                    {
+                        _recenter = false;
                     }
                 }
             }
-
-            /// HEADER ///
-
-            std::ifstream ifs;
-            if (!liblas::Open(ifs, file))
-            {
-                return ReadResult::ERROR_IN_READING_FILE;
-            }
-            liblas::Reader reader(ifs);
+            liblas::ReaderFactory f;
+            liblas::Reader reader = f.CreateWithStream(ifs);
             liblas::Header const& h = reader.GetHeader();
-        
-            if (verbose) {
-                std::cout << "File name: " << file << '\n';
+
+            if (_verbose)
+            {
+                //std::cout << "File name: " << file << '\n';
                 //std::cout << "Version  : " << reader.GetVersion() << '\n';
                 std::cout << "Signature: " << h.GetFileSignature() << '\n';
                 std::cout << "Format   : " << h.GetDataFormatId() << '\n';
@@ -98,66 +113,54 @@ class ReaderWriterLAS : public osgDB::ReaderWriter
 
             liblas::detail::Timer t;
             t.start();
-
-            // This is legacy from libLas Read example.
-            // The limits are not used in the OSG actual code
-            // It is left for visual "verification" using the cout output
             typedef std::pair<double, double> minmax_t;
             minmax_t mx (DBL_MAX, -DBL_MAX);
             minmax_t my (DBL_MAX, -DBL_MAX);
             minmax_t mz (DBL_MAX, -DBL_MAX);
 
-            while (reader.ReadNextPoint())
-            {
-                liblas::Point const& p = reader.GetPoint();
-
-                mx.first = std::min<double>(mx.first, p[0]);
-                mx.second = std::max<double>(mx.second, p[0]);
-                my.first = std::min<double>(my.first, p[1]);
-                my.second = std::max<double>(my.second, p[1]);
-                mz.first = std::min<double>(mz.first, p[2]);
-                mz.second = std::max<double>(mz.second, p[2]);
-            }
-
-            double const d1 = t.stop();
-            t.start();
-
-            if (verbose) {
-                std::cout << "Min Max calculation. Elapsed Time: " << d1 << "\n"
-                    << std::fixed << std::setprecision(6)
-                    << "\nX: (" << mx.first << ", " << mx.second << ")"
-                    << "\nY: (" << my.first << ", " << my.second << ")"
-                    << "\nZ: (" << mz.first << ", " << mz.second << ")"
-                    << std::endl;
-            }
-
-            // calculate the mid point of the point cloud
-            double mid_x = 0.5*(mx.second - mx.first);
-            double mid_y = 0.5*(my.second - my.first);
-            double mid_z = 0.5*(mz.second - mz.first);
-
-            // now we do a second pass subtracting the mid point to each point
-            reader.Reset();
             uint32_t i = 0;
+            bool singleColor = true;
+            liblas::Color singleColorValue;
             while (reader.ReadNextPoint())
             {
                 liblas::Point const& p = reader.GetPoint();
-            
+
                 // Extract color components from LAS point
                 liblas::Color c = p.GetColor();
-                uint32_t r = c.GetRed();
-                uint32_t g = c.GetGreen();
-                uint32_t b = c.GetBlue();
+                uint32_t r = c.GetRed() >> 8;
+                uint32_t g = c.GetGreen() >> 8;
+                uint32_t b = c.GetBlue() >> 8;
                 uint32_t a = 255;    // default value, since LAS point has no alpha information
 
-                if (vertices->size()>=targetNumVertices) 
+                if (vertices->size() == 0)
+                {
+                    singleColorValue = c;
+                    singleColor = true;
+                }
+                else
+                {
+                    if (singleColor)
+                    {
+                        singleColor = singleColorValue == c;//set false if different color found
+                    }
+                }
+                if (vertices->size() >= targetNumVertices)
                 {
                     // finishing setting up the current geometry and add it to the geode.
                     geometry->setUseDisplayList(true);
                     geometry->setUseVertexBufferObjects(true);
                     geometry->setVertexArray(vertices);
-                    geometry->setColorArray(colours, osg::Array::BIND_PER_VERTEX);
-                    geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS,0,vertices->size()));
+                    if (singleColor)
+                    {
+                        colours->resize(1);
+                        geometry->setColorArray(colours, osg::Array::BIND_OVERALL);
+                    }
+                    else
+                    {
+                        geometry->setColorArray(colours, osg::Array::BIND_PER_VERTEX);
+
+                    }
+                    geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, vertices->size()));
 
                     geode->addDrawable(geometry);
 
@@ -170,17 +173,58 @@ class ReaderWriterLAS : public osgDB::ReaderWriter
                     vertices->reserve(targetNumVertices);
                     colours->reserve(targetNumVertices);
                 }
+                double X = p.GetRawX();
+                double Y = p.GetRawY();
+                double Z = p.GetRawZ();
+                if (_scale)
+                {
+                    X *= h.GetScaleX();
+                    Y *= h.GetScaleY();
+                    Z *= h.GetScaleZ();
+                }
+                if (_recenter)
+                {
+                    mx.first = std::min<double>(mx.first, X);
+                    mx.second = std::max<double>(mx.second, X);
+                    my.first = std::min<double>(my.first, Y);
+                    my.second = std::max<double>(my.second, Y);
+                    mz.first = std::min<double>(mz.first, Z);
+                    mz.second = std::max<double>(mz.second, Z);
+                }
+                vertices->push_back(osg::Vec3(X, Y, Z));
 
-                vertices->push_back(osg::Vec3d (p[0] - mid_x, p[1] - mid_y, p[2] - mid_z) );
-                colours->push_back(osg::Vec4ub(r,g,b,a));
+                colours->push_back(osg::Vec4ub(r, g, b, a));
 
                 // Warning: Printing zillion of points may take looong time
                 //std::cout << i << ". " << p << '\n';
                 i++;
             }
+            // calculate the mid point of the point cloud
+            double mid_x = 0.5*(mx.second + mx.first);
+            double mid_y = 0.5*(my.second + my.first);
+            double mid_z = 0.5*(mz.second + mz.first);
+            osg::Vec3 midVec(mid_x, mid_y, mid_z);
+            if (_recenter)
+            {
+                //Transform vertices to midpoint
+                for (unsigned int geomIndex = 0; geomIndex < geode->getNumDrawables(); ++geomIndex)
+                {
+                    osg::Geometry *geom = dynamic_cast<osg::Geometry*>(geode->getDrawable(geomIndex));
+                    if (geom)
+                    {
+                        osg::Vec3Array* vertArray = dynamic_cast<osg::Vec3Array*>(geom->getVertexArray());
+                        size_t vertArraySize = vertArray->size();
+                        for (size_t vertexIndex = 0; vertexIndex < vertArraySize; ++vertexIndex)
+                        {
+                            (*vertArray)[vertexIndex] -= midVec;
+                        }
+                    }
+                }
+            }
             double const d2 = t.stop();
 
-            if (verbose) {
+            if (_verbose)
+            {
                 std::cout << "Read points: " << i << " Elapsed Time: " << d2
                     << std::endl << std::endl;
             }
@@ -188,8 +232,17 @@ class ReaderWriterLAS : public osgDB::ReaderWriter
             geometry->setUseDisplayList(true);
             geometry->setUseVertexBufferObjects(true);
             geometry->setVertexArray(vertices);
-            geometry->setColorArray(colours, osg::Array::BIND_PER_VERTEX);
-            geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS,0,vertices->size()));
+            if (singleColor)
+            {
+                colours->resize(1);
+                geometry->setColorArray(colours, osg::Array::BIND_OVERALL);
+            }
+            else
+            {
+                geometry->setColorArray(colours, osg::Array::BIND_PER_VERTEX);
+
+            }
+            geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, vertices->size()));
 
             geode->addDrawable(geometry);
 
@@ -197,7 +250,33 @@ class ReaderWriterLAS : public osgDB::ReaderWriter
             // MatrixTransform with the mid-point translation
 
             osg::MatrixTransform *mt = new osg::MatrixTransform;
-            mt->setMatrix ( osg::Matrix::translate ( osg::Vec3d(mid_x, mid_y, mid_z)) );
+            mt->setDataVariance(osg::Object::STATIC);//can be optimized away
+            if (_scale)//vertex positions are scaled already
+            {
+                if (_recenter)
+                {
+                    mt->setMatrix(osg::Matrix::translate(osg::Vec3d(h.GetOffsetX() + mid_x, h.GetOffsetY() + mid_y, h.GetOffsetZ() + mid_z)));
+                }
+                else
+                {
+                    mt->setMatrix(osg::Matrix::translate(osg::Vec3d(h.GetOffsetX(), h.GetOffsetY(), h.GetOffsetZ())));
+                }
+            }
+            else
+            {
+                if (_recenter)
+                {
+                    mid_x *= h.GetScaleX();
+                    mid_y *= h.GetScaleY();
+                    mid_z *= h.GetScaleZ();
+                    mt->setMatrix(osg::Matrix::scale(osg::Vec3d(h.GetScaleX(), h.GetScaleY(), h.GetScaleZ())) * osg::Matrix::translate(osg::Vec3d(h.GetOffsetX() + mid_x, h.GetOffsetY() + mid_y, h.GetOffsetZ() + mid_z)));
+                }
+                else
+                {
+                    mt->setMatrix(osg::Matrix::scale(osg::Vec3d(h.GetScaleX(), h.GetScaleY(), h.GetScaleZ())) * osg::Matrix::translate(osg::Vec3d(h.GetOffsetX(), h.GetOffsetY(), h.GetOffsetZ())));
+                }
+            }
+
             mt->addChild (geode);
 
             return mt;

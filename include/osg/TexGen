@@ -17,7 +17,7 @@
 #include <osg/Plane>
 #include <osg/StateAttribute>
 
-#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GL3_AVAILABLE)
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE) || defined(OSG_GL3_AVAILABLE)
     #define GL_OBJECT_LINEAR    0x2401
     #define GL_EYE_LINEAR       0x2400
     #define GL_SPHERE_MAP       0x2402

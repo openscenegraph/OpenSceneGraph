@@ -89,7 +89,6 @@ class OSGUTIL_EXPORT Optimizer
             VERTEX_POSTTRANSFORM =      (1 << 19),
             VERTEX_PRETRANSFORM =       (1 << 20),
             BUFFER_OBJECT_SETTINGS =    (1 << 21),
-            MAKE_DRAW_ARRAYS =          (1 << 22),
             DEFAULT_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
                                 REMOVE_LOADED_PROXY_NODES |
@@ -533,10 +532,10 @@ class OSGUTIL_EXPORT Optimizer
                     return _targetMaximumNumberOfVertices;
                 }
 
-                virtual void apply(osg::Geode& geode) { mergeGeode(geode); }
+                virtual void apply(osg::Group& group) { mergeGroup(group); traverse(group); }
                 virtual void apply(osg::Billboard&) { /* don't do anything*/ }
 
-                bool mergeGeode(osg::Geode& geode);
+                bool mergeGroup(osg::Group& group);
 
                 static bool geometryContainsSharedArrays(osg::Geometry& geom);
 

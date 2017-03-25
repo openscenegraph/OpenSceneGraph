@@ -85,7 +85,7 @@ void LightPointDrawable::reset()
 
 void LightPointDrawable::drawImplementation(osg::RenderInfo& renderInfo) const
 {
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
     osg::State& state = *renderInfo.getState();
 
     state.applyMode(GL_POINT_SMOOTH,true);

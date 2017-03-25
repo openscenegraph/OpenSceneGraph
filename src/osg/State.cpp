@@ -89,14 +89,21 @@ State::State():
     _currentClientActiveTextureUnit=0;
 
     _currentPBO = 0;
+    _currentVAO = 0;
 
     _isSecondaryColorSupported = false;
     _isFogCoordSupported = false;
     _isVertexBufferObjectSupported = false;
     _isVertexArrayObjectSupported = false;
 
+#if OSG_GL3_FEATURES
+    _forceVertexBufferObject = true;
+    _forceVertexArrayObject = true;
+#else
     _forceVertexBufferObject = false;
     _forceVertexArrayObject = false;
+#endif
+
 
     _lastAppliedProgramObject = 0;
 
@@ -116,7 +123,6 @@ State::State():
     _glVertexAttrib4fv = 0;
     _glVertexAttrib4f = 0;
     _glBindBuffer = 0;
-    _glBindVertexArrayObject=0;
 
     _dynamicObjectCount  = 0;
 
@@ -136,7 +142,6 @@ State::State():
     _timestampBits = 0;
 
     _vas = 0;
-	_current_bound_vao = 0;///MY PERHAPS MAXINT...
 }
 
 State::~State()
@@ -176,12 +181,21 @@ void State::initializeExtensionProcs()
 
     _isSecondaryColorSupported = osg::isGLExtensionSupported(_contextID,"GL_EXT_secondary_color");
     _isFogCoordSupported = osg::isGLExtensionSupported(_contextID,"GL_EXT_fog_coord");
-    _isVertexBufferObjectSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(_contextID,"GL_ARB_vertex_buffer_object");
+    _isVertexBufferObjectSupported = OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(_contextID,"GL_ARB_vertex_buffer_object");
     _isVertexArrayObjectSupported = _glExtensions->isVAOSupported;
 
     const DisplaySettings* ds = getDisplaySettings() ? getDisplaySettings() : osg::DisplaySettings::instance().get();
-    _forceVertexArrayObject = _isVertexArrayObjectSupported && (ds->getVertexBufferHint()==DisplaySettings::VERTEX_ARRAY_OBJECT);
-    _forceVertexBufferObject = _forceVertexArrayObject || (_isVertexBufferObjectSupported && (ds->getVertexBufferHint()==DisplaySettings::VERTEX_BUFFER_OBJECT));
+
+    if (ds->getVertexBufferHint()==DisplaySettings::VERTEX_BUFFER_OBJECT)
+    {
+        _forceVertexBufferObject = true;
+        _forceVertexArrayObject = false;
+    }
+    else if (ds->getVertexBufferHint()==DisplaySettings::VERTEX_ARRAY_OBJECT)
+    {
+        _forceVertexBufferObject = true;
+        _forceVertexArrayObject = true;
+    }
 
     OSG_NOTICE<<"_forceVertexArrayObject = "<<_forceVertexArrayObject<<std::endl;
     OSG_NOTICE<<"_forceVertexBufferObject = "<<_forceVertexBufferObject<<std::endl;
@@ -192,7 +206,7 @@ void State::initializeExtensionProcs()
     _globalVertexArrayState->assignAllDispatchers();
     // if (_useVertexArrayObject) _globalVertexArrayState->generateVertexArrayObject();
 
-    setCurrentToGlobalVertexArrayState();
+    setCurrentToGloabalVertexArrayState();
 
 
     setGLExtensionFuncPtr(_glClientActiveTexture,"glClientActiveTexture","glClientActiveTextureARB");
@@ -208,12 +222,11 @@ void State::initializeExtensionProcs()
     setGLExtensionFuncPtr(_glVertexAttrib4fv, "glVertexAttrib4fv");
     setGLExtensionFuncPtr(_glDisableVertexAttribArray, "glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
     setGLExtensionFuncPtr(_glBindBuffer, "glBindBuffer","glBindBufferARB");
-    setGLExtensionFuncPtr(_glBindVertexArrayObject, "glBindVertexArray","glBindVertexArrayARB");
 
     setGLExtensionFuncPtr(_glDrawArraysInstanced, "glDrawArraysInstanced","glDrawArraysInstancedARB","glDrawArraysInstancedEXT");
     setGLExtensionFuncPtr(_glDrawElementsInstanced, "glDrawElementsInstanced","glDrawElementsInstancedARB","glDrawElementsInstancedEXT");
 
-    if (osg::getGLVersionNumber() >= 2.0 || osg::isGLExtensionSupported(_contextID, "GL_ARB_vertex_shader") || OSG_GLES2_FEATURES || OSG_GL3_FEATURES)
+    if (osg::getGLVersionNumber() >= 2.0 || osg::isGLExtensionSupported(_contextID, "GL_ARB_vertex_shader") || OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES)
     {
         glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&_glMaxTextureUnits);
         #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
@@ -1232,6 +1245,13 @@ bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
         declPos = 0;
     }
 
+    std::string::size_type extPos = source.rfind( "#extension " );
+    if ( extPos != std::string::npos )
+    {
+        // found the string, now find the next linefeed and set the insertion point after it.
+        declPos = source.find( '\n', extPos );
+        declPos = declPos != std::string::npos ? declPos+1 : source.length();
+    }
     if (_useModelViewAndProjectionUniforms)
     {
         // replace ftransform as it only works with built-ins

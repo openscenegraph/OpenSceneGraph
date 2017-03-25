@@ -45,13 +45,13 @@ osg::ref_ptr<osg::Program> program;
 struct MyRigTransformHardware : public osgAnimation::RigTransformHardware
 {
 
-    /*virtual void operator()(osgAnimation::RigGeometry& geom)
+    void operator()(osgAnimation::RigGeometry& geom)
     {
         if (_needInit)
             if (!init(geom))
                 return;
         computeMatrixPaletteUniform(geom.getMatrixFromSkeletonToGeometry(), geom.getInvMatrixFromSkeletonToGeometry());
-    }*/
+    }
 
     bool init(osgAnimation::RigGeometry& geom)
     {
@@ -130,28 +130,6 @@ struct MyRigTransformHardware : public osgAnimation::RigTransformHardware
 };
 
 
-struct AnimationManagerFinder : public osg::NodeVisitor
-{
-
-    osg::ref_ptr<osgAnimation::BasicAnimationManager> _am;
-    AnimationManagerFinder() : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
-    void apply(osg::Node& node) {
-        if (_am.valid()){
-            osgAnimation::Animation * anim=_am->getRegisteredAnimation(0);
-            OSG_WARN<<"aim0"<<anim->getName()<<std::endl;
-            return;
-            }
-        if (node.getUpdateCallback()) {
-            osgAnimation::BasicAnimationManager* b = dynamic_cast<osgAnimation::BasicAnimationManager*>(node.getUpdateCallback());
-            if (b) {
-
-                _am = b;//new osgAnimation::BasicAnimationManager(*b);
-                return;
-            }
-        }
-        traverse(node);
-    }
-};
 struct SetupRigGeometry : public osg::NodeVisitor
 {
     bool _hardware;
@@ -167,7 +145,7 @@ struct SetupRigGeometry : public osg::NodeVisitor
         if (_hardware) {
             osgAnimation::RigGeometry* rig = dynamic_cast<osgAnimation::RigGeometry*>(&geom);
             if (rig)
-                rig->setRigTransformImplementation(new MyRigTransformHardware());
+                rig->setRigTransformImplementation(new MyRigTransformHardware);
         }
 
 #if 0
@@ -186,10 +164,7 @@ osg::Group* createCharacterInstance(osg::Group* character, bool hardware)
     else
         c = osg::clone(character, osg::CopyOp::DEEP_COPY_ALL);
 
-AnimationManagerFinder animfinder;
-c->accept(animfinder);
-if(animfinder._am.valid()){
-    osgAnimation::AnimationManagerBase* animationManager = dynamic_cast<osgAnimation::AnimationManagerBase*>(animfinder._am.get());
+    osgAnimation::AnimationManagerBase* animationManager = dynamic_cast<osgAnimation::AnimationManagerBase*>(c->getUpdateCallback());
 
     osgAnimation::BasicAnimationManager* anim = dynamic_cast<osgAnimation::BasicAnimationManager*>(animationManager);
     const osgAnimation::AnimationList& list = animationManager->getAnimationList();
@@ -200,11 +175,7 @@ if(animfinder._am.valid()){
     }
 
     anim->playAnimation(list[v].get());
-}else
-{
-            osg::notify(osg::FATAL) << "no AnimationManagerBase found, updateCallback need to animate elements" << std::endl;
-            exit(-1);
- }
+
     SetupRigGeometry switcher(hardware);
     c->accept(switcher);
 
@@ -225,22 +196,22 @@ int main (int argc, char* argv[])
     while (psr.read("--software")) { hardware = false; }
     while (psr.read("--number", maxChar)) {}
 
-
-    osg::ref_ptr<osg::Group> root = dynamic_cast<osg::Group*>(osgDB::readNodeFiles(psr));
+    osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFiles(psr);
+    osg::ref_ptr<osg::Group> root = dynamic_cast<osg::Group*>(node.get());
     if (!root)
     {
         std::cout << psr.getApplicationName() <<": No data loaded" << std::endl;
         return 1;
     }
 
-    /*{
+    {
         osgAnimation::AnimationManagerBase* animationManager = dynamic_cast<osgAnimation::AnimationManagerBase*>(root->getUpdateCallback());
         if(!animationManager)
         {
             osg::notify(osg::FATAL) << "no AnimationManagerBase found, updateCallback need to animate elements" << std::endl;
             return 1;
         }
-    }*/
+    }
 
 
     osg::ref_ptr<osg::Group> scene = new osg::Group;

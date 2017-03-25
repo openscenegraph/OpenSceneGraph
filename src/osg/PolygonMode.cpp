@@ -68,7 +68,7 @@ PolygonMode::Mode PolygonMode::getMode(Face face) const
 
 void PolygonMode::apply(State&) const
 {
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
     if (_modeFront==_modeBack)
     {
         glPolygonMode(GL_FRONT_AND_BACK,(GLenum)_modeFront);

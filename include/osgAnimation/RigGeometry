@@ -82,7 +82,6 @@ namespace osgAnimation
         RigTransform* getRigTransformImplementation();
         const RigTransform* getRigTransformImplementation() const { return _rigTransformImplementation.get(); }
 
-
         virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
         void update();
 

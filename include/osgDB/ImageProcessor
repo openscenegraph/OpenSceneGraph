@@ -14,7 +14,7 @@
 #ifndef OSGDB_IMAGEPROCESSOR
 #define OSGDB_IMAGEPROCESSOR 1
 
-#include <osg/Texture>
+#include <osg/Object>
 
 namespace osgDB {
 

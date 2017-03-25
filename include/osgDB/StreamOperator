@@ -37,6 +37,8 @@ public:
     virtual void writeUInt( unsigned int i ) = 0;
     virtual void writeLong( long l ) = 0;
     virtual void writeULong( unsigned long l ) = 0;
+    virtual void writeInt64( GLint64 ll ) = 0;
+    virtual void writeUInt64( GLuint64 ull ) = 0;
     virtual void writeFloat( float f ) = 0;
     virtual void writeDouble( double d ) = 0;
     virtual void writeString( const std::string& s ) = 0;

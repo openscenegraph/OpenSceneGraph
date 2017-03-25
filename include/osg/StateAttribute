@@ -208,8 +208,6 @@ class OSG_EXPORT StateAttribute : public Object
             DEPTHRANGEINDEXED,
             SCISSORINDEXED,
 
-            SUBROUTINEUNIFORM,///Should never be below PROGRAM
-
             CAPABILITY = 100
         };
 

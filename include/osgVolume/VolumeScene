@@ -14,7 +14,7 @@
 #ifndef OSGVOLUMESCENE
 #define OSGVOLUMESCENE 1
 
-#include <osg/Geometry>
+#include <osg/Group>
 #include <osg/Texture2D>
 #include <osgUtil/CullVisitor>
 

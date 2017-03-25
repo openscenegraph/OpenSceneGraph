@@ -9,7 +9,7 @@
 #define FLOATSIZE    4
 #define LONGSIZE    4
 #define DOUBLESIZE    8
-
+#define INT64SIZE    8
 //Don't know where else to put this
 namespace ive{
 

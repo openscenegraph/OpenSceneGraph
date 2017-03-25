@@ -32,9 +32,8 @@
 using namespace osgText;
 using namespace std;
 
-#define FIXED_FUNCTION defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
 #define SHADERS_GL3 (defined(OSG_GL3_AVAILABLE) || defined(OSG_GLES3_AVAILABLE))
-#define SHADERS_GL2 !FIXED_FUNCTION && !SHADERS_GL3
+#define SHADERS_GL2 (!defined(OSG_GL_FIXED_FUNCTION_AVAILABLE) && !defined(OSG_GL3_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE))
 #define IS_ES (defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE))
 
 #if SHADERS_GL3
@@ -329,7 +328,7 @@ Font::Font(FontImplementation* implementation):
     _stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     _stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
 
-#if FIXED_FUNCTION
+#if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
 
     OSG_INFO<<"Font::Font() Fixed function pipeline"<<std::endl;
 

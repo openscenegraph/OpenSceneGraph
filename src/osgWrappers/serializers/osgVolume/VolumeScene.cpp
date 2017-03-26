@@ -1,3 +1,4 @@
+#include <osg/Geometry>
 #include <osgVolume/VolumeScene>
 #include <osgDB/ObjectWrapper>
 #include <osgDB/InputStream>

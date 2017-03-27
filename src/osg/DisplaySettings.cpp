@@ -15,6 +15,7 @@
 #include <osg/ApplicationUsage>
 #include <osg/Math>
 #include <osg/Notify>
+#include <osg/GL>
 #include <osg/ref_ptr>
 
 #include <algorithm>
@@ -117,6 +118,7 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
     _swapMethod = vs._swapMethod;
 
     _vertexBufferHint = vs._vertexBufferHint;
+    _shaderHint = vs._shaderHint;
 
     _keystoneHint = vs._keystoneHint;
     _keystoneFileNames = vs._keystoneFileNames;
@@ -246,6 +248,24 @@ void DisplaySettings::setDefaults()
     _vertexBufferHint = NO_PREFERENCE;
     // _vertexBufferHint = VERTEX_BUFFER_OBJECT;
     // _vertexBufferHint = VERTEX_ARRAY_OBJECT;
+
+#if defined(OSG_GLES3_AVAILABLE)
+    _shaderHint = SHADER_GLES3;
+    OSG_NOTICE<<"DisplaySettings::SHADER_GLES3"<<std::endl;
+#elif defined(OSG_GLES2_AVAILABLE)
+    _shaderHint = SHADER_GLES2;
+    OSG_NOTICE<<"DisplaySettings::SHADER_GLES2"<<std::endl;
+#elif defined(OSG_GL3_AVAILABLE)
+    _shaderHint = SHADER_GL3;
+    OSG_NOTICE<<"DisplaySettings::SHADER_GL3"<<std::endl;
+#elif defined(OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE)
+    OSG_NOTICE<<"DisplaySettings::SHADER_NONE"<<std::endl;
+    _shaderHint = SHADER_NONE;
+#else
+    OSG_NOTICE<<"DisplaySettings::SHADER_GL2"<<std::endl;
+    _shaderHint = SHADER_GL2;
+#endif
+
 
     _keystoneHint = false;
 
@@ -697,6 +717,31 @@ void DisplaySettings::readEnvironmentalVariables()
         {
             OSG_NOTICE<<"OSG_VERTEX_BUFFER_HINT set to NO_PREFERENCE"<<std::endl;
             _vertexBufferHint = NO_PREFERENCE;
+        }
+    }
+
+
+    if ((ptr = getenv("OSG_SHADER_HINT")) != 0)
+    {
+        if (strcmp(ptr,"GL2")==0)
+        {
+            _shaderHint = SHADER_GL2;
+        }
+        else if (strcmp(ptr,"GL3")==0)
+        {
+            _shaderHint = SHADER_GL3;
+        }
+        else if (strcmp(ptr,"GLES2")==0)
+        {
+            _shaderHint = SHADER_GLES2;
+        }
+        else if (strcmp(ptr,"GLES3")==0)
+        {
+            _shaderHint = SHADER_GLES3;
+        }
+        else if (strcmp(ptr,"NONE")==0)
+        {
+            _shaderHint = SHADER_NONE;
         }
     }
 

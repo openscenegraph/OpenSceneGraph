@@ -310,6 +310,19 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         VertexBufferHint getVertexBufferHint() const { return _vertexBufferHint; }
 
 
+        enum ShaderHint
+        {
+            SHADER_NONE,
+            SHADER_GL2,
+            SHADER_GLES2,
+            SHADER_GL3,
+            SHADER_GLES3
+        };
+
+        void setShaderHint(ShaderHint hint) { _shaderHint = hint; }
+        ShaderHint getShaderHint() const { return _shaderHint; }
+
+
         void setKeystoneHint(bool enabled) { _keystoneHint = enabled; }
         bool getKeystoneHint() const { return _keystoneHint; }
 
@@ -323,7 +336,8 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         Objects& getKeystones() { return _keystones; }
         const Objects& getKeystones() const { return _keystones; }
 
-        enum OSXMenubarBehavior {
+        enum OSXMenubarBehavior
+        {
             MENUBAR_AUTO_HIDE,
             MENUBAR_FORCE_HIDE,
             MENUBAR_FORCE_SHOW
@@ -400,6 +414,7 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         unsigned int                    _syncSwapBuffers;
 
         VertexBufferHint                _vertexBufferHint;
+        ShaderHint                      _shaderHint;
 
         bool                            _keystoneHint;
         FileNames                       _keystoneFileNames;

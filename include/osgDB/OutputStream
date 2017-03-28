@@ -209,9 +209,9 @@ protected:
     typedef std::map<std::string, int> VersionMap;
     VersionMap _domainVersionMap;
     WriteImageHint _writeImageHint;
-    bool _writeBufferObjectConfiguration;
     bool _useSchemaData;
     bool _useRobustBinaryFormat;
+    bool _writeBufferObjectConfiguration;
 
     typedef std::map<std::string, std::string> SchemaMap;
     SchemaMap _inbuiltSchemaMap;

@@ -85,6 +85,10 @@ REGISTER_OBJECT_WRAPPER( DrawArrays,
                          osg::DrawArrays,
                          "osg::Object osg::BufferData osg::PrimitiveSet osg::DrawArrays" )
 {
+    {
+        UPDATE_TO_VERSION_SCOPED( 147 )
+        ADDED_ASSOCIATE("osg::BufferData")
+    }
     ADD_GLINT_SERIALIZER( First, 0);
     ADD_GLINT_SERIALIZER( Count, 0);
 }
@@ -98,6 +102,10 @@ REGISTER_OBJECT_WRAPPER( DrawArrayLengths,
                          osg::DrawArrayLengths,
                          "osg::Object osg::BufferData osg::PrimitiveSet osg::DrawArrayLengths" )
 {
+    {
+        UPDATE_TO_VERSION_SCOPED( 147 )
+        ADDED_ASSOCIATE("osg::BufferData")
+    }
     ADD_GLINT_SERIALIZER( First, 0);
     ADD_ISAVECTOR_SERIALIZER( vector, osgDB::BaseSerializer::RW_INT, 4 );
 }

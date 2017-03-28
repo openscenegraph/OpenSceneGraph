@@ -23,6 +23,7 @@
 #include <osgUtil/ShaderGen>
 
 #include <osgViewer/Viewer>
+#include <osgGA/StateSetManipulator>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
@@ -115,6 +116,9 @@ int main(int, char **)
 
     // add model to viewer.
     viewer.setSceneData( createShapes() );
+
+    // add the state manipulator
+    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
 
     return viewer.run();
 }

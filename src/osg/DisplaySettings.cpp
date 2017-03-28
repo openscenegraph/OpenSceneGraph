@@ -251,18 +251,18 @@ void DisplaySettings::setDefaults()
 
 #if defined(OSG_GLES3_AVAILABLE)
     _shaderHint = SHADER_GLES3;
-    OSG_NOTICE<<"DisplaySettings::SHADER_GLES3"<<std::endl;
+    OSG_INFO<<"DisplaySettings::SHADER_GLES3"<<std::endl;
 #elif defined(OSG_GLES2_AVAILABLE)
     _shaderHint = SHADER_GLES2;
-    OSG_NOTICE<<"DisplaySettings::SHADER_GLES2"<<std::endl;
+    OSG_INFO<<"DisplaySettings::SHADER_GLES2"<<std::endl;
 #elif defined(OSG_GL3_AVAILABLE)
     _shaderHint = SHADER_GL3;
-    OSG_NOTICE<<"DisplaySettings::SHADER_GL3"<<std::endl;
+    OSG_INFO<<"DisplaySettings::SHADER_GL3"<<std::endl;
 #elif defined(OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE)
-    OSG_NOTICE<<"DisplaySettings::SHADER_NONE"<<std::endl;
+    OSG_INFO<<"DisplaySettings::SHADER_NONE"<<std::endl;
     _shaderHint = SHADER_NONE;
 #else
-    OSG_NOTICE<<"DisplaySettings::SHADER_GL2"<<std::endl;
+    OSG_INFO<<"DisplaySettings::SHADER_GL2"<<std::endl;
     _shaderHint = SHADER_GL2;
 #endif
 

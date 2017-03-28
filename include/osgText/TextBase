@@ -276,6 +276,10 @@ public:
     void getCoord(unsigned int i, osg::Vec2& c) const { c.set((*_coords)[i].x(), (*_coords)[i].y()); }
     void getCoord(unsigned int i, osg::Vec3& c) const { c = (*_coords)[i]; }
 
+
+    /** Get the internal matrix used to provide positioning of text.*/
+    const osg::Matrix& getMatrix() const { return _matrix; }
+
 protected:
 
     virtual ~TextBase();

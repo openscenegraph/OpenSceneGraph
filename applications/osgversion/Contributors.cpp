@@ -271,7 +271,8 @@ const char* invalidNames[] =
     "Wed",
     "Fri",
     "Sat",
-    "Sun"
+    "Sun",
+    "I"
 };
 
 

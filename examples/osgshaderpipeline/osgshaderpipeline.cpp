@@ -70,12 +70,12 @@ int main(int argc, char** argv)
     osg::ref_ptr<osg::Program> program = new osg::Program;
 
 
-    if (!readShaderArguments(arguments, "--vert", program, "shaders/shaderpipeline.vert"))
+    if (!readShaderArguments(arguments, "--vert", program.get(), "shaders/shaderpipeline.vert"))
     {
         return 1;
     }
 
-    if (!readShaderArguments(arguments, "--frag", program, "shaders/shaderpipeline.frag"))
+    if (!readShaderArguments(arguments, "--frag", program.get(), "shaders/shaderpipeline.frag"))
     {
         return 1;
     }

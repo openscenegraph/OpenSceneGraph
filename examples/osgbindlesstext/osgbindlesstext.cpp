@@ -238,8 +238,8 @@ BindlessTexture::BindlessTexture():osg::Texture2D(),_bindlessIndex(0)
     _isBound.resize(5,false);
 }
 
-BindlessTexture::BindlessTexture(const BindlessTexture& rhs, const osg::CopyOp& copy) 
-    :osg::Texture2D( rhs, copy )
+BindlessTexture::BindlessTexture(const BindlessTexture& rhs, const osg::CopyOp& copy) :
+    osg::Texture2D( rhs, copy )
 {
     _isBound.resize(5,false);
     _buffer = rhs._buffer;
@@ -249,7 +249,10 @@ BindlessTexture::BindlessTexture(const BindlessTexture& rhs, const osg::CopyOp& 
 }
 
 BindlessTexture::BindlessTexture(BufferRef ref,TextureList textureList) :
-osg::Texture2D( textureList[0] ),_buffer(ref),_bindlessIndex(0),_textureList(textureList)
+    osg::Texture2D( textureList[0] ),
+    _textureList(textureList),
+    _buffer(ref),
+    _bindlessIndex(0)
 {
     _isBound.resize(5,false);
 }
@@ -346,13 +349,12 @@ void BindlessTexture::releaseGLObjects(osg::State* state) const
 }
 
 void
-BindlessTexture::resizeGLObjectBuffers(unsigned maxSize)
+BindlessTexture::resizeGLObjectBuffers(unsigned int maxSize)
 {
     osg::Texture2D::resizeGLObjectBuffers( maxSize );
 
-    size_t handleSize = _handles.size();
-    size_t txtSize = _textureList.size();
-    size_t boundSize = _isBound.size();
+    unsigned int handleSize = _handles.size();
+    unsigned int txtSize = _textureList.size();
     if ( handleSize < maxSize ) {
         _isBound.resize(maxSize,false);
     }
@@ -396,8 +398,8 @@ void createImageArray(osg::StateSet* attachPnt){
         secondaryColor[0] = rand()%128;
         secondaryColor[1] = rand()%128;
         secondaryColor[2] = rand()%128;
-        for (int x = 0; x < imageSize; x++){
-            for (int y =0; y<imageSize; y++){
+        for (unsigned int x = 0; x < imageSize; x++){
+            for (unsigned int y =0; y<imageSize; y++){
                 unsigned char* pixel = &buff[(x*imageSize+y)*stride];
                 int xSide = x/boxWidth;
                 int ySide = y/boxLength;
@@ -535,7 +537,6 @@ osg::Group* CreateScene(){
     osg::Geode *geo = new osg::Geode();
     geo->setName("Geo");
     sceneRoot->addChild(geo);
-    float size = 1.0f;
     osg::StateSet* scene_ss  = sceneRoot->getOrCreateStateSet();
     createImageArray(scene_ss);
     scene_ss->setMode(GL_DEPTH_TEST,osg::StateAttribute::ON);

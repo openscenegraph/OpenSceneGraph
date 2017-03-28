@@ -152,7 +152,11 @@ REGISTER_OBJECT_WRAPPER( DrawElements,
 #define DRAW_ELEMENTS_WRAPPER( DRAWELEMENTS, ELEMENTTYPE ) \
     namespace Wrapper##DRAWELEMENTS { \
         REGISTER_OBJECT_WRAPPER( DRAWELEMENTS, new osg::DRAWELEMENTS, osg::DRAWELEMENTS, "osg::Object osg::BufferData osg::PrimitiveSet osg::"#DRAWELEMENTS) \
-        { \
+        { \    
+           { \
+            UPDATE_TO_VERSION_SCOPED( 147 ) \
+            ADDED_ASSOCIATE("osg::BufferData") \
+           }\
                 ADD_ISAVECTOR_SERIALIZER( vector, osgDB::BaseSerializer::ELEMENTTYPE, 4 ); \
         } \
     }

@@ -1,3 +1,1431 @@
+Tue, 28 Mar 2017 10:33:02 +0100
+Author : Robert Osfield
+Updated date
+
+Tue, 28 Mar 2017 10:17:44 +0100
+Author : Robert Osfield
+Fixed warnings
+
+Tue, 28 Mar 2017 09:41:07 +0100
+Author : Robert Osfield
+Fixed typo
+
+Mon, 27 Mar 2017 20:30:14 +0100
+Author : Robert Osfield
+Fixed ac plugin's handling of rot primitive in .ac files
+
+Mon, 27 Mar 2017 20:02:33 +0100
+Author : Robert Osfield
+Added serializers for BufferObject and BufferData
+
+Mon, 27 Mar 2017 15:05:59 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #230 from mp3butcher/commitMasteradd new serializers
+
+Mon, 27 Mar 2017 11:44:41 +0100
+Author : Robert Osfield
+Replaced macro based selection of which shaders to use by default with DisplaySettings::setShaderHint() and OSG_SHADER=HINT=GL2|GL3|GLES2|GLES3|NONE controls
+
+Sun, 26 Mar 2017 16:26:43 +0200
+Author : mp3butcher
+add an include to osg/geometry
+
+Sun, 26 Mar 2017 15:59:36 +0200
+Author : mp3butcher
+add new serializers
+
+Sat, 25 Mar 2017 16:05:57 +0000
+Author : Robert Osfield
+Restructed the marco to resolve Windows build issues
+
+Thu, 23 Mar 2017 19:36:01 +0000
+Author : Robert Osfield
+Fixed file endings
+
+Thu, 23 Mar 2017 14:53:08 +0000
+Author : Robert Osfield
+Added simple fallback from osg::Material::apply() when fixed function pipeline is disabled
+
+Thu, 23 Mar 2017 14:40:44 +0000
+Author : Robert Osfield
+Fixed missing initializer for _color and assignment of color to ShapeDrawable
+
+Thu, 23 Mar 2017 11:09:49 +0000
+Author : Robert Osfield
+First pass at default shader for GLES2,GLES3 and GL3.
+
+Thu, 23 Mar 2017 10:25:25 +0000
+Author : Robert Osfield
+Removed no longer relevant line
+
+Thu, 23 Mar 2017 09:52:21 +0000
+Author : Robert Osfield
+Removed hardwaring to online write inine when writing to binary files to allow inline images in asci and binary files
+
+Wed, 22 Mar 2017 17:27:05 +0000
+Author : Torben Dannhauer
+as preparation for the upcoming 3rdParty package for Visual Studio 2017, I updated Find3rdPartyDependencies.cmake to find also the newest Freetype 2.7.1 release.
+
+Wed, 22 Mar 2017 14:20:03 +0000
+Author : Robert Osfield
+Added TextureBuffer serializer
+
+Wed, 22 Mar 2017 10:31:45 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #225 from MPursche/add_texture2dmultisample_serializerAdded serializer for Texture2DMultisample
+
+Wed, 22 Mar 2017 10:42:13 +0100
+Author : Marcel Pursche
+Added serializer for Texture2DMultisample
+
+Wed, 22 Mar 2017 09:43:19 +0000
+Author : Robert Osfield
+Replaced GL_QUADS and GL_QUAD_STRIP usage with indexed GL_TRIANGLES
+
+Tue, 21 Mar 2017 17:56:39 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #221 from tomhog/topic-gles3-iosGLES3 support improvements on iOS
+
+Tue, 21 Mar 2017 15:38:52 +0000
+Author : Robert Osfield
+Made VAO the default for GL3 builds. Improved the handling of DisplaySettings::getVertexBufferHint() values.
+
+Tue, 21 Mar 2017 15:33:13 +0000
+Author : tomhog
+Merge branch 'master' into topic-gles3-ios
+
+Tue, 21 Mar 2017 14:43:09 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #224 from MPursche/improved_debian_packagesImproved CPack configuration for building debian packages
+
+Tue, 21 Mar 2017 13:10:45 +0000
+Author : Robert Osfield
+Refactored GlyphTexture so that it utlizes standard osg::Texture2D/osg::Image combinations rather than locally implemented per glyph subloading.
+
+Mon, 20 Mar 2017 19:43:07 +0000
+Author : Thomas Hogarth
+Merged origin
+
+Mon, 20 Mar 2017 19:35:01 +0000
+Author : Thomas Hogarth
+Adusted Font shaders to use gl3 path on gles3, iphone example using inbuilt shaders
+
+Sat, 18 Mar 2017 17:35:00 +0000
+Author : Thomas Hogarth
+Shaders now using vertex colors
+
+Sat, 18 Mar 2017 07:46:14 +0000
+Author : Thomas Hogarth
+small compile fix for ios viewer example gles1
+
+Sat, 18 Mar 2017 07:32:17 +0000
+Author : Thomas Hogarth
+updated ios build instructions in readme
+
+Sat, 18 Mar 2017 06:53:32 +0000
+Author : Thomas Hogarth
+GLES3 now working on iOS, tried to maintain support for have bother gles2 and gles3, allowed avfoundation to be added on iOS, improved iOS example cmake generation
+
+Fri, 17 Mar 2017 18:01:44 +0000
+Author : Thomas Hogarth
+More gles3 tweaks
+
+Wed, 15 Mar 2017 01:35:58 +0000
+Author : Thomas Hogarth
+Added conditionals for GLES3, added correct gl headers for GLES3 on iOS and Android to GL.in
+
+Mon, 20 Mar 2017 16:31:09 +0100
+Author : Marcel Pursche
+Improved cpack configuration for building debian packages: * Added configurable maintainer * Added configurable dependencies and conflicts per package * Added post install script to run ldconfig after package is installed * Updated name of readme file in cpack configuration
+
+Mon, 20 Mar 2017 14:07:14 +0000
+Author : Robert Osfield
+Improved support for stats, fonts and shadergen for GLES2, GLES3 and GL3
+
+Mon, 20 Mar 2017 10:31:58 +0000
+Author : Robert Osfield
+Added shader for GL3/GLES/GL2/GL2
+
+Mon, 20 Mar 2017 09:25:49 +0000
+Author : Robert Osfield
+Quited debug messages
+
+Sat, 18 Mar 2017 18:09:12 +0000
+Author : Robert Osfield
+Removed no longer required GL3 shaders as osgText itself now provides shaders
+
+Sat, 18 Mar 2017 18:08:12 +0000
+Author : Robert Osfield
+Added support for GL3/GLES3, GL2,GLE2 shaders to osgText::Font/Text.
+
+Sat, 18 Mar 2017 17:35:00 +0000
+Author : Thomas Hogarth
+Shaders now using vertex colors
+
+Fri, 17 Mar 2017 19:02:54 +0000
+Author : Robert Osfield
+Improved readability of code
+
+Fri, 17 Mar 2017 19:00:33 +0000
+Author : Robert Osfield
+Fixed GL3 core profile and shandard shaders to work with new osgText
+
+Fri, 17 Mar 2017 14:33:56 +0000
+Author : Robert Osfield
+Improved handling of osgText::Text with and wihout shaders
+
+Fri, 17 Mar 2017 13:11:43 +0000
+Author : Robert Osfield
+Removed no longer supported code paths
+
+Fri, 17 Mar 2017 12:50:15 +0000
+Author : Robert Osfield
+Introduced streamlined text rendering dispatch code.
+
+Sat, 18 Mar 2017 11:17:03 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #220 from rickyviking/addPenInputWin32Added PEN input support to GraphicsWindowWin32 with the WM_POINTER*
+
+Sat, 18 Mar 2017 07:46:14 +0000
+Author : Thomas Hogarth
+small compile fix for ios viewer example gles1
+
+Sat, 18 Mar 2017 07:32:17 +0000
+Author : Thomas Hogarth
+updated ios build instructions in readme
+
+Sat, 18 Mar 2017 06:53:32 +0000
+Author : Thomas Hogarth
+GLES3 now working on iOS, tried to maintain support for have bother gles2 and gles3, allowed avfoundation to be added on iOS, improved iOS example cmake generation
+
+Fri, 17 Mar 2017 18:01:44 +0000
+Author : Thomas Hogarth
+More gles3 tweaks
+
+Wed, 15 Mar 2017 01:35:58 +0000
+Author : Thomas Hogarth
+Added conditionals for GLES3, added correct gl headers for GLES3 on iOS and Android to GL.in
+
+Thu, 16 Mar 2017 15:46:51 +0000
+Author : Robert Osfield
+Added explict call to state.applyModelViewAndProjectionUniformsIfRequired() when required for better GL3/GlES2 support.
+
+Thu, 16 Mar 2017 15:32:05 +0100
+Author : Riccardo Corsi
+Added PEN input support to GraphicsWindowWin32 with the WM_POINTER* framework available since Windows 8. Fallback on existing WM_TOUCH implementation for actual touch inputs.
+
+Tue, 14 Mar 2017 10:43:52 +0000
+Author : Robert Osfield
+Added experimental --shaders path into osgtext example to test out using shaders for text rendering.
+
+Mon, 13 Mar 2017 17:46:51 +0000
+Author : Robert Osfield
+Replaced GL_QUADS usage with GL_TRIANGLES to aid portability.
+
+Mon, 13 Mar 2017 15:01:08 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #207 from LaurensVoerman/submitOpenCascadefix OpenCascade library list for use with shared libs; added list and…
+
+Mon, 13 Mar 2017 14:25:33 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #215 from LaurensVoerman/submit-SerializerParticleSubmit serializer particle
+
+Fri, 24 Feb 2017 16:34:30 +0100
+Author : Laurens Voerman
+fix OpenCascade library list for use with shared libs; added list and options for static lib
+
+Mon, 13 Mar 2017 11:44:34 +0000
+Author : Robert Osfield
+Added lazy state updating for vertex array object binding/unbinding
+
+Mon, 6 Mar 2017 15:56:49 +0100
+Author : Laurens Voerman
+bugfix: read endbracket for fileversion 145 (introduced 25/8/2016)
+
+Sat, 11 Mar 2017 17:31:27 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #198 from scrawl/buildswitchAdd cmake options for disabling plugins from the build
+
+Sat, 11 Mar 2017 15:08:57 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #213 from marchelbling/bug/osg-fixesBug/osg fixes
+
+Sat, 11 Mar 2017 12:31:19 +0000
+Author : Robert Osfield
+Build fixes
+
+Sat, 11 Mar 2017 11:58:20 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #211 from D-A-Heitbrink/masterAdded support for unsigned 64 bit ints + some code for bindless textures
+
+Sat, 11 Mar 2017 11:37:33 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #208 from LaurensVoerman/submitRWlasrewrote las plugin to read in a single pass: more speed, better precision
+
+Sat, 11 Mar 2017 11:36:31 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #206 from LaurensVoerman/submitLAScmakeallow library names liblas.lib and liblas_c.lib;fix include dirs typo…
+
+Sat, 11 Mar 2017 11:35:36 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #205 from LaurensVoerman/submitGTAcmakeGTA: use normal cmake search if PKG_CHECK_MODULES fails; fix win32 debug lnk
+
+Sat, 11 Mar 2017 11:34:56 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #204 from LaurensVoerman/submitFBX2017added FBX SDK 2017.1 and try to add apple (clang) support.
+
+Sat, 11 Mar 2017 11:34:16 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #203 from scrawl/optimizerMergeGeometryVisitor fix
+
+Fri, 10 Mar 2017 17:47:02 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #202 from nicokruithof/masterFixed typo
+
+Fri, 10 Mar 2017 17:06:04 +0000
+Author : Robert Osfield
+Fixed handling of VAO's Text with backdrop and per vertex colours
+
+Fri, 10 Mar 2017 12:08:22 +0000
+Author : Robert Osfield
+Improved handling of backdrops
+
+Thu, 9 Mar 2017 18:17:53 +0000
+Author : Robert Osfield
+Improved the management of the unbinding of VBO's and EBO's
+
+Thu, 9 Mar 2017 18:16:04 +0000
+Author : Robert Osfield
+Reordered operations to make code easier to follow
+
+Thu, 9 Mar 2017 17:48:06 +0000
+Author : Robert Osfield
+Cleaned up VertexArrayState handling
+
+Thu, 9 Mar 2017 17:47:27 +0000
+Author : Robert Osfield
+Improved handling of VBO/VAO's in Text3D
+
+Thu, 9 Mar 2017 17:33:38 +0000
+Author : Robert Osfield
+Cleaned out old code paths
+
+Thu, 9 Mar 2017 17:01:33 +0000
+Author : Robert Osfield
+Added setDataVariance(DYNAMIC) to stats text labels that are dyanmically updated.
+
+Wed, 8 Mar 2017 18:15:06 +0000
+Author : Robert Osfield
+Improved the handling of array updates and support for VBO and VAO's.
+
+Wed, 8 Mar 2017 18:12:37 +0000
+Author : Robert Osfield
+Improved the checks against VBO+VAO usage and cleaned up setup.
+
+Tue, 7 Mar 2017 13:35:03 +0000
+Author : Robert Osfield
+Added --counter test
+
+Tue, 7 Mar 2017 09:13:29 +0000
+Author : Robert Osfield
+Added --plain test to simply basic text testing
+
+Mon, 6 Mar 2017 15:33:22 +0100
+Author : Laurens Voerman
+fix bug in osgb/osgt/osgx readerwriter causing the osgParticle-SizeInterpolator and -ColorInterpolator to dissapear
+
+Mon, 6 Mar 2017 14:37:21 +0000
+Author : Robert Osfield
+Fixed text background tessellation
+
+Wed, 25 May 2016 13:24:15 +0200
+Author : Laurens Voerman
+rewrote las plugin to read in a single pass: more speed, compressed file (.laz) support and better precision.
+
+Mon, 6 Mar 2017 12:54:54 +0100
+Author : Marc Helbling
+Fix commented variable assertions in inventor writer
+
+Mon, 6 Mar 2017 12:49:06 +0100
+Author : Marc Helbling
+Fix implicit ref_ptr conversions
+
+Mon, 6 Mar 2017 12:29:19 +0100
+Author : Marc Helbling
+Revert bad change in 3ds reader
+
+Thu, 2 Mar 2017 11:36:33 +0000
+Author : Marc Helbling
+Remove unused offset attribute in MergeArrayVisitor
+
+Thu, 2 Mar 2017 11:33:47 +0000
+Author : Marc Helbling
+Add missing type for attribute merge
+
+Sat, 4 Mar 2017 17:20:54 +0000
+Author : Robert Osfield
+Moved all vertex array set up to start of Text/Text3D::drawImplementation().
+
+Fri, 3 Mar 2017 18:31:51 +0000
+Author : Robert Osfield
+Implemented better handling of VertexBufferObjects and ElementBufferObjects in osgText
+
+Thu, 2 Mar 2017 17:05:24 +0000
+Author : Robert Osfield
+Removed unneccessary mutable usage
+
+Thu, 2 Mar 2017 16:33:09 +0000
+Author : Robert Osfield
+Updated Attribute and PrimitiveFunctor implementations
+
+Thu, 2 Mar 2017 16:11:10 +0000
+Author : Robert Osfield
+Refactored osgText::Tex3D to use a single vertex and normal arrays and a combined set of primitive sets.  Deprecated Text3D::RenderMode as it's no longer used.
+
+Thu, 2 Mar 2017 11:12:55 +0000
+Author : Robert Osfield
+Added NEW_APPROACH code path that merges the separate GlyphGeometry arrays and primitives into a single set of arrays and primitives
+
+Wed, 1 Mar 2017 18:12:46 -0600
+Author : d-a-heitbrink
+removed some of the hard coded options in the main funct.
+
+Wed, 1 Mar 2017 16:12:49 -0600
+Author : d-a-heitbrink
+Merge branch 'master' of https://github.com/openscenegraph/OpenSceneGraph
+
+Wed, 1 Mar 2017 15:33:19 -0600
+Author : D-A-Heitbrink
+Add files via upload
+
+Wed, 1 Mar 2017 16:43:05 +0000
+Author : Robert Osfield
+Merged the decoration vertices with the same vertex arrays used for text glyphs
+
+Wed, 1 Mar 2017 11:51:27 +0000
+Author : Robert Osfield
+Replaced hardwired glDrawArrays calls with use of osg::DrawElementsUshort.
+
+Tue, 7 Feb 2017 20:24:03 +0100
+Author : scrawl
+Update travis-ci to use the new more flexible BUILD_OSG_PLUGINS_BY_DEFAULT
+
+Tue, 7 Feb 2017 19:30:38 +0100
+Author : scrawl
+Add CMake options to control which osgPlugins/ are built
+
+Tue, 28 Feb 2017 17:12:58 +0000
+Author : Robert Osfield
+Removed unused member variable
+
+Tue, 28 Feb 2017 17:02:02 +0000
+Author : Robert Osfield
+Removed old Text::GlyphQuads array code paths
+
+Tue, 28 Feb 2017 16:34:33 +0000
+Author : Robert Osfield
+Merged the Text::GlyphQuads cooordinate arrays
+
+Mon, 27 Feb 2017 15:15:37 +0000
+Author : Robert Osfield
+Removed old code paths
+
+Mon, 27 Feb 2017 11:53:42 +0000
+Author : Robert Osfield
+Added option for combining the GlyphQuad::backdropcoords into the GlyphQuad::coords.
+
+Mon, 27 Feb 2017 10:47:14 +0000
+Author : Robert Osfield
+Added StateSetManipulator to osglogo.
+
+Fri, 24 Feb 2017 18:25:16 +0000
+Author : Robert Osfield
+Scaled back the primitives sets set up so they match the requirements of the osgText::Text accordinging to the BackdropType
+
+Fri, 24 Feb 2017 17:08:48 +0000
+Author : Robert Osfield
+Moved glyph quad setup into dedicated method
+
+Fri, 24 Feb 2017 16:21:20 +0100
+Author : Laurens Voerman
+allow library names liblas.lib and liblas_c.lib;fix include dirs typo; link only liblas_c in plugin.
+
+Fri, 24 Feb 2017 16:09:13 +0100
+Author : Laurens Voerman
+use normal cmake search if PKG_CHECK_MODULES fails; fix win32 debug linking with SET(TARGET_LIBRARIES_VARS GTA_LIBRARY)
+
+Fri, 24 Feb 2017 15:54:07 +0100
+Author : Laurens Voerman
+added FBX SDK 2017.1 and try to add apple (clang) support (not tested - I have no apple)
+
+Fri, 24 Feb 2017 11:17:22 +0000
+Author : Robert Osfield
+Removed unused lineNumber
+
+Fri, 24 Feb 2017 11:08:15 +0000
+Author : Robert Osfield
+Grouped GlyphQuad setup
+
+Fri, 24 Feb 2017 10:40:52 +0000
+Author : Robert Osfield
+Fixed indentation
+
+Fri, 24 Feb 2017 10:07:01 +0000
+Author : Robert Osfield
+Moved to use of single vector of DrawElementsUShort for backdrops and foreground text quads
+
+Fri, 24 Feb 2017 07:41:19 +0100
+Author : scrawl
+Add missing copy of callbacks when a Transform is replaced by Group
+
+Fri, 24 Feb 2017 01:08:44 +0100
+Author : scrawl
+Change the order of optimizations to allow for the possibility of merging Geometries that have just become siblings after the removal of redundant nodes
+
+Fri, 24 Feb 2017 01:07:24 +0100
+Author : scrawl
+Fix unused parameter warning
+
+Fri, 24 Feb 2017 01:05:57 +0100
+Author : scrawl
+Fix MergeGeometryVisitor to work with a Group instead of Geode
+
+Fri, 24 Feb 2017 01:00:49 +0100
+Author : scrawl
+Use asDrawable()/asNode() over dynamic_cast in the Optimizer
+
+Thu, 23 Feb 2017 18:36:35 +0000
+Author : Robert Osfield
+Added missing relaseGLObjects()/resizeGLObjects(). Reordered calls to make it easier to read and see patterns.
+
+Thu, 23 Feb 2017 18:14:36 +0000
+Author : Robert Osfield
+Cleaned up types
+
+Thu, 23 Feb 2017 15:45:43 +0000
+Author : Robert Osfield
+Restructed and unified the position computation
+
+Wed, 22 Feb 2017 14:14:03 +0000
+Author : Robert Osfield
+Removed the old code paths
+
+Wed, 22 Feb 2017 12:41:45 +0000
+Author : Robert Osfield
+Removed the unncessary array.
+
+Wed, 22 Feb 2017 12:07:43 +0000
+Author : Robert Osfield
+Added the option for changing the type of the GlyphQuads::Coords
+
+Tue, 21 Feb 2017 21:55:05 +0100
+Author : Nico Kruithof
+Fixed typoosg_ModeViewMatrix -> osg_ModelViewMatrix
+
+
+Tue, 21 Feb 2017 17:47:54 +0000
+Author : Robert Osfield
+Fixed FadeText when using NEW_APPROACH
+
+Tue, 21 Feb 2017 17:07:53 +0000
+Author : Robert Osfield
+Refactored the computation of the transforms for the osgText::Text
+
+Sat, 18 Feb 2017 10:38:31 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #201 from blobfish/moreManipSloposgManipulator: Constraint: snap_point_to_grid wants Vec3d instead of Vec3
+
+Tue, 14 Feb 2017 23:46:27 -0500
+Author : blobfish
+osgManipulator: Constraint: snap_point_to_grid wants Vec3d instead of Vec3
+
+Mon, 13 Feb 2017 16:53:37 +0000
+Author : Robert Osfield
+Added osgvolume command line option "--bg r g b a" to enable customization of the window background colour
+
+Tue, 7 Feb 2017 19:30:21 +0100
+Author : scrawl
+Add CMake option to not build deprecated serializers
+
+Fri, 3 Feb 2017 18:03:13 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #197 from scrawl/geodefixMore fixes for Geode/Drawable handling in visitors
+
+Fri, 3 Feb 2017 18:10:37 +0100
+Author : scrawl
+Remove seemingly redundant handling of Geode in GLObjectsVisitor
+
+Fri, 3 Feb 2017 18:01:08 +0100
+Author : scrawl
+Fix handling of in-scenegraph Drawables in osgShadow
+
+Fri, 3 Feb 2017 17:55:32 +0100
+Author : scrawl
+Fix handling of in-scenegraph Drawables in SmoothingVisitor, TriStripVisitor and GraphicsCostEstimator
+
+Fri, 3 Feb 2017 17:51:03 +0100
+Author : scrawl
+Fix handling of in-scenegraph Drawables in ShaderGenVisitor
+
+Fri, 3 Feb 2017 17:48:18 +0100
+Author : scrawl
+Fix handling of in-scenegraph Drawables in MeshOptimizers
+
+Fri, 3 Feb 2017 17:45:22 +0100
+Author : scrawl
+Fix unused parameter warning
+
+Fri, 3 Feb 2017 17:43:42 +0100
+Author : scrawl
+Fix handling of in-scenegraph Drawables in DrawElementTypeSimplifier
+
+Fri, 3 Feb 2017 17:42:21 +0100
+Author : scrawl
+Remove redundant handling of Geode in DisplayRequirementsVisitor
+
+Fri, 3 Feb 2017 17:39:56 +0100
+Author : scrawl
+Add a comment explaining some confusing code in UpdateVisitor and EventVisitor
+
+Fri, 3 Feb 2017 17:34:17 +0100
+Author : scrawl
+Remove redundant handling of Geode in SharedStateManager
+
+Fri, 3 Feb 2017 17:33:58 +0100
+Author : scrawl
+Fix handling of in-scenegraph drawables in osgUtil::Simplifier
+
+Fri, 3 Feb 2017 14:27:01 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #196 from LaurensVoerman/travisCIsplit travis-ci apple build into two jobs to avoid job time limit.
+
+Fri, 3 Feb 2017 10:01:15 +0100
+Author : Laurens Voerman
+split travis-ci apple build into two jobs to avoid job time limit.
+
+Fri, 3 Feb 2017 08:50:01 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #193 from kjean667/multi_view_shared_context_fixBug fix to not crash when using shared context and adding / removing windowed views dynamically
+
+Thu, 2 Feb 2017 11:46:16 +0100
+Author : Kjell Andersson
+Bug fix to not crash when using shared context and adding / removing windowed views dynamically. The GLExtension object is now reused instead of creating a new when allocating a state on the same ContextID. The static map that stores the GLExtensions is only reset when all references to the extension object are released.
+
+Fri, 27 Jan 2017 15:15:39 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #191 from LaurensVoerman/glExtentionsGLExtensions.cpp: Fixed a few typo's in old function names.
+
+Wed, 25 Jan 2017 17:05:56 +0100
+Author : Laurens Voerman
+Fixed a few old function names. Check extensions trough extermination string - not by function pointer value. Added a few validContext tests to ensure no functions or isExterntionSupported bool is set for an non valid context. Remove duplicates / merge some lines. Removed "GL_APPLE_texture_2D_limited_npot" form isNonPowerOfTwoTextureMipMappedSupported.
+
+Tue, 24 Jan 2017 17:36:36 +0000
+Author : Robert Osfield
+Fixed linking bug caused by repeated Program::addShader()/removeShader() operations invalidating the internal attach/dettech lists.
+
+Tue, 24 Jan 2017 09:27:07 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #190 from scrawl/optimizerOptimizer fixes
+
+Tue, 24 Jan 2017 09:15:26 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #189 from marchelbling/masterosgjs/gles updates
+
+Fri, 20 Jan 2017 23:02:15 +0100
+Author : scrawl
+Remove CheckGeometryVisitor which was a no-op
+
+Fri, 20 Jan 2017 23:01:04 +0100
+Author : scrawl
+MakeFastGeometryVisitor: fix handling of Geometries that are directly in the scene graph not attached to a Geode
+
+Fri, 20 Jan 2017 22:49:17 +0100
+Author : scrawl
+StateVisitor: remove redundant code for Geode handling
+
+Fri, 20 Jan 2017 22:47:43 +0100
+Author : scrawl
+TessellateVisitor: fix handling of Geometries that are directly in the scene graph not attached to a Geode
+
+Fri, 20 Jan 2017 22:43:58 +0100
+Author : scrawl
+FlattenStaticTransformsVisitor: fix handling of Drawables that are directly in the scene graph not attached to a Geode
+
+Fri, 20 Jan 2017 21:48:45 +0100
+Author : scrawl
+StaticObjectDetectionVisitor: make use of apply(Drawable) visitor function
+
+Fri, 20 Jan 2017 21:25:32 +0100
+Author : scrawl
+TextureAtlasVisitor: fix handling of Drawables that are directly in the scene graph not attached to a Geode
+
+Fri, 20 Jan 2017 21:08:02 +0100
+Author : scrawl
+TextureVisitor: remove redundant code for Geode handling
+
+Fri, 20 Jan 2017 20:58:05 +0100
+Author : scrawl
+RemoveEmptyNodesVisitor: add missing isOperationPermissible check
+
+Fri, 20 Jan 2017 20:57:03 +0100
+Author : scrawl
+RemoveEmptyNodesVisitor: remove redundant code for Geode handling
+
+Fri, 20 Jan 2017 17:31:09 +0000
+Author : Robert Osfield
+Quitened down verbose debug messages
+
+Fri, 20 Jan 2017 17:24:49 +0000
+Author : Robert Osfield
+Quitened down debug messages
+
+Fri, 20 Jan 2017 17:06:55 +0000
+Author : Robert Osfield
+Quietened down some verbose debug messages
+
+Fri, 20 Jan 2017 15:09:26 +0100
+Author : Marc Helbling
+Updates osgjs from sketchfab* updates uservalue serialization (avoid creating multie UserDataContainer for a same object)
+* removes vec4ubarray specific serialization (serialization should not enforce the previous color transformation)
+
+
+Fri, 20 Jan 2017 15:09:25 +0100
+Author : Marc Helbling
+Updates gles from sketchfab* fixes bbox issue for animated scenes
+* fixes geometry split (perf + line/point primitive management)
+* removes degenerated faces
+
+
+Thu, 19 Jan 2017 15:56:17 +0000
+Author : Robert Osfield
+Fixed indentation of comment
+
+Tue, 17 Jan 2017 10:52:26 +0000
+Author : Robert Osfield
+Added public accessors
+
+Mon, 16 Jan 2017 17:18:58 +0000
+Author : Robert Osfield
+Removed unused class
+
+Fri, 13 Jan 2017 09:57:32 -0600
+Author : d-a-heitbrink
+missing CMakeLists
+
+Fri, 13 Jan 2017 09:56:42 -0600
+Author : d-a-heitbrink
+Added support for Bindless texture extension, 64 bit uniforms, 64 bit buffers Added new bindless texture example
+
+Fri, 13 Jan 2017 09:33:49 -0600
+Author : d-a-heitbrink
+added code to deal with #extension for shader, added int64 and uint64 support
+
+Sun, 8 Jan 2017 14:41:51 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #186 from hwiesmann/masterAddition of documentation for LOD and PagedLOD
+
+Sat, 7 Jan 2017 13:03:22 +0000
+Author : Robert Osfield
+Fixed smallTile test as it was checking against <=2^14 rather than <2^16 which is more conservative than required for a ushort container
+
+Sat, 7 Jan 2017 13:54:21 +0100
+Author : Hartwig
+Replaced tabs with spaces
+
+Sat, 7 Jan 2017 10:39:29 +0100
+Author : Hartwig
+Merge remote-tracking branch 'origin/master' into my_master
+
+Sat, 7 Jan 2017 09:20:56 +0100
+Author : Hartwig
+Addition of documentation for LOD and PagedLODDocumentation has been added for their default constructors. Furthermore, the consequences of different center modes have been explained. A comment regarding the setting of the radius has been fixed.
+
+
+Wed, 4 Jan 2017 13:22:22 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #184 from hwiesmann/masterBUG FIX - Wrong calculation of terrain normals in GeometryTechnique
+
+Wed, 4 Jan 2017 12:55:15 +0000
+Author : Robert Osfield
+Fixed unitialized variable access to premature calling of computeMatrix().
+
+Sun, 1 Jan 2017 16:33:37 +0100
+Author : Hartwig
+Blending out of local functionsSome local functions are only needed for OS X compatibility. Define these functions only for OS X versions older than 10.6.
+
+
+Thu, 29 Dec 2016 21:43:20 +0100
+Author : Hartwig
+BUG FIX - Wrong calculation of terrain normalsThe partial derivative for the x-coordinate has been wrongly calculated: only a single sided derivative was calculated.
+
+
+Fri, 23 Dec 2016 17:23:07 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #183 from rickyviking/masterAdditional info when fail to load images
+
+Fri, 23 Dec 2016 17:16:16 +0000
+Author : Robert Osfield
+From Hartwig Wiesmann, "ScalarsToColors returns a wrong color in case a value larger max is passed to getColor"
+
+Fri, 23 Dec 2016 11:55:08 +0100
+Author : Riccardo Corsi
+InputStream::readImage() : added info about which file failed to load when printing error message
+
+Wed, 21 Dec 2016 17:16:30 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #182 from LaurensVoerman/fileStatsadded some info about dynamic drawables and transparent bin to Statistics
+
+Wed, 21 Dec 2016 17:02:05 +0000
+Author : Robert Osfield
+From Torben Dannhauer, build updates for NVTT.
+
+Wed, 21 Dec 2016 16:29:38 +0000
+Author : Robert Osfield
+From Torben Dannahauer, updates to track changes to Winddows 3rd party package
+
+Wed, 21 Dec 2016 16:11:39 +0000
+Author : Robert Osfield
+Refactored the minimum width of bars.
+
+Wed, 21 Dec 2016 16:04:24 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #180 from LaurensVoerman/stats_barsimprove stats display
+
+Wed, 25 May 2016 13:30:50 +0200
+Author : Laurens Voerman
+added some info about dynamic drawables and transparent bin to Statistics
+
+Wed, 21 Dec 2016 15:55:50 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #181 from LaurensVoerman/DebugFPSDEBUG FPS counter in red and named "DEBUG Frame Rate:"
+
+Wed, 21 Dec 2016 15:54:20 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #179 from LaurensVoerman/ktx_write_supportktx write support
+
+Wed, 21 Dec 2016 15:33:02 +0000
+Author : Robert Osfield
+From Torben Dannhauer, "When compiling OSG with DCMTK on windows, it throws an compiler error due to a missing ws2_32.lib in the linker settings."
+
+Wed, 21 Dec 2016 15:13:49 +0000
+Author : Robert Osfield
+From Vladimir Chebaev, "Dynamic linking of fbx plugin and fbx SDK"
+
+Wed, 21 Dec 2016 14:19:38 +0100
+Author : Laurens Voerman
+DEBUG FPS counter in red and named "DEBUG Frame Rate:"
+
+Tue, 11 Oct 2016 17:02:43 +0200
+Author : Laurens Voerman
+improve stats display
+
+Wed, 25 May 2016 13:25:44 +0200
+Author : Laurens Voerman
+ktx write support
+
+Wed, 21 Dec 2016 13:46:18 +0000
+Author : Robert Osfield
+Removed debug output
+
+Wed, 21 Dec 2016 11:40:16 +0000
+Author : Robert Osfield
+From Andreas Ekstrand, "he attached ESRIShape.cpp contains a small fix in parsing of PointZ features, now correctly comparing with header content length which is defined in 16-bit words.This should have been fixed in my old submission from 2012 but was probably overlooked due to an alternative way of comparing to a fix number for this feature type.
+
+Without this fix, the plugin will only read one PointZ feature even if multiple features exist."
+
+
+Wed, 21 Dec 2016 11:02:29 +0000
+Author : Robert Osfield
+Changed Program::apply() to Program::compileGLObjects() to avoid the Program::apply() setting of setLastAppliedProgramObjects for affect current state.
+
+Wed, 21 Dec 2016 09:10:50 +0000
+Author : Robert Osfield
+Added StateSet::setGlobalDefaults() to fix bug when osgViewer has stats on but no scene graph assigned
+
+Mon, 31 Oct 2016 16:11:20 +0000
+Author : Robert Osfield
+Fixed handling of #define's that are used as functions
+
+Tue, 13 Dec 2016 11:42:57 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #174 from etlapale/obj_plugin_improvementsImprovements for the OBJ writer plugin
+
+Tue, 13 Dec 2016 11:56:06 +0100
+Author : Émilien Tlapale
+Uncommenting missing argument.
+
+Tue, 13 Dec 2016 10:47:12 +0000
+Author : Robert Osfield
+Added header
+
+Tue, 13 Dec 2016 10:58:46 +0100
+Author : Émilien Tlapale
+Adding configurable precision for OBJ output.
+
+Tue, 13 Dec 2016 10:57:42 +0100
+Author : Émilien Tlapale
+Support for stateset in groups for OBJ.
+
+Mon, 12 Dec 2016 10:23:50 +0000
+Author : Robert Osfield
+Added create angle of 20 degrees to SmoothingVisitor to improve visual quality. Added geometry.setUseVertexBufferObjects(true) to geometry set up for improved performance. Refactored the color set up so that by default it assigns just a single color to the geometry to improve performance.
+
+Fri, 9 Dec 2016 17:52:17 +0000
+Author : Robert Osfield
+Renamed the iges plugin to OpenCASCADE to make it clearer what the plugin is, and added file extension aliases for stp, step, igs and iges to the OpenCASCADE plugin to enable automatic loading.
+
+Fri, 9 Dec 2016 17:29:55 +0000
+Author : Robert Osfield
+Added support for reading from STEP (.stp) files.
+
+Fri, 9 Dec 2016 17:29:20 +0000
+Author : Robert Osfield
+Refined the list of libraries to link
+
+Fri, 9 Dec 2016 17:27:17 +0000
+Author : Robert Osfield
+Converted to unix line endings
+
+Thu, 8 Dec 2016 17:52:46 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #172 from blobfish/manipSloposgManiputor: TranslateInLineCommand wants Vec3d instead of Vec3
+
+Wed, 7 Dec 2016 17:20:23 -0500
+Author : blobfish
+osgManiputor: TranslateInLineCommand wants Vec3d instead of Vec3
+
+Mon, 5 Dec 2016 10:33:23 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #170 from crubel/PThreadPullRequestFixed compile time errors that occur when you have ALLOW_PRIORITY_SCHEDULING defined
+
+Fri, 2 Dec 2016 08:07:15 -0500
+Author : Curtis Rubel
+Missed the printf define at the top of this file.Put back this:
+#ifdef DEBUG
+# define DPRINTF(arg) printf arg
+#else
+# define DPRINTF(arg)
+#endif
+
+I think that should do it now...
+
+Fri, 2 Dec 2016 08:05:30 -0500
+Author : Curtis Rubel
+Removed all OSGNOTIFY messages and put back all printf output as requested.Sorry about this mixup, I was not aware that this particular directory was to be considered a separate project and must not rely on any dependencies from the rest of the OSG project.  All OSGNOTIFY messages have been removed and the previous printf statements have been put back.
+
+Fri, 2 Dec 2016 08:04:10 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #171 from aluaces/iges_fixSeveral tweaks for compiling OpenCascade plugin:
+
+Thu, 1 Dec 2016 23:39:56 +0100
+Author : Alberto Luaces
+Several tweaks for compiling OpenCascade plugin:* Remove unneeded XSDRAW.hxx header inclusion.
+* Define WNT only on windows, because it is used for choosing between
+  win threads or pthreads.
+
+
+Thu, 1 Dec 2016 16:36:20 -0500
+Author : Curtis Rubel
+Fixed compile time errors that occur when you have ALLOW_PRIORITY_SCHEDULING defined.  I also replaced all printf's with OSGNOTIFY to get this more inline with the rest of OSG CGR
+
+Wed, 30 Nov 2016 20:10:22 +0000
+Author : Robert Osfield
+Teaking FindOpenCascade to help with linking of iges plugin
+
+Wed, 30 Nov 2016 19:11:15 +0000
+Author : Robert Osfield
+From Abhishek Bansal, with ammendemts by Robet Osfield to get working with recent OpenCascade and usng CMake.
+
+Wed, 30 Nov 2016 17:15:06 +0000
+Author : Robert Osfield
+Added GL_EXT_texture_border_clamp support for GLES
+
+Sat, 26 Nov 2016 11:45:07 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #169 from scrawl/stateset-fixFix flow control issue in StateSet::compileGLObjects
+
+Sat, 26 Nov 2016 01:09:13 +0100
+Author : scrawl
+Fix typo in StateSet::compileGLObjects, causing compilation of attributes to not be executed unless checkForGLErrors is true.
+
+Wed, 23 Nov 2016 18:19:59 +0000
+Author : Robert Osfield
+Fixed crash in handling of an osg::Callback attached to a Drawable as update callback. Added handling of osg::Callback when attavhed to a Drawable as a cull callback.
+
+Tue, 15 Nov 2016 17:36:21 +0000
+Author : Robert Osfield
+Added guards against division by zero
+
+Tue, 15 Nov 2016 14:52:59 +0000
+Author : Robert Osfield
+Added usage of GLExtensions::debugObjectLabel() to GLBufferObject::compile()
+
+Tue, 15 Nov 2016 14:35:47 +0000
+Author : Robert Osfield
+Added support for glObjectLabel debugging
+
+Tue, 15 Nov 2016 11:16:53 +0000
+Author : Robert Osfield
+Merge branch 'fredowski-master'
+
+Tue, 15 Nov 2016 11:16:03 +0000
+Author : Robert Osfield
+Improved the indentation and case to make the code more consistent and readable
+
+Tue, 15 Nov 2016 11:13:37 +0000
+Author : Robert Osfield
+Merge branch 'master' of https://github.com/fredowski/OpenSceneGraph into fredowski-master
+
+Tue, 15 Nov 2016 11:01:41 +0000
+Author : Robert Osfield
+Enabled sharing of main threads processor affinity to the next required thread for CullDrawThreadPerCamera and CullThreadPerCameraDrawThreadPerContext
+
+Tue, 15 Nov 2016 10:41:12 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #156 from LaurensVoerman/Affinity2unlock cpu's 32-63 on 64 bit windows
+
+Tue, 15 Nov 2016 09:47:48 +0000
+Author : Robert Osfield
+Removed todo that is not required
+
+Tue, 15 Nov 2016 09:29:09 +0000
+Author : Robert Osfield
+Reduced public documentation generation to just the public headers
+
+Tue, 15 Nov 2016 09:28:25 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #164 from CodeDocs/codedocsUse CodeDocs for Doxygen documentation
+
+Tue, 15 Nov 2016 08:57:24 +0000
+Author : Robert Osfield
+To avoid noise in documentation replaced nested namespaced enum with enum with FILE_COPY_ wording prefixed into enum values.
+
+Tue, 15 Nov 2016 08:37:05 +0000
+Author : Robert Osfield
+Fixed doxygen warnings
+
+Mon, 14 Nov 2016 18:01:22 +0000
+Author : Robert Osfield
+Added usage of osg::ConfigureBufferObjectsVisitor to correct for incoherent buffer oject set up due to the adhoc way that the OpenFlight plugin sets up osg::Geometry.
+
+Mon, 14 Nov 2016 17:59:25 +0000
+Author : Robert Osfield
+Added osg::Geometry::configureBufferObjects() and ConfigureBufferObjectsVisitor visitor to help with setting up buffer objects in a coherent fashion.
+
+Mon, 14 Nov 2016 11:59:47 +0000
+Author : Robert Osfield
+Added more flexibility into the State::checkGLErrors() method, allowing calling code to pass in two strings. Improved the StateSet::compileGLObjects() usage of checkGLErrors() to make the warning reports more meaningful.
+
+Fri, 11 Nov 2016 17:16:40 +0000
+Author : Robert Osfield
+Added Dragger::applyAppropriateFrontFace(StateSet*) to make it easy to handle inverted matrices by toggling the FrontFace to sure the correct face is visible.
+
+Fri, 11 Nov 2016 13:54:15 +0000
+Author : Robert Osfield
+Fixed handling of Locator's with negative extents
+
+Wed, 2 Nov 2016 20:56:04 -0400
+Author : Paul Novotny
+Use CodeDocs for Doxygen documentationAdds a configuration file (.codedocs) for building the Doxygen
+documentation using CodeDocs.xyz. Also, adds a badge to the README.md
+to link to the documentation.
+
+
+Mon, 24 Oct 2016 19:54:43 +0200
+Author : Friedrich Beckmann
+added alternative to middle-mouse button in manipulatorI added CTRL + RIGHT-MOUSE-CLICK to the standard manipulator as
+an alternative to MIDDLE-MOUSE-CLICK because a 3 Button Mouse
+not always available, e.g. on MacOS. I tested this with the
+osgAtlasSimbicon example.
+
+
+Thu, 20 Oct 2016 09:59:26 +0100
+Author : Robert Osfield
+Moved shader file loading to a help function
+
+Thu, 20 Oct 2016 09:46:47 +0100
+Author : Robert Osfield
+Fixed shader filename
+
+Wed, 19 Oct 2016 20:26:26 +0100
+Author : Robert Osfield
+Added osgshaderpipeline example that will server as a testbed for automatically mapping fixed function pipeline to shaders
+
+Mon, 17 Oct 2016 16:36:42 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #159 from LaurensVoerman/Affinity3bre-assign thread affinity at the end of setThreadingModel()
+
+Mon, 17 Oct 2016 09:50:48 +0200
+Author : Laurens Voerman
+re-assign thread affinity at the end of setThreadingModel()
+
+Fri, 14 Oct 2016 18:00:40 +0100
+Author : Robert Osfield
+Added _color copy to the copy constructor
+
+Fri, 14 Oct 2016 17:19:50 +0200
+Author : Laurens Voerman
+unlock cpu's 32-63 on 64 bit windows
+
+Fri, 14 Oct 2016 11:06:31 +0100
+Author : Robert Osfield
+Added a dedicated FindEGL.cmake script to help with locating the EGL.so library and header
+
+Thu, 13 Oct 2016 17:43:29 +0100
+Author : Robert Osfield
+Bumped OpenThreads version numbers to reflect changes in ABI
+
+Wed, 12 Oct 2016 18:00:05 +0100
+Author : Robert Osfield
+Fixed GLES build due to lack of GLclampd
+
+Wed, 12 Oct 2016 17:23:19 +0100
+Author : Robert Osfield
+Changed appending of \n to be to the version line.
+
+Wed, 12 Oct 2016 16:10:40 +0100
+Author : Robert Osfield
+Added OES variants of vertex array object functions
+
+Wed, 12 Oct 2016 13:41:57 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #155 from LaurensVoerman/Texture0add #define GL_TEXTURE0 for windows users previously provided by GLBeginEndAdapter
+
+Wed, 12 Oct 2016 13:29:58 +0200
+Author : Laurens Voerman
+add #define GL_TEXTURE0 for windows users previously provided by GLBeginEndAdapter
+
+Wed, 12 Oct 2016 10:08:56 +0100
+Author : Robert Osfield
+Altered the configureAffinity() scheme so that it places threads preferentially on even based number processors first, which should work better in case the processors available have hyper-threading
+
+Wed, 12 Oct 2016 09:09:37 +0100
+Author : Robert Osfield
+Updated version number to 3.5.6 and SO version to 146 after VAO merge
+
+Tue, 11 Oct 2016 20:11:39 +0100
+Author : Robert Osfield
+Added VAO support to osgTerrain::GeometryPool
+
+Tue, 11 Oct 2016 20:11:24 +0100
+Author : Robert Osfield
+Removed unneccessary includes
+
+Tue, 11 Oct 2016 15:14:14 +0100
+Author : Robert Osfield
+Renamed ArrayDispatchers to AttributeDispatchers to better reflect it's role
+
+Mon, 10 Oct 2016 20:49:19 +0100
+Author : Robert Osfield
+Streamlined the dispatch and activation of attribute dispatchers
+
+Mon, 10 Oct 2016 16:29:21 +0100
+Author : Robert Osfield
+Removed unused vertex and texcoord array dispatchers
+
+Sat, 24 Sep 2016 17:57:58 +0200
+Author : Fabian Wiesel
+VAO id is a GLuint
+
+Fri, 23 Sep 2016 21:00:40 +0200
+Author : Fabian Wiesel
+Missed rename in VertexAttribArrayDispatchThe variable array is by initialisation a null-pointer, new_array is the new array
+
+
+Mon, 5 Sep 2016 16:06:52 +0100
+Author : Robert Osfield
+Fixed build errors when OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION to OFF
+
+Mon, 5 Sep 2016 14:17:40 +0100
+Author : Robert Osfield
+Fixed warnings
+
+Fri, 2 Sep 2016 19:26:20 +0100
+Author : Robert Osfield
+Removed unneccessary parameter
+
+Fri, 2 Sep 2016 17:15:14 +0100
+Author : Robert Osfield
+Removed GLBeginEndAdapter as it is no longer needed
+
+Fri, 2 Sep 2016 17:01:25 +0100
+Author : Robert Osfield
+Refactored osgText so that it no longer uses GLBeginEndAdapter
+
+Fri, 2 Sep 2016 17:00:44 +0100
+Author : Robert Osfield
+Added --simple command line option and accompanying code to create a very simple text object for basic testing of osgText
+
+Fri, 2 Sep 2016 17:00:00 +0100
+Author : Robert Osfield
+Added ApplyTextureModeProxy for temporarily applying a texture mode
+
+Fri, 2 Sep 2016 14:22:47 +0100
+Author : Robert Osfield
+Refactored Text3D so that it no longer depends upon GLBeginEndAdapter
+
+Fri, 2 Sep 2016 14:20:17 +0100
+Author : Robert Osfield
+Added State::ApplyModeProxy to help with temporarily applying a mode
+
+Thu, 1 Sep 2016 17:26:35 +0100
+Author : Robert Osfield
+Removed no longer relevant comment
+
+Thu, 1 Sep 2016 17:26:26 +0100
+Author : Robert Osfield
+Added missing export
+
+Thu, 1 Sep 2016 17:14:03 +0100
+Author : Robert Osfield
+Refactored osgParticle so that it natives support vertex arrays, vertex buffer objects and vertex array objects
+
+Thu, 1 Sep 2016 17:01:58 +0100
+Author : Robert Osfield
+Added osg::convertToRGBA8(Vec4f) convenience function
+
+Thu, 1 Sep 2016 14:42:58 +0100
+Author : Robert Osfield
+Added explict setup of the stats graphing geometry so that it's VertexBufferObject is intialized to the correct size to prevent any need for later resizing
+
+Thu, 1 Sep 2016 14:41:17 +0100
+Author : Robert Osfield
+Improved handling of the BufferObject::Profile::_size, utilizing it's intial value when it is non zero and larger than the arrays assigned to it.
+
+Thu, 1 Sep 2016 14:38:16 +0100
+Author : Robert Osfield
+Fixed VertexArrayState::bind*BufferObject(..) methods so they correctly handle dirtied buffer objects
+
+Thu, 1 Sep 2016 14:36:24 +0100
+Author : Robert Osfield
+Fixed typo in comment
+
+Thu, 1 Sep 2016 14:35:13 +0100
+Author : Robert Osfield
+Fixed typo in comment
+
+Thu, 1 Sep 2016 14:34:00 +0100
+Author : Robert Osfield
+Added check against Array::Binding to decide whether to assign a VertexBufferObject to an array or not, only assigning it when Binding is BIND_PER_VERTEX
+
+Fri, 26 Aug 2016 19:48:32 +0100
+Author : Robert Osfield
+Beginings of refactoring ParticleSystem so that it does uses vertex arrays rather than GLBeginEndAdapter
+
+Fri, 26 Aug 2016 15:09:46 +0100
+Author : Robert Osfield
+Added OSG_EXPORT
+
+Thu, 25 Aug 2016 17:04:21 +0100
+Author : Robert Osfield
+Added command line parser to osgparticle examples viewer setup to make it easier to position window
+
+Thu, 25 Aug 2016 16:14:53 +0100
+Author : Robert Osfield
+Removed redundent use of Geode to decorate the ParticleSystem
+
+Thu, 25 Aug 2016 16:14:06 +0100
+Author : Robert Osfield
+Fixed line endings
+
+Thu, 25 Aug 2016 15:27:16 +0100
+Author : Robert Osfield
+Made ordering of case clearer
+
+Thu, 25 Aug 2016 15:13:36 +0100
+Author : Robert Osfield
+Removed Particle::Shape support for QUAD_TRIANGLESTRIP, HEXAGON, USER as these are unlikely to be used as their implementation prevents refactoring to use vertex array code paths
+
+Thu, 25 Aug 2016 11:32:00 +0100
+Author : Robert Osfield
+Refactored ImpostorSprite so that it no longer uses GLBeginEndAdapter
+
+Thu, 25 Aug 2016 11:05:30 +0100
+Author : Robert Osfield
+Added back in the osgimpostor example, cleaning up so that it no longer has any deprecated paths and adds stats and file output for debug purposes
+
+Thu, 25 Aug 2016 10:35:01 +0100
+Author : Robert Osfield
+Removed commented out debug message
+
+Thu, 25 Aug 2016 10:28:37 +0100
+Author : Robert Osfield
+Refactored osgSim::SphereSegment so that it no longer uses GLBeginEndAdapter
+
+Thu, 25 Aug 2016 10:25:49 +0100
+Author : Robert Osfield
+Added AdjustSphereSegmentCallback to provide '<' and '>' key controls over the azim and elev range of the sphere segment
+
+Wed, 24 Aug 2016 20:09:52 +0100
+Author : Robert Osfield
+Added StatsHandler to check performance
+
+Tue, 23 Aug 2016 11:21:49 +0100
+Author : Robert Osfield
+Removed unused header
+
+Tue, 23 Aug 2016 11:09:24 +0100
+Author : Robert Osfield
+Replaced old Shape to Geometry conversion code as new convinience methods in include/osg/Shape provide these features
+
+Tue, 23 Aug 2016 11:08:25 +0100
+Author : Robert Osfield
+Added osg::convertShapeToGeometry(...) convinience functions for creating osg::Geometry from osg::Shape descriptions.
+
+Wed, 17 Aug 2016 21:34:32 +0100
+Author : Robert Osfield
+Refactored ShapeDrawable so that it is subclassed from osg::Geometry rather than osg::Drawable.Created a BuildShapeGeometryVisitor visitor that can create osg::Geometry for osg::Shape objects
+
+
+Tue, 16 Aug 2016 16:51:41 +0100
+Author : Robert Osfield
+Fixed crash when using vertex attribute arrays
+
+Tue, 16 Aug 2016 15:33:54 +0100
+Author : Robert Osfield
+Added support for interleaved arrays
+
+Tue, 16 Aug 2016 11:23:29 +0100
+Author : Robert Osfield
+Removed no longer used member variables
+
+Tue, 16 Aug 2016 11:11:24 +0100
+Author : Robert Osfield
+Removed no longer used data structures
+
+Tue, 16 Aug 2016 10:51:56 +0100
+Author : Robert Osfield
+Moved FOG_COORD and SECONDARY_COLOR #define's from State header into VertexArrayState.cpp
+
+Tue, 16 Aug 2016 10:01:38 +0100
+Author : Robert Osfield
+Replaced osg::State:set*Pointer() calls with VertexArrayState::set*Array() calls
+
+Mon, 15 Aug 2016 18:17:35 +0100
+Author : Robert Osfield
+Added check against State::useVertexBufferObjects(..) so that Display Lists are only used when VBO is OFF.
+
+Mon, 15 Aug 2016 11:45:58 +0100
+Author : Robert Osfield
+Added automatic assignment of _markerObject to CompileSet.
+
+Fri, 12 Aug 2016 18:44:38 +0100
+Author : Robert Osfield
+Restructred the enabling of vertex array object support to allow one to set enable the default via osg::State.Added OSG_VERTEX_BUFFER_HINT env var to osg::DisplaySettings with VERTEX_BUFFER_OBJECT/VBO, VERTEX_ARRAY_OBJECT/VAO and NO_PREFERENCE to allow one to foce on VBO or VAO usage.
+
+Restructred BufferObject assigned in osg::Geometry
+
+Added
+
+
+Fri, 12 Aug 2016 18:42:33 +0100
+Author : Robert Osfield
+Cleaned up set up of osg::Geometry for stats
+
+Mon, 8 Aug 2016 18:30:20 +0100
+Author : Robert Osfield
+Removed unncessary checks
+
+Mon, 8 Aug 2016 17:57:20 +0100
+Author : Robert Osfield
+Streamlined State::_is*Supported variables
+
+Mon, 8 Aug 2016 15:08:07 +0100
+Author : Robert Osfield
+Build fixes when compiling wuth CMake options OPENGL_PROFILE set to GLCORE
+
+Fri, 5 Aug 2016 23:04:03 +0200
+Author : Mathieu MARACHE
+remove a warning when compiling with GL3 core profile and macOS
+
+Fri, 5 Aug 2016 23:01:15 +0200
+Author : Mathieu MARACHE
+compilation fixes when no OSG_GL_DISPLAYLISTS_AVAILABLE
+
+Fri, 5 Aug 2016 23:00:47 +0200
+Author : Mathieu MARACHE
+compilation fixes when no OSG_GL_FIXED_FUNCTION_AVAILABLE
+
+Fri, 5 Aug 2016 21:59:34 +0100
+Author : Robert Osfield
+Removed deprecated code paths and moved implementations into headers
+
+Fri, 5 Aug 2016 12:51:40 +0100
+Author : Robert Osfield
+Refactored the VertexArrayState's handling of vertex attribute aliasing
+
+Thu, 4 Aug 2016 22:00:58 +0100
+Author : Robert Osfield
+Moved implementations from .cpp's to headers as inline methods to improve performance.
+
+Thu, 4 Aug 2016 17:51:45 +0100
+Author : Robert Osfield
+Improved naming of createVertexArrayState(..) method
+
+Thu, 4 Aug 2016 17:15:29 +0100
+Author : Robert Osfield
+Removed resetting of the pointer state.
+
+Thu, 4 Aug 2016 15:33:02 +0100
+Author : Robert Osfield
+Added State::useVertexArrayObject() member to streamline toggling on/off of VAO usage
+
+Wed, 3 Aug 2016 20:12:20 +0100
+Author : Robert Osfield
+Added support for clean up Vertex Array Objects
+
+Wed, 3 Aug 2016 10:35:51 +0100
+Author : Robert Osfield
+Added intialization of the VAO in Geometry::compileGLObjects() and refined the invocation of updates to the VAO
+
+Tue, 2 Aug 2016 12:28:05 +0100
+Author : Robert Osfield
+Added lazy setting of arrays for osg::Geometry using vertex_array_object
+
+Sat, 23 Jul 2016 16:33:39 +0100
+Author : Robert Osfield
+Implemented lighter weight setting of the CurrentVertexArrayState and introduced GlobalVertexArrayState.
+
+Sat, 23 Jul 2016 15:02:08 +0100
+Author : Robert Osfield
+Implemented a different approach to vertex array object support to enable creation of a single global vertex array object as well as provide individual vertex array objects per Drawable when required.
+
+Mon, 18 Jul 2016 20:09:22 +0100
+Author : Robert Osfield
+Added ability to initializer GL vertex array object id with Geometry::compileGLObjects(). Improved the handling of buffer object state when not using VAO's
+
+Fri, 15 Jul 2016 15:41:43 +0100
+Author : Robert Osfield
+Experimental support for OpenGL Vertex Array Object
+
+Tue, 11 Oct 2016 11:02:20 +0100
+Author : Torben Dannhauer
+From Torben Dannhauer, added search for new libcurl and libtiff names
+
+Mon, 10 Oct 2016 17:38:24 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #153 from scrawl/typo-fixFix typo in processor affinity API
+
+Mon, 10 Oct 2016 18:02:38 +0200
+Author : scrawl
+Fix typo in processor affinity API
+
+Mon, 10 Oct 2016 11:21:28 +0100
+Author : Robert Osfield
+From Torben Dannhauer, added freetype27 (2.7) to search list
+
+Sat, 8 Oct 2016 15:58:33 +0100
+Author : Robert Osfield
+Fixed crash associated with setting the affinity on a null pointer
+
+Fri, 7 Oct 2016 19:11:01 +0100
+Author : Robert Osfield
+Updated AUTHORS for 3.5.5
+
+Fri, 7 Oct 2016 19:10:24 +0100
+Author : Robert Osfield
+Updated ChangeLog
+
 Fri, 7 Oct 2016 17:05:58 +0100
 Author : OpenSceneGraph git repository
 Merge pull request #152 from aluaces/spelling2Some spelling fixes in comments.

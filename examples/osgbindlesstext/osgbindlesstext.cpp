@@ -164,7 +164,7 @@ public:
         val->_sbbo    = new osg::UniformBufferObject;
         val->_handles = new osg::UInt64Array();
         val->_handles->resize(count*2,0);
-        val->_handles->setBufferObject(val->_sbbo);
+        val->_handles->setBufferObject(val->_sbbo.get());
         val->_ssbb    = new osg::UniformBufferBinding(0, val->_sbbo.get(), 0, sizeof(GLuint64)*count);
         return val;
     }

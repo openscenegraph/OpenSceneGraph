@@ -78,7 +78,7 @@ static const char* gl3_FragmentShader = {
     "out vec4 color;\n"
     "void main(void)\n"
     "{\n"
-    "    color = vertexColor * texture2D(baseTexture, texCoord);\n"
+    "    color = vertexColor * texture(baseTexture, texCoord);\n"
     "}\n"
 };
 

@@ -262,12 +262,12 @@ void BuildShapeGeometryVisitor::End()
             unsigned int p3 = i+3;
 
             primitives->addElement(p0);
-            primitives->addElement(p3);
             primitives->addElement(p1);
+            primitives->addElement(p3);
 
             primitives->addElement(p1);
-            primitives->addElement(p3);
             primitives->addElement(p2);
+            primitives->addElement(p3);
         }
     }
     else if (_mode==GL_QUAD_STRIP)
@@ -286,12 +286,12 @@ void BuildShapeGeometryVisitor::End()
             unsigned int p3 = i+3;
 
             primitives->addElement(p0);
-            primitives->addElement(p2);
             primitives->addElement(p1);
+            primitives->addElement(p2);
 
             primitives->addElement(p1);
-            primitives->addElement(p2);
             primitives->addElement(p3);
+            primitives->addElement(p2);
         }
     }
     else

@@ -36,7 +36,7 @@ class Script : public osg::Object
         META_Object(osg, Script)
 
         void setLanguage(const std::string& language) { _language = language; dirty(); }
-        const std::string& getLanguage() { return _language; }
+        const std::string& getLanguage() const{ return _language; }
 
         void setScript(const std::string& str) { _script = str; dirty(); }
         const std::string& getScript() const { return _script; }
@@ -74,6 +74,12 @@ class OSG_EXPORT ScriptNodeCallback : public osg::NodeCallback
 
         /** Get the script to call.*/
         const osg::Script* getScript() const { return _script.get(); }
+
+        /** Set the entry point to call.*/
+        void setEntryPoint(const std::string& script) { _entryPoint  = script; }
+
+        /** Get the script to call.*/
+        const std::string& getEntryPoint() const { return _entryPoint; }
 
         /** find the ScriptEngine from looking at the UserDataContainers of nodes in scene graph above the ScriptCallback.*/
         osg::ScriptEngine* getScriptEngine(osg::NodePath& nodePath);

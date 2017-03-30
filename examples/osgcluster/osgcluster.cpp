@@ -488,6 +488,17 @@ int main( int argc, char **argv )
         return 1;
     }
 
+    // objects for managing the broadcasting and receiving of camera packets.
+    Broadcaster     bc;
+    Receiver        rc;
+
+    std::string ifrName;
+    if (arguments.read("--ifr-name", ifrName)) { bc.setIFRName(ifrName); }
+
+    bc.setPort(static_cast<short int>(socketNumber));
+    rc.setPort(static_cast<short int>(socketNumber));
+
+
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 
@@ -541,12 +552,6 @@ int main( int argc, char **argv )
 
     CameraPacket *cp = new CameraPacket;
 
-    // objects for managing the broadcasting and receiving of camera packets.
-    Broadcaster     bc;
-    Receiver        rc;
-
-    bc.setPort(static_cast<short int>(socketNumber));
-    rc.setPort(static_cast<short int>(socketNumber));
 
     bool masterKilled = false;
 

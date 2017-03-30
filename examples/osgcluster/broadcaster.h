@@ -21,6 +21,8 @@
 #ifndef __BROADCASTER_H
 #define __BROADCASTER_H
 
+#include <string>
+
 ////////////////////////////////////////////////////////////
 // Broadcaster.h
 //
@@ -44,6 +46,10 @@ class Broadcaster
 	// Set the buffer to be broadcast
 	void setBuffer( void *buffer, const unsigned int buffer_size );
 
+    // Set the IFRName i.e. eth0, will default to platform appropriate setting where possible.
+    void setIFRName( const std::string& name );
+
+
 	// Set a recipient host.  If this is used, the Broadcaster
 	// no longer broadcasts, but rather directs UDP packets at
 	// host.
@@ -56,6 +62,9 @@ class Broadcaster
 	bool init( void );
 
     private :
+
+        std::string _ifr_name;
+
 #if defined(WIN32) && !defined(__CYGWIN__)
         SOCKET _so;
 #else

@@ -570,7 +570,7 @@ size_t Thread::getStackSize() {
 static int SetThreadAffinity(HANDLE tid, const Affinity& affinity)
 {
 	unsigned int numprocessors = OpenThreads::GetNumberOfProcessors();
-	std::cout << "SetThreadAffinity() : affinity.activeCPUs.size()=" << affinity.activeCPUs.size() << ", numprocessors=" << numprocessors << std::endl;
+	//std::cout << "SetThreadAffinity() : affinity.activeCPUs.size()=" << affinity.activeCPUs.size() << ", numprocessors=" << numprocessors << std::endl;
 
     DWORD_PTR affinityMask = 0x0;
     DWORD_PTR maskBit = 0x1;
@@ -586,7 +586,7 @@ static int SetThreadAffinity(HANDLE tid, const Affinity& affinity)
 				affinityMask |= (maskBit << cpunum);
 			}
 		}
-        std::cout << "   Setting affinityMask : 0x" << std::hex << affinityMask << std::dec << std::endl;
+        //std::cout << "   Setting affinityMask : 0x" << std::hex << affinityMask << std::dec << std::endl;
 	}
 	else
 	{
@@ -595,7 +595,7 @@ static int SetThreadAffinity(HANDLE tid, const Affinity& affinity)
 
 			affinityMask |= (maskBit << cpunum);
 		}
-		std::cout << "   Fallback setting affinityMask : 0x" << std::hex << affinityMask << std::dec << std::endl;
+		//std::cout << "   Fallback setting affinityMask : 0x" << std::hex << affinityMask << std::dec << std::endl;
 	}
 
 	DWORD_PTR res = SetThreadAffinityMask ( tid, affinityMask );

@@ -112,8 +112,7 @@ namespace OpenThreads
 #if defined(HAVE_PTHREAD_SETAFFINITY_NP) || defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY) || defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
 static void setAffinity(const Affinity& affinity)
 {
-
-    std::cout<<"setProcessAffinity : "<< affinity.activeCPUs.size() <<std::endl;
+    //std::cout<<"setProcessAffinity : "<< affinity.activeCPUs.size() <<std::endl;
     cpu_set_t cpumask;
     CPU_ZERO( &cpumask );
     unsigned int numprocessors = OpenThreads::GetNumberOfProcessors();
@@ -125,7 +124,7 @@ static void setAffinity(const Affinity& affinity)
         {
             if (*itr<numprocessors)
             {
-                std::cout<<"   setting CPU : "<< *itr<<std::endl;
+                //std::cout<<"   setting CPU : "<< *itr<<std::endl;
                 CPU_SET( *itr, &cpumask );
             }
         }
@@ -137,7 +136,7 @@ static void setAffinity(const Affinity& affinity)
         // We need to explicitly set it to all CPUs, if no affinity was specified.
         for (unsigned int i = 0; i < numprocessors; ++i)
         {
-            std::cout<<"   Fallback setting CPU : "<< i<<std::endl;
+            //std::cout<<"   Fallback setting CPU : "<< i<<std::endl;
 
             CPU_SET( i, &cpumask );
         }

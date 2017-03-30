@@ -2,6 +2,6 @@
 
 
 SET(TARGET_SRC osgobjectcache.cpp )
-SET(TARGET_EXTERNAL_LIBRARIES ${OPENGL_LIBRARIES} )
+
 #### end var setup  ###
 SETUP_EXAMPLE(osgobjectcache)

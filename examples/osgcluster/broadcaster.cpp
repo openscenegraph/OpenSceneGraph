@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <iostream>
 
 #if !defined (WIN32) || defined(__CYGWIN__)
 #include <sys/ioctl.h>
@@ -209,6 +210,7 @@ void Broadcaster::sync( void )
 #else
     unsigned int size = sizeof( struct sockaddr_in );
     sendto( _so, (const void *)_buffer, _buffer_size, 0, (struct sockaddr *)&saddr, size );
+    std::cout<<"sento("<<_buffer<<", "<<_buffer_size<<std::endl;
 #endif
 
 }

@@ -402,6 +402,20 @@ int main( int argc, char **argv )
 
 
 
+    std::string address;
+    std::string port;
+
+    while (arguments.read("--address", address)) {}
+    while (arguments.read("--port", port)) {}
+
+    bool use_zeroconf(false);
+    bool use_sender(false);
+    bool use_receiver(false);
+    if(arguments.find("--zeroconf") > 0) { use_zeroconf = true; }
+    if(arguments.find("--sender") > 0) { use_sender = true; }
+    if(arguments.find("--receiver") > 0) { use_receiver = true; }
+
+
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> scene = osgDB::readRefNodeFiles(arguments);
 
@@ -414,18 +428,6 @@ int main( int argc, char **argv )
         scene = geode;
     }
 
-    std::string address;
-    std::string port;
-
-    bool use_zeroconf(false);
-    bool use_sender(false);
-    bool use_receiver(false);
-    if(arguments.find("--zeroconf") > 0) { use_zeroconf = true; }
-    if(arguments.find("--sender") > 0) { use_sender = true; }
-    if(arguments.find("--receiver") > 0) { use_receiver = true; }
-
-    while (arguments.read("--address", address)) {}
-    while (arguments.read("--port", port)) {}
 
     // construct the viewer.
     osgViewer::CompositeViewer viewer(arguments);

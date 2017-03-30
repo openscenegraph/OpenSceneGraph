@@ -32,6 +32,7 @@
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
+#include <iostream>
 #include <assert.h>
 #include <signal.h>
 #include <math.h>
@@ -185,7 +186,9 @@ public:
         {
             std::string errorString("error when calling send : ");
             errorString += strerror(errno);
-            throw std::runtime_error(errorString);
+
+            std::cout<<errorString<<std::endl;
+            // throw std::runtime_error(errorString);
         }
     }
 

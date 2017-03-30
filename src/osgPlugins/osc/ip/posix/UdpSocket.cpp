@@ -179,9 +179,13 @@ public:
     {
         assert( isConnected_ );
 
-        if (send( socket_, data, size, 0 ) < 0)
+        ssize_t result = send( socket_, data, size, 0 );
+
+        if (result < 0)
         {
-            throw std::runtime_error("error when calling send(..)\n");
+            std::string errorString("error when calling send : ");
+            errorString += strerror(errno);
+            throw std::runtime_error(errorString);
         }
     }
 

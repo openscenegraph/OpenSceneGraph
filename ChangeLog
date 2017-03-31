@@ -1,3 +1,133 @@
+Thu, 30 Mar 2017 18:21:02 +0100
+Author : Robert Osfield
+Experiment with transmitting large UDP massages
+
+Thu, 30 Mar 2017 17:02:37 +0100
+Author : Robert Osfield
+Added --ifr-name name command line option to enable the broacaster to customize the ifreq.ifr_name
+
+Thu, 30 Mar 2017 15:23:17 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #238 from filnet/silence_thread_loggingopenthread: silence some log output
+
+Thu, 30 Mar 2017 13:21:05 +0100
+Author : Robert Osfield
+Reordered command line parsing and replace throw with cout.
+
+Thu, 30 Mar 2017 12:55:58 +0100
+Author : Robert Osfield
+Build fixes
+
+Thu, 30 Mar 2017 12:45:25 +0100
+Author : Robert Osfield
+Build fix
+
+Thu, 30 Mar 2017 12:20:45 +0100
+Author : Robert Osfield
+Added --address and --port command line parameters to osgoscdevice example
+
+Thu, 30 Mar 2017 12:18:16 +0100
+Author : Robert Osfield
+Improved the error warning message
+
+Thu, 30 Mar 2017 11:29:53 +0200
+Author : Philippe Renon
+openthread: silence some log output
+
+Wed, 29 Mar 2017 14:32:59 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #237 from remoe/patch-1Fix VS2013 build issue
+
+Wed, 29 Mar 2017 15:28:09 +0200
+Author : Remo E
+Fix VS2013 build issueFix this build issue on VS2013:
+
+```
+\src\osg\State.cpp(99): fatal error C1017: invalid integer constant expression
+```
+
+I hope this works also on other platforms.
+
+Wed, 29 Mar 2017 11:38:29 +0100
+Author : Robert Osfield
+Fix for GL3
+
+Wed, 29 Mar 2017 11:04:03 +0100
+Author : Robert Osfield
+Removed the build of examples as this may be causing timeout build failures
+
+Wed, 29 Mar 2017 10:02:03 +0100
+Author : Robert Osfield
+Fixed windings
+
+Wed, 29 Mar 2017 09:27:58 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #236 from mp3butcher/ScriptBranchadd ScriptNodeCallback serializer
+
+Wed, 29 Mar 2017 09:24:12 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #235 from mp3butcher/PrimSetSerilizeradd BufferData associate  as well as revisionassociate in PrimitiveSe…
+
+Wed, 29 Mar 2017 09:12:14 +0100
+Author : Robert Osfield
+Added Texture2D include to resolve VS build issue
+
+Tue, 28 Mar 2017 22:37:34 +0200
+Author : mp3butcher
+add ScriptNodeCallback serializer
+
+Tue, 28 Mar 2017 22:19:32 +0200
+Author : mp3butcher
+remove spaces in the previsouly  added macro
+
+Tue, 28 Mar 2017 22:14:44 +0200
+Author : mp3butcher
+oups forgot an associaterevisions
+
+Tue, 28 Mar 2017 20:48:35 +0200
+Author : mp3butcher
+add BufferData associate  as well as revisionassociate in PrimitiveSet Seriliazer
+
+Tue, 28 Mar 2017 18:29:26 +0100
+Author : Robert Osfield
+Added handling of large shapes
+
+Tue, 28 Mar 2017 18:03:16 +0100
+Author : Robert Osfield
+build fix
+
+Tue, 28 Mar 2017 17:45:54 +0100
+Author : Robert Osfield
+Fixed build
+
+Tue, 28 Mar 2017 16:15:57 +0100
+Author : Robert Osfield
+Added StateSetManipulator to assist with QA.
+
+Tue, 28 Mar 2017 14:43:07 +0100
+Author : Robert Osfield
+Added TextBase::getMatrix() accessor
+
+Tue, 28 Mar 2017 14:40:06 +0100
+Author : Robert Osfield
+Fixed typo
+
+Tue, 28 Mar 2017 11:50:04 +0100
+Author : Robert Osfield
+Updated AUTHORS.txt file and Contributors list for 3.5.6 dev release
+
+Tue, 28 Mar 2017 11:45:55 +0100
+Author : Robert Osfield
+Quiten down debug messages
+
+Tue, 28 Mar 2017 11:45:05 +0100
+Author : Robert Osfield
+Improved the contributor filters
+
+Tue, 28 Mar 2017 10:37:35 +0100
+Author : Robert Osfield
+Updated ChangeLog
+
 Tue, 28 Mar 2017 10:33:02 +0100
 Author : Robert Osfield
 Updated date

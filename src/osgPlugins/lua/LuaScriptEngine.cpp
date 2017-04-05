@@ -3543,6 +3543,7 @@ bool LuaScriptEngine::getValue(int pos, osg::Matrixf& value) const
             value(r,c) = lua_tonumber(_lua, -16+(r*4+c));
         }
     }
+    lua_pop(_lua, 16);
     return true;
 }
 

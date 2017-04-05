@@ -22,7 +22,6 @@
 #include <float.h>
 
 #include <string>
-#include <vector>
 #include <set>
 #include <sstream>
 
@@ -438,6 +437,7 @@ void GLExtensions::Set(unsigned int in_contextID, GLExtensions* extensions)
 ///////////////////////////////////////////////////////////////////////////
 // Extension function pointers for OpenGL v2.x
 
+
 GLExtensions::GLExtensions(unsigned int in_contextID):
     contextID(in_contextID)
 {
@@ -632,6 +632,8 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     // EXT_gpu_shader4
     setGLExtensionFuncPtr(glGetUniformuiv,  "glGetUniformuiv", "glGetUniformuivEXT", validContext);
     setGLExtensionFuncPtr(glBindFragDataLocation,  "glBindFragDataLocation", "glBindFragDataLocationEXT", validContext);
+    setGLExtensionFuncPtr(glBindFragDataLocationIndexed,  "glBindFragDataLocationIndexed", "glBindFragDataLocationIndexedEXT", validContext);
+    setGLExtensionFuncPtr(glGetFragDataIndex,  "glGetFragDataIndex", "glGetFragDataIndexEXT", validContext);
     setGLExtensionFuncPtr(glGetFragDataLocation,  "glGetFragDataLocation", "glGetFragDataLocationEXT", validContext);
     setGLExtensionFuncPtr(glUniform1ui,  "glUniform1ui", "glUniform1uiEXT", validContext);
     setGLExtensionFuncPtr(glUniform2ui,  "glUniform2ui", "glUniform2uiEXT", validContext);
@@ -784,6 +786,8 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glIsQuery, "glIsQuery", "glIsQueryARB", validContext);
     setGLExtensionFuncPtr(glBeginQuery, "glBeginQuery", "glBeginQueryARB", validContext);
     setGLExtensionFuncPtr(glEndQuery, "glEndQuery", "glEndQueryARB", validContext);
+    setGLExtensionFuncPtr(glBeginQueryIndexed, "glBeginQueryIndexed", "glBeginQueryIndexedARB", validContext);
+    setGLExtensionFuncPtr(glEndQueryIndexed, "glEndQueryIndexed", "glEndQueryIndexedARB", validContext);
     setGLExtensionFuncPtr(glGetQueryiv, "glGetQueryiv", "glGetQueryivARB", validContext);
     setGLExtensionFuncPtr(glGetQueryObjectiv, "glGetQueryObjectiv","glGetQueryObjectivARB", validContext);
     setGLExtensionFuncPtr(glGetQueryObjectuiv, "glGetQueryObjectuiv","glGetQueryObjectuivARB", validContext);
@@ -920,7 +924,8 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glCompressedTexImage3D, "glCompressedTexImage3D","glCompressedTexImage3DARB", validContext);
     setGLExtensionFuncPtr(glCompressedTexSubImage3D, "glCompressedTexSubImage3D","glCompressedTexSubImage3DARB", validContext);
     setGLExtensionFuncPtr(glCopyTexSubImage3D, "glCopyTexSubImage3D","glCopyTexSubImage3DEXT", validContext);
-
+    setGLExtensionFuncPtr(glBeginConditionalRender, "glBeginConditionalRender", "glBeginConditionalRenderARB");
+    setGLExtensionFuncPtr(glEndConditionalRender, "glEndConditionalRender", "glEndConditionalRenderARB");
 
     // Texture2DArray extensions
     isTexture2DArraySupported = validContext && (OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_EXT_texture_array"));
@@ -1027,7 +1032,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
 
     // Multisample
-    isMultisampleSupported = validContext && (OSG_GLES2_FEATURES || OSG_GLES2_FEATURES || OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_ARB_multisample"));
+    isMultisampleSupported = validContext && (OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_ARB_multisample"));
     isMultisampleFilterHintSupported = validContext && isGLExtensionSupported(contextID, "GL_NV_multisample_filter_hint");
 
     setGLExtensionFuncPtr(glSampleCoverage, "glSampleCoverage", "glSampleCoverageARB", validContext);
@@ -1133,6 +1138,20 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
     // MultiDrawArrays
     setGLExtensionFuncPtr(glMultiDrawArrays, "glMultiDrawArrays", "glMultiDrawArraysEXT", validContext);
+    setGLExtensionFuncPtr(glMultiDrawElements, "glMultiDrawElements", "glMultiDrawElementsEXT");
+    setGLExtensionFuncPtr(glDrawArraysInstancedBaseInstance, "glDrawArraysInstancedBaseInstance", "glDrawArraysInstancedBaseInstanceEXT");
+    setGLExtensionFuncPtr(glDrawElementsInstancedBaseInstance, "glDrawElementsInstancedBaseInstance", "glDrawElementsInstancedBaseInstanceEXT");
+    setGLExtensionFuncPtr(glDrawElementsInstancedBaseVertexBaseInstance, "glDrawElementsInstancedBaseVertexBaseInstance", "glDrawElementsInstancedBaseVertexBaseInstanceEXT");
+
+    setGLExtensionFuncPtr(glDrawRangeElements, "glDrawRangeElements");
+    setGLExtensionFuncPtr(glDrawElementsBaseVertex, "glDrawElementsBaseVertex", "glDrawElementsBaseVertexEXT");
+    setGLExtensionFuncPtr(glDrawRangeElementsBaseVertex, "glDrawRangeElementsBaseVertex", "glDrawRangeElementsBaseVertexEXT");
+    setGLExtensionFuncPtr(glDrawElementsInstancedBaseVertex, "glDrawElementsInstancedBaseVertex", "glDrawElementsInstancedBaseVertexEXT");
+    setGLExtensionFuncPtr(glMultiDrawElementsBaseVertex, "glMultiDrawElementsBaseVertex", "glMultiDrawElementsBaseVertexEXT");
+    setGLExtensionFuncPtr(glProvokingVertex, "glProvokingVertex", "glProvokingVertexEXT");
+
+    setGLExtensionFuncPtr(glBeginConditionalRender, "glBeginConditionalRender", "glBeginConditionalRenderEXT");
+    setGLExtensionFuncPtr(glEndConditionalRender, "glEndConditionalRender", "glEndConditionalRenderEXT");
 
     // ViewportArray
     isViewportArraySupported = validContext && (isGLExtensionOrVersionSupported(contextID, "GL_ARB_viewport_array", 4.1f));
@@ -1193,8 +1212,8 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     }
 
     osg::setGLExtensionFuncPtr(glObjectLabel, "glObjectLabel", validContext);
-}
 
+}
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1300,3 +1319,4 @@ bool GLExtensions::getFragDataLocation( const char* fragDataName, GLuint& locati
     location = loc;
     return true;
 }
+

@@ -31,6 +31,51 @@
 
 #include "TextNode.h"
 
+class Text3DAttributeHandler : public osgGA::GUIEventHandler
+{
+public:
+    Text3DAttributeHandler(osgText::Text3D* aText3D)
+    :    m_Text3D(aText3D)
+    {
+    }
+
+    ~Text3DAttributeHandler()
+    {
+    }
+
+    virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    {
+        if (ea.getEventType() == osgGA::GUIEventAdapter::KEYUP)
+        {
+            if (ea.getKey() == osgGA::GUIEventAdapter::KEY_Up)
+            {
+                m_Text3D->setCharacterSize(m_Text3D->getCharacterHeight() + 0.1);        // failed
+                OSG_NOTICE<<"m_Text3D->getCharacterHeight()="<<m_Text3D->getCharacterHeight()<<std::endl;
+            }
+            else if (ea.getKey() == osgGA::GUIEventAdapter::KEY_Down)
+            {
+                m_Text3D->setCharacterDepth(m_Text3D->getCharacterDepth() + 0.1);        // ok
+                OSG_NOTICE<<"m_Text3D->getCharacterDepth()="<<m_Text3D->getCharacterDepth()<<std::endl;
+            }
+            else if (ea.getKey() == osgGA::GUIEventAdapter::KEY_Left)
+            {
+                m_Text3D->setText("setText\nworks!", osgText::String::ENCODING_UTF8);    // ok
+                OSG_NOTICE<<"m_Text3D->getText()="<<m_Text3D->getText().size()<<std::endl;
+            }
+            else if (ea.getKey() == osgGA::GUIEventAdapter::KEY_Right)
+            {
+                m_Text3D->setLineSpacing(m_Text3D->getLineSpacing() + 0.1);
+                OSG_NOTICE<<"m_Text3D->getLineSpacing()="<<m_Text3D->getLineSpacing()<<std::endl;
+            }
+        }
+
+        return false;
+    }
+
+private:
+    osgText::Text3D*        m_Text3D;
+};
+
 
 int main(int argc, char** argv)
 {
@@ -117,6 +162,10 @@ int main(int argc, char** argv)
     else if (!arguments.read("--no-3d"))
     {
         osgText::Text3D* text3D = new osgText::Text3D;
+
+        // Does not help
+        text3D->setDataVariance(osg::Object::DYNAMIC);
+
         text3D->setFont(font.get());
         text3D->setStyle(style.get());
         text3D->setCharacterSize(characterSize);
@@ -188,6 +237,8 @@ int main(int argc, char** argv)
         {
             geode->addDrawable( osg::createTexturedQuadGeometry(osg::Vec3(0.0f,characterSize*thickness,0.0f),osg::Vec3(characterSize,0.0,0.0),osg::Vec3(0.0f,0.0,characterSize), 0.0, 0.0, 1.0, 1.0) );
         }
+
+        viewer.addEventHandler(new Text3DAttributeHandler(text3D));
     }
 
 

@@ -858,12 +858,13 @@ osg::ref_ptr<osg::Image> InputStream::readImage(bool readFromExternal)
     }
     else
     {
-        image = readObjectFieldsOfType<osg::Image>("osg::Object", id, image.get());
+        image = readObjectFieldsOfType<osg::Image>("osg::Object", id, image.get());// leaves _identifierMap[id] pointing at DummyObject if image invalid
         if ( image.valid() )
         {
             image->setFileName( name );
             image->setWriteHint( (osg::Image::WriteHint)writeHint );
         }
+        _identifierMap[id] = image;//valid or invalid, don't leave this pointing at an osg::Dummyobject as it's used with a static_cast when recycled
     }
     return image;
 }

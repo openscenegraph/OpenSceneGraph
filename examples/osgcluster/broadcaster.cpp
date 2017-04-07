@@ -135,8 +135,8 @@ bool Broadcaster::init( void )
 
 #if !defined (WIN32) || defined(__CYGWIN__)
         struct ifreq ifr;
-#endif
         strcpy( ifr.ifr_name, _ifr_name.c_str());
+#endif
 #if defined (WIN32) // get the server address
         saddr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
     }

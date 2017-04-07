@@ -58,6 +58,18 @@ public:
         _stringToValue[str] = value;
     }
 
+    void add2(const char* str, const char* newStr, Value value) {
+        if (_valueToString.find(value) != _valueToString.end())
+        {
+            osg::notify(osg::INFO) << "Duplicate enum value " << value
+                << " with old string: " << _valueToString[value]
+                << " and new strings: " << str  << " and " << newStr << std::endl;
+        }
+        _valueToString[value] = newStr;
+        _stringToValue[newStr] = value;
+        _stringToValue[str] = value;
+    }
+
     Value getValue( const char* str )
     {
         StringToValue::iterator itr = _stringToValue.find(str);

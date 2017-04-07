@@ -589,6 +589,8 @@ int main(int argc, char** argv)
     
     // add model to viewer.
     viewer.setSceneData( CreateScene() );
+
+    viewer.realize();
     
     viewer.getCamera()->getGraphicsContext()->getState()->setUseModelViewAndProjectionUniforms(true);
 

@@ -493,6 +493,10 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
     // ** apply this new modelview matrix
     state.applyModelViewMatrix(modelview);
 
+    // if we are using osg::Program which requires OSG's generated uniforms to track
+    // modelview and projection matrices then apply them now.
+    if (state.getUseModelViewAndProjectionUniforms()) state.applyModelViewAndProjectionUniformsIfRequired();
+
     osg::GLBeginEndAdapter& gl = (state.getGLBeginEndAdapter());
 
     if (_drawMode & BOUNDINGBOX)
@@ -583,6 +587,10 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
 
     // restore the previous modelview matrix
     state.applyModelViewMatrix(previous);
+
+    // if we are using osg::Program which requires OSG's generated uniforms to track
+    // modelview and projection matrices then apply them now.
+    if (state.getUseModelViewAndProjectionUniforms()) state.applyModelViewAndProjectionUniformsIfRequired();
 }
 
 void Text3D::renderPerGlyph(osg::State & state) const
@@ -612,6 +620,10 @@ void Text3D::renderPerGlyph(osg::State & state) const
             osg::Matrix matrix(original_modelview);
             matrix.preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
             state.applyModelViewMatrix(matrix);
+
+            // if we are using osg::Program which requires OSG's generated uniforms to track
+            // modelview and projection matrices then apply them now.
+            if (state.getUseModelViewAndProjectionUniforms()) state.applyModelViewAndProjectionUniformsIfRequired();
 
             state.lazyDisablingOfVertexAttributes();
 
@@ -688,6 +700,10 @@ void Text3D::renderPerFace(osg::State & state) const
             matrix.preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
             state.applyModelViewMatrix(matrix);
 
+            // if we are using osg::Program which requires OSG's generated uniforms to track
+            // modelview and projection matrices then apply them now.
+            if (state.getUseModelViewAndProjectionUniforms()) state.applyModelViewAndProjectionUniformsIfRequired();
+
             state.setVertexPointer(it->_glyphGeometry->getVertexArray());
             state.setNormalPointer(it->_glyphGeometry->getNormalArray());
 
@@ -712,6 +728,10 @@ void Text3D::renderPerFace(osg::State & state) const
             osg::Matrix matrix(original_modelview);
             matrix.preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
             state.applyModelViewMatrix(matrix);
+
+            // if we are using osg::Program which requires OSG's generated uniforms to track
+            // modelview and projection matrices then apply them now.
+            if (state.getUseModelViewAndProjectionUniforms()) state.applyModelViewAndProjectionUniformsIfRequired();
 
             state.setVertexPointer(it->_glyphGeometry->getVertexArray());
             state.setNormalPointer(it->_glyphGeometry->getNormalArray());
@@ -745,6 +765,10 @@ void Text3D::renderPerFace(osg::State & state) const
             osg::Matrix matrix(original_modelview);
             matrix.preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
             state.applyModelViewMatrix(matrix);
+
+            // if we are using osg::Program which requires OSG's generated uniforms to track
+            // modelview and projection matrices then apply them now.
+            if (state.getUseModelViewAndProjectionUniforms()) state.applyModelViewAndProjectionUniformsIfRequired();
 
             state.setVertexPointer(it->_glyphGeometry->getVertexArray());
             state.setNormalPointer(it->_glyphGeometry->getNormalArray());

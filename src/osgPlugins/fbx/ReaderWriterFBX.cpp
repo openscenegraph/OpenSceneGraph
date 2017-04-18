@@ -409,13 +409,13 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
                     switch (eUp)
                     {
                     case FbxAxisSystem::eXAxis:
-                        mat.set(0,fSign,0,0,-fSign,0,0,0,0,0,HorizSign,0,0,0,0,1);
+                        mat.set(0,-fSign,0,0,fSign,0,0,0,0,0,HorizSign,0,0,0,0,1);
                         break;
                     case FbxAxisSystem::eYAxis:
-                        mat.set(1,0,0,0,0,fSign,0,0,0,0,fSign*HorizSign,0,0,0,0,1);
+                        mat.set(1,0,0,0,0,-fSign,0,0,0,0,-fSign*HorizSign,0,0,0,0,1);
                         break;
                     case FbxAxisSystem::eZAxis:
-                        mat.set(1,0,0,0,0,0,-fSign*HorizSign,0,0,fSign,0,0,0,0,0,1);
+                        mat.set(1,0,0,0,0,0,fSign*HorizSign,0,0,-fSign,0,0,0,0,0,1);
                         break;
                     } 
                     refCoordSysChange = true;

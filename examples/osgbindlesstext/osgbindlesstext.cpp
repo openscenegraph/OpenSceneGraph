@@ -611,8 +611,6 @@ int main(int argc, char** argv)
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
 
-	viewer.setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
-
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
     

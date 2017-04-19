@@ -416,6 +416,15 @@ GLenum Image::computePixelFormat(GLenum format)
         case(GL_DEPTH_COMPONENT32F_NV):
             return GL_DEPTH_COMPONENT;
 
+			//add by myself 2017 04 16
+		case (GL_R32F):
+		case (GL_R16F):
+			return GL_RED;
+
+		case (GL_RG32F):
+		case (GL_RG16F):
+			return GL_RG;
+
         default:
             return format;
     }
@@ -700,6 +709,7 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
         case(GL_INT):
         case(GL_UNSIGNED_INT):
         case(GL_FLOAT): return 32*computeNumComponents(format);
+		case(GL_DOUBLE): return 64*computeNumComponents(format);
 
 
         case(GL_UNSIGNED_BYTE_3_3_2):
@@ -1061,16 +1071,15 @@ void Image::readPixels(int x,int y,int width,int height,
 
 void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMapsIfAvailable, GLenum type, unsigned int face)
 {
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     // OSG_NOTICE<<"Image::readImageFromCurrentTexture()"<<std::endl;
 
     const osg::GLExtensions* extensions = osg::GLExtensions::Get(contextID,true);
 
-    GLboolean binding1D = GL_FALSE, binding2D = GL_FALSE, bindingRect = GL_FALSE, binding3D = GL_FALSE, binding2DArray = GL_FALSE, bindingCubeMap = GL_FALSE;
+    GLboolean binding1D = GL_FALSE, binding2D = GL_FALSE, binding3D = GL_FALSE, binding2DArray = GL_FALSE, bindingCubeMap = GL_FALSE;
 
     glGetBooleanv(GL_TEXTURE_BINDING_1D, &binding1D);
     glGetBooleanv(GL_TEXTURE_BINDING_2D, &binding2D);
-    glGetBooleanv(GL_TEXTURE_BINDING_RECTANGLE, &bindingRect);
     glGetBooleanv(GL_TEXTURE_BINDING_3D, &binding3D);
     glGetBooleanv(GL_TEXTURE_BINDING_CUBE_MAP, &bindingCubeMap);
 
@@ -1079,7 +1088,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         glGetBooleanv(GL_TEXTURE_BINDING_2D_ARRAY_EXT, &binding2DArray);
     }
 
-    GLenum textureMode = binding1D ? GL_TEXTURE_1D : binding2D ? GL_TEXTURE_2D : bindingRect ? GL_TEXTURE_RECTANGLE : binding3D ? GL_TEXTURE_3D : binding2DArray ? GL_TEXTURE_2D_ARRAY_EXT : 0;
+    GLenum textureMode = binding1D ? GL_TEXTURE_1D : binding2D ? GL_TEXTURE_2D : binding3D ? GL_TEXTURE_3D : binding2DArray ? GL_TEXTURE_2D_ARRAY_EXT : 0;
     if (bindingCubeMap)
     {
         switch (face)
@@ -1271,7 +1280,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         _t = height;
         _r = depth;
 
-        _pixelFormat = computePixelFormat(internalformat);
+        _pixelFormat = computePixelFormat(internalformat);//buggy here, when internalformat is like GL_R32F, GL_RGB32F etc 32F type, this hole will give internaltextformat to _pixelformat, while glGetTexImage do not support these 32F type:see https://www.khronos.org/opengl/wiki/GLAPI/glGetTexImage
         _dataType = type;
         _internalTextureFormat = internalformat;
         _mipmapData = mipMapData;

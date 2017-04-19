@@ -338,6 +338,7 @@ SET(TARGET_SRC
     PolygonMode.cpp
     PolygonOffset.cpp
     PolygonStipple.cpp
+    Polytope.cpp
     PositionAttitudeTransform.cpp
     PrimitiveSet.cpp
     PrimitiveRestartIndex.cpp

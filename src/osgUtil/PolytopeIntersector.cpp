@@ -15,6 +15,7 @@
 #include <osgUtil/PolytopeIntersector>
 
 #include <osg/Geometry>
+#include <osg/KdTree>
 #include <osg/Notify>
 #include <osg/io_utils>
 #include <osg/TemplatePrimitiveFunctor>
@@ -561,12 +562,105 @@ void PolytopeIntersector::leave()
     // do nothing.
 }
 
+struct IntersectFunctor
+{
+
+    IntersectFunctor(osgUtil::PolytopeIntersector* pi):
+        _polytopeIntersector(pi),
+        _numHits(0),
+        _numMisses(0)
+    {
+
+    }
+
+    struct Hit
+    {
+        Hit(int in_pi, unsigned int in_p0, unsigned int in_p1, unsigned int in_p2):
+            primitiveIndex(in_pi),
+            p0(in_p0),
+            p1(in_p1),
+            p2(in_p2) {}
+
+        Hit():
+            primitiveIndex(0),
+            p0(0),
+            p1(0),
+            p2(0) {}
+
+
+        int primitiveIndex;
+        unsigned int p0;
+        unsigned int p1;
+        unsigned int p2;
+    };
+
+    typedef std::vector<Hit> Hits;
+
+    bool intersect(const osg::BoundingBox& bb)
+    {
+        return _polytopeIntersector->getPolytope().contains(bb);
+    }
+
+    bool intersect(const osg::Vec3Array* vertices, int i, unsigned int p0, unsigned int p1, unsigned int p2)
+    {
+        if (_polytopeIntersector->getPolytope().contains((*vertices)[p0], (*vertices)[p1], (*vertices)[p2]))
+        {
+            ++_numHits;
+
+            _hits.push_back(Hit(i, p0, p1, p2));
+
+            return true;
+        }
+        else
+        {
+            ++_numMisses;
+            return false;
+        }
+    }
+
+
+    osgUtil::PolytopeIntersector* _polytopeIntersector;
+    Hits _hits;
+    unsigned int _numHits;
+    unsigned int _numMisses;
+};
+
 
 void PolytopeIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)
 {
     if (reachedLimit()) return;
 
     if ( !_polytope.contains( drawable->getBoundingBox() ) ) return;
+
+    osg::KdTree* kdTree = iv.getUseKdTreeWhenAvailable() ? dynamic_cast<osg::KdTree*>(drawable->getShape()) : 0;
+    if (kdTree)
+    {
+
+        IntersectFunctor intersector(this);
+        kdTree->intersect(intersector, kdTree->getNode(0));
+
+        for(IntersectFunctor::Hits::iterator itr = intersector._hits.begin();
+            itr != intersector._hits.end();
+            ++itr)
+        {
+            IntersectFunctor::Hit& hit = *itr;
+
+            Intersection intersection;
+            intersection.primitiveIndex = hit.primitiveIndex;
+            intersection.nodePath = iv.getNodePath();
+            intersection.drawable = drawable;
+            intersection.matrix = iv.getModelMatrix();
+
+            //OSG_NOTICE<<"Inserting intersection.primitiveIndex="<<intersection.primitiveIndex<<std::endl;
+
+            insertIntersection(intersection);
+        }
+
+        //OSG_NOTICE<<"NumHits "<<intersector._numHits<<std::endl;
+        //OSG_NOTICE<<"NumMisses "<<intersector._numMisses<<std::endl;
+        return;
+    }
+
 
     osg::TemplatePrimitiveFunctor<PolytopeIntersectorUtils::PolytopePrimitiveIntersector> func;
     func.setPolytope( _polytope, _referencePlane );

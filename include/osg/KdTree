@@ -158,6 +158,32 @@ class OSG_EXPORT KdTree : public osg::Shape
         TriangleList& getTriangles() { return _triangles; }
         const TriangleList& getTriangles() const { return _triangles; }
 
+        template<class IntersectFunctor>
+        void intersect(IntersectFunctor& functor, const KdNode& node) const
+        {
+            if (node.first<0)
+            {
+                // treat as a leaf
+                int istart = -node.first-1;
+                int iend = istart + node.second;
+
+                for(int i=istart; i<iend; ++i)
+                {
+                    const KdTree::Triangle& tri = _triangles[i];
+
+                    // OSG_NOTICE<<"   tri("<<tri.p1<<","<<tri.p2<<","<<tri.p3<<")"<<std::endl;
+
+                    functor.intersect(_vertices.get(), i, tri.p0, tri.p1, tri.p2);
+                }
+            }
+            else if (functor.intersect(node.bb))
+            {
+                if (node.first>0) intersect(functor, _kdNodes[node.first]);
+                if (node.second>0) intersect(functor, _kdNodes[node.second]);
+            }
+        }
+
+
 
     protected:
 

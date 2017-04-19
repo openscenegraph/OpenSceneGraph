@@ -44,6 +44,13 @@ class OSGUTIL_EXPORT PolytopeIntersector : public Intersector
           * In VIEW and MODEL coordinates (clip space cube) creates a five sided polytope box that has a front face at 0.0 and sides around box xMin, yMin, xMax, yMax.*/
         PolytopeIntersector(CoordinateFrame cf, double xMin, double yMin, double xMax, double yMax);
 
+        /** Get the Polytope used by the intersector.*/
+        osg::Polytope& getPolytope() { return _polytope;}
+
+        /** Get the const Polytope used by the intersector.*/
+        const osg::Polytope& getPolytope() const { return _polytope;}
+
+
         typedef osg::Plane::Vec3_type Vec3_type;
 
         struct Intersection

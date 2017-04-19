@@ -147,12 +147,12 @@ std::string fragShader =
 "#version 450 compatibility                                    \n"
 "#extension GL_ARB_bindless_texture : require                  \n"
 "#extension GL_NV_gpu_shader5 : require // uint64_t            \n"
-"#extension GL_ARB_gpu_shader5 : require // uint64_t			\n"
-"#extension GL_ARB_gpu_shader_int64: require // uint64_t		\n"
+"#extension GL_ARB_gpu_shader5 : require // uint64_t		\n"
+"#extension GL_ARB_gpu_shader_int64: require // uint64_t	\n"
 "uniform sampler2D TextureId;                                  \n"
 "in vec2 TexCoord;                                             \n"
 "flat in int textureIndex;                                     \n"
-"layout (binding = 0, std140) uniform TEXTURE_BLOCK            \n"//binding == 0 <==>osg::UniformBufferBinding._index
+"layout (binding = 0, std140) uniform TEXTURE_BLOCK            \n"
 "{                                                             \n"
 "    uint64_t      tex[XXX];                                   \n"
 "};                                                            \n"
@@ -221,7 +221,7 @@ class BindlessTexture: public osg::Texture2D
 public:
     typedef osg::ref_ptr<BindlessBuffer> BufferRef;
     typedef std::vector<osg::ref_ptr<osg::Image> > TextureList;
-	typedef std::vector<osg::Image* > PTextureList;//use pointer vector instead of smart pointer vector to release memory after applying 2017 04 09
+    typedef std::vector<osg::Image* > PTextureList;//use pointer vector instead of smart pointer vector to release memory after applying 2017 04 09
     typedef std::vector<GLuint64> HandleList;
     typedef osg::ref_ptr< osg::Texture::TextureObject> TextureObjectRef;
     typedef std::vector<TextureObjectRef> TextureObjectList;
@@ -574,7 +574,7 @@ osg::Group* CreateScene(){
     geom->setCullingActive(false);
     prim->setNumInstances(1000);
     prim->dirty();
-   // sceneRoot->addChild(geo);
+   // sceneRoot->addChild(geo);duplicatedly add child
     geo->addDrawable(geom.get());
         
     osg::StateSet* ss = geo->getOrCreateStateSet();
@@ -602,18 +602,6 @@ osg::Group* CreateScene(){
     return sceneRoot;
  }
 
-//test
-class MyPreDrawCallBackForTrace:public osg::Camera::DrawCallback
-{
-public:
-	MyPreDrawCallBackForTrace(){}
-
-	virtual void operator () (osg::RenderInfo& renderInfo) const
-	{
-		return;
-	}
-	 
-};
 
 int main(int argc, char** argv)
 {

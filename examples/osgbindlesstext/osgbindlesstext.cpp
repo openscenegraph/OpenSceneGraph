@@ -574,7 +574,7 @@ osg::Group* CreateScene(){
     geom->setCullingActive(false);
     prim->setNumInstances(1000);
     prim->dirty();
-    sceneRoot->addChild(geo);
+   // sceneRoot->addChild(geo);
     geo->addDrawable(geom.get());
         
     osg::StateSet* ss = geo->getOrCreateStateSet();

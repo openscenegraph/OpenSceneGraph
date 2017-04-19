@@ -20,6 +20,7 @@
 // example that provides the user with control over view position with basic picking.
 
 #include <osg/Timer>
+#include <osg/KdTree>
 #include <osg/io_utils>
 #include <osg/observer_ptr>
 
@@ -205,6 +206,7 @@ public:
         osg::Node* node = 0;
         osg::Group* parent = 0;
 
+
         if (_usePolytopeIntersector)
         {
             osgUtil::PolytopeIntersector* picker;
@@ -229,7 +231,11 @@ public:
             }
             osgUtil::IntersectionVisitor iv(picker);
 
+            osg::ElapsedTime elapsedTime;
+
             viewer->getCamera()->accept(iv);
+
+            OSG_NOTICE<<"PoltyopeIntersector traversal took "<<elapsedTime.elapsedTime_m()<<"ms"<<std::endl;
 
             if (picker->containsIntersections())
             {
@@ -269,7 +275,11 @@ public:
             }
             osgUtil::IntersectionVisitor iv(picker);
 
+            osg::ElapsedTime elapsedTime;
+
             viewer->getCamera()->accept(iv);
+
+            OSG_NOTICE<<"LineSegmentIntersector traversal took "<<elapsedTime.elapsedTime_m()<<"ms"<<std::endl;
 
             if (picker->containsIntersections())
             {
@@ -338,10 +348,14 @@ protected:
 
 int main( int argc, char **argv )
 {
-    osg::ref_ptr<osg::Node> loadedModel;
+    osg::ArgumentParser arguments(&argc, argv);
 
-    // load the scene.
-    if (argc>1) loadedModel = osgDB::readRefNodeFile(argv[1]);
+    bool useKdTree = false;
+    while (arguments.read("--kdtree")) { useKdTree = true; }
+
+
+    // load model
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
 
     // if not loaded assume no arguments passed in, try use default mode instead.
     if (!loadedModel) loadedModel = osgDB::readRefNodeFile("dumptruck.osgt");
@@ -351,6 +365,14 @@ int main( int argc, char **argv )
         std::cout << argv[0] <<": No data loaded." << std::endl;
         return 1;
     }
+
+    if (useKdTree)
+    {
+        OSG_NOTICE<<"Buildering KdTrees"<<std::endl;
+        osg::ref_ptr<osg::KdTreeBuilder> builder = new osg::KdTreeBuilder;
+        loadedModel->accept(*builder);
+    }
+
 
     // create the window to draw to.
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;

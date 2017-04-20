@@ -176,10 +176,12 @@ class OSG_EXPORT KdTree : public osg::Shape
                     functor.intersect(_vertices.get(), i, tri.p0, tri.p1, tri.p2);
                 }
             }
-            else if (functor.intersect(node.bb))
+            else if (functor.enter(node.bb))
             {
                 if (node.first>0) intersect(functor, _kdNodes[node.first]);
                 if (node.second>0) intersect(functor, _kdNodes[node.second]);
+
+                functor.leave();
             }
         }
 

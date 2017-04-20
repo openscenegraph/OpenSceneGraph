@@ -596,9 +596,22 @@ struct IntersectFunctor
 
     typedef std::vector<Hit> Hits;
 
-    bool intersect(const osg::BoundingBox& bb)
+    bool enter(const osg::BoundingBox& bb)
     {
-        return _polytopeIntersector->getPolytope().contains(bb);
+        if (_polytopeIntersector->getPolytope().contains(bb))
+        {
+            _polytopeIntersector->getPolytope().pushCurrentMask();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    void leave()
+    {
+        _polytopeIntersector->getPolytope().popCurrentMask();
     }
 
     bool intersect(const osg::Vec3Array* vertices, int i, unsigned int p0, unsigned int p1, unsigned int p2)

@@ -390,8 +390,8 @@ class OSG_EXPORT Polytope
                 if (_resultMask&selector_mask)
                 {
                     itr->transformProvidingInverse(matrix);
-                    selector_mask <<= 1;
                 }
+                selector_mask <<= 1;
             }
         }
 

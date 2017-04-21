@@ -396,6 +396,8 @@ int main( int argc, char **argv )
 {
     osg::ArgumentParser arguments(&argc, argv);
 
+    osgViewer::Viewer viewer(arguments);
+
     bool useKdTree = false;
     while (arguments.read("--kdtree")) { useKdTree = true; }
 
@@ -419,29 +421,7 @@ int main( int argc, char **argv )
         loadedModel->accept(*builder);
     }
 
-
-    // create the window to draw to.
-    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-    traits->x = 200;
-    traits->y = 200;
-    traits->width = 800;
-    traits->height = 600;
-    traits->windowDecoration = true;
-    traits->doubleBuffer = true;
-    traits->sharedContext = 0;
-
-    osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-    osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
-    if (!gw)
-    {
-        osg::notify(osg::NOTICE)<<"Error: unable to create graphics window."<<std::endl;
-        return 1;
-    }
-
-    // create the view of the scene.
-    osgViewer::Viewer viewer;
-    viewer.getCamera()->setGraphicsContext(gc.get());
-    viewer.getCamera()->setViewport(0,0,800,600);
+    // assign the scene graph to viewer
     viewer.setSceneData(loadedModel);
 
     // create a tracball manipulator to move the camera around in response to keyboard/mouse events

@@ -565,12 +565,16 @@ void PolytopeIntersector::leave()
 struct IntersectFunctor
 {
 
-    IntersectFunctor(osgUtil::PolytopeIntersector* pi, osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable):
-        _polytopeIntersector(pi),
-        _iv(iv),
-        _drawable(drawable)
-    {
+    typedef std::vector<osg::Vec3d> Vertices;
 
+    IntersectFunctor():
+        _polytopeIntersector(0),
+        _iv(0),
+        _drawable(0),
+        _primitiveIndex(0)
+    {
+        src.reserve(10);
+        dest.reserve(10);
     }
 
     bool enter(const osg::BoundingBox& bb)
@@ -591,25 +595,49 @@ struct IntersectFunctor
         _polytopeIntersector->getPolytope().popCurrentMask();
     }
 
-    typedef std::vector<osg::Vec3d> Vertices;
-    Vertices src, dest;
+    void addIntersection()
+    {
+        osg::Vec3d center(0.0,0.0,0.0);
+        double maxDistance = -DBL_MAX;
+        const osg::Plane& referencePlane = _polytopeIntersector->getReferencePlane();
+        for(Vertices::iterator itr = src.begin();
+            itr != src.end();
+            ++itr)
+        {
+            center += *itr;
+            double d = referencePlane.distance(*itr);
+            if (d>maxDistance) maxDistance = d;
 
-    bool contains(const osg::Vec3f& v0, const osg::Vec3f& v1, const osg::Vec3f& v2)
+        }
+
+        center /= double(src.size());
+
+        PolytopeIntersector::Intersection intersection;
+        intersection.primitiveIndex = _primitiveIndex;
+        intersection.distance = referencePlane.distance(center);
+        intersection.maxDistance = maxDistance;
+        intersection.nodePath = _iv->getNodePath();
+        intersection.drawable = _drawable;
+        intersection.matrix = _iv->getModelMatrix();
+        intersection.localIntersectionPoint = center;
+
+        if (src.size()<PolytopeIntersector::Intersection::MaxNumIntesectionPoints) intersection.numIntersectionPoints = src.size();
+        else intersection.numIntersectionPoints = PolytopeIntersector::Intersection::MaxNumIntesectionPoints;
+
+        for(unsigned int i=0; i<intersection.numIntersectionPoints; ++i)
+        {
+            intersection.intersectionPoints[i] = src[i];
+        }
+
+        // OSG_NOTICE<<"intersection "<<src.size()<<" center="<<center<<std::endl;
+
+        _polytopeIntersector->insertIntersection(intersection);
+    }
+
+    bool contains()
     {
         const osg::Polytope& polytope = _polytopeIntersector->getPolytope();
-
-
         const osg::Polytope::PlaneList& planeList = polytope.getPlaneList();
-
-        // initialize the set of vertices to test.
-        src.reserve(4+planeList.size());
-        dest.reserve(4+planeList.size());
-
-        src.clear();
-        src.push_back(v0);
-        src.push_back(v1);
-        src.push_back(v2);
-        src.push_back(v0);
 
         osg::Polytope::ClippingMask resultMask = polytope.getCurrentMask();
         if (!resultMask) return true;
@@ -683,45 +711,107 @@ struct IntersectFunctor
         return true;
     }
 
-    bool intersect(const osg::Vec3Array* vertices, int primtiveIndex, unsigned int p0, unsigned int p1, unsigned int p2)
+    bool contains(const osg::Vec3f& v0, const osg::Vec3f& v1, const osg::Vec3f& v2)
+    {
+        // initialize the set of vertices to test.
+        src.clear();
+        src.push_back(v0);
+        src.push_back(v1);
+        src.push_back(v2);
+        src.push_back(v0);
+
+        return contains();
+    }
+
+
+    void operator()(const osg::Vec3& v0, bool /*treatVertexDataAsTemporary*/)
+    {
+        ++_primitiveIndex;
+
+        // initialize the set of vertices to test.
+        src.clear();
+
+        const osg::Polytope& polytope = _polytopeIntersector->getPolytope();
+        osg::Polytope::ClippingMask resultMask = polytope.getCurrentMask();
+        if (resultMask)
+        {
+            osg::Polytope::ClippingMask selector_mask = 0x1;
+
+            const osg::Polytope::PlaneList& planeList = polytope.getPlaneList();
+            for(osg::Polytope::PlaneList::const_iterator pitr = planeList.begin();
+                pitr != planeList.end();
+                ++pitr)
+            {
+                if (resultMask&selector_mask)
+                {
+                    const osg::Plane& plane=*pitr;
+                    double d1=plane.distance(v0);
+                    if (d1<0.0f) return;   // point outside
+                }
+            }
+        }
+
+        src.push_back(v0);
+
+        addIntersection();
+    }
+
+    // handle lines
+    void operator()(const osg::Vec3& v0, const osg::Vec3& v1, bool /*treatVertexDataAsTemporary*/)
+    {
+        ++_primitiveIndex;
+
+        src.clear();
+        src.push_back(v0);
+        src.push_back(v1);
+        src.push_back(v0);
+        if (contains())
+        {
+            addIntersection();
+        }
+    }
+
+    // handle triangles
+    void operator()(const osg::Vec3& v0, const osg::Vec3& v1, const osg::Vec3& v2, bool /*treatVertexDataAsTemporary*/)
+    {
+        ++_primitiveIndex;
+
+        src.clear();
+        src.push_back(v0);
+        src.push_back(v1);
+        src.push_back(v2);
+        src.push_back(v0);
+
+        if (contains())
+        {
+            addIntersection();
+        }
+    }
+
+    void operator()(const osg::Vec3& v0, const osg::Vec3& v1, const osg::Vec3& v2, const osg::Vec3& v3, bool /*treatVertexDataAsTemporary*/)
+    {
+        ++_primitiveIndex;
+        src.clear();
+
+        src.push_back(v0);
+        src.push_back(v1);
+        src.push_back(v2);
+        src.push_back(v3);
+        src.push_back(v0);
+
+        if (contains())
+        {
+            addIntersection();
+        }
+    }
+
+    bool intersect(const osg::Vec3Array* vertices, int primitiveIndex, unsigned int p0, unsigned int p1, unsigned int p2)
     {
         if (contains((*vertices)[p0], (*vertices)[p1], (*vertices)[p2]))
         {
-            osg::Vec3d center(0.0,0.0,0.0);
-            double maxDistance = -DBL_MAX;
-            const osg::Plane& referencePlane = _polytopeIntersector->getReferencePlane();
-            for(Vertices::iterator itr = src.begin();
-                itr != src.end();
-                ++itr)
-            {
-                center += *itr;
-                double d = referencePlane.distance(*itr);
-                if (d>maxDistance) maxDistance = d;
+            _primitiveIndex = primitiveIndex;
 
-            }
-
-            center /= double(src.size());
-
-            PolytopeIntersector::Intersection intersection;
-            intersection.primitiveIndex = primtiveIndex;
-            intersection.distance = referencePlane.distance(center);
-            intersection.maxDistance = maxDistance;
-            intersection.nodePath = _iv.getNodePath();
-            intersection.drawable = _drawable;
-            intersection.matrix = _iv.getModelMatrix();
-            intersection.localIntersectionPoint = center;
-
-            if (src.size()<PolytopeIntersector::Intersection::MaxNumIntesectionPoints) intersection.numIntersectionPoints = src.size();
-            else intersection.numIntersectionPoints = PolytopeIntersector::Intersection::MaxNumIntesectionPoints;
-
-            for(unsigned int i=0; i<intersection.numIntersectionPoints; ++i)
-            {
-                intersection.intersectionPoints[i] = src[i];
-            }
-
-            // OSG_NOTICE<<"intersection "<<src.size()<<" center="<<center<<std::endl;
-
-            _polytopeIntersector->insertIntersection(intersection);
+            addIntersection();
 
             return true;
         }
@@ -731,9 +821,12 @@ struct IntersectFunctor
         }
     }
 
+
+    Vertices src, dest;
     osgUtil::PolytopeIntersector* _polytopeIntersector;
-    osgUtil::IntersectionVisitor& _iv;
+    osgUtil::IntersectionVisitor* _iv;
     osg::Drawable*                _drawable;
+    unsigned int                  _primitiveIndex;
 };
 
 
@@ -743,58 +836,63 @@ void PolytopeIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawa
 
     if ( !_polytope.contains( drawable->getBoundingBox() ) ) return;
 
+    osg::TemplatePrimitiveFunctor<IntersectFunctor> intersector;
+    intersector._polytopeIntersector = this;
+    intersector._iv = &iv;
+    intersector._drawable = drawable;
+
     osg::KdTree* kdTree = iv.getUseKdTreeWhenAvailable() ? dynamic_cast<osg::KdTree*>(drawable->getShape()) : 0;
     if (kdTree)
     {
-
-        IntersectFunctor intersector(this, iv, drawable);
         kdTree->intersect(intersector, kdTree->getNode(0));
-
-
-        //OSG_NOTICE<<"NumHits "<<intersector._numHits<<std::endl;
-        //OSG_NOTICE<<"NumMisses "<<intersector._numMisses<<std::endl;
-        return;
     }
-
-
-    osg::TemplatePrimitiveFunctor<PolytopeIntersectorUtils::PolytopePrimitiveIntersector> func;
-    func.setPolytope( _polytope, _referencePlane );
-    func.setDimensionMask( _dimensionMask );
-    func.setLimitOneIntersection( _intersectionLimit == LIMIT_ONE_PER_DRAWABLE || _intersectionLimit == LIMIT_ONE );
-
-    drawable->accept(func);
-
-    if (func.intersections.empty()) return;
-
-
-    for(PolytopeIntersectorUtils::Intersections::const_iterator it=func.intersections.begin();
-        it!=func.intersections.end();
-        ++it)
+    else
+#if 1
     {
-        const PolytopeIntersectorUtils::PolytopeIntersection& intersection = *it;
-
-        Intersection hit;
-        hit.distance = intersection._distance;
-        hit.maxDistance = intersection._maxDistance;
-        hit.primitiveIndex = intersection._index;
-        hit.nodePath = iv.getNodePath();
-        hit.drawable = drawable;
-        hit.matrix = iv.getModelMatrix();
-
-        PolytopeIntersectorUtils::Vec3_type center;
-        for (unsigned int i=0; i<intersection._numPoints; ++i)
-        {
-            center += intersection._points[i];
-        }
-        center /= PolytopeIntersectorUtils::value_type(intersection._numPoints);
-        hit.localIntersectionPoint = center;
-
-        hit.numIntersectionPoints = intersection._numPoints;
-        std::copy(&intersection._points[0], &intersection._points[intersection._numPoints],
-              &hit.intersectionPoints[0]);
-
-        insertIntersection(hit);
+        drawable->accept(intersector);
     }
+#else
+    {
+        osg::TemplatePrimitiveFunctor<PolytopeIntersectorUtils::PolytopePrimitiveIntersector> func;
+        func.setPolytope( _polytope, _referencePlane );
+        func.setDimensionMask( _dimensionMask );
+        func.setLimitOneIntersection( _intersectionLimit == LIMIT_ONE_PER_DRAWABLE || _intersectionLimit == LIMIT_ONE );
+
+        drawable->accept(func);
+
+        if (func.intersections.empty()) return;
+
+
+        for(PolytopeIntersectorUtils::Intersections::const_iterator it=func.intersections.begin();
+            it!=func.intersections.end();
+            ++it)
+        {
+            const PolytopeIntersectorUtils::PolytopeIntersection& intersection = *it;
+
+            Intersection hit;
+            hit.distance = intersection._distance;
+            hit.maxDistance = intersection._maxDistance;
+            hit.primitiveIndex = intersection._index;
+            hit.nodePath = iv.getNodePath();
+            hit.drawable = drawable;
+            hit.matrix = iv.getModelMatrix();
+
+            PolytopeIntersectorUtils::Vec3_type center;
+            for (unsigned int i=0; i<intersection._numPoints; ++i)
+            {
+                center += intersection._points[i];
+            }
+            center /= PolytopeIntersectorUtils::value_type(intersection._numPoints);
+            hit.localIntersectionPoint = center;
+
+            hit.numIntersectionPoints = intersection._numPoints;
+            std::copy(&intersection._points[0], &intersection._points[intersection._numPoints],
+                &hit.intersectionPoints[0]);
+
+            insertIntersection(hit);
+        }
+}
+#endif
 }
 
 

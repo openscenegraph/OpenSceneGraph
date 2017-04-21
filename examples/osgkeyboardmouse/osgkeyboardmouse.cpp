@@ -165,6 +165,10 @@ public:
                         osg::notify(osg::NOTICE)<<"Using projection coordiates for picking"<<std::endl;
                     }
                 }
+                else if (ea.getKey()=='a')
+                {
+                    fullWindowIntersectionTest(viewer);
+                }
                 else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Delete || ea.getKey()==osgGA::GUIEventAdapter::KEY_BackSpace)
                 {
                     osg::notify(osg::NOTICE)<<"Delete"<<std::endl;
@@ -194,6 +198,48 @@ public:
             default:
                 return false;
         }
+    }
+
+    void fullWindowIntersectionTest(osgViewer::Viewer* viewer)
+    {
+
+        osg::ref_ptr<osgUtil::IntersectorGroup> intersectors = new osgUtil::IntersectorGroup;
+
+        osg::Viewport* viewport = viewer->getCamera()->getViewport();
+        unsigned int numX = 100;
+        unsigned int numY = 100;
+        double dx = viewport->width()/double(numX-1);
+        double dy = viewport->width()/double(numX-1);
+
+
+        double y = viewport->x();
+        for(unsigned int r=0; r<numY; ++r)
+        {
+            double x = viewport->x();
+            for(unsigned int c=0; c<numX; ++c)
+            {
+                if (_usePolytopeIntersector)
+                {
+                    intersectors->getIntersectors().push_back( new osgUtil::PolytopeIntersector( osgUtil::Intersector::WINDOW, x-dx*0.5, y-dy*0.5, x+dx*0.5, y+dy*0.5 ) );
+                }
+                else
+                {
+                    intersectors->getIntersectors().push_back( new osgUtil::LineSegmentIntersector( osgUtil::Intersector::WINDOW, x, y ) );
+                }
+
+                x += dx;
+            }
+            y += dy;
+        }
+
+
+        osgUtil::IntersectionVisitor iv(intersectors.get());
+
+        osg::ElapsedTime elapsedTime;
+        viewer->getCamera()->accept(iv);
+
+        OSG_NOTICE<<"Intersection traversal took "<<elapsedTime.elapsedTime_m()<<"ms for "<<intersectors->getIntersectors().size()<<" intersectors"<<std::endl;
+
     }
 
     void pick(const osgGA::GUIEventAdapter& ea, osgViewer::Viewer* viewer)

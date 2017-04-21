@@ -614,6 +614,115 @@ struct IntersectFunctor
         _polytopeIntersector->getPolytope().popCurrentMask();
     }
 
+#if 1
+    typedef std::vector<osg::Vec3d> Vertices;
+    Vertices src, dest;
+
+    bool contains(const osg::Vec3f& v0, const osg::Vec3f& v1, const osg::Vec3f& v2)
+    {
+        const osg::Polytope& polytope = _polytopeIntersector->getPolytope();
+
+        osg::Polytope::ClippingMask resultMask = polytope.getCurrentMask();
+
+        if (!resultMask) return true;
+
+        const osg::Polytope::PlaneList& planeList = polytope.getPlaneList();
+
+        // initialize the set of vertices to test.
+        src.reserve(4+planeList.size());
+        dest.reserve(4+planeList.size());
+
+        src.clear();
+        src.push_back(v0);
+        src.push_back(v1);
+        src.push_back(v2);
+        src.push_back(v0);
+
+        osg::Polytope::ClippingMask selector_mask = 0x1;
+
+        for(osg::Polytope::PlaneList::const_iterator pitr = planeList.begin();
+            pitr != planeList.end();
+            ++pitr)
+        {
+            if (resultMask&selector_mask)
+            {
+                //OSG_NOTICE<<"Polytope::contains() Plane testing"<<std::endl;
+
+                dest.clear();
+
+                const osg::Plane& plane = *pitr;
+                Vertices::iterator vitr = src.begin();
+
+                osg::Vec3d* v_previous = &(*(vitr++));
+                double d_previous = plane.distance(*v_previous);
+
+                for(; vitr != src.end(); ++vitr)
+                {
+                    osg::Vec3d* v_current = &(*vitr);
+                    double d_current = plane.distance(*v_current);
+
+                    if (d_previous>=0.0)
+                    {
+                        dest.push_back(*v_previous);
+
+                    }
+
+                    if (d_previous*d_current<0.0)
+                    {
+                        // edge crosses plane so insert the vertex between them.
+                        double distance = d_previous-d_current;
+                        double r_current = d_previous/distance;
+                        osg::Vec3d v_new = (*v_previous)*(1.0-r_current) + (*v_current)*r_current;
+                        dest.push_back(v_new);
+                    }
+
+                    d_previous = d_current;
+                    v_previous = v_current;
+
+                }
+
+                if (d_previous>=0.0)
+                {
+                    dest.push_back(*v_previous);
+                }
+
+                if (dest.size()<=1)
+                {
+                    // OSG_NOTICE<<"Polytope::contains() All points on triangle culled, dest.size()="<<dest.size()<<std::endl;
+                    return false;
+                }
+
+                dest.swap(src);
+            }
+            else
+            {
+                // OSG_NOTICE<<"Polytope::contains() Plane disabled"<<std::endl;
+            }
+
+            selector_mask <<= 1;
+        }
+
+        //OSG_NOTICE<<"Polytope::contains() triangle within Polytope, src.size()="<<src.size()<<std::endl;
+        return true;
+    }
+
+    bool intersect(const osg::Vec3Array* vertices, int i, unsigned int p0, unsigned int p1, unsigned int p2)
+    {
+        if (contains((*vertices)[p0], (*vertices)[p1], (*vertices)[p2]))
+        {
+            ++_numHits;
+
+            _hits.push_back(Hit(i, p0, p1, p2));
+
+            return true;
+        }
+        else
+        {
+            ++_numMisses;
+            return false;
+        }
+    }
+#else
     bool intersect(const osg::Vec3Array* vertices, int i, unsigned int p0, unsigned int p1, unsigned int p2)
     {
         if (_polytopeIntersector->getPolytope().contains((*vertices)[p0], (*vertices)[p1], (*vertices)[p2]))
@@ -630,7 +739,7 @@ struct IntersectFunctor
             return false;
         }
     }
-
+#endif
 
     osgUtil::PolytopeIntersector* _polytopeIntersector;
     Hits _hits;

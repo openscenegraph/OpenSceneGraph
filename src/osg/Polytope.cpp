@@ -59,7 +59,6 @@ bool Polytope::contains(const osg::Vec3f& v0, const osg::Vec3f& v1, const osg::V
                 if (d_previous>=0.0)
                 {
                     dest.push_back(*v_previous);
-
                 }
 
                 if (d_previous*d_current<0.0)

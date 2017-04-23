@@ -710,16 +710,15 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     if (!_win) return;
 
     NSString* unmodified_chars = [theEvent charactersIgnoringModifiers];
-    if ([theEvent modifierFlags] && NSShiftKeyMask) {
+    if ([theEvent modifierFlags] & NSShiftKeyMask) {
         unmodified_chars = [unmodified_chars lowercaseString];
     }
 
     NSString* chars = [theEvent characters];
-
-    if ((chars) && ([chars length] > 0)) {
+    if (chars && ([chars length] > 0)) {
         unsigned int unmodified_keyCode = remapCocoaKey([unmodified_chars characterAtIndex:0], [theEvent modifierFlags] );
         unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], [theEvent modifierFlags] );
-        //std::cout << std::hex << "key dn: " <<[chars characterAtIndex:0] << "=" << keyCode << " unmodified: " << unmodified_keyCode <<  std::endl;
+        //std::cout << "key dn: " << std::hex << [chars characterAtIndex:0] << "=" << keyCode << " unmodified: " << unmodified_keyCode << std::endl;
         _win->getEventQueue()->keyPress( keyCode, _win->getEventQueue()->getTime(), unmodified_keyCode);
     }
 }
@@ -730,17 +729,15 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     if (!_win) return;
 
     NSString* unmodified_chars = [theEvent charactersIgnoringModifiers];
-    if ([theEvent modifierFlags] && NSShiftKeyMask) {
+    if ([theEvent modifierFlags] & NSShiftKeyMask) {
         unmodified_chars = [unmodified_chars lowercaseString];
     }
 
     NSString* chars = [theEvent characters];
-
-    if ((chars) && ([chars length] > 0)) {
+    if (chars && ([chars length] > 0)) {
         unsigned int unmodified_keyCode = remapCocoaKey([unmodified_chars characterAtIndex:0], [theEvent modifierFlags] );
         unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], [theEvent modifierFlags] );
-        //std::cout << std::hex << "key up: " <<[chars characterAtIndex:0] << "=" << keyCode << " unmodified: " << unmodified_keyCode <<  std::endl;
-
+        //std::cout << "key up: " << std::hex << [chars characterAtIndex:0] << "=" << keyCode << " unmodified: " << unmodified_keyCode << std::endl;
         _win->getEventQueue()->keyRelease( keyCode, _win->getEventQueue()->getTime(), unmodified_keyCode);
     }
 }
@@ -790,26 +787,18 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 - (osgGA::GUIEventAdapter::TouchPhase) convertTouchPhase: (NSTouchPhase) phase
 {
     switch(phase) {
-
         case NSTouchPhaseBegan:
             return osgGA::GUIEventAdapter::TOUCH_BEGAN;
-            break;
         case NSTouchPhaseMoved:
             return osgGA::GUIEventAdapter::TOUCH_MOVED;
-            break;
-
         case NSTouchPhaseStationary:
             return osgGA::GUIEventAdapter::TOUCH_STATIONERY;
-            break;
-
         case NSTouchPhaseEnded:
         case NSTouchPhaseCancelled:
             return osgGA::GUIEventAdapter::TOUCH_ENDED;
-            break;
     }
 
     return osgGA::GUIEventAdapter::TOUCH_ENDED;
-
 }
 
 
@@ -1107,7 +1096,6 @@ void GraphicsWindowCocoa::init()
 
 void GraphicsWindowCocoa::setupNSWindow(NSWindow* win)
 {
-
     [win setReleasedWhenClosed:NO];
     [win setDisplaysWhenScreenProfileChanges:YES];
     GraphicsWindowCocoaDelegate* delegate = [[GraphicsWindowCocoaDelegate alloc] initWith: this];
@@ -1116,7 +1104,6 @@ void GraphicsWindowCocoa::setupNSWindow(NSWindow* win)
 
     [win makeKeyAndOrderFront:nil];
     [win setAcceptsMouseMovedEvents: YES];
-
 }
 
 

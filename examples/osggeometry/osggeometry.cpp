@@ -510,8 +510,10 @@ osg::Node* createScene()
         geode->addDrawable(polyGeom);
     }
 
+    geode->getOrCreateStateSet()->setMode(GL_LIGHTING,
+                    osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED);
     return geode;
-}
+} //createScene()
 
 
 // define a node callback to animate a transform as a cycle along the y axis, between 0 and 2.0.
@@ -543,9 +545,10 @@ class MyTransformCallback : public osg::NodeCallback
 
         float               _angular_velocity;
 
-};
+}; //class MyTransformCallback
 
-
+/// Create a quad that sits behind the geometry from createScene()
+/// and shows the image from the OpenGL docs that geometry duplicates.
 osg::Node* createBackground()
 {
 
@@ -625,22 +628,22 @@ osg::Node* createBackground()
     polyGeom->setStateSet(stateset);
 
 
-    // create the Geode (Geometry Node) to contain all our osg::Geometry objects.
+    // create the Geode (Geometry Node) to contain the quad's osg::Geometry
     osg::Geode* geode = new osg::Geode();
 
     // add the points geometry to the geode.
     geode->addDrawable(polyGeom);
 
-    //return geode;
+    geode->getOrCreateStateSet()->setMode(GL_LIGHTING,
+                    osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED);
 
     // create a transform to move the background back and forward with.
-
     osg::MatrixTransform* transform = new osg::MatrixTransform();
     transform->setUpdateCallback(new MyTransformCallback(1.0f));
     transform->addChild(geode);
 
     return transform;
-}
+} //createBackground()
 
 int main(int, char **)
 {

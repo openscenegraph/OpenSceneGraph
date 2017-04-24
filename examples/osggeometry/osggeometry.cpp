@@ -80,6 +80,9 @@ void printTriangles(const std::string& name, osg::Drawable& drawable)
 }
 
 
+/// Create a scene with examples of the different types of OpenGL primitives.
+/// The primitives are the same as shown in the OpenGL diagram loaded in
+/// createBackground() (Images/primitives.gif).
 osg::Node* createScene()
 {
     // create the Geode (Geometry Node) to contain all our osg::Geometry objects.
@@ -124,7 +127,11 @@ osg::Node* createScene()
         pointsGeom->setColorArray(colors, osg::Array::BIND_OVERALL);
 
 
-        // set the normal in the same way color.
+        // Set the normal in the same way as the color.
+        // (0,-1,0) points toward the viewer, in the default coordinate
+        // setup.  Even for POINTS, the normal specified here
+        // is used to determine how the geometry appears under different
+        // lighting conditions.
         osg::Vec3Array* normals = new osg::Vec3Array;
         normals->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
         pointsGeom->setNormalArray(normals, osg::Array::BIND_OVERALL);
@@ -170,7 +177,9 @@ osg::Node* createScene()
         linesGeom->setColorArray(colors, osg::Array::BIND_OVERALL);
 
 
-        // set the normal in the same way color.
+        // Set the normal in the same way as the color.
+        // As above for POINTS, this normal is used for the lighting
+        // calculations of the LINES.
         osg::Vec3Array* normals = new osg::Vec3Array;
         normals->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
         linesGeom->setNormalArray(normals, osg::Array::BIND_OVERALL);
@@ -210,7 +219,7 @@ osg::Node* createScene()
         linesGeom->setColorArray(colors, osg::Array::BIND_OVERALL);
 
 
-        // set the normal in the same way color.
+        // Set the normal in the same way as the color (see note at POINTS, above).
         osg::Vec3Array* normals = new osg::Vec3Array;
         normals->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
         linesGeom->setNormalArray(normals, osg::Array::BIND_OVERALL);
@@ -255,7 +264,7 @@ osg::Node* createScene()
         linesGeom->setColorArray(colors, osg::Array::BIND_OVERALL);
 
 
-        // set the normal in the same way color.
+        // Set the normal in the same way as the color (see note at POINTS, above).
         osg::Vec3Array* normals = new osg::Vec3Array;
         normals->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
         linesGeom->setNormalArray(normals, osg::Array::BIND_OVERALL);
@@ -273,21 +282,19 @@ osg::Node* createScene()
 
 
 
-    // now we'll stop creating separate normal and color arrays
-    // since we are using the same values all the time, we'll just
-    // share the same ColorArray and NormalArrays..
+    // Now we'll stop creating separate normal and color arrays.
+    // Since we are using the same values all the time, we'll just
+    // share the same ColorArray and NormalArrays.
 
-    // set the colors as before, use a ref_ptr rather than just
+    // Set the colors as before, use a ref_ptr rather than just
     // standard C pointer, as that in the case of it not being
     // assigned it will still be cleaned up automatically.
     osg::ref_ptr<osg::Vec4Array> shared_colors = new osg::Vec4Array;
     shared_colors->push_back(osg::Vec4(1.0f,1.0f,0.0f,1.0f));
 
-    // same trick for shared normal.
+    // Same trick for shared normal.
     osg::ref_ptr<osg::Vec3Array> shared_normals = new osg::Vec3Array;
     shared_normals->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
-
-
 
     // Note on vertex ordering.
     // According to the OpenGL diagram vertices should be specified in a clockwise direction.
@@ -510,10 +517,17 @@ osg::Node* createScene()
         geode->addDrawable(polyGeom);
     }
 
+    // Turn off the lighting on the geode.  This is not required for setting up
+    // the geometry.  However, by default, lighting is on, and so the normals
+    // above are used to light the geometry.
+    // - With lighting turned off, the geometry has the same color
+    //   regardless of the angle you view it from.
+    // - With lighting turned on, the colors darken as the light moves
+    //   away from the normal.
     geode->getOrCreateStateSet()->setMode(GL_LIGHTING,
                     osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED);
     return geode;
-} //createScene()
+}
 
 
 // define a node callback to animate a transform as a cycle along the y axis, between 0 and 2.0.
@@ -545,7 +559,7 @@ class MyTransformCallback : public osg::NodeCallback
 
         float               _angular_velocity;
 
-}; //class MyTransformCallback
+};
 
 /// Create a quad that sits behind the geometry from createScene()
 /// and shows the image from the OpenGL docs that geometry duplicates.
@@ -579,7 +593,7 @@ osg::Node* createBackground()
     polyGeom->setColorArray(colors, osg::Array::BIND_OVERALL);
 
 
-    // set the normal in the same way color.
+    // Set the normal in the same way as the color.
     osg::Vec3Array* normals = new osg::Vec3Array;
     normals->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
     polyGeom->setNormalArray(normals, osg::Array::BIND_OVERALL);
@@ -598,7 +612,7 @@ osg::Node* createBackground()
     // and use it to set texture unit 0.
     polyGeom->setTexCoordArray(0,new osg::Vec2Array(numTexCoords,myTexCoords));
 
-    // well use indices and DrawElements to define the primitive this time.
+    // we'll use indices and DrawElements to define the primitive this time.
     unsigned short myIndices[] =
     {
         0,
@@ -627,13 +641,13 @@ osg::Node* createBackground()
 
     polyGeom->setStateSet(stateset);
 
-
     // create the Geode (Geometry Node) to contain the quad's osg::Geometry
     osg::Geode* geode = new osg::Geode();
 
     // add the points geometry to the geode.
     geode->addDrawable(polyGeom);
 
+    // Turn off the lighting (see note in createScene(), above).
     geode->getOrCreateStateSet()->setMode(GL_LIGHTING,
                     osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED);
 
@@ -643,7 +657,7 @@ osg::Node* createBackground()
     transform->addChild(geode);
 
     return transform;
-} //createBackground()
+}
 
 int main(int, char **)
 {
@@ -652,7 +666,7 @@ int main(int, char **)
     root->addChild( createScene() );
     root->addChild( createBackground() );
 
-    //osgDB::writeNodeFile(*root,"geoemtry.osgt");
+    //osgDB::writeNodeFile(*root,"geometry.osgt");
 
     osgViewer::Viewer viewer;
 

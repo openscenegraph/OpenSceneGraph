@@ -1036,7 +1036,7 @@ GLExtensions::GLExtensions(unsigned int contextID)
         glFramebufferRenderbuffer != 0 &&
         glGenerateMipmap != 0 &&
         glGetRenderbufferParameteriv != 0 &&
-    ( OSG_GLES1_FEATURES || isGLExtensionOrVersionSupported(contextID, "GL_EXT_framebuffer_object",3.0f) );
+    ( OSG_GLES2_FEATURES || OSG_GLES1_FEATURES || isGLExtensionOrVersionSupported(contextID, "GL_EXT_framebuffer_object",3.0f) );
       
 
     isPackedDepthStencilSupported = OSG_GL3_FEATURES ||

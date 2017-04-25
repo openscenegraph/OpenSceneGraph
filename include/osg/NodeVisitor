@@ -40,6 +40,8 @@ class OccluderNode;
 class OcclusionQueryNode;
 class PagedLOD;
 class PositionAttitudeTransform;
+class AutoTransform;
+class MultiViewAutoTransform;
 class Projection;
 class ProxyNode;
 class Sequence;
@@ -338,6 +340,7 @@ class OSG_EXPORT NodeVisitor : public virtual Object
         virtual void apply(CameraView& node);
         virtual void apply(MatrixTransform& node);
         virtual void apply(PositionAttitudeTransform& node);
+        virtual void apply(AutoTransform& node);
 
         virtual void apply(Switch& node);
         virtual void apply(Sequence& node);

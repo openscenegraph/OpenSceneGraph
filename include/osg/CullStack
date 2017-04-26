@@ -143,8 +143,14 @@ class OSG_EXPORT CullStack : public osg::CullSettings
         inline const CullingSet& getCurrentCullingSet() const { return *_back_modelviewCullingStack; }
 
         inline osg::Viewport* getViewport();
+        inline const osg::Viewport* getViewport() const;
+
         inline osg::RefMatrix* getModelViewMatrix();
+        inline const osg::RefMatrix* getModelViewMatrix() const;
+
         inline osg::RefMatrix* getProjectionMatrix();
+        inline const osg::RefMatrix* getProjectionMatrix() const;
+
         inline osg::Matrix getWindowMatrix() const;
         inline const osg::RefMatrix* getMVPW();
 
@@ -224,38 +230,32 @@ class OSG_EXPORT CullStack : public osg::CullSettings
 
 inline osg::Viewport* CullStack::getViewport()
 {
-    if (!_viewportStack.empty())
-    {
-        return _viewportStack.back().get();
-    }
-    else
-    {
-        return 0L;
-    }
+    return _viewportStack.empty() ? 0 : _viewportStack.back().get();
+}
+
+inline const osg::Viewport* CullStack::getViewport() const
+{
+    return _viewportStack.empty() ? 0 : _viewportStack.back().get();
 }
 
 inline osg::RefMatrix* CullStack::getModelViewMatrix()
 {
-    if (!_modelviewStack.empty())
-    {
-        return _modelviewStack.back().get();
-    }
-    else
-    {
-        return _identity.get();
-    }
+    return _modelviewStack.empty() ? _identity.get() : _modelviewStack.back().get();
+}
+
+inline const osg::RefMatrix* CullStack::getModelViewMatrix() const
+{
+    return _modelviewStack.empty() ? _identity.get() : _modelviewStack.back().get();
 }
 
 inline osg::RefMatrix* CullStack::getProjectionMatrix()
 {
-    if (!_projectionStack.empty())
-    {
-        return _projectionStack.back().get();
-    }
-    else
-    {
-        return _identity.get();
-    }
+    return _projectionStack.empty() ? _identity.get() : _projectionStack.back().get();
+}
+
+inline const osg::RefMatrix* CullStack::getProjectionMatrix() const
+{
+    return _projectionStack.empty() ? _identity.get() : _projectionStack.back().get();
 }
 
 inline osg::Matrix CullStack::getWindowMatrix() const

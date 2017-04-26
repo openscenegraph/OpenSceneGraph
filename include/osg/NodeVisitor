@@ -52,6 +52,7 @@ class Camera;
 class CameraView;
 class Drawable;
 class Geometry;
+class CullStack;
 
 
 
@@ -149,6 +150,13 @@ class OSG_EXPORT NodeVisitor : public virtual Object
           * Equivalent to dynamic_cast<const osgUtil::IntersectionVisitor*>(this).*/
         virtual const osgUtil::IntersectionVisitor* asIntersectionVisitor() const { return 0; }
 
+        /** Convert 'this' into a osg::CullStack pointer if Object is a osg::CullStack, otherwise return 0.
+          * Equivalent to dynamic_cast<osg::CullStack*>(this).*/
+        virtual osg::CullStack* asCullStack() { return 0; }
+
+        /** convert 'const this' into a const osg::CullStack pointer if Object is a osg::CullStack, otherwise return 0.
+          * Equivalent to dynamic_cast<const osg::CullStack*>(this).*/
+        virtual const osg::CullStack* asCullStack() const { return 0; }
 
 
 

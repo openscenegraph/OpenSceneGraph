@@ -140,7 +140,7 @@ osg::Matrixd AutoTransform::computeMatrix(const osg::NodeVisitor* nv) const
     Quat rotation = _rotation;
     osg::Vec3d scale = _scale;
 
-    const CullStack* cs = dynamic_cast<const CullStack*>(nv);
+    const CullStack* cs = nv ? nv->asCullStack() : 0;
     if (cs)
     {
         osg::Vec3d eyePoint = cs->getEyeLocal();

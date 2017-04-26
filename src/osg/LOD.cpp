@@ -51,7 +51,7 @@ void LOD::traverse(NodeVisitor& nv)
             }
             else
             {
-                osg::CullStack* cullStack = dynamic_cast<osg::CullStack*>(&nv);
+                osg::CullStack* cullStack = nv.asCullStack();
                 if (cullStack && cullStack->getLODScale())
                 {
                     required_range = cullStack->clampedPixelSize(getBound()) / cullStack->getLODScale();

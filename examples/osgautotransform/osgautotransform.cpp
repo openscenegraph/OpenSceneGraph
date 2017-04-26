@@ -199,6 +199,29 @@ osgViewer::View* createView(osg::ref_ptr<osg::Node> scenegraph, osg::ref_ptr<osg
 {
     OSG_NOTICE<<"createView(....,x="<<x<<", y="<<y<<", width="<<width<<", height="<<height<<")"<<std::endl;
 
+    if (!gc)
+    {
+        osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+        traits->x = x;
+        traits->y = y;
+        traits->width = width;
+        traits->height = height;
+        traits->windowDecoration = true;
+        traits->doubleBuffer = true;
+        traits->sharedContext = 0;
+
+        gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+        if (!gc)
+        {
+            osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
+            return 0;
+        }
+
+        x = 0;
+        y = 0;
+    }
+
+
     osgViewer::View* view = new osgViewer::View;
     view->getCamera()->setGraphicsContext(gc);
     view->getCamera()->setViewport(new osg::Viewport(x, y, width, height));
@@ -221,6 +244,9 @@ int main(int argc, char** argv)
 
     unsigned int numViews = 1;
     while (arguments.read("-n",numViews)) {}
+
+    bool windows = false;
+    while (arguments.read("-w")) { windows = true; }
 
     if (numViews<=1)
     {
@@ -246,21 +272,24 @@ int main(int argc, char** argv)
         unsigned int x=0, y=0;
         while(arguments.read("--window", x, y, width, height)) {}
 
-        osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-        traits->x = x;
-        traits->y = y;
-        traits->width = width;
-        traits->height = height;
-        traits->windowDecoration = true;
-        traits->doubleBuffer = true;
-        traits->sharedContext = 0;
-
-
-        osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-        if (!gc)
+        osg::ref_ptr<osg::GraphicsContext> gc;
+        if (!windows)
         {
-            osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
-            return 1;
+            osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+            traits->x = x;
+            traits->y = y;
+            traits->width = width;
+            traits->height = height;
+            traits->windowDecoration = true;
+            traits->doubleBuffer = true;
+            traits->sharedContext = 0;
+
+            gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+            if (!gc)
+            {
+                osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
+                return 1;
+            }
         }
 
         if (numViews==2)

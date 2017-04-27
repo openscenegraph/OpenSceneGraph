@@ -1,0 +1,441 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_TERMPLATEPRIMITIVEINDEXFUNCTOR
+#define OSG_TERMPLATEPRIMITIVEINDEXFUNCTOR 1
+
+#include <osg/PrimitiveSet>
+#include <osg/Notify>
+
+namespace osg {
+
+
+/** Provides access to the primitives that compose an \c osg::Drawable.
+    *  <p>Notice that \c TemplatePrimitiveIndexFunctor is a class template, and that it inherits
+    *  from its template parameter \c T. This template parameter must implement
+    *  <tt>operator()(const osg::Vec3 v1, const osg::Vec3 v2, const osg::Vec3
+    *  v3, bool treatVertexDataAsTemporary)</tt>,
+    *  <tt>operator()(const osg::Vec3 v1, const osg::Vec3 v2, bool
+    *  treatVertexDataAsTemporary)</tt>, <tt>operator()(const osg::Vec3 v1,
+    *  const osg::Vec3 v2, const osg::Vec3 v3, bool treatVertexDataAsTemporary)</tt>,
+    *  and <tt>operator()(const osg::Vec3 v1, const osg::Vec3 v2, const osg::Vec3 v3,
+    *  const osg::Vec3 v4, bool treatVertexDataAsTemporary)</tt> which will be called
+    *  for the matching primitive when the functor is applied to a \c Drawable.
+    *  Parameters \c v1, \c v2, \c v3, and \c v4 are the vertices of the primitive.
+    *  The last parameter, \c treatVertexDataAsTemporary, indicates whether these
+    *  vertices are coming from a "real" vertex array, or from a temporary vertex array,
+    *  created by the \c TemplatePrimitiveIndexFunctor from some other geometry representation.
+    *  @see \c PrimitiveFunctor for general usage hints.
+    */
+template<class T>
+class TemplatePrimitiveIndexFunctor : public PrimitiveIndexFunctor, public T
+{
+public:
+
+    TemplatePrimitiveIndexFunctor() {}
+
+    virtual ~TemplatePrimitiveIndexFunctor() {}
+
+    virtual void setVertexArray(unsigned int,const Vec2*) {}
+    virtual void setVertexArray(unsigned int ,const Vec3*) {}
+    virtual void setVertexArray(unsigned int,const Vec4*) {}
+    virtual void setVertexArray(unsigned int,const Vec2d*) {}
+    virtual void setVertexArray(unsigned int ,const Vec3d*) {}
+    virtual void setVertexArray(unsigned int,const Vec4d*) {}
+
+    virtual void drawArrays(GLenum mode,GLint first,GLsizei count)
+    {
+        switch(mode)
+        {
+            case(GL_TRIANGLES):
+            {
+                unsigned int pos=first;
+                for(GLsizei i=2;i<count;i+=3,pos+=3)
+                {
+                    this->operator()(pos,pos+1,pos+2);
+                }
+                break;
+            }
+            case(GL_TRIANGLE_STRIP):
+             {
+                unsigned int pos=first;
+                for(GLsizei i=2;i<count;++i,++pos)
+                {
+                    if ((i%2)) this->operator()(pos,pos+2,pos+1);
+                    else       this->operator()(pos,pos+1,pos+2);
+                }
+                break;
+            }
+            case(GL_QUADS):
+            {
+                unsigned int pos=first;
+                for(GLsizei i=3;i<count;i+=4,pos+=4)
+                {
+                    this->operator()(pos,pos+1,pos+2,pos+3);
+                }
+                break;
+            }
+            case(GL_QUAD_STRIP):
+            {
+                unsigned int pos=first;
+                for(GLsizei i=3;i<count;i+=2,pos+=2)
+                {
+                    this->operator()(pos,pos+1,pos+2,pos+3);
+                }
+                break;
+            }
+            case(GL_POLYGON): // treat polygons as GL_TRIANGLE_FAN
+            case(GL_TRIANGLE_FAN):
+            {
+                unsigned int pos=first+1;
+                for(GLsizei i=2;i<count;++i,++pos)
+                {
+                    this->operator()(first,pos,pos+1);
+                }
+                break;
+            }
+            case(GL_POINTS):
+            {
+                unsigned int pos=first;
+                for(GLsizei i=0;i<count;++i,++pos)
+                {
+                    this->operator()(pos);
+                }
+                break;
+            }
+            case(GL_LINES):
+            {
+                unsigned int pos=first;
+                for(GLsizei i=1;i<count;i+=2,pos+=2)
+                {
+                    this->operator()(pos,pos+1);
+                }
+                break;
+            }
+            case(GL_LINE_STRIP):
+            {
+                unsigned int pos=first;
+                for(GLsizei i=1;i<count;++i,++pos)
+                {
+                    this->operator()(pos,pos+1);
+                }
+                break;
+            }
+            case(GL_LINE_LOOP):
+            {
+                unsigned int pos=first;
+                for(GLsizei i=1;i<count;++i,++pos)
+                {
+                    this->operator()(pos,pos+1);
+                }
+                this->operator()(first+count-1,first);
+                break;
+            }
+            default:
+                // can't be converted into to triangles.
+                break;
+        }
+    }
+
+    virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices)
+    {
+        if (indices==0 || count==0) return;
+
+        typedef GLubyte Index;
+        typedef const Index* IndexPointer;
+
+        switch(mode)
+        {
+            case(GL_TRIANGLES):
+            {
+                IndexPointer ilast = &indices[count];
+                for(IndexPointer iptr=indices;iptr<ilast;iptr+=3)
+                    this->operator()(*iptr,*(iptr+1),*(iptr+2));
+                break;
+            }
+            case(GL_TRIANGLE_STRIP):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=2;i<count;++i,++iptr)
+                {
+                    if ((i%2)) this->operator()(*(iptr),*(iptr+2),*(iptr+1));
+                    else       this->operator()(*(iptr),*(iptr+1),*(iptr+2));
+                }
+                break;
+            }
+            case(GL_QUADS):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=3;i<count;i+=4,iptr+=4)
+                {
+                    this->operator()(*(iptr),*(iptr+1),*(iptr+2),*(iptr+3));
+                }
+                break;
+            }
+            case(GL_QUAD_STRIP):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=3;i<count;i+=2,iptr+=2)
+                {
+                    this->operator()(*(iptr),*(iptr+1),*(iptr+2),*(iptr+3));
+                }
+                break;
+            }
+            case(GL_POLYGON): // treat polygons as GL_TRIANGLE_FAN
+            case(GL_TRIANGLE_FAN):
+            {
+                IndexPointer iptr = indices;
+                Index first = *iptr;
+                ++iptr;
+                for(GLsizei i=2;i<count;++i,++iptr)
+                {
+                    this->operator()(first,*(iptr),*(iptr+1));
+                }
+                break;
+            }
+            case(GL_POINTS):
+            {
+                IndexPointer ilast = &indices[count];
+                for(IndexPointer iptr=indices;iptr<ilast;++iptr)
+                    this->operator()(*iptr);
+                break;
+            }
+            case(GL_LINES):
+            {
+                IndexPointer ilast = &indices[count];
+                for(IndexPointer iptr=indices;iptr<ilast;iptr+=2)
+                    this->operator()(*iptr,*(iptr+1));
+                break;
+            }
+            case(GL_LINE_STRIP):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=1;i<count;++i,++iptr)
+                {
+                    this->operator()(*(iptr),*(iptr+1));
+                }
+                break;
+            }
+            case(GL_LINE_LOOP):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=1;i<count;++i,++iptr)
+                {
+                    this->operator()(*(iptr),*(iptr+1));
+                }
+                this->operator()(*(iptr),*(indices));
+                break;
+            }
+            default:
+                // can't be converted into to triangles.
+                break;
+        }
+    }
+
+
+    virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices)
+    {
+        if (indices==0 || count==0) return;
+
+        typedef GLushort Index;
+        typedef const Index* IndexPointer;
+
+        switch(mode)
+        {
+            case(GL_TRIANGLES):
+            {
+                IndexPointer ilast = &indices[count];
+                for(IndexPointer iptr=indices;iptr<ilast;iptr+=3)
+                    this->operator()(*iptr,*(iptr+1),*(iptr+2));
+                break;
+            }
+            case(GL_TRIANGLE_STRIP):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=2;i<count;++i,++iptr)
+                {
+                    if ((i%2)) this->operator()(*(iptr),*(iptr+2),*(iptr+1));
+                    else       this->operator()(*(iptr),*(iptr+1),*(iptr+2));
+                }
+                break;
+            }
+            case(GL_QUADS):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=3;i<count;i+=4,iptr+=4)
+                {
+                    this->operator()(*(iptr),*(iptr+1),*(iptr+2),*(iptr+3));
+                }
+                break;
+            }
+            case(GL_QUAD_STRIP):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=3;i<count;i+=2,iptr+=2)
+                {
+                    this->operator()(*(iptr),*(iptr+1),*(iptr+2),*(iptr+3));
+                }
+                break;
+            }
+            case(GL_POLYGON): // treat polygons as GL_TRIANGLE_FAN
+            case(GL_TRIANGLE_FAN):
+            {
+                IndexPointer iptr = indices;
+                Index first = *iptr;
+                ++iptr;
+                for(GLsizei i=2;i<count;++i,++iptr)
+                {
+                    this->operator()(first,*(iptr),*(iptr+1));
+                }
+                break;
+            }
+            case(GL_POINTS):
+            {
+                IndexPointer ilast = &indices[count];
+                for(IndexPointer iptr=indices;iptr<ilast;++iptr)
+                    this->operator()(*iptr);
+                break;
+            }
+            case(GL_LINES):
+            {
+                IndexPointer ilast = &indices[count];
+                for(IndexPointer iptr=indices;iptr<ilast;iptr+=2)
+                    this->operator()(*iptr,*(iptr+1));
+                break;
+            }
+            case(GL_LINE_STRIP):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=1;i<count;++i,++iptr)
+                {
+                    this->operator()(*(iptr),*(iptr+1));
+                }
+                break;
+            }
+            case(GL_LINE_LOOP):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=1;i<count;++i,++iptr)
+                {
+                    this->operator()(*(iptr),*(iptr+1));
+                }
+                this->operator()(*(iptr),*(indices));
+                break;
+            }
+            default:
+                // can't be converted into to triangles.
+                break;
+        }
+    }
+
+    virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices)
+    {
+        if (indices==0 || count==0) return;
+
+        typedef GLuint Index;
+        typedef const Index* IndexPointer;
+
+        switch(mode)
+        {
+            case(GL_TRIANGLES):
+            {
+                IndexPointer ilast = &indices[count];
+                for(IndexPointer iptr=indices;iptr<ilast;iptr+=3)
+                    this->operator()(*iptr,*(iptr+1),*(iptr+2));
+                break;
+            }
+            case(GL_TRIANGLE_STRIP):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=2;i<count;++i,++iptr)
+                {
+                    if ((i%2)) this->operator()(*(iptr),*(iptr+2),*(iptr+1));
+                    else       this->operator()(*(iptr),*(iptr+1),*(iptr+2));
+                }
+                break;
+            }
+            case(GL_QUADS):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=3;i<count;i+=4,iptr+=4)
+                {
+                    this->operator()(*(iptr),*(iptr+1),*(iptr+2),*(iptr+3));
+                }
+                break;
+            }
+            case(GL_QUAD_STRIP):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=3;i<count;i+=2,iptr+=2)
+                {
+                    this->operator()(*(iptr),*(iptr+1),*(iptr+2),*(iptr+3));
+                }
+                break;
+            }
+            case(GL_POLYGON): // treat polygons as GL_TRIANGLE_FAN
+            case(GL_TRIANGLE_FAN):
+            {
+                IndexPointer iptr = indices;
+                Index first = *iptr;
+                ++iptr;
+                for(GLsizei i=2;i<count;++i,++iptr)
+                {
+                    this->operator()(first,*(iptr),*(iptr+1));
+                }
+                break;
+            }
+            case(GL_POINTS):
+            {
+                IndexPointer ilast = &indices[count];
+                for(IndexPointer iptr=indices;iptr<ilast;++iptr)
+                    this->operator()(*iptr);
+                break;
+            }
+            case(GL_LINES):
+            {
+                IndexPointer ilast = &indices[count];
+                for(IndexPointer iptr=indices;iptr<ilast;iptr+=2)
+                    this->operator()(*iptr,*(iptr+1));
+                break;
+            }
+            case(GL_LINE_STRIP):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=1;i<count;++i,++iptr)
+                {
+                    this->operator()(*(iptr),*(iptr+1));
+                }
+                break;
+            }
+            case(GL_LINE_LOOP):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=1;i<count;++i,++iptr)
+                {
+                    this->operator()(*(iptr),*(iptr+1));
+                }
+                this->operator()(*(iptr),*(indices));
+                break;
+            }
+            default:
+                // can't be converted into to triangles.
+                break;
+        }
+    }
+
+};
+
+
+}
+
+#endif

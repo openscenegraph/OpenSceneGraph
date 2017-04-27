@@ -46,14 +46,9 @@ namespace osg {
         {
             _vertexArraySize=0;
             _vertexArrayPtr=0;
-            _modeCache=0;
-            _treatVertexDataAsTemporary=false;
         }
 
         virtual ~TemplatePrimitiveFunctor() {}
-
-        void setTreatVertexDataAsTemporary(bool treatVertexDataAsTemporary) { _treatVertexDataAsTemporary=treatVertexDataAsTemporary; }
-        bool getTreatVertexDataAsTemporary() const { return _treatVertexDataAsTemporary; }
 
         virtual void setVertexArray(unsigned int,const Vec2*)
         {
@@ -96,15 +91,15 @@ namespace osg {
                 case(GL_TRIANGLES): {
                     const Vec3* vlast = &_vertexArrayPtr[first+count];
                     for(const Vec3* vptr=&_vertexArrayPtr[first];vptr<vlast;vptr+=3)
-                        this->operator()(*(vptr),*(vptr+1),*(vptr+2),_treatVertexDataAsTemporary);
+                        this->operator()(*(vptr),*(vptr+1),*(vptr+2),false);
                     break;
                 }
                 case(GL_TRIANGLE_STRIP): {
                     const Vec3* vptr = &_vertexArrayPtr[first];
                     for(GLsizei i=2;i<count;++i,++vptr)
                     {
-                        if ((i%2)) this->operator()(*(vptr),*(vptr+2),*(vptr+1),_treatVertexDataAsTemporary);
-                        else       this->operator()(*(vptr),*(vptr+1),*(vptr+2),_treatVertexDataAsTemporary);
+                        if ((i%2)) this->operator()(*(vptr),*(vptr+2),*(vptr+1),false);
+                        else       this->operator()(*(vptr),*(vptr+1),*(vptr+2),false);
                     }
                     break;
                 }
@@ -112,7 +107,7 @@ namespace osg {
                     const Vec3* vptr = &_vertexArrayPtr[first];
                     for(GLsizei i=3;i<count;i+=4,vptr+=4)
                     {
-                        this->operator()(*(vptr),*(vptr+1),*(vptr+2),*(vptr+3),_treatVertexDataAsTemporary);
+                        this->operator()(*(vptr),*(vptr+1),*(vptr+2),*(vptr+3),false);
                     }
                     break;
                 }
@@ -120,7 +115,7 @@ namespace osg {
                     const Vec3* vptr = &_vertexArrayPtr[first];
                     for(GLsizei i=3;i<count;i+=2,vptr+=2)
                     {
-                        this->operator()(*(vptr),*(vptr+1),*(vptr+3),*(vptr+2),_treatVertexDataAsTemporary);
+                        this->operator()(*(vptr),*(vptr+1),*(vptr+3),*(vptr+2),false);
                     }
                     break;
                 }
@@ -130,39 +125,39 @@ namespace osg {
                     const Vec3* vptr = vfirst+1;
                     for(GLsizei i=2;i<count;++i,++vptr)
                     {
-                        this->operator()(*(vfirst),*(vptr),*(vptr+1),_treatVertexDataAsTemporary);
+                        this->operator()(*(vfirst),*(vptr),*(vptr+1),false);
                     }
                     break;
                 }
                 case(GL_POINTS): {
                     const Vec3* vlast = &_vertexArrayPtr[first+count];
                     for(const Vec3* vptr=&_vertexArrayPtr[first];vptr<vlast;vptr+=1)
-                        this->operator()(*(vptr),_treatVertexDataAsTemporary);
+                        this->operator()(*(vptr),false);
                     break;
                 }
                 case(GL_LINES): {
                     const Vec3* vlast = &_vertexArrayPtr[first+count-1];
                     for(const Vec3* vptr=&_vertexArrayPtr[first];vptr<vlast;vptr+=2)
-                        this->operator()(*(vptr),*(vptr+1),_treatVertexDataAsTemporary);
+                        this->operator()(*(vptr),*(vptr+1),false);
                     break;
                 }
                 case(GL_LINE_STRIP): {
                     const Vec3* vlast = &_vertexArrayPtr[first+count-1];
                     for(const Vec3* vptr=&_vertexArrayPtr[first];vptr<vlast;vptr+=1)
-                        this->operator()(*(vptr),*(vptr+1),_treatVertexDataAsTemporary);
+                        this->operator()(*(vptr),*(vptr+1),false);
                     break;
                 }
                 case(GL_LINE_STRIP_ADJACENCY): {
                     const Vec3* vlast = &_vertexArrayPtr[first+count-2];
                     for(const Vec3* vptr=&_vertexArrayPtr[first+1];vptr<vlast;vptr+=1)
-                        this->operator()(*(vptr),*(vptr+1),_treatVertexDataAsTemporary);
+                        this->operator()(*(vptr),*(vptr+1),false);
                     break;
                 }
                 case(GL_LINE_LOOP): {
                     const Vec3* vlast = &_vertexArrayPtr[first+count-1];
                     for(const Vec3* vptr=&_vertexArrayPtr[first];vptr<vlast;vptr+=1)
-                        this->operator()(*(vptr),*(vptr+1),_treatVertexDataAsTemporary);
-                    this->operator()(*(vlast),_vertexArrayPtr[first],_treatVertexDataAsTemporary);
+                        this->operator()(*(vptr),*(vptr+1),false);
+                    this->operator()(*(vlast),_vertexArrayPtr[first],false);
                     break;
                 }
                 default:
@@ -182,7 +177,7 @@ namespace osg {
                 case(GL_TRIANGLES): {
                     IndexPointer ilast = &indices[count];
                     for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
-                        this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],false);
                     break;
                 }
                 case(GL_TRIANGLE_STRIP): {
@@ -190,9 +185,9 @@ namespace osg {
                     for(GLsizei i=2;i<count;++i,++iptr)
                     {
                         if ((i%2)) this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],
-                                                    _vertexArrayPtr[*(iptr+1)],_treatVertexDataAsTemporary);
+                                                    _vertexArrayPtr[*(iptr+1)],false);
                         else       this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],
-                                                    _vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                                                    _vertexArrayPtr[*(iptr+2)],false);
                     }
                     break;
                 }
@@ -202,7 +197,7 @@ namespace osg {
                     {
                         this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],
                                          _vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)],
-                                         _treatVertexDataAsTemporary);
+                                         false);
                     }
                     break;
                 }
@@ -212,7 +207,7 @@ namespace osg {
                     {
                         this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],
                                          _vertexArrayPtr[*(iptr+3)],_vertexArrayPtr[*(iptr+2)],
-                                         _treatVertexDataAsTemporary);
+                                         false);
                     }
                     break;
                 }
@@ -224,44 +219,44 @@ namespace osg {
                     for(GLsizei i=2;i<count;++i,++iptr)
                     {
                         this->operator()(vfirst,_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],
-                                         _treatVertexDataAsTemporary);
+                                         false);
                     }
                     break;
                 }
                 case(GL_POINTS): {
                     IndexPointer ilast = &indices[count];
                     for(IndexPointer  iptr=indices;iptr<ilast;iptr+=1)
-                        this->operator()(_vertexArrayPtr[*iptr],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr[*iptr],false);
                     break;
                 }
                 case(GL_LINES): {
                     IndexPointer ilast = &indices[count-1];
                     for(IndexPointer  iptr=indices;iptr<ilast;iptr+=2)
                         this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],
-                                         _treatVertexDataAsTemporary);
+                                         false);
                     break;
                 }
                 case(GL_LINE_STRIP): {
                     IndexPointer ilast = &indices[count-1];
                     for(IndexPointer  iptr=indices;iptr<ilast;iptr+=1)
                         this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],
-                                         _treatVertexDataAsTemporary);
+                                         false);
                     break;
                 }
                 case(GL_LINE_STRIP_ADJACENCY): {
                     IndexPointer ilast = &indices[count-2];
                     for(IndexPointer  iptr=&indices[1];iptr<ilast;iptr+=1)
                         this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],
-                                         _treatVertexDataAsTemporary);
+                                         false);
                     break;
                 }
                 case(GL_LINE_LOOP): {
                     IndexPointer ilast = &indices[count-1];
                     for(IndexPointer  iptr=indices;iptr<ilast;iptr+=1)
                         this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],
-                                         _treatVertexDataAsTemporary);
+                                         false);
                     this->operator()(_vertexArrayPtr[*(ilast)],_vertexArrayPtr[indices[0]],
-                                     _treatVertexDataAsTemporary);
+                                     false);
                     break;
                 }
                 default:
@@ -285,41 +280,10 @@ namespace osg {
             drawElementsTemplate(mode, count, indices);
         }
 
-        /** Note:
-         * begin(..),vertex(..) & end() are convenience methods for adapting
-         * non vertex array primitives to vertex array based primitives.
-         * This is done to simplify the implementation of primitive functor
-         * subclasses - users only need override drawArray and drawElements.
-         */
-        virtual void begin(GLenum mode)
-        {
-            _modeCache = mode;
-            _vertexCache.clear();
-        }
-
-        virtual void vertex(const Vec2& vert) { _vertexCache.push_back(osg::Vec3(vert[0],vert[1],0.0f)); }
-        virtual void vertex(const Vec3& vert) { _vertexCache.push_back(vert); }
-        virtual void vertex(const Vec4& vert) { _vertexCache.push_back(osg::Vec3(vert[0],vert[1],vert[2])/vert[3]); }
-        virtual void vertex(float x,float y) { _vertexCache.push_back(osg::Vec3(x,y,0.0f)); }
-        virtual void vertex(float x,float y,float z) { _vertexCache.push_back(osg::Vec3(x,y,z)); }
-        virtual void vertex(float x,float y,float z,float w) { _vertexCache.push_back(osg::Vec3(x,y,z)/w); }
-        virtual void end()
-        {
-            if (!_vertexCache.empty())
-            {
-                setVertexArray(_vertexCache.size(),&_vertexCache.front());
-                _treatVertexDataAsTemporary = true;
-                drawArrays(_modeCache,0,_vertexCache.size());
-            }
-        }
-
     protected:
-
 
         unsigned int        _vertexArraySize;
         const Vec3*         _vertexArrayPtr;
-
-        GLenum              _modeCache;
     };
 
 

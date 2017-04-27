@@ -97,38 +97,6 @@ public:
 
     /// Mimics the OpenGL \c glDrawElements() function.
     virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices) = 0;
-
-    /// Mimics the OpenGL \c glBegin() function.
-    virtual void begin(GLenum mode) = 0;
-
-    /// Mimics the OpenGL \c glVertex() "family of functions".
-    virtual void vertex(const Vec2& vert) = 0;
-
-    /// Mimics the OpenGL \c glVertex() "family of functions".
-    virtual void vertex(const Vec3& vert) = 0;
-
-    /// Mimics the OpenGL \c glVertex() "family of functions".
-    virtual void vertex(const Vec4& vert) = 0;
-
-    /// Mimics the OpenGL \c glVertex() "family of functions".
-    virtual void vertex(float x,float y) = 0;
-
-    /// Mimics the OpenGL \c glVertex() "family of functions".
-    virtual void vertex(float x,float y,float z) = 0;
-
-    /// Mimics the OpenGL \c glVertex() "family of functions".
-    virtual void vertex(float x,float y,float z,float w) = 0;
-
-    /// Mimics the OpenGL \c glEnd() function.
-    virtual void end() = 0;
-
-    void useVertexCacheAsVertexArray()
-    {
-        setVertexArray(_vertexCache.size(),&_vertexCache.front());
-    }
-
-    std::vector<Vec3>   _vertexCache;
-    bool                _treatVertexDataAsTemporary;
 };
 
 class PrimitiveIndexFunctor
@@ -149,18 +117,6 @@ public:
     virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices) = 0;
     virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices) = 0;
     virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices) = 0;
-
-    virtual void begin(GLenum mode) = 0;
-    virtual void vertex(unsigned int pos) = 0;
-    virtual void end() = 0;
-
-    void useVertexCacheAsVertexArray()
-    {
-        setVertexArray(_vertexCache.size(),&_vertexCache.front());
-    }
-
-    std::vector<Vec3>   _vertexCache;
-    bool                _treatVertexDataAsTemporary;
 };
 
 class DrawElements;

@@ -95,7 +95,7 @@ namespace LineSegmentIntersectorUtils
             _d /= _length;
         }
 
-        inline void operator () (const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec3& v3, bool treatVertexDataAsTemporary)
+        inline void operator () (const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec3& v3)
         {
             ++_index;
 
@@ -194,14 +194,7 @@ namespace LineSegmentIntersectorUtils
             value_type r = d/_length;
 
 
-            if (treatVertexDataAsTemporary)
-            {
-                _intersections->insert(std::pair<const float,TriangleIntersection>(r,TriangleIntersection(_index-1,normal,r1,0,r2,0,r3,0)));
-            }
-            else
-            {
-                _intersections->insert(std::pair<const float,TriangleIntersection>(r,TriangleIntersection(_index-1,normal,r1,&v1,r2,&v2,r3,&v3)));
-            }
+            _intersections->insert(std::pair<const float,TriangleIntersection>(r,TriangleIntersection(_index-1,normal,r1,&v1,r2,&v2,r3,&v3)));
             _hit = true;
 
         }

@@ -437,7 +437,7 @@ namespace PlaneIntersectorUtils
             }
         }
 
-        inline void operator () (const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec3& v3, bool)
+        inline void operator () (const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec3& v3)
         {
 
             if (_limitOneIntersection && _hit) return;

@@ -24,30 +24,12 @@ class TriangleIndexFunctor : public PrimitiveIndexFunctor, public T
 {
 public:
 
-
-    virtual void setVertexArray(unsigned int,const Vec2*)
-    {
-    }
-
-    virtual void setVertexArray(unsigned int ,const Vec3* )
-    {
-    }
-
-    virtual void setVertexArray(unsigned int,const Vec4* )
-    {
-    }
-
-    virtual void setVertexArray(unsigned int,const Vec2d*)
-    {
-    }
-
-    virtual void setVertexArray(unsigned int ,const Vec3d* )
-    {
-    }
-
-    virtual void setVertexArray(unsigned int,const Vec4d* )
-    {
-    }
+    virtual void setVertexArray(unsigned int,const Vec2*) {}
+    virtual void setVertexArray(unsigned int ,const Vec3*) {}
+    virtual void setVertexArray(unsigned int,const Vec4*) {}
+    virtual void setVertexArray(unsigned int,const Vec2d*) {}
+    virtual void setVertexArray(unsigned int ,const Vec3d*) {}
+    virtual void setVertexArray(unsigned int,const Vec4d*) {}
 
     virtual void drawArrays(GLenum mode,GLint first,GLsizei count)
     {

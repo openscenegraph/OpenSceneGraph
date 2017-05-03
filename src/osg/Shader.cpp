@@ -567,7 +567,7 @@ void Shader::PerContextShader::compileShader(osg::State& state)
     if( ! _needsCompile ) return;
     _needsCompile = false;
 
-#if defined(OSG_GLES2_AVAILABLE)
+#if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
     if (_shader->getShaderBinary())
     {
         GLint numFormats = 0;

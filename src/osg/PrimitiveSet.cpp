@@ -49,7 +49,7 @@ unsigned int PrimitiveSet::getNumPrimitives() const
 //
 void DrawArrays::draw(State& state, bool) const
 {
-#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
     GLenum mode = _mode;
     if (_mode==GL_QUADS)
     {
@@ -109,7 +109,7 @@ unsigned int DrawArrayLengths::getNumPrimitives() const
 void DrawArrayLengths::draw(State& state, bool) const
 {
     GLenum mode = _mode;
-    #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+    #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
         if (_mode==GL_QUADS)
         {
             GLint first = _first;
@@ -188,7 +188,7 @@ DrawElementsUByte::~DrawElementsUByte()
 void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const
 {
     GLenum mode = _mode;
-    #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+    #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
         if (mode==GL_POLYGON) mode = GL_TRIANGLE_FAN;
         if (mode==GL_QUAD_STRIP) mode = GL_TRIANGLE_STRIP;
     #endif
@@ -250,7 +250,7 @@ DrawElementsUShort::~DrawElementsUShort()
 void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
 {
     GLenum mode = _mode;
-    #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+    #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
         if (mode==GL_POLYGON) mode = GL_TRIANGLE_FAN;
         if (mode==GL_QUAD_STRIP) mode = GL_TRIANGLE_STRIP;
     #endif
@@ -311,7 +311,7 @@ DrawElementsUInt::~DrawElementsUInt()
 void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const
 {
     GLenum mode = _mode;
-    #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+    #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
         if (mode==GL_POLYGON) mode = GL_TRIANGLE_FAN;
         if (mode==GL_QUAD_STRIP) mode = GL_TRIANGLE_STRIP;
     #endif

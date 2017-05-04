@@ -7,7 +7,7 @@ SET(TARGET_SRC
     osgIPhoneViewer-Info.plist
 )
 
-SET(TARGET_ADDED_LIBRARIES osgdb_osg osgdb_imageio osgdb_avfoundation)
+SET(TARGET_ADDED_LIBRARIES osgdb_osg osgdb_rgb osgdb_imageio osgdb_avfoundation)
 
 SET(TARGET_ADDED_LIBRARIES ${TARGET_ADDED_LIBRARIES}
     osgdb_deprecated_osg osgdb_deprecated_osgparticle osgdb_deprecated_osganimation

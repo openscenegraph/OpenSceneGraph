@@ -123,7 +123,8 @@ public:
     PickHandler():
         _mx(0.0),_my(0.0),
         _usePolytopeIntersector(false),
-        _useWindowCoordinates(false) {}
+        _useWindowCoordinates(false),
+        _precisionHint(osgUtil::Intersector::USE_DOUBLE_CALCULATIONS) {}
 
     ~PickHandler() {}
 
@@ -218,14 +219,20 @@ public:
             double x = viewport->x();
             for(unsigned int c=0; c<numX; ++c)
             {
+                osg::ref_ptr<osgUtil::Intersector> intersector;
+
+
                 if (_usePolytopeIntersector)
                 {
-                    intersectors->getIntersectors().push_back( new osgUtil::PolytopeIntersector( osgUtil::Intersector::WINDOW, x-dx*0.5, y-dy*0.5, x+dx*0.5, y+dy*0.5 ) );
+                    intersector = new osgUtil::PolytopeIntersector( osgUtil::Intersector::WINDOW, x-dx*0.5, y-dy*0.5, x+dx*0.5, y+dy*0.5);
                 }
                 else
                 {
-                    intersectors->getIntersectors().push_back( new osgUtil::LineSegmentIntersector( osgUtil::Intersector::WINDOW, x, y ) );
+                    intersector = new osgUtil::LineSegmentIntersector( osgUtil::Intersector::WINDOW, x, y);
                 }
+
+                intersector->setPrecisionHint(_precisionHint);
+                intersectors->getIntersectors().push_back(intersector);
 
                 x += dx;
             }
@@ -275,6 +282,9 @@ public:
                 double h = 0.05;
                 picker = new osgUtil::PolytopeIntersector( osgUtil::Intersector::PROJECTION, mx-w, my-h, mx+w, my+h );
             }
+
+            picker->setPrecisionHint(_precisionHint);
+
             osgUtil::IntersectionVisitor iv(picker);
 
             osg::ElapsedTime elapsedTime;
@@ -319,6 +329,8 @@ public:
                 float my = viewport->y() + (int)((float)viewport->height()*(ea.getYnormalized()*0.5f+0.5f));
                 picker = new osgUtil::LineSegmentIntersector( osgUtil::Intersector::WINDOW, mx, my );
             }
+            picker->setPrecisionHint(_precisionHint);
+
             osgUtil::IntersectionVisitor iv(picker);
 
             osg::ElapsedTime elapsedTime;
@@ -385,11 +397,15 @@ public:
         }
     }
 
+    void setPrecisionHint(osgUtil::Intersector::PrecisionHint hint) { _precisionHint = hint; }
+
 protected:
 
     float _mx,_my;
     bool _usePolytopeIntersector;
     bool _useWindowCoordinates;
+    osgUtil::Intersector::PrecisionHint _precisionHint;
+
 };
 
 int main( int argc, char **argv )
@@ -401,6 +417,9 @@ int main( int argc, char **argv )
     bool useKdTree = false;
     while (arguments.read("--kdtree")) { useKdTree = true; }
 
+    osg::ref_ptr<PickHandler> pickhandler = new PickHandler;
+    while (arguments.read("--double")) { pickhandler->setPrecisionHint(osgUtil::Intersector::USE_DOUBLE_CALCULATIONS); }
+    while (arguments.read("--float")) { pickhandler->setPrecisionHint(osgUtil::Intersector::USE_FLOAT_CALCULATIONS); }
 
     // load model
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
@@ -431,7 +450,7 @@ int main( int argc, char **argv )
     viewer.addEventHandler(statesetManipulator.get());
 
     // add the pick handler
-    viewer.addEventHandler(new PickHandler());
+    viewer.addEventHandler(pickhandler.get());
 
     viewer.realize();
 

@@ -21,187 +21,393 @@
 #include <osg/KdTree>
 #include <osg/Timer>
 #include <osg/TexMat>
+#include <osg/TemplatePrimitiveFunctor>
 
 using namespace osgUtil;
 
 namespace LineSegmentIntersectorUtils
 {
-    struct TriangleIntersection
+
+struct Settings : public osg::Referenced
+{
+    Settings() :
+        _lineSegIntersector(0),
+        _iv(0),
+        _drawable(0),
+        _limitOneIntersection(false) {}
+
+    osgUtil::LineSegmentIntersector* _lineSegIntersector;
+    osgUtil::IntersectionVisitor*   _iv;
+    osg::Drawable*                  _drawable;
+    osg::ref_ptr<osg::Vec3Array>    _vertices;
+    bool                            _limitOneIntersection;
+};
+
+template<typename Vec3, typename value_type>
+struct IntersectFunctor
+{
+    osg::ref_ptr<Settings>  _settings;
+
+    unsigned int            _primitiveIndex;
+    Vec3                    _start;
+    Vec3                    _end;
+
+    typedef std::pair< Vec3, Vec3> StartEnd;
+    typedef std::vector< StartEnd > StartEndStack;
+
+    StartEndStack _startEndStack;
+
+    Vec3        _d;
+    value_type  _length;
+    value_type  _inverse_length;
+
+    Vec3        _d_invX;
+    Vec3        _d_invY;
+    Vec3        _d_invZ;
+
+    bool        _hit;
+
+    IntersectFunctor():
+        _primitiveIndex(0),
+        _hit(false)
     {
-        TriangleIntersection(unsigned int index, const osg::Vec3& normal, float r1, const osg::Vec3* v1, float r2, const osg::Vec3* v2, float r3, const osg::Vec3* v3):
-            _index(index),
-            _normal(normal),
-            _r1(r1),
-            _v1(v1),
-            _r2(r2),
-            _v2(v2),
-            _r3(r3),
-            _v3(v3) {}
-
-        unsigned int        _index;
-        const osg::Vec3     _normal;
-        float               _r1;
-        const osg::Vec3*    _v1;
-        float               _r2;
-        const osg::Vec3*    _v2;
-        float               _r3;
-        const osg::Vec3*    _v3;
-
-    protected:
-
-        TriangleIntersection& operator = (const TriangleIntersection&) { return *this; }
-    };
-
-    typedef std::multimap<float,TriangleIntersection> TriangleIntersections;
+    }
 
 
-    template<typename Vec3, typename value_type>
-    struct TriangleIntersector
+    void set(const osg::Vec3d& s, const osg::Vec3d& e, Settings* settings)
     {
-        Vec3   _s;
-        Vec3   _d;
-        value_type       _length;
+        _settings = settings;
 
-        int         _index;
-        value_type  _ratio;
-        bool        _hit;
-        bool        _limitOneIntersection;
-        TriangleIntersections* _intersections;
+        _start = s;
+        _end = e;
 
-        TriangleIntersector()
+        _startEndStack.push_back(StartEnd(_start,_end));
+
+        _d = e - s;
+        _length = _d.length();
+        _inverse_length = (_length!=0.0) ? 1.0/_length : 0.0;
+        _d *= _inverse_length;
+
+        _d_invX = _d.x()!=0.0 ? _d/_d.x() : Vec3(0.0,0.0,0.0);
+        _d_invY = _d.y()!=0.0 ? _d/_d.y() : Vec3(0.0,0.0,0.0);
+        _d_invZ = _d.z()!=0.0 ? _d/_d.z() : Vec3(0.0,0.0,0.0);
+    }
+
+    bool enter(const osg::BoundingBox& bb)
+    {
+        StartEnd startend = _startEndStack.back();
+        Vec3& s = startend.first;
+        Vec3& e = startend.second;
+
+        //return true;
+
+        //if (!bb.valid()) return true;
+
+        // compare s and e against the xMin to xMax range of bb.
+        if (s.x()<=e.x())
         {
-            _intersections = 0;
-            _length = 0.0f;
-            _index = 0;
-            _ratio = 0.0f;
-            _hit = false;
-            _limitOneIntersection = false;
+
+            // trivial reject of segment wholely outside.
+            if (e.x()<bb.xMin()) return false;
+            if (s.x()>bb.xMax()) return false;
+
+            if (s.x()<bb.xMin())
+            {
+                // clip s to xMin.
+                s = s+_d_invX*(bb.xMin()-s.x());
+            }
+
+            if (e.x()>bb.xMax())
+            {
+                // clip e to xMax.
+                e = s+_d_invX*(bb.xMax()-s.x());
+            }
+        }
+        else
+        {
+            if (s.x()<bb.xMin()) return false;
+            if (e.x()>bb.xMax()) return false;
+
+            if (e.x()<bb.xMin())
+            {
+                // clip s to xMin.
+                e = s+_d_invX*(bb.xMin()-s.x());
+            }
+
+            if (s.x()>bb.xMax())
+            {
+                // clip e to xMax.
+                s = s+_d_invX*(bb.xMax()-s.x());
+            }
         }
 
-        void set(TriangleIntersections* intersections)
+        // compate s and e against the yMin to yMax range of bb.
+        if (s.y()<=e.y())
         {
-            _intersections = intersections;
+
+            // trivial reject of segment wholely outside.
+            if (e.y()<bb.yMin()) return false;
+            if (s.y()>bb.yMax()) return false;
+
+            if (s.y()<bb.yMin())
+            {
+                // clip s to yMin.
+                s = s+_d_invY*(bb.yMin()-s.y());
+            }
+
+            if (e.y()>bb.yMax())
+            {
+                // clip e to yMax.
+                e = s+_d_invY*(bb.yMax()-s.y());
+            }
+        }
+        else
+        {
+            if (s.y()<bb.yMin()) return false;
+            if (e.y()>bb.yMax()) return false;
+
+            if (e.y()<bb.yMin())
+            {
+                // clip s to yMin.
+                e = s+_d_invY*(bb.yMin()-s.y());
+            }
+
+            if (s.y()>bb.yMax())
+            {
+                // clip e to yMax.
+                s = s+_d_invY*(bb.yMax()-s.y());
+            }
         }
 
-        void set(const osg::Vec3d& start, const osg::Vec3d& end, value_type ratio=FLT_MAX)
+        // compate s and e against the zMin to zMax range of bb.
+        if (s.z()<=e.z())
         {
-            _hit=false;
-            _index = 0;
-            _ratio = ratio;
 
-            _s = start;
-            _d = end - start;
-            _length = _d.length();
-            _d /= _length;
+            // trivial reject of segment wholely outside.
+            if (e.z()<bb.zMin()) return false;
+            if (s.z()>bb.zMax()) return false;
+
+            if (s.z()<bb.zMin())
+            {
+                // clip s to zMin.
+                s = s+_d_invZ*(bb.zMin()-s.z());
+            }
+
+            if (e.z()>bb.zMax())
+            {
+                // clip e to zMax.
+                e = s+_d_invZ*(bb.zMax()-s.z());
+            }
+        }
+        else
+        {
+            if (s.z()<bb.zMin()) return false;
+            if (e.z()>bb.zMax()) return false;
+
+            if (e.z()<bb.zMin())
+            {
+                // clip s to zMin.
+                e = s+_d_invZ*(bb.zMin()-s.z());
+            }
+
+            if (s.z()>bb.zMax())
+            {
+                // clip e to zMax.
+                s = s+_d_invZ*(bb.zMax()-s.z());
+            }
         }
 
-        inline void operator () (const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec3& v3)
+        // OSG_NOTICE<<"clampped segment "<<s<<" "<<e<<std::endl;
+        _startEndStack.push_back(startend);
+
+        return true;
+    }
+
+    void leave()
+    {
+        // OSG_NOTICE<<"leave() "<<_startEndStack.size()<<std::endl;
+        _startEndStack.pop_back();
+    }
+
+    void intersect(const osg::Vec3& v0, const osg::Vec3& v1, const osg::Vec3& v2)
+    {
+        if (_settings->_limitOneIntersection && _hit) return;
+
+        // OSG_NOTICE<<"   intersect(v0=("<<v0<<"), v1=("<<v1<<"), v2=("<<v2<<") )"<<std::endl;
+
+        // const StartEnd startend = _startEndStack.back();
+        // const osg::Vec3& ls = startend.first;
+        // const osg::Vec3& le = startend.second;
+
+        Vec3 T = _start - v0;
+        Vec3 E2 = v2 - v0;
+        Vec3 E1 = v1 - v0;
+
+        Vec3 P =  _d ^ E2;
+
+        value_type det = P * E1;
+
+        value_type r,r0,r1,r2;
+
+        const value_type esplison = 1e-10;
+        if (det>esplison)
         {
-            ++_index;
+            value_type u = (P*T);
+            if (u<0.0 || u>det) return;
 
-            if (_limitOneIntersection && _hit) return;
+            osg::Vec3 Q = T ^ E1;
+            value_type v = (Q*_d);
+            if (v<0.0 || v>det) return;
 
-            if (v1==v2 || v2==v3 || v1==v3) return;
+            if ((u+v)> det) return;
 
-            Vec3 v12 = v2-v1;
-            Vec3 n12 = v12^_d;
-            value_type ds12 = (_s-v1)*n12;
-            value_type d312 = (v3-v1)*n12;
-            if (d312>=0.0f)
-            {
-                if (ds12<0.0f) return;
-                if (ds12>d312) return;
-            }
-            else                     // d312 < 0
-            {
-                if (ds12>0.0f) return;
-                if (ds12<d312) return;
-            }
+            value_type inv_det = 1.0/det;
+            value_type t = (Q*E2)*inv_det;
+            if (t<0.0 || t>_length) return;
 
-            Vec3 v23 = v3-v2;
-            Vec3 n23 = v23^_d;
-            value_type ds23 = (_s-v2)*n23;
-            value_type d123 = (v1-v2)*n23;
-            if (d123>=0.0f)
-            {
-                if (ds23<0.0f) return;
-                if (ds23>d123) return;
-            }
-            else                     // d123 < 0
-            {
-                if (ds23>0.0f) return;
-                if (ds23<d123) return;
-            }
+            u *= inv_det;
+            v *= inv_det;
 
-            Vec3 v31 = v1-v3;
-            Vec3 n31 = v31^_d;
-            value_type ds31 = (_s-v3)*n31;
-            value_type d231 = (v2-v3)*n31;
-            if (d231>=0.0f)
-            {
-                if (ds31<0.0f) return;
-                if (ds31>d231) return;
-            }
-            else                     // d231 < 0
-            {
-                if (ds31>0.0f) return;
-                if (ds31<d231) return;
-            }
+            r0 = 1.0-u-v;
+            r1 = u;
+            r2 = v;
+            r = t * _inverse_length;
+        }
+        else if (det<-esplison)
+        {
+            value_type u = (P*T);
+            if (u>0.0 || u<det) return;
 
+            Vec3 Q = T ^ E1;
+            value_type v = (Q*_d);
+            if (v>0.0 || v<det) return;
 
-            value_type r3;
-            if (ds12==0.0f) r3=0.0f;
-            else if (d312!=0.0f) r3 = ds12/d312;
-            else return; // the triangle and the line must be parallel intersection.
+            if ((u+v) < det) return;
 
-            value_type r1;
-            if (ds23==0.0f) r1=0.0f;
-            else if (d123!=0.0f) r1 = ds23/d123;
-            else return; // the triangle and the line must be parallel intersection.
+            value_type inv_det = 1.0/det;
+            value_type t = (Q*E2)*inv_det;
+            if (t<0.0 || t>_length) return;
 
-            value_type r2;
-            if (ds31==0.0f) r2=0.0f;
-            else if (d231!=0.0f) r2 = ds31/d231;
-            else return; // the triangle and the line must be parallel intersection.
+            u *= inv_det;
+            v *= inv_det;
 
-            value_type total_r = (r1+r2+r3);
-            if (total_r!=1.0f)
-            {
-                if (total_r==0.0f) return; // the triangle and the line must be parallel intersection.
-                value_type inv_total_r = 1.0f/total_r;
-                r1 *= inv_total_r;
-                r2 *= inv_total_r;
-                r3 *= inv_total_r;
-            }
-
-            Vec3 in = v1*r1+v2*r2+v3*r3;
-            if (!in.valid())
-            {
-                OSG_WARN<<"Warning:: Picked up error in TriangleIntersect"<<std::endl;
-                OSG_WARN<<"   ("<<v1<<",\t"<<v2<<",\t"<<v3<<")"<<std::endl;
-                OSG_WARN<<"   ("<<r1<<",\t"<<r2<<",\t"<<r3<<")"<<std::endl;
-                return;
-            }
-
-            value_type d = (in-_s)*_d;
-
-            if (d<0.0f) return;
-            if (d>_length) return;
-
-            Vec3 normal = v12^v23;
-            normal.normalize();
-
-            value_type r = d/_length;
-
-
-            _intersections->insert(std::pair<const float,TriangleIntersection>(r,TriangleIntersection(_index-1,normal,r1,&v1,r2,&v2,r3,&v3)));
-            _hit = true;
-
+            r0 = 1.0-u-v;
+            r1 = u;
+            r2 = v;
+            r = t * _inverse_length;
+        }
+        else
+        {
+            return;
         }
 
-    };
+        Vec3 in = v0*r0 + v1*r1 + v2*r2;
+        Vec3 normal = E1^E2;
+        normal.normalize();
 
-}
+
+        LineSegmentIntersector::Intersection hit;
+        hit.ratio = r;
+        hit.matrix = _settings->_iv->getModelMatrix();
+        hit.nodePath = _settings->_iv->getNodePath();
+        hit.drawable = _settings->_drawable;
+        hit.primitiveIndex = _primitiveIndex;
+
+        hit.localIntersectionPoint = in;
+
+        //OSG_NOTICE<<" intersection         ("<<in<<")  ratio="<<hit.ratio<<", _start=("<<_start<<"), _end=("<<_end<<")"<<std::endl;
+        // osg::Vec3 computed_inttersection = _start*(1.0-r)+_end*r;
+        //OSG_NOTICE<<" computed_intersection("<<computed_inttersection<<")"<<std::endl;
+
+        hit.localIntersectionNormal = normal;
+
+        if (_settings->_vertices.valid())
+        {
+            const osg::Vec3* first = &(_settings->_vertices->front());
+            hit.indexList.reserve(3);
+            hit.ratioList.reserve(3);
+
+            if (r0!=0.0f)
+            {
+                hit.indexList.push_back(&v0-first);
+                hit.ratioList.push_back(r0);
+            }
+
+            if (r1!=0.0f)
+            {
+                hit.indexList.push_back(&v1-first);
+                hit.ratioList.push_back(r1);
+            }
+
+            if (r2!=0.0f)
+            {
+                hit.indexList.push_back(&v2-first);
+                hit.ratioList.push_back(r2);
+            }
+        }
+
+        _settings->_lineSegIntersector->insertIntersection(hit);
+        _hit = true;
+    }
+
+    // handle lines
+    void operator()(const osg::Vec3&, bool /*treatVertexDataAsTemporary*/)
+    {
+        ++_primitiveIndex;
+    }
+
+    void operator()(const osg::Vec3&, const osg::Vec3&, bool /*treatVertexDataAsTemporary*/)
+    {
+        ++_primitiveIndex;
+    }
+
+    // handle triangles
+    void operator()(const osg::Vec3& v0, const osg::Vec3& v1, const osg::Vec3& v2, bool /*treatVertexDataAsTemporary*/)
+    {
+        ++_primitiveIndex;
+        intersect(v0,v1,v2);
+    }
+
+    void operator()(const osg::Vec3& v0, const osg::Vec3& v1, const osg::Vec3& v2, const osg::Vec3& v3, bool /*treatVertexDataAsTemporary*/)
+    {
+        ++_primitiveIndex;
+        intersect(v0,v1,v3);
+        intersect(v1,v2,v3);
+    }
+
+    bool intersect(const osg::Vec3Array*, int , unsigned int)
+    {
+        return false;
+    }
+
+    bool intersect(const osg::Vec3Array*, int, unsigned int, unsigned int)
+    {
+        return false;
+    }
+
+    bool intersect(const osg::Vec3Array* vertices, int primitiveIndex, unsigned int p0, unsigned int p1, unsigned int p2)
+    {
+        if (_settings->_limitOneIntersection && _hit) return false;
+
+        _primitiveIndex = primitiveIndex;
+
+        intersect((*vertices)[p0], (*vertices)[p1], (*vertices)[p2]);
+        return false;
+    }
+
+    bool intersect(const osg::Vec3Array* vertices, int primitiveIndex, unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3)
+    {
+        if (_settings->_limitOneIntersection && _hit) return false;
+
+        _primitiveIndex = primitiveIndex;
+
+        intersect((*vertices)[p0], (*vertices)[p1], (*vertices)[p3]);
+        intersect((*vertices)[p1], (*vertices)[p2], (*vertices)[p3]);
+        return false;
+    }
+};
+
+} // namespace LineSegmentIntersectorUtils
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -315,157 +521,37 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
 void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable,
                                        const osg::Vec3d& s, const osg::Vec3d& e)
 {
-    osg::KdTree* kdTree = iv.getUseKdTreeWhenAvailable() ? dynamic_cast<osg::KdTree*>(drawable->getShape()) : 0;
-    if (kdTree)
+    if (reachedLimit()) return;
+
+    osg::ref_ptr<LineSegmentIntersectorUtils::Settings> settings = new LineSegmentIntersectorUtils::Settings;
+    settings->_lineSegIntersector = this;
+    settings->_iv = &iv;
+    settings->_drawable = drawable;
+    settings->_limitOneIntersection = (_intersectionLimit == LIMIT_ONE_PER_DRAWABLE || _intersectionLimit == LIMIT_ONE);
+
+    osg::Geometry* geometry = drawable->asGeometry();
+    if (geometry)
     {
-        osg::KdTree::LineSegmentIntersections intersections;
-        intersections.reserve(4);
-        if (kdTree->intersect(s,e,intersections))
-        {
-            // OSG_NOTICE<<"Got KdTree intersections"<<std::endl;
-            for(osg::KdTree::LineSegmentIntersections::iterator itr = intersections.begin();
-                itr != intersections.end();
-                ++itr)
-            {
-                osg::KdTree::LineSegmentIntersection& lsi = *(itr);
-
-                // get ratio in s,e range
-                double ratio = lsi.ratio;
-
-                // remap ratio into _start, _end range
-                double remap_ratio = ((s-_start).length() + ratio * (e-s).length() )/(_end-_start).length();
-
-
-                Intersection hit;
-                hit.ratio = remap_ratio;
-                hit.matrix = iv.getModelMatrix();
-                hit.nodePath = iv.getNodePath();
-                hit.drawable = drawable;
-                hit.primitiveIndex = lsi.primitiveIndex;
-
-                hit.localIntersectionPoint = _start*(1.0-remap_ratio) + _end*remap_ratio;
-
-                // OSG_NOTICE<<"KdTree: ratio="<<hit.ratio<<" ("<<hit.localIntersectionPoint<<")"<<std::endl;
-
-                hit.localIntersectionNormal = lsi.intersectionNormal;
-
-                hit.indexList.reserve(3);
-                hit.ratioList.reserve(3);
-                if (lsi.r0!=0.0f)
-                {
-                    hit.indexList.push_back(lsi.p0);
-                    hit.ratioList.push_back(lsi.r0);
-                }
-
-                if (lsi.r1!=0.0f)
-                {
-                    hit.indexList.push_back(lsi.p1);
-                    hit.ratioList.push_back(lsi.r1);
-                }
-
-                if (lsi.r2!=0.0f)
-                {
-                    hit.indexList.push_back(lsi.p2);
-                    hit.ratioList.push_back(lsi.r2);
-                }
-
-                insertIntersection(hit);
-            }
-        }
-
-        return;
+        settings->_vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
     }
 
-    LineSegmentIntersectorUtils::TriangleIntersections intersections;
+    osg::KdTree* kdTree = iv.getUseKdTreeWhenAvailable() ? dynamic_cast<osg::KdTree*>(drawable->getShape()) : 0;
 
     if (getPrecisionHint()==USE_DOUBLE_CALCULATIONS)
     {
-        OSG_INFO<<"Using double intersections"<<std::endl;
-        typedef LineSegmentIntersectorUtils::TriangleIntersector<osg::Vec3d, osg::Vec3d::value_type> TriangleIntersector;
-        osg::TriangleFunctor< TriangleIntersector > ti;
+        osg::TemplatePrimitiveFunctor<LineSegmentIntersectorUtils::IntersectFunctor<osg::Vec3d, double> > intersector;
+        intersector.set(s,e, settings.get());
 
-        ti.set(&intersections);
-        ti.set(s,e);
-        ti._limitOneIntersection = (_intersectionLimit == LIMIT_ONE_PER_DRAWABLE || _intersectionLimit == LIMIT_ONE);
-        drawable->accept(ti);
+        if (kdTree) kdTree->intersect(intersector, kdTree->getNode(0));
+        else drawable->accept(intersector);
     }
     else
     {
-        OSG_INFO<<"Using float intersections"<<std::endl;
-        typedef LineSegmentIntersectorUtils::TriangleIntersector<osg::Vec3f, osg::Vec3f::value_type> TriangleIntersector;
-        osg::TriangleFunctor< TriangleIntersector > ti;
+        osg::TemplatePrimitiveFunctor<LineSegmentIntersectorUtils::IntersectFunctor<osg::Vec3f, float> > intersector;
+        intersector.set(s,e, settings.get());
 
-        ti.set(&intersections);
-        ti.set(s,e);
-        ti._limitOneIntersection = (_intersectionLimit == LIMIT_ONE_PER_DRAWABLE || _intersectionLimit == LIMIT_ONE);
-        drawable->accept(ti);
-    }
-
-    if (!intersections.empty())
-    {
-        osg::Geometry* geometry = drawable->asGeometry();
-
-        for(LineSegmentIntersectorUtils::TriangleIntersections::iterator thitr = intersections.begin();
-            thitr != intersections.end();
-            ++thitr)
-        {
-
-            // get ratio in s,e range
-            double ratio = thitr->first;
-
-            // remap ratio into _start, _end range
-            double remap_ratio = ((s-_start).length() + ratio * (e-s).length() )/(_end-_start).length();
-
-            if ( _intersectionLimit == LIMIT_NEAREST && !getIntersections().empty() )
-            {
-                if (remap_ratio >= getIntersections().begin()->ratio )
-                    break;
-                else
-                    getIntersections().clear();
-            }
-
-            LineSegmentIntersectorUtils::TriangleIntersection& triHit = thitr->second;
-
-            Intersection hit;
-            hit.ratio = remap_ratio;
-            hit.matrix = iv.getModelMatrix();
-            hit.nodePath = iv.getNodePath();
-            hit.drawable = drawable;
-            hit.primitiveIndex = triHit._index;
-
-            hit.localIntersectionPoint = _start*(1.0-remap_ratio) + _end*remap_ratio;
-
-            // OSG_NOTICE<<"Conventional: ratio="<<hit.ratio<<" ("<<hit.localIntersectionPoint<<")"<<std::endl;
-
-            hit.localIntersectionNormal = triHit._normal;
-
-            if (geometry)
-            {
-                osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
-                if (vertices)
-                {
-                    osg::Vec3* first = &(vertices->front());
-                    if (triHit._v1)
-                    {
-                        hit.indexList.push_back(triHit._v1-first);
-                        hit.ratioList.push_back(triHit._r1);
-                    }
-                    if (triHit._v2)
-                    {
-                        hit.indexList.push_back(triHit._v2-first);
-                        hit.ratioList.push_back(triHit._r2);
-                    }
-                    if (triHit._v3)
-                    {
-                        hit.indexList.push_back(triHit._v3-first);
-                        hit.ratioList.push_back(triHit._r3);
-                    }
-                }
-            }
-
-            insertIntersection(hit);
-
-        }
+        if (kdTree) kdTree->intersect(intersector, kdTree->getNode(0));
+        else drawable->accept(intersector);
     }
 }
 

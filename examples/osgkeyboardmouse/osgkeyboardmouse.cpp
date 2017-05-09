@@ -408,6 +408,36 @@ protected:
 
 };
 
+class ConvertPrimitives : public osg::NodeVisitor
+{
+public:
+
+    osg::PrimitiveSet::Mode _mode;
+
+    ConvertPrimitives(osg::PrimitiveSet::Mode mode):
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _mode(mode) {}
+
+        void apply(osg::Geometry& geometry)
+        {
+            if (!geometry.getVertexArray()) return;
+
+            unsigned int numVertices = geometry.getVertexArray()->getNumElements();
+
+            if (_mode==osg::PrimitiveSet::POINTS)
+            {
+                // remove previous primitive sets.
+                geometry.removePrimitiveSet(0, geometry.getNumPrimitiveSets());
+                geometry.addPrimitiveSet(new osg::DrawArrays(_mode, 0,numVertices));
+            }
+            else if (_mode==osg::PrimitiveSet::LINES)
+            {
+                geometry.removePrimitiveSet(0, geometry.getNumPrimitiveSets());
+                geometry.addPrimitiveSet(new osg::DrawArrays(_mode, 0,numVertices));
+            }
+        }
+};
+
 int main( int argc, char **argv )
 {
     osg::ArgumentParser arguments(&argc, argv);
@@ -433,12 +463,16 @@ int main( int argc, char **argv )
         return 1;
     }
 
+    while(arguments.read("--points")) { ConvertPrimitives cp(osg::PrimitiveSet::POINTS); loadedModel->accept(cp); }
+    while(arguments.read("--lines")) { ConvertPrimitives cp(osg::PrimitiveSet::LINES); loadedModel->accept(cp); }
+
     if (useKdTree)
     {
         OSG_NOTICE<<"Buildering KdTrees"<<std::endl;
         osg::ref_ptr<osg::KdTreeBuilder> builder = new osg::KdTreeBuilder;
         loadedModel->accept(*builder);
     }
+
 
     // assign the scene graph to viewer
     viewer.setSceneData(loadedModel);

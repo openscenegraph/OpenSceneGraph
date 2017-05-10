@@ -373,6 +373,7 @@ void GlyphTexture::apply(osg::State& state) const
             glyphsWereSubloading.clear();
 
             glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, getFilter(osg::Texture::MIN_FILTER));
 
             #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
             glPixelStorei(GL_UNPACK_ROW_LENGTH,getTextureWidth());
@@ -517,6 +518,10 @@ void Glyph::subload() const
     #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glPixelStorei(GL_UNPACK_ROW_LENGTH,getRowLength());
     #endif
+    if (_texture)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _texture->getFilter(osg::Texture::MIN_FILTER));
+    else
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
     glTexSubImage2D(GL_TEXTURE_2D,0,
                     _texturePosX,_texturePosY,

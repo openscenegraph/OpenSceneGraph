@@ -233,8 +233,6 @@ struct IntersectFunctor
     {
         if (_settings->_limitOneIntersection && _hit) return;
 
-        // OSG_NOTICE<<"   intersect(v0=("<<v0<<"), v1=("<<v1<<"), v2=("<<v2<<") )"<<std::endl;
-
         // const StartEnd startend = _startEndStack.back();
         // const osg::Vec3& ls = startend.first;
         // const osg::Vec3& le = startend.second;
@@ -314,11 +312,6 @@ struct IntersectFunctor
         hit.primitiveIndex = _primitiveIndex;
 
         hit.localIntersectionPoint = in;
-
-        //OSG_NOTICE<<" intersection         ("<<in<<")  ratio="<<hit.ratio<<", _start=("<<_start<<"), _end=("<<_end<<")"<<std::endl;
-        // osg::Vec3 computed_inttersection = _start*(1.0-r)+_end*r;
-        //OSG_NOTICE<<" computed_intersection("<<computed_inttersection<<")"<<std::endl;
-
         hit.localIntersectionNormal = normal;
 
         if (_settings->_vertices.valid())
@@ -375,35 +368,31 @@ struct IntersectFunctor
         intersect(v1,v2,v3);
     }
 
-    bool intersect(const osg::Vec3Array*, int , unsigned int)
+    void intersect(const osg::Vec3Array*, int , unsigned int)
     {
-        return false;
     }
 
-    bool intersect(const osg::Vec3Array*, int, unsigned int, unsigned int)
+    void intersect(const osg::Vec3Array*, int, unsigned int, unsigned int)
     {
-        return false;
     }
 
-    bool intersect(const osg::Vec3Array* vertices, int primitiveIndex, unsigned int p0, unsigned int p1, unsigned int p2)
+    void intersect(const osg::Vec3Array* vertices, int primitiveIndex, unsigned int p0, unsigned int p1, unsigned int p2)
     {
-        if (_settings->_limitOneIntersection && _hit) return false;
+        if (_settings->_limitOneIntersection && _hit) return;
 
         _primitiveIndex = primitiveIndex;
 
         intersect((*vertices)[p0], (*vertices)[p1], (*vertices)[p2]);
-        return false;
     }
 
-    bool intersect(const osg::Vec3Array* vertices, int primitiveIndex, unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3)
+    void intersect(const osg::Vec3Array* vertices, int primitiveIndex, unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3)
     {
-        if (_settings->_limitOneIntersection && _hit) return false;
+        if (_settings->_limitOneIntersection && _hit) return;
 
         _primitiveIndex = primitiveIndex;
 
         intersect((*vertices)[p0], (*vertices)[p1], (*vertices)[p3]);
         intersect((*vertices)[p1], (*vertices)[p2], (*vertices)[p3]);
-        return false;
     }
 };
 

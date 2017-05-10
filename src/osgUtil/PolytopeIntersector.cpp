@@ -339,75 +339,51 @@ struct IntersectFunctor
         }
     }
 
-    bool intersect(const osg::Vec3Array* vertices, int primitiveIndex, unsigned int p0)
+    void intersect(const osg::Vec3Array* vertices, int primitiveIndex, unsigned int p0)
     {
-        if (_settings->_limitOneIntersection && _hit) return false;
+        if (_settings->_limitOneIntersection && _hit) return;
 
         if (contains((*vertices)[p0]))
         {
             _primitiveIndex = primitiveIndex;
 
             addIntersection();
-
-            return true;
-        }
-        else
-        {
-            return false;
         }
     }
 
-    bool intersect(const osg::Vec3Array* vertices, int primitiveIndex, unsigned int p0, unsigned int p1)
+    void intersect(const osg::Vec3Array* vertices, int primitiveIndex, unsigned int p0, unsigned int p1)
     {
-        if (_settings->_limitOneIntersection && _hit) return false;
+        if (_settings->_limitOneIntersection && _hit) return;
 
         if (contains((*vertices)[p0], (*vertices)[p1]))
         {
             _primitiveIndex = primitiveIndex;
 
             addIntersection();
-
-            return true;
-        }
-        else
-        {
-            return false;
         }
     }
 
-    bool intersect(const osg::Vec3Array* vertices, int primitiveIndex, unsigned int p0, unsigned int p1, unsigned int p2)
+    void intersect(const osg::Vec3Array* vertices, int primitiveIndex, unsigned int p0, unsigned int p1, unsigned int p2)
     {
-        if (_settings->_limitOneIntersection && _hit) return false;
+        if (_settings->_limitOneIntersection && _hit) return;
 
         if (contains((*vertices)[p0], (*vertices)[p1], (*vertices)[p2]))
         {
             _primitiveIndex = primitiveIndex;
 
             addIntersection();
-
-            return true;
-        }
-        else
-        {
-            return false;
         }
     }
 
-    bool intersect(const osg::Vec3Array* vertices, int primitiveIndex, unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3)
+    void intersect(const osg::Vec3Array* vertices, int primitiveIndex, unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3)
     {
-        if (_settings->_limitOneIntersection && _hit) return false;
+        if (_settings->_limitOneIntersection && _hit) return;
 
         if (contains((*vertices)[p0], (*vertices)[p1], (*vertices)[p2], (*vertices)[p3]))
         {
             _primitiveIndex = primitiveIndex;
 
             addIntersection();
-
-            return true;
-        }
-        else
-        {
-            return false;
         }
     }
 

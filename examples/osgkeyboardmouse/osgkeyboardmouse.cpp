@@ -468,7 +468,7 @@ int main( int argc, char **argv )
 
     if (useKdTree)
     {
-        OSG_NOTICE<<"Buildering KdTrees"<<std::endl;
+        OSG_NOTICE<<"Building KdTrees"<<std::endl;
         osg::ref_ptr<osg::KdTreeBuilder> builder = new osg::KdTreeBuilder;
         loadedModel->accept(*builder);
     }

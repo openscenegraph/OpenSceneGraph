@@ -158,9 +158,9 @@ class OSG_EXPORT KdTree : public osg::Shape
                     switch(numVertices)
                     {
                         case(1): functor.intersect(_vertices.get(), i, _vertexIndices[primitiveIndex]); break;
-                        case(2): functor.intersect(_vertices.get(), i, _vertexIndices[primitiveIndex], _vertexIndices[primitiveIndex]+1); break;
-                        case(3): functor.intersect(_vertices.get(), i, _vertexIndices[primitiveIndex], _vertexIndices[primitiveIndex]+1, _vertexIndices[primitiveIndex]+2); break;
-                        case(4): functor.intersect(_vertices.get(), i, _vertexIndices[primitiveIndex], _vertexIndices[primitiveIndex]+1, _vertexIndices[primitiveIndex]+2, _vertexIndices[primitiveIndex]+3); break;
+                        case(2): functor.intersect(_vertices.get(), i, _vertexIndices[primitiveIndex], _vertexIndices[primitiveIndex+1]); break;
+                        case(3): functor.intersect(_vertices.get(), i, _vertexIndices[primitiveIndex], _vertexIndices[primitiveIndex+1], _vertexIndices[primitiveIndex+2]); break;
+                        case(4): functor.intersect(_vertices.get(), i, _vertexIndices[primitiveIndex], _vertexIndices[primitiveIndex+1], _vertexIndices[primitiveIndex+2], _vertexIndices[primitiveIndex+3]); break;
                         default : OSG_NOTICE<<"Warning: KdTree::intersect() encounted unsupported primitive size of "<<numVertices<<std::endl; break;
                     }
                 }

@@ -64,7 +64,7 @@ struct PrimitiveIndicesCollector
 
     inline void operator () (unsigned int p0)
     {
-        OSG_NOTICE<<"    point ("<<p0<<")"<<std::endl;
+        //OSG_NOTICE<<"    point ("<<p0<<")"<<std::endl;
         const osg::Vec3& v0 = (*(_buildKdTree->_kdTree.getVertices()))[p0];
 
         _buildKdTree->_kdTree.addPoint(p0);
@@ -78,7 +78,7 @@ struct PrimitiveIndicesCollector
 
     inline void operator () (unsigned int p0, unsigned int p1)
     {
-        OSG_NOTICE<<"    line ("<<p0<<", "<<p1<<")"<<std::endl;
+        //OSG_NOTICE<<"    line ("<<p0<<", "<<p1<<")"<<std::endl;
         const osg::Vec3& v0 = (*(_buildKdTree->_kdTree.getVertices()))[p0];
         const osg::Vec3& v1 = (*(_buildKdTree->_kdTree.getVertices()))[p1];
 
@@ -127,7 +127,7 @@ struct PrimitiveIndicesCollector
 
     inline void operator () (unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3)
     {
-        OSG_NOTICE<<"    quad ("<<p0<<", "<<p1<<", "<<p2<<", "<<p3<<")"<<std::endl;
+        //OSG_NOTICE<<"    quad ("<<p0<<", "<<p1<<", "<<p2<<", "<<p3<<")"<<std::endl;
 
         const osg::Vec3& v0 = (*(_buildKdTree->_kdTree.getVertices()))[p0];
         const osg::Vec3& v1 = (*(_buildKdTree->_kdTree.getVertices()))[p1];
@@ -207,7 +207,6 @@ bool BuildKdTree::build(KdTree::BuildOptions& options, osg::Geometry* geometry)
     osg::BoundingBox bb = _bb;
     nodeNum = divide(options, bb, nodeNum, 0);
 
-    OSG_NOTICE<<"After KdTree setup"<<std::endl;
     osg::KdTree::Indices& primitiveIndices = _kdTree.getPrimitiveIndices();
 
     KdTree::Indices new_indices;
@@ -283,21 +282,18 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
             int istart = -node.first-1;
             int iend = istart+node.second-1;
 
-            OSG_NOTICE<<"Computing bb on KdNode, numPrimitives="<<node.second<<std::endl;
-
             // leaf is done, now compute bound on it.
             node.bb.init();
             for(int i=istart; i<=iend; ++i)
             {
                 unsigned int primitiveIndex = _kdTree.getPrimitiveIndices()[_primitiveIndices[i]];
                 unsigned int numPoints = _kdTree.getVertexIndices()[primitiveIndex++];
-                OSG_NOTICE<<"    Primitive "<<primitiveIndex<<", numPoints="<<numPoints<<std::endl;
+
                 for(; numPoints>0; --numPoints)
                 {
                     unsigned int vi = _kdTree.getVertexIndices()[primitiveIndex++];
                     const osg::Vec3& v = (*_kdTree.getVertices())[vi];
                     node.bb.expandBy(v);
-                    OSG_NOTICE<<"        vi="<<vi<<", v="<<v<<std::endl;
                 }
             }
 

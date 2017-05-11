@@ -67,6 +67,15 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
           * Equivalent to dynamic_cast<const osgUtil::CullVisitor*>(this).*/
         virtual const osgUtil::CullVisitor* asCullVisitor() const { return this; }
 
+        /** Convert 'this' into a osg::CullStack pointer if Object is a osg::CullStack, otherwise return 0.
+          * Equivalent to dynamic_cast<osg::CullStack*>(this).*/
+        virtual osg::CullStack* asCullStack() { return static_cast<osg::CullStack*>(this); }
+
+        /** convert 'const this' into a const osg::CullStack pointer if Object is a osg::CullStack, otherwise return 0.
+          * Equivalent to dynamic_cast<const osg::CullStack*>(this).*/
+        virtual const osg::CullStack* asCullStack() const { return static_cast<const osg::CullStack*>(this); }
+
+
         using osg::NodeVisitor::clone;
 
         /** Create a shallow copy of the CullVisitor, used by CullVisitor::create() to clone the prototype. */

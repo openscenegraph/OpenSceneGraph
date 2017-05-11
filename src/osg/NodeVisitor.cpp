@@ -25,6 +25,7 @@
 #include <osg/OcclusionQueryNode>
 #include <osg/PagedLOD>
 #include <osg/PositionAttitudeTransform>
+#include <osg/AutoTransform>
 #include <osg/Projection>
 #include <osg/ProxyNode>
 #include <osg/Sequence>
@@ -157,6 +158,11 @@ void NodeVisitor::apply(MatrixTransform& node)
 }
 
 void NodeVisitor::apply(PositionAttitudeTransform& node)
+{
+    apply(static_cast<Transform&>(node));
+}
+
+void NodeVisitor::apply(AutoTransform& node)
 {
     apply(static_cast<Transform&>(node));
 }

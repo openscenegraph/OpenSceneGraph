@@ -1,3 +1,251 @@
+Thu, 11 May 2017 16:27:20 +0100
+Author : Robert Osfield
+Build fix.
+
+Thu, 11 May 2017 16:10:47 +0100
+Author : Robert Osfield
+Updated SO_VERSION to reflect API changes to KdTree
+
+Wed, 10 May 2017 09:19:29 +0100
+Author : Robert Osfield
+Fixes/clean up of KdTree/LineSegmentIntersector/PolytopeIntersector
+
+Tue, 9 May 2017 11:33:22 +0100
+Author : Robert Osfield
+Added --points and --lines command line options that do a very simplistic conversion of geometry primitives to points or lines respectively, used to aid testing of intersectors
+
+Tue, 9 May 2017 10:36:28 +0100
+Author : Robert Osfield
+Added --double and --float command line options to enable toggling between double and float precision in intersectors
+
+Thu, 27 Apr 2017 19:12:16 +0100
+Author : Robert Osfield
+Added missing header
+
+Thu, 27 Apr 2017 19:04:54 +0100
+Author : Robert Osfield
+Introduced use of TempaltePrimitiveFunctor and TempaltePrimitiveIndexFunctor as a test of these template classes
+
+Thu, 27 Apr 2017 19:04:26 +0100
+Author : Robert Osfield
+Improved indentation, making it consistent with the rest of the OSG headers
+
+Thu, 27 Apr 2017 19:03:05 +0100
+Author : Robert Osfield
+Created TemplatePrimitiveIndexFunctor to enable easier handling of point, lines, triangles and quad index meshes
+
+Thu, 27 Apr 2017 16:18:27 +0100
+Author : Robert Osfield
+Removed redudent bool parameter from TriangleFunctor::operator(Vec3, Vec3, Vec3, bool) so it's now simply TriangleFunctor::operator(Vec3, Vec3, Vec3) as the bool was always false in recently OSG versions.
+
+Thu, 27 Apr 2017 15:04:44 +0100
+Author : Robert Osfield
+Removed old style OpenGL methods from PrimitiveFunctor classes/templates as these are no longer used or required.
+
+Fri, 21 Apr 2017 19:35:10 +0100
+Author : Robert Osfield
+Added support for using new IntersectFunctor for non kdtree as well as kdtree PolytopeIntersector
+
+Fri, 21 Apr 2017 19:34:22 +0100
+Author : Robert Osfield
+Added ability to pass in command line arguments to the osgkeyboardmouse viewer constructor
+
+Fri, 21 Apr 2017 16:35:55 +0100
+Author : Robert Osfield
+Implemented the setting of all the PolytopeIntersector::Intersection values on hits detected by KdTree/Polytope intersection codes
+
+Fri, 21 Apr 2017 11:09:26 +0100
+Author : Robert Osfield
+Moved the Polytope::contains(..) triangle test into PolytopeIntersector to enable customization and optimization.
+
+Fri, 21 Apr 2017 11:07:17 +0100
+Author : Robert Osfield
+Added group intersection test that covers the window with 10000 tests, activated by pressing 'a'.  I have added this to provide a reproducable intersection test for benchmarking.
+
+Fri, 21 Apr 2017 10:32:26 +0100
+Author : Robert Osfield
+Added support for outputting the model, filename defaults to model.osgt, to override this use -o filename on command line, and to write the file press 'o' key.
+
+Thu, 20 Apr 2017 19:21:21 +0100
+Author : Robert Osfield
+Implemented Polytope::contains(..) for triangle vertices and added support for using the results mask.
+
+Wed, 19 Apr 2017 18:18:46 +0100
+Author : Robert Osfield
+Initial work on adding KdTree support for PolytopeIntersector.
+
+Wed, 19 Apr 2017 10:20:01 +0100
+Author : Robert Osfield
+Added --kdtree command line option and associated invocation of KdTreeBuilder to enable benchmarking. Added timing stats code.
+
+Thu, 11 May 2017 14:35:50 +0100
+Author : Robert Osfield
+Merge branch 'MultiViewAutoTransform'
+
+Wed, 10 May 2017 11:18:09 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #252 from remoe/patch-2Avoid call of SetupThreads in DatabasePager Constructor 
+
+Wed, 10 May 2017 11:13:11 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #254 from tomhog/topic-gles3-iosTopic gles3 ios
+
+Wed, 10 May 2017 10:54:55 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #250 from cxw42/example-osggeometryAdded comments to make code easier to understand. Turned off lighting in examples/osggeometry
+
+Mon, 24 Apr 2017 15:55:40 -0400
+Author : Chris White
+Added clarifying comments in examples/osggeometryPer reviewer feedback
+
+
+Mon, 24 Apr 2017 09:44:59 -0400
+Author : Chris White
+Turned off lighting in examples/osggeometryThis way you can see the image and the points even if you view them
+close to edge-on.
+
+
+Mon, 8 May 2017 12:27:07 +0100
+Author : Robert Osfield
+Addeed support for GLES shaders
+
+Thu, 4 May 2017 18:17:30 +0100
+Author : Thomas Hogarth
+Added more plugins to iOS example, Textures now working on GLES3 (missed so if defineds)
+
+Thu, 4 May 2017 00:24:46 +0100
+Author : Thomas Hogarth
+Added more plugins and texture shader to iOS example, fixed a couple of missed if defines for GLES3
+
+Fri, 28 Apr 2017 16:51:34 +0200
+Author : Remo E
+Avoid call of SetupThreads in DatabasePagerThis solves a bug with some shared library configurations. Sometimes the DatabasePager Singleton is initialised before one can call other configuration options like "setNumOfDatabaseThreadsHint". But OSG initialise it here:
+
+https://github.com/openscenegraph/OpenSceneGraph/blob/master/src/osgDB/DatabasePager.cpp#L1555 
+
+So this call is not needed?!
+
+Wed, 26 Apr 2017 17:10:58 +0100
+Author : Robert Osfield
+Replaced dynamoc_cast<osg::CullStack*> with asCullStack() to improve performance of AutoTransform, screen size based LOD and PagedLOD.
+
+Wed, 26 Apr 2017 11:50:35 +0100
+Author : Robert Osfield
+Refactored AutoTransform so that it dynamically computes the rotation, scale and matrices during the cull traversal to enable usage in multi-view, multi-threaded applications
+
+Wed, 26 Apr 2017 09:48:08 +0100
+Author : Robert Osfield
+Added ability to create windows for each view using -w command line hint.
+
+Tue, 25 Apr 2017 20:26:26 +0100
+Author : Robert Osfield
+Added multiple view support to osgautotransform for testing multi-views
+
+Tue, 25 Apr 2017 18:04:04 +0100
+Author : Robert Osfield
+Added missing Node::asAutoTransform() + NodeVisitor::apply(AutoTransform&).
+
+Sat, 15 Apr 2017 00:04:51 +0300
+Author : Alexander Roan
+GLExtenstions: fix checking of isFrameBufferObjectSupported flag for GLES2
+
+Sun, 23 Apr 2017 21:23:14 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #249 from uhertlein/masterFixes compiler warning regarding logic vs bitwise AND
+
+Sun, 23 Apr 2017 15:36:11 +0200
+Author : Ulrich Hertlein
+RAII memory management for macOS image loading- use std::vector instead of manual memory management
+- removes dead/commented code
+
+Sun, 23 Apr 2017 21:38:01 +0200
+Author : Ulrich Hertlein
+Updates the macOS build instructions in README.md.- Removes obsolete instructions regarding x86_64 vs i386, Cocoa vs Carbon, etc
+- Markdown formatting changes
+
+Sun, 23 Apr 2017 11:52:05 +0200
+Author : Ulrich Hertlein
+Fixes compiler warning regarding logic vs bitwise AND
+
+Tue, 18 Apr 2017 17:01:26 +0100
+Author : Farshid Lashkari
+There is a small bug in how the FBX importer computes the rotation matrix for nodes. It applies the "RotationOrder" property to the local, pre, and post rotation values. However, the pre/post rotation values should always use a fixed XYZ order. The "RotationOrder" property should only apply to the local rotation value. I've attached the updated file with the fix.
+
+Tue, 18 Apr 2017 16:40:56 +0100
+Author : Farshid Lashkari
+Modified the FBX loader to support bump, specular, and gloss maps. I've attached a zip containing the modified files.
+
+Tue, 18 Apr 2017 16:01:58 +0100
+Author : Farshid Lashkari
+When the "ZUp" option was added to the fbx loader, it broke the previous behavior of converting to the OpenGL axis system. I'm referencing the following commit:https://github.com/openscenegraph/OpenSceneGraph/commit/c168887e5e9da4e891904d11ccac8ddd60b0362d
+
+This commit inverted the value of the "fSign" variable, but did not update the previous code that used the variable. I've attached the change that restores the original behavior when not using the "ZUp"
+
+
+Fri, 7 Apr 2017 17:35:58 +0100
+Author : Robert Osfield
+Merge branch 'master' of https://github.com/openscenegraph/OpenSceneGraph
+
+Fri, 7 Apr 2017 17:34:22 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #244 from LaurensVoerman/submit_osgtMissingTextureCrashfix a crash when reading an osgt file with multiple references to a missing texture.
+
+Fri, 7 Apr 2017 17:33:25 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #245 from LaurensVoerman/submit_dupeEnumremove info message about GL_LINES_ADJACENCY_EXT / GL_LINES_ADJACENCY 
+
+Fri, 7 Apr 2017 15:56:32 +0200
+Author : Laurens Voerman
+avoid INFO message about duplicate enums with and without _EXT
+
+Fri, 7 Apr 2017 15:27:56 +0200
+Author : Laurens Voerman
+fix a crash when reading an osgt file with multiple references to a missing texture.
+
+Fri, 7 Apr 2017 07:15:30 +0100
+Author : jamie robertson
+osgbindlesstext example fix : needed to add "viewer.realize()" before the line "viewer.getCamera()->getGraphicsContext()" in order to get a valid graphics context, before viewer.run() is called.
+
+Fri, 7 Apr 2017 07:11:57 +0100
+Author : Robert Osfield
+Removed unneccessary EXT usage
+
+Fri, 7 Apr 2017 07:09:24 +0100
+Author : Jamie Robertson
+VS build fix
+
+Thu, 6 Apr 2017 10:51:47 +0100
+Author : Konstantin Matveyev
+Added dynamic update of Text3D test
+
+Wed, 5 Apr 2017 17:39:05 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #243 from mp3butcher/moreExtensionsadd Extensions
+
+Wed, 5 Apr 2017 17:37:51 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #242 from mp3butcher/LuaMatrixfew fixes for lua Matrix support..
+
+Wed, 5 Apr 2017 18:11:50 +0200
+Author : mp3butcher
+add Extensions
+
+Wed, 5 Apr 2017 17:59:06 +0200
+Author : mp3butcher
+forgot a lua_pop(_lua, 16)
+
+Wed, 5 Apr 2017 17:57:08 +0200
+Author : mp3butcher
+few fixes for Matrix support.. but getElements still fails..
+
+Wed, 5 Apr 2017 12:01:55 +0100
+Author : Torben Dannhauer
+Update to FindCollada.cmake to handle Visual Studio 2017 binaries
+
+Fri, 31 Mar 2017 16:26:46 +0100
+Author : Robert Osfield
+Updated ChangeLog for dev release
+
 Thu, 30 Mar 2017 18:21:02 +0100
 Author : Robert Osfield
 Experiment with transmitting large UDP massages

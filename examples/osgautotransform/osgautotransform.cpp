@@ -223,7 +223,7 @@ osgViewer::View* createView(osg::ref_ptr<osg::Node> scenegraph, osg::ref_ptr<osg
 
 
     osgViewer::View* view = new osgViewer::View;
-    view->getCamera()->setGraphicsContext(gc);
+    view->getCamera()->setGraphicsContext(gc.get());
     view->getCamera()->setViewport(new osg::Viewport(x, y, width, height));
     //view->getCamera()->setProjectionMatrixAsPerspective(30.0, double(width) / double(height), 1.0, 1000.0);
     view->setCameraManipulator(new osgGA::TrackballManipulator);

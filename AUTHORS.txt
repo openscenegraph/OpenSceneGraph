@@ -11,8 +11,8 @@ Farshid Lashkari
 Mathias Fröhlich
 Marco Jez
 Wang Rui
-Jean-Sébastien Guay
 Laurens Voerman
+Jean-Sébastien Guay
 Ulrich Hertlein
 Mike Weiblen
 Sukender

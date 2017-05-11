@@ -272,7 +272,9 @@ const char* invalidNames[] =
     "Fri",
     "Sat",
     "Sun",
-    "I"
+    "I",
+    "TriangleFunctor",
+    "PrimitiveFunctor"
 };
 
 

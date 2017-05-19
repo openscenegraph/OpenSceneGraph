@@ -1,3 +1,15 @@
+Mon, 15 May 2017 14:53:27 +0100
+Author : Robert Osfield
+Refactored COLLADA_BUILDNAME and COLLADA_BOOST_BUILDNAME to resolve case where CMAKE_VS_PLATFORM_TOOLSET is not set.
+
+Thu, 11 May 2017 16:32:13 +0100
+Author : Robert Osfield
+Updated AUTHORS file for dev release
+
+Thu, 11 May 2017 16:29:45 +0100
+Author : Robert Osfield
+Updated ChangeLog
+
 Thu, 11 May 2017 16:27:20 +0100
 Author : Robert Osfield
 Build fix.

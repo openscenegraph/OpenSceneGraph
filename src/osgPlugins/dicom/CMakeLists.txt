@@ -5,7 +5,16 @@ IF  (DCMTK_FOUND)
 
     SET(TARGET_SRC ReaderWriterDICOM.cpp )
 
-    LINK_LIBRARIES(${DCMTK_LIBRARIES} ${ZLIB_LIBRARY})
+    LINK_LIBRARIES(optimized ${ZLIB_LIBRARY} debug ${ZLIB_LIBRARY_DEBUG} )
+	
+	# Unfortunately LINK_LIBRARIES uses the keywords optimized|debug only for the first following lib,
+	# so we need to interate through the lists and add the library one by one using the configuration keyword
+	foreach(tmplib ${DCMTK_LIBRARIES} )
+		LINK_LIBRARIES(optimized ${tmplib})
+	endforeach(tmplib)
+	foreach(tmplib2 ${DCMTK_LIBRARIES_DEBUG} )
+		LINK_LIBRARIES(debug ${tmplib2})
+	endforeach(tmplib2)
 
     ADD_DEFINITIONS(-DUSE_DCMTK)
 

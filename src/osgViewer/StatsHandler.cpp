@@ -1191,6 +1191,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
     _camera->addChild(_switch.get());
 
     osg::StateSet* stateset = _switch->getOrCreateStateSet();
+    stateset->setGlobalDefaults();
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
     stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);

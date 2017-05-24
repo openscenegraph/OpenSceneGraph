@@ -125,11 +125,11 @@ public:
         _usePolytopeIntersector(false),
         _useWindowCoordinates(false),
         _precisionHint(osgUtil::Intersector::USE_DOUBLE_CALCULATIONS),
-        _dimensionMask(osgUtil::PolytopeIntersector::AllDims) {}
+        _primitiveMask(osgUtil::PolytopeIntersector::ALL_PRIMITIVES) {}
 
     ~PickHandler() {}
 
-    void setDimensionMask(unsigned int dimensionMask) { _dimensionMask = dimensionMask; }
+    void setPrimitiveMask(unsigned int primitiveMask) { _primitiveMask = primitiveMask; }
 
 
     bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
@@ -229,7 +229,7 @@ public:
                 if (_usePolytopeIntersector)
                 {
                     osg::ref_ptr<osgUtil::PolytopeIntersector> pi = new osgUtil::PolytopeIntersector( osgUtil::Intersector::WINDOW, x-dx*0.5, y-dy*0.5, x+dx*0.5, y+dy*0.5);
-                    pi->setDimensionMask(_dimensionMask);
+                    pi->setPrimitiveMask(_primitiveMask);
                     intersector = pi.get();
                 }
                 else
@@ -290,7 +290,7 @@ public:
             }
 
             picker->setPrecisionHint(_precisionHint);
-            picker->setDimensionMask(_dimensionMask);
+            picker->setPrimitiveMask(_primitiveMask);
 
             osgUtil::IntersectionVisitor iv(picker);
 
@@ -412,7 +412,7 @@ protected:
     bool _usePolytopeIntersector;
     bool _useWindowCoordinates;
     osgUtil::Intersector::PrecisionHint _precisionHint;
-    unsigned int _dimensionMask;
+    unsigned int _primitiveMask;
 
 };
 
@@ -459,8 +459,8 @@ int main( int argc, char **argv )
     while (arguments.read("--double")) { pickhandler->setPrecisionHint(osgUtil::Intersector::USE_DOUBLE_CALCULATIONS); }
     while (arguments.read("--float")) { pickhandler->setPrecisionHint(osgUtil::Intersector::USE_FLOAT_CALCULATIONS); }
 
-    unsigned int mask = osgUtil::PolytopeIntersector::AllDims;
-    while (arguments.read("--dim-mask", mask) || arguments.read("--dm", mask)) { pickhandler->setDimensionMask(mask); }
+    unsigned int mask = osgUtil::PolytopeIntersector::ALL_PRIMITIVES;
+    while (arguments.read("--prim-mask", mask) || arguments.read("--pm", mask)) { pickhandler->setPrimitiveMask(mask); }
 
     // load model
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);

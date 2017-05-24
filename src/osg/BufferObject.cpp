@@ -68,6 +68,10 @@ GLBufferObject::GLBufferObject(unsigned int contextID, BufferObject* bufferObjec
 
     if (glObjectID==0)
     {
+#if defined(OSG_GL3_AVAILABLE) && defined(__APPLE__)
+        _extensions->glGenVertexArrays(1, &_glVaoID );
+        _extensions->glBindVertexArray( _glVaoID );
+#endif
         _extensions->glGenBuffers(1, &_glObjectID);
     }
 
@@ -243,7 +247,10 @@ void GLBufferObject::deleteGLObject()
     {
         _extensions->glDeleteBuffers(1, &_glObjectID);
         _glObjectID = 0;
-
+#if defined(OSG_GL3_AVAILABLE) && defined(__APPLE__)
+        _extensions->glDeleteVertexArrays(1, &_glVaoID );
+        _glVaoID = 0;
+#endif
         _allocatedSize = 0;
         _bufferEntries.clear();
     }

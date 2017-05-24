@@ -10,6 +10,7 @@
 
 #include <osgViewer/Viewer>
 #include <osgDB/ReadFile>
+#include <osgUtil/Optimizer>
 #include <osg/GraphicsContext>
 #include <osg/Camera>
 #include <osg/Viewport>
@@ -73,6 +74,11 @@ int main( int argc, char** argv )
         osg::notify( osg::FATAL ) << "Unable to load model from command line." << std::endl;
         return( 1 );
     }
+
+
+    osgUtil::Optimizer optimizer;
+    optimizer.optimize(root.get(), osgUtil::Optimizer::ALL_OPTIMIZATIONS|osgUtil::Optimizer::TESSELLATE_GEOMETRY);
+
     configureShaders( root->getOrCreateStateSet() );
 
     const int width( 800 ), height( 450 );
@@ -118,7 +124,7 @@ OSG currently support OpenGL 3.x on Windows. This comment block describes the
 necessary configuration steps.
 
 Get the draft gl3.h header file from OpenGL.org and put it in a folder called
-“GL3” somewhere on your hard drive. OSG includes this header as <GL3/gl3.h>. Get
+"GL3" somewhere on your hard drive. OSG includes this header as <GL3/gl3.h>. Get
 gl3.h from here:
 http://www.opengl.org/registry/
 

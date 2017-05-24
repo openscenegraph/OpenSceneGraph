@@ -472,6 +472,7 @@ IF (OSG_GL3_AVAILABLE)
     IF (APPLE)
         SET(OPENGL_HEADER1 "#include <OpenGL/gl.h>" CACHE STRING "#include<> line for OpenGL Header")
         SET(OPENGL_HEADER2 "#include <OpenGL/gl3.h>" CACHE STRING "#include<> line for additional OpenGL Headers if required")
+        ADD_DEFINITIONS(-DGL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED)
     ELSE()
 
         IF (OPENGL_PROFILE STREQUAL "GLCORE")

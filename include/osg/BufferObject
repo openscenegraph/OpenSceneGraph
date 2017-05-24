@@ -247,6 +247,7 @@ class OSG_EXPORT GLBufferObject : public Referenced
 
         unsigned int            _contextID;
         GLuint                  _glObjectID;
+        GLuint                  _glVaoID;
 
         BufferObjectProfile     _profile;
         unsigned int            _allocatedSize;

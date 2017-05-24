@@ -89,6 +89,9 @@ public:
     void setWriteImageHint( WriteImageHint hint ) { _writeImageHint = hint; }
     WriteImageHint getWriteImageHint() const { return _writeImageHint; }
 
+    void setWriteBufferObjectConfiguration( bool hint ) { _writeBufferObjectConfiguration = hint; }
+    bool getWriteBufferObjectConfiguration() const { return _writeBufferObjectConfiguration; }
+
     // Serialization related functions
     OutputStream& operator<<( bool b ) { _out->writeBool(b); return *this; }
     OutputStream& operator<<( char c ) { _out->writeChar(c); return *this; }
@@ -208,6 +211,7 @@ protected:
     WriteImageHint _writeImageHint;
     bool _useSchemaData;
     bool _useRobustBinaryFormat;
+    bool _writeBufferObjectConfiguration;
 
     typedef std::map<std::string, std::string> SchemaMap;
     SchemaMap _inbuiltSchemaMap;

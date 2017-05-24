@@ -145,6 +145,7 @@ void ViewerBase::configureAffinity()
 
     if (requiresCameraThreads)
     {
+        availableProcessor--;//cull can share a core with main
         Cameras cameras;
         getCameras(cameras);
 
@@ -190,14 +191,15 @@ void ViewerBase::configureAffinity()
 
         OSG_NOTICE<<"  databasePagers = "<<databasePagers.size()<<std::endl;
 
-        availableProcessor = availableProcessors[availableProcessor % availableProcessors.size()];
-
         OpenThreads::Affinity databasePagerAffinity;
+        //if any free CPU's remain, assign the databasePagers to those
+        for (; availableProcessor < availableProcessors.size(); ++availableProcessor) databasePagerAffinity.add(availableProcessors[availableProcessor]);
+
         for(DatabasePagers::iterator itr = databasePagers.begin();
             itr != databasePagers.end();
             ++itr)
         {
-            (*itr)->setProcessorAffinity(OpenThreads::Affinity(availableProcessor, numProcessors-availableProcessor));
+            (*itr)->setProcessorAffinity(databasePagerAffinity);
         }
     }
 }

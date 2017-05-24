@@ -145,6 +145,7 @@ void ViewerBase::configureAffinity()
 
     if (requiresCameraThreads)
     {
+        availableProcessor--;//cull can share a core with main
         Cameras cameras;
         getCameras(cameras);
 

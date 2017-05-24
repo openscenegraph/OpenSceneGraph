@@ -442,6 +442,8 @@ ENDIF(WIN32 AND NOT ANDROID)
 
 OPTION(OSG_NOTIFY_DISABLED "Set to ON to build OpenSceneGraph with the notify() disabled." OFF)
 
+OPTION(OSG_USE_DEPRECATED_API "Set to ON to build OpenSceneGraph with the OSG_USE_DEPREFATED_API #define enabled to allow access to deprecated APIs ." ON)
+
 OPTION(OSG_USE_FLOAT_MATRIX "Set to ON to build OpenSceneGraph with float Matrix instead of double." OFF)
 MARK_AS_ADVANCED(OSG_USE_FLOAT_MATRIX)
 

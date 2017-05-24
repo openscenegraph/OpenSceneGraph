@@ -19,6 +19,10 @@
 
 #include <ostream>
 
+#if OSG_UWP
+inline char* getenv(const char* arg){return 0;}
+#endif
+
 namespace osg {
 
 /** Range of notify levels from DEBUG_FP through to FATAL, ALWAYS

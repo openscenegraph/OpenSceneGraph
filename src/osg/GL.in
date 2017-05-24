@@ -109,6 +109,10 @@
     #define GL_GLEXT_PROTOTYPES 1
 #endif
 
+#if defined(OSG_GLES2_AVAILABLE) && defined(OSG_UWP)
+    #define GL_GLEXT_PROTOTYPES 1
+#endif
+
 
 @OPENGL_HEADER1@
 @OPENGL_HEADER2@

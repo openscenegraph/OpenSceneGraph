@@ -67,7 +67,7 @@
 #include <osg/VertexProgram>
 #include <osg/FragmentProgram>
 #include <osg/GLExtensions>
-#include <osg/ContextData>
+//#include <osg/ContextData>
 
 #include <osg/TextureBuffer>
 #include <osg/BufferIndexBinding>
@@ -85,6 +85,20 @@
 
 #include <iostream>
 #include <sstream>
+
+
+#ifdef _DEBUG
+#pragma comment(lib, "osgd.lib")
+#pragma comment(lib, "osgViewerd.lib")
+#pragma comment(lib, "osgGAd.lib")
+#pragma comment(lib, "osgDbd.lib")
+#else
+#pragma comment(lib, "osg.lib")
+#pragma comment(lib, "osgViewer.lib")
+#pragma comment(lib, "osgGA.lib")
+#pragma comment(lib, "osgDb.lib")
+#endif
+
 //Hard coded constant for number unique textures 
 const int TextureCount = 1000;
 // To use bindless textures, we need to tell the GPU to 
@@ -101,10 +115,10 @@ const int TextureCount = 1000;
 //the XXX is so we can replace it with a string from TextureCount
 std::string vertShader= 
 "#version 450 compatibility                                 \n"
-"#extension GL_ARB_bindless_texture : require               \n"
-"#extension GL_NV_gpu_shader5 : require // uint64_t         \n"
-"//#extension GL_ARB_gpu_shader5 : require // uint64_t      \n"
-"//#extension GL_ARB_gpu_shader_int64: require // uint64_t  \n"
+"//#extension GL_ARB_bindless_texture : require             \n"
+"//#extension GL_NV_gpu_shader5 : require  //uint64_t       \n"
+"//#extension GL_ARB_gpu_shader5 : require  //uint64_t      \n"
+"//#extension GL_ARB_gpu_shader_int64: require  //uint64_t  \n"
 "in float osg_FrameTime;                                    \n"
 "out vec2 TexCoord;                                         \n"
 "flat out int textureIndex;                                 \n"
@@ -133,12 +147,12 @@ std::string fragShader =
 "#version 450 compatibility                                    \n"
 "#extension GL_ARB_bindless_texture : require                  \n"
 "#extension GL_NV_gpu_shader5 : require // uint64_t            \n"
-"//#extension GL_ARB_gpu_shader5 : require // uint64_t         \n"
-"//#extension GL_ARB_gpu_shader_int64: require // uint64_t     \n"
+"#extension GL_ARB_gpu_shader5 : require // uint64_t			\n"
+"#extension GL_ARB_gpu_shader_int64: require // uint64_t		\n"
 "uniform sampler2D TextureId;                                  \n"
 "in vec2 TexCoord;                                             \n"
 "flat in int textureIndex;                                     \n"
-"layout (binding = 0, std140) uniform TEXTURE_BLOCK            \n"
+"layout (binding = 0, std140) uniform TEXTURE_BLOCK            \n"//binding == 0 <==>osg::UniformBufferBinding._index
 "{                                                             \n"
 "    uint64_t      tex[XXX];                                   \n"
 "};                                                            \n"
@@ -207,13 +221,14 @@ class BindlessTexture: public osg::Texture2D
 public:
     typedef osg::ref_ptr<BindlessBuffer> BufferRef;
     typedef std::vector<osg::ref_ptr<osg::Image> > TextureList;
+	typedef std::vector<osg::Image* > PTextureList;//use pointer vector instead of smart pointer vector to release memory after applying 2017 04 09
     typedef std::vector<GLuint64> HandleList;
     typedef osg::ref_ptr< osg::Texture::TextureObject> TextureObjectRef;
     typedef std::vector<TextureObjectRef> TextureObjectList;
     typedef osg::buffered_object<TextureObjectList>  TextureObjectBuffer;
 
     BindlessTexture(); 
-    BindlessTexture(BufferRef, TextureList);
+    BindlessTexture(BufferRef, const PTextureList&);
     BindlessTexture(const BindlessTexture& rhs, const osg::CopyOp& copy =osg::CopyOp::SHALLOW_COPY);
     void releaseGLObjects(osg::State* state) const;
     void resizeGLObjectBuffers(unsigned maxSize);
@@ -223,6 +238,7 @@ public:
     void apply(osg::State& state) const;
 protected:
     void applyOnce(osg::State &state) const;
+	void unrefImageDataAfterApplying(const BindlessTexture* bt)const;//added by myself 2017 04 19
     mutable osg::buffered_object<HandleList> _handles;
     mutable TextureList _textureList;
     mutable osg::ref_ptr<BindlessBuffer> _buffer;
@@ -248,12 +264,14 @@ BindlessTexture::BindlessTexture(const BindlessTexture& rhs, const osg::CopyOp& 
         _handles[i] = rhs._handles[i];
 }
 
-BindlessTexture::BindlessTexture(BufferRef ref,TextureList textureList) :
-    osg::Texture2D( textureList[0] ),
-    _textureList(textureList),
+BindlessTexture::BindlessTexture(BufferRef ref, const PTextureList& ptextureList) :
+    osg::Texture2D( ptextureList[0] ),
     _buffer(ref),
     _bindlessIndex(0)
 {
+	//change to be instert to avoid referencing of smart pointer
+	_textureList.insert(_textureList.end(), ptextureList.begin(), ptextureList.end());
+
     _isBound.resize(5,false);
 }
 
@@ -318,6 +336,12 @@ void BindlessTexture::applyOnce(osg::State& state) const
     getModifiedCount(contextID) = image->getModifiedCount();
 }
 
+void BindlessTexture::unrefImageDataAfterApplying(const BindlessTexture* bt)const
+{
+	bt->_textureList.clear();
+	const_cast<BindlessTexture*>(bt)->_image = NULL;
+}
+
 void BindlessTexture::apply(osg::State& state) const
 {
    unsigned contextID = state.getContextID();
@@ -325,6 +349,7 @@ void BindlessTexture::apply(osg::State& state) const
    {
        applyOnce(state);
        _isBound[contextID] = true;
+	   unrefImageDataAfterApplying(this);
    }else{
        //we should mostly hit this durring the lifetime of this object,
        //note we basically do nothing......
@@ -373,12 +398,12 @@ typedef osg::ref_ptr<osg::Image> ImageRef;
 ///pattern with random color and size
 ///
 void createImageArray(osg::StateSet* attachPnt){
-    BindlessTexture::TextureList images;
+    BindlessTexture::PTextureList images;
     images.resize(TextureCount);
     BindlessBuffer::BindlessBufferRef buffer = BindlessBuffer::Make(TextureCount);
     srand (time(NULL));
     for (int i =0; i < TextureCount; i++){
-        ImageRef tImage = new osg::Image();
+        osg::Image* tImage = new osg::Image();
         int powerOf2 = rand()%6+4;
         const unsigned int imageSize = 1<<powerOf2;
         tImage->allocateImage(imageSize,imageSize,1,GL_RGBA,GL_UNSIGNED_BYTE);
@@ -576,6 +601,20 @@ osg::Group* CreateScene(){
     
     return sceneRoot;
  }
+
+//test
+class MyPreDrawCallBackForTrace:public osg::Camera::DrawCallback
+{
+public:
+	MyPreDrawCallBackForTrace(){}
+
+	virtual void operator () (osg::RenderInfo& renderInfo) const
+	{
+		return;
+	}
+	 
+};
+
 int main(int argc, char** argv)
 {
     // set command line options
@@ -583,6 +622,8 @@ int main(int argc, char** argv)
 
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
+
+	viewer.setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
 
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);

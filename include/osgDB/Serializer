@@ -788,12 +788,11 @@ public:
         if ( is.isBinary() )
         {
             is >> size;
-            for ( unsigned int i=0; i<size; ++i )
-            {
-                ValueType value;
-                is >> value;
-                list.push_back( value );
-            }
+
+            list.resize(size);
+            osgDB::InputIterator * iter = is.getInputIterator();
+            iter->getStream()->read((char*)&list[0], sizeof(ValueType)*size);
+            
             if ( size>0 ) (object.*_setter)( list );
         }
         else if ( is.matchString(_name) )
@@ -1117,14 +1116,11 @@ public:
         unsigned int size = 0;
         if ( is.isBinary() )
         {
-            is >> size;
-            list.reserve(size);
-            for ( unsigned int i=0; i<size; ++i )
-            {
-                ValueType value;
-                is >> value;
-                list.push_back( value );
-            }
+           is >> size;
+           
+	   list.resize(size);
+           osgDB::InputIterator * iter = is.getInputIterator();
+           iter->getStream()->read((char*)&list[0], sizeof(ValueType)*size);
         }
         else if ( is.matchString(_name) )
         {

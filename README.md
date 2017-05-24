@@ -47,7 +47,7 @@ Alternatively, you can create an out-of-source build directory and run cmake or 
 
     mkdir build
     cd build
-    cmake ../OpenSceneGraph
+    cmake ..
     make
     sudo make install
 

@@ -32,13 +32,15 @@ struct Settings : public osg::Referenced
         _polytopeIntersector(0),
         _iv(0),
         _drawable(0),
-        _limitOneIntersection(false) {}
+        _limitOneIntersection(false),
+        _dimensionMask( PolytopeIntersector::AllDims ) {}
 
     osgUtil::PolytopeIntersector*   _polytopeIntersector;
     osgUtil::IntersectionVisitor*   _iv;
     osg::Drawable*                  _drawable;
     osg::ref_ptr<osg::Vec3Array>    _vertices;
     bool                            _limitOneIntersection;
+    unsigned int                    _dimensionMask;
 };
 
 template<typename Vec3>
@@ -256,6 +258,8 @@ struct IntersectFunctor
 
         ++_primitiveIndex;
 
+        if ((_settings->_dimensionMask&PolytopeIntersector::DimZero)==0) return;
+
         // initialize the set of vertices to test.
         src.clear();
 
@@ -291,6 +295,8 @@ struct IntersectFunctor
 
         ++_primitiveIndex;
 
+        if ((_settings->_dimensionMask&PolytopeIntersector::DimOne)==0) return;
+
         src.clear();
         src.push_back(v0);
         src.push_back(v1);
@@ -307,6 +313,8 @@ struct IntersectFunctor
         if (_settings->_limitOneIntersection && _hit) return;
 
         ++_primitiveIndex;
+
+        if ((_settings->_dimensionMask&PolytopeIntersector::DimTwo)==0) return;
 
         src.clear();
         src.push_back(v0);
@@ -325,6 +333,9 @@ struct IntersectFunctor
         if (_settings->_limitOneIntersection && _hit) return;
 
         ++_primitiveIndex;
+
+        if ((_settings->_dimensionMask&PolytopeIntersector::DimTwo)==0) return;
+
         src.clear();
 
         src.push_back(v0);
@@ -343,6 +354,8 @@ struct IntersectFunctor
     {
         if (_settings->_limitOneIntersection && _hit) return;
 
+        if ((_settings->_dimensionMask&PolytopeIntersector::DimZero)==0) return;
+
         if (contains((*vertices)[p0]))
         {
             _primitiveIndex = primitiveIndex;
@@ -354,6 +367,8 @@ struct IntersectFunctor
     void intersect(const osg::Vec3Array* vertices, int primitiveIndex, unsigned int p0, unsigned int p1)
     {
         if (_settings->_limitOneIntersection && _hit) return;
+
+        if ((_settings->_dimensionMask&PolytopeIntersector::DimOne)==0) return;
 
         if (contains((*vertices)[p0], (*vertices)[p1]))
         {
@@ -367,6 +382,8 @@ struct IntersectFunctor
     {
         if (_settings->_limitOneIntersection && _hit) return;
 
+        if ((_settings->_dimensionMask&PolytopeIntersector::DimTwo)==0) return;
+
         if (contains((*vertices)[p0], (*vertices)[p1], (*vertices)[p2]))
         {
             _primitiveIndex = primitiveIndex;
@@ -378,6 +395,8 @@ struct IntersectFunctor
     void intersect(const osg::Vec3Array* vertices, int primitiveIndex, unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3)
     {
         if (_settings->_limitOneIntersection && _hit) return;
+
+        if ((_settings->_dimensionMask&PolytopeIntersector::DimTwo)==0) return;
 
         if (contains((*vertices)[p0], (*vertices)[p1], (*vertices)[p2], (*vertices)[p3]))
         {
@@ -519,6 +538,7 @@ void PolytopeIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawa
     settings->_iv = &iv;
     settings->_drawable = drawable;
     settings->_limitOneIntersection = (_intersectionLimit == LIMIT_ONE_PER_DRAWABLE || _intersectionLimit == LIMIT_ONE);
+    settings->_dimensionMask = _dimensionMask;
 
     osg::KdTree* kdTree = iv.getUseKdTreeWhenAvailable() ? dynamic_cast<osg::KdTree*>(drawable->getShape()) : 0;
 

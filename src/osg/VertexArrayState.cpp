@@ -663,8 +663,18 @@ void VertexArrayState::setArray(ArrayDispatch* vad, osg::State& state, const osg
             GLBufferObject* vbo = isVertexBufferObjectSupported() ? new_array->getOrCreateGLBufferObject(state.getContextID()) : 0;
             if (vbo)
             {
-                bindVertexBufferObject(vbo);
-                vad->enable_and_dispatch(state, new_array, vbo);
+				//add by myself to judge if this buffer object is really a VBO 2017 04 22
+				VertexBufferObject* prototype_vbo = dynamic_cast<VertexBufferObject*>(vbo->getBufferObject());
+				if (prototype_vbo)
+				{
+					bindVertexBufferObject(vbo);
+					vad->enable_and_dispatch(state, new_array, vbo);
+				}
+				else
+				{
+					unbindVertexBufferObject();
+					vad->enable_and_dispatch(state, new_array);
+				}
             }
             else
             {
@@ -677,8 +687,18 @@ void VertexArrayState::setArray(ArrayDispatch* vad, osg::State& state, const osg
             GLBufferObject* vbo = isVertexBufferObjectSupported() ? new_array->getOrCreateGLBufferObject(state.getContextID()) : 0;
             if (vbo)
             {
-                bindVertexBufferObject(vbo);
-                vad->dispatch(state, new_array, vbo);
+				//add by myself to judge if this buffer object is really a VBO 2017 04 22
+				VertexBufferObject* prototype_vbo = dynamic_cast<VertexBufferObject*>(vbo->getBufferObject());
+				if (prototype_vbo)
+				{
+					bindVertexBufferObject(vbo);
+					vad->dispatch(state, new_array, vbo);
+				}
+				else
+				{
+					unbindVertexBufferObject();
+					vad->dispatch(state, new_array);
+				}
             }
             else
             {
@@ -744,4 +764,6 @@ void VertexArrayState::dirty()
 {
     setRequiresSetArrays(true);
 }
+
+
 

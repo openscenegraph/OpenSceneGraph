@@ -2091,26 +2091,33 @@ void Text::GlyphQuads::initGlyphQuads()
         }
     }
 
-    _quadIndices = new DrawElementsUInt(PrimitiveSet::TRIANGLES);
+    _quadIndices = new DrawElementsUShort(PrimitiveSet::TRIANGLES);
 }
 
 void Text::GlyphQuads::updateQuadIndices()
 {
-    _quadIndices->clear();
-    if (_coords->size() % 4 != 0)
+    unsigned int numCoords = _coords->size();
+    unsigned int numQuads = numCoords/4;
+    unsigned int numVertices = numQuads*6;
+
+    if (numCoords % 4 != 0)
     {
         OSG_WARN << "size of _coords is not divisible by 4.";
     }
     
-    for (unsigned int i = 0; i < (unsigned int)_coords->size(); i += 4)
-    {
-        _quadIndices->push_back(i);
-        _quadIndices->push_back(i + 1);
-        _quadIndices->push_back(i + 3);
 
-        _quadIndices->push_back(i + 1);
-        _quadIndices->push_back(i + 2);
-        _quadIndices->push_back(i + 3);
+    _quadIndices->resizeElements(numVertices);
+
+    unsigned int vi=0;
+    for (unsigned int i = 0; i < numCoords; i += 4)
+    {
+        _quadIndices->setElement(vi++, i);
+        _quadIndices->setElement(vi++, i + 1);
+        _quadIndices->setElement(vi++, i + 3);
+
+        _quadIndices->setElement(vi++, i + 1);
+        _quadIndices->setElement(vi++, i + 2);
+        _quadIndices->setElement(vi++, i + 3);
     }
 }
 

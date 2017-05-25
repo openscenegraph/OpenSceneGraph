@@ -110,7 +110,7 @@ class OSGUTIL_EXPORT PolytopeIntersector : public Intersector
 
         inline const osg::Plane& getReferencePlane() const { return _referencePlane; }
 
-#ifdef USE_DEPRECATED_API
+#ifdef OSG_USE_DEPRECATED_API
 
         enum {
             DimZero = POINT_PRIMITIVES,    /// deprecated, use POINT_PRIMITIVES

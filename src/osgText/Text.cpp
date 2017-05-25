@@ -229,10 +229,12 @@ void Text::addGlyphQuad(Glyph* glyph, const osg::Vec2& minc, const osg::Vec2& ma
 
     glyphquad._glyphs.push_back(glyph);
 
-    osg::DrawElementsUShort* primitives = 0;
+    osg::DrawElements* primitives = 0;
     if (glyphquad._primitives.empty())
     {
-        primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
+        unsigned int maxIndices = _text.size()*4;
+        if (maxIndices>=16384) primitives = new osg::DrawElementsUInt(GL_TRIANGLES);
+        else primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
         primitives->setBufferObject(_ebo.get());
         glyphquad._primitives.push_back(primitives);
     }
@@ -253,13 +255,13 @@ void Text::addGlyphQuad(Glyph* glyph, const osg::Vec2& minc, const osg::Vec2& ma
     addTexCoord(osg::Vec2(maxtc.x(), mintc.y()));
     addTexCoord(osg::Vec2(maxtc.x(), maxtc.y()));
 
-    primitives->push_back(lt);
-    primitives->push_back(lb);
-    primitives->push_back(rb);
+    primitives->addElement(lt);
+    primitives->addElement(lb);
+    primitives->addElement(rb);
 
-    primitives->push_back(lt);
-    primitives->push_back(rb);
-    primitives->push_back(rt);
+    primitives->addElement(lt);
+    primitives->addElement(rb);
+    primitives->addElement(rt);
 
     primitives->dirty();
 }
@@ -291,7 +293,7 @@ void Text::computeGlyphRepresentation()
             pitr != glyphquads._primitives.end();
             ++pitr)
         {
-            (*pitr)->clear();
+            (*pitr)->resizeElements(0);
             (*pitr)->dirty();
         }
     }
@@ -734,7 +736,7 @@ void Text::computeBackdropPositions()
         {
             GlyphQuads& glyphquad = titr->second;
 
-            osg::DrawElementsUShort* src_primitives = glyphquad._primitives[0].get();
+            osg::DrawElements* src_primitives = glyphquad._primitives[0].get();
 
             for(unsigned int i=glyphquad._primitives.size(); i<=backdrop_index; ++i)
             {
@@ -743,10 +745,10 @@ void Text::computeBackdropPositions()
                 glyphquad._primitives.push_back(dst_primitives);
             }
 
-            osg::DrawElementsUShort* dst_primitives = glyphquad._primitives[backdrop_index].get();
-            dst_primitives->clear();
+            osg::DrawElements* dst_primitives = glyphquad._primitives[backdrop_index].get();
+            dst_primitives->resizeElements(0);
 
-            unsigned int numCoords = src_primitives->size();
+            unsigned int numCoords = src_primitives->getNumIndices();
 
             Coords& src_coords = _coords;
             TexCoords& src_texcoords = _texcoords;
@@ -756,10 +758,10 @@ void Text::computeBackdropPositions()
 
             for(unsigned int i=0;i<numCoords;++i)
             {
-                unsigned int si = (*src_primitives)[i];
+                unsigned int si = (*src_primitives).getElement(i);
                 osg::Vec3 v(horizontal_shift_direction * _backdropHorizontalOffset * avg_width + (*src_coords)[si].x(), vertical_shift_direction * _backdropVerticalOffset * avg_height + (*src_coords)[si].y(), 0.0f);
                 unsigned int di = dst_coords->size();
-                (*dst_primitives).push_back(di);
+                (*dst_primitives).addElement(di);
                 (*dst_coords).push_back(v);
                 (*dst_texcoords).push_back((*src_texcoords)[si]);
             }
@@ -1273,7 +1275,19 @@ void Text::accept(osg::PrimitiveFunctor& pf) const
         const GlyphQuads& glyphquad = titr->second;
         if (!glyphquad._primitives.empty())
         {
-            pf.drawElements(GL_TRIANGLES, glyphquad._primitives[0]->size(), &(glyphquad._primitives[0]->front()));
+            const osg::DrawElementsUShort* drawElementsUShort = dynamic_cast<const osg::DrawElementsUShort*>(glyphquad._primitives[0].get());
+            if (drawElementsUShort)
+            {
+                pf.drawElements(GL_TRIANGLES, drawElementsUShort->size(), &(drawElementsUShort->front()));
+            }
+            else
+            {
+                const osg::DrawElementsUInt* drawElementsUInt = dynamic_cast<const osg::DrawElementsUInt*>(glyphquad._primitives[0].get());
+                if (drawElementsUInt)
+                {
+                    pf.drawElements(GL_TRIANGLES, drawElementsUInt->size(), &(drawElementsUInt->front()));
+                }
+            }
         }
     }
 }

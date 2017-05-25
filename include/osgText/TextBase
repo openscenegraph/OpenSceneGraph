@@ -299,7 +299,7 @@ protected:
 
     typedef osg::ref_ptr<osg::Vec2Array> TexCoords;
     typedef osg::ref_ptr<osg::Vec4Array> ColorCoords;
-    typedef std::vector< osg::ref_ptr<osg::DrawElementsUShort> > Primitives;
+    typedef std::vector< osg::ref_ptr<osg::DrawElements> > Primitives;
 
 
     // members which have public access.

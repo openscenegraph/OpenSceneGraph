@@ -2105,7 +2105,7 @@ void Text::GlyphQuads::updateQuadIndices()
         OSG_WARN << "size of _coords is not divisible by 4.";
     }
     
-    if (numIndices>16384 && _quadIndices->getType()!=osg::PrimitiveSet::DrawElementsUIntPrimitiveType)
+    if (numCoords>=16384 && _quadIndices->getType()!=osg::PrimitiveSet::DrawElementsUIntPrimitiveType)
     {
         // if we need more indices
         _quadIndices = new DrawElementsUInt(PrimitiveSet::TRIANGLES);

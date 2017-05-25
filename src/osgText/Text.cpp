@@ -2098,15 +2098,20 @@ void Text::GlyphQuads::updateQuadIndices()
 {
     unsigned int numCoords = _coords->size();
     unsigned int numQuads = numCoords/4;
-    unsigned int numVertices = numQuads*6;
+    unsigned int numIndices = numQuads*6;
 
     if (numCoords % 4 != 0)
     {
         OSG_WARN << "size of _coords is not divisible by 4.";
     }
     
+    if (numIndices>16384 && _quadIndices->getType()!=osg::PrimitiveSet::DrawElementsUIntPrimitiveType)
+    {
+        // if we need more indices
+        _quadIndices = new DrawElementsUInt(PrimitiveSet::TRIANGLES);
+    }
 
-    _quadIndices->resizeElements(numVertices);
+    _quadIndices->resizeElements(numIndices);
 
     unsigned int vi=0;
     for (unsigned int i = 0; i < numCoords; i += 4)

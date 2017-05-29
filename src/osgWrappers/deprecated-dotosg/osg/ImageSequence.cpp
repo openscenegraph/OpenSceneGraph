@@ -27,7 +27,25 @@ bool ImageSequence_readLocalData(Object& obj, Input& fr)
 
     ImageSequence& is = static_cast<ImageSequence&>(obj);
 
+    double timeMultiplier;
+    if (fr.read("TimeMultiplier", timeMultiplier))
+    {
+        is.setTimeMultiplier(timeMultiplier);
+    }
+
     std::string modeStr;
+    if (fr.read("LoopingMode",modeStr))
+    {
+        if (modeStr=="NO_LOOPING")
+        {
+            is.setLoopingMode(osg::ImageSequence::NO_LOOPING);
+        }
+        else if (modeStr=="LOOPING")
+        {
+            is.setLoopingMode(osg::ImageSequence::LOOPING);
+        }
+    }
+
     if (fr.read("Mode",modeStr))
     {
         if (modeStr=="PRE_LOAD_ALL_IMAGES")
@@ -100,6 +118,18 @@ bool ImageSequence_writeLocalData(const Object& obj, Output& fw)
 
     // no current image writing code here
     // as it is all handled by osg::Registry::writeImage() via plugins.
+
+    fw.indent()<<"TimeMultiplier "<<is.getTimeMultiplier()<<std::endl;
+
+    switch(is.getLoopingMode())
+    {
+        case(osg::ImageSequence::NO_LOOPING):
+            fw.indent()<<"LoopingMode NO_LOOPING"<<std::endl;
+            break;
+        case(osg::ImageSequence::LOOPING):
+            fw.indent()<<"LoopingMode LOOPING"<<std::endl;
+            break;
+    }
 
     switch(is.getMode())
     {

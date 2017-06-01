@@ -287,6 +287,7 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
             for(int i=istart; i<=iend; ++i)
             {
                 unsigned int primitiveIndex = _kdTree.getPrimitiveIndices()[_primitiveIndices[i]];
+                primitiveIndex++; //skip original Primitive index
                 unsigned int numPoints = _kdTree.getVertexIndices()[primitiveIndex++];
 
                 for(; numPoints>0; --numPoints)

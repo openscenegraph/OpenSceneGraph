@@ -361,8 +361,6 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
 
                 while(left<right && (_centers[_primitiveIndices[right]][axis]>mid)) { --right; }
 
-                while(left<right && (_centers[_primitiveIndices[right]][axis]>mid)) { --right; }
-
                 if (left<right)
                 {
                     std::swap(_primitiveIndices[left], _primitiveIndices[right]);

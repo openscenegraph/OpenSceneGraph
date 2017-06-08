@@ -1208,11 +1208,11 @@ namespace State_Utils
         return replacedStr;
     }
 
-    void replaceAndInsertDeclaration(std::string& source, std::string::size_type declPos, const std::string& originalStr, const std::string& newStr, const std::string& qualifier, const std::string& declarationPrefix)
+    void replaceAndInsertDeclaration(std::string& source, std::string::size_type insPos, const std::string& originalStr, const std::string& newStr, const std::string& qualifier, const std::string& declarationPrefix)
     {
         if (replace(source, originalStr, newStr))
         {
-            source.insert(declPos, qualifier + declarationPrefix + newStr + std::string(";\n"));
+            source.insert(insPos, qualifier + declarationPrefix + newStr + std::string(";\n"));
         }
     }
 }
@@ -1227,22 +1227,29 @@ bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
 
     // find the first legal insertion point for replacement declarations. GLSL requires that nothing
     // precede a "#verson" compiler directive, so we must insert new declarations after it.
-    std::string::size_type declPos = source.rfind( "#version " );
-    if ( declPos != std::string::npos )
+    std::string::size_type insPos = source.rfind( "#version " );
+    if ( insPos != std::string::npos )
     {
-        declPos = source.find(" ", declPos); // move to the first space after "#version"
-        declPos = source.find_first_not_of(std::string(" "), declPos); // skip all the spaces until you reach the version number
-        std::string versionNumber(source, declPos, 3);
+        insPos = source.find(" ", insPos); // move to the first space after "#version"
+        insPos = source.find_first_not_of(std::string(" "), insPos); // skip all the spaces until you reach the version number
+        std::string versionNumber(source, insPos, 3);
         int glslVersion = atoi(versionNumber.c_str());
         OSG_INFO<<"shader version found: "<< glslVersion <<std::endl;
         if (glslVersion >= 130) attributeQualifier = "in ";
         // found the string, now find the next linefeed and set the insertion point after it.
-        declPos = source.find( '\n', declPos );
-        declPos = declPos != std::string::npos ? declPos+1 : source.length();
+        insPos = source.find( '\n', insPos );
+        insPos = insPos != std::string::npos ? insPos+1 : source.length();
     }
     else
     {
-        declPos = 0;
+        insPos = 0;
+    }
+
+    // move insPos to next line as long as the line begins with an #. This ensures declarations appear
+    // after any possible #extension directives
+    for(int sourceSize = source.length(); insPos < sourceSize && (source[insPos] == '#' || source[insPos] == '\n'); ) {
+      insPos = source.find( '\n', insPos) ;
+      insPos = insPos != std::string::npos ? insPos+1 : sourceSize;
     }
 
     std::string::size_type extPos = source.rfind( "#extension " );
@@ -1258,23 +1265,23 @@ bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
         State_Utils::replace(source, "ftransform()", "gl_ModelViewProjectionMatrix * gl_Vertex");
 
         // replace built in uniform
-        State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_ModelViewMatrix", "osg_ModelViewMatrix", "uniform ", "mat4 ");
-        State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_ModelViewProjectionMatrix", "osg_ModelViewProjectionMatrix", "uniform ", "mat4 ");
-        State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_ProjectionMatrix", "osg_ProjectionMatrix", "uniform ", "mat4 ");
-        State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_NormalMatrix", "osg_NormalMatrix", "uniform ", "mat3 ");
+        State_Utils::replaceAndInsertDeclaration(source, insPos, "gl_ModelViewMatrix", "osg_ModelViewMatrix", "uniform ", "mat4 ");
+        State_Utils::replaceAndInsertDeclaration(source, insPos, "gl_ModelViewProjectionMatrix", "osg_ModelViewProjectionMatrix", "uniform ", "mat4 ");
+        State_Utils::replaceAndInsertDeclaration(source, insPos, "gl_ProjectionMatrix", "osg_ProjectionMatrix", "uniform ", "mat4 ");
+        State_Utils::replaceAndInsertDeclaration(source, insPos, "gl_NormalMatrix", "osg_NormalMatrix", "uniform ", "mat3 ");
     }
 
     if (_useVertexAttributeAliasing)
     {
-        State_Utils::replaceAndInsertDeclaration(source, declPos, _vertexAlias._glName,         _vertexAlias._osgName,         attributeQualifier, _vertexAlias._declaration);
-        State_Utils::replaceAndInsertDeclaration(source, declPos, _normalAlias._glName,         _normalAlias._osgName,         attributeQualifier, _normalAlias._declaration);
-        State_Utils::replaceAndInsertDeclaration(source, declPos, _colorAlias._glName,          _colorAlias._osgName,          attributeQualifier, _colorAlias._declaration);
-        State_Utils::replaceAndInsertDeclaration(source, declPos, _secondaryColorAlias._glName, _secondaryColorAlias._osgName, attributeQualifier, _secondaryColorAlias._declaration);
-        State_Utils::replaceAndInsertDeclaration(source, declPos, _fogCoordAlias._glName,       _fogCoordAlias._osgName,       attributeQualifier, _fogCoordAlias._declaration);
+        State_Utils::replaceAndInsertDeclaration(source, insPos, _vertexAlias._glName,         _vertexAlias._osgName,         attributeQualifier, _vertexAlias._declaration);
+        State_Utils::replaceAndInsertDeclaration(source, insPos, _normalAlias._glName,         _normalAlias._osgName,         attributeQualifier, _normalAlias._declaration);
+        State_Utils::replaceAndInsertDeclaration(source, insPos, _colorAlias._glName,          _colorAlias._osgName,          attributeQualifier, _colorAlias._declaration);
+        State_Utils::replaceAndInsertDeclaration(source, insPos, _secondaryColorAlias._glName, _secondaryColorAlias._osgName, attributeQualifier, _secondaryColorAlias._declaration);
+        State_Utils::replaceAndInsertDeclaration(source, insPos, _fogCoordAlias._glName,       _fogCoordAlias._osgName,       attributeQualifier, _fogCoordAlias._declaration);
         for (size_t i=0; i<_texCoordAliasList.size(); i++)
         {
             const VertexAttribAlias& texCoordAlias = _texCoordAliasList[i];
-            State_Utils::replaceAndInsertDeclaration(source, declPos, texCoordAlias._glName, texCoordAlias._osgName, attributeQualifier, texCoordAlias._declaration);
+            State_Utils::replaceAndInsertDeclaration(source, insPos, texCoordAlias._glName, texCoordAlias._osgName, attributeQualifier, texCoordAlias._declaration);
         }
     }
 

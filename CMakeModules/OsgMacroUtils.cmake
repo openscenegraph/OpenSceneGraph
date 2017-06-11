@@ -122,9 +122,9 @@ MACRO(SETUP_LINK_LIBRARIES)
     FOREACH(LINKLIB ${TARGET_ADDED_LIBRARIES})
       SET(TO_INSERT TRUE)
       FOREACH (value ${TARGET_COMMON_LIBRARIES})
-            IF (${value} STREQUAL ${LINKLIB})
+            IF ("${value}" STREQUAL "${LINKLIB}")
                   SET(TO_INSERT FALSE)
-            ENDIF (${value} STREQUAL ${LINKLIB})
+            ENDIF ("${value}" STREQUAL "${LINKLIB}")
         ENDFOREACH (value ${TARGET_COMMON_LIBRARIES})
       IF(TO_INSERT)
           LIST(APPEND TARGET_LIBRARIES ${LINKLIB})
@@ -269,7 +269,7 @@ MACRO(SETUP_PLUGIN PLUGIN_NAME)
 
       # add cpack config variables for plugin with own package
       IF(BUILD_OSG_PACKAGES)
-        IF(${CPACK_GENERATOR} STREQUAL "DEB")
+        IF("${CPACK_GENERATOR}" STREQUAL "DEB")
             STRING(TOUPPER ${PACKAGE_COMPONENT} UPPER_PACKAGE_COMPONENT)
             SET(CPACK_${UPPER_PACKAGE_COMPONENT}_DEPENDENCIES
                 "libopenscenegraph"

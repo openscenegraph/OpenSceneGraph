@@ -62,6 +62,7 @@ class OSG_EXPORT Array : public BufferData
 
     public:
 
+        /// The type of data stored in this array.
         enum Type
         {
             ArrayType = 0,
@@ -115,9 +116,16 @@ class OSG_EXPORT Array : public BufferData
             QuatArrayType     = 35,
 
             UInt64ArrayType   = 36,
-            Int64ArrayType    = 37
+            Int64ArrayType    = 37,
+
+            LastArrayType     = 37
+                // If new array types are added, update this and
+                // update Array::className() in src/osg/Array.cpp.
+                // Array::Type values are from ArrayType to
+                // LastArrayType, inclusive.
         };
 
+        /// The scope of applicability of the values in this array
         enum Binding
         {
             BIND_UNDEFINED=-1,
@@ -146,6 +154,9 @@ class OSG_EXPORT Array : public BufferData
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Array*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
+
+        /// Get the class name of this array.  Defined in src/osg/Array.cpp
+        /// for all concrete array types listed below --- doesn't use traits.
         virtual const char* className() const;
 
         virtual void accept(ArrayVisitor&) = 0;
@@ -226,6 +237,7 @@ inline osg::Array::Binding getBinding(const osg::Array* array) { return array ? 
 inline bool getNormalize(const osg::Array* array) { return array ? array->getNormalize() : false; }
 
 
+/// A concrete array holding elements of type T.
 template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>
 class TemplateArray : public Array, public MixinVector<T>
 {
@@ -396,6 +408,8 @@ class TemplateIndexArray : public IndexArray, public MixinVector<T>
         virtual ~TemplateIndexArray() {}
 };
 
+// The predefined array types
+
 typedef TemplateIndexArray<GLbyte,Array::ByteArrayType,1,GL_BYTE>               ByteArray;
 typedef TemplateIndexArray<GLshort,Array::ShortArrayType,1,GL_SHORT>            ShortArray;
 typedef TemplateIndexArray<GLint,Array::IntArrayType,1,GL_INT>                  IntArray;
@@ -406,7 +420,6 @@ typedef TemplateIndexArray<GLuint,Array::UIntArrayType,1,GL_UNSIGNED_INT>       
 
 typedef TemplateArray<GLfloat,Array::FloatArrayType,1,GL_FLOAT>                 FloatArray;
 typedef TemplateArray<GLdouble,Array::DoubleArrayType,1,GL_DOUBLE>              DoubleArray;
-
 
 typedef TemplateArray<Vec2b,Array::Vec2bArrayType,2,GL_BYTE>                    Vec2bArray;
 typedef TemplateArray<Vec3b,Array::Vec3bArrayType,3,GL_BYTE>                    Vec3bArray;
@@ -447,6 +460,7 @@ typedef TemplateArray<Quat,Array::QuatArrayType,4,GL_DOUBLE>                    
 
 typedef TemplateIndexArray<GLuint64,Array::UInt64ArrayType,1,GL_UNSIGNED_INT64_ARB> UInt64Array;
 typedef TemplateIndexArray<GLint64,Array::Int64ArrayType,1,GL_INT64_ARB>            Int64Array;
+
 class ArrayVisitor
 {
     public:

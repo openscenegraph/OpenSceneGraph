@@ -86,6 +86,7 @@ struct PrimitiveIndicesCollector
         if (v0==v1)
         {
             //OSG_NOTICE<<"Disgarding degenerate triangle"<<std::endl;
+            _buildKdTree->_kdTree._degenerateCount++;
             return;
         }
 
@@ -111,6 +112,7 @@ struct PrimitiveIndicesCollector
         if (v0==v1 || v1==v2 || v2==v0)
         {
             //OSG_NOTICE<<"Disgarding degenerate triangle"<<std::endl;
+            _buildKdTree->_kdTree._degenerateCount++;
             return;
         }
 
@@ -138,6 +140,7 @@ struct PrimitiveIndicesCollector
         if (v0==v1 || v1==v2 || v2==v0 || v3==v0 || v3==v1 || v3==v2)
         {
             //OSG_NOTICE<<"Disgarding degenerate quad"<<std::endl;
+            _buildKdTree->_kdTree._degenerateCount++;
             return;
         }
 
@@ -287,6 +290,7 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
             for(int i=istart; i<=iend; ++i)
             {
                 unsigned int primitiveIndex = _kdTree.getPrimitiveIndices()[_primitiveIndices[i]];
+                primitiveIndex++; //skip original Primitive index
                 unsigned int numPoints = _kdTree.getVertexIndices()[primitiveIndex++];
 
                 for(; numPoints>0; --numPoints)
@@ -480,12 +484,13 @@ KdTree::BuildOptions::BuildOptions():
 //
 // KdTree
 
-KdTree::KdTree()
+KdTree::KdTree() : _degenerateCount(0)
 {
 }
 
 KdTree::KdTree(const KdTree& rhs, const osg::CopyOp& copyop):
     Shape(rhs, copyop),
+    _degenerateCount(rhs._degenerateCount),
     _vertices(rhs._vertices),
     _kdNodes(rhs._kdNodes)
 {

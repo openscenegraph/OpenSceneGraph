@@ -357,15 +357,15 @@ struct IntersectFunctor
     // handle triangles
     void operator()(const osg::Vec3& v0, const osg::Vec3& v1, const osg::Vec3& v2, bool /*treatVertexDataAsTemporary*/)
     {
-        ++_primitiveIndex;
         intersect(v0,v1,v2);
+        ++_primitiveIndex;
     }
 
     void operator()(const osg::Vec3& v0, const osg::Vec3& v1, const osg::Vec3& v2, const osg::Vec3& v3, bool /*treatVertexDataAsTemporary*/)
     {
-        ++_primitiveIndex;
         intersect(v0,v1,v3);
         intersect(v1,v2,v3);
+        ++_primitiveIndex;
     }
 
     void intersect(const osg::Vec3Array*, int , unsigned int)

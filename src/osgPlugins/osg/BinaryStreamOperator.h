@@ -90,7 +90,7 @@ public:
         {
             if ( mark._name=="{" )
             {
-                long long size = 0;
+                uint64_t size = 0;
                 _beginPositions.push_back( _out->tellp() );
                 _out->write( (char*)&size, osgDB::INT64_SIZE );
             }
@@ -101,7 +101,7 @@ public:
                 _out->seekp( beginPos );
 
                 std::streampos size64 = pos - beginPos;
-                long long size = (long long) size64;
+                uint64_t size = (uint64_t) size64;
                 _out->write( (char*)&size, osgDB::INT64_SIZE);
                 _out->seekp( pos );
             }
@@ -251,7 +251,7 @@ public:
                 // to accommodate any block size.
                 if (getInputStream() && getInputStream()->getFileVersion() > 148)
                 {
-                   long long size = 0;
+                   uint64_t size = 0;
                    _in->read( (char*)&size, osgDB::INT64_SIZE);
                    if ( _byteSwap ) osg::swapBytes( (char*)&size, osgDB::INT64_SIZE);
                    _blockSizes.push_back( size );

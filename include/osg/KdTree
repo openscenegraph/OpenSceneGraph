@@ -69,41 +69,45 @@ class OSG_EXPORT KdTree : public osg::Shape
         inline unsigned int addPoint(unsigned int p0)
         {
             unsigned int i = _vertexIndices.size();
-            _primitiveIndices.push_back(i);
+            _vertexIndices.push_back(_primitiveIndices.size() + _degenerateCount);
             _vertexIndices.push_back(1);
             _vertexIndices.push_back(p0);
+            _primitiveIndices.push_back(i);
             return i;
         }
         inline unsigned int addLine(unsigned int p0, unsigned int p1)
         {
             unsigned int i = _vertexIndices.size();
-            _primitiveIndices.push_back(i);
+            _vertexIndices.push_back(_primitiveIndices.size() + _degenerateCount);
             _vertexIndices.push_back(2);
             _vertexIndices.push_back(p0);
             _vertexIndices.push_back(p1);
+            _primitiveIndices.push_back(i);
             return i;
         }
 
         inline unsigned int addTriangle(unsigned int p0, unsigned int p1, unsigned int p2)
         {
             unsigned int i = _vertexIndices.size();
-            _primitiveIndices.push_back(i);
+            _vertexIndices.push_back(_primitiveIndices.size() + _degenerateCount);
             _vertexIndices.push_back(3);
             _vertexIndices.push_back(p0);
             _vertexIndices.push_back(p1);
             _vertexIndices.push_back(p2);
+            _primitiveIndices.push_back(i);
             return i;
         }
 
         inline unsigned int addQuad(unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3)
         {
             unsigned int i = _vertexIndices.size();
-            _primitiveIndices.push_back(i);
+            _vertexIndices.push_back(_primitiveIndices.size() + _degenerateCount);
             _vertexIndices.push_back(4);
             _vertexIndices.push_back(p0);
             _vertexIndices.push_back(p1);
             _vertexIndices.push_back(p2);
             _vertexIndices.push_back(p3);
+            _primitiveIndices.push_back(i);
             return i;
         }
 
@@ -154,13 +158,14 @@ class OSG_EXPORT KdTree : public osg::Shape
                 for(int i=istart; i<iend; ++i)
                 {
                     unsigned int primitiveIndex = _primitiveIndices[i];
+                    unsigned int originalPIndex = _vertexIndices[primitiveIndex++];
                     unsigned int numVertices = _vertexIndices[primitiveIndex++];
                     switch(numVertices)
                     {
-                        case(1): functor.intersect(_vertices.get(), i, _vertexIndices[primitiveIndex]); break;
-                        case(2): functor.intersect(_vertices.get(), i, _vertexIndices[primitiveIndex], _vertexIndices[primitiveIndex+1]); break;
-                        case(3): functor.intersect(_vertices.get(), i, _vertexIndices[primitiveIndex], _vertexIndices[primitiveIndex+1], _vertexIndices[primitiveIndex+2]); break;
-                        case(4): functor.intersect(_vertices.get(), i, _vertexIndices[primitiveIndex], _vertexIndices[primitiveIndex+1], _vertexIndices[primitiveIndex+2], _vertexIndices[primitiveIndex+3]); break;
+                        case(1): functor.intersect(_vertices.get(), originalPIndex, _vertexIndices[primitiveIndex]); break;
+                        case(2): functor.intersect(_vertices.get(), originalPIndex, _vertexIndices[primitiveIndex], _vertexIndices[primitiveIndex+1]); break;
+                        case(3): functor.intersect(_vertices.get(), originalPIndex, _vertexIndices[primitiveIndex], _vertexIndices[primitiveIndex+1], _vertexIndices[primitiveIndex+2]); break;
+                        case(4): functor.intersect(_vertices.get(), originalPIndex, _vertexIndices[primitiveIndex], _vertexIndices[primitiveIndex+1], _vertexIndices[primitiveIndex+2], _vertexIndices[primitiveIndex+3]); break;
                         default : OSG_NOTICE<<"Warning: KdTree::intersect() encounted unsupported primitive size of "<<numVertices<<std::endl; break;
                     }
                 }
@@ -174,7 +179,7 @@ class OSG_EXPORT KdTree : public osg::Shape
             }
         }
 
-
+        unsigned int _degenerateCount;
 
     protected:
 

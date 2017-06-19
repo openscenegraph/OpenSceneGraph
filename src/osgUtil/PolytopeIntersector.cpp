@@ -256,9 +256,11 @@ struct IntersectFunctor
     {
         if (_settings->_limitOneIntersection && _hit) return;
 
-        ++_primitiveIndex;
-
-        if ((_settings->_primitiveMask&PolytopeIntersector::POINT_PRIMITIVES)==0) return;
+        if ((_settings->_primitiveMask&PolytopeIntersector::POINT_PRIMITIVES)==0)
+        {
+          ++_primitiveIndex;
+          return;
+        }
 
         // initialize the set of vertices to test.
         src.clear();
@@ -278,7 +280,11 @@ struct IntersectFunctor
                 {
                     const osg::Plane& plane=*pitr;
                     double d1=plane.distance(v0);
-                    if (d1<0.0) return;   // point outside
+                    if (d1<0.0)   // point outside
+                    {
+                      ++_primitiveIndex;
+                      return;
+                    }
                 }
             }
         }
@@ -286,6 +292,8 @@ struct IntersectFunctor
         src.push_back(v0);
 
         addIntersection();
+        
+        ++_primitiveIndex;
     }
 
     // handle lines
@@ -293,9 +301,11 @@ struct IntersectFunctor
     {
         if (_settings->_limitOneIntersection && _hit) return;
 
-        ++_primitiveIndex;
-
-        if ((_settings->_primitiveMask&PolytopeIntersector::LINE_PRIMITIVES)==0) return;
+        if ((_settings->_primitiveMask&PolytopeIntersector::LINE_PRIMITIVES)==0)
+        {
+          ++_primitiveIndex;
+          return;
+        }
 
         src.clear();
         src.push_back(v0);
@@ -305,6 +315,7 @@ struct IntersectFunctor
         {
             addIntersection();
         }
+        ++_primitiveIndex;
     }
 
     // handle triangles
@@ -312,9 +323,11 @@ struct IntersectFunctor
     {
         if (_settings->_limitOneIntersection && _hit) return;
 
-        ++_primitiveIndex;
-
-        if ((_settings->_primitiveMask&PolytopeIntersector::TRIANGLE_PRIMITIVES)==0) return;
+        if ((_settings->_primitiveMask&PolytopeIntersector::TRIANGLE_PRIMITIVES)==0)
+        {
+          ++_primitiveIndex;
+          return;
+        }
 
         src.clear();
         src.push_back(v0);
@@ -326,15 +339,18 @@ struct IntersectFunctor
         {
             addIntersection();
         }
+        ++_primitiveIndex;
     }
 
     void operator()(const osg::Vec3& v0, const osg::Vec3& v1, const osg::Vec3& v2, const osg::Vec3& v3, bool /*treatVertexDataAsTemporary*/)
     {
         if (_settings->_limitOneIntersection && _hit) return;
 
-        ++_primitiveIndex;
-
-        if ((_settings->_primitiveMask&PolytopeIntersector::TRIANGLE_PRIMITIVES)==0) return;
+        if ((_settings->_primitiveMask&PolytopeIntersector::TRIANGLE_PRIMITIVES)==0)
+        {
+          ++_primitiveIndex;
+          return;
+        }
 
         src.clear();
 
@@ -348,6 +364,7 @@ struct IntersectFunctor
         {
             addIntersection();
         }
+        ++_primitiveIndex;
     }
 
     void intersect(const osg::Vec3Array* vertices, int primitiveIndex, unsigned int p0)

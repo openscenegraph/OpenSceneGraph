@@ -141,7 +141,7 @@ struct IntersectFunctor
             }
         }
 
-        // compate s and e against the yMin to yMax range of bb.
+        // compare s and e against the yMin to yMax range of bb.
         if (s.y()<=e.y())
         {
 
@@ -179,7 +179,7 @@ struct IntersectFunctor
             }
         }
 
-        // compate s and e against the zMin to zMax range of bb.
+        // compare s and e against the zMin to zMax range of bb.
         if (s.z()<=e.z())
         {
 
@@ -247,8 +247,8 @@ struct IntersectFunctor
 
         value_type r,r0,r1,r2;
 
-        const value_type esplison = 1e-10;
-        if (det>esplison)
+        const value_type epsilon = 1e-10;
+        if (det>epsilon)
         {
             value_type u = (P*T);
             if (u<0.0 || u>det) return;
@@ -271,7 +271,7 @@ struct IntersectFunctor
             r2 = v;
             r = t * _inverse_length;
         }
-        else if (det<-esplison)
+        else if (det<-epsilon)
         {
             value_type u = (P*T);
             if (u>0.0 || u<det) return;
@@ -357,15 +357,15 @@ struct IntersectFunctor
     // handle triangles
     void operator()(const osg::Vec3& v0, const osg::Vec3& v1, const osg::Vec3& v2, bool /*treatVertexDataAsTemporary*/)
     {
-        ++_primitiveIndex;
         intersect(v0,v1,v2);
+        ++_primitiveIndex;
     }
 
     void operator()(const osg::Vec3& v0, const osg::Vec3& v1, const osg::Vec3& v2, const osg::Vec3& v3, bool /*treatVertexDataAsTemporary*/)
     {
-        ++_primitiveIndex;
         intersect(v0,v1,v3);
         intersect(v1,v2,v3);
+        ++_primitiveIndex;
     }
 
     void intersect(const osg::Vec3Array*, int , unsigned int)
@@ -595,7 +595,7 @@ bool LineSegmentIntersector::intersectAndClip(osg::Vec3d& s, osg::Vec3d& e,const
 
     double epsilon = 1e-5;
 
-    // compate s and e against the xMin to xMax range of bb.
+    // compare s and e against the xMin to xMax range of bb.
     if (s.x()<=e.x())
     {
         // trivial reject of segment wholely outside.
@@ -636,7 +636,7 @@ bool LineSegmentIntersector::intersectAndClip(osg::Vec3d& s, osg::Vec3d& e,const
         }
     }
 
-    // compate s and e against the yMin to yMax range of bb.
+    // compare s and e against the yMin to yMax range of bb.
     if (s.y()<=e.y())
     {
         // trivial reject of segment wholely outside.
@@ -677,7 +677,7 @@ bool LineSegmentIntersector::intersectAndClip(osg::Vec3d& s, osg::Vec3d& e,const
         }
     }
 
-    // compate s and e against the zMin to zMax range of bb.
+    // compare s and e against the zMin to zMax range of bb.
     if (s.z()<=e.z())
     {
         // trivial reject of segment wholely outside.

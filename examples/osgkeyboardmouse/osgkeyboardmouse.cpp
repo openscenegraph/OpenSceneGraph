@@ -349,7 +349,9 @@ public:
             if (picker->containsIntersections())
             {
                 osgUtil::LineSegmentIntersector::Intersection intersection = picker->getFirstIntersection();
-                osg::notify(osg::NOTICE)<<"Picked "<<intersection.localIntersectionPoint<<std::endl;
+                osg::notify(osg::NOTICE)<<"Picked "<<intersection.localIntersectionPoint<<std::endl
+                <<"  primitive index "<<intersection.primitiveIndex
+                <<std::endl;
 
                 osg::NodePath& nodePath = intersection.nodePath;
                 node = (nodePath.size()>=1)?nodePath[nodePath.size()-1]:0;

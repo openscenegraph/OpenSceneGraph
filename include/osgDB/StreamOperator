@@ -12,16 +12,21 @@ namespace osgDB
 
 // forward declare
 class InputStream;
+class OutputStream;
 
 class OSGDB_EXPORT OutputIterator : public osg::Referenced
 {
 public:
-    OutputIterator() : _out(0), _supportBinaryBrackets(false) {}
+    OutputIterator() : _out(0), _outputStream(0), _supportBinaryBrackets(false) {}
     virtual ~OutputIterator() {}
 
     void setStream( std::ostream* ostream ) { _out = ostream; }
     std::ostream* getStream() { return _out; }
     const std::ostream* getStream() const { return _out; }
+
+    void setOutputStream( OutputStream* outputStream) { _outputStream = outputStream; }
+    OutputStream* getOutputStream() { return _outputStream; }
+    const OutputStream* getOutputStream() const { return _outputStream; }
 
     void setSupportBinaryBrackets( bool b ) { _supportBinaryBrackets = b; }
     bool getSupportBinaryBrackets() const { return _supportBinaryBrackets; }
@@ -69,6 +74,7 @@ protected:
     }
 
     std::ostream* _out;
+    osgDB::OutputStream* _outputStream;
     bool _supportBinaryBrackets;
 };
 

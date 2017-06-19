@@ -706,6 +706,8 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
         throwException( "OutputStream: Null stream specified." );
     if ( getException() ) return;
 
+    _out->setOutputStream(this);
+
     if ( isBinary() )
     {
         *this << (unsigned int)type << (unsigned int)OPENSCENEGRAPH_SOVERSION;

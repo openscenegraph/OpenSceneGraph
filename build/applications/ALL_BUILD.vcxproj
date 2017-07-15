@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{31C489A2-9F61-3FAF-A370-A2864901F845}</ProjectGUID>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>ALL_BUILD</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+    <PropertyGroup>
+      <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\applications\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/applications/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015 -BD:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build --check-stamp-file D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build/applications/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/applications/CMakeLists.txt;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\applications\CMakeLists.txt;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\applications\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\applications\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/applications/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015 -BD:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build --check-stamp-file D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build/applications/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/applications/CMakeLists.txt;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\applications\CMakeLists.txt;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\applications\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\applications\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/applications/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015 -BD:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build --check-stamp-file D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build/applications/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/applications/CMakeLists.txt;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\applications\CMakeLists.txt;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\applications\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\applications\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/applications/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015 -BD:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build --check-stamp-file D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build/applications/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/applications/CMakeLists.txt;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\applications\CMakeLists.txt;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\applications\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\applications\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\ZERO_CHECK.vcxproj">
+      <Project>{099DEE26-FAC1-370E-9D4B-C640F377F0AA}</Project>
+      <Name>ZERO_CHECK</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\applications\osgarchive\application_osgarchive.vcxproj">
+      <Project>{432DCC7B-F0E0-3485-8D1A-1C9A5A859A8F}</Project>
+      <Name>application_osgarchive</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\applications\osgconv\application_osgconv.vcxproj">
+      <Project>{A8042E75-CF82-3F89-A7EF-D6CBD43854D5}</Project>
+      <Name>application_osgconv</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\applications\osgfilecache\application_osgfilecache.vcxproj">
+      <Project>{6D94ADF5-3BA1-3541-96A0-513BB69B3347}</Project>
+      <Name>application_osgfilecache</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\applications\osgversion\application_osgversion.vcxproj">
+      <Project>{D3450959-18A6-3AF8-A7AA-9C5FD1579480}</Project>
+      <Name>application_osgversion</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\applications\osgviewer\application_osgviewer.vcxproj">
+      <Project>{C9BF0723-00B5-3693-8B22-92C7E35A6F8E}</Project>
+      <Name>application_osgviewer</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\applications\present3D\application_present3D.vcxproj">
+      <Project>{D0AA939C-D0CE-3E4F-8833-3E056B8FDF67}</Project>
+      <Name>application_present3D</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

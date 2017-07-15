@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPresentation\Cursor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPresentation\AnimationMaterial.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPresentation\CompileSlideCallback.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPresentation\PickEventHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPresentation\PropertyManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPresentation\KeyEventHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPresentation\SlideEventHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPresentation\SlideShowConstructor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPresentation\Timeout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPresentation\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgPresentation\Export">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgPresentation\Cursor">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgPresentation\AnimationMaterial">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgPresentation\CompileSlideCallback">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgPresentation\PickEventHandler">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgPresentation\PropertyManager">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgPresentation\KeyEventHandler">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgPresentation\SlideEventHandler">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgPresentation\SlideShowConstructor">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgPresentation\Timeout">
+      <Filter>Header Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\PlatformSpecifics\Windows\OpenSceneGraphVersionInfo.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{A7D8C856-1ECA-3B64-A765-B7A8D0A376D1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{25291159-70A2-3485-88AE-C7B7E30AE539}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

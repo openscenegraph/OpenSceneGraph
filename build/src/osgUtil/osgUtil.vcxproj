@@ -1,0 +1,433 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{87D84E42-6B7E-3A1C-841E-138A5BDA2BF4}</ProjectGUID>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>osgUtil</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+    <PropertyGroup>
+      <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\bin\</OutDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">osgUtil.dir\Debug\</IntDir>
+      <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">osg149-osgUtild</TargetName>
+      <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.dll</TargetExt>
+      <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+      <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\bin\</OutDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">osgUtil.dir\Release\</IntDir>
+      <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">osg149-osgUtil</TargetName>
+      <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.dll</TargetExt>
+      <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+      <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\bin\</OutDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">osgUtil.dir\MinSizeRel\</IntDir>
+      <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">osg149-osgUtils</TargetName>
+      <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.dll</TargetExt>
+      <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+      <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\bin\</OutDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">osgUtil.dir\RelWithDebInfo\</IntDir>
+      <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">osg149-osgUtilrd</TargetName>
+      <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.dll</TargetExt>
+      <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+      <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+    </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Debug/</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4589;4706;4127;4100</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;OSGUTIL_LIBRARY;CMAKE_INTDIR="Debug";osgUtil_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;OSGUTIL_LIBRARY;CMAKE_INTDIR=\"Debug\";osgUtil_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalOptions>%(AdditionalOptions)  /machine:x64</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\..\lib\osgd.lib;..\..\lib\OpenThreadsd.lib;opengl32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>Debug</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build/lib/osgUtild.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build/bin/osg149-osgUtild.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version></Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Release/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DisableSpecificWarnings>4589;4706;4127;4100</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;OSGUTIL_LIBRARY;CMAKE_INTDIR="Release";osgUtil_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat></DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;OSGUTIL_LIBRARY;CMAKE_INTDIR=\"Release\";osgUtil_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalOptions>%(AdditionalOptions)  /machine:x64</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\..\lib\osg.lib;..\..\lib\OpenThreads.lib;opengl32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>No</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build/lib/osgUtil.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build/bin/osg149-osgUtil.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version></Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>MinSizeRel/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DisableSpecificWarnings>4589;4706;4127;4100</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;OSGUTIL_LIBRARY;CMAKE_INTDIR="MinSizeRel";osgUtil_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat></DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;OSGUTIL_LIBRARY;CMAKE_INTDIR=\"MinSizeRel\";osgUtil_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalOptions>%(AdditionalOptions)  /machine:x64</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\..\lib\osgs.lib;..\..\lib\OpenThreadss.lib;opengl32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>No</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build/lib/osgUtils.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build/bin/osg149-osgUtils.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version></Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4589;4706;4127;4100</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;OSGUTIL_LIBRARY;CMAKE_INTDIR="RelWithDebInfo";osgUtil_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;OSGUTIL_LIBRARY;CMAKE_INTDIR=\"RelWithDebInfo\";osgUtil_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\include;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalOptions>%(AdditionalOptions)  /machine:x64</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\..\lib\osgrd.lib;..\..\lib\OpenThreadsrd.lib;opengl32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>Debug</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build/lib/osgUtilrd.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build/bin/osg149-osgUtilrd.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version></Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/src/osgUtil/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015 -BD:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build --check-stamp-file D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build/src/osgUtil/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/src/osgUtil/CMakeLists.txt;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\CMakeLists.txt;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\CMakeModules\ModuleInstall.cmake;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\src\osgUtil\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/src/osgUtil/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015 -BD:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build --check-stamp-file D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build/src/osgUtil/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/src/osgUtil/CMakeLists.txt;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\CMakeLists.txt;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\CMakeModules\ModuleInstall.cmake;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\src\osgUtil\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/src/osgUtil/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015 -BD:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build --check-stamp-file D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build/src/osgUtil/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/src/osgUtil/CMakeLists.txt;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\CMakeLists.txt;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\CMakeModules\ModuleInstall.cmake;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\src\osgUtil\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/src/osgUtil/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015 -BD:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build --check-stamp-file D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/build/src/osgUtil/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:/Workspace/opensource/OSG/code/OpenSceneGraph_vs2015/src/osgUtil/CMakeLists.txt;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\CMakeLists.txt;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\CMakeModules\ModuleInstall.cmake;D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\src\osgUtil\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include\detail\graph_array.h" />
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include\detail\types.h" />
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include\detail\cache_simulator.h" />
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include\detail\policy.h" />
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include\detail\heap_array.h" />
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include\detail\connectivity_graph.h" />
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include\tri_stripper.h" />
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\include\public_types.h" />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\CubeMapGenerator.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\CullVisitor.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\DelaunayTriangulator.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\DisplayRequirementsVisitor.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\DrawElementTypeSimplifier.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\EdgeCollector.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\GLObjectsVisitor.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\HalfWayMapGenerator.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\HighlightMapGenerator.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\IntersectionVisitor.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\IntersectVisitor.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\IncrementalCompileOperation.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\LineSegmentIntersector.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\MeshOptimizers.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\Optimizer.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\PerlinNoise.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\PlaneIntersector.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\PolytopeIntersector.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\PositionalStateContainer.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\PrintVisitor.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\RayIntersector.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\RenderBin.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\RenderLeaf.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\RenderStage.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\ReversePrimitiveFunctor.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\SceneView.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\ShaderGen.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\Simplifier.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\SmoothingVisitor.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\SceneGraphBuilder.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\StateGraph.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\Statistics.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\TangentSpaceGenerator.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\Tessellator.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\TransformAttributeFunctor.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\TransformCallback.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\src\tri_stripper.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\src\policy.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\tristripper\src\connectivity_graph.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\TriStripVisitor.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\UpdateVisitor.cpp"  />
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgUtil\Version.cpp"  />
+    <ResourceCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\PlatformSpecifics\Windows\OpenSceneGraphVersionInfo.rc"  />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\ConvertVec" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\CubeMapGenerator" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\CullVisitor" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\DelaunayTriangulator" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\DisplayRequirementsVisitor" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\DrawElementTypeSimplifier" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\EdgeCollector" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\Export" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\GLObjectsVisitor" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\HalfWayMapGenerator" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\HighlightMapGenerator" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\IntersectionVisitor" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\IntersectVisitor" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\IncrementalCompileOperation" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\LineSegmentIntersector" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\MeshOptimizers" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\OperationArrayFunctor" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\Optimizer" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\PerlinNoise" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\PlaneIntersector" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\PolytopeIntersector" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\PositionalStateContainer" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\PrintVisitor" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\RayIntersector" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\ReflectionMapGenerator" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\RenderBin" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\RenderLeaf" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\RenderStage" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\ReversePrimitiveFunctor" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\SceneView" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\SceneGraphBuilder" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\ShaderGen" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\Simplifier" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\SmoothingVisitor" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\StateGraph" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\Statistics" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\TangentSpaceGenerator" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\Tessellator" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\TransformAttributeFunctor" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\TransformCallback" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\TriStripVisitor" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\UpdateVisitor" />
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgUtil\Version" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\ZERO_CHECK.vcxproj">
+      <Project>{099DEE26-FAC1-370E-9D4B-C640F377F0AA}</Project>
+      <Name>ZERO_CHECK</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\src\OpenThreads\win32\OpenThreads.vcxproj">
+      <Project>{AEA99C52-B0D8-3FB4-959C-CA24051B1CC6}</Project>
+      <Name>OpenThreads</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\src\osg\osg.vcxproj">
+      <Project>{1C8E3326-52A8-3337-81E2-5AE8135C94D1}</Project>
+      <Name>osg</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\AncillaryRecords.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\AttrData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\ControlRecords.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\DataInputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\DataOutputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\Document.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\expAncillaryRecords.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\expControlRecords.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\expGeometryRecords.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\expPrimaryRecords.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\ExportOptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\FltExportVisitor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\GeometryRecords.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\LightPointRecords.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\LightSourcePaletteManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\MaterialPaletteManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\PaletteRecords.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\Pools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\PrimaryRecords.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\ReaderWriterATTR.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\ReaderWriterFLT.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\Record.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\RecordInputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\Registry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\ReservedRecords.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\RoadRecords.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\TexturePaletteManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\Vertex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\VertexPaletteManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\VertexRecords.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\AttrData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\DataInputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\DataOutputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\ExportOptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\FltExportVisitor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\FltWriteResult.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\Document.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\LightSourcePaletteManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\MaterialPaletteManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\Pools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\Record.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\RecordInputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\Registry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\TexturePaletteManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\Vertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\VertexPaletteManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\Opcodes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\Types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\OpenFlight\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\PlatformSpecifics\Windows\OpenSceneGraphVersionInfo.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{A7D8C856-1ECA-3B64-A765-B7A8D0A376D1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{25291159-70A2-3485-88AE-C7B7E30AE539}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

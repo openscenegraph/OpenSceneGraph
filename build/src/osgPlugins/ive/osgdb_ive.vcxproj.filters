@@ -1,0 +1,797 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\AlphaFunc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\AnimationPathCallback.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\AnimationPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\AnisotropicLighting.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\AutoTransform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\AzimElevationSector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\AzimSector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Billboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\BlendColor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\BlendEquation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\BlendFunc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\BlinkSequence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\BumpMapping.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\CameraView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Cartoon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ClipNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ClipPlane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ClusterCullingCallback.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ColorMask.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\CompositeLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ConeSector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ConvexPlanarOccluder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ConvexPlanarPolygon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\CoordinateSystemNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\CullFace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DataInputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DataOutputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Depth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DirectionalSector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DOFTransform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Drawable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DrawArrayLengths.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DrawArrays.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DrawElementsUByte.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DrawElementsUInt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DrawElementsUShort.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Effect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ElevationSector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\EllipsoidModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Exception.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\FadeText.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Fog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\FragmentProgram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\FrontFace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Geode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Geometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Group.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\HeightFieldLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ImageLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ImageSequence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Impostor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\LightModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\LightPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\LightPointNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\LightSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\LineStipple.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\LineWidth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Locator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\LOD.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\MatrixTransform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Multisample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\MultiSwitch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\MultiTextureControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\OccluderNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\OcclusionQueryNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\PagedLOD.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Point.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\PointSprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\PolygonMode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\PolygonOffset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\PolygonStipple.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\PositionAttitudeTransform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\PrimitiveSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Program.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ProxyNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ReaderWriterIVE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Scissor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Scribe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Sequence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ShadeModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ShapeAttributeList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Shape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ShapeDrawable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\SpecularHighlights.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\StateSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Stencil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\StencilTwoSided.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Switch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\SwitchLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Terrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\TerrainTile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\TexEnvCombine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\TexEnv.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\TexGen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\TexGenNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\TexMat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Text3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Text.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Texture1D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Texture2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Texture2DArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Texture3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\TextureCubeMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\TextureRectangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Transform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Uniform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VertexProgram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Viewport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VisibilityGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumeCompositeLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumeCompositeProperty.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumeSwitchProperty.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumeScalarProperty.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumeTransferFunctionProperty.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumePropertyAdjustmentCallback.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Volume.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumeImageLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumeLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumeLocator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumeTile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\AlphaFunc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\AnimationPathCallback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\AnimationPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\AnisotropicLighting.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\AutoTransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\AzimElevationSector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\AzimSector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Billboard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\BlendColor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\BlendFunc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\BlinkSequence.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\BumpMapping.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\CameraView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Cartoon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ClipNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ClipPlane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ClusterCullingCallback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ColorMask.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\CompositeLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ConeSector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ConvexPlanarOccluder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ConvexPlanarPolygon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\CoordinateSystemNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\CullFace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DataInputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DataOutputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DataTypeSize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Depth.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DirectionalSector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DOFTransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Drawable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DrawArrayLengths.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DrawArrays.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DrawElementsUByte.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DrawElementsUInt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\DrawElementsUShort.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Effect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ElevationSector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\EllipsoidModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Exception.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\FadeText.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Fog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\FragmentProgram.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\FrontFace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Geode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Geometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Group.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\HeightFieldLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ImageLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ImageSequence.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Impostor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\IveVersion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Layer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\LightModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\LightPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\LightPointNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\LightSource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\LineStipple.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\LineWidth.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Locator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\LOD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\MatrixTransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\MultiSwitch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\MultiTextureControl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\OccluderNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\OcclusionQueryNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\PagedLOD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Point.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\PointSprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\PolygonMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\PolygonOffset.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\PolygonStipple.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\PositionAttitudeTransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\PrimitiveSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Program.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ProxyNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ReadWrite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Scissor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Scribe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Sequence.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ShadeModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ShapeAttributeList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\ShapeDrawable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Shape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\SpecularHighlights.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\StateSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Stencil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\StencilTwoSided.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Switch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\SwitchLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Terrain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\TerrainTile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\TexEnvCombine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\TexEnv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\TexGen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\TexGenNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\TexMat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Text3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Text.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Texture1D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Texture2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Texture2DArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Texture3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\TextureCubeMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\TextureRectangle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Transform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Uniform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VertexProgram.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Viewport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VisibilityGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumeCompositeLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumeCompositeProperty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumeSwitchProperty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumeScalarProperty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumeTransferFunctionProperty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumePropertyAdjustmentCallback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\Volume.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumeImageLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumeLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumeLocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\VolumeTile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgPlugins\ive\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\PlatformSpecifics\Windows\OpenSceneGraphVersionInfo.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{A7D8C856-1ECA-3B64-A765-B7A8D0A376D1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{25291159-70A2-3485-88AE-C7B7E30AE539}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

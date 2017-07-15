@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgText\DefaultFont.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgText\GlyphGeometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgText\Font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgText\FadeText.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgText\Glyph.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgText\String.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgText\Style.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgText\TextBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgText\Text.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgText\Text3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgText\Version.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgText\DefaultFont.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgText\GlyphGeometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgText\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgText\Export">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgText\Font">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgText\Font3D">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgText\FadeText">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgText\Glyph">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgText\KerningType">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgText\String">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgText\Style">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgText\TextBase">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgText\Text">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgText\Text3D">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgText\Version">
+      <Filter>Header Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\PlatformSpecifics\Windows\OpenSceneGraphVersionInfo.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{A7D8C856-1ECA-3B64-A765-B7A8D0A376D1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{25291159-70A2-3485-88AE-C7B7E30AE539}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

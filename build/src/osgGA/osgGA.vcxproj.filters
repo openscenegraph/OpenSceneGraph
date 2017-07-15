@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\AnimationPathManipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\DriveManipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\Device.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\Event.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\EventHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\EventQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\EventVisitor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\FirstPersonManipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\FlightManipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\GUIEventAdapter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\GUIEventHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\KeySwitchMatrixManipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\CameraManipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\MultiTouchTrackballManipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\NodeTrackerManipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\OrbitManipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\StandardManipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\SphericalManipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\StateSetManipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\TerrainManipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\TrackballManipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\UFOManipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\Widget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\Version.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\CameraViewSwitchManipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgGA\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\AnimationPathManipulator">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\CameraViewSwitchManipulator">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\DriveManipulator">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\Device">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\Event">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\EventHandler">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\EventQueue">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\EventVisitor">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\Export">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\FirstPersonManipulator">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\FlightManipulator">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\GUIActionAdapter">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\GUIEventAdapter">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\GUIEventHandler">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\KeySwitchMatrixManipulator">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\CameraManipulator">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\MultiTouchTrackballManipulator">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\NodeTrackerManipulator">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\OrbitManipulator">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\StandardManipulator">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\SphericalManipulator">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\StateSetManipulator">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\TerrainManipulator">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\TrackballManipulator">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\UFOManipulator">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\Widget">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgGA\Version">
+      <Filter>Header Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\PlatformSpecifics\Windows\OpenSceneGraphVersionInfo.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{A7D8C856-1ECA-3B64-A765-B7A8D0A376D1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{25291159-70A2-3485-88AE-C7B7E30AE539}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

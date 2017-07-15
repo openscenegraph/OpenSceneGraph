@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\ObjectWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\InputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\OutputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\Compressors.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\Archive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\AuthenticationMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\Callbacks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\ClassInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\ConvertBase64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\ConvertUTF.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\DatabasePager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\DatabaseRevisions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\DotOsgWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\DynamicLibrary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\ExternalFileWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\Field.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\FieldReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\FieldReaderIterator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\FileCache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\FileNameUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\FileUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\fstream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\ImageOptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\ImagePager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\Input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\MimeTypes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\ObjectCache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\Output.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\Options.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\PluginQuery.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\ReaderWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\ReadFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\Registry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\SharedStateManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\StreamOperator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\Version.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\WriteFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\XmlParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\src\osgDB\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\DataTypes">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\StreamOperator">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\Serializer">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\ObjectWrapper">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\InputStream">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\OutputStream">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\Archive">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\AuthenticationMap">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\Callbacks">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\ClassInterface">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\ConvertBase64">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\ConvertUTF">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\DatabasePager">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\DatabaseRevisions">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\DotOsgWrapper">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\DynamicLibrary">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\Export">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\ExternalFileWriter">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\FileCache">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\FileNameUtils">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\FileUtils">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\fstream">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\ImageOptions">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\ImagePager">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\ImageProcessor">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\Input">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\ObjectCache">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\Output">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\Options">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\ParameterOutput">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\PluginQuery">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\ReaderWriter">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\ReadFile">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\Registry">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\SharedStateManager">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\Version">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\WriteFile">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\include\osgDB\XmlParser">
+      <Filter>Header Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="D:\Workspace\opensource\OSG\code\OpenSceneGraph_vs2015\build\PlatformSpecifics\Windows\OpenSceneGraphVersionInfo.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{A7D8C856-1ECA-3B64-A765-B7A8D0A376D1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{25291159-70A2-3485-88AE-C7B7E30AE539}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

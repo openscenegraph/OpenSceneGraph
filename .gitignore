@@ -63,10 +63,10 @@ install_manifest.txt
 PlatformSpecifics/Windows/*.rc
 
 # Visual studio - project files
-*.sln
+# *.sln
 *.suo
-*.vcxproj
-*.vcxproj.filters
+# *.vcxproj
+# *.vcxproj.filters
 *.vcxproj.user
 
 # Visual Studio - Build Results

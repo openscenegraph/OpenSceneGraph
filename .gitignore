@@ -84,3 +84,4 @@ DerivedData/
 *.DS_Store
 *.build
 *.xcodeproj
+/build/OpenSceneGraph.VC.VC.opendb

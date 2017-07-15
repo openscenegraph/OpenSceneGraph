@@ -85,3 +85,4 @@ DerivedData/
 *.build
 *.xcodeproj
 /build/OpenSceneGraph.VC.VC.opendb
+/build/OpenSceneGraph.VC.db

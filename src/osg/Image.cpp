@@ -1937,9 +1937,9 @@ Vec4 Image::getColor(unsigned int s,unsigned t,unsigned r) const
 
 Vec4 Image::getColor(const Vec3& texcoord) const
 {
-    unsigned int s = osg::clampTo(int(texcoord.x()*float(_s-1)), 0, _s-1);
-    unsigned int t = osg::clampTo(int(texcoord.y()*float(_t-1)), 0, _t-1);
-    unsigned int r = osg::clampTo(int(texcoord.z()*float(_r-1)), 0, _r-1);
+    unsigned int s = osg::clampTo(int(texcoord.x()*float(_s)), 0, _s-1);
+    unsigned int t = osg::clampTo(int(texcoord.y()*float(_t)), 0, _t-1);
+    unsigned int r = osg::clampTo(int(texcoord.z()*float(_r)), 0, _r-1);
     //OSG_NOTICE<<"getColor("<<texcoord<<")="<<getColor(s,t,r)<<std::endl;
     return getColor(s,t,r);
 }

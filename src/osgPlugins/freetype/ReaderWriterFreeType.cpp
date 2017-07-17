@@ -20,6 +20,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
             supportsExtension("fon","Windows bitmap fonts format");
             supportsExtension("fnt","Windows bitmap fonts format");
             supportsExtension("text3d","use 3D Font instead of 2D Font");
+            supportsExtension("woff","web open font format");
 
             supportsOption("monochrome","Select monochrome font.");
         }

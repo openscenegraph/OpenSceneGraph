@@ -26,7 +26,7 @@ using namespace osg;
 // DrawArrayIndirectCommand
 //
 
-DrawArraysIndirectCommand::DrawArraysIndirectCommand():BufferData(),MixinVector<DrawArraysIndirectCmd>() {}
+DrawArraysIndirectCommand::DrawArraysIndirectCommand():BufferData(), MixinVector<DrawArraysIndirectCmd>() {}
 DrawArraysIndirectCommand::DrawArraysIndirectCommand(const DrawArraysIndirectCommand& copy,const CopyOp& copyop/*=CopyOp::SHALLOW_COPY*/)
     :BufferData(copy, copyop),MixinVector<DrawArraysIndirectCmd>() {
 }
@@ -34,7 +34,7 @@ DrawArraysIndirectCommand::DrawArraysIndirectCommand(const DrawArraysIndirectCom
 //
 // DrawElementIndirectCommand
 //
-DrawElementsIndirectCommand::DrawElementsIndirectCommand():BufferData(),MixinVector<DrawElementsIndirectCmd>() {}
+DrawElementsIndirectCommand::DrawElementsIndirectCommand():BufferData(), MixinVector<DrawElementsIndirectCmd>() {}
 DrawElementsIndirectCommand::DrawElementsIndirectCommand(const DrawElementsIndirectCommand& copy,const CopyOp& copyop/*=CopyOp::SHALLOW_COPY*/)
     :BufferData(copy, copyop), MixinVector<DrawElementsIndirectCmd>(){
 }
@@ -42,47 +42,7 @@ MultiDrawElementsIndirectUByte::~MultiDrawElementsIndirectUByte()
 {
     releaseGLObjects();
 }
-/*
-void DrawArraysIndirect::draw(State& state, bool) const
-{
-    GLBufferObject* dibo=_indirectCommand->getBufferObject()->getOrCreateGLBufferObject(state.getContextID());
-    state.bindDrawIndirectBufferObject(dibo);
 
-#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
-    GLenum mode = _mode;
-    if (_mode==GL_QUADS)
-    {
-        state.drawQuads(_first, _count, _numInstances);
-        return;
-    }
-    else if (mode==GL_POLYGON)
-    {
-        mode = GL_TRIANGLE_FAN;
-    }
-    else if (mode==GL_QUAD_STRIP)
-    {
-        mode = GL_TRIANGLE_STRIP;
-    }
-
-    if (_numInstances>=1) state.glDrawArraysInstanced(mode,_first,_count, _numInstances);
-    else glDrawArrays(mode,_first,_count);
-#else
-    // if (_numInstances>=1) state.glDrawArraysItInstanced(_mode,_first,_count, _numInstances);
-    //else
-    state.get<GLExtensions>()->glDrawArraysIndirect(_mode,_indirect);
-#endif
-}
-
-void DrawArraysIndirect::accept(PrimitiveFunctor& functor) const
-{
-    //cant mimic GPU stored drawcall functor.drawArrays(_mode,_first,_count);
-}
-
-void DrawArraysIndirect::accept(PrimitiveIndexFunctor& functor) const
-{
-    //cant mimic GPU stored drawcall functor.drawArrays(_mode,_first,_count);
-}
-*/
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // MultiDrawElementsIndirectUByte
@@ -90,8 +50,8 @@ void DrawArraysIndirect::accept(PrimitiveIndexFunctor& functor) const
 
 void MultiDrawElementsIndirectUByte::draw(State& state, bool useVertexBufferObjects) const
 {
-    GLBufferObject* dibo=_indirectCommand->getBufferObject()->getOrCreateGLBufferObject(state.getContextID());
-    state.bindDrawIndirectBufferObject(dibo);
+    GLBufferObject* dibo = _indirectCommand->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
+    state.bindDrawIndirectBufferObject( dibo );
     GLenum mode = _mode;
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
     if (mode==GL_POLYGON) mode = GL_TRIANGLE_FAN;
@@ -144,8 +104,8 @@ MultiDrawElementsIndirectUShort::~MultiDrawElementsIndirectUShort()
 }
 
 void MultiDrawElementsIndirectUShort::draw(State& state, bool useVertexBufferObjects) const
-{   GLBufferObject* dibo=_indirectCommand->getBufferObject()->getOrCreateGLBufferObject(state.getContextID());
-    state.bindDrawIndirectBufferObject(dibo);
+{   GLBufferObject* dibo = _indirectCommand->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
+    state.bindDrawIndirectBufferObject( dibo );
 
     GLenum mode = _mode;
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
@@ -198,8 +158,8 @@ MultiDrawElementsIndirectUInt::~MultiDrawElementsIndirectUInt()
 
 void MultiDrawElementsIndirectUInt::draw(State& state, bool useVertexBufferObjects) const
 {
-    GLBufferObject* dibo=_indirectCommand->getBufferObject()->getOrCreateGLBufferObject(state.getContextID());
-    state.bindDrawIndirectBufferObject(dibo);
+    GLBufferObject* dibo = _indirectCommand->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
+    state.bindDrawIndirectBufferObject( dibo );
     GLenum mode = _mode;
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
     if (mode==GL_POLYGON) mode = GL_TRIANGLE_FAN;
@@ -213,7 +173,7 @@ void MultiDrawElementsIndirectUInt::draw(State& state, bool useVertexBufferObjec
 
     state.bindElementBufferObject(ebo);
 
-    state.get<GLExtensions>()-> glMultiDrawElementsIndirect(mode, GL_UNSIGNED_INT, (const GLvoid *)(dibo->getOffset(_indirectCommand->getBufferIndex())),_indirectCommand->size(),_stride);
+    state.get<GLExtensions>()-> glMultiDrawElementsIndirect(mode, GL_UNSIGNED_INT, (const GLvoid *)(dibo->getOffset(_indirectCommand->getBufferIndex())),_indirectCommand->size(), _stride);
 
 }
 
@@ -249,12 +209,12 @@ void MultiDrawElementsIndirectUInt::offsetIndices(int offset)
 //
 void MultiDrawArraysIndirect::draw(osg::State& state, bool) const
 {
-    GLBufferObject* dibo=_indirectCommand->getBufferObject()->getOrCreateGLBufferObject(state.getContextID());
-    state.bindDrawIndirectBufferObject(dibo);
+    GLBufferObject* dibo = _indirectCommand->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
+    state.bindDrawIndirectBufferObject( dibo );
 
     GLExtensions* ext = state.get<GLExtensions>();
 
-    ext->glMultiDrawArraysIndirect(_mode,  (const GLvoid *)(dibo->getOffset(_indirectCommand->getBufferIndex())),_indirectCommand->size(),_stride);
+    ext->glMultiDrawArraysIndirect(_mode,  (const GLvoid *)(dibo->getOffset(_indirectCommand->getBufferIndex())),_indirectCommand->size(), _stride);
 
 }
 
@@ -298,7 +258,6 @@ unsigned int MultiDrawArraysIndirect::index(unsigned int pos) const
 
 void MultiDrawArraysIndirect::offsetIndices(int offset)
 {
-
     for(DrawArraysIndirectCommand::iterator itcmd=_indirectCommand->begin(); itcmd!=_indirectCommand->end(); itcmd++)
         itcmd->first += offset;
 }

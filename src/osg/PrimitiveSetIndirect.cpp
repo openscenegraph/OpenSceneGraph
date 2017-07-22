@@ -42,7 +42,41 @@ MultiDrawElementsIndirectUByte::~MultiDrawElementsIndirectUByte()
 {
     releaseGLObjects();
 }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// MultiDrawElementsIndirect
+//
+unsigned int MultiDrawElementsIndirect::getNumPrimitives() const
+{
+    unsigned int total=0;
+    switch(_mode)
+    {
+    case(POINTS):
+         for(DrawElementsIndirectCommand::iterator itcmd=_indirectCommand->begin(); itcmd!=_indirectCommand->end(); itcmd++)
+            total+=itcmd->count;
+    case(LINES):
+        for(DrawElementsIndirectCommand::iterator itcmd=_indirectCommand->begin(); itcmd!=_indirectCommand->end(); itcmd++)
+           total+=itcmd->count/2;
+    case(TRIANGLES):
+        for(DrawElementsIndirectCommand::iterator itcmd=_indirectCommand->begin(); itcmd!=_indirectCommand->end(); itcmd++)
+           total+=itcmd->count/3;
+    case(QUADS):
+        for(DrawElementsIndirectCommand::iterator itcmd=_indirectCommand->begin(); itcmd!=_indirectCommand->end(); itcmd++)
+           total+=itcmd->count/4;
+    case(LINE_STRIP):
+    case(LINE_LOOP):
+    case(TRIANGLE_STRIP):
+    case(TRIANGLE_FAN):
+    case(QUAD_STRIP):
+    case(PATCHES):
+    case(POLYGON):
+    {
+        unsigned int primcount = _indirectCommand->size();
+        return primcount;
+    }
+    }
+    return total;
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // MultiDrawElementsIndirectUByte

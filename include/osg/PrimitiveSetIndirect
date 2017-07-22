@@ -93,7 +93,6 @@ public:
     inline GLsizei getStride()const {
         return _stride;
     }
-
     inline void setIndirectCommand(DrawElementsIndirectCommand*idc) {
         _indirectCommand = idc;
         if(!_indirectCommand->getBufferObject())
@@ -102,6 +101,7 @@ public:
     inline DrawElementsIndirectCommand* getIndirectCommand()const {
         return _indirectCommand;
     }
+    virtual unsigned int getNumPrimitives() const;
 protected:
     virtual ~MultiDrawElementsIndirect() {}
 

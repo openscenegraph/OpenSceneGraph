@@ -21,21 +21,18 @@
 
 void DrawArraysIndirect::draw(osg::State& state, bool /*useVertexBufferObjects*/) const
 {
+    osg::GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
+    state.bindDrawIndirectBufferObject( dibo );
+
 // if you want to see how many primitives were rendered - uncomment code below, but
 // be warned : it is a serious performance killer ( because of GPU->CPU roundtrip )
+#if 0
+    osg::Drawable::Extensions *dext = osg::Drawable::getExtensions( state.getContextID(),true );
+    int* tab = (int*)dext->glMapBuffer(GL_DRAW_INDIRECT_BUFFER,GL_READ_ONLY);
+    int val = _indirect/sizeof(int);
+    OSG_WARN<<"DrawArraysIndirect ("<<val<<"): "<< tab[val] << " " << tab[val+1] << " " << tab[val+2] << " " << tab[val+3] << std::endl;
+    dext->glUnmapBuffer(GL_DRAW_INDIRECT_BUFFER);
+#endif
+    state.get<osg::GLExtensions>()->glDrawArraysIndirect( _mode, (const GLvoid *)(dibo->getOffset(_indirectCommandArray->getBufferIndex())+_indirect ));
 
-// osg::Drawable::Extensions *dext = osg::Drawable::getExtensions( state.getContextID(),true );
-// int* tab = (int*)dext->glMapBuffer(GL_DRAW_INDIRECT_BUFFER,GL_READ_ONLY);
-// int val = _indirect/sizeof(int);
-// OSG_WARN<<"DrawArraysIndirect ("<<val<<"): "<< tab[val] << " " << tab[val+1] << " " << tab[val+2] << " " << tab[val+3] << std::endl;
-// dext->glUnmapBuffer(GL_DRAW_INDIRECT_BUFFER);
-
-   state.get<osg::GLExtensions>()->glDrawArraysIndirect( _mode, reinterpret_cast<const void*>(_indirect) );
-
-}
-
-void MultiDrawArraysIndirect::draw(osg::State& state, bool /*useVertexBufferObjects*/) const
-{
-   // DrawIndirectGLExtensions *ext = DrawIndirectGLExtensions::getExtensions( state.getContextID(),true );
-    state.get<osg::GLExtensions>()->glMultiDrawArraysIndirect( _mode, reinterpret_cast<const void*>(_indirect), _drawcount, _stride );
 }

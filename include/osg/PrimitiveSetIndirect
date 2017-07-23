@@ -29,15 +29,15 @@ typedef  struct GLDrawArraysIndirectCmd {
     uint  instanceCount;
     uint  first;
     uint  baseInstance;
-} DrawArraysIndirectCmd;
+} DrawArraysIndirectCommand;
 
 /// vector of DrawArraysCommand to be hosted on GPU
-class DrawArraysIndirectCommand: public BufferData, public  MixinVector<DrawArraysIndirectCmd>
+class DrawArraysIndirectCommandArray: public BufferData, public  MixinVector<DrawArraysIndirectCommand>
 {
 public:
-    META_Object(osg,DrawArraysIndirectCommand)
-    DrawArraysIndirectCommand();
-    DrawArraysIndirectCommand(const DrawArraysIndirectCommand& copy,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+    META_Object(osg,DrawArraysIndirectCommandArray)
+    DrawArraysIndirectCommandArray();
+    DrawArraysIndirectCommandArray(const DrawArraysIndirectCommandArray& copy,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
     virtual const GLvoid*   getDataPointer() const {
         return empty()?0:&front();
     }
@@ -56,15 +56,15 @@ typedef  struct GLDrawElementsIndirectCmd {
     unsigned int  firstIndex;
     unsigned int  baseVertex;
     unsigned int  baseInstance;
-} DrawElementsIndirectCmd;
+} DrawElementsIndirectCommand;
 
 /// vector of DrawElementsCommand to be hosted on GPU
-class DrawElementsIndirectCommand: public BufferData, public MixinVector<DrawElementsIndirectCmd>
+class DrawElementsIndirectCommandArray: public BufferData, public MixinVector<DrawElementsIndirectCommand>
 {
 public:
-    META_Object(osg,DrawElementsIndirectCommand)
-    DrawElementsIndirectCommand();
-    DrawElementsIndirectCommand(const DrawElementsIndirectCommand& copy,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+    META_Object(osg,DrawElementsIndirectCommandArray)
+    DrawElementsIndirectCommandArray();
+    DrawElementsIndirectCommandArray(const DrawElementsIndirectCommandArray& copy,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
     virtual const GLvoid*   getDataPointer() const {
         return empty()?0:&front();
     }
@@ -81,11 +81,11 @@ class MultiDrawElementsIndirect : public DrawElements
 public:
 
     MultiDrawElementsIndirect(Type primType=PrimitiveType, GLenum mode=0, GLsizei stride=0):
-        DrawElements(primType,mode, 0),_stride(stride) {setIndirectCommand(new DrawElementsIndirectCommand());}
+        DrawElements(primType,mode, 0),_stride(stride) {setIndirectCommandArray(new DrawElementsIndirectCommandArray());}
 
     MultiDrawElementsIndirect(const MultiDrawElementsIndirect& rhs,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
         DrawElements(rhs,copyop),_stride(rhs._stride) {
-        _indirectCommand=(DrawElementsIndirectCommand*)copyop(rhs._indirectCommand.get());
+        _indirectCommandArray=(DrawElementsIndirectCommandArray*)copyop(rhs._indirectCommandArray.get());
     }
     inline void setStride( GLsizei  i) {
         _stride=i;
@@ -93,20 +93,20 @@ public:
     inline GLsizei getStride()const {
         return _stride;
     }
-    inline void setIndirectCommand(DrawElementsIndirectCommand*idc) {
-        _indirectCommand = idc;
-        if(!_indirectCommand->getBufferObject())
-            _indirectCommand->setBufferObject(new osg::DrawIndirectBufferObject());
+    inline void setIndirectCommandArray(DrawElementsIndirectCommandArray*idc) {
+        _indirectCommandArray = idc;
+        if(!_indirectCommandArray->getBufferObject())
+            _indirectCommandArray->setBufferObject(new osg::DrawIndirectBufferObject());
     }
-    inline DrawElementsIndirectCommand* getIndirectCommand()const {
-        return _indirectCommand;
+    inline DrawElementsIndirectCommandArray* getIndirectCommandArray()const {
+        return _indirectCommandArray;
     }
     virtual unsigned int getNumPrimitives() const;
 protected:
     virtual ~MultiDrawElementsIndirect() {}
 
     GLsizei _stride;
-    ref_ptr<DrawElementsIndirectCommand> _indirectCommand;
+    ref_ptr<DrawElementsIndirectCommandArray> _indirectCommandArray;
 
 };
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -417,11 +417,11 @@ public:
 
     MultiDrawArraysIndirect(GLenum mode=0, GLsizei stride=0):
         osg::PrimitiveSet(Type(MultiDrawArraysIndirectPrimitiveType), mode),
-        _stride(stride) {setIndirectCommand(new DrawArraysIndirectCommand);}
+        _stride(stride) {setIndirectCommandArray(new DrawArraysIndirectCommandArray);}
 
     MultiDrawArraysIndirect(const MultiDrawArraysIndirect& dal,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
         osg::PrimitiveSet(dal,copyop),
-         _indirectCommand((DrawArraysIndirectCommand*)copyop( dal._indirectCommand.get())),
+         _indirectCommandArray((DrawArraysIndirectCommandArray*)copyop( dal._indirectCommandArray.get())),
         _stride(dal._stride)
     {}
 
@@ -459,18 +459,18 @@ public:
         return _stride;
     }
 
-    inline void setIndirectCommand(DrawArraysIndirectCommand*idc) {
-        _indirectCommand = idc;
-        if(!_indirectCommand->getBufferObject())
-            _indirectCommand->setBufferObject(new osg::DrawIndirectBufferObject());
+    inline void setIndirectCommandArray(DrawArraysIndirectCommandArray*idc) {
+        _indirectCommandArray = idc;
+        if(!_indirectCommandArray->getBufferObject())
+            _indirectCommandArray->setBufferObject(new osg::DrawIndirectBufferObject());
     }
-    inline DrawArraysIndirectCommand* getIndirectCommand()const {
-        return _indirectCommand;
+    inline DrawArraysIndirectCommandArray* getIndirectCommandArray()const {
+        return _indirectCommandArray;
     }
 
 protected:
 
-    ref_ptr<DrawArraysIndirectCommand> _indirectCommand;
+    ref_ptr<DrawArraysIndirectCommandArray> _indirectCommandArray;
     GLsizei _stride;
 
 };

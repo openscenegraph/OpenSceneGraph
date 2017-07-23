@@ -16,7 +16,7 @@
 #ifndef OSG_DRAWINDIRECTPRIMITIVESET
 #define OSG_DRAWINDIRECTPRIMITIVESET 1
 
-#include <osg/PrimitiveSet>
+#include <osg/PrimitiveSetIndirect>
 #include <osg/BufferObject>
 #include <osg/TextureBuffer>
 
@@ -24,8 +24,8 @@
 class DrawArraysIndirect : public osg::DrawArrays
 {
 public:
-  DrawArraysIndirect(GLenum mode=0,  unsigned int indirect=0)
-   : osg::DrawArrays(mode), _indirect(indirect)
+  DrawArraysIndirect(GLenum mode=0,  unsigned int indirect=0, osg::DrawArraysIndirectCommandArray*indirectCommands=0)
+   : _indirectCommandArray(indirectCommands), osg::DrawArrays(mode), _indirect(indirect)
   {
   }
   virtual osg::Object* cloneType() const { return new DrawArraysIndirect(); }
@@ -35,29 +35,18 @@ public:
   virtual const char* className() const { return "DrawArraysIndirect"; }
 
   virtual void draw(osg::State& state, bool useVertexBufferObjects) const;
-protected:
-  unsigned int _indirect;
-};
-
-class MultiDrawArraysIndirect : public osg::DrawArrays
-{
-public:
-  MultiDrawArraysIndirect(GLenum mode=0, unsigned int indirect=0, GLsizei drawcount=0, GLsizei stride=0)
-   : osg::DrawArrays(mode),   _indirect(indirect), _drawcount(drawcount), _stride(stride)
-  {
+  inline void setIndirectCommandArray(osg::DrawArraysIndirectCommandArray*idc) {
+        _indirectCommandArray = idc;
+        if(!_indirectCommandArray->getBufferObject())
+            _indirectCommandArray->setBufferObject(new osg::DrawIndirectBufferObject());
   }
-  virtual osg::Object* cloneType() const { return new MultiDrawArraysIndirect(); }
-  virtual osg::Object* clone(const osg::CopyOp& /*copyop*/) const { return NULL; }
-  virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const MultiDrawArraysIndirect*>(obj)!=NULL; }
-  virtual const char* libraryName() const { return "osg"; }
-  virtual const char* className() const { return "MultiDrawArraysIndirect"; }
+  inline osg::DrawArraysIndirectCommandArray* getIndirectCommandArray()const {
+        return _indirectCommandArray;
+  }
 
-  virtual void draw(osg::State& state, bool useVertexBufferObjects) const;
 protected:
+  osg::ref_ptr< osg::DrawArraysIndirectCommandArray >             _indirectCommandArray;
   unsigned int _indirect;
-  GLsizei _drawcount;
-  GLsizei _stride;
 };
-
 
 #endif

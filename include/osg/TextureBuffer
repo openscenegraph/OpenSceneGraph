@@ -87,8 +87,9 @@ class OSG_EXPORT TextureBuffer : public Texture
         /**  Set setBufferData attached */
         void setBufferData(BufferData *bo);
 
-         /**  Set setBufferData attached */
+         /**  Get setBufferData attached */
         const BufferData * getBufferData()const {return _bufferData.get();}
+        BufferData * getBufferData() {return _bufferData.get();}
     protected :
 
         virtual ~TextureBuffer();

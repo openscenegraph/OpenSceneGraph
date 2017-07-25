@@ -1,0 +1,480 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+ *
+ * osg/PrimitiveSetIndirect
+ * Author: Julien Valentin 2016-2017
+*/
+
+#ifndef OSG_INDIRECTPRIMITIVESET
+#define OSG_INDIRECTPRIMITIVESET 1
+
+#include <osg/PrimitiveSet>
+
+
+namespace osg {
+/// GL DrawArraysCommand
+typedef  struct GLDrawArraysIndirectCmd {
+    GLDrawArraysIndirectCmd(uint pcount = 0, uint pinstanceCount = 0, uint pfirst = 0, uint pbaseInstance = 0)
+        :count(pcount), instanceCount(pinstanceCount), first(pfirst), baseInstance(pbaseInstance){};
+    uint  count;
+    uint  instanceCount;
+    uint  first;
+    uint  baseInstance;
+} DrawArraysIndirectCommand;
+
+/// vector of DrawArraysCommand to be hosted on GPU
+class DrawArraysIndirectCommandArray: public BufferData, public  MixinVector<DrawArraysIndirectCommand>
+{
+public:
+    META_Object(osg,DrawArraysIndirectCommandArray)
+    DrawArraysIndirectCommandArray();
+    DrawArraysIndirectCommandArray(const DrawArraysIndirectCommandArray& copy,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+    virtual const GLvoid*   getDataPointer() const {
+        return empty()?0:&front();
+    }
+    virtual unsigned int    getTotalDataSize() const {
+        return 16u*static_cast<unsigned int>(size());
+    }
+};
+
+
+/// GL DrawElementsCommand
+typedef  struct GLDrawElementsIndirectCmd {
+    GLDrawElementsIndirectCmd(uint pcount = 0, uint pinstanceCount = 0, uint pfirstIndex = 0, uint pbaseVertex = 0, uint pbaseInstance = 0)
+        :count(pcount), instanceCount(pinstanceCount), firstIndex(pfirstIndex), baseVertex(pbaseVertex), baseInstance(pbaseInstance){};
+    unsigned int  count;
+    unsigned int  instanceCount;
+    unsigned int  firstIndex;
+    unsigned int  baseVertex;
+    unsigned int  baseInstance;
+} DrawElementsIndirectCommand;
+
+/// vector of DrawElementsCommand to be hosted on GPU
+class DrawElementsIndirectCommandArray: public BufferData, public MixinVector<DrawElementsIndirectCommand>
+{
+public:
+    META_Object(osg,DrawElementsIndirectCommandArray)
+    DrawElementsIndirectCommandArray();
+    DrawElementsIndirectCommandArray(const DrawElementsIndirectCommandArray& copy,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+    virtual const GLvoid*   getDataPointer() const {
+        return empty()?0:&front();
+    }
+    virtual unsigned int    getTotalDataSize() const {
+        return 20u*static_cast<unsigned int>(size());
+    }
+};
+
+///////////////////////////////////////////////////////////////////////////////////////
+/// \brief The MultiDrawElementsIndirect base PrimitiveSet
+///
+class MultiDrawElementsIndirect : public DrawElements
+{
+public:
+
+    MultiDrawElementsIndirect(Type primType=PrimitiveType, GLenum mode=0, GLsizei stride=0):
+        DrawElements(primType,mode, 0),_stride(stride) {setIndirectCommandArray(new DrawElementsIndirectCommandArray());}
+
+    MultiDrawElementsIndirect(const MultiDrawElementsIndirect& rhs,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+        DrawElements(rhs,copyop),_stride(rhs._stride) {
+        _indirectCommandArray=(DrawElementsIndirectCommandArray*)copyop(rhs._indirectCommandArray.get());
+    }
+    inline void setStride( GLsizei  i) {
+        _stride=i;
+    }
+    inline GLsizei getStride()const {
+        return _stride;
+    }
+    inline void setIndirectCommandArray(DrawElementsIndirectCommandArray*idc) {
+        _indirectCommandArray = idc;
+        if(!_indirectCommandArray->getBufferObject())
+            _indirectCommandArray->setBufferObject(new osg::DrawIndirectBufferObject());
+    }
+    inline DrawElementsIndirectCommandArray* getIndirectCommandArray()const {
+        return _indirectCommandArray;
+    }
+    virtual unsigned int getNumPrimitives() const;
+protected:
+    virtual ~MultiDrawElementsIndirect() {}
+
+    GLsizei _stride;
+    ref_ptr<DrawElementsIndirectCommandArray> _indirectCommandArray;
+
+};
+///////////////////////////////////////////////////////////////////////////////////////
+/// \brief The MultiDrawElementsIndirectUByte PrimitiveSet
+///
+class OSG_EXPORT MultiDrawElementsIndirectUByte : public MultiDrawElementsIndirect, public VectorGLubyte
+{
+public:
+
+    typedef VectorGLubyte vector_type;
+
+    MultiDrawElementsIndirectUByte(GLenum mode=0):
+        MultiDrawElementsIndirect(MultiDrawElementsUByteIndirectPrimitiveType,mode) {}
+
+    MultiDrawElementsIndirectUByte(const MultiDrawElementsIndirectUByte& array, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+        MultiDrawElementsIndirect(array,copyop),
+        vector_type(array) {}
+
+    /**
+     * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
+     * \param no Number of intended elements. This will be the size of the underlying vector.
+     * \param ptr Pointer to a GLubyte to copy index data from.
+     */
+    MultiDrawElementsIndirectUByte(GLenum mode, unsigned int no, const GLubyte* ptr) :
+        MultiDrawElementsIndirect(MultiDrawElementsUByteIndirectPrimitiveType,mode),
+        vector_type(ptr,ptr+no) {}
+
+    /**
+     * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
+     * \param no Number of intended elements. This will be the size of the underlying vector.
+     */
+    MultiDrawElementsIndirectUByte(GLenum mode, unsigned int no) :
+        MultiDrawElementsIndirect(MultiDrawElementsUByteIndirectPrimitiveType,mode),
+        vector_type(no) {}
+
+    virtual Object* cloneType() const {
+        return new MultiDrawElementsIndirectUByte();
+    }
+    virtual Object* clone(const CopyOp& copyop) const {
+        return new MultiDrawElementsIndirectUByte(*this,copyop);
+    }
+    virtual bool isSameKindAs(const Object* obj) const {
+        return dynamic_cast<const MultiDrawElementsIndirectUByte*>(obj)!=NULL;
+    }
+    virtual const char* libraryName() const {
+        return "osg";
+    }
+    virtual const char* className() const {
+        return "MultiDrawElementsIndirectUByte";
+    }
+
+    virtual const GLvoid*   getDataPointer() const {
+        return empty()?0:&front();
+    }
+    virtual unsigned int    getTotalDataSize() const {
+        return static_cast<unsigned int>(size());
+    }
+    virtual bool            supportsBufferObject() const {
+        return false;
+    }
+
+    virtual void draw(State& state, bool useVertexBufferObjects) const;
+
+    virtual void accept(PrimitiveFunctor& functor) const;
+    virtual void accept(PrimitiveIndexFunctor& functor) const;
+
+    virtual unsigned int getNumIndices() const {
+        return static_cast<unsigned int>(size());
+    }
+    virtual unsigned int index(unsigned int pos) const {
+        return (*this)[pos];
+    }
+    virtual void offsetIndices(int offset);
+
+    virtual GLenum getDataType() {
+        return GL_UNSIGNED_BYTE;
+    }
+    virtual void resizeElements(unsigned int numIndices) {
+        resize(numIndices);
+    }
+    virtual void reserveElements(unsigned int numIndices) {
+        reserve(numIndices);
+    }
+    virtual void setElement(unsigned int i, unsigned int v)  {
+        (*this)[i] = v;
+    }
+    virtual unsigned int getElement(unsigned int i) {
+        return (*this)[i];
+    }
+    virtual void addElement(unsigned int v) {
+        push_back(GLubyte(v));
+    }
+
+protected:
+
+    virtual ~MultiDrawElementsIndirectUByte();
+};
+
+
+///////////////////////////////////////////////////////////////////////////////////////
+/// \brief The MultiDrawElementsIndirectUShort PrimitiveSet
+///
+class OSG_EXPORT MultiDrawElementsIndirectUShort : public MultiDrawElementsIndirect, public VectorGLushort
+{
+public:
+
+    typedef VectorGLushort vector_type;
+
+    MultiDrawElementsIndirectUShort(GLenum mode=0):
+        MultiDrawElementsIndirect(MultiDrawElementsUShortIndirectPrimitiveType,mode) {}
+
+    MultiDrawElementsIndirectUShort(const MultiDrawElementsIndirectUShort& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+        MultiDrawElementsIndirect(array,copyop),
+        vector_type(array) {}
+
+    /**
+     * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
+     * \param no Number of intended elements. This will be the size of the underlying vector.
+     * \param ptr Pointer to a GLushort to copy index data from.
+     */
+    MultiDrawElementsIndirectUShort(GLenum mode, unsigned int no, const GLushort* ptr) :
+        MultiDrawElementsIndirect(MultiDrawElementsUShortIndirectPrimitiveType,mode),
+        vector_type(ptr,ptr+no) {}
+
+    /**
+     * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
+     * \param no Number of intended elements. This will be the size of the underlying vector.
+     */
+    MultiDrawElementsIndirectUShort(GLenum mode, unsigned int no) :
+        MultiDrawElementsIndirect(MultiDrawElementsUShortIndirectPrimitiveType,mode),
+        vector_type(no) {}
+
+    template <class InputIterator>
+    MultiDrawElementsIndirectUShort(GLenum mode, InputIterator first,InputIterator last) :
+        MultiDrawElementsIndirect(MultiDrawElementsUShortIndirectPrimitiveType,mode),
+        vector_type(first,last) {}
+
+    virtual Object* cloneType() const {
+        return new MultiDrawElementsIndirectUShort();
+    }
+    virtual Object* clone(const CopyOp& copyop) const {
+        return new MultiDrawElementsIndirectUShort(*this,copyop);
+    }
+    virtual bool isSameKindAs(const Object* obj) const {
+        return dynamic_cast<const MultiDrawElementsIndirectUShort*>(obj)!=NULL;
+    }
+    virtual const char* libraryName() const {
+        return "osg";
+    }
+    virtual const char* className() const {
+        return "MultiDrawElementsIndirectUShort";
+    }
+
+    virtual const GLvoid*   getDataPointer() const {
+        return empty()?0:&front();
+    }
+    virtual unsigned int    getTotalDataSize() const {
+        return 2u*static_cast<unsigned int>(size());
+    }
+    virtual bool            supportsBufferObject() const {
+        return false;
+    }
+
+    virtual void draw(State& state, bool useVertexBufferObjects) const;
+
+    virtual void accept(PrimitiveFunctor& functor) const;
+    virtual void accept(PrimitiveIndexFunctor& functor) const;
+
+    virtual unsigned int getNumIndices() const {
+        return static_cast<unsigned int>(size());
+    }
+    virtual unsigned int index(unsigned int pos) const {
+        return (*this)[pos];
+    }
+    virtual void offsetIndices(int offset);
+
+    virtual GLenum getDataType() {
+        return GL_UNSIGNED_SHORT;
+    }
+    virtual void resizeElements(unsigned int numIndices) {
+        resize(numIndices);
+    }
+    virtual void reserveElements(unsigned int numIndices) {
+        reserve(numIndices);
+    }
+    virtual void setElement(unsigned int i, unsigned int v) {
+        (*this)[i] = v;
+    }
+    virtual unsigned int getElement(unsigned int i) {
+        return (*this)[i];
+    }
+    virtual void addElement(unsigned int v) {
+        push_back(GLushort(v));
+    }
+
+protected:
+
+    virtual ~MultiDrawElementsIndirectUShort();
+};
+
+///////////////////////////////////////////////////////////////////////////////////////
+/// \brief The MultiDrawElementsIndirectUInt PrimitiveSet
+///
+class OSG_EXPORT MultiDrawElementsIndirectUInt : public MultiDrawElementsIndirect, public VectorGLuint
+{
+public:
+
+    typedef VectorGLuint vector_type;
+
+    MultiDrawElementsIndirectUInt(GLenum mode=0):
+        MultiDrawElementsIndirect(MultiDrawElementsUIntIndirectPrimitiveType,mode) {}
+
+    MultiDrawElementsIndirectUInt(const MultiDrawElementsIndirectUInt& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+        MultiDrawElementsIndirect(array,copyop),
+        vector_type(array) {}
+
+    /**
+     * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
+     * \param no Number of intended elements. This will be the size of the underlying vector.
+     * \param ptr Pointer to a GLuint to copy index data from.
+     */
+    MultiDrawElementsIndirectUInt(GLenum mode, unsigned int no, const GLuint* ptr) :
+        MultiDrawElementsIndirect(MultiDrawElementsUIntIndirectPrimitiveType,mode),
+        vector_type(ptr,ptr+no) {}
+
+    /**
+     * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
+     * \param no Number of intended elements. This will be the size of the underlying vector.
+     */
+    MultiDrawElementsIndirectUInt(GLenum mode, unsigned int no) :
+        MultiDrawElementsIndirect(MultiDrawElementsUIntIndirectPrimitiveType,mode),
+        vector_type(no) {}
+
+    template <class InputIterator>
+    MultiDrawElementsIndirectUInt(GLenum mode, InputIterator first,InputIterator last) :
+        MultiDrawElementsIndirect(MultiDrawElementsUIntIndirectPrimitiveType,mode),
+        vector_type(first,last) {}
+
+    virtual Object* cloneType() const {
+        return new MultiDrawElementsIndirectUInt();
+    }
+    virtual Object* clone(const CopyOp& copyop) const {
+        return new MultiDrawElementsIndirectUInt(*this,copyop);
+    }
+    virtual bool isSameKindAs(const Object* obj) const {
+        return dynamic_cast<const MultiDrawElementsIndirectUInt*>(obj)!=NULL;
+    }
+    virtual const char* libraryName() const {
+        return "osg";
+    }
+    virtual const char* className() const {
+        return "MultiDrawElementsIndirectUInt";
+    }
+
+    virtual const GLvoid*   getDataPointer() const {
+        return empty()?0:&front();
+    }
+    virtual unsigned int    getTotalDataSize() const {
+        return 4u*static_cast<unsigned int>(size());
+    }
+    virtual bool            supportsBufferObject() const {
+        return false;
+    }
+
+    virtual void draw(State& state, bool useVertexBufferObjects) const;
+
+    virtual void accept(PrimitiveFunctor& functor) const;
+    virtual void accept(PrimitiveIndexFunctor& functor) const;
+
+    virtual unsigned int getNumIndices() const {
+        return static_cast<unsigned int>(size());
+    }
+    virtual unsigned int index(unsigned int pos) const {
+        return (*this)[pos];
+    }
+    virtual void offsetIndices(int offset);
+
+    virtual GLenum getDataType() {
+        return GL_UNSIGNED_INT;
+    }
+    virtual void resizeElements(unsigned int numIndices) {
+        resize(numIndices);
+    }
+    virtual void reserveElements(unsigned int numIndices) {
+        reserve(numIndices);
+    }
+    virtual void setElement(unsigned int i, unsigned int v) {
+        (*this)[i] = v;
+    }
+    virtual unsigned int getElement(unsigned int i) {
+        return (*this)[i];
+    }
+    virtual void addElement(unsigned int v) {
+        push_back(GLuint(v));
+    }
+
+protected:
+
+    virtual ~MultiDrawElementsIndirectUInt();
+};
+
+///////////////////////////////////////////////////////////////////////////////////////
+/// \brief The MultiDrawArraysIndirect PrimitiveSet
+///
+class OSG_EXPORT MultiDrawArraysIndirect : public osg::PrimitiveSet
+{
+public:
+
+    MultiDrawArraysIndirect(GLenum mode=0, GLsizei stride=0):
+        osg::PrimitiveSet(Type(MultiDrawArraysIndirectPrimitiveType), mode),
+        _stride(stride) {setIndirectCommandArray(new DrawArraysIndirectCommandArray);}
+
+    MultiDrawArraysIndirect(const MultiDrawArraysIndirect& dal,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+        osg::PrimitiveSet(dal,copyop),
+         _indirectCommandArray((DrawArraysIndirectCommandArray*)copyop( dal._indirectCommandArray.get())),
+        _stride(dal._stride)
+    {}
+
+    virtual osg::Object* cloneType() const {
+        return new MultiDrawArraysIndirect();
+    }
+    virtual osg::Object* clone(const osg::CopyOp& copyop) const {
+        return new MultiDrawArraysIndirect(*this,copyop);
+    }
+    virtual bool isSameKindAs(const osg::Object* obj) const {
+        return dynamic_cast<const MultiDrawArraysIndirect*>(obj)!=NULL;
+    }
+    virtual const char* libraryName() const {
+        return "osg";
+    }
+    virtual const char* className() const {
+        return "MultiDrawArraysIndirect";
+    }
+
+    virtual void draw(State& state, bool useVertexBufferObjects) const;
+
+    virtual void accept(PrimitiveFunctor& functor) const;
+    virtual void accept(PrimitiveIndexFunctor& functor) const;
+
+    virtual unsigned int getNumIndices() const;
+    virtual unsigned int index(unsigned int pos) const;
+    virtual void offsetIndices(int offset);
+
+    virtual unsigned int getNumPrimitives() const;
+
+    void setStride( GLsizei  i) {
+        _stride=i;
+    }
+    GLsizei getStride()const {
+        return _stride;
+    }
+
+    inline void setIndirectCommandArray(DrawArraysIndirectCommandArray*idc) {
+        _indirectCommandArray = idc;
+        if(!_indirectCommandArray->getBufferObject())
+            _indirectCommandArray->setBufferObject(new osg::DrawIndirectBufferObject());
+    }
+    inline DrawArraysIndirectCommandArray* getIndirectCommandArray()const {
+        return _indirectCommandArray;
+    }
+
+protected:
+
+    ref_ptr<DrawArraysIndirectCommandArray> _indirectCommandArray;
+    GLsizei _stride;
+
+};
+
+}
+
+#endif

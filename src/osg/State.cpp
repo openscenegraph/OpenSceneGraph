@@ -139,8 +139,12 @@ State::~State()
     // delete the GLExtensions object associated with this osg::State.
     if (_glExtensions)
     {
-        GLExtensions::Set(_contextID, 0);
         _glExtensions = 0;
+        GLExtensions* glExtensions = GLExtensions::Get(_contextID, false);
+        if (glExtensions && glExtensions->referenceCount() == 1) {
+            // the only reference left to the extension is in the static map itself, so we clean it up now
+            GLExtensions::Set(_contextID, 0);
+        }
     }
 
     //_texCoordArrayList.clear();

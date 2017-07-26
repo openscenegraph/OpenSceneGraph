@@ -167,8 +167,7 @@ void State::initializeExtensionProcs()
         _defineMap.changed = true;
     }
 
-    _glExtensions = new GLExtensions(_contextID);
-    GLExtensions::Set(_contextID, _glExtensions.get());
+    _glExtensions = GLExtensions::Get(_contextID, true);
 
     setGLExtensionFuncPtr(_glClientActiveTexture,"glClientActiveTexture","glClientActiveTextureARB");
     setGLExtensionFuncPtr(_glActiveTexture, "glActiveTexture","glActiveTextureARB");

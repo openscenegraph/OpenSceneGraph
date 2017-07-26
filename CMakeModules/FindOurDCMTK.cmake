@@ -60,6 +60,23 @@ FIND_LIBRARY( DCMTK_ofstd_LIBRARY ofstd
     PATH_SUFFIXES dcmtk
 )
 
+FIND_LIBRARY( DCMTK_ofstd_LIBRARY_DEBUG ofstd_d
+    PATHS
+        ${DCMTK_DIR}/ofstd/libsrc
+        ${DCMTK_DIR}/ofstd/libsrc/Release
+        ${DCMTK_DIR}/ofstd/libsrc/Debug
+        ${DCMTK_DIR}/ofstd/Release
+        ${DCMTK_DIR}/ofstd/Debug
+        ${DCMTK_DIR}/lib
+        /usr/local/dicom/lib
+        /usr/local/lib64
+        /usr/lib64
+        /usr/local/lib
+        /usr/lib
+        /usr/local/dicom/lib
+    PATH_SUFFIXES dcmtk
+)
+
 
 FIND_PATH( DCMTK_dcmdata_INCLUDE_DIR dctypes.h
     ${DCMTK_ROOT_INCLUDE_DIR}/dcmtk/dcmdata
@@ -72,6 +89,23 @@ FIND_PATH( DCMTK_dcmdata_INCLUDE_DIR dctypes.h
 )
 
 FIND_LIBRARY( DCMTK_dcmdata_LIBRARY dcmdata
+    PATHS
+        ${DCMTK_DIR}/dcmdata/libsrc
+        ${DCMTK_DIR}/dcmdata/libsrc/Release
+        ${DCMTK_DIR}/dcmdata/libsrc/Debug
+        ${DCMTK_DIR}/dcmdata/Release
+        ${DCMTK_DIR}/dcmdata/Debug
+        ${DCMTK_DIR}/lib
+        /usr/local/dicom/lib
+        /usr/local/lib64
+        /usr/lib64
+        /usr/local/lib
+        /usr/lib
+        /usr/local/dicom/lib
+    PATH_SUFFIXES dcmtk
+)
+
+FIND_LIBRARY( DCMTK_dcmdata_LIBRARY_DEBUG dcmdata_d
     PATHS
         ${DCMTK_DIR}/dcmdata/libsrc
         ${DCMTK_DIR}/dcmdata/libsrc/Release
@@ -116,6 +150,23 @@ FIND_LIBRARY( DCMTK_dcmimgle_LIBRARY dcmimgle
     PATH_SUFFIXES dcmtk
 )
 
+FIND_LIBRARY( DCMTK_dcmimgle_LIBRARY_DEBUG dcmimgle_d
+    PATHS
+        ${DCMTK_DIR}/dcmimgle/libsrc
+        ${DCMTK_DIR}/dcmimgle/libsrc/Release
+        ${DCMTK_DIR}/dcmimgle/libsrc/Debug
+        ${DCMTK_DIR}/dcmimgle/Release
+        ${DCMTK_DIR}/dcmimgle/Debug
+        ${DCMTK_DIR}/lib
+        /usr/local/dicom/lib
+        /usr/local/lib64
+        /usr/lib64
+        /usr/local/lib
+        /usr/lib
+        /usr/local/dicom/lib
+    PATH_SUFFIXES dcmtk
+)
+
 FIND_PATH( DCMTK_dcmimage_INCLUDE_DIR diregist.h
     ${DCMTK_ROOT_INCLUDE_DIR}/dcmtk/dcmimage
     ${DCMTK_DIR}/dcmimage/include
@@ -143,7 +194,40 @@ FIND_LIBRARY( DCMTK_dcmimage_LIBRARY dcmimage
     PATH_SUFFIXES dcmtk
 )
 
+FIND_LIBRARY( DCMTK_dcmimage_LIBRARY_DEBUG dcmimage_d
+    PATHS
+        ${DCMTK_DIR}/dcmimage/libsrc
+        ${DCMTK_DIR}/dcmimage/libsrc/Release
+        ${DCMTK_DIR}/dcmimage/libsrc/Debug
+        ${DCMTK_DIR}/dcmimage/Release
+        ${DCMTK_DIR}/dcmimage/Debug
+        ${DCMTK_DIR}/lib
+        /usr/local/dicom/lib
+        /usr/local/lib64
+        /usr/lib64
+        /usr/local/lib
+        /usr/lib
+        /usr/local/dicom/lib
+    PATH_SUFFIXES dcmtk
+)
+
+
 FIND_LIBRARY(DCMTK_imagedb_LIBRARY imagedb
+    PATHS
+        ${DCMTK_DIR}/imagectn/libsrc/Release
+        ${DCMTK_DIR}/imagectn/libsrc/
+        ${DCMTK_DIR}/imagectn/libsrc/Debug
+        ${DCMTK_DIR}/lib
+        /usr/local/dicom/lib
+        /usr/local/lib64
+        /usr/lib64
+        /usr/local/lib
+        /usr/lib
+        /usr/local/dicom/lib
+    PATH_SUFFIXES dcmtk
+)
+
+FIND_LIBRARY(DCMTK_imagedb_LIBRARY_DEBUG imagedb_d
     PATHS
         ${DCMTK_DIR}/imagectn/libsrc/Release
         ${DCMTK_DIR}/imagectn/libsrc/
@@ -173,7 +257,38 @@ FIND_LIBRARY(DCMTK_dcmnet_LIBRARY dcmnet
     PATH_SUFFIXES dcmtk
 )
 
+FIND_LIBRARY(DCMTK_dcmnet_LIBRARY_DEBUG dcmnet_d
+    PATHS
+        ${DCMTK_DIR}/dcmnet/libsrc/Release
+        ${DCMTK_DIR}/dcmnet/libsrc/Debug
+        ${DCMTK_DIR}/dcmnet/libsrc/
+        ${DCMTK_DIR}/lib
+        /usr/local/dicom/lib
+        /usr/local/lib64
+        /usr/lib64
+        /usr/local/lib
+        /usr/lib
+        /usr/local/dicom/lib
+    PATH_SUFFIXES dcmtk
+)
+
+
 FIND_LIBRARY(DCMTK_oflog_LIBRARY oflog
+    PATHS
+        ${DCMTK_DIR}/dcmnet/libsrc/Release
+        ${DCMTK_DIR}/dcmnet/libsrc/Debug
+        ${DCMTK_DIR}/dcmnet/libsrc/
+        ${DCMTK_DIR}/lib
+        /usr/local/dicom/lib
+        /usr/local/lib64
+        /usr/lib64
+        /usr/local/lib
+        /usr/lib
+        /usr/local/dicom/lib
+    PATH_SUFFIXES dcmtk
+)
+
+FIND_LIBRARY(DCMTK_oflog_LIBRARY_DEBUG oflog_d
     PATHS
         ${DCMTK_DIR}/dcmnet/libsrc/Release
         ${DCMTK_DIR}/dcmnet/libsrc/Debug
@@ -203,6 +318,22 @@ FIND_LIBRARY(DCMTK_ofstd_LIBRARY ofstd
     PATH_SUFFIXES dcmtk
 )
 
+FIND_LIBRARY(DCMTK_ofstd_LIBRARY_DEBUG ofstd_d
+    PATHS
+        ${DCMTK_DIR}/dcmnet/libsrc/Release
+        ${DCMTK_DIR}/dcmnet/libsrc/Debug
+        ${DCMTK_DIR}/dcmnet/libsrc/
+        ${DCMTK_DIR}/lib
+        /usr/local/dicom/lib
+        /usr/local/lib64
+        /usr/lib64
+        /usr/local/lib
+        /usr/lib
+        /usr/local/dicom/lib
+    PATH_SUFFIXES dcmtk
+)
+
+
 IF( DCMTK_config_INCLUDE_DIR
     AND DCMTK_ofstd_INCLUDE_DIR
     AND DCMTK_ofstd_LIBRARY
@@ -229,11 +360,24 @@ IF( DCMTK_config_INCLUDE_DIR
     ${DCMTK_ofstd_LIBRARY}
     ${DCMTK_config_LIBRARY}
   )
+  
+  SET( DCMTK_LIBRARIES_DEBUG
+    ${DCMTK_dcmimgle_LIBRARY_DEBUG}
+    ${DCMTK_dcmimage_LIBRARY_DEBUG}
+    ${DCMTK_dcmdata_LIBRARY_DEBUG}
+    ${DCMTK_ofstd_LIBRARY_DEBUG}
+    ${DCMTK_config_LIBRARY_DEBUG}
+  )
+		
 
   IF(DCMTK_imagedb_LIBRARY)
    SET( DCMTK_LIBRARIES
    ${DCMTK_LIBRARIES}
    ${DCMTK_imagedb_LIBRARY}
+   )
+   SET( DCMTK_LIBRARIES_DEBUG
+   ${DCMTK_LIBRARIES_DEBUG}
+   ${DCMTK_imagedb_LIBRARY_DEBUG}
    )
   ENDIF()
 
@@ -242,12 +386,20 @@ IF( DCMTK_config_INCLUDE_DIR
    ${DCMTK_LIBRARIES}
    ${DCMTK_dcmnet_LIBRARY}
    )
+   SET( DCMTK_LIBRARIES_DEBUG
+   ${DCMTK_LIBRARIES_DEBUG}
+   ${DCMTK_dcmnet_LIBRARY_DEBUG}
+   )
   ENDIF()
 
   IF(DCMTK_oflog_LIBRARY)
    SET( DCMTK_LIBRARIES
    ${DCMTK_LIBRARIES}
    ${DCMTK_oflog_LIBRARY}
+   )
+   SET( DCMTK_LIBRARIES_DEBUG
+   ${DCMTK_LIBRARIES_DEBUG}
+   ${DCMTK_oflog_LIBRARY_DEBUG}
    )
   ENDIF()
 
@@ -256,10 +408,15 @@ IF( DCMTK_config_INCLUDE_DIR
    ${DCMTK_LIBRARIES}
    ${DCMTK_ofstd_LIBRARY}
    )
+   SET( DCMTK_LIBRARIES_DEBUG
+   ${DCMTK_LIBRARIES_DEBUG}
+   ${DCMTK_ofstd_LIBRARY_DEBUG}
+   )
   ENDIF()
 
   IF( WIN32 )
     SET( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} netapi32 )
+	SET( DCMTK_LIBRARIES_DEBUG ${DCMTK_LIBRARIES_DEBUG} netapi32 )
   ENDIF()
 
 ENDIF()

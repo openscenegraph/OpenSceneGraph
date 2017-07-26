@@ -64,7 +64,7 @@ unsigned int DrawElementsIndirectUShort::getNumPrimitives() const{return getNumP
 
 void DrawElementsIndirectUInt::draw(State& state, bool useVertexBufferObjects) const
 {   GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
-    state.get<GLExtensions>()->glBindBuffer(GL_DRAW_INDIRECT_BUFFER, dibo->getGLObjectID());
+    state.bindDrawIndirectBufferObject(dibo);
 
     GLenum mode = _mode;
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
@@ -122,7 +122,7 @@ void DrawElementsIndirectUInt::accept(PrimitiveIndexFunctor& functor) const
 }
 void DrawElementsIndirectUByte::draw(State& state, bool useVertexBufferObjects) const
 {   GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
-    state.get<GLExtensions>()->glBindBuffer(GL_DRAW_INDIRECT_BUFFER, dibo->getGLObjectID());
+    state.bindDrawIndirectBufferObject(dibo);
 
     GLenum mode = _mode;
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
@@ -176,7 +176,7 @@ void DrawElementsIndirectUByte::accept(PrimitiveIndexFunctor& functor) const
 }
 void DrawElementsIndirectUShort::draw(State& state, bool useVertexBufferObjects) const
 {   GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
-    state.get<GLExtensions>()->glBindBuffer(GL_DRAW_INDIRECT_BUFFER, dibo->getGLObjectID());
+    state.bindDrawIndirectBufferObject(dibo);
 
     GLenum mode = _mode;
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
@@ -282,7 +282,7 @@ void MultiDrawElementsIndirectUByte::draw(State& state, bool useVertexBufferObje
 {
     GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
 
-    state.get<GLExtensions>()->glBindBuffer(GL_DRAW_INDIRECT_BUFFER, dibo->getGLObjectID());
+    state.bindDrawIndirectBufferObject(dibo);
     GLenum mode = _mode;
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
     if (mode==GL_POLYGON) mode = GL_TRIANGLE_FAN;
@@ -340,7 +340,7 @@ MultiDrawElementsIndirectUShort::~MultiDrawElementsIndirectUShort()
 
 void MultiDrawElementsIndirectUShort::draw(State& state, bool useVertexBufferObjects) const
 {   GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
-    state.get<GLExtensions>()->glBindBuffer(GL_DRAW_INDIRECT_BUFFER, dibo->getGLObjectID());
+    state.bindDrawIndirectBufferObject(dibo);
 
     GLenum mode = _mode;
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
@@ -397,7 +397,7 @@ MultiDrawElementsIndirectUInt::~MultiDrawElementsIndirectUInt()
 void MultiDrawElementsIndirectUInt::draw(State& state, bool useVertexBufferObjects) const
 {
     GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
-    state.get<GLExtensions>()->glBindBuffer(GL_DRAW_INDIRECT_BUFFER, dibo->getGLObjectID());
+    state.bindDrawIndirectBufferObject(dibo);
     GLenum mode = _mode;
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
     if (mode==GL_POLYGON) mode = GL_TRIANGLE_FAN;
@@ -450,7 +450,7 @@ void MultiDrawElementsIndirectUInt::accept(PrimitiveIndexFunctor& functor) const
 void DrawArraysIndirect::draw(osg::State& state, bool) const
 {
     GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
-    state.get<GLExtensions>()->glBindBuffer(GL_DRAW_INDIRECT_BUFFER, dibo->getGLObjectID());
+    state.bindDrawIndirectBufferObject(dibo);
 
     GLExtensions* ext = state.get<GLExtensions>();
 
@@ -517,7 +517,7 @@ unsigned int DrawArraysIndirect::getNumPrimitives() const
 void MultiDrawArraysIndirect::draw(osg::State& state, bool) const
 {
     GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
-    state.get<GLExtensions>()->glBindBuffer(GL_DRAW_INDIRECT_BUFFER, dibo->getGLObjectID());
+    state.bindDrawIndirectBufferObject(dibo);
 
     GLExtensions* ext = state.get<GLExtensions>();
 

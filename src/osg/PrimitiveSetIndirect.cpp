@@ -29,7 +29,7 @@ template<class T>   inline
 unsigned int getNumPrimitivesDI( const T&_this)
 {
     unsigned int offset= _this.getFirstCommandToDraw();
-    IndirectCommandDrawElements *cmd=_this.getIndirectCommandDrawArrays();
+    IndirectCommandDrawElements *cmd=const_cast<IndirectCommandDrawElements *>(_this.getIndirectCommandArray());
     unsigned int total=0;
     switch(_this.getMode())
     {
@@ -221,21 +221,21 @@ void DrawElementsIndirectUShort::accept(PrimitiveIndexFunctor& functor) const
 //
 template<class T>   inline
 unsigned int getNumPrimitivesMDI( const T&_this)
-{   IndirectCommandDrawElements *_IndirectCommandDrawArrays=_this.getIndirectCommandDrawArrays();
+{   IndirectCommandDrawElements *_IndirectCommandDrawArrays=const_cast<IndirectCommandDrawElements *>(_this.getIndirectCommandArray());
     unsigned int total=0;
     switch(_this.getMode())
     {
     case(PrimitiveSet::POINTS):
-        for(unsigned int i=0;i<_IndirectCommandDrawArrays->getNumElements();i++)
+        for(unsigned int i=0;i<_IndirectCommandDrawArrays->getNumElements();++i)
             total+=_IndirectCommandDrawArrays->count(i);
     case(PrimitiveSet::LINES):
-        for(unsigned int i=0;i<_IndirectCommandDrawArrays->getNumElements();i++)
+        for(unsigned int i=0;i<_IndirectCommandDrawArrays->getNumElements();++i)
            total+=_IndirectCommandDrawArrays->count(i)/2;
     case(PrimitiveSet::TRIANGLES):
-        for(unsigned int i=0;i<_IndirectCommandDrawArrays->getNumElements();i++)
+        for(unsigned int i=0;i<_IndirectCommandDrawArrays->getNumElements();++i)
            total+=_IndirectCommandDrawArrays->count(i)/3;
     case(PrimitiveSet::QUADS):
-        for(unsigned int i=0;i<_IndirectCommandDrawArrays->getNumElements();i++)
+        for(unsigned int i=0;i<_IndirectCommandDrawArrays->getNumElements();++i)
            total+=_IndirectCommandDrawArrays->count(i)/4;
     case(PrimitiveSet::LINE_STRIP):
     case(PrimitiveSet::LINE_LOOP):
@@ -290,7 +290,7 @@ void MultiDrawElementsIndirectUByte::accept(PrimitiveFunctor& functor) const
 {
   /* if (!empty() )
        unsigned int maxindex=_count>0?_firstCommand + _count : _IndirectCommandDrawArrays->getNumElements() - _firstCommand;
-       for(unsigned int i=_firstCommand; i<maxindex;i++)
+       for(unsigned int i=_firstCommand; i<maxindex;++i)
                     functor.drawElements(_mode,_IndirectCommandDrawArrays->count(i),
                         &(*this)[_IndirectCommandDrawArrays->firstIndex(i)],
                         _IndirectCommandDrawArrays->baseVertex(i));
@@ -301,7 +301,7 @@ void MultiDrawElementsIndirectUByte::accept(PrimitiveIndexFunctor& functor) cons
 {
    /* if (!empty() )
        unsigned int maxindex=_count>0?_firstCommand + _count : _IndirectCommandDrawArrays->getNumElements() - _firstCommand;
-       for(unsigned int i=_firstCommand; i<maxindex;i++)
+       for(unsigned int i=_firstCommand; i<maxindex;++i)
                     functor.drawElements(_mode,_IndirectCommandDrawArrays->count(i),
                         &(*this)[_IndirectCommandDrawArrays->firstIndex(i)],
                         _IndirectCommandDrawArrays->baseVertex(i));
@@ -345,7 +345,7 @@ void MultiDrawElementsIndirectUShort::accept(PrimitiveFunctor& functor) const
 {
   /* if (!empty() )
        unsigned int maxindex=_count>0?_firstCommand + _count : _IndirectCommandDrawArrays->getNumElements() - _firstCommand;
-       for(unsigned int i=_firstCommand; i<maxindex;i++)
+       for(unsigned int i=_firstCommand; i<maxindex;++i)
                     functor.drawElements(_mode,_IndirectCommandDrawArrays->count(i),
                         &(*this)[_IndirectCommandDrawArrays->firstIndex(i)],
                         _IndirectCommandDrawArrays->baseVertex(i));
@@ -356,7 +356,7 @@ void MultiDrawElementsIndirectUShort::accept(PrimitiveIndexFunctor& functor) con
 {
   /* if (!empty() )
        unsigned int maxindex=_count>0?_firstCommand + _count : _IndirectCommandDrawArrays->getNumElements() - _firstCommand;
-       for(unsigned int i=_firstCommand; i<maxindex;i++)
+       for(unsigned int i=_firstCommand; i<maxindex;++i)
                     functor.drawElements(_mode,_IndirectCommandDrawArrays->count(i),
                         &(*this)[_IndirectCommandDrawArrays->firstIndex(i)],
                         _IndirectCommandDrawArrays->baseVertex(i));
@@ -398,7 +398,7 @@ void MultiDrawElementsIndirectUInt::accept(PrimitiveFunctor& functor) const
 {
   /* if (!empty() )
        unsigned int maxindex=_count>0?_firstCommand + _count : _IndirectCommandDrawArrays->getNumElements() - _firstCommand;
-       for(unsigned int i=_firstCommand; i<maxindex;i++)
+       for(unsigned int i=_firstCommand; i<maxindex;++i)
                     functor.drawElements(_mode,_IndirectCommandDrawArrays->count(i),
                         &(*this)[_IndirectCommandDrawArrays->firstIndex(i)],
                         _IndirectCommandDrawArrays->baseVertex(i));
@@ -409,7 +409,7 @@ void MultiDrawElementsIndirectUInt::accept(PrimitiveIndexFunctor& functor) const
 {
   /* if (!empty() )
        unsigned int maxindex=_count>0?_firstCommand + _count : _IndirectCommandDrawArrays->getNumElements() - _firstCommand;
-       for(unsigned int i=_firstCommand; i<maxindex;i++)
+       for(unsigned int i=_firstCommand; i<maxindex;++i)
                     functor.drawElements(_mode,_IndirectCommandDrawArrays->count(i),
                         &(*this)[_IndirectCommandDrawArrays->firstIndex(i)],
                         _IndirectCommandDrawArrays->baseVertex(i));
@@ -504,7 +504,7 @@ void MultiDrawArraysIndirect::draw(osg::State& state, bool) const
 void MultiDrawArraysIndirect::accept(PrimitiveFunctor& functor) const
 {
     unsigned int maxindex=_count>0?_firstCommand + _count : _IndirectCommandDrawArrays->getNumElements() - _firstCommand;
-    for(unsigned int i=_firstCommand; i<maxindex;i++)
+    for(unsigned int i=_firstCommand; i<maxindex;++i)
     {
         functor.drawArrays(_mode, _IndirectCommandDrawArrays->first(i), _IndirectCommandDrawArrays->count(i));
     }
@@ -513,7 +513,7 @@ void MultiDrawArraysIndirect::accept(PrimitiveFunctor& functor) const
 void MultiDrawArraysIndirect::accept(PrimitiveIndexFunctor& functor) const
 {
     unsigned int maxindex=_count>0?_firstCommand + _count : _IndirectCommandDrawArrays->getNumElements() - _firstCommand;
-    for(unsigned int i=_firstCommand; i<maxindex;i++)
+    for(unsigned int i=_firstCommand; i<maxindex;++i)
     {
         functor.drawArrays(_mode, _IndirectCommandDrawArrays->first(i), _IndirectCommandDrawArrays->count(i));
     }
@@ -524,7 +524,7 @@ unsigned int MultiDrawArraysIndirect::getNumIndices() const
     unsigned int total=0;
 
     unsigned int maxindex=_count>0?_firstCommand + _count : _IndirectCommandDrawArrays->getNumElements() - _firstCommand;
-    for(unsigned int i=_firstCommand; i<maxindex;i++)
+    for(unsigned int i=_firstCommand; i<maxindex;++i)
         total+= _IndirectCommandDrawArrays->count(i);
     return total;
 }
@@ -532,7 +532,7 @@ unsigned int MultiDrawArraysIndirect::getNumIndices() const
 unsigned int MultiDrawArraysIndirect::index(unsigned int pos) const
 {
   /*  unsigned int maxindex=_count>0?_firstCommand + _count : _IndirectCommandDrawArrays->getNumElements() - _firstCommand;
-    for(unsigned int i=_firstCommand; i<maxindex;i++)
+    for(unsigned int i=_firstCommand; i<maxindex;++i)
       {
         unsigned int count = _IndirectCommandDrawArrays->count(i);
         if (pos<count) break;
@@ -546,7 +546,7 @@ unsigned int MultiDrawArraysIndirect::index(unsigned int pos) const
 void MultiDrawArraysIndirect::offsetIndices(int offset)
 {
     unsigned int maxindex=_count>0?_firstCommand + _count : _IndirectCommandDrawArrays->getNumElements() - _firstCommand;
-    for(unsigned int i=_firstCommand; i<maxindex;i++)
+    for(unsigned int i=_firstCommand; i<maxindex;++i)
         _IndirectCommandDrawArrays->first(i) += offset;
 }
 
@@ -557,16 +557,16 @@ unsigned int MultiDrawArraysIndirect::getNumPrimitives() const
     switch(_mode)
     {
     case(POINTS):
-          for(unsigned int i=_firstCommand; i<maxindex;i++)
+          for(unsigned int i=_firstCommand; i<maxindex;++i)
             total+=_IndirectCommandDrawArrays->count(i);
     case(LINES):
-         for(unsigned int i=_firstCommand; i<maxindex;i++)
+         for(unsigned int i=_firstCommand; i<maxindex;++i)
            total+=_IndirectCommandDrawArrays->count(i)/2;
     case(TRIANGLES):
-         for(unsigned int i=_firstCommand; i<maxindex;i++)
+         for(unsigned int i=_firstCommand; i<maxindex;++i)
            total+=_IndirectCommandDrawArrays->count(i)/3;
     case(QUADS):
-         for(unsigned int i=_firstCommand; i<maxindex;i++)
+         for(unsigned int i=_firstCommand; i<maxindex;++i)
            total+=_IndirectCommandDrawArrays->count(i)/4;
     case(LINE_STRIP):
     case(LINE_LOOP):

@@ -137,39 +137,34 @@ class OSG_EXPORT DrawElementsIndirect : public DrawElements
 public:
 
     DrawElementsIndirect(Type primType=PrimitiveType, GLenum mode = 0,unsigned int firstCommand = 0, GLsizei stride = 0):
-        DrawElements(primType,mode, 0),_firstCommand(firstCommand),_stride(stride){setIndirectCommandDrawArrays(new DefaultIndirectCommandDrawElements());}
+        DrawElements(primType,mode, 0),_firstCommand(firstCommand),_stride(stride){setIndirectCommandArray(new DefaultIndirectCommandDrawElements());}
 
     DrawElementsIndirect(const DrawElementsIndirect& rhs,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
         DrawElements(rhs,copyop),_firstCommand(rhs._firstCommand), _stride(rhs._stride) {
         _IndirectCommandDrawArrays=(DefaultIndirectCommandDrawElements*)copyop(rhs._IndirectCommandDrawArrays.get());
     }
     /// set command array of this indirect primitive set
-    inline void setIndirectCommandDrawArrays(IndirectCommandDrawElements*idc) {
+    inline void setIndirectCommandArray(IndirectCommandDrawElements*idc) {
         _IndirectCommandDrawArrays = idc;
         if(!_IndirectCommandDrawArrays->getBufferObject())
             _IndirectCommandDrawArrays->setBufferObject(new osg::VertexBufferObject());
     }
     /// get command array of this indirect primitive set
-    inline IndirectCommandDrawElements* getIndirectCommandDrawArrays()const {
-        return _IndirectCommandDrawArrays;
-    }
+    inline IndirectCommandDrawElements* getIndirectCommandArray() {        return _IndirectCommandDrawArrays;    }
+    inline const IndirectCommandDrawElements* getIndirectCommandArray() const {        return _IndirectCommandDrawArrays;    }
     ///Further methods are for advanced DI when you plan to use your own IndirectCommandElement (stride)
     ///or if you want to draw a particular command index of the IndirectCommandElement(FirstCommandToDraw)
 
     /// set offset of the first command to draw in the IndirectCommandDrawArrays
-    inline void setFirstCommandToDraw( unsigned int  i) {
-        _firstCommand=i;
-    }
+    inline void setFirstCommandToDraw( unsigned int  i) {     _firstCommand = i;      }
     /// get offset of the first command in the IndirectCommandDrawArrays
-    inline unsigned int getFirstCommandToDraw()const {
-        return _firstCommand;
-    }
+    inline unsigned int getFirstCommandToDraw() const {        return _firstCommand;   }
     /// stride (to set if you use custom CommandArray)
     inline void setStride( GLsizei  i) {
         _stride=i;
     }
     /// stride (to set if you use custom CommandArray)
-    inline GLsizei getStride()const {
+    inline GLsizei getStride() const {
         return _stride;
     }
     virtual unsigned int getNumPrimitives() const=0;
@@ -491,7 +486,18 @@ public:
         DrawElementsIndirectUShort(mode,firstCommand,stride),_count(commandcount){_primitiveType=(Type(MultiDrawElementsUShortIndirectPrimitiveType));}
     MultiDrawElementsIndirectUShort(const MultiDrawElementsIndirectUShort& mdi,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
         DrawElementsIndirectUShort(mdi,copyop),_count(mdi._count) {}
-
+    virtual osg::Object* cloneType() const {
+        return new MultiDrawElementsIndirectUShort();
+    }
+    virtual osg::Object* clone(const osg::CopyOp& copyop) const {
+        return new MultiDrawElementsIndirectUShort(*this,copyop);
+    }
+    virtual bool isSameKindAs(const osg::Object* obj) const {
+        return dynamic_cast<const MultiDrawElementsIndirectUShort*>(obj)!=NULL;
+    }
+    virtual const char* className() const {
+        return "MultiDrawElementsIndirectUShort";
+    }
     virtual void draw(State& state, bool useVertexBufferObjects) const;
     virtual void accept(PrimitiveFunctor& functor) const;
     virtual void accept(PrimitiveIndexFunctor& functor) const;
@@ -519,6 +525,18 @@ public:
         DrawElementsIndirectUByte(mode,firstCommand,stride),_count(commandcount){_primitiveType=(Type(MultiDrawElementsUByteIndirectPrimitiveType));}
     MultiDrawElementsIndirectUByte(const MultiDrawElementsIndirectUByte& mdi,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
         DrawElementsIndirectUByte(mdi,copyop),_count(mdi._count) {}
+    virtual osg::Object* cloneType() const {
+        return new MultiDrawElementsIndirectUByte();
+    }
+    virtual osg::Object* clone(const osg::CopyOp& copyop) const {
+        return new MultiDrawElementsIndirectUByte(*this,copyop);
+    }
+    virtual bool isSameKindAs(const osg::Object* obj) const {
+        return dynamic_cast<const MultiDrawElementsIndirectUByte*>(obj)!=NULL;
+    }
+    virtual const char* className() const {
+        return "MultiDrawElementsIndirectUByte";
+    }
     virtual void draw(State& state, bool useVertexBufferObjects) const;
     virtual void accept(PrimitiveFunctor& functor) const;
     virtual void accept(PrimitiveIndexFunctor& functor) const;
@@ -542,7 +560,18 @@ public:
         DrawElementsIndirectUInt(mode,firstCommand,stride),_count(commandcount){_primitiveType=(Type(MultiDrawElementsUIntIndirectPrimitiveType));}
     MultiDrawElementsIndirectUInt(const MultiDrawElementsIndirectUInt& mdi,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
         DrawElementsIndirectUInt(mdi,copyop),_count(mdi._count) {}
-
+    virtual osg::Object* cloneType() const {
+        return new MultiDrawElementsIndirectUInt();
+    }
+    virtual osg::Object* clone(const osg::CopyOp& copyop) const {
+        return new MultiDrawElementsIndirectUInt(*this,copyop);
+    }
+    virtual bool isSameKindAs(const osg::Object* obj) const {
+        return dynamic_cast<const MultiDrawElementsIndirectUInt*>(obj)!=NULL;
+    }
+    virtual const char* className() const {
+        return "MultiDrawElementsIndirectUInt";
+    }
     virtual void draw(State& state, bool useVertexBufferObjects) const;
     virtual void accept(PrimitiveFunctor& functor) const;
     virtual void accept(PrimitiveIndexFunctor& functor) const;
@@ -568,7 +597,7 @@ public:
 
     DrawArraysIndirect(GLenum mode=0, unsigned int firstcommand = 0, GLsizei stride = 0):
         osg::PrimitiveSet(Type(DrawArraysIndirectPrimitiveType), mode),
-        _firstCommand(firstcommand),  _stride(stride) {setIndirectCommandDrawArrays(new DefaultIndirectCommandDrawArrays);}
+        _firstCommand(firstcommand),  _stride(stride) {setIndirectCommandArray(new DefaultIndirectCommandDrawArrays);}
 
     DrawArraysIndirect(const DrawArraysIndirect& dal,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
         osg::PrimitiveSet(dal,copyop),
@@ -604,8 +633,8 @@ public:
 
     virtual unsigned int getNumPrimitives() const;
 
-      /// stride (to set if you use custom CommandArray)
-    inline void setStride( GLsizei  i) {
+    /// stride (to set if you use custom CommandArray)
+    inline void setStride( GLsizei i) {
         _stride=i;
     }
     /// stride (to set if you use custom CommandArray)
@@ -613,20 +642,23 @@ public:
         return _stride;
     }
     /// set offset of the first command in the IndirectCommandDrawArrays
-    inline void setFirstCommand( unsigned int  i) {
+    inline void setFirstCommandToDraw( unsigned int i) {
         _firstCommand=i;
     }
     /// get offset of the first command in the IndirectCommandDrawArrays
-    inline unsigned int getFirstCommand()const {
+    inline unsigned int getFirstCommandToDraw() const {
         return _firstCommand;
     }
 
-    inline void setIndirectCommandDrawArrays(IndirectCommandDrawArrays*idc) {
+    inline void setIndirectCommandArray(IndirectCommandDrawArrays*idc) {
         _IndirectCommandDrawArrays = idc;
         if(!_IndirectCommandDrawArrays->getBufferObject())
             _IndirectCommandDrawArrays->setBufferObject(new osg::VertexBufferObject());
     }
-    inline IndirectCommandDrawArrays* getIndirectCommandDrawArrays()const {
+    inline const IndirectCommandDrawArrays* getIndirectCommandArray() const {
+        return _IndirectCommandDrawArrays;
+    }
+    inline IndirectCommandDrawArrays* getIndirectCommandArray(){
         return _IndirectCommandDrawArrays;
     }
 

@@ -206,7 +206,7 @@ struct IndirectTarget
 
             for(unsigned int j=0;j<indirectCommands->size(); ++j){
                 osg::DrawArraysIndirect *ipr=new osg::DrawArraysIndirect( GL_TRIANGLES, j );
-                ipr->setIndirectCommandDrawArrays( indirectCommands);
+                ipr->setIndirectCommandArray( indirectCommands);
                 newPrimitiveSets.push_back(ipr);
                 }
 
@@ -220,7 +220,7 @@ struct IndirectTarget
         else // use glMultiDrawArraysIndirect()
         {
             osg::MultiDrawArraysIndirect *ipr=new osg::MultiDrawArraysIndirect( GL_TRIANGLES );
-            ipr->setIndirectCommandDrawArrays( indirectCommands );
+            ipr->setIndirectCommandArray( indirectCommands );
             geometryAggregator->getAggregatedGeometry()->removePrimitiveSet(0,geometryAggregator->getAggregatedGeometry()->getNumPrimitiveSets() );
             geometryAggregator->getAggregatedGeometry()->addPrimitiveSet( ipr );
         }

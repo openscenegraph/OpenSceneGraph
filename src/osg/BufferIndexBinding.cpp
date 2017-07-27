@@ -18,10 +18,6 @@
 
 #include <string.h> // for memcpy
 
-#ifndef GL_DRAW_INDIRECT_BUFFER
-    #define GL_DRAW_INDIRECT_BUFFER 0x8F3F
-#endif
-
 namespace osg {
 
 BufferIndexBinding::BufferIndexBinding(GLenum target, GLuint index)
@@ -171,38 +167,5 @@ ShaderStorageBufferBinding::ShaderStorageBufferBinding(const ShaderStorageBuffer
     : BufferIndexBinding(rhs, copyop)
 {
 }
-
-
-
-
-
-DrawIndirectBufferBinding::DrawIndirectBufferBinding( )
-  : BufferIndexBinding(GL_DRAW_INDIRECT_BUFFER, 0)
-{
-}
-void DrawIndirectBufferBinding::apply(State& state) const
-{
-    if (_bufferObject.valid())
-    {
-        GLBufferObject* glObject
-            = _bufferObject->getOrCreateGLBufferObject(state.getContextID());
-        if (!glObject->_extensions->isUniformBufferObjectSupported)
-            return;
-      //  if (glObject->isDirty()) glObject->compileBuffer();
-        glObject->_extensions->glBindBuffer (_target, glObject->getGLObjectID());
-    }
-}
-DrawIndirectBufferBinding::DrawIndirectBufferBinding(  BufferObject* bo)
-    : BufferIndexBinding(GL_DRAW_INDIRECT_BUFFER, 0, bo, 0, 0)
-{
-
-}
-
-DrawIndirectBufferBinding::DrawIndirectBufferBinding(const DrawIndirectBufferBinding& rhs,
-                                           const CopyOp& copyop)
-    : BufferIndexBinding(rhs, copyop)
-{
-}
-
 
 } // namespace osg

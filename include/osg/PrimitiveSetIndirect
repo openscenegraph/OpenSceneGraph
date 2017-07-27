@@ -21,7 +21,7 @@
 
 
 namespace osg {
-///common interface for IndirectCommandDrawArrayss
+///common interface for IndirectCommandDrawArrays
 class OSG_EXPORT IndirectCommandDrawArrays: public BufferData
 {
 public:
@@ -29,14 +29,15 @@ public:
     IndirectCommandDrawArrays(const IndirectCommandDrawArrays& copy,const CopyOp& copyop/*=CopyOp::SHALLOW_COPY*/)
     :BufferData(copy, copyop){ }
 
-    virtual unsigned int & count(const unsigned int&index)=0;
-    virtual unsigned int & instanceCount(const unsigned int&index)=0;
-    virtual unsigned int & first(const unsigned int&index)=0;
-    virtual unsigned int & baseInstance(const unsigned int&index)=0;
+    virtual unsigned int & count(const unsigned int & index)=0;
+    virtual unsigned int & instanceCount(const unsigned int & index)=0;
+    virtual unsigned int & first(const unsigned int & index)=0;
+    virtual unsigned int & baseInstance(const unsigned int & index)=0;
 
     virtual unsigned int getElementSize() const = 0;
     virtual unsigned int getNumElements() const = 0;
 };
+///common interface for IndirectCommandDrawElements
 class OSG_EXPORT IndirectCommandDrawElements: public BufferData
 {
 public:
@@ -44,11 +45,11 @@ public:
     IndirectCommandDrawElements(const IndirectCommandDrawElements& copy,const CopyOp& copyop/*=CopyOp::SHALLOW_COPY*/)
     :BufferData(copy, copyop){}
 
-    virtual unsigned int & count(const unsigned int&index)=0;
-    virtual unsigned int & instanceCount(const unsigned int&index)=0;
-    virtual unsigned int & firstIndex(const unsigned int&index)=0;
-    virtual unsigned int & baseVertex(const unsigned int&index)=0;
-    virtual unsigned int & baseInstance(const unsigned int&index)=0;
+    virtual unsigned int & count(const unsigned int & index)=0;
+    virtual unsigned int & instanceCount(const unsigned int & index)=0;
+    virtual unsigned int & firstIndex(const unsigned int & index)=0;
+    virtual unsigned int & baseVertex(const unsigned int & index)=0;
+    virtual unsigned int & baseInstance(const unsigned int & index)=0;
 
     virtual unsigned int getElementSize()const = 0;
     virtual unsigned int getNumElements() const = 0;
@@ -61,10 +62,10 @@ public:
 struct DrawArraysIndirectCommand {
     DrawArraysIndirectCommand(unsigned int pcount = 0, unsigned int pinstanceCount = 0, unsigned int pfirst = 0, unsigned int pbaseInstance = 0)
         :count(pcount), instanceCount(pinstanceCount), first(pfirst), baseInstance(pbaseInstance){};
-    unsigned int  count;
-    unsigned int  instanceCount;
-    unsigned int  first;
-    unsigned int  baseInstance;
+    unsigned int count;
+    unsigned int instanceCount;
+    unsigned int first;
+    unsigned int baseInstance;
 };
 
 /// default implementation of IndirectCommandDrawArrays
@@ -85,10 +86,10 @@ public:
         return 16u*static_cast<unsigned int>(size());
     }
     virtual unsigned int getElementSize()const {return 16u;};
-    virtual unsigned int & count(const unsigned int&index){return at(index).count;}
-    virtual unsigned int & instanceCount(const unsigned int&index){return at(index).instanceCount;}
-    virtual unsigned int & first(const unsigned int&index){return at(index).first;}
-    virtual unsigned int & baseInstance(const unsigned int&index){return at(index).baseInstance;}
+    virtual unsigned int & count(const unsigned int & index){return at(index).count;}
+    virtual unsigned int & instanceCount(const unsigned int & index){return at(index).instanceCount;}
+    virtual unsigned int & first(const unsigned int & index){return at(index).first;}
+    virtual unsigned int & baseInstance(const unsigned int & index){return at(index).baseInstance;}
     virtual unsigned int getNumElements() const {return static_cast<unsigned int>(size());}
 };
 
@@ -98,11 +99,11 @@ public:
 struct DrawElementsIndirectCommand{
     DrawElementsIndirectCommand(unsigned int pcount = 0, unsigned int pinstanceCount = 0, unsigned int pfirstIndex = 0, unsigned int pbaseVertex = 0, unsigned int pbaseInstance = 0)
         :count(pcount), instanceCount(pinstanceCount), firstIndex(pfirstIndex), baseVertex(pbaseVertex), baseInstance(pbaseInstance){};
-    unsigned int  count;
-    unsigned int  instanceCount;
-    unsigned int  firstIndex;
-    unsigned int  baseVertex;
-    unsigned int  baseInstance;
+    unsigned int count;
+    unsigned int instanceCount;
+    unsigned int firstIndex;
+    unsigned int baseVertex;
+    unsigned int baseInstance;
 };
 
 /// vector of DrawElementsCommand to be hosted on GPU
@@ -121,11 +122,11 @@ public:
     }
 
     virtual unsigned int getElementSize()const {return 20u;};
-    virtual unsigned int & count(const unsigned int&index){return at(index).count;}
-    virtual unsigned int & instanceCount(const unsigned int&index){return at(index).instanceCount;}
-    virtual unsigned int & firstIndex(const unsigned int&index){return at(index).firstIndex;}
-    virtual unsigned int & baseVertex(const unsigned int&index){return at(index).baseVertex;}
-    virtual unsigned int & baseInstance(const unsigned int&index){return at(index).baseInstance;}
+    virtual unsigned int & count(const unsigned int & index){return at(index).count;}
+    virtual unsigned int & instanceCount(const unsigned int & index){return at(index).instanceCount;}
+    virtual unsigned int & firstIndex(const unsigned int & index){return at(index).firstIndex;}
+    virtual unsigned int & baseVertex(const unsigned int & index){return at(index).baseVertex;}
+    virtual unsigned int & baseInstance(const unsigned int & index){return at(index).baseInstance;}
     virtual unsigned int getNumElements() const {return static_cast<unsigned int>(size());}
 };
 

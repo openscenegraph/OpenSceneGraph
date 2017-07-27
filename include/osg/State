@@ -600,7 +600,7 @@ class OSG_EXPORT State : public Referenced
             }
             else if (ibo != _currentDIBO)
             {
-                _glBindBuffer(GL_DRAW_INDIRECT_BUFFER, ibo->getGLObjectID());
+                ibo->bindBuffer();
                 _currentDIBO = ibo;
             }
         }

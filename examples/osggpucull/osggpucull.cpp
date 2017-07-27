@@ -189,7 +189,7 @@ struct IndirectTarget
     }
     void endRegister(unsigned int index, unsigned int rowsPerInstance, GLenum pixelFormat, GLenum type, GLint internalFormat, bool useMultiDrawArraysIndirect )
     {
-        osg::VertexBufferObject * indirectCommandbuffer=new osg::VertexBufferObject();
+        osg::DrawIndirectBufferObject * indirectCommandbuffer = new osg::DrawIndirectBufferObject();
         indirectCommandbuffer->setUsage(GL_DYNAMIC_DRAW);
         indirectCommands->setBufferObject(indirectCommandbuffer);
 

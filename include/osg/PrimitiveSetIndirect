@@ -148,7 +148,7 @@ public:
     inline void setIndirectCommandArray(IndirectCommandDrawElements*idc) {
         _indirectCommandArray = idc;
         if(!_indirectCommandArray->getBufferObject())
-            _indirectCommandArray->setBufferObject(new osg::VertexBufferObject());
+            _indirectCommandArray->setBufferObject(new osg::DrawIndirectBufferObject());
     }
     /// get command array of this indirect primitive set
     inline IndirectCommandDrawElements* getIndirectCommandArray() {        return _indirectCommandArray;    }
@@ -656,7 +656,7 @@ public:
     inline void setIndirectCommandArray(IndirectCommandDrawArrays*idc) {
         _indirectCommandArray = idc;
         if(!_indirectCommandArray->getBufferObject())
-            _indirectCommandArray->setBufferObject(new osg::VertexBufferObject());
+            _indirectCommandArray->setBufferObject(new osg::DrawIndirectBufferObject());
     }
     inline const IndirectCommandDrawArrays* getIndirectCommandArray() const {
         return _indirectCommandArray;

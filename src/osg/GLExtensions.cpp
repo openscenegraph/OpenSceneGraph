@@ -47,6 +47,9 @@
     #else
         #include <dlfcn.h>
     #endif
+#elif defined(__EMSCRIPTEN__)
+    // Emscripten ships SDL, which we use to get OpenGL function addresses.
+    #include <SDL2/SDL.h>
 #else
     #include <dlfcn.h>
 #endif
@@ -406,6 +409,10 @@ OSG_INIT_SINGLETON_PROXY(GLExtensionDisableStringInitializationProxy, osg::getGL
     #elif defined (__QNX__)
 
         return dlsym(RTLD_DEFAULT, funcName);
+
+    #elif defined(__EMSCRIPTEN__)
+        // Use SDL to get OpenGL function address for Emscripten.
+        return SDL_GL_GetProcAddress(funcName);
 
     #else // all other unixes
 

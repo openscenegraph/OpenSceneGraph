@@ -25,7 +25,7 @@ namespace osg {
 class OSG_EXPORT IndirectCommandDrawArrays: public BufferData
 {
 public:
-    IndirectCommandDrawArrays():BufferData(){}
+    IndirectCommandDrawArrays():BufferData(){setBufferObject(new DrawIndirectBufferObject());}
     IndirectCommandDrawArrays(const IndirectCommandDrawArrays& copy,const CopyOp& copyop/*=CopyOp::SHALLOW_COPY*/)
     :BufferData(copy, copyop){ }
 
@@ -40,7 +40,7 @@ public:
 class OSG_EXPORT IndirectCommandDrawElements: public BufferData
 {
 public:
-    IndirectCommandDrawElements():BufferData(){}
+    IndirectCommandDrawElements():BufferData(){setBufferObject(new DrawIndirectBufferObject());}
     IndirectCommandDrawElements(const IndirectCommandDrawElements& copy,const CopyOp& copyop/*=CopyOp::SHALLOW_COPY*/)
     :BufferData(copy, copyop){}
 
@@ -147,8 +147,9 @@ public:
     /// set command array of this indirect primitive set
     inline void setIndirectCommandArray(IndirectCommandDrawElements*idc) {
         _indirectCommandArray = idc;
-        if(!_indirectCommandArray->getBufferObject())
-            _indirectCommandArray->setBufferObject(new osg::VertexBufferObject());
+        //ensure bo of idc is of the correct type
+        if(!dynamic_cast<DrawIndirectBufferObject* >(_indirectCommandArray->getBufferObject()))
+            _indirectCommandArray->setBufferObject(new DrawIndirectBufferObject());
     }
     /// get command array of this indirect primitive set
     inline IndirectCommandDrawElements* getIndirectCommandArray() {        return _indirectCommandArray;    }
@@ -655,8 +656,9 @@ public:
 
     inline void setIndirectCommandArray(IndirectCommandDrawArrays*idc) {
         _indirectCommandArray = idc;
-        if(!_indirectCommandArray->getBufferObject())
-            _indirectCommandArray->setBufferObject(new osg::VertexBufferObject());
+        //ensure bo of idc is of the correct type
+        if(!dynamic_cast<DrawIndirectBufferObject* >(_indirectCommandArray->getBufferObject()))
+            _indirectCommandArray->setBufferObject(new DrawIndirectBufferObject());
     }
     inline const IndirectCommandDrawArrays* getIndirectCommandArray() const {
         return _indirectCommandArray;

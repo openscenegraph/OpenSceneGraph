@@ -1358,6 +1358,50 @@ const DrawElements* ElementBufferObject::getDrawElements(unsigned int i) const
     return dynamic_cast<const DrawElements*>(getBufferData(i));
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+//
+//  DrawIndirectBufferObject
+//
+DrawIndirectBufferObject::DrawIndirectBufferObject()
+{
+    setTarget(GL_DRAW_INDIRECT_BUFFER);
+    setUsage(GL_STATIC_DRAW_ARB);
+//    setUsage(GL_STREAM_DRAW_ARB);
+}
+
+DrawIndirectBufferObject::DrawIndirectBufferObject(const DrawIndirectBufferObject& vbo,const CopyOp& copyop):
+    BufferObject(vbo,copyop)
+{
+}
+
+DrawIndirectBufferObject::~DrawIndirectBufferObject()
+{
+}
+
+unsigned int DrawIndirectBufferObject::addArray(osg::Array* array)
+{
+    return addBufferData(array);
+}
+
+void DrawIndirectBufferObject::removeArray(osg::Array* array)
+{
+    removeBufferData(array);
+}
+
+void DrawIndirectBufferObject::setArray(unsigned int i, Array* array)
+{
+    setBufferData(i,array);
+}
+
+Array* DrawIndirectBufferObject::getArray(unsigned int i)
+{
+    return dynamic_cast<osg::Array*>(getBufferData(i));
+}
+
+const Array* DrawIndirectBufferObject::getArray(unsigned int i) const
+{
+    return dynamic_cast<const osg::Array*>(getBufferData(i));
+}
 
 //////////////////////////////////////////////////////////////////////////////////
 //

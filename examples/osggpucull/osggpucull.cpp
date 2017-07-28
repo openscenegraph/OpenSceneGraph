@@ -181,18 +181,16 @@ struct IndirectTarget
         : maxTargetQuantity(0)
     {
         indirectCommands    = new osg::DefaultIndirectCommandDrawArrays;
+        indirectCommands->getBufferObject()->setUsage(GL_DYNAMIC_DRAW);
     }
     IndirectTarget( AggregateGeometryVisitor* agv, osg::Program* program )
         : geometryAggregator(agv), drawProgram(program), maxTargetQuantity(0)
     {
         indirectCommands    = new osg::DefaultIndirectCommandDrawArrays;
+        indirectCommands->getBufferObject()->setUsage(GL_DYNAMIC_DRAW);
     }
     void endRegister(unsigned int index, unsigned int rowsPerInstance, GLenum pixelFormat, GLenum type, GLint internalFormat, bool useMultiDrawArraysIndirect )
     {
-        osg::VertexBufferObject * indirectCommandbuffer=new osg::VertexBufferObject();
-        indirectCommandbuffer->setUsage(GL_DYNAMIC_DRAW);
-        indirectCommands->setBufferObject(indirectCommandbuffer);
-
         indirectCommandTextureBuffer = new osg::TextureBuffer(indirectCommands);
         indirectCommandTextureBuffer->setInternalFormat( GL_R32I );
         indirectCommandTextureBuffer->bindToImageUnit(index, osg::Texture::READ_WRITE);

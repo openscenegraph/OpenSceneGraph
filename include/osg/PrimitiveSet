@@ -56,11 +56,11 @@ public:
 
     virtual ~PrimitiveFunctor() {}
 
+
     /** Sets the array of vertices used to describe the primitives. Somehow
      *  mimics the OpenGL \c glVertexPointer() function.
      */
     virtual void setVertexArray(unsigned int count,const Vec2* vertices) = 0;
-
     /** Sets the array of vertices used to describe the primitives. Somehow
      *  mimics the OpenGL \c glVertexPointer() function.
      */
@@ -97,6 +97,9 @@ public:
 
     /// Mimics the OpenGL \c glDrawElements() function.
     virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices) = 0;
+
+    /// add a temporary offset when dealing with basevertex primset
+    virtual void addVertexArrayOffset(int offset) = 0;
 };
 
 class PrimitiveIndexFunctor
@@ -117,6 +120,9 @@ public:
     virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices) = 0;
     virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices) = 0;
     virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices) = 0;
+
+    /// add a temporary offset when dealing with basevertex primset
+    virtual void addVertexArrayOffset(int offset) = 0;
 };
 
 class DrawElements;

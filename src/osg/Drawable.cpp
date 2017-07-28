@@ -479,6 +479,15 @@ struct ComputeBound : public PrimitiveFunctor
         virtual void setVertexArray(unsigned int,const Vec3d* vertices) { _vertices3d  = vertices; }
         virtual void setVertexArray(unsigned int,const Vec4d* vertices) { _vertices4d = vertices; }
 
+        virtual void addVertexArrayOffset(int offset) {
+            if      (_vertices3f) _vertices3f += offset;
+            else if (_vertices2f) _vertices2f += offset;
+            else if (_vertices4f) _vertices4f += offset;
+            else if (_vertices2d) _vertices2d += offset;
+            else if (_vertices3d) _vertices3d += offset;
+            else if (_vertices4d) _vertices4d += offset;
+        }
+
         template<typename T>
         void _drawArrays(T* vert, T* end)
         {

@@ -60,7 +60,10 @@ public:
         _vertexArraySize = count;
         _vertexArrayPtr = vertices;
     }
-
+    virtual void addVertexArrayOffset(int offset) {
+        _vertexArraySize -= offset;
+        _vertexArrayPtr += offset;
+    }
     virtual void setVertexArray(unsigned int,const Vec4* )
     {
         notify(WARN)<<"Triangle Functor does not support Vec4* vertex arrays"<<std::endl;

@@ -261,7 +261,20 @@ const char* invalidNames[] =
     "RayIntersector",
     "OpenSceneGraph-Data",
     "Node",
-    "AlphaFunc"
+    "AlphaFunc",
+    "CompositeViewer",
+    "OpenSceneGraph-3",
+    "DisplaySettings::SHADER_NONE",
+    "CodeDocs",
+    "Mon",
+    "Tue",
+    "Wed",
+    "Fri",
+    "Sat",
+    "Sun",
+    "I",
+    "TriangleFunctor",
+    "PrimitiveFunctor"
 };
 
 
@@ -484,7 +497,8 @@ TypoCorrection typoCorrections[] =
     {"Janik", "Jannik"},
     {"ViganÃ²", "Viganò"},
     {"Vigano", "Viganò"},
-    {"Frashud", "Farshid"}
+    {"Frashud", "Farshid"},
+    {"Dannahauer","Dannahauer"}
 };
 
 
@@ -498,6 +512,16 @@ struct NameCorrection
 
 NameCorrection nameCorrections[] =
 {
+    {"LaurensVoerman","Meta_Shape",
+     "Laurens", "Voerman"},
+    {"LaurensVoerman","OpenCascade",
+     "Laurens", "Voerman"},
+    {"LaurensVoerman","Fri",
+     "Laurens", "Voerman"},
+    {"LaurensVoerman","",
+     "Laurens", "Voerman"},
+    {"Laurens","Loerman",
+     "Laurens", "Voerman"},
     {"FrancoisTigeot","",
      "Francois", "Tigeot"},
     {"Juan","Manuel",

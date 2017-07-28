@@ -1,4 +1,4 @@
-OpenSceneGraph Library 3.5.6
+OpenSceneGraph Library 3.5.7
 
 566 Contributors:
 

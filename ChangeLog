@@ -1,3 +1,181 @@
+Fri, 28 Jul 2017 10:27:47 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #267 from kornerr/masterAdd osgemscripten example
+
+Wed, 26 Jul 2017 12:54:37 +0100
+Author : Robert Osfield
+Replaced FindOurDCMTK.cmake usage with FindDCMTK.cmake
+
+Wed, 26 Jul 2017 12:26:38 +0100
+Author : Robert Osfield
+Replaced local FindOurDCMTK.cmake with stock Cmake's FindDCMTK.cmake as the later is now feature complete and has full support for debug and release libraries.
+
+Tue, 25 Jul 2017 14:56:27 +0100
+Author : Robert Osfield
+Merged MSVC static build fix from OpenSceneGraph-3.4
+
+Mon, 17 Jul 2017 16:46:16 +0100
+Author : Anna Sokol
+Since version 2.5.1 freetype has supported the WOFF extension format. In the attached ReaderWriterFreeType.cpp file I added the following line:            supportsExtension("woff","web open font format");
+
+
+Mon, 17 Jul 2017 07:53:48 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #270 from caishanli/patch-1fix StatsHandler crash on windows
+
+Mon, 3 Jul 2017 16:24:01 +0800
+Author : Cai Shanli
+fix StatsHandler crush on windowschange static_cast to dynamic_cast to avoid type cast error
+
+Thu, 22 Jun 2017 09:44:06 +0700
+Author : Michael Kapelko
+Add osgemscripten example
+
+Mon, 19 Jun 2017 15:55:42 +0100
+Author : Robert Osfield
+Updated SO version number to 149 to enable uint64 object length read/writing in the .osgb format
+
+Mon, 19 Jun 2017 15:45:35 +0100
+Author : Robert Osfield
+Added version checks for when writing out new 64bit object sizes
+
+Mon, 19 Jun 2017 15:33:52 +0100
+Author : Robert Osfield
+Replaced long long with uint64_t
+
+Mon, 19 Jun 2017 15:25:04 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #264 from rickyviking/binaryStreamLargeBlockBinaryStreamOperator: read and write block size as long long integer
+
+Mon, 19 Jun 2017 12:04:03 +0100
+Author : Robert Osfield
+Added ability for OSG serializers to get the file version number when writing out via the OutputStream object
+
+Mon, 19 Jun 2017 08:50:00 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #265 from cxw42/array-classnameMake Array::className() support all Array::Type values
+
+Mon, 19 Jun 2017 08:43:54 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #263 from cxw42/build-fixStill build even if CPACK_GENERATOR is undefined
+
+Mon, 19 Jun 2017 08:26:24 +0100
+Author : Robert Osfield
+Merge branch 'master' of https://github.com/openscenegraph/OpenSceneGraph
+
+Mon, 19 Jun 2017 08:12:47 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #260 from blobfish/primitiveIndexIntersections and primitive index
+
+Fri, 16 Jun 2017 09:58:32 -0400
+Author : Chris White
+Make Array::className() support all Array::Type'sArray::className() had fallen out of date with respect to Array::Type.
+This commit updates it, and adds documentation and a debug message to
+serve as a reminder for future additions of values to Array::Type.
+
+
+Wed, 14 Jun 2017 16:09:40 +0200
+Author : Riccardo Corsi
+BinaryStreamOperator: read and write block size as long long integer on 8 bytes, to accommodate arbitrarily large block size. When reading check of file version for backward compatibility.
+
+Sat, 10 Jun 2017 22:05:19 -0400
+Author : cxw
+Still build even if CPACK_GENERATOR is undefinedWithout the quotes around `${CPACK_GENERATOR}`, Windows CMake, generating
+for VS2013, would exit with an error because the `STREQUAL` only had one arg.
+
+
+Thu, 8 Jun 2017 07:10:32 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #261 from cxw42/doxy-osguiAdded osgUI to Doxygen-generated documentation
+
+Wed, 7 Jun 2017 07:50:55 -0400
+Author : Chris White
+Added osgUI to Doxygen-generated documentation
+
+Fri, 2 Jun 2017 15:43:54 -0400
+Author : blobfish
+osg: KdTree: count degenerates to keep original primitive index in sync
+
+Thu, 1 Jun 2017 15:25:38 -0400
+Author : blobfish
+osg: KdTree: encode original primitive index into _vertexIndices
+
+Tue, 30 May 2017 18:46:03 -0400
+Author : blobfish
+osgUtil: LineSegmentIntersector: don't increment primitive index until after adding intersection
+
+Mon, 29 May 2017 12:19:08 -0400
+Author : blobfish
+osgUtil: PolytopeIntersector: don't increment primitive index until after adding intersection
+
+Tue, 30 May 2017 18:38:25 -0400
+Author : blobfish
+examples: osgkeyboardmouse: add primitive index to LineSegmentIntersector output
+
+Fri, 2 Jun 2017 09:29:05 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #259 from jtorresfabra/fixes_kdtreeFixes kdtree building
+
+Wed, 31 May 2017 13:30:50 +0200
+Author : Jordi
+Fixes kdtree building
+
+Mon, 29 May 2017 12:20:31 +0100
+Author : Robert Osfield
+Added TimeMultiplier and LoopingMode to ImageSequence .osg serializer
+
+Thu, 25 May 2017 12:38:54 +0100
+Author : Robert Osfield
+Improved support for Text with large numbers of glyphs
+
+Thu, 25 May 2017 09:54:11 +0100
+Author : Robert Osfield
+Build fix
+
+Thu, 25 May 2017 09:37:30 +0100
+Author : Robert Osfield
+Merge branch 'master' of https://github.com/openscenegraph/OpenSceneGraph
+
+Thu, 25 May 2017 09:37:26 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #258 from kornerr/masterAdd x86_64 architecture to iOS simulator
+
+Thu, 25 May 2017 08:56:53 +0100
+Author : Robert Osfield
+Tidied up spacing
+
+Thu, 25 May 2017 08:48:45 +0100
+Author : Robert Osfield
+Fixed naming of OSG_USE_DEPRECATED_API
+
+Wed, 24 May 2017 19:40:08 +0100
+Author : Robert Osfield
+Moved OSG_USE_DEPRECATED_API from include/osg/Export to Cmake controlled include/osg/Config
+
+Wed, 24 May 2017 19:39:36 +0100
+Author : Robert Osfield
+Replaced deprecated API usage
+
+Wed, 24 May 2017 18:34:22 +0100
+Author : Robert Osfield
+Replaced DimensionMask naming with more appropriate PrimitiveMask nameing.
+
+Wed, 24 May 2017 16:02:29 +0100
+Author : Robert Osfield
+Added support for PolytopeIntersector::setDimensionsMask.
+
+Wed, 24 May 2017 16:01:49 +0100
+Author : Robert Osfield
+Aded --dim-mask mask and --dm mask command line option for setting the PolytopeIntersector::setDimensionsMask().
+
+Wed, 24 May 2017 22:29:19 +0700
+Author : Michael Kapelko
+Add x86_64 architecture to iOS simulator
+
+Fri, 19 May 2017 17:06:36 +0100
+Author : Robert Osfield
+Updated ChangeLog for 3.5.6 dev release
+
 Mon, 15 May 2017 14:53:27 +0100
 Author : Robert Osfield
 Refactored COLLADA_BUILDNAME and COLLADA_BOOST_BUILDNAME to resolve case where CMAKE_VS_PLATFORM_TOOLSET is not set.

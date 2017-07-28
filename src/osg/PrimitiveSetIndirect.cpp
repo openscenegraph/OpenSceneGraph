@@ -248,15 +248,19 @@ unsigned int getNumPrimitivesMDI( const T&_this)
         case(PrimitiveSet::POINTS):
             for(unsigned int i=0;i<_indirectCommandArray->getNumElements();++i)
                 total+=_indirectCommandArray->count(i);
+            break;
         case(PrimitiveSet::LINES):
             for(unsigned int i=0;i<_indirectCommandArray->getNumElements();++i)
             total+=_indirectCommandArray->count(i)/2;
+            break;
         case(PrimitiveSet::TRIANGLES):
             for(unsigned int i=0;i<_indirectCommandArray->getNumElements();++i)
             total+=_indirectCommandArray->count(i)/3;
+            break;
         case(PrimitiveSet::QUADS):
             for(unsigned int i=0;i<_indirectCommandArray->getNumElements();++i)
             total+=_indirectCommandArray->count(i)/4;
+            break;
         case(PrimitiveSet::LINE_STRIP):
         case(PrimitiveSet::LINE_LOOP):
         case(PrimitiveSet::TRIANGLE_STRIP):
@@ -490,7 +494,7 @@ unsigned int DrawArraysIndirect::getNumPrimitives() const
     switch(_mode)
     {
         case(POINTS):
-                return _indirectCommandArray->count(_firstCommand);
+            return _indirectCommandArray->count(_firstCommand);
         case(LINES):
             return _indirectCommandArray->count(_firstCommand)/2;
         case(TRIANGLES):
@@ -585,15 +589,19 @@ unsigned int MultiDrawArraysIndirect::getNumPrimitives() const
         case(POINTS):
             for(unsigned int i = _firstCommand; i<maxindex; ++i)
                 total+=_indirectCommandArray->count(i);
+            break;
         case(LINES):
             for(unsigned int i = _firstCommand; i<maxindex; ++i)
             total+=_indirectCommandArray->count(i)/2;
+            break;
         case(TRIANGLES):
             for(unsigned int i = _firstCommand; i<maxindex; ++i)
             total+=_indirectCommandArray->count(i)/3;
+            break;
         case(QUADS):
             for(unsigned int i = _firstCommand; i<maxindex; ++i)
             total+=_indirectCommandArray->count(i)/4;
+            break;
         case(LINE_STRIP):
         case(LINE_LOOP):
         case(TRIANGLE_STRIP):

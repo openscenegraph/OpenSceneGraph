@@ -20,10 +20,8 @@
 #include <osg/Notify>
 #include <assert.h>
 
-///  TODO: add base vertex feature to PrimitiveFunctor and PrimitiveIndexFunctor
-#define PRIMFUNCTORBASEVERTEX 1
-
 using namespace osg;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // DrawElementsIndirect
@@ -100,9 +98,6 @@ void DrawElementsIndirectUInt::offsetIndices(int offset)
 }
 void DrawElementsIndirectUInt::accept(PrimitiveFunctor& functor) const
 {
-
-#ifdef PRIMFUNCTORBASEVERTEX
-   //  TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
     if (!empty()){
          functor.addVertexArrayOffset(_indirectCommandArray->baseVertex(_firstCommand));
          functor.drawElements(_mode,_indirectCommandArray->count(_firstCommand),
@@ -110,13 +105,10 @@ void DrawElementsIndirectUInt::accept(PrimitiveFunctor& functor) const
                      );
          functor.addVertexArrayOffset(-_indirectCommandArray->baseVertex(_firstCommand));
     }
-#endif
 }
 
 void DrawElementsIndirectUInt::accept(PrimitiveIndexFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
-   //  TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
    if (!empty()){
         functor.addVertexArrayOffset(_indirectCommandArray->baseVertex(_firstCommand));
         functor.drawElements(_mode,_indirectCommandArray->count(_firstCommand),
@@ -124,8 +116,6 @@ void DrawElementsIndirectUInt::accept(PrimitiveIndexFunctor& functor) const
                     );
         functor.addVertexArrayOffset(-_indirectCommandArray->baseVertex(_firstCommand));
    }
-#endif
-
 }
 void DrawElementsIndirectUByte::draw(State& state, bool useVertexBufferObjects) const
 {   GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
@@ -162,8 +152,6 @@ void DrawElementsIndirectUByte::offsetIndices(int offset)
 }
 void DrawElementsIndirectUByte::accept(PrimitiveFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
-   //  TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
     if (!empty()){
          functor.addVertexArrayOffset(_indirectCommandArray->baseVertex(_firstCommand));
          functor.drawElements(_mode,_indirectCommandArray->count(_firstCommand),
@@ -171,13 +159,10 @@ void DrawElementsIndirectUByte::accept(PrimitiveFunctor& functor) const
                      );
          functor.addVertexArrayOffset(-_indirectCommandArray->baseVertex(_firstCommand));
     }
-#endif
 }
 
 void DrawElementsIndirectUByte::accept(PrimitiveIndexFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
-   //  TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
     if (!empty()){
          functor.addVertexArrayOffset(_indirectCommandArray->baseVertex(_firstCommand));
          functor.drawElements(_mode,_indirectCommandArray->count(_firstCommand),
@@ -185,7 +170,6 @@ void DrawElementsIndirectUByte::accept(PrimitiveIndexFunctor& functor) const
                      );
          functor.addVertexArrayOffset(-_indirectCommandArray->baseVertex(_firstCommand));
     }
-#endif
 }
 void DrawElementsIndirectUShort::draw(State& state, bool useVertexBufferObjects) const
 {   GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
@@ -222,8 +206,6 @@ void DrawElementsIndirectUShort::offsetIndices(int offset)
 }
 void DrawElementsIndirectUShort::accept(PrimitiveFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
-   //  TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
     if (!empty()){
          functor.addVertexArrayOffset(_indirectCommandArray->baseVertex(_firstCommand));
          functor.drawElements(_mode,_indirectCommandArray->count(_firstCommand),
@@ -231,13 +213,10 @@ void DrawElementsIndirectUShort::accept(PrimitiveFunctor& functor) const
                      );
          functor.addVertexArrayOffset(-_indirectCommandArray->baseVertex(_firstCommand));
     }
-#endif
 }
 
 void DrawElementsIndirectUShort::accept(PrimitiveIndexFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
-   //  TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
     if (!empty()){
          functor.addVertexArrayOffset(_indirectCommandArray->baseVertex(_firstCommand));
          functor.drawElements(_mode,_indirectCommandArray->count(_firstCommand),
@@ -245,7 +224,6 @@ void DrawElementsIndirectUShort::accept(PrimitiveIndexFunctor& functor) const
                      );
          functor.addVertexArrayOffset(-_indirectCommandArray->baseVertex(_firstCommand));
     }
-#endif
 
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -321,8 +299,6 @@ void MultiDrawElementsIndirectUByte::draw(State& state, bool useVertexBufferObje
 
 void MultiDrawElementsIndirectUByte::accept(PrimitiveFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
-  //TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
        unsigned int maxindex=_count>0?_firstCommand + _count : _indirectCommandArray->getNumElements() - _firstCommand;
        if (!empty() )
             for(unsigned int i = _firstCommand; i<maxindex; ++i){
@@ -331,13 +307,10 @@ void MultiDrawElementsIndirectUByte::accept(PrimitiveFunctor& functor) const
                         &(*this)[_indirectCommandArray->firstIndex(i)]);
                 functor.addVertexArrayOffset(-_indirectCommandArray->baseVertex(i));
             }
-#endif
 }
 
 void MultiDrawElementsIndirectUByte::accept(PrimitiveIndexFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
-  //TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
        unsigned int maxindex=_count>0?_firstCommand + _count : _indirectCommandArray->getNumElements() - _firstCommand;
        if (!empty() )
             for(unsigned int i = _firstCommand; i<maxindex; ++i){
@@ -346,7 +319,6 @@ void MultiDrawElementsIndirectUByte::accept(PrimitiveIndexFunctor& functor) cons
                         &(*this)[_indirectCommandArray->firstIndex(i)]);
                 functor.addVertexArrayOffset(-_indirectCommandArray->baseVertex(i));
             }
-#endif
 }
 
 
@@ -384,8 +356,6 @@ void MultiDrawElementsIndirectUShort::draw(State& state, bool useVertexBufferObj
 
 void MultiDrawElementsIndirectUShort::accept(PrimitiveFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
-  //TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
        unsigned int maxindex=_count>0?_firstCommand + _count : _indirectCommandArray->getNumElements() - _firstCommand;
        if (!empty() )
             for(unsigned int i = _firstCommand; i<maxindex; ++i){
@@ -394,13 +364,10 @@ void MultiDrawElementsIndirectUShort::accept(PrimitiveFunctor& functor) const
                         &(*this)[_indirectCommandArray->firstIndex(i)]);
                 functor.addVertexArrayOffset(-_indirectCommandArray->baseVertex(i));
             }
-#endif
 }
 
 void MultiDrawElementsIndirectUShort::accept(PrimitiveIndexFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
-  //TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
        unsigned int maxindex=_count>0?_firstCommand + _count : _indirectCommandArray->getNumElements() - _firstCommand;
        if (!empty() )
             for(unsigned int i = _firstCommand; i<maxindex; ++i){
@@ -409,7 +376,6 @@ void MultiDrawElementsIndirectUShort::accept(PrimitiveIndexFunctor& functor) con
                         &(*this)[_indirectCommandArray->firstIndex(i)]);
                 functor.addVertexArrayOffset(-_indirectCommandArray->baseVertex(i));
             }
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -445,8 +411,6 @@ void MultiDrawElementsIndirectUInt::draw(State& state, bool useVertexBufferObjec
 
 void MultiDrawElementsIndirectUInt::accept(PrimitiveFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
-  //TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
        unsigned int maxindex=_count>0?_firstCommand + _count : _indirectCommandArray->getNumElements() - _firstCommand;
        if (!empty() )
             for(unsigned int i = _firstCommand; i<maxindex; ++i){
@@ -455,13 +419,10 @@ void MultiDrawElementsIndirectUInt::accept(PrimitiveFunctor& functor) const
                         &(*this)[_indirectCommandArray->firstIndex(i)]);
                 functor.addVertexArrayOffset(-_indirectCommandArray->baseVertex(i));
             }
-#endif
 }
 
 void MultiDrawElementsIndirectUInt::accept(PrimitiveIndexFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
-  //TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
        unsigned int maxindex=_count>0?_firstCommand + _count : _indirectCommandArray->getNumElements() - _firstCommand;
        if (!empty() )
             for(unsigned int i = _firstCommand; i<maxindex; ++i){
@@ -470,7 +431,6 @@ void MultiDrawElementsIndirectUInt::accept(PrimitiveIndexFunctor& functor) const
                         &(*this)[_indirectCommandArray->firstIndex(i)]);
                 functor.addVertexArrayOffset(-_indirectCommandArray->baseVertex(i));
             }
-#endif
 }
 
 

@@ -22,7 +22,7 @@
 
 namespace osg {
 
-///common interface for IndirectCommandDrawArrayss
+///common interface for IndirectCommandDrawArraysArray
 class OSG_EXPORT IndirectCommandDrawArrays: public BufferData
 {
 public:
@@ -40,6 +40,7 @@ public:
     virtual unsigned int getNumElements() const = 0;
 };
 
+///common interface for IndirectCommandDrawElementsArray
 class OSG_EXPORT IndirectCommandDrawElements: public BufferData
 {
 public:

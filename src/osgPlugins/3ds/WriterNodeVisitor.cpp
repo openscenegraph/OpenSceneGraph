@@ -138,7 +138,8 @@ public:
           _hasNormalCoords(geo->getNormalArray() != NULL),
           _hasTexCoords(geo->getTexCoordArray(0) != NULL),
           _lastFaceIndex(0),
-          _material(material)
+          _material(material),
+          _basevertex(0)
       {
       }
 
@@ -155,7 +156,9 @@ public:
       virtual void setVertexArray(unsigned int ,const osg::Vec3d*) {}
 
       virtual void setVertexArray(unsigned int,const osg::Vec4d*) {}
-
+      virtual void addVertexArrayOffset(int offset) {
+          _basevertex += offset;
+      }
 
       // operator for triangles
       void writeTriangle(unsigned int i1, unsigned int i2, unsigned int i3)
@@ -190,95 +193,95 @@ public:
 
       virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices)
       {
-          drawElementsImplementation<GLubyte>(mode, count, indices);
+          drawElementsImplementation<GLubyte>(mode, count, indices, _basevertex);
       }
       virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices)
       {
-          drawElementsImplementation<GLushort>(mode, count, indices);
+          drawElementsImplementation<GLushort>(mode, count, indices, _basevertex);
       }
 
       virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices)
       {
-          drawElementsImplementation<GLuint>(mode, count, indices);
+          drawElementsImplementation<GLuint>(mode, count, indices, _basevertex);
       }
 
 protected:
 
-    template<typename T>void drawElementsImplementation(GLenum mode, GLsizei count, const T* indices)
-    {
-        if (indices==0 || count==0) return;
+      template<typename T> inline void drawElementsImplementation(GLenum mode, GLsizei count, const T* indices, const GLuint basevertex = 0)
+       {
+           if (indices==0 || count==0) return;
 
-        typedef const T* IndexPointer;
+           typedef const T* IndexPointer;
 
-        switch(mode)
-        {
-        case(GL_TRIANGLES):
-            {
-                //lib3ds_mesh_resize_faces(_mesh, _lastFaceIndex + count / 3);
-                IndexPointer ilast = &indices[count];
-                for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
-                    writeTriangle(*iptr,*(iptr+1),*(iptr+2));
+           switch(mode)
+           {
+           case(GL_TRIANGLES):
+               {
+                   //lib3ds_mesh_resize_faces(_mesh, _lastFaceIndex + count / 3);
+                   IndexPointer ilast = &indices[count];
+                   for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
+                       writeTriangle(*iptr+basevertex,*(iptr+1)+basevertex,*(iptr+2)+basevertex);
 
-                break;
-            }
-        case(GL_TRIANGLE_STRIP):
-            {
-                //lib3ds_mesh_resize_faces(_mesh, _lastFaceIndex + count -2);
-                IndexPointer iptr = indices;
-                for(GLsizei i=2;i<count;++i,++iptr)
-                {
-                    if ((i%2)) writeTriangle(*(iptr),*(iptr+2),*(iptr+1));
-                    else       writeTriangle(*(iptr),*(iptr+1),*(iptr+2));
-                }
-                break;
-            }
-        case(GL_QUADS):
-            {
-                //lib3ds_mesh_resize_faces(_mesh, _lastFaceIndex + count /2);        // count/4*2
-                IndexPointer iptr = indices;
-                for(GLsizei i=3;i<count;i+=4,iptr+=4)
-                {
-                    writeTriangle(*(iptr),*(iptr+1),*(iptr+2));
-                    writeTriangle(*(iptr),*(iptr+2),*(iptr+3));
-                }
-                break;
-            }
-        case(GL_QUAD_STRIP):
-            {
-                //lib3ds_mesh_resize_faces(_mesh, _lastFaceIndex + (count / 2 -1)*2);
-                IndexPointer iptr = indices;
-                for(GLsizei i=3;i<count;i+=2,iptr+=2)
-                {
-                    writeTriangle(*(iptr),*(iptr+1),*(iptr+2));
-                    writeTriangle(*(iptr+1),*(iptr+3),*(iptr+2));
-                }
-                break;
-            }
-        case(GL_POLYGON): // treat polygons as GL_TRIANGLE_FAN
-        case(GL_TRIANGLE_FAN):
-            {
-                //lib3ds_mesh_resize_faces(_mesh, _lastFaceIndex + count -2);
-                IndexPointer iptr = indices;
-                unsigned int first = *iptr;
-                ++iptr;
-                for(GLsizei i=2;i<count;++i,++iptr)
-                {
-                    writeTriangle(first,*(iptr),*(iptr+1));
-                }
-                break;
-            }
-        case(GL_POINTS):
-        case(GL_LINES):
-        case(GL_LINE_STRIP):
-        case(GL_LINE_LOOP):
-            // Not handled
-            break;
+                   break;
+               }
+           case(GL_TRIANGLE_STRIP):
+               {
+                   //lib3ds_mesh_resize_faces(_mesh, _lastFaceIndex + count -2);
+                   IndexPointer iptr = indices;
+                   for(GLsizei i=2;i<count;++i,++iptr)
+                   {
+                       if ((i%2)) writeTriangle(*(iptr)+basevertex,*(iptr+2)+basevertex,*(iptr+1)+basevertex);
+                       else       writeTriangle(*(iptr)+basevertex,*(iptr+1)+basevertex,*(iptr+2)+basevertex);
+                   }
+                   break;
+               }
+           case(GL_QUADS):
+               {
+                   //lib3ds_mesh_resize_faces(_mesh, _lastFaceIndex + count /2);        // count/4*2
+                   IndexPointer iptr = indices;
+                   for(GLsizei i=3;i<count;i+=4,iptr+=4)
+                   {
+                       writeTriangle(*(iptr)+basevertex,*(iptr+1)+basevertex,*(iptr+2)+basevertex);
+                       writeTriangle(*(iptr)+basevertex,*(iptr+2)+basevertex,*(iptr+3)+basevertex);
+                   }
+                   break;
+               }
+           case(GL_QUAD_STRIP):
+               {
+                   //lib3ds_mesh_resize_faces(_mesh, _lastFaceIndex + (count / 2 -1)*2);
+                   IndexPointer iptr = indices;
+                   for(GLsizei i=3;i<count;i+=2,iptr+=2)
+                   {
+                       writeTriangle(*(iptr)+basevertex,*(iptr+1)+basevertex,*(iptr+2)+basevertex);
+                       writeTriangle(*(iptr+1)+basevertex,*(iptr+3)+basevertex,*(iptr+2)+basevertex);
+                   }
+                   break;
+               }
+           case(GL_POLYGON): // treat polygons as GL_TRIANGLE_FAN
+           case(GL_TRIANGLE_FAN):
+               {
+                   //lib3ds_mesh_resize_faces(_mesh, _lastFaceIndex + count -2);
+                   IndexPointer iptr = indices;
+                   unsigned int first = *iptr+basevertex;
+                   ++iptr;
+                   for(GLsizei i=2;i<count;++i,++iptr)
+                   {
+                       writeTriangle(first,*(iptr)+basevertex,*(iptr+1)+basevertex);
+                   }
+                   break;
+               }
+           case(GL_POINTS):
+           case(GL_LINES):
+           case(GL_LINE_STRIP):
+           case(GL_LINE_LOOP):
+               // Not handled
+               break;
 
-        default:
-            // uhm should never come to this point :)
-            break;
-        }
-    }
+           default:
+               // uhm should never come to this point :)
+               break;
+           }
+   }
 
 private:
 
@@ -291,6 +294,7 @@ private:
     bool                 _hasNormalCoords, _hasTexCoords;
     unsigned int         _lastFaceIndex;
     unsigned int         _material;
+    unsigned int         _basevertex;
 };
 
 

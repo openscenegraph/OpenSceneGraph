@@ -77,6 +77,8 @@ class OSGUTIL_EXPORT Statistics : public osg::PrimitiveFunctor
         virtual void setVertexArray(unsigned int count,const osg::Vec3d*) { _vertexCount += count; }
         virtual void setVertexArray(unsigned int count,const osg::Vec2d*) { _vertexCount += count; }
         virtual void setVertexArray(unsigned int count,const osg::Vec4d*) { _vertexCount += count; }
+        /// Do nothing as this functor doesn't access vertices
+        virtual void addVertexArrayOffset(int offset){}
 
         virtual void drawArrays(GLenum mode,GLint,GLsizei count);
         virtual void drawElements(GLenum mode,GLsizei count,const GLubyte*);

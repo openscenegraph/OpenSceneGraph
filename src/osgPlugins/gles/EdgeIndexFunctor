@@ -21,6 +21,7 @@ template<class T>
 class EdgeIndexFunctor : public osg::PrimitiveIndexFunctor, public T
 {
 public:
+    EdgeIndexFunctor():_basevertex(0){}
     virtual void setVertexArray(unsigned int,const osg::Vec2*)
     {}
 
@@ -39,6 +40,8 @@ public:
     virtual void setVertexArray(unsigned int,const osg::Vec4d* )
     {}
 
+    /// add a temporary offset when dealing with basevertex primset
+    virtual void addVertexArrayOffset(int offset){_basevertex+=offset;}
     virtual void begin(GLenum mode) {
         _modeCache = mode;
         _indexCache.clear();
@@ -152,7 +155,7 @@ public:
     }
 
     template<typename I>
-    void drawElements(GLenum mode, GLsizei count, const I* indices) {
+    inline void drawElements(GLenum mode, GLsizei count, const I* indices, const GLuint basevertex = 0) {
         if (indices == 0 || count == 0) return;
 
         switch(mode)
@@ -161,9 +164,9 @@ public:
         {
             const I* ilast = &indices[count];
             for(const I* iptr = indices ; iptr < ilast ; iptr += 3) {
-                this->operator()(*iptr,     *(iptr+1));
-                this->operator()(*(iptr+1), *(iptr+2));
-                this->operator()(*iptr,     *(iptr+2));
+                this->operator()(*iptr+basevertex,     *(iptr+1)+basevertex);
+                this->operator()(*(iptr+1)+basevertex, *(iptr+2)+basevertex);
+                this->operator()(*iptr+basevertex,     *(iptr+2)+basevertex);
             }
             break;
         }
@@ -171,9 +174,9 @@ public:
         {
             const I* iptr = indices;
             for(GLsizei i = 2 ; i < count ; ++ i, ++ iptr) {
-                I v0 = *(iptr),
-                  v1 = *(iptr + 1),
-                  v2 = *(iptr + 2);
+                I v0 = *(iptr)+basevertex,
+                  v1 = *(iptr + 1)+basevertex,
+                  v2 = *(iptr + 2)+basevertex;
 
                 // when merging strips we create degenerate triangles and add
                 // non existing edges that should be filtered
@@ -195,10 +198,10 @@ public:
         {
             const I* iptr = indices;
             for(GLsizei i = 3 ; i < count ; i += 4, iptr += 4) {
-                this->operator()(*(iptr),   *(iptr+1));
-                this->operator()(*(iptr+1), *(iptr+2));
-                this->operator()(*(iptr+2), *(iptr+3) );
-                this->operator()(*(iptr),   *(iptr+3) );
+                this->operator()(*(iptr)+basevertex,   *(iptr+1)+basevertex);
+                this->operator()(*(iptr+1)+basevertex, *(iptr+2)+basevertex);
+                this->operator()(*(iptr+2)+basevertex, *(iptr+3)+basevertex );
+                this->operator()(*(iptr)+basevertex,   *(iptr+3)+basevertex );
             }
             break;
         }
@@ -206,10 +209,10 @@ public:
         {
             const I* iptr = indices;
             for(GLsizei i = 3 ; i < count ; i += 2, iptr += 2) {
-                this->operator()(*(iptr),   *(iptr+1));
-                this->operator()(*(iptr+3), *(iptr+1));
-                this->operator()(*(iptr+2), *(iptr+3));
-                this->operator()(*(iptr),   *(iptr+2));
+                this->operator()(*(iptr)+basevertex,   *(iptr+1)+basevertex);
+                this->operator()(*(iptr+3)+basevertex, *(iptr+1)+basevertex);
+                this->operator()(*(iptr+2)+basevertex, *(iptr+3)+basevertex);
+                this->operator()(*(iptr)+basevertex,   *(iptr+2)+basevertex);
             }
             break;
         }
@@ -219,7 +222,7 @@ public:
             const I* iptr = indices;
             ++iptr;
             for(GLsizei i = 2 ; i < count ; ++ i, ++ iptr) {
-                this->operator()(*(iptr), *(iptr+1));
+                this->operator()(*(iptr)+basevertex, *(iptr+1)+basevertex);
             }
             break;
         }
@@ -227,7 +230,7 @@ public:
         {
             const I* iptr = indices;
             for(GLsizei i = 0 ; i < count - 1 ; i += 2, iptr += 2) {
-                this->operator()(*iptr, *(iptr+1));
+                this->operator()(*iptr+basevertex, *(iptr+1)+basevertex);
             }
         }
         break;
@@ -235,7 +238,7 @@ public:
         {
             const I* iptr = indices;
             for(GLsizei i = 0 ; i < count - 1 ; i += 1, iptr += 1) {
-                this->operator()(*iptr, *(iptr+1));
+                this->operator()(*iptr+basevertex, *(iptr+1)+basevertex);
             }
         }
         break;
@@ -244,9 +247,9 @@ public:
             const I* iptr = indices;
             I first = *iptr;
             for(GLsizei i = 0 ; i < count - 1 ; i += 1, iptr += 1) {
-                this->operator()(*iptr, *(iptr+1));
+                this->operator()(*iptr+basevertex, *(iptr+1)+basevertex);
             }
-            this->operator()(*iptr, first);
+            this->operator()(*iptr+basevertex, first+basevertex);
         }
         break;
         case(GL_POINTS):
@@ -258,20 +261,21 @@ public:
     }
 
     virtual void drawElements(GLenum mode, GLsizei count, const GLubyte* indices) {
-        drawElements<GLubyte>(mode, count, indices);
+        drawElements<GLubyte>(mode, count, indices, _basevertex);
     }
 
     virtual void drawElements(GLenum mode, GLsizei count, const GLushort* indices) {
-        drawElements<GLushort>(mode, count, indices);
+        drawElements<GLushort>(mode, count, indices, _basevertex);
     }
 
     virtual void drawElements(GLenum mode, GLsizei count, const GLuint* indices) {
-        drawElements<GLuint>(mode, count, indices);
+        drawElements<GLuint>(mode, count, indices, _basevertex);
     }
 
 
     GLenum                      _modeCache;
     std::vector<GLuint>         _indexCache;
+    unsigned int                _basevertex;
 };
 
 #endif

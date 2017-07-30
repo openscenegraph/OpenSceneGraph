@@ -45,8 +45,10 @@
 typedef char GLchar;
 #endif
 
-#if !defined(GL_VERSION_2_0)
+#ifndef GL_VERTEX_PROGRAM_POINT_SIZE
     #define GL_VERTEX_PROGRAM_POINT_SIZE      0x8642
+#endif
+#ifndef GL_VERTEX_PROGRAM_TWO_SIDE
     #define GL_VERTEX_PROGRAM_TWO_SIDE        0x8643
 #endif
 

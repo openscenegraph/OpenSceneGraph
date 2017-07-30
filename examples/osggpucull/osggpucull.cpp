@@ -38,12 +38,14 @@
 #include <osg/BufferTemplate>
 #include "ShapeToGeometry.h"
 #include "AggregateGeometryVisitor.h"
+#if 0
 #include "DrawIndirectPrimitiveSet.h"
+#else
+#include <osg/PrimitiveSetIndirect>
+#endif
 #include "GpuCullShaders.h"
 
-#ifndef GL_RASTERIZER_DISCARD
-    #define GL_RASTERIZER_DISCARD 0x8C89
-#endif
+
 
 // each instance type may have max 8 LODs ( if you change
 // this value, don't forget to change it in vertex shaders accordingly )
@@ -178,23 +180,18 @@ struct IndirectTarget
     IndirectTarget()
         : maxTargetQuantity(0)
     {
-        indirectCommands    = new osg::BufferTemplate< std::vector<DrawArraysIndirectCommand> >;
+        indirectCommands    = new osg::DefaultIndirectCommandDrawArrays;
+        indirectCommands->getBufferObject()->setUsage(GL_DYNAMIC_DRAW);
     }
     IndirectTarget( AggregateGeometryVisitor* agv, osg::Program* program )
         : geometryAggregator(agv), drawProgram(program), maxTargetQuantity(0)
     {
-        indirectCommands    = new osg::BufferTemplate< std::vector<DrawArraysIndirectCommand> >;
+        indirectCommands    = new osg::DefaultIndirectCommandDrawArrays;
+        indirectCommands->getBufferObject()->setUsage(GL_DYNAMIC_DRAW);
     }
     void endRegister(unsigned int index, unsigned int rowsPerInstance, GLenum pixelFormat, GLenum type, GLint internalFormat, bool useMultiDrawArraysIndirect )
     {
-        osg::Image* indirectCommandImage = new osg::Image;
-        indirectCommandImage->setImage( indirectCommands->getTotalDataSize()/sizeof(unsigned int), 1, 1, GL_R32I, GL_RED, GL_UNSIGNED_INT, (unsigned char*)indirectCommands->getDataPointer(), osg::Image::NO_DELETE );
-
-        osg::VertexBufferObject * indirectCommandImagebuffer=new osg::VertexBufferObject();
-        indirectCommandImagebuffer->setUsage(GL_DYNAMIC_DRAW);
-        indirectCommandImage->setBufferObject(indirectCommandImagebuffer);
-
-        indirectCommandTextureBuffer = new osg::TextureBuffer(indirectCommandImage);
+        indirectCommandTextureBuffer = new osg::TextureBuffer(indirectCommands);
         indirectCommandTextureBuffer->setInternalFormat( GL_R32I );
         indirectCommandTextureBuffer->bindToImageUnit(index, osg::Texture::READ_WRITE);
         indirectCommandTextureBuffer->setUnRefImageDataAfterApply(false);
@@ -203,28 +200,29 @@ struct IndirectTarget
         // add proper primitivesets to geometryAggregators
         if( !useMultiDrawArraysIndirect ) // use glDrawArraysIndirect()
         {
-            std::vector<DrawArraysIndirect*> newPrimitiveSets;
+            std::vector<osg::DrawArraysIndirect*> newPrimitiveSets;
 
-            for(unsigned int j=0;j<indirectCommands->getData().size(); ++j)
-                newPrimitiveSets.push_back( new DrawArraysIndirect( GL_TRIANGLES, j*sizeof( DrawArraysIndirectCommand ) ) );
+            for(unsigned int j=0;j<indirectCommands->size(); ++j){
+                osg::DrawArraysIndirect *ipr=new osg::DrawArraysIndirect( GL_TRIANGLES, j );
+                ipr->setIndirectCommandArray( indirectCommands);
+                newPrimitiveSets.push_back(ipr);
+                }
 
             geometryAggregator->getAggregatedGeometry()->removePrimitiveSet(0,geometryAggregator->getAggregatedGeometry()->getNumPrimitiveSets() );
 
-            for(unsigned int j=0;j<indirectCommands->getData().size(); ++j)
+            for(unsigned int j=0;j<indirectCommands->size(); ++j)
                 geometryAggregator->getAggregatedGeometry()->addPrimitiveSet( newPrimitiveSets[j] );
 
 
         }
         else // use glMultiDrawArraysIndirect()
         {
+            osg::MultiDrawArraysIndirect *ipr=new osg::MultiDrawArraysIndirect( GL_TRIANGLES );
+            ipr->setIndirectCommandArray( indirectCommands );
             geometryAggregator->getAggregatedGeometry()->removePrimitiveSet(0,geometryAggregator->getAggregatedGeometry()->getNumPrimitiveSets() );
-            geometryAggregator->getAggregatedGeometry()->addPrimitiveSet( new MultiDrawArraysIndirect( GL_TRIANGLES, 0, indirectCommands->getData().size(), 0 ) );
+            geometryAggregator->getAggregatedGeometry()->addPrimitiveSet( ipr );
         }
 
-        ///attach a DrawIndirect buffer binding to the stateset
-        osg::ref_ptr<osg::DrawIndirectBufferBinding> bb=new osg::DrawIndirectBufferBinding();
-        bb->setBufferObject(indirectCommandImage->getBufferObject());
-        geometryAggregator->getAggregatedGeometry()->getOrCreateStateSet()->setAttribute(bb );
         geometryAggregator->getAggregatedGeometry()->setUseDisplayList(false);
         geometryAggregator->getAggregatedGeometry()->setUseVertexBufferObjects(true);
 
@@ -268,7 +266,7 @@ struct IndirectTarget
         stateset->setAttributeAndModes( drawProgram.get(), osg::StateAttribute::ON );
     }
 
-    osg::ref_ptr< osg::BufferTemplate< std::vector<DrawArraysIndirectCommand> > >  indirectCommands;
+    osg::ref_ptr< osg::DefaultIndirectCommandDrawArrays >        indirectCommands;
     osg::ref_ptr<osg::TextureBuffer>                                indirectCommandTextureBuffer;
     osg::ref_ptr< AggregateGeometryVisitor >                        geometryAggregator;
     osg::ref_ptr<osg::Program>                                      drawProgram;
@@ -318,7 +316,7 @@ struct GPUCullData
         // AggregateGeometryVisitor creates single osg::Geometry from all objects used by specific indirect target
         AggregateGeometryVisitor::AddObjectResult aoResult = target->second.geometryAggregator->addObject( node , typeID, lodNumber );
         // Information about first vertex and a number of vertices is stored for later primitiveset creation
-        target->second.indirectCommands->getData().push_back( DrawArraysIndirectCommand( aoResult.first, aoResult.count ) );
+        target->second.indirectCommands->push_back( osg::DrawArraysIndirectCommand( aoResult.count,1, aoResult.first ) );
 
         osg::ComputeBoundsVisitor cbv;
         node->accept(cbv);
@@ -360,10 +358,10 @@ struct GPUCullData
         std::map<unsigned int, IndirectTarget>::iterator it,eit;
         for(it=targets.begin(), eit=targets.end(); it!=eit; ++it)
         {
-            for(unsigned j=0; j<it->second.indirectCommands->getData().size(); ++j)
+            for(unsigned j=0; j<it->second.indirectCommands->size(); ++j)
             {
-                DrawArraysIndirectCommand& iComm = it->second.indirectCommands->getData().at(j);
-                OSG_INFO<<"("<<iComm.first<<" "<<iComm.primCount<<" "<<iComm.count<<") ";
+                osg::DrawArraysIndirectCommand& iComm = it->second.indirectCommands->at(j);
+                OSG_INFO<<"("<<iComm.first<<" "<<iComm.instanceCount<<" "<<iComm.count<<") ";
             }
             unsigned int sizeInBytes = (unsigned int ) it->second.maxTargetQuantity * sizeof(osg::Vec4);
             OSG_INFO<<" => Maximum elements in target : "<< it->second.maxTargetQuantity <<" ( "<< sizeInBytes <<" bytes, " << sizeInBytes/1024<< " kB )" << std::endl;
@@ -724,16 +722,16 @@ struct ResetTexturesCallback : public osg::StateSet::Callback
         std::vector<unsigned int>::iterator it,eit;
         for(it=texUnitsDirty.begin(), eit=texUnitsDirty.end(); it!=eit; ++it)
         {
-            osg::Texture* tex = dynamic_cast<osg::Texture*>( stateset->getTextureAttribute(*it,osg::StateAttribute::TEXTURE) );
+            osg::TextureBuffer* tex = dynamic_cast<osg::TextureBuffer*>( stateset->getTextureAttribute(*it,osg::StateAttribute::TEXTURE) );
             if(tex==NULL)
                 continue;
-            osg::Image* img = tex->getImage(0);
+            osg::BufferData* img =const_cast<osg::BufferData*>(tex->getBufferData());
             if(img!=NULL)
                 img->dirty();
         }
         for(it=texUnitsDirtyParams.begin(), eit=texUnitsDirtyParams.end(); it!=eit; ++it)
         {
-            osg::Texture* tex = dynamic_cast<osg::Texture*>( stateset->getTextureAttribute(*it,osg::StateAttribute::TEXTURE) );
+            osg::TextureBuffer* tex = dynamic_cast<osg::TextureBuffer*>( stateset->getTextureAttribute(*it,osg::StateAttribute::TEXTURE) );
             if(tex!=NULL)
                 tex->dirtyTextureParameters();
         }

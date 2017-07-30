@@ -18,7 +18,7 @@
 #include <osgDB/FileUtils>
 #include <osgDB/WriteFile>
 #include <osgDB/ObjectWrapper>
-#include <fstream>
+#include <osgDB/fstream>
 #include <sstream>
 #include <stdlib.h>
 
@@ -559,7 +559,7 @@ void OutputStream::writeImage( const osg::Image* img )
             if ( isBinary() )
             {
                 std::string fullPath = osgDB::findDataFile( img->getFileName() );
-                std::ifstream infile( fullPath.c_str(), std::ios::in|std::ios::binary );
+                osgDB::ifstream infile( fullPath.c_str(), std::ios::in|std::ios::binary );
                 if ( infile )
                 {
                     infile.seekg( 0, std::ios::end );

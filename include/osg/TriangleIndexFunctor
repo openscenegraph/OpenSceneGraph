@@ -23,13 +23,16 @@ template<class T>
 class TriangleIndexFunctor : public PrimitiveIndexFunctor, public T
 {
 public:
-
+    TriangleIndexFunctor():_basevertex(0){}
     virtual void setVertexArray(unsigned int,const Vec2*) {}
     virtual void setVertexArray(unsigned int ,const Vec3*) {}
     virtual void setVertexArray(unsigned int,const Vec4*) {}
     virtual void setVertexArray(unsigned int,const Vec2d*) {}
     virtual void setVertexArray(unsigned int ,const Vec3d*) {}
     virtual void setVertexArray(unsigned int,const Vec4d*) {}
+
+    /// add a temporary offset when dealing with basevertex primset
+    virtual void addVertexArrayOffset(int offset){_basevertex+=offset;}
 
     virtual void drawArrays(GLenum mode,GLint first,GLsizei count)
     {
@@ -107,7 +110,7 @@ public:
             {
                 IndexPointer ilast = &indices[count];
                 for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
-                    this->operator()(*iptr,*(iptr+1),*(iptr+2));
+                    this->operator()((*iptr)+ _basevertex,*(iptr+1)+ _basevertex,*(iptr+2)+ _basevertex);
                 break;
             }
             case(GL_TRIANGLE_STRIP):
@@ -115,8 +118,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-                    if ((i%2)) this->operator()(*(iptr),*(iptr+2),*(iptr+1));
-                    else       this->operator()(*(iptr),*(iptr+1),*(iptr+2));
+                    if ((i%2)) this->operator()(*(iptr)+ _basevertex,*(iptr+2)+ _basevertex,*(iptr+1)+ _basevertex);
+                    else       this->operator()(*(iptr)+ _basevertex,*(iptr+1)+ _basevertex,*(iptr+2)+ _basevertex);
                 }
                 break;
             }
@@ -125,8 +128,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=4,iptr+=4)
                 {
-                    this->operator()(*(iptr),*(iptr+1),*(iptr+2));
-                    this->operator()(*(iptr),*(iptr+2),*(iptr+3));
+                    this->operator()(*(iptr)+ _basevertex,*(iptr+1)+ _basevertex,*(iptr+2)+ _basevertex);
+                    this->operator()(*(iptr)+ _basevertex,*(iptr+2)+ _basevertex,*(iptr+3)+ _basevertex);
                 }
                 break;
             }
@@ -135,8 +138,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=2,iptr+=2)
                 {
-                    this->operator()(*(iptr),*(iptr+1),*(iptr+2));
-                    this->operator()(*(iptr+1),*(iptr+3),*(iptr+2));
+                    this->operator()(*(iptr)+ _basevertex,*(iptr+1)+ _basevertex,*(iptr+2)+ _basevertex);
+                    this->operator()(*(iptr+1)+ _basevertex,*(iptr+3)+ _basevertex,*(iptr+2)+ _basevertex);
                 }
                 break;
             }
@@ -148,7 +151,7 @@ public:
                 ++iptr;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-                    this->operator()(first,*(iptr),*(iptr+1));
+                    this->operator()(first+ _basevertex,*(iptr)+ _basevertex,*(iptr+1)+ _basevertex);
                 }
                 break;
             }
@@ -175,7 +178,7 @@ public:
             {
                 IndexPointer ilast = &indices[count];
                 for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
-                    this->operator()(*iptr,*(iptr+1),*(iptr+2));
+                    this->operator()(*iptr+ _basevertex,*(iptr+1)+ _basevertex,*(iptr+2)+ _basevertex);
                 break;
             }
             case(GL_TRIANGLE_STRIP):
@@ -183,8 +186,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-                    if ((i%2)) this->operator()(*(iptr),*(iptr+2),*(iptr+1));
-                    else       this->operator()(*(iptr),*(iptr+1),*(iptr+2));
+                    if ((i%2)) this->operator()(*(iptr)+ _basevertex,*(iptr+2)+ _basevertex,*(iptr+1)+ _basevertex);
+                    else       this->operator()(*(iptr)+ _basevertex,*(iptr+1)+ _basevertex,*(iptr+2)+ _basevertex);
                 }
                 break;
             }
@@ -193,8 +196,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=4,iptr+=4)
                 {
-                    this->operator()(*(iptr),*(iptr+1),*(iptr+2));
-                    this->operator()(*(iptr),*(iptr+2),*(iptr+3));
+                    this->operator()(*(iptr)+ _basevertex,*(iptr+1)+ _basevertex,*(iptr+2)+ _basevertex);
+                    this->operator()(*(iptr)+ _basevertex,*(iptr+2)+ _basevertex,*(iptr+3)+ _basevertex);
                 }
                 break;
             }
@@ -203,8 +206,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=2,iptr+=2)
                 {
-                    this->operator()(*(iptr),*(iptr+1),*(iptr+2));
-                    this->operator()(*(iptr+1),*(iptr+3),*(iptr+2));
+                    this->operator()(*(iptr)+ _basevertex,*(iptr+1)+ _basevertex,*(iptr+2)+ _basevertex);
+                    this->operator()(*(iptr+1)+ _basevertex,*(iptr+3)+ _basevertex,*(iptr+2)+ _basevertex);
                 }
                 break;
             }
@@ -216,7 +219,7 @@ public:
                 ++iptr;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-                    this->operator()(first,*(iptr),*(iptr+1));
+                    this->operator()(first+ _basevertex,*(iptr)+ _basevertex,*(iptr+1)+ _basevertex);
                 }
                 break;
             }
@@ -243,7 +246,7 @@ public:
             {
                 IndexPointer ilast = &indices[count];
                 for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
-                    this->operator()(*iptr,*(iptr+1),*(iptr+2));
+                    this->operator()((*iptr)+ _basevertex,*(iptr+1)+ _basevertex,*(iptr+2)+ _basevertex);
                 break;
             }
             case(GL_TRIANGLE_STRIP):
@@ -251,8 +254,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-                    if ((i%2)) this->operator()(*(iptr),*(iptr+2),*(iptr+1));
-                    else       this->operator()(*(iptr),*(iptr+1),*(iptr+2));
+                    if ((i%2)) this->operator()(*(iptr)+ _basevertex,*(iptr+2)+ _basevertex,*(iptr+1)+ _basevertex);
+                    else       this->operator()(*(iptr)+ _basevertex,*(iptr+1)+ _basevertex,*(iptr+2)+ _basevertex);
                 }
                 break;
             }
@@ -261,8 +264,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=4,iptr+=4)
                 {
-                    this->operator()(*(iptr),*(iptr+1),*(iptr+2));
-                    this->operator()(*(iptr),*(iptr+2),*(iptr+3));
+                    this->operator()(*(iptr)+ _basevertex,*(iptr+1)+ _basevertex,*(iptr+2)+ _basevertex);
+                    this->operator()(*(iptr)+ _basevertex,*(iptr+2)+ _basevertex,*(iptr+3)+ _basevertex);
                 }
                 break;
             }
@@ -271,8 +274,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=2,iptr+=2)
                 {
-                    this->operator()(*(iptr),*(iptr+1),*(iptr+2));
-                    this->operator()(*(iptr+1),*(iptr+3),*(iptr+2));
+                    this->operator()(*(iptr)+ _basevertex,*(iptr+1)+ _basevertex,*(iptr+2)+ _basevertex);
+                    this->operator()(*(iptr+1)+ _basevertex,*(iptr+3)+ _basevertex,*(iptr+2)+ _basevertex);
                 }
                 break;
             }
@@ -284,7 +287,7 @@ public:
                 ++iptr;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-                    this->operator()(first,*(iptr),*(iptr+1));
+                    this->operator()(first+ _basevertex,*(iptr)+ _basevertex,*(iptr+1)+ _basevertex);
                 }
                 break;
             }
@@ -297,6 +300,7 @@ public:
                 break;
         }
     }
+    unsigned int _basevertex;
 };
 
 }

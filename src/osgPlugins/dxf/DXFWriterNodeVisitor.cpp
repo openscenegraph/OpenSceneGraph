@@ -71,11 +71,14 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
             _layer(layer),
             _acad(acad),
             _m(m),
-            _writeTriangleAs3DFace(writeTriangleAs3DFace)
+            _writeTriangleAs3DFace(writeTriangleAs3DFace),
+            _basevertex(0)
         {
 
         }
-
+        virtual void addVertexArrayOffset(int offset) {
+            _basevertex += offset;
+        }
         virtual void setVertexArray(unsigned int,const osg::Vec2*) {}
 
         virtual void setVertexArray(unsigned int ,const osg::Vec3* ) {}
@@ -91,7 +94,7 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
 
         void write(unsigned int i,int c)
         {
-            const osg::Vec3 point = ((osg::Vec3Array *)_geo->getVertexArray())->at(i) * _m;
+            const osg::Vec3 point = ((osg::Vec3Array *)_geo->getVertexArray())->at(i+_basevertex) * _m;
             _fout <<c+10<<"\n "<<point.x()<<"\n"<<20+c<<"\n "<<point.y()<<"\n"<<30+c<<"\n "<<point.z()<<"\n";
         }
 
@@ -165,7 +168,7 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
             if ( _layer._color ) {
                 _fout << "62\n"<<_layer._color<<"\n";
             } else {
-                _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i1))<<"\n";
+                _fout << "62\n"<<_acad.findColor(DXFWriterNodeVisitor::getNodeRGB(_geo,i1+_basevertex))<<"\n";
                 //_fout << "420\n"<<DXFWriterNodeVisitor::getNodeRGB(_geo,i1)<<"\n";
 
             }
@@ -195,21 +198,21 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
 
         virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices)
         {
-            drawElementsImplementation<GLubyte>(mode, count, indices);
+            drawElementsImplementation<GLubyte>(mode, count, indices,_basevertex);
         }
         virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices)
         {
-            drawElementsImplementation<GLushort>(mode, count, indices);
+            drawElementsImplementation<GLushort>(mode, count, indices,_basevertex);
         }
 
         virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices)
         {
-            drawElementsImplementation<GLuint>(mode, count, indices);
+            drawElementsImplementation<GLuint>(mode, count, indices,_basevertex);
         }
 
     protected:
 
-        template<typename T>void drawElementsImplementation(GLenum mode, GLsizei count, const T* indices)
+        template<typename T>void drawElementsImplementation(GLenum mode, GLsizei count, const T* indices,const GLuint basevertex)
         {
             if (indices==0 || count==0) return;
 
@@ -221,7 +224,7 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                 {
                     IndexPointer ilast = &indices[count];
                     for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
-                        writeTriangle(*iptr,*(iptr+1),*(iptr+2));
+                        writeTriangle(*iptr+basevertex,*(iptr+1)+basevertex,*(iptr+2)+basevertex);
 
                     break;
                 }
@@ -230,8 +233,8 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                     IndexPointer iptr = indices;
                     for(GLsizei i=2;i<count;++i,++iptr)
                     {
-                        if ((i%2)) writeTriangle(*(iptr),*(iptr+2),*(iptr+1));
-                        else       writeTriangle(*(iptr),*(iptr+1),*(iptr+2));
+                        if ((i%2)) writeTriangle(*(iptr)+basevertex,*(iptr+2)+basevertex,*(iptr+1)+basevertex);
+                        else       writeTriangle(*(iptr)+basevertex,*(iptr+1)+basevertex,*(iptr+2)+basevertex);
                     }
                     break;
                 }
@@ -240,8 +243,8 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                     IndexPointer iptr = indices;
                     for(GLsizei i=3;i<count;i+=4,iptr+=4)
                     {
-                        writeTriangle(*(iptr),*(iptr+1),*(iptr+2));
-                        writeTriangle(*(iptr),*(iptr+2),*(iptr+3));
+                        writeTriangle(*(iptr)+basevertex,*(iptr+1)+basevertex,*(iptr+2)+basevertex);
+                        writeTriangle(*(iptr)+basevertex,*(iptr+2)+basevertex,*(iptr+3)+basevertex);
                     }
                     break;
                 }
@@ -250,8 +253,8 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                     IndexPointer iptr = indices;
                     for(GLsizei i=3;i<count;i+=2,iptr+=2)
                     {
-                        writeTriangle(*(iptr),*(iptr+1),*(iptr+2));
-                        writeTriangle(*(iptr+1),*(iptr+3),*(iptr+2));
+                        writeTriangle(*(iptr)+basevertex,*(iptr+1)+basevertex,*(iptr+2)+basevertex);
+                        writeTriangle(*(iptr+1)+basevertex,*(iptr+3)+basevertex,*(iptr+2)+basevertex);
                     }
                     break;
                 }
@@ -259,11 +262,11 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                 case(GL_TRIANGLE_FAN):
                 {
                     IndexPointer iptr = indices;
-                    unsigned int first = *iptr;
+                    unsigned int first = *iptr+basevertex;
                     ++iptr;
                     for(GLsizei i=2;i<count;++i,++iptr)
                     {
-                        writeTriangle(first,*(iptr),*(iptr+1));
+                        writeTriangle(first,*(iptr)+basevertex,*(iptr+1)+basevertex);
                     }
                     break;
                 }
@@ -273,7 +276,7 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                     for(IndexPointer  iptr=indices;iptr<ilast;++iptr)
 
                     {
-                        writePoint(*iptr);
+                        writePoint(*iptr+basevertex);
                     }
                     break;
                 }
@@ -283,7 +286,7 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                     IndexPointer ilast = &indices[count];
                     for(IndexPointer  iptr=indices;iptr<ilast;iptr+=2)
                     {
-                        writeLine(*iptr, *(iptr+1));
+                        writeLine(*iptr+basevertex, *(iptr+1)+basevertex);
                     }
                     break;
                 }
@@ -294,7 +297,7 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                     for(IndexPointer  iptr=indices+1;iptr<ilast;iptr+=2)
 
                     {
-                        writeLine(*(iptr-1), *iptr);
+                        writeLine(*(iptr-1)+basevertex, *iptr+basevertex);
                     }
                     break;
                 }
@@ -303,9 +306,9 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
                     IndexPointer ilast = &indices[count];
                     for(IndexPointer  iptr=indices+1;iptr<ilast;iptr+=2)
                     {
-                        writeLine(*(iptr-1), *iptr);
+                        writeLine(*(iptr-1)+basevertex, *iptr+basevertex);
                     }
-                    writeLine(*ilast, *indices);
+                    writeLine(*ilast+basevertex, *indices+basevertex);
                     break;
                 }
 
@@ -329,6 +332,7 @@ class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
         osg::Matrix  _m;
 
         bool         _writeTriangleAs3DFace;
+        unsigned int _basevertex;
 };
 
 

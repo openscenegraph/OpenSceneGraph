@@ -21,7 +21,7 @@ template<class T>
 class PointIndexFunctor : public osg::PrimitiveIndexFunctor, public T
 {
 public:
-
+    PointIndexFunctor():_basevertex(0){}
 
     virtual void setVertexArray(unsigned int,const osg::Vec2*)
     {
@@ -46,6 +46,9 @@ public:
     virtual void setVertexArray(unsigned int,const osg::Vec4d* )
     {
     }
+
+    /// add a temporary offset when dealing with basevertex primset
+    virtual void addVertexArrayOffset(int offset){_basevertex+=offset;}
 
     virtual void begin(GLenum mode)
     {
@@ -96,7 +99,7 @@ public:
         {
             IndexPointer ilast = &indices[count];
             for(IndexPointer  iptr=indices;iptr<ilast;iptr+=1)
-                this->operator()(*iptr);
+                this->operator()(*iptr+_basevertex);
         }
         break;
         default:
@@ -117,7 +120,7 @@ public:
         {
             IndexPointer ilast = &indices[count];
             for(IndexPointer  iptr=indices;iptr<ilast;iptr+=1)
-                this->operator()(*iptr);
+                this->operator()(*iptr+_basevertex);
         }
         break;
         default:
@@ -138,16 +141,17 @@ public:
         {
             IndexPointer ilast = &indices[count];
             for(IndexPointer  iptr=indices;iptr<ilast;iptr+=1)
-                this->operator()(*iptr);
+                this->operator()(*iptr+_basevertex);
         }
         break;
         default:
             break;
         }
     }
-
     GLenum               _modeCache;
     std::vector<GLuint>  _indexCache;
+    unsigned int _basevertex;
+
 };
 
 #endif

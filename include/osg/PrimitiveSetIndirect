@@ -22,7 +22,7 @@
 
 namespace osg {
 
-///common interface for IndirectCommandDrawArrayss
+///common interface for IndirectCommandDrawArraysArray
 class OSG_EXPORT IndirectCommandDrawArrays: public BufferData
 {
 public:
@@ -30,6 +30,8 @@ public:
 
     IndirectCommandDrawArrays(const IndirectCommandDrawArrays& copy,const CopyOp& copyop/*=CopyOp::SHALLOW_COPY*/) :
         BufferData(copy, copyop) {}
+
+    virtual unsigned int getTotalDataSize() const { return getElementSize()*getNumElements(); }
 
     virtual unsigned int & count(const unsigned int&index)=0;
     virtual unsigned int & instanceCount(const unsigned int&index)=0;
@@ -40,6 +42,7 @@ public:
     virtual unsigned int getNumElements() const = 0;
 };
 
+///common interface for IndirectCommandDrawElementsArray
 class OSG_EXPORT IndirectCommandDrawElements: public BufferData
 {
 public:
@@ -47,6 +50,8 @@ public:
 
     IndirectCommandDrawElements(const IndirectCommandDrawElements& copy,const CopyOp& copyop/*=CopyOp::SHALLOW_COPY*/)
         : BufferData(copy, copyop) {}
+
+    virtual unsigned int getTotalDataSize() const { return getElementSize()*getNumElements(); }
 
     virtual unsigned int & count(const unsigned int&index)=0;
     virtual unsigned int & instanceCount(const unsigned int&index)=0;
@@ -84,13 +89,13 @@ public:
         IndirectCommandDrawArrays(copy, copyop),MixinVector<DrawArraysIndirectCommand>() {}
 
     virtual const GLvoid* getDataPointer() const { return empty()?0:&front(); }
-    virtual unsigned int getTotalDataSize() const { return 16u*static_cast<unsigned int>(size()); }
+    virtual unsigned int getNumElements() const { return static_cast<unsigned int>(size()); }
     virtual unsigned int getElementSize()const { return 16u; };
+
     virtual unsigned int & count(const unsigned int&index) { return at(index).count; }
     virtual unsigned int & instanceCount(const unsigned int&index) { return at(index).instanceCount; }
     virtual unsigned int & first(const unsigned int&index) { return at(index).first; }
     virtual unsigned int & baseInstance(const unsigned int&index) { return at(index).baseInstance; }
-    virtual unsigned int getNumElements() const { return static_cast<unsigned int>(size()); }
 };
 
 
@@ -120,15 +125,14 @@ public:
         IndirectCommandDrawElements(copy, copyop), MixinVector<DrawElementsIndirectCommand>() {}
 
     virtual const GLvoid*   getDataPointer() const { return empty()?0:&front(); }
-    virtual unsigned int    getTotalDataSize() const { return 20u*static_cast<unsigned int>(size()); }
-
+    virtual unsigned int getNumElements() const { return static_cast<unsigned int>(size()); }
     virtual unsigned int getElementSize()const { return 20u; };
+
     virtual unsigned int & count(const unsigned int&index) { return at(index).count; }
     virtual unsigned int & instanceCount(const unsigned int&index) { return at(index).instanceCount; }
     virtual unsigned int & firstIndex(const unsigned int&index) { return at(index).firstIndex; }
     virtual unsigned int & baseVertex(const unsigned int&index) { return at(index).baseVertex; }
     virtual unsigned int & baseInstance(const unsigned int&index) { return at(index).baseInstance; }
-    virtual unsigned int getNumElements() const { return static_cast<unsigned int>(size()); }
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////

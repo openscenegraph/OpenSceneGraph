@@ -69,6 +69,18 @@ namespace osgAnimation
         META_Object(osgAnimation, UpdateFloatUniform);
     };
 
+    // Vec2f
+    struct UpdateVec2fUniform : public UpdateUniform<osg::Vec2f>
+    {
+        UpdateVec2fUniform(const std::string& aName = "") : UpdateUniform<osg::Vec2f>(aName) { }
+        UpdateVec2fUniform(const UpdateVec2fUniform& uv2fu,
+                           const osg::CopyOp& copyop) :
+            osg::Object(uv2fu, copyop),        // copy name
+            UpdateUniform<osg::Vec2f>(uv2fu, copyop) { }
+
+        META_Object(osgAnimation, UpdateVec2fUniform);
+    };
+
     // Vec3f
     struct UpdateVec3fUniform : public UpdateUniform<osg::Vec3f>
     {
@@ -79,6 +91,18 @@ namespace osgAnimation
             UpdateUniform<osg::Vec3f>(uv3fu, copyop) { }
 
         META_Object(osgAnimation, UpdateVec3fUniform);
+    };
+
+    // Vec4f
+    struct UpdateVec4fUniform : public UpdateUniform<osg::Vec4f>
+    {
+        UpdateVec4fUniform(const std::string& aName = "") : UpdateUniform<osg::Vec4f>(aName) { }
+        UpdateVec4fUniform(const UpdateVec4fUniform& uv4fu,
+                           const osg::CopyOp& copyop) :
+            osg::Object(uv4fu, copyop),        // copy name
+            UpdateUniform<osg::Vec4f>(uv4fu, copyop) { }
+
+        META_Object(osgAnimation, UpdateVec4fUniform);
     };
 
     // Matrixf

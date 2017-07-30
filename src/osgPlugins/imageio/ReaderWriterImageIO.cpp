@@ -35,7 +35,7 @@
 // Used because CGDataProviderCreate became deprecated in 10.5
 #include <AvailabilityMacros.h>
 
-
+#include <osg/Config>
 #include <osg/GL>
 #include <osg/Notify>
 #include <osg/Image>
@@ -252,183 +252,222 @@ CGImageRef CreateCGImageFromFile(const char* the_path)
     return image_ref;
 }
 
+namespace
+{
+	template<typename T>
+	void consume4(size_t width, size_t height, T* src_data, size_t src_stride, T* dst_data)
+	{
+		T* dst_data_ptr = dst_data;
+		for (int y = height - 1; y >= 0; y--)		// flip y
+		{
+			T* src_data_ptr = src_data + y*src_stride;
+
+			for (int x = 0; x < width; x++)
+			{
+#if OSG_GLES2_FEATURES
+				*dst_data_ptr++ = *src_data_ptr++;	// red
+				*dst_data_ptr++ = *src_data_ptr++;	// green
+				*dst_data_ptr++ = *src_data_ptr++;	// blue
+#else
+				unsigned char r = *src_data_ptr++;
+				unsigned char g = *src_data_ptr++;
+				unsigned char b = *src_data_ptr++;
+
+				*dst_data_ptr++ = b;				// blue
+				*dst_data_ptr++ = g;				// green
+				*dst_data_ptr++ = r;				// red
+#endif
+				*dst_data_ptr++ = *src_data_ptr++;	// alpha
+			}
+		}
+	}
+
+	template<typename T>
+	void consume3(size_t width, size_t height, T* src_data, size_t src_stride, T* dst_data)
+	{
+		T* dst_data_ptr = dst_data;
+		for (int y = height - 1; y >= 0; y--)		// flip y
+		{
+			T* src_data_ptr = src_data + y*src_stride;
+
+			for (int x = 0; x < width; x++)
+			{
+#if OSG_GLES2_FEATURES
+				*dst_data_ptr++ = *src_data_ptr++;	// red
+				*dst_data_ptr++ = *src_data_ptr++;	// green
+				*dst_data_ptr++ = *src_data_ptr++;	// blue
+#else
+				unsigned char r = *src_data_ptr++;
+				unsigned char g = *src_data_ptr++;
+				unsigned char b = *src_data_ptr++;
+
+				*dst_data_ptr++ = b;				// blue
+				*dst_data_ptr++ = g;				// green
+				*dst_data_ptr++ = r;				// red
+#endif
+			}
+		}
+	}
+
+	template<typename T>
+	void consume2(size_t width, size_t height, T* src_data, size_t src_stride, T* dst_data)
+	{
+		T* dst_data_ptr = dst_data;
+		for (int y = height - 1; y >= 0; y--)		// flip y
+		{
+			T* src_data_ptr = src_data + y*src_stride;
+
+			for (int x = 0; x < width; x++)
+			{
+				*dst_data_ptr++ = *src_data_ptr++;	// red (luminance)
+				*dst_data_ptr++ = *src_data_ptr++;	// green (alpha)
+			}
+		}
+	}
+
+	template<typename T>
+	void consume1(size_t width, size_t height, T* src_data, size_t src_stride, T* dst_data)
+	{
+		T* dst_data_ptr = dst_data;
+		for (int y = height - 1; y >= 0; y--)		// flip y
+		{
+			T* src_data_ptr = src_data + y*src_stride;
+
+			for (int x = 0; x < width; x++)
+				*dst_data_ptr++ = *src_data_ptr++;	// red
+		}
+	}
+
+	template<typename T>
+	bool consume(size_t channels, size_t width, size_t height, T* src_data, size_t src_stride, T* dst_data)
+	{
+		if (channels == 4)
+		{
+			consume4<T>(width, height, src_data, src_stride, dst_data);
+			return true;
+		}
+		else if (channels == 3)
+		{
+			consume3<T>(width, height, src_data, src_stride, dst_data);
+			return true;
+		}
+		else if (channels == 2)
+		{
+			consume2<T>(width, height, src_data, src_stride, dst_data);
+			return true;
+		}
+		else if (channels == 1)
+		{
+			consume1<T>(width, height, src_data, src_stride, dst_data);
+			return true;
+		}
+
+		return false;
+	}
+}// anonymous namespace
+
+
 /* Once we have our image (CGImageRef), we need to get it into an osg::Image */
+// TODO: GL3 core profile
 osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
 {
-    /* This code is adapted from Apple's Documentation found here:
-     * http://developer.apple.com/documentation/GraphicsImaging/Conceptual/OpenGL-MacProgGuide/index.html
-     * Listing 9-4Using a Quartz image as a texture source.
-     * Unfortunately, this guide doesn't show what to do about
-     * non-RGBA image formats so I'm making the rest up
-     * (and it's probably all wrong).
-     */
+	size_t				src_width				= CGImageGetWidth(image_ref);
+	size_t				src_height				= CGImageGetHeight(image_ref);
+    size_t				src_bits_per_pixel		= CGImageGetBitsPerPixel(image_ref);
+    size_t				src_bytes_per_row		= CGImageGetBytesPerRow(image_ref);
+	size_t				src_bits_per_component	= CGImageGetBitsPerComponent(image_ref);
+    CGImageAlphaInfo	src_alpha_info			= CGImageGetAlphaInfo(image_ref);
+//	CGBitmapInfo		src_bitmap_info			= CGImageGetBitmapInfo(image_ref);
 
-    size_t the_width = CGImageGetWidth(image_ref);
-    size_t the_height = CGImageGetHeight(image_ref);
-    CGRect the_rect = {{0.0f, 0.0f}, {static_cast<CGFloat>(the_width), static_cast<CGFloat>(the_height)}};
+	CFDataRef rawData = CGDataProviderCopyData(CGImageGetDataProvider(image_ref));
+	const UInt8* src_data = CFDataGetBytePtr(rawData);
 
-    size_t bits_per_pixel = CGImageGetBitsPerPixel(image_ref);
-    size_t bytes_per_row = CGImageGetBytesPerRow(image_ref);
-//    size_t bits_per_component = CGImageGetBitsPerComponent(image_ref);
-    size_t bits_per_component = 8;
+	size_t channels = src_bits_per_pixel/src_bits_per_component;
+	uint8_t* image_data = new uint8_t[int(src_width*src_height*channels*(src_bits_per_component/8.0))];
 
-    CGImageAlphaInfo alpha_info = CGImageGetAlphaInfo(image_ref);
+	size_t stride = src_bytes_per_row*(8.0/src_bits_per_component);
 
-    GLint internal_format;
-    GLenum pixel_format;
-    GLenum data_type;
+	// Suppose 4 channels
+	GLenum	type			= GL_UNSIGNED_BYTE;
+	GLint	internal_format	= GL_RGBA;
+	GLenum	pixel_format	= GL_BGRA;	// Should be faster than RGBA on x86
 
-    void* image_data = calloc(the_width * 4, the_height);
-
-    CGColorSpaceRef color_space;
-    CGBitmapInfo bitmap_info = CGImageGetBitmapInfo(image_ref);
-
-    switch(bits_per_pixel)
-    {
-        // Drat, if 8-bit, how do you distinguish
-        // between a 256 color GIF, a LUMINANCE map
-        // or an ALPHA map?
-        case 8:
-        {
-            // I probably did the formats all wrong for this case,
-            // especially the ALPHA case.
-            if(kCGImageAlphaNone == alpha_info)
-            {
-                /*
-                 internal_format = GL_LUMINANCE;
-                 pixel_format = GL_LUMINANCE;
-                 */
-                internal_format = GL_RGBA8;
-                pixel_format = GL_BGRA_EXT;
-                data_type = GL_UNSIGNED_INT_8_8_8_8_REV;
-
-                bytes_per_row = the_width*4;
-//                color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-                color_space = CGColorSpaceCreateDeviceRGB();
-//                bitmap_info = kCGImageAlphaPremultipliedFirst;
-#if __BIG_ENDIAN__
-                bitmap_info = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Big; /* XRGB Big Endian */
+	if (channels == 3)
+	{
+		internal_format		= GL_RGB;
+		pixel_format		= GL_BGR;
+	}
+	else if (channels == 2)
+	{
+#if defined(OSG_GL3_AVAILABLE) && !defined(OSG_GL2_AVAILABLE) && !defined(OSG_GL1_AVAILABLE)
+		internal_format		= GL_RG;	// GL_RG8
+		pixel_format		= GL_RG;
 #else
-                bitmap_info = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little; /* XRGB Little Endian */
+		internal_format		= GL_LUMINANCE_ALPHA;
+		pixel_format		= GL_LUMINANCE_ALPHA;
 #endif
-            }
-            else
-            {
-                internal_format = GL_ALPHA;
-                pixel_format = GL_ALPHA;
-                data_type = GL_UNSIGNED_BYTE;
-                //            bytes_per_row = the_width;
-//                color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericGray);
-                color_space = CGColorSpaceCreateDeviceGray();
-            }
-
-            break;
-        }
-        case 24:
-        {
-            internal_format = GL_RGBA8;
-            pixel_format = GL_BGRA_EXT;
-            data_type = GL_UNSIGNED_INT_8_8_8_8_REV;
-            bytes_per_row = the_width*4;
-//            color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-            color_space = CGColorSpaceCreateDeviceRGB();
-//            bitmap_info = kCGImageAlphaNone;
-#if __BIG_ENDIAN__
-            bitmap_info = kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Big; /* XRGB Big Endian */
+	}
+	else if (channels == 1)
+	{
+#if defined(OSG_GL3_AVAILABLE) && !defined(OSG_GL2_AVAILABLE) && !defined(OSG_GL1_AVAILABLE)
+		internal_format		= GL_RED;	// GL_R8
+		pixel_format		= GL_RED;
 #else
-            bitmap_info = kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little; /* XRGB Little Endian */
+		if (src_alpha_info == kCGImageAlphaOnly)
+		{
+			internal_format	= GL_ALPHA;
+			pixel_format	= GL_ALPHA;
+		}
+		else
+		{
+			internal_format	= GL_LUMINANCE;
+			pixel_format	= GL_LUMINANCE;
+		}
 #endif
-            break;
-        }
-        //
-        // Tatsuhiro Nishioka
-        // 16 bpp grayscale (8 bit white and 8 bit alpha) causes invalid argument combination
-        // in CGBitmapContextCreate.
-        // I guess it is safer to handle 16 bit grayscale image as 32-bit RGBA image.
-        // It works at least on FlightGear
-        //
-        case 16:
-        case 32:
-        case 48:
-        case 64:
-        {
+	}
 
-            internal_format = GL_RGBA8;
-            pixel_format = GL_BGRA_EXT;
-            data_type = GL_UNSIGNED_INT_8_8_8_8_REV;
-
-            bytes_per_row = the_width*4;
-//            color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-            color_space = CGColorSpaceCreateDeviceRGB();
-//            bitmap_info = kCGImageAlphaPremultipliedFirst;
-
-#if __BIG_ENDIAN__
-            bitmap_info = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Big; /* XRGB Big Endian */
-#else
-            bitmap_info = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little; /* XRGB Little Endian */
+#if OSG_GLES2_FEATURES
+	pixel_format = internal_format;	// Needed by spec
 #endif
-            break;
-        }
-        default:
-        {
-            // OSG_WARN << "Unknown file type in " << fileName.c_str() << " with " << origDepth << std::endl;
-            return NULL;
-            break;
-        }
 
-    }
+	bool readSuccess = false;
+	if (src_bits_per_component == 8)
+	{
+		uint8_t* src_data_cast = (uint8_t*)(src_data);
+		uint8_t* dst_data = image_data;
+		readSuccess = consume<uint8_t>(channels, src_width, src_height, src_data_cast, stride, dst_data);
+	}
+	else if (src_bits_per_component == 16)
+	{
+		type = GL_UNSIGNED_SHORT;
+		uint16_t* src_data_cast = (uint16_t*)(src_data);
+		uint16_t* dst_data = (uint16_t*)image_data;
+		readSuccess = consume<uint16_t>(channels, src_width, src_height, src_data_cast, stride, dst_data);
 
+	}
+	else if (src_bits_per_component == 32)
+	{
+		type = GL_FLOAT;
+		float* src_data_cast = (float*)(src_data);
+		float* dst_data = (float*)image_data;
+		readSuccess = consume<float>(channels, src_width, src_height, src_data_cast, stride, dst_data);
+	}
 
-    // Sets up a context to be drawn to with image_data as the area to be drawn to
-    CGContextRef bitmap_context = CGBitmapContextCreate(
-        image_data,
-        the_width,
-        the_height,
-        bits_per_component,
-        bytes_per_row,
-        color_space,
-        bitmap_info
-    );
+	CFRelease(rawData);
 
-    CGContextTranslateCTM(bitmap_context, 0, the_height);
-    CGContextScaleCTM(bitmap_context, 1.0, -1.0);
-    // Draws the image into the context's image_data
-    CGContextDrawImage(bitmap_context, the_rect, image_ref);
+	if (!readSuccess)
+	{
+		OSG_WARN << "Can't load image (via imageio plugin): Unsupported number of channels";
+		delete[] image_data;
 
-    CGContextRelease(bitmap_context);
+		return NULL;
+	}
 
-    if (!image_data)
-        return NULL;
+	osg::Image* osg_image = new osg::Image;
+	osg_image->setImage(src_width, src_height, 1, internal_format, pixel_format,
+						type, image_data, osg::Image::USE_NEW_DELETE);
 
-    // alpha is premultiplied with rgba, undo it
-
-    vImage_Buffer vb;
-    vb.data = image_data;
-    vb.height = the_height;
-    vb.width = the_width;
-    vb.rowBytes = the_width * 4;
-    vImageUnpremultiplyData_RGBA8888(&vb, &vb, 0);
-
-    // changing it to GL_UNSIGNED_BYTE seems working, but I'm not sure if this is a right way.
-    //
-    data_type = GL_UNSIGNED_BYTE;
-    osg::Image* osg_image = new osg::Image;
-
-    osg_image->setImage(
-        the_width,
-        the_height,
-        1,
-        internal_format,
-        pixel_format,
-        data_type,
-        (unsigned char*)image_data,
-        osg::Image::USE_MALLOC_FREE // Assumption: osg_image takes ownership of image_data and will free
-    );
-
-    return osg_image;
-
-
-
+	return osg_image;
 }
 /**************************************************************
 ***** End Support functions for reading (stream and file) *****

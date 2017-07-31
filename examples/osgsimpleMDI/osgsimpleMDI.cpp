@@ -47,11 +47,6 @@
 
 
 
-
-///////////////////////////////////////////////////////////////////////////
-//#define MAXX 1000
-//#define MAXY 1000
-
 int main( int argc, char**argv )
 {
 
@@ -69,9 +64,10 @@ int main( int argc, char**argv )
         return 1;
     }
 
-     int MAXX=200;int MAXY=200;
-     arguments.read("--numX",MAXX);
-     arguments.read("--numY",MAXY);
+    int MAXX=200;
+    int MAXY=200;
+    arguments.read("--numX",MAXX);
+    arguments.read("--numY",MAXY);
 
     bool MDIenable=true;
     if(arguments.read("--classic"))
@@ -132,10 +128,10 @@ int main( int argc, char**argv )
 
     } else
         for(int i=0; i<MAXY*MAXX; ++i) {
-            for(int z=0; z<4; z++)myIndicesUI[z]+=4;
             osg::DrawElementsUInt *dre=new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLE_STRIP,4,myIndicesUI) ;
             dre->setElementBufferObject(ebo);
             geom->addPrimitiveSet(dre);
+            for(int z=0; z<4; z++)myIndicesUI[z]+=4;
         }
     root->addChild(geom);
     osgViewer::Viewer viewer;

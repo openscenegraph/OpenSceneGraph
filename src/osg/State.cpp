@@ -1828,10 +1828,10 @@ void State::frameCompleted()
 
 bool State::DefineMap::updateCurrentDefines()
 {
-    if (!changed)
-		return false;
+    if (!changed) return false;
 
     currentDefines.clear();
+
     for(DefineStackMap::const_iterator itr = map.begin();
         itr != map.end();
         ++itr)
@@ -1846,9 +1846,10 @@ bool State::DefineMap::updateCurrentDefines()
             }
         }
     }
+
     changed = false;
 
-	return true;
+    return true;
 }
 
 std::string State::getDefineString(const osg::ShaderDefines& shaderDefines)

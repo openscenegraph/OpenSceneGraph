@@ -38,7 +38,7 @@
 #include <osg/Shader>
 #include <osg/BlendFunc>
 
-#include <osg/Uniform>
+#include <osg/Notify>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 
@@ -51,7 +51,7 @@
 ///////////////////////////////////////////////////////////////////////////
 #define MAXX 100
 #define MAXY 100
-
+//#define VIAINTERFACE 1
 int main( int argc, char**argv )
 {
 
@@ -59,23 +59,25 @@ int main( int argc, char**argv )
 
     bool MDIenable=true;
     if(arguments.read("--classic"))
-        MDIenable=false;
+    {   MDIenable=false;
+        OSG_WARN<<"disabling MDI"<<std::endl;
+    }
 
     osg::Geode* root( new osg::Geode );
-    osg::BoundingBox bb;
 
-    osg::Vec3 corner;
-    osg::ref_ptr<osg::VertexBufferObject> vertbo=new osg::VertexBufferObject;
-    osg::ref_ptr<osg::VertexBufferObject> texbo=new osg::VertexBufferObject;
     osg::ref_ptr<osg::ElementBufferObject> ebo=new osg::ElementBufferObject;
 
     ///create empty mdi
     osg::MultiDrawElementsIndirectUShort* mdi=new  osg::MultiDrawElementsIndirectUShort(osg::PrimitiveSet::TRIANGLE_STRIP);
     osg::DefaultIndirectCommandDrawElements* mdicommands= new osg::DefaultIndirectCommandDrawElements();
     mdi->setIndirectCommandArray(mdicommands);
-    mdi->setBufferObject(ebo);
 
-    osg::ref_ptr<osg::Geometry>	oldprHolder=new osg::Geometry();
+    osg::ref_ptr<osg::Geometry>  geom=new osg::Geometry();
+    geom->setUseVertexBufferObjects(true);
+    osg::BoundingBox bb;
+    bb.set(0,0,0,MAXX,0,MAXY);
+    //set bounds by hand cause of the lack of support of basevertex in PrimitiveFunctors
+    geom->setInitialBound(bb);
 
     osg::Vec3 myCoords[] =
     {
@@ -85,13 +87,6 @@ int main( int argc, char**argv )
         osg::Vec3(0.7f,0.0f,0.7f)
     };
 
-    osg::Vec2 myTexCoords[] =
-    {
-        osg::Vec2(0,1),
-        osg::Vec2(0,0),
-        osg::Vec2(1,0),
-        osg::Vec2(1,1)
-    };
     unsigned short myIndices[] =
     {
         0,
@@ -99,60 +94,38 @@ int main( int argc, char**argv )
         3,
         2
     };
+    osg::Vec3Array * verts=new osg::Vec3Array();
+
+
     for(int j =0 ; j<MAXY; ++j) {
         for(int i =0 ; i<MAXX; ++i) {
 
-            ///begin generate indexed quad
-            corner=osg::Vec3(i,0,j);
-            osg::Geometry* geom = new osg::Geometry();
-            geom->setUseVertexBufferObjects(true);
-            osg::Vec3Array * verts=new osg::Vec3Array(4,myCoords);
-            for(int z=0; z<4; z++)(*verts)[z]+=corner;
-            geom->setVertexArray(verts);
-            geom->setTexCoordArray(0,new osg::Vec2Array(4,myTexCoords));
-            geom->addPrimitiveSet(new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLE_STRIP,4,myIndices));
-            ///end generate indexed quad
+            ///create indirect command
+            osg::DrawElementsIndirectCommand cmd;
+            cmd.count=4;
+            cmd.instanceCount=1;
+            cmd.firstIndex=verts->size();
+            cmd.baseVertex=verts->size();
+            mdicommands->push_back(cmd);
 
-            bb.expandBy(geom->getBoundingBox());
-
-            if(MDIenable) {
-                ///setup bos
-                geom->getVertexArray()->setBufferObject(vertbo);
-                geom->getTexCoordArray(0)->setBufferObject(texbo);
-                osg::DrawElementsUShort *dre = static_cast<osg::DrawElementsUShort*>(geom->getPrimitiveSet(0));
-                dre->setBufferObject(ebo);
-
-                ///keep old pr alive for indices upload purpose
-                oldprHolder->addPrimitiveSet(dre);
-                geom->removePrimitiveSet(0,1);
-
-                ///create indirect command
-                osg::DrawElementsIndirectCommand cmd;
-                cmd.count=4;
-                cmd.instanceCount=1;
-                cmd.firstIndex=root->getNumChildren()*4;
-                cmd.baseVertex=root->getNumChildren()*4;
-                mdicommands->push_back(cmd);
-
-                if(cmd.firstIndex==0) {
-                    ///only first geom have a mdi primset
-                    geom->addPrimitiveSet(mdi);
-                    ///avoid bound computation to fail because of the lack of support of basevertex in functors
-                    geom->setComputeBoundingBoxCallback(new osg::Drawable::ComputeBoundingBoxCallback);
-                }
-
+            for(int z=0; z<4; z++) {
+                verts->push_back(osg::Vec3(i,0,j)+myCoords[z]);
+                mdi->addElement(myIndices[z]);
             }
-            root->addChild(geom);
         }
     }
-
+    geom->setVertexArray(verts);
     if(MDIenable) {
-        ///override bounds
-        root->getDrawable(0)->setInitialBound(bb);
-        ///put it somewhere
-        root->setUserData( oldprHolder);
-    }
+        geom->addPrimitiveSet(mdi);
 
+    } else
+        for(int i=0; i<MAXY*MAXX; ++i) {
+            for(int z=0; z<4; z++)myIndices[z]+=4;
+            osg::DrawElementsUShort *dre=new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLE_STRIP,4,myIndices) ;
+            dre->setElementBufferObject(ebo);
+            geom->addPrimitiveSet(dre);
+        }
+    root->addChild(geom);
     osgViewer::Viewer viewer;
     viewer.addEventHandler(new osgViewer::StatsHandler);
     viewer.setSceneData( root );

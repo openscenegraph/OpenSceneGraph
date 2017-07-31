@@ -38,7 +38,7 @@
 #include <osg/Shader>
 #include <osg/BlendFunc>
 
-#include <osg/Notify>
+#include <iostream>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 
@@ -49,13 +49,29 @@
 
 
 ///////////////////////////////////////////////////////////////////////////
-#define MAXX 100
-#define MAXY 100
-//#define VIAINTERFACE 1
+//#define MAXX 1000
+//#define MAXY 1000
+
 int main( int argc, char**argv )
 {
 
     osg::ArgumentParser arguments(&argc,argv);
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates Multi Indirect Draw with basevertex");
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] ");
+    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("--numX","square count on X");
+    arguments.getApplicationUsage()->addCommandLineOption("--numY","square count on Y");
+    arguments.getApplicationUsage()->addCommandLineOption("--classic","disable MDI and use classic DrawElements");
+
+    if (arguments.read("-h") || arguments.read("--help"))
+    {
+        arguments.getApplicationUsage()->write(std::cout);
+        return 1;
+    }
+
+     int MAXX=200;int MAXY=200;
+     arguments.read("--numX",MAXX);
+     arguments.read("--numY",MAXY);
 
     bool MDIenable=true;
     if(arguments.read("--classic"))
@@ -87,13 +103,9 @@ int main( int argc, char**argv )
         osg::Vec3(0.7f,0.0f,0.7f)
     };
 
-    unsigned short myIndices[] =
-    {
-        0,
-        1,
-        3,
-        2
-    };
+    unsigned short myIndices[] =   {       0,        1,        3,        2    };
+    unsigned int myIndicesUI[] =   {       0,        1,        3,        2    };
+
     osg::Vec3Array * verts=new osg::Vec3Array();
 
 
@@ -120,8 +132,8 @@ int main( int argc, char**argv )
 
     } else
         for(int i=0; i<MAXY*MAXX; ++i) {
-            for(int z=0; z<4; z++)myIndices[z]+=4;
-            osg::DrawElementsUShort *dre=new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLE_STRIP,4,myIndices) ;
+            for(int z=0; z<4; z++)myIndicesUI[z]+=4;
+            osg::DrawElementsUInt *dre=new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLE_STRIP,4,myIndicesUI) ;
             dre->setElementBufferObject(ebo);
             geom->addPrimitiveSet(dre);
         }

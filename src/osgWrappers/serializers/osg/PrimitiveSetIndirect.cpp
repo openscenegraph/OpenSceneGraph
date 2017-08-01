@@ -168,13 +168,13 @@ REGISTER_OBJECT_WRAPPER( DrawElementsIndirect,
 }
 #define INDIRECTDRAW_ELEMENTS_WRAPPER( DRAWELEMENTS, ELEMENTTYPE ) \
     namespace Wrapper##DRAWELEMENTS { \
-        REGISTER_OBJECT_WRAPPER( DRAWELEMENTS, new osg::DRAWELEMENTS, osg::DRAWELEMENTS, "osg::Object osg::BufferData osg::PrimitiveSet osg::IndirectDrawElements osg::"#DRAWELEMENTS) \
+        REGISTER_OBJECT_WRAPPER( DRAWELEMENTS, new osg::DRAWELEMENTS, osg::DRAWELEMENTS, "osg::Object osg::BufferData osg::PrimitiveSet osg::DrawElementsIndirect osg::"#DRAWELEMENTS) \
         { \
                 ADD_ISAVECTOR_SERIALIZER( vector, osgDB::BaseSerializer::ELEMENTTYPE, 4 ); \
         } \
     }\
     namespace WrapperMulti##DRAWELEMENTS { \
-        REGISTER_OBJECT_WRAPPER( Multi##DRAWELEMENTS, new osg::Multi##DRAWELEMENTS, osg::Multi##DRAWELEMENTS, "osg::Object osg::BufferData osg::PrimitiveSet osg::IndirectDrawElements osg::"#DRAWELEMENTS" osg::Multi"#DRAWELEMENTS) \
+        REGISTER_OBJECT_WRAPPER( Multi##DRAWELEMENTS, new osg::Multi##DRAWELEMENTS, osg::Multi##DRAWELEMENTS, "osg::Object osg::BufferData osg::PrimitiveSet osg::DrawElementsIndirect osg::"#DRAWELEMENTS" osg::Multi"#DRAWELEMENTS) \
         { \
     ADD_UINT_SERIALIZER( NumCommandsToDraw, 0);\
         } \

@@ -31,6 +31,8 @@ public:
     IndirectCommandDrawArrays(const IndirectCommandDrawArrays& copy,const CopyOp& copyop/*=CopyOp::SHALLOW_COPY*/) :
         BufferData(copy, copyop) {}
 
+    virtual unsigned int getTotalDataSize() const { return getNumElements()*getElementSize(); }
+
     virtual unsigned int & count(const unsigned int&index)=0;
     virtual unsigned int & instanceCount(const unsigned int&index)=0;
     virtual unsigned int & first(const unsigned int&index)=0;
@@ -38,6 +40,7 @@ public:
 
     virtual unsigned int getElementSize() const = 0;
     virtual unsigned int getNumElements() const = 0;
+    virtual void resize(const unsigned int) = 0;
 };
 
 class OSG_EXPORT IndirectCommandDrawElements: public BufferData
@@ -48,6 +51,8 @@ public:
     IndirectCommandDrawElements(const IndirectCommandDrawElements& copy,const CopyOp& copyop/*=CopyOp::SHALLOW_COPY*/)
         : BufferData(copy, copyop) {}
 
+    virtual unsigned int getTotalDataSize() const { return getNumElements()*getElementSize(); }
+
     virtual unsigned int & count(const unsigned int&index)=0;
     virtual unsigned int & instanceCount(const unsigned int&index)=0;
     virtual unsigned int & firstIndex(const unsigned int&index)=0;
@@ -56,6 +61,7 @@ public:
 
     virtual unsigned int getElementSize()const = 0;
     virtual unsigned int getNumElements() const = 0;
+    virtual void resize(const unsigned int) = 0;
 };
 
 
@@ -84,13 +90,15 @@ public:
         IndirectCommandDrawArrays(copy, copyop),MixinVector<DrawArraysIndirectCommand>() {}
 
     virtual const GLvoid* getDataPointer() const { return empty()?0:&front(); }
-    virtual unsigned int getTotalDataSize() const { return 16u*static_cast<unsigned int>(size()); }
     virtual unsigned int getElementSize()const { return 16u; };
+    virtual unsigned int getNumElements() const { return static_cast<unsigned int>(size()); }
+    virtual void resize(const unsigned int n) {resize(n);}
+
     virtual unsigned int & count(const unsigned int&index) { return at(index).count; }
     virtual unsigned int & instanceCount(const unsigned int&index) { return at(index).instanceCount; }
     virtual unsigned int & first(const unsigned int&index) { return at(index).first; }
     virtual unsigned int & baseInstance(const unsigned int&index) { return at(index).baseInstance; }
-    virtual unsigned int getNumElements() const { return static_cast<unsigned int>(size()); }
+
 };
 
 
@@ -120,15 +128,17 @@ public:
         IndirectCommandDrawElements(copy, copyop), MixinVector<DrawElementsIndirectCommand>() {}
 
     virtual const GLvoid*   getDataPointer() const { return empty()?0:&front(); }
-    virtual unsigned int    getTotalDataSize() const { return 20u*static_cast<unsigned int>(size()); }
-
+    virtual unsigned int getNumElements() const { return static_cast<unsigned int>(size()); }
     virtual unsigned int getElementSize()const { return 20u; };
+    virtual void resize(const unsigned int n) {resize(n);}
+
     virtual unsigned int & count(const unsigned int&index) { return at(index).count; }
     virtual unsigned int & instanceCount(const unsigned int&index) { return at(index).instanceCount; }
     virtual unsigned int & firstIndex(const unsigned int&index) { return at(index).firstIndex; }
     virtual unsigned int & baseVertex(const unsigned int&index) { return at(index).baseVertex; }
     virtual unsigned int & baseInstance(const unsigned int&index) { return at(index).baseInstance; }
-    virtual unsigned int getNumElements() const { return static_cast<unsigned int>(size()); }
+
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -191,8 +201,8 @@ public:
 
     typedef VectorGLubyte vector_type;
 
-    DrawElementsIndirectUByte(GLenum mode = 0,unsigned int firstCommand = 0, GLsizei stride = 0) :
-        DrawElementsIndirect(DrawElementsUByteIndirectPrimitiveType,mode,firstCommand,stride) {}
+    DrawElementsIndirectUByte(GLenum mode = 0/*,unsigned int firstCommand = 0, GLsizei stride = 0*/) :
+        DrawElementsIndirect(DrawElementsUByteIndirectPrimitiveType,mode) {}
 
     DrawElementsIndirectUByte(const DrawElementsIndirectUByte& array, const CopyOp& copyop=CopyOp::SHALLOW_COPY) :
         DrawElementsIndirect(array,copyop),
@@ -204,7 +214,7 @@ public:
      * \param ptr Pointer to a GLubyte to copy index data from.
      */
     DrawElementsIndirectUByte(GLenum mode, unsigned int no, const GLubyte* ptr) :
-        DrawElementsIndirect(MultiDrawElementsUByteIndirectPrimitiveType,mode),
+        DrawElementsIndirect(DrawElementsUByteIndirectPrimitiveType,mode),
         vector_type(ptr,ptr+no) {}
 
     /**
@@ -212,7 +222,7 @@ public:
      * \param no Number of intended elements. This will be the size of the underlying vector.
      */
     DrawElementsIndirectUByte(GLenum mode, unsigned int no) :
-        DrawElementsIndirect(MultiDrawElementsUByteIndirectPrimitiveType,mode),
+        DrawElementsIndirect(DrawElementsUByteIndirectPrimitiveType,mode),
         vector_type(no) {}
 
     virtual Object* cloneType() const { return new DrawElementsIndirectUByte(); }
@@ -260,8 +270,8 @@ public:
 
     typedef VectorGLushort vector_type;
 
-    DrawElementsIndirectUShort(GLenum mode = 0,unsigned int firstCommand = 0, GLsizei stride = 0) :
-        DrawElementsIndirect(DrawElementsUShortIndirectPrimitiveType,mode,firstCommand,stride) {}
+    DrawElementsIndirectUShort(GLenum mode = 0/*,unsigned int firstCommand = 0, GLsizei stride = 0*/) :
+        DrawElementsIndirect(DrawElementsUShortIndirectPrimitiveType,mode) {}
 
     DrawElementsIndirectUShort(const DrawElementsIndirectUShort& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY) :
         DrawElementsIndirect(array,copyop),
@@ -273,7 +283,7 @@ public:
      * \param ptr Pointer to a GLushort to copy index data from.
      */
     DrawElementsIndirectUShort(GLenum mode, unsigned int no, const GLushort* ptr) :
-        DrawElementsIndirect(MultiDrawElementsUShortIndirectPrimitiveType,mode),
+        DrawElementsIndirect(DrawElementsUShortIndirectPrimitiveType,mode),
         vector_type(ptr,ptr+no) {}
 
     /**
@@ -281,12 +291,12 @@ public:
      * \param no Number of intended elements. This will be the size of the underlying vector.
      */
     DrawElementsIndirectUShort(GLenum mode, unsigned int no) :
-        DrawElementsIndirect(MultiDrawElementsUShortIndirectPrimitiveType,mode),
+        DrawElementsIndirect(DrawElementsUShortIndirectPrimitiveType,mode),
         vector_type(no) {}
 
     template <class InputIterator>
     DrawElementsIndirectUShort(GLenum mode, InputIterator first,InputIterator last) :
-        DrawElementsIndirect(MultiDrawElementsUShortIndirectPrimitiveType,mode),
+        DrawElementsIndirect(DrawElementsUShortIndirectPrimitiveType,mode),
         vector_type(first,last) {}
 
     virtual Object* cloneType() const { return new DrawElementsIndirectUShort(); }
@@ -332,8 +342,8 @@ public:
 
     typedef VectorGLuint vector_type;
 
-    DrawElementsIndirectUInt(GLenum mode = 0,unsigned int firstCommand = 0, GLsizei stride = 0) :
-        DrawElementsIndirect(DrawElementsUIntIndirectPrimitiveType,mode,firstCommand,stride) {}
+    DrawElementsIndirectUInt(GLenum mode = 0/*,unsigned int firstCommand = 0, GLsizei stride = 0*/) :
+        DrawElementsIndirect(DrawElementsUIntIndirectPrimitiveType,mode) {}
 
     DrawElementsIndirectUInt(const DrawElementsIndirectUInt& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY) :
         DrawElementsIndirect(array,copyop),
@@ -353,12 +363,12 @@ public:
      * \param no Number of intended elements. This will be the size of the underlying vector.
      */
     DrawElementsIndirectUInt(GLenum mode, unsigned int no) :
-        DrawElementsIndirect(MultiDrawElementsUIntIndirectPrimitiveType,mode),
+        DrawElementsIndirect(DrawElementsUIntIndirectPrimitiveType,mode),
         vector_type(no) {}
 
     template <class InputIterator>
     DrawElementsIndirectUInt(GLenum mode, InputIterator first,InputIterator last) :
-        DrawElementsIndirect(MultiDrawElementsUIntIndirectPrimitiveType,mode),
+        DrawElementsIndirect(DrawElementsUIntIndirectPrimitiveType,mode),
         vector_type(first,last) {}
 
     virtual Object* cloneType() const { return new DrawElementsIndirectUInt(); }
@@ -400,11 +410,32 @@ protected:
 class OSG_EXPORT MultiDrawElementsIndirectUShort : public DrawElementsIndirectUShort
 {
 public:
-    MultiDrawElementsIndirectUShort(GLenum mode = 0,unsigned int firstCommand = 0,unsigned int commandcount = 0, GLsizei stride = 0) :
-        DrawElementsIndirectUShort(mode,firstCommand,stride),_count(commandcount) { _primitiveType=(Type(MultiDrawElementsUShortIndirectPrimitiveType)); }
+    MultiDrawElementsIndirectUShort(GLenum mode = 0/*,unsigned int firstCommand = 0, GLsizei stride = 0*/) :
+        DrawElementsIndirectUShort(mode),_count(0) { _primitiveType=(Type(MultiDrawElementsUShortIndirectPrimitiveType)); }
 
     MultiDrawElementsIndirectUShort(const MultiDrawElementsIndirectUShort& mdi,const CopyOp& copyop=CopyOp::SHALLOW_COPY) :
         DrawElementsIndirectUShort(mdi,copyop),_count(mdi._count) {}
+    /**
+     * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
+     * \param no Number of intended elements. This will be the size of the underlying vector.
+     * \param ptr Pointer to a GLunsigned int to copy index data from.
+     */
+    MultiDrawElementsIndirectUShort(GLenum mode, unsigned int no, const GLushort* ptr) :
+        DrawElementsIndirectUShort(mode,no,ptr)
+    {_primitiveType=(Type(MultiDrawElementsUShortIndirectPrimitiveType));}
+
+    /**
+     * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
+     * \param no Number of intended elements. This will be the size of the underlying vector.
+     */
+    MultiDrawElementsIndirectUShort(GLenum mode, unsigned int no) :
+        DrawElementsIndirectUShort(mode,no)
+    {_primitiveType=(Type(MultiDrawElementsUShortIndirectPrimitiveType));}
+
+    template <class InputIterator>
+    MultiDrawElementsIndirectUShort(GLenum mode, InputIterator first,InputIterator last) :
+        DrawElementsIndirectUShort(mode,first,last)
+    {_primitiveType=(Type(MultiDrawElementsUShortIndirectPrimitiveType));}
 
     virtual osg::Object* cloneType() const { return new MultiDrawElementsIndirectUShort(); }
     virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new MultiDrawElementsIndirectUShort(*this,copyop); }
@@ -431,11 +462,32 @@ protected:
 class OSG_EXPORT MultiDrawElementsIndirectUByte : public DrawElementsIndirectUByte
 {
 public:
-    MultiDrawElementsIndirectUByte(GLenum mode = 0,unsigned int firstCommand = 0,unsigned int commandcount = 0, GLsizei stride = 0) :
-        DrawElementsIndirectUByte(mode,firstCommand,stride),_count(commandcount) { _primitiveType=(Type(MultiDrawElementsUByteIndirectPrimitiveType)); }
+    MultiDrawElementsIndirectUByte(GLenum mode = 0) :
+        DrawElementsIndirectUByte(mode),_count(0) { _primitiveType=(Type(MultiDrawElementsUByteIndirectPrimitiveType)); }
 
     MultiDrawElementsIndirectUByte(const MultiDrawElementsIndirectUByte& mdi,const CopyOp& copyop=CopyOp::SHALLOW_COPY) :
         DrawElementsIndirectUByte(mdi,copyop),_count(mdi._count) {}
+    /**
+     * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
+     * \param no Number of intended elements. This will be the size of the underlying vector.
+     * \param ptr Pointer to a GLunsigned int to copy index data from.
+     */
+    MultiDrawElementsIndirectUByte(GLenum mode, unsigned int no, const GLubyte* ptr) :
+        DrawElementsIndirectUByte(mode,no,ptr)
+    {_primitiveType=(Type(MultiDrawElementsUByteIndirectPrimitiveType));}
+
+    /**
+     * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
+     * \param no Number of intended elements. This will be the size of the underlying vector.
+     */
+    MultiDrawElementsIndirectUByte(GLenum mode, unsigned int no) :
+        DrawElementsIndirectUByte(mode,no)
+    {_primitiveType=(Type(MultiDrawElementsUByteIndirectPrimitiveType));}
+
+    template <class InputIterator>
+    MultiDrawElementsIndirectUByte(GLenum mode, InputIterator first,InputIterator last) :
+        DrawElementsIndirectUByte(mode,first,last)
+    {_primitiveType=(Type(MultiDrawElementsUByteIndirectPrimitiveType));}
 
     virtual osg::Object* cloneType() const { return new MultiDrawElementsIndirectUByte(); }
     virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new MultiDrawElementsIndirectUByte(*this,copyop); }
@@ -460,11 +512,32 @@ protected:
 class OSG_EXPORT MultiDrawElementsIndirectUInt : public DrawElementsIndirectUInt
 {
 public:
-    MultiDrawElementsIndirectUInt(GLenum mode = 0,unsigned int firstCommand = 0,unsigned int commandcount = 0, GLsizei stride = 0) :
-        DrawElementsIndirectUInt(mode,firstCommand,stride),_count(commandcount) { _primitiveType=(Type(MultiDrawElementsUIntIndirectPrimitiveType)); }
+    MultiDrawElementsIndirectUInt(GLenum mode = 0) :
+        DrawElementsIndirectUInt(mode),_count(0) { _primitiveType=(Type(MultiDrawElementsUIntIndirectPrimitiveType)); }
 
     MultiDrawElementsIndirectUInt(const MultiDrawElementsIndirectUInt& mdi,const CopyOp& copyop=CopyOp::SHALLOW_COPY) :
         DrawElementsIndirectUInt(mdi,copyop),_count(mdi._count) {}
+    /**
+     * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
+     * \param no Number of intended elements. This will be the size of the underlying vector.
+     * \param ptr Pointer to a GLunsigned int to copy index data from.
+     */
+    MultiDrawElementsIndirectUInt(GLenum mode, unsigned int no, const GLuint* ptr) :
+        DrawElementsIndirectUInt(mode,no,ptr)
+    {_primitiveType=(Type(MultiDrawElementsUIntIndirectPrimitiveType));}
+
+    /**
+     * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
+     * \param no Number of intended elements. This will be the size of the underlying vector.
+     */
+    MultiDrawElementsIndirectUInt(GLenum mode, unsigned int no) :
+        DrawElementsIndirectUInt(mode,no)
+    {_primitiveType=(Type(MultiDrawElementsUIntIndirectPrimitiveType));}
+
+    template <class InputIterator>
+    MultiDrawElementsIndirectUInt(GLenum mode, InputIterator first,InputIterator last) :
+        DrawElementsIndirectUInt(mode,first,last)
+    {_primitiveType=(Type(MultiDrawElementsUIntIndirectPrimitiveType));}
 
     virtual osg::Object* cloneType() const { return new MultiDrawElementsIndirectUInt(); }
     virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new MultiDrawElementsIndirectUInt(*this,copyop); }

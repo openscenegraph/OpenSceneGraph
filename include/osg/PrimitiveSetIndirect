@@ -40,7 +40,8 @@ public:
 
     virtual unsigned int getElementSize() const = 0;
     virtual unsigned int getNumElements() const = 0;
-    virtual void resize(const unsigned int) = 0;
+    virtual void reserveElements(const unsigned int) = 0;
+    virtual void resizeElements(const unsigned int) = 0;
 };
 
 class OSG_EXPORT IndirectCommandDrawElements: public BufferData
@@ -61,7 +62,8 @@ public:
 
     virtual unsigned int getElementSize()const = 0;
     virtual unsigned int getNumElements() const = 0;
-    virtual void resize(const unsigned int) = 0;
+    virtual void reserveElements(const unsigned int) = 0;
+    virtual void resizeElements(const unsigned int) = 0;
 };
 
 
@@ -92,7 +94,8 @@ public:
     virtual const GLvoid* getDataPointer() const { return empty()?0:&front(); }
     virtual unsigned int getElementSize()const { return 16u; };
     virtual unsigned int getNumElements() const { return static_cast<unsigned int>(size()); }
-    virtual void resize(const unsigned int n) {resize(n);}
+    virtual void reserveElements(const unsigned int n) {reserve(n);}
+    virtual void resizeElements(const unsigned int n) {resize(n);}
 
     virtual unsigned int & count(const unsigned int&index) { return at(index).count; }
     virtual unsigned int & instanceCount(const unsigned int&index) { return at(index).instanceCount; }
@@ -130,7 +133,8 @@ public:
     virtual const GLvoid*   getDataPointer() const { return empty()?0:&front(); }
     virtual unsigned int getNumElements() const { return static_cast<unsigned int>(size()); }
     virtual unsigned int getElementSize()const { return 20u; };
-    virtual void resize(const unsigned int n) {resize(n);}
+    virtual void reserveElements(const unsigned int n) {reserve(n);}
+    virtual void resizeElements(const unsigned int n) {resize(n);}
 
     virtual unsigned int & count(const unsigned int&index) { return at(index).count; }
     virtual unsigned int & instanceCount(const unsigned int&index) { return at(index).instanceCount; }

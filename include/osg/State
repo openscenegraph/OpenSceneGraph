@@ -1480,7 +1480,7 @@ inline void State::pushDefineList(DefineMap& defineMap,const StateSet::DefineLis
             dv.push_back(StateSet::DefinePair(aitr->second.first,aitr->second.second));
 
             // if the back of the stack has changed since the last then mark it as changed.
-            bool changed = (dv[dv.size()-2].first==dv[dv.size()-1].first);
+            bool changed = (dv[dv.size()-2] != dv.back());
             if (changed)
             {
                 ds.changed = true;
@@ -1549,7 +1549,7 @@ inline void State::popDefineList(DefineMap& defineMap,const StateSet::DefineList
         if (!dv.empty())
         {
             // if the stack has less than 2 entries or new back vs old back are different then mark the DefineStack as changed
-            if ((dv.size()<2) || (dv[dv.size()-2].first!=dv.back().first))
+            if ((dv.size() < 2) || (dv[dv.size()-2] != dv.back()))
             {
                 ds.changed = true;
                 defineMap.changed = true;

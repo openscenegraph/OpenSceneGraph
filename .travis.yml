@@ -29,7 +29,7 @@ matrix:
             name: "openscenegraph/OpenSceneGraph"
             description: "OpenSceneGraph build"
           notification_email: robert@openscenegraph.com
-          build_command_prepend: "cmake -DCMAKE_BUILD_TYPE=Release ."
+          build_command_prepend: "cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_OSG_DEPRECATED_SERIALIZERS=OFF ."
           build_command:   "make -j 3"
           branch_pattern: coverity_scan
         apt:

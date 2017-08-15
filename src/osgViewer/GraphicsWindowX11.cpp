@@ -38,6 +38,10 @@
 #include <X11/extensions/Xrandr.h>
 #endif
 
+#ifdef OSGVIEWER_USE_XINERAMA
+#include <X11/extensions/Xinerama.h>
+#endif
+
 #include <unistd.h>
 
 using namespace osgViewer;
@@ -382,23 +386,95 @@ bool GraphicsWindowX11::checkAndSendEventFullScreenIfNeeded(Display* display, in
     Atom netWMStateAtom = XInternAtom(display, "_NET_WM_STATE", True);
     Atom netWMStateFullscreenAtom = XInternAtom(display, "_NET_WM_STATE_FULLSCREEN", True);
 
+    OSG_NOTICE<<"GraphicsWindowX11::checkAndSendEventFullScreenIfNeeded()"<<std::endl;
+
     if (netWMStateAtom != None && netWMStateFullscreenAtom != None)
     {
-        XEvent xev;
-        xev.xclient.type = ClientMessage;
-        xev.xclient.serial = 0;
-        xev.xclient.send_event = True;
-        xev.xclient.window = _window;
-        xev.xclient.message_type = netWMStateAtom;
-        xev.xclient.format = 32;
-        xev.xclient.data.l[0] = isFullScreen ? 1 : 0;
-        xev.xclient.data.l[1] = netWMStateFullscreenAtom;
-        xev.xclient.data.l[2] = 0;
+        // set up full screen
+        {
+            XEvent xev;
+            xev.xclient.type = ClientMessage;
+            xev.xclient.serial = 0;
+            xev.xclient.send_event = True;
+            xev.xclient.window = _window;
+            xev.xclient.message_type = netWMStateAtom;
+            xev.xclient.format = 32;
+            xev.xclient.data.l[0] = isFullScreen ? 1 : 0;
+            xev.xclient.data.l[1] = netWMStateFullscreenAtom;
+            xev.xclient.data.l[2] = 0;
 
-        XSendEvent(display, RootWindow(display, DefaultScreen(display)),
-                    False,  SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+            XSendEvent(display, RootWindow(display, DefaultScreen(display)),
+                        False,  SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+        }
+
+#ifdef OSGVIEWER_USE_XINERAMA
+
+        // Span all monitors
+        if( isFullScreen && XineramaIsActive( display ) )
+        {
+            int numMonitors;
+            XineramaScreenInfo* xi = XineramaQueryScreens( display, &numMonitors );
+            enum {
+                TopMost,
+                BottomMost,
+                LeftMost,
+                RightMost
+            };
+            uint32_t span[4] = { 0, 0, 0, 0 };
+            int32_t minx =  2147483647; // INT_MAX
+            int32_t maxx = -2147483648; // INT_MIN
+            int32_t miny =  2147483647; // INT_MAX
+            int32_t maxy = -2147483648; // INT_MIN
+
+            for( int i = 0; i < numMonitors; i++ )
+            {
+                if( xi[i].x_org < minx )
+                {
+                    span[LeftMost] = xi[i].screen_number;
+                    minx = xi[i].x_org;
+                }
+
+                if( xi[i].x_org > maxx )
+                {
+                    span[RightMost] = xi[i].screen_number;
+                    maxx = xi[i].x_org;
+                }
+
+                if( xi[i].y_org < miny )
+                {
+                    span[TopMost] = xi[i].screen_number;
+                    miny = xi[i].y_org;
+                }
+
+                if( xi[i].y_org > maxy )
+                {
+                    span[BottomMost] = xi[i].screen_number;
+                    maxy = xi[i].y_org;
+                }
+            }
+            XFree(xi);
+
+            Atom fullmons = XInternAtom(display, "_NET_WM_FULLSCREEN_MONITORS", True);
+            if( fullmons != None )
+            {
+                XEvent xev;
+                xev.type = ClientMessage;
+                xev.xclient.window = _window;
+                xev.xclient.message_type = fullmons;
+                xev.xclient.format = 32;
+                xev.xclient.data.l[0] = span[TopMost];
+                xev.xclient.data.l[1] = span[BottomMost];
+                xev.xclient.data.l[2] = span[LeftMost];
+                xev.xclient.data.l[3] = span[RightMost];
+                xev.xclient.data.l[4] = 0;
+
+                XSendEvent( display, DefaultRootWindow(display), False, SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+            }
+        }
+#endif
         return true;
     }
+
     return false;
 }
 
@@ -1328,6 +1404,7 @@ bool GraphicsWindowX11::checkEvents()
                     bool isModifier = keyMapGetKey(modMap, key);
                     if (!isModifier) forceKey(key, eventTime, false);
                 }
+                needNewWindowSize = true;
 
                 // release modifier keys
                 for (unsigned int key = 8; key < 256; key++)
@@ -1367,6 +1444,7 @@ bool GraphicsWindowX11::checkEvents()
                     bool isPressed = keyMapGetKey(keyMap, key);
                     if (!isPressed) forceKey(key, eventTime, false);
                 }
+                needNewWindowSize = true;
 
                 // press/release modifier keys
                 for (unsigned int key = 8; key < 256; key++)

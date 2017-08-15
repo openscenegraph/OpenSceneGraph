@@ -28,12 +28,12 @@
 namespace osgShadow {
 
 /**
-Class used as a layer for debuging resources used by derived xxxShadowMap classes.
+Class used as a layer for debugging resources used by derived xxxShadowMap classes.
 As designed by its base ViewDepndentShadowTechnique, DebugShadowMap serves mainly as container of
-DebugShadowMap::ViewData objects. Most of the debuging support work is done by these objects.
+DebugShadowMap::ViewData objects. Most of the debugging support work is done by these objects.
 DebugShadowMap technique only initializes them in initViewDependentData method.
 
-Debuging outputs present:
+Debugging outputs present:
     Shadow maps (pseudo colored to improve readability)
     Shadow and related volumes (represented as convex polyhedra)
 */
@@ -65,16 +65,16 @@ class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique
         /** Declaration of standard OSG object methods */
         META_Object( osgShadow, DebugShadowMap );
 
-        /** Turn on/off debuging hud & rendering of debug volumes in main view */
+        /** Turn on/off debugging hud & rendering of debug volumes in main view */
         void setDebugDraw( bool draw ) { _doDebugDraw = draw; }
 
-        /** Tell if debuging hud & rendering of debug volumes is active */
+        /** Tell if debugging hud & rendering of debug volumes is active */
         bool getDebugDraw( void ) const { return _doDebugDraw; }
 
-        /** Get the file name of debuging dump */
+        /** Get the file name of debugging dump */
         std::string getDebugDump( void ) const { return _debugDump; }
 
-        /** Set the file name of debuging dump */
+        /** Set the file name of debugging dump */
         void setDebugDump( const std::string & debugDumpFile ) { _debugDump = debugDumpFile; }
 
 

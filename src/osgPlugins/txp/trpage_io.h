@@ -562,7 +562,7 @@ TX_EXDECL class TX_CLDECL trpgCheckable {
 public:
     trpgCheckable(void);
     virtual ~trpgCheckable(void);
-    // Returns the state of the valid flag, or can be overriden by a subclass to do a more complex check.
+    // Returns the state of the valid flag, or can be overridden by a subclass to do a more complex check.
     bool isValid(void) const;
 
     virtual TeAttrHdl GetHandle() const {
@@ -606,7 +606,7 @@ public:
     /* The Write method is a virtual that must be filled in by the subclass.
         It takes a trpgWriteBuffer and should return true on success. */
     virtual bool        Write(trpgWriteBuffer &) = 0;
-    /* The Read method should be overriden by a subclass.  It should read
+    /* The Read method should be overridden by a subclass.  It should read
         the contents of the given trpgReadBuffer up to the current limit
         into itself.  It must return true on success. */
     virtual bool        Read(trpgReadBuffer &) { return false;};

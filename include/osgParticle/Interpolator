@@ -39,7 +39,7 @@ namespace osgParticle
         virtual const char* className() const { return "Interpolator"; }
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Interpolator* >(obj) != 0; }
 
-        /// Interpolate between floats. Must be overriden in descendant classes.
+        /// Interpolate between floats. Must be overridden in descendant classes.
         virtual float interpolate(float t, float y1, float y2) const = 0;
 
         /// Interpolate between 2-dimensional vectors. Default behavior is to interpolate each component separately.

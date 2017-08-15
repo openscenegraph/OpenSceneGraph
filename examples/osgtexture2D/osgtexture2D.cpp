@@ -613,7 +613,7 @@ public:
         // to be deleted and re-recreated.
         //
         // The load/subload happens during the draw traversal so doesn't happen on
-        // the setImage which just updates internal pointers and modifed flags.
+        // the setImage which just updates internal pointers and modified flags.
 
         _texture->setImage(_imageList[_currPos].get());
 

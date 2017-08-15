@@ -91,7 +91,7 @@ class ReaderWritterOpenCASCADE: public osgDB::ReaderWriter
 
                 /// \brief heals a opencascade shape
                 /// \detail http://www.opencascade.org/org/forum/thread_12716/?forum=3
-                ///         Usually IGES files suffer from precision problems (when transfering from
+                ///         Usually IGES files suffer from precision problems (when transferring from
                 ///         one CAD system to another).It might be the case that faces are not sewed
                 ///         properly,  or do not have the right precision, and so the tesselator does
                 ///         not treat them like "sewed". this needs to be done for sewing

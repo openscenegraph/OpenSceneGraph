@@ -14,7 +14,7 @@
  * OpenSceneGraph loader for Terrapage format database
  * by Boris Bralo 2002
  *
- * based on/modifed  sgl (Scene Graph Library) loader by Bryan Walsh
+ * based on/modified  sgl (Scene Graph Library) loader by Bryan Walsh
  *
  * This loader is based on/modified from Terrain Experts Performer Loader,
  * and was ported to SGL by Bryan Walsh / bryanw at earthlink dot net

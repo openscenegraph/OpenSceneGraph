@@ -150,7 +150,7 @@ protected:
         bool fixBlackMaterials;
         bool noReverseFaces;
         // This is the order in which the materials will be assigned to texture maps, unless
-        // otherwise overriden
+        // otherwise overridden
         typedef std::vector< std::pair<int,obj::Material::Map::TextureMapType> > TextureAllocationMap;
         TextureAllocationMap textureUnitAllocation;
         /// Coordinates precision.

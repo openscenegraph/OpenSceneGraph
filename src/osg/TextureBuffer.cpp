@@ -63,7 +63,7 @@ void TextureBuffer::setBufferData(BufferData *bufferdata)
     {
         _bufferData->addClient(this);
 
-        ///set BufferObject if not setted by user
+        ///set BufferObject if not set by user
         if(!_bufferData->getBufferObject())
         {
             VertexBufferObject* bo=new  VertexBufferObject();

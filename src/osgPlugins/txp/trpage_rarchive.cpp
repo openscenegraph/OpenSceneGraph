@@ -338,7 +338,7 @@ bool trpgr_Archive::ReadHeader(bool readAllBlocks)
 // Read Tile
 // Read a tile into a read buffer
 // For version 2.1 only  tile with lod=0 are stored in the tile table, so an
-// error will be returned if you try to use the table with a differrent lod.
+// error will be returned if you try to use the table with a different lod.
 bool trpgr_Archive::ReadTile(uint32 x,uint32 y,uint32 lod,trpgMemReadBuffer &buf)
 {
     if (!isValid())

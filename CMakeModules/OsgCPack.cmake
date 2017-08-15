@@ -203,7 +203,7 @@ MACRO(GENERATE_PACKAGING_TARGET package_name)
         COMMENT "Run CPack packaging for ${package_name}..."
     )
     # Add the exact same custom command to the all package generating target.
-    # I can't use add_dependencies to do this because it would allow parallell building of packages so am going brute here
+    # I can't use add_dependencies to do this because it would allow parallel building of packages so am going brute here
     ADD_CUSTOM_COMMAND(TARGET ${PACKAGE_ALL_TARGETNAME}
         COMMAND ${CMAKE_CPACK_COMMAND} -C ${OSG_CPACK_CONFIGURATION} --config ${OpenSceneGraph_BINARY_DIR}/CPackConfig-${package_name}.cmake
     )

@@ -74,7 +74,7 @@ IF(APPLE AND NOT ANDROID)
       SET(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for iOS Simulator" FORCE)
     ENDIF()
 
-    #here we set the specific iphone sdk version. We can only set either device or simulator sdk. So if you want both you currently have to have two seperate projects
+    #here we set the specific iphone sdk version. We can only set either device or simulator sdk. So if you want both you currently have to have two separate projects
     SET(CMAKE_OSX_SYSROOT "${IPHONE_SDKROOT}" CACHE STRING "System root for iOS" FORCE)
 
   ELSE()
@@ -232,7 +232,7 @@ IF(NOT ANDROID)
 IF(APPLE)
     # Trying to get CMake to generate an XCode IPhone project, current efforts are to get iphoneos sdk 3.1 working
     # Added option which needs manually setting to select the IPhone SDK for building. We can only have one of the below
-    # set to true. Should realy have an OSG_BUILD_PLATFORM variable that we set to our desired platform
+    # set to true. Should really have an OSG_BUILD_PLATFORM variable that we set to our desired platform
     OPTION(OSG_BUILD_PLATFORM_IPHONE "Enable IPhoneSDK Device support" OFF)
     OPTION(OSG_BUILD_PLATFORM_IPHONE_SIMULATOR "Enable IPhoneSDK Simulator support" OFF)
 
@@ -884,7 +884,7 @@ IF(NOT DEFINED LIB_POSTFIX)
     SET(LIB_POSTFIX "")
 ENDIF()
 
-# Here we apparantly do some funky stuff with making the bin/ and lib/
+# Here we apparently do some funky stuff with making the bin/ and lib/
 # folders which is probably needed to work around a very old CMake bug?
 
 #SET(OUTPUT_BINDIR ${PROJECT_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME})
@@ -1057,7 +1057,7 @@ IF(OSG_AGGRESSIVE_WARNING_FLAGS)
             ENDIF()
         ENDFOREACH()
     ELSE()
-        # Remove all flags considered aggresive
+        # Remove all flags considered aggressive
         FOREACH(flag ${OSG_AGGRESSIVE_WARNING_FLAGS})
             STRING(REGEX REPLACE "${flag}" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
         ENDFOREACH()
@@ -1112,7 +1112,7 @@ IF(APPLE AND NOT ANDROID)
 
         ENDIF()
 
-        #here we set the specific iphone sdk version. We can only set either device or simulator sdk. So if you want both you currently have to have two seperate projects
+        #here we set the specific iphone sdk version. We can only set either device or simulator sdk. So if you want both you currently have to have two separate projects
         SET(CMAKE_OSX_SYSROOT "${IPHONE_SDKROOT}" CACHE STRING "System root for iOS" FORCE)
 
         #hack, force link to opengles

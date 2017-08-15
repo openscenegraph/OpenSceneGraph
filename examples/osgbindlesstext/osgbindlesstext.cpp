@@ -32,10 +32,10 @@
 /// with a different texture. Generally speaking in broad terms
 /// driver overhead tends to be a huge bottle neck on modern
 /// hardware (as of late 2016). By using bindless textures
-/// we can remove alot of calls to the driver to switch active 
+/// we can remove a lot of calls to the driver to switch active 
 /// textures while rendering. What this also allows us to do
 /// is to consolidate more objects + draw states as we do
-/// not need to change textures, this save us alot of calls to 
+/// not need to change textures, this save us a lot of calls to 
 /// the driver.
 ///
 /// This example combines instancing with bindless textures 
@@ -43,7 +43,7 @@
 /// a pretty simplified example, where each instance ID is 
 /// used as a index into the array of textures. 
 ///
-/// One of the powerfull things about bindless textures is it allows
+/// One of the powerful things about bindless textures is it allows
 /// many more objects to be combined into a single drawable. 
 /// However to do this you may need to add an attribute to 
 /// use an index into the array of texture handles, and not
@@ -261,7 +261,7 @@ void BindlessTexture::setBidlessIndex(unsigned int index){
     _bindlessIndex = index;
 }
 /// Just as the name suggest this should be called once per
-/// context, durring its lifetime. This basically 
+/// context, during its lifetime. This basically 
 /// just sets up our texture handles, and loads them
 /// into our UBO. A good portion of this was copied from
 /// Texture2D::apply, this is in no ways a general solution.
@@ -326,7 +326,7 @@ void BindlessTexture::apply(osg::State& state) const
        applyOnce(state);
        _isBound[contextID] = true;
    }else{
-       //we should mostly hit this durring the lifetime of this object,
+       //we should mostly hit this during the lifetime of this object,
        //note we basically do nothing......
    }
 }

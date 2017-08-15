@@ -270,7 +270,7 @@ void Text3D::computeGlyphRepresentation()
         osg::Vec2 endOfLine_coords(cursor);
         String::iterator endOfLine_itr = computeLastCharacterOnLine(endOfLine_coords, itr,_text.end());
 
-        // ** position the cursor function to the Layout and the alignement
+        // ** position the cursor function to the Layout and the alignment
         TextBase::positionCursor(endOfLine_coords, cursor, (unsigned int) (endOfLine_itr - startOfLine_itr));
 
 

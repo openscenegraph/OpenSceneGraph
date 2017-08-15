@@ -238,9 +238,21 @@ int main(int argc, char** argv)
             geode->addDrawable( osg::createTexturedQuadGeometry(osg::Vec3(0.0f,characterSize*thickness,0.0f),osg::Vec3(characterSize,0.0,0.0),osg::Vec3(0.0f,0.0,characterSize), 0.0, 0.0, 1.0, 1.0) );
         }
 
+		if (arguments.read("--add-axes"))
+			group->addChild(osgDB::readNodeFile("axes.osgt"));
+
+		std::string mode;
+		if (arguments.read("--character-size-mode", mode))
+		{
+			if (mode == "screen_coords")
+			{
+				text3D->setCharacterSizeMode(osgText::TextBase::SCREEN_COORDS);
+				text3D->setCharacterSize(1080/4);
+			}
+		}
+
         viewer.addEventHandler(new Text3DAttributeHandler(text3D));
     }
-
 
     viewer.setSceneData(group);
 

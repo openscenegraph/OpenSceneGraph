@@ -325,11 +325,11 @@ protected:
     osg::Vec4                               _textBBColor;
     KerningType                             _kerningType;
     unsigned int                            _lineCount;
+    bool                                    _glyphNormalized;
 
     osg::Vec3                               _offset;
     osg::Vec3                               _normal;
     osg::BoundingBox                        _textBB;
-
 
     mutable osg::Matrix                     _matrix;
 

@@ -21,12 +21,14 @@ namespace osgText
 Text3D::Text3D():
     _renderMode(PER_GLYPH)
 {
+    _glyphNormalized = true;
 }
 
 Text3D::Text3D(const Text3D & text3D, const osg::CopyOp & copyop):
     osgText::TextBase(text3D, copyop),
     _renderMode(text3D._renderMode)
 {
+    _glyphNormalized = text3D._glyphNormalized;
     computeGlyphRepresentation();
 }
 

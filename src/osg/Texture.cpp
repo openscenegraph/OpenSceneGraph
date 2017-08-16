@@ -1634,7 +1634,7 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
     {
         case(GL_INTENSITY) : internalFormat = GL_RED; break; // should it be swizzled to match RGBA(INTENSITY, INTENSITY, INTENSITY, INTENSITY)?
         case(GL_LUMINANCE) : internalFormat = GL_RED; break; // should it be swizzled to match RGBA(LUMINANCE, LUMINANCE, LUMINANCE, 1.0)?
-        case(1) : internalFormat = GL_RED; break; // or sould this be GL_ALPHA?
+        case(1) : internalFormat = GL_RED; break; // or should this be GL_ALPHA?
         case(2) : internalFormat = GL_RG; break; // should we assume GL_LUMINANCE_ALPHA?
         case(GL_LUMINANCE_ALPHA) : internalFormat = GL_RG; break; // should it be swizlled to match RGAB(LUMUNIANCE, LUMINANCE, LUMINANCE, ALPHA)?
         case(3) : internalFormat = GL_RGB; break;

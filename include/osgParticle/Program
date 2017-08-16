@@ -50,7 +50,7 @@ namespace osgParticle
         /// Implementation of <CODE>ParticleProcessor::process()</CODE>. Do not call this method by yourself.
         inline void process(double dt);
 
-        /// Execute the program on the particle system. Must be overriden in descendant classes.
+        /// Execute the program on the particle system. Must be overridden in descendant classes.
         virtual void execute(double dt) = 0;
 
     private:

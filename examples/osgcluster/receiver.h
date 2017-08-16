@@ -46,7 +46,7 @@ class Receiver
  	// Define what port to listen and bind to
 	void setPort( const short port );
 
-	// Sync does a blocking wait to recieve next message
+	// Sync does a blocking wait to receive next message
 	unsigned int sync( void );
 
     private :

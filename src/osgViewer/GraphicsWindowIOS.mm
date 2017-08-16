@@ -886,7 +886,7 @@ bool GraphicsWindowIOS::realizeImplementation()
 
         OSG_DEBUG << "GraphicsWindowIOS::realizeImplementation: INFO: Created UIWindow with bounds '" << window_bounds.size.width << ", " << window_bounds.size.height << "' (points)." << std::endl;
 
-        //if the user has requested a differnet screenNum from default 0 get the UIScreen object and
+        //if the user has requested a different screenNum from default 0 get the UIScreen object and
         //apply to our window (this is for IPad external screens, I don't have one, so I've no idea if it works)
         //I'm also not sure if we should apply this to external windows also?
         if(_traits->screenNum > 0 && screen != nil)

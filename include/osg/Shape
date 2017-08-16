@@ -747,7 +747,7 @@ class TessellationHints : public Object
 // forward declare;
 class Geometry;
 
-/** Convinience class for populating an Geomtry with vertex, normals, texture coords and primitives that can render a Shape. */
+/** Convenience class for populating an Geomtry with vertex, normals, texture coords and primitives that can render a Shape. */
 class OSG_EXPORT BuildShapeGeometryVisitor : public ConstShapeVisitor
 {
     public:

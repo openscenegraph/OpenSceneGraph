@@ -851,6 +851,17 @@ SET(CMAKE_RELEASE_POSTFIX "" CACHE STRING "add a postfix, usually empty on windo
 SET(CMAKE_RELWITHDEBINFO_POSTFIX "rd" CACHE STRING "add a postfix, usually empty on windows")
 SET(CMAKE_MINSIZEREL_POSTFIX "s" CACHE STRING "add a postfix, usually empty on windows")
 
+# Correct any incorrect case usage in CMAKE_BUILD_TYPE
+IF     (CMAKE_BUILD_TYPE MATCHES "release" OR CMAKE_BUILD_TYPE MATCHES "RELEASE")
+    SET(CMAKE_BUILD_TYPE "Release")
+ELSEIF (CMAKE_BUILD_TYPE MATCHES "minsizerel" OR CMAKE_BUILD_TYPE MATCHES "MINSIZEREL")
+    SET(CMAKE_BUILD_TYPE "MinSizeRel")
+ELSEIF (CMAKE_BUILD_TYPE MATCHES "relwithdebinfo" OR CMAKE_BUILD_TYPE MATCHES "RELWITHDEBINFO")
+    SET(CMAKE_BUILD_TYPE "RelWithDebInfo")
+ELSEIF (CMAKE_BUILD_TYPE MATCHES "debug" OR CMAKE_BUILD_TYPE MATCHES "DEBUG")
+    SET(CMAKE_BUILD_TYPE "Debug")
+ENDIF()
+
 # Set the build postfix extension according to what configuration is being built.
 IF (CMAKE_BUILD_TYPE MATCHES "Release")
     SET(CMAKE_BUILD_POSTFIX "${CMAKE_RELEASE_POSTFIX}")

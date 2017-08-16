@@ -690,10 +690,6 @@ namespace osg
             #endif
         #endif
     #endif
-
-    #if defined(OSG_GLES1_FEATURES) || defined(OSG_GLES2_FEATURES)|| defined(OSG_GLES3_FEATURES)
-        typedef double GLclampd;
-    #endif
 }
 
 #endif

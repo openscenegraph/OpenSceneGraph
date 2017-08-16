@@ -1171,6 +1171,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     osg::setGLExtensionFuncPtr(glScissorIndexedv, "glScissorIndexedv", validContext);
     osg::setGLExtensionFuncPtr(glDepthRangeArrayv, "glDepthRangeArrayv", validContext);
     osg::setGLExtensionFuncPtr(glDepthRangeIndexed, "glDepthRangeIndexed", validContext);
+    osg::setGLExtensionFuncPtr(glDepthRangeIndexedf, "glDepthRangeIndexedfOES", "glDepthRangeIndexedfNV", validContext);
     osg::setGLExtensionFuncPtr(glGetFloati_v, "glGetFloati_v", validContext);
     osg::setGLExtensionFuncPtr(glGetDoublei_v, "glGetDoublei_v", validContext);
     osg::setGLExtensionFuncPtr(glGetIntegerIndexedvEXT, "glGetIntegerIndexedvEXT", validContext);

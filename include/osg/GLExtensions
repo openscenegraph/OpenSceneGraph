@@ -557,7 +557,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         bool isSGIXMinMaxSupported;
         bool isLogicOpSupported;
 
-        void (GL_APIENTRY * glBlendColor) (GLclampf red , GLclampf green , GLclampf blue , GLclampf alpha);
+        void (GL_APIENTRY * glBlendColor) (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
         void (GL_APIENTRY * glBlendEquation)(GLenum mode);
         void (GL_APIENTRY * glBlendEquationSeparate)(GLenum modeRGB, GLenum modeAlpha);
         void (GL_APIENTRY * glBlendEquationi)(GLuint buf,  GLenum mode);
@@ -599,7 +599,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         bool isMultisampleSupported;
         bool isMultisampleFilterHintSupported;
 
-        void (GL_APIENTRY * glSampleCoverage) (GLclampf value, GLboolean invert);
+        void (GL_APIENTRY * glSampleCoverage) (GLfloat value, GLboolean invert);
 
 
         // Point
@@ -725,8 +725,9 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glScissorArrayv) (GLuint first, GLsizei count, const GLint * v);
         void (GL_APIENTRY * glScissorIndexed) (GLuint index, GLint left, GLint bottom, GLsizei width, GLsizei height);
         void (GL_APIENTRY * glScissorIndexedv) (GLuint index, const GLint * v);
-        void (GL_APIENTRY * glDepthRangeArrayv) (GLuint first, GLsizei count, const GLclampd * v);
-        void (GL_APIENTRY * glDepthRangeIndexed) (GLuint index, GLclampd n, GLclampd f);
+        void (GL_APIENTRY * glDepthRangeArrayv) (GLuint first, GLsizei count, const GLdouble * v);
+        void (GL_APIENTRY * glDepthRangeIndexed) (GLuint index, GLdouble n, GLdouble f);
+        void (GL_APIENTRY * glDepthRangeIndexedf) (GLuint index, GLfloat n, GLfloat f);
         void (GL_APIENTRY * glGetFloati_v) (GLenum target, GLuint index, GLfloat *data);
         void (GL_APIENTRY * glGetDoublei_v) (GLenum target, GLuint index, GLdouble *data);
 

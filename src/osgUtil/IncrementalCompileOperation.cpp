@@ -332,7 +332,7 @@ double IncrementalCompileOperation::CompileList::estimatedTimeForCompile(Compile
 {
     double estimateTime = 0.0;
     for(CompileOps::const_iterator itr = _compileOps.begin();
-        itr != _compileOps.begin();
+        itr != _compileOps.end();
         ++itr)
     {
         estimateTime += (*itr)->estimatedTimeForCompile(compileInfo);

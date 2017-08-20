@@ -1156,8 +1156,6 @@ Geometry* osg::createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVe
     (*normals)[0].normalize();
     geom->setNormalArray(normals, osg::Array::BIND_OVERALL);
 
-
-#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
     DrawElementsUByte* elems = new DrawElementsUByte(PrimitiveSet::TRIANGLES);
     elems->push_back(0);
     elems->push_back(1);
@@ -1167,9 +1165,6 @@ Geometry* osg::createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVe
     elems->push_back(3);
     elems->push_back(0);
     geom->addPrimitiveSet(elems);
-#else
-    geom->addPrimitiveSet(new DrawArrays(PrimitiveSet::QUADS,0,4));
-#endif
 
     return geom;
 }

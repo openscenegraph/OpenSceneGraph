@@ -37,6 +37,7 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow, pub
             _parent(0),
             _window(0),
             _visualInfo(0),
+            _fbConfig(0),
             #ifdef OSG_USE_EGL
             _eglDisplay(0),
             _eglSurface(0),
@@ -176,6 +177,7 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow, pub
         Window          _parent;
         Window          _window;
         XVisualInfo*    _visualInfo;
+        GLXFBConfig     _fbConfig;
 
         #ifdef OSG_USE_EGL
         EGLDisplay      _eglDisplay;

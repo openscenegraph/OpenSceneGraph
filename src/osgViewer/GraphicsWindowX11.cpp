@@ -43,6 +43,7 @@
 #endif
 
 #include <unistd.h>
+#include <cstdlib>
 
 using namespace osgViewer;
 
@@ -326,13 +327,10 @@ bool GraphicsWindowX11::createVisualInfo()
         typedef std::vector<int> Attributes;
         Attributes attributes;
 
-        attributes.push_back(GLX_USE_GL);
+        attributes.push_back(GLX_RENDER_TYPE); attributes.push_back(GLX_RGBA_BIT);
 
-        attributes.push_back(GLX_RGBA);
-
-        if (_traits->doubleBuffer) attributes.push_back(GLX_DOUBLEBUFFER);
-
-        if (_traits->quadBufferStereo) attributes.push_back(GLX_STEREO);
+        if (_traits->doubleBuffer) { attributes.push_back(GLX_DOUBLEBUFFER); attributes.push_back(True); }
+        if (_traits->quadBufferStereo) { attributes.push_back(GLX_STEREO); attributes.push_back(True); }
 
         attributes.push_back(GLX_RED_SIZE); attributes.push_back(_traits->red);
         attributes.push_back(GLX_GREEN_SIZE); attributes.push_back(_traits->green);
@@ -340,14 +338,11 @@ bool GraphicsWindowX11::createVisualInfo()
         attributes.push_back(GLX_DEPTH_SIZE); attributes.push_back(_traits->depth);
 
         if (_traits->alpha) { attributes.push_back(GLX_ALPHA_SIZE); attributes.push_back(_traits->alpha); }
-
         if (_traits->stencil) { attributes.push_back(GLX_STENCIL_SIZE); attributes.push_back(_traits->stencil); }
 
         #if defined(GLX_SAMPLE_BUFFERS) && defined (GLX_SAMPLES)
-
             if (_traits->sampleBuffers) { attributes.push_back(GLX_SAMPLE_BUFFERS); attributes.push_back(_traits->sampleBuffers); }
             if (_traits->samples) { attributes.push_back(GLX_SAMPLES); attributes.push_back(_traits->samples); }
-
         #endif
         // TODO
         //  GLX_AUX_BUFFERS
@@ -356,7 +351,16 @@ bool GraphicsWindowX11::createVisualInfo()
 
         attributes.push_back(None);
 
-        _visualInfo = glXChooseVisual( _display, _traits->screenNum, &(attributes.front()) );
+        int numFbConfigs = 0;
+        GLXFBConfig* fbConfigs = glXChooseFBConfig(_display, _traits->screenNum, attributes.data(), &numFbConfigs);
+        if (numFbConfigs > 0)
+        {
+            _fbConfig = fbConfigs[0];
+        }
+
+        XFree(fbConfigs);
+
+        _visualInfo = glXGetVisualFromFBConfig(_display, _fbConfig);
     #endif
     }
 
@@ -893,7 +897,58 @@ void GraphicsWindowX11::init()
 
     #else
 
-        _context = glXCreateContext( _display, _visualInfo, sharedContext, True );
+        typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
+
+        const char* glx_str = glXQueryExtensionsString(_display, _traits->screenNum);
+        std::string glx_string; if (glx_str) glx_string = glx_str;
+
+        glXCreateContextAttribsARBProc glXCreateContextAttribsARB = 0;
+        if (glx_string.find("GLX_ARB_create_context")!=std::string::npos)
+        {
+            glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc) glXGetProcAddress((const GLubyte*)"glXCreateContextAttribsARB");
+        }
+
+        bool supportsProfiles = glx_string.find("GLX_ARB_create_context")!=std::string::npos;
+
+
+        if (glXCreateContextAttribsARB)
+        {
+            OSG_INFO << "Attempting to create GL context:" << std::endl;
+            OSG_INFO << " * version: " << _traits->glContextVersion << std::endl;
+            OSG_INFO << " * context flags: " << _traits->glContextFlags << std::endl;
+            OSG_INFO << " * profile: " << _traits->glContextProfileMask << std::endl;
+
+            std::vector<int> contextAttributes;
+
+            std::size_t pos = _traits->glContextVersion.find(".");
+            int majorVersion = std::atoi(_traits->glContextVersion.substr(0, pos).c_str());
+            int minorVersion = pos == std::string::npos ? 0 : std::atoi(_traits->glContextVersion.substr(pos + 1).c_str());
+
+            contextAttributes.push_back(GLX_CONTEXT_MAJOR_VERSION_ARB);
+            contextAttributes.push_back(majorVersion);
+            contextAttributes.push_back(GLX_CONTEXT_MINOR_VERSION_ARB);
+            contextAttributes.push_back(minorVersion);
+
+            // If asking for OpenGL 3.2 or newer we should also specify a profile
+            float glVersion = static_cast<float>(majorVersion)+static_cast<float>(minorVersion)*0.1f;
+            if (glVersion>=3.2 && supportsProfiles && _traits->glContextProfileMask != 0)
+            {
+                contextAttributes.push_back(GLX_CONTEXT_PROFILE_MASK_ARB);
+                contextAttributes.push_back(_traits->glContextProfileMask);
+            }
+            if (_traits->glContextFlags != 0)
+            {
+                contextAttributes.push_back(GLX_CONTEXT_FLAGS_ARB);
+                contextAttributes.push_back(_traits->glContextFlags);
+            }
+            contextAttributes.push_back(None);
+
+            _context = glXCreateContextAttribsARB( _display, _fbConfig, sharedContext, True, contextAttributes.data() );
+        }
+        else
+        {
+            _context = glXCreateContext( _display, _visualInfo, sharedContext, True );
+        }
 
         if (!_context)
         {

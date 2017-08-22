@@ -1,3 +1,178 @@
+Tue, 22 Aug 2017 09:04:49 +0100
+Author : Robert Osfield
+Added catch for controbutors list
+
+Tue, 22 Aug 2017 11:58:49 +0100
+Author : Robert Osfield
+Added name typo fix
+
+Tue, 22 Aug 2017 09:22:41 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #311 from eligovision/masterGeometry::compileGLObjects function VAO fix
+
+Tue, 22 Aug 2017 09:21:24 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #312 from LaurensVoerman/vnc_pluginReaderWriterVNC.cpp fix g++ warnings
+
+Mon, 21 Aug 2017 11:15:22 +0200
+Author : Laurens Voerman
+ReaderWriterVNC.cpp fix g++ warnings
+
+Tue, 22 Aug 2017 10:12:36 +0300
+Author : Konstantin S. Matveyev
+Geometry::compileGLObjects function VAO fix
+
+Tue, 22 Aug 2017 08:01:40 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #309 from mp3butcher/osganimationadd DrawElementTypeSimplifierVisitor constructor because default nodevisitor is TRAVERSE_NONE..
+
+Mon, 21 Aug 2017 18:33:56 +0200
+Author : Julien Valentin
+fix nodevisitor construction
+
+Mon, 21 Aug 2017 16:24:34 +0100
+Author : Robert Osfield
+Revert commit 904619e219b5c045b1c8d9d923f52f80089ee24e as it was causeing build problems
+
+Mon, 21 Aug 2017 15:06:31 +0100
+Author : Robert Osfield
+Added handling of CPACK and automatically generated package files
+
+Mon, 21 Aug 2017 11:40:45 +0100
+Author : Robert Osfield
+Using a PR from Sando Mani for requestioning a specific GL version as a base, cleaned up formattating, made the new code paths simpler and added clean up of memory
+
+Sun, 20 Aug 2017 19:53:41 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #307 from eligovision/master[*] createTexturedQuadGeometry: fixed for GL3 spec
+
+Sun, 20 Aug 2017 19:52:31 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #308 from OpenMW/collada_valuetype_patchUse osg::Quat::value_type instead of double in collada plugin
+
+Sun, 20 Aug 2017 15:56:40 +0000
+Author : scrawl
+Use osg::Quat::value_type instead of double in collada pluginNote that although the value_type is currently always double, using the proper typedef will open the door to implementing a float Quaternion in the future (as I have done so in my own fork)
+
+
+Sun, 20 Aug 2017 18:01:49 +0300
+Author : konstantin.matveyev
+[*] createTexturedQuadGeometry: fixed for GL3 spec: GL_QUADS -> GL_TRIANGLES
+
+Sun, 20 Aug 2017 08:32:02 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #306 from AnyOldName3/targa-type-one-supportAdd support for type-1 (colour-mapped, uncompressed) targa images to …
+
+Sat, 19 Aug 2017 22:22:20 +0100
+Author : AnyOldName3
+Add support for type-1 (colour-mapped, uncompressed) targa images to the osgTGA plugin
+
+Sat, 19 Aug 2017 17:20:40 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #304 from eligovision/masterglClear should not be called with zero-mask in osgUtil::RenderStage::…
+
+Fri, 18 Aug 2017 16:13:16 +0100
+Author : Robert Osfield
+Merged addition of "" around variable from 3.4 branch
+
+Fri, 18 Aug 2017 10:20:26 +0300
+Author : Konstantin S. Matveyev
+glClear should not be called with zero-mask in osgUtil::RenderStage::drawImplementation
+
+Fri, 18 Aug 2017 08:08:28 +0100
+Author : Robert Osfield
+Fixed iterator comparison.
+
+Thu, 17 Aug 2017 13:55:13 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #301 from LaurensVoerman/Submit_linkWithVariablesfix for visual studio trying to link "debug.lib" and "release.lib"
+
+Thu, 17 Aug 2017 10:52:59 +0100
+Author : Robert Osfield
+Added version check for boolean, TRUE and FALSE settings
+
+Thu, 17 Aug 2017 11:44:06 +0200
+Author : Laurens Voerman
+fix for visual studio trying to link "debug.lib" and "release.lib"
+
+Wed, 16 Aug 2017 17:51:58 +0100
+Author : Robert Osfield
+Added remapping of CMAKE_BUILD_TYPE strings that don't have the correct case.
+
+Wed, 16 Aug 2017 14:20:00 +0100
+Author : Robert Osfield
+Removed the GLclampd declaration and replaced its usage with GLdouble to standardize the OSG extension setup with current GL/GLES headers.Added a float fallback from osg::DepthDangeIndex to suppprt GLES.
+
+
+Wed, 16 Aug 2017 11:30:14 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #300 from eligovision/masterText3D character/glyph size fix
+
+Wed, 16 Aug 2017 09:04:02 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #299 from luzpaz/misc-typo-fixesmisc. typo fixes
+
+Tue, 15 Aug 2017 22:15:31 +0300
+Author : konstantin.matveyev
+Merge remote-tracking branch 'upstream/master'
+
+Tue, 15 Aug 2017 22:11:15 +0300
+Author : konstantin.matveyev
+Text3D character/glyph size fixed
+
+Tue, 15 Aug 2017 12:23:49 -0400
+Author : luzpaz
+misc. typo fixesmostly non-user-facing but some doxy. 
+
+Tue, 15 Aug 2017 16:35:23 +0100
+Author : Robert Osfield
+Fixed warning
+
+Tue, 15 Aug 2017 15:42:22 +0100
+Author : Uwe Woessner
+Extension to the PLY plugin to read files with textures.
+
+Tue, 15 Aug 2017 06:39:02 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #298 from eligovision/masterEmscripten: EGL instead of SDL2 in GLExtensions.cpp
+
+Mon, 14 Aug 2017 14:58:29 +0300
+Author : konstantin.matveyev
+Merge remote-tracking branch 'upstream/master'
+
+Mon, 14 Aug 2017 11:19:04 +0300
+Author : konstantin.matveyev
+Emscripten: EGL instead of SDL2 in GLExtensions.cpp
+
+Tue, 23 May 2017 16:33:16 +0100
+Author : Robert Osfield
+Replaced local FindZLIB.cmake usage with CMake's own FindZLIB.cmake, and ZLIB_LIBRARY to ZLIB_LIBRARIES
+
+Wed, 9 Aug 2017 14:08:59 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #296 from openscenegraph/FullScreenFrom Don Burns, add use of Xinerama to ensure full screen goes across all screens.
+
+Wed, 9 Aug 2017 08:58:25 +0100
+Author : Robert Osfield
+Disabled the building of deprecated serializations in convertity_scan
+
+Tue, 8 Aug 2017 13:35:35 +0100
+Author : Anna Sokol
+In the attached GraphicsWindowWin32.cpp file, I changed order of the "else-if" for the TOUCHEVENTF_UP and TOUCHEVENTF_MOVE, I made it less intrusive then changing them into "if" events. I tested this on Windows 7 64-bit with a touch screen and a Windows 10 64-bit tablet.Separately in the same file, I also needed to address the fact that the close button would not react on touch so I added to the top of the "handleNativeWindowingEvent" close button handling in case of touch events. Again this was tested on the same 2 devices.
+
+
+Mon, 7 Aug 2017 16:32:44 +0100
+Author : Robert Osfield
+Added link to ABI tracker
+
+Mon, 31 Jul 2017 13:38:18 +0100
+Author : Robert Osfield
+Merged #pragmatic shader fix from OpenSceneGraph-3.4 branch.
+
+Fri, 28 Jul 2017 17:17:25 +0100
+Author : Robert Osfield
+Updated version number, ChangeLog and AUTHORS file for 3.5.7 developer release
+
 Fri, 28 Jul 2017 10:27:47 +0100
 Author : OpenSceneGraph git repository
 Merge pull request #267 from kornerr/masterAdd osgemscripten example
@@ -179,6 +354,10 @@ Updated ChangeLog for 3.5.6 dev release
 Mon, 15 May 2017 14:53:27 +0100
 Author : Robert Osfield
 Refactored COLLADA_BUILDNAME and COLLADA_BOOST_BUILDNAME to resolve case where CMAKE_VS_PLATFORM_TOOLSET is not set.
+
+Fri, 12 May 2017 16:26:07 +0100
+Author : Robert Osfield
+From Don Burns, add use of Xinerama to ensure full screen goes across all screens.
 
 Thu, 11 May 2017 16:32:13 +0100
 Author : Robert Osfield

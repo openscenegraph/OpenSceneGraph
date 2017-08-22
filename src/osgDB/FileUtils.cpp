@@ -95,6 +95,10 @@ typedef char TCHAR;
     #endif
 #endif
 
+#if defined(__ANDROID__)
+    #define stat64 stat
+#endif
+
     // set up _S_ISDIR()
 #if !defined(S_ISDIR)
 #  if defined( _S_IFDIR) && !defined( __S_IFDIR)

@@ -499,7 +499,8 @@ TypoCorrection typoCorrections[] =
     {"ViganÃ²", "Viganò"},
     {"Vigano", "Viganò"},
     {"Frashud", "Farshid"},
-    {"Dannahauer","Dannahauer"}
+    {"Dannahauer","Dannahauer"},
+    {"Sando","Sandro"}
 };
 
 

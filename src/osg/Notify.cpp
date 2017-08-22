@@ -61,6 +61,9 @@ struct NotifyStreamBuffer : public std::stringbuf
 {
     NotifyStreamBuffer() : _severity(osg::NOTICE)
     {
+        /* reduce the need to reallocate the std::ostream buffer behind osg::Notify (causing multitreading issues) by pre-allocating 4095 bytes */
+        str(std::string(4095, 0));
+        pubseekpos(0, std::ios_base::out);
     }
 
     void setNotifyHandler(osg::NotifyHandler *handler) { _handler = handler; }

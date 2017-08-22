@@ -274,7 +274,8 @@ const char* invalidNames[] =
     "Sun",
     "I",
     "TriangleFunctor",
-    "PrimitiveFunctor"
+    "PrimitiveFunctor",
+    "OpenMW"
 };
 
 

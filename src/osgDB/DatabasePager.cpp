@@ -728,7 +728,10 @@ void DatabasePager::DatabaseThread::run()
 
         _active = true;
 
-        OSG_INFO<<_name<<": _pager->size()= "<<read_queue->size()<<" to delete = "<<read_queue->_childrenToDeleteList.size()<<std::endl;
+        if (osg::isNotifyEnabled(osg::INFO)) {
+            unsigned int rqSize = read_queue->size();
+            OSG_INFO << _name << ": _pager->size()= " << rqSize << " to delete = " << read_queue->_childrenToDeleteList.size() << std::endl;
+        }
 
 
 

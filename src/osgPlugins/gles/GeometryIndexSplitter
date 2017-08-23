@@ -61,7 +61,7 @@ protected:
         }
 
         bool contains(unsigned int v1) const {
-            return subvertices.count(v1);
+            return 0 != subvertices.count(v1);
         }
 
         void addTriangle(unsigned int v1, unsigned int v2, unsigned v3) {

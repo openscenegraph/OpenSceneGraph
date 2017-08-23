@@ -187,14 +187,14 @@ struct IndirectTarget
     }
     void endRegister(unsigned int index, unsigned int rowsPerInstance, GLenum pixelFormat, GLenum type, GLint internalFormat, bool useMultiDrawArraysIndirect )
     {
-        osg::Image* indirectCommandImage = new osg::Image;
-        indirectCommandImage->setImage( indirectCommands->getTotalDataSize()/sizeof(unsigned int), 1, 1, GL_R32I, GL_RED, GL_UNSIGNED_INT, (unsigned char*)indirectCommands->getDataPointer(), osg::Image::NO_DELETE );
+       // osg::Image* indirectCommandImage = new osg::Image;
+        //indirectCommandImage->setImage( indirectCommands->getTotalDataSize()/sizeof(unsigned int), 1, 1, GL_R32I, GL_RED, GL_UNSIGNED_INT, (unsigned char*)indirectCommands->getDataPointer(), osg::Image::NO_DELETE );
 
         osg::VertexBufferObject * indirectCommandImagebuffer=new osg::VertexBufferObject();
         indirectCommandImagebuffer->setUsage(GL_DYNAMIC_DRAW);
-        indirectCommandImage->setBufferObject(indirectCommandImagebuffer);
+        indirectCommands->setBufferObject(indirectCommandImagebuffer);
 
-        indirectCommandTextureBuffer = new osg::TextureBuffer(indirectCommandImage);
+        indirectCommandTextureBuffer = new osg::TextureBuffer(indirectCommands);
         indirectCommandTextureBuffer->setInternalFormat( GL_R32I );
         indirectCommandTextureBuffer->bindToImageUnit(index, osg::Texture::READ_WRITE);
         indirectCommandTextureBuffer->setUnRefImageDataAfterApply(false);
@@ -222,9 +222,9 @@ struct IndirectTarget
         }
 
         ///attach a DrawIndirect buffer binding to the stateset
-        osg::ref_ptr<osg::DrawIndirectBufferBinding> bb=new osg::DrawIndirectBufferBinding();
-        bb->setBufferObject(indirectCommandImage->getBufferObject());
-        geometryAggregator->getAggregatedGeometry()->getOrCreateStateSet()->setAttribute(bb );
+        osg::ref_ptr<osg::DrawIndirectBufferBinding> bb=new osg::DrawIndirectBufferBinding(indirectCommands);
+
+        geometryAggregator->getAggregatedGeometry()->getOrCreateStateSet()->setAttributeAndModes(bb );
         geometryAggregator->getAggregatedGeometry()->setUseDisplayList(false);
         geometryAggregator->getAggregatedGeometry()->setUseVertexBufferObjects(true);
 
@@ -288,7 +288,7 @@ struct GPUCullData
         instanceTypesUBO = new osg::UniformBufferObject;
 //        instanceTypesUBO->setUsage( GL_STREAM_DRAW );
         instanceTypes->setBufferObject( instanceTypesUBO.get() );
-        instanceTypesUBB = new osg::UniformBufferBinding(1, instanceTypesUBO.get(), 0, 0);
+        instanceTypesUBB = new osg::UniformBufferBinding(1, instanceTypes.get(), 0, 0);
 
     }
     void setUseMultiDrawArraysIndirect( bool value )
@@ -724,16 +724,16 @@ struct ResetTexturesCallback : public osg::StateSet::Callback
         std::vector<unsigned int>::iterator it,eit;
         for(it=texUnitsDirty.begin(), eit=texUnitsDirty.end(); it!=eit; ++it)
         {
-            osg::Texture* tex = dynamic_cast<osg::Texture*>( stateset->getTextureAttribute(*it,osg::StateAttribute::TEXTURE) );
+            osg::TextureBuffer* tex = dynamic_cast<osg::TextureBuffer*>( stateset->getTextureAttribute(*it,osg::StateAttribute::TEXTURE) );
             if(tex==NULL)
                 continue;
-            osg::Image* img = tex->getImage(0);
+            osg::BufferData* img = const_cast<osg::BufferData*>(tex->getBufferData());
             if(img!=NULL)
                 img->dirty();
         }
         for(it=texUnitsDirtyParams.begin(), eit=texUnitsDirtyParams.end(); it!=eit; ++it)
         {
-            osg::Texture* tex = dynamic_cast<osg::Texture*>( stateset->getTextureAttribute(*it,osg::StateAttribute::TEXTURE) );
+            osg::TextureBuffer* tex = dynamic_cast<osg::TextureBuffer*>( stateset->getTextureAttribute(*it,osg::StateAttribute::TEXTURE) );
             if(tex!=NULL)
                 tex->dirtyTextureParameters();
         }

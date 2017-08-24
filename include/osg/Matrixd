@@ -242,6 +242,12 @@ class OSG_EXPORT Matrixd
         /** full 4x4 matrix invert. */
         bool invert_4x4( const Matrixd& rhs);
 
+        /** transpose a matrix */
+        bool transpose(const Matrixd&rhs);
+
+        /** transpose orthogonal part of the matrix **/
+        bool transpose3x3(const Matrixd&rhs);
+
         /** ortho-normalize the 3x3 rotation & scale matrix */
         void orthoNormalize(const Matrixd& rhs);
 

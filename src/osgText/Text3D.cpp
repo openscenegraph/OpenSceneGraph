@@ -21,12 +21,14 @@ namespace osgText
 Text3D::Text3D():
     _renderMode(PER_GLYPH)
 {
+    _glyphNormalized = true;
 }
 
 Text3D::Text3D(const Text3D & text3D, const osg::CopyOp & copyop):
     osgText::TextBase(text3D, copyop),
     _renderMode(text3D._renderMode)
 {
+    _glyphNormalized = text3D._glyphNormalized;
     computeGlyphRepresentation();
 }
 
@@ -270,7 +272,7 @@ void Text3D::computeGlyphRepresentation()
         osg::Vec2 endOfLine_coords(cursor);
         String::iterator endOfLine_itr = computeLastCharacterOnLine(endOfLine_coords, itr,_text.end());
 
-        // ** position the cursor function to the Layout and the alignement
+        // ** position the cursor function to the Layout and the alignment
         TextBase::positionCursor(endOfLine_coords, cursor, (unsigned int) (endOfLine_itr - startOfLine_itr));
 
 

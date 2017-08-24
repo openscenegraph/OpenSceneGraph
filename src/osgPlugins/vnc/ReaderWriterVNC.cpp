@@ -199,7 +199,7 @@ static rfbBool rfbInitConnection(rfbClient* client)
   return TRUE;
 }
 
-void LibVncImage::passwordCheck(rfbClient* client,const char* encryptedPassWord,int len)
+void LibVncImage::passwordCheck(rfbClient* /*client*/,const char* /*encryptedPassWord*/,int /*len*/)
 {
     OSG_NOTICE<<"LibVncImage::passwordCheck"<<std::endl;
 }
@@ -319,7 +319,7 @@ rfbBool LibVncImage::resizeImage(rfbClient* client)
     return TRUE;
 }
 
-void LibVncImage::updateImage(rfbClient* client,int x,int y,int w,int h)
+void LibVncImage::updateImage(rfbClient* client, int /*x*/, int /*y*/, int /*w*/, int /*h*/)
 {
     LibVncImage* image = (LibVncImage*)(rfbClientGetClientData(client, 0));
 

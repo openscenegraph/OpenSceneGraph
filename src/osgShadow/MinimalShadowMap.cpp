@@ -138,7 +138,7 @@ void MinimalShadowMap::ViewData::aimShadowCastingCamera
 
     if( up.length2() <= 0 )
     {
-    // This is extra step (not really needed but helpful in debuging)
+    // This is extra step (not really needed but helpful in debugging)
     // Compute such lightUp vector that shadow cam is intuitively aligned with eye
     // We compute this vector on -ZY view plane, perpendicular to light direction
     // Matrix m = ViewToWorld
@@ -234,7 +234,7 @@ void MinimalShadowMap::ViewData::frameShadowCastingCamera
     if( bb.valid() )
         trimProjection( cameraShadow->getProjectionMatrix(), bb, 1|2|4|8|16|32 );
 
-    ///// Debuging stuff //////////////////////////////////////////////////////////
+    ///// Debugging stuff //////////////////////////////////////////////////////////
     setDebugPolytope( "scene", _sceneReceivingShadowPolytope, osg::Vec4(0,1,0,1) );
 
 

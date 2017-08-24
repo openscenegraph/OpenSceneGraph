@@ -62,8 +62,9 @@ namespace glesUtil {
                 _geometry = target.getGeometry();
                 _geometry->setPrimitiveSetList(morph.getPrimitiveSetList());
 
-                _hasTexCoord = _geometry->getTexCoordArrayList().size();
-                if(!_hasTexCoord) {
+                _hasTexCoord = !_geometry->getTexCoordArrayList().empty();
+                if(_hasTexCoord)
+                {
                     _geometry->setTexCoordArrayList(morph.getTexCoordArrayList());
                 }
             }

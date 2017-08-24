@@ -129,7 +129,7 @@ class OSG_EXPORT Geometry : public Drawable
         unsigned int getPrimitiveSetIndex(const PrimitiveSet* primitiveset) const;
 
 
-        /** Convinience method that checks all the vertex arrays to make sure that the buffer objects are all assigned appropriate.*/
+        /** Convenience method that checks all the vertex arrays to make sure that the buffer objects are all assigned appropriate.*/
         void configureBufferObjects();
 
         /** return true if any arrays are shared.*/
@@ -279,7 +279,7 @@ class OSG_EXPORT Geometry : public Drawable
 #endif
 };
 
-/** Convinience visitor for making sure that any BufferObjects that might be required are set up in the scene graph.*/
+/** Convenience visitor for making sure that any BufferObjects that might be required are set up in the scene graph.*/
 class ConfigureBufferObjectsVisitor : public osg::NodeVisitor
 {
 public:

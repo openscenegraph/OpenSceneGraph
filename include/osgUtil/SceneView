@@ -460,8 +460,8 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
 
         /** Do init traversal of the attached scene graph using Init NodeVisitor.
           * The init traversal is called once for each SceneView, and should
-          * be used to compile display lists, texture objects and intialize data
-          * not otherwise intialized during scene graph loading. Note, is
+          * be used to compile display lists, texture objects and initialize data
+          * not otherwise initialized during scene graph loading. Note, is
           * called automatically by update & cull if it hasn't already been called
           * elsewhere. Also init() should only ever be called within a valid
           * graphics context.*/

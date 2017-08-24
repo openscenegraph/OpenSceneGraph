@@ -27,7 +27,7 @@ CMakeFiles
 CMakeScripts
 Makefile
 cmake_install.cmake
-install_manifest.txt
+install_manifest*.txt
 
 
 # Compiled Object files
@@ -84,3 +84,11 @@ DerivedData/
 *.DS_Store
 *.build
 *.xcodeproj
+
+#CPACK related files
+CPackConfig-*.cmake
+_CPack_Packages/
+
+#packages
+*.tar.gz
+*.zip

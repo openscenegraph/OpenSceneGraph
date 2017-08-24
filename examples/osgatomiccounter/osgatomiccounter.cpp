@@ -108,10 +108,10 @@ class ResetAtomicCounter : public osg::StateAttributeCallback
             osg::AtomicCounterBufferBinding * acbb = dynamic_cast<osg::AtomicCounterBufferBinding *>(sa);
             if (acbb)
             {
-                osg::AtomicCounterBufferObject * acbo = dynamic_cast<osg::AtomicCounterBufferObject*>(acbb->getBufferObject());
-                if (acbo && acbo->getBufferData(0))
+                osg::BufferData * acbd = acbb->getBufferData();
+                if (acbd)
                 {
-                    acbo->getBufferData(0)->dirty();
+                    acbd->dirty();
                 }
             }
         }
@@ -207,10 +207,10 @@ int main(int argc, char** argv)
     acboBlue->setUsage(GL_STREAM_COPY);
     atomicCounterArrayBlue->setBufferObject(acboBlue.get());
 
-    osg::ref_ptr<osg::AtomicCounterBufferBinding> acbbRedAndGreen = new osg::AtomicCounterBufferBinding(0, acboRedAndGreen.get(), 0, sizeof(GLuint)*3);
+    osg::ref_ptr<osg::AtomicCounterBufferBinding> acbbRedAndGreen = new osg::AtomicCounterBufferBinding(0, atomicCounterArrayRedAndGreen.get(), 0, sizeof(GLuint)*3);
     ss->setAttributeAndModes(acbbRedAndGreen.get());
 
-    osg::ref_ptr<osg::AtomicCounterBufferBinding> acbbBlue = new osg::AtomicCounterBufferBinding(2, acboBlue.get(), 0, sizeof(GLuint));
+    osg::ref_ptr<osg::AtomicCounterBufferBinding> acbbBlue = new osg::AtomicCounterBufferBinding(2, atomicCounterArrayBlue.get(), 0, sizeof(GLuint));
     ss->setAttributeAndModes(acbbBlue.get());
 
     acbbRedAndGreen->setUpdateCallback(new ResetAtomicCounter);

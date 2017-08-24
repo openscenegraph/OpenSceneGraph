@@ -18,6 +18,10 @@
 #include <osg/Geode>
 #include <osg/io_utils>
 #include <osgUtil/SmoothingVisitor>
+#include <osg/TexEnv>
+#include <osgDB/ReaderWriter>
+#include <osgDB/ReadFile>
+#include <osg/Texture2D>
 
 using namespace std;
 using namespace ply;
@@ -35,6 +39,7 @@ VertexData::VertexData()
     _diffuse = NULL;
     _ambient = NULL;
     _specular = NULL;
+    _texcoord = NULL;
 }
 
 
@@ -66,6 +71,8 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
         unsigned char   specular_blue;
         float           specular_coeff;
         float           specular_power;
+        float texture_u;
+        float texture_v;
     } vertex;
 
     PlyProperty vertexProps[] =
@@ -74,8 +81,8 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
         { "y", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, y ), 0, 0, 0, 0 },
         { "z", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, z ), 0, 0, 0, 0 },
         { "nx", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, nx ), 0, 0, 0, 0 },
-        { "ny", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, ny ), 0, 0, 0, 0 },
-        { "nz", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, nz ), 0, 0, 0, 0 },
+        { "ny", PLY_FLOAT, PLY_FLOAT, offsetof(_Vertex, ny), 0, 0, 0, 0 },
+        { "nz", PLY_FLOAT, PLY_FLOAT, offsetof(_Vertex, nz), 0, 0, 0, 0 },
         { "red", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, red ), 0, 0, 0, 0 },
         { "green", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, green ), 0, 0, 0, 0 },
         { "blue", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, blue ), 0, 0, 0, 0 },
@@ -91,6 +98,8 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
         { "specular_blue", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, specular_blue ), 0, 0, 0, 0 },
         { "specular_coeff", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, specular_coeff ), 0, 0, 0, 0 },
         { "specular_power", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, specular_power ), 0, 0, 0, 0 },
+        { "texture_u", PLY_FLOAT, PLY_FLOAT, offsetof(_Vertex, texture_u), 0, 0, 0, 0 },
+        { "texture_v", PLY_FLOAT, PLY_FLOAT, offsetof(_Vertex, texture_v), 0, 0, 0, 0 },
     };
 
     // use all 6 properties when reading colors, only the first 3 otherwise
@@ -119,6 +128,10 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
     if (fields & SPECULAR)
       for( int i = 16; i < 21; ++i )
         ply_get_property( file, "vertex", &vertexProps[i] );
+
+    if (fields & TEXCOORD)
+        for (int i = 21; i < 23; ++i)
+            ply_get_property(file, "vertex", &vertexProps[i]);
 
     // check whether array is valid otherwise allocate the space
     if(!_vertices.valid())
@@ -154,6 +167,11 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
         if(!_specular.valid())
             _specular = new osg::Vec4Array;
     }
+    if (fields & TEXCOORD)
+    {
+        if (!_texcoord.valid())
+            _texcoord = new osg::Vec2Array;
+    }
 
     // read in the vertices
     for( int i = 0; i < nVertices; ++i )
@@ -186,6 +204,8 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
             _specular->push_back( osg::Vec4( (unsigned int) vertex.specular_red / 255.0,
                                              (unsigned int) vertex.specular_green / 255.0 ,
                                              (unsigned int) vertex.specular_blue / 255.0, 1.0 ) );
+        if (fields & TEXCOORD)
+            _texcoord->push_back(osg::Vec2(vertex.texture_u,vertex.texture_v));
     }
 }
 
@@ -291,12 +311,46 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
     MESHINFO << filename << ": " << nPlyElems << " elements, file type = "
              << fileType << ", version = " << version << endl;
     #endif
-
+    char *textureFile = NULL;
     for( int i = 0; i < nComments; i++ )
     {
         if( equal_strings( comments[i], "modified by flipply" ) )
         {
             _invertFaces = true;
+        }
+        if (strncmp(comments[i], "TextureFile",11)==0)
+        {
+            textureFile = comments[i]+12;
+            char * path = new char[strlen(const_cast<char*>(filename)) + 1 + strlen(comments[i])];
+            if (textureFile[0] == '\\' || textureFile[0] == '/' || textureFile[1] == ':')
+            {
+                // texture filename is absolute
+                strcpy(path, textureFile);
+            }
+            else
+            {
+                // texture filename is relative
+                // add directory of ply file
+                strcpy(path, const_cast<char*>(filename));
+                char *pp = path + strlen(path);
+                while (pp >= path)
+                {
+                    if (*pp == '\\' || *pp == '/')
+                    {
+                        pp++;
+                        *pp = '\0';
+                        break;
+                    }
+                    pp--;
+                }
+                if (pp == path - 1)
+                {
+                    pp++;
+                    *pp = '\0';
+                }
+                strcat(path, textureFile);
+            }
+            textureFile = path;
         }
 
     }
@@ -330,10 +384,10 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         // if the string is vertex means vertex data is started
         if( equal_strings( elemNames[i], "vertex" ) )
         {
- 	    int fields = NONE;
+            int fields = NONE;
             // determine if the file stores vertex colors
             for( int j = 0; j < nProps; ++j )
-	      {
+            {
                 // if the string have the red means color info is there
                 if( equal_strings( props[j]->name, "x" ) )
                     fields |= XYZ;
@@ -347,15 +401,19 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
                     fields |= AMBIENT;
                 if( equal_strings( props[j]->name, "diffuse_red" ) )
                     fields |= DIFFUSE;
-                if( equal_strings( props[j]->name, "specular_red" ) )
+                if (equal_strings(props[j]->name, "specular_red"))
                     fields |= SPECULAR;
-          }
+                if (equal_strings(props[j]->name, "texture_u"))
+                    fields |= TEXCOORD;
+                if (equal_strings(props[j]->name, "texture_v"))
+                    fields |= TEXCOORD;
+            }
 
             if( ignoreColors )
-	      {
-		fields &= ~(XYZ | NORMALS);
-                MESHINFO << "Colors in PLY file ignored per request." << endl;
-	      }
+            {
+                fields &= ~(XYZ | NORMALS);
+                    MESHINFO << "Colors in PLY file ignored per request." << endl;
+            }
 
             try {
                 // Read vertices and store in a std::vector array
@@ -363,7 +421,7 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
                 // Check whether all vertices are loaded or not
                 MESHASSERT( _vertices->size() == static_cast< size_t >( nElems ) );
 
-		// Check if all the optional elements were read or not
+                // Check if all the optional elements were read or not
                 if( fields & NORMALS )
                 {
                     MESHASSERT( _normals->size() == static_cast< size_t >( nElems ) );
@@ -380,9 +438,13 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
                 {
                     MESHASSERT( _diffuse->size() == static_cast< size_t >( nElems ) );
                 }
-                if( fields & SPECULAR )
+                if (fields & SPECULAR)
                 {
-                    MESHASSERT( _specular->size() == static_cast< size_t >( nElems ) );
+                    MESHASSERT(_specular->size() == static_cast< size_t >(nElems));
+                }
+                if (fields & TEXCOORD)
+                {
+                    MESHASSERT(_texcoord->size() == static_cast< size_t >(nElems));
                 }
 
                 result = true;
@@ -462,9 +524,9 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
             geom->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, _vertices->size()));
 
 
-	// Apply the colours to the model; at the moment this is a
-	// kludge because we only use one kind and apply them all the
-	// same way. Also, the priority order is completely arbitrary
+        // Apply the colours to the model; at the moment this is a
+        // kludge because we only use one kind and apply them all the
+        // same way. Also, the priority order is completely arbitrary
 
         if(_colors.valid())
         {
@@ -478,9 +540,13 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         {
             geom->setColorArray(_diffuse.get(), osg::Array::BIND_PER_VERTEX );
         }
-	else if(_specular.valid())
+        else if(_specular.valid())
         {
             geom->setColorArray(_specular.get(), osg::Array::BIND_PER_VERTEX );
+        }
+        else if (_texcoord.valid())
+        {
+            geom->setTexCoordArray(0, _texcoord);
         }
 
         // If the model has normals, add them to the geometry
@@ -497,11 +563,26 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         // set flage true to activate the vertex buffer object of drawable
         geom->setUseVertexBufferObjects(true);
 
+        osg::Image *image = NULL;
+        if (textureFile && (image = osgDB::readImageFile(textureFile)) != NULL)
+        {
+            osg::Texture2D *texture = new osg::Texture2D;
+            texture->setImage(image);
+            texture->setResizeNonPowerOfTwoHint(false);
+
+            osg::TexEnv *texenv = new osg::TexEnv;
+            texenv->setMode(osg::TexEnv::REPLACE);
+
+            osg::StateSet *stateset = geom->getOrCreateStateSet();
+            stateset->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
+            stateset->setTextureAttribute(0, texenv);
+            delete[] textureFile;
+        }
 
         osg::Geode* geode = new osg::Geode;
         geode->addDrawable(geom);
         return geode;
-   }
+    }
 
     return NULL;
 }

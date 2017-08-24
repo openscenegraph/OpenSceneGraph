@@ -1,6 +1,363 @@
+Tue, 22 Aug 2017 09:04:49 +0100
+Author : Robert Osfield
+Added catch for controbutors list
+
+Tue, 22 Aug 2017 11:58:49 +0100
+Author : Robert Osfield
+Added name typo fix
+
+Tue, 22 Aug 2017 09:22:41 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #311 from eligovision/masterGeometry::compileGLObjects function VAO fix
+
+Tue, 22 Aug 2017 09:21:24 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #312 from LaurensVoerman/vnc_pluginReaderWriterVNC.cpp fix g++ warnings
+
+Mon, 21 Aug 2017 11:15:22 +0200
+Author : Laurens Voerman
+ReaderWriterVNC.cpp fix g++ warnings
+
+Tue, 22 Aug 2017 10:12:36 +0300
+Author : Konstantin S. Matveyev
+Geometry::compileGLObjects function VAO fix
+
+Tue, 22 Aug 2017 08:01:40 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #309 from mp3butcher/osganimationadd DrawElementTypeSimplifierVisitor constructor because default nodevisitor is TRAVERSE_NONE..
+
+Mon, 21 Aug 2017 18:33:56 +0200
+Author : Julien Valentin
+fix nodevisitor construction
+
+Mon, 21 Aug 2017 16:24:34 +0100
+Author : Robert Osfield
+Revert commit 904619e219b5c045b1c8d9d923f52f80089ee24e as it was causeing build problems
+
+Mon, 21 Aug 2017 15:06:31 +0100
+Author : Robert Osfield
+Added handling of CPACK and automatically generated package files
+
+Mon, 21 Aug 2017 11:40:45 +0100
+Author : Robert Osfield
+Using a PR from Sando Mani for requestioning a specific GL version as a base, cleaned up formattating, made the new code paths simpler and added clean up of memory
+
+Sun, 20 Aug 2017 19:53:41 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #307 from eligovision/master[*] createTexturedQuadGeometry: fixed for GL3 spec
+
+Sun, 20 Aug 2017 19:52:31 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #308 from OpenMW/collada_valuetype_patchUse osg::Quat::value_type instead of double in collada plugin
+
+Sun, 20 Aug 2017 15:56:40 +0000
+Author : scrawl
+Use osg::Quat::value_type instead of double in collada pluginNote that although the value_type is currently always double, using the proper typedef will open the door to implementing a float Quaternion in the future (as I have done so in my own fork)
+
+
+Sun, 20 Aug 2017 18:01:49 +0300
+Author : konstantin.matveyev
+[*] createTexturedQuadGeometry: fixed for GL3 spec: GL_QUADS -> GL_TRIANGLES
+
+Sun, 20 Aug 2017 08:32:02 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #306 from AnyOldName3/targa-type-one-supportAdd support for type-1 (colour-mapped, uncompressed) targa images to …
+
+Sat, 19 Aug 2017 22:22:20 +0100
+Author : AnyOldName3
+Add support for type-1 (colour-mapped, uncompressed) targa images to the osgTGA plugin
+
+Sat, 19 Aug 2017 17:20:40 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #304 from eligovision/masterglClear should not be called with zero-mask in osgUtil::RenderStage::…
+
+Fri, 18 Aug 2017 16:13:16 +0100
+Author : Robert Osfield
+Merged addition of "" around variable from 3.4 branch
+
+Fri, 18 Aug 2017 10:20:26 +0300
+Author : Konstantin S. Matveyev
+glClear should not be called with zero-mask in osgUtil::RenderStage::drawImplementation
+
+Fri, 18 Aug 2017 08:08:28 +0100
+Author : Robert Osfield
+Fixed iterator comparison.
+
+Thu, 17 Aug 2017 13:55:13 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #301 from LaurensVoerman/Submit_linkWithVariablesfix for visual studio trying to link "debug.lib" and "release.lib"
+
+Thu, 17 Aug 2017 10:52:59 +0100
+Author : Robert Osfield
+Added version check for boolean, TRUE and FALSE settings
+
+Thu, 17 Aug 2017 11:44:06 +0200
+Author : Laurens Voerman
+fix for visual studio trying to link "debug.lib" and "release.lib"
+
+Wed, 16 Aug 2017 17:51:58 +0100
+Author : Robert Osfield
+Added remapping of CMAKE_BUILD_TYPE strings that don't have the correct case.
+
+Wed, 16 Aug 2017 14:20:00 +0100
+Author : Robert Osfield
+Removed the GLclampd declaration and replaced its usage with GLdouble to standardize the OSG extension setup with current GL/GLES headers.Added a float fallback from osg::DepthDangeIndex to suppprt GLES.
+
+
+Wed, 16 Aug 2017 11:30:14 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #300 from eligovision/masterText3D character/glyph size fix
+
+Wed, 16 Aug 2017 09:04:02 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #299 from luzpaz/misc-typo-fixesmisc. typo fixes
+
+Tue, 15 Aug 2017 22:15:31 +0300
+Author : konstantin.matveyev
+Merge remote-tracking branch 'upstream/master'
+
+Tue, 15 Aug 2017 22:11:15 +0300
+Author : konstantin.matveyev
+Text3D character/glyph size fixed
+
+Tue, 15 Aug 2017 12:23:49 -0400
+Author : luzpaz
+misc. typo fixesmostly non-user-facing but some doxy. 
+
+Tue, 15 Aug 2017 16:35:23 +0100
+Author : Robert Osfield
+Fixed warning
+
+Tue, 15 Aug 2017 15:42:22 +0100
+Author : Uwe Woessner
+Extension to the PLY plugin to read files with textures.
+
+Tue, 15 Aug 2017 06:39:02 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #298 from eligovision/masterEmscripten: EGL instead of SDL2 in GLExtensions.cpp
+
+Mon, 14 Aug 2017 14:58:29 +0300
+Author : konstantin.matveyev
+Merge remote-tracking branch 'upstream/master'
+
+Mon, 14 Aug 2017 11:19:04 +0300
+Author : konstantin.matveyev
+Emscripten: EGL instead of SDL2 in GLExtensions.cpp
+
+Tue, 23 May 2017 16:33:16 +0100
+Author : Robert Osfield
+Replaced local FindZLIB.cmake usage with CMake's own FindZLIB.cmake, and ZLIB_LIBRARY to ZLIB_LIBRARIES
+
+Wed, 9 Aug 2017 14:08:59 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #296 from openscenegraph/FullScreenFrom Don Burns, add use of Xinerama to ensure full screen goes across all screens.
+
+Wed, 9 Aug 2017 08:58:25 +0100
+Author : Robert Osfield
+Disabled the building of deprecated serializations in convertity_scan
+
+Tue, 8 Aug 2017 13:35:35 +0100
+Author : Anna Sokol
+In the attached GraphicsWindowWin32.cpp file, I changed order of the "else-if" for the TOUCHEVENTF_UP and TOUCHEVENTF_MOVE, I made it less intrusive then changing them into "if" events. I tested this on Windows 7 64-bit with a touch screen and a Windows 10 64-bit tablet.Separately in the same file, I also needed to address the fact that the close button would not react on touch so I added to the top of the "handleNativeWindowingEvent" close button handling in case of touch events. Again this was tested on the same 2 devices.
+
+
+Mon, 7 Aug 2017 16:32:44 +0100
+Author : Robert Osfield
+Added link to ABI tracker
+
+Mon, 31 Jul 2017 13:38:18 +0100
+Author : Robert Osfield
+Merged #pragmatic shader fix from OpenSceneGraph-3.4 branch.
+
+Fri, 28 Jul 2017 17:17:25 +0100
+Author : Robert Osfield
+Updated version number, ChangeLog and AUTHORS file for 3.5.7 developer release
+
+Fri, 28 Jul 2017 10:27:47 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #267 from kornerr/masterAdd osgemscripten example
+
+Wed, 26 Jul 2017 12:54:37 +0100
+Author : Robert Osfield
+Replaced FindOurDCMTK.cmake usage with FindDCMTK.cmake
+
+Wed, 26 Jul 2017 12:26:38 +0100
+Author : Robert Osfield
+Replaced local FindOurDCMTK.cmake with stock Cmake's FindDCMTK.cmake as the later is now feature complete and has full support for debug and release libraries.
+
+Tue, 25 Jul 2017 14:56:27 +0100
+Author : Robert Osfield
+Merged MSVC static build fix from OpenSceneGraph-3.4
+
+Mon, 17 Jul 2017 16:46:16 +0100
+Author : Anna Sokol
+Since version 2.5.1 freetype has supported the WOFF extension format. In the attached ReaderWriterFreeType.cpp file I added the following line:            supportsExtension("woff","web open font format");
+
+
+Mon, 17 Jul 2017 07:53:48 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #270 from caishanli/patch-1fix StatsHandler crash on windows
+
+Mon, 3 Jul 2017 16:24:01 +0800
+Author : Cai Shanli
+fix StatsHandler crush on windowschange static_cast to dynamic_cast to avoid type cast error
+
+Thu, 22 Jun 2017 09:44:06 +0700
+Author : Michael Kapelko
+Add osgemscripten example
+
+Mon, 19 Jun 2017 15:55:42 +0100
+Author : Robert Osfield
+Updated SO version number to 149 to enable uint64 object length read/writing in the .osgb format
+
+Mon, 19 Jun 2017 15:45:35 +0100
+Author : Robert Osfield
+Added version checks for when writing out new 64bit object sizes
+
+Mon, 19 Jun 2017 15:33:52 +0100
+Author : Robert Osfield
+Replaced long long with uint64_t
+
+Mon, 19 Jun 2017 15:25:04 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #264 from rickyviking/binaryStreamLargeBlockBinaryStreamOperator: read and write block size as long long integer
+
+Mon, 19 Jun 2017 12:04:03 +0100
+Author : Robert Osfield
+Added ability for OSG serializers to get the file version number when writing out via the OutputStream object
+
+Mon, 19 Jun 2017 08:50:00 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #265 from cxw42/array-classnameMake Array::className() support all Array::Type values
+
+Mon, 19 Jun 2017 08:43:54 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #263 from cxw42/build-fixStill build even if CPACK_GENERATOR is undefined
+
+Mon, 19 Jun 2017 08:26:24 +0100
+Author : Robert Osfield
+Merge branch 'master' of https://github.com/openscenegraph/OpenSceneGraph
+
+Mon, 19 Jun 2017 08:12:47 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #260 from blobfish/primitiveIndexIntersections and primitive index
+
+Fri, 16 Jun 2017 09:58:32 -0400
+Author : Chris White
+Make Array::className() support all Array::Type'sArray::className() had fallen out of date with respect to Array::Type.
+This commit updates it, and adds documentation and a debug message to
+serve as a reminder for future additions of values to Array::Type.
+
+
+Wed, 14 Jun 2017 16:09:40 +0200
+Author : Riccardo Corsi
+BinaryStreamOperator: read and write block size as long long integer on 8 bytes, to accommodate arbitrarily large block size. When reading check of file version for backward compatibility.
+
+Sat, 10 Jun 2017 22:05:19 -0400
+Author : cxw
+Still build even if CPACK_GENERATOR is undefinedWithout the quotes around `${CPACK_GENERATOR}`, Windows CMake, generating
+for VS2013, would exit with an error because the `STREQUAL` only had one arg.
+
+
+Thu, 8 Jun 2017 07:10:32 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #261 from cxw42/doxy-osguiAdded osgUI to Doxygen-generated documentation
+
+Wed, 7 Jun 2017 07:50:55 -0400
+Author : Chris White
+Added osgUI to Doxygen-generated documentation
+
+Fri, 2 Jun 2017 15:43:54 -0400
+Author : blobfish
+osg: KdTree: count degenerates to keep original primitive index in sync
+
+Thu, 1 Jun 2017 15:25:38 -0400
+Author : blobfish
+osg: KdTree: encode original primitive index into _vertexIndices
+
+Tue, 30 May 2017 18:46:03 -0400
+Author : blobfish
+osgUtil: LineSegmentIntersector: don't increment primitive index until after adding intersection
+
+Mon, 29 May 2017 12:19:08 -0400
+Author : blobfish
+osgUtil: PolytopeIntersector: don't increment primitive index until after adding intersection
+
+Tue, 30 May 2017 18:38:25 -0400
+Author : blobfish
+examples: osgkeyboardmouse: add primitive index to LineSegmentIntersector output
+
+Fri, 2 Jun 2017 09:29:05 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #259 from jtorresfabra/fixes_kdtreeFixes kdtree building
+
+Wed, 31 May 2017 13:30:50 +0200
+Author : Jordi
+Fixes kdtree building
+
+Mon, 29 May 2017 12:20:31 +0100
+Author : Robert Osfield
+Added TimeMultiplier and LoopingMode to ImageSequence .osg serializer
+
+Thu, 25 May 2017 12:38:54 +0100
+Author : Robert Osfield
+Improved support for Text with large numbers of glyphs
+
+Thu, 25 May 2017 09:54:11 +0100
+Author : Robert Osfield
+Build fix
+
+Thu, 25 May 2017 09:37:30 +0100
+Author : Robert Osfield
+Merge branch 'master' of https://github.com/openscenegraph/OpenSceneGraph
+
+Thu, 25 May 2017 09:37:26 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #258 from kornerr/masterAdd x86_64 architecture to iOS simulator
+
+Thu, 25 May 2017 08:56:53 +0100
+Author : Robert Osfield
+Tidied up spacing
+
+Thu, 25 May 2017 08:48:45 +0100
+Author : Robert Osfield
+Fixed naming of OSG_USE_DEPRECATED_API
+
+Wed, 24 May 2017 19:40:08 +0100
+Author : Robert Osfield
+Moved OSG_USE_DEPRECATED_API from include/osg/Export to Cmake controlled include/osg/Config
+
+Wed, 24 May 2017 19:39:36 +0100
+Author : Robert Osfield
+Replaced deprecated API usage
+
+Wed, 24 May 2017 18:34:22 +0100
+Author : Robert Osfield
+Replaced DimensionMask naming with more appropriate PrimitiveMask nameing.
+
+Wed, 24 May 2017 16:02:29 +0100
+Author : Robert Osfield
+Added support for PolytopeIntersector::setDimensionsMask.
+
+Wed, 24 May 2017 16:01:49 +0100
+Author : Robert Osfield
+Aded --dim-mask mask and --dm mask command line option for setting the PolytopeIntersector::setDimensionsMask().
+
+Wed, 24 May 2017 22:29:19 +0700
+Author : Michael Kapelko
+Add x86_64 architecture to iOS simulator
+
+Fri, 19 May 2017 17:06:36 +0100
+Author : Robert Osfield
+Updated ChangeLog for 3.5.6 dev release
+
 Mon, 15 May 2017 14:53:27 +0100
 Author : Robert Osfield
 Refactored COLLADA_BUILDNAME and COLLADA_BOOST_BUILDNAME to resolve case where CMAKE_VS_PLATFORM_TOOLSET is not set.
+
+Fri, 12 May 2017 16:26:07 +0100
+Author : Robert Osfield
+From Don Burns, add use of Xinerama to ensure full screen goes across all screens.
 
 Thu, 11 May 2017 16:32:13 +0100
 Author : Robert Osfield

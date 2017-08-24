@@ -162,7 +162,7 @@ ENDIF()
 IF( ZLIB_FOUND )
     ADD_DEFINITIONS( -DUSE_ZLIB )
     INCLUDE_DIRECTORIES( ${ZLIB_INCLUDE_DIR} )
-    SET(COMPRESSION_LIBRARIES ZLIB_LIBRARY)
+    SET(COMPRESSION_LIBRARIES ZLIB_LIBRARIES)
 ENDIF()
 
 ################################################################################

@@ -74,7 +74,7 @@ IF(APPLE AND NOT ANDROID)
       SET(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for iOS Simulator" FORCE)
     ENDIF()
 
-    #here we set the specific iphone sdk version. We can only set either device or simulator sdk. So if you want both you currently have to have two seperate projects
+    #here we set the specific iphone sdk version. We can only set either device or simulator sdk. So if you want both you currently have to have two separate projects
     SET(CMAKE_OSX_SYSROOT "${IPHONE_SDKROOT}" CACHE STRING "System root for iOS" FORCE)
 
   ELSE()
@@ -115,7 +115,7 @@ PROJECT(OpenSceneGraph)
 
 SET(OPENSCENEGRAPH_MAJOR_VERSION 3)
 SET(OPENSCENEGRAPH_MINOR_VERSION 5)
-SET(OPENSCENEGRAPH_PATCH_VERSION 6)
+SET(OPENSCENEGRAPH_PATCH_VERSION 7)
 SET(OPENSCENEGRAPH_SOVERSION 149)
 
 # set to 0 when not a release candidate, non zero means that any generated
@@ -232,7 +232,7 @@ IF(NOT ANDROID)
 IF(APPLE)
     # Trying to get CMake to generate an XCode IPhone project, current efforts are to get iphoneos sdk 3.1 working
     # Added option which needs manually setting to select the IPhone SDK for building. We can only have one of the below
-    # set to true. Should realy have an OSG_BUILD_PLATFORM variable that we set to our desired platform
+    # set to true. Should really have an OSG_BUILD_PLATFORM variable that we set to our desired platform
     OPTION(OSG_BUILD_PLATFORM_IPHONE "Enable IPhoneSDK Device support" OFF)
     OPTION(OSG_BUILD_PLATFORM_IPHONE_SIMULATOR "Enable IPhoneSDK Simulator support" OFF)
 
@@ -851,6 +851,17 @@ SET(CMAKE_RELEASE_POSTFIX "" CACHE STRING "add a postfix, usually empty on windo
 SET(CMAKE_RELWITHDEBINFO_POSTFIX "rd" CACHE STRING "add a postfix, usually empty on windows")
 SET(CMAKE_MINSIZEREL_POSTFIX "s" CACHE STRING "add a postfix, usually empty on windows")
 
+# Correct any incorrect case usage in CMAKE_BUILD_TYPE
+IF     (CMAKE_BUILD_TYPE MATCHES "release" OR CMAKE_BUILD_TYPE MATCHES "RELEASE")
+    SET(CMAKE_BUILD_TYPE "Release")
+ELSEIF (CMAKE_BUILD_TYPE MATCHES "minsizerel" OR CMAKE_BUILD_TYPE MATCHES "MINSIZEREL")
+    SET(CMAKE_BUILD_TYPE "MinSizeRel")
+ELSEIF (CMAKE_BUILD_TYPE MATCHES "relwithdebinfo" OR CMAKE_BUILD_TYPE MATCHES "RELWITHDEBINFO")
+    SET(CMAKE_BUILD_TYPE "RelWithDebInfo")
+ELSEIF (CMAKE_BUILD_TYPE MATCHES "debug" OR CMAKE_BUILD_TYPE MATCHES "DEBUG")
+    SET(CMAKE_BUILD_TYPE "Debug")
+ENDIF()
+
 # Set the build postfix extension according to what configuration is being built.
 IF (CMAKE_BUILD_TYPE MATCHES "Release")
     SET(CMAKE_BUILD_POSTFIX "${CMAKE_RELEASE_POSTFIX}")
@@ -884,7 +895,7 @@ IF(NOT DEFINED LIB_POSTFIX)
     SET(LIB_POSTFIX "")
 ENDIF()
 
-# Here we apparantly do some funky stuff with making the bin/ and lib/
+# Here we apparently do some funky stuff with making the bin/ and lib/
 # folders which is probably needed to work around a very old CMake bug?
 
 #SET(OUTPUT_BINDIR ${PROJECT_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME})
@@ -1057,7 +1068,7 @@ IF(OSG_AGGRESSIVE_WARNING_FLAGS)
             ENDIF()
         ENDFOREACH()
     ELSE()
-        # Remove all flags considered aggresive
+        # Remove all flags considered aggressive
         FOREACH(flag ${OSG_AGGRESSIVE_WARNING_FLAGS})
             STRING(REGEX REPLACE "${flag}" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
         ENDFOREACH()
@@ -1112,7 +1123,7 @@ IF(APPLE AND NOT ANDROID)
 
         ENDIF()
 
-        #here we set the specific iphone sdk version. We can only set either device or simulator sdk. So if you want both you currently have to have two seperate projects
+        #here we set the specific iphone sdk version. We can only set either device or simulator sdk. So if you want both you currently have to have two separate projects
         SET(CMAKE_OSX_SYSROOT "${IPHONE_SDKROOT}" CACHE STRING "System root for iOS" FORCE)
 
         #hack, force link to opengles

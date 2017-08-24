@@ -47,6 +47,9 @@
     #else
         #include <dlfcn.h>
     #endif
+#elif defined(__EMSCRIPTEN__)
+    // Emscripten ships EGL, which we use to get OpenGL function addresses.
+    #include <EGL/egl.h>
 #else
     #include <dlfcn.h>
 #endif
@@ -406,6 +409,10 @@ OSG_INIT_SINGLETON_PROXY(GLExtensionDisableStringInitializationProxy, osg::getGL
     #elif defined (__QNX__)
 
         return dlsym(RTLD_DEFAULT, funcName);
+
+    #elif defined(__EMSCRIPTEN__)
+        // Use EGL to get OpenGL function address for Emscripten.
+        return convertPointerType<void*, __eglMustCastToProperFunctionPointerType>(eglGetProcAddress(funcName));
 
     #else // all other unixes
 
@@ -1164,6 +1171,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     osg::setGLExtensionFuncPtr(glScissorIndexedv, "glScissorIndexedv", validContext);
     osg::setGLExtensionFuncPtr(glDepthRangeArrayv, "glDepthRangeArrayv", validContext);
     osg::setGLExtensionFuncPtr(glDepthRangeIndexed, "glDepthRangeIndexed", validContext);
+    osg::setGLExtensionFuncPtr(glDepthRangeIndexedf, "glDepthRangeIndexedfOES", "glDepthRangeIndexedfNV", validContext);
     osg::setGLExtensionFuncPtr(glGetFloati_v, "glGetFloati_v", validContext);
     osg::setGLExtensionFuncPtr(glGetDoublei_v, "glGetDoublei_v", validContext);
     osg::setGLExtensionFuncPtr(glGetIntegerIndexedvEXT, "glGetIntegerIndexedvEXT", validContext);

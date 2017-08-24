@@ -3112,7 +3112,7 @@ public:
 
     // Set the text alignment.  See GetAlignmentType() for more information.
     void    SetAlignment(AlignmentType);
-    /* Return the alignement type.  This controls the alignement of the text
+    /* Return the alignment type.  This controls the alignment of the text
        with respect to the label geometry.
     */
     AlignmentType    GetAlignment(void) const;

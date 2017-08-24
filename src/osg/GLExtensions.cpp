@@ -719,7 +719,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glIsBuffer, "glIsBuffer","glIsBufferARB", validContext);
     setGLExtensionFuncPtr(glGetBufferSubData, "glGetBufferSubData","glGetBufferSubDataARB", validContext);
     setGLExtensionFuncPtr(glMapBuffer, "glMapBuffer","glMapBufferARB", validContext);
-    setGLExtensionFuncPtr(glMapBufferRange,  "glMapBufferRange" , validContext);
+    setGLExtensionFuncPtr(glMapBufferRange,  "glMapBufferRange", "glMapBufferRangeARB" , validContext);
     setGLExtensionFuncPtr(glUnmapBuffer, "glUnmapBuffer","glUnmapBufferARB", validContext);
     setGLExtensionFuncPtr(glGetBufferParameteriv, "glGetBufferParameteriv","glGetBufferParameterivARB", validContext);
     setGLExtensionFuncPtr(glGetBufferPointerv, "glGetBufferPointerv","glGetBufferPointervARB", validContext);
@@ -822,7 +822,23 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glProgramString, "glProgramStringARB", validContext);
     setGLExtensionFuncPtr(glProgramLocalParameter4fv, "glProgramLocalParameter4fvARB", validContext);
 
+    // Sample Extensions (OpenGL>=3.3)
+    setGLExtensionFuncPtr(glSamplerParameteri, "glSamplerParameteri", "glSamplerParameteriARB", validContext);
+    setGLExtensionFuncPtr(glSamplerParameterf, "glSamplerParameterf", "glSamplerParameterfARB", validContext);
+    setGLExtensionFuncPtr(glSamplerParameteriv, "glSamplerParameteriv", "glSamplerParameterivARB", validContext);
+    setGLExtensionFuncPtr(glSamplerParameterfv, "glSamplerParameterfv", "glSamplerParameterfvARB", validContext);
+    setGLExtensionFuncPtr(glSamplerParameterIiv, "glSamplerParameterIiv", "glSamplerParameterIivARB", validContext);
+    setGLExtensionFuncPtr(glSamplerParameterIuiv, "glSamplerParameterIuiv", "glSamplerParameterIuivARB", validContext);
 
+    setGLExtensionFuncPtr(glGetSamplerParameteriv, "glGetSamplerParameteriv", "glGetSamplerParameterivARB", validContext);
+    setGLExtensionFuncPtr(glGetSamplerParameterfv, "glGetSamplerParameterfv", "glGetSamplerParameterfvARB", validContext);
+    setGLExtensionFuncPtr(glGetSamplerParameterIiv, "glGetSamplerParameterIiv", "glGetSamplerParameterIivARB", validContext);
+    setGLExtensionFuncPtr(glGetSamplerParameterIuiv, "glGetSamplerParameterIuiv", "glGetSamplerParameterIuivARB", validContext);
+
+    setGLExtensionFuncPtr(glGenSamplers, "glGenSamplers", "glGenSamplersARB", validContext);
+    setGLExtensionFuncPtr(glDeleteSamplers, "glDeleteSamplers", "glDeleteSamplersARB", validContext);
+    setGLExtensionFuncPtr(glBindSampler, "glBindSampler", "glBindSamplerARB", validContext);
+    setGLExtensionFuncPtr(glIsSampler, "glIsSampler", "glIsSamplerARB", validContext);
 
     // Texture extensions
     const char* renderer = validContext ? (const char*) glGetString(GL_RENDERER) : 0;
@@ -1142,6 +1158,21 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     osg::setGLExtensionFuncPtr(glBindVertexArray, "glBindVertexArray", "glBindVertexArrayOES", validContext);
     osg::setGLExtensionFuncPtr(glDeleteVertexArrays, "glDeleteVertexArrays", "glDeleteVertexArraysOES", validContext);
     osg::setGLExtensionFuncPtr(glIsVertexArray, "glIsVertexArray", "glIsVertexArrayOES", validContext);
+
+    // OpenGL 4.3 / ARB_vertex_attrib_binding
+    isVertexAttribBindingSupported = validContext && (isGLExtensionOrVersionSupported(contextID, "GL_ARB_vertex_attrib_binding", 4.3f));
+
+    osg::setGLExtensionFuncPtr(glBindVertexBuffer, "glBindVertexBuffer", "glBindVertexBufferOES", validContext);
+    osg::setGLExtensionFuncPtr(glVertexArrayVertexBuffer, "glVertexArrayVertexBuffer", "glVertexArrayVertexBufferOES", validContext);
+    osg::setGLExtensionFuncPtr(glVertexAttribBinding, "glVertexAttribBinding", "glVertexAttribBindingOES", validContext);
+    osg::setGLExtensionFuncPtr(glVertexArrayAttribBinding, "glVertexArrayAttribBinding", "glVertexArrayAttribBindingOES", validContext);
+
+    osg::setGLExtensionFuncPtr(glVertexAttribFormat, "glVertexAttribBinding", "glVertexAttribBindingOES", validContext);
+    osg::setGLExtensionFuncPtr(glVertexAttribIFormat, "glVertexAttribBinding", "glVertexAttribBindingOES", validContext);
+    osg::setGLExtensionFuncPtr(glVertexAttribLFormat, "glVertexAttribLFormat", "glVertexAttribLFormatOES", validContext);
+    osg::setGLExtensionFuncPtr(glVertexArrayAttribFormat, "glVertexArrayAttribFormat", "glVertexArrayAttribFormatOES", validContext);
+    osg::setGLExtensionFuncPtr(glVertexArrayAttribIFormat, "glVertexArrayAttribIFormat", "glVertexArrayAttribIFormatOES", validContext);
+    osg::setGLExtensionFuncPtr(glVertexArrayAttribLFormat, "glVertexArrayAttribLFormat", "glVertexArrayAttribLFormatOES", validContext);
 
     // MultiDrawArrays
     setGLExtensionFuncPtr(glMultiDrawArrays, "glMultiDrawArrays", "glMultiDrawArraysEXT", validContext);

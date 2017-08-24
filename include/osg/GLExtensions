@@ -479,6 +479,23 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glProgramString) (GLenum target, GLenum format, GLsizei len, const void *string);
         void (GL_APIENTRY * glProgramLocalParameter4fv) (GLenum target, GLuint index, const GLfloat *params);
 
+        // Sample Extensions (OpenGL>=3.3)
+        void (GL_APIENTRY * glSamplerParameteri)(GLuint sampler, GLenum param, GLint value);
+        void (GL_APIENTRY * glSamplerParameterf)(GLuint sampler, GLenum param, GLfloat value);
+        void (GL_APIENTRY * glSamplerParameteriv)(GLuint sampler, GLenum param, GLint *value);
+        void (GL_APIENTRY * glSamplerParameterfv)(GLuint sampler, GLenum param, GLfloat *value);
+        void (GL_APIENTRY * glSamplerParameterIiv)(GLuint sampler, GLenum param, GLint *value);
+        void (GL_APIENTRY * glSamplerParameterIuiv)(GLuint sampler, GLenum param, GLuint *value);
+
+        void (GL_APIENTRY * glGetSamplerParameteriv)(GLuint sampler, GLenum param, GLint *value);
+        void (GL_APIENTRY * glGetSamplerParameterfv)(GLuint sampler, GLenum param, GLfloat *value);
+        void (GL_APIENTRY * glGetSamplerParameterIiv)(GLuint sampler, GLenum param, GLint *value);
+        void (GL_APIENTRY * glGetSamplerParameterIuiv)(GLuint sampler, GLenum param, GLuint *value);
+
+        void (GL_APIENTRY * glGenSamplers)(GLsizei size,GLuint * samplers);
+        void (GL_APIENTRY * glDeleteSamplers)(GLsizei size,const GLuint * samplers);
+        void (GL_APIENTRY * glBindSampler)(GLuint tu, GLuint sampler);
+        GLboolean (GL_APIENTRY * glIsSampler)(GLuint id);
 
         // Texture Extensions
         bool isMultiTexturingSupported;
@@ -693,6 +710,19 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glGenVertexArrays) (GLsizei size, GLuint *handles);
         GLboolean (GL_APIENTRY * glIsVertexArray) (GLuint handle);
         void (GL_APIENTRY * glBindVertexArray) (GLuint handle);
+        // OpenGL 4.3 / ARB_vertex_attrib_binding
+        bool isVertexAttribBindingSupported;
+        void (GL_APIENTRY * glBindVertexBuffer)(GLuint bindingindex, GLuint buffer, GLintptr offset, GLintptr stride);
+        void (GL_APIENTRY * glVertexArrayVertexBuffer)(GLuint vaobj, GLuint bindingindex, GLuint buffer, GLintptr offset, GLsizei stride);
+        void (GL_APIENTRY * glVertexAttribBinding)(GLuint attribindex, GLuint bindingindex);
+        void (GL_APIENTRY * glVertexArrayAttribBinding)(GLuint vaobj, GLuint attribindex, GLuint bindingindex);
+
+        void (GL_APIENTRY * glVertexAttribFormat)( GLuint attribindex, GLint size, GLenum type, GLboolean normalized, GLuint relativeoffset);
+        void (GL_APIENTRY * glVertexAttribIFormat)( GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset);
+        void (GL_APIENTRY * glVertexAttribLFormat)( GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset);
+        void (GL_APIENTRY * glVertexArrayAttribFormat)( GLuint vaobj, GLuint attribindex, GLint size, GLenum type, GLboolean normalized, GLuint relativeoffset);
+        void (GL_APIENTRY * glVertexArrayAttribIFormat)( GLuint vaobj, GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset);
+        void (GL_APIENTRY * glVertexArrayAttribLFormat)( GLuint vaobj, GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset);
 
         // MultiDrawArrays
         void (GL_APIENTRY * glMultiDrawArrays) (GLenum mode, const GLint * first, const GLsizei * count, GLsizei primcount);

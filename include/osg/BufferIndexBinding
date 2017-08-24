@@ -213,30 +213,6 @@ class OSG_EXPORT ShaderStorageBufferBinding : public BufferIndexBinding
     }
 };
 
-
-class OSG_EXPORT DrawIndirectBufferBinding : public BufferIndexBinding
-{
- public:
-    DrawIndirectBufferBinding();
-    /** Create a binding for a draw indirect buffer target.
-     *  @param bd associated buffer data
-     */
-    DrawIndirectBufferBinding( BufferData* bd);
-    DrawIndirectBufferBinding(const DrawIndirectBufferBinding& rhs, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
-    META_StateAttribute(osg, DrawIndirectBufferBinding, INDIRECTDRAWBUFFERBINDING);
-
-    virtual void apply(State& state) const;
-
-    virtual int compare(const StateAttribute& bb) const
-    {
-        COMPARE_StateAttribute_Types(DrawIndirectBufferBinding, bb)
-        COMPARE_StateAttribute_Parameter(_target)
-        COMPARE_StateAttribute_Parameter(_bufferData)
-        return 0;
-    }
-};
-
-
 } // namespace osg
 
 #endif

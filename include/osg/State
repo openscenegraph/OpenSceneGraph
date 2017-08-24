@@ -591,6 +591,27 @@ class OSG_EXPORT State : public Referenced
         }
 
 
+        inline void bindDrawIndirectBufferObject(osg::GLBufferObject* ibo)
+        {
+            if (ibo->isDirty())
+            {
+                ibo->compileBuffer();
+                _currentDIBO = ibo;
+            }
+            else if (ibo != _currentDIBO)
+            {
+                ibo->bindBuffer();
+                _currentDIBO = ibo;
+            }
+        }
+
+        inline void unbindDrawIndirectBufferObject()
+        {
+            if (!_currentDIBO) return;
+            _glBindBuffer(GL_DRAW_INDIRECT_BUFFER,0);
+            _currentDIBO = 0;
+        }
+
         void setCurrentVertexArrayObject(GLuint vao) { _currentVAO = vao; }
         GLuint getCurrentVertexArrayObject() const { return _currentVAO; }
 
@@ -1259,6 +1280,7 @@ class OSG_EXPORT State : public Referenced
         unsigned int                    _currentActiveTextureUnit;
         unsigned int                    _currentClientActiveTextureUnit;
         GLBufferObject*                 _currentPBO;
+        GLBufferObject*                 _currentDIBO;
         GLuint                          _currentVAO;
 
 

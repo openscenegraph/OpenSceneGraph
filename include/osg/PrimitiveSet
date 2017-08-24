@@ -133,7 +133,15 @@ class OSG_EXPORT PrimitiveSet : public BufferData
             DrawElementsUBytePrimitiveType,
             DrawElementsUShortPrimitiveType,
             DrawElementsUIntPrimitiveType,
-            MultiDrawArraysPrimitiveType
+            MultiDrawArraysPrimitiveType,
+            DrawArraysIndirectPrimitiveType,
+            DrawElementsUByteIndirectPrimitiveType,
+            DrawElementsUShortIndirectPrimitiveType,
+            DrawElementsUIntIndirectPrimitiveType,
+            MultiDrawArraysIndirectPrimitiveType,
+            MultiDrawElementsUByteIndirectPrimitiveType,
+            MultiDrawElementsUShortIndirectPrimitiveType,
+            MultiDrawElementsUIntIndirectPrimitiveType
         };
 
         enum Mode

@@ -89,6 +89,7 @@ State::State():
     _currentClientActiveTextureUnit=0;
 
     _currentPBO = 0;
+    _currentDIBO = 0;
     _currentVAO = 0;
 
     _isSecondaryColorSupported = false;

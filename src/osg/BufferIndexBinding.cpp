@@ -174,34 +174,4 @@ ShaderStorageBufferBinding::ShaderStorageBufferBinding(const ShaderStorageBuffer
 }
 
 
-DrawIndirectBufferBinding::DrawIndirectBufferBinding( )
-  : BufferIndexBinding(GL_DRAW_INDIRECT_BUFFER, 0)
-{
-}
-void DrawIndirectBufferBinding::apply(State& state) const
-{
-    if (_bufferData.valid())
-    {
-        BufferObject * bo = _bufferData->getBufferObject();
-        GLBufferObject* glObject
-            = bo->getOrCreateGLBufferObject(state.getContextID());
-        if (!glObject->_extensions->isUniformBufferObjectSupported)
-            return;
-        if (glObject->isDirty()) glObject->compileBuffer();
-        glObject->_extensions->glBindBuffer (_target, glObject->getGLObjectID());
-    }
-}
-DrawIndirectBufferBinding::DrawIndirectBufferBinding(  BufferData* bo)
-    : BufferIndexBinding(GL_DRAW_INDIRECT_BUFFER, 0, bo, 0, 0)
-{
-
-}
-
-DrawIndirectBufferBinding::DrawIndirectBufferBinding(const DrawIndirectBufferBinding& rhs,
-                                           const CopyOp& copyop)
-    : BufferIndexBinding(rhs, copyop)
-{
-}
-
-
 } // namespace osg

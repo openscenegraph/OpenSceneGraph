@@ -435,6 +435,8 @@ typedef char GLchar;
 #define GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW  0x900D
 #define GL_INT_SAMPLER_CUBE_MAP_ARRAY     0x900E
 #define GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY 0x900F
+#define GL_DRAW_INDIRECT_BUFFER           0x8F3F
+#define GL_DRAW_INDIRECT_BUFFER_BINDING   0x8F43
 #endif
 
 // ARB_shader_atomic_counters
@@ -556,14 +558,14 @@ typedef char GLchar;
 #define GL_MAP_UNSYNCHRONIZED_BIT 0x0020
 #endif
 
-#define GL_INT64_ARB               0x140E 
-#define GL_UNSIGNED_INT64_ARB      0x140F 
-#define GL_INT64_VEC2_ARB          0x8FE9 
-#define GL_INT64_VEC3_ARB          0x8FEA 
-#define GL_INT64_VEC4_ARB          0x8FEB 
-#define GL_UNSIGNED_INT64_VEC2_ARB 0x8FF5 
-#define GL_UNSIGNED_INT64_VEC3_ARB 0x8FF6 
-#define GL_UNSIGNED_INT64_VEC4_ARB 0x8FF7 
+#define GL_INT64_ARB               0x140E
+#define GL_UNSIGNED_INT64_ARB      0x140F
+#define GL_INT64_VEC2_ARB          0x8FE9
+#define GL_INT64_VEC3_ARB          0x8FEA
+#define GL_INT64_VEC4_ARB          0x8FEB
+#define GL_UNSIGNED_INT64_VEC2_ARB 0x8FF5
+#define GL_UNSIGNED_INT64_VEC3_ARB 0x8FF6
+#define GL_UNSIGNED_INT64_VEC4_ARB 0x8FF7
 /* ------------------------------ GL_KHR_debug ----------------------------- */
 #ifndef GL_KHR_debug
 #define GL_KHR_debug 1

@@ -36,13 +36,10 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 #include <osg/BufferTemplate>
+#include <osg/PrimitiveSetIndirect>
+
 #include "ShapeToGeometry.h"
 #include "AggregateGeometryVisitor.h"
-#if 0
-#include "DrawIndirectPrimitiveSet.h"
-#else
-#include <osg/PrimitiveSetIndirect>
-#endif
 #include "GpuCullShaders.h"
 
 

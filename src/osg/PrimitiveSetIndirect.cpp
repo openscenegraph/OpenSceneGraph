@@ -18,7 +18,6 @@
 #include <osg/BufferObject>
 #include <osg/State>
 #include <osg/Notify>
-#include <assert.h>
 
 ///  TODO: add base vertex feature to PrimitiveFunctor and PrimitiveIndexFunctor
 //#define PRIMFUNCTORBASEVERTEX 1
@@ -62,8 +61,9 @@ unsigned int DrawElementsIndirectUInt::getNumPrimitives() const { return getNumP
 unsigned int DrawElementsIndirectUByte::getNumPrimitives() const { return getNumPrimitivesDI<DrawElementsIndirectUByte>(*this); }
 unsigned int DrawElementsIndirectUShort::getNumPrimitives() const { return getNumPrimitivesDI<DrawElementsIndirectUShort>(*this); }
 
-void DrawElementsIndirectUInt::draw(State& state, bool useVertexBufferObjects) const
-{   GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
+void DrawElementsIndirectUInt::draw(State& state, bool /*useVertexBufferObjects*/) const
+{
+    GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
     state.bindDrawIndirectBufferObject(dibo);
 
     GLenum mode = _mode;
@@ -73,8 +73,6 @@ void DrawElementsIndirectUInt::draw(State& state, bool useVertexBufferObjects) c
 #endif
 
     GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
-
-    assert (useVertexBufferObjects && ebo);
 
     state.bindElementBufferObject(ebo);
 
@@ -88,6 +86,7 @@ DrawElementsIndirectUInt::~DrawElementsIndirectUInt()
 {
     releaseGLObjects();
 }
+
 void DrawElementsIndirectUInt::offsetIndices(int offset)
 {
     for(iterator itr=begin();
@@ -97,31 +96,33 @@ void DrawElementsIndirectUInt::offsetIndices(int offset)
         *itr += offset;
     }
 }
+
+#ifndef PRIMFUNCTORBASEVERTEX
+void DrawElementsIndirectUInt::accept(PrimitiveFunctor&) const {}
+void DrawElementsIndirectUInt::accept(PrimitiveIndexFunctor&) const {}
+#else
 void DrawElementsIndirectUInt::accept(PrimitiveFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
    //  TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
    if (!empty())
         functor.drawElements(_mode,_indirectCommandArray->count(_firstCommand),
                              &(*this)[_indirectCommandArray->firstIndex(_firstCommand)],
                              _indirectCommandArray->baseVertex(_firstCommand));
-#endif
 }
 
 void DrawElementsIndirectUInt::accept(PrimitiveIndexFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
    //  TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
    if (!empty())
         functor.drawElements(_mode,_indirectCommandArray->count(_firstCommand),
                              &(*this)[_indirectCommandArray->firstIndex(_firstCommand)],
                              _indirectCommandArray->baseVertex(_firstCommand));
+}
 #endif
 
-}
-
-void DrawElementsIndirectUByte::draw(State& state, bool useVertexBufferObjects) const
-{   GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
+void DrawElementsIndirectUByte::draw(State& state, bool /*useVertexBufferObjects*/) const
+{
+    GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
     state.bindDrawIndirectBufferObject(dibo);
 
     GLenum mode = _mode;
@@ -131,8 +132,6 @@ void DrawElementsIndirectUByte::draw(State& state, bool useVertexBufferObjects) 
 #endif
 
     GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
-
-    assert (useVertexBufferObjects && ebo);
 
     state.bindElementBufferObject(ebo);
 
@@ -154,29 +153,31 @@ void DrawElementsIndirectUByte::offsetIndices(int offset)
         *itr += offset;
     }
 }
+
+#ifndef PRIMFUNCTORBASEVERTEX
+void DrawElementsIndirectUByte::accept(PrimitiveFunctor&) const {}
+void DrawElementsIndirectUByte::accept(PrimitiveIndexFunctor&) const {}
+#else
 void DrawElementsIndirectUByte::accept(PrimitiveFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
    //  TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
    if (!empty())
         functor.drawElements(_mode,_indirectCommandArray->count(_firstCommand),
                              &(*this)[_indirectCommandArray->firstIndex(_firstCommand)],
                              _indirectCommandArray->baseVertex(_firstCommand));
-#endif
 }
 
 void DrawElementsIndirectUByte::accept(PrimitiveIndexFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
    //  TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
    if (!empty())
         functor.drawElements(_mode,_indirectCommandArray->count(_firstCommand),
                       &(*this)[_indirectCommandArray->firstIndex(_firstCommand)],
                       _indirectCommandArray->baseVertex(_firstCommand));
-#endif
 }
+#endif
 
-void DrawElementsIndirectUShort::draw(State& state, bool useVertexBufferObjects) const
+void DrawElementsIndirectUShort::draw(State& state, bool /*useVertexBufferObjects*/) const
 {
     GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
     state.bindDrawIndirectBufferObject(dibo);
@@ -188,8 +189,6 @@ void DrawElementsIndirectUShort::draw(State& state, bool useVertexBufferObjects)
 #endif
 
     GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
-
-    assert (useVertexBufferObjects && ebo);
 
     state.bindElementBufferObject(ebo);
 
@@ -211,28 +210,29 @@ void DrawElementsIndirectUShort::offsetIndices(int offset)
         *itr += offset;
     }
 }
+
+#ifndef PRIMFUNCTORBASEVERTEX
+void DrawElementsIndirectUShort::accept(PrimitiveFunctor&) const {}
+void DrawElementsIndirectUShort::accept(PrimitiveIndexFunctor&) const {}
+#else
 void DrawElementsIndirectUShort::accept(PrimitiveFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
    //  TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
    if (!empty())
         functor.drawElements(_mode,_indirectCommandArray->count(_firstCommand),
                              &(*this)[_indirectCommandArray->firstIndex(_firstCommand)],
                              _indirectCommandArray->baseVertex(_firstCommand));
-#endif
 }
 
 void DrawElementsIndirectUShort::accept(PrimitiveIndexFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
    //  TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
    if (!empty())
         functor.drawElements(_mode,_indirectCommandArray->count(_firstCommand),
                              &(*this)[_indirectCommandArray->firstIndex(_firstCommand)],
                              _indirectCommandArray->baseVertex(_firstCommand));
-#endif
-
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -289,7 +289,7 @@ MultiDrawElementsIndirectUByte::~MultiDrawElementsIndirectUByte()
     releaseGLObjects();
 }
 
-void MultiDrawElementsIndirectUByte::draw(State& state, bool useVertexBufferObjects) const
+void MultiDrawElementsIndirectUByte::draw(State& state, bool /*useVertexBufferObjects*/) const
 {
     GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
 
@@ -302,17 +302,18 @@ void MultiDrawElementsIndirectUByte::draw(State& state, bool useVertexBufferObje
 
     GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
 
-    assert (useVertexBufferObjects && ebo);
-
     state.bindElementBufferObject(ebo);
 
     state.get<GLExtensions>()-> glMultiDrawElementsIndirect(mode, GL_UNSIGNED_BYTE,
                                                             (const GLvoid *)(dibo->getOffset(_indirectCommandArray->getBufferIndex())),_indirectCommandArray->getNumElements(), _stride);
 }
 
+#ifndef PRIMFUNCTORBASEVERTEX
+void MultiDrawElementsIndirectUByte::accept(PrimitiveFunctor&) const {}
+void MultiDrawElementsIndirectUByte::accept(PrimitiveIndexFunctor&) const {}
+#else
 void MultiDrawElementsIndirectUByte::accept(PrimitiveFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
   //TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
        unsigned int maxindex= (_count>0) ? _firstCommand + _count : _indirectCommandArray->getNumElements() - _firstCommand;
        if (!empty() )
@@ -320,12 +321,10 @@ void MultiDrawElementsIndirectUByte::accept(PrimitiveFunctor& functor) const
                     functor.drawElements(_mode,_indirectCommandArray->count(i),
                                          &(*this)[_indirectCommandArray->firstIndex(i)],
                                          _indirectCommandArray->baseVertex(i));
-#endif
 }
 
 void MultiDrawElementsIndirectUByte::accept(PrimitiveIndexFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
   //TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
        unsigned int maxindex= (_count>0) ? _firstCommand + _count : _indirectCommandArray->getNumElements() - _firstCommand;
        if (!empty() )
@@ -333,8 +332,8 @@ void MultiDrawElementsIndirectUByte::accept(PrimitiveIndexFunctor& functor) cons
                     functor.drawElements(_mode,_indirectCommandArray->count(i),
                                          &(*this)[_indirectCommandArray->firstIndex(i)],
                                          _indirectCommandArray->baseVertex(i));
-#endif
 }
+#endif
 
 
 
@@ -348,7 +347,7 @@ MultiDrawElementsIndirectUShort::~MultiDrawElementsIndirectUShort()
     releaseGLObjects();
 }
 
-void MultiDrawElementsIndirectUShort::draw(State& state, bool useVertexBufferObjects) const
+void MultiDrawElementsIndirectUShort::draw(State& state, bool /*useVertexBufferObjects*/) const
 {   GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
     state.bindDrawIndirectBufferObject(dibo);
 
@@ -360,17 +359,18 @@ void MultiDrawElementsIndirectUShort::draw(State& state, bool useVertexBufferObj
 
     GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
 
-    assert (useVertexBufferObjects && ebo);
-
     state.bindElementBufferObject(ebo);
 
     state.get<GLExtensions>()-> glMultiDrawElementsIndirect(mode, GL_UNSIGNED_SHORT, (const GLvoid *)(dibo->getOffset(_indirectCommandArray->getBufferIndex())),
                                                             (_count>0) ?_count:_indirectCommandArray->getNumElements(),_stride);
 }
 
+#ifndef PRIMFUNCTORBASEVERTEX
+void MultiDrawElementsIndirectUShort::accept(PrimitiveFunctor&) const {}
+void MultiDrawElementsIndirectUShort::accept(PrimitiveIndexFunctor&) const {}
+#else
 void MultiDrawElementsIndirectUShort::accept(PrimitiveFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
   //TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
        unsigned int maxindex= (_count>0) ? _firstCommand + _count : _indirectCommandArray->getNumElements() - _firstCommand;
        if (!empty() )
@@ -378,12 +378,10 @@ void MultiDrawElementsIndirectUShort::accept(PrimitiveFunctor& functor) const
                     functor.drawElements(_mode,_indirectCommandArray->count(i),
                                          &(*this)[_indirectCommandArray->firstIndex(i)],
                                          _indirectCommandArray->baseVertex(i));
-#endif
 }
 
 void MultiDrawElementsIndirectUShort::accept(PrimitiveIndexFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
   //TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
        unsigned int maxindex = (_count>0) ?_firstCommand + _count : _indirectCommandArray->getNumElements() - _firstCommand;
        if (!empty() )
@@ -391,8 +389,8 @@ void MultiDrawElementsIndirectUShort::accept(PrimitiveIndexFunctor& functor) con
                     functor.drawElements(_mode,_indirectCommandArray->count(i),
                                          &(*this)[_indirectCommandArray->firstIndex(i)],
                                          _indirectCommandArray->baseVertex(i));
-#endif
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -403,7 +401,7 @@ MultiDrawElementsIndirectUInt::~MultiDrawElementsIndirectUInt()
     releaseGLObjects();
 }
 
-void MultiDrawElementsIndirectUInt::draw(State& state, bool useVertexBufferObjects) const
+void MultiDrawElementsIndirectUInt::draw(State& state, bool /*useVertexBufferObjects*/) const
 {
     GLBufferObject* dibo = _indirectCommandArray->getBufferObject()->getOrCreateGLBufferObject( state.getContextID() );
     state.bindDrawIndirectBufferObject(dibo);
@@ -415,17 +413,18 @@ void MultiDrawElementsIndirectUInt::draw(State& state, bool useVertexBufferObjec
 
     GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
 
-    assert (useVertexBufferObjects && ebo);
-
     state.bindElementBufferObject(ebo);
 
     state.get<GLExtensions>()-> glMultiDrawElementsIndirect(mode, GL_UNSIGNED_INT, (const GLvoid *)(dibo->getOffset(_indirectCommandArray->getBufferIndex())),
                                                             (_count>0) ? _count:_indirectCommandArray->getNumElements(), _stride);
 }
 
+#ifndef PRIMFUNCTORBASEVERTEX
+void MultiDrawElementsIndirectUInt::accept(PrimitiveFunctor&) const {}
+void MultiDrawElementsIndirectUInt::accept(PrimitiveIndexFunctor&) const {}
+#else
 void MultiDrawElementsIndirectUInt::accept(PrimitiveFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
   //TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
        unsigned int maxindex= (_count>0) ? _firstCommand + _count : _indirectCommandArray->getNumElements() - _firstCommand;
        if (!empty() )
@@ -433,12 +432,10 @@ void MultiDrawElementsIndirectUInt::accept(PrimitiveFunctor& functor) const
                     functor.drawElements(_mode,_indirectCommandArray->count(i),
                                          &(*this)[_indirectCommandArray->firstIndex(i)],
                                          _indirectCommandArray->baseVertex(i));
-#endif
 }
 
 void MultiDrawElementsIndirectUInt::accept(PrimitiveIndexFunctor& functor) const
 {
-#ifdef PRIMFUNCTORBASEVERTEX
   //TODO: add base vertex parameter in PrimitiveFunctor and PrimitiveIndexFunctor drawelements method
        unsigned int maxindex = (_count>0) ?_firstCommand + _count : _indirectCommandArray->getNumElements() - _firstCommand;
        if (!empty() )
@@ -446,8 +443,8 @@ void MultiDrawElementsIndirectUInt::accept(PrimitiveIndexFunctor& functor) const
                     functor.drawElements(_mode,_indirectCommandArray->count(i),
                         &(*this)[_indirectCommandArray->firstIndex(i)],
                         _indirectCommandArray->baseVertex(i));
-#endif
 }
+#endif
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

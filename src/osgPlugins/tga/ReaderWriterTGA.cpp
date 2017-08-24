@@ -273,8 +273,8 @@ int *numComponents_ret)
     int flags;
     int format;
     unsigned char *colormap;
-    int colormapLen;
-    int indexsize;
+    int colormapLen = 0;
+    int indexsize = 0;
     int rleIsCompressed;
     int rleRemaining;
     int rleEntrySize;
@@ -360,6 +360,10 @@ int *numComponents_ret)
     {
         case 1:                  /* colormap, uncompressed */
         {
+            if (colormapLen == 0 || indexsize == 0) {
+                tgaerror = ERR_UNSUPPORTED; /* colormap missing or empty */
+                return NULL;
+            }
             unsigned char * formattedMap = new unsigned char[colormapLen * format];
             for (int i = 0; i < colormapLen; i++)
             {
@@ -395,7 +399,7 @@ int *numComponents_ret)
                         break;
                     default:
                         tgaerror = ERR_UNSUPPORTED;
-                        break;
+                        return NULL; /* unreachable code - (depth < 1 || depth > 4) rejected by "check for reasonable values in case this is not a tga file" near the start of this function*/
                     }
 
                     int adjustedX = bLeftToRight ? x : (width - 1) - x;

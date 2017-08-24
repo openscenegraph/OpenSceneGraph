@@ -1,3 +1,19 @@
+Wed, 23 Aug 2017 15:26:07 +0100
+Checked in by : Robert Osfield
+Fixed underflow issue
+
+Tue, 22 Aug 2017 14:17:45 +0100
+Checked in by : Robert Osfield
+Bimped SO version due to changes in Windows exports in osgDB::ifstream + ofstream.
+
+Tue, 22 Aug 2017 12:19:40 +0100
+Checked in by : Robert Osfield
+Updated RC number to 2 for 3.4.1-rc2
+
+Tue, 22 Aug 2017 12:18:29 +0100
+Checked in by : Robert Osfield
+Updated ChangeLog
+
 Tue, 22 Aug 2017 11:58:49 +0100
 Checked in by : Robert Osfield
 Added name typo fix

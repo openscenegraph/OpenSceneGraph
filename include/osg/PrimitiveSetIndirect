@@ -82,7 +82,7 @@ struct DrawArraysIndirectCommand
 
 /// default implementation of IndirectCommandDrawArrays
 /// DefaultIndirectCommandDrawArrays to be hosted on GPU
-class OSG_EXPORT DefaultIndirectCommandDrawArrays: public IndirectCommandDrawArrays, public  MixinVector<DrawArraysIndirectCommand>
+class DefaultIndirectCommandDrawArrays: public IndirectCommandDrawArrays, public  MixinVector<DrawArraysIndirectCommand>
 {
 public:
     META_Object(osg,DefaultIndirectCommandDrawArrays)
@@ -120,7 +120,7 @@ struct DrawElementsIndirectCommand
 };
 
 /// vector of DrawElementsCommand to be hosted on GPU
-class OSG_EXPORT DefaultIndirectCommandDrawElements: public IndirectCommandDrawElements, public MixinVector<DrawElementsIndirectCommand>
+class DefaultIndirectCommandDrawElements: public IndirectCommandDrawElements, public MixinVector<DrawElementsIndirectCommand>
 {
 public:
     META_Object(osg,DefaultIndirectCommandDrawElements)

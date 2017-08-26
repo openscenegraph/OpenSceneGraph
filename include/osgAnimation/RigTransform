@@ -37,6 +37,23 @@ namespace osgAnimation
         virtual ~RigTransform() {}
 
     };
+    class MorphGeometry;
+
+    class MorphTransform : public osg::Object
+    {
+    public:
+        MorphTransform() {}
+        MorphTransform(const MorphTransform& org, const osg::CopyOp& copyop):
+            osg::Object(org, copyop) {}
+
+        META_Object(osgAnimation,MorphTransform)
+
+        virtual void operator()(MorphGeometry&) {}
+
+    protected:
+        virtual ~MorphTransform() {}
+
+    };
 
 }
 

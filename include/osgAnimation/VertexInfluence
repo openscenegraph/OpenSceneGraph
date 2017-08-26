@@ -25,7 +25,7 @@ namespace osgAnimation
 {
 
     // first is vertex index, and second the weight, the
-    typedef std::pair<int, float> VertexIndexWeight;
+    typedef std::pair<unsigned int, float> VertexIndexWeight;
     typedef std::vector<VertexIndexWeight> VertexList;
     class OSGANIMATION_EXPORT VertexInfluence : public VertexList
     {
@@ -62,43 +62,48 @@ namespace osgAnimation
         {
         public:
             BoneWeight(const std::string& name, float weight) : _boneName(name), _weight(weight) {}
+            BoneWeight(const BoneWeight &bw2) : _boneName(bw2._boneName), _weight(bw2._weight) {}
             const std::string& getBoneName() const { return _boneName; }
             float getWeight() const { return _weight; }
             void setWeight(float weight) { _weight = weight; }
             bool operator==(const BoneWeight& b) const { return (_boneName == b.getBoneName() && _weight == b.getWeight()); }
+
         protected:
             std::string _boneName;
             float _weight;
         };
 
         typedef std::vector<BoneWeight> BoneWeightList;
-        typedef std::map<int,BoneWeightList> VertexIndexToBoneWeightMap;
+        typedef std::vector<BoneWeightList> VertIDToBoneWeightList;
 
-        class UniqVertexSetToBoneSet
+        class VertexGroup
         {
         public:
+            // set Influences of the VertexGroup
             void setBones(BoneWeightList& bones) { _bones = bones;}
             const BoneWeightList& getBones() const { return _bones;}
-            std::vector<int>& getVertexes() { return _vertexes;}
-            const std::vector<int>& getVertexes() const { return _vertexes;}
+            // set Vertex Indices of the VertexGroup
+            std::vector<unsigned  int>& getVertexes() { return _vertexes;}
+            const std::vector<unsigned  int>& getVertexes() const { return _vertexes;}
         protected:
-            std::vector<int> _vertexes;
+            std::vector<unsigned int> _vertexes;
             BoneWeightList _bones; // here we could limit matrix operation by caching (weight * matrix)
         };
 
-        typedef std::vector<UniqVertexSetToBoneSet> UniqVertexSetToBoneSetList;
-
-        const UniqVertexSetToBoneSetList& getUniqVertexSetToBoneSetList() const { return _uniqVertexSetToBoneSet;}
+        typedef std::vector<VertexGroup> UniqVertexGroupList;
+        /** construct a vector of unique VertexGroups and their influences**/
+        void buildUniqVertexGroupList();
+        /** return a list of unique VertexGroups and their influences**/
+        const UniqVertexGroupList& getUniqVertexGroupList() const { return _uniqVertexSetToBoneSet;}
         void addVertexInfluence(const VertexInfluence& v);
-        void buildVertex2BoneList();
-        void buildUniqVertexSetToBoneSetList();
+        void buildVertex2BoneList(unsigned int numvertices);
         void clear();
 
-        const VertexIndexToBoneWeightMap& getVertexToBoneList() const;
+        const VertIDToBoneWeightList& getVertexToBoneList() const;
     protected:
         BoneToVertexList _bone2Vertexes;
-        VertexIndexToBoneWeightMap _vertex2Bones;
-        UniqVertexSetToBoneSetList _uniqVertexSetToBoneSet;
+        VertIDToBoneWeightList _vertex2Bones;
+        UniqVertexGroupList _uniqVertexSetToBoneSet;
     };
 
 }

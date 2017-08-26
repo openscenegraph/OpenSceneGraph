@@ -2,7 +2,7 @@
 #include <osgDB/ObjectWrapper>
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
-
+namespace wrap_osgAnimationRigGeometry{
 static bool checkInfluenceMap( const osgAnimation::RigGeometry& geom )
 {
     return geom.getInfluenceMap()->size()>0;
@@ -77,4 +77,5 @@ REGISTER_OBJECT_WRAPPER( osgAnimation_RigGeometry,
         UPDATE_TO_VERSION_SCOPED( 145 )
         ADD_OBJECT_SERIALIZER( RigTransformImplementation, osgAnimation::RigTransform, NULL );  // _geometry
     }
+}
 }

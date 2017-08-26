@@ -34,45 +34,6 @@ RigTransformSoftware::RigTransformSoftware(const RigTransformSoftware& rts,const
 
 }
 
-// sort by name and weight
-struct SortByNameAndWeight : public std::less<VertexInfluenceSet::BoneWeight>
-{
-    bool operator()(const VertexInfluenceSet::BoneWeight& b0,
-                    const VertexInfluenceSet::BoneWeight& b1) const
-    {
-        if (b0.getBoneName() < b1.getBoneName())
-            return true;
-        else if (b0.getBoneName() > b1.getBoneName())
-            return false;
-        if (b0.getWeight() < b1.getWeight())
-            return true;
-        return false;
-    }
-};
-
-struct SortByBoneWeightList : public std::less<VertexInfluenceSet::BoneWeightList>
-{
-    bool operator()(const VertexInfluenceSet::BoneWeightList& b0,
-                    const VertexInfluenceSet::BoneWeightList& b1) const
-    {
-        if (b0.size() < b1.size())
-            return true;
-        else if (b0.size() > b1.size())
-            return false;
-
-        int size = b0.size();
-        for (int i = 0; i < size; i++)
-        {
-            bool result = SortByNameAndWeight()(b0[i], b1[i]);
-            if (result)
-                return true;
-            else if (SortByNameAndWeight()(b1[i], b0[i]))
-                return false;
-        }
-        return false;
-    }
-};
-
 bool RigTransformSoftware::init(RigGeometry& geom)
 {
     if (!geom.getSkeleton())
@@ -186,13 +147,13 @@ void RigTransformSoftware::initVertexSetFromBones(const BoneMap& map, const Vert
         }
         // if a bone referenced by a vertexinfluence is missed it can make the sum less than 1.0
         // so we check it and renormalize the all weight bone
-        /*const double threshold = 1e-4;
-        if (!_boneSetVertexSet[i].getBones().empty() &&
+        const double threshold = 1e-4;
+        if (!vg.getBones().empty() &&
             (sumOfWeight < 1.0 - threshold ||  sumOfWeight > 1.0 + threshold))
         {
             for (int b = 0; b < (int)boneList.size(); b++)
                 boneList[b].setWeight(boneList[b].getWeight() / sumOfWeight);
-        }*/
+        }
         _uniqInfluenceSet2VertIDList[i].getVertexes() = vg.getVertexes();
     }
 }

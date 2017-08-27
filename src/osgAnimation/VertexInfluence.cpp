@@ -20,7 +20,7 @@
 
 using namespace osgAnimation;
 
-void VertexInfluenceSet::addVertexInfluence(const VertexInfluence& v) { _bone2Vertexes.push_back(v); }
+void VertexInfluenceSet::addVertexInfluence(const BoneInfluenceList& v) { _bone2Vertexes.push_back(v); }
 const VertexInfluenceSet::VertIDToBoneWeightList& VertexInfluenceSet::getVertexToBoneList() const { return _vertex2Bones;}
 // this class manage VertexInfluence database by mesh
 // reference bones per vertex ...
@@ -33,11 +33,11 @@ void VertexInfluenceSet::buildVertex2BoneList(unsigned int numvertices)
 
     for (BoneToVertexList::const_iterator it = _bone2Vertexes.begin(); it != _bone2Vertexes.end(); ++it)
     {
-        const VertexInfluence& vi = (*it);
+        const BoneInfluenceList& vi = (*it);
         int size = vi.size();
         for (int i = 0; i < size; i++)
         {
-            VertexIndexWeight viw = vi[i];
+            IndexWeight viw = vi[i];
             int index = viw.first;
             float weight = viw.second;
             if (vi.getName().empty()){

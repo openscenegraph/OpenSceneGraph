@@ -25,9 +25,9 @@ namespace osgAnimation
 {
 
     // first is vertex index, and second the weight, the
-    typedef std::pair<unsigned int, float> VertexIndexWeight;
-    typedef std::vector<VertexIndexWeight> VertexList;
-    class OSGANIMATION_EXPORT VertexInfluence : public VertexList
+    typedef std::pair<unsigned int, float> IndexWeight;
+    typedef std::vector<IndexWeight> VertexList;
+    class OSGANIMATION_EXPORT BoneInfluenceList : public VertexList
     {
     public:
         const std::string& getName() const { return _name;}
@@ -38,14 +38,14 @@ namespace osgAnimation
         std::string _name;
     };
 
-    class VertexInfluenceMap : public std::map<std::string, VertexInfluence> , public osg::Object
+    class VertexInfluenceMap : public std::map<std::string, BoneInfluenceList> , public osg::Object
     {
     public:
         META_Object(osgAnimation, VertexInfluenceMap);
 
         VertexInfluenceMap() {}
         VertexInfluenceMap(const osgAnimation::VertexInfluenceMap& org, const osg::CopyOp& copyop):
-            std::map<std::string, VertexInfluence>(org),
+            std::map<std::string, BoneInfluenceList>(org),
             osg::Object(org, copyop)
         {}
     };
@@ -56,7 +56,7 @@ namespace osgAnimation
     class OSGANIMATION_EXPORT VertexInfluenceSet
     {
     public:
-        typedef std::vector<VertexInfluence> BoneToVertexList;
+        typedef std::vector<BoneInfluenceList> BoneToVertexList;
 
         class BoneWeight
         {
@@ -95,7 +95,7 @@ namespace osgAnimation
         void buildUniqVertexGroupList();
         /** return a list of unique VertexGroups and their influences**/
         const UniqVertexGroupList& getUniqVertexGroupList() const { return _uniqVertexSetToBoneSet;}
-        void addVertexInfluence(const VertexInfluence& v);
+        void addVertexInfluence(const BoneInfluenceList& v);
         void buildVertex2BoneList(unsigned int numvertices);
         void clear();
 

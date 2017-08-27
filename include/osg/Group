@@ -43,7 +43,7 @@ class OSG_EXPORT Group : public Node
         virtual void traverse(NodeVisitor& nv);
 
         /** Add Node to Group.
-          * If node is not NULL and is not contained in Group then increment its
+          * If node is not NULL then increment its
           * reference count, add it to the child list and dirty the bounding
           * sphere to force it to recompute on next getBound() and return true for success.
           * Otherwise return false. Scene nodes can't be added as child nodes.

@@ -37,35 +37,43 @@ namespace osgAnimation
 
         virtual void operator()(RigGeometry&);
 
-        class BonePtrWeight
+        class BonePtrWeight: public BoneWeight
         {
         public:
-            BonePtrWeight(Bone* bone, float weight) : _bone(bone), _weight(weight) {}
-            const Bone* getBone() const { return _bone.get(); }
-            float getWeight() const { return _weight; }
-            void setWeight(float w) { _weight = w; }
+            BonePtrWeight(const std::string& name, float weight, Bone *bptr=0) :BoneWeight(name,weight), _boneptr(bptr) {}
+            BonePtrWeight(const BonePtrWeight &bw2) : BoneWeight(bw2), _boneptr(bw2._boneptr) {}
+
+            const Bone * getBonePtr()const{return _boneptr.get();}
+            void setBonePtr(Bone*b){_boneptr=b;}
+
+            bool operator==(const BonePtrWeight& b) const { return (getBoneName() == b.getBoneName() && getWeight() == b.getWeight()); }
+            //default order : sort by weight desc and bonename if equal
+            /*bool operator<(const BoneWeight& bw2)const{        if (_weight > bw2._weight)return true;
+            if (_weight < bw2._weight)return false;
+            return(_boneName<bw2._boneName);
+                                                     }*/
         protected:
-            osg::observer_ptr<Bone> _bone;
-            float _weight;
+            osg::observer_ptr< Bone > _boneptr;
         };
+        typedef std::vector<BonePtrWeight>  BonePtrWeightList;
+        typedef std::vector<unsigned int> IndexList;
 
-        typedef std::vector<BonePtrWeight> BonePtrWeightList;
-        typedef std::vector<unsigned int> VertexList;
-
+        /// map a set of boneinfluence to a list of vertex indices sharing this set
         class VertexGroup
         {
         public:
-            BonePtrWeightList& getBoneWeights() { return _boneweights; }
-            VertexList& getVertexes() { return _vertexes; }
+            inline BonePtrWeightList& getBoneWeights() { return _boneweights; }
 
-            void resetMatrix()
+            inline IndexList& getVertexes() { return _vertexes; }
+
+            inline void resetMatrix()
             {
                 _result.set(0, 0, 0, 0,
                             0, 0, 0, 0,
                             0, 0, 0, 0,
                             0, 0, 0, 1);
             }
-            void accummulateMatrix(const osg::Matrix& invBindMatrix, const osg::Matrix& matrix, osg::Matrix::value_type weight)
+            inline void accummulateMatrix(const osg::Matrix& invBindMatrix, const osg::Matrix& matrix, osg::Matrix::value_type weight)
             {
                 osg::Matrix m = invBindMatrix * matrix;
                 osg::Matrix::value_type* ptr = m.ptr();
@@ -86,7 +94,7 @@ namespace osgAnimation
                 ptrresult[13] += ptr[13] * weight;
                 ptrresult[14] += ptr[14] * weight;
             }
-            void computeMatrixForVertexSet()
+            inline void computeMatrixForVertexSet()
             {
                 if (_boneweights.empty())
                 {
@@ -98,7 +106,7 @@ namespace osgAnimation
 
                 for(BonePtrWeightList::iterator bwit=_boneweights.begin();bwit!=_boneweights.end();++bwit )
                 {
-                    const Bone* bone = bwit->getBone();
+                    const Bone* bone = bwit->getBonePtr();
                     if (!bone)
                     {
                         osg::notify(osg::WARN) << this << " RigTransformSoftware::computeMatrixForVertexSet Warning a bone is null, skip it" << std::endl;
@@ -110,10 +118,10 @@ namespace osgAnimation
                     accummulateMatrix(invBindMatrix, matrix, w);
                 }
             }
-            const osg::Matrix& getMatrix() const { return _result;}
+            inline const osg::Matrix& getMatrix() const { return _result;}
         protected:
             BonePtrWeightList _boneweights;
-            VertexList _vertexes;
+            IndexList _vertexes;
             osg::Matrix _result;
         };
 
@@ -128,8 +136,8 @@ namespace osgAnimation
                 uniq.computeMatrixForVertexSet();
                 osg::Matrix matrix =  transform * uniq.getMatrix() * invTransform;
 
-                const VertexList& vertexes = uniq.getVertexes();
-                for(VertexList::const_iterator vertIDit=vertexes.begin(); vertIDit!=vertexes.end(); ++vertIDit)
+                const IndexList& vertexes = uniq.getVertexes();
+                for(IndexList::const_iterator vertIDit=vertexes.begin(); vertIDit!=vertexes.end(); ++vertIDit)
                 {
                     dst[*vertIDit] = src[*vertIDit] * matrix;
                 }
@@ -146,8 +154,8 @@ namespace osgAnimation
                 uniq.computeMatrixForVertexSet();
                 osg::Matrix matrix =  transform * uniq.getMatrix() * invTransform;
 
-                const VertexList& vertexes = uniq.getVertexes();
-                for(VertexList::const_iterator vertIDit=vertexes.begin(); vertIDit!=vertexes.end(); ++vertIDit)
+                const IndexList& vertexes = uniq.getVertexes();
+                for(IndexList::const_iterator vertIDit=vertexes.begin(); vertIDit!=vertexes.end(); ++vertIDit)
                 {
                     dst[*vertIDit] = osg::Matrix::transform3x3(src[*vertIDit],matrix);
                 }
@@ -163,6 +171,7 @@ namespace osgAnimation
         bool _needInit;
 
         std::map<std::string,bool> _invalidInfluence;
+
     };
 }
 

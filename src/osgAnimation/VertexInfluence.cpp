@@ -40,10 +40,10 @@ void VertexInfluenceSet::buildVertex2BoneList(unsigned int numvertices)
             IndexWeight viw = vi[i];
             int index = viw.first;
             float weight = viw.second;
-            if (vi.getName().empty()){
+            if (vi.getBoneName().empty()){
                 OSG_WARN << "VertexInfluenceSet::buildVertex2BoneList warning vertex " << index << " is not assigned to a bone" << std::endl;
             }
-            _vertex2Bones[index].push_back(BoneWeight(vi.getName(), weight));
+            _vertex2Bones[index].push_back(BoneWeight(vi.getBoneName(), weight));
         }
     }
 

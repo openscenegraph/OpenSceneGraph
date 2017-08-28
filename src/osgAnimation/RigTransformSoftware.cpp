@@ -34,6 +34,46 @@ RigTransformSoftware::RigTransformSoftware(const RigTransformSoftware& rts,const
 
 }
 
+typedef std::vector<RigTransformSoftware::BonePtrWeight> BoneWeightList;
+// sort by name and weight
+struct SortByNameAndWeight : public std::less<RigTransformSoftware::BonePtrWeight>
+{
+    bool operator()(const RigTransformSoftware::BonePtrWeight& b0,
+                    const RigTransformSoftware::BonePtrWeight& b1) const
+    {
+        if (b0.getBoneName() < b1.getBoneName())
+            return true;
+        else if (b0.getBoneName() > b1.getBoneName())
+            return false;
+        if (b0.getWeight() < b1.getWeight())
+            return true;
+        return false;
+    }
+};
+
+struct SortByBoneWeightList : public std::less<BoneWeightList>
+{
+    bool operator()(const BoneWeightList& b0,
+                    const BoneWeightList& b1) const
+    {
+        if (b0.size() < b1.size())
+            return true;
+        else if (b0.size() > b1.size())
+            return false;
+
+        int size = b0.size();
+        for (int i = 0; i < size; i++)
+        {
+            bool result = SortByNameAndWeight()(b0[i], b1[i]);
+            if (result)
+                return true;
+            else if (SortByNameAndWeight()(b1[i], b0[i]))
+                return false;
+        }
+        return false;
+    }
+};
+
 bool RigTransformSoftware::init(RigGeometry& geom)
 {
     if (!geom.getSkeleton())
@@ -142,7 +182,7 @@ void RigTransformSoftware::initVertexSetFromBones(const BoneMap& map, const Vert
                 continue;
             }
             Bone* bone = it->second.get();
-            boneList.push_back(BonePtrWeight(bone, weight));
+            boneList.push_back(BonePtrWeight(bone->getName(), weight, bone));
             sumOfWeight += weight;
         }
         // if a bone referenced by a vertexinfluence is missed it can make the sum less than 1.0

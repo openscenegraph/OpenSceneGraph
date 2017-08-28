@@ -36,6 +36,7 @@ namespace osgAnimation
 
         bool init(MorphGeometry&);
         virtual void operator()(MorphGeometry&);
+
     protected:
         bool _needInit;
 

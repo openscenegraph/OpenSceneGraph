@@ -23,15 +23,32 @@
 
 namespace osgAnimation
 {
+    // first is bonename, and second the weight
+    struct BoneWeight: public std::pair<std::string, float>
+    {
+        BoneWeight( std::string f,float s):
+        std::pair<std::string,float>(f,s){}
+        inline const std::string& getBoneName()const{return first;}
+        inline void setBoneName(const std::string&s){first=s;}
+        inline const float &getWeight()const{return second;}
+        inline void setWeight(float i){second=i;}
+    };
+    // first is vertex index, and second the weight
+    struct IndexWeight: public std::pair<unsigned int, float>
+    {
+        IndexWeight( unsigned int f,float s): std::pair<unsigned int,float>(f,s){}
+        inline const unsigned int& getIndex()const{return first;}
+        inline void setIndex(unsigned int i){first=i;}
+        inline const float &getWeight()const{return second;}
+        inline void setWeight(float i){second=i;}
+    };
 
-    // first is vertex index, and second the weight, the
-    typedef std::pair<unsigned int, float> IndexWeight;
     typedef std::vector<IndexWeight> VertexList;
     class OSGANIMATION_EXPORT BoneInfluenceList : public VertexList
     {
     public:
-        const std::string& getName() const { return _name;}
-        void setName(const std::string& name) { _name = name;}
+        const std::string& getBoneName() const { return _name;}
+        void setBoneName(const std::string& name) { _name = name;}
 
     protected:
         // the name is the bone to link to

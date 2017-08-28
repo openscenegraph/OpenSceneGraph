@@ -1,19 +1,14 @@
 OSG News
 ========
 
-OpenSceneGraph 3.4 release introduces shader composition, new osgUI library, displacement mapping, volume rendering, lua scripting support and much more
-PERTHSHIRE, Scotland - 12th August 2015 - OpenSceneGraph Professional Services announces the release of OpenSceneGraph 3.4, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. OpenSceneGraph 3.4 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. OpenSceneGraph 3.4 runs on all Microsoft Windows platforms, Apple OS/X, IOS, GNU/Linux, Android, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
+OpenSceneGraph 3.4.1 release is maintaince release that provide build/runtime improvements and better GLES support
+PERTHSHIRE, Scotland - 28th August 2017 - OpenSceneGraph Professional Services announces the release of OpenSceneGraph 3.4.1, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. OpenSceneGraph 3.4 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. OpenSceneGraph 3.4 runs on all Microsoft Windows platforms, Apple OS/X, IOS, GNU/Linux, Android, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
 Updates include:
 
-  * New #pragma(tic) composition shader functionality built into the core OSG that provides a easy to use yet flexible scheme for controlling and composing shaders at runtime levering GLSL support for #define and #pragma.
-  * New osgTerrain::DisplacementMappingTechnique to uses vertex, geometry and fragment shader based displacement mapping technique that dramatically lowers the CPU and GPU memory footprint and bandwidth needs for the same visual quality.  The new scheme enables paged terrain that work robustly on smaller hardware, or with far higher loads without framedrops.  This new technique levels #pragma(tic) shader composition to enable one to toggle on/off features in the shaders at runtime in a way that is as convenient to use as toggle modes in a fixed function pipeline scene graph.
-  * New osgVolume::MultipassTechique that uses multipass rendering and shaders to enable seamless mixing of traditional 3D geometry and volumes, support for geometry hulls that constrain where the volume should be rendered as well as improving the ray tracing shaders so that they are both faster and have higher visual quality than the previous generation of ray traced shaders supported by OSG-3.2 releases and before.
-  * New osgDB::Classiterface  class that provides an easy to use mechanism for introspection of scene graph classes, allowing one to get, set properties and invoke methods in a generic way, making the task of integrating 3rd prarty tools such as scripting languages straight forward.
-  * New Lua scripting support via a plugin that integrates Lua 5.2.3 and the OSG via the OSG's native serialization codes.
-  * New osgUI NodeKit, that enables User Interface elements to be placed directly into 3D scene graph. The classes are fully scriptable so you create create UI and behaviours all within lua scripts.
-  * Improvements to OpenGL ES 1.1, ES 2.0 and ES3.0 support, including platform specific extensions
-  * Improvements to OpenGL 4.x support with a range of new extensions support
-  * Updates to osgQt to support Qt5 and provide better support for Qt4
+  * Improves to GLES support across platforms
+  * Full support for osgText and on screen stats across all platfroms, including GLES2 and core pofile
+  * Build fixes to allow compilation against recent 3rd party depdendency changes
+  * Range of runtime fixes
 
 Downloads and Licensing:
 
@@ -33,7 +28,7 @@ Community support and contributions:
 
 The diverse and growing community of over 5000 developers is centred around the public osg-users mailing list/forum, where members discuss how best to use OpenSceneGraph, provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists.
 
-The OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the 550 individuals from around the world that have directly contributed to the development and refinement of the OpenSceneGraph code base.
+The OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the 562 individuals from around the world that have directly contributed to the development and refinement of the OpenSceneGraph code base.
 
 
 

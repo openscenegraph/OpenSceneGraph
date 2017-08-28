@@ -127,9 +127,9 @@ namespace osgAnimation
         template <class V> void compute(const osg::Matrix& transform, const osg::Matrix& invTransform, const V* src, V* dst)
         {
             // the result of matrix mult should be cached to be used for vertexes transform and normal transform and maybe other computation
-            for(VertexGroupSet::iterator itvg=_uniqInfluenceSet2VertIDList.begin(); itvg!=_uniqInfluenceSet2VertIDList.end(); ++itvg)
+            for(VertexGroupList::iterator itvg=_uniqInfluenceSet2VertIDList.begin(); itvg!=_uniqInfluenceSet2VertIDList.end(); ++itvg)
             {
-                VertexGroup& uniq = itvg->second;
+                VertexGroup& uniq = *itvg;
                 uniq.computeMatrixForVertexSet();
                 osg::Matrix matrix =  transform * uniq.getMatrix() * invTransform;
 
@@ -145,9 +145,9 @@ namespace osgAnimation
 
         template <class V> void computeNormal(const osg::Matrix& transform, const osg::Matrix& invTransform, const V* src, V* dst)
         {
-            for(VertexGroupSet::iterator itvg=_uniqInfluenceSet2VertIDList.begin(); itvg!=_uniqInfluenceSet2VertIDList.end(); ++itvg)
+            for(VertexGroupList::iterator itvg=_uniqInfluenceSet2VertIDList.begin(); itvg!=_uniqInfluenceSet2VertIDList.end(); ++itvg)
             {
-                VertexGroup& uniq = itvg->second;
+                VertexGroup& uniq = *itvg;
                 uniq.computeMatrixForVertexSet();
                 osg::Matrix matrix =  transform * uniq.getMatrix() * invTransform;
 
@@ -165,10 +165,9 @@ namespace osgAnimation
 
         std::map<std::string,bool> _invalidInfluence;
 
-        typedef std::vector<BonePtrWeight> BoneWeightList;
-        typedef std::map<BoneWeightList, VertexGroup> VertexGroupSet;
+        typedef std::vector<VertexGroup> VertexGroupList;
 
-        VertexGroupSet _uniqInfluenceSet2VertIDList;
+        VertexGroupList _uniqInfluenceSet2VertIDList;
         void buildMinimumUpdateSet(const BoneMap&boneMap,const RigGeometry&rig );
 
     };

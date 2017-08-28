@@ -32,11 +32,6 @@ namespace osgAnimation
         inline void setBoneName(const std::string&s){first=s;}
         inline const float &getWeight()const{return second;}
         inline void setWeight(float i){second=i;}
-        ///default invweight ordered
-        bool operator <(const BoneWeight&o)const{
-            if(getWeight()>o.getWeight())                return true;
-            if(getWeight()<o.getWeight())                return false;
-            return getBoneName()<o.getBoneName();}
     };
     // first is vertex index, and second the weight
     struct IndexWeight: public std::pair<unsigned int, float>

@@ -35,6 +35,46 @@ RigTransformSoftware::RigTransformSoftware(const RigTransformSoftware& rts,const
 
 }
 
+
+// sort by name and weight
+struct SortByNameAndWeight : public std::less<RigTransformSoftware::BonePtrWeight>
+{
+    bool operator()(const RigTransformSoftware::BonePtrWeight& b0,
+                    const RigTransformSoftware::BonePtrWeight& b1) const
+    {
+        if (b0.getBoneName() < b1.getBoneName())
+            return true;
+        else if (b0.getBoneName() > b1.getBoneName())
+            return false;
+        if (b0.getWeight() < b1.getWeight())
+            return true;
+        return false;
+    }
+};
+typedef std::vector<RigTransformSoftware::BonePtrWeight> BoneWeightList;
+
+struct SortByBoneWeightList : public std::less<BoneWeightList>
+{
+    bool operator()(const BoneWeightList& b0,
+                    const BoneWeightList& b1) const
+    {
+        if (b0.size() < b1.size())
+            return true;
+        else if (b0.size() > b1.size())
+            return false;
+
+        int size = b0.size();
+        for (int i = 0; i < size; i++)
+        {
+            if (SortByNameAndWeight()(b0[i], b1[i]))
+                return true;
+            else if (SortByNameAndWeight()(b1[i], b0[i]))
+                return false;
+        }
+        return false;
+    }
+};
+
 void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const RigGeometry&rig ){
 
     ///1 Create Index2Vec<BoneWeight>
@@ -93,18 +133,24 @@ void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const Rig
     ///2 Create inverse mapping Vec<BoneWeight>2Vec<Index> from previous built Index2Vec<BoneWeight>
     ///in order to minimize weighted matrices computation on update
     _uniqInfluenceSet2VertIDList.clear();
+
+    typedef std::map<BoneWeightList, VertexGroup, SortByBoneWeightList> UnifyBoneGroup;
+    UnifyBoneGroup unifyBuffer;
     vertexID=0;
     for (std::vector<BoneWeightList>::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); ++it,++vertexID)
     {
         BoneWeightList& bones = *it;
         // sort the vector to have a consistent key
-        std::sort(bones.begin(), bones.end());
+        std::sort(bones.begin(), bones.end(), SortByNameAndWeight() );
         // we use the vector<BoneWeight> as key to differentiate group
-        VertexGroupSet::iterator result = _uniqInfluenceSet2VertIDList.find(bones);
-        if (result == _uniqInfluenceSet2VertIDList.end())
-            _uniqInfluenceSet2VertIDList[bones].getBoneWeights()=bones;
-        _uniqInfluenceSet2VertIDList[bones].getVertexes().push_back(vertexID);
+        UnifyBoneGroup::iterator result = unifyBuffer.find(bones);
+        if (result == unifyBuffer.end())
+            unifyBuffer[bones].getBoneWeights()=bones;
+        unifyBuffer[bones].getVertexes().push_back(vertexID);
     }
+    _uniqInfluenceSet2VertIDList.reserve(unifyBuffer.size());
+    for (UnifyBoneGroup::iterator it = unifyBuffer.begin(); it != unifyBuffer.end(); ++it)
+        _uniqInfluenceSet2VertIDList.push_back(it->second);
     OSG_DEBUG << "uniq groups " << _uniqInfluenceSet2VertIDList.size() << " for " << rig.getName() << std::endl;
 }
 

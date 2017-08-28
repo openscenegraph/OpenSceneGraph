@@ -66,7 +66,6 @@ RigGeometry::RigGeometry()
 RigGeometry::RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop) :
     osg::Geometry(b,copyop),
     _geometry(b._geometry),
-    _vertexInfluenceSet(b._vertexInfluenceSet),
     _vertexInfluenceMap(b._vertexInfluenceMap),
     _needToComputeMatrix(b._needToComputeMatrix)
 {
@@ -84,23 +83,6 @@ RigGeometry::RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop) :
 const osg::Matrix& RigGeometry::getMatrixFromSkeletonToGeometry() const { return _matrixFromSkeletonToGeometry; }
 const osg::Matrix& RigGeometry::getInvMatrixFromSkeletonToGeometry() const { return _invMatrixFromSkeletonToGeometry;}
 
-void RigGeometry::buildVertexInfluenceSet()
-{
-    if (!_vertexInfluenceMap.valid())
-    {
-        OSG_WARN << "buildVertexInfluenceSet can't be called without VertexInfluence already set to the RigGeometry ( " << getName() << " ) " << std::endl;
-        return;
-    }
-    _vertexInfluenceSet.clear();
-    for (osgAnimation::VertexInfluenceMap::iterator it = _vertexInfluenceMap->begin();
-         it != _vertexInfluenceMap->end();
-         ++it){
-        _vertexInfluenceSet.addVertexInfluence(it->second);
-    }
-    _vertexInfluenceSet.buildVertex2BoneList(getSourceGeometry()->getVertexArray()->getNumElements());
-    _vertexInfluenceSet.buildUniqVertexGroupList();
-    OSG_DEBUG << "uniq groups " << _vertexInfluenceSet.getUniqVertexGroupList().size() << " for " << getName() << std::endl;
-}
 
 void RigGeometry::computeMatrixFromRootSkeleton()
 {

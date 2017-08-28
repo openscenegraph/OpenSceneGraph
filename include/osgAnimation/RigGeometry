@@ -69,13 +69,7 @@ namespace osgAnimation
         void setNeedToComputeMatrix(bool state) { _needToComputeMatrix = state;}
         bool getNeedToComputeMatrix() const { return _needToComputeMatrix;}
 
-
-        // this build the internal database about vertex influence and bones
-        void buildVertexInfluenceSet();
-        inline const VertexInfluenceSet& getVertexInfluenceSet() const { return _vertexInfluenceSet;}
-
         void computeMatrixFromRootSkeleton();
-
 
         // set implementation of rig method
         inline RigTransform* getRigTransformImplementation() { return _rigTransformImplementation.get(); }
@@ -86,7 +80,6 @@ namespace osgAnimation
 
         const osg::Matrix& getMatrixFromSkeletonToGeometry() const;
         const osg::Matrix& getInvMatrixFromSkeletonToGeometry() const;
-
 
         inline osg::Geometry* getSourceGeometry() { return _geometry.get(); }
         inline const osg::Geometry* getSourceGeometry() const { return _geometry.get(); }
@@ -112,7 +105,6 @@ namespace osgAnimation
         osg::ref_ptr<osg::Geometry> _geometry;
         osg::ref_ptr<RigTransform> _rigTransformImplementation;
 
-        VertexInfluenceSet _vertexInfluenceSet;
         osg::ref_ptr<VertexInfluenceMap> _vertexInfluenceMap;
 
         osg::Matrix _matrixFromSkeletonToGeometry;

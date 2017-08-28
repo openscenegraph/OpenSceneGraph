@@ -144,7 +144,7 @@ namespace osgAnimation
         inline bool isDirty()const { return _dirty; }
 
         /** for retrocompatibility */
-        virtual void transformSoftwareMethod(){ if (!_rigTransformImplementation.valid())_rigTransformImplementation = new MorphTransformSoftware();_rigTransformImplementation(*this);}
+        virtual void transformSoftwareMethod(){ if (!_rigTransformImplementation.valid())_rigTransformImplementation = new MorphTransformSoftware();(*_rigTransformImplementation.get())(*this);}
 
     protected:
         osg::ref_ptr<MorphTransform> _rigTransformImplementation;

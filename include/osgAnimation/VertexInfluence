@@ -36,7 +36,7 @@ namespace osgAnimation
     // first is vertex index, and second the weight
     struct IndexWeight: public std::pair<unsigned int, float>
     {
-        IndexWeight( unsigned int f,float s): std::pair<unsigned int,float>(f,s){}
+        IndexWeight( unsigned int f = 0xffffffff,float s = 0.0f): std::pair<unsigned int,float>(f,s){}
         inline const unsigned int& getIndex()const{return first;}
         inline void setIndex(unsigned int i){first=i;}
         inline const float &getWeight()const{return second;}

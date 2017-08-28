@@ -17,7 +17,7 @@
 
 #include <osgAnimation/Export>
 #include <osgAnimation/Skeleton>
-#include <osgAnimation/RigTransform>
+#include <osgAnimation/RigTransformSoftware>
 #include <osgAnimation/VertexInfluence>
 #include <osg/Geometry>
 
@@ -151,8 +151,13 @@ namespace osgAnimation
                     osg::notify(osg::WARN) << "A RigGeometry did not find a parent skeleton for RigGeometry ( " << geom->getName() << " )" << std::endl;
                     return;
                 }
-                geom->buildVertexInfluenceSet();
                 geom->setSkeleton(finder._root.get());
+
+                if(!geom->getRigTransformImplementation())
+                {
+                    geom->setRigTransformImplementation(new RigTransformSoftware);
+                }
+                geom->getRigTransformImplementation()->prepareData(*geom);
             }
 
             if(!geom->getSkeleton())

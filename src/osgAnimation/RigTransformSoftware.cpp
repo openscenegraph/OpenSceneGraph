@@ -256,7 +256,7 @@ bool RigTransformSoftware::prepareData(RigGeometry&rig) {
 void RigTransformSoftware::operator()(RigGeometry& geom)
 {
     if (_needInit)
-        if (!init(geom))
+        if (!prepareData(geom))
             return;
 
     if (!geom.getSourceGeometry()) {

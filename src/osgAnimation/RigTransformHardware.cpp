@@ -600,7 +600,7 @@ bool RigTransformHardware::init(RigGeometry& geom)
 void RigTransformHardware::operator()(RigGeometry& geom)
 {
     if (_needInit)
-        if (!init(geom))
+        if (!prepareData(geom))
             return;
     computeMatrixPaletteUniform(geom.getMatrixFromSkeletonToGeometry(), geom.getInvMatrixFromSkeletonToGeometry());
 }

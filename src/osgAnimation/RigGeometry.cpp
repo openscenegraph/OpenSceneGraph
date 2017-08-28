@@ -118,11 +118,6 @@ void RigGeometry::computeMatrixFromRootSkeleton()
 
 void RigGeometry::update()
 {
-    if (!getRigTransformImplementation())
-    {
-        _rigTransformImplementation = new RigTransformSoftware;
-    }
-
     RigTransform& implementation = *getRigTransformImplementation();
     (implementation)(*this);
 }

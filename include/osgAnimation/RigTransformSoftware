@@ -36,6 +36,8 @@ namespace osgAnimation
         META_Object(osgAnimation,RigTransformSoftware)
 
         virtual void operator()(RigGeometry&);
+        //to call when a skeleton is reacheable from the rig to prepare technic data
+        virtual bool prepareData(RigGeometry&);
 
         class BonePtrWeight: public BoneWeight
         {
@@ -172,6 +174,7 @@ namespace osgAnimation
 
         std::map<std::string,bool> _invalidInfluence;
 
+        void buildMinimumUpdateSet(const BoneMap&boneMap,const RigGeometry&rig );
     };
 }
 

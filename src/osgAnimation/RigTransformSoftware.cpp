@@ -115,6 +115,144 @@ bool RigTransformSoftware::init(RigGeometry& geom)
     return true;
 }
 
+void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const RigGeometry&rig ){
+
+    ///1 Create Index2Vec<BoneWeight>
+    typedef std::vector<BonePtrWeight> BoneWeightList;
+    typedef std::vector<BoneWeightList> VertIDToBoneWeightList;
+
+    VertIDToBoneWeightList _vertex2Bones;
+    _vertex2Bones.clear();
+    _vertex2Bones.resize(rig.getSourceGeometry()->getVertexArray()->getNumElements());
+
+    const VertexInfluenceMap *_vertexInfluenceMap=rig.getInfluenceMap();
+    for (osgAnimation::VertexInfluenceMap::const_iterator it = _vertexInfluenceMap->begin();
+            it != _vertexInfluenceMap->end();
+            ++it)
+    {
+        const BoneInfluenceList& inflist = it->second;
+        for(BoneInfluenceList::const_iterator infit=inflist.begin(); infit!=inflist.end(); ++infit)
+        {
+            const IndexWeight &iw = *infit;
+            const unsigned int &index = iw.getIndex();
+            float weight = iw.getWeight();
+            if (inflist.getBoneName().empty()) {
+                OSG_WARN << "VertexInfluenceSet::buildVertex2BoneList warning vertex " << index << " is not assigned to a bone" << std::endl;
+            }
+            BoneMap::const_iterator it = boneMap.find(inflist.getBoneName());
+            if (it == boneMap.end() )
+            {
+                if (_invalidInfluence.find(inflist.getBoneName()) != _invalidInfluence.end()) {
+                    _invalidInfluence[inflist.getBoneName()] = true;
+                    OSG_WARN << "RigTransformSoftware Bone " << inflist.getBoneName() << " not found, skip the influence group " << std::endl;
+                }
+                continue;
+            }
+            Bone* bone = it->second.get();
+            _vertex2Bones[index].push_back(BonePtrWeight(inflist.getBoneName(), weight,bone));;
+        }
+    }
+
+    // normalize _vertex2Bones weight per vertex
+    unsigned vertexID=0;
+    for (VertIDToBoneWeightList::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); ++it, ++vertexID)
+    {
+        BoneWeightList& bones = *it;
+        float sum = 0;
+        for(BoneWeightList::iterator bwit=bones.begin();bwit!=bones.end();++bwit)
+            sum += bwit->getWeight();
+        if (sum < 1e-4)
+        {
+            OSG_WARN << "VertexInfluenceSet::buildVertex2BoneList warning the vertex " << vertexID << " seems to have 0 weight, skip normalize for this vertex" << std::endl;
+        }
+        else
+        {
+            float mult = 1.0/sum;
+            for(BoneWeightList::iterator bwit=bones.begin();bwit!=bones.end();++bwit)
+                bwit->setWeight(bwit->getWeight() * mult);
+        }
+    }
+
+    ///2 Create inverse mapping Vec<BoneWeight>2Vec<Index> from previous built Index2Vec<BoneWeight>
+    ///in order to minimize weighted matrices computation on update
+    typedef std::map<BoneWeightList, VertexGroup, SortByBoneWeightList> UnifyBoneGroup;
+    UnifyBoneGroup unifyBuffer;
+    vertexID=0;
+    for (VertIDToBoneWeightList::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); ++it,++vertexID)
+    {
+        BoneWeightList& bones = *it;
+        // sort the vector to have a consistent key
+        std::sort(bones.begin(), bones.end(), SortByNameAndWeight());
+        // we use the vector<BoneWeight> as key to differentiate group
+        UnifyBoneGroup::iterator result = unifyBuffer.find(bones);
+        if (result == unifyBuffer.end())
+            unifyBuffer[bones].getBoneWeights()=bones;
+        unifyBuffer[bones].getVertexes().push_back(vertexID);
+    }
+    if(_vertex2Bones.size()==unifyBuffer.size()) {
+        OSG_WARN << "RigTransformSoftware::build mapping is useless no duplicate VertexGroup : too much " <<_vertex2Bones.size()<<"=="<<unifyBuffer.size()<< std::endl;
+
+    }
+    _uniqInfluenceSet2VertIDList.reserve(unifyBuffer.size());
+
+    for (UnifyBoneGroup::iterator it = unifyBuffer.begin(); it != unifyBuffer.end(); ++it)
+        _uniqInfluenceSet2VertIDList.push_back(it->second);
+
+
+    OSG_DEBUG << "uniq groups " << _uniqInfluenceSet2VertIDList.size() << " for " << rig.getName() << std::endl;
+}
+
+bool RigTransformSoftware::prepareData(RigGeometry&rig) {
+    if(!rig.getSkeleton() && !rig.getParents().empty())
+    {
+        RigGeometry::FindNearestParentSkeleton finder;
+        if(rig.getParents().size() > 1)
+            osg::notify(osg::WARN) << "A RigGeometry should not have multi parent ( " << rig.getName() << " )" << std::endl;
+        rig.getParents()[0]->accept(finder);
+
+        if(!finder._root.valid())
+        {
+            osg::notify(osg::WARN) << "A RigGeometry did not find a parent skeleton for RigGeometry ( " << rig.getName() << " )" << std::endl;
+            return false;
+        }
+        rig.setSkeleton(finder._root.get());
+    }
+    BoneMapVisitor mapVisitor;
+    rig.getSkeleton()->accept(mapVisitor);
+    BoneMap boneMap = mapVisitor.getBoneMap();
+
+    buildMinimumUpdateSet(boneMap,rig);
+
+    if (rig.getSourceGeometry())
+        rig.copyFrom(*rig.getSourceGeometry());
+
+
+    osg::Vec3Array* normalSrc = dynamic_cast<osg::Vec3Array*>(rig.getSourceGeometry()->getNormalArray());
+    osg::Vec3Array* positionSrc = dynamic_cast<osg::Vec3Array*>(rig.getSourceGeometry()->getVertexArray());
+
+    if(!(positionSrc) || positionSrc->empty() )
+        return false;
+    if(normalSrc&& normalSrc->size()!=positionSrc->size())
+        return false;
+
+
+    rig.setVertexArray(new osg::Vec3Array);
+    osg::Vec3Array* positionDst =new osg::Vec3Array;
+    rig.setVertexArray(positionDst);
+    *positionDst=*positionSrc;
+    positionDst->setDataVariance(osg::Object::DYNAMIC);
+
+
+    if(normalSrc) {
+        osg::Vec3Array* normalDst =new osg::Vec3Array;
+        *normalDst=*normalSrc;
+        rig.setNormalArray(normalDst, osg::Array::BIND_PER_VERTEX);
+        normalDst->setDataVariance(osg::Object::DYNAMIC);
+    }
+
+    _needInit = false;
+    return true;
+}
 void RigTransformSoftware::operator()(RigGeometry& geom)
 {
     if (_needInit)

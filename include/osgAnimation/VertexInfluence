@@ -81,6 +81,10 @@ namespace osgAnimation
         ///remove weakest influences in order to fit targetted numbonepervertex
         void cullInfluenceCountPerVertex(unsigned int maxnumbonepervertex, float minweight=0, bool renormalize=true);
 
+        //compute PerVertexInfluenceList
+        void computePerVertexInfluenceList(std::vector<BoneWeightList>& vertex2Bones,unsigned int numvert)const;
+        //create the minimal VertexGroup set
+        void computeMinimalVertexGroupList(std::vector<VertexGroup>&uniqVertexGroupList,unsigned int numvert)const;
     };
 
 }

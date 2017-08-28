@@ -102,3 +102,93 @@ void VertexInfluenceMap::cullInfluenceCountPerVertex(unsigned int numbonepervert
         }
     }
 }
+
+void VertexInfluenceMap::computePerVertexInfluenceList(std::vector<BoneWeightList>& vertex2Bones,unsigned int numvert)const
+{
+  vertex2Bones.resize(numvert);
+  for (osgAnimation::VertexInfluenceMap::const_iterator it = begin();
+            it != end();
+            ++it)
+    {
+        const BoneInfluenceList& inflist = it->second;
+        if (inflist.getBoneName().empty()) {
+            OSG_WARN << "RigTransformSoftware::VertexInfluenceMap contains unamed bone BoneInfluenceList" << std::endl;
+        }
+        for(BoneInfluenceList::const_iterator infit=inflist.begin(); infit!=inflist.end(); ++infit)
+        {
+            const IndexWeight &iw = *infit;
+            const unsigned int &index = iw.getIndex();
+            float weight = iw.getWeight();
+
+            vertex2Bones[index].push_back(BoneWeight(inflist.getBoneName(), weight));;
+        }
+    }
+}
+
+// sort by name and weight
+struct SortByNameAndWeight : public std::less<BoneWeight>
+{
+    bool operator()(const BoneWeight& b0,
+                    const BoneWeight& b1) const
+    {
+        if (b0.getBoneName() < b1.getBoneName())
+            return true;
+        else if (b0.getBoneName() > b1.getBoneName())
+            return false;
+        return (b0.getWeight() < b1.getWeight());
+    }
+};
+
+struct SortByBoneWeightList : public std::less<BoneWeightList>
+{
+    bool operator()(const BoneWeightList& b0,
+                    const BoneWeightList& b1) const
+    {
+        if (b0.size() < b1.size())
+            return true;
+        else if (b0.size() > b1.size())
+            return false;
+
+        int size = b0.size();
+        for (int i = 0; i < size; i++)
+        {
+            if (SortByNameAndWeight()(b0[i], b1[i]))
+                return true;
+            else if (SortByNameAndWeight()(b1[i], b0[i]))
+                return false;
+        }
+        return false;
+    }
+};
+void VertexInfluenceMap::computeMinimalVertexGroupList(std::vector<VertexGroup>&uniqVertexGroupList,unsigned int numvert)const
+{
+    uniqVertexGroupList.clear();
+    std::vector<BoneWeightList> vertex2Bones;
+    computePerVertexInfluenceList(vertex2Bones,numvert);
+    typedef std::map<BoneWeightList,VertexGroup, SortByBoneWeightList> UnifyBoneGroup;
+    UnifyBoneGroup unifyBuffer;
+
+    unsigned int vertexID=0;
+    for (std::vector<BoneWeightList>::iterator it = vertex2Bones.begin(); it != vertex2Bones.end(); ++it,++vertexID)
+    {
+        BoneWeightList &boneweightlist = *it;//->second;
+        //int vertexIndex = it->first;
+
+        // sort the vector to have a consistent key
+        std::sort(boneweightlist.begin(), boneweightlist.end(), SortByNameAndWeight());
+
+        // we use the vector<BoneWeight> as key to differentiate group
+        UnifyBoneGroup::iterator result = unifyBuffer.find(boneweightlist);
+        if (result == unifyBuffer.end())
+            unifyBuffer[boneweightlist].setBoneWeights(boneweightlist);
+        unifyBuffer[boneweightlist].vertIDs().push_back(vertexID);
+    }
+    if(vertex2Bones.size()==unifyBuffer.size()) {
+        OSG_WARN << "VertexInfluenceSet::buildmap is useless no duplicate VertexGroup" << std::endl;
+    }
+    uniqVertexGroupList.reserve(unifyBuffer.size());
+    for (UnifyBoneGroup::iterator it = unifyBuffer.begin(); it != unifyBuffer.end(); ++it)
+    {
+        uniqVertexGroupList.push_back(it->second);
+    }
+}

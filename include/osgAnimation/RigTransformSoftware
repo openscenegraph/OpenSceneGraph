@@ -1,5 +1,6 @@
 /*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <cedric.pinson@plopbyte.net>
+ *  Copyright (C) 2017 Julien Valentin <mp3butcher@hotmail.com>
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -132,9 +133,9 @@ namespace osgAnimation
         template <class V> void compute(const osg::Matrix& transform, const osg::Matrix& invTransform, const V* src, V* dst)
         {
             // the result of matrix mult should be cached to be used for vertexes transform and normal transform and maybe other computation
-            for(std::vector<VertexGroup>::iterator itvg=_uniqInfluenceSet2VertIDList.begin(); itvg!=_uniqInfluenceSet2VertIDList.end(); ++itvg)
+            for(VertexGroupSet::iterator itvg=_uniqInfluenceSet2VertIDList.begin(); itvg!=_uniqInfluenceSet2VertIDList.end(); ++itvg)
             {
-                VertexGroup& uniq = *itvg;
+                VertexGroup& uniq = itvg->second;
                 uniq.computeMatrixForVertexSet();
                 osg::Matrix matrix =  transform * uniq.getMatrix() * invTransform;
 
@@ -150,9 +151,9 @@ namespace osgAnimation
 
         template <class V> void computeNormal(const osg::Matrix& transform, const osg::Matrix& invTransform, const V* src, V* dst)
         {
-            for(std::vector<VertexGroup>::iterator itvg=_uniqInfluenceSet2VertIDList.begin(); itvg!=_uniqInfluenceSet2VertIDList.end(); ++itvg)
+            for(VertexGroupSet::iterator itvg=_uniqInfluenceSet2VertIDList.begin(); itvg!=_uniqInfluenceSet2VertIDList.end(); ++itvg)
             {
-                VertexGroup& uniq = *itvg;
+                VertexGroup& uniq = itvg->second;
                 uniq.computeMatrixForVertexSet();
                 osg::Matrix matrix =  transform * uniq.getMatrix() * invTransform;
 
@@ -166,15 +167,16 @@ namespace osgAnimation
 
     protected:
 
-        bool init(RigGeometry&);
-        void initVertexSetFromBones(const BoneMap& map, const VertexInfluenceSet::UniqVertexGroupList& influence);
-        std::vector<VertexGroup> _uniqInfluenceSet2VertIDList;
-
         bool _needInit;
 
         std::map<std::string,bool> _invalidInfluence;
 
+        typedef std::vector<BonePtrWeight> BoneWeightList;
+        typedef std::map<BoneWeightList, VertexGroup> VertexGroupSet;
+
+        VertexGroupSet _uniqInfluenceSet2VertIDList;
         void buildMinimumUpdateSet(const BoneMap&boneMap,const RigGeometry&rig );
+
     };
 }
 

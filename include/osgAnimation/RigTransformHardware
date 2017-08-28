@@ -1,5 +1,6 @@
 /*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <cedric.pinson@plopbyte.net>
+ *  Copyright (C) 2017 Julien Valentin <mp3butcher@hotmail.com>
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -43,17 +44,6 @@ namespace osgAnimation
         typedef std::map<std::string, unsigned int> BoneNamePaletteIndex;
 
         typedef std::vector<osg::Matrix> MatrixPalette;
-        /*struct IndexWeightEntry
-        {
-            IndexWeightEntry(unsigned int index=0, float weight=0.0f): _boneIndex(index), _boneWeight(weight){}
-            IndexWeightEntry(const IndexWeightEntry&o): _boneIndex(o._boneIndex), _boneWeight(o._boneWeight){}
-            bool operator <(const IndexWeightEntry &o)const{return (_boneIndex<o._boneIndex);}
-            const unsigned int &getBoneIndex() const { return _boneIndex; }
-            const float &getWeight() const { return _boneWeight; }
-            unsigned int _boneIndex;
-            float _boneWeight;
-        };*/
-
 
         osg::Vec4Array* getVertexAttrib(unsigned int index);
         unsigned int getNumVertexAttrib();
@@ -63,8 +53,6 @@ namespace osgAnimation
 
         unsigned int getNumBonesPerVertex() const;
         unsigned int getNumVertexes() const;
-
-        bool createPalette(unsigned int nbVertexes,const BoneMap& boneMap, const VertexInfluenceSet::VertIDToBoneWeightList& vertexIndexToBoneWeightMap);
 
         virtual void operator()(RigGeometry&);
 
@@ -78,8 +66,7 @@ namespace osgAnimation
 
     protected:
 
-        bool init(RigGeometry&);
-         osg::Uniform* createVertexUniform();
+        osg::Uniform* createVertexUniform();
 
         unsigned int _bonesPerVertex;
         unsigned int _nbVertexes;

@@ -121,10 +121,6 @@ void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const Rig
     std::vector<BoneWeightList> _vertex2Bones;
     _vertex2Bones.resize(rig.getSourceGeometry()->getVertexArray()->getNumElements());
 
-    typedef std::pair<float,unsigned int> FloatInt;
-    std::vector< FloatInt > sums;///stat totalweight nbref
-    sums.resize(rig.getSourceGeometry()->getVertexArray()->getNumElements()
-    );
     const VertexInfluenceMap *_vertexInfluenceMap=rig.getInfluenceMap();
     for (osgAnimation::VertexInfluenceMap::const_iterator it = _vertexInfluenceMap->begin();
             it != _vertexInfluenceMap->end();

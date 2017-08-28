@@ -546,7 +546,7 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         }
         else if (_texcoord.valid())
         {
-            geom->setTexCoordArray(0, _texcoord);
+            geom->setTexCoordArray(0, _texcoord.get());
         }
 
         // If the model has normals, add them to the geometry

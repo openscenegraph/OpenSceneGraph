@@ -1,5 +1,6 @@
 /*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <cedric.pinson@plopbyte.net>
+ *  Copyright (C) 2017 Julien Valentin <mp3butcher@hotmail.com>
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -38,37 +39,25 @@ namespace osgAnimation
         META_Object(osgAnimation,RigTransformHardware);
 
         typedef osg::Matrix MatrixType;
-        typedef osgAnimation::Bone BoneType;
         typedef std::vector<osg::ref_ptr<osg::Vec4Array> > BoneWeightAttribList;
-        typedef std::vector<osg::ref_ptr<BoneType> > BonePalette;
-        typedef std::map<std::string, int> BoneNamePaletteIndex;
+        typedef std::vector<osg::ref_ptr<Bone> > BonePalette;
+        typedef std::map<std::string, unsigned int> BoneNamePaletteIndex;
 
         typedef std::vector<osg::Matrix> MatrixPalette;
-        struct IndexWeightEntry
-        {
-            int _boneIndex;
-            float _boneWeight;
-            IndexWeightEntry() { _boneIndex = 0; _boneWeight = 0;}
-            IndexWeightEntry(int index, float weight) { _boneIndex = index; _boneWeight = weight;}
-            int getIndex() const { return _boneIndex; }
-            float getWeight() const { return _boneWeight; }
-        };
-        typedef std::vector<std::vector<IndexWeightEntry> > VertexIndexWeightList;
 
-
-
-        osg::Vec4Array* getVertexAttrib(int index);
-        int getNumVertexAttrib();
+        osg::Vec4Array* getVertexAttrib(unsigned int index);
+        unsigned int getNumVertexAttrib();
 
         osg::Uniform* getMatrixPaletteUniform();
         void computeMatrixPaletteUniform(const osg::Matrix& transformFromSkeletonToGeometry, const osg::Matrix& invTransformFromSkeletonToGeometry);
 
-        int getNumBonesPerVertex() const;
-        int getNumVertexes() const;
-
-        bool createPalette(int nbVertexes, BoneMap boneMap, const VertexInfluenceSet::VertexIndexToBoneWeightMap& vertexIndexToBoneWeightMap);
+        unsigned int getNumBonesPerVertex() const;
+        unsigned int getNumVertexes() const;
 
         virtual void operator()(RigGeometry&);
+
+        virtual bool prepareData(RigGeometry& );
+
         void setShader(osg::Shader*);
 
         const BoneNamePaletteIndex& getBoneNameToPalette() {
@@ -77,14 +66,11 @@ namespace osgAnimation
 
     protected:
 
-        bool init(RigGeometry&);
-
-        BoneWeightAttribList createVertexAttribList();
         osg::Uniform* createVertexUniform();
 
-        int _bonesPerVertex;
-        int _nbVertexes;
-        VertexIndexWeightList _vertexIndexMatrixWeightList;
+        unsigned int _bonesPerVertex;
+        unsigned int _nbVertexes;
+
         BonePalette _bonePalette;
         BoneNamePaletteIndex _boneNameToPalette;
         BoneWeightAttribList _boneWeightAttribArrays;
@@ -92,6 +78,9 @@ namespace osgAnimation
         osg::ref_ptr<osg::Shader> _shader;
 
         bool _needInit;
+
+        bool buildPalette(BoneMap&boneMap ,RigGeometry&rig);
+
     };
 }
 

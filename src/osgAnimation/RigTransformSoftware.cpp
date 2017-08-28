@@ -18,6 +18,7 @@
 #include <osgAnimation/BoneMapVisitor>
 #include <osgAnimation/RigGeometry>
 
+#include <algorithm>
 using namespace osgAnimation;
 
 RigTransformSoftware::RigTransformSoftware()
@@ -41,12 +42,34 @@ bool RigTransformSoftware::init(RigGeometry& geom)
     BoneMapVisitor mapVisitor;
     geom.getSkeleton()->accept(mapVisitor);
     BoneMap bm = mapVisitor.getBoneMap();
-    initVertexSetFromBones(bm, geom.getVertexInfluenceSet().getUniqVertexSetToBoneSetList());
+    initVertexSetFromBones(bm, geom.getVertexInfluenceSet().getUniqVertexGroupList());
 
     if (geom.getSourceGeometry())
         geom.copyFrom(*geom.getSourceGeometry());
-    geom.setVertexArray(0);
-    geom.setNormalArray(0);
+
+
+    osg::Vec3Array* normalSrc = dynamic_cast<osg::Vec3Array*>(geom.getSourceGeometry()->getNormalArray());
+    osg::Vec3Array* positionSrc = dynamic_cast<osg::Vec3Array*>(geom.getSourceGeometry()->getVertexArray());
+
+    if(!(positionSrc) || positionSrc->empty() )
+        return false;
+    if(normalSrc&& normalSrc->size()!=positionSrc->size())
+        return false;
+
+
+    geom.setVertexArray(new osg::Vec3Array);
+    osg::Vec3Array* positionDst =new osg::Vec3Array;
+    geom.setVertexArray(positionDst);
+    *positionDst=*positionSrc;
+    positionDst->setDataVariance(osg::Object::DYNAMIC);
+
+
+    if(normalSrc){
+        osg::Vec3Array* normalDst =new osg::Vec3Array;
+        *normalDst=*normalSrc;
+        geom.setNormalArray(normalDst, osg::Array::BIND_PER_VERTEX);
+        normalDst->setDataVariance(osg::Object::DYNAMIC);
+    }
 
     _needInit = false;
     return true;
@@ -65,74 +88,50 @@ void RigTransformSoftware::operator()(RigGeometry& geom)
     osg::Geometry& source = *geom.getSourceGeometry();
     osg::Geometry& destination = geom;
 
-    osg::Vec3Array* positionSrc = dynamic_cast<osg::Vec3Array*>(source.getVertexArray());
-    osg::Vec3Array* positionDst = dynamic_cast<osg::Vec3Array*>(destination.getVertexArray());
-    if (positionSrc )
-    {
-        if (!positionDst || (positionDst->size() != positionSrc->size()) )
-        {
-            if (!positionDst)
-            {
-                positionDst = new osg::Vec3Array;
-                positionDst->setDataVariance(osg::Object::DYNAMIC);
-                destination.setVertexArray(positionDst);
-            }
-            *positionDst = *positionSrc;
-        }
-        if (!positionDst->empty())
-        {
-            compute<osg::Vec3>(geom.getMatrixFromSkeletonToGeometry(),
-                               geom.getInvMatrixFromSkeletonToGeometry(),
-                               &positionSrc->front(),
-                               &positionDst->front());
-            positionDst->dirty();
-        }
-
-    }
-
+    osg::Vec3Array* positionSrc = static_cast<osg::Vec3Array*>(source.getVertexArray());
+    osg::Vec3Array* positionDst = static_cast<osg::Vec3Array*>(destination.getVertexArray());
     osg::Vec3Array* normalSrc = dynamic_cast<osg::Vec3Array*>(source.getNormalArray());
-    osg::Vec3Array* normalDst = dynamic_cast<osg::Vec3Array*>(destination.getNormalArray());
+    osg::Vec3Array* normalDst = static_cast<osg::Vec3Array*>(destination.getNormalArray());
+
+
+    compute<osg::Vec3>(geom.getMatrixFromSkeletonToGeometry(),
+                       geom.getInvMatrixFromSkeletonToGeometry(),
+                       &positionSrc->front(),
+                       &positionDst->front());
+    positionDst->dirty();
+
+
+
     if (normalSrc )
     {
-        if (!normalDst || (normalDst->size() != normalSrc->size()) )
-        {
-            if (!normalDst)
-            {
-                normalDst = new osg::Vec3Array;
-                normalDst->setDataVariance(osg::Object::DYNAMIC);
-                destination.setNormalArray(normalDst, osg::Array::BIND_PER_VERTEX);
-            }
-            *normalDst = *normalSrc;
-        }
-        if (!normalDst->empty())
-        {
             computeNormal<osg::Vec3>(geom.getMatrixFromSkeletonToGeometry(),
                                geom.getInvMatrixFromSkeletonToGeometry(),
                                &normalSrc->front(),
                                &normalDst->front());
             normalDst->dirty();
-        }
     }
 
 }
 
-void RigTransformSoftware::initVertexSetFromBones(const BoneMap& map, const VertexInfluenceSet::UniqVertexSetToBoneSetList& influence)
+///convert BoneWeight to BonePtrWeight using bonemap
+void RigTransformSoftware::initVertexSetFromBones(const BoneMap& map, const VertexInfluenceSet::UniqVertexGroupList& vertexgroups)
 {
-    _boneSetVertexSet.clear();
+    _uniqInfluenceSet2VertIDList.clear();
 
-    int size = influence.size();
-    _boneSetVertexSet.resize(size);
-    for (int i = 0; i < size; i++)
+    int size = vertexgroups.size();
+    _uniqInfluenceSet2VertIDList.resize(size);
+    //for (VertexInfluenceSet::UniqVertexGroupList::const_iterator vgit=vertexgroups.begin();         vgit!=vertexgroups.end();vgit++)
+    for(int i = 0; i < size; i++)
     {
-        const VertexInfluenceSet::UniqVertexSetToBoneSet& inf = influence[i];
-        int nbBones = inf.getBones().size();
-        BoneWeightList& boneList = _boneSetVertexSet[i].getBones();
+        const VertexInfluenceSet::VertexGroup& vg = vertexgroups[i];
+        int nbBones = vg.getBones().size();
+        BonePtrWeightList& boneList = _uniqInfluenceSet2VertIDList[i].getBoneWeights();
 
         double sumOfWeight = 0;
         for (int b = 0; b < nbBones; b++)
         {
-            const std::string& bname = inf.getBones()[b].getBoneName();
-            float weight = inf.getBones()[b].getWeight();
+            const std::string& bname = vg.getBones()[b].getBoneName();
+            float weight = vg.getBones()[b].getWeight();
             BoneMap::const_iterator it = map.find(bname);
             if (it == map.end() )
             {
@@ -143,18 +142,18 @@ void RigTransformSoftware::initVertexSetFromBones(const BoneMap& map, const Vert
                 continue;
             }
             Bone* bone = it->second.get();
-            boneList.push_back(BoneWeight(bone, weight));
+            boneList.push_back(BonePtrWeight(bone, weight));
             sumOfWeight += weight;
         }
         // if a bone referenced by a vertexinfluence is missed it can make the sum less than 1.0
         // so we check it and renormalize the all weight bone
         const double threshold = 1e-4;
-        if (!_boneSetVertexSet[i].getBones().empty() &&
+        if (!vg.getBones().empty() &&
             (sumOfWeight < 1.0 - threshold ||  sumOfWeight > 1.0 + threshold))
         {
             for (int b = 0; b < (int)boneList.size(); b++)
                 boneList[b].setWeight(boneList[b].getWeight() / sumOfWeight);
         }
-        _boneSetVertexSet[i].getVertexes() = inf.getVertexes();
+        _uniqInfluenceSet2VertIDList[i].getVertexes() = vg.getVertexes();
     }
 }

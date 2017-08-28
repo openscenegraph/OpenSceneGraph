@@ -1,6 +1,7 @@
 
 #include <osgAnimation/RigTransformHardware>
 #include <osgAnimation/RigTransformSoftware>
+#include <osgAnimation/MorphTransformSoftware>
 #include <osgDB/ObjectWrapper>
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
@@ -22,4 +23,17 @@ namespace wrap_osgAnimationRigTransformHardWare{
                              new osgAnimation::RigTransformHardware,
                              osgAnimation::RigTransformHardware,
                              "osg::Object osgAnimation::RigTransform osgAnimation::RigTransformHardware" ){}
+}
+
+namespace wrap_osgAnimationMorphTransform{
+  REGISTER_OBJECT_WRAPPER( osgAnimation_MorphTransform,
+                             NULL,
+                             osgAnimation::MorphTransform,
+                             "osg::Object osgAnimation::MorphTransform" ){}
+}
+namespace wrap_osgAnimationMorphTransformSoftWare{
+  REGISTER_OBJECT_WRAPPER( osgAnimation_MorphTransformSoftware,
+                             new osgAnimation::MorphTransformSoftware,
+                             osgAnimation::MorphTransformSoftware,
+                             "osg::Object osgAnimation::MorphTransform  osgAnimation::MorphTransformSoftware" ){}
 }

@@ -89,7 +89,7 @@ namespace osgAnimation
 
         /** Set source of vertices for this morph geometry */
         inline void setVertexSource(osg::Vec3Array *v){ _positionSource=v;}
-        
+
         /** Get source of vertices for this morph geometry */
         inline osg::Vec3Array * getVertexSource()const{return _positionSource;}
 
@@ -143,6 +143,8 @@ namespace osgAnimation
         inline void dirty(bool b=true) { _dirty = b; }
         inline bool isDirty()const { return _dirty; }
 
+        /** for retrocompatibility */
+        virtual void transformSoftwareMethod(){ if (!_rigTransformImplementation.valid()_rigTransformImplementation = new MorphTransformSoftware();_rigTransformImplementation(*this);}
 
     protected:
         osg::ref_ptr<MorphTransform> _rigTransformImplementation;

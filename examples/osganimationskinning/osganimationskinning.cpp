@@ -134,12 +134,11 @@ void initVertexMap(osgAnimation::Bone* b0,
                    osgAnimation::RigGeometry* geom,
                    osg::Vec3Array* array)
 {
-    osgAnimation::VertexInfluenceSet vertexesInfluences;
     osgAnimation::VertexInfluenceMap* vim = new osgAnimation::VertexInfluenceMap;
 
-    (*vim)[b0->getName()].setName(b0->getName());
-    (*vim)[b1->getName()].setName(b1->getName());
-    (*vim)[b2->getName()].setName(b2->getName());
+    (*vim)[b0->getName()].setBoneName(b0->getName());
+    (*vim)[b1->getName()].setBoneName(b1->getName());
+    (*vim)[b2->getName()].setBoneName(b2->getName());
 
     for (int i = 0; i < (int)array->size(); i++)
     {

@@ -1,3 +1,19 @@
+Mon, 28 Aug 2017 17:34:51 +0100
+Checked in by : Robert Osfield
+Build fix
+
+Mon, 28 Aug 2017 16:55:52 +0100
+Checked in by : Robert Osfield
+Added back in 3.4.0 release entry
+
+Mon, 28 Aug 2017 14:34:39 +0200
+Checked in by : Denys Koch
+Fix flawed BoundingSphere inequality operator
+
+Mon, 28 Aug 2017 15:36:31 +0100
+Checked in by : Robert Osfield
+Updates for 3.4.1 stable release
+
 Thu, 24 Aug 2017 17:49:34 +0100
 Checked in by : Robert Osfield
 Updated rc number to 3 or 3.4.1-rc3

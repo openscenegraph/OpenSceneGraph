@@ -65,6 +65,12 @@ namespace osgAnimation
             std::map<std::string, BoneInfluenceList>(org),
             osg::Object(org, copyop)
         {}
+        ///normalize per vertex weights given numvert of the attached mesh
+        void normalize(unsigned int numvert);
+
+        ///remove weakest influences in order to fit targetted numbonepervertex
+        void cullInfluenceCountPerVertex(unsigned int maxnumbonepervertex, float minweight=0, bool renormalize=true);
+
     };
 
 }

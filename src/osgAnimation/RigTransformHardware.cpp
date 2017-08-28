@@ -390,11 +390,11 @@ bool RigTransformHardware::buildPalette(BoneMap&boneMap ,RigGeometry&rig) {
     VertexIndexWeightList vertexIndexWeight;
     vertexIndexWeight.resize(_nbVertexes);
 
-    for (osgAnimation::VertexInfluenceMap::iterator it = vertexInfluenceMap->begin();
-            it != vertexInfluenceMap->end();
-            ++it)
+    for (osgAnimation::VertexInfluenceMap::iterator mapit = vertexInfluenceMap->begin();
+            mapit != vertexInfluenceMap->end();
+            ++mapit)
     {
-        const BoneInfluenceList& boneinflist = it->second;
+        const BoneInfluenceList& boneinflist = mapit->second;
         for(BoneInfluenceList::const_iterator infit = boneinflist.begin(); infit!=boneinflist.end(); ++infit)
         {
             const IndexWeight& iw = *infit;
@@ -402,8 +402,6 @@ bool RigTransformHardware::buildPalette(BoneMap&boneMap ,RigGeometry&rig) {
             const float &weight = iw.getWeight();
 
             FloatInt &sum=sums[index];
-            unsigned int arrayid=sum.second/2;
-            unsigned short inx=2*(sum.second&1);
 
             if (boneinflist.getBoneName().empty()) {
                 OSG_WARN << "VertexInfluenceSet::buildVertex2BoneList warning vertex " << index << " is not assigned to a bone" << std::endl;

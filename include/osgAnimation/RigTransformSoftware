@@ -49,12 +49,6 @@ namespace osgAnimation
             const Bone * getBonePtr()const{return _boneptr.get();}
             void setBonePtr(Bone*b){_boneptr=b;}
 
-            bool operator==(const BonePtrWeight& b) const { return (getBoneName() == b.getBoneName() && getWeight() == b.getWeight()); }
-            //default order : sort by weight desc and bonename if equal
-            /*bool operator<(const BoneWeight& bw2)const{        if (_weight > bw2._weight)return true;
-            if (_weight < bw2._weight)return false;
-            return(_boneName<bw2._boneName);
-                                                     }*/
         protected:
             osg::observer_ptr< Bone > _boneptr;
         };

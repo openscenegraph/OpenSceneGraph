@@ -814,7 +814,7 @@ bool RigGeometry_readLocalData(Object& obj, Input& fr)
         }
 
         osgAnimation::BoneInfluenceList vi;
-        vi.setName(name);
+        vi.setBoneName(name);
         vi.reserve(nbVertexes);
         for (int j = 0; j < nbVertexes; j++)
         {

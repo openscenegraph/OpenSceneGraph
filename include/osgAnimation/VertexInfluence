@@ -42,9 +42,19 @@ namespace osgAnimation
         inline const float &getWeight()const{return second;}
         inline void setWeight(float i){second=i;}
     };
+    typedef std::vector<IndexWeight> IndexWeightList;
+    typedef std::vector<BoneWeight> BoneWeightList;
+    typedef std::vector<unsigned int> IndexList;
 
-    typedef std::vector<IndexWeight> VertexList;
-    class OSGANIMATION_EXPORT BoneInfluenceList : public VertexList
+    /// map a set of boneinfluence to a list of vertex indices sharing this set
+    class VertexGroup: public std::pair<BoneWeightList, IndexList>
+    {
+    public:
+        inline const BoneWeightList& getBoneWeights()const { return first; }
+        inline void setBoneWeights(BoneWeightList&o) {  first=o; }
+        inline IndexList& vertIDs() { return second; }
+    };
+    class OSGANIMATION_EXPORT BoneInfluenceList : public IndexWeightList
     {
     public:
         const std::string& getBoneName() const { return _name;}

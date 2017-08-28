@@ -46,17 +46,15 @@ struct SortByNameAndWeight : public std::less<RigTransformSoftware::BonePtrWeigh
             return true;
         else if (b0.getBoneName() > b1.getBoneName())
             return false;
-        if (b0.getWeight() < b1.getWeight())
-            return true;
-        return false;
+        return (b0.getWeight() < b1.getWeight());
     }
 };
-typedef std::vector<RigTransformSoftware::BonePtrWeight> BoneWeightList;
+typedef std::vector<RigTransformSoftware::BonePtrWeight> BonePtrWeightList;
 
-struct SortByBoneWeightList : public std::less<BoneWeightList>
+struct SortByBoneWeightList : public std::less<BonePtrWeightList>
 {
-    bool operator()(const BoneWeightList& b0,
-                    const BoneWeightList& b1) const
+    bool operator()(const BonePtrWeightList& b0,
+                    const BonePtrWeightList& b1) const
     {
         if (b0.size() < b1.size())
             return true;
@@ -78,7 +76,7 @@ struct SortByBoneWeightList : public std::less<BoneWeightList>
 void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const RigGeometry&rig ){
 
     ///1 Create Index2Vec<BoneWeight>
-    std::vector<BoneWeightList> _vertex2Bones;
+    std::vector<BonePtrWeightList> _vertex2Bones;
     _vertex2Bones.resize(rig.getSourceGeometry()->getVertexArray()->getNumElements());
 
     const VertexInfluenceMap *_vertexInfluenceMap=rig.getInfluenceMap();
@@ -112,11 +110,11 @@ void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const Rig
 
     // normalize _vertex2Bones weight per vertex
     unsigned vertexID=0;
-    for (std::vector<BoneWeightList>::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); ++it, ++vertexID)
+    for (std::vector<BonePtrWeightList>::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); ++it, ++vertexID)
     {
-        BoneWeightList& bones = *it;
+        BonePtrWeightList& bones = *it;
         float sum = 0;
-        for(BoneWeightList::iterator bwit=bones.begin();bwit!=bones.end();++bwit)
+        for(BonePtrWeightList::iterator bwit=bones.begin();bwit!=bones.end();++bwit)
             sum += bwit->getWeight();
         if (sum < 1e-4)
         {
@@ -125,7 +123,7 @@ void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const Rig
         else
         {
             float mult = 1.0/sum;
-            for(BoneWeightList::iterator bwit=bones.begin();bwit!=bones.end();++bwit)
+            for(BonePtrWeightList::iterator bwit=bones.begin();bwit!=bones.end();++bwit)
                 bwit->setWeight(bwit->getWeight() * mult);
         }
     }
@@ -134,12 +132,12 @@ void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const Rig
     ///in order to minimize weighted matrices computation on update
     _uniqInfluenceSet2VertIDList.clear();
 
-    typedef std::map<BoneWeightList, VertexGroup, SortByBoneWeightList> UnifyBoneGroup;
+    typedef std::map<BonePtrWeightList, VertexGroup, SortByBoneWeightList> UnifyBoneGroup;
     UnifyBoneGroup unifyBuffer;
     vertexID=0;
-    for (std::vector<BoneWeightList>::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); ++it,++vertexID)
+    for (std::vector<BonePtrWeightList>::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); ++it,++vertexID)
     {
-        BoneWeightList& bones = *it;
+        BonePtrWeightList& bones = *it;
         // sort the vector to have a consistent key
         std::sort(bones.begin(), bones.end(), SortByNameAndWeight() );
         // we use the vector<BoneWeight> as key to differentiate group

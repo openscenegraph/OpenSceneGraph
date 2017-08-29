@@ -84,8 +84,8 @@ typedef std::list<unsigned int> Sizes;
 
 int main(int argc, char** argv)
 {
-    osgViewer::Viewer   viewer;
     osg::ArgumentParser args(&argc, argv);
+    osgViewer::Viewer viewer(args);
 
     // Make sure we have the minimum args...
     if(argc <= 2)

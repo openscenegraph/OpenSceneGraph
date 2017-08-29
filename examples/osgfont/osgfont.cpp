@@ -3,6 +3,7 @@
 #include <osg/io_utils>
 #include <osg/ArgumentParser>
 #include <osg/Geode>
+#include <osg/MatrixTransform>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 #include <osgGA/StateSetManipulator>
@@ -56,12 +57,12 @@ osg::Camera* createOrthoCamera(double width, double height)
     return camera;
 }
 
-osgText::Text* createLabel(const std::string& l, const char* f, unsigned int size)
+osgText::Text* createLabel(const std::string& l, const std::string& fontfile, unsigned int size)
 {
     static osg::Vec3 pos(10.0f, 10.0f, 0.0f);
 
     osgText::Text* label = new osgText::Text();
-    osg::ref_ptr<osgText::Font> font  = osgText::readRefFontFile(f);
+    osg::ref_ptr<osgText::Font> font  = osgText::readRefFontFile(fontfile);
 
     label->setFont(font);
     label->setCharacterSize(size);
@@ -100,8 +101,27 @@ int main(int argc, char** argv)
     viewer.addEventHandler(new osgViewer::StatsHandler());
     viewer.addEventHandler(new osgViewer::WindowSizeHandler());
 
-    osg::Group*  group  = new osg::Group();
-    osg::Camera* camera = createOrthoCamera(1280.0f, 1024.0f);
+
+    osg::ref_ptr<osg::Group> root = new osg::Group;
+
+    bool ortho = args.read("--ortho");
+    if (ortho)
+    {
+        osg::ref_ptr<osg::Camera> camera = createOrthoCamera(1280.0f, 1024.0f);
+        root->addChild(camera.get());
+        root = camera;
+    }
+    else
+    {
+        osg::ref_ptr<osg::MatrixTransform> transform = new osg::MatrixTransform;
+        transform->setMatrix(osg::Matrixd::rotate(osg::DegreesToRadians(90.0), 1.0, 0.0, 0.0));
+        root->addChild(transform.get());
+        root = transform;
+    }
+
+    std::string fontfile("arial.ttf");
+
+    fontfile = argv[1];
 
     // Create the list of desired sizes.
     Sizes sizes;
@@ -122,14 +142,12 @@ int main(int argc, char** argv)
 
         ss << *i << " 1234567890 abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-        geode->addDrawable(createLabel(ss.str(), args[1], *i));
+        geode->addDrawable(createLabel(ss.str(), fontfile, *i));
     }
 
-    camera->addChild(geode);
+    root->addChild(geode);
 
-    group->addChild(camera);
-
-    viewer.setSceneData(group);
+    viewer.setSceneData(root.get());
 
     return viewer.run();
 }

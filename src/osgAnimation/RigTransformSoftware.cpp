@@ -120,7 +120,7 @@ void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const Rig
     _uniqInfluenceSet2VertIDList.reserve(unifyBuffer.size());
     for (UnifyBoneGroup::const_iterator it = unifyBuffer.begin(); it != unifyBuffer.end(); ++it)
         _uniqInfluenceSet2VertIDList.push_back(it->second);
-    OSG_DEBUG << "uniq groups " << _uniqInfluenceSet2VertIDList.size() << " for " << rig.getName() << std::endl;
+    OSG_WARN << "uniq groups " << _uniqInfluenceSet2VertIDList.size() << " for " << rig.getName() << std::endl;
 }
 
 bool RigTransformSoftware::prepareData(RigGeometry&rig) {

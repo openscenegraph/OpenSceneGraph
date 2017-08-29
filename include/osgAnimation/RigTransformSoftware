@@ -51,11 +51,9 @@ namespace osgAnimation
             inline const float & getWeight() const {return second;}
             inline void setWeight(float b) {second=b;}
             inline bool operator<(const BonePtrWeight &b1) const{
-                    if (getBonePtr() < b1.getBonePtr())
-                        return true;
-                    else if (getBonePtr() > b1.getBonePtr())
-                        return false;
-                    return (getWeight() < b1.getWeight());
+                    if (second > b1.second)return true;
+                    if (second < b1.second)return false;
+                    return (first.get() > b1.first.get());
             }
         };
         typedef std::vector<BonePtrWeight>  BonePtrWeightList;

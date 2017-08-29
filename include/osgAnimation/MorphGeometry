@@ -144,7 +144,7 @@ namespace osgAnimation
         inline bool isDirty()const { return _dirty; }
 
         /** for retrocompatibility */
-        virtual void transformSoftwareMethod(){(*_morphTransformImplementation.get())(*this);}
+        void transformSoftwareMethod(){(*_morphTransformImplementation.get())(*this);}
 
     protected:
         osg::ref_ptr<MorphTransform> _morphTransformImplementation;

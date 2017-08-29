@@ -46,14 +46,6 @@ namespace osgAnimation
     typedef std::vector<BoneWeight> BoneWeightList;
     typedef std::vector<unsigned int> IndexList;
 
-    /// map a set of boneinfluence to a list of vertex indices sharing this set
-    class VertexGroup: public std::pair<BoneWeightList, IndexList>
-    {
-    public:
-        inline const BoneWeightList& getBoneWeights()const { return first; }
-        inline void setBoneWeights(BoneWeightList&o) {  first=o; }
-        inline IndexList& vertIDs() { return second; }
-    };
     class OSGANIMATION_EXPORT BoneInfluenceList : public IndexWeightList
     {
     public:
@@ -82,9 +74,19 @@ namespace osgAnimation
         void cullInfluenceCountPerVertex(unsigned int maxnumbonepervertex, float minweight=0, bool renormalize=true);
 
         //compute PerVertexInfluenceList
-        void computePerVertexInfluenceList(std::vector<BoneWeightList>& vertex2Bones,unsigned int numvert)const;
-        //create the minimal VertexGroup set
-        void computeMinimalVertexGroupList(std::vector<VertexGroup>&uniqVertexGroupList,unsigned int numvert)const;
+        void computePerVertexInfluenceList(std::vector<BoneWeightList>& perVertexInfluenceList, unsigned int numvert)const;
+
+        /// map a set of boneinfluence to a list of vertex indices sharing this set
+        class VertexGroup: public std::pair<BoneWeightList, IndexList>
+        {
+        public:
+            inline const BoneWeightList& getBoneWeights()const { return first; }
+            inline void setBoneWeights( BoneWeightList& o ) {  first=o; }
+            inline IndexList& vertIDs() { return second; }
+        };
+
+        /// compute the minimal VertexGroup Set in which vertices shares the same influence set
+        void computeMinimalVertexGroupList(std::vector<VertexGroup>&uniqVertexGroupList, unsigned int numvert)const;
     };
 
 }

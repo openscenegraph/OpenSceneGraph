@@ -20,6 +20,7 @@
 #include <osgAnimation/RigGeometry>
 
 #include <algorithm>
+
 using namespace osgAnimation;
 
 RigTransformSoftware::RigTransformSoftware()
@@ -34,7 +35,6 @@ RigTransformSoftware::RigTransformSoftware(const RigTransformSoftware& rts,const
 {
 
 }
-
 
 // sort by name and weight
 struct SortByNameAndWeight : public std::less<RigTransformSoftware::BonePtrWeight>
@@ -104,7 +104,7 @@ void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const Rig
             const unsigned int &index = iw.getIndex();
             float weight = iw.getWeight();
 
-            _vertex2Bones[index].push_back(BonePtrWeight(inflist.getBoneName(), weight,bone));;
+            _vertex2Bones[index].push_back(BonePtrWeight(inflist.getBoneName(), weight,bone));
         }
     }
 
@@ -135,19 +135,25 @@ void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const Rig
     typedef std::map<BonePtrWeightList, VertexGroup, SortByBoneWeightList> UnifyBoneGroup;
     UnifyBoneGroup unifyBuffer;
     vertexID=0;
+    ;
     for (std::vector<BonePtrWeightList>::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); ++it,++vertexID)
     {
-        BonePtrWeightList& bones = *it;
+        BonePtrWeightList bones = *it;
         // sort the vector to have a consistent key
         std::sort(bones.begin(), bones.end(), SortByNameAndWeight() );
         // we use the vector<BoneWeight> as key to differentiate group
         UnifyBoneGroup::iterator result = unifyBuffer.find(bones);
-        if (result == unifyBuffer.end())
-            unifyBuffer[bones].getBoneWeights()=bones;
-        unifyBuffer[bones].getVertexes().push_back(vertexID);
+        if (result != unifyBuffer.end())
+            result->second.getVertices().push_back(vertexID);
+        else
+        {
+            VertexGroup& vg = unifyBuffer[bones];
+            vg.getBoneWeights() = bones;
+            vg.getVertices().push_back(vertexID);
+        }
     }
     _uniqInfluenceSet2VertIDList.reserve(unifyBuffer.size());
-    for (UnifyBoneGroup::iterator it = unifyBuffer.begin(); it != unifyBuffer.end(); ++it)
+    for (UnifyBoneGroup::const_iterator it = unifyBuffer.begin(); it != unifyBuffer.end(); ++it)
         _uniqInfluenceSet2VertIDList.push_back(it->second);
     OSG_DEBUG << "uniq groups " << _uniqInfluenceSet2VertIDList.size() << " for " << rig.getName() << std::endl;
 }

@@ -1131,6 +1131,8 @@ void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colo
 #if 1
             if(_backdropType != NONE)
             {
+                OSG_NOTICE<<"Text::drawImplementationSinglePass() Drawing backdrop"<<std::endl;
+
                 unsigned int backdrop_index;
                 unsigned int max_backdrop_index;
                 if(_backdropType == OUTLINE)
@@ -1144,13 +1146,20 @@ void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colo
                     max_backdrop_index = backdrop_index+1;
                 }
 
+                OSG_NOTICE<<"   1 backdrop_index="<<backdrop_index<<", max_backdrop_index="<<max_backdrop_index<<std::endl;
+
                 if (max_backdrop_index>glyphquad._primitives.size()) max_backdrop_index=glyphquad._primitives.size();
+
+                OSG_NOTICE<<"   2 backdrop_index="<<backdrop_index<<", max_backdrop_index="<<max_backdrop_index<<std::endl;
 
                 state.disableColorPointer();
                 state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
+                OSG_NOTICE<<"   _backdropColor("<<_backdropColor<<")"<<std::endl;
+
                 for( ; backdrop_index < max_backdrop_index; backdrop_index++)
                 {
+                    OSG_NOTICE<<"      draw backdrop "<<backdrop_index<<std::endl;
                     glyphquad._primitives[backdrop_index]->draw(state, usingVertexBufferObjects);
                 }
             }

@@ -4,6 +4,7 @@
 #include <osg/ArgumentParser>
 #include <osg/Geode>
 #include <osg/MatrixTransform>
+#include <osgDB/WriteFile>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 #include <osgGA/StateSetManipulator>
@@ -57,29 +58,73 @@ osg::Camera* createOrthoCamera(double width, double height)
     return camera;
 }
 
-osgText::Text* createLabel(const std::string& l, const std::string& fontfile, unsigned int size)
+struct TextSettings
+{
+    TextSettings():
+        fontFilename("fonts/arial.ttf"),
+        textColor(1.0f, 1.0f, 1.0f, 1.0f),
+        backdropType(osgText::Text::NONE),
+        backdropOffset(0.04f, 0.04f),
+        backdropColor(0.0f, 0.0f, 0.0f, 1.0f)
+    {
+    }
+
+    void read(osg::ArgumentParser& arguments)
+    {
+        if (arguments.read("--outline")) backdropType = osgText::Text::OUTLINE;
+        if (arguments.read("--shadow")) backdropType = osgText::Text::DROP_SHADOW_BOTTOM_RIGHT;
+
+        float offset;
+        if (arguments.read("--offset", offset)) backdropOffset.set(offset, offset);
+
+        if (arguments.read("--text-color", textColor.r(), textColor.g(), textColor.b(), textColor.a())) {}
+        if (arguments.read("--bd-color", backdropColor.r(), backdropColor.g(), backdropColor.b(), backdropColor.a())) {}
+    }
+
+    void setText(osgText::Text& text)
+    {
+        OSG_NOTICE<<"Settings::setText()"<<std::endl;
+        text.setFont(fontFilename);
+        text.setColor(textColor);
+        text.setBackdropType(backdropType);
+        text.setBackdropOffset(backdropOffset.x(), backdropOffset.y());
+        text.setBackdropColor(backdropColor);
+    }
+
+    std::string                 fontFilename;
+    osg::Vec4                   textColor;
+    osgText::Text::BackdropType backdropType;
+    osg::Vec2                   backdropOffset;
+    osg::Vec4                   backdropColor;
+};
+
+osgText::Text* createLabel(const std::string& l, TextSettings& settings, unsigned int size)
 {
     static osg::Vec3 pos(10.0f, 10.0f, 0.0f);
 
     osgText::Text* label = new osgText::Text();
-    osg::ref_ptr<osgText::Font> font  = osgText::readRefFontFile(fontfile);
+    osg::ref_ptr<osgText::Font> font  = osgText::readRefFontFile(settings.fontFilename);
 
-    label->setFont(font);
+    settings.setText(*label);
+
     label->setCharacterSize(size);
     label->setFontResolution(size, size);
-    label->setColor(osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f));
     label->setPosition(pos);
     label->setAlignment(osgText::Text::LEFT_BOTTOM);
+
 
     // It seems to be important we do this last to get best results?
     label->setText(l);
 
-    textInfo(label);
+
+    // textInfo(label);
 
     pos.y() += size + 10.0f;
 
     return label;
 }
+
+
 
 typedef std::list<unsigned int> Sizes;
 
@@ -101,6 +146,11 @@ int main(int argc, char** argv)
     viewer.addEventHandler(new osgViewer::StatsHandler());
     viewer.addEventHandler(new osgViewer::WindowSizeHandler());
 
+    osg::Vec4d backgroudColor = viewer.getCamera()->getClearColor();
+    if (args.read("--bg-color", backgroudColor.r(), backgroudColor.g(), backgroudColor.b(), backgroudColor.a()))
+    {
+        viewer.getCamera()->setClearColor(backgroudColor);
+    }
 
     osg::ref_ptr<osg::Group> root = new osg::Group;
 
@@ -119,9 +169,10 @@ int main(int argc, char** argv)
         root = transform;
     }
 
-    std::string fontfile("arial.ttf");
+    TextSettings settings;
+    settings.fontFilename = argv[1];
+    settings.read(args);
 
-    fontfile = argv[1];
 
     // Create the list of desired sizes.
     Sizes sizes;
@@ -142,10 +193,17 @@ int main(int argc, char** argv)
 
         ss << *i << " 1234567890 abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-        geode->addDrawable(createLabel(ss.str(), fontfile, *i));
+        geode->addDrawable(createLabel(ss.str(), settings, *i));
     }
 
     root->addChild(geode);
+
+    std::string filename;
+    if (args.read("-o", filename))
+    {
+        osgDB::writeNodeFile(*root, filename);
+        return 0;
+    }
 
     viewer.setSceneData(root.get());
 

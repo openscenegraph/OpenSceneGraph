@@ -28,6 +28,8 @@
 #include <osgAnimation/BasicAnimationManager>
 #include <osgAnimation/RigGeometry>
 #include <osgAnimation/RigTransformHardware>
+#include <osgAnimation/MorphGeometry>
+#include <osgAnimation/MorphTransformHardware>
 #include <osgAnimation/AnimationManagerBase>
 #include <osgAnimation/BoneMapVisitor>
 
@@ -182,8 +184,11 @@ struct SetupRigGeometry : public osg::NodeVisitor
         if (_hardware)
         {
             osgAnimation::RigGeometry* rig = dynamic_cast<osgAnimation::RigGeometry*>(&geom);
-            if (rig)
+            if (rig){
                 rig->setRigTransformImplementation(new MyRigTransformHardware);
+                osgAnimation::MorphGeometry *morph=dynamic_cast<osgAnimation::MorphGeometry*>(rig->getSourceGeometry());
+                if(morph)morph->setMorphTransformImplementation(new osgAnimation::MorphTransformHardware);
+            }
         }
 
 #if 0

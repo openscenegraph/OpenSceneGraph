@@ -40,17 +40,23 @@ namespace osgAnimation
         //to call when a skeleton is reacheable from the rig to prepare technic data
         virtual bool prepareData(RigGeometry&);
 
-        class BonePtrWeight: public BoneWeight
+        class BonePtrWeight: std::pair< osg::observer_ptr< Bone >, float>
         {
         public:
-            BonePtrWeight(const std::string& name, float weight, Bone *bptr=0) :BoneWeight(name,weight), _boneptr(bptr) {}
-            BonePtrWeight(const BonePtrWeight &bw2) : BoneWeight(bw2), _boneptr(bw2._boneptr) {}
+            BonePtrWeight(Bone*bone, float weight) :std::pair< osg::observer_ptr< Bone >, float>(bone,weight) {}
+            BonePtrWeight(const BonePtrWeight &bw2) : std::pair< osg::observer_ptr< Bone >, float>(bw2.first.get(),bw2.getWeight()) {}
 
-            const Bone * getBonePtr()const{return _boneptr.get();}
-            void setBonePtr(Bone*b){_boneptr=b;}
-
-        protected:
-            osg::observer_ptr< Bone > _boneptr;
+            inline const Bone * getBonePtr() const {return first.get();}
+            inline void setBonePtr(Bone*b){first=b;}
+            inline const float & getWeight() const {return second;}
+            inline void setWeight(float b) {second=b;}
+            inline bool operator<(const BonePtrWeight &b1) const{
+                    if (getBonePtr() < b1.getBonePtr())
+                        return true;
+                    else if (getBonePtr() > b1.getBonePtr())
+                        return false;
+                    return (getWeight() < b1.getWeight());
+            }
         };
         typedef std::vector<BonePtrWeight>  BonePtrWeightList;
 

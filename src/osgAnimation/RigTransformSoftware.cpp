@@ -36,42 +36,7 @@ RigTransformSoftware::RigTransformSoftware(const RigTransformSoftware& rts,const
 
 }
 
-// sort by name and weight
-struct SortByNameAndWeight : public std::less<RigTransformSoftware::BonePtrWeight>
-{
-    bool operator()(const RigTransformSoftware::BonePtrWeight& b0,
-                    const RigTransformSoftware::BonePtrWeight& b1) const
-    {
-        if (b0.getBoneName() < b1.getBoneName())
-            return true;
-        else if (b0.getBoneName() > b1.getBoneName())
-            return false;
-        return (b0.getWeight() < b1.getWeight());
-    }
-};
 typedef std::vector<RigTransformSoftware::BonePtrWeight> BonePtrWeightList;
-
-struct SortByBoneWeightList : public std::less<BonePtrWeightList>
-{
-    bool operator()(const BonePtrWeightList& b0,
-                    const BonePtrWeightList& b1) const
-    {
-        if (b0.size() < b1.size())
-            return true;
-        else if (b0.size() > b1.size())
-            return false;
-
-        int size = b0.size();
-        for (int i = 0; i < size; i++)
-        {
-            if (SortByNameAndWeight()(b0[i], b1[i]))
-                return true;
-            else if (SortByNameAndWeight()(b1[i], b0[i]))
-                return false;
-        }
-        return false;
-    }
-};
 
 void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const RigGeometry&rig ){
 
@@ -104,7 +69,7 @@ void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const Rig
             const unsigned int &index = iw.getIndex();
             float weight = iw.getWeight();
 
-            _vertex2Bones[index].push_back(BonePtrWeight(inflist.getBoneName(), weight,bone));
+            _vertex2Bones[index].push_back(BonePtrWeight(bone, weight));
         }
     }
 
@@ -132,15 +97,15 @@ void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const Rig
     ///in order to minimize weighted matrices computation on update
     _uniqInfluenceSet2VertIDList.clear();
 
-    typedef std::map<BonePtrWeightList, VertexGroup, SortByBoneWeightList> UnifyBoneGroup;
+    typedef std::map<BonePtrWeightList, VertexGroup> UnifyBoneGroup;
     UnifyBoneGroup unifyBuffer;
     vertexID=0;
     ;
     for (std::vector<BonePtrWeightList>::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); ++it,++vertexID)
     {
-        BonePtrWeightList bones = *it;
+        BonePtrWeightList &bones = *it;
         // sort the vector to have a consistent key
-        std::sort(bones.begin(), bones.end(), SortByNameAndWeight() );
+        std::sort(bones.begin(), bones.end() );
         // we use the vector<BoneWeight> as key to differentiate group
         UnifyBoneGroup::iterator result = unifyBuffer.find(bones);
         if (result != unifyBuffer.end())

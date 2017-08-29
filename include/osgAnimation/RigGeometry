@@ -145,10 +145,6 @@ namespace osgAnimation
                 }
                 geom->setSkeleton(finder._root.get());
 
-                if(!geom->getRigTransformImplementation())
-                {
-                    geom->setRigTransformImplementation(new RigTransformSoftware);
-                }
                 geom->getRigTransformImplementation()->prepareData(*geom);
             }
 

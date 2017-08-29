@@ -61,25 +61,25 @@ namespace osgAnimation
         virtual const char* className() const { return "MorphGeometry"; }
 
         // set implementation of rig method
-        void setMorphTransformImplementation(MorphTransform*);
-        MorphTransform* getMorphTransformImplementation();
-        const MorphTransform* getMorphTransformImplementation() const { return _rigTransformImplementation.get(); }
+        inline void setMorphTransformImplementation(MorphTransform*mt) {  _morphTransformImplementation=mt; }
+        inline MorphTransform* getMorphTransformImplementation() { return _morphTransformImplementation.get(); }
+        inline const MorphTransform* getMorphTransformImplementation() const { return _morphTransformImplementation.get(); }
 
         /** Set the morphing method. */
-        void setMethod(Method method) { _method = method; }
+        inline void setMethod(Method method) { _method = method; }
         /** Get the morphing method. */
         inline Method getMethod() const { return _method; }
 
         /** Set flag for morphing normals. */
-        void setMorphNormals(bool morphNormals) { _morphNormals = morphNormals; }
+        inline void setMorphNormals(bool morphNormals) { _morphNormals = morphNormals; }
         /** Get the flag for morphing normals. */
         inline bool getMorphNormals() const { return _morphNormals; }
 
         /** Get the list of MorphTargets.*/
-        const MorphTargetList& getMorphTargetList() const { return _morphTargets; }
+        inline const MorphTargetList& getMorphTargetList() const { return _morphTargets; }
 
         /** Get the list of MorphTargets. Warning if you modify this array you will have to call dirty() */
-        MorphTargetList& getMorphTargetList() { return _morphTargets; }
+        inline MorphTargetList& getMorphTargetList() { return _morphTargets; }
 
         /** Return the \c MorphTarget at position \c i.*/
         inline const MorphTarget& getMorphTarget( unsigned int i ) const { return _morphTargets[i]; }
@@ -130,7 +130,7 @@ namespace osgAnimation
         }
 
         /** update a morph target at index setting its current weight to morphWeight */
-        void setWeight(unsigned int index, float morphWeight)
+        inline void setWeight(unsigned int index, float morphWeight)
         {
             if (index < _morphTargets.size())
             {
@@ -144,10 +144,10 @@ namespace osgAnimation
         inline bool isDirty()const { return _dirty; }
 
         /** for retrocompatibility */
-        virtual void transformSoftwareMethod(){ if (!_rigTransformImplementation.valid())_rigTransformImplementation = new MorphTransformSoftware();(*_rigTransformImplementation.get())(*this);}
+        virtual void transformSoftwareMethod(){(*_morphTransformImplementation.get())(*this);}
 
     protected:
-        osg::ref_ptr<MorphTransform> _rigTransformImplementation;
+        osg::ref_ptr<MorphTransform> _morphTransformImplementation;
         /// Do we need to recalculate the morphed geometry?
         bool _dirty;
 

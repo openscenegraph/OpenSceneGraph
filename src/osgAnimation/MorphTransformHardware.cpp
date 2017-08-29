@@ -1,5 +1,5 @@
 /*  -*-c++-*-
- *  Copyleft 2016 Valentin Julien
+ *  Copyright (C) 2017 Julien Valentin <mp3butcher@hotmail.com>
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or

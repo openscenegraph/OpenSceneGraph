@@ -80,9 +80,15 @@ struct ZIPENTRY
   ZIPENTRY():
     index(0),
     attr(0),
+#ifdef _MSC_VER
     atime({0}),
     ctime({0}),
     mtime({0}),
+#else
+    atime(0),
+    ctime(0),
+    mtime(0),
+#endif
     comp_size(0),
     unc_size(0) {}
 

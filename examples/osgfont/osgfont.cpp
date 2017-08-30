@@ -4,6 +4,7 @@
 #include <osg/ArgumentParser>
 #include <osg/Geode>
 #include <osg/MatrixTransform>
+#include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
@@ -200,6 +201,29 @@ int main(int argc, char** argv)
         root = transform;
     }
 
+    osg::ref_ptr<osg::Program> program = new osg::Program;
+    std::string shaderFilename;
+    while(args.read("--shader", shaderFilename))
+    {
+        osg::ref_ptr<osg::Shader> shader = osgDB::readRefShaderFile(shaderFilename);
+        if (shader.get())
+        {
+            OSG_NOTICE<<"Loading shader "<<shaderFilename<<std::endl;
+            program->addShader(shader.get());
+        }
+    }
+
+    if (program->getNumShaders()>0)
+    {
+        OSG_NOTICE<<"Using shaders"<<std::endl;
+        root->getOrCreateStateSet()->setAttribute(program.get(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
+        root->getOrCreateStateSet()->addUniform(new osg::Uniform("glyphTexture", 0));
+    }
+
+
+    std::string outputFilename;
+    if (args.read("-o", outputFilename)) {}
+
     if (args.argc() > 1)
     {
         settings.fontFilename = argv[1];
@@ -235,10 +259,9 @@ int main(int argc, char** argv)
 
     root->addChild(geode);
 
-    std::string filename;
-    if (args.read("-o", filename))
+    if (!outputFilename.empty())
     {
-        osgDB::writeNodeFile(*root, filename);
+        osgDB::writeNodeFile(*root, outputFilename);
         return 0;
     }
 

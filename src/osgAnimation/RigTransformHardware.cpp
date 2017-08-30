@@ -104,7 +104,7 @@ void createVertexAttribList(RigTransformHardware& rig,
                 unsigned int boneIndexInVec4 = b*2;
                 (*array)[j][0 + boneIndexInVec4] = 0;
                 (*array)[j][1 + boneIndexInVec4] = 0;
-                if (boneIndexInList < maxbonepervertex)
+                if (boneIndexInList < perVertexInfluences[j].size())
                 {
                     float boneIndex = static_cast<float>(perVertexInfluences[j][boneIndexInList].getIndex());
                     float boneWeight = perVertexInfluences[j][boneIndexInList].getWeight();
@@ -214,7 +214,7 @@ bool RigTransformHardware::buildPalette(const BoneMap&boneMap ,const RigGeometry
             }
             else
             {
-                OSG_INFO << "RigTransformHardware::buildPalette Bone " << bonename << " has a weight " << weight << " for vertex " << index << " this bone will not be in the palette" << std::endl;
+                OSG_WARN << "RigTransformHardware::buildPalette Bone " << bonename << " has a weight " << weight << " for vertex " << index << " this bone will not be in the palette" << std::endl;
             }
             maxBonePerVertex = osg::maximum(maxBonePerVertex, iwlist.size());
 

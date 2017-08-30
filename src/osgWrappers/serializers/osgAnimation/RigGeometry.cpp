@@ -19,8 +19,8 @@ static bool readInfluenceMap( osgDB::InputStream& is, osgAnimation::RigGeometry&
         is >> is.PROPERTY("VertexInfluence");
         is.readWrappedString(bonename);
         viSize = is.readSize(); is >> is.BEGIN_BRACKET;
-
-        osgAnimation::IndexWeightList vi;
+        osgAnimation::VertexInfluence vi;
+        vi.setName( bonename );
         vi.reserve( viSize );
         for ( unsigned int j=0; j<viSize; ++j )
         {
@@ -46,14 +46,14 @@ static bool writeInfluenceMap( osgDB::OutputStream& os, const osgAnimation::RigG
           itr!=map->end(); ++itr )
     {
         std::string name = itr->first;
-        const osgAnimation::IndexWeightList& vi = itr->second;
+        const osgAnimation::VertexInfluence& vi = itr->second;
         if ( name.empty() ) name = "Empty";
 
         os << os.PROPERTY("VertexInfluence");
         os.writeWrappedString(name);
         os.writeSize(vi.size()) ; os << os.BEGIN_BRACKET << std::endl;
 
-        for ( osgAnimation::IndexWeightList::const_iterator vitr=vi.begin();
+        for ( osgAnimation::VertexInfluence::const_iterator vitr=vi.begin();
               vitr != vi.end(); ++vitr )
         {
             os << vitr->first << vitr->second << std::endl;

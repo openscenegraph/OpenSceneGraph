@@ -804,16 +804,17 @@ bool RigGeometry_readLocalData(Object& obj, Input& fr)
     for (int i = 0; i < nbGroups; i++)
     {
         int nbVertexes = 0;
-        std::string bonename;
+        std::string name;
         if (fr.matchSequence("osgAnimation::VertexInfluence %s %i {"))
         {
-            bonename = fr[1].getStr();
+            name = fr[1].getStr();
             fr[2].getInt(nbVertexes);
             fr += 4;
             iteratorAdvanced = true;
         }
 
-        osgAnimation::IndexWeightList vi;
+        osgAnimation::VertexInfluence vi;
+        vi.setName(name);
         vi.reserve(nbVertexes);
         for (int j = 0; j < nbVertexes; j++)
         {
@@ -832,7 +833,7 @@ bool RigGeometry_readLocalData(Object& obj, Input& fr)
         {
             fr+=1;
         }
-        (*vmap)[bonename] = vi;
+        (*vmap)[name] = vi;
     }
     if (!vmap->empty())
         geom.setInfluenceMap(vmap.get());
@@ -862,8 +863,8 @@ bool RigGeometry_writeLocalData(const Object& obj, Output& fw)
             name = "Empty";
         fw.indent() << "osgAnimation::VertexInfluence \""  << name << "\" " << it->second.size() << " {" << std::endl;
         fw.moveIn();
-        const osgAnimation::IndexWeightList& vi = it->second;
-        for (osgAnimation::IndexWeightList::const_iterator itv = vi.begin(); itv != vi.end(); itv++)
+        const osgAnimation::VertexInfluence& vi = it->second;
+        for (osgAnimation::VertexInfluence::const_iterator itv = vi.begin(); itv != vi.end(); itv++)
         {
             fw.indent() << itv->first << " " << itv->second << std::endl;
         }

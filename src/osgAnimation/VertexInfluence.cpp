@@ -89,14 +89,16 @@ void VertexInfluenceMap::cullInfluenceCountPerVertex(unsigned int numbonepervert
             if(sum>1e-4){
                 sum=1.0f/sum;
                 for(BoneWeightOrdered::iterator bwit=bwset.begin(); bwit!=bwset.end(); ++bwit) {
-                    IndexWeightList & inf= (*this)[bwit->getBoneName()];
+                    VertexInfluence & inf= (*this)[bwit->getBoneName()];
                     inf.push_back(IndexWeight(mapit->first, bwit->getWeight()*sum));
+                    inf.setName(bwit->getBoneName());
                 }
             }
         }else{
             for(BoneWeightOrdered::iterator bwit=bwset.begin(); bwit!=bwset.end(); ++bwit) {
-                IndexWeightList & inf= (*this)[bwit->getBoneName()];
+                VertexInfluence & inf= (*this)[bwit->getBoneName()];
                 inf.push_back(IndexWeight(mapit->first,bwit->getWeight()));
+                inf.setName(bwit->getBoneName());
             }
 
         }

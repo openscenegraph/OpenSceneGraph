@@ -48,17 +48,6 @@ osg::Vec4Array* RigTransformHardware::getVertexAttrib(unsigned int index)
     return _boneWeightAttribArrays[index].get();
 }
 
-unsigned int RigTransformHardware::getNumVertexAttrib()
-{
-    return _boneWeightAttribArrays.size();
-}
-
-osg::Uniform* RigTransformHardware::getMatrixPaletteUniform()
-{
-    return _uniformMatrixPalette.get();
-}
-
-
 void RigTransformHardware::computeMatrixPaletteUniform(const osg::Matrix& transformFromSkeletonToGeometry, const osg::Matrix& invTransformFromSkeletonToGeometry)
 {
     for (unsigned int i = 0; i <  _bonePalette.size(); i++)
@@ -74,11 +63,7 @@ void RigTransformHardware::computeMatrixPaletteUniform(const osg::Matrix& transf
 }
 
 
-unsigned int RigTransformHardware::getNumBonesPerVertex() const { return _bonesPerVertex;}
-unsigned int RigTransformHardware::getNumVertexes() const { return _nbVertexes;}
-
-typedef std::vector<std::vector<IndexWeight> > VertexIndexWeightList;
-void createVertexAttribList(RigTransformHardware& rig,const VertexIndexWeightList&_vertexIndexMatrixWeightList,RigTransformHardware::BoneWeightAttribList & boneWeightAttribArrays);
+void createVertexAttribList(RigTransformHardware& rig,const  std::vector<std::vector<IndexWeight> > &perVertexInfluences,RigTransformHardware::BoneWeightAttribList & boneWeightAttribArrays);
 
 //
 // create vertex attribute by 2 bones
@@ -89,11 +74,15 @@ void createVertexAttribList(RigTransformHardware& rig,const VertexIndexWeightLis
 // than the 4 bones using two vertex attributes
 //
 
-void createVertexAttribList(RigTransformHardware& rig,const VertexIndexWeightList& _vertexIndexMatrixWeightList, RigTransformHardware::BoneWeightAttribList& boneWeightAttribArrays)
+typedef std::vector<std::vector<IndexWeight> > PerVertexInfList;
+void createVertexAttribList(RigTransformHardware& rig,
+                            const PerVertexInfList & perVertexInfluences,
+                            RigTransformHardware::BoneWeightAttribList& boneWeightAttribArrays)
 {
     unsigned int nbVertices= rig.getNumVertexes();
     unsigned int maxbonepervertex=rig.getNumBonesPerVertex();
     unsigned int nbArray = static_cast<unsigned int>(ceilf( ((float)maxbonepervertex) * 0.5f));
+
     if (!nbArray)
         return ;
 
@@ -105,7 +94,6 @@ void createVertexAttribList(RigTransformHardware& rig,const VertexIndexWeightLis
         array->resize( nbVertices);
         for (unsigned int j = 0; j < nbVertices; j++)
         {
-
             for (unsigned int b = 0; b < 2; b++)
             {
                 // the granularity is 2 so if we have only one bone
@@ -116,8 +104,8 @@ void createVertexAttribList(RigTransformHardware& rig,const VertexIndexWeightLis
                 (*array)[j][1 + boneIndexInVec4] = 0;
                 if (boneIndexInList < maxbonepervertex)
                 {
-                    float boneIndex = static_cast<float>(_vertexIndexMatrixWeightList[j][boneIndexInList].getIndex());
-                    float boneWeight = _vertexIndexMatrixWeightList[j][boneIndexInList].getWeight();
+                    float boneIndex = static_cast<float>(perVertexInfluences[j][boneIndexInList].getIndex());
+                    float boneWeight = perVertexInfluences[j][boneIndexInList].getWeight();
                     // fill the vec4
                     (*array)[j][0 + boneIndexInVec4] = boneIndex;
                     (*array)[j][1 + boneIndexInVec4] = boneWeight;
@@ -125,19 +113,7 @@ void createVertexAttribList(RigTransformHardware& rig,const VertexIndexWeightLis
             }
         }
     }
-    return ;
-}
-
-osg::Uniform* RigTransformHardware::createVertexUniform()
-{
-    osg::Uniform* uniform = new osg::Uniform(osg::Uniform::FLOAT_MAT4, "matrixPalette", _bonePalette.size());
-    return uniform;
-}
-
-
-void RigTransformHardware::setShader(osg::Shader* shader)
-{
-    _shader = shader;
+    return;
 }
 
 bool RigTransformHardware::prepareData(RigGeometry& rig)
@@ -252,37 +228,32 @@ bool RigTransformHardware::prepareData(RigGeometry& rig)
     _needInit = false;
     return true;
 }
-void createVertexAttribList(RigTransformHardware& rig,const VertexIndexWeightList&_vertexIndexMatrixWeightList,RigTransformHardware::BoneWeightAttribList & boneWeightAttribArrays);
 
-bool RigTransformHardware::buildPalette(BoneMap&boneMap ,RigGeometry&rig) {
-
-    _nbVertexes = rig.getVertexArray()->getNumElements();
-    IndexWeightList::size_type maxBonePerVertex=0;
-
-    typedef std::pair<float,unsigned int> FloatInt;
-    std::vector< FloatInt > sums;///stat totalweight nbref
-    sums.resize(_nbVertexes);
+bool RigTransformHardware::buildPalette(const BoneMap&boneMap ,const RigGeometry&rig) {
 
     typedef std::map<std::string, int> BoneNameCountMap;
+    _nbVertexes = rig.getVertexArray()->getNumElements();
+    _boneWeightAttribArrays.resize(0);
     _bonePalette.clear();
     _boneNameToPalette.clear();
+
+    IndexWeightList::size_type maxBonePerVertex=0;
     BoneNameCountMap boneNameCountMap;
 
-    VertexInfluenceMap *vertexInfluenceMap=rig.getInfluenceMap();
+    const VertexInfluenceMap &vertexInfluenceMap=*rig.getInfluenceMap();
     BoneNamePaletteIndex::iterator boneName2PaletteIndex;
-    _boneWeightAttribArrays.resize(0);
 
     // init temp vertex attribute data
-    VertexIndexWeightList vertexIndexWeight;
-    vertexIndexWeight.resize(_nbVertexes);
+    std::vector<std::vector<IndexWeight> >  perVertexInfluences;
+    perVertexInfluences.resize(_nbVertexes);
 
     unsigned int paletteindex;
-    for (osgAnimation::VertexInfluenceMap::iterator mapit = vertexInfluenceMap->begin();
-            mapit != vertexInfluenceMap->end();
-            ++mapit)
+    for (osgAnimation::VertexInfluenceMap::const_iterator boneinflistit = vertexInfluenceMap.begin();
+            boneinflistit != vertexInfluenceMap.end();
+            ++boneinflistit)
     {
-        const IndexWeightList& boneinflist = mapit->second;
-        const std::string& bonename = mapit->first;
+        const IndexWeightList& boneinflist = boneinflistit->second;
+        const std::string& bonename = boneinflistit->first;
         BoneMap::const_iterator bonebyname;
         if ((bonebyname=boneMap.find(bonename)) == boneMap.end())
         {
@@ -307,7 +278,7 @@ bool RigTransformHardware::buildPalette(BoneMap&boneMap ,RigGeometry&rig) {
             const IndexWeight& iw = *infit;
             const unsigned int &index = iw.getIndex();
             const float &weight = iw.getWeight();
-            IndexWeightList & iwlist=vertexIndexWeight[index];
+            IndexWeightList & iwlist=perVertexInfluences[index];
 
             if(fabs(weight) > 1e-4) // don't use bone with weight too small
             {
@@ -315,7 +286,7 @@ bool RigTransformHardware::buildPalette(BoneMap&boneMap ,RigGeometry&rig) {
             }
             else
             {
-                OSG_WARN << "RigTransformHardware::buildPalette Bone " << bonename << " has a weight " << weight << " for vertex " << index << " this bone will not be in the palette" << std::endl;
+                OSG_INFO << "RigTransformHardware::buildPalette Bone " << bonename << " has a weight " << weight << " for vertex " << index << " this bone will not be in the palette" << std::endl;
             }
             maxBonePerVertex = osg::maximum(maxBonePerVertex, iwlist.size());
 
@@ -334,11 +305,11 @@ bool RigTransformHardware::buildPalette(BoneMap&boneMap ,RigGeometry&rig) {
     }
 
     ///normalize
-    /*unsigned int vertid=0;
-    for(VertexIndexWeightList::iterator it=vertexIndexWeight.begin();it!=vertexIndexWeight.end();++it,++vertid)
+    unsigned int vertid=0;
+    for(PerVertexInfList::iterator vertinfit=perVertexInfluences.begin(); vertinfit != perVertexInfluences.end(); ++vertinfit,++vertid)
     {
         float sum=0;
-        for(IndexWeightList::iterator iwit=it->begin();iwit!=it->end();++iwit)
+        for(IndexWeightList::iterator iwit = vertinfit->begin(); iwit != vertinfit->end(); ++iwit)
             sum+=iwit->second;
 
         if(sum< 1e-4){
@@ -347,15 +318,15 @@ bool RigTransformHardware::buildPalette(BoneMap&boneMap ,RigGeometry&rig) {
         else
         {
             sum=1.0f/sum;
-            for(IndexWeightList::iterator iwit=it->begin();iwit!=it->end();++iwit)
+            for(IndexWeightList::iterator iwit=vertinfit->begin();iwit!=vertinfit->end();++iwit)
                 iwit->second*=sum;
         }
-    }*/
+    }
 
     _bonesPerVertex = maxBonePerVertex;
     _uniformMatrixPalette = new osg::Uniform(osg::Uniform::FLOAT_MAT4, "matrixPalette", _bonePalette.size());
 
-    createVertexAttribList(*this,vertexIndexWeight,this->_boneWeightAttribArrays);
+    createVertexAttribList(*this,perVertexInfluences,this->_boneWeightAttribArrays);
 
 return true;
 }

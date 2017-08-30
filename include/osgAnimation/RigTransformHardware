@@ -38,35 +38,31 @@ namespace osgAnimation
 
         META_Object(osgAnimation,RigTransformHardware);
 
-        typedef osg::Matrix MatrixType;
         typedef std::vector<osg::ref_ptr<osg::Vec4Array> > BoneWeightAttribList;
         typedef std::vector<osg::ref_ptr<Bone> > BonePalette;
         typedef std::map<std::string, unsigned int> BoneNamePaletteIndex;
-
         typedef std::vector<osg::Matrix> MatrixPalette;
 
         osg::Vec4Array* getVertexAttrib(unsigned int index);
-        unsigned int getNumVertexAttrib();
+        unsigned int getNumVertexAttrib() const     {return _boneWeightAttribArrays.size();}
 
-        osg::Uniform* getMatrixPaletteUniform();
+        void setShader(osg::Shader* shader)         {       _shader = shader;             }
+        osg::Shader* getShader() const              {       return _shader;               }
+
+        const unsigned int &getNumBonesPerVertex() const{   return _bonesPerVertex;       }
+        const unsigned int &getNumVertexes() const      {   return _nbVertexes;           }
+
+        const BoneNamePaletteIndex& getBoneNameToPalette(){ return _boneNameToPalette;    }
+        const BonePalette& getBonePalette()             {   return _bonePalette;          }
+        osg::Uniform* getMatrixPaletteUniform()         {   return _uniformMatrixPalette; }
+
         void computeMatrixPaletteUniform(const osg::Matrix& transformFromSkeletonToGeometry, const osg::Matrix& invTransformFromSkeletonToGeometry);
-
-        unsigned int getNumBonesPerVertex() const;
-        unsigned int getNumVertexes() const;
 
         virtual void operator()(RigGeometry&);
 
         virtual bool prepareData(RigGeometry& );
 
-        void setShader(osg::Shader*);
-
-        const BoneNamePaletteIndex& getBoneNameToPalette() {
-            return _boneNameToPalette;
-        }
-
     protected:
-
-        osg::Uniform* createVertexUniform();
 
         unsigned int _bonesPerVertex;
         unsigned int _nbVertexes;
@@ -79,7 +75,7 @@ namespace osgAnimation
 
         bool _needInit;
 
-        bool buildPalette(BoneMap&boneMap ,RigGeometry&rig);
+        bool buildPalette(const BoneMap& boneMap ,const RigGeometry& rig);
 
     };
 }

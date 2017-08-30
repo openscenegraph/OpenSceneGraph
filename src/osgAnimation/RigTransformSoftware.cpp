@@ -38,19 +38,19 @@ RigTransformSoftware::RigTransformSoftware(const RigTransformSoftware& rts,const
 
 typedef std::vector<RigTransformSoftware::BonePtrWeight> BonePtrWeightList;
 
-void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const RigGeometry&rig ){
+void RigTransformSoftware::buildMinimumUpdateSet( const BoneMap&boneMap, const RigGeometry&rig ){
 
     ///1 Create Index2Vec<BoneWeight>
-    std::vector<BonePtrWeightList> _vertex2Bones;
-    _vertex2Bones.resize(rig.getSourceGeometry()->getVertexArray()->getNumElements());
+    const VertexInfluenceMap &vertexInfluenceMap=*rig.getInfluenceMap();
+    std::vector<BonePtrWeightList> perVertexInfluences;
+    perVertexInfluences.resize(rig.getSourceGeometry()->getVertexArray()->getNumElements());
 
-    const VertexInfluenceMap *_vertexInfluenceMap=rig.getInfluenceMap();
-    for (osgAnimation::VertexInfluenceMap::const_iterator it = _vertexInfluenceMap->begin();
-            it != _vertexInfluenceMap->end();
-            ++it)
+    for (osgAnimation::VertexInfluenceMap::const_iterator perBoneinfit = vertexInfluenceMap.begin();
+            perBoneinfit != vertexInfluenceMap.end();
+            ++perBoneinfit)
     {
-        const IndexWeightList& inflist = it->second;
-        const std::string& bonename = it->first;
+        const IndexWeightList& inflist = perBoneinfit->second;
+        const std::string& bonename = perBoneinfit->first;
 
         if (bonename.empty()) {
             OSG_WARN << "RigTransformSoftware::VertexInfluenceMap contains unamed bone IndexWeightList" << std::endl;
@@ -71,13 +71,13 @@ void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const Rig
             const unsigned int &index = iw.getIndex();
             float weight = iw.getWeight();
 
-            _vertex2Bones[index].push_back(BonePtrWeight(bone, weight));
+            perVertexInfluences[index].push_back(BonePtrWeight(bone, weight));
         }
     }
 
     // normalize _vertex2Bones weight per vertex
     unsigned vertexID=0;
-    for (std::vector<BonePtrWeightList>::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); ++it, ++vertexID)
+    for (std::vector<BonePtrWeightList>::iterator it = perVertexInfluences.begin(); it != perVertexInfluences.end(); ++it, ++vertexID)
     {
         BonePtrWeightList& bones = *it;
         float sum = 0;
@@ -97,32 +97,31 @@ void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const Rig
 
     ///2 Create inverse mapping Vec<BoneWeight>2Vec<Index> from previous built Index2Vec<BoneWeight>
     ///in order to minimize weighted matrices computation on update
-    _uniqInfluenceSet2VertIDList.clear();
+    _uniqVertexGroupList.clear();
 
     typedef std::map<BonePtrWeightList, VertexGroup> UnifyBoneGroup;
     UnifyBoneGroup unifyBuffer;
     vertexID=0;
-    ;
-    for (std::vector<BonePtrWeightList>::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); ++it,++vertexID)
+    for (std::vector<BonePtrWeightList>::iterator perVertinfit = perVertexInfluences.begin(); perVertinfit!=perVertexInfluences.end(); ++perVertinfit,++vertexID)
     {
-        BonePtrWeightList &bones = *it;
+        BonePtrWeightList &boneinfs = *perVertinfit;
         // sort the vector to have a consistent key
-        std::sort(bones.begin(), bones.end() );
+        std::sort(boneinfs.begin(), boneinfs.end() );
         // we use the vector<BoneWeight> as key to differentiate group
-        UnifyBoneGroup::iterator result = unifyBuffer.find(bones);
+        UnifyBoneGroup::iterator result = unifyBuffer.find(boneinfs);
         if (result != unifyBuffer.end())
             result->second.getVertices().push_back(vertexID);
         else
         {
-            VertexGroup& vg = unifyBuffer[bones];
-            vg.getBoneWeights() = bones;
+            VertexGroup& vg = unifyBuffer[boneinfs];
+            vg.getBoneWeights() = boneinfs;
             vg.getVertices().push_back(vertexID);
         }
     }
-    _uniqInfluenceSet2VertIDList.reserve(unifyBuffer.size());
+    _uniqVertexGroupList.reserve(unifyBuffer.size());
     for (UnifyBoneGroup::const_iterator it = unifyBuffer.begin(); it != unifyBuffer.end(); ++it)
-        _uniqInfluenceSet2VertIDList.push_back(it->second);
-    OSG_WARN << "uniq groups " << _uniqInfluenceSet2VertIDList.size() << " for " << rig.getName() << std::endl;
+        _uniqVertexGroupList.push_back(it->second);
+    OSG_INFO << "uniq groups " << _uniqVertexGroupList.size() << " for " << rig.getName() << std::endl;
 }
 
 bool RigTransformSoftware::prepareData(RigGeometry&rig) {

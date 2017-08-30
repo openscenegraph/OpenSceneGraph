@@ -129,7 +129,7 @@ namespace osgAnimation
         inline void compute(const osg::Matrix& transform, const osg::Matrix& invTransform, const V* src, V* dst)
         {
             // the result of matrix mult should be cached to be used for vertexes transform and normal transform and maybe other computation
-            for(VertexGroupList::iterator itvg=_uniqInfluenceSet2VertIDList.begin(); itvg!=_uniqInfluenceSet2VertIDList.end(); ++itvg)
+            for(VertexGroupList::iterator itvg=_uniqVertexGroupList.begin(); itvg!=_uniqVertexGroupList.end(); ++itvg)
             {
                 VertexGroup& uniq = *itvg;
                 uniq.computeMatrixForVertexSet();
@@ -148,7 +148,7 @@ namespace osgAnimation
         template <class V>
         inline void computeNormal(const osg::Matrix& transform, const osg::Matrix& invTransform, const V* src, V* dst)
         {
-            for(VertexGroupList::iterator itvg=_uniqInfluenceSet2VertIDList.begin(); itvg!=_uniqInfluenceSet2VertIDList.end(); ++itvg)
+            for(VertexGroupList::iterator itvg=_uniqVertexGroupList.begin(); itvg!=_uniqVertexGroupList.end(); ++itvg)
             {
                 VertexGroup& uniq = *itvg;
                 uniq.computeMatrixForVertexSet();
@@ -170,7 +170,7 @@ namespace osgAnimation
 
         typedef std::vector<VertexGroup> VertexGroupList;
 
-        VertexGroupList _uniqInfluenceSet2VertIDList;
+        VertexGroupList _uniqVertexGroupList;
         void buildMinimumUpdateSet(const BoneMap&boneMap,const RigGeometry&rig );
 
     };

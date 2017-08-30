@@ -17,7 +17,7 @@
 
 #include <osgAnimation/Export>
 #include <osgAnimation/Skeleton>
-#include <osgAnimation/RigTransformSoftware>
+#include <osgAnimation/RigTransform>
 #include <osgAnimation/VertexInfluence>
 #include <osg/Geometry>
 

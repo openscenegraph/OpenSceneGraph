@@ -46,25 +46,15 @@ namespace osgAnimation
     typedef std::vector<BoneWeight> BoneWeightList;
     typedef std::vector<unsigned int> IndexList;
 
-    class OSGANIMATION_EXPORT BoneInfluenceList : public IndexWeightList
-    {
-    public:
-        const std::string& getBoneName() const { return _name;}
-        void setBoneName(const std::string& name) { _name = name;}
 
-    protected:
-        // the name is the bone to link to
-        std::string _name;
-    };
-
-    class VertexInfluenceMap : public std::map<std::string, BoneInfluenceList> , public osg::Object
+    class VertexInfluenceMap : public std::map<std::string, IndexWeightList> , public osg::Object
     {
     public:
         META_Object(osgAnimation, VertexInfluenceMap);
 
         VertexInfluenceMap() {}
         VertexInfluenceMap(const osgAnimation::VertexInfluenceMap& org, const osg::CopyOp& copyop):
-            std::map<std::string, BoneInfluenceList>(org),
+            std::map<std::string, IndexWeightList>(org),
             osg::Object(org, copyop)
         {}
         ///normalize per vertex weights given numvert of the attached mesh

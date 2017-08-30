@@ -49,21 +49,23 @@ void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const Rig
             it != _vertexInfluenceMap->end();
             ++it)
     {
-        const BoneInfluenceList& inflist = it->second;
-        if (inflist.getBoneName().empty()) {
-            OSG_WARN << "RigTransformSoftware::VertexInfluenceMap contains unamed bone BoneInfluenceList" << std::endl;
+        const IndexWeightList& inflist = it->second;
+        const std::string& bonename = it->first;
+
+        if (bonename.empty()) {
+            OSG_WARN << "RigTransformSoftware::VertexInfluenceMap contains unamed bone IndexWeightList" << std::endl;
         }
-        BoneMap::const_iterator bmit = boneMap.find(inflist.getBoneName());
+        BoneMap::const_iterator bmit = boneMap.find(bonename);
         if (bmit == boneMap.end() )
         {
-            if (_invalidInfluence.find(inflist.getBoneName()) != _invalidInfluence.end()) {
-                _invalidInfluence[inflist.getBoneName()] = true;
-                OSG_WARN << "RigTransformSoftware Bone " << inflist.getBoneName() << " not found, skip the influence group " << std::endl;
+            if (_invalidInfluence.find(bonename) != _invalidInfluence.end()) {
+                _invalidInfluence[bonename] = true;
+                OSG_WARN << "RigTransformSoftware Bone " << bonename << " not found, skip the influence group " << std::endl;
             }
             continue;
         }
         Bone* bone = bmit->second.get();
-        for(BoneInfluenceList::const_iterator infit=inflist.begin(); infit!=inflist.end(); ++infit)
+        for(IndexWeightList::const_iterator infit=inflist.begin(); infit!=inflist.end(); ++infit)
         {
             const IndexWeight &iw = *infit;
             const unsigned int &index = iw.getIndex();

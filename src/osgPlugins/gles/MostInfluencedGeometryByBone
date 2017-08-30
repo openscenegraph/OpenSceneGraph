@@ -200,9 +200,9 @@ protected:
                 BoneNameBoneMap::iterator bone_it = boneMap.find(vertexInfluencePair->first);
                 if(bone_it == boneMap.end()) continue;
                 osg::ref_ptr<osgAnimation::Bone> bone = bone_it->second;
-                const osgAnimation::BoneInfluenceList& vertexInfluence = (*vertexInfluencePair).second;
+                const osgAnimation::IndexWeightList& vertexInfluence = (*vertexInfluencePair).second;
 
-                for(osgAnimation::BoneInfluenceList::const_iterator vertexIndexWeight = vertexInfluence.begin(); vertexIndexWeight != vertexInfluence.end(); ++vertexIndexWeight) {
+                for(osgAnimation::IndexWeightList::const_iterator vertexIndexWeight = vertexInfluence.begin(); vertexIndexWeight != vertexInfluence.end(); ++vertexIndexWeight) {
                     rigGeometryInfluenceByBoneMap[bone.get()][*rigGeometry].addWeight((*vertexIndexWeight).second);
                 }
             }

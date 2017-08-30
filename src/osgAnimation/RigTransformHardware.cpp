@@ -280,8 +280,9 @@ bool RigTransformHardware::buildPalette(BoneMap&boneMap ,RigGeometry&rig) {
             mapit != vertexInfluenceMap->end();
             ++mapit)
     {
-        const BoneInfluenceList& boneinflist = mapit->second;
-        for(BoneInfluenceList::const_iterator infit = boneinflist.begin(); infit!=boneinflist.end(); ++infit)
+        const IndexWeightList& boneinflist = mapit->second;
+        const std::string& bonename = mapit->first;
+        for(IndexWeightList::const_iterator infit = boneinflist.begin(); infit!=boneinflist.end(); ++infit)
         {
             const IndexWeight& iw = *infit;
             const unsigned int &index = iw.getIndex();
@@ -289,30 +290,24 @@ bool RigTransformHardware::buildPalette(BoneMap&boneMap ,RigGeometry&rig) {
 
             FloatInt &sum=sums[index];
 
-            if (boneinflist.getBoneName().empty()) {
-                OSG_WARN << "VertexInfluenceSet::buildVertex2BoneList warning vertex " << index << " is not assigned to a bone" << std::endl;
-            }
-
-            //_vertex2Bones[index].push_back(VertexInfluenceSet::BoneWeight(vi.getName(), weight));;
-
             if(fabs(weight) > 1e-4) // don't use bone with weight too small
             {
-                if ((boneName2PaletteIndex= _boneNameToPalette.find(boneinflist.getBoneName())) != _boneNameToPalette.end())
+                if ((boneName2PaletteIndex= _boneNameToPalette.find(bonename)) != _boneNameToPalette.end())
                 {
-                    boneNameCountMap[boneinflist.getBoneName()]++;
+                    boneNameCountMap[bonename]++;
                     vertexIndexWeight[index].push_back(IndexWeight(boneName2PaletteIndex->second,weight));
                 }
                 else
                 {
                     BoneMap::const_iterator bonebyname;
-                    if ((bonebyname=boneMap.find(boneinflist.getBoneName())) == boneMap.end())
+                    if ((bonebyname=boneMap.find(bonename)) == boneMap.end())
                     {
-                        OSG_WARN << "RigTransformHardware::createPalette can't find bone " << boneinflist.getBoneName() << "in skeleton bonemap:  skip this influence" << std::endl;
+                        OSG_WARN << "RigTransformHardware::createPalette can't find bone " << bonename << "in skeleton bonemap:  skip this influence" << std::endl;
                         continue;
                     }
-                    boneNameCountMap[boneinflist.getBoneName()] = 1; // for stats
+                    boneNameCountMap[bonename] = 1; // for stats
 
-                    _boneNameToPalette[boneinflist.getBoneName()] = _bonePalette.size() ;
+                    _boneNameToPalette[bonename] = _bonePalette.size() ;
                     vertexIndexWeight[index].push_back(IndexWeight(_bonePalette.size(),weight));
                     _bonePalette.push_back(bonebyname->second);
                     sum.first+=weight;
@@ -321,7 +316,7 @@ bool RigTransformHardware::buildPalette(BoneMap&boneMap ,RigGeometry&rig) {
             }
             else
             {
-                OSG_WARN << "RigTransformHardware::createPalette Bone " << boneinflist.getBoneName() << " has a weight " << weight << " for vertex " << index << " this bone will not be in the palette" << std::endl;
+                OSG_WARN << "RigTransformHardware::createPalette Bone " << bonename << " has a weight " << weight << " for vertex " << index << " this bone will not be in the palette" << std::endl;
             }
             maxBonePerVertex = osg::maximum(maxBonePerVertex, sum.second);
 

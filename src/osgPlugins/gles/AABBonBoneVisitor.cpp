@@ -51,7 +51,7 @@ void ComputeAABBOnBoneVisitor::computeBoundingBoxOnBones() {
             osg::Vec3Array *vertices = dynamic_cast<osg::Vec3Array*>(rigGeometry->getVertexArray());
             if(!vertices) continue;
 
-            osgAnimation::BoneInfluenceList vxtInf = (*itMap).second;
+            osgAnimation::IndexWeightList vxtInf = (*itMap).second;
 
             //Expand the boundingBox with each vertex
             for(unsigned int j = 0; j < vxtInf.size(); j++) {

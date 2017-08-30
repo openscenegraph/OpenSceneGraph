@@ -36,8 +36,8 @@ void VertexInfluenceMap::normalize(unsigned int numvert) {
     std::vector<PerVertWeights > localstore;
     localstore.resize(numvert);
     for(VertexInfluenceMap::iterator mapit=this->begin(); mapit!=this->end(); ++mapit) {
-        BoneInfluenceList &curvecinf=mapit->second;
-        for(BoneInfluenceList::iterator curinf=curvecinf.begin(); curinf!=curvecinf.end(); ++curinf) {
+        IndexWeightList &curvecinf=mapit->second;
+        for(IndexWeightList::iterator curinf=curvecinf.begin(); curinf!=curvecinf.end(); ++curinf) {
             IndexWeight& inf=*curinf;
             localstore[inf.first].first+=inf.second;
             localstore[inf.first].second.push_back(&inf.second);
@@ -65,14 +65,16 @@ void VertexInfluenceMap::cullInfluenceCountPerVertex(unsigned int numbonepervert
 
     typedef std::set<BoneWeight,invweight_ordered >  BoneWeightOrdered;
     std::map<int,BoneWeightOrdered > tempVec2Bones;
-    for(VertexInfluenceMap::iterator mapit=this->begin(); mapit!=this->end(); ++mapit) {
-        BoneInfluenceList &curvecinf=mapit->second;
-        for(BoneInfluenceList::iterator curinf=curvecinf.begin(); curinf!=curvecinf.end(); ++curinf) {
+    for(VertexInfluenceMap::iterator mapit=this->begin(); mapit!=this->end(); ++mapit)
+    {
+        const std::string& bonename=mapit->first;
+        IndexWeightList &curvecinf=mapit->second;
+        for(IndexWeightList::iterator curinf=curvecinf.begin(); curinf!=curvecinf.end(); ++curinf) {
             IndexWeight& inf=*curinf;
-            if( curvecinf.getBoneName().empty()) {
+            if( bonename.empty()) {
                 OSG_WARN << "VertexInfluenceSet::buildVertex2BoneList warning vertex " << inf.first << " is not assigned to a bone" << std::endl;
             }
-            else if(inf.second>minweight)tempVec2Bones[inf.first].insert(BoneWeight(curvecinf.getBoneName(), inf.second));
+            else if(inf.second>minweight)tempVec2Bones[inf.first].insert(BoneWeight(bonename, inf.second));
         }
     }
     this->clear();
@@ -87,15 +89,13 @@ void VertexInfluenceMap::cullInfluenceCountPerVertex(unsigned int numbonepervert
             if(sum>1e-4){
                 sum=1.0f/sum;
                 for(BoneWeightOrdered::iterator bwit=bwset.begin(); bwit!=bwset.end(); ++bwit) {
-                    BoneInfluenceList & inf= (*this)[bwit->getBoneName()];
-                    inf.setBoneName(bwit->getBoneName());
+                    IndexWeightList & inf= (*this)[bwit->getBoneName()];
                     inf.push_back(IndexWeight(mapit->first, bwit->getWeight()*sum));
                 }
             }
         }else{
             for(BoneWeightOrdered::iterator bwit=bwset.begin(); bwit!=bwset.end(); ++bwit) {
-                BoneInfluenceList & inf= (*this)[bwit->getBoneName()];
-                inf.setBoneName(bwit->getBoneName());
+                IndexWeightList & inf= (*this)[bwit->getBoneName()];
                 inf.push_back(IndexWeight(mapit->first,bwit->getWeight()));
             }
 
@@ -110,17 +110,17 @@ void VertexInfluenceMap::computePerVertexInfluenceList(std::vector<BoneWeightLis
             it != end();
             ++it)
     {
-        const BoneInfluenceList& inflist = it->second;
-        if (inflist.getBoneName().empty()) {
-            OSG_WARN << "RigTransformSoftware::VertexInfluenceMap contains unamed bone BoneInfluenceList" << std::endl;
+        const IndexWeightList& inflist = it->second;
+        if (it->first.empty()) {
+            OSG_WARN << "RigTransformSoftware::VertexInfluenceMap contains unamed bone IndexWeightList" << std::endl;
         }
-        for(BoneInfluenceList::const_iterator infit=inflist.begin(); infit!=inflist.end(); ++infit)
+        for(IndexWeightList::const_iterator infit=inflist.begin(); infit!=inflist.end(); ++infit)
         {
             const IndexWeight &iw = *infit;
             const unsigned int &index = iw.getIndex();
             float weight = iw.getWeight();
 
-            vertex2Bones[index].push_back(BoneWeight(inflist.getBoneName(), weight));;
+            vertex2Bones[index].push_back(BoneWeight(it->first, weight));;
         }
     }
 }

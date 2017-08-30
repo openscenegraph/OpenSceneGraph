@@ -136,10 +136,6 @@ void initVertexMap(osgAnimation::Bone* b0,
 {
     osgAnimation::VertexInfluenceMap* vim = new osgAnimation::VertexInfluenceMap;
 
-    (*vim)[b0->getName()].setBoneName(b0->getName());
-    (*vim)[b1->getName()].setBoneName(b1->getName());
-    (*vim)[b2->getName()].setBoneName(b2->getName());
-
     for (int i = 0; i < (int)array->size(); i++)
     {
         float val = (*array)[i][0];

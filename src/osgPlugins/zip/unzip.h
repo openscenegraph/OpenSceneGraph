@@ -80,9 +80,9 @@ struct ZIPENTRY
   ZIPENTRY():
     index(0),
     attr(0),
-    atime(0),
-    ctime(0),
-    mtime(0),
+    atime({0}),
+    ctime({0}),
+    mtime({0}),
     comp_size(0),
     unc_size(0) {}
 

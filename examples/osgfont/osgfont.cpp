@@ -64,6 +64,8 @@ struct TextSettings
 {
     TextSettings():
         fontFilename("fonts/arial.ttf"),
+        glyphImageMargin(1),
+        glyphImageMarginRatio(0.02),
         textColor(1.0f, 1.0f, 1.0f, 1.0f),
         backdropType(osgText::Text::NONE),
         backdropOffset(0.04f, 0.04f),
@@ -90,6 +92,11 @@ struct TextSettings
 
         if (arguments.read("--font",fontFilename)) {}
 
+
+        if (arguments.read("--margin", glyphImageMargin)) {}
+        if (arguments.read("--margin-ratio", glyphImageMarginRatio)) {}
+
+
         if (arguments.read("--outline")) backdropType = osgText::Text::OUTLINE;
         if (arguments.read("--shadow")) backdropType = osgText::Text::DROP_SHADOW_BOTTOM_RIGHT;
 
@@ -113,6 +120,9 @@ struct TextSettings
     }
 
     std::string                 fontFilename;
+    unsigned int                glyphImageMargin;
+    float                       glyphImageMarginRatio;
+
     osg::Vec4                   textColor;
     osgText::Text::BackdropType backdropType;
     osg::Vec2                   backdropOffset;
@@ -127,6 +137,9 @@ osgText::Text* createLabel(const std::string& l, TextSettings& settings, unsigne
 
     osgText::Text* label = new osgText::Text();
     osg::ref_ptr<osgText::Font> font  = osgText::readRefFontFile(settings.fontFilename);
+
+    font->setGlyphImageMargin(settings.glyphImageMargin);
+    font->setGlyphImageMarginRatio(settings.glyphImageMarginRatio);
 
     settings.setText(*label);
 

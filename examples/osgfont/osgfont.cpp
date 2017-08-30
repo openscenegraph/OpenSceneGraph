@@ -66,6 +66,7 @@ struct TextSettings
         fontFilename("fonts/arial.ttf"),
         glyphImageMargin(1),
         glyphImageMarginRatio(0.02),
+        glyphInterval(1),
         textColor(1.0f, 1.0f, 1.0f, 1.0f),
         backdropType(osgText::Text::NONE),
         backdropOffset(0.04f, 0.04f),
@@ -95,6 +96,7 @@ struct TextSettings
 
         if (arguments.read("--margin", glyphImageMargin)) {}
         if (arguments.read("--margin-ratio", glyphImageMarginRatio)) {}
+        if (arguments.read("--interval", glyphInterval)) {}
 
 
         if (arguments.read("--outline")) backdropType = osgText::Text::OUTLINE;
@@ -122,6 +124,7 @@ struct TextSettings
     std::string                 fontFilename;
     unsigned int                glyphImageMargin;
     float                       glyphImageMarginRatio;
+    int                         glyphInterval;
 
     osg::Vec4                   textColor;
     osgText::Text::BackdropType backdropType;

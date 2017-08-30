@@ -78,6 +78,8 @@ namespace osgAnimation
 
         void update();
 
+        void buildVertexInfluenceSet(){_rigTransformImplementation->prepareData(*this);}
+
         const osg::Matrix& getMatrixFromSkeletonToGeometry() const;
         const osg::Matrix& getInvMatrixFromSkeletonToGeometry() const;
 

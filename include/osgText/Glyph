@@ -260,6 +260,9 @@ public:
     void setGlyphImageMarginRatio(float margin) { _marginRatio = margin; }
     float getGlyphImageMarginRatio() const { return _marginRatio; }
 
+    void setGlyphInterval(int interval) { _interval = interval; }
+    int getGlyphInterval() const { return _interval; }
+
     bool getSpaceForGlyph(Glyph* glyph, int& posX, int& posY);
 
     void addGlyph(Glyph* glyph,int posX, int posY);
@@ -282,6 +285,8 @@ protected:
     // in the texture which could accommodate new glyphs.
     int _margin;
     float _marginRatio;
+    int _interval;
+
     int _usedY;
     int _partUsedX;
     int _partUsedY;

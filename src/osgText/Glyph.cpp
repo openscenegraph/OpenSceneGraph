@@ -31,6 +31,7 @@ using namespace std;
 GlyphTexture::GlyphTexture():
     _margin(1),
     _marginRatio(0.02f),
+    _interval(1),
     _usedY(0),
     _partUsedX(0),
     _partUsedY(0)
@@ -60,18 +61,22 @@ bool GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
     int width = glyph->s()+2*margin;
     int height = glyph->t()+2*margin;
 
-    // first check box (_partUsedX,_usedY) to (width,height)
-    if (width <= (getTextureWidth()-_partUsedX) &&
-        height <= (getTextureHeight()-_usedY))
+    int partUsedX = ((_partUsedX % _interval) == 0) ? _partUsedX : (((_partUsedX/_interval)+1)*_interval);
+    int partUsedY = ((_partUsedY % _interval) == 0) ? _partUsedY : (((_partUsedY/_interval)+1)*_interval);
+    int usedY = ((_usedY % _interval) == 0) ? _usedY : (((_usedY/_interval)+1)*_interval);
+
+    // first check box (partUsedX, usedY) to (width,height)
+    if (width <= (getTextureWidth()-partUsedX) &&
+        height <= (getTextureHeight()-usedY))
     {
         // can fit in existing row.
 
         // record the position in which the texture will be stored.
-        posX = _partUsedX+margin;
-        posY = _usedY+margin;
+        posX = partUsedX+margin;
+        posY = usedY+margin;
 
         // move used markers on.
-        _partUsedX += width;
+        _partUsedX = posX+width;
         if (_usedY+height>_partUsedY) _partUsedY = _usedY+height;
 
         return true;
@@ -83,14 +88,14 @@ bool GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
     {
         // can fit next row.
         _partUsedX = 0;
-        _usedY = _partUsedY;
+        _usedY = partUsedY;
 
         posX = _partUsedX+margin;
         posY = _usedY+margin;
 
         // move used markers on.
-        _partUsedX += width;
-        if (_usedY+height>_partUsedY) _partUsedY = _usedY+height;
+        _partUsedX = posX+width;
+        _partUsedY = _usedY+height;
 
         return true;
     }

@@ -301,6 +301,7 @@ Font::Font(FontImplementation* implementation):
     osg::Object(true),
     _margin(1),
     _marginRatio(0.02),
+    _glyphInterval(1),
     _textureWidthHint(1024),
     _textureHeightHint(1024),
     _minFilterHint(osg::Texture::LINEAR_MIPMAP_LINEAR),
@@ -604,6 +605,7 @@ void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph*
         // reserve enough space for the glyphs.
         glyphTexture->setGlyphImageMargin(_margin);
         glyphTexture->setGlyphImageMarginRatio(_marginRatio);
+        glyphTexture->setGlyphInterval(_glyphInterval);
         glyphTexture->setTextureSize(_textureWidthHint,_textureHeightHint);
         glyphTexture->setFilter(osg::Texture::MIN_FILTER,_minFilterHint);
         glyphTexture->setFilter(osg::Texture::MAG_FILTER,_magFilterHint);

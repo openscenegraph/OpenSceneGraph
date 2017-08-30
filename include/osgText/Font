@@ -122,6 +122,11 @@ public:
     void setGlyphImageMarginRatio(float margin);
     float getGlyphImageMarginRatio() const;
 
+    /** Set the interval that glyph positions are clamped to.
+      * Default interval is 1 texels.*/
+    void setGlyphInterval(int interval);
+    int getGlyphInterval() const;
+
 
     /** Set the size of texture to create to store the glyph images when rendering.
       * Note, this doesn't affect already created Texture Glhph's.*/
@@ -197,6 +202,7 @@ protected:
     FontResolution                  _fontSize;
     unsigned int                    _margin;
     float                           _marginRatio;
+    int                             _glyphInterval;
 
     unsigned int                    _textureWidthHint;
     unsigned int                    _textureHeightHint;

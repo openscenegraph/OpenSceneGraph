@@ -58,6 +58,8 @@ osg::Camera* createOrthoCamera(double width, double height)
     return camera;
 }
 
+typedef std::list<unsigned int> Sizes;
+
 struct TextSettings
 {
     TextSettings():
@@ -71,6 +73,23 @@ struct TextSettings
 
     void read(osg::ArgumentParser& arguments)
     {
+        if (arguments.read("--test"))
+        {
+            backgroundColor = osg::Vec4(1.0, 1.0, 1.0, 1.0);
+
+            fontFilename = "fonts/arialbd.ttf";
+            backdropType = osgText::Text::OUTLINE;
+
+            sizes.clear();
+            sizes.push_back(8);
+            sizes.push_back(16);
+            sizes.push_back(32);
+            sizes.push_back(64);
+            sizes.push_back(128);
+        }
+
+        if (arguments.read("--font",fontFilename)) {}
+
         if (arguments.read("--outline")) backdropType = osgText::Text::OUTLINE;
         if (arguments.read("--shadow")) backdropType = osgText::Text::DROP_SHADOW_BOTTOM_RIGHT;
 
@@ -79,6 +98,8 @@ struct TextSettings
 
         if (arguments.read("--text-color", textColor.r(), textColor.g(), textColor.b(), textColor.a())) {}
         if (arguments.read("--bd-color", backdropColor.r(), backdropColor.g(), backdropColor.b(), backdropColor.a())) {}
+        if (arguments.read("--bg-color", backgroundColor.r(), backgroundColor.g(), backgroundColor.b(), backgroundColor.a())) {}
+
     }
 
     void setText(osgText::Text& text)
@@ -96,6 +117,8 @@ struct TextSettings
     osgText::Text::BackdropType backdropType;
     osg::Vec2                   backdropOffset;
     osg::Vec4                   backdropColor;
+    osg::Vec4                   backgroundColor;
+    Sizes                       sizes;
 };
 
 osgText::Text* createLabel(const std::string& l, TextSettings& settings, unsigned int size)
@@ -126,31 +149,23 @@ osgText::Text* createLabel(const std::string& l, TextSettings& settings, unsigne
 
 
 
-typedef std::list<unsigned int> Sizes;
 
 int main(int argc, char** argv)
 {
     osg::ArgumentParser args(&argc, argv);
     osgViewer::Viewer viewer(args);
 
-    // Make sure we have the minimum args...
-    if(argc <= 2)
-    {
-        osg::notify(osg::FATAL) << "usage: " << args[0] << " fontfile size1 [size2 ...]" << std::endl;
-
-        return 1;
-    }
-
 
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
     viewer.addEventHandler(new osgViewer::StatsHandler());
     viewer.addEventHandler(new osgViewer::WindowSizeHandler());
 
-    osg::Vec4d backgroudColor = viewer.getCamera()->getClearColor();
-    if (args.read("--bg-color", backgroudColor.r(), backgroudColor.g(), backgroudColor.b(), backgroudColor.a()))
-    {
-        viewer.getCamera()->setClearColor(backgroudColor);
-    }
+    TextSettings settings;
+    settings.backgroundColor = viewer.getCamera()->getClearColor();
+
+    settings.read(args);
+
+    viewer.getCamera()->setClearColor(settings.backgroundColor);
 
     osg::ref_ptr<osg::Group> root = new osg::Group;
 
@@ -169,25 +184,31 @@ int main(int argc, char** argv)
         root = transform;
     }
 
-    TextSettings settings;
-    settings.fontFilename = argv[1];
-    settings.read(args);
-
-
-    // Create the list of desired sizes.
-    Sizes sizes;
-
-    for(int i = 2; i < argc; i++)
+    if (args.argc() > 1)
     {
-        if(!args.isNumber(i)) continue;
+        settings.fontFilename = argv[1];
 
-        sizes.push_back(std::atoi(args[i]));
+        // Create the list of desired sizes.
+        for(int i = 2; i < args.argc(); i++)
+        {
+            if(!args.isNumber(i)) continue;
+
+            settings.sizes.push_back(std::atoi(args[i]));
+        }
+    }
+
+    if (settings.sizes.empty())
+    {
+        settings.sizes.push_back(8);
+        settings.sizes.push_back(16);
+        settings.sizes.push_back(32);
+        settings.sizes.push_back(64);
     }
 
     osg::Geode* geode = new osg::Geode();
 
     // Add all of our osgText drawables.
-    for(Sizes::const_iterator i = sizes.begin(); i != sizes.end(); i++)
+    for(Sizes::const_iterator i = settings.sizes.begin(); i != settings.sizes.end(); i++)
     {
         std::stringstream ss;
 

@@ -38,7 +38,13 @@ namespace osgAnimation
         META_Object(osgAnimation,MorphTransformHardware);
 
         virtual void operator()(MorphGeometry&);
-        void setShader(osg::Shader*);
+
+        inline void setShader(osg::Shader*s){_shader=s;}
+        inline osg::Shader * getShader()const{return _shader;}
+
+        ///texture unit reserved for morphtarget TBO default is 7
+        void setReservedTextureUnit(unsigned int t){_reservedTextureUnit=t;}
+        unsigned int getReservedTextureUnit() const {return _reservedTextureUnit;}
 
     protected:
 
@@ -49,6 +55,7 @@ namespace osgAnimation
         osg::ref_ptr<osg::Shader> _shader;
 
         bool _needInit;
+        unsigned int _reservedTextureUnit;
     };
 }
 

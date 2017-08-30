@@ -20,12 +20,13 @@
 
 using namespace osgAnimation;
 
-
+#define DEFAULT_FIRST_VERTATTRIB_TARGETTED 11
 RigTransformHardware::RigTransformHardware()
 {
     _needInit = true;
     _bonesPerVertex = 0;
     _nbVertexes = 0;
+    _minAttribIndex = DEFAULT_FIRST_VERTATTRIB_TARGETTED;
 }
 
 RigTransformHardware::RigTransformHardware(const RigTransformHardware& rth, const osg::CopyOp& copyop):
@@ -37,7 +38,8 @@ RigTransformHardware::RigTransformHardware(const RigTransformHardware& rth, cons
     _boneWeightAttribArrays(rth._boneWeightAttribArrays),
     _uniformMatrixPalette(rth._uniformMatrixPalette),
     _shader(rth._shader),
-    _needInit(rth._needInit)
+    _needInit(rth._needInit),
+    _minAttribIndex(rth._minAttribIndex)
 {
 }
 
@@ -198,7 +200,7 @@ bool RigTransformHardware::prepareData(RigGeometry& rig)
         OSG_INFO << "Shader " << str << std::endl;
     }
 
-    unsigned int attribIndex = 11;
+    unsigned int attribIndex = _minAttribIndex;
     unsigned int nbAttribs = getNumVertexAttrib();
     if(nbAttribs==0)
         OSG_WARN << "nbAttribs== " << nbAttribs << std::endl;

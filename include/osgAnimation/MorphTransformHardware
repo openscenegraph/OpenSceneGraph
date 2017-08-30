@@ -37,13 +37,8 @@ namespace osgAnimation
 
         META_Object(osgAnimation,MorphTransformHardware);
 
-
-
-
         virtual void operator()(MorphGeometry&);
         void setShader(osg::Shader*);
-
-
 
     protected:
 

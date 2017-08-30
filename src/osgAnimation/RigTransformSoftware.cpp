@@ -77,7 +77,7 @@ void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const Rig
 
     // normalize _vertex2Bones weight per vertex
     unsigned vertexID=0;
-    /*for (std::vector<BonePtrWeightList>::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); ++it, ++vertexID)
+    for (std::vector<BonePtrWeightList>::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); ++it, ++vertexID)
     {
         BonePtrWeightList& bones = *it;
         float sum = 0;
@@ -93,7 +93,7 @@ void RigTransformSoftware::buildMinimumUpdateSet(const BoneMap&boneMap,const Rig
             for(BonePtrWeightList::iterator bwit=bones.begin();bwit!=bones.end();++bwit)
                 bwit->setWeight(bwit->getWeight() * mult);
         }
-    }*/
+    }
 
     ///2 Create inverse mapping Vec<BoneWeight>2Vec<Index> from previous built Index2Vec<BoneWeight>
     ///in order to minimize weighted matrices computation on update

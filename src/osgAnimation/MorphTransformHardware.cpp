@@ -187,11 +187,14 @@ void MorphTransformHardware::operator()(MorphGeometry& geom)
     if (_needInit)
         if (!init(geom))
             return;
-
-    ///upload new morph weights each update via uniform
-    int curimorph=0;
-    MorphGeometry::MorphTargetList & morphlist=geom.getMorphTargetList();
-    for(MorphGeometry::MorphTargetList::const_iterator curmorph=morphlist.begin(); curmorph!=morphlist.end(); ++curmorph)
-        _uniformTargetsWeight->setElement(curimorph++, curmorph->getWeight());
-    _uniformTargetsWeight->dirty();
+    if (geom.isDirty())
+    {
+        ///upload new morph weights each update via uniform
+        int curimorph=0;
+        MorphGeometry::MorphTargetList & morphlist=geom.getMorphTargetList();
+        for(MorphGeometry::MorphTargetList::const_iterator curmorph=morphlist.begin(); curmorph!=morphlist.end(); ++curmorph)
+            _uniformTargetsWeight->setElement(curimorph++, curmorph->getWeight());
+        _uniformTargetsWeight->dirty();
+        geom.dirty(false);
+    }
 }

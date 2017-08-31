@@ -21,13 +21,12 @@
 using namespace osgAnimation;
 
 #define DEFAULT_FIRST_VERTATTRIB_TARGETTED 11
-RigTransformHardware::RigTransformHardware()
-{
-    _needInit = true;
-    _bonesPerVertex = 0;
-    _nbVertexes = 0;
-    _minAttribIndex = DEFAULT_FIRST_VERTATTRIB_TARGETTED;
-}
+RigTransformHardware::RigTransformHardware():
+    _bonesPerVertex (0),
+    _nbVertexes (0),
+    _needInit (true),
+    _minAttribIndex(DEFAULT_FIRST_VERTATTRIB_TARGETTED)
+    {}
 
 RigTransformHardware::RigTransformHardware(const RigTransformHardware& rth, const osg::CopyOp& copyop):
     RigTransform(rth, copyop),
@@ -152,8 +151,6 @@ bool RigTransformHardware::prepareData(RigGeometry& rig)
     // copy shallow from source geometry to rig
     rig.copyFrom(source);
 
-
-
     return true;
 }
 
@@ -229,7 +226,6 @@ bool RigTransformHardware::buildPalette(const BoneMap&boneMap ,const RigGeometry
 
         OSG_INFO << "RigTransformHardware::buildPalette will use " << boneNameCountMap.size() * 4 << " uniforms" << std::endl;
 
-
     }
 
     ///normalize
@@ -251,8 +247,9 @@ bool RigTransformHardware::buildPalette(const BoneMap&boneMap ,const RigGeometry
         }
     }
 
-    _bonesPerVertex = maxBonePerVertex;
     _uniformMatrixPalette = new osg::Uniform(osg::Uniform::FLOAT_MAT4, "matrixPalette", _bonePalette.size());
+
+    _bonesPerVertex = maxBonePerVertex;
 
     createVertexAttribList(*this,perVertexInfluences,this->_boneWeightAttribArrays);
 
@@ -260,7 +257,7 @@ return true;
 }
 
 bool RigTransformHardware::init(RigGeometry& rig){
-    if(_uniformMatrixPalette.valid()){
+    if(_bonesPerVertex>0){
     ///data seams prepared
         osg::ref_ptr<osg::Program> program ;
         osg::ref_ptr<osg::Shader> vertexshader;
@@ -328,14 +325,17 @@ bool RigTransformHardware::init(RigGeometry& rig){
 
 
         program->addShader(vertexshader.get());
+
         stateset->removeUniform("nbBonesPerVertex");
         stateset->addUniform(new osg::Uniform("nbBonesPerVertex",_bonesPerVertex));
+
         stateset->removeUniform("matrixPalette");
-        stateset->addUniform(getMatrixPaletteUniform());
+        stateset->addUniform(_uniformMatrixPalette);
 
         stateset->removeAttribute(osg::StateAttribute::PROGRAM);
         if(!stateset->getAttribute(osg::StateAttribute::PROGRAM))
             stateset->setAttributeAndModes(program.get());
+
         _needInit = false;
         return false;
     }

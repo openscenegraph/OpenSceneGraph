@@ -62,8 +62,10 @@ namespace osgAnimation
 
         void computeMatrixPaletteUniform(const osg::Matrix& transformFromSkeletonToGeometry, const osg::Matrix& invTransformFromSkeletonToGeometry);
 
+        // update rig if needed
         virtual void operator()(RigGeometry&);
 
+        // init animations data
         virtual bool prepareData(RigGeometry& );
 
     protected:
@@ -81,6 +83,7 @@ namespace osgAnimation
         unsigned int _minAttribIndex;
         bool buildPalette(const BoneMap& boneMap ,const RigGeometry& rig);
 
+        //on first update
         virtual bool init(RigGeometry& );
 
     };

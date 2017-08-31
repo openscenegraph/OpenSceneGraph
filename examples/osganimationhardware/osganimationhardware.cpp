@@ -42,12 +42,12 @@ static unsigned int getRandomValueinRange(unsigned int v)
 }
 
 
-osg::ref_ptr<osg::Program> program;
+//osg::ref_ptr<osg::Program> program;
 // show how to override the default RigTransformHardware for customized usage
 struct MyRigTransformHardware : public osgAnimation::RigTransformHardware
 {
 
-    virtual bool prepareData(osgAnimation::RigGeometry& rig)
+    virtual bool init(osgAnimation::RigGeometry& rig)
     {
         if(!rig.getSkeleton() && !rig.getParents().empty())
         {
@@ -81,7 +81,7 @@ struct MyRigTransformHardware : public osgAnimation::RigTransformHardware
         // copy shallow from source geometry to rig
         rig.copyFrom(source);
 
-       // osg::ref_ptr<osg::Program> program ;
+        osg::ref_ptr<osg::Program> program ;
         osg::ref_ptr<osg::Shader> vertexshader;
         osg::ref_ptr<osg::StateSet> stateset = rig.getOrCreateStateSet();
 

@@ -1,5 +1,6 @@
 /*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
+ *  Copyright (C) 2017 Julien Valentin <mp3butcher@hotmail.com>
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -72,7 +73,7 @@ void VertexInfluenceMap::cullInfluenceCountPerVertex(unsigned int numbonepervert
         for(IndexWeightList::iterator curinf=curvecinf.begin(); curinf!=curvecinf.end(); ++curinf) {
             VertexIndexWeight& inf=*curinf;
             if( bonename.empty()) {
-                OSG_WARN << "VertexInfluenceSet::buildVertex2BoneList warning vertex " << inf.first << " is not assigned to a bone" << std::endl;
+                OSG_WARN << "VertexInfluenceSet::cullInfluenceCountPerVertex warning vertex " << inf.first << " is not assigned to a bone" << std::endl;
             }
             else if(inf.second>minweight)tempVec2Bones[inf.first].insert(BoneWeight(bonename, inf.second));
         }
@@ -161,7 +162,7 @@ struct SortByBoneWeightList : public std::less<BoneWeightList>
         return false;
     }
 };
-void VertexInfluenceMap::computeMinimalVertexGroupList(std::vector<VertexGroup>&uniqVertexGroupList,unsigned int numvert)const
+void VertexInfluenceMap::computeMinimalVertexGroupList(std::vector<VertexGroup>& uniqVertexGroupList, unsigned int numvert)const
 {
     uniqVertexGroupList.clear();
     std::vector<BoneWeightList> vertex2Bones;
@@ -182,7 +183,7 @@ void VertexInfluenceMap::computeMinimalVertexGroupList(std::vector<VertexGroup>&
         unifyBuffer[boneweightlist].vertIDs().push_back(vertexID);
     }
     if(vertex2Bones.size()==unifyBuffer.size()) {
-        OSG_WARN << "VertexInfluenceSet::buildmap is useless no duplicate VertexGroup" << std::endl;
+        OSG_WARN << "VertexInfluenceMap::computeMinimalVertexGroupList is useless no duplicate VertexGroup" << std::endl;
     }
     uniqVertexGroupList.reserve(unifyBuffer.size());
     for (UnifyBoneGroup::iterator it = unifyBuffer.begin(); it != unifyBuffer.end(); ++it)

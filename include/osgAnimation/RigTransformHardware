@@ -65,7 +65,7 @@ namespace osgAnimation
         // update rig if needed
         virtual void operator()(RigGeometry&);
 
-        // init animations data
+        // init/reset animations data
         virtual bool prepareData(RigGeometry& );
 
     protected:

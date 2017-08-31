@@ -23,7 +23,9 @@
 
 using namespace osgAnimation;
 
-MorphTransformHardware::MorphTransformHardware():_needInit(true),_reservedTextureUnit(DEFAULTMORPHTEXTUREUNIT)
+MorphTransformHardware::MorphTransformHardware():
+    _needInit(true),
+    _reservedTextureUnit(DEFAULTMORPHTEXTUREUNIT)
 {
 }
 
@@ -46,23 +48,22 @@ bool MorphTransformHardware::init(MorphGeometry& morphGeometry)
     ///check for correct morph configuration
     ///(blender osgexport doesn't set sources so assume morphgeom arrays are sources)
     if(pos)
-    {
+    {   pos->setDataVariance(osg::Object::STATIC);
         ///check if source is setted correctly
         if (!vertexSource|| vertexSource->size() != pos->size())
         {
-            vertexSource =(static_cast<osg::Vec3Array*>( pos->clone(osg::CopyOp::DEEP_COPY_ARRAYS)));//osg::Vec3Array(pos->begin(),pos->end());
-            pos->setDataVariance(osg::Object::DYNAMIC);
+            vertexSource =(static_cast<osg::Vec3Array*>( pos->clone(osg::CopyOp::DEEP_COPY_ARRAYS)));
         }
         osg::Vec3Array* normal = dynamic_cast<osg::Vec3Array*>(morphGeometry.getNormalArray());
-        bool normalmorphable = morphGeometry.getMorphNormals() && normal;
+        bool normalmorphable = morphGeometry.getMorphNormals() && normal&&(normal->getBinding()==osg::Array::BIND_PER_VERTEX);
         if(!normalmorphable) {
-            OSG_WARN << "MorphTransformHardware::morph geometry "<<morphGeometry.getName()<<" without normal morphing not supported! "  << std::endl;
+            OSG_WARN << "MorphTransformHardware::morph geometry "<<morphGeometry.getName()<<" without per vertex normal : HWmorphing not supported! "  << std::endl;
             return false;
         }
+        normal->setDataVariance(osg::Object::STATIC);
         if (normalmorphable && (!normalSource || normalSource->size() != normal->size()))
         {
-            normalSource =(static_cast<osg::Vec3Array*>( normal->clone(osg::CopyOp::DEEP_COPY_ARRAYS)));//osg::Vec3Array(normal->begin(),normal->end());
-            normal->setDataVariance(osg::Object::DYNAMIC);
+            normalSource =(static_cast<osg::Vec3Array*>( normal->clone(osg::CopyOp::DEEP_COPY_ARRAYS)));
         }
     }
     ///end check
@@ -98,7 +99,7 @@ bool MorphTransformHardware::init(MorphGeometry& morphGeometry)
 
     //create TBO Texture handle
     osg::Uniform * morphTBOHandle=new osg::Uniform(osg::Uniform::SAMPLER_BUFFER,"morphTargets");
-    morphTBOHandle->set(_reservedTextureUnit);
+    morphTBOHandle->set((int)_reservedTextureUnit);
 
     //create dynamic uniform for morphtargets animation weights
     _uniformTargetsWeight=new osg::Uniform(osg::Uniform::FLOAT,"morphWeights",morphlist.size());
@@ -139,7 +140,6 @@ bool MorphTransformHardware::init(MorphGeometry& morphGeometry)
     std::size_t start = str.find(toreplace);
     if (std::string::npos == start){
         ///perhaps remanance from previous init (if saved after init) so reload shader
-
         vertexshader = osg::Shader::readShaderFile(osg::Shader::VERTEX,"morphing.vert");
         if (!vertexshader.valid()) {
             OSG_WARN << "RigTransformHardware can't load VertexShader" << std::endl;

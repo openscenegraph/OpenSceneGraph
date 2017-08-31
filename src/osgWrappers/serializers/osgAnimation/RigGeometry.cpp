@@ -2,6 +2,7 @@
 #include <osgDB/ObjectWrapper>
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
+
 namespace wrap_osgAnimationRigGeometry{
 static bool checkInfluenceMap( const osgAnimation::RigGeometry& geom )
 {

@@ -139,6 +139,8 @@ bool RigTransformSoftware::prepareData(RigGeometry&rig) {
         }
         rig.setSkeleton(finder._root.get());
     }
+    if(!rig.getSkeleton())
+        return false;
     ///get bonemap from skeleton
     BoneMapVisitor mapVisitor;
     rig.getSkeleton()->accept(mapVisitor);

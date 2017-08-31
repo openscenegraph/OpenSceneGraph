@@ -134,23 +134,20 @@ void initVertexMap(osgAnimation::Bone* b0,
                    osgAnimation::RigGeometry* geom,
                    osg::Vec3Array* array)
 {
-    osgAnimation::VertexInfluenceSet vertexesInfluences;
     osgAnimation::VertexInfluenceMap* vim = new osgAnimation::VertexInfluenceMap;
-
     (*vim)[b0->getName()].setName(b0->getName());
     (*vim)[b1->getName()].setName(b1->getName());
     (*vim)[b2->getName()].setName(b2->getName());
-
     for (int i = 0; i < (int)array->size(); i++)
     {
         float val = (*array)[i][0];
         std::cout << val << std::endl;
         if (val >= -1.0f && val <= 0.0f)
-            (*vim)[b0->getName()].push_back(osgAnimation::IndexWeight(i,1.0f));
+            (*vim)[b0->getName()].push_back(osgAnimation::VertexIndexWeight(i,1.0f));
         else if ( val > 0.0f && val <= 1.0f)
-            (*vim)[b1->getName()].push_back(osgAnimation::IndexWeight(i,1.0f));
+            (*vim)[b1->getName()].push_back(osgAnimation::VertexIndexWeight(i,1.0f));
         else if ( val > 1.0f)
-            (*vim)[b2->getName()].push_back(osgAnimation::IndexWeight(i,1.0f));
+            (*vim)[b2->getName()].push_back(osgAnimation::VertexIndexWeight(i,1.0f));
     }
 
     geom->setInfluenceMap(vim);

@@ -35,7 +35,7 @@ namespace osgAnimation
 
         /// to call manually when a skeleton is reacheable from the rig
         /// in order to prepare technic data before rendering
-        virtual bool prepareData(RigGeometry&){}
+        virtual bool prepareData(RigGeometry&){return true;}
 
     protected:
         virtual ~RigTransform() {}

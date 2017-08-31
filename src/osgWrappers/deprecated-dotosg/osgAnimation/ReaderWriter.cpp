@@ -813,7 +813,7 @@ bool RigGeometry_readLocalData(Object& obj, Input& fr)
             iteratorAdvanced = true;
         }
 
-        osgAnimation::BoneInfluenceList vi;
+        osgAnimation::VertexInfluence vi;
         vi.setName(name);
         vi.reserve(nbVertexes);
         for (int j = 0; j < nbVertexes; j++)
@@ -827,7 +827,7 @@ bool RigGeometry_readLocalData(Object& obj, Input& fr)
                 fr += 2;
                 iteratorAdvanced = true;
             }
-            vi.push_back(osgAnimation::IndexWeight(index, weight));
+            vi.push_back(osgAnimation::VertexIndexWeight(index, weight));
         }
         if (fr.matchSequence("}"))
         {
@@ -863,8 +863,8 @@ bool RigGeometry_writeLocalData(const Object& obj, Output& fw)
             name = "Empty";
         fw.indent() << "osgAnimation::VertexInfluence \""  << name << "\" " << it->second.size() << " {" << std::endl;
         fw.moveIn();
-        const osgAnimation::BoneInfluenceList& vi = it->second;
-        for (osgAnimation::BoneInfluenceList::const_iterator itv = vi.begin(); itv != vi.end(); itv++)
+        const osgAnimation::VertexInfluence& vi = it->second;
+        for (osgAnimation::VertexInfluence::const_iterator itv = vi.begin(); itv != vi.end(); itv++)
         {
             fw.indent() << itv->first << " " << itv->second << std::endl;
         }

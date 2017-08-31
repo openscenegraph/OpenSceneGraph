@@ -23,11 +23,31 @@
 
 namespace osgAnimation
 {
+    // first is bonename, and second the weight
+    struct BoneWeight: public std::pair<std::string, float>
+    {
+        BoneWeight( std::string f,float s):
+        std::pair<std::string,float>(f,s){}
+        inline const std::string& getBoneName()const{return first;}
+        inline void setBoneName(const std::string&s){first=s;}
+        inline const float &getWeight()const{return second;}
+        inline void setWeight(float i){second=i;}
+    };
+    // first is vertex index, and second the weight
+    struct VertexIndexWeight: public std::pair<unsigned int, float>
+    {
+        VertexIndexWeight( unsigned int f = 0xffffffff,float s = 0.0f): std::pair<unsigned int,float>(f,s){}
+        inline const unsigned int& getIndex()const{return first;}
+        inline void setIndex(unsigned int i){first=i;}
+        inline const float &getWeight()const{return second;}
+        inline void setWeight(float i){second=i;}
+    };
+    typedef std::vector<VertexIndexWeight> IndexWeightList;
+    typedef std::vector<BoneWeight> BoneWeightList;
+    typedef std::vector<unsigned int> IndexList;
 
-    // first is vertex index, and second the weight, the
-    typedef std::pair<unsigned int, float> IndexWeight;
-    typedef std::vector<IndexWeight> VertexList;
-    class OSGANIMATION_EXPORT BoneInfluenceList : public VertexList
+    //Bone influence list
+    class OSGANIMATION_EXPORT VertexInfluence : public IndexWeightList
     {
     public:
         const std::string& getName() const { return _name;}
@@ -38,72 +58,36 @@ namespace osgAnimation
         std::string _name;
     };
 
-    class VertexInfluenceMap : public std::map<std::string, BoneInfluenceList> , public osg::Object
+    class VertexInfluenceMap : public std::map<std::string, VertexInfluence> , public osg::Object
     {
     public:
         META_Object(osgAnimation, VertexInfluenceMap);
 
         VertexInfluenceMap() {}
         VertexInfluenceMap(const osgAnimation::VertexInfluenceMap& org, const osg::CopyOp& copyop):
-            std::map<std::string, BoneInfluenceList>(org),
+            std::map<std::string, VertexInfluence>(org),
             osg::Object(org, copyop)
         {}
-    };
+        ///normalize per vertex weights given numvert of the attached mesh
+        void normalize(unsigned int numvert);
 
+        ///remove weakest influences in order to fit targetted numbonepervertex
+        void cullInfluenceCountPerVertex(unsigned int maxnumbonepervertex, float minweight=0, bool renormalize=true);
 
-    // this class manage VertexInfluence database by mesh
-    // reference bones per vertex ...
-    class OSGANIMATION_EXPORT VertexInfluenceSet
-    {
-    public:
-        typedef std::vector<BoneInfluenceList> BoneToVertexList;
+        //compute PerVertexInfluenceList
+        void computePerVertexInfluenceList(std::vector<BoneWeightList>& perVertexInfluenceList, unsigned int numvert)const;
 
-        class BoneWeight
+        /// map a set of boneinfluence to a list of vertex indices sharing this set
+        class VertexGroup: public std::pair<BoneWeightList, IndexList>
         {
         public:
-            BoneWeight(const std::string& name, float weight) : _boneName(name), _weight(weight) {}
-            BoneWeight(const BoneWeight &bw2) : _boneName(bw2._boneName), _weight(bw2._weight) {}
-            const std::string& getBoneName() const { return _boneName; }
-            float getWeight() const { return _weight; }
-            void setWeight(float weight) { _weight = weight; }
-            bool operator==(const BoneWeight& b) const { return (_boneName == b.getBoneName() && _weight == b.getWeight()); }
-
-        protected:
-            std::string _boneName;
-            float _weight;
+            inline const BoneWeightList& getBoneWeights()const { return first; }
+            inline void setBoneWeights( BoneWeightList& o ) {  first=o; }
+            inline IndexList& vertIDs() { return second; }
         };
 
-        typedef std::vector<BoneWeight> BoneWeightList;
-        typedef std::vector<BoneWeightList> VertIDToBoneWeightList;
-
-        class VertexGroup
-        {
-        public:
-            // set Influences of the VertexGroup
-            void setBones(BoneWeightList& bones) { _bones = bones;}
-            const BoneWeightList& getBones() const { return _bones;}
-            // set Vertex Indices of the VertexGroup
-            std::vector<unsigned  int>& getVertexes() { return _vertexes;}
-            const std::vector<unsigned  int>& getVertexes() const { return _vertexes;}
-        protected:
-            std::vector<unsigned int> _vertexes;
-            BoneWeightList _bones; // here we could limit matrix operation by caching (weight * matrix)
-        };
-
-        typedef std::vector<VertexGroup> UniqVertexGroupList;
-        /** construct a vector of unique VertexGroups and their influences**/
-        void buildUniqVertexGroupList();
-        /** return a list of unique VertexGroups and their influences**/
-        const UniqVertexGroupList& getUniqVertexGroupList() const { return _uniqVertexSetToBoneSet;}
-        void addVertexInfluence(const BoneInfluenceList& v);
-        void buildVertex2BoneList(unsigned int numvertices);
-        void clear();
-
-        const VertIDToBoneWeightList& getVertexToBoneList() const;
-    protected:
-        BoneToVertexList _bone2Vertexes;
-        VertIDToBoneWeightList _vertex2Bones;
-        UniqVertexGroupList _uniqVertexSetToBoneSet;
+        /// compute the minimal VertexGroup Set in which vertices shares the same influence set
+        void computeMinimalVertexGroupList(std::vector<VertexGroup>&uniqVertexGroupList, unsigned int numvert)const;
     };
 
 }

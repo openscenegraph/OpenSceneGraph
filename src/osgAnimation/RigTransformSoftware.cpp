@@ -1,5 +1,6 @@
 /*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <cedric.pinson@plopbyte.net>
+ *  Copyright (C) 2017 Julien Valentin <mp3butcher@hotmail.com>
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -19,6 +20,7 @@
 #include <osgAnimation/RigGeometry>
 
 #include <algorithm>
+
 using namespace osgAnimation;
 
 RigTransformSoftware::RigTransformSoftware()
@@ -34,40 +36,141 @@ RigTransformSoftware::RigTransformSoftware(const RigTransformSoftware& rts,const
 
 }
 
-bool RigTransformSoftware::init(RigGeometry& geom)
-{
-    if (!geom.getSkeleton())
-        return false;
+typedef std::vector<RigTransformSoftware::BonePtrWeight> BonePtrWeightList;
 
+void RigTransformSoftware::buildMinimumUpdateSet( const BoneMap&boneMap, const RigGeometry&rig ){
+
+    ///1 Create Index2Vec<BoneWeight>
+    const VertexInfluenceMap &vertexInfluenceMap=*rig.getInfluenceMap();
+    std::vector<BonePtrWeightList> perVertexInfluences;
+    perVertexInfluences.resize(rig.getSourceGeometry()->getVertexArray()->getNumElements());
+
+    for (osgAnimation::VertexInfluenceMap::const_iterator perBoneinfit = vertexInfluenceMap.begin();
+            perBoneinfit != vertexInfluenceMap.end();
+            ++perBoneinfit)
+    {
+        const IndexWeightList& inflist = perBoneinfit->second;
+        const std::string& bonename = perBoneinfit->first;
+
+        if (bonename.empty()) {
+            OSG_WARN << "RigTransformSoftware::VertexInfluenceMap contains unamed bone IndexWeightList" << std::endl;
+        }
+        BoneMap::const_iterator bmit = boneMap.find(bonename);
+        if (bmit == boneMap.end() )
+        {
+            if (_invalidInfluence.find(bonename) != _invalidInfluence.end()) {
+                _invalidInfluence[bonename] = true;
+                OSG_WARN << "RigTransformSoftware Bone " << bonename << " not found, skip the influence group " << std::endl;
+            }
+            continue;
+        }
+        Bone* bone = bmit->second.get();
+        for(IndexWeightList::const_iterator infit=inflist.begin(); infit!=inflist.end(); ++infit)
+        {
+            const VertexIndexWeight &iw = *infit;
+            const unsigned int &index = iw.getIndex();
+            float weight = iw.getWeight();
+            perVertexInfluences[index].push_back(BonePtrWeight(bone, weight));
+        }
+    }
+
+    // normalize _vertex2Bones weight per vertex
+    unsigned vertexID=0;
+    for (std::vector<BonePtrWeightList>::iterator it = perVertexInfluences.begin(); it != perVertexInfluences.end(); ++it, ++vertexID)
+    {
+        BonePtrWeightList& bones = *it;
+        float sum = 0;
+        for(BonePtrWeightList::iterator bwit=bones.begin();bwit!=bones.end();++bwit)
+            sum += bwit->getWeight();
+        if (sum < 1e-4)
+        {
+            OSG_WARN << "VertexInfluenceSet::buildVertex2BoneList warning the vertex " << vertexID << " seems to have 0 weight, skip normalize for this vertex" << std::endl;
+        }
+        else
+        {
+            float mult = 1.0/sum;
+            for(BonePtrWeightList::iterator bwit=bones.begin();bwit!=bones.end();++bwit)
+                bwit->setWeight(bwit->getWeight() * mult);
+        }
+    }
+
+    ///2 Create inverse mapping Vec<BoneWeight>2Vec<Index> from previous built Index2Vec<BoneWeight>
+    ///in order to minimize weighted matrices computation on update
+    _uniqVertexGroupList.clear();
+
+    typedef std::map<BonePtrWeightList, VertexGroup> UnifyBoneGroup;
+    UnifyBoneGroup unifyBuffer;
+    vertexID=0;
+    for (std::vector<BonePtrWeightList>::iterator perVertinfit = perVertexInfluences.begin(); perVertinfit!=perVertexInfluences.end(); ++perVertinfit,++vertexID)
+    {
+        BonePtrWeightList &boneinfs = *perVertinfit;
+        // sort the vector to have a consistent key
+        std::sort(boneinfs.begin(), boneinfs.end() );
+        // we use the vector<BoneWeight> as key to differentiate group
+        UnifyBoneGroup::iterator result = unifyBuffer.find(boneinfs);
+        if (result != unifyBuffer.end())
+            result->second.getVertices().push_back(vertexID);
+        else
+        {
+            VertexGroup& vg = unifyBuffer[boneinfs];
+            vg.getBoneWeights() = boneinfs;
+            vg.getVertices().push_back(vertexID);
+        }
+    }
+    _uniqVertexGroupList.reserve(unifyBuffer.size());
+    for (UnifyBoneGroup::const_iterator it = unifyBuffer.begin(); it != unifyBuffer.end(); ++it)
+        _uniqVertexGroupList.push_back(it->second);
+    OSG_INFO << "uniq groups " << _uniqVertexGroupList.size() << " for " << rig.getName() << std::endl;
+}
+
+bool RigTransformSoftware::prepareData(RigGeometry&rig) {
+    ///find skeleton if not set
+    if(!rig.getSkeleton() && !rig.getParents().empty())
+    {
+        RigGeometry::FindNearestParentSkeleton finder;
+        if(rig.getParents().size() > 1)
+            osg::notify(osg::WARN) << "A RigGeometry should not have multi parent ( " << rig.getName() << " )" << std::endl;
+        rig.getParents()[0]->accept(finder);
+
+        if(!finder._root.valid())
+        {
+            osg::notify(osg::WARN) << "A RigGeometry did not find a parent skeleton for RigGeometry ( " << rig.getName() << " )" << std::endl;
+            return false;
+        }
+        rig.setSkeleton(finder._root.get());
+    }
+    ///get bonemap from skeleton
     BoneMapVisitor mapVisitor;
-    geom.getSkeleton()->accept(mapVisitor);
-    BoneMap bm = mapVisitor.getBoneMap();
-    initVertexSetFromBones(bm, geom.getVertexInfluenceSet().getUniqVertexGroupList());
+    rig.getSkeleton()->accept(mapVisitor);
+    BoneMap boneMap = mapVisitor.getBoneMap();
 
-    if (geom.getSourceGeometry())
-        geom.copyFrom(*geom.getSourceGeometry());
+    /// build minimal set of VertexGroup
+    buildMinimumUpdateSet(boneMap,rig);
+
+    ///set geom as it source
+    if (rig.getSourceGeometry())
+        rig.copyFrom(*rig.getSourceGeometry());
 
 
-    osg::Vec3Array* normalSrc = dynamic_cast<osg::Vec3Array*>(geom.getSourceGeometry()->getNormalArray());
-    osg::Vec3Array* positionSrc = dynamic_cast<osg::Vec3Array*>(geom.getSourceGeometry()->getVertexArray());
+    osg::Vec3Array* normalSrc = dynamic_cast<osg::Vec3Array*>(rig.getSourceGeometry()->getNormalArray());
+    osg::Vec3Array* positionSrc = dynamic_cast<osg::Vec3Array*>(rig.getSourceGeometry()->getVertexArray());
 
     if(!(positionSrc) || positionSrc->empty() )
         return false;
     if(normalSrc&& normalSrc->size()!=positionSrc->size())
         return false;
 
-
-    geom.setVertexArray(new osg::Vec3Array);
+    /// setup Vertex and Normal arrays with copy of sources
+    rig.setVertexArray(new osg::Vec3Array);
     osg::Vec3Array* positionDst =new osg::Vec3Array;
-    geom.setVertexArray(positionDst);
+    rig.setVertexArray(positionDst);
     *positionDst=*positionSrc;
     positionDst->setDataVariance(osg::Object::DYNAMIC);
 
-
-    if(normalSrc){
+    if(normalSrc) {
         osg::Vec3Array* normalDst =new osg::Vec3Array;
         *normalDst=*normalSrc;
-        geom.setNormalArray(normalDst, osg::Array::BIND_PER_VERTEX);
+        rig.setNormalArray(normalDst, osg::Array::BIND_PER_VERTEX);
         normalDst->setDataVariance(osg::Object::DYNAMIC);
     }
 
@@ -78,7 +181,7 @@ bool RigTransformSoftware::init(RigGeometry& geom)
 void RigTransformSoftware::operator()(RigGeometry& geom)
 {
     if (_needInit)
-        if (!init(geom))
+        if (!prepareData(geom))
             return;
 
     if (!geom.getSourceGeometry()) {
@@ -111,49 +214,4 @@ void RigTransformSoftware::operator()(RigGeometry& geom)
             normalDst->dirty();
     }
 
-}
-
-///convert BoneWeight to BonePtrWeight using bonemap
-void RigTransformSoftware::initVertexSetFromBones(const BoneMap& map, const VertexInfluenceSet::UniqVertexGroupList& vertexgroups)
-{
-    _uniqInfluenceSet2VertIDList.clear();
-
-    int size = vertexgroups.size();
-    _uniqInfluenceSet2VertIDList.resize(size);
-    //for (VertexInfluenceSet::UniqVertexGroupList::const_iterator vgit=vertexgroups.begin();         vgit!=vertexgroups.end();vgit++)
-    for(int i = 0; i < size; i++)
-    {
-        const VertexInfluenceSet::VertexGroup& vg = vertexgroups[i];
-        int nbBones = vg.getBones().size();
-        BonePtrWeightList& boneList = _uniqInfluenceSet2VertIDList[i].getBoneWeights();
-
-        double sumOfWeight = 0;
-        for (int b = 0; b < nbBones; b++)
-        {
-            const std::string& bname = vg.getBones()[b].getBoneName();
-            float weight = vg.getBones()[b].getWeight();
-            BoneMap::const_iterator it = map.find(bname);
-            if (it == map.end() )
-            {
-                if (_invalidInfluence.find(bname) != _invalidInfluence.end()) {
-                    _invalidInfluence[bname] = true;
-                    OSG_WARN << "RigTransformSoftware Bone " << bname << " not found, skip the influence group " <<bname  << std::endl;
-                }
-                continue;
-            }
-            Bone* bone = it->second.get();
-            boneList.push_back(BonePtrWeight(bone, weight));
-            sumOfWeight += weight;
-        }
-        // if a bone referenced by a vertexinfluence is missed it can make the sum less than 1.0
-        // so we check it and renormalize the all weight bone
-        const double threshold = 1e-4;
-        if (!vg.getBones().empty() &&
-            (sumOfWeight < 1.0 - threshold ||  sumOfWeight > 1.0 + threshold))
-        {
-            for (int b = 0; b < (int)boneList.size(); b++)
-                boneList[b].setWeight(boneList[b].getWeight() / sumOfWeight);
-        }
-        _uniqInfluenceSet2VertIDList[i].getVertexes() = vg.getVertexes();
-    }
 }

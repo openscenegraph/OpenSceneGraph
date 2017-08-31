@@ -59,6 +59,7 @@ RigGeometry::RigGeometry()
     _matrixFromSkeletonToGeometry = _invMatrixFromSkeletonToGeometry = osg::Matrix::identity();
     // disable the computation of boundingbox for the rig mesh
     setComputeBoundingBoxCallback(new RigComputeBoundingBoxCallback());
+    _rigTransformImplementation = new osgAnimation::RigTransformSoftware;
 
 }
 
@@ -66,7 +67,7 @@ RigGeometry::RigGeometry()
 RigGeometry::RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop) :
     osg::Geometry(b,copyop),
     _geometry(b._geometry),
-    _vertexInfluenceSet(b._vertexInfluenceSet),
+    _rigTransformImplementation((RigTransform*)copyop(b._rigTransformImplementation)),
     _vertexInfluenceMap(b._vertexInfluenceMap),
     _needToComputeMatrix(b._needToComputeMatrix)
 {
@@ -84,23 +85,6 @@ RigGeometry::RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop) :
 const osg::Matrix& RigGeometry::getMatrixFromSkeletonToGeometry() const { return _matrixFromSkeletonToGeometry; }
 const osg::Matrix& RigGeometry::getInvMatrixFromSkeletonToGeometry() const { return _invMatrixFromSkeletonToGeometry;}
 
-void RigGeometry::buildVertexInfluenceSet()
-{
-    if (!_vertexInfluenceMap.valid())
-    {
-        OSG_WARN << "buildVertexInfluenceSet can't be called without VertexInfluence already set to the RigGeometry ( " << getName() << " ) " << std::endl;
-        return;
-    }
-    _vertexInfluenceSet.clear();
-    for (osgAnimation::VertexInfluenceMap::iterator it = _vertexInfluenceMap->begin();
-         it != _vertexInfluenceMap->end();
-         ++it){
-        _vertexInfluenceSet.addVertexInfluence(it->second);
-    }
-    _vertexInfluenceSet.buildVertex2BoneList(getSourceGeometry()->getVertexArray()->getNumElements());
-    _vertexInfluenceSet.buildUniqVertexGroupList();
-    OSG_DEBUG << "uniq groups " << _vertexInfluenceSet.getUniqVertexGroupList().size() << " for " << getName() << std::endl;
-}
 
 void RigGeometry::computeMatrixFromRootSkeleton()
 {
@@ -118,12 +102,7 @@ void RigGeometry::computeMatrixFromRootSkeleton()
 
 void RigGeometry::update()
 {
-    if (!getRigTransformImplementation())
-    {
-        _rigTransformImplementation = new RigTransformSoftware;
-    }
-
-    RigTransform& implementation = *getRigTransformImplementation();
+    RigTransform& implementation = *_rigTransformImplementation;
     (implementation)(*this);
 }
 

@@ -1,5 +1,5 @@
 /*  -*-c++-*-
- *  Copyleft 2016 Valentin Julien
+ *  Copyright (C) 2017 Julien Valentin <mp3butcher@hotmail.com>
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -19,27 +19,21 @@
 #include <sstream>
 
 ///texture unit reserved for morphtarget TBO
-#define MORPHTEXTUREUNIT 7
+#define DEFAULTMORPHTEXTUREUNIT 7
 
 using namespace osgAnimation;
 
-MorphTransformHardware::MorphTransformHardware()
+MorphTransformHardware::MorphTransformHardware():_needInit(true),_reservedTextureUnit(DEFAULTMORPHTEXTUREUNIT)
 {
-    _needInit = true;
-
 }
 
 MorphTransformHardware::MorphTransformHardware(const MorphTransformHardware& rth, const osg::CopyOp& copyop):
     MorphTransform(rth, copyop),
     _uniformTargetsWeight(rth._uniformTargetsWeight),
     _shader(rth._shader),
-    _needInit(rth._needInit)
+    _needInit(rth._needInit),
+    _reservedTextureUnit(rth._reservedTextureUnit)
 {
-}
-
-void MorphTransformHardware::setShader(osg::Shader* shader)
-{
-    _shader = shader;
 }
 
 bool MorphTransformHardware::init(MorphGeometry& morphGeometry)
@@ -104,7 +98,7 @@ bool MorphTransformHardware::init(MorphGeometry& morphGeometry)
 
     //create TBO Texture handle
     osg::Uniform * morphTBOHandle=new osg::Uniform(osg::Uniform::SAMPLER_BUFFER,"morphTargets");
-    morphTBOHandle->set(MORPHTEXTUREUNIT);
+    morphTBOHandle->set(_reservedTextureUnit);
 
     //create dynamic uniform for morphtargets animation weights
     _uniformTargetsWeight=new osg::Uniform(osg::Uniform::FLOAT,"morphWeights",morphlist.size());
@@ -174,7 +168,7 @@ bool MorphTransformHardware::init(MorphGeometry& morphGeometry)
 
     osg::ref_ptr<osg::StateSet> ss = morphGeometry.getOrCreateStateSet();
     ss->addUniform(_uniformTargetsWeight);
-    ss->setTextureAttribute(MORPHTEXTUREUNIT,morphTargetsTBO);
+    ss->setTextureAttribute(_reservedTextureUnit,morphTargetsTBO);
     ss->addUniform( morphTBOHandle);
     ss->addUniform(new osg::Uniform("nbMorphVertex", morphGeometry.getVertexArray()->getNumElements()));
 
@@ -187,11 +181,14 @@ void MorphTransformHardware::operator()(MorphGeometry& geom)
     if (_needInit)
         if (!init(geom))
             return;
-
-    ///upload new morph weights each update via uniform
-    int curimorph=0;
-    MorphGeometry::MorphTargetList & morphlist=geom.getMorphTargetList();
-    for(MorphGeometry::MorphTargetList::const_iterator curmorph=morphlist.begin(); curmorph!=morphlist.end(); ++curmorph)
-        _uniformTargetsWeight->setElement(curimorph++, curmorph->getWeight());
-    _uniformTargetsWeight->dirty();
+    if (geom.isDirty())
+    {
+        ///upload new morph weights each update via uniform
+        int curimorph=0;
+        MorphGeometry::MorphTargetList & morphlist=geom.getMorphTargetList();
+        for(MorphGeometry::MorphTargetList::const_iterator curmorph=morphlist.begin(); curmorph!=morphlist.end(); ++curmorph)
+            _uniformTargetsWeight->setElement(curimorph++, curmorph->getWeight());
+        _uniformTargetsWeight->dirty();
+        geom.dirty(false);
+    }
 }

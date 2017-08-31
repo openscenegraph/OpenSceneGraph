@@ -54,7 +54,7 @@ namespace osgAnimation
         unsigned int getNumVertexAttrib() const     {return _boneWeightAttribArrays.size();}
 
         const unsigned int &getNumBonesPerVertex() const{   return _bonesPerVertex;       }
-        const unsigned int &getNumVertexes() const      {   return _nbVertexes;           }
+        const unsigned int &getNumVertexes() const      {   return _nbVertices;           }
 
         const BoneNamePaletteIndex& getBoneNameToPalette(){ return _boneNameToPalette;    }
         const BonePalette& getBonePalette()             {   return _bonePalette;          }
@@ -71,7 +71,7 @@ namespace osgAnimation
     protected:
 
         unsigned int _bonesPerVertex;
-        unsigned int _nbVertexes;
+        unsigned int _nbVertices;
 
         BonePalette _bonePalette;
         BoneNamePaletteIndex _boneNameToPalette;

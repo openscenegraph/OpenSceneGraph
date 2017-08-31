@@ -81,7 +81,7 @@ namespace osgAnimation
         unsigned int _minAttribIndex;
         bool buildPalette(const BoneMap& boneMap ,const RigGeometry& rig);
 
-        bool init(RigGeometry& );
+        virtual bool init(RigGeometry& );
 
     };
 }

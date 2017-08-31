@@ -827,7 +827,7 @@ bool RigGeometry_readLocalData(Object& obj, Input& fr)
                 fr += 2;
                 iteratorAdvanced = true;
             }
-            vi.push_back(osgAnimation::IndexWeight(index, weight));
+            vi.push_back(osgAnimation::VertexIndexWeight(index, weight));
         }
         if (fr.matchSequence("}"))
         {

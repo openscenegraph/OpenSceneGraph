@@ -67,7 +67,7 @@ void RigTransformSoftware::buildMinimumUpdateSet( const BoneMap&boneMap, const R
         Bone* bone = bmit->second.get();
         for(IndexWeightList::const_iterator infit=inflist.begin(); infit!=inflist.end(); ++infit)
         {
-            const IndexWeight &iw = *infit;
+            const VertexIndexWeight &iw = *infit;
             const unsigned int &index = iw.getIndex();
             float weight = iw.getWeight();
 

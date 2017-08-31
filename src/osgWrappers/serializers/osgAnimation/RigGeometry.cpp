@@ -27,7 +27,7 @@ static bool readInfluenceMap( osgDB::InputStream& is, osgAnimation::RigGeometry&
             int index = 0;
             float weight = 0.0f;
             is >> index >> weight;
-            vi.push_back( osgAnimation::IndexWeight(index, weight) );
+            vi.push_back( osgAnimation::VertexIndexWeight(index, weight) );
         }
         (*map)[bonename] = vi;
         is >> is.END_BRACKET;

@@ -65,7 +65,7 @@ void RigTransformHardware::computeMatrixPaletteUniform(const osg::Matrix& transf
 }
 
 
-void createVertexAttribList(RigTransformHardware& rig,const  std::vector<std::vector<IndexWeight> > &perVertexInfluences,RigTransformHardware::BoneWeightAttribList & boneWeightAttribArrays);
+void createVertexAttribList(RigTransformHardware& rig,const  std::vector<std::vector<VertexIndexWeight> > &perVertexInfluences,RigTransformHardware::BoneWeightAttribList & boneWeightAttribArrays);
 
 //
 // create vertex attribute by 2 bones
@@ -76,7 +76,7 @@ void createVertexAttribList(RigTransformHardware& rig,const  std::vector<std::ve
 // than the 4 bones using two vertex attributes
 //
 
-typedef std::vector<std::vector<IndexWeight> > PerVertexInfList;
+typedef std::vector<std::vector<VertexIndexWeight> > PerVertexInfList;
 void createVertexAttribList(RigTransformHardware& rig,
                             const PerVertexInfList & perVertexInfluences,
                             RigTransformHardware::BoneWeightAttribList& boneWeightAttribArrays)
@@ -172,7 +172,7 @@ bool RigTransformHardware::buildPalette(const BoneMap&boneMap ,const RigGeometry
     BoneNamePaletteIndex::iterator boneName2PaletteIndex;
 
     // init temp vertex attribute data
-    std::vector<std::vector<IndexWeight> >  perVertexInfluences;
+    std::vector<IndexWeightList >  perVertexInfluences;
     perVertexInfluences.resize(_nbVertexes);
 
     unsigned int paletteindex;
@@ -203,14 +203,14 @@ bool RigTransformHardware::buildPalette(const BoneMap&boneMap ,const RigGeometry
         }
         for(IndexWeightList::const_iterator infit = boneinflist.begin(); infit!=boneinflist.end(); ++infit)
         {
-            const IndexWeight& iw = *infit;
+            const VertexIndexWeight& iw = *infit;
             const unsigned int &index = iw.getIndex();
             const float &weight = iw.getWeight();
             IndexWeightList & iwlist=perVertexInfluences[index];
 
             if(fabs(weight) > 1e-4) // don't use bone with weight too small
             {
-                iwlist.push_back(IndexWeight(paletteindex,weight));
+                iwlist.push_back(VertexIndexWeight(paletteindex,weight));
             }
             else
             {

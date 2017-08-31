@@ -38,7 +38,7 @@ void VertexInfluenceMap::normalize(unsigned int numvert) {
     for(VertexInfluenceMap::iterator mapit=this->begin(); mapit!=this->end(); ++mapit) {
         IndexWeightList &curvecinf=mapit->second;
         for(IndexWeightList::iterator curinf=curvecinf.begin(); curinf!=curvecinf.end(); ++curinf) {
-            IndexWeight& inf=*curinf;
+            VertexIndexWeight& inf=*curinf;
             localstore[inf.first].first+=inf.second;
             localstore[inf.first].second.push_back(&inf.second);
 
@@ -70,7 +70,7 @@ void VertexInfluenceMap::cullInfluenceCountPerVertex(unsigned int numbonepervert
         const std::string& bonename=mapit->first;
         IndexWeightList &curvecinf=mapit->second;
         for(IndexWeightList::iterator curinf=curvecinf.begin(); curinf!=curvecinf.end(); ++curinf) {
-            IndexWeight& inf=*curinf;
+            VertexIndexWeight& inf=*curinf;
             if( bonename.empty()) {
                 OSG_WARN << "VertexInfluenceSet::buildVertex2BoneList warning vertex " << inf.first << " is not assigned to a bone" << std::endl;
             }
@@ -90,14 +90,14 @@ void VertexInfluenceMap::cullInfluenceCountPerVertex(unsigned int numbonepervert
                 sum=1.0f/sum;
                 for(BoneWeightOrdered::iterator bwit=bwset.begin(); bwit!=bwset.end(); ++bwit) {
                     VertexInfluence & inf= (*this)[bwit->getBoneName()];
-                    inf.push_back(IndexWeight(mapit->first, bwit->getWeight()*sum));
+                    inf.push_back(VertexIndexWeight(mapit->first, bwit->getWeight()*sum));
                     inf.setName(bwit->getBoneName());
                 }
             }
         }else{
             for(BoneWeightOrdered::iterator bwit=bwset.begin(); bwit!=bwset.end(); ++bwit) {
                 VertexInfluence & inf= (*this)[bwit->getBoneName()];
-                inf.push_back(IndexWeight(mapit->first,bwit->getWeight()));
+                inf.push_back(VertexIndexWeight(mapit->first,bwit->getWeight()));
                 inf.setName(bwit->getBoneName());
             }
 
@@ -114,14 +114,13 @@ void VertexInfluenceMap::computePerVertexInfluenceList(std::vector<BoneWeightLis
     {
         const IndexWeightList& inflist = it->second;
         if (it->first.empty()) {
-            OSG_WARN << "RigTransformSoftware::VertexInfluenceMap contains unamed bone IndexWeightList" << std::endl;
+            OSG_WARN << "VertexInfluenceMap::computePerVertexInfluenceList contains unamed bone IndexWeightList" << std::endl;
         }
         for(IndexWeightList::const_iterator infit=inflist.begin(); infit!=inflist.end(); ++infit)
         {
-            const IndexWeight &iw = *infit;
+            const VertexIndexWeight &iw = *infit;
             const unsigned int &index = iw.getIndex();
             float weight = iw.getWeight();
-
             vertex2Bones[index].push_back(BoneWeight(it->first, weight));;
         }
     }
@@ -173,12 +172,9 @@ void VertexInfluenceMap::computeMinimalVertexGroupList(std::vector<VertexGroup>&
     unsigned int vertexID=0;
     for (std::vector<BoneWeightList>::iterator it = vertex2Bones.begin(); it != vertex2Bones.end(); ++it,++vertexID)
     {
-        BoneWeightList &boneweightlist = *it;//->second;
-        //int vertexIndex = it->first;
-
+        BoneWeightList &boneweightlist = *it;
         // sort the vector to have a consistent key
         std::sort(boneweightlist.begin(), boneweightlist.end(), SortByNameAndWeight());
-
         // we use the vector<BoneWeight> as key to differentiate group
         UnifyBoneGroup::iterator result = unifyBuffer.find(boneweightlist);
         if (result == unifyBuffer.end())

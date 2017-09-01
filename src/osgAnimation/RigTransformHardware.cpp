@@ -127,9 +127,9 @@ unsigned int createVertexAttribList(const PerVertexInfList & perVertexInfluences
                     boneIndexInList = j*2 + b;
                     if (boneIndexInList < (*vertinfit).size())
                     {
-                        float boneIndex = static_cast<float>((*vertinfit)[boneIndexInList].getIndex());
+                        float boneIndex = static_cast<float>((*vertinfit)[boneIndexInList].first);
                         ///normalization here
-                        float boneWeight = (*vertinfit)[boneIndexInList].getWeight()*sum;
+                        float boneWeight = (*vertinfit)[boneIndexInList].second*sum;
                         dest[0 + boneIndexInVec4] = boneIndex;
                         dest[1 + boneIndexInVec4] = boneWeight;
                     }
@@ -233,8 +233,8 @@ bool RigTransformHardware::buildPalette(const BoneMap&boneMap,const RigGeometry&
         for(IndexWeightList::const_iterator infit = boneinflist.begin(); infit!=boneinflist.end(); ++infit)
         {
             const VertexIndexWeight& iw = *infit;
-            const unsigned int &index = iw.getIndex();
-            const float &weight = iw.getWeight();
+            const unsigned int &index = iw.first;
+            const float &weight = iw.second;
             IndexWeightList & iwlist = perVertexInfluences[index];
 
             if(fabs(weight) > 1e-4) // don't use bone with weight too small
@@ -327,14 +327,13 @@ bool RigTransformHardware::init(RigGeometry& rig)
             OSG_INFO << "Shader " << str << std::endl;
         }
 
-        unsigned int attribIndex = _minAttribIndex;
         unsigned int nbAttribs = getNumVertexAttrib();
         for (unsigned int i = 0; i < nbAttribs; i++)
         {
             std::stringstream ss;
             ss << "boneWeight" << i;
-            program->addBindAttribLocation(ss.str(), attribIndex + i);
-            rig.setVertexAttribArray(attribIndex + i, getVertexAttrib(i));
+            program->addBindAttribLocation(ss.str(), _minAttribIndex + i);
+            rig.setVertexAttribArray(_minAttribIndex + i, getVertexAttrib(i));
             OSG_INFO << "set vertex attrib " << ss.str() << std::endl;
         }
 

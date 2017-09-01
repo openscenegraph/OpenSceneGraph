@@ -68,8 +68,8 @@ void RigTransformSoftware::buildMinimumUpdateSet( const BoneMap&boneMap, const R
         for(IndexWeightList::const_iterator infit=inflist.begin(); infit!=inflist.end(); ++infit)
         {
             const VertexIndexWeight &iw = *infit;
-            const unsigned int &index = iw.getIndex();
-            float weight = iw.getWeight();
+            const unsigned int &index = iw.first;
+            float weight = iw.second;
             perVertexInfluences[index].push_back(BonePtrWeight(bone, weight));
         }
     }

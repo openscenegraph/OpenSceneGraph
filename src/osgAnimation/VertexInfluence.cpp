@@ -25,9 +25,9 @@ struct invweight_ordered
 {
     inline bool operator() (const BoneWeight& bw1, const BoneWeight& bw2)
     {
-        if (bw1.getWeight() > bw2.getWeight())return true;
-        if (bw1.getWeight() < bw2.getWeight())return false;
-        return(bw1.getBoneName()<bw2.getBoneName());
+        if (bw1.second > bw2.second)return true;
+        if (bw1.second < bw2.second)return false;
+        return(bw1.first<bw2.first);
     }
 };
 
@@ -86,20 +86,20 @@ void VertexInfluenceMap::cullInfluenceCountPerVertex(unsigned int numbonepervert
         while(bwset.size()>newsize)bwset.erase(*bwset.rbegin());
         if(renormalize){
             for(BoneWeightOrdered::iterator bwit=bwset.begin(); bwit!=bwset.end(); ++bwit)
-                sum+=bwit->getWeight();
+                sum+=bwit->second;
             if(sum>1e-4){
                 sum=1.0f/sum;
                 for(BoneWeightOrdered::iterator bwit=bwset.begin(); bwit!=bwset.end(); ++bwit) {
-                    VertexInfluence & inf= (*this)[bwit->getBoneName()];
-                    inf.push_back(VertexIndexWeight(mapit->first, bwit->getWeight()*sum));
-                    inf.setName(bwit->getBoneName());
+                    VertexInfluence & inf= (*this)[bwit->first];
+                    inf.push_back(VertexIndexWeight(mapit->first, bwit->second*sum));
+                    inf.setName(bwit->first);
                 }
             }
         }else{
             for(BoneWeightOrdered::iterator bwit=bwset.begin(); bwit!=bwset.end(); ++bwit) {
-                VertexInfluence & inf= (*this)[bwit->getBoneName()];
-                inf.push_back(VertexIndexWeight(mapit->first,bwit->getWeight()));
-                inf.setName(bwit->getBoneName());
+                VertexInfluence & inf= (*this)[bwit->first];
+                inf.push_back(VertexIndexWeight(mapit->first,bwit->second));
+                inf.setName(bwit->first);
             }
 
         }
@@ -120,8 +120,8 @@ void VertexInfluenceMap::computePerVertexInfluenceList(std::vector<BoneWeightLis
         for(IndexWeightList::const_iterator infit=inflist.begin(); infit!=inflist.end(); ++infit)
         {
             const VertexIndexWeight &iw = *infit;
-            const unsigned int &index = iw.getIndex();
-            float weight = iw.getWeight();
+            const unsigned int &index = iw.first;
+            const float &weight = iw.second;
             vertex2Bones[index].push_back(BoneWeight(it->first, weight));;
         }
     }
@@ -133,11 +133,11 @@ struct SortByNameAndWeight : public std::less<BoneWeight>
     bool operator()(const BoneWeight& b0,
                     const BoneWeight& b1) const
     {
-        if (b0.getBoneName() < b1.getBoneName())
+        if (b0.first < b1.first)
             return true;
-        else if (b0.getBoneName() > b1.getBoneName())
+        else if (b0.first> b1.first)
             return false;
-        return (b0.getWeight() < b1.getWeight());
+        return (b0.second < b1.second);
     }
 };
 

@@ -20,13 +20,11 @@
 
 using namespace osgAnimation;
 
-#define DEFAULT_FIRST_VERTATTRIB_TARGETTED 11
-
 RigTransformHardware::RigTransformHardware():
     _bonesPerVertex (0),
     _nbVertices (0),
     _needInit (true),
-    _minAttribIndex(DEFAULT_FIRST_VERTATTRIB_TARGETTED)
+    _minAttribIndex(RIGTRANSHW_DEFAULT_FIRST_VERTATTRIB_TARGETTED)
 {}
 
 RigTransformHardware::RigTransformHardware(const RigTransformHardware& rth, const osg::CopyOp& copyop):

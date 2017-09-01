@@ -24,6 +24,8 @@
 
 namespace osgAnimation
 {
+    class Skeleton;
+
     // first is bonename, and second the weight
     typedef std::pair<std::string, float> BoneWeight;
     // first is vertex index, and second the weight
@@ -77,6 +79,9 @@ namespace osgAnimation
 
         /// compute the minimal VertexGroup Set in which vertices shares the same influence set
         void computeMinimalVertexGroupList(std::vector<VertexGroup>&uniqVertexGroupList, unsigned int numvert)const;
+
+        //Experimental removal of unexpressed bone from the skeleton
+        void removeUnexpressedBones(Skeleton &skel) const;
     };
 
 }

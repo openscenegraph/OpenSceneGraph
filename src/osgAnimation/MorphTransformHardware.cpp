@@ -48,7 +48,8 @@ bool MorphTransformHardware::init(MorphGeometry& morphGeometry)
     ///check for correct morph configuration
     ///(blender osgexport doesn't set sources so assume morphgeom arrays are sources)
     if(pos)
-    {   pos->setDataVariance(osg::Object::STATIC);
+    {
+        pos->setDataVariance(osg::Object::STATIC);
         ///check if source is setted correctly
         if (!vertexSource|| vertexSource->size() != pos->size())
         {

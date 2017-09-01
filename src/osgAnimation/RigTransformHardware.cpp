@@ -346,8 +346,7 @@ bool RigTransformHardware::init(RigGeometry& rig)
         stateset->removeUniform("matrixPalette");
         stateset->addUniform(_uniformMatrixPalette);
 
-        stateset->removeAttribute(osg::StateAttribute::PROGRAM);
-        stateset->setAttributeAndModes(program.get());
+        stateset->setAttribute(program.get());
 
         _needInit = false;
         return true;

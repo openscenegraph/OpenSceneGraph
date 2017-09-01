@@ -1,5 +1,6 @@
 /*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
+ *  Copyright (C) 2017 Julien Valentin <mp3butcher@hotmail.com>
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -24,9 +25,9 @@ struct invweight_ordered
 {
     inline bool operator() (const BoneWeight& bw1, const BoneWeight& bw2)
     {
-        if (bw1.getWeight() > bw2.getWeight())return true;
-        if (bw1.getWeight() < bw2.getWeight())return false;
-        return(bw1.getBoneName()<bw2.getBoneName());
+        if (bw1.second > bw2.second)return true;
+        if (bw1.second < bw2.second)return false;
+        return(bw1.first<bw2.first);
     }
 };
 
@@ -72,7 +73,7 @@ void VertexInfluenceMap::cullInfluenceCountPerVertex(unsigned int numbonepervert
         for(IndexWeightList::iterator curinf=curvecinf.begin(); curinf!=curvecinf.end(); ++curinf) {
             VertexIndexWeight& inf=*curinf;
             if( bonename.empty()) {
-                OSG_WARN << "VertexInfluenceSet::buildVertex2BoneList warning vertex " << inf.first << " is not assigned to a bone" << std::endl;
+                OSG_WARN << "VertexInfluenceSet::cullInfluenceCountPerVertex warning vertex " << inf.first << " is not assigned to a bone" << std::endl;
             }
             else if(inf.second>minweight)tempVec2Bones[inf.first].insert(BoneWeight(bonename, inf.second));
         }
@@ -85,20 +86,20 @@ void VertexInfluenceMap::cullInfluenceCountPerVertex(unsigned int numbonepervert
         while(bwset.size()>newsize)bwset.erase(*bwset.rbegin());
         if(renormalize){
             for(BoneWeightOrdered::iterator bwit=bwset.begin(); bwit!=bwset.end(); ++bwit)
-                sum+=bwit->getWeight();
+                sum+=bwit->second;
             if(sum>1e-4){
                 sum=1.0f/sum;
                 for(BoneWeightOrdered::iterator bwit=bwset.begin(); bwit!=bwset.end(); ++bwit) {
-                    VertexInfluence & inf= (*this)[bwit->getBoneName()];
-                    inf.push_back(VertexIndexWeight(mapit->first, bwit->getWeight()*sum));
-                    inf.setName(bwit->getBoneName());
+                    VertexInfluence & inf= (*this)[bwit->first];
+                    inf.push_back(VertexIndexWeight(mapit->first, bwit->second*sum));
+                    inf.setName(bwit->first);
                 }
             }
         }else{
             for(BoneWeightOrdered::iterator bwit=bwset.begin(); bwit!=bwset.end(); ++bwit) {
-                VertexInfluence & inf= (*this)[bwit->getBoneName()];
-                inf.push_back(VertexIndexWeight(mapit->first,bwit->getWeight()));
-                inf.setName(bwit->getBoneName());
+                VertexInfluence & inf= (*this)[bwit->first];
+                inf.push_back(VertexIndexWeight(mapit->first,bwit->second));
+                inf.setName(bwit->first);
             }
 
         }
@@ -119,8 +120,8 @@ void VertexInfluenceMap::computePerVertexInfluenceList(std::vector<BoneWeightLis
         for(IndexWeightList::const_iterator infit=inflist.begin(); infit!=inflist.end(); ++infit)
         {
             const VertexIndexWeight &iw = *infit;
-            const unsigned int &index = iw.getIndex();
-            float weight = iw.getWeight();
+            const unsigned int &index = iw.first;
+            const float &weight = iw.second;
             vertex2Bones[index].push_back(BoneWeight(it->first, weight));;
         }
     }
@@ -132,11 +133,11 @@ struct SortByNameAndWeight : public std::less<BoneWeight>
     bool operator()(const BoneWeight& b0,
                     const BoneWeight& b1) const
     {
-        if (b0.getBoneName() < b1.getBoneName())
+        if (b0.first < b1.first)
             return true;
-        else if (b0.getBoneName() > b1.getBoneName())
+        else if (b0.first> b1.first)
             return false;
-        return (b0.getWeight() < b1.getWeight());
+        return (b0.second < b1.second);
     }
 };
 
@@ -161,7 +162,7 @@ struct SortByBoneWeightList : public std::less<BoneWeightList>
         return false;
     }
 };
-void VertexInfluenceMap::computeMinimalVertexGroupList(std::vector<VertexGroup>&uniqVertexGroupList,unsigned int numvert)const
+void VertexInfluenceMap::computeMinimalVertexGroupList(std::vector<VertexGroup>& uniqVertexGroupList, unsigned int numvert)const
 {
     uniqVertexGroupList.clear();
     std::vector<BoneWeightList> vertex2Bones;
@@ -182,7 +183,7 @@ void VertexInfluenceMap::computeMinimalVertexGroupList(std::vector<VertexGroup>&
         unifyBuffer[boneweightlist].vertIDs().push_back(vertexID);
     }
     if(vertex2Bones.size()==unifyBuffer.size()) {
-        OSG_WARN << "VertexInfluenceSet::buildmap is useless no duplicate VertexGroup" << std::endl;
+        OSG_WARN << "VertexInfluenceMap::computeMinimalVertexGroupList is useless no duplicate VertexGroup" << std::endl;
     }
     uniqVertexGroupList.reserve(unifyBuffer.size());
     for (UnifyBoneGroup::iterator it = unifyBuffer.begin(); it != unifyBuffer.end(); ++it)

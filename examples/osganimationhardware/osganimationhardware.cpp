@@ -145,7 +145,7 @@ struct MyRigTransformHardware : public osgAnimation::RigTransformHardware
             ss << "boneWeight" << i;
             program->addBindAttribLocation(ss.str(), attribIndex + i);
 
-            if(getVertexAttrib(i)->getNumElements()!=_nbVertexes)
+            if(getVertexAttrib(i)->getNumElements()!=_nbVertices)
                 OSG_WARN << "getVertexAttrib== " << getVertexAttrib(i)->getNumElements() << std::endl;
             rig.setVertexAttribArray(attribIndex + i, getVertexAttrib(i));
             OSG_INFO << "set vertex attrib " << ss.str() << std::endl;

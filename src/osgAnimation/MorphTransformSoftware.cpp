@@ -23,7 +23,6 @@ using namespace osgAnimation;
 
 bool MorphTransformSoftware::init(MorphGeometry& morphGeometry){
 
-
     morphGeometry.setDataVariance(osg::Object::DYNAMIC);
     osg::Vec3Array* pos = dynamic_cast<osg::Vec3Array*>(morphGeometry.getVertexArray());
     osg::Vec3Array * vertexSource = (morphGeometry.getVertexSource());

@@ -1,5 +1,6 @@
 /*  -*-c++-*-
  *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
+ *  Copyright (C) 2017 Julien Valentin <mp3butcher@hotmail.com>
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -24,26 +25,14 @@
 namespace osgAnimation
 {
     // first is bonename, and second the weight
-    struct BoneWeight: public std::pair<std::string, float>
-    {
-        BoneWeight( std::string f,float s):
-        std::pair<std::string,float>(f,s){}
-        inline const std::string& getBoneName()const{return first;}
-        inline void setBoneName(const std::string&s){first=s;}
-        inline const float &getWeight()const{return second;}
-        inline void setWeight(float i){second=i;}
-    };
+    typedef std::pair<std::string, float> BoneWeight;
     // first is vertex index, and second the weight
-    struct VertexIndexWeight: public std::pair<unsigned int, float>
-    {
-        VertexIndexWeight( unsigned int f = 0xffffffff,float s = 0.0f): std::pair<unsigned int,float>(f,s){}
-        inline const unsigned int& getIndex()const{return first;}
-        inline void setIndex(unsigned int i){first=i;}
-        inline const float &getWeight()const{return second;}
-        inline void setWeight(float i){second=i;}
-    };
+    typedef std::pair<unsigned int, float> VertexIndexWeight;
+    // list of IndexWeight
     typedef std::vector<VertexIndexWeight> IndexWeightList;
+    // list of IndexWeight
     typedef std::vector<BoneWeight> BoneWeightList;
+    // list of Index
     typedef std::vector<unsigned int> IndexList;
 
     //Bone influence list

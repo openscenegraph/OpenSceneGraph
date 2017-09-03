@@ -500,7 +500,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
     if (reachedLimit()) return;
 
     osg::Vec3d s(_start), e(_end);
-    if ( !intersectAndClip( s, e, drawable->getBoundingBox() ) ) return;
+    if ( drawable->isCullingActive() && !intersectAndClip( s, e, drawable->getBoundingBox() ) ) return;
 
     if (iv.getDoDummyTraversal()) return;
 

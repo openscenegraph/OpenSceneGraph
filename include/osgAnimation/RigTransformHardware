@@ -89,6 +89,7 @@ namespace osgAnimation
         //on first update
         virtual bool init(RigGeometry& );
 
+        std::vector<IndexWeightList>  _perVertexInfluences;
     };
 }
 

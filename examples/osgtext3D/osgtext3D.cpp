@@ -49,23 +49,34 @@ public:
         {
             if (ea.getKey() == osgGA::GUIEventAdapter::KEY_Up)
             {
-                m_Text3D->setCharacterSize(m_Text3D->getCharacterHeight() + 0.1);        // failed
-                OSG_NOTICE<<"m_Text3D->getCharacterHeight()="<<m_Text3D->getCharacterHeight()<<std::endl;
+                m_Text3D->setCharacterSize(m_Text3D->getCharacterHeight() + 0.1);
+                OSG_NOTICE<<"m_Text3D->getCharacterHeight() = " << m_Text3D->getCharacterHeight() << std::endl;
             }
             else if (ea.getKey() == osgGA::GUIEventAdapter::KEY_Down)
             {
-                m_Text3D->setCharacterDepth(m_Text3D->getCharacterDepth() + 0.1);        // ok
-                OSG_NOTICE<<"m_Text3D->getCharacterDepth()="<<m_Text3D->getCharacterDepth()<<std::endl;
+                m_Text3D->setCharacterDepth(m_Text3D->getCharacterDepth() + 0.1);
+                OSG_NOTICE<<"m_Text3D->getCharacterDepth() = " << m_Text3D->getCharacterDepth() << std::endl;
             }
             else if (ea.getKey() == osgGA::GUIEventAdapter::KEY_Left)
             {
-                m_Text3D->setText("setText\nworks!", osgText::String::ENCODING_UTF8);    // ok
-                OSG_NOTICE<<"m_Text3D->getText()="<<m_Text3D->getText().size()<<std::endl;
+                static int counter = 1;
+                if (counter%3 == 0)
+                   m_Text3D->setText("Press arrow keys.", osgText::String::ENCODING_UTF8);
+                else if (counter%3 == 1)
+                   m_Text3D->setText("setText\nworks!", osgText::String::ENCODING_UTF8);
+                else if (counter%3 == 2)
+                   m_Text3D->setText("setText really works?", osgText::String::ENCODING_UTF8);
+                else if (counter%3 == 3)
+                   m_Text3D->setText("setText works, really!", osgText::String::ENCODING_UTF8);
+
+                ++counter;
+
+                OSG_NOTICE<<"m_Text3D->getText().size() = " << m_Text3D->getText().size() << std::endl;
             }
             else if (ea.getKey() == osgGA::GUIEventAdapter::KEY_Right)
             {
                 m_Text3D->setLineSpacing(m_Text3D->getLineSpacing() + 0.1);
-                OSG_NOTICE<<"m_Text3D->getLineSpacing()="<<m_Text3D->getLineSpacing()<<std::endl;
+                OSG_NOTICE<<"m_Text3D->getLineSpacing() = " << m_Text3D->getLineSpacing() << std::endl;
             }
         }
 
@@ -90,7 +101,7 @@ int main(int argc, char** argv)
     if (!font) return 1;
     OSG_NOTICE<<"Read font "<<fontFile<<" font="<<font.get()<<std::endl;
 
-    std::string word("This is a new test.");
+    std::string word("Press arrow keys.");
     while (arguments.read("-w",word)) {}
 
     osg::ref_ptr<osgText::Style> style = new osgText::Style;
@@ -238,18 +249,18 @@ int main(int argc, char** argv)
             geode->addDrawable( osg::createTexturedQuadGeometry(osg::Vec3(0.0f,characterSize*thickness,0.0f),osg::Vec3(characterSize,0.0,0.0),osg::Vec3(0.0f,0.0,characterSize), 0.0, 0.0, 1.0, 1.0) );
         }
 
-		if (arguments.read("--add-axes"))
-			group->addChild(osgDB::readNodeFile("axes.osgt"));
+        if (arguments.read("--add-axes"))
+            group->addChild(osgDB::readNodeFile("axes.osgt"));
 
-		std::string mode;
-		if (arguments.read("--character-size-mode", mode))
-		{
-			if (mode == "screen_coords")
-			{
-				text3D->setCharacterSizeMode(osgText::TextBase::SCREEN_COORDS);
-				text3D->setCharacterSize(1080/4);
-			}
-		}
+        std::string mode;
+        if (arguments.read("--character-size-mode", mode))
+        {
+            if (mode == "screen_coords")
+            {
+                text3D->setCharacterSizeMode(osgText::TextBase::SCREEN_COORDS);
+                text3D->setCharacterSize(1080/4);
+            }
+        }
 
         viewer.addEventHandler(new Text3DAttributeHandler(text3D));
     }

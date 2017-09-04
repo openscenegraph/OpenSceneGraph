@@ -36,14 +36,14 @@ RigTransformSoftware::RigTransformSoftware(const RigTransformSoftware& rts,const
 
 }
 
-typedef std::vector<RigTransformSoftware::BonePtrWeight> BonePtrWeightList;
-
 void RigTransformSoftware::buildMinimumUpdateSet( const RigGeometry&rig )
 {
     ///1 Create Index2Vec<BoneWeight>
-    const VertexInfluenceMap &vertexInfluenceMap=*rig.getInfluenceMap();
+    unsigned int nbVertices=rig.getSourceGeometry()->getVertexArray()->getNumElements();
+    const VertexInfluenceMap &vertexInfluenceMap = *rig.getInfluenceMap();
     std::vector<BonePtrWeightList> perVertexInfluences;
-    perVertexInfluences.resize(rig.getSourceGeometry()->getVertexArray()->getNumElements());
+    perVertexInfluences.reserve(nbVertices);
+    perVertexInfluences.resize(nbVertices);
 
     unsigned int vimapBoneID = 0;
     for (osgAnimation::VertexInfluenceMap::const_iterator perBoneinfit = vertexInfluenceMap.begin();
@@ -57,7 +57,7 @@ void RigTransformSoftware::buildMinimumUpdateSet( const RigGeometry&rig )
         {
             OSG_WARN << "RigTransformSoftware::VertexInfluenceMap contains unamed bone IndexWeightList" << std::endl;
         }
-        for(IndexWeightList::const_iterator infit=inflist.begin(); infit!=inflist.end(); ++infit)
+        for(IndexWeightList::const_iterator infit = inflist.begin(); infit!=inflist.end(); ++infit)
         {
             const VertexIndexWeight &iw = *infit;
             const unsigned int &index = iw.first;
@@ -67,12 +67,14 @@ void RigTransformSoftware::buildMinimumUpdateSet( const RigGeometry&rig )
     }
 
     // normalize _vertex2Bones weight per vertex
-    unsigned vertexID=0;
-    for (std::vector<BonePtrWeightList>::iterator it = perVertexInfluences.begin(); it != perVertexInfluences.end(); ++it, ++vertexID)
+    unsigned vertexID = 0;
+    for (std::vector<BonePtrWeightList>::iterator it = perVertexInfluences.begin();
+            it != perVertexInfluences.end();
+            ++it, ++vertexID)
     {
         BonePtrWeightList& bones = *it;
         float sum = 0;
-        for(BonePtrWeightList::iterator bwit=bones.begin(); bwit!=bones.end(); ++bwit)
+        for(BonePtrWeightList::iterator bwit = bones.begin(); bwit!=bones.end(); ++bwit)
             sum += bwit->getWeight();
         if (sum < 1e-4)
         {
@@ -81,7 +83,7 @@ void RigTransformSoftware::buildMinimumUpdateSet( const RigGeometry&rig )
         else
         {
             float mult = 1.0/sum;
-            for(BonePtrWeightList::iterator bwit=bones.begin(); bwit!=bones.end(); ++bwit)
+            for(BonePtrWeightList::iterator bwit = bones.begin(); bwit != bones.end(); ++bwit)
                 bwit->setWeight(bwit->getWeight() * mult);
         }
     }
@@ -92,8 +94,10 @@ void RigTransformSoftware::buildMinimumUpdateSet( const RigGeometry&rig )
 
     typedef std::map<BonePtrWeightList, VertexGroup> UnifyBoneGroup;
     UnifyBoneGroup unifyBuffer;
-    vertexID=0;
-    for (std::vector<BonePtrWeightList>::iterator perVertinfit = perVertexInfluences.begin(); perVertinfit!=perVertexInfluences.end(); ++perVertinfit,++vertexID)
+    vertexID = 0;
+    for (std::vector<BonePtrWeightList>::iterator perVertinfit = perVertexInfluences.begin();
+            perVertinfit!=perVertexInfluences.end();
+            ++perVertinfit,++vertexID)
     {
         BonePtrWeightList &boneinfs = *perVertinfit;
         // sort the vector to have a consistent key
@@ -127,20 +131,20 @@ bool RigTransformSoftware::prepareData(RigGeometry&rig)
 
     if(!(positionSrc) || positionSrc->empty() )
         return false;
-    if(normalSrc&& normalSrc->size()!=positionSrc->size())
+    if(normalSrc && normalSrc->size() != positionSrc->size())
         return false;
 
     /// setup Vertex and Normal arrays with copy of sources
     rig.setVertexArray(new osg::Vec3Array);
-    osg::Vec3Array* positionDst =new osg::Vec3Array;
+    osg::Vec3Array* positionDst = new osg::Vec3Array;
     rig.setVertexArray(positionDst);
-    *positionDst=*positionSrc;
+    *positionDst = *positionSrc;
     positionDst->setDataVariance(osg::Object::DYNAMIC);
 
     if(normalSrc)
     {
-        osg::Vec3Array* normalDst =new osg::Vec3Array;
-        *normalDst=*normalSrc;
+        osg::Vec3Array* normalDst = new osg::Vec3Array;
+        *normalDst = *normalSrc;
         rig.setNormalArray(normalDst, osg::Array::BIND_PER_VERTEX);
         normalDst->setDataVariance(osg::Object::DYNAMIC);
     }
@@ -166,7 +170,7 @@ bool RigTransformSoftware::init(RigGeometry&rig)
     BoneMapVisitor mapVisitor;
     rig.getSkeleton()->accept(mapVisitor);
     BoneMap boneMap = mapVisitor.getBoneMap();
-    VertexInfluenceMap & vertexInfluenceMap= *rig.getInfluenceMap();
+    VertexInfluenceMap & vertexInfluenceMap = *rig.getInfluenceMap();
 
     ///create local bonemap
     std::vector<Bone*> localid2bone;
@@ -198,14 +202,14 @@ bool RigTransformSoftware::init(RigGeometry&rig)
     }
 
     ///fill bone ptr in the _uniqVertexGroupList
-    for(VertexGroupList::iterator itvg=_uniqVertexGroupList.begin(); itvg!=_uniqVertexGroupList.end(); ++itvg)
+    for(VertexGroupList::iterator itvg = _uniqVertexGroupList.begin(); itvg != _uniqVertexGroupList.end(); ++itvg)
     {
         VertexGroup& uniq = *itvg;
-        for(BonePtrWeightList::iterator bwit=  uniq.getBoneWeights().begin(); bwit!=uniq.getBoneWeights().end(); )
+        for(BonePtrWeightList::iterator bwit=  uniq.getBoneWeights().begin(); bwit != uniq.getBoneWeights().end(); )
         {
-            Bone * b=localid2bone[bwit->getBoneID()];
+            Bone * b = localid2bone[bwit->getBoneID()];
             if(!b)
-                bwit=uniq.getBoneWeights().erase(bwit);
+                bwit = uniq.getBoneWeights().erase(bwit);
             else
                 bwit++->setBonePtr(b);
         }

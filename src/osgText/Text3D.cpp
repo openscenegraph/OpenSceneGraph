@@ -438,9 +438,11 @@ void Text3D::computeGlyphRepresentation()
             {
                 (*_coords)[i] += position;
             }
+            _coords->dirty();
 
             // copy normals
             _normals->insert(_normals->end(), src_normals->begin(), src_normals->end());
+            _normals->dirty();
 
             copyAndOffsetPrimitiveSets(_frontPrimitiveSetList, it->_glyphGeometry->getFrontPrimitiveSetList(), base);
             copyAndOffsetPrimitiveSets(_wallPrimitiveSetList, it->_glyphGeometry->getWallPrimitiveSetList(), base);

@@ -18,14 +18,11 @@
 #include <osg/TextureBuffer>
 #include <sstream>
 
-///texture unit reserved for morphtarget TBO
-#define DEFAULTMORPHTEXTUREUNIT 7
-
 using namespace osgAnimation;
 
 MorphTransformHardware::MorphTransformHardware():
     _needInit(true),
-    _reservedTextureUnit(DEFAULTMORPHTEXTUREUNIT)
+    _reservedTextureUnit(MORPHTRANSHW_DEFAULTMORPHTEXTUREUNIT)
 {
 }
 

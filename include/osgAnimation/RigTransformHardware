@@ -23,6 +23,8 @@
 #include <osg/Matrix>
 #include <osg/Array>
 
+#define RIGTRANSHW_DEFAULT_FIRST_VERTATTRIB_TARGETTED 11
+
 namespace osgAnimation
 {
     class RigGeometry;
@@ -48,7 +50,8 @@ namespace osgAnimation
         unsigned int getFirstVertexAttributeTarget()const { return _minAttribIndex;}
 
         void setShader(osg::Shader* shader)         {       _shader = shader;             }
-        osg::Shader* getShader() const              {       return _shader;               }
+        const osg::Shader* getShader() const        {       return _shader;               }
+        osg::Shader* getShader()                    {       return _shader;               }
 
         osg::Vec4Array* getVertexAttrib(unsigned int index);
         unsigned int getNumVertexAttrib() const     {return _boneWeightAttribArrays.size();}
@@ -86,6 +89,7 @@ namespace osgAnimation
         //on first update
         virtual bool init(RigGeometry& );
 
+        std::vector<IndexWeightList>  _perVertexInfluences;
     };
 }
 

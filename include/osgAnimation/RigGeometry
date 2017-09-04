@@ -145,9 +145,8 @@ namespace osgAnimation
                     osg::notify(osg::WARN) << "A RigGeometry did not find a parent skeleton for RigGeometry ( " << geom->getName() << " )" << std::endl;
                     return;
                 }
-                geom->setSkeleton(finder._root.get());
-
                 geom->getRigTransformImplementation()->prepareData(*geom);
+                geom->setSkeleton(finder._root.get());
             }
 
             if(!geom->getSkeleton())

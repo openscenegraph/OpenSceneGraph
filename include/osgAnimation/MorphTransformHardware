@@ -22,6 +22,9 @@
 #include <osg/Matrix>
 #include <osg/Array>
 
+///texture unit reserved for morphtarget TBO
+#define MORPHTRANSHW_DEFAULTMORPHTEXTUREUNIT 7
+
 namespace osgAnimation
 {
     class MorphGeometry;
@@ -39,12 +42,13 @@ namespace osgAnimation
 
         virtual void operator()(MorphGeometry&);
 
-        inline void setShader(osg::Shader*s){_shader=s;}
-        inline osg::Shader * getShader()const{return _shader;}
+        inline void setShader( osg::Shader*s )      {   _shader=s;      }
+        inline const osg::Shader * getShader() const{   return _shader; }
+        inline osg::Shader * getShader()            {   return _shader; }
 
         ///texture unit reserved for morphtarget TBO default is 7
-        void setReservedTextureUnit(unsigned int t){_reservedTextureUnit=t;}
-        unsigned int getReservedTextureUnit() const {return _reservedTextureUnit;}
+        void setReservedTextureUnit(unsigned int t) {   _reservedTextureUnit=t;     }
+        unsigned int getReservedTextureUnit() const {   return _reservedTextureUnit;}
 
     protected:
 

@@ -40,22 +40,28 @@ namespace osgAnimation
         //to call when a skeleton is reacheable from the rig to prepare technic data
         virtual bool prepareData(RigGeometry&);
 
-        class BonePtrWeight: std::pair< osg::observer_ptr< Bone >, float>
+        typedef std::pair<unsigned int, float> LocalBoneIDWeight;
+        class BonePtrWeight: LocalBoneIDWeight
         {
         public:
-            BonePtrWeight(Bone*bone, float weight) :std::pair< osg::observer_ptr< Bone >, float>(bone,weight) {}
-            BonePtrWeight(const BonePtrWeight &bw2) : std::pair< osg::observer_ptr< Bone >, float>(bw2.first.get(),bw2.getWeight()) {}
-
-            inline const Bone * getBonePtr() const {return first.get();}
-            inline void setBonePtr(Bone*b){first=b;}
+            BonePtrWeight(unsigned int id,float weight, Bone*bone=0 ): LocalBoneIDWeight(id,weight), _boneptr(bone){}
+            BonePtrWeight(const BonePtrWeight &bw2): LocalBoneIDWeight(bw2.getBoneID(),bw2.getWeight()), _boneptr(bw2._boneptr.get()){}
             inline const float & getWeight() const {return second;}
             inline void setWeight(float b) {second=b;}
+            inline const unsigned int  & getBoneID() const {return first;}
+            inline void setBoneID(unsigned int b) {first=b;}
             inline bool operator<(const BonePtrWeight &b1) const{
                     if (second > b1.second)return true;
                     if (second < b1.second)return false;
-                    return (first.get() > b1.first.get());
+                    return (first > b1.first);
             }
+            ///set Bone pointer
+            inline const Bone * getBonePtr() const {return _boneptr.get();}
+            inline void setBonePtr(Bone*b){_boneptr=b;}
+        protected:
+            osg::observer_ptr< Bone > _boneptr;
         };
+
         typedef std::vector<BonePtrWeight>  BonePtrWeightList;
 
         /// map a set of boneinfluence to a list of vertex indices sharing this set
@@ -144,7 +150,6 @@ namespace osgAnimation
             }
         }
 
-
         template <class V>
         inline void computeNormal(const osg::Matrix& transform, const osg::Matrix& invTransform, const V* src, V* dst)
         {
@@ -166,12 +171,14 @@ namespace osgAnimation
 
         bool _needInit;
 
+        virtual bool init(RigGeometry&);
+
         std::map<std::string,bool> _invalidInfluence;
 
         typedef std::vector<VertexGroup> VertexGroupList;
-
         VertexGroupList _uniqVertexGroupList;
-        void buildMinimumUpdateSet(const BoneMap&boneMap,const RigGeometry&rig );
+
+        void buildMinimumUpdateSet(const RigGeometry&rig );
 
     };
 }

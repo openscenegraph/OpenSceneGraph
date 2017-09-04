@@ -24,8 +24,11 @@ namespace wrap_osgAnimationRigTransformHardWare{
                              new osgAnimation::RigTransformHardware,
                              osgAnimation::RigTransformHardware,
                              "osg::Object osgAnimation::RigTransform osgAnimation::RigTransformHardware" ){
-                             ADD_OBJECT_SERIALIZER(Shader,osg::Shader,NULL);
-                             ADD_UINT_SERIALIZER(FirstVertexAttributeTarget,RIGTRANSHW_DEFAULT_FIRST_VERTATTRIB_TARGETTED);
+                                  {
+                                     UPDATE_TO_VERSION_SCOPED(150)
+                                     ADD_OBJECT_SERIALIZER(Shader, osg::Shader, NULL);
+                                     ADD_UINT_SERIALIZER(FirstVertexAttributeTarget, RIGTRANSHW_DEFAULT_FIRST_VERTATTRIB_TARGETTED);
+                                 }
                              }
 }
 
@@ -46,7 +49,10 @@ namespace wrap_osgAnimationMorphTransformHardware{
                              new osgAnimation::MorphTransformHardware,
                              osgAnimation::MorphTransformHardware,
                              "osg::Object osgAnimation::MorphTransform  osgAnimation::MorphTransformHardware" ){
-                             ADD_OBJECT_SERIALIZER(Shader,osg::Shader,NULL);
-                             ADD_UINT_SERIALIZER(ReservedTextureUnit,MORPHTRANSHW_DEFAULTMORPHTEXTUREUNIT);
+                                 {
+                                     UPDATE_TO_VERSION_SCOPED(150)
+                                     ADD_OBJECT_SERIALIZER(Shader, osg::Shader, NULL);
+                                     ADD_UINT_SERIALIZER(ReservedTextureUnit, MORPHTRANSHW_DEFAULTMORPHTEXTUREUNIT);
+                                 }
                              }
 }

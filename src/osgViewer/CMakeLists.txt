@@ -58,28 +58,34 @@ SET(LIB_COMMON_FILES
 SET(LIB_EXTRA_LIBS)
 
 IF(WIN32 AND NOT ANDROID)
-    #
-    # Enable workaround for OpenGL driver issues when used in multithreaded/multiscreen with NVidia drivers on Windows XP
-    # For example: osgviewer dumptruck.osg was showing total garbage (screen looked like shattered, splashed hedgehog)
-    # There were also serious issues with render to texture cameras.
-    # Workaround repeats makeCurrentContext call as it was found that this causes the problems to disappear.
-    #
-    OPTION(OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND "Set to ON if you have NVidia board and drivers earlier than 177.92 ver" OFF)
-    MARK_AS_ADVANCED(OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND)
-    IF(OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND)
-        ADD_DEFINITIONS(-DOSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND)
+
+    SET(OSG_WINDOWING_SYSTEM "Win32" CACHE STRING "Windowing system type for desktop Microsoft Windows.")
+
+    IF(${OSG_WINDOWING_SYSTEM} STREQUAL "Win32")
+        #
+        # Enable workaround for OpenGL driver issues when used in multithreaded/multiscreen with NVidia drivers on Windows XP
+        # For example: osgviewer dumptruck.osg was showing total garbage (screen looked like shattered, splashed hedgehog)
+        # There were also serious issues with render to texture cameras.
+        # Workaround repeats makeCurrentContext call as it was found that this causes the problems to disappear.
+        #
+        OPTION(OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND "Set to ON if you have NVidia board and drivers earlier than 177.92 ver" OFF)
+        MARK_AS_ADVANCED(OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND)
+        IF(OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND)
+            ADD_DEFINITIONS(-DOSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND)
+        ENDIF()
+
+        SET(TARGET_H_NO_MODULE_INSTALL
+            ${HEADER_PATH}/api/Win32/GraphicsHandleWin32
+            ${HEADER_PATH}/api/Win32/GraphicsWindowWin32
+            ${HEADER_PATH}/api/Win32/PixelBufferWin32
+        )
+
+        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
+            GraphicsWindowWin32.cpp
+            PixelBufferWin32.cpp
+        )
     ENDIF()
 
-    SET(TARGET_H_NO_MODULE_INSTALL
-        ${HEADER_PATH}/api/Win32/GraphicsHandleWin32
-        ${HEADER_PATH}/api/Win32/GraphicsWindowWin32
-        ${HEADER_PATH}/api/Win32/PixelBufferWin32
-    )
-
-    SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
-        GraphicsWindowWin32.cpp
-        PixelBufferWin32.cpp
-    )
 ELSE()
     IF(ANDROID)
       SET(OSG_WINDOWING_SYSTEM "None" CACHE STRING "None Windowing system type for graphics window creation.")

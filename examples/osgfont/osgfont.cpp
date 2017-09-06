@@ -65,6 +65,8 @@ struct TextSettings
 {
     TextSettings():
         fontFilename("fonts/arial.ttf"),
+        minFilter(osg::Texture::LINEAR_MIPMAP_LINEAR),
+        magFilter(osg::Texture::LINEAR),
         glyphImageMargin(1),
         glyphImageMarginRatio(0.02),
         glyphInterval(1),
@@ -73,6 +75,14 @@ struct TextSettings
         backdropOffset(0.04f, 0.04f),
         backdropColor(0.0f, 0.0f, 0.0f, 1.0f)
     {
+    }
+
+
+    void readFilterMode(const std::string& value, osg::Texture::FilterMode& filterMode)
+    {
+        if (value=="LINEAR") filterMode = osg::Texture::LINEAR;
+        if (value=="NEAREST") filterMode = osg::Texture::NEAREST;
+        if (value=="LINEAR_MIPMAP_LINEAR") filterMode = osg::Texture::LINEAR_MIPMAP_LINEAR;
     }
 
     void read(osg::ArgumentParser& arguments)
@@ -93,6 +103,10 @@ struct TextSettings
         }
 
         if (arguments.read("--font",fontFilename)) {}
+
+        std::string value;
+        if (arguments.read("--min", value)) { readFilterMode(value, minFilter); }
+        if (arguments.read("--mag", value)) { readFilterMode(value, magFilter); }
 
 
         if (arguments.read("--margin", glyphImageMargin)) {}
@@ -123,6 +137,8 @@ struct TextSettings
     }
 
     std::string                 fontFilename;
+    osg::Texture::FilterMode    minFilter;
+    osg::Texture::FilterMode    magFilter;
     unsigned int                glyphImageMargin;
     float                       glyphImageMarginRatio;
     int                         glyphInterval;
@@ -144,6 +160,8 @@ osgText::Text* createLabel(const std::string& l, TextSettings& settings, unsigne
 
     font->setGlyphImageMargin(settings.glyphImageMargin);
     font->setGlyphImageMarginRatio(settings.glyphImageMarginRatio);
+    font->setMinFilterHint(settings.minFilter);
+    font->setMagFilterHint(settings.magFilter);
 
     settings.setText(*label);
 

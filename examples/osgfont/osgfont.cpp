@@ -182,7 +182,61 @@ osgText::Text* createLabel(const std::string& l, TextSettings& settings, unsigne
     return label;
 }
 
+class KeyHandler : public osgGA::GUIEventHandler
+{
+public:
 
+    KeyHandler() {}
+
+    ~KeyHandler() {}
+
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    {
+        osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+        if (!view) return false;
+
+#if 1
+        osg::StateSet* stateset = view->getSceneData()->getOrCreateStateSet();
+#else
+        osg::StateSet* stateset = view->getCamera()->getOrCreateStateSet();
+#endif
+        switch(ea.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYUP):
+            {
+                if (ea.getKey()=='d')
+                {
+                    toggleDefine(stateset, "SIGNED_DISTANCE_FIELD");
+                    return true;
+                }
+                else if (ea.getKey()=='o')
+                {
+                    toggleDefine(stateset, "OUTLINE");
+                    return true;
+                }
+                break;
+            }
+            default:
+                break;
+        }
+        return false;
+    }
+
+    void toggleDefine(osg::StateSet* stateset, const std::string& define)
+    {
+        osg::StateSet::DefinePair* dp = stateset->getDefinePair(define);
+        if (dp)
+        {
+            OSG_NOTICE<<"Disabling "<<define<<std::endl;
+            stateset->removeDefine(define);
+        }
+        else
+        {
+            OSG_NOTICE<<"Enabling "<<define<<std::endl;
+            stateset->setDefine(define);
+        }
+    }
+};
 
 
 int main(int argc, char** argv)
@@ -191,9 +245,10 @@ int main(int argc, char** argv)
     osgViewer::Viewer viewer(args);
 
 
-    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
+    viewer.addEventHandler(new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()));
     viewer.addEventHandler(new osgViewer::StatsHandler());
     viewer.addEventHandler(new osgViewer::WindowSizeHandler());
+    viewer.addEventHandler(new KeyHandler());
 
     TextSettings settings;
     settings.backgroundColor = viewer.getCamera()->getClearColor();

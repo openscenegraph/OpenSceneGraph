@@ -128,6 +128,10 @@ public:
     int getGlyphInterval() const;
 
 
+    void setGyphTextureFeatures(GlyphTexture::Features features) { _glyphTextureFeatures = features; }
+    GlyphTexture::Features getGlyphTextureFeatures() const { return _glyphTextureFeatures; }
+
+
     /** Set the size of texture to create to store the glyph images when rendering.
       * Note, this doesn't affect already created Texture Glhph's.*/
     void setTextureSizeHint(unsigned int width,unsigned int height);
@@ -144,6 +148,9 @@ public:
       * Note, this doesn't affect already created Texture Glhph's.*/
     void setMagFilterHint(osg::Texture::FilterMode mode);
     osg::Texture::FilterMode getMagFilterHint() const;
+
+    void setMaxAnisotropy(float anis) { _maxAnisotropy = anis; }
+    float getMaxAnisotropy() const { return _maxAnisotropy; }
 
     unsigned int getFontDepth() const { return _depth; }
 
@@ -203,11 +210,13 @@ protected:
     unsigned int                    _margin;
     float                           _marginRatio;
     int                             _glyphInterval;
+    GlyphTexture::Features          _glyphTextureFeatures;
 
     unsigned int                    _textureWidthHint;
     unsigned int                    _textureHeightHint;
     osg::Texture::FilterMode        _minFilterHint;
     osg::Texture::FilterMode        _magFilterHint;
+    float                           _maxAnisotropy;
 
     unsigned int                    _depth;
     unsigned int                    _numCurveSamples;
@@ -252,8 +261,6 @@ public:
 
         virtual bool getVerticalSize(float & /*ascender*/, float & /*descender*/) const { return false; }
     };
-
-
 
 };
 

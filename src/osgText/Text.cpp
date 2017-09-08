@@ -494,8 +494,10 @@ void Text::computeGlyphRepresentation()
                     osg::Vec2 maxtc = glyph->getMaxTexCoord();
                     osg::Vec2 vDiff = maxtc - mintc;
 
-                    float fHorizTCMargin = 1.0f / glyph->getTexture()->getTextureWidth();
-                    float fVertTCMargin = 1.0f / glyph->getTexture()->getTextureHeight();
+                    float texelMargin = 4.0f;
+
+                    float fHorizTCMargin = texelMargin / glyph->getTexture()->getTextureWidth();
+                    float fVertTCMargin = texelMargin / glyph->getTexture()->getTextureHeight();
                     float fHorizQuadMargin = vDiff.x() == 0.0f ? 0.0f : width * fHorizTCMargin / vDiff.x();
                     float fVertQuadMargin = vDiff.y() == 0.0f ? 0.0f : height * fVertTCMargin / vDiff.y();
 

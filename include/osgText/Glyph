@@ -58,6 +58,9 @@ public:
 
     unsigned int getGlyphCode() const { return _glyphCode; }
 
+    void setFontResolution(const FontResolution& fontRes) { _fontResolution = fontRes; }
+    const FontResolution& getFontResolution() const { return _fontResolution; }
+
     void setWidth(float width) { _width = width; }
     float getWidth() const { return _width; }
 
@@ -90,14 +93,14 @@ public:
     void setMaxTexCoord(const osg::Vec2& coord);
     const osg::Vec2& getMaxTexCoord() const;
 
-    void subload() const;
-
 protected:
 
     virtual ~Glyph();
 
     Font*                       _font;
     unsigned int                _glyphCode;
+
+    FontResolution              _fontResolution;
 
     float                       _width;
     float                       _height;
@@ -263,6 +266,17 @@ public:
     void setGlyphInterval(int interval) { _interval = interval; }
     int getGlyphInterval() const { return _interval; }
 
+    enum Features
+    {
+        GREYSCALE,
+        OUTLINE_GREYSCALE,
+        SIGNED_DISTANCE_FIELD,
+        ALL_FEATURES
+    };
+
+    void setGlyphTextureFeatures(Features features) { _glyphTextureFeatures = features; }
+    Features getGlyphTextureFeatures() const { return _glyphTextureFeatures; }
+
     bool getSpaceForGlyph(Glyph* glyph, int& posX, int& posY);
 
     void addGlyph(Glyph* glyph,int posX, int posY);
@@ -280,16 +294,19 @@ protected:
 
     virtual ~GlyphTexture();
 
+    void copyGlyphImage(Glyph* glyph);
+
 
     // parameter used to compute the size and position of empty space
     // in the texture which could accommodate new glyphs.
-    int _margin;
-    float _marginRatio;
-    int _interval;
+    int         _margin;
+    float       _marginRatio;
+    int         _interval;
+    Features    _glyphTextureFeatures;
 
-    int _usedY;
-    int _partUsedX;
-    int _partUsedY;
+    int         _usedY;
+    int         _partUsedX;
+    int         _partUsedY;
 
     typedef std::vector< osg::ref_ptr<Glyph> > GlyphRefList;
     typedef std::vector< const Glyph* > GlyphPtrList;

@@ -302,10 +302,16 @@ Font::Font(FontImplementation* implementation):
     _margin(1),
     _marginRatio(0.02),
     _glyphInterval(1),
+#if 0
+    _glyphTextureFeatures(GlyphTexture::ALL_FEATURES),
+#else
+    _glyphTextureFeatures(GlyphTexture::GREYSCALE),
+#endif
     _textureWidthHint(1024),
     _textureHeightHint(1024),
     _minFilterHint(osg::Texture::LINEAR_MIPMAP_LINEAR),
     _magFilterHint(osg::Texture::LINEAR),
+    _maxAnisotropy(16),
     _depth(1),
     _numCurveSamples(10)
 {
@@ -410,6 +416,12 @@ float Font::getGlyphImageMarginRatio() const
 {
     return _marginRatio;
 }
+
+void Font::setGlyphInterval(int interval)
+{
+    _glyphInterval = interval;
+}
+
 
 void Font::setTextureSizeHint(unsigned int width,unsigned int height)
 {
@@ -606,10 +618,11 @@ void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph*
         glyphTexture->setGlyphImageMargin(_margin);
         glyphTexture->setGlyphImageMarginRatio(_marginRatio);
         glyphTexture->setGlyphInterval(_glyphInterval);
+        glyphTexture->setGlyphTextureFeatures(_glyphTextureFeatures);
         glyphTexture->setTextureSize(_textureWidthHint,_textureHeightHint);
         glyphTexture->setFilter(osg::Texture::MIN_FILTER,_minFilterHint);
         glyphTexture->setFilter(osg::Texture::MAG_FILTER,_magFilterHint);
-        glyphTexture->setMaxAnisotropy(8);
+        glyphTexture->setMaxAnisotropy(_maxAnisotropy);
 
         _glyphTextureList.push_back(glyphTexture);
 

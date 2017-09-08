@@ -28,6 +28,14 @@
 using namespace osgText;
 using namespace std;
 
+#if 0
+    #define TEXTURE_IMAGE_NUM_CHANNELS 1
+    #define TEXTURE_IMAGE_FORMAT OSGTEXT_GLYPH_FORMAT
+#else
+    #define TEXTURE_IMAGE_NUM_CHANNELS 4
+    #define TEXTURE_IMAGE_FORMAT GL_RGBA
+#endif
+
 GlyphTexture::GlyphTexture():
     _margin(1),
     _marginRatio(0.02f),
@@ -121,8 +129,227 @@ void GlyphTexture::addGlyph(Glyph* glyph, int posX, int posY)
     glyph->setMaxTexCoord( osg::Vec2( static_cast<float>(posX+glyph->s())/static_cast<float>(getTextureWidth()),
                                       static_cast<float>(posY+glyph->t())/static_cast<float>(getTextureHeight()) ) );
 
-    _image->copySubImage(glyph->getTexturePositionX(), glyph->getTexturePositionY(), 0, glyph);
-    _image->dirty();
+    copyGlyphImage(glyph);
+}
+
+void GlyphTexture::copyGlyphImage(Glyph* glyph)
+{
+
+    if (_glyphTextureFeatures==GREYSCALE)
+    {
+        // OSG_NOTICE<<"GlyphTexture::copyGlyphImage() greyscale copy"<<std::endl;
+        _image->copySubImage(glyph->getTexturePositionX(), glyph->getTexturePositionY(), 0, glyph);
+        _image->dirty();
+        return;
+    }
+
+    // OSG_NOTICE<<"GlyphTexture::copyGlyphImage() generating signed distance field."<<std::endl;
+
+    int src_columns = glyph->s();
+    int src_rows = glyph->t();
+    unsigned char* src_data = glyph->data();
+
+    int dest_columns = _image->s();
+    int dest_rows = _image->t();
+    unsigned char* dest_data = _image->data(glyph->getTexturePositionX(),glyph->getTexturePositionY());
+
+    int search_distance = glyph->getFontResolution().second/8;
+
+    int left = -search_distance;
+    int right = glyph->s()+search_distance;
+    int lower = -search_distance;
+    int upper = glyph->t()+search_distance;
+
+    float multiplier = 1.0/255.0f;
+    float max_distance = sqrtf(float(search_distance*search_distance)*2.0f);
+
+    int num_channels = TEXTURE_IMAGE_NUM_CHANNELS;
+
+    if ((left+glyph->getTexturePositionX())<0) left = -glyph->getTexturePositionX();
+    if ((right+glyph->getTexturePositionX())>=dest_columns) right = dest_columns-glyph->getTexturePositionX()-1;
+
+    if ((lower+glyph->getTexturePositionY())<0) lower = -glyph->getTexturePositionY();
+    if ((upper+glyph->getTexturePositionY())>=dest_rows) upper = dest_rows-glyph->getTexturePositionY()-1;
+
+
+    for(int dr=lower; dr<=upper; ++dr)
+    {
+        for(int dc=left; dc<=right; ++dc)
+        {
+            unsigned char value = 0;
+
+            unsigned char center_value = 0;
+            if (dr>=0 && dr<src_rows && dc>=0 && dc<src_columns) center_value = *(src_data + dr*src_columns + dc);
+
+            float center_value_f = center_value*multiplier;
+            float min_distance = FLT_MAX;
+
+            if (center_value>0 && center_value<255)
+            {
+                if (center_value_f>=0.5f)
+                {
+                    min_distance = center_value_f-0.5f;
+                    value = 128+(min_distance/max_distance)*127;
+                }
+                else
+                {
+                    min_distance = 0.5f-center_value_f;
+                    value = 127-(min_distance/max_distance)*127;
+                }
+            }
+            else
+            {
+                for(int radius=1; radius<search_distance; ++radius)
+                {
+                    for(int span=-radius; span<radius; ++span)
+                    {
+                        {
+                            // left
+                            int dx = -radius;
+                            int dy = span;
+
+                            int c = dc+dx;
+                            int r = dr+dy;
+
+                            unsigned char local_value = 0;
+                            if (r>=0 && r<src_rows && c>=0 && c<src_columns) local_value = *(src_data + r*src_columns + c);
+                            if (local_value!=center_value)
+                            {
+                                float local_value_f = float(local_value)*multiplier;
+
+                                float D = sqrtf(float(dx*dx) + float(dy*dy));
+                                float local_multiplier = (abs(dx)>abs(dy)) ? D/float(abs(dx)) : D/float(abs(dy));
+
+                                float local_distance = sqrtf(float(radius*radius)+float(span*span));
+                                if (center_value==0) local_distance += (0.5f-local_value_f)*local_multiplier;
+                                else local_distance += (local_value_f - 0.5f)*local_multiplier;
+                            }
+                        }
+
+                        {
+                            // top
+                            int dx = radius;
+                            int dy = span;
+
+                            int c = dc+dx;
+                            int r = dr+dy;
+
+                            unsigned char local_value = 0;
+                            if (r>=0 && r<src_rows && c>=0 && c<src_columns) local_value = *(src_data + r*src_columns + c);
+                            if (local_value!=center_value)
+                            {
+                                float local_value_f = float(local_value)*multiplier;
+
+                                float D = sqrtf(float(dx*dx) + float(dy*dy));
+                                float local_multiplier = (abs(dx)>abs(dy)) ? D/float(abs(dx)) : D/float(abs(dy));
+
+                                float local_distance = sqrtf(float(radius*radius)+float(span*span));
+                                if (center_value==0) local_distance += (0.5f-local_value_f)*local_multiplier;
+                                else local_distance += (local_value_f - 0.5f)*local_multiplier;
+                            }
+                        }
+
+                        {
+                            // right
+                            int dx = radius;
+                            int dy = -span;
+
+                            int c = dc+dx;
+                            int r = dr+dy;
+
+                            unsigned char local_value = 0;
+                            if (r>=0 && r<src_rows && c>=0 && c<src_columns) local_value = *(src_data + r*src_columns + c);
+                            if (local_value!=center_value)
+                            {
+                                float local_value_f = float(local_value)*multiplier;
+
+                                float D = sqrtf(float(dx*dx) + float(dy*dy));
+                                float local_multiplier = (abs(dx)>abs(dy)) ? D/float(abs(dx)) : D/float(abs(dy));
+
+                                float local_distance = sqrtf(float(radius*radius)+float(span*span));
+                                if (center_value==0) local_distance += (0.5f-local_value_f)*local_multiplier;
+                                else local_distance += (local_value_f - 0.5f)*local_multiplier;
+                                if (local_distance<min_distance) min_distance = local_distance;
+                            }
+                        }
+
+                        {
+                            // bottom
+                            int dx = -radius;
+                            int dy = -span;
+
+                            int c = dc+dx;
+                            int r = dr+dy;
+
+                            unsigned char local_value = 0;
+                            if (r>=0 && r<src_rows && c>=0 && c<src_columns) local_value = *(src_data + r*src_columns + c);
+                            if (local_value!=center_value)
+                            {
+                                float local_value_f = float(local_value)*multiplier;
+
+                                float D = sqrtf(float(dx*dx) + float(dy*dy));
+                                float local_multiplier = (abs(dx)>abs(dy)) ? D/float(abs(dx)) : D/float(abs(dy));
+
+                                float local_distance = sqrtf(float(radius*radius)+float(span*span));
+                                if (center_value==0) local_distance += (0.5f-local_value_f)*local_multiplier;
+                                else local_distance += (local_value_f - 0.5f)*local_multiplier;
+                                if (local_distance<min_distance) min_distance = local_distance;
+                            }
+                        }
+                    }
+                }
+
+                if (center_value_f>=0.5)
+                {
+                    value = 128+(min_distance/max_distance)*127;
+                }
+                else
+                {
+                    value = 127-(min_distance/max_distance)*127;
+                }
+            }
+
+
+            unsigned char* dest_ptr = dest_data + (dr*dest_columns + dc)*num_channels;
+            if (num_channels==4)
+            {
+                // signed distance field value
+                *(dest_ptr++) = value;
+
+                float outline_distance = max_distance/4.0f;
+
+                // compute the alpha value of outline, one texel thick
+                unsigned char outline = center_value;
+                if (center_value<255)
+                {
+                    if (min_distance<outline_distance-1.0) outline = 255;
+                    else if (min_distance<outline_distance) outline = 255*(outline_distance-min_distance);
+                    else outline = 0;
+                }
+
+                *(dest_ptr++) = outline;
+
+                outline_distance *= 2.0f;
+
+                // compute the alpha vlaue of outline two texel thick
+                outline = center_value;
+                if (center_value<255)
+                {
+                    if (min_distance<outline_distance-1.0) outline = 255;
+                    else if (min_distance<outline_distance) outline = 255*(outline_distance-min_distance);
+                    else outline = 0;
+                }
+                *(dest_ptr++) = outline;
+
+                // original alpha value from glyph image
+                *(dest_ptr) = center_value;
+            }
+            else
+            {
+                *(dest_ptr) = value;
+            }
+        }
+    }
 }
 
 void GlyphTexture::setThreadSafeRefUnref(bool threadSafe)
@@ -152,8 +379,17 @@ osg::Image* GlyphTexture::createImage()
 {
     if (!_image)
     {
+        OSG_NOTICE<<"GlyphTexture::createImage() : Creating image 0x"<<std::hex<<TEXTURE_IMAGE_FORMAT<<std::dec<<std::endl;
+
         _image = new osg::Image;
-        _image->allocateImage(getTextureWidth(), getTextureHeight(), 1, OSGTEXT_GLYPH_FORMAT, GL_UNSIGNED_BYTE);
+
+        #if defined(OSG_GL3_AVAILABLE) && !defined(OSG_GL2_AVAILABLE) && !defined(OSG_GL1_AVAILABLE)
+        GLenum imageFormat = (_glyphTextureFeatures==GREYSCALE) ? GL_RED : GL_RGBA;
+        #else
+        GLenum imageFormat = (_glyphTextureFeatures==GREYSCALE) ? GL_ALPHA : GL_RGBA;
+        #endif
+
+        _image->allocateImage(getTextureWidth(), getTextureHeight(), 1, imageFormat, GL_UNSIGNED_BYTE);
         memset(_image->data(), 0, _image->getTotalSizeInBytes());
 
         for(GlyphRefList::iterator itr = _glyphs.begin();
@@ -161,7 +397,7 @@ osg::Image* GlyphTexture::createImage()
             ++itr)
         {
             Glyph* glyph = itr->get();
-            _image->copySubImage(glyph->getTexturePositionX(), glyph->getTexturePositionY(), 0, glyph);
+            copyGlyphImage(glyph);
         }
     }
 
@@ -216,53 +452,6 @@ const osg::Vec2& Glyph::getMinTexCoord() const { return _minTexCoord; }
 
 void Glyph::setMaxTexCoord(const osg::Vec2& coord) { _maxTexCoord=coord; }
 const osg::Vec2& Glyph::getMaxTexCoord() const { return _maxTexCoord; }
-
-void Glyph::subload() const
-{
-    GLenum errorNo = glGetError();
-    if (errorNo!=GL_NO_ERROR)
-    {
-        const GLubyte* msg = osg::gluErrorString(errorNo);
-        if (msg) { OSG_WARN<<"before Glyph::subload(): detected OpenGL error: "<<msg<<std::endl; }
-        else  { OSG_WARN<<"before Glyph::subload(): detected OpenGL error number: "<<errorNo<<std::endl; }
-    }
-
-    if(s() <= 0 || t() <= 0)
-    {
-        OSG_INFO<<"Glyph::subload(): texture sub-image width and/or height of 0, ignoring operation."<<std::endl;
-        return;
-    }
-
-    glPixelStorei(GL_UNPACK_ALIGNMENT,getPacking());
-
-    #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
-    glPixelStorei(GL_UNPACK_ROW_LENGTH,getRowLength());
-    #endif
-
-    glTexSubImage2D(GL_TEXTURE_2D,0,
-                    _texturePosX,_texturePosY,
-                    s(),t(),
-                    (GLenum)getPixelFormat(),
-                    (GLenum)getDataType(),
-                    data());
-
-    errorNo = glGetError();
-    if (errorNo!=GL_NO_ERROR)
-    {
-
-
-        const GLubyte* msg = osg::gluErrorString(errorNo);
-        if (msg) { OSG_WARN<<"after Glyph::subload() : detected OpenGL error: "<<msg<<std::endl; }
-        else { OSG_WARN<<"after Glyph::subload() : detected OpenGL error number: "<<errorNo<<std::endl; }
-
-        OSG_WARN<< "\tglTexSubImage2D(0x"<<hex<<GL_TEXTURE_2D<<dec<<" ,"<<0<<"\t"<<std::endl<<
-                                 "\t                "<<_texturePosX<<" ,"<<_texturePosY<<std::endl<<
-                                 "\t                "<<s()<<" ,"<<t()<<std::endl<<hex<<
-                                 "\t                0x"<<(GLenum)getPixelFormat()<<std::endl<<
-                                 "\t                0x"<<(GLenum)getDataType()<<std::endl<<
-                                 "\t                "<<static_cast<const void*>(data())<<");"<<dec<<std::endl;
-    }
-}
 
 Glyph3D::Glyph3D(Font* font, unsigned int glyphCode):
     osg::Referenced(true),

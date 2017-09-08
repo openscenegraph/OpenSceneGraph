@@ -67,9 +67,11 @@ struct TextSettings
         fontFilename("fonts/arial.ttf"),
         minFilter(osg::Texture::LINEAR_MIPMAP_LINEAR),
         magFilter(osg::Texture::LINEAR),
+        maxAnisotropy(16.0f),
         glyphImageMargin(1),
         glyphImageMarginRatio(0.02),
         glyphInterval(1),
+        glyphTextureFeatures(osgText::GlyphTexture::GREYSCALE),
         textColor(1.0f, 1.0f, 1.0f, 1.0f),
         backdropType(osgText::Text::NONE),
         backdropOffset(0.04f, 0.04f),
@@ -81,8 +83,8 @@ struct TextSettings
     void readFilterMode(const std::string& value, osg::Texture::FilterMode& filterMode)
     {
         if (value=="LINEAR") filterMode = osg::Texture::LINEAR;
-        if (value=="NEAREST") filterMode = osg::Texture::NEAREST;
-        if (value=="LINEAR_MIPMAP_LINEAR") filterMode = osg::Texture::LINEAR_MIPMAP_LINEAR;
+        else if (value=="NEAREST") filterMode = osg::Texture::NEAREST;
+        else if (value=="LINEAR_MIPMAP_LINEAR") filterMode = osg::Texture::LINEAR_MIPMAP_LINEAR;
     }
 
     void read(osg::ArgumentParser& arguments)
@@ -102,12 +104,18 @@ struct TextSettings
             sizes.push_back(128);
         }
 
+        if (arguments.read("--GREYSCALE")) { glyphTextureFeatures = osgText::GlyphTexture::GREYSCALE; }
+        if (arguments.read("--OUTLINE_GREYSCALE")) { glyphTextureFeatures = osgText::GlyphTexture::OUTLINE_GREYSCALE; }
+        if (arguments.read("--SIGNED_DISTANCE_FIELD")) { glyphTextureFeatures = osgText::GlyphTexture::SIGNED_DISTANCE_FIELD; }
+        if (arguments.read("--ALL_FEATURES")) { glyphTextureFeatures = osgText::GlyphTexture::ALL_FEATURES; }
+
         if (arguments.read("--font",fontFilename)) {}
 
         std::string value;
         if (arguments.read("--min", value)) { readFilterMode(value, minFilter); }
         if (arguments.read("--mag", value)) { readFilterMode(value, magFilter); }
 
+        if (arguments.read("--anisotropy",maxAnisotropy)) {}
 
         if (arguments.read("--margin", glyphImageMargin)) {}
         if (arguments.read("--margin-ratio", glyphImageMarginRatio)) {}
@@ -129,26 +137,39 @@ struct TextSettings
     void setText(osgText::Text& text)
     {
         OSG_NOTICE<<"Settings::setText()"<<std::endl;
-        text.setFont(fontFilename);
+
+        osg::ref_ptr<osgText::Font> font  = osgText::readRefFontFile(fontFilename);
+
+        font->setGlyphImageMargin(glyphImageMargin);
+        font->setGlyphImageMarginRatio(glyphImageMarginRatio);
+        font->setMinFilterHint(minFilter);
+        font->setMagFilterHint(magFilter);
+        font->setMaxAnisotropy(maxAnisotropy);
+        font->setGlyphInterval(glyphInterval);
+        font->setGyphTextureFeatures(glyphTextureFeatures);
+        text.setFont(font.get());
+
         text.setColor(textColor);
         text.setBackdropType(backdropType);
         text.setBackdropOffset(backdropOffset.x(), backdropOffset.y());
         text.setBackdropColor(backdropColor);
     }
 
-    std::string                 fontFilename;
-    osg::Texture::FilterMode    minFilter;
-    osg::Texture::FilterMode    magFilter;
-    unsigned int                glyphImageMargin;
-    float                       glyphImageMarginRatio;
-    int                         glyphInterval;
+    std::string                     fontFilename;
+    osg::Texture::FilterMode        minFilter;
+    osg::Texture::FilterMode        magFilter;
+    float                           maxAnisotropy;
+    unsigned int                    glyphImageMargin;
+    float                           glyphImageMarginRatio;
+    int                             glyphInterval;
+    osgText::GlyphTexture::Features glyphTextureFeatures;
 
-    osg::Vec4                   textColor;
-    osgText::Text::BackdropType backdropType;
-    osg::Vec2                   backdropOffset;
-    osg::Vec4                   backdropColor;
-    osg::Vec4                   backgroundColor;
-    Sizes                       sizes;
+    osg::Vec4                       textColor;
+    osgText::Text::BackdropType     backdropType;
+    osg::Vec2                       backdropOffset;
+    osg::Vec4                       backdropColor;
+    osg::Vec4                       backgroundColor;
+    Sizes                           sizes;
 };
 
 osgText::Text* createLabel(const std::string& l, TextSettings& settings, unsigned int size)
@@ -156,12 +177,6 @@ osgText::Text* createLabel(const std::string& l, TextSettings& settings, unsigne
     static osg::Vec3 pos(10.0f, 10.0f, 0.0f);
 
     osgText::Text* label = new osgText::Text();
-    osg::ref_ptr<osgText::Font> font  = osgText::readRefFontFile(settings.fontFilename);
-
-    font->setGlyphImageMargin(settings.glyphImageMargin);
-    font->setGlyphImageMarginRatio(settings.glyphImageMarginRatio);
-    font->setMinFilterHint(settings.minFilter);
-    font->setMagFilterHint(settings.magFilter);
 
     settings.setText(*label);
 
@@ -291,6 +306,8 @@ int main(int argc, char** argv)
         OSG_NOTICE<<"Using shaders"<<std::endl;
         root->getOrCreateStateSet()->setAttribute(program.get(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
         root->getOrCreateStateSet()->addUniform(new osg::Uniform("glyphTexture", 0));
+
+        settings.glyphTextureFeatures = osgText::GlyphTexture::ALL_FEATURES;
     }
 
 

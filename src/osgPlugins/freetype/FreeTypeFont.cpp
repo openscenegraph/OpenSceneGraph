@@ -351,6 +351,8 @@ osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, u
 
     osg::ref_ptr<osgText::Glyph> glyph = new osgText::Glyph(_facade, charcode);
 
+    glyph->setFontResolution(fontRes);
+
     unsigned int dataSize = width*height;
     unsigned char* data = new unsigned char[dataSize];
 

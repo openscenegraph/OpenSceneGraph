@@ -64,7 +64,10 @@ int GlyphTexture::compare(const osg::StateAttribute& rhs) const
 bool GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
 {
     int maxAxis = osg::maximum(glyph->s(), glyph->t());
-    int margin = _margin + (int)((float)maxAxis * _marginRatio);
+    int margin_from_ratio = (int)((float)maxAxis * _marginRatio);
+    int search_distance = glyph->getFontResolution().second/8;
+
+    int margin = _margin + osg::maximum(margin_from_ratio, search_distance);
 
     int width = glyph->s()+2*margin;
     int height = glyph->t()+2*margin;

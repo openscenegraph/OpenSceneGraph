@@ -147,12 +147,20 @@ struct TextSettings
         font->setMaxAnisotropy(maxAnisotropy);
         font->setGlyphInterval(glyphInterval);
         font->setGyphTextureFeatures(glyphTextureFeatures);
-        text.setFont(font.get());
+        // text.setFont(font.get());
 
         text.setColor(textColor);
         text.setBackdropType(backdropType);
         text.setBackdropOffset(backdropOffset.x(), backdropOffset.y());
         text.setBackdropColor(backdropColor);
+
+        if (glyphTextureFeatures==osgText::GlyphTexture::ALL_FEATURES)
+        {
+            text.setBackdropImplementation(osgText::Text::USE_SHADERS);
+        }
+
+        text.setFont(font.get());
+
     }
 
     std::string                     fontFilename;

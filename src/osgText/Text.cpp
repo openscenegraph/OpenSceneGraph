@@ -149,6 +149,8 @@ Text::~Text()
 {
 }
 
+#include <sstream>
+
 osg::StateSet* Text::createStateSet()
 {
     Font* activeFont = getActiveFont();
@@ -156,12 +158,78 @@ osg::StateSet* Text::createStateSet()
 
     Font::StateSets& statesets = activeFont->getCachedStateSets();
 
-    if (!statesets.empty())
+    osg::StateSet::DefineList defineList;
+    if (_backdropType!=NONE && _backdropImplementation==USE_SHADERS)
     {
-        return statesets.front().get();
+        std::stringstream ss;
+
+        ss.str("");
+        ss << "vec4("<<_backdropColor.r()<<", "<<_backdropColor.g()<<", "<<_backdropColor.b()<<", "<<_backdropColor.a()<<")";
+
+        defineList["BACKDROP_COLOR"] = osg::StateSet::DefinePair(ss.str(), osg::StateAttribute::ON);
+
+        if (_backdropType==OUTLINE)
+        {
+            ss.str("");
+            ss <<_backdropHorizontalOffset;
+            defineList["OUTLINE"] = osg::StateSet::DefinePair(ss.str(), osg::StateAttribute::ON);
+        }
+        else
+        {
+            osg::Vec2 offset(_backdropHorizontalOffset, _backdropVerticalOffset);
+            switch(_backdropType)
+            {
+                case(DROP_SHADOW_BOTTOM_RIGHT) :    offset.set(_backdropHorizontalOffset, -_backdropVerticalOffset); break;
+                case(DROP_SHADOW_CENTER_RIGHT) :    offset.set(_backdropHorizontalOffset, 0.0f); break;
+                case(DROP_SHADOW_TOP_RIGHT) :       offset.set(_backdropHorizontalOffset, _backdropVerticalOffset); break;
+                case(DROP_SHADOW_BOTTOM_CENTER) :   offset.set(0.0f, -_backdropVerticalOffset); break;
+                case(DROP_SHADOW_TOP_CENTER) :      offset.set(0.0f, _backdropVerticalOffset); break;
+                case(DROP_SHADOW_BOTTOM_LEFT) :     offset.set(-_backdropHorizontalOffset, -_backdropVerticalOffset); break;
+                case(DROP_SHADOW_CENTER_LEFT) :     offset.set(-_backdropHorizontalOffset, 0.0f); break;
+                case(DROP_SHADOW_TOP_LEFT) :        offset.set(-_backdropHorizontalOffset, _backdropVerticalOffset); break;
+                default : break;
+            }
+
+            ss.str("");
+            ss << "vec2("<<offset.x()<<", "<<offset.y()<<")";
+
+            defineList["SHADOW"] = osg::StateSet::DefinePair(ss.str(), osg::StateAttribute::ON);
+        }
     }
 
+#if 0
+    OSG_NOTICE<<"Text::createStateSet() _backdropType="<<_backdropType<<", _backdropImplementation="<<_backdropImplementation<<std::endl;
+    OSG_NOTICE<<"Text::createStateSet() defines:"<<defineList.size()<<std::endl;
+    for(osg::StateSet::DefineList::iterator itr = defineList.begin();
+        itr != defineList.end();
+        ++itr)
+    {
+        OSG_NOTICE<<"   define["<<itr->first<<"] = "<<itr->second.first<<std::endl;
+    }
+#endif
+
+    if (!statesets.empty())
+    {
+        for(Font::StateSets::iterator itr = statesets.begin();
+            itr != statesets.end();
+            ++itr)
+        {
+            if ((*itr)->getDefineList()==defineList)
+            {
+                // OSG_NOTICE<<"Text::createStateSet() : Matched DefineList, return StateSet "<<itr->get()<<std::endl;
+                return itr->get();
+            }
+            else
+            {
+            }
+        }
+    }
+
+    // OSG_NOTICE<<"Text::createStateSet() : Not Matched DefineList, creating new StateSet"<<std::endl;
+
     osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
+
+    stateset->setDefineList(defineList);
 
     statesets.push_back(stateset.get());
 
@@ -1281,7 +1349,7 @@ void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colo
                 }
                 else
                 {
-                    OSG_NOTICE<<"Using shaders for backdrop"<<std::endl;
+                    // OSG_NOTICE<<"Using shaders for backdrop"<<std::endl;
                 }
             }
 

@@ -27,6 +27,7 @@ namespace osgText {
 
 // forward declare Font
 class Font;
+class TextBase;
 
 #ifdef OSG_PROVIDE_READFILE
 /** Read a font from specified file. The filename may contain a path.
@@ -84,13 +85,9 @@ public:
 
     static osg::ref_ptr<Font>& getDefaultFont();
 
-    void setTexEnv(osg::TexEnv* texenv) { if (texenv) _texenv = texenv; }
-    inline osg::TexEnv* getTexEnv() {  return _texenv.get(); }
-    inline const osg::TexEnv* getTexEnv() const {  return _texenv.get(); }
-
-    void setStateSet(osg::StateSet* stateset) { _stateset = stateset; }
-    osg::StateSet* getStateSet() { return _stateset.get(); }
-    const osg::StateSet* getStateSet() const { return _stateset.get(); }
+    typedef std::vector< osg::ref_ptr<osg::StateSet> > StateSets;
+    StateSets& getCachedStateSets() { return _statesets; }
+    const StateSets& getCachedStateSets() const { return _statesets; }
 
 
     /** Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes and a font resolution.*/
@@ -188,7 +185,6 @@ protected:
 
     void addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph* glyph);
 
-    typedef std::vector< osg::ref_ptr<osg::StateSet> >      StateSetList;
     typedef std::map< unsigned int, osg::ref_ptr<Glyph> >   GlyphMap;
     typedef std::map< unsigned int, osg::ref_ptr<Glyph3D> >  Glyph3DMap;
 
@@ -197,8 +193,7 @@ protected:
 
     mutable OpenThreads::Mutex      _glyphMapMutex;
 
-    osg::ref_ptr<osg::TexEnv>       _texenv;
-    osg::ref_ptr<osg::StateSet>     _stateset;
+    StateSets                       _statesets;
     FontSizeGlyphMap                _sizeGlyphMap;
     GlyphTextureList                _glyphTextureList;
 

@@ -284,6 +284,10 @@ protected:
 
     virtual ~TextBase();
 
+    virtual osg::StateSet* createStateSet();
+
+    virtual void assignStateSet();
+
     void initArraysAndBuffers();
 
     osg::VertexArrayState* createVertexArrayState(osg::RenderInfo& renderInfo) const;

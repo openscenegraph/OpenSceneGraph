@@ -28,10 +28,92 @@
 using namespace osg;
 using namespace osgText;
 
+#if (!defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE))
+    #define GLSL_VERSION_STR "330 core"
+    #define GLYPH_CMP "r"
+#else
+    #define GLSL_VERSION_STR "300 es"
+    #define GLYPH_CMP "a"
+#endif
+
+static const char* gl3_TextVertexShader = {
+    "#version " GLSL_VERSION_STR "\n"
+    "// gl3_TextVertexShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
+    "in vec4 osg_Vertex;\n"
+    "in vec4 osg_Color;\n"
+    "in vec4 osg_MultiTexCoord0;\n"
+    "uniform mat4 osg_ModelViewProjectionMatrix;\n"
+    "out vec2 texCoord;\n"
+    "out vec4 vertexColor;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_Position = osg_ModelViewProjectionMatrix * osg_Vertex;\n"
+    "    texCoord = osg_MultiTexCoord0.xy;\n"
+    "    vertexColor = osg_Color; \n"
+    "}\n"
+};
+
+static const char* gl3_TextFragmentShader = {
+    "#version " GLSL_VERSION_STR "\n"
+    "// gl3_TextFragmentShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
+    "uniform sampler2D glyphTexture;\n"
+    "in vec2 texCoord;\n"
+    "in vec4 vertexColor;\n"
+    "out vec4 color;\n"
+    "void main(void)\n"
+    "{\n"
+    "    if (texCoord.x>=0.0) color = vertexColor * vec4(1.0, 1.0, 1.0, texture(glyphTexture, texCoord)." GLYPH_CMP ");\n"
+    "    else color = vertexColor;\n"
+    "}\n"
+};
+
+static const char* gl2_TextVertexShader = {
+    "// gl2_TextVertexShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
+    "varying vec2 texCoord;\n"
+    "varying vec4 vertexColor;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+    "    texCoord = gl_MultiTexCoord0.xy;\n"
+    "    vertexColor = gl_Color; \n"
+    "}\n"
+};
+
+static const char* gl2_TextFragmentShader = {
+    "// gl2_TextFragmentShader\n"
+    "#ifdef GL_ES\n"
+    "    precision highp float;\n"
+    "#endif\n"
+    "uniform sampler2D glyphTexture;\n"
+    "varying vec2 texCoord;\n"
+    "varying vec4 vertexColor;\n"
+    "void main(void)\n"
+    "{\n"
+    "    if (texCoord.x>=0.0) gl_FragColor = vertexColor * vec4(1.0, 1.0, 1.0, texture2D(glyphTexture, texCoord).a);\n"
+    "    else gl_FragColor = vertexColor;\n"
+    "}\n"
+};
+
+
+
+
 Text::Text():
     _enableDepthWrites(true),
     _backdropType(NONE),
+#if 1
     _backdropImplementation(DELAYED_DEPTH_WRITES),
+#else
+    _backdropImplementation(USE_SHADERS),
+#endif
     _backdropHorizontalOffset(0.07f),
     _backdropVerticalOffset(0.07f),
     _backdropColor(0.0f, 0.0f, 0.0f, 1.0f),
@@ -42,6 +124,8 @@ Text::Text():
     _colorGradientTopRight(1.0f, 1.0f, 1.0f, 1.0f)
 {
     _supportsVertexBufferObjects = true;
+
+    assignStateSet();
 }
 
 Text::Text(const Text& text,const osg::CopyOp& copyop):
@@ -65,21 +149,59 @@ Text::~Text()
 {
 }
 
-void Text::setFont(osg::ref_ptr<Font> font)
+osg::StateSet* Text::createStateSet()
 {
-    if (_font==font) return;
+    Font* activeFont = getActiveFont();
+    if (!activeFont) return 0;
 
-    osg::StateSet* previousFontStateSet = _font.valid() ? _font->getStateSet() : Font::getDefaultFont()->getStateSet();
-    osg::StateSet* newFontStateSet = font.valid() ? font->getStateSet() : Font::getDefaultFont()->getStateSet();
+    Font::StateSets& statesets = activeFont->getCachedStateSets();
 
-    if (getStateSet() == previousFontStateSet)
+    if (!statesets.empty())
     {
-        setStateSet( newFontStateSet );
+        return statesets.front().get();
     }
 
-    TextBase::setFont(font);
-}
+    osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
 
+    statesets.push_back(stateset.get());
+
+    stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+    stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+
+#if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
+
+    OSG_INFO<<"Font::Font() Fixed function pipeline"<<std::endl;
+
+    stateset->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::ON);
+#endif
+
+    osg::DisplaySettings::ShaderHint shaderHint = osg::DisplaySettings::instance()->getShaderHint();
+    if (shaderHint==osg::DisplaySettings::SHADER_GL3 || shaderHint==osg::DisplaySettings::SHADER_GLES3)
+    {
+        OSG_INFO<<"Font::Font() Setting up GL3 compatible shaders"<<std::endl;
+
+        osg::ref_ptr<osg::Program> program = new osg::Program;
+        program->addShader(new osg::Shader(osg::Shader::VERTEX, gl3_TextVertexShader));
+        program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl3_TextFragmentShader));
+        stateset->setAttributeAndModes(program.get());
+        stateset->addUniform(new osg::Uniform("glyphTexture", 0));
+
+    }
+    else if (shaderHint==osg::DisplaySettings::SHADER_GL2 || shaderHint==osg::DisplaySettings::SHADER_GLES2)
+    {
+        OSG_INFO<<"Font::Font() Setting up GL2 compatible shaders"<<std::endl;
+
+        osg::ref_ptr<osg::Program> program = new osg::Program;
+        program->addShader(new osg::Shader(osg::Shader::VERTEX, gl2_TextVertexShader));
+        program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl2_TextFragmentShader));
+        stateset->setAttributeAndModes(program.get());
+        stateset->addUniform(new osg::Uniform("glyphTexture", 0));
+
+    }
+
+    return stateset.release();
+}
 
 Font* Text::getActiveFont()
 {
@@ -632,7 +754,7 @@ void Text::computePositionsImplementation()
 // Presumes the atc matrix is already up-to-date
 void Text::computeBackdropPositions()
 {
-    if(_backdropType == NONE)
+    if(_backdropType == NONE || _backdropImplementation == USE_SHADERS)
     {
         return;
     }
@@ -1130,33 +1252,39 @@ void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colo
 
             const GlyphQuads& glyphquad = titr->second;
 
-#if 1
             if(_backdropType != NONE)
             {
-                unsigned int backdrop_index;
-                unsigned int max_backdrop_index;
-                if(_backdropType == OUTLINE)
+                if (_backdropImplementation != USE_SHADERS)
                 {
-                    backdrop_index = 1;
-                    max_backdrop_index = 8;
+                    unsigned int backdrop_index;
+                    unsigned int max_backdrop_index;
+                    if(_backdropType == OUTLINE)
+                    {
+                        backdrop_index = 1;
+                        max_backdrop_index = 8;
+                    }
+                    else
+                    {
+                        backdrop_index = _backdropType+1;
+                        max_backdrop_index = backdrop_index+1;
+                    }
+
+                    if (max_backdrop_index>glyphquad._primitives.size()) max_backdrop_index=glyphquad._primitives.size();
+
+                    state.disableColorPointer();
+                    state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
+
+                    for( ; backdrop_index < max_backdrop_index; backdrop_index++)
+                    {
+                        glyphquad._primitives[backdrop_index]->draw(state, usingVertexBufferObjects);
+                    }
                 }
                 else
                 {
-                    backdrop_index = _backdropType+1;
-                    max_backdrop_index = backdrop_index+1;
-                }
-
-                if (max_backdrop_index>glyphquad._primitives.size()) max_backdrop_index=glyphquad._primitives.size();
-
-                state.disableColorPointer();
-                state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
-
-                for( ; backdrop_index < max_backdrop_index; backdrop_index++)
-                {
-                    glyphquad._primitives[backdrop_index]->draw(state, usingVertexBufferObjects);
+                    OSG_NOTICE<<"Using shaders for backdrop"<<std::endl;
                 }
             }
-#endif
+
             if(_colorGradientMode == SOLID)
             {
                 vas->disableColorArray(state);

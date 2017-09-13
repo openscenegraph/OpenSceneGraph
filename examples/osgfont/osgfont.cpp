@@ -124,6 +124,16 @@ struct TextSettings
 
         if (arguments.read("--outline")) backdropType = osgText::Text::OUTLINE;
         if (arguments.read("--shadow")) backdropType = osgText::Text::DROP_SHADOW_BOTTOM_RIGHT;
+        if (arguments.read("--shadow-br")) backdropType = osgText::Text::DROP_SHADOW_BOTTOM_RIGHT;
+        if (arguments.read("--shadow-cr")) backdropType = osgText::Text::DROP_SHADOW_CENTER_RIGHT;
+        if (arguments.read("--shadow-tr")) backdropType = osgText::Text::DROP_SHADOW_TOP_RIGHT;
+        if (arguments.read("--shadow-bc")) backdropType = osgText::Text::DROP_SHADOW_BOTTOM_CENTER;
+        if (arguments.read("--shadow-tc")) backdropType = osgText::Text::DROP_SHADOW_TOP_CENTER;
+        if (arguments.read("--shadow-bl")) backdropType = osgText::Text::DROP_SHADOW_BOTTOM_LEFT;
+        if (arguments.read("--shadow-cl")) backdropType = osgText::Text::DROP_SHADOW_CENTER_LEFT;
+        if (arguments.read("--shadow-tl")) backdropType = osgText::Text::DROP_SHADOW_TOP_LEFT;
+
+
 
         float offset;
         if (arguments.read("--offset", offset)) backdropOffset.set(offset, offset);

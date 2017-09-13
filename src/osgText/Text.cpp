@@ -864,7 +864,7 @@ void Text::computeBackdropPositions()
     {
         float horizontal_shift_direction;
         float vertical_shift_direction;
-        switch(backdrop_index)
+        switch(backdrop_index-1)
         {
             case DROP_SHADOW_BOTTOM_RIGHT:
                 {

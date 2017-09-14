@@ -226,6 +226,8 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
                                 float local_distance = sqrtf(float(radius*radius)+float(span*span));
                                 if (center_value==0) local_distance += (0.5f-local_value_f)*local_multiplier;
                                 else local_distance += (local_value_f - 0.5f)*local_multiplier;
+
+                                if (local_distance<min_distance) min_distance = local_distance;
                             }
                         }
 
@@ -249,6 +251,8 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
                                 float local_distance = sqrtf(float(radius*radius)+float(span*span));
                                 if (center_value==0) local_distance += (0.5f-local_value_f)*local_multiplier;
                                 else local_distance += (local_value_f - 0.5f)*local_multiplier;
+
+                                if (local_distance<min_distance) min_distance = local_distance;
                             }
                         }
 
@@ -272,6 +276,7 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
                                 float local_distance = sqrtf(float(radius*radius)+float(span*span));
                                 if (center_value==0) local_distance += (0.5f-local_value_f)*local_multiplier;
                                 else local_distance += (local_value_f - 0.5f)*local_multiplier;
+
                                 if (local_distance<min_distance) min_distance = local_distance;
                             }
                         }
@@ -296,6 +301,7 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
                                 float local_distance = sqrtf(float(radius*radius)+float(span*span));
                                 if (center_value==0) local_distance += (0.5f-local_value_f)*local_multiplier;
                                 else local_distance += (local_value_f - 0.5f)*local_multiplier;
+
                                 if (local_distance<min_distance) min_distance = local_distance;
                             }
                         }
@@ -319,8 +325,9 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
                 // signed distance field value
                 *(dest_ptr++) = value;
 
-                float outline_distance = max_distance/4.0f;
+                float outline_distance = max_distance/3.0f;
 
+#if 0
                 // compute the alpha value of outline, one texel thick
                 unsigned char outline = center_value;
                 if (center_value<255)
@@ -329,11 +336,27 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
                     else if (min_distance<outline_distance) outline = 255*(outline_distance-min_distance);
                     else outline = 0;
                 }
-
+#else
+                // compute the alpha value of outline, one texel thick
+                unsigned char outline = 0;
+                if (center_value<255)
+                {
+                    float inner_outline = outline_distance-1.0f;
+                    if (min_distance<inner_outline) outline = 255;
+                    else if (min_distance<=outline_distance) outline = (unsigned char)(255.0*(outline_distance-min_distance)/(outline_distance-inner_outline));
+                    else outline = 0;
+                }
+                if (outline>center_value)
+                {
+                    outline -= center_value;
+                }
+#endif
                 *(dest_ptr++) = outline;
+
 
                 outline_distance *= 2.0f;
 
+#if 0
                 // compute the alpha vlaue of outline two texel thick
                 outline = center_value;
                 if (center_value<255)
@@ -342,6 +365,21 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
                     else if (min_distance<outline_distance) outline = 255*(outline_distance-min_distance);
                     else outline = 0;
                 }
+#else
+                // compute the alpha value of outline, one texel thick
+                outline = 0;
+                if (center_value<255)
+                {
+                    float inner_outline = outline_distance-1.0f;
+                    if (min_distance<inner_outline) outline = 255;
+                    else if (min_distance<=outline_distance) outline = (unsigned char)(255.0*(outline_distance-min_distance)/(outline_distance-inner_outline));
+                    else outline = 0;
+                }
+                if (outline>center_value)
+                {
+                    outline -= center_value;
+                }
+#endif
                 *(dest_ptr++) = outline;
 
                 // original alpha value from glyph image

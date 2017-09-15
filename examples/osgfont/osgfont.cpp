@@ -75,7 +75,8 @@ struct TextSettings
         textColor(1.0f, 1.0f, 1.0f, 1.0f),
         backdropType(osgText::Text::NONE),
         backdropOffset(0.04f, 0.04f),
-        backdropColor(0.0f, 0.0f, 0.0f, 1.0f)
+        backdropColor(0.0f, 0.0f, 0.0f, 1.0f),
+        scaleFontSizeToFontResolution(false)
     {
     }
 
@@ -142,6 +143,9 @@ struct TextSettings
         if (arguments.read("--bd-color", backdropColor.r(), backdropColor.g(), backdropColor.b(), backdropColor.a())) {}
         if (arguments.read("--bg-color", backgroundColor.r(), backgroundColor.g(), backgroundColor.b(), backgroundColor.a())) {}
 
+        if (arguments.read("--constant-size")) scaleFontSizeToFontResolution = false;
+        if (arguments.read("--scale-size")) scaleFontSizeToFontResolution = true;
+
     }
 
     void setText(osgText::Text& text)
@@ -188,6 +192,7 @@ struct TextSettings
     osg::Vec4                       backdropColor;
     osg::Vec4                       backgroundColor;
     Sizes                           sizes;
+    bool                            scaleFontSizeToFontResolution;
 };
 
 osgText::Text* createLabel(const std::string& l, TextSettings& settings, unsigned int size)
@@ -198,7 +203,13 @@ osgText::Text* createLabel(const std::string& l, TextSettings& settings, unsigne
 
     settings.setText(*label);
 
-    label->setCharacterSize(size);
+
+    if (settings.scaleFontSizeToFontResolution)
+    {
+        label->setCharacterSize(size);
+    }
+
+
     label->setFontResolution(size, size);
     label->setPosition(pos);
     label->setAlignment(osgText::Text::LEFT_BOTTOM);
@@ -210,7 +221,7 @@ osgText::Text* createLabel(const std::string& l, TextSettings& settings, unsigne
 
     // textInfo(label);
 
-    pos.y() += size + 10.0f;
+    pos.y() += label->getCharacterHeight()*2.0;
 
     return label;
 }

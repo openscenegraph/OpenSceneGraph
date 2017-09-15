@@ -571,5 +571,17 @@ void OBJWriterNodeVisitor::apply( osg::Geode &node )
     _nameStack.pop_back();
 }
 
+void OBJWriterNodeVisitor::apply(osg::Drawable& drawable)
+{
+   osg::Geometry* g = drawable.asGeometry();
+   if (g)
+   {
+      pushStateSet(g->getStateSet());
 
+      osg::Matrix m = osg::computeLocalToWorld(getNodePath());
+      processGeometry(g, m);
+
+      popStateSet(g->getStateSet());
+   }
+}
 

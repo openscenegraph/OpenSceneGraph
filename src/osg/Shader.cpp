@@ -618,7 +618,7 @@ void Shader::PerContextShader::compileShader(osg::State& state)
 #endif
 
     std::string source = _shader->getShaderSource();
-    if (_shader->getType()==osg::Shader::VERTEX && (state.getUseVertexAttributeAliasing() || state.getUseModelViewAndProjectionUniforms()))
+    // if (_shader->getType()==osg::Shader::VERTEX && (state.getUseVertexAttributeAliasing() || state.getUseModelViewAndProjectionUniforms()))
     {
         state.convertVertexShaderSourceToOsgBuiltIns(source);
     }

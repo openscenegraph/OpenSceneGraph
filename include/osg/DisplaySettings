@@ -20,6 +20,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 namespace osg {
 
@@ -319,7 +320,9 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
             SHADER_GLES3
         };
 
-        void setShaderHint(ShaderHint hint) { _shaderHint = hint; }
+        /** set the ShaderHint to tells shader generating cdoes  version to create.
+         * By default also OSG_GLSL_VERSION and OSG_PRECISION_FLOAT values that can get use directly in shaders using $OSG_GLSL_VERSION and $OSG_PRECISION_FLOAT respectively.*/
+        void setShaderHint(ShaderHint hint, bool setShaderValues=true);
         ShaderHint getShaderHint() const { return _shaderHint; }
 
 
@@ -357,6 +360,11 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
 
         /** helper function for computing the right eye view matrix.*/
         virtual osg::Matrixd computeRightEyeViewImplementation(const osg::Matrixd& view, double eyeSeperationScale=1.0) const;
+
+
+        void setValue(const std::string& name, const std::string& value);
+
+        bool getValue(const std::string& name, std::string& value, bool use_getenv_fallback=true) const;
 
     protected:
 
@@ -421,6 +429,11 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         Objects                         _keystones;
 
         OSXMenubarBehavior              _OSXMenubarBehavior;
+
+        typedef std::map<std::string, std::string> ValueMap;
+
+        mutable OpenThreads::Mutex      _valueMapMutex;
+        mutable ValueMap                _valueMap;
 
 };
 

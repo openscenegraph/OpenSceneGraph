@@ -1,5 +1,5 @@
 char text_greyscale_frag[] = "$OSG_GLSL_VERSION\n"
-                             "$OSG_GLSL_PRECISION_FLOAT\n"
+                             "$OSG_PRECISION_FLOAT\n"
                              "\n"
                              "#pragma import_defines( BACKDROP_COLOR, OUTLINE, ALPHA )\n"
                              "\n"

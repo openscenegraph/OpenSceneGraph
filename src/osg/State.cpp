@@ -1345,7 +1345,7 @@ bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
         }
     }
 
-    OSG_NOTICE<<"-------- Converted source "<<std::endl<<source<<std::endl<<"----------------"<<std::endl;
+    OSG_INFO<<"-------- Converted source "<<std::endl<<source<<std::endl<<"----------------"<<std::endl;
 
     return true;
 }

@@ -161,7 +161,6 @@ struct TextSettings
         font->setMaxAnisotropy(maxAnisotropy);
         font->setGlyphInterval(glyphInterval);
         font->setGyphTextureFeatures(glyphTextureFeatures);
-        // text.setFont(font.get());
 
         text.setColor(textColor);
         text.setBackdropType(backdropType);

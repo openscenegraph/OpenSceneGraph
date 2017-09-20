@@ -278,6 +278,8 @@ protected:
 
     virtual osg::StateSet* createStateSet();
 
+    void assignStateSet();
+
     Font* getActiveFont();
     const Font* getActiveFont() const;
 

@@ -205,6 +205,11 @@ osg::StateSet* Text::createStateSet()
     return stateset.release();
 }
 
+void Text::assignStateSet()
+{
+    setStateSet(createStateSet());
+}
+
 Font* Text::getActiveFont()
 {
     return _font.valid() ? _font.get() : Font::getDefaultFont().get();
@@ -1454,6 +1459,9 @@ void Text::setBackdropType(BackdropType type)
     if (_backdropType==type) return;
 
     _backdropType = type;
+
+    assignStateSet();
+
     computeGlyphRepresentation();
 }
 
@@ -1462,6 +1470,9 @@ void Text::setBackdropImplementation(BackdropImplementation implementation)
     if (_backdropImplementation==implementation) return;
 
     _backdropImplementation = implementation;
+
+    assignStateSet();
+
     computeGlyphRepresentation();
 }
 
@@ -1470,6 +1481,9 @@ void Text::setBackdropOffset(float offset)
 {
     _backdropHorizontalOffset = offset;
     _backdropVerticalOffset = offset;
+
+    assignStateSet();
+
     computeGlyphRepresentation();
 }
 
@@ -1477,6 +1491,9 @@ void Text::setBackdropOffset(float horizontal, float vertical)
 {
     _backdropHorizontalOffset = horizontal;
     _backdropVerticalOffset = vertical;
+
+    assignStateSet();
+
     computeGlyphRepresentation();
 }
 

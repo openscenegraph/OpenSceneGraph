@@ -213,6 +213,9 @@ void TextBase::setFontResolution(unsigned int width, unsigned int height)
     if (_fontSize==size) return;
 
     _fontSize = size;
+
+    assignStateSet();
+
     computeGlyphRepresentation();
 }
 

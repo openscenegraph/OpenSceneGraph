@@ -117,6 +117,18 @@ osg::StateSet* Text::createStateSet()
 
             defineList["SHADOW"] = osg::StateSet::DefinePair(ss.str(), osg::StateAttribute::ON);
         }
+
+        if (_fontSize.second>16)
+        {
+            OSG_NOTICE<<"Requesting SDF support _fontSize.second="<<_fontSize.second<<std::endl;
+            defineList["SIGNED_DISTNACE_FIELD"] = osg::StateSet::DefinePair("1", osg::StateAttribute::ON);
+        }
+        else
+        {
+            OSG_NOTICE<<"Disabling SDF support _fontSize.second="<<_fontSize.second<<std::endl;
+        }
+
+
     }
 
 #if 0
@@ -203,11 +215,6 @@ osg::StateSet* Text::createStateSet()
     }
 
     return stateset.release();
-}
-
-void Text::assignStateSet()
-{
-    setStateSet(createStateSet());
 }
 
 Font* Text::getActiveFont()

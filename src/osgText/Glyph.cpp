@@ -327,16 +327,6 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
 
                 float outline_distance = max_distance/3.0f;
 
-#if 0
-                // compute the alpha value of outline, one texel thick
-                unsigned char outline = center_value;
-                if (center_value<255)
-                {
-                    if (min_distance<outline_distance-1.0) outline = 255;
-                    else if (min_distance<outline_distance) outline = 255*(outline_distance-min_distance);
-                    else outline = 0;
-                }
-#else
                 // compute the alpha value of outline, one texel thick
                 unsigned char outline = 0;
                 if (center_value<255)
@@ -350,22 +340,12 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
                 {
                     outline -= center_value;
                 }
-#endif
+
                 *(dest_ptr++) = outline;
 
 
                 outline_distance *= 2.0f;
 
-#if 0
-                // compute the alpha vlaue of outline two texel thick
-                outline = center_value;
-                if (center_value<255)
-                {
-                    if (min_distance<outline_distance-1.0) outline = 255;
-                    else if (min_distance<outline_distance) outline = 255*(outline_distance-min_distance);
-                    else outline = 0;
-                }
-#else
                 // compute the alpha value of outline, one texel thick
                 outline = 0;
                 if (center_value<255)
@@ -379,7 +359,7 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
                 {
                     outline -= center_value;
                 }
-#endif
+
                 *(dest_ptr++) = outline;
 
                 // original alpha value from glyph image

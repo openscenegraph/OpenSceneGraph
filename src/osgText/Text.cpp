@@ -1507,6 +1507,8 @@ void Text::setBackdropOffset(float horizontal, float vertical)
 void Text::setBackdropColor(const osg::Vec4& color)
 {
     _backdropColor = color;
+
+    assignStateSet();
 }
 
 void Text::setColorGradientMode(ColorGradientMode mode)

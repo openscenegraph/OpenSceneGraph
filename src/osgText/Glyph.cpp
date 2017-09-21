@@ -175,6 +175,11 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
     if ((upper+glyph->getTexturePositionY())>=dest_rows) upper = dest_rows-glyph->getTexturePositionY()-1;
 
 
+    bool use_SDF_for_Outline = true;
+
+    float outer_outline_distance = float(search_distance);
+    float inner_outline_distance = float(outer_outline_distance)/2.0f;
+
     for(int dr=lower; dr<=upper; ++dr)
     {
         for(int dc=left; dc<=right; ++dc)
@@ -184,11 +189,17 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
             unsigned char center_value = 0;
             if (dr>=0 && dr<src_rows && dc>=0 && dc<src_columns) center_value = *(src_data + dr*src_columns + dc);
 
+            unsigned char inner_max_value = center_value;
+            unsigned char outer_max_value = center_value;
+
             float center_value_f = center_value*multiplier;
             float min_distance = FLT_MAX;
 
             if (center_value>0 && center_value<255)
             {
+                inner_max_value = 255;
+                outer_max_value = 255;
+
                 if (center_value_f>=0.5f)
                 {
                     min_distance = center_value_f-0.5f;
@@ -204,7 +215,7 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
             {
                 for(int radius=1; radius<search_distance; ++radius)
                 {
-                    for(int span=-radius; span<radius; ++span)
+                    for(int span=-radius; span<=radius; ++span)
                     {
                         {
                             // left
@@ -228,11 +239,42 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
                                 else local_distance += (local_value_f - 0.5f)*local_multiplier;
 
                                 if (local_distance<min_distance) min_distance = local_distance;
+
+                                if (local_value>inner_max_value && local_distance<=inner_outline_distance) inner_max_value = local_value;
+                                if (local_value>outer_max_value && local_distance<=outer_outline_distance) outer_max_value = local_value;
                             }
                         }
 
                         {
                             // top
+                            int dx = span;
+                            int dy = radius;
+
+                            int c = dc+dx;
+                            int r = dr+dy;
+
+                            unsigned char local_value = 0;
+                            if (r>=0 && r<src_rows && c>=0 && c<src_columns) local_value = *(src_data + r*src_columns + c);
+                            if (local_value!=center_value)
+                            {
+                                float local_value_f = float(local_value)*multiplier;
+
+                                float D = sqrtf(float(dx*dx) + float(dy*dy));
+                                float local_multiplier = (abs(dx)>abs(dy)) ? D/float(abs(dx)) : D/float(abs(dy));
+
+                                float local_distance = sqrtf(float(radius*radius)+float(span*span));
+                                if (center_value==0) local_distance += (0.5f-local_value_f)*local_multiplier;
+                                else local_distance += (local_value_f - 0.5f)*local_multiplier;
+
+                                if (local_distance<min_distance) min_distance = local_distance;
+
+                                if (local_value>inner_max_value && local_distance<=inner_outline_distance) inner_max_value = local_value;
+                                if (local_value>outer_max_value && local_distance<=outer_outline_distance) outer_max_value = local_value;
+                            }
+                        }
+
+                        {
+                            // right
                             int dx = radius;
                             int dy = span;
 
@@ -249,42 +291,21 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
                                 float local_multiplier = (abs(dx)>abs(dy)) ? D/float(abs(dx)) : D/float(abs(dy));
 
                                 float local_distance = sqrtf(float(radius*radius)+float(span*span));
+
                                 if (center_value==0) local_distance += (0.5f-local_value_f)*local_multiplier;
                                 else local_distance += (local_value_f - 0.5f)*local_multiplier;
 
                                 if (local_distance<min_distance) min_distance = local_distance;
-                            }
-                        }
 
-                        {
-                            // right
-                            int dx = radius;
-                            int dy = -span;
-
-                            int c = dc+dx;
-                            int r = dr+dy;
-
-                            unsigned char local_value = 0;
-                            if (r>=0 && r<src_rows && c>=0 && c<src_columns) local_value = *(src_data + r*src_columns + c);
-                            if (local_value!=center_value)
-                            {
-                                float local_value_f = float(local_value)*multiplier;
-
-                                float D = sqrtf(float(dx*dx) + float(dy*dy));
-                                float local_multiplier = (abs(dx)>abs(dy)) ? D/float(abs(dx)) : D/float(abs(dy));
-
-                                float local_distance = sqrtf(float(radius*radius)+float(span*span));
-                                if (center_value==0) local_distance += (0.5f-local_value_f)*local_multiplier;
-                                else local_distance += (local_value_f - 0.5f)*local_multiplier;
-
-                                if (local_distance<min_distance) min_distance = local_distance;
+                                if (local_value>inner_max_value && local_distance<=inner_outline_distance) inner_max_value = local_value;
+                                if (local_value>outer_max_value && local_distance<=outer_outline_distance) outer_max_value = local_value;
                             }
                         }
 
                         {
                             // bottom
-                            int dx = -radius;
-                            int dy = -span;
+                            int dx = span;
+                            int dy = -radius;
 
                             int c = dc+dx;
                             int r = dr+dy;
@@ -303,6 +324,9 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
                                 else local_distance += (local_value_f - 0.5f)*local_multiplier;
 
                                 if (local_distance<min_distance) min_distance = local_distance;
+
+                                if (local_value>inner_max_value && local_distance<=inner_outline_distance) inner_max_value = local_value;
+                                if (local_value>outer_max_value && local_distance<=outer_outline_distance) outer_max_value = local_value;
                             }
                         }
                     }
@@ -329,16 +353,24 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
 
                 // compute the alpha value of outline, one texel thick
                 unsigned char outline = 0;
-                if (center_value<255)
+
+                if (use_SDF_for_Outline)
                 {
-                    float inner_outline = outline_distance-1.0f;
-                    if (min_distance<inner_outline) outline = 255;
-                    else if (min_distance<=outline_distance) outline = (unsigned char)(255.0*(outline_distance-min_distance)/(outline_distance-inner_outline));
-                    else outline = 0;
+                    if (center_value<255)
+                    {
+                        float inner_outline = outline_distance-1.0f;
+                        if (min_distance<inner_outline) outline = 255;
+                        else if (min_distance<=outline_distance) outline = (unsigned char)(255.0*(outline_distance-min_distance)/(outline_distance-inner_outline));
+                        else outline = 0;
+                    }
+                    if (outline>center_value)
+                    {
+                        outline -= center_value;
+                    }
                 }
-                if (outline>center_value)
+                else
                 {
-                    outline -= center_value;
+                    outline = inner_max_value-center_value;
                 }
 
                 *(dest_ptr++) = outline;
@@ -348,16 +380,23 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
 
                 // compute the alpha value of outline, one texel thick
                 outline = 0;
-                if (center_value<255)
+                if (use_SDF_for_Outline)
                 {
-                    float inner_outline = outline_distance-1.0f;
-                    if (min_distance<inner_outline) outline = 255;
-                    else if (min_distance<=outline_distance) outline = (unsigned char)(255.0*(outline_distance-min_distance)/(outline_distance-inner_outline));
-                    else outline = 0;
+                    if (center_value<255)
+                    {
+                        float inner_outline = outline_distance-1.0f;
+                        if (min_distance<inner_outline) outline = 255;
+                        else if (min_distance<=outline_distance) outline = (unsigned char)(255.0*(outline_distance-min_distance)/(outline_distance-inner_outline));
+                        else outline = 0;
+                    }
+                    if (outline>center_value)
+                    {
+                        outline -= center_value;
+                    }
                 }
-                if (outline>center_value)
+                else
                 {
-                    outline -= center_value;
+                    outline = outer_max_value-center_value;
                 }
 
                 *(dest_ptr++) = outline;

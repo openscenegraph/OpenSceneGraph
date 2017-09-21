@@ -397,20 +397,23 @@ class ReaderWriterVNC : public osgDB::ReaderWriter
             const osgDB::AuthenticationMap* authenticationMap = (options && options->getAuthenticationMap()) ?
                     options->getAuthenticationMap() :
                     osgDB::Registry::instance()->getAuthenticationMap();
+            if (authenticationMap != NULL) {
+                const osgDB::AuthenticationDetails* details = authenticationMap->getAuthenticationDetails(hostname);
+                if (details == NULL) {
+                    size_t pos = hostname.find(":");
+                    if (pos != std::string::npos) {
+                        details = authenticationMap->getAuthenticationDetails(hostname.substr(0, pos));
+                    }
+                }
+                // configure authentication if required.
+                if (details != NULL)
+                {
+                    OSG_NOTICE << "Passing in password = " << details->password << std::endl;
 
-            const osgDB::AuthenticationDetails* details = authenticationMap ?
-                authenticationMap->getAuthenticationDetails(hostname) :
-                0;
-
-            // configure authentication if required.
-            if (details)
-            {
-                OSG_NOTICE<<"Passing in password = "<<details->password<<std::endl;
-
-                image->_username = details->username;
-                image->_password = details->password;
+                    image->_username = details->username;
+                    image->_password = details->password;
+                }
             }
-
             if (options && !options->getOptionString().empty())
             {
                 image->_optionString = options->getOptionString();

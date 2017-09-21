@@ -333,16 +333,17 @@ int main( int argc, char **argv )
     }
 
     // set up any logins required for http access
-    std::string url, username, password;
-    while(arguments.read("--login",url, username, password))
     {
-        if (!osgDB::Registry::instance()->getAuthenticationMap())
+        std::string url, username, password;
+        while (arguments.read("--login", url, username, password))
         {
-            osgDB::Registry::instance()->setAuthenticationMap(new osgDB::AuthenticationMap);
-            osgDB::Registry::instance()->getAuthenticationMap()->addAuthenticationDetails(
-                url,
-                new osgDB::AuthenticationDetails(username, password)
-            );
+            osgDB::AuthenticationMap* authMap = osgDB::Registry::instance()->getAuthenticationMap();
+            if (!authMap)
+            {
+                authMap = new osgDB::AuthenticationMap;
+                osgDB::Registry::instance()->setAuthenticationMap(authMap);
+            }
+            authMap->addAuthenticationDetails(url, new osgDB::AuthenticationDetails(username, password));
         }
     }
 

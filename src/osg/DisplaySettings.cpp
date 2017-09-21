@@ -1155,7 +1155,7 @@ bool DisplaySettings::getValue(const std::string& name, std::string& value, bool
     if (itr!=_valueMap.end())
     {
         value = itr->second;
-        OSG_NOTICE<<"DisplaySettings::getValue("<<name<<") found existing value = ["<<value<<"]"<<std::endl;
+        OSG_INFO<<"DisplaySettings::getValue("<<name<<") found existing value = ["<<value<<"]"<<std::endl;
         return true;
     }
 
@@ -1164,7 +1164,7 @@ bool DisplaySettings::getValue(const std::string& name, std::string& value, bool
     const char* str = getenv(name.c_str());
     if (str)
     {
-        OSG_NOTICE<<"DisplaySettings::getValue("<<name<<") found getenv value = ["<<value<<"]"<<std::endl;
+        OSG_INFO<<"DisplaySettings::getValue("<<name<<") found getenv value = ["<<value<<"]"<<std::endl;
         _valueMap[name] = value = str;
         return true;
 

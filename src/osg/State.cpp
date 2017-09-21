@@ -1221,15 +1221,12 @@ namespace State_Utils
     {
         std::string var_str(str.substr(start_pos+1, num_chars-1));
         std::string value;
-        OSG_NOTICE<<"    Need to replace : ["<<var_str<<"] ds="<<state.getDisplaySettings()<< std::endl;
         if (state.getActiveDisplaySettings()->getValue(var_str, value))
         {
-            OSG_NOTICE<<"    Value : "<<value<<std::endl;
             str.replace(start_pos, num_chars, value);
         }
         else
         {
-            OSG_NOTICE<<"    No value assignd, ereasing "<<std::endl;
             str.erase(start_pos, num_chars);
         }
     }
@@ -1237,14 +1234,11 @@ namespace State_Utils
 
     void substitudeEnvVars(const osg::State& state, std::string& str)
     {
-        OSG_NOTICE<<"substitudeEnvVars()"<<std::endl;
-
         std::string::size_type pos = 0;
         while (pos<str.size() && ((pos=str.find_first_of("$'\"", pos)) != std::string::npos))
         {
             if (pos==str.size())
             {
-                OSG_NOTICE<<"    Found "<<str[pos]<<" but it's the last character"<<std::endl;
                 break;
             }
 
@@ -1253,8 +1247,6 @@ namespace State_Utils
                 std::string::size_type start_quote = pos;
                 ++pos;
                 pos = str.find(str[start_quote], pos);
-                if (pos != std::string::npos) { OSG_NOTICE<<"    Found ending string : "<<str.substr(start_quote, pos-start_quote+1)<<std::endl; ++pos; }
-                else { OSG_NOTICE<<"    Found middle string : "<<str.substr(start_quote, std::string::npos)<<std::endl; break; }
             }
             else
             {
@@ -1265,13 +1257,11 @@ namespace State_Utils
                 if (pos != std::string::npos)
                 {
 
-                    OSG_NOTICE<<"   Found $ : "<<str.substr(start_var, pos-start_var)<<" "<<pos<<std::endl;
                     replaceVar(state, str, start_var, pos-start_var);
                     pos = start_var;
                 }
                 else
                 {
-                    OSG_NOTICE<<"   Found $ at end of string : "<<str.substr(start_var, std::string::npos)<<" "<<pos<<std::endl;
                     replaceVar(state, str, start_var, str.size()-start_var);
                     pos = start_var;
                 }

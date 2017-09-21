@@ -185,29 +185,22 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb, const std::string& label,
     text->setFont(font);
     text->setFontResolution(110,120);
 
-    text->setAlignment(osgText::Text::RIGHT_CENTER);
-    text->setAxisAlignment(osgText::Text::XZ_PLANE);
-    text->setCharacterSize((bb.zMax()-bb.zMin())*1.0f);
-
-    text->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin()),-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.1f));
-    //text->setColor(osg::Vec4(0.37f,0.48f,0.67f,1.0f)); // Neil's original OSG colour
-    text->setColor(osg::Vec4(0.20f,0.45f,0.60f,1.0f)); // OGL logo colour
-
-    OSG_NOTICE<<std::endl<<"***** POS A ******"<<std::endl;
-
     if (s_useSDF)
     {
         text->getFont()->setGyphTextureFeatures(osgText::GlyphTexture::ALL_FEATURES);
         text->setBackdropImplementation(osgText::Text::USE_SHADERS);
     }
 
-    OSG_NOTICE<<std::endl<<"***** POS B ******"<<std::endl;
+    text->setAlignment(osgText::Text::RIGHT_CENTER);
+    text->setAxisAlignment(osgText::Text::XZ_PLANE);
+    text->setCharacterSize((bb.zMax()-bb.zMin())*1.0f);
+
+    text->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin()),-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.1f));
+    text->setColor(osg::Vec4(0.20f,0.45f,0.60f,1.0f)); // OGL logo colour
 
     text->setBackdropType(osgText::Text::OUTLINE);
     text->setBackdropOffset(0.03f);
     text->setBackdropColor(osg::Vec4(0.0f, 0.0f, 0.5f, 1.0f));
-
-    OSG_NOTICE<<std::endl<<"***** POS C ******"<<std::endl;
 
     text->setColorGradientMode(osgText::Text::OVERALL);
     osg::Vec4 lightblue(0.30f,0.6f,0.90f,1.0f);

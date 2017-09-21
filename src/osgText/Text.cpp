@@ -131,7 +131,7 @@ osg::StateSet* Text::createStateSet()
         OSG_NOTICE<<"Disabling SDF support _fontSize.second="<<_fontSize.second<<std::endl;
     }
 
-#if 1
+#if 0
     OSG_NOTICE<<"Text::createStateSet() _backdropType="<<_backdropType<<", _backdropImplementation="<<_backdropImplementation<<std::endl;
     OSG_NOTICE<<"Text::createStateSet() defines:"<<defineList.size()<<std::endl;
     for(osg::StateSet::DefineList::iterator itr = defineList.begin();

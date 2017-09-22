@@ -204,14 +204,14 @@ osg::StateSet* Text::createStateSet()
         OSG_NOTICE<<"Using shaders/text_greyscale.frag"<<std::endl;
 
         #include "shaders/text_greyscale_frag.cpp"
-        program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::VERTEX, "shaders/text_greyscale.frag", text_greyscale_frag));
+        program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/text_greyscale.frag", text_greyscale_frag));
     }
     else
     {
         OSG_NOTICE<<"Using shaders/text_sdf.frag"<<std::endl;
 
         #include "shaders/text_sdf_frag.cpp"
-        program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::VERTEX, "shaders/text_sdf.frag", text_sdf_frag));
+        program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/text_sdf.frag", text_sdf_frag));
     }
 
     return stateset.release();

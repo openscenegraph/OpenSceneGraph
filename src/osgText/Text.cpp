@@ -1275,7 +1275,7 @@ void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colo
                     if(_backdropType == OUTLINE)
                     {
                         backdrop_index = 1;
-                        max_backdrop_index = 8;
+                        max_backdrop_index = backdrop_index+8;
                     }
                     else
                     {

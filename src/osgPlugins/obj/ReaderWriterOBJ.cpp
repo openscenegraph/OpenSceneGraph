@@ -333,7 +333,7 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
             osg_material->setDiffuse(osg::Material::FRONT_AND_BACK,material.diffuse);
             osg_material->setEmission(osg::Material::FRONT_AND_BACK,material.emissive);
 
-            if (material.illum == 2) {
+            if (material.illum >= 2) {
                 osg_material->setSpecular(osg::Material::FRONT_AND_BACK,material.specular);
             } else {
                 osg_material->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0,0,0,1));

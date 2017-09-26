@@ -90,6 +90,7 @@ osg::StateSet* Text::createStateSet()
 
         defineList["BACKDROP_COLOR"] = osg::StateSet::DefinePair(ss.str(), osg::StateAttribute::ON);
 
+
         if (_backdropType==OUTLINE)
         {
             ss.str("");
@@ -121,7 +122,7 @@ osg::StateSet* Text::createStateSet()
 
     }
 
-    if (_fontSize.second>8)
+    if (_fontSize.second>16/* && _backdropImplementation==USE_SHADERS*/)
     {
         OSG_NOTICE<<"Requesting SDF support _fontSize.second="<<_fontSize.second<<std::endl;
         defineList["SIGNED_DISTNACE_FIELD"] = osg::StateSet::DefinePair("1", osg::StateAttribute::ON);
@@ -150,7 +151,7 @@ osg::StateSet* Text::createStateSet()
         {
             if ((*itr)->getDefineList()==defineList)
             {
-                // OSG_NOTICE<<"Text::createStateSet() : Matched DefineList, return StateSet "<<itr->get()<<std::endl;
+                OSG_NOTICE<<"Text::createStateSet() : Matched DefineList, return StateSet "<<itr->get()<<std::endl;
                 return itr->get();
             }
             else
@@ -159,7 +160,7 @@ osg::StateSet* Text::createStateSet()
         }
     }
 
-    // OSG_NOTICE<<"Text::createStateSet() : Not Matched DefineList, creating new StateSet"<<std::endl;
+    OSG_NOTICE<<"Text::createStateSet() : Not Matched DefineList, creating new StateSet"<<std::endl;
 
     osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
 
@@ -463,6 +464,8 @@ void Text::computeGlyphRepresentation()
     float hr = _characterHeight;
     float wr = hr/getCharacterAspectRatio();
 
+    float texelMargin = 5.0f;
+
     for(String::iterator itr=_text.begin();
         itr!=_text.end();
         )
@@ -629,8 +632,6 @@ void Text::computeGlyphRepresentation()
                     osg::Vec2 mintc = glyph->getMinTexCoord();
                     osg::Vec2 maxtc = glyph->getMaxTexCoord();
                     osg::Vec2 vDiff = maxtc - mintc;
-
-                    float texelMargin = 5.0f;
 
                     float fHorizTCMargin = texelMargin / glyph->getTexture()->getTextureWidth();
                     float fVertTCMargin = texelMargin / glyph->getTexture()->getTextureHeight();

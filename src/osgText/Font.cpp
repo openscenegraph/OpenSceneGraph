@@ -243,7 +243,7 @@ Font::Font(FontImplementation* implementation):
     setImplementation(implementation);
 
     char *ptr;
-    if( (ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)
+    if ((ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)
     {
         unsigned int osg_max_size = atoi(ptr);
 
@@ -251,6 +251,14 @@ Font::Font(FontImplementation* implementation):
         if (osg_max_size<_textureHeightHint) _textureHeightHint = osg_max_size;
     }
 
+    if ((ptr = getenv("OSG_SDF_TEXT")) != 0)
+    {
+        _glyphTextureFeatures = GlyphTexture::ALL_FEATURES;
+    }
+    else if ((ptr = getenv("OSG_GREYSCALE_TEXT")) != 0)
+    {
+        _glyphTextureFeatures = GlyphTexture::GREYSCALE;
+    }
 }
 
 Font::~Font()

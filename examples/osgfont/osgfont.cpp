@@ -74,7 +74,7 @@ struct TextSettings
         glyphTextureFeatures(osgText::GlyphTexture::GREYSCALE),
         textColor(1.0f, 1.0f, 1.0f, 1.0f),
         backdropType(osgText::Text::NONE),
-        backdropOffset(0.04f, 0.04f),
+        backdropOffset(0.07f, 0.07f),
         backdropColor(0.0f, 0.0f, 0.0f, 1.0f),
         scaleFontSizeToFontResolution(false)
     {
@@ -194,10 +194,8 @@ struct TextSettings
     bool                            scaleFontSizeToFontResolution;
 };
 
-osgText::Text* createLabel(const std::string& l, TextSettings& settings, unsigned int size)
+osgText::Text* createLabel(const std::string& l, TextSettings& settings, unsigned int size, osg::Vec3& pos)
 {
-    static osg::Vec3 pos(10.0f, 10.0f, 0.0f);
-
     osgText::Text* label = new osgText::Text();
 
     settings.setText(*label);
@@ -302,20 +300,51 @@ int main(int argc, char** argv)
 
     osg::ref_ptr<osg::Group> root = new osg::Group;
 
-    bool ortho = args.read("--ortho");
-    if (ortho)
+    bool split_screen = args.read("--split");
+
+    if (split_screen)
     {
-        osg::ref_ptr<osg::Camera> camera = createOrthoCamera(1280.0f, 1024.0f);
-        root->addChild(camera.get());
-        root = camera;
+        viewer.realize();
+
+        // quite an dirty divusion of the master Camera's window if one is assigned.
+        if (viewer.getCamera()->getGraphicsContext())
+        {
+            viewer.stopThreading();
+
+            osg::ref_ptr<osg::GraphicsContext> gc = viewer.getCamera()->getGraphicsContext();
+            osg::ref_ptr<const osg::GraphicsContext::Traits> traits = gc->getTraits();
+
+            // left half
+            {
+                osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+                camera->setCullMask(0x1);
+                camera->setGraphicsContext(gc.get());
+                camera->setViewport(new osg::Viewport(0,0, traits->width/2, traits->height));
+                viewer.addSlave(camera.get(), osg::Matrixd::translate(1.0,0.0,0.0), osg::Matrixd::scale(2.0, 1.0, 1.0));
+            }
+
+            {
+                osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+                camera->setCullMask(0x2);
+                camera->setGraphicsContext(gc.get());
+                camera->setViewport(new osg::Viewport(traits->width/2+2,0, traits->width/2, traits->height));
+                viewer.addSlave(camera.get(), osg::Matrixd::translate(-1.0,0.0,0.0), osg::Matrixd::scale(2.0, 1.0, 1.0));
+            }
+
+            viewer.getCamera()->setGraphicsContext(0);
+
+            viewer.startThreading();
+        }
+        else
+        {
+            split_screen = false;
+        }
     }
-    else
-    {
-        osg::ref_ptr<osg::MatrixTransform> transform = new osg::MatrixTransform;
-        transform->setMatrix(osg::Matrixd::rotate(osg::DegreesToRadians(90.0), 1.0, 0.0, 0.0));
-        root->addChild(transform.get());
-        root = transform;
-    }
+
+    osg::ref_ptr<osg::MatrixTransform> transform = new osg::MatrixTransform;
+    transform->setMatrix(osg::Matrixd::rotate(osg::DegreesToRadians(90.0), 1.0, 0.0, 0.0));
+    root->addChild(transform.get());
+    root = transform;
 
     osg::ref_ptr<osg::Program> program = new osg::Program;
     std::string shaderFilename;
@@ -363,7 +392,9 @@ int main(int argc, char** argv)
         settings.sizes.push_back(64);
     }
 
-    osg::Geode* geode = new osg::Geode();
+    osg::ref_ptr<osg::Geode> geode = new osg::Geode();
+
+    osg::Vec3 pos(0.0f, 0.0f, 0.0f);
 
     // Add all of our osgText drawables.
     for(Sizes::const_iterator i = settings.sizes.begin(); i != settings.sizes.end(); i++)
@@ -372,10 +403,34 @@ int main(int argc, char** argv)
 
         ss << *i << " 1234567890 abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-        geode->addDrawable(createLabel(ss.str(), settings, *i));
+        geode->addDrawable(createLabel(ss.str(), settings, *i, pos));
     }
 
-    root->addChild(geode);
+    root->addChild(geode.get());
+
+    if (split_screen)
+    {
+        geode->setNodeMask(0x1);
+
+        osg::ref_ptr<osg::Geode> right_geode = new osg::Geode;
+        right_geode->setNodeMask(0x2);
+
+        settings.glyphTextureFeatures = osgText::GlyphTexture::GREYSCALE;
+
+        pos.set(0.0f, 0.0f, 0.0f);
+
+        for(Sizes::const_iterator i = settings.sizes.begin(); i != settings.sizes.end(); i++)
+        {
+            std::stringstream ss;
+
+            ss << *i << " 1234567890 abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+            right_geode->addDrawable(createLabel(ss.str(), settings, *i, pos));
+        }
+
+        root->addChild(right_geode);
+    }
+
 
     if (!outputFilename.empty())
     {

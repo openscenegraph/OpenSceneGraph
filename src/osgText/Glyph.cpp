@@ -137,16 +137,16 @@ void GlyphTexture::addGlyph(Glyph* glyph, int posX, int posY)
 
 void GlyphTexture::copyGlyphImage(Glyph* glyph)
 {
+    _image->dirty();
 
     if (_glyphTextureFeatures==GREYSCALE)
     {
-        // OSG_NOTICE<<"GlyphTexture::copyGlyphImage() greyscale copy"<<std::endl;
+        // OSG_NOTICE<<"GlyphTexture::copyGlyphImage() greyscale copying. glyphTexture="<<this<<", glyph="<<glyph->getGlyphCode()<<std::endl;
         _image->copySubImage(glyph->getTexturePositionX(), glyph->getTexturePositionY(), 0, glyph);
-        _image->dirty();
         return;
     }
 
-    // OSG_NOTICE<<"GlyphTexture::copyGlyphImage() generating signed distance field."<<std::endl;
+    // OSG_NOTICE<<"GlyphTexture::copyGlyphImage() generating signed distance field. glyphTexture="<<this<<", glyph="<<glyph->getGlyphCode()<<std::endl;
 
     int src_columns = glyph->s();
     int src_rows = glyph->t();

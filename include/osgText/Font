@@ -107,23 +107,6 @@ public:
      *  return true on success, return false when not supported.*/
     virtual bool getVerticalSize(float& ascender, float& descender) const { return _implementation ? _implementation->getVerticalSize(ascender, descender) : false; }
 
-    /** Set the margin around each glyph,
-      * to ensure that texture filtering doesn't bleed adjacent glyph's into each other.
-      * Default margin is 1 texels.*/
-    void setGlyphImageMargin(unsigned int margin);
-    unsigned int getGlyphImageMargin() const;
-
-    /** Set the margin ratio around each glyph, relative to the glyph's size.
-      * to ensure that texture filtering doesn't bleed adjacent glyph's into each other.
-      * Default margin is 0.05.*/
-    void setGlyphImageMarginRatio(float margin);
-    float getGlyphImageMarginRatio() const;
-
-    /** Set the interval that glyph positions are clamped to.
-      * Default interval is 1 texels.*/
-    void setGlyphInterval(int interval);
-    int getGlyphInterval() const;
-
 
     void setGyphTextureFeatures(GlyphTexture::Features features) { _glyphTextureFeatures = features; }
     GlyphTexture::Features getGlyphTextureFeatures() const { return _glyphTextureFeatures; }
@@ -202,9 +185,7 @@ protected:
 
     // current active size of font
     FontResolution                  _fontSize;
-    unsigned int                    _margin;
-    float                           _marginRatio;
-    int                             _glyphInterval;
+
     GlyphTexture::Features          _glyphTextureFeatures;
 
     unsigned int                    _textureWidthHint;

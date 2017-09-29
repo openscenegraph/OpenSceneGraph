@@ -29,9 +29,6 @@ DefaultFont::DefaultFont()
     _minFilterHint = osg::Texture::LINEAR_MIPMAP_LINEAR;
     _magFilterHint = osg::Texture::NEAREST;
 
-    _margin = 8;
-    _marginRatio = 0.0;
-    _glyphInterval = 16;
 
     constructGlyphs();
 }

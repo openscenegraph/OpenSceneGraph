@@ -93,6 +93,9 @@ public:
     void setMaxTexCoord(const osg::Vec2& coord);
     const osg::Vec2& getMaxTexCoord() const;
 
+    void setTexelMargin(float margin) { _texelMargin = margin; }
+    float getTexelMargin() const { return _texelMargin; }
+
 protected:
 
     virtual ~Glyph();
@@ -116,6 +119,7 @@ protected:
     int                         _texturePosY;
     osg::Vec2                   _minTexCoord;
     osg::Vec2                   _maxTexCoord;
+    float                       _texelMargin;
 
     typedef osg::buffered_value<GLuint> GLObjectList;
     mutable GLObjectList _globjList;
@@ -256,16 +260,6 @@ public:
     /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
     virtual int compare(const osg::StateAttribute& rhs) const;
 
-    /** Set the margin around each glyph, to ensure that texture filtering doesn't bleed adjacent glyph's into each other.*/
-    void setGlyphImageMargin(unsigned int margin) { _margin = margin; }
-    unsigned int getGlyphImageMargin() const { return _margin; }
-
-    void setGlyphImageMarginRatio(float margin) { _marginRatio = margin; }
-    float getGlyphImageMarginRatio() const { return _marginRatio; }
-
-    void setGlyphInterval(int interval) { _interval = interval; }
-    int getGlyphInterval() const { return _interval; }
-
     enum Features
     {
         GREYSCALE,
@@ -276,6 +270,10 @@ public:
 
     void setGlyphTextureFeatures(Features features) { _glyphTextureFeatures = features; }
     Features getGlyphTextureFeatures() const { return _glyphTextureFeatures; }
+
+
+    int getEffectMargin(const Glyph* glyph);
+    int getTexelMargin(const Glyph* glyph);
 
     bool getSpaceForGlyph(Glyph* glyph, int& posX, int& posY);
 
@@ -296,12 +294,6 @@ protected:
 
     void copyGlyphImage(Glyph* glyph);
 
-
-    // parameter used to compute the size and position of empty space
-    // in the texture which could accommodate new glyphs.
-    int         _margin;
-    float       _marginRatio;
-    int         _interval;
     Features    _glyphTextureFeatures;
 
     int         _usedY;

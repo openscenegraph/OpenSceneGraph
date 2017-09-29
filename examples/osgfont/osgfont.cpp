@@ -68,9 +68,6 @@ struct TextSettings
         minFilter(osg::Texture::LINEAR_MIPMAP_LINEAR),
         magFilter(osg::Texture::LINEAR),
         maxAnisotropy(16.0f),
-        glyphImageMargin(1),
-        glyphImageMarginRatio(0.02),
-        glyphInterval(1),
         glyphTextureFeatures(osgText::GlyphTexture::GREYSCALE),
         textColor(1.0f, 1.0f, 1.0f, 1.0f),
         backdropType(osgText::Text::NONE),
@@ -118,10 +115,6 @@ struct TextSettings
 
         if (arguments.read("--anisotropy",maxAnisotropy)) {}
 
-        if (arguments.read("--margin", glyphImageMargin)) {}
-        if (arguments.read("--margin-ratio", glyphImageMarginRatio)) {}
-        if (arguments.read("--interval", glyphInterval)) {}
-
 
         if (arguments.read("--outline")) backdropType = osgText::Text::OUTLINE;
         if (arguments.read("--shadow")) backdropType = osgText::Text::DROP_SHADOW_BOTTOM_RIGHT;
@@ -158,12 +151,9 @@ struct TextSettings
 
         if (!font) font = osgText::Font::getDefaultFont();
 
-        font->setGlyphImageMargin(glyphImageMargin);
-        font->setGlyphImageMarginRatio(glyphImageMarginRatio);
         font->setMinFilterHint(minFilter);
         font->setMagFilterHint(magFilter);
         font->setMaxAnisotropy(maxAnisotropy);
-        font->setGlyphInterval(glyphInterval);
         font->setGyphTextureFeatures(glyphTextureFeatures);
 
         text.setColor(textColor);
@@ -184,9 +174,6 @@ struct TextSettings
     osg::Texture::FilterMode        minFilter;
     osg::Texture::FilterMode        magFilter;
     float                           maxAnisotropy;
-    unsigned int                    glyphImageMargin;
-    float                           glyphImageMarginRatio;
-    int                             glyphInterval;
     osgText::GlyphTexture::Features glyphTextureFeatures;
 
     osg::Vec4                       textColor;
@@ -204,21 +191,17 @@ osgText::Text* createLabel(const std::string& l, TextSettings& settings, unsigne
 
     settings.setText(*label);
 
-
     if (settings.scaleFontSizeToFontResolution)
     {
         label->setCharacterSize(size);
     }
 
-
     label->setFontResolution(size, size);
     label->setPosition(pos);
     label->setAlignment(osgText::Text::LEFT_BOTTOM);
 
-
     // It seems to be important we do this last to get best results?
     label->setText(l);
-
 
     // textInfo(label);
 

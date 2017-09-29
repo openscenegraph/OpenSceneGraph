@@ -464,8 +464,6 @@ void Text::computeGlyphRepresentation()
     float hr = _characterHeight;
     float wr = hr/getCharacterAspectRatio();
 
-    float texelMargin = 5.0f;
-
     for(String::iterator itr=_text.begin();
         itr!=_text.end();
         )
@@ -632,6 +630,7 @@ void Text::computeGlyphRepresentation()
                     osg::Vec2 mintc = glyph->getMinTexCoord();
                     osg::Vec2 maxtc = glyph->getMaxTexCoord();
                     osg::Vec2 vDiff = maxtc - mintc;
+                    float texelMargin = glyph->getTexelMargin();
 
                     float fHorizTCMargin = texelMargin / glyph->getTexture()->getTextureWidth();
                     float fVertTCMargin = texelMargin / glyph->getTexture()->getTextureHeight();

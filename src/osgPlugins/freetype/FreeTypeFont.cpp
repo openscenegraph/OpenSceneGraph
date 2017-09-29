@@ -278,19 +278,6 @@ void FreeTypeFont::setFontResolution(const osgText::FontResolution& fontSize)
 
     int width = fontSize.first;
     int height = fontSize.second;
-    int maxAxis = std::max(width, height);
-    int margin = _facade->getGlyphImageMargin() + (int)((float)maxAxis * _facade->getGlyphImageMarginRatio());
-
-    if ((unsigned int)(width+2*margin) > _facade->getTextureWidthHint() ||
-        (unsigned int)(width+2*margin) > _facade->getTextureHeightHint())
-    {
-        OSG_WARN<<"Warning: FreeTypeFont::setSize("<<width<<","<<height<<") sizes too large,"<<std::endl;
-
-        width = _facade->getTextureWidthHint()-2*margin;
-        height = _facade->getTextureHeightHint()-2*margin;
-
-        OSG_WARN<<"         sizes capped ("<<width<<","<<height<<") to fit int current glyph texture size."<<std::endl;
-    }
 
     FT_Error error = FT_Set_Pixel_Sizes( _face,      /* handle to face object  */
                                          width,      /* pixel_width            */

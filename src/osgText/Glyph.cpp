@@ -37,9 +37,6 @@ using namespace std;
 #endif
 
 GlyphTexture::GlyphTexture():
-    _margin(1),
-    _marginRatio(0.02f),
-    _interval(1),
     _usedY(0),
     _partUsedX(0),
     _partUsedY(0)
@@ -60,21 +57,39 @@ int GlyphTexture::compare(const osg::StateAttribute& rhs) const
     return 0;
 }
 
+int GlyphTexture::getEffectMargin(const Glyph* glyph)
+{
+    if (_glyphTextureFeatures==GREYSCALE) return 0;
+    else return glyph->getFontResolution().second/4;
+}
+
+int GlyphTexture::getTexelMargin(const Glyph* glyph)
+{
+    int width = glyph->s();
+    int height = glyph->t();
+    int effect_margin = getEffectMargin(glyph);
+
+    int max_dimension = std::max(width, height) + 2 * effect_margin;
+    int margin = osg::maximum(max_dimension/4, 2) + effect_margin;
+
+    return margin;
+}
 
 bool GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
 {
-    int maxAxis = osg::maximum(glyph->s(), glyph->t());
-    int margin_from_ratio = (int)((float)maxAxis * _marginRatio);
-    int search_distance = glyph->getFontResolution().second/8;
+    int width = glyph->s();
+    int height = glyph->t();
 
-    int margin = _margin + osg::maximum(margin_from_ratio, search_distance);
+    int margin = getTexelMargin(glyph);
 
-    int width = glyph->s()+2*margin;
-    int height = glyph->t()+2*margin;
+    width += 2*margin;
+    height += 2*margin;
 
-    int partUsedX = ((_partUsedX % _interval) == 0) ? _partUsedX : (((_partUsedX/_interval)+1)*_interval);
-    int partUsedY = ((_partUsedY % _interval) == 0) ? _partUsedY : (((_partUsedY/_interval)+1)*_interval);
-    int usedY = ((_usedY % _interval) == 0) ? _usedY : (((_usedY/_interval)+1)*_interval);
+    int interval = 4;
+
+    int partUsedX = ((_partUsedX % interval) == 0) ? _partUsedX : (((_partUsedX/interval)+1)*interval);
+    int partUsedY = ((_partUsedY % interval) == 0) ? _partUsedY : (((_partUsedY/interval)+1)*interval);
+    int usedY = ((_usedY % interval) == 0) ? _usedY : (((_usedY/interval)+1)*interval);
 
     // first check box (partUsedX, usedY) to (width,height)
     if (width <= (getTextureWidth()-partUsedX) &&
@@ -132,6 +147,9 @@ void GlyphTexture::addGlyph(Glyph* glyph, int posX, int posY)
     glyph->setMaxTexCoord( osg::Vec2( static_cast<float>(posX+glyph->s())/static_cast<float>(getTextureWidth()),
                                       static_cast<float>(posY+glyph->t())/static_cast<float>(getTextureHeight()) ) );
 
+
+    glyph->setTexelMargin(float(getTexelMargin(glyph)));
+
     copyGlyphImage(glyph);
 }
 
@@ -156,7 +174,7 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
     int dest_rows = _image->t();
     unsigned char* dest_data = _image->data(glyph->getTexturePositionX(),glyph->getTexturePositionY());
 
-    int search_distance = glyph->getFontResolution().second/4;
+    int search_distance = getEffectMargin(glyph);
 
     int left = -search_distance;
     int right = glyph->s()+search_distance;

@@ -224,9 +224,6 @@ osg::ref_ptr<Font> osgText::readRefFontStream(std::istream& stream, const osgDB:
 
 Font::Font(FontImplementation* implementation):
     osg::Object(true),
-    _margin(1),
-    _marginRatio(0.02),
-    _glyphInterval(1),
 #if 0
     _glyphTextureFeatures(GlyphTexture::ALL_FEATURES),
 #else
@@ -288,32 +285,6 @@ std::string Font::getFileName() const
     if (_implementation.valid()) return _implementation->getFileName();
     return std::string();
 }
-
-void Font::setGlyphImageMargin(unsigned int margin)
-{
-    _margin = margin;
-}
-
-unsigned int Font::getGlyphImageMargin() const
-{
-    return _margin;
-}
-
-void Font::setGlyphImageMarginRatio(float ratio)
-{
-    _marginRatio = ratio;
-}
-
-float Font::getGlyphImageMarginRatio() const
-{
-    return _marginRatio;
-}
-
-void Font::setGlyphInterval(int interval)
-{
-    _glyphInterval = interval;
-}
-
 
 void Font::setTextureSizeHint(unsigned int width,unsigned int height)
 {
@@ -514,9 +485,6 @@ void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph*
         OSG_INFO<< "   Font " << this<< ", numberOfTexturesAllocated "<<numberOfTexturesAllocated<<std::endl;
 
         // reserve enough space for the glyphs.
-        glyphTexture->setGlyphImageMargin(_margin);
-        glyphTexture->setGlyphImageMarginRatio(_marginRatio);
-        glyphTexture->setGlyphInterval(_glyphInterval);
         glyphTexture->setGlyphTextureFeatures(_glyphTextureFeatures);
         glyphTexture->setTextureSize(_textureWidthHint,_textureHeightHint);
         glyphTexture->setFilter(osg::Texture::MIN_FILTER,_minFilterHint);

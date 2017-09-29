@@ -24,8 +24,15 @@ using namespace osgText;
 
 DefaultFont::DefaultFont()
 {
+    _fontSize = FontResolution(8,12);
+
     _minFilterHint = osg::Texture::LINEAR_MIPMAP_LINEAR;
     _magFilterHint = osg::Texture::NEAREST;
+
+    _margin = 8;
+    _marginRatio = 0.0;
+    _glyphInterval = 16;
+
     constructGlyphs();
 }
 
@@ -232,6 +239,8 @@ void DefaultFont::constructGlyphs()
         glyph->setHorizontalAdvance(sourceWidth*coord_scale);
         glyph->setVerticalBearing(osg::Vec2(0.5f,1.0f)); // top middle.
         glyph->setVerticalAdvance(sourceHeight*coord_scale);
+
+        glyph->setFontResolution(fontRes);
 
         addGlyph(fontRes,i,glyph.get());
     }

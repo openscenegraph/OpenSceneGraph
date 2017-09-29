@@ -152,7 +152,11 @@ struct TextSettings
     {
         OSG_NOTICE<<"Settings::setText()"<<std::endl;
 
-        osg::ref_ptr<osgText::Font> font  = osgText::readRefFontFile(fontFilename);
+        osg::ref_ptr<osgText::Font> font;
+
+        if (fontFilename!="default") font = osgText::readRefFontFile(fontFilename);
+
+        if (!font) font = osgText::Font::getDefaultFont();
 
         font->setGlyphImageMargin(glyphImageMargin);
         font->setGlyphImageMarginRatio(glyphImageMarginRatio);

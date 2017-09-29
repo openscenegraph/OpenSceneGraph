@@ -156,7 +156,7 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
     int dest_rows = _image->t();
     unsigned char* dest_data = _image->data(glyph->getTexturePositionX(),glyph->getTexturePositionY());
 
-    int search_distance = glyph->getFontResolution().second/8;
+    int search_distance = glyph->getFontResolution().second/4;
 
     int left = -search_distance;
     int right = glyph->s()+search_distance;
@@ -165,7 +165,7 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
 
     float multiplier = 1.0/255.0f;
 
-    float max_distance = glyph->getFontResolution().first/4;
+    float max_distance = sqrtf(float(search_distance)*float(search_distance)*2.0);
 
     int num_channels = TEXTURE_IMAGE_NUM_CHANNELS;
 
@@ -175,10 +175,9 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
     if ((lower+glyph->getTexturePositionY())<0) lower = -glyph->getTexturePositionY();
     if ((upper+glyph->getTexturePositionY())>=dest_rows) upper = dest_rows-glyph->getTexturePositionY()-1;
 
-
     bool use_SDF_for_Outline = true;
 
-    float outer_outline_distance = float(glyph->getFontResolution().first)*0.14f;
+    float outer_outline_distance = float(glyph->getFontResolution().first)*0.1f;
     float inner_outline_distance = outer_outline_distance*0.5f;
 
     unsigned char full_on = 255;
@@ -198,7 +197,7 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
             unsigned char outer_max_value = center_value;
 
             float center_value_f = center_value*multiplier;
-            float min_distance = FLT_MAX;
+            float min_distance = max_distance;
 
             if (center_value>0 && center_value<full_on)
             {

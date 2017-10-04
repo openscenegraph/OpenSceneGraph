@@ -47,6 +47,17 @@ Text::Text():
 {
     _supportsVertexBufferObjects = true;
 
+    char *ptr;
+    if ((ptr = getenv("OSG_SDF_TEXT")) != 0)
+    {
+        _backdropImplementation = USE_SHADERS;
+    }
+    else if ((ptr = getenv("OSG_GREYSCALE_TEXT")) != 0)
+    {
+        _backdropImplementation = DELAYED_DEPTH_WRITES;
+    }
+
+
     assignStateSet();
 }
 
@@ -80,11 +91,10 @@ osg::StateSet* Text::createStateSet()
 
     Font::StateSets& statesets = activeFont->getCachedStateSets();
 
+    std::stringstream ss;
     osg::StateSet::DefineList defineList;
     if (_backdropType!=NONE && _backdropImplementation==USE_SHADERS)
     {
-        std::stringstream ss;
-
         ss.str("");
         ss << "vec4("<<_backdropColor.r()<<", "<<_backdropColor.g()<<", "<<_backdropColor.b()<<", "<<_backdropColor.a()<<")";
 
@@ -122,14 +132,18 @@ osg::StateSet* Text::createStateSet()
 
     }
 
-    if (_fontSize.second>16/* && _backdropImplementation==USE_SHADERS*/)
+    if (activeFont->getGlyphTextureFeatures()!=GlyphTexture::GREYSCALE)
     {
-        OSG_NOTICE<<"Requesting SDF support _fontSize.second="<<_fontSize.second<<std::endl;
+        ss.str("");
+        ss << _fontSize.second;
+
+        defineList["GLYPH_DIMENSION"] = osg::StateSet::DefinePair(ss.str(), osg::StateAttribute::ON);
+
+        ss.str("");
+        ss << activeFont->getTextureWidthHint();
+        defineList["TEXTURE_DIMENSION"] = osg::StateSet::DefinePair(ss.str(), osg::StateAttribute::ON);
+
         defineList["SIGNED_DISTNACE_FIELD"] = osg::StateSet::DefinePair("1", osg::StateAttribute::ON);
-    }
-    else
-    {
-        OSG_NOTICE<<"Disabling SDF support _fontSize.second="<<_fontSize.second<<std::endl;
     }
 
 #if 0
@@ -151,7 +165,7 @@ osg::StateSet* Text::createStateSet()
         {
             if ((*itr)->getDefineList()==defineList)
             {
-                OSG_NOTICE<<"Text::createStateSet() : Matched DefineList, return StateSet "<<itr->get()<<std::endl;
+                // OSG_NOTICE<<"Text::createStateSet() : Matched DefineList, return StateSet "<<itr->get()<<std::endl;
                 return itr->get();
             }
             else
@@ -180,7 +194,7 @@ osg::StateSet* Text::createStateSet()
     osg::DisplaySettings::ShaderHint shaderHint = osg::DisplaySettings::instance()->getShaderHint();
     if (activeFont->getGlyphTextureFeatures()==GlyphTexture::GREYSCALE && shaderHint==osg::DisplaySettings::SHADER_NONE)
     {
-        OSG_INFO<<"Font::Font() Fixed function pipeline"<<std::endl;
+        OSG_NOTICE<<"Font::Font() Fixed function pipeline"<<std::endl;
 
         stateset->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::ON);
         return stateset.release();

@@ -27,8 +27,13 @@ DefaultFont::DefaultFont()
     _fontSize = FontResolution(8,12);
 
     _minFilterHint = osg::Texture::LINEAR_MIPMAP_LINEAR;
-    _magFilterHint = osg::Texture::NEAREST;
+    _magFilterHint = osg::Texture::LINEAR;
 
+    char *ptr;
+    if ((ptr = getenv("OSG_SDF_TEXT")) != 0)
+    {
+        _glyphTextureFeatures = osgText::GlyphTexture::ALL_FEATURES;
+    }
 
     constructGlyphs();
 }

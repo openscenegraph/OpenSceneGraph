@@ -60,7 +60,9 @@ int GlyphTexture::compare(const osg::StateAttribute& rhs) const
 int GlyphTexture::getEffectMargin(const Glyph* glyph)
 {
     if (_glyphTextureFeatures==GREYSCALE) return 0;
-    else return glyph->getFontResolution().second/4;
+//    else return glyph->getFontResolution().second/4;
+    else return osg::maximum(glyph->getFontResolution().second/6, 2u);
+//    else return osg::maximum(glyph->getFontResolution().second/8,1u);
 }
 
 int GlyphTexture::getTexelMargin(const Glyph* glyph)

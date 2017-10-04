@@ -66,35 +66,13 @@ void RigTransformSoftware::buildMinimumUpdateSet( const RigGeometry&rig )
         }
     }
 
-    // normalize _vertex2Bones weight per vertex
-    unsigned vertexID = 0;
-    for (std::vector<BonePtrWeightList>::iterator it = perVertexInfluences.begin();
-            it != perVertexInfluences.end();
-            ++it, ++vertexID)
-    {
-        BonePtrWeightList& bones = *it;
-        float sum = 0;
-        for(BonePtrWeightList::iterator bwit = bones.begin(); bwit!=bones.end(); ++bwit)
-            sum += bwit->getWeight();
-        if (sum < 1e-4)
-        {
-            OSG_WARN << "VertexInfluenceSet::buildVertex2BoneList warning the vertex " << vertexID << " seems to have 0 weight, skip normalize for this vertex" << std::endl;
-        }
-        else
-        {
-            float mult = 1.0/sum;
-            for(BonePtrWeightList::iterator bwit = bones.begin(); bwit != bones.end(); ++bwit)
-                bwit->setWeight(bwit->getWeight() * mult);
-        }
-    }
-
     ///2 Create inverse mapping Vec<BoneWeight>2Vec<Index> from previous built Index2Vec<BoneWeight>
     ///in order to minimize weighted matrices computation on update
     _uniqVertexGroupList.clear();
 
     typedef std::map<BonePtrWeightList, VertexGroup> UnifyBoneGroup;
     UnifyBoneGroup unifyBuffer;
-    vertexID = 0;
+    unsigned int vertexID = 0;
     for (std::vector<BonePtrWeightList>::iterator perVertinfit = perVertexInfluences.begin();
             perVertinfit!=perVertexInfluences.end();
             ++perVertinfit,++vertexID)
@@ -188,7 +166,7 @@ bool RigTransformSoftware::init(RigGeometry&rig)
         BoneMap::const_iterator bmit = boneMap.find(bonename);
         if (bmit == boneMap.end() )
         {
-            if (_invalidInfluence.find(bonename) != _invalidInfluence.end())
+            if (_invalidInfluence.find(bonename) == _invalidInfluence.end())
             {
                 _invalidInfluence[bonename] = true;
                 OSG_WARN << "RigTransformSoftware Bone " << bonename << " not found, skip the influence group " << std::endl;
@@ -214,11 +192,25 @@ bool RigTransformSoftware::init(RigGeometry&rig)
                 bwit++->setBonePtr(b);
         }
     }
-
+    for(VertexGroupList::iterator itvg = _uniqVertexGroupList.begin(); itvg != _uniqVertexGroupList.end(); ++itvg)
+        itvg->normalize();
     _needInit = false;
 
     return true;
 }
+
+void RigTransformSoftware::VertexGroup::normalize(){
+    osg::Matrix::value_type sum=0;
+    for(BonePtrWeightList::iterator bwit = _boneweights.begin(); bwit != _boneweights.end(); ++bwit )
+        sum+=bwit->getWeight();
+    if (sum < 1e-4)
+    {
+        OSG_WARN << "RigTransformSoftware::VertexGroup: warning try to normalize a zero sum vertexgroup" << std::endl;
+    }else
+        for(BonePtrWeightList::iterator bwit = _boneweights.begin(); bwit != _boneweights.end(); ++bwit )
+            bwit->setWeight(bwit->getWeight()/sum);
+}
+
 void RigTransformSoftware::operator()(RigGeometry& geom)
 {
     if (_needInit)

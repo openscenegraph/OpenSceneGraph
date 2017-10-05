@@ -136,9 +136,6 @@ bool RigTransformHardware::createPalette(int nbVertexes, BoneMap boneMap, const 
     OSG_INFO << "RigTransformHardware::createPalette will use " << boneNameCountMap.size() * 4 << " uniforms" << std::endl;
 
 
-    for (int i = 0 ; i < (int)vertexIndexWeight.size(); i++)
-        vertexIndexWeight[i].resize(maxBonePerVertex);
-
     _nbVertexes = nbVertexes;
     _bonesPerVertex = maxBonePerVertex;
     _bonePalette = palette;
@@ -181,7 +178,7 @@ RigTransformHardware::BoneWeightAttribList RigTransformHardware::createVertexAtt
                 int boneIndexInVec4 = b*2;
                 (*array)[j][0 + boneIndexInVec4] = 0;
                 (*array)[j][1 + boneIndexInVec4] = 0;
-                if (boneIndexInList < getNumBonesPerVertex())
+                if (boneIndexInList < _vertexIndexMatrixWeightList[j].size())
                 {
                     float boneIndex = static_cast<float>(_vertexIndexMatrixWeightList[j][boneIndexInList].getIndex());
                     float boneWeight = _vertexIndexMatrixWeightList[j][boneIndexInList].getWeight();

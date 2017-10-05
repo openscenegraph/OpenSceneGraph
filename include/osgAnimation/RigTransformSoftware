@@ -124,6 +124,7 @@ namespace osgAnimation
                     accummulateMatrix(invBindMatrix, matrix, w);
                 }
             }
+            void normalize();
             inline const osg::Matrix& getMatrix() const { return _result;}
         protected:
             BonePtrWeightList _boneweights;

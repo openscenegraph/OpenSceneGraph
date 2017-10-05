@@ -227,7 +227,6 @@ void indexGeometry(osg::Geometry& geom, IndexList& mapping) {
     }
 
     VertexAttribComparitor arrayComparitor(geom);
-    std::sort(vindices.begin(),vindices.end(),arrayComparitor);
 
     unsigned int lastUnique = 0;
     unsigned int numUnique = 1;

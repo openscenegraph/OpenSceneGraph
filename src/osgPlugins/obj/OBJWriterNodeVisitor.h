@@ -66,6 +66,7 @@ class OBJWriterNodeVisitor: public osg::NodeVisitor {
         }
 
         virtual void apply(osg::Geode &node);
+        virtual void apply(osg::Drawable &drawable);
 
         virtual void apply(osg::Group &node)
         {

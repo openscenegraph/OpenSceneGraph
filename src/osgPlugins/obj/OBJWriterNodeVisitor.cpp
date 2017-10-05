@@ -545,26 +545,26 @@ void OBJWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m) {
 
 }
 
+void OBJWriterNodeVisitor::apply(osg::Geometry& geometry)
+{
+    osg::Matrix m = osg::computeLocalToWorld(getNodePath());
+
+    pushStateSet(geometry.getStateSet());
+
+    processGeometry(&geometry,m);
+
+    popStateSet(geometry.getStateSet());
+}
+
 void OBJWriterNodeVisitor::apply( osg::Geode &node )
 {
-
     pushStateSet(node.getStateSet());
     _nameStack.push_back(node.getName());
-    osg::Matrix m = osg::computeLocalToWorld(getNodePath());
     unsigned int count = node.getNumDrawables();
     for ( unsigned int i = 0; i < count; i++ )
     {
-        osg::Geometry *g = node.getDrawable( i )->asGeometry();
-        if ( g != NULL )
-        {
-            pushStateSet(g->getStateSet());
-
-            processGeometry(g,m);
-
-            popStateSet(g->getStateSet());
-        }
+        node.getDrawable( i )->accept(*this);
     }
-
 
     popStateSet(node.getStateSet());
     _nameStack.pop_back();

@@ -183,7 +183,7 @@ bool RigTransformSoftware::init(RigGeometry&rig)
     for(VertexGroupList::iterator itvg = _uniqVertexGroupList.begin(); itvg != _uniqVertexGroupList.end(); ++itvg)
     {
         VertexGroup& uniq = *itvg;
-        for(BonePtrWeightList::iterator bwit=  uniq.getBoneWeights().begin(); bwit != uniq.getBoneWeights().end(); )
+        for(BonePtrWeightList::iterator bwit = uniq.getBoneWeights().begin(); bwit != uniq.getBoneWeights().end(); )
         {
             Bone * b = localid2bone[bwit->getBoneID()];
             if(!b)
@@ -192,23 +192,36 @@ bool RigTransformSoftware::init(RigGeometry&rig)
                 bwit++->setBonePtr(b);
         }
     }
+
     for(VertexGroupList::iterator itvg = _uniqVertexGroupList.begin(); itvg != _uniqVertexGroupList.end(); ++itvg)
+    {
         itvg->normalize();
+    }
+
     _needInit = false;
 
     return true;
 }
 
-void RigTransformSoftware::VertexGroup::normalize(){
+void RigTransformSoftware::VertexGroup::normalize()
+{
     osg::Matrix::value_type sum=0;
     for(BonePtrWeightList::iterator bwit = _boneweights.begin(); bwit != _boneweights.end(); ++bwit )
-        sum+=bwit->getWeight();
+    {
+        sum += bwit->getWeight();
+    }
+
     if (sum < 1e-4)
     {
         OSG_WARN << "RigTransformSoftware::VertexGroup: warning try to normalize a zero sum vertexgroup" << std::endl;
-    }else
+    }
+    else
+    {
         for(BonePtrWeightList::iterator bwit = _boneweights.begin(); bwit != _boneweights.end(); ++bwit )
+        {
             bwit->setWeight(bwit->getWeight()/sum);
+        }
+    }
 }
 
 void RigTransformSoftware::operator()(RigGeometry& geom)

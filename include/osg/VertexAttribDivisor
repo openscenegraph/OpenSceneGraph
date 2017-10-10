@@ -50,6 +50,7 @@ class OSG_EXPORT VertexAttribDivisor : public StateAttribute
             COMPARE_StateAttribute_Types(VertexAttribDivisor,sa)
 
             // compare each parameter in turn against the rhs.
+            COMPARE_StateAttribute_Parameter(_index)
             COMPARE_StateAttribute_Parameter(_divisor)
 
             return 0; // passed all the above comparison macros, must be equal.

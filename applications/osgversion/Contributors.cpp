@@ -699,7 +699,9 @@ NameCorrection nameCorrections[] =
      {"WeSee", "",
        "Alois", "Wismer"},
      {"We", "See",
-       "Alois", "Wismer"}
+       "Alois", "Wismer"},
+     {"AnyOldName3", "",
+       "Chris", "Djali"}
 };
 
 

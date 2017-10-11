@@ -19,6 +19,7 @@
  *         Holger Helmich 2010-10-21
 */
 
+#include <algorithm>
 #include <fstream>
 #include <list>
 #include <sstream>
@@ -688,6 +689,8 @@ void Shader::PerContextShader::compileShader(osg::State& state)
     }
     else
     {
+        // Remove \r from windows line endings
+        source.erase(std::remove_if(source.begin(), source.end(), EqualTo('\r')), source.end());
 
         std::string versionLine;
         unsigned int lineNum = 0;
@@ -695,7 +698,7 @@ void Shader::PerContextShader::compileShader(osg::State& state)
         do
         {
             std::string::size_type start_of_line = find_first(source, NoneOf(" \t"), previous_pos);
-            std::string::size_type end_of_line = (start_of_line != std::string::npos) ? find_first(source, OneOf("\n\r"), start_of_line) : std::string::npos;
+            std::string::size_type end_of_line = (start_of_line != std::string::npos) ? find_first(source, EqualTo('\n'), start_of_line) : std::string::npos;
             if (end_of_line != std::string::npos)
             {
                 // OSG_NOTICE<<"A Checking line "<<lineNum<<" ["<<source.substr(start_of_line, end_of_line-start_of_line)<<"]"<<std::endl;

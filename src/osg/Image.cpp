@@ -1719,7 +1719,7 @@ bool Image::isImageTranslucent() const
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
-            return dxtc_tool::CompressedImageTranslucent(_s, _t, _pixelFormat, _data);
+            return dxtc_tool::isCompressedImageTranslucent(_s, _t, _pixelFormat, _data);
         default:
             return false;
     }
@@ -1919,6 +1919,12 @@ Vec4 _readColor(GLenum pixelFormat, T* data,float scale)
 
 Vec4 Image::getColor(unsigned int s,unsigned t,unsigned r) const
 {
+    if (dxtc_tool::isDXTC(_pixelFormat)) {
+        unsigned char color[4];
+        if (dxtc_tool::CompressedImageGetColor(color, s, t, r, _s, _t, _r, _pixelFormat, _data)) {
+            return Vec4(((float)color[0]) / 255.0f, ((float)color[1]) / 255.0f, ((float)color[2]) / 255.0f, ((float)color[3]) / 255.0f );
+        }
+    }
     const unsigned char* ptr = data(s,t,r);
 
     switch(_dataType)

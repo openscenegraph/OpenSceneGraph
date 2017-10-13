@@ -60,33 +60,6 @@ public:
         NONE
     };
 
-    enum BackdropImplementation
-    {
-        /* No longer supported, naps to DELAYED_DEPTH_WRITES.*/
-        POLYGON_OFFSET = 0,
-
-        /* No longer supported, naps to DELAYED_DEPTH_WRITES.*/
-        NO_DEPTH_BUFFER,
-
-        /* No longer supported, naps to DELAYED_DEPTH_WRITES.*/
-        DEPTH_RANGE,
-
-        /* No longer supported, naps to DELAYED_DEPTH_WRITES.*/
-        STENCIL_BUFFER,
-
-        /* DELAYED_DEPTH_WRITES
-         * This mode renders all text with depth writes turned off, then
-         * again with depth writes on, but with the color buffer disabled.
-         * This should render text accurately for all graphics cards. The
-         * only downside is the additional pass to render to the depth
-         * buffer. But if you don't need the depth buffer updated for
-         * your, this extra pass can be disabled by calling
-         * enableDepthWrites(false).*/
-        DELAYED_DEPTH_WRITES,
-
-        USE_SHADERS
-    };
-
     /**
      * BackdropType gives you a background shadow text behind your regular
      * text. This helps give text extra contrast which can be useful when
@@ -140,18 +113,6 @@ public:
     void setBackdropColor(const osg::Vec4& color);
 
     const osg::Vec4& getBackdropColor() const { return _backdropColor; }
-
-    /**
-     * This specifies the underlying backdrop rendering implementation.
-     * Unfortunately, at this time, there is no "perfect" rendering solution
-     * so this function is provided to let you 'pick your poison'. Each
-     * implementation has trade-offs. See BackdropImplementation enum
-     * docs for details.*/
-     void setBackdropImplementation(BackdropImplementation implementation);
-
-     BackdropImplementation getBackdropImplementation() const { return _backdropImplementation; }
-
-
 
     enum ColorGradientMode
     {
@@ -224,6 +185,20 @@ public:
 
 public:
 
+    /** deprecated, value ignored.*/
+    enum BackdropImplementation
+    {
+        POLYGON_OFFSET = 0,
+        NO_DEPTH_BUFFER,
+        DEPTH_RANGE,
+        STENCIL_BUFFER,
+        DELAYED_DEPTH_WRITES
+    };
+
+    /** deprecated, value ignored.*/
+     void setBackdropImplementation(BackdropImplementation) {}
+    /** deprecated, value should be ignored.*/
+    BackdropImplementation getBackdropImplementation() const { return DELAYED_DEPTH_WRITES; }
 
     // internal structures, variable and methods used for rendering of characters.
     struct OSGTEXT_EXPORT GlyphQuads
@@ -310,7 +285,6 @@ protected:
     bool _enableDepthWrites;
 
     BackdropType _backdropType;
-    BackdropImplementation _backdropImplementation;
 
     float _backdropHorizontalOffset;
     float _backdropVerticalOffset;

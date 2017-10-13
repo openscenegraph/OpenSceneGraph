@@ -57,27 +57,6 @@ std::string convertBackdropTypeEnumToString(osgText::Text::BackdropType backdrop
     }
 }
 
-
-osgText::Text::BackdropImplementation convertBackdropImplementationStringToEnum(std::string & str)
-{
-    if      (str=="POLYGON_OFFSET") return osgText::Text::POLYGON_OFFSET;
-    else if (str=="NO_DEPTH_BUFFER") return osgText::Text::NO_DEPTH_BUFFER;
-    else if (str=="DEPTH_RANGE") return osgText::Text::DEPTH_RANGE;
-    else if (str=="STENCIL_BUFFER") return osgText::Text::STENCIL_BUFFER;
-    else return static_cast<osgText::Text::BackdropImplementation>(-1);
-}
-std::string convertBackdropImplementationEnumToString(osgText::Text::BackdropImplementation backdropImplementation)
-{
-    switch (backdropImplementation)
-    {
-    case osgText::Text::POLYGON_OFFSET: return "POLYGON_OFFSET";
-    case osgText::Text::NO_DEPTH_BUFFER: return "NO_DEPTH_BUFFER";
-    case osgText::Text::DEPTH_RANGE: return "DEPTH_RANGE";
-    case osgText::Text::STENCIL_BUFFER: return "STENCIL_BUFFER";
-    default : return "";
-    }
-}
-
 osgText::Text::ColorGradientMode convertColorGradientModeStringToEnum(std::string & str)
 {
     if      (str=="SOLID") return osgText::Text::SOLID;
@@ -155,12 +134,6 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
     // backdropImplementation
     if (fr[0].matchWord("backdropImplementation"))
     {
-        std::string str = fr[1].getStr();
-        osgText::Text::BackdropImplementation backdropImplementation = convertBackdropImplementationStringToEnum(str);
-
-        if (backdropImplementation != static_cast<osgText::Text::BackdropImplementation>(-1))
-            text.setBackdropImplementation(backdropImplementation);
-
         fr += 2;
         itAdvanced = true;
     }
@@ -253,9 +226,6 @@ bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     // backdropColor
     osg::Vec4 c = text.getBackdropColor();
     fw.indent() << "backdropColor " << c.x() << " " << c.y() << " " << c.z() << " " << c.w() << std::endl;
-
-    // backdropImplementation
-    fw.indent() << "backdropImplementation " << convertBackdropImplementationEnumToString(text.getBackdropImplementation()) << std::endl;
 
     // colorGradientMode
     fw.indent() << "colorGradientMode " << convertColorGradientModeEnumToString(text.getColorGradientMode()) << std::endl;

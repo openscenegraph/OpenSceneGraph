@@ -161,11 +161,6 @@ struct TextSettings
         text.setBackdropOffset(backdropOffset.x(), backdropOffset.y());
         text.setBackdropColor(backdropColor);
 
-        if (glyphTextureFeatures==osgText::GlyphTexture::ALL_FEATURES)
-        {
-            text.setBackdropImplementation(osgText::Text::USE_SHADERS);
-        }
-
         text.setFont(font.get());
 
     }

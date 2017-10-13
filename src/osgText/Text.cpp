@@ -31,11 +31,6 @@ using namespace osgText;
 Text::Text():
     _enableDepthWrites(true),
     _backdropType(NONE),
-#if 1
-    _backdropImplementation(DELAYED_DEPTH_WRITES),
-#else
-    _backdropImplementation(USE_SHADERS),
-#endif
     _backdropHorizontalOffset(0.07f),
     _backdropVerticalOffset(0.07f),
     _backdropColor(0.0f, 0.0f, 0.0f, 1.0f),
@@ -47,17 +42,6 @@ Text::Text():
 {
     _supportsVertexBufferObjects = true;
 
-    char *ptr;
-    if ((ptr = getenv("OSG_SDF_TEXT")) != 0)
-    {
-        _backdropImplementation = USE_SHADERS;
-    }
-    else if ((ptr = getenv("OSG_GREYSCALE_TEXT")) != 0)
-    {
-        _backdropImplementation = DELAYED_DEPTH_WRITES;
-    }
-
-
     assignStateSet();
 }
 
@@ -65,7 +49,6 @@ Text::Text(const Text& text,const osg::CopyOp& copyop):
     osgText::TextBase(text,copyop),
     _enableDepthWrites(text._enableDepthWrites),
     _backdropType(text._backdropType),
-    _backdropImplementation(text._backdropImplementation),
     _backdropHorizontalOffset(text._backdropHorizontalOffset),
     _backdropVerticalOffset(text._backdropVerticalOffset),
     _backdropColor(text._backdropColor),
@@ -93,7 +76,7 @@ osg::StateSet* Text::createStateSet()
 
     std::stringstream ss;
     osg::StateSet::DefineList defineList;
-    if (_backdropType!=NONE && _backdropImplementation==USE_SHADERS)
+    if (_backdropType!=NONE)
     {
         ss.str("");
         ss << "vec4("<<_backdropColor.r()<<", "<<_backdropColor.g()<<", "<<_backdropColor.b()<<", "<<_backdropColor.a()<<")";
@@ -128,8 +111,6 @@ osg::StateSet* Text::createStateSet()
 
             defineList["SHADOW"] = osg::StateSet::DefinePair(ss.str(), osg::StateAttribute::ON);
         }
-
-
     }
 
     if (activeFont->getGlyphTextureFeatures()!=GlyphTexture::GREYSCALE)
@@ -147,7 +128,6 @@ osg::StateSet* Text::createStateSet()
     }
 
 #if 0
-    OSG_NOTICE<<"Text::createStateSet() _backdropType="<<_backdropType<<", _backdropImplementation="<<_backdropImplementation<<std::endl;
     OSG_NOTICE<<"Text::createStateSet() defines:"<<defineList.size()<<std::endl;
     for(osg::StateSet::DefineList::iterator itr = defineList.begin();
         itr != defineList.end();
@@ -1293,18 +1273,6 @@ void Text::setBackdropType(BackdropType type)
 
     computeGlyphRepresentation();
 }
-
-void Text::setBackdropImplementation(BackdropImplementation implementation)
-{
-    if (_backdropImplementation==implementation) return;
-
-    _backdropImplementation = implementation;
-
-    assignStateSet();
-
-    computeGlyphRepresentation();
-}
-
 
 void Text::setBackdropOffset(float offset)
 {

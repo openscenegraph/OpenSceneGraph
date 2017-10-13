@@ -154,7 +154,6 @@ osg:: Node* createTextBelow(const osg::BoundingBox& bb, const std::string& label
     if (s_useSDF)
     {
         text->getFont()->setGyphTextureFeatures(osgText::GlyphTexture::ALL_FEATURES);
-        text->setBackdropImplementation(osgText::Text::USE_SHADERS);
     }
 
     text->setAlignment(osgText::Text::CENTER_CENTER);
@@ -188,7 +187,6 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb, const std::string& label,
     if (s_useSDF)
     {
         text->getFont()->setGyphTextureFeatures(osgText::GlyphTexture::ALL_FEATURES);
-        text->setBackdropImplementation(osgText::Text::USE_SHADERS);
     }
 
     text->setAlignment(osgText::Text::RIGHT_CENTER);

@@ -28,6 +28,22 @@
 using namespace osgText;
 using namespace std;
 
+// GL_ALPHA and GL_LUMINANCE_ALPHA are deprecated in GL3/GL4 core profile, use GL_RED & GL_RB in this case.
+#if defined(OSG_GL3_AVAILABLE) && !defined(OSG_GL2_AVAILABLE) && !defined(OSG_GL1_AVAILABLE)
+#define OSGTEXT_GLYPH_ALPHA_FORMAT GL_RED
+#define OSGTEXT_GLYPH_ALPHA_INTERNALFORMAT GL_R8
+#define OSGTEXT_GLYPH_SDF_FORMAT GL_RG
+#define OSGTEXT_GLYPH_SDF_INTERNALFORMAT GL_RG8
+#else
+#define OSGTEXT_GLYPH_ALPHA_FORMAT GL_ALPHA
+#define OSGTEXT_GLYPH_ALPHA_INTERNALFORMAT GL_ALPHA
+#define OSGTEXT_GLYPH_SDF_FORMAT GL_LUMINANCE_ALPHA
+#define OSGTEXT_GLYPH_SDF_INTERNALFORMAT GL_LUMINANCE_ALPHA
+#endif
+
+
+
+
 #if 0
     #define TEXTURE_IMAGE_NUM_CHANNELS 1
     #define TEXTURE_IMAGE_FORMAT OSGTEXT_GLYPH_FORMAT
@@ -160,6 +176,9 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
     if (_glyphTextureFeatures==GREYSCALE)
     {
         // OSG_NOTICE<<"GlyphTexture::copyGlyphImage() greyscale copying. glyphTexture="<<this<<", glyph="<<glyph->getGlyphCode()<<std::endl;
+        // make sure the glyph image settings and the target image are consisent before copying.
+        glyph->setPixelFormat(_image->getPixelFormat());
+        glyph->setInternalTextureFormat(_image->getPixelFormat());
         _image->copySubImage(glyph->getTexturePositionX(), glyph->getTexturePositionY(), 0, glyph);
         return;
     }
@@ -185,13 +204,17 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
 
     float max_distance = sqrtf(float(search_distance)*float(search_distance)*2.0);
 
-    int num_channels = TEXTURE_IMAGE_NUM_CHANNELS;
-
     if ((left+glyph->getTexturePositionX())<0) left = -glyph->getTexturePositionX();
     if ((right+glyph->getTexturePositionX())>=dest_columns) right = dest_columns-glyph->getTexturePositionX()-1;
 
     if ((lower+glyph->getTexturePositionY())<0) lower = -glyph->getTexturePositionY();
     if ((upper+glyph->getTexturePositionY())>=dest_rows) upper = dest_rows-glyph->getTexturePositionY()-1;
+
+
+    int num_components = osg::Image::computeNumComponents(_image->getPixelFormat());
+    int bytes_per_pixel = osg::Image::computePixelSizeInBits(_image->getPixelFormat(),_image->getDataType())/8;
+    int alpha_offset = (_image->getPixelFormat()==GL_LUMINANCE_ALPHA) ? 1 : 0;
+    int sdf_offset = (_image->getPixelFormat()==GL_LUMINANCE_ALPHA) ? 0 : 1;
 
 
     unsigned char full_on = 255;
@@ -343,14 +366,14 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
             }
 
 
-            unsigned char* dest_ptr = dest_data + (dr*dest_columns + dc)*num_channels;
-            if (num_channels==2)
+            unsigned char* dest_ptr = dest_data + (dr*dest_columns + dc)*bytes_per_pixel;
+            if (num_components==2)
             {
                 // signed distance field value
-                *(dest_ptr++) = value;
+                *(dest_ptr+sdf_offset) = value;
 
                 // original alpha value from glyph image
-                *(dest_ptr) = center_value;
+                *(dest_ptr+alpha_offset) = center_value;
             }
             else
             {
@@ -391,13 +414,12 @@ osg::Image* GlyphTexture::createImage()
 
         _image = new osg::Image;
 
-        #if defined(OSG_GL3_AVAILABLE) && !defined(OSG_GL2_AVAILABLE) && !defined(OSG_GL1_AVAILABLE)
-        GLenum imageFormat = (_glyphTextureFeatures==GREYSCALE) ? GL_RED : GL_RG;
-        #else
-        GLenum imageFormat = (_glyphTextureFeatures==GREYSCALE) ? GL_ALPHA : GL_LUMINANCE_ALPHA;
-        #endif
+        GLenum imageFormat = (_glyphTextureFeatures==GREYSCALE) ? OSGTEXT_GLYPH_ALPHA_FORMAT : OSGTEXT_GLYPH_SDF_FORMAT;
+        GLenum internalFormat = (_glyphTextureFeatures==GREYSCALE) ? OSGTEXT_GLYPH_ALPHA_INTERNALFORMAT : OSGTEXT_GLYPH_SDF_INTERNALFORMAT;
 
         _image->allocateImage(getTextureWidth(), getTextureHeight(), 1, imageFormat, GL_UNSIGNED_BYTE);
+        _image->setInternalTextureFormat(internalFormat);
+
         memset(_image->data(), 0, _image->getTotalSizeInBytes());
 
         for(GlyphRefList::iterator itr = _glyphs.begin();

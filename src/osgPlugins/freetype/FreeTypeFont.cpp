@@ -348,13 +348,11 @@ osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, u
     for(unsigned char* p=data;p<data+dataSize;) { *p++ = 0; }
 
     glyph->setImage(width,height,1,
-                    OSGTEXT_GLYPH_INTERNALFORMAT,
-                    OSGTEXT_GLYPH_FORMAT, GL_UNSIGNED_BYTE,
+                    GL_ALPHA,
+                    GL_ALPHA, GL_UNSIGNED_BYTE,
                     data,
                     osg::Image::USE_NEW_DELETE,
                     1);
-
-    glyph->setInternalTextureFormat(OSGTEXT_GLYPH_INTERNALFORMAT);
 
     // copy image across to osgText::Glyph image.
     switch(glyphslot->bitmap.pixel_mode)

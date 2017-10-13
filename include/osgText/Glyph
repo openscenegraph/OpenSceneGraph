@@ -263,7 +263,6 @@ public:
     enum Features
     {
         GREYSCALE,
-        OUTLINE_GREYSCALE,
         SIGNED_DISTANCE_FIELD,
         ALL_FEATURES
     };

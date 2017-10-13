@@ -103,7 +103,6 @@ struct TextSettings
         }
 
         if (arguments.read("--GREYSCALE")) { glyphTextureFeatures = osgText::GlyphTexture::GREYSCALE; }
-        if (arguments.read("--OUTLINE_GREYSCALE")) { glyphTextureFeatures = osgText::GlyphTexture::OUTLINE_GREYSCALE; }
         if (arguments.read("--SIGNED_DISTANCE_FIELD")) { glyphTextureFeatures = osgText::GlyphTexture::SIGNED_DISTANCE_FIELD; }
         if (arguments.read("--ALL_FEATURES")) { glyphTextureFeatures = osgText::GlyphTexture::ALL_FEATURES; }
 

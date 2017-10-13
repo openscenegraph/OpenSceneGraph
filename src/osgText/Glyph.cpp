@@ -32,7 +32,7 @@ using namespace std;
     #define TEXTURE_IMAGE_NUM_CHANNELS 1
     #define TEXTURE_IMAGE_FORMAT OSGTEXT_GLYPH_FORMAT
 #else
-    #define TEXTURE_IMAGE_NUM_CHANNELS 4
+    #define TEXTURE_IMAGE_NUM_CHANNELS 2
     #define TEXTURE_IMAGE_FORMAT GL_RGBA
 #endif
 
@@ -60,9 +60,7 @@ int GlyphTexture::compare(const osg::StateAttribute& rhs) const
 int GlyphTexture::getEffectMargin(const Glyph* glyph)
 {
     if (_glyphTextureFeatures==GREYSCALE) return 0;
-//    else return glyph->getFontResolution().second/4;
     else return osg::maximum(glyph->getFontResolution().second/6, 2u);
-//    else return osg::maximum(glyph->getFontResolution().second/8,1u);
 }
 
 int GlyphTexture::getTexelMargin(const Glyph* glyph)
@@ -195,10 +193,6 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
     if ((lower+glyph->getTexturePositionY())<0) lower = -glyph->getTexturePositionY();
     if ((upper+glyph->getTexturePositionY())>=dest_rows) upper = dest_rows-glyph->getTexturePositionY()-1;
 
-    bool use_SDF_for_Outline = true;
-
-    float outer_outline_distance = float(glyph->getFontResolution().first)*0.1f;
-    float inner_outline_distance = outer_outline_distance*0.5f;
 
     unsigned char full_on = 255;
     unsigned char mid_point = full_on/2;
@@ -213,17 +207,11 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
             unsigned char center_value = 0;
             if (dr>=0 && dr<src_rows && dc>=0 && dc<src_columns) center_value = *(src_data + dr*src_columns + dc);
 
-            unsigned char inner_max_value = center_value;
-            unsigned char outer_max_value = center_value;
-
             float center_value_f = center_value*multiplier;
             float min_distance = max_distance;
 
             if (center_value>0 && center_value<full_on)
             {
-                inner_max_value = 255;
-                outer_max_value = 255;
-
                 if (center_value_f>=mid_point_f)
                 {
                     min_distance = center_value_f-mid_point_f;
@@ -263,9 +251,6 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
                                 else local_distance += (local_value_f - mid_point_f)*local_multiplier;
 
                                 if (local_distance<min_distance) min_distance = local_distance;
-
-                                if (local_value>inner_max_value && local_distance<=inner_outline_distance) inner_max_value = local_value;
-                                if (local_value>outer_max_value && local_distance<=outer_outline_distance) outer_max_value = local_value;
                             }
                         }
 
@@ -291,9 +276,6 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
                                 else local_distance += (local_value_f - mid_point_f)*local_multiplier;
 
                                 if (local_distance<min_distance) min_distance = local_distance;
-
-                                if (local_value>inner_max_value && local_distance<=inner_outline_distance) inner_max_value = local_value;
-                                if (local_value>outer_max_value && local_distance<=outer_outline_distance) outer_max_value = local_value;
                             }
                         }
 
@@ -320,9 +302,6 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
                                 else local_distance += (local_value_f - mid_point_f)*local_multiplier;
 
                                 if (local_distance<min_distance) min_distance = local_distance;
-
-                                if (local_value>inner_max_value && local_distance<=inner_outline_distance) inner_max_value = local_value;
-                                if (local_value>outer_max_value && local_distance<=outer_outline_distance) outer_max_value = local_value;
                             }
                         }
 
@@ -348,9 +327,6 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
                                 else local_distance += (local_value_f - mid_point_f)*local_multiplier;
 
                                 if (local_distance<min_distance) min_distance = local_distance;
-
-                                if (local_value>inner_max_value && local_distance<=inner_outline_distance) inner_max_value = local_value;
-                                if (local_value>outer_max_value && local_distance<=outer_outline_distance) outer_max_value = local_value;
                             }
                         }
                     }
@@ -368,62 +344,10 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
 
 
             unsigned char* dest_ptr = dest_data + (dr*dest_columns + dc)*num_channels;
-            if (num_channels==4)
+            if (num_channels==2)
             {
                 // signed distance field value
                 *(dest_ptr++) = value;
-
-                float outline_distance = inner_outline_distance;
-
-                // compute the alpha value of outline, one texel thick
-                unsigned char outline = 0;
-
-                if (use_SDF_for_Outline)
-                {
-                    if (center_value<255)
-                    {
-                        float inner_outline = outline_distance-1.0f;
-                        if (min_distance<inner_outline) outline = 255;
-                        else if (min_distance<=outline_distance) outline = (unsigned char)(255.0*(outline_distance-min_distance)/(outline_distance-inner_outline));
-                        else outline = 0;
-                    }
-                    if (outline>center_value)
-                    {
-                        outline -= center_value;
-                    }
-                }
-                else
-                {
-                    outline = inner_max_value-center_value;
-                }
-
-                *(dest_ptr++) = outline;
-
-
-                outline_distance = outer_outline_distance;
-
-                // compute the alpha value of outline, one texel thick
-                outline = 0;
-                if (use_SDF_for_Outline)
-                {
-                    if (center_value<255)
-                    {
-                        float inner_outline = outline_distance-1.0f;
-                        if (min_distance<inner_outline) outline = 255;
-                        else if (min_distance<=outline_distance) outline = (unsigned char)(255.0*(outline_distance-min_distance)/(outline_distance-inner_outline));
-                        else outline = 0;
-                    }
-                    if (outline>center_value)
-                    {
-                        outline -= center_value;
-                    }
-                }
-                else
-                {
-                    outline = outer_max_value-center_value;
-                }
-
-                *(dest_ptr++) = outline;
 
                 // original alpha value from glyph image
                 *(dest_ptr) = center_value;
@@ -468,9 +392,9 @@ osg::Image* GlyphTexture::createImage()
         _image = new osg::Image;
 
         #if defined(OSG_GL3_AVAILABLE) && !defined(OSG_GL2_AVAILABLE) && !defined(OSG_GL1_AVAILABLE)
-        GLenum imageFormat = (_glyphTextureFeatures==GREYSCALE) ? GL_RED : GL_RGBA;
+        GLenum imageFormat = (_glyphTextureFeatures==GREYSCALE) ? GL_RED : GL_RG;
         #else
-        GLenum imageFormat = (_glyphTextureFeatures==GREYSCALE) ? GL_ALPHA : GL_RGBA;
+        GLenum imageFormat = (_glyphTextureFeatures==GREYSCALE) ? GL_ALPHA : GL_LUMINANCE_ALPHA;
         #endif
 
         _image->allocateImage(getTextureWidth(), getTextureHeight(), 1, imageFormat, GL_UNSIGNED_BYTE);

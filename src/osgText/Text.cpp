@@ -380,18 +380,14 @@ void Text::addGlyphQuad(Glyph* glyph, const osg::Vec2& minc, const osg::Vec2& ma
 
     glyphquad._glyphs.push_back(glyph);
 
-    osg::DrawElements* primitives = 0;
-    if (glyphquad._primitives.empty())
+    osg::DrawElements* primitives = glyphquad._primitives.get();
+    if (!primitives)
     {
         unsigned int maxIndices = _text.size()*4;
         if (maxIndices>=16384) primitives = new osg::DrawElementsUInt(GL_TRIANGLES);
         else primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
         primitives->setBufferObject(_ebo.get());
-        glyphquad._primitives.push_back(primitives);
-    }
-    else
-    {
-        primitives = glyphquad._primitives[0].get();
+        glyphquad._primitives = primitives;
     }
 
 
@@ -431,25 +427,18 @@ void Text::computeGlyphRepresentation()
     if (!_texcoords) { _texcoords = new osg::Vec2Array(osg::Array::BIND_PER_VERTEX); _texcoords->setBufferObject(_vbo.get()); }
     else _texcoords->clear();
 
-#if 0
-    _textureGlyphQuadMap.clear();
-#else
     for(TextureGlyphQuadMap::iterator itr = _textureGlyphQuadMap.begin();
         itr != _textureGlyphQuadMap.end();
         ++itr)
     {
         GlyphQuads& glyphquads = itr->second;
         glyphquads._glyphs.clear();
-        for(Primitives::iterator pitr = glyphquads._primitives.begin();
-            pitr != glyphquads._primitives.end();
-            ++pitr)
+        if (glyphquads._primitives.valid())
         {
-            (*pitr)->resizeElements(0);
-            (*pitr)->dirty();
+            glyphquads._primitives->resizeElements(0);
+            glyphquads._primitives->dirty();
         }
     }
-#endif
-
 
 
     _lineCount = 0;
@@ -774,151 +763,8 @@ void Text::computePositionsImplementation()
 {
     TextBase::computePositionsImplementation();
 
-    computeBackdropPositions();
     computeBackdropBoundingBox();
     computeBoundingBoxMargin();
-}
-
-// Presumes the atc matrix is already up-to-date
-void Text::computeBackdropPositions()
-{
-    if(_backdropType == NONE || _backdropImplementation == USE_SHADERS)
-    {
-        return;
-    }
-
-    float avg_width = 0.0f;
-    float avg_height = 0.0f;
-
-    // FIXME: OPTIMIZE: This function produces the same value regardless of contextID.
-    // Since we tend to loop over contextID, we should cache this value some how
-    // instead of recomputing it each time.
-    bool is_valid_size = computeAverageGlyphWidthAndHeight(avg_width, avg_height);
-    if (!is_valid_size) return;
-
-    unsigned int backdrop_index;
-    unsigned int max_backdrop_index;
-    if(_backdropType == OUTLINE)
-    {
-        // For outline, we want to draw the in every direction
-        backdrop_index = 1;
-        max_backdrop_index = backdrop_index+8;
-    }
-    else
-    {
-        // Yes, this may seem a little strange,
-        // but since the code is using references,
-        // I would have to duplicate the following code twice
-        // for each part of the if/else because I can't
-        // declare a reference without setting it immediately
-        // and it wouldn't survive the scope.
-        // So it happens that the _backdropType value matches
-        // the index in the array I want to store the coordinates
-        // in. So I'll just setup the for-loop so it only does
-        // the one direction I'm interested in.
-        backdrop_index = _backdropType+1;
-        max_backdrop_index = backdrop_index+1;
-    }
-
-    for( ; backdrop_index < max_backdrop_index; backdrop_index++)
-    {
-        float horizontal_shift_direction;
-        float vertical_shift_direction;
-        switch(backdrop_index-1)
-        {
-            case DROP_SHADOW_BOTTOM_RIGHT:
-                {
-                    horizontal_shift_direction = 1.0f;
-                    vertical_shift_direction = -1.0f;
-                    break;
-                }
-            case DROP_SHADOW_CENTER_RIGHT:
-                {
-                    horizontal_shift_direction = 1.0f;
-                    vertical_shift_direction = 0.0f;
-                    break;
-                }
-            case DROP_SHADOW_TOP_RIGHT:
-                {
-                    horizontal_shift_direction = 1.0f;
-                    vertical_shift_direction = 1.0f;
-                    break;
-                }
-            case DROP_SHADOW_BOTTOM_CENTER:
-                {
-                    horizontal_shift_direction = 0.0f;
-                    vertical_shift_direction = -1.0f;
-                    break;
-                }
-            case DROP_SHADOW_TOP_CENTER:
-                {
-                    horizontal_shift_direction = 0.0f;
-                    vertical_shift_direction = 1.0f;
-                    break;
-                }
-            case DROP_SHADOW_BOTTOM_LEFT:
-                {
-                    horizontal_shift_direction = -1.0f;
-                    vertical_shift_direction = -1.0f;
-                    break;
-                }
-            case DROP_SHADOW_CENTER_LEFT:
-                {
-                    horizontal_shift_direction = -1.0f;
-                    vertical_shift_direction = 0.0f;
-                    break;
-                }
-            case DROP_SHADOW_TOP_LEFT:
-                {
-                    horizontal_shift_direction = -1.0f;
-                    vertical_shift_direction = 1.0f;
-                    break;
-                }
-            default: // error
-                {
-                    horizontal_shift_direction = 1.0f;
-                    vertical_shift_direction = -1.0f;
-                }
-        }
-
-        // now apply matrix to the glyphs.
-        for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
-            titr!=_textureGlyphQuadMap.end();
-            ++titr)
-        {
-            GlyphQuads& glyphquad = titr->second;
-
-            osg::DrawElements* src_primitives = glyphquad._primitives[0].get();
-
-            for(unsigned int i=glyphquad._primitives.size(); i<=backdrop_index; ++i)
-            {
-                osg::DrawElementsUShort* dst_primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
-                dst_primitives->setBufferObject(src_primitives->getBufferObject());
-                glyphquad._primitives.push_back(dst_primitives);
-            }
-
-            osg::DrawElements* dst_primitives = glyphquad._primitives[backdrop_index].get();
-            dst_primitives->resizeElements(0);
-
-            unsigned int numCoords = src_primitives->getNumIndices();
-
-            Coords& src_coords = _coords;
-            TexCoords& src_texcoords = _texcoords;
-
-            Coords& dst_coords = _coords;
-            TexCoords& dst_texcoords = _texcoords;
-
-            for(unsigned int i=0;i<numCoords;++i)
-            {
-                unsigned int si = (*src_primitives).getElement(i);
-                osg::Vec3 v(horizontal_shift_direction * _backdropHorizontalOffset * avg_width + (*src_coords)[si].x(), vertical_shift_direction * _backdropVerticalOffset * avg_height + (*src_coords)[si].y(), 0.0f);
-                unsigned int di = dst_coords->size();
-                (*dst_primitives).addElement(di);
-                (*dst_coords).push_back(v);
-                (*dst_texcoords).push_back((*src_texcoords)[si]);
-            }
-        }
-    }
 }
 
 // This method adjusts the bounding box to account for the expanded area caused by the backdrop.
@@ -1269,7 +1115,6 @@ void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colo
     }
 
     if (_drawMode & TEXT)
-//    if (false)
     {
         for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
             titr!=_textureGlyphQuadMap.end();
@@ -1279,39 +1124,6 @@ void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colo
             state.applyTextureAttribute(0,titr->first.get());
 
             const GlyphQuads& glyphquad = titr->second;
-
-            if(_backdropType != NONE)
-            {
-                if (_backdropImplementation != USE_SHADERS)
-                {
-                    unsigned int backdrop_index;
-                    unsigned int max_backdrop_index;
-                    if(_backdropType == OUTLINE)
-                    {
-                        backdrop_index = 1;
-                        max_backdrop_index = backdrop_index+8;
-                    }
-                    else
-                    {
-                        backdrop_index = _backdropType+1;
-                        max_backdrop_index = backdrop_index+1;
-                    }
-
-                    if (max_backdrop_index>glyphquad._primitives.size()) max_backdrop_index=glyphquad._primitives.size();
-
-                    state.disableColorPointer();
-                    state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
-
-                    for( ; backdrop_index < max_backdrop_index; backdrop_index++)
-                    {
-                        glyphquad._primitives[backdrop_index]->draw(state, usingVertexBufferObjects);
-                    }
-                }
-                else
-                {
-                    // OSG_NOTICE<<"Using shaders for backdrop"<<std::endl;
-                }
-            }
 
             if(_colorGradientMode == SOLID)
             {
@@ -1326,7 +1138,7 @@ void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colo
                 }
             }
 
-            glyphquad._primitives[0]->draw(state, usingVertexBufferObjects);
+            glyphquad._primitives->draw(state, usingVertexBufferObjects);
         }
     }
 }
@@ -1374,9 +1186,6 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
         vas->applyDisablingOfVertexAttributes(state);
     }
 
-#if 0
-    drawImplementationSinglePass(state, colorMultiplier);
-#else
     glDepthMask(GL_FALSE);
 
     drawImplementationSinglePass(state, colorMultiplier);
@@ -1393,7 +1202,6 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
     }
 
     state.haveAppliedAttribute(osg::StateAttribute::DEPTH);
-#endif
 
     if (usingVertexBufferObjects && !usingVertexArrayObjects)
     {
@@ -1431,16 +1239,16 @@ void Text::accept(osg::PrimitiveFunctor& pf) const
         ++titr)
     {
         const GlyphQuads& glyphquad = titr->second;
-        if (!glyphquad._primitives.empty())
+        if (glyphquad._primitives.valid())
         {
-            const osg::DrawElementsUShort* drawElementsUShort = dynamic_cast<const osg::DrawElementsUShort*>(glyphquad._primitives[0].get());
+            const osg::DrawElementsUShort* drawElementsUShort = dynamic_cast<const osg::DrawElementsUShort*>(glyphquad._primitives.get());
             if (drawElementsUShort)
             {
                 pf.drawElements(GL_TRIANGLES, drawElementsUShort->size(), &(drawElementsUShort->front()));
             }
             else
             {
-                const osg::DrawElementsUInt* drawElementsUInt = dynamic_cast<const osg::DrawElementsUInt*>(glyphquad._primitives[0].get());
+                const osg::DrawElementsUInt* drawElementsUInt = dynamic_cast<const osg::DrawElementsUInt*>(glyphquad._primitives.get());
                 if (drawElementsUInt)
                 {
                     pf.drawElements(GL_TRIANGLES, drawElementsUInt->size(), &(drawElementsUInt->front()));
@@ -1563,20 +1371,10 @@ Text::GlyphQuads::GlyphQuads(const GlyphQuads&)
 
 void Text::GlyphQuads::resizeGLObjectBuffers(unsigned int maxSize)
 {
-    for(Primitives::iterator itr = _primitives.begin();
-        itr != _primitives.end();
-        ++itr)
-    {
-        (*itr)->resizeGLObjectBuffers(maxSize);
-    }
+    if (_primitives.valid()) _primitives->resizeGLObjectBuffers(maxSize);
 }
 
 void Text::GlyphQuads::releaseGLObjects(osg::State* state) const
 {
-    for(Primitives::const_iterator itr = _primitives.begin();
-        itr != _primitives.end();
-        ++itr)
-    {
-        (*itr)->releaseGLObjects(state);
-    }
+    if (_primitives.valid()) _primitives->releaseGLObjects(state);
 }

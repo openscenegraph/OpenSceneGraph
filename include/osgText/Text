@@ -231,7 +231,7 @@ public:
         typedef std::vector<Glyph*> Glyphs;
 
         Glyphs                          _glyphs;
-        Primitives                      _primitives;
+        osg::ref_ptr<osg::DrawElements> _primitives;
 
         GlyphQuads();
         GlyphQuads(const GlyphQuads& gq);
@@ -296,7 +296,6 @@ protected:
 
     virtual void computePositionsImplementation();
 
-    void computeBackdropPositions();
     void computeBackdropBoundingBox();
     void computeBoundingBoxMargin();
 

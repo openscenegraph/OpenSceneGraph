@@ -1272,9 +1272,9 @@ namespace State_Utils
 
 bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
 {
-    OSG_INFO<<"State::convertShaderSourceToOsgBuiltIns()"<<std::endl;
+    OSG_DEBUG<<"State::convertShaderSourceToOsgBuiltIns()"<<std::endl;
 
-    OSG_INFO<<"++Before Converted source "<<std::endl<<source<<std::endl<<"++++++++"<<std::endl;
+    OSG_DEBUG<<"++Before Converted source "<<std::endl<<source<<std::endl<<"++++++++"<<std::endl;
 
 
     State_Utils::substitudeEnvVars(*this, source);
@@ -1335,7 +1335,7 @@ bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
         }
     }
 
-    OSG_INFO<<"-------- Converted source "<<std::endl<<source<<std::endl<<"----------------"<<std::endl;
+    OSG_DEBUG<<"-------- Converted source "<<std::endl<<source<<std::endl<<"----------------"<<std::endl;
 
     return true;
 }

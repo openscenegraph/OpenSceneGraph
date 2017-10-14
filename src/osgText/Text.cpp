@@ -66,6 +66,7 @@ Text::~Text()
 }
 
 #include <sstream>
+#include <iomanip>
 
 osg::StateSet* Text::createStateSet()
 {
@@ -75,6 +76,8 @@ osg::StateSet* Text::createStateSet()
     Font::StateSets& statesets = activeFont->getCachedStateSets();
 
     std::stringstream ss;
+    ss<<std::fixed<<std::setprecision(3);
+
     osg::StateSet::DefineList defineList;
     if (_backdropType!=NONE)
     {
@@ -115,13 +118,15 @@ osg::StateSet* Text::createStateSet()
 
     if (activeFont->getGlyphTextureFeatures()!=GlyphTexture::GREYSCALE)
     {
+        ss<<std::fixed<<std::setprecision(1);
+
         ss.str("");
-        ss << _fontSize.second;
+        ss << float(_fontSize.second);
 
         defineList["GLYPH_DIMENSION"] = osg::StateSet::DefinePair(ss.str(), osg::StateAttribute::ON);
 
         ss.str("");
-        ss << activeFont->getTextureWidthHint();
+        ss << float(activeFont->getTextureWidthHint());
         defineList["TEXTURE_DIMENSION"] = osg::StateSet::DefinePair(ss.str(), osg::StateAttribute::ON);
 
         defineList["SIGNED_DISTNACE_FIELD"] = osg::StateSet::DefinePair("1", osg::StateAttribute::ON);

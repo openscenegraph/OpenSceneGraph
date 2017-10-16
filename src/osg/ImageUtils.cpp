@@ -20,6 +20,7 @@
 
 #include <osg/Notify>
 #include <osg/io_utils>
+#include "dxtctool.h"
 
 namespace osg
 {
@@ -716,6 +717,48 @@ OSG_EXPORT osg::Image* createImageWithOrientationConversion(const osg::Image* sr
     unsigned int pixelSizeInBits =  srcImage->getPixelSizeInBits();
     unsigned int pixelSizeInBytes = pixelSizeInBits/8;
     unsigned int pixelSizeRemainder = pixelSizeInBits%8;
+    if (dxtc_tool::isDXTC(srcImage->getPixelFormat())) {
+        unsigned int DXTblockSize = 8;
+        if ((srcImage->getPixelFormat() == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT) || (srcImage->getPixelFormat() == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT)) DXTblockSize = 16;
+        unsigned int DXTblocksWidht = (srcImage->s() + 3) / 4;//width in 4x4 blocks
+        unsigned int DXTblocksHeight = (srcImage->t() + 3) / 4;//height in 4x4 blocks
+        unsigned int dst_DXTblocksWidht = (width + 3) / 4;//width in 4x4 blocks
+        unsigned int dst_DXTblocksHeight = (height + 3) / 4;//height in 4x4 blocks
+
+        dstImage->allocateImage(width, height, depth, srcImage->getPixelFormat(), srcImage->getDataType());
+        // copy across the pixels from the source image to the destination image.
+        if (depth != 1)
+        {
+            OSG_NOTICE << "Warning: createImageWithOrientationConversion(..) cannot handle dxt-compressed images with depth." << std::endl;
+            return const_cast<osg::Image*>(srcImage);
+        }
+        for (int l = 0; l<depth; l+=4)
+        {
+            for (int r = 0; r<height; r+=4)
+            {
+                osg::Vec3i cp(srcOrigin.x() + columnDelta.x()*r + layerDelta.x()*l,
+                    srcOrigin.y() + columnDelta.y()*r + layerDelta.y()*l,
+                    srcOrigin.z() + columnDelta.z()*r + layerDelta.z()*l);
+                for (int c = 0; c<width; c+=4)
+                {
+                    unsigned int src_blockIndex = (cp.x() >> 2) + DXTblocksWidht * ((cp.y() >> 2) + (cp.z() >> 2) * DXTblocksHeight);
+                    const unsigned char *src_block = srcImage->data() + src_blockIndex * DXTblockSize;
+
+                    unsigned int dst_blockIndex = (c >> 2) + dst_DXTblocksWidht * ((r >> 2) + (l >> 2) * dst_DXTblocksHeight);
+                    unsigned char *dst_block = dstImage->data() + dst_blockIndex * DXTblockSize;
+
+                    memcpy((void *)dst_block, (void *)src_block, DXTblockSize);
+                    osg::Vec3i srcSubOrigin(cp.x() & 0x7, cp.y() & 0x7, cp.z() & 0x7);
+                    dxtc_tool::compressedBlockOrientationConversion(srcImage->getPixelFormat(),src_block, dst_block, srcSubOrigin, rowDelta, columnDelta);
+
+                    cp.x() += 4 * rowDelta.x();
+                    cp.y() += 4 * rowDelta.y();
+                    cp.z() += 4 * rowDelta.z();
+                }
+            }
+        }
+        return dstImage.release();
+    }
     if (pixelSizeRemainder!=0)
     {
         OSG_NOTICE<<"Warning: createImageWithOrientationConversion(..) cannot handle non byte aligned pixel formats."<<std::endl;

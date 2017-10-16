@@ -717,7 +717,8 @@ OSG_EXPORT osg::Image* createImageWithOrientationConversion(const osg::Image* sr
     unsigned int pixelSizeInBits =  srcImage->getPixelSizeInBits();
     unsigned int pixelSizeInBytes = pixelSizeInBits/8;
     unsigned int pixelSizeRemainder = pixelSizeInBits%8;
-    if (dxtc_tool::isDXTC(srcImage->getPixelFormat())) {
+    if (dxtc_tool::isDXTC(srcImage->getPixelFormat()))
+    {
         unsigned int DXTblockSize = 8;
         if ((srcImage->getPixelFormat() == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT) || (srcImage->getPixelFormat() == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT)) DXTblockSize = 16;
         unsigned int DXTblocksWidht = (srcImage->s() + 3) / 4;//width in 4x4 blocks

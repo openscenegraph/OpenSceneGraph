@@ -2147,7 +2147,7 @@ Vec4 _readColor(GLenum pixelFormat, T* data,float scale)
 
 Vec4 Image::getColor(unsigned int s,unsigned t,unsigned r) const
 {
-    if (isCompressed(_pixelFormat))
+    if (isCompressed())
     {
         if (dxtc_tool::isDXTC(_pixelFormat)) {
             unsigned char color[4];

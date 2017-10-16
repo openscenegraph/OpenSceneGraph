@@ -742,7 +742,7 @@ void VertexArrayState::setArray(ArrayDispatch* vad, osg::State& state, GLint siz
     }
 }
 
-void VertexArrayState::setInterleavedArrays( osg::State& state, GLenum format, GLsizei stride, const GLvoid* pointer)
+void VertexArrayState::setInterleavedArrays(osg::State& /*state*/, GLenum format, GLsizei stride, const GLvoid* pointer)
 {
 #if defined(OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
     unbindVertexBufferObject();

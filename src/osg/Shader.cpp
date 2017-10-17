@@ -89,6 +89,20 @@ struct NoneOf
     const char* _str;
 };
 
+// Replaces all occurrences of "from" with the contents of "to"
+// It does only one pass, i.e. new matches created in a position before the current match are not replaced
+std::string replaceAll(const std::string& str, const std::string& from, const std::string& to)
+{
+    std::string result = str;
+    std::string::size_type pos = 0;
+    while ((pos = result.find(from, pos)) != std::string::npos)
+    {
+        result.replace(pos, from.length(), to);
+        pos += to.length();
+    }
+    return result;
+}
+
 }
 
 using namespace osg;
@@ -689,8 +703,8 @@ void Shader::PerContextShader::compileShader(osg::State& state)
     }
     else
     {
-        // Remove \r from windows line endings
-        source.erase(std::remove_if(source.begin(), source.end(), EqualTo('\r')), source.end());
+        // Convert all windows line endings to \n
+        source = replaceAll(source, "\r\n", "\n");
 
         std::string versionLine;
         unsigned int lineNum = 0;
@@ -698,7 +712,7 @@ void Shader::PerContextShader::compileShader(osg::State& state)
         do
         {
             std::string::size_type start_of_line = find_first(source, NoneOf(" \t"), previous_pos);
-            std::string::size_type end_of_line = (start_of_line != std::string::npos) ? find_first(source, EqualTo('\n'), start_of_line) : std::string::npos;
+            std::string::size_type end_of_line = (start_of_line != std::string::npos) ? find_first(source, OneOf("\n\r"), start_of_line) : std::string::npos;
             if (end_of_line != std::string::npos)
             {
                 // OSG_NOTICE<<"A Checking line "<<lineNum<<" ["<<source.substr(start_of_line, end_of_line-start_of_line)<<"]"<<std::endl;

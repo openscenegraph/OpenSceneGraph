@@ -297,7 +297,7 @@ bool TerrainManipulator::performMovementMiddleMouseButton( const double eventTim
         }
     }
 
-    return true;
+    return hasInertia();
 }
 
 
@@ -305,7 +305,7 @@ bool TerrainManipulator::performMovementRightMouseButton( const double eventTime
 {
     // zoom model
     zoomModel( dy * getThrowScale( eventTimeDelta ), false );
-    return true;
+    return hasInertia();
 }
 
 

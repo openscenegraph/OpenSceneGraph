@@ -227,19 +227,19 @@ bool FlightManipulator::performMovementLeftMouseButton( const double eventTimeDe
 {
     // pan model
     _velocity += eventTimeDelta * (_acceleration + _velocity);
-    return true;
+    return hasInertia();
 }
 
 
 bool FlightManipulator::performMovementMiddleMouseButton( const double /*eventTimeDelta*/, const double /*dx*/, const double /*dy*/ )
 {
     _velocity = 0.0f;
-    return true;
+    return hasInertia();
 }
 
 
 bool FlightManipulator::performMovementRightMouseButton( const double eventTimeDelta, const double /*dx*/, const double /*dy*/ )
 {
     _velocity -= eventTimeDelta * (_acceleration + _velocity);
-    return true;
+    return hasInertia();
 }

@@ -84,6 +84,14 @@ class OSGGA_EXPORT StandardManipulator : public CameraManipulator
         virtual bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
         virtual void getUsage( osg::ApplicationUsage& usage ) const;
 
+		/** Sets inertia available or not when a mouse button is released.*/
+		inline void setInertia( bool inertia );
+
+		/** Gets the state of the inertia when a mouse button is released.
+			true to keep motion of the camera; false to stop motion when
+			the mouse button is released.*/
+		inline bool hasInertia() const ;
+
     protected:
 
         virtual bool handleFrame( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
@@ -168,12 +176,25 @@ class OSGGA_EXPORT StandardManipulator : public CameraManipulator
         inline void setRelativeFlag( int index, bool value );
         static int numRelativeFlagsAllocated;
         static int allocateRelativeFlag();
+
+		// inertia when a mouse button is released
+		bool _inertia;
 };
 
 
 //
 //  inline methods
 //
+
+inline void StandardManipulator::setInertia( bool inertia )
+{
+	_inertia = inertia;
+}
+
+inline bool StandardManipulator::hasInertia() const
+{
+	return _inertia;
+}
 
 inline bool StandardManipulator::getRelativeFlag( int index ) const
 {

@@ -41,7 +41,8 @@ StandardManipulator::StandardManipulator( int flags )
       _modelSize( 0. ),
       _verticalAxisFixed( true ),
       _flags( flags ),
-      _relativeFlags( 0 )
+      _relativeFlags( 0 ),
+	  _inertia( true )
 {
 }
 
@@ -60,7 +61,8 @@ StandardManipulator::StandardManipulator( const StandardManipulator& uim, const 
       _modelSize( uim._modelSize ),
       _verticalAxisFixed( uim._verticalAxisFixed ),
       _flags( uim._flags ),
-      _relativeFlags( uim._relativeFlags )
+      _relativeFlags( uim._relativeFlags ),
+	  _inertia( true )
 {
 }
 
@@ -462,7 +464,7 @@ bool StandardManipulator::performMovement()
     This method implements movement for left mouse button.*/
 bool StandardManipulator::performMovementLeftMouseButton( const double /*eventTimeDelta*/, const double /*dx*/, const double /*dy*/ )
 {
-    return false;
+    return _inertia;
 }
 
 
@@ -471,7 +473,7 @@ bool StandardManipulator::performMovementLeftMouseButton( const double /*eventTi
     or combination of left and right mouse button pressed together.*/
 bool StandardManipulator::performMovementMiddleMouseButton( const double /*eventTimeDelta*/, const double /*dx*/, const double /*dy*/ )
 {
-    return false;
+    return _inertia;
 }
 
 
@@ -479,7 +481,7 @@ bool StandardManipulator::performMovementMiddleMouseButton( const double /*event
     This method implements movement for right mouse button.*/
 bool StandardManipulator::performMovementRightMouseButton( const double /*eventTimeDelta*/, const double /*dx*/, const double /*dy*/ )
 {
-    return false;
+    return _inertia;
 }
 
 
@@ -502,7 +504,7 @@ bool StandardManipulator::handleMouseDeltaMovement( const GUIEventAdapter& ea, G
 /// The method performs manipulator update based on relative mouse movement (mouse delta).
 bool StandardManipulator::performMouseDeltaMovement( const float /*dx*/, const float /*dy*/ )
 {
-   return false;
+   return _inertia;
 }
 
 

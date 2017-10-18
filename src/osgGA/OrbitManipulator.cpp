@@ -284,7 +284,7 @@ bool OrbitManipulator::performMovementLeftMouseButton( const double eventTimeDel
         rotateTrackball( _ga_t0->getXnormalized(), _ga_t0->getYnormalized(),
                          _ga_t1->getXnormalized(), _ga_t1->getYnormalized(),
                          getThrowScale( eventTimeDelta ) );
-    return true;
+    return hasInertia();
 }
 
 
@@ -294,7 +294,7 @@ bool OrbitManipulator::performMovementMiddleMouseButton( const double eventTimeD
     // pan model
     float scale = -0.3f * _distance * getThrowScale( eventTimeDelta );
     panModel( dx*scale, dy*scale );
-    return true;
+    return hasInertia();
 }
 
 
@@ -303,7 +303,7 @@ bool OrbitManipulator::performMovementRightMouseButton( const double eventTimeDe
 {
     // zoom model
     zoomModel( dy * getThrowScale( eventTimeDelta ), true );
-    return true;
+    return hasInertia();
 }
 
 
@@ -315,7 +315,7 @@ bool OrbitManipulator::performMouseDeltaMovement( const float dx, const float dy
     else
         rotateTrackball( 0.f, 0.f, dx, dy, 1.f );
 
-    return true;
+    return hasInertia();
 }
 
 

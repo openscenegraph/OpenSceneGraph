@@ -91,16 +91,15 @@ struct NoneOf
 
 // Replaces all occurrences of "from" with the contents of "to"
 // It does only one pass, i.e. new matches created in a position before the current match are not replaced
-std::string replaceAll(const std::string& str, const std::string& from, const std::string& to)
+void replaceAll(std::string& str, const std::string& from, const std::string& to)
 {
-    std::string result = str;
     std::string::size_type pos = 0;
-    while ((pos = result.find(from, pos)) != std::string::npos)
+    while ((pos = str.find(from, pos)) != std::string::npos)
     {
-        result.replace(pos, from.length(), to);
+        str.replace(pos, from.length(), to);
+
         pos += to.length();
     }
-    return result;
 }
 
 }
@@ -704,7 +703,7 @@ void Shader::PerContextShader::compileShader(osg::State& state)
     else
     {
         // Convert all windows line endings to \n
-        source = replaceAll(source, "\r\n", "\n");
+        replaceAll(source, "\r\n", " \n");
 
         std::string versionLine;
         unsigned int lineNum = 0;

@@ -307,7 +307,7 @@ bool FirstPersonManipulator::performMovementLeftMouseButton( const double /*even
 
    rotateYawPitch( _rotation, dx, dy, localUp );
 
-   return true;
+   return hasInertia();
 }
 
 
@@ -326,7 +326,7 @@ bool FirstPersonManipulator::performMouseDeltaMovement( const float dx, const fl
 
       rotateYawPitch( _rotation, dx, dy );
 
-   return true;
+   return hasInertia();
 }
 
 

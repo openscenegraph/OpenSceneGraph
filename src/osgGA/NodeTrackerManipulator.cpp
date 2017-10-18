@@ -278,7 +278,7 @@ bool NodeTrackerManipulator::performMovementLeftMouseButton( const double eventT
                          _ga_t1->getXnormalized(), _ga_t1->getYnormalized(),
                          getThrowScale( eventTimeDelta ) );
 
-    return true;
+    return hasInertia();
 }
 
 
@@ -289,7 +289,7 @@ bool NodeTrackerManipulator::performMovementMiddleMouseButton( const double /*ev
     osg::Quat nodeRotation;
     computeNodeCenterAndRotation(nodeCenter, nodeRotation);
 
-    return true;
+    return hasInertia();
 }
 
 

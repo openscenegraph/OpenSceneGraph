@@ -205,12 +205,11 @@ void Texture2D::apply(State& state) const
         }
         else if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
         {
-            applyTexImage2D_subload(state,GL_TEXTURE_2D,_image.get(),
-                                    _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
-
             // update the modified tag to show that it is up to date.
             getModifiedCount(contextID) = _image->getModifiedCount();
 
+            applyTexImage2D_subload(state,GL_TEXTURE_2D,_image.get(),
+                                    _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
         }
         else if (_readPBuffer.valid())
         {
@@ -226,6 +225,8 @@ void Texture2D::apply(State& state) const
 
         applyTexParameters(GL_TEXTURE_2D,state);
 
+        if (_image.valid()) getModifiedCount(contextID) = _image->getModifiedCount();
+
         _subloadCallback->load(*this,state);
 
         textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,_borderWidth);
@@ -237,7 +238,6 @@ void Texture2D::apply(State& state) const
         //glBindTexture( GL_TEXTURE_2D, handle );
 
         // update the modified tag to show that it is up to date.
-        if (_image.valid()) getModifiedCount(contextID) = _image->getModifiedCount();
     }
     else if (_image.valid() && _image->data())
     {
@@ -257,6 +257,9 @@ void Texture2D::apply(State& state) const
 
         applyTexParameters(GL_TEXTURE_2D,state);
 
+        // update the modified tag to show that it is up to date.
+        getModifiedCount(contextID) = image->getModifiedCount();
+
         if (textureObject->isAllocated() && image->supportsTextureSubloading())
         {
             //OSG_NOTICE<<"Reusing texture object"<<std::endl;
@@ -271,9 +274,6 @@ void Texture2D::apply(State& state) const
 
             textureObject->setAllocated(true);
         }
-
-        // update the modified tag to show that it is up to date.
-        getModifiedCount(contextID) = image->getModifiedCount();
 
         // unref image data?
         if (isSafeToUnrefImageData(state) && image->getDataVariance()==STATIC)

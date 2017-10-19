@@ -112,11 +112,12 @@ void TextureBuffer::apply(State& state) const
     {
         if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
         {
+            _modifiedCount[contextID] = _image->getModifiedCount();
+
             computeInternalFormat();
             textureBufferObject->bindBuffer(GL_TEXTURE_BUFFER);
             textureBufferObject->bufferSubData(_image.get() );
             textureBufferObject->unbindBuffer(GL_TEXTURE_BUFFER);
-            _modifiedCount[contextID] = _image->getModifiedCount();
         }
         textureObject->bind();
 
@@ -153,6 +154,9 @@ void TextureBuffer::apply(State& state) const
 
         computeInternalFormat();
         _textureWidth = _image->s();
+
+        _modifiedCount[contextID] = _image->getModifiedCount();
+
         textureBufferObject->bindBuffer(GL_TEXTURE_BUFFER);
         textureBufferObject->bufferData( _image.get() );
         textureObject->setAllocated(true);
@@ -161,7 +165,6 @@ void TextureBuffer::apply(State& state) const
         textureObject->bind();
         textureBufferObject->texBuffer(_internalFormat);
 
-        _modifiedCount[contextID] = _image->getModifiedCount();
     }
     else
     {

@@ -253,12 +253,12 @@ void Texture3D::apply(State& state) const
         }
         else if (_image.get() && getModifiedCount(contextID) != _image->getModifiedCount())
         {
-           computeRequiredTextureDimensions(state,*_image,_textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
-
-            applyTexImage3D(GL_TEXTURE_3D,_image.get(),state, _textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
-
             // update the modified count to show that it is up to date.
             getModifiedCount(contextID) = _image->getModifiedCount();
+
+            computeRequiredTextureDimensions(state,*_image,_textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
+
+            applyTexImage3D(GL_TEXTURE_3D,_image.get(),state, _textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
         }
 
     }
@@ -295,15 +295,14 @@ void Texture3D::apply(State& state) const
 
         textureObject->bind();
 
+        // update the modified count to show that it is up to date.
+        getModifiedCount(contextID) = _image->getModifiedCount();
 
         applyTexParameters(GL_TEXTURE_3D,state);
 
         applyTexImage3D(GL_TEXTURE_3D,_image.get(),state, _textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
 
         textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,_textureDepth,0);
-
-        // update the modified count to show that it is up to date.
-        getModifiedCount(contextID) = _image->getModifiedCount();
 
         // unref image data?
         if (isSafeToUnrefImageData(state) && _image->getDataVariance()==STATIC)

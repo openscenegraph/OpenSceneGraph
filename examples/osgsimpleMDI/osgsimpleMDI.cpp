@@ -69,10 +69,24 @@ int main( int argc, char**argv )
     arguments.read("--numX",MAXX);
     arguments.read("--numY",MAXY);
 
-    bool MDIenable=true;
+    enum PrimtiveSetUsage
+    {
+        MultiDraw,
+        MultiplePrimitiveSets,
+        SinglePrimitiveSet
+    };
+
+    PrimtiveSetUsage usage = MultiDraw;
     if(arguments.read("--classic"))
-    {   MDIenable=false;
-        OSG_WARN<<"disabling MDI"<<std::endl;
+    {
+        usage = MultiplePrimitiveSets;
+        OSG_WARN<<"disabling MDI, using multiple PrimitiveSet"<<std::endl;
+    }
+
+    if(arguments.read("--single"))
+    {
+        usage = SinglePrimitiveSet;
+        OSG_WARN<<"disabling MDI, using single PrimitiveSet"<<std::endl;
     }
 
     osg::Geode* root( new osg::Geode );
@@ -127,18 +141,43 @@ int main( int argc, char**argv )
 
     geom->setVertexArray(verts);
 
-    if(MDIenable)
+    switch(usage)
     {
-        geom->addPrimitiveSet(mdi);
-
-    } else
-    {
-        for(int i=0; i<MAXY*MAXX; ++i)
+        case(MultiDraw):
         {
-            osg::DrawElementsUInt *dre=new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLE_STRIP,4,myIndicesUI) ;
-            dre->setElementBufferObject(ebo.get());
-            geom->addPrimitiveSet(dre);
-            for(int z=0; z<4; z++)myIndicesUI[z]+=4;
+            geom->addPrimitiveSet(mdi);
+            break;
+
+        }
+        case(MultiplePrimitiveSets):
+        {
+            for(int i=0; i<MAXY*MAXX; ++i)
+            {
+                osg::ref_ptr<osg::DrawElementsUInt> dre = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLE_STRIP,4,myIndicesUI);
+                dre->setElementBufferObject(ebo.get());
+                geom->addPrimitiveSet(dre.get());
+                for(int z=0; z<4; z++) myIndicesUI[z]+=4;
+            }
+            break;
+        }
+        case(SinglePrimitiveSet):
+        {
+            osg::ref_ptr<osg::DrawElementsUInt> primitives = new osg::DrawElementsUInt(GL_TRIANGLES);
+            primitives->setElementBufferObject(ebo.get());
+            geom->addPrimitiveSet(primitives.get());
+
+            unsigned int vi = 0;
+            for(int i=0; i<MAXY*MAXX; ++i)
+            {
+                primitives->push_back(vi);
+                primitives->push_back(vi+2);
+                primitives->push_back(vi+1);
+                primitives->push_back(vi+1);
+                primitives->push_back(vi+2);
+                primitives->push_back(vi+3);
+                vi += 4;
+            }
+            break;
         }
     }
 

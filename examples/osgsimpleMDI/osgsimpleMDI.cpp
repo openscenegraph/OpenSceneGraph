@@ -86,6 +86,7 @@ int main( int argc, char**argv )
 
     osg::ref_ptr<osg::Geometry>  geom=new osg::Geometry();
     geom->setUseVertexBufferObjects(true);
+
     osg::BoundingBox bb;
     bb.set(0,0,0,MAXX,0,MAXY);
     //set bounds by hand cause of the lack of support of basevertex in PrimitiveFunctors
@@ -104,10 +105,10 @@ int main( int argc, char**argv )
 
     osg::Vec3Array * verts=new osg::Vec3Array();
 
-
-    for(int j =0 ; j<MAXY; ++j) {
-        for(int i =0 ; i<MAXX; ++i) {
-
+    for(int j =0 ; j<MAXY; ++j)
+    {
+        for(int i =0 ; i<MAXX; ++i)
+        {
             ///create indirect command
             osg::DrawElementsIndirectCommand cmd;
             cmd.count=4;
@@ -116,24 +117,33 @@ int main( int argc, char**argv )
             cmd.baseVertex=verts->size();
             mdicommands->push_back(cmd);
 
-            for(int z=0; z<4; z++) {
+            for(int z=0; z<4; z++)
+            {
                 verts->push_back(osg::Vec3(i,0,j)+myCoords[z]);
                 mdi->addElement(myIndices[z]);
             }
         }
     }
+
     geom->setVertexArray(verts);
-    if(MDIenable) {
+
+    if(MDIenable)
+    {
         geom->addPrimitiveSet(mdi);
 
     } else
-        for(int i=0; i<MAXY*MAXX; ++i) {
+    {
+        for(int i=0; i<MAXY*MAXX; ++i)
+        {
             osg::DrawElementsUInt *dre=new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLE_STRIP,4,myIndicesUI) ;
             dre->setElementBufferObject(ebo);
             geom->addPrimitiveSet(dre);
             for(int z=0; z<4; z++)myIndicesUI[z]+=4;
         }
+    }
+
     root->addChild(geom);
+
     osgViewer::Viewer viewer;
     viewer.addEventHandler(new osgViewer::StatsHandler);
     viewer.setSceneData( root );

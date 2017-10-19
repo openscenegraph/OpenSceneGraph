@@ -283,8 +283,10 @@ void Texture2DArray::apply(State& state) const
                 // if image content is modified, then upload it to the GPU memory
                 if (image && getModifiedCount(n,contextID) != image->getModifiedCount())
                 {
+                    // update the modified tag to show that it is up to date, but do it before uploading in case it gets updated again in another thread
+                    getModifiedCount(n, contextID) = image->getModifiedCount();
+
                     applyTexImage2DArray_subload(state, image, _textureWidth, _textureHeight, n, _internalFormat, _numMipmapLevels);
-                    getModifiedCount(n,contextID) = image->getModifiedCount();
                 }
             }
         }
@@ -361,9 +363,11 @@ void Texture2DArray::apply(State& state) const
             osg::Image* image = _images[n].get();
             if (image)
             {
+                // update the modified tag to show that it is up to date, but do it before uploading in case it gets updated again in another thread
+                getModifiedCount(n,contextID) = image->getModifiedCount();
+
                 // now load the image data into the memory, this will also check if image do have valid properties
                 applyTexImage2DArray_subload(state, image, _textureWidth, _textureHeight, n, _internalFormat, _numMipmapLevels);
-                getModifiedCount(n,contextID) = image->getModifiedCount();
             }
         }
 

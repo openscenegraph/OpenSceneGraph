@@ -112,11 +112,13 @@ void TextureBuffer::apply(State& state) const
     {
         if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
         {
+            // update the modified tag to show that it is up to date, but do it before uploading in case it gets updated again in another thread
+            _modifiedCount[contextID] = _image->getModifiedCount();
+
             computeInternalFormat();
             textureBufferObject->bindBuffer(GL_TEXTURE_BUFFER_ARB);
             textureBufferObject->bufferSubData(_image.get() );
             textureBufferObject->unbindBuffer(GL_TEXTURE_BUFFER_ARB);
-            _modifiedCount[contextID] = _image->getModifiedCount();
         }
         textureObject->bind();        
         
@@ -135,6 +137,8 @@ void TextureBuffer::apply(State& state) const
     }
     else if (_image.valid() && _image->data())
     {
+        _modifiedCount[contextID] = _image->getModifiedCount();
+
         textureObject = generateTextureObject(this, contextID,GL_TEXTURE_BUFFER_ARB);
         _textureObjectBuffer[contextID] = textureObject;
         textureObject->bind();
@@ -161,8 +165,6 @@ void TextureBuffer::apply(State& state) const
         
         textureObject->bind();
         textureBufferObject->texBuffer(_internalFormat);
-               
-        _modifiedCount[contextID] = _image->getModifiedCount();
     }
     else
     {

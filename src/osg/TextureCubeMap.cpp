@@ -250,8 +250,9 @@ void TextureCubeMap::apply(State& state) const
                 const osg::Image* image = _images[n].get();
                 if (image && getModifiedCount((Face)n,contextID) != image->getModifiedCount())
                 {
+                   // update the modified tag to show that it is up to date, but do it before uploading in case it gets updated again in another thread
+                    getModifiedCount((Face)n, contextID) = image->getModifiedCount();
                     applyTexImage2D_subload( state, faceTarget[n], _images[n].get(), _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
-                    getModifiedCount((Face)n,contextID) = image->getModifiedCount();
                 }
             }
         }
@@ -301,6 +302,8 @@ void TextureCubeMap::apply(State& state) const
             const osg::Image* image = _images[n].get();
             if (image)
             {
+                // update the modified tag to show that it is up to date, but do it before uploading in case it gets updated again in another thread
+                getModifiedCount((Face)n, contextID) = image->getModifiedCount();
                 if (textureObject->isAllocated())
                 {
                     applyTexImage2D_subload( state, faceTarget[n], image, _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
@@ -309,7 +312,6 @@ void TextureCubeMap::apply(State& state) const
                 {
                     applyTexImage2D_load( state, faceTarget[n], image, _textureWidth, _textureHeight, _numMipmapLevels);
                 }
-                getModifiedCount((Face)n,contextID) = image->getModifiedCount();
             }
 
 

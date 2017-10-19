@@ -255,12 +255,12 @@ void Texture3D::apply(State& state) const
         }
         else if (_image.get() && getModifiedCount(contextID) != _image->getModifiedCount())
         {
-           computeRequiredTextureDimensions(state,*_image,_textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
+            // update the modified tag to show that it is up to date, but do it before uploading in case it gets updated again in another thread
+            getModifiedCount(contextID) = _image->getModifiedCount();
+
+            computeRequiredTextureDimensions(state,*_image,_textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
 
             applyTexImage3D(GL_TEXTURE_3D,_image.get(),state, _textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
-
-            // update the modified count to show that it is upto date.
-            getModifiedCount(contextID) = _image->getModifiedCount();
         }
 
     }
@@ -286,6 +286,8 @@ void Texture3D::apply(State& state) const
     }
     else if (_image.valid() && _image->data())
     {
+        // update the modified tag to show that it is up to date, but do it before uploading in case it gets updated again in another thread
+        getModifiedCount(contextID) = _image->getModifiedCount();
 
         // compute the internal texture format, this set the _internalFormat to an appropriate value.
         computeInternalFormat();
@@ -303,9 +305,6 @@ void Texture3D::apply(State& state) const
         applyTexImage3D(GL_TEXTURE_3D,_image.get(),state, _textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
 
         textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,_textureDepth,0);
-
-        // update the modified count to show that it is upto date.
-        getModifiedCount(contextID) = _image->getModifiedCount();
 
         _textureObjectBuffer[contextID] = textureObject;
 

@@ -205,12 +205,11 @@ void Texture2D::apply(State& state) const
         }
         else if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
         {
-            applyTexImage2D_subload(state,GL_TEXTURE_2D,_image.get(),
-                                    _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
-
-            // update the modified tag to show that it is up to date.
+            // update the modified tag to show that it is up to date, but do it before uploading in case it gets updated again in another thread
             getModifiedCount(contextID) = _image->getModifiedCount();
 
+            applyTexImage2D_subload(state,GL_TEXTURE_2D,_image.get(),
+                                    _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
         }
         else if (_readPBuffer.valid())
         {
@@ -220,6 +219,9 @@ void Texture2D::apply(State& state) const
     }
     else if (_subloadCallback.valid())
     {
+        // update the modified tag to show that it is up to date, but do it before uploading in case it gets updated again in another thread
+        if (_image.valid()) getModifiedCount(contextID) = _image->getModifiedCount();
+
         _textureObjectBuffer[contextID] = textureObject = _subloadCallback->generateTextureObject(*this, state);
 
         textureObject->bind();
@@ -235,15 +237,15 @@ void Texture2D::apply(State& state) const
         // unless a second bind is called?!!
         // perhaps it is the first glBind which is not required...
         //glBindTexture( GL_TEXTURE_2D, handle );
-
-        // update the modified tag to show that it is upto date.
-        if (_image.valid()) getModifiedCount(contextID) = _image->getModifiedCount();
     }
     else if (_image.valid() && _image->data())
     {
 
         // keep the image around at least till we go out of scope.
         osg::ref_ptr<osg::Image> image = _image;
+
+        // update the modified tag to show that it is up to date, but do it before uploading in case it gets updated again in another thread
+        getModifiedCount(contextID) = image->getModifiedCount();
 
         // compute the internal texture format, this set the _internalFormat to an appropriate value.
         computeInternalFormat();
@@ -272,9 +274,6 @@ void Texture2D::apply(State& state) const
 
             textureObject->setAllocated(true);
         }
-
-        // update the modified tag to show that it is upto date.
-        getModifiedCount(contextID) = image->getModifiedCount();
 
         // unref image data?
         if (isSafeToUnrefImageData(state) && image->getDataVariance()==STATIC)

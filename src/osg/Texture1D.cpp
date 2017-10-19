@@ -172,10 +172,10 @@ void Texture1D::apply(State& state) const
         }
         else if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
         {
-            applyTexImage1D(GL_TEXTURE_1D,_image.get(),state, _textureWidth, _numMipmapLevels);
-
-            // update the modified count to show that it is upto date.
+            // update the modified tag to show that it is up to date, but do it before uploading in case it gets updated again in another thread
             getModifiedCount(contextID) = _image->getModifiedCount();
+
+            applyTexImage1D(GL_TEXTURE_1D,_image.get(),state, _textureWidth, _numMipmapLevels);
         }
 
     }
@@ -202,6 +202,8 @@ void Texture1D::apply(State& state) const
     }
     else if (_image.valid() && _image->data())
     {
+        // update the modified count to show that it is up to date, but do it before uploading in case it gets updated again in another thread
+        getModifiedCount(contextID) = _image->getModifiedCount();
 
         // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.
         textureObject = generateTextureObject(this, contextID,GL_TEXTURE_1D);
@@ -213,9 +215,6 @@ void Texture1D::apply(State& state) const
         applyTexImage1D(GL_TEXTURE_1D,_image.get(),state, _textureWidth, _numMipmapLevels);
 
         textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,1,1,0);
-
-        // update the modified count to show that it is upto date.
-        getModifiedCount(contextID) = _image->getModifiedCount();
 
         _textureObjectBuffer[contextID] = textureObject;
 

@@ -188,7 +188,7 @@ struct IndirectTarget
     }
     void endRegister(unsigned int index, unsigned int rowsPerInstance, GLenum pixelFormat, GLenum type, GLint internalFormat, bool useMultiDrawArraysIndirect )
     {
-        indirectCommandTextureBuffer = new osg::TextureBuffer(indirectCommands);
+        indirectCommandTextureBuffer = new osg::TextureBuffer(indirectCommands.get());
         indirectCommandTextureBuffer->setInternalFormat( GL_R32I );
         indirectCommandTextureBuffer->bindToImageUnit(index, osg::Texture::READ_WRITE);
         indirectCommandTextureBuffer->setUnRefImageDataAfterApply(false);
@@ -201,7 +201,7 @@ struct IndirectTarget
 
             for(unsigned int j=0;j<indirectCommands->size(); ++j){
                 osg::DrawArraysIndirect *ipr=new osg::DrawArraysIndirect( GL_TRIANGLES, j );
-                ipr->setIndirectCommandArray( indirectCommands);
+                ipr->setIndirectCommandArray( indirectCommands.get());
                 newPrimitiveSets.push_back(ipr);
                 }
 
@@ -215,7 +215,7 @@ struct IndirectTarget
         else // use glMultiDrawArraysIndirect()
         {
             osg::MultiDrawArraysIndirect *ipr=new osg::MultiDrawArraysIndirect( GL_TRIANGLES );
-            ipr->setIndirectCommandArray( indirectCommands );
+            ipr->setIndirectCommandArray( indirectCommands.get() );
             geometryAggregator->getAggregatedGeometry()->removePrimitiveSet(0,geometryAggregator->getAggregatedGeometry()->getNumPrimitiveSets() );
             geometryAggregator->getAggregatedGeometry()->addPrimitiveSet( ipr );
         }

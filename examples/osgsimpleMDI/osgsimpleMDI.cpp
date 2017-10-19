@@ -136,7 +136,7 @@ int main( int argc, char**argv )
         for(int i=0; i<MAXY*MAXX; ++i)
         {
             osg::DrawElementsUInt *dre=new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLE_STRIP,4,myIndicesUI) ;
-            dre->setElementBufferObject(ebo);
+            dre->setElementBufferObject(ebo.get());
             geom->addPrimitiveSet(dre);
             for(int z=0; z<4; z++)myIndicesUI[z]+=4;
         }

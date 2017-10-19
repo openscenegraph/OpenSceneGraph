@@ -168,8 +168,8 @@ public:
     }
 
     /// get command array of this indirect primitive set
-    inline IndirectCommandDrawElements* getIndirectCommandArray() { return _indirectCommandArray; }
-    inline const IndirectCommandDrawElements* getIndirectCommandArray() const { return _indirectCommandArray; }
+    inline IndirectCommandDrawElements* getIndirectCommandArray() { return _indirectCommandArray.get(); }
+    inline const IndirectCommandDrawElements* getIndirectCommandArray() const { return _indirectCommandArray.get(); }
 
     ///Further methods are for advanced DI when you plan to use your own IndirectCommandElement (stride)
     ///or if you want to draw a particular command index of the IndirectCommandElement(FirstCommandToDraw)
@@ -616,8 +616,8 @@ public:
         if(!dynamic_cast<DrawIndirectBufferObject* >(_indirectCommandArray->getBufferObject()))
             _indirectCommandArray->setBufferObject(new DrawIndirectBufferObject());
     }
-    inline const IndirectCommandDrawArrays* getIndirectCommandArray() const { return _indirectCommandArray; }
-    inline IndirectCommandDrawArrays* getIndirectCommandArray() { return _indirectCommandArray; }
+    inline const IndirectCommandDrawArrays* getIndirectCommandArray() const { return _indirectCommandArray.get(); }
+    inline IndirectCommandDrawArrays* getIndirectCommandArray() { return _indirectCommandArray.get(); }
 
 protected:
 

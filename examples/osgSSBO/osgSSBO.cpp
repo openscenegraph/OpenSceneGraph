@@ -773,7 +773,7 @@ void ComputeNode::initComputingSetup()
     _dataArray->setBufferObject(_ssbo.get());
 
 
-    _ssbb = new osg::ShaderStorageBufferBinding(0, _dataArray, 0, blockSize);
+    _ssbb = new osg::ShaderStorageBufferBinding(0, _dataArray.get(), 0, blockSize);
     statesetComputation->setAttributeAndModes(_ssbb.get(), osg::StateAttribute::ON);
 
 

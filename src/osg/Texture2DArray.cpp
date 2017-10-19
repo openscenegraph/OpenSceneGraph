@@ -297,8 +297,8 @@ void Texture2DArray::apply(State& state) const
                 {
                     if (getModifiedCount(n,contextID) != image->getModifiedCount())
                     {
-                        applyTexImage2DArray_subload(state, image, n, _textureWidth, _textureHeight, image->r(), _internalFormat, _numMipmapLevels);
                         getModifiedCount(n,contextID) = image->getModifiedCount();
+                        applyTexImage2DArray_subload(state, image, n, _textureWidth, _textureHeight, image->r(), _internalFormat, _numMipmapLevels);
                     }
                     n += image->r();
                 }
@@ -380,8 +380,8 @@ void Texture2DArray::apply(State& state) const
             {
                 if (getModifiedCount(n,contextID) != image->getModifiedCount())
                 {
-                    applyTexImage2DArray_subload(state, image, n, _textureWidth, _textureHeight, image->r(), _internalFormat, _numMipmapLevels);
                     getModifiedCount(n,contextID) = image->getModifiedCount();
+                    applyTexImage2DArray_subload(state, image, n, _textureWidth, _textureHeight, image->r(), _internalFormat, _numMipmapLevels);
                 }
                 n += image->r();
             }

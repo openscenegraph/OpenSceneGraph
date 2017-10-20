@@ -32,7 +32,7 @@ DefaultFont::DefaultFont()
     char *ptr;
     if ((ptr = getenv("OSG_SDF_TEXT")) != 0)
     {
-        _glyphTextureFeatures = osgText::GlyphTexture::ALL_FEATURES;
+        _shaderTechnique = osgText::ALL_FEATURES;
     }
 
     constructGlyphs();

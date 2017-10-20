@@ -68,7 +68,7 @@ struct TextSettings
         minFilter(osg::Texture::LINEAR_MIPMAP_LINEAR),
         magFilter(osg::Texture::LINEAR),
         maxAnisotropy(16.0f),
-        glyphTextureFeatures(osgText::GlyphTexture::GREYSCALE),
+        shaderTechnique(osgText::GREYSCALE),
         textColor(1.0f, 1.0f, 1.0f, 1.0f),
         backdropType(osgText::Text::NONE),
         backdropOffset(0.07f, 0.07f),
@@ -102,9 +102,9 @@ struct TextSettings
             sizes.push_back(128);
         }
 
-        if (arguments.read("--GREYSCALE")) { glyphTextureFeatures = osgText::GlyphTexture::GREYSCALE; }
-        if (arguments.read("--SIGNED_DISTANCE_FIELD")) { glyphTextureFeatures = osgText::GlyphTexture::SIGNED_DISTANCE_FIELD; }
-        if (arguments.read("--ALL_FEATURES")) { glyphTextureFeatures = osgText::GlyphTexture::ALL_FEATURES; }
+        if (arguments.read("--GREYSCALE")) { shaderTechnique = osgText::GREYSCALE; }
+        if (arguments.read("--SIGNED_DISTANCE_FIELD")) { shaderTechnique = osgText::SIGNED_DISTANCE_FIELD; }
+        if (arguments.read("--ALL_FEATURES")) { shaderTechnique = osgText::ALL_FEATURES; }
 
         if (arguments.read("--font",fontFilename)) {}
 
@@ -153,7 +153,7 @@ struct TextSettings
         font->setMinFilterHint(minFilter);
         font->setMagFilterHint(magFilter);
         font->setMaxAnisotropy(maxAnisotropy);
-        font->setGyphTextureFeatures(glyphTextureFeatures);
+        font->setShaderTechnique(shaderTechnique);
 
         text.setColor(textColor);
         text.setBackdropType(backdropType);
@@ -168,7 +168,7 @@ struct TextSettings
     osg::Texture::FilterMode        minFilter;
     osg::Texture::FilterMode        magFilter;
     float                           maxAnisotropy;
-    osgText::GlyphTexture::Features glyphTextureFeatures;
+    osgText::ShaderTechnique        shaderTechnique;
 
     osg::Vec4                       textColor;
     osgText::Text::BackdropType     backdropType;
@@ -345,7 +345,7 @@ int main(int argc, char** argv)
         root->getOrCreateStateSet()->setAttribute(program.get(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
         root->getOrCreateStateSet()->addUniform(new osg::Uniform("glyphTexture", 0));
 
-        settings.glyphTextureFeatures = osgText::GlyphTexture::ALL_FEATURES;
+        settings.shaderTechnique = osgText::ALL_FEATURES;
     }
 
 
@@ -396,7 +396,7 @@ int main(int argc, char** argv)
         osg::ref_ptr<osg::Geode> right_geode = new osg::Geode;
         right_geode->setNodeMask(0x2);
 
-        settings.glyphTextureFeatures = osgText::GlyphTexture::GREYSCALE;
+        settings.shaderTechnique = osgText::GREYSCALE;
 
         pos.set(0.0f, 0.0f, 0.0f);
 

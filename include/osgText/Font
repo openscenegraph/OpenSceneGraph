@@ -108,8 +108,8 @@ public:
     virtual bool getVerticalSize(float& ascender, float& descender) const { return _implementation ? _implementation->getVerticalSize(ascender, descender) : false; }
 
 
-    void setGyphTextureFeatures(GlyphTexture::Features features) { _glyphTextureFeatures = features; }
-    GlyphTexture::Features getGlyphTextureFeatures() const { return _glyphTextureFeatures; }
+    void setShaderTechnique(ShaderTechnique features) { _shaderTechnique = features; }
+    ShaderTechnique getShaderTechnique() const { return _shaderTechnique; }
 
 
     /** Set the size of texture to create to store the glyph images when rendering.
@@ -186,7 +186,7 @@ protected:
     // current active size of font
     FontResolution                  _fontSize;
 
-    GlyphTexture::Features          _glyphTextureFeatures;
+    ShaderTechnique          _shaderTechnique;
 
     unsigned int                    _textureWidthHint;
     unsigned int                    _textureHeightHint;

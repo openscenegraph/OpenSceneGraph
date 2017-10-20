@@ -116,7 +116,7 @@ osg::StateSet* Text::createStateSet()
         }
     }
 
-    if (activeFont->getGlyphTextureFeatures()!=GlyphTexture::GREYSCALE)
+    if (activeFont->getShaderTechnique()!=GREYSCALE)
     {
         ss<<std::fixed<<std::setprecision(1);
 
@@ -172,12 +172,12 @@ osg::StateSet* Text::createStateSet()
     stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
 
 
-    OSG_NOTICE<<"Text::createStateSet() activeFont->getGlyphTextureFeatures()="<<activeFont->getGlyphTextureFeatures()<<std::endl;
+    OSG_NOTICE<<"Text::createStateSet() activeFont->getShaderTechnique()="<<activeFont->getShaderTechnique()<<std::endl;
 
 
     #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
     osg::DisplaySettings::ShaderHint shaderHint = osg::DisplaySettings::instance()->getShaderHint();
-    if (activeFont->getGlyphTextureFeatures()==GlyphTexture::GREYSCALE && shaderHint==osg::DisplaySettings::SHADER_NONE)
+    if (activeFont->getShaderTechnique()==GREYSCALE && shaderHint==osg::DisplaySettings::SHADER_NONE)
     {
         OSG_NOTICE<<"Font::Font() Fixed function pipeline"<<std::endl;
 
@@ -199,7 +199,7 @@ osg::StateSet* Text::createStateSet()
         program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::VERTEX, "shaders/text.vert", text_vert));
     }
 
-    if (activeFont->getGlyphTextureFeatures()==GlyphTexture::GREYSCALE)
+    if (activeFont->getShaderTechnique()==GREYSCALE)
     {
         OSG_NOTICE<<"Using shaders/text_greyscale.frag"<<std::endl;
 

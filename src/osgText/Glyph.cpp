@@ -75,7 +75,7 @@ int GlyphTexture::compare(const osg::StateAttribute& rhs) const
 
 int GlyphTexture::getEffectMargin(const Glyph* glyph)
 {
-    if (_glyphTextureFeatures==GREYSCALE) return 0;
+    if (_shaderTechnique==GREYSCALE) return 0;
     else return osg::maximum(glyph->getFontResolution().second/6, 2u);
 }
 
@@ -173,7 +173,7 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
 {
     _image->dirty();
 
-    if (_glyphTextureFeatures==GREYSCALE)
+    if (_shaderTechnique==GREYSCALE)
     {
         // OSG_NOTICE<<"GlyphTexture::copyGlyphImage() greyscale copying. glyphTexture="<<this<<", glyph="<<glyph->getGlyphCode()<<std::endl;
         // make sure the glyph image settings and the target image are consisent before copying.
@@ -414,8 +414,8 @@ osg::Image* GlyphTexture::createImage()
 
         _image = new osg::Image;
 
-        GLenum imageFormat = (_glyphTextureFeatures==GREYSCALE) ? OSGTEXT_GLYPH_ALPHA_FORMAT : OSGTEXT_GLYPH_SDF_FORMAT;
-        GLenum internalFormat = (_glyphTextureFeatures==GREYSCALE) ? OSGTEXT_GLYPH_ALPHA_INTERNALFORMAT : OSGTEXT_GLYPH_SDF_INTERNALFORMAT;
+        GLenum imageFormat = (_shaderTechnique==GREYSCALE) ? OSGTEXT_GLYPH_ALPHA_FORMAT : OSGTEXT_GLYPH_SDF_FORMAT;
+        GLenum internalFormat = (_shaderTechnique==GREYSCALE) ? OSGTEXT_GLYPH_ALPHA_INTERNALFORMAT : OSGTEXT_GLYPH_SDF_INTERNALFORMAT;
 
         _image->allocateImage(getTextureWidth(), getTextureHeight(), 1, imageFormat, GL_UNSIGNED_BYTE);
         _image->setInternalTextureFormat(internalFormat);

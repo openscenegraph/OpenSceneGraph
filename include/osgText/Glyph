@@ -38,6 +38,13 @@ class Glyph3D;
 class GlyphGeometry;
 class GlyphTexture;
 
+enum ShaderTechnique
+{
+    GREYSCALE = 0x1,
+    SIGNED_DISTANCE_FIELD = 0x2,
+    ALL_FEATURES = GREYSCALE | SIGNED_DISTANCE_FIELD
+};
+
 class OSGTEXT_EXPORT Glyph : public osg::Image
 {
 public:
@@ -251,15 +258,9 @@ public:
     /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
     virtual int compare(const osg::StateAttribute& rhs) const;
 
-    enum Features
-    {
-        GREYSCALE,
-        SIGNED_DISTANCE_FIELD,
-        ALL_FEATURES
-    };
+    void setShaderTechnique(ShaderTechnique technique) { _shaderTechnique = technique; }
 
-    void setGlyphTextureFeatures(Features features) { _glyphTextureFeatures = features; }
-    Features getGlyphTextureFeatures() const { return _glyphTextureFeatures; }
+    ShaderTechnique getShaderTechnique() const { return _shaderTechnique; }
 
 
     int getEffectMargin(const Glyph* glyph);
@@ -284,11 +285,11 @@ protected:
 
     void copyGlyphImage(Glyph* glyph);
 
-    Features    _glyphTextureFeatures;
+    ShaderTechnique _shaderTechnique;
 
-    int         _usedY;
-    int         _partUsedX;
-    int         _partUsedY;
+    int             _usedY;
+    int             _partUsedX;
+    int             _partUsedY;
 
     typedef std::vector< osg::ref_ptr<Glyph> > GlyphRefList;
     typedef std::vector< const Glyph* > GlyphPtrList;

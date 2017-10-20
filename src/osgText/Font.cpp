@@ -225,9 +225,9 @@ osg::ref_ptr<Font> osgText::readRefFontStream(std::istream& stream, const osgDB:
 Font::Font(FontImplementation* implementation):
     osg::Object(true),
 #if 0
-    _glyphTextureFeatures(GlyphTexture::ALL_FEATURES),
+    _shaderTechnique(ALL_FEATURES),
 #else
-    _glyphTextureFeatures(GlyphTexture::GREYSCALE),
+    _shaderTechnique(GREYSCALE),
 #endif
     _textureWidthHint(1024),
     _textureHeightHint(1024),
@@ -250,11 +250,11 @@ Font::Font(FontImplementation* implementation):
 
     if ((ptr = getenv("OSG_SDF_TEXT")) != 0)
     {
-        _glyphTextureFeatures = GlyphTexture::ALL_FEATURES;
+        _shaderTechnique = ALL_FEATURES;
     }
     else if ((ptr = getenv("OSG_GREYSCALE_TEXT")) != 0)
     {
-        _glyphTextureFeatures = GlyphTexture::GREYSCALE;
+        _shaderTechnique = GREYSCALE;
     }
 }
 
@@ -485,7 +485,7 @@ void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph*
         OSG_INFO<< "   Font " << this<< ", numberOfTexturesAllocated "<<numberOfTexturesAllocated<<std::endl;
 
         // reserve enough space for the glyphs.
-        glyphTexture->setGlyphTextureFeatures(_glyphTextureFeatures);
+        glyphTexture->setShaderTechnique(_shaderTechnique);
         glyphTexture->setTextureSize(_textureWidthHint,_textureHeightHint);
         glyphTexture->setFilter(osg::Texture::MIN_FILTER,_minFilterHint);
         glyphTexture->setFilter(osg::Texture::MAG_FILTER,_magFilterHint);

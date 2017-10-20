@@ -601,7 +601,10 @@ osg::ref_ptr<osg::Program> GeometryPool::getOrCreateProgram(LayerTypes& layerTyp
     _programMap[layerTypes] = program;
 
     // add shader that provides the lighting functions
-    program->addShader(osgDB::readRefShaderFile("shaders/lighting.vert"));
+    {
+        #include "shaders/lighting_vert.cpp"
+        program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::VERTEX, "shaders/lighting.vert", lighting_vert));
+    }
 
     // OSG_NOTICE<<") creating new Program "<<program.get()<<std::endl;
     {

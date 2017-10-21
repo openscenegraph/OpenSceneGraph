@@ -36,6 +36,13 @@ public:
     virtual const char* className() const { return "Text"; }
     virtual const char* libraryName() const { return "osgText"; }
 
+    /** Set the ShaderTechnique hint to specify what fatures in the text shaders to enable.*/
+    void setShaderTechnique(ShaderTechnique technique);
+
+    /** Get the ShaderTechnique hint.*/
+    ShaderTechnique getShaderTechnique() { return _shaderTechnique; }
+
+
     /**
      * Turns off writing to the depth buffer when rendering text. This only affects text
      * with no backdrop or text using the DELAYED_DEPTH_WRITES implementation, since
@@ -282,6 +289,7 @@ protected:
 
     void drawImplementationSinglePass(osg::State& state, const osg::Vec4& colorMultiplier) const;
 
+    ShaderTechnique _shaderTechnique;
     bool _enableDepthWrites;
 
     BackdropType _backdropType;

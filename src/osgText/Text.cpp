@@ -25,10 +25,15 @@
 
 #include <osgDB/ReadFile>
 
+#include <sstream>
+#include <iomanip>
+
+
 using namespace osg;
 using namespace osgText;
 
 Text::Text():
+    _shaderTechnique(GREYSCALE),
     _enableDepthWrites(true),
     _backdropType(NONE),
     _backdropHorizontalOffset(0.07f),
@@ -47,6 +52,7 @@ Text::Text():
 
 Text::Text(const Text& text,const osg::CopyOp& copyop):
     osgText::TextBase(text,copyop),
+    _shaderTechnique(text._shaderTechnique),
     _enableDepthWrites(text._enableDepthWrites),
     _backdropType(text._backdropType),
     _backdropHorizontalOffset(text._backdropHorizontalOffset),
@@ -65,8 +71,15 @@ Text::~Text()
 {
 }
 
-#include <sstream>
-#include <iomanip>
+
+void Text::setShaderTechnique(ShaderTechnique technique)
+{
+    if (_shaderTechnique==technique) return;
+
+    _shaderTechnique = technique;
+
+    assignStateSet();
+}
 
 osg::StateSet* Text::createStateSet()
 {

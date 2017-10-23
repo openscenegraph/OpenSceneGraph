@@ -224,11 +224,6 @@ osg::ref_ptr<Font> osgText::readRefFontStream(std::istream& stream, const osgDB:
 
 Font::Font(FontImplementation* implementation):
     osg::Object(true),
-#if 0
-    _shaderTechnique(ALL_FEATURES),
-#else
-    _shaderTechnique(GREYSCALE),
-#endif
     _textureWidthHint(1024),
     _textureHeightHint(1024),
     _minFilterHint(osg::Texture::LINEAR_MIPMAP_LINEAR),
@@ -246,15 +241,6 @@ Font::Font(FontImplementation* implementation):
 
         if (osg_max_size<_textureWidthHint) _textureWidthHint = osg_max_size;
         if (osg_max_size<_textureHeightHint) _textureHeightHint = osg_max_size;
-    }
-
-    if ((ptr = getenv("OSG_SDF_TEXT")) != 0)
-    {
-        _shaderTechnique = ALL_FEATURES;
-    }
-    else if ((ptr = getenv("OSG_GREYSCALE_TEXT")) != 0)
-    {
-        _shaderTechnique = GREYSCALE;
     }
 }
 
@@ -459,6 +445,10 @@ void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph*
 
     _sizeGlyphMap[fontRes][charcode]=glyph;
 
+}
+
+void Font::assignGlyphToGlyphTexture(Glyph* glyph, ShaderTechnique shaderTechnique)
+{
     int posX=0,posY=0;
 
     GlyphTexture* glyphTexture = 0;
@@ -485,7 +475,7 @@ void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph*
         OSG_INFO<< "   Font " << this<< ", numberOfTexturesAllocated "<<numberOfTexturesAllocated<<std::endl;
 
         // reserve enough space for the glyphs.
-        glyphTexture->setShaderTechnique(_shaderTechnique);
+        glyphTexture->setShaderTechnique(shaderTechnique);
         glyphTexture->setTextureSize(_textureWidthHint,_textureHeightHint);
         glyphTexture->setFilter(osg::Texture::MIN_FILTER,_minFilterHint);
         glyphTexture->setFilter(osg::Texture::MAG_FILTER,_magFilterHint);
@@ -503,5 +493,4 @@ void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph*
 
     // add the glyph into the texture.
     glyphTexture->addGlyph(glyph,posX,posY);
-
 }

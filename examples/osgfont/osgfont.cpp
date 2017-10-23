@@ -153,12 +153,12 @@ struct TextSettings
         font->setMinFilterHint(minFilter);
         font->setMagFilterHint(magFilter);
         font->setMaxAnisotropy(maxAnisotropy);
-        font->setShaderTechnique(shaderTechnique);
 
         text.setColor(textColor);
         text.setBackdropType(backdropType);
         text.setBackdropOffset(backdropOffset.x(), backdropOffset.y());
         text.setBackdropColor(backdropColor);
+        text.setShaderTechnique(shaderTechnique);
 
         text.setFont(font.get());
 

@@ -42,8 +42,6 @@ using namespace std;
 #endif
 
 
-
-
 #if 0
     #define TEXTURE_IMAGE_NUM_CHANNELS 1
     #define TEXTURE_IMAGE_FORMAT OSGTEXT_GLYPH_FORMAT
@@ -52,6 +50,11 @@ using namespace std;
     #define TEXTURE_IMAGE_FORMAT GL_RGBA
 #endif
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// GlyphTexture
+//
 GlyphTexture::GlyphTexture():
     _usedY(0),
     _partUsedX(0),
@@ -154,22 +157,19 @@ void GlyphTexture::addGlyph(Glyph* glyph, int posX, int posY)
 
     _glyphs.push_back(glyph);
 
-    // set up the details of where to place glyph's image in the texture.
-    glyph->setTexture(this);
-    glyph->setTexturePosition(posX,posY);
+    osg::ref_ptr<Glyph::TextureInfo> info = new Glyph::TextureInfo(
+                        this,
+                        posX, posY,
+                        osg::Vec2( static_cast<float>(posX)/static_cast<float>(getTextureWidth()), static_cast<float>(posY)/static_cast<float>(getTextureHeight()) ), // minTexCoord
+                        osg::Vec2( static_cast<float>(posX+glyph->s())/static_cast<float>(getTextureWidth()), static_cast<float>(posY+glyph->t())/static_cast<float>(getTextureHeight()) ), // maxTexCoord
+                        float(getTexelMargin(glyph))); // margin
 
-    glyph->setMinTexCoord( osg::Vec2( static_cast<float>(posX)/static_cast<float>(getTextureWidth()),
-                                      static_cast<float>(posY)/static_cast<float>(getTextureHeight()) ) );
-    glyph->setMaxTexCoord( osg::Vec2( static_cast<float>(posX+glyph->s())/static_cast<float>(getTextureWidth()),
-                                      static_cast<float>(posY+glyph->t())/static_cast<float>(getTextureHeight()) ) );
+    glyph->setTextureInfo(_shaderTechnique, info.get());
 
-
-    glyph->setTexelMargin(float(getTexelMargin(glyph)));
-
-    copyGlyphImage(glyph);
+    copyGlyphImage(glyph, info);
 }
 
-void GlyphTexture::copyGlyphImage(Glyph* glyph)
+void GlyphTexture::copyGlyphImage(Glyph* glyph, Glyph::TextureInfo* info)
 {
     _image->dirty();
 
@@ -179,7 +179,7 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
         // make sure the glyph image settings and the target image are consisent before copying.
         glyph->setPixelFormat(_image->getPixelFormat());
         glyph->setInternalTextureFormat(_image->getPixelFormat());
-        _image->copySubImage(glyph->getTexturePositionX(), glyph->getTexturePositionY(), 0, glyph);
+        _image->copySubImage(info->texturePositionX, info->texturePositionY, 0, glyph);
         return;
     }
 
@@ -191,7 +191,7 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
 
     int dest_columns = _image->s();
     int dest_rows = _image->t();
-    unsigned char* dest_data = _image->data(glyph->getTexturePositionX(),glyph->getTexturePositionY());
+    unsigned char* dest_data = _image->data(info->texturePositionX, info->texturePositionY);
 
     int search_distance = getEffectMargin(glyph);
 
@@ -204,11 +204,11 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph)
 
     float max_distance = sqrtf(float(search_distance)*float(search_distance)*2.0);
 
-    if ((left+glyph->getTexturePositionX())<0) left = -glyph->getTexturePositionX();
-    if ((right+glyph->getTexturePositionX())>=dest_columns) right = dest_columns-glyph->getTexturePositionX()-1;
+    if ((left+info->texturePositionX)<0) left = -info->texturePositionX;
+    if ((right+info->texturePositionX)>=dest_columns) right = dest_columns-info->texturePositionX-1;
 
-    if ((lower+glyph->getTexturePositionY())<0) lower = -glyph->getTexturePositionY();
-    if ((upper+glyph->getTexturePositionY())>=dest_rows) upper = dest_rows-glyph->getTexturePositionY()-1;
+    if ((lower+info->texturePositionY)<0) lower = -info->texturePositionY;
+    if ((upper+info->texturePositionY)>=dest_rows) upper = dest_rows-info->texturePositionY-1;
 
 
     int num_components = osg::Image::computeNumComponents(_image->getPixelFormat());
@@ -427,13 +427,18 @@ osg::Image* GlyphTexture::createImage()
             ++itr)
         {
             Glyph* glyph = itr->get();
-            copyGlyphImage(glyph);
+            // copyGlyphImage(glyph); // TODO!!!!!
+            OSG_NOTICE<<"GlyphTexture::createImage() need to implement copy"<<std::endl;
         }
     }
 
     return _image.get();
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Glyph
+//
 // all the methods in Font::Glyph have been made non inline because VisualStudio6.0 is STUPID, STUPID, STUPID PILE OF JUNK.
 Glyph::Glyph(Font* font, unsigned int glyphCode):
     _font(font),
@@ -443,12 +448,7 @@ Glyph::Glyph(Font* font, unsigned int glyphCode):
     _horizontalBearing(0.0f,0.f),
     _horizontalAdvance(0.f),
     _verticalBearing(0.0f,0.f),
-    _verticalAdvance(0.f),
-    _texture(0),
-    _texturePosX(0),
-    _texturePosY(0),
-    _minTexCoord(0.0f,0.0f),
-    _maxTexCoord(0.0f,0.0f)
+    _verticalAdvance(0.f)
 {
     setThreadSafeRefUnref(true);
 }
@@ -469,20 +469,20 @@ const osg::Vec2& Glyph::getVerticalBearing() const { return _verticalBearing; }
 void Glyph::setVerticalAdvance(float advance) {  _verticalAdvance=advance; }
 float Glyph::getVerticalAdvance() const { return _verticalAdvance; }
 
-void Glyph::setTexture(GlyphTexture* texture) { _texture = texture; }
-GlyphTexture* Glyph::getTexture() { return _texture; }
-const GlyphTexture* Glyph::getTexture() const { return _texture; }
+Glyph::TextureInfo* Glyph::getOrCreateTextureInfo(ShaderTechnique technique)
+{
+    if (technique>=_textureInfoList.size()) _textureInfoList.resize(technique+1);
+    if (!_textureInfoList[technique])
+    {
+        _font->assignGlyphToGlyphTexture(this, technique);
+    }
+    return  _textureInfoList[technique].get();
+}
 
-void Glyph::setTexturePosition(int posX,int posY) { _texturePosX = posX; _texturePosY = posY; }
-int Glyph::getTexturePositionX() const { return _texturePosX; }
-int Glyph::getTexturePositionY() const { return _texturePosY; }
-
-void Glyph::setMinTexCoord(const osg::Vec2& coord) { _minTexCoord=coord; }
-const osg::Vec2& Glyph::getMinTexCoord() const { return _minTexCoord; }
-
-void Glyph::setMaxTexCoord(const osg::Vec2& coord) { _maxTexCoord=coord; }
-const osg::Vec2& Glyph::getMaxTexCoord() const { return _maxTexCoord; }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Glyph3D
+//
 Glyph3D::Glyph3D(Font* font, unsigned int glyphCode):
     osg::Referenced(true),
     _font(font),

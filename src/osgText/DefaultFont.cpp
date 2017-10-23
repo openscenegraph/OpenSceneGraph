@@ -29,12 +29,6 @@ DefaultFont::DefaultFont()
     _minFilterHint = osg::Texture::LINEAR_MIPMAP_LINEAR;
     _magFilterHint = osg::Texture::LINEAR;
 
-    char *ptr;
-    if ((ptr = getenv("OSG_SDF_TEXT")) != 0)
-    {
-        _shaderTechnique = osgText::ALL_FEATURES;
-    }
-
     constructGlyphs();
 }
 

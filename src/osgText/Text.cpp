@@ -47,6 +47,16 @@ Text::Text():
 {
     _supportsVertexBufferObjects = true;
 
+    char* ptr = 0;
+    if ((ptr = getenv("OSG_SDF_TEXT")) != 0)
+    {
+        _shaderTechnique = ALL_FEATURES;
+    }
+    else if ((ptr = getenv("OSG_GREYSCALE_TEXT")) != 0)
+    {
+        _shaderTechnique = GREYSCALE;
+    }
+
     assignStateSet();
 }
 
@@ -129,7 +139,7 @@ osg::StateSet* Text::createStateSet()
         }
     }
 
-    if (activeFont->getShaderTechnique()!=GREYSCALE)
+    if (_shaderTechnique!=GREYSCALE)
     {
         ss<<std::fixed<<std::setprecision(1);
 
@@ -185,12 +195,12 @@ osg::StateSet* Text::createStateSet()
     stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
 
 
-    OSG_NOTICE<<"Text::createStateSet() activeFont->getShaderTechnique()="<<activeFont->getShaderTechnique()<<std::endl;
+    OSG_NOTICE<<"Text::createStateSet() ShaderTechnique="<<_shaderTechnique<<std::endl;
 
 
     #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
     osg::DisplaySettings::ShaderHint shaderHint = osg::DisplaySettings::instance()->getShaderHint();
-    if (activeFont->getShaderTechnique()==GREYSCALE && shaderHint==osg::DisplaySettings::SHADER_NONE)
+    if (_shaderTechnique==GREYSCALE && shaderHint==osg::DisplaySettings::SHADER_NONE)
     {
         OSG_NOTICE<<"Font::Font() Fixed function pipeline"<<std::endl;
 
@@ -212,7 +222,7 @@ osg::StateSet* Text::createStateSet()
         program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::VERTEX, "shaders/text.vert", text_vert));
     }
 
-    if (activeFont->getShaderTechnique()==GREYSCALE)
+    if (_shaderTechnique==GREYSCALE)
     {
         OSG_NOTICE<<"Using shaders/text_greyscale.frag"<<std::endl;
 
@@ -374,7 +384,9 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
 void Text::addGlyphQuad(Glyph* glyph, const osg::Vec2& minc, const osg::Vec2& maxc, const osg::Vec2& mintc, const osg::Vec2& maxtc)
 {
     // set up the coords of the quad
-    GlyphQuads& glyphquad = _textureGlyphQuadMap[glyph->getTexture()];
+    const Glyph::TextureInfo* info = glyph->getOrCreateTextureInfo(_shaderTechnique);
+    GlyphTexture* glyphTexture = info ? info->texture : 0;
+    GlyphQuads& glyphquad = _textureGlyphQuadMap[glyphTexture];
 
     glyphquad._glyphs.push_back(glyph);
 
@@ -625,46 +637,54 @@ void Text::computeGlyphRepresentation()
                     local.x() += bearing.x() * wr;
                     local.y() += bearing.y() * hr;
 
-
-                    // Adjust coordinates and texture coordinates to avoid
-                    // clipping the edges of antialiased characters.
-                    osg::Vec2 mintc = glyph->getMinTexCoord();
-                    osg::Vec2 maxtc = glyph->getMaxTexCoord();
-                    osg::Vec2 vDiff = maxtc - mintc;
-                    float texelMargin = glyph->getTexelMargin();
-
-                    float fHorizTCMargin = texelMargin / glyph->getTexture()->getTextureWidth();
-                    float fVertTCMargin = texelMargin / glyph->getTexture()->getTextureHeight();
-                    float fHorizQuadMargin = vDiff.x() == 0.0f ? 0.0f : width * fHorizTCMargin / vDiff.x();
-                    float fVertQuadMargin = vDiff.y() == 0.0f ? 0.0f : height * fVertTCMargin / vDiff.y();
-
-                    mintc.x() -= fHorizTCMargin;
-                    mintc.y() -= fVertTCMargin;
-                    maxtc.x() += fHorizTCMargin;
-                    maxtc.y() += fVertTCMargin;
-                    osg::Vec2 minc = local+osg::Vec2(0.0f-fHorizQuadMargin,0.0f-fVertQuadMargin);
-                    osg::Vec2 maxc = local+osg::Vec2(width+fHorizQuadMargin,height+fVertQuadMargin);
-
-                    addGlyphQuad(glyph, minc, maxc, mintc, maxtc);
-
-                    // move the cursor onto the next character.
-                    // also expand bounding box
-                    switch(_layout)
+                    const Glyph::TextureInfo* info = glyph->getOrCreateTextureInfo(_shaderTechnique);
+                    if (info)
                     {
-                        case LEFT_TO_RIGHT:
-                            cursor.x() += glyph->getHorizontalAdvance() * wr;
-                            _textBB.expandBy(osg::Vec3(minc.x(), minc.y(), 0.0f)); //lower left corner
-                            _textBB.expandBy(osg::Vec3(maxc.x(), maxc.y(), 0.0f)); //upper right corner
-                            break;
-                        case VERTICAL:
-                            cursor.y() -= glyph->getVerticalAdvance() * hr;
-                            _textBB.expandBy(osg::Vec3(minc.x(),maxc.y(),0.0f)); //upper left corner
-                            _textBB.expandBy(osg::Vec3(maxc.x(),minc.y(),0.0f)); //lower right corner
-                            break;
-                        case RIGHT_TO_LEFT:
-                            _textBB.expandBy(osg::Vec3(maxc.x(),minc.y(),0.0f)); //lower right corner
-                            _textBB.expandBy(osg::Vec3(minc.x(),maxc.y(),0.0f)); //upper left corner
-                            break;
+
+                        // Adjust coordinates and texture coordinates to avoid
+                        // clipping the edges of antialiased characters.
+                        osg::Vec2 mintc = info->minTexCoord;
+                        osg::Vec2 maxtc = info->maxTexCoord;
+                        osg::Vec2 vDiff = maxtc - mintc;
+                        float texelMargin = info->texelMargin;
+
+                        float fHorizTCMargin = texelMargin / info->texture->getTextureWidth();
+                        float fVertTCMargin = texelMargin / info->texture->getTextureHeight();
+                        float fHorizQuadMargin = vDiff.x() == 0.0f ? 0.0f : width * fHorizTCMargin / vDiff.x();
+                        float fVertQuadMargin = vDiff.y() == 0.0f ? 0.0f : height * fVertTCMargin / vDiff.y();
+
+                        mintc.x() -= fHorizTCMargin;
+                        mintc.y() -= fVertTCMargin;
+                        maxtc.x() += fHorizTCMargin;
+                        maxtc.y() += fVertTCMargin;
+                        osg::Vec2 minc = local+osg::Vec2(0.0f-fHorizQuadMargin,0.0f-fVertQuadMargin);
+                        osg::Vec2 maxc = local+osg::Vec2(width+fHorizQuadMargin,height+fVertQuadMargin);
+
+                        addGlyphQuad(glyph, minc, maxc, mintc, maxtc);
+
+                        // move the cursor onto the next character.
+                        // also expand bounding box
+                        switch(_layout)
+                        {
+                            case LEFT_TO_RIGHT:
+                                cursor.x() += glyph->getHorizontalAdvance() * wr;
+                                _textBB.expandBy(osg::Vec3(minc.x(), minc.y(), 0.0f)); //lower left corner
+                                _textBB.expandBy(osg::Vec3(maxc.x(), maxc.y(), 0.0f)); //upper right corner
+                                break;
+                            case VERTICAL:
+                                cursor.y() -= glyph->getVerticalAdvance() * hr;
+                                _textBB.expandBy(osg::Vec3(minc.x(),maxc.y(),0.0f)); //upper left corner
+                                _textBB.expandBy(osg::Vec3(maxc.x(),minc.y(),0.0f)); //lower right corner
+                                break;
+                            case RIGHT_TO_LEFT:
+                                _textBB.expandBy(osg::Vec3(maxc.x(),minc.y(),0.0f)); //lower right corner
+                                _textBB.expandBy(osg::Vec3(minc.x(),maxc.y(),0.0f)); //upper left corner
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        OSG_NOTICE<<"No TextureInfo for "<<charcode<<std::endl;
                     }
 
                     previous_charcode = charcode;

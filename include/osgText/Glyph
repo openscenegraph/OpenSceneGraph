@@ -77,22 +77,40 @@ public:
     void setVerticalAdvance(float advance);
     float getVerticalAdvance() const;
 
-    void setTexture(GlyphTexture* texture);
-    GlyphTexture* getTexture();
-    const GlyphTexture* getTexture() const;
+    struct TextureInfo : public osg::Referenced
+    {
+        TextureInfo():
+            texture(0),
+            texelMargin(0.0f) {}
 
-    void setTexturePosition(int posX,int posY);
-    int getTexturePositionX() const;
-    int getTexturePositionY() const;
+        TextureInfo(GlyphTexture* tex, int x, int y, const osg::Vec2& mintc, const osg::Vec2& maxtc, float margin):
+            texture(tex),
+            texturePositionX(x),
+            texturePositionY(y),
+            minTexCoord(mintc),
+            maxTexCoord(maxtc),
+            texelMargin(margin) {}
 
-    void setMinTexCoord(const osg::Vec2& coord);
-    const osg::Vec2& getMinTexCoord() const;
+        GlyphTexture*   texture;
+        int             texturePositionX;
+        int             texturePositionY;
+        osg::Vec2       minTexCoord;
+        osg::Vec2       maxTexCoord;
+        float           texelMargin;
+    };
 
-    void setMaxTexCoord(const osg::Vec2& coord);
-    const osg::Vec2& getMaxTexCoord() const;
+    void setTextureInfo(ShaderTechnique technique, TextureInfo* info)
+    {
+        if (technique>=_textureInfoList.size()) _textureInfoList.resize(technique+1);
+        _textureInfoList[technique] = info;
+    }
 
-    void setTexelMargin(float margin) { _texelMargin = margin; }
-    float getTexelMargin() const { return _texelMargin; }
+    const TextureInfo* getTextureInfo(ShaderTechnique technique) const
+    {
+        return  (technique<_textureInfoList.size()) ? _textureInfoList[technique].get() : 0;
+    }
+
+    TextureInfo* getOrCreateTextureInfo(ShaderTechnique technique);
 
 protected:
 
@@ -112,16 +130,8 @@ protected:
     osg::Vec2                   _verticalBearing;
     float                       _verticalAdvance;
 
-    GlyphTexture*               _texture;
-    int                         _texturePosX;
-    int                         _texturePosY;
-    osg::Vec2                   _minTexCoord;
-    osg::Vec2                   _maxTexCoord;
-    float                       _texelMargin;
-
-    typedef osg::buffered_value<GLuint> GLObjectList;
-    mutable GLObjectList _globjList;
-
+    typedef std::vector< osg::ref_ptr<TextureInfo> > TextureInfoList;
+    TextureInfoList             _textureInfoList;
 };
 
 class OSGTEXT_EXPORT GlyphGeometry : public osg::Referenced
@@ -283,7 +293,7 @@ protected:
 
     virtual ~GlyphTexture();
 
-    void copyGlyphImage(Glyph* glyph);
+    void copyGlyphImage(Glyph* glyph, Glyph::TextureInfo* info);
 
     ShaderTechnique _shaderTechnique;
 

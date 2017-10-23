@@ -107,11 +107,6 @@ public:
      *  return true on success, return false when not supported.*/
     virtual bool getVerticalSize(float& ascender, float& descender) const { return _implementation ? _implementation->getVerticalSize(ascender, descender) : false; }
 
-
-    void setShaderTechnique(ShaderTechnique features) { _shaderTechnique = features; }
-    ShaderTechnique getShaderTechnique() const { return _shaderTechnique; }
-
-
     /** Set the size of texture to create to store the glyph images when rendering.
       * Note, this doesn't affect already created Texture Glhph's.*/
     void setTextureSizeHint(unsigned int width,unsigned int height);
@@ -162,6 +157,8 @@ public:
     typedef std::vector< osg::ref_ptr<GlyphTexture> >       GlyphTextureList;
     GlyphTextureList& getGlyphTextureList() { return _glyphTextureList; }
 
+    void assignGlyphToGlyphTexture(Glyph* glyph, ShaderTechnique shaderTechnique);
+
 protected:
 
     virtual ~Font();
@@ -185,8 +182,6 @@ protected:
 
     // current active size of font
     FontResolution                  _fontSize;
-
-    ShaderTechnique          _shaderTechnique;
 
     unsigned int                    _textureWidthHint;
     unsigned int                    _textureHeightHint;

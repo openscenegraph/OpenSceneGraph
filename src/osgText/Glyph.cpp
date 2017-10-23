@@ -173,7 +173,7 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph, Glyph::TextureInfo* info)
 {
     _image->dirty();
 
-    if (_shaderTechnique==GREYSCALE)
+    if (_shaderTechnique<=GREYSCALE)
     {
         // OSG_NOTICE<<"GlyphTexture::copyGlyphImage() greyscale copying. glyphTexture="<<this<<", glyph="<<glyph->getGlyphCode()<<std::endl;
         // make sure the glyph image settings and the target image are consisent before copying.
@@ -414,22 +414,13 @@ osg::Image* GlyphTexture::createImage()
 
         _image = new osg::Image;
 
-        GLenum imageFormat = (_shaderTechnique==GREYSCALE) ? OSGTEXT_GLYPH_ALPHA_FORMAT : OSGTEXT_GLYPH_SDF_FORMAT;
-        GLenum internalFormat = (_shaderTechnique==GREYSCALE) ? OSGTEXT_GLYPH_ALPHA_INTERNALFORMAT : OSGTEXT_GLYPH_SDF_INTERNALFORMAT;
+        GLenum imageFormat = (_shaderTechnique<=GREYSCALE) ? OSGTEXT_GLYPH_ALPHA_FORMAT : OSGTEXT_GLYPH_SDF_FORMAT;
+        GLenum internalFormat = (_shaderTechnique<=GREYSCALE) ? OSGTEXT_GLYPH_ALPHA_INTERNALFORMAT : OSGTEXT_GLYPH_SDF_INTERNALFORMAT;
 
         _image->allocateImage(getTextureWidth(), getTextureHeight(), 1, imageFormat, GL_UNSIGNED_BYTE);
         _image->setInternalTextureFormat(internalFormat);
 
         memset(_image->data(), 0, _image->getTotalSizeInBytes());
-
-        for(GlyphRefList::iterator itr = _glyphs.begin();
-            itr != _glyphs.end();
-            ++itr)
-        {
-            Glyph* glyph = itr->get();
-            // copyGlyphImage(glyph); // TODO!!!!!
-            OSG_NOTICE<<"GlyphTexture::createImage() need to implement copy"<<std::endl;
-        }
     }
 
     return _image.get();

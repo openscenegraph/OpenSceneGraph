@@ -56,6 +56,10 @@ Text::Text():
     {
         _shaderTechnique = GREYSCALE;
     }
+    else if ((ptr = getenv("OSG_NO_TEXT_SHADER")) != 0)
+    {
+        _shaderTechnique = NO_TEXT_SHADER;
+    }
 
     assignStateSet();
 }
@@ -139,7 +143,6 @@ osg::StateSet* Text::createStateSet()
         }
     }
 
-    if (_shaderTechnique!=GREYSCALE)
     {
         ss<<std::fixed<<std::setprecision(1);
 
@@ -151,7 +154,10 @@ osg::StateSet* Text::createStateSet()
         ss.str("");
         ss << float(activeFont->getTextureWidthHint());
         defineList["TEXTURE_DIMENSION"] = osg::StateSet::DefinePair(ss.str(), osg::StateAttribute::ON);
+    }
 
+    if (_shaderTechnique>GREYSCALE)
+    {
         defineList["SIGNED_DISTNACE_FIELD"] = osg::StateSet::DefinePair("1", osg::StateAttribute::ON);
     }
 
@@ -200,7 +206,7 @@ osg::StateSet* Text::createStateSet()
 
     #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
     osg::DisplaySettings::ShaderHint shaderHint = osg::DisplaySettings::instance()->getShaderHint();
-    if (_shaderTechnique==GREYSCALE && shaderHint==osg::DisplaySettings::SHADER_NONE)
+    if (_shaderTechnique==NO_TEXT_SHADER && shaderHint==osg::DisplaySettings::SHADER_NONE)
     {
         OSG_NOTICE<<"Font::Font() Fixed function pipeline"<<std::endl;
 
@@ -222,19 +228,11 @@ osg::StateSet* Text::createStateSet()
         program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::VERTEX, "shaders/text.vert", text_vert));
     }
 
-    if (_shaderTechnique==GREYSCALE)
     {
-        OSG_NOTICE<<"Using shaders/text_greyscale.frag"<<std::endl;
+        OSG_NOTICE<<"Using shaders/text.frag"<<std::endl;
 
-        #include "shaders/text_greyscale_frag.cpp"
-        program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/text_greyscale.frag", text_greyscale_frag));
-    }
-    else
-    {
-        OSG_NOTICE<<"Using shaders/text_sdf.frag"<<std::endl;
-
-        #include "shaders/text_sdf_frag.cpp"
-        program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/text_sdf.frag", text_sdf_frag));
+        #include "shaders/text_frag.cpp"
+        program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/text.frag", text_frag));
     }
 
     return stateset.release();

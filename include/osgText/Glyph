@@ -40,6 +40,7 @@ class GlyphTexture;
 
 enum ShaderTechnique
 {
+    NO_TEXT_SHADER = 0x0,
     GREYSCALE = 0x1,
     SIGNED_DISTANCE_FIELD = 0x2,
     ALL_FEATURES = GREYSCALE | SIGNED_DISTANCE_FIELD

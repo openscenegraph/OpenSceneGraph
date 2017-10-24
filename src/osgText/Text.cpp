@@ -48,18 +48,15 @@ Text::Text():
     _supportsVertexBufferObjects = true;
 
     char* ptr = 0;
-    if ((ptr = getenv("OSG_SDF_TEXT")) != 0)
+    if ((ptr = getenv("OSG_TEXT_SHADER_TECHNIQUE")) != 0)
     {
-        _shaderTechnique = ALL_FEATURES;
+        if (strcmp(ptr,"ALL_FEATURES")==0) _shaderTechnique = ALL_FEATURES;
+        else if (strcmp(ptr,"GREYSCALE")==0) _shaderTechnique = GREYSCALE;
+        else if (strcmp(ptr,"SIGNED_DISTANCE_FIELD")==0 || strcmp(ptr,"SDF")==0) _shaderTechnique = SIGNED_DISTANCE_FIELD;
+        else if (strcmp(ptr,"NO_TEXT_SHADER")==0 || strcmp(ptr,"NONE")==0) _shaderTechnique = NO_TEXT_SHADER;
     }
-    else if ((ptr = getenv("OSG_GREYSCALE_TEXT")) != 0)
-    {
-        _shaderTechnique = GREYSCALE;
-    }
-    else if ((ptr = getenv("OSG_NO_TEXT_SHADER")) != 0)
-    {
-        _shaderTechnique = NO_TEXT_SHADER;
-    }
+
+    OSG_NOTICE<<"Text::Text() "<<_shaderTechnique<<std::endl;
 
     assignStateSet();
 }

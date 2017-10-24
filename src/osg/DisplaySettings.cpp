@@ -385,6 +385,9 @@ static ApplicationUsageProxy DisplaySetting_e31(ApplicationUsage::ENVIRONMENTAL_
 static ApplicationUsageProxy DisplaySetting_e32(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_VERTEX_BUFFER_HINT <value>",
         "Set the hint to what backend osg::Geometry implementation to use. NO_PREFERENCE | VERTEX_BUFFER_OBJECT | VERTEX_ARRAY_OBJECT");
+static ApplicationUsageProxy DisplaySetting_e33(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+        "OSG_TEXT_SHADER_TECHNIQUE <value>",
+        "Set the defafult osgText::ShaderTechnique. ALL_FEATURES | ALL | GREYSCALE | SIGNED_DISTANCE_FIELD | SDF | NO_TEXT_SHADER | NONE");
 
 void DisplaySettings::readEnvironmentalVariables()
 {
@@ -740,6 +743,10 @@ void DisplaySettings::readEnvironmentalVariables()
         }
     }
 
+    if ((ptr = getenv("OSG_TEXT_SHADER_TECHNIQUE")) != 0)
+    {
+        setTextShaderTechnique(ptr);
+    }
 
     if( (ptr = getenv("OSG_KEYSTONE")) != 0)
     {

@@ -28,6 +28,8 @@
 #include <sstream>
 #include <iomanip>
 
+#define DEBUG_MESSAGE_LEVEL osg::INFO
+#define DEBUG_MESSAGE osg::notify(DEBUG_MESSAGE_LEVEL)
 
 using namespace osg;
 using namespace osgText;
@@ -47,16 +49,14 @@ Text::Text():
 {
     _supportsVertexBufferObjects = true;
 
-    char* ptr = 0;
-    if ((ptr = getenv("OSG_TEXT_SHADER_TECHNIQUE")) != 0)
+    const std::string& str = osg::DisplaySettings::instance()->getTextShaderTechnique();
+    if (!str.empty())
     {
-        if (strcmp(ptr,"ALL_FEATURES")==0) _shaderTechnique = ALL_FEATURES;
-        else if (strcmp(ptr,"GREYSCALE")==0) _shaderTechnique = GREYSCALE;
-        else if (strcmp(ptr,"SIGNED_DISTANCE_FIELD")==0 || strcmp(ptr,"SDF")==0) _shaderTechnique = SIGNED_DISTANCE_FIELD;
-        else if (strcmp(ptr,"NO_TEXT_SHADER")==0 || strcmp(ptr,"NONE")==0) _shaderTechnique = NO_TEXT_SHADER;
+        if (str=="ALL_FEATURES" || str=="ALL") _shaderTechnique = ALL_FEATURES;
+        else if (str=="GREYSCALE") _shaderTechnique = GREYSCALE;
+        else if (str=="SIGNED_DISTANCE_FIELD" || str=="SDF") _shaderTechnique = SIGNED_DISTANCE_FIELD;
+        else if (str=="NO_TEXT_SHADER" || str=="NONE") _shaderTechnique = NO_TEXT_SHADER;
     }
-
-    OSG_NOTICE<<"Text::Text() "<<_shaderTechnique<<std::endl;
 
     assignStateSet();
 }
@@ -185,7 +185,20 @@ osg::StateSet* Text::createStateSet()
         }
     }
 
-    OSG_INFO<<"Text::createStateSet() : Not Matched DefineList, creating new StateSet"<<std::endl;
+
+    if (osg::isNotifyEnabled(DEBUG_MESSAGE_LEVEL))
+    {
+        DEBUG_MESSAGE<<"Text::createStateSet() ShaderTechnique ";
+        switch(_shaderTechnique)
+        {
+            case(NO_TEXT_SHADER) : DEBUG_MESSAGE<<"NO_TEXT_SHADER"<<std::endl; break;
+            case(GREYSCALE) : DEBUG_MESSAGE<<"GREYSCALE"<<std::endl; break;
+            case(SIGNED_DISTANCE_FIELD) : DEBUG_MESSAGE<<"SIGNED_DISTANCE_FIELD"<<std::endl; break;
+            case(ALL_FEATURES) : DEBUG_MESSAGE<<"ALL_FEATURES"<<std::endl; break;
+        }
+    }
+
+    DEBUG_MESSAGE<<"Text::createStateSet() : Not Matched DefineList, creating new StateSet"<<std::endl;
 
     osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
 
@@ -198,14 +211,11 @@ osg::StateSet* Text::createStateSet()
     stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
 
 
-    OSG_INFO<<"Text::createStateSet() ShaderTechnique="<<_shaderTechnique<<std::endl;
-
-
     #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
     osg::DisplaySettings::ShaderHint shaderHint = osg::DisplaySettings::instance()->getShaderHint();
     if (_shaderTechnique==NO_TEXT_SHADER && shaderHint==osg::DisplaySettings::SHADER_NONE)
     {
-        OSG_INFO<<"Font::Font() Fixed function pipeline"<<std::endl;
+        DEBUG_MESSAGE<<"Font::Font() Fixed function pipeline"<<std::endl;
 
         stateset->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::ON);
         return stateset.release();
@@ -219,14 +229,14 @@ osg::StateSet* Text::createStateSet()
     stateset->setAttributeAndModes(program.get());
 
     {
-        OSG_INFO<<"Using shaders/text.vert"<<std::endl;
+        DEBUG_MESSAGE<<"Using shaders/text.vert"<<std::endl;
 
         #include "shaders/text_vert.cpp"
         program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::VERTEX, "shaders/text.vert", text_vert));
     }
 
     {
-        OSG_INFO<<"Using shaders/text.frag"<<std::endl;
+        DEBUG_MESSAGE<<"Using shaders/text.frag"<<std::endl;
 
         #include "shaders/text_frag.cpp"
         program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/text.frag", text_frag));

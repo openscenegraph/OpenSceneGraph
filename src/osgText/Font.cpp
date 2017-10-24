@@ -456,12 +456,12 @@ void Font::assignGlyphToGlyphTexture(Glyph* glyph, ShaderTechnique shaderTechniq
         itr!=_glyphTextureList.end() && !glyphTexture;
         ++itr)
     {
-        if ((*itr)->getSpaceForGlyph(glyph,posX,posY)) glyphTexture = itr->get();
+        if ((*itr)->getShaderTechnique()==shaderTechnique && (*itr)->getSpaceForGlyph(glyph,posX,posY)) glyphTexture = itr->get();
     }
 
     if (glyphTexture)
     {
-        //cout << "    found space for texture "<<glyphTexture<<" posX="<<posX<<" posY="<<posY<<endl;
+        //cout << "    Font::assignGlyphToGlyphTexture() found space for texture "<<glyphTexture<<" posX="<<posX<<" posY="<<posY<<endl;
     }
 
     if (!glyphTexture)

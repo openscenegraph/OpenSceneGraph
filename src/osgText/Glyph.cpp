@@ -151,6 +151,7 @@ bool GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
 
 void GlyphTexture::addGlyph(Glyph* glyph, int posX, int posY)
 {
+
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
     if (!_image.valid()) createImage();
@@ -460,9 +461,26 @@ const osg::Vec2& Glyph::getVerticalBearing() const { return _verticalBearing; }
 void Glyph::setVerticalAdvance(float advance) {  _verticalAdvance=advance; }
 float Glyph::getVerticalAdvance() const { return _verticalAdvance; }
 
+void Glyph::setTextureInfo(ShaderTechnique technique, TextureInfo* info)
+{
+    if (technique>=_textureInfoList.size())
+    {
+        _textureInfoList.resize(technique+1);
+    }
+    _textureInfoList[technique] = info;
+}
+
+const Glyph::TextureInfo* Glyph::getTextureInfo(ShaderTechnique technique) const
+{
+    return  (technique<_textureInfoList.size()) ? _textureInfoList[technique].get() : 0;
+}
+
 Glyph::TextureInfo* Glyph::getOrCreateTextureInfo(ShaderTechnique technique)
 {
-    if (technique>=_textureInfoList.size()) _textureInfoList.resize(technique+1);
+    if (technique>=_textureInfoList.size())
+    {
+        _textureInfoList.resize(technique+1);
+    }
     if (!_textureInfoList[technique])
     {
         _font->assignGlyphToGlyphTexture(this, technique);

@@ -638,7 +638,6 @@ void Text::computeGlyphRepresentation()
                     const Glyph::TextureInfo* info = glyph->getOrCreateTextureInfo(_shaderTechnique);
                     if (info)
                     {
-
                         // Adjust coordinates and texture coordinates to avoid
                         // clipping the edges of antialiased characters.
                         osg::Vec2 mintc = info->minTexCoord;

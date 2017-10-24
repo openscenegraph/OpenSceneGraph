@@ -100,16 +100,9 @@ public:
         float           texelMargin;
     };
 
-    void setTextureInfo(ShaderTechnique technique, TextureInfo* info)
-    {
-        if (technique>=_textureInfoList.size()) _textureInfoList.resize(technique+1);
-        _textureInfoList[technique] = info;
-    }
+    void setTextureInfo(ShaderTechnique technique, TextureInfo* info);
 
-    const TextureInfo* getTextureInfo(ShaderTechnique technique) const
-    {
-        return  (technique<_textureInfoList.size()) ? _textureInfoList[technique].get() : 0;
-    }
+    const TextureInfo* getTextureInfo(ShaderTechnique technique) const;
 
     TextureInfo* getOrCreateTextureInfo(ShaderTechnique technique);
 

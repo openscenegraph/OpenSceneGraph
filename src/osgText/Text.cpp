@@ -188,7 +188,7 @@ osg::StateSet* Text::createStateSet()
         }
     }
 
-    OSG_NOTICE<<"Text::createStateSet() : Not Matched DefineList, creating new StateSet"<<std::endl;
+    OSG_INFO<<"Text::createStateSet() : Not Matched DefineList, creating new StateSet"<<std::endl;
 
     osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
 
@@ -201,14 +201,14 @@ osg::StateSet* Text::createStateSet()
     stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
 
 
-    OSG_NOTICE<<"Text::createStateSet() ShaderTechnique="<<_shaderTechnique<<std::endl;
+    OSG_INFO<<"Text::createStateSet() ShaderTechnique="<<_shaderTechnique<<std::endl;
 
 
     #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
     osg::DisplaySettings::ShaderHint shaderHint = osg::DisplaySettings::instance()->getShaderHint();
     if (_shaderTechnique==NO_TEXT_SHADER && shaderHint==osg::DisplaySettings::SHADER_NONE)
     {
-        OSG_NOTICE<<"Font::Font() Fixed function pipeline"<<std::endl;
+        OSG_INFO<<"Font::Font() Fixed function pipeline"<<std::endl;
 
         stateset->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::ON);
         return stateset.release();
@@ -222,14 +222,14 @@ osg::StateSet* Text::createStateSet()
     stateset->setAttributeAndModes(program.get());
 
     {
-        OSG_NOTICE<<"Using shaders/text.vert"<<std::endl;
+        OSG_INFO<<"Using shaders/text.vert"<<std::endl;
 
         #include "shaders/text_vert.cpp"
         program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::VERTEX, "shaders/text.vert", text_vert));
     }
 
     {
-        OSG_NOTICE<<"Using shaders/text.frag"<<std::endl;
+        OSG_INFO<<"Using shaders/text.frag"<<std::endl;
 
         #include "shaders/text_frag.cpp"
         program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/text.frag", text_frag));

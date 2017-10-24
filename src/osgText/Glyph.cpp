@@ -411,7 +411,7 @@ osg::Image* GlyphTexture::createImage()
 {
     if (!_image)
     {
-        OSG_NOTICE<<"GlyphTexture::createImage() : Creating image 0x"<<std::hex<<TEXTURE_IMAGE_FORMAT<<std::dec<<std::endl;
+        OSG_INFO<<"GlyphTexture::createImage() : Creating image 0x"<<std::hex<<TEXTURE_IMAGE_FORMAT<<std::dec<<std::endl;
 
         _image = new osg::Image;
 

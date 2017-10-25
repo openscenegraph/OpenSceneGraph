@@ -1115,6 +1115,8 @@ void Text::drawImplementation(osg::RenderInfo& renderInfo) const
 
 void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
+    if (colorMultiplier.a()==0.0f || _color.a()==0.0f) return;
+
     osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
     bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);

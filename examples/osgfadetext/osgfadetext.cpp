@@ -121,10 +121,70 @@ osg::Node* createFadeText(osg::EllipsoidModel* ellipsoid)
 }
 
 
-int main(int, char**)
+class TextSettings : public osg::NodeVisitor
 {
+public:
+    TextSettings(osg::ArgumentParser& arguments):
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _backdropTypeSet(false),
+        _backdropType(osgText::Text::NONE),
+        _shaderTechniqueSet(false),
+        _shaderTechnique(osgText::GREYSCALE)
+    {
+        if (arguments.read("--outline"))
+        {
+            _backdropTypeSet = true;
+            _backdropType = osgText::Text::OUTLINE;
+        }
+        if (arguments.read("--sdf"))
+        {
+            _shaderTechniqueSet = true;
+            _shaderTechnique = osgText::SIGNED_DISTANCE_FIELD;
+        }
+        if (arguments.read("--all"))
+        {
+            _shaderTechniqueSet = true;
+            _shaderTechnique = osgText::ALL_FEATURES;
+        }
+        if (arguments.read("--greyscale"))
+        {
+            _shaderTechniqueSet = true;
+            _shaderTechnique = osgText::GREYSCALE;
+        }
+        if (arguments.read("--no-shader"))
+        {
+            _shaderTechniqueSet = true;
+            _shaderTechnique = osgText::NO_TEXT_SHADER;
+        }
+    }
+
+    void apply(osg::Drawable& drawable)
+    {
+        osgText::Text* text = dynamic_cast<osgText::Text*>(&drawable);
+        if (text)
+        {
+            if (_backdropTypeSet)
+            {
+                text->setBackdropType(_backdropType);
+                text->setBackdropOffset(0.1f);
+                text->setBackdropColor(osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f));
+            }
+            if (_shaderTechniqueSet) text->setShaderTechnique(_shaderTechnique);
+        }
+    }
+
+    bool                        _backdropTypeSet;
+    osgText::Text::BackdropType _backdropType;
+    bool                        _shaderTechniqueSet;
+    osgText::ShaderTechnique    _shaderTechnique;
+};
+
+int main(int argc, char** argv)
+{
+    osg::ArgumentParser arguments(&argc, argv);
+
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
 
     viewer.getCamera()->setComputeNearFarMode(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
     viewer.getCamera()->setNearFarRatio(0.00001f);
@@ -142,6 +202,12 @@ int main(int, char**)
     {
         // add fade text around the globe
         csn->addChild(createFadeText(csn->getEllipsoidModel()));
+    }
+
+    if (arguments.argc()>1)
+    {
+        TextSettings textSettings(arguments);
+        root->accept(textSettings);
     }
 
     viewer.setCameraManipulator(new osgGA::TerrainManipulator);

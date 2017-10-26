@@ -53,6 +53,9 @@ public:
     virtual void setFont(const std::string& fontfile);
 
     /** Get the font. Return 0 if default is being used.*/
+    Font* getFont() { return _font.get(); }
+
+    /** Get the const font. Return 0 if default is being used.*/
     const Font* getFont() const { return _font.get(); }
 
 
@@ -283,6 +286,10 @@ public:
 protected:
 
     virtual ~TextBase();
+
+    virtual osg::StateSet* createStateSet();
+
+    virtual void assignStateSet();
 
     void initArraysAndBuffers();
 

@@ -32,81 +32,6 @@
 using namespace osgText;
 using namespace std;
 
-#if (!defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE))
-    #define GLSL_VERSION_STR "330 core"
-    #define GLYPH_CMP "r"
-#else
-    #define GLSL_VERSION_STR "300 es"
-    #define GLYPH_CMP "a"
-#endif
-
-static const char* gl3_TextVertexShader = {
-    "#version " GLSL_VERSION_STR "\n"
-    "// gl3_TextVertexShader\n"
-    "#ifdef GL_ES\n"
-    "    precision highp float;\n"
-    "#endif\n"
-    "in vec4 osg_Vertex;\n"
-    "in vec4 osg_Color;\n"
-    "in vec4 osg_MultiTexCoord0;\n"
-    "uniform mat4 osg_ModelViewProjectionMatrix;\n"
-    "out vec2 texCoord;\n"
-    "out vec4 vertexColor;\n"
-    "void main(void)\n"
-    "{\n"
-    "    gl_Position = osg_ModelViewProjectionMatrix * osg_Vertex;\n"
-    "    texCoord = osg_MultiTexCoord0.xy;\n"
-    "    vertexColor = osg_Color; \n"
-    "}\n"
-};
-
-static const char* gl3_TextFragmentShader = {
-    "#version " GLSL_VERSION_STR "\n"
-    "// gl3_TextFragmentShader\n"
-    "#ifdef GL_ES\n"
-    "    precision highp float;\n"
-    "#endif\n"
-    "uniform sampler2D glyphTexture;\n"
-    "in vec2 texCoord;\n"
-    "in vec4 vertexColor;\n"
-    "out vec4 color;\n"
-    "void main(void)\n"
-    "{\n"
-    "    if (texCoord.x>=0.0) color = vertexColor * vec4(1.0, 1.0, 1.0, texture(glyphTexture, texCoord)." GLYPH_CMP ");\n"
-    "    else color = vertexColor;\n"
-    "}\n"
-};
-
-static const char* gl2_TextVertexShader = {
-    "// gl2_TextVertexShader\n"
-    "#ifdef GL_ES\n"
-    "    precision highp float;\n"
-    "#endif\n"
-    "varying vec2 texCoord;\n"
-    "varying vec4 vertexColor;\n"
-    "void main(void)\n"
-    "{\n"
-    "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
-    "    texCoord = gl_MultiTexCoord0.xy;\n"
-    "    vertexColor = gl_Color; \n"
-    "}\n"
-};
-
-static const char* gl2_TextFragmentShader = {
-    "// gl2_TextFragmentShader\n"
-    "#ifdef GL_ES\n"
-    "    precision highp float;\n"
-    "#endif\n"
-    "uniform sampler2D glyphTexture;\n"
-    "varying vec2 texCoord;\n"
-    "varying vec4 vertexColor;\n"
-    "void main(void)\n"
-    "{\n"
-    "    if (texCoord.x>=0.0) gl_FragColor = vertexColor * vec4(1.0, 1.0, 1.0, texture2D(glyphTexture, texCoord).a);\n"
-    "    else gl_FragColor = vertexColor;\n"
-    "}\n"
-};
-
 osg::ref_ptr<Font>& Font::getDefaultFont()
 {
     static OpenThreads::Mutex s_DefaultFontMutex;
@@ -299,67 +224,24 @@ osg::ref_ptr<Font> osgText::readRefFontStream(std::istream& stream, const osgDB:
 
 Font::Font(FontImplementation* implementation):
     osg::Object(true),
-    _margin(1),
-    _marginRatio(0.02),
     _textureWidthHint(1024),
     _textureHeightHint(1024),
     _minFilterHint(osg::Texture::LINEAR_MIPMAP_LINEAR),
     _magFilterHint(osg::Texture::LINEAR),
+    _maxAnisotropy(16),
     _depth(1),
     _numCurveSamples(10)
 {
     setImplementation(implementation);
 
-    _texenv = new osg::TexEnv;
-    _stateset = new osg::StateSet;
-
-    _stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-    _stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-    _stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
-
-#if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
-
-    OSG_INFO<<"Font::Font() Fixed function pipeline"<<std::endl;
-
-    _stateset->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::ON);
-#endif
-
-    osg::DisplaySettings::ShaderHint shaderHint = osg::DisplaySettings::instance()->getShaderHint();
-    if (shaderHint==osg::DisplaySettings::SHADER_GL3 || shaderHint==osg::DisplaySettings::SHADER_GLES3)
-    {
-
-        OSG_INFO<<"Font::Font() Setting up GL3 compatible shaders"<<std::endl;
-
-        osg::ref_ptr<osg::Program> program = new osg::Program;
-        program->addShader(new osg::Shader(osg::Shader::VERTEX, gl3_TextVertexShader));
-        program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl3_TextFragmentShader));
-        _stateset->setAttributeAndModes(program.get());
-        _stateset->addUniform(new osg::Uniform("glyphTexture", 0));
-
-    }
-    else if (shaderHint==osg::DisplaySettings::SHADER_GL2 || shaderHint==osg::DisplaySettings::SHADER_GLES2)
-    {
-
-
-        OSG_INFO<<"Font::Font() Setting up GL2 compatible shaders"<<std::endl;
-
-        osg::ref_ptr<osg::Program> program = new osg::Program;
-        program->addShader(new osg::Shader(osg::Shader::VERTEX, gl2_TextVertexShader));
-        program->addShader(new osg::Shader(osg::Shader::FRAGMENT, gl2_TextFragmentShader));
-        _stateset->setAttributeAndModes(program.get());
-        _stateset->addUniform(new osg::Uniform("glyphTexture", 0));
-
-    }
-
     char *ptr;
-    if( (ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)
+    if ((ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)
     {
         unsigned int osg_max_size = atoi(ptr);
 
         if (osg_max_size<_textureWidthHint) _textureWidthHint = osg_max_size;
         if (osg_max_size<_textureHeightHint) _textureHeightHint = osg_max_size;
     }
-
 }
 
 Font::~Font()
@@ -388,26 +270,6 @@ std::string Font::getFileName() const
 {
     if (_implementation.valid()) return _implementation->getFileName();
     return std::string();
-}
-
-void Font::setGlyphImageMargin(unsigned int margin)
-{
-    _margin = margin;
-}
-
-unsigned int Font::getGlyphImageMargin() const
-{
-    return _margin;
-}
-
-void Font::setGlyphImageMarginRatio(float ratio)
-{
-    _marginRatio = ratio;
-}
-
-float Font::getGlyphImageMarginRatio() const
-{
-    return _marginRatio;
 }
 
 void Font::setTextureSizeHint(unsigned int width,unsigned int height)
@@ -518,9 +380,6 @@ void Font::setThreadSafeRefUnref(bool threadSafe)
 {
    osg::Object::setThreadSafeRefUnref(threadSafe);
 
-    if (_texenv.valid()) _texenv->setThreadSafeRefUnref(threadSafe);
-    if (_stateset.valid()) _stateset->setThreadSafeRefUnref(threadSafe);
-
     for(GlyphTextureList::const_iterator itr=_glyphTextureList.begin();
         itr!=_glyphTextureList.end();
         ++itr)
@@ -531,7 +390,12 @@ void Font::setThreadSafeRefUnref(bool threadSafe)
 
 void Font::resizeGLObjectBuffers(unsigned int maxSize)
 {
-    if (_stateset.valid()) _stateset->resizeGLObjectBuffers(maxSize);
+    for(StateSets::iterator itr = _statesets.begin();
+        itr != _statesets.end();
+        ++itr)
+    {
+        (*itr)->resizeGLObjectBuffers(maxSize);
+    }
 
     for(GlyphTextureList::const_iterator itr=_glyphTextureList.begin();
         itr!=_glyphTextureList.end();
@@ -543,7 +407,12 @@ void Font::resizeGLObjectBuffers(unsigned int maxSize)
 
 void Font::releaseGLObjects(osg::State* state) const
 {
-    if (_stateset.valid()) _stateset->releaseGLObjects(state);
+    for(StateSets::const_iterator itr = _statesets.begin();
+        itr != _statesets.end();
+        ++itr)
+    {
+        (*itr)->releaseGLObjects(state);
+    }
 
     for(GlyphTextureList::const_iterator itr=_glyphTextureList.begin();
         itr!=_glyphTextureList.end();
@@ -576,6 +445,10 @@ void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph*
 
     _sizeGlyphMap[fontRes][charcode]=glyph;
 
+}
+
+void Font::assignGlyphToGlyphTexture(Glyph* glyph, ShaderTechnique shaderTechnique)
+{
     int posX=0,posY=0;
 
     GlyphTexture* glyphTexture = 0;
@@ -583,12 +456,12 @@ void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph*
         itr!=_glyphTextureList.end() && !glyphTexture;
         ++itr)
     {
-        if ((*itr)->getSpaceForGlyph(glyph,posX,posY)) glyphTexture = itr->get();
+        if ((*itr)->getShaderTechnique()==shaderTechnique && (*itr)->getSpaceForGlyph(glyph,posX,posY)) glyphTexture = itr->get();
     }
 
     if (glyphTexture)
     {
-        //cout << "    found space for texture "<<glyphTexture<<" posX="<<posX<<" posY="<<posY<<endl;
+        //cout << "    Font::assignGlyphToGlyphTexture() found space for texture "<<glyphTexture<<" posX="<<posX<<" posY="<<posY<<endl;
     }
 
     if (!glyphTexture)
@@ -602,12 +475,11 @@ void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph*
         OSG_INFO<< "   Font " << this<< ", numberOfTexturesAllocated "<<numberOfTexturesAllocated<<std::endl;
 
         // reserve enough space for the glyphs.
-        glyphTexture->setGlyphImageMargin(_margin);
-        glyphTexture->setGlyphImageMarginRatio(_marginRatio);
+        glyphTexture->setShaderTechnique(shaderTechnique);
         glyphTexture->setTextureSize(_textureWidthHint,_textureHeightHint);
         glyphTexture->setFilter(osg::Texture::MIN_FILTER,_minFilterHint);
         glyphTexture->setFilter(osg::Texture::MAG_FILTER,_magFilterHint);
-        glyphTexture->setMaxAnisotropy(8);
+        glyphTexture->setMaxAnisotropy(_maxAnisotropy);
 
         _glyphTextureList.push_back(glyphTexture);
 
@@ -621,5 +493,4 @@ void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph*
 
     // add the glyph into the texture.
     glyphTexture->addGlyph(glyph,posX,posY);
-
 }

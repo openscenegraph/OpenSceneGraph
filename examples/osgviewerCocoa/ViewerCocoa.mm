@@ -432,7 +432,6 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
 
     default_text->setAlignment(osgText::Text::CENTER_CENTER);
     default_text->setBackdropType(osgText::Text::OUTLINE);
-//    default_text->setBackdropImplementation(osgText::Text::POLYGON_OFFSET);
     default_text->setColor(osg::Vec4(1.0, 1.0, 0.0, 1.0));
     default_text->setBackdropColor(osg::Vec4(0.0, 0.0, 0.0, 1.0));
     default_text->setAxisAlignment(osgText::Text::XZ_PLANE);

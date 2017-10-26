@@ -30,15 +30,6 @@
 
 #include <OpenThreads/Mutex>
 
-// GL_ALPHA is deprecated in GL3/GL4 core profile, use GL_RED and a shader in this case. See osgText example.
-#if defined(OSG_GL3_AVAILABLE) && !defined(OSG_GL2_AVAILABLE) && !defined(OSG_GL1_AVAILABLE)
-#define OSGTEXT_GLYPH_FORMAT GL_RED
-#define OSGTEXT_GLYPH_INTERNALFORMAT GL_R8
-#else
-#define OSGTEXT_GLYPH_FORMAT GL_ALPHA
-#define OSGTEXT_GLYPH_INTERNALFORMAT GL_ALPHA
-#endif
-
 namespace osgText {
 
 class Font;
@@ -46,6 +37,14 @@ class Text;
 class Glyph3D;
 class GlyphGeometry;
 class GlyphTexture;
+
+enum ShaderTechnique
+{
+    NO_TEXT_SHADER = 0x0,
+    GREYSCALE = 0x1,
+    SIGNED_DISTANCE_FIELD = 0x2,
+    ALL_FEATURES = GREYSCALE | SIGNED_DISTANCE_FIELD
+};
 
 class OSGTEXT_EXPORT Glyph : public osg::Image
 {
@@ -57,6 +56,9 @@ public:
     const Font* getFont() const { return _font; }
 
     unsigned int getGlyphCode() const { return _glyphCode; }
+
+    void setFontResolution(const FontResolution& fontRes) { _fontResolution = fontRes; }
+    const FontResolution& getFontResolution() const { return _fontResolution; }
 
     void setWidth(float width) { _width = width; }
     float getWidth() const { return _width; }
@@ -76,21 +78,33 @@ public:
     void setVerticalAdvance(float advance);
     float getVerticalAdvance() const;
 
-    void setTexture(GlyphTexture* texture);
-    GlyphTexture* getTexture();
-    const GlyphTexture* getTexture() const;
+    struct TextureInfo : public osg::Referenced
+    {
+        TextureInfo():
+            texture(0),
+            texelMargin(0.0f) {}
 
-    void setTexturePosition(int posX,int posY);
-    int getTexturePositionX() const;
-    int getTexturePositionY() const;
+        TextureInfo(GlyphTexture* tex, int x, int y, const osg::Vec2& mintc, const osg::Vec2& maxtc, float margin):
+            texture(tex),
+            texturePositionX(x),
+            texturePositionY(y),
+            minTexCoord(mintc),
+            maxTexCoord(maxtc),
+            texelMargin(margin) {}
 
-    void setMinTexCoord(const osg::Vec2& coord);
-    const osg::Vec2& getMinTexCoord() const;
+        GlyphTexture*   texture;
+        int             texturePositionX;
+        int             texturePositionY;
+        osg::Vec2       minTexCoord;
+        osg::Vec2       maxTexCoord;
+        float           texelMargin;
+    };
 
-    void setMaxTexCoord(const osg::Vec2& coord);
-    const osg::Vec2& getMaxTexCoord() const;
+    void setTextureInfo(ShaderTechnique technique, TextureInfo* info);
 
-    void subload() const;
+    const TextureInfo* getTextureInfo(ShaderTechnique technique) const;
+
+    TextureInfo* getOrCreateTextureInfo(ShaderTechnique technique);
 
 protected:
 
@@ -98,6 +112,8 @@ protected:
 
     Font*                       _font;
     unsigned int                _glyphCode;
+
+    FontResolution              _fontResolution;
 
     float                       _width;
     float                       _height;
@@ -108,15 +124,8 @@ protected:
     osg::Vec2                   _verticalBearing;
     float                       _verticalAdvance;
 
-    GlyphTexture*               _texture;
-    int                         _texturePosX;
-    int                         _texturePosY;
-    osg::Vec2                   _minTexCoord;
-    osg::Vec2                   _maxTexCoord;
-
-    typedef osg::buffered_value<GLuint> GLObjectList;
-    mutable GLObjectList _globjList;
-
+    typedef std::vector< osg::ref_ptr<TextureInfo> > TextureInfoList;
+    TextureInfoList             _textureInfoList;
 };
 
 class OSGTEXT_EXPORT GlyphGeometry : public osg::Referenced
@@ -253,12 +262,13 @@ public:
     /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
     virtual int compare(const osg::StateAttribute& rhs) const;
 
-    /** Set the margin around each glyph, to ensure that texture filtering doesn't bleed adjacent glyph's into each other.*/
-    void setGlyphImageMargin(unsigned int margin) { _margin = margin; }
-    unsigned int getGlyphImageMargin() const { return _margin; }
+    void setShaderTechnique(ShaderTechnique technique) { _shaderTechnique = technique; }
 
-    void setGlyphImageMarginRatio(float margin) { _marginRatio = margin; }
-    float getGlyphImageMarginRatio() const { return _marginRatio; }
+    ShaderTechnique getShaderTechnique() const { return _shaderTechnique; }
+
+
+    int getEffectMargin(const Glyph* glyph);
+    int getTexelMargin(const Glyph* glyph);
 
     bool getSpaceForGlyph(Glyph* glyph, int& posX, int& posY);
 
@@ -277,14 +287,13 @@ protected:
 
     virtual ~GlyphTexture();
 
+    void copyGlyphImage(Glyph* glyph, Glyph::TextureInfo* info);
 
-    // parameter used to compute the size and position of empty space
-    // in the texture which could accommodate new glyphs.
-    int _margin;
-    float _marginRatio;
-    int _usedY;
-    int _partUsedX;
-    int _partUsedY;
+    ShaderTechnique _shaderTechnique;
+
+    int             _usedY;
+    int             _partUsedX;
+    int             _partUsedY;
 
     typedef std::vector< osg::ref_ptr<Glyph> > GlyphRefList;
     typedef std::vector< const Glyph* > GlyphPtrList;

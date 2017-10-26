@@ -153,6 +153,23 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
     }
 }
 
+void GLObjectsVisitor::compile(osg::Node& node)
+{
+    if (_renderInfo.getState())
+    {
+        node.accept(*this);
+
+        if (_lastCompiledProgram.valid())
+        {
+            osg::State* state = _renderInfo.getState();
+            osg::GLExtensions* extensions = state->get<osg::GLExtensions>();
+            extensions->glUseProgram(0);
+            _renderInfo.getState()->setLastAppliedProgramObject(0);
+        }
+    }
+}
+
+
 /////////////////////////////////////////////////////////////////
 //
 // GLObjectsOperation

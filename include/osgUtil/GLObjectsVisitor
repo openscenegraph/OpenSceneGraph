@@ -97,6 +97,9 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
         void apply(osg::Drawable& drawable);
         void apply(osg::StateSet& stateset);
 
+        /** Do a compile traversal and then reset any state,*/
+        void compile(osg::Node& node);
+
     protected:
 
         typedef std::set<osg::Drawable*> DrawableAppliedSet;

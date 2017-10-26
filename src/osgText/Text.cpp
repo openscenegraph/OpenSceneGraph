@@ -90,6 +90,8 @@ void Text::setShaderTechnique(ShaderTechnique technique)
     _shaderTechnique = technique;
 
     assignStateSet();
+
+    computeGlyphRepresentation();
 }
 
 osg::StateSet* Text::createStateSet()

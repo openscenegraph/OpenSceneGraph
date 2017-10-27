@@ -34,6 +34,8 @@ public:
                 modifiedCount(0xffffffff),
                 active(false) {}
 
+            virtual const char* className() const = 0; // { return "ArrayDispatch"; }
+
             virtual void enable_and_dispatch(osg::State& /*state*/, const osg::Array* /*new_array*/) {} // = 0;
 
             virtual void enable_and_dispatch(osg::State& /*state*/, const osg::Array* /*new_array*/, const osg::GLBufferObject* /*vbo*/) {} // = 0;

@@ -1216,13 +1216,69 @@ namespace State_Utils
             source.insert(declPos, qualifier + declarationPrefix + newStr + std::string(";\n"));
         }
     }
+
+    void replaceVar(const osg::State& state, std::string& str, std::string::size_type start_pos,  std::string::size_type num_chars)
+    {
+        std::string var_str(str.substr(start_pos+1, num_chars-1));
+        std::string value;
+        if (state.getActiveDisplaySettings()->getValue(var_str, value))
+        {
+            str.replace(start_pos, num_chars, value);
+        }
+        else
+        {
+            str.erase(start_pos, num_chars);
+        }
+    }
+
+
+    void substitudeEnvVars(const osg::State& state, std::string& str)
+    {
+        std::string::size_type pos = 0;
+        while (pos<str.size() && ((pos=str.find_first_of("$'\"", pos)) != std::string::npos))
+        {
+            if (pos==str.size())
+            {
+                break;
+            }
+
+            if (str[pos]=='"' || str[pos]=='\'')
+            {
+                std::string::size_type start_quote = pos;
+                ++pos;
+                pos = str.find(str[start_quote], pos);
+            }
+            else
+            {
+                std::string::size_type start_var = pos;
+                ++pos;
+                pos = str.find_first_not_of("ABCDEFGHIJKLMNOPQRTSUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_", pos);
+                std::string var_str;
+                if (pos != std::string::npos)
+                {
+
+                    replaceVar(state, str, start_var, pos-start_var);
+                    pos = start_var;
+                }
+                else
+                {
+                    replaceVar(state, str, start_var, str.size()-start_var);
+                    pos = start_var;
+                }
+            }
+        }
+    }
 }
 
 bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
 {
-    OSG_INFO<<"State::convertShaderSourceToOsgBuiltIns()"<<std::endl;
+    OSG_DEBUG<<"State::convertShaderSourceToOsgBuiltIns()"<<std::endl;
 
-    OSG_INFO<<"++Before Converted source "<<std::endl<<source<<std::endl<<"++++++++"<<std::endl;
+    OSG_DEBUG<<"++Before Converted source "<<std::endl<<source<<std::endl<<"++++++++"<<std::endl;
+
+
+    State_Utils::substitudeEnvVars(*this, source);
+
 
     std::string attributeQualifier("attribute ");
 
@@ -1279,7 +1335,7 @@ bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
         }
     }
 
-    OSG_INFO<<"-------- Converted source "<<std::endl<<source<<std::endl<<"----------------"<<std::endl;
+    OSG_DEBUG<<"-------- Converted source "<<std::endl<<source<<std::endl<<"----------------"<<std::endl;
 
     return true;
 }

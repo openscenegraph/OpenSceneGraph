@@ -299,13 +299,17 @@ struct IntersectFunctor
             return;
         }
 
-        Vec3 in = v0*r0 + v1*r1 + v2*r2;
+        // Remap ratio into the range of LineSegment
+        const osg::Vec3d& lsStart = _settings->_lineSegIntersector->getStart();
+        const osg::Vec3d& lsEnd = _settings->_lineSegIntersector->getEnd();
+        double remap_ratio =  ((_start - lsStart).length() + r*_length)/(lsEnd - lsStart).length();
+
+        Vec3 in = lsStart*(1.0 - remap_ratio) + lsEnd*remap_ratio; // == v0*r0 + v1*r1 + v2*r2;
         Vec3 normal = E1^E2;
         normal.normalize();
 
-
         LineSegmentIntersector::Intersection hit;
-        hit.ratio = r;
+        hit.ratio = remap_ratio;
         hit.matrix = _settings->_iv->getModelMatrix();
         hit.nodePath = _settings->_iv->getNodePath();
         hit.drawable = _settings->_drawable;
@@ -500,7 +504,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
     if (reachedLimit()) return;
 
     osg::Vec3d s(_start), e(_end);
-    if ( !intersectAndClip( s, e, drawable->getBoundingBox() ) ) return;
+    if ( drawable->isCullingActive() && !intersectAndClip( s, e, drawable->getBoundingBox() ) ) return;
 
     if (iv.getDoDummyTraversal()) return;
 

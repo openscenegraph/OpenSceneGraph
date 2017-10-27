@@ -1,6 +1,6 @@
 OpenSceneGraph Library 3.5.7
 
-566 Contributors:
+568 Contributors:
 
 Firstname Surname
 -----------------
@@ -175,6 +175,7 @@ John Ivar
 Gustav Haapalahti
 Erik den Dekker
 Emmanuel Roche
+Don Burns
 Domenico Mangieri
 Daniel Larimer
 Colin Dunlop
@@ -226,7 +227,6 @@ Fabio Mierlo
 Doug McCorkle
 Donald Cipperly
 Don Leich
-Don Burns
 Dietmar Funck
 Colin Cochran
 Christian Ruzicka
@@ -362,6 +362,7 @@ Shuxing Xiao
 Shane Arnott
 Sergey Kurdakov
 Sebastien Kuntz
+Sandro Mani
 Ruth Lang
 Ruben The
 Ruben Smelik
@@ -538,6 +539,7 @@ Christian Noon
 Christian Kaser
 Christian Ehrlicher
 Chris McGlone
+Chris Djali
 Carlos Garcea
 Bryce Eldridge
 Bruno Herbelin

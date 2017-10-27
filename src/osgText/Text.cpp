@@ -25,13 +25,19 @@
 
 #include <osgDB/ReadFile>
 
+#include <sstream>
+#include <iomanip>
+
+#define DEBUG_MESSAGE_LEVEL osg::INFO
+#define DEBUG_MESSAGE osg::notify(DEBUG_MESSAGE_LEVEL)
+
 using namespace osg;
 using namespace osgText;
 
 Text::Text():
+    _shaderTechnique(GREYSCALE),
     _enableDepthWrites(true),
     _backdropType(NONE),
-    _backdropImplementation(DELAYED_DEPTH_WRITES),
     _backdropHorizontalOffset(0.07f),
     _backdropVerticalOffset(0.07f),
     _backdropColor(0.0f, 0.0f, 0.0f, 1.0f),
@@ -42,13 +48,24 @@ Text::Text():
     _colorGradientTopRight(1.0f, 1.0f, 1.0f, 1.0f)
 {
     _supportsVertexBufferObjects = true;
+
+    const std::string& str = osg::DisplaySettings::instance()->getTextShaderTechnique();
+    if (!str.empty())
+    {
+        if (str=="ALL_FEATURES" || str=="ALL") _shaderTechnique = ALL_FEATURES;
+        else if (str=="GREYSCALE") _shaderTechnique = GREYSCALE;
+        else if (str=="SIGNED_DISTANCE_FIELD" || str=="SDF") _shaderTechnique = SIGNED_DISTANCE_FIELD;
+        else if (str=="NO_TEXT_SHADER" || str=="NONE") _shaderTechnique = NO_TEXT_SHADER;
+    }
+
+    assignStateSet();
 }
 
 Text::Text(const Text& text,const osg::CopyOp& copyop):
     osgText::TextBase(text,copyop),
+    _shaderTechnique(text._shaderTechnique),
     _enableDepthWrites(text._enableDepthWrites),
     _backdropType(text._backdropType),
-    _backdropImplementation(text._backdropImplementation),
     _backdropHorizontalOffset(text._backdropHorizontalOffset),
     _backdropVerticalOffset(text._backdropVerticalOffset),
     _backdropColor(text._backdropColor),
@@ -65,21 +82,170 @@ Text::~Text()
 {
 }
 
-void Text::setFont(osg::ref_ptr<Font> font)
+
+void Text::setShaderTechnique(ShaderTechnique technique)
 {
-    if (_font==font) return;
+    if (_shaderTechnique==technique) return;
 
-    osg::StateSet* previousFontStateSet = _font.valid() ? _font->getStateSet() : Font::getDefaultFont()->getStateSet();
-    osg::StateSet* newFontStateSet = font.valid() ? font->getStateSet() : Font::getDefaultFont()->getStateSet();
+    _shaderTechnique = technique;
 
-    if (getStateSet() == previousFontStateSet)
-    {
-        setStateSet( newFontStateSet );
-    }
+    assignStateSet();
 
-    TextBase::setFont(font);
+    computeGlyphRepresentation();
 }
 
+osg::StateSet* Text::createStateSet()
+{
+    Font* activeFont = getActiveFont();
+    if (!activeFont) return 0;
+
+    Font::StateSets& statesets = activeFont->getCachedStateSets();
+
+    std::stringstream ss;
+    ss<<std::fixed<<std::setprecision(3);
+
+    osg::StateSet::DefineList defineList;
+    if (_backdropType!=NONE)
+    {
+        ss.str("");
+        ss << "vec4("<<_backdropColor.r()<<", "<<_backdropColor.g()<<", "<<_backdropColor.b()<<", "<<_backdropColor.a()<<")";
+
+        defineList["BACKDROP_COLOR"] = osg::StateSet::DefinePair(ss.str(), osg::StateAttribute::ON);
+
+
+        if (_backdropType==OUTLINE)
+        {
+            ss.str("");
+            ss <<_backdropHorizontalOffset;
+            defineList["OUTLINE"] = osg::StateSet::DefinePair(ss.str(), osg::StateAttribute::ON);
+        }
+        else
+        {
+            osg::Vec2 offset(_backdropHorizontalOffset, _backdropVerticalOffset);
+            switch(_backdropType)
+            {
+                case(DROP_SHADOW_BOTTOM_RIGHT) :    offset.set(_backdropHorizontalOffset, -_backdropVerticalOffset); break;
+                case(DROP_SHADOW_CENTER_RIGHT) :    offset.set(_backdropHorizontalOffset, 0.0f); break;
+                case(DROP_SHADOW_TOP_RIGHT) :       offset.set(_backdropHorizontalOffset, _backdropVerticalOffset); break;
+                case(DROP_SHADOW_BOTTOM_CENTER) :   offset.set(0.0f, -_backdropVerticalOffset); break;
+                case(DROP_SHADOW_TOP_CENTER) :      offset.set(0.0f, _backdropVerticalOffset); break;
+                case(DROP_SHADOW_BOTTOM_LEFT) :     offset.set(-_backdropHorizontalOffset, -_backdropVerticalOffset); break;
+                case(DROP_SHADOW_CENTER_LEFT) :     offset.set(-_backdropHorizontalOffset, 0.0f); break;
+                case(DROP_SHADOW_TOP_LEFT) :        offset.set(-_backdropHorizontalOffset, _backdropVerticalOffset); break;
+                default : break;
+            }
+
+            ss.str("");
+            ss << "vec2("<<offset.x()<<", "<<offset.y()<<")";
+
+            defineList["SHADOW"] = osg::StateSet::DefinePair(ss.str(), osg::StateAttribute::ON);
+        }
+    }
+
+    {
+        ss<<std::fixed<<std::setprecision(1);
+
+        ss.str("");
+        ss << float(_fontSize.second);
+
+        defineList["GLYPH_DIMENSION"] = osg::StateSet::DefinePair(ss.str(), osg::StateAttribute::ON);
+
+        ss.str("");
+        ss << float(activeFont->getTextureWidthHint());
+        defineList["TEXTURE_DIMENSION"] = osg::StateSet::DefinePair(ss.str(), osg::StateAttribute::ON);
+    }
+
+    if (_shaderTechnique>GREYSCALE)
+    {
+        defineList["SIGNED_DISTNACE_FIELD"] = osg::StateSet::DefinePair("1", osg::StateAttribute::ON);
+    }
+
+#if 0
+    OSG_NOTICE<<"Text::createStateSet() defines:"<<defineList.size()<<std::endl;
+    for(osg::StateSet::DefineList::iterator itr = defineList.begin();
+        itr != defineList.end();
+        ++itr)
+    {
+        OSG_NOTICE<<"   define["<<itr->first<<"] = "<<itr->second.first<<std::endl;
+    }
+#endif
+
+    if (!statesets.empty())
+    {
+        for(Font::StateSets::iterator itr = statesets.begin();
+            itr != statesets.end();
+            ++itr)
+        {
+            if ((*itr)->getDefineList()==defineList)
+            {
+                // OSG_NOTICE<<"Text::createStateSet() : Matched DefineList, return StateSet "<<itr->get()<<std::endl;
+                return itr->get();
+            }
+            else
+            {
+            }
+        }
+    }
+
+
+    if (osg::isNotifyEnabled(DEBUG_MESSAGE_LEVEL))
+    {
+        DEBUG_MESSAGE<<"Text::createStateSet() ShaderTechnique ";
+        switch(_shaderTechnique)
+        {
+            case(NO_TEXT_SHADER) : DEBUG_MESSAGE<<"NO_TEXT_SHADER"<<std::endl; break;
+            case(GREYSCALE) : DEBUG_MESSAGE<<"GREYSCALE"<<std::endl; break;
+            case(SIGNED_DISTANCE_FIELD) : DEBUG_MESSAGE<<"SIGNED_DISTANCE_FIELD"<<std::endl; break;
+            case(ALL_FEATURES) : DEBUG_MESSAGE<<"ALL_FEATURES"<<std::endl; break;
+        }
+    }
+
+    DEBUG_MESSAGE<<"Text::createStateSet() : Not Matched DefineList, creating new StateSet"<<std::endl;
+
+    osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
+
+    stateset->setDefineList(defineList);
+
+    statesets.push_back(stateset.get());
+
+    stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+    stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+
+
+    #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
+    osg::DisplaySettings::ShaderHint shaderHint = osg::DisplaySettings::instance()->getShaderHint();
+    if (_shaderTechnique==NO_TEXT_SHADER && shaderHint==osg::DisplaySettings::SHADER_NONE)
+    {
+        DEBUG_MESSAGE<<"Font::Font() Fixed function pipeline"<<std::endl;
+
+        stateset->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::ON);
+        return stateset.release();
+    }
+    #endif
+
+    // set up the StateSet to use shaders
+    stateset->addUniform(new osg::Uniform("glyphTexture", 0));
+
+    osg::ref_ptr<osg::Program> program = new osg::Program;
+    stateset->setAttributeAndModes(program.get());
+
+    {
+        DEBUG_MESSAGE<<"Using shaders/text.vert"<<std::endl;
+
+        #include "shaders/text_vert.cpp"
+        program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::VERTEX, "shaders/text.vert", text_vert));
+    }
+
+    {
+        DEBUG_MESSAGE<<"Using shaders/text.frag"<<std::endl;
+
+        #include "shaders/text_frag.cpp"
+        program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/text.frag", text_frag));
+    }
+
+    return stateset.release();
+}
 
 Font* Text::getActiveFont()
 {
@@ -225,22 +391,20 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
 void Text::addGlyphQuad(Glyph* glyph, const osg::Vec2& minc, const osg::Vec2& maxc, const osg::Vec2& mintc, const osg::Vec2& maxtc)
 {
     // set up the coords of the quad
-    GlyphQuads& glyphquad = _textureGlyphQuadMap[glyph->getTexture()];
+    const Glyph::TextureInfo* info = glyph->getOrCreateTextureInfo(_shaderTechnique);
+    GlyphTexture* glyphTexture = info ? info->texture : 0;
+    GlyphQuads& glyphquad = _textureGlyphQuadMap[glyphTexture];
 
     glyphquad._glyphs.push_back(glyph);
 
-    osg::DrawElements* primitives = 0;
-    if (glyphquad._primitives.empty())
+    osg::DrawElements* primitives = glyphquad._primitives.get();
+    if (!primitives)
     {
         unsigned int maxIndices = _text.size()*4;
         if (maxIndices>=16384) primitives = new osg::DrawElementsUInt(GL_TRIANGLES);
         else primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
         primitives->setBufferObject(_ebo.get());
-        glyphquad._primitives.push_back(primitives);
-    }
-    else
-    {
-        primitives = glyphquad._primitives[0].get();
+        glyphquad._primitives = primitives;
     }
 
 
@@ -280,25 +444,18 @@ void Text::computeGlyphRepresentation()
     if (!_texcoords) { _texcoords = new osg::Vec2Array(osg::Array::BIND_PER_VERTEX); _texcoords->setBufferObject(_vbo.get()); }
     else _texcoords->clear();
 
-#if 0
-    _textureGlyphQuadMap.clear();
-#else
     for(TextureGlyphQuadMap::iterator itr = _textureGlyphQuadMap.begin();
         itr != _textureGlyphQuadMap.end();
         ++itr)
     {
         GlyphQuads& glyphquads = itr->second;
         glyphquads._glyphs.clear();
-        for(Primitives::iterator pitr = glyphquads._primitives.begin();
-            pitr != glyphquads._primitives.end();
-            ++pitr)
+        if (glyphquads._primitives.valid())
         {
-            (*pitr)->resizeElements(0);
-            (*pitr)->dirty();
+            glyphquads._primitives->resizeElements(0);
+            glyphquads._primitives->dirty();
         }
     }
-#endif
-
 
 
     _lineCount = 0;
@@ -487,45 +644,53 @@ void Text::computeGlyphRepresentation()
                     local.x() += bearing.x() * wr;
                     local.y() += bearing.y() * hr;
 
-
-                    // Adjust coordinates and texture coordinates to avoid
-                    // clipping the edges of antialiased characters.
-                    osg::Vec2 mintc = glyph->getMinTexCoord();
-                    osg::Vec2 maxtc = glyph->getMaxTexCoord();
-                    osg::Vec2 vDiff = maxtc - mintc;
-
-                    float fHorizTCMargin = 1.0f / glyph->getTexture()->getTextureWidth();
-                    float fVertTCMargin = 1.0f / glyph->getTexture()->getTextureHeight();
-                    float fHorizQuadMargin = vDiff.x() == 0.0f ? 0.0f : width * fHorizTCMargin / vDiff.x();
-                    float fVertQuadMargin = vDiff.y() == 0.0f ? 0.0f : height * fVertTCMargin / vDiff.y();
-
-                    mintc.x() -= fHorizTCMargin;
-                    mintc.y() -= fVertTCMargin;
-                    maxtc.x() += fHorizTCMargin;
-                    maxtc.y() += fVertTCMargin;
-                    osg::Vec2 minc = local+osg::Vec2(0.0f-fHorizQuadMargin,0.0f-fVertQuadMargin);
-                    osg::Vec2 maxc = local+osg::Vec2(width+fHorizQuadMargin,height+fVertQuadMargin);
-
-                    addGlyphQuad(glyph, minc, maxc, mintc, maxtc);
-
-                    // move the cursor onto the next character.
-                    // also expand bounding box
-                    switch(_layout)
+                    const Glyph::TextureInfo* info = glyph->getOrCreateTextureInfo(_shaderTechnique);
+                    if (info)
                     {
-                        case LEFT_TO_RIGHT:
-                            cursor.x() += glyph->getHorizontalAdvance() * wr;
-                            _textBB.expandBy(osg::Vec3(minc.x(), minc.y(), 0.0f)); //lower left corner
-                            _textBB.expandBy(osg::Vec3(maxc.x(), maxc.y(), 0.0f)); //upper right corner
-                            break;
-                        case VERTICAL:
-                            cursor.y() -= glyph->getVerticalAdvance() * hr;
-                            _textBB.expandBy(osg::Vec3(minc.x(),maxc.y(),0.0f)); //upper left corner
-                            _textBB.expandBy(osg::Vec3(maxc.x(),minc.y(),0.0f)); //lower right corner
-                            break;
-                        case RIGHT_TO_LEFT:
-                            _textBB.expandBy(osg::Vec3(maxc.x(),minc.y(),0.0f)); //lower right corner
-                            _textBB.expandBy(osg::Vec3(minc.x(),maxc.y(),0.0f)); //upper left corner
-                            break;
+                        // Adjust coordinates and texture coordinates to avoid
+                        // clipping the edges of antialiased characters.
+                        osg::Vec2 mintc = info->minTexCoord;
+                        osg::Vec2 maxtc = info->maxTexCoord;
+                        osg::Vec2 vDiff = maxtc - mintc;
+                        float texelMargin = info->texelMargin;
+
+                        float fHorizTCMargin = texelMargin / info->texture->getTextureWidth();
+                        float fVertTCMargin = texelMargin / info->texture->getTextureHeight();
+                        float fHorizQuadMargin = vDiff.x() == 0.0f ? 0.0f : width * fHorizTCMargin / vDiff.x();
+                        float fVertQuadMargin = vDiff.y() == 0.0f ? 0.0f : height * fVertTCMargin / vDiff.y();
+
+                        mintc.x() -= fHorizTCMargin;
+                        mintc.y() -= fVertTCMargin;
+                        maxtc.x() += fHorizTCMargin;
+                        maxtc.y() += fVertTCMargin;
+                        osg::Vec2 minc = local+osg::Vec2(0.0f-fHorizQuadMargin,0.0f-fVertQuadMargin);
+                        osg::Vec2 maxc = local+osg::Vec2(width+fHorizQuadMargin,height+fVertQuadMargin);
+
+                        addGlyphQuad(glyph, minc, maxc, mintc, maxtc);
+
+                        // move the cursor onto the next character.
+                        // also expand bounding box
+                        switch(_layout)
+                        {
+                            case LEFT_TO_RIGHT:
+                                cursor.x() += glyph->getHorizontalAdvance() * wr;
+                                _textBB.expandBy(osg::Vec3(minc.x(), minc.y(), 0.0f)); //lower left corner
+                                _textBB.expandBy(osg::Vec3(maxc.x(), maxc.y(), 0.0f)); //upper right corner
+                                break;
+                            case VERTICAL:
+                                cursor.y() -= glyph->getVerticalAdvance() * hr;
+                                _textBB.expandBy(osg::Vec3(minc.x(),maxc.y(),0.0f)); //upper left corner
+                                _textBB.expandBy(osg::Vec3(maxc.x(),minc.y(),0.0f)); //lower right corner
+                                break;
+                            case RIGHT_TO_LEFT:
+                                _textBB.expandBy(osg::Vec3(maxc.x(),minc.y(),0.0f)); //lower right corner
+                                _textBB.expandBy(osg::Vec3(minc.x(),maxc.y(),0.0f)); //upper left corner
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        OSG_NOTICE<<"No TextureInfo for "<<charcode<<std::endl;
                     }
 
                     previous_charcode = charcode;
@@ -622,151 +787,8 @@ void Text::computePositionsImplementation()
 {
     TextBase::computePositionsImplementation();
 
-    computeBackdropPositions();
     computeBackdropBoundingBox();
     computeBoundingBoxMargin();
-}
-
-// Presumes the atc matrix is already up-to-date
-void Text::computeBackdropPositions()
-{
-    if(_backdropType == NONE)
-    {
-        return;
-    }
-
-    float avg_width = 0.0f;
-    float avg_height = 0.0f;
-
-    // FIXME: OPTIMIZE: This function produces the same value regardless of contextID.
-    // Since we tend to loop over contextID, we should cache this value some how
-    // instead of recomputing it each time.
-    bool is_valid_size = computeAverageGlyphWidthAndHeight(avg_width, avg_height);
-    if (!is_valid_size) return;
-
-    unsigned int backdrop_index;
-    unsigned int max_backdrop_index;
-    if(_backdropType == OUTLINE)
-    {
-        // For outline, we want to draw the in every direction
-        backdrop_index = 1;
-        max_backdrop_index = backdrop_index+8;
-    }
-    else
-    {
-        // Yes, this may seem a little strange,
-        // but since the code is using references,
-        // I would have to duplicate the following code twice
-        // for each part of the if/else because I can't
-        // declare a reference without setting it immediately
-        // and it wouldn't survive the scope.
-        // So it happens that the _backdropType value matches
-        // the index in the array I want to store the coordinates
-        // in. So I'll just setup the for-loop so it only does
-        // the one direction I'm interested in.
-        backdrop_index = _backdropType+1;
-        max_backdrop_index = backdrop_index+1;
-    }
-
-    for( ; backdrop_index < max_backdrop_index; backdrop_index++)
-    {
-        float horizontal_shift_direction;
-        float vertical_shift_direction;
-        switch(backdrop_index)
-        {
-            case DROP_SHADOW_BOTTOM_RIGHT:
-                {
-                    horizontal_shift_direction = 1.0f;
-                    vertical_shift_direction = -1.0f;
-                    break;
-                }
-            case DROP_SHADOW_CENTER_RIGHT:
-                {
-                    horizontal_shift_direction = 1.0f;
-                    vertical_shift_direction = 0.0f;
-                    break;
-                }
-            case DROP_SHADOW_TOP_RIGHT:
-                {
-                    horizontal_shift_direction = 1.0f;
-                    vertical_shift_direction = 1.0f;
-                    break;
-                }
-            case DROP_SHADOW_BOTTOM_CENTER:
-                {
-                    horizontal_shift_direction = 0.0f;
-                    vertical_shift_direction = -1.0f;
-                    break;
-                }
-            case DROP_SHADOW_TOP_CENTER:
-                {
-                    horizontal_shift_direction = 0.0f;
-                    vertical_shift_direction = 1.0f;
-                    break;
-                }
-            case DROP_SHADOW_BOTTOM_LEFT:
-                {
-                    horizontal_shift_direction = -1.0f;
-                    vertical_shift_direction = -1.0f;
-                    break;
-                }
-            case DROP_SHADOW_CENTER_LEFT:
-                {
-                    horizontal_shift_direction = -1.0f;
-                    vertical_shift_direction = 0.0f;
-                    break;
-                }
-            case DROP_SHADOW_TOP_LEFT:
-                {
-                    horizontal_shift_direction = -1.0f;
-                    vertical_shift_direction = 1.0f;
-                    break;
-                }
-            default: // error
-                {
-                    horizontal_shift_direction = 1.0f;
-                    vertical_shift_direction = -1.0f;
-                }
-        }
-
-        // now apply matrix to the glyphs.
-        for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
-            titr!=_textureGlyphQuadMap.end();
-            ++titr)
-        {
-            GlyphQuads& glyphquad = titr->second;
-
-            osg::DrawElements* src_primitives = glyphquad._primitives[0].get();
-
-            for(unsigned int i=glyphquad._primitives.size(); i<=backdrop_index; ++i)
-            {
-                osg::DrawElementsUShort* dst_primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
-                dst_primitives->setBufferObject(src_primitives->getBufferObject());
-                glyphquad._primitives.push_back(dst_primitives);
-            }
-
-            osg::DrawElements* dst_primitives = glyphquad._primitives[backdrop_index].get();
-            dst_primitives->resizeElements(0);
-
-            unsigned int numCoords = src_primitives->getNumIndices();
-
-            Coords& src_coords = _coords;
-            TexCoords& src_texcoords = _texcoords;
-
-            Coords& dst_coords = _coords;
-            TexCoords& dst_texcoords = _texcoords;
-
-            for(unsigned int i=0;i<numCoords;++i)
-            {
-                unsigned int si = (*src_primitives).getElement(i);
-                osg::Vec3 v(horizontal_shift_direction * _backdropHorizontalOffset * avg_width + (*src_coords)[si].x(), vertical_shift_direction * _backdropVerticalOffset * avg_height + (*src_coords)[si].y(), 0.0f);
-                unsigned int di = dst_coords->size();
-                (*dst_primitives).addElement(di);
-                (*dst_coords).push_back(v);
-                (*dst_texcoords).push_back((*src_texcoords)[si]);
-            }
-        }
-    }
 }
 
 // This method adjusts the bounding box to account for the expanded area caused by the backdrop.
@@ -1095,6 +1117,8 @@ void Text::drawImplementation(osg::RenderInfo& renderInfo) const
 
 void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
+    if (colorMultiplier.a()==0.0f || _color.a()==0.0f) return;
+
     osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
     bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
@@ -1117,7 +1141,6 @@ void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colo
     }
 
     if (_drawMode & TEXT)
-//    if (false)
     {
         for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
             titr!=_textureGlyphQuadMap.end();
@@ -1128,33 +1151,6 @@ void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colo
 
             const GlyphQuads& glyphquad = titr->second;
 
-#if 1
-            if(_backdropType != NONE)
-            {
-                unsigned int backdrop_index;
-                unsigned int max_backdrop_index;
-                if(_backdropType == OUTLINE)
-                {
-                    backdrop_index = 1;
-                    max_backdrop_index = 8;
-                }
-                else
-                {
-                    backdrop_index = _backdropType+1;
-                    max_backdrop_index = backdrop_index+1;
-                }
-
-                if (max_backdrop_index>glyphquad._primitives.size()) max_backdrop_index=glyphquad._primitives.size();
-
-                state.disableColorPointer();
-                state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
-
-                for( ; backdrop_index < max_backdrop_index; backdrop_index++)
-                {
-                    glyphquad._primitives[backdrop_index]->draw(state, usingVertexBufferObjects);
-                }
-            }
-#endif
             if(_colorGradientMode == SOLID)
             {
                 vas->disableColorArray(state);
@@ -1168,7 +1164,7 @@ void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colo
                 }
             }
 
-            glyphquad._primitives[0]->draw(state, usingVertexBufferObjects);
+            glyphquad._primitives->draw(state, usingVertexBufferObjects);
         }
     }
 }
@@ -1216,9 +1212,6 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
         vas->applyDisablingOfVertexAttributes(state);
     }
 
-#if 0
-    drawImplementationSinglePass(state, colorMultiplier);
-#else
     glDepthMask(GL_FALSE);
 
     drawImplementationSinglePass(state, colorMultiplier);
@@ -1235,7 +1228,6 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
     }
 
     state.haveAppliedAttribute(osg::StateAttribute::DEPTH);
-#endif
 
     if (usingVertexBufferObjects && !usingVertexArrayObjects)
     {
@@ -1273,16 +1265,16 @@ void Text::accept(osg::PrimitiveFunctor& pf) const
         ++titr)
     {
         const GlyphQuads& glyphquad = titr->second;
-        if (!glyphquad._primitives.empty())
+        if (glyphquad._primitives.valid())
         {
-            const osg::DrawElementsUShort* drawElementsUShort = dynamic_cast<const osg::DrawElementsUShort*>(glyphquad._primitives[0].get());
+            const osg::DrawElementsUShort* drawElementsUShort = dynamic_cast<const osg::DrawElementsUShort*>(glyphquad._primitives.get());
             if (drawElementsUShort)
             {
                 pf.drawElements(GL_TRIANGLES, drawElementsUShort->size(), &(drawElementsUShort->front()));
             }
             else
             {
-                const osg::DrawElementsUInt* drawElementsUInt = dynamic_cast<const osg::DrawElementsUInt*>(glyphquad._primitives[0].get());
+                const osg::DrawElementsUInt* drawElementsUInt = dynamic_cast<const osg::DrawElementsUInt*>(glyphquad._primitives.get());
                 if (drawElementsUInt)
                 {
                     pf.drawElements(GL_TRIANGLES, drawElementsUInt->size(), &(drawElementsUInt->front()));
@@ -1322,22 +1314,19 @@ void Text::setBackdropType(BackdropType type)
     if (_backdropType==type) return;
 
     _backdropType = type;
+
+    assignStateSet();
+
     computeGlyphRepresentation();
 }
-
-void Text::setBackdropImplementation(BackdropImplementation implementation)
-{
-    if (_backdropImplementation==implementation) return;
-
-    _backdropImplementation = implementation;
-    computeGlyphRepresentation();
-}
-
 
 void Text::setBackdropOffset(float offset)
 {
     _backdropHorizontalOffset = offset;
     _backdropVerticalOffset = offset;
+
+    assignStateSet();
+
     computeGlyphRepresentation();
 }
 
@@ -1345,12 +1334,17 @@ void Text::setBackdropOffset(float horizontal, float vertical)
 {
     _backdropHorizontalOffset = horizontal;
     _backdropVerticalOffset = vertical;
+
+    assignStateSet();
+
     computeGlyphRepresentation();
 }
 
 void Text::setBackdropColor(const osg::Vec4& color)
 {
     _backdropColor = color;
+
+    assignStateSet();
 }
 
 void Text::setColorGradientMode(ColorGradientMode mode)
@@ -1391,20 +1385,10 @@ Text::GlyphQuads::GlyphQuads(const GlyphQuads&)
 
 void Text::GlyphQuads::resizeGLObjectBuffers(unsigned int maxSize)
 {
-    for(Primitives::iterator itr = _primitives.begin();
-        itr != _primitives.end();
-        ++itr)
-    {
-        (*itr)->resizeGLObjectBuffers(maxSize);
-    }
+    if (_primitives.valid()) _primitives->resizeGLObjectBuffers(maxSize);
 }
 
 void Text::GlyphQuads::releaseGLObjects(osg::State* state) const
 {
-    for(Primitives::const_iterator itr = _primitives.begin();
-        itr != _primitives.end();
-        ++itr)
-    {
-        (*itr)->releaseGLObjects(state);
-    }
+    if (_primitives.valid()) _primitives->releaseGLObjects(state);
 }

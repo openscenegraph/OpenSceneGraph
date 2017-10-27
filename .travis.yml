@@ -4,6 +4,9 @@ env:
    #   via the "travis encrypt" command using the project repo's public key
    - secure: "0ROQiFbsZo33ce2v5VjBxNljemh/HU70ntSSPygYwaDFymubts/62SixXVkbKNIFdrs3uYD6qeA/eMmpqXxLcs+PXNq5NrH7eSWw9oDIKMhq3NQH/IZLdRfXwihHimZ1qEs/TXyWlT2aC4rpBi1py3cJeTh1aBMlz4V/nm16iRAgc596ThNTuPDHa0F9/gZnwccI/Rr9VpiYn7vEBbuY9lYr43D0G3NuuQyvvlHShroH09fh6KyFOWIY38AQtnuVGNC1fIiAUk7TUqDqSBwhIrUV5saHbP0kca6DP32REkv//h4JwM76UHv+ntVEoK/UiztJHMkrw71gXYTyvIvlDBpT+IDoeIwUW2QFNQ5zJZI7FM8k0+oeK+F7k/mkffDzr1zww/PQoxqFBF0PoxAni/L9qkA4X2o1A6mRDbe9besp2LQG6Vniwj3bHpCId2QiiMrANVg0EAqkcL2mVFEaqZsh90qCkr1UDq4WQoYbXh0Fy3UnQpbuxDvCME8u03lwuv6ds/SBxc5cgKv7oWXgezaDg7/OCR+0lIAGuLqmNRD8Xw7a0WZGmSbYCHIZmeyFja2KuUvMiVCt8+QsyZr3e523DwBwnSj1BIYFRstMaSEJgu9B8rfTRRllOOKJXCQtdFVuGu8VI6PniSAkI6c535yOWzsuS8HwIkN2ll+Wn7E="
 
+language: cpp
+cache: ccache
+
 matrix:
   fast_finish: true
   include:
@@ -18,8 +21,7 @@ matrix:
       sudo: false
       cache:
         apt: true
-        directories:
-          - $HOME/.ccache
+        ccache: true
       compiler:
           #- clang
           - gcc
@@ -43,11 +45,19 @@ matrix:
 
     # OSX build
     - os: osx
-      language: cpp
+      before_install:
+         - brew update
+      install:
+         - brew install ccache
+         - export PATH="/usr/local/opt/ccache/libexec:$PATH"
       env:
          - CMAKECMD_ARGS="-DBUILD_OSG_EXAMPLES=OFF -DBUILD_OSG_PLUGINS_BY_DEFAULT=ON -DBUILD_OSG_APPLICATIONS=ON"
     - os: osx
-      language: cpp
+      before_install:
+         - brew update
+      install:
+         - brew install ccache
+         - export PATH="/usr/local/opt/ccache/libexec:$PATH"
       env:
          - CMAKECMD_ARGS="-DBUILD_OSG_EXAMPLES=ON -DBUILD_OSG_PLUGINS_BY_DEFAULT=OFF -DBUILD_OSG_APPLICATIONS=OFF"
 

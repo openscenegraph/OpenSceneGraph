@@ -199,7 +199,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 // the app-delegate, handling quit-requests
 // ----------------------------------------------------------------------------------------------------------
 
-@interface CocoaAppDelegate : NSObject
+@interface CocoaAppDelegate : NSObject <NSApplicationDelegate>
 {
 }
 

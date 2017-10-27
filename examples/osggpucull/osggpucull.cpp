@@ -188,7 +188,7 @@ struct IndirectTarget
     }
     void endRegister(unsigned int index, unsigned int rowsPerInstance, GLenum pixelFormat, GLenum type, GLint internalFormat, bool useMultiDrawArraysIndirect )
     {
-        indirectCommandTextureBuffer = new osg::TextureBuffer(indirectCommands);
+        indirectCommandTextureBuffer = new osg::TextureBuffer(indirectCommands.get());
         indirectCommandTextureBuffer->setInternalFormat( GL_R32I );
         indirectCommandTextureBuffer->bindToImageUnit(index, osg::Texture::READ_WRITE);
         indirectCommandTextureBuffer->setUnRefImageDataAfterApply(false);
@@ -199,11 +199,12 @@ struct IndirectTarget
         {
             std::vector<osg::DrawArraysIndirect*> newPrimitiveSets;
 
-            for(unsigned int j=0;j<indirectCommands->size(); ++j){
+            for(unsigned int j=0;j<indirectCommands->size(); ++j)
+            {
                 osg::DrawArraysIndirect *ipr=new osg::DrawArraysIndirect( GL_TRIANGLES, j );
-                ipr->setIndirectCommandArray( indirectCommands);
+                ipr->setIndirectCommandArray( indirectCommands.get());
                 newPrimitiveSets.push_back(ipr);
-                }
+            }
 
             geometryAggregator->getAggregatedGeometry()->removePrimitiveSet(0,geometryAggregator->getAggregatedGeometry()->getNumPrimitiveSets() );
 
@@ -215,7 +216,7 @@ struct IndirectTarget
         else // use glMultiDrawArraysIndirect()
         {
             osg::MultiDrawArraysIndirect *ipr=new osg::MultiDrawArraysIndirect( GL_TRIANGLES );
-            ipr->setIndirectCommandArray( indirectCommands );
+            ipr->setIndirectCommandArray( indirectCommands.get() );
             geometryAggregator->getAggregatedGeometry()->removePrimitiveSet(0,geometryAggregator->getAggregatedGeometry()->getNumPrimitiveSets() );
             geometryAggregator->getAggregatedGeometry()->addPrimitiveSet( ipr );
         }
@@ -236,6 +237,7 @@ struct IndirectTarget
         instanceTarget->bindToImageUnit(OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index, osg::Texture::READ_WRITE);
 
     }
+
     void addIndirectCommandData( const std::string& uniformNamePrefix, int index, osg::StateSet* stateset )
     {
         std::string uniformName = uniformNamePrefix + char( '0' + index );
@@ -245,6 +247,7 @@ struct IndirectTarget
 
 
     }
+
     void addIndirectTargetData( bool cullPhase, const std::string& uniformNamePrefix, int index, osg::StateSet* stateset )
     {
         std::string uniformName;
@@ -257,6 +260,7 @@ struct IndirectTarget
         stateset->addUniform( uniform );
         stateset->setTextureAttribute( OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index, instanceTarget.get() );
     }
+
     void addDrawProgram( const std::string& uniformBlockName, osg::StateSet* stateset )
     {
         drawProgram->addBindUniformBlock(uniformBlockName, 1);
@@ -286,6 +290,7 @@ struct GPUCullData
         instanceTypesUBB = new osg::UniformBufferBinding(1, instanceTypes.get(), 0, 0);
 
     }
+
     void setUseMultiDrawArraysIndirect( bool value )
     {
         useMultiDrawArraysIndirect = value;
@@ -297,6 +302,7 @@ struct GPUCullData
             return;
         targets[index] = IndirectTarget( agv, targetDrawProgram );
     }
+
     bool registerType(unsigned int typeID, unsigned int targetID, osg::Node* node, const osg::Vec4& lodDistances, float maxDensityPerSquareKilometer )
     {
         if( typeID >= instanceTypes->getData().size() )
@@ -328,6 +334,7 @@ struct GPUCullData
         target->second.maxTargetQuantity += maxQuantity;
         return true;
     }
+
     // endRegister() method is called after all indirect targets and instance types are registered.
     // It creates indirect targets with pixel format and data type provided by user ( indirect targets may hold
     // different information about single instance depending on user's needs ( in our example : static rendering
@@ -388,10 +395,12 @@ struct StaticInstance
     : position(m), extraParams(params), idParams(typeID,id,0,0)
    {
    }
+
    osg::Vec3d getPosition() const
    {
        return position.getTrans();
    }
+
    osg::Matrixf position;
    osg::Vec4f   extraParams;
    osg::Vec4i   idParams;
@@ -705,10 +714,12 @@ struct ResetTexturesCallback : public osg::StateSet::Callback
     ResetTexturesCallback()
     {
     }
+
     void addTextureDirty( unsigned int texUnit )
     {
         texUnitsDirty.push_back(texUnit);
     }
+
     void addTextureDirtyParams( unsigned int texUnit )
     {
         texUnitsDirtyParams.push_back(texUnit);
@@ -748,6 +759,7 @@ struct InvokeMemoryBarrier : public osg::Drawable::DrawCallback
         : _barriers(barriers)
     {
     }
+
     virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
     {
         //DrawIndirectGLExtensions *ext = DrawIndirectGLExtensions::getExtensions( renderInfo.getContextID(), true );
@@ -836,11 +848,13 @@ osg::Group* createSimpleHouse( float detailRatio, const osg::Vec4& buildingColor
         osg::ref_ptr<osg::Geode> chimneyGeode     = convertShapeToGeode( *chimney.get(), tessHints.get(), chimneyColor );
         root->addChild( chimneyGeode.get() );
     }
+
     {
         osg::ref_ptr<osg::Cylinder> chimney       = new osg::Cylinder( osg::Vec3( -5.5, 3.0, 16.5 ), 0.1, 1.0 );
         osg::ref_ptr<osg::Geode> chimneyGeode     = convertShapeToGeode( *chimney.get(), tessHints.get(), chimneyColor );
         root->addChild( chimneyGeode.get() );
     }
+
     {
         osg::ref_ptr<osg::Cylinder> chimney       = new osg::Cylinder( osg::Vec3( -5.0, 3.0, 16.25 ), 0.1, 0.5 );
         osg::ref_ptr<osg::Geode> chimneyGeode     = convertShapeToGeode( *chimney.get(), tessHints.get(), chimneyColor );
@@ -1183,6 +1197,7 @@ struct AnimateObjectsCallback : public osg::DrawableUpdateCallback
         for(; i<3*_quantityPerType; ++i) // speed of airplanes
             _speed.push_back( random( 10.0, 16.0 ) );
     }
+
     virtual void update(osg::NodeVisitor* nv, osg::Drawable* drawable)
     {
         if( nv->getVisitorType() != osg::NodeVisitor::UPDATE_VISITOR )
@@ -1213,6 +1228,7 @@ struct AnimateObjectsCallback : public osg::DrawableUpdateCallback
             setRotationUsingRotSpeed( i, 5, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0)) * osg::Matrix::translate(0.0,2.0,-6.0), currentTime, 0.5 );
             setRotationUsingRotSpeed( i, 6, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0)) * osg::Matrix::translate(0.0,-2.0,-6.0), currentTime, -0.5 );
         }
+
         for(;i<2*_quantityPerType;++i) //update cars
         {
             nbbox.expandBy( updateObjectPosition( vertexArray, i, deltaTime ) );
@@ -1223,6 +1239,7 @@ struct AnimateObjectsCallback : public osg::DrawableUpdateCallback
             setRotationUsingRotSpeed( i, 3, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(1.0,0.0,0.0)) * osg::Matrix::translate(2.0,-1.8,1.0), currentTime, wheelRotSpeed );
             setRotationUsingRotSpeed( i, 4, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(1.0,0.0,0.0)) * osg::Matrix::translate(-2.0,-1.8,1.0), currentTime, wheelRotSpeed );
         }
+
         for(;i<3*_quantityPerType;++i) // update airplanes
         {
             nbbox.expandBy( updateObjectPosition( vertexArray, i, deltaTime ) );
@@ -1251,6 +1268,7 @@ struct AnimateObjectsCallback : public osg::DrawableUpdateCallback
         (*vertexArray)[index] = newPosition;
         return newPosition;
     }
+
     void setRotationUsingRotSpeed( unsigned int index, unsigned int boneIndex, const osg::Matrix& zeroMatrix, double currentTime, double rotSpeed )
     {
         // setRotationUsingRotSpeed() is a very unoptimally written ( because it uses osg::Matrix::inverse() ),
@@ -1473,12 +1491,16 @@ int main( int argc, char **argv )
 
     if ( arguments.read("--skip-static") )
         showStaticRendering = false;
+
     if ( arguments.read("--skip-dynamic") )
         showDynamicRendering = false;
+
     if ( arguments.read("--export-objects") )
         exportInstanceObjects = true;
+
     if ( arguments.read("--use-multi-draw") )
         useMultiDrawArraysIndirect = true;
+
     arguments.read("--instances-per-cell",instancesPerCell);
     arguments.read("--static-area-size",staticAreaSize);
     arguments.read("--dynamic-area-size",dynamicAreaSize);

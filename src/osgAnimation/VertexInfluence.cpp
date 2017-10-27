@@ -289,6 +289,7 @@ void VertexInfluenceMap::removeUnexpressedBones(Skeleton &skel) const
             ++ removed;
             OSG_INFO<<"removing useless bone: "<< bone2rm->getName() <<std::endl;
             osg::NodeList nodes;
+
             for(unsigned int numchild = 0; numchild < bone2rm->getNumChildren(); numchild++)
             {
                 if( (child = dynamic_cast<Bone*>(bone2rm->getChild(numchild))) )

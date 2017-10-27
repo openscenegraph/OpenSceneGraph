@@ -47,7 +47,7 @@ MorphGeometry::MorphGeometry(const osg::Geometry& g) :
 
 MorphGeometry::MorphGeometry(const MorphGeometry& b, const osg::CopyOp& copyop) :
     osg::Geometry(b,copyop),
-    _morphTransformImplementation((MorphTransform*)copyop(b._morphTransformImplementation)),
+    _morphTransformImplementation(osg::clone(b._morphTransformImplementation.get(), copyop)),
     _dirty(b._dirty),
     _method(b._method),
     _morphTargets(b._morphTargets),

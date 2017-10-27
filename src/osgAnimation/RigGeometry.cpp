@@ -67,7 +67,7 @@ RigGeometry::RigGeometry()
 RigGeometry::RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop) :
     osg::Geometry(b,copyop),
     _geometry(b._geometry),
-    _rigTransformImplementation((RigTransform*)copyop(b._rigTransformImplementation)),
+    _rigTransformImplementation(osg::clone(_rigTransformImplementation.get(), copyop)),
     _vertexInfluenceMap(b._vertexInfluenceMap),
     _needToComputeMatrix(b._needToComputeMatrix)
 {

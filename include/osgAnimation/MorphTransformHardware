@@ -43,8 +43,8 @@ namespace osgAnimation
         virtual void operator()(MorphGeometry&);
 
         inline void setShader( osg::Shader*s )      {   _shader=s;      }
-        inline const osg::Shader * getShader() const{   return _shader; }
-        inline osg::Shader * getShader()            {   return _shader; }
+        inline const osg::Shader * getShader() const{   return _shader.get(); }
+        inline osg::Shader * getShader()            {   return _shader.get(); }
 
         ///texture unit reserved for morphtarget TBO default is 7
         void setReservedTextureUnit(unsigned int t) {   _reservedTextureUnit=t;     }

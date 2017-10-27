@@ -41,8 +41,8 @@ static bool writeMorphTargets( osgDB::OutputStream& os, const osgAnimation::Morp
     { return geom.get##PROP()!=0; } \
     static bool read##ORIGINAL_PROP( osgDB::InputStream& is, osgAnimation::MorphGeometry& geom ) { \
         is >> is.BEGIN_BRACKET; \
-        osg::Array* array =is.readArray(); \
-        geom.set##PROP((osg::Vec3Array*)array); \
+        osg::ref_ptr<osg::Array> array = is.readArray(); \
+        geom.set##PROP(dynamic_cast<osg::Vec3Array*>(array.get())); \
         is >> is.END_BRACKET; \
         return true; \
     } \

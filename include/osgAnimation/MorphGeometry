@@ -91,13 +91,13 @@ namespace osgAnimation
         inline void setVertexSource(osg::Vec3Array *v){ _positionSource=v;}
 
         /** Get source of vertices for this morph geometry */
-        inline osg::Vec3Array * getVertexSource()const{return _positionSource;}
+        inline osg::Vec3Array * getVertexSource()const{return _positionSource.get();}
 
         /** Set source of normals for this morph geometry */
         inline void setNormalSource(osg::Vec3Array *n){ _normalSource=n;}
 
         /** Get source of normals for this morph geometry */
-        inline osg::Vec3Array * getNormalSource()const{return _normalSource;}
+        inline osg::Vec3Array * getNormalSource() const {return _normalSource.get();}
 
         /** Add a \c MorphTarget to the \c MorphGeometry.
           * If \c MorphTarget is not \c NULL and is not contained in the \c MorphGeometry

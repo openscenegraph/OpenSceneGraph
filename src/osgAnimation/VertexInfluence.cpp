@@ -279,7 +279,7 @@ void VertexInfluenceMap::removeUnexpressedBones(Skeleton &skel) const
             }
 
             ///Bone can be removed
-            Bone * bone2rm = bmit->second;
+            Bone * bone2rm = bmit->second.get();
             for(unsigned int numchild = 0; numchild < bone2rm->getNumChildren(); numchild++)
             {
                 if( (child = dynamic_cast<Bone*>(bone2rm->getChild(numchild))) )

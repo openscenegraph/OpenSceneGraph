@@ -178,7 +178,7 @@ RigTransformHardware::BoneWeightAttribList RigTransformHardware::createVertexAtt
                 int boneIndexInVec4 = b*2;
                 (*array)[j][0 + boneIndexInVec4] = 0;
                 (*array)[j][1 + boneIndexInVec4] = 0;
-                if (boneIndexInList < _vertexIndexMatrixWeightList[j].size())
+                if (boneIndexInList < static_cast<int>(_vertexIndexMatrixWeightList[j].size()))
                 {
                     float boneIndex = static_cast<float>(_vertexIndexMatrixWeightList[j][boneIndexInList].getIndex());
                     float boneWeight = _vertexIndexMatrixWeightList[j][boneIndexInList].getWeight();

@@ -278,7 +278,7 @@ void VertexInfluenceMap::removeUnexpressedBones(Skeleton &skel) const
                 continue;
             }
 
-            Bone * bone2rm = bmit->second;
+            Bone * bone2rm = bmit->second.get();
 
             if( recursiveisUsefull(bone2rm,usebones)) {
                 ++bmit;

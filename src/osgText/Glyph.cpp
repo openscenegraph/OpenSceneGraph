@@ -88,7 +88,7 @@ int GlyphTexture::getTexelMargin(const Glyph* glyph)
     int height = glyph->t();
     int effect_margin = getEffectMargin(glyph);
 
-    int max_dimension = std::max(width, height) + 2 * effect_margin;
+    int max_dimension = osg::maximum(width, height) + 2 * effect_margin;
     int margin = osg::maximum(max_dimension/4, 2) + effect_margin;
 
     return margin;

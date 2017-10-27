@@ -44,20 +44,20 @@ namespace osgAnimation
         class BonePtrWeight: LocalBoneIDWeight
         {
         public:
-            BonePtrWeight(unsigned int id,float weight, Bone*bone=0 ): LocalBoneIDWeight(id,weight), _boneptr(bone){}
-            BonePtrWeight(const BonePtrWeight &bw2): LocalBoneIDWeight(bw2.getBoneID(),bw2.getWeight()), _boneptr(bw2._boneptr.get()){}
-            inline const float & getWeight() const {return second;}
-            inline void setWeight(float b) {second=b;}
-            inline const unsigned int  & getBoneID() const {return first;}
-            inline void setBoneID(unsigned int b) {first=b;}
-            inline bool operator<(const BonePtrWeight &b1) const{
-                    if (second > b1.second)return true;
-                    if (second < b1.second)return false;
-                    return (first > b1.first);
+            BonePtrWeight(unsigned int id,float weight, Bone*bone=0 ): LocalBoneIDWeight(id,weight), _boneptr(bone) {}
+            BonePtrWeight(const BonePtrWeight &bw2): LocalBoneIDWeight(bw2.getBoneID(),bw2.getWeight()), _boneptr(bw2._boneptr.get()) {}
+            inline const float & getWeight() const { return second; }
+            inline void setWeight(float b) { second=b; }
+            inline const unsigned int  & getBoneID() const { return first; }
+            inline void setBoneID(unsigned int b) { first=b; }
+            inline bool operator< (const BonePtrWeight &b1) const {
+                if (second > b1.second) return true;
+                if (second < b1.second) return false;
+                return (first > b1.first);
             }
             ///set Bone pointer
-            inline const Bone * getBonePtr() const {return _boneptr.get();}
-            inline void setBonePtr(Bone*b){_boneptr=b;}
+            inline const Bone * getBonePtr() const { return _boneptr.get(); }
+            inline void setBonePtr(Bone*b) { _boneptr=b; }
         protected:
             osg::observer_ptr< Bone > _boneptr;
         };
@@ -110,7 +110,7 @@ namespace osgAnimation
                 }
                 resetMatrix();
 
-                for(BonePtrWeightList::iterator bwit=_boneweights.begin();bwit!=_boneweights.end();++bwit )
+                for(BonePtrWeightList::iterator bwit=_boneweights.begin(); bwit!=_boneweights.end(); ++bwit )
                 {
                     const Bone* bone = bwit->getBonePtr();
                     if (!bone)
@@ -125,7 +125,7 @@ namespace osgAnimation
                 }
             }
             void normalize();
-            inline const osg::Matrix& getMatrix() const { return _result;}
+            inline const osg::Matrix& getMatrix() const { return _result; }
         protected:
             BonePtrWeightList _boneweights;
             IndexList _vertexes;

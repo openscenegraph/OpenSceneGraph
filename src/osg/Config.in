@@ -33,5 +33,6 @@
 #cmakedefine OSG_USE_UTF8_FILENAME
 #cmakedefine OSG_DISABLE_MSVC_WARNINGS
 #cmakedefine OSG_PROVIDE_READFILE
+#cmakedefine OSG_USE_DEPRECATED_API
 
 #endif

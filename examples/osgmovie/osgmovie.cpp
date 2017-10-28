@@ -469,29 +469,55 @@ int main(int argc, char** argv)
     {
         //useTextureRectangle = false;
 
-        static const char *shaderSourceTextureRec = {
-            "uniform vec4 cutoff_color;\n"
-            "uniform samplerRect movie_texture;\n"
+        static const char *shaderSourceTextureVertex = {
+            "#ifdef GL_ES\n"
+            "    precision highp float;\n"
+            "    precision highp int;\n"
+            "#endif\n"
+            "varying vec4 texcoord;\n"
             "void main(void)\n"
             "{\n"
-            "    vec4 texture_color = textureRect(movie_texture, gl_TexCoord[0].st); \n"
+            "    texcoord = gl_MultiTexCoord0; \n"
+            "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+            "}\n"
+        };
+
+        static const char *shaderSourceTextureRec = {
+            "#ifdef GL_ES\n"
+            "    precision highp float;\n"
+            "    precision highp int;\n"
+            "#endif\n"
+            "uniform vec4 cutoff_color;\n"
+            "uniform samplerRect movie_texture;\n"
+            "varying vec4 texcoord;\n"
+            "void main(void)\n"
+            "{\n"
+            "    vec4 texture_color = textureRect(movie_texture, texcoord.st); \n"
             "    if (all(lessThanEqual(texture_color,cutoff_color))) discard; \n"
             "    gl_FragColor = texture_color;\n"
             "}\n"
         };
 
         static const char *shaderSourceTexture2D = {
+            "#ifdef GL_ES\n"
+            "    precision highp float;\n"
+            "    precision highp int;\n"
+            "#endif\n"
             "uniform vec4 cutoff_color;\n"
             "uniform sampler2D movie_texture;\n"
+            "varying vec4 texcoord;\n"
             "void main(void)\n"
             "{\n"
-            "    vec4 texture_color = texture2D(movie_texture, gl_TexCoord[0].st); \n"
+            "    vec4 texture_color = texture2D(movie_texture, texcoord.st); \n"
             "    if (all(lessThanEqual(texture_color,cutoff_color))) discard; \n"
             "    gl_FragColor = texture_color;\n"
             "}\n"
         };
 
         osg::Program* program = new osg::Program;
+
+
+        program->addShader(new osg::Shader(osg::Shader::VERTEX, shaderSourceTextureVertex));
 
         program->addShader(new osg::Shader(osg::Shader::FRAGMENT,
                                            useTextureRectangle ? shaderSourceTextureRec : shaderSourceTexture2D));

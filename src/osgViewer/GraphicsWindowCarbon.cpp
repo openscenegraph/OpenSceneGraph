@@ -1100,3 +1100,6 @@ public:
 REGISTER_WINDOWINGSYSTEMINTERFACE(Carbon, CarbonWindowingSystemInterface)
 
 }
+
+#endif
+

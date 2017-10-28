@@ -20,6 +20,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 namespace osg {
 
@@ -310,6 +311,25 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         VertexBufferHint getVertexBufferHint() const { return _vertexBufferHint; }
 
 
+        enum ShaderHint
+        {
+            SHADER_NONE,
+            SHADER_GL2,
+            SHADER_GLES2,
+            SHADER_GL3,
+            SHADER_GLES3
+        };
+
+        /** set the ShaderHint to tells shader generating cdoes  version to create.
+         * By default also OSG_GLSL_VERSION and OSG_PRECISION_FLOAT values that can get use directly in shaders using $OSG_GLSL_VERSION and $OSG_PRECISION_FLOAT respectively.*/
+        void setShaderHint(ShaderHint hint, bool setShaderValues=true);
+        ShaderHint getShaderHint() const { return _shaderHint; }
+
+        /** Set the TextShaderTechnique that is used in the Text default constructor to choose which osgText::ShaderTechnique to use.*/
+        void setTextShaderTechnique(const std::string& str) { _textShaderTechnique = str; }
+        const std::string& getTextShaderTechnique() const { return _textShaderTechnique; }
+
+
         void setKeystoneHint(bool enabled) { _keystoneHint = enabled; }
         bool getKeystoneHint() const { return _keystoneHint; }
 
@@ -323,7 +343,8 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         Objects& getKeystones() { return _keystones; }
         const Objects& getKeystones() const { return _keystones; }
 
-        enum OSXMenubarBehavior {
+        enum OSXMenubarBehavior
+        {
             MENUBAR_AUTO_HIDE,
             MENUBAR_FORCE_HIDE,
             MENUBAR_FORCE_SHOW
@@ -355,6 +376,9 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
 
         void setShaderPipelineNumTextureUnits(unsigned int units) { _shaderPipelineNumTextureUnits = units; }
         unsigned int getShaderPipelineNumTextureUnits() const { return _shaderPipelineNumTextureUnits; }
+
+        void setValue(const std::string& name, const std::string& value);
+        bool getValue(const std::string& name, std::string& value, bool use_getenv_fallback=true) const;
 
 protected:
 
@@ -412,6 +436,8 @@ protected:
         unsigned int                    _syncSwapBuffers;
 
         VertexBufferHint                _vertexBufferHint;
+        ShaderHint                      _shaderHint;
+        std::string                     _textShaderTechnique;
 
         bool                            _keystoneHint;
         FileNames                       _keystoneFileNames;
@@ -419,9 +445,15 @@ protected:
 
         OSXMenubarBehavior              _OSXMenubarBehavior;
 
+
         bool                            _shaderPipeline;
         Filenames                       _shaderPipelineFiles;
         unsigned int                    _shaderPipelineNumTextureUnits;
+
+        typedef std::map<std::string, std::string> ValueMap;
+
+        mutable OpenThreads::Mutex      _valueMapMutex;
+        mutable ValueMap                _valueMap;
 
 };
 

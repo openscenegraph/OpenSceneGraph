@@ -23,6 +23,7 @@
 #include <osgUtil/ShaderGen>
 
 #include <osgViewer/Viewer>
+#include <osgGA/StateSetManipulator>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
@@ -32,7 +33,7 @@
 // for the grid data..
 #include "../osghangglide/terrain_coords.h"
 
-osg::Geode* createShapes()
+osg::Geode* createShapes(osg::ArgumentParser& arguments)
 {
     osg::Geode* geode = new osg::Geode();
 
@@ -69,17 +70,43 @@ osg::Geode* createShapes()
     geode->addDrawable(new osg::ShapeDrawable(new osg::Capsule(osg::Vec3(8.0f,0.0f,0.0f),radius,height),hints));
 
     osg::HeightField* grid = new osg::HeightField;
-    grid->allocate(38,39);
-    grid->setXInterval(0.28f);
-    grid->setYInterval(0.28f);
-
-    for(unsigned int r=0;r<39;++r)
+    if (arguments.read("--large"))
     {
-        for(unsigned int c=0;c<38;++c)
+        unsigned int numX = 512;
+        unsigned int numY = 512;
+        double sizeX = 10.0;
+        double sizeY = 10.0;
+        grid->allocate(numX,numY);
+        grid->setXInterval(sizeX/float(numX));
+        grid->setYInterval(sizeY/float(numY));
+
+        for(unsigned int r=0;r<numY;++r)
         {
-            grid->setHeight(c,r,vertex[r+c*39][2]);
+            for(unsigned int c=0;c<numX;++c)
+            {
+                double rx = double(c)/double(numX-1);
+                double ry = double(r)/double(numY-1);
+
+                grid->setHeight(c, r, 2.0*sin(rx*ry*4.0*osg::PI));
+            }
         }
     }
+    else
+    {
+        grid->allocate(38,39);
+        grid->setXInterval(0.28f);
+        grid->setYInterval(0.28f);
+
+        for(unsigned int r=0;r<39;++r)
+        {
+            for(unsigned int c=0;c<38;++c)
+            {
+                grid->setHeight(c,r,vertex[r+c*39][2]);
+            }
+        }
+    }
+
+
     geode->addDrawable(new osg::ShapeDrawable(grid));
 
     osg::ConvexHull* mesh = new osg::ConvexHull;
@@ -108,13 +135,18 @@ osg::Geode* createShapes()
     return geode;
 }
 
-int main(int, char **)
+int main(int argc, char **argv)
 {
+    osg::ArgumentParser arguments(&argc,argv);
+
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
 
     // add model to viewer.
-    viewer.setSceneData( createShapes() );
+    viewer.setSceneData( createShapes(arguments) );
+
+    // add the state manipulator
+    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
 
     return viewer.run();
 }

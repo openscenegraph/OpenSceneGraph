@@ -366,6 +366,13 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** Set the password map to be used by plugins when access files from secure locations.*/
         void setAuthenticationMap(AuthenticationMap* authenticationMap) { _authenticationMap = authenticationMap; }
 
+        /** Get the password map to be used by plugins when access files from secure locations. Create a AuthenticationMap if one isn't already assigned.*/
+        AuthenticationMap* getOrCreateAuthenticationMap()
+        {
+            if (!_authenticationMap) _authenticationMap = new AuthenticationMap;
+            return _authenticationMap.get();
+        }
+
         /** Get the password map to be used by plugins when access files from secure locations.*/
         AuthenticationMap* getAuthenticationMap() { return _authenticationMap.get(); }
 

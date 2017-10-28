@@ -36,14 +36,13 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 #include <osg/BufferTemplate>
+#include <osg/PrimitiveSetIndirect>
+
 #include "ShapeToGeometry.h"
 #include "AggregateGeometryVisitor.h"
-#include "DrawIndirectPrimitiveSet.h"
 #include "GpuCullShaders.h"
 
-#ifndef GL_RASTERIZER_DISCARD
-    #define GL_RASTERIZER_DISCARD 0x8C89
-#endif
+
 
 // each instance type may have max 8 LODs ( if you change
 // this value, don't forget to change it in vertex shaders accordingly )
@@ -178,23 +177,18 @@ struct IndirectTarget
     IndirectTarget()
         : maxTargetQuantity(0)
     {
-        indirectCommands    = new osg::BufferTemplate< std::vector<DrawArraysIndirectCommand> >;
+        indirectCommands    = new osg::DefaultIndirectCommandDrawArrays;
+        indirectCommands->getBufferObject()->setUsage(GL_DYNAMIC_DRAW);
     }
     IndirectTarget( AggregateGeometryVisitor* agv, osg::Program* program )
         : geometryAggregator(agv), drawProgram(program), maxTargetQuantity(0)
     {
-        indirectCommands    = new osg::BufferTemplate< std::vector<DrawArraysIndirectCommand> >;
+        indirectCommands    = new osg::DefaultIndirectCommandDrawArrays;
+        indirectCommands->getBufferObject()->setUsage(GL_DYNAMIC_DRAW);
     }
     void endRegister(unsigned int index, unsigned int rowsPerInstance, GLenum pixelFormat, GLenum type, GLint internalFormat, bool useMultiDrawArraysIndirect )
     {
-        osg::Image* indirectCommandImage = new osg::Image;
-        indirectCommandImage->setImage( indirectCommands->getTotalDataSize()/sizeof(unsigned int), 1, 1, GL_R32I, GL_RED, GL_UNSIGNED_INT, (unsigned char*)indirectCommands->getDataPointer(), osg::Image::NO_DELETE );
-
-        osg::VertexBufferObject * indirectCommandImagebuffer=new osg::VertexBufferObject();
-        indirectCommandImagebuffer->setUsage(GL_DYNAMIC_DRAW);
-        indirectCommandImage->setBufferObject(indirectCommandImagebuffer);
-
-        indirectCommandTextureBuffer = new osg::TextureBuffer(indirectCommandImage);
+        indirectCommandTextureBuffer = new osg::TextureBuffer(indirectCommands.get());
         indirectCommandTextureBuffer->setInternalFormat( GL_R32I );
         indirectCommandTextureBuffer->bindToImageUnit(index, osg::Texture::READ_WRITE);
         indirectCommandTextureBuffer->setUnRefImageDataAfterApply(false);
@@ -203,28 +197,30 @@ struct IndirectTarget
         // add proper primitivesets to geometryAggregators
         if( !useMultiDrawArraysIndirect ) // use glDrawArraysIndirect()
         {
-            std::vector<DrawArraysIndirect*> newPrimitiveSets;
+            std::vector<osg::DrawArraysIndirect*> newPrimitiveSets;
 
-            for(unsigned int j=0;j<indirectCommands->getData().size(); ++j)
-                newPrimitiveSets.push_back( new DrawArraysIndirect( GL_TRIANGLES, j*sizeof( DrawArraysIndirectCommand ) ) );
+            for(unsigned int j=0;j<indirectCommands->size(); ++j)
+            {
+                osg::DrawArraysIndirect *ipr=new osg::DrawArraysIndirect( GL_TRIANGLES, j );
+                ipr->setIndirectCommandArray( indirectCommands.get());
+                newPrimitiveSets.push_back(ipr);
+            }
 
             geometryAggregator->getAggregatedGeometry()->removePrimitiveSet(0,geometryAggregator->getAggregatedGeometry()->getNumPrimitiveSets() );
 
-            for(unsigned int j=0;j<indirectCommands->getData().size(); ++j)
+            for(unsigned int j=0;j<indirectCommands->size(); ++j)
                 geometryAggregator->getAggregatedGeometry()->addPrimitiveSet( newPrimitiveSets[j] );
 
 
         }
         else // use glMultiDrawArraysIndirect()
         {
+            osg::MultiDrawArraysIndirect *ipr=new osg::MultiDrawArraysIndirect( GL_TRIANGLES );
+            ipr->setIndirectCommandArray( indirectCommands.get() );
             geometryAggregator->getAggregatedGeometry()->removePrimitiveSet(0,geometryAggregator->getAggregatedGeometry()->getNumPrimitiveSets() );
-            geometryAggregator->getAggregatedGeometry()->addPrimitiveSet( new MultiDrawArraysIndirect( GL_TRIANGLES, 0, indirectCommands->getData().size(), 0 ) );
+            geometryAggregator->getAggregatedGeometry()->addPrimitiveSet( ipr );
         }
 
-        ///attach a DrawIndirect buffer binding to the stateset
-        osg::ref_ptr<osg::DrawIndirectBufferBinding> bb=new osg::DrawIndirectBufferBinding();
-        bb->setBufferObject(indirectCommandImage->getBufferObject());
-        geometryAggregator->getAggregatedGeometry()->getOrCreateStateSet()->setAttribute(bb );
         geometryAggregator->getAggregatedGeometry()->setUseDisplayList(false);
         geometryAggregator->getAggregatedGeometry()->setUseVertexBufferObjects(true);
 
@@ -241,6 +237,7 @@ struct IndirectTarget
         instanceTarget->bindToImageUnit(OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index, osg::Texture::READ_WRITE);
 
     }
+
     void addIndirectCommandData( const std::string& uniformNamePrefix, int index, osg::StateSet* stateset )
     {
         std::string uniformName = uniformNamePrefix + char( '0' + index );
@@ -250,6 +247,7 @@ struct IndirectTarget
 
 
     }
+
     void addIndirectTargetData( bool cullPhase, const std::string& uniformNamePrefix, int index, osg::StateSet* stateset )
     {
         std::string uniformName;
@@ -262,13 +260,14 @@ struct IndirectTarget
         stateset->addUniform( uniform );
         stateset->setTextureAttribute( OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index, instanceTarget.get() );
     }
+
     void addDrawProgram( const std::string& uniformBlockName, osg::StateSet* stateset )
     {
         drawProgram->addBindUniformBlock(uniformBlockName, 1);
         stateset->setAttributeAndModes( drawProgram.get(), osg::StateAttribute::ON );
     }
 
-    osg::ref_ptr< osg::BufferTemplate< std::vector<DrawArraysIndirectCommand> > >  indirectCommands;
+    osg::ref_ptr< osg::DefaultIndirectCommandDrawArrays >        indirectCommands;
     osg::ref_ptr<osg::TextureBuffer>                                indirectCommandTextureBuffer;
     osg::ref_ptr< AggregateGeometryVisitor >                        geometryAggregator;
     osg::ref_ptr<osg::Program>                                      drawProgram;
@@ -288,9 +287,10 @@ struct GPUCullData
         instanceTypesUBO = new osg::UniformBufferObject;
 //        instanceTypesUBO->setUsage( GL_STREAM_DRAW );
         instanceTypes->setBufferObject( instanceTypesUBO.get() );
-        instanceTypesUBB = new osg::UniformBufferBinding(1, instanceTypesUBO.get(), 0, 0);
+        instanceTypesUBB = new osg::UniformBufferBinding(1, instanceTypes.get(), 0, 0);
 
     }
+
     void setUseMultiDrawArraysIndirect( bool value )
     {
         useMultiDrawArraysIndirect = value;
@@ -302,6 +302,7 @@ struct GPUCullData
             return;
         targets[index] = IndirectTarget( agv, targetDrawProgram );
     }
+
     bool registerType(unsigned int typeID, unsigned int targetID, osg::Node* node, const osg::Vec4& lodDistances, float maxDensityPerSquareKilometer )
     {
         if( typeID >= instanceTypes->getData().size() )
@@ -318,7 +319,7 @@ struct GPUCullData
         // AggregateGeometryVisitor creates single osg::Geometry from all objects used by specific indirect target
         AggregateGeometryVisitor::AddObjectResult aoResult = target->second.geometryAggregator->addObject( node , typeID, lodNumber );
         // Information about first vertex and a number of vertices is stored for later primitiveset creation
-        target->second.indirectCommands->getData().push_back( DrawArraysIndirectCommand( aoResult.first, aoResult.count ) );
+        target->second.indirectCommands->push_back( osg::DrawArraysIndirectCommand( aoResult.count,1, aoResult.first ) );
 
         osg::ComputeBoundsVisitor cbv;
         node->accept(cbv);
@@ -333,6 +334,7 @@ struct GPUCullData
         target->second.maxTargetQuantity += maxQuantity;
         return true;
     }
+
     // endRegister() method is called after all indirect targets and instance types are registered.
     // It creates indirect targets with pixel format and data type provided by user ( indirect targets may hold
     // different information about single instance depending on user's needs ( in our example : static rendering
@@ -360,10 +362,10 @@ struct GPUCullData
         std::map<unsigned int, IndirectTarget>::iterator it,eit;
         for(it=targets.begin(), eit=targets.end(); it!=eit; ++it)
         {
-            for(unsigned j=0; j<it->second.indirectCommands->getData().size(); ++j)
+            for(unsigned j=0; j<it->second.indirectCommands->size(); ++j)
             {
-                DrawArraysIndirectCommand& iComm = it->second.indirectCommands->getData().at(j);
-                OSG_INFO<<"("<<iComm.first<<" "<<iComm.primCount<<" "<<iComm.count<<") ";
+                osg::DrawArraysIndirectCommand& iComm = it->second.indirectCommands->at(j);
+                OSG_INFO<<"("<<iComm.first<<" "<<iComm.instanceCount<<" "<<iComm.count<<") ";
             }
             unsigned int sizeInBytes = (unsigned int ) it->second.maxTargetQuantity * sizeof(osg::Vec4);
             OSG_INFO<<" => Maximum elements in target : "<< it->second.maxTargetQuantity <<" ( "<< sizeInBytes <<" bytes, " << sizeInBytes/1024<< " kB )" << std::endl;
@@ -393,10 +395,12 @@ struct StaticInstance
     : position(m), extraParams(params), idParams(typeID,id,0,0)
    {
    }
+
    osg::Vec3d getPosition() const
    {
        return position.getTrans();
    }
+
    osg::Matrixf position;
    osg::Vec4f   extraParams;
    osg::Vec4i   idParams;
@@ -710,10 +714,12 @@ struct ResetTexturesCallback : public osg::StateSet::Callback
     ResetTexturesCallback()
     {
     }
+
     void addTextureDirty( unsigned int texUnit )
     {
         texUnitsDirty.push_back(texUnit);
     }
+
     void addTextureDirtyParams( unsigned int texUnit )
     {
         texUnitsDirtyParams.push_back(texUnit);
@@ -724,16 +730,16 @@ struct ResetTexturesCallback : public osg::StateSet::Callback
         std::vector<unsigned int>::iterator it,eit;
         for(it=texUnitsDirty.begin(), eit=texUnitsDirty.end(); it!=eit; ++it)
         {
-            osg::Texture* tex = dynamic_cast<osg::Texture*>( stateset->getTextureAttribute(*it,osg::StateAttribute::TEXTURE) );
+            osg::TextureBuffer* tex = dynamic_cast<osg::TextureBuffer*>( stateset->getTextureAttribute(*it,osg::StateAttribute::TEXTURE) );
             if(tex==NULL)
                 continue;
-            osg::Image* img = tex->getImage(0);
+            osg::BufferData* img =const_cast<osg::BufferData*>(tex->getBufferData());
             if(img!=NULL)
                 img->dirty();
         }
         for(it=texUnitsDirtyParams.begin(), eit=texUnitsDirtyParams.end(); it!=eit; ++it)
         {
-            osg::Texture* tex = dynamic_cast<osg::Texture*>( stateset->getTextureAttribute(*it,osg::StateAttribute::TEXTURE) );
+            osg::TextureBuffer* tex = dynamic_cast<osg::TextureBuffer*>( stateset->getTextureAttribute(*it,osg::StateAttribute::TEXTURE) );
             if(tex!=NULL)
                 tex->dirtyTextureParameters();
         }
@@ -753,6 +759,7 @@ struct InvokeMemoryBarrier : public osg::Drawable::DrawCallback
         : _barriers(barriers)
     {
     }
+
     virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
     {
         //DrawIndirectGLExtensions *ext = DrawIndirectGLExtensions::getExtensions( renderInfo.getContextID(), true );
@@ -841,11 +848,13 @@ osg::Group* createSimpleHouse( float detailRatio, const osg::Vec4& buildingColor
         osg::ref_ptr<osg::Geode> chimneyGeode     = convertShapeToGeode( *chimney.get(), tessHints.get(), chimneyColor );
         root->addChild( chimneyGeode.get() );
     }
+
     {
         osg::ref_ptr<osg::Cylinder> chimney       = new osg::Cylinder( osg::Vec3( -5.5, 3.0, 16.5 ), 0.1, 1.0 );
         osg::ref_ptr<osg::Geode> chimneyGeode     = convertShapeToGeode( *chimney.get(), tessHints.get(), chimneyColor );
         root->addChild( chimneyGeode.get() );
     }
+
     {
         osg::ref_ptr<osg::Cylinder> chimney       = new osg::Cylinder( osg::Vec3( -5.0, 3.0, 16.25 ), 0.1, 0.5 );
         osg::ref_ptr<osg::Geode> chimneyGeode     = convertShapeToGeode( *chimney.get(), tessHints.get(), chimneyColor );
@@ -1188,6 +1197,7 @@ struct AnimateObjectsCallback : public osg::DrawableUpdateCallback
         for(; i<3*_quantityPerType; ++i) // speed of airplanes
             _speed.push_back( random( 10.0, 16.0 ) );
     }
+
     virtual void update(osg::NodeVisitor* nv, osg::Drawable* drawable)
     {
         if( nv->getVisitorType() != osg::NodeVisitor::UPDATE_VISITOR )
@@ -1218,6 +1228,7 @@ struct AnimateObjectsCallback : public osg::DrawableUpdateCallback
             setRotationUsingRotSpeed( i, 5, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0)) * osg::Matrix::translate(0.0,2.0,-6.0), currentTime, 0.5 );
             setRotationUsingRotSpeed( i, 6, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0)) * osg::Matrix::translate(0.0,-2.0,-6.0), currentTime, -0.5 );
         }
+
         for(;i<2*_quantityPerType;++i) //update cars
         {
             nbbox.expandBy( updateObjectPosition( vertexArray, i, deltaTime ) );
@@ -1228,6 +1239,7 @@ struct AnimateObjectsCallback : public osg::DrawableUpdateCallback
             setRotationUsingRotSpeed( i, 3, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(1.0,0.0,0.0)) * osg::Matrix::translate(2.0,-1.8,1.0), currentTime, wheelRotSpeed );
             setRotationUsingRotSpeed( i, 4, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(1.0,0.0,0.0)) * osg::Matrix::translate(-2.0,-1.8,1.0), currentTime, wheelRotSpeed );
         }
+
         for(;i<3*_quantityPerType;++i) // update airplanes
         {
             nbbox.expandBy( updateObjectPosition( vertexArray, i, deltaTime ) );
@@ -1256,6 +1268,7 @@ struct AnimateObjectsCallback : public osg::DrawableUpdateCallback
         (*vertexArray)[index] = newPosition;
         return newPosition;
     }
+
     void setRotationUsingRotSpeed( unsigned int index, unsigned int boneIndex, const osg::Matrix& zeroMatrix, double currentTime, double rotSpeed )
     {
         // setRotationUsingRotSpeed() is a very unoptimally written ( because it uses osg::Matrix::inverse() ),
@@ -1478,12 +1491,16 @@ int main( int argc, char **argv )
 
     if ( arguments.read("--skip-static") )
         showStaticRendering = false;
+
     if ( arguments.read("--skip-dynamic") )
         showDynamicRendering = false;
+
     if ( arguments.read("--export-objects") )
         exportInstanceObjects = true;
+
     if ( arguments.read("--use-multi-draw") )
         useMultiDrawArraysIndirect = true;
+
     arguments.read("--instances-per-cell",instancesPerCell);
     arguments.read("--static-area-size",staticAreaSize);
     arguments.read("--dynamic-area-size",dynamicAreaSize);
@@ -1565,3 +1582,4 @@ int main( int argc, char **argv )
 
     return viewer.run();
 }
+

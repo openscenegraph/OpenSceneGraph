@@ -162,9 +162,9 @@ void makeLocalMatrix(const FbxNode* pNode, osg::Matrix& m)
     if (rotationActive)
     {
         m.preMultRotate(
-            makeQuat(fbxPostRot, fbxRotOrder) *
+            makeQuat(fbxPostRot, eEulerXYZ) *
             makeQuat(fbxLclRot, fbxRotOrder) *
-            makeQuat(fbxPreRot, fbxRotOrder));
+            makeQuat(fbxPreRot, eEulerXYZ));
     }
     else
     {
@@ -339,7 +339,7 @@ void readUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform* pUpdate, Fbx
 
     if (rotationActive)
     {
-        staticTransform.preMultRotate(makeQuat(pNode->PreRotation.Get(), fbxRotOrder));
+        staticTransform.preMultRotate(makeQuat(pNode->PreRotation.Get(), eEulerXYZ));
     }
 
     readRotationElement(pNode->LclRotation, fbxRotOrder,
@@ -348,7 +348,7 @@ void readUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform* pUpdate, Fbx
 
     if (rotationActive)
     {
-        staticTransform.preMultRotate(makeQuat(pNode->PostRotation.Get(), fbxRotOrder));
+        staticTransform.preMultRotate(makeQuat(pNode->PostRotation.Get(), eEulerXYZ));
     }
 
     FbxDouble3 fbxSclOffset = pNode->ScalingOffset.Get();

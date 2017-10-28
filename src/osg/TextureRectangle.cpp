@@ -204,10 +204,10 @@ void TextureRectangle::apply(State& state) const
         }
         else if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
         {
-            applyTexImage_subload(GL_TEXTURE_RECTANGLE, _image.get(), state, _textureWidth, _textureHeight, _internalFormat);
-
             // update the modified count to show that it is up to date.
             getModifiedCount(contextID) = _image->getModifiedCount();
+
+            applyTexImage_subload(GL_TEXTURE_RECTANGLE, _image.get(), state, _textureWidth, _textureHeight, _internalFormat);
         }
     }
     else if (_subloadCallback.valid())

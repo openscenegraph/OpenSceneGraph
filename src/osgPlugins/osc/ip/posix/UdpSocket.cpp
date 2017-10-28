@@ -32,6 +32,7 @@
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
+#include <iostream>
 #include <assert.h>
 #include <signal.h>
 #include <math.h>
@@ -179,9 +180,15 @@ public:
     {
         assert( isConnected_ );
 
-        if (send( socket_, data, size, 0 ) < 0)
+        ssize_t result = send( socket_, data, size, 0 );
+
+        if (result < 0)
         {
-            throw std::runtime_error("error when calling send(..)\n");
+            std::string errorString("error when calling send : ");
+            errorString += strerror(errno);
+
+            std::cout<<errorString<<std::endl;
+            // throw std::runtime_error(errorString);
         }
     }
 

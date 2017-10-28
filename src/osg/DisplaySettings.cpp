@@ -15,6 +15,7 @@
 #include <osg/ApplicationUsage>
 #include <osg/Math>
 #include <osg/Notify>
+#include <osg/GL>
 #include <osg/ref_ptr>
 
 #include <algorithm>
@@ -117,6 +118,8 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
     _swapMethod = vs._swapMethod;
 
     _vertexBufferHint = vs._vertexBufferHint;
+
+    setShaderHint(_shaderHint);
 
     _keystoneHint = vs._keystoneHint;
     _keystoneFileNames = vs._keystoneFileNames;
@@ -246,6 +249,18 @@ void DisplaySettings::setDefaults()
     _vertexBufferHint = NO_PREFERENCE;
     // _vertexBufferHint = VERTEX_BUFFER_OBJECT;
     // _vertexBufferHint = VERTEX_ARRAY_OBJECT;
+
+#if defined(OSG_GLES3_AVAILABLE)
+    setShaderHint(SHADER_GLES3);
+#elif defined(OSG_GLES2_AVAILABLE)
+    setShaderHint(SHADER_GLES2);
+#elif defined(OSG_GL3_AVAILABLE)
+    setShaderHint(SHADER_GL3);
+#elif defined(OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE)
+    setShaderHint(SHADER_NONE);
+#else
+    setShaderHint(SHADER_GL2);
+#endif
 
     _keystoneHint = false;
 
@@ -384,7 +399,9 @@ static ApplicationUsageProxy DisplaySetting_e34(ApplicationUsage::ENVIRONMENTAL_
 static ApplicationUsageProxy DisplaySetting_e35(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_SHADER_PIPELINE_NUM_TEXTURE_UNITS <value>",
         "Specifiy number of texture units Shader Pipeline shaders support");
-
+static ApplicationUsageProxy DisplaySetting_e36(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+        "OSG_TEXT_SHADER_TECHNIQUE <value>",
+        "Set the defafult osgText::ShaderTechnique. ALL_FEATURES | ALL | GREYSCALE | SIGNED_DISTANCE_FIELD | SDF | NO_TEXT_SHADER | NONE");
 
 void DisplaySettings::readEnvironmentalVariables()
 {
@@ -716,6 +733,35 @@ void DisplaySettings::readEnvironmentalVariables()
     }
 
 
+    if ((ptr = getenv("OSG_SHADER_HINT")) != 0)
+    {
+        if (strcmp(ptr,"GL2")==0)
+        {
+            setShaderHint(SHADER_GL2);
+        }
+        else if (strcmp(ptr,"GL3")==0)
+        {
+            setShaderHint(SHADER_GL3);
+        }
+        else if (strcmp(ptr,"GLES2")==0)
+        {
+            setShaderHint(SHADER_GLES2);
+        }
+        else if (strcmp(ptr,"GLES3")==0)
+        {
+            setShaderHint(SHADER_GLES3);
+        }
+        else if (strcmp(ptr,"NONE")==0)
+        {
+            setShaderHint(SHADER_NONE);
+        }
+    }
+
+    if ((ptr = getenv("OSG_TEXT_SHADER_TECHNIQUE")) != 0)
+    {
+        setTextShaderTechnique(ptr);
+    }
+
     if( (ptr = getenv("OSG_KEYSTONE")) != 0)
     {
         if (strcmp(ptr,"OFF")==0)
@@ -836,7 +882,7 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
     if (arguments.getApplicationUsage())
     {
         arguments.getApplicationUsage()->addCommandLineOption("--display <type>","MONITOR | POWERWALL | REALITY_CENTER | HEAD_MOUNTED_DISPLAY");
-        arguments.getApplicationUsage()->addCommandLineOption("--stereo","Use default stereo mode which is ANAGLYPHIC if not overriden by environmental variable");
+        arguments.getApplicationUsage()->addCommandLineOption("--stereo","Use default stereo mode which is ANAGLYPHIC if not overridden by environmental variable");
         arguments.getApplicationUsage()->addCommandLineOption("--stereo <mode>","ANAGLYPHIC | QUAD_BUFFER | HORIZONTAL_SPLIT | VERTICAL_SPLIT | LEFT_EYE | RIGHT_EYE | HORIZONTAL_INTERLACE | VERTICAL_INTERLACE | CHECKERBOARD | ON | OFF ");
         arguments.getApplicationUsage()->addCommandLineOption("--rgba","Request a RGBA color buffer visual");
         arguments.getApplicationUsage()->addCommandLineOption("--stencil","Request a stencil buffer visual");
@@ -1116,4 +1162,85 @@ osg::Matrixd DisplaySettings::computeRightEyeViewImplementation(const osg::Matri
                        0.0,1.0,0.0,0.0,
                        0.0,0.0,1.0,0.0,
                        -es,0.0,0.0,1.0);
+}
+
+void DisplaySettings::setShaderHint(ShaderHint hint, bool setShaderValues)
+{
+    _shaderHint = hint;
+    if (setShaderValues)
+    {
+        switch(_shaderHint)
+        {
+        case(SHADER_GLES3) :
+            setValue("OSG_GLSL_VERSION", "#version 300 es");
+            setValue("OSG_PRECISION_FLOAT", "precision highp float;");
+            setValue("OSG_VARYING_IN", "in");
+            setValue("OSG_VARYING_OUT", "out");
+            OSG_NOTICE<<"DisplaySettings::SHADER_GLES3"<<std::endl;
+            break;
+        case(SHADER_GLES2) :
+            setValue("OSG_GLSL_VERSION", "");
+            setValue("OSG_PRECISION_FLOAT", "precision highp float;");
+            setValue("OSG_VARYING_IN", "varying");
+            setValue("OSG_VARYING_OUT", "varying");
+            OSG_NOTICE<<"DisplaySettings::SHADER_GLES2"<<std::endl;
+            break;
+        case(SHADER_GL3) :
+            setValue("OSG_GLSL_VERSION", "#version 330");
+            setValue("OSG_PRECISION_FLOAT", "");
+            setValue("OSG_VARYING_IN", "in");
+            setValue("OSG_VARYING_OUT", "out");
+            OSG_NOTICE<<"DisplaySettings::SHADER_GL3"<<std::endl;
+            break;
+        case(SHADER_GL2) :
+            setValue("OSG_GLSL_VERSION", "");
+            setValue("OSG_PRECISION_FLOAT", "");
+            setValue("OSG_VARYING_IN", "varying");
+            setValue("OSG_VARYING_OUT", "varying");
+            OSG_NOTICE<<"DisplaySettings::SHADER_GL2"<<std::endl;
+            break;
+        case(SHADER_NONE) :
+            setValue("OSG_GLSL_VERSION", "");
+            setValue("OSG_PRECISION_FLOAT", "");
+            setValue("OSG_VARYING_IN", "varying");
+            setValue("OSG_VARYING_OUT", "varying");
+            OSG_NOTICE<<"DisplaySettings::NONE"<<std::endl;
+            break;
+        }
+    }
+}
+
+void DisplaySettings::setValue(const std::string& name, const std::string& value)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_valueMapMutex);
+
+    _valueMap[name] = value;
+}
+
+bool DisplaySettings::getValue(const std::string& name, std::string& value, bool use_getenv_fallback) const
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_valueMapMutex);
+
+    ValueMap::iterator itr = _valueMap.find(name);
+    if (itr!=_valueMap.end())
+    {
+        value = itr->second;
+        OSG_INFO<<"DisplaySettings::getValue("<<name<<") found existing value = ["<<value<<"]"<<std::endl;
+        return true;
+    }
+
+    if (!use_getenv_fallback) return false;
+
+    const char* str = getenv(name.c_str());
+    if (str)
+    {
+        OSG_INFO<<"DisplaySettings::getValue("<<name<<") found getenv value = ["<<value<<"]"<<std::endl;
+        _valueMap[name] = value = str;
+        return true;
+
+    }
+    else
+    {
+        return false;
+    }
 }

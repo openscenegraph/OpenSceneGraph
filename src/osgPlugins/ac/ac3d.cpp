@@ -1242,7 +1242,11 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
         else if (token == "rot") {
             for (unsigned n = 0; n < 3; ++n)
                 for (unsigned m = 0; m < 3; ++m)
+#if 1
+                    stream >> transform(n, m);
+#else
                     stream >> transform(m, n);
+#endif
         }
         else if (token == "loc") {
             for (unsigned n = 0; n < 3; ++n)

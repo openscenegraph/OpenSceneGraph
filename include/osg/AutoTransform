@@ -37,16 +37,14 @@ class OSG_EXPORT AutoTransform : public Transform
         virtual const char* className() const { return "AutoTransform"; }
         virtual const char* libraryName() const { return "osg"; }
 
-        virtual void accept(NodeVisitor& nv);
-
         virtual AutoTransform* asAutoTransform() { return this; }
         virtual const AutoTransform* asAutoTransform() const { return this; }
 
-        inline void setPosition(const Vec3d& pos) { _position = pos; _matrixDirty=true; dirtyBound(); }
+        inline void setPosition(const Vec3d& pos) { _position = pos; dirtyBound(); }
         inline const Vec3d& getPosition() const { return _position; }
 
 
-        inline void setRotation(const Quat& quat) { _rotation = quat; _matrixDirty=true; dirtyBound(); }
+        inline void setRotation(const Quat& quat) { _rotation = quat; dirtyBound(); }
         inline const Quat& getRotation() const { return _rotation; }
 
         inline void setScale(double scale) { setScale(osg::Vec3(scale,scale,scale)); }
@@ -60,7 +58,7 @@ class OSG_EXPORT AutoTransform : public Transform
         void setMaximumScale(double maximumScale) { _maximumScale = maximumScale; }
         double getMaximumScale() const { return _maximumScale; }
 
-        inline void setPivotPoint(const Vec3d& pivot) { _pivotPoint = pivot; _matrixDirty=true; dirtyBound(); }
+        inline void setPivotPoint(const Vec3d& pivot) { _pivotPoint = pivot; dirtyBound(); }
         inline const Vec3d& getPivotPoint() const { return _pivotPoint; }
 
 
@@ -91,7 +89,7 @@ class OSG_EXPORT AutoTransform : public Transform
         /** Get the front face direction normal. */
         inline const Vec3& getNormal() const { return _normal; }
 
-        void setAutoScaleToScreen(bool autoScaleToScreen) { _autoScaleToScreen = autoScaleToScreen; _matrixDirty=true; }
+        void setAutoScaleToScreen(bool autoScaleToScreen) { _autoScaleToScreen = autoScaleToScreen; }
 
         bool getAutoScaleToScreen() const { return _autoScaleToScreen; }
 
@@ -120,21 +118,14 @@ class OSG_EXPORT AutoTransform : public Transform
 
         mutable Quat                    _rotation;
         mutable Vec3d                   _scale;
-        mutable bool                    _firstTimeToInitEyePoint;
-        mutable osg::Vec3               _previousEyePoint;
-        mutable osg::Vec3               _previousLocalUp;
-        mutable Viewport::value_type    _previousWidth;
-        mutable Viewport::value_type    _previousHeight;
-        mutable osg::Matrixd            _previousProjection;
-        mutable osg::Vec3d              _previousPosition;
 
         double                          _minimumScale;
         double                          _maximumScale;
         double                          _autoScaleTransitionWidthRatio;
 
-        void computeMatrix() const;
+        osg::Matrixd computeMatrix(const osg::NodeVisitor* nv) const;
 
-        mutable bool                    _matrixDirty;
+        mutable bool                    _matrixInitalized;
         mutable osg::Matrixd            _cachedMatrix;
 
         enum AxisAligned

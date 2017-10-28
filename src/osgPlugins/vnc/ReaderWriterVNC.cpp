@@ -199,7 +199,7 @@ static rfbBool rfbInitConnection(rfbClient* client)
   return TRUE;
 }
 
-void LibVncImage::passwordCheck(rfbClient* client,const char* encryptedPassWord,int len)
+void LibVncImage::passwordCheck(rfbClient* /*client*/,const char* /*encryptedPassWord*/,int /*len*/)
 {
     OSG_NOTICE<<"LibVncImage::passwordCheck"<<std::endl;
 }
@@ -319,7 +319,7 @@ rfbBool LibVncImage::resizeImage(rfbClient* client)
     return TRUE;
 }
 
-void LibVncImage::updateImage(rfbClient* client,int x,int y,int w,int h)
+void LibVncImage::updateImage(rfbClient* client, int /*x*/, int /*y*/, int /*w*/, int /*h*/)
 {
     LibVncImage* image = (LibVncImage*)(rfbClientGetClientData(client, 0));
 
@@ -398,17 +398,26 @@ class ReaderWriterVNC : public osgDB::ReaderWriter
                     options->getAuthenticationMap() :
                     osgDB::Registry::instance()->getAuthenticationMap();
 
-            const osgDB::AuthenticationDetails* details = authenticationMap ?
-                authenticationMap->getAuthenticationDetails(hostname) :
-                0;
-
-            // configure authentication if required.
-            if (details)
+            if (authenticationMap != NULL)
             {
-                OSG_NOTICE<<"Passing in password = "<<details->password<<std::endl;
+                const osgDB::AuthenticationDetails* details = authenticationMap->getAuthenticationDetails(hostname);
+                if (details == NULL)
+                {
+                    size_t pos = hostname.find(":");
+                    if (pos != std::string::npos)
+                    {
+                        details = authenticationMap->getAuthenticationDetails(hostname.substr(0, pos));
+                    }
+                }
 
-                image->_username = details->username;
-                image->_password = details->password;
+                // configure authentication if required.
+                if (details != NULL)
+                {
+                    OSG_NOTICE << "Passing in password = " << details->password << std::endl;
+
+                    image->_username = details->username;
+                    image->_password = details->password;
+                }
             }
 
             if (options && !options->getOptionString().empty())

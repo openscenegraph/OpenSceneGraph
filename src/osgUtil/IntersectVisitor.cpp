@@ -473,7 +473,7 @@ struct TriangleIntersect
     }
 
     //   bool intersect(const Vec3& v1,const Vec3& v2,const Vec3& v3,float& r)
-    inline void operator () (const Vec3& v1,const Vec3& v2,const Vec3& v3, bool treatVertexDataAsTemporary)
+    inline void operator () (const Vec3& v1,const Vec3& v2,const Vec3& v3)
     {
         ++_index;
 
@@ -570,14 +570,7 @@ struct TriangleIntersect
         float r = d/_length;
 
 
-        if (treatVertexDataAsTemporary)
-        {
-            _thl.insert(std::pair<const float,TriangleHit>(r,TriangleHit(_index-1,normal,r1,0,r2,0,r3,0)));
-        }
-        else
-        {
-            _thl.insert(std::pair<const float,TriangleHit>(r,TriangleHit(_index-1,normal,r1,&v1,r2,&v2,r3,&v3)));
-        }
+        _thl.insert(std::pair<const float,TriangleHit>(r,TriangleHit(_index-1,normal,r1,&v1,r2,&v2,r3,&v3)));
         _hit = true;
 
     }

@@ -43,14 +43,9 @@ public:
     {
         _vertexArraySize=0;
         _vertexArrayPtr=0;
-        _modeCache=0;
-        _treatVertexDataAsTemporary=false;
     }
 
     virtual ~TriangleFunctor() {}
-
-    void setTreatVertexDataAsTemporary(bool treatVertexDataAsTemporary) { _treatVertexDataAsTemporary=treatVertexDataAsTemporary; }
-    bool getTreatVertexDataAsTemporary() const { return _treatVertexDataAsTemporary; }
 
     virtual void setVertexArray(unsigned int,const Vec2*)
     {
@@ -93,7 +88,7 @@ public:
             {
                 const Vec3* vlast = &_vertexArrayPtr[first+count];
                 for(const Vec3* vptr=&_vertexArrayPtr[first];vptr<vlast;vptr+=3)
-                    this->operator()(*(vptr),*(vptr+1),*(vptr+2),_treatVertexDataAsTemporary);
+                    this->operator()(*(vptr),*(vptr+1),*(vptr+2));
                 break;
             }
             case(GL_TRIANGLE_STRIP):
@@ -101,8 +96,8 @@ public:
                 const Vec3* vptr = &_vertexArrayPtr[first];
                 for(GLsizei i=2;i<count;++i,++vptr)
                 {
-                    if ((i%2)) this->operator()(*(vptr),*(vptr+2),*(vptr+1),_treatVertexDataAsTemporary);
-                    else       this->operator()(*(vptr),*(vptr+1),*(vptr+2),_treatVertexDataAsTemporary);
+                    if ((i%2)) this->operator()(*(vptr),*(vptr+2),*(vptr+1));
+                    else       this->operator()(*(vptr),*(vptr+1),*(vptr+2));
                 }
                 break;
             }
@@ -111,8 +106,8 @@ public:
                 const Vec3* vptr = &_vertexArrayPtr[first];
                 for(GLsizei i=3;i<count;i+=4,vptr+=4)
                 {
-                    this->operator()(*(vptr),*(vptr+1),*(vptr+2),_treatVertexDataAsTemporary);
-                    this->operator()(*(vptr),*(vptr+2),*(vptr+3),_treatVertexDataAsTemporary);
+                    this->operator()(*(vptr),*(vptr+1),*(vptr+2));
+                    this->operator()(*(vptr),*(vptr+2),*(vptr+3));
                 }
                 break;
             }
@@ -121,8 +116,8 @@ public:
                 const Vec3* vptr = &_vertexArrayPtr[first];
                 for(GLsizei i=3;i<count;i+=2,vptr+=2)
                 {
-                    this->operator()(*(vptr),*(vptr+1),*(vptr+2),_treatVertexDataAsTemporary);
-                    this->operator()(*(vptr+1),*(vptr+3),*(vptr+2),_treatVertexDataAsTemporary);
+                    this->operator()(*(vptr),*(vptr+1),*(vptr+2));
+                    this->operator()(*(vptr+1),*(vptr+3),*(vptr+2));
                 }
                 break;
             }
@@ -133,7 +128,7 @@ public:
                 const Vec3* vptr = vfirst+1;
                 for(GLsizei i=2;i<count;++i,++vptr)
                 {
-                    this->operator()(*(vfirst),*(vptr),*(vptr+1),_treatVertexDataAsTemporary);
+                    this->operator()(*(vfirst),*(vptr),*(vptr+1));
                 }
                 break;
             }
@@ -159,7 +154,7 @@ public:
             {
                 IndexPointer ilast = &indices[count];
                 for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
-                    this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                    this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
                 break;
             }
             case(GL_TRIANGLE_STRIP):
@@ -167,8 +162,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-                    if ((i%2)) this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+1)],_treatVertexDataAsTemporary);
-                    else       this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                    if ((i%2)) this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+1)]);
+                    else       this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
                 }
                 break;
             }
@@ -177,8 +172,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=4,iptr+=4)
                 {
-                    this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
-                    this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)],_treatVertexDataAsTemporary);
+                    this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                    this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)]);
                 }
                 break;
             }
@@ -187,8 +182,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=2,iptr+=2)
                 {
-                    this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
-                    this->operator()(_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+3)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                    this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                    this->operator()(_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+3)],_vertexArrayPtr[*(iptr+2)]);
                 }
                 break;
             }
@@ -200,7 +195,7 @@ public:
                 ++iptr;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-                    this->operator()(vfirst,_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_treatVertexDataAsTemporary);
+                    this->operator()(vfirst,_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)]);
                 }
                 break;
             }
@@ -227,7 +222,7 @@ public:
                 IndexPointer ilast = &indices[count];
                 for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
                 {
-                    this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                    this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
                 }
                 break;
             }
@@ -236,8 +231,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-                    if ((i%2)) this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+1)],_treatVertexDataAsTemporary);
-                    else       this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                    if ((i%2)) this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+1)]);
+                    else       this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
                 }
                 break;
             }
@@ -246,8 +241,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=4,iptr+=4)
                 {
-                    this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
-                    this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)],_treatVertexDataAsTemporary);
+                    this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                    this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)]);
                 }
                 break;
             }
@@ -256,8 +251,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=2,iptr+=2)
                 {
-                    this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
-                    this->operator()(_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+3)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                    this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                    this->operator()(_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+3)],_vertexArrayPtr[*(iptr+2)]);
                 }
                 break;
             }
@@ -269,7 +264,7 @@ public:
                 ++iptr;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-                    this->operator()(vfirst,_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_treatVertexDataAsTemporary);
+                    this->operator()(vfirst,_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)]);
                 }
                 break;
             }
@@ -295,7 +290,7 @@ public:
             {
                 IndexPointer ilast = &indices[count];
                 for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
-                    this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                    this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
                 break;
             }
             case(GL_TRIANGLE_STRIP):
@@ -303,8 +298,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-                    if ((i%2)) this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+1)],_treatVertexDataAsTemporary);
-                    else       this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                    if ((i%2)) this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+1)]);
+                    else       this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
                 }
                 break;
             }
@@ -313,8 +308,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=4,iptr+=4)
                 {
-                    this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
-                    this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)],_treatVertexDataAsTemporary);
+                    this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                    this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)]);
                 }
                 break;
             }
@@ -323,8 +318,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=2,iptr+=2)
                 {
-                    this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
-                    this->operator()(_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+3)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                    this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                    this->operator()(_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+3)],_vertexArrayPtr[*(iptr+2)]);
                 }
                 break;
             }
@@ -336,7 +331,7 @@ public:
                 ++iptr;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-                    this->operator()(vfirst,_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_treatVertexDataAsTemporary);
+                    this->operator()(vfirst,_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)]);
                 }
                 break;
             }
@@ -350,45 +345,12 @@ public:
         }
     }
 
-
-
-    /** Note:
-      * begin(..),vertex(..) & end() are convenience methods for adapting
-      * non vertex array primitives to vertex array based primitives.
-      * This is done to simplify the implementation of primitive functor
-      * subclasses - users only need override drawArray and drawElements.
-    */
-    virtual void begin(GLenum mode)
-    {
-        _modeCache = mode;
-        _vertexCache.clear();
-    }
-
-    virtual void vertex(const Vec2& vert) { _vertexCache.push_back(osg::Vec3(vert[0],vert[1],0.0f)); }
-    virtual void vertex(const Vec3& vert) { _vertexCache.push_back(vert); }
-    virtual void vertex(const Vec4& vert) { _vertexCache.push_back(osg::Vec3(vert[0],vert[1],vert[2])/vert[3]); }
-    virtual void vertex(float x,float y) { _vertexCache.push_back(osg::Vec3(x,y,0.0f)); }
-    virtual void vertex(float x,float y,float z) { _vertexCache.push_back(osg::Vec3(x,y,z)); }
-    virtual void vertex(float x,float y,float z,float w) { _vertexCache.push_back(osg::Vec3(x,y,z)/w); }
-    virtual void end()
-    {
-        if (!_vertexCache.empty())
-        {
-            setVertexArray(_vertexCache.size(),&_vertexCache.front());
-            _treatVertexDataAsTemporary = true;
-            drawArrays(_modeCache,0,_vertexCache.size());
-        }
-    }
-
 protected:
 
 
     unsigned int        _vertexArraySize;
     const Vec3*         _vertexArrayPtr;
-
-    GLenum              _modeCache;
 };
-
 
 }
 

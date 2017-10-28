@@ -112,14 +112,14 @@ void Receiver::setBuffer( void *buffer, const unsigned int size )
     _buffer_size = size;
 }
 
-void Receiver::sync( void )
+unsigned int Receiver::sync( void )
 {
     if(!_initialized) init();
 
     if( _buffer == 0L )
     {
         fprintf( stderr, "Receiver::sync() - No buffer\n" );
-        return;
+        return 0;
     }
 
 #if defined(__linux) || defined(__FreeBSD__) || defined( __APPLE__ ) || defined(__FreeBSD_kernel__) || defined(__GNU__)
@@ -161,5 +161,6 @@ void Receiver::sync( void )
         }
     }
 #endif
+    return static_cast<unsigned int>(_buffer_size);
 }
 

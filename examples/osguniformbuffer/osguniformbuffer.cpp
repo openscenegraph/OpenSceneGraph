@@ -104,9 +104,7 @@ public:
     void operator() (StateAttribute* attr, NodeVisitor* nv)
     {
         UniformBufferBinding* ubb = static_cast<UniformBufferBinding*>(attr);
-        UniformBufferObject* ubo
-            = static_cast<UniformBufferObject*>(ubb->getBufferObject());
-        FloatArray* array = static_cast<FloatArray*>(ubo->getBufferData(0));
+        FloatArray* array = static_cast<FloatArray*>(ubb->getBufferData());
         double time = nv->getFrameStamp()->getSimulationTime();
         double frac = fmod(time, 1.0);
         Vec4f warmColor = (Vec4f(0.0, 0.0, 1.0 ,1) * frac
@@ -165,7 +163,7 @@ int main(int argc, char** argv)
     group1->addChild(loadedModel.get());
     scene->addChild(group1);
     ref_ptr<UniformBufferBinding> ubb1
-        = new UniformBufferBinding(0, ubo.get(), 0, blockSize);
+        = new UniformBufferBinding(0, colorArray.get(), 0, blockSize);
     ss1->setAttributeAndModes(ubb1.get(), StateAttribute::ON);
 
     ref_ptr<FloatArray> colorArray2
@@ -180,7 +178,7 @@ int main(int argc, char** argv)
     group2->addChild(loadedModel.get());
     scene->addChild(group2);
     ref_ptr<UniformBufferBinding> ubb2
-        = new UniformBufferBinding(0, ubo2.get(), 0, blockSize);
+        = new UniformBufferBinding(0, colorArray2.get(), 0, blockSize);
     ss2->setAttributeAndModes(ubb2.get(), StateAttribute::ON);
 
     ref_ptr<FloatArray> colorArray3
@@ -195,7 +193,7 @@ int main(int argc, char** argv)
     group3->addChild(loadedModel.get());
     scene->addChild(group3);
     ref_ptr<UniformBufferBinding> ubb3
-        = new UniformBufferBinding(0, ubo3.get(), 0, blockSize);
+        = new UniformBufferBinding(0, colorArray3.get(), 0, blockSize);
     ubb3->setUpdateCallback(new UniformBufferCallback);
     ubb3->setDataVariance(Object::DYNAMIC);
     ss3->setAttributeAndModes(ubb3.get(), StateAttribute::ON);

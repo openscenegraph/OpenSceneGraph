@@ -161,7 +161,7 @@ osg::Group *TXPParser::parseScene(
        _root->accept(lv);
 
        //modified by Brad Anderegg May-27-08
-       //running the optimizer on the terrain fixes some major preformance issues, unfortunately the texture atlas builder seems to get messed up
+       //running the optimizer on the terrain fixes some major performance issues, unfortunately the texture atlas builder seems to get messed up
        //on some of the textures (usually around buildings) and the tri stripper seems to occasionally crash and also mess up the indices on certain buildings.
        osgUtil::Optimizer opt;
        opt.optimize(_root.get(), (osgUtil::Optimizer::ALL_OPTIMIZATIONS ^ osgUtil::Optimizer::TEXTURE_ATLAS_BUILDER) ^ osgUtil::Optimizer::TRISTRIP_GEOMETRY);
@@ -1433,7 +1433,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     if (geometry.valid() && top)
     {
 
-       //modifed by Brad Anderegg on May-27-08
+       //modified by Brad Anderegg on May-27-08
        //using display lists actually increases our framerate by
        //a fair amount, on certain laptops it increased by as much as 1000%
        geometry->setUseDisplayList(true);

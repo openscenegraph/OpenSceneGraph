@@ -307,6 +307,18 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
                     pixelFormat = GL_RGBA;
 
                 int internalFormat = pixelFormat;
+                if (depth > 8)
+                {
+                    switch(color)
+                    {
+                      case(GL_LUMINANCE): internalFormat = GL_LUMINANCE16; break;
+                      case(GL_ALPHA): internalFormat = GL_ALPHA16; break;
+                      case(GL_LUMINANCE_ALPHA): internalFormat = GL_LUMINANCE16_ALPHA16; break;
+                      case(GL_RGB): internalFormat = GL_RGB16; break;
+                      case(GL_RGBA): internalFormat = GL_RGBA16; break;
+                      default: break;
+                    }
+                }
 
                 png_destroy_read_struct(&png, &info, &endinfo);
 

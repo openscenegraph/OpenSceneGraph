@@ -1,3 +1,8 @@
+// REVIEW:
+//
+// virtual bool acceptsExtension(const std::string& extension) const
+//  Don't override acceptsExtension, the base class checks the list of supported extensions
+
 // Copyright Eric Wing
 // This plugin is the bridge to OS X's ImageIO framework
 // which provides access to all of Apple's supported image types.
@@ -269,7 +274,6 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
 
     size_t bits_per_pixel = CGImageGetBitsPerPixel(image_ref);
     size_t bytes_per_row = CGImageGetBytesPerRow(image_ref);
-//    size_t bits_per_component = CGImageGetBitsPerComponent(image_ref);
     size_t bits_per_component = 8;
 
     CGImageAlphaInfo alpha_info = CGImageGetAlphaInfo(image_ref);
@@ -277,8 +281,6 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
     GLint internal_format;
     GLenum pixel_format;
     GLenum data_type;
-
-    void* image_data = calloc(the_width * 4, the_height);
 
     CGColorSpaceRef color_space;
     CGBitmapInfo bitmap_info = CGImageGetBitmapInfo(image_ref);
@@ -289,7 +291,6 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
         // between a 256 color GIF, a LUMINANCE map
         // or an ALPHA map?
         case 8:
-        {
             // I probably did the formats all wrong for this case,
             // especially the ALPHA case.
             if(kCGImageAlphaNone == alpha_info)
@@ -303,9 +304,8 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
                 data_type = GL_UNSIGNED_INT_8_8_8_8_REV;
 
                 bytes_per_row = the_width*4;
-//                color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
                 color_space = CGColorSpaceCreateDeviceRGB();
-//                bitmap_info = kCGImageAlphaPremultipliedFirst;
+
 #if __BIG_ENDIAN__
                 bitmap_info = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Big; /* XRGB Big Endian */
 #else
@@ -317,29 +317,25 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
                 internal_format = GL_ALPHA;
                 pixel_format = GL_ALPHA;
                 data_type = GL_UNSIGNED_BYTE;
-                //            bytes_per_row = the_width;
-//                color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericGray);
+                //bytes_per_row = the_width;
                 color_space = CGColorSpaceCreateDeviceGray();
             }
-
             break;
-        }
+
         case 24:
-        {
             internal_format = GL_RGBA8;
             pixel_format = GL_BGRA_EXT;
             data_type = GL_UNSIGNED_INT_8_8_8_8_REV;
             bytes_per_row = the_width*4;
-//            color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
             color_space = CGColorSpaceCreateDeviceRGB();
-//            bitmap_info = kCGImageAlphaNone;
+
 #if __BIG_ENDIAN__
             bitmap_info = kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Big; /* XRGB Big Endian */
 #else
             bitmap_info = kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little; /* XRGB Little Endian */
 #endif
             break;
-        }
+
         //
         // Tatsuhiro Nishioka
         // 16 bpp grayscale (8 bit white and 8 bit alpha) causes invalid argument combination
@@ -351,16 +347,12 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
         case 32:
         case 48:
         case 64:
-        {
-
             internal_format = GL_RGBA8;
             pixel_format = GL_BGRA_EXT;
             data_type = GL_UNSIGNED_INT_8_8_8_8_REV;
 
             bytes_per_row = the_width*4;
-//            color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
             color_space = CGColorSpaceCreateDeviceRGB();
-//            bitmap_info = kCGImageAlphaPremultipliedFirst;
 
 #if __BIG_ENDIAN__
             bitmap_info = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Big; /* XRGB Big Endian */
@@ -368,16 +360,17 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
             bitmap_info = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little; /* XRGB Little Endian */
 #endif
             break;
-        }
-        default:
-        {
-            // OSG_WARN << "Unknown file type in " << fileName.c_str() << " with " << origDepth << std::endl;
-            return NULL;
-            break;
-        }
 
+        default:
+            OSG_WARN << "Unsupported pixel depth " << bits_per_pixel << std::endl;
+            return NULL;
     }
 
+    void* image_data = calloc(the_width * 4, the_height);
+    if (!image_data) {
+        OSG_WARN << "Failed to allocate image data size " << the_width << "x" << the_height << std::endl;
+        return NULL;
+    }
 
     // Sets up a context to be drawn to with image_data as the area to be drawn to
     CGContextRef bitmap_context = CGBitmapContextCreate(
@@ -390,18 +383,17 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
         bitmap_info
     );
 
+    // Swap upside-down
     CGContextTranslateCTM(bitmap_context, 0, the_height);
     CGContextScaleCTM(bitmap_context, 1.0, -1.0);
+
     // Draws the image into the context's image_data
     CGContextDrawImage(bitmap_context, the_rect, image_ref);
 
     CGContextRelease(bitmap_context);
-
-    if (!image_data)
-        return NULL;
+    CGColorSpaceRelease(color_space);
 
     // alpha is premultiplied with rgba, undo it
-
     vImage_Buffer vb;
     vb.data = image_data;
     vb.height = the_height;
@@ -410,7 +402,6 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
     vImageUnpremultiplyData_RGBA8888(&vb, &vb, 0);
 
     // changing it to GL_UNSIGNED_BYTE seems working, but I'm not sure if this is a right way.
-    //
     data_type = GL_UNSIGNED_BYTE;
     osg::Image* osg_image = new osg::Image;
 
@@ -426,10 +417,8 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
     );
 
     return osg_image;
-
-
-
 }
+
 /**************************************************************
 ***** End Support functions for reading (stream and file) *****
 **************************************************************/
@@ -477,7 +466,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
         osg_image.getRowSizeInBytes()
     };
 
-    void* out_image_data;
+    std::vector<unsigned char> out_image_data;
     vImage_Buffer vimage_buffer_out =
     {
         NULL, // will fill-in in switch
@@ -491,26 +480,24 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
     switch(osg_image.getPixelFormat())
     {
         case GL_LUMINANCE:
-        {
             bitmap_info = kCGImageAlphaNone;
             target_bytes_per_row = (image_width * 8 + 7)/8;
-            //color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericGray);
             color_space = CGColorSpaceCreateDeviceGray();
             if(NULL == color_space)
             {
                 return NULL;
             }
 
-            //    out_image_data = calloc(target_bytes_per_row, image_height);
-            out_image_data = malloc(target_bytes_per_row * image_height);
-            if(NULL == out_image_data)
-            {
-                OSG_WARN << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
+            try {
+                out_image_data.resize(target_bytes_per_row * image_height);
+            }
+            catch (std::exception&) {
+                OSG_WARN << "In CreateCGImageFromOSGData, resize failed" << std::endl;
                 CGColorSpaceRelease(color_space);
                 return NULL;
             }
 
-            vimage_buffer_out.data = out_image_data;
+            vimage_buffer_out.data = &out_image_data[0];
             vimage_buffer_out.rowBytes = target_bytes_per_row;
 
             // Now invert the image
@@ -522,16 +509,12 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             if(vimage_error_flag != kvImageNoError)
             {
                 OSG_WARN << "In CreateCGImageFromOSGData for GL_LUMINANCE, vImageVerticalReflect_Planar8 failed with vImage Error Code: " << vimage_error_flag << std::endl;
-                free(out_image_data);
                 CGColorSpaceRelease(color_space);
                 return NULL;
             }
-
-
             break;
-        }
+
         case GL_ALPHA:
-        {
             bitmap_info = kCGImageAlphaOnly;
             target_bytes_per_row = (image_width * 8 + 7)/8;
             // According to:
@@ -539,15 +522,15 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             // colorSpace=NULL is for alpha only
             color_space = NULL;
 
-            //    out_image_data = calloc(target_bytes_per_row, image_height);
-            out_image_data = malloc(target_bytes_per_row * image_height);
-            if(NULL == out_image_data)
-            {
-                OSG_WARN << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
+            try {
+                out_image_data.resize(target_bytes_per_row * image_height);
+            }
+            catch (std::exception&) {
+                OSG_WARN << "In CreateCGImageFromOSGData, resize failed" << std::endl;
                 return NULL;
             }
 
-            vimage_buffer_out.data = out_image_data;
+            vimage_buffer_out.data = &out_image_data[0];
             vimage_buffer_out.rowBytes = target_bytes_per_row;
 
             // Now invert the image
@@ -559,44 +542,31 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             if(vimage_error_flag != kvImageNoError)
             {
                 OSG_WARN << "In CreateCGImageFromOSGData for GL_ALPHA, vImageVerticalReflect_Planar8 failed with vImage Error Code: " << vimage_error_flag << std::endl;
-                free(out_image_data);
                 return NULL;
             }
-
-
             break;
-        }
-/*
-        case GL_LUMINANCE_ALPHA:
-        {
-            // I don't know if we can support this.
-            // The qa1037 doesn't show both gray+alpha.
-            break;
-        }
-*/
+
         case GL_RGB:
-        {
             bitmap_info = kCGImageAlphaNoneSkipFirst;
             target_bytes_per_row = (image_width * 8 * 4 + 7)/8;
-            //color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
             color_space = CGColorSpaceCreateDeviceRGB();
-             if(NULL == color_space)
+            if(NULL == color_space)
             {
                 OSG_WARN << "In CreateCGImageFromOSGData, CGColorSpaceCreateWithName failed" << std::endl;
                 return NULL;
             }
 
-            //    out_image_data = calloc(target_bytes_per_row, image_height);
-            out_image_data = malloc(target_bytes_per_row * image_height);
-            if(NULL == out_image_data)
-            {
-                OSG_WARN << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
+            try {
+                out_image_data.resize(target_bytes_per_row * image_height);
+            }
+            catch (std::exception&) {
+                OSG_WARN << "In CreateCGImageFromOSGData, resize failed" << std::endl;
                 CGColorSpaceRelease(color_space);
                 return NULL;
             }
 
             // Use vImage to get an RGB buffer into ARGB.
-            vimage_buffer_out.data = out_image_data;
+            vimage_buffer_out.data = &out_image_data[0];
             vimage_buffer_out.rowBytes = target_bytes_per_row;
             vimage_error_flag = vImageConvert_RGB888toARGB8888(
                 &vimage_buffer_in,
@@ -609,7 +579,6 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             if(vimage_error_flag != kvImageNoError)
             {
                 OSG_WARN << "In CreateCGImageFromOSGData, vImageConvert_RGB888toARGB8888 failed with vImage Error Code: " << vimage_error_flag << std::endl;
-                free(out_image_data);
                 CGColorSpaceRelease(color_space);
                 return NULL;
             }
@@ -622,34 +591,33 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             if(vimage_error_flag != kvImageNoError)
             {
                 OSG_WARN << "In CreateCGImageFromOSGData, vImageAffineWarp_ARGB8888 failed with vImage Error Code: " << vimage_error_flag << std::endl;
-                free(out_image_data);
                 CGColorSpaceRelease(color_space);
                 return NULL;
             }
-
             break;
-        }
+
         case GL_RGBA:
-        {
             bitmap_info = kCGImageAlphaPremultipliedLast;
             target_bytes_per_row = osg_image.getRowSizeInBytes();
-            //color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
             color_space = CGColorSpaceCreateDeviceRGB();
             if(NULL == color_space)
             {
                 OSG_WARN << "In CreateCGImageFromOSGData, CGColorSpaceCreateWithName failed" << std::endl;
                 return NULL;
             }
-            //    out_image_data = calloc(target_bytes_per_row, image_height);
-            out_image_data = malloc(target_bytes_per_row * image_height);
-            if(NULL == out_image_data)
-            {
-                OSG_WARN << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
+
+            try {
+                out_image_data.resize(target_bytes_per_row * image_height);
+            }
+            catch (std::exception&) {
+                OSG_WARN << "In CreateCGImageFromOSGData, resize failed" << std::endl;
                 CGColorSpaceRelease(color_space);
                 return NULL;
             }
-            vimage_buffer_out.data = out_image_data;
+
+            vimage_buffer_out.data = &out_image_data[0];
             vimage_buffer_out.rowBytes = target_bytes_per_row;
+
             // Invert the image
             vimage_error_flag = vImageVerticalReflect_ARGB8888(
                 &vimage_buffer_in, // since the osg_image is const...
@@ -659,14 +627,12 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             if(vimage_error_flag != kvImageNoError)
             {
                 OSG_WARN << "In CreateCGImageFromOSGData, vImageAffineWarp_ARGB8888 failed with vImage Error Code: " << vimage_error_flag << std::endl;
-                free(out_image_data);
                 CGColorSpaceRelease(color_space);
                 return NULL;
             }
             break;
-        }
+
         case GL_BGRA:
-        {
             if(GL_UNSIGNED_INT_8_8_8_8_REV == osg_image.getDataType())
             {
 #if __BIG_ENDIAN__
@@ -682,23 +648,25 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             }
 
             target_bytes_per_row = osg_image.getRowSizeInBytes();
-            //color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
             color_space = CGColorSpaceCreateDeviceRGB();
             if(NULL == color_space)
             {
                 OSG_WARN << "In CreateCGImageFromOSGData, CGColorSpaceCreateWithName failed" << std::endl;
                 return NULL;
             }
-            //    out_image_data = calloc(target_bytes_per_row, image_height);
-            out_image_data = malloc(target_bytes_per_row * image_height);
-            if(NULL == out_image_data)
-            {
-                OSG_WARN << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
+
+            try {
+                out_image_data.resize(target_bytes_per_row * image_height);
+            }
+            catch (std::exception&) {
+                OSG_WARN << "In CreateCGImageFromOSGData, resize failed" << std::endl;
                 CGColorSpaceRelease(color_space);
                 return NULL;
             }
-            vimage_buffer_out.data = out_image_data;
+
+            vimage_buffer_out.data = &out_image_data[0];
             vimage_buffer_out.rowBytes = target_bytes_per_row;
+
             // Invert the image
             vimage_error_flag = vImageVerticalReflect_ARGB8888(
                                                                &vimage_buffer_in, // since the osg_image is const...
@@ -708,20 +676,17 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             if(vimage_error_flag != kvImageNoError)
             {
                 OSG_WARN << "In CreateCGImageFromOSGData, vImageAffineWarp_ARGB8888 failed with vImage Error Code: " << vimage_error_flag << std::endl;
-                free(out_image_data);
                 CGColorSpaceRelease(color_space);
                 return NULL;
             }
             break;
-        }
+
         // FIXME: Handle other cases.
         // Use vImagePermuteChannels_ARGB8888 to swizzle bytes
+        case GL_LUMINANCE_ALPHA:
         default:
-        {
             OSG_WARN << "In CreateCGImageFromOSGData: Sorry support for this format is not implemented." << std::endl;
             return NULL;
-            break;
-        }
     }
 
     CGContextRef bitmap_context = CGBitmapContextCreate(
@@ -733,21 +698,17 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
         color_space,
         bitmap_info
     );
+
     /* Done with color space */
     CGColorSpaceRelease(color_space);
 
     if(NULL == bitmap_context)
     {
-        free(out_image_data);
         return NULL;
     }
 
-
     /* Make an image out of our bitmap; does a cheap vm_copy of the bitmap */
     CGImageRef image_ref = CGBitmapContextCreateImage(bitmap_context);
-
-    /* Done with data */
-    free(out_image_data);
 
     /* Done with bitmap_context */
     CGContextRelease(bitmap_context);

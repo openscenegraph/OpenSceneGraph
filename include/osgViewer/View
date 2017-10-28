@@ -246,7 +246,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         const ViewConfig* getLastAppliedViewConfig() const { return _lastAppliedViewConfig.get(); }
 
 
-        /** deprecated, use view.apply(new osgViewer::AcrossAllWindows()). */
+        /** deprecated, use view.apply(new osgViewer::AcrossAllScreens()). */
         void setUpViewAcrossAllScreens();
 
         /** deprecated, use view.apply(new osgViewer::SingleWindow(x,y,width,screenNum)). */

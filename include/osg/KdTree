@@ -48,42 +48,69 @@ class OSG_EXPORT KdTree : public osg::Shape
           * retun true on success. */
         virtual bool build(BuildOptions& buildOptions, osg::Geometry* geometry);
 
-        struct LineSegmentIntersection
+
+        void setVertices(osg::Vec3Array* vertices) { _vertices = vertices; }
+        const osg::Vec3Array* getVertices() const { return _vertices.get(); }
+
+
+        typedef std::vector< unsigned int > Indices;
+
+        // index in the VertexIndices vector
+        void setPrimitiveIndices(const Indices& indices) { _primitiveIndices = indices; }
+        Indices& getPrimitiveIndices() { return _primitiveIndices; }
+        const Indices& getPrimitiveIndices() const { return _primitiveIndices; }
+
+        // vector containing the primitive vertex index data packed as no_vertice_indices then vertex indices ie. for points it's (1, p0), for lines (2, p0, p1) etc.
+        void setVertexIndices(const Indices& indices) { _vertexIndices = indices; }
+        Indices& getVertexIndices() { return _vertexIndices; }
+        const Indices& getVertexIndices() const { return _vertexIndices; }
+
+
+        inline unsigned int addPoint(unsigned int p0)
         {
-            LineSegmentIntersection():
-                ratio(-1.0),
-                p0(0),
-                p1(0),
-                p2(0),
-                r0(0.0f),
-                r1(0.0f),
-                r2(0.0f),
-                primitiveIndex(0) {}
+            unsigned int i = _vertexIndices.size();
+            _vertexIndices.push_back(_primitiveIndices.size() + _degenerateCount);
+            _vertexIndices.push_back(1);
+            _vertexIndices.push_back(p0);
+            _primitiveIndices.push_back(i);
+            return i;
+        }
+        inline unsigned int addLine(unsigned int p0, unsigned int p1)
+        {
+            unsigned int i = _vertexIndices.size();
+            _vertexIndices.push_back(_primitiveIndices.size() + _degenerateCount);
+            _vertexIndices.push_back(2);
+            _vertexIndices.push_back(p0);
+            _vertexIndices.push_back(p1);
+            _primitiveIndices.push_back(i);
+            return i;
+        }
 
-            bool operator < (const LineSegmentIntersection& rhs) const { return ratio < rhs.ratio; }
+        inline unsigned int addTriangle(unsigned int p0, unsigned int p1, unsigned int p2)
+        {
+            unsigned int i = _vertexIndices.size();
+            _vertexIndices.push_back(_primitiveIndices.size() + _degenerateCount);
+            _vertexIndices.push_back(3);
+            _vertexIndices.push_back(p0);
+            _vertexIndices.push_back(p1);
+            _vertexIndices.push_back(p2);
+            _primitiveIndices.push_back(i);
+            return i;
+        }
 
-            typedef std::vector<unsigned int>   IndexList;
-            typedef std::vector<double>         RatioList;
+        inline unsigned int addQuad(unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3)
+        {
+            unsigned int i = _vertexIndices.size();
+            _vertexIndices.push_back(_primitiveIndices.size() + _degenerateCount);
+            _vertexIndices.push_back(4);
+            _vertexIndices.push_back(p0);
+            _vertexIndices.push_back(p1);
+            _vertexIndices.push_back(p2);
+            _vertexIndices.push_back(p3);
+            _primitiveIndices.push_back(i);
+            return i;
+        }
 
-            double                          ratio;
-            osg::Vec3d                      intersectionPoint;
-            osg::Vec3                       intersectionNormal;
-
-            unsigned int                    p0;
-            unsigned int                    p1;
-            unsigned int                    p2;
-            float                           r0;
-            float                           r1;
-            float                           r2;
-
-            unsigned int                    primitiveIndex;
-        };
-
-
-        typedef std::vector<LineSegmentIntersection> LineSegmentIntersections;
-
-        /** compute the intersection of a line segment and the kdtree, return true if an intersection has been found.*/
-        virtual bool intersect(const osg::Vec3d& start, const osg::Vec3d& end, LineSegmentIntersections& intersections) const;
 
 
         typedef int value_type;
@@ -103,31 +130,7 @@ class OSG_EXPORT KdTree : public osg::Shape
             value_type first;
             value_type second;
         };
-
-        struct Triangle
-        {
-            Triangle():
-                p0(0),p1(0),p2(0) {}
-
-            Triangle(unsigned int ip0, unsigned int ip1, unsigned int ip2):
-                p0(ip0), p1(ip1), p2(ip2) {}
-
-            bool operator < (const Triangle& rhs) const
-            {
-                if (p0<rhs.p0) return true;
-                if (p0>rhs.p0) return false;
-                if (p1<rhs.p1) return true;
-                if (p1>rhs.p1) return false;
-                return p2<rhs.p2;
-            }
-
-            unsigned int p0;
-            unsigned int p1;
-            unsigned int p2;
-        };
-
         typedef std::vector< KdNode >       KdNodeList;
-        typedef std::vector< Triangle >     TriangleList;
 
         int addNode(const KdNode& node)
         {
@@ -142,29 +145,48 @@ class OSG_EXPORT KdTree : public osg::Shape
         KdNodeList& getNodes() { return _kdNodes; }
         const KdNodeList& getNodes() const { return _kdNodes; }
 
-        void setVertices(osg::Vec3Array* vertices) { _vertices = vertices; }
-        const osg::Vec3Array* getVertices() const { return _vertices.get(); }
 
-        unsigned int addTriangle(const Triangle& tri)
+        template<class IntersectFunctor>
+        void intersect(IntersectFunctor& functor, const KdNode& node) const
         {
-            unsigned int num = static_cast<unsigned int>(_triangles.size());
-            _triangles.push_back(tri);
-            return num;
+            if (node.first<0)
+            {
+                // treat as a leaf
+                int istart = -node.first-1;
+                int iend = istart + node.second;
+
+                for(int i=istart; i<iend; ++i)
+                {
+                    unsigned int primitiveIndex = _primitiveIndices[i];
+                    unsigned int originalPIndex = _vertexIndices[primitiveIndex++];
+                    unsigned int numVertices = _vertexIndices[primitiveIndex++];
+                    switch(numVertices)
+                    {
+                        case(1): functor.intersect(_vertices.get(), originalPIndex, _vertexIndices[primitiveIndex]); break;
+                        case(2): functor.intersect(_vertices.get(), originalPIndex, _vertexIndices[primitiveIndex], _vertexIndices[primitiveIndex+1]); break;
+                        case(3): functor.intersect(_vertices.get(), originalPIndex, _vertexIndices[primitiveIndex], _vertexIndices[primitiveIndex+1], _vertexIndices[primitiveIndex+2]); break;
+                        case(4): functor.intersect(_vertices.get(), originalPIndex, _vertexIndices[primitiveIndex], _vertexIndices[primitiveIndex+1], _vertexIndices[primitiveIndex+2], _vertexIndices[primitiveIndex+3]); break;
+                        default : OSG_NOTICE<<"Warning: KdTree::intersect() encounted unsupported primitive size of "<<numVertices<<std::endl; break;
+                    }
+                }
+            }
+            else if (functor.enter(node.bb))
+            {
+                if (node.first>0) intersect(functor, _kdNodes[node.first]);
+                if (node.second>0) intersect(functor, _kdNodes[node.second]);
+
+                functor.leave();
+            }
         }
 
-        Triangle& getTriangle(unsigned int i) { return _triangles[i]; }
-        const Triangle& getTriangle(unsigned int i) const { return _triangles[i]; }
-
-        TriangleList& getTriangles() { return _triangles; }
-        const TriangleList& getTriangles() const { return _triangles; }
-
+        unsigned int _degenerateCount;
 
     protected:
 
-        osg::ref_ptr<osg::Vec3Array>        _vertices;
-        KdNodeList                          _kdNodes;
-        TriangleList                        _triangles;
-
+        osg::ref_ptr<osg::Vec3Array>    _vertices;
+        Indices                         _primitiveIndices;
+        Indices                         _vertexIndices;
+        KdNodeList                      _kdNodes;
 };
 
 class OSG_EXPORT KdTreeBuilder : public osg::NodeVisitor

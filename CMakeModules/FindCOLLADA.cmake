@@ -23,26 +23,38 @@ ELSE ()
 ENDIF()
 
 
-
 IF(APPLE)
     SET(COLLADA_BUILDNAME "mac")
+  SET(COLLADA_BOOST_BUILDNAME ${COLLADA_BUILDNAME})
 ELSEIF(MINGW)
     SET(COLLADA_BUILDNAME "mingw")
-ELSEIF(MSVC14)
+  SET(COLLADA_BOOST_BUILDNAME ${COLLADA_BUILDNAME})
+ELSEIF(MSVC_VERSION EQUAL 1900 OR MSVC_VERSION EQUAL 1910 )
     SET(COLLADA_BUILDNAME "vc14")
-ELSEIF(MSVC12)
+    SET(COLLADA_BOOST_BUILDNAME "vc140")
+ELSEIF(MSVC_VERSION EQUAL 1800)
     SET(COLLADA_BUILDNAME "vc12")
-ELSEIF(MSVC11)
+    SET(COLLADA_BOOST_BUILDNAME "vc120")
+ELSEIF(MSVC_VERSION EQUAL 1700)
     SET(COLLADA_BUILDNAME "vc11")
-ELSEIF(MSVC10)
+    SET(COLLADA_BOOST_BUILDNAME "vc110")
+ELSEIF(MSVC_VERSION EQUAL 1600)
     SET(COLLADA_BUILDNAME "vc10")
-ELSEIF(MSVC90)
+    SET(COLLADA_BOOST_BUILDNAME "vc100")
+ELSEIF(MSVC_VERSION EQUAL 1500)
     SET(COLLADA_BUILDNAME "vc9")
-ELSEIF(MSVC80)
+    SET(COLLADA_BOOST_BUILDNAME "vc90")
+ELSEIF(MSVC_VERSION EQUAL 1400)
     SET(COLLADA_BUILDNAME "vc8")
-ELSE(APPLE)
+    SET(COLLADA_BOOST_BUILDNAME "vc80")
+ELSE()
   SET(COLLADA_BUILDNAME "linux")
-ENDIF(APPLE)
+  SET(COLLADA_BOOST_BUILDNAME ${COLLADA_BUILDNAME})
+ENDIF()
+
+IF(${CMAKE_VS_PLATFORM_TOOLSET})
+    string(REPLACE "v" "vc" COLLADA_BOOST_BUILDNAME ${CMAKE_VS_PLATFORM_TOOLSET})
+ENDIF()
 
 
 FIND_PATH(COLLADA_INCLUDE_DIR dae.h
@@ -74,7 +86,7 @@ FIND_PATH(COLLADA_INCLUDE_DIR dae.h
 )
 
 FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY
-    NAMES collada_dom collada14dom Collada14Dom libcollada14dom21 libcollada14dom22 collada-dom2.4-dp collada-dom2.4-dp-vc120-mt
+    NAMES collada_dom collada14dom Collada14Dom libcollada14dom21 libcollada14dom22 collada-dom2.4-dp collada-dom2.4-dp-${COLLADA_BOOST_BUILDNAME}-mt
     PATHS
     ${COLLADA_DOM_ROOT}/build/${COLLADA_BUILDNAME}-1.4
     ${COLLADA_DOM_ROOT}
@@ -98,7 +110,7 @@ FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY
 )
 
 FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY_DEBUG
-    NAMES collada_dom-d collada14dom-d Collada14Dom-d libcollada14dom21-d libcollada14dom22-d  collada-dom2.4-dp-d collada-dom2.4-dp-vc120-mt-d
+    NAMES collada_dom-d collada14dom-d Collada14Dom-d libcollada14dom21-d libcollada14dom22-d  collada-dom2.4-dp-d collada-dom2.4-dp-${COLLADA_BOOST_BUILDNAME}-mt-d
     PATHS
     ${COLLADA_DOM_ROOT}/build/${COLLADA_BUILDNAME}-1.4-d
     ${COLLADA_DOM_ROOT}
@@ -261,7 +273,7 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY_DEBUG
     )
 
     FIND_LIBRARY(COLLADA_BOOST_FILESYSTEM_LIBRARY
-        NAMES libboost_filesystem boost_filesystem boost_filesystem-mt libboost_filesystem-${COLLADA_BUILDNAME}0-mt libboost_filesystem-${COLLADA_BUILDNAME}0-mt-1_54 libboost_filesystem-${COLLADA_BUILDNAME}0-mt-1_55 libboost_filesystem-${COLLADA_BUILDNAME}0-mt-1_58 boost_filesystem-${COLLADA_BUILDNAME}0-mt-1_62
+        NAMES libboost_filesystem boost_filesystem boost_filesystem-mt libboost_filesystem-${COLLADA_BOOST_BUILDNAME}-mt libboost_filesystem-${COLLADA_BOOST_BUILDNAME}-mt-1_54 libboost_filesystem-${COLLADA_BOOST_BUILDNAME}-mt-1_55 libboost_filesystem-${COLLADA_BOOST_BUILDNAME}-mt-1_58 boost_filesystem-${COLLADA_BOOST_BUILDNAME}-mt-1_62 boost_filesystem-${COLLADA_BOOST_BUILDNAME}-mt-1_63
         PATHS
         ${COLLADA_DOM_ROOT}/external-libs/boost/lib/${COLLADA_BUILDNAME}
         ${COLLADA_DOM_ROOT}/external-libs/boost/lib/mingw
@@ -269,7 +281,7 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY_DEBUG
     )
 
     FIND_LIBRARY(COLLADA_BOOST_FILESYSTEM_LIBRARY_DEBUG
-        NAMES libboost_filesystem-d boost_filesystem-d boost_filesystem-mt-d libboost_filesystem-${COLLADA_BUILDNAME}0-mt-gd libboost_filesystem-${COLLADA_BUILDNAME}0-mt-gd-1_54 libboost_filesystem-${COLLADA_BUILDNAME}0-mt-gd-1_55 libboost_filesystem-${COLLADA_BUILDNAME}0-mt-gd-1_58 boost_filesystem-${COLLADA_BUILDNAME}0-mt-gd-1_62
+        NAMES libboost_filesystem-d boost_filesystem-d boost_filesystem-mt-d libboost_filesystem-${COLLADA_BOOST_BUILDNAME}-mt-gd libboost_filesystem-${COLLADA_BOOST_BUILDNAME}-mt-gd-1_54 libboost_filesystem-${COLLADA_BOOST_BUILDNAME}-mt-gd-1_55 libboost_filesystem-${COLLADA_BOOST_BUILDNAME}-mt-gd-1_58 boost_filesystem-${COLLADA_BOOST_BUILDNAME}-mt-gd-1_62 boost_filesystem-${COLLADA_BOOST_BUILDNAME}-mt-gd-1_63
         PATHS
         ${COLLADA_DOM_ROOT}/external-libs/boost/lib/${COLLADA_BUILDNAME}
         ${COLLADA_DOM_ROOT}/external-libs/boost/lib/mingw
@@ -277,7 +289,7 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY_DEBUG
     )
 
     FIND_LIBRARY(COLLADA_BOOST_SYSTEM_LIBRARY
-        NAMES libboost_system boost_system boost_system-mt libboost_system-${COLLADA_BUILDNAME}0-mt libboost_system-${COLLADA_BUILDNAME}0-mt-1_54 libboost_system-${COLLADA_BUILDNAME}0-mt-1_55  libboost_system-${COLLADA_BUILDNAME}0-mt-1_58 boost_system-${COLLADA_BUILDNAME}0-mt-1_62
+        NAMES libboost_system boost_system boost_system-mt libboost_system-${COLLADA_BOOST_BUILDNAME}-mt libboost_system-${COLLADA_BOOST_BUILDNAME}-mt-1_54 libboost_system-${COLLADA_BOOST_BUILDNAME}-mt-1_55  libboost_system-${COLLADA_BOOST_BUILDNAME}-mt-1_58 boost_system-${COLLADA_BOOST_BUILDNAME}-mt-1_62 boost_system-${COLLADA_BOOST_BUILDNAME}-mt-1_63
         PATHS
         ${COLLADA_DOM_ROOT}/external-libs/boost/lib/${COLLADA_BUILDNAME}
         ${COLLADA_DOM_ROOT}/external-libs/boost/lib/mingw
@@ -285,7 +297,7 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY_DEBUG
     )
 
     FIND_LIBRARY(COLLADA_BOOST_SYSTEM_LIBRARY_DEBUG
-        NAMES libboost_system-d boost_system-d boost_system-mt-d libboost_system-${COLLADA_BUILDNAME}0-mt-gd libboost_system-${COLLADA_BUILDNAME}0-mt-gd-1_54 libboost_system-${COLLADA_BUILDNAME}0-mt-gd-1_55 libboost_system-${COLLADA_BUILDNAME}0-mt-gd-1_58 boost_system-${COLLADA_BUILDNAME}0-mt-gd-1_62
+        NAMES libboost_system-d boost_system-d boost_system-mt-d libboost_system-${COLLADA_BOOST_BUILDNAME}-mt-gd libboost_system-${COLLADA_BOOST_BUILDNAME}-mt-gd-1_54 libboost_system-${COLLADA_BOOST_BUILDNAME}-mt-gd-1_55 libboost_system-${COLLADA_BOOST_BUILDNAME}-mt-gd-1_58 boost_system-${COLLADA_BOOST_BUILDNAME}-mt-gd-1_62 boost_system-${COLLADA_BOOST_BUILDNAME}-mt-gd-1_63
         PATHS
         ${COLLADA_DOM_ROOT}/external-libs/boost/lib/${COLLADA_BUILDNAME}
         ${COLLADA_DOM_ROOT}/external-libs/boost/lib/mingw

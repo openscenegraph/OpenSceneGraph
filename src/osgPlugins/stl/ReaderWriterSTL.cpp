@@ -347,7 +347,7 @@ private:
             osg::Matrix m_mat;
             bool m_dontSaveNormals;
 
-            inline void operator () (const osg::Vec3& _v1, const osg::Vec3& _v2, const osg::Vec3& _v3, bool /*treatVertexDataAsTemporary*/)
+            inline void operator () (const osg::Vec3& _v1, const osg::Vec3& _v2, const osg::Vec3& _v3)
             {
                 osg::Vec3 v1 = _v1 * m_mat;
                 osg::Vec3 v2 = _v2 * m_mat;

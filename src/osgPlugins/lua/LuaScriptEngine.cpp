@@ -2184,8 +2184,8 @@ public:
     virtual void apply(osg::Vec4d& value)       { if (_lse->getValue(_index, value)) { _success=true; _numberToPop = 4; } }
     virtual void apply(osg::Quat& value)        { if (_lse->getValue(_index, value)) { _success=true; _numberToPop = 4; } }
     virtual void apply(osg::Plane& value)       { if (_lse->getValue(_index, value)) { _success=true; _numberToPop = 4; } }
-    virtual void apply(osg::Matrixf& value)     { if (_lse->getValue(_index, value)) { _success=true; } }
-    virtual void apply(osg::Matrixd& value)     { if (_lse->getValue(_index, value)) { _success=true; } }
+    virtual void apply(osg::Matrixf& value)     { if (_lse->getValue(_index, value)) { _success = true; _numberToPop = 16; } }
+    virtual void apply(osg::Matrixd& value)     { if (_lse->getValue(_index, value)) { _success = true; _numberToPop = 16; } }
     virtual void apply(osg::BoundingBoxf& value) { if (_lse->getValue(_index, value)) { _success=true; } }
     virtual void apply(osg::BoundingBoxd& value) { if (_lse->getValue(_index, value)) { _success=true; } }
     virtual void apply(osg::BoundingSpheref& value) { if (_lse->getValue(_index, value)) { _success=true; } }
@@ -3543,6 +3543,7 @@ bool LuaScriptEngine::getValue(int pos, osg::Matrixf& value) const
             value(r,c) = lua_tonumber(_lua, -16+(r*4+c));
         }
     }
+    lua_pop(_lua, 16);
     return true;
 }
 
@@ -3557,6 +3558,7 @@ bool LuaScriptEngine::getValue(int pos, osg::Matrixd& value) const
             value(r,c) = lua_tonumber(_lua, -16+(r*4+c));
         }
     }
+    lua_pop(_lua, 16);
     return true;
 }
 
@@ -3601,7 +3603,7 @@ void LuaScriptEngine::pushValue(const osg::Matrixf& value) const
     {
         for(unsigned int c=0; c<4; ++c)
         {
-            lua_pushnumber(_lua, r*4+c); lua_pushinteger(_lua, (lua_Integer) value(r,c)); lua_settable(_lua, -3);
+            lua_pushinteger(_lua, r*4+c); lua_pushnumber(_lua, (lua_Integer) value(r,c)); lua_settable(_lua, -3);
         }
     }
 }

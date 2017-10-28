@@ -621,8 +621,8 @@ struct TextCounterCallback : public osg::NodeCallback
         if (text)
         {
             std::stringstream str;
-            str <<"Text Counter "<<_textCounter<<std::endl;
-            OSG_NOTICE<<"Udating text"<<str.str()<<std::endl;
+            str <<"Text Counter "<<_textCounter;
+            OSG_NOTICE<<"Updating text : "<<str.str()<<std::endl;
 
             text->setText(str.str());
 
@@ -670,7 +670,7 @@ int main(int argc, char** argv)
         text->setUpdateCallback(new TextCounterCallback());
         text->setFont("fonts/times.ttf");
         text->setAxisAlignment(osgText::Text::XZ_PLANE);
-        text->setText("This is a counter test");
+        text->setText("Text Counter :");
 
         viewer.setSceneData(text.get());
     }

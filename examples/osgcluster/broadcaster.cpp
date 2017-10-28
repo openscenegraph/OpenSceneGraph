@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <iostream>
 
 #if !defined (WIN32) || defined(__CYGWIN__)
 #include <sys/ioctl.h>
@@ -68,6 +69,13 @@
 
 Broadcaster::Broadcaster( void )
 {
+#if defined (__linux) || defined(__CYGWIN__)
+     _ifr_name = "eth0";
+#elif defined(__sun)
+     _ifr_name = "hme0";
+#elif !defined (WIN32)
+     _ifr_name = "ef0";
+#endif
     _port = 0;
     _initialized = false;
     _buffer = 0L;
@@ -127,13 +135,7 @@ bool Broadcaster::init( void )
 
 #if !defined (WIN32) || defined(__CYGWIN__)
         struct ifreq ifr;
-#endif
-#if defined (__linux) || defined(__CYGWIN__)
-        strcpy( ifr.ifr_name, "eth0" );
-#elif defined(__sun)
-        strcpy( ifr.ifr_name, "hme0" );
-#elif !defined (WIN32)
-        strcpy( ifr.ifr_name, "ef0" );
+        strcpy( ifr.ifr_name, _ifr_name.c_str());
 #endif
 #if defined (WIN32) // get the server address
         saddr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
@@ -141,6 +143,7 @@ bool Broadcaster::init( void )
 #else
         if( (ioctl( _so, SIOCGIFBRDADDR, &ifr)) < 0 )
         {
+            printf(" ifr.ifr_name = %s\n",ifr.ifr_name);
             perror( "Broadcaster::init() Cannot get Broadcast Address" );
             return false;
         }
@@ -159,6 +162,11 @@ bool Broadcaster::init( void )
 
     _initialized = true;
     return _initialized;
+}
+
+void Broadcaster::setIFRName( const std::string& name )
+{
+    _ifr_name = name;
 }
 
 void Broadcaster::setHost( const char *hostname )
@@ -202,6 +210,7 @@ void Broadcaster::sync( void )
 #else
     unsigned int size = sizeof( struct sockaddr_in );
     sendto( _so, (const void *)_buffer, _buffer_size, 0, (struct sockaddr *)&saddr, size );
+    std::cout<<"sento("<<_buffer<<", "<<_buffer_size<<std::endl;
 #endif
 
 }

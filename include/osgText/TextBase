@@ -53,6 +53,9 @@ public:
     virtual void setFont(const std::string& fontfile);
 
     /** Get the font. Return 0 if default is being used.*/
+    Font* getFont() { return _font.get(); }
+
+    /** Get the const font. Return 0 if default is being used.*/
     const Font* getFont() const { return _font.get(); }
 
 
@@ -276,9 +279,17 @@ public:
     void getCoord(unsigned int i, osg::Vec2& c) const { c.set((*_coords)[i].x(), (*_coords)[i].y()); }
     void getCoord(unsigned int i, osg::Vec3& c) const { c = (*_coords)[i]; }
 
+
+    /** Get the internal matrix used to provide positioning of text.*/
+    const osg::Matrix& getMatrix() const { return _matrix; }
+
 protected:
 
     virtual ~TextBase();
+
+    virtual osg::StateSet* createStateSet();
+
+    virtual void assignStateSet();
 
     void initArraysAndBuffers();
 
@@ -295,7 +306,7 @@ protected:
 
     typedef osg::ref_ptr<osg::Vec2Array> TexCoords;
     typedef osg::ref_ptr<osg::Vec4Array> ColorCoords;
-    typedef std::vector< osg::ref_ptr<osg::DrawElementsUShort> > Primitives;
+    typedef std::vector< osg::ref_ptr<osg::DrawElements> > Primitives;
 
 
     // members which have public access.
@@ -321,11 +332,11 @@ protected:
     osg::Vec4                               _textBBColor;
     KerningType                             _kerningType;
     unsigned int                            _lineCount;
+    bool                                    _glyphNormalized;
 
     osg::Vec3                               _offset;
     osg::Vec3                               _normal;
     osg::BoundingBox                        _textBB;
-
 
     mutable osg::Matrix                     _matrix;
 

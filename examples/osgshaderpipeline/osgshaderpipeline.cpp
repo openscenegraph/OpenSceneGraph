@@ -70,12 +70,12 @@ bool setUpStateSet(osg::ArgumentParser& arguments, osg::StateSet* stateset)
     osg::ref_ptr<osg::Program> program = new osg::Program;
 
 
-    if (!readShaderArguments(arguments, "--vert", program, "shaders/shaderpipeline.vert"))
+    if (!readShaderArguments(arguments, "--vert", program.get(), "shaders/shaderpipeline.vert"))
     {
         return false;
     }
 
-    if (!readShaderArguments(arguments, "--frag", program, "shaders/shaderpipeline.frag"))
+    if (!readShaderArguments(arguments, "--frag", program.get(), "shaders/shaderpipeline.frag"))
     {
         return false;
     }
@@ -168,7 +168,7 @@ int main(int argc, char** argv)
     stateset->setGlobalDefaults();
 
     // set up the topmost StateSet with the shader pipeline settings.
-    setUpStateSet(arguments, stateset);
+    setUpStateSet(arguments, stateset.get());
 
 
     bool useRootStateSet = arguments.read("--state");
@@ -180,9 +180,7 @@ int main(int argc, char** argv)
         viewer.getCamera()->setStateSet(stateset.get());
     }
 
-
     viewer.realize();
-
 
 
     // load the data

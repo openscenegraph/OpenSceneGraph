@@ -65,9 +65,10 @@ class OBJWriterNodeVisitor: public osg::NodeVisitor {
             }
         }
 
-        virtual void apply(osg::Geode &node);
+        virtual void apply(osg::Geometry & geometry);
+        virtual void apply(osg::Geode & node);
 
-        virtual void apply(osg::Group &node)
+        virtual void apply(osg::Group & node)
         {
             pushStateSet(node.getStateSet());
             _nameStack.push_back( node.getName().empty() ? node.className() : node.getName() );
@@ -78,14 +79,6 @@ class OBJWriterNodeVisitor: public osg::NodeVisitor {
             traverse( node );
 
             _nameStack.pop_back();
-            popStateSet(node.getStateSet());
-        }
-
-        void traverse (osg::Node &node)
-        {
-            pushStateSet(node.getStateSet());
-
-            osg::NodeVisitor::traverse( node );
 
             popStateSet(node.getStateSet());
         }

@@ -72,7 +72,7 @@ class OSG_EXPORT Callback : public virtual Object {
 
         /** Invoke the callback, first parameter is the Object that the callback is attached to,
          *  the second parameter, the data, is typically the NodeVisitor that is invoking the callback.
-         *  The run(..) method may be overriden by users directly, or if the user is using one of the old
+         *  The run(..) method may be overridden by users directly, or if the user is using one of the old
          *  style callbacks such as NodeCallback or Drawable::UpdateCallback then you can just override
          *  the appropriate callback method on those callback subclasses.
          *  If you are implementing your own callback then one should call traverse() to make sure nested callbacks

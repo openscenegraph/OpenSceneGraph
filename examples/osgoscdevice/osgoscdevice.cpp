@@ -201,7 +201,7 @@ private:
 bool UserEventHandler::handle(osgGA::Event* event, osg::Object* /*object*/, osg::NodeVisitor* nv)
 {
 
-    OSG_ALWAYS << "handle user-event: " << event->getName() << std::endl;
+    OSG_INFO << "handle user-event: " << event->getName() << std::endl;
 
     if (event->getName() == "/pick-result")
     {
@@ -398,8 +398,22 @@ int main( int argc, char **argv )
 
     arguments.getApplicationUsage()->addCommandLineOption("--zeroconf","uses zeroconf to advertise the osc-plugin and to discover it");
     arguments.getApplicationUsage()->addCommandLineOption("--sender","create a view which sends its events via osc");
-    arguments.getApplicationUsage()->addCommandLineOption("--recevier","create a view which receive its events via osc");
+    arguments.getApplicationUsage()->addCommandLineOption("--receiver","create a view which receive its events via osc");
 
+
+
+    std::string address;
+    std::string port;
+
+    while (arguments.read("--address", address)) {}
+    while (arguments.read("--port", port)) {}
+
+    bool use_zeroconf(false);
+    bool use_sender(false);
+    bool use_receiver(false);
+    if(arguments.find("--zeroconf") > 0) { use_zeroconf = true; }
+    if(arguments.find("--sender") > 0) { use_sender = true; }
+    if(arguments.find("--receiver") > 0) { use_receiver = true; }
 
 
     // read the scene from the list of file specified commandline args.
@@ -414,12 +428,7 @@ int main( int argc, char **argv )
         scene = geode;
     }
 
-    bool use_zeroconf(false);
-    bool use_sender(false);
-    bool use_receiver(false);
-    if(arguments.find("--zeroconf") > 0) { use_zeroconf = true; }
-    if(arguments.find("--sender") > 0) { use_sender = true; }
-    if(arguments.find("--receiver") > 0) { use_receiver = true; }
+
     // construct the viewer.
     osgViewer::CompositeViewer viewer(arguments);
 
@@ -463,7 +472,13 @@ int main( int argc, char **argv )
         view->addEventHandler( new osgViewer::StatsHandler );
         view->addEventHandler( new UserEventHandler(text) );
 
-        osg::ref_ptr<osgGA::Device> device = osgDB::readRefFile<osgGA::Device>("0.0.0.0:9000.receiver.osc");
+        if (address.empty()) address="0.0.0.0";
+        if (port.empty()) port="9000";
+
+        std::string address_port = address+":"+port+".receiver.osc";
+        OSG_NOTICE<<"osc plugin address:port string : "<<address_port<<std::endl;
+
+        osg::ref_ptr<osgGA::Device> device = osgDB::readRefFile<osgGA::Device>(address_port);
         if (device.valid() && (device->getCapabilities() & osgGA::Device::RECEIVE_EVENTS))
         {
             view->addDevice(device);
@@ -536,7 +551,13 @@ int main( int argc, char **argv )
         }
         else
         {
-            osg::ref_ptr<osgGA::Device> device = osgDB::readRefFile<osgGA::Device>("localhost:9000.sender.osc");
+            if (address.empty()) address="localhost";
+            if (port.empty()) port="9000";
+
+            std::string address_port = address+":"+port+".sender.osc";
+            OSG_NOTICE<<"osc plugin address:port string : "<<address_port<<std::endl;
+
+            osg::ref_ptr<osgGA::Device> device = osgDB::readRefFile<osgGA::Device>(address_port);
             if (device.valid() && (device->getCapabilities() & osgGA::Device::SEND_EVENTS))
             {
                 // add as first event handler, so it gets ALL events ...

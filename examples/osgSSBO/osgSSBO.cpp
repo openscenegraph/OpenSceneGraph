@@ -473,7 +473,6 @@ void ComputeNode::addDataMonitor(osg::Vec3 placement, osg::Vec3 relativePlacemen
     pat->setName(labelCaption);
     text->setText(pat->getName());
     text->setBackdropType(osgText::Text::OUTLINE);
-    text->setBackdropImplementation(osgText::Text::POLYGON_OFFSET);
     text->setBackdropOffset(0.05f);
     text->setBackdropColor(osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
@@ -773,7 +772,7 @@ void ComputeNode::initComputingSetup()
     _dataArray->setBufferObject(_ssbo.get());
 
 
-    _ssbb = new osg::ShaderStorageBufferBinding(0, _ssbo.get(), 0, blockSize);
+    _ssbb = new osg::ShaderStorageBufferBinding(0, _dataArray.get(), 0, blockSize);
     statesetComputation->setAttributeAndModes(_ssbb.get(), osg::StateAttribute::ON);
 
 

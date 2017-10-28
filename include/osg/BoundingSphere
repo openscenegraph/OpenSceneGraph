@@ -64,7 +64,7 @@ class BoundingSphereImpl
         inline bool valid() const { return _radius>=0.0; }
 
         inline bool operator == (const BoundingSphereImpl& rhs) const { return _center==rhs._center && _radius==rhs._radius; }
-        inline bool operator != (const BoundingSphereImpl& rhs) const { return _center!=rhs._center || _radius==rhs._radius; }
+        inline bool operator != (const BoundingSphereImpl& rhs) const { return _center!=rhs._center || _radius!=rhs._radius; }
 
         /** Set the bounding sphere to the given center/radius using floats. */
         inline void set(const vec_type& center,value_type radius)

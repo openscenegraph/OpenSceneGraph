@@ -1110,10 +1110,6 @@ DatabasePager::DatabasePager()
     // test of setting the database threads affinity.
     // _affinity = OpenThreads::Affinity(4,4);
 
-    setUpThreads(
-        osg::DisplaySettings::instance()->getNumOfDatabaseThreadsHint(),
-        osg::DisplaySettings::instance()->getNumOfHttpDatabaseThreadsHint());
-
     str = getenv("OSG_DATABASE_PAGER_PRIORITY");
     if (str)
     {

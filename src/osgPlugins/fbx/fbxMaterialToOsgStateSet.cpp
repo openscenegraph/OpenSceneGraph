@@ -148,6 +148,69 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
         }
     }
 
+    // normal map...
+    const FbxProperty lNormalProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sNormalMap);
+    if (lNormalProperty.IsValid())
+    {
+        int lNbTex = lNormalProperty.GetSrcObjectCount<FbxFileTexture>();
+        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+        {
+            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lNormalProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
+            if (lTexture)
+            {
+                result.normalTexture = fbxTextureToOsgTexture(lTexture);
+                result.normalChannel = lTexture->UVSet.Get();
+                result.normalScaleU = lTexture->GetScaleU();
+                result.normalScaleV = lTexture->GetScaleV();
+            }
+
+            //For now only allow 1 texture
+            break;
+        }
+    }
+
+    // specular map...
+    const FbxProperty lSpecularProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sSpecular);
+    if (lSpecularProperty.IsValid())
+    {
+        int lNbTex = lSpecularProperty.GetSrcObjectCount<FbxFileTexture>();
+        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+        {
+            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lSpecularProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
+            if (lTexture)
+            {
+                result.specularTexture = fbxTextureToOsgTexture(lTexture);
+                result.specularChannel = lTexture->UVSet.Get();
+                result.specularScaleU = lTexture->GetScaleU();
+                result.specularScaleV = lTexture->GetScaleV();
+            }
+
+            //For now only allow 1 texture
+            break;
+        }
+    }
+
+    // shininess map...
+    const FbxProperty lShininessProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sShininess);
+    if (lShininessProperty.IsValid())
+    {
+        int lNbTex = lShininessProperty.GetSrcObjectCount<FbxFileTexture>();
+        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+        {
+            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lShininessProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
+            if (lTexture)
+            {
+                result.shininessTexture = fbxTextureToOsgTexture(lTexture);
+                result.shininessChannel = lTexture->UVSet.Get();
+                result.shininessScaleU = lTexture->GetScaleU();
+                result.shininessScaleV = lTexture->GetScaleV();
+            }
+
+            //For now only allow 1 texture
+            break;
+        }
+    }
+
     if (pFbxLambert)
     {
         FbxDouble3 color = pFbxLambert->Diffuse.Get();
@@ -177,6 +240,9 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
 
         // get maps factors...
         result.diffuseFactor = pFbxLambert->DiffuseFactor.Get();
+        result.emissiveFactor = pFbxLambert->EmissiveFactor.Get();
+        result.ambientFactor = pFbxLambert->AmbientFactor.Get();
+        result.normalFactor = pFbxLambert->BumpFactor.Get();
 
         if (const FbxSurfacePhong* pFbxPhong = FbxCast<FbxSurfacePhong>(pFbxLambert))
         {
@@ -196,6 +262,7 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
 
             // get maps factors...
             result.reflectionFactor = pFbxPhong->ReflectionFactor.Get();
+            result.specularFactor = pFbxPhong->SpecularFactor.Get();
             // get more factors here...
         }
     }

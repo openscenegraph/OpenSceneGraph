@@ -20,6 +20,7 @@
 // example that provides the user with control over view position with basic picking.
 
 #include <osg/Timer>
+#include <osg/KdTree>
 #include <osg/io_utils>
 #include <osg/observer_ptr>
 
@@ -122,9 +123,14 @@ public:
     PickHandler():
         _mx(0.0),_my(0.0),
         _usePolytopeIntersector(false),
-        _useWindowCoordinates(false) {}
+        _useWindowCoordinates(false),
+        _precisionHint(osgUtil::Intersector::USE_DOUBLE_CALCULATIONS),
+        _primitiveMask(osgUtil::PolytopeIntersector::ALL_PRIMITIVES) {}
 
     ~PickHandler() {}
+
+    void setPrimitiveMask(unsigned int primitiveMask) { _primitiveMask = primitiveMask; }
+
 
     bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
     {
@@ -164,6 +170,10 @@ public:
                         osg::notify(osg::NOTICE)<<"Using projection coordiates for picking"<<std::endl;
                     }
                 }
+                else if (ea.getKey()=='a')
+                {
+                    fullWindowIntersectionTest(viewer);
+                }
                 else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Delete || ea.getKey()==osgGA::GUIEventAdapter::KEY_BackSpace)
                 {
                     osg::notify(osg::NOTICE)<<"Delete"<<std::endl;
@@ -195,6 +205,56 @@ public:
         }
     }
 
+    void fullWindowIntersectionTest(osgViewer::Viewer* viewer)
+    {
+
+        osg::ref_ptr<osgUtil::IntersectorGroup> intersectors = new osgUtil::IntersectorGroup;
+
+        osg::Viewport* viewport = viewer->getCamera()->getViewport();
+        unsigned int numX = 100;
+        unsigned int numY = 100;
+        double dx = viewport->width()/double(numX-1);
+        double dy = viewport->width()/double(numX-1);
+
+
+        double y = viewport->x();
+        for(unsigned int r=0; r<numY; ++r)
+        {
+            double x = viewport->x();
+            for(unsigned int c=0; c<numX; ++c)
+            {
+                osg::ref_ptr<osgUtil::Intersector> intersector;
+
+
+                if (_usePolytopeIntersector)
+                {
+                    osg::ref_ptr<osgUtil::PolytopeIntersector> pi = new osgUtil::PolytopeIntersector( osgUtil::Intersector::WINDOW, x-dx*0.5, y-dy*0.5, x+dx*0.5, y+dy*0.5);
+                    pi->setPrimitiveMask(_primitiveMask);
+                    intersector = pi.get();
+                }
+                else
+                {
+                    intersector = new osgUtil::LineSegmentIntersector( osgUtil::Intersector::WINDOW, x, y);
+                }
+
+                intersector->setPrecisionHint(_precisionHint);
+                intersectors->getIntersectors().push_back(intersector);
+
+                x += dx;
+            }
+            y += dy;
+        }
+
+
+        osgUtil::IntersectionVisitor iv(intersectors.get());
+
+        osg::ElapsedTime elapsedTime;
+        viewer->getCamera()->accept(iv);
+
+        OSG_NOTICE<<"Intersection traversal took "<<elapsedTime.elapsedTime_m()<<"ms for "<<intersectors->getIntersectors().size()<<" intersectors"<<std::endl;
+
+    }
+
     void pick(const osgGA::GUIEventAdapter& ea, osgViewer::Viewer* viewer)
     {
         osg::Node* scene = viewer->getSceneData();
@@ -204,6 +264,7 @@ public:
 
         osg::Node* node = 0;
         osg::Group* parent = 0;
+
 
         if (_usePolytopeIntersector)
         {
@@ -227,9 +288,17 @@ public:
                 double h = 0.05;
                 picker = new osgUtil::PolytopeIntersector( osgUtil::Intersector::PROJECTION, mx-w, my-h, mx+w, my+h );
             }
+
+            picker->setPrecisionHint(_precisionHint);
+            picker->setPrimitiveMask(_primitiveMask);
+
             osgUtil::IntersectionVisitor iv(picker);
 
+            osg::ElapsedTime elapsedTime;
+
             viewer->getCamera()->accept(iv);
+
+            OSG_NOTICE<<"PoltyopeIntersector traversal took "<<elapsedTime.elapsedTime_m()<<"ms"<<std::endl;
 
             if (picker->containsIntersections())
             {
@@ -267,14 +336,22 @@ public:
                 float my = viewport->y() + (int)((float)viewport->height()*(ea.getYnormalized()*0.5f+0.5f));
                 picker = new osgUtil::LineSegmentIntersector( osgUtil::Intersector::WINDOW, mx, my );
             }
+            picker->setPrecisionHint(_precisionHint);
+
             osgUtil::IntersectionVisitor iv(picker);
 
+            osg::ElapsedTime elapsedTime;
+
             viewer->getCamera()->accept(iv);
+
+            OSG_NOTICE<<"LineSegmentIntersector traversal took "<<elapsedTime.elapsedTime_m()<<"ms"<<std::endl;
 
             if (picker->containsIntersections())
             {
                 osgUtil::LineSegmentIntersector::Intersection intersection = picker->getFirstIntersection();
-                osg::notify(osg::NOTICE)<<"Picked "<<intersection.localIntersectionPoint<<std::endl;
+                osg::notify(osg::NOTICE)<<"Picked "<<intersection.localIntersectionPoint<<std::endl
+                <<"  primitive index "<<intersection.primitiveIndex
+                <<std::endl;
 
                 osg::NodePath& nodePath = intersection.nodePath;
                 node = (nodePath.size()>=1)?nodePath[nodePath.size()-1]:0;
@@ -329,19 +406,66 @@ public:
         }
     }
 
+    void setPrecisionHint(osgUtil::Intersector::PrecisionHint hint) { _precisionHint = hint; }
+
 protected:
 
     float _mx,_my;
     bool _usePolytopeIntersector;
     bool _useWindowCoordinates;
+    osgUtil::Intersector::PrecisionHint _precisionHint;
+    unsigned int _primitiveMask;
+
+};
+
+class ConvertPrimitives : public osg::NodeVisitor
+{
+public:
+
+    osg::PrimitiveSet::Mode _mode;
+
+    ConvertPrimitives(osg::PrimitiveSet::Mode mode):
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _mode(mode) {}
+
+        void apply(osg::Geometry& geometry)
+        {
+            if (!geometry.getVertexArray()) return;
+
+            unsigned int numVertices = geometry.getVertexArray()->getNumElements();
+
+            if (_mode==osg::PrimitiveSet::POINTS)
+            {
+                // remove previous primitive sets.
+                geometry.removePrimitiveSet(0, geometry.getNumPrimitiveSets());
+                geometry.addPrimitiveSet(new osg::DrawArrays(_mode, 0,numVertices));
+            }
+            else if (_mode==osg::PrimitiveSet::LINES)
+            {
+                geometry.removePrimitiveSet(0, geometry.getNumPrimitiveSets());
+                geometry.addPrimitiveSet(new osg::DrawArrays(_mode, 0,numVertices));
+            }
+        }
 };
 
 int main( int argc, char **argv )
 {
-    osg::ref_ptr<osg::Node> loadedModel;
+    osg::ArgumentParser arguments(&argc, argv);
 
-    // load the scene.
-    if (argc>1) loadedModel = osgDB::readRefNodeFile(argv[1]);
+    osgViewer::Viewer viewer(arguments);
+
+    bool useKdTree = false;
+    while (arguments.read("--kdtree")) { useKdTree = true; }
+
+    osg::ref_ptr<PickHandler> pickhandler = new PickHandler;
+    while (arguments.read("--double")) { pickhandler->setPrecisionHint(osgUtil::Intersector::USE_DOUBLE_CALCULATIONS); }
+    while (arguments.read("--float")) { pickhandler->setPrecisionHint(osgUtil::Intersector::USE_FLOAT_CALCULATIONS); }
+
+    unsigned int mask = osgUtil::PolytopeIntersector::ALL_PRIMITIVES;
+    while (arguments.read("--prim-mask", mask) || arguments.read("--pm", mask)) { pickhandler->setPrimitiveMask(mask); }
+
+    // load model
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
 
     // if not loaded assume no arguments passed in, try use default mode instead.
     if (!loadedModel) loadedModel = osgDB::readRefNodeFile("dumptruck.osgt");
@@ -352,28 +476,18 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    // create the window to draw to.
-    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-    traits->x = 200;
-    traits->y = 200;
-    traits->width = 800;
-    traits->height = 600;
-    traits->windowDecoration = true;
-    traits->doubleBuffer = true;
-    traits->sharedContext = 0;
+    while(arguments.read("--points")) { ConvertPrimitives cp(osg::PrimitiveSet::POINTS); loadedModel->accept(cp); }
+    while(arguments.read("--lines")) { ConvertPrimitives cp(osg::PrimitiveSet::LINES); loadedModel->accept(cp); }
 
-    osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-    osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
-    if (!gw)
+    if (useKdTree)
     {
-        osg::notify(osg::NOTICE)<<"Error: unable to create graphics window."<<std::endl;
-        return 1;
+        OSG_NOTICE<<"Building KdTrees"<<std::endl;
+        osg::ref_ptr<osg::KdTreeBuilder> builder = new osg::KdTreeBuilder;
+        loadedModel->accept(*builder);
     }
 
-    // create the view of the scene.
-    osgViewer::Viewer viewer;
-    viewer.getCamera()->setGraphicsContext(gc.get());
-    viewer.getCamera()->setViewport(0,0,800,600);
+
+    // assign the scene graph to viewer
     viewer.setSceneData(loadedModel);
 
     // create a tracball manipulator to move the camera around in response to keyboard/mouse events
@@ -383,7 +497,7 @@ int main( int argc, char **argv )
     viewer.addEventHandler(statesetManipulator.get());
 
     // add the pick handler
-    viewer.addEventHandler(new PickHandler());
+    viewer.addEventHandler(pickhandler.get());
 
     viewer.realize();
 

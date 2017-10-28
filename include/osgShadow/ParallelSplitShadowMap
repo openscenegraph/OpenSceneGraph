@@ -111,7 +111,7 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
         class OSGSHADOW_EXPORT FragmentShaderGenerator : public osg::Referenced {
             public:
                 /**
-                 * generate the GLSL fragement shader
+                 * generate the GLSL fragment shader
                  */
                 virtual std::string generateGLSL_FragmentShader_BaseTex(bool debug, unsigned int splitCount,double textureRes, bool filtered, unsigned int nbrSplits,unsigned int textureOffset);
         };

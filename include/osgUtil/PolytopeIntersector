@@ -24,13 +24,6 @@ namespace osgUtil
 class OSGUTIL_EXPORT PolytopeIntersector : public Intersector
 {
     public:
-        /// dimension enum to specify primitive types to check.
-        enum {
-            DimZero = (1<<0),    ///< check for points
-            DimOne = (1<<1),     ///< check for lines
-            DimTwo = (1<<2),     ///< check for triangles, quad
-            AllDims = (DimZero | DimOne | DimTwo)
-        };
 
         /** Construct a PolytopeIntersector using specified polytope in MODEL coordinates.*/
         PolytopeIntersector(const osg::Polytope& polytope);
@@ -43,6 +36,13 @@ class OSGUTIL_EXPORT PolytopeIntersector : public Intersector
           * In PROJECTION coordinates (clip space cube) creates a five sided polytope box that has a front face at -1 and sides around box xMin, yMin, xMax, yMax.
           * In VIEW and MODEL coordinates (clip space cube) creates a five sided polytope box that has a front face at 0.0 and sides around box xMin, yMin, xMax, yMax.*/
         PolytopeIntersector(CoordinateFrame cf, double xMin, double yMin, double xMax, double yMax);
+
+        /** Get the Polytope used by the intersector.*/
+        osg::Polytope& getPolytope() { return _polytope;}
+
+        /** Get the const Polytope used by the intersector.*/
+        const osg::Polytope& getPolytope() const { return _polytope;}
+
 
         typedef osg::Plane::Vec3_type Vec3_type;
 
@@ -86,15 +86,20 @@ class OSGUTIL_EXPORT PolytopeIntersector : public Intersector
 
         inline Intersection getFirstIntersection() { Intersections& intersections = getIntersections(); return intersections.empty() ? Intersection() : *(intersections.begin()); }
 
-        inline unsigned int getDimensionMask() const { return _dimensionMask; }
 
-        /** set the dimension mask.
-         * As polytope-triangle and polytope-quad intersections are expensive to compute
-         * it is possible to turn them off by calling setDimensionMask( DimZero | DimOne )
-         */
-        inline void setDimensionMask(unsigned int dimensionMask) { _dimensionMask = dimensionMask; }
+        /// dimension enum to specify primitive types to check.
+        enum {
+            POINT_PRIMITIVES = (1<<0),      /// check for points
+            LINE_PRIMITIVES = (1<<1),       /// check for lines
+            TRIANGLE_PRIMITIVES = (1<<2),   /// check for triangles and other primitives like quad, polygons that can be decomposed into triangles
+            ALL_PRIMITIVES = ( POINT_PRIMITIVES | LINE_PRIMITIVES | TRIANGLE_PRIMITIVES )
+        };
 
-        inline const osg::Plane& getReferencePlane() const { return _referencePlane; }
+        /** Set which Primitives should be tested for intersections.*/
+        void setPrimitiveMask(unsigned int mask) { _primitiveMask = mask; }
+
+        /** Get which Primitives should be tested for intersections.*/
+        unsigned int getPrimitiveMask() const { return _primitiveMask; }
 
         /** set the plane used to sort the intersections.
          * The intersections are sorted by the distance of the localIntersectionPoint
@@ -103,7 +108,24 @@ class OSGUTIL_EXPORT PolytopeIntersector : public Intersector
          */
         inline void setReferencePlane(const osg::Plane& plane) { _referencePlane = plane; }
 
-    public:
+        inline const osg::Plane& getReferencePlane() const { return _referencePlane; }
+
+#ifdef OSG_USE_DEPRECATED_API
+        enum {
+            DimZero = POINT_PRIMITIVES,    /// deprecated, use POINT_PRIMITIVES
+            DimOne = LINE_PRIMITIVES,      /// deprecated, use POINT_PRIMITIVES
+            DimTwo = TRIANGLE_PRIMITIVES,  /// deprecated, use POINT_PRIMITIVES
+            AllDims =  ALL_PRIMITIVES      /// deprecated, use ALL_PRIMITIVES
+        };
+
+        /** deprecated, use setPrimtiveMask() */
+        inline void setDimensionMask(unsigned int mask) { setPrimitiveMask(mask); }
+
+        /** deprecated, use getPrimtiveMask() */
+        inline unsigned int getDimensionMask() const { return getPrimitiveMask(); }
+#endif
+
+public:
 
         virtual Intersector* clone(osgUtil::IntersectionVisitor& iv);
 
@@ -123,7 +145,7 @@ class OSGUTIL_EXPORT PolytopeIntersector : public Intersector
 
         osg::Polytope _polytope;
 
-        unsigned int _dimensionMask; ///< mask which dimensions should be checked
+        unsigned int _primitiveMask; ///< mask which dimensions should be checked
         osg::Plane _referencePlane; ///< plane to use for sorting intersections
 
         Intersections _intersections;

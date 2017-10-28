@@ -32,7 +32,7 @@ Purpose:
     std::streampos actually points past 32 bit addressable range (2 GiB).
 
     Even if std::streamoff is 32 bit and incapable of representing 64 bit file
-    positions, original std::streampos may be prefectly able to handle them.
+    positions, original std::streampos may be perfectly able to handle them.
 
     But, when such situation occurs more elaborate conversion methods from/to
     std::streampos are needed. Functions below employ such methods.

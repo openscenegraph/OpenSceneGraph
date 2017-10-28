@@ -17,7 +17,7 @@
 /// [EXPERIMENTAL] Disables animation data (and matrix transforms) for compatibility with some 3rd party apps.
 /// Animations are not read by all 3DS importers. Thus disabling them may allow some 3rd-party apps, such as Rhinoceros (tested with 4.0) to correctly import 3DS files.
 /// However, having proper hierarchy with matrix transforms will become impossible.
-///\warning This is still experimental, hence the compile flag. This should become a reader/writer option as soon as it works as intented (maybe "noMatrixTransforms" could become a read/write option?).
+///\warning This is still experimental, hence the compile flag. This should become a reader/writer option as soon as it works as intended (maybe "noMatrixTransforms" could become a read/write option?).
 #define DISABLE_3DS_ANIMATION 0            // Default = 0
 
 #include <osg/io_utils>

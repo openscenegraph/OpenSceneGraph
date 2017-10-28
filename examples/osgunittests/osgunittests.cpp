@@ -407,8 +407,7 @@ void testQuat(const osg::Vec3d& quat_scale)
                        0.0, 0.0, 0.5, 0.0,
                        1.0, 1.0, 1.0, 1.0);
 
-    osg::Quat quat;
-    matrix.get(quat);
+    osg::Quat quat = matrix.getRotate();
 
     osg::notify(osg::NOTICE)<<"Matrix = "<<matrix<<"rotation = "<<quat<<", expected quat = (0,0,0,1)"<<std::endl;
 }

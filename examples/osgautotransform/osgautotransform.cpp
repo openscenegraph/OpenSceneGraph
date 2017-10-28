@@ -18,7 +18,9 @@
 
 #include <osgUtil/Optimizer>
 #include <osgDB/ReadFile>
-#include <osgViewer/Viewer>
+#include <osgGA/TrackballManipulator>
+#include <osgViewer/ViewerEventHandlers>
+#include <osgViewer/CompositeViewer>
 
 #include <osg/Material>
 #include <osg/Geode>
@@ -193,13 +195,125 @@ osg::Node* createScene()
     return root;
 }
 
-int main(int, char**)
+osgViewer::View* createView(osg::ref_ptr<osg::Node> scenegraph, osg::ref_ptr<osg::GraphicsContext> gc, unsigned int x, unsigned int y, unsigned int width, unsigned int height)
 {
-    // construct the viewer.
-    osgViewer::Viewer viewer;
+    OSG_NOTICE<<"createView(....,x="<<x<<", y="<<y<<", width="<<width<<", height="<<height<<")"<<std::endl;
 
-    // set the scene to render
-    viewer.setSceneData(createScene());
+    if (!gc)
+    {
+        osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+        traits->x = x;
+        traits->y = y;
+        traits->width = width;
+        traits->height = height;
+        traits->windowDecoration = true;
+        traits->doubleBuffer = true;
+        traits->sharedContext = 0;
+
+        gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+        if (!gc)
+        {
+            osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
+            return 0;
+        }
+
+        x = 0;
+        y = 0;
+    }
+
+
+    osgViewer::View* view = new osgViewer::View;
+    view->getCamera()->setGraphicsContext(gc.get());
+    view->getCamera()->setViewport(new osg::Viewport(x, y, width, height));
+    //view->getCamera()->setProjectionMatrixAsPerspective(30.0, double(width) / double(height), 1.0, 1000.0);
+    view->setCameraManipulator(new osgGA::TrackballManipulator);
+    view->setSceneData(scenegraph);
+    return view;
+}
+
+int main(int argc, char** argv)
+{
+    osg::ArgumentParser arguments(&argc, argv);
+
+    // construct the viewer.
+    osgViewer::CompositeViewer viewer(arguments);
+
+
+    // create the scene graph that contains osg::AutoTransform nodes, see about for implementation details
+    osg::ref_ptr<osg::Node> scenegraph = createScene();
+
+    unsigned int numViews = 1;
+    while (arguments.read("-n",numViews)) {}
+
+    bool windows = false;
+    while (arguments.read("-w")) { windows = true; }
+
+    if (numViews<=1)
+    {
+        osgViewer::View* view = new osgViewer::View;
+        view->setUpViewAcrossAllScreens();
+        view->setSceneData(scenegraph.get());
+        view->setCameraManipulator(new osgGA::TrackballManipulator);
+        view->addEventHandler( new osgViewer::StatsHandler );
+        viewer.addView(view);
+    }
+    else
+    {
+        osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
+        if (!wsi)
+        {
+            osg::notify(osg::NOTICE)<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
+            return 1;
+        }
+
+        unsigned int width, height;
+        wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
+
+        unsigned int x=0, y=0;
+        while(arguments.read("--window", x, y, width, height)) {}
+
+        osg::ref_ptr<osg::GraphicsContext> gc;
+        if (!windows)
+        {
+            osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+            traits->x = x;
+            traits->y = y;
+            traits->width = width;
+            traits->height = height;
+            traits->windowDecoration = true;
+            traits->doubleBuffer = true;
+            traits->sharedContext = 0;
+
+            gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+            if (!gc)
+            {
+                osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
+                return 1;
+            }
+        }
+
+        if (numViews==2)
+        {
+            viewer.addView(createView(scenegraph, gc, 0, 0, width/2, height));
+            viewer.addView(createView(scenegraph, gc, width/2, 0, width/2, height));
+        }
+        else if (numViews==3)
+        {
+            viewer.addView(createView(scenegraph, gc, 0, 0, width/2, height/2));
+            viewer.addView(createView(scenegraph, gc, width/2, 0, width/2, height/2));
+            viewer.addView(createView(scenegraph, gc, 0, height/2, width, height/2));
+        }
+        else
+        {
+            viewer.addView(createView(scenegraph, gc, 0, 0, width/2, height/2));
+            viewer.addView(createView(scenegraph, gc, width/2, 0, width/2, height/2));
+            viewer.addView(createView(scenegraph, gc, 0, height/2, width/2, height/2));
+            viewer.addView(createView(scenegraph, gc, width/2, height/2, width/2, height/2));
+        }
+
+        viewer.getView(0)->addEventHandler( new osgViewer::StatsHandler );
+
+    }
 
     // run the viewers frame loop
     return viewer.run();

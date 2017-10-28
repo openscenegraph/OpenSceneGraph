@@ -31,17 +31,18 @@
 // Current version: 1.00 BETA 1 (27/08/2002)
 //
 // Comment: Only works with DXTC mode supported by OpenGL.
-//          (currently: DXT1/DXT3/DXT5) 
+//          (currently: DXT1/DXT3/DXT5)
 //
 // History: -
 //
 //////////////////////////////////////////////////////////////////////
 
 #ifndef DXTCTOOL_H
-#define DXTCTOOL_H 
+#define DXTCTOOL_H
 
 #include <osg/GL>
 #include <osg/Texture>
+#include <osg/Vec3i>
 
 #if defined(_MSC_VER)
 
@@ -78,10 +79,19 @@ bool isDXTC(GLenum pixelFormat);
 
 bool VerticalFlip(size_t Width, size_t Height, GLenum Format, void * pPixels);
 
-bool CompressedImageTranslucent(size_t Width, size_t Height, GLenum Format, void * pPixels);
+bool isCompressedImageTranslucent(size_t Width, size_t Height, GLenum Format, void * pPixels);
 
+//interpolate RGB565 colors with 2/3 part color1 and 1/3 part color2
+unsigned short interpolateColors21(unsigned short color1, unsigned short color2);
+//interpolate RGB565 colors with equal weights
+unsigned short interpolateColors11(unsigned short color1, unsigned short color2);
 
-// Class holding reference to DXTC image pixels 
+bool CompressedImageGetColor(unsigned char color[4], unsigned int s, unsigned int t, unsigned int r, int width, int height, int depth, GLenum format, unsigned char *imageData);
+
+void compressedBlockOrientationConversion(const GLenum format, const unsigned char *src_block, unsigned char *dst_block, const osg::Vec3i& srcOrigin, const osg::Vec3i& rowDelta, const osg::Vec3i& columnDelta);
+
+void compressedBlockStripAlhpa(const GLenum format, const unsigned char *src_block, unsigned char *dst_block);
+// Class holding reference to DXTC image pixels
 class dxtc_pixels
 {
 public:
@@ -102,7 +112,7 @@ protected:
     inline bool SupportedFormat() const;
 
     // Vertical flipping functions
-    void VFlip_DXT1() const;    
+    void VFlip_DXT1() const;
     void VFlip_DXT3() const;
     void VFlip_DXT5() const;
 
@@ -116,7 +126,7 @@ protected:
     inline void BVF_Alpha_DXT5_H2(void * const pBlock) const;                        // V. flip one alpha (DXT5) block with its virtual height == 2
     inline void BVF_Alpha_DXT5_H4(void * const pBlock) const;                        // V. flip one alpha (DXT5) block with its virtual height == 4
     inline void BVF_Alpha_DXT5(void * const pBlock1, void * const pBlock2) const;    // V. flip and swap two alpha (DXT5) blocks, with their virtual height == 4
-    
+
     // Block localization functions
     inline void * GetBlock(size_t i, size_t j, size_t BlockSize) const;
 
@@ -155,7 +165,7 @@ inline bool isDXTC(GLenum pixelFormat)
 }
 
 inline bool VerticalFlip(size_t Width, size_t Height, GLenum Format, void * pPixels) {
-    return (dxtc_pixels(Width, Height, Format, pPixels)).VFlip(); 
+    return (dxtc_pixels(Width, Height, Format, pPixels)).VFlip();
 }
 
 

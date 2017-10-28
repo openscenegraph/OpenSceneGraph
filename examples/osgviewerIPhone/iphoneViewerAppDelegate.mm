@@ -7,9 +7,11 @@
 // multi-touch gestures.
 
 #import "iphoneViewerAppDelegate.h"
-#include <osgGA/MultiTouchTrackballManipulator>
+
 #include <osg/ShapeDrawable>
+#include <osgDB/FileUtils>
 #include <osgUtil/Optimizer>
+#include <osgGA/MultiTouchTrackballManipulator>
 
 //include the iphone specific windowing stuff
 #include <osgViewer/api/IOS/GraphicsWindowIOS> 
@@ -18,6 +20,7 @@
 
 // global programs
 osg::ref_ptr<osg::Program> _vertColorProgram;
+osg::ref_ptr<osg::Program> _textureProgram;
 
 
 @interface MyViewController : UIViewController
@@ -323,6 +326,10 @@ private:
     _vertColorProgram = new osg::Program();
     _vertColorProgram->addShader( new osg::Shader(osg::Shader::VERTEX, ColorShaderVert));
     _vertColorProgram->addShader( new osg::Shader(osg::Shader::FRAGMENT, ColorShaderFrag));
+    
+    _textureProgram = new osg::Program();
+    _textureProgram->addShader( new osg::Shader(osg::Shader::VERTEX, TextureShaderVert));
+    _textureProgram->addShader( new osg::Shader(osg::Shader::FRAGMENT, TextureShaderFrag));
 #endif
     
     //create root
@@ -330,7 +337,7 @@ private:
     _root->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);
     
     //load and attach scene model
-    osg::ref_ptr<osg::Node> model = osgDB::readNodeFile("hog.osg");
+    osg::ref_ptr<osg::Node> model = osgDB::readNodeFile(osgDB::findDataFile("lz.osg"));
     if (!model) {
         osg::Geode* geode = new osg::Geode();
         osg::ShapeDrawable* drawable = new osg::ShapeDrawable(new osg::Box(osg::Vec3(0,0,0), 1));
@@ -341,7 +348,8 @@ private:
     
     // attach shader program if needed
 #if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
-    model->getOrCreateStateSet()->setAttributeAndModes(_vertColorProgram, osg::StateAttribute::ON);
+    //model->getOrCreateStateSet()->setAttributeAndModes(_vertColorProgram, osg::StateAttribute::ON);
+    model->getOrCreateStateSet()->setAttributeAndModes(_textureProgram, osg::StateAttribute::ON);
     optimizeNode(model);
 #endif
 

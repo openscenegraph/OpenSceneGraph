@@ -607,6 +607,27 @@ class OSG_EXPORT State : public Referenced
         }
 
 
+        inline void bindDrawIndirectBufferObject(osg::GLBufferObject* ibo)
+        {
+            if (ibo->isDirty())
+            {
+                ibo->compileBuffer();
+                _currentDIBO = ibo;
+            }
+            else if (ibo != _currentDIBO)
+            {
+                ibo->bindBuffer();
+                _currentDIBO = ibo;
+            }
+        }
+
+        inline void unbindDrawIndirectBufferObject()
+        {
+            if (!_currentDIBO) return;
+            _glBindBuffer(GL_DRAW_INDIRECT_BUFFER,0);
+            _currentDIBO = 0;
+        }
+
         void setCurrentVertexArrayObject(GLuint vao) { _currentVAO = vao; }
         GLuint getCurrentVertexArrayObject() const { return _currentVAO; }
 
@@ -823,8 +844,11 @@ class OSG_EXPORT State : public Referenced
           * during rendering. */
         inline void setDisplaySettings(DisplaySettings* vs) { _displaySettings = vs; }
 
-        /** Get the DisplaySettings */
+        /** Get the const DisplaySettings */
         inline const DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
+
+        /** Get the const DisplaySettings that is current active DisplaySettings to be used by osg::State, - if DisplaySettings is not directly assigned then fallback to DisplaySettings::instance(). */
+        inline const DisplaySettings* getActiveDisplaySettings() const { return _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance().get(); }
 
 
         /** Set the root StateSet this is applied above all StateSet that are pushed and popped during the draw traversal.*/
@@ -1308,11 +1332,12 @@ class OSG_EXPORT State : public Referenced
         unsigned int                                                    _maxBufferObjectPoolSize;
 
 
-        unsigned int                            _currentActiveTextureUnit;
-        unsigned int                            _currentClientActiveTextureUnit;
-        GLBufferObject*                         _currentPBO;
-        GLuint                                  _currentVAO;
-        osg::ref_ptr<osg::IntArrayUniform>      _textureFormat;
+        unsigned int                                                    _currentActiveTextureUnit;
+        unsigned int                                                    _currentClientActiveTextureUnit;
+        GLBufferObject*                                                 _currentPBO;
+        GLBufferObject*                                                 _currentDIBO;
+        GLuint                                                          _currentVAO;
+        osg::ref_ptr<osg::IntArrayUniform>                              _textureFormat;
 
 
         inline ModeMap& getOrCreateTextureModeMap(unsigned int unit)
@@ -1533,7 +1558,7 @@ inline void State::pushDefineList(DefineMap& defineMap,const StateSet::DefineLis
             dv.push_back(StateSet::DefinePair(aitr->second.first,aitr->second.second));
 
             // if the back of the stack has changed since the last then mark it as changed.
-            bool changed = (dv[dv.size()-2].first==dv[dv.size()-1].first);
+            bool changed = (dv[dv.size()-2] != dv.back());
             if (changed)
             {
                 ds.changed = true;
@@ -1602,7 +1627,7 @@ inline void State::popDefineList(DefineMap& defineMap,const StateSet::DefineList
         if (!dv.empty())
         {
             // if the stack has less than 2 entries or new back vs old back are different then mark the DefineStack as changed
-            if ((dv.size()<2) || (dv[dv.size()-2].first!=dv.back().first))
+            if ((dv.size() < 2) || (dv[dv.size()-2] != dv.back()))
             {
                 ds.changed = true;
                 defineMap.changed = true;

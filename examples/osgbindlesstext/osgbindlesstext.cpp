@@ -32,10 +32,10 @@
 /// with a different texture. Generally speaking in broad terms
 /// driver overhead tends to be a huge bottle neck on modern
 /// hardware (as of late 2016). By using bindless textures
-/// we can remove alot of calls to the driver to switch active 
+/// we can remove a lot of calls to the driver to switch active 
 /// textures while rendering. What this also allows us to do
 /// is to consolidate more objects + draw states as we do
-/// not need to change textures, this save us alot of calls to 
+/// not need to change textures, this save us a lot of calls to 
 /// the driver.
 ///
 /// This example combines instancing with bindless textures 
@@ -43,7 +43,7 @@
 /// a pretty simplified example, where each instance ID is 
 /// used as a index into the array of textures. 
 ///
-/// One of the powerfull things about bindless textures is it allows
+/// One of the powerful things about bindless textures is it allows
 /// many more objects to be combined into a single drawable. 
 /// However to do this you may need to add an attribute to 
 /// use an index into the array of texture handles, and not
@@ -164,8 +164,8 @@ public:
         val->_sbbo    = new osg::UniformBufferObject;
         val->_handles = new osg::UInt64Array();
         val->_handles->resize(count*2,0);
-        val->_handles->setBufferObject(val->_sbbo);
-        val->_ssbb    = new osg::UniformBufferBinding(0, val->_sbbo.get(), 0, sizeof(GLuint64)*count);
+        val->_handles->setBufferObject(val->_sbbo.get());
+        val->_ssbb    = new osg::UniformBufferBinding(0, val->_handles.get(), 0, sizeof(GLuint64)*count);
         return val;
     }
     BindlessBuffer& operator  = (const BindlessBuffer& rhs){
@@ -207,7 +207,7 @@ class BindlessTexture: public osg::Texture2D
 public:
     typedef osg::ref_ptr<BindlessBuffer> BufferRef;
     typedef std::vector<osg::ref_ptr<osg::Image> > TextureList;
-    typedef std::vector<GLuint64EXT> HandleList;
+    typedef std::vector<GLuint64> HandleList;
     typedef osg::ref_ptr< osg::Texture::TextureObject> TextureObjectRef;
     typedef std::vector<TextureObjectRef> TextureObjectList;
     typedef osg::buffered_object<TextureObjectList>  TextureObjectBuffer;
@@ -238,8 +238,8 @@ BindlessTexture::BindlessTexture():osg::Texture2D(),_bindlessIndex(0)
     _isBound.resize(5,false);
 }
 
-BindlessTexture::BindlessTexture(const BindlessTexture& rhs, const osg::CopyOp& copy) 
-    :osg::Texture2D( rhs, copy )
+BindlessTexture::BindlessTexture(const BindlessTexture& rhs, const osg::CopyOp& copy) :
+    osg::Texture2D( rhs, copy )
 {
     _isBound.resize(5,false);
     _buffer = rhs._buffer;
@@ -249,7 +249,10 @@ BindlessTexture::BindlessTexture(const BindlessTexture& rhs, const osg::CopyOp& 
 }
 
 BindlessTexture::BindlessTexture(BufferRef ref,TextureList textureList) :
-osg::Texture2D( textureList[0] ),_buffer(ref),_bindlessIndex(0),_textureList(textureList)
+    osg::Texture2D( textureList[0] ),
+    _textureList(textureList),
+    _buffer(ref),
+    _bindlessIndex(0)
 {
     _isBound.resize(5,false);
 }
@@ -258,7 +261,7 @@ void BindlessTexture::setBidlessIndex(unsigned int index){
     _bindlessIndex = index;
 }
 /// Just as the name suggest this should be called once per
-/// context, durring its lifetime. This basically 
+/// context, during its lifetime. This basically 
 /// just sets up our texture handles, and loads them
 /// into our UBO. A good portion of this was copied from
 /// Texture2D::apply, this is in no ways a general solution.
@@ -323,7 +326,7 @@ void BindlessTexture::apply(osg::State& state) const
        applyOnce(state);
        _isBound[contextID] = true;
    }else{
-       //we should mostly hit this durring the lifetime of this object,
+       //we should mostly hit this during the lifetime of this object,
        //note we basically do nothing......
    }
 }
@@ -346,13 +349,12 @@ void BindlessTexture::releaseGLObjects(osg::State* state) const
 }
 
 void
-BindlessTexture::resizeGLObjectBuffers(unsigned maxSize)
+BindlessTexture::resizeGLObjectBuffers(unsigned int maxSize)
 {
     osg::Texture2D::resizeGLObjectBuffers( maxSize );
 
-    size_t handleSize = _handles.size();
-    size_t txtSize = _textureList.size();
-    size_t boundSize = _isBound.size();
+    unsigned int handleSize = _handles.size();
+    unsigned int txtSize = _textureList.size();
     if ( handleSize < maxSize ) {
         _isBound.resize(maxSize,false);
     }
@@ -396,8 +398,8 @@ void createImageArray(osg::StateSet* attachPnt){
         secondaryColor[0] = rand()%128;
         secondaryColor[1] = rand()%128;
         secondaryColor[2] = rand()%128;
-        for (int x = 0; x < imageSize; x++){
-            for (int y =0; y<imageSize; y++){
+        for (unsigned int x = 0; x < imageSize; x++){
+            for (unsigned int y =0; y<imageSize; y++){
                 unsigned char* pixel = &buff[(x*imageSize+y)*stride];
                 int xSide = x/boxWidth;
                 int ySide = y/boxLength;
@@ -535,7 +537,6 @@ osg::Group* CreateScene(){
     osg::Geode *geo = new osg::Geode();
     geo->setName("Geo");
     sceneRoot->addChild(geo);
-    float size = 1.0f;
     osg::StateSet* scene_ss  = sceneRoot->getOrCreateStateSet();
     createImageArray(scene_ss);
     scene_ss->setMode(GL_DEPTH_TEST,osg::StateAttribute::ON);
@@ -588,9 +589,10 @@ int main(int argc, char** argv)
     
     // add model to viewer.
     viewer.setSceneData( CreateScene() );
+
+    viewer.realize();
     
     viewer.getCamera()->getGraphicsContext()->getState()->setUseModelViewAndProjectionUniforms(true);
 
     return viewer.run();
 }
-

@@ -88,22 +88,45 @@ public:
     {
         if ( _supportBinaryBrackets )
         {
-            if ( mark._name=="{" )
+            if (getOutputStream() && getOutputStream()->getFileVersion() > 148)
             {
-                int size = 0;
-                _beginPositions.push_back( _out->tellp() );
-                _out->write( (char*)&size, osgDB::INT_SIZE );
-            }
-            else if ( mark._name=="}" && _beginPositions.size()>0 )
-            {
-                std::streampos pos = _out->tellp(), beginPos = _beginPositions.back();
-                _beginPositions.pop_back();
-                _out->seekp( beginPos );
+                if ( mark._name=="{" )
+                {
+                    uint64_t size = 0;
+                    _beginPositions.push_back( _out->tellp() );
+                    _out->write( (char*)&size, osgDB::INT64_SIZE );
+                }
+                else if ( mark._name=="}" && _beginPositions.size()>0 )
+                {
+                    std::streampos pos = _out->tellp(), beginPos = _beginPositions.back();
+                    _beginPositions.pop_back();
+                    _out->seekp( beginPos );
 
-                std::streampos size64 = pos - beginPos;
-                int size = (int) size64;
-                _out->write( (char*)&size, osgDB::INT_SIZE );
-                _out->seekp( pos );
+                    std::streampos size64 = pos - beginPos;
+                    uint64_t size = (uint64_t) size64;
+                    _out->write( (char*)&size, osgDB::INT64_SIZE);
+                    _out->seekp( pos );
+                }
+            }
+            else
+            {
+                if ( mark._name=="{" )
+                {
+                    int size = 0;
+                    _beginPositions.push_back( _out->tellp() );
+                    _out->write( (char*)&size, osgDB::INT_SIZE );
+                }
+                else if ( mark._name=="}" && _beginPositions.size()>0 )
+                {
+                    std::streampos pos = _out->tellp(), beginPos = _beginPositions.back();
+                    _beginPositions.pop_back();
+                    _out->seekp( beginPos );
+
+                    std::streampos size64 = pos - beginPos;
+                    int size = (int) size64;
+                    _out->write( (char*)&size, osgDB::INT_SIZE);
+                    _out->seekp( pos );
+                }
             }
         }
     }
@@ -244,12 +267,25 @@ public:
         {
             if ( mark._name=="{" )
             {
-                int size = 0;
                 _beginPositions.push_back( _in->tellg() );
 
-                _in->read( (char*)&size, osgDB::INT_SIZE );
-                if ( _byteSwap ) osg::swapBytes( (char*)&size, osgDB::INT_SIZE );
-                _blockSizes.push_back( size );
+                // since version 149 (osg version > 3.5.6) size is expressed 
+                // on 8 bytes rather than 4 bytes, 
+                // to accommodate any block size.
+                if (getInputStream() && getInputStream()->getFileVersion() > 148)
+                {
+                   uint64_t size = 0;
+                   _in->read( (char*)&size, osgDB::INT64_SIZE);
+                   if ( _byteSwap ) osg::swapBytes( (char*)&size, osgDB::INT64_SIZE);
+                   _blockSizes.push_back( size );
+                }
+                else
+                {
+                   int size = 0;
+                   _in->read( (char*)&size, osgDB::INT_SIZE);
+                   if ( _byteSwap ) osg::swapBytes( (char*)&size, osgDB::INT_SIZE);
+                   _blockSizes.push_back( size );
+                }
             }
             else if ( mark._name=="}" && _beginPositions.size()>0 )
             {
@@ -279,7 +315,7 @@ public:
 
 protected:
     std::vector<std::streampos> _beginPositions;
-    std::vector<int> _blockSizes;
+    std::vector<std::streampos> _blockSizes;
 };
 
 #endif

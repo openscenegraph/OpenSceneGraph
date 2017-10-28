@@ -243,10 +243,15 @@ void BuildShapeGeometryVisitor::End()
 {
     if (_start_index>=_vertices->size()) return;
 
+    bool smallPrimitiveSet = _vertices->size() < 65536;
 
+    // OSG_NOTICE<<"BuildShapeGeometryVisitor::End() smallPrimitiveSet = "<<smallPrimitiveSet<<std::endl;
     if (_mode==GL_QUADS)
     {
-        osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
+        osg::ref_ptr<osg::DrawElements> primitives = smallPrimitiveSet ?
+            static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_TRIANGLES)) :
+            static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_TRIANGLES));
+
         _geometry->addPrimitiveSet(primitives.get());
 
         for(unsigned int i=_start_index; i<_vertices->size(); i+=4)
@@ -256,18 +261,21 @@ void BuildShapeGeometryVisitor::End()
             unsigned int p2 = i+2;
             unsigned int p3 = i+3;
 
-            primitives->push_back(p0);
-            primitives->push_back(p3);
-            primitives->push_back(p1);
+            primitives->addElement(p0);
+            primitives->addElement(p1);
+            primitives->addElement(p3);
 
-            primitives->push_back(p1);
-            primitives->push_back(p3);
-            primitives->push_back(p2);
+            primitives->addElement(p1);
+            primitives->addElement(p2);
+            primitives->addElement(p3);
         }
     }
     else if (_mode==GL_QUAD_STRIP)
     {
-        osg::ref_ptr<osg::DrawElementsUShort> primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
+        osg::ref_ptr<osg::DrawElements> primitives = smallPrimitiveSet ?
+            static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_TRIANGLES)) :
+            static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_TRIANGLES));
+
         _geometry->addPrimitiveSet(primitives.get());
 
         for(unsigned int i=_start_index; i<_vertices->size()-2; i+=2)
@@ -277,13 +285,13 @@ void BuildShapeGeometryVisitor::End()
             unsigned int p2 = i+2;
             unsigned int p3 = i+3;
 
-            primitives->push_back(p0);
-            primitives->push_back(p2);
-            primitives->push_back(p1);
+            primitives->addElement(p0);
+            primitives->addElement(p1);
+            primitives->addElement(p2);
 
-            primitives->push_back(p1);
-            primitives->push_back(p2);
-            primitives->push_back(p3);
+            primitives->addElement(p1);
+            primitives->addElement(p3);
+            primitives->addElement(p2);
         }
     }
     else

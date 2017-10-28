@@ -242,6 +242,12 @@ class OSG_EXPORT Matrixd
         /** full 4x4 matrix invert. */
         bool invert_4x4( const Matrixd& rhs);
 
+        /** transpose a matrix */
+        bool transpose(const Matrixd&rhs);
+
+        /** transpose orthogonal part of the matrix **/
+        bool transpose3x3(const Matrixd&rhs);
+
         /** ortho-normalize the 3x3 rotation & scale matrix */
         void orthoNormalize(const Matrixd& rhs);
 
@@ -322,8 +328,8 @@ class OSG_EXPORT Matrixd
         inline Vec4d operator* ( const Vec4d& v ) const;
 
 #ifdef USE_DEPRECATED_API
-        inline void set(const Quat& q) { makeRotate(q); }
-        inline void get(Quat& q) const { q = getRotate(); }
+        inline void set(const Quat& q) { makeRotate(q); }   /// deprecated, replace with makeRotate(q)
+        inline void get(Quat& q) const { q = getRotate(); } /// deprecated, replace with getRotate()
 #endif
 
         void setRotate(const Quat& q);

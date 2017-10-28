@@ -358,6 +358,9 @@ class OSG_EXPORT Polytope
             return true;
         }
 
+        /** Check whether any part of a triangle is contained within the polytope.*/
+        bool contains(const osg::Vec3f& v0, const osg::Vec3f& v1, const osg::Vec3f& v2) const;
+
 
         /** Transform the clipping set by matrix.  Note, this operations carries out
           * the calculation of the inverse of the matrix since a plane must
@@ -387,8 +390,8 @@ class OSG_EXPORT Polytope
                 if (_resultMask&selector_mask)
                 {
                     itr->transformProvidingInverse(matrix);
-                    selector_mask <<= 1;
                 }
+                selector_mask <<= 1;
             }
         }
 

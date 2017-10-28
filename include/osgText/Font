@@ -27,6 +27,7 @@ namespace osgText {
 
 // forward declare Font
 class Font;
+class TextBase;
 
 #ifdef OSG_PROVIDE_READFILE
 /** Read a font from specified file. The filename may contain a path.
@@ -84,13 +85,9 @@ public:
 
     static osg::ref_ptr<Font>& getDefaultFont();
 
-    void setTexEnv(osg::TexEnv* texenv) { if (texenv) _texenv = texenv; }
-    inline osg::TexEnv* getTexEnv() {  return _texenv.get(); }
-    inline const osg::TexEnv* getTexEnv() const {  return _texenv.get(); }
-
-    void setStateSet(osg::StateSet* stateset) { _stateset = stateset; }
-    osg::StateSet* getStateSet() { return _stateset.get(); }
-    const osg::StateSet* getStateSet() const { return _stateset.get(); }
+    typedef std::vector< osg::ref_ptr<osg::StateSet> > StateSets;
+    StateSets& getCachedStateSets() { return _statesets; }
+    const StateSets& getCachedStateSets() const { return _statesets; }
 
 
     /** Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes and a font resolution.*/
@@ -110,19 +107,6 @@ public:
      *  return true on success, return false when not supported.*/
     virtual bool getVerticalSize(float& ascender, float& descender) const { return _implementation ? _implementation->getVerticalSize(ascender, descender) : false; }
 
-    /** Set the margin around each glyph,
-      * to ensure that texture filtering doesn't bleed adjacent glyph's into each other.
-      * Default margin is 1 texels.*/
-    void setGlyphImageMargin(unsigned int margin);
-    unsigned int getGlyphImageMargin() const;
-
-    /** Set the margin ratio around each glyph, relative to the glyph's size.
-      * to ensure that texture filtering doesn't bleed adjacent glyph's into each other.
-      * Default margin is 0.05.*/
-    void setGlyphImageMarginRatio(float margin);
-    float getGlyphImageMarginRatio() const;
-
-
     /** Set the size of texture to create to store the glyph images when rendering.
       * Note, this doesn't affect already created Texture Glhph's.*/
     void setTextureSizeHint(unsigned int width,unsigned int height);
@@ -139,6 +123,9 @@ public:
       * Note, this doesn't affect already created Texture Glhph's.*/
     void setMagFilterHint(osg::Texture::FilterMode mode);
     osg::Texture::FilterMode getMagFilterHint() const;
+
+    void setMaxAnisotropy(float anis) { _maxAnisotropy = anis; }
+    float getMaxAnisotropy() const { return _maxAnisotropy; }
 
     unsigned int getFontDepth() const { return _depth; }
 
@@ -170,13 +157,14 @@ public:
     typedef std::vector< osg::ref_ptr<GlyphTexture> >       GlyphTextureList;
     GlyphTextureList& getGlyphTextureList() { return _glyphTextureList; }
 
+    void assignGlyphToGlyphTexture(Glyph* glyph, ShaderTechnique shaderTechnique);
+
 protected:
 
     virtual ~Font();
 
     void addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph* glyph);
 
-    typedef std::vector< osg::ref_ptr<osg::StateSet> >      StateSetList;
     typedef std::map< unsigned int, osg::ref_ptr<Glyph> >   GlyphMap;
     typedef std::map< unsigned int, osg::ref_ptr<Glyph3D> >  Glyph3DMap;
 
@@ -185,8 +173,7 @@ protected:
 
     mutable OpenThreads::Mutex      _glyphMapMutex;
 
-    osg::ref_ptr<osg::TexEnv>       _texenv;
-    osg::ref_ptr<osg::StateSet>     _stateset;
+    StateSets                       _statesets;
     FontSizeGlyphMap                _sizeGlyphMap;
     GlyphTextureList                _glyphTextureList;
 
@@ -195,13 +182,12 @@ protected:
 
     // current active size of font
     FontResolution                  _fontSize;
-    unsigned int                    _margin;
-    float                           _marginRatio;
 
     unsigned int                    _textureWidthHint;
     unsigned int                    _textureHeightHint;
     osg::Texture::FilterMode        _minFilterHint;
     osg::Texture::FilterMode        _magFilterHint;
+    float                           _maxAnisotropy;
 
     unsigned int                    _depth;
     unsigned int                    _numCurveSamples;
@@ -246,8 +232,6 @@ public:
 
         virtual bool getVerticalSize(float & /*ascender*/, float & /*descender*/) const { return false; }
     };
-
-
 
 };
 

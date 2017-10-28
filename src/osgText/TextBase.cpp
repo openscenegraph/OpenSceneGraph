@@ -47,9 +47,9 @@ TextBase::TextBase():
     _textBBMargin(0.0f),
     _textBBColor(0.0, 0.0, 0.0, 0.5),
     _kerningType(KERNING_DEFAULT),
-    _lineCount(0)
+    _lineCount(0),
+    _glyphNormalized(false)
 {
-    setStateSet(Font::getDefaultFont()->getStateSet());
     setUseDisplayList(false);
     setSupportsDisplayList(false);
 
@@ -78,13 +78,19 @@ TextBase::TextBase(const TextBase& textBase,const osg::CopyOp& copyop):
     _textBBMargin(textBase._textBBMargin),
     _textBBColor(textBase._textBBColor),
     _kerningType(textBase._kerningType),
-    _lineCount(textBase._lineCount)
+    _lineCount(textBase._lineCount),
+    _glyphNormalized(textBase._glyphNormalized)
 {
     initArraysAndBuffers();
 }
 
 TextBase::~TextBase()
 {
+}
+
+osg::StateSet* TextBase::createStateSet()
+{
+    return 0;
 }
 
 void TextBase::initArraysAndBuffers()
@@ -180,12 +186,18 @@ void TextBase::setColor(const osg::Vec4& color)
     _color = color;
 }
 
+void TextBase::assignStateSet()
+{
+    setStateSet(createStateSet());
+}
 
 void TextBase::setFont(osg::ref_ptr<Font> font)
 {
     if (_font==font) return;
 
     _font = font;
+
+    assignStateSet();
 
     computeGlyphRepresentation();
 }
@@ -201,6 +213,9 @@ void TextBase::setFontResolution(unsigned int width, unsigned int height)
     if (_fontSize==size) return;
 
     _fontSize = size;
+
+    assignStateSet();
+
     computeGlyphRepresentation();
 }
 
@@ -537,6 +552,12 @@ bool TextBase::computeMatrix(osg::Matrix& matrix, osg::State* state) const
             if (pixelSizeHori == 0.0f)
                pixelSizeHori= 1.0f;
 
+            if (_glyphNormalized)
+            {
+                osg::Vec3 scaleVec(_characterHeight/getCharacterAspectRatio(), _characterHeight, _characterHeight);
+                matrix.postMultScale(scaleVec);
+            }
+
             if (_characterSizeMode==SCREEN_COORDS)
             {
                 float scale_font_vert=_characterHeight/pixelSizeVert;
@@ -544,12 +565,12 @@ bool TextBase::computeMatrix(osg::Matrix& matrix, osg::State* state) const
 
                 if (P10<0)
                    scale_font_vert=-scale_font_vert;
-                matrix.postMultScale(osg::Vec3f(scale_font_hori, scale_font_vert,1.0f));
+                matrix.postMultScale(osg::Vec3f(scale_font_hori, scale_font_vert, scale_font_hori));
             }
             else if (pixelSizeVert>getFontHeight())
             {
                 float scale_font = getFontHeight()/pixelSizeVert;
-                matrix.postMultScale(osg::Vec3f(scale_font, scale_font,1.0f));
+                matrix.postMultScale(osg::Vec3f(scale_font, scale_font, scale_font));
             }
 
         }
@@ -560,17 +581,29 @@ bool TextBase::computeMatrix(osg::Matrix& matrix, osg::State* state) const
         }
 
         matrix.postMultTranslate(_position);
+
     }
     else if (!_rotation.zeroRotation())
     {
-        matrix.makeRotate(_rotation);
-        matrix.preMultTranslate(-_offset);
+        matrix.makeTranslate(-_offset);
+        if (_glyphNormalized)
+        {
+            osg::Vec3 scaleVec(_characterHeight/getCharacterAspectRatio(), _characterHeight, _characterHeight);
+            matrix.postMultScale(scaleVec);
+        }
+        matrix.postMultRotate(_rotation);
         matrix.postMultTranslate(_position);
         // OSG_NOTICE<<"New Need to rotate "<<matrix<<std::endl;
     }
     else
     {
-        matrix.makeTranslate(_position-_offset);
+        matrix.makeTranslate(-_offset);
+        if (_glyphNormalized)
+        {
+            osg::Vec3 scaleVec(_characterHeight/getCharacterAspectRatio(), _characterHeight, _characterHeight);
+            matrix.postMultScale(scaleVec);
+        }
+        matrix.postMultTranslate(_position);
     }
 
     if (_matrix!=matrix)

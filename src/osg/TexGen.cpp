@@ -155,7 +155,7 @@ void TexGen::apply(State& state) const
         {
             GLenum glmode = _mode == OBJECT_LINEAR ? GL_OBJECT_PLANE : GL_EYE_PLANE;
 
-            if (sizeof(_plane_s[0])==sizeof(GLfloat))
+            if (sizeof((_plane_s->getValue())[0])==sizeof(GLfloat))
             {
                 glTexGenfv(GL_S, glmode, (const GLfloat*)_plane_s->getValue().ptr());
                 glTexGenfv(GL_T, glmode, (const GLfloat*)_plane_t->getValue().ptr());

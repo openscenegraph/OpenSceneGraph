@@ -461,13 +461,20 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-o <float>","Offset angle of camera");
 
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
 
 
     // read up the osgcluster specific arguments.
     ViewerMode viewerMode = STAND_ALONE;
     while (arguments.read("-m")) viewerMode = MASTER;
     while (arguments.read("-s")) viewerMode = SLAVE;
+
+    unsigned int messageSize = 1024;
+    while (arguments.read("--size", messageSize)) {}
+
+
+    bool readWriteFrame = false;
+    while (arguments.read("--frame")) readWriteFrame = true;
 
     int socketNumber=8100;
     while (arguments.read("-n",socketNumber)) ;
@@ -487,6 +494,17 @@ int main( int argc, char **argv )
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
+
+    // objects for managing the broadcasting and receiving of camera packets.
+    Broadcaster     bc;
+    Receiver        rc;
+
+    std::string ifrName;
+    if (arguments.read("--ifr-name", ifrName)) { bc.setIFRName(ifrName); }
+
+    bc.setPort(static_cast<short int>(socketNumber));
+    rc.setPort(static_cast<short int>(socketNumber));
+
 
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
@@ -538,19 +556,40 @@ int main( int argc, char **argv )
     // create the windows and run the threads.
     viewer.realize();
 
+    osg::ref_ptr<osg::Image> image;
+    if (readWriteFrame)
+    {
+        osgViewer::Viewer::Windows windows;
+        viewer.getWindows(windows);
+
+        if (windows.empty())
+        {
+            return 1;
+        }
+        unsigned int width = windows.front()->getTraits()->width;
+        unsigned int height = windows.front()->getTraits()->height;
+        image = new osg::Image;
+
+        if (windows.front()->getTraits()->alpha)
+        {
+            OSG_NOTICE<<"Setting up RGBA osg::Image, width = "<<width<<", height = "<<height<<std::endl;
+            image->allocateImage(width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE);
+        }
+        else
+        {
+            OSG_NOTICE<<"Setting up RGB osg::Image, width = "<<width<<", height = "<<height<<std::endl;
+            image->allocateImage(width, height, 1, GL_RGB, GL_UNSIGNED_BYTE);
+        }
+
+        // if (image->getImageStepInBytes()>messageSize) messageSize = image->getImageStepInBytes();
+    }
 
     CameraPacket *cp = new CameraPacket;
 
-    // objects for managing the broadcasting and receiving of camera packets.
-    Broadcaster     bc;
-    Receiver        rc;
-
-    bc.setPort(static_cast<short int>(socketNumber));
-    rc.setPort(static_cast<short int>(socketNumber));
 
     bool masterKilled = false;
 
-    DataConverter scratchPad(1024);
+    DataConverter scratchPad(messageSize);
 
     while( !viewer.done() && !masterKilled )
     {
@@ -579,9 +618,14 @@ int main( int argc, char **argv )
 
                 bc.setBuffer(scratchPad._startPtr, scratchPad._numBytes);
 
-                std::cout << "bc.sync()"<<scratchPad._numBytes<<std::endl;
-
                 bc.sync();
+
+                if (image.valid())
+                {
+                    bc.setBuffer(image->data(), image->getImageStepInBytes());
+                    bc.sync();
+                }
+
 
             }
             break;
@@ -590,7 +634,9 @@ int main( int argc, char **argv )
 
                 rc.setBuffer(scratchPad._startPtr, scratchPad._numBytes);
 
-                rc.sync();
+                unsigned int readsize = rc.sync();
+
+                if (readsize) std::cout<<std::endl<<"readsize = "<<readsize<<std::endl;
 
                 scratchPad.reset();
                 scratchPad.read(*cp);
@@ -603,6 +649,14 @@ int main( int argc, char **argv )
                     // break out of while (!done) loop since we've now want to shut down.
                     masterKilled = true;
                 }
+
+                if (image)
+                {
+                    rc.setBuffer(image->data(), image->getImageStepInBytes());
+                    readsize = rc.sync();
+                    if (readsize) std::cout<<"image readsize = "<<readsize<<std::endl;
+                }
+
             }
             break;
         default:

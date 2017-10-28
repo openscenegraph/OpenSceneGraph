@@ -134,7 +134,7 @@ public:
     : _name(copy._name), _indentDelta(copy._indentDelta) {}
 
     void set( const char* name, int delta=0 )
-    { _name = name, _indentDelta = delta; }
+    { _name = name; _indentDelta = delta; }
 
     std::string _name;
     int _indentDelta;

@@ -24,49 +24,12 @@ class TriangleIndexFunctor : public PrimitiveIndexFunctor, public T
 {
 public:
 
-
-    virtual void setVertexArray(unsigned int,const Vec2*)
-    {
-    }
-
-    virtual void setVertexArray(unsigned int ,const Vec3* )
-    {
-    }
-
-    virtual void setVertexArray(unsigned int,const Vec4* )
-    {
-    }
-
-    virtual void setVertexArray(unsigned int,const Vec2d*)
-    {
-    }
-
-    virtual void setVertexArray(unsigned int ,const Vec3d* )
-    {
-    }
-
-    virtual void setVertexArray(unsigned int,const Vec4d* )
-    {
-    }
-
-    virtual void begin(GLenum mode)
-    {
-        _modeCache = mode;
-        _indexCache.clear();
-    }
-
-    virtual void vertex(unsigned int vert)
-    {
-        _indexCache.push_back(vert);
-    }
-
-    virtual void end()
-    {
-        if (!_indexCache.empty())
-        {
-            drawElements(_modeCache,_indexCache.size(),&_indexCache.front());
-        }
-    }
+    virtual void setVertexArray(unsigned int,const Vec2*) {}
+    virtual void setVertexArray(unsigned int ,const Vec3*) {}
+    virtual void setVertexArray(unsigned int,const Vec4*) {}
+    virtual void setVertexArray(unsigned int,const Vec2d*) {}
+    virtual void setVertexArray(unsigned int ,const Vec3d*) {}
+    virtual void setVertexArray(unsigned int,const Vec4d*) {}
 
     virtual void drawArrays(GLenum mode,GLint first,GLsizei count)
     {
@@ -334,9 +297,6 @@ public:
                 break;
         }
     }
-
-    GLenum               _modeCache;
-    std::vector<GLuint>  _indexCache;
 };
 
 }

@@ -17,6 +17,7 @@
 */
 
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 
 #include <osgUtil/Optimizer>
 #include <osgUtil/Simplifier>
@@ -33,10 +34,12 @@ class KeyboardEventHandler : public osgGA::GUIEventHandler
 {
 public:
 
-    KeyboardEventHandler(unsigned int& flag) : _flag(flag)
+    KeyboardEventHandler(unsigned int& flag, const std::string& filename) :
+        _flag(flag),
+        _outputFilename(filename)
     {}
 
-    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
+    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
     {
         switch(ea.getEventType())
         {
@@ -52,6 +55,17 @@ public:
                     _flag = 2;
                     return true;
                 }
+                if (ea.getKey()=='o')
+                {
+                    osgViewer::View* view = dynamic_cast<osgViewer::Viewer*>(aa.asView());
+                    osg::Node* sceneData = view ? view->getSceneData() : 0;
+                    if (sceneData)
+                    {
+                        OSG_NOTICE<<"Witten model to file: "<<_outputFilename<<std::endl;
+                        osgDB::writeNodeFile(*sceneData, _outputFilename);
+                    }
+                    return true;
+                }
                 break;
             }
             default:
@@ -63,6 +77,7 @@ public:
 private:
 
     unsigned int& _flag;
+    std::string _outputFilename;
 };
 
 
@@ -81,6 +96,8 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--max-error <error>","Specify the maximum error","4.0");
 
 
+    std::string outputFilename="model.osgt";
+
     float sampleRatio = 0.5f;
     float maxError = 4.0f;
 
@@ -90,6 +107,7 @@ int main( int argc, char **argv )
     // read the sample ratio if one is supplied
     while (arguments.read("--ratio",sampleRatio)) {}
     while (arguments.read("--max-error",maxError)) {}
+    while (arguments.read("-o",outputFilename)) {}
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -120,7 +138,7 @@ int main( int argc, char **argv )
     //loadedModel->accept(simplifier);
 
     unsigned int keyFlag = 0;
-    viewer.addEventHandler(new KeyboardEventHandler(keyFlag));
+    viewer.addEventHandler(new KeyboardEventHandler(keyFlag, outputFilename));
 
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );

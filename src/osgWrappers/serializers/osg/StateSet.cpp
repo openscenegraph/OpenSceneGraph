@@ -56,6 +56,25 @@ static void readAttributes( osgDB::InputStream& is, osg::StateSet::AttributeList
         }
 }
 
+static void readDefines( osgDB::InputStream& is, osg::StateSet::DefineList& attrs )
+{
+    unsigned int size = is.readSize();
+    if ( size>0 )
+    {
+        is >> is.BEGIN_BRACKET;
+        for ( unsigned int i=0; i<size; ++i )
+        {
+            std::string def,defv;
+            is >> def;
+            is >> defv;
+            is >> is.PROPERTY("Value");
+            int value = readValue( is );
+            attrs[def] = osg::StateSet::DefinePair(defv,value);
+        }
+            is >> is.END_BRACKET;
+        }
+}
+
 static void writeValue( osgDB::OutputStream& os, int value )
 {
     if ( os.isBinary() )
@@ -100,6 +119,28 @@ static void writeAttributes( osgDB::OutputStream& os, const osg::StateSet::Attri
               itr!=attrs.end(); ++itr )
         {
             os << itr->second.first.get();
+            os << os.PROPERTY("Value");
+            writeValue(os, itr->second.second);
+            os << std::endl;
+        }
+        os << os.END_BRACKET;
+    }
+    os << std::endl;
+}
+
+static void writeDefines( osgDB::OutputStream& os, const osg::StateSet::DefineList& attrs )
+{
+    os.writeSize(attrs.size());
+    if ( attrs.size()>0 )
+    {
+        os << os.BEGIN_BRACKET << std::endl;
+        for ( osg::StateSet::DefineList::const_iterator itr=attrs.begin();
+              itr!=attrs.end(); ++itr )
+        {
+            os << itr->first;
+            os << std::endl;
+            os << itr->second.first;
+            os << std::endl;
             os << os.PROPERTY("Value");
             writeValue(os, itr->second.second);
             os << std::endl;
@@ -270,6 +311,25 @@ static bool writeUniformList( osgDB::OutputStream& os, const osg::StateSet& ss )
     return true;
 }
 
+// _defines
+static bool checkDefineList( const osg::StateSet& ss )
+{
+    return ss.getDefineList().size()>0;
+}
+
+static bool readDefineList( osgDB::InputStream& is, osg::StateSet& ss )
+{
+    osg::StateSet::DefineList attrs; readDefines( is, attrs );
+    ss.setDefineList(attrs);
+    return true;
+}
+
+static bool writeDefineList( osgDB::OutputStream& os, const osg::StateSet& ss )
+{
+    writeDefines( os, ss.getDefineList() );
+    return true;
+}
+
 REGISTER_OBJECT_WRAPPER( StateSet,
                          new osg::StateSet,
                          osg::StateSet,
@@ -280,6 +340,10 @@ REGISTER_OBJECT_WRAPPER( StateSet,
     ADD_USER_SERIALIZER( TextureModeList );  // _textureModeList
     ADD_USER_SERIALIZER( TextureAttributeList );  // _textureAttributeList
     ADD_USER_SERIALIZER( UniformList );  // _uniformList
+    {
+        UPDATE_TO_VERSION_SCOPED( 150 )
+        ADD_USER_SERIALIZER( DefineList );  // _defineList
+    }
     ADD_INT_SERIALIZER( RenderingHint, osg::StateSet::DEFAULT_BIN );  // _renderingHint
 
     BEGIN_ENUM_SERIALIZER( RenderBinMode, INHERIT_RENDERBIN_DETAILS );

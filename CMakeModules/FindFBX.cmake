@@ -60,9 +60,13 @@ SET(FBX_LIBNAME_DEBUG ${FBX_LIBNAME}d)
 
 SET( FBX_SEARCH_PATHS
     $ENV{FBX_DIR}
+    "$ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2018.1.1"
+    "$ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2018.1.1"
     "$ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2017.1"
     "$ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2017.1"
     "/Applications/Autodesk/FBX SDK/2017.1"
+    "$ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2016.1.2"
+    "$ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2016.1.2"
     "$ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2016.1.1"
     "$ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2016.1.1"
     "$ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2015.1"

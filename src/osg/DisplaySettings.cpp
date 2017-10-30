@@ -1141,7 +1141,7 @@ void DisplaySettings::setShaderHint(ShaderHint hint, bool setShaderValues)
             setValue("OSG_PRECISION_FLOAT", "");
             setValue("OSG_VARYING_IN", "varying");
             setValue("OSG_VARYING_OUT", "varying");
-            OSG_NOTICE<<"DisplaySettings::NONE"<<std::endl;
+            OSG_INFO<<"DisplaySettings::NONE"<<std::endl;
             break;
         }
     }

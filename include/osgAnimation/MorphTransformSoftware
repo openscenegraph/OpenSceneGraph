@@ -29,8 +29,8 @@ namespace osgAnimation
     class OSGANIMATION_EXPORT MorphTransformSoftware : public MorphTransform
     {
     public:
-        MorphTransformSoftware():_needInit(true){}
-        MorphTransformSoftware(const MorphTransformSoftware& rts,const osg::CopyOp& copyop): MorphTransform(rts, copyop), _needInit(true){}
+        MorphTransformSoftware():_needInit(true) {}
+        MorphTransformSoftware(const MorphTransformSoftware& rts,const osg::CopyOp& copyop): MorphTransform(rts, copyop), _needInit(true) {}
 
         META_Object(osgAnimation,MorphTransformSoftware)
 

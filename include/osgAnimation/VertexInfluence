@@ -41,15 +41,14 @@ namespace osgAnimation
     class OSGANIMATION_EXPORT VertexInfluence : public IndexWeightList
     {
     public:
-        const std::string& getName() const { return _name;}
-        void setName(const std::string& name) { _name = name;}
-
+        const std::string& getName() const { return _name; }
+        void setName(const std::string& name) { _name = name; }
     protected:
         // the name is the bone to link to
         std::string _name;
     };
 
-    class VertexInfluenceMap : public std::map<std::string, VertexInfluence> , public osg::Object
+    class VertexInfluenceMap : public std::map<std::string, VertexInfluence>, public osg::Object
     {
     public:
         META_Object(osgAnimation, VertexInfluenceMap);
@@ -57,8 +56,8 @@ namespace osgAnimation
         VertexInfluenceMap() {}
         VertexInfluenceMap(const osgAnimation::VertexInfluenceMap& org, const osg::CopyOp& copyop):
             std::map<std::string, VertexInfluence>(org),
-            osg::Object(org, copyop)
-        {}
+            osg::Object(org, copyop) {}
+
         ///normalize per vertex weights given numvert of the attached mesh
         void normalize(unsigned int numvert);
 
@@ -72,8 +71,8 @@ namespace osgAnimation
         class VertexGroup: public std::pair<BoneWeightList, IndexList>
         {
         public:
-            inline const BoneWeightList& getBoneWeights()const { return first; }
-            inline void setBoneWeights( BoneWeightList& o ) {  first=o; }
+            inline const BoneWeightList& getBoneWeights() const { return first; }
+            inline void setBoneWeights( BoneWeightList& o ) { first=o; }
             inline IndexList& vertIDs() { return second; }
         };
 
@@ -83,7 +82,6 @@ namespace osgAnimation
         //Experimental removal of unexpressed bone from the skeleton
         void removeUnexpressedBones(Skeleton &skel) const;
     };
-
 }
 
 #endif

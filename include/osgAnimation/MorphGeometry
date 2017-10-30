@@ -29,7 +29,8 @@ namespace osgAnimation
 
     public:
 
-        enum Method {
+        enum Method
+        {
             NORMALIZED,
             RELATIVE
         };
@@ -61,7 +62,7 @@ namespace osgAnimation
         virtual const char* className() const { return "MorphGeometry"; }
 
         // set implementation of rig method
-        inline void setMorphTransformImplementation(MorphTransform*mt) {  _morphTransformImplementation=mt; }
+        inline void setMorphTransformImplementation(MorphTransform*mt) { _morphTransformImplementation=mt; }
         inline MorphTransform* getMorphTransformImplementation() { return _morphTransformImplementation.get(); }
         inline const MorphTransform* getMorphTransformImplementation() const { return _morphTransformImplementation.get(); }
 
@@ -88,16 +89,16 @@ namespace osgAnimation
         inline MorphTarget& getMorphTarget( unsigned int i ) { return _morphTargets[i]; }
 
         /** Set source of vertices for this morph geometry */
-        inline void setVertexSource(osg::Vec3Array *v){ _positionSource=v;}
+        inline void setVertexSource(osg::Vec3Array *v) { _positionSource=v; }
 
         /** Get source of vertices for this morph geometry */
-        inline osg::Vec3Array * getVertexSource()const{return _positionSource.get();}
+        inline osg::Vec3Array * getVertexSource() const { return _positionSource.get(); }
 
         /** Set source of normals for this morph geometry */
-        inline void setNormalSource(osg::Vec3Array *n){ _normalSource=n;}
+        inline void setNormalSource(osg::Vec3Array *n) { _normalSource=n; }
 
         /** Get source of normals for this morph geometry */
-        inline osg::Vec3Array * getNormalSource() const {return _normalSource.get();}
+        inline osg::Vec3Array * getNormalSource() const { return _normalSource.get(); }
 
         /** Add a \c MorphTarget to the \c MorphGeometry.
           * If \c MorphTarget is not \c NULL and is not contained in the \c MorphGeometry
@@ -108,20 +109,30 @@ namespace osgAnimation
           * @param weight The weight to be added to the \c MorphGeometry.
           * @return  \c true for success; \c false otherwise.
         */
-        virtual void addMorphTarget( osg::Geometry *morphTarget, float weight = 1.0 ) { _morphTargets.push_back(MorphTarget(morphTarget, weight)); _dirty = true; }
+        virtual void addMorphTarget( osg::Geometry *morphTarget, float weight = 1.0 )
+        {
+            _morphTargets.push_back(MorphTarget(morphTarget, weight));
+            _dirty = true;
+        }
 
-        virtual void removeMorphTarget( osg::Geometry *morphTarget ) {
-            for(MorphTargetList::iterator iterator = _morphTargets.begin() ; iterator != _morphTargets.end() ; ++ iterator) {
-                if(iterator->getGeometry()  == morphTarget) {
+        virtual void removeMorphTarget( osg::Geometry *morphTarget )
+        {
+            for(MorphTargetList::iterator iterator = _morphTargets.begin() ; iterator != _morphTargets.end() ; ++ iterator)
+            {
+                if(iterator->getGeometry()  == morphTarget)
+                {
                     _morphTargets.erase(iterator);
                     break;
                 }
             }
         }
 
-        virtual void removeMorphTarget( const std::string& name ) {
-            for(MorphTargetList::iterator iterator = _morphTargets.begin() ; iterator != _morphTargets.end() ; ++ iterator) {
-                if(iterator->getGeometry() && iterator->getGeometry()->getName() == name) {
+        virtual void removeMorphTarget( const std::string& name )
+        {
+            for(MorphTargetList::iterator iterator = _morphTargets.begin() ; iterator != _morphTargets.end() ; ++ iterator)
+            {
+                if(iterator->getGeometry() && iterator->getGeometry()->getName() == name)
+                {
                     _morphTargets.erase(iterator);
                     break;
                 }
@@ -141,10 +152,10 @@ namespace osgAnimation
 
         /** Set the MorphGeometry dirty.*/
         inline void dirty(bool b=true) { _dirty = b; }
-        inline bool isDirty()const { return _dirty; }
+        inline bool isDirty() const { return _dirty; }
 
         /** for retrocompatibility */
-        void transformSoftwareMethod(){(*_morphTransformImplementation.get())(*this);}
+        void transformSoftwareMethod() { (*_morphTransformImplementation.get())(*this); }
 
     protected:
         osg::ref_ptr<MorphTransform> _morphTransformImplementation;
@@ -175,7 +186,8 @@ namespace osgAnimation
         void addTarget(const std::string& name) { _targetNames.push_back(name); }
         unsigned int getNumTarget() const { return _targetNames.size(); }
         const std::string& getTargetName(unsigned int index) { return _targetNames[index]; }
-        void removeTarget(const std::string& name) {
+        void removeTarget(const std::string& name)
+        {
             TargetNames::iterator found = std::find(_targetNames.begin(), _targetNames.end(), name);
             if(found != _targetNames.end())
                 _targetNames.erase(found);
@@ -185,9 +197,7 @@ namespace osgAnimation
         const std::vector<std::string>& getTargetNames() const { return _targetNames; }
         std::vector<std::string>& getTargetNames() { return _targetNames; }
 
-        void setTargetNames(const TargetNames& targetNames) {
-            _targetNames.assign(targetNames.begin(), targetNames.end());
-        }
+        void setTargetNames(const TargetNames& targetNames) { _targetNames.assign(targetNames.begin(), targetNames.end()); }
 
         /** Callback method called by the NodeVisitor when visiting a node.*/
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
@@ -226,8 +236,6 @@ namespace osgAnimation
             (implementation)(*geom);
         }
     };
-
-
 }
 
 #endif

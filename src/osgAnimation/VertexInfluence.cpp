@@ -25,7 +25,7 @@ using namespace osgAnimation;
 
 struct invweight_ordered
 {
-    inline bool operator() (const BoneWeight& bw1, const BoneWeight& bw2)
+    inline bool operator() (const BoneWeight& bw1, const BoneWeight& bw2) const
     {
         if (bw1.second > bw2.second)return true;
         if (bw1.second < bw2.second)return false;

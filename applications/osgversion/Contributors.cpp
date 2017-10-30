@@ -275,7 +275,9 @@ const char* invalidNames[] =
     "I",
     "TriangleFunctor",
     "PrimitiveFunctor",
-    "OpenMW"
+    "OpenMW",
+    "StreamOperator",
+    "FindLIBLAS"
 };
 
 

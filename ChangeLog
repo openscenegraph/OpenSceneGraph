@@ -1,3 +1,274 @@
+Mon, 30 Oct 2017 09:32:04 +0000
+Author : Robert Osfield
+Merged support for StateSet::DefineList from shader_pipeline branch
+
+Fri, 27 Oct 2017 13:48:52 +0100
+Author : Robert Osfield
+Build fix for when compiling with OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION set to OFF
+
+Fri, 27 Oct 2017 13:19:52 +0100
+Author : Robert Osfield
+Fixed warning
+
+Fri, 27 Oct 2017 13:17:47 +0100
+Author : Robert Osfield
+From Farshid Lashkari, "fix for the Collada loader to check for some NULL attributes."
+
+Fri, 27 Oct 2017 09:33:24 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #373 from LaurensVoerman/noStdMaxuse osg::maximum, not std::max
+
+Fri, 27 Oct 2017 09:41:28 +0200
+Author : Laurens Voerman
+use osg::maximum, not std::max
+
+Thu, 26 Oct 2017 14:26:01 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #372 from openscenegraph/text_improvementsText improvements, introducing implementation of Signed Distance Function texture generation and new shaders for outlines and shadows replacing old multi-pass approach
+
+Thu, 26 Oct 2017 12:08:00 +0100
+Author : Robert Osfield
+Updated from OpenSceneGraph-Data/shader/text.frag to add fixes to handling of vertexColor's alpha values
+
+Thu, 26 Oct 2017 12:03:56 +0100
+Author : Robert Osfield
+Added update of glyph representation to ensure all the glyphs are assigned to the required GlyphTextures
+
+Thu, 26 Oct 2017 12:02:56 +0100
+Author : Robert Osfield
+Added command line parsing to aid with testing of osgText by allowing osgText::FadeText to be created with various options
+
+Wed, 25 Oct 2017 16:29:25 +0100
+Author : Robert Osfield
+Added optimization for text where the colour alpha value is 0.0, returning early to aovid any GL calls.
+
+Wed, 25 Oct 2017 16:13:26 +0100
+Author : Robert Osfield
+Fixed pre compilation osg::Program state leaking into the main scene graph rendering
+
+Tue, 24 Oct 2017 16:04:14 +0100
+Author : Robert Osfield
+Added stats handler
+
+Tue, 24 Oct 2017 15:14:23 +0100
+Author : Robert Osfield
+Updated from OpenSceneGraph-Data/shaders/text.frag to address GLSL int to float conversion warning
+
+Tue, 24 Oct 2017 14:46:13 +0100
+Author : Robert Osfield
+Added DisplaySettings:s/getgTextShaderTechnique() and  OSG_TEXT_SHADER_TECHNIQUE env var support to DisplaySettings. Added using of DisplaySettings:getgTextShaderTechnique() to Text default constructor. Added better debug output control in Text.cpp
+
+Tue, 24 Oct 2017 12:34:48 +0100
+Author : Robert Osfield
+Improved the Text::_shaderTechnique default setting using OSG_TEXT_SHADER_TECHNIQUE env var, options are ALL_FEATURES, GREYSCALE, SIGNED_DISTANCE_FIELD, SDF, NO_TEXT_SHADER, NONE.
+
+Tue, 24 Oct 2017 12:07:13 +0100
+Author : Robert Osfield
+Quitened down debug info
+
+Tue, 24 Oct 2017 11:36:00 +0100
+Author : Robert Osfield
+Fixed Glyph::TextureInfo assignment bug
+
+Mon, 23 Oct 2017 16:07:24 +0100
+Author : Robert Osfield
+Renamed text_sdf.frag to text.frag and removed text_greyscale_frag. Cleaned up setup of osgText::ShaderTechnique adding a NO_SHADER_TECHNIQUE option.
+
+Mon, 23 Oct 2017 14:50:35 +0100
+Author : Robert Osfield
+Restructed the way that GlyphTexture is set up to better support control of osgText::ShaderTechnique from osgText::Text
+
+Mon, 23 Oct 2017 09:06:55 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #371 from hwiesmann/masterRemoval of compiler warning for Cocoa builds
+
+Mon, 23 Oct 2017 09:05:34 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #370 from siu/master-travisCcacheFix ccache on travis
+
+Sun, 22 Oct 2017 22:13:46 +0200
+Author : Hartwig
+BUG FIX - Addition of missing #endif directive
+
+Sun, 22 Oct 2017 15:04:33 +0200
+Author : Hartwig
+Replacement of commas with semicolons
+
+Sun, 22 Oct 2017 13:47:51 +0200
+Author : Hartwig
+Removal of compiler warning for Cocoa builds
+
+Fri, 20 Oct 2017 14:09:11 +0200
+Author : David Siñuela Pastor
+Install ccache on MacOsNote that brew update must be run before any brew install command or
+it will fail, see https://github.com/travis-ci/travis-ci/issues/8552.
+
+
+Wed, 18 Oct 2017 12:20:35 +0200
+Author : David Siñuela Pastor
+Fix ccache configuration in travisUse ccache as explained in https://docs.travis-ci.com/user/caching/#ccache-cache
+
+
+Sat, 21 Oct 2017 10:08:41 +0100
+Author : Robert Osfield
+Added Text::s/getShaderTechnique()
+
+Fri, 20 Oct 2017 17:03:25 +0100
+Author : Robert Osfield
+Moved osgText::GlyphTechnique::Features enum to osgText::ShaderTechinque enum to make it's roll clearer
+
+Fri, 20 Oct 2017 14:14:14 +0100
+Author : Robert Osfield
+Merge branch 'master' into text_improvements
+
+Fri, 20 Oct 2017 11:52:48 +0100
+Author : Robert Osfield
+From Ralf Habacker, patch refactoring struct ObjOptionsStruct in obj plugin into a real class, which is a preparation for further obj related patches.
+
+Fri, 20 Oct 2017 11:37:41 +0100
+Author : Robert Osfield
+Added built-in support for lighting.vert
+
+Fri, 20 Oct 2017 10:18:21 +0100
+Author : Robert Osfield
+Updated shaders from OpenSceneGraph-Data/shaders
+
+Thu, 19 Oct 2017 20:57:25 +0100
+Author : Robert Osfield
+Moved the assignment of the ModifiedCount to before GL texture calls.
+
+Thu, 19 Oct 2017 12:39:22 +0100
+Author : Robert Osfield
+Implemented --single command line option that creates a single osg::DrawElementsUInt primitive set instead of using MultiDrawIndirect.
+
+Thu, 19 Oct 2017 12:06:59 +0100
+Author : Robert Osfield
+Improved spacing to make code more readable
+
+Thu, 19 Oct 2017 11:57:53 +0100
+Author : Robert Osfield
+Build fixes with ref_ptr<> autoconversion disabled
+
+Thu, 19 Oct 2017 11:06:23 +0100
+Author : Robert Osfield
+Fixed placement of { and spacing to make the code more readable and consistent with the rest of the OSG
+
+Wed, 18 Oct 2017 10:11:43 +0100
+Author : Robert Osfield
+Implemented inplace replacement
+
+Tue, 17 Oct 2017 17:11:12 +0200
+Author : David Siñuela Pastor
+Do not break systems with cr as line endings
+
+Mon, 16 Oct 2017 11:52:54 +0100
+Author : Robert Osfield
+Fixed warning
+
+Mon, 16 Oct 2017 10:47:47 +0100
+Author : Robert Osfield
+Fixed GLX EGL build
+
+Mon, 16 Oct 2017 10:38:33 +0100
+Author : Robert Osfield
+Removed inappropriate tabs&spaces
+
+Mon, 16 Oct 2017 10:16:49 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #364 from mp3butcher/osganimbugfixadd osg::Program::BindUniformBlockList serialization
+
+Mon, 16 Oct 2017 10:12:19 +0100
+Author : Robert Osfield
+Fixed build error
+
+Mon, 16 Oct 2017 10:08:18 +0100
+Author : Robert Osfield
+Moved bracket to be consistent with the rest of the OSG
+
+Mon, 16 Oct 2017 10:00:49 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #366 from LaurensVoerman/rotateDXTadd support for dxt compressed images to createImageWithOrientationConversion
+
+Mon, 16 Oct 2017 09:58:29 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #367 from LaurensVoerman/compression_astccopySubImage support for block compressed images, added support for astc compressed type.
+
+Mon, 16 Oct 2017 09:49:47 +0100
+Author : Robert Osfield
+Fixed indentation
+
+Mon, 16 Oct 2017 09:45:37 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #365 from LaurensVoerman/login2modified present3D and osgvnc to allow multiple --login arguments like osgViewer.
+
+Sat, 14 Oct 2017 09:06:37 +0100
+Author : Robert Osfield
+Changed the precision setting of  #pargma(tic) shader composition define setup to address GLES compatibility issues
+
+Sat, 14 Oct 2017 09:03:08 +0100
+Author : Robert Osfield
+Improved the formating of GLSL source that is passed to OpenGL to make debugging shaders easier.
+
+Fri, 13 Oct 2017 17:03:31 +0100
+Author : Robert Osfield
+Cleaned up support for GL3 build
+
+Fri, 13 Oct 2017 16:54:04 +0200
+Author : Laurens Voerman
+copySubImage support for block compressed images, added support for astc compressed type.
+
+Fri, 13 Oct 2017 13:01:57 +0100
+Author : Robert Osfield
+Removed the glyph image outline support as it's no longer required.
+
+Fri, 13 Oct 2017 11:42:25 +0100
+Author : Robert Osfield
+Deprecated Text:BackdropImplementation, removing the backend as it no longer required when using shaders for backdrop effects
+
+Fri, 13 Oct 2017 08:40:58 +0100
+Author : Robert Osfield
+Removed old multipass implemenmtations of backdrops as effect is now fully implememted in shaders
+
+Thu, 12 Oct 2017 17:19:24 +0200
+Author : Julien Valentin
+add osg::Program::BindUniformBlock serialization
+
+Thu, 12 Oct 2017 18:45:38 +0100
+Author : Robert Osfield
+Updated from OpenSceneGraph-Data/shaders/text_sdf.frag to add support for SHADOW
+
+Thu, 12 Oct 2017 16:44:40 +0100
+Author : Robert Osfield
+Merge branch 'master' into text_improvements
+
+Thu, 12 Oct 2017 17:38:16 +0200
+Author : Laurens Voerman
+add support for dxt compressed images to createImageWithOrientationConversion
+
+Thu, 12 Oct 2017 17:21:10 +0200
+Author : Laurens Voerman
+modified present3D to allow multiple --login arguments like osgViewer, added --login option to osgvnc example
+
+Thu, 12 Oct 2017 15:52:42 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #363 from LaurensVoerman/dxtcGetcoloradded dxtc support in Image::getColor, Image::isImageTranscent testdxt3 and dxt5
+
+Thu, 12 Oct 2017 13:49:57 +0200
+Author : Laurens Voerman
+added dxtc support in Image::getColor, enhanced Image::isImageTranslucent to test opacity of dxt3 and dxt5 images
+
+Thu, 12 Oct 2017 11:12:47 +0100
+Author : Robert Osfield
+Updated text_sdf_frag.cpp from OpenSceneGraph-Data changes that add outline generation for non SIGNED_DISTANCE_FIELD text.
+
+Tue, 10 Oct 2017 09:21:34 +0100
+Author : Robert Osfield
+Merge branch 'master' into text_improvements
+
+Mon, 9 Oct 2017 12:33:06 +0100
+Author : Robert Osfield
+Updated ChangeLog
+
 Mon, 9 Oct 2017 12:25:40 +0100
 Author : Robert Osfield
 Updated version number
@@ -66,9 +337,65 @@ Thu, 5 Oct 2017 12:15:23 +0100
 Author : OpenSceneGraph git repository
 Merge pull request #346 from LaurensVoerman/FindLIBLASremoved las_c library from FindLIBLAS.cmake, it's not used by the osgplugin.
 
+Thu, 5 Oct 2017 12:14:03 +0100
+Author : Robert Osfield
+Merge branch 'master' into text_improvements
+
+Wed, 4 Oct 2017 18:06:42 +0100
+Author : Robert Osfield
+Improvements to the Signed Distance Field implementation.
+
+Fri, 29 Sep 2017 20:21:13 +0100
+Author : Robert Osfield
+Simplified and improved the glyph margin computation and usage
+
+Fri, 29 Sep 2017 10:39:02 +0100
+Author : Robert Osfield
+Improved SDF generation
+
+Fri, 29 Sep 2017 10:25:04 +0100
+Author : Robert Osfield
+Added setting of the FontResolution of the DefaultFont
+
+Fri, 29 Sep 2017 10:20:59 +0100
+Author : Robert Osfield
+Added command line support for specifying "default" for osgText::DefaultFont
+
+Fri, 29 Sep 2017 09:54:43 +0100
+Author : Robert Osfield
+Improved the setup of the --counter test
+
 Thu, 28 Sep 2017 11:09:18 +0200
 Author : Denys Koch
 Fix loading of 16bit PNG imagesWhen a 16bit PNG image is loaded, the internalTextureFormat is set to unsized (i.e pixelFormat) constant. This results in 8 Bit Texture2D
+
+Wed, 27 Sep 2017 11:09:22 +0100
+Author : Robert Osfield
+Fixed update of GlyphTexture Image when copying new Glyph image's to it.
+
+Tue, 26 Sep 2017 15:32:41 +0100
+Author : Robert Osfield
+UPdated from OpenSceneGraph-Data with handling of non textured text decoration
+
+Tue, 26 Sep 2017 12:51:03 +0100
+Author : Robert Osfield
+Updated shader from OpenSceneGraph-Data/shaders to add fade out for SDF and non SDF pathways
+
+Tue, 26 Sep 2017 10:57:09 +0100
+Author : Robert Osfield
+Updated wiht OpenSceneGraph-Data/shader version that introduced use of textureLOD to reduce aliasing artifacts with SDF
+
+Tue, 26 Sep 2017 10:44:14 +0100
+Author : Robert Osfield
+Updated shaders using latest OpenSceneGraph-Data/shader versions
+
+Tue, 26 Sep 2017 10:42:47 +0100
+Author : Robert Osfield
+Improvements to SDF and outline generation
+
+Fri, 22 Sep 2017 12:22:58 +0100
+Author : Robert Osfield
+Fixed rendering old sytel outline
 
 Fri, 22 Sep 2017 11:38:43 +0300
 Author : Konstantin S. Matveyev
@@ -78,17 +405,138 @@ Sun, 17 Sep 2017 18:48:32 +0300
 Author : konstantin.matveyev
 tellg call removed from StreamOperator's checkStream function, because reading of files (readNodeFile etc.) with tellg on 'every iter' is approximately 100 times slower on Emscripten platform
 
+Fri, 22 Sep 2017 07:56:30 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #352 from remoe/patch-3addShader fix
+
+Fri, 22 Sep 2017 08:39:38 +0200
+Author : Remo E
+addShader fix
+
+Thu, 21 Sep 2017 16:04:10 +0100
+Author : Robert Osfield
+Removed debug output
+
+Thu, 21 Sep 2017 16:01:27 +0100
+Author : Robert Osfield
+Added assignStateSet() to Text::setBackgroundColor()
+
+Thu, 21 Sep 2017 15:52:07 +0100
+Author : Robert Osfield
+Added support for toggling on use of the new SignedDistanceFunction function now built into osgText, just use --sdf to enable.
+
+Thu, 21 Sep 2017 15:41:21 +0100
+Author : Robert Osfield
+Removed debug info
+
 Thu, 21 Sep 2017 16:33:14 +0200
 Author : Laurens Voerman
 VNC: try to find password for host if no password for host:port is found
+
+Thu, 21 Sep 2017 14:35:31 +0100
+Author : Robert Osfield
+Moved enabling/disabling of SDF so it's done regardless of whether a backdrop is used.
+
+Thu, 21 Sep 2017 14:32:17 +0100
+Author : Robert Osfield
+Umproved SDF computation.
+
+Wed, 20 Sep 2017 16:51:30 +0100
+Author : Robert Osfield
+Removed no longer used code paths
+
+Wed, 20 Sep 2017 15:51:03 +0100
+Author : Robert Osfield
+Added support for only enabling SignedDistanceField shader path when font resolution is greater than 16.
+
+Wed, 20 Sep 2017 14:30:23 +0100
+Author : Robert Osfield
+cleaned up exmple
+
+Wed, 20 Sep 2017 14:29:05 +0100
+Author : Robert Osfield
+Added Text::assignStateSet() and usage to make sure the correct StateSet is setup for each combination of backdrop settings
+
+Wed, 20 Sep 2017 11:02:06 +0100
+Author : Robert Osfield
+Updated text_sdf.frag shader to handle GLES2+ versions
+
+Wed, 20 Sep 2017 11:01:04 +0100
+Author : Robert Osfield
+Added commented out debug output to make it easier to test in future
+
+Tue, 19 Sep 2017 17:07:59 +0100
+Author : Robert Osfield
+Fixed OSG_PRECISION_FLOAT usage
+
+Tue, 19 Sep 2017 17:01:58 +0100
+Author : Robert Osfield
+Fixed X11 GLES2 build
+
+Tue, 19 Sep 2017 16:35:28 +0100
+Author : Robert Osfield
+Added osgText/shaders to support greyscale and Signed Distance Field based text
+
+Mon, 18 Sep 2017 18:09:15 +0100
+Author : Robert Osfield
+Added support for subsititing $VAR_NAME entries in shaders to enable writing shaders that work across GLSL versions.
+
+Fri, 15 Sep 2017 15:14:19 +0100
+Author : Robert Osfield
+Added constant sizeing vs changing label size relatve to font resolution, controlled by --constant-size and --scale-size command line options.
 
 Fri, 15 Sep 2017 12:14:37 +0300
 Author : Konstantin S. Matveyev
 osg serializers fixed for static build, ShaderAttribute wrapper added
 
+Thu, 14 Sep 2017 15:58:38 +0100
+Author : Robert Osfield
+Impprovide the computation of the Signed Distance Field
+
+Wed, 13 Sep 2017 11:09:56 +0100
+Author : Robert Osfield
+Fixed of shadow
+
+Wed, 13 Sep 2017 11:08:51 +0100
+Author : Robert Osfield
+Added --shadow-* command line variants to provide full control over the position of the text shadow
+
+Tue, 12 Sep 2017 19:13:01 +0100
+Author : Robert Osfield
+Added setting of the Text::BackdropImplementation type to USE_SHADERS when setting up shaders
+
+Tue, 12 Sep 2017 16:03:35 +0100
+Author : Robert Osfield
+Changed the margin computation to properly account of the Signed Distance Function data
+
+Tue, 12 Sep 2017 11:50:47 +0100
+Author : Robert Osfield
+Shifted set up of osgText related StateSet from osgText::Font into into osg::TextBase/Text to enable grater control over state required for specific Text implementations
+
 Tue, 12 Sep 2017 09:19:33 +0200
 Author : Laurens Voerman
 removed las_c library from FindLIBLAS.cmake, it's not used by the osg plugin.
+
+Fri, 8 Sep 2017 17:03:15 +0100
+Author : Robert Osfield
+Added extra command line paramter and osgText::Font settings to add better control of osgText::GlyphTexture generation to support signed distance field and outline image data.
+
+Fri, 8 Sep 2017 17:02:38 +0100
+Author : Robert Osfield
+Added setting of the original font reoslution to the created Glyph
+
+Fri, 8 Sep 2017 16:59:43 +0100
+Author : Robert Osfield
+Add support for generating outline and signed distance field channels in a RGBA packed GlyphTexture Image.
+
+Wed, 6 Sep 2017 16:53:54 +0100
+Author : Robert Osfield
+Added KeyHandler for toggling "SIGNED_DISTANCE_FIELD" and "OUTLINE" #pragma(tic) shader defines to control the different shader paths.Keys to press are 'd' for toggle SIGNED_DISTANCE_FIELD and 'o' for OUTLINE.
+
+
+Wed, 6 Sep 2017 10:40:05 +0100
+Author : Robert Osfield
+To control the GlyphTexture Min/MagFilter values Added --min <value> and --mag <value> filter with LINEAR, NEAREST and LINEAR_MIPMAP_LINER options for values
 
 Mon, 4 Sep 2017 15:21:26 +0100
 Author : OpenSceneGraph git repository
@@ -121,6 +569,42 @@ Merge pull request #337 from mp3butcher/osganimbugfixfix a bug in how vertexattr
 Wed, 30 Aug 2017 23:15:01 +0200
 Author : Julien Valentin
 fix a bug in how vertexattributes are filled
+
+Wed, 30 Aug 2017 17:43:29 +0100
+Author : Robert Osfield
+Added --shader filename command line parsing and associated set up of osg::Program to allow shaders to be passed into example to customize rendering
+
+Wed, 30 Aug 2017 16:22:25 +0100
+Author : Robert Osfield
+Added --interval value commnad line option for setting the Font::setGlyphInterval() to experimentation of clamping of glyph images to user specified intervals in the glyph texture
+
+Wed, 30 Aug 2017 16:21:03 +0100
+Author : Robert Osfield
+Added osgText::Font::s/getGlyphInterval(int) and GlyphTexture::s/getGlyphInterval(int) and internal support for clmapping positions of glyph images an defined intervals, defaults to 1.
+
+Wed, 30 Aug 2017 10:50:26 +0100
+Author : Robert Osfield
+Added --margin texel_width and --margin-ration ratio to control the spacing between glyphs in the font.
+
+Wed, 30 Aug 2017 10:16:18 +0100
+Author : Robert Osfield
+Added --test command line option that sets up all the sizes and font settings required for a useufl unit test.
+
+Tue, 29 Aug 2017 17:32:14 +0100
+Author : Robert Osfield
+Removed debug messages
+
+Tue, 29 Aug 2017 17:19:26 +0100
+Author : Robert Osfield
+Added TextSettings struct to manage values used to set up the text. with the addition of following command line parameters:    --outline // enable outlne    --shadow // enable shadow    --offset ratio // set the backdrop offset    --text-color r g b a // set the text body color    --bd-color r g b a // set the shadow/outline color    --bg-color r g b a // window background color    -o filename // write create subgraph to disk using specified filename
+
+Tue, 29 Aug 2017 13:48:06 +0100
+Author : Robert Osfield
+Added --ortho command line option to toggle use of orthographic camera or default perspective one
+
+Tue, 29 Aug 2017 12:21:14 +0100
+Author : Robert Osfield
+Added argument parsing to viewer constructor
 
 Tue, 29 Aug 2017 10:51:06 +0100
 Author : OpenSceneGraph git repository

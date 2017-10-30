@@ -341,7 +341,7 @@ REGISTER_OBJECT_WRAPPER( StateSet,
     ADD_OBJECT_SERIALIZER( EventCallback, osg::StateSet::Callback, NULL );  // _eventCallback
 
     {
-        UPDATE_TO_VERSION_SCOPED( 146 )
+        UPDATE_TO_VERSION_SCOPED( 151 )
         ADD_USER_SERIALIZER( DefineList );  // _defineList
     }
 }

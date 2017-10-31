@@ -32,7 +32,7 @@ matrix:
             description: "OpenSceneGraph build"
           notification_email: robert@openscenegraph.com
           build_command_prepend: "cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_OSG_DEPRECATED_SERIALIZERS=OFF ."
-          build_command:   "make -j 3"
+          build_command:   "make -j 4"
           branch_pattern: coverity_scan
         apt:
           sources:
@@ -70,4 +70,4 @@ matrix:
 
 script:
     - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then mkdir build && cd build && travis_wait 60 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../product $CMAKECMD_ARGS ../ ; fi
-    - if [ -f CMakeCache.txt ]; then make -j3 ; fi
+    - if [ -f CMakeCache.txt ]; then make -j4 ; fi

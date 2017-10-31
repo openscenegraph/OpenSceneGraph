@@ -165,7 +165,8 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
         return NULL;
     }
 
-    mapbase = malloc (st.st_size);
+    mapbase = malloc (st.st_size+1);
+    memset(mapbase, 0, st.st_size+1);
     if (!mapbase)
     {
         close (file_fd);

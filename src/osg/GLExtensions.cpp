@@ -946,6 +946,10 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glTexSubImage3D, "glTexSubImage3D","glTexSubImage3DEXT", validContext);
     setGLExtensionFuncPtr(glCompressedTexImage3D, "glCompressedTexImage3D","glCompressedTexImage3DARB", validContext);
     setGLExtensionFuncPtr(glCompressedTexSubImage3D, "glCompressedTexSubImage3D","glCompressedTexSubImage3DARB", validContext);
+
+    setGLExtensionFuncPtr(glTexImage3DMultisample, "glTexImage3DMultisample", validContext);
+    setGLExtensionFuncPtr(glGetMultisamplefv, "glGetMultisamplefv", validContext);
+
     setGLExtensionFuncPtr(glCopyTexSubImage3D, "glCopyTexSubImage3D","glCopyTexSubImage3DEXT", validContext);
     setGLExtensionFuncPtr(glBeginConditionalRender, "glBeginConditionalRender", "glBeginConditionalRenderARB");
     setGLExtensionFuncPtr(glEndConditionalRender, "glEndConditionalRender", "glEndConditionalRenderARB");

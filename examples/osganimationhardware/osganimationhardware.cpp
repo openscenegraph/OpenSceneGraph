@@ -42,27 +42,22 @@ static unsigned int getRandomValueinRange(unsigned int v)
 }
 
 
-//osg::ref_ptr<osg::Program> program;
+osg::ref_ptr<osg::Program> CommonProgram;
 // show how to override the default RigTransformHardware for customized usage
 struct MyRigTransformHardware : public osgAnimation::RigTransformHardware
 {
-
+    int _maxmatrix;
+    MyRigTransformHardware() : _maxmatrix(99){}
     virtual bool init(osgAnimation::RigGeometry& rig)
     {
-        if(!rig.getSkeleton() && !rig.getParents().empty())
+        if(_perVertexInfluences.empty())
         {
-            osgAnimation::RigGeometry::FindNearestParentSkeleton finder;
-            if(rig.getParents().size() > 1)
-                osg::notify(osg::WARN) << "A RigGeometry should not have multi parent ( " << rig.getName() << " )" << std::endl;
-            rig.getParents()[0]->accept(finder);
-
-            if(!finder._root.valid())
-            {
-                osg::notify(osg::WARN) << "A RigGeometry did not find a parent skeleton for RigGeometry ( " << rig.getName() << " )" << std::endl;
-                return false;
-            }
-            rig.setSkeleton(finder._root.get());
+            prepareData(rig);
+            return false;
         }
+        if(!rig.getSkeleton())
+            return false;
+
         osgAnimation::BoneMapVisitor mapVisitor;
         rig.getSkeleton()->accept(mapVisitor);
         osgAnimation::BoneMap boneMap = mapVisitor.getBoneMap();
@@ -72,6 +67,7 @@ struct MyRigTransformHardware : public osgAnimation::RigTransformHardware
 
         osg::Geometry& source = *rig.getSourceGeometry();
         osg::Vec3Array* positionSrc = dynamic_cast<osg::Vec3Array*>(source.getVertexArray());
+
         if (!positionSrc)
         {
             OSG_WARN << "RigTransformHardware no vertex array in the geometry " << rig.getName() << std::endl;
@@ -81,86 +77,62 @@ struct MyRigTransformHardware : public osgAnimation::RigTransformHardware
         // copy shallow from source geometry to rig
         rig.copyFrom(source);
 
-        osg::ref_ptr<osg::Program> program ;
         osg::ref_ptr<osg::Shader> vertexshader;
         osg::ref_ptr<osg::StateSet> stateset = rig.getOrCreateStateSet();
+        if(!CommonProgram.valid()){
+            CommonProgram   = new osg::Program;
+            CommonProgram->setName("HardwareSkinning");
 
-        //grab geom source program and vertex shader if _shader is not setted
-        if(!_shader.valid() && (program = (osg::Program*)stateset->getAttribute(osg::StateAttribute::PROGRAM)))
-        {
-            for(unsigned int i=0; i<program->getNumShaders(); ++i)
-                if(program->getShader(i)->getType()==osg::Shader::VERTEX)
+            //set default source if _shader is not user setted
+            if (!vertexshader.valid())
+            {
+                    vertexshader = osg::Shader::readShaderFile(osg::Shader::VERTEX,"skinning.vert");
+            }
+
+            if (!vertexshader.valid())
+            {
+                OSG_WARN << "RigTransformHardware can't load VertexShader" << std::endl;
+                return false;
+            }
+
+            // replace max matrix by the value from uniform
+            {
+                std::string str = vertexshader->getShaderSource();
+                std::string toreplace = std::string("MAX_MATRIX");
+                std::size_t start = str.find(toreplace);
+                if (std::string::npos != start)
                 {
-                    vertexshader=program->getShader(i);
-                    program->removeShader(vertexshader);
-
+                    std::stringstream ss;
+                    ss << _maxmatrix;//getMatrixPaletteUniform()->getNumElements();
+                    str.replace(start, toreplace.size(), ss.str());
+                    vertexshader->setShaderSource(str);
                 }
-        }
-        else
-        {
-            program = new osg::Program;
-            program->setName("HardwareSkinning");
-        }
-        //set default source if _shader is not user setted
-        if (!vertexshader.valid())
-        {
-            if (!_shader.valid())
-                vertexshader = osg::Shader::readShaderFile(osg::Shader::VERTEX,"shaders/skinning.vert");
-            else vertexshader=_shader;
-        }
-
-
-        if (!vertexshader.valid())
-        {
-            OSG_WARN << "RigTransformHardware can't load VertexShader" << std::endl;
-            return false;
-        }
-
-        // replace max matrix by the value from uniform
-        {
-            std::string str = vertexshader->getShaderSource();
-            std::string toreplace = std::string("MAX_MATRIX");
-            std::size_t start = str.find(toreplace);
-            if (std::string::npos != start)
-            {
-                std::stringstream ss;
-                ss << getMatrixPaletteUniform()->getNumElements();
-                str.replace(start, toreplace.size(), ss.str());
-                vertexshader->setShaderSource(str);
+                else
+                {
+                    OSG_WARN<< "MAX_MATRIX not found in Shader! " << str << std::endl;
+                }
+                OSG_INFO << "Shader " << str << std::endl;
             }
-            else
-            {
-                OSG_INFO<< "MAX_MATRIX not found in Shader! " << str << std::endl;
-            }
-            OSG_INFO << "Shader " << str << std::endl;
+            CommonProgram->addShader(vertexshader.get());
         }
-
-        unsigned int attribIndex = 11;
         unsigned int nbAttribs = getNumVertexAttrib();
-        if(nbAttribs==0)
-            OSG_WARN << "nbAttribs== " << nbAttribs << std::endl;
         for (unsigned int i = 0; i < nbAttribs; i++)
         {
             std::stringstream ss;
             ss << "boneWeight" << i;
-            program->addBindAttribLocation(ss.str(), attribIndex + i);
-
-            if(getVertexAttrib(i)->getNumElements()!=_nbVertices)
-                OSG_WARN << "getVertexAttrib== " << getVertexAttrib(i)->getNumElements() << std::endl;
-            rig.setVertexAttribArray(attribIndex + i, getVertexAttrib(i));
+            CommonProgram->addBindAttribLocation(ss.str(), _minAttribIndex + i);
+            rig.setVertexAttribArray(_minAttribIndex + i, getVertexAttrib(i));
             OSG_INFO << "set vertex attrib " << ss.str() << std::endl;
         }
 
 
-        program->addShader(vertexshader.get());
         stateset->removeUniform("nbBonesPerVertex");
         stateset->addUniform(new osg::Uniform("nbBonesPerVertex",_bonesPerVertex));
-        stateset->removeUniform("matrixPalette");
-        stateset->addUniform(getMatrixPaletteUniform());
 
-        stateset->removeAttribute(osg::StateAttribute::PROGRAM);
-        if(!stateset->getAttribute(osg::StateAttribute::PROGRAM))
-            stateset->setAttributeAndModes(program.get());
+        stateset->removeUniform("matrixPalette");
+        stateset->addUniform(_uniformMatrixPalette);
+
+        stateset->setAttribute(CommonProgram.get());
 
         _needInit = false;
         return true;

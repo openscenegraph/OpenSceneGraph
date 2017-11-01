@@ -22,6 +22,13 @@
 
 namespace osg {
 
+inline unsigned int getClampedLength(const char* str, unsigned int maxNumChars=4096)
+{
+    unsigned int i = 0;
+    while(i<maxNumChars && str[i]!=0) { ++i; }
+    return i;
+}
+
 template<typename T>
 inline bool getEnvVar(const char* name, T& value)
 {
@@ -29,7 +36,7 @@ inline bool getEnvVar(const char* name, T& value)
     const char* ptr = getenv(name);
     if (!ptr) return false;
 
-    std::istringstream str(ptr);
+    std::istringstream str(std::string(ptr, getClampedLength(ptr)));
     str >> value;
     return !str.fail();
 #else
@@ -44,7 +51,7 @@ inline bool getEnvVar(const char* name, std::string& value)
     const char* ptr = getenv(name);
     if (!ptr) return false;
 
-    value = ptr;
+    value.assign(ptr, getClampedLength(ptr));
     return true;
 #else
     return false;
@@ -58,7 +65,7 @@ inline bool getEnvVar(const char* name, T1& value1, T2& value2)
     const char* ptr = getenv(name);
     if (!ptr) return false;
 
-    std::istringstream str(ptr);
+    std::istringstream str(std::string(ptr, getClampedLength(ptr)));
     str >> value1 >> value2;
     return !str.fail();
 #else
@@ -73,7 +80,7 @@ inline bool getEnvVar(const char* name, T1& value1, T2& value2, T3& value3)
     const char* ptr = getenv(name);
     if (!ptr) return false;
 
-    std::istringstream str(ptr);
+    std::istringstream str(std::string(ptr, getClampedLength(ptr)));
     str >> value1 >> value2 >> value3;
     return !str.fail();
 #else
@@ -88,7 +95,7 @@ inline bool getEnvVar(const char* name, T1& value1, T2& value2, T3& value3, T4& 
     const char* ptr = getenv(name);
     if (!ptr) return false;
 
-    std::istringstream str(ptr);
+    std::istringstream str(std::string(ptr, getClampedLength(ptr)));
     str >> value1 >> value2 >> value3 >> value4;
     return !str.fail();
 #else

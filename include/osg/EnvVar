@@ -17,6 +17,7 @@
 #include <osg/Config>
 
 #ifdef OSG_ENVVAR_SUPPORTED
+    #include <stdlib.h>
     #include <sstream>
 #endif
 
@@ -28,6 +29,15 @@ inline unsigned int getClampedLength(const char* str, unsigned int maxNumChars=4
     while(i<maxNumChars && str[i]!=0) { ++i; }
     return i;
 }
+
+inline std::string getEnvVar(const char* name)
+{
+    std::string value;
+    const char* ptr = getenv(name);
+    if (ptr) value.assign(ptr, getClampedLength(ptr));
+    return value;
+ }
+
 
 template<typename T>
 inline bool getEnvVar(const char* name, T& value)

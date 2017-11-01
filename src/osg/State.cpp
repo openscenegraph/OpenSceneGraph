@@ -18,6 +18,7 @@
 #include <osg/Drawable>
 #include <osg/ApplicationUsage>
 #include <osg/ContextData>
+#include <osg/EnvVar>
 
 #include <sstream>
 #include <algorithm>
@@ -75,14 +76,17 @@ State::State():
 
     _checkGLErrors = ONCE_PER_FRAME;
 
-    const char* str = getenv("OSG_GL_ERROR_CHECKING");
-    if (str && (strcmp(str,"ONCE_PER_ATTRIBUTE")==0 || strcmp(str,"ON")==0 || strcmp(str,"on")==0))
+    std::string str;
+    if (getEnvVar("OSG_GL_ERROR_CHECKING", str))
     {
-        _checkGLErrors = ONCE_PER_ATTRIBUTE;
-    }
-    else if(str && (strcmp(str, "OFF") == 0 || strcmp(str, "off") == 0))
-    {
-        _checkGLErrors = NEVER_CHECK_GL_ERRORS;
+        if (str=="ONCE_PER_ATTRIBUTE" || str=="ON" || str=="on")
+        {
+            _checkGLErrors = ONCE_PER_ATTRIBUTE;
+        }
+        else if (str=="OFF" || str=="off")
+        {
+            _checkGLErrors = NEVER_CHECK_GL_ERRORS;
+        }
     }
 
     _currentActiveTextureUnit=0;

@@ -15,6 +15,8 @@
 #include <osg/Notify>
 #include <osg/Math>
 #include <osg/buffered_value>
+#include <osg/EnvVar>
+#include <osg/ApplicationUsage>
 
 #include <stdlib.h>
 #include <string.h>
@@ -64,6 +66,9 @@ static osg::buffered_value<int> s_glInitializedList;
 static osg::buffered_object<ExtensionSet> s_gluExtensionSetList;
 static osg::buffered_object<std::string> s_gluRendererList;
 static osg::buffered_value<int> s_gluInitializedList;
+
+static ApplicationUsageProxy GLEXtension_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE, "OSG_GL_EXTENSION_DISABLE <value>", "Use space deliminarted list of GL extensions to disable associated GL extensions");
+static ApplicationUsageProxy GLEXtension_e1(ApplicationUsage::ENVIRONMENTAL_VARIABLE, "OSG_MAX_TEXTURE_SIZE <value>", "Clamp the maximum GL texture size to specified value.");
 
 float osg::getGLVersionNumber()
 {
@@ -308,8 +313,7 @@ void osg::setGLExtensionDisableString(const std::string& disableString)
 
 std::string& osg::getGLExtensionDisableString()
 {
-    static const char* envVar = getenv("OSG_GL_EXTENSION_DISABLE");
-    static std::string s_GLExtensionDisableString(envVar?envVar:"Nothing defined");
+    static std::string s_GLExtensionDisableString(getEnvVar("OSG_GL_EXTENSION_DISABLE"));
 
     return s_GLExtensionDisableString;
 }
@@ -901,15 +905,12 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     if (validContext) glGetIntegerv(GL_MAX_TEXTURE_SIZE,&maxTextureSize);
 
     char *ptr;
-    if( (ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)
+
+    GLint osg_max_size = maxTextureSize;
+
+    if( (getEnvVar("OSG_MAX_TEXTURE_SIZE", osg_max_size)) && osg_max_size<maxTextureSize)
     {
-        GLint osg_max_size = atoi(ptr);
-
-        if (osg_max_size<maxTextureSize)
-        {
-
-            maxTextureSize = osg_max_size;
-        }
+        maxTextureSize = osg_max_size;
     }
 
     setGLExtensionFuncPtr(glTexStorage2D,"glTexStorage2D","glTexStorage2DARB", validContext);

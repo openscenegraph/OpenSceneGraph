@@ -12,6 +12,7 @@
 */
 #include <osg/Notify>
 #include <osg/ApplicationUsage>
+#include <osg/EnvVar>
 #include <osg/ref_ptr>
 #include <string>
 #include <stdlib.h>
@@ -140,9 +141,8 @@ struct NotifySingleton
 
         _notifyLevel = osg::NOTICE; // Default value
 
-        char* OSGNOTIFYLEVEL=getenv("OSG_NOTIFY_LEVEL");
-        if (!OSGNOTIFYLEVEL) OSGNOTIFYLEVEL=getenv("OSGNOTIFYLEVEL");
-        if(OSGNOTIFYLEVEL)
+        std::string OSGNOTIFYLEVEL;
+        if(getEnvVar("OSG_NOTIFY_LEVEL", OSGNOTIFYLEVEL) || getEnvVar("OSGNOTIFYLEVEL", OSGNOTIFYLEVEL))
         {
 
             std::string stringOSGNOTIFYLEVEL(OSGNOTIFYLEVEL);

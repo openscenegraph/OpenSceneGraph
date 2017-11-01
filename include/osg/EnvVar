@@ -23,7 +23,7 @@
 namespace osg {
 
 template<typename T>
-bool getEnvVar(const char* name, T& value)
+inline bool getEnvVar(const char* name, T& value)
 {
 #ifdef OSG_ENVVAR_SUPPORTED
     const char* ptr = getenv(name);
@@ -38,7 +38,7 @@ bool getEnvVar(const char* name, T& value)
 }
 
 template<>
-bool getEnvVar(const char* name, std::string& value)
+inline bool getEnvVar(const char* name, std::string& value)
 {
 #ifdef OSG_ENVVAR_SUPPORTED
     const char* ptr = getenv(name);
@@ -52,7 +52,7 @@ bool getEnvVar(const char* name, std::string& value)
 }
 
 template<typename T1, typename T2>
-bool getEnvVar(const char* name, T1& value1, T2& value2)
+inline bool getEnvVar(const char* name, T1& value1, T2& value2)
 {
 #ifdef OSG_ENVVAR_SUPPORTED
     const char* ptr = getenv(name);
@@ -67,7 +67,7 @@ bool getEnvVar(const char* name, T1& value1, T2& value2)
 }
 
 template<typename T1, typename T2, typename T3>
-bool getEnvVar(const char* name, T1& value1, T2& value2, T3& value3)
+inline bool getEnvVar(const char* name, T1& value1, T2& value2, T3& value3)
 {
 #ifdef OSG_ENVVAR_SUPPORTED
     const char* ptr = getenv(name);
@@ -82,7 +82,7 @@ bool getEnvVar(const char* name, T1& value1, T2& value2, T3& value3)
 }
 
 template<typename T1, typename T2, typename T3, typename T4>
-bool getEnvVar(const char* name, T1& value1, T2& value2, T3& value3, T4& value4)
+inline bool getEnvVar(const char* name, T1& value1, T2& value2, T3& value3, T4& value4)
 {
 #ifdef OSG_ENVVAR_SUPPORTED
     const char* ptr = getenv(name);

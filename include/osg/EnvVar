@@ -1,0 +1,101 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2017 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_EnvVar
+#define OSG_EnvVar 1
+
+#include <osg/Config>
+
+#ifdef OSG_ENVVAR_SUPPORTED
+    #include <sstream>
+#endif
+
+namespace osg {
+
+template<typename T>
+bool getEnvVar(const char* name, T& value)
+{
+#ifdef OSG_ENVVAR_SUPPORTED
+    const char* ptr = getenv(name);
+    if (!ptr) return false;
+
+    std::istringstream str(ptr);
+    str >> value;
+    return !str.fail();
+#else
+    return false;
+#endif
+}
+
+template<>
+bool getEnvVar(const char* name, std::string& value)
+{
+#ifdef OSG_ENVVAR_SUPPORTED
+    const char* ptr = getenv(name);
+    if (!ptr) return false;
+
+    value = ptr;
+    return true;
+#else
+    return false;
+#endif
+}
+
+template<typename T1, typename T2>
+bool getEnvVar(const char* name, T1& value1, T2& value2)
+{
+#ifdef OSG_ENVVAR_SUPPORTED
+    const char* ptr = getenv(name);
+    if (!ptr) return false;
+
+    std::istringstream str(ptr);
+    str >> value1 >> value2;
+    return !str.fail();
+#else
+    return false;
+#endif
+}
+
+template<typename T1, typename T2, typename T3>
+bool getEnvVar(const char* name, T1& value1, T2& value2, T3& value3)
+{
+#ifdef OSG_ENVVAR_SUPPORTED
+    const char* ptr = getenv(name);
+    if (!ptr) return false;
+
+    std::istringstream str(ptr);
+    str >> value1 >> value2 >> value3;
+    return !str.fail();
+#else
+    return false;
+#endif
+}
+
+template<typename T1, typename T2, typename T3, typename T4>
+bool getEnvVar(const char* name, T1& value1, T2& value2, T3& value3, T4& value4)
+{
+#ifdef OSG_ENVVAR_SUPPORTED
+    const char* ptr = getenv(name);
+    if (!ptr) return false;
+
+    std::istringstream str(ptr);
+    str >> value1 >> value2 >> value3 >> value4;
+    return !str.fail();
+#else
+    return false;
+#endif
+}
+
+}
+
+# endif

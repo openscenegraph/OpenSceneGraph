@@ -39,12 +39,15 @@ public:
         }
         else {
             osg::Vec3Array* positions = dynamic_cast<osg::Vec3Array*>(geometry.getVertexArray());
-            SubGeometry cleaned(geometry,
-                                clean(*positions, getTriangles(geometry), 3),
-                                clean(*positions, getLines(geometry), 2),
-                                clean(*positions, getWireframe(geometry), 2),
-                                clean(*positions, getPoints(geometry), 1));
-            _clean.push_back(cleaned.geometry());
+            if (positions)
+            {
+                SubGeometry cleaned(geometry,
+                                    clean(*positions, getTriangles(geometry), 3),
+                                    clean(*positions, getLines(geometry), 2),
+                                    clean(*positions, getWireframe(geometry), 2),
+                                    clean(*positions, getPoints(geometry), 1));
+                _clean.push_back(cleaned.geometry());
+            }
         }
 
         return _clean;

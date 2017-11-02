@@ -583,23 +583,23 @@ void DisplaySettings::readEnvironmentalVariables()
 
         for( unsigned int n = 0; n < sizeof( variable ) / sizeof( variable[0] ); n++ )
         {
-            const char* env = getenv( variable[n] );
-            if ( !env ) continue;
-            std::string str(env);
+            std::string str;
+            if (getEnvVar(variable[n], str))
+            {
+                if(str.find("OFF")!=std::string::npos) *mask[n] = 0;
 
-            if(str.find("OFF")!=std::string::npos) *mask[n] = 0;
+                if(str.find("~DEFAULT")!=std::string::npos) *mask[n] ^= DEFAULT_IMPLICIT_BUFFER_ATTACHMENT;
+                else if(str.find("DEFAULT")!=std::string::npos) *mask[n] |= DEFAULT_IMPLICIT_BUFFER_ATTACHMENT;
 
-            if(str.find("~DEFAULT")!=std::string::npos) *mask[n] ^= DEFAULT_IMPLICIT_BUFFER_ATTACHMENT;
-            else if(str.find("DEFAULT")!=std::string::npos) *mask[n] |= DEFAULT_IMPLICIT_BUFFER_ATTACHMENT;
+                if(str.find("~COLOR")!=std::string::npos) *mask[n] ^= IMPLICIT_COLOR_BUFFER_ATTACHMENT;
+                else if(str.find("COLOR")!=std::string::npos) *mask[n] |= IMPLICIT_COLOR_BUFFER_ATTACHMENT;
 
-            if(str.find("~COLOR")!=std::string::npos) *mask[n] ^= IMPLICIT_COLOR_BUFFER_ATTACHMENT;
-            else if(str.find("COLOR")!=std::string::npos) *mask[n] |= IMPLICIT_COLOR_BUFFER_ATTACHMENT;
+                if(str.find("~DEPTH")!=std::string::npos) *mask[n] ^= IMPLICIT_DEPTH_BUFFER_ATTACHMENT;
+                else if(str.find("DEPTH")!=std::string::npos) *mask[n] |= (int)IMPLICIT_DEPTH_BUFFER_ATTACHMENT;
 
-            if(str.find("~DEPTH")!=std::string::npos) *mask[n] ^= IMPLICIT_DEPTH_BUFFER_ATTACHMENT;
-            else if(str.find("DEPTH")!=std::string::npos) *mask[n] |= (int)IMPLICIT_DEPTH_BUFFER_ATTACHMENT;
-
-            if(str.find("~STENCIL")!=std::string::npos) *mask[n] ^= (int)IMPLICIT_STENCIL_BUFFER_ATTACHMENT;
-            else if(str.find("STENCIL")!=std::string::npos) *mask[n] |= (int)IMPLICIT_STENCIL_BUFFER_ATTACHMENT;
+                if(str.find("~STENCIL")!=std::string::npos) *mask[n] ^= (int)IMPLICIT_STENCIL_BUFFER_ATTACHMENT;
+                else if(str.find("STENCIL")!=std::string::npos) *mask[n] |= (int)IMPLICIT_STENCIL_BUFFER_ATTACHMENT;
+            }
         }
     }
 
@@ -1110,7 +1110,7 @@ void DisplaySettings::setValue(const std::string& name, const std::string& value
     _valueMap[name] = value;
 }
 
-bool DisplaySettings::getValue(const std::string& name, std::string& value, bool use_getenv_fallback) const
+bool DisplaySettings::getValue(const std::string& name, std::string& value, bool use_env_fallback) const
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_valueMapMutex);
 
@@ -1122,12 +1122,12 @@ bool DisplaySettings::getValue(const std::string& name, std::string& value, bool
         return true;
     }
 
-    if (!use_getenv_fallback) return false;
+    if (!use_env_fallback) return false;
 
-    const char* str = getenv(name.c_str());
-    if (str)
+    std::string str;
+    if (getEnvVar(name.c_str(), str))
     {
-        OSG_INFO<<"DisplaySettings::getValue("<<name<<") found getenv value = ["<<value<<"]"<<std::endl;
+        OSG_INFO<<"DisplaySettings::getValue("<<name<<") found getEnvVar value = ["<<value<<"]"<<std::endl;
         _valueMap[name] = value = str;
         return true;
 

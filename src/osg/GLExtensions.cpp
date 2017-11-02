@@ -904,10 +904,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     maxTextureSize=0;
     if (validContext) glGetIntegerv(GL_MAX_TEXTURE_SIZE,&maxTextureSize);
 
-    char *ptr;
-
     GLint osg_max_size = maxTextureSize;
-
     if( (getEnvVar("OSG_MAX_TEXTURE_SIZE", osg_max_size)) && osg_max_size<maxTextureSize)
     {
         maxTextureSize = osg_max_size;

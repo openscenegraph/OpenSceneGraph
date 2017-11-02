@@ -846,7 +846,7 @@ void SharedGeometry::compileGLObjects(osg::RenderInfo& renderInfo) const
 
         osg::BufferObject* ebo = _drawElements->getElementBufferObject();
         osg::GLBufferObject* ebo_glBufferObject = ebo->getOrCreateGLBufferObject(contextID);
-        if (ebo_glBufferObject && vbo_glBufferObject->isDirty())
+        if (ebo_glBufferObject && ebo_glBufferObject->isDirty())
         {
             // OSG_NOTICE<<"Compile buffer "<<glBufferObject<<std::endl;
             ebo_glBufferObject->compileBuffer();

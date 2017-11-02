@@ -214,8 +214,7 @@ void ViewerBase::setThreadingModel(ThreadingModel threadingModel)
 ViewerBase::ThreadingModel ViewerBase::suggestBestThreadingModel()
 {
     std::string str;
-    osg::getEnvVar("OSG_THREADING", str);
-    if (!str.empty())
+    if (osg::getEnvVar("OSG_THREADING", str))
     {
         if (str=="SingleThreaded") return SingleThreaded;
         else if (str=="CullDrawThreadPerContext") return CullDrawThreadPerContext;

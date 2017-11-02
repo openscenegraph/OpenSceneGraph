@@ -927,12 +927,16 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     isTextureMaxLevelSupported = (glVersion >= 1.2f);
 
     isTextureStorageEnabled = validContext && ((glVersion >= 4.2f) || isGLExtensionSupported(contextID, "GL_ARB_texture_storage"));
-    if ( (ptr = getenv("OSG_GL_TEXTURE_STORAGE"))  != 0 && isTextureStorageEnabled)
-    {
-        if (strcmp(ptr,"OFF")==0 || strcmp(ptr,"DISABLE")==0 ) isTextureStorageEnabled = false;
-        else isTextureStorageEnabled = true;
-    }
 
+    if (isTextureStorageEnabled)
+    {
+        std::string value;
+        if (getEnvVar("OSG_GL_TEXTURE_STORAGE", value))
+        {
+            if (value=="OFF" || value=="DISABLE") isTextureStorageEnabled = false;
+            else isTextureStorageEnabled = true;
+        }
+    }
 
     // Texture3D extensions
     isTexture3DFast = validContext && (OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_EXT_texture3D"));

@@ -172,14 +172,15 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
         return NULL;
     }
 
-    memset(mapbase, 0, st.st_size+1);
-
     if (read(file_fd, mapbase, st.st_size) != st.st_size)
     {
         close (file_fd);
         if (mapbase) free(mapbase);
         return NULL;
     }
+
+    // set the last value in the mapbase to 0 to make sure the buffer is null terminated for later string reads from it
+    ((char*)mapbase)[st.st_size] = 0;
 
     if (g_md2NormalsArray == NULL) {
         g_md2NormalsArray = new osg::Vec3Array;

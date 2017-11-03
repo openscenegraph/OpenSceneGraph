@@ -549,35 +549,38 @@ kfdata_read(Lib3dsFile *file, Lib3dsIo *io) {
 
     {
         Lib3dsNode **nodes = (Lib3dsNode **)malloc(num_nodes * sizeof(Lib3dsNode*));
-        unsigned i;
-        Lib3dsNode *p, *q, *parent;
+        if (nodes)
+        {
+            unsigned i;
+            Lib3dsNode *p, *q, *parent;
 
-        p = file->nodes;
-        for (i = 0; i < num_nodes; ++i) {
-            nodes[i] = p;
-            p = p->next;
-        }
-        qsort(nodes, num_nodes, sizeof(Lib3dsNode*), compare_node_id);
-
-        p = last;
-        while (p) {
-            q = (Lib3dsNode *)p->user_ptr;
-            if (p->user_id != 65535) {
-                parent = *(Lib3dsNode**)bsearch(&p->user_id, nodes, num_nodes, sizeof(Lib3dsNode*), compare_node_id2);
-                if (parent) {
-                    q->next = p->next;
-                    p->next = parent->childs;
-                    p->parent = parent;
-                    parent->childs = p;
-                } else {
-                    /* TODO: warning */
-                }
+            p = file->nodes;
+            for (i = 0; i < num_nodes; ++i) {
+                nodes[i] = p;
+                p = p->next;
             }
-            p->user_id = 0;
-            p->user_ptr = NULL;
-            p = q;
+            qsort(nodes, num_nodes, sizeof(Lib3dsNode*), compare_node_id);
+
+            p = last;
+            while (p) {
+                q = (Lib3dsNode *)p->user_ptr;
+                if (p->user_id != 65535) {
+                    parent = *(Lib3dsNode**)bsearch(&p->user_id, nodes, num_nodes, sizeof(Lib3dsNode*), compare_node_id2);
+                    if (parent) {
+                        q->next = p->next;
+                        p->next = parent->childs;
+                        p->parent = parent;
+                        parent->childs = p;
+                    } else {
+                        /* TODO: warning */
+                    }
+                }
+                p->user_id = 0;
+                p->user_ptr = NULL;
+                p = q;
+            }
+            free(nodes);
         }
-        free(nodes);
     }
 
     lib3ds_chunk_read_end(&c, io);

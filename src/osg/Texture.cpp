@@ -2298,9 +2298,8 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                         if (height == 0)
                             height = 1;
 
-                        glTexSubImage2D( target, k,
-                            0, 0,
-                            width, height,
+                        glTexImage2D( target, k, _internalFormat,                          
+                            width, height, _borderWidth,
                             (GLenum)image->getPixelFormat(),
                             (GLenum)image->getDataType(),
                             dataPtr + image->getMipmapOffset(k));
@@ -2603,12 +2602,11 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                     if (height == 0)
                         height = 1;
 
-                    glTexSubImage2D( target, k,
-                        0, 0,
-                        width, height,
-                        (GLenum)image->getPixelFormat(),
-                        (GLenum)image->getDataType(),
-                        dataPtr + image->getMipmapOffset(k));
+                    glTexImage2D( target, k, _internalFormat,                          
+                            width, height, _borderWidth,
+                            (GLenum)image->getPixelFormat(),
+                            (GLenum)image->getDataType(),
+                            dataPtr + image->getMipmapOffset(k));
 
                     width >>= 1;
                     height >>= 1;

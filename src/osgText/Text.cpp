@@ -1259,7 +1259,24 @@ void Text::accept(osg::Drawable::ConstAttributeFunctor& af) const
 
 void Text::accept(osg::PrimitiveFunctor& pf) const
 {
-    pf.setVertexArray(_coords->size(), &(_coords->front()));
+    if (!_coords || _coords->empty()) return;
+
+    // short term fix/workaround for _coords being transformed by a local matrix before rendering, so we need to replicate this was doing tasks like intersection testing.
+    osg::ref_ptr<osg::Vec3Array> vertices = _coords;
+    if (!_matrix.isIdentity())
+    {
+        vertices = new osg::Vec3Array;
+        vertices->resize(_coords->size());
+        for(Vec3Array::iterator sitr = _coords->begin(), ditr = vertices->begin();
+            sitr != _coords->end();
+            ++sitr, ++ditr)
+        {
+            *ditr = *sitr * _matrix;
+        }
+    }
+
+    pf.setVertexArray(vertices->size(), &(vertices->front()));
+
     for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
         ++titr)

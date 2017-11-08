@@ -81,11 +81,11 @@ class ReaderWriterGZ : public osgDB::ReaderWriter
         osgDB::ReaderWriter *getStreamAndReader(std::stringstream& outuncompessed, std::istream& fin, const std::string& fullFileName) const {
             std::string ext = osgDB::getLowerCaseFileExtension(fullFileName);
             osgDB::ReaderWriter* rw = 0;
-            rw = osgDB::Registry::instance()->getReaderWriterForExtension(ext);
-            std::string baseFileName = osgDB::getNameLessExtension(fullFileName);
-            std::string baseExt = osgDB::getLowerCaseFileExtension(baseFileName);
-            rw = osgDB::Registry::instance()->getReaderWriterForExtension(baseExt);
-            OSG_INFO<<classname()<<"::getStreamAndReader:"<<baseExt<<" ReaderWriter "<<rw<<std::endl;
+            rw = osgDB::Registry::instance()->getReaderWriterForExtension( ext );
+            std::string baseFileName = osgDB::getNameLessExtension( fullFileName );
+            std::string baseExt = osgDB::getLowerCaseFileExtension( baseFileName );
+            rw = osgDB::Registry::instance()->getReaderWriterForExtension( baseExt );
+            OSG_INFO<< className() << "::getStreamAndReader:" << baseExt << " ReaderWriter " << rw <<std::endl;
             read(fin, outuncompessed);
             return rw;
         }
@@ -165,8 +165,8 @@ class ReaderWriterGZ : public osgDB::ReaderWriter
         WriteResult writeFile(ObjectType objectType, const osg::Object* object, const std::string& fullFileName, const osgDB::ReaderWriter::Options* options) const;
 
 
-        bool read(std::istream& fin, std::string& destination) const;
-        bool write(std::ostream& fout, const std::string& source) const;
+        bool read(std::istream& fin, std::stringstream& destination) const;
+        bool write(std::ostream& fout, const std::stringstream& source) const;
 
 
 };
@@ -238,10 +238,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterGZ::readFile(ObjectType objectType, 
     if (!fin) return ReadResult::ERROR_IN_READING_FILE;
 
 
-    std::string dest;
-    read(fin, dest);
-
-    std::stringstream strstream(dest);
+    std::stringstream strstream;
+    read(fin, strstream);
 
     return readFile(objectType, rw, strstream, local_opt.get());
 }
@@ -290,14 +288,14 @@ osgDB::ReaderWriter::WriteResult ReaderWriterGZ::writeFile(ObjectType objectType
 
     osgDB::ofstream fout(fullFileName.c_str(), std::ios::binary|std::ios::out);
 
-    write(fout,strstream.str());
+    write(fout,strstream);
 
     return writeResult;
 }
 
 #define CHUNK 16384
 
-bool ReaderWriterGZ::read(std::istream& fin, std::string& destination) const
+bool ReaderWriterGZ::read(std::istream& fin, std::stringstream& destination) const
 {
     int ret;
     unsigned have;
@@ -313,7 +311,7 @@ bool ReaderWriterGZ::read(std::istream& fin, std::string& destination) const
     strm.next_in = Z_NULL;
     ret = inflateInit2(&strm,
                        15 + 32 // autodetected zlib or gzip header
-                       );
+                      );
     if (ret != Z_OK)
         return false;
 
@@ -346,8 +344,7 @@ bool ReaderWriterGZ::read(std::istream& fin, std::string& destination) const
                 return false;
             }
             have = CHUNK - strm.avail_out;
-
-            destination.append((char*)out, have);
+            destination.write((char*)out,have);
 
         } while (strm.avail_out == 0);
 
@@ -359,8 +356,9 @@ bool ReaderWriterGZ::read(std::istream& fin, std::string& destination) const
     return ret == Z_STREAM_END ? true : false;
 }
 
-bool ReaderWriterGZ::write(std::ostream& fout, const std::string& source) const
+bool ReaderWriterGZ::write(std::ostream& fout, const std::stringstream& sourcestream) const
 {
+    std::string source = sourcestream.str();
     int ret, flush = Z_FINISH;
     unsigned have;
     z_stream strm;
@@ -383,7 +381,7 @@ bool ReaderWriterGZ::write(std::ostream& fout, const std::string& source) const
                        8, // default
                        stategy);
     if (ret != Z_OK)
-    return false;
+        return false;
 
     strm.avail_in = source.size();
     strm.next_in = (Bytef*)(&(*source.begin()));
@@ -416,6 +414,8 @@ bool ReaderWriterGZ::write(std::ostream& fout, const std::string& source) const
     (void)deflateEnd(&strm);
     return true;
 }
+
+
 
 
 // now register with Registry to instantiate the above

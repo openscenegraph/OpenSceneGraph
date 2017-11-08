@@ -45,7 +45,7 @@ class ReaderWriterGZ : public osgDB::ReaderWriter
 
         ~ReaderWriterGZ();
 
-        virtual const char* className() const { return "HTTP Protocol Model Reader"; }
+        virtual const char* className() const { return "GZ Archive Reader/Writer"; }
 
         virtual ReadResult openArchive(const std::string& fileName,ArchiveStatus status, unsigned int , const Options* options) const
         {
@@ -77,6 +77,67 @@ class ReaderWriterGZ : public osgDB::ReaderWriter
 
         ReadResult readFile(ObjectType objectType, const std::string& fullFileName, const osgDB::ReaderWriter::Options* options) const;
 
+        ///return the reader for fullFileName and a outuncompessed stream fetching this file in the archive
+        osgDB::ReaderWriter *getStreamAndReader(std::stringstream& outuncompessed, std::istream& fin, const std::string& fullFileName) const {
+            std::string ext = osgDB::getLowerCaseFileExtension(fullFileName);
+            osgDB::ReaderWriter* rw = 0;
+            rw = osgDB::Registry::instance()->getReaderWriterForExtension(ext);
+            std::string baseFileName = osgDB::getNameLessExtension(fullFileName);
+            std::string baseExt = osgDB::getLowerCaseFileExtension(baseFileName);
+            rw = osgDB::Registry::instance()->getReaderWriterForExtension(baseExt);
+            OSG_INFO<<classname()<<"::getStreamAndReader:"<<baseExt<<" ReaderWriter "<<rw<<std::endl;
+            read(fin, outuncompessed);
+            return rw;
+        }
+
+        virtual ReadResult readImage(std::istream& fin,const osgDB::ReaderWriter::Options* local_opt=NULL) const {
+            std::string fullFileName = local_opt->getPluginStringData("STREAM_FILENAME");
+            std::string ext = osgDB::getLowerCaseFileExtension(fullFileName);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+            if (osgDB::containsServerAddress(fullFileName)) return ReadResult::FILE_NOT_HANDLED;
+            std::stringstream decstream;
+            osgDB::ReaderWriter* rw = getStreamAndReader(decstream, fin, fullFileName);
+            return readFile(IMAGE, rw, decstream, local_opt);
+        }
+
+        virtual ReadResult readHeightField(std::istream& fin,const osgDB::ReaderWriter::Options* local_opt=NULL) const {
+            std::string fullFileName = local_opt->getPluginStringData("STREAM_FILENAME");
+            std::string ext = osgDB::getLowerCaseFileExtension(fullFileName);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+            if (osgDB::containsServerAddress(fullFileName)) return ReadResult::FILE_NOT_HANDLED;
+            std::stringstream decstream;
+            osgDB::ReaderWriter* rw = getStreamAndReader(decstream, fin, fullFileName);
+            return readFile(HEIGHTFIELD, rw, decstream, local_opt);
+        }
+
+        virtual ReadResult readNode(std::istream& fin,const osgDB::ReaderWriter::Options* local_opt=NULL) const {
+            std::string fullFileName = local_opt->getPluginStringData("STREAM_FILENAME");
+            std::string ext = osgDB::getLowerCaseFileExtension(fullFileName);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+            if (osgDB::containsServerAddress(fullFileName)) return ReadResult::FILE_NOT_HANDLED;
+            std::stringstream decstream;
+            osgDB::ReaderWriter* rw = getStreamAndReader(decstream, fin, fullFileName);
+            return readFile(NODE, rw, decstream, local_opt);
+        }
+
+        virtual ReadResult readObject(std::istream& fin,const osgDB::ReaderWriter::Options* local_opt=NULL) const {
+            std::string fullFileName = local_opt->getPluginStringData("STREAM_FILENAME");
+            std::string ext = osgDB::getLowerCaseFileExtension(fullFileName);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+            if (osgDB::containsServerAddress(fullFileName)) return ReadResult::FILE_NOT_HANDLED;
+            std::stringstream decstream;
+            osgDB::ReaderWriter* rw = getStreamAndReader(decstream, fin, fullFileName);
+            return readFile(OBJECT, rw, decstream, local_opt);
+        }
+        virtual ReadResult readArchive(std::istream& fin,const osgDB::ReaderWriter::Options* local_opt=NULL) const {
+            std::string fullFileName = local_opt->getPluginStringData("STREAM_FILENAME");
+            std::string ext = osgDB::getLowerCaseFileExtension(fullFileName);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+            if (osgDB::containsServerAddress(fullFileName)) return ReadResult::FILE_NOT_HANDLED;
+            std::stringstream decstream;
+            osgDB::ReaderWriter* rw = getStreamAndReader(decstream, fin, fullFileName);
+            return readFile(ARCHIVE, rw, decstream, local_opt);
+        }
 
 
         virtual WriteResult writeObject(const osg::Object& obj, const std::string& fileName, const osgDB::ReaderWriter::Options* options) const

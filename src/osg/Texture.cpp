@@ -2313,7 +2313,17 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
 
             if(useTexStorrage)
             {
-                extensions->glTexStorage2D(target, numMipmapLevels, sizedInternalFormat, width, height);
+                if (getTextureTarget()==GL_TEXTURE_CUBE_MAP)
+                {
+                    if (target==GL_TEXTURE_CUBE_MAP_POSITIVE_X)
+                    {
+                        extensions->glTexStorage2D(GL_TEXTURE_CUBE_MAP, numMipmapLevels, sizedInternalFormat, width, height);
+                    }
+                }
+                else
+                {
+                    extensions->glTexStorage2D(target, numMipmapLevels, sizedInternalFormat, width, height);
+                }
 
                 if( !compressed_image )
                 {

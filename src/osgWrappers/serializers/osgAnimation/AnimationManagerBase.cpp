@@ -77,9 +77,13 @@ REGISTER_OBJECT_WRAPPER( osgAnimation_AnimationManagerBase,
 {
     ADD_USER_SERIALIZER( Animations );  // _animations
     ADD_BOOL_SERIALIZER( AutomaticLink, true );  // _automaticLink
+    
+    {
+        UPDATE_TO_VERSION_SCOPED( 152 )
 
-    ADD_METHOD_OBJECT( "getRegisteredAnimation", osgAnimation_AnimationManagerBasegetAnimation );
-    ADD_METHOD_OBJECT( "getNumRegisteredAnimations", osgAnimation_AnimationManagerBasegetnumAnimations );
+        ADD_METHOD_OBJECT( "getRegisteredAnimation", osgAnimation_AnimationManagerBasegetAnimation );
+        ADD_METHOD_OBJECT( "getNumRegisteredAnimations", osgAnimation_AnimationManagerBasegetnumAnimations );
+    }
 }
 }
 #undef OBJECT_CAST

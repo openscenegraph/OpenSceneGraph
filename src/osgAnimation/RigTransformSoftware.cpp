@@ -91,9 +91,12 @@ void RigTransformSoftware::buildMinimumUpdateSet( const RigGeometry&rig )
             vg.getVertices().push_back(vertexID);
         }
     }
+    
     _uniqVertexGroupList.reserve(unifyBuffer.size());
     for (UnifyBoneGroup::const_iterator it = unifyBuffer.begin(); it != unifyBuffer.end(); ++it)
+    {
         _uniqVertexGroupList.push_back(it->second);
+    }
     OSG_INFO << "uniq groups " << _uniqVertexGroupList.size() << " for " << rig.getName() << std::endl;
 }
 
@@ -144,6 +147,7 @@ bool RigTransformSoftware::init(RigGeometry&rig)
 
     if(!rig.getSkeleton())
         return false;
+    
     ///get bonemap from skeleton
     BoneMapVisitor mapVisitor;
     rig.getSkeleton()->accept(mapVisitor);
@@ -175,6 +179,7 @@ bool RigTransformSoftware::init(RigGeometry&rig)
             localid2bone.push_back(0);
             continue;
         }
+        
         Bone* bone = bmit->second.get();
         localid2bone.push_back(bone);
     }
@@ -226,15 +231,14 @@ void RigTransformSoftware::VertexGroup::normalize()
 
 void RigTransformSoftware::operator()(RigGeometry& geom)
 {
-    if (_needInit)
-        if (!init(geom))
-            return;
+    if (_needInit && !init(geom)) return;
 
     if (!geom.getSourceGeometry())
     {
         OSG_WARN << this << " RigTransformSoftware no source geometry found on RigGeometry" << std::endl;
         return;
     }
+    
     osg::Geometry& source = *geom.getSourceGeometry();
     osg::Geometry& destination = geom;
 
@@ -247,10 +251,8 @@ void RigTransformSoftware::operator()(RigGeometry& geom)
     compute<osg::Vec3>(geom.getMatrixFromSkeletonToGeometry(),
                        geom.getInvMatrixFromSkeletonToGeometry(),
                        &positionSrc->front(),
-                       &positionDst->front());
+                       &positionDst->front());    
     positionDst->dirty();
-
-
 
     if (normalSrc )
     {

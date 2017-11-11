@@ -65,7 +65,7 @@ namespace osgAnimation
         void cullInfluenceCountPerVertex(unsigned int maxnumbonepervertex, float minweight=0, bool renormalize=true);
 
         //compute PerVertexInfluenceList
-        void computePerVertexInfluenceList(std::vector<BoneWeightList>& perVertexInfluenceList, unsigned int numvert)const;
+        void computePerVertexInfluenceList(std::vector<BoneWeightList>& perVertexInfluenceList, unsigned int numvert) const;
 
         /// map a set of boneinfluence to a list of vertex indices sharing this set
         class VertexGroup: public std::pair<BoneWeightList, IndexList>
@@ -77,7 +77,7 @@ namespace osgAnimation
         };
 
         /// compute the minimal VertexGroup Set in which vertices shares the same influence set
-        void computeMinimalVertexGroupList(std::vector<VertexGroup>&uniqVertexGroupList, unsigned int numvert)const;
+        void computeMinimalVertexGroupList(std::vector<VertexGroup>&uniqVertexGroupList, unsigned int numvert) const;
 
         //Experimental removal of unexpressed bone from the skeleton
         void removeUnexpressedBones(Skeleton &skel) const;

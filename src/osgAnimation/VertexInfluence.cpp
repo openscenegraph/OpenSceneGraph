@@ -47,14 +47,13 @@ void VertexInfluenceMap::normalize(unsigned int numvert)
             VertexIndexWeight& inf = *curinf;
             localstore[inf.first].first += inf.second;
             localstore[inf.first].second.push_back(&inf.second);
-
         }
     }
     
     unsigned int vertid = 0;
     for(std::vector<PerVertWeights >::iterator itvert = localstore.begin();
-    itvert != localstore.end();
-    ++itvert, ++vertid)
+        itvert != localstore.end();
+        ++itvert, ++vertid)
     {
         PerVertWeights & weights = *itvert;
         if(weights.first< 1e-4)
@@ -317,12 +316,14 @@ void VertexInfluenceMap::removeUnexpressedBones(Skeleton &skel) const
             {
                 if( (child = dynamic_cast<Bone*>(bone2rm->getChild(numchild))) )
                 {
-                    if(par!=child &&child!=bone2rm) {
+                    if(par!=child &&child!=bone2rm)
+                    {
                         par->addChild(child);
                         nodes.push_back(child);
                     }
                 }
             }
+            
             for(unsigned int i=0; i<nodes.size(); ++i)
             {
                 bone2rm->removeChild(nodes[i]);

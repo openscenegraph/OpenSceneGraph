@@ -79,7 +79,8 @@ struct MyRigTransformHardware : public osgAnimation::RigTransformHardware
 
         osg::ref_ptr<osg::Shader> vertexshader;
         osg::ref_ptr<osg::StateSet> stateset = rig.getOrCreateStateSet();
-        if(!CommonProgram.valid()){
+        if(!CommonProgram.valid())
+        {
             CommonProgram   = new osg::Program;
             CommonProgram->setName("HardwareSkinning");
 
@@ -115,6 +116,7 @@ struct MyRigTransformHardware : public osgAnimation::RigTransformHardware
             }
             CommonProgram->addShader(vertexshader.get());
         }
+        
         unsigned int nbAttribs = getNumVertexAttrib();
         for (unsigned int i = 0; i < nbAttribs; i++)
         {
@@ -144,6 +146,7 @@ struct MyRigTransformHardware : public osgAnimation::RigTransformHardware
 struct SetupRigGeometry : public osg::NodeVisitor
 {
     bool _hardware;
+    
     SetupRigGeometry( bool hardware = true) : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN), _hardware(hardware) {}
 
     void apply(osg::Geode& geode)
@@ -156,7 +159,8 @@ struct SetupRigGeometry : public osg::NodeVisitor
         if (_hardware)
         {
             osgAnimation::RigGeometry* rig = dynamic_cast<osgAnimation::RigGeometry*>(&geom);
-            if (rig){
+            if (rig)
+            {
                 rig->setRigTransformImplementation(new MyRigTransformHardware);
                 osgAnimation::MorphGeometry *morph=dynamic_cast<osgAnimation::MorphGeometry*>(rig->getSourceGeometry());
                 if(morph)morph->setMorphTransformImplementation(new osgAnimation::MorphTransformHardware);
@@ -266,7 +270,6 @@ int main (int argc, char* argv[])
     {
         for (double  j = 0.0; j < yChar; j++)
         {
-
             osg::ref_ptr<osg::Group> c = createCharacterInstance(root.get(), hardware);
             osg::MatrixTransform* tr = new osg::MatrixTransform;
             tr->setMatrix(osg::Matrix::translate( 2.0 * (i - xChar * .5),
@@ -277,7 +280,6 @@ int main (int argc, char* argv[])
         }
     }
     std::cout << "created " << xChar * yChar << " instance"  << std::endl;
-
 
     return viewer.run();
 }

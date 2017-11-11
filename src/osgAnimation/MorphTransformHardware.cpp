@@ -54,7 +54,8 @@ bool MorphTransformHardware::init(MorphGeometry& morphGeometry)
         }
         osg::Vec3Array* normal = dynamic_cast<osg::Vec3Array*>(morphGeometry.getNormalArray());
         bool normalmorphable = morphGeometry.getMorphNormals() && normal&&(normal->getBinding()==osg::Array::BIND_PER_VERTEX);
-        if(!normalmorphable) {
+        if(!normalmorphable)
+        {
             OSG_WARN << "MorphTransformHardware::morph geometry "<<morphGeometry.getName()<<" without per vertex normal : HWmorphing not supported! "  << std::endl;
             return false;
         }
@@ -64,6 +65,7 @@ bool MorphTransformHardware::init(MorphGeometry& morphGeometry)
             normalSource =(static_cast<osg::Vec3Array*>( normal->clone(osg::CopyOp::DEEP_COPY_ARRAYS)));
         }
     }
+    
     ///end check
     morphGeometry.setVertexArray(morphGeometry.getVertexSource());
     morphGeometry.setNormalArray(morphGeometry.getNormalSource(),osg::Array::BIND_PER_VERTEX);
@@ -72,25 +74,32 @@ bool MorphTransformHardware::init(MorphGeometry& morphGeometry)
     //create one TBO for all morphtargets (pack vertex/normal)
     osg::Vec3Array *  morphTargets=new osg::Vec3Array ;
     MorphGeometry::MorphTargetList & morphlist=morphGeometry.getMorphTargetList();
-    for(MorphGeometry::MorphTargetList::const_iterator curmorph=morphlist.begin(); curmorph!=morphlist.end(); ++curmorph) {
+    for(MorphGeometry::MorphTargetList::const_iterator curmorph=morphlist.begin(); curmorph!=morphlist.end(); ++curmorph)
+    {
         const osg::Geometry * morphtargetgeom=                curmorph->getGeometry() ;
         const osg::Vec3Array *varray=(osg::Vec3Array*)morphtargetgeom->getVertexArray();
         const osg::Vec3Array *narray=(osg::Vec3Array*)morphtargetgeom->getNormalArray();
-        if(morphGeometry.getMethod()==MorphGeometry::RELATIVE){
-            for(unsigned int i=0; i<morphGeometry.getVertexArray()->getNumElements(); ++i) {
+        if(morphGeometry.getMethod()==MorphGeometry::RELATIVE)
+        {
+            for(unsigned int i=0; i<morphGeometry.getVertexArray()->getNumElements(); ++i)
+            {
                 morphTargets->push_back( (*varray)[i]);
                 morphTargets->push_back( (*narray)[i]);
             }
-        }else{
+        }
+        else
+        {
             //convert to RELATIVE as it involve less math in the VS than NORMALIZED
             const osg::Vec3Array *ovarray=(osg::Vec3Array*)morphGeometry.getVertexArray();
             const osg::Vec3Array *onarray=(osg::Vec3Array*)morphGeometry.getNormalArray();
-            for(unsigned int i=0; i<morphGeometry.getVertexArray()->getNumElements(); ++i) {
+            for(unsigned int i=0; i<morphGeometry.getVertexArray()->getNumElements(); ++i)
+            {
                 morphTargets->push_back( (*varray)[i]- (*ovarray)[i] );
                 morphTargets->push_back( (*narray)[i]- (*onarray)[i] );
             }
         }
     }
+    
     osg::TextureBuffer * morphTargetsTBO=new osg::TextureBuffer();
     morphTargetsTBO->setBufferData(morphTargets);
     morphTargetsTBO->setInternalFormat( GL_RGB32F_ARB );
@@ -110,56 +119,66 @@ bool MorphTransformHardware::init(MorphGeometry& morphGeometry)
     if(!_shader.valid() && (program = (osg::Program*)stateset->getAttribute(osg::StateAttribute::PROGRAM)))
     {
         for(unsigned int i=0;i<program->getNumShaders();++i)
-            if(program->getShader(i)->getType()==osg::Shader::VERTEX){
+        {
+            if(program->getShader(i)->getType()==osg::Shader::VERTEX)
+            {
                // vertexshader=program->getShader(i);
                 program->removeShader(vertexshader);
             }
-    }else {
-
-    }        program = new osg::Program;
+        }
+    }
+    
+    if (!program)
+    {
+        program = new osg::Program;
+    }
+    
     program->setName("HardwareMorphing");
     //set default source if _shader is not user setted
-    if (!vertexshader.valid()){
+    if (!vertexshader.valid())
+    {
         if (!_shader.valid())
             vertexshader = osg::Shader::readShaderFile(osg::Shader::VERTEX,"morphing.vert");
-        else vertexshader=_shader;
+        else
+            vertexshader=_shader;
     }
 
-
-    if (!vertexshader.valid()) {
+    if (!vertexshader.valid())
+    {
         OSG_WARN << "RigTransformHardware can't load VertexShader" << std::endl;
         return false;
     }
 
     // replace max matrix by the value from uniform
     {
-    std::string str = vertexshader->getShaderSource();
-    std::string toreplace = std::string("MAX_MORPHWEIGHT");
-    std::size_t start = str.find(toreplace);
-    if (std::string::npos == start){
-        ///perhaps remanance from previous init (if saved after init) so reload shader
-        vertexshader = osg::Shader::readShaderFile(osg::Shader::VERTEX,"morphing.vert");
-        if (!vertexshader.valid()) {
-            OSG_WARN << "RigTransformHardware can't load VertexShader" << std::endl;
-            return false;
+        std::string str = vertexshader->getShaderSource();
+        std::string toreplace = std::string("MAX_MORPHWEIGHT");
+        std::size_t start = str.find(toreplace);
+        if (std::string::npos == start)
+        {
+            // perhaps remanance from previous init (if saved after init) so reload shader
+            vertexshader = osg::Shader::readShaderFile(osg::Shader::VERTEX,"morphing.vert");
+            if (!vertexshader.valid())
+            {
+                OSG_WARN << "RigTransformHardware can't load VertexShader" << std::endl;
+                return false;
+            }
+            str = vertexshader->getShaderSource();
+            start = str.find(toreplace);
         }
-        str = vertexshader->getShaderSource();
-        start = str.find(toreplace);
+        if (std::string::npos != start)
+        {
+            std::stringstream ss;
+            ss << _uniformTargetsWeight->getNumElements();
+            str.replace(start, toreplace.size(), ss.str());
+            vertexshader->setShaderSource(str);
+        }
+        else
+        {
+            OSG_WARN << "MAX_MORPHWEIGHT not found in Shader! " << str << std::endl;
+        }
+        OSG_INFO << "Shader " << str << std::endl;
     }
-    if (std::string::npos != start) {
-        std::stringstream ss;
-        ss << _uniformTargetsWeight->getNumElements();
-        str.replace(start, toreplace.size(), ss.str());
-        vertexshader->setShaderSource(str);
-    }
-    else
-    {
-        OSG_WARN << "MAX_MORPHWEIGHT not found in Shader! " << str << std::endl;
-    }
-    OSG_INFO << "Shader " << str << std::endl;
-    }
-
-
 
     program->addShader(vertexshader.get());
     //morphGeometry.setStateSet((osg::StateSet *) osg::CopyOp()(source.getOrCreateStateSet()));
@@ -174,18 +193,20 @@ bool MorphTransformHardware::init(MorphGeometry& morphGeometry)
     _needInit = false;
     return true;
 }
+
 void MorphTransformHardware::operator()(MorphGeometry& geom)
 {
-    if (_needInit)
-        if (!init(geom))
-            return;
+    if (_needInit && !init(geom)) return;
+    
     if (geom.isDirty())
     {
         ///upload new morph weights each update via uniform
         int curimorph=0;
         MorphGeometry::MorphTargetList & morphlist=geom.getMorphTargetList();
         for(MorphGeometry::MorphTargetList::const_iterator curmorph=morphlist.begin(); curmorph!=morphlist.end(); ++curmorph)
+        {
             _uniformTargetsWeight->setElement(curimorph++, curmorph->getWeight());
+        }
         _uniformTargetsWeight->dirty();
         geom.dirty(false);
     }

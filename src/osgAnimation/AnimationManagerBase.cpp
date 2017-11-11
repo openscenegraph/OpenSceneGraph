@@ -105,6 +105,7 @@ void AnimationManagerBase::removeRegisteredAnimation(Animation* animation)
 {
 	unregisterAnimation(animation);
 }
+
 void AnimationManagerBase::unregisterAnimation(Animation* animation)
 {
     AnimationList::iterator it = std::find(_animations.begin(), _animations.end(), animation);

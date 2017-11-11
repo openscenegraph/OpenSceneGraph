@@ -59,7 +59,7 @@ namespace wrap_osgAnimationMorphTransformHardware
     REGISTER_OBJECT_WRAPPER( osgAnimation_MorphTransformHardware,
                              new osgAnimation::MorphTransformHardware,
                              osgAnimation::MorphTransformHardware,
-                             "osg::Object osgAnimation::MorphTransform  osgAnimation::MorphTransformHardware" 
+                             "osg::Object osgAnimation::MorphTransform  osgAnimation::MorphTransformHardware") 
     {
         {
             UPDATE_TO_VERSION_SCOPED(152)

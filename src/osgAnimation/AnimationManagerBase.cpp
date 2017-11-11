@@ -101,7 +101,8 @@ void AnimationManagerBase::registerAnimation (Animation* animation)
     buildTargetReference();
 }
 
-void AnimationManagerBase::removeRegisteredAnimation(Animation* animation){
+void AnimationManagerBase::removeRegisteredAnimation(Animation* animation)
+{
 	unregisterAnimation(animation);
 }
 void AnimationManagerBase::unregisterAnimation(Animation* animation)

@@ -42,13 +42,23 @@ namespace osgAnimation
         const AnimationList& getAnimationList() const { return _animations;}
         AnimationList& getAnimationList() { return _animations;}
 
+        //uniformisation of the API
+        inline Animation * getRegisteredAnimation(unsigned int i) { return _animations[i].get();}
+        inline unsigned int getNumRegisteredAnimations() const { return _animations.size();}
+        inline void addRegisteredAnimation(Animation* animation)
+        {
+            _needToLink = true;
+            _animations.push_back(animation);
+            buildTargetReference();
+        }
+        void removeRegisteredAnimation(Animation* animation);
+
         /** Callback method called by the NodeVisitor when visiting a node.*/
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
 
         /** Reset the value of targets
             this Operation must be done each frame */
         void clearTargets();
-
 
         LinkVisitor* getOrCreateLinkVisitor();
         void setLinkVisitor(LinkVisitor*);

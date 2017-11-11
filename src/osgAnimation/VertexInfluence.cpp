@@ -50,6 +50,7 @@ void VertexInfluenceMap::normalize(unsigned int numvert)
 
         }
     }
+    
     unsigned int vertid = 0;
     for(std::vector<PerVertWeights >::iterator itvert = localstore.begin();
     itvert != localstore.end();
@@ -64,7 +65,9 @@ void VertexInfluenceMap::normalize(unsigned int numvert)
         {
             float mult = 1.0/weights.first;
             for (std::vector<float*>::iterator itf = weights.second.begin(); itf != weights.second.end(); ++itf)
+            {
                 **itf *= mult;
+            }
         }
     }
 
@@ -86,7 +89,10 @@ void VertexInfluenceMap::cullInfluenceCountPerVertex(unsigned int numbonepervert
             {
                 OSG_WARN << "VertexInfluenceSet::cullInfluenceCountPerVertex warning vertex " << inf.first << " is not assigned to a bone" << std::endl;
             }
-            else if(inf.second>minweight)tempVec2Bones[inf.first].insert(BoneWeight(bonename, inf.second));
+            else if(inf.second>minweight)
+            {
+                tempVec2Bones[inf.first].insert(BoneWeight(bonename, inf.second));
+            }
         }
     }
     this->clear();
@@ -99,7 +105,10 @@ void VertexInfluenceMap::cullInfluenceCountPerVertex(unsigned int numbonepervert
         if(renormalize)
         {
             for(BoneWeightOrdered::iterator bwit = bwset.begin(); bwit != bwset.end(); ++bwit)
+            {
                 sum += bwit->second;
+            }
+            
             if(sum > 1e-4)
             {
                 sum = 1.0f/sum;
@@ -119,7 +128,6 @@ void VertexInfluenceMap::cullInfluenceCountPerVertex(unsigned int numbonepervert
                 inf.push_back(VertexIndexWeight(mapit->first,bwit->second));
                 inf.setName(bwit->first);
             }
-
         }
     }
 }
@@ -134,6 +142,7 @@ void VertexInfluenceMap::computePerVertexInfluenceList(std::vector<BoneWeightLis
         {
             OSG_WARN << "VertexInfluenceMap::computePerVertexInfluenceList contains unamed bone IndexWeightList" << std::endl;
         }
+        
         for(IndexWeightList::const_iterator infit = inflist.begin(); infit != inflist.end(); ++infit)
         {
             const VertexIndexWeight &iw = *infit;
@@ -147,13 +156,13 @@ void VertexInfluenceMap::computePerVertexInfluenceList(std::vector<BoneWeightLis
 // sort by name and weight
 struct SortByNameAndWeight : public std::less<BoneWeight>
 {
-    bool operator()(const BoneWeight& b0,
-                    const BoneWeight& b1) const
+    bool operator()(const BoneWeight& b0, const BoneWeight& b1) const
     {
         if (b0.first < b1.first)
             return true;
         else if (b0.first > b1.first)
             return false;
+            
         return (b0.second < b1.second);
     }
 };
@@ -193,16 +202,22 @@ void VertexInfluenceMap::computeMinimalVertexGroupList(std::vector<VertexGroup>&
         BoneWeightList &boneweightlist = *it;
         // sort the vector to have a consistent key
         std::sort(boneweightlist.begin(), boneweightlist.end(), SortByNameAndWeight());
+        
         // we use the vector<BoneWeight> as key to differentiate group
         UnifyBoneGroup::iterator result = unifyBuffer.find(boneweightlist);
         if (result == unifyBuffer.end())
+        {
             unifyBuffer[boneweightlist].setBoneWeights(boneweightlist);
+        }
+        
         unifyBuffer[boneweightlist].vertIDs().push_back(vertexID);
     }
+    
     if(vertex2Bones.size() == unifyBuffer.size())
     {
         OSG_WARN << "VertexInfluenceMap::computeMinimalVertexGroupList is useless no duplicate VertexGroup" << std::endl;
     }
+    
     uniqVertexGroupList.reserve(unifyBuffer.size());
     for (UnifyBoneGroup::iterator it = unifyBuffer.begin(); it != unifyBuffer.end(); ++it)
     {
@@ -234,10 +249,13 @@ void CollectRigVisitor::apply(osg::Geometry& node)
         _map.push_back(rig);
 }
 
-bool recursiveisUsefull( Bone* bone, std::set<std::string> foundnames) {
-    for(unsigned int i=0; i<bone->getNumChildren(); ++i) {
+bool recursiveisUsefull( Bone* bone, std::set<std::string> foundnames)
+{
+    for(unsigned int i=0; i<bone->getNumChildren(); ++i)
+    {
         Bone* child = dynamic_cast< Bone* >(bone->getChild(i));
-        if(child){
+        if(child)
+        {
             if( foundnames.find(child->getName()) != foundnames.end() )
                 return true;
             if( recursiveisUsefull(child,foundnames) ) 
@@ -262,16 +280,20 @@ void VertexInfluenceMap::removeUnexpressedBones(Skeleton &skel) const
     Bone* child, *par;
 
     std::set<std::string> usebones;
-    for(RigList::iterator rigit = rigs.begin(); rigit != rigs.end(); ++rigit) {
+    for(RigList::iterator rigit = rigs.begin(); rigit != rigs.end(); ++rigit)
+    {
         for(VertexInfluenceMap::iterator mapit = (*rigit)->getInfluenceMap()->begin();
-                mapit != (*rigit)->getInfluenceMap()->end();
-                ++mapit) {
+            mapit != (*rigit)->getInfluenceMap()->end();
+            ++mapit)
+        {
             usebones.insert((*mapit).first);
         }
     }
   
-    for(BoneMap::iterator bmit = boneMap.begin(); bmit != boneMap.end();) {
-        if(usebones.find(bmit->second->getName()) == usebones.end()) {
+    for(BoneMap::iterator bmit = boneMap.begin(); bmit != boneMap.end();)
+    {
+        if(usebones.find(bmit->second->getName()) == usebones.end())
+        {
             if( !(par = bmit->second->getBoneParent()) )
             {
                 ++bmit;
@@ -280,7 +302,8 @@ void VertexInfluenceMap::removeUnexpressedBones(Skeleton &skel) const
 
             Bone * bone2rm = bmit->second.get();
 
-            if( recursiveisUsefull(bone2rm,usebones)) {
+            if( recursiveisUsefull(bone2rm,usebones))
+            {
                 ++bmit;
                 continue;
             }
@@ -301,7 +324,9 @@ void VertexInfluenceMap::removeUnexpressedBones(Skeleton &skel) const
                 }
             }
             for(unsigned int i=0; i<nodes.size(); ++i)
+            {
                 bone2rm->removeChild(nodes[i]);
+            }
             par->removeChild(bone2rm);
 
             ///rebuild bonemap after bone removal
@@ -311,8 +336,10 @@ void VertexInfluenceMap::removeUnexpressedBones(Skeleton &skel) const
             bmit = boneMap.begin(); 
                  
         }
-        else ++bmit;
+        else 
+        {
+            ++bmit;
+        }
     }
     OSG_WARN<<"Number of bone removed "<<removed<<std::endl;
-
 }

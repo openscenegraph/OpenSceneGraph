@@ -468,13 +468,13 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     isVertexShaderSupported = validContext && (shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_vertex_shader"));
     isFragmentShaderSupported = validContext && (shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_fragment_shader"));
     isLanguage100Supported = validContext && (shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_shading_language_100"));
-    isGeometryShader4Supported = validContext && (osg::isGLExtensionSupported(contextID,"GL_EXT_geometry_shader4") || osg::isGLExtensionSupported(contextID,"GL_OES_geometry_shader"));
-    isGpuShader4Supported = validContext && osg::isGLExtensionSupported(contextID,"GL_EXT_gpu_shader4");
-    areTessellationShadersSupported = validContext && (osg::isGLExtensionSupported(contextID, "GL_ARB_tessellation_shader") || osg::isGLExtensionSupported(contextID,"GL_OES_tessellation_shader"));
-    isUniformBufferObjectSupported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_uniform_buffer_object");
-    isGetProgramBinarySupported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_get_program_binary");
-    isGpuShaderFp64Supported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_gpu_shader_fp64");
-    isShaderAtomicCountersSupported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_shader_atomic_counters");
+    isGeometryShader4Supported = validContext && (osg::isGLExtensionSupported(contextID,"GL_EXT_geometry_shader4") || osg::isGLExtensionSupported(contextID,"GL_OES_geometry_shader") || osg::isGLExtensionOrVersionSupported(contextID,"GL_ARB_geometry_shader4", 3.2f));
+    isGpuShader4Supported = validContext && osg::isGLExtensionOrVersionSupported(contextID,"GL_EXT_gpu_shader4", 3.0f);
+    areTessellationShadersSupported = validContext && (osg::isGLExtensionOrVersionSupported(contextID, "GL_ARB_tessellation_shader", 4.0f) || osg::isGLExtensionSupported(contextID,"GL_OES_tessellation_shader"));
+    isUniformBufferObjectSupported = validContext && osg::isGLExtensionOrVersionSupported(contextID,"GL_ARB_uniform_buffer_object", 3.1f);
+    isGetProgramBinarySupported = validContext && osg::isGLExtensionOrVersionSupported(contextID,"GL_ARB_get_program_binary", 4.1f);
+    isGpuShaderFp64Supported = validContext && osg::isGLExtensionOrVersionSupported(contextID,"GL_ARB_gpu_shader_fp64", 4.0f);
+    isShaderAtomicCountersSupported = validContext && osg::isGLExtensionOrVersionSupported(contextID,"GL_ARB_shader_atomic_counters", 4.2f);
 
     isRectangleSupported = validContext &&
                            (OSG_GL3_FEATURES ||

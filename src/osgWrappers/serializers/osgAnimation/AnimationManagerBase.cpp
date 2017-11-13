@@ -43,7 +43,7 @@ struct osgAnimation_AnimationManagerBasegetnumAnimations : public osgDB::MethodO
     virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
     {
         osgAnimation::AnimationManagerBase* group =  dynamic_cast<osgAnimation::AnimationManagerBase*>(reinterpret_cast<osg::Object*>(objectPtr));
-        outputParameters.push_back(new osg::UIntValueObject("return",group->getNumRegisteredAnimations()));
+        if (group) outputParameters.push_back(new osg::UIntValueObject("return",group->getNumRegisteredAnimations()));
         return true;
     }
 };
@@ -64,8 +64,7 @@ struct osgAnimation_AnimationManagerBasegetAnimation : public osgDB::MethodObjec
             if (uivo) index = uivo->getValue();
         }
         osgAnimation::AnimationManagerBase* group = dynamic_cast<osgAnimation::AnimationManagerBase*>(reinterpret_cast<osg::Object*>(objectPtr));
-        outputParameters.push_back(group->getRegisteredAnimation(index));
-
+        if (group) outputParameters.push_back(group->getRegisteredAnimation(index));
 
         return true;
     }

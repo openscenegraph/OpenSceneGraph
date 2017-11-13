@@ -15,7 +15,7 @@ struct BasicAnimationManagerIsplaying : public osgDB::MethodObject
         osgAnimation::Animation* child = dynamic_cast<osgAnimation::Animation*>(inputParameters[0].get());
         if (!child) return false;
         osgAnimation::BasicAnimationManager* group = dynamic_cast<osgAnimation::BasicAnimationManager*>(reinterpret_cast<osg::Object*>(objectPtr));
-        outputParameters.push_back(new osg::BoolValueObject("return", group->isPlaying(child)));
+        id (group) outputParameters.push_back(new osg::BoolValueObject("return", group->isPlaying(child)));
         return true;
     }
 };
@@ -28,7 +28,7 @@ struct BasicAnimationManagerfindAnimation : public osgDB::MethodObject
         osgAnimation::Animation* child = dynamic_cast<osgAnimation::Animation*>(inputParameters[0].get());
         if (!child) return false;
         osgAnimation::BasicAnimationManager* group = dynamic_cast<osgAnimation::BasicAnimationManager*>(reinterpret_cast<osg::Object*>(objectPtr));
-        outputParameters.push_back(new osg::BoolValueObject("return",group->findAnimation(child)));
+        id (group) outputParameters.push_back(new osg::BoolValueObject("return",group->findAnimation(child)));
         return true;
     }
 };
@@ -41,7 +41,7 @@ struct BasicAnimationManagerPlayanimation : public osgDB::MethodObject
         osgAnimation::Animation* child = dynamic_cast<osgAnimation::Animation*>(inputParameters[0].get());
         if (!child) return false;
         osgAnimation::BasicAnimationManager* group = dynamic_cast<osgAnimation::BasicAnimationManager*>(reinterpret_cast<osg::Object*>(objectPtr));
-        group->playAnimation(child);
+        id (group) group->playAnimation(child);
         return true;
     }
 };
@@ -54,7 +54,7 @@ struct BasicAnimationManagerStopanimation : public osgDB::MethodObject
         osgAnimation::Animation* child = dynamic_cast<osgAnimation::Animation*>(inputParameters[0].get());
         if (!child) return false;
         osgAnimation::BasicAnimationManager* group = dynamic_cast<osgAnimation::BasicAnimationManager*>(reinterpret_cast<osg::Object*>(objectPtr));
-        group->stopAnimation(child);
+        id (group) group->stopAnimation(child);
         return true;
     }
 };

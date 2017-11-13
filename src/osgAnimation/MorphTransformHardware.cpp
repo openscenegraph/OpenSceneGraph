@@ -100,12 +100,12 @@ bool MorphTransformHardware::init(MorphGeometry& morphGeometry)
         }
     }
     
-    osg::TextureBuffer * morphTargetsTBO=new osg::TextureBuffer();
+    osg::ref_ptr<osg::TextureBuffer> morphTargetsTBO=new osg::TextureBuffer();
     morphTargetsTBO->setBufferData(morphTargets);
     morphTargetsTBO->setInternalFormat( GL_RGB32F_ARB );
 
     //create TBO Texture handle
-    osg::Uniform * morphTBOHandle=new osg::Uniform(osg::Uniform::SAMPLER_BUFFER,"morphTargets");
+    osg::ref_ptr<osg::Uniform> morphTBOHandle=new osg::Uniform(osg::Uniform::SAMPLER_BUFFER,"morphTargets");
     morphTBOHandle->set((int)_reservedTextureUnit);
 
     //create dynamic uniform for morphtargets animation weights

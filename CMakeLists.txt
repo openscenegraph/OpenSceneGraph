@@ -742,6 +742,7 @@ IF(ANDROID)
 ELSE()
 # Common to all platforms except android:
     FIND_PACKAGE(Freetype)
+    FIND_PACKAGE(ilmbase)
     FIND_PACKAGE(Inventor)
     FIND_PACKAGE(Jasper)
     FIND_PACKAGE(OpenEXR)

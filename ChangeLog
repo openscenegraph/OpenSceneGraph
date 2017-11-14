@@ -1,6 +1,315 @@
+Tue, 14 Nov 2017 10:38:18 +0000
+Author : Raymond de Vries
+attached fixes for configuring and building the osgPlugin exr with Visual Studio and using out-of-the-box builds of ilmbase and openexr, i.e. without manual/extra config for using these 2 libs with the OSG.Previously, the assumption was made that ilmbase and openexr were installed in a common directory and hence the header files and libs were both found in that common directory. That is not consistent with other libs and this submission makes it consistent and therefore the OSG configures out of the box. I made this work for ilmbase-2.1.0.tar.gz / openexr-2.1.0.tar.gz and ilmbase-2.2.0.tar.gz / openexr-2.2.0.tar.gz
+
+
+Mon, 13 Nov 2017 13:08:39 +0000
+Author : Robert Osfield
+Fixed typo
+
+Mon, 13 Nov 2017 13:06:12 +0000
+Author : Robert Osfield
+Fixed CoverityScan reported errors
+
+Mon, 13 Nov 2017 12:49:33 +0000
+Author : Robert Osfield
+FIxed two CoverityScan detected memory leaks
+
+Mon, 13 Nov 2017 10:24:31 +0000
+Author : Andre Normann
+Attached is a fix in GLExtension, which is based on latest git version, that fixes the usage of uniform buffer objects on macOS. Under macOS core OpenGL features aren't exported as extension. OpenGL 3.1 includes the GL_ARB_uniform_buffer_object as core feature for example. On macOS a simple osg::isGLExtensionSupported() call would fail. It is required to use the isGLExtensionOrVersionSupported() method. This is what my fix does.
+
+Sat, 11 Nov 2017 14:50:55 +0000
+Author : Robert Osfield
+Updated SO version to 152 to reflect the resent API changes to osgAnimation.
+
+Sat, 11 Nov 2017 14:43:10 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #382 from openscenegraph/osganimationOsganimation improvements
+
+Sat, 11 Nov 2017 13:27:43 +0000
+Author : OpenSceneGraph git repository
+Build fix
+
+Sat, 11 Nov 2017 13:08:42 +0000
+Author : OpenSceneGraph git repository
+Readbility improvements and updating version to 152
+
+Sat, 11 Nov 2017 13:04:34 +0000
+Author : OpenSceneGraph git repository
+Added versioning to the new serialization additions
+
+Sat, 11 Nov 2017 13:00:56 +0000
+Author : OpenSceneGraph git repository
+Code readability improvements
+
+Sat, 11 Nov 2017 12:58:52 +0000
+Author : OpenSceneGraph git repository
+Code readability improvements
+
+Sat, 11 Nov 2017 12:54:28 +0000
+Author : OpenSceneGraph git repository
+Code readability improvements
+
+Sat, 11 Nov 2017 12:46:48 +0000
+Author : OpenSceneGraph git repository
+Code readability improvement
+
+Sat, 11 Nov 2017 12:45:55 +0000
+Author : OpenSceneGraph git repository
+Small readability improvements
+
+Sat, 11 Nov 2017 12:42:34 +0000
+Author : OpenSceneGraph git repository
+Fix of incorrect Program assignment bug and coding style
+
+Sat, 11 Nov 2017 12:33:44 +0000
+Author : OpenSceneGraph git repository
+coding style/readability fixes
+
+Sat, 11 Nov 2017 12:29:45 +0000
+Author : OpenSceneGraph git repository
+coding style/readability fixes
+
+Sat, 11 Nov 2017 12:27:56 +0000
+Author : OpenSceneGraph git repository
+coding style/readability fixes
+
+Sat, 11 Nov 2017 12:24:27 +0000
+Author : OpenSceneGraph git repository
+coding style fix
+
+Sat, 11 Nov 2017 11:17:34 +0000
+Author : Robert Osfield
+Restructed the ref counting of the rawImageRec structure so that it's done with a separate refImageRec struct so it doesn't interfer with the writing of the rawImageRec as a header when writing to .rgb
+
+Sat, 11 Nov 2017 10:19:09 +0000
+Author : Andreas Ekstrand
+I have implemented readObject to make loading objects from SceneLoader in the LWS plugin work. I'm not sure about other implications from changes leading up to this problem (readRefFile instead of readNodeFile in SceneLoader) but this fix works for me.
+
+Fri, 10 Nov 2017 17:12:20 +0000
+Author : Robert Osfield
+Fixed handling of GL_TEXTURE_CUBE_MAP when using glTextureStorage.
+
+Fri, 10 Nov 2017 17:00:52 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #381 from openscenegraph/revert-379-osganimbugfixRevert "    following guidance from OpenGL Common Mistakes:"
+
+Fri, 10 Nov 2017 16:58:29 +0000
+Author : OpenSceneGraph git repository
+Revert "    following guidance from OpenGL Common Mistakes:"
+
+Fri, 10 Nov 2017 14:49:54 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #379 from mp3butcher/osganimbugfixFixed handling of mipmaps
+
+Fri, 10 Nov 2017 13:36:52 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #380 from mp3butcher/MDI7add funcs to read GZ Objects from a stream
+
+Fri, 10 Nov 2017 12:41:21 +0000
+Author : Robert Osfield
+Fixed crash in copy constructor due to copy and paste/typo.
+
+Wed, 8 Nov 2017 15:57:34 +0100
+Author : Julien Valentin
+replace string with stringstream (avoid a string copy at read)
+
+Wed, 8 Nov 2017 15:40:11 +0100
+Author : Julien Valentin
+add funcs to read Object from a GZ stream
+
+Mon, 6 Nov 2017 20:49:23 +0000
+Author : Robert Osfield
+Added Pawel's origin commit message into the osggpucull source as it examples a lot about how the example works
+
+Mon, 6 Nov 2017 19:53:38 +0000
+Author : Robert Osfield
+Temporary workaround for the regression of intersection tests with osgText::Text.  Added a local vertex array that is transformed by the last applied text matrix.
+
+Sat, 4 Nov 2017 17:28:14 +0100
+Author : Julien Valentin
+    following guidance from OpenGL Common Mistakes:     mipmaps should be upload with glTexImage2D and not glTexSubImage2D
+
+Fri, 3 Nov 2017 09:55:42 +0000
+Author : Robert Osfield
+Added check for malloc returning a valid pointer
+
+Fri, 3 Nov 2017 09:49:50 +0000
+Author : Robert Osfield
+Added an explict null termination of buffer to address Coverity Scan reported issue
+
+Thu, 2 Nov 2017 18:43:05 +0000
+Author : Robert Osfield
+Added check for a valud positions pointer
+
+Thu, 2 Nov 2017 18:39:11 +0000
+Author : Robert Osfield
+Fuxed missing initializers
+
+Thu, 2 Nov 2017 16:39:32 +0000
+Author : Robert Osfield
+Changed the key binding for opening and editor to edit presentation to 'E' and to trigger update the presentation by pressing 'e'
+
+Thu, 2 Nov 2017 11:51:03 +0000
+Author : Robert Osfield
+Fixed copy and paste error
+
+Thu, 2 Nov 2017 11:48:39 +0000
+Author : Robert Osfield
+Moved memset to after check for null memory pointer
+
+Thu, 2 Nov 2017 11:42:25 +0000
+Author : Robert Osfield
+Cleaned up getEnvVar usage
+
+Thu, 2 Nov 2017 10:43:41 +0000
+Author : Robert Osfield
+Replaced getenv usage with safer osg::getEnvVar
+
+Thu, 2 Nov 2017 10:02:34 +0000
+Author : Robert Osfield
+Fixed warning
+
+Thu, 2 Nov 2017 10:00:28 +0000
+Author : Robert Osfield
+Replaced getenv calls with safer osg::getEnvVar usage
+
+Wed, 1 Nov 2017 17:38:33 +0000
+Author : Robert Osfield
+Moved getenv usage across to safer osg::getEnvVar() usage
+
+Wed, 1 Nov 2017 16:43:32 +0000
+Author : Robert Osfield
+Added safety check for getenv parsing to prevent overflow attacks via getenv.
+
+Wed, 1 Nov 2017 14:45:27 +0000
+Author : Robert Osfield
+Moved from getenv to osg::getEnvVar usage
+
+Wed, 1 Nov 2017 14:16:54 +0000
+Author : Robert Osfield
+Made template function inline to avoid multiple declaration issues
+
+Wed, 1 Nov 2017 13:54:15 +0000
+Author : Robert Osfield
+Replaced getenv(..) usage with osg::getEnvVar(..)
+
+Wed, 1 Nov 2017 13:32:47 +0000
+Author : Robert Osfield
+Added OSG_ENVVAR_SUPPORTED cmake control and bool osg::getEnvVar(const char* name, T& value, ...) conviniece funcions to make it easier to implement optinal getenv reading code.
+
+Wed, 1 Nov 2017 11:35:05 +0000
+Author : Robert Osfield
+Fixed Coverity Scane reported issue.
+
+Tue, 31 Oct 2017 17:59:13 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #378 from mp3butcher/osganimationupdate osganimationhardware example to use a common program
+
+Tue, 31 Oct 2017 17:55:59 +0000
+Author : Robert Osfield
+Fixed unititialized memory variables and improved readability by adding spacing where appropriate
+
+Tue, 31 Oct 2017 17:43:39 +0000
+Author : Robert Osfield
+Added missing initializers
+
+Tue, 31 Oct 2017 17:39:34 +0000
+Author : Robert Osfield
+Fixed CovertiScan reported uninitialized member variable
+
+Tue, 31 Oct 2017 17:02:31 +0000
+Author : Robert Osfield
+Fixed Coverity Scan reported issue
+
+Tue, 31 Oct 2017 18:00:06 +0100
+Author : Julien Valentin
+update example to use a common program
+
+Tue, 31 Oct 2017 16:46:42 +0000
+Author : Robert Osfield
+Replace c char array with std::string to address Coverity scan reported issue
+
+Tue, 31 Oct 2017 15:55:24 +0000
+Author : Robert Osfield
+Fixed Coverity Scan reported memory leaks
+
+Tue, 31 Oct 2017 15:47:49 +0000
+Author : Robert Osfield
+Fixed Coverity reported memory leak
+
+Tue, 31 Oct 2017 14:55:41 +0000
+Author : Robert Osfield
+Reinstated two stage OSX build, and disabled part of the coverity_scan build to attempt to get it running without timeout.
+
+Tue, 31 Oct 2017 12:32:45 +0000
+Author : Robert Osfield
+Upped the number of threads used in build to try and improve build speed
+
+Tue, 31 Oct 2017 10:01:52 +0000
+Author : Robert Osfield
+Simplified build for OSX now that trais builds are running faster.
+
+Mon, 30 Oct 2017 15:53:56 +0000
+Author : Robert Osfield
+Merge branch 'master' into osganimation
+
+Mon, 30 Oct 2017 14:36:41 +0000
+Author : Robert Osfield
+From Raymond de Vires, added support for 2018 and 2016 versions of FBX.
+
+Mon, 30 Oct 2017 14:36:41 +0000
+Author : Robert Osfield
+From Raymond de Vires, added support for 2018 and 2016 versions of FBX.
+
+Mon, 30 Oct 2017 14:22:10 +0000
+Author : Robert Osfield
+From Raymond de Vires, Windows build fix
+
+Mon, 30 Oct 2017 14:05:45 +0000
+Author : Robert Osfield
+Updated ChangeLog and AUTHORS
+
+Mon, 30 Oct 2017 13:40:50 +0000
+Author : Robert Osfield
+Quitened down the DisplaySettings::setShaderHint() output for NONE.
+
 Mon, 30 Oct 2017 09:32:04 +0000
 Author : Robert Osfield
 Merged support for StateSet::DefineList from shader_pipeline branch
+
+Mon, 30 Oct 2017 08:37:19 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #375 from mp3butcher/osganimationreformat AStyle (with codeblocks)
+
+Fri, 27 Oct 2017 21:02:43 +0200
+Author : Julien Valentin
+reformat with the help of AStyle reformat tool (codeblocks)
+
+Fri, 27 Oct 2017 18:14:04 +0100
+Author : Robert Osfield
+Fixed build error when building wiht OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION=OFF
+
+Fri, 27 Oct 2017 17:15:38 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #374 from mp3butcher/osganimationfix InfluenceMap "remove useless bones" method
+
+Fri, 27 Oct 2017 17:14:43 +0100
+Author : OpenSceneGraph git repository
+Merge branch 'osganimation' into osganimation
+
+Fri, 27 Oct 2017 14:19:13 +0100
+Author : Robert Osfield
+Fixed build errors when compiling with OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION set to OFF
+
+Fri, 27 Oct 2017 14:41:29 +0200
+Author : Julien Valentin
+fix InfluenceMap "remove useless bones" method
+
+Fri, 27 Oct 2017 13:48:52 +0100
+Author : Robert Osfield
+Build fix for when compiling with OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION set to OFF
 
 Fri, 27 Oct 2017 13:48:52 +0100
 Author : Robert Osfield
@@ -13,6 +322,10 @@ Fixed warning
 Fri, 27 Oct 2017 13:17:47 +0100
 Author : Robert Osfield
 From Farshid Lashkari, "fix for the Collada loader to check for some NULL attributes."
+
+Fri, 27 Oct 2017 12:54:10 +0100
+Author : Robert Osfield
+Merge branch 'master' into osganimation
 
 Fri, 27 Oct 2017 09:33:24 +0100
 Author : OpenSceneGraph git repository
@@ -301,6 +614,14 @@ Fri, 6 Oct 2017 14:33:07 +0300
 Author : Konstantin S. Matveyev
 VertexAttribDivisor compare function fix: index must be compared
 
+Thu, 5 Oct 2017 16:56:30 +0100
+Author : Robert Osfield
+Improved the readability of recent changes by adding spaces, {} and moving { onto separate lines to keep things consistent with the rest of the OSG.
+
+Thu, 5 Oct 2017 16:43:54 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #357 from mp3butcher/osganimationfix normalization bug (happen too early )
+
 Thu, 5 Oct 2017 16:31:45 +0100
 Author : OpenSceneGraph git repository
 Merge pull request #354 from eligovision/OpenSceneGraph_intersectionLineSegmentIntersector fixed: intersection ratio remaped to the range…
@@ -344,6 +665,13 @@ Merge branch 'master' into text_improvements
 Wed, 4 Oct 2017 18:06:42 +0100
 Author : Robert Osfield
 Improvements to the Signed Distance Field implementation.
+
+Wed, 4 Oct 2017 05:42:33 +0200
+Author : Julien Valentin
+fix normalization bug (happen too early )minor bug
+
+bla
+
 
 Fri, 29 Sep 2017 20:21:13 +0100
 Author : Robert Osfield
@@ -538,6 +866,10 @@ Wed, 6 Sep 2017 10:40:05 +0100
 Author : Robert Osfield
 To control the GlyphTexture Min/MagFilter values Added --min <value> and --mag <value> filter with LINEAR, NEAREST and LINEAR_MIPMAP_LINER options for values
 
+Mon, 4 Sep 2017 15:35:01 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #340 from mp3butcher/osganimationadd a new method on VertexInfluenceMap and the serializer for MorphTransforfHW
+
 Mon, 4 Sep 2017 15:21:26 +0100
 Author : OpenSceneGraph git repository
 Merge pull request #344 from eligovision/OpenSceneGraph_text3dText3D dynamic changing fix
@@ -545,6 +877,10 @@ Merge pull request #344 from eligovision/OpenSceneGraph_text3dText3D dynamic cha
 Mon, 4 Sep 2017 15:20:54 +0100
 Author : OpenSceneGraph git repository
 Merge pull request #345 from eligovision/OpenSceneGraph_example_text3dexample_osgtext3d: more options for testing
+
+Mon, 4 Sep 2017 12:04:37 +0200
+Author : Julien Valentin
+add DSO scope in modified XXXTransformHardware serializers
 
 Mon, 4 Sep 2017 11:44:30 +0300
 Author : Konstantin S. Matveyev
@@ -558,17 +894,89 @@ Mon, 4 Sep 2017 08:36:49 +0100
 Author : OpenSceneGraph git repository
 Merge pull request #341 from scrawl/cullingactive_fixLineSegmentIntersector: respect the 'cullingActive' flag for bounding box check
 
+Mon, 4 Sep 2017 02:27:54 +0200
+Author : Julien Valentin
+cleanup
+
+Sun, 3 Sep 2017 17:37:06 +0200
+Author : Julien Valentin
+make preparedata skeleton independant (as it was with the Rig::buildInfluenceSet) no more divergence with master i think
+
 Sun, 3 Sep 2017 14:15:36 +0000
 Author : scrawl
 LineSegmentIntersector: respect the 'cullingActive' flag when testing drawable bounding box
+
+Fri, 1 Sep 2017 20:03:05 +0200
+Author : Julien Valentin
+Merge remote-tracking branch 'upstream/master' into osganimation
+
+Fri, 1 Sep 2017 19:13:01 +0200
+Author : Julien Valentin
+update serializer with new properties
+
+Fri, 1 Sep 2017 18:08:37 +0200
+Author : Julien Valentin
+add MorphTransformHardware serializer
+
+Fri, 1 Sep 2017 18:04:32 +0200
+Author : Julien Valentin
+Merge remote-tracking branch 'upstream/osganimation' into osganimation
+
+Fri, 1 Sep 2017 17:48:28 +0200
+Author : Julien Valentin
+add void InfluenceMap::removeUnexpressedBones(Skeleton &skel) const; a bit experimental but work well without further process on my test set
+
+Fri, 1 Sep 2017 16:46:38 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #338 from mp3butcher/osganimationclean and bugfix
 
 Fri, 1 Sep 2017 15:50:47 +0100
 Author : OpenSceneGraph git repository
 Merge pull request #337 from mp3butcher/osganimbugfixfix a bug in how vertexattributes are filled
 
+Fri, 1 Sep 2017 16:23:49 +0200
+Author : Julien Valentin
+remove utility classes BoneWeight and IndexWeight in order to avoid unnecessary symbols (but decrease a bit clarity of the code)
+
+Fri, 1 Sep 2017 15:12:10 +0200
+Author : Julien Valentin
+cleanup
+
+Fri, 1 Sep 2017 01:43:00 +0200
+Author : Julien Valentin
+a functional cleanup
+
+Thu, 31 Aug 2017 16:35:05 +0200
+Author : Julien Valentin
+clean and bugfixes
+
+Thu, 31 Aug 2017 14:32:39 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #333 from mp3butcher/osganimationosgAnimation: change animationdata owner from riggeometry to rigtransformimplementations
+
+Thu, 31 Aug 2017 13:49:27 +0200
+Author : Julien Valentin
+few cleanup
+
+Thu, 31 Aug 2017 13:30:24 +0200
+Author : Julien Valentin
+revert s/VertexIndexWeight/IndexWeight/
+
+Thu, 31 Aug 2017 13:29:42 +0200
+Author : Julien Valentin
+fix example
+
 Wed, 30 Aug 2017 23:15:01 +0200
 Author : Julien Valentin
 fix a bug in how vertexattributes are filled
+
+Wed, 30 Aug 2017 23:01:21 +0200
+Author : Julien Valentin
+I found the damn bug in RigTransformHW
+
+Wed, 30 Aug 2017 20:36:34 +0200
+Author : Julien Valentin
+rehabilit an init method to ensure morphing po setted before skinning po in case of rigeom source that are morphgeom
 
 Wed, 30 Aug 2017 17:43:29 +0100
 Author : Robert Osfield
@@ -582,6 +990,34 @@ Wed, 30 Aug 2017 16:21:03 +0100
 Author : Robert Osfield
 Added osgText::Font::s/getGlyphInterval(int) and GlyphTexture::s/getGlyphInterval(int) and internal support for clmapping positions of glyph images an defined intervals, defaults to 1.
 
+Wed, 30 Aug 2017 17:07:11 +0200
+Author : Julien Valentin
+add parameter to XXXTranformHW to customize reserved texture attribs and vertex attribs
+
+Wed, 30 Aug 2017 15:46:19 +0200
+Author : Julien Valentin
+add a guard (if dirty) on uniform update
+
+Wed, 30 Aug 2017 15:13:54 +0200
+Author : Julien Valentin
+readd VertexInfluence whenever it's bad named and kinda useless
+
+Wed, 30 Aug 2017 14:59:31 +0200
+Author : Julien Valentin
+readd buildVertexInfluenceSet for backward compat
+
+Wed, 30 Aug 2017 13:21:32 +0200
+Author : Julien Valentin
+cleanup
+
+Wed, 30 Aug 2017 12:55:45 +0200
+Author : Julien Valentin
+uncomment normalization in rigtransformxxx
+
+Wed, 30 Aug 2017 12:09:54 +0200
+Author : Julien Valentin
+add and comment out normlization in rigtransformXXX
+
 Wed, 30 Aug 2017 10:50:26 +0100
 Author : Robert Osfield
 Added --margin texel_width and --margin-ration ratio to control the spacing between glyphs in the font.
@@ -590,6 +1026,10 @@ Wed, 30 Aug 2017 10:16:18 +0100
 Author : Robert Osfield
 Added --test command line option that sets up all the sizes and font settings required for a useufl unit test.
 
+Wed, 30 Aug 2017 11:12:17 +0200
+Author : Julien Valentin
+refactor: remove totally VertexInfluence (renamed BoneInfluenceList) everywhere
+
 Tue, 29 Aug 2017 17:32:14 +0100
 Author : Robert Osfield
 Removed debug messages
@@ -597,6 +1037,26 @@ Removed debug messages
 Tue, 29 Aug 2017 17:19:26 +0100
 Author : Robert Osfield
 Added TextSettings struct to manage values used to set up the text. with the addition of following command line parameters:    --outline // enable outlne    --shadow // enable shadow    --offset ratio // set the backdrop offset    --text-color r g b a // set the text body color    --bd-color r g b a // set the shadow/outline color    --bg-color r g b a // window background color    -o filename // write create subgraph to disk using specified filename
+
+Tue, 29 Aug 2017 17:32:19 +0200
+Author : Julien Valentin
+swap priority in BonePtrWeight comparator< yeild the same VG set
+
+Tue, 29 Aug 2017 17:24:35 +0200
+Author : Julien Valentin
+cleanup
+
+Tue, 29 Aug 2017 15:10:05 +0200
+Author : Julien Valentin
+remove virtual qualifier for deprecated method
+
+Tue, 29 Aug 2017 14:47:56 +0200
+Author : Julien Valentin
+add MorphTransformHW for RigGeometry sources that are MorphGeometry
+
+Tue, 29 Aug 2017 14:11:44 +0200
+Author : Julien Valentin
+set defaut implementation at creation
 
 Tue, 29 Aug 2017 13:48:06 +0100
 Author : Robert Osfield
@@ -617,13 +1077,105 @@ Under macOS the glValidateProgram reports too many false negatives (errors) abou
 
 An appropriate place to call glValidateProgram would be right before you make a real render call. »
 
+Tue, 29 Aug 2017 02:55:40 +0200
+Author : Julien Valentin
+few refactoring and fixes
+
+Tue, 29 Aug 2017 00:34:26 +0200
+Author : Julien Valentin
+readd the 2 methods in InfluenceMap just in case
+
+Tue, 29 Aug 2017 00:09:38 +0200
+Author : Julien Valentin
+cleanup
+
+Tue, 29 Aug 2017 00:07:07 +0200
+Author : Julien Valentin
+remove VertexInfluenceSet
+
+Mon, 28 Aug 2017 18:42:22 +0200
+Author : Julien Valentin
+add 2 method to VertexInfluenceMap: normalize and cullInfluenceCountPerVertex
+
+Mon, 28 Aug 2017 18:27:23 +0200
+Author : Julien Valentin
+comply with refactoring
+
+Mon, 28 Aug 2017 18:16:30 +0200
+Author : Julien Valentin
+total removal of the old path
+
+Mon, 28 Aug 2017 18:02:52 +0200
+Author : Julien Valentin
+remove default order for BoneWeight and restore old sort func (behaviors differs)
+
 Mon, 28 Aug 2017 16:28:30 +0100
 Author : OpenSceneGraph git repository
 Merge pull request #332 from denyskoch/fix-boundingsphere-inequality-operatorFix flawed BoundingSphere inequality operator
 
+Mon, 28 Aug 2017 17:13:48 +0200
+Author : Julien Valentin
+clean unused
+
+Mon, 28 Aug 2017 17:13:23 +0200
+Author : Julien Valentin
+fix the example
+
+Mon, 28 Aug 2017 16:46:01 +0200
+Author : Julien Valentin
+remove old path and add few fixes
+
+Mon, 28 Aug 2017 16:02:00 +0200
+Author : Julien Valentin
+minor fixes removed unused
+
+Mon, 28 Aug 2017 15:59:13 +0200
+Author : Julien Valentin
+reroot to rigtransform::prepareData old path to rig::buildvertexinfluence
+
+Mon, 28 Aug 2017 15:44:09 +0200
+Author : Julien Valentin
+remove unused
+
+Mon, 28 Aug 2017 15:41:14 +0200
+Author : Julien Valentin
+add prepareData for RigTransformHW
+
+Mon, 28 Aug 2017 15:40:04 +0200
+Author : Julien Valentin
+minor changes+fix
+
+Mon, 28 Aug 2017 15:27:46 +0200
+Author : Julien Valentin
+add default constructor for IndexWeight with invalid indices
+
+Mon, 28 Aug 2017 14:25:12 +0200
+Author : Julien Valentin
+add prepareData for rigttransform software
+
 Mon, 28 Aug 2017 14:34:39 +0200
 Author : Denys Koch
 Fix flawed BoundingSphere inequality operator
+
+Mon, 28 Aug 2017 14:23:15 +0200
+Author : Julien Valentin
+few refactoring
+
+Mon, 28 Aug 2017 13:18:37 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #331 from mp3butcher/osganimationOsganimation fix a bug introduced when readding transformsoftwareMethod
+
+Mon, 28 Aug 2017 13:34:06 +0200
+Author : Julien Valentin
+Merge remote-tracking branch 'upstream/osganimation' into osganimation
+
+Mon, 28 Aug 2017 05:22:14 +0200
+Author : Julien Valentin
+fix a bug introduced when readding transformsoftwareMethod
+
+Mon, 28 Aug 2017 10:28:18 +0100
+Author : Robert Osfield
+Merge branch 'osganimation' of https://github.com/mp3butcher/OpenSceneGraph into osganimation
 
 Mon, 28 Aug 2017 10:02:27 +0100
 Author : OpenSceneGraph git repository
@@ -633,6 +1185,22 @@ Mon, 28 Aug 2017 09:44:10 +0200
 Author : Mathieu MARACHE
 osg::Program::isFixedFunction() should'nt return true fixed function is unavailable, even if _shaderList.empty() is true
 
+Mon, 28 Aug 2017 05:22:14 +0200
+Author : Julien Valentin
+fix a bug introduced when readding transformsoftwareMethod
+
+Mon, 28 Aug 2017 05:17:17 +0200
+Author : Julien Valentin
+add a new prepareData method to the interface
+
+Mon, 28 Aug 2017 04:51:52 +0200
+Author : Julien Valentin
+MorphTransformHardware using TBO added
+
+Mon, 28 Aug 2017 04:42:51 +0200
+Author : Julien Valentin
+readd virtual void transformSoftwareMethod() for retrocompatibity
+
 Sun, 27 Aug 2017 18:08:09 +0100
 Author : OpenSceneGraph git repository
 Merge pull request #327 from kornerr/masterFix Emscripten build errors
@@ -640,6 +1208,23 @@ Merge pull request #327 from kornerr/masterFix Emscripten build errors
 Sun, 27 Aug 2017 18:07:21 +0100
 Author : OpenSceneGraph git repository
 Merge pull request #328 from scrawl/group-docsFix docs for Group::addChild to match implementation
+
+Sun, 27 Aug 2017 02:14:12 +0200
+Author : Julien Valentin
+replace VertexInfluence to BoneInfluenceList and VertexIndexWeight to IndexWeightfix in example
+
+
+Sun, 27 Aug 2017 00:10:52 +0200
+Author : Julien Valentin
+remove unused code and remove a commented section
+
+Sat, 26 Aug 2017 23:05:52 +0200
+Author : Julien Valentin
+update serializers
+
+Sat, 26 Aug 2017 20:37:10 +0200
+Author : Julien Valentin
+refactoring and fixes only change in design: decouplage between MorphGeometry and MorphTransform technique no real change in behavior (i hope)
 
 Sat, 26 Aug 2017 19:25:00 +0300
 Author : Michael Kapelko

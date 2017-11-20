@@ -241,7 +241,7 @@ std::string osgDB::getCurrentWorkingDirectory( void )
     #define MAX_PATH 1024
 #endif
     TCHAR rootdir[MAX_PATH];
-#if !OSG_UWP
+#if !defined(WIN32_UWP)
     if(getcwd(rootdir,MAX_PATH-1))
 #else
     if(_getcwd(rootdir, MAX_PATH-1))
@@ -527,7 +527,7 @@ static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
     {
         osgDB::DirectoryContents contents;
 
-#if !defined(OSG_UWP)
+#if !defined(WIN32_UWP)
         OSGDB_WINDOWS_FUNCT(WIN32_FIND_DATA) data;
         HANDLE handle = OSGDB_WINDOWS_FUNCT(FindFirstFile)((OSGDB_STRING_TO_FILENAME(dirName) + OSGDB_FILENAME_TEXT("\\*")).c_str(), &data);
         if (handle != INVALID_HANDLE_VALUE)
@@ -776,7 +776,7 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
         // will search as if it was enabled.
 
         // So if SafeDllSearchMode is enabled, the search order is as follows:
-#if !defined(OSG_UWP)
+#if !defined(WIN32_UWP)
         //   1. The directory from which the application loaded.
         DWORD retval = 0;
         const DWORD size = MAX_PATH;
@@ -798,7 +798,7 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
         //   2. The directory that the dll that contains this function is in.
         // For static builds, this will be the executable directory.
 
-        #if defined(_MSC_VER) && !defined(OSG_UWP)
+        #if defined(_MSC_VER) && !defined(WIN32_UWP)
             // Requires use of the GetModuleHandleEx() function which is available only on Windows XP or higher.
             // In order to allow execution on older versions, we load the function dynamically from the library and
             // use it only if it's available.

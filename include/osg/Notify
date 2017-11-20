@@ -19,7 +19,7 @@
 
 #include <ostream>
 
-#if OSG_UWP
+#if defined(WIN32_UWP)
 inline char* getenv(const char* arg){return NULL;}
 #endif
 

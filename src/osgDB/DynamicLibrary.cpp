@@ -94,7 +94,7 @@ DynamicLibrary::HANDLE DynamicLibrary::getLibraryHandle( const std::string& libr
     HANDLE handle = NULL;
 
 #if defined(WIN32) && !defined(__CYGWIN__)
-#if !defined(OSG_UWP)
+#if !defined(WIN32_UWP)
 #ifdef OSG_USE_UTF8_FILENAME
     handle = LoadLibraryW(  convertUTF8toUTF16(libraryName).c_str() );
 #else

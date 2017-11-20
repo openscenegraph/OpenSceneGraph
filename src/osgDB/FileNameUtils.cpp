@@ -20,7 +20,7 @@
 
 #ifdef WIN32
 #if !defined(__MINGW32__)
-#if !defined(OSG_UWP)
+#if !defined(WIN32_UWP)
     #define _WIN32_WINNT 0x0500
 #else
     #define _WIN32_WINNT 0x0602
@@ -29,7 +29,7 @@
 
     #include <windows.h>
 
-#if defined(OSG_UWP)
+#if defined(WIN32_UWP)
     DWORD GetShortPathNameW(
         _In_  LPCTSTR lpszLongPath,
         _Out_ LPTSTR  lpszShortPath,

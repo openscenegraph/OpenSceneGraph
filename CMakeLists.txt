@@ -371,7 +371,7 @@ IF(WIN32 AND NOT ANDROID)
         # This option adds define to indicate we're building for UWP
         OPTION(OSG_BUILD_PLATFORM_UWP "Enable UWP build" OFF)
         IF(OSG_BUILD_PLATFORM_UWP)
-            ADD_DEFINITIONS(-DOSG_UWP)
+            ADD_DEFINITIONS(-DWIN32_UWP)
         ENDIF(OSG_BUILD_PLATFORM_UWP)
 
         OPTION(MSVC_DISABLE_CHECKED_ITERATORS "Set to ON to disable Visual C++ checked iterators. If you do this you must ensure that every other project in your solution and all dependencies are compiled with _SECURE_SCL=0." OFF)

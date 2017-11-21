@@ -12,8 +12,8 @@ TangentSpaceGenerator::TangentSpaceGenerator()
     N_(new osg::Vec4Array)
 {
     T_->setBinding(osg::Array::BIND_PER_VERTEX); T_->setNormalize(false);
-    B_->setBinding(osg::Array::BIND_PER_VERTEX); T_->setNormalize(false);
-    N_->setBinding(osg::Array::BIND_PER_VERTEX); T_->setNormalize(false);
+    B_->setBinding(osg::Array::BIND_PER_VERTEX); B_->setNormalize(false);
+    N_->setBinding(osg::Array::BIND_PER_VERTEX); N_->setNormalize(false);
 }
 
 TangentSpaceGenerator::TangentSpaceGenerator(const TangentSpaceGenerator &copy, const osg::CopyOp &copyop)
@@ -281,107 +281,74 @@ void TangentSpaceGenerator::compute(osg::PrimitiveSet *pset,
         OSG_WARN << "Warning: TangentSpaceGenerator: texture coord array must be Vec2Array, Vec3Array or Vec4Array" << std::endl;
     }
 
-    if(nx){
-        osg::Vec3 V, T1, T2, T3, B1, B2, B3;
+    osg::Vec3 V, T1, T2, T3, B1, B2, B3;
 
-        V = osg::Vec3(P2.x() - P1.x(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^
-            osg::Vec3(P3.x() - P1.x(), uv3.x() - uv1.x(), uv3.y() - uv1.y());
-        if (V.x() != 0) {
-            V.normalize();
-            T1.x() += -V.y() / V.x();
-            B1.x() += -V.z() / V.x();
-            T2.x() += -V.y() / V.x();
-            B2.x() += -V.z() / V.x();
-            T3.x() += -V.y() / V.x();
-            B3.x() += -V.z() / V.x();
-        }
-
-        V = osg::Vec3(P2.y() - P1.y(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^
-            osg::Vec3(P3.y() - P1.y(), uv3.x() - uv1.x(), uv3.y() - uv1.y());
-        if (V.x() != 0) {
-            V.normalize();
-            T1.y() += -V.y() / V.x();
-            B1.y() += -V.z() / V.x();
-            T2.y() += -V.y() / V.x();
-            B2.y() += -V.z() / V.x();
-            T3.y() += -V.y() / V.x();
-            B3.y() += -V.z() / V.x();
-        }
-
-        V = osg::Vec3(P2.z() - P1.z(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^
-            osg::Vec3(P3.z() - P1.z(), uv3.x() - uv1.x(), uv3.y() - uv1.y());
-        if (V.x() != 0) {
-            V.normalize();
-            T1.z() += -V.y() / V.x();
-            B1.z() += -V.z() / V.x();
-            T2.z() += -V.y() / V.x();
-            B2.z() += -V.z() / V.x();
-            T3.z() += -V.y() / V.x();
-            B3.z() += -V.z() / V.x();
-        }
-
-        osg::Vec3 tempvec;
-        tempvec = N1 ^ T1;
-        (*T_)[iA] = osg::Vec4(tempvec ^ N1, 0);
-        tempvec = B1 ^ N1;
-        (*B_)[iA] = osg::Vec4(N1 ^ tempvec, 0);
-        tempvec = N2 ^ T2;
-        (*T_)[iB] = osg::Vec4(tempvec ^ N2, 0);
-        tempvec = B2 ^ N2;
-        (*B_)[iB] = osg::Vec4(N2 ^ tempvec, 0);
-        tempvec = N3 ^ T3;
-        (*T_)[iC] = osg::Vec4(tempvec ^ N3, 0);
-        tempvec = B3 ^ N3;
-        (*B_)[iC] = osg::Vec4(N3 ^ tempvec, 0);
-
-        (*N_)[iA] += osg::Vec4(N1, 0);
-        (*N_)[iB] += osg::Vec4(N2, 0);
-        (*N_)[iC] += osg::Vec4(N3, 0);
+    // no normal per vertex use the one by face
+    if (!nx) {
+        N1 = (P2 - P1) ^ (P3 - P1);
+        N2 = N1;
+        N3 = N1;
     }
-    else{
-        osg::Vec3 face_normal = (P2 - P1) ^ (P3 - P1);
 
-        osg::Vec3 V;
-
-        V = osg::Vec3(P2.x() - P1.x(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^
-            osg::Vec3(P3.x() - P1.x(), uv3.x() - uv1.x(), uv3.y() - uv1.y());
-        if (V.x() != 0) {
-            V.normalize();
-            (*T_)[iA].x() += -V.y() / V.x();
-            (*B_)[iA].x() += -V.z() / V.x();
-            (*T_)[iB].x() += -V.y() / V.x();
-            (*B_)[iB].x() += -V.z() / V.x();
-            (*T_)[iC].x() += -V.y() / V.x();
-            (*B_)[iC].x() += -V.z() / V.x();
-        }
-
-        V = osg::Vec3(P2.y() - P1.y(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^
-            osg::Vec3(P3.y() - P1.y(), uv3.x() - uv1.x(), uv3.y() - uv1.y());
-        if (V.x() != 0) {
-            V.normalize();
-            (*T_)[iA].y() += -V.y() / V.x();
-            (*B_)[iA].y() += -V.z() / V.x();
-            (*T_)[iB].y() += -V.y() / V.x();
-            (*B_)[iB].y() += -V.z() / V.x();
-            (*T_)[iC].y() += -V.y() / V.x();
-            (*B_)[iC].y() += -V.z() / V.x();
-        }
-
-        V = osg::Vec3(P2.z() - P1.z(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^
-            osg::Vec3(P3.z() - P1.z(), uv3.x() - uv1.x(), uv3.y() - uv1.y());
-        if (V.x() != 0) {
-            V.normalize();
-            (*T_)[iA].z() += -V.y() / V.x();
-            (*B_)[iA].z() += -V.z() / V.x();
-            (*T_)[iB].z() += -V.y() / V.x();
-            (*B_)[iB].z() += -V.z() / V.x();
-            (*T_)[iC].z() += -V.y() / V.x();
-            (*B_)[iC].z() += -V.z() / V.x();
-        }
-
-        (*N_)[iA] += osg::Vec4(face_normal, 0);
-        (*N_)[iB] += osg::Vec4(face_normal, 0);
-        (*N_)[iC] += osg::Vec4(face_normal, 0);
+    V = osg::Vec3(P2.x() - P1.x(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^
+        osg::Vec3(P3.x() - P1.x(), uv3.x() - uv1.x(), uv3.y() - uv1.y());
+    if (V.x() != 0) {
+        V.normalize();
+        T1.x() += -V.y() / V.x();
+        B1.x() += -V.z() / V.x();
+        T2.x() += -V.y() / V.x();
+        B2.x() += -V.z() / V.x();
+        T3.x() += -V.y() / V.x();
+        B3.x() += -V.z() / V.x();
     }
+
+    V = osg::Vec3(P2.y() - P1.y(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^
+        osg::Vec3(P3.y() - P1.y(), uv3.x() - uv1.x(), uv3.y() - uv1.y());
+    if (V.x() != 0) {
+        V.normalize();
+        T1.y() += -V.y() / V.x();
+        B1.y() += -V.z() / V.x();
+        T2.y() += -V.y() / V.x();
+        B2.y() += -V.z() / V.x();
+        T3.y() += -V.y() / V.x();
+        B3.y() += -V.z() / V.x();
+    }
+
+    V = osg::Vec3(P2.z() - P1.z(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^
+        osg::Vec3(P3.z() - P1.z(), uv3.x() - uv1.x(), uv3.y() - uv1.y());
+    if (V.x() != 0) {
+        V.normalize();
+        T1.z() += -V.y() / V.x();
+        B1.z() += -V.z() / V.x();
+        T2.z() += -V.y() / V.x();
+        B2.z() += -V.z() / V.x();
+        T3.z() += -V.y() / V.x();
+        B3.z() += -V.z() / V.x();
+    }
+
+    osg::Vec3 tempvec;
+
+    tempvec = N1 ^ T1;
+    (*T_)[iA] += osg::Vec4(tempvec ^ N1, 0);
+
+    tempvec = B1 ^ N1;
+    (*B_)[iA] += osg::Vec4(N1 ^ tempvec, 0);
+
+    tempvec = N2 ^ T2;
+    (*T_)[iB] += osg::Vec4(tempvec ^ N2, 0);
+
+    tempvec = B2 ^ N2;
+    (*B_)[iB] += osg::Vec4(N2 ^ tempvec, 0);
+
+    tempvec = N3 ^ T3;
+    (*T_)[iC] += osg::Vec4(tempvec ^ N3, 0);
+
+    tempvec = B3 ^ N3;
+    (*B_)[iC] += osg::Vec4(N3 ^ tempvec, 0);
+
+    (*N_)[iA] += osg::Vec4(N1, 0);
+    (*N_)[iB] += osg::Vec4(N2, 0);
+    (*N_)[iC] += osg::Vec4(N3, 0);
+
 }
 

@@ -1301,6 +1301,21 @@ void Text::accept(osg::PrimitiveFunctor& pf) const
     }
 }
 
+bool Text::getCharacterCorners(unsigned int index, osg::Vec3& bottomLeft, osg::Vec3& bottomRight, osg::Vec3& topLeft, osg::Vec3& topRight) const
+{
+    if (_coords) return false;
+
+    if ((index*4+4)>static_cast<unsigned int>(_coords->size())) return false;
+
+    unsigned int base = index*4;
+    topLeft = (*_coords)[base];
+    bottomLeft = (*_coords)[base+1];
+    bottomRight = (*_coords)[base+2];
+    topRight = (*_coords)[base+3];
+
+    return true;
+}
+
 void Text::resizeGLObjectBuffers(unsigned int maxSize)
 {
     TextBase::resizeGLObjectBuffers(maxSize);

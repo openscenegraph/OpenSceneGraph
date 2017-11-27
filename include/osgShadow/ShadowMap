@@ -68,6 +68,8 @@ class OSGSHADOW_EXPORT ShadowMap : public ShadowTechnique
         /** Add a shader to internal list, will be used instead of the default ones */
         inline void addShader(osg::Shader* shader) { _shaderList.push_back(shader); }
 
+        template<class T> void addShader( const osg::ref_ptr<T>& shader ) { addShader(shader.get()); }
+
         /** Reset internal shader list */
         inline void clearShaderList() { _shaderList.clear(); }
 

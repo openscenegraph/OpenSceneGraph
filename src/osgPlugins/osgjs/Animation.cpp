@@ -240,16 +240,6 @@ static void addJSONChannel(osgAnimation::Channel* channel, JSONObject& anim, Wri
         }
     }
 
-#ifdef USE_COMPRESSED_CHANNELS
-    {
-        osgAnimation::Vec3usLinearChannel* c = dynamic_cast<osgAnimation::Vec3usLinearChannel*>(channel);
-        if (c) {
-            if (addJSONChannel<osgAnimation::Vec3usLinearChannel>("osgAnimation.Vec3LerpChannelCompressed", c, true, anim, writer, parent))
-                return;
-        }
-    }
-#endif
-
     {
         osgAnimation::QuatSphericalLinearChannel* c = dynamic_cast<osgAnimation::QuatSphericalLinearChannel*>(channel);
         if (c) {
@@ -257,16 +247,6 @@ static void addJSONChannel(osgAnimation::Channel* channel, JSONObject& anim, Wri
                 return;
         }
     }
-
-#ifdef USE_COMPRESSED_CHANNELS
-    {
-        osgAnimation::Vec3usSphericalLinearChannel* c = dynamic_cast<osgAnimation::Vec3usSphericalLinearChannel*>(channel);
-        if (c) {
-            if (addJSONChannel<osgAnimation::Vec3usSphericalLinearChannel>("osgAnimation.QuatSlerpChannelCompressed", c, true, anim, writer, parent))
-                return;
-        }
-    }
-#endif
 
     {
         osgAnimation::FloatCubicBezierChannel* c = dynamic_cast<osgAnimation::FloatCubicBezierChannel*>(channel);

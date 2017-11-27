@@ -1,7 +1,7 @@
 // -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
 // $Id: osgwidgetshader.cpp 28 2008-03-26 15:26:48Z cubicool $
 
-#include <osgDB/FileUtils>
+#include <osgDB/ReadFile>
 #include <osgWidget/Util>
 #include <osgWidget/WindowManager>
 #include <osgWidget/Canvas>
@@ -60,15 +60,9 @@ int main(int, char**)
 
     osg::Program* program = new osg::Program();
 
-    program->addShader(osg::Shader::readShaderFile(
-        osg::Shader::VERTEX,
-        osgDB::findDataFile("osgWidget/osgwidgetshader-vert.glsl")
-    ));
 
-    program->addShader(osg::Shader::readShaderFile(
-        osg::Shader::FRAGMENT,
-        osgDB::findDataFile("osgWidget/osgwidgetshader-frag.glsl")
-    ));
+    program->addShader(osgDB::readRefShaderFile( osg::Shader::VERTEX, "osgWidget/osgwidgetshader-vert.glsl" ) );
+    program->addShader(osgDB::readRefShaderFile( osg::Shader::FRAGMENT, "osgWidget/osgwidgetshader-frag.glsl" ) );
 
     canvas->getGeode()->getOrCreateStateSet()->setAttribute(program);
 

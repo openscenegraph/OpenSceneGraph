@@ -16,6 +16,7 @@
 #include <osgAnimation/RigTransformHardware>
 #include <osgAnimation/RigGeometry>
 #include <osgAnimation/BoneMapVisitor>
+#include <osgDB/ReadFile>
 #include <sstream>
 
 using namespace osgAnimation;
@@ -315,8 +316,7 @@ bool RigTransformHardware::init(RigGeometry& rig)
     //set default source if _shader is not user setted
     if (!vertexshader.valid())
     {
-        if (!_shader.valid())
-            vertexshader = osg::Shader::readShaderFile(osg::Shader::VERTEX,"skinning.vert");
+        if (!_shader.valid()) vertexshader = osgDB::readRefShaderFile(osg::Shader::VERTEX,"skinning.vert");
         else vertexshader = _shader;
     }
 

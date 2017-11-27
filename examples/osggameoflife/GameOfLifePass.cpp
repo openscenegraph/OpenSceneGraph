@@ -18,6 +18,7 @@
 
 #include "GameOfLifePass.h"
 #include <osgDB/FileUtils>
+#include <osgDB/ReadFile>
 #include <iostream>
 
 ProcessPass::ProcessPass(osg::TextureRectangle *in_tex,
@@ -110,15 +111,12 @@ void ProcessPass::setupCamera()
 
 void ProcessPass::setShader(std::string filename)
 {
-    std::string foundFile = osgDB::findDataFile(filename);
-    if (foundFile.empty())
+    osg::ref_ptr<osg::Shader> fshader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, filename);
+    if (!fshader)
     {
         osg::notify(osg::NOTICE)<<"Could not file shader file: "<<filename<<std::endl;
         return;
     }
-
-    osg::ref_ptr<osg::Shader> fshader = new osg::Shader( osg::Shader::FRAGMENT );
-    fshader->loadShaderSourceFromFile(foundFile);
 
     _FragmentProgram = 0;
     _FragmentProgram = new osg::Program;

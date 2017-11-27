@@ -16,6 +16,7 @@
 #include <osgAnimation/MorphGeometry>
 #include <osgAnimation/BoneMapVisitor>
 #include <osg/TextureBuffer>
+#include <osgDB/ReadFile>
 #include <sstream>
 
 using namespace osgAnimation;
@@ -137,10 +138,8 @@ bool MorphTransformHardware::init(MorphGeometry& morphGeometry)
     //set default source if _shader is not user setted
     if (!vertexshader.valid())
     {
-        if (!_shader.valid())
-            vertexshader = osg::Shader::readShaderFile(osg::Shader::VERTEX,"morphing.vert");
-        else
-            vertexshader=_shader;
+        if (!_shader.valid()) vertexshader = osgDB::readRefShaderFile(osg::Shader::VERTEX,"morphing.vert");
+        else vertexshader=_shader;
     }
 
     if (!vertexshader.valid())
@@ -157,7 +156,7 @@ bool MorphTransformHardware::init(MorphGeometry& morphGeometry)
         if (std::string::npos == start)
         {
             // perhaps remanance from previous init (if saved after init) so reload shader
-            vertexshader = osg::Shader::readShaderFile(osg::Shader::VERTEX,"morphing.vert");
+            vertexshader = osgDB::readRefShaderFile(osg::Shader::VERTEX,"morphing.vert");
             if (!vertexshader.valid())
             {
                 OSG_WARN << "RigTransformHardware can't load VertexShader" << std::endl;

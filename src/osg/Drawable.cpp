@@ -331,7 +331,7 @@ void Drawable::releaseGLObjects(State* state) const
             }
         }
 
-        VertexArrayState* vas = contextID <_vertexArrayStateList.size() ? _vertexArrayStateList[contextID].get() : 0;
+        PerContextVertexArrayState* vas = contextID <_vertexArrayStateList.size() ? _vertexArrayStateList[contextID].get() : 0;
         if (vas)
         {
             vas->release();
@@ -453,7 +453,7 @@ void Drawable::dirtyGLObjects()
 
     for(i=0; i<_vertexArrayStateList.size(); ++i)
     {
-        VertexArrayState* vas = _vertexArrayStateList[i].get();
+        PerContextVertexArrayState* vas = _vertexArrayStateList[i].get();
         if (vas) vas->dirty();
     }
 }
@@ -630,7 +630,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
     {
         unsigned int contextID = renderInfo.getContextID();
 
-        VertexArrayState* vas = _vertexArrayStateList[contextID].get();
+        PerContextVertexArrayState* vas = _vertexArrayStateList[contextID].get();
         if (!vas)
         {
             _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
@@ -696,9 +696,9 @@ void Drawable::draw(RenderInfo& renderInfo) const
 
 #endif
 
-VertexArrayState* Drawable::createVertexArrayState(RenderInfo& renderInfo) const
+PerContextVertexArrayState* Drawable::createVertexArrayState(RenderInfo& renderInfo) const
 {
-    VertexArrayState* vos = new osg::VertexArrayState(renderInfo.getState());
+    PerContextVertexArrayState* vos = new osg::PerContextVertexArrayState(renderInfo.getState());
     vos->assignAllDispatchers();
     return vos;
 }

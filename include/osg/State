@@ -527,19 +527,19 @@ class OSG_EXPORT State : public Referenced
         /** Proxy helper class for applyig a VertexArrayState in a local scope, with the preivous value being resotred automatically on leaving the scope that proxy was created.*/
         struct SetCurrentVertexArrayStateProxy
         {
-            SetCurrentVertexArrayStateProxy(osg::State& state, VertexArrayState* vas):_state(state) { _state.setCurrentVertexArrayState(vas); }
-            ~SetCurrentVertexArrayStateProxy() { _state.setCurrentToGloabalVertexArrayState(); }
+            SetCurrentVertexArrayStateProxy(osg::State& state, PerContextVertexArrayState* vas):_state(state) { _state.setCurrentVertexArrayState(vas); }
+            ~SetCurrentVertexArrayStateProxy() { _state.setCurrentToGlobalVertexArrayState(); }
             osg::State& _state;
         };
 
         /** Set the CurrentVetexArrayState object that take which vertex arrays are bound.*/
-        void setCurrentVertexArrayState(VertexArrayState* vas) { _vas = vas; }
+        void setCurrentVertexArrayState(PerContextVertexArrayState* vas) { _vas = vas; }
 
         /** Get the CurrentVetexArrayState object that take which vertex arrays are bound.*/
-        VertexArrayState* getCurrentVertexArrayState() const { return _vas; }
+        PerContextVertexArrayState* getCurrentVertexArrayState() const { return _vas; }
 
         /** Set the getCurrentVertexArrayState to the GloabalVertexArrayState.*/
-        void setCurrentToGloabalVertexArrayState() { _vas = _globalVertexArrayState.get(); }
+        void setCurrentToGlobalVertexArrayState() { _vas = _globalVertexArrayState.get(); }
 
 
         /** disable the vertex, normal, color, tex coords, secondary color, fog coord and index arrays.*/
@@ -615,7 +615,7 @@ class OSG_EXPORT State : public Referenced
         void setCurrentVertexArrayObject(GLuint vao) { _currentVAO = vao; }
         GLuint getCurrentVertexArrayObject() const { return _currentVAO; }
 
-        inline void bindVertexArrayObject(const VertexArrayState* vas) { bindVertexArrayObject(vas->getVertexArrayObject()); }
+        inline void bindVertexArrayObject(const PerContextVertexArrayState* vas) { bindVertexArrayObject(vas->getVertexArrayObject()); }
 
         inline void bindVertexArrayObject(GLuint vao) { if (_currentVAO!=vao) { _glExtensions->glBindVertexArray(vao); _currentVAO = vao; } }
 
@@ -1068,8 +1068,8 @@ class OSG_EXPORT State : public Referenced
         GraphicsContext*            _graphicsContext;
         unsigned int                _contextID;
 
-        osg::ref_ptr<VertexArrayState>  _globalVertexArrayState;
-        VertexArrayState*               _vas;
+        osg::ref_ptr<PerContextVertexArrayState>  _globalVertexArrayState;
+        PerContextVertexArrayState*               _vas;
 
         bool                            _shaderCompositionEnabled;
         bool                            _shaderCompositionDirty;

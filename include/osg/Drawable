@@ -278,7 +278,7 @@ class OSG_EXPORT Drawable : public Node
         */
         virtual void compileGLObjects(RenderInfo& renderInfo) const;
 
-        virtual VertexArrayState* createVertexArrayState(RenderInfo& renderInfo) const;
+        virtual PerContextVertexArrayState* createVertexArrayState(RenderInfo& renderInfo) const;
 
 
         /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
@@ -491,7 +491,7 @@ class OSG_EXPORT Drawable : public Node
         typedef osg::buffered_value<GLuint> GLObjectList;
         mutable GLObjectList    _globjList;
 
-        typedef buffered_object< osg::ref_ptr<VertexArrayState> > VertexArrayStateList;
+        typedef buffered_object< osg::ref_ptr<PerContextVertexArrayState> > VertexArrayStateList;
         mutable VertexArrayStateList    _vertexArrayStateList;
 
         ref_ptr<DrawCallback>   _drawCallback;

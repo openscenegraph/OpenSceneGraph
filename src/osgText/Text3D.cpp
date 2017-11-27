@@ -505,7 +505,7 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
         // OSG_NOTICE<<"No need to apply matrix "<<std::endl;
     }
 
-    osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
+    osg::PerContextVertexArrayState* vas = state.getCurrentVertexArrayState();
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
     bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
     bool requiresSetArrays = !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();

@@ -1119,7 +1119,7 @@ void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colo
 {
     if (colorMultiplier.a()==0.0f || _color.a()==0.0f) return;
 
-    osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
+    osg::PerContextVertexArrayState* vas = state.getCurrentVertexArrayState();
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
     bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
     bool requiresSetArrays = !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();
@@ -1199,7 +1199,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
 
     state.Normal(_normal.x(), _normal.y(), _normal.z());
 
-    osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
+    osg::PerContextVertexArrayState* vas = state.getCurrentVertexArrayState();
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
     bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
     bool requiresSetArrays = !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();

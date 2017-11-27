@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_VertexArrayState
-#define OSG_VertexArrayState 1
+#ifndef OSG_PerContextVertexArrayState
+#define OSG_PerContextVertexArrayState 1
 
 #include <osg/Referenced>
 #include <osg/GLExtensions>
@@ -21,17 +21,18 @@
 
 namespace osg {
 
-class OSG_EXPORT VertexArrayState : public osg::Referenced
+class OSG_EXPORT PerContextVertexArrayState : public osg::Referenced
 {
 public:
 
-        VertexArrayState(osg::State* state);
+        PerContextVertexArrayState(osg::State* state, GLint basevertex = 0);
 
         struct ArrayDispatch : public osg::Referenced
         {
-            ArrayDispatch():
+            ArrayDispatch(GLint & base):
                 array(0),
                 modifiedCount(0xffffffff),
+                basevertex(base),
                 active(false) {}
 
             virtual const char* className() const = 0; // { return "ArrayDispatch"; }
@@ -52,13 +53,14 @@ public:
 
             const osg::Array*   array;
             unsigned int        modifiedCount;
+            GLint  &     basevertex;
             bool                active;
         };
 
         typedef std::vector< ref_ptr<ArrayDispatch> >       ArrayDispatchList;
 
-        void setCurrentVertexBufferObject(osg::GLBufferObject* vbo) { _currentVBO = vbo; }
-        GLBufferObject* getCurrentVertexBufferObject() { return _currentVBO; }
+        inline void setCurrentVertexBufferObject(osg::GLBufferObject* vbo) { _currentVBO = vbo; }
+        inline GLBufferObject* getCurrentVertexBufferObject() { return _currentVBO; }
 
         inline void bindVertexBufferObject(osg::GLBufferObject* vbo)
         {
@@ -82,8 +84,8 @@ public:
         }
 
 
-        void setCurrentElementBufferObject(osg::GLBufferObject* ebo) { _currentEBO = ebo; }
-        GLBufferObject* getCurrentElementBufferObject() { return _currentEBO; }
+        inline void setCurrentElementBufferObject(osg::GLBufferObject* ebo) { _currentEBO = ebo; }
+        inline GLBufferObject* getCurrentElementBufferObject() { return _currentEBO; }
 
         inline void bindElementBufferObject(osg::GLBufferObject* ebo)
         {
@@ -166,10 +168,10 @@ public:
 
         void deleteVertexArrayObject();
 
-        GLuint getVertexArrayObject() const { return _vertexArrayObject; }
-
+        inline GLuint getVertexArrayObject() const { return _vertexArrayObject; }
 
         void setRequiresSetArrays(bool flag) { _requiresSetArrays = flag; }
+
         bool getRequiresSetArrays() const { return _requiresSetArrays; }
 
         void dirty();
@@ -188,7 +190,6 @@ public:
 
         GLuint                          _vertexArrayObject;
 
-
         osg::ref_ptr<ArrayDispatch>     _vertexArray;
         osg::ref_ptr<ArrayDispatch>     _normalArray;
         osg::ref_ptr<ArrayDispatch>     _colorArray;
@@ -205,10 +206,11 @@ public:
         GLBufferObject*                 _currentEBO;
 
         bool                            _requiresSetArrays;
+        GLint _basevertex;
 };
 
 
-inline void VertexArrayState::lazyDisablingOfVertexAttributes()
+inline void PerContextVertexArrayState::lazyDisablingOfVertexAttributes()
 {
     _activeDispatchers.swap(_previous_activeDispatchers);
     _activeDispatchers.clear();
@@ -223,7 +225,7 @@ inline void VertexArrayState::lazyDisablingOfVertexAttributes()
     }
 }
 
-inline void VertexArrayState::applyDisablingOfVertexAttributes(osg::State& state)
+inline void PerContextVertexArrayState::applyDisablingOfVertexAttributes(osg::State& state)
 {
     for(ActiveDispatchers::iterator itr = _previous_activeDispatchers.begin();
         itr != _previous_activeDispatchers.end();
@@ -240,7 +242,7 @@ inline void VertexArrayState::applyDisablingOfVertexAttributes(osg::State& state
     _previous_activeDispatchers.clear();
 }
 
-inline void VertexArrayState::disableTexCoordArrayAboveAndIncluding(osg::State& state, unsigned int index)
+inline void PerContextVertexArrayState::disableTexCoordArrayAboveAndIncluding(osg::State& state, unsigned int index)
 {
     for(unsigned int i=index; i<_texCoordArrays.size(); ++i)
     {
@@ -248,7 +250,7 @@ inline void VertexArrayState::disableTexCoordArrayAboveAndIncluding(osg::State& 
     }
 }
 
-inline void VertexArrayState::disableVertexAttribArrayAboveAndIncluding(osg::State& state, unsigned int index)
+inline void PerContextVertexArrayState::disableVertexAttribArrayAboveAndIncluding(osg::State& state, unsigned int index)
 {
     for(unsigned int i=index; i<_vertexAttribArrays.size(); ++i)
     {
@@ -256,8 +258,21 @@ inline void VertexArrayState::disableVertexAttribArrayAboveAndIncluding(osg::Sta
     }
 }
 
+/// Per Context VAS container
+class OSG_EXPORT VertexArrayState : public osg::Object{
+public:
+META_Object(osg,VertexArrayState)
+    VertexArrayState();
+    ~VertexArrayState();
+    VertexArrayState(const VertexArrayState& val, const CopyOp& copyop = CopyOp::SHALLOW_COPY);
 
+    typedef buffered_object< osg::ref_ptr<PerContextVertexArrayState> > PerContextVertexArrayStateList;
 
+    inline  PerContextVertexArrayStateList& getPCVertexArrayStates()const{return  _pcvas;}
+
+protected:
+    mutable PerContextVertexArrayStateList _pcvas;
+};
 }
 
 #endif

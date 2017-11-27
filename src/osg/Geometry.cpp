@@ -720,11 +720,11 @@ void Geometry::releaseGLObjects(State* state) const
 
 }
 
-VertexArrayState* Geometry::createVertexArrayState(RenderInfo& renderInfo) const
+PerContextVertexArrayState* Geometry::createVertexArrayState(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
 
-    VertexArrayState* vas = new osg::VertexArrayState(&state);
+    PerContextVertexArrayState* vas = new osg::PerContextVertexArrayState(&state);
 
     // OSG_NOTICE<<"Creating new osg::VertexArrayState "<< vas<<std::endl;
 
@@ -813,7 +813,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
 
         if (state.useVertexArrayObject(_useVertexArrayObject))
         {
-            VertexArrayState* vas = 0;
+            PerContextVertexArrayState* vas = 0;
 
             _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
 
@@ -869,7 +869,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     if (usingVertexBufferObjects && !usingVertexArrayObjects)
     {
         // unbind the VBO's if any are used.
-        osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
+        osg::PerContextVertexArrayState* vas = state.getCurrentVertexArrayState();
         vas->unbindVertexBufferObject();
         vas->unbindElementBufferObject();
     }
@@ -880,7 +880,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
-    VertexArrayState* vas = state.getCurrentVertexArrayState();
+    PerContextVertexArrayState* vas = state.getCurrentVertexArrayState();
 
     bool handleVertexAttributes = !_vertexAttribList.empty();
 

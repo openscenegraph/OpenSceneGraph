@@ -236,6 +236,7 @@ Drawable::Drawable()
 #endif
 
     _useVertexArrayObject = false;
+     _vas = new osg::VertexArrayState();
 }
 
 Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
@@ -252,6 +253,7 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     _drawCallback(drawable._drawCallback)
 {
     setStateSet(copyop(drawable._stateset.get()));
+    setVertexArrayState( (osg::VertexArrayState*)copyop(drawable._vas.get()));
 }
 
 Drawable::~Drawable()
@@ -303,7 +305,7 @@ void Drawable::resizeGLObjectBuffers(unsigned int maxSize)
 
     _globjList.resize(maxSize);
 
-    _vertexArrayStateList.resize(maxSize);
+    _vas->getPCVertexArrayStates().resize(maxSize);
 }
 
 void Drawable::releaseGLObjects(State* state) const
@@ -331,11 +333,11 @@ void Drawable::releaseGLObjects(State* state) const
             }
         }
 
-        PerContextVertexArrayState* vas = contextID <_vertexArrayStateList.size() ? _vertexArrayStateList[contextID].get() : 0;
+        PerContextVertexArrayState* vas = contextID <_vas->  getPCVertexArrayStates().size() ? _vas->  getPCVertexArrayStates()[contextID].get() : 0;
         if (vas)
         {
             vas->release();
-            _vertexArrayStateList[contextID] = 0;
+            _vas->  getPCVertexArrayStates()[contextID] = 0;
         }
     }
     else
@@ -451,9 +453,9 @@ void Drawable::dirtyGLObjects()
     }
 #endif
 
-    for(i=0; i<_vertexArrayStateList.size(); ++i)
+    for( i=0; i < _vas->getPCVertexArrayStates().size(); ++i)
     {
-        PerContextVertexArrayState* vas = _vertexArrayStateList[i].get();
+        PerContextVertexArrayState* vas = _vas->getPCVertexArrayStates()[i].get();
         if (vas) vas->dirty();
     }
 }
@@ -630,10 +632,11 @@ void Drawable::draw(RenderInfo& renderInfo) const
     {
         unsigned int contextID = renderInfo.getContextID();
 
-        PerContextVertexArrayState* vas = _vertexArrayStateList[contextID].get();
+        PerContextVertexArrayState* vas = _vas->getPCVertexArrayStates()[contextID].get();
         if (!vas)
         {
-            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
+              _vas->getPCVertexArrayStates()[contextID] =
+                      vas = createVertexArrayState(renderInfo);
         }
         else
         {

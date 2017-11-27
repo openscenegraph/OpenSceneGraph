@@ -688,13 +688,13 @@ void Geometry::releaseGLObjects(State* state) const
 
     if (state)
     {
-        if (_vertexArrayStateList[state->getContextID()].valid())
+        if (_vas->getPCVertexArrayStates()[state->getContextID()].valid())
         {
-            _vertexArrayStateList[state->getContextID()]->release();
-            _vertexArrayStateList[state->getContextID()] = 0;
+            _vas->getPCVertexArrayStates()[state->getContextID()]->release();
+            _vas->getPCVertexArrayStates()[state->getContextID()] = 0;
         }
     }
-    else _vertexArrayStateList.clear();
+    else _vas->getPCVertexArrayStates().clear();
 
     ArrayList arrays;
     if (getArrayList(arrays))
@@ -724,7 +724,11 @@ PerContextVertexArrayState* Geometry::createVertexArrayState(RenderInfo& renderI
 {
     State& state = *renderInfo.getState();
 
-    PerContextVertexArrayState* vas = new osg::PerContextVertexArrayState(&state);
+    PerContextVertexArrayState* vas ;
+    if( vas = _vas->getPCVertexArrayStates()[state.getContextID()])
+        return vas;
+
+    _vas->getPCVertexArrayStates()[renderInfo.getContextID()] = vas = new osg::PerContextVertexArrayState(&state);
 
     // OSG_NOTICE<<"Creating new osg::VertexArrayState "<< vas<<std::endl;
 
@@ -815,7 +819,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
         {
             PerContextVertexArrayState* vas = 0;
 
-            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
+            _vas->getPCVertexArrayStates()[contextID] = vas = createVertexArrayState(renderInfo);
 
             State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 

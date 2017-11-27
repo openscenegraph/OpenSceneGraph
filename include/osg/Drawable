@@ -506,7 +506,7 @@ inline void Drawable::draw(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
     bool useVertexArrayObject = state.useVertexArrayObject(_useVertexArrayObject);
-    if (useVertexArrayObject)
+    if (useVertexArrayObject && _vas.valid() )
     {
         unsigned int contextID = renderInfo.getContextID();
 

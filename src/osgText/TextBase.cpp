@@ -54,6 +54,8 @@ TextBase::TextBase():
     setSupportsDisplayList(false);
 
     initArraysAndBuffers();
+
+    _vas = new osg::VertexArrayState();
 }
 
 TextBase::TextBase(const TextBase& textBase,const osg::CopyOp& copyop):

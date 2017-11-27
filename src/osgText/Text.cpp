@@ -59,6 +59,7 @@ Text::Text():
     }
 
     assignStateSet();
+    _vas = new osg::VertexArrayState();
 }
 
 Text::Text(const Text& text,const osg::CopyOp& copyop):

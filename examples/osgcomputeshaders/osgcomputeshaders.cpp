@@ -20,7 +20,7 @@
 // This example can work only if GL version is 4.3 or greater
 
 #include <osg/Texture2D>
-#include <osg/Geometry>
+#include <osg/ComputeDispatch>
 #include <osg/Geode>
 #include <osgDB/ReadFile>
 #include <osgGA/StateSetManipulator>
@@ -64,7 +64,7 @@ int main( int argc, char** argv )
     // It is OK to have just an empty node here, but seems inbuilt uniforms like osg_FrameTime won't work then.
     // TODO: maybe we can have a custom drawable which also will implement glMemoryBarrier?
     osg::ref_ptr<osg::Node> sourceNode = osgDB::readRefNodeFile("axes.osgt");
-    if ( !sourceNode ) sourceNode = new osg::Node;
+    if ( !sourceNode ) sourceNode = new osg::ComputeDispatch( 512/16, 512/16, 1 );
     sourceNode->setDataVariance( osg::Object::DYNAMIC );
     sourceNode->getOrCreateStateSet()->setAttributeAndModes( computeProg.get() );
     sourceNode->getOrCreateStateSet()->addUniform( new osg::Uniform("targetTex", (int)0) );

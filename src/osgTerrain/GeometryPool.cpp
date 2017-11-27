@@ -778,6 +778,7 @@ SharedGeometry::SharedGeometry()
 {
     setSupportsDisplayList(false);
     _supportsVertexBufferObjects = true;
+     _vas = new osg::VertexArrayState();
 }
 
 SharedGeometry::SharedGeometry(const SharedGeometry& rhs,const osg::CopyOp& copyop):

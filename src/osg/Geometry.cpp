@@ -29,6 +29,7 @@ Geometry::Geometry():
     _supportsVertexBufferObjects = true;
     _useVertexBufferObjects = false;
 #endif
+     _vas = new osg::VertexArrayState();
 }
 
 Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):

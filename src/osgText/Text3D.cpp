@@ -22,6 +22,7 @@ Text3D::Text3D():
     _renderMode(PER_GLYPH)
 {
     _glyphNormalized = true;
+     _vas = new osg::VertexArrayState();
 }
 
 Text3D::Text3D(const Text3D & text3D, const osg::CopyOp & copyop):

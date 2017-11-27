@@ -60,6 +60,7 @@ osgParticle::ParticleSystem::ParticleSystem()
     // we don't support display lists because particle systems
     // are dynamic, and they always changes between frames
     setSupportsDisplayList(false);
+    _vas = new osg::VertexArrayState();
 }
 
 osgParticle::ParticleSystem::ParticleSystem(const ParticleSystem& copy, const osg::CopyOp& copyop)

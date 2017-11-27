@@ -236,7 +236,6 @@ Drawable::Drawable()
 #endif
 
     _useVertexArrayObject = false;
-     _vas = new osg::VertexArrayState();
 }
 
 Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
@@ -304,8 +303,8 @@ void Drawable::resizeGLObjectBuffers(unsigned int maxSize)
     if (_drawCallback.valid()) _drawCallback->resizeGLObjectBuffers(maxSize);
 
     _globjList.resize(maxSize);
-
-    _vas->getPCVertexArrayStates().resize(maxSize);
+    if(_vas.valid())
+        _vas->getPCVertexArrayStates().resize(maxSize);
 }
 
 void Drawable::releaseGLObjects(State* state) const
@@ -332,12 +331,13 @@ void Drawable::releaseGLObjects(State* state) const
                 globj = 0;
             }
         }
-
-        PerContextVertexArrayState* vas = contextID <_vas->  getPCVertexArrayStates().size() ? _vas->  getPCVertexArrayStates()[contextID].get() : 0;
-        if (vas)
-        {
-            vas->release();
-            _vas->  getPCVertexArrayStates()[contextID] = 0;
+        if(_vas.valid()){
+            PerContextVertexArrayState* vas = contextID <_vas->  getPCVertexArrayStates().size() ? _vas->  getPCVertexArrayStates()[contextID].get() : 0;
+            if (vas)
+            {
+                vas->release();
+                _vas->  getPCVertexArrayStates()[contextID] = 0;
+            }
         }
     }
     else
@@ -452,12 +452,12 @@ void Drawable::dirtyGLObjects()
         }
     }
 #endif
-
-    for( i=0; i < _vas->getPCVertexArrayStates().size(); ++i)
-    {
-        PerContextVertexArrayState* vas = _vas->getPCVertexArrayStates()[i].get();
-        if (vas) vas->dirty();
-    }
+    if(_vas.valid())
+        for( i=0; i < _vas->getPCVertexArrayStates().size(); ++i)
+        {
+            PerContextVertexArrayState* vas = _vas->getPCVertexArrayStates()[i].get();
+            if (vas) vas->dirty();
+        }
 }
 
 
@@ -628,7 +628,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
     bool useVertexArrayObject = state.useVertexArrayObject(_useVertexArrayObject);
-    if (useVertexArrayObject)
+    if (useVertexArrayObject && _vas.valid())
     {
         unsigned int contextID = renderInfo.getContextID();
 

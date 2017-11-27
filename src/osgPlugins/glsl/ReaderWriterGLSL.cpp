@@ -24,6 +24,10 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
             supportsExtension("tctrl","OpenGL Shader Language format");
             supportsExtension("teval","OpenGL Shader Language format");
             supportsExtension("compute","OpenGL Shader Language format");
+            supportsExtension("cs","OpenGL Shader Language format");
+            supportsExtension("gs","OpenGL Shader Language format");
+            supportsExtension("vs","OpenGL Shader Language format");
+            supportsExtension("fs","OpenGL Shader Language format");
         }
 
         virtual const char* className() const { return "GLSL Shader Reader"; }

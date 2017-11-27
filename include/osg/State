@@ -528,7 +528,7 @@ class OSG_EXPORT State : public Referenced
         struct SetCurrentVertexArrayStateProxy
         {
             SetCurrentVertexArrayStateProxy(osg::State& state, VertexArrayState* vas):_state(state) { _state.setCurrentVertexArrayState(vas); }
-            ~SetCurrentVertexArrayStateProxy() { _state.setCurrentToGloabalVertexArrayState(); }
+            ~SetCurrentVertexArrayStateProxy() { _state.setCurrentToGlobalVertexArrayState(); }
             osg::State& _state;
         };
 
@@ -539,7 +539,7 @@ class OSG_EXPORT State : public Referenced
         VertexArrayState* getCurrentVertexArrayState() const { return _vas; }
 
         /** Set the getCurrentVertexArrayState to the GloabalVertexArrayState.*/
-        void setCurrentToGloabalVertexArrayState() { _vas = _globalVertexArrayState.get(); }
+        void setCurrentToGlobalVertexArrayState() { _vas = _globalVertexArrayState.get(); }
 
 
         /** disable the vertex, normal, color, tex coords, secondary color, fog coord and index arrays.*/

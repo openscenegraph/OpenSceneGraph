@@ -54,7 +54,7 @@ int main(int argc,char** argv)
     {
     }
 
-    std::string url, username, password;
+    std::string url, username;
     while (arguments.read("--login", url, username, password))
     {
         osgDB::Registry::instance()->getOrCreateAuthenticationMap()->addAuthenticationDetails(
@@ -71,7 +71,7 @@ int main(int argc,char** argv)
 
             if (!password.empty())
             {
-                const osgDB::AuthenticationMap* authenticationMap = osgDB::Registry::instance()->getOrCreateAuthenticationMap();
+                osgDB::AuthenticationMap* authenticationMap = osgDB::Registry::instance()->getOrCreateAuthenticationMap();
                 const osgDB::AuthenticationDetails* details = authenticationMap->getAuthenticationDetails(hostname);
                 if (details == NULL)
                 {

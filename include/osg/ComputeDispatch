@@ -34,11 +34,16 @@ namespace osg{
 
             META_Node(osg, ComputeDispatch);
 
+            virtual void compileGLObjects(RenderInfo& renderInfo) const {return;}
+
+            virtual VertexArrayState* createVertexArrayState(RenderInfo& renderInfo) const { return 0; }
 
             virtual void drawImplementation(RenderInfo& renderInfo) const;
+
              /** Set/get compute shader work groups */
             void setComputeGroups( GLint numGroupsX, GLint numGroupsY, GLint numGroupsZ ) { _numGroupsX=numGroupsX,_numGroupsY=numGroupsY, _numGroupsZ=numGroupsZ; }
             void getComputeGroups( GLint& numGroupsX, GLint& numGroupsY, GLint& numGroupsZ ) const{ numGroupsX=_numGroupsX; numGroupsY=_numGroupsY; numGroupsZ=_numGroupsZ; }
+
         protected:
             GLint _numGroupsX, _numGroupsY, _numGroupsZ;
 

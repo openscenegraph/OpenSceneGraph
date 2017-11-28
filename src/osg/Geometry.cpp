@@ -29,6 +29,7 @@ Geometry::Geometry():
     _supportsVertexBufferObjects = true;
     _useVertexBufferObjects = false;
 #endif
+     _vas = new osg::VertexArrayState();
 }
 
 Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
@@ -688,13 +689,13 @@ void Geometry::releaseGLObjects(State* state) const
 
     if (state)
     {
-        if (_vertexArrayStateList[state->getContextID()].valid())
+        if (_vas->getPCVertexArrayStates()[state->getContextID()].valid())
         {
-            _vertexArrayStateList[state->getContextID()]->release();
-            _vertexArrayStateList[state->getContextID()] = 0;
+            _vas->getPCVertexArrayStates()[state->getContextID()]->release();
+            _vas->getPCVertexArrayStates()[state->getContextID()] = 0;
         }
     }
-    else _vertexArrayStateList.clear();
+    else _vas->getPCVertexArrayStates().clear();
 
     ArrayList arrays;
     if (getArrayList(arrays))
@@ -720,11 +721,15 @@ void Geometry::releaseGLObjects(State* state) const
 
 }
 
-VertexArrayState* Geometry::createVertexArrayState(RenderInfo& renderInfo) const
+PerContextVertexArrayState* Geometry::createVertexArrayState(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
 
-    VertexArrayState* vas = new osg::VertexArrayState(&state);
+    PerContextVertexArrayState* vas ;
+    if( vas = _vas->getPCVertexArrayStates()[state.getContextID()])
+        return vas;
+
+    _vas->getPCVertexArrayStates()[renderInfo.getContextID()] = vas = new osg::PerContextVertexArrayState(&state);
 
     // OSG_NOTICE<<"Creating new osg::VertexArrayState "<< vas<<std::endl;
 
@@ -813,9 +818,9 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
 
         if (state.useVertexArrayObject(_useVertexArrayObject))
         {
-            VertexArrayState* vas = 0;
+            PerContextVertexArrayState* vas = 0;
 
-            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
+            _vas->getPCVertexArrayStates()[contextID] = vas = createVertexArrayState(renderInfo);
 
             State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 
@@ -869,7 +874,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     if (usingVertexBufferObjects && !usingVertexArrayObjects)
     {
         // unbind the VBO's if any are used.
-        osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
+        osg::PerContextVertexArrayState* vas = state.getCurrentVertexArrayState();
         vas->unbindVertexBufferObject();
         vas->unbindElementBufferObject();
     }
@@ -880,7 +885,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
-    VertexArrayState* vas = state.getCurrentVertexArrayState();
+    PerContextVertexArrayState* vas = state.getCurrentVertexArrayState();
 
     bool handleVertexAttributes = !_vertexAttribList.empty();
 

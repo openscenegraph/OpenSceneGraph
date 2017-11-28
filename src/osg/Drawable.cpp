@@ -252,6 +252,7 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     _drawCallback(drawable._drawCallback)
 {
     setStateSet(copyop(drawable._stateset.get()));
+    setVertexArrayState( (osg::VertexArrayState*)copyop(drawable._vas.get()));
 }
 
 Drawable::~Drawable()
@@ -302,8 +303,8 @@ void Drawable::resizeGLObjectBuffers(unsigned int maxSize)
     if (_drawCallback.valid()) _drawCallback->resizeGLObjectBuffers(maxSize);
 
     _globjList.resize(maxSize);
-
-    _vertexArrayStateList.resize(maxSize);
+    if(_vas.valid())
+        _vas->getPCVertexArrayStates().resize(maxSize);
 }
 
 void Drawable::releaseGLObjects(State* state) const
@@ -330,12 +331,13 @@ void Drawable::releaseGLObjects(State* state) const
                 globj = 0;
             }
         }
-
-        VertexArrayState* vas = contextID <_vertexArrayStateList.size() ? _vertexArrayStateList[contextID].get() : 0;
-        if (vas)
-        {
-            vas->release();
-            _vertexArrayStateList[contextID] = 0;
+        if(_vas.valid()){
+            PerContextVertexArrayState* vas = contextID <_vas->  getPCVertexArrayStates().size() ? _vas->  getPCVertexArrayStates()[contextID].get() : 0;
+            if (vas)
+            {
+                vas->release();
+                _vas->  getPCVertexArrayStates()[contextID] = 0;
+            }
         }
     }
     else
@@ -450,12 +452,12 @@ void Drawable::dirtyGLObjects()
         }
     }
 #endif
-
-    for(i=0; i<_vertexArrayStateList.size(); ++i)
-    {
-        VertexArrayState* vas = _vertexArrayStateList[i].get();
-        if (vas) vas->dirty();
-    }
+    if(_vas.valid())
+        for( i=0; i < _vas->getPCVertexArrayStates().size(); ++i)
+        {
+            PerContextVertexArrayState* vas = _vas->getPCVertexArrayStates()[i].get();
+            if (vas) vas->dirty();
+        }
 }
 
 
@@ -626,14 +628,15 @@ void Drawable::draw(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
     bool useVertexArrayObject = state.useVertexArrayObject(_useVertexArrayObject);
-    if (useVertexArrayObject)
+    if (useVertexArrayObject && _vas.valid())
     {
         unsigned int contextID = renderInfo.getContextID();
 
-        VertexArrayState* vas = _vertexArrayStateList[contextID].get();
+        PerContextVertexArrayState* vas = _vas->getPCVertexArrayStates()[contextID].get();
         if (!vas)
         {
-            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
+              _vas->getPCVertexArrayStates()[contextID] =
+                      vas = createVertexArrayState(renderInfo);
         }
         else
         {
@@ -696,9 +699,9 @@ void Drawable::draw(RenderInfo& renderInfo) const
 
 #endif
 
-VertexArrayState* Drawable::createVertexArrayState(RenderInfo& renderInfo) const
+PerContextVertexArrayState* Drawable::createVertexArrayState(RenderInfo& renderInfo) const
 {
-    VertexArrayState* vos = new osg::VertexArrayState(renderInfo.getState());
+    PerContextVertexArrayState* vos = new osg::PerContextVertexArrayState(renderInfo.getState());
     vos->assignAllDispatchers();
     return vos;
 }

@@ -22,6 +22,7 @@ Text3D::Text3D():
     _renderMode(PER_GLYPH)
 {
     _glyphNormalized = true;
+     _vas = new osg::VertexArrayState();
 }
 
 Text3D::Text3D(const Text3D & text3D, const osg::CopyOp & copyop):
@@ -505,7 +506,7 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
         // OSG_NOTICE<<"No need to apply matrix "<<std::endl;
     }
 
-    osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
+    osg::PerContextVertexArrayState* vas = state.getCurrentVertexArrayState();
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
     bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
     bool requiresSetArrays = !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();

@@ -54,6 +54,8 @@ TextBase::TextBase():
     setSupportsDisplayList(false);
 
     initArraysAndBuffers();
+
+    _vas = new osg::VertexArrayState();
 }
 
 TextBase::TextBase(const TextBase& textBase,const osg::CopyOp& copyop):
@@ -109,11 +111,11 @@ void TextBase::initArraysAndBuffers()
     _texcoords->setBufferObject(_vbo.get());
 }
 
-osg::VertexArrayState* TextBase::createVertexArrayState(osg::RenderInfo& renderInfo) const
+osg::PerContextVertexArrayState* TextBase::createVertexArrayState(osg::RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
 
-    VertexArrayState* vas = new osg::VertexArrayState(&state);
+    PerContextVertexArrayState* vas = new osg::PerContextVertexArrayState(&state);
 
     // OSG_NOTICE<<"Creating new osg::VertexArrayState "<< vas<<std::endl;
 

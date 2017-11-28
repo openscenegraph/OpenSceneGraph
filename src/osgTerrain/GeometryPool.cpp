@@ -778,6 +778,7 @@ SharedGeometry::SharedGeometry()
 {
     setSupportsDisplayList(false);
     _supportsVertexBufferObjects = true;
+     _vas = new osg::VertexArrayState();
 }
 
 SharedGeometry::SharedGeometry(const SharedGeometry& rhs,const osg::CopyOp& copyop):
@@ -796,13 +797,13 @@ SharedGeometry::~SharedGeometry()
 {
 }
 
-osg::VertexArrayState* SharedGeometry::createVertexArrayState(osg::RenderInfo& renderInfo) const
+osg::PerContextVertexArrayState* SharedGeometry::createVertexArrayState(osg::RenderInfo& renderInfo) const
 {
     osg::State& state = *renderInfo.getState();
 
-    osg::VertexArrayState* vas = new osg::VertexArrayState(&state);
+    osg::PerContextVertexArrayState* vas = new osg::PerContextVertexArrayState(&state);
 
-    // OSG_NOTICE<<"Creating new osg::VertexArrayState "<< vas<<std::endl;
+    // OSG_NOTICE<<"Creating new osg::PerContextVertexArrayState "<< vas<<std::endl;
 
     if (_vertexArray.valid()) vas->assignVertexArrayDispatcher();
     if (_colorArray.valid()) vas->assignColorArrayDispatcher();
@@ -811,13 +812,13 @@ osg::VertexArrayState* SharedGeometry::createVertexArrayState(osg::RenderInfo& r
 
     if (state.useVertexArrayObject(_useVertexArrayObject))
     {
-        // OSG_NOTICE<<"  Setup VertexArrayState to use VAO "<<vas<<std::endl;
+        // OSG_NOTICE<<"  Setup PerContextVertexArrayState to use VAO "<<vas<<std::endl;
 
         vas->generateVertexArrayObject();
     }
     else
     {
-        // OSG_NOTICE<<"  Setup VertexArrayState to without using VAO "<<vas<<std::endl;
+        // OSG_NOTICE<<"  Setup PerContextVertexArrayState to without using VAO "<<vas<<std::endl;
     }
 
     return vas;
@@ -856,9 +857,9 @@ void SharedGeometry::compileGLObjects(osg::RenderInfo& renderInfo) const
         if (state.useVertexArrayObject(_useVertexArrayObject))
         {
 
-            osg::VertexArrayState* vas = 0;
+            osg::PerContextVertexArrayState* vas = 0;
 
-            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
+            _vas->getPCVertexArrayStates()[contextID] = vas = createVertexArrayState(renderInfo);
 
             // OSG_NOTICE<<"  setting up VertexArrayObject "<<vas<<std::endl;
 
@@ -907,7 +908,7 @@ void SharedGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
     // OSG_NOTICE<<"SharedGeometry::drawImplementation "<<computeDiagonals<<std::endl;
 
     osg::State& state = *renderInfo.getState();
-    osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
+    osg::PerContextVertexArrayState* vas = state.getCurrentVertexArrayState();
 
 
     // state.checkGLErrors("Before SharedGeometry::drawImplementation.");

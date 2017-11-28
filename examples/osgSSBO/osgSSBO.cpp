@@ -10,7 +10,7 @@
 #include <osg/StateAttributeCallback>
 #include <osg/Texture2D>
 #include <osg/Geometry>
-#include <osg/Geode>
+#include <osg/ComputeDispatch>
 #include <osgDB/ReadFile>
 #include <osgGA/StateSetManipulator>
 #include <osgViewer/Viewer>
@@ -167,6 +167,7 @@ class ComputeNode : public osg::PositionAttitudeTransform
 
 public:
 
+    osg::ref_ptr<osg::ComputeDispatch>                _computeDispatch;
     osg::ref_ptr<osg::Program>                        _computeProgram;
     osg::ref_ptr<osg::Shader>                        _computeShader;        //compute and write position data in SSBO
 
@@ -204,6 +205,8 @@ public:
         _vertexShaderSourcePath = "shaders/osgssboVertexShader.vs";
         _geometryShaderSourcePath = "shaders/osgssboGeometryShader.gs";
         _fragmentShaderSourcePath = "shaders/osgssboFragmentShader.fs";
+	_computeDispatch=new osg::ComputeDispatch();
+        addChild(_computeDispatch);
     }
 
 };
@@ -622,7 +625,7 @@ void ComputeNode::initComputingSetup()
 {
 
     _computeProgram = new osg::Program;
-    _computeProgram->setComputeGroups((NUM_ELEMENTS_X / WORK_GROUP_SIZE) <= 1 ? 1 : (NUM_ELEMENTS_X / WORK_GROUP_SIZE), (NUM_ELEMENTS_Y / WORK_GROUP_SIZE) <= 1 ? 1 : (NUM_ELEMENTS_Y / WORK_GROUP_SIZE), 1);
+    _computeDispatch->setComputeGroups((NUM_ELEMENTS_X / WORK_GROUP_SIZE) <= 1 ? 1 : (NUM_ELEMENTS_X / WORK_GROUP_SIZE), (NUM_ELEMENTS_Y / WORK_GROUP_SIZE) <= 1 ? 1 : (NUM_ELEMENTS_Y / WORK_GROUP_SIZE), 1);
     _computeShader = osgDB::readRefShaderFile(osg::Shader::COMPUTE, _computeShaderSourcePath);
     _computeProgram->addShader(_computeShader.get());
 

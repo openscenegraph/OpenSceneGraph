@@ -858,7 +858,7 @@ void SharedGeometry::compileGLObjects(osg::RenderInfo& renderInfo) const
 
             osg::VertexArrayState* vas = 0;
 
-            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
+            _vertexArrayStateSet->getVertexArrayStates()[contextID] = vas = createVertexArrayState(renderInfo);
 
             // OSG_NOTICE<<"  setting up VertexArrayObject "<<vas<<std::endl;
 

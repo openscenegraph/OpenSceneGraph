@@ -686,7 +686,8 @@ void Geometry::releaseGLObjects(State* state) const
 {
     Drawable::releaseGLObjects(state);
 
-    if (state)
+    _vertexArrayStateSet->releaseGLObjects(state);
+    /*if (state)
     {
         if (_vertexArrayStateList[state->getContextID()].valid())
         {
@@ -695,7 +696,7 @@ void Geometry::releaseGLObjects(State* state) const
         }
     }
     else _vertexArrayStateList.clear();
-
+    */
     ArrayList arrays;
     if (getArrayList(arrays))
     {
@@ -815,7 +816,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
         {
             VertexArrayState* vas = 0;
 
-            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
+            _vertexArrayStateSet->getVertexArrayStates()[contextID] = vas = createVertexArrayState(renderInfo);
 
             State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 

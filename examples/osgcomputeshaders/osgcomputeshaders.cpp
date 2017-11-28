@@ -63,7 +63,7 @@ int main( int argc, char** argv )
     // Create a node for outputting to the texture.
     // It is OK to have just an empty node here, but seems inbuilt uniforms like osg_FrameTime won't work then.
     // TODO: maybe we can have a custom drawable which also will implement glMemoryBarrier?
-    osg::ref_ptr<osg::Node> sourceNode = osgDB::readRefNodeFile("axes.osgt");
+    osg::ref_ptr<osg::Node> sourceNode = 0;//osgDB::readRefNodeFile("axes.osgt");
     if ( !sourceNode ) sourceNode = new osg::ComputeDispatch( 512/16, 512/16, 1 );
     sourceNode->setDataVariance( osg::Object::DYNAMIC );
     sourceNode->getOrCreateStateSet()->setAttributeAndModes( computeProg.get() );

@@ -1108,8 +1108,4 @@ Program::ProgramBinary* Program::PerContextProgram::compileProgramBinary(osg::St
 void Program::PerContextProgram::useProgram() const
 {
     _extensions->glUseProgram( _glProgramHandle  );
-    if ( _program->_numGroupsX>0 && _program->_numGroupsY>0 && _program->_numGroupsZ>0 )
-    {
-        _extensions->glDispatchCompute( _program->_numGroupsX, _program->_numGroupsY, _program->_numGroupsZ );
-    }
 }

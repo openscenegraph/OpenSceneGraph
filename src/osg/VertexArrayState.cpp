@@ -138,8 +138,8 @@ protected:
 //
 struct VertexArrayDispatch : public VertexArrayState::ArrayDispatch
 {
-    VertexArrayDispatch(GLint & basevertex):
-                        VertexArrayState::ArrayDispatch(basevertex) {}
+    VertexArrayDispatch(GLint & basev):
+                        VertexArrayState::ArrayDispatch(basev) {}
 
     virtual const char* className() const { return "VertexArrayDispatch"; }
 
@@ -152,7 +152,7 @@ struct VertexArrayDispatch : public VertexArrayState::ArrayDispatch
 
     virtual void enable_and_dispatch(osg::State&, const osg::Array* new_array, const osg::GLBufferObject* vbo)
     {
-        OSG_WARN<<"    VertexArrayDispatch::enable_and_dispatch("<<new_array->getNumElements()<<", vbo="<<std::hex<<vbo<<std::dec<<")"<<vbo->getOffset(new_array->getBufferIndex())<<" "<<basevertex*new_array->getElementSize()<<std::endl;
+        VAS_NOTICE<<"    VertexArrayDispatch::enable_and_dispatch("<<new_array->getNumElements()<<")"<<std::endl;
         glEnableClientState(GL_VERTEX_ARRAY);
         glVertexPointer(new_array->getDataSize(), new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())-basevertex*new_array->getElementSize()));
     }
@@ -194,8 +194,8 @@ struct VertexArrayDispatch : public VertexArrayState::ArrayDispatch
 //
 struct ColorArrayDispatch : public VertexArrayState::ArrayDispatch
 {
-    ColorArrayDispatch(GLint & basevertex):
-        VertexArrayState::ArrayDispatch(basevertex) {}
+    ColorArrayDispatch(GLint & basev):
+        VertexArrayState::ArrayDispatch(basev) {}
 
     virtual const char* className() const { return "ColorArrayDispatch"; }
 
@@ -251,8 +251,8 @@ struct ColorArrayDispatch : public VertexArrayState::ArrayDispatch
 //
 struct NormalArrayDispatch : public VertexArrayState::ArrayDispatch
 {
-    NormalArrayDispatch(GLint & basevertex):
-        VertexArrayState::ArrayDispatch(basevertex) {}
+    NormalArrayDispatch(GLint & basev):
+        VertexArrayState::ArrayDispatch(basev) {}
 
     virtual const char* className() const { return "NormalArrayDispatch"; }
 
@@ -315,8 +315,8 @@ struct NormalArrayDispatch : public VertexArrayState::ArrayDispatch
 //
 struct SecondaryColorArrayDispatch : public VertexArrayState::ArrayDispatch
 {
-    SecondaryColorArrayDispatch(GLint & basevertex):
-        VertexArrayState::ArrayDispatch(basevertex) {}
+    SecondaryColorArrayDispatch(GLint & basev):
+        VertexArrayState::ArrayDispatch(basev) {}
 
     virtual const char* className() const { return "SecondaryColorArrayDispatch"; }
 
@@ -363,8 +363,8 @@ struct SecondaryColorArrayDispatch : public VertexArrayState::ArrayDispatch
 //
 struct FogCoordArrayDispatch : public VertexArrayState::ArrayDispatch
 {
-    FogCoordArrayDispatch(GLint & basevertex):
-        VertexArrayState::ArrayDispatch(basevertex) {}
+    FogCoordArrayDispatch(GLint & basev):
+        VertexArrayState::ArrayDispatch(basev) {}
 
     virtual const char* className() const { return "FogCoordArrayDispatch"; }
 
@@ -402,8 +402,8 @@ struct FogCoordArrayDispatch : public VertexArrayState::ArrayDispatch
 //
 struct TexCoordArrayDispatch : public VertexArrayState::ArrayDispatch
 {
-    TexCoordArrayDispatch(unsigned int in_unit,GLint & basevertex):
-                          VertexArrayState::ArrayDispatch(basevertex) , unit(in_unit) {}
+    TexCoordArrayDispatch(unsigned int in_unit,GLint & basev):
+                          VertexArrayState::ArrayDispatch(basev) , unit(in_unit) {}
 
     virtual const char* className() const { return "TexCoordArrayDispatch"; }
 
@@ -474,8 +474,8 @@ struct TexCoordArrayDispatch : public VertexArrayState::ArrayDispatch
 
 struct VertexAttribArrayDispatch : public VertexArrayState::ArrayDispatch
 {
-    VertexAttribArrayDispatch(unsigned int in_unit,GLint & basevertex):
-                              VertexArrayState::ArrayDispatch(basevertex), unit(in_unit) {}
+    VertexAttribArrayDispatch(unsigned int in_unit,GLint & basev):
+                              VertexArrayState::ArrayDispatch(basev), unit(in_unit) {}
 
     virtual const char* className() const { return "VertexAttribArrayDispatch"; }
 
@@ -772,7 +772,7 @@ void VertexArrayState::setArray(ArrayDispatch* vad, osg::State& state, GLint siz
     }
 }
 
-void VertexArrayState::setInterleavedArrays( osg::State& state, GLenum format, GLsizei stride, const GLvoid* pointer)
+void VertexArrayState::setInterleavedArrays( osg::State& /*state*/, GLenum format, GLsizei stride, const GLvoid* pointer)
 {
 #if defined(OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
     unbindVertexBufferObject();

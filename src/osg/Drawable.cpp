@@ -333,12 +333,6 @@ void Drawable::releaseGLObjects(State* state) const
         }
 
         _vertexArrayStateSet->releaseGLObjects(state);
-        /*VertexArrayState* vas = contextID <_vertexArrayStateSet->getPCVertexArrayStates().size() ? _vertexArrayStateSet->getPCVertexArrayStates()[contextID].get() : 0;
-        if (vas)
-        {
-            vas->release();
-            _vertexArrayStateList[contextID] = 0;
-        }*/
     }
     else
     {
@@ -453,11 +447,6 @@ void Drawable::dirtyGLObjects()
     }
 #endif
     _vertexArrayStateSet->dirty();
-    /*for(i=0; i<_vertexArrayStateList.size(); ++i)
-    {
-        VertexArrayState* vas = _vertexArrayStateList[i].get();
-        if (vas) vas->dirty();
-    }*/
 }
 
 

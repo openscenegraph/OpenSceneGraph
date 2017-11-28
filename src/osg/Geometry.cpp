@@ -687,16 +687,7 @@ void Geometry::releaseGLObjects(State* state) const
     Drawable::releaseGLObjects(state);
 
     _vertexArrayStateSet->releaseGLObjects(state);
-    /*if (state)
-    {
-        if (_vertexArrayStateList[state->getContextID()].valid())
-        {
-            _vertexArrayStateList[state->getContextID()]->release();
-            _vertexArrayStateList[state->getContextID()] = 0;
-        }
-    }
-    else _vertexArrayStateList.clear();
-    */
+
     ArrayList arrays;
     if (getArrayList(arrays))
     {
@@ -724,9 +715,11 @@ void Geometry::releaseGLObjects(State* state) const
 VertexArrayState* Geometry::createVertexArrayState(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
+    VertexArrayState* vas ;
+    if( vas = _vertexArrayStateSet->getVertexArrayStates()[state.getContextID()])
+        return vas;
 
-    VertexArrayState* vas = new osg::VertexArrayState(&state);
-
+    _vertexArrayStateSet->getVertexArrayStates()[renderInfo.getContextID()] = vas = new VertexArrayState(&state);
     // OSG_NOTICE<<"Creating new osg::VertexArrayState "<< vas<<std::endl;
 
     if (_vertexArray.valid()) vas->assignVertexArrayDispatcher();

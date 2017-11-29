@@ -18,12 +18,16 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
         {
             supportsExtension("gl","OpenGL Shader Language format");
             supportsExtension("frag","OpenGL Shader Language format");
+            supportsExtension("fs","OpenGL Shader Language format");
             supportsExtension("vert","OpenGL Shader Language format");
+            supportsExtension("vs","OpenGL Shader Language format");
             supportsExtension("geom","OpenGL Shader Language format");
+            supportsExtension("gs","OpenGL Shader Language format");
             supportsExtension("glsl","OpenGL Shader Language format");
             supportsExtension("tctrl","OpenGL Shader Language format");
             supportsExtension("teval","OpenGL Shader Language format");
             supportsExtension("compute","OpenGL Shader Language format");
+            supportsExtension("cs","OpenGL Shader Language format");
         }
 
         virtual const char* className() const { return "GLSL Shader Reader"; }
@@ -126,12 +130,12 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
                 if (shader->getType() == osg::Shader::UNDEFINED)
                 {
                     // set type based on filename extension, where possible
-                    if (ext == "frag") shader->setType(osg::Shader::FRAGMENT);
-                    if (ext == "vert") shader->setType(osg::Shader::VERTEX);
-                    if (ext == "geom") shader->setType(osg::Shader::GEOMETRY);
+                    if (ext == "frag" || ext == "fs") shader->setType(osg::Shader::FRAGMENT);
+                    if (ext == "vert" || ext == "vs" ) shader->setType(osg::Shader::VERTEX);
+                    if (ext == "geom" || ext == "geom") shader->setType(osg::Shader::GEOMETRY);
                     if (ext == "tctrl") shader->setType(osg::Shader::TESSCONTROL);
                     if (ext == "teval") shader->setType(osg::Shader::TESSEVALUATION);
-                    if (ext == "compute") shader->setType(osg::Shader::COMPUTE);
+                    if (ext == "compute" || ext == "cs") shader->setType(osg::Shader::COMPUTE);
                 }
             }
             return rr;

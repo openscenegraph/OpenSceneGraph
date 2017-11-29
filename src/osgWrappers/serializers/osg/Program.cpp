@@ -121,6 +121,25 @@ static bool writeFeedBackMode( osgDB::OutputStream& os, const osg::Program& attr
 	os << attr.getTransformFeedBackMode()<< std::endl;
 	return true;
 }
+// _numGroupsX/Y/Z
+static bool checkComputeGroups( const osg::Program& attr )
+{
+    return false;
+}
+
+static bool readComputeGroups( osgDB::InputStream& is, osg::Program& attr )
+{
+    GLint numX = 0, numY = 0, numZ = 0;
+    is >> numX >> numY >> numZ;
+    return true;
+}
+
+static bool writeComputeGroups( osgDB::OutputStream& os, const osg::Program& attr )
+{
+    GLint numX = 0, numY = 0, numZ = 0;
+    os << numX << numY << numZ << std::endl;
+    return true;
+}
 
 static bool checkBindUniformBlock( const osg::Program& node )
 {
@@ -166,6 +185,16 @@ REGISTER_OBJECT_WRAPPER( Program,
     ADD_USER_SERIALIZER( GeometryVerticesOut );  // _geometryVerticesOut
     ADD_USER_SERIALIZER( GeometryInputType );  // _geometryInputType
     ADD_USER_SERIALIZER( GeometryOutputType );  // _geometryOutputType
+
+    {
+        UPDATE_TO_VERSION_SCOPED( 95 )
+        ADD_USER_SERIALIZER( ComputeGroups );  // _numGroupsX/Y/Z
+    }
+
+    {
+        UPDATE_TO_VERSION_SCOPED( 153 )
+        REMOVE_SERIALIZER( ComputeGroups );
+    }
 
     {
         UPDATE_TO_VERSION_SCOPED( 116 )

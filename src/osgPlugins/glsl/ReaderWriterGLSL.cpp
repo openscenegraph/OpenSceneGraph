@@ -203,11 +203,15 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
                 {
                     // set type based on filename extension, where possible
                     if (ext == "frag") shader->setType(osg::Shader::FRAGMENT);
+                    if (ext == "fs") shader->setType(osg::Shader::FRAGMENT);
                     if (ext == "vert") shader->setType(osg::Shader::VERTEX);
+                    if (ext == "vs") shader->setType(osg::Shader::VERTEX);
                     if (ext == "geom") shader->setType(osg::Shader::GEOMETRY);
+                    if (ext == "gs") shader->setType(osg::Shader::GEOMETRY);
                     if (ext == "tctrl") shader->setType(osg::Shader::TESSCONTROL);
                     if (ext == "teval") shader->setType(osg::Shader::TESSEVALUATION);
                     if (ext == "compute") shader->setType(osg::Shader::COMPUTE);
+                    if (ext == "cs") shader->setType(osg::Shader::COMPUTE);
                 }
             }
             return rr;

@@ -1,3 +1,171 @@
+Wed, 29 Nov 2017 14:44:00 +0000
+Author : Robert Osfield
+Fixed build with OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION set to OFF
+
+Wed, 29 Nov 2017 14:22:31 +0000
+Author : Robert Osfield
+Introduced Drawable::CreateVertexArrayStateCallback to enable customization of how VertexArrayState objects.Added public accessors to the Drawable::VertexArrayStateList.
+
+
+Wed, 29 Nov 2017 12:22:03 +0000
+Author : Robert Osfield
+Added mapping of GLSL file extension to shader Type.
+
+Wed, 29 Nov 2017 10:40:42 +0000
+Author : Robert Osfield
+Merge branch 'master' of https://github.com/openscenegraph/OpenSceneGraph
+
+Wed, 29 Nov 2017 10:40:20 +0000
+Author : Robert Osfield
+Bummped the SO version
+
+Wed, 29 Nov 2017 10:38:52 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #394 from mathieu/masterMake the culling be disabled at the drawable level 
+
+Wed, 29 Nov 2017 10:14:16 +0000
+Author : Robert Osfield
+Merge branch 'mp3butcher-ComputeDispatch'
+
+Wed, 29 Nov 2017 10:11:35 +0000
+Author : Robert Osfield
+Added back in serializer support for comput dispatch groups to retain backwards compatibility.
+
+Wed, 29 Nov 2017 11:05:53 +0100
+Author : Mathieu
+Make the culling be disables at the drawable level not at the geode level
+
+Wed, 29 Nov 2017 09:30:56 +0000
+Author : Robert Osfield
+Merge branch 'ComputeDispatch' of https://github.com/mp3butcher/OpenSceneGraph into mp3butcher-ComputeDispatch
+
+Wed, 29 Nov 2017 08:16:53 +0000
+Author : OpenSceneGraph git repository
+Cleaned up code layout
+
+Wed, 29 Nov 2017 08:14:44 +0000
+Author : OpenSceneGraph git repository
+Cleaned up code layout
+
+Wed, 29 Nov 2017 08:09:01 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #390 from filnet/readrefreplace more read*File() usage to readRef*File()
+
+Tue, 28 Nov 2017 20:31:09 +0100
+Author : Julien Valentin
+override compile and createVAS in order to do nothing
+
+Tue, 28 Nov 2017 20:03:40 +0100
+Author : Julien Valentin
+adapt SSBO example for ComputeDispatch but have strange runtime errors: 0(100) : error C7623: implicit narrowing of type from "vec3" to "float" 0(108) : error C7623: implicit narrowing of type from "vec3" to "float"
+
+Tue, 28 Nov 2017 19:51:31 +0100
+Author : Philippe Renon
+replace more read*File() usage to readRef*File()
+
+Tue, 28 Nov 2017 18:08:08 +0000
+Author : Robert Osfield
+Quietened down debug output
+
+Tue, 28 Nov 2017 18:05:59 +0000
+Author : Robert Osfield
+Quietened down debug output
+
+Tue, 28 Nov 2017 18:04:26 +0000
+Author : Robert Osfield
+Quitened down debug output
+
+Tue, 28 Nov 2017 17:39:32 +0100
+Author : Julien Valentin
+numgroup removed but introduce a reto compatibility bug in Program serializer hope nobody use it
+
+Tue, 28 Nov 2017 17:30:04 +0100
+Author : Julien Valentin
+add ComputeDispatch class revoke glDispatch in PCProgram::useProgram update example
+
+Tue, 28 Nov 2017 15:31:39 +0000
+Author : Robert Osfield
+To the GLSL shader plugin added support forL   #pragma include shaderfile.glsl
+
+To enable easier reuse of shaders
+
+
+Mon, 27 Nov 2017 18:38:37 +0000
+Author : Robert Osfield
+Replaced deprecated osg::Shader::reaDShaderFile()/loadShaderFromSource() usage
+
+Mon, 27 Nov 2017 18:36:41 +0000
+Author : Robert Osfield
+Merge branch 'master' of https://github.com/openscenegraph/OpenSceneGraph
+
+Mon, 27 Nov 2017 18:28:15 +0000
+Author : Robert Osfield
+Deprecated the osg::Shader::reaDShaderFile() and osg::Shader::loadShaderSourceFromFile() methods. Programmers should use osgDB::readRefShaderFile()/readShaderFile() instead.
+
+Mon, 27 Nov 2017 18:27:13 +0000
+Author : Robert Osfield
+Added support for .cs, .compute, .tctrlm .teval extensions in the GLSL plugin
+
+Mon, 27 Nov 2017 15:54:39 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #387 from jtorresfabra/remove_custom_codeRemoves custom code added for sketchfab channel compression that shou…
+
+Mon, 27 Nov 2017 15:44:11 +0000
+Author : Robert Osfield
+Refactored the MergeGeometry::mergeGroup(..) method to avoid O(N^2) issue with using removeChildren() on groups with very large numbers of children.
+
+Mon, 27 Nov 2017 15:41:54 +0000
+Author : Robert Osfield
+Replaced read*File() usage to readRef*File()
+
+Mon, 27 Nov 2017 15:40:21 +0000
+Author : Robert Osfield
+Added template addShader() method to make it easier to pass ref_ptr<osg::Shader>
+
+Mon, 27 Nov 2017 15:48:50 +0100
+Author : Jordi
+Removes custom code added for sketchfab channel compression that should not be there
+
+Mon, 27 Nov 2017 11:10:48 +0000
+Author : Robert Osfield
+Fixes for building with OSG_PROVIDE_READFILE to OFF
+
+Mon, 27 Nov 2017 11:05:31 +0000
+Author : Robert Osfield
+Fixed build issues when compiling with OSG_PROVIDE_READFILE to OFF
+
+Mon, 27 Nov 2017 10:32:02 +0000
+Author : Robert Osfield
+Build fix
+
+Wed, 22 Nov 2017 11:05:17 +0000
+Author : Robert Osfield
+Removed use of local static to avoid threading issue.
+
+Tue, 21 Nov 2017 14:01:14 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #383 from anormann1974/patch-1Fixed missing initialization of B_ and N_ in constructor
+
+Tue, 21 Nov 2017 13:59:51 +0000
+Author : Robert Osfield
+Fixed typo
+
+Tue, 21 Nov 2017 13:41:57 +0000
+Author : Robert Osfield
+Added Text::getCharacterCorners(...) method to help applications that want to find out the positions of characters being rendered.
+
+Tue, 21 Nov 2017 13:54:45 +0100
+Author : Andre Normann
+Fixed missing initialization of B_ and N_ in constructor
+
+Mon, 20 Nov 2017 12:49:20 +0000
+Author : Robert Osfield
+Moved the version to 3.5.9 and the version setting code to top of CMake file
+
+Tue, 14 Nov 2017 15:04:05 +0000
+Author : Robert Osfield
+Updated ChangeLog and AUTHORS file for 3.5.8 dev release
+
 Tue, 14 Nov 2017 10:38:18 +0000
 Author : Raymond de Vries
 attached fixes for configuring and building the osgPlugin exr with Visual Studio and using out-of-the-box builds of ilmbase and openexr, i.e. without manual/extra config for using these 2 libs with the OSG.Previously, the assumption was made that ilmbase and openexr were installed in a common directory and hence the header files and libs were both found in that common directory. That is not consistent with other libs and this submission makes it consistent and therefore the OSG configures out of the box. I made this work for ilmbase-2.1.0.tar.gz / openexr-2.1.0.tar.gz and ilmbase-2.2.0.tar.gz / openexr-2.2.0.tar.gz

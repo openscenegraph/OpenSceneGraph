@@ -34,9 +34,9 @@ namespace osg{
 
             META_Node(osg, ComputeDispatch);
 
-            virtual void compileGLObjects(RenderInfo& renderInfo) const {}
+            virtual void compileGLObjects(RenderInfo&) const {}
 
-            virtual VertexArrayState* createVertexArrayState(RenderInfo& renderInfo) const { return 0; }
+            virtual VertexArrayState* createVertexArrayStateImplememtation(RenderInfo&) const { return 0; }
 
             virtual void drawImplementation(RenderInfo& renderInfo) const;
 

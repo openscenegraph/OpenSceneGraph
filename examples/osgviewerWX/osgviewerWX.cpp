@@ -69,7 +69,7 @@ bool wxOsgApp::OnInit()
 
     // load the scene.
     wxString fname(argv[1]);
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(std::string(fname.mb_str()));
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFile(std::string(fname.mb_str()));
     if (!loadedModel)
     {
         std::cout << argv[0] <<": No data loaded." << std::endl;

@@ -39,7 +39,7 @@ FOX_OSG_MDIView::FOX_OSG_MDIView(FXMDIClient *p, const FXString &name,
     viewer->setKeyEventSetsDone(0);
 
     // load the scene.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile("cow.osgt");
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFile("cow.osgt");
     if (!loadedModel)
     {
         return ;

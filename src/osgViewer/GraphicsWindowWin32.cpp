@@ -23,6 +23,7 @@
 #include <osg/GL>
 #include <osg/DeleteHandler>
 #include <osg/ApplicationUsage>
+#include <osg/EnvVar>
 
 #include <vector>
 #include <map>
@@ -1314,10 +1315,10 @@ void GraphicsWindowWin32::init()
     _applyWorkaroundForMultimonitorMultithreadNVidiaWin32Issues = true;
 #endif
 
-    const char* str = getenv("OSG_WIN32_NV_MULTIMON_MULTITHREAD_WORKAROUND");
-    if (str)
+    std::string str;
+    if (osg::getEnvVar("OSG_WIN32_NV_MULTIMON_MULTITHREAD_WORKAROUND", str))
     {
-        _applyWorkaroundForMultimonitorMultithreadNVidiaWin32Issues = (strcmp(str, "on")==0 || strcmp(str, "ON")==0 || strcmp(str, "On")==0 );
+        _applyWorkaroundForMultimonitorMultithreadNVidiaWin32Issues = (str=="on") || (str=="ON") || (str=="On");
     }
 }
 

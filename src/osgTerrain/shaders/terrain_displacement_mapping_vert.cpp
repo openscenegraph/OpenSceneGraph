@@ -125,5 +125,5 @@ char terrain_displacement_mapping_vert[] = "#version 120\n"
                                            "    vec3 position = gl_Vertex.xyz + gl_Normal.xyz * height_center;\n"
                                            "    gl_Position   = gl_ModelViewProjectionMatrix * vec4(position,1.0);\n"
                                            "\n"
-                                           "};\n"
+                                           "}\n"
                                            "\n";

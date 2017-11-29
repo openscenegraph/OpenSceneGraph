@@ -188,12 +188,12 @@ osg::ref_ptr<osg::Group> createSceneRoom()
 {
     // Room.
     osg::ref_ptr<osg::MatrixTransform> room = new osg::MatrixTransform;
-    osg::ref_ptr<osg::Node> roomModel = osgDB::readNodeFile("simpleroom.osgt");
+    osg::ref_ptr<osg::Node> roomModel = osgDB::readRefNodeFile("simpleroom.osgt");
     room->addChild(roomModel);
     room->setMatrix(osg::Matrix::translate(0, 0, 1));
     // Torus.
     osg::ref_ptr<osg::MatrixTransform> torus = new osg::MatrixTransform;
-    osg::ref_ptr<osg::Node> torusModel = osgDB::readNodeFile("torus.osgt");
+    osg::ref_ptr<osg::Node> torusModel = osgDB::readRefNodeFile("torus.osgt");
     torus->addChild(torusModel);
     setAnimationPath(torus, osg::Vec3(0, 0, 15), 6, 16);
     // Torus2.
@@ -240,7 +240,7 @@ osg::Geode *createScreenQuad(float width,
 osg::Texture2D *createTexture(const std::string &fileName)
 {
     osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D;
-    texture->setImage(osgDB::readImageFile(fileName));
+    texture->setImage(osgDB::readRefImageFile(fileName));
     texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
     texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
     texture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
@@ -292,8 +292,8 @@ osg::ref_ptr<osg::StateSet> setShaderProgram(osg::ref_ptr<osg::Camera> pass,
                                              const std::string& frag)
 {
     osg::ref_ptr<osg::Program> program = new osg::Program;
-    program->addShader(osgDB::readShaderFile(vert));
-    program->addShader(osgDB::readShaderFile(frag));
+    program->addShader(osgDB::readRefShaderFile(vert));
+    program->addShader(osgDB::readRefShaderFile(frag));
     osg::ref_ptr<osg::StateSet> ss = pass->getOrCreateStateSet();
     ss->setAttributeAndModes(
         program.get(),
@@ -313,7 +313,7 @@ int main()
     // Shadowed scene.
     osg::ref_ptr<osgShadow::SoftShadowMap> shadowMap = new osgShadow::SoftShadowMap;
     shadowMap->setJitteringScale(16);
-    shadowMap->addShader(osgDB::readShaderFile("shaders/pass1Shadow.frag"));
+    shadowMap->addShader(osgDB::readRefShaderFile("shaders/pass1Shadow.frag"));
     shadowMap->setLight(light.get());
     osg::ref_ptr<osgShadow::ShadowedScene> shadowedScene = new osgShadow::ShadowedScene;
     shadowedScene->setShadowTechnique(shadowMap.get());

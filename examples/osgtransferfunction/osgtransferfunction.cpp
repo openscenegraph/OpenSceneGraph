@@ -407,13 +407,12 @@ int main(int argc, char ** argv)
     osg::ArgumentParser arguments(&argc, argv);
 
 #if 0
-
     osg::ref_ptr<MyClass> myobject = new MyClass;
     myobject->getOrCreateUserDataContainer()->addUserObject(new osg::CallbackObject("myMethod"));
     myobject->myMethod();
 
-    osg::ref_ptr<osg::ScriptEngine> se = osgDB::readFile<osg::ScriptEngine>("ScriptEngine.lua");
-    osg::ref_ptr<osg::Script> script = osgDB::readFile<osg::Script>("script.lua");
+    osg::ref_ptr<osg::ScriptEngine> se = osgDB::readRefFile<osg::ScriptEngine>("ScriptEngine.lua");
+    osg::ref_ptr<osg::Script> script = osgDB::readRefFile<osg::Script>("script.lua");
 
     osg::ref_ptr<MyClass> copyobject = new MyClass;
     copyobject->getOrCreateUserDataContainer()->addUserObject(new MyScriptCallback(se.get(), script.get(), "myMethod"));
@@ -421,7 +420,7 @@ int main(int argc, char ** argv)
 #endif
 
 #if 0
-    osg::ref_ptr<osg::Object> object = osgDB::readNodeFile("load.lua");
+    osg::ref_ptr<osg::Object> object = osgDB::readRefNodeFile("load.lua");
     if (object.valid())
     {
         osg::CallbackObject* co = osg::getCallbackObject(object.get(), "method");

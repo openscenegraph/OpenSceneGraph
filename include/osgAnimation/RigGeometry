@@ -23,7 +23,6 @@
 
 namespace osgAnimation
 {
-
     // The idea is to compute a bounding box with a factor x of the first step we compute the bounding box
     class OSGANIMATION_EXPORT RigComputeBoundingBoxCallback : public osg::Drawable::ComputeBoundingBoxCallback
     {
@@ -37,8 +36,8 @@ namespace osgAnimation
 
         META_Object(osgAnimation, RigComputeBoundingBoxCallback);
 
-
         void reset() { _computed = false; }
+
         virtual osg::BoundingBox computeBound(const osg::Drawable& drawable) const;
     protected:
         mutable bool _computed;
@@ -57,40 +56,36 @@ namespace osgAnimation
 
         META_Object(osgAnimation, RigGeometry);
 
-        void setInfluenceMap(VertexInfluenceMap* vertexInfluenceMap) { _vertexInfluenceMap = vertexInfluenceMap; }
-        const VertexInfluenceMap* getInfluenceMap() const { return _vertexInfluenceMap.get();}
-        VertexInfluenceMap* getInfluenceMap() { return _vertexInfluenceMap.get();}
+        inline void setInfluenceMap(VertexInfluenceMap* vertexInfluenceMap) { _vertexInfluenceMap = vertexInfluenceMap; }
+        inline const VertexInfluenceMap* getInfluenceMap() const { return _vertexInfluenceMap.get(); }
+        inline VertexInfluenceMap* getInfluenceMap() { return _vertexInfluenceMap.get(); }
 
-        const Skeleton* getSkeleton() const;
-        Skeleton* getSkeleton();
+        inline const Skeleton* getSkeleton() const { return _root.get(); }
+        inline Skeleton* getSkeleton() { return _root.get(); }
         // will be used by the update callback to init correctly the rig mesh
-        void setSkeleton(Skeleton*);
+        inline void setSkeleton(Skeleton* root) { _root = root; }
 
-        void setNeedToComputeMatrix(bool state) { _needToComputeMatrix = state;}
-        bool getNeedToComputeMatrix() const { return _needToComputeMatrix;}
-
-
-        // this build the internal database about vertex influence and bones
-        void buildVertexInfluenceSet();
-        const VertexInfluenceSet& getVertexInfluenceSet() const;
+        void setNeedToComputeMatrix(bool state) { _needToComputeMatrix = state; }
+        bool getNeedToComputeMatrix() const { return _needToComputeMatrix; }
 
         void computeMatrixFromRootSkeleton();
 
-
         // set implementation of rig method
-        void setRigTransformImplementation(RigTransform*);
-        RigTransform* getRigTransformImplementation();
-        const RigTransform* getRigTransformImplementation() const { return _rigTransformImplementation.get(); }
+        inline RigTransform* getRigTransformImplementation() { return _rigTransformImplementation.get(); }
+        inline void setRigTransformImplementation(RigTransform* rig) { _rigTransformImplementation = rig; }
+        inline const RigTransform* getRigTransformImplementation() const { return _rigTransformImplementation.get(); }
 
-        virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
         void update();
 
+        void buildVertexInfluenceSet() { _rigTransformImplementation->prepareData(*this); }
+
         const osg::Matrix& getMatrixFromSkeletonToGeometry() const;
+
         const osg::Matrix& getInvMatrixFromSkeletonToGeometry() const;
 
-        osg::Geometry* getSourceGeometry();
-        const osg::Geometry* getSourceGeometry() const;
-        void setSourceGeometry(osg::Geometry* geometry);
+        inline osg::Geometry* getSourceGeometry() { return _geometry.get(); }
+        inline const osg::Geometry* getSourceGeometry() const { return _geometry.get(); }
+        inline void setSourceGeometry(osg::Geometry* geometry) { _geometry = geometry; }
 
         void copyFrom(osg::Geometry& from);
 
@@ -111,8 +106,6 @@ namespace osgAnimation
 
         osg::ref_ptr<osg::Geometry> _geometry;
         osg::ref_ptr<RigTransform> _rigTransformImplementation;
-
-        VertexInfluenceSet _vertexInfluenceSet;
         osg::ref_ptr<VertexInfluenceMap> _vertexInfluenceMap;
 
         osg::Matrix _matrixFromSkeletonToGeometry;
@@ -120,8 +113,7 @@ namespace osgAnimation
         osg::observer_ptr<Skeleton> _root;
         bool _needToComputeMatrix;
 
-
-   };
+    };
 
 
     struct UpdateRigGeometry : public osg::Drawable::UpdateCallback
@@ -135,7 +127,8 @@ namespace osgAnimation
 
         META_Object(osgAnimation, UpdateRigGeometry);
 
-        virtual void update(osg::NodeVisitor* nv, osg::Drawable* drw) {
+        virtual void update(osg::NodeVisitor* nv, osg::Drawable* drw)
+        {
             RigGeometry* geom = dynamic_cast<RigGeometry*>(drw);
             if(!geom)
                 return;
@@ -151,7 +144,7 @@ namespace osgAnimation
                     osg::notify(osg::WARN) << "A RigGeometry did not find a parent skeleton for RigGeometry ( " << geom->getName() << " )" << std::endl;
                     return;
                 }
-                geom->buildVertexInfluenceSet();
+                geom->getRigTransformImplementation()->prepareData(*geom);
                 geom->setSkeleton(finder._root.get());
             }
 
@@ -161,7 +154,8 @@ namespace osgAnimation
             if(geom->getNeedToComputeMatrix())
                 geom->computeMatrixFromRootSkeleton();
 
-            if(geom->getSourceGeometry()) {
+            if(geom->getSourceGeometry())
+            {
                 osg::Drawable::UpdateCallback * up = dynamic_cast<osg::Drawable::UpdateCallback*>(geom->getSourceGeometry()->getUpdateCallback());
                 if(up)
                     up->update(nv, geom->getSourceGeometry());

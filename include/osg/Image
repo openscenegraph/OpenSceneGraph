@@ -17,6 +17,7 @@
 #include <osg/BufferObject>
 #include <osg/Vec2>
 #include <osg/Vec3>
+#include <osg/Vec3i>
 #include <osg/Vec4>
 #include <osg/FrameStamp>
 #include <osg/StateAttribute>
@@ -68,6 +69,10 @@
 #endif
 
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE) || defined(OSG_GL3_AVAILABLE)
+    #define GL_ALPHA4               0x803B
+    #define GL_ALPHA8               0x803C
+    #define GL_ALPHA12              0x803D
+    #define GL_ALPHA16              0x803E
     #define GL_BITMAP               0x1A00
     #define GL_COLOR_INDEX          0x1900
     #define GL_INTENSITY12          0x804C
@@ -113,6 +118,38 @@
     #define GL_COMPRESSED_RG11_EAC                              0x9272
     #define GL_COMPRESSED_SIGNED_RG11_EAC                       0x9273
 #endif
+
+#ifndef GL_KHR_texture_compression_astc_hdr
+#define GL_KHR_texture_compression_astc_hdr 1
+#define GL_COMPRESSED_RGBA_ASTC_4x4_KHR   0x93B0
+#define GL_COMPRESSED_RGBA_ASTC_5x4_KHR   0x93B1
+#define GL_COMPRESSED_RGBA_ASTC_5x5_KHR   0x93B2
+#define GL_COMPRESSED_RGBA_ASTC_6x5_KHR   0x93B3
+#define GL_COMPRESSED_RGBA_ASTC_6x6_KHR   0x93B4
+#define GL_COMPRESSED_RGBA_ASTC_8x5_KHR   0x93B5
+#define GL_COMPRESSED_RGBA_ASTC_8x6_KHR   0x93B6
+#define GL_COMPRESSED_RGBA_ASTC_8x8_KHR   0x93B7
+#define GL_COMPRESSED_RGBA_ASTC_10x5_KHR  0x93B8
+#define GL_COMPRESSED_RGBA_ASTC_10x6_KHR  0x93B9
+#define GL_COMPRESSED_RGBA_ASTC_10x8_KHR  0x93BA
+#define GL_COMPRESSED_RGBA_ASTC_10x10_KHR 0x93BB
+#define GL_COMPRESSED_RGBA_ASTC_12x10_KHR 0x93BC
+#define GL_COMPRESSED_RGBA_ASTC_12x12_KHR 0x93BD
+#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR 0x93D0
+#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR 0x93D1
+#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR 0x93D2
+#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR 0x93D3
+#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR 0x93D4
+#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR 0x93D5
+#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR 0x93D6
+#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR 0x93D7
+#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR 0x93D8
+#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR 0x93D9
+#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR 0x93DA
+#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR 0x93DB
+#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR 0x93DC
+#define GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR 0x93DD
+#endif /* GL_KHR_texture_compression_astc_hdr */
 
 #ifndef GL_DEPTH_COMPONENT
 #define GL_DEPTH_COMPONENT              0x1902
@@ -404,11 +441,17 @@ class OSG_EXPORT Image : public BufferData
         static bool isPackedType(GLenum type);
         static GLenum computePixelFormat(GLenum pixelFormat);
         static GLenum computeFormatDataType(GLenum pixelFormat);
+
+        /** return the dimensions of a block of compressed pixels */
+        static osg::Vec3i computeBlockFootprint(GLenum pixelFormat);
+
+        /** return the size in bytes of a block of compressed pixels */
         static unsigned int computeBlockSize(GLenum pixelFormat, GLenum packing);
         static unsigned int computeNumComponents(GLenum pixelFormat);
         static unsigned int computePixelSizeInBits(GLenum pixelFormat,GLenum type);
         static unsigned int computeRowWidthInBytes(int width,GLenum pixelFormat,GLenum type,int packing);
         static unsigned int computeImageSizeInBytes(int width,int height, int depth, GLenum pixelFormat, GLenum type, int packing = 1, int slice_packing = 1, int image_packing = 1);
+        static int roudUpToMultiple(int s, int pack);
         static int computeNearestPowerOfTwo(int s,float bias=0.5f);
         static int computeNumberOfMipmapLevels(int s,int t = 1, int r = 1);
 

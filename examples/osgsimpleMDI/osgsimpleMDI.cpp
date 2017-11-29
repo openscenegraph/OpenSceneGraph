@@ -69,10 +69,24 @@ int main( int argc, char**argv )
     arguments.read("--numX",MAXX);
     arguments.read("--numY",MAXY);
 
-    bool MDIenable=true;
+    enum PrimtiveSetUsage
+    {
+        MultiDraw,
+        MultiplePrimitiveSets,
+        SinglePrimitiveSet
+    };
+
+    PrimtiveSetUsage usage = MultiDraw;
     if(arguments.read("--classic"))
-    {   MDIenable=false;
-        OSG_WARN<<"disabling MDI"<<std::endl;
+    {
+        usage = MultiplePrimitiveSets;
+        OSG_WARN<<"disabling MDI, using multiple PrimitiveSet"<<std::endl;
+    }
+
+    if(arguments.read("--single"))
+    {
+        usage = SinglePrimitiveSet;
+        OSG_WARN<<"disabling MDI, using single PrimitiveSet"<<std::endl;
     }
 
     osg::Geode* root( new osg::Geode );
@@ -86,6 +100,7 @@ int main( int argc, char**argv )
 
     osg::ref_ptr<osg::Geometry>  geom=new osg::Geometry();
     geom->setUseVertexBufferObjects(true);
+
     osg::BoundingBox bb;
     bb.set(0,0,0,MAXX,0,MAXY);
     //set bounds by hand cause of the lack of support of basevertex in PrimitiveFunctors
@@ -104,10 +119,10 @@ int main( int argc, char**argv )
 
     osg::Vec3Array * verts=new osg::Vec3Array();
 
-
-    for(int j =0 ; j<MAXY; ++j) {
-        for(int i =0 ; i<MAXX; ++i) {
-
+    for(int j =0 ; j<MAXY; ++j)
+    {
+        for(int i =0 ; i<MAXX; ++i)
+        {
             ///create indirect command
             osg::DrawElementsIndirectCommand cmd;
             cmd.count=4;
@@ -116,24 +131,58 @@ int main( int argc, char**argv )
             cmd.baseVertex=verts->size();
             mdicommands->push_back(cmd);
 
-            for(int z=0; z<4; z++) {
+            for(int z=0; z<4; z++)
+            {
                 verts->push_back(osg::Vec3(i,0,j)+myCoords[z]);
                 mdi->addElement(myIndices[z]);
             }
         }
     }
-    geom->setVertexArray(verts);
-    if(MDIenable) {
-        geom->addPrimitiveSet(mdi);
 
-    } else
-        for(int i=0; i<MAXY*MAXX; ++i) {
-            osg::DrawElementsUInt *dre=new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLE_STRIP,4,myIndicesUI) ;
-            dre->setElementBufferObject(ebo);
-            geom->addPrimitiveSet(dre);
-            for(int z=0; z<4; z++)myIndicesUI[z]+=4;
+    geom->setVertexArray(verts);
+
+    switch(usage)
+    {
+        case(MultiDraw):
+        {
+            geom->addPrimitiveSet(mdi);
+            break;
+
         }
+        case(MultiplePrimitiveSets):
+        {
+            for(int i=0; i<MAXY*MAXX; ++i)
+            {
+                osg::ref_ptr<osg::DrawElementsUInt> dre = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLE_STRIP,4,myIndicesUI);
+                dre->setElementBufferObject(ebo.get());
+                geom->addPrimitiveSet(dre.get());
+                for(int z=0; z<4; z++) myIndicesUI[z]+=4;
+            }
+            break;
+        }
+        case(SinglePrimitiveSet):
+        {
+            osg::ref_ptr<osg::DrawElementsUInt> primitives = new osg::DrawElementsUInt(GL_TRIANGLES);
+            primitives->setElementBufferObject(ebo.get());
+            geom->addPrimitiveSet(primitives.get());
+
+            unsigned int vi = 0;
+            for(int i=0; i<MAXY*MAXX; ++i)
+            {
+                primitives->push_back(vi);
+                primitives->push_back(vi+2);
+                primitives->push_back(vi+1);
+                primitives->push_back(vi+1);
+                primitives->push_back(vi+2);
+                primitives->push_back(vi+3);
+                vi += 4;
+            }
+            break;
+        }
+    }
+
     root->addChild(geom);
+
     osgViewer::Viewer viewer;
     viewer.addEventHandler(new osgViewer::StatsHandler);
     viewer.setSceneData( root );

@@ -1,0 +1,13 @@
+char text_vert[] = "$OSG_GLSL_VERSION\n"
+                   "$OSG_PRECISION_FLOAT\n"
+                   "\n"
+                   "$OSG_VARYING_OUT vec2 texCoord;\n"
+                   "$OSG_VARYING_OUT vec4 vertexColor;\n"
+                   "\n"
+                   "void main(void)\n"
+                   "{\n"
+                   "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+                   "    texCoord = gl_MultiTexCoord0.xy;\n"
+                   "    vertexColor = gl_Color;\n"
+                   "}\n"
+                   "\n";

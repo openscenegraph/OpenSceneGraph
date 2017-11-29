@@ -134,7 +134,6 @@ void Label::setFontColor(const Color& c) {
 
 void Label::setShadow(point_type offset) {
     _text->setBackdropType(osgText::Text::DROP_SHADOW_BOTTOM_RIGHT);
-    _text->setBackdropImplementation(osgText::Text::NO_DEPTH_BUFFER);
     _text->setBackdropOffset(offset);
 
     _calculateSize(getTextSize());

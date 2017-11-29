@@ -390,7 +390,7 @@ bool GraphicsWindowX11::checkAndSendEventFullScreenIfNeeded(Display* display, in
     Atom netWMStateAtom = XInternAtom(display, "_NET_WM_STATE", True);
     Atom netWMStateFullscreenAtom = XInternAtom(display, "_NET_WM_STATE_FULLSCREEN", True);
 
-    OSG_NOTICE<<"GraphicsWindowX11::checkAndSendEventFullScreenIfNeeded()"<<std::endl;
+    OSG_INFO<<"GraphicsWindowX11::checkAndSendEventFullScreenIfNeeded()"<<std::endl;
 
     if (netWMStateAtom != None && netWMStateFullscreenAtom != None)
     {

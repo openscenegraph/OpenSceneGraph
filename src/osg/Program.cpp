@@ -516,7 +516,6 @@ void Program::apply( osg::State& state ) const
     {
         // for shader debugging: to minimize performance impact,
         // optionally validate based on notify level.
-        // TODO: enable this using notify level, or perhaps its own getenv()?
 #ifndef __APPLE__
         if( osg::isNotifyEnabled(osg::INFO) )
             pcp->validateProgram();

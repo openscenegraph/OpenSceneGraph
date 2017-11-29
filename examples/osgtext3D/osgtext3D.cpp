@@ -250,7 +250,9 @@ int main(int argc, char** argv)
         }
 
         if (arguments.read("--add-axes"))
-            group->addChild(osgDB::readNodeFile("axes.osgt"));
+        {
+            group->addChild(osgDB::readRefNodeFile("axes.osgt"));
+        }
 
         std::string mode;
         if (arguments.read("--character-size-mode", mode))

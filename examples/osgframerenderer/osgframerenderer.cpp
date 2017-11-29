@@ -196,7 +196,11 @@ int main( int argc, char **argv )
             newCameraProperty = true;
             cp = new gsc::CameraProperty;
 
-            osg::ref_ptr<osg::Node> node = fc->getInputFileName().empty() ? 0 : osgDB::readNodeFile(fc->getInputFileName());
+            osg::ref_ptr<osg::Node> node;
+            if (!fc->getInputFileName().empty())
+            {
+                osgDB::readRefNodeFile(fc->getInputFileName());
+            }
             if (node.valid())
             {
                 cp->setToModel(node.get());
@@ -522,7 +526,7 @@ int main( int argc, char **argv )
         gsc::CaptureSettings* fc = itr->get();
         screenShot->_frameCapture = fc;
 
-        osg::ref_ptr<osg::Node> model = osgDB::readNodeFile(fc->getInputFileName());
+        osg::ref_ptr<osg::Node> model = osgDB::readRefNodeFile(fc->getInputFileName());
         if (!model) break;
 
         viewer.setSceneData(model.get());

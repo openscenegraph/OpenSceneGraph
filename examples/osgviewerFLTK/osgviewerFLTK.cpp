@@ -140,7 +140,7 @@ int main( int argc, char **argv )
     osg::ArgumentParser arguments(&argc, argv);
 
     // load the scene.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
     if (!loadedModel)
     {
         std::cout << argv[0] <<": No data loaded." << std::endl;

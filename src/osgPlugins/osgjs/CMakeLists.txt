@@ -16,10 +16,6 @@ SET(TARGET_H
     WriteVisitor
 )
 
-IF($ENV{SKETCHFAB_BUILD})
-    ADD_DEFINITIONS(-DUSE_COMPRESSED_CHANNELS)
-ENDIF()
-
 #### end var setup  ###
 SET(TARGET_ADDED_LIBRARIES
     osgAnimation

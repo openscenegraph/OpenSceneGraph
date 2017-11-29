@@ -360,8 +360,14 @@ int *numComponents_ret)
     {
         case 1:                  /* colormap, uncompressed */
         {
-            if (colormapLen == 0 || indexsize == 0) {
+            if (colormapLen == 0 || indexsize == 0)
+            {
                 tgaerror = ERR_UNSUPPORTED; /* colormap missing or empty */
+
+                if (colormap) delete [] colormap;
+                delete [] buffer;
+                delete [] linebuf;
+
                 return NULL;
             }
             unsigned char * formattedMap = new unsigned char[colormapLen * format];

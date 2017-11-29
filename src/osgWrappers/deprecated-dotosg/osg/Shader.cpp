@@ -47,10 +47,7 @@ bool Shader_readLocalData(Object& obj, Input& fr)
     {
 
         osg::ref_ptr<Shader> s = osgDB::readRefShaderFile(fr[1].getStr(), fr.getOptions());
-        if(s.get())
-            shader.setShaderSource(s->getShaderSource());
-        else
-            shader.loadShaderSourceFromFile( osgDB::findDataFile(fr[1].getStr()) );
+        if(s.get()) shader.setShaderSource(s->getShaderSource());
 
         fr += 2;
         iteratorAdvanced = true;

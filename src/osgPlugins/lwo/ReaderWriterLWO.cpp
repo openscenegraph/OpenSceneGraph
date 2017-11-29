@@ -56,6 +56,11 @@ public:
 
     virtual const char* className() const { return "Lightwave Object Reader"; }
 
+    virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+    {
+      return readNode(file, options);
+    }
+
     virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
         std::string ext = osgDB::getLowerCaseFileExtension(file);

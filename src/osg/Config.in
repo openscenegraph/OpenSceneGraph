@@ -34,5 +34,6 @@
 #cmakedefine OSG_DISABLE_MSVC_WARNINGS
 #cmakedefine OSG_PROVIDE_READFILE
 #cmakedefine OSG_USE_DEPRECATED_API
+#cmakedefine OSG_ENVVAR_SUPPORTED
 
 #endif

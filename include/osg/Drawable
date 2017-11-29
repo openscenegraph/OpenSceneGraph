@@ -55,7 +55,7 @@
 #endif
 
 
-// #define INLINE_DRAWABLE_DRAW
+#define INLINE_DRAWABLE_DRAW
 
 namespace osg {
 
@@ -195,7 +195,11 @@ class OSG_EXPORT Drawable : public Node
         /** Get the const Shape of the const Drawable.*/
         inline const Shape* getShape() const { return _shape.get(); }
 
+        /** set the vertex array state of this Drawable **/
+        void setVertexArrayStateSet(VertexArrayStateSet* vasset) { _vertexArrayStateSet = vasset; }
 
+        /** get the vertex array state of this Drawable **/
+        VertexArrayStateSet* getVertexArrayStateSet()const { return _vertexArrayStateSet; }
 
         /** Set the drawable so that it can or cannot be used in conjunction with OpenGL
           * display lists.  When set to true, calls to Drawable::setUseDisplayList,
@@ -491,8 +495,7 @@ class OSG_EXPORT Drawable : public Node
         typedef osg::buffered_value<GLuint> GLObjectList;
         mutable GLObjectList    _globjList;
 
-        typedef buffered_object< osg::ref_ptr<VertexArrayState> > VertexArrayStateList;
-        mutable VertexArrayStateList    _vertexArrayStateList;
+        osg::ref_ptr<VertexArrayStateSet>  _vertexArrayStateSet;
 
         ref_ptr<DrawCallback>   _drawCallback;
 };
@@ -506,10 +509,10 @@ inline void Drawable::draw(RenderInfo& renderInfo) const
     {
         unsigned int contextID = renderInfo.getContextID();
 
-        VertexArrayState* vas = _vertexArrayStateList[contextID].get();
+        VertexArrayState* vas = _vertexArrayStateSet->getVertexArrayStates()[contextID].get();
         if (!vas)
         {
-            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
+            _vertexArrayStateSet->getVertexArrayStates()[contextID] = vas = createVertexArrayState(renderInfo);
         }
         else
         {
@@ -518,7 +521,7 @@ inline void Drawable::draw(RenderInfo& renderInfo) const
 
         State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 
-        vas->bindVertexArrayObject();
+        state.bindVertexArrayObject(vas);
 
         drawInner(renderInfo);
 
@@ -528,8 +531,7 @@ inline void Drawable::draw(RenderInfo& renderInfo) const
     }
 
     // TODO, add check against whether VAO is active and supported
-    if (state.getCurrentVertexArrayState()) state.getCurrentVertexArrayState()->bindVertexArrayObject();
-
+    if (state.getCurrentVertexArrayState()) state.bindVertexArrayObject(state.getCurrentVertexArrayState());
 
 #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     if (!state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects) && _useDisplayList)

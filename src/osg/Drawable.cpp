@@ -236,6 +236,7 @@ Drawable::Drawable()
 #endif
 
     _useVertexArrayObject = false;
+    _vertexArrayStateSet = new osg::VertexArrayStateSet();
 }
 
 Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
@@ -303,7 +304,7 @@ void Drawable::resizeGLObjectBuffers(unsigned int maxSize)
 
     _globjList.resize(maxSize);
 
-    _vertexArrayStateList.resize(maxSize);
+    _vertexArrayStateSet->getVertexArrayStates().resize(maxSize);
 }
 
 void Drawable::releaseGLObjects(State* state) const
@@ -331,12 +332,7 @@ void Drawable::releaseGLObjects(State* state) const
             }
         }
 
-        VertexArrayState* vas = contextID <_vertexArrayStateList.size() ? _vertexArrayStateList[contextID].get() : 0;
-        if (vas)
-        {
-            vas->release();
-            _vertexArrayStateList[contextID] = 0;
-        }
+        _vertexArrayStateSet->releaseGLObjects(state);
     }
     else
     {
@@ -450,12 +446,7 @@ void Drawable::dirtyGLObjects()
         }
     }
 #endif
-
-    for(i=0; i<_vertexArrayStateList.size(); ++i)
-    {
-        VertexArrayState* vas = _vertexArrayStateList[i].get();
-        if (vas) vas->dirty();
-    }
+    _vertexArrayStateSet->dirty();
 }
 
 
@@ -630,10 +621,10 @@ void Drawable::draw(RenderInfo& renderInfo) const
     {
         unsigned int contextID = renderInfo.getContextID();
 
-        VertexArrayState* vas = _vertexArrayStateList[contextID].get();
+        VertexArrayState* vas = _vertexArrayStateSet->getVertexArrayState(contextID);
         if (!vas)
         {
-            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
+            _vertexArrayStateSet->getVertexArrayStates()[contextID] = vas = createVertexArrayState(renderInfo);
         }
         else
         {

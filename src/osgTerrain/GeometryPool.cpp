@@ -796,7 +796,7 @@ SharedGeometry::~SharedGeometry()
 {
 }
 
-osg::VertexArrayState* SharedGeometry::createVertexArrayStateImplemenation(osg::RenderInfo& renderInfo) const
+osg::VertexArrayState* SharedGeometry::createVertexArrayStateImplementation(osg::RenderInfo& renderInfo) const
 {
     osg::State& state = *renderInfo.getState();
 

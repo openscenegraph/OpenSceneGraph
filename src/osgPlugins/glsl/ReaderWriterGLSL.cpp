@@ -194,7 +194,7 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
 
             osgDB::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
             if(!istream) return ReadResult::FILE_NOT_HANDLED;
-            ReadResult rr = readShader(istream, local_opt);
+            ReadResult rr = readShader(istream, local_opt.get());
             if(rr.validShader())
             {
                 osg::Shader* shader = rr.getShader();

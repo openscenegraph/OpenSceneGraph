@@ -23,28 +23,31 @@ using namespace osgAnimation;
 MorphGeometry::MorphGeometry() :
     _dirty(false),
     _method(NORMALIZED),
+    _positionSource(0),_normalSource(0),
     _morphNormals(true)
 {
     setUseDisplayList(false);
     setUpdateCallback(new UpdateMorphGeometry);
-    setDataVariance(osg::Object::DYNAMIC);
     setUseVertexBufferObjects(true);
+    _morphTransformImplementation = new MorphTransformSoftware();
 }
 
-MorphGeometry::MorphGeometry(const osg::Geometry& b) :
-    osg::Geometry(b, osg::CopyOp::DEEP_COPY_ARRAYS),
+MorphGeometry::MorphGeometry(const osg::Geometry& g) :
+    osg::Geometry(g, osg::CopyOp::DEEP_COPY_ARRAYS),
     _dirty(false),
     _method(NORMALIZED),
+    _positionSource(0),_normalSource(0),
     _morphNormals(true)
 {
     setUseDisplayList(false);
     setUpdateCallback(new UpdateMorphGeometry);
-    setDataVariance(osg::Object::DYNAMIC);
     setUseVertexBufferObjects(true);
+    _morphTransformImplementation = new MorphTransformSoftware();
 }
 
 MorphGeometry::MorphGeometry(const MorphGeometry& b, const osg::CopyOp& copyop) :
     osg::Geometry(b,copyop),
+    _morphTransformImplementation(osg::clone(b._morphTransformImplementation.get(), copyop)),
     _dirty(b._dirty),
     _method(b._method),
     _morphTargets(b._morphTargets),
@@ -56,151 +59,12 @@ MorphGeometry::MorphGeometry(const MorphGeometry& b, const osg::CopyOp& copyop) 
     setUseVertexBufferObjects(true);
 }
 
-
-void MorphGeometry::transformSoftwareMethod()
-{
-    if (_dirty)
-    {
-        // See if we have an internal optimized geometry
-        osg::Geometry* morphGeometry = this;
-
-        osg::Vec3Array* pos = dynamic_cast<osg::Vec3Array*>(morphGeometry->getVertexArray());
-
-        if(pos)
-        {
-            if ( _positionSource.size() != pos->size())
-            {
-                _positionSource = std::vector<osg::Vec3>(pos->begin(),pos->end());
-                pos->setDataVariance(osg::Object::DYNAMIC);
-            }
-
-            osg::Vec3Array* normal = dynamic_cast<osg::Vec3Array*>(morphGeometry->getNormalArray());
-            bool normalmorphable = _morphNormals && normal;
-            if (normal && _normalSource.size() != normal->size())
-            {
-                _normalSource = std::vector<osg::Vec3>(normal->begin(),normal->end());
-                normal->setDataVariance(osg::Object::DYNAMIC);
-            }
-
-
-            if (!_positionSource.empty())
-            {
-                bool initialized = false;
-                if (_method == NORMALIZED)
-                {
-                    // base * 1 - (sum of weights) + sum of (weight * target)
-                    float baseWeight = 0;
-                    for (unsigned int i=0; i < _morphTargets.size(); i++)
-                    {
-                        baseWeight += _morphTargets[i].getWeight();
-                    }
-                    baseWeight = 1 - baseWeight;
-
-                    if (baseWeight != 0)
-                    {
-                        initialized = true;
-                        for (unsigned int i=0; i < pos->size(); i++)
-                        {
-                            (*pos)[i] = _positionSource[i] * baseWeight;
-                        }
-                        if (normalmorphable)
-                        {
-                            for (unsigned int i=0; i < normal->size(); i++)
-                            {
-                                (*normal)[i] = _normalSource[i] * baseWeight;
-                            }
-                        }
-                    }
-                }
-                else //if (_method == RELATIVE)
-                {
-                    // base + sum of (weight * target)
-                    initialized = true;
-                    for (unsigned int i=0; i < pos->size(); i++)
-                    {
-                        (*pos)[i] = _positionSource[i];
-                    }
-                    if (normalmorphable)
-                    {
-                        for (unsigned int i=0; i < normal->size(); i++)
-                        {
-                            (*normal)[i] = _normalSource[i];
-                        }
-                    }
-                }
-
-                for (unsigned int i=0; i < _morphTargets.size(); i++)
-                {
-                    if (_morphTargets[i].getWeight() > 0)
-                    {
-                        // See if any the targets use the internal optimized geometry
-                        osg::Geometry* targetGeometry = _morphTargets[i].getGeometry();
-
-                        osg::Vec3Array* targetPos = dynamic_cast<osg::Vec3Array*>(targetGeometry->getVertexArray());
-                        osg::Vec3Array* targetNormals = dynamic_cast<osg::Vec3Array*>(targetGeometry->getNormalArray());
-                        normalmorphable = normalmorphable && targetNormals;
-                        if(targetPos)
-                        {
-                            if (initialized)
-                            {
-                                // If vertices are initialized, add the morphtargets
-                                for (unsigned int j=0; j < pos->size(); j++)
-                                {
-                                    (*pos)[j] += (*targetPos)[j] * _morphTargets[i].getWeight();
-                                }
-
-                                if (normalmorphable)
-                                {
-                                    for (unsigned int j=0; j < normal->size(); j++)
-                                    {
-                                        (*normal)[j] += (*targetNormals)[j] * _morphTargets[i].getWeight();
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                // If not initialized, initialize with this morph target
-                                initialized = true;
-                                for (unsigned int j=0; j < pos->size(); j++)
-                                {
-                                    (*pos)[j] = (*targetPos)[j] * _morphTargets[i].getWeight();
-                                }
-
-                                if (normalmorphable)
-                                {
-                                    for (unsigned int j=0; j < normal->size(); j++)
-                                    {
-                                        (*normal)[j] = (*targetNormals)[j] * _morphTargets[i].getWeight();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                pos->dirty();
-                if (normalmorphable)
-                {
-                    for (unsigned int j=0; j < normal->size(); j++)
-                    {
-                        (*normal)[j].normalize();
-                    }
-                    normal->dirty();
-                }
-            }
-
-            dirtyBound();
-
-        }
-        _dirty = false;
-    }
-}
-
 UpdateMorph::UpdateMorph(const UpdateMorph& apc,const osg::CopyOp& copyop) :
     osg::Object(apc, copyop),
     osg::Callback(apc, copyop),
     AnimationUpdateCallback<osg::NodeCallback>(apc, copyop)
 {
+    _targetNames=apc._targetNames;
 }
 
 UpdateMorph::UpdateMorph(const std::string& name) : AnimationUpdateCallback<osg::NodeCallback>(name)
@@ -242,8 +106,6 @@ void UpdateMorph::operator()(osg::Node* node, osg::NodeVisitor* nv)
     }
     traverse(node,nv);
 }
-
-
 
 bool UpdateMorph::needLink() const
 {

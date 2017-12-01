@@ -69,7 +69,7 @@ class ExampleOSGGTKDrawingArea : public OSGGTKDrawingArea {
             if(gtk_dialog_run(GTK_DIALOG(of)) == GTK_RESPONSE_ACCEPT) {
                 char* file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(of));
 
-                osg::ref_ptr<osg::Node> model = osgDB::readNodeFile(file);
+                osg::ref_ptr<osg::Node> model = osgDB::readRefNodeFile(file);
 
                 if(model.valid()) {
                     setSceneData(model.get());
@@ -170,7 +170,7 @@ int main(int argc, char** argv) {
 
     if(da.createWidget(640, 480)) {
         if(argc >= 2) {
-            osg::ref_ptr<osg::Node> model = osgDB::readNodeFile(argv[1]);
+            osg::ref_ptr<osg::Node> model = osgDB::readRefNodeFile(argv[1]);
 
             if(model.valid()) da.setSceneData(model.get());
         }

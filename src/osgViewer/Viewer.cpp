@@ -34,6 +34,8 @@
 #include <osgViewer/config/PanoramicSphericalDisplay>
 #include <osgViewer/config/WoWVxDisplay>
 
+#include <osg/EnvVar>
+
 #include <sstream>
 #include <string.h>
 
@@ -495,26 +497,18 @@ void Viewer::realize()
 
         // no windows are already set up so set up a default view
 
-        const char* ptr = 0;
-        if ((ptr = getenv("OSG_CONFIG_FILE")) != 0)
+        std::string value;
+        if (osg::getEnvVar("OSG_CONFIG_FILE", value))
         {
-            readConfiguration(ptr);
+            readConfiguration(value);
         }
         else
         {
             int screenNum = -1;
-            if ((ptr = getenv("OSG_SCREEN")) != 0)
-            {
-                if (strlen(ptr)!=0) screenNum = atoi(ptr);
-                else screenNum = -1;
-            }
+            osg::getEnvVar("OSG_SCREEN", screenNum);
 
             int x = -1, y = -1, width = -1, height = -1;
-            if ((ptr = getenv("OSG_WINDOW")) != 0)
-            {
-                std::istringstream iss(ptr);
-                iss >> x >> y >> width >> height;
-            }
+            osg::getEnvVar("OSG_WINDOW", x, y, width, height);
 
             if (width>0 && height>0)
             {

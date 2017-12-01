@@ -233,7 +233,7 @@ class OSG_EXPORT Geometry : public Drawable
 
         bool                            _containsDeprecatedData;
 
-        virtual VertexArrayState* createVertexArrayState(RenderInfo& renderInfo) const;
+        virtual VertexArrayState* createVertexArrayStateImplementation(RenderInfo& renderInfo) const;
 
     public:
 

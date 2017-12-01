@@ -314,7 +314,7 @@ void Shader::setShaderSource( const std::string& sourceText )
     dirtyShader();
 }
 
-
+#ifdef OSG_USE_DEPRECATED_API
 Shader* Shader::readShaderFile( Type type, const std::string& fileName )
 {
     ref_ptr<Shader> shader = new Shader(type);
@@ -348,7 +348,7 @@ bool Shader::loadShaderSourceFromFile( const std::string& fileName )
     delete [] text;
     return true;
 }
-
+#endif
 
 const char* Shader::getTypename() const
 {

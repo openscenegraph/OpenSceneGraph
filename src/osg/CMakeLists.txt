@@ -55,6 +55,7 @@ SET(TARGET_H
     ${HEADER_PATH}/ColorMaski
     ${HEADER_PATH}/ColorMatrix
     ${HEADER_PATH}/ComputeBoundsVisitor
+    ${HEADER_PATH}/ComputeDispatch
     ${HEADER_PATH}/ContextData
     ${HEADER_PATH}/ConvexPlanarOccluder
     ${HEADER_PATH}/ConvexPlanarPolygon
@@ -269,6 +270,7 @@ SET(TARGET_SRC
     ColorMaski.cpp
     ColorMatrix.cpp
     ComputeBoundsVisitor.cpp
+    ComputeDispatch.cpp
     ContextData.cpp
     ConvexPlanarOccluder.cpp
     ConvexPlanarPolygon.cpp

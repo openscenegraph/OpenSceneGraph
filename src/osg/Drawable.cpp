@@ -249,7 +249,8 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     _supportsVertexBufferObjects(drawable._supportsVertexBufferObjects),
     _useVertexBufferObjects(drawable._useVertexBufferObjects),
     _useVertexArrayObject(drawable._useVertexArrayObject),
-    _drawCallback(drawable._drawCallback)
+    _drawCallback(drawable._drawCallback),
+    _createVertexArrayStateCallback(drawable._createVertexArrayStateCallback)
 {
     setStateSet(copyop(drawable._stateset.get()));
 }
@@ -696,8 +697,9 @@ void Drawable::draw(RenderInfo& renderInfo) const
 
 #endif
 
-VertexArrayState* Drawable::createVertexArrayState(RenderInfo& renderInfo) const
+VertexArrayState* Drawable::createVertexArrayStateImplementation(RenderInfo& renderInfo) const
 {
+    OSG_NOTICE<<"VertexArrayState* Drawable::createVertexArrayStateImplementation(RenderInfo& renderInfo) const "<<this<<std::endl;
     VertexArrayState* vos = new osg::VertexArrayState(renderInfo.getState());
     vos->assignAllDispatchers();
     return vos;

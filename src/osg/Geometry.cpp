@@ -720,7 +720,7 @@ void Geometry::releaseGLObjects(State* state) const
 
 }
 
-VertexArrayState* Geometry::createVertexArrayState(RenderInfo& renderInfo) const
+VertexArrayState* Geometry::createVertexArrayStateImplementation(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
 

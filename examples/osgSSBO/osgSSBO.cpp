@@ -10,7 +10,7 @@
 #include <osg/StateAttributeCallback>
 #include <osg/Texture2D>
 #include <osg/Geometry>
-#include <osg/Geode>
+#include <osg/ComputeDispatch>
 #include <osgDB/ReadFile>
 #include <osgGA/StateSetManipulator>
 #include <osgViewer/Viewer>
@@ -167,6 +167,7 @@ class ComputeNode : public osg::PositionAttitudeTransform
 
 public:
 
+    osg::ref_ptr<osg::ComputeDispatch>                _computeDispatch;
     osg::ref_ptr<osg::Program>                        _computeProgram;
     osg::ref_ptr<osg::Shader>                        _computeShader;        //compute and write position data in SSBO
 
@@ -200,15 +201,12 @@ public:
 
     ComputeNode()
     {
-        const char* envOsgFilePath = getenv("OSG_FILE_PATH");
-        std::stringstream computeshaderpath; computeshaderpath << envOsgFilePath << "/shaders/osgssboComputeShader.cs";
-        _computeShaderSourcePath = computeshaderpath.str();
-        std::stringstream vertexshaderpath; vertexshaderpath << envOsgFilePath << "/shaders/osgssboVertexShader.vs";
-        _vertexShaderSourcePath = vertexshaderpath.str();
-        std::stringstream geometryshaderpath; geometryshaderpath << envOsgFilePath << "/shaders/osgssboGeometryShader.gs";
-        _geometryShaderSourcePath = geometryshaderpath.str();
-        std::stringstream fragmentshaderpath; fragmentshaderpath << envOsgFilePath << "/shaders/osgssboFragmentShader.fs";
-        _fragmentShaderSourcePath = fragmentshaderpath.str();
+        _computeShaderSourcePath = "shaders/osgssboComputeShader.cs";
+        _vertexShaderSourcePath = "shaders/osgssboVertexShader.vs";
+        _geometryShaderSourcePath = "shaders/osgssboGeometryShader.gs";
+        _fragmentShaderSourcePath = "shaders/osgssboFragmentShader.fs";
+	_computeDispatch=new osg::ComputeDispatch();
+        addChild(_computeDispatch);
     }
 
 };
@@ -243,7 +241,7 @@ public:
             if (_computeNode->_computeShader.valid())
             {
                 runningSource = _computeNode->_computeShader->getShaderSource();
-                reloadedshader = osg::Shader::readShaderFile(osg::Shader::COMPUTE, _computeNode->_computeShaderSourcePath);
+                reloadedshader = osgDB::readRefShaderFile(osg::Shader::COMPUTE, _computeNode->_computeShaderSourcePath);
 
                 reloadedstring = reloadedshader->getShaderSource();
                 if (!osgDB::equalCaseInsensitive(runningSource.c_str(), reloadedstring.c_str()))
@@ -258,7 +256,7 @@ public:
             {
 
                 runningSource = _computeNode->_vertexShader->getShaderSource();
-                reloadedshader = osg::Shader::readShaderFile(osg::Shader::VERTEX, _computeNode->_vertexShaderSourcePath);
+                reloadedshader = osgDB::readRefShaderFile(osg::Shader::VERTEX, _computeNode->_vertexShaderSourcePath);
 
                 reloadedstring = reloadedshader->getShaderSource();
                 if (!osgDB::equalCaseInsensitive(runningSource.c_str(), reloadedstring.c_str()))
@@ -274,7 +272,7 @@ public:
             if (_computeNode->_geometryShader.valid())
             {
                 runningSource = _computeNode->_geometryShader->getShaderSource();
-                reloadedshader = osg::Shader::readShaderFile(osg::Shader::GEOMETRY, _computeNode->_geometryShaderSourcePath);
+                reloadedshader = osgDB::readRefShaderFile(osg::Shader::GEOMETRY, _computeNode->_geometryShaderSourcePath);
 
                 reloadedstring = reloadedshader->getShaderSource();
                 if (!osgDB::equalCaseInsensitive(runningSource.c_str(), reloadedstring.c_str()))
@@ -288,7 +286,7 @@ public:
             if (_computeNode->_fragmentShader.valid())
             {
                 runningSource = _computeNode->_fragmentShader->getShaderSource();
-                reloadedshader = osg::Shader::readShaderFile(osg::Shader::FRAGMENT, _computeNode->_fragmentShaderSourcePath);
+                reloadedshader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, _computeNode->_fragmentShaderSourcePath);
 
                 reloadedstring = reloadedshader->getShaderSource();
                 if (!osgDB::equalCaseInsensitive(runningSource.c_str(), reloadedstring.c_str()))
@@ -517,13 +515,13 @@ void ComputeNode::addComputationResultsRenderTree()
 
     _computationResultsRenderProgram = new osg::Program;
 
-    _vertexShader = osg::Shader::readShaderFile(osg::Shader::VERTEX, _vertexShaderSourcePath);
+    _vertexShader = osgDB::readRefShaderFile(osg::Shader::VERTEX, _vertexShaderSourcePath);
     _computationResultsRenderProgram->addShader(_vertexShader.get());
 
-    _geometryShader = osg::Shader::readShaderFile(osg::Shader::GEOMETRY, _geometryShaderSourcePath);
+    _geometryShader = osgDB::readRefShaderFile(osg::Shader::GEOMETRY, _geometryShaderSourcePath);
     _computationResultsRenderProgram->addShader(_geometryShader.get());
 
-    _fragmentShader = osg::Shader::readShaderFile(osg::Shader::FRAGMENT, _fragmentShaderSourcePath);
+    _fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, _fragmentShaderSourcePath);
     _computationResultsRenderProgram->addShader(_fragmentShader.get());
 
 
@@ -627,8 +625,8 @@ void ComputeNode::initComputingSetup()
 {
 
     _computeProgram = new osg::Program;
-    _computeProgram->setComputeGroups((NUM_ELEMENTS_X / WORK_GROUP_SIZE) <= 1 ? 1 : (NUM_ELEMENTS_X / WORK_GROUP_SIZE), (NUM_ELEMENTS_Y / WORK_GROUP_SIZE) <= 1 ? 1 : (NUM_ELEMENTS_Y / WORK_GROUP_SIZE), 1);
-    _computeShader = osg::Shader::readShaderFile(osg::Shader::COMPUTE, _computeShaderSourcePath);
+    _computeDispatch->setComputeGroups((NUM_ELEMENTS_X / WORK_GROUP_SIZE) <= 1 ? 1 : (NUM_ELEMENTS_X / WORK_GROUP_SIZE), (NUM_ELEMENTS_Y / WORK_GROUP_SIZE) <= 1 ? 1 : (NUM_ELEMENTS_Y / WORK_GROUP_SIZE), 1);
+    _computeShader = osgDB::readRefShaderFile(osg::Shader::COMPUTE, _computeShaderSourcePath);
     _computeProgram->addShader(_computeShader.get());
 
     setDataVariance(osg::Object::DYNAMIC);

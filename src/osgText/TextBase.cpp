@@ -109,7 +109,7 @@ void TextBase::initArraysAndBuffers()
     _texcoords->setBufferObject(_vbo.get());
 }
 
-osg::VertexArrayState* TextBase::createVertexArrayState(osg::RenderInfo& renderInfo) const
+osg::VertexArrayState* TextBase::createVertexArrayStateImplementation(osg::RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
 

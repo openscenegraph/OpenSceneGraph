@@ -1,4 +1,4 @@
-OpenSceneGraph Library 3.5.8
+OpenSceneGraph Library 3.5.9
 
 568 Contributors:
 
@@ -8,11 +8,11 @@ Robert Osfield
 Stephan Huber
 Paul Martz
 Farshid Lashkari
-Mathias Frhlich
+Mathias Fröhlich
 Laurens Voerman
 Marco Jez
 Wang Rui
-Jean-Sbastien Guay
+Jean-Sébastien Guay
 Ulrich Hertlein
 Mike Weiblen
 Sukender
@@ -65,11 +65,11 @@ Norman Vine
 Chris Denham
 Sherman Wilcox
 Serge Lages
-Romano Jos Magacho da Silva
+Romano José Magacho da Silva
 Mourad Boufarguine
 Alberto Farre
 Glenn Waldron
-Andr Garneau
+André Garneau
 Adrian Egli
 Sebastian Messerschmidt
 Randall Hopper
@@ -84,7 +84,7 @@ Michael Gronager
 Martin Naylor
 Joakim Simonsson
 David Spilling
-Daniel Sjlie
+Daniel Sjölie
 Bryan Thrall
 Andreas Ekstrand
 Rafa Gaitan
@@ -122,7 +122,7 @@ Gordon Tomlinson
 Frederic Marmond
 Frederic Bouvier
 Carlo Camporesi
-Bjrn Blissing
+Björn Blissing
 Alexander Sinditskiy
 Vladimir Chebaev
 Thibault Genessay
@@ -141,10 +141,11 @@ Uwe Woessner
 Tony Horrobin
 Thom DeCarlo
 Tatsuhiro Nishioka
-Tanguy Fautr
+Tanguy Fautré
 Sean Spicer
 Ryan Kawicki
 Richard Schmidt
+Raymond de Vries
 Peter Hrenka
 Paul de Repentigny
 Nikolaus Hanekamp
@@ -201,7 +202,7 @@ Phil Atkin
 Pawel Ksiezopolski
 Patrick Neary
 Nathan Monteleone
-Miha Ravelj
+Miha Rav¨elj
 Miguel Escriva
 Mattias Linde
 Mark Sciabica
@@ -233,8 +234,8 @@ Christian Ruzicka
 Christian Buchner
 Charles Cole
 Blake Williams
-Bjrn Hein
-Aurlien Chatelain
+Björn Hein
+Aurélien Chatelain
 Antoine Hue
 Andrew Bettison
 Andreas Henne
@@ -254,7 +255,6 @@ Stephan Eilemann
 Stanislav Blinov
 Sergey Polischuk
 Roni Zanolli
-Raymond de Vries
 Ralf Kern
 Piotr Gwiazdowski
 Pierre Haritchabalet
@@ -264,7 +264,7 @@ Paul Obermeier
 Nguyen Van Truong
 Nathan Cournia
 Morten Haukness
-Morn Pistorius
+Morné Pistorius
 Michael Mc Donnell
 Michael Henheffer
 Michael Guerrero
@@ -297,7 +297,7 @@ Guillaume Taze
 Guillaume Chouvenc
 Giuseppe Donvito
 Gill Peacegood
-Giampaolo Vigan
+Giampaolo Viganò
 Gerrick Bivins
 George Tarantilis
 Ferdi Smit
@@ -305,7 +305,7 @@ Eduardo Poyart
 Edgar Ellis
 Dmitry Marakasov
 Dimi Christopoulos
-Diane Delalle
+Diane Delallée
 David Longest
 David Ergo
 Daniel Trstenjak
@@ -337,7 +337,7 @@ Vasily Radostev
 Valery Bickov
 Valeriy Dubov
 Vaclav Bilek
-Tyge Lvset
+Tyge Løvset
 Troy Yee
 Torben Dannahauer
 Tony Vasile
@@ -387,7 +387,7 @@ Piotr Rak
 Pierre Bourdin
 Philipp Svehla
 Philipp Siemoleit
-Philipp Mchler
+Philipp Mächler
 Philip Lamb
 Petr Salinger
 Peter Bear
@@ -412,7 +412,7 @@ Nick Thu
 Nick Black
 Mojtaba Fathi
 Mirko Viviani
-Mikkel Gjl
+Mikkel Gjøl
 Mike Krus
 Mike Garrity
 Mick Thu
@@ -465,7 +465,7 @@ Juan Hernando
 Josh Portway
 Jonathan Greig
 John Tan
-John Hedstrm
+John HedstrÃ¶m
 John Grant
 John Farrier
 John Donovan
@@ -524,11 +524,11 @@ David Jung
 Danny Valente
 Daniel Stien
 Dan Minor
-Csar L. B. Silveira
+César L. B. Silveira
 Cyril Brulebois
 Curtis Rubel
 Cory Slep
-Clment Bsch
+Clément B½sch
 Clay Fowler
 Claus Steuer
 Chuck Sembroski

@@ -37,7 +37,6 @@
 #include <osg/Texture2D>
 #include <osg/Texture3D>
 #include <osgDB/ReadFile>
-#include <osgDB/FileUtils>
 #include <osgUtil/Optimizer>
 
 #include <osg/Program>
@@ -141,10 +140,10 @@ ModelInstance()
 static void
 LoadShaderSource( osg::Shader* shader, const std::string& fileName )
 {
-    std::string fqFileName = osgDB::findDataFile(fileName);
-    if( fqFileName.length() != 0 )
+    osg::ref_ptr<osg::Shader> loaded_shader = osgDB::readRefShaderFile(fileName);
+    if (loaded_shader)
     {
-        shader->loadShaderSourceFromFile( fqFileName.c_str() );
+        shader->setShaderSource( loaded_shader->getShaderSource() );
     }
     else
     {

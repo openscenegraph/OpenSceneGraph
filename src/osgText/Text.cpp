@@ -1259,7 +1259,24 @@ void Text::accept(osg::Drawable::ConstAttributeFunctor& af) const
 
 void Text::accept(osg::PrimitiveFunctor& pf) const
 {
-    pf.setVertexArray(_coords->size(), &(_coords->front()));
+    if (!_coords || _coords->empty()) return;
+
+    // short term fix/workaround for _coords being transformed by a local matrix before rendering, so we need to replicate this was doing tasks like intersection testing.
+    osg::ref_ptr<osg::Vec3Array> vertices = _coords;
+    if (!_matrix.isIdentity())
+    {
+        vertices = new osg::Vec3Array;
+        vertices->resize(_coords->size());
+        for(Vec3Array::iterator sitr = _coords->begin(), ditr = vertices->begin();
+            sitr != _coords->end();
+            ++sitr, ++ditr)
+        {
+            *ditr = *sitr * _matrix;
+        }
+    }
+
+    pf.setVertexArray(vertices->size(), &(vertices->front()));
+
     for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
         ++titr)
@@ -1282,6 +1299,21 @@ void Text::accept(osg::PrimitiveFunctor& pf) const
             }
         }
     }
+}
+
+bool Text::getCharacterCorners(unsigned int index, osg::Vec3& bottomLeft, osg::Vec3& bottomRight, osg::Vec3& topLeft, osg::Vec3& topRight) const
+{
+    if (_coords) return false;
+
+    if ((index*4+4)>static_cast<unsigned int>(_coords->size())) return false;
+
+    unsigned int base = index*4;
+    topLeft = (*_coords)[base];
+    bottomLeft = (*_coords)[base+1];
+    bottomRight = (*_coords)[base+2];
+    topRight = (*_coords)[base+3];
+
+    return true;
 }
 
 void Text::resizeGLObjectBuffers(unsigned int maxSize)

@@ -24,52 +24,123 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
             supportsExtension("tctrl","OpenGL Shader Language format");
             supportsExtension("teval","OpenGL Shader Language format");
             supportsExtension("compute","OpenGL Shader Language format");
+            supportsExtension("cs","OpenGL Shader Language format");
+            supportsExtension("gs","OpenGL Shader Language format");
+            supportsExtension("vs","OpenGL Shader Language format");
+            supportsExtension("fs","OpenGL Shader Language format");
         }
 
         virtual const char* className() const { return "GLSL Shader Reader"; }
 
-        osg::Shader* processIncludes( const osg::Shader* shader, const Options* options ) const
+        void processIncludes( osg::Shader& shader, const Options* options ) const
         {
-            std::string code = shader->getShaderSource();
+            std::string code = shader.getShaderSource();
+            std::string startOfIncludeMarker("// Start of include code : ");
+            std::string endOfIncludeMarker("// End of include code : ");
+            std::string failedLoadMarker("// Failed to load include code : ");
+
+            #if defined(__APPLE__)
+            std::string endOfLine("\r");
+            #elif defined(_WIN32)
+            std::string endOfLine("\r\n");
+            #else
+            std::string endOfLine("\n");
+            #endif
+
 
             std::string::size_type pos = 0;
-
-            static std::string::size_type includeLen = 8;
-
-            while( ( pos = code.find( "#include", pos ) ) != std::string::npos )
+            std::string::size_type pragma_pos = 0;
+            std::string::size_type include_pos = 0;
+            while( (pos !=std::string::npos) && (((pragma_pos=code.find( "#pragma", pos )) != std::string::npos) || (include_pos=code.find( "#include", pos )) != std::string::npos))
             {
-                // we found an include
-                std::string::size_type pos2 = code.find_first_not_of( " ", pos + includeLen );
+                pos = (pragma_pos!= std::string::npos) ? pragma_pos : include_pos;
 
-                if ( ( pos2 == std::string::npos ) || ( code[ pos2 ] != '\"' ) )
+                std::string::size_type start_of_pragma_line = pos;
+                std::string::size_type end_of_line = code.find_first_of("\n\r", pos );
+
+                if (pragma_pos!= std::string::npos)
                 {
-                    // error, bail out
-                    return NULL;
+                    // we have #pragma usage so skip to the start of the first non white space
+                    pos = code.find_first_not_of(" \t", pos+7 );
+                    if (pos==std::string::npos) break;
+
+
+                    // check for include part of #pragma imclude usage
+                    if (code.compare(pos, 7, "include")!=0)
+                    {
+                        pos = end_of_line;
+                        continue;
+                    }
+
+                    // found include entry so skip to next non white space
+                    pos = code.find_first_not_of(" \t", pos+7 );
+                    if (pos==std::string::npos) break;
+                }
+                else
+                {
+                    // we have #include usage so skip to next non white space
+                    pos = code.find_first_not_of(" \t", pos+8 );
+                    if (pos==std::string::npos) break;
                 }
 
-                // we found an "
-                std::string::size_type pos3 = code.find( "\"", pos2 + 1 );
 
-                if ( pos3 == std::string::npos )
+                std::string::size_type num_characters = (end_of_line==std::string::npos) ? code.size()-pos : end_of_line-pos;
+                if (num_characters==0) continue;
+
+                // prune trailing white space
+                while(num_characters>0 && (code[pos+num_characters-1]==' ' || code[pos+num_characters-1]=='\t')) --num_characters;
+
+                if (code[pos]=='\"')
                 {
-                    return NULL;
+                    if (code[pos+num_characters-1]!='\"')
+                    {
+                        num_characters -= 1;
+                    }
+                    else
+                    {
+                        num_characters -= 2;
+                    }
+
+                    ++pos;
                 }
 
-                const std::string filename = code.substr( pos2 + 1, pos3 - pos2 - 1 );
+                std::string filename(code, pos, num_characters);
 
-                osg::ref_ptr<osg::Shader> innerShader = osgDB::readRefShaderFile( shader->getType(), filename, options );
+                code.erase(start_of_pragma_line, (end_of_line==std::string::npos) ? code.size()-start_of_pragma_line : end_of_line-start_of_pragma_line);
+                pos = start_of_pragma_line;
 
-                if ( !innerShader.valid() )
+                osg::ref_ptr<osg::Shader> innerShader = osgDB::readRefShaderFile( filename, options );
+
+                if (innerShader.valid())
                 {
-                    return NULL;
+                    if (!startOfIncludeMarker.empty())
+                    {
+                        code.insert(pos, startOfIncludeMarker); pos += startOfIncludeMarker.size();
+                        code.insert(pos, filename); pos += filename.size();
+                        code.insert(pos, endOfLine); pos += endOfLine.size();
+                    }
+
+                    code.insert(pos, innerShader->getShaderSource() ); pos += innerShader->getShaderSource().size();
+
+                    if (!endOfIncludeMarker.empty())
+                    {
+                        code.insert(pos, endOfIncludeMarker); pos += endOfIncludeMarker.size();
+                        code.insert(pos, filename); pos += filename.size();
+                        code.insert(pos, endOfLine); pos += endOfLine.size();
+                    }
                 }
-
-                code.replace( pos, pos3 - pos + 1, innerShader->getShaderSource() );
-
-                pos += innerShader->getShaderSource().size();
+                else
+                {
+                    if (!failedLoadMarker.empty())
+                    {
+                        code.insert(pos, failedLoadMarker); pos += failedLoadMarker.size();
+                        code.insert(pos, filename); pos += filename.size();
+                        code.insert(pos, endOfLine); pos += endOfLine.size();
+                    }
+                }
             }
 
-            return new osg::Shader( shader->getType(), code );
+            shader.setShaderSource(code);
         }
 
         virtual ReadResult readObject(std::istream& fin,const Options* options) const
@@ -104,8 +175,10 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
                 if (options->getOptionString().find("compute")!=std::string::npos) shader->setType(osg::Shader::COMPUTE);
             }
 
+            processIncludes( *shader, options );
+
             // return valid shader
-            return processIncludes( shader.get(), options );
+            return shader.get();
         }
 
         virtual ReadResult readShader(const std::string& file, const osgDB::ReaderWriter::Options* options) const
@@ -116,9 +189,12 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
             std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
+            osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+            local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
+
             osgDB::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
             if(!istream) return ReadResult::FILE_NOT_HANDLED;
-            ReadResult rr = readShader(istream, options);
+            ReadResult rr = readShader(istream, local_opt.get());
             if(rr.validShader())
             {
                 osg::Shader* shader = rr.getShader();
@@ -127,11 +203,15 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
                 {
                     // set type based on filename extension, where possible
                     if (ext == "frag") shader->setType(osg::Shader::FRAGMENT);
+                    if (ext == "fs") shader->setType(osg::Shader::FRAGMENT);
                     if (ext == "vert") shader->setType(osg::Shader::VERTEX);
+                    if (ext == "vs") shader->setType(osg::Shader::VERTEX);
                     if (ext == "geom") shader->setType(osg::Shader::GEOMETRY);
+                    if (ext == "gs") shader->setType(osg::Shader::GEOMETRY);
                     if (ext == "tctrl") shader->setType(osg::Shader::TESSCONTROL);
                     if (ext == "teval") shader->setType(osg::Shader::TESSEVALUATION);
                     if (ext == "compute") shader->setType(osg::Shader::COMPUTE);
+                    if (ext == "cs") shader->setType(osg::Shader::COMPUTE);
                 }
             }
             return rr;

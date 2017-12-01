@@ -182,8 +182,12 @@ public:
     virtual void accept(osg::PrimitiveFunctor& pf) const;
 
 
+    /** Get the coordinates of the character corners in local coordinates. Use Text::getMatrix() or Text::computeMatrix(..) to get the transform into model coordinates (see TextBase header.) */
+    bool getCharacterCorners(unsigned int index, osg::Vec3& bottomLeft, osg::Vec3& bottomRight, osg::Vec3& topLeft, osg::Vec3& topRight) const;
+
     /** Resize any per context GLObject buffers to specified size. */
     virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
 
     /** If State is non-zero, this function releases OpenGL objects for
       * the specified graphics context. Otherwise, releases OpenGL objexts

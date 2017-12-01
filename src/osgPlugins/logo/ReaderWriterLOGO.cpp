@@ -321,7 +321,7 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
             if( ld->hasLogos() )
                 geode->addDrawable( ld );
 
-            geode->setCullingActive(false);
+            ld->setCullingActive(false);
             return geode;
         }
 };

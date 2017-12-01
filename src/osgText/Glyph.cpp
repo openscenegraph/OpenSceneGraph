@@ -56,6 +56,7 @@ using namespace std;
 // GlyphTexture
 //
 GlyphTexture::GlyphTexture():
+    _shaderTechnique(GREYSCALE),
     _usedY(0),
     _partUsedX(0),
     _partUsedY(0)

@@ -124,23 +124,19 @@ static bool writeFeedBackMode( osgDB::OutputStream& os, const osg::Program& attr
 // _numGroupsX/Y/Z
 static bool checkComputeGroups( const osg::Program& attr )
 {
-    GLint numX = 0, numY = 0, numZ = 0;
-    attr.getComputeGroups( numX, numY, numZ );
-    return numX>0 && numY>0 && numZ>0;
+    return false;
 }
 
 static bool readComputeGroups( osgDB::InputStream& is, osg::Program& attr )
 {
     GLint numX = 0, numY = 0, numZ = 0;
     is >> numX >> numY >> numZ;
-    attr.setComputeGroups( numX, numY, numZ );
     return true;
 }
 
 static bool writeComputeGroups( osgDB::OutputStream& os, const osg::Program& attr )
 {
     GLint numX = 0, numY = 0, numZ = 0;
-    attr.getComputeGroups( numX, numY, numZ );
     os << numX << numY << numZ << std::endl;
     return true;
 }
@@ -193,6 +189,11 @@ REGISTER_OBJECT_WRAPPER( Program,
     {
         UPDATE_TO_VERSION_SCOPED( 95 )
         ADD_USER_SERIALIZER( ComputeGroups );  // _numGroupsX/Y/Z
+    }
+
+    {
+        UPDATE_TO_VERSION_SCOPED( 153 )
+        REMOVE_SERIALIZER( ComputeGroups );
     }
 
     {

@@ -20,6 +20,7 @@
 #include <osgUtil/SmoothingVisitor>
 #include <osg/TexEnv>
 #include <osgDB/ReaderWriter>
+#include <osgDB/FileNameUtils>
 #include <osgDB/ReadFile>
 #include <osg/Texture2D>
 
@@ -311,7 +312,8 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
     MESHINFO << filename << ": " << nPlyElems << " elements, file type = "
              << fileType << ", version = " << version << endl;
     #endif
-    char *textureFile = NULL;
+
+    std::string textureFile;
     for( int i = 0; i < nComments; i++ )
     {
         if( equal_strings( comments[i], "modified by flipply" ) )
@@ -321,38 +323,11 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         if (strncmp(comments[i], "TextureFile",11)==0)
         {
             textureFile = comments[i]+12;
-            char * path = new char[strlen(const_cast<char*>(filename)) + 1 + strlen(comments[i])];
-            if (textureFile[0] == '\\' || textureFile[0] == '/' || textureFile[1] == ':')
+            if (!osgDB::isAbsolutePath(textureFile))
             {
-                // texture filename is absolute
-                strcpy(path, textureFile);
+                textureFile = osgDB::concatPaths(osgDB::getFilePath(filename), textureFile);
             }
-            else
-            {
-                // texture filename is relative
-                // add directory of ply file
-                strcpy(path, const_cast<char*>(filename));
-                char *pp = path + strlen(path);
-                while (pp >= path)
-                {
-                    if (*pp == '\\' || *pp == '/')
-                    {
-                        pp++;
-                        *pp = '\0';
-                        break;
-                    }
-                    pp--;
-                }
-                if (pp == path - 1)
-                {
-                    pp++;
-                    *pp = '\0';
-                }
-                strcat(path, textureFile);
-            }
-            textureFile = path;
         }
-
     }
     for( int i = 0; i < nPlyElems; ++i )
     {
@@ -563,11 +538,11 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         // set flage true to activate the vertex buffer object of drawable
         geom->setUseVertexBufferObjects(true);
 
-        osg::Image *image = NULL;
-        if (textureFile && (image = osgDB::readImageFile(textureFile)) != NULL)
+        osg::ref_ptr<osg::Image> image;
+        if (!textureFile.empty() && (image = osgDB::readRefImageFile(textureFile)) != NULL)
         {
             osg::Texture2D *texture = new osg::Texture2D;
-            texture->setImage(image);
+            texture->setImage(image.get());
             texture->setResizeNonPowerOfTwoHint(false);
 
             osg::TexEnv *texenv = new osg::TexEnv;
@@ -576,7 +551,6 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
             osg::StateSet *stateset = geom->getOrCreateStateSet();
             stateset->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
             stateset->setTextureAttribute(0, texenv);
-            delete[] textureFile;
         }
 
         osg::Geode* geode = new osg::Geode;

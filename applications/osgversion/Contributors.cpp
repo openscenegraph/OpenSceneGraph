@@ -277,6 +277,8 @@ const char* invalidNames[] =
     "PrimitiveFunctor",
     "OpenMW",
     "StreamOperator",
+    "SceneLoader",
+    "OpenGL",
     "FindLIBLAS"
 };
 

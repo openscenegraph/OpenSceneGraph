@@ -1231,7 +1231,22 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 return true;
             }
 
-            else if (ea.getKey()=='U')
+            return false;
+        }
+        case(osgGA::GUIEventAdapter::KEYUP):
+        {
+            if (ea.getKey()=='h')
+            {
+                _hold = false;
+                return true;
+            }
+            else if (ea.getKey()=='e')
+            {
+                // reload presentation to reflect changes from editor
+                setRequestReload(true);
+                return true;
+            }
+            else if (ea.getKey()=='E')
             {
                 char* editor = getenv("P3D_EDITOR");
                 if (!editor) editor = getenv("EDITOR");
@@ -1250,20 +1265,6 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 return true;
             }
 
-            return false;
-        }
-        case(osgGA::GUIEventAdapter::KEYUP):
-        {
-            if (ea.getKey()=='h')
-            {
-                _hold = false;
-                return true;
-            }
-            else if (ea.getKey()=='u')
-            {
-                setRequestReload(true);
-                return true;
-            }
             return false;
         }
         default:

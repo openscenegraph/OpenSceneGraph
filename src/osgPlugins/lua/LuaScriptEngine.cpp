@@ -755,19 +755,44 @@ static int callStateSetSet(lua_State* _lua)
     }
     else if (lua_type(_lua,2)==LUA_TSTRING)
     {
-        std::string modeString = lua_tostring(_lua, 2);
-        GLenum mode = lse->lookUpGLenumValue(modeString);
+        std::string key = lua_tostring(_lua, 2);
+        GLenum mode = lse->lookUpGLenumValue(key);
         if (n>=3)
         {
-            osg::StateAttribute::OverrideValue value=osg::StateAttribute::ON;
-            bool setOnOff = false;
-            if (lua_type(_lua,3)==LUA_TSTRING)
+            if (mode)
             {
-                value = convertStringToStateAttributeValue(lua_tostring(_lua, 3), value, setOnOff);
-            }
+                osg::StateAttribute::OverrideValue value=osg::StateAttribute::ON;
+                bool setOnOff = false;
+                if (lua_type(_lua,3)==LUA_TSTRING)
+                {
+                    value = convertStringToStateAttributeValue(lua_tostring(_lua, 3), value, setOnOff);
+                }
 
-            stateset->setMode(mode, value);
-            return 0;
+                stateset->setMode(mode, value);
+                return 0;
+            }
+            else
+            {
+                std::string value;
+                if (lua_type(_lua,3)==LUA_TSTRING)
+                {
+                    value = lua_tostring(_lua, 3);
+                }
+                stateset->setDefine(key, value);
+            }
+        }
+        else
+        {
+            if (mode)
+            {
+                osg::StateAttribute::OverrideValue value=osg::StateAttribute::ON;
+                stateset->setMode(mode, value);
+                return 0;
+            }
+            else
+            {
+                stateset->setDefine(key);
+            }
         }
     }
 
@@ -982,6 +1007,19 @@ static int callStateSetGet(lua_State* _lua)
             }
         }
 
+
+        const osg::StateSet::DefineList& dl = stateset->getDefineList();
+        for(osg::StateSet::DefineList::const_iterator itr = dl.begin();
+            itr != dl.end();
+            ++itr)
+        {
+            if (value == itr->first)
+            {
+                lua_pushstring(_lua, itr->second.first.c_str());
+                return 1;
+            }
+        }
+
         OSG_NOTICE<<"Warning: StateSet:get("<<value<<") Could not find matching mode or attribute"<<std::endl;
         lua_pushnil(_lua);
         return 1;
@@ -1112,6 +1150,18 @@ static int callStateSetRemove(lua_State* _lua)
                 value == itr->second.first->getName())
             {
                 stateset->removeUniform(itr->second.first.get());
+                return 0;
+            }
+        }
+
+        const osg::StateSet::DefineList& dl = stateset->getDefineList();
+        for(osg::StateSet::DefineList::const_iterator itr = dl.begin();
+            itr != dl.end();
+            ++itr)
+        {
+            if (value == itr->first)
+            {
+                stateset->removeDefine(value);
                 return 0;
             }
         }

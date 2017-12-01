@@ -58,7 +58,7 @@ void TexGen::setMode( Mode mode )
 
 void TexGen::configureUniformNames()
 {
-    OSG_NOTICE<<__PRETTY_FUNCTION__<<"  _textureUnit="<<_textureUnit<<std::endl;
+    //OSG_NOTICE<<__PRETTY_FUNCTION__<<"  _textureUnit="<<_textureUnit<<std::endl;
 
     MakeString str;
     std::string TEXTURE_GEN_FUNCTION = str<<"TEXTURE_GEN_FUNCTION"<<_textureUnit;

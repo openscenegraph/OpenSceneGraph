@@ -1798,6 +1798,24 @@ static int readImageFile(lua_State * _lua)
     return 0;
 }
 
+static int readShaderFile(lua_State * _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n==1 && lua_type(_lua, 1)==LUA_TSTRING)
+    {
+        std::string filename = lua_tostring(_lua, 1);
+        osg::ref_ptr<osg::Shader> shader = osgDB::readRefShaderFile(filename);
+        if (shader.valid())
+        {
+            lse->pushObject(shader.get());
+            return 1;
+        }
+    }
+    return 0;
+}
+
 static int readNodeFile(lua_State * _lua)
 {
     const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
@@ -1914,6 +1932,13 @@ void LuaScriptEngine::initialize()
         lua_pushlightuserdata(_lua, this);
         lua_pushcclosure(_lua, readImageFile, 1);
         lua_setglobal(_lua, "readImageFile");
+    }
+
+    // provide global new method for read Images
+    {
+        lua_pushlightuserdata(_lua, this);
+        lua_pushcclosure(_lua, readShaderFile, 1);
+        lua_setglobal(_lua, "readShaderFile");
     }
 
     // provide global new method for read Images

@@ -174,6 +174,75 @@ static bool writeBindUniformBlock( osgDB::OutputStream& os, const osg::Program& 
     return true;
 }
 
+
+
+struct ProgramGetNumShaders : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+    {
+        osg::Program* program = reinterpret_cast<osg::Program*>(objectPtr);
+        outputParameters.push_back(new osg::UIntValueObject("return", program->getNumShaders()));
+        return true;
+    }
+};
+
+struct ProgramGetShader : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+    {
+        if (inputParameters.empty()) return false;
+
+        osg::Object* indexObject = inputParameters[0].get();
+
+        unsigned int index = 0;
+        osg::DoubleValueObject* dvo = dynamic_cast<osg::DoubleValueObject*>(indexObject);
+        if (dvo) index = static_cast<unsigned int>(dvo->getValue());
+        else
+        {
+            osg::UIntValueObject* uivo = dynamic_cast<osg::UIntValueObject*>(indexObject);
+            if (uivo) index = uivo->getValue();
+        }
+        osg::Program* program = reinterpret_cast<osg::Program*>(objectPtr);
+        outputParameters.push_back(program->getShader(index));
+
+        return true;
+    }
+};
+
+struct ProgramAddShader : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+    {
+        if (inputParameters.empty()) return false;
+
+        osg::Shader* shader = dynamic_cast<osg::Shader*>(inputParameters[0].get());
+        if (!shader) return false;
+
+        osg::Program* program = reinterpret_cast<osg::Program*>(objectPtr);
+        program->addShader(shader);
+
+        return true;
+    }
+};
+
+
+struct ProgramRemoveShader : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+    {
+        if (inputParameters.empty()) return false;
+
+        osg::Shader* shader = dynamic_cast<osg::Shader*>(inputParameters[0].get());
+        if (!shader) return false;
+
+        osg::Program* program = reinterpret_cast<osg::Program*>(objectPtr);
+        program->removeShader(shader);
+
+        return true;
+    }
+};
+
+
 REGISTER_OBJECT_WRAPPER( Program,
                          new osg::Program,
                          osg::Program,
@@ -205,4 +274,11 @@ REGISTER_OBJECT_WRAPPER( Program,
         UPDATE_TO_VERSION_SCOPED( 150 )
         ADD_USER_SERIALIZER( BindUniformBlock );
     }
+
+
+    ADD_METHOD_OBJECT( "getNumShaders", ProgramGetNumShaders );
+    ADD_METHOD_OBJECT( "getShader", ProgramGetShader );
+    ADD_METHOD_OBJECT( "addShader", ProgramAddShader );
+    ADD_METHOD_OBJECT( "removeShader", ProgramRemoveShader );
+
 }

@@ -781,21 +781,21 @@ void DisplaySettings::readEnvironmentalVariables()
     }
 
 
-    if( (ptr = getenv("OSG_SHADER_PIPELINE")) != 0)
+    if (getEnvVar("OSG_SHADER_PIPELINE", value))
     {
-        if (strcmp(ptr,"OFF")==0)
+        if (value=="OFF")
         {
             _shaderPipeline = false;
         }
         else
-        if (strcmp(ptr,"ON")==0)
+        if (value=="ON")
         {
             _shaderPipeline = true;
         }
     }
 
 
-    if ((ptr = getenv("OSG_SHADER_PIPELINE_FILES")) != 0)
+    if (getEnvVar("OSG_SHADER_PIPELINE_FILES", value))
     {
     #if defined(WIN32) && !defined(__CYGWIN__)
         char delimitor = ';';
@@ -805,7 +805,7 @@ void DisplaySettings::readEnvironmentalVariables()
 
         _shaderPipelineFiles.clear();
 
-        std::string paths(ptr);
+        std::string paths(value);
         if (!paths.empty())
         {
             std::string::size_type start = 0;
@@ -822,9 +822,9 @@ void DisplaySettings::readEnvironmentalVariables()
         }
     }
 
-    if( (ptr = getenv("OSG_SHADER_PIPELINE_NUM_TEXTURE_UNITS")) != 0)
+    if(getEnvVar("OSG_SHADER_PIPELINE_NUM_TEXTURE_UNITS", value))
     {
-        _shaderPipelineNumTextureUnits = atoi(ptr);
+        _shaderPipelineNumTextureUnits = atoi(value.c_str());
 
     }
     OSG_NOTICE<<"_shaderPipelineNumTextureUnits = "<<_shaderPipelineNumTextureUnits<<std::endl;

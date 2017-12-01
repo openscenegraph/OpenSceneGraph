@@ -735,15 +735,13 @@ void SceneView::cull()
             _cullVisitorLeft->setClampProjectionMatrixCallback(_cullVisitor->getClampProjectionMatrixCallback());
             _cullVisitorLeft->setTraversalMask(_cullMaskLeft);
             computeLeftEyeViewport(getViewport());
-            bool computeNearFar = cullStage(computeLeftEyeProjection(getProjectionMatrix()),computeLeftEyeView(getViewMatrix()),_cullVisitorLeft.get(),_stateGraphLeft.get(),_renderStageLeft.get(),_viewportLeft.get());
-
 
             // set up the right eye.
             _cullVisitorRight->setDatabaseRequestHandler(_cullVisitor->getDatabaseRequestHandler());
             _cullVisitorRight->setClampProjectionMatrixCallback(_cullVisitor->getClampProjectionMatrixCallback());
             _cullVisitorRight->setTraversalMask(_cullMaskRight);
             computeRightEyeViewport(getViewport());
-            computeNearFar = cullStage(computeRightEyeProjection(getProjectionMatrix()),computeRightEyeView(getViewMatrix()),_cullVisitorRight.get(),_stateGraphRight.get(),_renderStageRight.get(),_viewportRight.get());
+            bool computeNearFar = cullStage(computeRightEyeProjection(getProjectionMatrix()),computeRightEyeView(getViewMatrix()),_cullVisitorRight.get(),_stateGraphRight.get(),_renderStageRight.get(),_viewportRight.get());
 
             if (computeNearFar)
             {

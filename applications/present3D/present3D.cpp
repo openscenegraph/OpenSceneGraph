@@ -805,8 +805,6 @@ int main( int argc, char **argv )
         viewer.realize();
 
         if (doSetViewer) setViewer(viewer, width, height, distance);
-
-        viewerInitialized = true;
     }
 
 

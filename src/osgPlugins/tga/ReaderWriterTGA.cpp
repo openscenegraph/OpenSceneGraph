@@ -405,6 +405,7 @@ int *numComponents_ret)
                         break;
                     default:
                         tgaerror = ERR_UNSUPPORTED;
+                        delete[] formattedMap;
                         return NULL; /* unreachable code - (depth < 1 || depth > 4) rejected by "check for reasonable values in case this is not a tga file" near the start of this function*/
                     }
 

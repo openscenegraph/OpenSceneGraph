@@ -589,8 +589,6 @@ bool daeReader::processColorOrTextureType(const osg::StateSet* ss,
     }
     bool retVal = false;
 
-    std::string texCoordSet;
-
     //osg::StateAttribute *sa = NULL;
     //TODO: Make all channels process <param ref=""> type of value
     if (channel == osg::Material::EMISSION )

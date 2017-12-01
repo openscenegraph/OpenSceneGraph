@@ -36,8 +36,6 @@ Q3BSPReader::Q3BSPReader()
 bool Q3BSPReader::readFile(const std::string& file,
                            const osgDB::ReaderWriter::Options* options)
 {
-    std::string ext = osgDB::getLowerCaseFileExtension(file);
-
     Q3BSPLoad load_data;
     load_data.Load(file,8);
 

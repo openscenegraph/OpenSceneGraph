@@ -1207,8 +1207,8 @@ void SharedArrayOptimizer::findDuplicatedUVs(const osg::Geometry& geometry)
     for(unsigned int id = 0 ; id != geometry.getNumTexCoordArrays() ; ++ id)
     {
         const osg::Array* channel = geometry.getTexCoordArray(id);
-        // test if array is shared outside the geometry
-        if(channel && static_cast<unsigned int>(channel->referenceCount()) == arrayPointerCounter[channel])
+        // test if array is shared inside the geometry
+        if(channel && arrayPointerCounter[channel] > 1)
         {
             std::map<const osg::Array*, unsigned int>::const_iterator reference = references.find(channel);
             if(reference == references.end())

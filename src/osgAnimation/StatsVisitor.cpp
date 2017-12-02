@@ -77,10 +77,6 @@ void StatsActionVisitor::apply(ActionStripAnimation& action)
     if (isActive(action))
     {
         _channels.push_back(action.getName());
-        double value;
-        std::string name = action.getName();
-        if (_stats->getAttribute(_frame, name, value))
-            name += "+";
         _stats->setAttribute(_frame, action.getName(), action.getAnimation()->getAnimation()->getWeight());
     }
 }

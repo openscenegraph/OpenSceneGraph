@@ -409,7 +409,6 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
             if (!visitor)
                 return;
 
-            std::string font("fonts/arial.ttf");
             float leftPos = 10.0f;
             float characterSize = 20.0f;
 

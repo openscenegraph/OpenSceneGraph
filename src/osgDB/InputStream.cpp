@@ -709,11 +709,13 @@ osg::ref_ptr<osg::Image> InputStream::readImage(bool readFromExternal)
                 char* data = new char[size];
                 if ( !data )
                     throwException( "InputStream::readImage() Out of memory." );
+
                 if ( getException() )
                 {
-                    delete[] data;
+                    delete [] data;
                     return NULL;
                 }
+
                 readCharArray( data, size );
                 image = new osg::Image;
                 image->setOrigin( (osg::Image::Origin)origin );

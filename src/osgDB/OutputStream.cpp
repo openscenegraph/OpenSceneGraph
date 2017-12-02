@@ -860,7 +860,6 @@ void OutputStream::writeSchema( std::ostream& fout )
         ObjectWrapper::TypeList types;
         wrapper->writeSchema( properties, types );
 
-        std::string propertiesString;
         unsigned int size = osg::minimum( properties.size(), types.size() );
         for ( unsigned int i=0; i<size; ++i )
         {

@@ -126,7 +126,7 @@ void TerrainManipulator::setByMatrix(const Matrixd& matrix)
 
             _rotation.set(0,0,0,1);
 
-            hitFound = true;
+            //hitFound = true;
         }
     }
 

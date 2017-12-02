@@ -813,7 +813,6 @@ public:
         osg::ref_ptr<Point> edge_p1 = edge->_p1;
         osg::ref_ptr<Point> edge_p2 = edge->_p2;
 
-        TriangleMap  triangleMap;
         TriangleList triangles_p1;
         TriangleList triangles_p2;
         LocalEdgeList oldEdges;

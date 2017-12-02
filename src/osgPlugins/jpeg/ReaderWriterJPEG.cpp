@@ -689,7 +689,7 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
               default:
               {
                   OSG_DEBUG << "ReaderWriterJPEG::write_JPEG_file - Error pixel format non supported" << std::endl;
-                return WriteResult::ERROR_IN_WRITING_FILE; break;
+                  return WriteResult::ERROR_IN_WRITING_FILE;
               }
             }
 

@@ -286,7 +286,6 @@ void ApplicationUsage::write(std::ostream& output, unsigned int type, unsigned i
         if (needspace) output << std::endl;
         output << "Keyboard and Mouse Bindings:"<<std::endl;
         write(output,getKeyboardMouseBindings(),widthOfOutput);
-        needspace = true;
     }
 
 }

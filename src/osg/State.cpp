@@ -1257,7 +1257,6 @@ namespace State_Utils
                 std::string::size_type start_var = pos;
                 ++pos;
                 pos = str.find_first_not_of("ABCDEFGHIJKLMNOPQRTSUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_", pos);
-                std::string var_str;
                 if (pos != std::string::npos)
                 {
 

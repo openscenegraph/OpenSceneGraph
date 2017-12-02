@@ -570,15 +570,10 @@ void Geometry::setUseVertexBufferObjects(bool flag)
     DrawElementsList drawElementsList;
     getDrawElementsList(drawElementsList);
 
-    typedef std::vector<osg::VertexBufferObject*>  VertexBufferObjectList;
-    typedef std::vector<osg::ElementBufferObject*>  ElementBufferObjectList;
-
     /*if (_useVertexBufferObjects)*/
     {
         if (!arrayList.empty())
         {
-
-            VertexBufferObjectList vboList;
 
             osg::ref_ptr<osg::VertexBufferObject> vbo;
 
@@ -604,8 +599,6 @@ void Geometry::setUseVertexBufferObjects(bool flag)
 
         if (!drawElementsList.empty())
         {
-            ElementBufferObjectList eboList;
-
             osg::ref_ptr<osg::ElementBufferObject> ebo;
 
             DrawElementsList::iterator deitr;

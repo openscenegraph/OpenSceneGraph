@@ -1,3 +1,152 @@
+Sun, 3 Dec 2017 11:17:34 +0000
+Author : Robert Osfield
+Renamed chanels to array to be consistent with the rest of the usage
+
+Sun, 3 Dec 2017 11:12:20 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #398 from marchelbling/sharedarrayoptimizer-fixImprove SharedArrayOptimizer
+
+Sun, 3 Dec 2017 10:49:39 +0000
+Author : Robert Osfield
+Removed redundent !ps
+
+Sun, 3 Dec 2017 09:49:09 +0000
+Author : Robert Osfield
+Removed unused local variable and associated typedef
+
+Sun, 3 Dec 2017 09:45:37 +0000
+Author : Robert Osfield
+Quietened down cppcheck false positive.
+
+Sun, 3 Dec 2017 09:38:32 +0000
+Author : Robert Osfield
+Fixed leak and clean up formatting.
+
+Sun, 3 Dec 2017 09:34:43 +0000
+Author : Robert Osfield
+From Jordi Torres, fixed leak and inappropriate read bug
+
+Sun, 3 Dec 2017 09:32:50 +0000
+Author : Robert Osfield
+From Jordi Torres, removed unused local variable
+
+Sun, 3 Dec 2017 09:30:35 +0000
+Author : Robert Osfield
+From Jordi Torres, fix indentation and removed redundent break;
+
+Sun, 3 Dec 2017 09:27:41 +0000
+Author : Robert Osfield
+From Jordi Torres, added ref_ptr<> usage to quieten cppcheck false positive
+
+Sat, 2 Dec 2017 18:07:13 +0000
+Author : Robert Osfield
+From Jordi Torres, removed unused local variables
+
+Sat, 2 Dec 2017 18:04:43 +0000
+Author : Robert Osfield
+From Jordi Torres, removed unused local variables
+
+Sat, 2 Dec 2017 18:00:03 +0000
+Author : Robert Osfield
+From Jordi Torres, Removed unused local variables
+
+Sat, 2 Dec 2017 17:58:17 +0000
+Author : Robert Osfield
+From Jordi Torres, removed unused local variables
+
+Sat, 2 Dec 2017 17:52:47 +0000
+Author : Robert Osfield
+From Jordi Torres, removed unused local variables
+
+Sat, 2 Dec 2017 17:42:53 +0000
+Author : Robert Osfield
+Commented out unused local variables
+
+Sat, 2 Dec 2017 17:41:27 +0000
+Author : Robert Osfield
+From Jordi Torres, removed unused local variable
+
+Sat, 2 Dec 2017 17:35:36 +0000
+Author : Robert Osfield
+Fixed string parsing and substituion bugs isn substitudeEnvVars(..)
+
+Sat, 2 Dec 2017 17:08:14 +0000
+Author : Robert Osfield
+From Jordi Torres, removed unused local variables
+
+Sat, 2 Dec 2017 16:49:47 +0000
+Author : Jordi Torres
+same values in || so one of them not needed
+
+Sat, 2 Dec 2017 16:35:16 +0000
+Author : Robert Osfield
+Improved readaibility of text by removing redundent indirection.
+
+Sat, 2 Dec 2017 16:20:34 +0000
+Author : Robert Osfield
+Fixes for cppcheck reported issues
+
+Fri, 1 Dec 2017 12:26:00 +0100
+Author : Marc Helbling
+Improve SharedArrayOptimizerWhen an array is shared within and outside a geometry, it's still worth it and safe
+to recreate the reference within each individual geometry.
+
+
+Thu, 30 Nov 2017 14:13:21 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #396 from bjornblissing/feature/DPIAwareScalingApplications declared as DPI-aware in the Windows environment
+
+Thu, 30 Nov 2017 14:12:05 +0000
+Author : OpenSceneGraph git repository
+Added return to last line
+
+Thu, 30 Nov 2017 12:48:47 +0000
+Author : Robert Osfield
+Quieted down dubug output
+
+Thu, 30 Nov 2017 13:00:54 +0100
+Author : Björn Blissing
+Applications declared DPI-aware in the Windows environmentApplications that run on a Windows computer with desktop scaling enabled
+gets scaled incorrectly since windows assumes that applications are
+DPI-unaware unless declared otherwise.
+
+This change declares the application DPI-aware, thus not automatically
+scaled by the operating system.
+
+The corresponding library call requires Windows 8.1 or later.
+
+
+Thu, 30 Nov 2017 12:53:24 +0100
+Author : Björn Blissing
+Added script to identify Windows versionAdded script to identify the Windows version used to compile the source.
+Currently the windows version for Windows NT is hard coded into the
+source. By running this CMake script the _WIN32_WINNT preprocessor
+variable gets set to the corresponding windows version.
+
+
+Thu, 30 Nov 2017 12:47:57 +0100
+Author : Björn Blissing
+Removed unnecessary define in FileUtilsThe define of _WIN32_WINNT was added to handle an error case from MinGW
+,as described in commit 712ca432196cd797cc3c265adb2847465551461f
+
+This was later giving warnings and thus undefined for MinGW by commit
+3bf6fb1778687c45d389b91675b55f709ef1f67b
+
+Since the two operations cancel each other out, they should be removed.
+
+
+Wed, 29 Nov 2017 21:20:10 +0000
+Author : Robert Osfield
+Typo fix
+
+Wed, 29 Nov 2017 15:06:53 +0000
+Author : Robert Osfield
+Update version to 3.5.10
+
+Wed, 29 Nov 2017 14:49:00 +0000
+Author : Robert Osfield
+Updated ChangeLog and AUTHORS for 3.5.9 dev release
+
 Wed, 29 Nov 2017 14:44:00 +0000
 Author : Robert Osfield
 Fixed build with OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION set to OFF

@@ -279,7 +279,8 @@ const char* invalidNames[] =
     "StreamOperator",
     "SceneLoader",
     "OpenGL",
-    "FindLIBLAS"
+    "FindLIBLAS",
+    "MinGW"
 };
 
 

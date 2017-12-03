@@ -231,7 +231,6 @@ bool Model::readMTL(std::istream& fin)
     bool usingDissolve = false;
 
     Material* material = 0;// &(materialMap[""]);
-    std::string filename;
 
     while (fin)
     {

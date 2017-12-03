@@ -874,7 +874,7 @@ void Shader::_computeShaderDefines()
 
         std::string::size_type first_chararcter = find_first(_shaderSource, NoneOf(" \t"), pos, eol);
 
-        OSG_NOTICE<<"\nFound pragma line ["<<_shaderSource.substr(first_chararcter, eol-first_chararcter)<<"]"<<std::endl;
+        OSG_INFO<<"\nFound pragma line ["<<_shaderSource.substr(first_chararcter, eol-first_chararcter)<<"]"<<std::endl;
 
         if (first_chararcter<eol)
         {
@@ -916,7 +916,7 @@ void Shader::_computeShaderDefines()
         pos = eol;
     }
 
-#if 1
+#if 0
     for(ShaderDefines::iterator itr = _shaderPragmas.defines.begin();
         itr != _shaderPragmas.defines.end();
         ++itr)

@@ -27,6 +27,7 @@
 
 #include <osgDB/Registry>
 #include <osgDB/FileUtils>
+#include <osgDB/ReadFile>
 #include <osgDB/FileNameUtils>
 #include <osgDB/fstream>
 #include <osgDB/Archive>

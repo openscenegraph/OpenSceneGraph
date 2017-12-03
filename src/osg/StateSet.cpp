@@ -704,26 +704,17 @@ void StateSet::setGlobalDefaults()
                 itr != files.end();
                 ++itr)
             {
-                std::string fileName = *itr;
-                std::string ext;
-                std::string::size_type dot = fileName.find_last_of('.');
-                if (dot!=std::string::npos) ext = std::string(fileName.begin()+dot+1,fileName.end());
-                OSG_NOTICE<<"    filename "<<*itr<<", "<<ext<<std::endl;
-
-                if (ext=="vert")
+                // look up object for specified filename - this will be preloaded by osgDB::Registry
+                osg::Object* object = DisplaySettings::instance()->getObject(*itr);
+                osg::Shader* shader = dynamic_cast<osg::Shader*>(object);
+                if (shader)
                 {
-                    OSG_NOTICE<<"vertex shader: "<<*itr<<std::endl;
-                    program->addShader(Shader::readShaderFile( Shader::VERTEX, fileName));
+                    program->addShader(shader);
                 }
-                else if (ext=="frag")
-                {
-                    OSG_NOTICE<<"fragment shader: "<<*itr<<std::endl;
-                    program->addShader(Shader::readShaderFile( Shader::FRAGMENT, fileName));
-                }
-
             }
         }
-        else
+
+        if (program->getNumShaders()==0)
         {
             OSG_NOTICE<<"void StateSet::setGlobalDefaults() ShaderPipeline enabled, numTextUnits = "<<DisplaySettings::instance()->getShaderPipelineNumTextureUnits()<<std::endl;
 

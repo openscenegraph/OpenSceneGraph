@@ -380,6 +380,10 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         void setValue(const std::string& name, const std::string& value);
         bool getValue(const std::string& name, std::string& value, bool use_getenv_fallback=true) const;
 
+        void setObject(const std::string& name, osg::Object* object) { _objectMap[name] = object; }
+        Object* getObject(const std::string& name) { ObjectMap::iterator itr = _objectMap.find(name); return itr!=_objectMap.end() ? itr->second.get() : 0; }
+        const Object* getObject(const std::string& name) const { ObjectMap::const_iterator itr = _objectMap.find(name); return itr!=_objectMap.end() ? itr->second.get() : 0; }
+
 protected:
 
         virtual ~DisplaySettings();
@@ -451,9 +455,11 @@ protected:
         unsigned int                    _shaderPipelineNumTextureUnits;
 
         typedef std::map<std::string, std::string> ValueMap;
+        typedef std::map<std::string, ref_ptr<Object> > ObjectMap;
 
         mutable OpenThreads::Mutex      _valueMapMutex;
         mutable ValueMap                _valueMap;
+        mutable ObjectMap               _objectMap;
 
 };
 

@@ -361,7 +361,7 @@ osg::Node* daeReader::processLight( domLight *dlight )
     lightmodel->setAmbientIntensity(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
     _rootStateSet->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
 
-    osg::LightSource* lightsource = new osg::LightSource();
+    osg::ref_ptr<osg::LightSource> lightsource = new osg::LightSource();
     lightsource->setLight(light);
     std::string name = dlight->getId() ? dlight->getId() : "";
     if (dlight->getName())
@@ -520,7 +520,7 @@ osg::Node* daeReader::processLight( domLight *dlight )
         light->setDirection(osg::Vec3(0, 0, -1));
     }
 
-    return lightsource;
+    return lightsource.release();
 }
 
 // <camera>

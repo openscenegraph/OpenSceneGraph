@@ -653,8 +653,6 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
     bool                    found = false;
     ref_ptr<StateSet>       stateSet;
     std::string             shaderName;
-    std::string             texName;
-    std::string             tex2Name;
     ref_ptr<Texture>        texture;
     ref_ptr<Texture>        texture2;
     ref_ptr<TexEnvCombine>  combiner0;
@@ -992,7 +990,6 @@ void VBSPReader::createScene()
     Quat                        yaw, pitch, roll;
     ref_ptr<MatrixTransform>    propXform;
     std::string                 propModel;
-    std::string                 propFile;
     ref_ptr<Node>               propNode;
 
     // Load the materials and create a StateSet for each one

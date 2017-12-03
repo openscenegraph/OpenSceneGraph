@@ -20,9 +20,8 @@ osg::PrimitiveSet * drawElementsTemplate(GLenum mode,GLsizei count, const typena
 {
      if (indices==0 || count==0) return NULL;
 
-     Type * dePtr = new Type(mode);
-     Type & de = *dePtr;
-     de.reserve(count);
+     Type * primitives = new Type(mode);
+     primitives->reserve(count);
 
      typedef const typename Type::value_type* IndexPointer;
 
@@ -34,9 +33,9 @@ osg::PrimitiveSet * drawElementsTemplate(GLenum mode,GLsizei count, const typena
 
              for (IndexPointer iptr=indices; iptr<ilast; iptr+=3)
              {
-                 de.push_back(*(iptr));
-                 de.push_back(*(iptr+2));
-                 de.push_back(*(iptr+1));
+                 primitives->push_back(*(iptr));
+                 primitives->push_back(*(iptr+2));
+                 primitives->push_back(*(iptr+1));
              }
              break;
          }
@@ -46,10 +45,10 @@ osg::PrimitiveSet * drawElementsTemplate(GLenum mode,GLsizei count, const typena
              IndexPointer ilast = &indices[count - 3];
              for (IndexPointer iptr = indices; iptr<ilast; iptr+=4)
              {
-                 de.push_back(*(iptr));
-                 de.push_back(*(iptr+3));
-                 de.push_back(*(iptr+2));
-                 de.push_back(*(iptr+1));
+                 primitives->push_back(*(iptr));
+                 primitives->push_back(*(iptr+3));
+                 primitives->push_back(*(iptr+2));
+                 primitives->push_back(*(iptr+1));
              }
              break;
          }
@@ -59,19 +58,19 @@ osg::PrimitiveSet * drawElementsTemplate(GLenum mode,GLsizei count, const typena
              IndexPointer ilast = &indices[count];
              for (IndexPointer iptr = indices; iptr<ilast; iptr+=2)
              {
-                 de.push_back(*(iptr+1));
-                 de.push_back(*(iptr));
+                 primitives->push_back(*(iptr+1));
+                 primitives->push_back(*(iptr));
              }
              break;
          }
          case (GL_TRIANGLE_FAN):
          {
-             de.push_back(*indices);
+             primitives->push_back(*indices);
 
              IndexPointer iptr = indices + 1;
              IndexPointer ilast = &indices[count];
-             de.resize(count);
-             std::reverse_copy(iptr, ilast, de.begin() + 1);
+             primitives->resize(count);
+             std::reverse_copy(iptr, ilast, primitives->begin() + 1);
 
              break;
          }
@@ -83,8 +82,8 @@ osg::PrimitiveSet * drawElementsTemplate(GLenum mode,GLsizei count, const typena
          {
              IndexPointer iptr = indices;
              IndexPointer ilast = &indices[count];
-             de.resize(count);
-             std::reverse_copy(iptr, ilast, de.begin());
+             primitives->resize(count);
+             std::reverse_copy(iptr, ilast, primitives->begin());
 
              break;
          }
@@ -92,7 +91,7 @@ osg::PrimitiveSet * drawElementsTemplate(GLenum mode,GLsizei count, const typena
              break;
      }
 
-     return &de;
+     return primitives;
 }
 
 namespace osgUtil {
@@ -101,9 +100,8 @@ void ReversePrimitiveFunctor::drawArrays(GLenum mode, GLint first, GLsizei count
 {
     if (count==0) return ;
 
-    osg::DrawElementsUInt * dePtr = new osg::DrawElementsUInt(mode);
-    osg::DrawElementsUInt & de = *dePtr;
-    de.reserve(count);
+    osg::DrawElementsUInt * primitives = new osg::DrawElementsUInt(mode);
+    primitives->reserve(count);
 
     GLint end = first + count;
 
@@ -113,9 +111,9 @@ void ReversePrimitiveFunctor::drawArrays(GLenum mode, GLint first, GLsizei count
         {
             for (GLint i=first; i<end; i+=3)
             {
-                de.push_back(i);
-                de.push_back(i+2);
-                de.push_back(i+1);
+                primitives->push_back(i);
+                primitives->push_back(i+2);
+                primitives->push_back(i+1);
             }
             break;
         }
@@ -123,10 +121,10 @@ void ReversePrimitiveFunctor::drawArrays(GLenum mode, GLint first, GLsizei count
         {
             for (GLint i=first; i<end; i+=4)
             {
-                de.push_back(i);
-                de.push_back(i+3);
-                de.push_back(i+2);
-                de.push_back(i+1);
+                primitives->push_back(i);
+                primitives->push_back(i+3);
+                primitives->push_back(i+2);
+                primitives->push_back(i+1);
             }
             break;
         }
@@ -135,17 +133,17 @@ void ReversePrimitiveFunctor::drawArrays(GLenum mode, GLint first, GLsizei count
         {
             for (GLint i=first; i<end; i+=2)
             {
-                de.push_back(i+1);
-                de.push_back(i);
+                primitives->push_back(i+1);
+                primitives->push_back(i);
             }
             break;
         }
         case (GL_TRIANGLE_FAN):
         {
-            de.push_back(first);
+            primitives->push_back(first);
 
             for (GLint i=end-1; i>first; i--)
-                de.push_back(i);
+                primitives->push_back(i);
 
             break;
         }
@@ -156,7 +154,7 @@ void ReversePrimitiveFunctor::drawArrays(GLenum mode, GLint first, GLsizei count
         case (GL_LINE_LOOP):
         {
             for (GLint i=end-1; i>=first; i--)
-                de.push_back(i);
+                primitives->push_back(i);
 
             break;
         }
@@ -164,7 +162,7 @@ void ReversePrimitiveFunctor::drawArrays(GLenum mode, GLint first, GLsizei count
             break;
     }
 
-    _reversedPrimitiveSet = &de;
+    _reversedPrimitiveSet = primitives;
 }
 
 void ReversePrimitiveFunctor::drawElements(GLenum mode,GLsizei count,const GLubyte* indices)

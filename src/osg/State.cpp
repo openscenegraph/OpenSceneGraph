@@ -1447,15 +1447,19 @@ namespace State_Utils
             if (str[pos]=='"' || str[pos]=='\'')
             {
                 std::string::size_type start_quote = pos;
-                ++pos;
+                ++pos; // skip over first quote
                 pos = str.find(str[start_quote], pos);
+
+                if (pos!=std::string::npos)
+                {
+                    ++pos; // skip over second quote
+                }
             }
             else
             {
                 std::string::size_type start_var = pos;
                 ++pos;
                 pos = str.find_first_not_of("ABCDEFGHIJKLMNOPQRTSUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_", pos);
-                std::string var_str;
                 if (pos != std::string::npos)
                 {
 

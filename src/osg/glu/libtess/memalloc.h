@@ -41,14 +41,8 @@
 #define memFree		free
 
 #define memInit		__gl_memInit
-/*extern void		__gl_memInit( size_t );*/
 extern int		__gl_memInit( size_t );
 
-#ifndef MEMORY_DEBUG
 #define memAlloc	malloc
-#else
-#define memAlloc	__gl_memAlloc
-extern void *		__gl_memAlloc( size_t );
-#endif
 
 #endif

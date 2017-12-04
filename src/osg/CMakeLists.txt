@@ -193,6 +193,7 @@ SET(TARGET_H
     ${HEADER_PATH}/TriangleLinePointIndexFunctor
     ${HEADER_PATH}/Types
     ${HEADER_PATH}/Uniform
+    ${HEADER_PATH}/UniformBase
     ${HEADER_PATH}/UserDataContainer
     ${HEADER_PATH}/ValueObject
     ${HEADER_PATH}/ValueMap

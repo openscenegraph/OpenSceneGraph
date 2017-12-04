@@ -96,9 +96,9 @@ enum tagPOINTER_INPUT_TYPE {
    PT_TOUCH = 0x00000002,   // Touch
    PT_PEN = 0x00000003,   // Pen
    PT_MOUSE = 0x00000004,   // Mouse
-#if(WINVER >= 0x0603)
+//#if(WINVER >= 0x0603)
    PT_TOUCHPAD = 0x00000005,   // Touchpad
-#endif /* WINVER >= 0x0603 */
+//#endif /* WINVER >= 0x0603 */
 };
 typedef DWORD POINTER_INPUT_TYPE;
 
@@ -145,7 +145,7 @@ static GetTouchInputInfoFunc *getTouchInputInfoFunc = NULL;
 static GetPointerTypeFunc *getPointerTypeFunc = NULL;
 
 // DPI Awareness
-#if(WINVER >= 0x0603)
+// #if(WINVER >= 0x0603)
 
 #ifndef DPI_ENUMS_DECLARED
 
@@ -163,7 +163,7 @@ BOOL
 	PROCESS_DPI_AWARENESS dpi_awareness));
 
 static SetProcessDpiAwarenessFunc *setProcessDpiAwareness = NULL;
-#endif
+// #endif
 
 
 
@@ -787,10 +787,10 @@ Win32WindowingSystem::Win32WindowingSystem()
     }
 
 
-#if(WINVER >= 0x0603)
-	// For Windows 8.1 and higher 
+// #if(WINVER >= 0x0603)
+	// For Windows 8.1 and higher
 	//
-	// Per monitor DPI aware.This app checks for the DPI when it is created and adjusts the scale factor 
+	// Per monitor DPI aware.This app checks for the DPI when it is created and adjusts the scale factor
 	// whenever the DPI changes.These applications are not automatically scaled by the system.
 	HMODULE hModuleShore = LoadLibrary("Shcore");
 	if (hModuleShore) {
@@ -799,7 +799,7 @@ Win32WindowingSystem::Win32WindowingSystem()
 			(*setProcessDpiAwareness)(PROCESS_DPI_AWARENESS::PROCESS_PER_MONITOR_DPI_AWARE);
 		}
 	}
-#endif
+// #endif
 }
 
 Win32WindowingSystem::~Win32WindowingSystem()

@@ -1240,7 +1240,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 _hold = false;
                 return true;
             }
-            else if (ea.getKey()=='e')
+            else if (ea.getKey()=='R')
             {
                 // reload presentation to reflect changes from editor
                 setRequestReload(true);

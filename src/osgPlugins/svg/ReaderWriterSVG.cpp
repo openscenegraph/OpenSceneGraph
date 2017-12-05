@@ -110,11 +110,14 @@ class ReaderWriterSVG : public osgDB::ReaderWriter
                 // I don't know why, but we check the size...
                 if (width < 128) width = 128;
                 if (height < 128) height = 128;
-                width = osg::Image::computeNearestPowerOfTwo(width);
-                height = osg::Image::computeNearestPowerOfTwo(height);
+                //width = osg::Image::computeNearestPowerOfTwo(width);
+                //height = osg::Image::computeNearestPowerOfTwo(height);
                 osg::Image *image = new osg::Image();
                 image->allocateImage(width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE);
                 image->setPixelFormat(GL_BGRA);
+
+                // make sure the image data is cleared before we write to it.
+                memset(image->data(), 0, image->getTotalSizeInBytesIncludingMipmaps());
 
                 cairo_surface_t *cairo_surface = cairo_image_surface_create_for_data(image->data(),
                                         CAIRO_FORMAT_ARGB32, width, height, image->getRowSizeInBytes());

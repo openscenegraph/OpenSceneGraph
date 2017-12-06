@@ -483,6 +483,14 @@ struct VertexAttribArrayDispatch : public VertexArrayState::ArrayDispatch
         callVertexAttribPointer(ext, new_array, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
     }
 
+    virtual void enable_and_dispatch(osg::State& state, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean normalized)
+    {
+        GLExtensions* ext = state.get<GLExtensions>();
+ 
+        ext->glEnableVertexAttribArray( unit );
+        ext->glVertexAttribPointer(static_cast<GLuint>(unit), size, type, normalized, stride, ptr);
+    }
+
     virtual void dispatch(osg::State& state, const osg::Array* new_array)
     {
         GLExtensions* ext = state.get<GLExtensions>();
@@ -713,30 +721,20 @@ void VertexArrayState::setArray(ArrayDispatch* vad, osg::State& state, const osg
 
 void VertexArrayState::setArray(ArrayDispatch* vad, osg::State& state, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean normalized)
 {
-    if (ptr)
-    {
+    if(!vad->array){
+
         if (!vad->active)
         {
             vad->active = true;
             _activeDispatchers.push_back(vad);
         }
 
-        if (vad->array==0)
-        {
-            unbindVertexBufferObject();
-            vad->enable_and_dispatch(state, size, type, stride, ptr, normalized);
-        }
-        else
-        {
-            unbindVertexBufferObject();
-            vad->dispatch(state, size, type, stride, ptr, normalized);
-        }
+        vad->enable_and_dispatch(state, size, type, stride, ptr, normalized);
 
-        vad->array = 0;
         vad->modifiedCount = 0xffffffff;
 
     }
-    else if (vad->array)
+    else
     {
         disable(vad, state);
     }

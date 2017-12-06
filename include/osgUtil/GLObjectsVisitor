@@ -91,6 +91,12 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
             return _renderInfo;
         }
 
+        /** Set whether and how often OpenGL errors should be checked for, defaults to osg::State::ONCE_PER_ATTRIBUTE. */
+        void setCheckForGLErrors(osg::State::CheckForGLErrors check) { _checkGLErrors = check; }
+
+        /** Get whether and how often OpenGL errors should be checked for.*/
+        osg::State::CheckForGLErrors getCheckForGLErrors() const { return _checkGLErrors; }
+
         /** Simply traverse using standard NodeVisitor traverse method.*/
         virtual void apply(osg::Node& node);
 
@@ -105,11 +111,13 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
         typedef std::set<osg::Drawable*> DrawableAppliedSet;
         typedef std::set<osg::StateSet*> StatesSetAppliedSet;
 
-        Mode                        _mode;
-        osg::RenderInfo             _renderInfo;
-        DrawableAppliedSet          _drawablesAppliedSet;
-        StatesSetAppliedSet         _stateSetAppliedSet;
-        osg::ref_ptr<osg::Program>  _lastCompiledProgram;
+        Mode                            _mode;
+        osg::RenderInfo                 _renderInfo;
+        osg::State::CheckForGLErrors    _checkGLErrors;
+
+        DrawableAppliedSet              _drawablesAppliedSet;
+        StatesSetAppliedSet             _stateSetAppliedSet;
+        osg::ref_ptr<osg::Program>      _lastCompiledProgram;
 
 };
 

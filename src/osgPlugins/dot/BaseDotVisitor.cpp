@@ -24,8 +24,11 @@ using namespace osg;
 
 namespace osgDot {
 
-  BaseDotVisitor::BaseDotVisitor()
-  {
+BaseDotVisitor::BaseDotVisitor():
+    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
+{
+    // setNodeMaskOverride(0xffffff);
+
     _rankdir = "rankdir = LR;";
     // Set the locale used by the _nodes and _edges streams to the
     //   classic or "C" locale. This is needed because most of the
@@ -33,156 +36,145 @@ namespace osgDot {
     //   by id numbers containing commas or periods.
     _nodes.imbue(std::locale("C"));
     _edges.imbue(std::locale("C"));
-  }
+}
 
-  BaseDotVisitor::~BaseDotVisitor() {
-  }
+BaseDotVisitor::~BaseDotVisitor()
+{
+}
 
-    void BaseDotVisitor::setOptions(const osgDB::Options* options)
+void BaseDotVisitor::setOptions(const osgDB::Options* options)
+{
+    _options = const_cast<osgDB::Options*>(options);
+    OSG_INFO<<"BaseDotVisitor::setOptions("<<options<<")"<<std::endl;
+    if (_options.valid() && !(_options->getOptionString().empty()))
     {
-        _options = const_cast<osgDB::Options*>(options);
-        OSG_INFO<<"BaseDotVisitor::setOptions("<<options<<")"<<std::endl;
-        if (_options.valid() && !(_options->getOptionString().empty()))
+
+        std::string optionString = _options->getOptionString();
+
+        OSG_INFO<<"  BaseDotVisitor::optionString ("<<optionString<<")"<<std::endl;
+
+        std::string::size_type pos = optionString.find("rankdir");
+        if (pos!=std::string::npos)
         {
-
-            std::string optionString = _options->getOptionString();
-
-            OSG_INFO<<"  BaseDotVisitor::optionString ("<<optionString<<")"<<std::endl;
-
-            std::string::size_type pos = optionString.find("rankdir");
-            if (pos!=std::string::npos)
+            std::string::size_type semi_pos = optionString.find(";",pos);
+            if (semi_pos!=std::string::npos)
             {
-                std::string::size_type semi_pos = optionString.find(";",pos);
-                if (semi_pos!=std::string::npos)
-                {
-                    _rankdir = optionString.substr(pos, semi_pos-pos);
-                    OSG_INFO<<"  BaseDotVisitor::Set _rankdir to "<<_rankdir<<std::endl;
-                }
+                _rankdir = optionString.substr(pos, semi_pos-pos);
+                OSG_INFO<<"  BaseDotVisitor::Set _rankdir to "<<_rankdir<<std::endl;
             }
         }
-
     }
 
-    bool BaseDotVisitor::run( osg::Node& root, std::ostream* fout ) {
-    setTraversalMode( TRAVERSE_ALL_CHILDREN );
-    if ( fout && *fout ) {
-      root.accept( *this );
+}
 
-      *fout << "digraph osg_scenegraph { "<<_rankdir<< std::endl;
+bool BaseDotVisitor::run( osg::Node& root, std::ostream* fout )
+{
 
-      *fout << _nodes.str() << _edges.str();
+    if ( fout && *fout )
+    {
+        root.accept( *this );
 
-      *fout << "}" << std::endl;
+        *fout << "digraph osg_scenegraph { "<<_rankdir<< std::endl;
 
-      _nodes.clear();
-      _edges.clear();
-      _objectMap.clear();
+        *fout << "bgcolor=transparent;"<<std::endl;
 
-      return true;
+        *fout << _nodes.str() << _edges.str();
+
+        *fout << "}" << std::endl;
+
+        _nodes.clear();
+        _edges.clear();
+        _objectMap.clear();
+
+        return true;
     }
 
     return false;
-  }
+}
 
-  void BaseDotVisitor::apply(Node& node) {
+void BaseDotVisitor::apply(Node& node)
+{
     int id;
-    if ( getOrCreateId( &node, id ) ) {
-      handle( node, id );
-      handleNodeAndTraverse( node, id );
+    if ( getOrCreateId( &node, id ) )
+    {
+        handle( node, id );
+        handleNodeAndTraverse( node, id );
     }
-  }
+}
 
-  void BaseDotVisitor::apply(Geode& node) {
+void BaseDotVisitor::apply(Drawable& drawable)
+{
     int id;
-    if ( getOrCreateId( &node, id ) ) {
-      handle( node, id );
-      handleNodeAndTraverse( node, id );
-
-      unsigned int i;
-      for ( i = 0; i < node.getNumDrawables(); i++ ) {
-        osg::Drawable* drawable = node.getDrawable( i );
-        int id2;
-        if ( getOrCreateId( drawable, id2 ) ) {
-          handle( *drawable, id2 );
-          osg::StateSet* s = drawable->getStateSet();
-          if ( s ) {
-            int id3;
-            if ( getOrCreateId( s, id3 ) ) {
-              handle( *s, id3 );
-            }
-            handle( *drawable, *s, id2, id3 );
-          }
-        }
-        handle( node, *drawable, id, id2 );
-      }
-
+    if ( getOrCreateId( &drawable, id ) )
+    {
+        handle( drawable, id );
+        handleNodeAndTraverse( drawable, id );
     }
+}
 
-  }
-
-  void BaseDotVisitor::apply(Group& node) {
+void BaseDotVisitor::apply(Group& node)
+{
     int id;
 
-    if ( getOrCreateId( &node, id ) ) {
-      handle( node, id );
-      handleNodeAndTraverse( node, id );
+    if ( getOrCreateId( &node, id ) )
+    {
+        handle( node, id );
+        handleNodeAndTraverse( node, id );
 
-      unsigned int i;
-      for ( i = 0; i < node.getNumChildren(); i++ ) {
-        osg::Node* child = node.getChild( i );
-        //handleNodeAndTraverse( *child );
-        int id2;
-        if (getOrCreateId( child, id2 ))
+        unsigned int i;
+        for ( i = 0; i < node.getNumChildren(); i++ )
         {
+            osg::Node* child = node.getChild( i );
+            //handleNodeAndTraverse( *child );
+            int id2;
+            getOrCreateId( child, id2 );
             handle( node, *child, id, id2 );
         }
-      }
 
     }
+}
 
-  }
+void BaseDotVisitor::handle(osg::Node&, int) {}
 
-  void BaseDotVisitor::handle(osg::Node&, int) {}
+void BaseDotVisitor::handle(osg::Group&, int) {}
 
-  void BaseDotVisitor::handle(osg::Geode&, int) {}
+void BaseDotVisitor::handle(osg::Group&, osg::Node&, int, int) {}
 
-  void BaseDotVisitor::handle(osg::Group&, int) {}
-
-  void BaseDotVisitor::handle(osg::Group&, osg::Node&, int, int) {}
-
-  void BaseDotVisitor::handleNodeAndTraverse(osg::Node& node, int id) {
+void BaseDotVisitor::handleNodeAndTraverse(osg::Node& node, int id)
+{
     osg::StateSet* ss = node.getStateSet();
-    if ( ss ) {
-      int id2;
-      if ( getOrCreateId( ss, id2 ) ) {
-        handle( *ss, id2 );
-      }
-      handle( node, *ss, id, id2 );
+    if ( ss )
+    {
+        int id2;
+        if ( getOrCreateId( ss, id2 ) )
+        {
+            handle( *ss, id2 );
+        }
+        handle( node, *ss, id, id2 );
     }
     traverse(node);
-  }
+}
 
-  void BaseDotVisitor::handle(osg::StateSet&, int) {}
+void BaseDotVisitor::handle(osg::StateSet&, int) {}
 
-  void BaseDotVisitor::handle(osg::Node&, osg::StateSet&, int, int) {}
+void BaseDotVisitor::handle(osg::Node&, osg::StateSet&, int, int) {}
 
-  void BaseDotVisitor::handle(osg::Drawable&, int) {}
+void BaseDotVisitor::handle(osg::Drawable&, int) {}
 
-  void BaseDotVisitor::handle(osg::Drawable&, osg::StateSet&, int, int) {}
+void BaseDotVisitor::handle(osg::Drawable&, osg::StateSet&, int, int) {}
 
-  void BaseDotVisitor::handle(osg::Geode&, osg::Drawable&, int, int) {}
-
-  bool BaseDotVisitor::getOrCreateId( osg::Object* object, int &id ) {
-    assert( object );
+bool BaseDotVisitor::getOrCreateId( osg::Object* object, int &id )
+{
     ObjectMap::iterator it = _objectMap.find( object );
-    if ( it != _objectMap.end() ) {
-      id = it->second;
-      return false;
+    if ( it != _objectMap.end() )
+    {
+        id = it->second;
+        return false;
     }
 
     id = _objectMap.size();
     _objectMap[ object ] = id;
     return true;
-  }
+}
 
 } // namespace osgDot

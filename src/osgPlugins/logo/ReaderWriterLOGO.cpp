@@ -259,7 +259,7 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
             Logos::RelativePosition pos = Logos::LowerRight;
 
 
-            std::ifstream fin(filePath.c_str());
+            std::ifstream fin(fileName.c_str());
             if (!fin) return NULL;
 
             while(fin)

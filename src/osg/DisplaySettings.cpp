@@ -658,17 +658,17 @@ void DisplaySettings::readEnvironmentalVariables()
     {
         if (value=="VERTEX_BUFFER_OBJECT" || value=="VBO")
         {
-            OSG_NOTICE<<"OSG_VERTEX_BUFFER_HINT set to VERTEX_BUFFER_OBJECT"<<std::endl;
+            OSG_INFO<<"OSG_VERTEX_BUFFER_HINT set to VERTEX_BUFFER_OBJECT"<<std::endl;
             _vertexBufferHint = VERTEX_BUFFER_OBJECT;
         }
         else if (value=="VERTEX_ARRAY_OBJECT" || value=="VAO")
         {
-            OSG_NOTICE<<"OSG_VERTEX_BUFFER_HINT set to VERTEX_ARRAY_OBJECT"<<std::endl;
+            OSG_INFO<<"OSG_VERTEX_BUFFER_HINT set to VERTEX_ARRAY_OBJECT"<<std::endl;
             _vertexBufferHint = VERTEX_ARRAY_OBJECT;
         }
         else
         {
-            OSG_NOTICE<<"OSG_VERTEX_BUFFER_HINT set to NO_PREFERENCE"<<std::endl;
+            OSG_INFO<<"OSG_VERTEX_BUFFER_HINT set to NO_PREFERENCE"<<std::endl;
             _vertexBufferHint = NO_PREFERENCE;
         }
     }

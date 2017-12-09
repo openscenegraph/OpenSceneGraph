@@ -484,7 +484,8 @@ void SlideShowConstructor::addLayer(bool inheritPreviousLayers, bool defineAsBas
             bool useTextureRectangle = true;
             float s = useTextureRectangle ? image->s() : 1.0;
             float t = useTextureRectangle ? image->t() : 1.0;
-            osg::Geometry* backgroundQuad = osg::createTexturedQuadGeometry(_slideOrigin,
+            osg::Vec3 backgroundShift(0.0f, _slideWidth*0.0001f, 0.0f);
+            osg::Geometry* backgroundQuad = osg::createTexturedQuadGeometry(_slideOrigin+backgroundShift,
                                                             osg::Vec3(_slideWidth,0.0f,0.0f),
                                                             osg::Vec3(0.0f,0.0f,_slideHeight),
                                                             s, t);

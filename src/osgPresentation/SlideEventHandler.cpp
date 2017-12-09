@@ -40,7 +40,7 @@ SlideEventHandler* SlideEventHandler::instance() { return s_seh.get(); }
 
 bool JumpData::jump(SlideEventHandler* seh) const
 {
-        OSG_NOTICE<<"Requires jump"<<seh<<", "<<relativeJump<<", "<<slideNum<<", "<<layerNum<<", "<<slideName<<", "<<layerName<<std::endl;
+        OSG_INFO<<"Requires jump"<<seh<<", "<<relativeJump<<", "<<slideNum<<", "<<layerNum<<", "<<slideName<<", "<<layerName<<std::endl;
 
         int slideNumToUse = slideNum;
         int layerNumToUse = layerNum;

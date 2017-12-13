@@ -571,7 +571,6 @@ void Renderer::compile()
 {
     DEBUG_MESSAGE<<"Renderer::compile()"<<std::endl;
 
-
     _compileOnNextDraw = false;
 
     osgUtil::SceneView* sceneView = _sceneView[0].get();
@@ -583,7 +582,7 @@ void Renderer::compile()
     {
         osgUtil::GLObjectsVisitor glov;
         glov.setState(sceneView->getState());
-        sceneView->getSceneData()->accept(glov);
+        glov.compile(*(sceneView->getSceneData()));
     }
 
     sceneView->getState()->checkGLErrors("After Renderer::compile");

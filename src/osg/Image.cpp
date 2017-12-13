@@ -241,11 +241,17 @@ Image::Image(const Image& image,const CopyOp& copyop):
     {
         unsigned int size = image.getTotalSizeInBytesIncludingMipmaps();
         setData(new unsigned char [size],USE_NEW_DELETE);
-        unsigned char* dest_ptr = _data;
-        for(DataIterator itr(&image); itr.valid(); ++itr)
+        if (unsigned char* dest_ptr = _data) 
         {
-            memcpy(dest_ptr, itr.data(), itr.size());
-            dest_ptr += itr.size();
+            for(DataIterator itr(&image); itr.valid(); ++itr)
+            {
+                memcpy(dest_ptr, itr.data(), itr.size());
+                dest_ptr += itr.size();
+            }
+        }
+        else
+        {
+            OSG_WARN<<"Warning: Image::Image(const Image&, const CopyOp&) out of memory, no image copy made."<<std::endl;
         }
     }
 }
@@ -602,7 +608,36 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_BGRA_INTEGER_EXT): return 4;
         case(GL_LUMINANCE_INTEGER_EXT): return 1;
         case(GL_LUMINANCE_ALPHA_INTEGER_EXT): return 2;
-
+        case(GL_SRGB8) : return 3;
+        case(GL_SRGB8_ALPHA8) : return 4;
+        case (GL_COMPRESSED_RGBA_ASTC_4x4_KHR)           : return 4;
+        case (GL_COMPRESSED_RGBA_ASTC_5x4_KHR)           : return 4;
+        case (GL_COMPRESSED_RGBA_ASTC_5x5_KHR)           : return 4;
+        case (GL_COMPRESSED_RGBA_ASTC_6x5_KHR)           : return 4;
+        case (GL_COMPRESSED_RGBA_ASTC_6x6_KHR)           : return 4;
+        case (GL_COMPRESSED_RGBA_ASTC_8x5_KHR)           : return 4;
+        case (GL_COMPRESSED_RGBA_ASTC_8x6_KHR)           : return 4;
+        case (GL_COMPRESSED_RGBA_ASTC_8x8_KHR)           : return 4;
+        case (GL_COMPRESSED_RGBA_ASTC_10x5_KHR)          : return 4;
+        case (GL_COMPRESSED_RGBA_ASTC_10x6_KHR)          : return 4;
+        case (GL_COMPRESSED_RGBA_ASTC_10x8_KHR)          : return 4;
+        case (GL_COMPRESSED_RGBA_ASTC_10x10_KHR)         : return 4;
+        case (GL_COMPRESSED_RGBA_ASTC_12x10_KHR)         : return 4;
+        case (GL_COMPRESSED_RGBA_ASTC_12x12_KHR)         : return 4;
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR)   : return 4;
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR)   : return 4;
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR)   : return 4;
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR)   : return 4;
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR)   : return 4;
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR)   : return 4;
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR)   : return 4;
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR)   : return 4;
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR)  : return 4;
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR)  : return 4;
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR)  : return 4;
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR) : return 4;
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR) : return 4;
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR) : return 4;
         default:
         {
             OSG_WARN<<"error pixelFormat = "<<std::hex<<pixelFormat<<std::dec<<std::endl;
@@ -665,6 +700,51 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
             return 0;
         default: break;
     }
+    switch (format)
+    {//handle GL_KHR_texture_compression_astc_hdr
+        case (GL_COMPRESSED_RGBA_ASTC_4x4_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_5x4_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_5x5_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_6x5_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_6x6_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_8x5_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_8x6_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_8x8_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_10x5_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_10x6_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_10x8_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_10x10_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_12x10_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_12x12_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR) :
+        {
+            osg::Vec3i footprint = computeBlockFootprint(format);
+            unsigned int pixelsPerBlock = footprint.x() * footprint.y();
+            unsigned int bitsPerBlock = computeBlockSize(format, 0);//16 x 8 = 128
+            unsigned int bitsPerPixel = bitsPerBlock / pixelsPerBlock;
+            if (bitsPerBlock == bitsPerPixel * pixelsPerBlock) {
+                OSG_WARN << "Image::computePixelSizeInBits(format,type) : bits per pixel (" << bitsPerPixel << ") is not an integer for GL_KHR_texture_compression_astc_hdr sizes other than 4x4 and 8x8." << std::endl;
+                return bitsPerPixel;
+            } else {
+                OSG_WARN << "Image::computePixelSizeInBits(format,type) : bits per pixel (" << bitsPerBlock << "/" << pixelsPerBlock << ") is not an integer for GL_KHR_texture_compression_astc_hdr size" << footprint.x()  << "x" << footprint.y() << "." << std::endl;
+            }
+            return 0;
+        }
+        default: break;
+    }
 
     switch(format)
     {
@@ -725,6 +805,71 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
 
 }
 
+osg::Vec3i Image::computeBlockFootprint(GLenum pixelFormat) {
+    switch (pixelFormat)
+    {
+        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT) :
+        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) :
+        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT) :
+        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT) :
+           return osg::Vec3i(4,4,4);//opengl 3d dxt: r value means (max)4 consecutive blocks in r direction packed into a slab.
+        
+        case(GL_COMPRESSED_SIGNED_RED_RGTC1_EXT) :
+        case(GL_COMPRESSED_RED_RGTC1_EXT) :
+        case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT) :
+        case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT) :
+        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG) :
+        case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG) :
+        case(GL_ETC1_RGB8_OES) :
+        case(GL_COMPRESSED_RGB8_ETC2) :
+        case(GL_COMPRESSED_SRGB8_ETC2) :
+        case(GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2) :
+        case(GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2) :
+        case(GL_COMPRESSED_RGBA8_ETC2_EAC) :
+        case(GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC) :
+        case(GL_COMPRESSED_R11_EAC) :
+        case(GL_COMPRESSED_SIGNED_R11_EAC) :
+        case(GL_COMPRESSED_RG11_EAC) :
+        case(GL_COMPRESSED_SIGNED_RG11_EAC) :
+            return osg::Vec3i(4, 4, 1);//not sure about r
+        case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG) :
+        case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG) :
+            return osg::Vec3i(8, 4, 1);//no 3d texture support in pvrtc at all
+        case (GL_COMPRESSED_RGBA_ASTC_4x4_KHR) : return osg::Vec3i(4, 4, 1);
+        case (GL_COMPRESSED_RGBA_ASTC_5x4_KHR) : return osg::Vec3i(5, 4, 1);
+        case (GL_COMPRESSED_RGBA_ASTC_5x5_KHR) : return osg::Vec3i(5, 5, 1);
+        case (GL_COMPRESSED_RGBA_ASTC_6x5_KHR) : return osg::Vec3i(6, 5, 1);
+        case (GL_COMPRESSED_RGBA_ASTC_6x6_KHR) : return osg::Vec3i(6, 6, 1);
+        case (GL_COMPRESSED_RGBA_ASTC_8x5_KHR) : return osg::Vec3i(8, 5, 1);
+        case (GL_COMPRESSED_RGBA_ASTC_8x6_KHR) : return osg::Vec3i(8, 6, 1);
+        case (GL_COMPRESSED_RGBA_ASTC_8x8_KHR) : return osg::Vec3i(8, 8, 1);
+        case (GL_COMPRESSED_RGBA_ASTC_10x5_KHR) : return osg::Vec3i(10, 5, 1);
+        case (GL_COMPRESSED_RGBA_ASTC_10x6_KHR) : return osg::Vec3i(10, 6, 1);
+        case (GL_COMPRESSED_RGBA_ASTC_10x8_KHR) : return osg::Vec3i(10, 8, 1);
+        case (GL_COMPRESSED_RGBA_ASTC_10x10_KHR) : return osg::Vec3i(10, 10, 1);
+        case (GL_COMPRESSED_RGBA_ASTC_12x10_KHR) : return osg::Vec3i(12, 10, 1);
+        case (GL_COMPRESSED_RGBA_ASTC_12x12_KHR) : return osg::Vec3i(12, 12, 1);
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR) : return osg::Vec3i(4, 4, 1);
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR) : return osg::Vec3i(5, 4, 1);
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR) : return osg::Vec3i(5, 5, 1);
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR) : return osg::Vec3i(6, 5, 1);
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR) : return osg::Vec3i(6, 6, 1);
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR) : return osg::Vec3i(8, 5, 1);
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR) : return osg::Vec3i(8, 6, 1);
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR) : return osg::Vec3i(8, 8, 1);
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR) : return osg::Vec3i(10, 5, 1);
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR) : return osg::Vec3i(10, 6, 1);
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR) : return osg::Vec3i(10, 8, 1);
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR) : return osg::Vec3i(10, 10, 1);
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR) : return osg::Vec3i(12, 10, 1);
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR) : return osg::Vec3i(12, 12, 1);
+        
+        default:
+            break;
+    }
+    return osg::Vec3i(1,1,1);
+}
+//returns the max(size of a 2D block in bytes,packing)
 unsigned int Image::computeBlockSize(GLenum pixelFormat, GLenum packing)
 {
     switch(pixelFormat)
@@ -761,6 +906,35 @@ unsigned int Image::computeBlockSize(GLenum pixelFormat, GLenum packing)
         case(GL_COMPRESSED_RG11_EAC):
         case(GL_COMPRESSED_SIGNED_RG11_EAC):
             return osg::maximum(16u,packing); // block size of 16
+        case (GL_COMPRESSED_RGBA_ASTC_4x4_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_5x4_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_5x5_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_6x5_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_6x6_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_8x5_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_8x6_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_8x8_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_10x5_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_10x6_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_10x8_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_10x10_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_12x10_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_12x12_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR) :
+            return osg::maximum(16u, packing); // block size of 16
         default:
             break;
     }
@@ -780,29 +954,18 @@ unsigned int Image::computeImageSizeInBytes(int width,int height, int depth, GLe
 {
     if (width<=0 || height<=0 || depth<=0) return 0;
 
-    // Taking advantage of the fact that
-    // DXT formats are defined as 4 successive numbers:
-    // GL_COMPRESSED_RGB_S3TC_DXT1_EXT         0x83F0
-    // GL_COMPRESSED_RGBA_S3TC_DXT1_EXT        0x83F1
-    // GL_COMPRESSED_RGBA_S3TC_DXT3_EXT        0x83F2
-    // GL_COMPRESSED_RGBA_S3TC_DXT5_EXT        0x83F3
-    if( pixelFormat >= GL_COMPRESSED_RGB_S3TC_DXT1_EXT &&
-        pixelFormat <= GL_COMPRESSED_RGBA_S3TC_DXT5_EXT )
-    {
-        width = (width + 3) & ~3;
-        height = (height + 3) & ~3;
-    }
-
-    // 3dc ATI formats
-    // GL_COMPRESSED_RED_RGTC1_EXT                     0x8DBB
-    // GL_COMPRESSED_SIGNED_RED_RGTC1_EXT              0x8DBC
-    // GL_COMPRESSED_RED_GREEN_RGTC2_EXT               0x8DBD
-    // GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT        0x8DBE
-    if( pixelFormat >= GL_COMPRESSED_RED_RGTC1_EXT &&
-        pixelFormat <= GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT )
-    {
-        width = (width + 3) & ~3;
-        height = (height + 3) & ~3;
+    int blockSize = computeBlockSize(pixelFormat, 0);
+    if (blockSize > 0) {
+        osg::Vec3i footprint = computeBlockFootprint(pixelFormat);
+        width = (width + footprint.x() - 1) / footprint.x();
+        height = (height + footprint.y() - 1) / footprint.y();
+        unsigned int size = blockSize * width;
+        size = roudUpToMultiple(size, packing);
+        size *= height;
+        size = roudUpToMultiple(size, slice_packing);
+        size *= depth;
+        size = roudUpToMultiple(size, image_packing);
+        return size;
     }
 
     // compute size of one row
@@ -819,6 +982,13 @@ unsigned int Image::computeImageSizeInBytes(int width,int height, int depth, GLe
     size -= size % image_packing;
 
     return osg::maximum( size, computeBlockSize(pixelFormat, packing) );
+}
+
+int Image::roudUpToMultiple(int s, int pack) {
+    if (pack < 2) return s;
+    s += pack - 1;
+    s -= s % pack;
+    return s;
 }
 
 int Image::computeNearestPowerOfTwo(int s,float bias)
@@ -880,6 +1050,34 @@ bool Image::isCompressed() const
         case(GL_COMPRESSED_SIGNED_R11_EAC):
         case(GL_COMPRESSED_RG11_EAC):
         case(GL_COMPRESSED_SIGNED_RG11_EAC):
+        case (GL_COMPRESSED_RGBA_ASTC_4x4_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_5x4_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_5x5_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_6x5_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_6x6_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_8x5_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_8x6_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_8x8_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_10x5_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_10x6_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_10x8_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_10x10_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_12x10_KHR) :
+        case (GL_COMPRESSED_RGBA_ASTC_12x12_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR) :
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR) :
             return true;
         default:
             return false;
@@ -1189,7 +1387,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         unsigned char* data = new unsigned char[total_size];
         if (!data)
         {
-            OSG_WARN<<"Warning: Image::readImageFromCurrentTexture(..) out of memory, now image read."<<std::endl;
+            OSG_WARN<<"Warning: Image::readImageFromCurrentTexture(..) out of memory, no image read."<<std::endl;
             return;
         }
 
@@ -1256,7 +1454,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         unsigned char* data = new unsigned char[total_size];
         if (!data)
         {
-            OSG_WARN<<"Warning: Image::readImageFromCurrentTexture(..) out of memory, now image read."<<std::endl;
+            OSG_WARN<<"Warning: Image::readImageFromCurrentTexture(..) out of memory, no image read."<<std::endl;
             return;
         }
 
@@ -1409,8 +1607,38 @@ void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Im
         return;
     }
 
-    void* data_destination = data(s_offset,t_offset,r_offset);
-
+    unsigned char* data_destination = data(s_offset, t_offset, r_offset);
+    if (isCompressed())
+    {
+        osg::Vec3i footprint = computeBlockFootprint(_pixelFormat);
+        if (footprint.x() == 4 && footprint.y() == 4) { 
+        if ((source->s() & 0x3) || (source->t() & 0x3) || (s_offset & 0x3) || (t_offset & 0x3))
+        {
+            OSG_WARN << "Error Image::copySubImage() did not succeed : size " << source->s() << "x" << source->t() << " or offset " << s_offset<< "," << t_offset << " not multiple of 4." << std::endl;
+            return;
+        }
+        } else {
+            if ((source->s() % footprint.x()) || (source->t() % footprint.y()) || (s_offset % footprint.x()) || (t_offset% footprint.y()))
+            {
+                OSG_WARN << "Error Image::copySubImage() did not succeed : size " << source->s() << "x" << source->t() << " or offset " << s_offset << "," << t_offset << " not multiple of footprint " << footprint.x() << "x" << footprint.y() << std::endl;
+                return;
+            }
+        }
+        unsigned int rowWidthInBlocks = (_s + footprint.x() - 1) / footprint.x();
+        unsigned int blockSize = computeBlockSize(_pixelFormat, 0);
+        data_destination = _data + blockSize * (rowWidthInBlocks * t_offset + (s_offset / footprint.x()));
+        unsigned int copy_width = (osg::minimum(source->s(), _s - s_offset) + footprint.x() - 1) / footprint.x();
+        unsigned int copy_height = (osg::minimum(source->t(), _t - t_offset) + footprint.y() - 1) / footprint.y();
+        unsigned int dstRowStep = blockSize * rowWidthInBlocks;
+        unsigned int srcRowStep = blockSize * (source->_s + footprint.x() - 1) / footprint.x();
+        const unsigned char* data_source = source->data(0, 0, 0);
+        for (unsigned int row = 0; row < copy_height; row += 1) { //copy blocks in a row, footprint.y() rows at a time
+            memcpy(data_destination, data_source, copy_width * blockSize);
+            data_source += srcRowStep;
+            data_destination += dstRowStep;
+        }
+        return;
+    }
     PixelStorageModes psm;
     psm.pack_alignment = _packing;
     psm.pack_row_length = _rowLength!=0 ? _rowLength : _s;
@@ -1719,7 +1947,7 @@ bool Image::isImageTranslucent() const
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
-            return dxtc_tool::CompressedImageTranslucent(_s, _t, _pixelFormat, _data);
+            return dxtc_tool::isCompressedImageTranslucent(_s, _t, _pixelFormat, _data);
         default:
             return false;
     }
@@ -1919,18 +2147,29 @@ Vec4 _readColor(GLenum pixelFormat, T* data,float scale)
 
 Vec4 Image::getColor(unsigned int s,unsigned t,unsigned r) const
 {
-    const unsigned char* ptr = data(s,t,r);
-
-    switch(_dataType)
+    if (isCompressed())
     {
-        case(GL_BYTE):              return _readColor(_pixelFormat, (char*)ptr,             1.0f/128.0f);
-        case(GL_UNSIGNED_BYTE):     return _readColor(_pixelFormat, (unsigned char*)ptr,    1.0f/255.0f);
-        case(GL_SHORT):             return _readColor(_pixelFormat, (short*)ptr,            1.0f/32768.0f);
-        case(GL_UNSIGNED_SHORT):    return _readColor(_pixelFormat, (unsigned short*)ptr,   1.0f/65535.0f);
-        case(GL_INT):               return _readColor(_pixelFormat, (int*)ptr,              1.0f/2147483648.0f);
-        case(GL_UNSIGNED_INT):      return _readColor(_pixelFormat, (unsigned int*)ptr,     1.0f/4294967295.0f);
-        case(GL_FLOAT):             return _readColor(_pixelFormat, (float*)ptr,            1.0f);
-        case(GL_DOUBLE):            return _readColor(_pixelFormat, (double*)ptr,           1.0f);
+        if (dxtc_tool::isDXTC(_pixelFormat)) {
+            unsigned char color[4];
+            if (dxtc_tool::CompressedImageGetColor(color, s, t, r, _s, _t, _r, _pixelFormat, _data)) {
+                return Vec4(((float)color[0]) / 255.0f, ((float)color[1]) / 255.0f, ((float)color[2]) / 255.0f, ((float)color[3]) / 255.0f );
+            }
+        }
+    }
+    else
+    {
+        const unsigned char* ptr = data(s,t,r);
+        switch(_dataType)
+        {
+            case(GL_BYTE):              return _readColor(_pixelFormat, (char*)ptr,             1.0f/128.0f);
+            case(GL_UNSIGNED_BYTE):     return _readColor(_pixelFormat, (unsigned char*)ptr,    1.0f/255.0f);
+            case(GL_SHORT):             return _readColor(_pixelFormat, (short*)ptr,            1.0f/32768.0f);
+            case(GL_UNSIGNED_SHORT):    return _readColor(_pixelFormat, (unsigned short*)ptr,   1.0f/65535.0f);
+            case(GL_INT):               return _readColor(_pixelFormat, (int*)ptr,              1.0f/2147483648.0f);
+            case(GL_UNSIGNED_INT):      return _readColor(_pixelFormat, (unsigned int*)ptr,     1.0f/4294967295.0f);
+            case(GL_FLOAT):             return _readColor(_pixelFormat, (float*)ptr,            1.0f);
+            case(GL_DOUBLE):            return _readColor(_pixelFormat, (double*)ptr,           1.0f);
+        }
     }
     return Vec4(1.0f,1.0f,1.0f,1.0f);
 }

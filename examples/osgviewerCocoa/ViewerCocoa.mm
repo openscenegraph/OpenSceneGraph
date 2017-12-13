@@ -432,7 +432,6 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
 
     default_text->setAlignment(osgText::Text::CENTER_CENTER);
     default_text->setBackdropType(osgText::Text::OUTLINE);
-//    default_text->setBackdropImplementation(osgText::Text::POLYGON_OFFSET);
     default_text->setColor(osg::Vec4(1.0, 1.0, 0.0, 1.0));
     default_text->setBackdropColor(osg::Vec4(0.0, 0.0, 0.0, 1.0));
     default_text->setAxisAlignment(osgText::Text::XZ_PLANE);
@@ -1194,7 +1193,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 //        int number_of_files = [file_names count];
         // Exercise for the reader: Try loading all files in the array
         NSString* single_file = [file_names objectAtIndex:0];
-        osg::ref_ptr<osg::Node> loaded_model = osgDB::readNodeFile([single_file fileSystemRepresentation]);
+        osg::ref_ptr<osg::Node> loaded_model = osgDB::readRefNodeFile([single_file fileSystemRepresentation]);
         if(!loaded_model)
         {
             NSLog(@"File: %@ failed to load", single_file);
@@ -1213,7 +1212,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
             return NO;
         }
         NSString* file_path = [file_url path];
-        osg::ref_ptr<osg::Node> loaded_model = osgDB::readNodeFile([file_path fileSystemRepresentation]);
+        osg::ref_ptr<osg::Node> loaded_model = osgDB::readRefNodeFile([file_path fileSystemRepresentation]);
         if(!loaded_model)
         {
             NSLog(@"URL: %@ failed to load, %@", file_url, file_path);

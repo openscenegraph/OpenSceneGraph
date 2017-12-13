@@ -13,6 +13,137 @@
  *
 */
 
+ /** osggpucull example.
+
+  A geometry instancing rendering algorithm consisting of two consequent phases :
+
+    - first phase is a GLSL shader performing object culling and LOD picking ( a culling shader ).
+      Every culled object is represented as GL_POINT in the input osg::Geometry.
+      The output of the culling shader is a set of object LODs that need to be rendered.
+      The output is stored in texture buffer objects. No pixel is drawn to the screen
+      because GL_RASTERIZER_DISCARD mode is used.
+
+    - second phase draws osg::Geometry containing merged LODs using glDrawArraysIndirect()
+      function. Information about quantity of instances to render, its positions and other
+      parameters is sourced from texture buffer objects filled in the first phase.
+
+    The example uses various OpenGL 4.2 features such as texture buffer objects,
+    atomic counters, image units and functions defined in GL_ARB_shader_image_load_store
+    extension to achieve its goal and thus will not work on graphic cards with older OpenGL
+    versions.
+
+    The example was tested on Linux and Windows with NVidia 570 and 580 cards.
+    The tests on AMD cards were not conducted ( due to lack of it ).
+    The tests were performed using OSG revision 14088.
+
+    The main advantages of this rendering method :
+    - instanced rendering capable of drawing thousands of different objects with
+      almost no CPU intervention  ( cull and draw times are close to 0 ms ).
+    - input objects may be sourced from any OSG graph ( for example - information about
+      object points may be stored in a PagedLOD graph. This way we may cover the whole
+      countries with trees, buildings and other objects ).
+      Furthermore if we create osgDB plugins that generate data on the fly, we may
+      generate information for every grass blade for that country.
+    - every object may have its own parameters and thus may be distinct from other objects
+      of the same type.
+    - relatively low memory footprint ( single object information is stored in a few
+      vertex attributes ).
+    - no GPU->CPU roundtrip typical for such methods ( method uses atomic counters
+      and glDrawArraysIndirect() function instead of OpenGL queries. This way
+      information about quantity of rendered objects never goes back to CPU.
+      The typical GPU->CPU roundtrip cost is about 2 ms ).
+    - this example also shows how to render dynamic objects ( objects that may change
+      its position ) with moving parts ( like car wheels or airplane propellers ) .
+      The obvious extension to that dynamic method would be the animated crowd rendering.
+    - rendered objects may be easily replaced ( there is no need to process the whole
+      OSG graphs, because these graphs store only positional information ).
+
+    The main disadvantages of a method :
+    - the maximum quantity of objects to render must be known beforehand
+      ( because texture buffer objects holding data between phases have constant size ).
+    - OSG statistics are flawed ( they don't know anymore how many objects are drawn ).
+    - osgUtil::Intersection does not work
+
+    Example application may be used to make some performance tests, so below you
+    will find some extended parameter description :
+    --skip-dynamic       - skip rendering of dynamic objects if you only want to
+                           observe static object statistics
+    --skip-static        - the same for static objects
+    --dynamic-area-size  - size of the area for dynamic rendering. Default = 1000 meters
+                           ( square 1000m x 1000m ). Along with density defines
+                           how many dynamic objects is there in the example.
+    --static-area-size   - the same for static objects. Default = 2000 meters
+                           ( square 2000m x 2000m ).
+
+    Example application defines some parameters (density, LOD ranges, object's triangle count).
+    You may manipulate its values using below described modifiers:
+    --density-modifier   - density modifier in percent. Default = 100%.
+                           Density ( along with LOD ranges ) defines maximum
+                           quantity of rendered objects. registerType() function
+                           accepts maximum density ( in objects per square kilometer )
+                           as its parameter.
+    --lod-modifier       - defines the LOD ranges. Default = 100%.
+    --triangle-modifier  - defines the number of triangles in finally rendered objects.
+                           Default = 100 %.
+    --instances-per-cell - for static rendering the application builds OSG graph using
+                           InstanceCell class ( this class is a modified version of Cell class
+                           from osgforest example - it builds simple quadtree from a list
+                           of static instances ). This parameter defines maximum number
+                           of instances in a single osg::Group in quadtree.
+                           If, for example, you modify it to value=100, you will see
+                           really big cull time in OSG statistics ( because resulting
+                           tree generated by InstanceCell will be very deep ).
+                           Default value = 4096 .
+    --export-objects     - write object geometries and quadtree of instances to osgt files
+                           for later analysis.
+    --use-multi-draw     - use glMultiDrawArraysIndirect() instead of glDrawArraysIndirect() in a
+                           draw shader. Thanks to this we may render all ( different ) objects
+                           using only one draw call. Requires OpenGL version 4.3.
+
+    This application is inspired by Daniel Rákos work : "GPU based dynamic geometry LOD" that
+    may be found under this address : http://rastergrid.com/blog/2010/10/gpu-based-dynamic-geometry-lod/
+    There are however some differences :
+    - Daniel Rákos uses GL queries to count objects to render, while this example
+      uses atomic counters ( no GPU->CPU roundtrip )
+    - this example does not use transform feedback buffers to store intermediate data
+      ( it uses texture buffer objects instead ).
+    - I use only the vertex shader to cull objects, whereas Daniel Rákos uses vertex shader
+      and geometry shader ( because only geometry shader can send more than one primitive
+      to transform feedback buffers ).
+    - objects in the example are drawn using glDrawArraysIndirect() function,
+      instead of glDrawElementsInstanced().
+
+    Finally there are some things to consider/discuss  :
+    - the whole algorithm exploits nice OpenGL feature that any GL buffer
+      may be bound as any type of buffer ( in our example a buffer is once bound
+      as a texture buffer object, and later is bound as GL_DRAW_INDIRECT_BUFFER ).
+      osg::TextureBuffer class has one handy method to do that trick ( bindBufferAs() ),
+      and new primitive sets use osg::TextureBuffer as input.
+      For now I added new primitive sets to example ( DrawArraysIndirect and
+      MultiDrawArraysIndirect defined in examples/osggpucull/DrawIndirectPrimitiveSet.h ),
+      but if Robert will accept its current implementations ( I mean - primitive
+      sets that have osg::TextureBuffer in constructor ), I may add it to
+      osg/include/PrimitiveSet header.
+    - I used BufferTemplate class writen and published by Aurelien in submission forum
+      some time ago. For some reason this class never got into osg/include, but is
+      really needed during creation of UBOs, TBOs, and possibly SSBOs in the future.
+      I added std::vector specialization to that template class.
+    - I needed to create similar osg::Geometries with variable number of vertices
+      ( to create different LODs in my example ). For this reason I've written
+      some code allowing me to create osg::Geometries from osg::Shape descendants.
+      This code may be found in ShapeToGeometry.* files. Examples of use are in
+      osggpucull.cpp . The question is : should this code stay in example, or should
+      it be moved to osgUtil ?
+    - this remark is important for NVidia cards on Linux and Windows : if
+      you have "Sync to VBlank" turned ON in nvidia-settings and you want to see
+      real GPU times in OSG statistics window, you must set the power management
+      settings to "Prefer maximum performance", because when "Adaptive mode" is used,
+      the graphic card's clock may be slowed down by the driver during program execution
+      ( On Linux when OpenGL application starts in adaptive mode, clock should work
+      as fast as possible, but after one minute of program execution, the clock slows down ).
+      This happens when GPU time in OSG statistics window is shorter than 3 ms.
+*/
+
 #include <osg/Vec4i>
 #include <osg/Quat>
 #include <osg/Geometry>
@@ -188,7 +319,7 @@ struct IndirectTarget
     }
     void endRegister(unsigned int index, unsigned int rowsPerInstance, GLenum pixelFormat, GLenum type, GLint internalFormat, bool useMultiDrawArraysIndirect )
     {
-        indirectCommandTextureBuffer = new osg::TextureBuffer(indirectCommands);
+        indirectCommandTextureBuffer = new osg::TextureBuffer(indirectCommands.get());
         indirectCommandTextureBuffer->setInternalFormat( GL_R32I );
         indirectCommandTextureBuffer->bindToImageUnit(index, osg::Texture::READ_WRITE);
         indirectCommandTextureBuffer->setUnRefImageDataAfterApply(false);
@@ -199,11 +330,12 @@ struct IndirectTarget
         {
             std::vector<osg::DrawArraysIndirect*> newPrimitiveSets;
 
-            for(unsigned int j=0;j<indirectCommands->size(); ++j){
+            for(unsigned int j=0;j<indirectCommands->size(); ++j)
+            {
                 osg::DrawArraysIndirect *ipr=new osg::DrawArraysIndirect( GL_TRIANGLES, j );
-                ipr->setIndirectCommandArray( indirectCommands);
+                ipr->setIndirectCommandArray( indirectCommands.get());
                 newPrimitiveSets.push_back(ipr);
-                }
+            }
 
             geometryAggregator->getAggregatedGeometry()->removePrimitiveSet(0,geometryAggregator->getAggregatedGeometry()->getNumPrimitiveSets() );
 
@@ -215,7 +347,7 @@ struct IndirectTarget
         else // use glMultiDrawArraysIndirect()
         {
             osg::MultiDrawArraysIndirect *ipr=new osg::MultiDrawArraysIndirect( GL_TRIANGLES );
-            ipr->setIndirectCommandArray( indirectCommands );
+            ipr->setIndirectCommandArray( indirectCommands.get() );
             geometryAggregator->getAggregatedGeometry()->removePrimitiveSet(0,geometryAggregator->getAggregatedGeometry()->getNumPrimitiveSets() );
             geometryAggregator->getAggregatedGeometry()->addPrimitiveSet( ipr );
         }
@@ -236,6 +368,7 @@ struct IndirectTarget
         instanceTarget->bindToImageUnit(OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index, osg::Texture::READ_WRITE);
 
     }
+
     void addIndirectCommandData( const std::string& uniformNamePrefix, int index, osg::StateSet* stateset )
     {
         std::string uniformName = uniformNamePrefix + char( '0' + index );
@@ -245,6 +378,7 @@ struct IndirectTarget
 
 
     }
+
     void addIndirectTargetData( bool cullPhase, const std::string& uniformNamePrefix, int index, osg::StateSet* stateset )
     {
         std::string uniformName;
@@ -257,6 +391,7 @@ struct IndirectTarget
         stateset->addUniform( uniform );
         stateset->setTextureAttribute( OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index, instanceTarget.get() );
     }
+
     void addDrawProgram( const std::string& uniformBlockName, osg::StateSet* stateset )
     {
         drawProgram->addBindUniformBlock(uniformBlockName, 1);
@@ -286,6 +421,7 @@ struct GPUCullData
         instanceTypesUBB = new osg::UniformBufferBinding(1, instanceTypes.get(), 0, 0);
 
     }
+
     void setUseMultiDrawArraysIndirect( bool value )
     {
         useMultiDrawArraysIndirect = value;
@@ -297,6 +433,7 @@ struct GPUCullData
             return;
         targets[index] = IndirectTarget( agv, targetDrawProgram );
     }
+
     bool registerType(unsigned int typeID, unsigned int targetID, osg::Node* node, const osg::Vec4& lodDistances, float maxDensityPerSquareKilometer )
     {
         if( typeID >= instanceTypes->getData().size() )
@@ -328,6 +465,7 @@ struct GPUCullData
         target->second.maxTargetQuantity += maxQuantity;
         return true;
     }
+
     // endRegister() method is called after all indirect targets and instance types are registered.
     // It creates indirect targets with pixel format and data type provided by user ( indirect targets may hold
     // different information about single instance depending on user's needs ( in our example : static rendering
@@ -388,10 +526,12 @@ struct StaticInstance
     : position(m), extraParams(params), idParams(typeID,id,0,0)
    {
    }
+
    osg::Vec3d getPosition() const
    {
        return position.getTrans();
    }
+
    osg::Matrixf position;
    osg::Vec4f   extraParams;
    osg::Vec4i   idParams;
@@ -705,10 +845,12 @@ struct ResetTexturesCallback : public osg::StateSet::Callback
     ResetTexturesCallback()
     {
     }
+
     void addTextureDirty( unsigned int texUnit )
     {
         texUnitsDirty.push_back(texUnit);
     }
+
     void addTextureDirtyParams( unsigned int texUnit )
     {
         texUnitsDirtyParams.push_back(texUnit);
@@ -748,6 +890,7 @@ struct InvokeMemoryBarrier : public osg::Drawable::DrawCallback
         : _barriers(barriers)
     {
     }
+
     virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
     {
         //DrawIndirectGLExtensions *ext = DrawIndirectGLExtensions::getExtensions( renderInfo.getContextID(), true );
@@ -836,11 +979,13 @@ osg::Group* createSimpleHouse( float detailRatio, const osg::Vec4& buildingColor
         osg::ref_ptr<osg::Geode> chimneyGeode     = convertShapeToGeode( *chimney.get(), tessHints.get(), chimneyColor );
         root->addChild( chimneyGeode.get() );
     }
+
     {
         osg::ref_ptr<osg::Cylinder> chimney       = new osg::Cylinder( osg::Vec3( -5.5, 3.0, 16.5 ), 0.1, 1.0 );
         osg::ref_ptr<osg::Geode> chimneyGeode     = convertShapeToGeode( *chimney.get(), tessHints.get(), chimneyColor );
         root->addChild( chimneyGeode.get() );
     }
+
     {
         osg::ref_ptr<osg::Cylinder> chimney       = new osg::Cylinder( osg::Vec3( -5.0, 3.0, 16.25 ), 0.1, 0.5 );
         osg::ref_ptr<osg::Geode> chimneyGeode     = convertShapeToGeode( *chimney.get(), tessHints.get(), chimneyColor );
@@ -1183,6 +1328,7 @@ struct AnimateObjectsCallback : public osg::DrawableUpdateCallback
         for(; i<3*_quantityPerType; ++i) // speed of airplanes
             _speed.push_back( random( 10.0, 16.0 ) );
     }
+
     virtual void update(osg::NodeVisitor* nv, osg::Drawable* drawable)
     {
         if( nv->getVisitorType() != osg::NodeVisitor::UPDATE_VISITOR )
@@ -1213,6 +1359,7 @@ struct AnimateObjectsCallback : public osg::DrawableUpdateCallback
             setRotationUsingRotSpeed( i, 5, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0)) * osg::Matrix::translate(0.0,2.0,-6.0), currentTime, 0.5 );
             setRotationUsingRotSpeed( i, 6, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(0.0,1.0,0.0)) * osg::Matrix::translate(0.0,-2.0,-6.0), currentTime, -0.5 );
         }
+
         for(;i<2*_quantityPerType;++i) //update cars
         {
             nbbox.expandBy( updateObjectPosition( vertexArray, i, deltaTime ) );
@@ -1223,6 +1370,7 @@ struct AnimateObjectsCallback : public osg::DrawableUpdateCallback
             setRotationUsingRotSpeed( i, 3, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(1.0,0.0,0.0)) * osg::Matrix::translate(2.0,-1.8,1.0), currentTime, wheelRotSpeed );
             setRotationUsingRotSpeed( i, 4, osg::Matrix::rotate( osg::DegreesToRadians(90.0), osg::Vec3(1.0,0.0,0.0)) * osg::Matrix::translate(-2.0,-1.8,1.0), currentTime, wheelRotSpeed );
         }
+
         for(;i<3*_quantityPerType;++i) // update airplanes
         {
             nbbox.expandBy( updateObjectPosition( vertexArray, i, deltaTime ) );
@@ -1251,6 +1399,7 @@ struct AnimateObjectsCallback : public osg::DrawableUpdateCallback
         (*vertexArray)[index] = newPosition;
         return newPosition;
     }
+
     void setRotationUsingRotSpeed( unsigned int index, unsigned int boneIndex, const osg::Matrix& zeroMatrix, double currentTime, double rotSpeed )
     {
         // setRotationUsingRotSpeed() is a very unoptimally written ( because it uses osg::Matrix::inverse() ),
@@ -1473,12 +1622,16 @@ int main( int argc, char **argv )
 
     if ( arguments.read("--skip-static") )
         showStaticRendering = false;
+
     if ( arguments.read("--skip-dynamic") )
         showDynamicRendering = false;
+
     if ( arguments.read("--export-objects") )
         exportInstanceObjects = true;
+
     if ( arguments.read("--use-multi-draw") )
         useMultiDrawArraysIndirect = true;
+
     arguments.read("--instances-per-cell",instancesPerCell);
     arguments.read("--static-area-size",staticAreaSize);
     arguments.read("--dynamic-area-size",dynamicAreaSize);

@@ -41,6 +41,9 @@
 
 #include <iostream>
 
+
+static bool s_useSDF = false;
+
 class MyBillboardTransform : public osg::PositionAttitudeTransform
 {
     public:
@@ -147,6 +150,12 @@ osg:: Node* createTextBelow(const osg::BoundingBox& bb, const std::string& label
 
     text->setFont(font);
     text->setFontResolution(64,64);
+
+    if (s_useSDF)
+    {
+        text->setShaderTechnique(osgText::ALL_FEATURES);
+    }
+
     text->setAlignment(osgText::Text::CENTER_CENTER);
     text->setAxisAlignment(osgText::Text::XZ_PLANE);
     text->setPosition(bb.center()-osg::Vec3(0.0f,0.0f,(bb.zMax()-bb.zMin())));
@@ -174,48 +183,35 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb, const std::string& label,
 
     text->setFont(font);
     text->setFontResolution(110,120);
+
+    if (s_useSDF)
+    {
+        text->setShaderTechnique(osgText::ALL_FEATURES);
+    }
+
     text->setAlignment(osgText::Text::RIGHT_CENTER);
     text->setAxisAlignment(osgText::Text::XZ_PLANE);
     text->setCharacterSize((bb.zMax()-bb.zMin())*1.0f);
+
     text->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin()),-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.1f));
-    //text->setColor(osg::Vec4(0.37f,0.48f,0.67f,1.0f)); // Neil's original OSG colour
     text->setColor(osg::Vec4(0.20f,0.45f,0.60f,1.0f)); // OGL logo colour
-    text->setText(label);
 
-#if 1
     text->setBackdropType(osgText::Text::OUTLINE);
-//   text->setBackdropType(osgText::Text::DROP_SHADOW_BOTTOM_RIGHT);
-
-    text->setBackdropImplementation(osgText::Text::POLYGON_OFFSET);
-//    text->setBackdropImplementation(osgText::Text::NO_DEPTH_BUFFER);
-//    text->setBackdropImplementation(osgText::Text::DEPTH_RANGE);
-//    text->setBackdropImplementation(osgText::Text::STENCIL_BUFFER);
-
-    text->setBackdropOffset(0.05f);
+    text->setBackdropOffset(0.03f);
     text->setBackdropColor(osg::Vec4(0.0f, 0.0f, 0.5f, 1.0f));
-#endif
 
-
-#if 1
     text->setColorGradientMode(osgText::Text::OVERALL);
     osg::Vec4 lightblue(0.30f,0.6f,0.90f,1.0f);
     osg::Vec4 blue(0.10f,0.30f,0.40f,1.0f);
     text->setColorGradientCorners(lightblue, blue, blue, lightblue);
-#else
-    text->setColorGradientMode(osgText::Text::OVERALL);
-    osg::Vec4 light = osg::Vec4(0.0f, 1.0f, 1.0f, 1.0f);
-    osg::Vec4 dark = osg::Vec4(0.0f, 0.0f, 0.5f, 1.0f);
-    text->setColorGradientCorners(light, dark, dark, light);
-//    text->setColorGradientCorners(dark, light, light, dark);
-#endif
+
+    text->setText(label);
 
     geode->addDrawable( text );
 
 
     if (!subscript.empty())
     {
-        //osgText::Text* subscript = new  osgText::Text(new osgText::TextureFont(font,45));
-
         osgText::Text* subscriptText = new osgText::Text;
         subscriptText->setFont(font);
         subscriptText->setText(subscript);
@@ -353,9 +349,6 @@ osg:: Node* createBoxNo5No2(const osg::BoundingBox& bb,float chordRatio)
 
 osg:: Node* createBackdrop(const osg::Vec3& corner,const osg::Vec3& top,const osg::Vec3& right)
 {
-
-
-
     osg::Geometry* geom = new osg::Geometry;
 
     osg::Vec3 normal = (corner-top)^(right-corner);
@@ -474,6 +467,9 @@ int main( int argc, char **argv )
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
+
+
+    while(arguments.read("--sdf")) { s_useSDF = true; }
 
     std::string label = "OpenSceneGraph";
     std::string subscript = "";

@@ -30,12 +30,6 @@ osgWidget::Label* createLabel(const std::string& l, unsigned int size=13) {
     label->setFontColor(1.0f, 1.0f, 1.0f, 1.0f);
     label->setLabel(l);
 
-    /*
-    text->setBackdropType(osgText::Text::DROP_SHADOW_BOTTOM_RIGHT);
-    text->setBackdropImplementation(osgText::Text::NO_DEPTH_BUFFER);
-    text->setBackdropOffset(0.2f);
-    */
-
     return label;
 }
 

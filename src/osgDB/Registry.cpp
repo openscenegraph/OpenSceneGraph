@@ -307,6 +307,13 @@ Registry::Registry()
     addFileExtensionAlias("vert", "glsl");
     addFileExtensionAlias("frag", "glsl");
     addFileExtensionAlias("geom", "glsl");
+    addFileExtensionAlias("tctrl", "glsl");
+    addFileExtensionAlias("teval", "glsl");
+    addFileExtensionAlias("compute", "glsl");
+    addFileExtensionAlias("vs", "glsl");
+    addFileExtensionAlias("fs", "glsl");
+    addFileExtensionAlias("cs", "glsl");
+    addFileExtensionAlias("gs", "glsl");
 
     addFileExtensionAlias("js", "V8");
 

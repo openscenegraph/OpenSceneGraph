@@ -23,6 +23,7 @@
 #include <osg/GL>
 #include <osg/DeleteHandler>
 #include <osg/ApplicationUsage>
+#include <osg/EnvVar>
 
 #include <vector>
 #include <map>
@@ -95,9 +96,9 @@ enum tagPOINTER_INPUT_TYPE {
    PT_TOUCH = 0x00000002,   // Touch
    PT_PEN = 0x00000003,   // Pen
    PT_MOUSE = 0x00000004,   // Mouse
-#if(WINVER >= 0x0603)
+//#if(WINVER >= 0x0603)
    PT_TOUCHPAD = 0x00000005,   // Touchpad
-#endif /* WINVER >= 0x0603 */
+//#endif /* WINVER >= 0x0603 */
 };
 typedef DWORD POINTER_INPUT_TYPE;
 
@@ -143,6 +144,26 @@ static CloseTouchInputHandleFunc *closeTouchInputHandleFunc = NULL;
 static GetTouchInputInfoFunc *getTouchInputInfoFunc = NULL;
 static GetPointerTypeFunc *getPointerTypeFunc = NULL;
 
+// DPI Awareness
+// #if(WINVER >= 0x0603)
+
+#ifndef DPI_ENUMS_DECLARED
+
+typedef enum PROCESS_DPI_AWARENESS {
+	PROCESS_DPI_UNAWARE = 0,
+	PROCESS_SYSTEM_DPI_AWARE = 1,
+	PROCESS_PER_MONITOR_DPI_AWARE = 2
+} PROCESS_DPI_AWARENESS;
+
+#endif // DPI_ENUMS_DECLARED
+
+typedef
+BOOL
+(WINAPI	SetProcessDpiAwarenessFunc(
+	PROCESS_DPI_AWARENESS dpi_awareness));
+
+static SetProcessDpiAwarenessFunc *setProcessDpiAwareness = NULL;
+// #endif
 
 
 
@@ -764,6 +785,21 @@ Win32WindowingSystem::Win32WindowingSystem()
             FreeLibrary( hModule);
         }
     }
+
+
+// #if(WINVER >= 0x0603)
+	// For Windows 8.1 and higher
+	//
+	// Per monitor DPI aware.This app checks for the DPI when it is created and adjusts the scale factor
+	// whenever the DPI changes.These applications are not automatically scaled by the system.
+	HMODULE hModuleShore = LoadLibrary("Shcore");
+	if (hModuleShore) {
+		setProcessDpiAwareness = (SetProcessDpiAwarenessFunc *) GetProcAddress(hModuleShore, "SetProcessDpiAwareness");
+		if (setProcessDpiAwareness) {
+			(*setProcessDpiAwareness)(PROCESS_DPI_AWARENESS::PROCESS_PER_MONITOR_DPI_AWARE);
+		}
+	}
+// #endif
 }
 
 Win32WindowingSystem::~Win32WindowingSystem()
@@ -1314,10 +1350,10 @@ void GraphicsWindowWin32::init()
     _applyWorkaroundForMultimonitorMultithreadNVidiaWin32Issues = true;
 #endif
 
-    const char* str = getenv("OSG_WIN32_NV_MULTIMON_MULTITHREAD_WORKAROUND");
-    if (str)
+    std::string str;
+    if (osg::getEnvVar("OSG_WIN32_NV_MULTIMON_MULTITHREAD_WORKAROUND", str))
     {
-        _applyWorkaroundForMultimonitorMultithreadNVidiaWin32Issues = (strcmp(str, "on")==0 || strcmp(str, "ON")==0 || strcmp(str, "On")==0 );
+        _applyWorkaroundForMultimonitorMultithreadNVidiaWin32Issues = (str=="on") || (str=="ON") || (str=="On");
     }
 }
 

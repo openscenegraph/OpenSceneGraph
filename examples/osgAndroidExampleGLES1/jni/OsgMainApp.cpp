@@ -23,7 +23,7 @@ void OsgMainApp::loadModels(){
         newModel = _vModelsToLoad[i];
         osg::notify(osg::ALWAYS)<<"Loading: "<<newModel.filename<<std::endl;
 
-        osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(newModel.filename);
+        osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFile(newModel.filename);
         if (loadedModel == 0) {
             osg::notify(osg::ALWAYS)<<"Model not loaded"<<std::endl;
         } else {

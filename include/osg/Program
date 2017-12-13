@@ -103,10 +103,6 @@ class OSG_EXPORT Program : public osg::StateAttribute
         void setParameter( GLenum pname, GLint value );
         GLint getParameter( GLenum pname ) const;
 
-        /** Set/get compute shader work groups */
-        void setComputeGroups( GLint numGroupsX, GLint numGroupsY, GLint numGroupsZ );
-        void getComputeGroups( GLint& numGroupsX, GLint& numGroupsY, GLint& numGroupsZ ) const;
-
         /** Add an attribute location binding. */
         void addBindAttribLocation( const std::string& name, GLuint index );
 
@@ -438,12 +434,6 @@ class OSG_EXPORT Program : public osg::StateAttribute
         GLint _geometryVerticesOut;
         GLint _geometryInputType;
         GLint _geometryOutputType;
-
-
-        /** Parameter maintained with glDispatchCompute */
-        GLint _numGroupsX;
-        GLint _numGroupsY;
-        GLint _numGroupsZ;
 
         /**TransformFeedBack**/
         GLenum _feedbackmode;

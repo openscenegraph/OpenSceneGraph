@@ -24,8 +24,11 @@ using namespace osgText;
 
 DefaultFont::DefaultFont()
 {
+    _fontSize = FontResolution(8,12);
+
     _minFilterHint = osg::Texture::LINEAR_MIPMAP_LINEAR;
-    _magFilterHint = osg::Texture::NEAREST;
+    _magFilterHint = osg::Texture::LINEAR;
+
     constructGlyphs();
 }
 
@@ -198,13 +201,11 @@ void DefaultFont::constructGlyphs()
         for(unsigned char* p=data;p<data+dataSize;) { *p++ = 0; }
 
         glyph->setImage(sourceWidth,sourceHeight,1,
-                        OSGTEXT_GLYPH_INTERNALFORMAT,
-                        OSGTEXT_GLYPH_FORMAT, GL_UNSIGNED_BYTE,
+                        GL_ALPHA,
+                        GL_ALPHA, GL_UNSIGNED_BYTE,
                         data,
                         osg::Image::USE_NEW_DELETE,
                         1);
-
-        glyph->setInternalTextureFormat(OSGTEXT_GLYPH_INTERNALFORMAT);
 
         // now populate data array by converting bitmap into a luminance_alpha map.
         unsigned char* ptr = rasters[i-32];
@@ -232,6 +233,8 @@ void DefaultFont::constructGlyphs()
         glyph->setHorizontalAdvance(sourceWidth*coord_scale);
         glyph->setVerticalBearing(osg::Vec2(0.5f,1.0f)); // top middle.
         glyph->setVerticalAdvance(sourceHeight*coord_scale);
+
+        glyph->setFontResolution(fontRes);
 
         addGlyph(fontRes,i,glyph.get());
     }

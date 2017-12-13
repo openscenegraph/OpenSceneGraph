@@ -163,6 +163,8 @@ void TextureBuffer::apply(State& state) const
         const GLExtensions* extensions = state.get<GLExtensions>();
         if(_bufferData.valid() &&_modifiedCount[contextID]!=_bufferData->getModifiedCount() )
         {
+            _modifiedCount[contextID]=_bufferData->getModifiedCount() ;
+
             GLBufferObject* glBufferObject = _bufferData->getBufferObject()->getOrCreateGLBufferObject(contextID);
             if (glBufferObject)
             {
@@ -174,7 +176,6 @@ void TextureBuffer::apply(State& state) const
 
             }
 
-            _modifiedCount[contextID]=_bufferData->getModifiedCount() ;
         }
         textureObject->bind();
 
@@ -197,6 +198,8 @@ void TextureBuffer::apply(State& state) const
         if (glBufferObject )
         {
             const GLExtensions* extensions = state.get<GLExtensions>();
+
+            _modifiedCount[contextID] = _bufferData->getModifiedCount();
 
             textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_BUFFER);
             textureObject->_profile._internalFormat=_internalFormat;
@@ -221,7 +224,6 @@ void TextureBuffer::apply(State& state) const
 
             textureObject->bind();
             extensions->glTexBuffer(GL_TEXTURE_BUFFER, _internalFormat, glBufferObject->getGLObjectID());
-            _modifiedCount[contextID] = _bufferData->getModifiedCount();
         }
 
     }

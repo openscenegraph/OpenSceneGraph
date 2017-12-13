@@ -589,8 +589,6 @@ bool daeReader::processColorOrTextureType(const osg::StateSet* ss,
     }
     bool retVal = false;
 
-    std::string texCoordSet;
-
     //osg::StateAttribute *sa = NULL;
     //TODO: Make all channels process <param ref=""> type of value
     if (channel == osg::Material::EMISSION )
@@ -1017,6 +1015,11 @@ osg::Texture2D* daeReader::processTexture(
     domFx_surface_common *surface = NULL;
     domImage *dImg = NULL;
 
+    if(tex->getTexture() == NULL)
+    {
+        return NULL;
+    }
+
     std::string target = std::string("./") + std::string(tex->getTexture());
     OSG_INFO<<"processTexture("<<target<<")"<<std::endl;
 
@@ -1159,7 +1162,10 @@ osg::Texture2D* daeReader::processTexture(
         _textureParamMap[parameters] = t2D;
     }
 
-    _texCoordSetMap[TextureToCoordSetMap::key_type(ss, tuu)] = tex->getTexcoord();
+    if(tex->getTexcoord() != NULL)
+    {
+        _texCoordSetMap[TextureToCoordSetMap::key_type(ss, tuu)] = tex->getTexcoord();
+    }
 
     return t2D;
 }

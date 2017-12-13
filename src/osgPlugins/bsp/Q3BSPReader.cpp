@@ -36,8 +36,6 @@ Q3BSPReader::Q3BSPReader()
 bool Q3BSPReader::readFile(const std::string& file,
                            const osgDB::ReaderWriter::Options* options)
 {
-    std::string ext = osgDB::getLowerCaseFileExtension(file);
-
     Q3BSPLoad load_data;
     load_data.Load(file,8);
 
@@ -513,7 +511,7 @@ bool Q3BSPReader::loadLightMaps(
 
 
 
-  // A continuación, añado el blanco
+  // A continuacin, aado el blanco
   osg::Image* image=new osg::Image;
   unsigned char *data=new unsigned char[3];
   for(int whiteidx=0;whiteidx<3;whiteidx++)

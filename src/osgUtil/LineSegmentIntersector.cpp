@@ -69,6 +69,8 @@ struct IntersectFunctor
 
     IntersectFunctor():
         _primitiveIndex(0),
+        _length(0.0),
+        _inverse_length(0.0),
         _hit(false)
     {
     }

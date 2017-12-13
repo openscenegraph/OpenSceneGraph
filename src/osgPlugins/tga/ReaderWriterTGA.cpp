@@ -360,8 +360,14 @@ int *numComponents_ret)
     {
         case 1:                  /* colormap, uncompressed */
         {
-            if (colormapLen == 0 || indexsize == 0) {
+            if (colormapLen == 0 || indexsize == 0)
+            {
                 tgaerror = ERR_UNSUPPORTED; /* colormap missing or empty */
+
+                if (colormap) delete [] colormap;
+                delete [] buffer;
+                delete [] linebuf;
+
                 return NULL;
             }
             unsigned char * formattedMap = new unsigned char[colormapLen * format];
@@ -399,6 +405,7 @@ int *numComponents_ret)
                         break;
                     default:
                         tgaerror = ERR_UNSUPPORTED;
+                        delete [] formattedMap;
                         return NULL; /* unreachable code - (depth < 1 || depth > 4) rejected by "check for reasonable values in case this is not a tga file" near the start of this function*/
                     }
 
@@ -409,8 +416,7 @@ int *numComponents_ret)
                 dest += lineoffset;
             }
 
-            if (formattedMap)
-                delete[] formattedMap;
+            delete [] formattedMap;
         }
         break;
         case 2:                  /* RGB, uncompressed */

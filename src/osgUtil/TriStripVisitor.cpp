@@ -607,7 +607,7 @@ void TriStripVisitor::mergeTriangleStrips(osg::Geometry::PrimitiveSetList& primi
             osg::PrimitiveSet* ps = primitives[i].get();
             // remove null primitive sets and all primitives that have been merged
             // (i.e. all TRIANGLE_STRIP DrawElements)
-            if (!ps || (ps && ps->getMode() == osg::PrimitiveSet::TRIANGLE_STRIP))
+            if (ps && ps->getMode() == osg::PrimitiveSet::TRIANGLE_STRIP)
             {
                 primitives.erase(primitives.begin() + i);
             }

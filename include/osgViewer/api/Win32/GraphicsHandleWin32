@@ -16,8 +16,17 @@
 
 #include <osgViewer/Export>
 
+// Fallback if not correctly detected in CMake macro
 #ifndef _WIN32_WINNT
-#define _WIN32_WINNT    0x0500
+//#define _WIN32_WINNT    0x0A00 // Windows 10
+//#define _WIN32_WINNT    0x0603 // Windows 8.1
+//#define _WIN32_WINNT    0x0602 // Windows 8
+//#define _WIN32_WINNT    0x0601 // Windows 7
+//#define _WIN32_WINNT    0x0600 // Windows Server 2008
+//#define _WIN32_WINNT    0x0600 // Windows Vista
+//#define _WIN32_WINNT    0x0502 // Windows Server 2003 with SP1, Windows XP with SP2
+//#define _WIN32_WINNT    0x0501 // Windows Server 2003, Windows XP
+#define _WIN32_WINNT    0x0500 // Windows NT
 #endif
 #include <windows.h>
 

@@ -50,7 +50,6 @@ TextBase::TextBase():
     _lineCount(0),
     _glyphNormalized(false)
 {
-    setStateSet(Font::getDefaultFont()->getStateSet());
     setUseDisplayList(false);
     setSupportsDisplayList(false);
 
@@ -89,6 +88,11 @@ TextBase::~TextBase()
 {
 }
 
+osg::StateSet* TextBase::createStateSet()
+{
+    return 0;
+}
+
 void TextBase::initArraysAndBuffers()
 {
      _vbo = new osg::VertexBufferObject;
@@ -105,7 +109,7 @@ void TextBase::initArraysAndBuffers()
     _texcoords->setBufferObject(_vbo.get());
 }
 
-osg::VertexArrayState* TextBase::createVertexArrayState(osg::RenderInfo& renderInfo) const
+osg::VertexArrayState* TextBase::createVertexArrayStateImplementation(osg::RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
 
@@ -182,12 +186,18 @@ void TextBase::setColor(const osg::Vec4& color)
     _color = color;
 }
 
+void TextBase::assignStateSet()
+{
+    setStateSet(createStateSet());
+}
 
 void TextBase::setFont(osg::ref_ptr<Font> font)
 {
     if (_font==font) return;
 
     _font = font;
+
+    assignStateSet();
 
     computeGlyphRepresentation();
 }
@@ -203,6 +213,9 @@ void TextBase::setFontResolution(unsigned int width, unsigned int height)
     if (_fontSize==size) return;
 
     _fontSize = size;
+
+    assignStateSet();
+
     computeGlyphRepresentation();
 }
 

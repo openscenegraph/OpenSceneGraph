@@ -92,8 +92,7 @@ void Program::ProgramBinary::assign(unsigned int size, const unsigned char* data
 
 Program::Program() :
     _geometryVerticesOut(1), _geometryInputType(GL_TRIANGLES),
-    _geometryOutputType(GL_TRIANGLE_STRIP),
-    _numGroupsX(0), _numGroupsY(0), _numGroupsZ(0), _feedbackmode(GL_SEPARATE_ATTRIBS)
+    _geometryOutputType(GL_TRIANGLE_STRIP), _feedbackmode(GL_SEPARATE_ATTRIBS)
 {
 }
 
@@ -133,10 +132,6 @@ Program::Program(const Program& rhs, const osg::CopyOp& copyop):
     _geometryInputType = rhs._geometryInputType;
     _geometryOutputType = rhs._geometryOutputType;
 
-    _numGroupsX = rhs._numGroupsX;
-    _numGroupsY = rhs._numGroupsY;
-    _numGroupsZ = rhs._numGroupsZ;
-
     _feedbackmode=rhs._feedbackmode;
     _feedbackout=rhs._feedbackout;
 }
@@ -172,15 +167,6 @@ int Program::compare(const osg::StateAttribute& sa) const
 
     if( _geometryOutputType < rhs._geometryOutputType ) return -1;
     if( rhs._geometryOutputType < _geometryOutputType ) return 1;
-
-    if( _numGroupsX < rhs._numGroupsX ) return -1;
-    if( rhs._numGroupsX < _numGroupsX ) return 1;
-
-    if( _numGroupsY < rhs._numGroupsY ) return -1;
-    if( rhs._numGroupsY < _numGroupsY ) return 1;
-
-    if( _numGroupsZ < rhs._numGroupsZ ) return -1;
-    if( rhs._numGroupsZ < _numGroupsZ ) return 1;
 
     if(_feedbackout<rhs._feedbackout) return -1;
     if(_feedbackmode<rhs._feedbackmode) return -1;
@@ -386,20 +372,6 @@ GLint Program::getParameter( GLenum pname ) const
     return 0;
 }
 
-void Program::setComputeGroups( GLint numGroupsX, GLint numGroupsY, GLint numGroupsZ )
-{
-    _numGroupsX = numGroupsX;
-    _numGroupsY = numGroupsY;
-    _numGroupsZ = numGroupsZ;
-}
-
-void Program::getComputeGroups( GLint& numGroupsX, GLint& numGroupsY, GLint& numGroupsZ ) const
-{
-    numGroupsX = _numGroupsX;
-    numGroupsY = _numGroupsY;
-    numGroupsZ = _numGroupsZ;
-}
-
 void Program::addBindAttribLocation( const std::string& name, GLuint index )
 {
     _attribBindingList[name] = index;
@@ -516,7 +488,6 @@ void Program::apply( osg::State& state ) const
     {
         // for shader debugging: to minimize performance impact,
         // optionally validate based on notify level.
-        // TODO: enable this using notify level, or perhaps its own getenv()?
 #ifndef __APPLE__
         if( osg::isNotifyEnabled(osg::INFO) )
             pcp->validateProgram();
@@ -1109,8 +1080,4 @@ Program::ProgramBinary* Program::PerContextProgram::compileProgramBinary(osg::St
 void Program::PerContextProgram::useProgram() const
 {
     _extensions->glUseProgram( _glProgramHandle  );
-    if ( _program->_numGroupsX>0 && _program->_numGroupsY>0 && _program->_numGroupsZ>0 )
-    {
-        _extensions->glDispatchCompute( _program->_numGroupsX, _program->_numGroupsY, _program->_numGroupsZ );
-    }
 }

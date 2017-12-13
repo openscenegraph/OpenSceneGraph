@@ -438,7 +438,7 @@ int main(int argc, char** argv)
     if (arguments.read("-devices") || arguments.read("--devices"))
     {
         // Force load QuickTime plugin, probe video capability, exit
-        osgDB::readImageFile("devices.live");
+        osgDB::readRefImageFile("devices.live");
         return 1;
     }
 #endif

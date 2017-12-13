@@ -37,10 +37,11 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow, pub
             _parent(0),
             _window(0),
             _visualInfo(0),
-            _fbConfig(0),
             #ifdef OSG_USE_EGL
             _eglDisplay(0),
             _eglSurface(0),
+            #else
+            _fbConfig(0),
             #endif
             _currentCursor(0),
             _initialized(false),
@@ -54,7 +55,7 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow, pub
             memset(_keyMap, 0, 32);
 
             init();
-            
+
             if (valid())
             {
                 setState( new osg::State );
@@ -72,7 +73,7 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow, pub
 
             }
         }
-    
+
         virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const GraphicsWindowX11*>(object)!=0; }
         virtual const char* libraryName() const { return "osgViewer"; }
         virtual const char* className() const { return "GraphicsWindowX11"; }
@@ -129,35 +130,35 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow, pub
         {
             WindowData(Window window):
                 _window(window) {}
-                
+
             Window          _window;
         };
 
     public:
-    
+
         // X11 specific access functions
 
         Display* getEventDisplay() const { return _eventDisplay; }
         Display* getDisplayToUse() const ;
 
-        
+
         Window& getParent() { return _parent; }
         Window& getWindow() { return _window; }
 
         Cursor getCurrentCursor() { return _currentCursor; }
 
     protected:
-    
+
         ~GraphicsWindowX11();
-    
+
         Cursor getOrCreateCursor(MouseCursor mouseShape);
-        
+
         bool createVisualInfo();
 
         bool createWindow();
 
         bool setWindow(Window window);
-        
+
         void init();
 
         bool checkAndSendEventFullScreenIfNeeded(Display* display, int x, int y, int width, int height, bool windowDecoration);
@@ -171,23 +172,24 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow, pub
         int getModifierMask() const;
         void syncLocks();
         void flushKeyEvents();
-        
+
         bool            _valid;
         Display*        _eventDisplay;
         Window          _parent;
         Window          _window;
         XVisualInfo*    _visualInfo;
-        GLXFBConfig     _fbConfig;
 
         #ifdef OSG_USE_EGL
         EGLDisplay      _eglDisplay;
         EGLSurface      _eglSurface;
+        #else
+        GLXFBConfig     _fbConfig;
         #endif
 
         Cursor          _currentCursor;
 
         Atom            _deleteWindow;
-        
+
         bool            _initialized;
         bool            _realized;
         bool            _ownsWindow;

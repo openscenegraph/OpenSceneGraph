@@ -536,11 +536,6 @@ void UFOManipulator::_adjustPosition()
         return;
 
     // Forward line segment at 3 times our intersect distance
-
-
-    typedef std::vector<osg::Vec3d> Intersections;
-    Intersections intersections;
-
     // Check intersects infront.
     osg::Vec3d ip;
     if (intersect(_position,

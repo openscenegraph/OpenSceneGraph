@@ -18,6 +18,7 @@
 #include <osg/Drawable>
 #include <osg/ApplicationUsage>
 #include <osg/ContextData>
+#include <osg/EnvVar>
 
 #include <sstream>
 #include <algorithm>
@@ -75,14 +76,17 @@ State::State():
 
     _checkGLErrors = ONCE_PER_FRAME;
 
-    const char* str = getenv("OSG_GL_ERROR_CHECKING");
-    if (str && (strcmp(str,"ONCE_PER_ATTRIBUTE")==0 || strcmp(str,"ON")==0 || strcmp(str,"on")==0))
+    std::string str;
+    if (getEnvVar("OSG_GL_ERROR_CHECKING", str))
     {
-        _checkGLErrors = ONCE_PER_ATTRIBUTE;
-    }
-    else if(str && (strcmp(str, "OFF") == 0 || strcmp(str, "off") == 0))
-    {
-        _checkGLErrors = NEVER_CHECK_GL_ERRORS;
+        if (str=="ONCE_PER_ATTRIBUTE" || str=="ON" || str=="on")
+        {
+            _checkGLErrors = ONCE_PER_ATTRIBUTE;
+        }
+        else if (str=="OFF" || str=="off")
+        {
+            _checkGLErrors = NEVER_CHECK_GL_ERRORS;
+        }
     }
 
     _currentActiveTextureUnit=0;
@@ -198,8 +202,8 @@ void State::initializeExtensionProcs()
         _forceVertexArrayObject = true;
     }
 
-    OSG_NOTICE<<"_forceVertexArrayObject = "<<_forceVertexArrayObject<<std::endl;
-    OSG_NOTICE<<"_forceVertexBufferObject = "<<_forceVertexBufferObject<<std::endl;
+    OSG_INFO<<"osg::State::initializeExtensionProcs() _forceVertexArrayObject = "<<_forceVertexArrayObject<<std::endl;
+    OSG_INFO<<"                                       _forceVertexBufferObject = "<<_forceVertexBufferObject<<std::endl;
 
 
     // Set up up global VertexArrayState object
@@ -1216,13 +1220,73 @@ namespace State_Utils
             source.insert(declPos, qualifier + declarationPrefix + newStr + std::string(";\n"));
         }
     }
+
+    void replaceVar(const osg::State& state, std::string& str, std::string::size_type start_pos,  std::string::size_type num_chars)
+    {
+        std::string var_str(str.substr(start_pos+1, num_chars-1));
+        std::string value;
+        if (state.getActiveDisplaySettings()->getValue(var_str, value))
+        {
+            str.replace(start_pos, num_chars, value);
+        }
+        else
+        {
+            str.erase(start_pos, num_chars);
+        }
+    }
+
+
+    void substitudeEnvVars(const osg::State& state, std::string& str)
+    {
+        std::string::size_type pos = 0;
+        while (pos<str.size() && ((pos=str.find_first_of("$'\"", pos)) != std::string::npos))
+        {
+            if (pos==str.size())
+            {
+                break;
+            }
+
+            if (str[pos]=='"' || str[pos]=='\'')
+            {
+                std::string::size_type start_quote = pos;
+                ++pos; // skip over first quote
+                pos = str.find(str[start_quote], pos);
+
+                if (pos!=std::string::npos)
+                {
+                    ++pos; // skip over second quote
+                }
+            }
+            else
+            {
+                std::string::size_type start_var = pos;
+                ++pos;
+                pos = str.find_first_not_of("ABCDEFGHIJKLMNOPQRTSUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_", pos);
+                if (pos != std::string::npos)
+                {
+
+                    replaceVar(state, str, start_var, pos-start_var);
+                    pos = start_var;
+                }
+                else
+                {
+                    replaceVar(state, str, start_var, str.size()-start_var);
+                    pos = start_var;
+                }
+            }
+        }
+    }
 }
 
 bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
 {
-    OSG_INFO<<"State::convertShaderSourceToOsgBuiltIns()"<<std::endl;
+    OSG_DEBUG<<"State::convertShaderSourceToOsgBuiltIns()"<<std::endl;
 
-    OSG_INFO<<"++Before Converted source "<<std::endl<<source<<std::endl<<"++++++++"<<std::endl;
+    OSG_DEBUG<<"++Before Converted source "<<std::endl<<source<<std::endl<<"++++++++"<<std::endl;
+
+
+    State_Utils::substitudeEnvVars(*this, source);
+
 
     std::string attributeQualifier("attribute ");
 
@@ -1279,7 +1343,7 @@ bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
         }
     }
 
-    OSG_INFO<<"-------- Converted source "<<std::endl<<source<<std::endl<<"----------------"<<std::endl;
+    OSG_DEBUG<<"-------- Converted source "<<std::endl<<source<<std::endl<<"----------------"<<std::endl;
 
     return true;
 }

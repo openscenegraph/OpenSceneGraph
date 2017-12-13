@@ -251,7 +251,7 @@ void PickEventHandler::doOperation()
         }
         case(osgPresentation::EVENT):
         {
-            OSG_NOTICE<<"Event "<<_keyPos._key<<" "<<_keyPos._x<<" "<<_keyPos._y<<std::endl;
+            OSG_INFO<<"Event "<<_keyPos._key<<" "<<_keyPos._x<<" "<<_keyPos._y<<std::endl;
             if (SlideEventHandler::instance()) SlideEventHandler::instance()->dispatchEvent(_keyPos);
             break;
         }

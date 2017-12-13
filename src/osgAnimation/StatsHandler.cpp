@@ -409,7 +409,6 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
             if (!visitor)
                 return;
 
-            std::string font("fonts/arial.ttf");
             float leftPos = 10.0f;
             float characterSize = 20.0f;
 
@@ -427,7 +426,7 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
              }
 
             const std::vector<std::string>& channels = visitor->getChannels();
-            std::map<std::string,int> size;
+            // std::map<std::string,int> size;
             for (int i = 0; i < (int)channels.size(); i++) {
                 std::string name = channels[i];
                 if (_actions.find(name) == _actions.end()) {
@@ -440,14 +439,14 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
                     //_actions[name].touch();
                 }
                 _actions[name]._group->setNodeMask(~osg::Node::NodeMask(0x0));
-                size[name] = 0;
+                //size[name] = 0;
                 pos.y() -= characterSize + graphSpacing;
             }
 
             pos.y() -= backgroundMargin;
             osg::Vec3Array* array = static_cast<osg::Vec3Array*>(_background->getVertexArray());
-            float y = (*array)[0][1];
-            y = y - (pos.y() + backgroundMargin); //(2 * backgroundMargin + (size.size() * (characterSize + graphSpacing)));
+            // float y = (*array)[0][1];
+            // y = y - (pos.y() + backgroundMargin); //(2 * backgroundMargin + (size.size() * (characterSize + graphSpacing)));
             (*array)[1][1] = pos.y();
             (*array)[2][1] = pos.y();
             array->dirty();

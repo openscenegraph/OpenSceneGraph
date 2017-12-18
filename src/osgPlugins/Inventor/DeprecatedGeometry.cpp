@@ -21,7 +21,7 @@ void deprecated_osg::Geometry::setVertexAttribBinding(unsigned int index,Attribu
 
         _vertexAttribList[index]->setBinding(static_cast<osg::Array::Binding>(ab));
 
-        dirtyDisplayList();
+        dirtyGLObjects();
     }
     else
     {
@@ -37,7 +37,7 @@ void deprecated_osg::Geometry::setVertexAttribNormalize(unsigned int index,GLboo
     {
         _vertexAttribList[index]->setNormalize(norm!=GL_FALSE);
 
-        dirtyDisplayList();
+        dirtyGLObjects();
     }
 }
 

@@ -141,7 +141,7 @@ static void smooth_old(osg::Geometry& geom)
     }
     geom.setNormalArray( normals, osg::Array::BIND_PER_VERTEX);
 
-    geom.dirtyDisplayList();
+    geom.dirtyGLObjects();
 }
 
 

@@ -129,7 +129,7 @@ protected:
 
         osg::Vec4Array* c = dynamic_cast<osg::Vec4Array*>(geo->getColorArray());
         if (c) (*c)[0] = color;
-        geo->dirtyDisplayList();
+        geo->dirtyGLObjects();
         c->dirty();
     }
 
@@ -350,7 +350,7 @@ public:
                 (*tex_coords)[2].set(r,b);
                 (*tex_coords)[3].set(r,t);
                 tex_coords->dirty();
-                _geo->dirtyDisplayList();
+                _geo->dirtyGLObjects();
             }
         }
     }

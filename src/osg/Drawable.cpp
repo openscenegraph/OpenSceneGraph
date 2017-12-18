@@ -257,7 +257,7 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
 
 Drawable::~Drawable()
 {
-    dirtyDisplayList();
+    dirtyGLObjects();
 }
 
 osg::MatrixList Drawable::getWorldMatrices(const osg::Node* haltTraversalAtNode) const
@@ -358,7 +358,7 @@ void Drawable::setSupportsDisplayList(bool flag)
         {
             // used to support display lists and display lists switched
             // on so now delete them and turn useDisplayList off.
-            dirtyDisplayList();
+            dirtyGLObjects();
             _useDisplayList = false;
         }
     }
@@ -380,7 +380,7 @@ void Drawable::setUseDisplayList(bool flag)
 
     if (_useDisplayList)
     {
-        dirtyDisplayList();
+        dirtyGLObjects();
     }
 
     if (_supportsDisplayList)
@@ -431,11 +431,6 @@ void Drawable::setUseVertexBufferObjects(bool flag)
     }
 
     _useVertexBufferObjects = flag;
-}
-
-void Drawable::dirtyDisplayList()
-{
-    dirtyGLObjects();
 }
 
 void Drawable::dirtyGLObjects()

@@ -59,7 +59,7 @@ class Logos: public osg::Drawable
                         vp->height() != logos->getViewport()->height() )
                     {
                         logos->getViewport()->setViewport( vp->x(), vp->y(), vp->width(), vp->height() );
-                        logos->dirtyDisplayList();
+                        logos->dirtyGLObjects();
                     }
                 }
                 return false;

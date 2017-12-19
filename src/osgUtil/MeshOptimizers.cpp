@@ -735,7 +735,7 @@ void VertexCacheVisitor::optimizeVertices(Geometry& geom)
     else
         cout << "0.0\n";
 #endif
-    geom.dirtyDisplayList();
+    geom.dirtyGLObjects();
 }
 
 // The main optimization loop
@@ -1176,7 +1176,7 @@ void VertexAccessOrderVisitor::optimizeOrder(Geometry& geom)
     // deduplicate UVs array that were only shared within the geometry
     deduplicator.deduplicateUVs(geom);
 
-    geom.dirtyDisplayList();
+    geom.dirtyGLObjects();
 }
 
 void SharedArrayOptimizer::findDuplicatedUVs(const osg::Geometry& geometry)

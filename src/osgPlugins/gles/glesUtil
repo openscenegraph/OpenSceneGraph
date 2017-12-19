@@ -484,7 +484,7 @@ namespace glesUtil {
             // deduplicate UVs array that were only shared within the geometry
             deduplicator.deduplicateUVs(geom);
 
-            geom.dirtyDisplayList();
+            geom.dirtyGLObjects();
         }
     };
 } // glesUtil namespace

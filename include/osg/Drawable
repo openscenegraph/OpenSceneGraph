@@ -235,9 +235,13 @@ class OSG_EXPORT Drawable : public Node
         /** Return whether to use a local VertexArrayObject for this Drawable.*/
         bool getUseVertexArrayObject() const { return _useVertexArrayObject; }
 
-
+#ifdef OSG_USE_DEPRECATED_API
         /** Deprecated, use dirtyGLObjects() instead. */
-        virtual void dirtyDisplayList();
+        inline void dirtyDisplayList()
+        {
+            dirtyGLObjects();
+        }
+#endif
 
         /** Force a recompile on next draw() of any OpenGL objects associated with this geoset.*/
         virtual void dirtyGLObjects();
@@ -317,8 +321,6 @@ class OSG_EXPORT Drawable : public Node
         /** Implementaion of Craeate tje VertexArrayState object.*/
         virtual VertexArrayState* createVertexArrayStateImplementation(RenderInfo& renderInfo) const;
 
-        typedef buffered_object< osg::ref_ptr<VertexArrayState> > VertexArrayStateList;
-
         void setVertexArrayStateList(VertexArrayStateList& vasl) { _vertexArrayStateList = vasl; }
 
         VertexArrayStateList& getVertexArrayStateList() { return _vertexArrayStateList; }
@@ -362,7 +364,7 @@ class OSG_EXPORT Drawable : public Node
         };
 
         /** Set the DrawCallback which allows users to attach customize the drawing of existing Drawable object.*/
-        virtual void setDrawCallback(DrawCallback* dc) { _drawCallback=dc; dirtyDisplayList(); }
+        virtual void setDrawCallback(DrawCallback* dc) { _drawCallback=dc; dirtyGLObjects(); }
 
         /** Get the non const DrawCallback.*/
         DrawCallback* getDrawCallback() { return _drawCallback.get(); }

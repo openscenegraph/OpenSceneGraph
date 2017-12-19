@@ -884,7 +884,7 @@ void CollectLowestTransformsVisitor::doTransform(osg::Object* obj,osg::Matrix& m
         osgUtil::TransformAttributeFunctor tf(matrix);
         drawable->accept(tf);
         drawable->dirtyBound();
-        drawable->dirtyDisplayList();
+        drawable->dirtyGLObjects();
 
         return;
     }
@@ -2444,7 +2444,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     }
 
     lhs.dirtyBound();
-    lhs.dirtyDisplayList();
+    lhs.dirtyGLObjects();
 
     return true;
 }
@@ -4511,7 +4511,7 @@ void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::transf
         }
 
         geometry->dirtyBound();
-        geometry->dirtyDisplayList();
+        geometry->dirtyGLObjects();
     }
 }
 

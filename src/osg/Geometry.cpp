@@ -162,7 +162,12 @@ void Geometry::setVertexArray(Array* array)
     dirtyGLObjects();
     dirtyBound();
 
-    if (/*_useVertexBufferObjects && */array) addVertexBufferObjectIfRequired(array);
+    if (/*_useVertexBufferObjects && */array)
+    {
+        _vertexArrayStateList.assignVertexArrayDispatcher();
+
+        addVertexBufferObjectIfRequired(array);
+    }
 }
 
 void Geometry::setNormalArray(Array* array, osg::Array::Binding binding)
@@ -173,7 +178,12 @@ void Geometry::setNormalArray(Array* array, osg::Array::Binding binding)
 
     dirtyGLObjects();
 
-    if (/*_useVertexBufferObjects && */array) addVertexBufferObjectIfRequired(array);
+    if (/*_useVertexBufferObjects && */array)
+    {
+        _vertexArrayStateList.assignNormalArrayDispatcher();
+
+        addVertexBufferObjectIfRequired(array);
+    }
 }
 
 void Geometry::setColorArray(Array* array, osg::Array::Binding binding)
@@ -184,7 +194,12 @@ void Geometry::setColorArray(Array* array, osg::Array::Binding binding)
 
     dirtyGLObjects();
 
-    if (/*_useVertexBufferObjects && */array) addVertexBufferObjectIfRequired(array);
+    if (/*_useVertexBufferObjects && */array)
+    {
+        _vertexArrayStateList.assignColorArrayDispatcher();
+
+        addVertexBufferObjectIfRequired(array);
+    }
 }
 
 void Geometry::setSecondaryColorArray(Array* array, osg::Array::Binding binding)
@@ -195,7 +210,12 @@ void Geometry::setSecondaryColorArray(Array* array, osg::Array::Binding binding)
 
     dirtyGLObjects();
 
-    if (/*_useVertexBufferObjects && */array) addVertexBufferObjectIfRequired(array);
+    if (/*_useVertexBufferObjects && */array)
+    {
+        _vertexArrayStateList.assignSecondaryColorArrayDispatcher();
+
+        addVertexBufferObjectIfRequired(array);
+    }
 }
 
 void Geometry::setFogCoordArray(Array* array, osg::Array::Binding binding)
@@ -206,7 +226,12 @@ void Geometry::setFogCoordArray(Array* array, osg::Array::Binding binding)
 
     dirtyGLObjects();
 
-    if (/*_useVertexBufferObjects && */array) addVertexBufferObjectIfRequired(array);
+    if (/*_useVertexBufferObjects && */array)
+    {
+        _vertexArrayStateList.assignFogCoordArrayDispatcher();
+
+        addVertexBufferObjectIfRequired(array);
+    }
 }
 
 
@@ -228,6 +253,8 @@ void Geometry::setTexCoordArray(unsigned int index,Array* array, osg::Array::Bin
 
     if (/*_useVertexBufferObjects && */array)
     {
+        _vertexArrayStateList.assignTexCoordArrayDispatcher(_texCoordList.size());
+
         addVertexBufferObjectIfRequired(array);
     }
 }
@@ -250,8 +277,10 @@ void Geometry::setTexCoordArrayList(const ArrayList& arrayList)
 
     dirtyGLObjects();
 
-    /*if (_useVertexBufferObjects)*/
+    if (!_texCoordList.empty())
     {
+        _vertexArrayStateList.assignTexCoordArrayDispatcher(_texCoordList.size());
+
         for(ArrayList::iterator itr = _texCoordList.begin();
             itr != _texCoordList.end();
             ++itr)
@@ -272,7 +301,12 @@ void Geometry::setVertexAttribArray(unsigned int index, Array* array, osg::Array
 
     dirtyGLObjects();
 
-    if (/*_useVertexBufferObjects && */array) addVertexBufferObjectIfRequired(array);
+    if (/*_useVertexBufferObjects && */array)
+    {
+        _vertexArrayStateList.assignVertexAttribArrayDispatcher(_vertexAttribList.size());
+
+        addVertexBufferObjectIfRequired(array);
+    }
 }
 
 Array *Geometry::getVertexAttribArray(unsigned int index)
@@ -293,8 +327,10 @@ void Geometry::setVertexAttribArrayList(const ArrayList& arrayList)
 
     dirtyGLObjects();
 
-    /*if (_useVertexBufferObjects)*/
+    if (!_vertexAttribList.empty())
     {
+        _vertexArrayStateList.assignVertexAttribArrayDispatcher(_vertexAttribList.size());
+
         for(ArrayList::iterator itr = _vertexAttribList.begin();
             itr != _vertexAttribList.end();
             ++itr)

@@ -321,8 +321,6 @@ class OSG_EXPORT Drawable : public Node
         /** Implementaion of Craeate tje VertexArrayState object.*/
         virtual VertexArrayState* createVertexArrayStateImplementation(RenderInfo& renderInfo) const;
 
-        typedef buffered_object< osg::ref_ptr<VertexArrayState> > VertexArrayStateList;
-
         void setVertexArrayStateList(VertexArrayStateList& vasl) { _vertexArrayStateList = vasl; }
 
         VertexArrayStateList& getVertexArrayStateList() { return _vertexArrayStateList; }

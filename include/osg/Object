@@ -35,6 +35,7 @@ class Drawable;
 class Camera;
 class Callback;
 class CallbackObject;
+class ValueObject;
 
 #define _ADDQUOTES(def) #def
 #define ADDQUOTES(def) _ADDQUOTES(def)
@@ -177,6 +178,23 @@ class OSG_EXPORT Object : public Referenced
         /** convert 'const this' into a const UserDataContainer pointer if Object is a UserDataContainer, otherwise return 0.
           * Equivalent to dynamic_cast<const UserDataContainer*>(this).*/
         virtual const UserDataContainer* asUserDataContainer() const { return 0; }
+
+        /** Convert 'this' into a ValueObject pointer if Object is a ValueObject, otherwise return 0.
+          * Equivalent to dynamic_cast<ValueObject*>(this).*/
+        virtual ValueObject* asValueObject() { return 0; }
+
+        /** Convert 'this' into a ValueObject pointer if Object is a ValueObject, otherwise return 0.
+          * Equivalent to dynamic_cast<ValueObject*>(this).*/
+        virtual const ValueObject* asValueObject() const { return 0; }
+
+        /** Convert 'this' into a Image pointer if Object is a Image, otherwise return 0.
+          * Equivalent to dynamic_cast<Image*>(this).*/
+        virtual Image* asImage() { return 0; }
+
+        /** Convert 'this' into a Image pointer if Object is a Image, otherwise return 0.
+          * Equivalent to dynamic_cast<Image*>(this).*/
+        virtual const Image* asImage() const { return 0; }
+
 
 
         /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/

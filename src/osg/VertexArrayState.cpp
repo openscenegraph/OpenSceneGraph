@@ -546,7 +546,7 @@ void VertexArrayState::deleteVertexArrayObject()
 
 void VertexArrayState::assignVertexArrayDispatcher()
 {
-    if (_vertexArray.valid()) return;
+    // if (_vertexArray.valid()) return;
 
 #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
     if (!_state->getUseVertexAttributeAliasing())
@@ -563,7 +563,7 @@ void VertexArrayState::assignVertexArrayDispatcher()
 
 void VertexArrayState::assignNormalArrayDispatcher()
 {
-    if (_normalArray.valid()) return;
+    // if (_normalArray.valid()) return;
 
 #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
     if (!_state->getUseVertexAttributeAliasing())
@@ -580,7 +580,7 @@ void VertexArrayState::assignNormalArrayDispatcher()
 
 void VertexArrayState::assignColorArrayDispatcher()
 {
-    if (_colorArray.valid()) return;
+    // if (_colorArray.valid()) return;
 
 #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
     if (!_state->getUseVertexAttributeAliasing())
@@ -597,7 +597,7 @@ void VertexArrayState::assignColorArrayDispatcher()
 
 void VertexArrayState::assignSecondaryColorArrayDispatcher()
 {
-    if (_secondaryColorArray.valid()) return;
+    // if (_secondaryColorArray.valid()) return;
 
 #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
     if (!_state->getUseVertexAttributeAliasing())
@@ -613,7 +613,7 @@ void VertexArrayState::assignSecondaryColorArrayDispatcher()
 
 void VertexArrayState::assignFogCoordArrayDispatcher()
 {
-    if (_fogCoordArray.valid()) return;
+    // if (_fogCoordArray.valid()) return;
 
 #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
     if (!_state->getUseVertexAttributeAliasing())
@@ -632,24 +632,35 @@ void VertexArrayState::assignTexCoordArrayDispatcher(unsigned int numUnits)
 #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
     if (!_state->getUseVertexAttributeAliasing())
     {
-        for(unsigned int i=_texCoordArrays.size(); i<numUnits; ++i)
+        if (numUnits < _texCoordArrays.size())
+            _texCoordArrays.resize(numUnits);    // crop the array
+        else
         {
-            _texCoordArrays.push_back( new TexCoordArrayDispatch(i) );
+            for(unsigned int i=_texCoordArrays.size(); i<numUnits; ++i)
+                _texCoordArrays.push_back( new TexCoordArrayDispatch(i) );
         }
     }
     else
 #endif
     {
-        for(unsigned int i=_texCoordArrays.size(); i<numUnits; ++i)
+        _texCoordArrays.resize(numUnits);
+
+        for(unsigned int i=0; i<numUnits; ++i)
         {
             VAS_NOTICE<<"VertexArrayState::VertexArrayState::assignTexCoordArrayDispatcher() _state->getTexCoordAliasList()[i]._location="<<_state->getTexCoordAliasList()[i]._location<<std::endl;
-            _texCoordArrays.push_back( new VertexAttribArrayDispatch(_state->getTexCoordAliasList()[i]._location) );
+            _texCoordArrays[i] = new VertexAttribArrayDispatch(_state->getTexCoordAliasList()[i]._location);
         }
     }
 }
 
 void VertexArrayState::assignVertexAttribArrayDispatcher(unsigned int numUnits)
 {
+    if (numUnits < _vertexAttribArrays.size())
+    {
+        _vertexAttribArrays.resize(numUnits);    // crop the array
+        return;
+    }
+
     for(unsigned int i=_vertexAttribArrays.size(); i<numUnits; ++i)
     {
         _vertexAttribArrays.push_back( new VertexAttribArrayDispatch(i) );

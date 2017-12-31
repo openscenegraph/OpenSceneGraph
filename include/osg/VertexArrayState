@@ -34,6 +34,8 @@ class OSG_EXPORT VertexArrayState : public osg::Referenced
                 modifiedCount(0xffffffff),
                 active(false) {}
 
+            virtual bool isVertexAttribDispatch() const { return false; }
+
             virtual const char* className() const = 0; // { return "ArrayDispatch"; }
 
             virtual void enable_and_dispatch(osg::State& /*state*/, const osg::Array* /*new_array*/) {} // = 0;
@@ -107,6 +109,8 @@ class OSG_EXPORT VertexArrayState : public osg::Referenced
         }
 
         void resetBufferObjectPointers() { _currentVBO = 0; _currentEBO = 0; }
+
+        bool correctArrayDispatchAssigned(const ArrayDispatch* ad);
 
         void assignAllDispatchers();
 

@@ -196,7 +196,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
     private:
 
        /// process triangles and build faces for a batch of geometries
-       void ProcessGeometryList(GeometryList& geometryList, const std::string& meshName);
+       void processGeometryList(GeometryList& geometryList, const std::string& meshName);
 
         /**
         *  Fill the faces field of the mesh and call buildMesh().

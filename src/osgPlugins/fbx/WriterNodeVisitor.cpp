@@ -662,7 +662,7 @@ void WriterNodeVisitor::apply(osg::Geode& node)
     }
 
     // process geometries in batch
-    ProcessGeometryList(geometryList, node.getName());
+    processGeometryList(geometryList, node.getName());
 
     if(node.getStateSet()){
         popStateSet(node.getStateSet());
@@ -679,7 +679,7 @@ void WriterNodeVisitor::apply(osg::Geometry& geometry)
    // here we simply create a single fbx node to assign it the mesh
    // retrieved from the geometry.
    // No need to push&pop the geometry state set, as it will be taken into account
-   // by ProcessGeometryList()
+   // by processGeometryList()
 
    // create fbx node to contain the single geometry
    FbxNode* parent = _curFbxNode;
@@ -690,7 +690,7 @@ void WriterNodeVisitor::apply(osg::Geometry& geometry)
    // process the single geometry
    GeometryList geometryList;
    geometryList.push_back(&geometry);
-   ProcessGeometryList(geometryList, geometry.getName());
+   processGeometryList(geometryList, geometry.getName());
 
    // return to parent fbx node
    _curFbxNode = parent;
@@ -735,7 +735,7 @@ void WriterNodeVisitor::apply(osg::MatrixTransform& node)
 }
 
 //////////////////////////////////////////////////////////////////////////
-void WriterNodeVisitor::ProcessGeometryList(GeometryList &geometryList, const std::string& meshName)
+void WriterNodeVisitor::processGeometryList(GeometryList &geometryList, const std::string& meshName)
 {
    ListTriangle listTriangles;
    bool texcoords = false;

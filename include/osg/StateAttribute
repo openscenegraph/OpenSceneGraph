@@ -208,7 +208,7 @@ class OSG_EXPORT StateAttribute : public Object
             DEPTHRANGEINDEXED,
             SCISSORINDEXED,
             
-            IMAGETEXTURE,
+            BINDIMAGETEXTURE,
 
             CAPABILITY = 100
         };

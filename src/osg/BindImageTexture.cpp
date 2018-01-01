@@ -1,10 +1,10 @@
-#include <osg/ImageTexture>
+#include <osg/BindImageTexture>
 
 using namespace osg;
 
-int ImageTextureBinding::compare(const osg::StateAttribute &sa) const
+int BindImageTexture::compare(const osg::StateAttribute &sa) const
 {
-    COMPARE_StateAttribute_Types(ImageTextureBinding,sa)
+    COMPARE_StateAttribute_Types(BindImageTexture,sa)
     // Compare each parameter in turn against the rhs.
     COMPARE_StateAttribute_Parameter(_target)
     COMPARE_StateAttribute_Parameter(_imageunit)
@@ -15,7 +15,7 @@ int ImageTextureBinding::compare(const osg::StateAttribute &sa) const
     return 0;
 }
 
-void ImageTextureBinding::apply(osg::State&state) const
+void BindImageTexture::apply(osg::State&state) const
 {
     if(_target.valid())
     {

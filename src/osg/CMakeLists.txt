@@ -148,6 +148,7 @@ SET(TARGET_H
     ${HEADER_PATH}/ref_ptr
     ${HEADER_PATH}/RenderInfo
     ${HEADER_PATH}/SampleMaski
+    ${HEADER_PATH}/Sampler
     ${HEADER_PATH}/Scissor
     ${HEADER_PATH}/ScissorIndexed
     ${HEADER_PATH}/ScriptEngine
@@ -355,6 +356,7 @@ SET(TARGET_SRC
     Quat.cpp
     Referenced.cpp
     SampleMaski.cpp
+    Sampler.cpp
     Scissor.cpp
     ScissorIndexed.cpp
     ScriptEngine.cpp

@@ -62,6 +62,7 @@ struct VertexIndex
 
 typedef std::vector<std::pair<Triangle, int> > ListTriangle; //the int is the drawable of the triangle
 typedef std::map<VertexIndex, unsigned int> MapIndices;        ///< Map OSG indices to FBX mesh indices
+typedef std::vector<const osg::Geometry*> GeometryList; // a list of geometries to process in batch
 
 namespace pluginfbx
 {
@@ -94,9 +95,10 @@ class WriterNodeVisitor: public osg::NodeVisitor
         void failedApply() { _succeedLastApply = false; }
 
         virtual void apply(osg::Geode& node);
+        virtual void apply(osg::Geometry& node);
         virtual void apply(osg::Group& node);
         virtual void apply(osg::MatrixTransform& node);
-
+        
         void traverse (osg::Node& node)
         {
             pushStateSet(node.getStateSet());
@@ -192,13 +194,19 @@ class WriterNodeVisitor: public osg::NodeVisitor
         };
 
     private:
+
+       /// process triangles and build faces for a batch of geometries
+       void processGeometryList(GeometryList& geometryList, const std::string& meshName);
+
         /**
         *  Fill the faces field of the mesh and call buildMesh().
-        *  \param geo is the geode which contains the vertices and faces.
+        *  \param name the name to assign to the Fbx Mesh
+        *  \param geometryList is the list of geometries which contains the vertices and faces.
         *  \param listTriangles contain all the mesh's faces.
         *  \param texcoords tell us if we have to handle texture coordinates.
         */
-        void buildFaces(const osg::Geode&   geo,
+        void buildFaces(const std::string& name,
+                        const GeometryList& geometryList,
                         ListTriangle&       listTriangles,
                         bool                texcoords);
 
@@ -206,7 +214,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
         void setLayerTextureAndMaterial(FbxMesh* mesh);
 
         /// Set Vertices, normals, and UVs
-        void setControlPointAndNormalsAndUV(const osg::Geode& geo,
+        void setControlPointAndNormalsAndUV(const GeometryList& geometryList,
                                             MapIndices&       index_vert,
                                             bool              texcoords,
                                             FbxMesh*         fbxMesh);

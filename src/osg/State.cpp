@@ -260,7 +260,7 @@ void State::initializeExtensionProcs()
     _globalVertexArrayState->assignAllDispatchers();
     // if (_useVertexArrayObject) _globalVertexArrayState->generateVertexArrayObject();
 
-    setCurrentToGloabalVertexArrayState();
+    setCurrentToGlobalVertexArrayState();
 
 
     setGLExtensionFuncPtr(_glClientActiveTexture,"glClientActiveTexture","glClientActiveTextureARB");

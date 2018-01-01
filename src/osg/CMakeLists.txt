@@ -28,6 +28,7 @@ SET(TARGET_H
     ${HEADER_PATH}/AudioStream
     ${HEADER_PATH}/AutoTransform
     ${HEADER_PATH}/Billboard
+    ${HEADER_PATH}/BindImageTexture
     ${HEADER_PATH}/BlendColor
     ${HEADER_PATH}/BlendEquation
     ${HEADER_PATH}/BlendEquationi
@@ -249,6 +250,7 @@ SET(TARGET_SRC
     AudioStream.cpp
     AutoTransform.cpp
     Billboard.cpp
+    BindImageTexture.cpp
     BlendColor.cpp
     BlendEquation.cpp
     BlendEquationi.cpp

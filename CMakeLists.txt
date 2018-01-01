@@ -344,10 +344,14 @@ ENDIF()
 
 
 IF(WIN32 AND NOT ANDROID)
-    # Check window version
-    INCLUDE (OsgDetermineWinVersion)
-    get_WIN32_WINNT(WIN_VERSION)
-    ADD_DEFINITIONS(-D_WIN32_WINNT=${WIN_VERSION})
+    OPTION(OSG_DETERMINE_WIN_VERSION "Wheter to automatically determine current Windows version" ON)
+
+    IF(OSG_DETERMINE_WIN_VERSION)
+        # Check window version
+        INCLUDE (OsgDetermineWinVersion)
+        get_WIN32_WINNT(WIN_VERSION)
+        ADD_DEFINITIONS(-D_WIN32_WINNT=${WIN_VERSION})
+    ENDIF(OSG_DETERMINE_WIN_VERSION)
 
     IF(MSVC)
         # This option is to enable the /MP switch for Visual Studio 2005 and above compilers

@@ -60,16 +60,17 @@ namespace osg{
                 _layered(o._layered),
                 _layer(o._layer),
                 _access(o._access),
-                _format(o._format){}
-            virtual ~ImageTextureBinding(){}
+                _format(o._format) {}
+        
+            virtual ~ImageTextureBinding() {}
 
-            META_StateAttribute(osg,ImageTextureBinding,IMAGE)
+            META_StateAttribute(osg,ImageTextureBinding, IMAGETEXTURE)
 
             GLuint getImageUnit() const { return _imageunit; }
             void setImageUnit(GLuint i) { _imageunit=i; }
 
             GLint getLevel() const { return _level; }
-            void setLevel(GLint i){ _level=i; }
+            void setLevel(GLint i) { _level=i; }
 
             GLboolean getIsLayered() const { return _layered; }
             void setIsLayered( GLboolean i) { _layered=i; }
@@ -90,9 +91,8 @@ namespace osg{
 
             virtual int compare(const osg::StateAttribute &sa) const;
 
-            virtual unsigned getMember() const {
-                return static_cast<unsigned int>(_imageunit);
-            }
+            virtual unsigned getMember() const { return static_cast<unsigned int>(_imageunit); }
+        
         protected:
             osg::ref_ptr<osg::Texture> _target;
             GLuint _imageunit;

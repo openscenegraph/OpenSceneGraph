@@ -96,6 +96,7 @@ SET(TARGET_H
     ${HEADER_PATH}/ImageSequence
     ${HEADER_PATH}/ImageStream
     ${HEADER_PATH}/ImageUtils
+    ${HEADER_PATH}/ImageTexture
     ${HEADER_PATH}/io_utils
     ${HEADER_PATH}/KdTree
     ${HEADER_PATH}/Light
@@ -307,6 +308,7 @@ SET(TARGET_SRC
     ImageSequence.cpp
     ImageStream.cpp
     ImageUtils.cpp
+    ImageTexture.cpp
     KdTree.cpp
     Light.cpp
     LightModel.cpp

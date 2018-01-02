@@ -20,6 +20,7 @@
 // This example can work only if GL version is 4.3 or greater
 
 #include <osg/Texture2D>
+#include <osg/BindImageTexture>
 #include <osg/ComputeDispatch>
 #include <osg/Geode>
 #include <osgDB/ReadFile>
@@ -52,7 +53,9 @@ int main( int argc, char** argv )
     tex2D->setInternalFormat( GL_R32F );
     tex2D->setSourceFormat( GL_RED );
     tex2D->setSourceType( GL_FLOAT );
-    tex2D->bindToImageUnit( 0, osg::Texture::WRITE_ONLY );  // So we can use 'image2D' in the compute shader
+    // So we can use 'image2D' in the compute shader
+    osg::ref_ptr<osg::BindImageTexture> imagbinding = new osg::BindImageTexture(0, tex2D, osg::BindImageTexture::WRITE_ONLY, GL_R32F);
+
 
     // The compute shader can't work with other kinds of shaders
     // It also requires the work group numbers. Setting them to 0 will disable the compute shader
@@ -75,7 +78,7 @@ int main( int argc, char** argv )
     quad->addDrawable( geom );
     quad->getOrCreateStateSet()->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
     quad->getOrCreateStateSet()->setTextureAttributeAndModes( 0, tex2D.get() );
-
+    quad->getOrCreateStateSet()->setAttributeAndModes(imagbinding.get());
     // Create the scene graph and start the viewer
     osg::ref_ptr<osg::Group> scene = new osg::Group;
     scene->addChild( sourceNode );

@@ -1270,7 +1270,8 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _use_shadow_comparison(text._use_shadow_comparison),
             _shadow_compare_func(text._shadow_compare_func),
             _shadow_texture_mode(text._shadow_texture_mode),
-            _shadow_ambient(text._shadow_ambient)
+            _shadow_ambient(text._shadow_ambient),
+            _sampler(text._sampler)
 {
 }
 
@@ -1311,6 +1312,7 @@ int Texture::compareTexture(const Texture& rhs) const
     COMPARE_StateAttribute_Parameter(_resizeNonPowerOfTwoHint)
 
     COMPARE_StateAttribute_Parameter(_internalFormatType);
+    COMPARE_StateAttribute_Parameter(_sampler);
 
     return 0;
 }
@@ -1861,6 +1863,13 @@ void Texture::applyTexParameters(GLenum target, State& state) const
 {
     // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
+    if( _sampler.valid() )
+    {
+        ///TODO check if state.currentSampler(state.getActiveTextureUnit()) != _sampler
+        _sampler->apply(state);
+        return;
+    }
+
     const unsigned int contextID = state.getContextID();
     const GLExtensions* extensions = state.get<GLExtensions>();
 
@@ -2812,6 +2821,9 @@ void Texture::releaseGLObjects(State* state) const
     if (!state) const_cast<Texture*>(this)->dirtyTextureObject();
     else
     {
+        if( _sampler.valid() )
+            _sampler->releaseGLObjects(state);
+
         unsigned int contextID = state->getContextID();
         if (_textureObjectBuffer[contextID].valid())
         {
@@ -2822,4 +2834,229 @@ void Texture::releaseGLObjects(State* state) const
     }
 }
 
+
+#ifndef GL_TEXTURE_MIN_LOD
+#define GL_TEXTURE_MIN_LOD 0x813A
+#endif
+
+#ifndef GL_TEXTURE_MAX_LOD
+#define GL_TEXTURE_MAX_LOD 0x813B
+#endif
+
+#ifndef GL_TEXTURE_WRAP_R
+#define GL_TEXTURE_WRAP_R 0x2804
+#endif
+
+
+Sampler::Sampler(): Object(),
+    _wrap_s(Texture::CLAMP),
+    _wrap_t(Texture::CLAMP),
+    _wrap_r(Texture::CLAMP),
+    _shadow_compare_func(Texture::LEQUAL),
+    _shadow_texture_mode(Texture::NONE),
+    _min_filter(Texture::LINEAR_MIPMAP_LINEAR), // trilinear
+    _mag_filter(Texture::LINEAR),
+    _maxAnisotropy(1.0f),
+    _minlod(0.0f),
+    _maxlod(-1.0f),
+    _lodbias(0.0f)
+{
+        _PCdirtyflags.setAllElementsTo(true);
+        _PCsampler.setAllElementsTo(0);
+}
+
+Sampler::Sampler(const Sampler& sampler,const CopyOp &copyop ): Object(sampler,copyop),
+    _wrap_s(sampler._wrap_s),
+    _wrap_t(sampler._wrap_t),
+    _wrap_r(sampler._wrap_r),
+    _shadow_compare_func(sampler._shadow_compare_func),
+    _shadow_texture_mode(sampler._shadow_texture_mode),
+    _min_filter(sampler._min_filter),
+    _mag_filter(sampler._mag_filter),
+    _maxAnisotropy(sampler._maxAnisotropy),
+    _minlod(sampler._minlod),
+    _maxlod(sampler._maxlod),
+    _lodbias(sampler._lodbias)
+{
+        _PCdirtyflags.setAllElementsTo(true);
+        _PCsampler.setAllElementsTo(0);
+}
+
+void Sampler::setWrap(Texture::WrapParameter which, Texture::WrapMode wrap)
+{
+    switch( which )
+    {
+        case Texture::WRAP_S : _wrap_s = wrap;  _PCdirtyflags.setAllElementsTo(true); break;
+        case Texture::WRAP_T : _wrap_t = wrap;  _PCdirtyflags.setAllElementsTo(true); break;
+        case Texture::WRAP_R : _wrap_r = wrap;  _PCdirtyflags.setAllElementsTo(true); break;
+        default : OSG_WARN<<"Error: invalid 'which' passed Sampler::setWrap("<<(unsigned int)which<<","<<(unsigned int)wrap<<")"<<std::endl; break;
+    }
+
+}
+
+
+Texture::WrapMode Sampler::getWrap(Texture::WrapParameter which) const
+{
+    switch( which )
+    {
+        case Texture::WRAP_S : return _wrap_s;
+        case Texture::WRAP_T : return _wrap_t;
+        case Texture::WRAP_R : return _wrap_r;
+        default : OSG_WARN<<"Error: invalid 'which' passed Sampler::getWrap(which)"<<std::endl; return _wrap_s;
+    }
+}
+
+
+void Sampler::setFilter(Texture::FilterParameter which, Texture::FilterMode filter)
+{
+    switch( which )
+    {
+        case Texture::MIN_FILTER : _min_filter = filter; _PCdirtyflags.setAllElementsTo(true); break;
+        case Texture::MAG_FILTER : _mag_filter = filter; _PCdirtyflags.setAllElementsTo(true); break;
+        default : OSG_WARN<<"Error: invalid 'which' passed Sampler::setFilter("<<(unsigned int)which<<","<<(unsigned int)filter<<")"<<std::endl; break;
+    }
+}
+
+
+Texture::FilterMode Sampler::getFilter(Texture::FilterParameter which) const
+{
+    switch( which )
+    {
+        case Texture::MIN_FILTER : return _min_filter;
+        case Texture::MAG_FILTER : return _mag_filter;
+        default : OSG_WARN<<"Error: invalid 'which' passed Sampler::getFilter(which)"<< std::endl; return _min_filter;
+    }
+}
+void Sampler::setMaxAnisotropy(float anis)
+{
+    if (_maxAnisotropy!=anis)
+    {
+        _maxAnisotropy = anis;
+        _PCdirtyflags.setAllElementsTo(true);
+    }
+}
+
+void Sampler::setMinLOD(float func) { _minlod = func; _PCdirtyflags.setAllElementsTo(true);}
+void Sampler::setMaxLOD(float func) { _maxlod = func; _PCdirtyflags.setAllElementsTo(true);}
+void Sampler::setLODBias(float func) { _lodbias = func; _PCdirtyflags.setAllElementsTo(true);}
+
+/** getOrCreate Sampler Object and setup embedded Texture Parameters */
+void Sampler::setShadowCompareFunc(Texture::ShadowCompareFunc func) { _shadow_compare_func = func; _PCdirtyflags.setAllElementsTo(true);}
+
+/** Sets shadow texture mode after comparison. */
+void Sampler::setShadowTextureMode(Texture::ShadowTextureMode mode) { _shadow_texture_mode = mode; _PCdirtyflags.setAllElementsTo(true);}
+
+void Sampler::setBorderColor(const Vec4d& color) { _borderColor = color; _PCdirtyflags.setAllElementsTo(true); }
+
+void Sampler::compileGLObjects(State& state) const{
+    unsigned int contextID = state.getContextID();
+    if(_PCdirtyflags[contextID])
+    {
+        const GLExtensions* extensions = state.get<GLExtensions>();
+        GLuint samplerobject = _PCsampler[contextID];
+        if(samplerobject==0)
+        {
+            extensions->glGenSamplers(1,&_PCsampler[contextID]);
+            samplerobject = _PCsampler[contextID];
+        }
+
+        Texture::WrapMode ws = _wrap_s, wt = _wrap_t, wr = _wrap_r;
+
+        // GL_IBM_texture_mirrored_repeat, fall-back REPEAT
+        if (!extensions->isTextureMirroredRepeatSupported)
+        {
+            if (ws ==  Texture::MIRROR)
+                ws =  Texture::REPEAT;
+            if (wt ==  Texture::MIRROR)
+                wt =  Texture::REPEAT;
+            if (wr ==  Texture::MIRROR)
+                wr =  Texture::REPEAT;
+        }
+
+        // GL_EXT_texture_edge_clamp, fall-back CLAMP
+        if (!extensions->isTextureEdgeClampSupported)
+        {
+            if (ws ==  Texture::CLAMP_TO_EDGE)
+                ws =  Texture::CLAMP;
+            if (wt ==  Texture::CLAMP_TO_EDGE)
+                wt =  Texture::CLAMP;
+            if (wr ==  Texture::CLAMP_TO_EDGE)
+                wr =  Texture::CLAMP;
+        }
+
+        if(!extensions->isTextureBorderClampSupported)
+        {
+            if(ws == Texture::CLAMP_TO_BORDER)
+                ws = Texture::CLAMP;
+            if(wt == Texture::CLAMP_TO_BORDER)
+                wt = Texture::CLAMP;
+            if(wr == Texture::CLAMP_TO_BORDER)
+                wr = Texture::CLAMP;
+        }
+
+        #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GL3_AVAILABLE)
+            if (ws == Texture::CLAMP) ws = Texture::CLAMP_TO_EDGE;
+            if (wt == Texture::CLAMP) wt = Texture::CLAMP_TO_EDGE;
+            if (wr == Texture::CLAMP) wr = Texture::CLAMP_TO_EDGE;
+        #endif
+
+        extensions->glSamplerParameteri( samplerobject, GL_TEXTURE_WRAP_S, ws );
+        extensions->glSamplerParameteri( samplerobject, GL_TEXTURE_WRAP_T, wt );
+        extensions->glSamplerParameteri( samplerobject, GL_TEXTURE_WRAP_R, wr );
+
+
+        extensions->glSamplerParameteri( samplerobject, GL_TEXTURE_MIN_FILTER, _min_filter);
+        extensions->glSamplerParameteri( samplerobject, GL_TEXTURE_MAG_FILTER, _mag_filter);
+
+        if (extensions->isTextureBorderClampSupported)
+        {
+
+            #ifndef GL_TEXTURE_BORDER_COLOR
+                #define GL_TEXTURE_BORDER_COLOR     0x1004
+            #endif
+
+           GLfloat color[4] = {(GLfloat)_borderColor.r(), (GLfloat)_borderColor.g(), (GLfloat)_borderColor.b(), (GLfloat)_borderColor.a()};
+           extensions->glSamplerParameterfv(samplerobject, GL_TEXTURE_BORDER_COLOR, color);
+
+        }
+
+        extensions->glSamplerParameteri(samplerobject, GL_TEXTURE_COMPARE_MODE, _shadow_texture_mode);
+        extensions->glSamplerParameteri(samplerobject, GL_TEXTURE_COMPARE_FUNC, _shadow_compare_func);
+
+        if (extensions->isTextureFilterAnisotropicSupported )
+        {
+            // note, GL_TEXTURE_MAX_ANISOTROPY_EXT will either be defined
+            // by gl.h (or via glext.h) or by include/osg/Texture.
+         extensions->glSamplerParameterf(samplerobject, GL_TEXTURE_MAX_ANISOTROPY_EXT, _maxAnisotropy);
+        }
+
+        if( _maxlod - _minlod > 0){ // if range is valid
+            extensions->glSamplerParameterf(samplerobject, GL_TEXTURE_MIN_LOD, _minlod);
+            extensions->glSamplerParameterf(samplerobject, GL_TEXTURE_MAX_LOD, _maxlod);
+        }
+
+        extensions->glSamplerParameterf(samplerobject, GL_TEXTURE_LOD_BIAS, _lodbias);
+        _PCdirtyflags[contextID]=false;
+    }
+}
+
+/** bind SamplerObject **/
+void Sampler::apply(State&state) const
+{
+
+    unsigned int contextID = state.getContextID();
+    if(  _PCdirtyflags[contextID] )
+        compileGLObjects(state);
+    state.get<GLExtensions>()->glBindSampler( state.getActiveTextureUnit(), _PCsampler[contextID] );
+
+}
+
+void Sampler::releaseGLObjects(State* state) const
+{
+    if(state)
+    {
+        unsigned int contextID=state->getContextID();
+        state->get<GLExtensions>()->glDeleteSamplers(1,&_PCsampler[contextID]);
+    }
+}
 }

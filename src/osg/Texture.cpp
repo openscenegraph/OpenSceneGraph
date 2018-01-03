@@ -1384,16 +1384,6 @@ void Texture::setMaxAnisotropy(float anis)
     }
 }
 
-void Texture::bindToImageUnit(unsigned int unit, GLenum access, GLenum format, int level, bool layered, int layer)
-{
-    _imageAttachment.unit = unit;
-    _imageAttachment.level = level;
-    _imageAttachment.layered = layered ? GL_TRUE : GL_FALSE;
-    _imageAttachment.layer = layer;
-    _imageAttachment.access = access;
-    _imageAttachment.format = format;
-    dirtyTextureParameters();
-}
 
 /** Force a recompile on next apply() of associated OpenGL texture objects.*/
 void Texture::dirtyTextureObject()
@@ -1994,19 +1984,6 @@ void Texture::applyTexParameters(GLenum target, State& state) const
         else
         {
             glTexParameteri(target, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE);
-        }
-    }
-
-    // Apply image load/store attributes
-    if (extensions->isBindImageTextureSupported() && _imageAttachment.access!=0)
-    {
-        TextureObject* tobj = getTextureObject(contextID);
-        if (tobj)
-        {
-            extensions->glBindImageTexture(
-                _imageAttachment.unit, tobj->id(), _imageAttachment.level,
-                _imageAttachment.layered, _imageAttachment.layer, _imageAttachment.access,
-                _imageAttachment.format!=0 ? _imageAttachment.format : _internalFormat);
         }
     }
 

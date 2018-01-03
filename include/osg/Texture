@@ -676,38 +676,6 @@ class OSG_EXPORT Texture : public osg::TextureAttribute
           * min filter is used. */
         void allocateMipmapLevels();
 
-        /** Encapsulates texture image load/store attributes */
-        struct ImageAttachment
-        {
-            GLuint unit;
-            GLint level;
-            GLboolean layered;
-            GLint layer;
-            GLenum access;
-            GLenum format;
-
-            ImageAttachment()
-            : unit(0), level(0), layered(GL_FALSE), layer(0), access(0), format(0) {}
-        };
-
-        /** Type of access that will be performed on the texture image. */
-        enum ImageAccess
-        {
-             NOT_USED = 0,
-             READ_ONLY = GL_READ_ONLY_ARB,
-             WRITE_ONLY = GL_WRITE_ONLY_ARB,
-             READ_WRITE = GL_READ_WRITE_ARB
-        };
-
-        /** Bind texture to an image unit (available only if GL version is 4.2 or greater)
-          * The format parameter for the image unit need not exactly match the texture internal format,
-          * but if it is set to 0, the texture internal format will be used.
-          * See http://www.opengl.org/registry/specs/ARB/shader_image_load_store.txt */
-        void bindToImageUnit(unsigned int unit, GLenum access, GLenum format=0, int level=0, bool layered=false, int layer=0);
-
-        ImageAttachment& getImageAttachment() { return _imageAttachment; }
-        const ImageAttachment& getImageAttachment() const { return _imageAttachment; }
-
         /** Sets GL_TEXTURE_COMPARE_MODE_ARB to GL_COMPARE_R_TO_TEXTURE_ARB
           * See http://oss.sgi.com/projects/ogl-sample/registry/ARB/shadow.txt. */
         void setShadowComparison(bool flag) { _use_shadow_comparison = flag; }
@@ -889,8 +857,6 @@ class OSG_EXPORT Texture : public osg::TextureAttribute
         ShadowCompareFunc   _shadow_compare_func;
         ShadowTextureMode   _shadow_texture_mode;
         float               _shadow_ambient;
-
-        ImageAttachment _imageAttachment;
 
     public:
 

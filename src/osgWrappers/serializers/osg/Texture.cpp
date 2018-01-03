@@ -73,22 +73,31 @@ static bool writeInternalFormat( osgDB::OutputStream& os, const osg::Texture& te
 // _imageAttachment
 static bool checkImageAttachment( const osg::Texture& attr )
 {
-    return attr.getImageAttachment().access!=0;
+    return false;
 }
+
+struct DummyImageAttachment
+{
+DummyImageAttachment(): unit(0), level(0), layered(GL_FALSE), layer(0), access(0), format(0){}
+    GLuint unit;
+    GLint level;
+    GLboolean layered;
+    GLint layer;
+    GLenum access;
+    GLenum format;
+};
 
 static bool readImageAttachment( osgDB::InputStream& is, osg::Texture& attr )
 {
-    osg::Texture::ImageAttachment attachment;
+    DummyImageAttachment attachment;
     is >> attachment.unit >> attachment.level >> attachment.layered
        >> attachment.layer >> attachment.access >> attachment.format;
-    attr.bindToImageUnit( attachment.unit, attachment.access, attachment.format,
-                          attachment.level, attachment.layered!=GL_FALSE, attachment.layer );
     return true;
 }
 
 static bool writeImageAttachment( osgDB::OutputStream& os, const osg::Texture& attr )
 {
-    const osg::Texture::ImageAttachment& attachment = attr.getImageAttachment();
+    DummyImageAttachment attachment;
     os << attachment.unit << attachment.level << attachment.layered
        << attachment.layer << attachment.access << attachment.format << std::endl;
     return true;
@@ -248,9 +257,12 @@ REGISTER_OBJECT_WRAPPER( Texture,
         UPDATE_TO_VERSION_SCOPED( 95 )
         ADD_USER_SERIALIZER( ImageAttachment );  // _imageAttachment
     }
-
-    { 
-        UPDATE_TO_VERSION_SCOPED( 98 ) 
+    {
+        UPDATE_TO_VERSION_SCOPED( 153 )
+        REMOVE_SERIALIZER( ImageAttachment );
+    }
+    {
+        UPDATE_TO_VERSION_SCOPED( 98 )
         ADD_USER_SERIALIZER( Swizzle );  // _swizzle
     }
 }

@@ -160,7 +160,6 @@ void TextureBuffer::apply(State& state) const
 #endif
     if (textureObject)
     {
-        const GLExtensions* extensions = state.get<GLExtensions>();
         if(_bufferData.valid() &&_modifiedCount[contextID]!=_bufferData->getModifiedCount() )
         {
             _modifiedCount[contextID]=_bufferData->getModifiedCount() ;
@@ -178,18 +177,6 @@ void TextureBuffer::apply(State& state) const
 
         }
         textureObject->bind();
-
-        if( getTextureParameterDirty(contextID) )
-        {
-            if( extensions->isBindImageTextureSupported() && _imageAttachment.access!=0 )
-            {
-                extensions->glBindImageTexture(
-                    _imageAttachment.unit, textureObject->id(), _imageAttachment.level,
-                    _imageAttachment.layered, _imageAttachment.layer, _imageAttachment.access,
-                    _imageAttachment.format!=0 ? _imageAttachment.format : _internalFormat);
-            }
-            getTextureParameterDirty(state.getContextID()) = false;
-        }
     }
     else if (_bufferData.valid()  &&_bufferData->getBufferObject()  )//&& _bufferObject->getNumBufferData()>0 )
     {
@@ -205,13 +192,6 @@ void TextureBuffer::apply(State& state) const
             textureObject->_profile._internalFormat=_internalFormat;
             textureObject->bind();
 
-            if ( extensions->isBindImageTextureSupported() && _imageAttachment.access!=0 )
-            {
-                extensions->glBindImageTexture(
-                    _imageAttachment.unit, textureObject->id(), _imageAttachment.level,
-                    _imageAttachment.layered, _imageAttachment.layer, _imageAttachment.access,
-                    _imageAttachment.format!=0 ? _imageAttachment.format : _internalFormat);
-            }
             getTextureParameterDirty(state.getContextID()) = false;
 
             computeInternalFormat();
@@ -239,4 +219,3 @@ void TextureBuffer::computeInternalFormat() const
     if (getImage() ) computeInternalFormatWithImage(*getImage());
     else computeInternalFormatType();
 }
-

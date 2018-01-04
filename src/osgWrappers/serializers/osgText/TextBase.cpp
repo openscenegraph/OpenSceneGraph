@@ -128,8 +128,13 @@ static bool writeText( osgDB::OutputStream& os, const osgText::TextBase& text )
 REGISTER_OBJECT_WRAPPER( osgText_TextBase,
                          /*new osgText::TextBase*/NULL,
                          osgText::TextBase,
-                         "osg::Object osg::Drawable osgText::TextBase" )
+                         "osg::Object osg::Node osg::Drawable osgText::TextBase" )
 {
+    {
+         UPDATE_TO_VERSION_SCOPED( 154 )
+         ADDED_ASSOCIATE("osg::Node")
+    }
+
     ADD_USER_SERIALIZER( Font );  // _font
     ADD_USER_SERIALIZER( FontSize );  // _fontSize
     ADD_USER_SERIALIZER( CharacterSize );  // _characterHeight, _characterAspectRatio

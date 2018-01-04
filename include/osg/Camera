@@ -599,9 +599,12 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
                 Callback(org, copyop) {}
 
             META_Object(osg, DrawCallback);
+            
             /** Functor method called by rendering thread to recursively launch operator() on _nestedcallback **/
-            inline void run(osg::RenderInfo& renderInfo)const{
+            inline void run(osg::RenderInfo& renderInfo) const
+            {
                 operator () (renderInfo);
+                
                 if (_nestedCallback.valid())
                     ((const DrawCallback*)_nestedCallback.get())->run(renderInfo);
             }
@@ -623,8 +626,10 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         const DrawCallback* getInitialDrawCallback() const { return _initialDrawCallback.get(); }
 
         /** Convenience method that sets DrawCallback Initial callback of the node if it doesn't exist, or nest it into the existing one. */
-        inline void addInitialDrawCallback(DrawCallback* nc) {
-            if (nc != NULL) {
+        inline void addInitialDrawCallback(DrawCallback* nc)
+        {
+            if (nc != NULL)
+            {
                 if (_initialDrawCallback.valid()) _initialDrawCallback->addNestedCallback(nc);
                 else setInitialDrawCallback(nc);
             }
@@ -633,8 +638,10 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         template<class T> void addInitialDrawCallback(const ref_ptr<T>& nc) { addInitialDrawCallback(nc.get()); }
 
         /** Convenience method that removes a given callback from a node, even if that callback is nested. There is no error return in case the given callback is not found. */
-        inline void removeInitialDrawCallback(DrawCallback* nc) {
-            if (nc != NULL && _initialDrawCallback.valid()) {
+        inline void removeInitialDrawCallback(DrawCallback* nc)
+        {
+            if (nc != NULL && _initialDrawCallback.valid())
+            {
                 if (_initialDrawCallback == nc)
                 {
                     ref_ptr< DrawCallback> new_nested_callback = (DrawCallback*) nc->getNestedCallback();
@@ -657,8 +664,10 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         const DrawCallback* getPreDrawCallback() const { return _preDrawCallback.get(); }
 
         /** Convenience method that sets DrawCallback Initial callback of the node if it doesn't exist, or nest it into the existing one. */
-        inline void addPreDrawCallback(DrawCallback* nc) {
-            if (nc != NULL) {
+        inline void addPreDrawCallback(DrawCallback* nc)
+        {
+            if (nc != NULL)
+            {
                 if (_preDrawCallback.valid()) _preDrawCallback->addNestedCallback(nc);
                 else setPreDrawCallback(nc);
             }
@@ -667,8 +676,10 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         template<class T> void addPreDrawCallback(const ref_ptr<T>& nc) { addPreDrawCallback(nc.get()); }
 
         /** Convenience method that removes a given callback from a node, even if that callback is nested. There is no error return in case the given callback is not found. */
-        inline void removePreDrawCallback(DrawCallback* nc) {
-            if (nc != NULL && _preDrawCallback.valid()) {
+        inline void removePreDrawCallback(DrawCallback* nc)
+        {
+            if (nc != NULL && _preDrawCallback.valid())
+            {
                 if (_preDrawCallback == nc)
                 {
                     ref_ptr< DrawCallback> new_nested_callback = (DrawCallback*) nc->getNestedCallback();
@@ -691,8 +702,10 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         const DrawCallback* getPostDrawCallback() const { return _postDrawCallback.get(); }
 
         /** Convenience method that sets DrawCallback Initial callback of the node if it doesn't exist, or nest it into the existing one. */
-        inline void addPostDrawCallback(DrawCallback* nc) {
-            if (nc != NULL) {
+        inline void addPostDrawCallback(DrawCallback* nc)
+        {
+            if (nc != NULL)
+            {
                 if (_postDrawCallback.valid()) _postDrawCallback->addNestedCallback(nc);
                 else setPostDrawCallback(nc);
             }
@@ -701,8 +714,10 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         template<class T> void addPostDrawCallback(const ref_ptr<T>& nc) { addPostDrawCallback(nc.get()); }
 
         /** Convenience method that removes a given callback from a node, even if that callback is nested. There is no error return in case the given callback is not found. */
-        inline void removePostDrawCallback(DrawCallback* nc) {
-            if (nc != NULL && _postDrawCallback.valid()) {
+        inline void removePostDrawCallback(DrawCallback* nc)
+        {
+            if (nc != NULL && _postDrawCallback.valid())
+            {
                 if (_postDrawCallback == nc)
                 {
                     ref_ptr< DrawCallback> new_nested_callback = (DrawCallback*) nc->getNestedCallback();
@@ -725,8 +740,10 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         const DrawCallback* getFinalDrawCallback() const { return _finalDrawCallback.get(); }
 
         /** Convenience method that sets DrawCallback Initial callback of the node if it doesn't exist, or nest it into the existing one. */
-        inline void addFinalDrawCallback(DrawCallback* nc) {
-            if (nc != NULL) {
+        inline void addFinalDrawCallback(DrawCallback* nc)
+        {
+            if (nc != NULL)
+            {
                 if (_finalDrawCallback.valid()) _finalDrawCallback->addNestedCallback(nc);
                 else setFinalDrawCallback(nc);
             }
@@ -735,8 +752,10 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         template<class T> void addFinalDrawCallback(const ref_ptr<T>& nc) { addFinalDrawCallback(nc.get()); }
 
         /** Convenience method that removes a given callback from a node, even if that callback is nested. There is no error return in case the given callback is not found. */
-        inline void removeFinalDrawCallback(DrawCallback* nc) {
-            if (nc != NULL && _finalDrawCallback.valid()) {
+        inline void removeFinalDrawCallback(DrawCallback* nc)
+        {
+            if (nc != NULL && _finalDrawCallback.valid())
+            {
                 if (_finalDrawCallback == nc)
                 {
                     ref_ptr< DrawCallback> new_nested_callback = (DrawCallback*) nc->getNestedCallback();

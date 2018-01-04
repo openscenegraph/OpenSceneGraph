@@ -56,8 +56,13 @@ static bool writeColorGradientCorners( osgDB::OutputStream& os, const osgText::T
 REGISTER_OBJECT_WRAPPER( osgText_Text,
                          new osgText::Text,
                          osgText::Text,
-                         "osg::Object osg::Drawable osgText::TextBase osgText::Text" )
+                         "osg::Object osg::Node osg::Drawable osgText::TextBase osgText::Text" )
 {
+    {
+         UPDATE_TO_VERSION_SCOPED( 154 )
+         ADDED_ASSOCIATE("osg::Node")
+    }
+
     ADD_VEC4_SERIALIZER( Color, osg::Vec4() );  // _color
 
     BEGIN_ENUM_SERIALIZER( BackdropType, NONE );

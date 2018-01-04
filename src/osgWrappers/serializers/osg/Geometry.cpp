@@ -144,8 +144,12 @@ static bool writeFastPathHint( osgDB::OutputStream& os, const osg::Geometry& geo
 REGISTER_OBJECT_WRAPPER( Geometry,
                          new osg::Geometry,
                          osg::Geometry,
-                         "osg::Object osg::Drawable osg::Geometry" )
+                         "osg::Object osg::Node osg::Drawable osg::Geometry" )
 {
+  {
+         UPDATE_TO_VERSION_SCOPED( 154 )
+         ADDED_ASSOCIATE("osg::Node")
+    }
     //ADD_LIST_SERIALIZER( PrimitiveSetList, osg::Geometry::PrimitiveSetList );  // _primitives
     ADD_VECTOR_SERIALIZER( PrimitiveSetList, osg::Geometry::PrimitiveSetList, osgDB::BaseSerializer::RW_OBJECT, 0 );
 
@@ -179,7 +183,6 @@ REGISTER_OBJECT_WRAPPER( Geometry,
         ADD_VECTOR_SERIALIZER( TexCoordArrayList, osg::Geometry::ArrayList, osgDB::BaseSerializer::RW_OBJECT, 0 );
         ADD_VECTOR_SERIALIZER( VertexAttribArrayList, osg::Geometry::ArrayList, osgDB::BaseSerializer::RW_OBJECT, 0 );
     }
-
 
     wrapper->addFinishedObjectReadCallback( new GeometryFinishedObjectReadCallback() );
 }

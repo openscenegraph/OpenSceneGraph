@@ -555,6 +555,9 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
 
         void (GL_APIENTRY * glTexImage3D) ( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
         void (GL_APIENTRY * glTexSubImage3D) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
+        void (GL_APIENTRY * glTexStorage3D) ( GLenum target, GLsizei numMipmapLevels,GLenum sizedInternalFormat,GLsizei width,GLsizei height,GLsizei depth);
+        void (GL_APIENTRY * glTextureStorage3D) ( GLuint texture, GLsizei numMipmapLevels,GLenum sizedInternalFormat,GLsizei width,GLsizei height,GLsizei depth);
+
         void (GL_APIENTRY * glCopyTexSubImage3D) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
         void (GL_APIENTRY * glCompressedTexImage3D) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid *data);
         void (GL_APIENTRY * glCompressedTexSubImage3D) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const GLvoid *data );
@@ -658,6 +661,12 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glBlitFramebuffer) (GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum);
         void (GL_APIENTRY * glGetRenderbufferParameteriv) (GLenum, GLenum, GLint*);
 
+        //ARB_framebuffer_no_attachments
+        void (GL_APIENTRY * glFramebufferParameteri)(GLenum target, GLenum pname, GLint param);
+        void (GL_APIENTRY * glGetFramebufferParameteriv)(GLenum target, GLenum pname, GLint *params);
+        void (GL_APIENTRY * glNamedFramebufferParameteri)(GLuint fbo, GLenum pname, GLint param);
+        void (GL_APIENTRY * glGetNamedFramebufferParameteriv)(GLuint fbo, GLenum pname, GLint *params);
+
         //subroutine
         GLint(GL_APIENTRY* glGetSubroutineUniformLocation) (GLuint program, GLenum shadertype, const GLchar *name);
         void (GL_APIENTRY * glGetActiveSubroutineUniformName) (GLuint program, GLenum shadertype, GLuint index, GLsizei bufsize, GLsizei *length, GLchar *name);
@@ -680,8 +689,10 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glDrawArraysIndirect) (GLenum  mode,  const void * indirect);
         void (GL_APIENTRY * glMultiDrawArraysIndirect) (GLenum mode, const void *indirect, GLsizei drawcount, GLsizei stride);
         void (GL_APIENTRY * glDrawElementsIndirect) (GLenum mode,  GLenum type,  const void *indirect);
-        void (GL_APIENTRY * glMultiDrawElementsIndirect)(     GLenum mode,      GLenum type,      const void *indirect,      GLsizei drawcount,      GLsizei stride);
+        void (GL_APIENTRY * glMultiDrawElementsIndirect)(GLenum mode, GLenum type, const void *indirect, GLsizei drawcount, GLsizei stride);
 
+        // ARB_sparse_texture
+        void (GL_APIENTRY * glTexPageCommitment) (GLenum target, GLint level,GLint xoffset,GLint yoffset,GLint zoffset, GLsizei width, GLsizei height, GLsizei depth,GLboolean commit);
 
         // Transform feedback
         void (GL_APIENTRY * glBeginTransformFeedback) (GLenum primitiveMode);
@@ -710,6 +721,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glGenVertexArrays) (GLsizei size, GLuint *handles);
         GLboolean (GL_APIENTRY * glIsVertexArray) (GLuint handle);
         void (GL_APIENTRY * glBindVertexArray) (GLuint handle);
+
         // OpenGL 4.3 / ARB_vertex_attrib_binding
         bool isVertexAttribBindingSupported;
         void (GL_APIENTRY * glBindVertexBuffer)(GLuint bindingindex, GLuint buffer, GLintptr offset, GLintptr stride);

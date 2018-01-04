@@ -72,8 +72,12 @@ static bool writeImages( osgDB::OutputStream& os, const osg::ImageSequence& imag
 REGISTER_OBJECT_WRAPPER( ImageSequence,
                          new osg::ImageSequence,
                          osg::ImageSequence,
-                         "osg::Object osg::Image osg::ImageStream osg::ImageSequence" )
+                         "osg::Object osg::BufferData osg::Image osg::ImageStream osg::ImageSequence" )
 {
+    {
+         UPDATE_TO_VERSION_SCOPED( 154 )
+         ADDED_ASSOCIATE("osg::BufferData")
+    }
     ADD_DOUBLE_SERIALIZER( ReferenceTime, DBL_MAX );  // _referenceTime
     ADD_DOUBLE_SERIALIZER( TimeMultiplier, 1.0 );  // _timeMultiplier
 

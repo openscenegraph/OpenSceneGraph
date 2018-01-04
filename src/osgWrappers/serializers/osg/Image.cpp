@@ -6,8 +6,13 @@
 REGISTER_OBJECT_WRAPPER( Image,
                          new osg::Image,
                          osg::Image,
-                         "osg::Object osg::Image" )
+                         "osg::Object osg::BufferData osg::Image" )
 {
+    {
+         UPDATE_TO_VERSION_SCOPED( 154 )
+         ADDED_ASSOCIATE("osg::BufferData")
+    }
+
     {
         UPDATE_TO_VERSION_SCOPED( 112 )
 

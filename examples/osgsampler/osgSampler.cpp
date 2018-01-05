@@ -190,9 +190,13 @@ int main(int argc, char* argv[])
 
     ss->setTextureAttribute(0,tex1,osg::StateAttribute::ON);
     ss->setTextureAttribute(1,tex2,osg::StateAttribute::ON);
+#define SAMPLER_OBJECT_AUTO_PORT 1
+#ifdef SAMPLER_OBJECT_AUTO_PORT
+    ss->generateSamplerObjects();
+#else
     ss->setTextureAttribute(0,sampler1,osg::StateAttribute::ON);
     ss->setTextureAttribute(1,sampler2,osg::StateAttribute::ON);
-
+#endif
     ss->addUniform(new osg::Uniform("tex1",(int)0));
     ss->addUniform(new osg::Uniform("tex2",(int)1));
     ss->setAttribute(program.get());

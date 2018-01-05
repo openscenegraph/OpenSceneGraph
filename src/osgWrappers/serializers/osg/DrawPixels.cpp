@@ -27,8 +27,13 @@ static bool writeArea( osgDB::OutputStream& os, const osg::DrawPixels& drawable 
 REGISTER_OBJECT_WRAPPER( DrawPixels,
                          new osg::DrawPixels,
                          osg::DrawPixels,
-                         "osg::Object osg::Drawable osg::DrawPixels" )
+                         "osg::Object osg::Node osg::Drawable osg::DrawPixels" )
 {
+    {
+         UPDATE_TO_VERSION_SCOPED( 154 )
+         ADDED_ASSOCIATE("osg::Node")
+    }
+
     ADD_VEC3_SERIALIZER( Position, osg::Vec3() );  // _position
     ADD_IMAGE_SERIALIZER( Image, osg::Image, NULL );  // _image
     ADD_BOOL_SERIALIZER( UseSubImage, false );  // _useSubImage

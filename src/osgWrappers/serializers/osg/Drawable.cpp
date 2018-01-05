@@ -33,8 +33,12 @@ static bool writeInitialBound( osgDB::OutputStream& os, const osg::Drawable& dra
 REGISTER_OBJECT_WRAPPER( Drawable,
                          /*new osg::Drawable*/NULL,
                          osg::Drawable,
-                         "osg::Object osg::Drawable" )
+                         "osg::Object osg::Node osg::Drawable" )
 {
+    {
+         UPDATE_TO_VERSION_SCOPED( 154 )
+         ADDED_ASSOCIATE("osg::Node")
+    }
     ADD_OBJECT_SERIALIZER( StateSet, osg::StateSet, NULL );  // _stateset
     ADD_USER_SERIALIZER( InitialBound );  // _initialBound
     ADD_OBJECT_SERIALIZER( ComputeBoundingBoxCallback,
@@ -57,4 +61,5 @@ REGISTER_OBJECT_WRAPPER( Drawable,
         UPDATE_TO_VERSION_SCOPED( 145 )
         ADD_BOOL_SERIALIZER( CullingActive, true );  // _cullingActive
     }
+
 }

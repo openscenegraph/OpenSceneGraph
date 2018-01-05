@@ -121,11 +121,11 @@ bool ZipArchive::open(const std::string& file, ArchiveStatus status, const osgDB
         if ( !_zipLoaded ) // double-check avoids race condition
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
-            if (!acceptsExtension(ext)) return osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED;
+            if (!acceptsExtension(ext)) return false;
 
             // save the filename + password so other threads can open the file
             _filename = osgDB::findDataFile( file, options );
-            if (_filename.empty()) return osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND;
+            if (_filename.empty()) return false;
 
             _password = ReadPassword(options);
 

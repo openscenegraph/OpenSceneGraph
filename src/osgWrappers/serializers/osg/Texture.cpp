@@ -265,4 +265,10 @@ REGISTER_OBJECT_WRAPPER( Texture,
         UPDATE_TO_VERSION_SCOPED( 98 )
         ADD_USER_SERIALIZER( Swizzle );  // _swizzle
     }
+    {
+        UPDATE_TO_VERSION_SCOPED( 154 )
+        ADD_FLOAT_SERIALIZER( MaxLOD, -1.0f ); 
+        ADD_FLOAT_SERIALIZER( MinLOD, 0.0f ); 
+        ADD_FLOAT_SERIALIZER( LODBias, 0.0f ); 
+    }
 }

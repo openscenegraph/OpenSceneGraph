@@ -1245,7 +1245,7 @@ Texture::Texture():
             _sourceType(0),
             _use_shadow_comparison(false),
             _shadow_compare_func(LEQUAL),
-            _shadow_texture_mode(LUMINANCE),
+            _shadow_texture_mode(NONE),
             _shadow_ambient(0)
 {
 }

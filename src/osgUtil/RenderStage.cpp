@@ -1154,7 +1154,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     if (_camera.valid() && _camera->getInitialDrawCallback())
     {
         // if we have a camera with a initial draw callback invoke it.
-        (*(_camera->getInitialDrawCallback()))(renderInfo);
+        _camera->getInitialDrawCallback()->run(renderInfo);
     }
 
     // note, SceneView does call to drawPreRenderStages explicitly
@@ -1210,7 +1210,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     if (_camera.valid() && _camera->getPreDrawCallback())
     {
         // if we have a camera with a pre draw callback invoke it.
-        (*(_camera->getPreDrawCallback()))(renderInfo);
+        _camera->getPreDrawCallback()->run(renderInfo);
     }
 
     bool doCopyTexture = _texture.valid() ?
@@ -1271,7 +1271,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     if (_camera.valid() && _camera->getPostDrawCallback())
     {
         // if we have a camera with a post draw callback invoke it.
-        (*(_camera->getPostDrawCallback()))(renderInfo);
+        _camera->getPostDrawCallback()->run(renderInfo);
     }
 
     if (_graphicsContext.valid() && _graphicsContext != callingContext)
@@ -1309,7 +1309,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     if (_camera.valid() && _camera->getFinalDrawCallback())
     {
         // if we have a camera with a final callback invoke it.
-        (*(_camera->getFinalDrawCallback()))(renderInfo);
+        _camera->getFinalDrawCallback()->run(renderInfo);
     }
 
     // pop the render stages camera.

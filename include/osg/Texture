@@ -699,7 +699,8 @@ class OSG_EXPORT Texture : public osg::TextureAttribute
         enum ShadowTextureMode {
             LUMINANCE = GL_LUMINANCE,
             INTENSITY = GL_INTENSITY,
-            ALPHA = GL_ALPHA
+            ALPHA = GL_ALPHA,
+            NONE = GL_NONE
         };
 
         /** Sets shadow texture mode after comparison. */

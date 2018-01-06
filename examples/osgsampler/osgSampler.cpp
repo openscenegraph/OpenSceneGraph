@@ -1,5 +1,5 @@
 /*  -*-c++-*-
- *  Copyright (C) 2017 Julien Valentin <mp3butcher@hotmail.com>
+ *  Copyright (C) 2018 Julien Valentin <mp3butcher@hotmail.com>
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -38,12 +38,12 @@ static const char* fragSource =
 };
 
 
-class KeyboardEventHandler : public osgGA::GUIEventHandler
+class SamplersKeyboardEventHandler : public osgGA::GUIEventHandler
 {
 public:
-    KeyboardEventHandler(osg::Sampler* tessInnerU, osg::Sampler* tessOuterU,osg::StateSet* ss):
+    SamplersKeyboardEventHandler(osg::Sampler* tessInnerU, osg::Sampler* tessOuterU):
         _sampler1(tessInnerU),
-        _sampler2(tessOuterU),_ss(ss){}
+        _sampler2(tessOuterU){}
 
     virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& gaa)
     {
@@ -64,7 +64,6 @@ public:
                 _sampler2->setFilter(osg::Texture::MAG_FILTER,newone);
                 _sampler2->setFilter(osg::Texture::MIN_FILTER,newone);
                 return true;
-
             }
         }
         return osgGA::GUIEventHandler::handle(ea, gaa);
@@ -73,7 +72,6 @@ public:
 private:
     osg::Sampler* _sampler1;
     osg::Sampler* _sampler2;
-    osg::StateSet* _ss;
 
 };
 
@@ -82,11 +80,13 @@ public:
     StateCollec():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN){}
     virtual void apply(osg::Node& node){
         osg::StateSet *ss=node.getStateSet();
-        if(ss)_statesets.insert(ss);
+        if(ss) _statesets.insert(ss);
+        traverse(node);
     }
     std::set<osg::StateSet*> _statesets;
     std::set<osg::StateSet*> & getStateSets(){return _statesets;}
 };
+
 int main(int argc, char* argv[])
 {
     osg::ArgumentParser arguments(&argc,argv);
@@ -104,6 +104,7 @@ int main(int argc, char* argv[])
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
     osg::ref_ptr<osg::Node> geode ;
 
+        osg::ref_ptr<osg::Sampler > sampler1, sampler2;
     if (loadedModel)
     {
         ///ensure loaded have Sampler
@@ -111,17 +112,25 @@ int main(int argc, char* argv[])
         StateCollec sc;
         geode->accept(sc);
         for(std::set<osg::StateSet*>::iterator it=sc.getStateSets().begin();it != sc.getStateSets().end(); ++it)
+        {
             (*it)->generateSamplerObjects();
+            if(!sampler1.valid())
+                sampler1 = sampler2 = (osg::Sampler*)(*it)->getTextureAttribute(0,osg::StateAttribute::SAMPLER);
+            else
+                sampler2=(osg::Sampler*)(*it)->getTextureAttribute(0,osg::StateAttribute::SAMPLER);
+        }
+        if(sampler1.valid()&&sampler2.valid()){
+            OSG_WARN<<"2samplers manipulator setted"<<std::endl;
+            viewer.addEventHandler(new SamplersKeyboardEventHandler(sampler1, sampler2));
+        }
     }
     else
     {
-
         ///createQuadWith2TexturesMix
         geode = new osg::Geode;
         ((osg::Geode*)geode.get())->addDrawable(osg::createTexturedQuadGeometry(osg::Vec3(0,0,0),osg::Vec3(1,0,0),osg::Vec3(0,0,1) ));
 
         osg::ref_ptr< osg::Texture2D> tex1, tex2;
-        osg::ref_ptr<osg::Sampler > sampler1, sampler2;
 
         tex1=new osg::Texture2D();
         tex2=new osg::Texture2D();
@@ -224,11 +233,12 @@ int main(int argc, char* argv[])
         ss->addUniform(new osg::Uniform("tex2",(int)1));
         ss->setAttribute(program.get());
 
-        viewer.addEventHandler(new KeyboardEventHandler(sampler1, sampler2,ss));
+        viewer.addEventHandler(new SamplersKeyboardEventHandler(sampler1, sampler2));
     }
     viewer.addEventHandler(new osgViewer::StatsHandler);
 
     viewer.addEventHandler(new osgViewer::HelpHandler(arguments.getApplicationUsage()));
+    viewer.addEventHandler(new osgViewer::WindowSizeHandler());
 
     viewer.setSceneData(geode.get());
     return viewer.run();

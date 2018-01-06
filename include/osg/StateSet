@@ -519,6 +519,8 @@ class OSG_EXPORT StateSet : public Object
         /** call release on all StateAttributes contained within this StateSet.*/
         virtual void releaseGLObjects(State* state=0) const;
 
+        /** generate Sampler StateAttributes from Textures. */
+        void generateSamplerObjects();
     protected :
 
 
@@ -586,7 +588,6 @@ class OSG_EXPORT StateSet : public Object
         ref_ptr<Callback> _eventCallback;
         unsigned int _numChildrenRequiringEventTraversal;
         void setNumChildrenRequiringEventTraversal(unsigned int num);
-
 };
 
 extern OSG_EXPORT bool isTextureMode(StateAttribute::GLMode mode);

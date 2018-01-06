@@ -245,10 +245,11 @@ REGISTER_OBJECT_WRAPPER( Texture,
         ADD_ENUM_VALUE( ALWAYS );
     END_ENUM_SERIALIZER();  // _shadow_compare_func
 
-    BEGIN_ENUM_SERIALIZER( ShadowTextureMode, LUMINANCE );
+    BEGIN_ENUM_SERIALIZER( ShadowTextureMode, NONE );
         ADD_ENUM_VALUE( LUMINANCE );
         ADD_ENUM_VALUE( INTENSITY );
         ADD_ENUM_VALUE( ALPHA );
+        ADD_ENUM_VALUE( NONE );
     END_ENUM_SERIALIZER();  // _shadow_texture_mode
 
     ADD_FLOAT_SERIALIZER( ShadowAmbient, 0.0f );  // _shadow_ambient
@@ -264,5 +265,11 @@ REGISTER_OBJECT_WRAPPER( Texture,
     {
         UPDATE_TO_VERSION_SCOPED( 98 )
         ADD_USER_SERIALIZER( Swizzle );  // _swizzle
+    }
+    {
+        UPDATE_TO_VERSION_SCOPED( 154 )
+        ADD_FLOAT_SERIALIZER( MaxLOD, -1.0f );
+        ADD_FLOAT_SERIALIZER( MinLOD, 0.0f );
+        ADD_FLOAT_SERIALIZER( LODBias, 0.0f );
     }
 }

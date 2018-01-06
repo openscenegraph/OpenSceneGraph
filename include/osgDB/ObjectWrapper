@@ -283,6 +283,115 @@ protected:
     extern "C" void wrapper_compressor_##CLASS(void) {} \
     static osgDB::RegisterCompressorProxy compressor_proxy_##CLASS(NAME, new CLASS);
 
+/** Method wrapping helpers **/
+template <class T>
+class ObjectParameter{
+    T* _t;
+public:
+    inline void set(T* t)          {         _t=t;                                   }
+    inline void set(osg::Object* t){         _t=OBJECT_CAST<T*>(t);                  }
+    inline T* get()                {         return _t;                              }
+    inline osg::Object *getObject(){         return  get();                          }
+    inline osg::Object *getNew()   {         return get();                           }
+};
+
+template <class T,class U>
+class ValueObjectParameter{
+    T _t; osg::ref_ptr<osg::ValueObject> _u;
+public:
+    inline void set(T t)            {        _t=t;                                    }
+    inline void set(osg::Object * u){        _u=static_cast<osg::ValueObject*>(u);    }
+    inline osg::Object *getNew()    {        _u= new U("return",_t);return _u.get();  }
+    inline osg::Object *getObject() {        return _u.get();                         }
+    inline  T get(){
+        T ret;
+        osg::DoubleValueObject* dvo = dynamic_cast<osg::DoubleValueObject*>(_u.get());
+        if (dvo) ret= dvo->getValue();
+        else ret= static_cast<U*>(_u.get())->getValue();
+        return ret;
+    }
+};
+
+typedef ValueObjectParameter<std::string,osg::StringValueObject> StringValueObjectParameter;
+typedef ValueObjectParameter<bool,osg::BoolValueObject> BoolValueObjectParameter;
+typedef ValueObjectParameter<char,osg::CharValueObject> CharValueObjectParameter;
+typedef ValueObjectParameter<unsigned char,osg::UCharValueObject> UCharValueObjectParameter;
+typedef ValueObjectParameter<short,osg::ShortValueObject> ShortValueObjectParameter;
+typedef ValueObjectParameter<unsigned short,osg::UShortValueObject> UShortValueObjectParameter;
+typedef ValueObjectParameter<int,osg::IntValueObject> IntValueObjectParameter;
+typedef ValueObjectParameter<unsigned int,osg::UIntValueObject> UIntValueObjectParameter;
+typedef ValueObjectParameter<float,osg::FloatValueObject> FloatValueObjectParameter;
+typedef ValueObjectParameter<double,osg::DoubleValueObject> DoubleValueObjectParameter;
+typedef ValueObjectParameter<osg::Vec2f,osg::Vec2fValueObject> Vec2fValueObjectParameter;
+typedef ValueObjectParameter<osg::Vec3f,osg::Vec3fValueObject> Vec3fValueObjectParameter;
+typedef ValueObjectParameter<osg::Vec4f,osg::Vec4fValueObject> Vec4fValueObjectParameter;
+typedef ValueObjectParameter<osg::Vec2d,osg::Vec2dValueObject> Vec2dValueObjectParameter;
+typedef ValueObjectParameter<osg::Vec3d,osg::Vec3dValueObject> Vec3dValueObjectParameter;
+typedef ValueObjectParameter<osg::Vec4d,osg::Vec4dValueObject> Vec4dValueObjectParameter;
+typedef ValueObjectParameter<osg::Quat,osg::QuatValueObject> QuatValueObjectParameter;
+typedef ValueObjectParameter<osg::Plane,osg::PlaneValueObject> PlaneValueObjectParameter;
+typedef ValueObjectParameter<osg::Matrixf,osg::MatrixfValueObject> MatrixfValueObjectParameter;
+typedef ValueObjectParameter<osg::Matrixd,osg::MatrixdValueObject> MatrixdValueObjectParameter;
+typedef ValueObjectParameter<osg::BoundingBoxf,osg::BoundingBoxfValueObject> BoundingBoxfValueObjectParameter;
+typedef ValueObjectParameter<osg::BoundingBoxd,osg::BoundingBoxdValueObject> BoundingBoxdValueObjectParameter;
+typedef ValueObjectParameter<osg::BoundingSpheref,osg::BoundingSpherefValueObject> BoundingSpherefValueObjectParameter;
+typedef ValueObjectParameter<osg::BoundingSphered,osg::BoundingSpheredValueObject> BoundingSpheredValueObjectParameter;
 }
+#define BEGIN_METHOD_SERIALIZER(CLASS,WRAPMETHODNAME) \
+struct wrap_##WRAPMETHODNAME : public osgDB::MethodObject{\
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const {\
+        CLASS* classobj = OBJECT_CAST<CLASS*>(objectPtr);
+#define END_METHOD_SERIALIZER return true;}};
+
+#define WRAP_METHOD_GET_RETURN(RETTYPE,XXX) \
+    RETTYPE retobj;retobj.set(XXX);     if(!retobj.getObject())return false;\
+    osg::Object *ret=retobj.getNew();    if(ret)outputParameters.push_back(ret);
+#define WRAP_METHOD_GET_ARG(X,ARGTYPE) ARGTYPE arg##X;arg##X.set(inputParameters[X].get());   if(!arg##X.getObject())return false;
+
+#define WRAP_RET_METHOD(RETTYPE, CLASS, GETTERMETHODNAME)  \
+BEGIN_METHOD_SERIALIZER(CLASS,GETTERMETHODNAME )\
+       WRAP_METHOD_GET_RETURN(RETTYPE,classobj->GETTERMETHODNAME()) \
+END_METHOD_SERIALIZER
+
+#define WRAP_VOID_METHOD(CLASS, GETTERMETHODNAME)  \
+BEGIN_METHOD_SERIALIZER(CLASS,GETTERMETHODNAME )\
+       classobj->GETTERMETHODNAME(); \
+END_METHOD_SERIALIZER
+
+#define WRAP_RET_1ARG_METHOD(RETTYPE, CLASS, GETTERMETHODNAME, ARG0)  \
+BEGIN_METHOD_SERIALIZER(CLASS,GETTERMETHODNAME )\
+       WRAP_METHOD_GET_ARG(0,ARG0) \
+       WRAP_METHOD_GET_RETURN(RETTYPE,classobj->GETTERMETHODNAME(arg0.get())) \
+END_METHOD_SERIALIZER
+
+#define WRAP_VOID_1ARG_METHOD(CLASS, GETTERMETHODNAME, ARG0)  \
+BEGIN_METHOD_SERIALIZER(CLASS,GETTERMETHODNAME )\
+       WRAP_METHOD_GET_ARG(0,ARG0) \
+       classobj->GETTERMETHODNAME(arg0.get()); \
+END_METHOD_SERIALIZER
+
+#define WRAP_RET_2ARG_METHOD(RETTYPE, CLASS, GETTERMETHODNAME, ARG0,ARG1)  \
+BEGIN_METHOD_SERIALIZER(CLASS,GETTERMETHODNAME )\
+    WRAP_METHOD_GET_ARG(0,ARG0) WRAP_METHOD_GET_ARG(1,ARG1)  \
+       WRAP_METHOD_GET_RETURN(RETTYPE,classobj->GETTERMETHODNAME(arg0.get(),arg1.get())) \
+END_METHOD_SERIALIZER
+
+#define WRAP_VOID_2ARG_METHOD( CLASS, GETTERMETHODNAME, ARG0,ARG1)  \
+BEGIN_METHOD_SERIALIZER(CLASS,GETTERMETHODNAME )\
+       WRAP_METHOD_GET_ARG(0,ARG0) \WRAP_METHOD_GET_ARG(1,ARG1) \
+       classobj->GETTERMETHODNAME(arg0.get(),arg1.get()); \
+END_METHOD_SERIALIZER
+
+#define WRAP_RET_3ARG_METHOD(RETTYPE, CLASS, GETTERMETHODNAME, ARG0,ARG1,ARG2)  \
+BEGIN_METHOD_SERIALIZER(CLASS,GETTERMETHODNAME )\
+    WRAP_METHOD_GET_ARG(0,ARG0) WRAP_METHOD_GET_ARG(1,ARG1)  WRAP_METHOD_GET_ARG(2,ARG2) \
+       WRAP_METHOD_GET_RETURN(RETTYPE,classobj->GETTERMETHODNAME(arg0.get(),arg1.get(),arg2.get())) \
+END_METHOD_SERIALIZER
+
+#define WRAP_VOID_3ARG_METHOD(CLASS, GETTERMETHODNAME, ARG0,ARG1,ARG2)  \
+BEGIN_METHOD_SERIALIZER(CLASS,GETTERMETHODNAME )\
+       WRAP_METHOD_GET_ARG(0,ARG0) WRAP_METHOD_GET_ARG(1,ARG1)  WRAP_METHOD_GET_ARG(2,ARG2) \
+       classobj->GETTERMETHODNAME(arg0.get(),arg1.get(),arg2.get()); \
+END_METHOD_SERIALIZER
 
 #endif

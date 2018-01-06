@@ -128,6 +128,11 @@ struct GroupRemoveChild : public osgDB::MethodObject
     }
 };
 
+WRAP_RET_METHOD( osgDB::UIntValueObjectParameter, osg::Group, getNumChildren)
+WRAP_RET_1ARG_METHOD( osgDB::ObjectParameter<osg::Node>, osg::Group, getChild, osgDB::UIntValueObjectParameter)
+WRAP_VOID_1ARG_METHOD( osg::Group, setThreadSafeRefUnref, osgDB::BoolValueObjectParameter)
+WRAP_RET_2ARG_METHOD( osgDB::BoolValueObjectParameter, osg::Group, insertChild, osgDB::UIntValueObjectParameter, osgDB::ObjectParameter<osg::Node> )
+
 REGISTER_OBJECT_WRAPPER( Group,
                          new osg::Group,
                          osg::Group,
@@ -135,8 +140,13 @@ REGISTER_OBJECT_WRAPPER( Group,
 {
     ADD_USER_SERIALIZER( Children );  // _children
 
+    ADD_METHOD_OBJECT("getNumChildren", wrap_getNumChildren);
+    ADD_METHOD_OBJECT( "getChild", wrap_getChild );
+    ADD_METHOD_OBJECT( "insertChild", wrap_insertChild );
+    ADD_METHOD_OBJECT( "setThreadSafeRefUnref", wrap_setThreadSafeRefUnref );
+
     ADD_METHOD_OBJECT( "getNumChildren", GroupGetNumChildren );
-    ADD_METHOD_OBJECT( "getChild", GroupGetChild );
+    //ADD_METHOD_OBJECT( "getChild", GroupGetChild );
     ADD_METHOD_OBJECT( "setChild", GroupSetChild );
     ADD_METHOD_OBJECT( "addChild", GroupAddChild );
     ADD_METHOD_OBJECT( "removeChild", GroupRemoveChild );

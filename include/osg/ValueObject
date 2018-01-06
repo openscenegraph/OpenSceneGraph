@@ -240,7 +240,7 @@ class ValueObject : public Object
 
         template<typename T>
         bool getScalarValue(T& value) { GetScalarValue<T> gsv; if (get(gsv) &&  gsv.set) { value = gsv.value; return true; } else return false; }
-//
+
         template<typename T>
         bool setScalarValue(T value) { SetScalarValue<T> ssv(value); return set(ssv) && ssv.set; }
 

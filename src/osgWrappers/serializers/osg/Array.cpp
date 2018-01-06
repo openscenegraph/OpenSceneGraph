@@ -16,13 +16,9 @@ struct ResizeArray : public osgDB::MethodObject
         osg::Object* indexObject = inputParameters[0].get();
 
         unsigned int index = 0;
-        osg::DoubleValueObject* dvo = dynamic_cast<osg::DoubleValueObject*>(indexObject);
-        if (dvo) index = static_cast<unsigned int>(dvo->getValue());
-        else
-        {
-            osg::UIntValueObject* uivo = dynamic_cast<osg::UIntValueObject*>(indexObject);
-            if (uivo) index = uivo->getValue();
-        }
+        osg::ValueObject* indexObject = inputParameters[0]->asValueObject();
+        if (indexObject) indexObject->getScalarValue(index);
+
         osg::Array* array = reinterpret_cast<osg::Array*>(objectPtr);
         array->resizeArray(index);
 

@@ -10,16 +10,9 @@ struct SwitchGetValue : public osgDB::MethodObject
     {
         if (inputParameters.empty()) return false;
 
-        osg::Object* indexObject = inputParameters[0].get();
-
         unsigned int index = 0;
-        osg::DoubleValueObject* dvo = dynamic_cast<osg::DoubleValueObject*>(indexObject);
-        if (dvo) index = static_cast<unsigned int>(dvo->getValue());
-        else
-        {
-            osg::UIntValueObject* uivo = dynamic_cast<osg::UIntValueObject*>(indexObject);
-            if (uivo) index = uivo->getValue();
-        }
+        osg::ValueObject* indexObject = inputParameters[0]->asValueObject();
+        if (indexObject) indexObject->getScalarValue(index);
 
         osg::Switch* sw = reinterpret_cast<osg::Switch*>(objectPtr);
         outputParameters.push_back(new osg::BoolValueObject("return", sw->getValue(index)));
@@ -35,42 +28,13 @@ struct SwitchSetValue : public osgDB::MethodObject
     {
         if (inputParameters.size()<2) return false;
 
-        osg::Object* indexObject = inputParameters[0].get();
-
         unsigned int index = 0;
-        osg::DoubleValueObject* dvo = dynamic_cast<osg::DoubleValueObject*>(indexObject);
-        if (dvo) index = static_cast<unsigned int>(dvo->getValue());
-        else
-        {
-            osg::UIntValueObject* uivo = dynamic_cast<osg::UIntValueObject*>(indexObject);
-            if (uivo) index = uivo->getValue();
-        }
+        osg::ValueObject* indexObject = inputParameters[0]->asValueObject();
+        if (indexObject) indexObject->getScalarValue(index);
 
         bool enabled = false;
-        osg::Object* valueObject = inputParameters[1].get();
-        if (!valueObject) return false;
-
-        dvo = dynamic_cast<osg::DoubleValueObject*>(valueObject);
-        if (dvo)
-        {
-            enabled = dvo->getValue()!=0.0;
-        }
-        else
-        {
-            osg::UIntValueObject* uivo = dynamic_cast<osg::UIntValueObject*>(valueObject);
-            if (uivo)
-            {
-                enabled = uivo->getValue()!=0;
-            }
-            else
-            {
-                osg::BoolValueObject* bo = dynamic_cast<osg::BoolValueObject*>(valueObject);
-                if (bo)
-                {
-                    enabled = bo->getValue();
-                }
-            }
-        }
+        osg::ValueObject* valueObject = inputParameters[1]->asValueObject();
+        if (valueObject) valueObject->getScalarValue(enabled);
 
         osg::Switch* sw = reinterpret_cast<osg::Switch*>(objectPtr);
         sw->setValue(index, enabled);

@@ -54,12 +54,12 @@ struct GeodeGetDrawable : public osgDB::MethodObject
     {
         if (inputParameters.empty()) return false;
 
-        osg::Object* indexObject = inputParameters[0].get();
-        osg::UIntValueObject* uivo = dynamic_cast<osg::UIntValueObject*>(indexObject);
-        if (!uivo) return false;
+        unsigned int index = 0;
+        osg::ValueObject* indexObject = inputParameters[0]->asValueObject();
+        if (indexObject) indexObject->getScalarValue(index);
 
         osg::Geode* geode = reinterpret_cast<osg::Geode*>(objectPtr);
-        outputParameters.push_back(geode->getDrawable(uivo->getValue()));
+        outputParameters.push_back(geode->getDrawable(index));
 
         return true;
     }
@@ -72,17 +72,9 @@ struct GeodeSetDrawable : public osgDB::MethodObject
     {
         if (inputParameters.size()<2) return false;
 
-        osg::Object* indexObject = inputParameters[0].get();
-        OSG_NOTICE<<"GeodeSetChild "<<indexObject->className()<<std::endl;
-
         unsigned int index = 0;
-        osg::DoubleValueObject* dvo = dynamic_cast<osg::DoubleValueObject*>(indexObject);
-        if (dvo) index = static_cast<unsigned int>(dvo->getValue());
-        else
-        {
-            osg::UIntValueObject* uivo = dynamic_cast<osg::UIntValueObject*>(indexObject);
-            if (uivo) index = uivo->getValue();
-        }
+        osg::ValueObject* indexObject = inputParameters[0]->asValueObject();
+        if (indexObject) indexObject->getScalarValue(index);
 
         osg::Drawable* child = dynamic_cast<osg::Drawable*>(inputParameters[1].get());
         if (!child) return false;

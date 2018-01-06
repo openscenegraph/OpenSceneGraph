@@ -121,16 +121,10 @@ struct ResizeDrawElements : public osgDB::MethodObject
     {
         if (inputParameters.empty()) return false;
 
-        osg::Object* indexObject = inputParameters[0].get();
-
         unsigned int index = 0;
-        osg::DoubleValueObject* dvo = dynamic_cast<osg::DoubleValueObject*>(indexObject);
-        if (dvo) index = static_cast<unsigned int>(dvo->getValue());
-        else
-        {
-            osg::UIntValueObject* uivo = dynamic_cast<osg::UIntValueObject*>(indexObject);
-            if (uivo) index = uivo->getValue();
-        }
+        osg::ValueObject* indexObject = inputParameters[0]->asValueObject();
+        if (indexObject) indexObject->getScalarValue(index);
+
         osg::DrawElements* de = reinterpret_cast<osg::DrawElements*>(objectPtr);
         de->resizeElements(index);
 

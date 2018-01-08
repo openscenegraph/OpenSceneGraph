@@ -258,14 +258,8 @@ struct ProgramAddBindAttribLocation : public osgDB::MethodObject
 
         // decode index
         GLuint index = 0;
-        osg::Object* indexObject = inputParameters[1].get();
-        osg::DoubleValueObject* dvo = dynamic_cast<osg::DoubleValueObject*>(indexObject);
-        if (dvo) index = static_cast<GLuint>(dvo->getValue());
-        else
-        {
-            osg::UIntValueObject* uivo = dynamic_cast<osg::UIntValueObject*>(indexObject);
-            if (uivo) index = uivo->getValue();
-        }
+        osg::ValueObject* indexObject = inputParameters[1]->asValueObject();
+        if (indexObject) indexObject->getScalarValue(index);
 
         // assign the name and index to the program
         osg::Program* program = reinterpret_cast<osg::Program*>(objectPtr);

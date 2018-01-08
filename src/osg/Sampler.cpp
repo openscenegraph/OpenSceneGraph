@@ -144,10 +144,12 @@ void Sampler::setBorderColor(const Vec4d& color) { _borderColor = color; _PCdirt
 
 void Sampler::compileGLObjects(State& state) const
 {
+    const GLExtensions* extensions = state.get<GLExtensions>();
+    if (extensions->glGenSamplers==0) return;
+
     unsigned int contextID = state.getContextID();
     if(_PCdirtyflags[contextID])
     {
-        const GLExtensions* extensions = state.get<GLExtensions>();
         GLuint samplerobject = _PCsampler[contextID];
         if(samplerobject==0)
         {
@@ -237,6 +239,8 @@ void Sampler::compileGLObjects(State& state) const
 /** bind SamplerObject **/
 void Sampler::apply(State&state) const
 {
+    if (state.get<GLExtensions>()->glGenSamplers==0) return;
+
     unsigned int contextID = state.getContextID();
     if(  _PCdirtyflags[contextID] )
         compileGLObjects(state);
@@ -248,6 +252,8 @@ void Sampler::releaseGLObjects(State* state) const
 {
     if(state)
     {
+        if (state->get<GLExtensions>()->glDeleteSamplers==0) return;
+
         unsigned int contextID=state->getContextID();
         state->get<GLExtensions>()->glDeleteSamplers(1,&_PCsampler[contextID]);
     }

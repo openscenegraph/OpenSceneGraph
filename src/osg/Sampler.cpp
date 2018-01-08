@@ -27,6 +27,19 @@
 #define GL_TEXTURE_WRAP_R 0x2804
 #endif
 
+#ifndef GL_TEXTURE_COMPARE_MODE
+#define GL_TEXTURE_COMPARE_MODE 0x884C
+#endif
+
+#ifndef GL_TEXTURE_COMPARE_FUNC
+#define GL_TEXTURE_COMPARE_FUNC 0x884D
+#endif
+
+#ifndef GL_TEXTURE_LOD_BIAS
+#define GL_TEXTURE_LOD_BIAS 0x8501
+#endif
+
+
 using namespace osg;
 
 Sampler::Sampler(): StateAttribute(),

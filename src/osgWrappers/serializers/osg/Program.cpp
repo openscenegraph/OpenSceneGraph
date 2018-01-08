@@ -242,6 +242,57 @@ struct ProgramRemoveShader : public osgDB::MethodObject
     }
 };
 
+struct ProgramAddBindAttribLocation : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+    {
+        if (inputParameters.size()<2) return false;
+
+        // decode name
+        std::string name;
+        osg::Object* nameObject = inputParameters[0].get();
+        osg::StringValueObject* sno = dynamic_cast<osg::StringValueObject*>(nameObject);
+        if (sno) name = sno->getValue();
+
+        if (name.empty()) return false;
+
+        // decode index
+        GLuint index = 0;
+        osg::ValueObject* indexObject = inputParameters[1]->asValueObject();
+        if (indexObject) indexObject->getScalarValue(index);
+
+        // assign the name and index to the program
+        osg::Program* program = reinterpret_cast<osg::Program*>(objectPtr);
+        program->addBindAttribLocation(name, index);
+
+        return true;
+    }
+};
+
+/** Remove an attribute location binding. */
+// void removeBindAttribLocation( const std::string& name );
+struct ProgramRemoveBindAttribLocation : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+    {
+        if (inputParameters.empty()) return false;
+
+        // decode name
+        std::string name;
+        osg::Object* nameObject = inputParameters[0].get();
+        osg::StringValueObject* sno = dynamic_cast<osg::StringValueObject*>(nameObject);
+        if (sno) name = sno->getValue();
+
+        if (name.empty()) return false;
+
+        // assign the name and index to the program
+        osg::Program* program = reinterpret_cast<osg::Program*>(objectPtr);
+        program->removeBindAttribLocation(name);
+
+        return true;
+    }
+};
+
 
 REGISTER_OBJECT_WRAPPER( Program,
                          new osg::Program,
@@ -281,4 +332,6 @@ REGISTER_OBJECT_WRAPPER( Program,
     ADD_METHOD_OBJECT( "addShader", ProgramAddShader );
     ADD_METHOD_OBJECT( "removeShader", ProgramRemoveShader );
 
+    ADD_METHOD_OBJECT( "addBindAttribLocation", ProgramAddBindAttribLocation );
+    ADD_METHOD_OBJECT( "removeBindAttribLocation", ProgramRemoveBindAttribLocation );
 }

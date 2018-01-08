@@ -300,7 +300,6 @@ struct ProgramRemoveBindAttribLocation : public osgDB::MethodObject
 };
 
 
-
 REGISTER_OBJECT_WRAPPER( Program,
                          new osg::Program,
                          osg::Program,
@@ -338,7 +337,7 @@ REGISTER_OBJECT_WRAPPER( Program,
     ADD_METHOD_OBJECT( "getShader", ProgramGetShader );
     ADD_METHOD_OBJECT( "addShader", ProgramAddShader );
     ADD_METHOD_OBJECT( "removeShader", ProgramRemoveShader );
+
     ADD_METHOD_OBJECT( "addBindAttribLocation", ProgramAddBindAttribLocation );
     ADD_METHOD_OBJECT( "removeBindAttribLocation", ProgramRemoveBindAttribLocation );
-
 }

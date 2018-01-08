@@ -27,6 +27,19 @@
 #define GL_TEXTURE_WRAP_R 0x2804
 #endif
 
+#ifndef GL_TEXTURE_COMPARE_MODE
+#define GL_TEXTURE_COMPARE_MODE 0x884C
+#endif
+
+#ifndef GL_TEXTURE_COMPARE_FUNC
+#define GL_TEXTURE_COMPARE_FUNC 0x884D
+#endif
+
+#ifndef GL_TEXTURE_LOD_BIAS
+#define GL_TEXTURE_LOD_BIAS 0x8501
+#endif
+
+
 using namespace osg;
 
 Sampler::Sampler(): StateAttribute(),
@@ -131,10 +144,12 @@ void Sampler::setBorderColor(const Vec4d& color) { _borderColor = color; _PCdirt
 
 void Sampler::compileGLObjects(State& state) const
 {
+    const GLExtensions* extensions = state.get<GLExtensions>();
+    if (extensions->glGenSamplers==0) return;
+
     unsigned int contextID = state.getContextID();
     if(_PCdirtyflags[contextID])
     {
-        const GLExtensions* extensions = state.get<GLExtensions>();
         GLuint samplerobject = _PCsampler[contextID];
         if(samplerobject==0)
         {
@@ -196,8 +211,8 @@ void Sampler::compileGLObjects(State& state) const
                 #define GL_TEXTURE_BORDER_COLOR     0x1004
             #endif
 
-           GLfloat color[4] = {(GLfloat)_borderColor.r(), (GLfloat)_borderColor.g(), (GLfloat)_borderColor.b(), (GLfloat)_borderColor.a()};
-           extensions->glSamplerParameterfv(samplerobject, GL_TEXTURE_BORDER_COLOR, color);
+            GLfloat color[4] = {(GLfloat)_borderColor.r(), (GLfloat)_borderColor.g(), (GLfloat)_borderColor.b(), (GLfloat)_borderColor.a()};
+            extensions->glSamplerParameterfv(samplerobject, GL_TEXTURE_BORDER_COLOR, color);
         }
 
         extensions->glSamplerParameteri(samplerobject, GL_TEXTURE_COMPARE_MODE, _shadow_texture_mode);
@@ -207,7 +222,7 @@ void Sampler::compileGLObjects(State& state) const
         {
             // note, GL_TEXTURE_MAX_ANISOTROPY_EXT will either be defined
             // by gl.h (or via glext.h) or by include/osg/Texture.
-         extensions->glSamplerParameterf(samplerobject, GL_TEXTURE_MAX_ANISOTROPY_EXT, _maxAnisotropy);
+            extensions->glSamplerParameterf(samplerobject, GL_TEXTURE_MAX_ANISOTROPY_EXT, _maxAnisotropy);
         }
 
         if(_maxlod - _minlod > 0)
@@ -224,6 +239,8 @@ void Sampler::compileGLObjects(State& state) const
 /** bind SamplerObject **/
 void Sampler::apply(State&state) const
 {
+    if (state.get<GLExtensions>()->glGenSamplers==0) return;
+
     unsigned int contextID = state.getContextID();
     if(  _PCdirtyflags[contextID] )
         compileGLObjects(state);
@@ -235,6 +252,8 @@ void Sampler::releaseGLObjects(State* state) const
 {
     if(state)
     {
+        if (state->get<GLExtensions>()->glDeleteSamplers==0) return;
+
         unsigned int contextID=state->getContextID();
         state->get<GLExtensions>()->glDeleteSamplers(1,&_PCsampler[contextID]);
     }

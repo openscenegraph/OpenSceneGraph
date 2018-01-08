@@ -211,8 +211,8 @@ void Sampler::compileGLObjects(State& state) const
                 #define GL_TEXTURE_BORDER_COLOR     0x1004
             #endif
 
-           GLfloat color[4] = {(GLfloat)_borderColor.r(), (GLfloat)_borderColor.g(), (GLfloat)_borderColor.b(), (GLfloat)_borderColor.a()};
-           extensions->glSamplerParameterfv(samplerobject, GL_TEXTURE_BORDER_COLOR, color);
+            GLfloat color[4] = {(GLfloat)_borderColor.r(), (GLfloat)_borderColor.g(), (GLfloat)_borderColor.b(), (GLfloat)_borderColor.a()};
+            extensions->glSamplerParameterfv(samplerobject, GL_TEXTURE_BORDER_COLOR, color);
         }
 
         extensions->glSamplerParameteri(samplerobject, GL_TEXTURE_COMPARE_MODE, _shadow_texture_mode);
@@ -222,7 +222,7 @@ void Sampler::compileGLObjects(State& state) const
         {
             // note, GL_TEXTURE_MAX_ANISOTROPY_EXT will either be defined
             // by gl.h (or via glext.h) or by include/osg/Texture.
-         extensions->glSamplerParameterf(samplerobject, GL_TEXTURE_MAX_ANISOTROPY_EXT, _maxAnisotropy);
+            extensions->glSamplerParameterf(samplerobject, GL_TEXTURE_MAX_ANISOTROPY_EXT, _maxAnisotropy);
         }
 
         if(_maxlod - _minlod > 0)

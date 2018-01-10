@@ -1,5 +1,4 @@
 #include <osgGA/FreeCameraManipulator>
-#include <iostream>
 
 
 using namespace osgGA;
@@ -54,10 +53,10 @@ void FreeCameraManipulator::home(const osgGA::GUIEventAdapter& ea, osgGA::GUIAct
 
 osg::Matrixd FreeCameraManipulator::getMatrix() const
 {
-    osg::Matrixd matrix;
-    matrix.postMultTranslate(_position);
+	osg::Matrixd matrix;
+	matrix.postMultTranslate(_position);
 	matrix.postMultRotate(_rotation);
-    return matrix;
+	return matrix;
 }
 
 
@@ -111,19 +110,19 @@ bool FreeCameraManipulator::handleKeyDown(const osgGA::GUIEventAdapter& ea, osgG
 {
 	switch(ea.getKey())
 	{
-		case 'w':
+		case osgGA::GUIEventAdapter::KEY_W:
 			_move = _rotation.inverse() * osg::Vec3d(0.0, 0.0, -_speed);
 		break;
 
-		case 's':
+		case osgGA::GUIEventAdapter::KEY_S:
 			_move = _rotation.inverse() * osg::Vec3d(0.0, 0.0, _speed);
 		break;
 
-		case 'a':
+		case osgGA::GUIEventAdapter::KEY_A:
 			_move = _rotation.inverse() * osg::Vec3d(-_speed, 0.0, 0.0);
 		break;
 
-		case 'd':
+		case osgGA::GUIEventAdapter::KEY_D:
 			_move = _rotation.inverse() * osg::Vec3d(_speed, 0.0, 0.0);
 		break;
 

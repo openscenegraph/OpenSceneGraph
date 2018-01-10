@@ -1,4 +1,3 @@
-#pragma once
 #ifndef __OSGGA_FREECAMERAMANIPULATOR__
 #define __OSGGA_FREECAMERAMANIPULATOR__
 
@@ -31,7 +30,7 @@ public:
 	/*
 		Sets camera position.
 	*/
-    void setPosition(const osg::Vec3& position);
+	void setPosition(const osg::Vec3& position);
 	
 	/*
 		Sets speed of camera move.
@@ -47,7 +46,7 @@ public:
 	virtual bool handleKeyDown(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us);
 
 protected:
-    osg::Vec3d _position;
+	osg::Vec3d _position;
 	osg::Quat _rotation;
 
 	double _x;

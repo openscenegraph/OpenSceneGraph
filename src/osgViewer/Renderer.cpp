@@ -543,6 +543,12 @@ void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
         (*sceneView->getFrameStamp()) = *(state->getFrameStamp());
     }
 
+
+    if (view)
+    {
+        sceneView->setFusionDistance(view->getFusionDistanceMode(), view->getFusionDistanceValue());
+    }
+
     osg::DisplaySettings* ds = _camera->getDisplaySettings() ?  _camera->getDisplaySettings() :
                                ((view &&view->getDisplaySettings()) ?  view->getDisplaySettings() :  osg::DisplaySettings::instance().get());
 
@@ -642,10 +648,6 @@ void Renderer::cull()
         updateSceneView(sceneView);
 
         // OSG_NOTICE<<"Culling buffer "<<_currentCull<<std::endl;
-
-        // pass on the fusion distance settings from the View to the SceneView
-        osgViewer::View* view = dynamic_cast<osgViewer::View*>(sceneView->getCamera()->getView());
-        if (view) sceneView->setFusionDistance(view->getFusionDistanceMode(), view->getFusionDistanceValue());
 
         osg::Stats* stats = sceneView->getCamera()->getStats();
         const osg::FrameStamp* fs = sceneView->getFrameStamp();
@@ -820,12 +822,7 @@ void Renderer::cull_draw()
         compile();
     }
 
-    osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
-
     // OSG_NOTICE<<"RenderingOperation"<<std::endl;
-
-    // pass on the fusion distance settings from the View to the SceneView
-    if (view) sceneView->setFusionDistance(view->getFusionDistanceMode(), view->getFusionDistanceValue());
 
     osg::Stats* stats = sceneView->getCamera()->getStats();
     osg::State* state = sceneView->getState();

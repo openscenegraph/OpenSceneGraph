@@ -135,11 +135,13 @@ int ShapeAttribute::compare(const osgSim::ShapeAttribute& sa) const
         {
             if (_string<sa._string) return -1;
             if (sa._string<_string) return 1;
+            return 0;
         }
         case DOUBLE:
         {
             if (_double<sa._double) return -1;
             if (sa._double<_double) return 1;
+            return 0;
         }
         case INTEGER:
         case UNKNOWN:
@@ -147,6 +149,7 @@ int ShapeAttribute::compare(const osgSim::ShapeAttribute& sa) const
         {
             if (_integer<sa._integer) return -1;
             if (sa._integer<_integer) return 1;
+            return 0;
         }
     }
     return 0;

@@ -157,7 +157,7 @@ osg::StateSet* Text::createStateSet()
 
     if (_shaderTechnique>GREYSCALE)
     {
-        defineList["SIGNED_DISTNACE_FIELD"] = osg::StateSet::DefinePair("1", osg::StateAttribute::ON);
+        defineList["SIGNED_DISTANCE_FIELD"] = osg::StateSet::DefinePair("1", osg::StateAttribute::ON);
     }
 
 #if 0

@@ -8,6 +8,7 @@
 #include <osg/Geode>
 #include <osg/Group>
 #include <osg/Notify>
+#include <osg/os_utils>
 
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
@@ -94,7 +95,7 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
 
             OSG_NOTICE<<"Running command '"<<command<<"'"<<std::endl;
 
-            int result = system( command );
+            int result = osg::system( command );
             if (result!=0) return ReadResult::ERROR_IN_READING_FILE;
 
 
@@ -137,7 +138,7 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
         #endif
             OSG_NOTICE<<"Running command '"<<command<<"'"<<std::endl;
 
-            result = system( command );
+            result = osg::system( command );
             if (result!=0) return ReadResult::ERROR_IN_READING_FILE;
 
             if( grp->getNumChildren() == 0 )

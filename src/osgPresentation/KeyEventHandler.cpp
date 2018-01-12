@@ -14,6 +14,7 @@
 #include <osgPresentation/SlideEventHandler>
 
 #include <osgViewer/Viewer>
+#include <osg/os_utils>
 #include <osg/Notify>
 #include <osgDB/FileUtils>
 
@@ -119,7 +120,7 @@ void KeyEventHandler::doOperation()
 
             bool commandRunsInBackground = (_command.find("&")!=std::string::npos);
 
-            int result = system(_command.c_str());
+            int result = osg::system(_command.c_str());
 
             OSG_INFO<<"system("<<_command<<") result "<<result<<std::endl;
 

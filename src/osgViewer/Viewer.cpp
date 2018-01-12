@@ -16,6 +16,7 @@
 
 #include <osg/DeleteHandler>
 #include <osg/io_utils>
+#include <osg/os_utils>
 #include <osg/TextureRectangle>
 #include <osg/TextureCubeMap>
 
@@ -35,7 +36,6 @@
 #include <osgViewer/config/WoWVxDisplay>
 #include <osgViewer/config/SingleWindow>
 
-#include <osg/EnvVar>
 
 #include <sstream>
 #include <string.h>

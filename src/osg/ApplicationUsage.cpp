@@ -17,7 +17,7 @@
 #include <osg/ApplicationUsage>
 #include <osg/Object>
 #include <osg/Math>
-#include <osg/EnvVar>
+#include <osg/os_utils>
 #include <osg/ref_ptr>
 
 #include <sstream>

@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_EnvVar
-#define OSG_EnvVar 1
+#ifndef OSG_osg_utils
+#define OSG_osg_utils 1
 
 #include <osg/Config>
 

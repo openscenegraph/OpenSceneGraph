@@ -25,7 +25,7 @@
 #include <osg/TexMat>
 #include <osg/Texture2D>
 #include <osg/TextureRectangle>
-#include <osg/EnvVar>
+#include <osg/os_utils>
 #include <osg/io_utils>
 
 #include <osgViewer/Viewer>

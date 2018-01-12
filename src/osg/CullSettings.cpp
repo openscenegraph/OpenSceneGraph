@@ -16,7 +16,7 @@
 #include <osg/CullSettings>
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
-#include <osg/EnvVar>
+#include <osg/os_utils>
 
 #include <osg/Notify>
 

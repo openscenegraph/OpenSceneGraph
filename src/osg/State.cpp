@@ -18,7 +18,7 @@
 #include <osg/Drawable>
 #include <osg/ApplicationUsage>
 #include <osg/ContextData>
-#include <osg/EnvVar>
+#include <osg/os_utils>
 
 #include <sstream>
 #include <algorithm>

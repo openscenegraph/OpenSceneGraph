@@ -23,7 +23,7 @@
 #include <osg/GL>
 #include <osg/DeleteHandler>
 #include <osg/ApplicationUsage>
-#include <osg/EnvVar>
+#include <osg/os_utils>
 
 #include <vector>
 #include <map>

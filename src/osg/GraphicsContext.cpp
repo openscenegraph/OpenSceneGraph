@@ -18,7 +18,7 @@
 #include <osg/View>
 #include <osg/GLObjects>
 #include <osg/ContextData>
-#include <osg/EnvVar>
+#include <osg/os_utils>
 
 #include <osg/FrameBufferObject>
 #include <osg/Program>

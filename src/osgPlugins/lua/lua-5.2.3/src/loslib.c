@@ -19,6 +19,7 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
+#include <osg/Config>
 
 /*
 ** list of valid conversion specifiers for the 'strftime' function
@@ -78,6 +79,8 @@
 
 
 static int os_execute (lua_State *L) {
+
+#if defined(OSG_SYSTEM_SUPPORTED)
   const char *cmd = luaL_optstring(L, 1, NULL);
   int stat = system(cmd);
   if (cmd != NULL)
@@ -86,6 +89,9 @@ static int os_execute (lua_State *L) {
     lua_pushboolean(L, stat);  /* true if there is a shell */
     return 1;
   }
+#else
+    return 0;
+#endif
 }
 
 

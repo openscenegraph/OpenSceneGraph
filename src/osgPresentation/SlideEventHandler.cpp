@@ -21,6 +21,7 @@
 #include <osg/AlphaFunc>
 #include <osg/Timer>
 #include <osg/io_utils>
+#include <osg/os_utils>
 
 #include <osgUtil/TransformCallback>
 #include <osgUtil/GLObjectsVisitor>
@@ -420,7 +421,7 @@ struct LayerAttributesOperator : public ObjectOperator
                 OSG_NOTICE<<"Run "<<itr->c_str()<<std::endl;
                 osg::Timer_t startTick = osg::Timer::instance()->tick();
 
-                int result = system(itr->c_str());
+                int result = osg::system(itr->c_str());
 
                 OSG_INFO<<"system("<<*itr<<") result "<<result<<std::endl;
 
@@ -1257,7 +1258,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                     std::stringstream command;
                     command<<editor<<" "<<filename<<" &"<<std::endl;
 
-                    int result = system(command.str().c_str());
+                    int result = osg::system(command.str().c_str());
 
                     OSG_INFO<<"system("<<command.str()<<") result "<<result<<std::endl;
 

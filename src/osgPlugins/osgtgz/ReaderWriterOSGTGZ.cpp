@@ -8,6 +8,7 @@
 #include <osg/Geode>
 #include <osg/Group>
 #include <osg/Notify>
+#include <osg/os_utils>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -77,7 +78,7 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
             mkdir( dirname, 0700 );
         #endif
 
-            if ( system( command ) ) {
+            if (osg::system( command ) ) {
                 return ReadResult::FILE_NOT_HANDLED;
             }
 
@@ -107,7 +108,7 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
 
             sprintf( command, "rm -rf %s", dirname );
         #endif
-            if ( system( command ) ) {
+            if (osg::system( command ) ) {
                 return ReadResult::FILE_NOT_HANDLED;
             }
 

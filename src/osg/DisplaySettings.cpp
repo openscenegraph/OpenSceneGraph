@@ -16,7 +16,7 @@
 #include <osg/Math>
 #include <osg/Notify>
 #include <osg/GL>
-#include <osg/EnvVar>
+#include <osg/os_utils>
 #include <osg/ref_ptr>
 
 #include <algorithm>

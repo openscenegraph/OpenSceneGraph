@@ -18,7 +18,7 @@
 #include <osgViewer/View>
 #include <osgViewer/Renderer>
 
-#include <osg/EnvVar>
+#include <osg/os_utils>
 #include <osg/io_utils>
 
 #include <osg/TextureCubeMap>

@@ -15,7 +15,7 @@
 #include <osg/Notify>
 #include <osg/Math>
 #include <osg/buffered_value>
-#include <osg/EnvVar>
+#include <osg/os_utils>
 #include <osg/ApplicationUsage>
 
 #include <stdlib.h>

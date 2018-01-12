@@ -12,7 +12,7 @@
 */
 #include <osg/Notify>
 #include <osg/ApplicationUsage>
-#include <osg/EnvVar>
+#include <osg/os_utils>
 #include <osg/ref_ptr>
 #include <string>
 #include <stdlib.h>

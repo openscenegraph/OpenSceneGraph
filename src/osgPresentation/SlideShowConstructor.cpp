@@ -31,6 +31,7 @@
 #include <osg/ComputeBoundsVisitor>
 #include <osg/Notify>
 #include <osg/io_utils>
+#include <osg/os_utils>
 #include <osg/ValueObject>
 
 #include <osgUtil/TransformCallback>
@@ -1749,7 +1750,7 @@ void SlideShowConstructor::addGraph(const std::string& contents, const PositionD
 
     std::stringstream command;
     command<<"dot -Tsvg "<<dotFileName<<" -o "<<tmpSvgFileName;
-    int result = system(command.str().c_str());
+    int result = osg::system(command.str().c_str());
     if (result==0)
     {
         osg::ref_ptr<osgDB::Options> previousOptions = _options;

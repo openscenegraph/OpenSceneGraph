@@ -109,19 +109,6 @@ ADD_ARRAYDATA_FUNCTIONS( FogCoordData, FogCoordArray )
 ADD_ARRAYLIST_FUNCTIONS( TexCoordData, TexCoordArray, TexCoordArrayList )
 ADD_ARRAYLIST_FUNCTIONS( VertexAttribData, VertexAttribArray, VertexAttribArrayList )
 
-struct GeometryFinishedObjectReadCallback : public osgDB::FinishedObjectReadCallback
-{
-    virtual void objectRead(osgDB::InputStream&, osg::Object& obj)
-    {
-        osg::Geometry& geometry = static_cast<osg::Geometry&>(obj);
-        if (geometry.getUseVertexBufferObjects())
-        {
-            geometry.setUseVertexBufferObjects(false);
-            geometry.setUseVertexBufferObjects(true);
-        }
-    }
-};
-
 // implement backwards compatibility with reading/writing the FastPathHint
 static bool checkFastPathHint( const osg::Geometry& geom ) { return false; }
 static bool readFastPathHint( osgDB::InputStream& is, osg::Geometry& geom )
@@ -184,5 +171,4 @@ REGISTER_OBJECT_WRAPPER( Geometry,
         ADD_VECTOR_SERIALIZER( VertexAttribArrayList, osg::Geometry::ArrayList, osgDB::BaseSerializer::RW_OBJECT, 0 );
     }
 
-    wrapper->addFinishedObjectReadCallback( new GeometryFinishedObjectReadCallback() );
 }

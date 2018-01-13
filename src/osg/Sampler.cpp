@@ -225,13 +225,14 @@ void Sampler::compileGLObjects(State& state) const
             extensions->glSamplerParameterf(samplerobject, GL_TEXTURE_MAX_ANISOTROPY_EXT, _maxAnisotropy);
         }
 
-        if(_maxlod - _minlod > 0)
+        if(_maxlod - _minlod >= 0)
         {   // if range is valid
             extensions->glSamplerParameterf(samplerobject, GL_TEXTURE_MIN_LOD, _minlod);
             extensions->glSamplerParameterf(samplerobject, GL_TEXTURE_MAX_LOD, _maxlod);
         }
 
         extensions->glSamplerParameterf(samplerobject, GL_TEXTURE_LOD_BIAS, _lodbias);
+
         _PCdirtyflags[contextID]=false;
     }
 }
@@ -244,7 +245,7 @@ void Sampler::apply(State&state) const
     unsigned int contextID = state.getContextID();
     if(  _PCdirtyflags[contextID] )
         compileGLObjects(state);
-    
+
     state.get<GLExtensions>()->glBindSampler( state.getActiveTextureUnit(), _PCsampler[contextID] );
 }
 

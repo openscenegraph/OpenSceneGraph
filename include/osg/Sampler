@@ -70,10 +70,10 @@ class OSG_EXPORT Sampler : public osg::StateAttribute
           * filtering, use normal filtering (equivalent to a max anisotropy
           * value of 1.0. Valid range is 1.0f upwards.  The maximum value
           * depends on the graphics system. */
-          void setMaxAnisotropy(float anis);
+        void setMaxAnisotropy(float anis);
 
-          /** Gets the maximum anisotropy value. */
-          inline float getMaxAnisotropy() const { return _maxAnisotropy; }
+        /** Gets the maximum anisotropy value. */
+        inline float getMaxAnisotropy() const { return _maxAnisotropy; }
 
         void setMinLOD(float anis);
 
@@ -89,6 +89,9 @@ class OSG_EXPORT Sampler : public osg::StateAttribute
 
         /** Gets the maximum anisotropy value. */
         inline float getLODBias() const { return _lodbias; }
+
+        /** helper method to generate Sampler from Texture's sampling parameters (except shadow_texture_mode left to NONE) */
+        static void generateSamplerObjects(StateSet&);
 
         virtual void apply(State& state) const;
 
@@ -107,12 +110,12 @@ class OSG_EXPORT Sampler : public osg::StateAttribute
         Texture::ShadowTextureMode _shadow_texture_mode;
         Vec4d _borderColor;
 
-        Texture::FilterMode      _min_filter;
-        Texture::FilterMode      _mag_filter;
+        Texture::FilterMode _min_filter;
+        Texture::FilterMode _mag_filter;
         float _maxAnisotropy, _minlod, _maxlod, _lodbias;
 
         mutable buffered_value<GLuint> _PCsampler;
-        mutable buffered_value<uint8_t>   _PCdirtyflags;
+        mutable buffered_value<uint8_t> _PCdirtyflags;
 };
 }
 #endif

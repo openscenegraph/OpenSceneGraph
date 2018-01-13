@@ -205,11 +205,13 @@ void ViewerBase::setThreadingModel(ThreadingModel threadingModel)
 {
     if (_threadingModel == threadingModel) return;
 
+    bool needSetUpThreading = _threadsRunning;
+
     if (_threadsRunning) stopThreading();
 
     _threadingModel = threadingModel;
 
-    setUpThreading();
+    if (needSetUpThreading) setUpThreading();
 }
 
 ViewerBase::ThreadingModel ViewerBase::suggestBestThreadingModel()

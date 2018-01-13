@@ -1228,6 +1228,9 @@ Texture::Texture():
             _min_filter(LINEAR_MIPMAP_LINEAR), // trilinear
             _mag_filter(LINEAR),
             _maxAnisotropy(1.0f),
+            _minlod(0.0f),
+            _maxlod(-1.0f),
+            _lodbias(0.0f),
             _swizzle(GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA),
             _useHardwareMipMapGeneration(true),
             _unrefImageDataAfterApply(false),
@@ -1255,6 +1258,9 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _min_filter(text._min_filter),
             _mag_filter(text._mag_filter),
             _maxAnisotropy(text._maxAnisotropy),
+            _minlod(text._minlod),
+            _maxlod(text._maxlod),
+            _lodbias(text._lodbias),
             _swizzle(text._swizzle),
             _useHardwareMipMapGeneration(text._useHardwareMipMapGeneration),
             _unrefImageDataAfterApply(text._unrefImageDataAfterApply),
@@ -1288,6 +1294,9 @@ int Texture::compareTexture(const Texture& rhs) const
     COMPARE_StateAttribute_Parameter(_min_filter)
     COMPARE_StateAttribute_Parameter(_mag_filter)
     COMPARE_StateAttribute_Parameter(_maxAnisotropy)
+    COMPARE_StateAttribute_Parameter(_minlod)
+    COMPARE_StateAttribute_Parameter(_maxlod)
+    COMPARE_StateAttribute_Parameter(_lodbias)
     COMPARE_StateAttribute_Parameter(_swizzle)
     COMPARE_StateAttribute_Parameter(_useHardwareMipMapGeneration)
     COMPARE_StateAttribute_Parameter(_internalFormatMode)
@@ -1336,7 +1345,6 @@ void Texture::setWrap(WrapParameter which, WrapMode wrap)
         case WRAP_R : _wrap_r = wrap; dirtyTextureParameters(); break;
         default : OSG_WARN<<"Error: invalid 'which' passed Texture::setWrap("<<(unsigned int)which<<","<<(unsigned int)wrap<<")"<<std::endl; break;
     }
-
 }
 
 
@@ -1382,6 +1390,32 @@ void Texture::setMaxAnisotropy(float anis)
     }
 }
 
+void Texture::setMinLOD(float anis)
+{
+    if (_minlod!=anis)
+    {
+        _minlod = anis;
+        dirtyTextureParameters();
+    }
+}
+
+void Texture::setMaxLOD(float anis)
+{
+    if (_maxlod!=anis)
+    {
+        _maxlod = anis;
+        dirtyTextureParameters();
+    }
+}
+
+void Texture::setLODBias(float anis)
+{
+    if (_lodbias!=anis)
+    {
+        _lodbias = anis;
+        dirtyTextureParameters();
+    }
+}
 
 /** Force a recompile on next apply() of associated OpenGL texture objects.*/
 void Texture::dirtyTextureObject()
@@ -1984,6 +2018,14 @@ void Texture::applyTexParameters(GLenum target, State& state) const
             glTexParameteri(target, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE);
         }
     }
+    // if range is valid
+    if( _maxlod - _minlod >= 0)
+    {
+        glTexParameterf(target, GL_TEXTURE_MIN_LOD, _minlod);
+        glTexParameterf(target, GL_TEXTURE_MAX_LOD, _maxlod);
+    }
+
+    glTexParameterf(target, GL_TEXTURE_LOD_BIAS, _lodbias);
 
     getTextureParameterDirty(state.getContextID()) = false;
 

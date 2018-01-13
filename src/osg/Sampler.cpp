@@ -225,13 +225,14 @@ void Sampler::compileGLObjects(State& state) const
             extensions->glSamplerParameterf(samplerobject, GL_TEXTURE_MAX_ANISOTROPY_EXT, _maxAnisotropy);
         }
 
-        if(_maxlod - _minlod > 0)
+        if(_maxlod - _minlod >= 0)
         {   // if range is valid
             extensions->glSamplerParameterf(samplerobject, GL_TEXTURE_MIN_LOD, _minlod);
             extensions->glSamplerParameterf(samplerobject, GL_TEXTURE_MAX_LOD, _maxlod);
         }
 
         extensions->glSamplerParameterf(samplerobject, GL_TEXTURE_LOD_BIAS, _lodbias);
+
         _PCdirtyflags[contextID]=false;
     }
 }
@@ -244,7 +245,7 @@ void Sampler::apply(State&state) const
     unsigned int contextID = state.getContextID();
     if(  _PCdirtyflags[contextID] )
         compileGLObjects(state);
-    
+
     state.get<GLExtensions>()->glBindSampler( state.getActiveTextureUnit(), _PCsampler[contextID] );
 }
 
@@ -273,4 +274,49 @@ int Sampler::compare(const StateAttribute& sa) const
     COMPARE_StateAttribute_Parameter(_maxlod)
     COMPARE_StateAttribute_Parameter(_lodbias)
     return 0; // passed all the above comparison macros, must be equal.
+}
+
+void Sampler::generateSamplerObjects(StateSet& ss)
+{
+    const osg::StateSet::TextureAttributeList& texAttributes = ss.getTextureAttributeList();
+    for(unsigned int unit=0; unit<texAttributes.size(); ++unit)
+    {
+        StateSet::RefAttributePair attmode;
+        Sampler * sampler = 0;
+        const StateSet::AttributeList& tex_attributes = texAttributes[unit];
+        for(StateSet::AttributeList::const_iterator aitr = tex_attributes.begin();
+            aitr!=tex_attributes.end();
+            ++aitr)
+        {
+            if( aitr->second.first.get()->getType() != StateAttribute::TEXTURE )
+            {
+                if( aitr->second.first.get()->getType() == StateAttribute::SAMPLER)
+                    sampler = static_cast< Sampler* > (aitr->second.first.get());
+            }
+            else attmode= aitr->second;
+        }
+
+        if( attmode.first.valid() )
+        {
+            if( !sampler )
+            {
+                ///create new Sampler and add it to this
+                sampler = new Sampler();
+                Texture * tex = attmode.first->asTexture();
+                sampler->setFilter( Texture::MIN_FILTER, tex->getFilter(Texture::MIN_FILTER) );
+                sampler->setFilter( Texture::MAG_FILTER, tex->getFilter(Texture::MAG_FILTER) );
+                sampler->setWrap( Texture::WRAP_S, tex->getWrap(Texture::WRAP_S) );
+                sampler->setWrap( Texture::WRAP_T, tex->getWrap(Texture::WRAP_T) );
+                sampler->setWrap( Texture::WRAP_R, tex->getWrap(Texture::WRAP_R) );
+                sampler->setMaxAnisotropy( tex->getMaxAnisotropy() );
+                sampler->setShadowCompareFunc( tex->getShadowCompareFunc() );
+                //sampler->setShadowTextureMode( tex->getShadowTextureMode() ); default LUMINANCE tex param incompatible with default NONE Sampler param
+                sampler->setBorderColor( tex->getBorderColor() );
+                sampler->setLODBias( tex->getLODBias() );
+                sampler->setMinLOD( tex->getMinLOD() );
+                sampler->setMaxLOD( tex->getMaxLOD() );
+                ss.setTextureAttributeAndModes(unit,sampler,attmode.second);
+            }
+        }
+    }
 }

@@ -521,6 +521,24 @@ class OSG_EXPORT Texture : public osg::TextureAttribute
         /** Gets the maximum anisotropy value. */
         inline float getMaxAnisotropy() const { return _maxAnisotropy; }
 
+        /** Sets the minimum level of detail value. */
+        void setMinLOD(float minlod);
+
+        /** Gets the minimum level of detail value. */
+        inline float getMinLOD() const { return _minlod; }
+
+        /** Sets the maximum level of detail value. */
+        void setMaxLOD(float maxlod);
+
+        /** Gets the maximum level of detail value. */
+        inline float getMaxLOD() const { return _maxlod; }
+
+        /** Gets the level of detail bias value. */
+        void setLODBias(float lodbias);
+
+        /** Sets the level of detail bias value. */
+        inline float getLODBias() const { return _lodbias; }
+
         /** Configure the source of texture swizzling for all channels */
         inline void setSwizzle(const Vec4i& swizzle) { _swizzle = swizzle; dirtyTextureParameters(); };
 
@@ -839,6 +857,9 @@ class OSG_EXPORT Texture : public osg::TextureAttribute
         FilterMode      _min_filter;
         FilterMode      _mag_filter;
         float           _maxAnisotropy;
+        float           _minlod;
+        float           _maxlod;
+        float           _lodbias;
         Vec4i           _swizzle;
         bool            _useHardwareMipMapGeneration;
         bool            _unrefImageDataAfterApply;

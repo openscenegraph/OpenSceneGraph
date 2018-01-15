@@ -646,6 +646,19 @@ typedef char GLchar;
     #define GL_MAX_3D_TEXTURE_SIZE      0x8073
 #endif
 
+#ifndef GL_TEXTURE_MIN_LOD
+    #define GL_TEXTURE_MIN_LOD          0x813A
+#endif
+
+#ifndef GL_TEXTURE_MAX_LOD
+    #define GL_TEXTURE_MAX_LOD          0x813B
+#endif
+
+#ifndef GL_TEXTURE_LOD_BIAS
+    #define GL_TEXTURE_LOD_BIAS         0x8501
+#endif
+
+
 #ifndef GL_INTERLEAVED_ATTRIBS
     #define GL_INTERLEAVED_ATTRIBS      0x8C8C
 #endif

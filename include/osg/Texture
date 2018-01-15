@@ -162,6 +162,18 @@
     #define GL_MIRRORED_REPEAT_IBM            0x8370
 #endif
 
+#ifndef GL_TEXTURE_MIN_LOD
+    #define GL_TEXTURE_MIN_LOD                0x813A
+#endif
+
+#ifndef GL_TEXTURE_MAX_LOD
+    #define GL_TEXTURE_MAX_LOD                0x813B
+#endif
+
+#ifndef GL_TEXTURE_LOD_BIAS
+    #define GL_TEXTURE_LOD_BIAS               0x8501
+#endif
+
 #ifndef GL_CLAMP_TO_EDGE
     #define GL_CLAMP_TO_EDGE                  0x812F
 #endif

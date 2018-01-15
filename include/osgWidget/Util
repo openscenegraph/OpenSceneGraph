@@ -48,12 +48,17 @@ inline std::ostream& info()
     return _notify();
 }
 
+inline char lowerCaseChar(const char in)
+{
+    return (unsigned char)(::tolower((int)((unsigned char)in)));
+}
+
 inline std::string lowerCase(const std::string& str)
 {
     std::string s = str;
 
     // TODO: Why can't I specify std::tolower?
-    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+    std::transform(s.begin(), s.end(), s.begin(), lowerCaseChar);
 
     return s;
 }

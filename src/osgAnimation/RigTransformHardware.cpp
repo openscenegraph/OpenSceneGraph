@@ -194,7 +194,6 @@ bool RigTransformHardware::buildPalette(const BoneMap& boneMap, const RigGeometr
     _bonePalette.clear();
     _boneNameToPalette.clear();
 
-    IndexWeightList::size_type maxBonePerVertex = 0;
     BoneNameCountMap boneNameCountMap;
 
     const VertexInfluenceMap &vertexInfluenceMap = *rig.getInfluenceMap();

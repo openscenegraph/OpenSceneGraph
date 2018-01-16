@@ -370,7 +370,7 @@ void ObjPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
 
             for(GLsizei i=0;i<count;++i)
             {
-                writePoint(i);
+                writePoint(first + i);
             }
             break;
         }
@@ -379,7 +379,7 @@ void ObjPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
         {
             for(GLsizei i=0;i<count;i+=2)
             {
-                writeLine(i, i+1);
+                writeLine(first + i, first + i+1);
             }
             break;
         }
@@ -387,7 +387,7 @@ void ObjPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
         {
             for(GLsizei i=1;i<count;++i)
             {
-                writeLine(i-1, i);
+                writeLine(first + i-1, first + i);
             }
             break;
         }
@@ -395,9 +395,9 @@ void ObjPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
         {
             for(GLsizei i=1;i<count;++i)
             {
-                writeLine(i-1, i);
+                writeLine(first + i-1, first + i);
             }
-            writeLine(count-1, 0);
+            writeLine(first + count-1, first + 0);
             break;
         }
         default:

@@ -29,36 +29,31 @@
 #include <osgGA/TerrainManipulator>
 #include <osgGA/SphericalManipulator>
 
-#include <iostream>
-
-
-class AdaptNumPixelUniform : public osg::Camera::DrawCallback
-{
+class ReadBackAndResetCallback : public osg::SyncBufferDataCallback{
+        osg::Uniform *_invNumPixelUniform;
     public:
-        AdaptNumPixelUniform()
+        ReadBackAndResetCallback(osg::BufferData*bd, osg::Uniform* invNumPixelUniform):
+            osg::SyncBufferDataCallback(bd),
+            _invNumPixelUniform(invNumPixelUniform)
         {
-            _atomicCounterArray = new osg::UIntArray;
-            _atomicCounterArray->push_back(0);
+            setHostAccess(GL_READ_WRITE);
+            setDeviceAccess(GL_READ_WRITE);
         }
 
-        virtual void operator () (osg::RenderInfo& renderInfo) const
+        virtual bool synctraversal(osg::Node *,osg::NodeVisitor*)
         {
-            _acbb->readData(*renderInfo.getState(), *_atomicCounterArray);
-            unsigned int numPixel = osg::maximum(1u, _atomicCounterArray->front());
-
-            if ((renderInfo.getView()->getFrameStamp()->getFrameNumber() % 10) == 0)
+            osg::UIntArray * array = dynamic_cast<  osg::UIntArray*>(_bd.get());
+            unsigned int numPixel =  array->front();
+            _invNumPixelUniform->set( 1.0f / static_cast<float>( std::max(1u, numPixel)) );
+            // if ((renderInfo.getView()->getFrameStamp()->getFrameNumber() % 10) == 0)
             {
-                OSG_INFO << "osgatomiccounter : draw " << numPixel << " pixels." << std::endl;
+                OSG_WARN << "osgatomiccounter : draw " << numPixel << " pixels." << std::endl;
             }
-
-            _invNumPixelUniform->set( 1.0f / static_cast<float>(numPixel) );
+            (*array)[0] = 0;
+            _bd->dirty();
+            return true;
         }
-
-        osg::ref_ptr<osg::Uniform> _invNumPixelUniform;
-        osg::ref_ptr<osg::UIntArray> _atomicCounterArray;
-        osg::ref_ptr<osg::AtomicCounterBufferBinding> _acbb;
 };
-
 
 osg::Program * createProgram()
 {
@@ -214,16 +209,12 @@ int main(int argc, char** argv)
     ss->setAttributeAndModes(acbbBlue.get());
 
     acbbRedAndGreen->setUpdateCallback(new ResetAtomicCounter);
-    acbbBlue->setUpdateCallback(new ResetAtomicCounter);
+    //acbbBlue->setUpdateCallback(new ResetAtomicCounter);
 
     osg::ref_ptr<osg::Uniform> invNumPixelUniform = new osg::Uniform("invNumPixel", 1.0f/(800.0f*600.0f));
     ss->addUniform( invNumPixelUniform.get() );
 
-    AdaptNumPixelUniform * drawCallback = new AdaptNumPixelUniform;
-    drawCallback->_invNumPixelUniform = invNumPixelUniform;
-    drawCallback->_acbb = acbbBlue;
-
-    viewer.getCamera()->setFinalDrawCallback(drawCallback);
+    loadedModel->addUpdateCallback(new ReadBackAndResetCallback(atomicCounterArrayBlue, invNumPixelUniform));
 
     // optimize the scene graph, remove redundant nodes and state etc.
     osgUtil::Optimizer optimizer;

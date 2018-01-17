@@ -21,6 +21,7 @@
 #include <osg/Export>
 #include <osg/BufferObject>
 #include <osg/StateAttribute>
+#include <osg/Camera>
 
 #ifndef GL_TRANSFORM_FEEDBACK_BUFFER
     #define GL_TRANSFORM_FEEDBACK_BUFFER      0x8C8E
@@ -212,6 +213,59 @@ class OSG_EXPORT ShaderStorageBufferBinding : public BufferIndexBinding
         return 0;
     }
 };
+
+
+
+///Update callback in wich registered BufferData is RAM/VRAM synchronized on a READ/WRITE POLICY
+class SyncBufferDataCallback : public osg::NodeCallback{
+public:
+    typedef GLenum BufferDataAccess;
+
+    SyncBufferDataCallback(BufferData* bd):
+        _bd(bd),
+        gpuproduced(false),
+        cpuproduced(true),
+        _CpuAccess(GL_READ_ONLY),
+        _GpuAccess(GL_READ_ONLY){}
+
+    void setBufferData(BufferData* bd) { _bd=bd; }
+    const BufferData* getBufferData() const { return _bd.get(); }
+
+    inline void setHostAccess(BufferDataAccess a) { _CpuAccess=a; }
+    inline BufferDataAccess getHostAccess()const { return _CpuAccess; }
+
+    inline void setDeviceAccess(BufferDataAccess a) { _GpuAccess=a; }
+    inline BufferDataAccess getDeviceAccess()const { return _GpuAccess; }
+
+
+    inline void setReadBackCamera(Camera* a) { _cam=a; }
+    inline Camera* getReadBackCamera() const { return _cam.get(); }
+
+    /** first time: find mother camera and add a BufferDataReadBack */
+    virtual void operator()(Node* node, NodeVisitor* nv);
+
+    /** called during camera post draw */
+    void updateFlags( RenderInfo&);
+
+
+    /** user override (return true: CPU production never fails usually */
+    virtual bool synctraversal(Node* , NodeVisitor*){ return true; }
+
+    /** user override return true if GPU production didn't fail */
+    virtual bool readBackBufferData (RenderInfo& renderInfo) const;
+
+protected:
+    virtual ~SyncBufferDataCallback();
+
+    osg::observer_ptr<BufferData> _bd;
+    bool gpuproduced, cpuproduced;
+    BufferDataAccess _CpuAccess;
+    BufferDataAccess _GpuAccess;
+    ref_ptr<Camera::DrawCallback> _dcb;
+    observer_ptr<Camera> _cam;
+    OpenThreads::Mutex _lock;
+};
+
 
 } // namespace osg
 

@@ -827,7 +827,7 @@ void DisplaySettings::readEnvironmentalVariables()
         _shaderPipelineNumTextureUnits = atoi(value.c_str());
 
     }
-    OSG_NOTICE<<"_shaderPipelineNumTextureUnits = "<<_shaderPipelineNumTextureUnits<<std::endl;
+    OSG_INFO<<"_shaderPipelineNumTextureUnits = "<<_shaderPipelineNumTextureUnits<<std::endl;
 }
 
 void DisplaySettings::readCommandLine(ArgumentParser& arguments)

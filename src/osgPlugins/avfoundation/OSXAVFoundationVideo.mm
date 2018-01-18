@@ -345,7 +345,7 @@ void OSXAVFoundationVideo::open(const std::string& filename)
         object:_data->avplayer.currentItem];
     
     
-    _videoDuration = CMTimeGetSeconds([_data->avplayer.currentItem duration]);
+    _videoDuration = CMTimeGetSeconds([[_data->avplayer.currentItem asset] duration]);
     
     // get the max size of the video-tracks
     NSArray* tracks = [_data->avplayer.currentItem.asset tracksWithMediaType: AVMediaTypeVideo];

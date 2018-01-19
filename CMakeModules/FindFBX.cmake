@@ -9,12 +9,18 @@
 # correspond to the ./configure --prefix=$FBX_DIR
 
 IF(APPLE)
-  if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    # using regular Clang or AppleClang
-    SET(FBX_LIBDIR "clang")
-  else()
-    SET(FBX_LIBDIR "gcc4/ub")
-  endif()
+  IF(OSG_BUILD_PLATFORM_IPHONE)
+    SET(FBX_LIBDIR "ios-armv7")
+  ELSEIF(OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
+    SET(FBX_LIBDIR "ios-386")
+  ELSE()
+    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+      # using regular Clang or AppleClang
+      SET(FBX_LIBDIR "clang")
+    else()
+      SET(FBX_LIBDIR "gcc4/ub")
+    endif()
+  ENDIF()
 ELSEIF(CMAKE_COMPILER_IS_GNUCXX)
     SET(FBX_LIBDIR "gcc4")
 ELSEIF(MSVC80)
@@ -44,7 +50,11 @@ ENDIF()
 #try to use 2015.1 or 2014.2 version
 
 IF(APPLE)
-    SET(FBX_LIBNAME "libfbxsdk")
+    IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
+        SET(FBX_LIBNAME "libfbxsdk.a")
+    ELSE()
+        SET(FBX_LIBNAME "libfbxsdk")
+    ENDIF()
 ELSEIF(CMAKE_COMPILER_IS_GNUCXX)
     SET(FBX_LIBNAME "fbxsdk")
 ELSE()
@@ -64,6 +74,7 @@ SET( FBX_SEARCH_PATHS
     "$ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2018.1.1"
     "$ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2017.1"
     "$ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2017.1"
+    "/Applications/Autodesk/FBX SDK/2018.1.1"
     "/Applications/Autodesk/FBX SDK/2017.1"
     "$ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2016.1.2"
     "$ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2016.1.2"

@@ -566,18 +566,21 @@ bool Input::keyDown(int key, int mask, const WindowManager*)
             if (selectionMax - selectionMin > 0)
             {
                 std::string data;
-                std::copy(s.begin() + selectionMin, s.begin() + selectionMax, std::inserter(data, data.begin()));
+                osgText::String selection;
+                std::copy(s.begin() + selectionMin, s.begin() + selectionMax, std::back_inserter(selection));
+                data = selection.createUTF8EncodedString();
 
 // Data to clipboard
 #ifdef WIN32
                 if(::OpenClipboard(NULL))
                 {
                     ::EmptyClipboard();
-                    HGLOBAL clipbuffer = ::GlobalAlloc(GMEM_DDESHARE, data.length()+1);
-                    char* buffer = (char*)::GlobalLock(clipbuffer);
-                    strcpy(buffer, data.c_str());
+                    int wchar_count = MultiByteToWideChar(CP_UTF8, 0, data.c_str(), -1, NULL, 0);
+                    HGLOBAL clipbuffer = ::GlobalAlloc(GMEM_MOVEABLE, wchar_count * sizeof(wchar_t));
+                    wchar_t* buffer = (wchar_t*)::GlobalLock(clipbuffer);
+                    MultiByteToWideChar(CP_UTF8, 0, data.c_str(), -1, buffer, wchar_count);
                     ::GlobalUnlock(clipbuffer);
-                    ::SetClipboardData(CF_TEXT,clipbuffer);
+                    ::SetClipboardData(CF_UNICODETEXT,clipbuffer);
                     ::CloseClipboard();
                 }
 #endif

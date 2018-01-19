@@ -32,10 +32,19 @@ inline int system(const char* command)
     return ::system(command);
 }
 #else
+#ifndef WIN32
+    #include <spawn.h>
+#endif
 inline int system(const char* command)
 {
+#ifndef WIN32
+    pid_t pid;
+    posix_spawn(&pid, command, NULL, NULL, NULL, NULL);
+    return waitpid(pid, NULL, 0);
+#else
     OSG_WARN<<"system("<<command<<") not supported on this platform."<<std::endl;
     return 0;
+#endif
 }
 #endif
 

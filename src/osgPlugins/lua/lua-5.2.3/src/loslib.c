@@ -76,22 +76,28 @@
 
 #endif
 
-
+#if !defined(OSG_SYSTEM_SUPPORTED) && !defined(WIN32)
+    #include <spawn.h>
+#endif
 
 static int os_execute (lua_State *L) {
-
-#if defined(OSG_SYSTEM_SUPPORTED)
-  const char *cmd = luaL_optstring(L, 1, NULL);
-  int stat = system(cmd);
-  if (cmd != NULL)
-    return luaL_execresult(L, stat);
-  else {
-    lua_pushboolean(L, stat);  /* true if there is a shell */
-    return 1;
-  }
-#else
+#if !defined(OSG_SYSTEM_SUPPORTED) && defined(WIN32)
     return 0;
 #endif
+    const char *cmd = luaL_optstring(L, 1, NULL);
+#if defined(OSG_SYSTEM_SUPPORTED)
+    int stat = system(cmd);
+#else
+    pid_t pid;
+    posix_spawn(&pid, cmd, NULL, NULL, NULL, NULL);
+    int stat = waitpid(pid, NULL, 0);
+#endif
+    if (cmd != NULL)
+        return luaL_execresult(L, stat);
+    else {
+        lua_pushboolean(L, stat);  /* true if there is a shell */
+            return 1;
+    }
 }
 
 

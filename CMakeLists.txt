@@ -76,9 +76,12 @@ IF(APPLE AND NOT ANDROID)
     #set iphone arch and flags taken from http://sites.google.com/site/michaelsafyan/coding/resources/how-to-guides/cross-compile-for-the-iphone/how-to-cross-compile-for-the-iphone-using-cmake
     IF(OSG_BUILD_PLATFORM_IPHONE)
       IF(${IPHONE_VERSION_MIN} LESS "7.0")
-	SET(CMAKE_OSX_ARCHITECTURES "armv6;armv7" CACHE STRING "Build architectures for iOS" FORCE)
+	    SET(CMAKE_OSX_ARCHITECTURES "armv6;armv7" CACHE STRING "Build architectures for iOS" FORCE)
+      ELSEIF((${IPHONE_VERSION_MIN} GREATER "11.0") OR (${IPHONE_VERSION_MIN} EQUAL "11.0"))
+        message(AUTHOR_WARNING, "Setting iOS...11...")
+	    SET(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "Build architectures for iOS" FORCE)
       ELSE()
-	SET(CMAKE_OSX_ARCHITECTURES "armv7;armv7s;arm64" CACHE STRING "Build architectures for iOS" FORCE)
+	    SET(CMAKE_OSX_ARCHITECTURES "armv7;armv7s;arm64" CACHE STRING "Build architectures for iOS" FORCE)
       ENDIF()
 
     ELSE()
@@ -242,8 +245,8 @@ IF(APPLE)
     IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
 
         #you need to manually set the default sdk version here
-        SET (IPHONE_SDKVER "10.2" CACHE STRING "IOS SDK-Version")
-        SET (IPHONE_VERSION_MIN "7.0" CACHE STRING "IOS minimum os version, use 7.0 or greater to get 64bit support")
+        SET (IPHONE_SDKVER "11.2" CACHE STRING "IOS SDK-Version")
+        SET (IPHONE_VERSION_MIN "11.0" CACHE STRING "IOS minimum os version, use 7.0 or greater to get 64bit support")
 
         #the below is taken from ogre, it states the gcc stuff needs to happen before PROJECT() is called. I've no clue if we even need it
         # Force gcc <= 4.2 on iPhone
@@ -482,8 +485,14 @@ OPTION(OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION "Set to ON to use the ref_ptr<
 OPTION(OSG_USE_REF_PTR_SAFE_DEREFERENCE "Set to ON to throw an exception whenever ref_ptr<> is dereferenced or called. " OFF)
 
 OPTION(OSG_ENVVAR_SUPPORTED "Set to ON to build OpenSceneGraph with the OSG_ENVVAR_SUPPOERTED #define enabled to enable use of getenv() related functions." ON)
-OPTION(OSG_SYSTEM_SUPPORTED "Set to ON to build OpenSceneGraph with the OSG_SYSTEM_SUPPOERTED #define enabled to enable use of system() related functions." ON)
 
+IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
+  IF((${IPHONE_VERSION_MIN} GREATER "11.0") OR (${IPHONE_VERSION_MIN} EQUAL "11.0"))
+    OPTION(OSG_SYSTEM_SUPPORTED "Set to ON to build OpenSceneGraph with the OSG_SYSTEM_SUPPOERTED #define enabled to enable use of system() related functions." OFF)
+  ELSE()
+    OPTION(OSG_SYSTEM_SUPPORTED "Set to ON to build OpenSceneGraph with the OSG_SYSTEM_SUPPOERTED #define enabled to enable use of system() related functions." ON)
+  ENDIF()
+ENDIF()
 
 
 # Map the OPENGL_PROFILE to OSG_GL*_AVAILABLE settings
@@ -1126,6 +1135,9 @@ IF(APPLE AND NOT ANDROID)
             IF(${IPHONE_VERSION_MIN} LESS "7.0")
                 SET(CMAKE_OSX_ARCHITECTURES "armv6;armv7" CACHE STRING "Build architectures for iOS" FORCE)
                 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mno-thumb -pipe -no-cpp-precomp" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+            ELSEIF((${IPHONE_VERSION_MIN} GREATER "11.0") OR (${IPHONE_VERSION_MIN} EQUAL "11.0"))
+                SET(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "Build architectures for iOS" FORCE)
+                SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -no-cpp-precomp" CACHE STRING "Flags used by the compiler during all build types." FORCE)
             ELSE()
                 SET(CMAKE_OSX_ARCHITECTURES "armv7;armv7s;arm64" CACHE STRING "Build architectures for iOS" FORCE)
                 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -no-cpp-precomp" CACHE STRING "Flags used by the compiler during all build types." FORCE)

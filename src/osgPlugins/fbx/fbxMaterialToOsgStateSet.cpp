@@ -33,20 +33,51 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
     const FbxProperty lProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sDiffuse);
     if (lProperty.IsValid())
     {
-        int lNbTex = lProperty.GetSrcObjectCount<FbxFileTexture>();
-        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+        // check if layered textures are used...
+        int layeredTextureCount = lProperty.GetSrcObjectCount<FbxLayeredTexture>();
+        if(layeredTextureCount)
         {
-            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
-            if (lTexture)
-            {
-                result.diffuseTexture = fbxTextureToOsgTexture(lTexture);
-                result.diffuseChannel = lTexture->UVSet.Get();
-                result.diffuseScaleU = lTexture->GetScaleU();
-                result.diffuseScaleV = lTexture->GetScaleV();
-            }
+            FbxLayeredTexture* layered_texture = FbxCast<FbxLayeredTexture>(lProperty.GetSrcObject<FbxLayeredTexture>(0));
+            int lNbTex = layered_texture->GetSrcObjectCount<FbxFileTexture>();
 
-            //For now only allow 1 texture
-            break;
+            if(lNbTex)
+            {
+                // at least 1 texture, use 1st...
+                for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+                {
+                    FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(layered_texture->GetSrcObject<FbxFileTexture>(lTextureIndex));
+                    if (lTexture)
+                    {
+                        result.diffuseTexture = fbxTextureToOsgTexture(lTexture);
+                        result.diffuseChannel = lTexture->UVSet.Get();
+                        result.diffuseScaleU = lTexture->GetScaleU();
+                        result.diffuseScaleV = lTexture->GetScaleV();
+                    }
+
+                    //For now only allow 1 texture
+                    break;
+                }
+            }
+            else
+                OSG_WARN << "FBX: Missing Textures in FbxLayeredTexture." << std::endl;
+        }
+        else
+        {
+            int lNbTex = lProperty.GetSrcObjectCount<FbxFileTexture>();
+            for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+            {
+                FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
+                if (lTexture)
+                {
+                    result.diffuseTexture = fbxTextureToOsgTexture(lTexture);
+                    result.diffuseChannel = lTexture->UVSet.Get();
+                    result.diffuseScaleU = lTexture->GetScaleU();
+                    result.diffuseScaleV = lTexture->GetScaleV();
+                }
+
+                //For now only allow 1 texture
+                break;
+            }
         }
     }
 
@@ -64,22 +95,55 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
             useTransparencyColorFactor = true;
         }
 
-        int lNbTex = lOpacityProperty.GetSrcObjectCount<FbxFileTexture>();
-        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+        // check if layered textures are used...
+        int layeredTextureCount = lOpacityProperty.GetSrcObjectCount<FbxLayeredTexture>();
+        if(layeredTextureCount)
         {
-            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lOpacityProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
-            if (lTexture)
+            FbxLayeredTexture* layered_texture = FbxCast<FbxLayeredTexture>(lOpacityProperty.GetSrcObject<FbxLayeredTexture>(0));
+            int lNbTex = layered_texture->GetSrcObjectCount<FbxFileTexture>();
+
+            if(lNbTex)
             {
-                // TODO: if texture image does NOT have an alpha channel, should it be added?
+                // at least 1 texture, use 1st...
+                for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+                {
+                    FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(layered_texture->GetSrcObject<FbxFileTexture>(lTextureIndex));
+                    if (lTexture)
+                    {
+                        // TODO: if texture image does NOT have an alpha channel, should it be added?
 
-                result.opacityTexture = fbxTextureToOsgTexture(lTexture);
-                result.opacityChannel = lTexture->UVSet.Get();
-                result.opacityScaleU = lTexture->GetScaleU();
-                result.opacityScaleV = lTexture->GetScaleV();
+                        result.opacityTexture = fbxTextureToOsgTexture(lTexture);
+                        result.opacityChannel = lTexture->UVSet.Get();
+                        result.opacityScaleU = lTexture->GetScaleU();
+                        result.opacityScaleV = lTexture->GetScaleV();
+                    }
+
+                    //For now only allow 1 texture
+                    break;
+                }
             }
+            else
+                OSG_WARN << "FBX: Missing Textures in FbxLayeredTexture." << std::endl;
+        }
+        else
+        {
+            int lNbTex = lOpacityProperty.GetSrcObjectCount<FbxFileTexture>();
+            for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+            {
+                FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lOpacityProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
+                if (lTexture)
+                {
+                    // TODO: if texture image does NOT have an alpha channel, should it be added?
 
-            //For now only allow 1 texture
-            break;
+                    result.opacityTexture = fbxTextureToOsgTexture(lTexture);
+                    result.opacityChannel = lTexture->UVSet.Get();
+                    result.opacityScaleU = lTexture->GetScaleU();
+                    result.opacityScaleV = lTexture->GetScaleV();
+                }
+
+                //For now only allow 1 texture
+                break;
+            }
         }
     }
 
@@ -87,22 +151,55 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
     const FbxProperty lReflectionProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sReflection);
     if (lReflectionProperty.IsValid())
     {
-        int lNbTex = lReflectionProperty.GetSrcObjectCount<FbxFileTexture>();
-        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+        // check if layered textures are used...
+        int layeredTextureCount = lReflectionProperty.GetSrcObjectCount<FbxLayeredTexture>();
+        if(layeredTextureCount)
         {
-            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lReflectionProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
-            if (lTexture)
+            FbxLayeredTexture* layered_texture = FbxCast<FbxLayeredTexture>(lReflectionProperty.GetSrcObject<FbxLayeredTexture>(0));
+            int lNbTex = layered_texture->GetSrcObjectCount<FbxFileTexture>();
+
+            if(lNbTex)
             {
-                // support only spherical reflection maps...
-                if (FbxFileTexture::eUMT_ENVIRONMENT == lTexture->CurrentMappingType.Get())
+                // at least 1 texture, use 1st...
+                for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
                 {
-                    result.reflectionTexture = fbxTextureToOsgTexture(lTexture);
-                    result.reflectionChannel = lTexture->UVSet.Get();
+                    FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(layered_texture->GetSrcObject<FbxFileTexture>(lTextureIndex));
+                    if (lTexture)
+                    {
+                        // support only spherical reflection maps...
+                        if (FbxFileTexture::eUMT_ENVIRONMENT == lTexture->CurrentMappingType.Get())
+                        {
+                            result.reflectionTexture = fbxTextureToOsgTexture(lTexture);
+                            result.reflectionChannel = lTexture->UVSet.Get();
+                        }
+                    }
+
+                    //For now only allow 1 texture
+                    break;
                 }
             }
+            else
+                OSG_WARN << "FBX: Missing Textures in FbxLayeredTexture." << std::endl;
+        }
+        else
+        {
+            int lNbTex = lReflectionProperty.GetSrcObjectCount<FbxFileTexture>();
+            for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+            {
+                FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lReflectionProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
+                if (lTexture)
+                {
+                    // support only spherical reflection maps...
+                    if (FbxFileTexture::eUMT_ENVIRONMENT == lTexture->CurrentMappingType.Get())
+                    {
+                        result.reflectionTexture = fbxTextureToOsgTexture(lTexture);
+                        result.reflectionChannel = lTexture->UVSet.Get();
+                    }
+                }
 
-            //For now only allow 1 texture
-            break;
+                //For now only allow 1 texture
+                break;
+            }
         }
     }
 
@@ -110,20 +207,52 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
     const FbxProperty lEmissiveProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sEmissive);
     if (lEmissiveProperty.IsValid())
     {
-        int lNbTex = lEmissiveProperty.GetSrcObjectCount<FbxFileTexture>();
-        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+        // check if layered textures are used...
+        int layeredTextureCount = lEmissiveProperty.GetSrcObjectCount<FbxLayeredTexture>();
+        if(layeredTextureCount)
         {
-            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lEmissiveProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
-            if (lTexture)
-            {
-                result.emissiveTexture = fbxTextureToOsgTexture(lTexture);
-                result.emissiveChannel = lTexture->UVSet.Get();
-                result.emissiveScaleU = lTexture->GetScaleU();
-                result.emissiveScaleV = lTexture->GetScaleV();
-            }
+            FbxLayeredTexture* layered_texture = FbxCast<FbxLayeredTexture>(lEmissiveProperty.GetSrcObject<FbxLayeredTexture>(0));
+            int lNbTex = layered_texture->GetSrcObjectCount<FbxFileTexture>();
 
-            //For now only allow 1 texture
-            break;
+            if(lNbTex)
+            {
+                // at least 1 texture, use 1st...
+                for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+                {
+                    FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(layered_texture->GetSrcObject<FbxFileTexture>(lTextureIndex));
+                    if (lTexture)
+                    {
+                        // support only spherical reflection maps...
+                        result.emissiveTexture = fbxTextureToOsgTexture(lTexture);
+                        result.emissiveChannel = lTexture->UVSet.Get();
+                        result.emissiveScaleU = lTexture->GetScaleU();
+                        result.emissiveScaleV = lTexture->GetScaleV();
+                    }
+
+                    //For now only allow 1 texture
+                    break;
+                }
+            }
+            else
+                OSG_WARN << "FBX: Missing Textures in FbxLayeredTexture." << std::endl;
+        }
+        else
+        {
+            int lNbTex = lEmissiveProperty.GetSrcObjectCount<FbxFileTexture>();
+            for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+            {
+                FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lEmissiveProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
+                if (lTexture)
+                {
+                    result.emissiveTexture = fbxTextureToOsgTexture(lTexture);
+                    result.emissiveChannel = lTexture->UVSet.Get();
+                    result.emissiveScaleU = lTexture->GetScaleU();
+                    result.emissiveScaleV = lTexture->GetScaleV();
+                }
+
+                //For now only allow 1 texture
+                break;
+            }
         }
     }
 
@@ -131,20 +260,51 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
     const FbxProperty lAmbientProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sAmbient);
     if (lAmbientProperty.IsValid())
     {
-        int lNbTex = lAmbientProperty.GetSrcObjectCount<FbxFileTexture>();
-        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+        // check if layered textures are used...
+        int layeredTextureCount = lAmbientProperty.GetSrcObjectCount<FbxLayeredTexture>();
+        if(layeredTextureCount)
         {
-            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lAmbientProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
-            if (lTexture)
-            {
-                result.ambientTexture = fbxTextureToOsgTexture(lTexture);
-                result.ambientChannel = lTexture->UVSet.Get();
-                result.ambientScaleU = lTexture->GetScaleU();
-                result.ambientScaleV = lTexture->GetScaleV();
-            }
+            FbxLayeredTexture* layered_texture = FbxCast<FbxLayeredTexture>(lAmbientProperty.GetSrcObject<FbxLayeredTexture>(0));
+            int lNbTex = layered_texture->GetSrcObjectCount<FbxFileTexture>();
 
-            //For now only allow 1 texture
-            break;
+            if(lNbTex)
+            {
+                // at least 1 texture, use 1st...
+                for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+                {
+                    FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(layered_texture->GetSrcObject<FbxFileTexture>(lTextureIndex));
+                    if (lTexture)
+                    {
+                        result.ambientTexture = fbxTextureToOsgTexture(lTexture);
+                        result.ambientChannel = lTexture->UVSet.Get();
+                        result.ambientScaleU = lTexture->GetScaleU();
+                        result.ambientScaleV = lTexture->GetScaleV();
+                    }
+
+                    //For now only allow 1 texture
+                    break;
+                }
+            }
+            else
+                OSG_WARN << "FBX: Missing Textures in FbxLayeredTexture." << std::endl;
+        }
+        else
+        {
+            int lNbTex = lAmbientProperty.GetSrcObjectCount<FbxFileTexture>();
+            for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+            {
+                FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lAmbientProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
+                if (lTexture)
+                {
+                    result.ambientTexture = fbxTextureToOsgTexture(lTexture);
+                    result.ambientChannel = lTexture->UVSet.Get();
+                    result.ambientScaleU = lTexture->GetScaleU();
+                    result.ambientScaleV = lTexture->GetScaleV();
+                }
+
+                //For now only allow 1 texture
+                break;
+            }
         }
     }
 
@@ -152,20 +312,51 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
     const FbxProperty lNormalProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sNormalMap);
     if (lNormalProperty.IsValid())
     {
-        int lNbTex = lNormalProperty.GetSrcObjectCount<FbxFileTexture>();
-        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+        // check if layered textures are used...
+        int layeredTextureCount = lNormalProperty.GetSrcObjectCount<FbxLayeredTexture>();
+        if(layeredTextureCount)
         {
-            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lNormalProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
-            if (lTexture)
-            {
-                result.normalTexture = fbxTextureToOsgTexture(lTexture);
-                result.normalChannel = lTexture->UVSet.Get();
-                result.normalScaleU = lTexture->GetScaleU();
-                result.normalScaleV = lTexture->GetScaleV();
-            }
+            FbxLayeredTexture* layered_texture = FbxCast<FbxLayeredTexture>(lNormalProperty.GetSrcObject<FbxLayeredTexture>(0));
+            int lNbTex = layered_texture->GetSrcObjectCount<FbxFileTexture>();
 
-            //For now only allow 1 texture
-            break;
+            if(lNbTex)
+            {
+                // at least 1 texture, use 1st...
+                for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+                {
+                    FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(layered_texture->GetSrcObject<FbxFileTexture>(lTextureIndex));
+                    if (lTexture)
+                    {
+                        result.normalTexture = fbxTextureToOsgTexture(lTexture);
+                        result.normalChannel = lTexture->UVSet.Get();
+                        result.normalScaleU = lTexture->GetScaleU();
+                        result.normalScaleV = lTexture->GetScaleV();
+                    }
+
+                    //For now only allow 1 texture
+                    break;
+                }
+            }
+            else
+                OSG_WARN << "FBX: Missing Textures in FbxLayeredTexture." << std::endl;
+        }
+        else
+        {
+            int lNbTex = lNormalProperty.GetSrcObjectCount<FbxFileTexture>();
+            for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+            {
+                FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lNormalProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
+                if (lTexture)
+                {
+                    result.normalTexture = fbxTextureToOsgTexture(lTexture);
+                    result.normalChannel = lTexture->UVSet.Get();
+                    result.normalScaleU = lTexture->GetScaleU();
+                    result.normalScaleV = lTexture->GetScaleV();
+                }
+
+                //For now only allow 1 texture
+                break;
+            }
         }
     }
 
@@ -173,20 +364,51 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
     const FbxProperty lSpecularProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sSpecular);
     if (lSpecularProperty.IsValid())
     {
-        int lNbTex = lSpecularProperty.GetSrcObjectCount<FbxFileTexture>();
-        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+        // check if layered textures are used...
+        int layeredTextureCount = lSpecularProperty.GetSrcObjectCount<FbxLayeredTexture>();
+        if(layeredTextureCount)
         {
-            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lSpecularProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
-            if (lTexture)
-            {
-                result.specularTexture = fbxTextureToOsgTexture(lTexture);
-                result.specularChannel = lTexture->UVSet.Get();
-                result.specularScaleU = lTexture->GetScaleU();
-                result.specularScaleV = lTexture->GetScaleV();
-            }
+            FbxLayeredTexture* layered_texture = FbxCast<FbxLayeredTexture>(lSpecularProperty.GetSrcObject<FbxLayeredTexture>(0));
+            int lNbTex = layered_texture->GetSrcObjectCount<FbxFileTexture>();
 
-            //For now only allow 1 texture
-            break;
+            if(lNbTex)
+            {
+                // at least 1 texture, use 1st...
+                for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+                {
+                    FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(layered_texture->GetSrcObject<FbxFileTexture>(lTextureIndex));
+                    if (lTexture)
+                    {
+                        result.specularTexture = fbxTextureToOsgTexture(lTexture);
+                        result.specularChannel = lTexture->UVSet.Get();
+                        result.specularScaleU = lTexture->GetScaleU();
+                        result.specularScaleV = lTexture->GetScaleV();
+                    }
+
+                    //For now only allow 1 texture
+                    break;
+                }
+            }
+            else
+                OSG_WARN << "FBX: Missing Textures in FbxLayeredTexture." << std::endl;
+        }
+        else
+        {
+            int lNbTex = lSpecularProperty.GetSrcObjectCount<FbxFileTexture>();
+            for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+            {
+                FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lSpecularProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
+                if (lTexture)
+                {
+                    result.specularTexture = fbxTextureToOsgTexture(lTexture);
+                    result.specularChannel = lTexture->UVSet.Get();
+                    result.specularScaleU = lTexture->GetScaleU();
+                    result.specularScaleV = lTexture->GetScaleV();
+                }
+
+                //For now only allow 1 texture
+                break;
+            }
         }
     }
 
@@ -194,20 +416,51 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
     const FbxProperty lShininessProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sShininess);
     if (lShininessProperty.IsValid())
     {
-        int lNbTex = lShininessProperty.GetSrcObjectCount<FbxFileTexture>();
-        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+        // check if layered textures are used...
+        int layeredTextureCount = lShininessProperty.GetSrcObjectCount<FbxLayeredTexture>();
+        if(layeredTextureCount)
         {
-            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lShininessProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
-            if (lTexture)
-            {
-                result.shininessTexture = fbxTextureToOsgTexture(lTexture);
-                result.shininessChannel = lTexture->UVSet.Get();
-                result.shininessScaleU = lTexture->GetScaleU();
-                result.shininessScaleV = lTexture->GetScaleV();
-            }
+            FbxLayeredTexture* layered_texture = FbxCast<FbxLayeredTexture>(lShininessProperty.GetSrcObject<FbxLayeredTexture>(0));
+            int lNbTex = layered_texture->GetSrcObjectCount<FbxFileTexture>();
 
-            //For now only allow 1 texture
-            break;
+            if(lNbTex)
+            {
+                // at least 1 texture, use 1st...
+                for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+                {
+                    FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(layered_texture->GetSrcObject<FbxFileTexture>(lTextureIndex));
+                    if (lTexture)
+                    {
+                        result.shininessTexture = fbxTextureToOsgTexture(lTexture);
+                        result.shininessChannel = lTexture->UVSet.Get();
+                        result.shininessScaleU = lTexture->GetScaleU();
+                        result.shininessScaleV = lTexture->GetScaleV();
+                    }
+
+                    //For now only allow 1 texture
+                    break;
+                }
+            }
+            else
+                OSG_WARN << "FBX: Missing Textures in FbxLayeredTexture." << std::endl;
+        }
+        else
+        {
+            int lNbTex = lShininessProperty.GetSrcObjectCount<FbxFileTexture>();
+            for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+            {
+                FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lShininessProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
+                if (lTexture)
+                {
+                    result.shininessTexture = fbxTextureToOsgTexture(lTexture);
+                    result.shininessChannel = lTexture->UVSet.Get();
+                    result.shininessScaleU = lTexture->GetScaleU();
+                    result.shininessScaleV = lTexture->GetScaleV();
+                }
+
+                //For now only allow 1 texture
+                break;
+            }
         }
     }
 

@@ -173,7 +173,6 @@ ShaderStorageBufferBinding::ShaderStorageBufferBinding(const ShaderStorageBuffer
 {
 }
 
-
 /// Delegate Camera Post Draw Callback to SyncBufferDataCallback
 class BufferDataReadBack : public Camera::DrawCallback{
 public:
@@ -184,8 +183,8 @@ protected:
     SyncBufferDataCallback* _upcb;
 };
 
-//#define BUFER_RANGE_ATOMIC_COUNTER_BUFFER_AVAILABLE
-//seams to require more than GL4.2?!
+//#define MAP_BUFER_RANGE_WORKING
+//glMapBufferRange seams to fail
 //perhaps a bug in Linux 4.5.0 NVIDIA 381.22
 
 bool SyncBufferDataCallback::readBackBufferData (RenderInfo& renderInfo) const
@@ -193,8 +192,8 @@ bool SyncBufferDataCallback::readBackBufferData (RenderInfo& renderInfo) const
     GLenum target = _bd->getBufferObject()->getTarget();
     GLubyte* src;
 
-    GLBufferObject* glObject = _bd->getBufferObject()->getOrCreateGLBufferObject(renderInfo.getContextID());
-    if (glObject->isDirty())
+    GLBufferObject* glObject = _bd->getBufferObject()->getGLBufferObject(renderInfo.getContextID());
+    if (!glObject||glObject->isDirty())
     {
         OSG_DEBUG << "osg::SyncBufferDataCallback::readBackBufferData it seams we wanna read gpu data before its first upload" << std::endl;
         return false;
@@ -202,14 +201,12 @@ bool SyncBufferDataCallback::readBackBufferData (RenderInfo& renderInfo) const
 
     glObject->_extensions->glBindBuffer(target, glObject->getGLObjectID());
 
-#ifndef BUFER_RANGE_ATOMIC_COUNTER_BUFFER_AVAILABLE
-    if(target == GL_ATOMIC_COUNTER_BUFFER )
+#ifndef MAP_BUFER_RANGE_WORKING
     {
         src= (GLubyte*) glObject->_extensions->glMapBuffer( target, GL_READ_ONLY_ARB);
         if(src) memcpy(const_cast<GLvoid*>(_bd->getDataPointer()), src + glObject->getOffset(_bd->getBufferIndex()), _bd->getTotalDataSize());
     }
-    else
-#endif
+#else
     {
         src= (GLubyte*) glObject->_extensions->glMapBufferRange(
                  target,
@@ -219,6 +216,7 @@ bool SyncBufferDataCallback::readBackBufferData (RenderInfo& renderInfo) const
              );
         if(src) memcpy(const_cast<GLvoid*>(_bd->getDataPointer()), src, _bd->getTotalDataSize());
     }
+#endif
     glObject->_extensions->glUnmapBuffer(target);
     return true;
 }

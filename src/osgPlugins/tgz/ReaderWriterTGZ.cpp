@@ -95,7 +95,7 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
 
             OSG_NOTICE<<"Running command '"<<command<<"'"<<std::endl;
 
-            int result = osg::system( command );
+            int result = osg_system( command );
             if (result!=0) return ReadResult::ERROR_IN_READING_FILE;
 
 
@@ -138,7 +138,7 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
         #endif
             OSG_NOTICE<<"Running command '"<<command<<"'"<<std::endl;
 
-            result = osg::system( command );
+            result = osg_system( command );
             if (result!=0) return ReadResult::ERROR_IN_READING_FILE;
 
             if( grp->getNumChildren() == 0 )

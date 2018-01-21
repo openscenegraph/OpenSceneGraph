@@ -120,7 +120,7 @@ void KeyEventHandler::doOperation()
 
             bool commandRunsInBackground = (_command.find("&")!=std::string::npos);
 
-            int result = osg::system(_command.c_str());
+            int result = osg_system(_command.c_str());
 
             OSG_INFO<<"system("<<_command<<") result "<<result<<std::endl;
 

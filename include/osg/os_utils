@@ -11,33 +11,32 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_osg_utils
-#define OSG_osg_utils 1
+#ifndef OSG_os_utils
+#define OSG_os_utils 1
 
-#include <osg/Config>
+#include <osg/Export>
 
-#if defined(OSG_SYSTEM_SUPPORTED) || defined(OSG_ENVVAR_SUPPORTED)
-    #include <stdlib.h>
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-#ifdef OSG_ENVVAR_SUPPORTED
+/** Cross platform version of C system() function. */
+extern OSG_EXPORT int osg_system(const char* str);
+
+#ifdef __cplusplus
+}
+#endif
+
+
+#ifdef __cplusplus
+
+#if defined(OSG_ENVVAR_SUPPORTED)
+    #include <stdlib.h>
     #include <sstream>
 #endif
 
 namespace osg {
 
-#ifdef OSG_SYSTEM_SUPPORTED
-inline int system(const char* command)
-{
-    return ::system(command);
-}
-#else
-inline int system(const char* command)
-{
-    OSG_WARN<<"system("<<command<<") not supported on this platform."<<std::endl;
-    return 0;
-}
-#endif
 
 inline unsigned int getClampedLength(const char* str, unsigned int maxNumChars=4096)
 {
@@ -130,5 +129,7 @@ inline bool getEnvVar(const char* name, T1& value1, T2& value2, T3& value3, T4& 
 }
 
 }
+
+#endif // _cplusplus
 
 # endif

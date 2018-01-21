@@ -20,7 +20,7 @@ int osg_system(const char* command)
 #ifdef OSG_SYSTEM_SUPPORTED
     return system(command);
 #else
-    printf("osgSystem(%s) not supported.\n", command);
+    printf("osg_system(%s) not supported.\n", command);
 #endif
 }
 

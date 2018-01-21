@@ -1750,7 +1750,7 @@ void SlideShowConstructor::addGraph(const std::string& contents, const PositionD
 
     std::stringstream command;
     command<<"dot -Tsvg "<<dotFileName<<" -o "<<tmpSvgFileName;
-    int result = osg::system(command.str().c_str());
+    int result = osg_system(command.str().c_str());
     if (result==0)
     {
         osg::ref_ptr<osgDB::Options> previousOptions = _options;

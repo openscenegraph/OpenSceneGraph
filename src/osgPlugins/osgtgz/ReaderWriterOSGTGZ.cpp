@@ -78,7 +78,7 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
             mkdir( dirname, 0700 );
         #endif
 
-            if (osg::system( command ) ) {
+            if (osg_system( command ) ) {
                 return ReadResult::FILE_NOT_HANDLED;
             }
 
@@ -108,7 +108,7 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
 
             sprintf( command, "rm -rf %s", dirname );
         #endif
-            if (osg::system( command ) ) {
+            if (osg_system( command ) ) {
                 return ReadResult::FILE_NOT_HANDLED;
             }
 

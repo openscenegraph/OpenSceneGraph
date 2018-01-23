@@ -480,7 +480,6 @@ OPTION(OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION "Set to ON to use the ref_ptr<
 OPTION(OSG_USE_REF_PTR_SAFE_DEREFERENCE "Set to ON to throw an exception whenever ref_ptr<> is dereferenced or called. " OFF)
 
 OPTION(OSG_ENVVAR_SUPPORTED "Set to ON to build OpenSceneGraph with the OSG_ENVVAR_SUPPOERTED #define enabled to enable use of getenv() related functions." ON)
-OPTION(OSG_SYSTEM_SUPPORTED "Set to ON to build OpenSceneGraph with the OSG_SYSTEM_SUPPOERTED #define enabled to enable use of system() related functions." ON)
 
 
 

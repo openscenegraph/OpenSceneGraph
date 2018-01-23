@@ -15,14 +15,29 @@
 
 extern "C" {
 
+#define USE_POSIX_SPAWN defined(__APPLE__)
+//#define USE_POSIX_SPAWN true
+
+#if USE_POSIX_SPAWN
+
+#include <spawn.h>
+#include <sys/wait.h>
+
 int osg_system(const char* command)
 {
-#ifdef OSG_SYSTEM_SUPPORTED
-    return system(command);
-#else
-    printf("osg_system(%s) not supported.\n", command);
-#endif
+    pid_t pid;
+    posix_spawn(&pid, command, NULL, NULL, NULL, NULL);
+    return waitpid(pid, NULL, 0);
 }
+
+#else // use tranditional C sysmtem call for osg_system implementation
+
+int osg_system(const char* command)
+{
+    return system(command);
+}
+
+#endif
 
 }
 

@@ -108,7 +108,7 @@ class OSG_EXPORT Drawable : public Node
         virtual void computeDataVariance();
 
         /** Get the list of matrices that transform this node from local coordinates to world coordinates.
-          * The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specifed node. */
+          * The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specified node. */
         MatrixList getWorldMatrices(const osg::Node* haltTraversalAtNode=0) const;
 
 

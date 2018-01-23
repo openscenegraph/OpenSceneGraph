@@ -108,7 +108,7 @@ class OSG_EXPORT Drawable : public Node
         virtual void computeDataVariance();
 
         /** Get the list of matrices that transform this node from local coordinates to world coordinates.
-          * The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specifed node. */
+          * The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specified node. */
         MatrixList getWorldMatrices(const osg::Node* haltTraversalAtNode=0) const;
 
 
@@ -311,14 +311,14 @@ class OSG_EXPORT Drawable : public Node
         const CreateVertexArrayStateCallback* getCreateVertexArrayStateCallback() const { return _createVertexArrayStateCallback.get(); }
 
 
-        /** Craeate tje VertexArrayState object used to track vertex array and vertex array object state. This method will be called automatically during rendering setup so users should not call this themselves.*/
+        /** Create the VertexArrayState object used to track vertex array and vertex array object state. This method will be called automatically during rendering setup so users should not call this themselves.*/
         inline VertexArrayState* createVertexArrayState(RenderInfo& renderInfo) const
         {
             if (_createVertexArrayStateCallback.valid()) return _createVertexArrayStateCallback->createVertexArrayStateImplementation(renderInfo, this);
             else return createVertexArrayStateImplementation(renderInfo);
         }
 
-        /** Implementaion of Craeate tje VertexArrayState object.*/
+        /** Implementation of Create the VertexArrayState object.*/
         virtual VertexArrayState* createVertexArrayStateImplementation(RenderInfo& renderInfo) const;
 
         void setVertexArrayStateList(VertexArrayStateList& vasl) { _vertexArrayStateList = vasl; }
@@ -498,7 +498,7 @@ class OSG_EXPORT Drawable : public Node
 
         /** Accept a PrimitiveFunctor and call its methods to tell it about the internal primitives that this Drawable has.
           * return true if functor handled by drawable, return false on failure of drawable to generate functor calls.
-          * Note, PrimtiveFunctor only provides const access of the primitives, as primitives may be procedurally generated
+          * Note, PrimitiveFunctor only provides const access of the primitives, as primitives may be procedurally generated
           * so one cannot modify it.*/
         virtual void accept(PrimitiveFunctor&) const {}
 
@@ -507,7 +507,7 @@ class OSG_EXPORT Drawable : public Node
 
         /** Accept a PrimitiveIndexFunctor and call its methods to tell it about the internal primitives that this Drawable has.
           * return true if functor handled by drawable, return false on failure of drawable to generate functor calls.
-          * Note, PrimtiveIndexFunctor only provide const access of the primitives, as primitives may be procedurally generated
+          * Note, PrimitiveIndexFunctor only provide const access of the primitives, as primitives may be procedurally generated
           * so one cannot modify it.*/
         virtual void accept(PrimitiveIndexFunctor&) const {}
 

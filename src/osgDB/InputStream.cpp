@@ -856,7 +856,7 @@ osg::ref_ptr<osg::Image> InputStream::readImage(bool readFromExternal)
 
     if (loadedFromCache)
     {
-        // we don't want to overwrite the properties of the image in the cache as this could cause theading problems if the object is currently being used
+        // we don't want to overwrite the properties of the image in the cache as this could cause threading problems if the object is currently being used
         // so we read the properties from the file into a dummy object and discard the changes.
         osg::ref_ptr<osg::Object> temp_obj = readObjectFields("osg::Object", id, _dummyReadObject.get() );
         _identifierMap[id] = image;

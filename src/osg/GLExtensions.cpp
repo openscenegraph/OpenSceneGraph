@@ -722,6 +722,8 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glDeleteBuffers, "glDeleteBuffers","glDeleteBuffersARB", validContext);
     setGLExtensionFuncPtr(glIsBuffer, "glIsBuffer","glIsBufferARB", validContext);
     setGLExtensionFuncPtr(glGetBufferSubData, "glGetBufferSubData","glGetBufferSubDataARB", validContext);
+    setGLExtensionFuncPtr(glBufferStorage, "glBufferStorage","glBufferStorageARB", validContext);
+    setGLExtensionFuncPtr(glNamedBufferStorage, "glNamedBufferStorage","glNamedBufferStorageARB", validContext);
     setGLExtensionFuncPtr(glMapBuffer, "glMapBuffer","glMapBufferARB", validContext);
     setGLExtensionFuncPtr(glMapBufferRange,  "glMapBufferRange", "glMapBufferRangeARB" , validContext);
     setGLExtensionFuncPtr(glUnmapBuffer, "glUnmapBuffer","glUnmapBufferARB", validContext);
@@ -869,18 +871,18 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     isTextureCompressionRGTCSupported = validContext && isGLExtensionSupported(contextID,"GL_EXT_texture_compression_rgtc");
     isTextureCompressionPVRTCSupported = validContext && isGLExtensionSupported(contextID,"GL_IMG_texture_compression_pvrtc");
 
-    isTextureMirroredRepeatSupported = validContext && 
+    isTextureMirroredRepeatSupported = validContext &&
                                        (builtInSupport ||
                                         isGLExtensionOrVersionSupported(contextID,"GL_IBM_texture_mirrored_repeat", 1.4f) ||
                                         isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_mirrored_repeat", 1.4f));
 
-    isTextureEdgeClampSupported = validContext && 
+    isTextureEdgeClampSupported = validContext &&
                                   (builtInSupport ||
                                    isGLExtensionOrVersionSupported(contextID,"GL_EXT_texture_edge_clamp", 1.2f) ||
                                    isGLExtensionOrVersionSupported(contextID,"GL_SGIS_texture_edge_clamp", 1.2f));
 
 
-    isTextureBorderClampSupported = validContext && 
+    isTextureBorderClampSupported = validContext &&
                                     (OSG_GL3_FEATURES ||
                                      ((OSG_GL1_FEATURES || OSG_GL2_FEATURES) && isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_border_clamp", 1.3f)) ||
                                      ((OSG_GLES2_FEATURES || OSG_GLES3_FEATURES) && isGLExtensionSupported(contextID,"GL_EXT_texture_border_clamp")));
@@ -975,7 +977,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glIsTextureHandleResident,      "glIsTextureHandleResident","glIsTextureHandleResidentARB", "glIsTextureHandleResidentNV", validContext);
 
     // Blending
-    isBlendColorSupported = validContext && 
+    isBlendColorSupported = validContext &&
                             (OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES ||
                              isGLExtensionSupported(contextID,"GL_EXT_blend_color") ||
                              (glVersion >= 1.2f));
@@ -983,13 +985,13 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glBlendColor, "glBlendColor", "glBlendColorEXT", validContext);
 
     bool bultInSupport = OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES;
-    isBlendEquationSupported = validContext && 
+    isBlendEquationSupported = validContext &&
                                (bultInSupport ||
                                 isGLExtensionSupported(contextID, "GL_EXT_blend_equation") ||
                                 (glVersion >= 1.2f));
 
 
-    isBlendEquationSeparateSupported = validContext && 
+    isBlendEquationSeparateSupported = validContext &&
                                        (bultInSupport ||
                                         isGLExtensionSupported(contextID, "GL_EXT_blend_equation_separate") ||
                                         (glVersion >= 2.0f));

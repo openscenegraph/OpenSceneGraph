@@ -1,5 +1,6 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  * Copyright (C) 2012 David Callu
+ * Copyright (C) 2018 Julien Valentin
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -53,7 +54,7 @@ unsigned int GLBufferObject::BufferEntry::getNumClients() const
 GLBufferObject::GLBufferObject(unsigned int contextID, BufferObject* bufferObject, unsigned int glObjectID):
     _contextID(contextID),
     _glObjectID(glObjectID),
-    _profile(0,0,0),
+    _profile(0,0,0,0),
     _allocatedSize(0),
     _dirty(true),
     _bufferObject(0),
@@ -104,7 +105,7 @@ void GLBufferObject::assign(BufferObject* bufferObject)
     }
     else
     {
-        _profile.setProfile(0,0,0);
+        _profile.setProfile(0,0,0,0);
 
         // clear all previous entries;
         _bufferEntries.clear();
@@ -211,7 +212,17 @@ void GLBufferObject::compileBuffer()
     {
         _allocatedSize = _profile._size;
         OSG_INFO<<"    Allocating new glBufferData(), _allocatedSize="<<_allocatedSize<<std::endl;
-        _extensions->glBufferData(_profile._target, _profile._size, NULL, _profile._usage);
+
+        _profile._mappingbitfield=GL_MAP_WRITE_BIT|GL_MAP_READ_BIT; //DEBUG
+        if(_profile._mappingbitfield != 0)
+        {
+              _extensions->glBufferStorage(_profile._target, _profile._size, NULL, _profile._mappingbitfield);
+
+        }
+        else
+        {
+            _extensions->glBufferData(_profile._target, _profile._size, NULL, _profile._usage);
+        }
         compileAll = true;
     }
 
@@ -238,7 +249,26 @@ void GLBufferObject::compileBuffer()
             }
             else
             {
-                _extensions->glBufferSubData(_profile._target, (GLintptr)entry.offset, (GLsizeiptr)entry.dataSize, entry.dataSource->getDataPointer());
+                const osg::Array* array = entry.dataSource->asArray();
+                if(_profile._mappingbitfield != 0 )
+                {
+///GL_DYNAMIC_STORAGE_BIT, GL_MAP_READ_BIT GL_MAP_WRITE_BIT, GL_MAP_PERSISTENT_BIT, GL_MAP_COHERENT_BIT, and GL_CLIENT_STORAGE_BIT.
+                    /// first time : ownership transfer
+                    GLvoid* src=const_cast<GLvoid*>(entry.dataSource->getDataPointer()),
+                    *dst =  _extensions->glMapBufferRange(
+                        _profile._target,
+                        (GLintptr)entry.offset,
+                        (GLsizeiptr)entry.dataSize,
+                        _profile._mappingbitfield//|GL_MAP_INVALIDATE_RANGE_BIT
+                    );
+                    memcpy(dst,src,entry.dataSize);
+                    //entry.dataSource->getDataPointer()=dst;
+                    _extensions->glUnmapBuffer(_profile._target);
+                }
+                else
+                {
+                    _extensions->glBufferSubData(_profile._target, (GLintptr)entry.offset, (GLsizeiptr)entry.dataSize, entry.dataSource->getDataPointer());
+                }
             }
         }
     }
@@ -906,7 +936,7 @@ osg::ref_ptr<GLBufferObject> GLBufferObjectManager::generateGLBufferObject(const
 
     unsigned int requiredBufferSize = osg::maximum(bufferObject->computeRequiredBufferSize(), bufferObject->getProfile()._size);
 
-    BufferObjectProfile profile(bufferObject->getTarget(), bufferObject->getUsage(), requiredBufferSize);
+    BufferObjectProfile profile(bufferObject->getTarget(), bufferObject->getUsage(), requiredBufferSize, bufferObject->getMappingBitfield());
 
     // OSG_NOTICE<<"GLBufferObjectManager::generateGLBufferObject size="<<requiredBufferSize<<std::endl;
 

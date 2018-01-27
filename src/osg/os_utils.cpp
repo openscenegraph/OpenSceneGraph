@@ -15,10 +15,11 @@
 
 extern "C" {
 
-#define USE_POSIX_SPAWN defined(__APPLE__)
-//#define USE_POSIX_SPAWN true
+#ifdef __APPLE__
+#define USE_POSIX_SPAWN 1
+#endif
 
-#if USE_POSIX_SPAWN
+#ifdef USE_POSIX_SPAWN
 
 #include <spawn.h>
 #include <sys/wait.h>

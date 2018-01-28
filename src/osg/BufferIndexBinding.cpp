@@ -183,9 +183,7 @@ protected:
     SyncBufferDataCallback* _upcb;
 };
 
-//#define MAP_BUFER_RANGE_WORKING
-//glMapBufferRange seams to fail
-//perhaps a bug in Linux 4.5.0 NVIDIA 381.22
+#define MAP_BUFER_RANGE_WORKING 1
 
 bool SyncBufferDataCallback::readBackBufferData (RenderInfo& renderInfo) const
 {
@@ -193,7 +191,7 @@ bool SyncBufferDataCallback::readBackBufferData (RenderInfo& renderInfo) const
     GLubyte* src;
 
     GLBufferObject* glObject = _bd->getBufferObject()->getGLBufferObject(renderInfo.getContextID());
-    if (!glObject||glObject->isDirty())
+    if (!glObject || glObject->isDirty())
     {
         OSG_DEBUG << "osg::SyncBufferDataCallback::readBackBufferData it seams we wanna read gpu data before its first upload" << std::endl;
         return false;
@@ -201,22 +199,14 @@ bool SyncBufferDataCallback::readBackBufferData (RenderInfo& renderInfo) const
 
     glObject->_extensions->glBindBuffer(target, glObject->getGLObjectID());
 
-#ifndef MAP_BUFER_RANGE_WORKING
-    {
-        src= (GLubyte*) glObject->_extensions->glMapBuffer( target, GL_READ_ONLY_ARB);
-        if(src) memcpy(const_cast<GLvoid*>(_bd->getDataPointer()), src + glObject->getOffset(_bd->getBufferIndex()), _bd->getTotalDataSize());
-    }
-#else
-    {
-        src= (GLubyte*) glObject->_extensions->glMapBufferRange(
-                 target,
-                 glObject->getOffset(_bd->getBufferIndex()),
-                 _bd->getTotalDataSize(),
-                 GL_READ_ONLY_ARB
-             );
-        if(src) memcpy(const_cast<GLvoid*>(_bd->getDataPointer()), src, _bd->getTotalDataSize());
-    }
-#endif
+    src= (GLubyte*) glObject->_extensions->glMapBufferRange(
+             target,
+             glObject->getOffset(_bd->getBufferIndex()),
+             _bd->getTotalDataSize(),
+             GL_MAP_READ_BIT
+         );
+    if(src) memcpy(const_cast<GLvoid*>(_bd->getDataPointer()), src, _bd->getTotalDataSize());
+
     glObject->_extensions->glUnmapBuffer(target);
     return true;
 }

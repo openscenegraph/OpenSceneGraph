@@ -177,13 +177,11 @@ ShaderStorageBufferBinding::ShaderStorageBufferBinding(const ShaderStorageBuffer
 class BufferDataReadBack : public Camera::DrawCallback{
 public:
     BufferDataReadBack(SyncBufferDataCallback* u): Camera::DrawCallback(), _upcb(u){}
-    virtual void operator () (osg::RenderInfo& renderInfo) const{ _upcb->updateFlags(renderInfo); }
+    virtual void operator () (osg::RenderInfo& renderInfo) const { _upcb->updateFlags(renderInfo); }
 
 protected:
     SyncBufferDataCallback* _upcb;
 };
-
-#define MAP_BUFER_RANGE_WORKING 1
 
 bool SyncBufferDataCallback::readBackBufferData (RenderInfo& renderInfo) const
 {
@@ -199,13 +197,17 @@ bool SyncBufferDataCallback::readBackBufferData (RenderInfo& renderInfo) const
 
     glObject->_extensions->glBindBuffer(target, glObject->getGLObjectID());
 
-    src= (GLubyte*) glObject->_extensions->glMapBufferRange(
+    src = (GLubyte*) glObject->_extensions->glMapBufferRange(
              target,
              glObject->getOffset(_bd->getBufferIndex()),
              _bd->getTotalDataSize(),
-             GL_MAP_READ_BIT
+             _mappingflags
          );
-    if(src) memcpy(const_cast<GLvoid*>(_bd->getDataPointer()), src, _bd->getTotalDataSize());
+
+    if(!src)
+        return false;
+
+    memcpy(const_cast<GLvoid*>(_bd->getDataPointer()), src, _bd->getTotalDataSize());
 
     glObject->_extensions->glUnmapBuffer(target);
     return true;

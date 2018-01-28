@@ -221,22 +221,25 @@ class SyncBufferDataCallback : public osg::NodeCallback{
 public:
     typedef GLenum BufferDataAccess;
 
-    SyncBufferDataCallback(BufferData* bd):
+    SyncBufferDataCallback(BufferData* bd = 0):
         _bd(bd),
         gpuproduced(false),
         cpuproduced(true),
         _CpuAccess(GL_READ_ONLY),
-        _GpuAccess(GL_READ_ONLY){}
+        _GpuAccess(GL_READ_ONLY),
+        _mappingflags(GL_MAP_READ_BIT){}
 
     void setBufferData(BufferData* bd) { _bd=bd; }
     const BufferData* getBufferData() const { return _bd.get(); }
 
     inline void setHostAccess(BufferDataAccess a) { _CpuAccess=a; }
-    inline BufferDataAccess getHostAccess()const { return _CpuAccess; }
+    inline BufferDataAccess getHostAccess() const { return _CpuAccess; }
 
     inline void setDeviceAccess(BufferDataAccess a) { _GpuAccess=a; }
-    inline BufferDataAccess getDeviceAccess()const { return _GpuAccess; }
+    inline BufferDataAccess getDeviceAccess() const { return _GpuAccess; }
 
+    inline void setMappingFlag(GLbitfield a) { _mappingflags=a; }
+    inline GLbitfield getMappingFlag() const { return _mappingflags; }
 
     inline void setReadBackCamera(Camera* a) { _cam=a; }
     inline Camera* getReadBackCamera() const { return _cam.get(); }
@@ -261,6 +264,7 @@ protected:
     bool gpuproduced, cpuproduced;
     BufferDataAccess _CpuAccess;
     BufferDataAccess _GpuAccess;
+    GLbitfield _mappingflags;
     ref_ptr<Camera::DrawCallback> _dcb;
     observer_ptr<Camera> _cam;
     OpenThreads::Mutex _lock;

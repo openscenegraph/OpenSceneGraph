@@ -273,6 +273,7 @@ class OSG_EXPORT GLBufferObject : public GraphicsObject
 
     public:
         GLExtensions*          _extensions;
+        GLvoid*                _persistantDMA;
 
 };
 

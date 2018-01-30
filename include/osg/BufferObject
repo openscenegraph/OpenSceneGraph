@@ -508,7 +508,10 @@ class OSG_EXPORT BufferData : public Object
             Object(true),
             _modifiedCount(0),
             _bufferIndex(0),
-            _numClients(0) {}
+            _numClients(0),
+            _dmapinnedmemory(0),
+            _ext(0),
+            _contextid(0) {}
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         BufferData(const BufferData& bd,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
@@ -516,7 +519,10 @@ class OSG_EXPORT BufferData : public Object
             _modifiedCount(0),
             _bufferIndex(0),
             _modifiedCallback(bd._modifiedCallback),
-            _numClients(0) {}
+            _numClients(0),
+            _dmapinnedmemory(0),
+            _ext(0),
+            _contextid(0) {}
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const BufferData*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
@@ -588,7 +594,9 @@ class OSG_EXPORT BufferData : public Object
         void addClient(osg::Object * /*client*/) { ++_numClients; }
 
         void removeClient(osg::Object * /*client*/) { --_numClients; }
-
+        virtual void setupPinnedMemory(GLvoid*p, GLExtensions *s,GLuint c) { _dmapinnedmemory=p; _ext=s;_contextid=c; }
+        GLvoid * getPinnedMemory() { return  _dmapinnedmemory; }
+        void commitPinnedMemoryChanges();
 protected:
 
         virtual ~BufferData();
@@ -600,6 +608,7 @@ protected:
         osg::ref_ptr<ModifiedCallback>  _modifiedCallback;
 
         unsigned int _numClients;
+        GLvoid * _dmapinnedmemory; ref_ptr<GLExtensions> _ext; GLuint _contextid;
 };
 
 

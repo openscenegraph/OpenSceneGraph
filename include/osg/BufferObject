@@ -98,7 +98,6 @@ class BufferObject;
 class BufferObjectProfile
 {
     public:
-
         BufferObjectProfile():
             _target(0),
             _usage(0),
@@ -239,6 +238,10 @@ class OSG_EXPORT GLBufferObject : public GraphicsObject
         bool hasAllBufferDataBeenRead() const;
 
         void setBufferDataHasBeenRead(const osg::BufferData* bd);
+
+        void downloadBuffer(unsigned int entryidx);
+
+        void commitDMA(unsigned int entryidx);
 
     protected:
 
@@ -588,7 +591,6 @@ class OSG_EXPORT BufferData : public Object
         void addClient(osg::Object * /*client*/) { ++_numClients; }
 
         void removeClient(osg::Object * /*client*/) { --_numClients; }
-
 protected:
 
         virtual ~BufferData();

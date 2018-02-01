@@ -1224,9 +1224,15 @@ osg::ref_ptr<Texture::TextureObject> Texture::generateTextureObject(const Textur
 // Texture class implementation
 //
 Texture::Texture():
+#if 0
             _wrap_s(CLAMP),
             _wrap_t(CLAMP),
             _wrap_r(CLAMP),
+#else
+            _wrap_s(CLAMP_TO_EDGE),
+            _wrap_t(CLAMP_TO_EDGE),
+            _wrap_r(CLAMP_TO_EDGE),
+#endif
             _min_filter(LINEAR_MIPMAP_LINEAR), // trilinear
             _mag_filter(LINEAR),
             _maxAnisotropy(1.0f),

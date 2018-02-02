@@ -84,11 +84,11 @@ class OSG_EXPORT TextureBuffer : public Texture
         /** Bind the texture buffer.*/
         virtual void apply(State& state) const;
 
-        /**  Set BufferData attached */
+        /**  Set setBufferData attached */
         void setBufferData(BufferData *bo);
 
-         /**  Get BufferData attached */
-        virtual const BufferData * getBufferData() const { return _bufferData.get(); }
+         /**  Set setBufferData attached */
+        const BufferData * getBufferData()const {return _bufferData.get();}
     protected :
 
         virtual ~TextureBuffer();

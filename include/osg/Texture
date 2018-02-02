@@ -732,8 +732,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         void setShadowAmbient(float shadow_ambient) { _shadow_ambient = shadow_ambient; }
         float getShadowAmbient() const { return _shadow_ambient; }
 
-        /** Gets the texture BufferData */
-        virtual const BufferData* getBufferData() const { return getImage(0); }
 
         /** Sets the texture image for the specified face. */
         virtual void setImage(unsigned int face, Image* image) = 0;
@@ -743,13 +741,13 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         /** Gets the texture image for the specified face. */
         virtual Image* getImage(unsigned int face) = 0;
 
-
         /** Gets the const texture image for specified face. */
         virtual const Image* getImage(unsigned int face) const = 0;
 
+        virtual const BufferData* getBufferData() const { return getImage(0); }
+
         /** Gets the number of images that can be assigned to this Texture. */
         virtual unsigned int getNumImages() const = 0;
-
 
         /** Set the PBuffer graphics context to read from when using PBuffers for RenderToTexture.*/
         void setReadPBuffer(GraphicsContext* context) { _readPBuffer = context; }
@@ -1119,7 +1117,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
     protected:
 
         typedef buffered_object< ref_ptr<TextureObject> >  TextureObjectBuffer;
-        //mutable TextureObjectBuffer         _textureObjectBuffer;
         mutable ref_ptr<GraphicsContext>    _readPBuffer;
 
 };

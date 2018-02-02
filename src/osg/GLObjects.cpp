@@ -43,11 +43,12 @@ void osg::discardAllGLObjects(unsigned int contextID)
 //
 // GraphicsObject
 //
+/*
 GraphicsObject::GraphicsObject()
 {
 //    OSG_NOTICE<<"GraphicsObject::GraphicsObject() "<<this<<std::endl;
 }
-
+*/
 GraphicsObject::~GraphicsObject()
 {
 //    OSG_NOTICE<<"GraphicsObject::~GraphicsObject() "<<this<<std::endl;

@@ -19,7 +19,7 @@ void BindImageTexture::apply(osg::State&state) const
 {
     if(_target.valid())
     {
-        GLBufferObject *globj = _target->getBufferData()->getBufferObject()->getGLBufferObject( state.getContextID() );
+        GraphicsObject *globj = _target->getBufferData()->getGLGraphicsObject( state.getContextID() );
         if( !globj || globj->isDirty() )
         {
             // _target never been applied yet

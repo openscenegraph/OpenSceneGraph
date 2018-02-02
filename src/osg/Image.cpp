@@ -218,8 +218,9 @@ Image::Image()
     _dimensionsChangedCallbacks()
 {
     setDataVariance(STATIC);
+    setTextureGraphicObject(new osg::TextureGraphicObject());
 }
-
+void Image::setTextureGraphicObject(TextureGraphicObject*u)  { setGraphicsObject(u);}
 Image::Image(const Image& image,const CopyOp& copyop):
     BufferData(image,copyop),
     _fileName(image._fileName),
@@ -254,6 +255,7 @@ Image::Image(const Image& image,const CopyOp& copyop):
             OSG_WARN<<"Warning: Image::Image(const Image&, const CopyOp&) out of memory, no image copy made."<<std::endl;
         }
     }
+    setTextureGraphicObject(new osg::TextureGraphicObject());
 }
 
 Image::~Image()

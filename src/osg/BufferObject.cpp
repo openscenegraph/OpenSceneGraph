@@ -55,7 +55,6 @@ GLBufferObject::GLBufferObject(unsigned int contextID, BufferObject* bufferObjec
     _glObjectID(glObjectID),
     _profile(0,0,0),
     _allocatedSize(0),
-    _dirty(true),
     _bufferObject(0),
     _set(0),
     _previous(0),
@@ -1061,7 +1060,7 @@ BufferObject::BufferObject():
 }
 
 BufferObject::BufferObject(const BufferObject& bo,const CopyOp& copyop):
-    Object(bo,copyop),
+    PerContextGraphicObject(bo,copyop),
     _copyDataAndReleaseGLBufferObject(bo._copyDataAndReleaseGLBufferObject)
 {
 }
@@ -1071,13 +1070,11 @@ BufferObject::~BufferObject()
     releaseGLObjects(0);
 }
 
-GLBufferObject* BufferObject::getOrCreateGLBufferObject(unsigned int contextID) const
+GraphicsObject* BufferObject::createGraphicsObject(unsigned int contextID) const
 {
-    if (!_glBufferObjects[contextID]) _glBufferObjects[contextID] = osg::get<GLBufferObjectManager>(contextID)->generateGLBufferObject(this);
+    // OSG_NOTICE<<"BufferObject::createGraphicsObject() _glBufferObjects[contextID]->getProfile()._size() = "<<_glBufferObjects[contextID]->getProfile()._size<<std::endl;
+    return osg::get<GLBufferObjectManager>(contextID)->generateGLBufferObject(this).release();
 
-    // OSG_NOTICE<<"BufferObject::getOrCreateGLBufferObject() _glBufferObjects[contextID]->getProfile()._size() = "<<_glBufferObjects[contextID]->getProfile()._size<<std::endl;
-
-    return _glBufferObjects[contextID].get();
 }
 
 void BufferObject::setBufferData(unsigned int index, BufferData* bd)
@@ -1086,7 +1083,7 @@ void BufferObject::setBufferData(unsigned int index, BufferData* bd)
     _bufferDataList[index] = bd;
 }
 
-void BufferObject::dirty()
+void PerContextGraphicObject::dirty()
 {
     for(unsigned int i=0; i<_glBufferObjects.size(); ++i)
     {
@@ -1102,9 +1099,9 @@ void BufferObject::resizeGLObjectBuffers(unsigned int maxSize)
     _glBufferObjects.resize(maxSize);
 }
 
-void BufferObject::releaseGLObjects(State* state) const
+void PerContextGraphicObject::releaseGLObjects(State* state) const
 {
-    OSG_DEBUG<<"BufferObject::releaseGLObjects("<<state<<")"<<std::endl;
+    OSG_DEBUG<<"PerContextGraphicObject::releaseGLObjects("<<state<<")"<<std::endl;
     if (state)
     {
         unsigned int contextID = state->getContextID();
@@ -1217,7 +1214,7 @@ void BufferObject::deleteBufferObject(unsigned int contextID,GLuint globj)
     }
     osg::ref_ptr<GLBufferObject> glBufferObject = new GLBufferObject(contextID, 0, globj);
 
-    GLBufferObjectSet* bufferObjectSet = bufferObjectManager->getGLBufferObjectSet(glBufferObject->getProfile());
+    GLBufferObjectSet* bufferObjectSet = bufferObjectManager->getGLBufferObjectSet((BufferObjectProfile&)glBufferObject->getProfile());
     if (!bufferObjectSet)
     {
         OSG_NOTICE<<"Warning::BufferObject::deleteBufferObject("<<contextID<<", "<<globj<<") unable to get GLBufferObjectSet for context."<<std::endl;
@@ -1241,13 +1238,16 @@ void BufferData::setBufferObject(BufferObject* bufferObject)
 {
     if (_bufferObject==bufferObject) return;
 
-    if (_bufferObject.valid())
+    BufferObject* bo = dynamic_cast<BufferObject*>(_bufferObject.get());
+
+    if (bo)
     {
-        _bufferObject->removeBufferData(_bufferIndex);
+
+        bo->removeBufferData(_bufferIndex);
     }
 
-    _bufferObject = bufferObject;
-    _bufferIndex = _bufferObject.valid() ? _bufferObject->addBufferData(this) : 0;
+    setGraphicsObject(bufferObject);
+    _bufferIndex = bufferObject ? bufferObject->addBufferData(this) : 0;
 }
 
 void BufferData::resizeGLObjectBuffers(unsigned int maxSize)

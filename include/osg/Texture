@@ -407,12 +407,16 @@
 
 //#define OSG_COLLECT_TEXTURE_APPLIED_STATS 1
 
+///force an image with NULL data on texture without image setted
+#define FIX_DEPRECATED_IMAGELESS_TEXTURE 1
+
 namespace osg {
 
 
 // forward declare
 class TextureObjectSet;
 class TextureObjectManager;
+class TextureGraphicObject;
 
 
 /** Texture pure virtual base class that encapsulates OpenGL texture
@@ -654,17 +658,15 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         class TextureObject;
 
-        /** Returns a pointer to the TextureObject for the current context. */
-        inline TextureObject* getTextureObject(unsigned int contextID) const
+          /** Returns a pointer to the TextureObject for the current context.* /
+             inline osg::TextureObject* getTextureObject() const
         {
-            return _textureObjectBuffer[contextID].get();
-        }
+                   return static_cast<osg::TextureObject*>(getBufferData()->getBufferObject());
+        }*/
 
-        inline void setTextureObject(unsigned int contextID, TextureObject* to)
-        {
-            _textureObjectBuffer[contextID] = to;
-        }
-
+        ///retro compat
+        inline TextureObject* getTextureObject(unsigned int contextID) const;
+        inline void setTextureObject(unsigned int contextID, TextureObject* to);
         /** Forces a recompile on next apply() of associated OpenGL texture
           * objects. */
         void dirtyTextureObject();
@@ -885,7 +887,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
     public:
 
-        struct OSG_EXPORT TextureProfile
+        struct OSG_EXPORT TextureProfile : public GraphicsObjectProfile
         {
             inline TextureProfile(GLenum target):
                 _target(target),
@@ -1069,9 +1071,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
             inline bool isReusable() const { return _allocated && _profile._width!=0; }
 
-            /** release TextureObject to the orphan list to be reused or deleted.*/
-            void release();
-
             GLuint              _id;
             TextureProfile      _profile;
             TextureObjectSet*   _set;
@@ -1081,7 +1080,11 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             bool                _allocated;
             unsigned int        _frameLastUsed;
             double              _timeStamp;
-
+            /** release TextureObject to the orphan list to be reused or deleted.*/
+            virtual void release();
+            virtual void dirty(){ if(_texture)_texture->dirtyTextureObject(); }
+            virtual void clear(){}
+            virtual GraphicsObjectProfile & getProfile(){ return _profile;}
         protected:
             virtual ~TextureObject();
 
@@ -1116,7 +1119,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
     protected:
 
         typedef buffered_object< ref_ptr<TextureObject> >  TextureObjectBuffer;
-        mutable TextureObjectBuffer         _textureObjectBuffer;
+        //mutable TextureObjectBuffer         _textureObjectBuffer;
         mutable ref_ptr<GraphicsContext>    _readPBuffer;
 
 };
@@ -1254,6 +1257,29 @@ protected:
     unsigned int        _numGenerated;
     double              _generateTime;
 };
+
+class OSG_EXPORT TextureGraphicObject : public PerContextGraphicObject{
+
+public:
+    TextureGraphicObject();
+    TextureGraphicObject(const TextureGraphicObject& ubo, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+    META_Object(osg, TextureGraphicObject);
+
+    inline void setTextureObject(unsigned int contextID, Texture::TextureObject* glbo) const { setGraphicsObject(contextID, glbo); }
+    inline Texture::TextureObject* getTextureObject(unsigned int contextID) const { return  (Texture::TextureObject* )getGraphicsObject(contextID) ; }
+
+    virtual GraphicsObject* createGraphicsObject(unsigned int contextID) const;
+};
+///retro compat
+Texture::TextureObject* Texture::getTextureObject(unsigned int contextID) const
+{
+    return ((TextureGraphicObject*)(getBufferData()->getGraphicsObject()))->getTextureObject(contextID);
+}
+
+void Texture::setTextureObject(unsigned int contextID, Texture::TextureObject* to)
+{
+    ((TextureGraphicObject*)getBufferData()->getGraphicsObject())->setTextureObject(contextID,to);
+}
 }
 
 #endif

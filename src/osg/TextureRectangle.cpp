@@ -168,7 +168,8 @@ void TextureRectangle::apply(State& state) const
     const unsigned int contextID = state.getContextID();
 
     // get the texture object for the current contextID.
-    TextureObject* textureObject = getTextureObject(contextID);
+    const TextureGraphicObject *to = getImage(0)->getTextureGraphicObject();
+    TextureObject* textureObject = to->getTextureObject(contextID);
 
     if (textureObject)
     {
@@ -184,8 +185,10 @@ void TextureRectangle::apply(State& state) const
 
             if (!textureObject->match(GL_TEXTURE_RECTANGLE, new_numMipmapLevels, _internalFormat, new_width, new_height, 1, _borderWidth))
             {
-                _textureObjectBuffer[contextID]->release();
-                _textureObjectBuffer[contextID] = 0;
+                textureObject->release();
+                to->setTextureObject(contextID,0);
+               // _textureObjectBuffer[contextID]->release();
+              //  _textureObjectBuffer[contextID] = 0;
                 textureObject = 0;
             }
         }

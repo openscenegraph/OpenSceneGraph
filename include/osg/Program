@@ -410,6 +410,15 @@ class OSG_EXPORT Program : public osg::StateAttribute
             void addShaderToAttach(Shader* shader);
             void addShaderToDetach(Shader* shader);
             bool getGlProgramInfoLog(std::string& log) const;
+            virtual void release(){}
+            virtual void dirty(){}
+            virtual void clear(){}
+
+
+            ///TODO determine a ProgramObjectProfile characterizing how to generate the prog
+            class ProgramObjectProfile: public GraphicsObjectProfile{};
+            virtual GraphicsObjectProfile& getProfile(){  return _profil; }
+            ProgramObjectProfile _profil;
         };
 
         /** Get the PCP for a particular GL context */

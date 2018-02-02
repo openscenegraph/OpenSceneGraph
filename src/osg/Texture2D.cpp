@@ -137,6 +137,20 @@ void Texture2D::setImage(Image* image)
     }
 }
 
+#ifdef FIX_DEPRECATED_IMAGELESS_TEXTURE
+void Texture2D::compileGLObjects(State& state) const
+{
+    /// fix deprecated Imageless Textures
+    /// TODO do the same for all textures type
+    if(!getImage(0)){
+        ///fix deprecated case : require an empty image to be setted
+        osg::ref_ptr<Image> im=new Image();
+        im->setImage((int)_textureWidth,(int)_textureHeight,(int)1,_internalFormat,_sourceFormat ? _sourceFormat : _internalFormat,_sourceType ? _sourceType : GL_UNSIGNED_BYTE,(unsigned char*)NULL,Image::USE_NEW_DELETE);
+        const_cast<Texture2D*>(this)->setImage(im);
+    }
+    apply(state);
+}
+#endif
 bool Texture2D::textureObjectValid(State& state) const
 {
     TextureObject* textureObject = getTextureObject(state.getContextID());
@@ -159,7 +173,10 @@ bool Texture2D::textureObjectValid(State& state) const
 
 void Texture2D::apply(State& state) const
 {
-
+    /// TODO same test for all textures type
+    if(!getImage(0))
+        //it's a clone
+        return;
     //state.setReportGLErrors(true);
 
     // get the contextID (user defined ID of 0 upwards) for the
@@ -168,6 +185,7 @@ void Texture2D::apply(State& state) const
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
+    const osg::TextureGraphicObject * to= getImage()->getTextureGraphicObject();
     if (textureObject)
     {
         bool textureObjectInvalidated = false;
@@ -183,8 +201,10 @@ void Texture2D::apply(State& state) const
         if (textureObjectInvalidated)
         {
             // OSG_NOTICE<<"Discarding TextureObject"<<std::endl;
-            _textureObjectBuffer[contextID]->release();
-            _textureObjectBuffer[contextID] = 0;
+            textureObject->release();
+            to->setTextureObject(contextID,0);
+          //  _textureObjectBuffer[contextID]->release();
+           // _textureObjectBuffer[contextID] = 0;
             textureObject = 0;
         }
     }
@@ -216,8 +236,9 @@ void Texture2D::apply(State& state) const
     }
     else if (_subloadCallback.valid())
     {
-        _textureObjectBuffer[contextID] = _subloadCallback->generateTextureObject(*this, state);
-        textureObject = _textureObjectBuffer[contextID].get();
+        to->setTextureObject(contextID, _subloadCallback->generateTextureObject(*this, state));
+
+        textureObject = to->getTextureObject(contextID);
 
         textureObject->bind();
 
@@ -289,6 +310,7 @@ void Texture2D::apply(State& state) const
     }
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_internalFormat!=0) )
     {
+
         textureObject = generateAndAssignTextureObject(contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,_borderWidth);
 
         textureObject->bind();

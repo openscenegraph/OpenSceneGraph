@@ -215,6 +215,7 @@ void Texture3D::apply(State& state) const
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
 
+    osg::TextureGraphicObject * to= ( osg::TextureGraphicObject*)( getBufferData()->getBufferObject());
     if (textureObject)
     {
         if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
@@ -229,8 +230,10 @@ void Texture3D::apply(State& state) const
 
             if (!textureObject->match(GL_TEXTURE_3D, new_numMipmapLevels, _internalFormat, new_width, new_height, new_depth, _borderWidth))
             {
-                _textureObjectBuffer[contextID]->release();
-                _textureObjectBuffer[contextID] = 0;
+                textureObject->release();
+                to->setTextureObject(contextID,0);
+                //_textureObjectBuffer[contextID]->release();
+                //_textureObjectBuffer[contextID] = 0;
                 textureObject = 0;
             }
         }

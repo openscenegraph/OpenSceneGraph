@@ -205,7 +205,8 @@ void TextureCubeMap::apply(State& state) const
         return;
 
     // get the texture object for the current contextID.
-    TextureObject* textureObject = getTextureObject(contextID);
+    const TextureGraphicObject * to = getImage(0)->getTextureGraphicObject();
+    TextureObject* textureObject = to->getTextureObject(contextID);
 
     if (textureObject)
     {
@@ -222,8 +223,10 @@ void TextureCubeMap::apply(State& state) const
 
             if (!textureObject->match(GL_TEXTURE_CUBE_MAP, new_numMipmapLevels, _internalFormat, new_width, new_height, 1, _borderWidth))
             {
-                _textureObjectBuffer[contextID]->release();
-                _textureObjectBuffer[contextID] = 0;
+                textureObject->release();
+                to->setGraphicsObject(contextID,0);
+               // _textureObjectBuffer[contextID]->release();
+               // _textureObjectBuffer[contextID] = 0;
                 textureObject = 0;
             }
         }

@@ -215,7 +215,7 @@ void Texture3D::apply(State& state) const
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
 
-    osg::TextureGraphicObject * to= ( osg::TextureGraphicObject*)( getBufferData()->getBufferObject());
+    osg::TextureObject * to= ( osg::TextureObject*)( getBufferData()->getBufferObject());
     if (textureObject)
     {
         if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())

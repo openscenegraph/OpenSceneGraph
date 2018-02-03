@@ -168,8 +168,8 @@ void TextureRectangle::apply(State& state) const
     const unsigned int contextID = state.getContextID();
 
     // get the texture object for the current contextID.
-    const TextureGraphicObject *to = getImage(0)->getTextureGraphicObject();
-    TextureObject* textureObject = to->getTextureObject(contextID);
+    const osg::TextureObject *to = getImage(0)->getTextureObject();
+    Texture::TextureObject* textureObject = to->getTextureObject(contextID);
 
     if (textureObject)
     {

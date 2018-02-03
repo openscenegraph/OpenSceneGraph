@@ -184,8 +184,8 @@ void Texture2D::apply(State& state) const
     const unsigned int contextID = state.getContextID();
 
     // get the texture object for the current contextID.
-    TextureObject* textureObject = getTextureObject(contextID);
-    const osg::TextureGraphicObject * to= getImage()->getTextureGraphicObject();
+    const osg::TextureObject * to = getImage()->getTextureObject();
+    Texture::TextureObject* textureObject = to->getTextureObject(contextID);
     if (textureObject)
     {
         bool textureObjectInvalidated = false;

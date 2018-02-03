@@ -170,7 +170,7 @@
 #endif
 
 namespace osg {
-class TextureGraphicObject;
+class TextureObject;
 // forward declare
 class NodeVisitor;
 
@@ -268,9 +268,9 @@ class OSG_EXPORT Image : public BufferData
           * If source is NULL then no operation happens, this Image is left unchanged.
         */
         virtual void copySubImage(int s_offset, int t_offset, int r_offset, const osg::Image* source);
-        inline const TextureGraphicObject* getTextureGraphicObject() const { return (TextureGraphicObject*)getGraphicsObject();}
-        //TextureGraphicObject* getTextureGraphicObject() const { return (TextureGraphicObject*)getGraphicsObject();}
-        void setTextureGraphicObject(TextureGraphicObject*u);
+        inline const osg::TextureObject* getTextureObject() const { return (osg::TextureObject*)getGraphicsObject();}
+        //osg::TextureObject* getosg::TextureObject() const { return (osg::TextureObject*)getGraphicsObject();}
+        void setTextureObject(osg::TextureObject*u);
 
         enum Origin
         {

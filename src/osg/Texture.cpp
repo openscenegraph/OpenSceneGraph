@@ -485,7 +485,7 @@ void TextureObjectSet::deleteAllTextureObjects()
         ref_ptr<Texture> original_texture = glto->getTexture();
         if (original_texture.valid())
         {
-            static_cast<TextureGraphicObject*>(const_cast<PerContextGraphicObject*>(original_texture->getBufferData()->getGraphicsObject()))->setTextureObject(_contextID,0);
+            static_cast<osg::TextureObject*>(const_cast<PerContextGraphicObject*>(original_texture->getBufferData()->getGraphicsObject()))->setTextureObject(_contextID,0);
             //original_texture->setTextureObject(_contextID,0);
         }
     }
@@ -2079,7 +2079,7 @@ void Texture::computeRequiredTextureDimensions(State& state, const osg::Image& i
 
 bool Texture::areAllTextureObjectsLoaded() const
 {
-    osg::TextureGraphicObject* to = (osg::TextureGraphicObject*) getBufferData()->getGraphicsObject();
+    osg::TextureObject* to = (osg::TextureObject*) getBufferData()->getGraphicsObject();
 
     for(unsigned int i=0;i<DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();++i)
     {
@@ -2833,7 +2833,7 @@ void Texture::releaseGLObjects(State* state) const
 //    if (state) OSG_NOTICE<<"Texture::releaseGLObjects contextID="<<state->getContextID()<<std::endl;
 //    else OSG_NOTICE<<"Texture::releaseGLObjects no State "<<std::endl;
     if (getImage(0))    ///delegation to Image
-        getImage(0)->getTextureGraphicObject()->releaseGLObjects(state);
+        getImage(0)->getTextureObject()->releaseGLObjects(state);
 
    /*
     if (!state) const_cast<Texture*>(this)->dirtyTextureObject();
@@ -2849,10 +2849,10 @@ void Texture::releaseGLObjects(State* state) const
     } */
 }
 
-TextureGraphicObject::TextureGraphicObject():PerContextGraphicObject(){}
-TextureGraphicObject::TextureGraphicObject(const TextureGraphicObject& ubo, const CopyOp& copyop):PerContextGraphicObject(ubo,copyop){}
+TextureObject::TextureObject():PerContextGraphicObject(){}
+TextureObject::TextureObject(const osg::TextureObject& ubo, const CopyOp& copyop):PerContextGraphicObject(ubo,copyop){}
 
-GraphicsObject* TextureGraphicObject::createGraphicsObject(unsigned int contextID) const
+GraphicsObject* osg::TextureObject::createGraphicsObject(unsigned int contextID) const
 {
     // OSG_NOTICE<<"TextureObject::getOrCreateGLBufferObject() _glBufferObjects[contextID]->getProfile()._size() = "<<_glBufferObjects[contextID]->getProfile()._size<<std::endl;
 OSG_FATAL<<"can't create TextureObject without a Texture: createGraphicsObject interface can't be used until i'll' add a new interface attribute(ex: HostSideGLCreator)"<<std::endl;

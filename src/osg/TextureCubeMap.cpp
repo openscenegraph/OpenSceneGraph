@@ -205,7 +205,7 @@ void TextureCubeMap::apply(State& state) const
         return;
 
     // get the texture object for the current contextID.
-    const TextureGraphicObject * to = getImage(0)->getTextureGraphicObject();
+    const osg::TextureObject * to = getImage(0)->getTextureObject();
     TextureObject* textureObject = to->getTextureObject(contextID);
 
     if (textureObject)

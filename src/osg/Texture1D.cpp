@@ -137,7 +137,7 @@ void Texture1D::apply(State& state) const
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
     const BufferObject* bo=getBufferData()->getBufferObject();
-    osg::TextureGraphicObject * To=(osg::TextureGraphicObject * )(bo);
+    osg::TextureObject * To=(osg::TextureObject * )(bo);
 
     if (textureObject)
     {

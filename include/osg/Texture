@@ -416,7 +416,7 @@ namespace osg {
 // forward declare
 class TextureObjectSet;
 class TextureObjectManager;
-class TextureGraphicObject;
+//class TextureObject;
 
 
 /** Texture pure virtual base class that encapsulates OpenGL texture
@@ -1255,12 +1255,12 @@ protected:
     double              _generateTime;
 };
 
-class OSG_EXPORT TextureGraphicObject : public PerContextGraphicObject{
+class OSG_EXPORT TextureObject : public PerContextGraphicObject{
 
 public:
-    TextureGraphicObject();
-    TextureGraphicObject(const TextureGraphicObject& ubo, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
-    META_Object(osg, TextureGraphicObject);
+    TextureObject();
+    TextureObject(const TextureObject& ubo, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+    META_Object(osg, TextureObject);
 
     inline void setTextureObject(unsigned int contextID, Texture::TextureObject* glbo) const { setGraphicsObject(contextID, glbo); }
     inline Texture::TextureObject* getTextureObject(unsigned int contextID) const { return  (Texture::TextureObject* )getGraphicsObject(contextID) ; }
@@ -1270,12 +1270,12 @@ public:
 ///retro compat
 Texture::TextureObject* Texture::getTextureObject(unsigned int contextID) const
 {
-    return ((TextureGraphicObject*)(getBufferData()->getGraphicsObject()))->getTextureObject(contextID);
+    return ((osg::TextureObject*)(getBufferData()->getGraphicsObject()))->getTextureObject(contextID);
 }
 
 void Texture::setTextureObject(unsigned int contextID, Texture::TextureObject* to)
 {
-    ((TextureGraphicObject*)getBufferData()->getGraphicsObject())->setTextureObject(contextID,to);
+    ((osg::TextureObject*)getBufferData()->getGraphicsObject())->setTextureObject(contextID,to);
 }
 }
 

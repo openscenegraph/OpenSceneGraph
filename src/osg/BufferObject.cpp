@@ -122,7 +122,6 @@ void GLBufferObject::clear()
 void GLBufferObject::compileBuffer()
 {
     _dirty = false;
-_persistantDMA=0;
     _bufferEntries.reserve(_bufferObject->getNumBufferData());
 
     bool compileAll = false;

@@ -674,17 +674,17 @@ void Text::computeGlyphRepresentation()
                         {
                             case LEFT_TO_RIGHT:
                                 cursor.x() += glyph->getHorizontalAdvance() * wr;
-                                _textBB.expandBy(osg::Vec3(minc.x(), minc.y(), 0.0f)); //lower left corner
-                                _textBB.expandBy(osg::Vec3(maxc.x(), maxc.y(), 0.0f)); //upper right corner
+                                _textBB.expandBy(osg::Vec3(local.x(), local.y(), 0.0f)); //lower left corner
+                                _textBB.expandBy(osg::Vec3(local.x()+width, local.y()+height, 0.0f)); //upper right corner
                                 break;
                             case VERTICAL:
                                 cursor.y() -= glyph->getVerticalAdvance() * hr;
-                                _textBB.expandBy(osg::Vec3(minc.x(),maxc.y(),0.0f)); //upper left corner
-                                _textBB.expandBy(osg::Vec3(maxc.x(),minc.y(),0.0f)); //lower right corner
+                                _textBB.expandBy(osg::Vec3(local.x(), local.y()+height, 0.0f)); //upper left corner
+                                _textBB.expandBy(osg::Vec3(local.x()+width, local.y(), 0.0f)); //lower right corner
                                 break;
                             case RIGHT_TO_LEFT:
-                                _textBB.expandBy(osg::Vec3(maxc.x(),minc.y(),0.0f)); //lower right corner
-                                _textBB.expandBy(osg::Vec3(minc.x(),maxc.y(),0.0f)); //upper left corner
+                                _textBB.expandBy(osg::Vec3(local.x()+width, local.y(), 0.0f)); //lower right corner
+                                _textBB.expandBy(osg::Vec3(local.x(), local.y()+height, 0.0f)); //upper left corner
                                 break;
                         }
                     }

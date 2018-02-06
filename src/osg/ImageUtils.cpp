@@ -439,29 +439,29 @@ osg::Image* createImage3D(const ImageList& imageList,
 
     // compute nearest powers of two for each axis.
 
-    int size_s = 1;
-    int size_t = 1;
-    int size_r = 1;
+    int isize_s = 1;
+    int isize_t = 1;
+    int isize_r = 1;
 
     if (resizeToPowerOfTwo)
     {
-        while(size_s<max_s && size_s<s_maximumImageSize) size_s*=2;
-        while(size_t<max_t && size_t<t_maximumImageSize) size_t*=2;
-        while(size_r<total_r && size_r<r_maximumImageSize) size_r*=2;
+        while(isize_s<max_s && isize_s<s_maximumImageSize) isize_s*=2;
+        while(isize_t<max_t && isize_t<t_maximumImageSize) isize_t*=2;
+        while(isize_r<total_r && isize_r<r_maximumImageSize) isize_r*=2;
     }
     else
     {
-        size_s = max_s;
-        size_t = max_t;
-        size_r = total_r;
+        isize_s = max_s;
+        isize_t = max_t;
+        isize_r = total_r;
     }
 
     // now allocate the 3d texture;
     osg::ref_ptr<osg::Image> image_3d = new osg::Image;
-    image_3d->allocateImage(size_s,size_t,size_r,
+    image_3d->allocateImage(isize_s,isize_t,isize_r,
                             desiredPixelFormat,GL_UNSIGNED_BYTE);
 
-    unsigned int r_offset = (total_r<size_r) ? (size_r-total_r)/2 : 0;
+    unsigned int r_offset = (total_r<isize_r) ? (isize_r-total_r)/2 : 0;
 
     int curr_dest_r = r_offset;
 
@@ -486,8 +486,8 @@ osg::Image* createImage3D(const ImageList& imageList,
             int num_t = minimum(image->t(), image_3d->t());
             int num_r = minimum(image->r(), (image_3d->r() - curr_dest_r));
 
-            unsigned int s_offset_dest = (image->s()<size_s) ? (size_s - image->s())/2 : 0;
-            unsigned int t_offset_dest = (image->t()<size_t) ? (size_t - image->t())/2 : 0;
+            unsigned int s_offset_dest = (image->s()<isize_s) ? (isize_s - image->s())/2 : 0;
+            unsigned int t_offset_dest = (image->t()<isize_t) ? (isize_t - image->t())/2 : 0;
 
             copyImage(image, 0, 0, 0, num_s, num_t, num_r,
                       image_3d.get(), s_offset_dest, t_offset_dest, curr_dest_r, false);

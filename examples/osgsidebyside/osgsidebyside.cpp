@@ -156,6 +156,15 @@ public:
         return false;
     }
 
+    virtual NodeVisitor* asNodeVisitor() { return NodeVisitor::asNodeVisitor(); }
+    virtual const NodeVisitor* asNodeVisitor() const { return NodeVisitor::asNodeVisitor(); }
+
+    virtual Callback* asCallback() { return Callback::asCallback(); }
+    virtual const Callback* asCallback() const { return Callback::asCallback(); }
+
+    virtual CallbackObject* asCallbackObject() { return Callback::asCallbackObject(); }
+    virtual const CallbackObject* asCallbackObject() const { return Callback::asCallbackObject(); }
+
 private:
     std::vector<osgSim::MultiSwitch*> mSwitches;
     std::vector<osgSim::DOFTransform*> mDofs;

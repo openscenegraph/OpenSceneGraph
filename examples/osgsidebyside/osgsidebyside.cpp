@@ -41,41 +41,12 @@ using namespace osg;
 using namespace osgGA;
 
 
-class SwitchDOFVisitor : public osg::NodeVisitor, public osgGA::GUIEventHandler
+class SwitchDOFHandler : public osgGA::GUIEventHandler
 {
 public:
-    SwitchDOFVisitor():
-      osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
+
+    SwitchDOFHandler()
     {
-    }
-
-    SwitchDOFVisitor(const SwitchDOFVisitor& sdfv, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) {}
-
-    META_Object(osg, SwitchDOFVisitor)
-
-    virtual void apply(Group& node)
-    {
-        osgSim::MultiSwitch* pMSwitch = dynamic_cast<osgSim::MultiSwitch*>(&node);
-
-        if (pMSwitch)
-        {
-            mSwitches.push_back(pMSwitch);
-        }
-
-        osg::NodeVisitor::apply(node);
-    }
-
-    virtual void apply(Transform& node)
-    {
-        osgSim::DOFTransform* pDof = dynamic_cast<osgSim::DOFTransform*>(&node);
-
-        if (pDof)
-        {
-            mDofs.push_back(pDof);
-            pDof->setAnimationOn(true);
-        }
-
-        osg::NodeVisitor::apply(node);
     }
 
     void nextSwitch()
@@ -151,9 +122,53 @@ public:
         return false;
     }
 
+    void collectNodesOfInterest(osg::Node* node)
+    {
+        CollectNodes cn(this);
+        node->accept(cn);
+    }
+
 private:
-    std::vector<osgSim::MultiSwitch*> mSwitches;
-    std::vector<osgSim::DOFTransform*> mDofs;
+
+    friend class CollectNodes;
+
+    class CollectNodes : public osg::NodeVisitor
+    {
+    public:
+        SwitchDOFHandler* _parent;
+
+        CollectNodes(SwitchDOFHandler* parent):
+            osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+            _parent(parent)
+        {
+        }
+
+        virtual void apply(Group& node)
+        {
+            osgSim::MultiSwitch* pMSwitch = dynamic_cast<osgSim::MultiSwitch*>(&node);
+            if (pMSwitch)
+            {
+                _parent->mSwitches.push_back(pMSwitch);
+            }
+
+            traverse(node);
+        }
+
+        virtual void apply(Transform& node)
+        {
+            osgSim::DOFTransform* pDof = dynamic_cast<osgSim::DOFTransform*>(&node);
+            if (pDof)
+            {
+                _parent->mDofs.push_back(pDof);
+                pDof->setAnimationOn(true);
+            }
+
+            traverse(node);
+        }
+    };
+
+    std::vector< osg::ref_ptr<osgSim::MultiSwitch> > mSwitches;
+    std::vector< osg::ref_ptr<osgSim::DOFTransform> > mDofs;
 };
 
 void singleWindowSideBySideCameras(osgViewer::Viewer& viewer)
@@ -262,8 +277,8 @@ int main( int argc, char **argv )
     viewer.addEventHandler(new osgViewer::LODScaleHandler());
     viewer.addEventHandler(new osgGA::StateSetManipulator());
 
-    SwitchDOFVisitor* visit = new SwitchDOFVisitor;
-    viewer.addEventHandler(visit);
+    SwitchDOFHandler* switchOFHandler = new SwitchDOFHandler;
+    viewer.addEventHandler(switchOFHandler);
 
     // load the scene.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
@@ -289,12 +304,11 @@ int main( int argc, char **argv )
     group2->addChild(convertedModel.get());
     group2->setNodeMask(2);
 
-    // Activate DOF animations and collect switches
-    loadedModel->accept(*visit);
-    convertedModel->accept(*visit);
-
     group->addChild(group1);
     group->addChild(group2);
+
+    // Activate DOF animations and collect switches
+    switchOFHandler->collectNodesOfInterest(group);
 
     viewer.setSceneData(group);
 

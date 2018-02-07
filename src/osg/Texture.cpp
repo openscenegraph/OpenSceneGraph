@@ -485,7 +485,8 @@ void TextureObjectSet::deleteAllTextureObjects()
         ref_ptr<Texture> original_texture = glto->getTexture();
         if (original_texture.valid())
         {
-            original_texture->setTextureObject(_contextID,0);
+            static_cast<osg::TextureObject*>(const_cast<PerContextGraphicObject*>(original_texture->getBufferData()->getGraphicsObject()))->setTextureObject(_contextID,0);
+            //original_texture->setTextureObject(_contextID,0);
         }
     }
 
@@ -1026,8 +1027,9 @@ osg::ref_ptr<Texture::TextureObject> TextureObjectManager::generateTextureObject
 
 Texture::TextureObject* Texture::generateAndAssignTextureObject(unsigned int contextID, GLenum target) const
 {
-    _textureObjectBuffer[contextID] = generateTextureObject(this, contextID, target);
-    return _textureObjectBuffer[contextID].get();
+    const_cast<BufferData*>(getBufferData())->getBufferObject()->setGraphicsObject(contextID,generateTextureObject(this, contextID, target));
+    //_textureObjectBuffer[contextID] = generateTextureObject(this, contextID, target);
+    return getTextureObject(contextID);//_textureObjectBuffer[contextID].get();
 }
 
 Texture::TextureObject* Texture::generateAndAssignTextureObject(
@@ -1040,8 +1042,9 @@ Texture::TextureObject* Texture::generateAndAssignTextureObject(
                                              GLsizei   depth,
                                              GLint     border) const
 {
-    _textureObjectBuffer[contextID] = generateTextureObject(this, contextID, target, numMipmapLevels, internalFormat, width, height, depth, border);
-    return _textureObjectBuffer[contextID].get();
+    //_textureObjectBuffer[contextID] =
+    const_cast<BufferData*>(getBufferData())->getBufferObject()->setGraphicsObject(contextID,generateTextureObject(this, contextID, target, numMipmapLevels, internalFormat, width, height, depth, border));
+    return getTextureObject(contextID);//_textureObjectBuffer[contextID].get();
 }
 
 TextureObjectSet* TextureObjectManager::getTextureObjectSet(const Texture::TextureProfile& profile)
@@ -1326,14 +1329,14 @@ int Texture::compareTexture(const Texture& rhs) const
 
 int Texture::compareTextureObjects(const Texture& rhs) const
 {
-    if (_textureObjectBuffer.size()<rhs._textureObjectBuffer.size()) return -1;
+   /* if (_textureObjectBuffer.size()<rhs._textureObjectBuffer.size()) return -1;
     if (rhs._textureObjectBuffer.size()<_textureObjectBuffer.size()) return 1;
     for(unsigned int i=0; i<_textureObjectBuffer.size(); ++i)
     {
         if (_textureObjectBuffer[i] < rhs._textureObjectBuffer[i]) return -1;
         else if (rhs._textureObjectBuffer[i] < _textureObjectBuffer[i]) return 1;
-    }
-    return 0;
+    }*/
+    return getBufferData()->getBufferObject()->comparePerContextObjects(*rhs.getBufferData()->getBufferObject());
 }
 
 void Texture::setWrap(WrapParameter which, WrapMode wrap)
@@ -1420,14 +1423,15 @@ void Texture::setLODBias(float anis)
 /** Force a recompile on next apply() of associated OpenGL texture objects.*/
 void Texture::dirtyTextureObject()
 {
-    for(unsigned int i=0; i<_textureObjectBuffer.size();++i)
+    getBufferData()->getBufferObject()->releaseGLObjects();
+   /* for(unsigned int i=0; i<_textureObjectBuffer.size();++i)
     {
         if (_textureObjectBuffer[i].valid())
         {
             _textureObjectBuffer[i]->release();
             _textureObjectBuffer[i] = 0;
         }
-    }
+    }*/
 }
 
 void Texture::dirtyTextureParameters()
@@ -2075,9 +2079,11 @@ void Texture::computeRequiredTextureDimensions(State& state, const osg::Image& i
 
 bool Texture::areAllTextureObjectsLoaded() const
 {
+    osg::TextureObject* to = (osg::TextureObject*) getBufferData()->getGraphicsObject();
+
     for(unsigned int i=0;i<DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();++i)
     {
-        if (_textureObjectBuffer[i]==0) return false;
+        if (to->getTextureObject(i)==0) return false;
     }
     return true;
 }
@@ -2818,7 +2824,6 @@ void Texture::compileGLObjects(State& state) const
 
 void Texture::resizeGLObjectBuffers(unsigned int maxSize)
 {
-    _textureObjectBuffer.resize(maxSize);
     _texParametersDirtyList.resize(maxSize);
     _texMipmapGenerationDirtyList.resize(maxSize);
 }
@@ -2827,7 +2832,10 @@ void Texture::releaseGLObjects(State* state) const
 {
 //    if (state) OSG_NOTICE<<"Texture::releaseGLObjects contextID="<<state->getContextID()<<std::endl;
 //    else OSG_NOTICE<<"Texture::releaseGLObjects no State "<<std::endl;
+    if (getImage(0))    ///delegation to Image
+        getImage(0)->getTextureObject()->releaseGLObjects(state);
 
+   /*
     if (!state) const_cast<Texture*>(this)->dirtyTextureObject();
     else
     {
@@ -2838,7 +2846,18 @@ void Texture::releaseGLObjects(State* state) const
 
             _textureObjectBuffer[contextID] = 0;
         }
-    }
+    } */
+}
+
+TextureObject::TextureObject():PerContextGraphicObject(){}
+TextureObject::TextureObject(const osg::TextureObject& ubo, const CopyOp& copyop):PerContextGraphicObject(ubo,copyop){}
+
+GraphicsObject* osg::TextureObject::createGraphicsObject(unsigned int contextID) const
+{
+    // OSG_NOTICE<<"TextureObject::getOrCreateGLBufferObject() _glBufferObjects[contextID]->getProfile()._size() = "<<_glBufferObjects[contextID]->getProfile()._size<<std::endl;
+OSG_FATAL<<"can't create TextureObject without a Texture: createGraphicsObject interface can't be used until i'll' add a new interface attribute(ex: HostSideGLCreator)"<<std::endl;
+   //unused return osg::get<TextureObjectManager>(contextID)->generateTextureObject(this);//static_cast<Texture::TextureProfile&>(_glBufferObjects[contextID]->getProfile()));
+return 0;
 }
 
 }

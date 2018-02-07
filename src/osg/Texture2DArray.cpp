@@ -246,7 +246,7 @@ void Texture2DArray::apply(State& state) const
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
-
+    osg::TextureObject * to= ( osg::TextureObject*)( getBufferData()->getBufferObject());
     GLsizei textureDepth = computeTextureDepth();
 
     if (textureObject && textureDepth>0)
@@ -264,8 +264,10 @@ void Texture2DArray::apply(State& state) const
 
             if (!textureObject->match(GL_TEXTURE_2D_ARRAY_EXT, new_numMipmapLevels, _internalFormat, new_width, new_height, textureDepth, _borderWidth))
             {
-                _textureObjectBuffer[contextID]->release();
-                _textureObjectBuffer[contextID] = 0;
+                textureObject->release();
+                to->setTextureObject(contextID,0);
+                //_textureObjectBuffer[contextID]->release();
+                //_textureObjectBuffer[contextID] = 0;
                 textureObject = 0;
             }
         }

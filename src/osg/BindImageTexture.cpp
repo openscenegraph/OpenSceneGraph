@@ -19,13 +19,13 @@ void BindImageTexture::apply(osg::State&state) const
 {
     if(_target.valid())
     {
-        osg::Texture::TextureObject *to = _target->getTextureObject( state.getContextID() );
-        if( !to )
+        GraphicsObject *globj = _target->getBufferData()->getGLGraphicsObject( state.getContextID() );
+        if( !globj || globj->isDirty() )
         {
             // _target never been applied yet
             _target->apply(state);
-            to = _target->getTextureObject( state.getContextID() );
         }
+        Texture::TextureObject *to = _target->getTextureObject( state.getContextID() );
         state.get<osg::GLExtensions>()->glBindImageTexture(_imageunit, to->id(), _level, _layered, _layer, _access, _format);
     }
 

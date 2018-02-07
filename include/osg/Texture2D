@@ -146,7 +146,9 @@ class OSG_EXPORT Texture2D : public Texture
           * of two. */
         void copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, int y, int width, int height );
 
-
+#ifdef FIX_DEPRECATED_IMAGELESS_TEXTURE
+        virtual void compileGLObjects(State& state) const;
+#endif
         /** Bind the texture object. If the texture object hasn't already been
           * compiled, create the texture mipmap levels. */
         virtual void apply(State& state) const;

@@ -42,14 +42,26 @@ extern OSG_EXPORT void deleteAllGLObjects(unsigned int contextID);
   * also doesn't remove the associated OpenGL resource so discard should only be
   * called when the associated graphics context is being/has been closed. */
 extern OSG_EXPORT void discardAllGLObjects(unsigned int contextID);
+class OSG_EXPORT GraphicsObjectProfile : public osg::Referenced
+{
+    public:
+    GraphicsObjectProfile(){}
+protected:
+    ~GraphicsObjectProfile(){}
+};
 
 class OSG_EXPORT GraphicsObject : public osg::Referenced
 {
     public:
-        GraphicsObject();
-
+        GraphicsObject():_dirty(true) {}
+        virtual void release()=0;
+        virtual void clear()=0;
+        virtual GraphicsObjectProfile & getProfile()=0;
+        virtual void dirty() { _dirty = true; }
+        inline bool isDirty() const { return _dirty; }
     protected:
         virtual ~GraphicsObject();
+        bool _dirty;
 };
 
 

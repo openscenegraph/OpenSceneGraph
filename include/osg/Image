@@ -170,7 +170,7 @@
 #endif
 
 namespace osg {
-
+class TextureObject;
 // forward declare
 class NodeVisitor;
 
@@ -268,7 +268,9 @@ class OSG_EXPORT Image : public BufferData
           * If source is NULL then no operation happens, this Image is left unchanged.
         */
         virtual void copySubImage(int s_offset, int t_offset, int r_offset, const osg::Image* source);
-
+        inline const osg::TextureObject* getTextureObject() const { return (osg::TextureObject*)getGraphicsObject();}
+        //osg::TextureObject* getosg::TextureObject() const { return (osg::TextureObject*)getGraphicsObject();}
+        void setTextureObject(osg::TextureObject*u);
 
         enum Origin
         {
@@ -496,19 +498,23 @@ class OSG_EXPORT Image : public BufferData
         virtual bool isImageTranslucent() const;
 
         /** Set the optional PixelBufferObject used to map the image memory efficiently to graphics memory. */
-        void setPixelBufferObject(PixelBufferObject* buffer) { setBufferObject(buffer); }
+        void setPixelBufferObject(PixelBufferObject* buffer) { setGraphicsObject(buffer); }
 
         /** Get the PixelBufferObject.*/
-        PixelBufferObject* getPixelBufferObject() { return dynamic_cast<PixelBufferObject*>(getBufferObject()); }
+        PixelBufferObject* getPixelBufferObject() { return dynamic_cast<PixelBufferObject*>(getGraphicsObject()); }
 
         /** Get the const PixelBufferObject.*/
-        const PixelBufferObject* getPixelBufferObject() const { return dynamic_cast<const PixelBufferObject*>(getBufferObject()); }
+        const PixelBufferObject* getPixelBufferObject() const { return dynamic_cast<const PixelBufferObject*>(getGraphicsObject()); }
 
         /** Return whether the update(NodeVisitor* nv) should be required on each frame to enable proper working of osg::Image.*/
         virtual bool requiresUpdateCall() const { return false; }
 
         /** update method for osg::Image subclasses that update themselves during the update traversal.*/
         virtual void update(NodeVisitor* /*nv*/) {}
+
+
+        /** unload data from memory (make sure associated GLObject won't get dirty before calling this) */
+        virtual void unrefData(){ deallocateData(); }
 
         /** Convenience update callback class that can be attached to a StateAttribute (such as Textures) to ensure
           * that the Image::update(NodeVisitor*) method is called during the update traversal.  This callback

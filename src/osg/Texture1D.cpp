@@ -136,6 +136,8 @@ void Texture1D::apply(State& state) const
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
+    const BufferObject* bo=getBufferData()->getBufferObject();
+    osg::TextureObject * To=(osg::TextureObject * )(bo);
 
     if (textureObject)
     {
@@ -149,8 +151,10 @@ void Texture1D::apply(State& state) const
 
             if (!textureObject->match(GL_TEXTURE_1D, new_numMipmapLevels, _internalFormat, new_width, 1, 1, _borderWidth))
             {
-                _textureObjectBuffer[contextID]->release();
-                _textureObjectBuffer[contextID] = 0;
+                //_textureObjectBuffer[contextID]->release();
+                textureObject->release();
+                To->setTextureObject( contextID,0);
+                //_textureObjectBuffer[contextID] = 0;
                 textureObject = 0;
             }
         }
@@ -213,13 +217,14 @@ void Texture1D::apply(State& state) const
 
         textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,1,1,0);
 
-        _textureObjectBuffer[contextID] = textureObject;
+        To->setTextureObject(contextID, textureObject);
+        //_textureObjectBuffer[contextID] = textureObject;
 
-        // unref image data?
+        // unref image: release data but keep textureobject
         if (isSafeToUnrefImageData(state) && _image->getDataVariance()==STATIC)
         {
             Texture1D* non_const_this = const_cast<Texture1D*>(this);
-            non_const_this->_image = NULL;
+            non_const_this->_image ->unrefData();
         }
 
     }

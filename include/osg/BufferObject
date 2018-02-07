@@ -94,7 +94,7 @@ class State;
 class BufferData;
 class BufferObject;
 
-class BufferObjectProfile
+class BufferObjectProfile : public GraphicsObjectProfile
 {
     public:
         BufferObjectProfile():
@@ -209,13 +209,11 @@ class OSG_EXPORT GLBufferObject : public GraphicsObject
         }
 
         /** release GLBufferObject to the orphan list to be reused or deleted.*/
-        void release();
+        virtual void release();
 
-        inline bool isDirty() const { return _dirty; }
+        virtual GraphicsObjectProfile &getProfile(){ return _profile; }
 
-        void dirty() { _dirty = true; }
-
-        void clear();
+        virtual void clear();
 
         void compileBuffer();
 
@@ -401,7 +399,46 @@ class OSG_EXPORT GLBufferObjectManager : public GraphicsObjectManager
 };
 
 
-class OSG_EXPORT BufferObject : public Object
+///Base container class for all Object requiring PerContext OpenGL GraphicObjects
+class OSG_EXPORT PerContextGraphicObject : public Object
+{
+public:
+    PerContextGraphicObject(){}
+    PerContextGraphicObject(const PerContextGraphicObject&o,osg::CopyOp copy=CopyOp::SHALLOW_COPY):Object(o,copy){}
+    typedef osg::buffered_object< osg::ref_ptr<GraphicsObject> > GLGraphicsObjects;
+    inline void setGraphicsObject(unsigned int contextID, GraphicsObject* glbo) const { _glBufferObjects[contextID] = glbo; }
+    inline GraphicsObject* getGraphicsObject(unsigned int contextID) const { return _glBufferObjects[contextID].get(); }
+    inline void resizeGLObjectBuffers(unsigned int maxSize) const { _glBufferObjects.resize(maxSize); }
+
+    inline GraphicsObject* getOrCreateGraphicsObject(unsigned int contextID) const
+    {
+        if (!_glBufferObjects[contextID]) _glBufferObjects[contextID] = createGraphicsObject(contextID);
+        return _glBufferObjects[contextID].get();
+    }
+    int comparePerContextObjects(const PerContextGraphicObject& rhs) const
+    {
+        if (_glBufferObjects.size()<rhs._glBufferObjects.size()) return -1;
+        if (rhs._glBufferObjects.size()<_glBufferObjects.size()) return 1;
+        for(unsigned int i=0; i<_glBufferObjects.size(); ++i)
+        {
+            if (_glBufferObjects[i] < rhs._glBufferObjects[i]) return -1;
+            else if (rhs._glBufferObjects[i] < _glBufferObjects[i]) return 1;
+        }
+        return 0;
+    }
+    virtual GraphicsObject* createGraphicsObject(unsigned int contextID) const=0;
+
+    virtual void dirty();
+    /** If State is non-zero, this function releases OpenGL objects for
+      * the specified graphics context. Otherwise, releases OpenGL objects
+      * for all graphics contexts. */
+    virtual void releaseGLObjects(State* state=0) const;
+protected:
+    virtual ~PerContextGraphicObject(){}
+    mutable GLGraphicsObjects _glBufferObjects;
+};
+
+class OSG_EXPORT BufferObject : public PerContextGraphicObject
 {
     public:
 
@@ -437,16 +474,8 @@ class OSG_EXPORT BufferObject : public Object
         /** Get whether the BufferObject should use a GLBufferObject just for copying the BufferData and release it immmediately.*/
         bool getCopyDataAndReleaseGLBufferObject() const { return _copyDataAndReleaseGLBufferObject; }
 
-
-        void dirty();
-
         /** Resize any per context GLObject buffers to specified size. */
         virtual void resizeGLObjectBuffers(unsigned int maxSize);
-
-        /** If State is non-zero, this function releases OpenGL objects for
-          * the specified graphics context. Otherwise, releases OpenGL objects
-          * for all graphics contexts. */
-        void releaseGLObjects(State* state=0) const;
 
         unsigned int addBufferData(BufferData* bd);
         void removeBufferData(unsigned int index);
@@ -458,11 +487,12 @@ class OSG_EXPORT BufferObject : public Object
 
         unsigned int getNumBufferData() const { return static_cast<unsigned int>(_bufferDataList.size()); }
 
-        void setGLBufferObject(unsigned int contextID, GLBufferObject* glbo) { _glBufferObjects[contextID] = glbo; }
+        inline void setGLBufferObject(unsigned int contextID, GLBufferObject* glbo) { setGraphicsObject(contextID, glbo); }
 
-        GLBufferObject* getGLBufferObject(unsigned int contextID) const { return _glBufferObjects[contextID].get(); }
+        GLBufferObject* getGLBufferObject(unsigned int contextID) const { return (GLBufferObject*)getGraphicsObject(contextID); }
 
-        GLBufferObject* getOrCreateGLBufferObject(unsigned int contextID) const;
+        virtual GraphicsObject* createGraphicsObject(unsigned int contextID) const;
+        inline GLBufferObject* getOrCreateGLBufferObject(unsigned int contextID) const{return (GLBufferObject*)getOrCreateGraphicsObject(contextID);}
 
         unsigned int computeRequiredBufferSize() const;
 
@@ -474,7 +504,6 @@ class OSG_EXPORT BufferObject : public Object
         ~BufferObject();
 
         typedef std::vector< BufferData* > BufferDataList;
-        typedef osg::buffered_object< osg::ref_ptr<GLBufferObject> > GLBufferObjects;
 
         BufferObjectProfile     _profile;
 
@@ -482,7 +511,6 @@ class OSG_EXPORT BufferObject : public Object
 
         BufferDataList          _bufferDataList;
 
-        mutable GLBufferObjects _glBufferObjects;
 };
 
 class OSG_EXPORT BufferData : public Object
@@ -519,15 +547,26 @@ class OSG_EXPORT BufferData : public Object
         virtual osg::Image* asImage() { return 0; }
         virtual const osg::Image* asImage() const { return 0; }
 
+        inline void setGraphicsObject(PerContextGraphicObject* bufferObject){ _bufferObject = bufferObject; }
+        inline PerContextGraphicObject* getGraphicsObject() { return _bufferObject.get(); }
+        inline const PerContextGraphicObject* getGraphicsObject() const { return _bufferObject.get(); }
+
+        //retro compat (dont use with image)
         void setBufferObject(BufferObject* bufferObject);
-        BufferObject* getBufferObject() { return _bufferObject.get(); }
-        const BufferObject* getBufferObject() const { return _bufferObject.get(); }
+        inline BufferObject* getBufferObject() { return (BufferObject*)_bufferObject.get(); }
+        inline const BufferObject* getBufferObject() const { return (BufferObject*)_bufferObject.get(); }
+
 
         void setBufferIndex(unsigned int index) { _bufferIndex = index; }
         unsigned int getBufferIndex() const { return _bufferIndex; }
 
-        GLBufferObject* getGLBufferObject(unsigned int contextID) const { return _bufferObject.valid() ? _bufferObject->getGLBufferObject(contextID) : 0; }
-        GLBufferObject* getOrCreateGLBufferObject(unsigned int contextID) const { return _bufferObject.valid() ? _bufferObject->getOrCreateGLBufferObject(contextID) : 0; }
+        GraphicsObject* getGLGraphicsObject(unsigned int contextID) const { return _bufferObject.valid() ? _bufferObject->getGraphicsObject(contextID) : 0; }
+        GraphicsObject* getOrCreateGLGraphicsObject(unsigned int contextID) const { return _bufferObject.valid() ? _bufferObject->getOrCreateGraphicsObject(contextID) : 0; }
+
+
+        GLBufferObject* getGLBufferObject(unsigned int contextID) const { return (GLBufferObject*)getGLGraphicsObject(contextID); }
+        GLBufferObject* getOrCreateGLBufferObject(unsigned int contextID) const { return (GLBufferObject*)getOrCreateGLGraphicsObject(contextID); }
+
 
         struct ModifiedCallback : public virtual osg::Object
         {
@@ -581,7 +620,7 @@ protected:
         unsigned int                    _modifiedCount;
 
         unsigned int                    _bufferIndex;
-        osg::ref_ptr<BufferObject>      _bufferObject;
+        osg::ref_ptr<PerContextGraphicObject>      _bufferObject;
         osg::ref_ptr<ModifiedCallback>  _modifiedCallback;
 
         unsigned int _numClients;
@@ -674,7 +713,7 @@ class OSG_EXPORT PixelBufferObject : public BufferObject
         Image* getImage();
         const Image* getImage() const;
 
-        bool isPBOSupported(unsigned int contextID) const { return _glBufferObjects[contextID]->isPBOSupported(); }
+        bool isPBOSupported(unsigned int contextID) const { return getGLBufferObject(contextID)->isPBOSupported(); }
 
     protected:
 

@@ -186,7 +186,7 @@ protected:
 bool SyncBufferDataCallback::readBackBufferData (RenderInfo& renderInfo) const
 {
     GLenum target = _bd->getBufferObject()->getTarget();
-    GLubyte* src;
+
 
     GLBufferObject* glObject = _bd->getBufferObject()->getGLBufferObject(renderInfo.getContextID());
     if (!glObject || glObject->isDirty())
@@ -196,8 +196,14 @@ bool SyncBufferDataCallback::readBackBufferData (RenderInfo& renderInfo) const
     }
 
     glObject->_extensions->glBindBuffer(target, glObject->getGLObjectID());
-
-    src = (GLubyte*) glObject->_extensions->glMapBufferRange(
+#if 1
+    glObject->_extensions->glGetBufferSubData(target,
+                                              glObject->getOffset(_bd->getBufferIndex()),
+                                              _bd->getTotalDataSize(),
+                                              const_cast<GLvoid*>(_bd->getDataPointer()));
+#else
+    GLubyte* src =
+    (GLubyte*) glObject->_extensions->glMapBufferRange(
              target,
              glObject->getOffset(_bd->getBufferIndex()),
              _bd->getTotalDataSize(),
@@ -208,8 +214,8 @@ bool SyncBufferDataCallback::readBackBufferData (RenderInfo& renderInfo) const
         return false;
 
     memcpy(const_cast<GLvoid*>(_bd->getDataPointer()), src, _bd->getTotalDataSize());
-
     glObject->_extensions->glUnmapBuffer(target);
+#endif
     return true;
 }
 

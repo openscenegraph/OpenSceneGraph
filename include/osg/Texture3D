@@ -169,9 +169,6 @@ class OSG_EXPORT Texture3D : public Texture
 
         ref_ptr<SubloadCallback> _subloadCallback;
 
-        typedef buffered_value<unsigned int> ImageModifiedCount;
-        mutable ImageModifiedCount _modifiedCount;
-
 };
 
 }

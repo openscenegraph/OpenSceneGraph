@@ -377,8 +377,6 @@ struct IndirectTarget
         osg::Uniform* uniform = new osg::Uniform(uniformName.c_str(), (int)index );
         stateset->addUniform( uniform );
         stateset->setAttribute(indirectCommandImageBinding);
-        stateset->setTextureAttribute( index, indirectCommandTextureBuffer.get() );
-
 
     }
 
@@ -394,7 +392,6 @@ struct IndirectTarget
         stateset->addUniform( uniform );
 
         stateset->setAttribute(instanceTargetimagebinding);
-        stateset->setTextureAttribute( OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index, instanceTarget.get() );
     }
 
     void addDrawProgram( const std::string& uniformBlockName, osg::StateSet* stateset )
@@ -867,19 +864,17 @@ struct ResetTexturesCallback : public osg::StateSet::Callback
     {
         std::vector<unsigned int>::iterator it,eit;
         for(it=texUnitsDirty.begin(), eit=texUnitsDirty.end(); it!=eit; ++it)
-        {
-            osg::TextureBuffer* tex = dynamic_cast<osg::TextureBuffer*>( stateset->getTextureAttribute(*it,osg::StateAttribute::TEXTURE) );
-            if(tex==NULL)
-                continue;
-            osg::BufferData* img =const_cast<osg::BufferData*>(tex->getBufferData());
-            if(img!=NULL)
-                img->dirty();
-        }
-        for(it=texUnitsDirtyParams.begin(), eit=texUnitsDirtyParams.end(); it!=eit; ++it)
-        {
-            osg::TextureBuffer* tex = dynamic_cast<osg::TextureBuffer*>( stateset->getTextureAttribute(*it,osg::StateAttribute::TEXTURE) );
-            if(tex!=NULL)
+    {
+           osg::BindImageTexture*imb= dynamic_cast<osg::BindImageTexture*>( stateset->getAttribute(osg::StateAttribute::BINDIMAGETEXTURE,*it));
+           if(imb)
+               continue;
+            osg::Texture* tex =imb->getTexture();
+            if(imb->getImageUnit() == *it){
                 tex->dirtyTextureParameters();
+                osg::BufferData* img =const_cast<osg::BufferData*>(tex->getBufferData());
+                if(img)
+                    img->dirty();
+            }
         }
     }
 

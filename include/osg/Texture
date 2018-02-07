@@ -741,6 +741,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         /** Gets the const texture image for specified face. */
         virtual const Image* getImage(unsigned int face) const = 0;
+        virtual const BufferData* getBufferData() const { return getImage(0); }
 
         /** Gets the number of images that can be assigned to this Texture. */
         virtual unsigned int getNumImages() const = 0;
@@ -756,6 +757,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         /** Get the const PBuffer graphics context to read from when using PBuffers for RenderToTexture.*/
         const GraphicsContext* getReadPBuffer() const { return _readPBuffer.get(); }
+
+        /** Get texture object modified count value.*/
+        inline unsigned int getModifiedCount(unsigned int contextID ) const { return _modifiedCount[contextID]; }
 
         /** Texture is a pure virtual base class, apply must be overridden. */
         virtual void apply(State& state) const = 0;
@@ -879,6 +883,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         ShadowCompareFunc   _shadow_compare_func;
         ShadowTextureMode   _shadow_texture_mode;
         float               _shadow_ambient;
+
+        mutable buffered_value<unsigned int> _modifiedCount;
 
     public:
 

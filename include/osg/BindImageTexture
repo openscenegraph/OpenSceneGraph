@@ -46,6 +46,7 @@ class OSG_EXPORT BindImageTexture : public osg::StateAttribute {
                         bool layered = GL_FALSE,
                         int layer = 0) : osg::StateAttribute(),
             _target(target),
+            _targetTextureUnit(0),
             _imageunit(imageunit),
             _level(level),
             _layered(layered),
@@ -67,6 +68,14 @@ class OSG_EXPORT BindImageTexture : public osg::StateAttribute {
 
         META_StateAttribute(osg,BindImageTexture, BINDIMAGETEXTURE)
 
+        inline void setTexture(osg::Texture* target) { _target=target; }
+        inline osg::Texture* getTexture() { return _target.get();}
+        inline const osg::Texture* getTexture() const { return _target.get();}
+
+        /// set Texture unit on which Texture will be applied if required
+        inline void setTextureUnit(unsigned short i) { _targetTextureUnit=i; }
+        inline unsigned short getTextureUnit() const { return _targetTextureUnit; }
+
         inline void setImageUnit(GLuint i) { _imageunit=i; }
         inline GLuint getImageUnit() const { return _imageunit; }
 
@@ -85,11 +94,11 @@ class OSG_EXPORT BindImageTexture : public osg::StateAttribute {
         inline void setFormat(GLenum i) { _format=i; }
         inline GLenum getFormat() const { return _format; }
 
-        inline void setTexture(osg::Texture* target) { _target=target; }
-        inline osg::Texture* getTexture() { return _target.get();}
-        inline const osg::Texture* getTexture() const { return _target.get();}
+
 
         virtual void apply(osg::State&state) const;
+
+        virtual void compileGLObjects(State&state) const { apply(state); }
 
         virtual int compare(const osg::StateAttribute &sa) const;
 
@@ -98,6 +107,7 @@ class OSG_EXPORT BindImageTexture : public osg::StateAttribute {
     protected:
 
         osg::ref_ptr<osg::Texture> _target;
+        unsigned short _targetTextureUnit;
         GLuint _imageunit;
         GLint _level;
         GLboolean _layered;

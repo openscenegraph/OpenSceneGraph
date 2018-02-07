@@ -112,7 +112,7 @@ void Texture2DArray::setImage(unsigned int layer, Image* image)
     {
         // _images vector not large enough to contain layer so expand it.
         _images.resize(layer+1);
-        _modifiedCount.resize(layer+1);
+        _layersmodifiedCount.resize(layer+1);
     }
     else
     {
@@ -133,7 +133,7 @@ void Texture2DArray::setImage(unsigned int layer, Image* image)
 
     // set image
     _images[layer] = image;
-    _modifiedCount[layer].setAllElementsTo(0);
+    _layersmodifiedCount[layer].setAllElementsTo(0);
 
     if (_images[layer].valid())
     {
@@ -199,7 +199,7 @@ void Texture2DArray::setTextureDepth(int depth)
     if (depth < static_cast<int>(_images.size()))
     {
         _images.resize(depth);
-        _modifiedCount.resize(depth);
+        _layersmodifiedCount.resize(depth);
     }
 
     // resize the texture array
@@ -252,7 +252,7 @@ void Texture2DArray::apply(State& state) const
     if (textureObject && textureDepth>0)
     {
         const osg::Image* image = (_images.size()>0) ? _images[0].get() : 0;
-        if (image && getModifiedCount(0, contextID) != image->getModifiedCount())
+        if (image && _layersmodifiedCount[0][contextID] != image->getModifiedCount())
         {
             // compute the internal texture format, this set the _internalFormat to an appropriate value.
             computeInternalFormat();
@@ -297,13 +297,15 @@ void Texture2DArray::apply(State& state) const
                 {
                     if (getModifiedCount(n,contextID) != image->getModifiedCount())
                     {
-                        getModifiedCount(n,contextID) = image->getModifiedCount();
+                        _layersmodifiedCount[n][contextID] = image->getModifiedCount();
                         applyTexImage2DArray_subload(state, image, n, _textureWidth, _textureHeight, image->r(), _internalFormat, _numMipmapLevels);
                     }
                     n += image->r();
                 }
             }
-            }
+            //undirty texture object
+            _modifiedCount[contextID] = getModifiedCount(0,contextID);
+        }
 
     }
 

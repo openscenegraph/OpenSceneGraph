@@ -67,7 +67,7 @@ class OSG_EXPORT Texture2DArray : public Texture
         inline unsigned int& getModifiedCount(unsigned int layer, unsigned int contextID) const
         {
             // get the modified count for the current contextID.
-            return _modifiedCount[layer][contextID];
+            return _layersmodifiedCount[layer][contextID];
         }
 
         /** Set the texture width and height. If width or height are zero then
@@ -145,8 +145,8 @@ class OSG_EXPORT Texture2DArray : public Texture
 
         ref_ptr<SubloadCallback> _subloadCallback;
 
-        typedef buffered_value<unsigned int> ImageModifiedCount;
-        mutable std::vector<ImageModifiedCount> _modifiedCount;
+        typedef buffered_value<unsigned int> ImageLayerModifiedCount;
+        mutable std::vector<ImageLayerModifiedCount> _layersmodifiedCount;
 };
 
 }

@@ -88,7 +88,7 @@ class OSG_EXPORT TextureBuffer : public Texture
         void setBufferData(BufferData *bo);
 
          /**  Set setBufferData attached */
-        const BufferData * getBufferData()const {return _bufferData.get();}
+        virtual const BufferData * getBufferData() const { return _bufferData.get(); }
     protected :
 
         virtual ~TextureBuffer();
@@ -98,10 +98,6 @@ class OSG_EXPORT TextureBuffer : public Texture
         ref_ptr< BufferData > _bufferData;
 
         GLsizei _textureWidth;
-
-        typedef buffered_value< unsigned int > BufferDataModifiedCount;
-        mutable BufferDataModifiedCount _modifiedCount;
-
 
       };
 

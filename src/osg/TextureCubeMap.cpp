@@ -138,7 +138,7 @@ void TextureCubeMap::setImage(unsigned int face, Image* image)
     }
 
     _images[face] = image;
-    _modifiedCount[face].setAllElementsTo(0);
+    _facesmodifiedCount[face].setAllElementsTo(0);
 
     if (_images[face].valid())
     {
@@ -210,7 +210,7 @@ void TextureCubeMap::apply(State& state) const
     if (textureObject)
     {
         const osg::Image* image = _images[0].get();
-        if (image && getModifiedCount(0, contextID) != image->getModifiedCount())
+        if (image && _modifiedCount[contextID] != image->getModifiedCount())
         {
             // compute the internal texture format, this set the _internalFormat to an appropriate value.
             computeInternalFormat();
@@ -246,10 +246,11 @@ void TextureCubeMap::apply(State& state) const
                 const osg::Image* image = _images[n].get();
                 if (image && getModifiedCount((Face)n,contextID) != image->getModifiedCount())
                 {
-                    getModifiedCount((Face)n,contextID) = image->getModifiedCount();
+                    _facesmodifiedCount[n][contextID] = image->getModifiedCount();
                     applyTexImage2D_subload( state, faceTarget[n], _images[n].get(), _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
                 }
             }
+            _modifiedCount[contextID] = _facesmodifiedCount[0][contextID];
         }
 
     }

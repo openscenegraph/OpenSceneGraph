@@ -15,7 +15,7 @@
 */
 
 #include <osg/BufferIndexBinding>
-#include <osg/State>
+#include <osg/RenderInfo>
 
 #include <string.h> // for memcpy
 
@@ -171,6 +171,120 @@ ShaderStorageBufferBinding::ShaderStorageBufferBinding(GLuint index, BufferData*
 ShaderStorageBufferBinding::ShaderStorageBufferBinding(const ShaderStorageBufferBinding& rhs, const CopyOp& copyop)
     : BufferIndexBinding(rhs, copyop)
 {
+}
+
+/// Delegate Camera Post Draw Callback to SyncBufferDataCallback
+class BufferDataReadBack : public Camera::DrawCallback{
+public:
+    BufferDataReadBack(SyncBufferDataCallback* u): Camera::DrawCallback(), _upcb(u){}
+    virtual void operator () (osg::RenderInfo& renderInfo) const { _upcb->updateFlags(renderInfo); }
+
+protected:
+    SyncBufferDataCallback* _upcb;
+};
+
+bool SyncBufferDataCallback::readBackBufferData (RenderInfo& renderInfo) const
+{
+    GLenum target = _bd->getBufferObject()->getTarget();
+
+
+    GLBufferObject* glObject = _bd->getBufferObject()->getGLBufferObject(renderInfo.getContextID());
+    if (!glObject || glObject->isDirty())
+    {
+        OSG_DEBUG << "osg::SyncBufferDataCallback::readBackBufferData it seams we wanna read gpu data before its first upload" << std::endl;
+        return false;
+    }
+
+    glObject->_extensions->glBindBuffer(target, glObject->getGLObjectID());
+#if 1
+    glObject->_extensions->glGetBufferSubData(target,
+                                              glObject->getOffset(_bd->getBufferIndex()),
+                                              _bd->getTotalDataSize(),
+                                              const_cast<GLvoid*>(_bd->getDataPointer()));
+#else
+    GLubyte* src =
+    (GLubyte*) glObject->_extensions->glMapBufferRange(
+             target,
+             glObject->getOffset(_bd->getBufferIndex()),
+             _bd->getTotalDataSize(),
+             _mappingflags
+         );
+
+    if(!src)
+        return false;
+
+    memcpy(const_cast<GLvoid*>(_bd->getDataPointer()), src, _bd->getTotalDataSize());
+    glObject->_extensions->glUnmapBuffer(target);
+#endif
+    return true;
+}
+
+struct FindNearestCamera : public NodeVisitor
+{
+    ref_ptr<Camera> _root;
+    FindNearestCamera() : NodeVisitor(NodeVisitor::TRAVERSE_PARENTS) {}
+    void apply(Transform& node)
+    {
+        if (_root.valid())
+            return;
+        _root = dynamic_cast<Camera*>(&node);
+        traverse(node);
+    }
+};
+
+SyncBufferDataCallback::~SyncBufferDataCallback()
+{
+
+    if(_cam.valid())
+        _cam->removePostDrawCallback(_dcb);
+}
+
+void SyncBufferDataCallback::operator()(Node* node, NodeVisitor* nv)
+{
+
+    if(!_cam.valid() && _GpuAccess & GL_READ_WRITE)
+    {
+        FindNearestCamera fnc;
+        node->accept(fnc);
+        if(!fnc._root.valid())
+        {
+            OSG_WARN << "osg::SyncBufferDataCallback::operator() no camera found!?" << std::endl;
+            return;
+        }
+        _cam = fnc._root;
+        _dcb = new BufferDataReadBack(this);
+        _cam->addPostDrawCallback(_dcb );
+    }
+
+    _lock.lock();
+
+    if(_GpuAccess & GL_READ_WRITE)
+    {
+        if(gpuproduced && (cpuproduced = synctraversal( node,  nv)) )
+            gpuproduced = false;
+    }
+    else cpuproduced = synctraversal( node,  nv);
+
+    _lock.unlock();
+}
+
+///called by the Camera read back callback
+void SyncBufferDataCallback::updateFlags( RenderInfo&ri)
+{
+    _lock.lock();
+
+    if(_CpuAccess & GL_READ_WRITE)
+    {
+        if(cpuproduced)
+        {
+            if(!gpuproduced && (gpuproduced = readBackBufferData(ri)) )
+                cpuproduced = false;
+        }
+    }
+    else if(!gpuproduced)
+        gpuproduced = readBackBufferData(ri);
+
+    _lock.unlock();
 }
 
 

@@ -210,7 +210,7 @@ void TextureCubeMap::apply(State& state) const
     if (textureObject)
     {
         const osg::Image* image = _images[0].get();
-        if (image && _modifiedCount[contextID] != image->getModifiedCount())
+        if (image && _facesmodifiedCount[0][contextID] != image->getModifiedCount())
         {
             // compute the internal texture format, this set the _internalFormat to an appropriate value.
             computeInternalFormat();

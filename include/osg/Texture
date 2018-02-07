@@ -730,8 +730,6 @@ class OSG_EXPORT Texture : public osg::TextureAttribute
         void setShadowAmbient(float shadow_ambient) { _shadow_ambient = shadow_ambient; }
         float getShadowAmbient() const { return _shadow_ambient; }
 
-        /** Gets the texture BufferData */
-        virtual const BufferData* getBufferData() const { return getImage(0); }
 
         /** Sets the texture image for the specified face. */
         virtual void setImage(unsigned int face, Image* image) = 0;
@@ -740,7 +738,6 @@ class OSG_EXPORT Texture : public osg::TextureAttribute
 
         /** Gets the texture image for the specified face. */
         virtual Image* getImage(unsigned int face) = 0;
-
 
         /** Gets the const texture image for specified face. */
         virtual const Image* getImage(unsigned int face) const = 0;

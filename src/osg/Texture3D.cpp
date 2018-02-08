@@ -217,7 +217,7 @@ void Texture3D::apply(State& state) const
 
     if (textureObject)
     {
-        if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
+        if (_image.valid() && _modifiedCount[contextID] != _image->getModifiedCount())
         {
             // compute the internal texture format, this set the _internalFormat to an appropriate value.
             computeInternalFormat();
@@ -247,10 +247,10 @@ void Texture3D::apply(State& state) const
         {
             _subloadCallback->subload(*this,state);
         }
-        else if (_image.get() && getModifiedCount(contextID) != _image->getModifiedCount())
+        else if (_image.get() && _modifiedCount[contextID] != _image->getModifiedCount())
         {
             // update the modified count to show that it is up to date.
-            getModifiedCount(contextID) = _image->getModifiedCount();
+            _modifiedCount[contextID] = _image->getModifiedCount();
 
             computeRequiredTextureDimensions(state,*_image,_textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
 
@@ -292,7 +292,7 @@ void Texture3D::apply(State& state) const
         textureObject->bind();
 
         // update the modified count to show that it is up to date.
-        getModifiedCount(contextID) = _image->getModifiedCount();
+        _modifiedCount[contextID] = _image->getModifiedCount();
 
         applyTexParameters(GL_TEXTURE_3D,state);
 

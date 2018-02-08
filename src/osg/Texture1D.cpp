@@ -139,7 +139,7 @@ void Texture1D::apply(State& state) const
 
     if (textureObject)
     {
-        if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
+        if (_image.valid() && _modifiedCount[contextID] != _image->getModifiedCount())
         {
             // compute the internal texture format, this set the _internalFormat to an appropriate value.
             computeInternalFormat();
@@ -166,10 +166,10 @@ void Texture1D::apply(State& state) const
         {
             _subloadCallback->subload(*this,state);
         }
-        else if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
+        else if (_image.valid() && _modifiedCount[contextID] != _image->getModifiedCount())
         {
             // update the modified count to show that it is up to date.
-            getModifiedCount(contextID) = _image->getModifiedCount();
+            _modifiedCount[contextID] = _image->getModifiedCount();
 
             applyTexImage1D(GL_TEXTURE_1D,_image.get(),state, _textureWidth, _numMipmapLevels);
         }
@@ -207,7 +207,7 @@ void Texture1D::apply(State& state) const
         applyTexParameters(GL_TEXTURE_1D,state);
 
         // update the modified count to show that it is upto date.
-        getModifiedCount(contextID) = _image->getModifiedCount();
+        _modifiedCount[contextID] = _image->getModifiedCount();
 
         applyTexImage1D(GL_TEXTURE_1D,_image.get(),state, _textureWidth, _numMipmapLevels);
 

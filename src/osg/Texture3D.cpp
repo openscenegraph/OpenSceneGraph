@@ -318,7 +318,13 @@ void Texture3D::apply(State& state) const
         applyTexParameters(GL_TEXTURE_3D,state);
 
         // no image present, but dimensions at set so lets create the texture
-        extensions->glTexImage3D( GL_TEXTURE_3D, 0, _internalFormat,
+        bool useTexStorrage = extensions->isTextureStorageEnabled;
+        // no image present, but dimensions at set so lets create the texture
+        if(useTexStorrage)
+            extensions->glTexStorage3D( GL_TEXTURE_3D, (_numMipmapLevels >0)?_numMipmapLevels:1, _internalFormat,
+                     _textureWidth, _textureHeight, _textureDepth);
+        else
+            extensions->glTexImage3D( GL_TEXTURE_3D, 0, _internalFormat,
                      _textureWidth, _textureHeight, _textureDepth,
                      _borderWidth,
                      _sourceFormat ? _sourceFormat : _internalFormat,

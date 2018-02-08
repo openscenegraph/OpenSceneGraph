@@ -27,6 +27,7 @@ Texture2DMultisample::Texture2DMultisample():
             _numSamples(1),
             _fixedsamplelocations(GL_FALSE)
 {
+    _modifiedCount.setAllElementsTo(0);
 }
 
 Texture2DMultisample::Texture2DMultisample(GLsizei numSamples, GLboolean fixedsamplelocations):
@@ -35,6 +36,7 @@ Texture2DMultisample::Texture2DMultisample(GLsizei numSamples, GLboolean fixedsa
             _numSamples(numSamples),
             _fixedsamplelocations(fixedsamplelocations)
 {
+    _modifiedCount.setAllElementsTo(0);
 }
 
 Texture2DMultisample::Texture2DMultisample(const Texture2DMultisample& text,const CopyOp& copyop):
@@ -44,6 +46,7 @@ Texture2DMultisample::Texture2DMultisample(const Texture2DMultisample& text,cons
             _numSamples(text._numSamples),
             _fixedsamplelocations(text._fixedsamplelocations)
 {
+    _modifiedCount.setAllElementsTo(0);
 }
 
 Texture2DMultisample::~Texture2DMultisample()

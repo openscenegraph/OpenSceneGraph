@@ -774,6 +774,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
           * for all graphics contexts. */
         virtual void releaseGLObjects(State* state=0) const;
 
+        virtual unsigned int &getModifiedCount(unsigned int contextID) const = 0;
         /** Determine whether the given internalFormat is a compressed
           * image format. */
         static bool isCompressedInternalFormat(GLint internalFormat);

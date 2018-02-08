@@ -46,7 +46,12 @@ class OSG_EXPORT Texture2DMultisample : public Texture
         {
           return GL_TEXTURE_2D_MULTISAMPLE;
         }
-
+        virtual unsigned int& getModifiedCount(unsigned int contextID) const
+        {
+            // get the modified count for the given contextID.
+            //TOFIX _modifiedCount not maintained in this class
+            return  _modifiedCount[contextID];
+        }
         /** Texture2DMultisample is related to non fixed pipeline usage only so isn't appropriate to enable/disable.*/
         virtual bool getModeUsage(StateAttribute::ModeUsage&) const { return false; }
 
@@ -96,6 +101,8 @@ class OSG_EXPORT Texture2DMultisample : public Texture
 
         mutable GLboolean _fixedsamplelocations;
 
+        typedef buffered_value<unsigned int> ImageModifiedCount;
+        mutable ImageModifiedCount _modifiedCount;
 };
 
 }

@@ -64,8 +64,7 @@ class OSG_EXPORT Texture1D : public Texture
         /** Gets the const texture image. */
         inline const Image* getImage() const { return _image.get(); }
 
-        inline unsigned int& getModifiedCount(unsigned int contextID) const
-        {
+        virtual unsigned int& getModifiedCount(unsigned int contextID) const {
             // get the modified count for the current contextID.
             return _modifiedCount[contextID];
         }

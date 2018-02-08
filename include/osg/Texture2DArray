@@ -66,10 +66,14 @@ class OSG_EXPORT Texture2DArray : public Texture
         /** Check how often was a certain layer in the given context modified */
         inline unsigned int& getModifiedCount(unsigned int layer, unsigned int contextID) const
         {
-            // get the modified count for the current contextID.
+            // get the modified count for the given contextID and layer
             return _modifiedCount[layer][contextID];
         }
-
+        virtual unsigned int& getModifiedCount(unsigned int contextID) const
+        {
+            // get the modified count for the given contextID.
+            return _modifiedCount[0][contextID];
+        }
         /** Set the texture width and height. If width or height are zero then
           * the respective size value is calculated from the source image sizes.
           * Depth parameter specifies the number of layers to be used.

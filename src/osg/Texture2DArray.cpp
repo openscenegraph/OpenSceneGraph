@@ -17,6 +17,7 @@
 
 #include <string.h>
 
+//#define DO_TIMING
 
 using namespace osg;
 
@@ -454,6 +455,13 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
     if (!imagesValid())
         return;
 
+#ifdef DO_TIMING
+    osg::Timer_t start_tick = osg::Timer::instance()->tick();
+    OSG_NOTICE<<"Texture2DArray::applyTexImage2DArray_subload() = "<<(void*)image<<std::endl;
+#endif
+
+    const unsigned int contextID = state.getContextID();
+
     // get the contextID (user defined ID of 0 upwards) for the
     // current OpenGL context.
     const GLExtensions* extensions = state.get<GLExtensions>();
@@ -494,11 +502,29 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
     glPixelStorei(GL_UNPACK_ROW_LENGTH,image->getRowLength());
 #endif
 
-    bool useHardwareMipmapGeneration =
-        !image->isMipmap() && _useHardwareMipMapGeneration && extensions->isGenerateMipMapSupported;
+    bool mipmappingRequired = _min_filter != LINEAR && _min_filter != NEAREST;
+    bool useHardwareMipMapGeneration = mipmappingRequired && !image->isMipmap();
+    unsigned char* dataPtr = (unsigned char*)image->data();
+
+    GLBufferObject* pbo = image->getOrCreateGLBufferObject(contextID);
+    if (pbo)
+    {
+        state.bindPixelBufferObject(pbo);
+        dataPtr = reinterpret_cast<unsigned char*>(pbo->getOffset(image->getBufferIndex()));
+
+    }
+    else
+    {
+        pbo = 0;
+    }
+
+#ifdef DO_TIMING
+    OSG_NOTICE<<"    Texture2DArray::applyTexImage2DArray_subload() pbo="<<pbo<<", before copy time = "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
+    start_tick = osg::Timer::instance()->tick();
+#endif
 
     // if no special mipmapping is required, then
-    if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipmapGeneration )
+    if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration )
     {
         if( _min_filter == LINEAR || _min_filter == NEAREST )
             numMipmapLevels = 1;
@@ -508,12 +534,15 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
         // upload non-compressed image
         if ( !compressed_image )
         {
+            //OSG_NOTICE<<"Texture2DArray::applyTexImage2DArray_subload()"<<std::endl;
+#if 1
             extensions->glTexSubImage3D( target, 0,
                                       0, 0, layer,
                                       inwidth, inheight, indepth,
                                       (GLenum)image->getPixelFormat(),
                                       (GLenum)image->getDataType(),
-                                      image->data() );
+                                      dataPtr );
+#endif
         }
 
         // if we support compression and image is compressed, then
@@ -529,7 +558,7 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
                 inwidth, inheight, indepth,
                 (GLenum)image->getPixelFormat(),
                 size,
-                image->data());
+                dataPtr);
         }
 
     // we want to use mipmapping, so enable it
@@ -565,7 +594,7 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
                                               width, height, indepth,
                                               (GLenum)image->getPixelFormat(),
                                               (GLenum)image->getDataType(),
-                                               image->getMipmapData(k));
+                                              dataPtr + image->getMipmapOffset(k));
 
                     width >>= 1;
                     height >>= 1;
@@ -589,7 +618,7 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
                                                        width, height, indepth,
                                                        (GLenum)image->getPixelFormat(),
                                                        size,
-                                                       image->getMipmapData(k));
+                                                       dataPtr + image->getMipmapOffset(k));
 
 //                    state.checkGLErrors("after extensions->glCompressedTexSubImage3D(");
 
@@ -600,6 +629,14 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
         }
 
     }
+
+    if (pbo)
+    {
+        state.unbindPixelBufferObject();
+    }
+#ifdef DO_TIMING
+    OSG_NOTICE<<"    Texture2DArray::applyTexImage2DArray_subload() pbo="<<pbo<<", copy time = "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
+#endif
 }
 
 

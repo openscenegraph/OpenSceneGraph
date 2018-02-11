@@ -146,7 +146,7 @@ void TextureBuffer::apply(State& state) const
         bool textureObjectInvalidated = false;
         if (textureObject->_profile._internalFormat != _internalFormat )
         {
-            textureObjectInvalidated=true;
+            textureObjectInvalidated = true;
         }
 
         if (textureObjectInvalidated)
@@ -160,9 +160,9 @@ void TextureBuffer::apply(State& state) const
 #endif
     if (textureObject)
     {
-        if(_bufferData.valid() &&_modifiedCount[contextID]!=_bufferData->getModifiedCount() )
+        if(_bufferData.valid() && _modifiedCount[contextID] != _bufferData->getModifiedCount() )
         {
-            _modifiedCount[contextID]=_bufferData->getModifiedCount() ;
+            _modifiedCount[contextID] = _bufferData->getModifiedCount() ;
 
             GLBufferObject* glBufferObject = _bufferData->getBufferObject()->getOrCreateGLBufferObject(contextID);
             if (glBufferObject)
@@ -178,7 +178,7 @@ void TextureBuffer::apply(State& state) const
         }
         textureObject->bind();
     }
-    else if (_bufferData.valid()  &&_bufferData->getBufferObject()  )//&& _bufferObject->getNumBufferData()>0 )
+    else if (_bufferData.valid() && _bufferData->getBufferObject() )
     {
         /// now compile bufferobject if required
         GLBufferObject* glBufferObject = _bufferData->getBufferObject()->getOrCreateGLBufferObject(contextID);
@@ -200,7 +200,7 @@ void TextureBuffer::apply(State& state) const
                 glBufferObject->compileBuffer();
 
             textureObject->setAllocated(true);
-            extensions->glBindBuffer(_bufferData->getBufferObject()->getTarget(),0);
+            extensions->glBindBuffer(_bufferData->getBufferObject()->getTarget(), 0);
 
             textureObject->bind();
             extensions->glTexBuffer(GL_TEXTURE_BUFFER, _internalFormat, glBufferObject->getGLObjectID());
@@ -216,6 +216,6 @@ void TextureBuffer::apply(State& state) const
 
 void TextureBuffer::computeInternalFormat() const
 {
-    if (getImage() ) computeInternalFormatWithImage(*getImage());
+    if (getImage()) computeInternalFormatWithImage(*getImage());
     else computeInternalFormatType();
 }

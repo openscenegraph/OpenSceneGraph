@@ -67,6 +67,8 @@ class OSG_EXPORT BindImageTexture : public osg::StateAttribute {
 
         META_StateAttribute(osg,BindImageTexture, BINDIMAGETEXTURE)
 
+        virtual bool isTextureAttribute() const { return true; }
+
         inline void setImageUnit(GLuint i) { _imageunit=i; }
         inline GLuint getImageUnit() const { return _imageunit; }
 

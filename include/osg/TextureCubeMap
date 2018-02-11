@@ -62,10 +62,14 @@ class OSG_EXPORT TextureCubeMap : public Texture
 
         inline unsigned int& getModifiedCount(unsigned int face,unsigned int contextID) const
         {
-            // get the modified count for the current contextID.
+            // get the modified count for the given contextID and face
             return _modifiedCount[face][contextID];
         }
-
+        virtual unsigned int& getModifiedCount(unsigned int contextID) const
+        {
+            // get the modified count for the given contextID.
+            return _modifiedCount[0][contextID];
+        }
         /** Set the texture width and height. If width or height are zero then
           * the respective size value is calculated from the source image sizes.
         */

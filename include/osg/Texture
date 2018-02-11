@@ -742,6 +742,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         /** Gets the const texture image for specified face. */
         virtual const Image* getImage(unsigned int face) const = 0;
 
+        /** Retrieves BufferData whose dirtiness involves data upload to device */
+        virtual const BufferData* getBufferData() const { return getImage(0); }
+
         /** Gets the number of images that can be assigned to this Texture. */
         virtual unsigned int getNumImages() const = 0;
 
@@ -771,6 +774,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
           * for all graphics contexts. */
         virtual void releaseGLObjects(State* state=0) const;
 
+        virtual unsigned int &getModifiedCount(unsigned int contextID) const = 0;
         /** Determine whether the given internalFormat is a compressed
           * image format. */
         static bool isCompressedInternalFormat(GLint internalFormat);

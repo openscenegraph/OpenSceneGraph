@@ -172,7 +172,7 @@ void TextureRectangle::apply(State& state) const
 
     if (textureObject)
     {
-        if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
+        if (_image.valid() && _modifiedCount[contextID] != _image->getModifiedCount())
         {
             // compute the internal texture format, this set the _internalFormat to an appropriate value.
             computeInternalFormat();
@@ -202,10 +202,10 @@ void TextureRectangle::apply(State& state) const
         {
             _subloadCallback->subload(*this, state);
         }
-        else if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
+        else if (_image.valid() && _modifiedCount[contextID] != _image->getModifiedCount())
         {
             // update the modified count to show that it is up to date.
-            getModifiedCount(contextID) = _image->getModifiedCount();
+            _modifiedCount[contextID] = _image->getModifiedCount();
 
             applyTexImage_subload(GL_TEXTURE_RECTANGLE, _image.get(), state, _textureWidth, _textureHeight, _internalFormat);
         }
@@ -306,7 +306,7 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
     const GLExtensions* extensions = state.get<GLExtensions>();
 
     // update the modified count to show that it is up to date.
-    getModifiedCount(contextID) = image->getModifiedCount();
+    _modifiedCount[contextID] = image->getModifiedCount();
 
     // compute the internal texture format, sets _internalFormat.
     computeInternalFormat();
@@ -389,7 +389,7 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
 
 
     // update the modified count to show that it is up to date.
-    getModifiedCount(contextID) = image->getModifiedCount();
+    _modifiedCount[contextID] = image->getModifiedCount();
 
     // compute the internal texture format, sets _internalFormat.
     computeInternalFormat();

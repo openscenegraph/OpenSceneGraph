@@ -376,10 +376,7 @@ struct IndirectTarget
         std::string uniformName = uniformNamePrefix + char( '0' + index );
         osg::Uniform* uniform = new osg::Uniform(uniformName.c_str(), (int)index );
         stateset->addUniform( uniform );
-        stateset->setAttribute(indirectCommandImageBinding);
-        stateset->setTextureAttribute( index, indirectCommandTextureBuffer.get() );
-
-
+        stateset->setTextureAttribute(index, indirectCommandImageBinding);
     }
 
     void addIndirectTargetData( bool cullPhase, const std::string& uniformNamePrefix, int index, osg::StateSet* stateset )
@@ -392,9 +389,7 @@ struct IndirectTarget
 
         osg::Uniform* uniform = new osg::Uniform(uniformName.c_str(), (int)(OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index) );
         stateset->addUniform( uniform );
-
-        stateset->setAttribute(instanceTargetimagebinding);
-        stateset->setTextureAttribute( OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index, instanceTarget.get() );
+        stateset->setTextureAttribute(OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index, instanceTargetimagebinding);
     }
 
     void addDrawProgram( const std::string& uniformBlockName, osg::StateSet* stateset )
@@ -858,33 +853,31 @@ struct ResetTexturesCallback : public osg::StateSet::Callback
         texUnitsDirty.push_back(texUnit);
     }
 
-    void addTextureDirtyParams( unsigned int texUnit )
-    {
-        texUnitsDirtyParams.push_back(texUnit);
-    }
-
     virtual void operator() (osg::StateSet* stateset, osg::NodeVisitor* /*nv*/)
     {
         std::vector<unsigned int>::iterator it,eit;
         for(it=texUnitsDirty.begin(), eit=texUnitsDirty.end(); it!=eit; ++it)
-        {
-            osg::TextureBuffer* tex = dynamic_cast<osg::TextureBuffer*>( stateset->getTextureAttribute(*it,osg::StateAttribute::TEXTURE) );
-            if(tex==NULL)
-                continue;
-            osg::BufferData* img =const_cast<osg::BufferData*>(tex->getBufferData());
-            if(img!=NULL)
-                img->dirty();
-        }
-        for(it=texUnitsDirtyParams.begin(), eit=texUnitsDirtyParams.end(); it!=eit; ++it)
-        {
-            osg::TextureBuffer* tex = dynamic_cast<osg::TextureBuffer*>( stateset->getTextureAttribute(*it,osg::StateAttribute::TEXTURE) );
-            if(tex!=NULL)
-                tex->dirtyTextureParameters();
+    {
+           osg::BindImageTexture*imb = 0;
+           const osg::StateSet::AttributeList & texlist= stateset->getTextureAttributeList()[*it];
+           for(osg::StateSet::AttributeList ::const_iterator attit = texlist.begin(); attit != texlist.end();++attit)
+               if( (*attit).first.first == osg::StateAttribute::BINDIMAGETEXTURE )
+                   imb= dynamic_cast<osg::BindImageTexture*>(const_cast<osg::StateAttribute*>(attit->second.first.get()));
+
+           if(!imb)
+               continue;
+            osg::Texture* tex =imb->getTexture();
+            if(tex)
+            {
+                osg::BufferData* img =const_cast<osg::BufferData*>(tex->getBufferData());
+                if(img){
+                    img->dirty();
+                }
+            }
         }
     }
 
     std::vector<unsigned int> texUnitsDirty;
-    std::vector<unsigned int> texUnitsDirtyParams;
 };
 
 // We must ensure that cull shader finished filling indirect commands and indirect targets, before draw shader
@@ -1253,10 +1246,7 @@ void createStaticRendering( osg::Group* root, GPUCullData& gpuData, const osg::V
         {
             it->second.addIndirectCommandData( "indirectCommand", it->first, instancesTree->getOrCreateStateSet() );
             resetTexturesCallback->addTextureDirty( it->first );
-            resetTexturesCallback->addTextureDirtyParams( it->first );
-
             it->second.addIndirectTargetData( true, "indirectTarget", it->first, instancesTree->getOrCreateStateSet() );
-            resetTexturesCallback->addTextureDirtyParams( OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+it->first );
         }
 
         osg::Uniform* indirectCommandSize = new osg::Uniform( osg::Uniform::INT, "indirectCommandSize" );
@@ -1555,10 +1545,7 @@ void createDynamicRendering( osg::Group* root, GPUCullData& gpuData, osg::Buffer
         {
             it->second.addIndirectCommandData( "indirectCommand", it->first, instanceGeode->getOrCreateStateSet() );
             resetTexturesCallback->addTextureDirty( it->first );
-            resetTexturesCallback->addTextureDirtyParams( it->first );
-
             it->second.addIndirectTargetData( true, "indirectTarget", it->first, instanceGeode->getOrCreateStateSet() );
-            resetTexturesCallback->addTextureDirtyParams( OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+it->first );
         }
 
         osg::Uniform* indirectCommandSize = new osg::Uniform( osg::Uniform::INT, "indirectCommandSize" );

@@ -19,13 +19,14 @@ void BindImageTexture::apply(osg::State&state) const
 {
     if(_target.valid())
     {
-        osg::Texture::TextureObject *to = _target->getTextureObject( state.getContextID() );
-        if( !to )
+        unsigned int contextID = state.getContextID();
+        const BufferData * bd = _target->getBufferData();
+        if( (bd && bd->getModifiedCount() != _target->getModifiedCount(contextID)) )
         {
             // _target never been applied yet
-            _target->apply(state);
-            to = _target->getTextureObject( state.getContextID() );
+            state.applyTextureAttribute(state.getActiveTextureUnit(), _target);
         }
+        Texture::TextureObject *to = _target->getTextureObject(contextID);
         state.get<osg::GLExtensions>()->glBindImageTexture(_imageunit, to->id(), _level, _layered, _layer, _access, _format);
     }
 

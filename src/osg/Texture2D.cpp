@@ -175,7 +175,7 @@ void Texture2D::apply(State& state) const
         {
             textureObjectInvalidated = !_subloadCallback->textureObjectValid(*this, state);
         }
-        else if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
+        else if (_image.valid() && _modifiedCount[contextID] != _image->getModifiedCount())
         {
             textureObjectInvalidated = !textureObjectValid(state);
         }
@@ -200,10 +200,10 @@ void Texture2D::apply(State& state) const
         {
             _subloadCallback->subload(*this,state);
         }
-        else if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
+        else if (_image.valid() && _modifiedCount[contextID] != _image->getModifiedCount())
         {
             // update the modified tag to show that it is up to date.
-            getModifiedCount(contextID) = _image->getModifiedCount();
+            _modifiedCount[contextID] = _image->getModifiedCount();
 
             applyTexImage2D_subload(state,GL_TEXTURE_2D,_image.get(),
                                     _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
@@ -223,7 +223,7 @@ void Texture2D::apply(State& state) const
 
         applyTexParameters(GL_TEXTURE_2D,state);
 
-        if (_image.valid()) getModifiedCount(contextID) = _image->getModifiedCount();
+        if (_image.valid()) _modifiedCount[contextID] = _image->getModifiedCount();
 
         _subloadCallback->load(*this,state);
 
@@ -256,7 +256,7 @@ void Texture2D::apply(State& state) const
         applyTexParameters(GL_TEXTURE_2D,state);
 
         // update the modified tag to show that it is up to date.
-        getModifiedCount(contextID) = image->getModifiedCount();
+        _modifiedCount[contextID] = image->getModifiedCount();
 
         if (textureObject->isAllocated() && image->supportsTextureSubloading())
         {

@@ -36,7 +36,7 @@ namespace osgParticle
         virtual const char* className() const { return "Shooter"; }
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Shooter *>(obj) != 0; }
 
-        /**     Shoot a particle. Must be overriden by descendants.
+        /**     Shoot a particle. Must be overridden by descendants.
             This method should only set the velocity vector of particle <CODE>P</CODE>, leaving other
             attributes unchanged.
         */

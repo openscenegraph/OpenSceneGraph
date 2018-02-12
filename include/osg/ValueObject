@@ -68,122 +68,181 @@ class ValueObject : public Object
 
         META_Object(osg, ValueObject)
 
+        /** Convert 'this' into a ValueObject pointer if Object is a ValueObject, otherwise return 0.
+          * Equivalent to dynamic_cast<ValueObject*>(this).*/
+        virtual ValueObject* asValueObject() { return this; }
+
+        /** Convert 'this' into a ValueObject pointer if Object is a ValueObject, otherwise return 0.
+          * Equivalent to dynamic_cast<ValueObject*>(this).*/
+        virtual const ValueObject* asValueObject() const { return this; }
+
         class GetValueVisitor
         {
         public:
             virtual ~GetValueVisitor() {}
-            virtual void apply(bool /*value*/) {}
-            virtual void apply(char /*value*/) {}
-            virtual void apply(unsigned char /*value*/) {}
-            virtual void apply(short /*value*/) {}
-            virtual void apply(unsigned short /*value*/) {}
-            virtual void apply(int /*value*/) {}
-            virtual void apply(unsigned int /*value*/) {}
-            virtual void apply(float /*value*/) {}
-            virtual void apply(double /*value*/) {}
-            virtual void apply(const std::string& /*value*/) {}
+            virtual void apply(bool /*in_value*/) {}
+            virtual void apply(char /*in_value*/) {}
+            virtual void apply(unsigned char /*in_value*/) {}
+            virtual void apply(short /*in_value*/) {}
+            virtual void apply(unsigned short /*in_value*/) {}
+            virtual void apply(int /*in_value*/) {}
+            virtual void apply(unsigned int /*in_value*/) {}
+            virtual void apply(float /*in_value*/) {}
+            virtual void apply(double /*in_value*/) {}
+            virtual void apply(const std::string& /*in_value*/) {}
 
-            virtual void apply(const osg::Vec2b& /*value*/) {}
-            virtual void apply(const osg::Vec3b& /*value*/) {}
-            virtual void apply(const osg::Vec4b& /*value*/) {}
+            virtual void apply(const osg::Vec2b& /*in_value*/) {}
+            virtual void apply(const osg::Vec3b& /*in_value*/) {}
+            virtual void apply(const osg::Vec4b& /*in_value*/) {}
 
-            virtual void apply(const osg::Vec2ub& /*value*/) {}
-            virtual void apply(const osg::Vec3ub& /*value*/) {}
-            virtual void apply(const osg::Vec4ub& /*value*/) {}
+            virtual void apply(const osg::Vec2ub& /*in_value*/) {}
+            virtual void apply(const osg::Vec3ub& /*in_value*/) {}
+            virtual void apply(const osg::Vec4ub& /*in_value*/) {}
 
-            virtual void apply(const osg::Vec2s& /*value*/) {}
-            virtual void apply(const osg::Vec3s& /*value*/) {}
-            virtual void apply(const osg::Vec4s& /*value*/) {}
+            virtual void apply(const osg::Vec2s& /*in_value*/) {}
+            virtual void apply(const osg::Vec3s& /*in_value*/) {}
+            virtual void apply(const osg::Vec4s& /*in_value*/) {}
 
-            virtual void apply(const osg::Vec2us& /*value*/) {}
-            virtual void apply(const osg::Vec3us& /*value*/) {}
-            virtual void apply(const osg::Vec4us& /*value*/) {}
+            virtual void apply(const osg::Vec2us& /*in_value*/) {}
+            virtual void apply(const osg::Vec3us& /*in_value*/) {}
+            virtual void apply(const osg::Vec4us& /*in_value*/) {}
 
-            virtual void apply(const osg::Vec2i& /*value*/) {}
-            virtual void apply(const osg::Vec3i& /*value*/) {}
-            virtual void apply(const osg::Vec4i& /*value*/) {}
+            virtual void apply(const osg::Vec2i& /*in_value*/) {}
+            virtual void apply(const osg::Vec3i& /*in_value*/) {}
+            virtual void apply(const osg::Vec4i& /*in_value*/) {}
 
-            virtual void apply(const osg::Vec2ui& /*value*/) {}
-            virtual void apply(const osg::Vec3ui& /*value*/) {}
-            virtual void apply(const osg::Vec4ui& /*value*/) {}
+            virtual void apply(const osg::Vec2ui& /*in_value*/) {}
+            virtual void apply(const osg::Vec3ui& /*in_value*/) {}
+            virtual void apply(const osg::Vec4ui& /*in_value*/) {}
 
-            virtual void apply(const osg::Vec2f& /*value*/) {}
-            virtual void apply(const osg::Vec3f& /*value*/) {}
-            virtual void apply(const osg::Vec4f& /*value*/) {}
+            virtual void apply(const osg::Vec2f& /*in_value*/) {}
+            virtual void apply(const osg::Vec3f& /*in_value*/) {}
+            virtual void apply(const osg::Vec4f& /*in_value*/) {}
 
-            virtual void apply(const osg::Vec2d& /*value*/) {}
-            virtual void apply(const osg::Vec3d& /*value*/) {}
-            virtual void apply(const osg::Vec4d& /*value*/) {}
+            virtual void apply(const osg::Vec2d& /*in_value*/) {}
+            virtual void apply(const osg::Vec3d& /*in_value*/) {}
+            virtual void apply(const osg::Vec4d& /*in_value*/) {}
 
-            virtual void apply(const osg::Quat& /*value*/) {}
-            virtual void apply(const osg::Plane& /*value*/) {}
-            virtual void apply(const osg::Matrixf& /*value*/) {}
-            virtual void apply(const osg::Matrixd& /*value*/) {}
-            virtual void apply(const osg::BoundingBoxf& /*value*/) {}
-            virtual void apply(const osg::BoundingBoxd& /*value*/) {}
-            virtual void apply(const osg::BoundingSpheref& /*value*/) {}
-            virtual void apply(const osg::BoundingSphered& /*value*/) {}
+            virtual void apply(const osg::Quat& /*in_value*/) {}
+            virtual void apply(const osg::Plane& /*in_value*/) {}
+            virtual void apply(const osg::Matrixf& /*in_value*/) {}
+            virtual void apply(const osg::Matrixd& /*in_value*/) {}
+            virtual void apply(const osg::BoundingBoxf& /*in_value*/) {}
+            virtual void apply(const osg::BoundingBoxd& /*in_value*/) {}
+            virtual void apply(const osg::BoundingSpheref& /*in_value*/) {}
+            virtual void apply(const osg::BoundingSphered& /*in_value*/) {}
         };
+
+
+        template<typename T>
+        class GetScalarValue : public ValueObject::GetValueVisitor
+        {
+        public:
+
+            GetScalarValue() : set(false), value(0) {}
+
+            bool set;
+            T value;
+
+            virtual void apply(bool in_value) { value = in_value ? 0 : 1; set = true; }
+            virtual void apply(char in_value) { value = in_value; set = true; }
+            virtual void apply(unsigned char in_value) { value = in_value; set = true; }
+            virtual void apply(short in_value) { value = in_value; set = true; }
+            virtual void apply(unsigned short in_value) { value = in_value; set = true; }
+            virtual void apply(int in_value) { value = in_value; set = true; }
+            virtual void apply(unsigned int in_value) { value = in_value; set = true; }
+            virtual void apply(float in_value) { value = in_value; set = true; }
+            virtual void apply(double in_value) { value = in_value; set = true; }
+        };
+
 
         class SetValueVisitor
         {
         public:
             virtual ~SetValueVisitor() {}
-            virtual void apply(bool& /*value*/) {}
-            virtual void apply(char& /*value*/) {}
-            virtual void apply(unsigned char& /*value*/) {}
-            virtual void apply(short& /*value*/) {}
-            virtual void apply(unsigned short& /*value*/) {}
-            virtual void apply(int& /*value*/) {}
-            virtual void apply(unsigned int& /*value*/) {}
-            virtual void apply(float& /*value*/) {}
-            virtual void apply(double& /*value*/) {}
-            virtual void apply(std::string& /*value*/) {}
+            virtual void apply(bool& /*in_value*/) {}
+            virtual void apply(char& /*in_value*/) {}
+            virtual void apply(unsigned char& /*in_value*/) {}
+            virtual void apply(short& /*in_value*/) {}
+            virtual void apply(unsigned short& /*in_value*/) {}
+            virtual void apply(int& /*in_value*/) {}
+            virtual void apply(unsigned int& /*in_value*/) {}
+            virtual void apply(float& /*in_value*/) {}
+            virtual void apply(double& /*in_value*/) {}
+            virtual void apply(std::string& /*in_value*/) {}
 
-            virtual void apply(osg::Vec2b& /*value*/) {}
-            virtual void apply(osg::Vec3b& /*value*/) {}
-            virtual void apply(osg::Vec4b& /*value*/) {}
+            virtual void apply(osg::Vec2b& /*in_value*/) {}
+            virtual void apply(osg::Vec3b& /*in_value*/) {}
+            virtual void apply(osg::Vec4b& /*in_value*/) {}
 
-            virtual void apply(osg::Vec2ub& /*value*/) {}
-            virtual void apply(osg::Vec3ub& /*value*/) {}
-            virtual void apply(osg::Vec4ub& /*value*/) {}
+            virtual void apply(osg::Vec2ub& /*in_value*/) {}
+            virtual void apply(osg::Vec3ub& /*in_value*/) {}
+            virtual void apply(osg::Vec4ub& /*in_value*/) {}
 
-            virtual void apply(osg::Vec2s& /*value*/) {}
-            virtual void apply(osg::Vec3s& /*value*/) {}
-            virtual void apply(osg::Vec4s& /*value*/) {}
+            virtual void apply(osg::Vec2s& /*in_value*/) {}
+            virtual void apply(osg::Vec3s& /*in_value*/) {}
+            virtual void apply(osg::Vec4s& /*in_value*/) {}
 
-            virtual void apply(osg::Vec2us& /*value*/) {}
-            virtual void apply(osg::Vec3us& /*value*/) {}
-            virtual void apply(osg::Vec4us& /*value*/) {}
+            virtual void apply(osg::Vec2us& /*in_value*/) {}
+            virtual void apply(osg::Vec3us& /*in_value*/) {}
+            virtual void apply(osg::Vec4us& /*in_value*/) {}
 
-            virtual void apply(osg::Vec2i& /*value*/) {}
-            virtual void apply(osg::Vec3i& /*value*/) {}
-            virtual void apply(osg::Vec4i& /*value*/) {}
+            virtual void apply(osg::Vec2i& /*in_value*/) {}
+            virtual void apply(osg::Vec3i& /*in_value*/) {}
+            virtual void apply(osg::Vec4i& /*in_value*/) {}
 
-            virtual void apply(osg::Vec2ui& /*value*/) {}
-            virtual void apply(osg::Vec3ui& /*value*/) {}
-            virtual void apply(osg::Vec4ui& /*value*/) {}
+            virtual void apply(osg::Vec2ui& /*in_value*/) {}
+            virtual void apply(osg::Vec3ui& /*in_value*/) {}
+            virtual void apply(osg::Vec4ui& /*in_value*/) {}
 
-            virtual void apply(osg::Vec2f& /*value*/) {}
-            virtual void apply(osg::Vec3f& /*value*/) {}
-            virtual void apply(osg::Vec4f& /*value*/) {}
+            virtual void apply(osg::Vec2f& /*in_value*/) {}
+            virtual void apply(osg::Vec3f& /*in_value*/) {}
+            virtual void apply(osg::Vec4f& /*in_value*/) {}
 
-            virtual void apply(osg::Vec2d& /*value*/) {}
-            virtual void apply(osg::Vec3d& /*value*/) {}
-            virtual void apply(osg::Vec4d& /*value*/) {}
+            virtual void apply(osg::Vec2d& /*in_value*/) {}
+            virtual void apply(osg::Vec3d& /*in_value*/) {}
+            virtual void apply(osg::Vec4d& /*in_value*/) {}
 
-            virtual void apply(osg::Quat& /*value*/) {}
-            virtual void apply(osg::Plane& /*value*/) {}
-            virtual void apply(osg::Matrixf& /*value*/) {}
-            virtual void apply(osg::Matrixd& /*value*/) {}
-            virtual void apply(osg::BoundingBoxf& /*value*/) {}
-            virtual void apply(osg::BoundingBoxd& /*value*/) {}
-            virtual void apply(osg::BoundingSpheref& /*value*/) {}
-            virtual void apply(osg::BoundingSphered& /*value*/) {}
+            virtual void apply(osg::Quat& /*in_value*/) {}
+            virtual void apply(osg::Plane& /*in_value*/) {}
+            virtual void apply(osg::Matrixf& /*in_value*/) {}
+            virtual void apply(osg::Matrixd& /*in_value*/) {}
+            virtual void apply(osg::BoundingBoxf& /*in_value*/) {}
+            virtual void apply(osg::BoundingBoxd& /*in_value*/) {}
+            virtual void apply(osg::BoundingSpheref& /*in_value*/) {}
+            virtual void apply(osg::BoundingSphered& /*in_value*/) {}
+        };
+
+
+        template<typename T>
+        class SetScalarValue : public ValueObject::GetValueVisitor
+        {
+        public:
+
+            SetScalarValue(T in_value) : set(false), value(in_value) {}
+
+            bool set;
+            T value;
+
+            virtual void apply(bool& in_value) { in_value=(value!=0); set = true;}
+            virtual void apply(char& in_value) { in_value=value; set = true;}
+            virtual void apply(unsigned char& in_value) { in_value=value; set = true;}
+            virtual void apply(short& in_value) { in_value=value; set = true;}
+            virtual void apply(unsigned short& in_value) { in_value=value; set = true;}
+            virtual void apply(int& in_value) { in_value=value; set = true;}
+            virtual void apply(unsigned int& in_value) { in_value=value; set = true;}
+            virtual void apply(float& in_value) { in_value=value; set = true;}
+            virtual void apply(double& in_value) { in_value=value; set = true;}
         };
 
         virtual bool get(GetValueVisitor& /*gvv*/) const { return false; }
         virtual bool set(SetValueVisitor& /*gvv*/) { return false; }
+
+        template<typename T>
+        bool getScalarValue(T& value) { GetScalarValue<T> gsv; if (get(gsv) &&  gsv.set) { value = gsv.value; return true; } else return false; }
+
+        template<typename T>
+        bool setScalarValue(T value) { SetScalarValue<T> ssv(value); return set(ssv) && ssv.set; }
 
 protected:
         virtual ~ValueObject() {}
@@ -357,7 +416,6 @@ T* getOrCreateUserObjectOfType(P* parent)
     }
     return object;
 }
-
 
 
 }

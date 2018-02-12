@@ -18,6 +18,7 @@
 #include <osgViewer/View>
 #include <osgViewer/Renderer>
 
+#include <osg/os_utils>
 #include <osg/io_utils>
 
 #include <osg/TextureCubeMap>
@@ -37,6 +38,7 @@ static osg::ApplicationUsageProxy ViewerBase_e2(osg::ApplicationUsage::ENVIRONME
 static osg::ApplicationUsageProxy ViewerBase_e3(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_WINDOW x y width height","Set the default window dimensions that windows should open up on.");
 static osg::ApplicationUsageProxy ViewerBase_e4(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_RUN_FRAME_SCHEME","Frame rate manage scheme that viewer run should use,  ON_DEMAND or CONTINUOUS (default).");
 static osg::ApplicationUsageProxy ViewerBase_e5(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_RUN_MAX_FRAME_RATE","Set the maximum number of frame as second that viewer run. 0.0 is default and disables an frame rate capping.");
+static osg::ApplicationUsageProxy ViewerBase_e6(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_RUN_FRAME_COUNT", "Set the maximum number of frames to run the viewer run method.");
 
 using namespace osgViewer;
 
@@ -68,18 +70,14 @@ void ViewerBase::viewerBaseInit()
     _runFrameScheme = CONTINUOUS;
     _runMaxFrameRate = 0.0f;
 
-    const char* str = getenv("OSG_RUN_FRAME_SCHEME");
-    if (str)
+    std::string str;
+    if (osg::getEnvVar("OSG_RUN_FRAME_SCHEME", str))
     {
-        if      (strcmp(str, "ON_DEMAND")==0) _runFrameScheme = ON_DEMAND;
-        else if (strcmp(str, "CONTINUOUS")==0) _runFrameScheme = CONTINUOUS;
+        if      (str=="ON_DEMAND") _runFrameScheme = ON_DEMAND;
+        else if (str=="CONTINUOUS") _runFrameScheme = CONTINUOUS;
     }
 
-    str = getenv("OSG_RUN_MAX_FRAME_RATE");
-    if (str)
-    {
-        _runMaxFrameRate = osg::asciiToDouble(str);
-    }
+    osg::getEnvVar("OSG_RUN_MAX_FRAME_RATE", _runMaxFrameRate);
 
     _useConfigureAffinity = true;
 }
@@ -88,7 +86,8 @@ void ViewerBase::configureAffinity()
 {
     unsigned int numProcessors = OpenThreads::GetNumberOfProcessors();
 
-    OSG_NOTICE<<"ViewerBase::configureAffinity() numProcessors="<<numProcessors<<std::endl;
+    OSG_INFO<<"ViewerBase::configureAffinity() numProcessors="<<numProcessors<<std::endl;
+
     if (numProcessors==1) return;
 
     typedef std::vector<unsigned int> AvailableProcessors;
@@ -188,7 +187,7 @@ void ViewerBase::configureAffinity()
             if ((*itr)->getDatabasePager()) databasePagers.push_back((*itr)->getDatabasePager());
         }
 
-        OSG_NOTICE<<"  databasePagers = "<<databasePagers.size()<<std::endl;
+        OSG_INFO<<"  databasePagers = "<<databasePagers.size()<<std::endl;
 
         availableProcessor = availableProcessors[availableProcessor % availableProcessors.size()];
 
@@ -206,22 +205,24 @@ void ViewerBase::setThreadingModel(ThreadingModel threadingModel)
 {
     if (_threadingModel == threadingModel) return;
 
+    bool needSetUpThreading = _threadsRunning;
+
     if (_threadsRunning) stopThreading();
 
     _threadingModel = threadingModel;
 
-    setUpThreading();
+    if (needSetUpThreading) setUpThreading();
 }
 
 ViewerBase::ThreadingModel ViewerBase::suggestBestThreadingModel()
 {
-    const char* str = getenv("OSG_THREADING");
-    if (str)
+    std::string str;
+    if (osg::getEnvVar("OSG_THREADING", str))
     {
-        if (strcmp(str,"SingleThreaded")==0) return SingleThreaded;
-        else if (strcmp(str,"CullDrawThreadPerContext")==0) return CullDrawThreadPerContext;
-        else if (strcmp(str,"DrawThreadPerContext")==0) return DrawThreadPerContext;
-        else if (strcmp(str,"CullThreadPerCameraDrawThreadPerContext")==0) return CullThreadPerCameraDrawThreadPerContext;
+        if (str=="SingleThreaded") return SingleThreaded;
+        else if (str=="CullDrawThreadPerContext") return CullDrawThreadPerContext;
+        else if (str=="DrawThreadPerContext") return DrawThreadPerContext;
+        else if (str=="CullThreadPerCameraDrawThreadPerContext") return CullThreadPerCameraDrawThreadPerContext;
     }
 
     Contexts contexts;
@@ -690,10 +691,10 @@ int ViewerBase::run()
         realize();
     }
 
-    const char* run_frame_count_str = getenv("OSG_RUN_FRAME_COUNT");
-    unsigned int runTillFrameNumber = run_frame_count_str==0 ? osg::UNINITIALIZED_FRAME_NUMBER : atoi(run_frame_count_str);
+    unsigned int runTillFrameNumber = osg::UNINITIALIZED_FRAME_NUMBER;
+    osg::getEnvVar("OSG_RUN_FRAME_COUNT", runTillFrameNumber);
 
-    while(!done() && (run_frame_count_str==0 || getViewerFrameStamp()->getFrameNumber()<runTillFrameNumber))
+    while(!done() && (runTillFrameNumber==osg::UNINITIALIZED_FRAME_NUMBER || getViewerFrameStamp()->getFrameNumber()<runTillFrameNumber))
     {
         double minFrameTime = _runMaxFrameRate>0.0 ? 1.0/_runMaxFrameRate : 0.0;
         osg::Timer_t startFrameTick = osg::Timer::instance()->tick();

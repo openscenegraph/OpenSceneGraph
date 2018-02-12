@@ -314,7 +314,7 @@ void OccluderGeometry::setUpInternalStructures()
 
     dirtyBound();
 
-    dirtyDisplayList();
+    dirtyGLObjects();
 }
 
 struct IndexVec3PtrPair
@@ -860,7 +860,7 @@ void OccluderGeometry::computeShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
 
     }
 
-    svg.dirtyDisplayList();
+    svg.dirtyGLObjects();
     svg.dirtyBound();
 
     // osg::Timer_t t1 = osg::Timer::instance()->tick();

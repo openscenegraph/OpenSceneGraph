@@ -17,6 +17,7 @@
 #include <osg/Notify>
 #include <osgDB/FileUtils>
 #include <osg/io_utils>
+#include <osg/os_utils>
 
 #include <stdlib.h>
 
@@ -230,7 +231,7 @@ void PickEventHandler::doOperation()
 
             bool commandRunsInBackground = (_command.find("&")!=std::string::npos);
 
-            int result = system(_command.c_str());
+            int result = osg_system(_command.c_str());
 
             OSG_INFO<<"system("<<_command<<") result "<<result<<std::endl;
 
@@ -251,7 +252,7 @@ void PickEventHandler::doOperation()
         }
         case(osgPresentation::EVENT):
         {
-            OSG_NOTICE<<"Event "<<_keyPos._key<<" "<<_keyPos._x<<" "<<_keyPos._y<<std::endl;
+            OSG_INFO<<"Event "<<_keyPos._key<<" "<<_keyPos._x<<" "<<_keyPos._y<<std::endl;
             if (SlideEventHandler::instance()) SlideEventHandler::instance()->dispatchEvent(_keyPos);
             break;
         }

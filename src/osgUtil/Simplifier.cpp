@@ -267,7 +267,6 @@ public:
     typedef std::vector< osg::ref_ptr<Point> >                                  PointList;
     typedef std::list< osg::ref_ptr<Triangle> >                                 TriangleList;
     typedef std::set< osg::ref_ptr<Triangle> >                                  TriangleSet;
-    typedef std::map< osg::ref_ptr<Triangle>, unsigned int, dereference_less >  TriangleMap;
 
     struct Point : public osg::Referenced
     {
@@ -813,7 +812,6 @@ public:
         osg::ref_ptr<Point> edge_p1 = edge->_p1;
         osg::ref_ptr<Point> edge_p2 = edge->_p2;
 
-        TriangleMap  triangleMap;
         TriangleList triangles_p1;
         TriangleList triangles_p2;
         LocalEdgeList oldEdges;

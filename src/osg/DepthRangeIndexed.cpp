@@ -41,7 +41,11 @@ void DepthRangeIndexed::apply(State& state) const
     const GLExtensions* extensions = state.get<GLExtensions>();
     if (extensions->glDepthRangeIndexed)
     {
-        extensions->glDepthRangeIndexed(static_cast<GLuint>(_index), static_cast<GLclampd>(_zNear), static_cast<GLclampd>(_zFar));
+        extensions->glDepthRangeIndexed(static_cast<GLuint>(_index), static_cast<GLdouble>(_zNear), static_cast<GLdouble>(_zFar));
+    }
+    else if (extensions->glDepthRangeIndexedf)
+    {
+        extensions->glDepthRangeIndexedf(static_cast<GLuint>(_index), static_cast<GLfloat>(_zNear), static_cast<GLfloat>(_zFar));
     }
     else
     {

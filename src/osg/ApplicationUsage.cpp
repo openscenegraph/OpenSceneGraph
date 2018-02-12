@@ -17,6 +17,7 @@
 #include <osg/ApplicationUsage>
 #include <osg/Object>
 #include <osg/Math>
+#include <osg/os_utils>
 #include <osg/ref_ptr>
 
 #include <sstream>
@@ -317,10 +318,16 @@ void ApplicationUsage::writeEnvironmentSettings(std::ostream& output)
         std::string::size_type len = citr->first.find_first_of("\n\r\t ");
         if (len == std::string::npos) len = citr->first.size();
         line.replace(optionPos,len,citr->first.substr(0,len));
-        const char *cp = getenv(citr->first.substr(0, len).c_str());
-        if (!cp) cp = "[not set]";
-        else if (!*cp) cp = "[set]";
-        line += std::string(cp) + "\n";
+
+        std::string value;
+        if (getEnvVar(citr->first.substr(0, len).c_str(), value))
+        {
+            line += "[set]\n";
+        }
+        else
+        {
+            line += "[not set]\n";
+        }
 
         output << line;
     }

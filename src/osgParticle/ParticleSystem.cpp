@@ -657,7 +657,7 @@ void osgParticle::ParticleSystem::releaseGLObjects(osg::State* state) const
     }
 }
 
-osg::VertexArrayState* osgParticle::ParticleSystem::createVertexArrayState(osg::RenderInfo& renderInfo) const
+osg::VertexArrayState* osgParticle::ParticleSystem::createVertexArrayStateImplemenation(osg::RenderInfo& renderInfo) const
 {
     osg::State& state = *renderInfo.getState();
 

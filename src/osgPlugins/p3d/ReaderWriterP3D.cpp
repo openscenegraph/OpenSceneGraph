@@ -2195,11 +2195,11 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
         if (constructor.getCurrentLayer())
         {
             constructor.getCurrentLayer()->setUserValue("name",name);
-            OSG_NOTICE<<"Setting current layers name "<<name<<std::endl;
+            OSG_INFO<<"Setting current layers name "<<name<<std::endl;
         }
         else
         {
-            OSG_NOTICE<<"getCurrentSlide() returns NULL, unable to set name "<<std::endl;
+            OSG_INFO<<"getCurrentSlide() returns NULL, unable to set name "<<std::endl;
         }
     }
 }
@@ -2544,11 +2544,11 @@ void ReaderWriterP3DXML::parseSlide (osgPresentation::SlideShowConstructor& cons
         if (constructor.getCurrentSlide())
         {
             constructor.getCurrentSlide()->setUserValue("name",name);
-            OSG_NOTICE<<"Setting current slide name "<<name<<std::endl;
+            OSG_INFO<<"Setting current slide name "<<name<<std::endl;
         }
         else
         {
-            OSG_NOTICE<<"getCurrentSlide() returns NULL, unable to set name "<<std::endl;
+            OSG_INFO<<"getCurrentSlide() returns NULL, unable to set name "<<std::endl;
         }
     }
 

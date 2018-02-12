@@ -70,12 +70,14 @@ namespace osgDBJPEG
 
 static int jpegerror = ERR_NO_ERROR;
 
-/* Some versions of jmorecfg.h define boolean, some don't...
-   Those that do also define HAVE_BOOLEAN, so we can guard using that. */
-#ifndef HAVE_BOOLEAN
-  typedef int boolean;
-  #define FALSE 0
-  #define TRUE 1
+#if JPEG_LIB_VERSION < 90
+    /* Some versions of jmorecfg.h define boolean, some don't...
+    Those that do also define HAVE_BOOLEAN, so we can guard using that. */
+    #ifndef HAVE_BOOLEAN
+    typedef int boolean;
+    #define FALSE 0
+    #define TRUE 1
+    #endif
 #endif
 
 /* CODE FOR READING/WRITING JPEG FROM STREAMS
@@ -687,7 +689,7 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
               default:
               {
                   OSG_DEBUG << "ReaderWriterJPEG::write_JPEG_file - Error pixel format non supported" << std::endl;
-                return WriteResult::ERROR_IN_WRITING_FILE; break;
+                  return WriteResult::ERROR_IN_WRITING_FILE;
               }
             }
 

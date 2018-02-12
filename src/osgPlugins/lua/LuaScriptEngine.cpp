@@ -755,19 +755,44 @@ static int callStateSetSet(lua_State* _lua)
     }
     else if (lua_type(_lua,2)==LUA_TSTRING)
     {
-        std::string modeString = lua_tostring(_lua, 2);
-        GLenum mode = lse->lookUpGLenumValue(modeString);
+        std::string key = lua_tostring(_lua, 2);
+        GLenum mode = lse->lookUpGLenumValue(key);
         if (n>=3)
         {
-            osg::StateAttribute::OverrideValue value=osg::StateAttribute::ON;
-            bool setOnOff = false;
-            if (lua_type(_lua,3)==LUA_TSTRING)
+            if (mode)
             {
-                value = convertStringToStateAttributeValue(lua_tostring(_lua, 3), value, setOnOff);
-            }
+                osg::StateAttribute::OverrideValue value=osg::StateAttribute::ON;
+                bool setOnOff = false;
+                if (lua_type(_lua,3)==LUA_TSTRING)
+                {
+                    value = convertStringToStateAttributeValue(lua_tostring(_lua, 3), value, setOnOff);
+                }
 
-            stateset->setMode(mode, value);
-            return 0;
+                stateset->setMode(mode, value);
+                return 0;
+            }
+            else
+            {
+                std::string value;
+                if (lua_type(_lua,3)==LUA_TSTRING)
+                {
+                    value = lua_tostring(_lua, 3);
+                }
+                stateset->setDefine(key, value);
+            }
+        }
+        else
+        {
+            if (mode)
+            {
+                osg::StateAttribute::OverrideValue value=osg::StateAttribute::ON;
+                stateset->setMode(mode, value);
+                return 0;
+            }
+            else
+            {
+                stateset->setDefine(key);
+            }
         }
     }
 
@@ -982,6 +1007,19 @@ static int callStateSetGet(lua_State* _lua)
             }
         }
 
+
+        const osg::StateSet::DefineList& dl = stateset->getDefineList();
+        for(osg::StateSet::DefineList::const_iterator itr = dl.begin();
+            itr != dl.end();
+            ++itr)
+        {
+            if (value == itr->first)
+            {
+                lua_pushstring(_lua, itr->second.first.c_str());
+                return 1;
+            }
+        }
+
         OSG_NOTICE<<"Warning: StateSet:get("<<value<<") Could not find matching mode or attribute"<<std::endl;
         lua_pushnil(_lua);
         return 1;
@@ -1112,6 +1150,18 @@ static int callStateSetRemove(lua_State* _lua)
                 value == itr->second.first->getName())
             {
                 stateset->removeUniform(itr->second.first.get());
+                return 0;
+            }
+        }
+
+        const osg::StateSet::DefineList& dl = stateset->getDefineList();
+        for(osg::StateSet::DefineList::const_iterator itr = dl.begin();
+            itr != dl.end();
+            ++itr)
+        {
+            if (value == itr->first)
+            {
+                stateset->removeDefine(value);
                 return 0;
             }
         }
@@ -1798,6 +1848,24 @@ static int readImageFile(lua_State * _lua)
     return 0;
 }
 
+static int readShaderFile(lua_State * _lua)
+{
+    const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
+
+    int n = lua_gettop(_lua);    /* number of arguments */
+    if (n==1 && lua_type(_lua, 1)==LUA_TSTRING)
+    {
+        std::string filename = lua_tostring(_lua, 1);
+        osg::ref_ptr<osg::Shader> shader = osgDB::readRefShaderFile(filename);
+        if (shader.valid())
+        {
+            lse->pushObject(shader.get());
+            return 1;
+        }
+    }
+    return 0;
+}
+
 static int readNodeFile(lua_State * _lua)
 {
     const LuaScriptEngine* lse = reinterpret_cast<const LuaScriptEngine*>(lua_topointer(_lua, lua_upvalueindex(1)));
@@ -1914,6 +1982,13 @@ void LuaScriptEngine::initialize()
         lua_pushlightuserdata(_lua, this);
         lua_pushcclosure(_lua, readImageFile, 1);
         lua_setglobal(_lua, "readImageFile");
+    }
+
+    // provide global new method for read Images
+    {
+        lua_pushlightuserdata(_lua, this);
+        lua_pushcclosure(_lua, readShaderFile, 1);
+        lua_setglobal(_lua, "readShaderFile");
     }
 
     // provide global new method for read Images
@@ -4074,21 +4149,21 @@ void LuaScriptEngine::addPaths(const osgDB::FilePathList& paths)
     std::string  path = lua_tostring( _lua, -1 );
     lua_pop( _lua, 1 );
 
-    OSG_NOTICE<<"LuaScriptEngine::addPaths() original package.path = "<<path<<std::endl;
+    OSG_INFO<<"LuaScriptEngine::addPaths() original package.path = "<<path<<std::endl;
 
 
     for(osgDB::FilePathList::const_iterator itr = paths.begin();
         itr != paths.end();
         ++itr)
     {
-        OSG_NOTICE<<"  Appending path ["<<*itr<<"]"<<std::endl;
+        OSG_INFO<<"  Appending path ["<<*itr<<"]"<<std::endl;
 
         path.append( ";" );
         path.append( *itr );
         path.append( "/?.lua" );
     }
 
-    OSG_NOTICE<<"   path after = "<<path<<std::endl;
+    OSG_INFO<<"   path after = "<<path<<std::endl;
 
     lua_pushstring( _lua, path.c_str() );
     lua_setfield( _lua, -2, "path" );

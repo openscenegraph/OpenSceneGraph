@@ -23,7 +23,7 @@ namespace osg {
 
 class OSG_EXPORT VertexArrayState : public osg::Referenced
 {
-public:
+    public:
 
         VertexArrayState(osg::State* state);
 
@@ -33,6 +33,10 @@ public:
                 array(0),
                 modifiedCount(0xffffffff),
                 active(false) {}
+
+            virtual bool isVertexAttribDispatch() const { return false; }
+
+            virtual const char* className() const = 0; // { return "ArrayDispatch"; }
 
             virtual void enable_and_dispatch(osg::State& /*state*/, const osg::Array* /*new_array*/) {} // = 0;
 
@@ -106,6 +110,8 @@ public:
 
         void resetBufferObjectPointers() { _currentVBO = 0; _currentEBO = 0; }
 
+        bool correctArrayDispatchAssigned(const ArrayDispatch* ad);
+
         void assignAllDispatchers();
 
         void assignVertexArrayDispatcher();
@@ -174,7 +180,7 @@ public:
 
         void release();
 
-public:
+    public:
 
 
         // osg::GLBufferObject* getGLBufferObject(osg::Array* array);
@@ -204,6 +210,59 @@ public:
 
         bool                            _requiresSetArrays;
 };
+
+
+
+class OSG_EXPORT VertexArrayStateList
+{
+    public:
+
+        VertexArrayStateList();
+
+        VertexArrayStateList& operator = (const VertexArrayStateList& rhs);
+
+        inline void clear() { _array.clear(); }
+
+        inline bool empty() const { return _array.empty(); }
+
+        inline unsigned int size() const { return _array.size(); }
+
+        inline void resize(unsigned int newSize) { _array.resize(newSize); }
+
+        inline ref_ptr<VertexArrayState>& operator[] (unsigned int pos)
+        {
+            // automatically resize array.
+            if (_array.size()<=pos)
+                _array.resize(pos+1,0);
+
+            return _array[pos];
+        }
+
+        inline const ref_ptr<VertexArrayState>& operator[] (unsigned int pos) const
+        {
+            // automatically resize array.
+            if (_array.size()<=pos)
+                _array.resize(pos+1,0);
+
+            return _array[pos];
+        }
+
+        void assignAllDispatchers();
+
+        void assignVertexArrayDispatcher();
+        void assignNormalArrayDispatcher();
+        void assignColorArrayDispatcher();
+        void assignSecondaryColorArrayDispatcher();
+        void assignFogCoordArrayDispatcher();
+        void assignTexCoordArrayDispatcher(unsigned int numUnits);
+        void assignVertexAttribArrayDispatcher(unsigned int numUnits);
+
+protected:
+
+        typedef std::vector< osg::ref_ptr<VertexArrayState> > Array;
+        mutable Array _array;
+};
+
 
 
 inline void VertexArrayState::lazyDisablingOfVertexAttributes()

@@ -204,7 +204,7 @@ BOOL CALLBACK DirectInputRegistry::EnumJoysticksCallback( const DIDEVICEINSTANCE
     {
         hr = device->CreateDevice( didInstance->guidInstance,
                                    &(DirectInputRegistry::instance()->getJoyStick()), NULL );
+        if ( SUCCEEDED(hr) ) return DIENUM_STOP;
     }
-    if ( FAILED(hr) ) return DIENUM_CONTINUE;
-    return DIENUM_STOP;
+    return DIENUM_CONTINUE;
 }

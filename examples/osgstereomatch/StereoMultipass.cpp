@@ -19,7 +19,7 @@
 */
 
 #include "StereoMultipass.h"
-#include <osgDB/FileUtils>
+#include <osgDB/ReadFile>
 #include <iostream>
 
 SubtractPass::SubtractPass(osg::TextureRectangle *left_tex,
@@ -132,8 +132,12 @@ void SubtractPass::createOutputTextures()
 
 void SubtractPass::setShader(std::string filename)
 {
-    osg::ref_ptr<osg::Shader> fshader = new osg::Shader( osg::Shader::FRAGMENT );
-    fshader->loadShaderSourceFromFile(osgDB::findDataFile(filename));
+    osg::ref_ptr<osg::Shader> fshader = osgDB::readRefShaderFile( osg::Shader::FRAGMENT, filename);
+    if (!fshader)
+    {
+        OSG_NOTICE<<"Warning: could not file shader file : "<<filename<<std::endl;
+        return;
+    }
 
     _FragmentProgram = 0;
     _FragmentProgram = new osg::Program;
@@ -259,8 +263,12 @@ void AggregatePass::setupCamera()
 
 void AggregatePass::setShader(std::string filename)
 {
-    osg::ref_ptr<osg::Shader> fshader = new osg::Shader( osg::Shader::FRAGMENT );
-    fshader->loadShaderSourceFromFile(osgDB::findDataFile(filename));
+    osg::ref_ptr<osg::Shader> fshader = osgDB::readRefShaderFile( osg::Shader::FRAGMENT, filename);
+    if (!fshader)
+    {
+        OSG_NOTICE<<"Warning: could not file shader file : "<<filename<<std::endl;
+        return;
+    }
 
     _FragmentProgram = 0;
     _FragmentProgram = new osg::Program;
@@ -375,8 +383,12 @@ void SelectPass::createOutputTextures()
 
 void SelectPass::setShader(std::string filename)
 {
-    osg::ref_ptr<osg::Shader> fshader = new osg::Shader( osg::Shader::FRAGMENT );
-    fshader->loadShaderSourceFromFile(osgDB::findDataFile(filename));
+    osg::ref_ptr<osg::Shader> fshader = osgDB::readRefShaderFile( osg::Shader::FRAGMENT, filename);
+    if (!fshader)
+    {
+        OSG_NOTICE<<"Warning: could not file shader file : "<<filename<<std::endl;
+        return;
+    }
 
     _FragmentProgram = 0;
     _FragmentProgram = new osg::Program;
@@ -524,8 +536,12 @@ void StereoMultipass::createOutputTextures()
 
 void StereoMultipass::setShader(std::string filename)
 {
-    osg::ref_ptr<osg::Shader> fshader = new osg::Shader( osg::Shader::FRAGMENT );
-    fshader->loadShaderSourceFromFile(osgDB::findDataFile(filename));
+    osg::ref_ptr<osg::Shader> fshader = osgDB::readRefShaderFile( osg::Shader::FRAGMENT, filename);
+    if (!fshader)
+    {
+        OSG_NOTICE<<"Warning: could not file shader file : "<<filename<<std::endl;
+        return;
+    }
 
     _FragmentProgram = 0;
     _FragmentProgram = new osg::Program;

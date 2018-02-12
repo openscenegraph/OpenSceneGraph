@@ -70,7 +70,7 @@
  * This class packs a lot of functionality that you might not expect from a "Viewer".
  * The reason is that Mac users have high expectations of their applications, so things
  * that might not even be considered on other platforms (like drag-and-drop), are almost
- * a requirment on Mac OS X.
+ * a requirement on Mac OS X.
  * The good news is that this class can almost be used as a template for other purposes.
  * If you are looking for the bare minimum code needed, focus your attention on
  * the init* routines and drawRect.
@@ -432,7 +432,6 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
 
     default_text->setAlignment(osgText::Text::CENTER_CENTER);
     default_text->setBackdropType(osgText::Text::OUTLINE);
-//    default_text->setBackdropImplementation(osgText::Text::POLYGON_OFFSET);
     default_text->setColor(osg::Vec4(1.0, 1.0, 0.0, 1.0));
     default_text->setBackdropColor(osg::Vec4(0.0, 0.0, 0.0, 1.0));
     default_text->setAxisAlignment(osgText::Text::XZ_PLANE);
@@ -782,7 +781,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 }
 
 // This is a job for Mighty Mouse!
-// For the most fluid experience turn on 360 degree mode availble in 10.4.8+.
+// For the most fluid experience turn on 360 degree mode available in 10.4.8+.
 // With your Mighty Mouse plugged in,
 // open 'Keyboard & Mouse' in 'System Preferences'.
 // Select the 'Mouse' tab.
@@ -796,7 +795,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
     // This this call does nothing.
 //    theViewer->getEventQueue()->mouseScroll2D([the_event deltaX], [the_event deltaY]);
 
-    // With the absense of a useful mouseScroll2D API, we can manually simulate the desired effect.
+    // With the absence of a useful mouseScroll2D API, we can manually simulate the desired effect.
     NSPoint the_point = [the_event locationInWindow];
     NSPoint converted_point = [self convertPoint:the_point fromView:nil];
     theViewer->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, 1);
@@ -1194,7 +1193,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 //        int number_of_files = [file_names count];
         // Exercise for the reader: Try loading all files in the array
         NSString* single_file = [file_names objectAtIndex:0];
-        osg::ref_ptr<osg::Node> loaded_model = osgDB::readNodeFile([single_file fileSystemRepresentation]);
+        osg::ref_ptr<osg::Node> loaded_model = osgDB::readRefNodeFile([single_file fileSystemRepresentation]);
         if(!loaded_model)
         {
             NSLog(@"File: %@ failed to load", single_file);
@@ -1213,7 +1212,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
             return NO;
         }
         NSString* file_path = [file_url path];
-        osg::ref_ptr<osg::Node> loaded_model = osgDB::readNodeFile([file_path fileSystemRepresentation]);
+        osg::ref_ptr<osg::Node> loaded_model = osgDB::readRefNodeFile([file_path fileSystemRepresentation]);
         if(!loaded_model)
         {
             NSLog(@"URL: %@ failed to load, %@", file_url, file_path);

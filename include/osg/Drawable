@@ -108,7 +108,7 @@ class OSG_EXPORT Drawable : public Node
         virtual void computeDataVariance();
 
         /** Get the list of matrices that transform this node from local coordinates to world coordinates.
-          * The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specifed node. */
+          * The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specified node. */
         MatrixList getWorldMatrices(const osg::Node* haltTraversalAtNode=0) const;
 
 
@@ -235,9 +235,13 @@ class OSG_EXPORT Drawable : public Node
         /** Return whether to use a local VertexArrayObject for this Drawable.*/
         bool getUseVertexArrayObject() const { return _useVertexArrayObject; }
 
-
+#ifdef OSG_USE_DEPRECATED_API
         /** Deprecated, use dirtyGLObjects() instead. */
-        virtual void dirtyDisplayList();
+        inline void dirtyDisplayList()
+        {
+            dirtyGLObjects();
+        }
+#endif
 
         /** Force a recompile on next draw() of any OpenGL objects associated with this geoset.*/
         virtual void dirtyGLObjects();
@@ -278,7 +282,51 @@ class OSG_EXPORT Drawable : public Node
         */
         virtual void compileGLObjects(RenderInfo& renderInfo) const;
 
-        virtual VertexArrayState* createVertexArrayState(RenderInfo& renderInfo) const;
+
+        /** Callback class for overriding the default Drawable::createCreateVertexArrayStateImplementation().*/
+        struct CreateVertexArrayStateCallback : public virtual osg::Object
+        {
+            CreateVertexArrayStateCallback() {}
+
+            CreateVertexArrayStateCallback(const CreateVertexArrayStateCallback& rhs,const CopyOp& copyop):
+                Object(rhs, copyop) {}
+
+            META_Object(osg, CreateVertexArrayStateCallback);
+
+            /** do customized createVertexArrayState .*/
+            virtual osg::VertexArrayState* createVertexArrayStateImplementation(osg::RenderInfo& renderInfo, const osg::Drawable* drawable) const
+            {
+                return drawable->createVertexArrayStateImplementation(renderInfo);
+            }
+        };
+
+
+        /** Set the callback to override the default Drawable::createCreateVertexArrayStateImplementation().*/
+        void setCreateVertexArrayStateCallback(CreateVertexArrayStateCallback* cb) { _createVertexArrayStateCallback = cb; }
+
+        /** Get the callback that overrides the default Drawable::createCreateVertexArrayStateImplementation().*/
+        CreateVertexArrayStateCallback* getCreateVertexArrayStateCallback() { return _createVertexArrayStateCallback.get(); }
+
+        /** Get the const callback that overrides the default Drawable::createCreateVertexArrayStateImplementation().*/
+        const CreateVertexArrayStateCallback* getCreateVertexArrayStateCallback() const { return _createVertexArrayStateCallback.get(); }
+
+
+        /** Create the VertexArrayState object used to track vertex array and vertex array object state. This method will be called automatically during rendering setup so users should not call this themselves.*/
+        inline VertexArrayState* createVertexArrayState(RenderInfo& renderInfo) const
+        {
+            if (_createVertexArrayStateCallback.valid()) return _createVertexArrayStateCallback->createVertexArrayStateImplementation(renderInfo, this);
+            else return createVertexArrayStateImplementation(renderInfo);
+        }
+
+        /** Implementation of Create the VertexArrayState object.*/
+        virtual VertexArrayState* createVertexArrayStateImplementation(RenderInfo& renderInfo) const;
+
+        void setVertexArrayStateList(VertexArrayStateList& vasl) { _vertexArrayStateList = vasl; }
+
+        VertexArrayStateList& getVertexArrayStateList() { return _vertexArrayStateList; }
+
+        const VertexArrayStateList& getVertexArrayStateList() const { return _vertexArrayStateList; }
+
 
 
         /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
@@ -316,7 +364,7 @@ class OSG_EXPORT Drawable : public Node
         };
 
         /** Set the DrawCallback which allows users to attach customize the drawing of existing Drawable object.*/
-        virtual void setDrawCallback(DrawCallback* dc) { _drawCallback=dc; dirtyDisplayList(); }
+        virtual void setDrawCallback(DrawCallback* dc) { _drawCallback=dc; dirtyGLObjects(); }
 
         /** Get the non const DrawCallback.*/
         DrawCallback* getDrawCallback() { return _drawCallback.get(); }
@@ -450,7 +498,7 @@ class OSG_EXPORT Drawable : public Node
 
         /** Accept a PrimitiveFunctor and call its methods to tell it about the internal primitives that this Drawable has.
           * return true if functor handled by drawable, return false on failure of drawable to generate functor calls.
-          * Note, PrimtiveFunctor only provides const access of the primitives, as primitives may be procedurally generated
+          * Note, PrimitiveFunctor only provides const access of the primitives, as primitives may be procedurally generated
           * so one cannot modify it.*/
         virtual void accept(PrimitiveFunctor&) const {}
 
@@ -459,7 +507,7 @@ class OSG_EXPORT Drawable : public Node
 
         /** Accept a PrimitiveIndexFunctor and call its methods to tell it about the internal primitives that this Drawable has.
           * return true if functor handled by drawable, return false on failure of drawable to generate functor calls.
-          * Note, PrimtiveIndexFunctor only provide const access of the primitives, as primitives may be procedurally generated
+          * Note, PrimitiveIndexFunctor only provide const access of the primitives, as primitives may be procedurally generated
           * so one cannot modify it.*/
         virtual void accept(PrimitiveIndexFunctor&) const {}
 
@@ -491,10 +539,10 @@ class OSG_EXPORT Drawable : public Node
         typedef osg::buffered_value<GLuint> GLObjectList;
         mutable GLObjectList    _globjList;
 
-        typedef buffered_object< osg::ref_ptr<VertexArrayState> > VertexArrayStateList;
         mutable VertexArrayStateList    _vertexArrayStateList;
 
         ref_ptr<DrawCallback>   _drawCallback;
+        ref_ptr<CreateVertexArrayStateCallback> _createVertexArrayStateCallback;
 };
 
 #ifdef INLINE_DRAWABLE_DRAW

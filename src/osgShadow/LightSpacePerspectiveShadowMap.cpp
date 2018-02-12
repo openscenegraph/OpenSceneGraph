@@ -294,7 +294,7 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
 
 #if 1
     // Original LiSPSM Paper suggests that algorithm should work for all light types:
-    // infinte directional, omnidirectional and spot types may be treated as directional
+    // infinite directional, omnidirectional and spot types may be treated as directional
     // as all computations are performed in post projection light space.
     // Frankly, I have my doubts if their error analysis and methodology still works
     // in non directional lights post projective space. But since I can't prove it doesn't,

@@ -12,8 +12,8 @@ TangentSpaceGenerator::TangentSpaceGenerator()
     N_(new osg::Vec4Array)
 {
     T_->setBinding(osg::Array::BIND_PER_VERTEX); T_->setNormalize(false);
-    B_->setBinding(osg::Array::BIND_PER_VERTEX); T_->setNormalize(false);
-    N_->setBinding(osg::Array::BIND_PER_VERTEX); T_->setNormalize(false);
+    B_->setBinding(osg::Array::BIND_PER_VERTEX); B_->setNormalize(false);
+    N_->setBinding(osg::Array::BIND_PER_VERTEX); N_->setNormalize(false);
 }
 
 TangentSpaceGenerator::TangentSpaceGenerator(const TangentSpaceGenerator &copy, const osg::CopyOp &copyop)

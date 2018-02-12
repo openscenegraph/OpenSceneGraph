@@ -871,7 +871,15 @@ JSONObject* WriteVisitor::createJSONPagedLOD(osg::PagedLOD *plod)
         ss << "Range ";
         ss << i;
         std::string str = ss.str();
-        rangeObject->getMaps()[str] =  new JSONVec2Array(osg::Vec2(plod->getRangeList()[i].first, plod->getRangeList()[i].second));
+
+        osg::Vec2 range(plod->getRangeList()[i].first, plod->getRangeList()[i].second);
+
+        // Since OSGJS uses pixel area, use square range
+        if (plod->getRangeMode() == osg::LOD::PIXEL_SIZE_ON_SCREEN) {
+          range.set(pow(range.x(), 2.0f), pow(range.y(), 2.0f));
+        }
+
+        rangeObject->getMaps()[str] = new JSONVec2Array(range);
     }
     jsonPlod->getMaps()["RangeList"] = rangeObject;
     // File List

@@ -1228,6 +1228,9 @@ Texture::Texture():
             _min_filter(LINEAR_MIPMAP_LINEAR), // trilinear
             _mag_filter(LINEAR),
             _maxAnisotropy(1.0f),
+            _minlod(0.0f),
+            _maxlod(-1.0f),
+            _lodbias(0.0f),
             _swizzle(GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA),
             _useHardwareMipMapGeneration(true),
             _unrefImageDataAfterApply(false),
@@ -1255,6 +1258,9 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _min_filter(text._min_filter),
             _mag_filter(text._mag_filter),
             _maxAnisotropy(text._maxAnisotropy),
+            _minlod(text._minlod),
+            _maxlod(text._maxlod),
+            _lodbias(text._lodbias),
             _swizzle(text._swizzle),
             _useHardwareMipMapGeneration(text._useHardwareMipMapGeneration),
             _unrefImageDataAfterApply(text._unrefImageDataAfterApply),
@@ -1288,6 +1294,9 @@ int Texture::compareTexture(const Texture& rhs) const
     COMPARE_StateAttribute_Parameter(_min_filter)
     COMPARE_StateAttribute_Parameter(_mag_filter)
     COMPARE_StateAttribute_Parameter(_maxAnisotropy)
+    COMPARE_StateAttribute_Parameter(_minlod)
+    COMPARE_StateAttribute_Parameter(_maxlod)
+    COMPARE_StateAttribute_Parameter(_lodbias)
     COMPARE_StateAttribute_Parameter(_swizzle)
     COMPARE_StateAttribute_Parameter(_useHardwareMipMapGeneration)
     COMPARE_StateAttribute_Parameter(_internalFormatMode)
@@ -1336,7 +1345,6 @@ void Texture::setWrap(WrapParameter which, WrapMode wrap)
         case WRAP_R : _wrap_r = wrap; dirtyTextureParameters(); break;
         default : OSG_WARN<<"Error: invalid 'which' passed Texture::setWrap("<<(unsigned int)which<<","<<(unsigned int)wrap<<")"<<std::endl; break;
     }
-
 }
 
 
@@ -1382,15 +1390,31 @@ void Texture::setMaxAnisotropy(float anis)
     }
 }
 
-void Texture::bindToImageUnit(unsigned int unit, GLenum access, GLenum format, int level, bool layered, int layer)
+void Texture::setMinLOD(float anis)
 {
-    _imageAttachment.unit = unit;
-    _imageAttachment.level = level;
-    _imageAttachment.layered = layered ? GL_TRUE : GL_FALSE;
-    _imageAttachment.layer = layer;
-    _imageAttachment.access = access;
-    _imageAttachment.format = format;
-    dirtyTextureParameters();
+    if (_minlod!=anis)
+    {
+        _minlod = anis;
+        dirtyTextureParameters();
+    }
+}
+
+void Texture::setMaxLOD(float anis)
+{
+    if (_maxlod!=anis)
+    {
+        _maxlod = anis;
+        dirtyTextureParameters();
+    }
+}
+
+void Texture::setLODBias(float anis)
+{
+    if (_lodbias!=anis)
+    {
+        _lodbias = anis;
+        dirtyTextureParameters();
+    }
 }
 
 /** Force a recompile on next apply() of associated OpenGL texture objects.*/
@@ -1634,7 +1658,7 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
     {
         case(GL_INTENSITY) : internalFormat = GL_RED; break; // should it be swizzled to match RGBA(INTENSITY, INTENSITY, INTENSITY, INTENSITY)?
         case(GL_LUMINANCE) : internalFormat = GL_RED; break; // should it be swizzled to match RGBA(LUMINANCE, LUMINANCE, LUMINANCE, 1.0)?
-        case(1) : internalFormat = GL_RED; break; // or sould this be GL_ALPHA?
+        case(1) : internalFormat = GL_RED; break; // or should this be GL_ALPHA?
         case(2) : internalFormat = GL_RG; break; // should we assume GL_LUMINANCE_ALPHA?
         case(GL_LUMINANCE_ALPHA) : internalFormat = GL_RG; break; // should it be swizlled to match RGAB(LUMUNIANCE, LUMINANCE, LUMINANCE, ALPHA)?
         case(3) : internalFormat = GL_RGB; break;
@@ -1994,19 +2018,14 @@ void Texture::applyTexParameters(GLenum target, State& state) const
             glTexParameteri(target, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE);
         }
     }
-
-    // Apply image load/store attributes
-    if (extensions->isBindImageTextureSupported() && _imageAttachment.access!=0)
+    // if range is valid
+    if( _maxlod - _minlod >= 0)
     {
-        TextureObject* tobj = getTextureObject(contextID);
-        if (tobj)
-        {
-            extensions->glBindImageTexture(
-                _imageAttachment.unit, tobj->id(), _imageAttachment.level,
-                _imageAttachment.layered, _imageAttachment.layer, _imageAttachment.access,
-                _imageAttachment.format!=0 ? _imageAttachment.format : _internalFormat);
-        }
+        glTexParameterf(target, GL_TEXTURE_MIN_LOD, _minlod);
+        glTexParameterf(target, GL_TEXTURE_MAX_LOD, _maxlod);
     }
+
+    glTexParameterf(target, GL_TEXTURE_LOD_BIAS, _lodbias);
 
     getTextureParameterDirty(state.getContextID()) = false;
 
@@ -2286,7 +2305,17 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
 
             if(useTexStorrage)
             {
-                extensions->glTexStorage2D(target, numMipmapLevels, sizedInternalFormat, width, height);
+                if (getTextureTarget()==GL_TEXTURE_CUBE_MAP)
+                {
+                    if (target==GL_TEXTURE_CUBE_MAP_POSITIVE_X)
+                    {
+                        extensions->glTexStorage2D(GL_TEXTURE_CUBE_MAP, numMipmapLevels, sizedInternalFormat, width, height);
+                    }
+                }
+                else
+                {
+                    extensions->glTexStorage2D(target, numMipmapLevels, sizedInternalFormat, width, height);
+                }
 
                 if( !compressed_image )
                 {

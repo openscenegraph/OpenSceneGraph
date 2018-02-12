@@ -767,12 +767,6 @@ struct BlockDrawCallback : public virtual osg::Drawable::DrawCallback
 
         vertices->dirty();
 
-        osg::DrawArrays* drawArrays = dynamic_cast<osg::DrawArrays*>(geom->getPrimitiveSet(0));
-        if(drawArrays)
-        {
-            drawArrays->setCount(vi);
-        }
-
         drawable->drawImplementation(renderInfo);
     }
 

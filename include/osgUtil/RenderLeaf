@@ -52,8 +52,8 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
         {
             _parent = 0;
             _drawable = drawable;
-            _projection = projection,
-            _modelview = modelview,
+            _projection = projection;
+            _modelview = modelview;
             _depth = depth;
             _dynamic = (drawable->getDataVariance()==osg::Object::DYNAMIC);
             _traversalNumber = traversalNumber;

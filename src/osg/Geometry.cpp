@@ -83,7 +83,7 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
 Geometry::~Geometry()
 {
     // do dirty here to keep the getGLObjectSizeHint() estimate on the ball
-    dirtyDisplayList();
+    dirtyGLObjects();
 
     // no need to delete, all automatically handled by ref_ptr :-)
 }
@@ -159,10 +159,15 @@ void Geometry::setVertexArray(Array* array)
 
     _vertexArray = array;
 
-    dirtyDisplayList();
+    dirtyGLObjects();
     dirtyBound();
 
-    if (/*_useVertexBufferObjects && */array) addVertexBufferObjectIfRequired(array);
+    if (/*_useVertexBufferObjects && */array)
+    {
+        _vertexArrayStateList.assignVertexArrayDispatcher();
+
+        addVertexBufferObjectIfRequired(array);
+    }
 }
 
 void Geometry::setNormalArray(Array* array, osg::Array::Binding binding)
@@ -171,9 +176,14 @@ void Geometry::setNormalArray(Array* array, osg::Array::Binding binding)
 
     _normalArray = array;
 
-    dirtyDisplayList();
+    dirtyGLObjects();
 
-    if (/*_useVertexBufferObjects && */array) addVertexBufferObjectIfRequired(array);
+    if (/*_useVertexBufferObjects && */array)
+    {
+        _vertexArrayStateList.assignNormalArrayDispatcher();
+
+        addVertexBufferObjectIfRequired(array);
+    }
 }
 
 void Geometry::setColorArray(Array* array, osg::Array::Binding binding)
@@ -182,9 +192,14 @@ void Geometry::setColorArray(Array* array, osg::Array::Binding binding)
 
     _colorArray = array;
 
-    dirtyDisplayList();
+    dirtyGLObjects();
 
-    if (/*_useVertexBufferObjects && */array) addVertexBufferObjectIfRequired(array);
+    if (/*_useVertexBufferObjects && */array)
+    {
+        _vertexArrayStateList.assignColorArrayDispatcher();
+
+        addVertexBufferObjectIfRequired(array);
+    }
 }
 
 void Geometry::setSecondaryColorArray(Array* array, osg::Array::Binding binding)
@@ -193,9 +208,14 @@ void Geometry::setSecondaryColorArray(Array* array, osg::Array::Binding binding)
 
     _secondaryColorArray = array;
 
-    dirtyDisplayList();
+    dirtyGLObjects();
 
-    if (/*_useVertexBufferObjects && */array) addVertexBufferObjectIfRequired(array);
+    if (/*_useVertexBufferObjects && */array)
+    {
+        _vertexArrayStateList.assignSecondaryColorArrayDispatcher();
+
+        addVertexBufferObjectIfRequired(array);
+    }
 }
 
 void Geometry::setFogCoordArray(Array* array, osg::Array::Binding binding)
@@ -204,9 +224,14 @@ void Geometry::setFogCoordArray(Array* array, osg::Array::Binding binding)
 
     _fogCoordArray = array;
 
-    dirtyDisplayList();
+    dirtyGLObjects();
 
-    if (/*_useVertexBufferObjects && */array) addVertexBufferObjectIfRequired(array);
+    if (/*_useVertexBufferObjects && */array)
+    {
+        _vertexArrayStateList.assignFogCoordArrayDispatcher();
+
+        addVertexBufferObjectIfRequired(array);
+    }
 }
 
 
@@ -224,10 +249,12 @@ void Geometry::setTexCoordArray(unsigned int index,Array* array, osg::Array::Bin
 
     _texCoordList[index] = array;
 
-    dirtyDisplayList();
+    dirtyGLObjects();
 
     if (/*_useVertexBufferObjects && */array)
     {
+        _vertexArrayStateList.assignTexCoordArrayDispatcher(_texCoordList.size());
+
         addVertexBufferObjectIfRequired(array);
     }
 }
@@ -248,10 +275,12 @@ void Geometry::setTexCoordArrayList(const ArrayList& arrayList)
 {
     _texCoordList = arrayList;
 
-    dirtyDisplayList();
+    dirtyGLObjects();
 
-    /*if (_useVertexBufferObjects)*/
+    if (!_texCoordList.empty())
     {
+        _vertexArrayStateList.assignTexCoordArrayDispatcher(_texCoordList.size());
+
         for(ArrayList::iterator itr = _texCoordList.begin();
             itr != _texCoordList.end();
             ++itr)
@@ -270,9 +299,14 @@ void Geometry::setVertexAttribArray(unsigned int index, Array* array, osg::Array
 
     _vertexAttribList[index] = array;
 
-    dirtyDisplayList();
+    dirtyGLObjects();
 
-    if (/*_useVertexBufferObjects && */array) addVertexBufferObjectIfRequired(array);
+    if (/*_useVertexBufferObjects && */array)
+    {
+        _vertexArrayStateList.assignVertexAttribArrayDispatcher(_vertexAttribList.size());
+
+        addVertexBufferObjectIfRequired(array);
+    }
 }
 
 Array *Geometry::getVertexAttribArray(unsigned int index)
@@ -291,10 +325,12 @@ void Geometry::setVertexAttribArrayList(const ArrayList& arrayList)
 {
     _vertexAttribList = arrayList;
 
-    dirtyDisplayList();
+    dirtyGLObjects();
 
-    /*if (_useVertexBufferObjects)*/
+    if (!_vertexAttribList.empty())
     {
+        _vertexArrayStateList.assignVertexAttribArrayDispatcher(_vertexAttribList.size());
+
         for(ArrayList::iterator itr = _vertexAttribList.begin();
             itr != _vertexAttribList.end();
             ++itr)
@@ -312,7 +348,7 @@ bool Geometry::addPrimitiveSet(PrimitiveSet* primitiveset)
         /*if (_useVertexBufferObjects)*/ addElementBufferObjectIfRequired(primitiveset);
 
         _primitives.push_back(primitiveset);
-        dirtyDisplayList();
+        dirtyGLObjects();
         dirtyBound();
         return true;
     }
@@ -328,7 +364,7 @@ bool Geometry::setPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset)
         /*if (_useVertexBufferObjects)*/ addElementBufferObjectIfRequired(primitiveset);
 
         _primitives[i] = primitiveset;
-        dirtyDisplayList();
+        dirtyGLObjects();
         dirtyBound();
         return true;
     }
@@ -346,7 +382,7 @@ bool Geometry::insertPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset)
         if (i<_primitives.size())
         {
             _primitives.insert(_primitives.begin()+i,primitiveset);
-            dirtyDisplayList();
+            dirtyGLObjects();
             dirtyBound();
             return true;
         }
@@ -371,7 +407,7 @@ void Geometry::setPrimitiveSetList(const PrimitiveSetList& primitives)
         }
 
     }
-    dirtyDisplayList(); dirtyBound();
+    dirtyGLObjects(); dirtyBound();
 }
 
 bool Geometry::removePrimitiveSet(unsigned int i, unsigned int numElementsToRemove)
@@ -393,7 +429,7 @@ bool Geometry::removePrimitiveSet(unsigned int i, unsigned int numElementsToRemo
             _primitives.erase(_primitives.begin()+i,_primitives.end());
         }
 
-        dirtyDisplayList();
+        dirtyGLObjects();
         dirtyBound();
         return true;
     }
@@ -570,15 +606,10 @@ void Geometry::setUseVertexBufferObjects(bool flag)
     DrawElementsList drawElementsList;
     getDrawElementsList(drawElementsList);
 
-    typedef std::vector<osg::VertexBufferObject*>  VertexBufferObjectList;
-    typedef std::vector<osg::ElementBufferObject*>  ElementBufferObjectList;
-
     /*if (_useVertexBufferObjects)*/
     {
         if (!arrayList.empty())
         {
-
-            VertexBufferObjectList vboList;
 
             osg::ref_ptr<osg::VertexBufferObject> vbo;
 
@@ -604,8 +635,6 @@ void Geometry::setUseVertexBufferObjects(bool flag)
 
         if (!drawElementsList.empty())
         {
-            ElementBufferObjectList eboList;
-
             osg::ref_ptr<osg::ElementBufferObject> ebo;
 
             DrawElementsList::iterator deitr;
@@ -720,7 +749,7 @@ void Geometry::releaseGLObjects(State* state) const
 
 }
 
-VertexArrayState* Geometry::createVertexArrayState(RenderInfo& renderInfo) const
+VertexArrayState* Geometry::createVertexArrayStateImplementation(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
 
@@ -791,6 +820,9 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
             if ((*itr)->getBufferObject()) bufferObjects.insert((*itr)->getBufferObject());
         }
 
+        if (bufferObjects.empty())
+            return; // no buffers, nothing to compile
+
         //osg::ElapsedTime timer;
 
         // now compile any buffer objects that require it.
@@ -808,11 +840,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
 
         // OSG_NOTICE<<"Time to compile "<<timer.elapsedTime_m()<<"ms"<<std::endl;
 
-        // unbind the BufferObjects
-        extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
-        extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
-
-        if (state.useVertexArrayObject(_useVertexArrayObject) && !bufferObjects.empty())
+        if (state.useVertexArrayObject(_useVertexArrayObject))
         {
             VertexArrayState* vas = 0;
 
@@ -826,6 +854,10 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
 
             state.unbindVertexArrayObject();
         }
+
+        // unbind the BufferObjects
+        extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
+        extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
     }
     else
     {
@@ -1156,8 +1188,6 @@ Geometry* osg::createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVe
     (*normals)[0].normalize();
     geom->setNormalArray(normals, osg::Array::BIND_OVERALL);
 
-
-#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
     DrawElementsUByte* elems = new DrawElementsUByte(PrimitiveSet::TRIANGLES);
     elems->push_back(0);
     elems->push_back(1);
@@ -1167,9 +1197,6 @@ Geometry* osg::createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVe
     elems->push_back(3);
     elems->push_back(0);
     geom->addPrimitiveSet(elems);
-#else
-    geom->addPrimitiveSet(new DrawArrays(PrimitiveSet::QUADS,0,4));
-#endif
 
     return geom;
 }
@@ -1189,7 +1216,7 @@ Geometry* osg::createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVe
     if (array->getBinding() == binding) return; \
     array->setBinding(binding);\
     if (ab==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) _containsDeprecatedData = true; \
-    dirtyDisplayList();
+    dirtyGLObjects();
 
 
 #define GET_BINDING(array) (array!=0 ? static_cast<AttributeBinding>(array->getBinding()) : BIND_OFF)
@@ -1226,7 +1253,7 @@ void Geometry::setVertexAttribBinding(unsigned int index,AttributeBinding ab)
 
         _vertexAttribList[index]->setBinding(binding);
 
-        dirtyDisplayList();
+        dirtyGLObjects();
     }
     else
     {
@@ -1240,7 +1267,7 @@ void Geometry::setVertexAttribNormalize(unsigned int index,GLboolean norm)
     {
         _vertexAttribList[index]->setNormalize(norm!=GL_FALSE);
 
-        dirtyDisplayList();
+        dirtyGLObjects();
     }
 }
 

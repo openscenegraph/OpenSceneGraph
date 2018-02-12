@@ -274,7 +274,13 @@ const char* invalidNames[] =
     "Sun",
     "I",
     "TriangleFunctor",
-    "PrimitiveFunctor"
+    "PrimitiveFunctor",
+    "OpenMW",
+    "StreamOperator",
+    "SceneLoader",
+    "OpenGL",
+    "FindLIBLAS",
+    "MinGW"
 };
 
 
@@ -498,7 +504,8 @@ TypoCorrection typoCorrections[] =
     {"ViganÃ²", "Viganò"},
     {"Vigano", "Viganò"},
     {"Frashud", "Farshid"},
-    {"Dannahauer","Dannahauer"}
+    {"Dannahauer","Dannahauer"},
+    {"Sando","Sandro"}
 };
 
 
@@ -697,7 +704,9 @@ NameCorrection nameCorrections[] =
      {"WeSee", "",
        "Alois", "Wismer"},
      {"We", "See",
-       "Alois", "Wismer"}
+       "Alois", "Wismer"},
+     {"AnyOldName3", "",
+       "Chris", "Djali"}
 };
 
 

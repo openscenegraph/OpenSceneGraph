@@ -85,7 +85,7 @@ bool readerText::success(bool inSuccess, string type)
 
 bool readerText::getTrimmedLine(std::ifstream& f)
 {
-    static string line = "";
+    std::string line;
     if (getline(f, line, _delim)) {
         ++_lineCount;
         _str.clear();

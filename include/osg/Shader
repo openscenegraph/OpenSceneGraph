@@ -162,14 +162,13 @@ class OSG_EXPORT Shader : public osg::Object
         /** Get the const Shader's ShaderBinary, return NULL if none is assigned. */
         const ShaderBinary* getShaderBinary() const { return _shaderBinary.get(); }
 
-
-        /** Read shader source from file and then constructor shader of specified type.
-          * Return the resulting Shader or 0 if no valid shader source could be read.*/
+#ifdef OSG_USE_DEPRECATED_API
+        /** Deorecated use osgDB::readRefShaderFile().*/
         static Shader* readShaderFile( Type type, const std::string& fileName );
 
-        /** Load the Shader's source code text from a file. */
+        /** Deorecated use osgDB::readRefShaderFile(). */
         bool loadShaderSourceFromFile( const std::string& fileName );
-
+#endif
 
         /** The code injection map used when generating the main shader during main shader composition.*/
         typedef std::multimap<float, std::string> CodeInjectionMap;

@@ -63,7 +63,7 @@ void TextureBuffer::setBufferData(BufferData *bufferdata)
     {
         _bufferData->addClient(this);
 
-        ///set BufferObject if not setted by user
+        ///set BufferObject if not set by user
         if(!_bufferData->getBufferObject())
         {
             VertexBufferObject* bo=new  VertexBufferObject();
@@ -160,9 +160,10 @@ void TextureBuffer::apply(State& state) const
 #endif
     if (textureObject)
     {
-        const GLExtensions* extensions = state.get<GLExtensions>();
         if(_bufferData.valid() &&_modifiedCount[contextID]!=_bufferData->getModifiedCount() )
         {
+            _modifiedCount[contextID]=_bufferData->getModifiedCount() ;
+
             GLBufferObject* glBufferObject = _bufferData->getBufferObject()->getOrCreateGLBufferObject(contextID);
             if (glBufferObject)
             {
@@ -174,21 +175,8 @@ void TextureBuffer::apply(State& state) const
 
             }
 
-            _modifiedCount[contextID]=_bufferData->getModifiedCount() ;
         }
         textureObject->bind();
-
-        if( getTextureParameterDirty(contextID) )
-        {
-            if( extensions->isBindImageTextureSupported() && _imageAttachment.access!=0 )
-            {
-                extensions->glBindImageTexture(
-                    _imageAttachment.unit, textureObject->id(), _imageAttachment.level,
-                    _imageAttachment.layered, _imageAttachment.layer, _imageAttachment.access,
-                    _imageAttachment.format!=0 ? _imageAttachment.format : _internalFormat);
-            }
-            getTextureParameterDirty(state.getContextID()) = false;
-        }
     }
     else if (_bufferData.valid()  &&_bufferData->getBufferObject()  )//&& _bufferObject->getNumBufferData()>0 )
     {
@@ -198,17 +186,12 @@ void TextureBuffer::apply(State& state) const
         {
             const GLExtensions* extensions = state.get<GLExtensions>();
 
+            _modifiedCount[contextID] = _bufferData->getModifiedCount();
+
             textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_BUFFER);
             textureObject->_profile._internalFormat=_internalFormat;
             textureObject->bind();
 
-            if ( extensions->isBindImageTextureSupported() && _imageAttachment.access!=0 )
-            {
-                extensions->glBindImageTexture(
-                    _imageAttachment.unit, textureObject->id(), _imageAttachment.level,
-                    _imageAttachment.layered, _imageAttachment.layer, _imageAttachment.access,
-                    _imageAttachment.format!=0 ? _imageAttachment.format : _internalFormat);
-            }
             getTextureParameterDirty(state.getContextID()) = false;
 
             computeInternalFormat();
@@ -221,7 +204,6 @@ void TextureBuffer::apply(State& state) const
 
             textureObject->bind();
             extensions->glTexBuffer(GL_TEXTURE_BUFFER, _internalFormat, glBufferObject->getGLObjectID());
-            _modifiedCount[contextID] = _bufferData->getModifiedCount();
         }
 
     }
@@ -237,4 +219,3 @@ void TextureBuffer::computeInternalFormat() const
     if (getImage() ) computeInternalFormatWithImage(*getImage());
     else computeInternalFormatType();
 }
-

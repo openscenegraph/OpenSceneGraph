@@ -31,6 +31,7 @@
 #include <osg/ComputeBoundsVisitor>
 #include <osg/Notify>
 #include <osg/io_utils>
+#include <osg/os_utils>
 #include <osg/ValueObject>
 
 #include <osgUtil/TransformCallback>
@@ -484,7 +485,8 @@ void SlideShowConstructor::addLayer(bool inheritPreviousLayers, bool defineAsBas
             bool useTextureRectangle = true;
             float s = useTextureRectangle ? image->s() : 1.0;
             float t = useTextureRectangle ? image->t() : 1.0;
-            osg::Geometry* backgroundQuad = osg::createTexturedQuadGeometry(_slideOrigin,
+            osg::Vec3 backgroundShift(0.0f, _slideWidth*0.0001f, 0.0f);
+            osg::Geometry* backgroundQuad = osg::createTexturedQuadGeometry(_slideOrigin+backgroundShift,
                                                             osg::Vec3(_slideWidth,0.0f,0.0f),
                                                             osg::Vec3(0.0f,0.0f,_slideHeight),
                                                             s, t);
@@ -1748,7 +1750,7 @@ void SlideShowConstructor::addGraph(const std::string& contents, const PositionD
 
     std::stringstream command;
     command<<"dot -Tsvg "<<dotFileName<<" -o "<<tmpSvgFileName;
-    int result = system(command.str().c_str());
+    int result = osg_system(command.str().c_str());
     if (result==0)
     {
         osg::ref_ptr<osgDB::Options> previousOptions = _options;

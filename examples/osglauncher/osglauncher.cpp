@@ -44,6 +44,7 @@
 #include <osgGA/TrackballManipulator>
 
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
 
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
@@ -423,6 +424,9 @@ int main( int argc, char **argv )
 
     // add the handler for doing the picking
     viewer.addEventHandler(new PickHandler(&viewer,updateText.get()));
+
+    // add the stats handler
+    viewer.addEventHandler(new osgViewer::StatsHandler);
 
     osg::Group* root = new osg::Group();
 

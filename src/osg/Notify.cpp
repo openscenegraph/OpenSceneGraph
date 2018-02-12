@@ -12,6 +12,7 @@
 */
 #include <osg/Notify>
 #include <osg/ApplicationUsage>
+#include <osg/os_utils>
 #include <osg/ref_ptr>
 #include <string>
 #include <stdlib.h>
@@ -61,6 +62,9 @@ struct NotifyStreamBuffer : public std::stringbuf
 {
     NotifyStreamBuffer() : _severity(osg::NOTICE)
     {
+        /* reduce the need to reallocate the std::ostream buffer behind osg::Notify (causing multitreading issues) by pre-allocating 4095 bytes */
+        str(std::string(4095, 0));
+        pubseekpos(0, std::ios_base::out);
     }
 
     void setNotifyHandler(osg::NotifyHandler *handler) { _handler = handler; }
@@ -137,9 +141,8 @@ struct NotifySingleton
 
         _notifyLevel = osg::NOTICE; // Default value
 
-        char* OSGNOTIFYLEVEL=getenv("OSG_NOTIFY_LEVEL");
-        if (!OSGNOTIFYLEVEL) OSGNOTIFYLEVEL=getenv("OSGNOTIFYLEVEL");
-        if(OSGNOTIFYLEVEL)
+        std::string OSGNOTIFYLEVEL;
+        if(getEnvVar("OSG_NOTIFY_LEVEL", OSGNOTIFYLEVEL) || getEnvVar("OSGNOTIFYLEVEL", OSGNOTIFYLEVEL))
         {
 
             std::string stringOSGNOTIFYLEVEL(OSGNOTIFYLEVEL);

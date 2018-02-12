@@ -12,7 +12,7 @@
 
 #In ffmpeg code, old version use "#include <header.h>" and newer use "#include <libname/header.h>"
 #In OSG ffmpeg plugin, we used "#include <header.h>" for compatibility with old version of ffmpeg
-#With the new version of FFmpeg, a file named "time.h" was added that breaks compatability with the old version of ffmpeg.
+#With the new version of FFmpeg, a file named "time.h" was added that breaks compatibility with the old version of ffmpeg.
 
 #We have to search the path which contain the header.h (useful for old version)
 #and search the path which contain the libname/header.h (useful for new version)

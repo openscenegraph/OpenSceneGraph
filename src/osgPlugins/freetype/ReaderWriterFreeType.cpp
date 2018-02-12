@@ -11,7 +11,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
         ReaderWriterFreeType()
         {
             supportsExtension("ttf","true type font format");
-            supportsExtension("ttc","true type format");
+            supportsExtension("ttc","true type collection format");
             supportsExtension("pfb","type1 binary format");
             supportsExtension("pfa","type2 ascii format");
             supportsExtension("cid","Postscript CID-Fonts format");
@@ -23,6 +23,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
             supportsExtension("woff","web open font format");
 
             supportsOption("monochrome","Select monochrome font.");
+            supportsOption("index=<uint>", "Select index of font within ttc collection. Defaults to 0.");
         }
 
         virtual const char* className() const { return "FreeType Font Reader/Writer"; }
@@ -36,6 +37,20 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
             }
 
             return flags;
+        }
+
+        static unsigned int getIndex(const osgDB::ReaderWriter::Options* options)
+        {
+            if(!options) return 0;
+
+            std::string indexstr = options->getPluginStringData("index");
+            int index = std::atoi(indexstr.c_str());
+            if(index < 0)
+            {
+                OSG_WARN<< "Warning: invalid index string (" << indexstr << ") when loading freetype font. Attempting to use default index 0." << std::endl;
+                return 0;
+            }
+            else return (unsigned int)index;
         }
 
         virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
@@ -53,7 +68,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
                 return ReadResult::ERROR_IN_READING_FILE;
             }
 
-            return freeTypeLibrary->getFont(fileName,0,getFlags(options));
+            return freeTypeLibrary->getFont(fileName, getIndex(options), getFlags(options));
         }
 
         virtual ReadResult readObject(std::istream& stream, const osgDB::ReaderWriter::Options* options) const
@@ -65,7 +80,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
                 return ReadResult::ERROR_IN_READING_FILE;
             }
 
-            return freeTypeLibrary->getFont(stream, 0, getFlags(options));
+            return freeTypeLibrary->getFont(stream, getIndex(options), getFlags(options));
         }
 };
 

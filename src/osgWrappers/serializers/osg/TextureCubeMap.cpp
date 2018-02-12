@@ -31,6 +31,44 @@ FACE_IMAGE_FUNCTION( NegY, osg::TextureCubeMap::NEGATIVE_Y )
 FACE_IMAGE_FUNCTION( PosZ, osg::TextureCubeMap::POSITIVE_Z )
 FACE_IMAGE_FUNCTION( NegZ, osg::TextureCubeMap::NEGATIVE_Z )
 
+struct TextureCubeGetValue : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+    {
+        if (inputParameters.empty()) return false;
+
+        unsigned int index = 0;
+        osg::ValueObject* indexObject = inputParameters[0]->asValueObject();
+        if (indexObject) indexObject->getScalarValue(index);
+
+        osg::TextureCubeMap* tcm = reinterpret_cast<osg::TextureCubeMap*>(objectPtr);
+        outputParameters.push_back(tcm->getImage(index));
+
+        return true;
+    }
+};
+
+
+struct TextureCubeSetValue : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+    {
+        if (inputParameters.size()<2) return false;
+
+        unsigned int index = 0;
+        osg::ValueObject* indexObject = inputParameters[0]->asValueObject();
+        if (indexObject) indexObject->getScalarValue(index);
+
+        osg::Image* image = inputParameters[1]->asImage();
+        if (!image) return false;
+
+        osg::TextureCubeMap* tcm = reinterpret_cast<osg::TextureCubeMap*>(objectPtr);
+        tcm->setImage(index, image);
+
+        return true;
+    }
+};
+
 REGISTER_OBJECT_WRAPPER( TextureCubeMap,
                          new osg::TextureCubeMap,
                          osg::TextureCubeMap,
@@ -45,4 +83,7 @@ REGISTER_OBJECT_WRAPPER( TextureCubeMap,
 
     ADD_INT_SERIALIZER( TextureWidth, 0 );  // _textureWidth
     ADD_INT_SERIALIZER( TextureHeight, 0 );  // _textureHeight
+
+    ADD_METHOD_OBJECT( "getImage", TextureCubeGetValue );
+    ADD_METHOD_OBJECT( "setImage", TextureCubeSetValue );
 }

@@ -56,7 +56,7 @@ class OSG_EXPORT Timer {
         inline double time_n() const { return delta_n(_startTick, tick()); }
 
         /** Get the time in seconds between timer ticks t1 and t2.*/
-        inline double delta_s( Timer_t t1, Timer_t t2 ) const { return (double)(t2 - t1)*_secsPerTick; }
+        inline double delta_s( Timer_t t1, Timer_t t2 ) const { return (t2>t1) ? (double)(t2 - t1)*_secsPerTick : -(double)(t1 - t2)*_secsPerTick; }
 
         /** Get the time in milliseconds between timer ticks t1 and t2.*/
         inline double delta_m( Timer_t t1, Timer_t t2 ) const { return delta_s(t1,t2)*1e3; }

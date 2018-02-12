@@ -53,6 +53,9 @@ public:
     virtual void setFont(const std::string& fontfile);
 
     /** Get the font. Return 0 if default is being used.*/
+    Font* getFont() { return _font.get(); }
+
+    /** Get the const font. Return 0 if default is being used.*/
     const Font* getFont() const { return _font.get(); }
 
 
@@ -276,19 +279,23 @@ public:
     void getCoord(unsigned int i, osg::Vec2& c) const { c.set((*_coords)[i].x(), (*_coords)[i].y()); }
     void getCoord(unsigned int i, osg::Vec3& c) const { c = (*_coords)[i]; }
 
-
-    /** Get the internal matrix used to provide positioning of text.*/
+    /** Get the cached internal matrix used to provide positioning of text.  The cached matrix is originally computed by computeMatrix(..). */
     const osg::Matrix& getMatrix() const { return _matrix; }
+
+    /** compute the matrix that positions the text in model space for the given viewpoint.*/
+    bool computeMatrix(osg::Matrix& matrix, osg::State* state=0) const;
 
 protected:
 
     virtual ~TextBase();
 
+    virtual osg::StateSet* createStateSet();
+
+    virtual void assignStateSet();
+
     void initArraysAndBuffers();
 
-    osg::VertexArrayState* createVertexArrayState(osg::RenderInfo& renderInfo) const;
-
-    bool computeMatrix(osg::Matrix& matrix, osg::State* state=0) const;
+    osg::VertexArrayState* createVertexArrayStateImplementation(osg::RenderInfo& renderInfo) const;
 
     void positionCursor(const osg::Vec2 & endOfLine_coords, osg::Vec2 & cursor, unsigned int linelength);
     String::iterator computeLastCharacterOnLine(osg::Vec2& cursor, String::iterator first,String::iterator last);
@@ -325,11 +332,11 @@ protected:
     osg::Vec4                               _textBBColor;
     KerningType                             _kerningType;
     unsigned int                            _lineCount;
+    bool                                    _glyphNormalized;
 
     osg::Vec3                               _offset;
     osg::Vec3                               _normal;
     osg::BoundingBox                        _textBB;
-
 
     mutable osg::Matrix                     _matrix;
 

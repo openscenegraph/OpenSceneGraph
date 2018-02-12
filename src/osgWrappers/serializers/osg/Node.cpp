@@ -64,6 +64,17 @@ static bool writeDescriptions( osgDB::OutputStream& os, const osg::Node& node )
     return true;
 }
 
+struct NodeGetOrCreateStateSet : public osgDB::MethodObject
+{
+    virtual bool run(void* objectPtr, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
+    {
+        osg::Node* node = reinterpret_cast<osg::Node*>(objectPtr);
+        outputParameters.push_back(node->getOrCreateStateSet());
+        return true;
+    }
+};
+
+
 REGISTER_OBJECT_WRAPPER( Node,
                          new osg::Node,
                          osg::Node,
@@ -85,4 +96,6 @@ REGISTER_OBJECT_WRAPPER( Node,
     }
 
     ADD_OBJECT_SERIALIZER( StateSet, osg::StateSet, NULL );  // _stateset
+
+    ADD_METHOD_OBJECT( "getOrCreateStateSet", NodeGetOrCreateStateSet );
 }

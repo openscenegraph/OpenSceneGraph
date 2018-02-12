@@ -528,7 +528,7 @@ class OSG_EXPORT State : public Referenced
         struct SetCurrentVertexArrayStateProxy
         {
             SetCurrentVertexArrayStateProxy(osg::State& state, VertexArrayState* vas):_state(state) { _state.setCurrentVertexArrayState(vas); }
-            ~SetCurrentVertexArrayStateProxy() { _state.setCurrentToGloabalVertexArrayState(); }
+            ~SetCurrentVertexArrayStateProxy() { _state.setCurrentToGlobalVertexArrayState(); }
             osg::State& _state;
         };
 
@@ -538,8 +538,8 @@ class OSG_EXPORT State : public Referenced
         /** Get the CurrentVetexArrayState object that take which vertex arrays are bound.*/
         VertexArrayState* getCurrentVertexArrayState() const { return _vas; }
 
-        /** Set the getCurrentVertexArrayState to the GloabalVertexArrayState.*/
-        void setCurrentToGloabalVertexArrayState() { _vas = _globalVertexArrayState.get(); }
+        /** Set the getCurrentVertexArrayState to the GlobalVertexArrayState.*/
+        void setCurrentToGlobalVertexArrayState() { _vas = _globalVertexArrayState.get(); }
 
 
         /** disable the vertex, normal, color, tex coords, secondary color, fog coord and index arrays.*/
@@ -590,6 +590,27 @@ class OSG_EXPORT State : public Referenced
             _currentPBO = 0;
         }
 
+
+        inline void bindDrawIndirectBufferObject(osg::GLBufferObject* ibo)
+        {
+            if (ibo->isDirty())
+            {
+                ibo->compileBuffer();
+                _currentDIBO = ibo;
+            }
+            else if (ibo != _currentDIBO)
+            {
+                ibo->bindBuffer();
+                _currentDIBO = ibo;
+            }
+        }
+
+        inline void unbindDrawIndirectBufferObject()
+        {
+            if (!_currentDIBO) return;
+            _glBindBuffer(GL_DRAW_INDIRECT_BUFFER,0);
+            _currentDIBO = 0;
+        }
 
         void setCurrentVertexArrayObject(GLuint vao) { _currentVAO = vao; }
         GLuint getCurrentVertexArrayObject() const { return _currentVAO; }
@@ -802,8 +823,11 @@ class OSG_EXPORT State : public Referenced
           * during rendering. */
         inline void setDisplaySettings(DisplaySettings* vs) { _displaySettings = vs; }
 
-        /** Get the DisplaySettings */
+        /** Get the const DisplaySettings */
         inline const DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
+
+        /** Get the const DisplaySettings that is current active DisplaySettings to be used by osg::State, - if DisplaySettings is not directly assigned then fallback to DisplaySettings::instance(). */
+        inline const DisplaySettings* getActiveDisplaySettings() const { return _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance().get(); }
 
 
 
@@ -1259,6 +1283,7 @@ class OSG_EXPORT State : public Referenced
         unsigned int                    _currentActiveTextureUnit;
         unsigned int                    _currentClientActiveTextureUnit;
         GLBufferObject*                 _currentPBO;
+        GLBufferObject*                 _currentDIBO;
         GLuint                          _currentVAO;
 
 

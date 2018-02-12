@@ -1,5 +1,6 @@
 /*  -*-c++-*-
  *  Copyright (C) 2009 Cedric Pinson <cedric.pinson@plopbyte.net>
+ *  Copyright (C) 2017 Julien Valentin <mp3butcher@hotmail.com>
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -36,36 +37,49 @@ namespace osgAnimation
         META_Object(osgAnimation,RigTransformSoftware)
 
         virtual void operator()(RigGeometry&);
+        //to call when a skeleton is reacheable from the rig to prepare technic data
+        virtual bool prepareData(RigGeometry&);
 
-        class BoneWeight
+        typedef std::pair<unsigned int, float> LocalBoneIDWeight;
+        class BonePtrWeight: LocalBoneIDWeight
         {
         public:
-            BoneWeight(Bone* bone, float weight) : _bone(bone), _weight(weight) {}
-            const Bone* getBone() const { return _bone.get(); }
-            float getWeight() const { return _weight; }
-            void setWeight(float w) { _weight = w; }
+            BonePtrWeight(unsigned int id,float weight, Bone*bone=0 ): LocalBoneIDWeight(id,weight), _boneptr(bone) {}
+            BonePtrWeight(const BonePtrWeight &bw2): LocalBoneIDWeight(bw2.getBoneID(),bw2.getWeight()), _boneptr(bw2._boneptr.get()) {}
+            inline const float & getWeight() const { return second; }
+            inline void setWeight(float b) { second=b; }
+            inline const unsigned int  & getBoneID() const { return first; }
+            inline void setBoneID(unsigned int b) { first=b; }
+            inline bool operator< (const BonePtrWeight &b1) const {
+                if (second > b1.second) return true;
+                if (second < b1.second) return false;
+                return (first > b1.first);
+            }
+            ///set Bone pointer
+            inline const Bone * getBonePtr() const { return _boneptr.get(); }
+            inline void setBonePtr(Bone*b) { _boneptr=b; }
         protected:
-            osg::observer_ptr<Bone> _bone;
-            float _weight;
+            osg::observer_ptr< Bone > _boneptr;
         };
 
-        typedef std::vector<BoneWeight> BoneWeightList;
-        typedef std::vector<int> VertexList;
+        typedef std::vector<BonePtrWeight>  BonePtrWeightList;
 
-        class UniqBoneSetVertexSet
+        /// map a set of boneinfluence to a list of vertex indices sharing this set
+        class VertexGroup
         {
         public:
-            BoneWeightList& getBones() { return _bones; }
-            VertexList& getVertexes() { return _vertexes; }
+            inline BonePtrWeightList& getBoneWeights() { return _boneweights; }
 
-            void resetMatrix()
+            inline IndexList& getVertices() { return _vertexes; }
+
+            inline void resetMatrix()
             {
                 _result.set(0, 0, 0, 0,
                             0, 0, 0, 0,
                             0, 0, 0, 0,
                             0, 0, 0, 1);
             }
-            void accummulateMatrix(const osg::Matrix& invBindMatrix, const osg::Matrix& matrix, osg::Matrix::value_type weight)
+            inline void accummulateMatrix(const osg::Matrix& invBindMatrix, const osg::Matrix& matrix, osg::Matrix::value_type weight)
             {
                 osg::Matrix m = invBindMatrix * matrix;
                 osg::Matrix::value_type* ptr = m.ptr();
@@ -86,20 +100,19 @@ namespace osgAnimation
                 ptrresult[13] += ptr[13] * weight;
                 ptrresult[14] += ptr[14] * weight;
             }
-            void computeMatrixForVertexSet()
+            inline void computeMatrixForVertexSet()
             {
-                if (_bones.empty())
+                if (_boneweights.empty())
                 {
-                    osg::notify(osg::WARN) << this << " RigTransformSoftware::UniqBoneSetVertexSet no bones found" << std::endl;
+                    osg::notify(osg::WARN) << this << " RigTransformSoftware::VertexGroup no bones found" << std::endl;
                     _result = osg::Matrix::identity();
                     return;
                 }
                 resetMatrix();
 
-                int size = _bones.size();
-                for (int i = 0; i < size; i++)
+                for(BonePtrWeightList::iterator bwit=_boneweights.begin(); bwit!=_boneweights.end(); ++bwit )
                 {
-                    const Bone* bone = _bones[i].getBone();
+                    const Bone* bone = bwit->getBonePtr();
                     if (!bone)
                     {
                         osg::notify(osg::WARN) << this << " RigTransformSoftware::computeMatrixForVertexSet Warning a bone is null, skip it" << std::endl;
@@ -107,68 +120,67 @@ namespace osgAnimation
                     }
                     const osg::Matrix& invBindMatrix = bone->getInvBindMatrixInSkeletonSpace();
                     const osg::Matrix& matrix = bone->getMatrixInSkeletonSpace();
-                    osg::Matrix::value_type w = _bones[i].getWeight();
+                    osg::Matrix::value_type w = bwit->getWeight();
                     accummulateMatrix(invBindMatrix, matrix, w);
                 }
             }
-            const osg::Matrix& getMatrix() const { return _result;}
+            void normalize();
+            inline const osg::Matrix& getMatrix() const { return _result; }
         protected:
-            BoneWeightList _bones;
-            VertexList _vertexes;
+            BonePtrWeightList _boneweights;
+            IndexList _vertexes;
             osg::Matrix _result;
         };
 
-
-
-        template <class V> void compute(const osg::Matrix& transform, const osg::Matrix& invTransform, const V* src, V* dst)
+        template <class V>
+        inline void compute(const osg::Matrix& transform, const osg::Matrix& invTransform, const V* src, V* dst)
         {
             // the result of matrix mult should be cached to be used for vertexes transform and normal transform and maybe other computation
-            int size = _boneSetVertexSet.size();
-            for (int i = 0; i < size; i++)
+            for(VertexGroupList::iterator itvg=_uniqVertexGroupList.begin(); itvg!=_uniqVertexGroupList.end(); ++itvg)
             {
-                UniqBoneSetVertexSet& uniq = _boneSetVertexSet[i];
+                VertexGroup& uniq = *itvg;
                 uniq.computeMatrixForVertexSet();
                 osg::Matrix matrix =  transform * uniq.getMatrix() * invTransform;
 
-                const VertexList& vertexes = uniq.getVertexes();
-                int vertexSize = vertexes.size();
-                for (int j = 0; j < vertexSize; j++)
+                const IndexList& vertexes = uniq.getVertices();
+                for(IndexList::const_iterator vertIDit=vertexes.begin(); vertIDit!=vertexes.end(); ++vertIDit)
                 {
-                    int idx = vertexes[j];
-                    dst[idx] = src[idx] * matrix;
+                    dst[*vertIDit] = src[*vertIDit] * matrix;
                 }
+
             }
         }
 
-
-        template <class V> void computeNormal(const osg::Matrix& transform, const osg::Matrix& invTransform, const V* src, V* dst)
+        template <class V>
+        inline void computeNormal(const osg::Matrix& transform, const osg::Matrix& invTransform, const V* src, V* dst)
         {
-            int size = _boneSetVertexSet.size();
-            for (int i = 0; i < size; i++)
+            for(VertexGroupList::iterator itvg=_uniqVertexGroupList.begin(); itvg!=_uniqVertexGroupList.end(); ++itvg)
             {
-                UniqBoneSetVertexSet& uniq = _boneSetVertexSet[i];
+                VertexGroup& uniq = *itvg;
                 uniq.computeMatrixForVertexSet();
                 osg::Matrix matrix =  transform * uniq.getMatrix() * invTransform;
 
-                const VertexList& vertexes = uniq.getVertexes();
-                int vertexSize = vertexes.size();
-                for (int j = 0; j < vertexSize; j++)
+                const IndexList& vertexes = uniq.getVertices();
+                for(IndexList::const_iterator vertIDit=vertexes.begin(); vertIDit!=vertexes.end(); ++vertIDit)
                 {
-                    int idx = vertexes[j];
-                    dst[idx] = osg::Matrix::transform3x3(src[idx],matrix);
+                    dst[*vertIDit] = osg::Matrix::transform3x3(src[*vertIDit],matrix);
                 }
             }
         }
 
     protected:
 
-        bool init(RigGeometry&);
-        void initVertexSetFromBones(const BoneMap& map, const VertexInfluenceSet::UniqVertexSetToBoneSetList& influence);
-        std::vector<UniqBoneSetVertexSet> _boneSetVertexSet;
-
         bool _needInit;
 
+        virtual bool init(RigGeometry&);
+
         std::map<std::string,bool> _invalidInfluence;
+
+        typedef std::vector<VertexGroup> VertexGroupList;
+        VertexGroupList _uniqVertexGroupList;
+
+        void buildMinimumUpdateSet(const RigGeometry&rig );
+
     };
 }
 

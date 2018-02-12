@@ -270,6 +270,50 @@ static bool writeUniformList( osgDB::OutputStream& os, const osg::StateSet& ss )
     return true;
 }
 
+// _defineList
+static bool checkDefineList( const osg::StateSet& ss )
+{
+    return ss.getDefineList().size()>0;
+}
+
+static bool readDefineList( osgDB::InputStream& is, osg::StateSet& ss )
+{
+    unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
+    for ( unsigned int i=0; i<size; ++i )
+    {
+        std::string defineName;
+        is.readWrappedString( defineName );
+
+        std::string defineValue;
+        is.readWrappedString( defineValue );
+
+        is >> is.PROPERTY("Value");
+        int overrideValue = readValue( is );
+
+        ss.setDefine(defineName, defineValue, overrideValue);
+
+    }
+    is >> is.END_BRACKET;
+    return true;
+}
+
+static bool writeDefineList( osgDB::OutputStream& os, const osg::StateSet& ss )
+{
+    const osg::StateSet::DefineList& df = ss.getDefineList();
+    os.writeSize(df.size()); os << os.BEGIN_BRACKET << std::endl;
+    for ( osg::StateSet::DefineList::const_iterator itr=df.begin();
+          itr!=df.end(); ++itr )
+    {
+        os.writeWrappedString(itr->first);
+        os.writeWrappedString(itr->second.first);
+        os << os.PROPERTY("Value");
+        writeValue(os, itr->second.second);
+        os << std::endl;
+    }
+    os << os.END_BRACKET << std::endl;
+    return true;
+}
+
 REGISTER_OBJECT_WRAPPER( StateSet,
                          new osg::StateSet,
                          osg::StateSet,
@@ -295,4 +339,9 @@ REGISTER_OBJECT_WRAPPER( StateSet,
     ADD_BOOL_SERIALIZER( NestRenderBins, true );  // _nestRenderBins
     ADD_OBJECT_SERIALIZER( UpdateCallback, osg::StateSet::Callback, NULL );  // _updateCallback
     ADD_OBJECT_SERIALIZER( EventCallback, osg::StateSet::Callback, NULL );  // _eventCallback
+
+    {
+        UPDATE_TO_VERSION_SCOPED( 151 )
+        ADD_USER_SERIALIZER( DefineList );  // _defineList
+    }
 }

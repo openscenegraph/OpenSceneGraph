@@ -25,6 +25,7 @@
 #include <osg/TexMat>
 #include <osg/Texture2D>
 #include <osg/TextureRectangle>
+#include <osg/os_utils>
 #include <osg/io_utils>
 
 #include <osgViewer/Viewer>
@@ -407,15 +408,9 @@ RecordCameraPathHandler::RecordCameraPathHandler(const std::string& filename, fl
     _animStartTime(0),
     _lastFrameTime(osg::Timer::instance()->tick())
 {
-    const char* str = getenv("OSG_RECORD_CAMERA_PATH_FPS");
-    if (str)
-    {
-        _interval = 1.0f / osg::asciiToDouble(str);
-    }
-    else
-    {
-        _interval = 1.0f / fps;
-    }
+    osg::getEnvVar("OSG_RECORD_CAMERA_PATH_FPS", fps);
+
+    _interval = 1.0f / fps;
 }
 
 void RecordCameraPathHandler::getUsage(osg::ApplicationUsage &usage) const

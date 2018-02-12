@@ -386,6 +386,8 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glDeleteBuffers) (GLsizei n, const GLuint *buffers);
         GLboolean (GL_APIENTRY * glIsBuffer) (GLuint buffer);
         void (GL_APIENTRY * glGetBufferSubData) (GLenum target, GLintptr offset, GLsizeiptr size, GLvoid *data);
+        GLvoid* (GL_APIENTRY * glBufferStorage) (GLenum target, GLintptr size, const GLvoid * data, GLbitfield flags);
+        GLvoid* (GL_APIENTRY * glNamedBufferStorage) (GLuint buffer, GLsizei size, const void * data, GLbitfield flags);
         GLvoid* (GL_APIENTRY * glMapBuffer) (GLenum target, GLenum access);
         GLvoid* (GL_APIENTRY * glMapBufferRange)(GLenum target,  GLintptr offset,  GLsizeiptr length,  GLbitfield access);
         GLboolean (GL_APIENTRY * glUnmapBuffer) (GLenum target);
@@ -479,6 +481,23 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glProgramString) (GLenum target, GLenum format, GLsizei len, const void *string);
         void (GL_APIENTRY * glProgramLocalParameter4fv) (GLenum target, GLuint index, const GLfloat *params);
 
+        // Sample Extensions (OpenGL>=3.3)
+        void (GL_APIENTRY * glSamplerParameteri)(GLuint sampler, GLenum param, GLint value);
+        void (GL_APIENTRY * glSamplerParameterf)(GLuint sampler, GLenum param, GLfloat value);
+        void (GL_APIENTRY * glSamplerParameteriv)(GLuint sampler, GLenum param, GLint *value);
+        void (GL_APIENTRY * glSamplerParameterfv)(GLuint sampler, GLenum param, GLfloat *value);
+        void (GL_APIENTRY * glSamplerParameterIiv)(GLuint sampler, GLenum param, GLint *value);
+        void (GL_APIENTRY * glSamplerParameterIuiv)(GLuint sampler, GLenum param, GLuint *value);
+
+        void (GL_APIENTRY * glGetSamplerParameteriv)(GLuint sampler, GLenum param, GLint *value);
+        void (GL_APIENTRY * glGetSamplerParameterfv)(GLuint sampler, GLenum param, GLfloat *value);
+        void (GL_APIENTRY * glGetSamplerParameterIiv)(GLuint sampler, GLenum param, GLint *value);
+        void (GL_APIENTRY * glGetSamplerParameterIuiv)(GLuint sampler, GLenum param, GLuint *value);
+
+        void (GL_APIENTRY * glGenSamplers)(GLsizei size,GLuint * samplers);
+        void (GL_APIENTRY * glDeleteSamplers)(GLsizei size,const GLuint * samplers);
+        void (GL_APIENTRY * glBindSampler)(GLuint tu, GLuint sampler);
+        GLboolean (GL_APIENTRY * glIsSampler)(GLuint id);
 
         // Texture Extensions
         bool isMultiTexturingSupported;
@@ -538,6 +557,9 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
 
         void (GL_APIENTRY * glTexImage3D) ( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
         void (GL_APIENTRY * glTexSubImage3D) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
+        void (GL_APIENTRY * glTexStorage3D) ( GLenum target, GLsizei numMipmapLevels,GLenum sizedInternalFormat,GLsizei width,GLsizei height,GLsizei depth);
+        void (GL_APIENTRY * glTextureStorage3D) ( GLuint texture, GLsizei numMipmapLevels,GLenum sizedInternalFormat,GLsizei width,GLsizei height,GLsizei depth);
+
         void (GL_APIENTRY * glCopyTexSubImage3D) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
         void (GL_APIENTRY * glCompressedTexImage3D) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid *data);
         void (GL_APIENTRY * glCompressedTexSubImage3D) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const GLvoid *data );
@@ -557,7 +579,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         bool isSGIXMinMaxSupported;
         bool isLogicOpSupported;
 
-        void (GL_APIENTRY * glBlendColor) (GLclampf red , GLclampf green , GLclampf blue , GLclampf alpha);
+        void (GL_APIENTRY * glBlendColor) (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
         void (GL_APIENTRY * glBlendEquation)(GLenum mode);
         void (GL_APIENTRY * glBlendEquationSeparate)(GLenum modeRGB, GLenum modeAlpha);
         void (GL_APIENTRY * glBlendEquationi)(GLuint buf,  GLenum mode);
@@ -599,7 +621,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         bool isMultisampleSupported;
         bool isMultisampleFilterHintSupported;
 
-        void (GL_APIENTRY * glSampleCoverage) (GLclampf value, GLboolean invert);
+        void (GL_APIENTRY * glSampleCoverage) (GLfloat value, GLboolean invert);
 
 
         // Point
@@ -641,6 +663,12 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glBlitFramebuffer) (GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum);
         void (GL_APIENTRY * glGetRenderbufferParameteriv) (GLenum, GLenum, GLint*);
 
+        //ARB_framebuffer_no_attachments
+        void (GL_APIENTRY * glFramebufferParameteri)(GLenum target, GLenum pname, GLint param);
+        void (GL_APIENTRY * glGetFramebufferParameteriv)(GLenum target, GLenum pname, GLint *params);
+        void (GL_APIENTRY * glNamedFramebufferParameteri)(GLuint fbo, GLenum pname, GLint param);
+        void (GL_APIENTRY * glGetNamedFramebufferParameteriv)(GLuint fbo, GLenum pname, GLint *params);
+
         //subroutine
         GLint(GL_APIENTRY* glGetSubroutineUniformLocation) (GLuint program, GLenum shadertype, const GLchar *name);
         void (GL_APIENTRY * glGetActiveSubroutineUniformName) (GLuint program, GLenum shadertype, GLuint index, GLsizei bufsize, GLsizei *length, GLchar *name);
@@ -663,8 +691,10 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glDrawArraysIndirect) (GLenum  mode,  const void * indirect);
         void (GL_APIENTRY * glMultiDrawArraysIndirect) (GLenum mode, const void *indirect, GLsizei drawcount, GLsizei stride);
         void (GL_APIENTRY * glDrawElementsIndirect) (GLenum mode,  GLenum type,  const void *indirect);
-        void (GL_APIENTRY * glMultiDrawElementsIndirect)(     GLenum mode,      GLenum type,      const void *indirect,      GLsizei drawcount,      GLsizei stride);
+        void (GL_APIENTRY * glMultiDrawElementsIndirect)(GLenum mode, GLenum type, const void *indirect, GLsizei drawcount, GLsizei stride);
 
+        // ARB_sparse_texture
+        void (GL_APIENTRY * glTexPageCommitment) (GLenum target, GLint level,GLint xoffset,GLint yoffset,GLint zoffset, GLsizei width, GLsizei height, GLsizei depth,GLboolean commit);
 
         // Transform feedback
         void (GL_APIENTRY * glBeginTransformFeedback) (GLenum primitiveMode);
@@ -693,6 +723,20 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glGenVertexArrays) (GLsizei size, GLuint *handles);
         GLboolean (GL_APIENTRY * glIsVertexArray) (GLuint handle);
         void (GL_APIENTRY * glBindVertexArray) (GLuint handle);
+
+        // OpenGL 4.3 / ARB_vertex_attrib_binding
+        bool isVertexAttribBindingSupported;
+        void (GL_APIENTRY * glBindVertexBuffer)(GLuint bindingindex, GLuint buffer, GLintptr offset, GLintptr stride);
+        void (GL_APIENTRY * glVertexArrayVertexBuffer)(GLuint vaobj, GLuint bindingindex, GLuint buffer, GLintptr offset, GLsizei stride);
+        void (GL_APIENTRY * glVertexAttribBinding)(GLuint attribindex, GLuint bindingindex);
+        void (GL_APIENTRY * glVertexArrayAttribBinding)(GLuint vaobj, GLuint attribindex, GLuint bindingindex);
+
+        void (GL_APIENTRY * glVertexAttribFormat)( GLuint attribindex, GLint size, GLenum type, GLboolean normalized, GLuint relativeoffset);
+        void (GL_APIENTRY * glVertexAttribIFormat)( GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset);
+        void (GL_APIENTRY * glVertexAttribLFormat)( GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset);
+        void (GL_APIENTRY * glVertexArrayAttribFormat)( GLuint vaobj, GLuint attribindex, GLint size, GLenum type, GLboolean normalized, GLuint relativeoffset);
+        void (GL_APIENTRY * glVertexArrayAttribIFormat)( GLuint vaobj, GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset);
+        void (GL_APIENTRY * glVertexArrayAttribLFormat)( GLuint vaobj, GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset);
 
         // MultiDrawArrays
         void (GL_APIENTRY * glMultiDrawArrays) (GLenum mode, const GLint * first, const GLsizei * count, GLsizei primcount);
@@ -725,8 +769,9 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glScissorArrayv) (GLuint first, GLsizei count, const GLint * v);
         void (GL_APIENTRY * glScissorIndexed) (GLuint index, GLint left, GLint bottom, GLsizei width, GLsizei height);
         void (GL_APIENTRY * glScissorIndexedv) (GLuint index, const GLint * v);
-        void (GL_APIENTRY * glDepthRangeArrayv) (GLuint first, GLsizei count, const GLclampd * v);
-        void (GL_APIENTRY * glDepthRangeIndexed) (GLuint index, GLclampd n, GLclampd f);
+        void (GL_APIENTRY * glDepthRangeArrayv) (GLuint first, GLsizei count, const GLdouble * v);
+        void (GL_APIENTRY * glDepthRangeIndexed) (GLuint index, GLdouble n, GLdouble f);
+        void (GL_APIENTRY * glDepthRangeIndexedf) (GLuint index, GLfloat n, GLfloat f);
         void (GL_APIENTRY * glGetFloati_v) (GLenum target, GLuint index, GLfloat *data);
         void (GL_APIENTRY * glGetDoublei_v) (GLenum target, GLuint index, GLdouble *data);
 
@@ -747,7 +792,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         // debug extensions
         void (GL_APIENTRY * glObjectLabel) (GLenum identifier, GLuint name, GLsizei length, const GLchar* label);
 
-        /** convinience wrapper around glObjectLabel that calls glObjectLabel if it's supported and using std::string as a label parameter.*/
+        /** convenience wrapper around glObjectLabel that calls glObjectLabel if it's supported and using std::string as a label parameter.*/
         void debugObjectLabel(GLenum identifier, GLuint name, const std::string& label) const { if (glObjectLabel && !label.empty()) glObjectLabel(identifier, name, label.size(), label.c_str()); }
 };
 

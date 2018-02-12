@@ -90,7 +90,7 @@ void Text::write(DataOutputStream* out){
         out->writeFloat(getBackdropVerticalOffset());
 
         out->writeVec4(getBackdropColor());
-        out->writeUInt(getBackdropImplementation());
+        out->writeUInt(4); // old DELAYED_DEPTH_WRITES
 
         out->writeUInt(getColorGradientMode());
         out->writeVec4(getColorGradientTopLeft());
@@ -213,7 +213,7 @@ void Text::read(DataInputStream* in){
         setBackdropOffset(horizontalOffset,verticalOffset);
 
         setBackdropColor(in->readVec4());
-        setBackdropImplementation((osgText::Text::BackdropImplementation) in->readUInt());
+        in->readUInt(); // read old BackdropImplementation value, no longer used
         setColorGradientMode((osgText::Text::ColorGradientMode) in->readUInt());
 
         osg::Vec4 colorGradientTopLeft,colorGradientBottomLeft,colorGradientBottomRight,colorGradientTopRight;

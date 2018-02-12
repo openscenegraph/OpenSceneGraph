@@ -16,6 +16,7 @@
 #include <osg/CullSettings>
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
+#include <osg/os_utils>
 
 #include <osg/Notify>
 
@@ -97,25 +98,21 @@ void CullSettings::readEnvironmentalVariables()
 {
     OSG_INFO<<"CullSettings::readEnvironmentalVariables()"<<std::endl;
 
-    char *ptr;
-
-    if ((ptr = getenv("OSG_COMPUTE_NEAR_FAR_MODE")) != 0)
+    std::string value;
+    if (getEnvVar("OSG_COMPUTE_NEAR_FAR_MODE", value))
     {
-        if (strcmp(ptr,"DO_NOT_COMPUTE_NEAR_FAR")==0) _computeNearFar = DO_NOT_COMPUTE_NEAR_FAR;
-        else if (strcmp(ptr,"COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES")==0) _computeNearFar = COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES;
-        else if (strcmp(ptr,"COMPUTE_NEAR_FAR_USING_PRIMITIVES")==0) _computeNearFar = COMPUTE_NEAR_FAR_USING_PRIMITIVES;
+        if (value=="DO_NOT_COMPUTE_NEAR_FAR") _computeNearFar = DO_NOT_COMPUTE_NEAR_FAR;
+        else if (value=="COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES") _computeNearFar = COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES;
+        else if (value=="COMPUTE_NEAR_FAR_USING_PRIMITIVES") _computeNearFar = COMPUTE_NEAR_FAR_USING_PRIMITIVES;
 
         OSG_INFO<<"Set compute near far mode to "<<_computeNearFar<<std::endl;
 
     }
 
-    if ((ptr = getenv("OSG_NEAR_FAR_RATIO")) != 0)
+    if (getEnvVar("OSG_NEAR_FAR_RATIO", _nearFarRatio))
     {
-        _nearFarRatio = osg::asciiToDouble(ptr);
-
         OSG_INFO<<"Set near/far ratio to "<<_nearFarRatio<<std::endl;
     }
-
 }
 
 void CullSettings::readCommandLine(ArgumentParser& arguments)

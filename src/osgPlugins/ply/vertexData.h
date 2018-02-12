@@ -55,7 +55,8 @@ namespace ply
           AMBIENT = 8,
           DIFFUSE = 16,
           SPECULAR = 32,
-          RGBA = 64
+          RGBA = 64,
+          TEXCOORD = 128
         };
 
         // Function which reads all the vertices and colors if color info is
@@ -75,6 +76,7 @@ namespace ply
         osg::ref_ptr<osg::Vec4Array>   _ambient;
         osg::ref_ptr<osg::Vec4Array>   _diffuse;
         osg::ref_ptr<osg::Vec4Array>   _specular;
+        osg::ref_ptr<osg::Vec2Array>   _texcoord;
 
         // Normals in osg format
         osg::ref_ptr<osg::Vec3Array> _normals;

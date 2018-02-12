@@ -1154,7 +1154,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     if (_camera.valid() && _camera->getInitialDrawCallback())
     {
         // if we have a camera with a initial draw callback invoke it.
-        (*(_camera->getInitialDrawCallback()))(renderInfo);
+        _camera->getInitialDrawCallback()->run(renderInfo);
     }
 
     // note, SceneView does call to drawPreRenderStages explicitly
@@ -1210,7 +1210,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     if (_camera.valid() && _camera->getPreDrawCallback())
     {
         // if we have a camera with a pre draw callback invoke it.
-        (*(_camera->getPreDrawCallback()))(renderInfo);
+        _camera->getPreDrawCallback()->run(renderInfo);
     }
 
     bool doCopyTexture = _texture.valid() ?
@@ -1271,7 +1271,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     if (_camera.valid() && _camera->getPostDrawCallback())
     {
         // if we have a camera with a post draw callback invoke it.
-        (*(_camera->getPostDrawCallback()))(renderInfo);
+        _camera->getPostDrawCallback()->run(renderInfo);
     }
 
     if (_graphicsContext.valid() && _graphicsContext != callingContext)
@@ -1309,7 +1309,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     if (_camera.valid() && _camera->getFinalDrawCallback())
     {
         // if we have a camera with a final callback invoke it.
-        (*(_camera->getFinalDrawCallback()))(renderInfo);
+        _camera->getFinalDrawCallback()->run(renderInfo);
     }
 
     // pop the render stages camera.
@@ -1342,39 +1342,41 @@ void RenderStage::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& pr
     if (_colorMask.valid()) _colorMask->apply(state);
     else glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
 
-    if (_clearMask & GL_COLOR_BUFFER_BIT)
+    if (_clearMask != 0)
     {
-        glClearColor( _clearColor[0], _clearColor[1], _clearColor[2], _clearColor[3]);
-    }
+        if (_clearMask & GL_COLOR_BUFFER_BIT)
+        {
+            glClearColor( _clearColor[0], _clearColor[1], _clearColor[2], _clearColor[3]);
+        }
 
-    if (_clearMask & GL_DEPTH_BUFFER_BIT)
-    {
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
-            glClearDepth( _clearDepth);
-        #else
-            glClearDepthf( _clearDepth);
+        if (_clearMask & GL_DEPTH_BUFFER_BIT)
+        {
+            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
+                glClearDepth( _clearDepth);
+            #else
+                glClearDepthf( _clearDepth);
+            #endif
+
+            glDepthMask ( GL_TRUE );
+            state.haveAppliedAttribute( osg::StateAttribute::DEPTH );
+        }
+
+        if (_clearMask & GL_STENCIL_BUFFER_BIT)
+        {
+            glClearStencil( _clearStencil);
+            glStencilMask ( ~0u );
+            state.haveAppliedAttribute( osg::StateAttribute::STENCIL );
+        }
+
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+            if (_clearMask & GL_ACCUM_BUFFER_BIT)
+            {
+                glClearAccum( _clearAccum[0], _clearAccum[1], _clearAccum[2], _clearAccum[3]);
+            }
         #endif
 
-        glDepthMask ( GL_TRUE );
-        state.haveAppliedAttribute( osg::StateAttribute::DEPTH );
+        glClear( _clearMask );
     }
-
-    if (_clearMask & GL_STENCIL_BUFFER_BIT)
-    {
-        glClearStencil( _clearStencil);
-        glStencilMask ( ~0u );
-        state.haveAppliedAttribute( osg::StateAttribute::STENCIL );
-    }
-
-    #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
-        if (_clearMask & GL_ACCUM_BUFFER_BIT)
-        {
-            glClearAccum( _clearAccum[0], _clearAccum[1], _clearAccum[2], _clearAccum[3]);
-        }
-    #endif
-
-
-    glClear( _clearMask );
 
     #ifdef USE_SCISSOR_TEST
         glDisable( GL_SCISSOR_TEST );

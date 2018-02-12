@@ -170,7 +170,17 @@ lib3ds_mesh_calculate_vertex_normals(Lib3dsMesh *mesh, float (*normals)[3]) {
     }
 
     fl = (Lib3dsFaces**)calloc(sizeof(Lib3dsFaces*), mesh->nvertices);
+    if (!fl)
+    {
+        return;
+    }
+
     fa = (Lib3dsFaces*)malloc(sizeof(Lib3dsFaces) * 3 * mesh->nfaces);
+    if (!fa)
+    {
+        free(fl);
+        return;
+    }
 
     for (i = 0; i < mesh->nfaces; ++i) {
         for (j = 0; j < 3; ++j) {

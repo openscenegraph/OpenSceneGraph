@@ -65,7 +65,11 @@ ReaderWriterDAE::readNode(std::istream& fin,
     if (NULL == pDAE)
     {
         bOwnDAE = true;
+#ifdef COLLADA_DOM_2_4_OR_LATER
+        pDAE = new DAE(NULL,NULL,"1.4.1");
+#else
         pDAE = new DAE;
+#endif
     }
 
     std::auto_ptr<DAE> scopedDae(bOwnDAE ? pDAE : NULL);        // Deallocates locally created structure at scope exit
@@ -139,7 +143,11 @@ ReaderWriterDAE::readNode(const std::string& fname,
     if (NULL == pDAE)
     {
         bOwnDAE = true;
+#ifdef COLLADA_DOM_2_4_OR_LATER
+        pDAE = new DAE(NULL,NULL,"1.4.1");
+#else
         pDAE = new DAE;
+#endif
     }
     std::auto_ptr<DAE> scopedDae(bOwnDAE ? pDAE : NULL);        // Deallocates locally created structure at scope exit
 
@@ -232,7 +240,11 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
     if (NULL == pDAE)
     {
         bOwnDAE = true;
+#ifdef COLLADA_DOM_2_4_OR_LATER
+        pDAE = new DAE(NULL,NULL,"1.4.1");
+#else
         pDAE = new DAE;
+#endif
     }
     std::auto_ptr<DAE> scopedDae(bOwnDAE ? pDAE : NULL);        // Deallocates locally created structure at scope exit
 

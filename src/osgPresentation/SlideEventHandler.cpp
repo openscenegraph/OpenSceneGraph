@@ -21,6 +21,7 @@
 #include <osg/AlphaFunc>
 #include <osg/Timer>
 #include <osg/io_utils>
+#include <osg/os_utils>
 
 #include <osgUtil/TransformCallback>
 #include <osgUtil/GLObjectsVisitor>
@@ -40,7 +41,7 @@ SlideEventHandler* SlideEventHandler::instance() { return s_seh.get(); }
 
 bool JumpData::jump(SlideEventHandler* seh) const
 {
-        OSG_NOTICE<<"Requires jump"<<seh<<", "<<relativeJump<<", "<<slideNum<<", "<<layerNum<<", "<<slideName<<", "<<layerName<<std::endl;
+        OSG_INFO<<"Requires jump"<<seh<<", "<<relativeJump<<", "<<slideNum<<", "<<layerNum<<", "<<slideName<<", "<<layerName<<std::endl;
 
         int slideNumToUse = slideNum;
         int layerNumToUse = layerNum;
@@ -420,7 +421,7 @@ struct LayerAttributesOperator : public ObjectOperator
                 OSG_NOTICE<<"Run "<<itr->c_str()<<std::endl;
                 osg::Timer_t startTick = osg::Timer::instance()->tick();
 
-                int result = system(itr->c_str());
+                int result = osg_system(itr->c_str());
 
                 OSG_INFO<<"system("<<*itr<<") result "<<result<<std::endl;
 
@@ -1231,7 +1232,22 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 return true;
             }
 
-            else if (ea.getKey()=='U')
+            return false;
+        }
+        case(osgGA::GUIEventAdapter::KEYUP):
+        {
+            if (ea.getKey()=='h')
+            {
+                _hold = false;
+                return true;
+            }
+            else if (ea.getKey()=='R')
+            {
+                // reload presentation to reflect changes from editor
+                setRequestReload(true);
+                return true;
+            }
+            else if (ea.getKey()=='E')
             {
                 char* editor = getenv("P3D_EDITOR");
                 if (!editor) editor = getenv("EDITOR");
@@ -1242,7 +1258,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                     std::stringstream command;
                     command<<editor<<" "<<filename<<" &"<<std::endl;
 
-                    int result = system(command.str().c_str());
+                    int result = osg_system(command.str().c_str());
 
                     OSG_INFO<<"system("<<command.str()<<") result "<<result<<std::endl;
 
@@ -1250,20 +1266,6 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 return true;
             }
 
-            return false;
-        }
-        case(osgGA::GUIEventAdapter::KEYUP):
-        {
-            if (ea.getKey()=='h')
-            {
-                _hold = false;
-                return true;
-            }
-            else if (ea.getKey()=='u')
-            {
-                setRequestReload(true);
-                return true;
-            }
             return false;
         }
         default:

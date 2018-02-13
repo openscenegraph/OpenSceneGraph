@@ -63,6 +63,16 @@ class OSG_EXPORT Texture2DArray : public Texture
          */
         virtual unsigned int getNumImages() const { return _images.size(); }
 
+        /** return true if the texture image data has been modified and the associated GL texture object needs to be updated.*/
+        virtual bool isDirty(unsigned int contextID) const
+        {
+            for(unsigned int i=0; i<_images.size(); ++i)
+            {
+                if (_images[i].valid() && _images[i]->getModifiedCount()!=_modifiedCount[i][contextID]) return true;
+            }
+            return false;
+        }
+
         /** Check how often was a certain layer in the given context modified */
         inline unsigned int& getModifiedCount(unsigned int layer, unsigned int contextID) const
         {

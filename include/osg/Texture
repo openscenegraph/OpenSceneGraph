@@ -654,6 +654,11 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         class TextureObject;
 
+
+        /** return true if the texture image data has been modified and the associated GL texture object needs to be updated.*/
+        virtual bool isDirty(unsigned int /*contextID*/) const { return false; }
+
+
         /** Returns a pointer to the TextureObject for the current context. */
         inline TextureObject* getTextureObject(unsigned int contextID) const
         {

@@ -70,6 +70,9 @@ class OSG_EXPORT TextureRectangle : public Texture
         /** Get the const texture image. */
         inline const Image* getImage() const { return _image.get(); }
 
+        /** return true if the texture image data has been modified and the associated GL texture object needs to be updated.*/
+        virtual bool isDirty(unsigned int contextID) const { return (_image.valid() && _image->getModifiedCount()!=_modifiedCount[contextID]); }
+
         inline unsigned int& getModifiedCount(unsigned int contextID) const
         {
             // get the modified count for the current contextID.

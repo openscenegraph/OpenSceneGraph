@@ -15,17 +15,19 @@ int BindImageTexture::compare(const osg::StateAttribute &sa) const
     return 0;
 }
 
-void BindImageTexture::apply(osg::State&state) const
+void BindImageTexture::apply(osg::State& state) const
 {
     if(_target.valid())
     {
-        osg::Texture::TextureObject *to = _target->getTextureObject( state.getContextID() );
-        if( !to )
+        unsigned int contextID = state.getContextID();
+        osg::Texture::TextureObject *to = _target->getTextureObject( contextID );
+        if( !to || _target->isDirty( contextID ))
         {
-            // _target never been applied yet
-            _target->apply(state);
-            to = _target->getTextureObject( state.getContextID() );
+            // _target never been applied yet or is dirty
+            state.applyTextureAttribute( state.getActiveTextureUnit(), _target.get());
+            to = _target->getTextureObject( contextID );
         }
+
         state.get<osg::GLExtensions>()->glBindImageTexture(_imageunit, to->id(), _level, _layered, _layer, _access, _format);
     }
 

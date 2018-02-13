@@ -144,7 +144,7 @@ class ValueObject : public Object
             bool set;
             T value;
 
-            virtual void apply(bool in_value) { value = in_value ? 0 : 1; set = true; }
+            virtual void apply(bool in_value) { value = in_value ? 1 : 0; set = true; }
             virtual void apply(char in_value) { value = in_value; set = true; }
             virtual void apply(unsigned char in_value) { value = in_value; set = true; }
             virtual void apply(short in_value) { value = in_value; set = true; }
@@ -215,7 +215,7 @@ class ValueObject : public Object
 
 
         template<typename T>
-        class SetScalarValue : public ValueObject::GetValueVisitor
+        class SetScalarValue : public ValueObject::SetValueVisitor
         {
         public:
 

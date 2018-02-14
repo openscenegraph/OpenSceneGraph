@@ -38,7 +38,7 @@ static DNSServiceErrorType RegisterService(DNSServiceRef *sdref,
     {
     DNSServiceFlags flags = 0;
     uint16_t PortAsNumber = atoi(port);
-    Opaque16 registerPort = { { PortAsNumber >> 8, PortAsNumber & 0xFF } };
+    Opaque16 registerPort = { (unsigned char)(PortAsNumber >> 8), (unsigned char)(PortAsNumber & 0xFF) };
     unsigned char txt[2048] = "";
     unsigned char *ptr = txt;
     

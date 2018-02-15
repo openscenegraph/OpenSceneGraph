@@ -28,7 +28,7 @@ class OSG_EXPORT ClusterCullingCallback : public DrawableCullCallback, public No
 
         ClusterCullingCallback();
         ClusterCullingCallback(const ClusterCullingCallback& ccc,const CopyOp& copyop);
-        ClusterCullingCallback(const osg::Vec3& controlPoint, const osg::Vec3& normal, float deviation);
+        ClusterCullingCallback(const osg::Vec3& controlPoint, const osg::Vec3& normal, float deviation, float radius=-1.0f);
         ClusterCullingCallback(const osg::Drawable* drawable);
 
         META_Object(osg,ClusterCullingCallback);

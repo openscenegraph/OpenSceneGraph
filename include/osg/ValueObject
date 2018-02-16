@@ -154,8 +154,28 @@ class ValueObject : public Object
             virtual void apply(float in_value) { value = in_value; set = true; }
             virtual void apply(double in_value) { value = in_value; set = true; }
         };
+#if defined(_MSC_VER)
+        template<>
+        class GetScalarValue <bool> : public ValueObject::GetValueVisitor
+        {
+        public:
 
+            GetScalarValue() : set(false), value(0) {}
 
+            bool set;
+            bool value;
+
+            virtual void apply(bool in_value) { value = in_value; set = true; }
+            virtual void apply(char in_value) { value = in_value != 0; set = true; }
+            virtual void apply(unsigned char in_value) { value = in_value != 0; set = true; }
+            virtual void apply(short in_value) { value = in_value != 0; set = true; }
+            virtual void apply(unsigned short in_value) { value = in_value != 0; set = true; }
+            virtual void apply(int in_value) { value = in_value != 0; set = true; }
+            virtual void apply(unsigned int in_value) { value = in_value != 0; set = true; }
+            virtual void apply(float in_value) { value = in_value != 0.0f; set = true; }
+            virtual void apply(double in_value) { value = in_value != 0.0; set = true; }
+        };
+#endif
         class SetValueVisitor
         {
         public:

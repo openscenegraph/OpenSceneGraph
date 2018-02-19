@@ -30,6 +30,8 @@ SET(TARGET_H
 )
 
 if(WIN32 AND NOT ANDROID)
+    ADD_DEFINITIONS(-D_WINSOCK_DEPRECATED_NO_WARNINGS)
+
     SET(TARGET_SRC
         ${TARGET_SRC}
         ip/win32/NetworkingUtils.cpp

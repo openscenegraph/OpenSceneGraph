@@ -67,7 +67,8 @@ ENDIF()
 IF (MSVC)
     #disable specific warning :
     #warning C4702: unreachable code
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4702")
+    #warning C4324: lua-5.2.3\src\ldo.c(79): warning C4324: 'lua_longjmp': structure was padded due to alignment specifier
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4702 /wd4324")
 ENDIF(MSVC)
 
 #### end var setup  ###

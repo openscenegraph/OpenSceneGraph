@@ -758,7 +758,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 
                 if (pBufferTexture && renderTargetImplementation==osg::Camera::PIXEL_BUFFER_RTT)
                 {
-                   OSG_INFO<<"RenderStage::runCameraSetUp(State&) Assign graphis context to Texture"<<std::endl;
+                   OSG_INFO<<"RenderStage::runCameraSetUp(State&) Assign graphics context to Texture"<<std::endl;
                    pBufferTexture->setReadPBuffer(context.get());
                 }
                 else

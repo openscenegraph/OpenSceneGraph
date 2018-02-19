@@ -58,6 +58,11 @@ class Plane;
 class Matrixf;
 class Matrixd;
 
+template<typename T>
+class GetScalarValue;
+template<typename T>
+class SetScalarValue;
+
 class ValueObject : public Object
 {
     public:
@@ -134,28 +139,6 @@ class ValueObject : public Object
         };
 
 
-        template<typename T>
-        class GetScalarValue : public ValueObject::GetValueVisitor
-        {
-        public:
-
-            GetScalarValue() : set(false), value(0) {}
-
-            bool set;
-            T value;
-
-            virtual void apply(bool in_value) { value = in_value ? 1 : 0; set = true; }
-            virtual void apply(char in_value) { value = in_value; set = true; }
-            virtual void apply(unsigned char in_value) { value = in_value; set = true; }
-            virtual void apply(short in_value) { value = in_value; set = true; }
-            virtual void apply(unsigned short in_value) { value = in_value; set = true; }
-            virtual void apply(int in_value) { value = in_value; set = true; }
-            virtual void apply(unsigned int in_value) { value = in_value; set = true; }
-            virtual void apply(float in_value) { value = in_value; set = true; }
-            virtual void apply(double in_value) { value = in_value; set = true; }
-        };
-
-
         class SetValueVisitor
         {
         public:
@@ -213,28 +196,6 @@ class ValueObject : public Object
             virtual void apply(osg::BoundingSphered& /*in_value*/) {}
         };
 
-
-        template<typename T>
-        class SetScalarValue : public ValueObject::SetValueVisitor
-        {
-        public:
-
-            SetScalarValue(T in_value) : set(false), value(in_value) {}
-
-            bool set;
-            T value;
-
-            virtual void apply(bool& in_value) { in_value=(value!=0); set = true;}
-            virtual void apply(char& in_value) { in_value=value; set = true;}
-            virtual void apply(unsigned char& in_value) { in_value=value; set = true;}
-            virtual void apply(short& in_value) { in_value=value; set = true;}
-            virtual void apply(unsigned short& in_value) { in_value=value; set = true;}
-            virtual void apply(int& in_value) { in_value=value; set = true;}
-            virtual void apply(unsigned int& in_value) { in_value=value; set = true;}
-            virtual void apply(float& in_value) { in_value=value; set = true;}
-            virtual void apply(double& in_value) { in_value=value; set = true;}
-        };
-
         virtual bool get(GetValueVisitor& /*gvv*/) const { return false; }
         virtual bool set(SetValueVisitor& /*gvv*/) { return false; }
 
@@ -246,6 +207,68 @@ class ValueObject : public Object
 
 protected:
         virtual ~ValueObject() {}
+};
+
+template<typename T>
+class GetScalarValue : public ValueObject::GetValueVisitor
+{
+public:
+
+    GetScalarValue() : set(false), value(0) {}
+
+    bool set;
+    T value;
+
+    virtual void apply(bool in_value) { value = in_value ? 1 : 0; set = true; }
+    virtual void apply(char in_value) { value = in_value; set = true; }
+    virtual void apply(unsigned char in_value) { value = in_value; set = true; }
+    virtual void apply(short in_value) { value = in_value; set = true; }
+    virtual void apply(unsigned short in_value) { value = in_value; set = true; }
+    virtual void apply(int in_value) { value = in_value; set = true; }
+    virtual void apply(unsigned int in_value) { value = in_value; set = true; }
+    virtual void apply(float in_value) { value = in_value; set = true; }
+    virtual void apply(double in_value) { value = in_value; set = true; }
+};
+template<>
+class GetScalarValue <bool> : public ValueObject::GetValueVisitor
+{
+public:
+
+    GetScalarValue() : set(false), value(0) {}
+
+    bool set;
+    bool value;
+
+    virtual void apply(bool in_value) { value = in_value; set = true; }
+    virtual void apply(char in_value) { value = in_value != 0; set = true; }
+    virtual void apply(unsigned char in_value) { value = in_value != 0; set = true; }
+    virtual void apply(short in_value) { value = in_value != 0; set = true; }
+    virtual void apply(unsigned short in_value) { value = in_value != 0; set = true; }
+    virtual void apply(int in_value) { value = in_value != 0; set = true; }
+    virtual void apply(unsigned int in_value) { value = in_value != 0; set = true; }
+    virtual void apply(float in_value) { value = in_value != 0.0f; set = true; }
+    virtual void apply(double in_value) { value = in_value != 0.0; set = true; }
+};
+
+template<typename T>
+class SetScalarValue : public ValueObject::SetValueVisitor
+{
+public:
+
+    SetScalarValue(T in_value) : set(false), value(in_value) {}
+
+    bool set;
+    T value;
+
+    virtual void apply(bool& in_value) { in_value=(value!=0); set = true;}
+    virtual void apply(char& in_value) { in_value=value; set = true;}
+    virtual void apply(unsigned char& in_value) { in_value=value; set = true;}
+    virtual void apply(short& in_value) { in_value=value; set = true;}
+    virtual void apply(unsigned short& in_value) { in_value=value; set = true;}
+    virtual void apply(int& in_value) { in_value=value; set = true;}
+    virtual void apply(unsigned int& in_value) { in_value=value; set = true;}
+    virtual void apply(float& in_value) { in_value=value; set = true;}
+    virtual void apply(double& in_value) { in_value=value; set = true;}
 };
 
 template< typename T >

@@ -45,7 +45,7 @@ namespace deprecated_osg {
  * it is recommended that you should migrate your code to work just with osg::Geometry as existing
  * deprecated_osg::Geometry will be removed in future release.
 */
-class OSG_EXPORT Geometry : public osg::Geometry
+class Geometry : public osg::Geometry
 {
     public:
         Geometry() : osg::Geometry() {}

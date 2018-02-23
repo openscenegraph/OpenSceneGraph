@@ -517,12 +517,12 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             // and before call to glCheckFramebufferStatus
             if ( !colorAttached )
             {
-                setDrawBuffer( GL_NONE, true );
-                setReadBuffer( GL_NONE, true );
-                #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
-                    glDrawBuffer( GL_NONE );
-                    glReadBuffer( GL_NONE );
-                #endif
+            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
+                setDrawBuffer( GL_NONE, false );
+                setReadBuffer( GL_NONE, false );
+                glDrawBuffer( GL_NONE );
+                glReadBuffer( GL_NONE );
+            #endif
             }
 
             GLenum status = ext->glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT);

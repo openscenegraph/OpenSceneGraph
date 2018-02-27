@@ -233,24 +233,32 @@ void TextureCubeMap::apply(State& state) const
     {
         textureObject->bind();
 
-        if (getTextureParameterDirty(state.getContextID())) applyTexParameters(GL_TEXTURE_CUBE_MAP,state);
-
         if (_subloadCallback.valid())
         {
+            applyTexParameters(GL_TEXTURE_CUBE_MAP,state);
+
             _subloadCallback->subload(*this,state);
         }
         else
         {
+            bool applyParameters = true;
             for (int n=0; n<6; n++)
             {
                 const osg::Image* image = _images[n].get();
                 if (image && getModifiedCount((Face)n,contextID) != image->getModifiedCount())
                 {
                     getModifiedCount((Face)n,contextID) = image->getModifiedCount();
+                    if (applyParameters)
+                    {
+                        applyTexParameters(GL_TEXTURE_CUBE_MAP,state);
+                        applyParameters = false;
+                    }
                     applyTexImage2D_subload( state, faceTarget[n], _images[n].get(), _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
                 }
             }
         }
+        if (getTextureParameterDirty(state.getContextID()))
+            applyTexParameters(GL_TEXTURE_CUBE_MAP,state);
 
     }
     else if (_subloadCallback.valid())

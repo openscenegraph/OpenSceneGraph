@@ -1595,6 +1595,7 @@ void CullVisitor::apply(osg::Camera& camera)
 
             rtts->setCamera(&camera);
 
+            // Note #1: here is an example of render stage setup that will be wiped if an FBO is used
             if ( camera.getInheritanceMask() & DRAW_BUFFER )
             {
                 // inherit draw buffer from above.

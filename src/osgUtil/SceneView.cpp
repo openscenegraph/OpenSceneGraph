@@ -1333,6 +1333,14 @@ void SceneView::draw()
     {
 
         // Need to restore draw buffer when toggling Stereo off.
+        // Wrong #2 : if the comment above is still relevant then the restoring should be done
+        // only if this SceneView switched from a stereo mode to a non stereo node (this class needs to track that switch).
+        // As mentioned, wrong #2 has the side effect of "fixing" wrong #1, but only if the draw buffer was set explicitly on the camera.
+        // A camera might not do that in order to use defaults.
+        // Also note that the code below restores the state only partially. The draw buffer apply state is forced to true.
+        // This will then cause glDrawBuffer() to be called on each frame (very minor impact on performance).
+        // Finally it is important to fix wrong #1 if wrong #2 is fixed.
+        // At this stage one might think that everything is ok, but alas there remains wrong #3 in RenderStage...
         if( 0 == ( _camera->getInheritanceMask() & DRAW_BUFFER ) )
         {
             _renderStage->setDrawBuffer(_camera->getDrawBuffer());

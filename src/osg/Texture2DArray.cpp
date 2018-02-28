@@ -281,7 +281,7 @@ void Texture2DArray::apply(State& state) const
         // if subload is specified, then use it to subload the images to GPU memory
         if (_subloadCallback.valid())
         {
-            applyTexParameters(GL_TEXTURE_2D_ARRAY_EXT,state);
+            applyTexParameters(GL_TEXTURE_2D_ARRAY,state);
 
             _subloadCallback->subload(*this,state);
         }
@@ -302,7 +302,7 @@ void Texture2DArray::apply(State& state) const
 
                         if (applyParameters)
                         {
-                            applyTexParameters(GL_TEXTURE_2D_ARRAY_EXT,state);
+                            applyTexParameters(GL_TEXTURE_2D_ARRAY,state);
                             applyParameters = false;
                         }
 
@@ -315,7 +315,7 @@ void Texture2DArray::apply(State& state) const
 
         // if texture parameters changed, then reset them
         if (getTextureParameterDirty(state.getContextID()))
-            applyTexParameters(GL_TEXTURE_2D_ARRAY_EXT,state);
+            applyTexParameters(GL_TEXTURE_2D_ARRAY,state);
     }
 
     // there is no texture object, but exists a subload callback, so use it to upload images

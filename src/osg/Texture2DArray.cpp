@@ -345,6 +345,7 @@ void Texture2DArray::apply(State& state) const
 
         // bind texture
         textureObject->bind(state);
+
         applyTexParameters(GL_TEXTURE_2D_ARRAY, state);
 
         // First we need to allocate the texture memory
@@ -434,6 +435,7 @@ void Texture2DArray::apply(State& state) const
                 contextID, GL_TEXTURE_2D_ARRAY,_numMipmapLevels,_internalFormat, _textureWidth, _textureHeight, _textureDepth,0);
 
         textureObject->bind(state);
+
         applyTexParameters(GL_TEXTURE_2D_ARRAY,state);
 
         extensions->glTexImage3D( GL_TEXTURE_2D_ARRAY, 0, _internalFormat,

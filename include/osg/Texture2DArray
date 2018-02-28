@@ -40,7 +40,7 @@ class OSG_EXPORT Texture2DArray : public Texture
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& rhs) const;
 
-        virtual GLenum getTextureTarget() const { return GL_TEXTURE_2D_ARRAY_EXT; }
+        virtual GLenum getTextureTarget() const { return GL_TEXTURE_2D_ARRAY; }
 
         /** Texture2DArray is related to non fixed pipeline usage only so isn't appropriate to enable/disable.*/
         virtual bool getModeUsage(StateAttribute::ModeUsage&) const { return false; }

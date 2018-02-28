@@ -140,7 +140,7 @@ class TextureGLModeSet
 
             _textureModeSet.insert(GL_TEXTURE_CUBE_MAP);
             _textureModeSet.insert(GL_TEXTURE_RECTANGLE_NV);
-            _textureModeSet.insert(GL_TEXTURE_2D_ARRAY_EXT);
+            _textureModeSet.insert(GL_TEXTURE_2D_ARRAY);
             _textureModeSet.insert(GL_TEXTURE_2D_MULTISAMPLE);
 
             _textureModeSet.insert(GL_TEXTURE_GEN_Q);

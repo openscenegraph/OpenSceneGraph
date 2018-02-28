@@ -1277,7 +1277,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         glGetBooleanv(GL_TEXTURE_BINDING_2D_ARRAY_EXT, &binding2DArray);
     }
 
-    GLenum textureMode = binding1D ? GL_TEXTURE_1D : binding2D ? GL_TEXTURE_2D : bindingRect ? GL_TEXTURE_RECTANGLE : binding3D ? GL_TEXTURE_3D : binding2DArray ? GL_TEXTURE_2D_ARRAY_EXT : 0;
+    GLenum textureMode = binding1D ? GL_TEXTURE_1D : binding2D ? GL_TEXTURE_2D : bindingRect ? GL_TEXTURE_RECTANGLE : binding3D ? GL_TEXTURE_3D : binding2DArray ? GL_TEXTURE_2D_ARRAY : 0;
     if (bindingCubeMap)
     {
         switch (face)
@@ -1348,7 +1348,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
             glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_COMPRESSED_ARB,&compressed);
         }
     }
-    else if (textureMode==GL_TEXTURE_2D_ARRAY_EXT)
+    else if (textureMode==GL_TEXTURE_2D_ARRAY)
     {
         if (extensions->isCompressedTexImage3DSupported())
         {

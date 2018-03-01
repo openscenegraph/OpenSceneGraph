@@ -511,6 +511,16 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 
             fbo->apply(state);
 
+            // From https://open.gl/framebuffers
+            // A framebuffer is generally complete if:
+            // * At least one buffer has been attached (e.g. color, depth, stencil)
+            // * There must be at least one color attachment (OpenGL 4.1 and earlier)
+            // * All attachments are complete (For example, a texture attachment needs to have memory reserved)
+            // * All attachments must have the same number of multisamples
+            if ( !colorAttached )
+            {
+                OSG_INFO << "RenderStage::runCameraSetUp - FBO has no color buffer attached" << std::endl;
+            }
             // If no color attachment make sure to set glDrawBuffer/glReadBuffer to none
             // otherwise glCheckFramebufferStatus will fail
             // It has to be done after call to glBindFramebuffer (fbo->apply)
@@ -518,6 +528,19 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             if ( !colorAttached )
             {
             #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
+                // Wrong #3: some camera will dynamically attach a color buffer later (so will eventually be complete),
+                // but when reaching here, again, the draw buffer state will be wiped.
+                // The glDrawBuffer(GL_NONE) will also mess up the GL state and cameras relying on the GL defaults will start to fail.
+                // But one might wonder why we go at length to coerce the GL state to pass the completion test and
+                // at the same time mess with the render stage and GL states.
+                // Also of relevance, the requirement to have a color buffer has been lifted in OpenGL versions > 4.1.
+
+                // The OsgEarth Rex issue I was hunting fell exactly in that loop hole : the use of a "dynamic" camera and not setting the draw buffer explicitely.
+                // There are multiple and easy workarounds (set the draw buffer explicitly on the camera and benefit from wrong #2,
+                // attach a dummy initial color buffer to the camera to not reach here, fix the camera so it attach the buffer in time..
+
+                // An alternate approach I tested successfully was to glPushAttrib(GL_COLOR_BUFFER_BIT), glDrawBuffer( GL_NONE ) and after the test a pop.
+                // A warning should be logged when this happens.
                 setDrawBuffer( GL_NONE, false );
                 setReadBuffer( GL_NONE, false );
                 glDrawBuffer( GL_NONE );
@@ -542,6 +565,12 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             }
             else
             {
+                // Wrong #1: the following two calls are really suspicious
+                // Why, if the FBO was successfully created, wipe out the draw buffer state.
+                // This wipes the state set by the creator of this RenderStage (see note #1 in CullVisitor.cpp for an example).
+                // Note that that in the non FBO case the draw buffer state is not wiped like here.
+                // The effect of this are not always visible because the draw buffer state is, under conditions, later restored.
+                // See wrong #2 in SceneView.cpp for where this happens...
                 setDrawBuffer(GL_NONE, false );
                 setReadBuffer(GL_NONE, false );
 

@@ -582,7 +582,7 @@ void Registry::readCommandLine(osg::ArgumentParser& arguments)
     std::string value;
     while(arguments.read("-l",value))
     {
-        if (loadLibrary(value)!=NOT_LOADED)
+        if (loadLibrary(value)==NOT_LOADED)
         {
             OSG_NOTICE<<"Unable to load library : "<<value<<std::endl;
         }
@@ -591,7 +591,7 @@ void Registry::readCommandLine(osg::ArgumentParser& arguments)
     while(arguments.read("-e",value))
     {
         std::string libName = createLibraryNameForExtension(value);
-        if (loadLibrary(libName)!=NOT_LOADED)
+        if (loadLibrary(libName)==NOT_LOADED)
         {
             OSG_NOTICE<<"Unable to load library : "<<libName<<std::endl;
         }

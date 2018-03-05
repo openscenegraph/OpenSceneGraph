@@ -370,9 +370,9 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                     OSG_INFO << "reading RGBA"<<std::endl;
 
                     bandRed->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+0),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
-                    bandGreen->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+1),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
-                    bandBlue->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+2),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
-                    bandAlpha->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+3),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
+                    bandGreen->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+1*numBytesPerPixel),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
+                    bandBlue->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+2*numBytesPerPixel),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
+                    bandAlpha->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+3*numBytesPerPixel),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
 
                 }
                 else
@@ -389,8 +389,8 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                     OSG_INFO << "reading RGB"<<std::endl;
 
                     bandRed->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+0),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
-                    bandGreen->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+1),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
-                    bandBlue->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+2),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
+                    bandGreen->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+1*numBytesPerPixel),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
+                    bandBlue->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+2*numBytesPerPixel),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
 
                 }
             }
@@ -409,7 +409,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                     OSG_INFO << "reading grey + alpha"<<std::endl;
 
                     bandGray->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+0),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
-                    bandAlpha->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+1),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
+                    bandAlpha->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+1*numBytesPerPixel),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
                 }
                 else
                 {

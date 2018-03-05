@@ -152,19 +152,19 @@ class OSG_EXPORT State : public Referenced
             _extensionMap[id] = ptr;
         }
 
-        /* Set whether shader composition is enabled.*/
+        /* deprecated.*/
         void setShaderCompositionEnabled(bool flag) { _shaderCompositionEnabled = flag; }
 
-        /* Get whether shader composition is enabled.*/
+        /* deprecated.*/
         bool getShaderCompositionEnabled() const { return _shaderCompositionEnabled; }
 
-        /** Set the ShaderComposor object that implements shader composition.*/
+        /** deprecated.*/
         void setShaderComposer(ShaderComposer* sc) { _shaderComposer = sc; }
 
-        /** Get the ShaderComposor object.*/
+        /** deprecated.*/
         ShaderComposer* getShaderComposer() { return _shaderComposer.get(); }
 
-        /** Get the const ShaderComposor object.*/
+        /** deprecated.*/
         const ShaderComposer* getShaderComposer() const { return _shaderComposer.get(); }
 
         /** Get the unform list in which to inject any uniforms that StateAttribute::apply(State&) methods provide.*/

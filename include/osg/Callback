@@ -25,7 +25,7 @@ namespace osg {
 // forward declare
 class CallbackObject;
 class NodeCallback;
-class StateAtteributeCallback;
+class StateAttributeCallback;
 class UniformCallback;
 class DrawableUpdateCallback;
 class DrawableEventCallback;

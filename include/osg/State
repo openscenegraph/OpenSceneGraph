@@ -159,19 +159,19 @@ class OSG_EXPORT State : public Referenced
             _extensionMap[id] = ptr;
         }
 
-        /* Set whether shader composition is enabled.*/
+        /* deprecated.*/
         void setShaderCompositionEnabled(bool flag) { _shaderCompositionEnabled = flag; }
 
-        /* Get whether shader composition is enabled.*/
+        /* deprecated.*/
         bool getShaderCompositionEnabled() const { return _shaderCompositionEnabled; }
 
-        /** Set the ShaderComposor object that implements shader composition.*/
+        /** deprecated.*/
         void setShaderComposer(ShaderComposer* sc) { _shaderComposer = sc; }
 
-        /** Get the ShaderComposor object.*/
+        /** deprecated.*/
         ShaderComposer* getShaderComposer() { return _shaderComposer.get(); }
 
-        /** Get the const ShaderComposor object.*/
+        /** deprecated.*/
         const ShaderComposer* getShaderComposer() const { return _shaderComposer.get(); }
 
         /** Get the unform list in which to inject any uniforms that StateAttribute::apply(State&) methods provide.*/
@@ -325,6 +325,14 @@ class OSG_EXPORT State : public Referenced
 
         /** Apply any shader composed state.*/
         void applyShaderComposition();
+
+
+        void glDrawBuffer(GLenum buffer);
+        GLenum getDrawBuffer() const { return _drawBuffer; }
+
+        void glReadBuffer(GLenum buffer);
+        GLenum getReadBuffer() const { return _readBuffer; }
+
 
         /** Set whether a particular OpenGL mode is valid in the current graphics context.
           * Use to disable OpenGL modes that are not supported by current graphics drivers/context.*/
@@ -1138,6 +1146,9 @@ class OSG_EXPORT State : public Referenced
         StateSet::DefineList            _currentShaderCompositionDefines;
 
         ref_ptr<FrameStamp>         _frameStamp;
+
+        GLenum                      _drawBuffer;
+        GLenum                      _readBuffer;
 
         ref_ptr<const RefMatrix>    _identity;
         ref_ptr<const RefMatrix>    _initialViewMatrix;

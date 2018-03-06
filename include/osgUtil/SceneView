@@ -570,6 +570,30 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         unsigned int                                _dynamicObjectCount;
 
         bool                                        _resetColorMaskToAllEnabled;
+
+        /** Indicates if stereo is toggled on */
+        bool                                        _stereo;
+
+        /** Struct to store and restore buffer states from and to a RenderStage */
+        struct RenderStageBuffers {
+            void store(const RenderStage *rs) {
+                _drawBuffer = rs->getDrawBuffer();
+                _drawBufferApplyMask = rs->getDrawBufferApplyMask();
+                _readBuffer = rs->getReadBuffer();
+                _readBufferApplyMask = rs->getReadBufferApplyMask();
+            }
+            void restore(RenderStage *rs) const {
+                rs->setDrawBuffer(_drawBuffer, _drawBufferApplyMask);
+                rs->setReadBuffer(_readBuffer, _readBufferApplyMask);
+            }
+            GLenum _drawBuffer;
+            bool   _drawBufferApplyMask;
+            GLenum _readBuffer;
+            bool   _readBufferApplyMask;
+        };
+
+        /** Used to restore buffer states when toggling stereo off */
+        RenderStageBuffers                          _renderStageBuffers;
 };
 
 }

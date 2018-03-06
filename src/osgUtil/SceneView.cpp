@@ -142,6 +142,7 @@ SceneView::SceneView(DisplaySettings* ds)
     _dynamicObjectCount = 0;
 
     _resetColorMaskToAllEnabled = true;
+    _stereo = false;
 }
 
 SceneView::SceneView(const SceneView& rhs, const osg::CopyOp& copyop):
@@ -179,6 +180,8 @@ SceneView::SceneView(const SceneView& rhs, const osg::CopyOp& copyop):
     _dynamicObjectCount = 0;
 
     _resetColorMaskToAllEnabled = rhs._resetColorMaskToAllEnabled;
+    _stereo = rhs._stereo;
+    _renderStageBuffers = rhs._renderStageBuffers;
 }
 
 SceneView::~SceneView()
@@ -990,6 +993,13 @@ void SceneView::draw()
     if (_displaySettings.valid() && _displaySettings->getStereo())
     {
 
+        if (!_stereo)
+        {
+            _stereo = true;
+            // store buffer states when toggling stereo on
+            _renderStageBuffers.store(_renderStage.get());
+        }
+
         switch(_displaySettings->getStereoMode())
         {
         case(osg::DisplaySettings::QUAD_BUFFER):
@@ -1319,29 +1329,25 @@ void SceneView::draw()
                 glDisable(GL_STENCIL_TEST);
             #else
                 OSG_NOTICE<<"Warning: SceneView::draw() - VERTICAL_INTERLACE, HORIZONTAL_INTERLACE, and CHECKERBOARD stereo not supported."<<std::endl;
+                _stereo = false;
             #endif
             }
             break;
         default:
             {
                 OSG_NOTICE<<"Warning: stereo mode not implemented yet."<< std::endl;
+                _stereo = false;
             }
             break;
         }
     }
     else
     {
-
-        // Need to restore draw buffer when toggling Stereo off.
-        if( 0 == ( _camera->getInheritanceMask() & DRAW_BUFFER ) )
+        if (_stereo)
         {
-            _renderStage->setDrawBuffer(_camera->getDrawBuffer());
-            _renderStage->setReadBuffer(_camera->getDrawBuffer());
-        }
-
-        if( 0 == ( _camera->getInheritanceMask() & READ_BUFFER ) )
-        {
-            _renderStage->setReadBuffer(_camera->getReadBuffer());
+            _stereo = false;
+            // restore buffer states when toggling stereo off.
+            _renderStageBuffers.restore(_renderStage.get());
         }
 
         _localStateSet->setAttribute(getViewport());

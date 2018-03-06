@@ -303,6 +303,14 @@ class OSG_EXPORT State : public Referenced
         /** Apply any shader composed state.*/
         void applyShaderComposition();
 
+
+        void glDrawBuffer(GLenum buffer);
+        GLenum getDrawBuffer() const { return _drawBuffer; }
+
+        void glReadBuffer(GLenum buffer);
+        GLenum getReadBuffer() const { return _readBuffer; }
+
+
         /** Set whether a particular OpenGL mode is valid in the current graphics context.
           * Use to disable OpenGL modes that are not supported by current graphics drivers/context.*/
         inline void setModeValidity(StateAttribute::GLMode mode,bool valid)
@@ -1078,6 +1086,9 @@ class OSG_EXPORT State : public Referenced
         StateSet::UniformList           _currentShaderCompositionUniformList;
 
         ref_ptr<FrameStamp>         _frameStamp;
+
+        GLenum                      _drawBuffer;
+        GLenum                      _readBuffer;
 
         ref_ptr<const RefMatrix>    _identity;
         ref_ptr<const RefMatrix>    _initialViewMatrix;

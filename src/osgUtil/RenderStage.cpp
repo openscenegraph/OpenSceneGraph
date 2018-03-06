@@ -511,21 +511,40 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 
             fbo->apply(state);
 
-            // If no color attachment make sure to set glDrawBuffer/glReadBuffer to none
-            // otherwise glCheckFramebufferStatus will fail
-            // It has to be done after call to glBindFramebuffer (fbo->apply)
-            // and before call to glCheckFramebufferStatus
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
             if ( !colorAttached )
             {
-            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
-                setDrawBuffer( GL_NONE, false );
-                setReadBuffer( GL_NONE, false );
+                // Coerce glCheckFramebufferStatus to accept FBOs without a color buffer.
+                // This is done by setting glDrawBuffer/glReadBuffer to GL_NONE.
+                // If this is not done, glCheckFramebufferStatus will fail with particular GL drivers (<= 4.1 ?)
+                // It has to be done after calling glBindFramebuffer (fbo->apply)
+                // and before calling glCheckFramebufferStatus.
+                // This can happen when an FBO camera attaches its color buffer later (dynamically).
+                // Notes:
+                // - To reach here a camera must call setImplicitBufferAttachmentMask() to disable implicit color buffer creation.
+                // - A camera can attach all its buffers later and have no buffers attached when reaching here.
+                // - GL_NONE is not an accepted value for glReadBuffer (?)
+                glPushAttrib( GL_COLOR_BUFFER_BIT );
                 glDrawBuffer( GL_NONE );
                 glReadBuffer( GL_NONE );
-            #endif
             }
+#endif
 
+            // From https://open.gl/framebuffers
+            // A framebuffer is generally complete if:
+            // * At least one buffer has been attached (e.g. color, depth, stencil)
+            // * There must be at least one color attachment (OpenGL 4.1 and earlier)
+            // * All attachments are complete (For example, a texture attachment needs to have memory reserved)
+            // * All attachments must have the same number of multisamples
             GLenum status = ext->glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT);
+
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
+            if ( !colorAttached )
+            {
+                // restore draw buffer
+                glPopAttrib();
+            }
+#endif
 
             if (status != GL_FRAMEBUFFER_COMPLETE_EXT)
             {
@@ -542,8 +561,10 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             }
             else
             {
+#if 0
                 setDrawBuffer(GL_NONE, false );
                 setReadBuffer(GL_NONE, false );
+#endif
 
                 _fbo = fbo;
 

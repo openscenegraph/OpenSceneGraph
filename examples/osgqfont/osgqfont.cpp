@@ -503,6 +503,10 @@ public:
         camera->setGraphicsContext(graphicsWindow);
         camera->setViewport(new osg::Viewport(0, 0, width(), height()));
 
+        // set the draw and read buffers up for a double buffered window with rendering going to back buffer
+        camera->setDrawBuffer(GL_BACK);
+        camera->setReadBuffer(GL_BACK);
+
         startTimer(10);
     }
 

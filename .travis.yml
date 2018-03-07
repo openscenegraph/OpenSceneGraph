@@ -24,9 +24,9 @@ matrix:
             #- clang-3.8
             - g++
             - cmake
-    # OSX build
-    - os: osx
-      language: cpp
+#    # OSX build
+#    - os: osx
+#      language: cpp
 
 script:
    - mkdir build

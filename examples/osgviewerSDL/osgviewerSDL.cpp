@@ -128,6 +128,11 @@ int main( int argc, char **argv )
 
     osgViewer::Viewer viewer;
     osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> gw = viewer.setUpViewerAsEmbeddedInWindow(0,0,windowWidth,windowHeight);
+
+    // set the draw and read buffers up for a double buffered window with rendering going to back buffer
+    viewer.getCamera()->setDrawBuffer(GL_BACK);
+    viewer.getCamera()->setReadBuffer(GL_BACK);
+
     viewer.setSceneData(loadedModel.get());
     viewer.setCameraManipulator(new osgGA::TrackballManipulator);
     viewer.addEventHandler(new osgViewer::StatsHandler);

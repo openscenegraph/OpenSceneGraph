@@ -112,6 +112,10 @@ void cOSG::InitCameraConfig(void)
     camera->setProjectionMatrixAsPerspective(
         30.0f, static_cast<double>(traits->width)/static_cast<double>(traits->height), 1.0, 1000.0);
 
+    // set the draw and read buffers up for a double buffered window with rendering going to back buffer
+    camera->setDrawBuffer(GL_BACK);
+    camera->setReadBuffer(GL_BACK);
+
     // Add the Camera to the Viewer
     //mViewer->addSlave(camera.get());
     mViewer->setCamera(camera.get());

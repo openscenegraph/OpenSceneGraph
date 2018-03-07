@@ -301,6 +301,10 @@ private:
         {
             _viewer->getCamera()->setGraphicsContext(graphicsContext);
             _viewer->getCamera()->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
+
+            // set the draw and read buffers up for a double buffered window with rendering going to back buffer
+            _viewer->getCamera()->setDrawBuffer(GL_BACK);
+            _viewer->getCamera()->setReadBuffer(GL_BACK);
         }
     }
         

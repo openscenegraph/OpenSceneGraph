@@ -442,7 +442,7 @@ void State::glDrawBuffer(GLenum buffer)
     if (_drawBuffer!=buffer)
     {
         #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
-        glDrawBuffer(buffer);
+        ::glDrawBuffer(buffer);
         #endif
         _drawBuffer=buffer;
     }
@@ -453,7 +453,7 @@ void State::glReadBuffer(GLenum buffer)
     if (_readBuffer!=buffer)
     {
         #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
-        glReadBuffer(buffer);
+        ::glReadBuffer(buffer);
         #endif
         _readBuffer=buffer;
     }

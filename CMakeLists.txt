@@ -76,9 +76,9 @@ IF(APPLE AND NOT ANDROID)
     #set iphone arch and flags taken from http://sites.google.com/site/michaelsafyan/coding/resources/how-to-guides/cross-compile-for-the-iphone/how-to-cross-compile-for-the-iphone-using-cmake
     IF(OSG_BUILD_PLATFORM_IPHONE)
       IF(${IPHONE_VERSION_MIN} LESS "7.0")
-	SET(CMAKE_OSX_ARCHITECTURES "armv6;armv7" CACHE STRING "Build architectures for iOS" FORCE)
+        SET(CMAKE_OSX_ARCHITECTURES "armv6;armv7" CACHE STRING "Build architectures for iOS" FORCE)
       ELSE()
-	SET(CMAKE_OSX_ARCHITECTURES "armv7;armv7s;arm64" CACHE STRING "Build architectures for iOS" FORCE)
+        SET(CMAKE_OSX_ARCHITECTURES "armv7;armv7s;arm64" CACHE STRING "Build architectures for iOS" FORCE)
       ENDIF()
 
     ELSE()
@@ -262,6 +262,8 @@ IF(APPLE)
             SET (IPHONE_DEVROOT "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer")
             SET (IPHONE_SDKROOT "${IPHONE_DEVROOT}/SDKs/iPhoneSimulator${IPHONE_SDKVER}.sdk")
         ENDIF()
+
+        SET (IPHONE_ENABLE_BITCODE "NO" CACHE STRING "IOS Enable Bitcode")
 
         # Apple iOS: Find OpenGLES
         FIND_LIBRARY(OPENGLES_LIBRARY OpenGLES)

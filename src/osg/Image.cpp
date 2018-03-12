@@ -805,14 +805,15 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
 
 }
 
-osg::Vec3i Image::computeBlockFootprint(GLenum pixelFormat) {
+osg::Vec3i Image::computeBlockFootprint(GLenum pixelFormat)
+{
     switch (pixelFormat)
     {
         case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT) :
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) :
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT) :
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT) :
-           return osg::Vec3i(4,4,4);//opengl 3d dxt: r value means (max)4 consecutive blocks in r direction packed into a slab.
+            return osg::Vec3i(4,4,4);//opengl 3d dxt: r value means (max)4 consecutive blocks in r direction packed into a slab.
 
         case(GL_COMPRESSED_SIGNED_RED_RGTC1_EXT) :
         case(GL_COMPRESSED_RED_RGTC1_EXT) :

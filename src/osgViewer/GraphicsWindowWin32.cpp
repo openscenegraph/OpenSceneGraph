@@ -2273,7 +2273,7 @@ void GraphicsWindowWin32::setCursorImpl( MouseCursor mouseCursor )
 
         _currentCursor = newCursor;
         _traits->useCursor = (_currentCursor != NULL) && (_mouseCursor != NoCursor);
-        
+
         PostMessage(_hwnd, WM_SETCURSOR, 0, 0);
     }
 }

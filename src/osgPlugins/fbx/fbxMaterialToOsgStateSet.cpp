@@ -193,16 +193,35 @@ osg::ref_ptr<osg::Texture2D> FbxMaterialToOsgStateSet::fbxTextureToOsgTexture(co
     }
 }
 
-
 FbxFileTexture* FbxMaterialToOsgStateSet::selectFbxFileTexture(const FbxProperty& lProperty)
 {
     if (lProperty.IsValid())
     {
-        int lNbTex = lProperty.GetSrcObjectCount<FbxFileTexture>();
-        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+        // check if layered textures are used...
+        int layeredTextureCount = lProperty.GetSrcObjectCount<FbxLayeredTexture>();
+        if (layeredTextureCount)
         {
-            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
-            if (lTexture) return lTexture;
+            // find the first valud FileTexture
+            for (int layeredTextureIndex = 0; layeredTextureIndex<layeredTextureCount; ++layeredTextureIndex)
+            {
+                FbxLayeredTexture* layered_texture = FbxCast<FbxLayeredTexture>(lProperty.GetSrcObject<FbxLayeredTexture>(layeredTextureIndex));
+                int lNbTex = layered_texture->GetSrcObjectCount<FbxFileTexture>();
+                for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+                {
+                    FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(layered_texture->GetSrcObject<FbxFileTexture>(lTextureIndex));
+                    if (lTexture) return lTexture;
+                }
+            }
+        }
+        else
+        {
+            // find the first valud FileTexture
+            int lNbTex = lProperty.GetSrcObjectCount<FbxFileTexture>();
+            for(int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+            {
+                FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
+                if (lTexture) return lTexture;
+            }
         }
     }
     return 0;

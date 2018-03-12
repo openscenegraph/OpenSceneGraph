@@ -1210,7 +1210,6 @@ void GraphicsWindowWin32::init()
     if (_initialized) return;
 
     // getEventQueue()->setCurrentEventState(osgGA::GUIEventAdapter::getAccumulatedEventState().get());
-
     WindowData *windowData = _traits.valid() ? dynamic_cast<WindowData*>(_traits->inheritedWindowData.get()) : 0;
     HWND windowHandle = windowData ? windowData->_hwnd : 0;
 
@@ -1222,19 +1221,20 @@ void GraphicsWindowWin32::init()
     _initialized = _ownsWindow ? createWindow() : setWindow(windowHandle);
     _valid       = _initialized;
 
-    int windowX = 0, windowY = 0, windowWidth = 0, windowHeight = 0;
-    if (_traits.valid())
+
+    if (_ownsWindow)
     {
-        windowX = _traits->x;
-        windowY = _traits->y;
-        windowWidth = _traits->width;
-        windowHeight = _traits->height;
+        int windowX = _traits->x;
+        int windowY = _traits->y;
+        int windowWidth = _traits->width;
+        int windowHeight = _traits->height;
+
+        if (areWindowDimensionsChanged(_hwnd, _screenOriginX, _screenOriginY, windowX, windowY, windowWidth, windowHeight))
+        {
+            resized(windowX, windowY, windowWidth, windowHeight);
+        }
     }
 
-    if (areWindowDimensionsChanged(_hwnd, _screenOriginX, _screenOriginY, windowX, windowY, windowWidth, windowHeight))
-    {
-        resized(windowX, windowY, windowWidth, windowHeight);
-    }
 
     // make sure the event queue has the correct window rectangle size and input range
     getEventQueue()->syncWindowRectangleWithGraphicsContext();
@@ -2933,4 +2933,3 @@ void GraphicsWindowWin32::raiseWindow()
     SetWindowPos(_hwnd, HWND_NOTOPMOST, _traits->x, _traits->y, _traits->width, _traits->height, SWP_NOMOVE|SWP_NOSIZE);
 
 }
-

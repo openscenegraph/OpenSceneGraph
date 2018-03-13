@@ -1250,9 +1250,13 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
 
 void Text::accept(osg::Drawable::ConstAttributeFunctor& af) const
 {
-    if (_coords.valid() )
+    if (_coords.valid() && !_coords->empty())
     {
         af.apply(osg::Drawable::VERTICES, _coords->size(), &(_coords->front()));
+    }
+
+    if (_texcoords.valid() && !_texcoords->empty())
+    {
         af.apply(osg::Drawable::TEXTURE_COORDS_0, _texcoords->size(), &(_texcoords->front()));
     }
 }
@@ -1285,14 +1289,14 @@ void Text::accept(osg::PrimitiveFunctor& pf) const
         if (glyphquad._primitives.valid())
         {
             const osg::DrawElementsUShort* drawElementsUShort = dynamic_cast<const osg::DrawElementsUShort*>(glyphquad._primitives.get());
-            if (drawElementsUShort)
+            if (drawElementsUShort && drawElementsUShort->size() > 0)
             {
                 pf.drawElements(GL_TRIANGLES, drawElementsUShort->size(), &(drawElementsUShort->front()));
             }
             else
             {
                 const osg::DrawElementsUInt* drawElementsUInt = dynamic_cast<const osg::DrawElementsUInt*>(glyphquad._primitives.get());
-                if (drawElementsUInt)
+                if (drawElementsUInt && drawElementsUInt->size() > 0)
                 {
                     pf.drawElements(GL_TRIANGLES, drawElementsUInt->size(), &(drawElementsUInt->front()));
                 }
@@ -1303,7 +1307,7 @@ void Text::accept(osg::PrimitiveFunctor& pf) const
 
 bool Text::getCharacterCorners(unsigned int index, osg::Vec3& bottomLeft, osg::Vec3& bottomRight, osg::Vec3& topLeft, osg::Vec3& topRight) const
 {
-    if (_coords) return false;
+    if (!_coords.valid()) return false;
 
     if ((index*4+4)>static_cast<unsigned int>(_coords->size())) return false;
 

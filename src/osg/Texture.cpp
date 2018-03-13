@@ -2581,6 +2581,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     {
         pbo = 0;
     }
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, getFilter(osg::Texture::MIN_FILTER));
 #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
     glPixelStorei(GL_UNPACK_ROW_LENGTH,rowLength);
 #endif

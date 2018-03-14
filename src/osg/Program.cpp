@@ -653,7 +653,15 @@ Program::PerContextProgram::PerContextProgram(const Program* program, unsigned i
     {
         _extensions = GLExtensions::Get( _contextID, true );
         _glProgramHandle = _extensions->glCreateProgram();
-        _ownsProgramHandle = true;
+
+        if (_glProgramHandle)
+        {
+            _ownsProgramHandle = true;
+        }
+        else
+        {
+            OSG_WARN << "Unable to create osg::Program \"" << _program->getName() << "\"" << " contextID=" << _contextID <<  std::endl;
+        }
     }
     requestLink();
 }
@@ -678,6 +686,8 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
 {
     if( ! _needsLink ) return;
     _needsLink = false;
+
+    if (!_glProgramHandle) return;
 
     OSG_INFO << "Linking osg::Program \"" << _program->getName() << "\""
              << " id=" << _glProgramHandle
@@ -706,7 +716,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
     if (!_loadedBinary)
     {
         const GLsizei shaderMaxCount = 20;
-        GLsizei shadersCount;
+        GLsizei shadersCount = 0;
         GLuint shaderObjectHandle[shaderMaxCount];
         _extensions->glGetAttachedShaders(_glProgramHandle, shaderMaxCount, &shadersCount, shaderObjectHandle);
 
@@ -1032,6 +1042,8 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
 
 bool Program::PerContextProgram::validateProgram()
 {
+    if (!_glProgramHandle) return false;
+
     GLint validated = GL_FALSE;
     _extensions->glValidateProgram( _glProgramHandle );
     _extensions->glGetProgramiv( _glProgramHandle, GL_VALIDATE_STATUS, &validated );
@@ -1054,11 +1066,15 @@ bool Program::PerContextProgram::validateProgram()
 
 bool Program::PerContextProgram::getInfoLog( std::string& infoLog ) const
 {
+    if (!_glProgramHandle) return false;
+
     return _extensions->getProgramInfoLog( _glProgramHandle, infoLog );
 }
 
 Program::ProgramBinary* Program::PerContextProgram::compileProgramBinary(osg::State& state)
 {
+    if (!_glProgramHandle) return 0;
+
     linkProgram(state);
     GLint binaryLength = 0;
     _extensions->glGetProgramiv( _glProgramHandle, GL_PROGRAM_BINARY_LENGTH, &binaryLength );
@@ -1076,5 +1092,7 @@ Program::ProgramBinary* Program::PerContextProgram::compileProgramBinary(osg::St
 
 void Program::PerContextProgram::useProgram() const
 {
+    if (!_glProgramHandle) return;
+
     _extensions->glUseProgram( _glProgramHandle  );
 }

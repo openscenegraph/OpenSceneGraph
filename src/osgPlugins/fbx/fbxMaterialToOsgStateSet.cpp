@@ -1,9 +1,37 @@
 #include "fbxMaterialToOsgStateSet.h"
 #include <sstream>
+#include <osg/TexMat>
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
 
+TextureDetails::TextureDetails():
+    factor(1.0),
+    scale(1.0, 1.0)
+{
+}
+
+bool TextureDetails::transparent() const
+{
+    const osg::Image* image = texture.valid() ? texture->getImage() : 0;
+    return image!=0 ? image->isImageTranslucent() : false;
+}
+
+void TextureDetails::assignTextureIfRequired(osg::StateSet* stateSet, unsigned int unit)
+{
+    if (!texture) return;
+
+    stateSet->setTextureAttributeAndModes(unit, texture.get());
+}
+
+void TextureDetails::assignTexMatIfRequired(osg::StateSet* stateSet, unsigned int unit)
+{
+    if (scale.x() != 1.0 || scale.y() != 1.0)
+    {
+        // set UV scaling...
+        stateSet->setTextureAttributeAndModes(unit, new osg::TexMat(osg::Matrix::scale(scale.x(), scale.y(), 1.0)), osg::StateAttribute::ON);
+    }
+}
 
 static osg::Texture::WrapMode convertWrap(FbxFileTexture::EWrapMode wrap)
 {
@@ -11,8 +39,7 @@ static osg::Texture::WrapMode convertWrap(FbxFileTexture::EWrapMode wrap)
         osg::Texture2D::REPEAT : osg::Texture2D::CLAMP_TO_EDGE;
 }
 
-StateSetContent
-FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
+StateSetContent FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
 {
     FbxMaterialMap::const_iterator it = _fbxMaterialMap.find(pFbxMat);
     if (it != _fbxMaterialMap.end())
@@ -30,30 +57,12 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
     const FbxSurfaceLambert* pFbxLambert = FbxCast<FbxSurfaceLambert>(pFbxMat);
 
     // diffuse map...
-    const FbxProperty lProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sDiffuse);
-    if (lProperty.IsValid())
-    {
-        int lNbTex = lProperty.GetSrcObjectCount<FbxFileTexture>();
-        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
-        {
-            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
-            if (lTexture)
-            {
-                result.diffuseTexture = fbxTextureToOsgTexture(lTexture);
-                result.diffuseChannel = lTexture->UVSet.Get();
-                result.diffuseScaleU = lTexture->GetScaleU();
-                result.diffuseScaleV = lTexture->GetScaleV();
-            }
+    result.diffuse = selectTextureDetails(pFbxMat->FindProperty(FbxSurfaceMaterial::sDiffuse));
 
-            //For now only allow 1 texture
-            break;
-        }
-    }
-
+    // opacity map...
     double transparencyColorFactor = 1.0;
     bool useTransparencyColorFactor = false;
 
-    // opacity map...
     const FbxProperty lOpacityProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sTransparentColor);
     if (lOpacityProperty.IsValid())
     {
@@ -64,152 +73,27 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
             useTransparencyColorFactor = true;
         }
 
-        int lNbTex = lOpacityProperty.GetSrcObjectCount<FbxFileTexture>();
-        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
-        {
-            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lOpacityProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
-            if (lTexture)
-            {
-                // TODO: if texture image does NOT have an alpha channel, should it be added?
-
-                result.opacityTexture = fbxTextureToOsgTexture(lTexture);
-                result.opacityChannel = lTexture->UVSet.Get();
-                result.opacityScaleU = lTexture->GetScaleU();
-                result.opacityScaleV = lTexture->GetScaleV();
-            }
-
-            //For now only allow 1 texture
-            break;
-        }
+        result.opacity = selectTextureDetails(lOpacityProperty);
     }
 
     // reflection map...
-    const FbxProperty lReflectionProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sReflection);
-    if (lReflectionProperty.IsValid())
-    {
-        int lNbTex = lReflectionProperty.GetSrcObjectCount<FbxFileTexture>();
-        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
-        {
-            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lReflectionProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
-            if (lTexture)
-            {
-                // support only spherical reflection maps...
-                if (FbxFileTexture::eUMT_ENVIRONMENT == lTexture->CurrentMappingType.Get())
-                {
-                    result.reflectionTexture = fbxTextureToOsgTexture(lTexture);
-                    result.reflectionChannel = lTexture->UVSet.Get();
-                }
-            }
-
-            //For now only allow 1 texture
-            break;
-        }
-    }
+    result.reflection = selectTextureDetails(pFbxMat->FindProperty(FbxSurfaceMaterial::sReflection));
 
     // emissive map...
-    const FbxProperty lEmissiveProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sEmissive);
-    if (lEmissiveProperty.IsValid())
-    {
-        int lNbTex = lEmissiveProperty.GetSrcObjectCount<FbxFileTexture>();
-        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
-        {
-            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lEmissiveProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
-            if (lTexture)
-            {
-                result.emissiveTexture = fbxTextureToOsgTexture(lTexture);
-                result.emissiveChannel = lTexture->UVSet.Get();
-                result.emissiveScaleU = lTexture->GetScaleU();
-                result.emissiveScaleV = lTexture->GetScaleV();
-            }
-
-            //For now only allow 1 texture
-            break;
-        }
-    }
+    result.emissive = selectTextureDetails(pFbxMat->FindProperty(FbxSurfaceMaterial::sEmissive));
 
     // ambient map...
-    const FbxProperty lAmbientProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sAmbient);
-    if (lAmbientProperty.IsValid())
-    {
-        int lNbTex = lAmbientProperty.GetSrcObjectCount<FbxFileTexture>();
-        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
-        {
-            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lAmbientProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
-            if (lTexture)
-            {
-                result.ambientTexture = fbxTextureToOsgTexture(lTexture);
-                result.ambientChannel = lTexture->UVSet.Get();
-                result.ambientScaleU = lTexture->GetScaleU();
-                result.ambientScaleV = lTexture->GetScaleV();
-            }
-
-            //For now only allow 1 texture
-            break;
-        }
-    }
+    result.ambient = selectTextureDetails(pFbxMat->FindProperty(FbxSurfaceMaterial::sAmbient));
 
     // normal map...
-    const FbxProperty lNormalProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sNormalMap);
-    if (lNormalProperty.IsValid())
-    {
-        int lNbTex = lNormalProperty.GetSrcObjectCount<FbxFileTexture>();
-        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
-        {
-            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lNormalProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
-            if (lTexture)
-            {
-                result.normalTexture = fbxTextureToOsgTexture(lTexture);
-                result.normalChannel = lTexture->UVSet.Get();
-                result.normalScaleU = lTexture->GetScaleU();
-                result.normalScaleV = lTexture->GetScaleV();
-            }
-
-            //For now only allow 1 texture
-            break;
-        }
-    }
+    result.normalMap = selectTextureDetails(pFbxMat->FindProperty(FbxSurfaceMaterial::sNormalMap));
 
     // specular map...
-    const FbxProperty lSpecularProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sSpecular);
-    if (lSpecularProperty.IsValid())
-    {
-        int lNbTex = lSpecularProperty.GetSrcObjectCount<FbxFileTexture>();
-        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
-        {
-            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lSpecularProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
-            if (lTexture)
-            {
-                result.specularTexture = fbxTextureToOsgTexture(lTexture);
-                result.specularChannel = lTexture->UVSet.Get();
-                result.specularScaleU = lTexture->GetScaleU();
-                result.specularScaleV = lTexture->GetScaleV();
-            }
-
-            //For now only allow 1 texture
-            break;
-        }
-    }
+    result.specular = selectTextureDetails(pFbxMat->FindProperty(FbxSurfaceMaterial::sSpecular));
 
     // shininess map...
-    const FbxProperty lShininessProperty = pFbxMat->FindProperty(FbxSurfaceMaterial::sShininess);
-    if (lShininessProperty.IsValid())
-    {
-        int lNbTex = lShininessProperty.GetSrcObjectCount<FbxFileTexture>();
-        for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
-        {
-            FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lShininessProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
-            if (lTexture)
-            {
-                result.shininessTexture = fbxTextureToOsgTexture(lTexture);
-                result.shininessChannel = lTexture->UVSet.Get();
-                result.shininessScaleU = lTexture->GetScaleU();
-                result.shininessScaleV = lTexture->GetScaleV();
-            }
+    result.shininess = selectTextureDetails(pFbxMat->FindProperty(FbxSurfaceMaterial::sShininess));
 
-            //For now only allow 1 texture
-            break;
-        }
-    }
 
     if (pFbxLambert)
     {
@@ -239,10 +123,10 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
             1.0f));
 
         // get maps factors...
-        result.diffuseFactor = pFbxLambert->DiffuseFactor.Get();
-        result.emissiveFactor = pFbxLambert->EmissiveFactor.Get();
-        result.ambientFactor = pFbxLambert->AmbientFactor.Get();
-        result.normalFactor = pFbxLambert->BumpFactor.Get();
+        if (result.diffuse.valid()) result.diffuse->factor = pFbxLambert->DiffuseFactor.Get();
+        if (result.emissive.valid()) result.emissive->factor = pFbxLambert->EmissiveFactor.Get();
+        if (result.ambient.valid()) result.ambient->factor = pFbxLambert->AmbientFactor.Get();
+        if (result.normalMap.valid()) result.normalMap->factor = pFbxLambert->BumpFactor.Get();
 
         if (const FbxSurfacePhong* pFbxPhong = FbxCast<FbxSurfacePhong>(pFbxLambert))
         {
@@ -261,8 +145,8 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
                 static_cast<float>(shininess));
 
             // get maps factors...
-            result.reflectionFactor = pFbxPhong->ReflectionFactor.Get();
-            result.specularFactor = pFbxPhong->SpecularFactor.Get();
+            if (result.reflection.valid()) result.reflection->factor = pFbxPhong->ReflectionFactor.Get();
+            if (result.specular.valid()) result.specular->factor = pFbxPhong->SpecularFactor.Get();
             // get more factors here...
         }
     }
@@ -270,7 +154,7 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
     if (_lightmapTextures)
     {
         // if using an emission map then adjust material properties accordingly...
-        if (result.emissiveTexture)
+        if (result.emissive.valid())
         {
             osg::Vec4 diffuse = pOsgMat->getDiffuse(osg::Material::FRONT_AND_BACK);
             pOsgMat->setEmission(osg::Material::FRONT_AND_BACK, diffuse);
@@ -283,8 +167,7 @@ FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbxMat)
     return result;
 }
 
-osg::ref_ptr<osg::Texture2D>
-FbxMaterialToOsgStateSet::fbxTextureToOsgTexture(const FbxFileTexture* fbx)
+osg::ref_ptr<osg::Texture2D> FbxMaterialToOsgStateSet::fbxTextureToOsgTexture(const FbxFileTexture* fbx)
 {
     ImageMap::iterator it = _imageMap.find(fbx->GetFileName());
     if (it != _imageMap.end())
@@ -308,6 +191,57 @@ FbxMaterialToOsgStateSet::fbxTextureToOsgTexture(const FbxFileTexture* fbx)
     {
         return NULL;
     }
+}
+
+FbxFileTexture* FbxMaterialToOsgStateSet::selectFbxFileTexture(const FbxProperty& lProperty)
+{
+    if (lProperty.IsValid())
+    {
+        // check if layered textures are used...
+        int layeredTextureCount = lProperty.GetSrcObjectCount<FbxLayeredTexture>();
+        if (layeredTextureCount)
+        {
+            // find the first valud FileTexture
+            for (int layeredTextureIndex = 0; layeredTextureIndex<layeredTextureCount; ++layeredTextureIndex)
+            {
+                FbxLayeredTexture* layered_texture = FbxCast<FbxLayeredTexture>(lProperty.GetSrcObject<FbxLayeredTexture>(layeredTextureIndex));
+                int lNbTex = layered_texture->GetSrcObjectCount<FbxFileTexture>();
+                for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+                {
+                    FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(layered_texture->GetSrcObject<FbxFileTexture>(lTextureIndex));
+                    if (lTexture) return lTexture;
+                }
+            }
+        }
+        else
+        {
+            // find the first valud FileTexture
+            int lNbTex = lProperty.GetSrcObjectCount<FbxFileTexture>();
+            for(int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
+            {
+                FbxFileTexture* lTexture = FbxCast<FbxFileTexture>(lProperty.GetSrcObject<FbxFileTexture>(lTextureIndex));
+                if (lTexture) return lTexture;
+            }
+        }
+    }
+    return 0;
+}
+
+TextureDetails* FbxMaterialToOsgStateSet::selectTextureDetails(const FbxProperty& lProperty)
+{
+    if (lProperty.IsValid())
+    {
+        FbxFileTexture* fileTexture = selectFbxFileTexture(lProperty);
+        if (fileTexture)
+        {
+            TextureDetails* textureDetails = new TextureDetails();
+            textureDetails->texture = fbxTextureToOsgTexture(fileTexture);
+            textureDetails->channel = fileTexture->UVSet.Get();
+            textureDetails->scale.set(fileTexture->GetScaleU(), fileTexture->GetScaleV());
+            return textureDetails;
+        }
+    }
+    return 0;
 }
 
 void FbxMaterialToOsgStateSet::checkInvertTransparency()

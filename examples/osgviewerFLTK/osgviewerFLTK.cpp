@@ -104,6 +104,8 @@ class ViewerFLTK : public osgViewer::Viewer, public AdapterWidget
                 getCamera()->setViewport(new osg::Viewport(0,0,w,h));
                 getCamera()->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(w)/static_cast<double>(h), 1.0f, 10000.0f);
                 getCamera()->setGraphicsContext(getGraphicsWindow());
+                getCamera()->setDrawBuffer(GL_BACK);
+                getCamera()->setReadBuffer(GL_BACK);
                 setThreadingModel(osgViewer::Viewer::SingleThreaded);
             }
 
@@ -161,6 +163,8 @@ int main( int argc, char **argv )
             view1->getCamera()->setGraphicsContext(viewerWindow.getGraphicsWindow());
             view1->getCamera()->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(width)/static_cast<double>(height/2), 1.0, 1000.0);
             view1->getCamera()->setViewport(new osg::Viewport(0,0,width,height/2));
+            view1->getCamera()->setDrawBuffer(GL_BACK);
+            view1->getCamera()->setReadBuffer(GL_BACK);
             view1->setCameraManipulator(new osgGA::TrackballManipulator);
             view1->setSceneData(loadedModel.get());
             
@@ -172,6 +176,8 @@ int main( int argc, char **argv )
             view2->getCamera()->setGraphicsContext(viewerWindow.getGraphicsWindow());
             view2->getCamera()->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(width)/static_cast<double>(height/2), 1.0, 1000.0);
             view2->getCamera()->setViewport(new osg::Viewport(0,height/2,width,height/2));
+            view2->getCamera()->setDrawBuffer(GL_BACK);
+            view2->getCamera()->setReadBuffer(GL_BACK);
             view2->setCameraManipulator(new osgGA::TrackballManipulator);
             view2->setSceneData(loadedModel.get());
             

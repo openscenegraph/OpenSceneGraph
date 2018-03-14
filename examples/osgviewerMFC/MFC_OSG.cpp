@@ -106,6 +106,10 @@ void cOSG::InitCameraConfig(void)
     // Set the viewport for the Camera
     camera->setViewport(new osg::Viewport(traits->x, traits->y, traits->width, traits->height));
 
+    // set the draw and read buffers up for a double buffered window with rendering going to back buffer
+    camera->setDrawBuffer(GL_BACK);
+    camera->setReadBuffer(GL_BACK);
+
     // Set projection matrix and camera attribtues
     camera->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     camera->setClearColor(osg::Vec4f(0.2f, 0.2f, 0.4f, 1.0f));

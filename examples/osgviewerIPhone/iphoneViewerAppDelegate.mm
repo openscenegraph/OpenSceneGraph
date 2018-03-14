@@ -318,6 +318,8 @@ private:
             _viewer->getCamera()->setGraphicsContext(graphicsContext);
             _viewer->getCamera()->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
             _viewer->getCamera()->setProjectionMatrixAsPerspective(60.0, (double)traits->width/(double)traits->height, 0.1, 1000.0);
+            _viewer->getCamera()->setDrawBuffer(GL_BACK);
+            _viewer->getCamera()->setReadBuffer(GL_BACK);
         }
     }
     

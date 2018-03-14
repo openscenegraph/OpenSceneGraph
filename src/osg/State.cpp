@@ -68,8 +68,8 @@ State::State():
     _shaderComposer = new ShaderComposer;
     _currentShaderCompositionProgram = 0L;
 
-    _drawBuffer = GL_NONE;
-    _readBuffer = GL_NONE;
+    _drawBuffer = GL_INVALID_ENUM; // avoid the lazy state mechanism from ignoreing the first call to State::glDrawBuffer() to make sure it's always passed to OpenGL
+    _readBuffer = GL_INVALID_ENUM; // avoid the lazy state mechanism from ignoreing the first call to State::glReadBuffer() to make sure it's always passed to OpenGL
 
     _identity = new osg::RefMatrix(); // default RefMatrix constructs to identity.
     _initialViewMatrix = _identity;
@@ -592,7 +592,7 @@ void State::glDrawBuffer(GLenum buffer)
     if (_drawBuffer!=buffer)
     {
         #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
-        glDrawBuffer(buffer);
+        ::glDrawBuffer(buffer);
         #endif
         _drawBuffer=buffer;
     }
@@ -603,7 +603,7 @@ void State::glReadBuffer(GLenum buffer)
     if (_readBuffer!=buffer)
     {
         #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
-        glReadBuffer(buffer);
+        ::glReadBuffer(buffer);
         #endif
         _readBuffer=buffer;
     }

@@ -999,8 +999,27 @@ void CompositeViewer::eventTraversal()
         osgGA::GUIEventAdapter* event = (*itr)->asGUIEventAdapter();
         if (!event) continue;
 
+        enum EventClassification
+        {
+            EVENT_FOR_VIEW_ASSOCIATED_WITH_FOCUS,
+            EVENT_FOR_VIEWS_ASSOCIATED_WITH_WINDOW,
+            EVENT_FOR_ALL_VIEWS
+        };
+
+        EventClassification classifaction = EVENT_FOR_ALL_VIEWS;
+
         switch(event->getEventType())
         {
+            case(osgGA::GUIEventAdapter::CLOSE_WINDOW):
+            case(osgGA::GUIEventAdapter::RESIZE):
+                classifaction = EVENT_FOR_VIEWS_ASSOCIATED_WITH_WINDOW;
+                break;
+
+            case(osgGA::GUIEventAdapter::QUIT_APPLICATION):
+            case(osgGA::GUIEventAdapter::USER):
+                classifaction = EVENT_FOR_ALL_VIEWS;
+                break;
+
             case(osgGA::GUIEventAdapter::PUSH):
             case(osgGA::GUIEventAdapter::RELEASE):
             case(osgGA::GUIEventAdapter::DOUBLECLICK):
@@ -1021,8 +1040,10 @@ void CompositeViewer::eventTraversal()
 
                 _previousEvent = event;
 
+                classifaction = EVENT_FOR_VIEW_ASSOCIATED_WITH_FOCUS;
                 break;
             }
+
             default:
                 if (_previousEvent.valid()) event->copyPointerDataFrom(*_previousEvent);
                 break;
@@ -1037,12 +1058,12 @@ void CompositeViewer::eventTraversal()
         {
             if (_viewWithFocus.valid())
             {
-                // OSG_NOTICE<<"Falling back to using _viewWithFocus"<<std::endl;
+                OSG_INFO<<"Falling back to using _viewWithFocus"<<std::endl;
                 view = _viewWithFocus.get();
             }
             else if (!_views.empty())
             {
-                // OSG_NOTICE<<"Falling back to using first view as one with focus"<<std::endl;
+                OSG_INFO<<"Falling back to using first view as one with focus"<<std::endl;
                 view = _views[0].get();
             }
         }
@@ -1050,12 +1071,58 @@ void CompositeViewer::eventTraversal()
         // reassign view with focus
         if (_viewWithFocus != view)  _viewWithFocus = view;
 
-        if (view)
+        switch(classifaction)
         {
-            viewEventsMap[view].push_back( event );
+            case(EVENT_FOR_VIEW_ASSOCIATED_WITH_FOCUS):
+            {
+                if (view)
+                {
+                    OSG_INFO<<"Sending EVENT_FOR_VIEW_ASSOCIATED_WITH_FOCUS event "<<event<<" to view "<<view<<std::endl;
 
-            osgGA::GUIEventAdapter* eventState = view->getEventQueue()->getCurrentEventState();
-            eventState->copyPointerDataFrom(*event);
+                    viewEventsMap[view].push_back( event );
+
+                    osgGA::GUIEventAdapter* eventState = view->getEventQueue()->getCurrentEventState();
+                    eventState->copyPointerDataFrom(*event);
+                }
+                break;
+            }
+            case(EVENT_FOR_VIEWS_ASSOCIATED_WITH_WINDOW):
+            {
+                typedef std::set<View*> ViewSet;
+                ViewSet views;
+                osg::GraphicsContext* gc = event->getGraphicsContext();
+                if (gc)
+                {
+                    typedef osg::GraphicsContext::Cameras Cameras;
+                    Cameras& cameras = gc->getCameras();
+                    for(Cameras::iterator citr = cameras.begin();
+                        citr != cameras.end();
+                        ++citr)
+                    {
+                        osgViewer::View* camera_view = dynamic_cast<osgViewer::View*>((*citr)->getView());
+                        if (camera_view) views.insert(camera_view);
+                    }
+                }
+                for(ViewSet::iterator vitr=views.begin();
+                    vitr!=views.end();
+                    ++vitr)
+                {
+                    OSG_INFO<<"Sending EVENT_FOR_VIEWS_ASSOCIATED_WITH_WINDOW event "<<event<<" to view "<<*vitr<<std::endl;
+                    viewEventsMap[*vitr].push_back( event );
+                }
+                break;
+            }
+            case(EVENT_FOR_ALL_VIEWS):
+            {
+                for(RefViews::iterator vitr=_views.begin();
+                    vitr!=_views.end();
+                    ++vitr)
+                {
+                    OSG_INFO<<"Sending EVENT_FOR_ALL_VIEWS event "<<event<<" to view "<<vitr->get()<<std::endl;
+                    viewEventsMap[*vitr].push_back( event );
+                }
+                break;
+            }
         }
 
         _previousEvent = event;

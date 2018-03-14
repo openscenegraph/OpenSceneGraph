@@ -10,6 +10,7 @@
 */
 
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 #include <osgUtil/ShaderGen>
 
 #include <osgViewer/Viewer>
@@ -26,31 +27,6 @@
 #include <iostream>
 
 
-class ShaderGenReadFileCallback : public osgDB::Registry::ReadFileCallback
-{
-public:
-    ShaderGenReadFileCallback()
-    {
-    }
-
-    virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& filename, const osgDB::ReaderWriter::Options* options)
-    {
-        osgDB::ReaderWriter::ReadResult result = osgDB::Registry::ReadFileCallback::readNode(filename, options);
-        if (osg::Node *node = result.getNode())
-        {
-            _visitor.reset();
-            node->accept(_visitor);
-        }
-        return result;
-    }
-
-    void setRootStateSet(osg::StateSet *stateSet) { _visitor.setRootStateSet(stateSet); }
-    osg::StateSet *getRootStateSet() const { return _visitor.getRootStateSet(); }
-
-protected:
-    osgUtil::ShaderGenVisitor _visitor;
-};
-
 
 int main(int argc, char** argv)
 {
@@ -63,6 +39,8 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
 
     osgViewer::Viewer viewer(arguments);
+
+
 
     unsigned int helpType = 0;
     if ((helpType = arguments.readHelpType()))
@@ -134,11 +112,10 @@ int main(int argc, char** argv)
     // add the screen capture handler
     viewer.addEventHandler(new osgViewer::ScreenCaptureHandler);
 
-    // Register shader generator callback
-    ShaderGenReadFileCallback *readFileCallback = new ShaderGenReadFileCallback;
-    // All read nodes will inherit root state set.
-    readFileCallback->setRootStateSet(viewer.getCamera()->getStateSet());
-    osgDB::Registry::instance()->setReadFileCallback(readFileCallback);
+
+
+    std::string outputFilename;
+    if (arguments.read("-o", outputFilename)) {}
 
     // load the data
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
@@ -147,6 +124,20 @@ int main(int argc, char** argv)
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;
     }
+
+    // run the shadergen on the loaded scene graph, and assign the uber shader
+    osgUtil::ShaderGenVisitor shadergen;
+    shadergen.assignUberProgram(viewer.getCamera()->getStateSet());
+    //shadergen.assignUberProgram(loadedModel->getOrCreateStateSet());
+    loadedModel->accept(shadergen);
+
+    if (!outputFilename.empty())
+    {
+        osgDB::writeNodeFile(*loadedModel, outputFilename);
+        osgDB::writeObjectFile(*(viewer.getCamera()->getStateSet()),"rootStateSet.osgt");
+        return 0;
+    }
+
 
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();

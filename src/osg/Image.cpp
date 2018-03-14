@@ -241,7 +241,7 @@ Image::Image(const Image& image,const CopyOp& copyop):
     {
         unsigned int size = image.getTotalSizeInBytesIncludingMipmaps();
         setData(new unsigned char [size],USE_NEW_DELETE);
-        if (unsigned char* dest_ptr = _data) 
+        if (unsigned char* dest_ptr = _data)
         {
             for(DataIterator itr(&image); itr.valid(); ++itr)
             {
@@ -805,15 +805,16 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
 
 }
 
-osg::Vec3i Image::computeBlockFootprint(GLenum pixelFormat) {
+osg::Vec3i Image::computeBlockFootprint(GLenum pixelFormat)
+{
     switch (pixelFormat)
     {
         case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT) :
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) :
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT) :
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT) :
-           return osg::Vec3i(4,4,4);//opengl 3d dxt: r value means (max)4 consecutive blocks in r direction packed into a slab.
-        
+            return osg::Vec3i(4,4,4);//opengl 3d dxt: r value means (max)4 consecutive blocks in r direction packed into a slab.
+
         case(GL_COMPRESSED_SIGNED_RED_RGTC1_EXT) :
         case(GL_COMPRESSED_RED_RGTC1_EXT) :
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT) :
@@ -863,7 +864,7 @@ osg::Vec3i Image::computeBlockFootprint(GLenum pixelFormat) {
         case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR) : return osg::Vec3i(10, 10, 1);
         case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR) : return osg::Vec3i(12, 10, 1);
         case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR) : return osg::Vec3i(12, 12, 1);
-        
+
         default:
             break;
     }
@@ -1611,13 +1612,16 @@ void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Im
     if (isCompressed())
     {
         osg::Vec3i footprint = computeBlockFootprint(_pixelFormat);
-        if (footprint.x() == 4 && footprint.y() == 4) { 
-        if ((source->s() & 0x3) || (source->t() & 0x3) || (s_offset & 0x3) || (t_offset & 0x3))
+        if (footprint.x() == 4 && footprint.y() == 4)
         {
-            OSG_WARN << "Error Image::copySubImage() did not succeed : size " << source->s() << "x" << source->t() << " or offset " << s_offset<< "," << t_offset << " not multiple of 4." << std::endl;
-            return;
+            if ((source->s() & 0x3) || (source->t() & 0x3) || (s_offset & 0x3) || (t_offset & 0x3))
+            {
+                OSG_WARN << "Error Image::copySubImage() did not succeed : size " << source->s() << "x" << source->t() << " or offset " << s_offset<< "," << t_offset << " not multiple of 4." << std::endl;
+                return;
+            }
         }
-        } else {
+        else
+        {
             if ((source->s() % footprint.x()) || (source->t() % footprint.y()) || (s_offset % footprint.x()) || (t_offset% footprint.y()))
             {
                 OSG_WARN << "Error Image::copySubImage() did not succeed : size " << source->s() << "x" << source->t() << " or offset " << s_offset << "," << t_offset << " not multiple of footprint " << footprint.x() << "x" << footprint.y() << std::endl;

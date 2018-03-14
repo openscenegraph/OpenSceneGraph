@@ -725,7 +725,7 @@ void Texture2DArray::allocateMipmap(State& state) const
                 getCompressedSize( _internalFormat, width, height, textureDepth, blockSize, size);
 
                 extensions->glCompressedTexImage3D( GL_TEXTURE_2D_ARRAY, k, _internalFormat,
-                                                    width, height, _textureDepth, _borderWidth,
+                                                    width, height, textureDepth, _borderWidth,
                                                     size,
                                                     NULL);
             }

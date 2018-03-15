@@ -13,6 +13,8 @@ class ReaderWriterDAE : public osgDB::ReaderWriter
 public:
     ReaderWriterDAE()
     {
+        _specversion = "1.4.1";
+
         // Collada document
         supportsExtension("dae","COLLADA 1.4.x DAE format");
         // Collada zip archive (contains one or more dae files and a manifest.xml)
@@ -48,6 +50,7 @@ public:
 
 private:
     mutable OpenThreads::ReentrantMutex _serializerMutex;
+    const char* _specversion;
 };
 
 ///////////////////////////////////////////////////////////////////////////

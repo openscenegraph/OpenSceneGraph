@@ -32,6 +32,7 @@
 
 #define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)
 
+
 osgDB::ReaderWriter::ReadResult
 ReaderWriterDAE::readNode(std::istream& fin,
         const osgDB::ReaderWriter::Options* options) const
@@ -66,7 +67,7 @@ ReaderWriterDAE::readNode(std::istream& fin,
     {
         bOwnDAE = true;
 #ifdef COLLADA_DOM_2_4_OR_LATER
-        pDAE = new DAE(NULL,NULL,"1.4.1");
+        pDAE = new DAE(NULL,NULL,_specversion);
 #else
         pDAE = new DAE;
 #endif
@@ -144,7 +145,7 @@ ReaderWriterDAE::readNode(const std::string& fname,
     {
         bOwnDAE = true;
 #ifdef COLLADA_DOM_2_4_OR_LATER
-        pDAE = new DAE(NULL,NULL,"1.4.1");
+        pDAE = new DAE(NULL,NULL,_specversion);
 #else
         pDAE = new DAE;
 #endif
@@ -241,7 +242,7 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
     {
         bOwnDAE = true;
 #ifdef COLLADA_DOM_2_4_OR_LATER
-        pDAE = new DAE(NULL,NULL,"1.4.1");
+        pDAE = new DAE(NULL,NULL,_specversion);
 #else
         pDAE = new DAE;
 #endif

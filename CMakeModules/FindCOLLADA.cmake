@@ -67,14 +67,17 @@ FIND_PATH(COLLADA_INCLUDE_DIR dae.h
     /usr/local/include
     /usr/local/include/colladadom
     /usr/local/include/collada-dom
+    /usr/local/include/collada-dom2.5
     /usr/local/include/collada-dom2.4
     /usr/local/include/collada-dom2.2
     /opt/local/include/collada-dom
+    /opt/local/include/collada-dom2.5
     /opt/local/include/collada-dom2.4
     /opt/local/include/collada-dom2.2
     /usr/include/
     /usr/include/colladadom
     /usr/include/collada-dom
+    /usr/include/collada-dom2.5
     /usr/include/collada-dom2.4
     /usr/include/collada-dom2.2
     /sw/include # Fink
@@ -86,7 +89,7 @@ FIND_PATH(COLLADA_INCLUDE_DIR dae.h
 )
 
 FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY
-    NAMES collada_dom collada14dom Collada14Dom libcollada14dom21 libcollada14dom22 collada-dom2.4-dp collada-dom2.4-dp-${COLLADA_BOOST_BUILDNAME}-mt
+    NAMES collada_dom collada14dom Collada14Dom libcollada14dom21 libcollada14dom22 collada-dom2.5-dp collada-dom2.5-dp-${COLLADA_BOOST_BUILDNAME}-mt collada-dom2.4-dp collada-dom2.4-dp-${COLLADA_BOOST_BUILDNAME}-mt
     PATHS
     ${COLLADA_DOM_ROOT}/build/${COLLADA_BUILDNAME}-1.4
     ${COLLADA_DOM_ROOT}
@@ -110,7 +113,7 @@ FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY
 )
 
 FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY_DEBUG
-    NAMES collada_dom-d collada14dom-d Collada14Dom-d libcollada14dom21-d libcollada14dom22-d  collada-dom2.4-dp-d collada-dom2.4-dp-${COLLADA_BOOST_BUILDNAME}-mt-d
+    NAMES collada_dom-d collada14dom-d Collada14Dom-d libcollada14dom21-d libcollada14dom22-d  collada-dom2.5-dp-d collada-dom2.5-dp-${COLLADA_BOOST_BUILDNAME}-mt-d collada-dom2.4-dp-d collada-dom2.4-dp-${COLLADA_BOOST_BUILDNAME}-mt-d
     PATHS
     ${COLLADA_DOM_ROOT}/build/${COLLADA_BUILDNAME}-1.4-d
     ${COLLADA_DOM_ROOT}

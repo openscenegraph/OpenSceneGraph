@@ -30,21 +30,6 @@ using namespace osgUtil;
 namespace osgUtil
 {
 
-osg::ref_ptr<osg::Program> s_UberProgram;
-
-struct UberProgramConstructor
-{
-    UberProgramConstructor()
-    {
-        s_UberProgram = new osg::Program;
-        s_UberProgram->addShader(new osg::Shader(osg::Shader::VERTEX, shadergen_vert));
-        s_UberProgram->addShader(new osg::Shader(osg::Shader::FRAGMENT, shadergen_frag));
-    }
-};
-
-UberProgramConstructor s_UberProgramConstructor;
-
-
 ShaderGenVisitor::ShaderGenVisitor():
     osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
 {
@@ -54,7 +39,11 @@ void ShaderGenVisitor::assignUberProgram(osg::StateSet *stateSet)
 {
     if (stateSet)
     {
-        stateSet->setAttribute(s_UberProgram.get());
+        osg::ref_ptr<osg::Program> uberProgram = new osg::Program;
+        uberProgram->addShader(new osg::Shader(osg::Shader::VERTEX, shadergen_vert));
+        uberProgram->addShader(new osg::Shader(osg::Shader::FRAGMENT, shadergen_frag));
+
+        stateSet->setAttribute(uberProgram.get());
         stateSet->addUniform(new osg::Uniform("diffuseMap", 0));
 
         remapStateSet(stateSet);

@@ -112,7 +112,13 @@ int main(int argc, char** argv)
     // add the screen capture handler
     viewer.addEventHandler(new osgViewer::ScreenCaptureHandler);
 
-
+    osg::ref_ptr<osg::Program> uberProgram = new osg::Program;
+    std::string shaderFilename;
+    while(arguments.read("--shader", shaderFilename))
+    {
+        osg::ref_ptr<osg::Shader> shader = osgDB::readShaderFile(shaderFilename);
+        if (shader.valid()) uberProgram->addShader(shader.get());
+    }
 
     std::string outputFilename;
     if (arguments.read("-o", outputFilename)) {}
@@ -125,10 +131,23 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    osg::ref_ptr<osg::StateSet> rootStateSet = viewer.getCamera()->getStateSet();
+
     // run the shadergen on the loaded scene graph, and assign the uber shader
     osgUtil::ShaderGenVisitor shadergen;
-    shadergen.assignUberProgram(viewer.getCamera()->getStateSet());
-    //shadergen.assignUberProgram(loadedModel->getOrCreateStateSet());
+
+    if (uberProgram->getNumShaders()>0)
+    {
+        rootStateSet->setAttribute(uberProgram.get());
+        rootStateSet->addUniform(new osg::Uniform("diffuseMap", 0));
+
+        shadergen.remapStateSet(rootStateSet.get());
+    }
+    else
+    {
+        shadergen.assignUberProgram(rootStateSet.get());
+    }
+
     loadedModel->accept(shadergen);
 
     if (!outputFilename.empty())

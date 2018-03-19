@@ -1119,7 +1119,7 @@ void CompositeViewer::eventTraversal()
                     ++vitr)
                 {
                     OSG_INFO<<"Sending EVENT_FOR_ALL_VIEWS event "<<event<<" to view "<<vitr->get()<<std::endl;
-                    viewEventsMap[*vitr].push_back( event );
+                    viewEventsMap[vitr->get()].push_back( event );
                 }
                 break;
             }

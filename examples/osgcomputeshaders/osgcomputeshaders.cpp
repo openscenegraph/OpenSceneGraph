@@ -54,7 +54,7 @@ int main( int argc, char** argv )
     tex2D->setSourceFormat( GL_RED );
     tex2D->setSourceType( GL_FLOAT );
     // So we can use 'image2D' in the compute shader
-    osg::ref_ptr<osg::BindImageTexture> imagbinding = new osg::BindImageTexture(0, tex2D, osg::BindImageTexture::WRITE_ONLY, GL_R32F);
+    osg::ref_ptr<osg::BindImageTexture> imagbinding = new osg::BindImageTexture(0, tex2D.get(), osg::BindImageTexture::WRITE_ONLY, GL_R32F);
 
 
     // The compute shader can't work with other kinds of shaders

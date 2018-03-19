@@ -208,7 +208,7 @@ void OSGCanvas::OnKeyUp(wxKeyEvent &event)
     // event.Skip() to allow processing to continue.
 }
 
-void OSGCanvas::OnMouseEnter(wxMouseEvent &event)
+void OSGCanvas::OnMouseEnter(wxMouseEvent & /*event*/)
 {
     // Set focus to ourselves, so keyboard events get directed to us
     SetFocus();

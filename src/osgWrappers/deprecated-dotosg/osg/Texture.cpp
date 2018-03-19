@@ -541,6 +541,7 @@ bool Texture_matchShadowTextureModeStr(const char* str,Texture::ShadowTextureMod
     if (     strcmp(str,"GL_LUMINANCE")==0) value = Texture::LUMINANCE;
     else if (strcmp(str,"GL_INTENSITY")==0) value = Texture::INTENSITY;
     else if (strcmp(str,"GL_ALPHA")==0) value = Texture::ALPHA;
+    else if (strcmp(str,"GL_NONE")==0) value = Texture::NONE;
     else return false;
 
     return true;
@@ -553,6 +554,7 @@ const char* Texture_getShadowTextureModeStr(Texture::ShadowTextureMode value)
         case( Texture::LUMINANCE ): return "GL_LUMINANCE";
         case( Texture::INTENSITY ): return "GL_INTENSITY";
         case( Texture::ALPHA ): return "GL_ALPHA";
+        case( Texture::NONE ): return "GL_NONE";
     }
     return NULL;
 }

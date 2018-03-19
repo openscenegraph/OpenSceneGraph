@@ -234,7 +234,7 @@ class ReaderWriterPDF : public osgDB::ReaderWriter
             return readImage(file,options);
         }
 
-        virtual osgDB::ReaderWriter::ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+        virtual osgDB::ReaderWriter::ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options* /*options*/) const
         {
             if (!osgDB::equalCaseInsensitive(osgDB::getFileExtension(fileName),"pdf"))
             {

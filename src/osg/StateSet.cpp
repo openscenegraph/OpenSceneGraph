@@ -1341,7 +1341,7 @@ void StateSet::removeUniform(UniformBase* uniform)
     }
 }
 
-UniformBase* StateSet::getUniform(const std::string& name)
+UniformBase* StateSet::getUniformBase(const std::string& name)
 {
     UniformList::iterator itr = _uniformList.find(name);
     if (itr!=_uniformList.end()) return itr->second.first.get();
@@ -1367,7 +1367,7 @@ Uniform* StateSet::getOrCreateUniform(const std::string& name, Uniform::Type typ
 }
 
 
-const UniformBase* StateSet::getUniform(const std::string& name) const
+const UniformBase* StateSet::getUniformBase(const std::string& name) const
 {
     UniformList::const_iterator itr = _uniformList.find(name);
     if (itr!=_uniformList.end()) return itr->second.first.get();

@@ -324,7 +324,7 @@ struct IndirectTarget
         indirectCommandTextureBuffer->setInternalFormat( GL_R32I );
         indirectCommandTextureBuffer->setUnRefImageDataAfterApply(false);
 
-        indirectCommandImageBinding=new osg::BindImageTexture(index, indirectCommandTextureBuffer, osg::BindImageTexture::READ_WRITE, GL_R32I);
+        indirectCommandImageBinding=new osg::BindImageTexture(index, indirectCommandTextureBuffer.get(), osg::BindImageTexture::READ_WRITE, GL_R32I);
 
         // add proper primitivesets to geometryAggregators
         if( !useMultiDrawArraysIndirect ) // use glDrawArraysIndirect()
@@ -367,7 +367,7 @@ struct IndirectTarget
         instanceTarget = new osg::TextureBuffer(instanceTargetImage);
         instanceTarget->setInternalFormat( internalFormat );
 
-        instanceTargetimagebinding = new osg::BindImageTexture(OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index, instanceTarget, osg::BindImageTexture::READ_WRITE, internalFormat);
+        instanceTargetimagebinding = new osg::BindImageTexture(OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index, instanceTarget.get(), osg::BindImageTexture::READ_WRITE, internalFormat);
 
     }
 

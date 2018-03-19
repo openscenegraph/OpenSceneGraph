@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
     osg::ref_ptr<osg::Node> geode ;
 
-        osg::ref_ptr<osg::Sampler > sampler1, sampler2;
+    osg::ref_ptr<osg::Sampler > sampler1, sampler2;
     if (loadedModel)
     {
         ///ensure loaded have Sampler
@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
         }
         if(sampler1.valid()&&sampler2.valid()){
             OSG_WARN<<"2samplers manipulator setted"<<std::endl;
-            viewer.addEventHandler(new SamplersKeyboardEventHandler(sampler1, sampler2));
+            viewer.addEventHandler(new SamplersKeyboardEventHandler(sampler1.get(), sampler2.get()));
         }
     }
     else
@@ -222,7 +222,7 @@ int main(int argc, char* argv[])
         ss->addUniform(new osg::Uniform("tex2",(int)1));
         ss->setAttribute(program.get());
 
-        viewer.addEventHandler(new SamplersKeyboardEventHandler(sampler1, sampler2));
+        viewer.addEventHandler(new SamplersKeyboardEventHandler(sampler1.get(), sampler2.get()));
     }
 
     viewer.addEventHandler(new osgViewer::StatsHandler);

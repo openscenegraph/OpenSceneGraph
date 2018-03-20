@@ -678,7 +678,7 @@ static int callStateSetSet(lua_State* _lua)
     {
         osg::Object* po  = lse->getObjectFromTable<osg::Object>(2);
         osg::StateAttribute* sa = dynamic_cast<osg::StateAttribute*>(po);
-        osg::Uniform* uniform = dynamic_cast<osg::Uniform*>(po);
+        osg::UniformBase* uniform = dynamic_cast<osg::UniformBase*>(po);
 
         osg::StateAttribute::OverrideValue value=osg::StateAttribute::ON;
         bool setOnOff = false;
@@ -901,7 +901,7 @@ static int callStateSetGet(lua_State* _lua)
     {
         osg::Object* po  = lse->getObjectFromTable<osg::Object>(2);
         osg::StateAttribute* sa = dynamic_cast<osg::StateAttribute*>(po);
-        osg::Uniform* uniform = dynamic_cast<osg::Uniform*>(po);
+        osg::UniformBase* uniform = dynamic_cast<osg::UniformBase*>(po);
 
         if (sa && sa->isTextureAttribute() && stateset->getTextureAttributeList().size()>0)
         {
@@ -1107,7 +1107,7 @@ static int callStateSetRemove(lua_State* _lua)
     {
         osg::Object* po  = lse->getObjectFromTable<osg::Object>(2);
         osg::StateAttribute* sa = dynamic_cast<osg::StateAttribute*>(po);
-        osg::Uniform* uniform = dynamic_cast<osg::Uniform*>(po);
+        osg::UniformBase* uniform = dynamic_cast<osg::UniformBase*>(po);
 
         if (sa && sa->isTextureAttribute())
         {

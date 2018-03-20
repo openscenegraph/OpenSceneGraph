@@ -308,11 +308,13 @@ void View::setSceneData(osg::Node* node)
 
     if (getSceneData())
     {
+#if 0
         #if defined(OSG_GLES2_AVAILABLE)
             osgUtil::ShaderGenVisitor sgv;
             getSceneData()->getOrCreateStateSet();
             getSceneData()->accept(sgv);
         #endif
+#endif
 
         // now make sure the scene graph is set up with the correct DataVariance to protect the dynamic elements of
         // the scene graph from being run in parallel.

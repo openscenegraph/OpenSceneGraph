@@ -176,7 +176,7 @@ void TextureBuffer::apply(State& state) const
             }
 
         }
-        textureObject->bind();
+        textureObject->bind(state);
     }
     else if (_bufferData.valid()  &&_bufferData->getBufferObject()  )//&& _bufferObject->getNumBufferData()>0 )
     {
@@ -190,7 +190,7 @@ void TextureBuffer::apply(State& state) const
 
             textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_BUFFER);
             textureObject->_profile._internalFormat=_internalFormat;
-            textureObject->bind();
+            textureObject->bind(state);
 
             getTextureParameterDirty(state.getContextID()) = false;
 
@@ -202,7 +202,7 @@ void TextureBuffer::apply(State& state) const
             textureObject->setAllocated(true);
             extensions->glBindBuffer(_bufferData->getBufferObject()->getTarget(),0);
 
-            textureObject->bind();
+            textureObject->bind(state);
             extensions->glTexBuffer(GL_TEXTURE_BUFFER, _internalFormat, glBufferObject->getGLObjectID());
         }
 

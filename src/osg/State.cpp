@@ -20,6 +20,16 @@
 #include <osg/ContextData>
 #include <osg/os_utils>
 
+// for includes for GLES
+#include <osg/Fog>
+#include <osg/Material>
+#include <osg/ClipPlane>
+#include <osg/TexGen>
+#include <osg/Texture1D>
+#include <osg/GLDefines>
+
+#include <osg/io_utils>
+
 #include <sstream>
 #include <algorithm>
 
@@ -37,6 +47,13 @@
 
 using namespace std;
 using namespace osg;
+
+
+#ifdef WIN32
+    const char* s_LineEnding = "\r\n";
+#else
+    const char* s_LineEnding = "\n";
+#endif
 
 static ApplicationUsageProxy State_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_GL_ERROR_CHECKING <type>","ONCE_PER_ATTRIBUTE | ON | on enables fine grained checking,  ONCE_PER_FRAME enables coarse grained checking");
 
@@ -61,9 +78,13 @@ State::State():
     _modelViewCache = new osg::RefMatrix;
 
     #if !defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
+        _useStateAttributeShaders = true;
+        _useStateAttributeFixedFunction = false;
         _useModelViewAndProjectionUniforms = true;
         _useVertexAttributeAliasing = true;
     #else
+        _useStateAttributeShaders = false;
+        _useStateAttributeFixedFunction = true;
         _useModelViewAndProjectionUniforms = false;
         _useVertexAttributeAliasing = false;
     #endif
@@ -170,6 +191,28 @@ State::~State()
     //_vertexAttribArrayList.clear();
 }
 
+
+void State::setUseStateAttributeShaders(bool flag)
+{
+    _useStateAttributeShaders = flag;
+}
+
+void State::setUseStateAttributeFixedFunction(bool flag)
+{
+    _useStateAttributeFixedFunction = flag;
+}
+
+void State::setUseModelViewAndProjectionUniforms(bool flag)
+{
+    _useModelViewAndProjectionUniforms = flag;
+}
+
+void State::setUseVertexAttributeAliasing(bool flag)
+{
+    _useVertexAttributeAliasing = flag;
+    if (_globalVertexArrayState.valid()) _globalVertexArrayState->assignAllDispatchers();
+}
+
 void State::initializeExtensionProcs()
 {
     if (_extensionProcsInitialized) return;
@@ -207,6 +250,12 @@ void State::initializeExtensionProcs()
 
     OSG_INFO<<"osg::State::initializeExtensionProcs() _forceVertexArrayObject = "<<_forceVertexArrayObject<<std::endl;
     OSG_INFO<<"                                       _forceVertexBufferObject = "<<_forceVertexBufferObject<<std::endl;
+
+    if (DisplaySettings::instance()->getShaderPipeline())
+    {
+        setUseStateAttributeShaders(true);
+        setUseStateAttributeFixedFunction(true);
+    }
 
 
     // Set up up global VertexArrayState object
@@ -286,6 +335,107 @@ void State::initializeExtensionProcs()
     {
         RenderInfo renderInfo(this,0);
         _graphicsCostEstimator->calibrate(renderInfo);
+    }
+
+    initUpModeDefineMaps();
+}
+
+void State::initUpModeDefineMaps()
+{
+    #define ADDMODE(MODE) _stringModeMap[#MODE] = MODE;
+    ADDMODE(GL_LIGHTING)
+    ADDMODE(GL_LIGHT0)
+    ADDMODE(GL_LIGHT1)
+    ADDMODE(GL_LIGHT2)
+    ADDMODE(GL_LIGHT3)
+    ADDMODE(GL_LIGHT4)
+    ADDMODE(GL_LIGHT5)
+    ADDMODE(GL_LIGHT6)
+    ADDMODE(GL_LIGHT7)
+
+    ADDMODE(GL_TEXTURE_1D)
+    ADDMODE(GL_TEXTURE_2D)
+    ADDMODE(GL_TEXTURE_3D)
+    ADDMODE(GL_TEXTURE_RECTANGLE)
+    ADDMODE(GL_TEXTURE_2D_MULTISAMPLE)
+    ADDMODE(GL_TEXTURE_2D_ARRAY)
+
+    ADDMODE(GL_TEXTURE0)
+    ADDMODE(GL_TEXTURE1)
+    ADDMODE(GL_TEXTURE2)
+    ADDMODE(GL_TEXTURE3)
+    ADDMODE(GL_TEXTURE4)
+    ADDMODE(GL_TEXTURE5)
+    ADDMODE(GL_TEXTURE6)
+    ADDMODE(GL_TEXTURE7)
+
+    ADDMODE(GL_TEXTURE_GEN_S)
+    ADDMODE(GL_TEXTURE_GEN_T)
+    ADDMODE(GL_TEXTURE_GEN_R)
+    ADDMODE(GL_TEXTURE_GEN_Q)
+
+    ADDMODE(GL_ALPHA_TEST)
+
+    ADDMODE(GL_CLIP_PLANE0)
+    ADDMODE(GL_CLIP_PLANE1)
+    ADDMODE(GL_CLIP_PLANE2)
+    ADDMODE(GL_CLIP_PLANE3)
+    ADDMODE(GL_CLIP_PLANE4)
+    ADDMODE(GL_CLIP_PLANE5)
+
+    ADDMODE(GL_FOG)
+
+    ADDMODE(GL_COLOR_MATERIAL)
+
+    ADDMODE(GL_RED)
+    ADDMODE(GL_RG)
+    ADDMODE(GL_RGB)
+    ADDMODE(GL_RGBA)
+    ADDMODE(GL_ALPHA)
+
+    unsigned int maxNumTextureUnits = 16;
+    MakeString str;
+
+    _textureFormat = new IntArrayUniform("osg_TextureFormat",maxNumTextureUnits);
+
+    _textureModeDefineMapList.resize(maxNumTextureUnits);
+    for(unsigned int i=0; i<maxNumTextureUnits; ++i)
+    {
+        _textureModeDefineMapList[i][GL_TEXTURE_1D] = str.clear()
+            <<"#define TEXTURE_VERT_DECLARE"<<i<<" varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_VERT_BODY"<<i<<" TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FRAG_DECLARE"<<i<<" uniform sampler1D sampler"<<i<<"; varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FUNCTION"<<i<<"() texture1D( sampler"<<i<<", TexCoord"<<i<<".s)"<<std::endl;
+
+        _textureModeDefineMapList[i][GL_TEXTURE_2D] = str.clear()
+            <<"#define TEXTURE_VERT_DECLARE"<<i<<" varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_VERT_BODY"<<i<<" TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FRAG_DECLARE"<<i<<" uniform sampler2D sampler"<<i<<"; varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FUNCTION"<<i<<"() texture2D( sampler"<<i<<", TexCoord"<<i<<".st)"<<std::endl;
+
+        _textureModeDefineMapList[i][GL_TEXTURE_RECTANGLE] = str.clear()
+            <<"#define TEXTURE_VERT_DECLARE"<<i<<" varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_VERT_BODY"<<i<<" TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FRAG_DECLARE"<<i<<" uniform samplerRectangle sampler"<<i<<"; varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FUNCTION"<<i<<"() textureRectangle( sampler"<<i<<", TexCoord"<<i<<".st)"<<std::endl;
+
+        _textureModeDefineMapList[i][GL_TEXTURE_3D] = str.clear()
+            <<"#define TEXTURE_VERT_DECLARE"<<i<<" varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_VERT_BODY"<<i<<" TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FRAG_DECLARE"<<i<<" uniform sampler3D sampler"<<i<<"; varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FUNCTION"<<i<<"() texture3D( sampler"<<i<<", TexCoord"<<i<<".str)"<<std::endl;
+
+        _textureModeDefineMapList[i][GL_TEXTURE_CUBE_MAP] = str.clear()
+            <<"#define TEXTURE_VERT_DECLARE"<<i<<" varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_VERT_BODY"<<i<<" TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FRAG_DECLARE"<<i<<" uniform samplerCubeMap sampler"<<i<<"; varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FUNCTION"<<i<<"() textureCubeMap( sampler"<<i<<", TexCoord"<<i<<".str)"<<std::endl;
+
+        _textureModeDefineMapList[i][GL_TEXTURE_2D_ARRAY] = str.clear()
+            <<"#define TEXTURE_VERT_DECLARE"<<i<<" varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_VERT_BODY"<<i<<" TexCoord"<<i<<" = gl_MultiTexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FRAG_DECLARE"<<i<<" uniform sampler2DArray sampler"<<i<<"; varying vec4 TexCoord"<<i<<";"<<std::endl
+            <<"#define TEXTURE_FUNCTION"<<i<<"() texture2DArray( sampler"<<i<<", TexCoord"<<i<<".str)"<<std::endl;
     }
 }
 
@@ -481,9 +631,36 @@ void State::setMaxBufferObjectPoolSize(unsigned int size)
     OSG_INFO<<"osg::State::_maxBufferObjectPoolSize="<<_maxBufferObjectPoolSize<<std::endl;
 }
 
+void State::setRootStateSet(osg::StateSet* stateset)
+{
+    if (_rootStateSet == stateset) return;
+
+    _rootStateSet = stateset;
+
+    if (_stateStateStack.empty())
+    {
+        if (stateset) pushStateSet(stateset);
+    }
+    else
+    {
+        StateSetStack previousStateSetStack = _stateStateStack;
+
+        // we want to reset all the various state stacks, inserting the new root StateSet as the topmost one automatically (popeAllStateSet() does this.)
+        popAllStateSets();
+
+        // now we have to add back in all the StateSet's to make sure the state is consistent
+        for(StateSetStack::iterator itr = previousStateSetStack.begin();
+            itr != previousStateSetStack.end();
+            ++itr)
+        {
+            pushStateSet(*itr);
+        }
+    }
+}
+
+
 void State::pushStateSet(const StateSet* dstate)
 {
-
     _stateStateStack.push_back(dstate);
     if (dstate)
     {
@@ -519,12 +696,20 @@ void State::popAllStateSets()
 {
     // OSG_NOTICE<<"State::popAllStateSets()"<<_stateStateStack.size()<<std::endl;
 
-    while (!_stateStateStack.empty()) popStateSet();
-
+    if (_rootStateSet.valid())
+    {
+        while (_stateStateStack.size()>2) popStateSet();
+    }
+    else
+    {
+        while (!_stateStateStack.empty()) popStateSet();
+    }
+#if 0
     applyProjectionMatrix(0);
     applyModelViewMatrix(0);
 
     _lastAppliedProgramObject = 0;
+#endif
 }
 
 void State::popStateSet()
@@ -652,6 +837,8 @@ void State::captureCurrentState(StateSet& stateset) const
 
 void State::apply(const StateSet* dstate)
 {
+    // OSG_NOTICE<<__PRETTY_FUNCTION__<<" _stateStateStack.size()="<<_stateStateStack.size()<<std::endl;
+
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("start of State::apply(StateSet*)");
 
     // equivalent to:
@@ -710,6 +897,8 @@ void State::apply(const StateSet* dstate)
             }
         }
 
+        if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("after attributes State::apply()");
+
         if (dstate->getUniformList().empty())
         {
             if (_currentShaderCompositionUniformList.empty()) applyUniformMap(_uniformMap);
@@ -744,6 +933,9 @@ void State::apply(const StateSet* dstate)
 
 void State::apply()
 {
+    // OSG_NOTICE<<__PRETTY_FUNCTION__<<" _stateStateStack.size()="<<_stateStateStack.size()<<std::endl;
+
+
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("start of State::apply()");
 
     _currentShaderCompositionUniformList.clear();
@@ -779,11 +971,14 @@ void State::apply()
         applyShaderComposition();
     }
 
+    if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("after attributes State::apply()");
+
     if (_currentShaderCompositionUniformList.empty()) applyUniformMap(_uniformMap);
     else applyUniformList(_uniformMap, _currentShaderCompositionUniformList);
 
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("end of State::apply()");
 }
+
 
 void State::applyShaderComposition()
 {
@@ -1123,6 +1318,10 @@ unsigned int State::getClientActiveTextureUnit() const
     return _currentClientActiveTextureUnit;
 }
 
+bool State::checkGLErrors(const std::string& str) const
+{
+    return checkGLErrors(str.c_str());
+}
 
 bool State::checkGLErrors(const char* str1, const char* str2) const
 {
@@ -1196,7 +1395,6 @@ bool State::checkGLErrors(const StateAttribute* attribute) const
     }
     return false;
 }
-
 
 void State::applyModelViewAndProjectionUniformsIfRequired()
 {
@@ -1443,8 +1641,6 @@ void State::applyModelViewMatrix(const osg::Matrix& matrix)
 
     loadModelViewMatrix();
 }
-
-#include <osg/io_utils>
 
 void State::updateModelViewAndProjectionMatrixUniforms()
 {
@@ -1715,16 +1911,11 @@ bool State::DefineMap::updateCurrentDefines()
     return true;
 }
 
-std::string State::getDefineString(const osg::ShaderDefines& shaderDefines)
+
+void State::getDefineString(std::string& shaderDefineStr, const StateSet::DefineList& currentDefines, const osg::ShaderDefines& shaderDefines)
 {
-    if (_defineMap.changed) _defineMap.updateCurrentDefines();
-
-    const StateSet::DefineList& currentDefines = _defineMap.currentDefines;
-
     ShaderDefines::const_iterator sd_itr = shaderDefines.begin();
     StateSet::DefineList::const_iterator cd_itr = currentDefines.begin();
-
-    std::string shaderDefineStr;
 
     while(sd_itr != shaderDefines.end() && cd_itr != currentDefines.end())
     {
@@ -1740,28 +1931,132 @@ std::string State::getDefineString(const osg::ShaderDefines& shaderDefines)
                 if (dp.first[0]!='(') shaderDefineStr += " ";
                 shaderDefineStr += dp.first;
             }
-#ifdef WIN32
-            shaderDefineStr += "\r\n";
-#else
-            shaderDefineStr += "\n";
-#endif
+
+            shaderDefineStr += s_LineEnding;
 
             ++sd_itr;
             ++cd_itr;
         }
     }
-    return shaderDefineStr;
 }
 
-bool State::supportsShaderRequirements(const osg::ShaderDefines& shaderRequirements)
+void State::getDefineString(std::string& shaderDefineStr, const osg::ShaderPragmas& shaderPragmas)
 {
-    if (shaderRequirements.empty()) return true;
+    if (_defineMap.changed) _defineMap.updateCurrentDefines();
+
+    if (!shaderPragmas.defines.empty())
+    {
+        getDefineString(shaderDefineStr, _defineMap.currentDefines, shaderPragmas.defines);
+        getDefineString(shaderDefineStr, _currentShaderCompositionDefines, shaderPragmas.defines);
+    }
+    if (!shaderPragmas.requirements.empty())
+    {
+        getDefineString(shaderDefineStr, _defineMap.currentDefines, shaderPragmas.requirements);
+        getDefineString(shaderDefineStr, _currentShaderCompositionDefines, shaderPragmas.requirements);
+    }
+
+    if (!shaderPragmas.modes.empty())
+    {
+        for(ShaderDefines::iterator itr = shaderPragmas.modes.begin();
+            itr != shaderPragmas.modes.end();
+            ++itr)
+        {
+             const std::string& modeStr = *itr;
+             StringModeMap::iterator m_itr = _stringModeMap.find(modeStr);
+             if (m_itr!=_stringModeMap.end())
+             {
+                // OSG_NOTICE<<"Look up mode ["<<modeStr<<"]"<<std::endl;
+                StateAttribute::GLMode mode = m_itr->second;
+
+                if (mode>=GL_TEXTURE0 && mode<=(GL_TEXTURE0+15))
+                {
+                    // OSG_NOTICE<<"  Need to map GL_TEXTUREi"<<std::endl;
+                }
+                else
+                {
+                    ModeMap::const_iterator mm_itr = _modeMap.find(mode);
+                    bool mode_enabled = (mm_itr!=_modeMap.end() && mm_itr->second.last_applied_value);
+
+                    shaderDefineStr += "#define ";
+                    shaderDefineStr += modeStr;
+                    if (mode_enabled) shaderDefineStr += " 1";
+                    else shaderDefineStr += " 0";
+                    shaderDefineStr += s_LineEnding;
+                }
+             }
+        }
+
+        for(unsigned int i=0; i<_textureModeMapList.size(); ++i)
+        {
+            const ModeMap& modeMap = _textureModeMapList[i];
+            const ModeDefineMap& modeDefineMap = _textureModeDefineMapList[i];
+            for(ModeMap::const_iterator tm_itr = modeMap.begin();
+                tm_itr != modeMap.end();
+                ++tm_itr)
+            {
+                GLenum mode = tm_itr->first;
+                if (tm_itr->second.last_applied_value)
+                {
+                    ModeDefineMap::const_iterator mdm_itr = modeDefineMap.find(mode);
+                    if (mdm_itr!=modeDefineMap.end()) shaderDefineStr += mdm_itr->second;
+                }
+            }
+        }
+
+        for(unsigned int i=0; i<shaderPragmas.textureModes.size(); ++i)
+        {
+            if (i<_textureModeMapList.size())
+            {
+                const ShaderDefines& sd = shaderPragmas.textureModes[i];
+                const ModeMap& modeMap = _textureModeMapList[i];
+
+                for(ShaderDefines::iterator itr = sd.begin();
+                    itr != sd.end();
+                    ++itr)
+                {
+                    const std::string& modeStr = *itr;
+                    StringModeMap::iterator m_itr = _stringModeMap.find(modeStr);
+                    if (m_itr!=_stringModeMap.end())
+                    {
+                        // OSG_NOTICE<<"Need to look up mode ["<<modeStr<<"]"<<std::endl;
+
+                        StateAttribute::GLMode mode = m_itr->second;
+                        ModeMap::const_iterator mm_itr = modeMap.find(mode);
+                        bool mode_enabled = mm_itr!=modeMap.end() && mm_itr->second.last_applied_value;
+
+                        shaderDefineStr += "#define ";
+                        shaderDefineStr += modeStr;
+                        shaderDefineStr += char('0'+char(i));
+                        if (mode_enabled) shaderDefineStr += " 1";
+                        else shaderDefineStr += " 0";
+                        shaderDefineStr += s_LineEnding;
+
+                    }
+                }
+            }
+
+        }
+
+
+    }
+
+    if (getUseVertexAttributeAliasing() || getUseModelViewAndProjectionUniforms())
+    {
+        convertVertexShaderSourceToOsgBuiltIns(shaderDefineStr);
+    }
+
+    //OSG_NOTICE<<"State::getDefineString(..)\n"<<shaderDefineStr<<std::endl;
+}
+
+bool State::supportsShaderRequirements(const osg::ShaderPragmas& shaderPragmas)
+{
+    if (shaderPragmas.requirements.empty()) return true;
 
     if (_defineMap.changed) _defineMap.updateCurrentDefines();
 
     const StateSet::DefineList& currentDefines = _defineMap.currentDefines;
-    for(ShaderDefines::const_iterator sr_itr = shaderRequirements.begin();
-        sr_itr != shaderRequirements.end();
+    for(ShaderDefines::const_iterator sr_itr = shaderPragmas.requirements.begin();
+        sr_itr != shaderPragmas.requirements.end();
         ++sr_itr)
     {
         if (currentDefines.find(*sr_itr)==currentDefines.end()) return false;

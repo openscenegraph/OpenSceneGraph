@@ -113,6 +113,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Matrix
     ${HEADER_PATH}/Matrixd
     ${HEADER_PATH}/Matrixf
+    ${HEADER_PATH}/MatrixTemplate
     ${HEADER_PATH}/MatrixTransform
     ${HEADER_PATH}/MixinVector
     ${HEADER_PATH}/Multisample
@@ -170,6 +171,7 @@ SET(TARGET_H
     ${HEADER_PATH}/StencilTwoSided
     ${HEADER_PATH}/Switch
     ${HEADER_PATH}/TemplatePrimitiveFunctor
+    ${HEADER_PATH}/TextureAttribute
     ${HEADER_PATH}/TemplatePrimitiveIndexFunctor
     ${HEADER_PATH}/TexEnv
     ${HEADER_PATH}/TexEnvCombine
@@ -194,6 +196,7 @@ SET(TARGET_H
     ${HEADER_PATH}/TriangleLinePointIndexFunctor
     ${HEADER_PATH}/Types
     ${HEADER_PATH}/Uniform
+    ${HEADER_PATH}/UniformBase
     ${HEADER_PATH}/UserDataContainer
     ${HEADER_PATH}/ValueObject
     ${HEADER_PATH}/ValueMap

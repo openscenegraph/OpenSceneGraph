@@ -35,6 +35,7 @@ TYPE* CopyOp::operator() (const TYPE* obj) const \
 COPY_OP( Object,                   DEEP_COPY_OBJECTS )
 COPY_OP( StateSet,                 DEEP_COPY_STATESETS )
 COPY_OP( Image,                    DEEP_COPY_IMAGES )
+COPY_OP( UniformBase,              DEEP_COPY_UNIFORMS )
 COPY_OP( Uniform,                  DEEP_COPY_UNIFORMS )
 COPY_OP( UniformCallback,          DEEP_COPY_CALLBACKS )
 COPY_OP( StateAttributeCallback,   DEEP_COPY_CALLBACKS )

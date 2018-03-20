@@ -141,7 +141,7 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
                 {
                     pcp->apply(*(itr->second.first));
 
-                    if (_checkGLErrors==osg::State::ONCE_PER_ATTRIBUTE) _renderInfo.getState()->checkGLErrors("after pcp->apply(Unfiorm&) in GLObjectsVisitor::apply(osg::StateSet& stateset), unifrom name: ", (itr->second.first->getName()).c_str());
+                    if (_checkGLErrors==osg::State::ONCE_PER_ATTRIBUTE) _renderInfo.getState()->checkGLErrors("after pcp->apply(Uniform&) in GLObjectsVisitor::apply(osg::StateSet& stateset), uniform name: ", (itr->second.first->getName()).c_str());
                 }
             }
         }

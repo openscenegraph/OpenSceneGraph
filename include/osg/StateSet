@@ -299,13 +299,13 @@ class OSG_EXPORT StateSet : public Object
 
 
         /** Simple pairing between a Uniform and its override flag.*/
-        typedef std::pair<ref_ptr<Uniform>,StateAttribute::OverrideValue>  RefUniformPair;
+        typedef std::pair<ref_ptr<UniformBase>,StateAttribute::OverrideValue>  RefUniformPair;
 
         /** a container to map Uniform name to its respective RefUniformPair.*/
         typedef std::map<std::string,RefUniformPair> UniformList;
 
         /** Set this StateSet to contain specified uniform and override flag.*/
-        void addUniform(Uniform* uniform, StateAttribute::OverrideValue value=StateAttribute::ON);
+        void addUniform(UniformBase* uniform, StateAttribute::OverrideValue value=StateAttribute::ON);
 
         template<class T> void addUniform(const ref_ptr<T>& uniform, StateAttribute::OverrideValue value=StateAttribute::ON) { addUniform( uniform.get(), value); }
 
@@ -313,20 +313,51 @@ class OSG_EXPORT StateSet : public Object
         void removeUniform(const std::string& name);
 
         /** remove Uniform from StateSet.*/
-        void removeUniform(Uniform* uniform);
+        void removeUniform(UniformBase* uniform);
 
-        template<class T> void removeUniform(const ref_ptr<T>& uniform) { removeUniform(uniform.get()); }
+        template<class T>
+        void removeUniform(const ref_ptr<T>& uniform) { removeUniform(uniform.get()); }
 
         /** Get Uniform for specified name.
           * Returns NULL if no matching Uniform is contained within StateSet.*/
-        Uniform* getUniform(const std::string& name);
+        UniformBase* getUniformBase(const std::string& name);
+
+        /** Get Uniform for specified name.
+          * Returns NULL if no matching Uniform is contained within StateSet.*/
+        Uniform* getUniform(const std::string& name) { return dynamic_cast<Uniform*>(getUniformBase(name)); }
 
         /** Get Uniform for specified name, if one is not available create it, add it to this StateSet and return a pointer to it.*/
         Uniform* getOrCreateUniform(const std::string& name, Uniform::Type type, unsigned int numElements=1);
 
+        /** Get Uniform for specified name, if one is not available create it, add it to this StateSet and return a pointer to it.*/
+        template<class T>
+        T* getOrCreateUniform(const std::string& name)
+        {
+            UniformList::iterator itr = _uniformList.find(name);
+            if (itr!=_uniformList.end())
+            {
+                osg::UniformBase* u = itr->second.first.get();
+                if (u && typeid(T)==typeid(*u)) return static_cast<T*>(u);
+            }
+
+            // no uniform found matching name so create it..
+
+            T* uniform = new T(name);
+            addUniform(uniform);
+
+            return uniform;
+        }
+
+
         /** Get const Uniform for specified name.
           * Returns NULL if no matching Uniform is contained within StateSet.*/
-        const Uniform* getUniform(const std::string& name) const;
+        const UniformBase* getUniformBase(const std::string& name) const;
+
+
+        /** Get const Uniform for specified name.
+          * Returns NULL if no matching Uniform is contained within StateSet.*/
+        const Uniform* getUniform(const std::string& name) const { return dynamic_cast<const Uniform*>(getUniformBase(name)); }
+
 
         /** Get specified RefUniformPair for specified Uniform name.
           * Returns NULL if no Uniform is contained within StateSet.*/
@@ -533,6 +564,7 @@ class OSG_EXPORT StateSet : public Object
         friend class osg::Node;
         friend class osg::Drawable;
         friend class osg::Uniform;
+        friend class osg::UniformBase;
         friend class osg::StateAttribute;
 
         ModeList                            _modeList;

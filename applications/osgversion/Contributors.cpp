@@ -280,6 +280,7 @@ const char* invalidNames[] =
     "SceneLoader",
     "OpenGL",
     "FindLIBLAS",
+    "PissedCapslock",
     "MinGW"
 };
 
@@ -519,6 +520,8 @@ struct NameCorrection
 
 NameCorrection nameCorrections[] =
 {
+    {"LaurensVoerman","GetScalarValue",
+     "Laurens", "Voerman"},
     {"LaurensVoerman","Meta_Shape",
      "Laurens", "Voerman"},
     {"LaurensVoerman","OpenCascade",

@@ -1093,9 +1093,9 @@ void CompositeViewer::eventTraversal()
                 osg::GraphicsContext* gc = event->getGraphicsContext();
                 if (gc)
                 {
-                    typedef osg::GraphicsContext::Cameras Cameras;
-                    Cameras& cameras = gc->getCameras();
-                    for(Cameras::iterator citr = cameras.begin();
+                    typedef osg::GraphicsContext::Cameras CamList;
+                    CamList& cameras = gc->getCameras();
+                    for(CamList::iterator citr = cameras.begin();
                         citr != cameras.end();
                         ++citr)
                     {

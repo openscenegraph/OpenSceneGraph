@@ -141,7 +141,7 @@ class BoneNameBoneMap : public std::map<std::string, osgAnimation::Bone*> {
 
 public:
     BoneNameBoneMap(const BoneSet& bones) {
-        for(BoneSet::iterator bone = bones.begin(); bone != bones.end(); ++bone) {
+        for(BoneSet::const_iterator bone = bones.begin(); bone != bones.end(); ++bone) {
             insert(StringBonePair((*bone)->getName(), *bone));
         }
     }
@@ -153,7 +153,7 @@ class RigGeometryIndexMap : public std::map<osgAnimation::RigGeometry*, unsigned
 public:
     RigGeometryIndexMap(const RigGeometrySet& rigGeometrySet) {
         unsigned int index = 0;
-        for(RigGeometrySet::iterator rigGeometry = rigGeometrySet.begin(); rigGeometry != rigGeometrySet.end(); ++rigGeometry, ++index) {
+        for(RigGeometrySet::const_iterator rigGeometry = rigGeometrySet.begin(); rigGeometry != rigGeometrySet.end(); ++rigGeometry, ++index) {
             insert(RigGeometryIntPair(*rigGeometry, index));
         }
     }

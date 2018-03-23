@@ -113,10 +113,10 @@ class OSG_EXPORT Drawable : public Node
 
 
         /** Set the initial bounding volume to use when computing the overall bounding volume.*/
-        void setInitialBound(const osg::BoundingBox& bbox) { _initialBound = bbox; dirtyBound(); }
+        void setInitialBound(const osg::BoundingBox& bbox) { _initialBoundingBox = bbox; dirtyBound(); }
 
         /** Set the initial bounding volume to use when computing the overall bounding volume.*/
-        const BoundingBox& getInitialBound() const { return _initialBound; }
+        const BoundingBox& getInitialBound() const { return _initialBoundingBox; }
 
         inline const BoundingSphere& getBound() const
         {
@@ -131,10 +131,10 @@ class OSG_EXPORT Drawable : public Node
         {
             if(!_boundingSphereComputed)
             {
-                _boundingBox = _initialBound;
+                _boundingBox = _initialBoundingBox;
 
-                if (_computeBoundCallback.valid())
-                    _boundingBox.expandBy(_computeBoundCallback->computeBound(*this));
+                if (_computeBoundingBoxCallback.valid())
+                    _boundingBox.expandBy(_computeBoundingBoxCallback->computeBound(*this));
                 else
                     _boundingBox.expandBy(computeBoundingBox());
 
@@ -171,13 +171,13 @@ class OSG_EXPORT Drawable : public Node
         };
 
         /** Set the compute bound callback to override the default computeBound.*/
-        void setComputeBoundingBoxCallback(ComputeBoundingBoxCallback* callback) { _computeBoundCallback = callback; }
+        void setComputeBoundingBoxCallback(ComputeBoundingBoxCallback* callback) { _computeBoundingBoxCallback = callback; }
 
         /** Get the compute bound callback.*/
-        ComputeBoundingBoxCallback* getComputeBoundingBoxCallback() { return _computeBoundCallback.get(); }
+        ComputeBoundingBoxCallback* getComputeBoundingBoxCallback() { return _computeBoundingBoxCallback.get(); }
 
         /** Get the const compute bound callback.*/
-        const ComputeBoundingBoxCallback* getComputeBoundingBoxCallback() const { return _computeBoundCallback.get(); }
+        const ComputeBoundingBoxCallback* getComputeBoundingBoxCallback() const { return _computeBoundingBoxCallback.get(); }
 
 
         /** Set the Shape of the \c Drawable. The shape can be used to
@@ -524,8 +524,8 @@ class OSG_EXPORT Drawable : public Node
         friend class Geode;
         friend class StateSet;
 
-        BoundingBox                         _initialBound;
-        ref_ptr<ComputeBoundingBoxCallback> _computeBoundCallback;
+        BoundingBox                         _initialBoundingBox;
+        ref_ptr<ComputeBoundingBoxCallback> _computeBoundingBoxCallback;
         mutable BoundingBox                 _boundingBox;
 
         ref_ptr<Shape>          _shape;

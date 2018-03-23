@@ -740,7 +740,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     isTBOSupported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_texture_buffer_object");
     isVAOSupported = validContext && (OSG_GLES3_FEATURES || OSG_GL3_FEATURES  || osg::isGLExtensionSupported(contextID, "GL_ARB_vertex_array_object", "GL_OES_vertex_array_object"));
     isTransformFeedbackSupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_transform_feedback2");
-    isBufferObjectSupported = isVBOSupported && isPBOSupported;
+    isBufferObjectSupported = isVBOSupported || isPBOSupported;
 
 
     // BlendFunc extensions

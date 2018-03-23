@@ -462,7 +462,7 @@ void OutputStream::writeImage( const osg::Image* img )
     bool newID = false;
     unsigned int id = findOrCreateObjectID( img, newID );
 
-	if (_targetFileVersion > 94) *this << PROPERTY("ClassName") << name << std::endl;   // Write object name
+    if (_targetFileVersion > 94) *this << PROPERTY("ClassName") << name << std::endl;   // Write object name
 	
     *this << PROPERTY("UniqueID") << id << std::endl;      // Write image ID
     if ( getException() ) return;

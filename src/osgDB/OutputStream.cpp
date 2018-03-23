@@ -79,8 +79,8 @@ OutputStream::~OutputStream()
 
 void OutputStream::setFileVersion( const std::string& d, int v )
 {
-	if (d.empty()) _targetFileVersion = v;
-	else _domainVersionMap[d] = v;
+    if (d.empty()) _targetFileVersion = v;
+    else _domainVersionMap[d] = v;
 }
 
 int OutputStream::getFileVersion( const std::string& d ) const

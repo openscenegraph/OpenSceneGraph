@@ -70,7 +70,7 @@ OutputStream::OutputStream( const osgDB::Options* options )
             _targetFileVersion = version;
     }
 	
-	if (_targetFileVersion < 99) _useRobustBinaryFormat = false;
+    if (_targetFileVersion < 99) _useRobustBinaryFormat = false;
 }
 
 OutputStream::~OutputStream()
@@ -406,7 +406,7 @@ void OutputStream::writePrimitiveSet( const osg::PrimitiveSet* p )
         {
             const osg::DrawArrays* da = static_cast<const osg::DrawArrays*>(p);
             *this << MAPPEE(PrimitiveType, da->getMode());
-			if (_targetFileVersion > 96) *this << da->getNumInstances();
+            if (_targetFileVersion > 96) *this << da->getNumInstances();
             *this << da->getFirst() << da->getCount() << std::endl;
         }
         break;
@@ -415,8 +415,8 @@ void OutputStream::writePrimitiveSet( const osg::PrimitiveSet* p )
         {
             const osg::DrawArrayLengths* dl = static_cast<const osg::DrawArrayLengths*>(p);
             *this << MAPPEE(PrimitiveType, dl->getMode());
-			if (_targetFileVersion > 96) *this << dl->getNumInstances();
-			*this << dl->getFirst();
+            if (_targetFileVersion > 96) *this << dl->getNumInstances();
+            *this << dl->getFirst();
             writeArrayImplementation( dl, dl->size(), 4 );
         }
         break;
@@ -425,7 +425,7 @@ void OutputStream::writePrimitiveSet( const osg::PrimitiveSet* p )
         {
             const osg::DrawElementsUByte* de = static_cast<const osg::DrawElementsUByte*>(p);
             *this << MAPPEE(PrimitiveType, de->getMode());
-			if (_targetFileVersion > 96) *this << de->getNumInstances();
+            if (_targetFileVersion > 96) *this << de->getNumInstances();
             writeArrayImplementation( de, de->size(), 4 );
         }
         break;
@@ -434,7 +434,7 @@ void OutputStream::writePrimitiveSet( const osg::PrimitiveSet* p )
         {
             const osg::DrawElementsUShort* de = static_cast<const osg::DrawElementsUShort*>(p);
             *this << MAPPEE(PrimitiveType, de->getMode());
-			if (_targetFileVersion > 96) *this << de->getNumInstances();
+            if (_targetFileVersion > 96) *this << de->getNumInstances();
             writeArrayImplementation( de, de->size(), 4 );
         }
         break;
@@ -443,7 +443,7 @@ void OutputStream::writePrimitiveSet( const osg::PrimitiveSet* p )
         {
             const osg::DrawElementsUInt* de = static_cast<const osg::DrawElementsUInt*>(p);
             *this << MAPPEE(PrimitiveType, de->getMode());
-			if (_targetFileVersion > 96) *this << de->getNumInstances();
+            if (_targetFileVersion > 96) *this << de->getNumInstances();
             writeArrayImplementation( de, de->size(), 4 );
         }
         break;

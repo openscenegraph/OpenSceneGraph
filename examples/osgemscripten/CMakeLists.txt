@@ -14,12 +14,12 @@ SET(DYNAMIC_OPENTHREADS OFF CACHE BOOL "Link OpenThreads statically")
 SET(DYNAMIC_OPENSCENEGRAPH OFF CACHE BOOL "Link OpenSceneGraph statically")
 # Prevent CMake configuration error.
 SET(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS_EXITCODE "0" CACHE STRING "Prevent cfg error")
-# Reference SDL2 during build process.
-# We use SDL2 to do the following:
-# * OpenGL functions' address retrieval
-# * OpenGL graphics context creation
-SET(USE_SDL2 "-s USE_SDL=2")
-SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${USE_SDL2}" CACHE STRING "Use SDL2" FORCE)
+
+# Set special build flags:
+# * -O3: make compact binary, critical for web
+# * -s USE_SDL=2: provide SDL2
+SET(BUILD_FLAGS "-O3 -s USE_SDL=2")
+ADD_DEFINITIONS(${BUILD_FLAGS})
 
 # Reference OpenSceneGraph includes and libraries.
 SET(OSG_SOURCE_DIR "${OSG_DIR}")
@@ -42,7 +42,7 @@ ADD_EXECUTABLE(osgemscripten osgemscripten.cpp)
 # Make Emscripten generate ready-to-open HTML page.
 SET(CMAKE_EXECUTABLE_SUFFIX ".html")
 # Make Emscripten preload the resource.
-SET_TARGET_PROPERTIES(osgemscripten PROPERTIES LINK_FLAGS "--preload-file box.osgt")
+SET_TARGET_PROPERTIES(osgemscripten PROPERTIES LINK_FLAGS "--preload-file box.osgt ${BUILD_FLAGS}")
 # Copy the resource to the build directory.
 CONFIGURE_FILE(box.osgt box.osgt COPYONLY)
 # Libraries must be linked in the specified order.

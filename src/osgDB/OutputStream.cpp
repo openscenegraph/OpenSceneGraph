@@ -65,7 +65,7 @@ OutputStream::OutputStream( const osgDB::Options* options )
     if (!options->getPluginStringData("TargetFileVersion").empty())
     {
         std::string strVersion = options->getPluginStringData("TargetFileVersion");
-        int version = std::stoi(strVersion);
+        int version = atoi(strVersion.c_str());
         if (version > 0 && version <= OPENSCENEGRAPH_SOVERSION)
             _targetFileVersion = version;
     }

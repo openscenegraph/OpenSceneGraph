@@ -219,7 +219,7 @@ protected:
     osg::ref_ptr<OutputException> _exception;
     osg::ref_ptr<const osgDB::Options> _options;
 	
-	int _targetFileVersion;
+    int _targetFileVersion;
 };
 
 void OutputStream::throwException( const std::string& msg )

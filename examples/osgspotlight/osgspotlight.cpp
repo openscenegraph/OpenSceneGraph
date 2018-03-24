@@ -56,7 +56,7 @@ osg::Image* createSpotLightImage(const osg::Vec4& centerColour, const osg::Vec4&
             float dy = (float(r) - mid)*div;
             float pr = powf(1.0f-sqrtf(dx*dx+dy*dy),power);
             if (pr<0.0f) pr=0.0f;
-            osg::Vec4 color = centerColour*r+backgroudColour*(1.0f-pr);
+            osg::Vec4 color = centerColour*pr+backgroudColour*(1.0f-pr);
             *ptr++ = (unsigned char)((color[0])*255.0f);
             *ptr++ = (unsigned char)((color[1])*255.0f);
             *ptr++ = (unsigned char)((color[2])*255.0f);

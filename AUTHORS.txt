@@ -1,6 +1,6 @@
-OpenSceneGraph Library 3.5.11
+OpenSceneGraph Library 3.6.0
 
-569 Contributors:
+568 Contributors:
 
 Firstname Surname
 -----------------
@@ -491,7 +491,6 @@ Hartmut Seichter
 Gunter Huber
 Gregory Jaegy
 Graeme Harkness
-Github It
 Gian Lorenzetto
 George Papagiannakis
 Geoff Thu

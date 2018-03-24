@@ -1,6 +1,35 @@
 OSG News
 ========
 
+OpenSceneGraph 3.6 release
+PERTHSHIRE, Scotland - 24th March 2018 - OpenSceneGraph Professional Services announces the release of OpenSceneGraph 3.6, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. OpenSceneGraph 3.6 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. OpenSceneGraph 3.6 runs on all Microsoft Windows platforms, Apple OS/X, IOS, GNU/Linux, Android, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
+Updates include:
+
+  * Improvements to FBX and COLLADA loaders
+  * osgQt has been moved out to it's own dedicated
+
+Downloads and Licensing:
+
+OpenSceneGraph is open-source, so full source code is provided, and can be copied, modified and used free of charge for commercial and non-commercial use. Access to the source allows end users greater flexibility in how they develop, debug and deploy their applications. They gain productivity and freedom by being able to leverage the tool chain in accordance with their own release cycles. Downloads of binaries and source can be found in the Downloads section of the openscenegraph.org website.
+
+OpenSceneGraph is released under the OpenSceneGraph Public License, which is based on the Lesser GNU Public License (LGPL), permitting the software to be used free of charge across the full spectrum of commercial and open-source applications. Furthermore, it allows both static and dynamic linking of the OpenSceneGraph libraries without restricting the licensing of the user's software.
+Professional support and services
+
+OpenSceneGraph project is backed up with professional services by OpenSceneGraph Professional Services, based in Scotland, and a range of Contractors from around the world. Services available include:
+
+    Confidential Professional Support
+    Bespoke development
+    Consultancy
+    Training
+
+Community support and contributions:
+
+The diverse and growing community of over 5000 developers is centred around the public osg-users mailing list/forum, where members discuss how best to use OpenSceneGraph, provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists.
+
+The OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the 569 individuals from around the world that have directly contributed to the development and refinement of the OpenSceneGraph code base.
+
+
+
 OpenSceneGraph 3.4 release introduces shader composition, new osgUI library, displacement mapping, volume rendering, lua scripting support and much more
 PERTHSHIRE, Scotland - 12th August 2015 - OpenSceneGraph Professional Services announces the release of OpenSceneGraph 3.4, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. OpenSceneGraph 3.4 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. OpenSceneGraph 3.4 runs on all Microsoft Windows platforms, Apple OS/X, IOS, GNU/Linux, Android, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
 Updates include:

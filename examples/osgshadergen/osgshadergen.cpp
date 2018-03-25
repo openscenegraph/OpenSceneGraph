@@ -116,7 +116,7 @@ int main(int argc, char** argv)
     std::string shaderFilename;
     while(arguments.read("--shader", shaderFilename))
     {
-        osg::ref_ptr<osg::Shader> shader = osgDB::readShaderFile(shaderFilename);
+        osg::ref_ptr<osg::Shader> shader = osgDB::readRefShaderFile(shaderFilename);
         if (shader.valid()) uberProgram->addShader(shader.get());
     }
 

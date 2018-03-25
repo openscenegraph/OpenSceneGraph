@@ -1,3 +1,72 @@
+Sat, 24 Mar 2018 17:51:06 +0000
+Author : Robert Osfield
+Added new features in 3.6 to NEWS release
+
+Sat, 24 Mar 2018 12:13:59 +0000
+Author : Robert Osfield
+First step for 3.6 stable release news
+
+Sat, 24 Mar 2018 11:23:59 +0000
+Author : Robert Osfield
+Fixed read shader to safer ref version
+
+Sat, 24 Mar 2018 10:59:15 +0000
+Author : Robert Osfield
+Fixed spotlight colour mixing
+
+Fri, 23 Mar 2018 20:08:37 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #502 from Haojia521/OutputStreamUseTargertSoVersionwrite binary file with a specific so version
+
+Fri, 23 Mar 2018 19:54:33 +0000
+Author : Robert Osfield
+Removed serailizers that are now supplied by osg::Node
+
+Fri, 23 Mar 2018 19:54:01 +0000
+Author : Robert Osfield
+Fixed member variable names to avoid conflicts with osg::Node
+
+Fri, 23 Mar 2018 18:07:36 +0000
+Author : Robert Osfield
+Removed Drawable writing out of StateSet as this is now done by Node
+
+Fri, 23 Mar 2018 18:07:07 +0300
+Author : Michael Kapelko
+Provide osgemscripten example CMake flags in a more stable way
+
+Fri, 23 Mar 2018 12:55:00 +0000
+Author : Robert Osfield
+Changed the isBufferObjectSupported flag so that it's true when either VBO or PBO's are supported
+
+Thu, 22 Mar 2018 17:35:13 +0000
+Author : Paul Obermeier
+Fixes for VS2008 and 2010 build
+
+Thu, 22 Mar 2018 16:51:03 +0000
+Author : Robert Osfield
+Moved OPENGL_INCLUDE_DIR include into it's own INCLUDE_DIRECTORIES(SYSTEM ${OPENGL_INCLUDE_DIR}) entry to help with FreeBSD builds where a previous rev of the OSG has already been installed
+
+Thu, 22 Mar 2018 09:04:47 +0000
+Author : Robert Osfield
+Removed typedef and used osg::GraphicsContext::Cameras explictly to avoid any hiding of type
+
+Wed, 21 Mar 2018 19:44:25 +0300
+Author : Victor
+Fixed bug of determining availability of functions ‘pthread_getconcurrency’, ‘pthread_setconcurrency’, ‘pthread_setaffinity_np’ in ‘pthread’ libraryCMake cannot find 'pthread_getconcurrency’, ‘pthread_setconcurrency’ and ‘pthread_setaffinity_np' functions in 'pthread' library because when linking internal cmake test did’t specifed ‘-l pthread’.
+
+
+Tue, 20 Mar 2018 09:20:59 +0000
+Author : Robert Osfield
+Removed -m message that was causing problems with branch creation
+
+Tue, 20 Mar 2018 09:12:58 +0000
+Author : Robert Osfield
+Updated version numbers in prep for 3.6 branch
+
+Tue, 20 Mar 2018 09:02:05 +0000
+Author : Robert Osfield
+Updated ChangeLog and AUTHORS file
+
 Mon, 19 Mar 2018 14:27:18 +0000
 Author : Robert Osfield
 Updated ChangeLog and updated version to 3.5.11

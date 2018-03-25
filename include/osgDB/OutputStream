@@ -79,7 +79,7 @@ public:
     OutputStream( const osgDB::Options* options );
     virtual ~OutputStream();
 
-    void setFileVersion( const std::string& d, int v ) { _domainVersionMap[d] = v; }
+    void setFileVersion( const std::string& d, int v );
     int getFileVersion( const std::string& d=std::string() ) const;
 
     bool isBinary() const { return _out->isBinary(); }
@@ -147,13 +147,13 @@ public:
     OutputStream& operator<<( const osg::BoundingSphered& bb );
 
     OutputStream& operator<<( const osg::Image* img ) { writeImage(img); return *this; }
-    OutputStream& operator<<( const osg::Array* a ) { writeObject(a); return *this; }
-    OutputStream& operator<<( const osg::PrimitiveSet* p ) { writeObject(p); return *this; }
+    OutputStream& operator<<( const osg::Array* a ) { if (_targetFileVersion >= 112) writeObject(a); else writeArray(a); return *this; }
+    OutputStream& operator<<( const osg::PrimitiveSet* p ) { if (_targetFileVersion >= 112) writeObject(p); else writePrimitiveSet(p); return *this; }
     OutputStream& operator<<( const osg::Object* obj ) { writeObject(obj); return *this; }
 
     OutputStream& operator<<( const osg::ref_ptr<osg::Image>& ptr ) { writeImage(ptr.get()); return *this; }
-    OutputStream& operator<<( const osg::ref_ptr<osg::Array>& ptr ) { writeObject(ptr.get()); return *this; }
-    OutputStream& operator<<( const osg::ref_ptr<osg::PrimitiveSet>& ptr ) { writeObject(ptr.get()); return *this; }
+    OutputStream& operator<<( const osg::ref_ptr<osg::Array>& ptr ) { if (_targetFileVersion >= 112) writeObject(ptr.get()); else writeArray(ptr.get()); return *this; }
+    OutputStream& operator<<( const osg::ref_ptr<osg::PrimitiveSet>& ptr ) { if (_targetFileVersion >= 112) writeObject(ptr.get()); else writePrimitiveSet(ptr.get()); return *this; }
 
     template<typename T> OutputStream& operator<<( const osg::ref_ptr<T>& ptr ) { writeObject(ptr.get()); return *this; }
 
@@ -218,6 +218,8 @@ protected:
     osg::ref_ptr<OutputIterator> _out;
     osg::ref_ptr<OutputException> _exception;
     osg::ref_ptr<const osgDB::Options> _options;
+	
+    int _targetFileVersion;
 };
 
 void OutputStream::throwException( const std::string& msg )

@@ -281,7 +281,10 @@ const char* invalidNames[] =
     "OpenGL",
     "FindLIBLAS",
     "PissedCapslock",
-    "MinGW"
+    "MinGW",
+    "Haojia521",
+    "Github",
+    "It"
 };
 
 

@@ -39,6 +39,7 @@ REGISTER_OBJECT_WRAPPER( Drawable,
          UPDATE_TO_VERSION_SCOPED( 154 )
          ADDED_ASSOCIATE("osg::Node")
     }
+
     ADD_OBJECT_SERIALIZER( StateSet, osg::StateSet, NULL );  // _stateset
     ADD_USER_SERIALIZER( InitialBound );  // _initialBound
     ADD_OBJECT_SERIALIZER( ComputeBoundingBoxCallback,
@@ -51,6 +52,15 @@ REGISTER_OBJECT_WRAPPER( Drawable,
     ADD_OBJECT_SERIALIZER( EventCallback, osg::Callback, NULL );  // _eventCallback
     ADD_OBJECT_SERIALIZER( CullCallback, osg::Callback, NULL );  // _cullCallback
     ADD_OBJECT_SERIALIZER( DrawCallback, osg::Drawable::DrawCallback, NULL );  // _drawCallback
+    {
+         //now provided by Node's serialization
+         UPDATE_TO_VERSION_SCOPED( 156 )
+         REMOVE_SERIALIZER( StateSet )
+         REMOVE_SERIALIZER( UpdateCallback )
+         REMOVE_SERIALIZER( EventCallback )
+         REMOVE_SERIALIZER( CullCallback )
+         REMOVE_SERIALIZER( DrawCallback )
+    }
 
     {
         UPDATE_TO_VERSION_SCOPED( 142 )

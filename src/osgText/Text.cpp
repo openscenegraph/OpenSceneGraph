@@ -213,7 +213,7 @@ osg::StateSet* Text::createStateSet()
     stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
 
 
-    #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
+    // #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
     osg::DisplaySettings::ShaderHint shaderHint = osg::DisplaySettings::instance()->getShaderHint();
     if (_shaderTechnique==NO_TEXT_SHADER && shaderHint==osg::DisplaySettings::SHADER_NONE)
     {
@@ -222,7 +222,7 @@ osg::StateSet* Text::createStateSet()
         stateset->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::ON);
         return stateset.release();
     }
-    #endif
+    // #endif
 
     // set up the StateSet to use shaders
     stateset->addUniform(new osg::Uniform("glyphTexture", 0));

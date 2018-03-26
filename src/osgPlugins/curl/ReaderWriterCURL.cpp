@@ -399,6 +399,7 @@ ReaderWriterCURL::~ReaderWriterCURL()
 
 osgDB::ReaderWriter::WriteResult ReaderWriterCURL::writeFile(const osg::Object& obj, osgDB::ReaderWriter* rw, std::ostream& fout, const osgDB::ReaderWriter::Options *options) const
 {
+	
     const osg::HeightField* heightField = dynamic_cast<const osg::HeightField*>(&obj);
     if (heightField) return rw->writeHeightField(*heightField, fout, options);
 
@@ -407,12 +408,13 @@ osgDB::ReaderWriter::WriteResult ReaderWriterCURL::writeFile(const osg::Object& 
 
     const osg::Image* image = dynamic_cast<const osg::Image*>(&obj);
     if (image) return rw->writeImage(*image, fout, options);
-
+	
     return rw->writeObject(obj, fout, options);
 }
 
 osgDB::ReaderWriter::WriteResult ReaderWriterCURL::writeFile(const osg::Object& obj, const std::string& fullFileName, const Options *options) const
 {
+	
     if (!osgDB::containsServerAddress(fullFileName))
     {
         return WriteResult::FILE_NOT_HANDLED;
@@ -424,6 +426,12 @@ osgDB::ReaderWriter::WriteResult ReaderWriterCURL::writeFile(const osg::Object& 
     // Serialize obj into an std::stringstream buffer which will be uploaded via HTTP post request.
     std::string fileName = EasyCurl::getFileNameFromURL(fullFileName);
     std::string ext = osgDB::getLowerCaseFileExtension(fileName);
+
+    if (ext == "curl") 
+    {
+        fileName = osgDB::getNameLessExtension(fileName);
+        ext = osgDB::getLowerCaseFileExtension(fileName);
+    }
     osgDB::ReaderWriter* writer = osgDB::Registry::instance()->getReaderWriterForExtension(ext);
     if (!writer) return WriteResult::FILE_NOT_HANDLED;
     osgDB::ReaderWriter::WriteResult result = writeFile(obj, writer, requestBuffer, options);
@@ -526,7 +534,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
             if (osgDB::containsServerAddress(options->getDatabasePathList().front()))
             {
                 std::string newFileName = options->getDatabasePathList().front() + "/" + fileName;
-
+				
                 return readFile(objectType, newFileName,options);
             }
         }

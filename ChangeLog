@@ -1,3 +1,19 @@
+Mon, 26 Mar 2018 09:54:59 +0100
+Author : Robert Osfield
+Updated NEWS for 3.6.0-rc2
+
+Sun, 25 Mar 2018 12:14:46 +0100
+Author : Robert Osfield
+Re-ordered the creating of the DatagbaseThread to avoid startThread being called twice.
+
+Sun, 25 Mar 2018 12:13:50 +0100
+Author : Robert Osfield
+Added check if thraeding is running before executing start thread.
+
+Sat, 24 Mar 2018 18:02:35 +0000
+Author : Robert Osfield
+Updated ChangeLog, AUTHORS and Controbitors for 3.6.0-rc1
+
 Sat, 24 Mar 2018 17:51:06 +0000
 Author : Robert Osfield
 Added new features in 3.6 to NEWS release

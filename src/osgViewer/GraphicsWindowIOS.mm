@@ -6,16 +6,21 @@
 #import <QuartzCore/QuartzCore.h>
 #import <UIKit/UIKit.h>
 
+void(^processInMainThread)(void(^funcBlock)()) = ^(void(^funcBlock)())
+{
+    if ([NSThread isMainThread])
+        funcBlock();
+    else
+        dispatch_sync(dispatch_get_main_queue(), ^{ funcBlock(); });
+};
+
 #if OSG_GLES1_FEATURES
     #import <OpenGLES/ES1/glext.h>
 #else
-
-    #define MUTLI_GLES (OSG_GLES2_FEATURES && OSG_GLES3_FEATURES)
-
-    #if OSG_GLES2_FEATURES || MUTLI_GLES
+    #if OSG_GLES2_FEATURES
         #import <OpenGLES/ES2/glext.h>
     #endif
-    #if OSG_GLES3_FEATURES || MUTLI_GLES
+    #if OSG_GLES3_FEATURES
         #import <OpenGLES/ES3/glext.h>
     #endif
 
@@ -44,10 +49,10 @@
 
     #define GL_RGB5_A1_OES GL_RGB5_A1
 
-    #if OSG_GLES3_FEATURES && !MUTLI_GLES
+    #if OSG_GLES3_FEATURES && !OSG_GLES2_FEATURES
         #define glRenderbufferStorageMultisampleAPPLE glRenderbufferStorageMultisample
         #define glDiscardFramebufferEXT glInvalidateFramebuffer
-        //#define glResolveMultisampleFramebufferAPPLE glResolveMultisampleFramebuffer
+        #define glResolveMultisampleFramebufferAPPLE glResolveMultisampleFramebuffer
 
         #define GL_DEPTH24_STENCIL8_OES GL_DEPTH24_STENCIL8
         #define GL_DEPTH_COMPONENT24_OES GL_DEPTH_COMPONENT24
@@ -56,6 +61,7 @@
     #endif
 
 #endif
+
 
 #include "IOSUtils.h"
 
@@ -367,7 +373,14 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
 
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, _viewFramebuffer);
     glBindRenderbufferOES(GL_RENDERBUFFER_OES, _viewRenderbuffer);
-    [_context renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer*)self.layer];
+
+    if ([NSThread isMainThread])
+        [_context renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer*)self.layer];
+    else
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [_context renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer*)self.layer];
+        });
+
     glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, _viewRenderbuffer);
 
     glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &_backingWidth);
@@ -449,9 +462,17 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
         glBindFramebufferOES(GL_FRAMEBUFFER_OES, _msaaFramebuffer);
         glBindRenderbufferOES(GL_RENDERBUFFER_OES, _msaaRenderBuffer);
 
-        // Samples is the amount of pixels the MSAA buffer uses to make one pixel on the render // buffer. Use a small number like 2 for the 3G and below and 4 or more for newer models
+        // Samples is the amount of pixels the MSAA buffer uses to make one pixel on the render
+        // buffer. Use a small number like 2 for the 3G and below and 4 or more for newer models
+        // NOTE: Formats of draw and read buffers must be identical
 
-        glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER_OES, _win->getTraits()->samples, GL_RGB5_A1_OES, _backingWidth, _backingHeight);
+        GLenum internalFormat = GL_RGB5_A1_OES;
+#   if OSG_GLES3_FEATURES
+        if ([_context API] == kEAGLRenderingAPIOpenGLES3)
+            internalFormat = GL_RGBA8_OES;
+#   endif
+
+        glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER_OES, _win->getTraits()->samples, internalFormat, _backingWidth, _backingHeight);
 
         glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, _msaaRenderBuffer);
         glGenRenderbuffersOES(1, &_msaaDepthBuffer);
@@ -524,65 +545,68 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
 
 
 #if defined(__IPHONE_4_0) && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
-    if(_msaaFramebuffer)
-    {
-        glBindFramebufferOES(GL_FRAMEBUFFER_OES, _msaaFramebuffer);
-
+    if (_msaaFramebuffer) {
+        // Resolve the contents from the multisampling buffer into the resolve (view) buffer
         glBindFramebufferOES(GL_READ_FRAMEBUFFER_APPLE, _msaaFramebuffer);
         glBindFramebufferOES(GL_DRAW_FRAMEBUFFER_APPLE, _viewFramebuffer);
-    
-        GLenum attachments[] = {GL_DEPTH_ATTACHMENT_OES, GL_COLOR_ATTACHMENT0_OES};
 
-#if !OSG_GLES3_FEATURES
-        glResolveMultisampleFramebufferAPPLE();
-        glDiscardFramebufferEXT(GL_READ_FRAMEBUFFER_APPLE, 2, attachments);
-#else
-        switch ([_context API])
-        {
-            case kEAGLRenderingAPIOpenGLES3:
-                glBlitFramebuffer(0, 0, _backingWidth, _backingHeight,
-                                  0, 0, _backingWidth, _backingHeight,
-                                  GL_COLOR_BUFFER_BIT, GL_LINEAR);
-                glInvalidateFramebuffer(GL_READ_FRAMEBUFFER_APPLE, 2, attachments);
-                break;
-
-            default:
-            #if !OSG_GLES3_FEATURES
-                glResolveMultisampleFramebufferAPPLE();
-            #endif
-                glDiscardFramebufferEXT(GL_READ_FRAMEBUFFER_APPLE, 2, attachments);
-                break;
+#   if OSG_GLES3_FEATURES
+        if ([_context API] == kEAGLRenderingAPIOpenGLES3) {
+            glBlitFramebuffer(0, 0, _backingWidth, _backingHeight,
+                              0, 0, _backingWidth, _backingHeight,
+                              GL_COLOR_BUFFER_BIT, GL_LINEAR);
         }
-#endif
+        else
+            glResolveMultisampleFramebufferAPPLE();
+#   else
+        glResolveMultisampleFramebufferAPPLE();
+#   endif
     }
 #endif
 
-      //swap buffers (sort of i think?)
+    // Present Results step
     glBindRenderbufferOES(GL_RENDERBUFFER_OES, _viewRenderbuffer);
-
-    //display render in context
     [_context presentRenderbuffer:GL_RENDERBUFFER_OES];
 
-    //re bind the frame buffer for next frames renders
-    glBindFramebufferOES(GL_FRAMEBUFFER_OES, _viewFramebuffer);
-
 #if defined(__IPHONE_4_0) && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
-    if (_msaaFramebuffer)
-        glBindFramebufferOES(GL_FRAMEBUFFER_OES, _msaaFramebuffer);;
+    if (_msaaFramebuffer) {
+        // Invalidate (discard) step (must be after present step)
+        GLenum attachments[] = {GL_DEPTH_ATTACHMENT_OES, GL_COLOR_ATTACHMENT0_OES};
+#   if OSG_GLES3_FEATURES
+        if ([_context API] == kEAGLRenderingAPIOpenGLES3)
+            glInvalidateFramebuffer(GL_READ_FRAMEBUFFER_APPLE, 2, attachments);
+        else
+            glDiscardFramebufferEXT(GL_READ_FRAMEBUFFER_APPLE, 2, attachments);
+#   else
+        glDiscardFramebufferEXT(GL_READ_FRAMEBUFFER_APPLE, 2, attachments);
+#   endif
+    }
 #endif
+
+    [self bindFrameBuffer];
 }
 
 //
 //bind view buffer as current for new render pass
 //
 - (void)bindFrameBuffer {
-
-    //bind the frame buffer
-    glBindFramebufferOES(GL_FRAMEBUFFER_OES, _viewFramebuffer);
-
 #if defined(__IPHONE_4_0) && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
-    if (_msaaFramebuffer)
-        glBindFramebufferOES(GL_READ_FRAMEBUFFER_APPLE, _msaaFramebuffer);
+    if (_msaaFramebuffer) {
+#   if OSG_GLES3_FEATURES
+        if ([_context API] == kEAGLRenderingAPIOpenGLES3) {
+            glBindFramebufferOES(GL_DRAW_FRAMEBUFFER_APPLE, _msaaFramebuffer);
+            glBindFramebufferOES(GL_READ_FRAMEBUFFER_APPLE, _viewFramebuffer);
+        }
+        else
+            glBindFramebufferOES(GL_FRAMEBUFFER_OES, _msaaFramebuffer);
+#   else
+        glBindFramebufferOES(GL_FRAMEBUFFER_OES, _msaaFramebuffer);
+#   endif
+    }
+    else
+        glBindFramebufferOES(GL_FRAMEBUFFER_OES, _viewFramebuffer);
+#else
+    glBindFramebufferOES(GL_FRAMEBUFFER_OES, _viewFramebuffer);
 #endif
 }
 
@@ -704,8 +728,9 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
 
 @interface GraphicsWindowIOSGLViewController : UIViewController
 {
-
 }
+
+- (void) viewDidAppear:(BOOL)animated;
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration;
 
@@ -713,6 +738,13 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
 
 @implementation GraphicsWindowIOSGLViewController
 
+- (void) viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [UIViewController attemptRotationToDeviceOrientation];
+    if (self.view)
+        [self.view layoutSubviews];
+}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
@@ -767,6 +799,14 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
 using namespace osgIOS;
 namespace osgViewer {
 
+UIViewController* GraphicsWindowIOS::WindowData::getController() const
+{
+    return [_windowOrView isKindOfClass:[UIWindow class]]
+        ? ((UIWindow*)(_windowOrView)).rootViewController
+        : _parentController;
+}
+
+
 
 
 #pragma mark GraphicsWindowIOS
@@ -807,14 +847,17 @@ bool GraphicsWindowIOS::realizeImplementation()
 
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
-    BOOL bar_hidden = (_traits->windowDecoration) ? NO: YES;
-    #ifdef __IPHONE_OS_VERSION_MIN_REQUIRED
+    processInMainThread(^
+    {
+        BOOL bar_hidden = (_traits->windowDecoration) ? NO: YES;
+#ifdef __IPHONE_OS_VERSION_MIN_REQUIRED
     #if __IPHONE_OS_VERSION_MIN_REQUIRED > 30100
-        [[UIApplication sharedApplication] setStatusBarHidden: bar_hidden withAnimation:UIStatusBarAnimationNone];
+            [[UIApplication sharedApplication] setStatusBarHidden: bar_hidden withAnimation:UIStatusBarAnimationNone];
     #else
-        [[UIApplication sharedApplication] setStatusBarHidden: bar_hidden animated:NO];
+            [[UIApplication sharedApplication] setStatusBarHidden: bar_hidden animated:NO];
     #endif
-    #endif
+#endif
+    });
 
     //Get info about the requested screen
     IOSWindowingSystemInterface* wsi = dynamic_cast<IOSWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
@@ -843,7 +886,7 @@ bool GraphicsWindowIOS::realizeImplementation()
         if (windowData->getWindowOrParentView())
         {
             _ownsWindow = false;
-            _window = windowData->getWindowOrParentView();
+            _window = (GraphicsWindowIOSWindow*)(windowData->getWindowOrParentView());
         }
 
         _deviceOrientationFlags = windowData->_deviceOrientationFlags;
@@ -855,7 +898,6 @@ bool GraphicsWindowIOS::realizeImplementation()
     if(_viewContentScaleFactor < 0.0f)
     {_viewContentScaleFactor = screenScaleFactor;}
 
-
     OSG_DEBUG << "GraphicsWindowIOS::realizeImplementation / ownsWindow: " << _ownsWindow << std::endl;
 
 
@@ -863,7 +905,7 @@ bool GraphicsWindowIOS::realizeImplementation()
     //but we need to create our views and windows in points. By default we create a full res buffer across all devices. This
     //means that for backward compatibility you need to set the windowData _viewContentScaleFactor to 1.0f and set the screen res to the
     //res of the older gen device.
-    CGRect window_bounds;
+    __block CGRect window_bounds;
     osg::Vec2 pointsOrigin = this->pixelToPoint(osg::Vec2(_traits->x, _traits->y));
     osg::Vec2 pointsSize = this->pixelToPoint(osg::Vec2(_traits->width, _traits->height));
 
@@ -876,8 +918,11 @@ bool GraphicsWindowIOS::realizeImplementation()
     //if we own the window we need to create one
     if (_ownsWindow)
     {
-        //create the IOS window object using the viewbounds (in points) required for our context size
-        _window = [[GraphicsWindowIOSWindow alloc] initWithFrame: window_bounds];// styleMask: style backing: NSBackingStoreBuffered defer: NO];
+        processInMainThread(^
+        {
+            //create the IOS window object using the viewbounds (in points) required for our context size
+            _window = [[GraphicsWindowIOSWindow alloc] initWithFrame: window_bounds];// styleMask: style backing: NSBackingStoreBuffered defer: NO];
+        });
 
         if (!_window) {
             OSG_WARN << "GraphicsWindowIOS::realizeImplementation: ERROR: Failed to create GraphicsWindowIOSWindow can not display gl view" << std::endl;
@@ -899,10 +944,10 @@ bool GraphicsWindowIOS::realizeImplementation()
 #if OSG_GLES1_FEATURES
     _context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
 #elif OSG_GLES2_FEATURES
-
-    #if MULTI_GLES
+    #if OSG_GLES3_FEATURES
         _context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
-        if(!_context) _context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+        if (!_context)
+            _context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     #else
         _context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     #endif
@@ -915,30 +960,42 @@ bool GraphicsWindowIOS::realizeImplementation()
 
         #if OSG_GLES1_FEATURES
         OSG_FATAL << "GraphicsWindowIOS::realizeImplementation: ERROR: Failed to create a valid OpenGLES1 context" << std::endl;
+        #elif OSG_GLES2_FEATURES && OSG_GLES3_FEATURES
+        OSG_FATAL << "GraphicsWindowIOS::realizeImplementation: ERROR: Failed to create a valid OpenGLES3/OpenGLES2 context" << std::endl;
         #elif OSG_GLES2_FEATURES
-        OSG_FATAL << "GraphicsWindowIOS::realizeImplementation: ERROR: Failed to create a valid OpenGLES2" << std::endl;
+        OSG_FATAL << "GraphicsWindowIOS::realizeImplementation: ERROR: Failed to create a valid OpenGLES2 context" << std::endl;
         #elif OSG_GLES3_FEATURES
         OSG_FATAL << "GraphicsWindowIOS::realizeImplementation: ERROR: Failed to create a valid OpenGLES3 context" << std::endl;
         #endif
+
         return false;
     }
 
-    //create the view to display our context in our window
-    CGRect gl_view_bounds = (_ownsWindow) ? [_window frame] : window_bounds;
-    GraphicsWindowIOSGLView* theView = [[ GraphicsWindowIOSGLView alloc ] initWithFrame: gl_view_bounds : this ];
+    __block GraphicsWindowIOSGLView* theView;
+    processInMainThread(^
+    {
+        //create the view to display our context in our window
+        CGRect gl_view_bounds = (_ownsWindow) ? [_window frame] : window_bounds;
+
+        theView = [[ GraphicsWindowIOSGLView alloc ] initWithFrame: gl_view_bounds : this ];
+        if (theView)
+        {
+            [theView setAutoresizingMask:  ( UIViewAutoresizingFlexibleWidth |  UIViewAutoresizingFlexibleHeight) ];
+
+            // Apply our content scale factor to our view, this is what converts the views points
+            // size to our desired context size.
+#if defined(__IPHONE_4_0) && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
+            theView.contentScaleFactor = _viewContentScaleFactor;
+#endif
+        }
+    });
+
     if(!theView)
     {
         OSG_FATAL << "GraphicsWindowIOS::realizeImplementation: ERROR: Failed to create GraphicsWindowIOSGLView, can not create frame buffers." << std::endl;
         return false;
     }
 
-    [theView setAutoresizingMask:  ( UIViewAutoresizingFlexibleWidth |  UIViewAutoresizingFlexibleHeight) ];
-
-    //Apply our content scale factor to our view, this is what converts the views points
-    //size to our desired context size.
-#if defined(__IPHONE_4_0) && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
-    theView.contentScaleFactor = _viewContentScaleFactor;
-#endif
     [theView setGraphicsWindow: this];
     [theView setOpenGLContext:_context];
     _view = theView;
@@ -947,23 +1004,33 @@ bool GraphicsWindowIOS::realizeImplementation()
 
     if (getDeviceOrientationFlags() != WindowData::IGNORE_ORIENTATION)
     {
-        _viewController = [[GraphicsWindowIOSGLViewController alloc] init];
-        _viewController.view = _view;
+        processInMainThread(^
+        {
+            _viewController = [[GraphicsWindowIOSGLViewController alloc] init];
+            _viewController.view = _view;
+        });
     }
 
-    // Attach view to window
-    [_window addSubview: _view];
-    if ([_window isKindOfClass:[UIWindow class]])
-        _window.rootViewController = _viewController;
+    processInMainThread(^
+    {
+        // Attach view to window
+        [_window addSubview: _view];
+
+        if ([_window isKindOfClass:[UIWindow class]]) // our controller is root
+            _window.rootViewController = _viewController;
+        else if (windowData->_parentController) // our controller is child
+            [windowData->_parentController addChildViewController:_viewController];
+
+        //if we own the window also make it visible
+        if (_ownsWindow)
+        {
+            //show window
+            [_window makeKeyAndVisible];
+        }
+    });
+
     [theView release];
 
-    //if we own the window also make it visible
-    if (_ownsWindow)
-    {
-
-        //show window
-        [_window makeKeyAndVisible];
-    }
 
     [pool release];
 
@@ -1021,13 +1088,8 @@ void GraphicsWindowIOS::closeImplementation()
 // makeCurrentImplementation
 // ----------------------------------------------------------------------------------------------------------
 
-bool GraphicsWindowIOS:: makeCurrentImplementation()
+void GraphicsWindowIOS::runOperations()
 {
-
-
-    //bind the context
-    [EAGLContext setCurrentContext:_context];
-
     if (_updateContext)
     {
         [_view destroyFramebuffer];
@@ -1035,8 +1097,17 @@ bool GraphicsWindowIOS:: makeCurrentImplementation()
 
         _updateContext = false;
     }
+
+    GraphicsContext::runOperations();
+}
+
+bool GraphicsWindowIOS::makeCurrentImplementation()
+{
+    //bind the context
+    [EAGLContext setCurrentContext:_context];
+
     //i think we also want to bind the frame buffer here
-    //[_view bindFrameBuffer];
+//    [_view bindFrameBuffer];
 
     return true;
 }
@@ -1077,7 +1148,9 @@ bool GraphicsWindowIOS::setWindowDecorationImplementation(bool flag)
 {
     if (!_realized || !_ownsWindow) return false;
 
-    BOOL bar_hidden = (flag) ? NO: YES;
+    __block BOOL bar_hidden = (flag) ? NO: YES;
+    processInMainThread(^
+    {
     #ifdef __IPHONE_OS_VERSION_MIN_REQUIRED
     #if __IPHONE_OS_VERSION_MIN_REQUIRED > 30100
         [[UIApplication sharedApplication] setStatusBarHidden: bar_hidden withAnimation:UIStatusBarAnimationNone];
@@ -1085,6 +1158,7 @@ bool GraphicsWindowIOS::setWindowDecorationImplementation(bool flag)
         [[UIApplication sharedApplication] setStatusBarHidden: bar_hidden animated:NO];
     #endif
     #endif
+    });
 
     return true;
 }
@@ -1095,8 +1169,11 @@ bool GraphicsWindowIOS::setWindowDecorationImplementation(bool flag)
 // ----------------------------------------------------------------------------------------------------------
 void GraphicsWindowIOS::grabFocus()
 {
-    //i think make key is the equivalent of focus on iphone
-    [_window makeKeyWindow];
+    processInMainThread(^
+    {
+        //i think make key is the equivalent of focus on iphone
+        [_window makeKeyWindow];
+    });
 }
 
 
@@ -1114,7 +1191,10 @@ void GraphicsWindowIOS::grabFocusIfPointerInWindow()
 // ----------------------------------------------------------------------------------------------------------
 void GraphicsWindowIOS::raiseWindow()
 {
-    [_window bringSubviewToFront:_view];
+    processInMainThread(^
+    {
+        [_window bringSubviewToFront:_view];
+    });
 }
 
 // ----------------------------------------------------------------------------------------------------------
@@ -1205,8 +1285,7 @@ osg::Vec2 GraphicsWindowIOS::pointToPixel(const osg::Vec2& point)
 
 osg::Vec2 GraphicsWindowIOS::pixelToPoint(const osg::Vec2& pixel)
 {
-    float scaler = 1.0f / _viewContentScaleFactor;
-    return pixel * scaler;
+    return pixel / _viewContentScaleFactor;
 }
 
 
@@ -1246,4 +1325,4 @@ public:
 
 REGISTER_WINDOWINGSYSTEMINTERFACE(IOS, ConcreteIOSWindowingSystemInterface)
 
-}//end namspace
+}//end namespace

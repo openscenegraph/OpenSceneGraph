@@ -399,7 +399,6 @@ ReaderWriterCURL::~ReaderWriterCURL()
 
 osgDB::ReaderWriter::WriteResult ReaderWriterCURL::writeFile(const osg::Object& obj, osgDB::ReaderWriter* rw, std::ostream& fout, const osgDB::ReaderWriter::Options *options) const
 {
-
     const osg::HeightField* heightField = dynamic_cast<const osg::HeightField*>(&obj);
     if (heightField) return rw->writeHeightField(*heightField, fout, options);
 
@@ -414,7 +413,6 @@ osgDB::ReaderWriter::WriteResult ReaderWriterCURL::writeFile(const osg::Object& 
 
 osgDB::ReaderWriter::WriteResult ReaderWriterCURL::writeFile(const osg::Object& obj, const std::string& fullFileName, const Options *options) const
 {
-
     if (!osgDB::containsServerAddress(fullFileName))
     {
         return WriteResult::FILE_NOT_HANDLED;
@@ -534,7 +532,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
             if (osgDB::containsServerAddress(options->getDatabasePathList().front()))
             {
                 std::string newFileName = options->getDatabasePathList().front() + "/" + fileName;
-				
+
                 return readFile(objectType, newFileName,options);
             }
         }

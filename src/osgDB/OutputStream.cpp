@@ -580,7 +580,7 @@ void OutputStream::writeImage( const osg::Image* img )
         case IMAGE_INLINE_FILE:
             if ( isBinary() )
             {
-                std::string fullPath = osgDB::findDataFile( img->getFileName() );
+                std::string fullPath = osgDB::findDataFile( img->getFileName(), _options );
                 osgDB::ifstream infile( fullPath.c_str(), std::ios::in|std::ios::binary );
                 if ( infile )
                 {

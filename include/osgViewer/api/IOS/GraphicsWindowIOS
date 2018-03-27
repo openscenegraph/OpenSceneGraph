@@ -28,6 +28,7 @@
 @class EAGLContext;
 @class UIWindow;
 @class UIView;
+@class UIViewController;
 #else
 class GraphicsWindowIOSGLView;
 class GraphicsWindowIOSWindow;
@@ -35,6 +36,7 @@ class GraphicsWindowIOSGLViewController;
 class EAGLContext;
 class UIWindow;
 class UIView;
+class UIViewController;
 #endif
 
 #include <osgViewer/GraphicsWindow>
@@ -87,6 +89,8 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
         virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const GraphicsWindowIOS*>(object)!=0; }
         virtual const char* libraryName() const { return "osgViewer"; }
         virtual const char* className() const { return "GraphicsWindowIOS"; }
+
+        virtual void runOperations();
 
         virtual bool valid() const { return _valid; }
 
@@ -145,8 +149,9 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
                 };
                 typedef unsigned int DeviceOrientationFlags;
 
-                WindowData(UIView* window_or_view = NULL, DeviceOrientationFlags orientationFlags = ALL_ORIENTATIONS, float scaleFactor = -1.0f)
+                WindowData(UIView* window_or_view = NULL, UIViewController* parentController = NULL, DeviceOrientationFlags orientationFlags = ALL_ORIENTATIONS, float scaleFactor = -1.0f)
                 :   _windowOrView(window_or_view),
+                    _parentController(parentController),
                     _deviceOrientationFlags(orientationFlags),
                     _viewContentScaleFactor(scaleFactor),
                     _createTransparentView(false),
@@ -159,6 +164,7 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
                 void setViewContentScaleFactor(float scaleFactor) { _viewContentScaleFactor = scaleFactor; }
                 
                 UIView* getWindowOrParentView() const { return _windowOrView; }
+                UIViewController* getController() const;
                 
                 bool getCreateTransparentView() { return _createTransparentView; }
                 void setCreateTransparentView(bool b) { _createTransparentView = b; }
@@ -169,6 +175,7 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
             private:
 
                 UIView*                _windowOrView;
+                UIViewController*       _parentController;
                 DeviceOrientationFlags _deviceOrientationFlags;
                 float                  _viewContentScaleFactor; 
                 bool                   _createTransparentView;

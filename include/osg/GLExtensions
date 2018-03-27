@@ -810,7 +810,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glObjectLabel) (GLenum identifier, GLuint name, GLsizei length, const GLchar* label);
 
         /** convenience wrapper around glObjectLabel that calls glObjectLabel if it's supported and using std::string as a label parameter.*/
-        void debugObjectLabel(GLenum identifier, GLuint name, const std::string& label) const { if (glObjectLabel && !label.empty()) glObjectLabel(identifier, name, label.size(), label.c_str()); }
+        void debugObjectLabel(GLenum identifier, GLuint name, const std::string& label) const { if (glObjectLabel && !label.empty()) glObjectLabel(identifier, name, static_cast<GLsizei>(label.size()), label.c_str()); }
 
         inline void glUniform(GLint location, int value) const { glUniform1i(location, value); }
         inline void glUniform(GLint location, const osg::Vec2i& value) const { glUniform2iv(location, 1, value.ptr()); }
@@ -860,39 +860,39 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         inline void glUniform(GLint location, const osg::Matrixd& value) const { glUniformMatrix4dv(location, 1, GL_FALSE, value.ptr()); }
 
 
-        inline void glUniform(GLint location, const std::vector<int>& array) const        { if (!array.empty()) glUniform1iv(location, array.size(), &(array.front())); }
-        inline void glUniform(GLint location, const std::vector<osg::Vec2i>& array) const { if (!array.empty()) glUniform2iv(location, array.size(), array.front().ptr()); }
-        inline void glUniform(GLint location, const std::vector<osg::Vec3i>& array) const { if (!array.empty()) glUniform3iv(location, array.size(), array.front().ptr()); }
-        inline void glUniform(GLint location, const std::vector<osg::Vec4i>& array) const { if (!array.empty()) glUniform4iv(location, array.size(), array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<int>& array) const        { if (!array.empty()) glUniform1iv(location, static_cast<GLsizei>(array.size()), &(array.front())); }
+        inline void glUniform(GLint location, const std::vector<osg::Vec2i>& array) const { if (!array.empty()) glUniform2iv(location, static_cast<GLsizei>(array.size()), array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<osg::Vec3i>& array) const { if (!array.empty()) glUniform3iv(location, static_cast<GLsizei>(array.size()), array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<osg::Vec4i>& array) const { if (!array.empty()) glUniform4iv(location, static_cast<GLsizei>(array.size()), array.front().ptr()); }
 
-        inline void glUniform(GLint location, const std::vector<unsigned int>& array) const { if (!array.empty()) glUniform1uiv(location, array.size(), &(array.front())); }
-        inline void glUniform(GLint location, const std::vector<osg::Vec2ui>& array) const  { if (!array.empty()) glUniform2uiv(location, array.size(), array.front().ptr()); }
-        inline void glUniform(GLint location, const std::vector<osg::Vec3ui>& array) const  { if (!array.empty()) glUniform3uiv(location, array.size(), array.front().ptr()); }
-        inline void glUniform(GLint location, const std::vector<osg::Vec4ui>& array) const  { if (!array.empty()) glUniform4uiv(location, array.size(), array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<unsigned int>& array) const { if (!array.empty()) glUniform1uiv(location, static_cast<GLsizei>(array.size()), &(array.front())); }
+        inline void glUniform(GLint location, const std::vector<osg::Vec2ui>& array) const  { if (!array.empty()) glUniform2uiv(location, static_cast<GLsizei>(array.size()), array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<osg::Vec3ui>& array) const  { if (!array.empty()) glUniform3uiv(location, static_cast<GLsizei>(array.size()), array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<osg::Vec4ui>& array) const  { if (!array.empty()) glUniform4uiv(location, static_cast<GLsizei>(array.size()), array.front().ptr()); }
 
-        inline void glUniform(GLint location, const std::vector<float>& array) const     { if (!array.empty()) glUniform1fv(location, array.size(), &(array.front())); }
-        inline void glUniform(GLint location, const std::vector<osg::Vec2>& array) const { if (!array.empty()) glUniform2fv(location, array.size(), array.front().ptr()); }
-        inline void glUniform(GLint location, const std::vector<osg::Vec3>& array) const { if (!array.empty()) glUniform3fv(location, array.size(), array.front().ptr()); }
-        inline void glUniform(GLint location, const std::vector<osg::Vec4>& array) const { if (!array.empty()) glUniform4fv(location, array.size(), array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<float>& array) const     { if (!array.empty()) glUniform1fv(location, static_cast<GLsizei>(array.size()), &(array.front())); }
+        inline void glUniform(GLint location, const std::vector<osg::Vec2>& array) const { if (!array.empty()) glUniform2fv(location, static_cast<GLsizei>(array.size()), array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<osg::Vec3>& array) const { if (!array.empty()) glUniform3fv(location, static_cast<GLsizei>(array.size()), array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<osg::Vec4>& array) const { if (!array.empty()) glUniform4fv(location, static_cast<GLsizei>(array.size()), array.front().ptr()); }
 
-        inline void glUniform(GLint location, const std::vector<double>& array) const     { if (!array.empty()) glUniform1dv(location, array.size(), &(array.front())); }
-        inline void glUniform(GLint location, const std::vector<osg::Vec2d>& array) const { if (!array.empty()) glUniform2dv(location, array.size(), array.front().ptr()); }
-        inline void glUniform(GLint location, const std::vector<osg::Vec3d>& array) const { if (!array.empty()) glUniform3dv(location, array.size(), array.front().ptr()); }
-        inline void glUniform(GLint location, const std::vector<osg::Vec4d>& array) const { if (!array.empty()) glUniform4dv(location, array.size(), array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<double>& array) const     { if (!array.empty()) glUniform1dv(location, static_cast<GLsizei>(array.size()), &(array.front())); }
+        inline void glUniform(GLint location, const std::vector<osg::Vec2d>& array) const { if (!array.empty()) glUniform2dv(location, static_cast<GLsizei>(array.size()), array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<osg::Vec3d>& array) const { if (!array.empty()) glUniform3dv(location, static_cast<GLsizei>(array.size()), array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<osg::Vec4d>& array) const { if (!array.empty()) glUniform4dv(location, static_cast<GLsizei>(array.size()), array.front().ptr()); }
 
-        inline void glUniform(GLint location, const std::vector<osg::Matrix2>& array) const { if (!array.empty()) glUniformMatrix2fv(location, array.size(), GL_FALSE, array.front().ptr()); }
-        inline void glUniform(GLint location, const std::vector<osg::Matrix2x3>& array) const { if (!array.empty()) glUniformMatrix2x3fv(location, array.size(), GL_FALSE, array.front().ptr()); }
-        inline void glUniform(GLint location, const std::vector<osg::Matrix2x4>& array) const { if (!array.empty()) glUniformMatrix2x4fv(location, array.size(), GL_FALSE, array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<osg::Matrix2>& array) const   { if (!array.empty()) glUniformMatrix2fv(location, static_cast<GLsizei>(array.size()), GL_FALSE, array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<osg::Matrix2x3>& array) const { if (!array.empty()) glUniformMatrix2x3fv(location, static_cast<GLsizei>(array.size()), GL_FALSE, array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<osg::Matrix2x4>& array) const { if (!array.empty()) glUniformMatrix2x4fv(location, static_cast<GLsizei>(array.size()), GL_FALSE, array.front().ptr()); }
 
-        inline void glUniform(GLint location, const std::vector<osg::Matrix3>& array) const { if (!array.empty()) glUniformMatrix3fv(location, array.size(), GL_FALSE, array.front().ptr()); }
-        inline void glUniform(GLint location, const std::vector<osg::Matrix3x2>& array) const { if (!array.empty()) glUniformMatrix3x2fv(location, array.size(), GL_FALSE, array.front().ptr()); }
-        inline void glUniform(GLint location, const std::vector<osg::Matrix3x4>& array) const { if (!array.empty()) glUniformMatrix3x4fv(location, array.size(), GL_FALSE, array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<osg::Matrix3>& array) const   { if (!array.empty()) glUniformMatrix3fv(location, static_cast<GLsizei>(array.size()), GL_FALSE, array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<osg::Matrix3x2>& array) const { if (!array.empty()) glUniformMatrix3x2fv(location, static_cast<GLsizei>(array.size()), GL_FALSE, array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<osg::Matrix3x4>& array) const { if (!array.empty()) glUniformMatrix3x4fv(location, static_cast<GLsizei>(array.size()), GL_FALSE, array.front().ptr()); }
 
-        inline void glUniform(GLint location, const std::vector<osg::Matrixf>& array) const { if (!array.empty()) glUniformMatrix4fv(location, array.size(), GL_FALSE, array.front().ptr()); }
-        inline void glUniform(GLint location, const std::vector<osg::Matrix4x3>& array) const { if (!array.empty()) glUniformMatrix4x3fv(location, array.size(), GL_FALSE, array.front().ptr()); }
-        inline void glUniform(GLint location, const std::vector<osg::Matrix4x2>& array) const { if (!array.empty()) glUniformMatrix4x2fv(location, array.size(), GL_FALSE, array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<osg::Matrixf>& array) const   { if (!array.empty()) glUniformMatrix4fv(location, static_cast<GLsizei>(array.size()), GL_FALSE, array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<osg::Matrix4x3>& array) const { if (!array.empty()) glUniformMatrix4x3fv(location, static_cast<GLsizei>(array.size()), GL_FALSE, array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<osg::Matrix4x2>& array) const { if (!array.empty()) glUniformMatrix4x2fv(location, static_cast<GLsizei>(array.size()), GL_FALSE, array.front().ptr()); }
 
-        inline void glUniform(GLint location, const std::vector<osg::Matrixd>& array) const { if (!array.empty()) glUniformMatrix4dv(location, array.size(), GL_FALSE, array.front().ptr()); }
+        inline void glUniform(GLint location, const std::vector<osg::Matrixd>& array) const { if (!array.empty()) glUniformMatrix4dv(location, static_cast<GLsizei>(array.size()), GL_FALSE, array.front().ptr()); }
 };
 
 

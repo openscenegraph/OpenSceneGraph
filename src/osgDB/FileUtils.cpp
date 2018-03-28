@@ -422,7 +422,19 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         realFileName = getSimpleFileName(fileName);
     }
 
-    OSG_DEBUG << "findFileInDirectory() : looking for " << realFileName << " in " << realDirName << "...\n";
+
+    if (realDirName.size()>2)
+    {
+        char lastCharacter = realDirName[realDirName.size()-1];
+        bool trimLastCharacter = lastCharacter=='/' ||  lastCharacter=='\\';
+        if (trimLastCharacter)
+        {
+            realDirName.erase(realDirName.size()-1, 1);
+            OSG_DEBUG << "findFileInDirectory() Trimming last character of filepath, now realDirName="<<realDirName<<std::endl;
+        }
+    }
+
+    OSG_DEBUG << "findFileInDirectory() : looking for " << realFileName << " in " << realDirName << std::endl;
 
     if (realDirName.empty())
     {

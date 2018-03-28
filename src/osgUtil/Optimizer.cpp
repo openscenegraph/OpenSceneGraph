@@ -1956,7 +1956,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGroup(osg::Group& group)
                 ++mitr)
             {
                 DuplicateList& duplicateList = *mitr;
-                if (duplicateList.size()>1)
+                if (!duplicateList.empty())
                 {
                     osg::ref_ptr<osg::Geometry> lhs = duplicateList.front();
                     group.addChild(lhs.get());

@@ -1,0 +1,370 @@
+#define MINIMUM_SCALE 1e-10
+#define EPSILON 1e-6
+
+//////////////////////////////////
+// HELPERS
+//////////////////////////////////
+ // Number of elements for accessors type
+enum NbElements {
+    SCALAR=1,
+    VEC2=2,
+    VEC3=3,
+    VEC4=4,
+    MAT2=4,
+    MAT3=9,
+    MAT4=16
+};
+
+// Number for bytes for each component type
+enum CharSize {
+    BYTE=1,
+    UNSIGNED_BYTE=1,
+    SHORT=2,
+    UNSIGNED_SHORT=2,
+    UNSIGNED_INT=4,
+    FLOAT=4
+};
+
+// Helpers
+int getByteCount(const int& componentType)
+{
+    int byteCount = 0;
+    switch(componentType)
+    {
+        case TINYGLTF_COMPONENT_TYPE_BYTE:
+            byteCount = BYTE;
+            break;
+        case TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE:
+            byteCount = UNSIGNED_BYTE;
+            break;
+        case TINYGLTF_COMPONENT_TYPE_SHORT:
+            byteCount = SHORT;
+            break;
+        case TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT:
+            byteCount = UNSIGNED_SHORT;
+            break;
+        case TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT:
+            byteCount = UNSIGNED_INT;
+            break;
+        case TINYGLTF_COMPONENT_TYPE_FLOAT:
+            byteCount = FLOAT;
+            break;
+        default:
+            OSG_WARN << "Component type not supported" << std::endl;
+            break;
+    };
+
+    return byteCount;
+}
+
+int getElementCount(const int& dataType)
+{
+    int elementCount = 0;
+
+    switch(dataType)
+    {
+        case TINYGLTF_TYPE_SCALAR:
+            elementCount = SCALAR;
+            break;
+        case TINYGLTF_TYPE_VEC2:
+            elementCount = VEC2;
+            break;
+        case TINYGLTF_TYPE_VEC3:
+            elementCount = VEC3;
+            break;
+        case TINYGLTF_TYPE_VEC4:
+            elementCount = VEC4;
+            break;
+        case TINYGLTF_TYPE_MAT2:
+            elementCount = MAT2;
+            break;
+        case TINYGLTF_TYPE_MAT3:
+            elementCount = MAT3;
+            break;
+        case TINYGLTF_TYPE_MAT4:
+            elementCount = MAT4;
+            break;
+        default:
+            OSG_WARN << "Element type not supported" << std::endl;
+            break;
+    }
+
+    return elementCount;
+}
+
+class MetadataWriter
+{
+
+public:
+    MetadataWriter()
+    {}
+
+    template<typename T>
+    void setMeta(const std::string& name, T v) {
+        std::ostringstream oss;
+        oss << v;
+        addMeta(name, oss.str());
+    }
+
+    template<typename T>
+    void setMeta(const std::string& name, T v1, T v2, T v3) {
+        std::ostringstream oss;
+        oss << "[" << v1 << ", " << v2 << ", " << v3 << "]";
+        addMeta(name, oss.str());
+    }
+
+    template<typename T>
+    void setMeta(const std::string& name, T v1, T v2, T v3, T v4) {
+        std::ostringstream oss;
+        oss << "[" << v1 << ", " << v2 << ", " << v3 << ", " << v4 << "]";
+        addMeta(name, oss.str());
+    }
+
+    void addMeta(const std::string& name, const std::string& value) {
+        if(_metadata.count(name) > 0)
+            _metadata.erase(name);
+
+        _metadata.insert(std::pair<const std::string, const std::string>(name, value));
+    }
+
+    void writeMetadata(osg::Object* obj) const {
+        for(std::map<const std::string, const std::string>::const_iterator it_meta = _metadata.begin() ;
+            it_meta != _metadata.end() ; ++ it_meta) {
+            obj->setUserValue(it_meta->first, it_meta->second);
+        }
+    }
+
+protected:
+    std::map<const std::string, const std::string> _metadata;
+};
+
+template<typename T>
+bool isValidIndex(const int index, const T& vector)
+{
+    return index >= 0 && (size_t)index < vector.size();
+}
+
+int getIndexFromTexcoordStr(const std::string& texcoord)
+{
+    size_t texcoordIndex = texcoord.find("TEXCOORD_");
+    std::string indexStr = texcoord.substr(texcoordIndex + 9);
+
+    return atoi(indexStr.c_str());
+}
+
+void handleNullScales(osg::Vec3 &scale)
+{
+    for(unsigned int i = 0; i < 3; ++i)
+    {
+        if(std::abs(scale[i]) < EPSILON){
+            scale[i] = (scale[i] < 0 ? -MINIMUM_SCALE : MINIMUM_SCALE);
+        }
+    }
+}
+
+osg::Vec3 stdToOsgVec3(std::vector<double> vector, const float &defaultValue)
+{
+    osg::Vec3 vect;
+    if(vector.size() == 3)
+        vect = osg::Vec3((float)(vector[0]), (float)(vector[1]), (float)(vector[2]));
+    else
+        vect = osg::Vec3(defaultValue, defaultValue, defaultValue);
+
+    return vect;
+}
+
+template<typename T>
+void copyOsgVectorToStdVector(const T& osgVector, std::vector<double>& stdVector)
+{
+    stdVector.clear();
+    for(unsigned int i=0; i < T::num_components; i++)
+    {
+        stdVector.push_back(osgVector[i]);
+    }
+}
+
+void osgToGltfMatrix(const osg::Matrix &osgMatrix, std::vector<double>& gltfMatrix)
+{
+    if(!osgMatrix.isIdentity())
+    {
+        for(unsigned int i = 0; i < 4; ++i)
+        {
+            for(unsigned int j = 0; j < 4; ++j)
+            {
+                gltfMatrix.push_back(osgMatrix(i, j));
+            }
+        }
+    }
+}
+
+bool insertNodeOnTop(osg::ref_ptr<osg::Group> existingNode, osg::ref_ptr<osg::Group> nodeToInsert)
+{
+    if(existingNode->getParents().size() != 1){
+        OSG_WARN << "ERROR: node "<< existingNode->getName() << " has 0 or more than one parent "<< std::endl;
+        return false;
+    }
+
+    osg::Group* parent = existingNode->getParents()[0];
+    if(!parent){
+        OSG_WARN << "ERROR: node "<< existingNode->getName() << " has NULL parent "<< std::endl;
+        return false;
+    }
+
+    parent->removeChild(existingNode);
+    parent->addChild(nodeToInsert);
+    nodeToInsert->addChild(existingNode);
+    return true;
+}
+
+void moveChildrenFromTo(osg::ref_ptr<osg::Group> src, osg::ref_ptr<osg::Group> dest)
+{
+    if(src.get() == dest.get())
+    {
+        OSG_WARN << "Error: cannot move children (src and dst are the same node)" << std::endl;
+        return;
+    }
+
+    std::vector<osg::ref_ptr<osg::Node> > children;
+    for(unsigned int i=0; i< src->getNumChildren(); ++i)
+        children.push_back(src->getChild(i));
+
+    for(unsigned int i=0; i< children.size(); ++i)
+    {
+        dest->addChild(children[i].get());
+        src->removeChild(children[i].get());
+    }
+}
+
+void insertNodeBottom(osg::ref_ptr<osg::Group> existingNode, osg::ref_ptr<osg::Group> nodeToInsert)
+{
+    moveChildrenFromTo(existingNode, nodeToInsert);
+    existingNode->addChild(nodeToInsert);
+}
+
+void replaceNodeInGraph(osg::ref_ptr<osg::Group> nodeToReplace, osg::ref_ptr<osg::Group> newNode)
+{
+    moveChildrenFromTo(nodeToReplace, newNode);
+    if(nodeToReplace->getParents().size() == 1)
+    {
+        nodeToReplace->getParents()[0]->addChild(newNode);
+        nodeToReplace->getParents()[0]->removeChild(nodeToReplace);
+    }
+    else
+    {
+        OSG_WARN << "An issue occured when replacing " << nodeToReplace->className() << " " << nodeToReplace->getName() << " with " << newNode->className()  << " " << newNode->getName() << " (node has 0 or more than one parent)" << std::endl;
+    }
+}
+
+void detachNodeFromGraph(osg::ref_ptr<osg::Group> nodeToRemove)
+{
+    osg::ref_ptr<osg::Group> parent = nodeToRemove->getParents().size() == 1 ? nodeToRemove->getParents()[0]: NULL;
+    OSG_WARN << "REMOVING " << nodeToRemove->getName() << std::endl;
+    if(!parent)
+    {
+        OSG_WARN << "Error:  " << nodeToRemove->className() << " " << nodeToRemove->getName() <<" has not been detached (node has 0 or more than one parent)" << std::endl;
+        return;
+    }
+
+    moveChildrenFromTo(nodeToRemove, parent.get());
+    parent->removeChild(nodeToRemove.get());
+}
+
+osg::Matrix getMatrixFromTo(const osg::MatrixTransform* from, const osg::MatrixTransform* to)
+{
+    osg::Matrix fromW = from->getWorldMatrices()[0];
+    osg::Matrix toW = to->getWorldMatrices()[0];
+
+    toW.invert(toW);
+    return fromW * toW;
+}
+
+osg::Array* getTangentSpaceArray(osg::Geometry& geometry)
+{
+    int tangentArrayIndex;
+    // Tangent space given by the source file
+    if(geometry.getUserValue("tangent", tangentArrayIndex)) {
+        return geometry.getVertexAttribArray(tangentArrayIndex);
+    }
+
+    bool isTangentSpace = false;
+    for(unsigned int i = 0; i < geometry.getNumVertexAttribArrays(); ++i)
+    {
+
+        if(geometry.getVertexAttribArray(i) && geometry.getVertexAttribArray(i)->getUserValue("tangent", isTangentSpace))
+        {
+            return geometry.getVertexAttribArray(i);
+        }
+    }
+
+    return 0;
+}
+
+//////////////////////////////////
+// VISITOR
+//////////////////////////////////
+struct FindTopSkeletonVisitor : public osg::NodeVisitor
+{
+    osgAnimation::Skeleton* topSkeleton;
+
+    FindTopSkeletonVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS), topSkeleton(NULL) {}
+
+    void apply(osg::Node& node)
+    {
+        if(osgAnimation::Skeleton* skel = dynamic_cast<osgAnimation::Skeleton*>(&node))
+            topSkeleton = skel;
+
+        if(node.getParents().size())
+            traverse(node);
+    }
+
+    osgAnimation::Skeleton* getTopSkeleton()
+    {
+        return topSkeleton;
+    }
+};
+
+struct FindCommonParentVisitor : public osg::NodeVisitor {
+    osg::ref_ptr<osg::Group> _stopNode;
+    std::set<osg::Group*> _visitedNodes;
+
+    FindCommonParentVisitor(): osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS) {}
+
+    void reset()
+    {
+        _nodePath.clear();
+        _visitedNodes.clear();
+    }
+
+    void setVisitedNodes(std::set<osg::Group*>& visitedNodes)
+    {
+        _visitedNodes = visitedNodes;
+    }
+
+    void apply(osg::Group& node)
+    {
+        if(node.getParents().size() == 0 || _visitedNodes.count(&node) > 0)
+        {
+            _stopNode = &node;
+            // replace by std::copy
+            for(unsigned int i=0;i<_nodePath.size();++i)
+            {
+                _visitedNodes.insert(dynamic_cast<osg::Group*>(_nodePath[i]));
+            }
+        }
+        else
+        {
+            traverse(node);
+        }
+    }
+
+    std::set<osg::Group*> getVisitedNodes()
+    {
+        return _visitedNodes;
+    }
+
+    osg::Group* getStopNode()
+    {
+        return _stopNode.get();
+    }
+};
+

@@ -38,6 +38,7 @@
 #include <osgViewer/Viewer>
 
 #include <osgUtil/Optimizer>
+#include <osgText/Text>
 
 
 osg::ref_ptr<osg::Node> decorate_with_clip_node(const osg::ref_ptr<osg::Node>& subgraph)
@@ -56,25 +57,6 @@ osg::ref_ptr<osg::Node> decorate_with_clip_node(const osg::ref_ptr<osg::Node>& s
     wireframe_subgraph->setStateSet(stateset);
     wireframe_subgraph->addChild(subgraph);
     rootnode->addChild(wireframe_subgraph);
-
-/*
-    // simple approach to adding a clipnode above a subgraph.
-
-    // create clipped part.
-    osg::ClipNode* clipped_subgraph = new osg::ClipNode;
-
-    osg::BoundingSphere bs = subgraph->getBound();
-    bs.radius()*= 0.4f;
-
-    osg::BoundingBox bb;
-    bb.expandBy(bs);
-
-
-    clipped_subgraph->createClipBox(bb);
-    clipped_subgraph->addChild(subgraph);
-    rootnode->addChild(clipped_subgraph);
-*/
-
 
     // more complex approach to managing ClipNode, allowing
     // ClipNode node to be transformed independently from the subgraph
@@ -110,33 +92,103 @@ osg::ref_ptr<osg::Node> decorate_with_clip_node(const osg::ref_ptr<osg::Node>& s
 }
 
 
+osg::ref_ptr<osg::Node> simple_decorate_with_clip_node(const osg::ref_ptr<osg::Node>& subgraph)
+{
+    osg::ref_ptr<osg::Group> rootnode = new osg::Group;
+
+
+    // more complex approach to managing ClipNode, allowing
+    // ClipNode node to be transformed independently from the subgraph
+    // that it is clipping.
+
+    osg::MatrixTransform* transform= new osg::MatrixTransform;
+
+    osg::NodeCallback* nc = new osg::AnimationPathCallback(subgraph->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
+    transform->setUpdateCallback(nc);
+
+    osg::ClipNode* clipnode = new osg::ClipNode;
+    osg::BoundingSphere bs = subgraph->getBound();
+    bs.radius()*= 0.4f;
+
+    osg::BoundingBox bb;
+    bb.expandBy(bs);
+
+    clipnode->createClipBox(bb);
+    clipnode->setCullingActive(false);
+
+    transform->addChild(clipnode);
+    rootnode->addChild(transform);
+
+
+    // create clipped part.
+    osg::Group* clipped_subgraph = new osg::Group;
+
+    clipped_subgraph->setStateSet(clipnode->getStateSet());
+    clipped_subgraph->addChild(subgraph);
+    rootnode->addChild(clipped_subgraph);
+
+    return rootnode;
+}
+
 int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
 
+    osgViewer::Viewer viewer(arguments);
+
     // load the nodes from the commandline arguments.
+    osg::ref_ptr<osg::Group> scene = new osg::Group;
+
+    std::string textString;
+    while(arguments.read("--text", textString))
+    {
+        osg::ref_ptr<osgText::Text> text = new osgText::Text;
+        text->setFont("fonts/times.ttf");
+        text->setAxisAlignment(osgText::Text::XZ_PLANE);
+        text->setDrawMode(osgText::Text::TEXT|osgText::Text::ALIGNMENT|osgText::Text::BOUNDINGBOX|osgText::Text::FILLEDBOUNDINGBOX);
+        text->setText(textString);
+        scene->addChild(text);
+    }
+
+
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
+    if (loadedModel.valid())
+    {
+        scene->addChild(scene.get());
+    }
 
 
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!loadedModel) loadedModel = osgDB::readRefNodeFile("cow.osgt");
+    if (scene->getNumChildren()==0)
+    {
+        loadedModel = osgDB::readRefNodeFile("cow.osgt");
+        scene->addChild(loadedModel.get());
+    }
 
 
-    if (!loadedModel)
+    if (scene->getNumChildren()==0)
     {
         osg::notify(osg::NOTICE)<<"Please specify a filename on the command line"<<std::endl;
         return 1;
     }
 
     // decorate the scenegraph with a clip node.
-    osg::ref_ptr<osg::Node> rootnode = decorate_with_clip_node(loadedModel);
+    osg::ref_ptr<osg::Node> rootnode;
+
+
+    if (arguments.read("--simple"))
+    {
+        rootnode = simple_decorate_with_clip_node(scene);
+    }
+    else
+    {
+        rootnode = decorate_with_clip_node(scene);
+    }
 
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
     optimzer.optimize(rootnode);
-
-    osgViewer::Viewer viewer;
 
     // set the scene to render
     viewer.setSceneData(rootnode);

@@ -69,7 +69,7 @@ OutputStream::OutputStream( const osgDB::Options* options )
         if (version > 0 && version <= OPENSCENEGRAPH_SOVERSION)
             _targetFileVersion = version;
     }
-	
+
     if (_targetFileVersion < 99) _useRobustBinaryFormat = false;
 }
 
@@ -463,7 +463,7 @@ void OutputStream::writeImage( const osg::Image* img )
     unsigned int id = findOrCreateObjectID( img, newID );
 
     if (_targetFileVersion > 94) *this << PROPERTY("ClassName") << name << std::endl;   // Write object name
-	
+
     *this << PROPERTY("UniqueID") << id << std::endl;      // Write image ID
     if ( getException() ) return;
 
@@ -580,7 +580,7 @@ void OutputStream::writeImage( const osg::Image* img )
         case IMAGE_INLINE_FILE:
             if ( isBinary() )
             {
-                std::string fullPath = osgDB::findDataFile( img->getFileName(), _options );
+                std::string fullPath = osgDB::findDataFile( img->getFileName(), _options.get() );
                 osgDB::ifstream infile( fullPath.c_str(), std::ios::in|std::ios::binary );
                 if ( infile )
                 {

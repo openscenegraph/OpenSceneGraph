@@ -32,8 +32,6 @@ class TextureAttribute : public StateAttribute
 
         virtual bool isTextureAttribute() const { return true; }
 
-        virtual unsigned int getMember() const { return _textureUnit; }
-
     protected:
         virtual ~TextureAttribute() {}
 

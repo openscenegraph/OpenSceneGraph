@@ -2,7 +2,7 @@ OSG News
 ========
 
 OpenSceneGraph 3.6 release
-PERTHSHIRE, Scotland - 26th March 2018 - OpenSceneGraph Professional Services announces the release of OpenSceneGraph 3.6.0, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. OpenSceneGraph 3.6 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. OpenSceneGraph 3.6 runs on all Microsoft Windows platforms, Apple OS/X, IOS, GNU/Linux, Android, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
+PERTHSHIRE, Scotland - 30th March 2018 - OpenSceneGraph Professional Services announces the release of OpenSceneGraph 3.6.0, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. OpenSceneGraph 3.6 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. OpenSceneGraph 3.6 runs on all Microsoft Windows platforms, Apple OS/X, IOS, GNU/Linux, Android, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
 Updates include:
 
   * OpenThreads::Affinity introduced to enable setting of processor affinity on viewer and database threads

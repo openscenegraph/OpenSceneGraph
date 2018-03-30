@@ -1,3 +1,68 @@
+Fri, 30 Mar 2018 16:34:01 +0100
+Author : Robert Osfield
+Fixed build with OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION set to OFF
+
+Fri, 30 Mar 2018 15:27:35 +0100
+Author : Robert Osfield
+Added suport for writing to gl_ClipVertex
+
+Fri, 30 Mar 2018 15:16:45 +0100
+Author : Robert Osfield
+To osgclipe example added --text textstring and --simple command line options to test mixing text and clipping
+
+Fri, 30 Mar 2018 12:39:52 +0100
+Author : Robert Osfield
+Changed Layer::get*Value(..) methods to const
+
+Thu, 29 Mar 2018 11:38:04 +0100
+Author : Robert Osfield
+Fixed double calling of TerrainTechnique::init().
+
+Thu, 29 Mar 2018 11:35:34 +0100
+Author : Robert Osfield
+Maded TerrainTechnique::setTerrainTile(..), addNeighbour(..), removeNeighbour(..) and containsNeighbour(..) virtual and public to enable implementation of TerrainTechnique that act as a facade to actual TerrainTechnique implementations.
+
+Wed, 28 Mar 2018 14:04:41 +0100
+Author : Robert Osfield
+Updated RC number to 3
+
+Wed, 28 Mar 2018 11:34:52 +0100
+Author : Robert Osfield
+Fixed osgDB::findFileInDirectory() handling of directory strings with trailing \ or / that was causing failure to find valid files in otherwise valid directories
+
+Tue, 27 Mar 2018 18:56:38 +0800
+Author : Haojia Yu
+OutputStream writes images using its Options objectwhen writing images, OutputStream can search files using its Options object rahter than always using FilePathList object of global Regidtry instance.
+
+
+Tue, 27 Mar 2018 08:39:52 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #510 from eligovision/OpenSceneGraph-3.6_iosGraphicsWindowIOS: multithreaded viewer's mode support added; updated…
+
+Tue, 27 Mar 2018 08:37:29 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #508 from eligovision/OpenSceneGraph-3.6_pluginsOSG 3.6: Write support with .curl pseudo extension added
+
+Tue, 27 Mar 2018 08:35:57 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #509 from eligovision/OpenSceneGraph-3.6_vasVertexArrayState: typo fixed in log
+
+Mon, 26 Mar 2018 20:40:14 +0300
+Author : Konstantin S. Matveyev
+GraphicsWindowIOS: multithreaded viewer's mode support added; updated for iOS-11 SDK; view rotations fixed; GLES2, GLES3 preprocessors fixed; tested on iPhone4 and upper
+
+Fri, 19 Jan 2018 22:20:01 +0300
+Author : Konstantin S. Matveyev
+VertexArrayState: typo fixed in log
+
+Mon, 26 Mar 2018 17:59:49 +0300
+Author : Konstantin S. Matveyev
+Write support with .curl pseudo extension added
+
+Mon, 26 Mar 2018 09:55:53 +0100
+Author : Robert Osfield
+Updated ChangeLog
+
 Mon, 26 Mar 2018 09:54:59 +0100
 Author : Robert Osfield
 Updated NEWS for 3.6.0-rc2

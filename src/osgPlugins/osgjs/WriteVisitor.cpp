@@ -1034,8 +1034,6 @@ JSONObject* WriteVisitor::createJSONStateSet(osg::StateSet* stateset)
             osg::ref_ptr<osg::CullFace> defaultCull = new osg::CullFace();
             cf = createJSONCullFace(defaultCull.get());
             cf->getMaps()["Mode"] = new JSONValue<std::string>("DISABLE");
-            obj->getMaps()["osg.CullFace"] = cf;
-            attributeList->getArray().push_back(obj);
         } else {
             if (!cullFace) {
                 cullFace = new osg::CullFace();

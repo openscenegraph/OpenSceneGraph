@@ -125,7 +125,6 @@ class OSG_EXPORT AutoTransform : public Transform
 
         osg::Matrixd computeMatrix(const osg::NodeVisitor* nv) const;
 
-        mutable bool                    _matrixInitalized;
         mutable osg::Matrixd            _cachedMatrix;
 
         enum AxisAligned

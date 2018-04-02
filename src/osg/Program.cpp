@@ -187,7 +187,7 @@ int Program::compare(const osg::StateAttribute& sa) const
 
 void Program::compileGLObjects( osg::State& state ) const
 {
-    if( isFixedFunction() ) return;
+    if( _shaderList.empty() ) return;
 
     for( unsigned int i=0; i < _shaderList.size(); ++i )
     {
@@ -412,7 +412,7 @@ void Program::apply( osg::State& state ) const
     const GLExtensions* extensions = state.get<GLExtensions>();
     if( ! extensions->isGlslSupported ) return;
 
-    if( isFixedFunction() )
+    if( _shaderList.empty() )
     {
         extensions->glUseProgram( 0 );
         state.setLastAppliedProgramObject(0);

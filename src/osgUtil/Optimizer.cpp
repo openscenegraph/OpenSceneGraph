@@ -1887,55 +1887,40 @@ bool Optimizer::MergeGeometryVisitor::mergeGroup(osg::Group& group)
         // then build merge list using _targetMaximumNumberOfVertices
         bool needToDoMerge = false;
         // dequeue each DuplicateList when vertices limit is reached or when all elements has been checked
-        for(;!mergeListChecked.empty();)
+        for(MergeList::iterator itr=mergeListChecked.begin(); itr!=mergeListChecked.end(); ++itr)
         {
-            MergeList::iterator itr=mergeListChecked.begin();
             DuplicateList& duplicateList(*itr);
             if (duplicateList.size()==0)
             {
-                mergeListChecked.erase(itr);
                 continue;
             }
 
             if (duplicateList.size()==1)
             {
                 mergeList.push_back(duplicateList);
-                mergeListChecked.erase(itr);
                 continue;
             }
 
-            unsigned int numVertices(duplicateList.front()->getVertexArray() ? duplicateList.front()->getVertexArray()->getNumElements() : 0);
-            DuplicateList::iterator eachGeom(duplicateList.begin()+1);
-            // until all geometries have been checked or _targetMaximumNumberOfVertices is reached
-            for(;eachGeom!=duplicateList.end(); ++eachGeom)
+            unsigned int totalNumberVertices = 0;
+            DuplicateList subset;
+            for(DuplicateList::iterator ditr = duplicateList.begin();
+                ditr != duplicateList.end();
+                ++ditr)
             {
-                unsigned int numAddVertices((*eachGeom)->getVertexArray() ? (*eachGeom)->getVertexArray()->getNumElements() : 0);
-                if ((numVertices+numAddVertices)>_targetMaximumNumberOfVertices)
+                osg::Geometry* geometry = ditr->get();
+                unsigned int numVertices = (geometry->getVertexArray() ? geometry->getVertexArray()->getNumElements() : 0);
+                if ((totalNumberVertices+numVertices)>_targetMaximumNumberOfVertices && !subset.empty())
                 {
-                    break;
-                }
-                else
-                {
-                    numVertices += numAddVertices;
-                }
-            }
 
-            // push back if bellow the limit
-            if (eachGeom==duplicateList.end())
-            {
-                if (duplicateList.size()>1) needToDoMerge = true;
-                mergeList.push_back(duplicateList);
-                mergeListChecked.erase(itr);
+                    mergeList.push_back(subset);
+                    subset.clear();
+                    totalNumberVertices = 0;
+                }
+                totalNumberVertices += numVertices;
+                subset.push_back(geometry);
+                if (subset.size()>1) needToDoMerge = true;
             }
-            // else split the list to store what is below the limit and retry on what is above
-            else
-            {
-                mergeList.push_back(DuplicateList());
-                DuplicateList* duplicateListResult = &mergeList.back();
-                duplicateListResult->insert(duplicateListResult->end(),duplicateList.begin(),eachGeom);
-                duplicateList.erase(duplicateList.begin(),eachGeom);
-                if (duplicateListResult->size()>1) needToDoMerge = true;
-            }
+            if (!subset.empty()) mergeList.push_back(subset);
         }
 
         if (needToDoMerge)

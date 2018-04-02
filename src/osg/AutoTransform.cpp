@@ -25,7 +25,6 @@ AutoTransform::AutoTransform():
     _minimumScale(0.0),
     _maximumScale(DBL_MAX),
     _autoScaleTransitionWidthRatio(0.25),
-    _matrixInitalized(false),
     _axis(0.0f,0.0f,1.0f),
     _normal(0.0f,-1.0f,0.0f),
     _cachedMode(NO_ROTATION),
@@ -46,7 +45,6 @@ AutoTransform::AutoTransform(const AutoTransform& pat,const CopyOp& copyop):
     _minimumScale(pat._minimumScale),
     _maximumScale(pat._maximumScale),
     _autoScaleTransitionWidthRatio(pat._autoScaleTransitionWidthRatio),
-    _matrixInitalized(false),
     _axis(pat._axis),
     _normal(pat._normal),
     _cachedMode(pat._cachedMode),
@@ -135,8 +133,6 @@ bool AutoTransform::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) co
 
 osg::Matrixd AutoTransform::computeMatrix(const osg::NodeVisitor* nv) const
 {
-    _matrixInitalized = true;
-
     Quat rotation = _rotation;
     osg::Vec3d scale = _scale;
 
@@ -306,7 +302,7 @@ BoundingSphere AutoTransform::computeBound() const
 {
     BoundingSphere bsphere;
 
-    if ( getAutoScaleToScreen() && !_matrixInitalized )
+    if ( getAutoScaleToScreen() )
         return bsphere;
 
     bsphere = Transform::computeBound();

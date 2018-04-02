@@ -89,8 +89,7 @@ class OSG_EXPORT AutoTransform : public Transform
         /** Get the front face direction normal. */
         inline const Vec3& getNormal() const { return _normal; }
 
-        void setAutoScaleToScreen(bool autoScaleToScreen) { _autoScaleToScreen = autoScaleToScreen; }
-
+        void setAutoScaleToScreen(bool autoScaleToScreen);
         bool getAutoScaleToScreen() const { return _autoScaleToScreen; }
 
         void setAutoScaleTransitionWidthRatio(float ratio) { _autoScaleTransitionWidthRatio = ratio; }
@@ -100,9 +99,6 @@ class OSG_EXPORT AutoTransform : public Transform
         virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const;
 
         virtual bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const;
-
-        virtual BoundingSphere computeBound() const;
-
 
     protected :
 
@@ -124,9 +120,6 @@ class OSG_EXPORT AutoTransform : public Transform
         double                          _autoScaleTransitionWidthRatio;
 
         osg::Matrixd computeMatrix(const osg::NodeVisitor* nv) const;
-
-        mutable bool                    _matrixInitalized;
-        mutable osg::Matrixd            _cachedMatrix;
 
         enum AxisAligned
         {

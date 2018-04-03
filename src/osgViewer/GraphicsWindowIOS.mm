@@ -556,8 +556,10 @@ typedef std::map<void*, unsigned int> TouchPointsIdMapping;
                               0, 0, _backingWidth, _backingHeight,
                               GL_COLOR_BUFFER_BIT, GL_LINEAR);
         }
+#   if OSG_GLES2_FEATURES
         else
             glResolveMultisampleFramebufferAPPLE();
+#   endif
 #   else
         glResolveMultisampleFramebufferAPPLE();
 #   endif

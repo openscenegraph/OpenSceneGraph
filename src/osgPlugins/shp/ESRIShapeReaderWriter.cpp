@@ -20,6 +20,7 @@ class ESRIShapeReaderWriter : public osgDB::ReaderWriter
         {
             supportsExtension("shp","Geospatial Shape file format");
             supportsOption("double","Read x,y,z data as double an stored as geometry in osg::Vec3dArray's.");
+            supportsOption("keepSeparatePoints", "Avoid combining point features into multi-point.");
         }
 
         virtual const char* className() const { return "ESRI Shape ReaderWriter"; }
@@ -47,8 +48,14 @@ class ESRIShapeReaderWriter : public osgDB::ReaderWriter
                 useDouble = true;
             }
 
+            bool keepSeparatePoints = false;
+            if (options && options->getOptionString().find("keepSeparatePoints") != std::string::npos)
+            {
+              keepSeparatePoints = true;
+            }
 
-            ESRIShape::ESRIShapeParser sp(fileName, useDouble);
+
+            ESRIShape::ESRIShapeParser sp(fileName, useDouble, keepSeparatePoints);
 
 
             std::string xbaseFileName(osgDB::getNameLessExtension(fileName) + ".dbf");

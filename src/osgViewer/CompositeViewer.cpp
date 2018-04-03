@@ -1006,18 +1006,18 @@ void CompositeViewer::eventTraversal()
             EVENT_FOR_ALL_VIEWS
         };
 
-        EventClassification classifaction = EVENT_FOR_ALL_VIEWS;
+        EventClassification classification = EVENT_FOR_ALL_VIEWS;
 
         switch(event->getEventType())
         {
             case(osgGA::GUIEventAdapter::CLOSE_WINDOW):
             case(osgGA::GUIEventAdapter::RESIZE):
-                classifaction = EVENT_FOR_VIEWS_ASSOCIATED_WITH_WINDOW;
+                classification = EVENT_FOR_VIEWS_ASSOCIATED_WITH_WINDOW;
                 break;
 
             case(osgGA::GUIEventAdapter::QUIT_APPLICATION):
             case(osgGA::GUIEventAdapter::USER):
-                classifaction = EVENT_FOR_ALL_VIEWS;
+                classification = EVENT_FOR_ALL_VIEWS;
                 break;
 
             case(osgGA::GUIEventAdapter::PUSH):
@@ -1025,6 +1025,7 @@ void CompositeViewer::eventTraversal()
             case(osgGA::GUIEventAdapter::DOUBLECLICK):
             case(osgGA::GUIEventAdapter::MOVE):
             case(osgGA::GUIEventAdapter::DRAG):
+            case(osgGA::GUIEventAdapter::SCROLL):
             {
                 if ((event->getEventType()!=osgGA::GUIEventAdapter::DRAG && event->getEventType()!=osgGA::GUIEventAdapter::RELEASE) ||
                     !_previousEvent ||
@@ -1040,7 +1041,7 @@ void CompositeViewer::eventTraversal()
 
                 _previousEvent = event;
 
-                classifaction = EVENT_FOR_VIEW_ASSOCIATED_WITH_FOCUS;
+                classification = EVENT_FOR_VIEW_ASSOCIATED_WITH_FOCUS;
                 break;
             }
 
@@ -1071,7 +1072,7 @@ void CompositeViewer::eventTraversal()
         // reassign view with focus
         if (_viewWithFocus != view)  _viewWithFocus = view;
 
-        switch(classifaction)
+        switch(classification)
         {
             case(EVENT_FOR_VIEW_ASSOCIATED_WITH_FOCUS):
             {

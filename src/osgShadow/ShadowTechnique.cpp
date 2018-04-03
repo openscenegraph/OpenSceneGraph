@@ -48,6 +48,11 @@ ShadowTechnique::~ShadowTechnique()
 {
 }
 
+void ShadowTechnique::setShadowedScene(ShadowedScene* ss)
+{
+    _shadowedScene = ss;
+}
+
 void ShadowTechnique::init()
 {
     OSG_NOTICE<<className()<<"::init() not implemented yet"<<std::endl;

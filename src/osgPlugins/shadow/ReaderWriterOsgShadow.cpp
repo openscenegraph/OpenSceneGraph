@@ -11,9 +11,9 @@
 */
 
 #include <osgShadow/ShadowedScene>
-#include <osgShadow/ShadowVolume>
 #include <osgShadow/ShadowTexture>
 #include <osgShadow/ShadowMap>
+#include <osgShadow/ViewDependentShadowMap>
 
 #include <osgDB/ReaderWriter>
 #include <osgDB/FileNameUtils>
@@ -110,15 +110,14 @@ public:
         osg::ref_ptr<osgShadow::ShadowTechnique> technique;
         if (!params.empty())
         {
-            if      (params=="ShadowVolume" || params=="sv")             technique = new osgShadow::ShadowVolume;
-            else if (params=="ShadowTexture" || params=="st")            technique = new osgShadow::ShadowTexture;
-            else if (params=="ShadowMap" || params=="sm")                technique = new osgShadow::ShadowMap;
-//            else if (params=="ParallelSplitShadowMap" || params=="pssm") technique = new osgShadow::ParallelSplitShadowMap;
+            if (params=="ShadowTexture" || params=="st")                    technique = new osgShadow::ShadowTexture;
+            else if (params=="ViewDependentShadowMap" || params=="vdsm")    technique = new osgShadow::ViewDependentShadowMap;
+            else if (params=="ShadowMap" || params=="sm")                   technique = new osgShadow::ShadowMap;
             else subFileName += std::string(".") + params;
         }
 
         // default fallback to using ShadowVolume
-        if (!technique) technique = new osgShadow::ShadowVolume;
+        if (!technique) technique = new osgShadow::ViewDependentShadowMap;
 
         // recursively load the subfile.
         osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile( subFileName, options );

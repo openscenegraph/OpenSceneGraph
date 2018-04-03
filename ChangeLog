@@ -1,3 +1,56 @@
+Tue, 3 Apr 2018 15:48:37 +0100
+Author : Thomas Hogarth
+missing gles2 check
+
+Tue, 3 Apr 2018 15:29:54 +0100
+Author : Robert Osfield
+Added a ShadowTechniue::setShadowedScene() virtual method to make it possible to implement techniques as fascades to other techniques
+
+Tue, 3 Apr 2018 12:42:37 +0100
+Author : Andreas Ekstrand
+The attached code (from the 3.6 branch) adds a keepSeparatePoints option to the SHP plugin which makes it possible to avoid merging point features into multi-points, in case you e.g. need to keep separate point attributes.It also contains a fix in the Xbase DBF parser, converting a numeric shape attribute to double instead of integer. As stated in e.g. https://en.wikipedia.org/wiki/.dbf the numeric field can contain decimals.
+
+
+Tue, 3 Apr 2018 11:35:31 +0100
+Author : Robert Osfield
+Removed osgShadow::ShadowVolume as it functionality isn't functional
+
+Tue, 3 Apr 2018 12:10:29 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #516 from eligovision/OpenSceneGraph-3.6_programosg::Program's compileGLObjects and apply methods fixed for OSG witho…
+
+Mon, 2 Apr 2018 23:56:36 +0300
+Author : Konstantin S. Matveyev
+osg::Program's compileGLObjects and apply methods fixed for OSG without OSG_GL_FIXED_FUNCTION_AVAILABLE
+
+Mon, 2 Apr 2018 18:26:26 +0100
+Author : Robert Osfield
+Rewrote the handling of AutoTransform::setAutoScaleToScreen(bool) functionality so that is disabling CullingActive when switched on.
+
+Mon, 2 Apr 2018 16:21:20 +0100
+Author : Robert Osfield
+Added __VERSION__<140 check for usage of gl_ClipVertex to avoid GL3 core profile usage issues
+
+Mon, 2 Apr 2018 14:08:47 +0100
+Author : Robert Osfield
+Restructured merge geometry code to make it easier to follow
+
+Mon, 2 Apr 2018 11:44:03 +0100
+Author : Robert Osfield
+Fix for MergeGeometryVsiitor bug. Restructured the processing the merge geometry list to avoid missing geometries that aren't binned along with other geometries.
+
+Sun, 1 Apr 2018 10:40:25 +0100
+Author : Robert Osfield
+Removed stray CMAkeLists.txt from TARGET_SRC list
+
+Sun, 1 Apr 2018 10:18:45 +0100
+Author : Andreas Ekstrand
+Small fix (from the 3.6 branch) in the osgjs plugin, avoiding a double addition of the CullFace attribute when it has been turned off. This resulted in an empty json object in the osgjs file causing warnings in osgjs.
+
+Fri, 30 Mar 2018 17:52:12 +0100
+Author : Robert Osfield
+Updated NEWS and ChangeLog for 3.6.0-rc3
+
 Fri, 30 Mar 2018 16:34:01 +0100
 Author : Robert Osfield
 Fixed build with OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION set to OFF

@@ -1020,6 +1020,12 @@ void CompositeViewer::eventTraversal()
                 classification = EVENT_FOR_ALL_VIEWS;
                 break;
 
+            case(osgGA::GUIEventAdapter::KEYDOWN):
+            case(osgGA::GUIEventAdapter::KEYUP):
+                classification = EVENT_FOR_VIEW_ASSOCIATED_WITH_FOCUS;
+                if (_previousEvent.valid()) event->copyPointerDataFrom(*_previousEvent);
+                break;
+
             case(osgGA::GUIEventAdapter::PUSH):
             case(osgGA::GUIEventAdapter::RELEASE):
             case(osgGA::GUIEventAdapter::DOUBLECLICK):

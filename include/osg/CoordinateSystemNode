@@ -168,6 +168,38 @@ inline void EllipsoidModel::convertLatLongHeightToXYZ(double latitude, double lo
 inline void EllipsoidModel::convertXYZToLatLongHeight(double X, double Y, double Z,
                                       double& latitude, double& longitude, double& height) const
 {
+    // handle polar and center-of-earth cases directly.
+    if (X != 0.0)
+        longitude = atan2(Y,X);
+    else
+    {
+        if (Y > 0.0)
+            longitude = PI_2;
+        else if (Y < 0.0)
+            longitude = -PI_2;
+        else
+        {
+            // at pole or at center of the earth
+            longitude = 0.0;
+            if (Z > 0.0)
+            { // north pole.
+              latitude = PI_2;
+              height = Z - _radiusPolar;
+            }
+            else if (Z < 0.0)
+            { // south pole.
+              latitude = -PI_2;
+              height = -Z - _radiusPolar;
+            }
+            else
+            { // center of earth.
+              latitude = PI_2;
+              height = -_radiusPolar;
+            }
+            return;
+        }
+    }
+    
     // http://www.colorado.edu/geography/gcraft/notes/datum/gif/xyzllh.gif
     double p = sqrt(X*X + Y*Y);
     double theta = atan2(Z*_radiusEquator , (p*_radiusPolar));
@@ -179,7 +211,6 @@ inline void EllipsoidModel::convertXYZToLatLongHeight(double X, double Y, double
 
     latitude = atan( (Z + eDashSquared*_radiusPolar*sin_theta*sin_theta*sin_theta) /
                      (p - _eccentricitySquared*_radiusEquator*cos_theta*cos_theta*cos_theta) );
-    longitude = atan2(Y,X);
 
     double sin_latitude = sin(latitude);
     double N = _radiusEquator / sqrt( 1.0 - _eccentricitySquared*sin_latitude*sin_latitude);

@@ -1,0 +1,1784 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) Sketchfab
+ *
+ * This application is open source and may be redistributed and/or modified
+ * freely and without restriction, both in commercial and non commercial
+ * applications, as long as this copyright notice is tained.
+ *
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+*/
+
+#ifndef GLTFREADER_H
+#define GLTFREADER_H
+
+#include <cmath>
+#include <algorithm>
+#include <iomanip>
+#include <string>
+#include <bitset>
+#include <set>
+#include <vector>
+#include <limits>
+#include <typeinfo>
+
+#include <osg/Notify>
+#include <osg/Geode>
+#include <osg/CullFace>
+
+#include <osgDB/ReaderWriter>
+#include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
+
+#include <osgDB/Registry>
+#include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
+#include <osg/ref_ptr>
+#include <osg/MatrixTransform>
+#include <osg/Geode>
+#include <osg/StateSet>
+#include <osg/Texture2D>
+#include <osg/Material>
+#include <osg/PositionAttitudeTransform>
+
+// Animation
+#include <osgAnimation/BasicAnimationManager>
+#include <osgAnimation/Channel>
+#include <osgAnimation/Animation>
+#include <osgAnimation/Channel>
+#include <osgAnimation/Sampler>
+#include <osgAnimation/Bone>
+#include <osgAnimation/Skeleton>
+#include <osgAnimation/UpdateBone>
+#include <osgAnimation/StackedQuaternionElement>
+#include <osgAnimation/StackedRotateAxisElement>
+#include <osgAnimation/StackedScaleElement>
+#include <osgAnimation/StackedTranslateElement>
+#include <osgAnimation/StackedMatrixElement>
+#include <osgAnimation/UpdateMatrixTransform>
+#include <osgAnimation/RigGeometry>
+#include <osgAnimation/MorphGeometry>
+
+#define TINYGLTF_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
+
+#include "tiny_gltf.h"
+#include "Helpers"
+
+#define MAX_TEXCOORD_CHANNELS 12
+#define MAX_INFLUENCE_PER_VERTEX 4
+#define DEFAULT_TEXTURE_WRAP osg::Texture::REPEAT
+
+
+
+
+// Follows glTF 2.0 specification: https://github.com/KhronosGroup/glTF/tree/2.0/specification/2.0
+
+typedef std::vector<osg::ref_ptr<osg::Geometry> > GeometryList;
+typedef std::vector<osg::ref_ptr<osg::StateSet> > MaterialList;
+typedef std::map<std::string, int> AttributeMap;
+typedef std::vector<tinygltf::Material> GltfMaterialList;
+typedef std::vector<std::vector<int> > MaterialUVBindVector;
+typedef std::vector<tinygltf::Node> GltfNodeVector;
+
+typedef std::map<int, osg::ref_ptr<osg::MatrixTransform> > GltfIndexToOsgMTMap;
+typedef std::map<int, osg::ref_ptr<osgAnimation::Bone> > GltfToOsgBoneMap;
+
+// Animation
+typedef std::set<int> IndexList;
+IndexList _glTFBoneIndexes;
+
+typedef std::vector<osg::ref_ptr<osgAnimation::Bone> > BoneList;
+typedef std::map<int, osgAnimation::RigGeometry*> IntToRigMap;
+typedef std::map<int, BoneList> IntToBoneListMap;
+typedef std::map<osgAnimation::Bone*, int> BoneToIntMap;
+typedef std::map<int, osgAnimation::Skeleton*> IntToSkeletonMap;
+
+#define DEFAULT_TEXTURE_WRAP osg::Texture::REPEAT
+
+enum TextureUnits {
+    // CLASSIC
+    TEXTURE_AMBIENT,
+    TEXTURE_DIFFUSE,
+    TEXTURE_SPECULAR,
+    TEXTURE_EMISSION,
+    TEXTURE_OPACITY,
+    TEXTURE_NORMAL,
+    TEXTURE_BUMP,
+
+    // PBR
+    TEXTURE_METALLIC_ROUGHNESS,
+    TEXTURE_ROUGHNESS,
+    TEXTURE_SPECULARPBR_GLOSSINESS,
+    TEXTURE_GLOSSINESS,
+    TEXTURE_AO
+};
+
+void buildStackedTransform(osgAnimation::UpdateMatrixTransform* pUpdate,const tinygltf::Node& gltfnode)
+{
+    if(gltfnode.matrix.size())
+    {
+        osg::Matrix mat(&gltfnode.matrix[0]);
+        pUpdate->getStackedTransforms().push_back(new osgAnimation::StackedMatrixElement("matrix",  mat));
+    }
+    else
+    {
+        pUpdate->getStackedTransforms().push_back(new osgAnimation::StackedTranslateElement("translate", stdToOsgVec3(gltfnode.translation, 0)));
+        osg::Quat rotation;
+        if(gltfnode.rotation.size())
+        {
+            rotation = osg::Quat((float)gltfnode.rotation[0], (float)gltfnode.rotation[1], (float)gltfnode.rotation[2], (float)gltfnode.rotation[3]);
+        }
+        pUpdate->getStackedTransforms().push_back(new osgAnimation::StackedQuaternionElement("rotate", rotation));
+
+        osg::Vec3 scale = stdToOsgVec3(gltfnode.scale, 1);
+        handleNullScales(scale);
+
+        pUpdate->getStackedTransforms().push_back(new osgAnimation::StackedScaleElement("scale", scale));
+    }
+}
+
+class GLTFParser
+{
+public:
+
+    GLTFParser(const std::string& filename): _filename(filename)
+    {
+        _model = new tinygltf::Model();
+        channelsMetadata.clear();
+        channelsMetadata.push_back("sAmbient");
+        channelsMetadata.push_back("sDiffuse");
+        channelsMetadata.push_back("sSpecular");
+        channelsMetadata.push_back("sEmissive");
+        channelsMetadata.push_back("sOpacity");
+        channelsMetadata.push_back("sNormalMap");
+        channelsMetadata.push_back("sBump");
+        channelsMetadata.push_back("sMetallic");
+        channelsMetadata.push_back("sRoughness");
+        channelsMetadata.push_back("sSpecularPBR");
+        channelsMetadata.push_back("sGlossinessPBR");
+        channelsMetadata.push_back("sAO");
+    }
+
+    bool readFile()
+    {
+        tinygltf::TinyGLTFLoader loader;
+        std::string err;
+        std::string ext = osgDB::getLowerCaseFileExtension(_filename);
+        bool success;
+
+        if (ext == "glb") {
+            // assume binary glTF.
+            OSG_WARN << "Reading glTF binary file" << std::endl;
+            success = loader.LoadBinaryFromFile(_model, &err, _filename.c_str());
+        } else {
+            // assume ascii glTF.
+            OSG_WARN << "Reading glTF ASCII file" << std::endl;
+            success = loader.LoadASCIIFromFile(_model, &err, _filename.c_str());
+        }
+
+        if(success)
+            processGltfModel();
+        else
+            OSG_WARN << "Failed to process glTF file" << std::endl;
+
+        if(err.size())
+            OSG_WARN << err << std::endl;
+
+        return success;
+    }
+
+    void processGltfModel()
+    {
+        showParsingStats();
+        processSkins();
+        processGltfMaterials();
+        processNodes();
+
+        if(_model->animations.size() > 0)
+            processAnimations();
+    }
+
+    void showParsingStats()
+    {
+        OSG_WARN << "Scene graph stats (parsed)" << std::endl;
+        OSG_WARN << "--accessors    : " << _model->accessors.size() << std::endl;
+        OSG_WARN << "--animations: " << _model->animations.size() << std::endl;
+        OSG_WARN << "--buffers: " << _model->buffers.size() << std::endl;
+        OSG_WARN << "--bufferViews: " << _model->bufferViews.size() << std::endl;
+        OSG_WARN << "--images    : " << _model->images.size() << std::endl;
+        OSG_WARN << "--materials: " << _model->materials.size() << std::endl;
+        OSG_WARN << "--meshes: " << _model->meshes.size() << std::endl;
+        OSG_WARN << "--nodes: " << _model->nodes.size() << std::endl;
+        OSG_WARN << "--skins: " << _model->skins.size() << std::endl;
+        OSG_WARN << "--textures    : " << _model->textures.size() << std::endl;
+    }
+
+    std::string getNodeNameFromIndex(const int& nodeIndex)
+    {
+        if(!isValidIndex(nodeIndex, _model->nodes))
+        {
+            OSG_WARN << "[getNodeNameFromIndex] index error (out of range)" << std::endl;
+            return "NOTFOUND";
+        }
+
+        std::ostringstream oss;
+        oss << _model->nodes[nodeIndex].name << "_" << nodeIndex;
+        return oss.str();
+    }
+
+    bool isBone(const int& index) const
+    {
+        return std::find(_glTFBoneIndexes.begin(), _glTFBoneIndexes.end(), index) != _glTFBoneIndexes.end();
+    }
+
+    void processNodes()
+    {
+        // Create root node
+        _rootNode = new osg::Group();
+        _rootNode->setDataVariance(osg::Object::STATIC);
+        _rootNode->setName("root");
+        _rootNode->setUserValue(std::string("source"), std::string("gltf"));
+        _rootNode->setUserValue(std::string("authoring_tool"), _model->asset.generator);
+        _rootNode->setUserValue(std::string("version"), _model->asset.version);
+
+        // Build correction matrix  (Y-up -> Z-up):
+        // glTF coordinate system: https://github.com/KhronosGroup/glTF/tree/master/specification#coordinate-system-and-units
+        osg::ref_ptr<osg::MatrixTransform> correctionMatrix = new osg::MatrixTransform();
+        correctionMatrix->setDataVariance(osg::Object::STATIC);
+        correctionMatrix->setName("Correction matrix");
+        osg::Matrix mat = osg::Matrix();
+        mat.makeRotate(osg::PI / 2, 1, 0, 0);
+        correctionMatrix->setMatrix(mat);
+        _rootNode->addChild(correctionMatrix);
+
+        _gltfRoot = new osg::MatrixTransform();
+        _gltfRoot->setDataVariance(osg::Object::STATIC);
+        _gltfRoot->setName("GLTF_SceneRootNode");
+        correctionMatrix->addChild(_gltfRoot);
+
+        // Parse scene nodes
+        for(unsigned int i = 0; i < _model->nodes.size(); ++i)
+        {
+            osg::ref_ptr<osg::MatrixTransform> nodeMT = processNode(i);
+            _nodeMap.insert(std::pair<int, osg::ref_ptr<osg::MatrixTransform> >(i, nodeMT));
+        }
+
+        makeSceneNodesParenting();
+
+        postProcessSkeletons();
+    }
+
+    void makeSceneNodesParenting()
+    {
+        // Make scene nodes parenting
+        for(unsigned int i = 0; i < _model->nodes.size(); ++i)
+        {
+            std::vector<int> children = _model->nodes[i].children;
+            for(unsigned int j = 0; j < children.size(); ++j)
+            {
+                if(!isValidIndex(children[j], _model->nodes))
+                {
+                    OSG_WARN << "Parenting Error: Invalid child index for node " << _model->nodes[i].name << "(child index is "<< j << ")" << std::endl;
+                    continue;
+                }
+
+                osg::Group* child = _nodeMap[children[j]].get();
+                osg::Group* parent = _nodeMap[i].get();
+                parent->addChild(child);
+            }
+        }
+
+        // Nodes listed in glTF scene are the root nodes
+        //FIXME: all scenes will be merged, not sure if it's ok or if only the first one should be taken into account here
+        for(std::vector<tinygltf::Scene>::iterator it = _model->scenes.begin(); it != _model->scenes.end(); ++it)
+        {
+            for (unsigned int j = 0; j < it->nodes.size(); ++j)
+            {
+                osg::Group* child = _nodeMap[it->nodes[j]].get();
+                _gltfRoot->addChild(child);
+            }
+        }
+    }
+
+    osg::ref_ptr<osg::MatrixTransform> processNode(const int& gltfNodeIndex)
+    {
+
+        if(!isValidIndex(gltfNodeIndex, _model->nodes))
+        {
+            OSG_WARN << "Index out of range for BONE " << gltfNodeIndex << std::endl;
+            return NULL;
+        }
+
+        tinygltf::Node gltfNode = _model->nodes[gltfNodeIndex];
+        osg::ref_ptr<osg::MatrixTransform> matrixTransform = new osg::MatrixTransform();
+        matrixTransform->setName(getNodeNameFromIndex(gltfNodeIndex));  // Needs to be unique (for UpdateBoneHierarchyVisitor)
+
+        osg::Matrix mat;
+        processNodeTransform(mat, gltfNode);
+        matrixTransform->setMatrix(mat);
+
+        if(gltfNode.mesh != -1)
+        {
+            osg::ref_ptr<osg::Geode> node = new osg::Geode();
+            node->setName(gltfNode.name);
+
+            GeometryList geomList = processMesh(gltfNode.mesh, gltfNode.skin, node.get(), gltfNodeIndex);
+            for(unsigned int i = 0; i < geomList.size(); ++i)
+            {
+                node->addDrawable(geomList[i]);
+            }
+
+            matrixTransform->addChild(node);
+        }
+
+        return matrixTransform;
+    }
+
+    // Node transforms: https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#transformations
+    void processNodeTransform(osg::Matrix& mat, const tinygltf::Node& gltfNode)
+    {
+        if(gltfNode.matrix.size()){
+            std::vector<float> floatMatrix(gltfNode.matrix.begin(), gltfNode.matrix.end());
+            mat.set(&floatMatrix[0]);
+        }
+        else
+        {
+            osg::Quat rotation;
+            if(gltfNode.rotation.size()){
+                rotation = osg::Quat((float)gltfNode.rotation[0], (float)gltfNode.rotation[1], (float)gltfNode.rotation[2], (float)gltfNode.rotation[3]);
+            }
+            mat.makeRotate(rotation);
+
+            osg::Vec3 scale = stdToOsgVec3(gltfNode.scale, 1);
+            handleNullScales(scale);
+            mat.preMultScale(scale);
+
+            mat.postMultTranslate(stdToOsgVec3(gltfNode.translation, 0));
+        }
+    }
+
+    GeometryList processMesh(const int& meshIndex, const int& skinIndex, osg::Geode* geode, int glTFNodeIndex)
+    {
+        GeometryList geomList;
+        if(!isValidIndex(meshIndex, _model->meshes))
+        {
+            OSG_WARN << "Index out of range for MESH  skinned by" << skinIndex << std::endl;
+            return geomList;
+        }
+
+        tinygltf::Mesh glTFMesh = _model->meshes[meshIndex];
+        std::ostringstream meshName;
+        meshName << "mesh_" << meshIndex;
+
+        //Primitive contains the data of the geometry for a given primitive type
+        //TODO: Geometries should be merged according to materials after this
+        for(unsigned int p = 0; p < glTFMesh.primitives.size(); ++p)
+        {
+            tinygltf::Primitive glTFPrimitive = glTFMesh.primitives[p];
+
+            osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry();
+            osg::Vec4Array* joints = new osg::Vec4Array();
+            osg::Vec4Array* weights = new osg::Vec4Array();
+
+            parseGeometryData(glTFPrimitive, geometry.get(), joints, weights);
+
+            parseGeometryPrimitives(glTFPrimitive, geometry.get());
+
+            //Set Material
+            if(isValidIndex(glTFPrimitive.material, _osgMaterials))
+            {
+                geometry->setStateSet(_osgMaterials[glTFPrimitive.material]);
+            }
+
+            // Look for morph targets
+            if(!glTFPrimitive.targets.empty())
+            {
+                osg::ref_ptr<osgAnimation::MorphGeometry> morphGeometry = new osgAnimation::MorphGeometry(*geometry.get());
+                std::string name = meshName.str();
+                processMorphGeometryData(geode, morphGeometry.get(), glTFPrimitive, glTFMesh.weights, meshIndex, glTFNodeIndex);
+
+                geometry = morphGeometry;
+            }
+
+            // Process rig geometries data
+            if(isValidIndex(skinIndex, _model->skins) && joints->size() != 0 && weights->size() == joints->size())
+            {
+                osg::ref_ptr<osgAnimation::RigGeometry> rigGeom = new osgAnimation::RigGeometry();
+                _skinIndexToRigMap[skinIndex] = rigGeom.get();
+                rigGeom->setSourceGeometry(geometry.get());
+
+                // Setting the source geometry is not enough. Geometry data need to be copied to rigGeometry.
+                rigGeom->copyFrom(*geometry.get());
+                buildVertexInfluenceMap(joints, weights, rigGeom.get(), skinIndex);
+                geometry = rigGeom;
+            }
+
+            geomList.push_back(geometry);
+        }
+
+        return geomList;
+    }
+
+    void parseGeometryData(tinygltf::Primitive &glTFPrimitive, osg::Geometry* geom, osg::Vec4Array* joints, osg::Vec4Array* weights)
+    {
+        osg::Vec3Array* vertexes = new osg::Vec3Array();
+        osg::Vec4Array* colors = new osg::Vec4Array();
+        osg::Vec3Array* normals = new osg::Vec3Array();
+        osg::Vec4Array* tangents = new osg::Vec4Array();
+        std::vector<osg::Vec2Array*> texcoordsArray(MAX_TEXCOORD_CHANNELS);
+
+        std::bitset<MAX_TEXCOORD_CHANNELS> parsedUVs;
+
+        // Mesh attributes names are defined in spec: https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#meshes
+        for(AttributeMap::iterator attributeIt = glTFPrimitive.attributes.begin(); attributeIt != glTFPrimitive.attributes.end(); ++attributeIt)
+        {
+            if(!isValidIndex(attributeIt->second, _model->accessors))
+            {
+                OSG_WARN << "Index out of range for ACCESSOR in meshes for mesh." << std::endl;
+                continue;
+            }
+
+            tinygltf::Accessor accessor = _model->accessors[attributeIt->second];
+
+            if(attributeIt->first == "POSITION")
+            {
+                parseVectorAccessorData<osg::Vec3Array>(vertexes, accessor);
+            }
+            else if(attributeIt->first == "COLOR_0")
+            {
+                parseVectorAccessorData<osg::Vec4Array>(colors, accessor);
+            }
+            else if(attributeIt->first == "NORMAL")
+            {
+                parseVectorAccessorData<osg::Vec3Array>(normals, accessor);
+            }
+            else if(attributeIt->first == "WEIGHTS_0")
+            {
+                parseVectorAccessorData<osg::Vec4Array>(weights, accessor);
+            }
+            else if(attributeIt->first == "JOINTS_0")
+            {
+                parseVectorAccessorData<osg::Vec4Array>(joints, accessor);
+            }
+            // Tangents are given as Vec4 where XYZ give the tangent and W gives the sign of the binormal (1 or -1)
+            else if(attributeIt->first == "TANGENT")
+            {
+                parseVectorAccessorData<osg::Vec4Array>(tangents, accessor);
+            }
+
+            // Process texcoords arrays
+            size_t texcoordIndex = attributeIt->first.find("TEXCOORD_");
+            if(texcoordIndex != std::string::npos)
+            {
+                osg::Vec2Array* texcoords = new osg::Vec2Array();
+                std::string indexStr = attributeIt->first.substr(texcoordIndex + 9);
+                int index = atoi(indexStr.c_str());
+
+                parseVectorAccessorData<osg::Vec2Array>(texcoords, accessor);
+                texcoordsArray[index] = texcoords;
+                parsedUVs.set(index);
+            }
+        }
+
+        geom->setVertexArray(vertexes);
+        geom->setNormalArray(normals);
+
+        if(colors->getNumElements() > 0)
+        {
+            geom->setColorArray(colors);
+        }
+
+        if(tangents->getNumElements() > 0)
+        {
+            // 0 is not serialized for integer metadata
+            unsigned int tangentIndex = (geom->getNumVertexAttribArrays() > 0 ? geom->getNumVertexAttribArrays() : 1);
+            geom->setVertexAttribArray(tangentIndex, tangents, osg::Array::BIND_PER_VERTEX);
+            geom->setUserValue(std::string("tangent"), static_cast<int>(tangentIndex));
+        }
+
+        // Setup uv coordinates according to material bindings
+        processUVChannels(geom, texcoordsArray, parsedUVs, glTFPrimitive.material);
+    }
+
+    void parseGeometryPrimitives(const tinygltf::Primitive &glTFPrimitive, osg::Geometry* geometry)
+    {
+        osg::ref_ptr<osg::PrimitiveSet> primitives;
+        // Process PrimitiveSets
+        if(isValidIndex(glTFPrimitive.indices, _model->accessors))
+        {
+            primitives = new osg::DrawElementsUShort(glTFPrimitive.mode);
+            tinygltf::Accessor indicesAccessor = _model->accessors[glTFPrimitive.indices];
+
+            std::vector<unsigned short> indices;
+            convertAccessorBufferToVector<std::vector<unsigned short> >(&indices, indicesAccessor);
+            dynamic_cast<osg::DrawElementsUShort*>(primitives.get())->swap(indices);
+        }
+        else
+        {
+            primitives = new osg::DrawArrays(glTFPrimitive.mode, 0, geometry->getVertexArray()->getNumElements());
+        }
+
+        geometry->addPrimitiveSet(primitives.get());
+    }
+
+    void processUVChannels(osg::Geometry* geom, std::vector<osg::Vec2Array*> &texcoordsArray , std::bitset<MAX_TEXCOORD_CHANNELS>& parsedUVs, int materialIndex)
+    {
+        if(isValidIndex(materialIndex, _osgUVBindMap))
+        {
+            std::vector<int> uvBind = _osgUVBindMap[materialIndex];
+            // Setup uv maps into geometry
+            for(unsigned int i = 0; i < uvBind.size(); ++i)
+            {
+                int uvChannelIndex = uvBind[i];
+                if(uvChannelIndex != -1)
+                {
+                    if(texcoordsArray[uvChannelIndex])
+                    {
+                        geom->setTexCoordArray(i, texcoordsArray[uvChannelIndex]);
+                        parsedUVs.set(uvChannelIndex, 0);
+                    }
+                    else
+                    {
+                        OSG_WARN << "Warning: texcoord Array index " << uvChannelIndex << "is not defined in geometry " << std::endl;
+                    }
+                }
+            }
+        }
+        else
+        {
+            OSG_WARN << "Material UV BIND failed to retrieve uv binding" << std::endl;
+        }
+
+        // Check if there are still UVs that have not been added to geometry
+        // if yes, add them in empty indexes
+        if(parsedUVs.any())
+        {
+            for(unsigned int i = 0; i < parsedUVs.size(); ++i)
+            {
+                if(parsedUVs.test(i))
+                {
+                    unsigned int geomUVIndex = 0;
+                    while(geom->getTexCoordArray(geomUVIndex) != NULL)
+                    {
+                        geomUVIndex++;
+                    }
+
+                    geom->setTexCoordArray(geomUVIndex, texcoordsArray[i]);
+                    parsedUVs.set(i, 0);
+                }
+            }
+        }
+    }
+
+    void processMorphGeometryData(osg::Geode* geode, osgAnimation::MorphGeometry* morphGeometry, tinygltf::Primitive& glTFPrimitive, std::vector<double>& weights, const int& meshIndex, int glTFNodeIndex)
+    {
+        osgAnimation::UpdateMorph* updateMorph = new osgAnimation::UpdateMorph;
+        std::ostringstream oss;
+        oss << "mesh_" << meshIndex;
+        updateMorph->setName(oss.str());
+        morphGeometry->setName(oss.str());
+
+        osgAnimation::UpdateMorphGeometry* update = new osgAnimation::UpdateMorphGeometry();
+        morphGeometry->addUpdateCallback(update);
+
+        geode->addUpdateCallback(updateMorph);
+        for(unsigned int i = 0 ; i < glTFPrimitive.targets.size(); ++i)
+        {
+            osg::ref_ptr<osg::Vec3Array> targetVertexes = new osg::Vec3Array();
+            osg::ref_ptr<osg::Vec3Array> targetNormals = new osg::Vec3Array();
+            osg::ref_ptr<osg::Vec4Array> targetTangents = new osg::Vec4Array();
+            osg::ref_ptr<osg::Vec3Array> tangentV3 = new osg::Vec3Array();
+
+            for(AttributeMap::iterator attributeIt = glTFPrimitive.targets[i].begin(); attributeIt != glTFPrimitive.targets[i].end(); ++attributeIt)
+            {
+                tinygltf::Accessor accessor = _model->accessors[attributeIt->second];
+
+                if(attributeIt->first == "POSITION")
+                {
+                    parseVectorAccessorData<osg::Vec3Array>(targetVertexes.get(), accessor);
+                }
+                else if(attributeIt->first == "NORMAL")
+                {
+                    parseVectorAccessorData<osg::Vec3Array>(targetNormals.get(), accessor);
+                }
+                else if(attributeIt->first == "TANGENT")
+                {
+                    parseVectorAccessorData<osg::Vec3Array>(tangentV3.get(), accessor);
+                }
+            }
+
+            // From https://github.com/KhronosGroup/glTF/tree/2.0/specification/2.0#primitive
+            // glTF stores deviation in morph target
+            // deviations need to be applied
+            computeAbsoluteTargetData(morphGeometry, targetVertexes.get(), targetNormals.get(), tangentV3.get(), targetTangents.get());
+
+            std::ostringstream morphTargetName;
+            morphTargetName << "target_" << glTFNodeIndex << "_" << i;
+
+            osg::ref_ptr<osg::Geometry> target = new osg::Geometry();
+            target->setName(morphTargetName.str());
+
+            updateMorph->addTarget(morphTargetName.str());
+
+            target->setVertexArray(targetVertexes.get());
+            if(targetNormals->getNumElements())
+            {
+                target->setNormalArray(targetNormals.get());
+            }
+            if(targetTangents->getNumElements())
+            {
+                target->setVertexAttribArray(1, targetTangents.get(), osg::Array::BIND_PER_VERTEX);
+                target->setUserValue(std::string("tangent"), static_cast<int>(1));
+            }
+
+            osgAnimation::UpdateMorphGeometry* updateTarget = new osgAnimation::UpdateMorphGeometry();
+            target->addUpdateCallback(updateTarget);
+            morphGeometry->addMorphTarget(target.get(), weights[i]);
+        }
+    }
+
+    void computeAbsoluteTargetData(osg::Geometry* baseGeometry, osg::Vec3Array* targetVertexes, osg::Vec3Array* targetNormals, osg::Vec3Array* tangentV3, osg::Vec4Array* targetTangents)
+    {
+        osg::Vec3Array* vertexes = dynamic_cast<osg::Vec3Array*>(baseGeometry->getVertexArray());
+        osg::Vec3Array* normals = dynamic_cast<osg::Vec3Array*>(baseGeometry->getNormalArray());
+        osg::Vec4Array* tangents = dynamic_cast<osg::Vec4Array*>(getTangentSpaceArray(*baseGeometry));
+
+        for(unsigned int v = 0; v < targetVertexes->getNumElements(); ++v)
+        {
+            targetVertexes->at(v) = vertexes->at(v) + targetVertexes->at(v);
+            if(normals && targetNormals->getNumElements())
+            {
+                targetNormals->at(v) = normals->at(v) + targetNormals->at(v);
+            }
+            if(tangents && tangentV3->getNumElements())
+            {
+                osg::Vec3 tangent(tangents->at(v)[0], tangents->at(v)[1], tangents->at(v)[2]);
+                tangent = tangent + tangentV3->at(v);
+                targetTangents->push_back(osg::Vec4(tangent[0], tangent[1], tangent[2], tangents->at(v)[3]));
+            }
+        }
+    }
+
+    template<typename T, typename C> // T:output element type  -  C:Input element type
+    void convertAccessorBufferDataToVector(T* values, const tinygltf::Accessor& accessor)
+    {
+        tinygltf::BufferView bufferView = _model->bufferViews[accessor.bufferView];
+        tinygltf::Buffer buffer = _model->buffers[bufferView.buffer];
+
+        // Accessor data
+        unsigned int byteCount = getByteCount(accessor.componentType); // Number of bytes for field data type (ex FLOAT)
+        unsigned int elementCount = getElementCount(accessor.type); // Number of fields per elements (ex VEC3)
+
+        unsigned int startIndex = accessor.byteOffset + bufferView.byteOffset;
+        unsigned int length = accessor.count; // Number of elements to read
+        unsigned int fullByteLength = length * byteCount * elementCount; //Total number of bytes to read
+
+        for(unsigned int i = startIndex; i < startIndex + fullByteLength; i += byteCount)
+        {
+            C component;
+            memcpy(&component, &buffer.data[i], sizeof(C));
+            values->push_back(static_cast<typename T::value_type>(component));
+        }
+    }
+
+    template <typename T>
+    void convertAccessorBufferToVector(T* values, const tinygltf::Accessor& accessor)
+    {
+        switch(accessor.componentType)
+        {
+            case TINYGLTF_COMPONENT_TYPE_FLOAT:
+                convertAccessorBufferDataToVector<std::vector<typename T::value_type>, float>(values, accessor);
+                break;
+            case TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT:
+                convertAccessorBufferDataToVector<std::vector<typename T::value_type>, unsigned int>(values, accessor);
+                break;
+            case TINYGLTF_COMPONENT_TYPE_SHORT:
+                convertAccessorBufferDataToVector<std::vector<typename T::value_type>, short>(values, accessor);
+                break;
+            case TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT:
+                convertAccessorBufferDataToVector<std::vector<typename T::value_type>, unsigned short>(values, accessor);
+                break;
+            case TINYGLTF_COMPONENT_TYPE_BYTE:
+                convertAccessorBufferDataToVector<std::vector<typename T::value_type>, char>(values, accessor);
+                break;
+            case TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE:
+                convertAccessorBufferDataToVector<std::vector<typename T::value_type>, unsigned char>(values, accessor);
+                break;
+            default:
+                OSG_WARN << "[GLTFParser::convertAccessorBufferToVector] Unsupported buffer component type: " << accessor.componentType << std::endl;
+        }
+    }
+
+    template <typename T>
+    void parseVectorAccessorData(T* osgData, const tinygltf::Accessor& accessor)
+    {
+        // Get list of values
+        std::vector<typename T::ElementDataType::value_type> values;
+        convertAccessorBufferToVector(&values, accessor);
+
+        // build element
+        unsigned int elementCount = getElementCount(accessor.type);
+
+        typename T::ElementDataType bufferElement;
+        unsigned int indexInBuffer = 0;
+        for(unsigned int i = 0; i < values.size(); ++i)
+        {
+            if( i != 0 && i % elementCount == 0)
+            {
+                osgData->push_back(bufferElement);
+                bufferElement = typename T::ElementDataType();
+                indexInBuffer = 0;
+            }
+
+            bufferElement[indexInBuffer] = values[i];
+            indexInBuffer++;
+        }
+
+        osgData->push_back(bufferElement);
+        // Binds buffer per vertex
+        osgData->setBinding(osg::Array::BIND_PER_VERTEX);
+    }
+
+    template <typename T>
+    void parseMatrixAccessorData(T* osgData, const tinygltf::Accessor& accessor)
+    {
+        // Get list of values
+        std::vector<typename T::value_type::value_type> values;
+        convertAccessorBufferToVector<std::vector<typename T::value_type::value_type> >(&values, accessor);
+        for(unsigned int i = 0; i < values.size(); i += 16)
+        {
+            typename T::value_type mat;
+            mat.set(&values[i]);
+            osgData->push_back(mat);
+        }
+    }
+
+//////////////////////
+//  Materials
+//////////////////////
+    void processGltfMaterials()
+    {
+        // A material is never duplicated bewteen the following lists so it's ok to add each list content
+        // sequencialy
+        for(GltfMaterialList::iterator it = _model->materials.begin(); it != _model->materials.end(); ++it)
+        {
+            tinygltf::Material gltfMat = (*it);
+            osg::ref_ptr<osg::StateSet> stateSet = new osg::StateSet();
+            osg::ref_ptr<osg::Material> material = new osg::Material();
+            material->setName(gltfMat.name);
+            MetadataWriter meta;
+            std::vector<int> uvToChannelBindList(MAX_TEXCOORD_CHANNELS, -1);
+
+            //Add common metadata
+            bool isMetal = gltfMat.extPBRValues.empty();
+            setPBRDefaultValues(meta, isMetal);
+            tinygltf::ParameterMap materialParameters = isMetal ? gltfMat.values : gltfMat.extPBRValues;
+
+            for(tinygltf::ParameterMap::iterator paramIt = materialParameters.begin(); paramIt != materialParameters.end(); ++ paramIt)
+            {
+                processPBRMaterialParameterPacked(stateSet.get(), material.get(), paramIt->first, paramIt->second, uvToChannelBindList, meta, isMetal);
+            }
+
+            //Additional parameters
+            for(tinygltf::ParameterMap::iterator paramIt = gltfMat.additionalValues.begin(); paramIt != gltfMat.additionalValues.end(); ++ paramIt)
+            {
+                processPBRMaterialParameterPacked(stateSet.get(), material.get(), paramIt->first, paramIt->second, uvToChannelBindList, meta, isMetal);
+            }
+
+            stateSet->setAttributeAndModes(material);
+            meta.writeMetadata(stateSet.get());
+            _osgMaterials.push_back(stateSet);
+            _osgUVBindMap.push_back(uvToChannelBindList);
+        }
+    }
+
+    void setPBRDefaultValues(MetadataWriter &meta, bool isMetal)
+    {
+        // See https://github.com/KhronosGroup/glTF/tree/2.0/specification/2.0/schema
+        // for default values
+        meta.setMeta(std::string("DiffuseColor"), 1.0, 1.0, 1.0, 1.0);
+        meta.setMeta(std::string("DiffuseFactor"), 1.0);
+        meta.setMeta(std::string("EmissiveColor"), 0.0, 0.0, 0.0);
+        meta.setMeta(std::string("EmissiveFactor"), 1.0);
+
+        if(isMetal)
+        {
+            meta.setMeta(std::string("MetallicFactor"), 1.0);
+            meta.setMeta(std::string("RoughnessFactor"), 1.0);
+        }
+        else
+        {
+            meta.setMeta(std::string("SpecularPBRColor"), 1.0, 1.0, 1.0);
+            meta.setMeta(std::string("SpecularPBRFactor"), 1.0);
+            meta.setMeta(std::string("GlossinessPBRFactor"), 1.0);
+        }
+
+        meta.setMeta(std::string("NormalFactor"), 1.0);
+        meta.setMeta(std::string("AOFactor"), 1.0);
+    }
+
+    void processPBRMaterialParameterPacked(osg::StateSet* stateSet, osg::Material* material, const std::string& parameterName, const tinygltf::Parameter& parameter, std::vector<int>& bindings, MetadataWriter& meta, bool isMetal)
+    {
+        // Case where only the texture id is given for the current channel
+        if(parameter.json_double_value.size() > 0)
+        {
+            int unit = getTextureUnitFromParameterName(parameterName);
+            if(unit == -1) {
+                OSG_WARN << "GLTFParser::processPBRMaterialParameterPacked Unknown parameter name for texture (" << parameterName << ")" << std::endl;
+                return;
+            }
+            // Get texture
+            std::map<std::string, double>::const_iterator it = parameter.json_double_value.find("index");
+            if(it == parameter.json_double_value.end())
+            {
+                OSG_WARN << "No texture found for " << parameterName << std::endl;
+                return;
+            }
+
+            osg::ref_ptr<osg::Texture2D> texture = processTexture(static_cast<int>(it->second), meta);
+            if(texture.valid()){
+                if(!isMetal || unit != TEXTURE_AO)
+                    stateSet->setTextureAttributeAndModes(unit, texture.get());
+
+                meta.setMeta(channelsMetadata[unit], static_cast<float>(unit));
+
+                // Get texcoord index
+                it = parameter.json_double_value.find("texCoord");
+                bindings[unit] = it != parameter.json_double_value.end() ? static_cast<int>(it->second) : 0;
+
+                // Duplicate texture for metal/roughness and specular/glossiness textures
+                if(unit == TEXTURE_METALLIC_ROUGHNESS)
+                {
+                    // Roughness texture is stored in G channel
+                    osg::Texture2D* roughnessTexture = dynamic_cast<osg::Texture2D*>(texture->clone(osg::CopyOp::DEEP_COPY_ALL));
+                    stateSet->setTextureAttributeAndModes(TEXTURE_ROUGHNESS, roughnessTexture);
+                    meta.setMeta(channelsMetadata[TEXTURE_ROUGHNESS], static_cast<float>(TEXTURE_ROUGHNESS));
+                    bindings[TEXTURE_ROUGHNESS] = it != parameter.json_double_value.end() ? static_cast<int>(it->second) : 0;
+
+                    // Add metadata to split textures: Roughness = G, Metalness = B
+                    texture->setUserValue(std::string("channels"), std::string("B"));
+                    roughnessTexture->setUserValue(std::string("channels"), std::string("G"));
+                }
+                else if(unit == TEXTURE_SPECULARPBR_GLOSSINESS)
+                {
+                    osg::Texture2D* glossinessTexture = dynamic_cast<osg::Texture2D*>(texture->clone(osg::CopyOp::DEEP_COPY_ALL));
+                    stateSet->setTextureAttributeAndModes(TEXTURE_GLOSSINESS, glossinessTexture);
+                    meta.setMeta(channelsMetadata[TEXTURE_GLOSSINESS], static_cast<float>(TEXTURE_GLOSSINESS));
+                    bindings[TEXTURE_GLOSSINESS] = it != parameter.json_double_value.end() ? static_cast<int>(it->second) : 0;
+
+                    // Add metadata to split textures: Specular = RGB, Metalness = A
+                    texture->setUserValue(std::string("channels"), std::string("RGB"));
+                    glossinessTexture->setUserValue(std::string("channels"), std::string("A"));
+                }
+                else if(unit == TEXTURE_NORMAL)
+                {
+                    it = parameter.json_double_value.find("scale");
+                    if(it != parameter.json_double_value.end())
+                    {
+                        meta.setMeta(std::string("NormalFactor"), static_cast<float>(it->second));
+                    }
+                }
+                else if(unit == TEXTURE_AO)
+                {
+                    if(isMetal)
+                    {
+                        osg::Texture2D* occlusionTexture = dynamic_cast<osg::Texture2D*>(texture->clone(osg::CopyOp::DEEP_COPY_ALL));
+                        stateSet->setTextureAttributeAndModes(unit, occlusionTexture);
+
+                        // For metallic workflow, occlusion is packed in R channel in MetallicRoughness texture
+                        occlusionTexture->setUserValue(std::string("channels"), std::string("R"));
+                    }
+
+                    it = parameter.json_double_value.find("strength");
+                    if(it != parameter.json_double_value.end())
+                    {
+                        meta.setMeta(std::string("AOFactor"), static_cast<float>(it->second));
+                    }
+                }
+            }
+        }
+        else if(parameter.number_array.size() == 1)//Factors
+        {
+            if(parameterName == "metallicFactor"){
+                meta.setMeta(std::string("MetallicFactor"), static_cast<float>(parameter.number_array[0]));
+            }
+            else if(parameterName == "glossinessFactor"){
+                meta.setMeta(std::string("GlossinessPBRFactor"), static_cast<float>(parameter.number_array[0]));
+            }
+            else if(parameterName == "roughnessFactor"){
+                meta.setMeta(std::string("RoughnessFactor"), static_cast<float>(parameter.number_array[0]));
+            }
+            else if(parameterName == "normalFactor"){
+                meta.setMeta(std::string("NormalFactor"), static_cast<float>(parameter.number_array[0]));
+            }
+            // see https://github.com/KhronosGroup/glTF/issues/822
+            else if(parameterName == "alphaCutoff")
+            {
+                meta.setMeta(std::string("alphaCutoff"), static_cast<float>(parameter.number_array[0]));
+            }
+            else
+            {
+                OSG_WARN << "Unsupported DOUBLE channel for PBR extension (" << parameterName << ")" << std::endl;
+            }
+        }
+        else if(parameter.number_array.size() >= 3)
+        {
+            if(parameterName == "specularFactor"){
+                meta.setMeta(std::string("SpecularPBRFactor"), parameter.number_array[0]);
+                meta.setMeta(std::string("SpecularPBRColor"), parameter.number_array[0], parameter.number_array[1], parameter.number_array[2]);
+            }
+            else if(parameterName == "emissiveFactor"){
+                meta.setMeta(std::string("EmissiveFactor"), parameter.number_array[0]);
+                meta.setMeta(std::string("EmissiveColor"), parameter.number_array[0], parameter.number_array[1], parameter.number_array[2]);
+                material->setEmission(osg::Material::FRONT_AND_BACK, osg::Vec4(parameter.number_array[0], parameter.number_array[1], parameter.number_array[2], parameter.number_array[3]));
+            }
+            else if(parameterName == "diffuseFactor" || parameterName == "baseColorFactor"){
+                meta.setMeta(std::string("DiffuseColor"), parameter.number_array[0], parameter.number_array[1], parameter.number_array[2]);
+                meta.setMeta(std::string("DiffuseFactor"), parameter.number_array[0]);
+                meta.setMeta(std::string("OpacityFactor"), parameter.number_array[3]);
+                material->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(parameter.number_array[0], parameter.number_array[1], parameter.number_array[2], parameter.number_array[3]));
+            }
+            else
+            {
+                OSG_WARN << "Unsupported VEC4 channel for PBR extension (" << parameterName << ")" << std::endl;
+            }
+        }
+        else if(!parameter.string_value.empty())
+        {
+            // see https://github.com/KhronosGroup/glTF/issues/822
+            if(parameterName == "alphaMode")
+            {
+                meta.setMeta(std::string("alphaMode"), parameter.string_value);
+            }
+        }
+        else
+        {
+            if(parameterName == "doubleSided")
+            {
+                meta.setMeta(std::string("doubleSided"), parameter.bool_value ? "true" : "false");
+            }
+        }
+    }
+
+    int getTextureUnitFromParameterName(const std::string& parameterName)
+    {
+        if(parameterName.find("baseColor") != std::string::npos || parameterName.find("diffuse") != std::string::npos){
+            return TEXTURE_DIFFUSE;
+        }
+        else if(parameterName.find("metallic") != std::string::npos){
+            return TEXTURE_METALLIC_ROUGHNESS;
+        }
+        else if(parameterName.find("specular") != std::string::npos){
+            return TEXTURE_SPECULARPBR_GLOSSINESS;
+        }
+        else if(parameterName.find("emissive") != std::string::npos){
+            return TEXTURE_EMISSION;
+        }
+        else if(parameterName.find("normal") != std::string::npos){
+            return TEXTURE_NORMAL;
+        }
+        else if(parameterName.find("occlusion") != std::string::npos){
+            return TEXTURE_AO;
+        }
+
+        return -1;
+    }
+
+    osg::ref_ptr<osg::Texture2D> processTexture(const int& textureIndex, MetadataWriter& meta)
+    {
+        if(isValidIndex(textureIndex, _model->textures))
+        {
+            tinygltf::Texture gltfTexture = _model->textures[textureIndex];
+            osg::ref_ptr<osg::Image> pImage = NULL;
+
+            if(!isValidIndex(gltfTexture.source, _model->images)){
+                OSG_WARN << "Source index out of range for texture " << textureIndex << "  (" << gltfTexture.source << "). Skipping."  << std::endl;
+                return NULL;
+            }
+
+            tinygltf::Sampler* textureSampler = (isValidIndex(gltfTexture.sampler, _model->samplers) ? &_model->samplers[gltfTexture.sampler] : NULL);
+            tinygltf::Image image = _model->images[gltfTexture.source];
+
+            std::string osgPath = osgDB::findDataFile(image.uri);
+            if (!osgPath.empty() && (pImage = osgDB::readImageFile(osgPath)))
+            {
+                osg::ref_ptr<osg::Texture2D> pOsgTex = new osg::Texture2D;
+                pOsgTex->setImage(pImage.get());
+                pOsgTex->setWrap(osg::Texture2D::WRAP_S, (textureSampler ? getWrapParam(textureSampler->wrapS) : DEFAULT_TEXTURE_WRAP));
+                pOsgTex->setWrap(osg::Texture2D::WRAP_T, (textureSampler ? getWrapParam(textureSampler->wrapT) : DEFAULT_TEXTURE_WRAP));
+                pOsgTex->setFilter(osg::Texture2D::MIN_FILTER, (textureSampler ? getFilterParam(textureSampler->minFilter) : osg::Texture::LINEAR));
+                pOsgTex->setFilter(osg::Texture2D::MAG_FILTER, (textureSampler ? getFilterParam(textureSampler->magFilter) : osg::Texture::LINEAR));
+
+                if(gltfTexture.extras.Has("yUp"))
+                {
+                    meta.setMeta("yUp", (gltfTexture.extras.Get("yUp").Get<bool>() ? "true" : "false"));
+                }
+
+                return pOsgTex;
+            }
+        }
+        else
+        {
+            OSG_WARN << "Warning: Texture " << textureIndex << " not found in glTF data" << std::endl;
+        }
+
+        return new osg::Texture2D();
+    }
+
+    osg::Texture::WrapMode getWrapParam(const int& gltfWrap)
+    {
+        osg::Texture::WrapMode param;
+        switch(gltfWrap)
+        {
+            case TINYGLTF_TEXTURE_WRAP_RPEAT:
+                param = osg::Texture::REPEAT;
+                break;
+            case TINYGLTF_TEXTURE_WRAP_CLAMP_TO_EDGE:
+                param = osg::Texture::CLAMP_TO_EDGE ;
+                break;
+            default:
+                OSG_WARN << "Wrap parameter not supported. Fallback to Repeat" << std::endl;
+                param = DEFAULT_TEXTURE_WRAP;
+                break;
+        }
+
+        return param;
+    }
+
+
+    osg::Texture::FilterMode getFilterParam(const int& gltfFilter)
+    {
+        osg::Texture::FilterMode filter = osg::Texture::LINEAR_MIPMAP_LINEAR;
+        switch(gltfFilter)
+        {
+            case TINYGLTF_TEXTURE_FILTER_LINEAR:
+                filter = osg::Texture::LINEAR;
+                break;
+            case TINYGLTF_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR:
+                filter = osg::Texture::LINEAR_MIPMAP_LINEAR ;
+                break;
+            case TINYGLTF_TEXTURE_FILTER_LINEAR_MIPMAP_NEAREST:
+                filter = osg::Texture::LINEAR_MIPMAP_NEAREST ;
+                break;
+            case TINYGLTF_TEXTURE_FILTER_NEAREST:
+                filter = osg::Texture::NEAREST ;
+                break;
+            case TINYGLTF_TEXTURE_FILTER_NEAREST_MIPMAP_LINEAR:
+                filter = osg::Texture::NEAREST_MIPMAP_LINEAR ;
+                break;
+            case TINYGLTF_TEXTURE_FILTER_NEAREST_MIPMAP_NEAREST:
+                filter = osg::Texture::NEAREST_MIPMAP_NEAREST ;
+                break;
+        }
+
+        return filter;
+    }
+
+    void buildVertexInfluenceMap(osg::Vec4Array* joints, osg::Vec4Array* weights, osgAnimation::RigGeometry* rigGeom, const int& skinIndex)
+    {
+        rigGeom->setInfluenceMap(new osgAnimation::VertexInfluenceMap());
+        osgAnimation::VertexInfluenceMap& influenceMap = *(rigGeom->getInfluenceMap());
+        std::vector<int> boneList = _model->skins[skinIndex].joints;
+        for(unsigned int i = 0; i < joints->getNumElements(); ++i)
+        {
+            std::set<std::string> vtxset;
+            for(unsigned int j = 0; j < MAX_INFLUENCE_PER_VERTEX; ++j)
+            {
+                int boneIndex = boneList[joints->at(i)[j]];
+                std::string boneName = getNodeNameFromIndex(boneIndex);
+                float weight = weights->at(i)[j];
+                osgAnimation::VertexInfluence& vi = getVertexInfluence(influenceMap, boneName);
+                if(!vtxset.count(boneName)){
+                    vi.push_back(osgAnimation::VertexIndexWeight(i, weight));
+                    vtxset.insert(boneName);
+                }
+            }
+        }
+    }
+
+    osgAnimation::VertexInfluence& getVertexInfluence(osgAnimation::VertexInfluenceMap& vim, const std::string& name)
+    {
+        osgAnimation::VertexInfluenceMap::iterator it = vim.lower_bound(name);
+        if (it == vim.end() || name != it->first)
+        {
+            it = vim.insert(it, osgAnimation::VertexInfluenceMap::value_type(
+                name, osgAnimation::VertexInfluence()));
+            it->second.setName(name);
+        }
+        return it->second;
+    }
+
+
+//////////////////////
+// Animation
+//////////////////////
+
+    osgAnimation::BasicAnimationManager* processAnimations()
+    {
+        osgAnimation::BasicAnimationManager* animManager = new osgAnimation::BasicAnimationManager();
+        for(unsigned int i = 0; i < _model->animations.size(); ++i)
+        {
+            tinygltf::Animation gltfAnim = _model->animations[i];
+            osg::ref_ptr<osgAnimation::Animation> osgAnim = new osgAnimation::Animation();
+            std::ostringstream oss;
+            if(_model->animations[i].name.size())
+            {
+                osgAnim->setName(_model->animations[i].name);
+            }
+            else
+            {
+                oss << "GltfAnimation " << i;
+                osgAnim->setName(oss.str());
+            }
+
+            for(unsigned int j = 0; j < gltfAnim.channels.size(); ++j)
+            {
+                std::vector<osgAnimation::Channel*> channels = processChannel(gltfAnim.channels[j], gltfAnim.samplers);
+                for(unsigned int c = 0; c < channels.size(); ++c)
+                {
+                    osgAnim->addChannel(channels[c]);
+                }
+            }
+            animManager->registerAnimation(osgAnim.get());
+        }
+
+        _rootNode->setUpdateCallback(animManager);
+        return animManager;
+    }
+
+    std::vector<osgAnimation::Channel*> processChannel(tinygltf::AnimationChannel& channel, std::vector<tinygltf::AnimationSampler>& samplers)
+    {
+        // Update callback (already set for Bones, only for MatrixTransforms here)
+        tinygltf::Node node = _model->nodes[channel.target_node];
+        std::vector<osgAnimation::Channel*> channels;
+        std::string nodeName = getNodeNameFromIndex(channel.target_node);
+        if(!isBone(channel.target_node))
+        {
+            osgAnimation::UpdateMatrixTransform* pUpdate = new osgAnimation::UpdateMatrixTransform(nodeName);
+            buildStackedTransform(pUpdate, node);
+            _nodeMap[channel.target_node]->setUpdateCallback(pUpdate);
+        }
+
+        tinygltf::AnimationSampler sampler = samplers[channel.sampler];
+        tinygltf::Accessor timeAccessor = _model->accessors[sampler.input];
+
+        std::vector<float> times;
+        convertAccessorBufferToVector<std::vector<float> >(&times, timeAccessor);
+
+        if(channel.target_path == "translation" || channel.target_path == "scale")
+        {
+            osgAnimation::Vec3LinearChannel* osgChannel = new osgAnimation::Vec3LinearChannel();
+            osgAnimation::Vec3KeyframeContainer* pKeyFrameCntr = new osgAnimation::Vec3KeyframeContainer();
+            osgChannel->getOrCreateSampler()->setKeyframeContainer(pKeyFrameCntr);
+            osgChannel->setTargetName(nodeName);
+            osgChannel->setName(channel.target_path == "translation" ? "translate" : channel.target_path);
+
+            osg::Vec3Array* keyValues = new osg::Vec3Array();
+            tinygltf::Accessor accessor = _model->accessors[sampler.output];
+            parseVectorAccessorData<osg::Vec3Array>(keyValues, accessor);
+
+            for(unsigned int i = 0; i < times.size(); ++i)
+            {
+                if(channel.target_path== "scale")
+                    handleNullScales(keyValues->at(i));
+                pKeyFrameCntr->push_back(osgAnimation::Vec3Keyframe(times[i], keyValues->at(i)));
+            }
+
+            channels.push_back(osgChannel);
+        }
+        else if(channel.target_path == "rotation")
+        {
+            osgAnimation::QuatSphericalLinearChannel* osgChannel = new osgAnimation::QuatSphericalLinearChannel();
+            osgAnimation::QuatKeyframeContainer* pQuatLinearCntr = new osgAnimation::QuatKeyframeContainer();
+            osgChannel->getOrCreateSampler()->setKeyframeContainer(pQuatLinearCntr);
+            osgChannel->setTargetName(nodeName);
+            osgChannel->setName("rotate");
+
+            osg::Vec4Array* keyValues = new osg::Vec4Array();
+            tinygltf::Accessor accessor = _model->accessors[sampler.output];
+            parseVectorAccessorData<osg::Vec4Array>(keyValues, accessor);
+            for(unsigned int i = 0; i < times.size(); ++i)
+            {
+                osg::Quat value(keyValues->at(i));
+                pQuatLinearCntr->push_back(osgAnimation::QuatKeyframe(times[i], value));
+            }
+
+            channels.push_back(osgChannel);
+        }
+        else if(channel.target_path == "weights")
+        {
+            unsigned int nbMorphTargets = getMorphTargetCountFromNodeIndex(channel.target_node);
+            std::vector<osgAnimation::FloatKeyframeContainer*> keyframeContainers;
+            for(unsigned int i = 0; i < nbMorphTargets; ++i)
+            {
+                osgAnimation::FloatLinearChannel* osgChannel = new osgAnimation::FloatLinearChannel();
+                osgAnimation::FloatKeyframeContainer* keyframes = new osgAnimation::FloatKeyframeContainer();
+                osgChannel->getOrCreateSampler()->setKeyframeContainer(keyframes);
+
+                std::ostringstream oss;
+                oss << i; // To avoid linking issue, the channel name must be the morphTargetIndex
+                osgChannel->setName(oss.str());
+                oss.str("");
+                oss << "target_" << channel.target_node << "_" << i; // To ensure unicity, build targetName with node index
+                osgChannel->setTargetName(oss.str());
+
+                channels.push_back(osgChannel);
+                keyframeContainers.push_back(keyframes);
+            }
+
+            std::vector<double> weights;
+            tinygltf::Accessor accessor = _model->accessors[sampler.output];
+            convertAccessorBufferToVector<std::vector<double> >(&weights, accessor);
+
+            for(unsigned int i = 0; i < times.size(); ++i)
+            {
+                for(unsigned int k = 0; k < nbMorphTargets; ++k){
+                    double value(weights[i * nbMorphTargets + k]);
+                    keyframeContainers[k]->push_back(osgAnimation::FloatKeyframe(times[i], value));
+                }
+            }
+        }
+
+        return channels;
+    }
+
+    unsigned int getMorphTargetCountFromNodeIndex(int glTFNodeIndex)
+    {
+        tinygltf::Node glTFNode = _model->nodes[glTFNodeIndex];
+        tinygltf::Mesh glTFMesh = _model->meshes[glTFNode.mesh];
+
+        // weights are not always defined
+        if(glTFMesh.weights.size())
+        {
+            return glTFMesh.weights.size();
+        }
+
+        return glTFMesh.primitives[0].targets.size();
+    }
+
+    osg::Node* get()
+    {
+        return dynamic_cast<osg::Node*>(_rootNode.get());
+    }
+
+    virtual const char* className() const { return "GLTFParser"; }
+
+
+//////////////////////
+// Skinning
+//////////////////////
+
+    // Fixes and updates skeleton hierarchy according to new skeleton configuration
+    // - update bones invBindMatrices to the space of their new respective skeleton
+    // - convert MatrixTransforms that are in the bone hierarchy to avoid skinning issues
+    struct UpdateBoneHierarchyVisitor : public osg::NodeVisitor {
+
+        std::vector<osg::MatrixTransform*> nodesToConvert;
+        GltfNodeVector nodeMap; // original gltf node data map
+        bool hasChildBone;
+
+        UpdateBoneHierarchyVisitor(GltfNodeVector &nodemap): osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN), nodeMap(nodemap), hasChildBone(false) {}
+
+        void convertMatrixTransformToBone()
+        {
+            for(unsigned int i=0; i<nodesToConvert.size(); ++i)
+            {
+                osg::MatrixTransform* transform = nodesToConvert[i];
+                size_t nodeNameIndex = transform->getName().find_last_of("_");
+                if(nodeNameIndex == std::string::npos)
+                {
+                    OSG_WARN << "Error while converting bone" << transform->getName() << " to node" << std::endl;
+                    continue;
+                }
+
+                osg::ref_ptr<osgAnimation::Bone> newBone = new osgAnimation::Bone();
+                newBone->setName(transform->getName());
+                newBone->setMatrix(transform->getMatrix());
+                replaceNodeInGraph(transform, newBone);
+
+                std::string indexStr = transform->getName().substr(nodeNameIndex + 1);
+                int index = atoi(indexStr.c_str());
+                osgAnimation::UpdateBone* pUpdate = new osgAnimation::UpdateBone(transform->getName());
+                buildStackedTransform(pUpdate, nodeMap[index]);
+                newBone->addUpdateCallback(pUpdate);
+            }
+        }
+
+        void apply(osg::Node& node)
+        {
+            hasChildBone = false;
+            traverse(node);
+            if(strcmp(node.className(), "Bone") == 0)
+            {
+                hasChildBone = true;
+            }
+            else if(strcmp(node.className(), "MatrixTransform") == 0)
+            {
+                if(hasChildBone)
+                    nodesToConvert.push_back(dynamic_cast<osg::MatrixTransform*>(&node));
+            }
+        }
+    };
+
+   osg::ref_ptr<osgAnimation::Bone> createBoneFromIndex(int glTFNodeIndex)
+    {
+        osg::ref_ptr<osgAnimation::Bone> bone = new osgAnimation::Bone();
+        bone->setName(getNodeNameFromIndex(glTFNodeIndex));
+        bone->setDefaultUpdateCallback();
+
+        // Store for 'isBone' function
+        _glTFBoneIndexes.insert(glTFNodeIndex);
+        return bone;
+    }
+
+    // Create bones for given skin (even if already created)
+    // If a node is referenced in several skins, it will be duplicated
+    // Deduplication occurs later in the code
+    void processSkins()
+    {
+        for(unsigned int glTFSkinIndex = 0; glTFSkinIndex < _model->skins.size(); ++glTFSkinIndex)
+        {
+            tinygltf::Skin glTFSkin = _model->skins[glTFSkinIndex];
+
+            if(glTFSkin.joints.empty())
+            {
+                OSG_WARN << "[GLTFReader::processSkin] Skin '" << glTFSkinIndex << "' doesn't contain any joint. Skipping. " << std::endl;
+                return;
+            }
+
+            if(!isValidIndex(glTFSkin.inverseBindMatrices, _model->accessors))
+            {
+                OSG_WARN << "[GLTFReader::processSkin] Inverse bind matrices accessor index is out of range (skin index: " << glTFSkinIndex << "). Skipping." << std::endl;
+            }
+
+            // Get inverse bind matrices from accessor
+            std::vector<osg::Matrixf> matrices;
+            tinygltf::Accessor accessor = _model->accessors[glTFSkin.inverseBindMatrices];
+            parseMatrixAccessorData<std::vector<osg::Matrixf> >(&matrices, accessor);
+
+            for(unsigned int i = 0; i < glTFSkin.joints.size(); ++i)
+            {
+                int jointIndex = glTFSkin.joints[i];
+                osg::ref_ptr<osgAnimation::Bone> bone = createBoneFromIndex(jointIndex);
+                bone->setInvBindMatrixInSkeletonSpace(matrices[i]);
+                _indexToOsgBoneList[jointIndex].push_back(bone);
+
+                // Store in map to keep link between create bone and original skin
+                _osgBoneToGlTFSkinIndex[bone.get()] = glTFSkinIndex;
+            }
+        }
+    }
+
+    /* Generate Skeletons and Bones
+    Different glTF skins can reference the same glTF node, but with different invBindMatrices.
+    We want no duplication, so we need to do some merge/transformations.
+
+    1- Generate a skeleton for each glTF skin, and add it to the graph. A 'distance from root'
+    is also computed to determine which skeleton is higher in the scene graph.
+
+    2- Look for intersection between skins (i.e two skins using at least one same node as joint) then:
+        a. shared joints: use the bone from the skin whose corresponding skeleton is higher in the scene graph
+        b. include joints from the skin having the lower skeleton to the skeleton of the other skin
+
+        Skin 1    Skin 2                Skeleton(skin 1, higher in the scene graph than skin2's skeleton)
+          3         5                       3
+          4         6          =>           4
+          5         7                       5
+                                            6*
+                                            7*
+    3- Compute merge matrices: used to offset invbinds when adding a glTF bone to a specific osg skeleton.
+    A merge matrix transforms a point from mesh space to skeleton space, and is used
+    to convert from glTF invbind (Bone->Mesh) to an OSG invBind (Bone->Skeleton)
+
+    4- Convert all MatrixTransforms being in a bone hierarchy into Bones (in order to have proper skinning data update
+    with UpdateBones)
+
+    5- Move rigGeometries under their respective skeleton (if it's not already the case)*/
+    void postProcessSkeletons()
+    {
+        std::vector<unsigned int> distanceToRoot;
+        for(unsigned int i = 0; i < _model->skins.size(); ++i)
+        {
+            generateSkeletonForSkin(i, distanceToRoot);
+        }
+
+        std::vector<int> skinMapping; // skinMapping[3] = 1 means skin3 and skin1 share joints indexes, and skin3 needs to be merged in skin1
+        std::vector<std::vector<int> > bonesToBeUpdated; // Bones from skin3 that are not in skin1 (need to be updated when integrated in skin1)
+        lookForSkinIntersections(distanceToRoot, skinMapping, bonesToBeUpdated);
+
+        std::vector<osg::Matrix> mergeMatrices;
+        computeMergeMatrices(skinMapping, mergeMatrices);
+
+        mergeSkins(skinMapping, bonesToBeUpdated, mergeMatrices);
+
+        // Converts all MT being in the skeleton hierarchy into bones
+        for(unsigned int i=0; i< skinMapping.size(); ++i)
+        {
+            if(int(i) == skinMapping[i])
+            {
+                UpdateBoneHierarchyVisitor visitor(_model->nodes);
+                _skinIndexToSkeleton[i]->accept(visitor);
+                visitor.convertMatrixTransformToBone();
+            }
+        }
+
+        moveRigGeometriesUnderTheirSkeleton(skinMapping);
+    }
+
+    // Create a single skeleton object on top of all nodes
+    // referenced as joints by the skin at the given index
+    void generateSkeletonForSkin(int glTFSkinIndex, std::vector<unsigned int>& distanceToRoot)
+    {
+        std::vector<int> nodeIndexList = _model->skins[glTFSkinIndex].joints;
+        std::vector<osg::Group*> mtList; // Scene has no bones, only matrixTransforms that will be converted later
+
+        for(std::vector<int>::iterator it = nodeIndexList.begin(); it != nodeIndexList.end(); ++it)
+        {
+            osg::Group* futureBone = dynamic_cast<osg::Group*>(_nodeMap[*it].get());
+            if(!futureBone)
+            {
+                OSG_WARN << "[GLTFReader::generateSkeletonForSkin] An issue occured with skin '"
+                         << glTFSkinIndex
+                         <<"' for bone '"
+                         << *it
+                         << " (not a matrix transform)" << std::endl;
+            }
+
+            mtList.push_back(futureBone);
+        }
+
+        // Find the fist common parent of this node list, to place
+        // a skeleton node
+        osg::Group* commonParent = findCommonParent(mtList);
+
+        // Create a skeleton and add it as child of this (common parent) node
+        osg::ref_ptr<osgAnimation::Skeleton> newSkeleton = new osgAnimation::Skeleton();
+        std::ostringstream oss;
+        oss << "GLTF_created_" << glTFSkinIndex;
+        newSkeleton->setName(oss.str());
+
+        insertNodeBottom(commonParent, newSkeleton);
+        _skinIndexToSkeleton[glTFSkinIndex] = newSkeleton.get();
+
+        distanceToRoot.push_back(computeDistanceToRoot(newSkeleton.get()));
+    }
+
+    void lookForSkinIntersections(const std::vector<unsigned int>& distanceToRoot, std::vector<int>& skinMapping, std::vector<std::vector<int> >& bonesToBeUpdated)
+    {
+        for(unsigned int i = 0; i < _model->skins.size(); ++i)
+        {
+            skinMapping.push_back(i);
+        }
+
+        for(unsigned int i = 0; i < _model->skins.size(); ++i)
+        {
+            for(unsigned int k = i + 1 ; k < _model->skins.size(); ++k)
+            {
+                std::vector<int> intersectionAB;
+                getJointIntersection(i, k, intersectionAB);
+
+                if(!intersectionAB.empty())
+                {
+                    // skinMapping[2] = 1 means that skin2 will be merged into skin 1;
+                    if(distanceToRoot[i] < distanceToRoot[k]) // Merge B into A
+                    {
+                        skinMapping[k] = i;
+                    }
+                    else if(distanceToRoot[i] > distanceToRoot[k]) // Merge A into B
+                    {
+                        skinMapping[i] = k;
+                    }
+                }
+            }
+        }
+
+        // If skin1 should be merged in skin2, and skin2 merged in skin3, merge skin1 in skin3
+        bool isUpdated = true;
+        while(isUpdated)
+        {
+            isUpdated = false;
+
+            for(unsigned int i = 0; i <skinMapping.size(); ++i)
+            {
+                int index = skinMapping[i];
+                if(skinMapping[index] != index)
+                {
+                    isUpdated = true;
+                    skinMapping[i] = skinMapping[index];
+                }
+            }
+        }
+
+        // After mapping, list all bones that need to be updated from merged skins
+        std::vector<int> alreadyIncluded;
+        for(unsigned int i = 0; i < skinMapping.size(); ++i)
+        {
+            if(static_cast<int>(i) != skinMapping[i])
+            {
+                std::vector<int> nonIntersection;
+                getJointNonIntersection(skinMapping[i], i, nonIntersection, alreadyIncluded);
+                bonesToBeUpdated.push_back(nonIntersection);
+            }
+            else
+            {
+                bonesToBeUpdated.push_back(_model->skins[i].joints);
+            }
+        }
+    }
+
+    bool isSkinnedMesh(const tinygltf::Node& glTFNode)
+    {
+        return glTFNode.mesh != -1 && glTFNode.skin != -1;
+    }
+
+    bool isUnderGoodSkeleton(int glTFNodeIndex, int finalSkinIndex)
+    {
+        osg::MatrixTransform* rigMt = _nodeMap[glTFNodeIndex].get();
+        osgAnimation::RigGeometry::FindNearestParentSkeleton skelParentVisitor;
+        rigMt->accept(skelParentVisitor);
+
+        return skelParentVisitor._root.get() == _skinIndexToSkeleton[finalSkinIndex];
+    }
+
+    osgAnimation::Bone* getBoneFromSkinAndJointIndex(int skinIndex, int boneIndex)
+    {
+        BoneList bones = _indexToOsgBoneList[boneIndex];
+        for(unsigned int i = 0; i < bones.size(); ++i)
+        {
+            if(_osgBoneToGlTFSkinIndex[bones[i].get()] == skinIndex)
+            {
+                return bones[i].get();
+            }
+        }
+
+        return 0;
+    }
+
+    void mergeSkins(const std::vector<int>& skinMapping, const std::vector<std::vector<int> >& bonesToBeUpdated, const std::vector<osg::Matrix>& mergeMatrices)
+    {
+        for(unsigned int skinIndex = 0; skinIndex < bonesToBeUpdated.size(); ++skinIndex)
+        {
+            if(bonesToBeUpdated[skinIndex].empty())
+                continue;
+
+            const std::vector<int>& toUpdate = bonesToBeUpdated[skinIndex];
+            for(unsigned int jointNodeIndex = 0; jointNodeIndex < toUpdate.size(); ++jointNodeIndex)
+            {
+                osgAnimation::Bone* goodBone = getBoneFromSkinAndJointIndex(skinIndex, toUpdate[jointNodeIndex]);
+                osg::Matrix offsetInvBind = mergeMatrices[skinIndex];
+                goodBone->setInvBindMatrixInSkeletonSpace(offsetInvBind * goodBone->getInvBindMatrixInSkeletonSpace());
+                emplaceBoneInGraph(toUpdate[jointNodeIndex], goodBone);
+            }
+
+        }
+
+        for(unsigned int i = 0; i < skinMapping.size(); ++i)
+        {
+            if((int)i != skinMapping[i])
+            {
+                osg::Group* skeletonToRemove = dynamic_cast<osg::Group*>(_skinIndexToSkeleton[i]);
+                detachNodeFromGraph(skeletonToRemove);
+            }
+        }
+    }
+
+    void computeMergeMatrices(const std::vector<int>& skinMapping, std::vector<osg::Matrix>& mergeMatrices)
+    {
+        for(IntToRigMap::iterator it = _skinIndexToRigMap.begin(); it != _skinIndexToRigMap.end(); ++it)
+        {
+            osg::Matrix mergeMatrix = getMatrixFromTo(dynamic_cast<osg::MatrixTransform*>(it->second->getParents()[0]->getParents()[0]), dynamic_cast<osg::MatrixTransform*>(_skinIndexToSkeleton[skinMapping[it->first]]));
+            mergeMatrix.invert(mergeMatrix);
+            mergeMatrices.push_back(mergeMatrix);
+        }
+    }
+
+    void moveRigGeometriesUnderTheirSkeleton(const std::vector<int>& skinMapping)
+    {
+        for(unsigned int i=0; i< _model->nodes.size(); ++i)
+        {
+            if(isSkinnedMesh(_model->nodes[i]))
+            {
+                int finalSkinIndex = skinMapping[_model->nodes[i].skin];
+                if(isUnderGoodSkeleton(i, finalSkinIndex))
+                {
+                    continue;
+                }
+
+                osg::MatrixTransform* rigMt = _nodeMap[i].get();
+                osgAnimation::Skeleton* skel = _skinIndexToSkeleton[skinMapping[_model->nodes[i].skin]];
+
+                // compute a correction matrix to keep the mesh aligned with the skeleton when moving it accross the scene graph
+                osg::Matrix final = getMatrixFromTo(dynamic_cast<osg::MatrixTransform*>(rigMt->getParents()[0]), skel);
+                osg::MatrixTransform* correctionNode = new osg::MatrixTransform(final);
+
+                std::ostringstream oss;
+                oss << rigMt->getName() << "_correction";
+                correctionNode->setName(oss.str());
+
+                // Insert correction node
+                osg::Group* parent = rigMt->getParents()[0];
+                correctionNode->addChild(rigMt);
+                skel->addChild(correctionNode);
+                parent->removeChild(rigMt);
+            }
+        }
+    }
+
+    void getJointIntersection(int skinA, int skinB, std::vector<int>& intersection)
+    {
+        intersection.clear();
+        std::set<int> jointsA = std::set<int>(_model->skins[skinA].joints.begin(), _model->skins[skinA].joints.end());
+        std::set<int> jointsB = std::set<int>(_model->skins[skinB].joints.begin(), _model->skins[skinB].joints.end());
+        std::vector<int> intersectionAB;
+
+        // Elements need to be sorted here (implicitely sorted in std::set)
+        std::set_intersection(jointsA.begin(), jointsA.end(), jointsB.begin(), jointsB.end(), std::back_inserter(intersection));
+    }
+
+    // Returns joints included in skinB but not in skinA
+    void getJointNonIntersection(int skinA, int skinB, std::vector<int>& nonIntersection, std::vector<int>& alreadyIncluded)
+    {
+        nonIntersection.clear();
+        std::set<int> jointsA = std::set<int>(_model->skins[skinA].joints.begin(), _model->skins[skinA].joints.end());
+        std::set<int> jointsB = std::set<int>(_model->skins[skinB].joints.begin(), _model->skins[skinB].joints.end());
+        std::vector<int> nonIntersectionBA;
+
+        // Elements need to be sorted here (implicitely sorted in std::set)
+        std::set_difference(jointsB.begin(), jointsB.end(), jointsA.begin(), jointsA.end(), std::back_inserter(nonIntersection));
+
+        alreadyIncluded.insert(alreadyIncluded.end(), nonIntersection.begin(), nonIntersection.end());
+    }
+
+    void emplaceBoneInGraph(int glTFNodeIndex, osgAnimation::Bone* bone)
+    {
+        if(!bone)
+        {
+            OSG_WARN << "[GLTFReader::emplaceBoneInGraph] Failed to emplace bone on node of index '"
+                     << glTFNodeIndex
+                     << "'"
+                     << std::endl;
+        }
+
+        osg::MatrixTransform* matrixTransform = _nodeMap[glTFNodeIndex].get();
+        bone->setMatrix(matrixTransform->getMatrix());
+        osgAnimation::UpdateMatrixTransform* updateMatrix = dynamic_cast<osgAnimation::UpdateMatrixTransform*>(matrixTransform->getUpdateCallback());
+        osg::ref_ptr<osgAnimation::UpdateBone> updateBone = new osgAnimation::UpdateBone(matrixTransform->getName());
+
+        if(updateMatrix)
+        {
+            updateBone->getStackedTransforms() = updateMatrix->getStackedTransforms();
+        }
+        else
+        {
+            buildStackedTransform(updateBone.get(), _model->nodes[glTFNodeIndex]);
+        }
+
+        bone->setUpdateCallback(updateBone);
+
+        replaceNodeInGraph(matrixTransform, bone);
+    }
+
+    unsigned int computeDistanceToRoot(osg::Group* group)
+    {
+        osg::Node* currentNode = group;
+        unsigned int distanceToRoot = 0;
+        while(!currentNode->getParents().empty())
+        {
+            currentNode = currentNode->getParents()[0];
+            distanceToRoot++;
+        }
+
+        return distanceToRoot;
+    }
+
+    osg::Group* findCommonParent(const std::vector<osg::Group*>& osgGroupList)
+    {
+        if(osgGroupList.size() == 1)
+        {
+            return osgGroupList[0];
+        }
+
+        std::vector<osg::Group*> topNodeCandidates(osgGroupList.begin(), osgGroupList.end());
+        unsigned int counter = 0;
+        unsigned int max = topNodeCandidates.size();
+
+        std::vector<osg::Group*> newTopNodeCandidates;
+        std::set<osg::Group*> nodeSet(topNodeCandidates.begin(), topNodeCandidates.end());
+
+        for(unsigned int i = 0; i < topNodeCandidates.size(); ++i)
+        {
+            osg::Group* currentGroup = topNodeCandidates[i];
+            if(!currentGroup->getNumParents())
+                continue;
+
+            currentGroup = currentGroup->getParent(0);
+            while(currentGroup->getNumParents())
+            {
+                if(nodeSet.count(currentGroup) != 0)
+                {
+                    nodeSet.erase(topNodeCandidates[i]);
+                    break;
+                }
+                else
+                {
+                    currentGroup = currentGroup->getParent(0);
+                }
+            }
+        }
+
+        std::set<osg::Group*> visitedNodes;
+        topNodeCandidates = std::vector<osg::Group*>(nodeSet.begin(), nodeSet.end());
+
+        if(topNodeCandidates.size() == 1)
+        {
+            return topNodeCandidates[0]->getParent(0);
+        }
+
+        while(topNodeCandidates.size() > 1 && counter < max)
+        {
+            FindCommonParentVisitor findCommonParentVisitor;
+            for(unsigned int j = 0; j < topNodeCandidates.size(); ++j)
+            {
+                findCommonParentVisitor.setVisitedNodes(visitedNodes);
+                topNodeCandidates[j]->accept(findCommonParentVisitor);
+                std::set<osg::Group*> visited = findCommonParentVisitor.getVisitedNodes();
+
+                // Update visitedNodes set with previous visitor data
+                visitedNodes.insert(visited.begin(), visited.end());
+
+                if(j != 0) // first iteration always goes to scene root node
+                    newTopNodeCandidates.push_back(findCommonParentVisitor.getStopNode());
+            }
+
+            topNodeCandidates.clear();
+            topNodeCandidates.swap(newTopNodeCandidates);
+            newTopNodeCandidates.clear();
+            counter++;
+        }
+
+        if(topNodeCandidates.size() != 1) {
+            OSG_WARN << "[GLTFReader::findCommonParent] An error occured (found two common parents. operation failed)" << std::endl;
+        }
+
+        return topNodeCandidates[0];
+    }
+
+protected:
+    tinygltf::Model* _model;
+    osg::ref_ptr<osg::Group> _rootNode;
+    osg::ref_ptr<osg::MatrixTransform> _gltfRoot;
+    MaterialList _osgMaterials;
+    MaterialUVBindVector _osgUVBindMap;
+    GltfIndexToOsgMTMap _nodeMap;
+    const std::string& _filename;
+    std::vector<std::string> channelsMetadata;
+
+    IntToRigMap _skinIndexToRigMap;
+    IntToBoneListMap _indexToOsgBoneList;
+    BoneToIntMap _osgBoneToGlTFSkinIndex;
+    IntToSkeletonMap _skinIndexToSkeleton;
+};
+
+#endif

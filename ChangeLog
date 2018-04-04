@@ -1,6 +1,46 @@
+Wed, 4 Apr 2018 15:09:43 +0100
+Author : Robert Osfield
+Fixed threading crash in osgFX that occurred when an osgFX node is added to the scene being rendered in multiple threaded windows.
+
+Wed, 4 Apr 2018 13:40:51 +0100
+Author : Robert Osfield
+Added focus classifiction of handling of keyboard events
+
+Wed, 4 Apr 2018 13:40:06 +0100
+Author : Robert Osfield
+Added EventHandler to report key and mouse events for debugging purposes
+
+Wed, 4 Apr 2018 12:26:53 +0100
+Author : Robert Osfield
+Added -4 command line entry that creates two seperate windows within CompositeViewer
+
+Wed, 4 Apr 2018 08:50:39 +0100
+Author : Frank Bausch
+When testing XYZ/ECEF coordinate values that convert to LLA points with latitude = 90.0 or latitude = -90.0, the heights calculated by EllipsoidModel::convertXYZToLatLongHeight have substantial errors. With the provided change, points at the pole are handled more correctly. This has been tested against US NGA GoldData.
+
+Tue, 3 Apr 2018 17:21:47 +0100
+Author : Robert Osfield
+Updated rc to 5
+
+Tue, 3 Apr 2018 17:17:59 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #518 from emminizer/fix-scroll-eventCompositeViewer: SCROLL event now only goes to view with focus.  Incl…
+
+Tue, 3 Apr 2018 16:07:46 +0100
+Author : Robert Osfield
+Updated rc number to 4
+
+Tue, 3 Apr 2018 16:04:24 +0100
+Author : Robert Osfield
+Updated ChangeLog and NEWS for rc3
+
 Tue, 3 Apr 2018 15:48:37 +0100
 Author : Thomas Hogarth
 missing gles2 check
+
+Tue, 3 Apr 2018 10:32:58 -0400
+Author : Daniel Emminizer
+CompositeViewer: SCROLL event now only goes to view with focus.  Includes minor typo fixes.
 
 Tue, 3 Apr 2018 15:29:54 +0100
 Author : Robert Osfield

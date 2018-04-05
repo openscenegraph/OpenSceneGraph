@@ -2,26 +2,26 @@ OSG News
 ========
 
 OpenSceneGraph 3.6 release
-PERTHSHIRE, Scotland - 4th April 2018 - OpenSceneGraph Professional Services announces the release of OpenSceneGraph 3.6.0, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. OpenSceneGraph 3.6 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. OpenSceneGraph 3.6 runs on all Microsoft Windows platforms, Apple OS/X, IOS, GNU/Linux, Android, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
+PERTHSHIRE, Scotland - 5th April 2018 - OpenSceneGraph Professional Services announces the release of OpenSceneGraph 3.6.0, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. OpenSceneGraph 3.6 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. OpenSceneGraph 3.6 runs on all Microsoft Windows platforms, Apple OS/X, IOS, GNU/Linux, Android, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
 Updates include:
 
   * OpenThreads::Affinity introduced to enable setting of processor affinity on viewer and database threads
-  * Improvements to osgAnimation
-  * Improvements to gles plugin to provide better Sketchfab support
-  * NodeVisitor ValueMap for storing values that can be stored and accessed across frames, such as update, event and cull traversals
   * osgText rewritten to improve visual quality, add signed distance field support and full GLES2/3 and GL3/4 supprt
+  * Added VertexArrayObject support, enable full OpenGL Core Profile support under OSX.
+  * Added OpenCASCADE plugin
+  * Added STEP (.stp) plugin
+  * Improvements to FBX and COLLADA loaders
+  * Improvements to gles plugin to provide better Sketchfab support
+  * Added osgemscripten example
+  * Improvements to osgAnimation
+  * NodeVisitor ValueMap for storing values that can be stored and accessed across frames, such as update, event and cull traversals
   * ShadpeDrawable implemented as an osg::Geometry to improve performance and flexibility
   * Added osg::MultiDrawArrays support
   * Added osgderred example that illustrates how to implement deferred rendering
-  * Added VertexArrayObject support
   * Added MultiDrawIndirect support
   * Moved ComputeDispatch control out of osg::Program into a dedicated osg::ComputeDispatch class to improve flexibility of compute shaders
   * KdTree support added for PolytopeIntersector, and ability to work with points, lines and polygons
   * osgQt has been moved out to it's own dedicated osgQt github repository
-  * Improvements to FBX and COLLADA loaders
-  * Added OpenCASCADE plugin
-  * Added STEP (.stp) plugin
-  * Added osgemscripten example
   * CMake build support for iOS bitcode builds
   * CoverityScan testing introduced, fixes bring defect density to 0.0 per 1,0000 lines of code!
   * Support for Codedoc automated documentation

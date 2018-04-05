@@ -1,3 +1,23 @@
+Thu, 5 Apr 2018 11:21:55 +0200
+Author : Philippe Renon
+mingw: fix compile error in GraphicsWindowWin32.cppcompilation error was introduced by msvc specific change
+see https://github.com/openscenegraph/OpenSceneGraph/commit/bb169979a1054e2fa63a7ea82c9c8bec87e90494
+
+
+Wed, 4 Apr 2018 08:33:55 +0200
+Author : Ralf Habacker
+Remove duplicated and incorrect fetching of 'map_bump' attributes in obj pluginParsing the key 'map_bump' was processed in the block, where the attributes
+for 'bump' are extracted and results into having parts of the key in the
+extracted filename, generating an invalid filename.
+
+The mentioned string compare could be removed without loosing any features,
+because the key 'map_bump' is parsed correctly some lines below.
+
+
+Wed, 4 Apr 2018 15:35:28 +0100
+Author : Robert Osfield
+Updated ChangeLog for rc5
+
 Wed, 4 Apr 2018 15:09:43 +0100
 Author : Robert Osfield
 Fixed threading crash in osgFX that occurred when an osgFX node is added to the scene being rendered in multiple threaded windows.

@@ -31,60 +31,88 @@
 
 #include "TextNode.h"
 
-class Text3DAttributeHandler : public osgGA::GUIEventHandler
+class TextAttributeHandler : public osgGA::GUIEventHandler
 {
 public:
-    Text3DAttributeHandler(osgText::Text3D* aText3D)
-    :    m_Text3D(aText3D)
+    TextAttributeHandler()
     {
     }
 
-    ~Text3DAttributeHandler()
+    virtual ~TextAttributeHandler()
     {
+    }
+
+    void addText(osgText::TextBase* aText)
+    {
+        m_Texts.push_back(aText);
     }
 
     virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter&)
+    {
+        for (unsigned int i = 0; i < m_Texts.size(); ++i)
+            process(ea, m_Texts[i]);
+
+        return false;
+    }
+
+    void process(const osgGA::GUIEventAdapter& ea, osgText::TextBase* aText)
     {
         if (ea.getEventType() == osgGA::GUIEventAdapter::KEYUP)
         {
             if (ea.getKey() == osgGA::GUIEventAdapter::KEY_Up)
             {
-                m_Text3D->setCharacterSize(m_Text3D->getCharacterHeight() + 0.1);
-                OSG_NOTICE<<"m_Text3D->getCharacterHeight() = " << m_Text3D->getCharacterHeight() << std::endl;
+                aText->setCharacterSize(aText->getCharacterHeight() + 0.1);
+                OSG_NOTICE<<"aText->getCharacterHeight() = " << aText->getCharacterHeight() << std::endl;
             }
             else if (ea.getKey() == osgGA::GUIEventAdapter::KEY_Down)
             {
-                m_Text3D->setCharacterDepth(m_Text3D->getCharacterDepth() + 0.1);
-                OSG_NOTICE<<"m_Text3D->getCharacterDepth() = " << m_Text3D->getCharacterDepth() << std::endl;
+                osgText::Text3D* text3D = dynamic_cast<osgText::Text3D*>(aText);
+                if (text3D)
+                {
+                    text3D->setCharacterDepth(text3D->getCharacterDepth() + 0.1);
+                    OSG_NOTICE<<"text3D->getCharacterDepth() = " << text3D->getCharacterDepth() << std::endl;
+                }
             }
             else if (ea.getKey() == osgGA::GUIEventAdapter::KEY_Left)
             {
                 static int counter = 1;
-                if (counter%3 == 0)
-                   m_Text3D->setText("Press arrow keys.", osgText::String::ENCODING_UTF8);
-                else if (counter%3 == 1)
-                   m_Text3D->setText("setText\nworks!", osgText::String::ENCODING_UTF8);
-                else if (counter%3 == 2)
-                   m_Text3D->setText("setText really works?", osgText::String::ENCODING_UTF8);
-                else if (counter%3 == 3)
-                   m_Text3D->setText("setText works, really!", osgText::String::ENCODING_UTF8);
+                if (counter%4 == 0)
+                    aText->setText("Press arrow keys.", osgText::String::ENCODING_UTF8);
+                else if (counter%4 == 1)
+                    aText->setText("setText\nworks\nPress enter\nto change alignment!", osgText::String::ENCODING_UTF8);
+                else if (counter%4 == 2)
+                    aText->setText("setText really works?", osgText::String::ENCODING_UTF8);
+                else if (counter%4 == 3)
+                    aText->setText("setText works, really!", osgText::String::ENCODING_UTF8);
 
-                ++counter;
+                if (aText == m_Texts.back())
+                    ++counter;
 
-                OSG_NOTICE<<"m_Text3D->getText().size() = " << m_Text3D->getText().size() << std::endl;
+                OSG_NOTICE<<"aText->getText().size() = " << aText->getText().size() << std::endl;
             }
             else if (ea.getKey() == osgGA::GUIEventAdapter::KEY_Right)
             {
-                m_Text3D->setLineSpacing(m_Text3D->getLineSpacing() + 0.1);
-                OSG_NOTICE<<"m_Text3D->getLineSpacing() = " << m_Text3D->getLineSpacing() << std::endl;
+                aText->setLineSpacing(aText->getLineSpacing() + 0.1);
+                OSG_NOTICE<<"aText->getLineSpacing() = " << aText->getLineSpacing() << std::endl;
+            }
+            else if (ea.getKey() == osgGA::GUIEventAdapter::KEY_Return)
+            {
+                static int counter = 1;
+                if (counter%3 == 0)
+                    aText->setAlignment(osgText::TextBase::LEFT_BOTTOM_BASE_LINE);
+                else if (counter%3 == 1)
+                    aText->setAlignment(osgText::TextBase::CENTER_BOTTOM_BASE_LINE);
+                else if (counter%3 == 2)
+                    aText->setAlignment(osgText::TextBase::RIGHT_BOTTOM_BASE_LINE);
+
+                if (aText == m_Texts.back())
+                    ++counter;
             }
         }
-
-        return false;
     }
 
 private:
-    osgText::Text3D*        m_Text3D;
+    std::vector<osgText::TextBase*> m_Texts;
 };
 
 
@@ -138,6 +166,9 @@ int main(int argc, char** argv)
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
     viewer.addEventHandler(new osgViewer::StatsHandler);
 
+
+    osg::ref_ptr<TextAttributeHandler> textAttributeHandler = new TextAttributeHandler;
+
 #if 1
     osg::ref_ptr<osg::Group> group = new osg::Group;
 
@@ -147,6 +178,8 @@ int main(int argc, char** argv)
     if (arguments.read("--2d"))
     {
         osgText::Text* text2D = new osgText::Text;
+        text2D->setDataVariance(osg::Object::DYNAMIC);
+
         text2D->setFont(font.get());
         text2D->setCharacterSize(characterSize);
         text2D->setFontResolution(256,256);
@@ -156,6 +189,8 @@ int main(int argc, char** argv)
         osg::Geode* geode = new osg::Geode;
         geode->addDrawable(text2D);
         group->addChild(geode);
+
+        textAttributeHandler->addText(text2D);
     }
 
     if (arguments.read("--TextNode"))
@@ -173,8 +208,6 @@ int main(int argc, char** argv)
     else if (!arguments.read("--no-3d"))
     {
         osgText::Text3D* text3D = new osgText::Text3D;
-
-        // Does not help
         text3D->setDataVariance(osg::Object::DYNAMIC);
 
         text3D->setFont(font.get());
@@ -264,9 +297,10 @@ int main(int argc, char** argv)
             }
         }
 
-        viewer.addEventHandler(new Text3DAttributeHandler(text3D));
+        textAttributeHandler->addText(text3D);
     }
 
+    viewer.addEventHandler(textAttributeHandler);
     viewer.setSceneData(group);
 
 #endif

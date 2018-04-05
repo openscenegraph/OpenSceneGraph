@@ -297,3 +297,17 @@ osg::ref_ptr<Node> osgDB::readRefNodeFiles(osg::ArgumentParser& arguments,const 
     }
 
 }
+
+osg::ref_ptr<osg::Shader> osgDB::readRefShaderFileWithFallback(osg::Shader::Type type, const std::string& filename, const Options* options, const char* fallback)
+{
+    ReaderWriter::ReadResult rr = Registry::instance()->readShader(filename,options);
+    osg::ref_ptr<osg::Shader> shader = rr.getShader();
+    if (!rr.success())
+    {
+        OSG_INFO << "Error reading file " << filename << ": " << rr.statusMessage() << std::endl;
+    }
+
+    if (shader.valid() && type != osg::Shader::UNDEFINED) shader->setType(type);
+    if (!shader) shader = new osg::Shader(type, fallback);
+    return shader;
+}

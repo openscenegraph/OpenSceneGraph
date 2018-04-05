@@ -693,7 +693,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
 
 VertexArrayState* Drawable::createVertexArrayStateImplementation(RenderInfo& renderInfo) const
 {
-    OSG_NOTICE<<"VertexArrayState* Drawable::createVertexArrayStateImplementation(RenderInfo& renderInfo) const "<<this<<std::endl;
+    OSG_INFO<<"VertexArrayState* Drawable::createVertexArrayStateImplementation(RenderInfo& renderInfo) const "<<this<<std::endl;
     VertexArrayState* vos = new osg::VertexArrayState(renderInfo.getState());
     vos->assignAllDispatchers();
     return vos;

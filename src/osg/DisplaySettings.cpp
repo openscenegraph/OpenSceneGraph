@@ -1069,35 +1069,35 @@ void DisplaySettings::setShaderHint(ShaderHint hint, bool setShaderValues)
             setValue("OSG_PRECISION_FLOAT", "precision highp float;");
             setValue("OSG_VARYING_IN", "in");
             setValue("OSG_VARYING_OUT", "out");
-            OSG_NOTICE<<"DisplaySettings::SHADER_GLES3"<<std::endl;
+            OSG_DEBUG<<"DisplaySettings::SHADER_GLES3"<<std::endl;
             break;
         case(SHADER_GLES2) :
             setValue("OSG_GLSL_VERSION", "");
             setValue("OSG_PRECISION_FLOAT", "precision highp float;");
             setValue("OSG_VARYING_IN", "varying");
             setValue("OSG_VARYING_OUT", "varying");
-            OSG_NOTICE<<"DisplaySettings::SHADER_GLES2"<<std::endl;
+            OSG_DEBUG<<"DisplaySettings::SHADER_GLES2"<<std::endl;
             break;
         case(SHADER_GL3) :
             setValue("OSG_GLSL_VERSION", "#version 330");
             setValue("OSG_PRECISION_FLOAT", "");
             setValue("OSG_VARYING_IN", "in");
             setValue("OSG_VARYING_OUT", "out");
-            OSG_NOTICE<<"DisplaySettings::SHADER_GL3"<<std::endl;
+            OSG_DEBUG<<"DisplaySettings::SHADER_GL3"<<std::endl;
             break;
         case(SHADER_GL2) :
             setValue("OSG_GLSL_VERSION", "");
             setValue("OSG_PRECISION_FLOAT", "");
             setValue("OSG_VARYING_IN", "varying");
             setValue("OSG_VARYING_OUT", "varying");
-            OSG_NOTICE<<"DisplaySettings::SHADER_GL2"<<std::endl;
+            OSG_DEBUG<<"DisplaySettings::SHADER_GL2"<<std::endl;
             break;
         case(SHADER_NONE) :
             setValue("OSG_GLSL_VERSION", "");
             setValue("OSG_PRECISION_FLOAT", "");
             setValue("OSG_VARYING_IN", "varying");
             setValue("OSG_VARYING_OUT", "varying");
-            OSG_INFO<<"DisplaySettings::NONE"<<std::endl;
+            OSG_DEBUG<<"DisplaySettings::NONE"<<std::endl;
             break;
         }
     }

@@ -33,7 +33,7 @@
 #define MOUSEEVENTF_FROMTOUCH           0xFF515700
 
 // _MSC_VER 1500: VS 2008
-#if(WINVER < 0x0601 || _MSC_VER <= 1500)
+#if(WINVER < 0x0601 || (_MSC_VER <= 1500 && !__MINGW32__))
 // Provide Declarations for Multitouch
 
 #define WM_TOUCH                        0x0240
@@ -87,7 +87,7 @@ typedef TOUCHINPUT const * PCTOUCHINPUT;
 // for Windows 8 and above
 
 // _MSC_VER 1600: VS 2010
-#if(WINVER < 0x0602 || _MSC_VER <= 1600)
+#if(WINVER < 0x0602 || (_MSC_VER <= 1600 && !__MINGW32__))
 
 #define WM_POINTERUPDATE                0x0245
 #define WM_POINTERDOWN                  0x0246

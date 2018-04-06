@@ -55,7 +55,7 @@ void Technique::traverse_implementation(osg::NodeVisitor& nv, Effect* fx)
     if (cv)
     {
         // traverse all passes
-        for (int i=0; i<_passes.size(); ++i)
+        for (size_t i=0; i<_passes.size(); ++i)
         {
             // push the i-th pass' StateSet
             cv->pushStateSet(_passes[i].get());

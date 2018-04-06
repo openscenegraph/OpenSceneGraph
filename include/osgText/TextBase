@@ -337,6 +337,7 @@ protected:
     osg::Vec3                               _offset;
     osg::Vec3                               _normal;
     osg::BoundingBox                        _textBB;
+    osg::BoundingBox                        _textBBWithMargin;
 
     mutable osg::Matrix                     _matrix;
 

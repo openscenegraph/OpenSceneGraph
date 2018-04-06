@@ -785,168 +785,158 @@ bool Text::computeAverageGlyphWidthAndHeight(float& avg_width, float& avg_height
 
 void Text::computePositionsImplementation()
 {
+    // TextBase::computePositionsImplementation(); computes basic positions and maps the _textBB to _textBBWithMargin
     TextBase::computePositionsImplementation();
 
-    computeBackdropBoundingBox();
-    computeBoundingBoxMargin();
-}
+    if (!_textBBWithMargin.valid()) return;
 
-// This method adjusts the bounding box to account for the expanded area caused by the backdrop.
-// This assumes that the bounding box has already been computed for the text without the backdrop.
-void Text::computeBackdropBoundingBox()
-{
-    if(_backdropType == NONE)
+    if (_drawMode & (BOUNDINGBOX | FILLEDBOUNDINGBOX))
     {
-        return;
+        _textBBWithMargin.set(
+            _textBBWithMargin.xMin() - _textBBMargin,
+            _textBBWithMargin.yMin() - _textBBMargin,
+            _textBBWithMargin.zMin(),
+            _textBBWithMargin.xMax() + _textBBMargin,
+            _textBBWithMargin.yMax() + _textBBMargin,
+            _textBBWithMargin.zMax()
+        );
     }
 
-    float avg_width = 0.0f;
-    float avg_height = 0.0f;
-    bool is_valid_size;
-
-    // FIXME: OPTIMIZE: It is possible that this value has already been computed before
-    // from previous calls to this function. This might be worth optimizing.
-    is_valid_size = computeAverageGlyphWidthAndHeight(avg_width, avg_height);
-
-    // Finally, we have one more issue to deal with.
-    // Now that the text takes more space, we need
-    // to adjust the size of the bounding box.
-    if((!_textBB.valid() || !is_valid_size))
+    if (_backdropType != NONE)
     {
-        return;
-    }
+        float avg_width = 0.0f;
+        float avg_height = 0.0f;
+        bool is_valid_size;
 
-    // Finally, we have one more issue to deal with.
-    // Now that the text takes more space, we need
-    // to adjust the size of the bounding box.
-    switch(_backdropType)
-    {
-        case DROP_SHADOW_BOTTOM_RIGHT:
+        // FIXME: OPTIMIZE: It is possible that this value has already been computed before
+        // from previous calls to this function. This might be worth optimizing.
+        is_valid_size = computeAverageGlyphWidthAndHeight(avg_width, avg_height);
+
+        // Finally, we have one more issue to deal with.
+        // Now that the text takes more space, we need
+        // to adjust the size of the bounding box.
+        if (!is_valid_size)
+        {
+            return;
+        }
+
+        // Finally, we have one more issue to deal with.
+        // Now that the text takes more space, we need
+        // to adjust the size of the bounding box.
+        switch(_backdropType)
+        {
+            case DROP_SHADOW_BOTTOM_RIGHT:
             {
-                _textBB.set(
-                    _textBB.xMin(),
-                    _textBB.yMin() - avg_height * _backdropVerticalOffset,
-                    _textBB.zMin(),
-                    _textBB.xMax() + avg_width * _backdropHorizontalOffset,
-                    _textBB.yMax(),
-                    _textBB.zMax()
+                _textBBWithMargin.set(
+                    _textBBWithMargin.xMin(),
+                    _textBBWithMargin.yMin() - avg_height * _backdropVerticalOffset,
+                    _textBBWithMargin.zMin(),
+                    _textBBWithMargin.xMax() + avg_width * _backdropHorizontalOffset,
+                    _textBBWithMargin.yMax(),
+                    _textBBWithMargin.zMax()
                 );
                 break;
             }
-        case DROP_SHADOW_CENTER_RIGHT:
+            case DROP_SHADOW_CENTER_RIGHT:
             {
-                _textBB.set(
-                    _textBB.xMin(),
-                    _textBB.yMin(),
-                    _textBB.zMin(),
-                    _textBB.xMax() + avg_width * _backdropHorizontalOffset,
-                    _textBB.yMax(),
-                    _textBB.zMax()
+                _textBBWithMargin.set(
+                    _textBBWithMargin.xMin(),
+                    _textBBWithMargin.yMin(),
+                    _textBBWithMargin.zMin(),
+                    _textBBWithMargin.xMax() + avg_width * _backdropHorizontalOffset,
+                    _textBBWithMargin.yMax(),
+                    _textBBWithMargin.zMax()
                 );
                 break;
             }
-        case DROP_SHADOW_TOP_RIGHT:
+            case DROP_SHADOW_TOP_RIGHT:
             {
-                _textBB.set(
-                    _textBB.xMin(),
-                    _textBB.yMin(),
-                    _textBB.zMin(),
-                    _textBB.xMax() + avg_width * _backdropHorizontalOffset,
-                    _textBB.yMax() + avg_height * _backdropVerticalOffset,
-                    _textBB.zMax()
+                _textBBWithMargin.set(
+                    _textBBWithMargin.xMin(),
+                    _textBBWithMargin.yMin(),
+                    _textBBWithMargin.zMin(),
+                    _textBBWithMargin.xMax() + avg_width * _backdropHorizontalOffset,
+                    _textBBWithMargin.yMax() + avg_height * _backdropVerticalOffset,
+                    _textBBWithMargin.zMax()
                 );
                 break;
             }
-        case DROP_SHADOW_BOTTOM_CENTER:
+            case DROP_SHADOW_BOTTOM_CENTER:
             {
-                _textBB.set(
-                    _textBB.xMin(),
-                    _textBB.yMin() - avg_height * _backdropVerticalOffset,
-                    _textBB.zMin(),
-                    _textBB.xMax(),
-                    _textBB.yMax(),
-                    _textBB.zMax()
+                _textBBWithMargin.set(
+                    _textBBWithMargin.xMin(),
+                    _textBBWithMargin.yMin() - avg_height * _backdropVerticalOffset,
+                    _textBBWithMargin.zMin(),
+                    _textBBWithMargin.xMax(),
+                    _textBBWithMargin.yMax(),
+                    _textBBWithMargin.zMax()
                 );
                 break;
             }
-        case DROP_SHADOW_TOP_CENTER:
+            case DROP_SHADOW_TOP_CENTER:
             {
-                _textBB.set(
-                    _textBB.xMin(),
-                    _textBB.yMin(),
-                    _textBB.zMin(),
-                    _textBB.xMax(),
-                    _textBB.yMax() + avg_height * _backdropVerticalOffset,
-                    _textBB.zMax()
+                _textBBWithMargin.set(
+                    _textBBWithMargin.xMin(),
+                    _textBBWithMargin.yMin(),
+                    _textBBWithMargin.zMin(),
+                    _textBBWithMargin.xMax(),
+                    _textBBWithMargin.yMax() + avg_height * _backdropVerticalOffset,
+                    _textBBWithMargin.zMax()
                 );
                 break;
             }
-        case DROP_SHADOW_BOTTOM_LEFT:
+            case DROP_SHADOW_BOTTOM_LEFT:
             {
-                _textBB.set(
-                    _textBB.xMin() - avg_width * _backdropHorizontalOffset,
-                    _textBB.yMin() - avg_height * _backdropVerticalOffset,
-                    _textBB.zMin(),
-                    _textBB.xMax(),
-                    _textBB.yMax(),
-                    _textBB.zMax()
+                _textBBWithMargin.set(
+                    _textBBWithMargin.xMin() - avg_width * _backdropHorizontalOffset,
+                    _textBBWithMargin.yMin() - avg_height * _backdropVerticalOffset,
+                    _textBBWithMargin.zMin(),
+                    _textBBWithMargin.xMax(),
+                    _textBBWithMargin.yMax(),
+                    _textBBWithMargin.zMax()
                 );
                 break;
             }
-        case DROP_SHADOW_CENTER_LEFT:
+            case DROP_SHADOW_CENTER_LEFT:
             {
-                _textBB.set(
-                    _textBB.xMin() - avg_width * _backdropHorizontalOffset,
-                    _textBB.yMin(),
-                    _textBB.zMin(),
-                    _textBB.xMax(),
-                    _textBB.yMax(),
-                    _textBB.zMax()
+                _textBBWithMargin.set(
+                    _textBBWithMargin.xMin() - avg_width * _backdropHorizontalOffset,
+                    _textBBWithMargin.yMin(),
+                    _textBBWithMargin.zMin(),
+                    _textBBWithMargin.xMax(),
+                    _textBBWithMargin.yMax(),
+                    _textBBWithMargin.zMax()
                 );            break;
             }
-        case DROP_SHADOW_TOP_LEFT:
+            case DROP_SHADOW_TOP_LEFT:
             {
-                _textBB.set(
-                    _textBB.xMin() - avg_width * _backdropHorizontalOffset,
-                    _textBB.yMin(),
-                    _textBB.zMin(),
-                    _textBB.xMax(),
-                    _textBB.yMax() + avg_height * _backdropVerticalOffset,
-                    _textBB.zMax()
+                _textBBWithMargin.set(
+                    _textBBWithMargin.xMin() - avg_width * _backdropHorizontalOffset,
+                    _textBBWithMargin.yMin(),
+                    _textBBWithMargin.zMin(),
+                    _textBBWithMargin.xMax(),
+                    _textBBWithMargin.yMax() + avg_height * _backdropVerticalOffset,
+                    _textBBWithMargin.zMax()
                 );
                 break;
             }
-        case OUTLINE:
+            case OUTLINE:
             {
-                _textBB.set(
-                    _textBB.xMin() - avg_width * _backdropHorizontalOffset,
-                    _textBB.yMin() - avg_height * _backdropVerticalOffset,
-                    _textBB.zMin(),
-                    _textBB.xMax() + avg_width * _backdropHorizontalOffset,
-                    _textBB.yMax() + avg_height * _backdropVerticalOffset,
-                    _textBB.zMax()
+                _textBBWithMargin.set(
+                    _textBBWithMargin.xMin() - avg_width * _backdropHorizontalOffset,
+                    _textBBWithMargin.yMin() - avg_height * _backdropVerticalOffset,
+                    _textBBWithMargin.zMin(),
+                    _textBBWithMargin.xMax() + avg_width * _backdropHorizontalOffset,
+                    _textBBWithMargin.yMax() + avg_height * _backdropVerticalOffset,
+                    _textBBWithMargin.zMax()
                 );
                 break;
             }
-        default: // error
+            default: // error
             {
                 break;
             }
-    }
-}
-
-// This method expands the bounding box to a settable margin when a bounding box drawing mode is active.
-void Text::computeBoundingBoxMargin()
-{
-    if(_drawMode & (BOUNDINGBOX | FILLEDBOUNDINGBOX)){
-        _textBB.set(
-            _textBB.xMin() - _textBBMargin,
-            _textBB.yMin() - _textBBMargin,
-            _textBB.zMin(),
-            _textBB.xMax() + _textBBMargin,
-            _textBB.yMax() + _textBBMargin,
-            _textBB.zMax()
-        );
+        }
     }
 }
 

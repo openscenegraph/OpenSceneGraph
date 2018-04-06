@@ -1,3 +1,39 @@
+Fri, 6 Apr 2018 14:47:54 +0100
+Author : Robert Osfield
+Updated for rc6
+
+Fri, 6 Apr 2018 14:17:35 +0100
+Author : Robert Osfield
+Fixed warning
+
+Fri, 6 Apr 2018 14:07:58 +0100
+Author : Robert Osfield
+Changed TextBase::setAlignment() to use computeGlyphRepresentation(); rather than computePositions(); to address issues seen with calling Text::setAlignment() after calls to Text::setText()
+
+Fri, 6 Apr 2018 14:06:50 +0100
+Author : Robert Osfield
+Added osgtext --alignment test to look the effect of calling Text::setAlignent() before and after the Text::setText().
+
+Thu, 5 Apr 2018 18:00:30 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #525 from emminizer/fix-windows-exportosgDB: Added missing extern OSGDB_EXPORT.
+
+Thu, 5 Apr 2018 10:51:24 -0400
+Author : Daniel Emminizer
+osgDB: Added missing extern OSGDB_EXPORT.
+
+Thu, 5 Apr 2018 14:14:49 +0100
+Author : Robert Osfield
+Quietened down debug message output for osgText shader setup and Drawable::createVertexArrayStateImplementation
+
+Thu, 5 Apr 2018 12:35:36 +0100
+Author : Robert Osfield
+Changed DisplaySettings::setShaderHint(..) messages to INFO
+
+Thu, 5 Apr 2018 12:19:56 +0100
+Author : Robert Osfield
+Updated ChangeLOG and news
+
 Thu, 5 Apr 2018 11:21:55 +0200
 Author : Philippe Renon
 mingw: fix compile error in GraphicsWindowWin32.cppcompilation error was introduced by msvc specific change

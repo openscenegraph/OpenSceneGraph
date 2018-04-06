@@ -383,7 +383,8 @@ void TextBase::setBoundingBoxMargin(float margin)
         return;
 
     _textBBMargin = margin;
-    computeGlyphRepresentation();
+
+    computePositions();
 }
 
 
@@ -394,16 +395,16 @@ osg::BoundingBox TextBase::computeBoundingBox() const
     return bbox;
 #endif
 
-    if (_textBB.valid())
+    if (_textBBWithMargin.valid())
     {
-        bbox.expandBy(_textBB.corner(0)*_matrix);
-        bbox.expandBy(_textBB.corner(1)*_matrix);
-        bbox.expandBy(_textBB.corner(2)*_matrix);
-        bbox.expandBy(_textBB.corner(3)*_matrix);
-        bbox.expandBy(_textBB.corner(4)*_matrix);
-        bbox.expandBy(_textBB.corner(5)*_matrix);
-        bbox.expandBy(_textBB.corner(6)*_matrix);
-        bbox.expandBy(_textBB.corner(7)*_matrix);
+        bbox.expandBy(_textBBWithMargin.corner(0)*_matrix);
+        bbox.expandBy(_textBBWithMargin.corner(1)*_matrix);
+        bbox.expandBy(_textBBWithMargin.corner(2)*_matrix);
+        bbox.expandBy(_textBBWithMargin.corner(3)*_matrix);
+        bbox.expandBy(_textBBWithMargin.corner(4)*_matrix);
+        bbox.expandBy(_textBBWithMargin.corner(5)*_matrix);
+        bbox.expandBy(_textBBWithMargin.corner(6)*_matrix);
+        bbox.expandBy(_textBBWithMargin.corner(7)*_matrix);
 
 #if 0
         if (!bbox.valid())
@@ -444,6 +445,8 @@ osg::BoundingBox TextBase::computeBoundingBox() const
 
 void TextBase::computePositions()
 {
+    _textBBWithMargin = _textBB;
+
     computePositionsImplementation();
 
     osg::Matrix matrix;
@@ -745,12 +748,12 @@ void TextBase::setupDecoration()
 
     osg::Vec2 default_texcoord(-1.0, -1.0);
 
-    if ((_drawMode & FILLEDBOUNDINGBOX)!=0 && _textBB.valid())
+    if ((_drawMode & FILLEDBOUNDINGBOX)!=0 && _textBBWithMargin.valid())
     {
-        osg::Vec3 c000(_textBB.xMin(),_textBB.yMin(),_textBB.zMin());
-        osg::Vec3 c100(_textBB.xMax(),_textBB.yMin(),_textBB.zMin());
-        osg::Vec3 c110(_textBB.xMax(),_textBB.yMax(),_textBB.zMin());
-        osg::Vec3 c010(_textBB.xMin(),_textBB.yMax(),_textBB.zMin());
+        osg::Vec3 c000(_textBBWithMargin.xMin(),_textBBWithMargin.yMin(),_textBBWithMargin.zMin());
+        osg::Vec3 c100(_textBBWithMargin.xMax(),_textBBWithMargin.yMin(),_textBBWithMargin.zMin());
+        osg::Vec3 c110(_textBBWithMargin.xMax(),_textBBWithMargin.yMax(),_textBBWithMargin.zMin());
+        osg::Vec3 c010(_textBBWithMargin.xMin(),_textBBWithMargin.yMax(),_textBBWithMargin.zMin());
 
         unsigned int base = _coords->size();
 
@@ -779,14 +782,14 @@ void TextBase::setupDecoration()
         primitives->dirty();
     }
 
-    if ((_drawMode & BOUNDINGBOX)!=0 && _textBB.valid())
+    if ((_drawMode & BOUNDINGBOX)!=0 && _textBBWithMargin.valid())
     {
-        if (_textBB.zMin()==_textBB.zMax())
+        if (_textBBWithMargin.zMin()==_textBBWithMargin.zMax())
         {
-            osg::Vec3 c000(_textBB.xMin(),_textBB.yMin(),_textBB.zMin());
-            osg::Vec3 c100(_textBB.xMax(),_textBB.yMin(),_textBB.zMin());
-            osg::Vec3 c110(_textBB.xMax(),_textBB.yMax(),_textBB.zMin());
-            osg::Vec3 c010(_textBB.xMin(),_textBB.yMax(),_textBB.zMin());
+            osg::Vec3 c000(_textBBWithMargin.xMin(),_textBBWithMargin.yMin(),_textBBWithMargin.zMin());
+            osg::Vec3 c100(_textBBWithMargin.xMax(),_textBBWithMargin.yMin(),_textBBWithMargin.zMin());
+            osg::Vec3 c110(_textBBWithMargin.xMax(),_textBBWithMargin.yMax(),_textBBWithMargin.zMin());
+            osg::Vec3 c010(_textBBWithMargin.xMin(),_textBBWithMargin.yMax(),_textBBWithMargin.zMin());
 
             unsigned int base = _coords->size();
 
@@ -815,15 +818,15 @@ void TextBase::setupDecoration()
         }
         else
         {
-            osg::Vec3 c000(_textBB.xMin(),_textBB.yMin(),_textBB.zMin());
-            osg::Vec3 c100(_textBB.xMax(),_textBB.yMin(),_textBB.zMin());
-            osg::Vec3 c110(_textBB.xMax(),_textBB.yMax(),_textBB.zMin());
-            osg::Vec3 c010(_textBB.xMin(),_textBB.yMax(),_textBB.zMin());
+            osg::Vec3 c000(_textBBWithMargin.xMin(),_textBBWithMargin.yMin(),_textBBWithMargin.zMin());
+            osg::Vec3 c100(_textBBWithMargin.xMax(),_textBBWithMargin.yMin(),_textBBWithMargin.zMin());
+            osg::Vec3 c110(_textBBWithMargin.xMax(),_textBBWithMargin.yMax(),_textBBWithMargin.zMin());
+            osg::Vec3 c010(_textBBWithMargin.xMin(),_textBBWithMargin.yMax(),_textBBWithMargin.zMin());
 
-            osg::Vec3 c001(_textBB.xMin(),_textBB.yMin(),_textBB.zMax());
-            osg::Vec3 c101(_textBB.xMax(),_textBB.yMin(),_textBB.zMax());
-            osg::Vec3 c111(_textBB.xMax(),_textBB.yMax(),_textBB.zMax());
-            osg::Vec3 c011(_textBB.xMin(),_textBB.yMax(),_textBB.zMax());
+            osg::Vec3 c001(_textBBWithMargin.xMin(),_textBBWithMargin.yMin(),_textBBWithMargin.zMax());
+            osg::Vec3 c101(_textBBWithMargin.xMax(),_textBBWithMargin.yMin(),_textBBWithMargin.zMax());
+            osg::Vec3 c111(_textBBWithMargin.xMax(),_textBBWithMargin.yMax(),_textBBWithMargin.zMax());
+            osg::Vec3 c011(_textBBWithMargin.xMin(),_textBBWithMargin.yMax(),_textBBWithMargin.zMax());
 
             unsigned int base = _coords->size();
 

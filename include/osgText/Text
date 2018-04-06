@@ -282,9 +282,6 @@ protected:
 
     virtual void computePositionsImplementation();
 
-    void computeBackdropBoundingBox();
-    void computeBoundingBoxMargin();
-
     void computeColorGradients();
     void computeColorGradientsOverall();
     void computeColorGradientsPerCharacter();

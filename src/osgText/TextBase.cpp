@@ -298,8 +298,8 @@ void TextBase::setAlignment(AlignmentType alignment)
     if (_alignment==alignment) return;
 
     _alignment = alignment;
-    computePositions();
-    // computeGlyphRepresentation();
+    //computePositions();
+    computeGlyphRepresentation();
 }
 
 void TextBase::setAxisAlignment(AxisAlignment axis)

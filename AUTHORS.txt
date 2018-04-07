@@ -5,6 +5,7 @@ OpenSceneGraph Library 3.6.0
 Firstname Surname
 -----------------
 Robert Osfield
+Don Burns
 Stephan Huber
 Paul Martz
 Laurens Voerman
@@ -176,7 +177,6 @@ John Ivar
 Gustav Haapalahti
 Erik den Dekker
 Emmanuel Roche
-Don Burns
 Domenico Mangieri
 Daniel Larimer
 Colin Dunlop

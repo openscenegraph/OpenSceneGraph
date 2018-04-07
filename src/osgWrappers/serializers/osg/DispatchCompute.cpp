@@ -1,17 +1,17 @@
-#include <osg/ComputeDispatch>
+#include <osg/DispatchCompute>
 #include <osgDB/ObjectWrapper>
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
 
 // _numGroupsX/Y/Z
-static bool checkComputeGroups( const osg::ComputeDispatch& attr )
+static bool checkComputeGroups( const osg::DispatchCompute& attr )
 {
     GLint numX = 0, numY = 0, numZ = 0;
     attr.getComputeGroups( numX, numY, numZ );
     return numX>0 && numY>0 && numZ>0;
 }
 
-static bool readComputeGroups( osgDB::InputStream& is, osg::ComputeDispatch& attr )
+static bool readComputeGroups( osgDB::InputStream& is, osg::DispatchCompute& attr )
 {
     GLint numX = 0, numY = 0, numZ = 0;
     is >> numX >> numY >> numZ;
@@ -19,7 +19,7 @@ static bool readComputeGroups( osgDB::InputStream& is, osg::ComputeDispatch& att
     return true;
 }
 
-static bool writeComputeGroups( osgDB::OutputStream& os, const osg::ComputeDispatch& attr )
+static bool writeComputeGroups( osgDB::OutputStream& os, const osg::DispatchCompute& attr )
 {
     GLint numX = 0, numY = 0, numZ = 0;
     attr.getComputeGroups( numX, numY, numZ );
@@ -27,10 +27,10 @@ static bool writeComputeGroups( osgDB::OutputStream& os, const osg::ComputeDispa
     return true;
 }
 
-REGISTER_OBJECT_WRAPPER( ComputeDispatch,
-                         new osg::ComputeDispatch,
-                         osg::ComputeDispatch,
-                         "osg::Object osg::Node osg::Drawable osg::ComputeDispatch" )
+REGISTER_OBJECT_WRAPPER( DispatchCompute,
+                         new osg::DispatchCompute,
+                         osg::DispatchCompute,
+                         "osg::Object osg::Node osg::Drawable osg::DispatchCompute" )
 {
         ADD_USER_SERIALIZER( ComputeGroups );  // _numGroupsX/Y/Z
 }

@@ -1,3 +1,15 @@
+Sat, 7 Apr 2018 07:18:41 +0100
+Author : Robert Osfield
+Updated for rc7
+
+Fri, 6 Apr 2018 20:05:26 +0100
+Author : Robert Osfield
+Refactored the way that margin is applied to the text buounding box to prevent growth of the bounding box each time Text::setPosition() is called.
+
+Fri, 6 Apr 2018 15:33:42 +0100
+Author : Robert Osfield
+Updated ChangeLog
+
 Fri, 6 Apr 2018 14:58:00 +0100
 Author : Robert Osfield
 Update ChangeLog

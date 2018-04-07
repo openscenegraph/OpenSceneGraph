@@ -9,7 +9,7 @@ SET(OPENSCENEGRAPH_SOVERSION 156)
 
 # set to 0 when not a release candidate, non zero means that any generated
 # git tags will be treated as release candidates of given number
-SET(OPENSCENEGRAPH_RELEASE_CANDIDATE 6)
+SET(OPENSCENEGRAPH_RELEASE_CANDIDATE 7)
 set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS TRUE)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 

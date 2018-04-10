@@ -1,0 +1,53 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 2018 Ralf Habacker, Daniel Wendt
+*
+* This library is open source and may be redistributed and/or modified under
+* the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+* (at your option) any later version.  The full license is in LICENSE file
+* included with this distribution, and on the openscenegraph.org website.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGVIEWER_DUMPSCENEHANDLER_H
+#define OSGVIEWER_DUMPSCENEHANDLER_H
+
+#include <osgGA/GUIEventHandler>
+#include <osgViewer/Viewer>
+
+namespace osgViewer {
+
+/**
+ * Event handler for dumping the current scene to a file, useful for debugging
+ *
+ * When the configured key is pressed, the current scene is dumped to an .osgt file
+ * located in the global temporary directory. The file name used is created from the
+ * internal template 'scenedumpXXX.osgt', where 'XXX' is incremented on each dump.
+ *
+ * To disable the generation of multiple files, a specific file name can be specified
+ * by calling setFileName() or the constructor.
+ */
+class OSGVIEWER_EXPORT DumpSceneHandler : public osgGA::GUIEventHandler
+{
+public:
+    /** set filename to save the scene into; call without or empty parameter to use internal filename template */
+    DumpSceneHandler(const std::string &filename=std::string());
+
+    virtual bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
+
+    /** set filename to save the scene into, provide empty filename to restore template usage */
+    void setFileName(const std::string &filename);
+    void getUsage(osg::ApplicationUsage &usage) const;
+
+private:
+    std::string _fileName;
+    std::string _template;
+    bool _useDefaultName;
+    int _counter;
+};
+
+}
+
+#endif

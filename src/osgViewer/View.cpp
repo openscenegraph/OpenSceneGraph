@@ -887,7 +887,7 @@ bool View::containsCamera(const osg::Camera* camera) const
 const osg::Camera* View::getCameraContainingPosition(float x, float y, float& local_x, float& local_y) const
 {
     const osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState();
-    const osgViewer::GraphicsWindow* gw = dynamic_cast<const osgViewer::GraphicsWindow*>(eventState->getGraphicsContext());
+    const osg::GraphicsContext* gw = dynamic_cast<const osg::GraphicsContext*>(eventState->getGraphicsContext())    
     bool view_invert_y = eventState->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
 
     // OSG_NOTICE<<"getCameraContainingPosition("<<x<<", "<<y<<") view_invert_y = "<<view_invert_y<<", Xmin() = "<<eventState->getXmin()<<", Xmax() = "<<eventState->getXmax()<<", Ymin() = "<<eventState->getYmin()<<", Ymax() = "<<eventState->getYmax()<<std::endl;

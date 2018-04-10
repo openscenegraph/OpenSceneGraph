@@ -34,11 +34,13 @@ SET(TARGET_H
     ${HEADER_PATH}/Viewer
     ${HEADER_PATH}/ViewerBase
     ${HEADER_PATH}/ViewerEventHandlers
+    ${HEADER_PATH}/DumpSceneHandler
 )
 
 SET(LIB_COMMON_FILES
     ${CONFIG_SOURCE_FILES}
     CompositeViewer.cpp
+    DumpSceneHandler.cpp
     GraphicsWindow.cpp
     HelpHandler.cpp
     Keystone.cpp

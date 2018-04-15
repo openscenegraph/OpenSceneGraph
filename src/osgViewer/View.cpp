@@ -885,7 +885,7 @@ bool View::containsCamera(const osg::Camera* camera) const
 const osg::Camera* View::getCameraContainingPosition(float x, float y, float& local_x, float& local_y) const
 {
     const osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState();
-    const osgViewer::GraphicsWindow* gw = dynamic_cast<const osgViewer::GraphicsWindow*>(eventState->getGraphicsContext());
+    const osg::GraphicsContext* gc = eventState->getGraphicsContext();
     bool view_invert_y = eventState->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
 
     // OSG_NOTICE<<"getCameraContainingPosition("<<x<<", "<<y<<") view_invert_y = "<<view_invert_y<<", Xmin() = "<<eventState->getXmin()<<", Xmax() = "<<eventState->getXmax()<<", Ymin() = "<<eventState->getYmin()<<", Ymax() = "<<eventState->getYmax()<<std::endl;
@@ -896,7 +896,7 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
     // if master camera has graphics context and eventState context matches then assume coordinates refer
     // to master camera
     bool masterActive = (_camera->getGraphicsContext()!=0 && _camera->getViewport());
-    bool eventStateMatchesMaster = (gw!=0) ? _camera->getGraphicsContext()==gw : false;
+    bool eventStateMatchesMaster = (gc!=0) ? _camera->getGraphicsContext()==gc : false;
 
     if (masterActive && eventStateMatchesMaster)
     {

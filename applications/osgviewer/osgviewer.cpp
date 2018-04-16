@@ -19,6 +19,7 @@
 
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
+#include <osgViewer/DumpSceneHandler>
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
@@ -146,6 +147,9 @@ int main(int argc, char** argv)
 
     // add the screen capture handler
     viewer.addEventHandler(new osgViewer::ScreenCaptureHandler);
+
+    // add the dump scene handler
+    viewer.addEventHandler(new osgViewer::DumpSceneHandler);
 
     // load the data
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);

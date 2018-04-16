@@ -21,7 +21,6 @@ SET(TARGET_H
     ${HEADER_PATH}/HalfWayMapGenerator
     ${HEADER_PATH}/HighlightMapGenerator
     ${HEADER_PATH}/IntersectionVisitor
-    ${HEADER_PATH}/IntersectVisitor
     ${HEADER_PATH}/IncrementalCompileOperation
     ${HEADER_PATH}/LineSegmentIntersector
     ${HEADER_PATH}/MeshOptimizers
@@ -65,7 +64,6 @@ SET(TARGET_SRC
     HalfWayMapGenerator.cpp
     HighlightMapGenerator.cpp
     IntersectionVisitor.cpp
-    IntersectVisitor.cpp
     IncrementalCompileOperation.cpp
     LineSegmentIntersector.cpp
     MeshOptimizers.cpp

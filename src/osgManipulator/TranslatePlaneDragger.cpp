@@ -15,6 +15,7 @@
 #include <osgManipulator/TranslatePlaneDragger>
 
 #include <osg/ShapeDrawable>
+#include <osg/Geode>
 #include <osg/Geometry>
 #include <osg/LineWidth>
 #include <osg/Quat>

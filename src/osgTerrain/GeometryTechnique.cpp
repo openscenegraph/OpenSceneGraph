@@ -907,7 +907,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
 
         if (left_tile.valid())
         {
-            if (!(left_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
+            if (left_tile->getTerrainTechnique()==0 || !(left_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
             {
                 int dirtyMask = left_tile->getDirtyMask() | TerrainTile::LEFT_EDGE_DIRTY;
                 if (updateNeighboursImmediately) left_tile->init(dirtyMask, true);
@@ -916,7 +916,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
         }
         if (right_tile.valid())
         {
-            if (!(right_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
+            if (right_tile->getTerrainTechnique()==0 || !(right_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
             {
                 int dirtyMask = right_tile->getDirtyMask() | TerrainTile::RIGHT_EDGE_DIRTY;
                 if (updateNeighboursImmediately) right_tile->init(dirtyMask, true);
@@ -925,7 +925,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
         }
         if (top_tile.valid())
         {
-            if (!(top_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
+            if (top_tile->getTerrainTechnique()==0 || !(top_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
             {
                 int dirtyMask = top_tile->getDirtyMask() | TerrainTile::TOP_EDGE_DIRTY;
                 if (updateNeighboursImmediately) top_tile->init(dirtyMask, true);
@@ -935,7 +935,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
 
         if (bottom_tile.valid())
         {
-            if (!(bottom_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
+            if (bottom_tile->getTerrainTechnique()==0 || !(bottom_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
             {
                 int dirtyMask = bottom_tile->getDirtyMask() | TerrainTile::BOTTOM_EDGE_DIRTY;
                 if (updateNeighboursImmediately) bottom_tile->init(dirtyMask, true);
@@ -985,7 +985,6 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
         }
 #endif
     }
-
 
     osg::ref_ptr<osg::Vec3Array> skirtVectors = new osg::Vec3Array((*VNG._normals));
     VNG.computeNormals();

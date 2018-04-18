@@ -625,11 +625,7 @@ class OSG_EXPORT Uniform : public UniformBase
         Int64Array* getInt64Array() { return _int64Array.get(); }
         const Int64Array* getInt64Array() const { return _int64Array.get(); }
 
-        /** Get the number that the Uniform's name maps to uniquely */
-        unsigned int getNameID() const;
-
         virtual void apply(const GLExtensions* ext, GLint location) const;
-
 
     protected:
 

@@ -329,11 +329,11 @@ class VertexNormalGenerator
             osg::Vec3 zero(0.0f,0.0f,0.0f);
             if (left_valid)
             {
-                dx = center-left;
+                dx += center-left;
             }
             if (right_valid)
             {
-                dx = right-center;
+                dx += right-center;
             }
             if (bottom_valid)
             {
@@ -993,7 +993,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
     // populate the primitive data
     //
     bool swapOrientation = !(masterLocator->orientationOpenGL());
-    bool smallTile = numVertices <= 16384;
+    bool smallTile = numVertices < 65536;
 
     // OSG_NOTICE<<"smallTile = "<<smallTile<<std::endl;
 

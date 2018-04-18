@@ -181,15 +181,13 @@ void TerrainTile::init(int dirtyMask, bool assumeMultiThreaded)
 
     if (_terrainTechnique.valid())
     {
-        _terrainTechnique->init(dirtyMask, assumeMultiThreaded);
+        _terrainTechnique->init(dirtyMask|getDirtyMask(), assumeMultiThreaded);
     }
 }
 
 void TerrainTile::setTerrainTechnique(TerrainTechnique* terrainTechnique)
 {
     if (_terrainTechnique == terrainTechnique) return;
-
-    int dirtyDelta = (_dirtyMask==NOT_DIRTY) ? 0 : -1;
 
     if (_terrainTechnique.valid())
     {
@@ -201,11 +199,9 @@ void TerrainTile::setTerrainTechnique(TerrainTechnique* terrainTechnique)
     if (_terrainTechnique.valid())
     {
         _terrainTechnique->setTerrainTile(this);
-        ++dirtyDelta;
-    }
 
-    if (dirtyDelta>0) setDirtyMask(ALL_DIRTY);
-    else if (dirtyDelta<0) setDirtyMask(NOT_DIRTY);
+        setDirtyMask(ALL_DIRTY);
+    }
 }
 
 void TerrainTile::setDirtyMask(int dirtyMask)
@@ -218,14 +214,6 @@ void TerrainTile::setDirtyMask(int dirtyMask)
 
     if (_dirtyMask!=NOT_DIRTY) dirtyDelta += 1;
 
-#if 0
-    if (dirtyDelta>0)
-    {
-        // need to signal that we need an update
-        if (_terrain) _terrain->updateTerrainTileOnNextFrame(this);
-    }
-#else
-
     // setNumChildrenRequeingUpdateTraversal() isn't thread safe so should avoid using it.
     if (dirtyDelta>0)
     {
@@ -235,7 +223,6 @@ void TerrainTile::setDirtyMask(int dirtyMask)
     {
         setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-1);
     }
-#endif
 }
 
 
@@ -324,10 +311,10 @@ void WhiteListTileLoadedCallback::loaded(osgTerrain::TerrainTile* tile, const os
     for(unsigned int i=0; i<tile->getNumColorLayers(); ++i)
     {
         osgTerrain::Layer* layer = tile->getColorLayer(i);
-        osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(layer);
-        if (imageLayer)
+        osgTerrain::ImageLayer* color_imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(layer);
+        if (color_imageLayer)
         {
-            readImageLayer(imageLayer, options);
+            readImageLayer(color_imageLayer, options);
             continue;
         }
 
@@ -372,12 +359,12 @@ void WhiteListTileLoadedCallback::loaded(osgTerrain::TerrainTile* tile, const os
     for(unsigned int i=0; i<tile->getNumColorLayers(); ++i)
     {
         osgTerrain::Layer* layer = tile->getColorLayer(i);
-        osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(layer);
-        if (imageLayer)
+        osgTerrain::ImageLayer* color_imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(layer);
+        if (color_imageLayer)
         {
-            if (imageLayer->getImage()!=0)
+            if (color_imageLayer->getImage()!=0)
             {
-                validLayer = imageLayer;
+                validLayer = color_imageLayer;
             }
             continue;
         }
@@ -417,10 +404,10 @@ void WhiteListTileLoadedCallback::loaded(osgTerrain::TerrainTile* tile, const os
         for(unsigned int i=0; i<tile->getNumColorLayers(); ++i)
         {
             osgTerrain::Layer* layer = tile->getColorLayer(i);
-            osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(layer);
-            if (imageLayer)
+            osgTerrain::ImageLayer* color_imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(layer);
+            if (color_imageLayer)
             {
-                if (imageLayer->getImage()==0)
+                if (color_imageLayer->getImage()==0)
                 {
                     tile->setColorLayer(i, validLayer);
                     break;

@@ -1217,6 +1217,7 @@ Geometry* osg::createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVe
     } \
     if (array->getBinding() == binding) return; \
     array->setBinding(binding);\
+    if (binding==osg::Array::BIND_PER_VERTEX) addVertexBufferObjectIfRequired(array); \
     if (ab==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) _containsDeprecatedData = true; \
     dirtyGLObjects();
 

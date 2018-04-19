@@ -43,6 +43,7 @@
 #include <osgDB/FileNameUtils>
 
 #include <osgUtil/TriStripVisitor>
+#include <osgUtil/MeshOptimizers>
 #include <osgUtil/SmoothingVisitor>
 #include <osgUtil/Tessellator>
 
@@ -533,8 +534,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
 
     if (colors)
     {
-        geometry->setColorArray(colors);
-        geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+        geometry->setColorArray(colors, osg::Array::BIND_PER_VERTEX);
     }
 
     if (numPointElements>0)
@@ -654,12 +654,6 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
             obj::Element& element = *(*itr);
             if (element.dataType==obj::Element::POLYGON)
             {
-
-
-
-
-
-
                 #ifdef USE_DRAWARRAYLENGTHS
                     drawArrayLengths->push_back(element.vertexIndices.size());
                 #else
@@ -804,8 +798,14 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, ObjOptio
             // tri strip polygons to improve graphics peformance
             if (!localOptions.noTriStripPolygons)
             {
-                osgUtil::TriStripVisitor tsv;
-                tsv.stripify(*geometry);
+                osgUtil::IndexMeshVisitor imv;
+                imv.makeMesh(*geometry);
+
+                osgUtil::VertexCacheVisitor vcv;
+                vcv.optimizeVertices(*geometry);
+
+                osgUtil::VertexAccessOrderVisitor vaov;
+                vaov.optimizeOrder(*geometry);
             }
 
             // if no normals present add them.

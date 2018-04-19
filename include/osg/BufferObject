@@ -152,6 +152,14 @@ class BufferObjectProfile
 class GLBufferObjectSet;
 class GLBufferObjectManager;
 
+inline unsigned int computeBufferAlignment(unsigned int pos, unsigned int bufferAlignment)
+{
+    if (bufferAlignment<2) return pos;
+    if ((pos%bufferAlignment)==0) return pos;
+    return ((pos/bufferAlignment)+1)*bufferAlignment;
+}
+
+
 class OSG_EXPORT GLBufferObject : public GraphicsObject
 {
     public:
@@ -235,9 +243,7 @@ class OSG_EXPORT GLBufferObject : public GraphicsObject
 
         unsigned int computeBufferAlignment(unsigned int pos, unsigned int bufferAlignment) const
         {
-            if (bufferAlignment<2) return pos;
-            if ((pos%bufferAlignment)==0) return pos;
-            return ((pos/bufferAlignment)+1)*bufferAlignment;
+            return osg::computeBufferAlignment(pos, bufferAlignment);
         }
 
         unsigned int            _contextID;

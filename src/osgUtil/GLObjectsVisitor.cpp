@@ -57,7 +57,7 @@ void GLObjectsVisitor::apply(osg::Drawable& drawable)
 {
     if (_drawablesAppliedSet.count(&drawable)!=0) return;
 
-    if (_checkGLErrors==osg::State::ONCE_PER_ATTRIBUTE) _renderInfo.getState()->checkGLErrors("start of Drawable::apply(osg::Drawable& drawable)");
+    if (_checkGLErrors==osg::State::ONCE_PER_ATTRIBUTE) _renderInfo.getState()->checkGLErrors("start of GLObjectsVisitor::apply(osg::Drawable& drawable)");
 
     _drawablesAppliedSet.insert(&drawable);
 
@@ -92,7 +92,7 @@ void GLObjectsVisitor::apply(osg::Drawable& drawable)
 
         drawable.compileGLObjects(_renderInfo);
 
-        if (_checkGLErrors==osg::State::ONCE_PER_ATTRIBUTE) _renderInfo.getState()->checkGLErrors("after drawable.compileGLObjects() call in Drawable::apply(osg::Drawable& drawable)  ");
+        if (_checkGLErrors==osg::State::ONCE_PER_ATTRIBUTE) _renderInfo.getState()->checkGLErrors("after drawable.compileGLObjects() call in GLObjectsVisitor::apply(osg::Drawable& drawable)  ");
     }
 
 

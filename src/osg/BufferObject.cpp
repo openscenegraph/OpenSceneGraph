@@ -140,7 +140,7 @@ void GLBufferObject::compileBuffer()
                 entry.dataSource != bd ||
                 entry.dataSize != bd->getTotalDataSize())
             {
-                unsigned int previousEndOfBufferDataMarker = computeBufferAlignment(entry.offset + entry.dataSize, bufferAlignment);
+                unsigned int previousEndOfBufferDataMarker = osg::computeBufferAlignment(entry.offset + entry.dataSize, bufferAlignment);
 
                 // OSG_NOTICE<<"GLBufferObject::compileBuffer(..) updating BufferEntry"<<std::endl;
 
@@ -158,7 +158,7 @@ void GLBufferObject::compileBuffer()
             }
             else
             {
-                newTotalSize = computeBufferAlignment(newTotalSize + entry.dataSize, bufferAlignment);
+                newTotalSize = osg::computeBufferAlignment(newTotalSize + entry.dataSize, bufferAlignment);
             }
         }
         else
@@ -1188,13 +1188,14 @@ void BufferObject::removeBufferData(BufferData* bd)
 
 unsigned int BufferObject::computeRequiredBufferSize() const
 {
+    unsigned int bufferAlignment = 4;
     unsigned int newTotalSize = 0;
     for(BufferDataList::const_iterator itr = _bufferDataList.begin();
         itr != _bufferDataList.end();
         ++itr)
     {
         BufferData* bd = *itr;
-        if (bd) newTotalSize += bd->getTotalDataSize();
+        if (bd) newTotalSize = osg::computeBufferAlignment(newTotalSize + bd->getTotalDataSize(), bufferAlignment);
         else
         {
             OSG_NOTICE<<"BufferObject::"<<this<<":"<<className()<<"::BufferObject::computeRequiredBufferSize() error, BufferData is 0x0"<<std::endl;

@@ -121,5 +121,21 @@ protected:
     std::map<unsigned int, unsigned int> _deduplicateUvs;
 }; // SharedArrayOptimizer
 
+
+inline void optimizeMesh(osg::Node* node)
+{
+    IndexMeshVisitor imv;
+    node->accept(imv);
+    imv.makeMesh();
+
+    VertexCacheVisitor vcv;
+    node->accept(vcv);
+    vcv.optimizeVertices();
+
+    VertexAccessOrderVisitor vaov;
+    node->accept(vaov);
+    vaov.optimizeOrder();
+}
+
 }
 #endif

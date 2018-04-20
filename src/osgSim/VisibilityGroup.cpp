@@ -14,7 +14,7 @@
 #include <osgSim/VisibilityGroup>
 
 #include <osgUtil/CullVisitor>
-#include <osgUtil/IntersectVisitor>
+#include <osgUtil/LineSegmentIntersector>
 
 using namespace osgSim;
 using namespace osg;
@@ -55,26 +55,21 @@ void VisibilityGroup::traverse(osg::NodeVisitor& nv)
         osg::Vec3 seg = center - eye;
 
         // perform the intersection using the given mask
-        osgUtil::IntersectVisitor iv;
-        osg::ref_ptr<osg::LineSegment> lineseg = new osg::LineSegment;
-        lineseg->set(eye, center);
-        iv.addLineSegment(lineseg.get());
+        osg::ref_ptr<osgUtil::LineSegmentIntersector> lineseg = new osgUtil::LineSegmentIntersector(eye, center);
+        osgUtil::IntersectionVisitor iv(lineseg.get());
         iv.setTraversalMask(_volumeIntersectionMask);
 
         if(_visibilityVolume.valid())
             _visibilityVolume->accept(iv);
 
         // now examine the hit record
-        if(iv.hits())
+        if(lineseg->containsIntersections())
         {
-            osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(lineseg.get());
-            if(!hitList.empty()) // we actually hit something
-            {
-                //                OSG_INFO << "Hit obstruction"<< std::endl;
-                osg::Vec3 normal = hitList.front().getWorldIntersectNormal();
-                if((normal*seg) > 0.f ) // we are inside
-                    Group::traverse(nv);
-            }
+            osgUtil::LineSegmentIntersector::Intersection intersection = lineseg->getFirstIntersection();
+            osg::Vec3 normal = intersection.getWorldIntersectNormal();
+
+            if((normal*seg) > 0.f ) // we are inside
+                Group::traverse(nv);
         }
     }
     else

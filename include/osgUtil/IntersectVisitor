@@ -29,9 +29,9 @@
 namespace osgUtil {
 
 
+/** Deprecated */
 class OSGUTIL_EXPORT Hit
 {
-    /** Deprecated */
     public:
 
         Hit();
@@ -200,7 +200,7 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
         osg::Vec3                   _pseudoEyePoint;
 };
 
-/** Picking intersection visitor specialises the IntersectVistor to allow more convenient handling of mouse picking.*/
+/** Deprecated Use LineSegmentIntersector/IntersectionVisitor or View::computeIntersections(..).*/
 class OSGUTIL_EXPORT PickVisitor : public osgUtil::IntersectVisitor
 {
     public:

@@ -16,6 +16,7 @@
 #include <osgManipulator/Command>
 
 #include <osg/ShapeDrawable>
+#include <osg/Geode>
 #include <osg/Geometry>
 #include <osg/Material>
 

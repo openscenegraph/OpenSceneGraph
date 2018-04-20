@@ -21,7 +21,6 @@
 #include <osg/BoundingSphere>
 #include <osg/MatrixTransform>
 #include <osgUtil/SceneView>
-#include <osgUtil/IntersectVisitor>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/GUIActionAdapter>
 

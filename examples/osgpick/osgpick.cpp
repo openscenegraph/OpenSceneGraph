@@ -16,9 +16,7 @@
 *  THE SOFTWARE.
 */
 
-/* osgpick sample
-* demonstrate use of osgUtil/PickVisitor for picking in a HUD or
-* in a 3d scene,
+/* osgpick sample - Mouse picking in a 3d scene,
 */
 
 #include <osgUtil/Optimizer>

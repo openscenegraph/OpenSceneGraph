@@ -12,7 +12,6 @@ SET(TARGET_SRC
     RigAttributesVisitor.cpp
     TriangleMeshSmoother.cpp
     TangentSpaceVisitor.cpp
-    TriangleStripVisitor.cpp
     IndexMeshVisitor.cpp
     UnIndexMeshVisitor.cpp)
 
@@ -49,7 +48,6 @@ SET(TARGET_H
     TangentSpaceVisitor
     TriangleMeshGraph
     TriangleMeshSmoother
-    TriangleStripVisitor
     UnIndexMeshVisitor
     WireframeVisitor
 )

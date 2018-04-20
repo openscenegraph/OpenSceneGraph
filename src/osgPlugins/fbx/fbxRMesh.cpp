@@ -9,7 +9,6 @@
 #include <osg/TexGen>
 #include <osg/TexEnvCombine>
 
-#include <osgUtil/TriStripVisitor>
 #include <osgUtil/Tessellator>
 
 #include <osgDB/ReadFile>

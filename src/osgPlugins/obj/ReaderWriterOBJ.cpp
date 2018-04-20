@@ -42,7 +42,6 @@
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
 
-#include <osgUtil/TriStripVisitor>
 #include <osgUtil/MeshOptimizers>
 #include <osgUtil/SmoothingVisitor>
 #include <osgUtil/Tessellator>
@@ -798,14 +797,7 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, ObjOptio
             // tri strip polygons to improve graphics peformance
             if (!localOptions.noTriStripPolygons)
             {
-                osgUtil::IndexMeshVisitor imv;
-                imv.makeMesh(*geometry);
-
-                osgUtil::VertexCacheVisitor vcv;
-                vcv.optimizeVertices(*geometry);
-
-                osgUtil::VertexAccessOrderVisitor vaov;
-                vaov.optimizeOrder(*geometry);
+                osgUtil::optimizeMesh(geometry);
             }
 
             // if no normals present add them.

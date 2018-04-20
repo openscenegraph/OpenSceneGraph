@@ -47,8 +47,6 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 
-#include <osgUtil/TriStripVisitor>
-
 /// \class ReaderWritterOpenCASCADE
 /// \brief contains implementation of reading IGES models
 ///        depends on OpenCascade library

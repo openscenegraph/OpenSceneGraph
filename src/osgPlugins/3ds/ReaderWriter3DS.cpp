@@ -17,8 +17,6 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/ReadFile>
 
-#include <osgUtil/TriStripVisitor>
-
 //MIKEC debug only for PrintVisitor
 #include <osg/NodeVisitor>
 
@@ -1139,10 +1137,6 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
     } else {
         fillTriangles<DrawElementsUInt>  (*geom, remappedFaces, faceCount * 3);
    }
-#if 0
-    osgUtil::TriStripVisitor tsv;
-    tsv.stripify(*geom);
-#endif
 
     return geom;
 }

@@ -190,7 +190,7 @@ public:
     /**
      *  Set the thread's schedule priority.  This is a complex method.
      *  Beware of thread priorities when using a many-to-many kernel
-     *  entity implemenation (such as IRIX pthreads).  If one is not careful
+     *  entity implementation (such as IRIX pthreads).  If one is not careful
      *  to manage the thread priorities, a priority inversion deadlock can
      *  easily occur (Although the OpenThreads::Mutex & OpenThreads::Barrier
      *  constructs have been designed with this scenario in mind).  Unless

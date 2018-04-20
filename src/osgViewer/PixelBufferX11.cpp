@@ -289,7 +289,7 @@ void PixelBufferX11::init()
 
             if (_traits->width != iWidth || _traits->height != iHeight)
             {
-                OSG_NOTICE << "PixelBufferX11::init(), pbuffer created with different size then requsted" << std::endl;
+                OSG_NOTICE << "PixelBufferX11::init(), pbuffer created with different size then requested" << std::endl;
                 OSG_NOTICE << "\tRequested size (" << _traits->width << "," << _traits->height << ")" << std::endl;
                 OSG_NOTICE << "\tPbuffer size (" << iWidth << "," << iHeight << ")" << std::endl;
                 _traits->width  = iWidth;
@@ -323,7 +323,7 @@ void PixelBufferX11::init()
                                                                                         
             if (_traits->width != iWidth || _traits->height != iHeight)
             {
-                OSG_NOTICE << "PixelBufferX11::init(), SGIX_pbuffer created with different size then requsted" << std::endl;
+                OSG_NOTICE << "PixelBufferX11::init(), SGIX_pbuffer created with different size then requested" << std::endl;
                 OSG_NOTICE << "\tRequested size (" << _traits->width << "," << _traits->height << ")" << std::endl;
                 OSG_NOTICE << "\tPbuffer size (" << iWidth << "," << iHeight << ")" << std::endl;
                 _traits->width =  iWidth;

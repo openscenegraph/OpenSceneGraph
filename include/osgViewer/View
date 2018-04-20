@@ -47,7 +47,7 @@ class OSGVIEWER_EXPORT ViewConfig : public osg::Object
         /** configure method that is overridden by Config subclasses.*/
         virtual void configure(osgViewer::View& /*view*/) const {}
 
-        /** convenience method for getting the relavent display settings to use.*/
+        /** convenience method for getting the relevant display settings to use.*/
         virtual osg::DisplaySettings* getActiveDisplaySetting(osgViewer::View& view) const;
 };
 

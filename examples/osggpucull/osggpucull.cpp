@@ -124,7 +124,7 @@
       but if Robert will accept its current implementations ( I mean - primitive
       sets that have osg::TextureBuffer in constructor ), I may add it to
       osg/include/PrimitiveSet header.
-    - I used BufferTemplate class writen and published by Aurelien in submission forum
+    - I used BufferTemplate class written and published by Aurelien in submission forum
       some time ago. For some reason this class never got into osg/include, but is
       really needed during creation of UBOs, TBOs, and possibly SSBOs in the future.
       I added std::vector specialization to that template class.
@@ -1145,7 +1145,7 @@ osg::Group* createAirplane( float detailRatio, const osg::Vec4& hullColor, const
     return root.release();
 }
 
-// createStaticRendering() shows how to use any OSG graph ( wheter it is single osg::Geode, or sophisticated osg::PagedLOD tree covering whole earth )
+// createStaticRendering() shows how to use any OSG graph ( whether it is single osg::Geode, or sophisticated osg::PagedLOD tree covering whole earth )
 // as a source of  instance data. This way, the OSG graph of arbitrary size is at first culled using typical OSG mechanisms, then remaining osg::Geometries
 // are sent to cull shader ( cullProgram ). Cull shader does not draw anything to screen ( thanks to GL_RASTERIZER_DISCARD mode ), but calculates if particular
 // instances - sourced from above mentioned osg::Geometries - are visible and what LODs for these instances should be rendered.

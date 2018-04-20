@@ -122,7 +122,7 @@ void GLObjectManager::flushAllDeletedGLObjects()
 
 void GLObjectManager::deleteAllGLObjects()
 {
-    OSG_INFO<<"void "<<_name<<"::deleteAllGLObjects() : Not Implementated"<<std::endl;
+    OSG_INFO<<"void "<<_name<<"::deleteAllGLObjects() : Not Implemented"<<std::endl;
 }
 
 void GLObjectManager::discardAllGLObjects()
@@ -145,6 +145,6 @@ void GLObjectManager::scheduleGLObjectForDeletion(GLuint globj)
 
 GLuint GLObjectManager::createGLObject()
 {
-    OSG_INFO<<"void "<<_name<<"::createGLObject() : Not Implementated"<<std::endl;
+    OSG_INFO<<"void "<<_name<<"::createGLObject() : Not Implemented"<<std::endl;
     return 0;
 }

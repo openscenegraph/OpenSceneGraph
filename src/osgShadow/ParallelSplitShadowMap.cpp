@@ -104,7 +104,7 @@ std::string ParallelSplitShadowMap::FragmentShaderGenerator::generateGLSL_Fragme
         for (unsigned int i=0;i<nbrSplits;i++)    {
             if (!filtered) {
                 sstr << "    float shadow"    <<    i    <<" = shadow2D( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"].xyz).r;"   << std::endl;
-                sstr << " shadow"    <<    i    <<" = step(0.25,shadow"    <<    i    <<");" << std::endl; // reduce shadow artefacts
+                sstr << " shadow"    <<    i    <<" = step(0.25,shadow"    <<    i    <<");" << std::endl; // reduce shadow artifacts
             } else {
 
 
@@ -129,13 +129,13 @@ std::string ParallelSplitShadowMap::FragmentShaderGenerator::generateGLSL_Fragme
                     <<" + shadow3"    <<    i
                     << ")/6.0;"<< std::endl;
 
-                //sstr << " shadow"    <<    i    <<" = shadow"    <<    i    <<" * step(0.025,shadow"    <<    i    <<");" << std::endl; // reduce shadow artefacts
+                //sstr << " shadow"    <<    i    <<" = shadow"    <<    i    <<" * step(0.025,shadow"    <<    i    <<");" << std::endl; // reduce shadow artifacts
 
                 //sstr << "    float shadow02"    <<    i    <<" = (shadow0"    <<    i    <<"+shadow2"    <<    i    <<")*0.5;"<< std::endl;
                 //sstr << "    float shadow13"    <<    i    <<" = (shadow1"    <<    i    <<"+shadow3"    <<    i    <<")*0.5;"<< std::endl;
                 //sstr << "    float shadowSoft"    <<    i    <<" = (shadow02"    <<    i    <<"+shadow13"    <<    i    <<")*0.5;"<< std::endl;
                 //sstr << "    float shadow"    <<    i    <<" = (shadowSoft"    <<    i    <<"+shadowOrg"    <<    i    <<")*0.5;"<< std::endl;
-                //sstr << " shadow"    <<    i    <<" = step(0.25,shadow"    <<    i    <<");" << std::endl; // reduce shadow artefacts
+                //sstr << " shadow"    <<    i    <<" = step(0.25,shadow"    <<    i    <<");" << std::endl; // reduce shadow artifacts
             }
         }
 
@@ -417,7 +417,7 @@ void ParallelSplitShadowMap::init()
 
             //////////////////////////////////////////////////////////////////////////
             if ( ! _GLSL_shadow_filtered ) {
-                // if not glsl filtering enabled then we should force front face culling to reduce the number of shadow artefacts.
+                // if not glsl filtering enabled then we should force front face culling to reduce the number of shadow artifacts.
                 osg::ref_ptr<osg::CullFace> cull_face = new osg::CullFace;
                 cull_face->setMode(osg::CullFace::FRONT);
                 stateset->setAttribute(cull_face.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);

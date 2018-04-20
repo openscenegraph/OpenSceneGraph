@@ -269,7 +269,7 @@ simage_tiff_error(char * buffer, int buflen)
 
 /// Generates a std::string from a printf format string and a va_list.
 /// Took & adapted from the man page of printf.
-///\todo Externalize this function to make is useable for all OSG?
+///\todo Externalize this function to make is usable for all OSG?
 std::string doFormat(const char* fmt, va_list ap) {
     static const int MSG_BUFSIZE = 256;            // Initial size of the buffer used for formatting
     static const int MAX_BUFSIZE = 256*1024;    // Maximum size of the buffer used for formatting

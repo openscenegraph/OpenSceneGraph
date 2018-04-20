@@ -39,7 +39,7 @@
 #include "stdio.h"
 
 
-// callback to make the loaded model oscilate up and down.
+// callback to make the loaded model oscillate up and down.
 class ModelTransformCallback : public osg::NodeCallback
 {
     public:

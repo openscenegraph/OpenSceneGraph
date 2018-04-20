@@ -23,7 +23,7 @@
 #include <vector>
 
 #ifndef CALLBACK
-    /* Win32 calling conventions. (or a least thats what the GLUT example tess.c uses.)*/
+    /* Win32 calling conventions. (or a least that's what the GLUT example tess.c uses.)*/
     #define CALLBACK
 #endif
 

@@ -53,7 +53,7 @@ Caveats:
     - It's possible to render the whole sphere by specifying elevation
       and azimuth ranges round the full 360 degrees. When doing
       so you may consider switching the planes, spokes, and edge lines
-      off, to avoid rendering artefacts, e.g. the upper and lower
+      off, to avoid rendering artifacts, e.g. the upper and lower
       planes will be coincident.
 
 */
@@ -214,27 +214,27 @@ public:
     /** A list of vertex arrays representing a list of lines.*/
     typedef std::vector< osg::ref_ptr<osg::Vec3Array> > LineList;
 
-    /** Compute the interesection lines between subgraph and this sphere segment.
-      * The matrix is the transform that takes the subgraph into the same coordiante frame as the sphere segment.
+    /** Compute the intersection lines between subgraph and this sphere segment.
+      * The matrix is the transform that takes the subgraph into the same coordinate frame as the sphere segment.
       * The resulting intersections are in the coordinate frame of the sphere segment. */
     LineList computeIntersection(const osg::Matrixd& matrix, osg::Node* subgraph);
 
-    /** Compute the interesection lines between specified drawable and this sphere segment.
-      * The matrix is the transform that takes the subgraph into the same coordiante frame as the sphere segment.
+    /** Compute the intersection lines between specified drawable and this sphere segment.
+      * The matrix is the transform that takes the subgraph into the same coordinate frame as the sphere segment.
       * The resulting intersections are in the coordinate frame of the sphere segment. */
     LineList computeIntersection(const osg::Matrixd& matrix, osg::Drawable* drawable);
 
-    /** Compute the interesection lines between subgraph and this sphere segment.
-      * The matrix is the transform that takes the subgraph into the same coordiante frame as the sphere segment.
+    /** Compute the intersection lines between subgraph and this sphere segment.
+      * The matrix is the transform that takes the subgraph into the same coordinate frame as the sphere segment.
       * The resulting intersections are in the coordinate frame of the sphere segment. */
     osg::Node* computeIntersectionSubgraph(const osg::Matrixd& matrix, osg::Node* subgraph);
 
-    /** Compute the interesection lines between specified drawable and this sphere segment.
-      * The matrix is the transform that takes the subgraph into the same coordiante frame as the sphere segment.
+    /** Compute the intersection lines between specified drawable and this sphere segment.
+      * The matrix is the transform that takes the subgraph into the same coordinate frame as the sphere segment.
       * The resulting intersections are in the coordinate frame of the sphere segment. */
     osg::Node* computeIntersectionSubgraph(const osg::Matrixd& matrix, osg::Drawable* drawable);
 
-    /** recompute the vertex positions of the rendering meshes/lines thtat represent the sphere segment.*/
+    /** recompute the vertex positions of the rendering meshes/lines that represent the sphere segment.*/
     void updatePositions();
 
     /** recompute the primitives rendering meshes/lines thtat represent the sphere segment.*/

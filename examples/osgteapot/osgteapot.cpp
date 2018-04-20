@@ -235,7 +235,7 @@ class Teapot : public osg::Drawable
         // of OpenGL primitives.
         virtual void drawImplementation(osg::RenderInfo&) const
         {
-            // teapot(..) doens't use vertex arrays at all so we don't need to toggle their state
+            // teapot(..) doesn't use vertex arrays at all so we don't need to toggle their state
             // if we did we'd need to something like following call
             // state.disableAllVertexArrays(), see src/osg/Geometry.cpp for the low down.
 

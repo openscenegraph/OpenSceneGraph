@@ -50,7 +50,7 @@ int main(int argc, char** argv)
         if (script.valid()) scripts.push_back(script.get());
     }
 
-    // assgin script engine to scene graphs
+    // assign script engine to scene graphs
     model->getOrCreateUserDataContainer()->addUserObject(osgDB::readFile<osg::ScriptEngine>("ScriptEngine.lua"));
     model->getOrCreateUserDataContainer()->addUserObject(osgDB::readFile<osg::ScriptEngine>("ScriptEngine.python"));
     model->getOrCreateUserDataContainer()->addUserObject(osgDB::readFile<osg::ScriptEngine>("ScriptEngine.js"));

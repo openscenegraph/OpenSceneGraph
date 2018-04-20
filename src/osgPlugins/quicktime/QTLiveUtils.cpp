@@ -281,9 +281,9 @@ void probe_video_digitizer_components()
 
           // #define videoDigitizerComponentType = 'vdig'
           ComponentDescription video_component_description;
-          video_component_description.componentType         = 'vdig'; /* A unique 4-byte code indentifying the command set */
+          video_component_description.componentType         = 'vdig'; /* A unique 4-byte code identifying the command set */
           video_component_description.componentSubType      = 0;      /* Particular flavor of this instance */
-          video_component_description.componentManufacturer = 0;      /* Vendor indentification */
+          video_component_description.componentManufacturer = 0;      /* Vendor identification */
           video_component_description.componentFlags        = 0;      /* 8 each for Component,Type,SubType,Manuf/revision */
           video_component_description.componentFlagsMask    = 0;      /* Mask for specifying which flags to consider in search, zero during registration */
           long num_video_components = CountComponents (&video_component_description);
@@ -378,9 +378,9 @@ std::vector<OSG_SGDeviceList> probe_sequence_grabber_components()
 
           // #define videoDigitizerComponentType = 'vdig'
           ComponentDescription sg_component_description;
-          sg_component_description.componentType         = SeqGrabComponentType; /* A unique 4-byte code indentifying the command set */
+          sg_component_description.componentType         = SeqGrabComponentType; /* A unique 4-byte code identifying the command set */
           sg_component_description.componentSubType      = 0L;      /* Particular flavor of this instance */
-          sg_component_description.componentManufacturer = 'appl';  /* Vendor indentification */
+          sg_component_description.componentManufacturer = 'appl';  /* Vendor identification */
           sg_component_description.componentFlags        = 0L;      /* 8 each for Component,Type,SubType,Manuf/revision */
           sg_component_description.componentFlagsMask    = 0L;      /* Mask for specifying which flags to consider in search, zero during registration */
           long num_sg_components = CountComponents (&sg_component_description);
@@ -547,9 +547,9 @@ void get_video_device_bounds_idstr(short deviceID, short deviceInputID, short& o
           QTScopedMovieInitialiser qt_movie_init;
 
           ComponentDescription sg_component_description;
-          sg_component_description.componentType         = SeqGrabComponentType; /* A unique 4-byte code indentifying the command set */
+          sg_component_description.componentType         = SeqGrabComponentType; /* A unique 4-byte code identifying the command set */
           sg_component_description.componentSubType      = 0L;      /* Particular flavor of this instance */
-          sg_component_description.componentManufacturer = 0L;      /* Vendor indentification */
+          sg_component_description.componentManufacturer = 0L;      /* Vendor identification */
           sg_component_description.componentFlags        = 0L;      /* 8 each for Component,Type,SubType,Manuf/revision */
           sg_component_description.componentFlagsMask    = 0L;      /* Mask for specifying which flags to consider in search, zero during registration */
           long num_sg_components = CountComponents (&sg_component_description);
@@ -689,9 +689,9 @@ void get_sound_device_idstr(short soundDeviceID, short soundDeviceInputID, Str63
 
           // #define videoDigitizerComponentType = 'vdig'
           ComponentDescription sg_component_description;
-          sg_component_description.componentType         = SeqGrabComponentType; /* A unique 4-byte code indentifying the command set */
+          sg_component_description.componentType         = SeqGrabComponentType; /* A unique 4-byte code identifying the command set */
           sg_component_description.componentSubType      = 0L;      /* Particular flavor of this instance */
-          sg_component_description.componentManufacturer = 0L;      /* Vendor indentification */
+          sg_component_description.componentManufacturer = 0L;      /* Vendor identification */
           sg_component_description.componentFlags        = 0L;      /* 8 each for Component,Type,SubType,Manuf/revision */
           sg_component_description.componentFlagsMask    = 0L;      /* Mask for specifying which flags to consider in search, zero during registration */
           long num_sg_components = CountComponents (&sg_component_description);
@@ -775,7 +775,7 @@ void get_sound_device_idstr(short soundDeviceID, short soundDeviceInputID, Str63
 // You can use the VDSetDigitizerRect function to set the size and location of the digitizer rectangle.
 // The VDGetDigitizerRect function lets you retrieve the size and location of this rectangle.
 
-// Imput Source
+// Input Source
 // Some of these functions provide information about the available video inputs. Applications can use
 // the VDGetNumberOfInputs function to determine the number of video inputs supported by the digitizer component.
 // The VDGetInputFormat function allows applications to find out the video format (composite, s-video, or component) employed by a specified input.

@@ -28,7 +28,7 @@
 * Class to load a HDR file
 * An HDR file is an image file where each pixel is stored as float values in opposite
 * of traditional other formats (BMP, TGA, etc.) where integerer values are used.
-* see http://www.flipcode.com/cgi-bin/msg.cgi?showThread=COTD-HDRImageReader&forum=cotd&id=-1 for more informations
+* see http://www.flipcode.com/cgi-bin/msg.cgi?showThread=COTD-HDRImageReader&forum=cotd&id=-1 for more information
 */
 
 #ifndef HDRLOADER_H

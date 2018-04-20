@@ -90,7 +90,7 @@ class OSGSHADOW_EXPORT MinimalShadowMap : public StandardShadowMap
         // when scene objects are put on earth ellipsoid surface.
 
         // Other scenarios are also possible for example when models are
-        // built in XZY space which would require identity matrix with swapped colums
+        // built in XZY space which would require identity matrix with swapped columns
 
         osg::Matrix                        _modellingSpaceToWorld;
         float                              _maxFarPlane;

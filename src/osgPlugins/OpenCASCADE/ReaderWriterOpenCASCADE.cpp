@@ -321,7 +321,7 @@ osg::ref_ptr<osg::Geode> ReaderWritterOpenCASCADE::OCCTKReader::igesToOSGGeode(c
     _colorTool = XCAFDoc_DocumentTool::ColorTool(doc->Main());
 
     // free shape sequence
-    // get sequence of free shape lables
+    // get sequence of free shape labels
     TDF_LabelSequence freeShapes;
     _assembly->GetFreeShapes(freeShapes);
 

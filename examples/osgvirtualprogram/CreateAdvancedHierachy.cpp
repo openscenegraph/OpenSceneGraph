@@ -211,7 +211,7 @@ osg::Node * CreateAdvancedHierarchy( osg::Node * model )
 
     // Set default VirtualProgram in root StateSet
     // With main vertex and main fragment shaders calling
-    // lighting and texture functions defined in aditional shaders
+    // lighting and texture functions defined in additional shaders
     // Lighting is done per vertex using simple directional light
     // Texture uses stage 0 TexCoords and TexMap
 

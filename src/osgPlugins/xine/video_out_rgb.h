@@ -77,7 +77,7 @@ typedef enum
  * RGBout will pass it a buffer containing pixels in the format
  * specified by "format" (generally you have only to BLIT
  * the buffer if you want to display the frame).
- * "levels" selects which RGB level is visible (if you dont't
+ * "levels" selects which RGB level is visible (if you don't
  * need this feature, set it to PXLEVEL_ALL).
  *
  * N.B.: DO NOT FREE THE BUFFER

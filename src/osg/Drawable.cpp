@@ -127,7 +127,7 @@ public:
 
     virtual void deleteAllGLObjects()
     {
-         OSG_INFO<<"DisplayListManager::deleteAllGLObjects() Not currently implementated"<<std::endl;
+         OSG_INFO<<"DisplayListManager::deleteAllGLObjects() Not currently implemented"<<std::endl;
     }
 
     virtual void discardAllGLObjects()

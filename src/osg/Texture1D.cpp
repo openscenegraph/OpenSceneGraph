@@ -211,7 +211,7 @@ void Texture1D::apply(State& state) const
 
         applyTexParameters(GL_TEXTURE_1D,state);
 
-        // update the modified count to show that it is upto date.
+        // update the modified count to show that it is up to date.
         getModifiedCount(contextID) = _image->getModifiedCount();
 
         applyTexImage1D(GL_TEXTURE_1D,_image.get(),state, _textureWidth, _numMipmapLevels);

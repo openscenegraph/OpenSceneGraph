@@ -434,7 +434,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         void compileCompleted(DatabaseRequest* databaseRequest);
 
         /** Iterate through the active PagedLOD nodes children removing
-          * children which havn't been visited since specified expiryTime.
+          * children which haven't been visited since specified expiryTime.
           * note, should be only be called from the update thread. */
         virtual void removeExpiredSubgraphs(const osg::FrameStamp &frameStamp);
 

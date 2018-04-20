@@ -266,7 +266,7 @@ bool GeoState_readLocalData(Object& obj, Input& fr)
     if (fr[0].matchWord("texgening") && StateSet_matchModeStr(fr[1].getStr(),mode))
     {
         // leave up to a tex gen object to set modes associated with TexGen
-        // as there are mutiple modes associated with TexGen.  See below
+        // as there are multiple modes associated with TexGen.  See below
         // attribute reading code.
         texgening = mode;
         fr+=2;

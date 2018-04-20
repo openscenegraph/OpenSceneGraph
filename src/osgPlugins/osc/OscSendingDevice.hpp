@@ -36,7 +36,7 @@
  * The sending device knows how to handle Vec2, Vec3, Vec4, Quat, Plane and Matrix values
  *
  * TUIO-specific notes:
- * If you want to explicitely set the application-name when sending multi-touch-events, use
+ * If you want to explicitly set the application-name when sending multi-touch-events, use
  * osc_device->setUserValue("tuio_application_name", "<your application name>");
  * You'll also have to add the address-part, e.g.
  * osc_device->setUserValue("tuio_application_name", "my_tuio_application@192.168.1.1");

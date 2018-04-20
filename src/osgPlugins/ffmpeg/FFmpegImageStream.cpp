@@ -50,7 +50,7 @@ FFmpegImageStream::~FFmpegImageStream()
     OSG_INFO<<"Have done quit"<<std::endl;
 
     // release athe audio streams to make sure that the decoder doesn't retain any external
-    // refences.
+    // references.
     getAudioStreams().clear();
 
     // destroy the decoder and associated threads

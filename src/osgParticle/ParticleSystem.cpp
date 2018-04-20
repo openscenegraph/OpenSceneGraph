@@ -232,7 +232,7 @@ void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo
 
     if (_useVertexArray)
     {
-        // note from Robert Osfield, September 2016, this block implementated for backwards compatibility but is pretty way vertex array/shaders were hacked into osgParticle
+        // note from Robert Osfield, September 2016, this block implemented for backwards compatibility but is pretty way vertex array/shaders were hacked into osgParticle
 
         // set up arrays and primitives ready to fill in
         if (!ad.vertices.valid())

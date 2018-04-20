@@ -91,7 +91,7 @@ public:
     virtual bool outside(const osg::Vec3 &testpoint) const;
 
     /** Tessellate the constraint loops so that the crossing points are interpolated
-     * and added to the contraints for the triangulation. */
+     * and added to the constraints for the triangulation. */
     void handleOverlaps(void);
 
 protected:

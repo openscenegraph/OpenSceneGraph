@@ -45,10 +45,10 @@ public:
     Affinity& operator = (const Affinity& rhs) { if (&rhs!=this) { activeCPUs = rhs.activeCPUs; } return *this; }
 
 
-    /** add a specfied cpu core from the list to have affinity to. */
+    /** add a specified cpu core from the list to have affinity to. */
     void add(unsigned int cpuNmber) { activeCPUs.insert(cpuNmber); }
 
-    /** remove a specfied cpu core from the list to have affinity to. */
+    /** remove a specified cpu core from the list to have affinity to. */
     void remove(unsigned int cpuNmber) { activeCPUs.erase(cpuNmber); }
 
     /** return true if affinity has been provided for specific CPU cores.*/

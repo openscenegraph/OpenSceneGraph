@@ -55,7 +55,7 @@ void RigTransformSoftware::buildMinimumUpdateSet( const RigGeometry&rig )
 
         if (bonename.empty())
         {
-            OSG_WARN << "RigTransformSoftware::VertexInfluenceMap contains unamed bone IndexWeightList" << std::endl;
+            OSG_WARN << "RigTransformSoftware::VertexInfluenceMap contains unnamed bone IndexWeightList" << std::endl;
         }
         for(IndexWeightList::const_iterator infit = inflist.begin(); infit!=inflist.end(); ++infit)
         {
@@ -165,7 +165,7 @@ bool RigTransformSoftware::init(RigGeometry&rig)
 
         if (bonename.empty())
         {
-            OSG_WARN << "RigTransformSoftware::VertexInfluenceMap contains unamed bone IndexWeightList" << std::endl;
+            OSG_WARN << "RigTransformSoftware::VertexInfluenceMap contains unnamed bone IndexWeightList" << std::endl;
         }
         BoneMap::const_iterator bmit = boneMap.find(bonename);
         if (bmit == boneMap.end() )

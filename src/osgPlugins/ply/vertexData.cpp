@@ -28,7 +28,7 @@ using namespace std;
 using namespace ply;
 
 
-/*  Contructor.  */
+/*  Constructor.  */
 VertexData::VertexData()
     : _invertFaces( false )
 {

@@ -741,7 +741,7 @@ ReaderWriterSTL::ReaderObject::ReadResult ReaderWriterSTL::BinaryReaderObject::r
          *
          * The magics files may use whether per-face or per-object colors
          * for a given face, according to the value of the last bit (0 = per-face, 1 = per-object)
-         * Moreover, magics uses RGB instead of BGR (as the other softwares)
+         * Moreover, magics uses RGB instead of BGR (as the other software)
          */
         if (!_color.valid())
         {

@@ -91,7 +91,7 @@ public:
    // 2.
    // CreateAndRunWithVideoDigitizer
        void createAndRunWithVideoDigitizer(std::string fileName);
-   // Create the Video Digitizer (using GWorld Pixmap as target mamory)
+   // Create the Video Digitizer (using GWorld Pixmap as target memory)
    void createVideoDigitizer();
 
    // Thread run method

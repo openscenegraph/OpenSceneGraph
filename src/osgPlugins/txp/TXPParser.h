@@ -59,7 +59,7 @@ osg::Texture2D* getTemplateTexture(trpgrImageHelper& image_helper, trpgLocalMate
 // It is better since all the geometry children will be
 // added into one Geode node as drawables, then having one
 // geode node per child
-// Means, instad of having
+// Means, instead of having
 // Group
 //    +-----------
 //    |            |

@@ -204,7 +204,7 @@ protected:
         typedef std::vector<int> FaceList;
         typedef std::map<std::string,osg::StateSet*> GeoStateMap;
 
-        osg::Texture2D* createTexture(Lib3dsTextureMap *texture,const char* label,bool& transparancy);
+        osg::Texture2D* createTexture(Lib3dsTextureMap *texture,const char* label,bool& transparency);
         StateSetInfo createStateSet(Lib3dsMaterial *materials);
         osg::Drawable* createDrawable(Lib3dsMesh *meshes,FaceList& faceList, const osg::Matrix * matrix, StateSetInfo & ssi, bool smoothVertexNormals);
 
@@ -1205,7 +1205,7 @@ osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *
         osg::Texture2D* osg_texture = new osg::Texture2D;
         osg_texture->setImage(osg_image.get());
         osg_texture->setName(texture->name);
-        // does the texture support transparancy?
+        // does the texture support transparency?
         transparency = ((texture->flags)&LIB3DS_TEXTURE_ALPHA_SOURCE)!=0;
 
         // what is the wrap mode of the texture.

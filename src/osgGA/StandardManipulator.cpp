@@ -831,8 +831,8 @@ bool StandardManipulator::setCenterByMousePointerIntersection( const GUIEventAda
 }
 
 
-/** Makes mouse pointer intersection test with the geometry bellow the pointer
-    and starts animation to center camera to look at the closest hit bellow the mouse pointer.
+/** Makes mouse pointer intersection test with the geometry below the pointer
+    and starts animation to center camera to look at the closest hit below the mouse pointer.
 
     If there is a hit, animation is started and true is returned.
     Otherwise, the method returns false.*/

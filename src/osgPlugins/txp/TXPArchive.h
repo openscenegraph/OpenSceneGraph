@@ -107,7 +107,7 @@ namespace txp
             return _lights[i];
         };
 
-        // Gets some informations for a given tile
+        // Gets some information for a given tile
         struct TileInfo
         {
             osg::Vec3           center;

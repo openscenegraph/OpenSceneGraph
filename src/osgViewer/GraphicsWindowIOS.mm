@@ -875,7 +875,7 @@ bool GraphicsWindowIOS::realizeImplementation()
         wsi->getScreenSettings((*_traits), screenSettings);
         screen = wsi->getUIScreen((*_traits));
     }else{
-        OSG_FATAL << "GraphicsWindowIOS::realizeImplementation: ERROR: Failed to create IOS windowing system, OSG will be unable to create a vaild gl context and will not be able to render." << std::endl;
+        OSG_FATAL << "GraphicsWindowIOS::realizeImplementation: ERROR: Failed to create IOS windowing system, OSG will be unable to create a valid gl context and will not be able to render." << std::endl;
         return false;
     }
 

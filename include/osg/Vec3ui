@@ -28,7 +28,7 @@ class Vec3ui
         /** Number of vector components. */
         enum { num_components = 3 };
         
-        /** Vec member varaible. */
+        /** Vec member variable. */
         value_type _v[3];
 
         Vec3ui() { _v[0]=0; _v[1]=0; _v[2]=0; }

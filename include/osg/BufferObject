@@ -437,10 +437,10 @@ class OSG_EXPORT BufferObject : public Object
         const BufferObjectProfile& getProfile() const { return _profile; }
 
 
-        /** Set whether the BufferObject should use a GLBufferObject just for copying the BufferData and release it immmediately so that it may be reused.*/
+        /** Set whether the BufferObject should use a GLBufferObject just for copying the BufferData and release it immediately so that it may be reused.*/
         void setCopyDataAndReleaseGLBufferObject(bool copyAndRelease) { _copyDataAndReleaseGLBufferObject = copyAndRelease; }
 
-        /** Get whether the BufferObject should use a GLBufferObject just for copying the BufferData and release it immmediately.*/
+        /** Get whether the BufferObject should use a GLBufferObject just for copying the BufferData and release it immediately.*/
         bool getCopyDataAndReleaseGLBufferObject() const { return _copyDataAndReleaseGLBufferObject; }
 
 

@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
                 sampler2=(osg::Sampler*)(*it)->getTextureAttribute(0, osg::StateAttribute::SAMPLER);
         }
         if(sampler1.valid()&&sampler2.valid()){
-            OSG_WARN<<"2samplers manipulator setted"<<std::endl;
+            OSG_WARN<<"2samplers manipulator set"<<std::endl;
             viewer.addEventHandler(new SamplersKeyboardEventHandler(sampler1.get(), sampler2.get()));
         }
     }
@@ -185,7 +185,7 @@ int main(int argc, char* argv[])
             im->dirty();
             tex2->setImage(im);
         }
-        ///Overrided Filtering setup
+        ///Overridden Filtering setup
         tex1->setFilter(osg::Texture::MAG_FILTER,osg::Texture::NEAREST);
         tex1->setFilter(osg::Texture::MIN_FILTER,osg::Texture::NEAREST);
 

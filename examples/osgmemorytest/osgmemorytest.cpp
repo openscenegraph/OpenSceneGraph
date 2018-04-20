@@ -326,7 +326,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--texture <width> <height> <depth>","Allocate a 3D texture of specified dimensions.");
     arguments.getApplicationUsage()->addCommandLineOption("--texture <width> <height>","Allocate a 2D texture of specified dimensions.");
     arguments.getApplicationUsage()->addCommandLineOption("--texture <width>","Allocate a 1D texture of specified dimensions.");
-    arguments.getApplicationUsage()->addCommandLineOption("--geometry <width> <height>","Allocate a osg::Geometry representing a grid of specified size, using OpenGL Dislay Lists.");
+    arguments.getApplicationUsage()->addCommandLineOption("--geometry <width> <height>","Allocate a osg::Geometry representing a grid of specified size, using OpenGL Display Lists.");
     arguments.getApplicationUsage()->addCommandLineOption("--geometry-va <width> <height>","Allocate a osg::Geometry representing a grid of specified size, using Vertex Arrays.");
     arguments.getApplicationUsage()->addCommandLineOption("--geometry-vbo <width> <height>","Allocate a osg::Geometry representing a grid of specified size, using Vertex Buffer Objects.");
     arguments.getApplicationUsage()->addCommandLineOption("--fbo <width> <height>","Allocate a FrameBufferObject of specified dimensions.");

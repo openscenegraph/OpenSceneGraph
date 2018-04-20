@@ -395,7 +395,7 @@ void Timeout::traverse(osg::NodeVisitor& nv)
     {
         if (strcmp(nv.className(),"FindOperatorsVisitor")==0)
         {
-            OSG_NOTICE<<"Timout::traverse() "<<nv.className()<<", ignoring traversal"<<std::endl;
+            OSG_NOTICE<<"Timeout::traverse() "<<nv.className()<<", ignoring traversal"<<std::endl;
         }
         else
         {

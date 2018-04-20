@@ -1265,7 +1265,7 @@ void StateSet::addUniform(UniformBase* uniform, StateAttribute::OverrideValue va
         {
             if (itr->second.first==uniform)
             {
-                // chaning just override
+                // changing just override
                 itr->second.second = value&(StateAttribute::OVERRIDE|StateAttribute::PROTECTED);
             }
             else

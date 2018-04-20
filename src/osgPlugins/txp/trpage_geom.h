@@ -1681,7 +1681,7 @@ TX_EXDECL class TX_CLDECL trpgTileTable : public trpgReadWriteable
 {
 public:
     // Tiles can be stored individually (External and ExternalSaved) or in grouped files (Local).
-    // ExternalSaved still have an entry in the table. In this case the addess data is not valid.
+    // ExternalSaved still have an entry in the table. In this case the address data is not valid.
 
     enum TileMode {Local,External, ExternalSaved};
 
@@ -1943,7 +1943,7 @@ public:
     */
     bool    GetLocalMaterial(int32 nth,trpgLocalMaterial &locMat) const;
     /* Return a pointer to the list of locally defined materials.
-       See GetLocalMaterial for an explantion of local materials.
+       See GetLocalMaterial for an explanation of local materials.
     */
     const std::vector<trpgLocalMaterial> *GetLocalMaterialList(void) const;
     // {secret}
@@ -2618,7 +2618,7 @@ protected:
    In TerraPage 2.0 we added the Range Index field.  This field is here to help
    run-time systems gracefully degrade visual fidelity.  The trpgLod node still acts
    like a normal LOD and you can safely ignore the range index field.  If, however,
-   you want to use it, please read the documention on the trpgRangeTable for further
+   you want to use it, please read the documentation on the trpgRangeTable for further
    information.
 
    {group:Read/Write Classes}
@@ -2692,7 +2692,7 @@ protected:
    don't sweat it.
 
    If you're doing a TerraPage writer, this is fairly simple.  Obey the ordering
-   contraints and try to keep this simple.  Ideally that would mean just a few
+   constraints and try to keep this simple.  Ideally that would mean just a few
    trpgGeometry nodes below this node.  Also keep in mind that layering works
    very poorly on most OpenGL systems.
    {group:Read/Write Classes}

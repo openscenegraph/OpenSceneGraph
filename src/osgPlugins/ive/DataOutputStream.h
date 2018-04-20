@@ -110,7 +110,7 @@ public:
 
     void writeVolumeLayer(const osgVolume::Layer* layer);
     void writeVolumeLocator(const osgVolume::Locator* locator);
-    void writeVolumeProperty(const osgVolume::Property* propety);
+    void writeVolumeProperty(const osgVolume::Property* property);
 
     void writeObject(const osg::Object* object);
 

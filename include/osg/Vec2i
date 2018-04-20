@@ -28,7 +28,7 @@ class Vec2i
         /** Number of vector components. */
         enum { num_components = 2 };
         
-        /** Vec member varaible. */
+        /** Vec member variable. */
         value_type _v[2];
 
         Vec2i() { _v[0]=0; _v[1]=0; }

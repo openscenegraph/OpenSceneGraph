@@ -939,7 +939,7 @@ void CollectLowestTransformsVisitor::disableObject(ObjectMap::iterator itr)
 
     if (itr->second._canBeApplied)
     {
-        // we havn't been disabled yet so we need to disable,
+        // we haven't been disabled yet so we need to disable,
         itr->second._canBeApplied = false;
 
         // and then inform everybody we have been disabled.
@@ -963,7 +963,7 @@ void CollectLowestTransformsVisitor::disableTransform(osg::Transform* transform)
     if (itr->second._canBeApplied)
     {
 
-        // we havn't been disabled yet so we need to disable,
+        // we haven't been disabled yet so we need to disable,
         itr->second._canBeApplied = false;
         // and then inform everybody we have been disabled.
         for(TransformStruct::ObjectSet::iterator oitr = itr->second._objectSet.begin();

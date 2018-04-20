@@ -308,7 +308,7 @@ osg::Object* ClassInterface::createObject(const std::string& compoundClassName) 
     }
     else
     {
-        OSG_NOTICE<<"ClassInterface::createObject("<<compoundClassName<<"), No object wrapper avaiable."<<std::endl;
+        OSG_NOTICE<<"ClassInterface::createObject("<<compoundClassName<<"), No object wrapper available."<<std::endl;
         return 0;
     }
     // return (ow!=0) ? ow->createInstance() : 0;

@@ -184,14 +184,14 @@ class RenderSurface : public osg::Referenced
         unsigned int getWindowHeight() const;
 
 #if 0
-        /** Explicitely set the Display variable before realization. (X11 only). */
+        /** Explicitly set the Display variable before realization. (X11 only). */
         void               setDisplay( Display *dpy );
         /** Get the Display. (X11 only). */
         Display*           getDisplay( void );
         /** Get the const Display. (X11 only). */
         const Display*     getDisplay( void ) const;
 
-        /** Explicitely set the Windowing system window before realization. */
+        /** Explicitly set the Windowing system window before realization. */
         void               setWindow( const Window win );
         /** Returns the Windowing system handle to the window */
         Window getWindow( void ) const;

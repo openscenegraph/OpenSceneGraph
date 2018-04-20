@@ -69,7 +69,7 @@ public:
         supportsOption("mergeAllBinaryFiles","merge all binary files into one to avoid multi request on a server");
         supportsOption("inlineImages","insert base64 encoded images instead of referring to them");
         supportsOption("varint","Use varint encoding to serialize integer buffers");
-        supportsOption("useSpecificBuffer=userkey1[=uservalue1][:buffername1],userkey2[=uservalue2][:buffername2]","uses specific buffers for unshared buffers attached to geometries having a specified user key/value. Buffer name *may* be specificed after ':' and will be set to uservalue by default. If no value is set then only the existence of a uservalue with key string is performed.");
+        supportsOption("useSpecificBuffer=userkey1[=uservalue1][:buffername1],userkey2[=uservalue2][:buffername2]","uses specific buffers for unshared buffers attached to geometries having a specified user key/value. Buffer name *may* be specified after ':' and will be set to uservalue by default. If no value is set then only the existence of a uservalue with key string is performed.");
         supportsOption("disableCompactBuffer","keep source types and do not try to optimize buffers size");
         supportsOption("disableStrictJson","do not clean string (to utf8) or floating point (should be finite) values");
     }

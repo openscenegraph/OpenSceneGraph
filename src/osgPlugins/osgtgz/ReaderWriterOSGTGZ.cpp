@@ -102,7 +102,7 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
 
         #if defined(_WIN32) && !defined(__CYGWIN__)
             // note, is this the right command for windows?
-            // is there any way of overiding the Y/N option? RO.
+            // is there any way of overriding the Y/N option? RO.
             sprintf( command, "erase %s", dirname );
         #else
 

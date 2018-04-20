@@ -433,7 +433,7 @@ class OSG_EXPORT Image : public BufferData
 
         /** Ensure image dimensions are a power of two.
           * Mipmapped textures require the image dimensions to be
-          * power of two and are within the maxiumum texture size for
+          * power of two and are within the maximum texture size for
           * the host machine.
         */
         void ensureValidSizeForTexturing(GLint maxTextureSize);

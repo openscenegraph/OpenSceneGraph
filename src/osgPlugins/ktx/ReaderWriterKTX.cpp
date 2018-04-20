@@ -333,7 +333,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriterKTX::writeImage(const osg::Image &i
         DELETEFILE(file.c_str());
         OSG_WARN << "ReaderWriterKTX::writeImage Failed to write " << file << "." << std::endl;
     }
-    OSG_INFO << "ReaderWriterKTX::writeImage write " << file << " sucess;" << image.s() << "x" << image.t() << "x" << image.r() << std::endl;
+    OSG_INFO << "ReaderWriterKTX::writeImage write " << file << " success;" << image.s() << "x" << image.t() << "x" << image.r() << std::endl;
     return res;
 }
 

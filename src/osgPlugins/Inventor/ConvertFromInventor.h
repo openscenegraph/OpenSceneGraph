@@ -28,7 +28,7 @@ class ConvertFromInventor
         osg::Node* convert(SoNode* rootIVNode);
 
         /**
-         * Preprocessing restructure the scene for the convertor
+         * Preprocessing restructure the scene for the converter
          * to be able to convert some peculiar scene constructions.
          * Resulting scene is geometrically equivalent to the source
          * scene. The preprocessing is related to grouping nodes only

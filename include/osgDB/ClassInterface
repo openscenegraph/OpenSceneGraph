@@ -110,12 +110,12 @@ DECLARE_TYPE(osg::BoundingBoxd, BOUNDINGBOXD)
 DECLARE_TYPE(osg::BoundingSpheref, BOUNDINGSPHEREF)
 DECLARE_TYPE(osg::BoundingSphered, BOUNDINGSPHERED)
 
-// forward decalare
+// forward declare
 class PropertyOutputIterator;
 class PropertyInputIterator;
 
 
-/** ClassInterface provides a general means of checking for supported properties of classes, and getting/setting thoses properties.
+/** ClassInterface provides a general means of checking for supported properties of classes, and getting/setting those properties.
     Uses the osgDB serializers to do the actual object query/get/set.
 */
 class OSGDB_EXPORT ClassInterface
@@ -166,10 +166,10 @@ public:
     /// run method of object
     bool run(osg::Object* object, const std::string& methodName, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const;
 
-    /// checked for support of specificed method
+    /// checked for support of specified method
     bool hasMethod(const std::string& compoundClassName, const std::string& methodName) const;
 
-    /// checked for support of specificed method
+    /// checked for support of specified method
     bool hasMethod(const osg::Object* object, const std::string& methodName) const;
 
 

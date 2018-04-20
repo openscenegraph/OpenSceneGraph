@@ -444,7 +444,7 @@ void build_world(osg::Group *root)
     // the second one will be a little bit more complex, showing how to
     // create custom operators.
     // To avoid inserting too much code in a single function, we have
-    // splitted the work into two functions which accept a Group node as
+    // split the work into two functions which accept a Group node as
     // parameter, and return a pointer to the particle system they created.
 
     osgParticle::ParticleSystem *ps1 = create_simple_particle_system(root);

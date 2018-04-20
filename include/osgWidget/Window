@@ -638,7 +638,7 @@ class OSGWIDGET_EXPORT Window:
         // This method is passed the additional values by which width and height should be
         // modified as calculed by the parent method, Window::resize. Keep in mind that these
         // values can be negative (indicating a potential "shrink" request) or positive (which
-        // would indicate a "grow" reqeust).
+        // would indicate a "grow" request).
         virtual void _resizeImplementation(point_type, point_type) = 0;
 
         // These are made into implementation functions since getting the width or height

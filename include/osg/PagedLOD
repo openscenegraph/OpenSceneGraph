@@ -154,7 +154,7 @@ class OSG_EXPORT PagedLOD : public LOD
         /** Get the number of children that the PagedLOD must keep around, even if they are older than their expiry time.*/
         unsigned int getNumChildrenThatCannotBeExpired() const { return _numChildrenThatCannotBeExpired; }
 
-        /** Set wether you want to disable the paging in of external nodes.*/
+        /** Set whether you want to disable the paging in of external nodes.*/
         void setDisableExternalChildrenPaging(bool flag) { _disableExternalChildrenPaging = flag; }
 
         bool getDisableExternalChildrenPaging() const { return _disableExternalChildrenPaging; }

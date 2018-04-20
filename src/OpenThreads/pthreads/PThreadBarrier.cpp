@@ -97,7 +97,7 @@ Barrier::Barrier(int numThreads) {
 
     }
 
-#endif // ] Priority sheduling
+#endif // ] Priority scheduling
 
 #endif // ] ALLOW_PRIORITY_SCHEDULING
 

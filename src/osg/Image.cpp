@@ -683,7 +683,7 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
     // which raises the question of how to actually query for these sizes...
     // will need to revisit this issue, for now just report an error.
     // this is possible a bit of mute point though as since the ARB compressed formats
-    // arn't yet used for storing images to disk, so its likely that users wont have
+    // aren't yet used for storing images to disk, so its likely that users wont have
     // osg::Image's for pixel formats set the ARB compressed formats, just using these
     // compressed formats as internal texture modes.  This is very much speculation though
     // if get the below error then its time to revist this issue :-)
@@ -998,7 +998,7 @@ int Image::computeNearestPowerOfTwo(int s,float bias)
     {
         // it isn't so lets find the closest power of two.
         // yes, logf and powf are slow, but this code should
-        // only be called during scene graph initilization,
+        // only be called during scene graph initialization,
         // if at all, so not critical in the greater scheme.
         float p2 = logf((float)s)/logf(2.0f);
         float rounded_p2 = floorf(p2+bias);

@@ -77,7 +77,7 @@ void DrawElementsIndirectUInt::draw(State& state, bool /*useVertexBufferObjects*
     state.bindElementBufferObject(ebo);
 
     state.get<GLExtensions>()-> glDrawElementsIndirect(mode, GL_UNSIGNED_INT,
-        (const GLvoid *)(dibo->getOffset(_indirectCommandArray->getBufferIndex()) //command array adress
+        (const GLvoid *)(dibo->getOffset(_indirectCommandArray->getBufferIndex()) //command array address
         +_firstCommand* _indirectCommandArray->getElementSize())// runtime offset computaion can be sizeof(*_indirectCommandArray->begin())
     );
 }

@@ -1,3 +1,72 @@
+Fri, 20 Apr 2018 14:32:34 +0100
+Author : Robert Osfield
+Replaced osgUtil::IntersectVisitor usage with osgUtil::InteresectionVisitor
+
+Fri, 20 Apr 2018 10:24:17 +0100
+Author : Robert Osfield
+Removed TriStripVisitor for default set of Optimizer passes as it doesn't generate efficient scene graphs
+
+Fri, 20 Apr 2018 09:57:04 +0100
+Author : Robert Osfield
+Added osgUtil::optimizeMesh(osg::Node* node) convinience method
+
+Fri, 20 Apr 2018 11:42:31 +0100
+Author : Robert Osfield
+Removed usage of the osgUtil::TriStripVisitor is it generates osg::Geometry that perform very poorly when using VBO and VAO's vs GL DisplayLists. With DisplayLists being deprecated in GL and VBO and VAO becoming standard it's best to standardize on using the osgUtil::MeshOptimizers instead of TripStrupVisitor
+
+Thu, 19 Apr 2018 19:43:14 +0100
+Author : Robert Osfield
+Fixed the set*Binding() methods so that they assign BufferObjects when required
+
+Thu, 19 Apr 2018 19:42:51 +0100
+Author : Robert Osfield
+Fixed messages
+
+Thu, 19 Apr 2018 19:41:51 +0100
+Author : Robert Osfield
+Fixed the GLBufferObject size computation so that it takes into account padding.
+
+Thu, 19 Apr 2018 19:36:19 +0100
+Author : Robert Osfield
+Replaced the use of osgUtil::TriStripVisitor with ogUtil::MeshOptimizer usage to improve performance. Fixed set setColorArray assignement to pass in the color binding
+
+Wed, 18 Apr 2018 10:02:43 +0100
+Author : Robert Osfield
+Fixed the handle of boundary equalization
+
+Wed, 18 Apr 2018 09:33:12 +0100
+Author : Robert Osfield
+Added --equalize-boundaries -e command line option to call terrain->setEqualizeBoundaries(true)
+
+Mon, 16 Apr 2018 17:53:38 +0100
+Author : Robert Osfield
+Updated version number in prep for future 3.6.1 release.
+
+Mon, 16 Apr 2018 15:08:24 +0100
+Author : Robert Osfield
+Fixed inline Drawable::draw(..) method
+
+Mon, 16 Apr 2018 15:05:11 +0100
+Author : Robert Osfield
+Fixed Geometry::drawImplmentation() handling of VBO's to prevent them from being used when display lists are used.
+
+Sun, 15 Apr 2018 08:25:57 +0100
+Author : Robert Osfield
+Replaced osgViewer::GraphicsWindow dynamic_cast as it's not neccessary.
+
+Sat, 7 Apr 2018 18:35:19 +0100
+Author : Robert Osfield
+Fixed typo
+
+Sat, 7 Apr 2018 17:59:55 +0100
+Author : Robert Osfield
+Renamed osg::ComputeDispatch to osg::DispatchCompute to make sure the nameing between GL and OSG is consistent i.e glDispatchCompute -> osg::DispatchComputeUpdated AUTHORS.txt, NEWS.txt and README.txt for CMakeLists.txt for 3.6.0 release
+
+
+Sat, 7 Apr 2018 07:19:14 +0100
+Author : Robert Osfield
+Updated ChangeLog
+
 Sat, 7 Apr 2018 07:18:41 +0100
 Author : Robert Osfield
 Updated for rc7

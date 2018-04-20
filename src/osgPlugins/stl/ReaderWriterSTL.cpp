@@ -32,7 +32,7 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 
-#include <osgUtil/TriStripVisitor>
+#include <osgUtil/MeshOptimizers>
 #include <osgUtil/SmoothingVisitor>
 #include <osg/TriangleFunctor>
 
@@ -182,8 +182,7 @@ private:
             geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, _numFacets * 3));
 
             if(!_noTriStripPolygons) {
-                osgUtil::TriStripVisitor tristripper;
-                tristripper.stripify(*geom);
+                osgUtil::optimizeMesh(geom);
             }
 
             return geom;

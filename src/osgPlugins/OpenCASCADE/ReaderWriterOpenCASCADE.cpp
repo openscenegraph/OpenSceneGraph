@@ -74,7 +74,6 @@
 #include<osg/PrimitiveSet>
 #include <osg/MatrixTransform>
 
-#include <osgUtil/TriStripVisitor>
 #include <osgUtil/SmoothingVisitor>
 
 //#define _LOG_DEBUG_

@@ -19,7 +19,7 @@
 #include <osg/BufferObject>
 #include <osg/PrimitiveSet>
 #include <osg/RenderInfo>
-#include <osg/Group>
+#include <osg/Node>
 
 
 #ifndef GL_NV_occlusion_query

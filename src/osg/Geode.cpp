@@ -11,13 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Geode>
-#include <osg/Geometry>
 #include <osg/Notify>
-
-#include <stdio.h>
-#include <math.h>
-
-#define square(x)   ((x)*(x))
 
 using namespace osg;
 

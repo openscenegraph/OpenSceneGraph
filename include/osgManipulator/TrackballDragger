@@ -19,6 +19,7 @@
 #include <osgManipulator/RotateSphereDragger>
 #include <osg/ShapeDrawable>
 #include <osg/Geometry>
+#include <osg/Geode>
 #include <osg/LineWidth>
 
 namespace osgManipulator {

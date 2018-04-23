@@ -173,10 +173,10 @@ public:
     void writeObjectFields( const osg::Object* obj );
     void writeObjectFields( const osg::Object* obj, const std::string& compoundName );
 
-    /// set an output iterator, used directly when not using OutputStream with a traditional file releated stream.
+    /// set an output iterator, used directly when not using OutputStream with a traditional file related stream.
     void setOutputIterator( OutputIterator* oi ) { _out = oi; }
 
-    /// start writing to OutputStream treating it as a traditional file releated stream, handles headers and versioning
+    /// start writing to OutputStream treating it as a traditional file related stream, handles headers and versioning
     void start( OutputIterator* outIterator, WriteType type );
 
     void compress( std::ostream* ostream );

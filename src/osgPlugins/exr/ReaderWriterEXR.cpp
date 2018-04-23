@@ -25,7 +25,7 @@ using namespace Imath;
  *
  * Follows is code written by FOI (www.foi.se)
  * it is a wrapper of openEXR(www.openexr.com)
- * to add suport of exr images into osg
+ * to add support of exr images into osg
  *
  * Ported to a OSG-plugin, Ragnar Hammarqvist.
  * For patches, bugs and new features
@@ -404,6 +404,6 @@ protected:
     }
 };
 
-// now register with Registry to instantiate the exr suport
+// now register with Registry to instantiate the exr support
 // reader/writer.
 REGISTER_OSGPLUGIN(exr, ReaderWriterEXR)

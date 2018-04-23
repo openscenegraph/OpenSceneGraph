@@ -34,24 +34,24 @@ VolumeTechnique::~VolumeTechnique()
 
 void VolumeTechnique::init()
 {
-    OSG_NOTICE<<className()<<"::initialize(..) not implementated yet"<<std::endl;
+    OSG_NOTICE<<className()<<"::initialize(..) not implemented yet"<<std::endl;
 }
 
 void VolumeTechnique::update(osgUtil::UpdateVisitor* uv)
 {
-    OSG_NOTICE<<className()<<"::update(..) not implementated yet"<<std::endl;
+    OSG_NOTICE<<className()<<"::update(..) not implemented yet"<<std::endl;
     if (_volumeTile) _volumeTile->osg::Group::traverse(*uv);
 }
 
 void VolumeTechnique::cull(osgUtil::CullVisitor* cv)
 {
-    OSG_NOTICE<<className()<<"::cull(..) not implementated yet"<<std::endl;
+    OSG_NOTICE<<className()<<"::cull(..) not implemented yet"<<std::endl;
     if (_volumeTile) _volumeTile->osg::Group::traverse(*cv);
 }
 
 void VolumeTechnique::cleanSceneGraph()
 {
-    OSG_NOTICE<<className()<<"::cleanSceneGraph(..) not implementated yet"<<std::endl;
+    OSG_NOTICE<<className()<<"::cleanSceneGraph(..) not implemented yet"<<std::endl;
 }
 
 void VolumeTechnique::traverse(osg::NodeVisitor& nv)

@@ -633,7 +633,7 @@ void PixelBufferWin32::init()
 
     if (_traits->width != iWidth || _traits->height != iHeight)
     {
-        OSG_NOTICE << "PixelBufferWin32::init(), pbuffer created with different size then requsted" << std::endl;
+        OSG_NOTICE << "PixelBufferWin32::init(), pbuffer created with different size then requested" << std::endl;
         OSG_NOTICE << "\tRequested size (" << _traits->width << "," << _traits->height << ")" << std::endl;
         OSG_NOTICE << "\tPbuffer size (" << iWidth << "," << iHeight << ")" << std::endl;
         _traits->width  = iWidth;

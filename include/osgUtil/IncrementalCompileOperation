@@ -107,7 +107,7 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
         /** ConservativeTimeRatio governs how much of the measured spare time in each frame is used for flushing deleted and compile new OpenGL objects.
           * Default value is 0.5, valid range is 0.1 to 1.0.
           * A ratio near 1.0 will lead to paged databases being compiled and merged quicker but increase the chances of frame drop.
-          * A ratio near 0.1 will lead to paged databases being compiled and merged closer but reduse the chances of frame drop.*/
+          * A ratio near 0.1 will lead to paged databases being compiled and merged closer but reduce the chances of frame drop.*/
         void setConservativeTimeRatio(double ratio) { _conservativeTimeRatio = ratio; }
         double getConservativeTimeRatio() const { return _conservativeTimeRatio; }
 

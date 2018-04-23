@@ -36,7 +36,7 @@ namespace osgFX
         Scribe();
         Scribe(const Scribe& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
-        // effect class informations
+        // effect class information
         META_Effect(
             osgFX,
             Scribe,

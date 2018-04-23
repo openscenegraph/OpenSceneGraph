@@ -1309,7 +1309,7 @@ bool CTextureRenderer::openSoundCaptureDevice(const std::string& capture, int nb
         }
         else
         {
-            OSG_WARN << prefixForMessage << " can t retrieve informations pins" << std::endl;
+            OSG_WARN << prefixForMessage << " can t retrieve information pins" << std::endl;
         }
     }
     if (pISC) pISC->Release(); pISC = 0;
@@ -1639,7 +1639,7 @@ HRESULT CTextureRenderer::CheckMediaType(const CMediaType *pmt)
 //-----------------------------------------------------------------------------
 HRESULT CTextureRenderer::SetMediaType(const CMediaType *pmt)
 {
-    // Retrive the size of this media type
+    // Retrieve the size of this media type
     VIDEOINFO *pviBmp;                      // Bitmap info header
     pviBmp = (VIDEOINFO *)pmt->Format();
 
@@ -1673,7 +1673,7 @@ void CTextureRenderer::syncStreams(bool state)
         _dropFrame = S_OK;
 }
 HRESULT CTextureRenderer::ShouldDrawSampleNow(IMediaSample *sample, REFERENCE_TIME *start, REFERENCE_TIME *stop) {
-    return _dropFrame; // disable droping of frames
+    return _dropFrame; // disable dropping of frames
 }
 
 bool CTextureRenderer::StopFilters()

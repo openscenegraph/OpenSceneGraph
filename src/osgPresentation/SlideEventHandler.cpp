@@ -926,7 +926,7 @@ double SlideEventHandler::getDuration(const osg::Node* node) const
 void SlideEventHandler::set(osg::Node* model)
 {
 #if 0
-    // pause all slides, then just reenable the current slide.
+    // pause all slides, then just re-enable the current slide.
     ActivityUpdateCallbacksVisitor aucv(ALL_OBJECTS, true);
     aucv.setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
     model->accept(aucv);

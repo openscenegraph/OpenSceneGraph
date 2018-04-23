@@ -466,7 +466,7 @@ inline RenderLeaf* CullVisitor::createOrReuseRenderLeaf(osg::Drawable* drawable,
     while (_currentReuseRenderLeafIndex<_reuseRenderLeafList.size() &&
            _reuseRenderLeafList[_currentReuseRenderLeafIndex]->referenceCount()>1)
     {
-        osg::notify(osg::NOTICE)<<"Warning:createOrReuseRenderLeaf() skipping multiply refrenced entry."<< std::endl;
+        osg::notify(osg::NOTICE)<<"Warning:createOrReuseRenderLeaf() skipping multiply referenced entry."<< std::endl;
         ++_currentReuseRenderLeafIndex;
     }
 

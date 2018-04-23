@@ -68,7 +68,7 @@ osg::Geometry* DetachPrimitiveVisitor::makeDetachedGeometry(osg::Geometry& geome
 osg::Geometry* DetachPrimitiveVisitor::createDetachedGeometry(osg::Geometry& source) {
     osg::Geometry* detached = new osg::Geometry(source, osg::CopyOp::SHALLOW_COPY);
     if(!_keepGeometryAttributes) {
-        // we keep only vertexes and clean all other attributes and values
+        // we keep only vertices and clean all other attributes and values
         detached->setNormalArray(0);
         detached->setColorArray(0);
         detached->setSecondaryColorArray(0);
@@ -119,7 +119,7 @@ osg::Geometry* DetachPrimitiveVisitor::createDetachedGeometry(osgAnimation::RigG
         detached = new osgAnimation::RigGeometry();
         detached->setSourceGeometry(makeDetachedGeometry(*source.getSourceGeometry()));
 
-        // Only keep vertexes and Bones/Weights attrib arrays
+        // Only keep vertices and Bones/Weights attrib arrays
         detached->setVertexArray(source.getVertexArray());
         for(unsigned int i = 0 ; i < source.getVertexAttribArrayList().size() ; ++ i) {
             osg::Array* attribute = source.getVertexAttribArray(i);

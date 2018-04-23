@@ -610,7 +610,7 @@ int main( int argc, char **argv )
     osg::TexMat* texmatLeft = new osg::TexMat;
     osg::TexMat* texmatRight = new osg::TexMat;
 
-    // creat the scene from the file list.
+    // create the scene from the file list.
     osg::ref_ptr<osg::Switch> rootNode;
     if (!onDisk)  rootNode = createScene(fileList,texmatLeft,texmatRight,radius,height,length);
     else rootNode=new osg::Switch();

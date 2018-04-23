@@ -61,7 +61,7 @@ class OSGSHADOW_EXPORT StandardShadowMap : public DebugShadowMap
         // Example: Imagine we want to swap base(0) and shadow(1) indices:
         // We have to do an extra step to make sure both do not end up as 1
         //
-        // // initialy change base to something else than 1
+        // // initially change base to something else than 1
         // setBaseTextureCoordIndex( 100 );
         // // now search and replace all gl_TexCord[1] to gl_TexCord[0]
         // setShadowTextureCoordIndex( 0 );

@@ -3979,7 +3979,7 @@ void LuaScriptEngine::pushContainer(osg::Object* object, const std::string& prop
         }
         else
         {
-            OSG_NOTICE<<"Container type not suppported."<<std::endl;
+            OSG_NOTICE<<"Container type not supported."<<std::endl;
         }
     }
     else
@@ -4115,9 +4115,9 @@ void LuaScriptEngine::pushAndCastObject(const std::string& compoundClassName, os
             object->ref();
         }
 
-        std::string::size_type seperator = compoundClassName.find("::");
-        std::string libraryName = (seperator==std::string::npos) ? object->libraryName() : compoundClassName.substr(0, seperator);
-        std::string className = (seperator==std::string::npos) ? object->className() : compoundClassName.substr(seperator+2,std::string::npos);
+        std::string::size_type separator = compoundClassName.find("::");
+        std::string libraryName = (separator==std::string::npos) ? object->libraryName() : compoundClassName.substr(0, separator);
+        std::string className = (separator==std::string::npos) ? object->className() : compoundClassName.substr(separator+2,std::string::npos);
 
         lua_pushstring(_lua, "libraryName"); lua_pushstring(_lua, libraryName.c_str()); lua_settable(_lua, -3);
         lua_pushstring(_lua, "className"); lua_pushstring(_lua, className.c_str()); lua_settable(_lua, -3);
@@ -4168,7 +4168,7 @@ void LuaScriptEngine::addPaths(const osgDB::FilePathList& paths)
     lua_pushstring( _lua, path.c_str() );
     lua_setfield( _lua, -2, "path" );
 
-    lua_pop( _lua, 1 ); // return stack to orignal
+    lua_pop( _lua, 1 ); // return stack to original
 }
 
 void LuaScriptEngine::addPaths(const osgDB::Options* options)

@@ -176,7 +176,7 @@ void Geometry::read(DataInputStream* in)
             in_THROW_EXCEPTION("Geometry::read(): Could not cast this osg::Geometry to an osg::Drawable.");
 
 
-        // Read geoemtry properties
+        // Read geometry properties
 
         // Read primitiveset list.
         int size = in->readInt();

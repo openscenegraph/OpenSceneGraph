@@ -156,7 +156,7 @@ void CollectOccludersVisitor::apply(osg::OccluderNode& node)
     if (node.getOccluder())
     {
         // computeOccluder will check if the occluder is the view frustum,
-        // if it ins't then the it will return false, when in it will
+        // if it isn't then the it will return false, when in it will
         // clip the occluder's polygons in clip space, then create occluder
         // planes, all with their normals facing inward towards the volume,
         // and then transform them back into projection space.

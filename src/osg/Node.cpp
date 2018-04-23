@@ -92,7 +92,7 @@ Node::Node(const Node& node,const CopyOp& copyop):
 
 Node::~Node()
 {
-    // cleanly detatch any associated stateset (include remove parent links)
+    // cleanly detach any associated stateset (include remove parent links)
     setStateSet(0);
 }
 

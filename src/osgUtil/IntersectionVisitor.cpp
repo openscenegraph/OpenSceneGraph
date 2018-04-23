@@ -51,7 +51,7 @@ Intersector* IntersectorGroup::clone(osgUtil::IntersectionVisitor& iv)
 {
     IntersectorGroup* ig = new IntersectorGroup;
 
-    // now copy across all intersectors that arn't disabled.
+    // now copy across all intersectors that aren't disabled.
     for(Intersectors::iterator itr = _intersectors.begin();
         itr != _intersectors.end();
         ++itr)

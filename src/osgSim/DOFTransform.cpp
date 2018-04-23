@@ -226,7 +226,7 @@ void DOFTransform::updateCurrentHPR(const osg::Vec3& hpr)
     //if there is constrain on animation
     if (_limitationFlags & ROTATION_ROLL_LIMIT_BIT)
     {
-        //if we have min == max, it is efective constrain, so don't change
+        //if we have min == max, it is effective constrain, so don't change
         if(_minHPR[2] != _maxHPR[2])
         {
             _currentHPR[2] = hpr[2];

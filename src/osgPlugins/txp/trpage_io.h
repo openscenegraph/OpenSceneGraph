@@ -357,7 +357,7 @@ public:
     virtual void Add(const std::string &);
 
     /* Endianness is something the child class buffer type must set and use.
-        This function returns the endiannes of the current buffer. */
+        This function returns the endianness of the current buffer. */
     virtual trpgEndian GetEndian(void) { return ness; }
 
 protected:

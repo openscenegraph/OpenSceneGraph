@@ -620,7 +620,7 @@ osg::ref_ptr<GLBufferObject> GLBufferObjectSet::takeFromOrphans(BufferObject* bu
 
 osg::ref_ptr<GLBufferObject> GLBufferObjectSet::takeOrGenerate(BufferObject* bufferObject)
 {
-    // see if we can recyle GLBufferObject from the orphan list
+    // see if we can recycle GLBufferObject from the orphan list
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
         if (!_pendingOrphanedGLBufferObjects.empty())

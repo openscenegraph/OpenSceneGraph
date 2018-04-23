@@ -32,7 +32,7 @@ SET(TARGET_COMMON_LIBRARIES
     osgUtil
 )
 
-OPTION(BUILD_OSG_PLUGINS_BY_DEFAULT "If set, all available plugins are built by default and each plugin can be disabled from the build by setting BUILD_OSG_PLUGIN_<PLUGINNAME> to 0. If not set, no plugins are built by default and each desired plugin must be explicitely enabled by setting BUILD_OSG_PLUGIN_<PLUGINNAME> to 1." ON) 
+OPTION(BUILD_OSG_PLUGINS_BY_DEFAULT "If set, all available plugins are built by default and each plugin can be disabled from the build by setting BUILD_OSG_PLUGIN_<PLUGINNAME> to 0. If not set, no plugins are built by default and each desired plugin must be explicitly enabled by setting BUILD_OSG_PLUGIN_<PLUGINNAME> to 1." ON) 
 
 # Macro used for adding plugins below. By default, all plugins are built
 # but can be disabled by setting the CMake Variable BUILD_OSG_PLUGIN_<PLUGINNAME> to 0.

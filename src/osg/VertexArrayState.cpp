@@ -83,7 +83,7 @@ public:
 
     virtual void deleteAllGLObjects()
     {
-         OSG_INFO<<"VertexArrayStateManager::deleteAllGLObjects() Not currently implementated"<<std::endl;
+         OSG_INFO<<"VertexArrayStateManager::deleteAllGLObjects() Not currently implemented"<<std::endl;
     }
 
     virtual void discardAllGLObjects()

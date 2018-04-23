@@ -42,7 +42,7 @@ void RemapGeometryVisitor::apply(osg::Geode& geode) {
 
     // remove all drawables
     geode.removeDrawables(0, geode.getNumDrawables());
-    // insert splitted geometries
+    // insert split geometries
     for(unsigned int i = 0 ; i < remappedGeometries.size() ; ++ i) {
         geode.addDrawable(remappedGeometries[i].get());
     }

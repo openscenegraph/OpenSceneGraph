@@ -229,9 +229,9 @@ public:
               QTScopedMovieInitialiser qt_movie_init;
               //
               ComponentDescription video_component_description;
-              video_component_description.componentType         = 'vdig';  /* A unique 4-byte code indentifying the command set */
+              video_component_description.componentType         = 'vdig';  /* A unique 4-byte code identifying the command set */
               video_component_description.componentSubType      = 0L;      /* Particular flavor of this instance */
-              video_component_description.componentManufacturer = 0L;      /* Vendor indentification */
+              video_component_description.componentManufacturer = 0L;      /* Vendor identification */
               video_component_description.componentFlags        = 0L;      /* 8 each for Component,Type,SubType,Manuf/revision */
               video_component_description.componentFlagsMask    = 0L;      /* Mask for specifying which flags to consider in search, zero during registration */
               num_video_components = CountComponents (&video_component_description);

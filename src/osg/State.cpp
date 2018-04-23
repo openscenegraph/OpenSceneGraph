@@ -523,7 +523,7 @@ void State::reset()
         as.changed = true;
     }
 
-    // we can do a straight clear, we arn't interested in GL_DEPTH_TEST defaults in texture modes.
+    // we can do a straight clear, we aren't interested in GL_DEPTH_TEST defaults in texture modes.
     for(TextureModeMapList::iterator tmmItr=_textureModeMapList.begin();
         tmmItr!=_textureModeMapList.end();
         ++tmmItr)
@@ -1514,7 +1514,7 @@ bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
     std::string attributeQualifier("attribute ");
 
     // find the first legal insertion point for replacement declarations. GLSL requires that nothing
-    // precede a "#verson" compiler directive, so we must insert new declarations after it.
+    // precede a "#version" compiler directive, so we must insert new declarations after it.
     std::string::size_type declPos = source.rfind( "#version " );
     if ( declPos != std::string::npos )
     {

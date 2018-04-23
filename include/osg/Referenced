@@ -47,7 +47,7 @@ class OSG_EXPORT Referenced
 
         Referenced();
 
-        /** Deprecated, Referenced is now always uses thread safe ref/unref, use default Refernced() constructor instead */
+        /** Deprecated, Referenced is now always uses thread safe ref/unref, use default Referenced() constructor instead */
         explicit Referenced(bool threadSafeRefUnref);
 
         Referenced(const Referenced&);

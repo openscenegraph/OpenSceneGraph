@@ -61,7 +61,7 @@ namespace osgAnimation
         ///normalize per vertex weights given numvert of the attached mesh
         void normalize(unsigned int numvert);
 
-        ///remove weakest influences in order to fit targetted numbonepervertex
+        ///remove weakest influences in order to fit targeted numbonepervertex
         void cullInfluenceCountPerVertex(unsigned int maxnumbonepervertex, float minweight=0, bool renormalize=true);
 
         //compute PerVertexInfluenceList

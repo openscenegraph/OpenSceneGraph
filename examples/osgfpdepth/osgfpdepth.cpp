@@ -381,7 +381,7 @@ AppState::AppState(osgViewer::Viewer* viewer_)
     textProjection = new Projection;
     textProjection->setMatrix(Matrix::ortho2D(0,1280,0,1024));
     textProjection->addChild(textGeode);
-    // "texture not available" text displayed when the user trys to
+    // "texture not available" text displayed when the user tries to
     // display the depth texture while multisampling.
     osgText::Text* noCanDo = new osgText::Text;
     noCanDo->setFont(fontName);

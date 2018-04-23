@@ -27,7 +27,7 @@
 #include <osg/Shape>
 
 
-// Here the idea is to compute AABB by bone for a skelton
+// Here the idea is to compute AABB by bone for a skeleton
 // You just need to call this visitor on a skeleton and after call computeBoundingBoxOnBones
 // If you have more than one skeleton you should crete a visitor by skeleton
 class ComputeAABBOnBoneVisitor : public osg::NodeVisitor {

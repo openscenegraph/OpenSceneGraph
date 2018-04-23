@@ -159,7 +159,7 @@ void ImpostorSpriteManager::push_back(ImpostorSprite* is)
 {
     if (is==NULL || is==_last) return;
 
-    // remove entry for exisiting position in linked list
+    // remove entry for existing position in linked list
     // if it is already inserted.
     if (is->_previous)
     {
@@ -198,7 +198,7 @@ void ImpostorSpriteManager::remove(ImpostorSprite* is)
 {
     if (is==NULL) return;
 
-    // remove entry for exisiting position in linked list
+    // remove entry for existing position in linked list
     // if it is already inserted.
     if (is->_previous)
     {

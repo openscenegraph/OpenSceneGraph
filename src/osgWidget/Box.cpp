@@ -22,7 +22,7 @@ _lastAdd (box._lastAdd) {
 // TODO: Here's something to consider! If we resize the box by 1 every time, only the
 // first resizable Widget will continue to get larger. This is really silly.
 void Box::_resizeImplementation(point_type w, point_type h) {
-    // Get the number of Widgets that agree to fill. Also perfom some casting to integers
+    // Get the number of Widgets that agree to fill. Also perform some casting to integers
     // in case we're being request to resize with pixel perfection.
     point_type numFill  = _getNumFill();
     int        iw       = static_cast<int>(w);

@@ -73,7 +73,7 @@ public:
      * placing text against noisy backgrounds.
      * The color of the background shadow text is specified by setBackdropColor().
      * DROP_SHADOW_BOTTOM_RIGHT will draw backdrop text to the right and down of
-     * the normal text. Other DROW_SHADOW_* modes do the same for their repective directions.
+     * the normal text. Other DROP_SHADOW_* modes do the same for their respective directions.
      * OUTLINE will draw backdrop text so that it appears the text has an outline
      * or border around the normal text. This mode is particularly useful against
      * really noisy backgrounds that may put text on top of things that have

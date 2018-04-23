@@ -2012,7 +2012,7 @@ bool GraphicsWindowWin32::setWindowDecorationImplementation( bool decorated )
     error  = ::GetLastError();
     if (result==0 && error)
     {
-        reportErrorForScreen("GraphicsWindowWin32::setWindowDecoration() - Unable to set window extented style", _traits->screenNum, error);
+        reportErrorForScreen("GraphicsWindowWin32::setWindowDecoration() - Unable to set window extended style", _traits->screenNum, error);
         return false;
     }
 
@@ -2825,7 +2825,7 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
             {
                 // Wojciech Lewandowski: 2011/09/12
                 // Skip CONTROL | MENU | SHIFT tests because we are polling exact left or right keys
-                // above return press for both right and left so we may end up with incosistent
+                // above return press for both right and left so we may end up with inconsistent
                 // modifier mask if we report left control & right control while only right was pressed
                 LONG rightSideCode = 0;
                 switch( i )

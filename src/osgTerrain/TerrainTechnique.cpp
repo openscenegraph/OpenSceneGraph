@@ -85,24 +85,24 @@ void TerrainTechnique::setTerrainTile(TerrainTile* tile)
 
 void TerrainTechnique::init(int /*dirtyMask*/, bool /*assumeMultiThreaded*/)
 {
-    OSG_NOTICE<<className()<<"::init(..) not implementated yet"<<std::endl;
+    OSG_NOTICE<<className()<<"::init(..) not implemented yet"<<std::endl;
 }
 
 void TerrainTechnique::update(osgUtil::UpdateVisitor* uv)
 {
-    OSG_NOTICE<<className()<<"::update(..) not implementated yet"<<std::endl;
+    OSG_NOTICE<<className()<<"::update(..) not implemented yet"<<std::endl;
     if (_terrainTile) _terrainTile->osg::Group::traverse(*uv);
 }
 
 void TerrainTechnique::cull(osgUtil::CullVisitor* cv)
 {
-    OSG_NOTICE<<className()<<"::cull(..) not implementated yet"<<std::endl;
+    OSG_NOTICE<<className()<<"::cull(..) not implemented yet"<<std::endl;
     if (_terrainTile) _terrainTile->osg::Group::traverse(*cv);
 }
 
 void TerrainTechnique::cleanSceneGraph()
 {
-    OSG_NOTICE<<className()<<"::cleanSceneGraph(..) not implementated yet"<<std::endl;
+    OSG_NOTICE<<className()<<"::cleanSceneGraph(..) not implemented yet"<<std::endl;
 }
 
 void TerrainTechnique::traverse(osg::NodeVisitor& nv)

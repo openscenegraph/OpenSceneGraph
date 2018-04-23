@@ -555,7 +555,7 @@ public:
         }
 
         // fill the end of the polygon with repititions of the first index in the polygon to ensure
-        // that the orignal and new boundary polygons have the same number and pairing of indices.
+        // that the original and new boundary polygons have the same number and pairing of indices.
         // This ensures that the bevel can be created coherently.
         while(face->size() < count)
         {
@@ -756,7 +756,7 @@ OSGTEXT_EXPORT osg::Geometry* computeGlyphGeometry(const osgText::Glyph3D* glyph
                 }
             }
 
-            // add the first element to creat the loop.
+            // add the first element to create the loop.
             new_elements->push_back(new_elements->front());
 
         }

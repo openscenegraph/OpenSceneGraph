@@ -61,7 +61,7 @@ public:
         supportsOption("noRotation","Do not do the default rotate about X axis");
         supportsOption("noTesselateLargePolygons","Do not do the default tesselation of large polygons");
         supportsOption("noTriStripPolygons","Do not do the default tri stripping of polygons");
-        supportsOption("generateFacetNormals","generate facet normals for verticies without normals");
+        supportsOption("generateFacetNormals","generate facet normals for vertices without normals");
         supportsOption("noReverseFaces","avoid to reverse faces when normals and triangles orientation are reversed");
 
         supportsOption("DIFFUSE=<unit>", "Set texture unit for diffuse texture");
@@ -794,7 +794,7 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, ObjOptio
                 tessellator.retessellatePolygons(*geometry);
             }
 
-            // tri strip polygons to improve graphics peformance
+            // tri strip polygons to improve graphics performance
             if (!localOptions.noTriStripPolygons)
             {
                 osgUtil::optimizeMesh(geometry);

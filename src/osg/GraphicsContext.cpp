@@ -239,7 +239,11 @@ GraphicsContext::Traits::Traits(DisplaySettings* ds):
             swapBarrier(0),
             useMultiThreadedOpenGLEngine(false),
             useCursor(true),
+#ifdef OSG_GL3_FEATURES
+            glContextVersion("3.3"),
+#else
             glContextVersion("1.0"),
+#endif
             glContextFlags(0),
             glContextProfileMask(0),
             sharedContext(0),

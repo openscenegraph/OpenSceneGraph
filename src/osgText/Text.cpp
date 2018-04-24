@@ -472,6 +472,8 @@ void Text::computeGlyphRepresentation()
     // initialize bounding box, it will be expanded during glyph position calculation
     _textBB.init();
 
+    _textBB.set(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+
     osg::Vec2 startOfLine_coords(0.0f,0.0f);
     osg::Vec2 cursor(startOfLine_coords);
     osg::Vec2 local(0.0f,0.0f);
@@ -804,21 +806,9 @@ void Text::computePositionsImplementation()
 
     if (_backdropType != NONE)
     {
-        float avg_width = 0.0f;
-        float avg_height = 0.0f;
-        bool is_valid_size;
 
-        // FIXME: OPTIMIZE: It is possible that this value has already been computed before
-        // from previous calls to this function. This might be worth optimizing.
-        is_valid_size = computeAverageGlyphWidthAndHeight(avg_width, avg_height);
-
-        // Finally, we have one more issue to deal with.
-        // Now that the text takes more space, we need
-        // to adjust the size of the bounding box.
-        if (!is_valid_size)
-        {
-            return;
-        }
+        float height = _characterHeight;
+        float width = height/getCharacterAspectRatio();
 
         // Finally, we have one more issue to deal with.
         // Now that the text takes more space, we need
@@ -829,9 +819,9 @@ void Text::computePositionsImplementation()
             {
                 _textBBWithMargin.set(
                     _textBBWithMargin.xMin(),
-                    _textBBWithMargin.yMin() - avg_height * _backdropVerticalOffset,
+                    _textBBWithMargin.yMin() - height * _backdropVerticalOffset,
                     _textBBWithMargin.zMin(),
-                    _textBBWithMargin.xMax() + avg_width * _backdropHorizontalOffset,
+                    _textBBWithMargin.xMax() + width * _backdropHorizontalOffset,
                     _textBBWithMargin.yMax(),
                     _textBBWithMargin.zMax()
                 );
@@ -843,7 +833,7 @@ void Text::computePositionsImplementation()
                     _textBBWithMargin.xMin(),
                     _textBBWithMargin.yMin(),
                     _textBBWithMargin.zMin(),
-                    _textBBWithMargin.xMax() + avg_width * _backdropHorizontalOffset,
+                    _textBBWithMargin.xMax() + width * _backdropHorizontalOffset,
                     _textBBWithMargin.yMax(),
                     _textBBWithMargin.zMax()
                 );
@@ -855,8 +845,8 @@ void Text::computePositionsImplementation()
                     _textBBWithMargin.xMin(),
                     _textBBWithMargin.yMin(),
                     _textBBWithMargin.zMin(),
-                    _textBBWithMargin.xMax() + avg_width * _backdropHorizontalOffset,
-                    _textBBWithMargin.yMax() + avg_height * _backdropVerticalOffset,
+                    _textBBWithMargin.xMax() + width * _backdropHorizontalOffset,
+                    _textBBWithMargin.yMax() + height * _backdropVerticalOffset,
                     _textBBWithMargin.zMax()
                 );
                 break;
@@ -865,7 +855,7 @@ void Text::computePositionsImplementation()
             {
                 _textBBWithMargin.set(
                     _textBBWithMargin.xMin(),
-                    _textBBWithMargin.yMin() - avg_height * _backdropVerticalOffset,
+                    _textBBWithMargin.yMin() - height * _backdropVerticalOffset,
                     _textBBWithMargin.zMin(),
                     _textBBWithMargin.xMax(),
                     _textBBWithMargin.yMax(),
@@ -880,7 +870,7 @@ void Text::computePositionsImplementation()
                     _textBBWithMargin.yMin(),
                     _textBBWithMargin.zMin(),
                     _textBBWithMargin.xMax(),
-                    _textBBWithMargin.yMax() + avg_height * _backdropVerticalOffset,
+                    _textBBWithMargin.yMax() + height * _backdropVerticalOffset,
                     _textBBWithMargin.zMax()
                 );
                 break;
@@ -888,8 +878,8 @@ void Text::computePositionsImplementation()
             case DROP_SHADOW_BOTTOM_LEFT:
             {
                 _textBBWithMargin.set(
-                    _textBBWithMargin.xMin() - avg_width * _backdropHorizontalOffset,
-                    _textBBWithMargin.yMin() - avg_height * _backdropVerticalOffset,
+                    _textBBWithMargin.xMin() - width * _backdropHorizontalOffset,
+                    _textBBWithMargin.yMin() - height * _backdropVerticalOffset,
                     _textBBWithMargin.zMin(),
                     _textBBWithMargin.xMax(),
                     _textBBWithMargin.yMax(),
@@ -900,7 +890,7 @@ void Text::computePositionsImplementation()
             case DROP_SHADOW_CENTER_LEFT:
             {
                 _textBBWithMargin.set(
-                    _textBBWithMargin.xMin() - avg_width * _backdropHorizontalOffset,
+                    _textBBWithMargin.xMin() - width * _backdropHorizontalOffset,
                     _textBBWithMargin.yMin(),
                     _textBBWithMargin.zMin(),
                     _textBBWithMargin.xMax(),
@@ -911,11 +901,11 @@ void Text::computePositionsImplementation()
             case DROP_SHADOW_TOP_LEFT:
             {
                 _textBBWithMargin.set(
-                    _textBBWithMargin.xMin() - avg_width * _backdropHorizontalOffset,
+                    _textBBWithMargin.xMin() - width * _backdropHorizontalOffset,
                     _textBBWithMargin.yMin(),
                     _textBBWithMargin.zMin(),
                     _textBBWithMargin.xMax(),
-                    _textBBWithMargin.yMax() + avg_height * _backdropVerticalOffset,
+                    _textBBWithMargin.yMax() + height * _backdropVerticalOffset,
                     _textBBWithMargin.zMax()
                 );
                 break;
@@ -923,11 +913,11 @@ void Text::computePositionsImplementation()
             case OUTLINE:
             {
                 _textBBWithMargin.set(
-                    _textBBWithMargin.xMin() - avg_width * _backdropHorizontalOffset,
-                    _textBBWithMargin.yMin() - avg_height * _backdropVerticalOffset,
+                    _textBBWithMargin.xMin() - width * _backdropHorizontalOffset,
+                    _textBBWithMargin.yMin() - height * _backdropVerticalOffset,
                     _textBBWithMargin.zMin(),
-                    _textBBWithMargin.xMax() + avg_width * _backdropHorizontalOffset,
-                    _textBBWithMargin.yMax() + avg_height * _backdropVerticalOffset,
+                    _textBBWithMargin.xMax() + width * _backdropHorizontalOffset,
+                    _textBBWithMargin.yMax() + height * _backdropVerticalOffset,
                     _textBBWithMargin.zMax()
                 );
                 break;

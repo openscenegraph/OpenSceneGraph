@@ -556,9 +556,13 @@ ELSE()
     OPTION(OSG_CPP_EXCEPTIONS_AVAILABLE "Set to OFF to disable compile of OSG components that use C++ exceptions." ON)
 ENDIF()
 
+SET(OSG_GL_CONTEXT_STRING "1.0" CACHE STRING "GL Context String to pass when creaing graphics contexts")
 
 # Map the OSG_GL*_AVAILABLE settings to OpenGL header settings
 IF (OSG_GL3_AVAILABLE)
+
+    SET(OSG_GL_CONTEXT_STRING "3.3")
+
     IF (APPLE)
         SET(OPENGL_HEADER1 "#include <OpenGL/gl.h>" CACHE STRING "#include<> line for OpenGL Header")
         SET(OPENGL_HEADER2 "#include <OpenGL/gl3.h>" CACHE STRING "#include<> line for additional OpenGL Headers if required")

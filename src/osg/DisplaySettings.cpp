@@ -240,7 +240,7 @@ void DisplaySettings::setDefaults()
 
     _implicitBufferAttachmentRenderMask = DEFAULT_IMPLICIT_BUFFER_ATTACHMENT;
     _implicitBufferAttachmentResolveMask = DEFAULT_IMPLICIT_BUFFER_ATTACHMENT;
-    _glContextVersion = OSG_GL_CONTEXT_STRING;
+    _glContextVersion = OSG_GL_CONTEXT_VERSION;
     _glContextFlags = 0;
     _glContextProfileMask = 0;
 

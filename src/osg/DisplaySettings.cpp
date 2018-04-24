@@ -240,7 +240,11 @@ void DisplaySettings::setDefaults()
 
     _implicitBufferAttachmentRenderMask = DEFAULT_IMPLICIT_BUFFER_ATTACHMENT;
     _implicitBufferAttachmentResolveMask = DEFAULT_IMPLICIT_BUFFER_ATTACHMENT;
+#ifdef OSG_GL3_FEATURES
+    _glContextVersion = "3.3";
+#else
     _glContextVersion = "1.0";
+#endif
     _glContextFlags = 0;
     _glContextProfileMask = 0;
 

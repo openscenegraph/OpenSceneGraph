@@ -1,3 +1,143 @@
+Thu, 26 Apr 2018 09:49:35 +0100
+Author : Robert Osfield
+Split up #pragma so that there only three parameters per line to aovid Intel driver bug crash
+
+Thu, 26 Apr 2018 09:36:52 +0100
+Author : Robert Osfield
+Renamed text.vert and text.frag to osgText_Text.vert and .frag to avoid name overlapping with user shaders.
+
+Wed, 25 Apr 2018 09:48:02 +0100
+Author : Julien Valentin
+add wrapper for osg::DrawIndirectBufferObject
+
+Tue, 24 Apr 2018 17:05:03 +0100
+Author : Robert Osfield
+Renamed CMake variable + C++ #define to OSG_GL_CONTEXT_VERSION
+
+Tue, 24 Apr 2018 16:22:13 +0100
+Author : Robert Osfield
+Added OSG_GL_CONTEXT_STRING cmake variable to set include/osg/GL headers that sets Traits::glContextVersion.
+
+Tue, 24 Apr 2018 15:33:03 +0100
+Author : Robert Osfield
+Refactored the handling of glyph and shadow alpha values to make the text and shadow clearer for fonts with narrow glyphs
+
+Tue, 24 Apr 2018 13:52:53 +0100
+Author : Robert Osfield
+Refactored the handling of text bounding box to provide more stable bounding box computation
+
+Mon, 23 Apr 2018 10:45:19 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #533 from aluaces/spelling-3Fix typos and spelling.
+
+Fri, 20 Apr 2018 21:16:46 +0200
+Author : Alberto Luaces
+Small fix for uncaught typo.
+
+Fri, 20 Apr 2018 18:18:22 +0200
+Author : Alberto Luaces
+Fix typos and spelling.
+
+Fri, 20 Apr 2018 14:01:21 +0100
+Author : Robert Osfield
+Cleaned up inbludes and unused code
+
+Fri, 20 Apr 2018 13:06:28 +0100
+Author : Robert Osfield
+Removed osgUtil::TriStripVisitor as it is nolonger appropriate for modern OpenGL/OSG usage and bloats the osgUtil lib size by several hundred Kb.
+
+Fri, 20 Apr 2018 11:42:31 +0100
+Author : Robert Osfield
+Removed usage of the osgUtil::TriStripVisitor is it generates osg::Geometry that perform very poorly when using VBO and VAO's vs GL DisplayLists. With DisplayLists being deprecated in GL and VBO and VAO becoming standard it's best to standardize on using the osgUtil::MeshOptimizers instead of TripStrupVisitor
+
+Fri, 20 Apr 2018 10:24:17 +0100
+Author : Robert Osfield
+Removed TriStripVisitor for default set of Optimizer passes as it doesn't generate efficient scene graphs
+
+Fri, 20 Apr 2018 09:57:04 +0100
+Author : Robert Osfield
+Added osgUtil::optimizeMesh(osg::Node* node) convinience method
+
+Thu, 19 Apr 2018 20:11:19 +0100
+Author : Robert Osfield
+Merge branch 'master' of https://github.com/openscenegraph/OpenSceneGraph
+
+Thu, 19 Apr 2018 19:43:14 +0100
+Author : Robert Osfield
+Fixed the set*Binding() methods so that they assign BufferObjects when required
+
+Thu, 19 Apr 2018 19:42:51 +0100
+Author : Robert Osfield
+Fixed messages
+
+Thu, 19 Apr 2018 19:41:51 +0100
+Author : Robert Osfield
+Fixed the GLBufferObject size computation so that it takes into account padding.
+
+Thu, 19 Apr 2018 19:36:19 +0100
+Author : Robert Osfield
+Replaced the use of osgUtil::TriStripVisitor with ogUtil::MeshOptimizer usage to improve performance. Fixed set setColorArray assignement to pass in the color binding
+
+Thu, 19 Apr 2018 08:38:47 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #532 from jasonbeverage/remove_getNameIDRemoved unimplemented Uniform::getNameID from Uniform header
+
+Wed, 18 Apr 2018 14:59:51 -0400
+Author : Jason Beverage
+Removed unimplemented Uniform::getNameID from Uniform header as it's defined in UniformBase now.
+
+Wed, 18 Apr 2018 10:02:43 +0100
+Author : Robert Osfield
+Fixed the handle of boundary equalization
+
+Wed, 18 Apr 2018 09:33:12 +0100
+Author : Robert Osfield
+Added --equalize-boundaries -e command line option to call terrain->setEqualizeBoundaries(true)
+
+Tue, 17 Apr 2018 09:20:23 +0100
+Author : Robert Osfield
+Cleaned up includes
+
+Tue, 17 Apr 2018 09:06:18 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #531 from jasonbeverage/fixosgmanipulatorIncluding osg/Geode to fix osgManipulator build
+
+Mon, 16 Apr 2018 15:58:12 -0400
+Author : Jason Beverage
+Including osg/Geode to fix osgManipulator build
+
+Mon, 16 Apr 2018 19:41:53 +0100
+Author : Robert Osfield
+Removed long deprecated IntersectVisitor.
+
+Mon, 16 Apr 2018 15:08:24 +0100
+Author : Robert Osfield
+Fixed inline Drawable::draw(..) method
+
+Mon, 16 Apr 2018 15:05:11 +0100
+Author : Robert Osfield
+Fixed Geometry::drawImplmentation() handling of VBO's to prevent them from being used when display lists are used.
+
+Sun, 15 Apr 2018 08:25:57 +0100
+Author : Robert Osfield
+Replaced osgViewer::GraphicsWindow dynamic_cast as it's not neccessary.
+
+Sat, 7 Apr 2018 18:35:19 +0100
+Author : Robert Osfield
+Fixed typo
+
+Sat, 7 Apr 2018 18:14:57 +0100
+Author : Robert Osfield
+Pulled in latest changes from 3.6 branch
+
+Fri, 6 Apr 2018 20:05:26 +0100
+Author : Robert Osfield
+Refactored the way that margin is applied to the text buounding box to prevent growth of the bounding box each time Text::setPosition() is called.
+
+Fri, 6 Apr 2018 15:34:10 +0100
+Author : Robert Osfield
+Updated ChangeLog
+
 Fri, 6 Apr 2018 14:17:35 +0100
 Author : Robert Osfield
 Fixed warning

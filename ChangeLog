@@ -1,3 +1,67 @@
+Thu, 26 Apr 2018 09:49:35 +0100
+Author : Robert Osfield
+Split up #pragma so that there only three parameters per line to aovid Intel driver bug crash
+
+Thu, 26 Apr 2018 09:36:52 +0100
+Author : Robert Osfield
+Renamed text.vert and text.frag to osgText_Text.vert and .frag to avoid name overlapping with user shaders.
+
+Wed, 25 Apr 2018 09:48:02 +0100
+Author : Julien Valentin
+add wrapper for osg::DrawIndirectBufferObject
+
+Tue, 24 Apr 2018 17:05:03 +0100
+Author : Robert Osfield
+Renamed CMake variable + C++ #define to OSG_GL_CONTEXT_VERSION
+
+Tue, 24 Apr 2018 16:22:13 +0100
+Author : Robert Osfield
+Added OSG_GL_CONTEXT_STRING cmake variable to set include/osg/GL headers that sets Traits::glContextVersion.
+
+Tue, 24 Apr 2018 15:38:02 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #537 from openscenegraph/revert-536-default-gl3-contextRevert "When GL3 build is enabled, default context requested is version 3.3, …"
+
+Tue, 24 Apr 2018 15:37:44 +0100
+Author : OpenSceneGraph git repository
+Revert "When GL3 build is enabled, default context requested is version 3.3, …"
+
+Tue, 24 Apr 2018 15:36:11 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #536 from emminizer/default-gl3-contextWhen GL3 build is enabled, default context requested is version 3.3, …
+
+Tue, 24 Apr 2018 15:33:03 +0100
+Author : Robert Osfield
+Refactored the handling of glyph and shadow alpha values to make the text and shadow clearer for fonts with narrow glyphs
+
+Tue, 24 Apr 2018 13:52:53 +0100
+Author : Robert Osfield
+Refactored the handling of text bounding box to provide more stable bounding box computation
+
+Tue, 24 Apr 2018 06:31:32 -0400
+Author : Daniel Emminizer
+When GL3 build is enabled, default context requested is version 3.3, enabling core profile by default.
+
+Fri, 20 Apr 2018 21:16:46 +0200
+Author : Alberto Luaces
+Small fix for uncaught typo.
+
+Fri, 20 Apr 2018 18:18:22 +0200
+Author : Alberto Luaces
+Fix typos and spelling.
+
+Mon, 23 Apr 2018 11:02:03 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #534 from emminizer/fix-msvc-includesFix includes for MSVC 2015 build.
+
+Fri, 20 Apr 2018 13:16:43 -0400
+Author : Daniel Emminizer
+Fix includes for MSVC 2015 build.
+
+Fri, 20 Apr 2018 15:58:27 +0100
+Author : Robert Osfield
+Updated ChangeLog
+
 Fri, 20 Apr 2018 14:32:34 +0100
 Author : Robert Osfield
 Replaced osgUtil::IntersectVisitor usage with osgUtil::InteresectionVisitor

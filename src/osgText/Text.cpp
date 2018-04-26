@@ -231,17 +231,17 @@ osg::StateSet* Text::createStateSet()
     stateset->setAttributeAndModes(program.get());
 
     {
-        DEBUG_MESSAGE<<"Using shaders/text.vert"<<std::endl;
+        DEBUG_MESSAGE<<"Using shaders/osgText_Text.vert"<<std::endl;
 
-        #include "shaders/text_vert.cpp"
-        program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::VERTEX, "shaders/text.vert", text_vert));
+        #include "shaders/osgText_Text_vert.cpp"
+        program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::VERTEX, "shaders/osgText_Text.vert", osgText_Text_vert));
     }
 
     {
-        DEBUG_MESSAGE<<"Using shaders/text.frag"<<std::endl;
+        DEBUG_MESSAGE<<"Using shaders/osgText_Text.frag"<<std::endl;
 
-        #include "shaders/text_frag.cpp"
-        program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/text.frag", text_frag));
+        #include "shaders/osgText_Text_frag.cpp"
+        program->addShader(osgDB::readRefShaderFileWithFallback(osg::Shader::FRAGMENT, "shaders/osgText_Text.frag", osgText_Text_frag));
     }
 
     return stateset.release();

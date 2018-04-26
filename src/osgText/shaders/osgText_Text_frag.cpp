@@ -1,6 +1,7 @@
 char osgText_Text_frag[] = "$OSG_GLSL_VERSION\n"
                            "\n"
-                           "#pragma import_defines( BACKDROP_COLOR, SHADOW, OUTLINE, SIGNED_DISTANCE_FIELD, TEXTURE_DIMENSION, GLYPH_DIMENSION)\n"
+                           "#pragma import_defines( BACKDROP_COLOR, SHADOW, OUTLINE)\n"
+                           "#pragma import_defines( SIGNED_DISTANCE_FIELD, TEXTURE_DIMENSION, GLYPH_DIMENSION)\n"
                            "\n"
                            "#ifdef GL_ES\n"
                            "    #extension GL_OES_standard_derivatives : enable\n"

@@ -68,7 +68,7 @@ class OSGGA_EXPORT CameraManipulator : public GUIEventHandler
         osg::CoordinateFrame getCoordinateFrame(const osg::Vec3d& position) const
         {
             if (_coordinateFrameCallback.valid()) return  _coordinateFrameCallback->getCoordinateFrame(position);
-            return osg::CoordinateFrame();
+            return getMatrix();
         }
 
         osg::Vec3d getSideVector(const osg::CoordinateFrame& cf) const { return osg::Vec3d(cf(0,0),cf(0,1),cf(0,2)); }

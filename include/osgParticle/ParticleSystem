@@ -279,10 +279,6 @@ namespace osgParticle
         ParticleSystem& operator=(const ParticleSystem&) { return *this; }
 
         inline void update_bounds(const osg::Vec3& p, float r);
-        void single_pass_render(osg::RenderInfo& renderInfo, const osg::Matrix& modelview) const;
-        void render_vertex_array(osg::RenderInfo& renderInfo) const;
-
-        void new_drawImplementation(osg::RenderInfo& renderInfo) const;
 
         typedef std::vector<Particle> Particle_vector;
         typedef std::stack<Particle*> Death_stack;

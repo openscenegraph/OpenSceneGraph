@@ -641,7 +641,7 @@ void Shader::PerContextShader::compileShader(osg::State& state)
     GLint compiled = GL_FALSE;
 
     // OSG_NOTICE<<"Compiling PerContextShader "<<this<<" ShaderDefine="<<getDefineString()<<std::endl;
-    bool printOutShaders = osg::getNotifyLevel()>=osg::NOTICE;//INFO;
+    bool printOutShaders = osg::getNotifyLevel()>=osg::INFO;//NOTICE;
 
     if (_defineStr.empty())
     {

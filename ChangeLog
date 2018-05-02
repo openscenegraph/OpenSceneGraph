@@ -1,3 +1,27 @@
+Wed, 2 May 2018 09:10:54 +0100
+Author : Robert Osfield
+Updates for the 3.6.1-rc2
+
+Mon, 30 Apr 2018 11:55:17 +0100
+Author : Robert Osfield
+Updated SO version to reflect change in ABI
+
+Mon, 30 Apr 2018 11:44:02 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #542 from psyinf/fix_particle_system_headerFIX: <osgParticle> removed unimplemented functions from header
+
+Mon, 30 Apr 2018 11:16:02 +0200
+Author : Sebastian Messerschmidt
+FIX: <osgParticle> removed unimplemented functions from header
+
+Fri, 27 Apr 2018 11:23:07 +0100
+Author : Robert Osfield
+Fixed particle update bug where a ParticleSystem wouldn't start when loaded during the frame loop due to the _last_frame value not being set.
+
+Thu, 26 Apr 2018 10:21:53 +0100
+Author : Robert Osfield
+Updated ChangeLog, README.md and rc number for 3.6.1-rc1
+
 Thu, 26 Apr 2018 09:49:35 +0100
 Author : Robert Osfield
 Split up #pragma so that there only three parameters per line to aovid Intel driver bug crash

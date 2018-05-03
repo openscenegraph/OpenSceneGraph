@@ -169,16 +169,37 @@ StateSetContent FbxMaterialToOsgStateSet::convert(const FbxSurfaceMaterial* pFbx
 
 osg::ref_ptr<osg::Texture2D> FbxMaterialToOsgStateSet::fbxTextureToOsgTexture(const FbxFileTexture* fbx)
 {
-    ImageMap::iterator it = _imageMap.find(fbx->GetFileName());
+    // Try to find image in cache
+	ImageMap::iterator it = _imageMap.find(fbx->GetFileName());
     if (it != _imageMap.end())
         return it->second;
-    osg::ref_ptr<osg::Image> pImage = NULL;
+    
 
-    // Warning: fbx->GetRelativeFileName() is relative TO EXECUTION DIR
-    //          fbx->GetFileName() is as stored initially in the FBX
-    if ((pImage = osgDB::readRefImageFile(osgDB::concatPaths(_dir, fbx->GetFileName()), _options)) ||                // First try "export dir/name"
-        (pImage = osgDB::readRefImageFile(fbx->GetFileName(), _options)) ||                                        // Then try  "name" (if absolute)
-        (pImage = osgDB::readRefImageFile(osgDB::concatPaths(_dir, fbx->GetRelativeFileName()), _options)))        // Else try  "current dir/name"
+	// Try to locate valid filename
+	std::string filename = "";
+
+	// Warning: fbx->GetRelativeFileName() is relative TO EXECUTION DIR
+	//          fbx->GetFileName() is as stored initially in the FBX
+	if (osgDB::fileExists(osgDB::concatPaths(_dir, fbx->GetFileName()))) // First try "export dir/name"
+	{
+		filename = osgDB::concatPaths(_dir, fbx->GetFileName());
+	} 
+	else if (osgDB::fileExists(fbx->GetFileName())) // Then try  "name" (if absolute)
+	{
+		filename = fbx->GetFileName();
+	} 
+	else if (osgDB::fileExists(osgDB::concatPaths(_dir, fbx->GetRelativeFileName()))) // Else try  "current dir/name"
+	{
+		filename = osgDB::concatPaths(_dir, fbx->GetRelativeFileName());
+	} 
+	else 
+	{
+		OSG_WARN << "Could not find valid file for " << fbx->GetFileName() << std::endl;
+		return NULL;
+	}
+	
+	osg::ref_ptr<osg::Image> pImage = osgDB::readRefImageFile(filename, _options);
+	if (pImage.valid())        
     {
         osg::ref_ptr<osg::Texture2D> pOsgTex = new osg::Texture2D;
         pOsgTex->setImage(pImage.get());

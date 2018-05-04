@@ -184,6 +184,27 @@ REGISTER_OBJECT_WRAPPER( Camera,
                          osg::Camera,
                          "osg::Object osg::Node osg::Group osg::Transform osg::Camera" )
 {
+    {
+        UPDATE_TO_VERSION_SCOPED( 161 )
+        BEGIN_ENUM_SERIALIZER( ComputeNearFarMode, COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES );
+            ADD_ENUM_CLASS_VALUE( osg::CullSettings, DO_NOT_COMPUTE_NEAR_FAR );
+            ADD_ENUM_CLASS_VALUE( osg::CullSettings, COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES );
+            ADD_ENUM_CLASS_VALUE( osg::CullSettings, COMPUTE_NEAR_FAR_USING_PRIMITIVES );
+            ADD_ENUM_CLASS_VALUE( osg::CullSettings, COMPUTE_NEAR_USING_PRIMITIVES );
+        END_ENUM_SERIALIZER();  // _computeNearFarMode
+        ADD_BOOL_SERIALIZER( ImpostorsActive, true);//_impostorActive
+        ADD_FLOAT_SERIALIZER( ImpostorPixelErrorThreshold, 4.0f );// _impostorPixelErrorThreshold
+        ADD_DOUBLE_SERIALIZER( NearFarRatio, 0.0005f );// _nearfarratio
+        ADD_INT_SERIALIZER( NumberOfFrameToKeepImpostorSprites, 10);
+        ADD_FLOAT_SERIALIZER( LODScale, 1.0f); //_lodscale
+        ADD_FLOAT_SERIALIZER( SmallFeatureCullingPixelSize, 2.0f); //  _smallFeatureCullingPixelSize
+        ADD_BOOL_SERIALIZER( DepthSortImpostorSprites, false); //_depthSortImpostorSprites
+        ADD_FLOAT_SERIALIZER( ImpostorPixelErrorThreshold , 4.0f); //_impostorPixelErrorThreshold
+        ADD_HEXINT_SERIALIZER( CullMask , 0xffffffff); //_cullMask
+        ADD_HEXINT_SERIALIZER( CullMaskLeft , 0xffffffff); //_cullMaskLeft
+        ADD_HEXINT_SERIALIZER( CullMaskRight , 0xffffffff); //_cullMaskRight
+    }
+
     ADD_BOOL_SERIALIZER( AllowEventFocus, true );  // _allowEventFocus
     BEGIN_BITFLAGS_SERIALIZER(ClearMask,GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         ADD_BITFLAG_VALUE(COLOR, GL_COLOR_BUFFER_BIT);

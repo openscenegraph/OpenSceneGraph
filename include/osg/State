@@ -834,9 +834,11 @@ class OSG_EXPORT State : public Referenced
         /** Get the const DisplaySettings */
         inline const DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
+        /** Get the DisplaySettings that is current active DisplaySettings to be used by osg::State, - if DisplaySettings is not directly assigned then fallback to DisplaySettings::instance(). */
+        inline DisplaySettings* getActiveDisplaySettings() { return _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance().get(); }
+
         /** Get the const DisplaySettings that is current active DisplaySettings to be used by osg::State, - if DisplaySettings is not directly assigned then fallback to DisplaySettings::instance(). */
         inline const DisplaySettings* getActiveDisplaySettings() const { return _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance().get(); }
-
 
 
         /** Set flag for early termination of the draw traversal.*/

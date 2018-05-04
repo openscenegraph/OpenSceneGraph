@@ -69,7 +69,7 @@ void ObjectCache::addObjectCache(ObjectCache* objectCache)
 void ObjectCache::addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp, const Options *options)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-    _objectCache[FileNameOptionsPair(filename, osg::clone(options))] = ObjectTimeStampPair(object,timestamp);
+    _objectCache[FileNameOptionsPair(filename, options ? osg::clone(options) : 0)] = ObjectTimeStampPair(object,timestamp);
     OSG_DEBUG<<"Adding "<<filename<<" with options '"<<(options ? options->getOptionString() : "")<<"' to ObjectCache "<<this<<std::endl;
 }
 

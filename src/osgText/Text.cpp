@@ -1106,7 +1106,9 @@ void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colo
 
     if ((_drawMode&(~TEXT))!=0 && !_decorationPrimitives.empty())
     {
+#if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
         state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
+#endif
         vas->disableColorArray(state);
         for(Primitives::const_iterator itr = _decorationPrimitives.begin();
             itr != _decorationPrimitives.end();
@@ -1117,7 +1119,9 @@ void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colo
 
             (*itr)->draw(state, usingVertexBufferObjects);
         }
+#if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
         state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
+#endif
     }
 
     if (_drawMode & TEXT)

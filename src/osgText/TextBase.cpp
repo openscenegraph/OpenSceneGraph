@@ -547,13 +547,10 @@ bool TextBase::computeMatrix(osg::Matrix& matrix, osg::State* state) const
             float pixelSizeVector_w = M(3,2)*P23 + M(3,3)*P33;
 
             float pixelSizeVert=(_characterHeight*sqrtf(scale_10.length2()))/(pixelSizeVector_w*0.701f);
-            float pixelSizeHori=(_characterHeight/getCharacterAspectRatio()*sqrtf(scale_00.length2()))/(pixelSizeVector_w*0.701f);
 
             // avoid nasty math by preventing a divide by zero
             if (pixelSizeVert == 0.0f)
                pixelSizeVert= 1.0f;
-            if (pixelSizeHori == 0.0f)
-               pixelSizeHori= 1.0f;
 
             if (_glyphNormalized)
             {
@@ -564,7 +561,7 @@ bool TextBase::computeMatrix(osg::Matrix& matrix, osg::State* state) const
             if (_characterSizeMode==SCREEN_COORDS)
             {
                 float scale_font_vert=_characterHeight/pixelSizeVert;
-                float scale_font_hori=_characterHeight/getCharacterAspectRatio()/pixelSizeHori;
+                float scale_font_hori=scale_font_vert;
 
                 if (P10<0)
                    scale_font_vert=-scale_font_vert;

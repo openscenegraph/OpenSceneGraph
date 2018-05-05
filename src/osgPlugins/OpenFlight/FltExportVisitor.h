@@ -184,10 +184,10 @@ private:
     typedef std::vector< osg::ref_ptr<osg::StateSet> > StateSetStack;
     StateSetStack _stateSetStack;
 
-    std::auto_ptr<MaterialPaletteManager>     _materialPalette;
-    std::auto_ptr<TexturePaletteManager>      _texturePalette;
-    std::auto_ptr<LightSourcePaletteManager>  _lightSourcePalette;
-    std::auto_ptr<VertexPaletteManager>       _vertexPalette;
+    osg::ref_ptr<MaterialPaletteManager>     _materialPalette;
+    osg::ref_ptr<TexturePaletteManager>      _texturePalette;
+    osg::ref_ptr<LightSourcePaletteManager>  _lightSourcePalette;
+    osg::ref_ptr<VertexPaletteManager>       _vertexPalette;
 
     // Used to avoid duplicate Header/Group records at top of output FLT file.
     bool _firstNode;

@@ -40,11 +40,10 @@ namespace flt
    file and copies it to FltExportVisitor::_dos after the scene graph
    has been completely walked.
  */
-class VertexPaletteManager
+class VertexPaletteManager : public osg::Referenced
 {
 public:
     VertexPaletteManager( const ExportOptions& fltOpt );
-    ~VertexPaletteManager();
 
     void add( const osg::Geometry& geom );
     void add( const osg::Array* key,
@@ -66,6 +65,8 @@ public:
     static osg::ref_ptr< const osg::Vec4Array > asVec4Array( const osg::Array* in, const unsigned int n );
 
 protected:
+    virtual ~VertexPaletteManager();
+
     typedef enum {
         VERTEX_C,
         VERTEX_CN,

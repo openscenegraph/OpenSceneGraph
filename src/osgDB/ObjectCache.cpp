@@ -144,7 +144,11 @@ void ObjectCache::removeExpiredObjectsInCache(double expiryTime)
     {
         if (oitr->second.second<=expiryTime)
         {
+#if __cplusplus > 199711L
+            oitr = _objectCache.erase(oitr);
+#else
             _objectCache.erase(oitr++);
+#endif
         }
         else
         {

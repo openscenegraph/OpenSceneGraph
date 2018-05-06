@@ -1,3 +1,50 @@
+Sat, 5 May 2018 15:47:28 +0100
+Author : Robert Osfield
+Restructed the handling of SCREEN_COORD scaling to better handle window resizing
+
+Sat, 5 May 2018 12:31:00 +0100
+Author : Robert Osfield
+Added C++ specific path for calling std::map<>::erase() to avoid issues with std::map<>::erase implementation that invalidates iterators
+
+Sat, 5 May 2018 12:28:45 +0100
+Author : Robert Osfield
+Replaced std::auto_ptr<> usage as it's deprecated in C++11 and will be removed in C++17
+
+Fri, 4 May 2018 16:11:31 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #545 from emminizer/fix-gl3-text-bad-modeText only applies GL_TEXTURE_2D modes when fixed function is availabl…
+
+Fri, 4 May 2018 06:44:13 -0400
+Author : Daniel Emminizer
+Text only applies GL_TEXTURE_2D modes when fixed function is available.  Prevents GL3 Core Profile console spam.
+
+Fri, 4 May 2018 10:54:02 +0100
+Author : Robert Osfield
+Added non const version of State::getActiveDisplaySettings()
+
+Fri, 4 May 2018 09:44:43 +0100
+Author : Robert Osfield
+Added check for null to prevent null entries getting into the cache
+
+Fri, 18 Nov 2016 14:56:05 +0000
+Author : Robert Osfield
+Added osg::MakeString class to make it easier to create std::string's using std::ostream style << usage.
+
+Fri, 4 May 2018 09:22:54 +0100
+Author : Robert Osfield
+Fixed null pointer warning
+
+Thu, 3 May 2018 12:56:08 +0200
+Author : Björn Blissing
+Check existence of path before reading imageWhen loading texture images inside the FBX plugin check that the path
+exists before trying to read the image. This is done to avoid
+unnecessary warnings inside the readRefImageFile function.
+
+
+Wed, 2 May 2018 09:14:04 +0100
+Author : Robert Osfield
+Updated ChangeLog
+
 Wed, 2 May 2018 09:10:54 +0100
 Author : Robert Osfield
 Updates for the 3.6.1-rc2

@@ -35,7 +35,7 @@
 #if  __cplusplus > 199711L
     #define smart_ptr std::unique_ptr
 #else
-    #define smart_prt std::auto_ptr
+    #define smart_ptr std::auto_ptr
 #endif
 
 osgDB::ReaderWriter::ReadResult

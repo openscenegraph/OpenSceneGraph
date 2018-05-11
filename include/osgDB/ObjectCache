@@ -70,13 +70,16 @@ class OSGDB_EXPORT ObjectCache : public osg::Referenced
 
         typedef std::pair<std::string, osg::ref_ptr<const osgDB::Options> >   FileNameOptionsPair;
 
-        class ClassComp {
-        public:
+        struct ClassComp
+        {
             bool operator() (const ObjectCache::FileNameOptionsPair& lhs, const ObjectCache::FileNameOptionsPair& rhs) const;
         };
 
+
         typedef std::pair<osg::ref_ptr<osg::Object>, double >           ObjectTimeStampPair;
         typedef std::map<FileNameOptionsPair, ObjectTimeStampPair, ClassComp>     ObjectCacheMap;
+
+        ObjectCacheMap::iterator find(const std::string& fileName, const osgDB::Options* options);
 
         ObjectCacheMap                          _objectCache;
         OpenThreads::Mutex                      _objectCacheMutex;

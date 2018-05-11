@@ -75,10 +75,29 @@ void ObjectCache::addEntryToObjectCache(const std::string& filename, osg::Object
     OSG_DEBUG<<"Adding "<<filename<<" with options '"<<(options ? options->getOptionString() : "")<<"' to ObjectCache "<<this<<std::endl;
 }
 
+ObjectCache::ObjectCacheMap::iterator ObjectCache::find(const std::string& fileName, const osgDB::Options* options)
+{
+    for(ObjectCacheMap::iterator itr = _objectCache.begin();
+        itr != _objectCache.end();
+        ++itr)
+    {
+        if (itr->first.first==fileName)
+        {
+            if (itr->first.second.valid())
+            {
+                if (options && *(itr->first.second)==*options) return itr;
+            }
+            else if (!options) return itr;
+        }
+    }
+    return _objectCache.end();
+}
+
+
 osg::Object* ObjectCache::getFromObjectCache(const std::string& fileName, const Options *options)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-    ObjectCacheMap::iterator itr = _objectCache.find(FileNameOptionsPair(fileName, options));
+    ObjectCacheMap::iterator itr = find(fileName, options);
     if (itr!=_objectCache.end())
     {
         osg::ref_ptr<const osgDB::Options> o = itr->first.second;
@@ -98,8 +117,7 @@ osg::Object* ObjectCache::getFromObjectCache(const std::string& fileName, const 
 osg::ref_ptr<osg::Object> ObjectCache::getRefFromObjectCache(const std::string& fileName, const Options *options)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-    ObjectCacheMap::iterator itr;
-    itr = _objectCache.find(FileNameOptionsPair(fileName, options));
+    ObjectCacheMap::iterator itr = find(fileName, options);
     if (itr!=_objectCache.end())
     {
         osg::ref_ptr<const osgDB::Options> o = itr->first.second;
@@ -160,7 +178,7 @@ void ObjectCache::removeExpiredObjectsInCache(double expiryTime)
 void ObjectCache::removeFromObjectCache(const std::string& fileName, const Options *options)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-    ObjectCacheMap::iterator itr = _objectCache.find(FileNameOptionsPair(fileName, options));
+    ObjectCacheMap::iterator itr = find(fileName, options);
     if (itr!=_objectCache.end()) _objectCache.erase(itr);
 }
 

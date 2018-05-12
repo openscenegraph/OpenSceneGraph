@@ -653,7 +653,7 @@ ref_ptr<Group> VBSPGeometry::createGeometry()
 
         // Now, stripify the geode to convert the POLYGON primitives to
         // triangle strips
-        osgUtil::optimizeMesh(geode);
+        osgUtil::optimizeMesh(geode.get());
     }
 
     // Now do the same for the displacement surfaces (if any)

@@ -182,7 +182,7 @@ private:
             geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, _numFacets * 3));
 
             if(!_noTriStripPolygons) {
-                osgUtil::optimizeMesh(geom);
+                osgUtil::optimizeMesh(geom.get());
             }
 
             return geom;

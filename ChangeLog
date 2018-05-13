@@ -1,3 +1,48 @@
+Sat, 12 May 2018 12:41:42 +0100
+Author : Robert Osfield
+Build fixes for OSG_USE_REF_PTR_IMPLICIT_OUTPUT set to OFF
+
+Sat, 12 May 2018 11:40:25 +0100
+Author : Robert Osfield
+Rewrote TextBase::computeMatrix(..) computation of the scaling factor with slower but easier to understand and more robust code
+
+Sat, 12 May 2018 07:51:51 +0100
+Author : Robert Osfield
+Removed use of deprecated cmake policy
+
+Fri, 11 May 2018 11:15:45 +0100
+Author : Robert Osfield
+Moved constructors and destructors to .cpp
+
+Fri, 11 May 2018 11:11:48 +0100
+Author : Robert Osfield
+Revert "Moved the Options constructors and destructor implementaions into the cpp to make it easier to do debugging"This reverts commit 0fc7aa8cc096e59b9366df60c1fdbd0803ac4481.
+
+
+Fri, 11 May 2018 09:00:22 +0100
+Author : Robert Osfield
+Fixed crash the occurred when passing in a osgDB::Options to the ObjectCache that doesn't have any references to it.
+
+Fri, 11 May 2018 08:58:30 +0100
+Author : Robert Osfield
+Moved the Options constructors and destructor implementaions into the cpp to make it easier to do debugging
+
+Thu, 10 May 2018 18:58:29 +0100
+Author : Robert Osfield
+Fixed build when OSG_ENVVAR_SUPPORTED is disabled and quietened down warnings using OSG_UNUSED* macros
+
+Thu, 10 May 2018 18:50:17 +0100
+Author : Robert Osfield
+Changed the ordering of the build include directory and the source include directory to avoid build issues on systems where a different version of the OSG has been built in-source then another built out-of-source resulting in conflicts
+
+Thu, 10 May 2018 16:59:56 +0100
+Author : Robert Osfield
+Fixed typo
+
+Sun, 6 May 2018 07:47:23 +0100
+Author : Robert Osfield
+Updates for 3.6.1-rc3
+
 Sat, 5 May 2018 15:47:28 +0100
 Author : Robert Osfield
 Restructed the handling of SCREEN_COORD scaling to better handle window resizing

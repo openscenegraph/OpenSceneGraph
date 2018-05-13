@@ -233,6 +233,20 @@ void BuildShapeGeometryVisitor::setMatrix(const Matrixd& m)
     _inverse.setTrans(0.0,0.0,0.0);
 }
 
+void BuildShapeGeometryVisitor::Vertex(const Vec3f& v)
+{
+    _vertices->push_back(v);
+    if (_normals.valid() && _normals->size()<_vertices->size())
+    {
+        while(_normals->size()<_vertices->size()) _normals->push_back(osg::Vec3(0.0f, 0.0f, 1.0f));
+    }
+    if (_texcoords.valid() && _texcoords->size()<_vertices->size())
+    {
+        while(_texcoords->size()<_vertices->size()) _texcoords->push_back(osg::Vec2(0.0f, 0.0f));
+    }
+}
+
+
 void BuildShapeGeometryVisitor::Begin(GLenum mode)
 {
     _mode = mode;

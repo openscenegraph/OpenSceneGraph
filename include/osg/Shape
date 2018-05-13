@@ -768,10 +768,13 @@ class OSG_EXPORT BuildShapeGeometryVisitor : public ConstShapeVisitor
         virtual void apply(const CompositeShape&);
 
         void Normal(const Vec3f& v) { _normals->push_back(v); }
-        void Normal3f(float x, float y, float z) { _normals->push_back(Vec3(x,y,z)); }
-        void TexCoord2f(float x, float y) { _texcoords->push_back(Vec2(x,y)); }
-        void Vertex(const Vec3f& v) { _vertices->push_back(v); }
-        void Vertex3f(float x, float y, float z) { _vertices->push_back(Vec3(x,y,z)); }
+        void Normal3f(float x, float y, float z) { Normal(Vec3(x,y,z)); }
+
+        void TexCoord(const Vec2f& tc) { _texcoords->push_back(tc); }
+        void TexCoord2f(float x, float y) { TexCoord(Vec2(x,y)); }
+
+        void Vertex(const Vec3f& v);
+        void Vertex3f(float x, float y, float z) { Vertex(Vec3(x,y,z)); }
 
         void setMatrix(const Matrixd& m);
 

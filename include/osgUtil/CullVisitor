@@ -354,8 +354,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         RenderBin*                _currentRenderBin;
         std::vector<RenderBin*>   _renderBinStack;
 
-        unsigned int             _traversalNumber;
-
         value_type               _computed_znear;
         value_type               _computed_zfar;
 

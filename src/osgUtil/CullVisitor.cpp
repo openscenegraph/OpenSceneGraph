@@ -50,6 +50,7 @@ CullVisitor::CullVisitor():
     _currentRenderBin(NULL),
     _computed_znear(FLT_MAX),
     _computed_zfar(-FLT_MAX),
+    _traversalOrderNumber(0),
     _currentReuseRenderLeafIndex(0),
     _numberOfEncloseOverrideRenderBinDetails(0)
 {
@@ -64,6 +65,7 @@ CullVisitor::CullVisitor(const CullVisitor& rhs):
     _currentRenderBin(NULL),
     _computed_znear(FLT_MAX),
     _computed_zfar(-FLT_MAX),
+    _traversalOrderNumber(0),
     _currentReuseRenderLeafIndex(0),
     _numberOfEncloseOverrideRenderBinDetails(0),
     _identifier(rhs._identifier)
@@ -101,8 +103,8 @@ void CullVisitor::reset()
 
     _numberOfEncloseOverrideRenderBinDetails = 0;
 
-    // reset the traversal number
-    _traversalNumber = 0;
+    // reset the traversal order number
+    _traversalOrderNumber = 0;
 
     // reset the calculated near far planes.
     _computed_znear = FLT_MAX;

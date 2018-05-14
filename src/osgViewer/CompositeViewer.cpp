@@ -1278,13 +1278,13 @@ void CompositeViewer::eventTraversal()
                     osg::NodeVisitor::TraversalMode tm = _eventVisitor->getTraversalMode();
                     _eventVisitor->setTraversalMode(osg::NodeVisitor::TRAVERSE_NONE);
 
-                    if (view->getCamera() && view->getCamera()->getEventCallback()) view->getCamera()->accept(*_eventVisitor);
+                    if (view->getCamera()) view->getCamera()->accept(*_eventVisitor);
 
                     for(unsigned int i=0; i<view->getNumSlaves(); ++i)
                     {
                         osg::View::Slave& slave = view->getSlave(i);
                         osg::Camera* camera = view->getSlave(i)._camera.get();
-                        if (camera && slave._useMastersSceneData && camera->getEventCallback())
+                        if (camera && slave._useMastersSceneData)
                         {
                             camera->accept(*_eventVisitor);
                         }
@@ -1412,13 +1412,13 @@ void CompositeViewer::updateTraversal()
             osg::NodeVisitor::TraversalMode tm = _updateVisitor->getTraversalMode();
             _updateVisitor->setTraversalMode(osg::NodeVisitor::TRAVERSE_NONE);
 
-            if (view->getCamera() && view->getCamera()->getUpdateCallback()) view->getCamera()->accept(*_updateVisitor);
+            if (view->getCamera()) view->getCamera()->accept(*_updateVisitor);
 
             for(unsigned int i=0; i<view->getNumSlaves(); ++i)
             {
                 osg::View::Slave& slave = view->getSlave(i);
                 osg::Camera* camera = slave._camera.get();
-                if (camera && slave._useMastersSceneData && camera->getUpdateCallback())
+                if (camera && slave._useMastersSceneData)
                 {
                     camera->accept(*_updateVisitor);
                 }

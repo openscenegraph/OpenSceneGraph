@@ -627,6 +627,8 @@ class OSG_EXPORT Uniform : public UniformBase
 
         virtual void apply(const GLExtensions* ext, GLint location) const;
 
+        typedef osg::UniformCallback Callback;
+
     protected:
 
         virtual ~Uniform();

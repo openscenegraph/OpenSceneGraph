@@ -33,6 +33,9 @@ class OSG_EXPORT UniformBase : public Object
 
         META_Object(osg, UniformBase);
 
+        virtual const UniformBase* asUniformBase() const { return this; }
+        virtual UniformBase* asUniformBase() { return this; }
+
         /** Set the name of the glUniform, ensuring it is only set once.*/
         virtual void setName( const std::string& name );
 

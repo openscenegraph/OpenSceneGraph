@@ -286,7 +286,7 @@ public:
     virtual bool run(osg::Object* object, osg::Object* data);
 
     /** do customized update code.*/
-    virtual void operator () (UniformBase*, NodeVisitor*) {}
+    virtual void operator () (UniformBase* ub, NodeVisitor* nv);
 
     virtual void operator () (Uniform*, NodeVisitor*) {}
 

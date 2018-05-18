@@ -73,6 +73,9 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
         virtual void reset();
 
+        void setStateGraph(StateGraph* sg) { _rootStateGraph = sg; }
+        StateGraph* getStateGraph() { return _rootStateGraph.get(); }
+
         void setStateSet(osg::StateSet* stateset) { _stateset = stateset; }
         osg::StateSet* getStateSet() { return _stateset.get(); }
         const osg::StateSet* getStateSet() const { return _stateset.get(); }
@@ -156,6 +159,8 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
     protected:
 
         virtual ~RenderBin();
+
+        osg::ref_ptr<StateGraph>        _rootStateGraph;
 
         int                             _binNum;
         RenderBin*                      _parent;

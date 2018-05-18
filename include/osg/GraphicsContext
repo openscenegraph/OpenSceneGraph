@@ -597,10 +597,6 @@ struct WindowingSystemInterfaceProxy
     osg::ref_ptr<T> _wsi;
 };
 
-#define REGISTER_WINDOWINGSYSTEMINTERFACE(ext, classname) \
-    extern "C" void graphicswindow_##ext(void) {} \
-    static osg::WindowingSystemInterfaceProxy<classname> s_proxy_##classname(#ext);
-
 }
 
 #endif

@@ -2140,6 +2140,8 @@ Vec4 _readColor(GLenum pixelFormat, T* data,float scale)
         case(GL_DEPTH_COMPONENT):   //intentionally fall through and execute the code for GL_LUMINANCE
         case(GL_LUMINANCE):         { float l = float(*data++)*scale; return Vec4(l, l, l, 1.0f); }
         case(GL_ALPHA):             { float a = float(*data++)*scale; return Vec4(1.0f, 1.0f, 1.0f, a); }
+        case(GL_RED):               { float r = float(*data++)*scale; return Vec4(r, 1.0f, 1.0f, 1.0f); }
+        case(GL_RG):                { float r = float(*data++)*scale; float g = float(*data++)*scale; return Vec4(r, g, 1.0f, 1.0f); }
         case(GL_LUMINANCE_ALPHA):   { float l = float(*data++)*scale; float a = float(*data++)*scale; return Vec4(l,l,l,a); }
         case(GL_RGB):               { float r = float(*data++)*scale; float g = float(*data++)*scale; float b = float(*data++)*scale; return Vec4(r,g,b,1.0f); }
         case(GL_RGBA):              { float r = float(*data++)*scale; float g = float(*data++)*scale; float b = float(*data++)*scale; float a = float(*data++)*scale; return Vec4(r,g,b,a); }

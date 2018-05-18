@@ -1,3 +1,55 @@
+Fri, 18 May 2018 14:58:53 +0100
+Author : Robert Osfield
+Moved REGISTER_WINDOWINGSYSTEMINTERFACE from include/osg/GraphicsContext to include/osgViewer/GraphicsWindow and added OSGVIEWER_EXPORT
+
+Fri, 18 May 2018 13:53:39 +0100
+Author : Robert Osfield
+Added GL_RED and GL_RG support to _readColor()/Image::getColor();
+
+Fri, 18 May 2018 12:52:50 +0100
+Author : Robert Osfield
+Cleaned up the WindowingSystemInterface registration
+
+Fri, 18 May 2018 12:47:34 +0100
+Author : Robert Osfield
+Fixed create of graphics context by explicting adding USE_GRAPHICSWINDOW to force the WindowingSystemInterface to initialize
+
+Fri, 18 May 2018 12:42:20 +0100
+Author : Robert Osfield
+Quitened down unsupport compression output when passing in a file with a non rgb extension
+
+Fri, 18 May 2018 10:00:10 +0100
+Author : Robert Osfield
+Introduced a local StateGraph hierarchy into CullVisitor::apply(osg::Camera&) and RenderBin to fixed RTT Camera bug where multiple RTT Camera end up with the rendering back end results assigned to them which occured when RTT Camera's share the same StateSet or null StateSet.
+
+Mon, 14 May 2018 09:34:04 +0100
+Author : Robert Osfield
+Fixed support for update and event callbacks on StateSet/Uniform/StateAttributes on View(er) Cameras.
+
+Mon, 14 May 2018 08:43:08 +0100
+Author : Robert Osfield
+Renamed the counter used to enable traversal order sorting
+
+Mon, 14 May 2018 08:24:02 +0100
+Author : Robert Osfield
+Improved the handling of precision
+
+Sun, 13 May 2018 11:52:06 +0100
+Author : Robert Osfield
+Fixed crash when using ShapeDrawable with a TriangleMesh or ConvexHull shape due to missing texture coords
+
+Sun, 13 May 2018 09:23:38 +0100
+Author : Robert Osfield
+Updated for rc
+
+Sun, 13 May 2018 09:18:31 +0100
+Author : Robert Osfield
+Removed _traverseNumber variable that was duplicating the one in NodeVisitor base class
+
+Sat, 12 May 2018 12:47:08 +0100
+Author : Robert Osfield
+Updates for 3.6.1-rc4
+
 Sat, 12 May 2018 12:41:42 +0100
 Author : Robert Osfield
 Build fixes for OSG_USE_REF_PTR_IMPLICIT_OUTPUT set to OFF

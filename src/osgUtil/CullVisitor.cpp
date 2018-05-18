@@ -1569,12 +1569,40 @@ void CullVisitor::apply(osg::Camera& camera)
     }
     else
     {
+        // cache the StateGraph and replace with a clone of the exisitng parental chain.
+        osg::ref_ptr<StateGraph> previous_rootStateGraph = _rootStateGraph;
+        StateGraph* previous_currentStateGraph = _currentStateGraph;
+
+        {
+            // replicate the StageGraph parental chain so that state graph and render leaves all are kept local the the Camera's RenderStage.
+            typedef std::vector< osg::ref_ptr<StateGraph> > StageGraphStack;
+            StageGraphStack stateGraphParentalChain;
+            StateGraph* sg = _currentStateGraph;
+            while(sg)
+            {
+                stateGraphParentalChain.push_back(sg);
+                sg = sg->_parent;
+            }
+
+            StageGraphStack::reverse_iterator ritr = stateGraphParentalChain.rbegin();
+
+            if (ritr!=stateGraphParentalChain.rend())
+            {
+                const osg::StateSet* ss = (*ritr++)->getStateSet();
+                _rootStateGraph = ss ? new StateGraph(0, ss) : new StateGraph();
+                _currentStateGraph = _rootStateGraph.get();
+
+                while(ritr != stateGraphParentalChain.rend())
+                {
+                    _currentStateGraph = _currentStateGraph->find_or_insert((*ritr++)->getStateSet());
+                }
+            }
+        }
+
         // set up lighting.
         // currently ignore lights in the scene graph itself..
         // will do later.
         osgUtil::RenderStage* previous_stage = getCurrentRenderBin()->getStage();
-
-//        unsigned int contextID = getState() ? getState()->getContextID() : 0;
 
         // use render to texture stage.
         // create the render to texture stage.
@@ -1620,6 +1648,9 @@ void CullVisitor::apply(osg::Camera& camera)
             // reusing render to texture stage, so need to reset it to empty it from previous frames contents.
             rtts->reset();
         }
+
+        // assign the state grph to the RenderStage to ensure it remains in memory for the draw traversal.
+        rtts->setStateGraph(_rootStateGraph);
 
         // set up clear masks/values
         rtts->setClearDepth(camera.getClearDepth());
@@ -1667,6 +1698,11 @@ void CullVisitor::apply(osg::Camera& camera)
             // getting to this point means that all the subgraph has been
             // culled by small feature culling or is beyond LOD ranges.
         }
+
+
+        // restored cache of the StateGraph
+        _rootStateGraph = previous_rootStateGraph;
+        _currentStateGraph = previous_currentStateGraph;
 
 
         // and the render to texture stage to the current stages

@@ -26,10 +26,15 @@
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 
+#include <osgViewer/GraphicsWindow>
+
 #include <sstream>
 #include <iostream>
 
 #define MIN_NEARFAROFFSET 0.1
+
+// force the WIndowingSystem to initialize to allow us to create a graphics context.
+USE_GRAPHICSWINDOW()
 
 class SliceProcessor
 {

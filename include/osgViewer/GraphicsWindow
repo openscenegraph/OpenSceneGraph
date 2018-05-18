@@ -273,6 +273,11 @@ class GraphicsWindowEmbedded : public GraphicsWindow
         virtual void raiseWindow() {}
 };
 
+
+#define REGISTER_WINDOWINGSYSTEMINTERFACE(ext, classname) \
+    extern "C" OSGVIEWER_EXPORT void graphicswindow_##ext(void) {} \
+    static osg::WindowingSystemInterfaceProxy<classname> s_proxy_##classname(#ext);
+
 struct GraphicsWindowFunctionProxy
 {
     GraphicsWindowFunctionProxy(CGraphicsWindowFunction function) { (function)(); }

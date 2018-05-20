@@ -1,3 +1,11 @@
+Sun, 20 May 2018 13:22:58 +0100
+Author : Robert Osfield
+Restructed SCREEN auto scaling so that it's removes the rotation of the modelview matrix so that the XY coords of the text map directly to window xy coords for all text alignment types
+
+Fri, 18 May 2018 15:49:28 +0100
+Author : Robert Osfield
+Updates in prep for 3.6.1-rc5
+
 Fri, 18 May 2018 14:58:53 +0100
 Author : Robert Osfield
 Moved REGISTER_WINDOWINGSYSTEMINTERFACE from include/osg/GraphicsContext to include/osgViewer/GraphicsWindow and added OSGVIEWER_EXPORT

@@ -490,25 +490,20 @@ bool TextBase::computeMatrix(osg::Matrix& matrix, osg::State* state) const
         osg::Matrix modelview = state->getModelViewMatrix();
         osg::Matrix projection = state->getProjectionMatrix();
 
-        matrix.makeTranslate(-_offset);
+        osg::Matrix temp_matrix(modelview);
+        temp_matrix.setTrans(0.0,0.0,0.0);
 
         osg::Matrix rotate_matrix;
-        if (_autoRotateToScreen)
-        {
-            osg::Matrix temp_matrix(modelview);
-            temp_matrix.setTrans(0.0f,0.0f,0.0f);
+        rotate_matrix.invert(temp_matrix);
 
-            rotate_matrix.invert(temp_matrix);
-        }
-
-        matrix.postMultRotate(_rotation);
+        matrix.makeTranslate(-_offset);
 
         if (_characterSizeMode!=OBJECT_COORDS)
         {
             typedef osg::Matrix::value_type value_type;
 
-            value_type width = 1280.0f;
-            value_type height = 1024.0f;
+            value_type width = 1280.0;
+            value_type height = 1024.0;
 
             const osg::Viewport* viewport = state->getCurrentViewport();
             if (viewport)
@@ -518,6 +513,7 @@ bool TextBase::computeMatrix(osg::Matrix& matrix, osg::State* state) const
             }
 
             osg::Matrix mvpw = rotate_matrix * modelview * projection * osg::Matrix::scale(width/2.0, height/2.0, 1.0);
+
             osg::Vec3 origin = osg::Vec3(0.0, 0.0, 0.0) * mvpw;
             osg::Vec3 left = osg::Vec3(1.0, 0.0, 0.0) * mvpw - origin;
             osg::Vec3 up = osg::Vec3(0.0, 1.0, 0.0) * mvpw - origin;
@@ -529,12 +525,6 @@ bool TextBase::computeMatrix(osg::Matrix& matrix, osg::State* state) const
             value_type length_y = up.length();
             value_type scale_y = length_y>0.0 ? 1.0/length_y : 1.0;
 
-            value_type pixelSizeVert = _characterHeight / scale_y;
-
-            // avoid nasty math by preventing a divide by zero
-            if (pixelSizeVert == 0.0)
-               pixelSizeVert = 1.0;
-
             if (_glyphNormalized)
             {
                 osg::Vec3 scaleVec(_characterHeight/getCharacterAspectRatio(), _characterHeight, _characterHeight);
@@ -545,13 +535,23 @@ bool TextBase::computeMatrix(osg::Matrix& matrix, osg::State* state) const
             {
                 matrix.postMultScale(osg::Vec3(scale_x, scale_y, scale_x));
             }
-            else if (pixelSizeVert>getFontHeight())
+            else
             {
-                value_type scale_font = getFontHeight()/pixelSizeVert;
-                matrix.postMultScale(osg::Vec3f(scale_font, scale_font, scale_font));
-            }
+                value_type pixelSizeVert = _characterHeight / scale_y;
 
+                // avoid nasty math by preventing a divide by zero
+                if (pixelSizeVert == 0.0)
+                pixelSizeVert = 1.0;
+
+                if (pixelSizeVert>getFontHeight())
+                {
+                    value_type scale_font = getFontHeight()/pixelSizeVert;
+                    matrix.postMultScale(osg::Vec3f(scale_font, scale_font, scale_font));
+                }
+            }
         }
+
+        matrix.postMultRotate(_rotation);
 
         if (_autoRotateToScreen)
         {

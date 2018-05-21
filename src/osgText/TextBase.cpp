@@ -515,9 +515,9 @@ bool TextBase::computeMatrix(osg::Matrix& matrix, osg::State* state) const
 
             osg::Matrix mvpw = rotate_matrix * modelview * projection * osg::Matrix::scale(width/2.0, height/2.0, 1.0);
 
-            osg::Vec3 origin = osg::Vec3(0.0, 0.0, 0.0) * mvpw;
-            osg::Vec3 left = osg::Vec3(1.0, 0.0, 0.0) * mvpw - origin;
-            osg::Vec3 up = osg::Vec3(0.0, 1.0, 0.0) * mvpw - origin;
+            osg::Vec3d origin = osg::Vec3d(0.0, 0.0, 0.0) * mvpw;
+            osg::Vec3d left = osg::Vec3d(1.0, 0.0, 0.0) * mvpw - origin;
+            osg::Vec3d up = osg::Vec3d(0.0, 1.0, 0.0) * mvpw - origin;
 
             // compute the pixel size vector.
             value_type length_x = left.length();

@@ -1569,12 +1569,12 @@ void CullVisitor::apply(osg::Camera& camera)
     }
     else
     {
-        // cache the StateGraph and replace with a clone of the exisitng parental chain.
+        // cache the StateGraph and replace with a clone of the existing parental chain.
         osg::ref_ptr<StateGraph> previous_rootStateGraph = _rootStateGraph;
         StateGraph* previous_currentStateGraph = _currentStateGraph;
 
         {
-            // replicate the StageGraph parental chain so that state graph and render leaves all are kept local the the Camera's RenderStage.
+            // replicate the StageGraph parental chain so that state graph and render leaves are kept local to the Camera's RenderStage.
             typedef std::vector< osg::ref_ptr<StateGraph> > StageGraphStack;
             StageGraphStack stateGraphParentalChain;
             StateGraph* sg = _currentStateGraph;
@@ -1649,7 +1649,7 @@ void CullVisitor::apply(osg::Camera& camera)
             rtts->reset();
         }
 
-        // assign the state grph to the RenderStage to ensure it remains in memory for the draw traversal.
+        // assign the state graph to the RenderStage to ensure it remains in memory for the draw traversal.
         rtts->setStateGraph(_rootStateGraph);
 
         // set up clear masks/values
@@ -1700,7 +1700,7 @@ void CullVisitor::apply(osg::Camera& camera)
         }
 
 
-        // restored cache of the StateGraph
+        // restore cache of the StateGraph
         _rootStateGraph = previous_rootStateGraph;
         _currentStateGraph = previous_currentStateGraph;
 

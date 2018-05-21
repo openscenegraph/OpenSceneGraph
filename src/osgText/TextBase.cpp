@@ -497,6 +497,7 @@ bool TextBase::computeMatrix(osg::Matrix& matrix, osg::State* state) const
         rotate_matrix.invert(temp_matrix);
 
         matrix.makeTranslate(-_offset);
+        matrix.postMultRotate(_rotation);
 
         if (_characterSizeMode!=OBJECT_COORDS)
         {
@@ -550,8 +551,6 @@ bool TextBase::computeMatrix(osg::Matrix& matrix, osg::State* state) const
                 }
             }
         }
-
-        matrix.postMultRotate(_rotation);
 
         if (_autoRotateToScreen)
         {

@@ -1,3 +1,24 @@
+Mon, 21 May 2018 13:26:04 -0400
+Author : gwaldron
+osgText: perform pixel size computation in double-precision to prevent coordinate jitter
+
+Mon, 21 May 2018 18:14:18 +0100
+Author : Robert Osfield
+Moved the rotation to before the scale
+
+Mon, 21 May 2018 13:18:29 +0100
+Author : Robert Osfield
+Fixed typos
+
+Mon, 21 May 2018 13:10:40 +0100
+Author : Robert Osfield
+Restored the REGISTER_WINDOWINGSYSTEMINTERFACE macro to the include/osg/GraphicsContext header and removed the OSGVIEWER_EXPORT as this was causing compatibility issues with osgQt.In GraphicsWindowWin32 replaced REGISTER_WINDOWINGSYSTEMINTERFACE usage with locally implemented equivilant with the required OSGVIEWER_EXPORT.
+
+
+Sun, 20 May 2018 13:39:44 +0100
+Author : Robert Osfield
+Updated ChangeLog and README.md for rc5
+
 Sun, 20 May 2018 13:22:58 +0100
 Author : Robert Osfield
 Restructed SCREEN auto scaling so that it's removes the rotation of the modelview matrix so that the XY coords of the text map directly to window xy coords for all text alignment types

@@ -1650,7 +1650,7 @@ void CullVisitor::apply(osg::Camera& camera)
         }
 
         // assign the state graph to the RenderStage to ensure it remains in memory for the draw traversal.
-        rtts->setStateGraph(_rootStateGraph);
+        rtts->setStateGraph(_rootStateGraph.get());
 
         // set up clear masks/values
         rtts->setClearDepth(camera.getClearDepth());

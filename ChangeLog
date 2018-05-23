@@ -1,3 +1,31 @@
+Wed, 23 May 2018 19:53:12 +0100
+Author : Robert Osfield
+Updates for 3.6.1-rc7
+
+Wed, 23 May 2018 17:02:28 +0100
+Author : Robert Osfield
+Updated REMOVE_SERIALIZER( ImageAttachment ); block to use 154 version to retain compatibility with binaries made with 153 SOVERSION prior to the Imageattachement change
+
+Wed, 23 May 2018 14:30:31 +0100
+Author : Robert Osfield
+Implemented StateGraph reuse in in scene graph Canera's RenderStage.
+
+Wed, 23 May 2018 14:13:27 +0100
+Author : Robert Osfield
+Fixed warning of RenderLeaf's having multiple references in CullVisitor::createOrReuseRenderLeaf() but forcing a clean up of the StateGraph at the end of RenderStage::draw()
+
+Wed, 23 May 2018 07:47:15 +0100
+Author : Robert Osfield
+Added check to make sure that glEnablei and glDisablei are only called when the capability is non zero to fix GL invalid value error.
+
+Wed, 23 May 2018 06:32:42 +0100
+Author : Robert Osfield
+Fixed type of Timer_t under Windows
+
+Tue, 22 May 2018 09:04:48 +0100
+Author : Robert Osfield
+Updates for rc6
+
 Mon, 21 May 2018 13:26:04 -0400
 Author : gwaldron
 osgText: perform pixel size computation in double-precision to prevent coordinate jitter

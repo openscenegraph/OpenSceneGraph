@@ -86,7 +86,14 @@ struct Model{
 };
 
 static const char gVertexShader[] =
-    "varying vec4 color;                                                    \n"
+	"#version 300 es														\n"
+	"precision mediump float;                  \n"
+	"in vec4 osg_Vertex;\n"
+	"in vec3 osg_Normal;\n"
+	"uniform mat4 osg_ModelViewProjectionMatrix;\n"
+	"uniform mat4 osg_ModelViewMatrix;\n"
+	"uniform mat3 osg_NormalMatrix;\n"
+    "out vec4 color;                                                    \n"
     "const vec3 lightPos      =vec3(0.0, 0.0, 10.0);                        \n"
     "const vec4 cessnaColor   =vec4(0.8, 0.8, 0.8, 1.0);                    \n"
     "const vec4 lightAmbient  =vec4(0.1, 0.1, 0.1, 1.0);                    \n"
@@ -114,18 +121,20 @@ static const char gVertexShader[] =
     "    vec4 ambiCol = vec4(0.0);                                          \n"
     "    vec4 diffCol = vec4(0.0);                                          \n"
     "    vec4 specCol = vec4(0.0);                                          \n"
-    "    gl_Position   = gl_ModelViewProjectionMatrix * gl_Vertex;          \n"
-    "    vec3 normal   = normalize(gl_NormalMatrix * gl_Normal);            \n"
-    "    vec4 ecPos    = gl_ModelViewMatrix * gl_Vertex;                    \n"
+    "    gl_Position   = osg_ModelViewProjectionMatrix * osg_Vertex;          \n"
+    "    vec3 normal   = normalize(osg_NormalMatrix * osg_Normal);            \n"
+    "    vec4 ecPos    = osg_ModelViewMatrix * osg_Vertex;                    \n"
     "    DirectionalLight(normal, ecPos.xyz, ambiCol, diffCol, specCol);    \n"
     "    color = cessnaColor * (ambiCol + diffCol + specCol);               \n"
     "}                                                                      \n";
 
 static const char gFragmentShader[] =
+	"#version 300 es														\n"
     "precision mediump float;                  \n"
-    "varying mediump vec4 color;               \n"
+    "in mediump vec4 color;               \n"
+	"out vec4 fragData;\n"
     "void main() {                             \n"
-    "  gl_FragColor = color;                   \n"
+    "  fragData = color;                   \n"
     "}                                         \n";
 
 

@@ -4,12 +4,13 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := osgNativeLib
 ### Main Install dir
-OSG_ANDROID_DIR	:= < type your install directory >
+ANDROID_NDK	:= /Users/thomashogarth/Library/Android/sdk/ndk-bundle
+OSG_ANDROID_DIR	:= /Users/thomashogarth/Documents/AlphaPixel/osgEarth-Droid/osg
 LIBDIR 			:= $(OSG_ANDROID_DIR)/obj/local/armeabi
 
 ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
 	LOCAL_ARM_NEON 	:= true
-	LIBDIR 			:= $(OSG_ANDROID_DIR)/obj/local/armeabi-v7a
+	LIBDIR 			:= $(OSG_ANDROID_DIR)/lib
 endif
 
 ### Add all source file names to be included in lib separated by a whitespace
@@ -18,9 +19,10 @@ LOCAL_C_INCLUDES:= $(OSG_ANDROID_DIR)/include
 LOCAL_CFLAGS    := -Werror -fno-short-enums
 LOCAL_CPPFLAGS  := -DOSG_LIBRARY_STATIC 
 
-LOCAL_LDLIBS    := -llog -lGLESv3 -lz
+LOCAL_LDLIBS    := -llog -lGLESv3 -lz -lgnustl_static -lsupc++
 LOCAL_SRC_FILES := osgNativeLib.cpp OsgMainApp.cpp OsgAndroidNotifyHandler.cpp
-LOCAL_LDFLAGS   := -L $(LIBDIR) \
+LOCAL_LDFLAGS   := -L$(ANDROID_NDK)/sources/cxx-stl/gnu-libstdc++/4.9/libs/armeabi-v7a -lgnustl_static -lsupc++ \
+-L $(LIBDIR) \
 -losgdb_dds \
 -losgdb_openflight \
 -losgdb_tga \

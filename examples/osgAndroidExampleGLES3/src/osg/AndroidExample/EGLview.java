@@ -30,14 +30,14 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 /**
  * A simple GLSurfaceView sub-class that demonstrate how to perform
- * OpenGL ES 1.0 rendering into a GL Surface. Note the following important
+ * OpenGL ES 3.0 rendering into a GL Surface. Note the following important
  * details:
  *
  * - The class must use a custom context factory to enable 1.0 rendering.
  *   See ContextFactory class definition below.
  *
  * - The class must use a custom EGLConfigChooser to be able to select
- *   an EGLConfig that supports 1.0. This is done by providing a config
+ *   an EGLConfig that supports 3.0. This is done by providing a config
  *   specification to eglChooseConfig() that has the attribute
  *   EGL10.ELG_RENDERABLE_TYPE containing the EGL_OPENGL_ES_BIT flag
  *   set. See ConfigChooser class definition below.
@@ -97,9 +97,9 @@ public class EGLview extends GLSurfaceView {
 	private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
 	    private static int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
 	    public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
-	        Log.w(TAG, "creating OpenGL ES 2.0 context");
+	        Log.w(TAG, "creating OpenGL ES 3.0 context");
 	        checkEglError("Before eglCreateContext", egl);
-	        int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE };
+	        int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, 3, EGL10.EGL_NONE };
 	        EGLContext context = egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attrib_list);
 	        checkEglError("After eglCreateContext", egl);
 	        return context;

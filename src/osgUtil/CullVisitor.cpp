@@ -1569,36 +1569,6 @@ void CullVisitor::apply(osg::Camera& camera)
     }
     else
     {
-        // cache the StateGraph and replace with a clone of the existing parental chain.
-        osg::ref_ptr<StateGraph> previous_rootStateGraph = _rootStateGraph;
-        StateGraph* previous_currentStateGraph = _currentStateGraph;
-
-        {
-            // replicate the StageGraph parental chain so that state graph and render leaves are kept local to the Camera's RenderStage.
-            typedef std::vector< osg::ref_ptr<StateGraph> > StageGraphStack;
-            StageGraphStack stateGraphParentalChain;
-            StateGraph* sg = _currentStateGraph;
-            while(sg)
-            {
-                stateGraphParentalChain.push_back(sg);
-                sg = sg->_parent;
-            }
-
-            StageGraphStack::reverse_iterator ritr = stateGraphParentalChain.rbegin();
-
-            if (ritr!=stateGraphParentalChain.rend())
-            {
-                const osg::StateSet* ss = (*ritr++)->getStateSet();
-                _rootStateGraph = ss ? new StateGraph(0, ss) : new StateGraph();
-                _currentStateGraph = _rootStateGraph.get();
-
-                while(ritr != stateGraphParentalChain.rend())
-                {
-                    _currentStateGraph = _currentStateGraph->find_or_insert((*ritr++)->getStateSet());
-                }
-            }
-        }
-
         // set up lighting.
         // currently ignore lights in the scene graph itself..
         // will do later.
@@ -1649,8 +1619,48 @@ void CullVisitor::apply(osg::Camera& camera)
             rtts->reset();
         }
 
-        // assign the state graph to the RenderStage to ensure it remains in memory for the draw traversal.
-        rtts->setStateGraph(_rootStateGraph.get());
+        // cache the StateGraph and replace with a clone of the existing parental chain.
+        osg::ref_ptr<StateGraph> previous_rootStateGraph = _rootStateGraph;
+        StateGraph* previous_currentStateGraph = _currentStateGraph;
+
+        // replicate the StageGraph parental chain so that state graph and render leaves are kept local to the Camera's RenderStage.
+        {
+            typedef std::vector< osg::ref_ptr<StateGraph> > StageGraphStack;
+            StageGraphStack stateGraphParentalChain;
+            StateGraph* sg = _currentStateGraph;
+            while(sg)
+            {
+                stateGraphParentalChain.push_back(sg);
+                sg = sg->_parent;
+            }
+
+            _rootStateGraph = rtts->getStateGraph();
+            if (_rootStateGraph)
+            {
+                _rootStateGraph->clean();
+            }
+            else
+            {
+                _rootStateGraph = new StateGraph;
+
+                // assign the state graph to the RenderStage to ensure it remains in memory for the draw traversal.
+                rtts->setStateGraph(_rootStateGraph.get());
+            }
+            _currentStateGraph = _rootStateGraph.get();
+
+            StageGraphStack::reverse_iterator ritr = stateGraphParentalChain.rbegin();
+
+            if (ritr!=stateGraphParentalChain.rend())
+            {
+                const osg::StateSet* ss = (*ritr++)->getStateSet();
+                _rootStateGraph->setStateSet(ss);
+
+                while(ritr != stateGraphParentalChain.rend())
+                {
+                    _currentStateGraph = _currentStateGraph->find_or_insert((*ritr++)->getStateSet());
+                }
+            }
+        }
 
         // set up clear masks/values
         rtts->setClearDepth(camera.getClearDepth());
@@ -1701,6 +1711,7 @@ void CullVisitor::apply(osg::Camera& camera)
 
 
         // restore cache of the StateGraph
+        _rootStateGraph->prune();
         _rootStateGraph = previous_rootStateGraph;
         _currentStateGraph = previous_currentStateGraph;
 

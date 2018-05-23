@@ -466,7 +466,7 @@ inline RenderLeaf* CullVisitor::createOrReuseRenderLeaf(osg::Drawable* drawable,
     while (_currentReuseRenderLeafIndex<_reuseRenderLeafList.size() &&
            _reuseRenderLeafList[_currentReuseRenderLeafIndex]->referenceCount()>1)
     {
-        osg::notify(osg::NOTICE)<<"Warning:createOrReuseRenderLeaf() skipping multiply referenced entry."<< std::endl;
+        osg::notify(osg::INFO)<<"CullVisitor:createOrReuseRenderLeaf() skipping multiply referenced entry. _reuseRenderLeafList.size()="<< _reuseRenderLeafList.size()<<" _reuseRenderLeafList["<<_currentReuseRenderLeafIndex<<"]->referenceCount()="<<_reuseRenderLeafList[_currentReuseRenderLeafIndex]->referenceCount()<<std::endl;
         ++_currentReuseRenderLeafIndex;
     }
 
@@ -478,15 +478,15 @@ inline RenderLeaf* CullVisitor::createOrReuseRenderLeaf(osg::Drawable* drawable,
         return renderleaf;
     }
 
+
     // Otherwise need to create new renderleaf.
     RenderLeaf* renderleaf = new RenderLeaf(drawable,projection,matrix,depth,_traversalOrderNumber++);
     _reuseRenderLeafList.push_back(renderleaf);
+
     ++_currentReuseRenderLeafIndex;
     return renderleaf;
 }
 
-
 }
 
 #endif
-

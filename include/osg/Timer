@@ -19,7 +19,7 @@
 namespace osg {
 
 #if defined(_MSC_VER)
-    typedef __int64 Timer_t;
+    typedef unsigned __int64 Timer_t;
 #else
     typedef unsigned long long Timer_t;
 #endif

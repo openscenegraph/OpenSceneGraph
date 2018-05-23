@@ -1314,6 +1314,9 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
 
     // pop the render stages camera.
     if (_camera.valid()) renderInfo.popCamera();
+
+    // clean up state graph to make sure RenderLeaf etc, can be reused
+    if (_rootStateGraph.valid()) _rootStateGraph->clean();
 }
 
 void RenderStage::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& previous)

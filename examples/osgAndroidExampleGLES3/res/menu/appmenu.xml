@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menuLoadObject" android:title="@string/menuLoadObject" android:titleCondensed="@string/menuLoadObjectCondensed"></item>
+    <item android:id="@+id/menuDeleteObject" android:title="@string/menuDeleteObject" android:titleCondensed="@string/menuDeleteObjectCondensed"></item>
+    <item android:id="@+id/menuCleanScene" android:title="@string/menuCleanScene" android:titleCondensed="@string/menuCleanSceneCondensed"></item>
+    <item android:id="@+id/menuChangeBackground" android:title="@string/menuChangeBackground" android:titleCondensed="@string/menuChangeBackgroundCondensed"></item>
+    <item android:id="@+id/menuShowKeyboard" android:title="@string/menuShowKeyboard" android:titleCondensed="@string/menuShowKeyboardCondensed"></item>
+</menu>

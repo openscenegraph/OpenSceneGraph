@@ -1,13 +1,14 @@
-/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This software is open source and may be redistributed and/or modified under  
- * the terms of the GNU General Public License (GPL) version 2.0.
- * The full license is in LICENSE.txt file included with this distribution,.
- * 
- * This software is distributed in the hope that it will be useful,
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * include LICENSE.txt for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
 */
 
 #include <osgViewer/Viewer>
@@ -33,7 +34,7 @@ SDLIntegration::SDLIntegration()
     atexit(SDL_Quit);
 
     int numJoysticks =  SDL_NumJoysticks();
-    
+
     if (_verbose)
     {
         std::cout<<"number of joysticks "<<numJoysticks<<std::endl;
@@ -42,9 +43,9 @@ SDLIntegration::SDLIntegration()
             std::cout<<"Joystick name '"<<SDL_JoystickName(i)<<"'"<<std::endl;
         }
     }
-    
+
     _joystick = numJoysticks>0 ? SDL_JoystickOpen(0) : 0;
-    
+
     _numAxes = _joystick ? SDL_JoystickNumAxes(_joystick) : 0;
     _numBalls = _joystick ? SDL_JoystickNumBalls(_joystick) : 0;
     _numHats = _joystick ? SDL_JoystickNumHats(_joystick) : 0;
@@ -57,13 +58,13 @@ SDLIntegration::SDLIntegration()
         std::cout<<"numHats = "<<_numHats<<std::endl;
         std::cout<<"numButtons = "<<_numButtons<<std::endl;
     }
-        
+
     addMouseButtonMapping(4, 1); // left
     addMouseButtonMapping(5, 3); // right
     addMouseButtonMapping(6, 2); // middle
 
     addKeyMapping(10, ' '); // R2
-    
+
     addKeyMapping(0, '1'); // 1
     addKeyMapping(1, '2'); // 2
     addKeyMapping(2, '3'); // 3
@@ -88,7 +89,7 @@ void SDLIntegration::capture(ValueList& axisValues, ValueList& buttonValues) con
     if (_joystick)
     {
         SDL_JoystickUpdate();
-        
+
         axisValues.resize(_numAxes);
         for(int ai=0; ai<_numAxes; ++ai)
         {
@@ -107,21 +108,21 @@ void SDLIntegration::update(osgViewer::Viewer& viewer)
 {
     if (_joystick)
     {
-    
+
         ValueList newAxisValues;
         ValueList newButtonValues;
-        
+
         capture(newAxisValues, newButtonValues);
-        
+
         unsigned int mouseXaxis = 0;
         unsigned int mouseYaxis = 1;
-        
+
         float prev_mx = (float)_axisValues[mouseXaxis]/32767.0f;
         float prev_my = -(float)_axisValues[mouseYaxis]/32767.0f;
 
         float mx = (float)newAxisValues[mouseXaxis]/32767.0f;
         float my = -(float)newAxisValues[mouseYaxis]/32767.0f;
-        
+
 
         osgGA::EventQueue* eq = viewer.getEventQueue();
         double time = eq ? eq->getTime() : 0.0;
@@ -145,7 +146,7 @@ void SDLIntegration::update(osgViewer::Viewer& viewer)
                 }
             }
         }
-                
+
         for(int bi=0; bi<_numButtons; ++bi)
         {
             if (newButtonValues[bi]!=_buttonValues[bi])
@@ -171,11 +172,11 @@ void SDLIntegration::update(osgViewer::Viewer& viewer)
                 }
             }
         }
-        
+
         _axisValues.swap(newAxisValues);
         _buttonValues.swap(newButtonValues);
-        
+
     }
 
 }
-        
+

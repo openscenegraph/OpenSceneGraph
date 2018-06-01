@@ -681,6 +681,15 @@ void Geometry::setUseVertexBufferObjects(bool flag)
 
 void Geometry::dirtyGLObjects()
 {
+    if (_colorArray.valid() && _colorArray->getBinding() == osg::Array::BIND_PER_VERTEX)
+        addVertexBufferObjectIfRequired(_colorArray.get());
+    if (_normalArray.valid() && _normalArray->getBinding() == osg::Array::BIND_PER_VERTEX)
+        addVertexBufferObjectIfRequired(_normalArray.get());
+    if (_secondaryColorArray.valid() && _secondaryColorArray->getBinding() == osg::Array::BIND_PER_VERTEX)
+        addVertexBufferObjectIfRequired(_secondaryColorArray.get());
+    if (_fogCoordArray.valid() && _fogCoordArray->getBinding() == osg::Array::BIND_PER_VERTEX)
+        addVertexBufferObjectIfRequired(_fogCoordArray.get());
+
     Drawable::dirtyGLObjects();
 }
 

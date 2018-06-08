@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
     osg::ref_ptr<osg::Node> geode ;
 
-        osg::ref_ptr<osg::Sampler > sampler1, sampler2;
+    osg::ref_ptr<osg::Sampler > sampler1, sampler2;
     if (loadedModel)
     {
         ///ensure loaded have Sampler
@@ -120,8 +120,8 @@ int main(int argc, char* argv[])
                 sampler2=(osg::Sampler*)(*it)->getTextureAttribute(0, osg::StateAttribute::SAMPLER);
         }
         if(sampler1.valid()&&sampler2.valid()){
-            OSG_WARN<<"2samplers manipulator setted"<<std::endl;
-            viewer.addEventHandler(new SamplersKeyboardEventHandler(sampler1, sampler2));
+            OSG_WARN<<"2samplers manipulator set"<<std::endl;
+            viewer.addEventHandler(new SamplersKeyboardEventHandler(sampler1.get(), sampler2.get()));
         }
     }
     else
@@ -185,7 +185,7 @@ int main(int argc, char* argv[])
             im->dirty();
             tex2->setImage(im);
         }
-        ///Overrided Filtering setup
+        ///Overridden Filtering setup
         tex1->setFilter(osg::Texture::MAG_FILTER,osg::Texture::NEAREST);
         tex1->setFilter(osg::Texture::MIN_FILTER,osg::Texture::NEAREST);
 
@@ -222,7 +222,7 @@ int main(int argc, char* argv[])
         ss->addUniform(new osg::Uniform("tex2",(int)1));
         ss->setAttribute(program.get());
 
-        viewer.addEventHandler(new SamplersKeyboardEventHandler(sampler1, sampler2));
+        viewer.addEventHandler(new SamplersKeyboardEventHandler(sampler1.get(), sampler2.get()));
     }
 
     viewer.addEventHandler(new osgViewer::StatsHandler);

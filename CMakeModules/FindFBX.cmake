@@ -44,7 +44,7 @@ ENDIF()
 #try to use 2015.1 or 2014.2 version
 
 IF(APPLE)
-    SET(FBX_LIBNAME "libfbxsdk")
+    SET(FBX_LIBNAME "fbxsdk")
 ELSEIF(CMAKE_COMPILER_IS_GNUCXX)
     SET(FBX_LIBNAME "fbxsdk")
 ELSE()
@@ -62,6 +62,7 @@ SET( FBX_SEARCH_PATHS
     $ENV{FBX_DIR}
     "$ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2018.1.1"
     "$ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2018.1.1"
+    "/Applications/Autodesk/FBX\ SDK/2018.0"
     "$ENV{ProgramW6432}/Autodesk/FBX/FBX SDK/2017.1"
     "$ENV{PROGRAMFILES}/Autodesk/FBX/FBX SDK/2017.1"
     "/Applications/Autodesk/FBX SDK/2017.1"

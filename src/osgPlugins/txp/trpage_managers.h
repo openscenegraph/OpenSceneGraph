@@ -296,7 +296,7 @@ protected:
         //  loaded list.
         virtual void AckLoad();
 
-        // Get the lsit of
+        // Get the list of
         //bool GetLoadedTile
 
         // Return the next tile to unload for this terrain lod

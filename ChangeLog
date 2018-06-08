@@ -1,3 +1,1590 @@
+Thu, 26 Apr 2018 09:49:35 +0100
+Author : Robert Osfield
+Split up #pragma so that there only three parameters per line to aovid Intel driver bug crash
+
+Thu, 26 Apr 2018 09:36:52 +0100
+Author : Robert Osfield
+Renamed text.vert and text.frag to osgText_Text.vert and .frag to avoid name overlapping with user shaders.
+
+Wed, 25 Apr 2018 09:48:02 +0100
+Author : Julien Valentin
+add wrapper for osg::DrawIndirectBufferObject
+
+Tue, 24 Apr 2018 17:05:03 +0100
+Author : Robert Osfield
+Renamed CMake variable + C++ #define to OSG_GL_CONTEXT_VERSION
+
+Tue, 24 Apr 2018 16:22:13 +0100
+Author : Robert Osfield
+Added OSG_GL_CONTEXT_STRING cmake variable to set include/osg/GL headers that sets Traits::glContextVersion.
+
+Tue, 24 Apr 2018 15:33:03 +0100
+Author : Robert Osfield
+Refactored the handling of glyph and shadow alpha values to make the text and shadow clearer for fonts with narrow glyphs
+
+Tue, 24 Apr 2018 13:52:53 +0100
+Author : Robert Osfield
+Refactored the handling of text bounding box to provide more stable bounding box computation
+
+Mon, 23 Apr 2018 10:45:19 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #533 from aluaces/spelling-3Fix typos and spelling.
+
+Fri, 20 Apr 2018 21:16:46 +0200
+Author : Alberto Luaces
+Small fix for uncaught typo.
+
+Fri, 20 Apr 2018 18:18:22 +0200
+Author : Alberto Luaces
+Fix typos and spelling.
+
+Fri, 20 Apr 2018 14:01:21 +0100
+Author : Robert Osfield
+Cleaned up inbludes and unused code
+
+Fri, 20 Apr 2018 13:06:28 +0100
+Author : Robert Osfield
+Removed osgUtil::TriStripVisitor as it is nolonger appropriate for modern OpenGL/OSG usage and bloats the osgUtil lib size by several hundred Kb.
+
+Fri, 20 Apr 2018 11:42:31 +0100
+Author : Robert Osfield
+Removed usage of the osgUtil::TriStripVisitor is it generates osg::Geometry that perform very poorly when using VBO and VAO's vs GL DisplayLists. With DisplayLists being deprecated in GL and VBO and VAO becoming standard it's best to standardize on using the osgUtil::MeshOptimizers instead of TripStrupVisitor
+
+Fri, 20 Apr 2018 10:24:17 +0100
+Author : Robert Osfield
+Removed TriStripVisitor for default set of Optimizer passes as it doesn't generate efficient scene graphs
+
+Fri, 20 Apr 2018 09:57:04 +0100
+Author : Robert Osfield
+Added osgUtil::optimizeMesh(osg::Node* node) convinience method
+
+Thu, 19 Apr 2018 20:11:19 +0100
+Author : Robert Osfield
+Merge branch 'master' of https://github.com/openscenegraph/OpenSceneGraph
+
+Thu, 19 Apr 2018 19:43:14 +0100
+Author : Robert Osfield
+Fixed the set*Binding() methods so that they assign BufferObjects when required
+
+Thu, 19 Apr 2018 19:42:51 +0100
+Author : Robert Osfield
+Fixed messages
+
+Thu, 19 Apr 2018 19:41:51 +0100
+Author : Robert Osfield
+Fixed the GLBufferObject size computation so that it takes into account padding.
+
+Thu, 19 Apr 2018 19:36:19 +0100
+Author : Robert Osfield
+Replaced the use of osgUtil::TriStripVisitor with ogUtil::MeshOptimizer usage to improve performance. Fixed set setColorArray assignement to pass in the color binding
+
+Thu, 19 Apr 2018 08:38:47 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #532 from jasonbeverage/remove_getNameIDRemoved unimplemented Uniform::getNameID from Uniform header
+
+Wed, 18 Apr 2018 14:59:51 -0400
+Author : Jason Beverage
+Removed unimplemented Uniform::getNameID from Uniform header as it's defined in UniformBase now.
+
+Wed, 18 Apr 2018 10:02:43 +0100
+Author : Robert Osfield
+Fixed the handle of boundary equalization
+
+Wed, 18 Apr 2018 09:33:12 +0100
+Author : Robert Osfield
+Added --equalize-boundaries -e command line option to call terrain->setEqualizeBoundaries(true)
+
+Tue, 17 Apr 2018 09:20:23 +0100
+Author : Robert Osfield
+Cleaned up includes
+
+Tue, 17 Apr 2018 09:06:18 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #531 from jasonbeverage/fixosgmanipulatorIncluding osg/Geode to fix osgManipulator build
+
+Mon, 16 Apr 2018 15:58:12 -0400
+Author : Jason Beverage
+Including osg/Geode to fix osgManipulator build
+
+Mon, 16 Apr 2018 19:41:53 +0100
+Author : Robert Osfield
+Removed long deprecated IntersectVisitor.
+
+Mon, 16 Apr 2018 15:08:24 +0100
+Author : Robert Osfield
+Fixed inline Drawable::draw(..) method
+
+Mon, 16 Apr 2018 15:05:11 +0100
+Author : Robert Osfield
+Fixed Geometry::drawImplmentation() handling of VBO's to prevent them from being used when display lists are used.
+
+Sun, 15 Apr 2018 08:25:57 +0100
+Author : Robert Osfield
+Replaced osgViewer::GraphicsWindow dynamic_cast as it's not neccessary.
+
+Sat, 7 Apr 2018 18:35:19 +0100
+Author : Robert Osfield
+Fixed typo
+
+Sat, 7 Apr 2018 18:14:57 +0100
+Author : Robert Osfield
+Pulled in latest changes from 3.6 branch
+
+Fri, 6 Apr 2018 20:05:26 +0100
+Author : Robert Osfield
+Refactored the way that margin is applied to the text buounding box to prevent growth of the bounding box each time Text::setPosition() is called.
+
+Fri, 6 Apr 2018 15:34:10 +0100
+Author : Robert Osfield
+Updated ChangeLog
+
+Fri, 6 Apr 2018 14:17:35 +0100
+Author : Robert Osfield
+Fixed warning
+
+Fri, 6 Apr 2018 14:07:58 +0100
+Author : Robert Osfield
+Changed TextBase::setAlignment() to use computeGlyphRepresentation(); rather than computePositions(); to address issues seen with calling Text::setAlignment() after calls to Text::setText()
+
+Fri, 6 Apr 2018 14:06:50 +0100
+Author : Robert Osfield
+Added osgtext --alignment test to look the effect of calling Text::setAlignent() before and after the Text::setText().
+
+Thu, 5 Apr 2018 10:51:24 -0400
+Author : Daniel Emminizer
+osgDB: Added missing extern OSGDB_EXPORT.
+
+Thu, 5 Apr 2018 14:14:49 +0100
+Author : Robert Osfield
+Quietened down debug message output for osgText shader setup and Drawable::createVertexArrayStateImplementation
+
+Thu, 5 Apr 2018 12:35:36 +0100
+Author : Robert Osfield
+Changed DisplaySettings::setShaderHint(..) messages to INFO
+
+Thu, 5 Apr 2018 11:12:53 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #521 from filnet/mingw_compile_fixmingw: fix compile error in GraphicsWindowWin32.cpp
+
+Thu, 5 Apr 2018 11:21:55 +0200
+Author : Philippe Renon
+mingw: fix compile error in GraphicsWindowWin32.cppcompilation error was introduced by msvc specific change
+see https://github.com/openscenegraph/OpenSceneGraph/commit/bb169979a1054e2fa63a7ea82c9c8bec87e90494
+
+
+Wed, 4 Apr 2018 19:35:40 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #520 from rhabacker/masterRemove duplicated and incorrect fetching of 'map_bump' attributes in obj plugin
+
+Wed, 4 Apr 2018 08:33:55 +0200
+Author : Ralf Habacker
+Remove duplicated and incorrect fetching of 'map_bump' attributes in obj pluginParsing the key 'map_bump' was processed in the block, where the attributes
+for 'bump' are extracted and results into having parts of the key in the
+extracted filename, generating an invalid filename.
+
+The mentioned string compare could be removed without loosing any features,
+because the key 'map_bump' is parsed correctly some lines below.
+
+
+Wed, 4 Apr 2018 15:09:43 +0100
+Author : Robert Osfield
+Fixed threading crash in osgFX that occurred when an osgFX node is added to the scene being rendered in multiple threaded windows.
+
+Wed, 4 Apr 2018 13:40:51 +0100
+Author : Robert Osfield
+Added focus classifiction of handling of keyboard events
+
+Wed, 4 Apr 2018 13:40:06 +0100
+Author : Robert Osfield
+Added EventHandler to report key and mouse events for debugging purposes
+
+Wed, 4 Apr 2018 12:26:53 +0100
+Author : Robert Osfield
+Added -4 command line entry that creates two seperate windows within CompositeViewer
+
+Wed, 4 Apr 2018 08:50:39 +0100
+Author : Frank Bausch
+When testing XYZ/ECEF coordinate values that convert to LLA points with latitude = 90.0 or latitude = -90.0, the heights calculated by EllipsoidModel::convertXYZToLatLongHeight have substantial errors. With the provided change, points at the pole are handled more correctly. This has been tested against US NGA GoldData.
+
+Tue, 3 Apr 2018 10:32:58 -0400
+Author : Daniel Emminizer
+CompositeViewer: SCROLL event now only goes to view with focus.  Includes minor typo fixes.
+
+Tue, 3 Apr 2018 15:34:20 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #517 from tomhog/mastermissing gles2 check
+
+Tue, 3 Apr 2018 15:29:54 +0100
+Author : Robert Osfield
+Added a ShadowTechniue::setShadowedScene() virtual method to make it possible to implement techniques as fascades to other techniques
+
+Tue, 3 Apr 2018 13:58:22 +0100
+Author : Thomas Hogarth
+missing gles2 check
+
+Tue, 3 Apr 2018 12:42:37 +0100
+Author : Andreas Ekstrand
+The attached code (from the 3.6 branch) adds a keepSeparatePoints option to the SHP plugin which makes it possible to avoid merging point features into multi-points, in case you e.g. need to keep separate point attributes.It also contains a fix in the Xbase DBF parser, converting a numeric shape attribute to double instead of integer. As stated in e.g. https://en.wikipedia.org/wiki/.dbf the numeric field can contain decimals.
+
+
+Mon, 2 Apr 2018 23:56:36 +0300
+Author : Konstantin S. Matveyev
+osg::Program's compileGLObjects and apply methods fixed for OSG without OSG_GL_FIXED_FUNCTION_AVAILABLE
+
+Tue, 3 Apr 2018 11:35:31 +0100
+Author : Robert Osfield
+Removed osgShadow::ShadowVolume as it functionality isn't functional
+
+Mon, 2 Apr 2018 18:26:26 +0100
+Author : Robert Osfield
+Rewrote the handling of AutoTransform::setAutoScaleToScreen(bool) functionality so that is disabling CullingActive when switched on.
+
+Mon, 2 Apr 2018 16:21:20 +0100
+Author : Robert Osfield
+Added __VERSION__<140 check for usage of gl_ClipVertex to avoid GL3 core profile usage issues
+
+Mon, 2 Apr 2018 14:08:47 +0100
+Author : Robert Osfield
+Restructured merge geometry code to make it easier to follow
+
+Mon, 2 Apr 2018 11:44:03 +0100
+Author : Robert Osfield
+Fix for MergeGeometryVsiitor bug. Restructured the processing the merge geometry list to avoid missing geometries that aren't binned along with other geometries.
+
+Sun, 1 Apr 2018 10:40:25 +0100
+Author : Robert Osfield
+Removed stray CMAkeLists.txt from TARGET_SRC list
+
+Sun, 1 Apr 2018 10:18:45 +0100
+Author : Andreas Ekstrand
+Small fix (from the 3.6 branch) in the osgjs plugin, avoiding a double addition of the CullFace attribute when it has been turned off. This resulted in an empty json object in the osgjs file causing warnings in osgjs.
+
+Fri, 30 Mar 2018 16:34:01 +0100
+Author : Robert Osfield
+Fixed build with OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION set to OFF
+
+Fri, 30 Mar 2018 15:27:35 +0100
+Author : Robert Osfield
+Added suport for writing to gl_ClipVertex
+
+Fri, 30 Mar 2018 15:16:45 +0100
+Author : Robert Osfield
+To osgclipe example added --text textstring and --simple command line options to test mixing text and clipping
+
+Fri, 30 Mar 2018 12:39:52 +0100
+Author : Robert Osfield
+Changed Layer::get*Value(..) methods to const
+
+Thu, 29 Mar 2018 11:38:04 +0100
+Author : Robert Osfield
+Fixed double calling of TerrainTechnique::init().
+
+Thu, 29 Mar 2018 11:35:34 +0100
+Author : Robert Osfield
+Maded TerrainTechnique::setTerrainTile(..), addNeighbour(..), removeNeighbour(..) and containsNeighbour(..) virtual and public to enable implementation of TerrainTechnique that act as a facade to actual TerrainTechnique implementations.
+
+Wed, 28 Mar 2018 11:34:52 +0100
+Author : Robert Osfield
+Fixed osgDB::findFileInDirectory() handling of directory strings with trailing \ or / that was causing failure to find valid files in otherwise valid directories
+
+Wed, 28 Mar 2018 09:04:46 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #511 from Haojia521/master OutputStream writes images using its Options object
+
+Tue, 27 Mar 2018 18:56:38 +0800
+Author : Haojia Yu
+OutputStream writes images using its Options objectwhen writing images, OutputStream can search files using its Options object rahter than always using FilePathList object of global Regidtry instance.
+
+
+Mon, 26 Mar 2018 20:40:14 +0300
+Author : Konstantin S. Matveyev
+GraphicsWindowIOS: multithreaded viewer's mode support added; updated for iOS-11 SDK; view rotations fixed; GLES2, GLES3 preprocessors fixed; tested on iPhone4 and upper
+
+Fri, 19 Jan 2018 22:20:01 +0300
+Author : Konstantin S. Matveyev
+VertexArrayState: typo fixed in log
+
+Mon, 26 Mar 2018 17:59:49 +0300
+Author : Konstantin S. Matveyev
+Write support with .curl pseudo extension added
+
+Tue, 27 Mar 2018 15:32:51 +0800
+Author : Haojia Yu
+Merge pull request #2 from openscenegraph/mastermerge new code form source
+
+Mon, 26 Mar 2018 07:32:15 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #505 from hwiesmann/masterRemoval of compiler warnings caused by integer conversions
+
+Sun, 25 Mar 2018 19:04:10 +0200
+Author : Hartwig
+Removal of compiler warnings caused by integer conversionsIn most systems today sizeof(size_t) is larger than sizeof(GLsizei). Therefore, the inclusion of GLExtensions may introduce a lot of compiler warnings as array.size() (of type size_t) is passed to a function with a parameter of type GLsizei.
+
+
+Sun, 25 Mar 2018 12:14:46 +0100
+Author : Robert Osfield
+Re-ordered the creating of the DatagbaseThread to avoid startThread being called twice.
+
+Sun, 25 Mar 2018 12:13:50 +0100
+Author : Robert Osfield
+Added check if thraeding is running before executing start thread.
+
+Sun, 25 Mar 2018 10:05:25 +0800
+Author : Haojia Yu
+Merge pull request #1 from openscenegraph/mastermerge new code from source
+
+Sat, 24 Mar 2018 18:17:14 +0000
+Author : Robert Osfield
+Updated AUTHORS
+
+Sat, 24 Mar 2018 18:02:35 +0000
+Author : Robert Osfield
+Updated ChangeLog, AUTHORS and Controbitors for 3.6.0-rc1
+
+Sat, 24 Mar 2018 17:51:06 +0000
+Author : Robert Osfield
+Added new features in 3.6 to NEWS release
+
+Sat, 24 Mar 2018 12:13:59 +0000
+Author : Robert Osfield
+First step for 3.6 stable release news
+
+Sat, 24 Mar 2018 11:23:59 +0000
+Author : Robert Osfield
+Fixed read shader to safer ref version
+
+Sat, 24 Mar 2018 10:59:15 +0000
+Author : Robert Osfield
+Fixed spotlight colour mixing
+
+Fri, 23 Mar 2018 20:08:37 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #502 from Haojia521/OutputStreamUseTargertSoVersionwrite binary file with a specific so version
+
+Fri, 23 Mar 2018 19:54:33 +0000
+Author : Robert Osfield
+Removed serailizers that are now supplied by osg::Node
+
+Fri, 23 Mar 2018 19:54:01 +0000
+Author : Robert Osfield
+Fixed member variable names to avoid conflicts with osg::Node
+
+Fri, 23 Mar 2018 18:07:36 +0000
+Author : Robert Osfield
+Removed Drawable writing out of StateSet as this is now done by Node
+
+Fri, 23 Mar 2018 17:09:56 +0000
+Author : OpenSceneGraph git repository
+Fixed indentation
+
+Fri, 23 Mar 2018 17:04:30 +0000
+Author : OpenSceneGraph git repository
+Fixed indentation
+
+Fri, 23 Mar 2018 17:01:15 +0000
+Author : OpenSceneGraph git repository
+Fixed indentation
+
+Fri, 23 Mar 2018 17:00:00 +0000
+Author : OpenSceneGraph git repository
+Fixed indentation
+
+Fri, 23 Mar 2018 16:37:44 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #503 from kornerr/masterProvide osgemscripten example CMake flags in a more stable way
+
+Fri, 23 Mar 2018 18:07:07 +0300
+Author : Michael Kapelko
+Provide osgemscripten example CMake flags in a more stable way
+
+Fri, 23 Mar 2018 22:51:04 +0800
+Author : Haojia Yu
+fix bugs
+
+Fri, 23 Mar 2018 22:49:47 +0800
+Author : Haojia Yu
+Revert "Revert "write binary file with a specific so version""This reverts commit 0ae6f7fea6b9bd7c102e8f10dcacc401e05d0ba0.
+
+
+Fri, 23 Mar 2018 22:48:11 +0800
+Author : Haojia Yu
+Revert "write binary file with a specific so version"This reverts commit b5bf8864b116db00f2bb5139c843a3ce57c8d6be.
+
+
+Fri, 23 Mar 2018 22:31:12 +0800
+Author : Haojia Yu
+write binary file with a specific so versionwhen write binary file, like osgb file, users can set plugin string data, such as "TargetFileVersion=80", to options object, then the features of output file will be limitted to so version 80.
+
+
+Fri, 23 Mar 2018 12:55:00 +0000
+Author : Robert Osfield
+Changed the isBufferObjectSupported flag so that it's true when either VBO or PBO's are supported
+
+Thu, 22 Mar 2018 17:35:13 +0000
+Author : Paul Obermeier
+Fixes for VS2008 and 2010 build
+
+Thu, 22 Mar 2018 16:51:03 +0000
+Author : Robert Osfield
+Moved OPENGL_INCLUDE_DIR include into it's own INCLUDE_DIRECTORIES(SYSTEM ${OPENGL_INCLUDE_DIR}) entry to help with FreeBSD builds where a previous rev of the OSG has already been installed
+
+Thu, 22 Mar 2018 09:04:47 +0000
+Author : Robert Osfield
+Removed typedef and used osg::GraphicsContext::Cameras explictly to avoid any hiding of type
+
+Thu, 22 Mar 2018 08:34:32 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #500 from Vic-Min/masterFixed bug of determining availability of functions ‘pthread_getconcur…
+
+Wed, 21 Mar 2018 19:44:25 +0300
+Author : Victor
+Fixed bug of determining availability of functions ‘pthread_getconcurrency’, ‘pthread_setconcurrency’, ‘pthread_setaffinity_np’ in ‘pthread’ libraryCMake cannot find 'pthread_getconcurrency’, ‘pthread_setconcurrency’ and ‘pthread_setaffinity_np' functions in 'pthread' library because when linking internal cmake test did’t specifed ‘-l pthread’.
+
+
+Tue, 20 Mar 2018 10:07:34 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #497 from openscenegraph/shader_pipelineShader pipeline
+
+Tue, 20 Mar 2018 09:49:04 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Tue, 20 Mar 2018 09:47:23 +0000
+Author : Robert Osfield
+Updated version to 3.7.0 after making of the 3.6 stable release branch
+
+Tue, 20 Mar 2018 09:20:59 +0000
+Author : Robert Osfield
+Removed -m message that was causing problems with branch creation
+
+Tue, 20 Mar 2018 09:12:58 +0000
+Author : Robert Osfield
+Updated version numbers in prep for 3.6 branch
+
+Tue, 20 Mar 2018 09:02:05 +0000
+Author : Robert Osfield
+Updated ChangeLog and AUTHORS file
+
+Mon, 19 Mar 2018 15:36:32 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Mon, 19 Mar 2018 14:27:18 +0000
+Author : Robert Osfield
+Updated ChangeLog and updated version to 3.5.11
+
+Mon, 19 Mar 2018 14:08:47 +0000
+Author : Robert Osfield
+Fixed build issues when building with OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION set to OFF
+
+Mon, 19 Mar 2018 12:08:28 +0000
+Author : Robert Osfield
+Added osg::UnfiromBase* StateSet::getUniformBase(..) and osg::Uniform* StateSet::getUniform(..) methods to help with backwards compatibility
+
+Mon, 19 Mar 2018 11:00:07 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Mon, 19 Mar 2018 10:42:09 +0000
+Author : Robert Osfield
+Fixed warnings
+
+Fri, 16 Mar 2018 13:35:22 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Fri, 16 Mar 2018 11:33:03 +0000
+Author : Robert Osfield
+Updated ShaderGen shaders
+
+Thu, 15 Mar 2018 16:50:47 +0000
+Author : Robert Osfield
+Removed the static osg::Program creation as it's not required
+
+Thu, 15 Mar 2018 16:49:58 +0000
+Author : Robert Osfield
+Added --shader saderfilename command line option to enable one to manually specify which shaders to use for the uber program.
+
+Thu, 15 Mar 2018 16:12:40 +0000
+Author : Robert Osfield
+Introduced a _specverson to centralizer the control of this variable
+
+Thu, 15 Mar 2018 15:58:46 +0000
+Author : Robert Osfield
+Added support for Collada DOM-2.5
+
+Thu, 15 Mar 2018 13:28:22 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Thu, 15 Mar 2018 12:53:32 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #495 from aitormoreno/fix_installExamplesPDBfix installation of PDB files from the examples.
+
+Wed, 14 Mar 2018 16:56:08 +0100
+Author : Aitor Moreno
+Merge branch 'master' of https://github.com/openscenegraph/OpenSceneGraph into fix_installExamplesPDB
+
+Wed, 14 Mar 2018 16:54:05 +0100
+Author : Aitor Moreno
+(re)fix the installation of the PDB files
+
+Wed, 14 Mar 2018 09:20:08 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Wed, 14 Mar 2018 08:39:12 +0000
+Author : Robert Osfield
+Standardized the MSCV INSTALL lines between applications and examples
+
+Wed, 14 Mar 2018 08:22:45 +0000
+Author : Robert Osfield
+Refactored osgUtil::ShaderGen to use #pragma(tic) shader composition.
+
+Tue, 13 Mar 2018 11:21:35 +0100
+Author : Aitor Moreno
+fix installation of PDB files from the examples.
+
+Tue, 13 Mar 2018 08:47:53 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #494 from pelicanmapping/fix-text-empty-checksAdded required empty vector checks to osg::Text
+
+Mon, 12 Mar 2018 17:35:46 -0400
+Author : gwaldron
+Text: added code in accept(functor) methods to check for empty vectors before accessing front() element, which was causing a crash in some cases. Also fixed a negated null check in getCharacterCoords
+
+Mon, 12 Mar 2018 16:14:30 +0000
+Author : Yaroslav Tarasov
+Fixed renamed of _textureDepth.
+
+Mon, 12 Mar 2018 15:55:35 +0000
+Author : Robert Osfield
+From Colin McDonald, "If the glCreateProgram in osg::Program fails for any reason, then subsequently Program::PerContextProgram::linkProgram would crash.  I've put in some checks to prevent that."
+
+Mon, 12 Mar 2018 15:29:56 +0000
+Author : Robert Osfield
+Fixed indentation
+
+Mon, 12 Mar 2018 15:12:44 +0000
+Author : Robert Osfield
+Improved indentation
+
+Mon, 12 Mar 2018 10:43:56 +0000
+Author : Robert Osfield
+From Raymond de Vries, added support for latest FBX SDK
+
+Mon, 12 Mar 2018 10:29:04 +0000
+Author : Robert Osfield
+Added FbxLayeredTexture support
+
+Sat, 10 Mar 2018 17:51:52 +0000
+Author : Robert Osfield
+Refactored the texture setup to streamline it and make it easier to adapt
+
+Fri, 9 Mar 2018 10:17:59 +0000
+Author : Alessandro Terenzi
+iOS CMake project generation improvements (bitcode option)when building for iOS, Xcode allows developers to specify to enable or disable the 'bitcode' compilation option. There's not a preferred way to go and the choice is really up to the developer but considering that:
+
+1. Currently the generated project defaults the option to YES
+2. There are almost 90 projects targets that should be modified if one wants to disable the bitcode option (which considerably reduces the footprint of the app)
+3. Even though one can select all the 90+ targets and set the option to NO for all of them, the updates could take a few seconds and could be error prone because one could miss to select some targets
+
+I propose to add a CMake setting that is displayed only when building for iOS. By setting this option "before" the project generation would speed up things for developers and would avoid errors at compiling time.
+
+
+Thu, 8 Mar 2018 16:26:01 +0000
+Author : Robert Osfield
+Refactored the handling if RESIZE, CLOSE, QUIT AND USER events so they are dispatched to all views associated with a window, or all views associated with a CompositeViewer
+
+Thu, 8 Mar 2018 10:47:07 +0000
+Author : Robert Osfield
+Fixed recursive call bug
+
+Wed, 7 Mar 2018 17:49:40 +0000
+Author : Robert Osfield
+Changed glDrawBuffer/glReadBuffer calls to use the new State::glDrawBuffers/glReadBuffers helper functions to enable lazy state updating to avoid unneccessary GL calls
+
+Wed, 7 Mar 2018 17:44:48 +0000
+Author : Robert Osfield
+Changed the default values of _drawBuffer and _readBuffer to make sure that the lazy state updating in State.glDrawBuffers(GLenum)/glReadBuffers(Glenum) doesn't ever ignore the first call.
+
+Wed, 7 Mar 2018 16:45:58 +0000
+Author : Robert Osfield
+Fixed build error
+
+Tue, 6 Mar 2018 16:54:57 +0000
+Author : Robert Osfield
+Added missing Camera::setDrawBuffer/setReadBuffer()
+
+Tue, 6 Mar 2018 16:42:11 +0000
+Author : Robert Osfield
+Added missing Camera::setDrawBuffer() & setReadBuffer()
+
+Tue, 6 Mar 2018 16:23:20 +0000
+Author : Robert Osfield
+Added missing setDrawBufer/setReadBuffer calls
+
+Tue, 6 Mar 2018 10:24:26 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Tue, 6 Mar 2018 09:58:31 +0000
+Author : Robert Osfield
+Renamed numBytesPerPixel to numBytesPerComponent to be clearer
+
+Tue, 6 Mar 2018 09:49:02 +0000
+Author : Robert Osfield
+Added State::glDrawBuffer/glReadBuffer() method to implement lazy state updating for glDrawBuffer and glReadBuffer
+
+Tue, 6 Mar 2018 09:33:30 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #491 from mmassing/readerwritergdal_fix_reading_of_multichannel_multibyte_imagesReaderWriterGDAL: fix stride when reading multi-channel images with…
+
+Tue, 6 Mar 2018 09:25:49 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #492 from emminizer/stateattribute-typoMinor typo fix on osg::StateAttribute
+
+Mon, 5 Mar 2018 10:26:54 -0500
+Author : Daniel Emminizer
+Minor typo fix on osg::StateAttribute
+
+Mon, 5 Mar 2018 15:48:24 +0100
+Author : Manuel Massing
+- ReaderWriterGDAL: fix stride when reading multi-channel images with more than 1 byte per pixel
+
+Mon, 5 Mar 2018 14:39:07 +0000
+Author : Robert Osfield
+Added deprecated comments for ShaderComposer
+
+Fri, 2 Mar 2018 10:38:41 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Fri, 2 Mar 2018 09:43:24 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #490 from torokati44/masterosgDB: Fix handling of return value of loadLibrary in Registry.
+
+Fri, 2 Mar 2018 00:13:43 +0100
+Author : TÖRÖK Attila
+osgDB: Fix handling of return value of loadLibrary in Registry."Unable to load ..." was printed if the library could be loaded,
+and it wasn't if not.
+
+
+Wed, 28 Feb 2018 14:10:56 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Wed, 28 Feb 2018 14:10:15 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #488 from LaurensVoerman/submit_array_extremove _EXT from GL_MAX_ARRAY_TEXTURE_LAYERS_EXT 
+
+Wed, 28 Feb 2018 14:07:42 +0100
+Author : Laurens Voerman
+remove _EXT from GL_MAX_ARRAY_TEXTURE_LAYERS_EXT and GL_TEXTURE_BINDING_2D_ARRAY_EXT
+
+Wed, 28 Feb 2018 10:31:30 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Wed, 28 Feb 2018 10:30:47 +0000
+Author : Robert Osfield
+Added GUIEventHandler to allow one to write out models with event callbacks
+
+Wed, 28 Feb 2018 09:11:29 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Wed, 28 Feb 2018 08:50:48 +0000
+Author : Robert Osfield
+Replaced GL_TEXTURE_2D_ARRAY_EXT with GL_TEXTURE_2D_ARRAY
+
+Wed, 28 Feb 2018 08:00:40 +0000
+Author : Robert Osfield
+Changed GL enum to fix Windows build issue
+
+Wed, 28 Feb 2018 08:00:40 +0000
+Author : Robert Osfield
+Changed GL enum to fix Windows build issue
+
+Tue, 27 Feb 2018 19:10:26 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Tue, 27 Feb 2018 19:09:18 +0000
+Author : Robert Osfield
+Fixed precision issue with filling in the last element of the TransferFunction1D's osg::Image.
+
+Tue, 27 Feb 2018 18:16:08 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Tue, 27 Feb 2018 17:35:13 +0000
+Author : Robert Osfield
+Restructured the way that applyTexParameters() is applied to address issues with Intel drivers not handling mipmap generations unless the tex parameters are reapplied on new upload of data.
+
+Fri, 23 Feb 2018 09:58:16 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Fri, 23 Feb 2018 09:57:19 +0000
+Author : Robert Osfield
+Merge branch 'master' of https://github.com/openscenegraph/OpenSceneGraph
+
+Fri, 23 Feb 2018 09:55:00 +0000
+Author : Robert Osfield
+Cleaned up the applying of the glDrawBuffers()
+
+Fri, 23 Feb 2018 08:28:59 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #485 from eligovision/OpenSceneGraph_glesGLExtensions fix: No PBO on GLES2 by default
+
+Thu, 22 Feb 2018 16:41:46 +0300
+Author : Konstantin S. Matveyev
+GLExtensions fix: No PBO on GLES2 by default
+
+Thu, 22 Feb 2018 08:47:46 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Thu, 22 Feb 2018 08:15:46 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #484 from LaurensVoerman/submit_inventor_dllexportRemove OSG_EXPORT from deprecated_osg::Geometry in inventor plugin.
+
+Wed, 21 Feb 2018 13:38:42 +0100
+Author : Laurens Voerman
+Remove OSG_EXPORT from deprecated_osg::Geometry in inventor plugin.
+
+Mon, 19 Feb 2018 11:23:29 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Mon, 19 Feb 2018 10:14:36 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #479 from LaurensVoerman/submit_vc14WarnC4800_v2move Get/SetScalarvalue out of ValueObject and provide specialization…
+
+Mon, 19 Feb 2018 10:07:14 +0000
+Author : Robert Osfield
+Added ADD_DEFINITIONS(-D_WINSOCK_DEPRECATED_NO_WARNINGS) to quieten warning
+
+Mon, 19 Feb 2018 08:39:42 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #482 from hwiesmann/masterAddition of comments for ClusterCullingCallback
+
+Mon, 19 Feb 2018 08:39:23 +0000
+Author : OpenSceneGraph git repository
+Changed the doxygen control characters and clarifications
+
+Mon, 19 Feb 2018 08:35:00 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #483 from filnet/fix_log_messagesFix log messages
+
+Sun, 18 Feb 2018 18:15:19 +0100
+Author : Philippe Renon
+renderstage: fix spelling in log message
+
+Sun, 18 Feb 2018 18:13:27 +0100
+Author : Philippe Renon
+singlewindow: minor log output fixlog message made it look like it originated from View::setUpViewOnSingleScreen
+
+
+Sun, 18 Feb 2018 08:49:41 +0300
+Author : Hartwig Wiesmann
+Addition of comments for ClusterCullingCallback
+
+Fri, 16 Feb 2018 19:56:32 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #480 from hwiesmann/masterAddition of radius parameter for ClusterCullingCallback's constructor
+
+Thu, 15 Feb 2018 21:10:59 +0100
+Author : Hartwig
+Addition of radius parameter for ClusterCullingCallback's constructorThe radius parameter is already present in ClusterCullingCallback's set method but has been forgotten in the constructor.
+
+
+Thu, 15 Feb 2018 14:53:52 +0100
+Author : Laurens Voerman
+move Get/SetScalarvalue out of ValueObject and provide specialization for GetScalarValue<bool> fixing MSVC waring C4800
+
+Wed, 14 Feb 2018 17:16:39 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #476 from LaurensVoerman/submit_luaWarnsilence MSVC warning C4324: 'lua_longjmp': structure was padded
+
+Wed, 14 Feb 2018 17:15:31 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #475 from LaurensVoerman/submit_Zeroconf_warningsFixfix visual studio compile warnings for ZeroConfDevice project.
+
+Wed, 14 Feb 2018 17:12:46 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #474 from LaurensVoerman/submit_bool_getScalarvalue_Bugbugfix: GetScalarValue returns inverted values for booleans
+
+Wed, 14 Feb 2018 10:49:33 +0100
+Author : Laurens Voerman
+silence MSVC warning C4324: 'lua_longjmp': structure was padded
+
+Wed, 14 Feb 2018 10:38:09 +0100
+Author : Laurens Voerman
+fix visual studio compile warnings for ZeroConfDevice project.
+
+Tue, 13 Feb 2018 17:38:35 +0100
+Author : Laurens Voerman
+bugfix: GetScalarValue returns inverted values for booleans; SetScalarValue needs to be a SetValueVisitor
+
+Tue, 13 Feb 2018 12:24:26 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Tue, 13 Feb 2018 12:12:34 +0000
+Author : Robert Osfield
+Improved handling of updates to the Texture target that require the texture to be reapplied. Used State for applying Texture target to work better with lazy state updating.
+
+Tue, 13 Feb 2018 12:03:19 +0000
+Author : Robert Osfield
+Merge branch 'master' of https://github.com/openscenegraph/OpenSceneGraph
+
+Tue, 13 Feb 2018 12:01:57 +0000
+Author : Robert Osfield
+Added virtual bool Texture::isDirty(contextID) method to help determine whether a GL texture object is likely to be out of date and needs updating
+
+Mon, 12 Feb 2018 13:42:47 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #473 from LaurensVoerman/submit_OT_winverremove conficting defenition of _WIN32_WINNT in OSG_DETERMINE_WIN_VERSION is ON
+
+Mon, 12 Feb 2018 10:47:37 +0100
+Author : Laurens Voerman
+remove conficting defenition of _WIN32_WINNT in OSG_DETERMINE_WIN_VERSION is ON
+
+Sat, 10 Feb 2018 18:37:57 +0000
+Author : Robert Osfield
+Changed internalFormat to use pixelFormat
+
+Sat, 10 Feb 2018 18:37:57 +0000
+Author : Robert Osfield
+Changed internalFormat to use pixelFormat
+
+Sat, 10 Feb 2018 17:50:39 +0000
+Author : Robert Osfield
+Added support for PixelBufferObject to Texture2DArray
+
+Sat, 10 Feb 2018 17:50:39 +0000
+Author : Robert Osfield
+Added support for PixelBufferObject to Texture2DArray
+
+Thu, 8 Feb 2018 09:28:40 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Wed, 7 Feb 2018 18:28:17 +0000
+Author : Robert Osfield
+From Ravi Mathur, "he freetype plugin currently forces the use of the first font within a truetype collection (.ttc index 0). I made a slight modification such that users can specify any font index via the userOptions input to osgText::readFontFile(). Specifically, the freetype plugin now accepts a new string option of the format "index=< unsigned int >". Example usage:Code:
+// Chooses the second font within the Menlo font collection
+osg::ref_ptr<osgDB::Options> fontOptions = new osgDB::Options;
+fontOptions->setObjectCacheHint(osgDB::Options::CACHE_OBJECTS);
+fontOptions->setOptionString("index=1");
+text->setFont(osgText::readFontFile("Menlo.ttc", fontOptions));
+
+"
+
+
+Wed, 7 Feb 2018 17:23:14 +0000
+Author : Robert Osfield
+Refactored the event handler so that it contains a helper NodeVistor class rather than inherits from inappropriately using multiple inheritance.
+
+Wed, 7 Feb 2018 09:27:53 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Tue, 6 Feb 2018 17:54:33 +0000
+Author : Robert Osfield
+Changed the text bounding box calcualtion so that it only takes in to account the basic glyph size, and doesn't add in the glyph margin used for accounting for texel sampling
+
+Fri, 2 Feb 2018 09:54:48 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #466 from openscenegraph/revert-454-imagebindingRevert "BindingTextureImage: a more complex condition for  _texture->apply ?"
+
+Fri, 2 Feb 2018 09:54:31 +0000
+Author : OpenSceneGraph git repository
+Revert "BindingTextureImage: a more complex condition for  _texture->apply ?"
+
+Thu, 1 Feb 2018 10:50:09 +0000
+Author : Robert Osfield
+Maded CLAMP_TO_EDGE default clamp mode
+
+Tue, 30 Jan 2018 09:53:45 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #463 from xyzz/android-gl1getGLExtensionFuncPtr: support gl4es wrapper on Android.
+
+Wed, 17 Jan 2018 14:07:47 -0500
+Author : Ilya Zhuravlev
+getGLExtensionFuncPtr: support gl4es wrapper on Android.
+
+Sat, 27 Jan 2018 10:56:09 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Sat, 27 Jan 2018 09:20:12 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #459 from mp3butcher/bufferstorageadd more extensions
+
+Sat, 27 Jan 2018 09:17:30 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #461 from filnet/issue_458os_utils: fix non portable use of "defined"
+
+Sat, 27 Jan 2018 09:16:46 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #457 from PissedCapslock/patch-3Typo in comment
+
+Thu, 25 Jan 2018 16:49:05 +0100
+Author : Philippe Renon
+os_utils: fix non portable use of "defined"see https://github.com/openscenegraph/OpenSceneGraph/issues/458
+
+
+Thu, 25 Jan 2018 16:22:33 +0100
+Author : Julien Valentin
+add ARB_BufferStorage extensions
+
+Wed, 24 Jan 2018 10:29:49 +0100
+Author : Robin Stevens
+Typo in comment
+
+Tue, 23 Jan 2018 15:27:24 +0000
+Author : Robert Osfield
+Merged shader_pipeline version of CMakeLists.txt
+
+Tue, 23 Jan 2018 12:38:50 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Tue, 23 Jan 2018 11:43:55 +0000
+Author : Robert Osfield
+Removed the OSG_SYSTEM_SUPPORTED cmake var and added use of posix_spawn under Apple with C system function used elsewhere.
+
+Tue, 23 Jan 2018 10:39:05 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Tue, 23 Jan 2018 10:26:20 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #454 from mp3butcher/imagebindingBindingTextureImage: a more complex condition for  _texture->apply ?
+
+Tue, 23 Jan 2018 10:08:27 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Tue, 23 Jan 2018 09:56:26 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #456 from PissedCapslock/patch-2Fixing typos in comments
+
+Tue, 23 Jan 2018 09:55:52 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #455 from PissedCapslock/patch-1Typo in comment
+
+Tue, 23 Jan 2018 10:25:32 +0100
+Author : Robin Stevens
+Fixing typos in comments
+
+Tue, 23 Jan 2018 10:20:49 +0100
+Author : Robin Stevens
+Typo in comment
+
+Sun, 21 Jan 2018 13:11:51 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Sun, 21 Jan 2018 12:19:27 +0000
+Author : Robert Osfield
+Changed fallback message to be consistent with fucntion name
+
+Sun, 21 Jan 2018 12:09:49 +0000
+Author : Robert Osfield
+Restructured the system() fallback to be usable for C and C++
+
+Sun, 21 Jan 2018 01:24:01 +0100
+Author : Julien Valentin
+use introduced getBufferData to determine _target->apply requirements.
+
+Sun, 21 Jan 2018 01:23:38 +0100
+Author : Julien Valentin
+add a virtual getBufferData to Texture
+
+Sat, 20 Jan 2018 12:35:30 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #452 from LaurensVoerman/submit_input_copyWchartext copy - get unicode text to clipboard.
+
+Sat, 20 Jan 2018 12:33:54 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #453 from LaurensVoerman/submit_directinputfix bug: potentially uninitialized local variable 'hr' used
+
+Fri, 19 Jan 2018 11:38:01 +0100
+Author : Laurens Voerman
+fix bug: potentially uninitialized local variable 'hr' used
+
+Fri, 19 Jan 2018 11:20:34 +0100
+Author : Laurens Voerman
+text copy - get unicode text to clipboard.
+
+Wed, 17 Jan 2018 16:17:24 +0000
+Author : Robert Osfield
+Quitended down debug output
+
+Mon, 15 Jan 2018 16:52:10 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Mon, 15 Jan 2018 16:30:44 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #447 from LaurensVoerman/submit_remove_unused_varsremove unused variable "newArrays"
+
+Mon, 15 Jan 2018 16:30:23 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #448 from LaurensVoerman/submit_remove_unused_maxBonePerVertexremove unused variable "maxBonePerVertex"
+
+Mon, 15 Jan 2018 16:28:54 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #449 from LaurensVoerman/submit_toLowerfix vc2017 compile warning 'unsigned int' to 'const char'
+
+Mon, 15 Jan 2018 16:03:21 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Mon, 15 Jan 2018 16:02:44 +0000
+Author : Robert Osfield
+Moved defined into GLDefines header to avoid compile issues under Windows
+
+Mon, 15 Jan 2018 16:42:31 +0100
+Author : Laurens Voerman
+fix vc2017 compile warning 'unsigned int' to 'const char'
+
+Mon, 15 Jan 2018 14:47:55 +0100
+Author : Laurens Voerman
+remove unused variable "newArrays"
+
+Mon, 15 Jan 2018 14:49:24 +0100
+Author : Laurens Voerman
+remove unused variable "maxBonePerVertex"
+
+Sun, 14 Jan 2018 13:28:45 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Sun, 14 Jan 2018 13:27:15 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #445 from mp3butcher/osgSampler3Osg sampler3  improve example to get command arguments 
+
+Sun, 14 Jan 2018 13:25:23 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #444 from mp3butcher/osgSampler2Osg sampler2  add static helper func in order to generate Samplers of a Samplerless StateSet
+
+Sun, 14 Jan 2018 12:40:34 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #443 from mp3butcher/osgSampler1Add MinLOD MaxLOD and LODBias to Texture
+
+Sat, 13 Jan 2018 21:29:02 +0100
+Author : Julien Valentin
+improve example to get command arguments
+
+Sat, 13 Jan 2018 21:25:47 +0100
+Author : Julien Valentin
+add static helper func in order to generate Samplers of a Samplerless StateSet +fix ident
+
+Sat, 13 Jan 2018 21:20:32 +0100
+Author : Julien Valentin
+add MinLOD MaxLOD and LODBias to Texture and its serializer as well as ShadowTextureMode None enum
+
+Sat, 13 Jan 2018 21:19:25 +0100
+Author : Julien Valentin
+increment SO version
+
+Sat, 13 Jan 2018 21:16:16 +0100
+Author : Julien Valentin
+add MinLOD MaxLOD and LODBias to Texture
+
+Sat, 13 Jan 2018 16:52:21 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Sat, 13 Jan 2018 16:43:42 +0000
+Author : Robert Osfield
+Disabled the use of the GeometryFinishedObjectReadCallback in the Geometry serializer as this doesn't look it's needed anymore.
+
+Sat, 13 Jan 2018 16:07:56 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #442 from eligovision/OpenSceneGraph_viewerosgViewer::ViewerBase setThreadingModel function fixed
+
+Sat, 13 Jan 2018 15:46:53 +0300
+Author : Konstantin S. Matveyev
+osgViewer::ViewerBase setThreadingModel func fix: should not start threading, must only restart
+
+Sat, 13 Jan 2018 11:13:54 +0000
+Author : Robert Osfield
+Fixed typo and improved readability of description
+
+Fri, 12 Jan 2018 19:55:34 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Fri, 12 Jan 2018 19:52:31 +0000
+Author : Robert Osfield
+Added ability to toggle on/off use of C system() function call, using OSG_SYSTEM_SUPPORTED Cmake option
+
+Fri, 12 Jan 2018 17:03:31 +0000
+Author : Robert Osfield
+Added os_utils header
+
+Fri, 12 Jan 2018 16:48:17 +0000
+Author : Robert Osfield
+Renamed EnvVar header to os_utils in prep for adding more OS related calls to it
+
+Thu, 11 Jan 2018 14:34:11 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Thu, 11 Jan 2018 14:33:24 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Thu, 11 Jan 2018 14:32:53 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #437 from filnet/text_typoosgText: fix typos related to SIGNED_DISTANCE_FIELD
+
+Thu, 11 Jan 2018 10:10:43 +0000
+Author : Robert Osfield
+Fixed Linux NVTT build issue by restricting the addition of the new libs to just Windows
+
+Thu, 11 Jan 2018 09:39:27 +0000
+Author : Robert Osfield
+Merged NVTT cmake fixes from 3.4 branch
+
+Thu, 11 Jan 2018 08:54:53 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Thu, 11 Jan 2018 08:51:08 +0000
+Author : Robert Osfield
+Added returns to avoid fall through between case statements
+
+Wed, 10 Jan 2018 16:55:02 +0000
+Author : Robert Osfield
+Moved setFusionDistance() into View::updateSceneView()
+
+Wed, 10 Jan 2018 14:21:25 +0100
+Author : Philippe Renon
+osgText: fix typos related to SIGNED_DISTANCE_FIELD
+
+Wed, 10 Jan 2018 11:07:46 +0000
+Author : Andreas Ekstrand
+Small fix in the osgjs plugin. Since osgjs uses pixel area for PIXEL_SIZE_ON_SCREEN PagedLOD ranges instead of a diameter, it's a more correct approximation to square the ranges in this case.
+
+Tue, 9 Jan 2018 12:16:32 +0000
+Author : Robert Osfield
+Added non const variants of State::getDisplaySettings/getActiveDisplaySettings().
+
+Mon, 8 Jan 2018 10:53:41 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Mon, 8 Jan 2018 10:52:35 +0000
+Author : Robert Osfield
+Merged Program.cpp from shader_pipeline
+
+Mon, 8 Jan 2018 10:49:48 +0000
+Author : Robert Osfield
+Change index parameter handling to getScalerValue()
+
+Mon, 8 Jan 2018 10:46:03 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Mon, 8 Jan 2018 10:31:47 +0000
+Author : Robert Osfield
+Fixed indentation
+
+Mon, 8 Jan 2018 10:14:13 +0000
+Author : Robert Osfield
+Added extension support checks
+
+Mon, 8 Jan 2018 10:04:28 +0000
+Author : Robert Osfield
+Fixed build with GLES2
+
+Fri, 1 Dec 2017 13:00:42 +0000
+Author : Robert Osfield
+Added suppor for StateSet::DefineList
+
+Fri, 1 Dec 2017 12:07:28 +0000
+Author : Robert Osfield
+Improvements to lua/OSG integration
+
+Sat, 6 Jan 2018 13:48:28 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Sat, 6 Jan 2018 13:47:18 +0000
+Author : Robert Osfield
+Replaced old style access of ValueObject values to new ValueObject::getScaleValue() methods
+
+Wed, 20 Dec 2017 20:13:33 +0000
+Author : Robert Osfield
+Added TextureCubeMap::setImage/getImage() methpds
+
+Sat, 6 Jan 2018 12:52:34 +0000
+Author : Robert Osfield
+Removed inappropriate //
+
+Wed, 20 Dec 2017 20:12:49 +0000
+Author : Robert Osfield
+Added ValueObject::get/setScaleValue(..) convinient methods
+
+Sat, 6 Jan 2018 12:52:34 +0000
+Author : Robert Osfield
+Removed inappropriate //
+
+Sat, 6 Jan 2018 12:41:41 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Sat, 6 Jan 2018 12:37:02 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #431 from mp3butcher/callbacksallow read of script from zip
+
+Sat, 6 Jan 2018 12:31:23 +0000
+Author : OpenSceneGraph git repository
+Had to fix spacing and bracket position yet again...
+
+Fri, 5 Jan 2018 19:57:41 +0100
+Author : Julien Valentin
+allow read of zipped script
+
+Fri, 5 Jan 2018 15:20:07 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Fri, 5 Jan 2018 12:12:24 +0000
+Author : Robert Osfield
+Fixed return values
+
+Fri, 5 Jan 2018 11:35:11 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Fri, 5 Jan 2018 11:26:06 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #428 from mp3butcher/serializerfixbisadd Node associate on Drawable serializers
+
+Fri, 5 Jan 2018 10:36:25 +0000
+Author : Robert Osfield
+Disabled OSX builds as they are consistently failing on travis due to timeouts so a giving false positives for all builds
+
+Fri, 5 Jan 2018 09:43:16 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #424 from mp3butcher/osgSamplerGL3.3 SamplerObject as StateAttribute
+
+Fri, 5 Jan 2018 09:41:32 +0000
+Author : OpenSceneGraph git repository
+Fixed indentation and spacing issues
+
+Fri, 5 Jan 2018 09:18:39 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #425 from mp3butcher/callbacksSupport for multiple nest Camera DrawCallbacks
+
+Thu, 4 Jan 2018 05:16:21 +0100
+Author : Julien Valentin
+add BufferData associate to Image and subclasses
+
+Thu, 4 Jan 2018 15:28:45 +0000
+Author : OpenSceneGraph git repository
+Had to fix positioning of { and spacing to be consistent with the rest of the OSG
+
+Thu, 4 Jan 2018 15:20:57 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #426 from mp3butcher/moreExtensionsadd more Extensions
+
+Thu, 4 Jan 2018 04:34:48 +0100
+Author : Julien Valentin
+Evolve DSO add Node associate on Drawable based: Drawable Geometry DrawPixels.cpp ShapeDrawable.cpp RigGeometry.cpp ConnectedParticleSystem.cpp FadeText.cpp Text.cpp Text3D.cpp TextBase.cpp
+
+Thu, 4 Jan 2018 04:18:38 +0100
+Author : Julien Valentin
+add more Extensions
+
+Thu, 4 Jan 2018 03:41:37 +0100
+Author : Julien Valentin
+add recursivity on Camera Callbacks
+
+Wed, 3 Jan 2018 21:22:38 +0100
+Author : Julien Valentin
+ add GLSampler as Texture Property and a simple example mixing (add) 2 textures
+
+Wed, 3 Jan 2018 12:34:01 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Wed, 3 Jan 2018 11:11:16 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #421 from mp3butcher/imagebindingcomplete Imagebinding integration 
+
+Tue, 2 Jan 2018 18:29:42 +0100
+Author : Julien Valentin
+remove old BindImageTexture path
+
+Tue, 2 Jan 2018 18:15:25 +0100
+Author : Julien Valentin
+adapt examples for new BindImageTexture
+
+Mon, 1 Jan 2018 21:09:07 +0100
+Author : Julien Valentin
+add (untested) BindImageTexture serializer TOREVIEW : my GLBoolean serializer macro seams hacky
+
+Mon, 1 Jan 2018 12:36:31 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Mon, 1 Jan 2018 12:07:17 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #415 from aluaces/fix/opencascade_minimalUse a minimal set of OpenCASCADE libraries.
+
+Mon, 1 Jan 2018 11:10:55 +0000
+Author : Robert Osfield
+Renamed ImageTexture file to BindImageTexture to better fit it's OpenGL implementaton.Improved the indentation so it's more consistent with the rest of the OSG.
+
+
+Mon, 1 Jan 2018 10:16:10 +0000
+Author : Robert Osfield
+Merge branch 'imagebinding' of https://github.com/mp3butcher/OpenSceneGraph into mp3butcher-imagebinding
+
+Mon, 1 Jan 2018 10:14:58 +0000
+Author : OpenSceneGraph git repository
+Changed the enum value to be consistent with StateAttribute
+
+Mon, 1 Jan 2018 10:13:14 +0000
+Author : OpenSceneGraph git repository
+Change enum name to be consistent with assciated class name
+
+Mon, 1 Jan 2018 10:12:09 +0000
+Author : OpenSceneGraph git repository
+Improved spacing and indentaton To keep things consistent with the rest of the OSG
+
+Sun, 31 Dec 2017 13:44:21 +0000
+Author : Robert Osfield
+Changed the case of method name to be consistent with the rest of the OSG
+
+Sun, 31 Dec 2017 13:43:09 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #411 from rickyviking/fbxGeometrySupportFbx writer: added support to convert geometries directly attached as node
+
+Sun, 31 Dec 2017 13:34:26 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #414 from aluaces/fix/osg_winver_switchAdded optional checking the windows version at build configuration time to fix cross-compilation.
+
+Sun, 31 Dec 2017 13:32:44 +0000
+Author : OpenSceneGraph git repository
+Improved indentation
+
+Sun, 31 Dec 2017 13:17:23 +0000
+Author : Robert Osfield
+Fixed typo
+
+Sun, 31 Dec 2017 12:35:44 +0000
+Author : Robert Osfield
+Fixed handling of reassignment of ArrayDispatch when vertex aliasing is toggled
+
+Sun, 31 Dec 2017 12:35:44 +0000
+Author : Robert Osfield
+Fixed handling of reassignment of ArrayDispatch when vertex aliasing is toggled
+
+Mon, 25 Dec 2017 23:42:33 +0100
+Author : mp3butcher
+add flexier Image Unit Binding implementation (allow different IUBs for a Texture)
+
+Fri, 22 Dec 2017 13:17:10 +0100
+Author : Alberto Luaces
+Use a minimal set of OpenCASCADE libraries.This eases the configuration avoiding to look for unused or nonexistent
+libraries.
+
+
+Tue, 26 Dec 2017 15:35:42 +0100
+Author : Alberto Luaces
+Detecting the windows version at build time breaks cross-compilation.I have made this auto-detection optional (default ON).
+
+
+Wed, 20 Dec 2017 20:13:33 +0000
+Author : Robert Osfield
+Added TextureCubeMap::setImage/getImage() methpds
+
+Wed, 20 Dec 2017 20:12:49 +0000
+Author : Robert Osfield
+Added ValueObject::get/setScaleValue(..) convinient methods
+
+Wed, 20 Dec 2017 09:52:50 +0100
+Author : Riccardo Corsi
+Fbx writer: added support to convert geometries directly attached as node, without geodes.
+
+Tue, 19 Dec 2017 10:43:44 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Tue, 19 Dec 2017 09:57:57 +0000
+Author : Robert Osfield
+Introduced dedicated VertexArrayStateList class to wrap up the VertexArrayState container with convinience methods to help initialize them. Using the new VertexArrayStateList class fixed bug associated with setting new setTexCoord() array when a VertexArrayState is already assigned.
+
+Mon, 18 Dec 2017 13:54:08 +0000
+Author : Robert Osfield
+Deprecated dirtyDisplayLists(), use established dirtyGLObjects() instead
+
+Mon, 18 Dec 2017 10:45:00 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #408 from eligovision/OpenSceneGraph_serializersOpen scene graph serializers
+
+Mon, 18 Dec 2017 10:39:29 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #409 from jcarpent/master[Fix] Use explicitelly colladom 1.4.1
+
+Mon, 18 Dec 2017 10:33:35 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #406 from eligovision/OpenSceneGraph_textTextBase: left alignment position fix
+
+Thu, 14 Dec 2017 19:27:08 +0100
+Author : jcarpent
+[Fix] Use explicitelly colladom 1.4.1
+
+Wed, 13 Dec 2017 11:47:02 +0300
+Author : Konstantin S. Matveyev
+osgAnimation serializes: static linking fix
+
+Wed, 13 Dec 2017 11:48:08 +0300
+Author : Konstantin S. Matveyev
+Merge remote-tracking branch 'upstream/master' into OpenSceneGraph_serializers
+
+Fri, 27 Oct 2017 20:49:09 +0300
+Author : Konstantin S. Matveyev
+TextBase: left alignment position fix
+
+Sat, 9 Dec 2017 19:18:43 +0000
+Author : Robert Osfield
+Quitened down debug output
+
+Sat, 9 Dec 2017 18:42:40 +0000
+Author : Robert Osfield
+Quited now deboug output
+
+Sat, 9 Dec 2017 18:29:19 +0000
+Author : Robert Osfield
+Quietened down debug messages
+
+Sat, 9 Dec 2017 11:12:35 +0000
+Author : Robert Osfield
+Pushed background image away from eye point a small amount to prevent z fighting with text on the image plane.
+
+Fri, 8 Dec 2017 16:15:52 +0000
+Author : Robert Osfield
+Merge branch 'master' of https://github.com/openscenegraph/OpenSceneGraph
+
+Fri, 8 Dec 2017 16:10:57 +0000
+Author : Robert Osfield
+Added support for OSG_BORDERLESS_WINDOW="x y width heigh" and --bordless-window x y width height to make it easier to manage custom placement of viewers without window decoration
+
+Fri, 8 Dec 2017 11:19:20 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #403 from mp3butcher/VASfix logo reader plugin
+
+Thu, 7 Dec 2017 20:13:57 +0100
+Author : Julien Valentin
+fix logo reader plugin TODO upgrade to a more modern gl (remove glDrawpixel usage)
+
+Thu, 7 Dec 2017 17:52:24 +0000
+Author : Robert Osfield
+Improvements to dot visitors
+
+Thu, 7 Dec 2017 09:52:53 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Thu, 7 Dec 2017 09:49:47 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #402 from mp3butcher/VASadd a fix in order setArray  work with an user managed interleaved array
+
+Wed, 6 Dec 2017 22:57:03 +0100
+Author : Julien Valentin
+add a fix in order setArray  work with an user managed interleaved array
+
+Wed, 6 Dec 2017 18:16:47 +0000
+Author : Robert Osfield
+Fixed typos
+
+Wed, 6 Dec 2017 13:29:47 +0000
+Author : Robert Osfield
+Added support for Program::addBindAttirbLocation() and removeBindAttribLocation().
+
+Wed, 6 Dec 2017 10:33:32 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Mon, 14 Nov 2016 11:59:47 +0000
+Author : Robert Osfield
+Added more flexibility into the State::checkGLErrors() method, allowing calling code to pass in two strings. Improved the StateSet::compileGLObjects() usage of checkGLErrors() to make the warning reports more meaningful.
+
+Wed, 6 Dec 2017 09:50:42 +0000
+Author : Robert Osfield
+Added fine grained checking for GL errors in the GLObjectVisitor so that the OSG's default pre compile stage provides better feesback on any GL errors.
+
+Wed, 6 Dec 2017 09:50:42 +0000
+Author : Robert Osfield
+Added fine grained checking for GL errors in the GLObjectVisitor so that the OSG's default pre compile stage provides better feesback on any GL errors.
+
+Tue, 5 Dec 2017 17:16:17 +0000
+Author : Robert Osfield
+Removed the unncessary rescale to power of two, and added clear of image to prevent previous image data corrupting the rendered image
+
+Tue, 5 Dec 2017 16:33:55 +0000
+Author : Robert Osfield
+Merge branch 'master' of https://github.com/openscenegraph/OpenSceneGraph
+
+Tue, 5 Dec 2017 16:33:01 +0000
+Author : Robert Osfield
+Added "rs=value" Options support to SVG plugin
+
+Mon, 4 Dec 2017 18:55:47 +0000
+Author : Robert Osfield
+From Raymond de Vries, added missing header
+
+Mon, 4 Dec 2017 18:46:24 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Mon, 4 Dec 2017 17:51:21 +0000
+Author : Robert Osfield
+Fixed AUTHORS
+
+Mon, 4 Dec 2017 16:43:08 +0000
+Author : Robert Osfield
+Added passing of the osgDB::Options to the remove from cache to make sure the cache model for the presentation is found and removed.
+
+Mon, 4 Dec 2017 14:50:12 +0000
+Author : Robert Osfield
+Changed the reload presentaiton key to 'R' to better match the 'E' for editor
+
+Mon, 4 Dec 2017 13:01:52 +0000
+Author : Anna Sokol
+From Anna Sokol, "There is no need to specify WINVER of 0x0603 in order to check for the SetProcessDPIAwareness function existence. If your current OS where the application is running is Windows 8.1 or above it the function will exist in the dll or if its below it wont. I checked the attached code with both a Windows 7 desktop (where the function doesn't exist) and a Windows 10 tablet (where it does and had my screen scaled to 150%) and in both cases the code worked as intended."
+
+Sun, 3 Dec 2017 16:43:06 +0000
+Author : Robert Osfield
+Added object map to DisplaySettings::setObject(std::string, Object*) & getObject(std::string) This enables caching of data, such as pre-loaded files or other objects
+
+Sun, 3 Dec 2017 14:27:41 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
+Sun, 3 Dec 2017 14:27:10 +0000
+Author : Robert Osfield
+Updated ChangeLog and AUTHORS file
+
+Sun, 3 Dec 2017 14:14:34 +0000
+Author : Robert Osfield
+Updated ChangeLog
+
+Sun, 3 Dec 2017 11:34:15 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
 Sun, 3 Dec 2017 11:17:34 +0000
 Author : Robert Osfield
 Renamed chanels to array to be consistent with the rest of the usage
@@ -86,11 +1673,35 @@ Sat, 2 Dec 2017 16:20:34 +0000
 Author : Robert Osfield
 Fixes for cppcheck reported issues
 
+Fri, 1 Dec 2017 14:38:52 +0000
+Author : Robert Osfield
+From Raymond de Vries, Windows build fixes
+
+Fri, 1 Dec 2017 13:00:42 +0000
+Author : Robert Osfield
+Added suppor for StateSet::DefineList
+
+Fri, 1 Dec 2017 12:07:28 +0000
+Author : Robert Osfield
+Improvements to lua/OSG integration
+
 Fri, 1 Dec 2017 12:26:00 +0100
 Author : Marc Helbling
 Improve SharedArrayOptimizerWhen an array is shared within and outside a geometry, it's still worth it and safe
 to recreate the reference within each individual geometry.
 
+
+Fri, 1 Dec 2017 10:21:02 +0000
+Author : Robert Osfield
+Fixed Lua / osg::UniformBase integration
+
+Fri, 1 Dec 2017 10:20:48 +0000
+Author : Robert Osfield
+Fixed env var parsing
+
+Fri, 1 Dec 2017 09:14:52 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
 
 Thu, 30 Nov 2017 14:13:21 +0000
 Author : OpenSceneGraph git repository
@@ -568,6 +2179,10 @@ Tue, 31 Oct 2017 10:01:52 +0000
 Author : Robert Osfield
 Simplified build for OSX now that trais builds are running faster.
 
+Mon, 30 Oct 2017 16:25:41 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
 Mon, 30 Oct 2017 15:53:56 +0000
 Author : Robert Osfield
 Merge branch 'master' into osganimation
@@ -592,6 +2207,10 @@ Mon, 30 Oct 2017 13:40:50 +0000
 Author : Robert Osfield
 Quitened down the DisplaySettings::setShaderHint() output for NONE.
 
+Mon, 30 Oct 2017 09:39:30 +0000
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
+
 Mon, 30 Oct 2017 09:32:04 +0000
 Author : Robert Osfield
 Merged support for StateSet::DefineList from shader_pipeline branch
@@ -603,6 +2222,10 @@ Merge pull request #375 from mp3butcher/osganimationreformat AStyle (with codebl
 Fri, 27 Oct 2017 21:02:43 +0200
 Author : Julien Valentin
 reformat with the help of AStyle reformat tool (codeblocks)
+
+Sat, 28 Oct 2017 12:58:47 +0100
+Author : Robert Osfield
+Merge branch 'master' into shader_pipeline
 
 Fri, 27 Oct 2017 18:14:04 +0100
 Author : Robert Osfield
@@ -1049,6 +2672,10 @@ LineSegmentIntersector fixed: intersection ratio remaped to the range of LineSeg
 Sun, 17 Sep 2017 18:48:32 +0300
 Author : konstantin.matveyev
 tellg call removed from StreamOperator's checkStream function, because reading of files (readNodeFile etc.) with tellg on 'every iter' is approximately 100 times slower on Emscripten platform
+
+Fri, 22 Sep 2017 11:34:28 +0300
+Author : Konstantin S. Matveyev
+LineSegmentIntersector fixed: intersection ratio remaped to the range of LineSegment => correct order in multiset of intersections
 
 Fri, 22 Sep 2017 07:56:30 +0100
 Author : OpenSceneGraph git repository
@@ -2546,9 +4173,171 @@ Sat, 25 Mar 2017 16:05:57 +0000
 Author : Robert Osfield
 Restructed the marco to resolve Windows build issues
 
+Fri, 24 Mar 2017 18:53:22 +0000
+Author : Robert Osfield
+Added built-in shaders for shader_pipeline functionality Added support for enabling shader_pipeline shaders using OSG_SHADER_PIPELINE=ON/OFF env var Added support for setting the shader_pipeline shaders using OSG_SHADER_PIPELINE_FILES=shader.vert:shader.shaderpipeline_frag env var Added support for setting the maximum number of texture units used by shader_pipeline shaders via OSG_SHADER_PIPELINE_MAX_TEXTURE_UNITS=<num> env var
+
+Fri, 24 Mar 2017 13:47:05 +0000
+Author : Robert Osfield
+Renamed the osgVolume/Shaders directory to osgVolume/shaders to make it consistent with OpenSceneGraph-Data/shaders
+
+Fri, 24 Mar 2017 10:08:51 +0000
+Author : Robert Osfield
+Added parameter to invocation of all GLSL TexEnv combinations and cleaned up debug output from new osg::UniformTemplate implementations
+
 Thu, 23 Mar 2017 19:36:01 +0000
 Author : Robert Osfield
 Fixed file endings
+
+Thu, 23 Mar 2017 19:26:21 +0000
+Author : Robert Osfield
+Fixed build
+
+Wed, 23 Nov 2016 11:37:30 +0000
+Author : Robert Osfield
+Removed debug message
+
+Tue, 22 Nov 2016 16:38:10 +0000
+Author : Robert Osfield
+Added CopyOp handling of Uniform.
+
+Tue, 22 Nov 2016 15:12:56 +0000
+Author : Robert Osfield
+Added shader pipeline support to various Texture subclasses
+
+Tue, 22 Nov 2016 15:11:39 +0000
+Author : Robert Osfield
+Added name of uniform to debug output
+
+Tue, 22 Nov 2016 15:10:49 +0000
+Author : Robert Osfield
+Cleaned up osgshaderpipeline removing functionality now automatically provided in the core OSG
+
+Tue, 22 Nov 2016 15:10:15 +0000
+Author : Robert Osfield
+Added shader pipeline support to osg::TexEnv
+
+Tue, 22 Nov 2016 15:09:48 +0000
+Author : Robert Osfield
+Added shader pipeline support to osg::TexGen.
+
+Tue, 22 Nov 2016 15:07:13 +0000
+Author : Robert Osfield
+Added mapping of GL modes to 0 (disabled) or 1 (enabled) for the fixed function -> shaders mapping. Added flags for hinting to StateAttribute::apply() implementations whether to toggling on/off the fixed function or shader equivilants.
+
+Fri, 18 Nov 2016 16:58:20 +0000
+Author : Robert Osfield
+Added TextureAttribute base class from Texture related StateAttribute that need texture unit information from StateSet::setTextureAttribute assigned to help set configure the appropriate uniforms.
+
+Fri, 18 Nov 2016 16:36:27 +0000
+Author : Robert Osfield
+Added UniformBase::setName(const std::string& baseName, unsigned int unit); declaration
+
+Fri, 18 Nov 2016 15:36:42 +0000
+Author : Robert Osfield
+Cleaned up set of ModeDefine maps using the new osg:MakeString helper class
+
+Fri, 18 Nov 2016 15:35:16 +0000
+Author : Robert Osfield
+Added accessors for osg::State's ModeDefineMaps
+
+Fri, 18 Nov 2016 15:21:04 +0000
+Author : Robert Osfield
+Added convinience mathod for passing osg::Plane to glUniform
+
+Fri, 18 Nov 2016 15:14:46 +0000
+Author : Robert Osfield
+Added osg::PlaneUniform. Added osg::UniformBase::setName(const std::string&) ability to be reset. Added osg::UniformBase::setName(const std::string& baseName, unsigned int unit) so set the uniform name in the form "baseName[unit]".
+
+Fri, 18 Nov 2016 14:56:05 +0000
+Author : Robert Osfield
+Added osg::MakeString class to make it easier to create std::string's using std::ostream style << usage.
+
+Thu, 10 Nov 2016 17:40:18 +0000
+Author : Robert Osfield
+Introduced new osg::UniformBase class to enable an extensible uniform class hierachy Added osg::UniformTemplate, osg::UniformArrayTemplate and a set of IntUniform, IntArrayUniform etc. to make it easier to interact with basic types more efficiently.
+
+Tue, 8 Nov 2016 10:28:54 +0000
+Author : Robert Osfield
+Added mapping of texture modes to #define's to inject into shaders where required
+
+Thu, 3 Nov 2016 20:28:57 +0000
+Author : Robert Osfield
+if'd 0 out  resetting of the Projection and ModelView and Program object pointers in the popAllStateSets() as this was causing problems when using the RootStateSet.
+
+Thu, 3 Nov 2016 17:33:38 +0000
+Author : Robert Osfield
+Restructed check for whether to print out shaders to make it easier to toggle on/off
+
+Thu, 3 Nov 2016 17:23:03 +0000
+Author : Robert Osfield
+Added toggling of the osg::State ::setUseModelViewAndProjectionUniforms() and setUseVertexAttributeAliasing() via the --mv and --va command line options respectively
+
+Thu, 3 Nov 2016 17:11:58 +0000
+Author : Robert Osfield
+Moved the implementation of the State::setUseModelViewAndProjectionUniforms(bool) and State::setUseVertexAttributeAliasing(bool) into State.cpp and added initialization of the VertexArrayState array bindings to ensure that bindings get updated correctly.Refined the State::popStateSet() method to make it more efficient
+
+
+Wed, 2 Nov 2016 11:15:18 +0000
+Author : Robert Osfield
+Added set up of root StateSet in the osg::State to enable shaders to be applied for all rendering on a graphics context.
+
+Wed, 2 Nov 2016 11:13:57 +0000
+Author : Robert Osfield
+Added State::s/getRootStateSet() that enables applications to insert a StateSet above all rendering for a graphics context. Utilized in the new shadper pipeline functionality
+
+Tue, 1 Nov 2016 10:28:44 +0000
+Author : Robert Osfield
+Removed debug version of applyUniformList
+
+Tue, 1 Nov 2016 10:15:11 +0000
+Author : Robert Osfield
+Added fallback textures to handle cases where no texture is provided
+
+Mon, 31 Oct 2016 16:12:11 +0000
+Author : Robert Osfield
+Added shader defines for setting up vertex and fragment shaders with texture support
+
+Mon, 31 Oct 2016 16:09:29 +0000
+Author : Robert Osfield
+Improved debug output of shaders that use shader defines.
+
+Wed, 26 Oct 2016 11:34:23 +0100
+Author : Robert Osfield
+Added setup of uniform arrays for passing in texture modes
+
+Wed, 26 Oct 2016 11:33:24 +0100
+Author : Robert Osfield
+if'd out ShaderGenVisitor usage under GLES2 to enble proper testing of new fixed function -> shaders infrastructure.
+
+Tue, 25 Oct 2016 20:19:16 +0100
+Author : Robert Osfield
+Added support for mapping texture modes to #define's
+
+Tue, 25 Oct 2016 20:17:55 +0100
+Author : Robert Osfield
+Added #pragma import_texture_modes() -> #define into #pragma data structure a GLSL parsing
+
+Tue, 25 Oct 2016 18:44:26 +0100
+Author : Robert Osfield
+REplaced _EXT GLenum for standard GL versions
+
+Tue, 25 Oct 2016 18:42:03 +0100
+Author : Robert Osfield
+Standardized GLenum's on non EXT versions
+
+Fri, 21 Oct 2016 10:15:52 +0100
+Author : Robert Osfield
+Added more mods to the mode string map
+
+Thu, 20 Oct 2016 20:35:03 +0100
+Author : Robert Osfield
+Intial work on providing mapping from OpenGL modes to #pragma(tic) shader composition defines.Shader  usage:
+
+   #pragma import_modes ( GL_LIGHTING, GL_TEXGTURE_2D )
+
+Will provide #define in shaders for GL_LIGHTING and GL_TEXTURE_2D if these Modes are enabled via StateSet::setMode(..);
+
 
 Thu, 23 Mar 2017 14:53:08 +0000
 Author : Robert Osfield

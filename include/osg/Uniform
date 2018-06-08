@@ -19,398 +19,177 @@
 #ifndef OSG_UNIFORM
 #define OSG_UNIFORM 1
 
-#include <osg/ref_ptr>
+#include <osg/UniformBase>
+
 #include <osg/Array>
 #include <osg/Callback>
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
+#include <osg/Vec2i>
+#include <osg/Vec3i>
+#include <osg/Vec4i>
+#include <osg/Vec2ui>
+#include <osg/Vec3ui>
+#include <osg/Vec4ui>
 #include <osg/Vec2d>
 #include <osg/Vec3d>
 #include <osg/Vec4d>
-#include <osg/Matrix>
+#include <osg/Plane>
 #include <osg/GLExtensions>
-
-#include <string.h> // for memset
-#include <string>
-#include <vector>
-
 
 namespace osg {
 
-// forward declare
-class NodeVisitor;
+template< typename T >
+struct UniformClassNameTrait
+{
+    static const char* className() { return "TemplateUniform"; }
+};
 
-///////////////////////////////////////////////////////////////////////////
-// C++ classes to represent the GLSL-specific types.
-//
-// Warning :
-// OSG  is Row major
-// GLSL is Column Major
-//
-// If you define an Uniform with type Uniform::FLOAT_MAT4X2 and so use a Matrix4x2 to setup your Uniform,
-// like this :
-// 1 2
-// 3 4
-// 5 6
-// 7 8
-//
-// you will get in your shader a Column Major Matrix like this :
-// 1 3 5 7
-// 2 4 6 8
-//
-// In simple term, you matrix in OSG will be a transposed matrix in GLSL
-//
-//
-// You can avoid this behaviours starting GLSL version 1.40 with uniform layout :
-//
-// <GLSL code>
-// layout(row_major) uniform matrix4x2 myVariable;
-// <GLSL code>
-//
-//
-template <typename T, unsigned int RowN, unsigned int ColN>
-class MatrixTemplate
+template<typename T>
+class TemplateUniform : public osg::UniformBase
 {
     public:
-      enum { col_count = ColN };
-      enum { row_count = RowN };
-      enum { value_count = ColN * RowN };
 
-      typedef T value_type;
+        typedef T value_type;
 
+        TemplateUniform() {}
 
-    public:
-        MatrixTemplate() {}
-        ~MatrixTemplate() {}
+        TemplateUniform(const std::string& name) : osg::UniformBase(name) {}
 
-        value_type& operator()(int row, int col) { return _mat[row][col]; }
-        value_type operator()(int row, int col) const { return _mat[row][col]; }
+        TemplateUniform(const value_type& value) : _value(value) {}
 
-        MatrixTemplate& operator = (const MatrixTemplate& rhs)
+        TemplateUniform(const std::string& name, const value_type& value) : osg::UniformBase(name), _value(value) {}
+
+        TemplateUniform(const TemplateUniform& rhs, const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY) :
+            osg::UniformBase(rhs,copyop),
+            _value(rhs._value) {}
+
+        virtual Object* cloneType() const { return new TemplateUniform(); }
+        virtual Object* clone(const CopyOp& copyop) const { return new TemplateUniform(*this, copyop); }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const TemplateUniform*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return UniformClassNameTrait<T>::className(); }
+
+        virtual void apply(const osg::GLExtensions* ext, GLint location) const
         {
-            if( &rhs == this ) return *this;
-            set(rhs.ptr());
-            return *this;
+            ext->glUniform(location, _value);
         }
 
-        void set(const MatrixTemplate& rhs) { set(rhs.ptr()); }
-
-        void set(value_type const * const ptr)
-        {
-            value_type* local_ptr = (value_type*)_mat;
-            for(int i=0;i<value_count;++i) local_ptr[i]=ptr[i];
-        }
-
-        value_type* ptr() { return (value_type*)_mat; }
-        const value_type* ptr() const { return (const value_type*)_mat; }
-
-        value_type& operator [] (int i) {return ptr()[i];}
-        value_type operator [] (int i) const {return ptr()[i];}
-
-        void reset() { memset(_mat, 0, sizeof( value_type ) * value_count); }
+        void setValue(const value_type& value) { if (_value!=value) { _value = value; dirty(); } }
+        value_type& getValue() { return _value; }
+        const value_type& getValue() const { return _value; }
 
     protected:
-        value_type _mat[row_count][col_count];
+
+        value_type _value;
 };
 
-template <typename T>
-class Matrix2Template : public MatrixTemplate<T, 2, 2>
+#define META_Uniform(TYPE,NAME) \
+    template<> struct UniformClassNameTrait<TYPE> { static const char* className() { return #NAME; } }; \
+    typedef TemplateUniform<TYPE> NAME;
+
+META_Uniform(int, IntUniform)
+META_Uniform(unsigned int, UIntUniform)
+META_Uniform(float, FloatUniform)
+META_Uniform(double, DoubleUniform)
+META_Uniform(osg::Vec2i, Vec2iUniform)
+META_Uniform(osg::Vec3i, Vec3iUniform)
+META_Uniform(osg::Vec4i, Vec4iUniform)
+META_Uniform(osg::Vec2ui, Vec2uiUniform)
+META_Uniform(osg::Vec3ui, Vec3uiUniform)
+META_Uniform(osg::Vec4ui, Vec4uiUniform)
+META_Uniform(osg::Vec2, Vec2Uniform)
+META_Uniform(osg::Vec3, Vec3Uniform)
+META_Uniform(osg::Vec4, Vec4Uniform)
+META_Uniform(osg::Vec2d, Vec2dUniform)
+META_Uniform(osg::Vec3d, Vec3dUniform)
+META_Uniform(osg::Vec4d, Vec4dUniform)
+META_Uniform(osg::Plane, PlaneUniform)
+META_Uniform(osg::Matrixf, MatrixfUniform)
+META_Uniform(osg::Matrixd, MatrixdUniform)
+
+
+template< typename T >
+struct ArrayUniformClassNameTrait
+{
+    static const char* className() { return "TemplateArrayUniform"; }
+};
+
+template<typename T>
+class TemplateArrayUniform : public osg::UniformBase
 {
     public:
-        typedef MatrixTemplate<T, 2, 2>         base_class;
-        typedef typename base_class::value_type value_type;
 
+        typedef T value_type;
+        typedef std::vector<value_type> array_type;
 
-    public:
-        Matrix2Template() { makeIdentity(); }
-        Matrix2Template( const Matrix2Template& mat ) { set(mat.ptr()); }
-        Matrix2Template( value_type a00, value_type a01,
-                         value_type a10, value_type a11 )
+        TemplateArrayUniform() {}
+
+        TemplateArrayUniform(const std::string& name) : osg::UniformBase(name) {}
+
+        TemplateArrayUniform(const std::string& name, unsigned int new_size) : osg::UniformBase(name), _array(new_size) {}
+
+        TemplateArrayUniform(const TemplateArrayUniform& rhs, const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY) :
+            osg::UniformBase(rhs,copyop),
+            _array(rhs._array) {}
+
+        virtual Object* cloneType() const { return new TemplateArrayUniform(); }
+        virtual Object* clone(const CopyOp& copyop) const { return new TemplateArrayUniform(*this, copyop); }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const TemplateArrayUniform*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return ArrayUniformClassNameTrait<T>::className(); }
+
+        virtual void apply(const osg::GLExtensions* ext, GLint location) const
         {
-            set( a00, a01,
-                 a10, a11 );
+            ext->glUniform(location, _array);
         }
-        ~Matrix2Template() {}
 
-        using base_class::set;
+        bool empty() const { return _array.empty(); }
 
-        void set(value_type a00, value_type a01,
-                 value_type a10, value_type a11 )
-         {
-             base_class::_mat[0][0]=a00; base_class::_mat[0][1]=a01;
-             base_class::_mat[1][0]=a10; base_class::_mat[1][1]=a11;
-         }
+        void resize(unsigned int new_size) { _array.resize(new_size); }
 
-        void makeIdentity()
-        {
-            set( 1, 0,
-                 0, 1 );
-        }
+        unsigned int size() const { return static_cast<unsigned int>(_array.size()); }
+
+        void setElement(unsigned int i, const value_type& value) { if (_array[i]!=value) { _array[i] = value; dirty(); } }
+        value_type& getElement(unsigned int i) { return _array[i]; }
+        const value_type& getElement(unsigned int i) const { return _array[i]; }
+
+        void setArray(const array_type& array) { if (_array!=array) { _array = array; dirty(); } }
+        array_type& getArray() { return _array; }
+        const array_type& getArray() const { return _array; }
+
+    protected:
+
+        array_type _array;
 };
 
-template <typename T>
-class Matrix2x3Template : public MatrixTemplate<T, 2, 3>
-{
-    public:
-        typedef MatrixTemplate<T, 2, 3>         base_class;
-        typedef typename base_class::value_type value_type;
+#define META_ArrayUniform(TYPE,NAME) \
+    template<> struct ArrayUniformClassNameTrait<TYPE> { static const char* className() { return #NAME; } }; \
+    typedef TemplateArrayUniform<TYPE> NAME;
+
+META_ArrayUniform(int, IntArrayUniform)
+META_ArrayUniform(unsigned int, UIntArrayUniform)
+META_ArrayUniform(float, FloatArrayUniform)
+META_ArrayUniform(double, DoubleArrayUniform)
+META_ArrayUniform(osg::Vec2, Vec2ArrayUniform)
+META_ArrayUniform(osg::Vec3, Vec3ArrayUniform)
+META_ArrayUniform(osg::Vec4, Vec4ArrayUniform)
+META_ArrayUniform(osg::Vec2d, Vec2dArrayUniform)
+META_ArrayUniform(osg::Vec3d, Vec3dArrayUniform)
+META_ArrayUniform(osg::Vec4d, Vec4dArrayUniform)
+META_ArrayUniform(osg::Vec2i, Vec2iArrayUniform)
+META_ArrayUniform(osg::Vec3i, Vec3iArrayUniform)
+META_ArrayUniform(osg::Vec4i, Vec4iArrayUniform)
+META_ArrayUniform(osg::Vec2ui, Vec2uiArrayUniform)
+META_ArrayUniform(osg::Vec3ui, Vec3uiArrayUniform)
+META_ArrayUniform(osg::Vec4ui, Vec4uiArrayUniform)
+META_ArrayUniform(osg::Matrixf, MatrixfArrayUniform)
+META_ArrayUniform(osg::Matrixd, MatrixdArrayUniform)
 
 
-    public:
-        Matrix2x3Template() { base_class::reset(); }
-        Matrix2x3Template( const Matrix2x3Template& mat ) { set(mat.ptr()); }
-        Matrix2x3Template( value_type a00, value_type a01, value_type a02,
-                           value_type a10, value_type a11, value_type a12 )
-        {
-            set( a00, a01, a02,
-                 a10, a11, a12 );
-        }
-        ~Matrix2x3Template() {}
-
-        using base_class::set;
-
-        void set( value_type a00, value_type a01, value_type a02,
-                  value_type a10, value_type a11, value_type a12 )
-         {
-             base_class::_mat[0][0]=a00; base_class::_mat[0][1]=a01; base_class::_mat[0][2]=a02;
-             base_class::_mat[1][0]=a10; base_class::_mat[1][1]=a11; base_class::_mat[1][2]=a12;
-         }
-};
-
-template <typename T>
-class Matrix2x4Template : public MatrixTemplate<T, 2, 4>
-{
-    public:
-        typedef MatrixTemplate<T, 2, 4>         base_class;
-        typedef typename base_class::value_type value_type;
-
-
-    public:
-        Matrix2x4Template() { base_class::reset(); }
-        Matrix2x4Template( const Matrix2x4Template& mat ) { set(mat.ptr()); }
-        Matrix2x4Template( value_type a00, value_type a01, value_type a02, value_type a03,
-                           value_type a10, value_type a11, value_type a12, value_type a13 )
-        {
-            set( a00, a01, a02, a03,
-                 a10, a11, a12, a13 );
-        }
-        ~Matrix2x4Template() {}
-
-        using base_class::set;
-
-        void set( value_type a00, value_type a01, value_type a02, value_type a03,
-                  value_type a10, value_type a11, value_type a12, value_type a13 )
-         {
-             base_class::_mat[0][0]=a00; base_class::_mat[0][1]=a01; base_class::_mat[0][2]=a02; base_class::_mat[0][3]=a03;
-             base_class::_mat[1][0]=a10; base_class::_mat[1][1]=a11; base_class::_mat[1][2]=a12; base_class::_mat[1][3]=a13;
-         }
-};
-
-template <typename T>
-class Matrix3x2Template : public MatrixTemplate<T, 3, 2>
-{
-    public:
-        typedef MatrixTemplate<T, 3, 2>         base_class;
-        typedef typename base_class::value_type value_type;
-
-    public:
-        Matrix3x2Template() { base_class::reset(); }
-        Matrix3x2Template( const Matrix3x2Template& mat ) { set(mat.ptr()); }
-        Matrix3x2Template( value_type a00, value_type a01,
-                           value_type a10, value_type a11,
-                           value_type a20, value_type a21 )
-        {
-            set( a00, a01,
-                 a10, a11,
-                 a20, a21 );
-        }
-        ~Matrix3x2Template() {}
-
-        using base_class::set;
-
-        void set( value_type a00, value_type a01,
-                  value_type a10, value_type a11,
-                  value_type a20, value_type a21 )
-         {
-             base_class::_mat[0][0]=a00; base_class::_mat[0][1]=a01;
-             base_class::_mat[1][0]=a10; base_class::_mat[1][1]=a11;
-             base_class::_mat[2][0]=a20; base_class::_mat[2][1]=a21;
-         }
-};
-
-template <typename T>
-class Matrix3Template : public MatrixTemplate<T, 3, 3>
-{
-    public:
-        typedef MatrixTemplate<T, 3, 3>         base_class;
-        typedef typename base_class::value_type value_type;
-
-    public:
-        Matrix3Template() { base_class::reset(); }
-        Matrix3Template( const Matrix3Template& mat ) { set(mat.ptr()); }
-        Matrix3Template( value_type a00, value_type a01, value_type a02,
-                         value_type a10, value_type a11, value_type a12,
-                         value_type a20, value_type a21, value_type a22 )
-        {
-            set( a00, a01, a02,
-                 a10, a11, a12,
-                 a20, a21, a22 );
-        }
-        ~Matrix3Template() {}
-
-        using base_class::set;
-
-        void set( value_type a00, value_type a01, value_type a02,
-                  value_type a10, value_type a11, value_type a12,
-                  value_type a20, value_type a21, value_type a22 )
-         {
-             base_class::_mat[0][0]=a00; base_class::_mat[0][1]=a01; base_class::_mat[0][2]=a02;
-             base_class::_mat[1][0]=a10; base_class::_mat[1][1]=a11; base_class::_mat[1][2]=a12;
-             base_class::_mat[2][0]=a20; base_class::_mat[2][1]=a21; base_class::_mat[2][2]=a22;
-         }
-
-        void makeIdentity()
-        {
-            set( 1, 0, 0,
-                 0, 1, 0,
-                 0, 0, 1 );
-        }
-};
-
-template <typename T>
-class Matrix3x4Template : public MatrixTemplate<T, 3, 4>
-{
-    public:
-        typedef MatrixTemplate<T, 3, 4>         base_class;
-        typedef typename base_class::value_type value_type;
-
-    public:
-        Matrix3x4Template() { base_class::reset(); }
-        Matrix3x4Template( const Matrix3x4Template& mat ) { set(mat.ptr()); }
-        Matrix3x4Template( value_type a00, value_type a01, value_type a02, value_type a03,
-                           value_type a10, value_type a11, value_type a12, value_type a13,
-                           value_type a20, value_type a21, value_type a22, value_type a23 )
-        {
-            set( a00, a01, a02, a03,
-                 a10, a11, a12, a13,
-                 a20, a21, a22, a23 );
-        }
-        ~Matrix3x4Template() {}
-
-        using base_class::set;
-
-        void set( value_type a00, value_type a01, value_type a02, value_type a03,
-                  value_type a10, value_type a11, value_type a12, value_type a13,
-                  value_type a20, value_type a21, value_type a22, value_type a23 )
-         {
-             base_class::_mat[0][0]=a00; base_class::_mat[0][1]=a01; base_class::_mat[0][2]=a02; base_class::_mat[0][3]=a03;
-             base_class::_mat[1][0]=a10; base_class::_mat[1][1]=a11; base_class::_mat[1][2]=a12; base_class::_mat[1][3]=a13;
-             base_class::_mat[2][0]=a20; base_class::_mat[2][1]=a21; base_class::_mat[2][2]=a22; base_class::_mat[2][3]=a23;
-         }
-};
-
-template <typename T>
-class Matrix4x2Template : public MatrixTemplate<T, 4, 2>
-{
-    public:
-        typedef MatrixTemplate<T, 4, 2>         base_class;
-        typedef typename base_class::value_type value_type;
-
-    public:
-        Matrix4x2Template() { base_class::reset(); }
-        Matrix4x2Template( const Matrix4x2Template& mat ) { set(mat.ptr()); }
-        Matrix4x2Template( value_type a00, value_type a01,
-                           value_type a10, value_type a11,
-                           value_type a20, value_type a21,
-                           value_type a30, value_type a31 )
-        {
-            set( a00, a01,
-                 a10, a11,
-                 a20, a21,
-                 a30, a31 );
-        }
-        ~Matrix4x2Template() {}
-
-        using base_class::set;
-
-        void set( value_type a00, value_type a01,
-                  value_type a10, value_type a11,
-                  value_type a20, value_type a21,
-                  value_type a30, value_type a31 )
-         {
-             base_class::_mat[0][0]=a00; base_class::_mat[0][1]=a01;
-             base_class::_mat[1][0]=a10; base_class::_mat[1][1]=a11;
-             base_class::_mat[2][0]=a20; base_class::_mat[2][1]=a21;
-             base_class::_mat[3][0]=a30; base_class::_mat[3][1]=a31;
-         }
-};
-
-template <typename T>
-class Matrix4x3Template : public MatrixTemplate<T, 4, 3>
-{
-    public:
-        typedef MatrixTemplate<T, 4, 3>         base_class;
-        typedef typename base_class::value_type value_type;
-
-    public:
-        Matrix4x3Template() { base_class::reset(); }
-        Matrix4x3Template( const Matrix4x3Template& mat ) { set(mat.ptr()); }
-        Matrix4x3Template( value_type a00, value_type a01, value_type a02,
-                           value_type a10, value_type a11, value_type a12,
-                           value_type a20, value_type a21, value_type a22,
-                           value_type a30, value_type a31, value_type a32 )
-        {
-            set( a00, a01, a02,
-                 a10, a11, a12,
-                 a20, a21, a22,
-                 a30, a31, a32 );
-        }
-        ~Matrix4x3Template() {}
-
-        using base_class::set;
-
-        void set( value_type a00, value_type a01, value_type a02,
-                  value_type a10, value_type a11, value_type a12,
-                  value_type a20, value_type a21, value_type a22,
-                  value_type a30, value_type a31, value_type a32 )
-         {
-             base_class::_mat[0][0]=a00; base_class::_mat[0][1]=a01; base_class::_mat[0][2]=a02;
-             base_class::_mat[1][0]=a10; base_class::_mat[1][1]=a11; base_class::_mat[1][2]=a12;
-             base_class::_mat[2][0]=a20; base_class::_mat[2][1]=a21; base_class::_mat[2][2]=a22;
-             base_class::_mat[3][0]=a30; base_class::_mat[3][1]=a31; base_class::_mat[3][2]=a32;
-         }
-};
-
-typedef Matrix2Template<float>    Matrix2;
-typedef Matrix2x3Template<float>  Matrix2x3;
-typedef Matrix2x4Template<float>  Matrix2x4;
-
-typedef Matrix3x2Template<float>  Matrix3x2;
-typedef Matrix3Template<float>    Matrix3;
-typedef Matrix3x4Template<float>  Matrix3x4;
-
-typedef Matrix4x2Template<float>  Matrix4x2;
-typedef Matrix4x3Template<float>  Matrix4x3;
-
-
-typedef Matrix2Template<double>    Matrix2d;
-typedef Matrix2x3Template<double>  Matrix2x3d;
-typedef Matrix2x4Template<double>  Matrix2x4d;
-
-typedef Matrix3x2Template<double>  Matrix3x2d;
-typedef Matrix3Template<double>    Matrix3d;
-typedef Matrix3x4Template<double>  Matrix3x4d;
-
-typedef Matrix4x2Template<double>  Matrix4x2d;
-typedef Matrix4x3Template<double>  Matrix4x3d;
-
-
-
-///////////////////////////////////////////////////////////////////////////
-
-/** Uniform encapsulates glUniform values */
-class OSG_EXPORT Uniform : public Object
+/** Deprecated Uniform provides backwards compatibility. */
+class OSG_EXPORT Uniform : public UniformBase
 {
     public:
         enum Type {
@@ -562,15 +341,13 @@ class OSG_EXPORT Uniform : public Object
           * Equivalent to dynamic_cast<const Uniform*>(this).*/
         virtual const Uniform* asUniform() const { return this; }
 
-        
+
         /** Set the type of glUniform, ensuring it is only set once.*/
-        bool setType( Type t );
+        virtual bool setType( Type t );
 
         /** Get the type of glUniform as enum. */
         Type getType() const { return _type; }
 
-        /** Set the name of the glUniform, ensuring it is only set once.*/
-        virtual void setName( const std::string& name );
 
         /** Set the length of a uniform, ensuring it is only set once (1==scalar)*/
         void setNumElements( unsigned int numElements );
@@ -643,40 +420,10 @@ class OSG_EXPORT Uniform : public Object
         Uniform( const char* name, bool b0, bool b1, bool b2, bool b3 );
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
-        virtual int compare(const Uniform& rhs) const;
-        virtual int compareData(const Uniform& rhs) const;
-
-        bool operator <  (const Uniform& rhs) const { return compare(rhs)<0; }
-        bool operator == (const Uniform& rhs) const { return compare(rhs)==0; }
-        bool operator != (const Uniform& rhs) const { return compare(rhs)!=0; }
+        virtual int compare(const UniformBase& rhs) const;
+        virtual int compareData(const UniformBase& rhs) const;
 
         void copyData( const Uniform& rhs );
-
-
-        /** A vector of osg::StateSet pointers which is used to store the parent(s) of this Uniform, the parents could be osg::Node or osg::Drawable.*/
-        typedef std::vector<StateSet*> ParentList;
-
-        /** Get the parent list of this Uniform. */
-        inline const ParentList& getParents() const { return _parents; }
-
-        /** Get the a copy of parent list of node. A copy is returned to
-          * prevent modification of the parent list.*/
-        inline ParentList getParents() { return _parents; }
-
-        inline StateSet* getParent(unsigned int i)  { return _parents[i]; }
-        /**
-         * Get a single const parent of this Uniform.
-         * @param i index of the parent to get.
-         * @return the parent i.
-         */
-        inline const StateSet* getParent(unsigned int i) const  { return _parents[i]; }
-
-        /**
-         * Get the number of parents of this Uniform.
-         * @return the number of parents of this Uniform.
-         */
-        inline unsigned int getNumParents() const { return static_cast<unsigned int>(_parents.size()); }
-
 
         /** convenient scalar (non-array) value assignment */
         bool set( float f );
@@ -846,33 +593,6 @@ class OSG_EXPORT Uniform : public Object
         bool getElement( unsigned int index, bool& b0, bool& b1, bool& b2 ) const;
         bool getElement( unsigned int index, bool& b0, bool& b1, bool& b2, bool& b3 ) const;
         
-        
-        /** provide typedef for backwards compatibility to OSG-3.2 and other previous versions. */
-        typedef UniformCallback Callback;
-        
-
-        /** Set the UpdateCallback which allows users to attach customize the updating of an object during the update traversal.*/
-        void setUpdateCallback(UniformCallback* uc);
-
-        /** Get the non const UpdateCallback.*/
-        UniformCallback* getUpdateCallback() { return _updateCallback.get(); }
-
-        /** Get the const UpdateCallback.*/
-        const UniformCallback* getUpdateCallback() const { return _updateCallback.get(); }
-
-        /** Set the EventCallback which allows users to attach customize the updating of an object during the Event traversal.*/
-        void setEventCallback(UniformCallback* ec);
-
-        /** Get the non const EventCallback.*/
-        UniformCallback* getEventCallback() { return _eventCallback.get(); }
-
-        /** Get the const EventCallback.*/
-        const UniformCallback* getEventCallback() const { return _eventCallback.get(); }
-
-        /** Increment the modified count on the Uniform so Programs watching it know it update themselves.
-          * NOTE: automatically called during osg::Uniform::set*();
-          * you must call if modifying the internal data array directly. */
-        inline void dirty() { ++_modifiedCount; }
 
         /** Set the internal data array for a osg::Uniform */
         bool setArray( FloatArray* array );
@@ -905,14 +625,9 @@ class OSG_EXPORT Uniform : public Object
         Int64Array* getInt64Array() { return _int64Array.get(); }
         const Int64Array* getInt64Array() const { return _int64Array.get(); }
 
-        inline void setModifiedCount(unsigned int mc) { _modifiedCount = mc; }
-        inline unsigned int getModifiedCount() const { return _modifiedCount; }
+        virtual void apply(const GLExtensions* ext, GLint location) const;
 
-        /** Get the number that the Uniform's name maps to uniquely */
-        unsigned int getNameID() const;
-
-        void apply(const GLExtensions* ext, GLint location) const;
-
+        typedef osg::UniformCallback Callback;
 
     protected:
 
@@ -927,15 +642,8 @@ class OSG_EXPORT Uniform : public Object
         bool isScalar() const { return _numElements==1; }
         void allocateDataArray();
 
-        void addParent(osg::StateSet* object);
-        void removeParent(osg::StateSet* object);
-
-        ParentList _parents;
-        friend class osg::StateSet;
-
         Type                 _type;
         unsigned int         _numElements;
-        unsigned int         _nameID;
 
 
         // The internal data for osg::Uniforms are stored as an array of

@@ -349,7 +349,7 @@ osg::Node* Style::createIcon(const osg::BoundingBox& extents, const std::string&
     {
         node = group->getChild(0);
 
-        // remove references to avoid node from node being unreferenced afer the node ref_ptr<> is released().
+        // remove references to avoid node from node being unreferenced after the node ref_ptr<> is released().
         group = 0;
         transform = 0;
 

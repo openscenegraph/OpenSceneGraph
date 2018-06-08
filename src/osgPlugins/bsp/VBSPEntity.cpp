@@ -358,7 +358,7 @@ void VBSPEntity::parseParameters(std::string & entityText)
         // This is an "item".  Like a prop, these are external models
         // placed in the scene, but the specific model is determined
         // directly by the entity's class.  In HL2, these entities are
-        // useable by the player (ammunition and health packs are examples)
+        // usable by the player (ammunition and health packs are examples)
         entity_class = ENTITY_ITEM;
         processItem();
     }

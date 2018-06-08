@@ -141,8 +141,8 @@ bool GeometryIndexSplitter::split(osg::Geometry& geometry) {
     }
 
     osg::notify(osg::NOTICE) << "geometry " << &geometry << " " << geometry.getName()
-                                << " vertexes (" << geometry.getVertexArray()->getNumElements()
-                                << ") has DrawElements index > " << _maxAllowedIndex << ", splitted to "
+                                << " vertices (" << geometry.getVertexArray()->getNumElements()
+                                << ") has DrawElements index > " << _maxAllowedIndex << ", split to "
                                 << _geometryList.size() << " geometry" << std::endl;
 
     return true;

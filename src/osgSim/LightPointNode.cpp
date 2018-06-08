@@ -271,7 +271,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             // slip light point if its intensity is 0.0 or negative.
             if (intensity<=minimumIntensity) continue;
 
-            // (SIB) Clip on distance, if close to limit, add transparancy
+            // (SIB) Clip on distance, if close to limit, add transparency
             float distanceFactor = 1.0f;
             if (_maxVisibleDistance2!=FLT_MAX)
             {

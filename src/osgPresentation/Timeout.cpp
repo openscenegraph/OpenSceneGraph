@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2018 Robert Osfield
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -395,7 +395,7 @@ void Timeout::traverse(osg::NodeVisitor& nv)
     {
         if (strcmp(nv.className(),"FindOperatorsVisitor")==0)
         {
-            OSG_NOTICE<<"Timout::traverse() "<<nv.className()<<", ignoring traversal"<<std::endl;
+            OSG_NOTICE<<"Timeout::traverse() "<<nv.className()<<", ignoring traversal"<<std::endl;
         }
         else
         {

@@ -61,7 +61,7 @@ class /*OSGTEXT_EXPORT*/ TextTechnique : public osg::Object
         /// default TextTechnique implementation used if no other is specified on TextNode
         static osg::ref_ptr<TextTechnique>& getDefaultTextTechinque();
 
-        /// start building a new charater layout
+        /// start building a new character layout
         virtual void start();
 
         /// called by Layout engine to place individual characters
@@ -70,7 +70,7 @@ class /*OSGTEXT_EXPORT*/ TextTechnique : public osg::Object
         /// called by Layout engine to place individual characters
         virtual void addCharacter(const osg::Vec3& position, const osg::Vec3& size, Glyph3D* glyph, Style* style);
 
-        /// finish building new charater layout
+        /// finish building new character layout
         virtual void finish();
 
         /// provide traversal control

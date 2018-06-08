@@ -40,7 +40,7 @@ namespace deprecated_osg {
 #define GET_BINDING(array) (array!=0 ? static_cast<AttributeBinding>(array->getBinding()) : BIND_OFF)
 
 
-/** Geometry class contaning deprecated features.
+/** Geometry class containing deprecated features.
  * Users should only use deprecated_osg::Geometry when absolutely necessary for keeping things compiling,
  * it is recommended that you should migrate your code to work just with osg::Geometry as existing
  * deprecated_osg::Geometry will be removed in future release.

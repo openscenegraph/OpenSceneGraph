@@ -181,10 +181,10 @@ public:
         else return 0;
     }
 
-    /// set an input iterator, used directly when not using InputStream with a traditional file releated stream.
+    /// set an input iterator, used directly when not using InputStream with a traditional file related stream.
     void setInputIterator( InputIterator* ii ) { _in = ii; }
 
-    /// start reading from InputStream treating it as a traditional file releated stream, handles headers and versioning
+    /// start reading from InputStream treating it as a traditional file related stream, handles headers and versioning
     ReadType start( InputIterator* );
 
     void decompress();

@@ -127,7 +127,7 @@ public:
 
     virtual void deleteAllGLObjects()
     {
-         OSG_INFO<<"DisplayListManager::deleteAllGLObjects() Not currently implementated"<<std::endl;
+         OSG_INFO<<"DisplayListManager::deleteAllGLObjects() Not currently implemented"<<std::endl;
     }
 
     virtual void discardAllGLObjects()
@@ -240,8 +240,8 @@ Drawable::Drawable()
 
 Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     Node(drawable,copyop),
-    _initialBound(drawable._initialBound),
-    _computeBoundCallback(drawable._computeBoundCallback),
+    _initialBoundingBox(drawable._initialBoundingBox),
+    _computeBoundingBoxCallback(drawable._computeBoundingBoxCallback),
     _boundingBox(drawable._boundingBox),
     _shape(copyop(drawable._shape.get())),
     _supportsDisplayList(drawable._supportsDisplayList),
@@ -252,7 +252,6 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     _drawCallback(drawable._drawCallback),
     _createVertexArrayStateCallback(drawable._createVertexArrayStateCallback)
 {
-    setStateSet(copyop(drawable._stateset.get()));
 }
 
 Drawable::~Drawable()
@@ -694,7 +693,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
 
 VertexArrayState* Drawable::createVertexArrayStateImplementation(RenderInfo& renderInfo) const
 {
-    OSG_NOTICE<<"VertexArrayState* Drawable::createVertexArrayStateImplementation(RenderInfo& renderInfo) const "<<this<<std::endl;
+    OSG_INFO<<"VertexArrayState* Drawable::createVertexArrayStateImplementation(RenderInfo& renderInfo) const "<<this<<std::endl;
     VertexArrayState* vos = new osg::VertexArrayState(renderInfo.getState());
     vos->assignAllDispatchers();
     return vos;

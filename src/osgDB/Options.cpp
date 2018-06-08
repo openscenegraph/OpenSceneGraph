@@ -16,6 +16,26 @@
 
 using namespace osgDB;
 
+
+Options::Options():
+    osg::Object(true),
+    _objectCacheHint(CACHE_ARCHIVES),
+    _precisionHint(FLOAT_PRECISION_ALL),
+    _buildKdTreesHint(NO_PREFERENCE)
+{
+}
+
+Options::Options(const std::string& str):
+    osg::Object(true),
+    _str(str),
+    _objectCacheHint(CACHE_ARCHIVES),
+    _precisionHint(FLOAT_PRECISION_ALL),
+    _buildKdTreesHint(NO_PREFERENCE)
+{
+    parsePluginStringData(str);
+}
+
+
 Options::Options(const Options& options,const osg::CopyOp& copyop):
     osg::Object(options,copyop),
     _str(options._str),
@@ -32,7 +52,13 @@ Options::Options(const Options& options,const osg::CopyOp& copyop):
     _fileLocationCallback(options._fileLocationCallback),
     _fileCache(options._fileCache),
     _terrain(options._terrain),
-    _parentGroup(options._parentGroup) {}
+    _parentGroup(options._parentGroup)
+{
+}
+
+Options::~Options()
+{
+}
 
 void Options::parsePluginStringData(const std::string& str, char separator1, char separator2)
 {

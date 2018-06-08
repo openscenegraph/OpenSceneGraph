@@ -98,7 +98,7 @@ void Texture2DMultisample::apply(State& state) const
 
     if (textureObject)
     {
-        textureObject->bind();
+        textureObject->bind(state);
     }
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_numSamples!=0) )
     {
@@ -112,7 +112,7 @@ void Texture2DMultisample::apply(State& state) const
                                  1,
                                  _borderWidth);
 
-        textureObject->bind();
+        textureObject->bind(state);
 
         extensions->glTexImage2DMultisample( getTextureTarget(),
                                              _numSamples,

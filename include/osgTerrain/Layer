@@ -162,7 +162,7 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
          * @param[out] ir Returned X-axis fraction.
          * @param[out] jr Returned Y-axis fraction.
          */
-        inline void computeIndices(double ndc_x, double ndc_y, unsigned int& i, unsigned int& j, double& ir, double& jr)
+        inline void computeIndices(double ndc_x, double ndc_y, unsigned int& i, unsigned int& j, double& ir, double& jr) const
         {
             ndc_x *= double(getNumColumns()-1);
             ndc_y *= double(getNumRows()-1);
@@ -179,7 +179,7 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
          * @param[out] value Returned layer value.
          * @return true if value is valid, else false
          */
-        inline bool getInterpolatedValue(double ndc_x, double ndc_y, float& value)
+        inline bool getInterpolatedValue(double ndc_x, double ndc_y, float& value) const
         {
             unsigned int i,j;
             double ir, jr;
@@ -226,7 +226,7 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
             return false;
         }
 
-        inline bool getInterpolatedValidValue(double ndc_x, double ndc_y, float& value)
+        inline bool getInterpolatedValidValue(double ndc_x, double ndc_y, float& value) const
         {
             unsigned int i,j;
             double ir, jr;

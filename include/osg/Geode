@@ -14,8 +14,7 @@
 #ifndef OSG_GEODE
 #define OSG_GEODE 1
 
-#include <osg/Node>
-#include <osg/NodeVisitor>
+#include <osg/Group>
 #include <osg/Drawable>
 
 namespace osg {

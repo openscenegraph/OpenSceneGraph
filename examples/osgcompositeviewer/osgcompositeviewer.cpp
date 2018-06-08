@@ -125,6 +125,42 @@ public:
 
 };
 
+class EventHandler : public osgGA::GUIEventHandler {
+public:
+
+    EventHandler() {}
+
+    ~EventHandler() {}
+
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    {
+        osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+        if (!view) return false;
+
+        switch(ea.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYDOWN):
+            case(osgGA::GUIEventAdapter::KEYUP):
+                OSG_NOTICE<<"View "<<view<<", name="<<view->getName()<<" keyboard event "<<ea.getEventType()<<" key="<<ea.getKey()<<" ea.getX()="<<ea.getX()<<" ea.getY()="<<ea.getY()<<std::endl;
+                break;
+
+            case(osgGA::GUIEventAdapter::MOVE):
+            case(osgGA::GUIEventAdapter::DRAG):
+            case(osgGA::GUIEventAdapter::PUSH):
+            case(osgGA::GUIEventAdapter::RELEASE):
+                OSG_NOTICE<<"View "<<view<<", name="<<view->getName()<<" mouse event "<<ea.getEventType()<<" ea.getX()="<<ea.getX()<<" ea.getY()="<<ea.getY()<<std::endl;
+                break;
+
+            default:
+                // OSG_NOTICE<<"View "<<view<<", name="<<view->getName()<<" general event "<<ea.getEventType()<<std::endl;
+                break;
+        }
+
+        return false;
+    }
+
+};
+
 
 int main( int argc, char **argv )
 {
@@ -194,6 +230,50 @@ int main( int argc, char **argv )
 
             // add the handler for doing the picking
             view->addEventHandler(new PickHandler());
+        }
+    }
+
+
+
+    if (arguments.read("-4"))
+    {
+
+        // view one
+        {
+            osgViewer::View* view = new osgViewer::View;
+            view->setName("View one");
+            viewer.addView(view);
+
+            view->setUpViewInWindow(0, 0, 800, 600);
+            view->setSceneData(scene.get());
+            view->setCameraManipulator(new osgGA::TrackballManipulator);
+
+            // add the state manipulator
+            osg::ref_ptr<osgGA::StateSetManipulator> statesetManipulator = new osgGA::StateSetManipulator;
+            statesetManipulator->setStateSet(view->getCamera()->getOrCreateStateSet());
+
+            view->addEventHandler( statesetManipulator.get() );
+
+            view->addEventHandler( new EventHandler());
+        }
+
+        // view two
+        {
+            osgViewer::View* view = new osgViewer::View;
+            view->setName("View two");
+            viewer.addView(view);
+
+            view->setUpViewInWindow(1000, 0, 800, 600);
+            view->setSceneData(scene.get());
+            view->setCameraManipulator(new osgGA::TrackballManipulator);
+
+            view->addEventHandler( new osgViewer::StatsHandler );
+
+
+            // add the handler for doing the picking
+            view->addEventHandler(new PickHandler());
+
+            view->addEventHandler( new EventHandler());
         }
     }
 

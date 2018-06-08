@@ -424,6 +424,12 @@ osgDB::ReaderWriter::WriteResult ReaderWriterCURL::writeFile(const osg::Object& 
     // Serialize obj into an std::stringstream buffer which will be uploaded via HTTP post request.
     std::string fileName = EasyCurl::getFileNameFromURL(fullFileName);
     std::string ext = osgDB::getLowerCaseFileExtension(fileName);
+    if (ext == "curl") 
+    {
+        fileName = osgDB::getNameLessExtension(fileName);
+        ext = osgDB::getLowerCaseFileExtension(fileName);
+    }
+
     osgDB::ReaderWriter* writer = osgDB::Registry::instance()->getReaderWriterForExtension(ext);
     if (!writer) return WriteResult::FILE_NOT_HANDLED;
     osgDB::ReaderWriter::WriteResult result = writeFile(obj, writer, requestBuffer, options);

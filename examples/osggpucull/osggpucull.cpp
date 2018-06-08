@@ -124,7 +124,7 @@
       but if Robert will accept its current implementations ( I mean - primitive
       sets that have osg::TextureBuffer in constructor ), I may add it to
       osg/include/PrimitiveSet header.
-    - I used BufferTemplate class writen and published by Aurelien in submission forum
+    - I used BufferTemplate class written and published by Aurelien in submission forum
       some time ago. For some reason this class never got into osg/include, but is
       really needed during creation of UBOs, TBOs, and possibly SSBOs in the future.
       I added std::vector specialization to that template class.
@@ -324,7 +324,7 @@ struct IndirectTarget
         indirectCommandTextureBuffer->setInternalFormat( GL_R32I );
         indirectCommandTextureBuffer->setUnRefImageDataAfterApply(false);
 
-        indirectCommandImageBinding=new osg::BindImageTexture(index, indirectCommandTextureBuffer, osg::BindImageTexture::READ_WRITE, GL_R32I);
+        indirectCommandImageBinding=new osg::BindImageTexture(index, indirectCommandTextureBuffer.get(), osg::BindImageTexture::READ_WRITE, GL_R32I);
 
         // add proper primitivesets to geometryAggregators
         if( !useMultiDrawArraysIndirect ) // use glDrawArraysIndirect()
@@ -367,7 +367,7 @@ struct IndirectTarget
         instanceTarget = new osg::TextureBuffer(instanceTargetImage);
         instanceTarget->setInternalFormat( internalFormat );
 
-        instanceTargetimagebinding = new osg::BindImageTexture(OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index, instanceTarget, osg::BindImageTexture::READ_WRITE, internalFormat);
+        instanceTargetimagebinding = new osg::BindImageTexture(OSGGPUCULL_MAXIMUM_INDIRECT_TARGET_NUMBER+index, instanceTarget.get(), osg::BindImageTexture::READ_WRITE, internalFormat);
 
     }
 
@@ -1145,7 +1145,7 @@ osg::Group* createAirplane( float detailRatio, const osg::Vec4& hullColor, const
     return root.release();
 }
 
-// createStaticRendering() shows how to use any OSG graph ( wheter it is single osg::Geode, or sophisticated osg::PagedLOD tree covering whole earth )
+// createStaticRendering() shows how to use any OSG graph ( whether it is single osg::Geode, or sophisticated osg::PagedLOD tree covering whole earth )
 // as a source of  instance data. This way, the OSG graph of arbitrary size is at first culled using typical OSG mechanisms, then remaining osg::Geometries
 // are sent to cull shader ( cullProgram ). Cull shader does not draw anything to screen ( thanks to GL_RASTERIZER_DISCARD mode ), but calculates if particular
 // instances - sourced from above mentioned osg::Geometries - are visible and what LODs for these instances should be rendered.

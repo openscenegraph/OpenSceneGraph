@@ -80,7 +80,7 @@ void IOSWindowingSystemInterface::getScreenSettings(const osg::GraphicsContext::
         resolution.width = [screen bounds].size.width * scale;
         resolution.height = [screen bounds].size.height * scale;
         resolution.colorDepth = 24; 
-        resolution.refreshRate = 60; //i've read 60 is max, not sure if thats true        
+        resolution.refreshRate = 60; //i've read 60 is max, not sure if that's true        
     } 
     else 
     {
@@ -96,7 +96,7 @@ void IOSWindowingSystemInterface::getScreenSettings(const osg::GraphicsContext::
             resolution.width = size.width;
             resolution.height = size.height;
             resolution.colorDepth = 24; 
-            resolution.refreshRate = 60; //i've read 60 is max, not sure if thats true
+            resolution.refreshRate = 60; //i've read 60 is max, not sure if that's true
             
             OSG_INFO << "new resolution for screen " << si.screenNum << ": " << size.width << "x" << size.height << std::endl;
         }
@@ -130,7 +130,7 @@ void IOSWindowingSystemInterface::enumerateScreenSettings(const osg::GraphicsCon
         resolution.width = [screen bounds].size.width * scale;
         resolution.height = [screen bounds].size.height * scale;
         resolution.colorDepth = 24; 
-        resolution.refreshRate = 60; //i've read 60 is max, not sure if thats true
+        resolution.refreshRate = 60; //i've read 60 is max, not sure if that's true
         resolutionList.push_back(resolution);
         
         
@@ -151,7 +151,7 @@ void IOSWindowingSystemInterface::enumerateScreenSettings(const osg::GraphicsCon
             resolution.width = size.width;
             resolution.height = size.height;
             resolution.colorDepth = 24; 
-            resolution.refreshRate = 60; //i've read 60 is max, not sure if thats true
+            resolution.refreshRate = 60; //i've read 60 is max, not sure if that's true
             resolutionList.push_back(resolution);
             
             OSG_INFO << "new resolution: " << size.width << "x" << size.height << std::endl;

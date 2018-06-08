@@ -27,6 +27,7 @@
 
 #include <osgDB/Registry>
 #include <osgDB/FileUtils>
+#include <osgDB/ReadFile>
 #include <osgDB/FileNameUtils>
 #include <osgDB/fstream>
 #include <osgDB/Archive>
@@ -1168,7 +1169,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
 
             options->setDatabasePath(archiveName);
 
-            std::auto_ptr<ReadFunctor> rf(readFunctor.cloneType(fileName, options.get()));
+            osg::ref_ptr<ReadFunctor> rf(readFunctor.cloneType(fileName, options.get()));
 
             result = rf->doRead(*archive);
 

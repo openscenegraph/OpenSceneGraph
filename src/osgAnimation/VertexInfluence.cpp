@@ -71,7 +71,7 @@ void VertexInfluenceMap::normalize(unsigned int numvert)
     }
 
 }
-///remove weakest influences in order to fit targetted numbonepervertex
+///remove weakest influences in order to fit targeted numbonepervertex
 void VertexInfluenceMap::cullInfluenceCountPerVertex(unsigned int numbonepervertex,float minweight, bool renormalize)
 {
 
@@ -139,7 +139,7 @@ void VertexInfluenceMap::computePerVertexInfluenceList(std::vector<BoneWeightLis
         const IndexWeightList& inflist = it->second;
         if (it->first.empty())
         {
-            OSG_WARN << "VertexInfluenceMap::computePerVertexInfluenceList contains unamed bone IndexWeightList" << std::endl;
+            OSG_WARN << "VertexInfluenceMap::computePerVertexInfluenceList contains unnamed bone IndexWeightList" << std::endl;
         }
         
         for(IndexWeightList::const_iterator infit = inflist.begin(); infit != inflist.end(); ++infit)

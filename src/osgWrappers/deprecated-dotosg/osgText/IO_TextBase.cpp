@@ -312,7 +312,7 @@ bool TextBase_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     // font resolution
     fw.indent() << "fontResolution " << text.getFontWidth() << " " << text.getFontHeight() << std::endl;
 
-    // charater size.
+    // character size.
     fw.indent() << "characterSize " << text.getCharacterHeight() << " " << text.getCharacterAspectRatio() << std::endl;
 
     fw.indent() << "characterSizeMode ";

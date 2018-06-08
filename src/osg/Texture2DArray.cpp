@@ -276,7 +276,7 @@ void Texture2DArray::apply(State& state) const
     if (textureObject)
     {
         // bind texture object
-        textureObject->bind();
+        textureObject->bind(state);
 
         // if subload is specified, then use it to subload the images to GPU memory
         if (_subloadCallback.valid())
@@ -323,7 +323,7 @@ void Texture2DArray::apply(State& state) const
     {
         // generate texture (i.e. glGenTexture) and apply parameters
         textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_2D_ARRAY);
-        textureObject->bind();
+        textureObject->bind(state);
         applyTexParameters(GL_TEXTURE_2D_ARRAY, state);
         _subloadCallback->load(*this,state);
     }
@@ -344,7 +344,8 @@ void Texture2DArray::apply(State& state) const
                     contextID, GL_TEXTURE_2D_ARRAY,_numMipmapLevels, _internalFormat, _textureWidth, _textureHeight, textureDepth,0);
 
         // bind texture
-        textureObject->bind();
+        textureObject->bind(state);
+
         applyTexParameters(GL_TEXTURE_2D_ARRAY, state);
 
         // First we need to allocate the texture memory
@@ -433,7 +434,8 @@ void Texture2DArray::apply(State& state) const
         textureObject = generateAndAssignTextureObject(
                 contextID, GL_TEXTURE_2D_ARRAY,_numMipmapLevels,_internalFormat, _textureWidth, _textureHeight, _textureDepth,0);
 
-        textureObject->bind();
+        textureObject->bind(state);
+
         applyTexParameters(GL_TEXTURE_2D_ARRAY,state);
 
         extensions->glTexImage3D( GL_TEXTURE_2D_ARRAY, 0, _internalFormat,
@@ -661,7 +663,7 @@ void Texture2DArray::copyTexSubImage2DArray(State& state, int xoffset, int yoffs
     // if texture object is valid
     if (textureObject != 0)
     {
-        textureObject->bind();
+        textureObject->bind(state);
 
         applyTexParameters(GL_TEXTURE_2D_ARRAY,state);
         extensions->glCopyTexSubImage3D( GL_TEXTURE_2D_ARRAY, 0, xoffset,yoffset,zoffset, x, y, width, height);
@@ -700,7 +702,7 @@ void Texture2DArray::allocateMipmap(State& state) const
         }
 
         // bind texture
-        textureObject->bind();
+        textureObject->bind(state);
 
         // compute number of mipmap levels
         int width = _textureWidth;
@@ -725,7 +727,7 @@ void Texture2DArray::allocateMipmap(State& state) const
                 getCompressedSize( _internalFormat, width, height, textureDepth, blockSize, size);
 
                 extensions->glCompressedTexImage3D( GL_TEXTURE_2D_ARRAY, k, _internalFormat,
-                                                    width, height, _textureDepth, _borderWidth,
+                                                    width, height, textureDepth, _borderWidth,
                                                     size,
                                                     NULL);
             }

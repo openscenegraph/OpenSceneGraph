@@ -21,7 +21,7 @@
 
 #include <osg/Texture2D>
 #include <osg/BindImageTexture>
-#include <osg/ComputeDispatch>
+#include <osg/DispatchCompute>
 #include <osg/Geode>
 #include <osgDB/ReadFile>
 #include <osgGA/StateSetManipulator>
@@ -54,7 +54,7 @@ int main( int argc, char** argv )
     tex2D->setSourceFormat( GL_RED );
     tex2D->setSourceType( GL_FLOAT );
     // So we can use 'image2D' in the compute shader
-    osg::ref_ptr<osg::BindImageTexture> imagbinding = new osg::BindImageTexture(0, tex2D, osg::BindImageTexture::WRITE_ONLY, GL_R32F);
+    osg::ref_ptr<osg::BindImageTexture> imagbinding = new osg::BindImageTexture(0, tex2D.get(), osg::BindImageTexture::WRITE_ONLY, GL_R32F);
 
 
     // The compute shader can't work with other kinds of shaders
@@ -65,7 +65,7 @@ int main( int argc, char** argv )
     // Create a node for outputting to the texture.
     // It is OK to have just an empty node here, but seems inbuilt uniforms like osg_FrameTime won't work then.
     // TODO: maybe we can have a custom drawable which also will implement glMemoryBarrier?
-    osg::ref_ptr<osg::Node> sourceNode = new osg::ComputeDispatch(512/16, 512/16, 1 );
+    osg::ref_ptr<osg::Node> sourceNode = new osg::DispatchCompute(512/16, 512/16, 1 );
     sourceNode->setDataVariance( osg::Object::DYNAMIC );
     sourceNode->getOrCreateStateSet()->setAttributeAndModes( computeProg.get() );
     sourceNode->getOrCreateStateSet()->addUniform( new osg::Uniform("targetTex", (int)0) );

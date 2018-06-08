@@ -39,7 +39,14 @@
 #include <string>
 
 #ifndef GL_TEXTURE0
-#define GL_TEXTURE0 0x84C0
+    #define GL_TEXTURE0 0x84C0
+    #define GL_TEXTURE1 0x84C1
+    #define GL_TEXTURE2 0x84C2
+    #define GL_TEXTURE3 0x84C3
+    #define GL_TEXTURE4 0x84C4
+    #define GL_TEXTURE5 0x84C5
+    #define GL_TEXTURE6 0x84C6
+    #define GL_TEXTURE7 0x84C7
 #endif
 
 namespace osg {
@@ -171,12 +178,20 @@ class OSG_EXPORT State : public Referenced
         StateSet::UniformList& getCurrentShaderCompositionUniformList() { return _currentShaderCompositionUniformList; }
 
         /** Convenience method for StateAttribute::apply(State&) methods to pass on their uniforms to osg::State so it can apply them at the appropriate point.*/
-        void applyShaderCompositionUniform(const osg::Uniform* uniform, StateAttribute::OverrideValue value=StateAttribute::ON)
+        void applyShaderCompositionUniform(const osg::UniformBase* uniform, StateAttribute::OverrideValue value=StateAttribute::ON)
         {
             StateSet::RefUniformPair& up = _currentShaderCompositionUniformList[uniform->getName()];
-            up.first = const_cast<Uniform*>(uniform);
+            up.first = const_cast<UniformBase*>(uniform);
             up.second = value;
         }
+
+
+        /** Convenience method for StateAttribute::apply(State&) methods to pass on their defines to osg::State so it can apply them at the appropriate point.*/
+        void applyShaderCompositionDefines(const StateSet::DefineList& defineList)
+        {
+            _currentShaderCompositionDefines.insert(defineList.begin(), defineList.end());
+        }
+
 
 
         /** Push stateset onto state stack.*/
@@ -222,6 +237,20 @@ class OSG_EXPORT State : public Referenced
         }
 
 
+        void setUseStateAttributeShaders(bool flag);
+        bool getUseStateAttributeShaders() const { return _useStateAttributeShaders; }
+
+        void setUseStateAttributeFixedFunction(bool flag);
+        bool getUseStateAttributeFixedFunction() const { return _useStateAttributeFixedFunction; }
+
+        void setUseModelViewAndProjectionUniforms(bool flag);
+        bool getUseModelViewAndProjectionUniforms() const { return _useModelViewAndProjectionUniforms; }
+
+        void setUseVertexAttributeAliasing(bool flag);
+        bool getUseVertexAttributeAliasing() const { return _useVertexAttributeAliasing ; }
+
+
+
         void setInitialViewMatrix(const osg::RefMatrix* matrix);
 
         inline const osg::Matrix& getInitialViewMatrix() const { return *_initialViewMatrix; }
@@ -236,9 +265,6 @@ class OSG_EXPORT State : public Referenced
 
         const osg::Matrix& getModelViewMatrix() const { return *_modelView; }
 
-        void setUseModelViewAndProjectionUniforms(bool flag) { _useModelViewAndProjectionUniforms = flag; }
-        bool getUseModelViewAndProjectionUniforms() const { return _useModelViewAndProjectionUniforms; }
-
         void updateModelViewAndProjectionMatrixUniforms();
 
         void applyModelViewAndProjectionUniformsIfRequired();
@@ -251,9 +277,6 @@ class OSG_EXPORT State : public Referenced
 
         Polytope getViewFrustum() const;
 
-
-        void setUseVertexAttributeAliasing(bool flag) { _useVertexAttributeAliasing = flag; }
-        bool getUseVertexAttributeAliasing() const { return _useVertexAttributeAliasing ; }
 
         typedef std::vector<VertexAttribAlias> VertexAttribAliasList;
 
@@ -759,6 +782,11 @@ class OSG_EXPORT State : public Referenced
         /** Get the current texture unit.*/
         unsigned int getActiveTextureUnit() const { return _currentActiveTextureUnit; }
 
+
+        /** Set the current texture format uniform.*/
+        void setCurrentTextureFormat(GLenum format) { _textureFormat->setElement(_currentActiveTextureUnit, format); applyShaderCompositionUniform(_textureFormat.get()); }
+
+
         /** Set the current tex coord array texture unit, return true if selected,
           * false if selection failed such as when multi texturing is not supported.
           * note, only updates values that change.*/
@@ -832,11 +860,23 @@ class OSG_EXPORT State : public Referenced
         inline void setDisplaySettings(DisplaySettings* vs) { _displaySettings = vs; }
 
         /** Get the const DisplaySettings */
+        inline DisplaySettings* getDisplaySettings() { return _displaySettings.get(); }
+
+        /** Get the const DisplaySettings */
         inline const DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
+
+        /** Get the const DisplaySettings that is current active DisplaySettings to be used by osg::State, - if DisplaySettings is not directly assigned then fallback to DisplaySettings::instance(). */
+        inline DisplaySettings* getActiveDisplaySettings() { return _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance().get(); }
 
         /** Get the const DisplaySettings that is current active DisplaySettings to be used by osg::State, - if DisplaySettings is not directly assigned then fallback to DisplaySettings::instance(). */
         inline const DisplaySettings* getActiveDisplaySettings() const { return _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance().get(); }
 
+
+        /** Set the root StateSet this is applied above all StateSet that are pushed and popped during the draw traversal.*/
+        void setRootStateSet(osg::StateSet* stateset);
+
+        /** Get the root StateSet.*/
+        osg::StateSet* getRootStateSet() { return _rootStateSet.get(); }
 
 
         /** Set flag for early termination of the draw traversal.*/
@@ -914,6 +954,7 @@ class OSG_EXPORT State : public Referenced
         CheckForGLErrors getCheckForGLErrors() const { return _checkGLErrors; }
 
         bool checkGLErrors(const char* str1=0, const char* str2=0) const;
+        bool checkGLErrors(const std::string& str) const;
         bool checkGLErrors(StateAttribute::GLMode mode) const;
         bool checkGLErrors(const StateAttribute* attribute) const;
 
@@ -921,7 +962,7 @@ class OSG_EXPORT State : public Referenced
         void print(std::ostream& fout) const;
 
         /** Initialize extension used by osg::State.*/
-        void initializeExtensionProcs();
+        virtual void initializeExtensionProcs();
 
         /** Get the helper class for dispatching osg::Arrays as OpenGL attribute data.*/
         inline AttributeDispatchers& getAttributeDispatchers() { return _arrayDispatchers; }
@@ -1009,7 +1050,7 @@ class OSG_EXPORT State : public Referenced
 
         struct UniformStack
         {
-            typedef std::pair<const Uniform*,StateAttribute::OverrideValue>         UniformPair;
+            typedef std::pair<const UniformBase*, StateAttribute::OverrideValue>    UniformPair;
             typedef std::vector<UniformPair>                                        UniformVec;
 
             UniformStack() {}
@@ -1046,6 +1087,14 @@ class OSG_EXPORT State : public Referenced
 
         };
 
+        typedef std::map<std::string, GLenum>                           StringModeMap;
+        typedef std::map<GLenum, std::string>                           ModeDefineMap;
+        typedef std::vector<ModeDefineMap>                              TextureModeDefineMapList;
+
+        inline StringModeMap& getStringModeMap() { return _stringModeMap; }
+        inline TextureModeDefineMapList& getTextureModeDefineMapList() { return _textureModeDefineMapList; }
+        inline ModeDefineMap& getTextureModeDefineMap(unsigned int i) { return _textureModeDefineMapList[i]; }
+
         typedef std::map<StateAttribute::GLMode,ModeStack>              ModeMap;
         typedef std::vector<ModeMap>                                    TextureModeMapList;
 
@@ -1054,8 +1103,7 @@ class OSG_EXPORT State : public Referenced
 
         typedef std::map<std::string, UniformStack>                     UniformMap;
 
-
-        typedef std::vector< ref_ptr<const Matrix> >                     MatrixStack;
+        typedef std::vector< ref_ptr<const Matrix> >                    MatrixStack;
 
         inline const ModeMap&                                           getModeMap() const {return _modeMap;}
         inline const AttributeMap&                                      getAttributeMap() const {return _attributeMap;}
@@ -1064,9 +1112,13 @@ class OSG_EXPORT State : public Referenced
         inline const DefineMap&                                         getDefineMap() const {return _defineMap;}
         inline const TextureModeMapList&                                getTextureModeMapList() const {return _textureModeMapList;}
         inline const TextureAttributeMapList&                           getTextureAttributeMapList() const {return _textureAttributeMapList;}
+        inline StateSet::DefineList&                                    getCurrentShaderCompositionDefines() { return _currentShaderCompositionDefines; }
+        inline const StateSet::DefineList&                              getCurrentShaderCompositionDefines() const { return _currentShaderCompositionDefines; }
 
-        std::string getDefineString(const osg::ShaderDefines& shaderDefines);
-        bool supportsShaderRequirements(const osg::ShaderDefines& shaderRequirements);
+
+        void getDefineString(std::string& shaderDefineStr, const StateSet::DefineList& currentDefines, const osg::ShaderDefines& shaderDefines);
+        void getDefineString(std::string& shaderDefineStr, const osg::ShaderPragmas& shaderPragmas);
+        bool supportsShaderRequirements(const osg::ShaderPragmas& shaderPragmas);
         bool supportsShaderRequirement(const std::string& shaderRequirement);
 
     protected:
@@ -1076,6 +1128,13 @@ class OSG_EXPORT State : public Referenced
         GraphicsContext*            _graphicsContext;
         unsigned int                _contextID;
 
+        bool                        _useStateAttributeShaders;
+        bool                        _useStateAttributeFixedFunction;
+        bool                        _useModelViewAndProjectionUniforms;
+        bool                        _useVertexAttributeAliasing;
+
+        osg::ref_ptr<osg::StateSet>     _rootStateSet;
+
         osg::ref_ptr<VertexArrayState>  _globalVertexArrayState;
         VertexArrayState*               _vas;
 
@@ -1084,6 +1143,7 @@ class OSG_EXPORT State : public Referenced
         osg::ref_ptr<ShaderComposer>    _shaderComposer;
         osg::Program*                   _currentShaderCompositionProgram;
         StateSet::UniformList           _currentShaderCompositionUniformList;
+        StateSet::DefineList            _currentShaderCompositionDefines;
 
         ref_ptr<FrameStamp>         _frameStamp;
 
@@ -1096,7 +1156,7 @@ class OSG_EXPORT State : public Referenced
         ref_ptr<const RefMatrix>    _modelView;
         ref_ptr<RefMatrix>          _modelViewCache;
 
-        bool                        _useModelViewAndProjectionUniforms;
+
         ref_ptr<Uniform>            _modelViewMatrixUniform;
         ref_ptr<Uniform>            _projectionMatrixUniform;
         ref_ptr<Uniform>            _modelViewProjectionMatrixUniform;
@@ -1110,7 +1170,6 @@ class OSG_EXPORT State : public Referenced
         CheckForGLErrors            _checkGLErrors;
 
 
-        bool                        _useVertexAttributeAliasing;
         VertexAttribAlias           _vertexAlias;
         VertexAttribAlias           _normalAlias;
         VertexAttribAlias           _colorAlias;
@@ -1275,6 +1334,12 @@ class OSG_EXPORT State : public Referenced
                 return false;
         }
 
+        /** Initialize ModeDefineMaps used in fixed function modes to shader defines.  Called by initializeExtensionProcs().*/
+        virtual void initUpModeDefineMaps();
+
+        StringModeMap                                                   _stringModeMap;
+        TextureModeDefineMapList                                        _textureModeDefineMapList;
+
         ModeMap                                                         _modeMap;
         AttributeMap                                                    _attributeMap;
         UniformMap                                                      _uniformMap;
@@ -1291,11 +1356,12 @@ class OSG_EXPORT State : public Referenced
         unsigned int                                                    _maxBufferObjectPoolSize;
 
 
-        unsigned int                    _currentActiveTextureUnit;
-        unsigned int                    _currentClientActiveTextureUnit;
-        GLBufferObject*                 _currentPBO;
-        GLBufferObject*                 _currentDIBO;
-        GLuint                          _currentVAO;
+        unsigned int                                                    _currentActiveTextureUnit;
+        unsigned int                                                    _currentClientActiveTextureUnit;
+        GLBufferObject*                                                 _currentPBO;
+        GLBufferObject*                                                 _currentDIBO;
+        GLuint                                                          _currentVAO;
+        osg::ref_ptr<osg::IntArrayUniform>                              _textureFormat;
 
 
         inline ModeMap& getOrCreateTextureModeMap(unsigned int unit)

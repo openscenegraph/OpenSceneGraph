@@ -61,7 +61,7 @@ class ESRIShapeParser
 {
     public:
 
-        ESRIShapeParser( const std::string fileName, bool useDouble);
+        ESRIShapeParser( const std::string fileName, bool useDouble, bool keepSeparatePoints);
 
         osg::Geode *getGeode();
 
@@ -81,6 +81,7 @@ class ESRIShapeParser
 
         bool _valid;
         bool _useDouble;
+        bool _keepSeparatePoints;
 
         osg::ref_ptr<osg::Geode> _geode;
 

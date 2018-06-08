@@ -259,7 +259,7 @@ REGISTER_OBJECT_WRAPPER( Texture,
         ADD_USER_SERIALIZER( ImageAttachment );  // _imageAttachment
     }
     {
-        UPDATE_TO_VERSION_SCOPED( 153 )
+        UPDATE_TO_VERSION_SCOPED( 154 )
         REMOVE_SERIALIZER( ImageAttachment );
     }
     {

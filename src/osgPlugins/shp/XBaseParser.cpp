@@ -184,7 +184,7 @@ bool XBaseParser::parse(int fd)
                 char* number = new char[it->_fieldLength + 1];
                 memcpy(number, recordPtr, it->_fieldLength);
                 number[it->_fieldLength] = 0;
-                shapeAttributeList->push_back(osgSim::ShapeAttribute((const char *) it->_name, (int) atoi(number)));
+                shapeAttributeList->push_back(osgSim::ShapeAttribute((const char *) it->_name, atof(number)));
                 delete [] number;
                 break;
             }

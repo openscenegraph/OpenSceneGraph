@@ -135,15 +135,15 @@ namespace osgAnimation
         template <class V>
         inline void compute(const osg::Matrix& transform, const osg::Matrix& invTransform, const V* src, V* dst)
         {
-            // the result of matrix mult should be cached to be used for vertexes transform and normal transform and maybe other computation
+            // the result of matrix mult should be cached to be used for vertices transform and normal transform and maybe other computation
             for(VertexGroupList::iterator itvg=_uniqVertexGroupList.begin(); itvg!=_uniqVertexGroupList.end(); ++itvg)
             {
                 VertexGroup& uniq = *itvg;
                 uniq.computeMatrixForVertexSet();
                 osg::Matrix matrix =  transform * uniq.getMatrix() * invTransform;
 
-                const IndexList& vertexes = uniq.getVertices();
-                for(IndexList::const_iterator vertIDit=vertexes.begin(); vertIDit!=vertexes.end(); ++vertIDit)
+                const IndexList& vertices = uniq.getVertices();
+                for(IndexList::const_iterator vertIDit=vertices.begin(); vertIDit!=vertices.end(); ++vertIDit)
                 {
                     dst[*vertIDit] = src[*vertIDit] * matrix;
                 }
@@ -160,8 +160,8 @@ namespace osgAnimation
                 uniq.computeMatrixForVertexSet();
                 osg::Matrix matrix =  transform * uniq.getMatrix() * invTransform;
 
-                const IndexList& vertexes = uniq.getVertices();
-                for(IndexList::const_iterator vertIDit=vertexes.begin(); vertIDit!=vertexes.end(); ++vertIDit)
+                const IndexList& vertices = uniq.getVertices();
+                for(IndexList::const_iterator vertIDit=vertices.begin(); vertIDit!=vertices.end(); ++vertIDit)
                 {
                     dst[*vertIDit] = osg::Matrix::transform3x3(src[*vertIDit],matrix);
                 }

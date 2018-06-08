@@ -284,7 +284,7 @@ public:
 
         if (pointGeom->getVertexArray())
         {
-            OSG_INFO << "osgOgrFeature::multiPointToDrawable " << pointGeom->getVertexArray()->getNumElements() << " vertexes"<< std::endl;
+            OSG_INFO << "osgOgrFeature::multiPointToDrawable " << pointGeom->getVertexArray()->getNumElements() << " vertices"<< std::endl;
         }
 
         return pointGeom;
@@ -338,7 +338,7 @@ public:
 
         if (geom->getVertexArray())
         {
-            OSG_INFO << "osgOgrFeature::multiPolygonToDrawable " << geom->getVertexArray()->getNumElements() << " vertexes"<< std::endl;
+            OSG_INFO << "osgOgrFeature::multiPolygonToDrawable " << geom->getVertexArray()->getNumElements() << " vertices"<< std::endl;
         }
 
         return geom;

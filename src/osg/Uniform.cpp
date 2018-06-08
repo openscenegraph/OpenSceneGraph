@@ -22,43 +22,101 @@
 #include <osg/Program>
 #include <osg/StateSet>
 
+#include <osg/Timer>
+
 #include <limits.h>
 #include <algorithm>
 
 using namespace osg;
 
+
+
 ///////////////////////////////////////////////////////////////////////////
-// osg::Uniform
+// osg::UniformBase
 ///////////////////////////////////////////////////////////////////////////
 
-Uniform::Uniform() :
-    _type(UNDEFINED), _numElements(0), _nameID(UINT_MAX), _modifiedCount(0)
+UniformBase::UniformBase():
+    _nameID(UINT_MAX),
+    _modifiedCount(0)
 {
 }
 
-
-Uniform::Uniform( Type type, const std::string& name, int numElements ) :
-    _type(type), _numElements(0), _nameID(UINT_MAX), _modifiedCount(0)
+UniformBase::UniformBase(const std::string& name):
+    _nameID(UINT_MAX),
+    _modifiedCount(0)
 {
     setName(name);
-    setNumElements(numElements);
-    allocateDataArray();
 }
 
-Uniform::Uniform(const Uniform& uniform, const CopyOp& copyop) :
-    Object(uniform, copyop),
-    _type(uniform._type),
-    _updateCallback(copyop(uniform._updateCallback.get())),
-    _eventCallback(copyop(uniform._eventCallback.get()))
-{
-    copyData(uniform);
-}
-
-Uniform::~Uniform()
+UniformBase::UniformBase(const UniformBase& rhs, const CopyOp& copyop):
+    Object(rhs, copyop),
+    _nameID(rhs._nameID),
+    _modifiedCount(0),
+    _updateCallback(copyop(rhs._updateCallback.get())),
+    _eventCallback(copyop(rhs._eventCallback.get()))
 {
 }
 
-void Uniform::addParent(osg::StateSet* object)
+UniformBase::~UniformBase()
+{
+}
+
+int UniformBase::compare(const UniformBase&) const
+{
+    return 0;
+}
+
+int UniformBase::compareData(const UniformBase&) const
+{
+    return 0;
+}
+
+void UniformBase::setName( const std::string& name )
+{
+    if (_name==name) return;
+
+    std::string previousName = _name;
+
+    Object::setName(name);
+
+    // need to copy parents list before iterating through it as addUniform/removeUniform will modify the _parents list and invalidate the iterators.
+    ParentList parents = _parents;
+
+    for(ParentList::iterator itr = parents.begin();
+        itr != parents.end();
+        ++itr)
+    {
+        StateSet* stateset = *itr;
+
+        StateAttribute::OverrideValue overrideValue = osg::StateAttribute::ON;
+        const StateSet::RefUniformPair* rup = stateset->getUniformPair(previousName);
+        if (rup) overrideValue = rup->second;
+
+
+        stateset->addUniform(this, overrideValue);
+        stateset->removeUniform(previousName);
+    }
+
+    _nameID = Uniform::getNameID(_name);
+}
+
+void UniformBase::setName(const std::string& baseName, unsigned int unit)
+{
+    std::string name(baseName);
+    name += '[';
+    if (unit>=10)
+    {
+        unsigned int tens = (unit / 10);
+        name += char('0'+tens);
+    }
+    name += char('0'+(unit%10));
+    name += ']';
+
+    setName(name);
+}
+
+
+void UniformBase::addParent(osg::StateSet* object)
 {
     OSG_DEBUG_FP<<"Uniform Adding parent"<<std::endl;
 
@@ -67,12 +125,99 @@ void Uniform::addParent(osg::StateSet* object)
     _parents.push_back(object);
 }
 
-void Uniform::removeParent(osg::StateSet* object)
+void UniformBase::removeParent(osg::StateSet* object)
 {
     OpenThreads::ScopedPointerLock<OpenThreads::Mutex> lock(getRefMutex());
 
     ParentList::iterator pitr = std::find(_parents.begin(),_parents.end(),object);
     if (pitr!=_parents.end()) _parents.erase(pitr);
+}
+
+void UniformBase::setUpdateCallback(UniformCallback* uc)
+{
+    OSG_INFO<<"Uniform::Setting Update callbacks"<<std::endl;
+
+    if (_updateCallback==uc) return;
+
+    int delta = 0;
+    if (_updateCallback.valid()) --delta;
+    if (uc) ++delta;
+
+    _updateCallback = uc;
+
+    if (delta!=0)
+    {
+        OSG_INFO<<"Going to set Uniform parents"<<std::endl;
+
+        for(ParentList::iterator itr=_parents.begin();
+            itr!=_parents.end();
+            ++itr)
+        {
+            OSG_INFO<<"   setting Uniform parent"<<std::endl;
+            (*itr)->setNumChildrenRequiringUpdateTraversal((*itr)->getNumChildrenRequiringUpdateTraversal()+delta);
+        }
+    }
+}
+
+void UniformBase::setEventCallback(UniformCallback* ec)
+{
+    OSG_INFO<<"Uniform::Setting Event callbacks"<<std::endl;
+
+    if (_eventCallback==ec) return;
+
+    int delta = 0;
+    if (_eventCallback.valid()) --delta;
+    if (ec) ++delta;
+
+    _eventCallback = ec;
+
+    if (delta!=0)
+    {
+        for(ParentList::iterator itr=_parents.begin();
+            itr!=_parents.end();
+            ++itr)
+        {
+            (*itr)->setNumChildrenRequiringEventTraversal((*itr)->getNumChildrenRequiringEventTraversal()+delta);
+        }
+    }
+}
+
+void UniformBase::apply(const GLExtensions*, GLint) const
+{
+    OSG_NOTICE<<"Unimplemented : UniformBase::apply(const GLExtensions*, GLint)"<<std::endl;
+}
+
+
+///////////////////////////////////////////////////////////////////////////
+// osg::Uniform
+///////////////////////////////////////////////////////////////////////////
+
+Uniform::Uniform() :
+    _type(UNDEFINED),
+    _numElements(0)
+{
+}
+
+
+Uniform::Uniform( Type type, const std::string& name, int numElements ) :
+    UniformBase(name),
+    _type(type),
+    _numElements(0)
+{
+    setNumElements(numElements);
+    allocateDataArray();
+}
+
+Uniform::Uniform(const Uniform& uniform, const CopyOp& copyop) :
+    UniformBase(uniform, copyop),
+    _type(uniform._type),
+    _numElements(0)
+{
+    copyData(uniform);
+}
+
+Uniform::~Uniform()
+{
 }
 
 bool Uniform::setType( Type t )
@@ -87,17 +232,6 @@ bool Uniform::setType( Type t )
     _type = t;
     allocateDataArray();
     return true;
-}
-
-void Uniform::setName( const std::string& name )
-{
-    if( _name != "" )
-    {
-        OSG_WARN << "cannot change Uniform name" << std::endl;
-        return;
-    }
-    Object::setName(name);
-    _nameID = getNameID(_name);
 }
 
 void Uniform::setNumElements( unsigned int numElements )
@@ -280,8 +414,12 @@ bool Uniform::setArray( Int64Array* array )
 
 ///////////////////////////////////////////////////////////////////////////
 
-int Uniform::compare(const Uniform& rhs) const
+int Uniform::compare(const UniformBase& ub_rhs) const
 {
+    if (typeid(this)!=typeid(&ub_rhs)) return (this<&ub_rhs);
+
+    const Uniform& rhs = reinterpret_cast<const Uniform&>(ub_rhs);
+
     if( this == &rhs ) return 0;
 
     if( _type < rhs._type ) return -1;
@@ -296,9 +434,13 @@ int Uniform::compare(const Uniform& rhs) const
     return compareData( rhs );
 }
 
-int Uniform::compareData(const Uniform& rhs) const
+int Uniform::compareData(const UniformBase& ub_rhs) const
 {
     // caller must ensure that _type==rhs._type
+
+    if (typeid(this)!=typeid(&ub_rhs)) return (this<&ub_rhs);
+
+    const Uniform& rhs = reinterpret_cast<const Uniform&>(ub_rhs);
 
     if( _floatArray.valid() )
     {
@@ -1083,7 +1225,7 @@ OSG_INIT_SINGLETON_PROXY(UniformNameIDStaticInitializationProxy, Uniform::getNam
 // value constructors for single-element (ie: non-array) uniforms
 
 Uniform::Uniform( const char* name, float f ) :
-    _type(FLOAT), _numElements(1), _modifiedCount(0)
+    _type(FLOAT), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1091,7 +1233,7 @@ Uniform::Uniform( const char* name, float f ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Vec2& v2 ) :
-    _type(FLOAT_VEC2), _numElements(1), _modifiedCount(0)
+    _type(FLOAT_VEC2), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1099,7 +1241,7 @@ Uniform::Uniform( const char* name, const osg::Vec2& v2 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Vec3& v3 ) :
-     _type(FLOAT_VEC3), _numElements(1), _modifiedCount(0)
+     _type(FLOAT_VEC3), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1107,7 +1249,7 @@ Uniform::Uniform( const char* name, const osg::Vec3& v3 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Vec4& v4 ) :
-    _type(FLOAT_VEC4), _numElements(1), _modifiedCount(0)
+    _type(FLOAT_VEC4), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1115,7 +1257,7 @@ Uniform::Uniform( const char* name, const osg::Vec4& v4 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Matrix2& m2 ) :
-    _type(FLOAT_MAT2), _numElements(1), _modifiedCount(0)
+    _type(FLOAT_MAT2), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1123,7 +1265,7 @@ Uniform::Uniform( const char* name, const osg::Matrix2& m2 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Matrix3& m3 ) :
-    _type(FLOAT_MAT3), _numElements(1), _modifiedCount(0)
+    _type(FLOAT_MAT3), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1131,7 +1273,7 @@ Uniform::Uniform( const char* name, const osg::Matrix3& m3 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Matrixf& m4 ) :
-    _type(FLOAT_MAT4), _numElements(1), _modifiedCount(0)
+    _type(FLOAT_MAT4), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1139,7 +1281,7 @@ Uniform::Uniform( const char* name, const osg::Matrixf& m4 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Matrix2x3& m2x3 ) :
-    _type(FLOAT_MAT2x3), _numElements(1), _modifiedCount(0)
+    _type(FLOAT_MAT2x3), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1147,7 +1289,7 @@ Uniform::Uniform( const char* name, const osg::Matrix2x3& m2x3 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Matrix2x4& m2x4 ) :
-    _type(FLOAT_MAT2x4), _numElements(1), _modifiedCount(0)
+    _type(FLOAT_MAT2x4), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1155,7 +1297,7 @@ Uniform::Uniform( const char* name, const osg::Matrix2x4& m2x4 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Matrix3x2& m3x2 ) :
-    _type(FLOAT_MAT3x2), _numElements(1), _modifiedCount(0)
+    _type(FLOAT_MAT3x2), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1163,7 +1305,7 @@ Uniform::Uniform( const char* name, const osg::Matrix3x2& m3x2 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Matrix3x4& m3x4 ) :
-    _type(FLOAT_MAT3x4), _numElements(1), _modifiedCount(0)
+    _type(FLOAT_MAT3x4), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1171,7 +1313,7 @@ Uniform::Uniform( const char* name, const osg::Matrix3x4& m3x4 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Matrix4x2& m4x2 ) :
-    _type(FLOAT_MAT4x2), _numElements(1), _modifiedCount(0)
+    _type(FLOAT_MAT4x2), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1179,7 +1321,7 @@ Uniform::Uniform( const char* name, const osg::Matrix4x2& m4x2 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Matrix4x3& m4x3 ) :
-    _type(FLOAT_MAT4x3), _numElements(1), _modifiedCount(0)
+    _type(FLOAT_MAT4x3), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1187,7 +1329,7 @@ Uniform::Uniform( const char* name, const osg::Matrix4x3& m4x3 ) :
 }
 
 Uniform::Uniform( const char* name, double d ) :
-    _type(DOUBLE), _numElements(1), _modifiedCount(0)
+    _type(DOUBLE), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1195,7 +1337,7 @@ Uniform::Uniform( const char* name, double d ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Vec2d& v2 ) :
-    _type(DOUBLE_VEC2), _numElements(1), _modifiedCount(0)
+    _type(DOUBLE_VEC2), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1203,7 +1345,7 @@ Uniform::Uniform( const char* name, const osg::Vec2d& v2 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Vec3d& v3 ) :
-     _type(DOUBLE_VEC3), _numElements(1), _modifiedCount(0)
+     _type(DOUBLE_VEC3), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1211,7 +1353,7 @@ Uniform::Uniform( const char* name, const osg::Vec3d& v3 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Vec4d& v4 ) :
-    _type(DOUBLE_VEC4), _numElements(1), _modifiedCount(0)
+    _type(DOUBLE_VEC4), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1219,7 +1361,7 @@ Uniform::Uniform( const char* name, const osg::Vec4d& v4 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Matrix2d& m2 ) :
-    _type(DOUBLE_MAT2), _numElements(1), _modifiedCount(0)
+    _type(DOUBLE_MAT2), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1227,7 +1369,7 @@ Uniform::Uniform( const char* name, const osg::Matrix2d& m2 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Matrix3d& m3 ) :
-    _type(DOUBLE_MAT3), _numElements(1), _modifiedCount(0)
+    _type(DOUBLE_MAT3), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1235,7 +1377,7 @@ Uniform::Uniform( const char* name, const osg::Matrix3d& m3 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Matrixd& m4 ) :
-    _type(DOUBLE_MAT4), _numElements(1), _modifiedCount(0)
+    _type(DOUBLE_MAT4), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1243,7 +1385,7 @@ Uniform::Uniform( const char* name, const osg::Matrixd& m4 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Matrix2x3d& m2x3 ) :
-    _type(DOUBLE_MAT2x3), _numElements(1), _modifiedCount(0)
+    _type(DOUBLE_MAT2x3), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1251,7 +1393,7 @@ Uniform::Uniform( const char* name, const osg::Matrix2x3d& m2x3 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Matrix2x4d& m2x4 ) :
-    _type(DOUBLE_MAT2x4), _numElements(1), _modifiedCount(0)
+    _type(DOUBLE_MAT2x4), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1259,7 +1401,7 @@ Uniform::Uniform( const char* name, const osg::Matrix2x4d& m2x4 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Matrix3x2d& m3x2 ) :
-    _type(DOUBLE_MAT3x2), _numElements(1), _modifiedCount(0)
+    _type(DOUBLE_MAT3x2), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1267,7 +1409,7 @@ Uniform::Uniform( const char* name, const osg::Matrix3x2d& m3x2 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Matrix3x4d& m3x4 ) :
-    _type(DOUBLE_MAT3x4), _numElements(1), _modifiedCount(0)
+    _type(DOUBLE_MAT3x4), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1275,7 +1417,7 @@ Uniform::Uniform( const char* name, const osg::Matrix3x4d& m3x4 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Matrix4x2d& m4x2 ) :
-    _type(DOUBLE_MAT4x2), _numElements(1), _modifiedCount(0)
+    _type(DOUBLE_MAT4x2), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1283,7 +1425,7 @@ Uniform::Uniform( const char* name, const osg::Matrix4x2d& m4x2 ) :
 }
 
 Uniform::Uniform( const char* name, const osg::Matrix4x3d& m4x3 ) :
-    _type(DOUBLE_MAT4x3), _numElements(1), _modifiedCount(0)
+    _type(DOUBLE_MAT4x3), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1291,7 +1433,7 @@ Uniform::Uniform( const char* name, const osg::Matrix4x3d& m4x3 ) :
 }
 
 Uniform::Uniform( const char* name, int i ) :
-    _type(INT), _numElements(1), _modifiedCount(0)
+    _type(INT), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1299,7 +1441,7 @@ Uniform::Uniform( const char* name, int i ) :
 }
 
 Uniform::Uniform( const char* name, int i0, int i1 ) :
-    _type(INT_VEC2), _numElements(1), _modifiedCount(0)
+    _type(INT_VEC2), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1307,7 +1449,7 @@ Uniform::Uniform( const char* name, int i0, int i1 ) :
 }
 
 Uniform::Uniform( const char* name, int i0, int i1, int i2 ) :
-    _type(INT_VEC3), _numElements(1), _modifiedCount(0)
+    _type(INT_VEC3), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1315,7 +1457,7 @@ Uniform::Uniform( const char* name, int i0, int i1, int i2 ) :
 }
 
 Uniform::Uniform( const char* name, int i0, int i1, int i2, int i3 ) :
-    _type(INT_VEC4), _numElements(1), _modifiedCount(0)
+    _type(INT_VEC4), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1323,7 +1465,7 @@ Uniform::Uniform( const char* name, int i0, int i1, int i2, int i3 ) :
 }
 
 Uniform::Uniform( const char* name, unsigned int ui ) :
-    _type(UNSIGNED_INT), _numElements(1), _modifiedCount(0)
+    _type(UNSIGNED_INT), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1331,7 +1473,7 @@ Uniform::Uniform( const char* name, unsigned int ui ) :
 }
 
 Uniform::Uniform( const char* name, unsigned int ui0, unsigned int ui1 ) :
-    _type(UNSIGNED_INT_VEC2), _numElements(1), _modifiedCount(0)
+    _type(UNSIGNED_INT_VEC2), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1339,7 +1481,7 @@ Uniform::Uniform( const char* name, unsigned int ui0, unsigned int ui1 ) :
 }
 
 Uniform::Uniform( const char* name, unsigned int ui0, unsigned int ui1, unsigned int ui2 ) :
-    _type(UNSIGNED_INT_VEC3), _numElements(1), _modifiedCount(0)
+    _type(UNSIGNED_INT_VEC3), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1347,7 +1489,7 @@ Uniform::Uniform( const char* name, unsigned int ui0, unsigned int ui1, unsigned
 }
 
 Uniform::Uniform( const char* name, unsigned int ui0, unsigned int ui1, unsigned int ui2, unsigned int ui3 ) :
-    _type(UNSIGNED_INT_VEC4), _numElements(1), _modifiedCount(0)
+    _type(UNSIGNED_INT_VEC4), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1355,7 +1497,7 @@ Uniform::Uniform( const char* name, unsigned int ui0, unsigned int ui1, unsigned
 }
 
 Uniform::Uniform( const char* name, bool b ) :
-    _type(BOOL), _numElements(1), _modifiedCount(0)
+    _type(BOOL), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1363,7 +1505,7 @@ Uniform::Uniform( const char* name, bool b ) :
 }
 
 Uniform::Uniform( const char* name, bool b0, bool b1 ) :
-     _type(BOOL_VEC2), _numElements(1), _modifiedCount(0)
+     _type(BOOL_VEC2), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1371,7 +1513,7 @@ Uniform::Uniform( const char* name, bool b0, bool b1 ) :
 }
 
 Uniform::Uniform( const char* name, bool b0, bool b1, bool b2 ) :
-    _type(BOOL_VEC3), _numElements(1), _modifiedCount(0)
+    _type(BOOL_VEC3), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -1379,7 +1521,7 @@ Uniform::Uniform( const char* name, bool b0, bool b1, bool b2 ) :
 }
 
 Uniform::Uniform( const char* name, bool b0, bool b1, bool b2, bool b3 ) :
-    _type(BOOL_VEC4), _numElements(1), _modifiedCount(0)
+    _type(BOOL_VEC4), _numElements(1)
 {
     setName(name);
     allocateDataArray();
@@ -2602,16 +2744,13 @@ bool Uniform::getElement( unsigned int index, bool& b0, bool& b1, bool& b2, bool
     return true;
 }
 
-unsigned int Uniform::getNameID() const
-{
-    return _nameID;
-}
-
 ///////////////////////////////////////////////////////////////////////////
 
 void Uniform::apply(const GLExtensions* ext, GLint location) const
 {
     // OSG_NOTICE << "uniform at "<<location<<" "<<_name<< std::endl;
+
+    osg::ElapsedTime timer;
 
     GLsizei num = getNumElements();
     if( num < 1 ) return;
@@ -2770,55 +2909,6 @@ void Uniform::apply(const GLExtensions* ext, GLint location) const
     default:
         OSG_FATAL << "how got here? " __FILE__ ":" << __LINE__ << std::endl;
         break;
-    }
-}
-
-void Uniform::setUpdateCallback(UniformCallback* uc)
-{
-    OSG_INFO<<"Uniform::Setting Update callbacks"<<std::endl;
-
-    if (_updateCallback==uc) return;
-
-    int delta = 0;
-    if (_updateCallback.valid()) --delta;
-    if (uc) ++delta;
-
-    _updateCallback = uc;
-
-    if (delta!=0)
-    {
-        OSG_INFO<<"Going to set Uniform parents"<<std::endl;
-
-        for(ParentList::iterator itr=_parents.begin();
-            itr!=_parents.end();
-            ++itr)
-        {
-            OSG_INFO<<"   setting Uniform parent"<<std::endl;
-            (*itr)->setNumChildrenRequiringUpdateTraversal((*itr)->getNumChildrenRequiringUpdateTraversal()+delta);
-        }
-    }
-}
-
-void Uniform::setEventCallback(UniformCallback* ec)
-{
-    OSG_INFO<<"Uniform::Setting Event callbacks"<<std::endl;
-
-    if (_eventCallback==ec) return;
-
-    int delta = 0;
-    if (_eventCallback.valid()) --delta;
-    if (ec) ++delta;
-
-    _eventCallback = ec;
-
-    if (delta!=0)
-    {
-        for(ParentList::iterator itr=_parents.begin();
-            itr!=_parents.end();
-            ++itr)
-        {
-            (*itr)->setNumChildrenRequiringEventTraversal((*itr)->getNumChildrenRequiringEventTraversal()+delta);
-        }
     }
 }
 

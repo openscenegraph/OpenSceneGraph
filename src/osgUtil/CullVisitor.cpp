@@ -48,9 +48,9 @@ CullVisitor::CullVisitor():
     osg::NodeVisitor(CULL_VISITOR,TRAVERSE_ACTIVE_CHILDREN),
     _currentStateGraph(NULL),
     _currentRenderBin(NULL),
-    _traversalNumber(0),
     _computed_znear(FLT_MAX),
     _computed_zfar(-FLT_MAX),
+    _traversalOrderNumber(0),
     _currentReuseRenderLeafIndex(0),
     _numberOfEncloseOverrideRenderBinDetails(0)
 {
@@ -63,9 +63,9 @@ CullVisitor::CullVisitor(const CullVisitor& rhs):
     CullStack(rhs),
     _currentStateGraph(NULL),
     _currentRenderBin(NULL),
-    _traversalNumber(0),
     _computed_znear(FLT_MAX),
     _computed_zfar(-FLT_MAX),
+    _traversalOrderNumber(0),
     _currentReuseRenderLeafIndex(0),
     _numberOfEncloseOverrideRenderBinDetails(0),
     _identifier(rhs._identifier)
@@ -103,8 +103,8 @@ void CullVisitor::reset()
 
     _numberOfEncloseOverrideRenderBinDetails = 0;
 
-    // reset the traversal number
-    _traversalNumber = 0;
+    // reset the traversal order number
+    _traversalOrderNumber = 0;
 
     // reset the calculated near far planes.
     _computed_znear = FLT_MAX;
@@ -1574,8 +1574,6 @@ void CullVisitor::apply(osg::Camera& camera)
         // will do later.
         osgUtil::RenderStage* previous_stage = getCurrentRenderBin()->getStage();
 
-//        unsigned int contextID = getState() ? getState()->getContextID() : 0;
-
         // use render to texture stage.
         // create the render to texture stage.
         osg::ref_ptr<osgUtil::RenderStageCache> rsCache = dynamic_cast<osgUtil::RenderStageCache*>(camera.getRenderingCache());
@@ -1619,6 +1617,49 @@ void CullVisitor::apply(osg::Camera& camera)
         {
             // reusing render to texture stage, so need to reset it to empty it from previous frames contents.
             rtts->reset();
+        }
+
+        // cache the StateGraph and replace with a clone of the existing parental chain.
+        osg::ref_ptr<StateGraph> previous_rootStateGraph = _rootStateGraph;
+        StateGraph* previous_currentStateGraph = _currentStateGraph;
+
+        // replicate the StageGraph parental chain so that state graph and render leaves are kept local to the Camera's RenderStage.
+        {
+            typedef std::vector< osg::ref_ptr<StateGraph> > StageGraphStack;
+            StageGraphStack stateGraphParentalChain;
+            StateGraph* sg = _currentStateGraph;
+            while(sg)
+            {
+                stateGraphParentalChain.push_back(sg);
+                sg = sg->_parent;
+            }
+
+            _rootStateGraph = rtts->getStateGraph();
+            if (_rootStateGraph)
+            {
+                _rootStateGraph->clean();
+            }
+            else
+            {
+                _rootStateGraph = new StateGraph;
+
+                // assign the state graph to the RenderStage to ensure it remains in memory for the draw traversal.
+                rtts->setStateGraph(_rootStateGraph.get());
+            }
+            _currentStateGraph = _rootStateGraph.get();
+
+            StageGraphStack::reverse_iterator ritr = stateGraphParentalChain.rbegin();
+
+            if (ritr!=stateGraphParentalChain.rend())
+            {
+                const osg::StateSet* ss = (*ritr++)->getStateSet();
+                _rootStateGraph->setStateSet(ss);
+
+                while(ritr != stateGraphParentalChain.rend())
+                {
+                    _currentStateGraph = _currentStateGraph->find_or_insert((*ritr++)->getStateSet());
+                }
+            }
         }
 
         // set up clear masks/values
@@ -1667,6 +1708,12 @@ void CullVisitor::apply(osg::Camera& camera)
             // getting to this point means that all the subgraph has been
             // culled by small feature culling or is beyond LOD ranges.
         }
+
+
+        // restore cache of the StateGraph
+        _rootStateGraph->prune();
+        _rootStateGraph = previous_rootStateGraph;
+        _currentStateGraph = previous_currentStateGraph;
 
 
         // and the render to texture stage to the current stages

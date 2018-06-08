@@ -1,8 +1,61 @@
 OSG News
 ========
 
+OpenSceneGraph 3.6 release
+PERTHSHIRE, Scotland - 7th April 2018 - OpenSceneGraph Professional Services announces the release of OpenSceneGraph 3.6.0, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. The OpenSceneGraph is written entirely in Standard C++ and built upon OpenGL (1.2 to 4.6) and OpenGL ES (1.0 to 3.0), and offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modelling markets. OpenSceneGraph 3.6 runs on all Microsoft Windows platforms, Apple OS/X, iOS, GNU/Linux, Android, Solaris, HP-UX, AIX and FreeBSD operating systems.
+
+Updates include:
+
+  * OpenThreads::Affinity introduced to enable setting of processor affinity on viewer and database threads
+  * osgText rewritten to improve visual quality, add signed distance field support and full GLES2/3 and GL3/4 support
+  * Added VertexArrayObject support, enable full OpenGL Core Profile support under OSX.
+  * Added OpenCASCADE plugin
+  * Added STEP (.stp) plugin
+  * Improvements to FBX and COLLADA loaders
+  * Improvements to gles plugin to provide better Sketchfab support
+  * Added osgemscripten example
+  * Improvements to osgAnimation
+  * NodeVisitor ValueMap for storing values that can be stored and accessed across frames, such as update, event and cull traversals
+  * ShapeDrawable rewritten as an osg::Geometry to improve performance and flexibility
+  * Added osg::MultiDrawArrays support
+  * Added osgdeferred example that illustrates how to implement deferred rendering
+  * Added MultiDrawIndirect support
+  * Moved glDispatchCompute control out of osg::Program into a dedicated osg::DispatchCompute class to improve control of compute shaders
+  * KdTree support added for PolytopeIntersector, and ability to work with points, lines and polygons
+  * osgQt has been moved out to it's own dedicated osgQt github repository
+  * CMake build support for iOS bitcode builds
+  * CoverityScan testing introduced, fixes bring defect density to 0.0 per 1,0000 lines of code!
+  * Support for Codedoc automated documentation
+  * Support for Travis automated build system
+
+
+Downloads and Licensing:
+
+OpenSceneGraph is open-source, so full source code is provided, and can be copied, modified and used free of charge for commercial and non-commercial use. Access to the source allows end users greater flexibility in how they develop, debug and deploy their applications. They gain productivity and freedom by being able to leverage the tool chain in accordance with their own release cycles. Downloads of binaries and source can be found at http://www.openscenegraph.org/index.php/download-section/stable-releases and at our github repository https://github.com/openscenegraph/OpenSceneGraph/.
+
+OpenSceneGraph is released under the OpenSceneGraph Public License, which is based on the Lesser GNU Public License (LGPL), permitting the software to be used free of charge across the full spectrum of commercial and open-source applications. Furthermore, it allows both static and dynamic linking of the OpenSceneGraph libraries without restricting the licensing of the user's software. Further details http://www.openscenegraph.org/index.php/about/licensing
+
+
+Professional support and services:
+
+OpenSceneGraph project is backed up with professional services by OpenSceneGraph Professional Services, based in Scotland, and a range of Contractors from around the world http://www.openscenegraph.org/index.php/support/professional-support. For enquires email robert@openscenegraph.com. Services available include:
+
+    Confidential Professional Support
+    Bespoke development
+    Consultancy
+    Training
+
+
+Community support and contributions:
+
+The diverse and growing community of over 5000 developers is centred around the public osg-users mailing list/forum, where members discuss how best to use OpenSceneGraph, provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists.
+
+The OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the 568 individuals from around the world that have directly contributed to the development and refinement of the OpenSceneGraph code base.
+
+
+
 OpenSceneGraph 3.4 release introduces shader composition, new osgUI library, displacement mapping, volume rendering, lua scripting support and much more
-PERTHSHIRE, Scotland - 12th August 2015 - OpenSceneGraph Professional Services announces the release of OpenSceneGraph 3.4, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. OpenSceneGraph 3.4 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. OpenSceneGraph 3.4 runs on all Microsoft Windows platforms, Apple OS/X, IOS, GNU/Linux, Android, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
+PERTHSHIRE, Scotland - 12th August 2015 - OpenSceneGraph Professional Services announces the release of OpenSceneGraph 3.4, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. OpenSceneGraph 3.4 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modelling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. OpenSceneGraph 3.4 runs on all Microsoft Windows platforms, Apple OS/X, iOS, GNU/Linux, Android, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
 Updates include:
 
   * New #pragma(tic) composition shader functionality built into the core OSG that provides a easy to use yet flexible scheme for controlling and composing shaders at runtime levering GLSL support for #define and #pragma.
@@ -39,7 +92,7 @@ The OpenSceneGraph project owes a great deal to the community for its developmen
 
 = !OpenSceneGraph 3.2 release improves support iOS and Android, supports a range of new OpenGL features much more.
 
-PERTHSHIRE, Scotland - 24th July 2013 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 3.2, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 3.2 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 3.2 runs on all Microsoft Windows platforms, Apple OS/X, IOS, GNU/Linux, Android, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
+PERTHSHIRE, Scotland - 24th July 2013 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 3.2, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 3.2 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modelling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 3.2 runs on all Microsoft Windows platforms, Apple OS/X, iOS, GNU/Linux, Android, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
 
 === Open-source development delivers industry-leading features and performance ===
 The !OpenSceneGraph 3.2 release is the culmination of 14 years of work by the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs in both the desktop and mobile space.
@@ -90,7 +143,7 @@ The !OpenSceneGraph project owes a great deal to the community for its developme
 
 = !OpenSceneGraph 3.0 release adds support OpenGL ES 1.1, OpenGL ES 2.0, OpenGL 3.x to 4.0, support for Andoid and IOS platforms and much more.
 
-PERTHSHIRE, Scotland - 28th June 2011 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 3.0, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 3.0 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 3.0 runs on all Microsoft Windows platforms, Apple OS/X, IOS, GNU/Linux, Android, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
+PERTHSHIRE, Scotland - 28th June 2011 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 3.0, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 3.0 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modelling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 3.0 runs on all Microsoft Windows platforms, Apple OS/X, iOS, GNU/Linux, Android, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
 
 === Open-source development delivers industry-leading features and performance ===
 The !OpenSceneGraph 3.0 release is the culmination of 12 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs.
@@ -145,7 +198,7 @@ The !OpenSceneGraph project owes a great deal to the community for its developme
 
 = !OpenSceneGraph 2.8 release adds osgAnimation and osgVolume libraries, DICOM support, LispSM shadowing and much more. =
 
-PERTHSHIRE, Scotland - 12th February 2009 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.8, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.8 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.8 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
+PERTHSHIRE, Scotland - 12th February 2009 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.8, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.8 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modelling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.8 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
 
 === Open-source development delivers industry-leading features and performance ===
 The !OpenSceneGraph 2.8 release is the culmination of 10 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs.
@@ -216,7 +269,7 @@ About !OpenSceneGraph Professional Services:[[BR]]
 
 = !OpenSceneGraph 2.6 release adds osgWidget library, KdTree intersections, Anti-aliased FBOsand much more. =
 
-PERTHSHIRE, Scotland - 5th August 2008 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.6, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.6 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.6 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
+PERTHSHIRE, Scotland - 5th August 2008 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.6, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.6 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modelling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.6 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
 
 === Open-source development delivers industry-leading features and performance ===
 The !OpenSceneGraph 2.6 release is the culmination of 9 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs.
@@ -285,7 +338,7 @@ About !OpenSceneGraph Professional Services:[[BR]]
 
 = !OpenSceneGraph 2.4 release adds geometry shaders, multiple render targets, support for terrabyte scale terrain databases, writing to !OpenFlight and much more. =
 
-PERTHSHIRE, Scotland - 25th April 2008 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.4, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.4 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.4 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
+PERTHSHIRE, Scotland - 25th April 2008 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.4, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.4 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modelling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.4 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
 
 === Open-source development delivers industry-leading features and performance ===
 The !OpenSceneGraph 2.4 release is the culmination of 9 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs.
@@ -341,7 +394,7 @@ About !OpenSceneGraph Professional Services:[[BR]]
 
 = OpenSceneGraph 2.2 release adds support for advanced displays, soft and parallel split shadow maps and easier builds =
 
-PERTHSHIRE, Scotland - 4th October 2007  - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.2, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.2 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.2 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and !FreeBSD operating systems.
+PERTHSHIRE, Scotland - 4th October 2007  - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.2, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.2 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modelling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.2 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and !FreeBSD operating systems.
 
 === Open-source development delivers industry-leading features and performance ===
 The !OpenSceneGraph 2.2 release is the culmination of 8 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs.
@@ -398,7 +451,7 @@ About !OpenSceneGraph Professional Services:[[BR]]
 
 !!![=OpenSceneGraph=] 2.0 release improves ease-of-use and scalability, introducing new osgViewer, osgShadow and osgManipulator libraries, new build system, improved multi-core, multi-GPU support.
 
-PERTHSHIRE, Scotland - 15th June 2007  - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 2.0, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 2.0, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets a real-time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 2.0 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and [=FreeBSD=] operating systems.
+PERTHSHIRE, Scotland - 15th June 2007  - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 2.0, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 2.0, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modelling markets a real-time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 2.0 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and [=FreeBSD=] operating systems.
 
 !!!Open-source development delivers industry-leading features and performance
 The [=OpenSceneGraph=] 2.0 release is the culmination of 8 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs.
@@ -456,7 +509,7 @@ Project Lead and Proprietor [=OpenSceneGraph=] Professional Services
 
 !!![=OpenSceneGraph=] 1.2 release introduces Windows 64bit and AIX support, COLLADA support, processor affinity and texture atlas builder.
 
-PERTHSHIRE, Scotland - 12th September 2006  - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 1.2, the industry's leading open source scene graph technology, designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 1.2, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets a real time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 1.2 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and [=FreeBSD=] operating systems.
+PERTHSHIRE, Scotland - 12th September 2006  - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 1.2, the industry's leading open source scene graph technology, designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 1.2, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modelling markets a real time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 1.2 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and [=FreeBSD=] operating systems.
 
 The [=OpenSceneGraph=]-1.2 release introduces:
 
@@ -481,7 +534,7 @@ Project Lead and Proprietor [=OpenSceneGraph=] Professional Services
 !!!OpenSceneGraph 1.1 release introduces peformance and scalability improvements, full OpenGL Shading Language support and new OpenFlight 16.1, TerrPagea2.2 and Quake3 loaders.
 
 AYRSHIRE, Scotland - July 19th 2006  - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 1.1,
-the industry's leading open-source graphics library with [=OpenGL=] 2.0 and [=OpenGL=] Shading Language support. [=OpenSceneGraph=] is designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 1.1, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets a real time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 1.1 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris and [=FreeBSD=] operating systems.
+the industry's leading open-source graphics library with [=OpenGL=] 2.0 and [=OpenGL=] Shading Language support. [=OpenSceneGraph=] is designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 1.1, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modelling markets a real time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 1.1 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris and [=FreeBSD=] operating systems.
 
 The OpenSceneGraph-1.1 release introduces:
 
@@ -508,7 +561,7 @@ Project Lead and Proprietor [=OpenSceneGraph=] Professional Services
 
 !!!High performance open-source graphics toolkit [=OpenSceneGraph=] hits 1.0!
 
-AYRSHIRE, Scotland - December 9th, 2005 - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 1.0, the industry's leading open-source graphics library with [=OpenGL=] 2.0 and [=OpenGL=] Shading Language support. [=OpenSceneGraph=] is designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 1.0, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets a real time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 1.0 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris and [=FreeBSD=] operating systems.
+AYRSHIRE, Scotland - December 9th, 2005 - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 1.0, the industry's leading open-source graphics library with [=OpenGL=] 2.0 and [=OpenGL=] Shading Language support. [=OpenSceneGraph=] is designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 1.0, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modelling markets a real time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 1.0 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris and [=FreeBSD=] operating systems.
 
 ->''"3Dlabs congratulates the [=OpenSceneGraph=] development community on the release of [=OpenSceneGraph=] 1.0. [=OpenSceneGraph=] is a shining example of how open-source projects can deliver commercial-quality products with outstanding performance and a ton of cutting-edge features. 3Dlabs committed engineering resources to [=OpenSceneGraph=] to help implement full support of programmable shader technology through [=OpenGL=] Shading Language. It is gratifying to see the excitement that developers have for this important cross-platform, real-time visualization library."'''\\
 Randi Rost, director of developer relations at 3Dlabs, http://developer.3Dlabs.com/

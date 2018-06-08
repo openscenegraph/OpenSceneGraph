@@ -222,7 +222,7 @@ Quat Matrix_implementation::getRotate() const
     QZ = 0.5 * sqrt( osg::maximum( 0.0, 1.0 - _mat[0][0] - _mat[1][1] + _mat[2][2] ) );
 
 #if 0
-    // Robert Osfield, June 7th 2007, arggg this new implementation produces many many errors, so have to revert to sign(..) orignal below.
+    // Robert Osfield, June 7th 2007, arggg this new implementation produces many many errors, so have to revert to sign(..) original below.
     QX = QX * osg::signOrZero(  _mat[1][2] - _mat[2][1]) ;
     QY = QY * osg::signOrZero(  _mat[2][0] - _mat[0][2]) ;
     QZ = QZ * osg::signOrZero(  _mat[0][1] - _mat[1][0]) ;

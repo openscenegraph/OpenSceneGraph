@@ -354,10 +354,10 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         RenderBin*                _currentRenderBin;
         std::vector<RenderBin*>   _renderBinStack;
 
-        unsigned int             _traversalNumber;
+        value_type                _computed_znear;
+        value_type                _computed_zfar;
 
-        value_type               _computed_znear;
-        value_type               _computed_zfar;
+        unsigned int              _traversalOrderNumber;
 
 
         typedef std::vector< osg::ref_ptr<RenderLeaf> > RenderLeafList;
@@ -466,7 +466,7 @@ inline RenderLeaf* CullVisitor::createOrReuseRenderLeaf(osg::Drawable* drawable,
     while (_currentReuseRenderLeafIndex<_reuseRenderLeafList.size() &&
            _reuseRenderLeafList[_currentReuseRenderLeafIndex]->referenceCount()>1)
     {
-        osg::notify(osg::NOTICE)<<"Warning:createOrReuseRenderLeaf() skipping multiply refrenced entry."<< std::endl;
+        osg::notify(osg::INFO)<<"CullVisitor:createOrReuseRenderLeaf() skipping multiply referenced entry. _reuseRenderLeafList.size()="<< _reuseRenderLeafList.size()<<" _reuseRenderLeafList["<<_currentReuseRenderLeafIndex<<"]->referenceCount()="<<_reuseRenderLeafList[_currentReuseRenderLeafIndex]->referenceCount()<<std::endl;
         ++_currentReuseRenderLeafIndex;
     }
 
@@ -474,19 +474,19 @@ inline RenderLeaf* CullVisitor::createOrReuseRenderLeaf(osg::Drawable* drawable,
     if (_currentReuseRenderLeafIndex<_reuseRenderLeafList.size())
     {
         RenderLeaf* renderleaf = _reuseRenderLeafList[_currentReuseRenderLeafIndex++].get();
-        renderleaf->set(drawable,projection,matrix,depth,_traversalNumber++);
+        renderleaf->set(drawable,projection,matrix,depth,_traversalOrderNumber++);
         return renderleaf;
     }
 
+
     // Otherwise need to create new renderleaf.
-    RenderLeaf* renderleaf = new RenderLeaf(drawable,projection,matrix,depth,_traversalNumber++);
+    RenderLeaf* renderleaf = new RenderLeaf(drawable,projection,matrix,depth,_traversalOrderNumber++);
     _reuseRenderLeafList.push_back(renderleaf);
+
     ++_currentReuseRenderLeafIndex;
     return renderleaf;
 }
 
-
 }
 
 #endif
-

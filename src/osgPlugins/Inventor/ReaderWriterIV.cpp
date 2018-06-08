@@ -66,7 +66,7 @@ void ReaderWriterIV::initInventor() const
     // Disable delayed loading of VRML textures
     SoVRMLImageTexture::setDelayFetchURL(FALSE);
 
-    // initialize convertor
+    // initialize converter
     ConvertFromInventor::init();
 #endif
 }
@@ -226,7 +226,7 @@ ReaderWriterIV::readNode(std::istream& fin,
     // about it and think how to stream textures instead.
 
     // Get the data to the buffer
-    size_t bufSize = 126*1024; // let's make it something bellow 128KB
+    size_t bufSize = 126*1024; // let's make it something below 128KB
     char *buf = (char*)malloc(bufSize);
     size_t dataSize = 0;
     while (!fin.eof() && fin.good()) {

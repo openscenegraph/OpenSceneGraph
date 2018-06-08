@@ -494,7 +494,7 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
     QueryGeometry* qg = static_cast< QueryGeometry* >( _queryGeode->getDrawable( 0 ) );
 
     // Get the near plane for the upcoming distance calculation.
-    float nearPlane;
+    osg::Matrix::value_type nearPlane;
     const osg::Matrix& proj( camera->getProjectionMatrix() );
     if( ( proj(3,3) != 1. ) || ( proj(2,3) != 0. ) || ( proj(1,3) != 0. ) || ( proj(0,3) != 0.) )
         nearPlane = proj(3,2) / (proj(2,2)-1.);  // frustum / perspective
@@ -505,10 +505,10 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
     //   the results. Otherwise (near plane inside the BS shell) we are considered
     //   to have passed and don't need to retrieve the query.
     const osg::BoundingSphere& bs = getBound();
-    float distanceToEyePoint = nv.getDistanceToEyePoint( bs._center, false );
+    osg::Matrix::value_type distanceToEyePoint = nv.getDistanceToEyePoint( bs._center, false );
 
-    float distance = distanceToEyePoint - nearPlane - bs._radius;
-    _passed = ( distance <= 0.f );
+    osg::Matrix::value_type distance = distanceToEyePoint - nearPlane - bs._radius;
+    _passed = ( distance <= 0.0 );
     if (!_passed)
     {
         int result = qg->getNumPixels( camera );

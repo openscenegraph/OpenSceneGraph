@@ -83,7 +83,7 @@ public:
 
     virtual void deleteAllGLObjects()
     {
-         OSG_INFO<<"VertexArrayStateManager::deleteAllGLObjects() Not currently implementated"<<std::endl;
+         OSG_INFO<<"VertexArrayStateManager::deleteAllGLObjects() Not currently implemented"<<std::endl;
     }
 
     virtual void discardAllGLObjects()
@@ -568,7 +568,7 @@ void VertexArrayState::assignVertexArrayDispatcher()
 #endif
     {
         if (_vertexArray.valid()) return;
-        VAS_NOTICE<<"VertexArrayState::assignNormalArrayDispatcher() _state->getVertexAlias()._location="<<_state->getVertexAlias()._location<<std::endl;
+        VAS_NOTICE<<"VertexArrayState::assignVertexArrayDispatcher() _state->getVertexAlias()._location="<<_state->getVertexAlias()._location<<std::endl;
         _vertexArray = new VertexAttribArrayDispatch(_state->getVertexAlias()._location);
     }
 }

@@ -3705,7 +3705,7 @@ int unzOpenCurrentFile (unzFile file, const char *password)
 //  Read bytes from the current file.
 //  buf contain buffer where data must be copied
 //  len the size of buf.
-//  return the number of byte copied if somes bytes are copied (and also sets *reached_eof)
+//  return the number of byte copied if some bytes are copied (and also sets *reached_eof)
 //  return 0 if the end of file was reached. (and also sets *reached_eof).
 //  return <0 with error code if there is an error. (in which case *reached_eof is meaningless)
 //    (UNZ_ERRNO for IO error, or zLib error for uncompress error)

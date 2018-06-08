@@ -136,6 +136,14 @@ class OSG_EXPORT Object : public Referenced
         virtual Uniform* asUniform() { return 0; }
 
         /** convert 'const this' into a const Uniform pointer if Object is a Uniform, otherwise return 0.
+          * Equivalent to dynamic_cast<const UniformBase*>(this).*/
+        virtual const UniformBase* asUniformBase() const { return 0; }
+
+        /** Convert 'this' into a Uniform pointer if Object is a Uniform, otherwise return 0.
+          * Equivalent to dynamic_cast<UniformBase*>(this).*/
+        virtual UniformBase* asUniformBase() { return 0; }
+
+        /** convert 'const this' into a const Uniform pointer if Object is a Uniform, otherwise return 0.
           * Equivalent to dynamic_cast<const Uniform*>(this).*/
         virtual const Uniform* asUniform() const { return 0; }
 

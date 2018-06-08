@@ -26,6 +26,7 @@ class StateSet;
 class StateAttribute;
 class StateAttributeCallback;
 class Uniform;
+class UniformBase;
 class UniformCallback;
 class Node;
 class Drawable;
@@ -80,7 +81,8 @@ class OSG_EXPORT CopyOp
         virtual Array*          operator() (const Array* array) const;
         virtual PrimitiveSet*   operator() (const PrimitiveSet* primitives) const;
         virtual Shape*          operator() (const Shape* shape) const;
-        virtual Uniform*        operator() (const Uniform* shape) const;
+        virtual UniformBase*    operator() (const UniformBase* uniform) const;
+        virtual Uniform*        operator() (const Uniform* uniform) const;
         virtual Callback*       operator() (const Callback* nodecallback) const;
         virtual StateAttributeCallback* operator() (const StateAttributeCallback* stateattributecallback) const;
         virtual UniformCallback*        operator() (const UniformCallback* uniformcallback) const;

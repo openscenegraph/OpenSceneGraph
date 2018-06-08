@@ -2277,42 +2277,7 @@ public:
 
 };
 
-#if 1
-
 REGISTER_WINDOWINGSYSTEMINTERFACE(X11, X11WindowingSystemInterface)
-
-
-#else
-struct RegisterWindowingSystemInterfaceProxy
-{
-    RegisterWindowingSystemInterfaceProxy()
-    {
-        OSG_INFO<<"RegisterWindowingSystemInterfaceProxy()"<<std::endl;
-        osg::GraphicsContext::setWindowingSystemInterface(new X11WindowingSystemInterface);
-    }
-
-    ~RegisterWindowingSystemInterfaceProxy()
-    {
-        OSG_INFO<<"~RegisterWindowingSystemInterfaceProxy()"<<std::endl;
-
-        if (osg::Referenced::getDeleteHandler())
-        {
-            osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(0);
-            osg::Referenced::getDeleteHandler()->flushAll();
-        }
-
-        osg::GraphicsContext::setWindowingSystemInterface(0);
-
-    }
-};
-RegisterWindowingSystemInterfaceProxy createWindowingSystemInterfaceProxy;
-
-// declare C entry point for static compilation.
-extern "C" void graphicswindow_X11(void)
-{
-    osg::GraphicsContext::setWindowingSystemInterface(new X11WindowingSystemInterface);
-}
-#endif
 
 void GraphicsWindowX11::raiseWindow()
 {

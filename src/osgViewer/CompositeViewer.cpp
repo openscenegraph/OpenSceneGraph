@@ -1006,18 +1006,24 @@ void CompositeViewer::eventTraversal()
             EVENT_FOR_ALL_VIEWS
         };
 
-        EventClassification classifaction = EVENT_FOR_ALL_VIEWS;
+        EventClassification classification = EVENT_FOR_ALL_VIEWS;
 
         switch(event->getEventType())
         {
             case(osgGA::GUIEventAdapter::CLOSE_WINDOW):
             case(osgGA::GUIEventAdapter::RESIZE):
-                classifaction = EVENT_FOR_VIEWS_ASSOCIATED_WITH_WINDOW;
+                classification = EVENT_FOR_VIEWS_ASSOCIATED_WITH_WINDOW;
                 break;
 
             case(osgGA::GUIEventAdapter::QUIT_APPLICATION):
             case(osgGA::GUIEventAdapter::USER):
-                classifaction = EVENT_FOR_ALL_VIEWS;
+                classification = EVENT_FOR_ALL_VIEWS;
+                break;
+
+            case(osgGA::GUIEventAdapter::KEYDOWN):
+            case(osgGA::GUIEventAdapter::KEYUP):
+                classification = EVENT_FOR_VIEW_ASSOCIATED_WITH_FOCUS;
+                if (_previousEvent.valid()) event->copyPointerDataFrom(*_previousEvent);
                 break;
 
             case(osgGA::GUIEventAdapter::PUSH):
@@ -1025,6 +1031,7 @@ void CompositeViewer::eventTraversal()
             case(osgGA::GUIEventAdapter::DOUBLECLICK):
             case(osgGA::GUIEventAdapter::MOVE):
             case(osgGA::GUIEventAdapter::DRAG):
+            case(osgGA::GUIEventAdapter::SCROLL):
             {
                 if ((event->getEventType()!=osgGA::GUIEventAdapter::DRAG && event->getEventType()!=osgGA::GUIEventAdapter::RELEASE) ||
                     !_previousEvent ||
@@ -1040,7 +1047,7 @@ void CompositeViewer::eventTraversal()
 
                 _previousEvent = event;
 
-                classifaction = EVENT_FOR_VIEW_ASSOCIATED_WITH_FOCUS;
+                classification = EVENT_FOR_VIEW_ASSOCIATED_WITH_FOCUS;
                 break;
             }
 
@@ -1071,7 +1078,7 @@ void CompositeViewer::eventTraversal()
         // reassign view with focus
         if (_viewWithFocus != view)  _viewWithFocus = view;
 
-        switch(classifaction)
+        switch(classification)
         {
             case(EVENT_FOR_VIEW_ASSOCIATED_WITH_FOCUS):
             {
@@ -1093,9 +1100,8 @@ void CompositeViewer::eventTraversal()
                 osg::GraphicsContext* gc = event->getGraphicsContext();
                 if (gc)
                 {
-                    typedef osg::GraphicsContext::Cameras Cameras;
-                    Cameras& cameras = gc->getCameras();
-                    for(Cameras::iterator citr = cameras.begin();
+                    osg::GraphicsContext::Cameras& cameras = gc->getCameras();
+                    for(osg::GraphicsContext::Cameras::iterator citr = cameras.begin();
                         citr != cameras.end();
                         ++citr)
                     {
@@ -1119,7 +1125,7 @@ void CompositeViewer::eventTraversal()
                     ++vitr)
                 {
                     OSG_INFO<<"Sending EVENT_FOR_ALL_VIEWS event "<<event<<" to view "<<vitr->get()<<std::endl;
-                    viewEventsMap[*vitr].push_back( event );
+                    viewEventsMap[vitr->get()].push_back( event );
                 }
                 break;
             }
@@ -1272,13 +1278,13 @@ void CompositeViewer::eventTraversal()
                     osg::NodeVisitor::TraversalMode tm = _eventVisitor->getTraversalMode();
                     _eventVisitor->setTraversalMode(osg::NodeVisitor::TRAVERSE_NONE);
 
-                    if (view->getCamera() && view->getCamera()->getEventCallback()) view->getCamera()->accept(*_eventVisitor);
+                    if (view->getCamera()) view->getCamera()->accept(*_eventVisitor);
 
                     for(unsigned int i=0; i<view->getNumSlaves(); ++i)
                     {
                         osg::View::Slave& slave = view->getSlave(i);
                         osg::Camera* camera = view->getSlave(i)._camera.get();
-                        if (camera && slave._useMastersSceneData && camera->getEventCallback())
+                        if (camera && slave._useMastersSceneData)
                         {
                             camera->accept(*_eventVisitor);
                         }
@@ -1406,13 +1412,13 @@ void CompositeViewer::updateTraversal()
             osg::NodeVisitor::TraversalMode tm = _updateVisitor->getTraversalMode();
             _updateVisitor->setTraversalMode(osg::NodeVisitor::TRAVERSE_NONE);
 
-            if (view->getCamera() && view->getCamera()->getUpdateCallback()) view->getCamera()->accept(*_updateVisitor);
+            if (view->getCamera()) view->getCamera()->accept(*_updateVisitor);
 
             for(unsigned int i=0; i<view->getNumSlaves(); ++i)
             {
                 osg::View::Slave& slave = view->getSlave(i);
                 osg::Camera* camera = slave._camera.get();
-                if (camera && slave._useMastersSceneData && camera->getUpdateCallback())
+                if (camera && slave._useMastersSceneData)
                 {
                     camera->accept(*_updateVisitor);
                 }

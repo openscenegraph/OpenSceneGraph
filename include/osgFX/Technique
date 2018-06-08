@@ -123,28 +123,32 @@ namespace osgFX
 
     private:
         typedef std::vector<osg::ref_ptr<osg::StateSet> > Pass_list;
-        Pass_list _passes;
+        OpenThreads::Mutex  _mutex;
+        OpenThreads::Atomic _passesDefined;
+        Pass_list           _passes;
     };
 
     // INLINE METHODS
 
     inline int Technique::getNumPasses() const
     {
-        return static_cast<int>(_passes.size());
+        return _passesDefined!=0 ? static_cast<int>(_passes.size()) : 0;
     }
 
     inline osg::StateSet* Technique::getPassStateSet(int i)
     {
-        return _passes[i].get();
+        return _passesDefined!=0 ? _passes[i].get() : 0;
     }
 
     inline const osg::StateSet* Technique::getPassStateSet(int i) const
     {
-        return _passes[i].get();
+        return _passesDefined!=0 ? _passes[i].get() : 0;
     }
 
     inline void Technique::dirtyPasses()
     {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _mutex);
+        _passesDefined.exchange(0);
         _passes.clear();
     }
 

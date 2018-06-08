@@ -1083,13 +1083,13 @@ void Viewer::eventTraversal()
             osg::NodeVisitor::TraversalMode tm = _eventVisitor->getTraversalMode();
             _eventVisitor->setTraversalMode(osg::NodeVisitor::TRAVERSE_NONE);
 
-            if (_camera.valid() && _camera->getEventCallback()) _camera->accept(*_eventVisitor);
+            if (_camera.valid()) _camera->accept(*_eventVisitor);
 
             for(unsigned int i=0; i<getNumSlaves(); ++i)
             {
                 osg::View::Slave& slave = getSlave(i);
                 osg::Camera* camera = slave._camera.get();
-                if (camera && slave._useMastersSceneData && camera->getEventCallback())
+                if (camera && slave._useMastersSceneData)
                 {
                     camera->accept(*_eventVisitor);
                 }
@@ -1189,13 +1189,13 @@ void Viewer::updateTraversal()
         osg::NodeVisitor::TraversalMode tm = _updateVisitor->getTraversalMode();
         _updateVisitor->setTraversalMode(osg::NodeVisitor::TRAVERSE_NONE);
 
-        if (_camera.valid() && _camera->getUpdateCallback()) _camera->accept(*_updateVisitor);
+        if (_camera.valid()) _camera->accept(*_updateVisitor);
 
         for(unsigned int i=0; i<getNumSlaves(); ++i)
         {
             osg::View::Slave& slave = getSlave(i);
             osg::Camera* camera = slave._camera.get();
-            if (camera && slave._useMastersSceneData && camera->getUpdateCallback())
+            if (camera && slave._useMastersSceneData)
             {
                 camera->accept(*_updateVisitor);
             }

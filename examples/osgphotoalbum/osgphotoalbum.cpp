@@ -747,7 +747,7 @@ int main( int argc, char **argv )
 
     osg::ref_ptr<Album> album = new Album(arguments,width,height);
 
-    // creat the scene from the file list.
+    // create the scene from the file list.
     osg::ref_ptr<osg::Group> rootNode = album->getScene();
 
     if (!rootNode) return 0;

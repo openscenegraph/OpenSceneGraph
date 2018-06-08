@@ -40,14 +40,12 @@ public:
          std::string enableWireframe;
          bool generateTangentSpace;
          int tangentSpaceTextureUnit;
-         bool disableTriStrip;
+         bool disableMeshOptimization;
          bool disableMergeTriStrip;
          bool disablePreTransform;
          bool disableAnimation;
          bool disableAnimationCleaning;
          bool enableAABBonBone;
-         unsigned int triStripCacheSize;
-         unsigned int triStripMinSize;
          bool useDrawArray;
          bool disableIndex;
          unsigned int maxIndexValue;
@@ -59,14 +57,12 @@ public:
              enableWireframe = "";
              generateTangentSpace = false;
              tangentSpaceTextureUnit = 0;
-             disableTriStrip = false;
+             disableMeshOptimization = false;
              disableMergeTriStrip = false;
              disablePreTransform = false;
              disableAnimation = false;
              disableAnimationCleaning = false;
              enableAABBonBone = false;
-             triStripCacheSize = 16;
-             triStripMinSize = 2;
              useDrawArray = false;
              disableIndex = false;
              maxIndexValue = 0;
@@ -84,10 +80,8 @@ public:
         supportsOption("enableWireframe[=inline]","create a wireframe geometry for each triangles geometry. The wire geometry will be stored along the solid geometry if 'inline' is specified.");
         supportsOption("generateTangentSpace","Build tangent space to each geometry");
         supportsOption("tangentSpaceTextureUnit=<unit>","Specify on which texture unit normal map is");
-        supportsOption("triStripCacheSize=<int>","set the cache size when doing tristrip");
-        supportsOption("triStripMinSize=<int>","set the minimum accepted length for a strip");
         supportsOption("disableMergeTriStrip","disable the merge of all tristrip into one");
-        supportsOption("disableTriStrip","disable generation of tristrip");
+        supportsOption("disableMeshOptimization","disable mesh optimization");
         supportsOption("disablePreTransform","disable pre-transform of geometries after split");
         supportsOption("disableAnimation","disable animation support");
         supportsOption("disableAnimationCleaning","disable animations/channels cleaning");
@@ -114,9 +108,7 @@ public:
 
             optimizer.setMode(options.glesMode);
             optimizer.setUseDrawArray(options.useDrawArray);
-            optimizer.setTripStripCacheSize(options.triStripCacheSize);
-            optimizer.setTripStripMinSize(options.triStripMinSize);
-            optimizer.setDisableTriStrip(options.disableTriStrip);
+            optimizer.setDisableMeshOptimization(options.disableMeshOptimization);
             optimizer.setDisableMergeTriStrip(options.disableMergeTriStrip);
             optimizer.setDisablePreTransform(options.disablePreTransform);
             optimizer.setDisableAnimation(options.disableAnimation);
@@ -260,9 +252,9 @@ public:
                 {
                     localOptions.enableAABBonBone = true;
                 }
-                if (pre_equals == "disableTriStrip")
+                if (pre_equals == "disableMeshOptimization")
                 {
-                    localOptions.disableTriStrip = true;
+                    localOptions.disableMeshOptimization = true;
                 }
                 if (pre_equals == "generateTangentSpace")
                 {
@@ -279,12 +271,6 @@ public:
                 if (post_equals.length() > 0) {
                     if (pre_equals == "tangentSpaceTextureUnit") {
                         localOptions.tangentSpaceTextureUnit = atoi(post_equals.c_str());
-                    }
-                    if (pre_equals == "triStripCacheSize") {
-                        localOptions.triStripCacheSize = atoi(post_equals.c_str());
-                    }
-                    if (pre_equals == "triStripMinSize") {
-                        localOptions.triStripMinSize = atoi(post_equals.c_str());
                     }
                     if (pre_equals == "maxIndexValue") {
                         localOptions.maxIndexValue = atoi(post_equals.c_str());

@@ -14,9 +14,6 @@
 
 #include <osgManipulator/TranslateAxisDragger>
 
-#include <osg/ShapeDrawable>
-#include <osg/Geometry>
-#include <osg/LineWidth>
 #include <osg/Quat>
 
 using namespace osgManipulator;

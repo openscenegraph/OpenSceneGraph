@@ -91,7 +91,7 @@ private:
   bool createMap(MapMode mapMode, bool first=false);
 
   /*!
-    Creates a two dimensional noise map and initalizes _noiseMap with it
+    Creates a two dimensional noise map and initializes _noiseMap with it
    */
   bool createNoiseMap();
 

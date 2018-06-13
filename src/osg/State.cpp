@@ -170,6 +170,12 @@ State::~State()
     //_vertexAttribArrayList.clear();
 }
 
+void State::setUseVertexAttributeAliasing(bool flag)
+{
+    _useVertexAttributeAliasing = flag;
+    if (_globalVertexArrayState.valid()) _globalVertexArrayState->assignAllDispatchers();
+}
+
 void State::initializeExtensionProcs()
 {
     if (_extensionProcsInitialized) return;

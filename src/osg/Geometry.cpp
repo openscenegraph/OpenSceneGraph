@@ -535,7 +535,7 @@ bool Geometry::getDrawElementsList(DrawElementsList& drawElementsList) const
 
 void Geometry::addVertexBufferObjectIfRequired(osg::Array* array)
 {
-    if (/*_useVertexBufferObjects &&*/ array->getBinding()==Array::BIND_PER_VERTEX)
+    if (/*_useVertexBufferObjects &&*/ array->getBinding()==Array::BIND_PER_VERTEX || array->getBinding()==Array::BIND_UNDEFINED)
     {
         if (!array->getVertexBufferObject())
         {

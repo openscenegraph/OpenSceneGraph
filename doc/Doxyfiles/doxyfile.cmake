@@ -90,7 +90,7 @@ INPUT                  = "${OpenSceneGraph_SOURCE_DIR}/include/osg" \
                          "${OpenSceneGraph_SOURCE_DIR}/include/osgGA" \
                          "${OpenSceneGraph_SOURCE_DIR}/include/osgManipulator" \
                          "${OpenSceneGraph_SOURCE_DIR}/include/osgParticle" \
-                         "${OpenSceneGraph_SOURCE_DIR}/include/osgQt" \
+                         "${OpenSceneGraph_SOURCE_DIR}/include/osgPresentation" \
                          "${OpenSceneGraph_SOURCE_DIR}/include/osgShadow" \
                          "${OpenSceneGraph_SOURCE_DIR}/include/osgSim" \
                          "${OpenSceneGraph_SOURCE_DIR}/include/osgTerrain" \

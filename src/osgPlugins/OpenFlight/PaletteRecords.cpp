@@ -344,8 +344,13 @@ protected:
         texture->setImage(image.get());
         stateset->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
 
-        // Read attribute file
+        // Since the .attr file is optional according to the OpenFlight spec, check to see
+        // if the file exists before reading it, to avoid printing an unnecessary warning.
         std::string attrname = filename + ".attr";
+        if (!osgDB::fileExists(attrname))
+            return stateset;
+
+        // Read optional attribute file
         osg::ref_ptr<AttrData> attr = osgDB::readRefFile<AttrData>(attrname,document.getOptions());
         if (attr.valid())
         {

@@ -104,7 +104,7 @@ void cOSG::InitCameraConfig(void)
     camera->setGraphicsContext(gc);
 
     // Set the viewport for the Camera
-    camera->setViewport(new osg::Viewport(traits->x, traits->y, traits->width, traits->height));
+    camera->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
 
     // set the draw and read buffers up for a double buffered window with rendering going to back buffer
     camera->setDrawBuffer(GL_BACK);

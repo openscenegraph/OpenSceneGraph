@@ -180,6 +180,8 @@ void FFmpegDecoderVideo::decodeLoop()
             // Publish the frame if we have decoded a complete frame
             if (frame_finished)
             {
+#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(57,24,102)
+                //ffmpeg-3.0 and below
                 AVRational timebase;
                 // Find out the frame pts
                 if (m_frame->pts != int64_t(AV_NOPTS_VALUE))
@@ -207,7 +209,29 @@ void FFmpegDecoderVideo::decodeLoop()
 
                 pts *= av_q2d(timebase);
 
-                const double synched_pts = m_clocks.videoSynchClock(m_frame.get(), av_q2d(timebase), pts);
+#else
+                //above ffmpeg-3.0
+                // Find out the frame pts
+                if (m_frame->pts != int64_t(AV_NOPTS_VALUE))
+                {
+                    pts = av_q2d(m_stream->time_base) * m_frame->pts;
+                }
+                else if (packet.packet.dts == int64_t(AV_NOPTS_VALUE) &&
+                        m_frame->opaque != 0 &&
+                        *reinterpret_cast<const int64_t*>(m_frame->opaque) != int64_t(AV_NOPTS_VALUE))
+                {
+                    pts = av_q2d(m_stream->time_base) * *reinterpret_cast<const int64_t*>(m_frame->opaque);
+                }
+                else if (packet.packet.dts != int64_t(AV_NOPTS_VALUE))
+                {
+                    pts = av_q2d(m_stream->time_base) * packet.packet.dts;
+                }
+                else
+                {
+                    pts = 0;
+                }
+#endif
+                const double synched_pts = m_clocks.videoSynchClock(m_frame.get(), av_q2d(av_inv_q(m_context->framerate)), pts);
                 const double frame_delay = m_clocks.videoRefreshSchedule(synched_pts);
 
                 publishFrame(frame_delay, m_clocks.audioDisabled());

@@ -515,7 +515,8 @@ struct ComputeNearFarFunctor
 
         n1 = distance(p1.second,_matrix);
         n2 = distance(p2.second,_matrix);
-        _znear = _comparator.minimum(n1, n2);
+        _znear = _comparator.minimum(_znear, n1);
+        _znear = _comparator.minimum(_znear, n2);
         //OSG_NOTICE<<"Near plane updated "<<_znear<<std::endl;
     }
 

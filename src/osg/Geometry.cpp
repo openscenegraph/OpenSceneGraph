@@ -68,7 +68,7 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
 
     if ((copyop.getCopyFlags() & osg::CopyOp::DEEP_COPY_ARRAYS) || (copyop.getCopyFlags() & osg::CopyOp::DEEP_COPY_PRIMITIVES))
     {
-        /*if (_useVertexBufferObjects)*/
+        if (_useVertexBufferObjects)
         {
             // copying of arrays doesn't set up buffer objects so we'll need to force
             // Geometry to assign these, we'll do this by changing the cached value to false then re-enabling.
@@ -162,7 +162,7 @@ void Geometry::setVertexArray(Array* array)
     dirtyGLObjects();
     dirtyBound();
 
-    if (/*_useVertexBufferObjects && */array)
+    if (_useVertexBufferObjects && array)
     {
         _vertexArrayStateList.assignVertexArrayDispatcher();
 
@@ -178,7 +178,7 @@ void Geometry::setNormalArray(Array* array, osg::Array::Binding binding)
 
     dirtyGLObjects();
 
-    if (/*_useVertexBufferObjects && */array)
+    if (_useVertexBufferObjects && array)
     {
         _vertexArrayStateList.assignNormalArrayDispatcher();
 
@@ -194,7 +194,7 @@ void Geometry::setColorArray(Array* array, osg::Array::Binding binding)
 
     dirtyGLObjects();
 
-    if (/*_useVertexBufferObjects && */array)
+    if (_useVertexBufferObjects && array)
     {
         _vertexArrayStateList.assignColorArrayDispatcher();
 
@@ -210,7 +210,7 @@ void Geometry::setSecondaryColorArray(Array* array, osg::Array::Binding binding)
 
     dirtyGLObjects();
 
-    if (/*_useVertexBufferObjects && */array)
+    if (_useVertexBufferObjects && array)
     {
         _vertexArrayStateList.assignSecondaryColorArrayDispatcher();
 
@@ -226,7 +226,7 @@ void Geometry::setFogCoordArray(Array* array, osg::Array::Binding binding)
 
     dirtyGLObjects();
 
-    if (/*_useVertexBufferObjects && */array)
+    if (_useVertexBufferObjects && array)
     {
         _vertexArrayStateList.assignFogCoordArrayDispatcher();
 
@@ -251,7 +251,7 @@ void Geometry::setTexCoordArray(unsigned int index,Array* array, osg::Array::Bin
 
     dirtyGLObjects();
 
-    if (/*_useVertexBufferObjects && */array)
+    if (_useVertexBufferObjects && array)
     {
         _vertexArrayStateList.assignTexCoordArrayDispatcher(_texCoordList.size());
 
@@ -277,7 +277,7 @@ void Geometry::setTexCoordArrayList(const ArrayList& arrayList)
 
     dirtyGLObjects();
 
-    if (!_texCoordList.empty())
+    if (_useVertexBufferObjects && !_texCoordList.empty())
     {
         _vertexArrayStateList.assignTexCoordArrayDispatcher(_texCoordList.size());
 
@@ -301,7 +301,7 @@ void Geometry::setVertexAttribArray(unsigned int index, Array* array, osg::Array
 
     dirtyGLObjects();
 
-    if (/*_useVertexBufferObjects && */array)
+    if (_useVertexBufferObjects && array)
     {
         _vertexArrayStateList.assignVertexAttribArrayDispatcher(_vertexAttribList.size());
 
@@ -327,7 +327,7 @@ void Geometry::setVertexAttribArrayList(const ArrayList& arrayList)
 
     dirtyGLObjects();
 
-    if (!_vertexAttribList.empty())
+    if (_useVertexBufferObjects && !_vertexAttribList.empty())
     {
         _vertexArrayStateList.assignVertexAttribArrayDispatcher(_vertexAttribList.size());
 
@@ -345,7 +345,7 @@ bool Geometry::addPrimitiveSet(PrimitiveSet* primitiveset)
 {
     if (primitiveset)
     {
-        /*if (_useVertexBufferObjects)*/ addElementBufferObjectIfRequired(primitiveset);
+        if (_useVertexBufferObjects) addElementBufferObjectIfRequired(primitiveset);
 
         _primitives.push_back(primitiveset);
         dirtyGLObjects();
@@ -361,7 +361,7 @@ bool Geometry::setPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset)
 {
     if (i<_primitives.size() && primitiveset)
     {
-        /*if (_useVertexBufferObjects)*/ addElementBufferObjectIfRequired(primitiveset);
+        if (_useVertexBufferObjects) addElementBufferObjectIfRequired(primitiveset);
 
         _primitives[i] = primitiveset;
         dirtyGLObjects();
@@ -377,7 +377,7 @@ bool Geometry::insertPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset)
 
     if (primitiveset)
     {
-        /*if (_useVertexBufferObjects)*/ addElementBufferObjectIfRequired(primitiveset);
+        if (_useVertexBufferObjects) addElementBufferObjectIfRequired(primitiveset);
 
         if (i<_primitives.size())
         {
@@ -399,7 +399,7 @@ bool Geometry::insertPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset)
 void Geometry::setPrimitiveSetList(const PrimitiveSetList& primitives)
 {
     _primitives = primitives;
-    /*if (_useVertexBufferObjects)*/
+    if (_useVertexBufferObjects)
     {
         for (unsigned int primitiveSetIndex=0;primitiveSetIndex<_primitives.size();++primitiveSetIndex)
         {
@@ -535,7 +535,7 @@ bool Geometry::getDrawElementsList(DrawElementsList& drawElementsList) const
 
 void Geometry::addVertexBufferObjectIfRequired(osg::Array* array)
 {
-    if (/*_useVertexBufferObjects &&*/ array->getBinding()==Array::BIND_PER_VERTEX || array->getBinding()==Array::BIND_UNDEFINED)
+    if (_useVertexBufferObjects && array->getBinding()==Array::BIND_PER_VERTEX || array->getBinding()==Array::BIND_UNDEFINED)
     {
         if (!array->getVertexBufferObject())
         {
@@ -546,7 +546,7 @@ void Geometry::addVertexBufferObjectIfRequired(osg::Array* array)
 
 void Geometry::addElementBufferObjectIfRequired(osg::PrimitiveSet* primitiveSet)
 {
-    /*if (_useVertexBufferObjects)*/
+    if (_useVertexBufferObjects)
     {
         osg::DrawElements* drawElements = primitiveSet->getDrawElements();
         if (drawElements && !drawElements->getElementBufferObject())
@@ -606,7 +606,7 @@ void Geometry::setUseVertexBufferObjects(bool flag)
     DrawElementsList drawElementsList;
     getDrawElementsList(drawElementsList);
 
-    /*if (_useVertexBufferObjects)*/
+    if (_useVertexBufferObjects)
     {
         if (!arrayList.empty())
         {
@@ -657,7 +657,6 @@ void Geometry::setUseVertexBufferObjects(bool flag)
             }
         }
     }
-    /*
     else
     {
         for(ArrayList::iterator vitr = arrayList.begin();
@@ -676,7 +675,6 @@ void Geometry::setUseVertexBufferObjects(bool flag)
             if (elements->getElementBufferObject()) elements->setElementBufferObject(0);
         }
     }
-    */
 }
 
 void Geometry::dirtyGLObjects()

@@ -1,3 +1,68 @@
+Tue, 19 Jun 2018 17:09:56 +0100
+Author : Calum Robinson
+Fix z near calculation for lines
+
+Tue, 19 Jun 2018 11:50:38 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #558 from LaurensVoerman/submit-ffmpeg3.2resolve av sync failure with ffmpeg 3.2 and up
+
+Tue, 19 Jun 2018 09:21:02 +0200
+Author : Laurens Voerman
+resolve av sync failure with ffmpeg 3.2 and up
+
+Tue, 19 Jun 2018 00:33:03 +0800
+Author : 弥继平
+Fixed the position of the viewport for the cameraThe position of viewport doesn't setup properly, some part of viewer is out of CMFC_OSG_MDIView,  and not visible.
+
+Thu, 14 Jun 2018 14:31:28 +0200
+Author : Laurens Voerman
+remove include/osgQt from doxyfiles; add osgPresentation and osgUI
+
+Thu, 14 Jun 2018 14:44:16 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #555 from emminizer/fix-noisy-flt-loadingFLT: Missing optional attr files on textures no longer generates a co…
+
+Thu, 14 Jun 2018 07:33:08 -0400
+Author : Daniel Emminizer
+FLT: Missing optional attr files on textures no longer generates a console warning.
+
+Thu, 14 Jun 2018 08:54:21 +0100
+Author : Robert Osfield
+Changed version to 3.6.2 in prep for next release
+
+Thu, 14 Jun 2018 08:51:00 +0100
+Author : Robert Osfield
+To handle calling Array::setBinding() after Geometry::set*Array() call, to the Geometry::addVertexBufferObjectIfRequired(osg::Array* array) added treatment of array->getBinding()==Array::BIND_UNDEFINED as BIND_PER_VERTEX as a safe fallback.
+
+Wed, 13 Jun 2018 12:23:29 +0100
+Author : Robert Osfield
+Moved Stae::setUseVertexAttributeAliasing(bool) implementation to .cpp an added call to _globalVertexArrayState->assignAllDispatchers(); to ensure state is consistent
+
+Sun, 3 Jun 2018 10:27:00 +0100
+Author : Robert Osfield
+Updated LICENSE to use the WxWidgets-3.1 and updates to the LGPL-2.1-only that updates addresses and tighten up language used.Functionality the OSGPL-1.0 is the same as OSGPL-0.0, All the OpenSceneGraph users can use either OSGPL-0.0 or OSGPL-1.0.
+
+
+Thu, 31 May 2018 15:11:19 +0100
+Author : Robert Osfield
+Removed deprecated xine plugin to simplify licensing (xine plugin is GPL'd)
+
+Thu, 31 May 2018 14:45:37 +0100
+Author : Robert Osfield
+As the author of all the files in osgPresentation and present3D have rectified the license notices to reflect their intended license rather than histoical license they had prior to being merged into the OpenSceneGraph project.  OSGPL was always intended but missed during merge. Replaced the GPL notices with OSGPL usge in present3D and include/osgPresentation as this was intended when Present3D was merged back into OpenSceneGraph but missed.
+
+Mon, 28 May 2018 08:58:21 +0100
+Author : Robert Osfield
+Updated for 3.6.1
+
+Sun, 27 May 2018 14:21:57 +0200
+Author : Philippe Renon
+Notify: silence warning about unused argument
+
+Wed, 23 May 2018 19:54:10 +0100
+Author : Robert Osfield
+Updated ChangeLog
+
 Wed, 23 May 2018 19:53:12 +0100
 Author : Robert Osfield
 Updates for 3.6.1-rc7

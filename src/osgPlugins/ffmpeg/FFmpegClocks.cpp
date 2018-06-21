@@ -155,8 +155,7 @@ double FFmpegClocks::videoSynchClock(const AVFrame * const frame, const double t
 
     // Update the video clock to take into account the frame delay
 
-    double frame_delay = time_base;
-    frame_delay += frame->repeat_pict * (frame_delay * 0.5);
+    double frame_delay = time_base * (1 + frame->repeat_pict);
 
     m_video_clock += frame_delay;
 

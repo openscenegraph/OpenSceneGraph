@@ -43,7 +43,7 @@ int PointSprite::compare(const StateAttribute& sa) const
 bool PointSprite::checkValidityOfAssociatedModes(osg::State& state) const
 {
     const GLExtensions* extensions = state.get<GLExtensions>();
-    bool modeValid = extensions->isPointSpriteSupported;
+    bool modeValid = extensions->isPointSpriteModeSupported;
 
 #if defined( OSG_GLES1_AVAILABLE ) //point sprites don't exist on es 2.0
     state.setModeValidity(GL_POINT_SPRITE_OES, modeValid);

@@ -627,6 +627,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         // Point
         bool isPointParametersSupported;
         bool isPointSpriteSupported;
+        bool isPointSpriteModeSupported;
         bool isPointSpriteCoordOriginSupported;
 
         void (GL_APIENTRY * glPointParameteri) (GLenum pname, GLint param);

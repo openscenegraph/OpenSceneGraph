@@ -1,3 +1,35 @@
+Wed, 27 Jun 2018 09:06:58 +0100
+Author : Robert Osfield
+Fixed relaseGLObjects() calls
+
+Tue, 26 Jun 2018 20:50:55 +0100
+Author : Robert Osfield
+Merge branch 'OpenSceneGraph-3.6' of https://github.com/openscenegraph/OpenSceneGraph into OpenSceneGraph-3.6
+
+Tue, 26 Jun 2018 20:46:49 +0100
+Author : Robert Osfield
+Replaced creation of a temporary Settings object on the heap with creation on the stack to improve performance
+
+Tue, 26 Jun 2018 20:17:07 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #566 from emminizer/fix-gl_rb-in-gluscaleimageGL_RG is now a supported format in gluScaleImage().
+
+Tue, 26 Jun 2018 20:10:51 +0100
+Author : Robert Osfield
+Added GLExtensions::isPointSpriteModeSupported to allow it to be enable for GL versions that support GL_POINT_SPRITE_ARB/GL_POINT_SPRITE_OES
+
+Tue, 26 Jun 2018 14:44:34 -0400
+Author : Daniel Emminizer
+GL_RG is now a support format in gluScaleImage().
+
+Mon, 25 Jun 2018 20:02:30 +0100
+Author : Robert Osfield
+Moved osg::clampProjectionMatrix() template from CullVisitor.cpp into include/osg/CullSettings to make it easier to implement custom clampProjectionMatrix callbacks
+
+Wed, 20 Jun 2018 13:59:10 +0100
+Author : Robert Osfield
+Updates for 3.6.2-rc1
+
 Tue, 19 Jun 2018 17:09:56 +0100
 Author : Calum Robinson
 Fix z near calculation for lines

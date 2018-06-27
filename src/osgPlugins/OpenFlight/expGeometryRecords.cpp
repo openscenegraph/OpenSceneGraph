@@ -63,7 +63,12 @@ bool
 FltExportVisitor::isTextured( int unit, const osg::Geometry& geom ) const
 {
     const osg::StateSet* ss = getCurrentStateSet();
+#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
     bool texOn( ss->getTextureMode( unit, GL_TEXTURE_2D ) & osg::StateAttribute::ON );
+#else
+    // In this mode, osg::Texture::getModeUsage() is undefined, so just detect if a texture is present
+    bool texOn = (ss->getTextureAttribute(0, osg::StateAttribute::TEXTURE) != NULL);
+#endif
     bool hasCoords( geom.getTexCoordArray( unit ) != NULL );
 
     return( texOn && hasCoords );

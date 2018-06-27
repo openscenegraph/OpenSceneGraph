@@ -711,13 +711,10 @@ void OcclusionQueryNode::createSupportNodes()
 
 void OcclusionQueryNode::releaseGLObjects( State* state ) const
 {
-    if(_queryGeode->getDrawable( 0 ) != NULL)
-    {
-        // Query object discard and deletion is handled by QueryGeometry support class.
-        OcclusionQueryNode* nonConstThis = const_cast< OcclusionQueryNode* >( this );
-        QueryGeometry* qg = static_cast< QueryGeometry* >( nonConstThis->_queryGeode->getDrawable( 0 ) );
-        qg->releaseGLObjects( state );
-    }
+    if (_queryGeode.valid()) _queryGeode->releaseGLObjects(state);
+    if (_debugGeode.valid()) _debugGeode->releaseGLObjects(state);
+
+    osg::Group::releaseGLObjects(state);
 }
 
 void OcclusionQueryNode::flushDeletedQueryObjects( unsigned int contextID, double currentTime, double& availableTime )

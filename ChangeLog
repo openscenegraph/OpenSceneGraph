@@ -1,3 +1,23 @@
+Thu, 28 Jun 2018 07:06:59 +0100
+Author : Robert Osfield
+Updated for rc3
+
+Wed, 27 Jun 2018 21:21:31 -0700
+Author : Larry-Hu
+Remove call to nonexistent member seekpos() of std::fpos in VS 2017 version 15.8 or later
+
+Wed, 27 Jun 2018 20:59:09 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #568 from emminizer/fix-flt-texture-export-gl3OpenFlight: Textures now correctly export in GLCORE mode.
+
+Wed, 27 Jun 2018 12:57:20 -0400
+Author : Daniel Emminizer
+OpenFlight: Textures now correctly export in GLCORE mode.
+
+Wed, 27 Jun 2018 09:17:00 +0100
+Author : Robert Osfield
+Updated for 3.6.2-rc2
+
 Wed, 27 Jun 2018 09:06:58 +0100
 Author : Robert Osfield
 Fixed relaseGLObjects() calls

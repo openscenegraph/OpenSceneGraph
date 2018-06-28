@@ -70,10 +70,12 @@ inline std::streampos STREAM_POS( const OSGA_Archive::pos_type pos )
 
 inline OSGA_Archive::pos_type ARCHIVE_POS( const std::streampos & pos )
 {
-#if defined(_CPPLIB_VER)//newer Dinkumware(eg: one included with VC++ 2003,2005)
-    fpos_t position = pos.seekpos();
+#if (defined(_CPPLIB_VER) && defined(_MSC_VER) && _MSC_VER > 1914)   // VC++ 2017 version 15.8 or later
+	fpos_t position = pos;
+#elif (defined(_CPPLIB_VER) && defined(_MSC_VER)) // Dinkumware (eg: one included with VC++ 2003, 2005...)
+	fpos_t position = pos.seekpos();
 #else // older Dinkumware (eg: one included in Win Server 2003 Platform SDK )
-    fpos_t position = pos.get_fpos_t();
+	fpos_t position = pos.get_fpos_t();
 #endif
     std::streamoff offset = pos.operator std::streamoff( ) - _FPOSOFF( position );
 

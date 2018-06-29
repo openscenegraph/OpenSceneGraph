@@ -1055,7 +1055,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
     isPointSpriteSupported = validContext && (OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES || isGLExtensionSupported(contextID, "GL_ARB_point_sprite") || isGLExtensionSupported(contextID, "GL_OES_point_sprite") || isGLExtensionSupported(contextID, "GL_NV_point_sprite"));
 
-    isPointSpriteModeSupported = isPointSpriteModeSupported && !OSG_GL3_FEATURES;
+    isPointSpriteModeSupported = isPointSpriteSupported && !OSG_GL3_FEATURES;
 
     isPointSpriteCoordOriginSupported = validContext && (OSG_GL3_FEATURES || (glVersion >= 2.0f));
 

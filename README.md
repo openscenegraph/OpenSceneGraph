@@ -25,7 +25,7 @@ If details below are not sufficient then head over to the openscenegraph.org to 
 
 Robert Osfield.
 Project Lead.
-28th June 2018.
+29th June 2018.
 
 ---
 

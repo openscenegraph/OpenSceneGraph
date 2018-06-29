@@ -1,3 +1,23 @@
+Fri, 29 Jun 2018 10:56:01 +0100
+Author : Robert Osfield
+Updated date for 3.6.2 releases
+
+Fri, 29 Jun 2018 10:54:13 +0100
+Author : Robert Osfield
+Updates for 3.6.2 stable release
+
+Fri, 29 Jun 2018 10:53:23 +0100
+Author : Robert Osfield
+Fixed isPointSpriteModeSupported assignment bug
+
+Fri, 29 Jun 2018 09:52:47 +0100
+Author : Robert Osfield
+Removed the gl3.h usage for GL3 case as these headers were replaced by glcorearb.h, it's probably better to just fallback to gl.h and have the OSG get the extentions at runtime.
+
+Thu, 28 Jun 2018 07:34:49 +0100
+Author : Robert Osfield
+UPdated ChangeLog
+
 Thu, 28 Jun 2018 07:06:59 +0100
 Author : Robert Osfield
 Updated for rc3

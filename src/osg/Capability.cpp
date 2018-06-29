@@ -42,7 +42,7 @@ void Enablei::apply(State& state) const
     if (extensions->glEnablei)
     {
         OSG_INFO<<"extensions->glEnablei("<<_capability<<", "<<_index<<")"<<std::endl;
-        extensions->glEnablei(_capability, static_cast<GLuint>(_index));
+        if (_capability) extensions->glEnablei(_capability, static_cast<GLuint>(_index));
     }
     else
     {
@@ -56,7 +56,7 @@ void Disablei::apply(State& state) const
     if (extensions->glDisablei)
     {
         OSG_INFO<<"extensions->glDisablei("<<_capability<<", "<<_index<<")"<<std::endl;
-        extensions->glDisablei(_capability, static_cast<GLuint>(_index));
+        if (_capability) extensions->glDisablei(_capability, static_cast<GLuint>(_index));
     }
     else
     {

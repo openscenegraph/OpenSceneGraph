@@ -561,7 +561,7 @@ IF (OSG_GL3_AVAILABLE)
             SET(OPENGL_HEADER1 "#include <GL/glcorearb.h>" CACHE STRING "#include<> line for OpenGL Header")
             SET(OPENGL_HEADER2 "" CACHE STRING "#include<> line for additional OpenGL Headers if required")
         ELSE()
-            SET(OPENGL_HEADER1 "#include <GL3/gl3.h>" CACHE STRING "#include<> line for OpenGL Header")
+            SET(OPENGL_HEADER1 "#include <GL/gl.h>" CACHE STRING "#include<> line for OpenGL Header")
             SET(OPENGL_HEADER2 "" CACHE STRING "#include<> line for additional OpenGL Headers if required")
         ENDIF()
 

@@ -152,6 +152,14 @@ class BufferObjectProfile
 class GLBufferObjectSet;
 class GLBufferObjectManager;
 
+inline unsigned int computeBufferAlignment(unsigned int pos, unsigned int bufferAlignment)
+{
+    if (bufferAlignment<2) return pos;
+    if ((pos%bufferAlignment)==0) return pos;
+    return ((pos/bufferAlignment)+1)*bufferAlignment;
+}
+
+
 class OSG_EXPORT GLBufferObject : public GraphicsObject
 {
     public:
@@ -235,9 +243,7 @@ class OSG_EXPORT GLBufferObject : public GraphicsObject
 
         unsigned int computeBufferAlignment(unsigned int pos, unsigned int bufferAlignment) const
         {
-            if (bufferAlignment<2) return pos;
-            if ((pos%bufferAlignment)==0) return pos;
-            return ((pos/bufferAlignment)+1)*bufferAlignment;
+            return osg::computeBufferAlignment(pos, bufferAlignment);
         }
 
         unsigned int            _contextID;
@@ -431,10 +437,10 @@ class OSG_EXPORT BufferObject : public Object
         const BufferObjectProfile& getProfile() const { return _profile; }
 
 
-        /** Set whether the BufferObject should use a GLBufferObject just for copying the BufferData and release it immmediately so that it may be reused.*/
+        /** Set whether the BufferObject should use a GLBufferObject just for copying the BufferData and release it immediately so that it may be reused.*/
         void setCopyDataAndReleaseGLBufferObject(bool copyAndRelease) { _copyDataAndReleaseGLBufferObject = copyAndRelease; }
 
-        /** Get whether the BufferObject should use a GLBufferObject just for copying the BufferData and release it immmediately.*/
+        /** Get whether the BufferObject should use a GLBufferObject just for copying the BufferData and release it immediately.*/
         bool getCopyDataAndReleaseGLBufferObject() const { return _copyDataAndReleaseGLBufferObject; }
 
 

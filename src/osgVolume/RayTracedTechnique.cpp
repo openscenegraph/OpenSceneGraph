@@ -170,7 +170,7 @@ void RayTracedTechnique::init()
         }
         else
         {
-            #include "Shaders/volume_vert.cpp"
+            #include "shaders/volume_vert.cpp"
             program->addShader(new osg::Shader(osg::Shader::VERTEX, volume_vert));
         }
 
@@ -252,7 +252,7 @@ void RayTracedTechnique::init()
                 }
                 else
                 {
-                    #include "Shaders/volume_tf_mip_frag.cpp"
+                    #include "shaders/volume_tf_mip_frag.cpp"
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_tf_mip_frag));
                 }
 
@@ -269,7 +269,7 @@ void RayTracedTechnique::init()
                 }
                 else
                 {
-                    #include "Shaders/volume_mip_frag.cpp"
+                    #include "shaders/volume_mip_frag.cpp"
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_mip_frag));
                 }
             }
@@ -290,7 +290,7 @@ void RayTracedTechnique::init()
                 }
                 else
                 {
-                    #include "Shaders/volume_tf_iso_frag.cpp"
+                    #include "shaders/volume_tf_iso_frag.cpp"
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_tf_iso_frag));
                 }
             }
@@ -307,7 +307,7 @@ void RayTracedTechnique::init()
                 {
                     OSG_INFO<<"No Shader found"<<std::endl;
 
-                    #include "Shaders/volume_iso_frag.cpp"
+                    #include "shaders/volume_iso_frag.cpp"
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_iso_frag));
                 }
             }
@@ -325,7 +325,7 @@ void RayTracedTechnique::init()
                 }
                 else
                 {
-                    #include "Shaders/volume_lit_tf_frag.cpp"
+                    #include "shaders/volume_lit_tf_frag.cpp"
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_lit_tf_frag));
                 }
 
@@ -339,7 +339,7 @@ void RayTracedTechnique::init()
                 }
                 else
                 {
-                    #include "Shaders/volume_lit_frag.cpp"
+                    #include "shaders/volume_lit_frag.cpp"
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_lit_frag));
                 }
             }
@@ -357,7 +357,7 @@ void RayTracedTechnique::init()
                 }
                 else
                 {
-                    #include "Shaders/volume_tf_frag.cpp"
+                    #include "shaders/volume_tf_frag.cpp"
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_tf_frag));
                 }
 
@@ -371,7 +371,7 @@ void RayTracedTechnique::init()
                 }
                 else
                 {
-                    #include "Shaders/volume_frag.cpp"
+                    #include "shaders/volume_frag.cpp"
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_frag));
                 }
             }

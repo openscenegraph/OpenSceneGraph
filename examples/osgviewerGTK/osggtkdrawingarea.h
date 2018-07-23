@@ -4,7 +4,7 @@
 #include <osgGA/TrackballManipulator>
 
 // This is an implementation of SimpleViewer that is designed to be subclassed
-// and used as a GtkDrawingArea in a GTK application. Because of the implemention
+// and used as a GtkDrawingArea in a GTK application. Because of the implementation
 // of GTK, I was unable to derive from GtkWidget and instead had to "wrap" it.
 // Conceptually, however, you can think of an OSGGTKDrawingArea as both an OSG
 // Viewer AND GtkDrawingArea.

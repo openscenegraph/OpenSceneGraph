@@ -187,7 +187,7 @@ int Program::compare(const osg::StateAttribute& sa) const
 
 void Program::compileGLObjects( osg::State& state ) const
 {
-    if( isFixedFunction() ) return;
+    if( _shaderList.empty() ) return;
 
     for( unsigned int i=0; i < _shaderList.size(); ++i )
     {
@@ -233,18 +233,14 @@ void Program::dirtyProgram()
         if( _pcpList[cxt].valid() ) _pcpList[cxt]->requestLink();
     }
 
-    // update list of defines required.
-    _shaderDefines.clear();
+    // update list of pragma defines required.
+    _shaderPragmas.clear();
     for(ShaderList::iterator itr = _shaderList.begin();
         itr != _shaderList.end();
         ++itr)
     {
         Shader* shader = itr->get();
-        ShaderDefines& sd = shader->getShaderDefines();
-        _shaderDefines.insert(sd.begin(), sd.end());
-
-        ShaderDefines& sr = shader->getShaderRequirements();
-        _shaderDefines.insert(sr.begin(), sr.end());
+        _shaderPragmas.merge(shader->getShaderPragmas());
     }
 }
 
@@ -416,7 +412,7 @@ void Program::apply( osg::State& state ) const
     const GLExtensions* extensions = state.get<GLExtensions>();
     if( ! extensions->isGlslSupported ) return;
 
-    if( isFixedFunction() )
+    if( _shaderList.empty() )
     {
         extensions->glUseProgram( 0 );
         state.setLastAppliedProgramObject(0);
@@ -581,7 +577,8 @@ bool Program::ProgramObjects::getGlProgramInfoLog(std::string& log) const
 Program::PerContextProgram* Program::getPCP(State& state) const
 {
     unsigned int contextID = state.getContextID();
-    const std::string defineStr = state.getDefineString(getShaderDefines());
+    std::string defineStr;
+    state.getDefineString(defineStr, getShaderPragmas());
 
     if( ! _pcpList[contextID].valid() )
     {
@@ -656,7 +653,15 @@ Program::PerContextProgram::PerContextProgram(const Program* program, unsigned i
     {
         _extensions = GLExtensions::Get( _contextID, true );
         _glProgramHandle = _extensions->glCreateProgram();
-        _ownsProgramHandle = true;
+
+        if (_glProgramHandle)
+        {
+            _ownsProgramHandle = true;
+        }
+        else
+        {
+            OSG_WARN << "Unable to create osg::Program \"" << _program->getName() << "\"" << " contextID=" << _contextID <<  std::endl;
+        }
     }
     requestLink();
 }
@@ -681,6 +686,8 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
 {
     if( ! _needsLink ) return;
     _needsLink = false;
+
+    if (!_glProgramHandle) return;
 
     OSG_INFO << "Linking osg::Program \"" << _program->getName() << "\""
              << " id=" << _glProgramHandle
@@ -709,7 +716,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
     if (!_loadedBinary)
     {
         const GLsizei shaderMaxCount = 20;
-        GLsizei shadersCount;
+        GLsizei shadersCount = 0;
         GLuint shaderObjectHandle[shaderMaxCount];
         _extensions->glGetAttachedShaders(_glProgramHandle, shaderMaxCount, &shadersCount, shaderObjectHandle);
 
@@ -1035,6 +1042,8 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
 
 bool Program::PerContextProgram::validateProgram()
 {
+    if (!_glProgramHandle) return false;
+
     GLint validated = GL_FALSE;
     _extensions->glValidateProgram( _glProgramHandle );
     _extensions->glGetProgramiv( _glProgramHandle, GL_VALIDATE_STATUS, &validated );
@@ -1057,11 +1066,15 @@ bool Program::PerContextProgram::validateProgram()
 
 bool Program::PerContextProgram::getInfoLog( std::string& infoLog ) const
 {
+    if (!_glProgramHandle) return false;
+
     return _extensions->getProgramInfoLog( _glProgramHandle, infoLog );
 }
 
 Program::ProgramBinary* Program::PerContextProgram::compileProgramBinary(osg::State& state)
 {
+    if (!_glProgramHandle) return 0;
+
     linkProgram(state);
     GLint binaryLength = 0;
     _extensions->glGetProgramiv( _glProgramHandle, GL_PROGRAM_BINARY_LENGTH, &binaryLength );
@@ -1079,5 +1092,7 @@ Program::ProgramBinary* Program::PerContextProgram::compileProgramBinary(osg::St
 
 void Program::PerContextProgram::useProgram() const
 {
+    if (!_glProgramHandle) return;
+
     _extensions->glUseProgram( _glProgramHandle  );
 }

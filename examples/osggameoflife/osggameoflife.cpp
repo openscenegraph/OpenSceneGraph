@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
     osg::ArgumentParser arguments(&argc,argv);
 
     // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates ping pong rendering with FBOs and mutliple rendering branches. It uses Conway's Game of Life to illustrate the concept.");
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates ping pong rendering with FBOs and multiple rendering branches. It uses Conway's Game of Life to illustrate the concept.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] --startim start_image");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("--startim","The initial image to seed the game of life with.");

@@ -334,7 +334,7 @@ struct TraversalOrderFunctor
 {
     bool operator() (const RenderLeaf* lhs,const RenderLeaf* rhs) const
     {
-        return (lhs->_traversalNumber<rhs->_traversalNumber);
+        return (lhs->_traversalOrderNumber<rhs->_traversalOrderNumber);
     }
 };
 

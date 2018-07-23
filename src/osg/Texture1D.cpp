@@ -158,12 +158,12 @@ void Texture1D::apply(State& state) const
 
     if (textureObject)
     {
-        textureObject->bind();
-
-        if (getTextureParameterDirty(state.getContextID())) applyTexParameters(GL_TEXTURE_1D,state);
+        textureObject->bind(state);
 
         if (_subloadCallback.valid())
         {
+            applyTexParameters(GL_TEXTURE_1D,state);
+
             _subloadCallback->subload(*this,state);
         }
         else if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
@@ -171,8 +171,13 @@ void Texture1D::apply(State& state) const
             // update the modified count to show that it is up to date.
             getModifiedCount(contextID) = _image->getModifiedCount();
 
+            applyTexParameters(GL_TEXTURE_1D,state);
+
             applyTexImage1D(GL_TEXTURE_1D,_image.get(),state, _textureWidth, _numMipmapLevels);
         }
+
+        if (getTextureParameterDirty(state.getContextID()))
+            applyTexParameters(GL_TEXTURE_1D,state);
 
     }
     else if (_subloadCallback.valid())
@@ -181,7 +186,7 @@ void Texture1D::apply(State& state) const
         // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.
         textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_1D);
 
-        textureObject->bind();
+        textureObject->bind(state);
 
         applyTexParameters(GL_TEXTURE_1D,state);
 
@@ -202,11 +207,11 @@ void Texture1D::apply(State& state) const
         // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.
         textureObject = generateAndAssignTextureObject(contextID,GL_TEXTURE_1D);
 
-        textureObject->bind();
+        textureObject->bind(state);
 
         applyTexParameters(GL_TEXTURE_1D,state);
 
-        // update the modified count to show that it is upto date.
+        // update the modified count to show that it is up to date.
         getModifiedCount(contextID) = _image->getModifiedCount();
 
         applyTexImage1D(GL_TEXTURE_1D,_image.get(),state, _textureWidth, _numMipmapLevels);
@@ -227,7 +232,7 @@ void Texture1D::apply(State& state) const
     {
         textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_1D,_numMipmapLevels,_internalFormat,_textureWidth,1,1,0);
 
-        textureObject->bind();
+        textureObject->bind(state);
 
         applyTexParameters(GL_TEXTURE_1D,state);
         GLExtensions * extensions = state.get<GLExtensions>();
@@ -420,7 +425,7 @@ void Texture1D::copyTexImage1D(State& state, int x, int y, int width)
 
     textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_1D);
 
-    textureObject->bind();
+    textureObject->bind(state);
 
 
     applyTexParameters(GL_TEXTURE_1D,state);
@@ -449,7 +454,7 @@ void Texture1D::copyTexSubImage1D(State& state, int xoffset, int x, int y, int w
     if (textureObject != 0)
     {
 
-        textureObject->bind();
+        textureObject->bind(state);
 
         // we have a valid image
         applyTexParameters(GL_TEXTURE_1D,state);
@@ -481,7 +486,7 @@ void Texture1D::allocateMipmap(State& state) const
     if (textureObject && _textureWidth != 0)
     {
         // bind texture
-        textureObject->bind();
+        textureObject->bind(state);
 
         // compute number of mipmap levels
         int width = _textureWidth;

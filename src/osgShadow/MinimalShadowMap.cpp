@@ -191,7 +191,7 @@ void MinimalShadowMap::ViewData::frameShadowCastingCamera
         osg::Matrix transform = osg::Matrix::inverse( mvp );
 
         // Code below was working only for directional lights ie when projection was ortho
-        // osg::Vec3d normal = osg::Matrix::transform3x3( osg::Vec3d( 0,0,-1)., transfrom );
+        // osg::Vec3d normal = osg::Matrix::transform3x3( osg::Vec3d( 0,0,-1)., transform );
 
         // So I replaced it with safer code working with spot lights as well
         osg::Vec3d normal =
@@ -299,7 +299,7 @@ void MinimalShadowMap::ViewData::cullShadowReceivingScene( )
             _cv->clampProjectionMatrix( _clampedProjection, n, f );
     }
 
-    // Aditionally clamp far plane if shadows don't need to be cast as
+    // Additionally clamp far plane if shadows don't need to be cast as
     // far as main projection far plane
     if( 0 < *_maxFarPlanePtr )
         clampProjection( _clampedProjection, 0.f, *_maxFarPlanePtr );

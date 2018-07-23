@@ -8,7 +8,8 @@
 using namespace osgFX;
 
 Technique::Technique()
-:    osg::Referenced()
+:    osg::Referenced(),
+    _passesDefined(0)
 {
 }
 
@@ -37,8 +38,16 @@ bool Technique::validate(osg::State& state) const
 void Technique::traverse_implementation(osg::NodeVisitor& nv, Effect* fx)
 {
     // define passes if necessary
-    if (_passes.empty()) {
-        define_passes();
+    if (_passesDefined==0)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _mutex);
+
+        if (_passesDefined==0)
+        {
+            define_passes();
+
+            _passesDefined.exchange(1);
+        }
     }
 
     // special actions must be taken if the node visitor is actually a CullVisitor
@@ -46,7 +55,7 @@ void Technique::traverse_implementation(osg::NodeVisitor& nv, Effect* fx)
     if (cv)
     {
         // traverse all passes
-        for (int i=0; i<getNumPasses(); ++i)
+        for (size_t i=0; i<_passes.size(); ++i)
         {
             // push the i-th pass' StateSet
             cv->pushStateSet(_passes[i].get());

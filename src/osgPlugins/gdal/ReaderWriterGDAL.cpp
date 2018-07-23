@@ -256,7 +256,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             int internalFormat = GL_LUMINANCE;
             unsigned int pixelFormat = GL_LUMINANCE;
             unsigned int dataType = 0;
-            unsigned int numBytesPerPixel = 0;
+            unsigned int numBytesPerComponent = 0;
 
             GDALDataType targetGDALType = GDT_Byte;
 
@@ -327,14 +327,14 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                     targetGDALType = band->GetRasterDataType();
                     switch(band->GetRasterDataType())
                     {
-                      case(GDT_Byte): dataType = GL_UNSIGNED_BYTE; numBytesPerPixel = 1; break;
-                      case(GDT_UInt16): dataType = GL_UNSIGNED_SHORT; numBytesPerPixel = 2; break;
-                      case(GDT_Int16): dataType = GL_SHORT; numBytesPerPixel = 2; break;
-                      case(GDT_UInt32): dataType = GL_UNSIGNED_INT; numBytesPerPixel = 4; break;
-                      case(GDT_Int32): dataType = GL_INT; numBytesPerPixel = 4; break;
-                      case(GDT_Float32): dataType = GL_FLOAT; numBytesPerPixel = 4; break;
-                      case(GDT_Float64): dataType = GL_DOUBLE; numBytesPerPixel = 8; break;  // not handled
-                      default: dataType = 0; numBytesPerPixel = 0; break; // not handled
+                      case(GDT_Byte): dataType = GL_UNSIGNED_BYTE; numBytesPerComponent = 1; break;
+                      case(GDT_UInt16): dataType = GL_UNSIGNED_SHORT; numBytesPerComponent = 2; break;
+                      case(GDT_Int16): dataType = GL_SHORT; numBytesPerComponent = 2; break;
+                      case(GDT_UInt32): dataType = GL_UNSIGNED_INT; numBytesPerComponent = 4; break;
+                      case(GDT_Int32): dataType = GL_INT; numBytesPerComponent = 4; break;
+                      case(GDT_Float32): dataType = GL_FLOAT; numBytesPerComponent = 4; break;
+                      case(GDT_Float64): dataType = GL_DOUBLE; numBytesPerComponent = 8; break;  // not handled
+                      default: dataType = 0; numBytesPerComponent = 0; break; // not handled
                     }
                 }
             }
@@ -348,7 +348,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             if (dataType==0)
             {
                 dataType = GL_UNSIGNED_BYTE;
-                numBytesPerPixel = 1;
+                numBytesPerComponent = 1;
                 targetGDALType = GDT_Byte;
             }
 
@@ -360,7 +360,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                 {
                     // RGBA
 
-                    int pixelSpace=4*numBytesPerPixel;
+                    int pixelSpace=4*numBytesPerComponent;
                     int lineSpace=destWidth * pixelSpace;
 
                     imageData = new unsigned char[destWidth * destHeight * pixelSpace];
@@ -370,16 +370,16 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                     OSG_INFO << "reading RGBA"<<std::endl;
 
                     bandRed->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+0),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
-                    bandGreen->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+1),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
-                    bandBlue->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+2),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
-                    bandAlpha->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+3),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
+                    bandGreen->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+1*numBytesPerComponent),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
+                    bandBlue->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+2*numBytesPerComponent),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
+                    bandAlpha->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+3*numBytesPerComponent),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
 
                 }
                 else
                 {
                     // RGB
 
-                    int pixelSpace=3*numBytesPerPixel;
+                    int pixelSpace=3*numBytesPerComponent;
                     int lineSpace=destWidth * pixelSpace;
 
                     imageData = new unsigned char[destWidth * destHeight * pixelSpace];
@@ -389,8 +389,8 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                     OSG_INFO << "reading RGB"<<std::endl;
 
                     bandRed->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+0),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
-                    bandGreen->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+1),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
-                    bandBlue->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+2),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
+                    bandGreen->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+1*numBytesPerComponent),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
+                    bandBlue->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+2*numBytesPerComponent),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
 
                 }
             }
@@ -399,7 +399,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                 if (bandAlpha)
                 {
                     // Luminance alpha
-                    int pixelSpace=2*numBytesPerPixel;
+                    int pixelSpace=2*numBytesPerComponent;
                     int lineSpace=destWidth * pixelSpace;
 
                     imageData = new unsigned char[destWidth * destHeight * pixelSpace];
@@ -409,12 +409,12 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                     OSG_INFO << "reading grey + alpha"<<std::endl;
 
                     bandGray->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+0),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
-                    bandAlpha->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+1),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
+                    bandAlpha->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+1*numBytesPerComponent),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
                 }
                 else
                 {
                     // Luminance map
-                    int pixelSpace=1*numBytesPerPixel;
+                    int pixelSpace=1*numBytesPerComponent;
                     int lineSpace=destWidth * pixelSpace;
 
                     imageData = new unsigned char[destWidth * destHeight * pixelSpace];
@@ -429,7 +429,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             else if (bandAlpha)
             {
                 // alpha map
-                int pixelSpace=1*numBytesPerPixel;
+                int pixelSpace=1*numBytesPerComponent;
                 int lineSpace=destWidth * pixelSpace;
 
                 imageData = new unsigned char[destWidth * destHeight * pixelSpace];
@@ -444,7 +444,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             else if (bandPalette)
             {
                 // Paletted map
-                int pixelSpace=1*numBytesPerPixel;
+                int pixelSpace=1*numBytesPerComponent;
                 int lineSpace=destWidth * pixelSpace;
 
                 unsigned char *rawImageData;
@@ -454,7 +454,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                 internalFormat = GL_RGBA;
 
                 OSG_INFO << "reading palette"<<std::endl;
-                OSG_INFO << "numBytesPerPixel: " << numBytesPerPixel << std::endl;
+                OSG_INFO << "numBytesPerComponent: " << numBytesPerComponent << std::endl;
 
                 bandPalette->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(rawImageData),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
 

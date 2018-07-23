@@ -21,7 +21,6 @@ SET(TARGET_H
     ${HEADER_PATH}/HalfWayMapGenerator
     ${HEADER_PATH}/HighlightMapGenerator
     ${HEADER_PATH}/IntersectionVisitor
-    ${HEADER_PATH}/IntersectVisitor
     ${HEADER_PATH}/IncrementalCompileOperation
     ${HEADER_PATH}/LineSegmentIntersector
     ${HEADER_PATH}/MeshOptimizers
@@ -49,7 +48,6 @@ SET(TARGET_H
     ${HEADER_PATH}/Tessellator
     ${HEADER_PATH}/TransformAttributeFunctor
     ${HEADER_PATH}/TransformCallback
-    ${HEADER_PATH}/TriStripVisitor
     ${HEADER_PATH}/UpdateVisitor
     ${HEADER_PATH}/Version
 )
@@ -65,7 +63,6 @@ SET(TARGET_SRC
     HalfWayMapGenerator.cpp
     HighlightMapGenerator.cpp
     IntersectionVisitor.cpp
-    IntersectVisitor.cpp
     IncrementalCompileOperation.cpp
     LineSegmentIntersector.cpp
     MeshOptimizers.cpp
@@ -92,19 +89,6 @@ SET(TARGET_SRC
     TransformAttributeFunctor.cpp
     TransformCallback.cpp
 
-    tristripper/include/detail/graph_array.h
-    tristripper/include/detail/types.h
-    tristripper/include/detail/cache_simulator.h
-    tristripper/include/detail/policy.h
-    tristripper/include/detail/heap_array.h
-    tristripper/include/detail/connectivity_graph.h
-    tristripper/include/tri_stripper.h
-    tristripper/include/public_types.h
-    tristripper/src/tri_stripper.cpp
-    tristripper/src/policy.cpp
-    tristripper/src/connectivity_graph.cpp
-
-    TriStripVisitor.cpp
     UpdateVisitor.cpp
     Version.cpp
     ${OPENSCENEGRAPH_VERSIONINFO_RC}

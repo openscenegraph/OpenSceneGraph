@@ -123,7 +123,7 @@ public:
             if (l>='a' && l<='z') l = (l-'a')+'A';
             if (r>='a' && r<='z') r = (r-'a')+'A';
 
-            // if both charaters are equal then move to the next character
+            // if both characters are equal then move to the next character
             if (l==r)
             {
                 lhs_itr++;

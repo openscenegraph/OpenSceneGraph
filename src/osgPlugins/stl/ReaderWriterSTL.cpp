@@ -32,7 +32,7 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 
-#include <osgUtil/TriStripVisitor>
+#include <osgUtil/MeshOptimizers>
 #include <osgUtil/SmoothingVisitor>
 #include <osg/TriangleFunctor>
 
@@ -113,7 +113,7 @@ public:
     virtual WriteResult writeNode(const osg::Node& node, const std::string& fileName, const Options* = NULL) const;
 
 private:
-    class ReaderObject
+    class ReaderObject : public osg::Referenced
     {
     public:
         ReaderObject(bool noTriStripPolygons, bool generateNormals = true):
@@ -182,8 +182,7 @@ private:
             geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, _numFacets * 3));
 
             if(!_noTriStripPolygons) {
-                osgUtil::TriStripVisitor tristripper;
-                tristripper.stripify(*geom);
+                osgUtil::optimizeMesh(geom.get());
             }
 
             return geom;
@@ -527,7 +526,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     else
         readerObject = new AsciiReaderObject(localOptions.noTriStripPolygons);
 
-    std::auto_ptr<ReaderObject> readerPtr(readerObject);
+    osg::ref_ptr<ReaderObject> readerPtr(readerObject);
 
     while (1)
     {
@@ -742,7 +741,7 @@ ReaderWriterSTL::ReaderObject::ReadResult ReaderWriterSTL::BinaryReaderObject::r
          *
          * The magics files may use whether per-face or per-object colors
          * for a given face, according to the value of the last bit (0 = per-face, 1 = per-object)
-         * Moreover, magics uses RGB instead of BGR (as the other softwares)
+         * Moreover, magics uses RGB instead of BGR (as the other software)
          */
         if (!_color.valid())
         {

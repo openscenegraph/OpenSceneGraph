@@ -226,9 +226,9 @@ void QuicktimeLiveImageStream::createAndRunWithSequenceGrabber(std::string fileN
 void QuicktimeLiveImageStream::createSequenceGrabber()
 {
     ComponentDescription sg_component_description;
-    sg_component_description.componentType         = SeqGrabComponentType; /* A unique 4-byte code indentifying the command set */
+    sg_component_description.componentType         = SeqGrabComponentType; /* A unique 4-byte code identifying the command set */
     sg_component_description.componentSubType      = 0L;      /* Particular flavor of this instance */
-    sg_component_description.componentManufacturer = 'appl';  /* Vendor indentification */
+    sg_component_description.componentManufacturer = 'appl';  /* Vendor identification */
     sg_component_description.componentFlags        = 0L;      /* 8 each for Component,Type,SubType,Manuf/revision */
     sg_component_description.componentFlagsMask    = 0L;      /* Mask for specifying which flags to consider in search, zero during registration */
     long num_sg_components = CountComponents (&sg_component_description);
@@ -519,14 +519,14 @@ void QuicktimeLiveImageStream::createAndRunWithVideoDigitizer(std::string fileNa
 }
 
 // 2.
-// Create the Video Digitizer (using GWorld Pixmap as target mamory)
+// Create the Video Digitizer (using GWorld Pixmap as target memory)
 void QuicktimeLiveImageStream::createVideoDigitizer()
 {
     // #define videoDigitizerComponentType = 'vdig'
     ComponentDescription video_component_description;
-    video_component_description.componentType         = 'vdig'; /* A unique 4-byte code indentifying the command set */
+    video_component_description.componentType         = 'vdig'; /* A unique 4-byte code identifying the command set */
     video_component_description.componentSubType      = 0;      /* Particular flavor of this instance */
-    video_component_description.componentManufacturer = 0;      /* Vendor indentification */
+    video_component_description.componentManufacturer = 0;      /* Vendor identification */
     video_component_description.componentFlags        = 0;      /* 8 each for Component,Type,SubType,Manuf/revision */
     video_component_description.componentFlagsMask    = 0;      /* Mask for specifying which flags to consider in search, zero during registration */
     long num_video_components = CountComponents (&video_component_description);

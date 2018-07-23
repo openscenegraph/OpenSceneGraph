@@ -48,7 +48,7 @@ bool MorphTransformHardware::init(MorphGeometry& morphGeometry)
     if(pos)
     {
         pos->setDataVariance(osg::Object::STATIC);
-        ///check if source is setted correctly
+        ///check if source is set correctly
         if (!vertexSource|| vertexSource->size() != pos->size())
         {
             vertexSource =(static_cast<osg::Vec3Array*>( pos->clone(osg::CopyOp::DEEP_COPY_ARRAYS)));
@@ -116,7 +116,7 @@ bool MorphTransformHardware::init(MorphGeometry& morphGeometry)
     osg::ref_ptr<osg::Program> program ;
     osg::ref_ptr<osg::Shader> vertexshader;
     osg::ref_ptr<osg::StateSet> stateset = morphGeometry.getOrCreateStateSet();
-    //grab geom source program and vertex shader if _shader is not setted
+    //grab geom source program and vertex shader if _shader is not set
     if(!_shader.valid() && (program = (osg::Program*)stateset->getAttribute(osg::StateAttribute::PROGRAM)))
     {
         for(unsigned int i=0;i<program->getNumShaders();++i)
@@ -135,7 +135,7 @@ bool MorphTransformHardware::init(MorphGeometry& morphGeometry)
     }
     
     program->setName("HardwareMorphing");
-    //set default source if _shader is not user setted
+    //set default source if _shader is not user set
     if (!vertexshader.valid())
     {
         if (!_shader.valid()) vertexshader = osgDB::readRefShaderFile(osg::Shader::VERTEX,"morphing.vert");

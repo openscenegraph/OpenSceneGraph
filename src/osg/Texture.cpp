@@ -245,10 +245,12 @@ Texture::TextureObject::~TextureObject()
     // OSG_NOTICE<<"Texture::TextureObject::~TextureObject() "<<this<<std::endl;
 }
 
-void Texture::TextureObject::bind()
+void Texture::TextureObject::bind(osg::State& state)
 {
     glBindTexture( _profile._target, _id);
     if (_set) _set->moveToBack(this);
+
+    if (state.getUseStateAttributeShaders()) state.setCurrentTextureFormat(_profile._internalFormat);
 }
 
 void Texture::TextureObject::release()
@@ -1222,9 +1224,15 @@ osg::ref_ptr<Texture::TextureObject> Texture::generateTextureObject(const Textur
 // Texture class implementation
 //
 Texture::Texture():
+#if 0
             _wrap_s(CLAMP),
             _wrap_t(CLAMP),
             _wrap_r(CLAMP),
+#else
+            _wrap_s(CLAMP_TO_EDGE),
+            _wrap_t(CLAMP_TO_EDGE),
+            _wrap_r(CLAMP_TO_EDGE),
+#endif
             _min_filter(LINEAR_MIPMAP_LINEAR), // trilinear
             _mag_filter(LINEAR),
             _maxAnisotropy(1.0f),
@@ -1251,7 +1259,7 @@ Texture::Texture():
 }
 
 Texture::Texture(const Texture& text,const CopyOp& copyop):
-            StateAttribute(text,copyop),
+            TextureAttribute(text,copyop),
             _wrap_s(text._wrap_s),
             _wrap_t(text._wrap_t),
             _wrap_r(text._wrap_r),
@@ -1301,7 +1309,7 @@ int Texture::compareTexture(const Texture& rhs) const
     COMPARE_StateAttribute_Parameter(_useHardwareMipMapGeneration)
     COMPARE_StateAttribute_Parameter(_internalFormatMode)
 
-    // only compare _internalFomat is it has alrady been set in both lhs, and rhs
+    // only compare _internalFomat is it has already been set in both lhs, and rhs
     if (_internalFormat!=0 && rhs._internalFormat!=0)
     {
         COMPARE_StateAttribute_Parameter(_internalFormat)
@@ -1995,7 +2003,7 @@ void Texture::applyTexParameters(GLenum target, State& state) const
     // integer textures are not supported by the shadow
     // GL_TEXTURE_1D_ARRAY_EXT could be included in the check below but its not yet implemented in OSG
     if (extensions->isShadowSupported &&
-        (target == GL_TEXTURE_2D || target == GL_TEXTURE_1D || target == GL_TEXTURE_RECTANGLE || target == GL_TEXTURE_CUBE_MAP || target == GL_TEXTURE_2D_ARRAY_EXT ) &&
+        (target == GL_TEXTURE_2D || target == GL_TEXTURE_1D || target == GL_TEXTURE_RECTANGLE || target == GL_TEXTURE_CUBE_MAP || target == GL_TEXTURE_2D_ARRAY ) &&
         _internalFormatType != SIGNED_INTEGER && _internalFormatType != UNSIGNED_INTEGER)
     {
         if (_use_shadow_comparison)
@@ -2797,7 +2805,7 @@ void Texture::generateMipmap(State& state) const
     // FrameBufferObjects are required for glGenerateMipmap
     if (ext->isFrameBufferObjectSupported && ext->glGenerateMipmap)
     {
-        textureObject->bind();
+        textureObject->bind(state);
         ext->glGenerateMipmap(textureObject->target());
 
         // inform state that this texture is the current one bound.

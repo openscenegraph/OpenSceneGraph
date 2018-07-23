@@ -506,7 +506,7 @@ bool Model::readMTL(std::istream& fin)
                     material->maps.push_back(parseTextureMap(strip(line+7),Material::Map::SPECULAR_EXPONENT));
                 }
                 // modelling tools and convertors variously produce bump, map_bump, and map_Bump so parse them all
-                else if (strncasecmp(line,"bump ",5)==0 || strncasecmp(line,"map_bump ",9)==0)
+                else if (strncasecmp(line,"bump ",5)==0)
                 {
                     material->maps.push_back(parseTextureMap(strip(line+5),Material::Map::BUMP));
                 }

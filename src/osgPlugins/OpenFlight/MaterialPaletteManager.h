@@ -32,7 +32,7 @@ namespace flt
 class DataOutputStream;
 
 
-class MaterialPaletteManager
+class MaterialPaletteManager : public osg::Referenced
 {
   public:
       MaterialPaletteManager( ExportOptions& fltOpt );
@@ -45,6 +45,9 @@ class MaterialPaletteManager
 
 
   private:
+
+    virtual ~MaterialPaletteManager() {}
+
     int _currIndex;
 
     // Helper struct to hold material palette records

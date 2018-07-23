@@ -554,7 +554,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
     public:
         /** Functor used in internal implementations.*/
-        struct ReadFunctor
+        struct ReadFunctor : public osg::Referenced
         {
             ReadFunctor(const std::string& filename, const Options* options):
                 _filename(filename),

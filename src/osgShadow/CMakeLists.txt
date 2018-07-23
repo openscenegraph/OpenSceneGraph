@@ -18,11 +18,9 @@ SET(LIB_NAME osgShadow)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(TARGET_H
     ${HEADER_PATH}/Export
-    ${HEADER_PATH}/OccluderGeometry
     ${HEADER_PATH}/ShadowMap
     ${HEADER_PATH}/ShadowTechnique
     ${HEADER_PATH}/ShadowTexture
-    ${HEADER_PATH}/ShadowVolume
     ${HEADER_PATH}/ShadowedScene
     ${HEADER_PATH}/ShadowSettings
     ${HEADER_PATH}/SoftShadowMap
@@ -42,11 +40,9 @@ SET(TARGET_H
 
 # FIXME: For OS X, need flag for Framework or dylib
 SET(TARGET_SRC
-    OccluderGeometry.cpp
     ShadowMap.cpp
     ShadowTechnique.cpp
     ShadowTexture.cpp
-    ShadowVolume.cpp
     ShadowedScene.cpp
     ShadowSettings.cpp
     SoftShadowMap.cpp

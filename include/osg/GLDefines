@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2014 Robert Osfield
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2017 Robert Osfield
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2004-2005 Nathan Cournia
  * Copyright (C) 2007 Art Tevs
@@ -630,16 +630,15 @@ typedef char GLchar;
 #define GL_TIMEOUT_IGNORED                0xFFFFFFFFFFFFFFFFull
 #endif
 
-#ifndef GL_TEXTURE_2D_ARRAY_EXT
-    #define GL_TEXTURE_2D_ARRAY_EXT           0x8C1A
-    #define GL_TEXTURE_2D_ARRAY_EXT                        0x8C1A
-    #define GL_PROXY_TEXTURE_2D_ARRAY_EXT                  0x8C1B
-    #define GL_TEXTURE_BINDING_2D_ARRAY_EXT                0x8C1D
-    #define GL_MAX_ARRAY_TEXTURE_LAYERS_EXT                0x88FF
-    #define GL_COMPARE_REF_DEPTH_TO_TEXTURE_EXT            0x884E
-    #define GL_SAMPLER_2D_ARRAY_EXT                        0x8DC1
-    #define GL_SAMPLER_2D_ARRAY_SHADOW_EXT                 0x8DC4
-    #define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER_EXT    0x8CD4
+#ifndef GL_TEXTURE_2D_ARRAY
+    #define GL_TEXTURE_2D_ARRAY                        0x8C1A
+    #define GL_PROXY_TEXTURE_2D_ARRAY                  0x8C1B
+    #define GL_TEXTURE_BINDING_2D_ARRAY                0x8C1D
+    #define GL_MAX_ARRAY_TEXTURE_LAYERS                0x88FF
+    #define GL_COMPARE_REF_DEPTH_TO_TEXTURE            0x884E
+    #define GL_SAMPLER_2D_ARRAY                        0x8DC1
+    #define GL_SAMPLER_2D_ARRAY_SHADOW                 0x8DC4
+    #define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER    0x8CD4
 #endif
 
 #ifndef GL_MAX_3D_TEXTURE_SIZE

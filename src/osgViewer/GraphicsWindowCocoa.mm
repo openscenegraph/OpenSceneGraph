@@ -167,7 +167,7 @@ std::ostream& operator<<(std::ostream& os, const NSRect& rect)
 // Cocoa uses a coordinate system where its origin is in the bottom left corner,
 // osg and quartz uses top left for the origin
 //
-// these 2 methods convets rects between the different coordinate systems
+// these 2 methods converts rects between the different coordinate systems
 // ----------------------------------------------------------------------------------------------------------
 
 static NSRect convertFromQuartzCoordinates(const NSRect& rect)

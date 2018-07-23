@@ -42,7 +42,7 @@
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
 
-#include <osgUtil/TriStripVisitor>
+#include <osgUtil/MeshOptimizers>
 #include <osgUtil/SmoothingVisitor>
 #include <osgUtil/Tessellator>
 
@@ -61,7 +61,7 @@ public:
         supportsOption("noRotation","Do not do the default rotate about X axis");
         supportsOption("noTesselateLargePolygons","Do not do the default tesselation of large polygons");
         supportsOption("noTriStripPolygons","Do not do the default tri stripping of polygons");
-        supportsOption("generateFacetNormals","generate facet normals for verticies without normals");
+        supportsOption("generateFacetNormals","generate facet normals for vertices without normals");
         supportsOption("noReverseFaces","avoid to reverse faces when normals and triangles orientation are reversed");
 
         supportsOption("DIFFUSE=<unit>", "Set texture unit for diffuse texture");
@@ -533,8 +533,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
 
     if (colors)
     {
-        geometry->setColorArray(colors);
-        geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+        geometry->setColorArray(colors, osg::Array::BIND_PER_VERTEX);
     }
 
     if (numPointElements>0)
@@ -654,12 +653,6 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
             obj::Element& element = *(*itr);
             if (element.dataType==obj::Element::POLYGON)
             {
-
-
-
-
-
-
                 #ifdef USE_DRAWARRAYLENGTHS
                     drawArrayLengths->push_back(element.vertexIndices.size());
                 #else
@@ -801,11 +794,10 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, ObjOptio
                 tessellator.retessellatePolygons(*geometry);
             }
 
-            // tri strip polygons to improve graphics peformance
+            // tri strip polygons to improve graphics performance
             if (!localOptions.noTriStripPolygons)
             {
-                osgUtil::TriStripVisitor tsv;
-                tsv.stripify(*geometry);
+                osgUtil::optimizeMesh(geometry);
             }
 
             // if no normals present add them.

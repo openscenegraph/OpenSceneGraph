@@ -26,10 +26,15 @@
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 
+#include <osgViewer/GraphicsWindow>
+
 #include <sstream>
 #include <iostream>
 
 #define MIN_NEARFAROFFSET 0.1
+
+// force the WIndowingSystem to initialize to allow us to create a graphics context.
+USE_GRAPHICSWINDOW()
 
 class SliceProcessor
 {
@@ -187,7 +192,7 @@ int main( int argc, char **argv )
         // pass frame stamp to the SceneView so that the update, cull and draw traversals all use the same FrameStamp
         sceneView->setFrameStamp(frameStamp.get());
 
-        // update the viewport dimensions, incase the window has been resized.
+        // update the viewport dimensions, in case the window has been resized.
         sceneView->setViewport(0,0,traits->width,traits->height);
 
 

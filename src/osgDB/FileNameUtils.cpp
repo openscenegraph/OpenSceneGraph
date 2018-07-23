@@ -155,7 +155,7 @@ std::string osgDB::getNameLessExtension(const std::string& fileName)
 // strip all extensions from the filename.
 std::string osgDB::getNameLessAllExtensions(const std::string& fileName)
 {
-    // Finds start serach position: from last slash, or the beginning of the string if none found
+    // Finds start search position: from last slash, or the beginning of the string if none found
     std::string::size_type startPos = fileName.find_last_of(PATH_SEPARATORS);            // Finds forward slash *or* back slash
     if (startPos == std::string::npos) startPos = 0;
     std::string::size_type dot = fileName.find_first_of('.', startPos);        // Finds *FIRST* dot from start pos
@@ -449,7 +449,7 @@ std::string osgDB::getPathRelative(const std::string& from, const std::string& t
 
     // Definition: an "element" is a part between slashes. Ex: "/a/b" has two elements ("a" and "b").
     // Algorithm:
-    // 1. If paths are neither both absolute nor both relative, then we cannot do anything (we need to make them absolute, but need additionnal info on how to make it). Return.
+    // 1. If paths are neither both absolute nor both relative, then we cannot do anything (we need to make them absolute, but need additional info on how to make it). Return.
     // 2. If both paths are absolute and root isn't the same (for Windows only, as roots are of the type "C:", "D:"), then the operation is impossible. Return.
     // 3. Iterate over two paths elements until elements are equal
     // 4. For each remaining element in "from", add ".." to result

@@ -98,7 +98,7 @@ void Texture2DMultisample::apply(State& state) const
 
     if (textureObject)
     {
-        textureObject->bind();
+        textureObject->bind(state);
     }
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_numSamples!=0) )
     {
@@ -112,7 +112,7 @@ void Texture2DMultisample::apply(State& state) const
                                  1,
                                  _borderWidth);
 
-        textureObject->bind();
+        textureObject->bind(state);
         // no image present, but dimensions at set so lets create the texture
         if(extensions->isTextureStorageEnabled)
             extensions->glTexStorage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE, _numSamples, _internalFormat,

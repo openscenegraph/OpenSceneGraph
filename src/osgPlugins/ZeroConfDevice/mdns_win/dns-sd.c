@@ -199,9 +199,9 @@ static DNSServiceRef sc1, sc2, sc3;        // DNSServiceRefs for kDNSServiceFlag
 static int num_printed;
 static char addtest = 0;
 static DNSRecordRef record = NULL;
-static char myhinfoW[14] = "\002PC\012Windows XP";
-static char myhinfoX[ 9] = "\003Mac\004OS X";
-static char updatetest[3] = "\002AA";
+static char myhinfoW[15] = "\002PC\012Windows XP";
+static char myhinfoX[10] = "\003Mac\004OS X";
+static char updatetest[4] = "\002AA";
 static char bigNULL[8192];    // 8K is maximum rdata we support
 
 // Note: the select() implementation on Windows (Winsock2) fails with any timeout much larger than this
@@ -263,7 +263,7 @@ static uint16_t GetRRType(const char *s)
     else if (!strcasecmp(s, "MAILB"   )) return(kDNSServiceType_MAILB);
     else if (!strcasecmp(s, "MAILA"   )) return(kDNSServiceType_MAILA);
     else if (!strcasecmp(s, "ANY"     )) return(kDNSServiceType_ANY);
-    else                                 return(atoi(s));
+    else                                 return((uint16_t)(atoi(s)));
     }
 
 #if HAS_NAT_PMP_API | HAS_ADDRINFO_API
@@ -424,8 +424,10 @@ static void ShowTXTRecord(uint16_t txtLen, const unsigned char *txtRecord)
 static void DNSSD_API resolve_reply(DNSServiceRef sdref, const DNSServiceFlags flags, uint32_t ifIndex, DNSServiceErrorType errorCode,
     const char *fullname, const char *hosttarget, uint16_t opaqueport, uint16_t txtLen, const unsigned char *txtRecord, void *context)
     {
-    union { uint16_t s; u_char b[2]; } port = { opaqueport };
-    uint16_t PortAsNumber = ((uint16_t)port.b[0]) << 8 | port.b[1];
+    union { uint16_t s; u_char b[2]; } port;
+    uint16_t PortAsNumber;
+    port.s =  opaqueport ;
+    PortAsNumber = ((uint16_t)port.b[0]) << 8 | port.b[1];
 
     (void)sdref;        // Unused
     (void)ifIndex;      // Unused
@@ -456,11 +458,11 @@ static void myTimerCallBack(void)
             switch (addtest)
                 {
                 case 0: printf("Adding Test HINFO record\n");
-                        err = DNSServiceAddRecord(client, &record, 0, kDNSServiceType_HINFO, sizeof(myhinfoW), &myhinfoW[0], 0);
+                        err = DNSServiceAddRecord(client, &record, 0, kDNSServiceType_HINFO, sizeof(myhinfoW)-1, &myhinfoW[0], 0);
                         addtest = 1;
                         break;
                 case 1: printf("Updating Test HINFO record\n");
-                        err = DNSServiceUpdateRecord(client, record, 0, sizeof(myhinfoX), &myhinfoX[0], 0);
+                        err = DNSServiceUpdateRecord(client, record, 0, sizeof(myhinfoX)-1, &myhinfoX[0], 0);
                         addtest = 2;
                         break;
                 case 2: printf("Removing Test HINFO record\n");
@@ -503,7 +505,7 @@ static void myTimerCallBack(void)
 
 
 // Output the wire-format domainname pointed to by rd
-static int snprintd(char *p, int max, const unsigned char **rd)
+static size_t snprintd(char *p, size_t max, const unsigned char **rd)
     {
     const char *const buf = p;
     const char *const end = p + max;

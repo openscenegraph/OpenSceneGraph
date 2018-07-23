@@ -36,7 +36,6 @@
 #include <osgViewer/ViewerEventHandlers>
 
 #include <osgShadow/ShadowedScene>
-#include <osgShadow/ShadowVolume>
 #include <osgShadow/ShadowTexture>
 #include <osgShadow/ShadowMap>
 #include <osgShadow/SoftShadowMap>
@@ -707,7 +706,6 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--receivesShadowMask", "Override default receivesShadowMask (default - 0x1)");
 
     arguments.getApplicationUsage()->addCommandLineOption("--base", "Add a base geometry to test shadows.");
-    arguments.getApplicationUsage()->addCommandLineOption("--sv", "Select ShadowVolume implementation.");
     arguments.getApplicationUsage()->addCommandLineOption("--ssm", "Select SoftShadowMap implementation.");
     arguments.getApplicationUsage()->addCommandLineOption("--sm", "Select ShadowMap implementation.");
 
@@ -873,15 +871,8 @@ int main(int argc, char** argv)
     }
     else if (arguments.read("--sv"))
     {
-        // hint to tell viewer to request stencil buffer when setting up windows
-        osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
-
-        osg::ref_ptr<osgShadow::ShadowVolume> sv = new osgShadow::ShadowVolume;
-        sv->setDynamicShadowVolumes(updateLightPosition);
-        while (arguments.read("--two-sided")) sv->setDrawMode(osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED);
-        while (arguments.read("--two-pass")) sv->setDrawMode(osgShadow::ShadowVolumeGeometry::STENCIL_TWO_PASS);
-
-        shadowedScene->setShadowTechnique(sv.get());
+        OSG_NOTICE<<"Warning: ShadowVolume no longer supported."<<std::endl;
+        return 1;
     }
     else if (arguments.read("--st"))
     {

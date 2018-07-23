@@ -152,9 +152,9 @@ class OSG_EXPORT Program : public osg::StateAttribute
         GLenum getTransformFeedBackMode() const {return _feedbackmode;}
 
         /** Experimental. */
-        void setShaderDefines(const ShaderDefines& shaderDefs) { _shaderDefines = shaderDefs; }
-        ShaderDefines& getShaderDefines() { return _shaderDefines; }
-        const ShaderDefines& getShaderDefines() const { return _shaderDefines; }
+        void setShaderPragmas(const ShaderPragmas& shaderPragmas) { _shaderPragmas = shaderPragmas; }
+        ShaderPragmas& getShaderPragmas() { return _shaderPragmas; }
+        const ShaderPragmas& getShaderPragmas() const { return _shaderPragmas; }
 
 
 
@@ -299,12 +299,12 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 }
 
 
-                inline void apply(const Uniform& uniform) const
+                inline void apply(const UniformBase& uniform) const
                 {
                     GLint location = getUniformLocation(uniform.getNameID());
                     if (location>=0)
                     {
-                        const Uniform* lastAppliedUniform = _lastAppliedUniformList[location].first.get();
+                        const UniformBase* lastAppliedUniform = _lastAppliedUniformList[location].first.get();
                         if (lastAppliedUniform != &uniform)
                         {
                             // new attribute
@@ -380,7 +380,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 ActiveVarInfoMap _attribInfoMap;
                 UniformBlockMap _uniformBlockMap;
 
-                typedef std::pair<osg::ref_ptr<const osg::Uniform>, unsigned int> UniformModifiedCountPair;
+                typedef std::pair<osg::ref_ptr<const osg::UniformBase>, unsigned int> UniformModifiedCountPair;
                 typedef std::map<unsigned int, UniformModifiedCountPair> LastAppliedUniformList;
                 mutable LastAppliedUniformList _lastAppliedUniformList;
 
@@ -439,7 +439,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
         GLenum _feedbackmode;
         std::vector<std::string> _feedbackout;
 
-        ShaderDefines _shaderDefines;
+        ShaderPragmas _shaderPragmas;
 
 
     private:

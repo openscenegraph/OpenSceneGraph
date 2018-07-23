@@ -60,6 +60,18 @@ class OSG_EXPORT TextureCubeMap : public Texture
         /** Get the number of images that can be assigned to the Texture. */
         virtual unsigned int getNumImages() const { return 6; }
 
+
+        /** return true if the texture image data has been modified and the associated GL texture object needs to be updated.*/
+        virtual bool isDirty(unsigned int contextID) const
+        {
+            return  (_images[0].valid() && _images[0]->getModifiedCount()!=_modifiedCount[0][contextID]) ||
+                    (_images[1].valid() && _images[1]->getModifiedCount()!=_modifiedCount[1][contextID]) ||
+                    (_images[2].valid() && _images[2]->getModifiedCount()!=_modifiedCount[2][contextID]) ||
+                    (_images[3].valid() && _images[3]->getModifiedCount()!=_modifiedCount[3][contextID]) ||
+                    (_images[4].valid() && _images[4]->getModifiedCount()!=_modifiedCount[4][contextID]) ||
+                    (_images[5].valid() && _images[5]->getModifiedCount()!=_modifiedCount[5][contextID]);
+        }
+
         inline unsigned int& getModifiedCount(unsigned int face,unsigned int contextID) const
         {
             // get the modified count for the current contextID.

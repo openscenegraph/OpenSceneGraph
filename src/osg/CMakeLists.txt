@@ -58,7 +58,7 @@ SET(TARGET_H
     ${HEADER_PATH}/ColorMaski
     ${HEADER_PATH}/ColorMatrix
     ${HEADER_PATH}/ComputeBoundsVisitor
-    ${HEADER_PATH}/ComputeDispatch
+    ${HEADER_PATH}/DispatchCompute
     ${HEADER_PATH}/ContextData
     ${HEADER_PATH}/ConvexPlanarOccluder
     ${HEADER_PATH}/ConvexPlanarPolygon
@@ -113,6 +113,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Matrix
     ${HEADER_PATH}/Matrixd
     ${HEADER_PATH}/Matrixf
+    ${HEADER_PATH}/MatrixTemplate
     ${HEADER_PATH}/MatrixTransform
     ${HEADER_PATH}/MixinVector
     ${HEADER_PATH}/Multisample
@@ -170,6 +171,7 @@ SET(TARGET_H
     ${HEADER_PATH}/StencilTwoSided
     ${HEADER_PATH}/Switch
     ${HEADER_PATH}/TemplatePrimitiveFunctor
+    ${HEADER_PATH}/TextureAttribute
     ${HEADER_PATH}/TemplatePrimitiveIndexFunctor
     ${HEADER_PATH}/TexEnv
     ${HEADER_PATH}/TexEnvCombine
@@ -194,6 +196,7 @@ SET(TARGET_H
     ${HEADER_PATH}/TriangleLinePointIndexFunctor
     ${HEADER_PATH}/Types
     ${HEADER_PATH}/Uniform
+    ${HEADER_PATH}/UniformBase
     ${HEADER_PATH}/UserDataContainer
     ${HEADER_PATH}/ValueObject
     ${HEADER_PATH}/ValueMap
@@ -273,7 +276,7 @@ SET(TARGET_SRC
     ColorMaski.cpp
     ColorMatrix.cpp
     ComputeBoundsVisitor.cpp
-    ComputeDispatch.cpp
+    DispatchCompute.cpp
     ContextData.cpp
     ConvexPlanarOccluder.cpp
     ConvexPlanarPolygon.cpp

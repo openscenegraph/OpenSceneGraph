@@ -334,6 +334,11 @@ bool Thread::isRunning() {
 int Thread::start() {
 
     Win32ThreadPrivateData *pd = static_cast<Win32ThreadPrivateData *> (_prvData);
+    if (pd->isRunning)
+    {
+        return 0;
+    }
+
     //-------------------------------------------------------------------------
     // Prohibit the stack size from being changed.
     // (bb 5/13/2005) it actually doesn't matter.

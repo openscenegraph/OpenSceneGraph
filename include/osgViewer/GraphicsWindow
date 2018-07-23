@@ -273,6 +273,7 @@ class GraphicsWindowEmbedded : public GraphicsWindow
         virtual void raiseWindow() {}
 };
 
+
 struct GraphicsWindowFunctionProxy
 {
     GraphicsWindowFunctionProxy(CGraphicsWindowFunction function) { (function)(); }

@@ -66,7 +66,7 @@ as appropriate for the viewer.
 
 Events from the windowing environment are adpated, and then fed into the GUIEventHandlers.
 The GUIEventHandlers analyse and take action, and make requests of the windowing
-environemnt via the GUIActionAdapter. The viewer writer should then honour these
+environment via the GUIActionAdapter. The viewer writer should then honour these
 requests, translating them into calls to the windowing API.
 
 */

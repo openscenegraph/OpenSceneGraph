@@ -178,7 +178,7 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph, Glyph::TextureInfo* info)
     if (_shaderTechnique<=GREYSCALE)
     {
         // OSG_NOTICE<<"GlyphTexture::copyGlyphImage() greyscale copying. glyphTexture="<<this<<", glyph="<<glyph->getGlyphCode()<<std::endl;
-        // make sure the glyph image settings and the target image are consisent before copying.
+        // make sure the glyph image settings and the target image are consistent before copying.
         glyph->setPixelFormat(_image->getPixelFormat());
         glyph->setInternalTextureFormat(_image->getPixelFormat());
         _image->copySubImage(info->texturePositionX, info->texturePositionY, 0, glyph);

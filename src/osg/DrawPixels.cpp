@@ -16,7 +16,7 @@ using namespace osg;
 
 DrawPixels::DrawPixels()
 {
-    // turn off display lists right now, just incase we want to modify the projection matrix along the way.
+    // turn off display lists right now, just in case we want to modify the projection matrix along the way.
     setSupportsDisplayList(false);
 
     _position.set(0.0f,0.0f,0.0f);

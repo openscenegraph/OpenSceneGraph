@@ -95,7 +95,7 @@ public:
     }
 
     inline float angleCosine(const Triangle& other) const {
-        // Triangle._normal is normalized so no need to divide by lengthes
+        // Triangle._normal is normalized so no need to divide by lengths
         return (_normal * other._normal);
     }
 

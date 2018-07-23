@@ -33,6 +33,8 @@ int osg_system(const char* command)
 
 #else // use tranditional C sysmtem call for osg_system implementation
 
+#include <stdlib.h>
+
 int osg_system(const char* command)
 {
     return system(command);

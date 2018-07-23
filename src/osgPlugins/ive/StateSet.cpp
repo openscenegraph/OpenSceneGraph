@@ -91,11 +91,21 @@ void StateSet::write(DataOutputStream* out){
     {
         // Write stateset uniforms
         StateSet::UniformList ul = getUniformList();
-        out->writeInt(ul.size());
+
+        typedef std::vector< std::pair<const osg::Uniform*, unsigned int> > Uniforms;
+        Uniforms uniforms;
+        uniforms.reserve(ul.size());
         for(StateSet::UniformList::iterator uitr=ul.begin(); uitr!=ul.end(); ++uitr)
         {
-            out->writeUniform(uitr->second.first.get());
-            out->writeInt(uitr->second.second);
+            const osg::Uniform* uniform = dynamic_cast<const osg::Uniform*>(uitr->second.first.get());
+            if (uniform) uniforms.push_back(Uniforms::value_type(uniform, uitr->second.second));
+        }
+
+        out->writeInt(uniforms.size());
+        for(Uniforms::iterator uitr=uniforms.begin(); uitr!=uniforms.end(); ++uitr)
+        {
+            out->writeUniform(uitr->first);
+            out->writeInt(uitr->second);
         }
     }
 }

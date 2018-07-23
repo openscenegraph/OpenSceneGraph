@@ -48,7 +48,6 @@ SET(TARGET_SRC
     PdfReader.cpp
     VncClient.cpp
     Canvas.cpp
-    CMakeLists.txt
     Frame.cpp
     Input.cpp
     Label.cpp

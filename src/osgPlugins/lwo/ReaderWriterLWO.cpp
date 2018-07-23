@@ -141,7 +141,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO2(const std::string
 }
 
 
-// collect all the data relavent to a particular osg::Geometry being created.
+// collect all the data relevant to a particular osg::Geometry being created.
 struct GeometryCollection
 {
     GeometryCollection():
@@ -298,7 +298,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
             //   "By convention, the +X direction is to the right or east, the +Y
             //    direction is upward, and the +Z direction is forward or north"
             // However, the osg sticks to the more conventional, y to the north,
-            // z upwards, x is the same - rigth/east.  To handle this difference
+            // z upwards, x is the same - right/east.  To handle this difference
             // simple exchange osg_z for lwo_y, and osg_y for lwo_z.
 
             // add the corners in reverse order to reverse the windings, to keep the anticlockwise rotation of polys.

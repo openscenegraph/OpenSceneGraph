@@ -401,7 +401,7 @@ int Thread::GetConcurrency()
 
 //----------------------------------------------------------------------------
 //
-// Decription: Constructor
+// Description: Constructor
 //
 // Use: public.
 //
@@ -418,7 +418,7 @@ Thread::Thread()
 
 //----------------------------------------------------------------------------
 //
-// Decription: Destructor
+// Description: Destructor
 //
 // Use: public.
 //
@@ -603,6 +603,12 @@ bool Thread::isRunning()
 //
 int Thread::start() {
 
+    PThreadPrivateData *pd = static_cast<PThreadPrivateData *> (_prvData);
+    if (pd->isRunning())
+    {
+        return 0;
+    }
+
     int status;
     pthread_attr_t thread_attr;
 
@@ -611,8 +617,6 @@ int Thread::start() {
     {
         return status;
     }
-
-    PThreadPrivateData *pd = static_cast<PThreadPrivateData *> (_prvData);
 
     //-------------------------------------------------------------------------
     // Set the stack size if requested, but not less than a platform reasonable

@@ -159,7 +159,6 @@ bool Texture2D::textureObjectValid(State& state) const
 
 void Texture2D::apply(State& state) const
 {
-
     //state.setReportGLErrors(true);
 
     // get the contextID (user defined ID of 0 upwards) for the
@@ -191,19 +190,20 @@ void Texture2D::apply(State& state) const
 
     if (textureObject)
     {
-        textureObject->bind();
-
-        if (getTextureParameterDirty(state.getContextID()))
-            applyTexParameters(GL_TEXTURE_2D,state);
+        textureObject->bind(state);
 
         if (_subloadCallback.valid())
         {
+            applyTexParameters(GL_TEXTURE_2D,state);
+
             _subloadCallback->subload(*this,state);
         }
         else if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
         {
             // update the modified tag to show that it is up to date.
             getModifiedCount(contextID) = _image->getModifiedCount();
+
+            applyTexParameters(GL_TEXTURE_2D,state);
 
             applyTexImage2D_subload(state,GL_TEXTURE_2D,_image.get(),
                                     _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
@@ -213,13 +213,16 @@ void Texture2D::apply(State& state) const
             _readPBuffer->bindPBufferToTexture(GL_FRONT);
         }
 
+        if (getTextureParameterDirty(state.getContextID()))
+            applyTexParameters(GL_TEXTURE_2D,state);
+
     }
     else if (_subloadCallback.valid())
     {
         _textureObjectBuffer[contextID] = _subloadCallback->generateTextureObject(*this, state);
         textureObject = _textureObjectBuffer[contextID].get();
 
-        textureObject->bind();
+        textureObject->bind(state);
 
         applyTexParameters(GL_TEXTURE_2D,state);
 
@@ -251,7 +254,7 @@ void Texture2D::apply(State& state) const
 
         textureObject = generateAndAssignTextureObject(contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,_borderWidth);
 
-        textureObject->bind();
+        textureObject->bind(state);
 
         applyTexParameters(GL_TEXTURE_2D,state);
 
@@ -291,7 +294,7 @@ void Texture2D::apply(State& state) const
     {
         textureObject = generateAndAssignTextureObject(contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,_borderWidth);
 
-        textureObject->bind();
+        textureObject->bind(state);
 
         applyTexParameters(GL_TEXTURE_2D,state);
 
@@ -394,7 +397,7 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
 
     textureObject = generateAndAssignTextureObject(contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
 
-    textureObject->bind();
+    textureObject->bind(state);
 
     applyTexParameters(GL_TEXTURE_2D,state);
 
@@ -423,7 +426,7 @@ void Texture2D::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x,
     if (textureObject)
     {
         // we have a valid image
-        textureObject->bind();
+        textureObject->bind(state);
 
         applyTexParameters(GL_TEXTURE_2D,state);
 
@@ -469,7 +472,7 @@ void Texture2D::allocateMipmap(State& state) const
     if (textureObject && _textureWidth != 0 && _textureHeight != 0)
     {
         // bind texture
-        textureObject->bind();
+        textureObject->bind(state);
 
         // compute number of mipmap levels
         int width = _textureWidth;

@@ -193,7 +193,7 @@ void TextureRectangle::apply(State& state) const
 
     if (textureObject)
     {
-        textureObject->bind();
+        textureObject->bind(state);
 
         if (getTextureParameterDirty(state.getContextID()))
             applyTexParameters(GL_TEXTURE_RECTANGLE, state);
@@ -215,7 +215,7 @@ void TextureRectangle::apply(State& state) const
         // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.
         textureObject = generateAndAssignTextureObject(contextID,GL_TEXTURE_RECTANGLE);
 
-        textureObject->bind();
+        textureObject->bind(state);
 
         applyTexParameters(GL_TEXTURE_RECTANGLE, state);
 
@@ -245,7 +245,7 @@ void TextureRectangle::apply(State& state) const
         textureObject = generateAndAssignTextureObject(
                 contextID,GL_TEXTURE_RECTANGLE,1,_internalFormat,_textureWidth,_textureHeight,1,0);
 
-        textureObject->bind();
+        textureObject->bind(state);
 
         applyTexParameters(GL_TEXTURE_RECTANGLE, state);
 
@@ -271,7 +271,7 @@ void TextureRectangle::apply(State& state) const
         textureObject = generateAndAssignTextureObject(
                 contextID,GL_TEXTURE_RECTANGLE,0,_internalFormat,_textureWidth,_textureHeight,1,0);
 
-        textureObject->bind();
+        textureObject->bind(state);
 
         applyTexParameters(GL_TEXTURE_RECTANGLE,state);
 
@@ -490,7 +490,7 @@ void TextureRectangle::copyTexImage2D(State& state, int x, int y, int width, int
     //
     textureObject = generateAndAssignTextureObject(contextID,GL_TEXTURE_RECTANGLE);
 
-    textureObject->bind();
+    textureObject->bind(state);
 
     applyTexParameters(GL_TEXTURE_RECTANGLE,state);
 
@@ -524,7 +524,7 @@ void TextureRectangle::copyTexSubImage2D(State& state, int xoffset, int yoffset,
     if (textureObject)
     {
         // we have a valid image
-        textureObject->bind();
+        textureObject->bind(state);
 
         applyTexParameters(GL_TEXTURE_RECTANGLE,state);
 

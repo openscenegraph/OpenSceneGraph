@@ -358,7 +358,7 @@ public:
 
     void projectDowntoBase(const osg::Vec3d& control, const osg::Vec3d& normal)
     {
-        // OSG_NOTICE<<"CustomPolytope::projectDowntoBase not implementated yet."<<std::endl;
+        // OSG_NOTICE<<"CustomPolytope::projectDowntoBase not implemented yet."<<std::endl;
 
         Faces removedFaces;
 

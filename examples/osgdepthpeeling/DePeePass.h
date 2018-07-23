@@ -34,7 +34,7 @@ class DePeePass
   DePeePass();
   
   /*!
-    Desctructor cleans the whole depth peeling pass
+    Destructor cleans the whole depth peeling pass
    */
   ~DePeePass();
   

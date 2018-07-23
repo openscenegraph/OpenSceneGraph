@@ -35,6 +35,40 @@ class Program;
 
 // set of shader define strings that the shader is dependent upon.
 typedef std::set<std::string> ShaderDefines;
+typedef std::vector<ShaderDefines> ShaderDefinesVector;
+
+struct ShaderPragmas
+{
+    ShaderDefines defines;
+    ShaderDefines requirements;
+    ShaderDefines modes;
+    ShaderDefinesVector textureModes;
+
+    void clear()
+    {
+        defines.clear();
+        requirements.clear();
+        modes.clear();
+        textureModes.clear();
+    }
+
+    void merge(const ShaderPragmas& rhs)
+    {
+        defines.insert(rhs.defines.begin(), rhs.defines.end());
+        requirements.insert(rhs.requirements.begin(), rhs.requirements.end());
+        modes.insert(rhs.modes.begin(), rhs.modes.end());
+
+        // rseize textureModes vector if required
+        unsigned int rhs_rds_size = rhs.textureModes.size();
+        if (rhs_rds_size>textureModes.size()) textureModes.resize(rhs_rds_size);
+
+        for(unsigned int i=0; i<rhs_rds_size; ++i)
+        {
+            const ShaderDefines& rhs_tsd = rhs.textureModes[i];
+            textureModes[i].insert(rhs_tsd.begin(), rhs_tsd.end());
+        }
+    }
+};
 
 /** Simple class for wrapping up the data used in OpenGL ES 2's glShaderBinary calls.
   * ShaderBinary is set up with the binary data then assigned to one or more osg::Shader. */
@@ -134,23 +168,31 @@ class OSG_EXPORT Shader : public osg::Object
         inline const std::string& getShaderSource() const { return _shaderSource; }
 
 
-        enum ShaderDefinesMode
+        enum ShaderPragmaMode
         {
             USE_SHADER_PRAGMA,
             USE_MANUAL_SETTINGS
         };
 
-        void setShaderDefinesMode(ShaderDefinesMode sdm) { _shaderDefinesMode = sdm; }
-        ShaderDefinesMode getShaderDefinesMode() const { return _shaderDefinesMode; }
+        void setShaderPragmaMode(ShaderPragmaMode spm) { _shaderPragmaMode = spm; }
+        ShaderPragmaMode getShaderPragmaMode() const { return _shaderPragmaMode; }
 
 
-        void setShaderDefines(const ShaderDefines& shaderDefs) { _shaderDefines = shaderDefs; }
-        ShaderDefines& getShaderDefines() { return _shaderDefines; }
-        const ShaderDefines& getShaderDefines() const { return _shaderDefines; }
+        void setShaderDefines(const ShaderDefines& shaderDefs) { _shaderPragmas.defines = shaderDefs; }
+        ShaderDefines& getShaderDefines() { return _shaderPragmas.defines; }
+        const ShaderDefines& getShaderDefines() const { return _shaderPragmas.defines; }
 
-        void setShaderRequirements(const ShaderDefines& shaderDefs) { _shaderRequirements = shaderDefs; }
-        ShaderDefines& getShaderRequirements() { return _shaderRequirements; }
-        const ShaderDefines& getShaderRequirements() const { return _shaderRequirements; }
+        void setShaderRequirements(const ShaderDefines& shaderDefs) { _shaderPragmas.requirements = shaderDefs; }
+        ShaderDefines& getShaderRequirements() { return _shaderPragmas.requirements; }
+        const ShaderDefines& getShaderRequirements() const { return _shaderPragmas.requirements; }
+
+        void setShaderModes(const ShaderDefines& shaderDefs) { _shaderPragmas.modes = shaderDefs; }
+        ShaderDefines& getShaderModes() { return _shaderPragmas.modes; }
+        const ShaderDefines& getShaderModes() const { return _shaderPragmas.modes; }
+
+        void setShaderPragmas(const ShaderPragmas& shaderPragmas) { _shaderPragmas = shaderPragmas; }
+        ShaderPragmas& getShaderPragmas() { return _shaderPragmas; }
+        const ShaderPragmas& getShaderPragmas() const { return _shaderPragmas; }
 
 
         /** Set the Shader using a ShaderBinary. */
@@ -287,7 +329,7 @@ class OSG_EXPORT Shader : public osg::Object
         bool removeProgramRef( osg::Program* program );
 
         void _computeShaderDefines();
-        void _parseShaderDefines(const std::string& str, ShaderDefines& defines);
+        bool _parseShaderDefines(const std::string& str, ShaderDefines& defines, unsigned int& index);
 
 
         protected:        /*data*/
@@ -298,10 +340,9 @@ class OSG_EXPORT Shader : public osg::Object
 
         CodeInjectionMap                _codeInjectionMap;
 
-        // ShaderDefines variables
-        ShaderDefinesMode               _shaderDefinesMode;
-        ShaderDefines                   _shaderDefines;
-        ShaderDefines                   _shaderRequirements;
+        // ShaderPragmas variables
+        ShaderPragmaMode                _shaderPragmaMode;
+        ShaderPragmas                   _shaderPragmas;
 
         /** osg::Programs that this osg::Shader is attached to */
         typedef std::set< osg::Program* > ProgramSet;

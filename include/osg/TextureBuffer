@@ -51,7 +51,10 @@ class OSG_EXPORT TextureBuffer : public Texture
         /** Gets the const texture image. */
         inline const Image* getImage() const { return dynamic_cast<Image*>(_bufferData.get() ); }
 
-         inline unsigned int & getModifiedCount(unsigned int contextID) const
+        /** return true if the texture image data has been modified and the associated GL texture object needs to be updated.*/
+        virtual bool isDirty(unsigned int contextID) const { return (_bufferData.valid() && _bufferData->getModifiedCount()!=_modifiedCount[contextID]); }
+
+        inline unsigned int & getModifiedCount(unsigned int contextID) const
         {
             // get the modified count for the current contextID.
             return _modifiedCount[contextID];

@@ -74,7 +74,6 @@
 #include<osg/PrimitiveSet>
 #include <osg/MatrixTransform>
 
-#include <osgUtil/TriStripVisitor>
 #include <osgUtil/SmoothingVisitor>
 
 //#define _LOG_DEBUG_
@@ -322,7 +321,7 @@ osg::ref_ptr<osg::Geode> ReaderWritterOpenCASCADE::OCCTKReader::igesToOSGGeode(c
     _colorTool = XCAFDoc_DocumentTool::ColorTool(doc->Main());
 
     // free shape sequence
-    // get sequence of free shape lables
+    // get sequence of free shape labels
     TDF_LabelSequence freeShapes;
     _assembly->GetFreeShapes(freeShapes);
 

@@ -674,6 +674,30 @@ int main(int argc, char** argv)
 
         viewer.setSceneData(text.get());
     }
+    else if (arguments.read("--alignment"))
+    {
+        osg::ref_ptr<osg::Group> group = new osg::Group;
+
+        {
+            osg::ref_ptr<osgText::Text> text = new osgText::Text;
+            text->setFont("fonts/times.ttf");
+            text->setAxisAlignment(osgText::Text::XZ_PLANE);
+            text->setAlignment(osgText::Text::RIGHT_TOP);
+            text->setText("Alingment\nBefore:");
+            group->addChild(text);
+        }
+
+        {
+            osg::ref_ptr<osgText::Text> text = new osgText::Text;
+            text->setFont("fonts/times.ttf");
+            text->setAxisAlignment(osgText::Text::XZ_PLANE);
+            text->setText("Alingment\nAfter:");
+            text->setAlignment(osgText::Text::RIGHT_TOP);
+            group->addChild(text);
+        }
+
+        viewer.setSceneData(group.get());
+    }
     else if (arguments.read("--mt", numThreads) || arguments.read("--mt"))
     {
         // construct a multi-threaded text updating test.

@@ -12,9 +12,10 @@
 
 using namespace ESRIShape;
 
-ESRIShapeParser::ESRIShapeParser( const std::string fileName, bool useDouble ):
+ESRIShapeParser::ESRIShapeParser(const std::string fileName, bool useDouble, bool keepSeparatePoints) :
     _valid(false),
-    _useDouble(useDouble)
+    _useDouble(useDouble),
+    _keepSeparatePoints(keepSeparatePoints)
 {
     int fd = 0;
     if( !fileName.empty() )
@@ -215,7 +216,7 @@ osg::Geode *ESRIShapeParser::getGeode()
 
 void ESRIShapeParser::_combinePointToMultipoint()
 {
-    if( !_valid ) return;
+    if (!_valid || _keepSeparatePoints) return;
 
     OSG_NOTICE<<"_combinePointToMultipoint()"<<std::endl;
 

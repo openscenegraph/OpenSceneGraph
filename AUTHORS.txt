@@ -1,15 +1,16 @@
-OpenSceneGraph Library 3.5.10
+OpenSceneGraph Library 3.7.0
 
 568 Contributors:
 
 Firstname Surname
 -----------------
 Robert Osfield
+Don Burns
 Stephan Huber
 Paul Martz
+Laurens Voerman
 Farshid Lashkari
 Mathias Fröhlich
-Laurens Voerman
 Marco Jez
 Wang Rui
 Jean-Sébastien Guay
@@ -96,6 +97,7 @@ Thomas Hogarth
 Riccardo Corsi
 Melchior Franz
 Johannes Baeuerle
+Ravi Mathur
 Neil Hughes
 Martin Beckett
 Marc Helbling
@@ -110,7 +112,6 @@ Yefei He
 Sondra Iverson
 Simon Julier
 Rune Schmidt Jensen
-Ravi Mathur
 Ralf Habacker
 Rainer Oder
 Nico Kruithof
@@ -127,6 +128,7 @@ Alexander Sinditskiy
 Vladimir Chebaev
 Thibault Genessay
 Sasa Bistrovic
+Raymond de Vries
 Neil Groves
 Mikhail Izmestev
 Markus Trenkwalder
@@ -145,7 +147,6 @@ Tanguy Fautré
 Sean Spicer
 Ryan Kawicki
 Richard Schmidt
-Raymond de Vries
 Peter Hrenka
 Paul de Repentigny
 Nikolaus Hanekamp
@@ -176,7 +177,6 @@ John Ivar
 Gustav Haapalahti
 Erik den Dekker
 Emmanuel Roche
-Don Burns
 Domenico Mangieri
 Daniel Larimer
 Colin Dunlop
@@ -491,7 +491,6 @@ Hartmut Seichter
 Gunter Huber
 Gregory Jaegy
 Graeme Harkness
-Github It
 Gian Lorenzetto
 George Papagiannakis
 Geoff Thu
@@ -555,6 +554,7 @@ Bart Gallet
 Axel Volley
 Arjun Ramamurthy
 Anthousis Andreadis
+Anna Sokol
 Andy Preece
 Andrew Reyonolds
 Andreas Roth

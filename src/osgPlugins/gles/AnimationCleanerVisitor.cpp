@@ -395,7 +395,7 @@ bool AnimationCleanerVisitor::isValidAnimation(const osgAnimation::Animation& an
 bool AnimationCleanerVisitor::isValidChannel(const osgAnimation::Channel& channel) const {
     // a valid channel has valid target i.e.
     // 1. there exists some UpdateMatrixTransform with channel's target name
-    // 2. the channel does not simply mimick the UpdateMatrixTransform content
+    // 2. the channel does not simply mimic the UpdateMatrixTransform content
     std::string target = channel.getTargetName();
     for(AnimationUpdateCallBackMap::const_iterator update = _updates.begin() ; update != _updates.end() ; ++ update) {
         osgAnimation::UpdateMorph *updateMorph = dynamic_cast<osgAnimation::UpdateMorph*>(update->first.get());
@@ -408,7 +408,7 @@ bool AnimationCleanerVisitor::isValidChannel(const osgAnimation::Channel& channe
         }
         else {
             if(update->first->getName() == target) {
-                // check if channel contains necessary data or just mimick the UpdateCallback's StackedTransform
+                // check if channel contains necessary data or just mimic the UpdateCallback's StackedTransform
                 bool channelMimickingTransform = isChannelEqualToStackedTransform(channel,
                                                                                     dynamic_cast<osgAnimation::UpdateMatrixTransform*>(update->first.get()));
                 if(channelMimickingTransform) {

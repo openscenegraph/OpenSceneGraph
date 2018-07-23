@@ -107,7 +107,7 @@ class OSGGA_EXPORT EventVisitor : public osg::NodeVisitor
         }
 
         // The following overrides are technically redundant as the default implementation would eventually trickle down to
-        // apply(osg::Node&); - however defining these explicitely should save a couple of virtual function calls
+        // apply(osg::Node&); - however defining these explicitly should save a couple of virtual function calls
         virtual void apply(osg::Geode& node)        { handle_callbacks_and_traverse(node); }
         virtual void apply(osg::Billboard& node)    { handle_callbacks_and_traverse(node); }
         virtual void apply(osg::LightSource& node)  { handle_callbacks_and_traverse(node); }

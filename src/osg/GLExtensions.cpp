@@ -913,18 +913,6 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     {
         maxTextureSize = osg_max_size;
     }
-
-    setGLExtensionFuncPtr(glTexStorage2D,"glTexStorage2D","glTexStorage2DARB", validContext);
-    setGLExtensionFuncPtr(glCompressedTexImage2D,"glCompressedTexImage2D","glCompressedTexImage2DARB", validContext);
-    setGLExtensionFuncPtr(glCompressedTexSubImage2D,"glCompressedTexSubImage2D","glCompressedTexSubImage2DARB", validContext);
-    setGLExtensionFuncPtr(glGetCompressedTexImage,"glGetCompressedTexImage","glGetCompressedTexImageARB", validContext);;
-    setGLExtensionFuncPtr(glTexImage2DMultisample, "glTexImage2DMultisample", "glTexImage2DMultisampleARB", validContext);
-
-    setGLExtensionFuncPtr(glTexParameterIiv, "glTexParameterIiv", "glTexParameterIivARB", "glTexParameterIivEXT", validContext);
-    setGLExtensionFuncPtr(glTexParameterIuiv, "glTexParameterIuiv", "glTexParameterIuivARB", "glTexParameterIuivEXT", validContext);
-
-    setGLExtensionFuncPtr(glBindImageTexture, "glBindImageTexture", "glBindImageTextureARB", validContext);
-
     isTextureMaxLevelSupported = (glVersion >= 1.2f);
 
     isTextureStorageEnabled = validContext && ((glVersion >= 4.2f) || isGLExtensionSupported(contextID, "GL_ARB_texture_storage"));
@@ -939,6 +927,27 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
         }
     }
 
+    setGLExtensionFuncPtr(glTexStorage1D,"glTexStorage1D","glTexStorage1DARB", validContext);
+    setGLExtensionFuncPtr(glTextureStorage1D,"glTextureStorage1D","glTextureStorage1DARB", validContext);
+    setGLExtensionFuncPtr(glTexStorage2D,"glTexStorage2D","glTexStorage2DARB", validContext);
+    setGLExtensionFuncPtr(glTextureStorage2D,"glTextureStorage2D","glTextureStorage2DARB", validContext);
+    setGLExtensionFuncPtr(glTexStorage3D, "glTexStorage3D","glTexStorage3DEXT", validContext);
+    setGLExtensionFuncPtr(glTextureStorage3D, "glTextureStorage3D","glTextureStorage3DEXT", validContext);
+    setGLExtensionFuncPtr(glTexStorage2DMultisample, "glTextureStorage2DMultisample","glTextureStorage2DMultisampleEXT", validContext);
+    setGLExtensionFuncPtr(glTexStorage3DMultisample, "glTextureStorage3DMultisample","glTextureStorage3DMultisampleEXT", validContext);
+    setGLExtensionFuncPtr(glTextureView, "glTextureView","glTextureViewEXT", validContext);
+
+    setGLExtensionFuncPtr(glCompressedTexImage2D,"glCompressedTexImage2D","glCompressedTexImage2DARB", validContext);
+    setGLExtensionFuncPtr(glCompressedTexSubImage2D,"glCompressedTexSubImage2D","glCompressedTexSubImage2DARB", validContext);
+    setGLExtensionFuncPtr(glGetCompressedTexImage,"glGetCompressedTexImage","glGetCompressedTexImageARB", validContext);;
+    setGLExtensionFuncPtr(glTexImage2DMultisample, "glTexImage2DMultisample", "glTexImage2DMultisampleARB", validContext);
+
+    setGLExtensionFuncPtr(glTexParameterIiv, "glTexParameterIiv", "glTexParameterIivARB", "glTexParameterIivEXT", validContext);
+    setGLExtensionFuncPtr(glTexParameterIuiv, "glTexParameterIuiv", "glTexParameterIuivARB", "glTexParameterIuivEXT", validContext);
+
+    setGLExtensionFuncPtr(glBindImageTexture, "glBindImageTexture", "glBindImageTextureARB", validContext);
+
+
     // Texture3D extensions
     isTexture3DFast = validContext && (OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_EXT_texture3D"));
 
@@ -950,8 +959,6 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
     setGLExtensionFuncPtr(glTexImage3D, "glTexImage3D","glTexImage3DEXT", validContext);
     setGLExtensionFuncPtr(glTexSubImage3D, "glTexSubImage3D","glTexSubImage3DEXT", validContext);
-    setGLExtensionFuncPtr(glTexStorage3D, "glTexStorage3D","glTexStorage3DEXT", validContext);
-    setGLExtensionFuncPtr(glTextureStorage3D, "glTextureStorage3D","glTextureStorage3DEXT", validContext);
 
     setGLExtensionFuncPtr(glCompressedTexImage3D, "glCompressedTexImage3D","glCompressedTexImage3DARB", validContext);
     setGLExtensionFuncPtr(glCompressedTexSubImage3D, "glCompressedTexSubImage3D","glCompressedTexSubImage3DARB", validContext);
@@ -1385,4 +1392,3 @@ bool GLExtensions::getFragDataLocation( const char* fragDataName, GLuint& locati
     location = loc;
     return true;
 }
-

@@ -23,64 +23,64 @@
 #include <iostream>
 
 void assert2(bool success) {
-	if (!success) throw std::runtime_error("");
+    if (!success) throw std::runtime_error("");
 }
 
 void testSerializer(const osgSim::MultiSwitch::SwitchSetList &values,
-	const osgSim::MultiSwitch::SwitchSetNameList &names) {
+    const osgSim::MultiSwitch::SwitchSetNameList &names) {
 
-	osg::ref_ptr<osgSim::MultiSwitch> ms(new osgSim::MultiSwitch);
-	if (values.size() > 0) {
-		int nchildren = values[0].size();
-		for (int i = 0; i < nchildren; i++) {
-			ms->addChild(new osg::Node);
-		}
-	}
+    osg::ref_ptr<osgSim::MultiSwitch> ms(new osgSim::MultiSwitch);
+    if (values.size() > 0) {
+        int nchildren = values[0].size();
+        for (int i = 0; i < nchildren; i++) {
+            ms->addChild(new osg::Node);
+        }
+    }
 
-	ms->setSwitchSetList(values);
-	for (int i = 0; i < names.size(); i++) {
-		ms->setValueName(i, names[i]);
-	}
+    ms->setSwitchSetList(values);
+    for (int i = 0; i < names.size(); i++) {
+        ms->setValueName(i, names[i]);
+    }
 
-	osgDB::ReaderWriter *rw = osgDB::Registry::instance()->getReaderWriterForExtension("osgb");
-	osg::ref_ptr<osgDB::Options> options = new osgDB::Options;
-	std::stringstream ss;
+    osgDB::ReaderWriter *rw = osgDB::Registry::instance()->getReaderWriterForExtension("osgb");
+    osg::ref_ptr<osgDB::Options> options = new osgDB::Options;
+    std::stringstream ss;
 
-	// write
-	auto wresult = rw->writeNode(*ms, ss, options);
+    // write
+    auto wresult = rw->writeNode(*ms, ss, options);
 
-	// read
-	auto rresult = rw->readNode(ss, options);
-	osg::ref_ptr<osg::Node> node = rresult.takeNode();
+    // read
+    auto rresult = rw->readNode(ss, options);
+    osg::ref_ptr<osg::Node> node = rresult.takeNode();
 
-	osg::ref_ptr<osgSim::MultiSwitch> ms2(dynamic_cast<osgSim::MultiSwitch*>(node.get()));
-	assert2(ms2 != nullptr);
+    osg::ref_ptr<osgSim::MultiSwitch> ms2(dynamic_cast<osgSim::MultiSwitch*>(node.get()));
+    assert2(ms2 != nullptr);
 
-	assert2(ms2->getSwitchSetList() == values);
-	for (int i = 0; i < values.size(); i++) {
-		assert2(ms2->getValueName(i) == names[i]);
-	}
-	assert2(ms->getNumChildren() == ms2->getNumChildren());
+    assert2(ms2->getSwitchSetList() == values);
+    for (int i = 0; i < values.size(); i++) {
+        assert2(ms2->getValueName(i) == names[i]);
+    }
+    assert2(ms->getNumChildren() == ms2->getNumChildren());
 }
 
 int main( int argc, char **argv )
 {
-	testSerializer(
-		{
-			{false, false},
-			{true, true}
-		},
-		{ "offs", "ons" }
-	);
+    testSerializer(
+        {
+            {false, false},
+            {true, true}
+        },
+        { "offs", "ons" }
+    );
 
-	testSerializer({}, {});
+    testSerializer({}, {});
 
-	testSerializer(
-		{
-			{ true, true, false, true, false, true }
-		},
-		{"stuff"}
-	);
+    testSerializer(
+        {
+            { true, true, false, true, false, true }
+        },
+        {"stuff"}
+    );
 
-	return 0;
+    return 0;
 }

@@ -19,6 +19,7 @@
 #include <osgSim/MultiSwitch>
 #include <osg/Node>
 #include <osgDB/Registry>
+#include <stdexcept>
 
 #include <iostream>
 
@@ -31,14 +32,14 @@ void testSerializer(const osgSim::MultiSwitch::SwitchSetList &values,
 
     osg::ref_ptr<osgSim::MultiSwitch> ms(new osgSim::MultiSwitch);
     if (values.size() > 0) {
-        int nchildren = values[0].size();
-        for (int i = 0; i < nchildren; i++) {
+        size_t nchildren = values[0].size();
+        for (size_t i = 0; i < nchildren; i++) {
             ms->addChild(new osg::Node);
         }
     }
 
     ms->setSwitchSetList(values);
-    for (int i = 0; i < names.size(); i++) {
+    for (size_t i = 0; i < names.size(); i++) {
         ms->setValueName(i, names[i]);
     }
 
@@ -47,40 +48,65 @@ void testSerializer(const osgSim::MultiSwitch::SwitchSetList &values,
     std::stringstream ss;
 
     // write
-    auto wresult = rw->writeNode(*ms, ss, options);
+    osgDB::ReaderWriter::WriteResult wresult = rw->writeNode(*ms, ss, options);
 
     // read
-    auto rresult = rw->readNode(ss, options);
+	osgDB::ReaderWriter::ReadResult rresult = rw->readNode(ss, options);
     osg::ref_ptr<osg::Node> node = rresult.takeNode();
 
     osg::ref_ptr<osgSim::MultiSwitch> ms2(dynamic_cast<osgSim::MultiSwitch*>(node.get()));
-    assert2(ms2 != nullptr);
+    assert2(ms2 != NULL);
 
     assert2(ms2->getSwitchSetList() == values);
-    for (int i = 0; i < values.size(); i++) {
+    for (size_t i = 0; i < values.size(); i++) {
         assert2(ms2->getValueName(i) == names[i]);
     }
     assert2(ms->getNumChildren() == ms2->getNumChildren());
 }
 
-int main( int argc, char **argv )
+int main()
 {
-    testSerializer(
-        {
-            {false, false},
-            {true, true}
-        },
-        { "offs", "ons" }
-    );
+	osgSim::MultiSwitch::SwitchSetList values;
+	osgSim::MultiSwitch::SwitchSetNameList names;
+    //testSerializer(
+    //    {
+    //        {false, false},
+    //        {true, true}
+    //    },
+    //    { "offs", "ons" }
+    //);
+	std::vector<bool> offs(false, 2);
+	std::vector<bool> ons(true, 2);
+	values.push_back(offs);
+	values.push_back(ons);
+	names.push_back("offs");
+	names.push_back("ons");
+	testSerializer(values, names);
 
-    testSerializer({}, {});
+    //testSerializer({}, {});
+	values.clear();
+	names.clear();
+	testSerializer(values, names);
 
-    testSerializer(
-        {
-            { true, true, false, true, false, true }
-        },
-        {"stuff"}
-    );
+    //testSerializer(
+    //    {
+    //        { true, true, false, true, false, true }
+    //    },
+    //    {"stuff"}
+    //);
+	values.clear();
+	std::vector<bool> stuff;
+	stuff.push_back(true);
+	stuff.push_back(true);
+	stuff.push_back(false);
+	stuff.push_back(true);
+	stuff.push_back(false);
+	stuff.push_back(true);
+	values.push_back(stuff);
+
+	names.clear();
+	names.push_back("stuff");
+	testSerializer(values, names);
 
     return 0;
 }

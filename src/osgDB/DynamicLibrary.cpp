@@ -79,7 +79,7 @@ DynamicLibrary* DynamicLibrary::loadLibrary(const std::string& libraryName)
 
     std::string fullLibraryName = osgDB::findLibraryFile(libraryName);
     if (!fullLibraryName.empty()) handle = getLibraryHandle( fullLibraryName ); // try the lib we have found
-    else handle = getLibraryHandle( libraryName ); // haven't found a lib ourselves, see if the OS can find it simply from the library name.
+    else handle = getLibraryHandle( libraryName ); // havn't found a lib ourselves, see if the OS can find it simply from the library name.
 
     if (handle) return new DynamicLibrary(libraryName,handle);
 
@@ -120,6 +120,25 @@ DynamicLibrary::HANDLE DynamicLibrary::getLibraryHandle( const std::string& libr
         localLibraryName = "./" + libraryName;
     else
         localLibraryName = libraryName;
+#if defined(_DEBUG)
+    size_t pos = localLibraryName.find( ".so" );
+    if ( pos != std::string::npos )
+    {
+      if ( localLibraryName.find( "d.so" ) == std::string::npos )
+      {
+        std::string debugLibraryName( localLibraryName );
+        debugLibraryName.insert( pos, "d" );
+        if ( fileExists( debugLibraryName ) )
+        {
+          localLibraryName = debugLibraryName;
+        }
+        else
+        {
+          OSG_WARN << "Warning: debug dynamic library '" << debugLibraryName << "' does not exists." << std::endl;
+        }
+      }
+    }
+#endif
 
     handle = dlopen( localLibraryName.c_str(), RTLD_LAZY | RTLD_GLOBAL);
     if( handle == NULL )

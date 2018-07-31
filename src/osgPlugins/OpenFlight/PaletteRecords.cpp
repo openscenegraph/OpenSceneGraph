@@ -495,15 +495,15 @@ protected:
         }
 
         // Is texture in local cache?
-        osg::StateSet* stateset = flt::Registry::instance()->getTextureFromLocalCache(pathname);
+        osg::ref_ptr<osg::StateSet> stateset = flt::Registry::instance()->getTextureFromLocalCache(pathname);
 
         // Read file if not in cache.
-        if (!stateset)
+        if (!stateset.valid())
         {
             stateset = readTexture(pathname,document);
 
             // Add to texture cache.
-            flt::Registry::instance()->addTextureToLocalCache(pathname,stateset);
+            flt::Registry::instance()->addTextureToLocalCache(pathname,stateset.get());
         }
 
         // Add to texture pool.

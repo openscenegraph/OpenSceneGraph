@@ -23,6 +23,8 @@
 #include <queue>
 #include <map>
 #include <osg/ref_ptr>
+#include <osgDB/ObjectCache>
+#include <osgDB/Registry>
 #include "Opcodes.h"
 #include "Record.h"
 
@@ -51,7 +53,6 @@ class Registry : public osg::Referenced
         osg::Node* getExternalFromLocalCache(const std::string& filename);
         void addTextureToLocalCache(const std::string& filename, osg::StateSet* stateset);
         osg::StateSet* getTextureFromLocalCache(const std::string& filename);
-        void clearLocalCache();
 
     protected:
 
@@ -61,14 +62,6 @@ class Registry : public osg::Referenced
         RecordProtoMap     _recordProtoMap;
 
         ExternalQueue      _externalReadQueue;
-
-        // External cache
-        typedef std::map<std::string, osg::ref_ptr<osg::Node> > ExternalCacheMap;
-        ExternalCacheMap _externalCacheMap;
-
-        // Texture cache
-        typedef std::map<std::string, osg::ref_ptr<osg::StateSet> > TextureCacheMap;
-        TextureCacheMap    _textureCacheMap;
 };
 
 inline void Registry::addToExternalReadQueue(const std::string& filename, osg::Group* parent)
@@ -78,34 +71,22 @@ inline void Registry::addToExternalReadQueue(const std::string& filename, osg::G
 
 inline void Registry::addExternalToLocalCache(const std::string& filename, osg::Node* node)
 {
-    _externalCacheMap[filename] = node;
+    osgDB::Registry::instance()->addEntryToObjectCache(filename, node);
 }
 
 inline osg::Node* Registry::getExternalFromLocalCache(const std::string& filename)
 {
-    ExternalCacheMap::iterator itr = _externalCacheMap.find(filename);
-    if (itr != _externalCacheMap.end())
-        return (*itr).second.get();
-    return NULL;
+    return dynamic_cast<osg::Node*>(osgDB::Registry::instance()->getFromObjectCache(filename));
 }
 
 inline void Registry::addTextureToLocalCache(const std::string& filename, osg::StateSet* stateset)
 {
-    _textureCacheMap[filename] = stateset;
+    osgDB::Registry::instance()->addEntryToObjectCache(filename, stateset);
 }
 
 inline osg::StateSet* Registry::getTextureFromLocalCache(const std::string& filename)
 {
-    TextureCacheMap::iterator itr = _textureCacheMap.find(filename);
-    if (itr != _textureCacheMap.end())
-        return (*itr).second.get();
-    return NULL;
-}
-
-inline void Registry::clearLocalCache()
-{
-    _externalCacheMap.clear();
-    _textureCacheMap.clear();
+    return dynamic_cast<osg::StateSet*>(osgDB::Registry::instance()->getFromObjectCache(filename));
 }
 
 /** Proxy class for automatic registration of reader/writers with the Registry.*/

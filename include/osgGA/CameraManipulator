@@ -162,7 +162,6 @@ class OSGGA_EXPORT CameraManipulator : public GUIEventHandler
 
         /**
         Start/restart the manipulator.
-        FIXME: what does this actually mean? Provide examples.
         */
         virtual void init(const GUIEventAdapter& ,GUIActionAdapter&) {}
 

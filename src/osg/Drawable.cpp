@@ -257,6 +257,11 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
 Drawable::~Drawable()
 {
     dirtyGLObjects();
+    for (unsigned int i = 0; i<_vertexArrayStateList.size(); ++i)
+    {
+        VertexArrayState* vas = _vertexArrayStateList[i].get();
+        if (vas) vas->release();
+    }
 }
 
 osg::MatrixList Drawable::getWorldMatrices(const osg::Node* haltTraversalAtNode) const

@@ -2277,7 +2277,9 @@ public:
 
 };
 
-REGISTER_WINDOWINGSYSTEMINTERFACE(X11, X11WindowingSystemInterface)
+// Replaces REGISTER_WINDOWINGSYSTEMINTERFACE using OSGVIEWER_EXPORT
+extern "C" OSGVIEWER_EXPORT void graphicswindow_X11(void) {}
+static osg::WindowingSystemInterfaceProxy<X11WindowingSystemInterface> s_proxy_X11WindowingSystem("X11");
 
 void GraphicsWindowX11::raiseWindow()
 {

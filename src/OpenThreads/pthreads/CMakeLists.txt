@@ -20,6 +20,11 @@ SET(TARGET_SRC
     ../common/Version.cpp
     ../common/Atomic.cpp
 )
+
+IF(CYGWIN)  # define for pthread_{yield,getconcurrency,setconcurrency}
+    ADD_DEFINITIONS(-D_GNU_SOURCE)
+ENDIF()
+
 IF(ANDROID)
       ADD_DEFINITIONS(-D_GNU_SOURCE)
       SET(CMAKE_REQUIRED_DEFINITIONS "${CMAKE_REQUIRED_DEFINITIONS} -D_GNU_SOURCE")

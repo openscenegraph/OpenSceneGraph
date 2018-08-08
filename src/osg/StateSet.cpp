@@ -1459,10 +1459,10 @@ void StateSet::setTextureAttribute(unsigned int unit,StateAttribute *attribute, 
     {
         if (attribute->isTextureAttribute())
         {
-            setAttribute(getOrCreateTextureAttributeList(unit),attribute,value);
-
             TextureAttribute* ta = dynamic_cast<TextureAttribute*>(attribute);
             if (ta) ta->setTextureUnit(unit);
+
+            setAttribute(getOrCreateTextureAttributeList(unit),attribute,value);
         }
         else
         {
@@ -1488,11 +1488,11 @@ void StateSet::setTextureAttributeAndModes(unsigned int unit,StateAttribute *att
             }
             else
             {
-                setAttribute(getOrCreateTextureAttributeList(unit),attribute,value);
-                setAssociatedTextureModes(unit,attribute,value);
-
                 TextureAttribute* ta = dynamic_cast<TextureAttribute*>(attribute);
                 if (ta) ta->setTextureUnit(unit);
+
+                setAttribute(getOrCreateTextureAttributeList(unit),attribute,value);
+                setAssociatedTextureModes(unit,attribute,value);
             }
         }
         else
@@ -1565,27 +1565,27 @@ void StateSet::removeTextureAttribute(unsigned int unit, StateAttribute* attribu
 StateAttribute* StateSet::getTextureAttribute(unsigned int unit,StateAttribute::Type type)
 {
     if (unit>=_textureAttributeList.size()) return 0;
-    return getAttribute(_textureAttributeList[unit],type,0);
+    return getAttribute(_textureAttributeList[unit],type,unit);
 }
 
 
 const StateAttribute* StateSet::getTextureAttribute(unsigned int unit,StateAttribute::Type type) const
 {
     if (unit>=_textureAttributeList.size()) return 0;
-    return getAttribute(_textureAttributeList[unit],type,0);
+    return getAttribute(_textureAttributeList[unit],type,unit);
 }
 
 
 StateSet::RefAttributePair* StateSet::getTextureAttributePair(unsigned int unit, StateAttribute::Type type)
 {
     if (unit>=_textureAttributeList.size()) return 0;
-    return getAttributePair(_textureAttributeList[unit],type,0);
+    return getAttributePair(_textureAttributeList[unit],type,unit);
 }
 
 const StateSet::RefAttributePair* StateSet::getTextureAttributePair(unsigned int unit, StateAttribute::Type type) const
 {
     if (unit>=_textureAttributeList.size()) return 0;
-    return getAttributePair(_textureAttributeList[unit],type,0);
+    return getAttributePair(_textureAttributeList[unit],type,unit);
 }
 
 bool StateSet::checkValidityOfAssociatedModes(osg::State& state) const

@@ -924,7 +924,7 @@ void CullVisitor::apply(osg::Drawable& drawable)
 
     if (_computeNearFar && bb.valid())
     {
-        if (!updateCalculatedNearFar(matrix,drawable,false)) return;
+        if (!updateCalculatedNearFar(matrix,drawable,false) && drawable.isCullingActive()) return;
     }
 
     // need to track how push/pops there are, so we can unravel the stack correctly.

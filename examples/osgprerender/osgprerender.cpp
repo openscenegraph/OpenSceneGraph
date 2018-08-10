@@ -218,7 +218,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph,
     {
         osg::TextureRectangle* textureRect = new osg::TextureRectangle;
         textureRect->setTextureSize(tex_width, tex_height);
-        textureRect->setInternalFormat(GL_RGBA);
+        textureRect->setInternalFormat(GL_RGBA8);
         textureRect->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
         textureRect->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
 
@@ -228,7 +228,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph,
     {
         osg::Texture2D* texture2D = new osg::Texture2D;
         texture2D->setTextureSize(tex_width, tex_height);
-        texture2D->setInternalFormat(GL_RGBA);
+        texture2D->setInternalFormat(GL_RGBA8);
         texture2D->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
         texture2D->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
 

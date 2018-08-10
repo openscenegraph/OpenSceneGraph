@@ -799,7 +799,8 @@ osg::Node* createPrerenderSubgraph(osg::Node* subgraph, const osg::Vec4& clearCo
 
     osg::Texture2D* texture = new osg::Texture2D;
     texture->setTextureSize(tex_width, tex_height);
-    texture->setInternalFormat(GL_RGBA);
+    texture->setInternalFormat(GL_RGBA16);
+    texture->setSourceFormat(GL_RGBA);
     texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
     texture->setFilter(osg::Texture2D::MAG_FILTER, osg::Texture2D::LINEAR);
 

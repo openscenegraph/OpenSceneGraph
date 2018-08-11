@@ -275,8 +275,13 @@ void TextureRectangle::apply(State& state) const
 
         applyTexParameters(GL_TEXTURE_RECTANGLE,state);
 
+        GLExtensions * extensions = state.get<GLExtensions>();
+        bool useTexStorage = extensions->isTextureStorageEnabled;
         // no image present, but dimensions at set so lets create the texture
-        glTexImage2D( GL_TEXTURE_RECTANGLE, 0, _internalFormat,
+        if(useTexStorage)
+            extensions->glTexStorage2D( GL_TEXTURE_RECTANGLE, 1, _internalFormat, _textureWidth, _textureHeight);
+        else
+            glTexImage2D( GL_TEXTURE_RECTANGLE, 0, _internalFormat,
                      _textureWidth, _textureHeight, _borderWidth,
                      _sourceFormat ? _sourceFormat : _internalFormat,
                      _sourceType ? _sourceType : GL_UNSIGNED_BYTE,

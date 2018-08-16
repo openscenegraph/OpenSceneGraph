@@ -307,7 +307,8 @@ void DepthPeeling::createPeeling()
         colorTexture->setFilter(osg::Texture::MAG_FILTER, osg::Texture::NEAREST);
         colorTexture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_BORDER);
         colorTexture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_BORDER);
-        colorTexture->setInternalFormat(GL_RGBA);
+        colorTexture->setInternalFormat(GL_RGBA16);
+        colorTexture->setSourceFormat(GL_RGBA);
 
         _colorTextures[i] = colorTexture;
     }

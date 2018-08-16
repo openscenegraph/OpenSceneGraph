@@ -60,7 +60,7 @@ public:
         supportsExtension("obj","Alias Wavefront OBJ format");
         supportsOption("noRotation","Do not do the default rotate about X axis");
         supportsOption("noTesselateLargePolygons","Do not do the default tesselation of large polygons");
-        supportsOption("noTriStripPolygons","Do not do the default tri stripping of polygons");
+        supportsOption("triStripPolygons","Do tri stripping of polygons");
         supportsOption("generateFacetNormals","generate facet normals for vertices without normals");
         supportsOption("noReverseFaces","avoid to reverse faces when normals and triangles orientation are reversed");
 
@@ -146,7 +146,7 @@ protected:
      public:
         bool rotate;
         bool noTesselateLargePolygons;
-        bool noTriStripPolygons;
+        bool triStripPolygons;
         bool generateFacetNormals;
         bool fixBlackMaterials;
         bool noReverseFaces;
@@ -161,7 +161,7 @@ protected:
         {
             rotate = true;
             noTesselateLargePolygons = false;
-            noTriStripPolygons = false;
+            triStripPolygons = true;
             generateFacetNormals = false;
             fixBlackMaterials = true;
             noReverseFaces = false;
@@ -795,7 +795,7 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, ObjOptio
             }
 
             // tri strip polygons to improve graphics performance
-            if (!localOptions.noTriStripPolygons)
+            if (localOptions.triStripPolygons)
             {
                 osgUtil::optimizeMesh(geometry);
             }
@@ -865,9 +865,9 @@ ReaderWriterOBJ::ObjOptionsStruct ReaderWriterOBJ::parseOptions(const osgDB::Rea
             {
                 localOptions.noTesselateLargePolygons = true;
             }
-            else if (pre_equals == "noTriStripPolygons")
+            else if (pre_equals == "triStripPolygons")
             {
-                localOptions.noTriStripPolygons = true;
+                localOptions.triStripPolygons = true;
             }
             else if (pre_equals == "generateFacetNormals")
             {

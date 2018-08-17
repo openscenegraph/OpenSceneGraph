@@ -137,6 +137,7 @@ InternalPixelRelations sizedInternalFormats[] = {
 
 
     , { GL_RGBA8                               , GL_RGBA             , GL_UNSIGNED_BYTE                             }
+    , { GL_RGBA16                              , GL_RGBA             , GL_UNSIGNED_SHORT                            }
     , { GL_RGB10_A2                            , GL_RGBA             , GL_UNSIGNED_INT_10_10_10_2                   }
     , { GL_RGB10_A2                            , GL_RGBA             , GL_UNSIGNED_INT_2_10_10_10_REV               }
     , { GL_RGBA12                              , GL_RGBA             , GL_UNSIGNED_SHORT                            }
@@ -149,8 +150,8 @@ InternalPixelRelations sizedInternalFormats[] = {
     , { GL_RGB5_A1                             , GL_RGBA             , GL_UNSIGNED_INT_10_10_10_2                   }
     , { GL_RGB5_A1                             , GL_RGBA             , GL_UNSIGNED_INT_2_10_10_10_REV               }
  // , { GL_RGBA16F                             , GL_RGBA             , GL_HALF_FLOAT                                }
- // , { GL_RGBA16F                             , GL_RGBA             , GL_FLOAT                                     }
- // , { GL_RGBA32F                             , GL_RGBA             , GL_FLOAT                                     }
+    , { GL_RGBA16F                             , GL_RGBA             , GL_FLOAT                                     }
+    , { GL_RGBA32F                             , GL_RGBA             , GL_FLOAT                                     }
 
     , { GL_SRGB8                               , GL_RGB              , GL_UNSIGNED_BYTE                             }
     , { GL_SRGB8_ALPHA8                        , GL_RGBA             , GL_UNSIGNED_BYTE                             }

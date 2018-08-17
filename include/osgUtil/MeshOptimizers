@@ -49,13 +49,13 @@ public:
         : GeometryCollector(optimizer, Optimizer::INDEX_MESH), _isForcedReindexationEnable(false)
     {
     }
-    inline void setGenerateNewIndicesOnAllGeometries(bool b) { _isForcedReindexationEnable = b; }
-    inline bool getGenerateNewIndicesOnAllGeometries() const { return _isForcedReindexationEnable; }
+    inline void setGenerateNewIndicesOnAllGeometries(bool b) { _generateNewIndicesOnAllGeometries = b; }
+    inline bool getGenerateNewIndicesOnAllGeometries() const { return _generateNewIndicesOnAllGeometries; }
 
     void makeMesh(osg::Geometry& geom);
     void makeMesh();
 protected:
-    bool _isForcedReindexationEnable;
+    bool _generateNewIndicesOnAllGeometries;
 };
 
 // Optimize the triangle order in a mesh for best use of the GPU's

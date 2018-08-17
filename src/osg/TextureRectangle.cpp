@@ -231,7 +231,8 @@ void TextureRectangle::apply(State& state) const
     }
     else if (_image.valid() && _image->data())
     {
-
+        GLExtensions * extensions = state.get<GLExtensions>();
+        bool useTexStorage = extensions->isTextureStorageEnabled && (_borderWidth==0);
 
         // keep the image around at least till we go out of scope.
         osg::ref_ptr<osg::Image> image = _image;
@@ -239,11 +240,16 @@ void TextureRectangle::apply(State& state) const
         // compute the internal texture format, this set the _internalFormat to an appropriate value.
         computeInternalFormat();
 
+        //get sizedInternalFormat if TexStorage available
+        GLenum sizedInternalFormat = useTexStorage ? selectSizedInternalFormat(image) : 0;
+
         _textureWidth = image->s();
         _textureHeight = image->t();
 
         textureObject = generateAndAssignTextureObject(
-                contextID,GL_TEXTURE_RECTANGLE,1,_internalFormat,_textureWidth,_textureHeight,1,0);
+                contextID, GL_TEXTURE_RECTANGLE, 1,
+                sizedInternalFormat!=0 ? sizedInternalFormat : _internalFormat,
+                _textureWidth, _textureHeight, 1, 0);
 
         textureObject->bind(state);
 

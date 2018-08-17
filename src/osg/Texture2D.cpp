@@ -242,6 +242,8 @@ void Texture2D::apply(State& state) const
     }
     else if (_image.valid() && _image->data())
     {
+        GLExtensions * extensions = state.get<GLExtensions>();
+        bool useTexStorage = extensions->isTextureStorageEnabled && (_borderWidth==0);
 
         // keep the image around at least till we go out of scope.
         osg::ref_ptr<osg::Image> image = _image;
@@ -252,7 +254,11 @@ void Texture2D::apply(State& state) const
         // compute the dimensions of the texture.
         computeRequiredTextureDimensions(state,*image,_textureWidth, _textureHeight, _numMipmapLevels);
 
-        textureObject = generateAndAssignTextureObject(contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,_borderWidth);
+        GLenum sizedInternalFormat = useTexStorage ? selectSizedInternalFormat(_image) : 0;
+
+        textureObject = generateAndAssignTextureObject(contextID,GL_TEXTURE_2D,_numMipmapLevels,
+            sizedInternalFormat!=0 ? sizedInternalFormat : _internalFormat,
+            _textureWidth,_textureHeight,1,_borderWidth);
 
         textureObject->bind(state);
 

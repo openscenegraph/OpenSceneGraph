@@ -292,24 +292,30 @@ void Texture2D::apply(State& state) const
     }
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_internalFormat!=0) )
     {
-        textureObject = generateAndAssignTextureObject(contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,_borderWidth);
-
-        textureObject->bind(state);
-
-        applyTexParameters(GL_TEXTURE_2D,state);
-
-        GLExtensions * extensions = state.get<GLExtensions>();
-        bool useTexStorrage = extensions->isTextureStorageEnabled;
         // no image present, but dimensions at set so lets create the texture
-        if(useTexStorrage)
-            extensions->glTexStorage2D( GL_TEXTURE_2D, (_numMipmapLevels >0)?_numMipmapLevels:1, _internalFormat,
+        GLExtensions * extensions = state.get<GLExtensions>();
+        bool useTexStorage = extensions->isTextureStorageEnabled && (_borderWidth==0);
+        GLenum sizedInternalFormat = useTexStorage ? selectSizedInternalFormat() : 0;
+        if (useTexStorage &&  sizedInternalFormat!=0)
+        {
+            textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_2D, _numMipmapLevels, sizedInternalFormat, _textureWidth, _textureHeight, 1, _borderWidth);
+            textureObject->bind(state);
+            applyTexParameters(GL_TEXTURE_2D, state);
+            extensions->glTexStorage2D( GL_TEXTURE_2D, (_numMipmapLevels >0)?_numMipmapLevels:1, sizedInternalFormat,
                      _textureWidth, _textureHeight);
+        }
         else
+        {
+            GLenum internalFormat = _sourceFormat ? _sourceFormat : _internalFormat;
+            textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_2D, _numMipmapLevels, internalFormat, _textureWidth, _textureHeight, 1, _borderWidth);
+            textureObject->bind(state);
+            applyTexParameters(GL_TEXTURE_2D, state);
             glTexImage2D( GL_TEXTURE_2D, 0, _internalFormat,
                      _textureWidth, _textureHeight, _borderWidth,
-                     _sourceFormat ? _sourceFormat : _internalFormat,
+                     internalFormat,
                      _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
                      0);
+        }
 
         if (_readPBuffer.valid())
         {

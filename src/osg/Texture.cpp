@@ -2320,8 +2320,6 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
 
             bool useTexStorage = extensions->isTextureStorageEnabled && extensions->isTexStorage2DSupported() && (_borderWidth==0);
             GLenum sizedInternalFormat = useTexStorage ? selectSizedInternalFormat(image) : 0;
-            OSG_NOTICE<<"New path useTexStorage="<<useTexStorage<<", sizedInternalFormat="<<sizedInternalFormat<<std::endl;
-
             if (useTexStorage && sizedInternalFormat!=0)
             {
                 if (getTextureTarget()==GL_TEXTURE_CUBE_MAP)

@@ -268,24 +268,31 @@ void TextureRectangle::apply(State& state) const
     }
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_internalFormat!=0) )
     {
-        textureObject = generateAndAssignTextureObject(
-                contextID,GL_TEXTURE_RECTANGLE,0,_internalFormat,_textureWidth,_textureHeight,1,0);
-
-        textureObject->bind(state);
-
-        applyTexParameters(GL_TEXTURE_RECTANGLE,state);
-
+        // no image present, but dimensions at set so lets create the texture
         GLExtensions * extensions = state.get<GLExtensions>();
         bool useTexStorage = extensions->isTextureStorageEnabled;
-        // no image present, but dimensions at set so lets create the texture
-        if(useTexStorage)
-            extensions->glTexStorage2D( GL_TEXTURE_RECTANGLE, 1, _internalFormat, _textureWidth, _textureHeight);
+        GLenum sizedInternalFormat = useTexStorage ? selectSizedInternalFormat() : 0;
+        if (useTexStorage && sizedInternalFormat!=0)
+        {
+            textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_RECTANGLE, 0, sizedInternalFormat, _textureWidth, _textureHeight, 1, 0);
+            textureObject->bind(state);
+            applyTexParameters(GL_TEXTURE_RECTANGLE, state);
+
+            extensions->glTexStorage2D( GL_TEXTURE_RECTANGLE, 1, sizedInternalFormat, _textureWidth, _textureHeight);
+        }
         else
+        {
+            GLenum internalFormat = _sourceFormat ? _sourceFormat : _internalFormat;
+            textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_RECTANGLE, 0, internalFormat, _textureWidth, _textureHeight, 1, 0);
+            textureObject->bind(state);
+            applyTexParameters(GL_TEXTURE_RECTANGLE, state);
+
             glTexImage2D( GL_TEXTURE_RECTANGLE, 0, _internalFormat,
                      _textureWidth, _textureHeight, _borderWidth,
-                     _sourceFormat ? _sourceFormat : _internalFormat,
+                     internalFormat,
                      _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
                      0);
+        }
 
         if (_readPBuffer.valid())
         {

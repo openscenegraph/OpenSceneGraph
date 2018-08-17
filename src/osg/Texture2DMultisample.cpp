@@ -102,28 +102,28 @@ void Texture2DMultisample::apply(State& state) const
     }
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_numSamples!=0) )
     {
-        textureObject = generateAndAssignTextureObject(
-                                 contextID,
-                                 getTextureTarget(),
-                                 1,
-                                 _internalFormat,
-                                 _textureWidth,
-                                 _textureHeight,
-                                 1,
-                                 _borderWidth);
-
-        textureObject->bind(state);
         // no image present, but dimensions at set so lets create the texture
-        if(extensions->isTextureStorageEnabled)
-            extensions->glTexStorage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE, _numSamples, _internalFormat,
-                     _textureWidth, _textureHeight, _fixedsamplelocations);
+        bool useTexStorage = extensions->isTextureStorageEnabled && (_borderWidth==0);
+        GLenum sizedInternalFormat = useTexStorage ? selectSizedInternalFormat() : 0;
+        if (useTexStorage && sizedInternalFormat!=0)
+        {
+            textureObject = generateAndAssignTextureObject(contextID, getTextureTarget(), 1, sizedInternalFormat, _textureWidth, _textureHeight, 1, 0);
+            textureObject->bind(state);
+
+            extensions->glTexStorage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE, _numSamples, sizedInternalFormat, _textureWidth, _textureHeight, _fixedsamplelocations);
+        }
         else
+        {
+            textureObject = generateAndAssignTextureObject(contextID, getTextureTarget(), 1, _internalFormat, _textureWidth, _textureHeight, 1, _borderWidth);
+            textureObject->bind(state);
+
             extensions->glTexImage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE,
                                              _numSamples,
                                              _internalFormat,
                                              _textureWidth,
                                              _textureHeight,
                                              _fixedsamplelocations );
+        }
 
     }
     else

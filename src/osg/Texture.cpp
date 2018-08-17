@@ -2085,8 +2085,6 @@ bool Texture::areAllTextureObjectsLoaded() const
 
 GLenum Texture::selectSizedInternalFormat(const osg::Image* image) const
 {
-    if (_borderWidth!=0) return 0;
-
     if (image)
     {
         bool compressed_image = isCompressedInternalFormat((GLenum)image->getPixelFormat());

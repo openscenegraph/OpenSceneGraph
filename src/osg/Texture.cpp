@@ -228,7 +228,7 @@ GLenum assumeSizedInternalFormat(GLint internalFormat, GLenum type)
     return 0;
 }
 
-bool isCompressedInternalFormatSupportedByTexStorrage(GLint internalFormat)
+bool isCompressedInternalFormatSupportedByTexStorage(GLint internalFormat)
 {
     const size_t formatsCount = sizeof(compressedInternalFormats) / sizeof(compressedInternalFormats[0]);
 
@@ -2083,6 +2083,45 @@ bool Texture::areAllTextureObjectsLoaded() const
     return true;
 }
 
+GLenum Texture::selectSizedInternalFormat(const osg::Image* image) const
+{
+    if (_borderWidth!=0) return 0;
+
+    if (image)
+    {
+        bool compressed_image = isCompressedInternalFormat((GLenum)image->getPixelFormat());
+
+        //calculate sized internal format
+        if(compressed_image)
+        {
+            if(isCompressedInternalFormatSupportedByTexStorage(_internalFormat))
+            {
+                return _internalFormat;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        else
+        {
+            if(isSizedInternalFormat(_internalFormat))
+            {
+                return _internalFormat;
+            }
+            else
+            {
+                return assumeSizedInternalFormat((GLenum)image->getInternalTextureFormat(), (GLenum)image->getDataType());
+            }
+        }
+    }
+    else
+    {
+        if (isSizedInternalFormat(_internalFormat)) return _internalFormat;
+
+        return assumeSizedInternalFormat(_internalFormat, (_sourceType!=0) ? _sourceType : GL_UNSIGNED_BYTE);
+    }
+}
 
 void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* image, GLsizei inwidth, GLsizei inheight,GLsizei numMipmapLevels) const
 {
@@ -2273,38 +2312,11 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
             int width  = inwidth;
             int height = inheight;
 
-            bool useTexStorrage = extensions->isTextureStorageEnabled;
-            GLenum sizedInternalFormat = 0;
+            bool useTexStorage = extensions->isTextureStorageEnabled && extensions->isTexStorage2DSupported() && (_borderWidth==0);
+            GLenum sizedInternalFormat = useTexStorage ? selectSizedInternalFormat(image) : 0;
+            OSG_NOTICE<<"New path useTexStorage="<<useTexStorage<<", sizedInternalFormat="<<sizedInternalFormat<<std::endl;
 
-            if(useTexStorrage)
-            {
-                if(extensions->isTexStorage2DSupported() && _borderWidth == 0)
-                {
-                    //calculate sized internal format
-                    if(!compressed_image)
-                    {
-                        if(isSizedInternalFormat(_internalFormat))
-                        {
-                            sizedInternalFormat = _internalFormat;
-                        }
-                        else
-                        {
-                            sizedInternalFormat = assumeSizedInternalFormat((GLenum)image->getInternalTextureFormat(), (GLenum)image->getDataType());
-                        }
-                    }
-                    else
-                    {
-                        if(isCompressedInternalFormatSupportedByTexStorrage(_internalFormat))
-                        {
-                            sizedInternalFormat = _internalFormat;
-                        }
-                    }
-                }
-
-                useTexStorrage &= sizedInternalFormat != 0;
-            }
-
-            if(useTexStorrage)
+            if (useTexStorage && sizedInternalFormat!=0)
             {
                 if (getTextureTarget()==GL_TEXTURE_CUBE_MAP)
                 {

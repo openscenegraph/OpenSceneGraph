@@ -322,11 +322,11 @@ void Texture3D::apply(State& state) const
 
         applyTexParameters(GL_TEXTURE_3D,state);
 
+        bool useTexStorage = extensions->isTextureStorageEnabled && extensions->glTexStorage3D!=0 && (_borderWidth==0);
+        GLenum sizedInternalFormat = useTexStorage ? selectSizedInternalFormat() : 0;
         // no image present, but dimensions at set so lets create the texture
-        bool useTexStorrage = extensions->isTextureStorageEnabled;
-        // no image present, but dimensions at set so lets create the texture
-        if(useTexStorrage)
-            extensions->glTexStorage3D( GL_TEXTURE_3D, (_numMipmapLevels >0)?_numMipmapLevels:1, _internalFormat,
+        if(useTexStorage && sizedInternalFormat!=0)
+            extensions->glTexStorage3D( GL_TEXTURE_3D, (_numMipmapLevels >0)?_numMipmapLevels:1, sizedInternalFormat,
                      _textureWidth, _textureHeight, _textureDepth);
         else
             extensions->glTexImage3D( GL_TEXTURE_3D, 0, _internalFormat,

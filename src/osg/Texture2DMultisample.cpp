@@ -113,9 +113,11 @@ void Texture2DMultisample::apply(State& state) const
                                  _borderWidth);
 
         textureObject->bind(state);
+        bool useTexStorage = extensions->isTextureStorageEnabled && extensions->glTexStorage2DMultisample!=0 && (_borderWidth==0);
+        GLenum sizedInternalFormat = useTexStorage ? selectSizedInternalFormat() : 0;
         // no image present, but dimensions at set so lets create the texture
-        if(extensions->isTextureStorageEnabled)
-            extensions->glTexStorage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE, _numSamples, _internalFormat,
+        if(useTexStorage && sizedInternalFormat!=0)
+            extensions->glTexStorage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE, _numSamples, sizedInternalFormat,
                      _textureWidth, _textureHeight, _fixedsamplelocations);
         else
             extensions->glTexImage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE,

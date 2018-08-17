@@ -236,10 +236,11 @@ void Texture1D::apply(State& state) const
 
         applyTexParameters(GL_TEXTURE_1D,state);
         GLExtensions * extensions = state.get<GLExtensions>();
-        bool useTexStorrage = extensions->isTextureStorageEnabled;
+        bool useTexStorage = extensions->isTextureStorageEnabled && extensions->glTexStorage1D!=0 && (_borderWidth==0);
+        GLenum sizedInternalFormat = useTexStorage ? selectSizedInternalFormat() : 0;
         // no image present, but dimensions at set so lets create the texture
-        if(useTexStorrage)
-            extensions->glTexStorage1D( GL_TEXTURE_1D, (_numMipmapLevels >0)?_numMipmapLevels:1, _internalFormat,
+        if(useTexStorage && sizedInternalFormat!=0)
+            extensions->glTexStorage1D( GL_TEXTURE_1D, (_numMipmapLevels >0)?_numMipmapLevels:1, sizedInternalFormat,
                      _textureWidth);
         else
             glTexImage1D( GL_TEXTURE_1D, 0, _internalFormat,

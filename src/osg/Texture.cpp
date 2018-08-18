@@ -2318,20 +2318,19 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
             int width  = inwidth;
             int height = inheight;
 
-            bool useTexStorage = extensions->isTextureStorageEnabled && extensions->isTexStorage2DSupported() && (_borderWidth==0);
-            GLenum sizedInternalFormat = useTexStorage ? selectSizedInternalFormat(image) : 0;
-            if (useTexStorage && sizedInternalFormat!=0)
+            GLenum texStorageSizedInternalFormat = extensions->isTexStorage2DSupported() && (_borderWidth==0) ? selectSizedInternalFormat(image) : 0;
+            if (texStorageSizedInternalFormat!=0)
             {
                 if (getTextureTarget()==GL_TEXTURE_CUBE_MAP)
                 {
                     if (target==GL_TEXTURE_CUBE_MAP_POSITIVE_X)
                     {
-                        extensions->glTexStorage2D(GL_TEXTURE_CUBE_MAP, numMipmapLevels, sizedInternalFormat, width, height);
+                        extensions->glTexStorage2D(GL_TEXTURE_CUBE_MAP, numMipmapLevels, texStorageSizedInternalFormat, width, height);
                     }
                 }
                 else
                 {
-                    extensions->glTexStorage2D(target, numMipmapLevels, sizedInternalFormat, width, height);
+                    extensions->glTexStorage2D(target, numMipmapLevels, texStorageSizedInternalFormat, width, height);
                 }
 
                 if( !compressed_image )

@@ -232,15 +232,14 @@ void Texture1D::apply(State& state) const
     {
         // no image present, but dimensions at set so lets create the texture
         GLExtensions * extensions = state.get<GLExtensions>();
-        bool useTexStorage = extensions->isTextureStorageEnabled;
-        GLenum sizedInternalFormat = useTexStorage ? selectSizedInternalFormat() : 0;
-        if (useTexStorage && sizedInternalFormat!=0)
+        GLenum texStorageSizedInternalFormat = extensions->isTextureStorageEnabled ? selectSizedInternalFormat() : 0;
+        if (texStorageSizedInternalFormat!=0)
         {
-            textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_1D, _numMipmapLevels, sizedInternalFormat, _textureWidth, 1, 1, 0);
+            textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_1D, _numMipmapLevels, texStorageSizedInternalFormat, _textureWidth, 1, 1, 0);
             textureObject->bind(state);
             applyTexParameters(GL_TEXTURE_1D, state);
 
-            extensions->glTexStorage1D( GL_TEXTURE_1D, (_numMipmapLevels >0)?_numMipmapLevels:1, sizedInternalFormat, _textureWidth);
+            extensions->glTexStorage1D( GL_TEXTURE_1D, (_numMipmapLevels >0)?_numMipmapLevels:1, texStorageSizedInternalFormat, _textureWidth);
         }
         else
         {

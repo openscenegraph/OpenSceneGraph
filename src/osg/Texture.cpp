@@ -2282,12 +2282,22 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         if ( !compressed_image)
         {
             numMipmapLevels = 1;
-
-            glTexImage2D( target, 0, _internalFormat,
-                inwidth, inheight, _borderWidth,
-                (GLenum)image->getPixelFormat(),
-                (GLenum)image->getDataType(),
-                dataPtr);
+            GLenum sizedInternalFormat =  extensions->isTextureStorageEnabled && extensions->isTexStorage2DSupported() && (_borderWidth==0) ?
+                                          selectSizedInternalFormat(image) : 0;
+            // no image present, but dimensions at set so lets create the texture
+            if( sizedInternalFormat!=0)
+            {
+                extensions->glTexStorage2D( target, numMipmapLevels, sizedInternalFormat, inwidth, inheight);
+                glTexSubImage2D( target, 0, 0, 0, inwidth, inheight, (GLenum)image->getPixelFormat(),
+                        (GLenum)image->getDataType(),
+                        dataPtr);
+            }
+            else
+                glTexImage2D( target, 0, _internalFormat,
+                    inwidth, inheight, _borderWidth,
+                    (GLenum)image->getPixelFormat(),
+                    (GLenum)image->getDataType(),
+                    dataPtr);
 
         }
         else if (extensions->isCompressedTexImage2DSupported())

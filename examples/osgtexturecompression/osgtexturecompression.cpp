@@ -146,7 +146,7 @@ int main(int argc, char** argv)
 
 
     unsigned int width, height;
-    wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
+    wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(1), width, height);
 
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
     traits->x = 0;

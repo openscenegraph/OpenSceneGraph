@@ -232,7 +232,6 @@ void TextureRectangle::apply(State& state) const
     else if (_image.valid() && _image->data())
     {
         GLExtensions * extensions = state.get<GLExtensions>();
-        bool useTexStorage = extensions->isTextureStorageEnabled && (_borderWidth==0);
 
         // keep the image around at least till we go out of scope.
         osg::ref_ptr<osg::Image> image = _image;
@@ -241,14 +240,14 @@ void TextureRectangle::apply(State& state) const
         computeInternalFormat();
 
         //get sizedInternalFormat if TexStorage available
-        GLenum sizedInternalFormat = useTexStorage ? selectSizedInternalFormat(image) : 0;
+        GLenum texStorageSizedInternalFormat = extensions->isTextureStorageEnabled && (_borderWidth==0) ? selectSizedInternalFormat(image) : 0;
 
         _textureWidth = image->s();
         _textureHeight = image->t();
 
         textureObject = generateAndAssignTextureObject(
                 contextID, GL_TEXTURE_RECTANGLE, 1,
-                sizedInternalFormat!=0 ? sizedInternalFormat : _internalFormat,
+                texStorageSizedInternalFormat!=0 ? texStorageSizedInternalFormat : _internalFormat,
                 _textureWidth, _textureHeight, 1, 0);
 
         textureObject->bind(state);
@@ -276,15 +275,14 @@ void TextureRectangle::apply(State& state) const
     {
         // no image present, but dimensions at set so lets create the texture
         GLExtensions * extensions = state.get<GLExtensions>();
-        bool useTexStorage = extensions->isTextureStorageEnabled;
-        GLenum sizedInternalFormat = useTexStorage ? selectSizedInternalFormat() : 0;
-        if (useTexStorage && sizedInternalFormat!=0)
+        GLenum texStorageSizedInternalFormat = extensions->isTextureStorageEnabled ? selectSizedInternalFormat() : 0;
+        if (texStorageSizedInternalFormat!=0)
         {
-            textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_RECTANGLE, 0, sizedInternalFormat, _textureWidth, _textureHeight, 1, 0);
+            textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_RECTANGLE, 0, texStorageSizedInternalFormat, _textureWidth, _textureHeight, 1, 0);
             textureObject->bind(state);
             applyTexParameters(GL_TEXTURE_RECTANGLE, state);
 
-            extensions->glTexStorage2D( GL_TEXTURE_RECTANGLE, 1, sizedInternalFormat, _textureWidth, _textureHeight);
+            extensions->glTexStorage2D( GL_TEXTURE_RECTANGLE, 1, texStorageSizedInternalFormat, _textureWidth, _textureHeight);
         }
         else
         {

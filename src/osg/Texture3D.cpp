@@ -316,15 +316,14 @@ void Texture3D::apply(State& state) const
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_textureDepth!=0) && (_internalFormat!=0) )
     {
         // no image present, but dimensions at set so lets create the texture
-        bool useTexStorage = extensions->isTextureStorageEnabled;
-        GLenum sizedInternalFormat = useTexStorage ? selectSizedInternalFormat() : 0;
-        if (useTexStorage && sizedInternalFormat!=0)
+        GLenum texStorageSizedInternalFormat = extensions->isTextureStorageEnabled ? selectSizedInternalFormat() : 0;
+        if (texStorageSizedInternalFormat!=0)
         {
-            textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_3D, _numMipmapLevels, sizedInternalFormat, _textureWidth, _textureHeight, _textureDepth,0);
+            textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_3D, _numMipmapLevels, texStorageSizedInternalFormat, _textureWidth, _textureHeight, _textureDepth,0);
             textureObject->bind(state);
             applyTexParameters(GL_TEXTURE_3D, state);
 
-            extensions->glTexStorage3D( GL_TEXTURE_3D, (_numMipmapLevels >0)?_numMipmapLevels:1, sizedInternalFormat, _textureWidth, _textureHeight, _textureDepth);
+            extensions->glTexStorage3D( GL_TEXTURE_3D, (_numMipmapLevels >0)?_numMipmapLevels:1, texStorageSizedInternalFormat, _textureWidth, _textureHeight, _textureDepth);
         }
         else
         {

@@ -365,11 +365,21 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glUniformMatrix4x3dv)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
         void (GL_APIENTRY * glGetActiveAtomicCounterBufferiv)( GLuint program, GLuint bufferIndex, GLenum pname, GLint* params );
         void (GL_APIENTRY * glDispatchCompute)( GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ );
-        GLuint64 (GL_APIENTRY* glGetTextureHandle)(GLint texture);
-        void        (GL_APIENTRY* glMakeTextureHandleResident)(GLuint64 handle);
-        void        (GL_APIENTRY* glMakeTextureHandleNonResident)(GLuint64 handle);
-        void        (GL_APIENTRY* glUniformHandleui64)(GLint location, GLuint64 handle);
-        GLboolean   (GL_APIENTRY* glIsTextureHandleResident)(GLuint64 handle);
+
+        // ARB_bindless_texture
+        GLuint64 (GL_APIENTRY* glGetTextureHandle)(GLuint texture);
+        GLuint64 (GL_APIENTRY* glGetTextureSamplerHandle)(GLuint texture, GLuint sampler);
+        void (GL_APIENTRY* glMakeTextureHandleResident)(GLuint64 handle);
+        void (GL_APIENTRY* glMakeTextureHandleNonResident)(GLuint64 handle);
+        GLboolean (GL_APIENTRY* glIsTextureHandleResident)(GLuint64 handle);
+        GLuint64 (GL_APIENTRY* glGetImageHandle)(GLuint texture, GLint level, GLboolean layered, GLint layer, GLenum format);
+        void (GL_APIENTRY* glMakeImageHandleResident)(GLuint64 handle);
+        void  (GL_APIENTRY* glMakeImageHandleNonResident)(GLuint64 handle);
+        GLboolean (GL_APIENTRY* glIsImageHandleResident)(GLuint64 handle);
+        void  (GL_APIENTRY* glUniformHandleui64)(GLint location, GLuint64 handle);
+        void  (GL_APIENTRY* glUniformHandleuiv64)(GLint location, GLsizei count, GLuint64 *handles);
+        void  (GL_APIENTRY* glProgramUniformHandleui64)(GLuint program, GLint location, GLuint64 handle);
+        void  (GL_APIENTRY* glProgramUniformHandleuiv64)(GLuint program, GLint location, GLsizei count, GLuint64 *handles);
 
         // Buffer Object extensions
         bool isBufferObjectSupported;
@@ -538,7 +548,17 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
                     isNonPowerOfTwoTextureMipMappedSupported;
         }
 
-        void (GL_APIENTRY * glTexStorage2D) (GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
+        ///immutable texture storage and texture view
+        void (GL_APIENTRY * glTexStorage1D) (GLenum target, GLsizei numMipmapLevels, GLenum internalformat, GLsizei width);
+        void (GL_APIENTRY * glTextureStorage1D) (GLuint texture, GLsizei numMipmapLevels, GLenum internalformat, GLsizei width);
+        void (GL_APIENTRY * glTexStorage2D) (GLenum target, GLsizei numMipmapLevels, GLenum internalformat, GLsizei width, GLsizei height);
+        void (GL_APIENTRY * glTextureStorage2D) (GLuint texture, GLsizei numMipmapLevels, GLenum internalformat, GLsizei width, GLsizei height);
+        void (GL_APIENTRY * glTexStorage3D) ( GLenum target, GLsizei numMipmapLevels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth);
+        void (GL_APIENTRY * glTextureStorage3D) ( GLuint texture, GLsizei numMipmapLevels,GLenum internalformat,GLsizei width,GLsizei height,GLsizei depth);
+        void (GL_APIENTRY * glTexStorage2DMultisample) ( GLenum target, GLsizei numSamples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
+        void (GL_APIENTRY * glTexStorage3DMultisample) ( GLenum target, GLsizei numSamples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations);
+        void (GL_APIENTRY * glTextureView) ( GLuint texture, GLenum target, GLuint orig, GLenum internalformat, GLuint minlevel, GLuint numlevels, GLuint minlayer, GLuint numlayers);
+
         void (GL_APIENTRY * glCompressedTexImage2D) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
         void (GL_APIENTRY * glCompressedTexSubImage2D) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data);
         void (GL_APIENTRY * glGetCompressedTexImage) (GLenum target, GLint level, GLvoid *data);
@@ -557,8 +577,6 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
 
         void (GL_APIENTRY * glTexImage3D) ( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
         void (GL_APIENTRY * glTexSubImage3D) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
-        void (GL_APIENTRY * glTexStorage3D) ( GLenum target, GLsizei numMipmapLevels,GLenum sizedInternalFormat,GLsizei width,GLsizei height,GLsizei depth);
-        void (GL_APIENTRY * glTextureStorage3D) ( GLuint texture, GLsizei numMipmapLevels,GLenum sizedInternalFormat,GLsizei width,GLsizei height,GLsizei depth);
 
         void (GL_APIENTRY * glCopyTexSubImage3D) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
         void (GL_APIENTRY * glCompressedTexImage3D) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid *data);

@@ -293,8 +293,12 @@ void TextureCubeMap::apply(State& state) const
             _textureWidth = _textureHeight = minimum( _textureWidth , _textureHeight );
         }
 
+        GLenum texStorageSizedInternalFormat = extensions->isTextureStorageEnabled && (_borderWidth==0) ? selectSizedInternalFormat(_images[0]) : 0;
+
         textureObject = generateAndAssignTextureObject(
-                contextID,GL_TEXTURE_CUBE_MAP,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
+                contextID, GL_TEXTURE_CUBE_MAP, _numMipmapLevels,
+                texStorageSizedInternalFormat!=0 ? texStorageSizedInternalFormat : _internalFormat,
+                _textureWidth, _textureHeight, 1, 0);
 
         textureObject->bind();
 
@@ -335,22 +339,33 @@ void TextureCubeMap::apply(State& state) const
     }
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_internalFormat!=0) )
     {
+
+        GLenum texStorageSizedInternalFormat = extensions->isTextureStorageEnabled && (_borderWidth==0) ? selectSizedInternalFormat() : 0;
+
         textureObject = generateAndAssignTextureObject(
-                contextID,GL_TEXTURE_CUBE_MAP,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
+                contextID, GL_TEXTURE_CUBE_MAP, _numMipmapLevels,
+                texStorageSizedInternalFormat!=0 ? texStorageSizedInternalFormat : _internalFormat,
+                _textureWidth, _textureHeight, 1, 0);
 
         textureObject->bind();
 
         applyTexParameters(GL_TEXTURE_CUBE_MAP,state);
 
-        for (int n=0; n<6; n++)
+        if(texStorageSizedInternalFormat!=0)
         {
-            // no image present, but dimensions at set so less create the texture
-            glTexImage2D( faceTarget[n], 0, _internalFormat,
-                         _textureWidth, _textureHeight, _borderWidth,
-                         _sourceFormat ? _sourceFormat : _internalFormat,
-                         _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
-                         0);
+            extensions->glTexStorage2D(GL_TEXTURE_CUBE_MAP, _numMipmapLevels==0 ? 1 : _numMipmapLevels, texStorageSizedInternalFormat, _textureWidth, _textureHeight);
+
         }
+        else
+            for (int n=0; n<6; n++)
+            {
+                // no image present, but dimensions at set so less create the texture
+                glTexImage2D( faceTarget[n], 0, _internalFormat,
+                             _textureWidth, _textureHeight, _borderWidth,
+                             _sourceFormat ? _sourceFormat : _internalFormat,
+                             _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
+                             0);
+            }
 
     }
     else

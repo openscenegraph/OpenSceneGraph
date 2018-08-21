@@ -150,7 +150,7 @@ InternalPixelRelations sizedInternalFormats[] = {
     , { GL_RGB5_A1                             , GL_RGBA             , GL_UNSIGNED_INT_10_10_10_2                   }
     , { GL_RGB5_A1                             , GL_RGBA             , GL_UNSIGNED_INT_2_10_10_10_REV               }
  // , { GL_RGBA16F                             , GL_RGBA             , GL_HALF_FLOAT                                }
-    , { GL_RGBA16F                             , GL_RGBA             , GL_FLOAT                                     }
+    , { GL_RGBA16F_ARB                         , GL_RGBA             , GL_FLOAT                                     }
     , { GL_RGBA32F_ARB                         , GL_RGBA             , GL_FLOAT                                     }
 
     , { GL_SRGB8                               , GL_RGB              , GL_UNSIGNED_BYTE                             }

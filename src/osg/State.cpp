@@ -287,7 +287,6 @@ void State::initializeExtensionProcs()
     }
 
     // set the validity of Modes
-    if (false)
     {
         bool pointSpriteModeValid = _glExtensions->isPointSpriteModeSupported;
 

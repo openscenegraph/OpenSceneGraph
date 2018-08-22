@@ -18,6 +18,7 @@
 #include <osg/Drawable>
 #include <osg/ApplicationUsage>
 #include <osg/ContextData>
+#include <osg/PointSprite>
 #include <osg/os_utils>
 
 #include <sstream>
@@ -283,6 +284,18 @@ void State::initializeExtensionProcs()
             _glExtensions->glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS_ARB, &bits);
             setTimestampBits(bits);
         }
+    }
+
+    // set the validity of Modes
+    if (false)
+    {
+        bool pointSpriteModeValid = _glExtensions->isPointSpriteModeSupported;
+
+    #if defined( OSG_GLES1_AVAILABLE ) //point sprites don't exist on es 2.0
+        setModeValidity(GL_POINT_SPRITE_OES, pointSpriteModeValid);
+    #else
+        setModeValidity(GL_POINT_SPRITE_ARB, pointSpriteModeValid);
+    #endif
     }
 
 

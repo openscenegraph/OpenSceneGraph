@@ -979,11 +979,11 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     if (validContext) glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &maxLayerCount);
 
     // Bindless textures
-    setGLExtensionFuncPtr(glGetTextureHandle,             "glGetTextureHandle", "glGetTextureHandleARB","glGetTextureHandleNV", validContext);
-    setGLExtensionFuncPtr(glMakeTextureHandleResident,    "glMakeTextureHandleResident", "glMakeTextureHandleResidentARB","glMakeTextureHandleResidentNV", validContext);
-    setGLExtensionFuncPtr(glMakeTextureHandleNonResident, "glMakeTextureHandleNonResident", "glMakeTextureHandleNonResidentARB", "glMakeTextureHandleNonResidentNV",validContext);
-    setGLExtensionFuncPtr(glUniformHandleui64,            "glUniformHandleui64", "glUniformHandleui64ARB","glUniformHandleui64NV", validContext);
-    setGLExtensionFuncPtr(glIsTextureHandleResident,      "glIsTextureHandleResident","glIsTextureHandleResidentARB", "glIsTextureHandleResidentNV", validContext);
+    setGLExtensionFuncPtr(glGetTextureHandle,             "glGetTextureHandleARB", "glGetTextureHandle","glGetTextureHandleNV", validContext);
+    setGLExtensionFuncPtr(glMakeTextureHandleResident,    "glMakeTextureHandleResidentARB","glMakeTextureHandleResident","glMakeTextureHandleResidentNV", validContext);
+    setGLExtensionFuncPtr(glMakeTextureHandleNonResident,  "glMakeTextureHandleNonResidentARB","glMakeTextureHandleNonResident", "glMakeTextureHandleNonResidentNV",validContext);
+    setGLExtensionFuncPtr(glUniformHandleui64,             "glUniformHandleui64ARB","glUniformHandleui64","glUniformHandleui64NV", validContext);
+    setGLExtensionFuncPtr(glIsTextureHandleResident,      "glIsTextureHandleResidentARB","glIsTextureHandleResident", "glIsTextureHandleResidentNV", validContext);
 
     // Blending
     isBlendColorSupported = validContext &&

@@ -339,6 +339,8 @@ OSG_INIT_SINGLETON_PROXY(GLExtensionDisableStringInitializationProxy, osg::getGL
             static void *handle = dlopen("libGLESv1_CM.so", RTLD_NOW);
         #elif defined(OSG_GLES2_AVAILABLE)
             static void *handle = dlopen("libGLESv2.so", RTLD_NOW);
+        #elif defined(OSG_GLES3_AVAILABLE)
+            static void *handle = dlopen("libGLESv3.so", RTLD_NOW);
         #elif defined(OSG_GL1_AVAILABLE)
             static void *handle = dlopen("libGL.so", RTLD_NOW);
         #endif

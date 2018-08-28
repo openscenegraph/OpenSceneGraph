@@ -137,6 +137,7 @@ InternalPixelRelations sizedInternalFormats[] = {
 
 
     , { GL_RGBA8                               , GL_RGBA             , GL_UNSIGNED_BYTE                             }
+    , { GL_RGBA16                              , GL_RGBA             , GL_UNSIGNED_SHORT                            }
     , { GL_RGB10_A2                            , GL_RGBA             , GL_UNSIGNED_INT_10_10_10_2                   }
     , { GL_RGB10_A2                            , GL_RGBA             , GL_UNSIGNED_INT_2_10_10_10_REV               }
     , { GL_RGBA12                              , GL_RGBA             , GL_UNSIGNED_SHORT                            }
@@ -149,8 +150,8 @@ InternalPixelRelations sizedInternalFormats[] = {
     , { GL_RGB5_A1                             , GL_RGBA             , GL_UNSIGNED_INT_10_10_10_2                   }
     , { GL_RGB5_A1                             , GL_RGBA             , GL_UNSIGNED_INT_2_10_10_10_REV               }
  // , { GL_RGBA16F                             , GL_RGBA             , GL_HALF_FLOAT                                }
- // , { GL_RGBA16F                             , GL_RGBA             , GL_FLOAT                                     }
- // , { GL_RGBA32F                             , GL_RGBA             , GL_FLOAT                                     }
+    , { GL_RGBA16F_ARB                         , GL_RGBA             , GL_FLOAT                                     }
+    , { GL_RGBA32F_ARB                         , GL_RGBA             , GL_FLOAT                                     }
 
     , { GL_SRGB8                               , GL_RGB              , GL_UNSIGNED_BYTE                             }
     , { GL_SRGB8_ALPHA8                        , GL_RGBA             , GL_UNSIGNED_BYTE                             }
@@ -227,7 +228,7 @@ GLenum assumeSizedInternalFormat(GLint internalFormat, GLenum type)
     return 0;
 }
 
-bool isCompressedInternalFormatSupportedByTexStorrage(GLint internalFormat)
+bool isCompressedInternalFormatSupportedByTexStorage(GLint internalFormat)
 {
     const size_t formatsCount = sizeof(compressedInternalFormats) / sizeof(compressedInternalFormats[0]);
 
@@ -2090,6 +2091,43 @@ bool Texture::areAllTextureObjectsLoaded() const
     return true;
 }
 
+GLenum Texture::selectSizedInternalFormat(const osg::Image* image) const
+{
+    if (image)
+    {
+        bool compressed_image = isCompressedInternalFormat((GLenum)image->getPixelFormat());
+
+        //calculate sized internal format
+        if(compressed_image)
+        {
+            if(isCompressedInternalFormatSupportedByTexStorage(_internalFormat))
+            {
+                return _internalFormat;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        else
+        {
+            if(isSizedInternalFormat(_internalFormat))
+            {
+                return _internalFormat;
+            }
+            else
+            {
+                return assumeSizedInternalFormat((GLenum)image->getInternalTextureFormat(), (GLenum)image->getDataType());
+            }
+        }
+    }
+    else
+    {
+        if (isSizedInternalFormat(_internalFormat)) return _internalFormat;
+
+        return assumeSizedInternalFormat(_internalFormat, (_sourceType!=0) ? _sourceType : GL_UNSIGNED_BYTE);
+    }
+}
 
 void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* image, GLsizei inwidth, GLsizei inheight,GLsizei numMipmapLevels) const
 {
@@ -2280,49 +2318,19 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
             int width  = inwidth;
             int height = inheight;
 
-            bool useTexStorrage = extensions->isTextureStorageEnabled;
-            GLenum sizedInternalFormat = 0;
-
-            if(useTexStorrage)
-            {
-                if(extensions->isTexStorage2DSupported() && _borderWidth == 0)
-                {
-                    //calculate sized internal format
-                    if(!compressed_image)
-                    {
-                        if(isSizedInternalFormat(_internalFormat))
-                        {
-                            sizedInternalFormat = _internalFormat;
-                        }
-                        else
-                        {
-                            sizedInternalFormat = assumeSizedInternalFormat((GLenum)image->getInternalTextureFormat(), (GLenum)image->getDataType());
-                        }
-                    }
-                    else
-                    {
-                        if(isCompressedInternalFormatSupportedByTexStorrage(_internalFormat))
-                        {
-                            sizedInternalFormat = _internalFormat;
-                        }
-                    }
-                }
-
-                useTexStorrage &= sizedInternalFormat != 0;
-            }
-
-            if(useTexStorrage)
+            GLenum texStorageSizedInternalFormat = extensions->isTexStorage2DSupported() && (_borderWidth==0) ? selectSizedInternalFormat(image) : 0;
+            if (texStorageSizedInternalFormat!=0)
             {
                 if (getTextureTarget()==GL_TEXTURE_CUBE_MAP)
                 {
                     if (target==GL_TEXTURE_CUBE_MAP_POSITIVE_X)
                     {
-                        extensions->glTexStorage2D(GL_TEXTURE_CUBE_MAP, numMipmapLevels, sizedInternalFormat, width, height);
+                        extensions->glTexStorage2D(GL_TEXTURE_CUBE_MAP, numMipmapLevels, texStorageSizedInternalFormat, width, height);
                     }
                 }
                 else
                 {
-                    extensions->glTexStorage2D(target, numMipmapLevels, sizedInternalFormat, width, height);
+                    extensions->glTexStorage2D(target, numMipmapLevels, texStorageSizedInternalFormat, width, height);
                 }
 
                 if( !compressed_image )

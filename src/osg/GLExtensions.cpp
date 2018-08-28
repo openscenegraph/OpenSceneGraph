@@ -401,17 +401,6 @@ OSG_INIT_SINGLETON_PROXY(GLExtensionDisableStringInitializationProxy, osg::getGL
 
     #elif defined (__linux__)
 
-        typedef void (*__GLXextFuncPtr)(void);
-        typedef __GLXextFuncPtr (*GetProcAddressARBProc)(const char*);
-
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
-        static GetProcAddressARBProc s_glXGetProcAddressARB = convertPointerType<GetProcAddressARBProc, void*>(dlsym(0, "glXGetProcAddressARB"));
-        if (s_glXGetProcAddressARB)
-        {
-            return convertPointerType<void*, __GLXextFuncPtr>((s_glXGetProcAddressARB)(funcName));
-        }
-        #endif
-
         return dlsym(0, funcName);
 
     #elif defined (__QNX__)

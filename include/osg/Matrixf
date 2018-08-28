@@ -328,7 +328,7 @@ class OSG_EXPORT Matrixf
         inline Vec4f operator* ( const Vec4f& v ) const;
         inline Vec4d operator* ( const Vec4d& v ) const;
 
-#ifdef USE_DEPRECATED_API
+#ifdef OSG_USE_DEPRECATED_API
         inline void set(const Quat& q) { makeRotate(q); }
         inline void get(Quat& q) const { q = getRotate(); }
 #endif

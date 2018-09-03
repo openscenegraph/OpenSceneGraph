@@ -27,7 +27,7 @@ SET(TARGET_ADDED_LIBRARIES ${TARGET_ADDED_LIBRARIES}
 #backup setting
 SET(TMP_OSG_BUILD_APPLICATION_BUNDLES {$OSG_BUILD_APPLICATION_BUNDLES})
 SET(OSG_BUILD_APPLICATION_BUNDLES TRUE)
-SET(MACOSX_DEPLOYMENT_TARGET, ${IPHONE_VERSION_MIN})
+#SET(MACOSX_DEPLOYMENT_TARGET, ${IPHONE_VERSION_MIN})
 SETUP_EXAMPLE(osgViewerIPhone)
 SET_TARGET_PROPERTIES(example_osgViewerIPhone PROPERTIES XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer"
                                                         XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET ${IPHONE_VERSION_MIN}
@@ -35,4 +35,4 @@ SET_TARGET_PROPERTIES(example_osgViewerIPhone PROPERTIES XCODE_ATTRIBUTE_CODE_SI
 
 #restore setting
 SET(OSG_BUILD_APPLICATION_BUNDLES {$TMP_OSG_BUILD_APPLICATION_BUNDLES})
-SET(CMAKE_EXE_LINKER_FLAGS "-framework QuartzCore -framework Foundation -framework OpenGLES  -framework UIKit -framework ImageIO -framework CoreImage  -framework MobileCoreServices -framework CoreGraphics")
+SET(CMAKE_EXE_LINKER_FLAGS "-framework QuartzCore -framework Foundation -framework UIKit -framework ImageIO -framework CoreImage -framework MobileCoreServices -framework CoreGraphics")

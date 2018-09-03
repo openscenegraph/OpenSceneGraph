@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:background="@color/uiControlBar"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+  <FrameLayout
+  	android:layout_width="fill_parent"
+  	android:layout_height="fill_parent"
+  	android:layout_weight="1">
+  	<osg.AndroidExample.EGLview android:id="@+id/surfaceGLES"
+  		android:visibility="visible"
+  		android:layout_width="fill_parent"
+  		android:layout_height="fill_parent"
+  	/>
+  </FrameLayout>
+  <RelativeLayout android:id="@+id/uiNavigation"
+  	android:gravity="center"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content">
+	
+	<LinearLayout
+		android:layout_centerInParent="true"
+		android:orientation="horizontal"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:gravity="center">
+		<Button android:id="@+id/uiButtonLight"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/uiButtonLight"/>
+		<Button android:id="@+id/uiButtonCenter"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/uiButtonCenter"/>
+		<Button android:id="@+id/uiButtonChangeNavigation"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/uiButtonChangeNavigation"/>
+	</LinearLayout>
+	
+	</RelativeLayout>
+  	
+</LinearLayout>

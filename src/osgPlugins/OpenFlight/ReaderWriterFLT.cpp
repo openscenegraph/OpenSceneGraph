@@ -276,8 +276,8 @@ class FLTReaderWriter : public ReaderWriter
 
             // in local cache?
             {
-                osg::Node* node = flt::Registry::instance()->getExternalFromLocalCache(fileName);
-                if (node)
+                osg::ref_ptr<osg::Node> node = flt::Registry::instance()->getExternalFromLocalCache(fileName);
+                if (node.valid())
                     return ReadResult(node, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
             }
 
@@ -299,7 +299,6 @@ class FLTReaderWriter : public ReaderWriter
                 }
             }
 
-            static int nestedExternalsLevel = 0;
             if (rr.success())
             {
                 // add to local cache.
@@ -316,10 +315,8 @@ class FLTReaderWriter : public ReaderWriter
                     // read externals.
                     if (rr.getNode())
                     {
-                        nestedExternalsLevel++;
                         ReadExternalsVisitor visitor(local_opt.get());
                         rr.getNode()->accept(visitor);
-                        nestedExternalsLevel--;
                     }
                 }
                 else
@@ -333,10 +330,6 @@ class FLTReaderWriter : public ReaderWriter
                 osg::ConfigureBufferObjectsVisitor cbov;
                 rr.getNode()->accept(cbov);
             }
-
-            // clear local cache.
-            if (nestedExternalsLevel==0)
-                flt::Registry::instance()->clearLocalCache();
 
             return rr;
         }

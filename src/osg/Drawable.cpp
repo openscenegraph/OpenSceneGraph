@@ -256,7 +256,7 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
 
 Drawable::~Drawable()
 {
-    dirtyGLObjects();
+    Drawable::releaseGLObjects();
 }
 
 osg::MatrixList Drawable::getWorldMatrices(const osg::Node* haltTraversalAtNode) const
@@ -340,7 +340,26 @@ void Drawable::releaseGLObjects(State* state) const
     }
     else
     {
-        const_cast<Drawable*>(this)->dirtyGLObjects();
+    #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
+        for(unsigned int i=0;i<_globjList.size();++i)
+        {
+            if (_globjList[i] != 0)
+            {
+                Drawable::deleteDisplayList(i,_globjList[i], getGLObjectSizeHint());
+                _globjList[i] = 0;
+            }
+        }
+    #endif
+
+        for(unsigned int i=0; i<_vertexArrayStateList.size(); ++i)
+        {
+            VertexArrayState* vas = _vertexArrayStateList[i].get();
+            if (vas)
+            {
+                vas->release();
+                _vertexArrayStateList[i] = 0;
+            }
+        }
     }
 }
 
@@ -434,9 +453,8 @@ void Drawable::setUseVertexBufferObjects(bool flag)
 
 void Drawable::dirtyGLObjects()
 {
-    unsigned int i;
 #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
-    for(i=0;i<_globjList.size();++i)
+    for(unsigned int i=0;i<_globjList.size();++i)
     {
         if (_globjList[i] != 0)
         {
@@ -446,7 +464,7 @@ void Drawable::dirtyGLObjects()
     }
 #endif
 
-    for(i=0; i<_vertexArrayStateList.size(); ++i)
+    for(unsigned int i=0; i<_vertexArrayStateList.size(); ++i)
     {
         VertexArrayState* vas = _vertexArrayStateList[i].get();
         if (vas) vas->dirty();

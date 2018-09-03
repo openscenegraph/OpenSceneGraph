@@ -140,7 +140,8 @@ END_EVENT_TABLE()
 
 OSGCanvas::OSGCanvas(wxWindow *parent, wxWindowID id,
     const wxPoint& pos, const wxSize& size, long style, const wxString& name, int *attributes)
-    : wxGLCanvas(parent, id, pos, size, style|wxFULL_REPAINT_ON_RESIZE, name, attributes)
+    : wxGLCanvas(parent, id, attributes, pos, size, style|wxFULL_REPAINT_ON_RESIZE, name)
+    ,_context(this)
 {
     // default cursor to standard
     _oldCursor = *wxSTANDARD_CURSOR;
@@ -148,6 +149,11 @@ OSGCanvas::OSGCanvas(wxWindow *parent, wxWindowID id,
 
 OSGCanvas::~OSGCanvas()
 {
+}
+
+void OSGCanvas::SetContextCurrent()
+{
+	_context.SetCurrent(*this);
 }
 
 void OSGCanvas::OnPaint( wxPaintEvent& WXUNUSED(event) )
@@ -158,8 +164,6 @@ void OSGCanvas::OnPaint( wxPaintEvent& WXUNUSED(event) )
 
 void OSGCanvas::OnSize(wxSizeEvent& event)
 {
-    // this is also necessary to update the context on some platforms
-    wxGLCanvas::OnSize(event);
 
     // set GL viewport (not called by wxGLCanvas::OnSize on all platforms...)
     int width, height;
@@ -337,7 +341,7 @@ void GraphicsWindowWX::useCursor(bool cursorOn)
 
 bool GraphicsWindowWX::makeCurrentImplementation()
 {
-    _canvas->SetCurrent();
+    _canvas->SetContextCurrent();
     return true;
 }
 

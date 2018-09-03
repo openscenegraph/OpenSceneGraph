@@ -28,7 +28,7 @@ using namespace osgUtil;
 namespace LineSegmentIntersectorUtils
 {
 
-struct Settings : public osg::Referenced
+struct Settings
 {
     Settings() :
         _lineSegIntersector(0),
@@ -46,7 +46,7 @@ struct Settings : public osg::Referenced
 template<typename Vec3, typename value_type>
 struct IntersectFunctor
 {
-    osg::ref_ptr<Settings>  _settings;
+    Settings* _settings;
 
     unsigned int            _primitiveIndex;
     Vec3                    _start;
@@ -518,16 +518,16 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
 {
     if (reachedLimit()) return;
 
-    osg::ref_ptr<LineSegmentIntersectorUtils::Settings> settings = new LineSegmentIntersectorUtils::Settings;
-    settings->_lineSegIntersector = this;
-    settings->_iv = &iv;
-    settings->_drawable = drawable;
-    settings->_limitOneIntersection = (_intersectionLimit == LIMIT_ONE_PER_DRAWABLE || _intersectionLimit == LIMIT_ONE);
+    LineSegmentIntersectorUtils::Settings settings;
+    settings._lineSegIntersector = this;
+    settings._iv = &iv;
+    settings._drawable = drawable;
+    settings._limitOneIntersection = (_intersectionLimit == LIMIT_ONE_PER_DRAWABLE || _intersectionLimit == LIMIT_ONE);
 
     osg::Geometry* geometry = drawable->asGeometry();
     if (geometry)
     {
-        settings->_vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+        settings._vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
     }
 
     osg::KdTree* kdTree = iv.getUseKdTreeWhenAvailable() ? dynamic_cast<osg::KdTree*>(drawable->getShape()) : 0;
@@ -535,7 +535,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
     if (getPrecisionHint()==USE_DOUBLE_CALCULATIONS)
     {
         osg::TemplatePrimitiveFunctor<LineSegmentIntersectorUtils::IntersectFunctor<osg::Vec3d, double> > intersector;
-        intersector.set(s,e, settings.get());
+        intersector.set(s,e, &settings);
 
         if (kdTree) kdTree->intersect(intersector, kdTree->getNode(0));
         else drawable->accept(intersector);
@@ -543,7 +543,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
     else
     {
         osg::TemplatePrimitiveFunctor<LineSegmentIntersectorUtils::IntersectFunctor<osg::Vec3f, float> > intersector;
-        intersector.set(s,e, settings.get());
+        intersector.set(s,e, &settings);
 
         if (kdTree) kdTree->intersect(intersector, kdTree->getNode(0));
         else drawable->accept(intersector);

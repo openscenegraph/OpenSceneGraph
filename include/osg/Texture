@@ -652,8 +652,10 @@ class OSG_EXPORT Texture : public osg::TextureAttribute
         /** Get the internal texture format type. */
         inline InternalFormatType getInternalFormatType() const { return _internalFormatType; }
 
-        class TextureObject;
+        /* select the size internal format to use based on Image when available or Texture format settings.*/
+        GLenum selectSizedInternalFormat(const osg::Image* image=0) const;
 
+        class TextureObject;
 
         /** return true if the texture image data has been modified and the associated GL texture object needs to be updated.*/
         virtual bool isDirty(unsigned int /*contextID*/) const { return false; }

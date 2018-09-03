@@ -82,10 +82,7 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
 
 Geometry::~Geometry()
 {
-    // do dirty here to keep the getGLObjectSizeHint() estimate on the ball
-    dirtyGLObjects();
-
-    // no need to delete, all automatically handled by ref_ptr :-)
+    Geometry::releaseGLObjects();
 }
 
 #define ARRAY_NOT_EMPTY(array) (array!=0 && array->getNumElements()!=0)
@@ -535,7 +532,7 @@ bool Geometry::getDrawElementsList(DrawElementsList& drawElementsList) const
 
 void Geometry::addVertexBufferObjectIfRequired(osg::Array* array)
 {
-    if (/*_useVertexBufferObjects &&*/ array->getBinding()==Array::BIND_PER_VERTEX)
+    if (/*_useVertexBufferObjects &&*/ array->getBinding()==Array::BIND_PER_VERTEX || array->getBinding()==Array::BIND_UNDEFINED)
     {
         if (!array->getVertexBufferObject())
         {

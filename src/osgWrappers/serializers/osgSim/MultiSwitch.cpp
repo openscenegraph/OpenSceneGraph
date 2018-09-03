@@ -49,6 +49,36 @@ static bool writeValues( osgDB::OutputStream& os, const osgSim::MultiSwitch& nod
     return true;
 }
 
+static bool checkValueNames(const osgSim::MultiSwitch& node)
+{
+    return node.getSwitchSetList().size()>0;
+}
+
+static bool readValueNames(osgDB::InputStream& is, osgSim::MultiSwitch& node)
+{
+    unsigned int size = is.readSize(); is >> is.BEGIN_BRACKET;
+    for (unsigned int i = 0; i<size; ++i)
+    {
+        std::string name;
+        is >> name;
+        node.setValueName(i, name);
+    }
+    is >> is.END_BRACKET;
+    return true;
+}
+
+static bool writeValueNames(osgDB::OutputStream& os, const osgSim::MultiSwitch& node)
+{
+    const osgSim::MultiSwitch::SwitchSetList& switches = node.getSwitchSetList();
+    os.writeSize(switches.size()); os << os.BEGIN_BRACKET << std::endl;
+    for (unsigned int i = 0; i<switches.size(); ++i)
+    {
+        os << node.getValueName(i) << std::endl;
+    }
+    os << os.END_BRACKET << std::endl;
+    return true;
+}
+
 REGISTER_OBJECT_WRAPPER( osgSim_MultiSwitch,
                          new osgSim::MultiSwitch,
                          osgSim::MultiSwitch,
@@ -57,4 +87,9 @@ REGISTER_OBJECT_WRAPPER( osgSim_MultiSwitch,
     ADD_BOOL_SERIALIZER( NewChildDefaultValue, true );  // _newChildDefaultValue
     ADD_UINT_SERIALIZER( ActiveSwitchSet, 0 );  // _activeSwitchSet
     ADD_USER_SERIALIZER( Values );  // _values
+
+    {
+        UPDATE_TO_VERSION_SCOPED(160)
+        ADD_USER_SERIALIZER( ValueNames );  // _valueNames
+    }
 }

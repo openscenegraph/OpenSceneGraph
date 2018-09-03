@@ -3323,6 +3323,7 @@ static GLboolean legalFormat(GLenum format)
       case GL_RGBA:
       case GL_LUMINANCE:
       case GL_LUMINANCE_ALPHA:
+      case GL_RG:
       case GL_BGR:
       case GL_BGRA:
         return GL_TRUE;
@@ -4874,6 +4875,7 @@ static GLint elements_per_group(GLenum format, GLenum type)
       case GL_BGR:
         return 3;
       case GL_LUMINANCE_ALPHA:
+      case GL_RG:
         return 2;
       case GL_RGBA:
       case GL_BGRA:

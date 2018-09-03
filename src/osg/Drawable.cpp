@@ -256,6 +256,7 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
 
 Drawable::~Drawable()
 {
+    _stateset = 0;
     Drawable::releaseGLObjects();
 }
 

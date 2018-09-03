@@ -82,6 +82,7 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
 
 Geometry::~Geometry()
 {
+    _stateset = 0;
     Geometry::releaseGLObjects();
 }
 

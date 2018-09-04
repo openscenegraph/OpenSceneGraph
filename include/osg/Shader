@@ -306,6 +306,7 @@ class OSG_EXPORT Shader : public osg::Object
         /** osg::Programs that this osg::Shader is attached to */
         typedef std::set< osg::Program* > ProgramSet;
         ProgramSet                      _programSet;
+        OpenThreads::Mutex _programSetMutex;
         mutable osg::buffered_value< osg::ref_ptr<ShaderObjects> > _pcsList;
 
     private:

@@ -1,3 +1,147 @@
+Tue, 4 Sep 2018 15:26:30 +0100
+Author : Robert Osfield
+Changed the ShapeDrawable::build() methpd so that it does run when the ShadpwDrawabe is a KdTree.
+
+Tue, 4 Sep 2018 14:13:32 +0100
+Author : Robert Osfield
+Updated SO version as XmlNode::Input changes change the ABI
+
+Tue, 4 Sep 2018 12:19:14 +0100
+Author : Robert Osfield
+Added support for reading UTF-8 encoded of xml files
+
+Mon, 3 Sep 2018 12:30:02 +0100
+Author : Robert Osfield
+Changed the logic for whether to call setUpThreading() in setThreadingModel() to make it possible to changed threadings even if the threading model starts of as SingleThreaded
+
+Mon, 3 Sep 2018 11:19:50 +0100
+Author : Robert Osfield
+Updated version number to 3.6.3 in prep for next naintainance release
+
+Mon, 3 Sep 2018 10:16:45 +0100
+Author : Robert Osfield
+Merge branch 'OpenSceneGraph-3.6-TexStorage' into OpenSceneGraph-3.6
+
+Mon, 3 Sep 2018 09:37:36 +0100
+Author : Robert Osfield
+Added reset of _stateset to prevent the releaseGLObjects calling release on th StateSet from the destructor
+
+Mon, 3 Sep 2018 09:37:36 +0100
+Author : Robert Osfield
+Added reset of _stateset to prevent the releaseGLObjects calling release on th StateSet from the destructor
+
+Tue, 28 Aug 2018 11:22:57 +0100
+Author : Robert Osfield
+Replaced the glSGetProcAddressARB code with the dlsym() usage as the NVidia driver looks to be returning non NULL pointers for invalid function names.
+
+Tue, 28 Aug 2018 11:22:57 +0100
+Author : Robert Osfield
+Replaced the glSGetProcAddressARB code with the dlsym() usage as the NVidia driver looks to be returning non NULL pointers for invalid function names.
+
+Wed, 22 Aug 2018 11:13:11 +0100
+Author : Robert Osfield
+Enabled point sprite validty modes.
+
+Wed, 22 Aug 2018 11:13:11 +0100
+Author : Robert Osfield
+Enabled point sprite validty modes.
+
+Wed, 22 Aug 2018 10:42:18 +0100
+Author : Robert Osfield
+Merged fix for PointSprite modes validity checks from master.
+
+Wed, 22 Aug 2018 10:42:18 +0100
+Author : Robert Osfield
+Merged fix for PointSprite modes validity checks from master.
+
+Tue, 21 Aug 2018 09:38:03 -0400
+Author : plevy
+Change GL_RGBA16F to  GL_RGBA16F_ARB to fix Windows BuildChange GL_RGBA16F to  GL_RGBA16F_ARB to fix Windows build.
+
+Tue, 21 Aug 2018 09:38:03 -0400
+Author : plevy
+Change GL_RGBA16F to  GL_RGBA16F_ARB to fix Windows BuildChange GL_RGBA16F to  GL_RGBA16F_ARB to fix Windows build.
+
+Tue, 21 Aug 2018 09:19:50 +0100
+Author : Robert Osfield
+Replaced GL_RGBA32F with GL_RGBA32F_ARB to fix Windows build
+
+Tue, 21 Aug 2018 09:19:50 +0100
+Author : Robert Osfield
+Replaced GL_RGBA32F with GL_RGBA32F_ARB to fix Windows build
+
+Mon, 20 Aug 2018 10:08:09 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #606 from mp3butcher/OpenSceneGraph-3.6-TexStorageOpen scene graph 3.6 tex storage
+
+Mon, 20 Aug 2018 05:10:11 +0200
+Author : mp3butcher
+complete TexStorage support
+
+Mon, 20 Aug 2018 04:50:14 +0200
+Author : mp3butcher
+add more extensions
+
+Sun, 19 Aug 2018 22:46:10 +0200
+Author : mp3butcher
+remove redondant variable and test
+
+Fri, 17 Aug 2018 16:51:55 +0100
+Author : Robert Osfield
+Removed check as this is better outside of the function
+
+Fri, 17 Aug 2018 12:20:59 +0100
+Author : Robert Osfield
+Created a GLenum Texture::selectSizedInternalFormat(const osg::Image* image=0) const method to help clean up set up of glTexStorage. Fixed typo.
+
+Fri, 17 Aug 2018 10:31:46 +0100
+Author : Robert Osfield
+Merged changes to InternalPixelRelations sizedInternalFormats[] from master
+
+Thu, 16 Aug 2018 19:23:17 +0100
+Author : Robert Osfield
+Fixed memory leak associated with VertexArrayStte objects not getting released on destruction of Geometry/Drawables.
+
+Wed, 8 Aug 2018 14:42:04 +0100
+Author : Robert Osfield
+From Chris White, Cygwin build fix
+
+Wed, 8 Aug 2018 15:05:53 +0300
+Author : Vic-Min
+Renamed USE_DEPRECATED_API to OSG_USE_DEPRECATED_API
+
+Tue, 31 Jul 2018 16:58:41 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #583 from emminizer/flt-registry-cacheOpenFlight: Replace internal caches with osgDB::ObjectCache use.  Fix…
+
+Tue, 31 Jul 2018 11:45:33 -0400
+Author : Daniel Emminizer
+OpenFlight: Replace internal caches with osgDB::ObjectCache use.  Fixes unbounded memory growth when using readNode(std::istream&, ...) method.
+
+Tue, 31 Jul 2018 09:13:20 +0100
+Author : Robert Osfield
+Removed unneccessary FIX ME statement.
+
+Fri, 27 Jul 2018 17:34:30 +0100
+Author : Robert Osfield
+Fixed check against dataType changes
+
+Wed, 25 Nov 2015 09:36:15 +1100
+Author : Alex Burton
+updated osgviewerWX to remove deprecated calls in wxWidgets 3.x
+
+Mon, 9 Jul 2018 17:55:38 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #573 from emminizer/fix-flt-typoFLT: Fix texture unit typo and code style from PR 568.
+
+Mon, 9 Jul 2018 06:34:41 -0400
+Author : Daniel Emminizer
+FLT: Fix texture unit typo and code style from PR 568.
+
+Fri, 29 Jun 2018 10:56:35 +0100
+Author : Robert Osfield
+Updated ChangeLog for 3.6.2 release
+
 Fri, 29 Jun 2018 10:56:01 +0100
 Author : Robert Osfield
 Updated date for 3.6.2 releases

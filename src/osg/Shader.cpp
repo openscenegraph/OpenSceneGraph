@@ -484,6 +484,7 @@ Shader::PerContextShader* Shader::getPCS(osg::State& state) const
 
 bool Shader::addProgramRef( Program* program )
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lk(_programSetMutex);
     ProgramSet::iterator itr = _programSet.find(program);
     if( itr != _programSet.end() ) return false;
 
@@ -493,6 +494,7 @@ bool Shader::addProgramRef( Program* program )
 
 bool Shader::removeProgramRef( Program* program )
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lk(_programSetMutex);
     ProgramSet::iterator itr = _programSet.find(program);
     if( itr == _programSet.end() ) return false;
 
@@ -508,6 +510,7 @@ void Shader::dirtyShader()
         if( _pcsList[cxt].valid() ) _pcsList[cxt]->requestCompile();
     }
 
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lk(_programSetMutex);
     // Also mark Programs that depend on us as needing relink.
     for( ProgramSet::iterator itr = _programSet.begin();
         itr != _programSet.end(); ++itr )

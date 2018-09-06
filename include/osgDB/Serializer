@@ -551,20 +551,23 @@ public:
 };
 
 template<typename C, typename P>
-class ObjectSerializer : public TemplateSerializer<P*>
+class ObjectSerializer : public BaseSerializer
 {
 public:
-    typedef TemplateSerializer<P*> ParentType;
     typedef const P* (C::*Getter)() const;
     typedef void (C::*Setter)( P* );
 
-    ObjectSerializer( const char* name, P* def, Getter gf, Setter sf ) : ParentType(name, def), _getter(gf), _setter(sf)
+    ObjectSerializer( const char* name, P* def, Getter gf, Setter sf ) :
+        BaseSerializer(READ_WRITE_PROPERTY),
+        _name(name), _defaultValue(def), _getter(gf), _setter(sf)
     {
-        ParentType::setUsage( _getter!=0, _setter!=0);
+        setUsage( _getter!=0, _setter!=0);
     }
 
     virtual bool set(osg::Object& obj, void* value) { C& object = OBJECT_CAST<C&>(obj); (object.*_setter)( dynamic_cast<P*>(*(reinterpret_cast<osg::Object**>(value))) ); return true; }
     virtual bool get(const osg::Object& obj, void* value) { const C& object = OBJECT_CAST<const C&>(obj);*(reinterpret_cast<const osg::Object**>(value )) = dynamic_cast<const osg::Object*>((object.*_getter)()); return true; }
+
+    virtual const std::string& getName() const { return _name; }
 
     virtual bool read( InputStream& is, osg::Object& obj )
     {
@@ -579,7 +582,7 @@ public:
                 (object.*_setter)( value.get() );
             }
         }
-        else if ( is.matchString(ParentType::_name) )
+        else if ( is.matchString(_name) )
         {
             is >> hasObject;
             if ( hasObject )
@@ -606,9 +609,9 @@ public:
                 os.writeObject( value );
             }
         }
-        else if ( ParentType::_defaultValue!=value )
+        else if ( _defaultValue!=value )
         {
-            os << os.PROPERTY((ParentType::_name).c_str()) << hasObject;
+            os << os.PROPERTY(_name.c_str()) << hasObject;
             if ( hasObject )
             {
                 os << os.BEGIN_BRACKET << std::endl;
@@ -621,8 +624,10 @@ public:
     }
 
 public:
-    Getter _getter;
-    Setter _setter;
+    std::string     _name;
+    osg::ref_ptr<P> _defaultValue;
+    Getter          _getter;
+    Setter          _setter;
 };
 
 template<typename C, typename P>

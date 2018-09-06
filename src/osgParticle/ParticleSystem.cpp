@@ -394,29 +394,53 @@ void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo
                     case osgParticle::Particle::HEXAGON:
                     case osgParticle::Particle::QUAD:
                     {
-                        vertices.push_back(xpos-p1-p2);
-                        colors.push_back(color);
-                        texcoords.push_back(osg::Vec2(s_coord, t_coord));
+                        const osg::Vec3 c0(xpos-p1-p2);
+                        const osg::Vec2 t0(s_coord, t_coord);
+                        const osg::Vec3 c1(xpos+p1-p2);
+                        const osg::Vec2 t1(s_coord+s_tile, t_coord);
+                        const osg::Vec3 c2(xpos+p1+p2);
+                        const osg::Vec2 t2(s_coord+s_tile, t_coord+t_tile);
+                        const osg::Vec3 c3(xpos-p1+p2);
+                        const osg::Vec2 t3(s_coord, t_coord+t_tile);
 
-                        vertices.push_back(xpos+p1-p2);
-                        colors.push_back(color);
-                        texcoords.push_back(osg::Vec2(s_coord+s_tile, t_coord));
+                         // First 3 points (and texcoords) of quad or triangle
+                        vertices.push_back(c0);
+                        vertices.push_back(c1);
+                        vertices.push_back(c2);
+                        texcoords.push_back(t0);
+                        texcoords.push_back(t1);
+                        texcoords.push_back(t2);
 
-                        vertices.push_back(xpos+p1+p2);
-                        colors.push_back(color);
-                        texcoords.push_back(osg::Vec2(s_coord+s_tile, t_coord+t_tile));
+#if !defined(OSG_GLES2_AVAILABLE)
+                        const unsigned int count = 4;
+                        const GLenum mode = GL_QUADS;
 
-                        vertices.push_back(xpos-p1+p2);
-                        colors.push_back(color);
-                        texcoords.push_back(osg::Vec2(s_coord, t_coord+t_tile));
+                        // Last point (and texcoord) of quad
+                        vertices.push_back(c3);
+                        texcoords.push_back(t3);
+#else
+                        // No GL_QUADS mode on GLES2 and upper
+                        const unsigned int count = 6;
+                        const GLenum mode = GL_TRIANGLES;
 
-                        if (!primitives.empty() && primitives.back().first==GL_QUADS)
+                        // Second triangle
+                        vertices.push_back(c2);
+                        vertices.push_back(c3);
+                        vertices.push_back(c0);
+                        texcoords.push_back(t2);
+                        texcoords.push_back(t3);
+                        texcoords.push_back(t0);
+#endif
+                        for (unsigned int j = 0; j < count; ++j)
+                            colors.push_back(color);
+
+                        if (!primitives.empty() && primitives.back().first == mode)
                         {
-                            primitives.back().second+=4;
+                            primitives.back().second += count;
                         }
                         else
                         {
-                            primitives.push_back(ArrayData::ModeCount(GL_QUADS,4));
+                            primitives.push_back(ArrayData::ModeCount(mode, count));
                         }
 
                         break;

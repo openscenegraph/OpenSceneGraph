@@ -1,3 +1,27 @@
+Thu, 6 Sep 2018 11:50:21 +0100
+Author : Robert Osfield
+Fixed memory leak with assignment of default value to ObjectSerializer
+
+Wed, 5 Sep 2018 18:01:33 +0100
+Author : Robert Osfield
+Fixed copy constructor
+
+Wed, 5 Sep 2018 14:04:57 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #617 from aluaces/Image_scaleImage_typoFix typo in the initial check of Image::scaleImage().
+
+Wed, 5 Sep 2018 13:27:35 +0200
+Author : Alberto Luaces
+Fix typo in the initial check of Image::scaleImage().
+
+Tue, 4 Sep 2018 10:35:38 -0400
+Author : Jason Beverage
+Protect the _programSet in Shader with a mutex. This prevents thread safety issues when Shader objects are used in multiple programs.
+
+Wed, 5 Sep 2018 09:33:24 +0100
+Author : Robert Osfield
+Updated ChangeLog
+
 Tue, 4 Sep 2018 15:26:30 +0100
 Author : Robert Osfield
 Changed the ShapeDrawable::build() methpd so that it does run when the ShadpwDrawabe is a KdTree.

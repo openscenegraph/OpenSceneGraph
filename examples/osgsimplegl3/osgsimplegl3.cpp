@@ -87,6 +87,8 @@ int main( int argc, char** argv )
     traits->windowDecoration = true;
     traits->doubleBuffer = true;
     traits->glContextVersion = version;
+    traits->readDISPLAY();
+    traits->setUndefinedScreenDetailsToDefaultScreen();
     osg::ref_ptr< osg::GraphicsContext > gc = osg::GraphicsContext::createGraphicsContext( traits.get() );
     if( !gc.valid() )
     {

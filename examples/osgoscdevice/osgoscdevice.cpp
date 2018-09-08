@@ -443,6 +443,8 @@ int main( int argc, char **argv )
         traits->doubleBuffer = true;
         traits->sharedContext = 0;
         traits->windowName = "Receiver / view two";
+        traits->readDISPLAY();
+        traits->setUndefinedScreenDetailsToDefaultScreen();
 
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 
@@ -509,6 +511,8 @@ int main( int argc, char **argv )
         traits->doubleBuffer = true;
         traits->sharedContext = 0;
         traits->windowName = "Sender / view one";
+        traits->readDISPLAY();
+        traits->setUndefinedScreenDetailsToDefaultScreen();
 
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 

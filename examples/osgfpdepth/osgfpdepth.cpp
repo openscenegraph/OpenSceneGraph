@@ -722,6 +722,8 @@ GraphicsContext* setupGC(osgViewer::Viewer& viewer, ArgumentParser& arguments)
     traits->windowDecoration = decoration;
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
+    traits->readDISPLAY();
+    traits->setUndefinedScreenDetailsToDefaultScreen();
 
     ref_ptr<GraphicsContext> gc = GraphicsContext::createGraphicsContext(traits.get());
     osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());

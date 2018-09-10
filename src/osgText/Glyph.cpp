@@ -464,6 +464,8 @@ float Glyph::getVerticalAdvance() const { return _verticalAdvance; }
 
 void Glyph::setTextureInfo(ShaderTechnique technique, TextureInfo* info)
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_textureInfoListMutex);
+
     if (technique>=_textureInfoList.size())
     {
         _textureInfoList.resize(technique+1);
@@ -473,11 +475,15 @@ void Glyph::setTextureInfo(ShaderTechnique technique, TextureInfo* info)
 
 const Glyph::TextureInfo* Glyph::getTextureInfo(ShaderTechnique technique) const
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_textureInfoListMutex);
+
     return  (technique<_textureInfoList.size()) ? _textureInfoList[technique].get() : 0;
 }
 
 Glyph::TextureInfo* Glyph::getOrCreateTextureInfo(ShaderTechnique technique)
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_textureInfoListMutex);
+
     if (technique>=_textureInfoList.size())
     {
         _textureInfoList.resize(technique+1);

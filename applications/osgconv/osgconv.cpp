@@ -45,6 +45,8 @@ class MyGraphicsContext {
             traits->doubleBuffer = false;
             traits->sharedContext = 0;
             traits->pbuffer = true;
+            traits->readDISPLAY();
+            traits->setUndefinedScreenDetailsToDefaultScreen();
 
             _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 

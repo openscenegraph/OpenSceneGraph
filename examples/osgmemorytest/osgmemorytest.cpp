@@ -57,7 +57,7 @@ class ContextTest : public MemoryTest
             _width(width),
             _height(height),
             _pbuffer(pbuffer) {}
-        
+
         virtual osg::GraphicsContext* allocate()
         {
             osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
@@ -65,9 +65,11 @@ class ContextTest : public MemoryTest
             traits->height = _height;
             traits->windowDecoration = true;
             traits->pbuffer = _pbuffer;
-            
+            traits->readDISPLAY();
+            traits->setUndefinedScreenDetailsToDefaultScreen();
+
             osg::ref_ptr<osg::GraphicsContext> window = osg::GraphicsContext::createGraphicsContext(traits.get());
-            if (window.valid()) 
+            if (window.valid())
             {
                 if (window->realize())
                 {
@@ -82,15 +84,15 @@ class ContextTest : public MemoryTest
             else
             {
                 std::cerr<<"Error: Unable to create graphics context, problem with running osgViewer-"<<osgViewerGetVersion()<<", cannot create windows/pbuffers."<<std::endl;
-                
+
                 if (_pbuffer) throw "Failed to create PixelBuffer";
                 else  throw "Failed to create GraphicsWindow";
             }
         }
-        
+
 
     protected:
-    
+
         int     _width;
         int     _height;
         bool    _pbuffer;
@@ -102,19 +104,19 @@ class ContextTest : public MemoryTest
 class StateAttributeObject : public GLObject
 {
     public:
-    
+
         StateAttributeObject(osg::StateAttribute* sa): _attribute(sa) {}
-        
+
         void apply(osg::RenderInfo& renderInfo)
         {
             _attribute->apply(*renderInfo.getState());
-            
+
             if (renderInfo.getState()->checkGLErrors(_attribute.get()))
             {
                 throw "OpenGL error";
             }
         }
-        
+
         osg::ref_ptr<osg::StateAttribute> _attribute;
 };
 
@@ -129,40 +131,40 @@ class TextureTest : public GLMemoryTest
             _width(width),
             _height(height),
             _depth(depth) {}
-        
+
         virtual GLObject* allocate()
         {
             if (_depth>1)
             {
                 osg::ref_ptr<osg::Image> image = new osg::Image;
                 image->allocateImage(_width, _height, _depth, GL_RGBA, GL_UNSIGNED_BYTE);
-                
+
                 osg::ref_ptr<osg::Texture3D> texture = new osg::Texture3D;
                 texture->setImage(image.get());
                 texture->setResizeNonPowerOfTwoHint(false);
-                
+
                 return new StateAttributeObject(texture.get());
             }
             if (_height>1)
             {
                 osg::ref_ptr<osg::Image> image = new osg::Image;
                 image->allocateImage(_width, _height, 1, GL_RGBA, GL_UNSIGNED_BYTE);
-                
+
                 osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D;
                 texture->setImage(image.get());
                 texture->setResizeNonPowerOfTwoHint(false);
-                
+
                 return new StateAttributeObject(texture.get());
             }
             if (_width>1)
             {
                 osg::ref_ptr<osg::Image> image = new osg::Image;
                 image->allocateImage(_width, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE);
-                
+
                 osg::ref_ptr<osg::Texture1D> texture = new osg::Texture1D;
                 texture->setImage(image.get());
                 texture->setResizeNonPowerOfTwoHint(false);
-                
+
                 return new StateAttributeObject(texture.get());
             }
             else
@@ -170,10 +172,10 @@ class TextureTest : public GLMemoryTest
                 throw "Invalid texture size of 0,0,0";
             }
         }
-        
+
 
     protected:
-    
+
         int     _width;
         int     _height;
         int     _depth;
@@ -191,7 +193,7 @@ class FboTest : public GLMemoryTest
             _width(width),
             _height(height),
             _depth(depth) {}
-        
+
         virtual GLObject* allocate()
         {
             osg::ref_ptr<osg::FrameBufferObject> fbo = new osg::FrameBufferObject;
@@ -201,10 +203,10 @@ class FboTest : public GLMemoryTest
 
             return new StateAttributeObject(fbo.get());
         }
-        
+
 
     protected:
-    
+
         int     _width;
         int     _height;
         int     _depth;
@@ -218,19 +220,19 @@ class FboTest : public GLMemoryTest
 class DrawableObject : public GLObject
 {
     public:
-    
+
         DrawableObject(osg::Drawable* drawable): _drawable(drawable) {}
-        
+
         void apply(osg::RenderInfo& renderInfo)
         {
             _drawable->draw(renderInfo);
-            
+
             if (renderInfo.getState()->checkGLErrors("Drawable"))
             {
                 throw "OpenGL error";
             }
         }
-        
+
         osg::ref_ptr<osg::Drawable> _drawable;
 };
 
@@ -240,20 +242,20 @@ class DrawableObject : public GLObject
 class GeometryTest : public GLMemoryTest
 {
     public:
-    
+
         enum GLObjectType
         {
             VERTEX_ARRAY,
             DISPLAY_LIST,
             VERTEX_BUFFER_OBJECT
         };
-    
+
 
         GeometryTest(GLObjectType type, int width=64, int height=64):
             _glObjectType(type),
             _width(width),
             _height(height) {}
-        
+
         virtual GLObject* allocate()
         {
             unsigned int numVertices = _width * _height;
@@ -279,11 +281,11 @@ class GeometryTest : public GLMemoryTest
                     quads->push_back(i   + (j+1)*_width);
                 }
             }
-            
+
             osg::Geometry* geometry = new osg::Geometry;
             geometry->setVertexArray(vertices);
             geometry->addPrimitiveSet(quads);
-            
+
             switch(_glObjectType)
             {
                 case(VERTEX_ARRAY):
@@ -302,10 +304,10 @@ class GeometryTest : public GLMemoryTest
 
             return new DrawableObject(geometry);
         }
-        
+
 
     protected:
-    
+
         GLObjectType    _glObjectType;
         int             _width;
         int             _height;
@@ -314,7 +316,7 @@ class GeometryTest : public GLMemoryTest
 int main( int argc, char **argv )
 {
     osg::ArgumentParser arguments(&argc,argv);
-    
+
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" tests OpenGL and Windowing memory scalability..");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","List command line options.");
@@ -351,7 +353,7 @@ int main( int argc, char **argv )
 
     ContextTests contextTests;
     GLMemoryTests glMemoryTests;
-    
+
     int width, height, depth;
     while(arguments.read("--pbuffer",width,height)) { contextTests.push_back(new ContextTest(width, height, true)); }
     while(arguments.read("--pbuffer")) { contextTests.push_back(new ContextTest(512, 512, true)); }
@@ -396,20 +398,20 @@ int main( int argc, char **argv )
         return 1;
     }
 #endif
-    
+
     typedef std::list< osg::ref_ptr<osg::GraphicsContext> > Contexts;
     typedef std::list< osg::ref_ptr<GLObject> > GLObjects;
     Contexts allocatedContexts;
     GLObjects glObjects;
-    
+
     if (contextTests.empty())
     {
         if (glMemoryTests.empty())
         {
             std::cout<<"No tests specified, please specify test using the command line options below."<<std::endl<<std::endl;
-        
+
             arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
-            return 1;            
+            return 1;
         }
         else
         {
@@ -421,14 +423,14 @@ int main( int argc, char **argv )
 
     // use printf's below as C++'s ostream classes use more memory and are more likely to fail when everything
     // goes wrong with memory allocations.
-    
+
     int numContextIterations = 0;
     int numGLObjectIterations = 0;
     int numGLObjectsApplied = 0;
     try
     {
         for(; numGLObjectIterations<maxNumGLIterations; ++numGLObjectIterations)
-        {    
+        {
             for(GLMemoryTests::iterator itr = glMemoryTests.begin();
                 itr != glMemoryTests.end();
                 ++itr)
@@ -437,7 +439,7 @@ int main( int argc, char **argv )
                 if (glObject.valid()) glObjects.push_back(glObject.get());
             }
         }
-        
+
         for(;numContextIterations<maxNumContextIterations; ++numContextIterations)
         {
             printf("GraphicsContext %i\n",numContextIterations);
@@ -451,10 +453,10 @@ int main( int argc, char **argv )
                     allocatedContexts.push_back(context);
 
                     context->makeCurrent();
-                    
+
                     osg::RenderInfo renderInfo;
                     renderInfo.setState(context->getState());
-                    
+
                     for(GLObjects::iterator gitr = glObjects.begin();
                         gitr != glObjects.end();
                         ++gitr)
@@ -466,9 +468,9 @@ int main( int argc, char **argv )
                         (*gitr)->apply(renderInfo);
                         ++numGLObjectsApplied;
                     }
-                    
+
                     context->releaseContext();
-                    
+
                     printf("\n\n"); fflush(stdout);
                 }
             }
@@ -489,7 +491,7 @@ int main( int argc, char **argv )
 
     printf("\nSuccessful completion, contexts created = %i, gl objects applied = %i\n",numContextIterations, numGLObjectsApplied);
     printf("Duration = %f seconds.\n\n",osg::Timer::instance()->delta_s(startTick, endTick));
-    
+
 
     return 0;
 }

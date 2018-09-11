@@ -337,15 +337,16 @@ Glyph* Font::getGlyph(const FontResolution& fontRes, unsigned int charcode)
             GlyphMap::iterator gitr = glyphmap.find(charcode);
             if (gitr!=glyphmap.end()) return gitr->second.get();
         }
-    }
 
-    Glyph* glyph = _implementation->getGlyph(fontResUsed, charcode);
-    if (glyph)
-    {
-        addGlyph(fontResUsed, charcode, glyph);
-        return glyph;
+        Glyph* glyph = _implementation->getGlyph(fontResUsed, charcode);
+        if (glyph)
+        {
+            //addGlyph(fontResUsed, charcode, glyph);
+            _sizeGlyphMap[fontResUsed][charcode] = glyph;
+            return glyph;
+        }
+        else return 0;
     }
-    else return 0;
 }
 
 Glyph3D* Font::getGlyph3D(const FontResolution &fontRes, unsigned int charcode)
@@ -364,16 +365,15 @@ Glyph3D* Font::getGlyph3D(const FontResolution &fontRes, unsigned int charcode)
             Glyph3DMap::iterator gitr = glyphmap.find(charcode);
             if (gitr!=glyphmap.end()) return gitr->second.get();
         }
-    }
 
-    Glyph3D* glyph = _implementation->getGlyph3D(fontResUsed, charcode);
-    if (glyph)
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_glyphMapMutex);
-        _sizeGlyph3DMap[fontResUsed][charcode] = glyph;
-        return glyph;
+        Glyph3D* glyph = _implementation->getGlyph3D(fontResUsed, charcode);
+        if (glyph)
+        {
+            _sizeGlyph3DMap[fontResUsed][charcode] = glyph;
+            return glyph;
+        }
+        else return 0;
     }
-    else return 0;
 }
 
 void Font::setThreadSafeRefUnref(bool threadSafe)

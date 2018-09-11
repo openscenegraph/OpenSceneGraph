@@ -239,7 +239,8 @@ void Surface::generate_stateset(unsigned int max_tex_units, bool force_arb_compr
                                     break;
 
                                 case Block::SUBTRACTIVE:
-                                    OSG_WARN << "Warning: lwosg::Surface: 'Subtractive' blending mode is not supported, falling back to 'Difference' mode" << std::endl;
+                                    OSG_WARN << "Warning: lwosg::Surface: 'Subtractive' blending mode is not supported." << std::endl;
+                                    break;
                                 case Block::DIFFERENCE:
                                     tec->setCombine_RGB(osg::TexEnvCombine::SUBTRACT);
                                     break;

@@ -681,7 +681,7 @@ trpgrAppFile *trpgrAppFileCache::GetFile(trpgEndian ness,int id,int col,int row)
     OpenFile &of = files[oldID];
     if (of.afile)
         delete of.afile;
-    char fileName[1024];
+    char fileName[1056];
     if(col==-1) {
         sprintf(fileName,"%s_%d.%s",baseName,id,ext);
     }

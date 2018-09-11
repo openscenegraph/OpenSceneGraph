@@ -240,7 +240,7 @@ void TextureRectangle::apply(State& state) const
         computeInternalFormat();
 
         //get sizedInternalFormat if TexStorage available
-        GLenum texStorageSizedInternalFormat = extensions->isTextureStorageEnabled && (_borderWidth==0) ? selectSizedInternalFormat(image) : 0;
+        GLenum texStorageSizedInternalFormat = extensions->isTextureStorageEnabled && (_borderWidth==0) ? selectSizedInternalFormat(image.get()) : 0;
 
         _textureWidth = image->s();
         _textureHeight = image->t();

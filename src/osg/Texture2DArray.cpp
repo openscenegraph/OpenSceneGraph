@@ -336,7 +336,7 @@ void Texture2DArray::apply(State& state) const
         // compute the internal texture format, this set the _internalFormat to an appropriate value.
         computeInternalFormat();
 
-        GLenum texStorageSizedInternalFormat = extensions->isTextureStorageEnabled && (_borderWidth==0) ? selectSizedInternalFormat(_images[0]) : 0;
+        GLenum texStorageSizedInternalFormat = extensions->isTextureStorageEnabled && (_borderWidth==0) ? selectSizedInternalFormat(_images[0].get()) : 0;
 
         // compute the dimensions of the texture.
         computeRequiredTextureDimensions(state,*_images[0],_textureWidth, _textureHeight, _numMipmapLevels);

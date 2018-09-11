@@ -293,7 +293,7 @@ void TextureCubeMap::apply(State& state) const
             _textureWidth = _textureHeight = minimum( _textureWidth , _textureHeight );
         }
 
-        GLenum texStorageSizedInternalFormat = extensions->isTextureStorageEnabled && (_borderWidth==0) ? selectSizedInternalFormat(_images[0]) : 0;
+        GLenum texStorageSizedInternalFormat = extensions->isTextureStorageEnabled && (_borderWidth==0) ? selectSizedInternalFormat(_images[0].get()) : 0;
 
         textureObject = generateAndAssignTextureObject(
                 contextID, GL_TEXTURE_CUBE_MAP, _numMipmapLevels,

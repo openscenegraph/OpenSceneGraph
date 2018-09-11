@@ -513,7 +513,7 @@ bool TextBase::computeMatrix(osg::Matrix& matrix, osg::State* state) const
                 height = static_cast<value_type>(viewport->height());
             }
 
-            osg::Matrix mvpw = rotate_matrix * modelview * projection * osg::Matrix::scale(width/2.0, height/2.0, 1.0);
+            osg::Matrix mvpw = rotate_matrix * osg::Matrix::translate(_position) * modelview * projection * osg::Matrix::scale(width/2.0, height/2.0, 1.0);
 
             osg::Vec3d origin = osg::Vec3d(0.0, 0.0, 0.0) * mvpw;
             osg::Vec3d left = osg::Vec3d(1.0, 0.0, 0.0) * mvpw - origin;

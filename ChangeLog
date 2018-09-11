@@ -1,10 +1,75 @@
+Tue, 11 Sep 2018 11:56:04 +0100
+Author : Robert Osfield
+Updated rc number 2 for 3.6.3-rc2
+
+Tue, 11 Sep 2018 11:29:36 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #620 from LaurensVoerman/txt_SCREEN_COORDSfix scale problem for osgText with characterSizeMode SCREEN_COORDS and _position set.
+
+Tue, 11 Sep 2018 11:23:34 +0100
+Author : Robert Osfield
+Fixed hang using a ReentrantMutex
+
+Tue, 11 Sep 2018 10:13:49 +0100
+Author : Robert Osfield
+Fixed build
+
+Tue, 11 Sep 2018 09:31:35 +0100
+Author : Robert Osfield
+Fixed build
+
+Tue, 11 Sep 2018 09:03:01 +0100
+Author : Robert Osfield
+Cleaned up code
+
+Mon, 10 Sep 2018 08:00:41 -0400
+Author : gwaldron
+osgText: fixed thread-safety issues in Glyph and Font
+
+Sat, 8 Sep 2018 18:18:33 +0200
+Author : mp3butcher
+fix examples context creation for X11 (when display not :0.0)
+
+Tue, 11 Sep 2018 08:34:20 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #619 from mathieu/topic/SaveInlinedImagesAdded saving of inline Images without having the physical image file.
+
+Tue, 11 Sep 2018 08:11:27 +0100
+Author : Robert Osfield
+Added greater control of how cubemap is set up and controlled
+
+Fri, 7 Sep 2018 15:09:15 +0200
+Author : Laurens Voerman
+fix scale problem for osgText with characterSizeMode SCREEN_COORDS and _position set.
+
+Fri, 7 Sep 2018 14:04:41 +0200
+Author : Mathieu MARACHE
+Added saving of inline Images without having the physical image file.The can be read from and inlined image file
+
+
+Thu, 6 Sep 2018 12:30:18 +0100
+Author : Robert Osfield
+Merge branch 'OpenSceneGraph-3.6' of https://github.com/openscenegraph/OpenSceneGraph into OpenSceneGraph-3.6
+
+Thu, 6 Sep 2018 12:29:44 +0100
+Author : Robert Osfield
+Updated for 3.6.3-rc1
+
 Thu, 6 Sep 2018 11:50:21 +0100
 Author : Robert Osfield
 Fixed memory leak with assignment of default value to ObjectSerializer
 
+Wed, 5 Sep 2018 18:06:25 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #616 from eligovision/OpenSceneGraph-3.6_particlesParticleSystem: Added support for GLES2 and upper (GL_QUADS -> GL_TRI…
+
 Wed, 5 Sep 2018 18:01:33 +0100
 Author : Robert Osfield
 Fixed copy constructor
+
+Wed, 5 Sep 2018 19:00:29 +0300
+Author : Konstantin S. Matveyev
+ParticleSystem: Using of GL_TRIANGLES for GLES2 and upper; GL_QUADS otherwise
 
 Wed, 5 Sep 2018 14:04:57 +0100
 Author : OpenSceneGraph git repository
@@ -13,6 +78,10 @@ Merge pull request #617 from aluaces/Image_scaleImage_typoFix typo in the initia
 Wed, 5 Sep 2018 13:27:35 +0200
 Author : Alberto Luaces
 Fix typo in the initial check of Image::scaleImage().
+
+Wed, 5 Sep 2018 14:00:09 +0300
+Author : Konstantin S. Matveyev
+ParticleSystem: Added support for GLES2 and upper (GL_QUADS -> GL_TRIANGLES)
 
 Tue, 4 Sep 2018 10:35:38 -0400
 Author : Jason Beverage

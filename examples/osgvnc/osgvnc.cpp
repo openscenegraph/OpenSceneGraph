@@ -25,6 +25,7 @@ class EscapeHandler : public osgGA::GUIEventHandler
 
                         return true;
                     }
+                    break;
                 }
 
                 default:
@@ -95,7 +96,7 @@ int main(int argc,char** argv)
 
     // add a custom escape handler, but disable the standard viewer one to enable the vnc images to handle
     // the escape without it getting caught by the viewer.
-    viewer.addEventHandler(new EscapeHandler);    
+    viewer.addEventHandler(new EscapeHandler);
     viewer.setKeyEventSetsDone(0);
 
     return viewer.run();

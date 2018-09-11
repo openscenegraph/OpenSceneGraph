@@ -644,6 +644,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
             }
 
             _album->setVisibility();
+            return true;
 
         }
 

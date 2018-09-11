@@ -109,8 +109,9 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapte
                 user_event->setName("osc_test_1");
 
                 _device->sendEvent(*user_event);
+                return true;
             }
-
+            return false;
         }
 
         default:

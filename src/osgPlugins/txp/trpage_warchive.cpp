@@ -408,7 +408,7 @@ trpgLabelPropertyTable *trpgwArchive::GetLabelPropertyTable()
 // Same as above, only gets a basename as well
 bool trpgwArchive::OpenFile(const char *in_dir,const char *name)
 {
-    char filename[1024];
+    char filename[1025];
 
     strncpy(dir,in_dir,1023);
 
@@ -773,7 +773,7 @@ bool trpgwArchive::IncrementTileFile()
     }
 
     // Open the next one
-    char filename[1024];
+    char filename[1049];
     sprintf(filename,"%s" PATHSEPERATOR "tileFile_%d.tpf",dir,tileFileCount++);
     tileFile = GetNewWAppFile(ness,filename,true);
     if (!tileFile->isValid())
@@ -802,7 +802,7 @@ bool trpgwArchive::DesignateTileFile(int id)
     }
 
     // Open a named on
-    char filename[1024];
+    char filename[1049];
     sprintf(filename,"%s" PATHSEPERATOR "tileFile_%d.tpf",dir,id);
     tileFile = GetNewWAppFile(ness,filename);
     if (!tileFile->isValid())
@@ -834,7 +834,7 @@ bool trpgwArchive::WriteTile(unsigned int x,unsigned int y,unsigned int lod, flo
     // External tiles get their own individual files
     if (tileMode == TileExternal || tileMode == TileExternalSaved) {
         // Make a new filename
-        char filename[1024];
+        char filename[1069];
         // Note: Windows specific
         sprintf(filename,"%s" PATHSEPERATOR "tile_%d_%d_%d.tpt",dir,x,y,lod);
         if (!(tfp = osgDB::fopen(filename,"wb")))
@@ -1502,7 +1502,7 @@ trpgwAppFile* trpgwImageHelper::GetNewWAppFile(trpgEndian inNess,const char *fil
 */
 trpgwAppFile * trpgwImageHelper::IncrementTextureFile(bool geotyp)
 {
-    char filename[1024];
+    char filename[1049];
     trpgwAppFile *thefile = texFile;
 
     if(geotyp && separateGeoTypical) {
@@ -1553,7 +1553,7 @@ bool trpgwImageHelper::DesignateTextureFile(int id)
     texFile = NULL;
 
     // Open one with the given base name
-    char filename[1024];
+    char filename[1044];
     sprintf(filename,"%s" PATHSEPERATOR "texFile_%d.txf",dir,id);
     texFile = GetNewWAppFile(ness,filename);
     if (!texFile->isValid())

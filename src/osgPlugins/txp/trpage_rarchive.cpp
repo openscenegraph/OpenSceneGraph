@@ -63,7 +63,7 @@ void trpgr_Archive::SetDirectory(const char *in_dir)
 // Open the given file and look for the file specific info
 bool trpgr_Archive::OpenFile(const char *name)
 {
-    char file[1024];
+    char file[1025];
     sprintf(file,"%s" PATHSEPERATOR "%s",dir,name);
 
     CloseFile();
@@ -138,7 +138,7 @@ bool trpgr_Archive::ReadSubArchive(int row, int col, trpgEndian cpuNess)
     trpgHeader blockHeader;
     trpgr_Parser bparser;
 
-    char blockpath[1024];
+    char blockpath[1060];
     //open the block archive
     // the block archive will be in the base dir + \\cols\\row\\archive.txp
     sprintf(blockpath,"%s%s%d%s%d%sarchive.txp",dir,PATHSEPERATOR,col,PATHSEPERATOR,row,PATHSEPERATOR);
@@ -325,7 +325,7 @@ bool trpgr_Archive::ReadHeader(bool readAllBlocks)
     tileTable.GetMode(tileMode);
     if (tileMode == trpgTileTable::Local) {
         if (tileCache)  delete tileCache;
-        char fullBase[1024];
+        char fullBase[1060];
         sprintf(fullBase,"%s" PATHSEPERATOR "tileFile",dir);
         tileCache = GetNewRAppFileCache(fullBase,"tpf");
     }
@@ -390,7 +390,7 @@ bool trpgr_Archive::ReadTile(uint32 x,uint32 y,uint32 lod,trpgMemReadBuffer &buf
 bool trpgr_Archive::ReadExternalTile(uint32 x,uint32 y,uint32 lod,trpgMemReadBuffer &buf)
 {
     // Figure out the file name
-    char filename[1024];
+    char filename[1069];
     int majorVer,minorVer;
     header.GetVersion(majorVer,minorVer);
     if((majorVer >= TRPG_NOMERGE_VERSION_MAJOR) && (minorVer >= TRPG_NOMERGE_VERSION_MINOR)) {
@@ -554,7 +554,7 @@ void trpgrImageHelper::Init(trpgEndian inNess,char *inDir,
 
     // Set up the texture cache
     // It doesn't do anything until it's called anyway
-    char fullBase[1024];
+    char fullBase[1035];
     sprintf(fullBase,"%s" PATHSEPERATOR "texFile",dir);
     texCache = GetNewRAppFileCache(fullBase,"txf");
     if(sepGeoTyp) {

@@ -323,7 +323,7 @@ void Texture3D::apply(State& state) const
             textureObject->bind();
             applyTexParameters(GL_TEXTURE_3D, state);
 
-            extensions->glTexStorage3D( GL_TEXTURE_3D, (_numMipmapLevels >0)?_numMipmapLevels:1, texStorageSizedInternalFormat, _textureWidth, _textureHeight, _textureDepth);
+            extensions->glTexStorage3D( GL_TEXTURE_3D, osg::maximum(_numMipmapLevels,1), texStorageSizedInternalFormat, _textureWidth, _textureHeight, _textureDepth);
         }
         else
         {

@@ -239,7 +239,7 @@ void Texture1D::apply(State& state) const
             textureObject->bind();
             applyTexParameters(GL_TEXTURE_1D, state);
 
-            extensions->glTexStorage1D( GL_TEXTURE_1D, (_numMipmapLevels >0)?_numMipmapLevels:1, texStorageSizedInternalFormat, _textureWidth);
+            extensions->glTexStorage1D( GL_TEXTURE_1D, osg::maximum(_numMipmapLevels,1), texStorageSizedInternalFormat, _textureWidth);
         }
         else
         {

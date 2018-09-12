@@ -353,7 +353,7 @@ void TextureCubeMap::apply(State& state) const
 
         if(texStorageSizedInternalFormat!=0)
         {
-            extensions->glTexStorage2D(GL_TEXTURE_CUBE_MAP, _numMipmapLevels==0 ? 1 : _numMipmapLevels, texStorageSizedInternalFormat, _textureWidth, _textureHeight);
+            extensions->glTexStorage2D(GL_TEXTURE_CUBE_MAP, osg::maximum(_numMipmapLevels,1), texStorageSizedInternalFormat, _textureWidth, _textureHeight);
 
         }
         else

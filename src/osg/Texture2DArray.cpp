@@ -355,7 +355,7 @@ void Texture2DArray::apply(State& state) const
         // First we need to allocate the texture memory
         if(texStorageSizedInternalFormat!=0)
         {
-            extensions->glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, texStorageSizedInternalFormat, _textureWidth, _textureHeight, textureDepth);
+            extensions->glTexStorage3D(GL_TEXTURE_2D_ARRAY, osg::maximum(_numMipmapLevels,1), texStorageSizedInternalFormat, _textureWidth, _textureHeight, textureDepth);
         }
         else
         {
@@ -454,7 +454,7 @@ void Texture2DArray::apply(State& state) const
 
         if (texStorageSizedInternalFormat!=0)
         {
-            extensions->glTexStorage3D( GL_TEXTURE_2D_ARRAY, (_numMipmapLevels >0)?_numMipmapLevels:1, texStorageSizedInternalFormat, _textureWidth, _textureHeight, _textureDepth);
+            extensions->glTexStorage3D( GL_TEXTURE_2D_ARRAY, osg::maximum(_numMipmapLevels,1), texStorageSizedInternalFormat, _textureWidth, _textureHeight, _textureDepth);
         }
         else
             extensions->glTexImage3D( GL_TEXTURE_2D_ARRAY, 0, _internalFormat,

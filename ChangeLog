@@ -1,3 +1,23 @@
+Thu, 13 Sep 2018 08:47:17 +0100
+Author : Robert Osfield
+Updated for 3.6.3-rc3
+
+Wed, 12 Sep 2018 17:45:49 +0100
+Author : Robert Osfield
+Standardized the glTexStorage*() calls to use osg::maximum(_numMipmapLevels,1) of rnumber of mipmaps to keep the usage consistent. Fixed the erronous Texture2DArray glTexStorage call so that it used the _numMipmapLevels as above to resolve bug in allocation.
+
+Tue, 11 Sep 2018 15:32:44 +0100
+Author : Robert Osfield
+Warning fixes
+
+Tue, 11 Sep 2018 12:29:40 +0100
+Author : Robert Osfield
+Fixed warning
+
+Tue, 11 Sep 2018 12:23:01 +0100
+Author : Robert Osfield
+Updated for 3.6.3-rc2
+
 Tue, 11 Sep 2018 11:56:04 +0100
 Author : Robert Osfield
 Updated rc number 2 for 3.6.3-rc2

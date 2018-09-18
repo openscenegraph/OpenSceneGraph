@@ -21,7 +21,7 @@
 void configureShaders( osg::StateSet* stateSet )
 {
     const std::string vertexSource =
-        "#version 140 \n"
+        "#version 130 \n"
         " \n"
         "uniform mat4 osg_ModelViewProjectionMatrix; \n"
         "uniform mat3 osg_NormalMatrix; \n"
@@ -42,7 +42,7 @@ void configureShaders( osg::StateSet* stateSet )
     osg::Shader* vShader = new osg::Shader( osg::Shader::VERTEX, vertexSource );
 
     const std::string fragmentSource =
-        "#version 140 \n"
+        "#version 130 \n"
         " \n"
         "in vec4 color; \n"
         "out vec4 fragData; \n"
@@ -124,7 +124,7 @@ OSG currently support OpenGL 3.x on Windows. This comment block describes the
 necessary configuration steps.
 
 Get the draft gl3.h header file from OpenGL.org and put it in a folder called
-ìGL3î somewhere on your hard drive. OSG includes this header as <GL3/gl3.h>. Get
+‚ÄúGL3‚Äù somewhere on your hard drive. OSG includes this header as <GL3/gl3.h>. Get
 gl3.h from here:
 http://www.opengl.org/registry/
 
@@ -134,7 +134,7 @@ several changes.
  * Add the path to <GL3/gl3.h> to the CMake compiler flags, CMAKE_CXX_FLAGS and
    CMAKE_CXX_FLAGS_DEBUG (for release and debug builds; others if you use other
    build configurations). The text to add should look something like this:
-     /I ìC:\GLHeaderî
+     /I ‚ÄúC:\GLHeader‚Äù
    The folder GLHeader should contain a subfolder GL3, which in turn contains
    gl3.h.
 

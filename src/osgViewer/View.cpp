@@ -857,7 +857,7 @@ void View::requestWarpPointer(float x,float y)
             getEventQueue()->mouseWarped(x,y);
             if (gw->getEventQueue()->getCurrentEventState()->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS)
             {
-                local_y = gw->getTraits()->height - local_y;
+                local_y = gw->getTraits()->height - 1 - local_y;
             }
             const_cast<osgViewer::GraphicsWindow*>(gw)->getEventQueue()->mouseWarped(local_x,local_y);
             const_cast<osgViewer::GraphicsWindow*>(gw)->requestWarpPointer(local_x, local_y);
@@ -915,7 +915,7 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
         new_y *= static_cast<double>(_camera->getGraphicsContext()->getTraits()->height);
 
         if (new_x >= (viewport->x()-epsilon) && new_y >= (viewport->y()-epsilon) &&
-            new_x < (viewport->x()+viewport->width()-1.0+epsilon) && new_y <= (viewport->y()+viewport->height()-1.0+epsilon) )
+            new_x < (viewport->x()+viewport->width()+epsilon) && new_y < (viewport->y()+viewport->height()+epsilon) )
         {
             local_x = new_x;
             local_y = new_y;
@@ -963,7 +963,7 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
 
             if (viewport &&
                 new_coord.x() >= (viewport->x()-epsilon) && new_coord.y() >= (viewport->y()-epsilon) &&
-                new_coord.x() < (viewport->x()+viewport->width()-1.0+epsilon) && new_coord.y() <= (viewport->y()+viewport->height()-1.0+epsilon) )
+                new_coord.x() < (viewport->x()+viewport->width()+epsilon) && new_coord.y() < (viewport->y()+viewport->height()+epsilon) )
             {
                 // OSG_NOTICE<<"  in viewport "<<std::endl;;
 

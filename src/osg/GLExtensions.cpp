@@ -1284,6 +1284,13 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
 }
 
+GLExtensions::~GLExtensions()
+{
+    // Remove s_gl*List
+    s_glExtensionSetList[contextID] = ExtensionSet();
+    s_glRendererList[contextID] = std::string();
+    s_glInitializedList[contextID] = 0;
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // C++-friendly convenience methods

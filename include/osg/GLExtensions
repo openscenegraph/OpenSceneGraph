@@ -813,6 +813,9 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
 
         /** convenience wrapper around glObjectLabel that calls glObjectLabel if it's supported and using std::string as a label parameter.*/
         void debugObjectLabel(GLenum identifier, GLuint name, const std::string& label) const { if (glObjectLabel && !label.empty()) glObjectLabel(identifier, name, label.size(), label.c_str()); }
+
+    protected:
+        virtual ~GLExtensions();
 };
 
 

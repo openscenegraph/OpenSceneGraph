@@ -902,6 +902,9 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         inline void glUniform(GLint location, const std::vector<osg::Matrix4x2>& array) const { if (!array.empty()) glUniformMatrix4x2fv(location, static_cast<GLsizei>(array.size()), GL_FALSE, array.front().ptr()); }
 
         inline void glUniform(GLint location, const std::vector<osg::Matrixd>& array) const { if (!array.empty()) glUniformMatrix4dv(location, static_cast<GLsizei>(array.size()), GL_FALSE, array.front().ptr()); }
+
+    protected:
+        virtual ~GLExtensions();
 };
 
 

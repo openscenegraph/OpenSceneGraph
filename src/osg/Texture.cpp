@@ -2752,7 +2752,7 @@ Texture::GenerateMipmapMode Texture::mipmapBeforeTexImage(const State& state, bo
             if (useGenerateMipMap) return GENERATE_MIPMAP;
         }
 
-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+        glTexParameteri(getTextureTarget(), GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
         return GENERATE_MIPMAP_TEX_PARAMETER;
 #endif
     }
@@ -2775,7 +2775,7 @@ void Texture::mipmapAfterTexImage(State& state, GenerateMipmapMode beforeResult)
             break;
         }
         case GENERATE_MIPMAP_TEX_PARAMETER:
-            glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_FALSE);
+            glTexParameteri(getTextureTarget(), GL_GENERATE_MIPMAP_SGIS, GL_FALSE);
             break;
         case GENERATE_MIPMAP_NONE:
             break;

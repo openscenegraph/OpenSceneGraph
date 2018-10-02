@@ -63,10 +63,6 @@ static osg::buffered_object<ExtensionSet> s_glExtensionSetList;
 static osg::buffered_object<std::string> s_glRendererList;
 static osg::buffered_value<int> s_glInitializedList;
 
-static osg::buffered_object<ExtensionSet> s_gluExtensionSetList;
-static osg::buffered_object<std::string> s_gluRendererList;
-static osg::buffered_value<int> s_gluInitializedList;
-
 static ApplicationUsageProxy GLEXtension_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE, "OSG_GL_EXTENSION_DISABLE <value>", "Use space deliminarted list of GL extensions to disable associated GL extensions");
 static ApplicationUsageProxy GLEXtension_e1(ApplicationUsage::ENVIRONMENTAL_VARIABLE, "OSG_MAX_TEXTURE_SIZE <value>", "Clamp the maximum GL texture size to specified value.");
 

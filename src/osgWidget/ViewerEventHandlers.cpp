@@ -24,7 +24,7 @@ bool MouseHandler::handle(
         // osgWidget assumes origin is bottom left of window so make sure mouse coordinate are increaseing y upwards and are scaled to window size.
         float x = (gea.getX()-gea.getXmin())/(gea.getXmax()-gea.getXmin())*static_cast<float>(gea.getWindowWidth());
         float y = (gea.getY()-gea.getYmin())/(gea.getYmax()-gea.getYmin())*static_cast<float>(gea.getWindowHeight());
-        if (gea.getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS) y = static_cast<float>(gea.getWindowHeight())-y;
+        if (gea.getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS) y = static_cast<float>(gea.getWindowHeight() - 1) - y;
 
         //OSG_NOTICE<<"MouseHandler(x="<<x<<", y="<<y<<")"<<std::endl;
 

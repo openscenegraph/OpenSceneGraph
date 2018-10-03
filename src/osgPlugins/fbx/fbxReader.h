@@ -13,7 +13,8 @@ namespace osgAnimation
     class Skeleton;
 }
 
-typedef std::map<std::pair<FbxNode*, osgAnimation::RigGeometry*>, osg::Matrix> BindMatrixMap;
+typedef std::map< osg::Matrix, std::set<osgAnimation::RigGeometry*> > BindMatrixGeometryMap;
+typedef std::map< FbxNode* , BindMatrixGeometryMap > BindMatrixMap;
 
 class OsgFbxReader
 {

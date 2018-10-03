@@ -112,14 +112,15 @@ public:
 
         int i=1;
         int framePos = static_cast<int>(time*100.0/_multiplier);
-        if ( framePos>=(int)_length )
-            framePos = _length;
+        framePos = osg::clampBetween(framePos, 0, (int)_length);
+        _currentLength = framePos;
 
+        std::vector<FrameData*>::iterator lastFrame = --_dataList.end();
         std::vector<FrameData*>::iterator it;
         for ( it=_dataList.begin(); it!=_dataList.end(); it++,i++ )
         {
             framePos -= (*it)->delay;
-            if ( framePos<0 )
+            if ( framePos<0 || it == lastFrame )
                 break;
         }
         _dataNum = i-1;

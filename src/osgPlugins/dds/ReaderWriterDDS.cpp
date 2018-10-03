@@ -676,7 +676,7 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
             break;
         case 0x00000071: // A16B16G16R16F
             OSG_INFO << "ReadDDSFile info : format = A16B16G16R16F" << std::endl;
-            internalFormat = GL_RGBA; // why no transparency?
+            internalFormat = GL_RGBA16F_ARB; // why no transparency?
             pixelFormat    = GL_RGBA;
             dataType       = GL_HALF_FLOAT;
             break;
@@ -704,19 +704,19 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
             break;
         case 0x00000072: // R32F
             OSG_INFO << "ReadDDSFile info : format = R32F" << std::endl;
-            internalFormat = GL_RGB;
+            internalFormat = GL_R32F;
             pixelFormat    = GL_RED;
             dataType       = GL_FLOAT;
             break;
         case 0x0000006F: // R16F
             OSG_INFO << "ReadDDSFile info : format = R16F" << std::endl;
-            internalFormat = GL_RGB;
+            internalFormat = GL_R16F;
             pixelFormat    = GL_RED;
             dataType       = GL_HALF_FLOAT;
             break;
         case 0x00000074: // A32B32G32R32F
             OSG_INFO << "ReadDDSFile info : format = A32B32G32R32F" << std::endl;
-            internalFormat = GL_RGBA;
+            internalFormat = GL_RGBA32F_ARB;
             pixelFormat    = GL_RGBA;
             dataType       = GL_FLOAT;
             break;

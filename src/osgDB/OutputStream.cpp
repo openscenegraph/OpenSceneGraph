@@ -925,24 +925,31 @@ template<typename T>
 void OutputStream::writeArrayImplementation( const T* a, int write_size, unsigned int numInRow )
 {
     *this << write_size << BEGIN_BRACKET;
-    if ( numInRow>1 )
+    if ( isBinary() )
     {
-        for ( int i=0; i<write_size; ++i )
-        {
-            if ( !(i%numInRow) )
-            {
-                *this << std::endl << (*a)[i];
-            }
-            else
-                *this << (*a)[i];
-        }
-        *this << std::endl;
+        if (write_size) writeCharArray((char*)&((*a)[0]), write_size * sizeof((*a)[0]));
     }
     else
     {
-        *this << std::endl;
-        for ( int i=0; i<write_size; ++i )
-            *this << (*a)[i] << std::endl;
+        if ( numInRow>1 )
+        {
+            for ( int i=0; i<write_size; ++i )
+            {
+                if ( !(i%numInRow) )
+                {
+                    *this << std::endl << (*a)[i];
+                }
+                else
+                    *this << (*a)[i];
+            }
+            *this << std::endl;
+        }
+        else
+        {
+            *this << std::endl;
+            for ( int i=0; i<write_size; ++i )
+                *this << (*a)[i] << std::endl;
+        }
     }
     *this << END_BRACKET << std::endl;
 }

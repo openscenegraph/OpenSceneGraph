@@ -46,6 +46,9 @@
 #include <string.h>
 #include <memory>
 
+#include <iostream>
+#include <iomanip>
+
 struct STLOptionsStruct {
     bool smooth;
     bool separateFiles;

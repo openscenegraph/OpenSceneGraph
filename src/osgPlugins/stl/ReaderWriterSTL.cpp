@@ -359,6 +359,7 @@ private:
                 else
                     *m_stream << "facet normal " << vNormal[0] << " " << vNormal[1] << " " << vNormal[2] << std::endl;
                 *m_stream << "outer loop" << std::endl;
+                *m_stream << std::fixed << std::setprecision(7);
                 *m_stream << "vertex " << v1[0] << " " << v1[1] << " " << v1[2] << std::endl;
                 *m_stream << "vertex " << v2[0] << " " << v2[1] << " " << v2[2] << std::endl;
                 *m_stream << "vertex " << v3[0] << " " << v3[1] << " " << v3[2] << std::endl;

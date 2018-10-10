@@ -799,7 +799,7 @@ Win32WindowingSystem::Win32WindowingSystem()
 	if (hModuleShore) {
 		setProcessDpiAwareness = (SetProcessDpiAwarenessFunc *) GetProcAddress(hModuleShore, "SetProcessDpiAwareness");
 		if (setProcessDpiAwareness) {
-			(*setProcessDpiAwareness)(PROCESS_DPI_AWARENESS::PROCESS_PER_MONITOR_DPI_AWARE);
+			(*setProcessDpiAwareness)(PROCESS_PER_MONITOR_DPI_AWARE);
 		}
 	}
 // #endif

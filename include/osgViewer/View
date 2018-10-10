@@ -199,7 +199,12 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Get the const View's list of EventHandlers.*/
         const EventHandlers& getEventHandlers() const { return _eventHandlers; }
 
-
+        /** Get EventHandler by index.*/
+        osgGA::EventHandler* getEventHandler(unsigned int i) const { if( i>=_eventHandlers.size()) return 0; EventHandlers::const_iterator it=_eventHandlers.begin(); for(unsigned int j=0; j<i; ++it, ++j); return *it; }
+        
+        /** Get EventHandlers size.*/
+        unsigned int getNumEventHandlers() const { return _eventHandlers.size(); }
+        
         /** Set the NodePath to any active CoordinateSystemNode present in the Scene.
           * The CoordinateSystemNode path is used to help applications and CamaraManipulators handle geocentric coordinates systems,
           * so that the local up direction is known at any position on the whole earth. */

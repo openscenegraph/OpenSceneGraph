@@ -45,6 +45,7 @@
 
 #include <string.h>
 #include <memory>
+#include <iomanip>
 
 #include <iostream>
 #include <iomanip>

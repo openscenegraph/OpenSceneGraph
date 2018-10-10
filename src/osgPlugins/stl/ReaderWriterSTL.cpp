@@ -46,6 +46,9 @@
 #include <string.h>
 #include <memory>
 
+#include <iostream>
+#include <iomanip>
+
 struct STLOptionsStruct {
     bool smooth;
     bool separateFiles;
@@ -293,6 +296,7 @@ private:
             else
                 *m_f << "solid " << node.getName() << std::endl;
 
+            *m_f << std::fixed << std::setprecision(7);
             for (unsigned int i = 0; i < node.getNumDrawables(); ++i)
             {
                 osg::TriangleFunctor<PushPoints> tf;

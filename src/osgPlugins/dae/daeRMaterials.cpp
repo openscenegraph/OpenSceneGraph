@@ -280,10 +280,10 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
 {
     domProfile_COMMON::domTechnique *teq = pc->getTechnique();
 
-    domProfile_COMMON::domTechnique::domConstant *c = teq->getConstant();
-    domProfile_COMMON::domTechnique::domLambert *l = teq->getLambert();
-    domProfile_COMMON::domTechnique::domPhong *p = teq->getPhong();
-    domProfile_COMMON::domTechnique::domBlinn *b = teq->getBlinn();
+    domProfile_COMMON::domTechnique::domConstant *c = teq ? teq->getConstant() : NULL;
+    domProfile_COMMON::domTechnique::domLambert *l = teq ? teq->getLambert() : NULL;
+    domProfile_COMMON::domTechnique::domPhong *p = teq ? teq->getPhong() : NULL;
+    domProfile_COMMON::domTechnique::domBlinn *b = teq ? teq->getBlinn() : NULL;
 
     ss->setMode( GL_CULL_FACE, osg::StateAttribute::ON ); // Cull Back faces
 

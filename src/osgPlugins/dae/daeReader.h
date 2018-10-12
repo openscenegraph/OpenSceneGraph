@@ -157,6 +157,7 @@ public:
         int precisionHint;              ///< Precision hint flags, as specified in osgDB::Options::PrecisionHint
         bool usePredefinedTextureUnits;
         TessellateMode tessellateMode;
+        osg::ref_ptr<osgDB::ReaderWriter::Options> options;
     };
 
     daeReader(DAE *dae_, const Options * pluginOptions);

@@ -342,6 +342,11 @@ std::string osgDB::findFileInPath(const std::string& filename, const FilePathLis
         OSG_DEBUG << "itr='" <<*itr<< "'\n";
         std::string path = itr->empty() ? filename : concatPaths(*itr, filename);
 
+#ifdef WIN32
+        // if combined file path exceeds MAX_PATH then ignore as it's not a legal path otherwise subsequent IO calls with this path may result in undefined behavior
+        if (path.length()>MAX_PATH) continue;
+#endif
+
         path = getRealPath(path);
 
         OSG_DEBUG << "FindFileInPath() : trying " << path << " ...\n";

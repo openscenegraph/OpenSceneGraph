@@ -1136,7 +1136,7 @@ osg::Texture2D* daeReader::processTexture(
     }
     else
     {
-        osg::ref_ptr<osg::Image> img = osgDB::readRefImageFile(parameters.filename);
+        osg::ref_ptr<osg::Image> img = osgDB::readRefImageFile(parameters.filename, _pluginOptions.options.get());
 
         if (!img.valid())
         {

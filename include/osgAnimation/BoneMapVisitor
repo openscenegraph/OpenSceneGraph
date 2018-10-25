@@ -30,7 +30,6 @@ namespace osgAnimation
         META_NodeVisitor(osgAnimation, BoneMapVisitor)
         BoneMapVisitor();
 
-        void apply(osg::Node&);
         void apply(osg::Transform& node);
         const BoneMap& getBoneMap() const;
 

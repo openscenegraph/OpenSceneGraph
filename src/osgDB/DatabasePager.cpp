@@ -49,57 +49,6 @@ static osg::ApplicationUsageProxy DatabasePager_e4(osg::ApplicationUsage::ENVIRO
 static osg::ApplicationUsageProxy DatabasePager_e11(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAX_PAGEDLOD <num>","Set the target maximum number of PagedLOD to maintain.");
 static osg::ApplicationUsageProxy DatabasePager_e12(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_ASSIGN_PBO_TO_IMAGES <ON/OFF>","Set whether PixelBufferObjects should be assigned to Images to aid download to the GPU.");
 
-// Convert function objects that take pointer args into functions that a
-// reference to an osg::ref_ptr. This is quite useful for doing STL
-// operations on lists of ref_ptr. This code assumes that a function
-// with an argument const Foo* should be composed into a function of
-// argument type ref_ptr<Foo>&, not ref_ptr<const Foo>&. Some support
-// for that should be added to make this more general.
-
-namespace
-{
-template <typename U>
-struct PointerTraits
-{
-    typedef class NullType {} PointeeType;
-};
-
-template <typename U>
-struct PointerTraits<U*>
-{
-    typedef U PointeeType;
-};
-
-template <typename U>
-struct PointerTraits<const U*>
-{
-    typedef U PointeeType;
-};
-
-template <typename FuncObj>
-class RefPtrAdapter
-    : public std::unary_function<const osg::ref_ptr<typename PointerTraits<typename FuncObj::argument_type>::PointeeType>,
-                                 typename FuncObj::result_type>
-{
-public:
-    typedef typename PointerTraits<typename FuncObj::argument_type>::PointeeType PointeeType;
-    typedef osg::ref_ptr<PointeeType> RefPtrType;
-    explicit RefPtrAdapter(const FuncObj& funcObj) : _func(funcObj) {}
-    typename FuncObj::result_type operator()(const RefPtrType& refPtr) const
-    {
-        return _func(refPtr.get());
-    }
-protected:
-        FuncObj _func;
-};
-
-template <typename FuncObj>
-RefPtrAdapter<FuncObj> refPtrAdapt(const FuncObj& func)
-{
-    return RefPtrAdapter<FuncObj>(func);
-}
-}
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //

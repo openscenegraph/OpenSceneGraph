@@ -285,14 +285,16 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
 
     private:
         // A functor used to sort the Windows by their Z component in descending order.
-        struct WindowZCompare: public std::binary_function<ptr_type, ptr_type, bool> {
+        struct WindowZCompare
+        {
             bool operator()(const ptr_type& x, const ptr_type& y) {
                 return x.get()->getZ() > y.get()->getZ();
             }
         };
 
         // A functor used to sort the Windows by their BinNum component in descending order.
-        struct WindowBinNumberCompare: public std::binary_function<ptr_type, ptr_type, bool> {
+        struct WindowBinNumberCompare
+        {
             bool operator()(const ptr_type& x, const ptr_type& y) {
                 return
                     x.get()->getOrCreateStateSet()->getBinNumber() >

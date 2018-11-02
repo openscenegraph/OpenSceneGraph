@@ -322,7 +322,7 @@ int overwrite)
             // keep pixels of last image if transparent mode is on
             // this is necessary for GIF animating
             ptr += 3;
-	    if(overwrite) *ptr = 0x00;
+            if(overwrite) *ptr = 0x00;
             ++ptr;
         }
         else
@@ -340,7 +340,7 @@ int overwrite)
                 *ptr++ = col;
                 *ptr++ = col;
             }
-	    *ptr++ = 0xff;
+            *ptr++ = 0xff;
         }
     }
 }

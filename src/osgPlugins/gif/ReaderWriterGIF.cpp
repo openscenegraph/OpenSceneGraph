@@ -295,7 +295,8 @@ decode_row(GifFileType * giffile,
 unsigned char * buffer,
 unsigned char * rowdata,
 int x, int y, int len,
-int transparent)
+int transparent,
+int overwrite)
 {
     GifColorType * cmentry;
     ColorMapObject * colormap;
@@ -321,6 +322,8 @@ int transparent)
             // keep pixels of last image if transparent mode is on
             // this is necessary for GIF animating
             ptr += 3;
+            if(overwrite) *ptr = 0x00;
+            ++ptr;
         }
         else
         {
@@ -337,8 +340,8 @@ int transparent)
                 *ptr++ = col;
                 *ptr++ = col;
             }
+            *ptr++ = 0xff;
         }
-        *ptr++ = (col == transparent ? 0x00 : 0xff);
     }
 }
 
@@ -360,7 +363,7 @@ GifImageStream** obj)
     unsigned char * rowdata;
     unsigned char * buffer, * ptr;
     unsigned char bg;
-    int transparent, delaytime;
+    int transparent, delaytime, overwrite;
     GifRecordType recordtype;
     GifByteType * extension;
     GifFileType * giffile;
@@ -383,6 +386,7 @@ GifImageStream** obj)
 
     transparent = -1;            /* no transparent color by default */
     delaytime = 8;               /* delay time of a frame  */
+    overwrite = 1;               /* overwrite previous alpha values in animated gifs */
 
     n = giffile->SHeight * giffile->SWidth;
     buffer = new unsigned char [n * 4];
@@ -485,7 +489,7 @@ GifImageStream** obj)
                                 delete [] rowdata;
                                 return NULL;
                             }
-                            else decode_row(giffile, buffer, rowdata, col, j, width, transparent);
+                            else decode_row(giffile, buffer, rowdata, col, j, width, transparent, gif_num > 1 ? overwrite : true);
                         }
                     }
                 }
@@ -500,7 +504,7 @@ GifImageStream** obj)
                             delete [] rowdata;
                             return NULL;
                         }
-                        else decode_row(giffile, buffer, rowdata, col, row, width, transparent);
+                        else decode_row(giffile, buffer, rowdata, col, row, width, transparent, gif_num > 1 ? overwrite : true);
                     }
                 }
 
@@ -528,6 +532,20 @@ GifImageStream** obj)
                 {
                     if (extension[0] >= 4 && extension[1] & 0x1) transparent = extension[4];
                     else transparent = -1;
+
+                    // Set alpha overwrite flag based on disposal method
+                    unsigned char disposal_method = (extension[1]>>2) & 0x7;
+                    switch (disposal_method)
+                    {
+                        case 0:
+                        case 2:
+                            overwrite = 1;
+                            break;
+                        case 1:
+                        case 3:
+                            overwrite = 0;
+                            break;
+                    }
 
                     delaytime = (extension[3]<<8)+extension[2];    // minimum unit 1/100s, so 8 here means 8/100s
                 }

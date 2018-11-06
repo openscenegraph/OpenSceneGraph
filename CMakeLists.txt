@@ -519,7 +519,12 @@ ELSE()
     OPTION(OSG_CPP_EXCEPTIONS_AVAILABLE "Set to OFF to disable compile of OSG components that use C++ exceptions." ON)
 ENDIF()
 
-SET(OSG_GL_CONTEXT_VERSION "1.0" CACHE STRING "GL Context String to pass when creaing graphics contexts")
+#Windows workaround to set context version as line 532 does not set the context version
+IF (OSG_GL3_AVAILABLE)
+	SET(OSG_GL_CONTEXT_VERSION "3.3" CACHE STRING "GL Context String to pass when creaing graphics contexts")
+ELSE()
+	SET(OSG_GL_CONTEXT_VERSION "1.0" CACHE STRING "GL Context String to pass when creaing graphics contexts")
+ENDIF()
 
 # Map the OSG_GL*_AVAILABLE settings to OpenGL header settings
 IF (OSG_GL3_AVAILABLE)

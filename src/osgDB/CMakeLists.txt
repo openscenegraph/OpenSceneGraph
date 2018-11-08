@@ -127,8 +127,13 @@ SET(TARGET_SRC
 
 IF(APPLE AND NOT ANDROID)
     IF(NOT OSG_BUILD_PLATFORM_IPHONE)
-        # Needs CoreFoundation calls and a Carbon function
-        SET(OSGDB_PLATFORM_SPECIFIC_LIBRARIES ${CARBON_LIBRARY} ${COCOA_LIBRARY})
+        IF(OSG_OSX_VERSION VERSION_GREATER_EQUAL 10.14)
+            # Needs CoreFoundation
+            SET(OSGDB_PLATFORM_SPECIFIC_LIBRARIES ${COCOA_LIBRARY})
+        ELSE()
+            # Needs CoreFoundation calls and a Carbon function
+            SET(OSGDB_PLATFORM_SPECIFIC_LIBRARIES ${CARBON_LIBRARY} ${COCOA_LIBRARY})
+        ENDIF()
     ENDIF()
 
     IF(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX STREQUAL "quicktime")

@@ -77,23 +77,27 @@ IF(APPLE AND NOT ANDROID)
         SET(CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD)")
 
     ELSE()
-        # OSX >= 10.5 uses Cocoa windowing system, otherwise Carbon
-        IF(OSG_OSX_VERSION VERSION_LESS 10.5)
-            SET(OSG_WINDOWING_SYSTEM "Carbon" CACHE STRING "Windowing system type for graphics window creation, options Carbon, Cocoa or X11.")
-        ELSE()
+        # macOS >= 10.5 uses Cocoa windowing system, otherwise Carbon
+        IF(OSG_OSX_VERSION VERSION_GREATER_EQUAL 10.5)
             SET(OSG_WINDOWING_SYSTEM "Cocoa" CACHE STRING "Windowing system type for graphics window creation, options Carbon, Cocoa or X11.")
+        ELSE()
+            SET(OSG_WINDOWING_SYSTEM "Carbon" CACHE STRING "Windowing system type for graphics window creation, options Carbon, Cocoa or X11.")
         ENDIF()
 
-        # Set defaults for Universal Binaries. We want 32-bit Intel/PPC on 10.4
-        # and 32/64-bit Intel/PPC on >= 10.5. Anything <= 10.3 doesn't support.
-        # These are set the first time CMake is run, and can be changed by
-        # the user at any time.
-        IF(OSG_OSX_VERSION VERSION_GREATER 10.7)
-            # 64 Bit Works, i386,ppc is not supported any more
+        # Set macOS architectures for Universal Binaries.
+        IF(OSG_OSX_VERSION VERSION_GREATER_EQUAL 10.14)
+            # x86_64 only
+            SET(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX")
+            SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.9" CACHE STRING "Target OSX version")
+            # libstdc++ is no longer supported
+            SET(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
+            SET(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
+        ELSEIF(OSG_OSX_VERSION VERSION_GREATER_EQUAL 10.8)
+            # i386 is no longer supported
             SET(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX")
             SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.8" CACHE STRING "Target OSX version")
         ELSEIF(OSG_OSX_VERSION VERSION_EQUAL 10.7)
-            # 64 Bit Works, PPC is not supported any more
+            # ppc is no longer supported
             SET(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for OSX")
         ELSEIF(OSG_OSX_VERSION VERSION_GREATER 10.4)
             # 64-bit compiles are not supported with Carbon.
@@ -230,7 +234,6 @@ IF(APPLE)
         SET(OPENGL_gl_LIBRARY "${IPHONE_SDKROOT}/System/Library/Frameworks/OpenGLES.framework")
 
     ELSE ()
-        FIND_LIBRARY(CARBON_LIBRARY Carbon)
         FIND_LIBRARY(COCOA_LIBRARY Cocoa)
 
         # Apple OS X: Find OpenGL and AGL based on OSG_WINDOWING_SYSTEM
@@ -254,6 +257,7 @@ IF(APPLE)
 
         ELSEIF(OSG_WINDOWING_SYSTEM STREQUAL "Carbon")
           # AGL needed for Carbon windowing systems
+          FIND_LIBRARY(CARBON_LIBRARY Carbon)
           FIND_LIBRARY(AGL_LIBRARY AGL)
         ENDIF()
 

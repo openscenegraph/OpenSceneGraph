@@ -1366,6 +1366,13 @@ IF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
 ENDIF()
 
 #-----------------------------------------------------------------------------
+# add clobber build target to clear all the non git registered files/directories
+#-----------------------------------------------------------------------------
+add_custom_target(clobber
+    COMMAND git clean -d -f -x
+)
+
+#-----------------------------------------------------------------------------
 ### uninstall target
 #-----------------------------------------------------------------------------
 CONFIGURE_FILE(

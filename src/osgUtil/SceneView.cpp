@@ -313,10 +313,6 @@ void SceneView::init()
 {
     _initCalled = true;
 
-    // force the initialization of the OpenGL extension string
-    // to try and work around a Windows NVidia driver bug circa Oct 2006.
-    osg::isGLExtensionSupported(_renderInfo.getState()->getContextID(),"");
-
     if (_camera.valid() && _initVisitor.valid())
     {
         _initVisitor->reset();

@@ -912,22 +912,22 @@ IF(CMAKE_VERSION VERSION_EQUAL   "2.8.8" OR
 
     INCLUDE(CMakePackageConfigHelpers)
     CONFIGURE_PACKAGE_CONFIG_FILE(
-        ${PROJECT_SOURCE_DIR}/CMakeModules/OpenSceneGraph-config.cmake.in
-        configure/OpenSceneGraph-config.cmake
+        ${PROJECT_SOURCE_DIR}/CMakeModules/openscenegraph-config.cmake.in
+        configure/openscenegraph-config.cmake
         INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
         PATH_VARS INSTALL_INCDIR
     )
 
     WRITE_BASIC_PACKAGE_VERSION_FILE(
-        configure/OpenSceneGraph-config-version.cmake
+        configure/openscenegraph-config-version.cmake
         VERSION ${OPENSCENEGRAPH_VERSION}
         COMPATIBILITY SameMajorVersion
     )
 
     INSTALL(
         FILES
-            ${PROJECT_BINARY_DIR}/configure/OpenSceneGraph-config.cmake
-            ${PROJECT_BINARY_DIR}/configure/OpenSceneGraph-config-version.cmake
+            ${PROJECT_BINARY_DIR}/configure/openscenegraph-config.cmake
+            ${PROJECT_BINARY_DIR}/configure/openscenegraph-config-version.cmake
         DESTINATION ${INSTALL_CONFIGDIR}
         COMPONENT libopenscenegraph-dev
     )

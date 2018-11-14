@@ -148,18 +148,40 @@ ELSE()
         ${CMAKE_CURRENT_BINARY_DIR}
     )
 
-    INSTALL(
-        TARGETS OpenThreads
-        ARCHIVE DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads-dev
-        LIBRARY DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads
-        RUNTIME DESTINATION bin COMPONENT libopenthreads
-    )
+    IF(OSG_EXPORT_TARGETS)
+
+      INSTALL(
+          TARGETS OpenThreads
+          EXPORT  OpenThreads
+          ARCHIVE DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads-dev
+          LIBRARY DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads
+          RUNTIME DESTINATION bin COMPONENT libopenthreads
+      )
+
+      INSTALL(
+        EXPORT OpenThreads
+        NAMESPACE ${PKG_NAMESPACE}::
+        DESTINATION ${INSTALL_CONFIGDIR}
+        FILE OpenThreads-targets.cmake
+        COMPONENT libopenthreads-dev)
+
+    ELSE()
+
+      INSTALL(
+          TARGETS OpenThreads
+          ARCHIVE DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads-dev
+          LIBRARY DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads
+          RUNTIME DESTINATION bin COMPONENT libopenthreads
+      )
+
+    ENDIF()
 
     IF(NOT OSG_COMPILE_FRAMEWORKS)
-           INSTALL(
-               FILES ${OpenThreads_PUBLIC_HEADERS}
-               DESTINATION include/OpenThreads
-               COMPONENT libopenthreads-dev
+
+        INSTALL(
+            FILES ${OpenThreads_PUBLIC_HEADERS}
+            DESTINATION ${INSTALL_INCDIR}/OpenThreads
+            COMPONENT libopenthreads-dev
         )
 
     ELSE()

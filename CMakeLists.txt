@@ -907,7 +907,7 @@ IF(CMAKE_VERSION VERSION_EQUAL   "2.8.8" OR
     IF(WIN32)
         SET(INSTALL_CONFIGDIR cmake)
     ELSE()
-        SET(INSTALL_CONFIGDIR lib${LIB_POSTFIX}/cmake)
+        SET(INSTALL_CONFIGDIR lib${LIB_POSTFIX}/cmake/OpenSceneGraph)
     ENDIF()
 
     INCLUDE(CMakePackageConfigHelpers)

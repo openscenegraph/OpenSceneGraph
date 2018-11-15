@@ -34,6 +34,26 @@ IF(OSG_EXPORT_TARGETS)
         COMPONENT libopenscenegraph-dev
     )
 
+    SET(COMPONENT_CMAKE_DEPENDENCIES ${TARGET_LIBRARIES})
+
+    # These two libraries are special cases because they will always be included
+    # by the config-file.
+    LIST(REMOVE_ITEM COMPONENT_CMAKE_DEPENDENCIES OpenThreads)
+    LIST(REMOVE_ITEM COMPONENT_CMAKE_DEPENDENCIES osg)
+
+    SET(TARGET_IMPORT_INPUT_FILE  "${PROJECT_SOURCE_DIR}/packaging/cmake/openscenegraph-component-import-targets.cmake")
+    SET(TARGET_IMPORT_OUTPUT_FILE "${PROJECT_BINARY_DIR}/packaging/cmake/openscenegraph-${LIB_NAME}-import-targets.cmake")
+    CONFIGURE_FILE(
+        ${TARGET_IMPORT_INPUT_FILE}
+        ${TARGET_IMPORT_OUTPUT_FILE}
+        @ONLY
+    )
+    INSTALL(
+        FILES ${TARGET_IMPORT_OUTPUT_FILE}
+        DESTINATION ${INSTALL_CONFIGDIR}
+        COMPONENT libopenscenegraph-dev
+    )
+
 ELSE()
 
     INSTALL(

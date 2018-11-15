@@ -912,7 +912,7 @@ IF(CMAKE_VERSION VERSION_EQUAL   "2.8.8" OR
 
     INCLUDE(CMakePackageConfigHelpers)
     CONFIGURE_PACKAGE_CONFIG_FILE(
-        ${PROJECT_SOURCE_DIR}/CMakeModules/OpenSceneGraphConfig.cmake.in
+        ${PROJECT_SOURCE_DIR}/packaging/cmake/OpenSceneGraphConfig.cmake.in
         configure/OpenSceneGraphConfig.cmake
         INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
         PATH_VARS INSTALL_INCDIR

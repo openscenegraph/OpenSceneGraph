@@ -15,6 +15,9 @@
 # OpenSceneGraph_FOUND        : Set to true if all required components can be found
 # OPENSCENEGRAPH_FOUND
 #
+# OpenSceneGraph_<comp>_FOUND : Set to true if this component was found
+# OPENSCENEGRAPH_<COMP>_FOUND
+#
 # OSG_LIBRARY                 : The library for the core OSG component
 # OSG_LIBRARIES
 #
@@ -37,6 +40,12 @@
 # Use target_link_libraries(tgt [PUBLIC|PRIVATE] @PKG_NAMESPACE@::<comp>)
 # for each component that you want to link to.
 #
+# For convenience, this will also produce a variable
+#
+#   OpenSceneGraph_TARGETS
+#
+# which will contain the targets of all the requested components.
+#
 ################################################################################
 
 
@@ -47,6 +56,10 @@
 # We depend on 2.8.8 for CMakePackageConfigHelpers. This config file is not
 # guaranteed to work with lower versions of cmake.
 cmake_minimum_required(VERSION 2.8.8)
+
+# Assume we have succeeded unless a required component is missing
+set(OpenSceneGraph_FOUND TRUE)
+set(OPENSCENEGRAPH_FOUND TRUE)
 
 # Shortcut if find_package(OpenSceneGraph ...) has been called before
 if(OpenSceneGraph_CONFIG_INCLUDED)
@@ -76,32 +89,42 @@ set(OPENSCENEGRAPH_INCLUDE_DIRS ${OpenSceneGraph_INCLUDE_DIRS})
 
 set(OpenSceneGraph_LIBRARIES)
 
-foreach(component OpenThreads osg ${OpenSceneGraph_FIND_COMPONENTS})
+set(OpenSceneGraph_TARGETS)
 
-    message(STATUS "Looking for [${component}] component of OpenSceneGraph")
+foreach(component OpenThreads osg ${OpenSceneGraph_FIND_COMPONENTS})
 
     if(TARGET @PKG_NAMESPACE@::${component})
         # This component has already been found, so we'll skip it
         continue()
     endif()
 
-    if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/${component}-targets.cmake)
+    string(TOUPPER ${component} UC_COMPONENT)
+
+    set(osg_component_import_target_file ${CMAKE_CURRENT_LIST_DIR}/openscenegraph-${component}-import-targets.cmake)
+
+    if(NOT EXISTS ${osg_component_import_target_file})
 
         if(OpenSceneGraph_FIND_REQUIRED_${component} OR NOT OpenSceneGraph_FIND_QUIETLY)
             message("Could not find [${component}] component of OpenSceneGraph")
         endif()
 
+        set(OpenSceneGraph_${component}_FOUND FALSE)
+        set(OPENSCENEGRAPH_${UC_COMPONENT}_FOUND FALSE)
+
         continue()
 
     endif()
 
-    include(${CMAKE_CURRENT_LIST_DIR}/${component}-targets.cmake)
+    include(${osg_component_import_target_file})
+
+    list(APPEND OpenSceneGraph_TARGETS @PKG_NAMESPACE@::${component})
+
+    set(OpenSceneGraph_${component}_FOUND TRUE)
+    set(OPENSCENEGRAPH_${component}_FOUND TRUE)
 
     if(NOT OpenSceneGraph_FIND_QUIETLY)
         message(STATUS "Found [${component}] component of OpenSceneGraph")
     endif()
-
-    string(TOUPPER ${component} UC_COMPONENT)
 
     # Components all get installed to the same include directory
     set(${UC_COMPONENT}_INCLUDE_DIR ${OpenSceneGraph_INCLUDE_DIRS})
@@ -166,3 +189,4 @@ endforeach()
 set(OPENSCENEGRAPH_LIBRARIES ${OpenSceneGraph_LIBRARIES})
 
 check_required_components(OpenSceneGraph)
+set(OPENSCENEGRAPH_FOUND ${OpenSceneGraph_FOUND})

@@ -125,6 +125,12 @@ ELSE()
         ${TARGET_SRC}
     )
 
+    TARGET_INCLUDE_DIRECTORIES(${LIB_NAME}
+        PUBLIC
+            $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+            $<INSTALL_INTERFACE:${INSTALL_INCDIR}>
+    )
+
     IF(OPENTHREADS_SONAMES)
           SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES VERSION ${OPENTHREADS_VERSION} SOVERSION ${OPENTHREADS_SOVERSION})
     ENDIF()
@@ -150,29 +156,46 @@ ELSE()
 
     IF(OSG_EXPORT_TARGETS)
 
-      INSTALL(
-          TARGETS OpenThreads
-          EXPORT  OpenThreads
-          ARCHIVE DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads-dev
-          LIBRARY DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads
-          RUNTIME DESTINATION bin COMPONENT libopenthreads
-      )
+        INSTALL(
+            TARGETS ${LIB_NAME}
+            EXPORT  ${LIB_NAME}
+            ARCHIVE DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads-dev
+            LIBRARY DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads
+            RUNTIME DESTINATION bin COMPONENT libopenthreads
+        )
 
-      INSTALL(
-        EXPORT OpenThreads
-        NAMESPACE ${PKG_NAMESPACE}::
-        DESTINATION ${INSTALL_CONFIGDIR}
-        FILE OpenThreads-targets.cmake
-        COMPONENT libopenthreads-dev)
+        INSTALL(
+            EXPORT ${LIB_NAME}
+            NAMESPACE ${PKG_NAMESPACE}::
+            DESTINATION ${INSTALL_CONFIGDIR}
+            FILE ${LIB_NAME}-targets.cmake
+            COMPONENT libopenthreads-dev
+        )
+
+        # Intentionally blank
+        SET(COMPONENT_CMAKE_DEPENDENCIES)
+
+        SET(TARGET_IMPORT_INPUT_FILE  "${PROJECT_SOURCE_DIR}/packaging/cmake/openscenegraph-component-import-targets.cmake")
+        SET(TARGET_IMPORT_OUTPUT_FILE "${PROJECT_BINARY_DIR}/packaging/cmake/openscenegraph-${LIB_NAME}-import-targets.cmake")
+        CONFIGURE_FILE(
+            ${TARGET_IMPORT_INPUT_FILE}
+            ${TARGET_IMPORT_OUTPUT_FILE}
+            @ONLY
+        )
+        INSTALL(
+            FILES ${TARGET_IMPORT_OUTPUT_FILE}
+            DESTINATION ${INSTALL_CONFIGDIR}
+            COMPONENT libopenscenegraph-dev
+        )
 
     ELSE()
 
-      INSTALL(
-          TARGETS OpenThreads
-          ARCHIVE DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads-dev
-          LIBRARY DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads
-          RUNTIME DESTINATION bin COMPONENT libopenthreads
-      )
+        INSTALL(
+            TARGETS ${LIB_NAME}
+            ARCHIVE DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads-dev
+            LIBRARY DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads
+            RUNTIME DESTINATION bin COMPONENT libopenthreads
+        )
 
     ENDIF()
 

@@ -40,11 +40,13 @@ SET(TARGET_SRC
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
-SET(TARGET_LIBRARIES     
-    osgUtil
+SET(TARGET_LIBRARIES
     osgDB
+    osgUtil
     osg
     OpenThreads
 )
+
+SET(COMPONENT_PKGCONFIG_DESCRIPTION "Special effects library for Openscenegraph")
 
 SETUP_LIBRARY(${LIB_NAME})

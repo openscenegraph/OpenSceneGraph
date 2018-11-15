@@ -65,11 +65,13 @@ SET(TARGET_SRC
 
 SET(TARGET_LIBRARIES
     osgText
-    osgUtil
     osgDB
+    osgUtil
     osg
     OpenThreads
 )
+
+SET(COMPONENT_PKGCONFIG_DESCRIPTION "Simulator utility library for Openscenegraph")
 
 SETUP_LIBRARY(${LIB_NAME})
 

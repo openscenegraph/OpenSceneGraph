@@ -61,11 +61,13 @@ SET(TARGET_SRC
 )
 
 SET(TARGET_LIBRARIES
-    osgUtil
     osgDB
+    osgUtil
     osg
     OpenThreads
 )
+
+SET(COMPONENT_PKGCONFIG_DESCRIPTION "Shadow techniques library for Openscenegraph")
 
 SETUP_LIBRARY(${LIB_NAME})
 

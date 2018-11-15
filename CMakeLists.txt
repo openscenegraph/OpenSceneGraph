@@ -939,6 +939,8 @@ ELSE()
 
 ENDIF()
 
+SET(INSTALL_PKGCONFIGDIR lib${LIB_POSTFIX}/pkgconfig)
+
 # Here we apparently do some funky stuff with making the bin/ and lib/
 # folders which is probably needed to work around a very old CMake bug?
 
@@ -1295,35 +1297,6 @@ IF(CMAKE_CPACK_COMMAND)
       INCLUDE(OsgCPack)
     ENDIF()
 ENDIF()
-
-# Generate pkg-config configuration files
-
-SET(PKGCONFIG_FILES
-  openscenegraph
-  openscenegraph-osg
-  openscenegraph-osgDB
-  openscenegraph-osgFX
-  openscenegraph-osgGA
-  openscenegraph-osgParticle
-  openscenegraph-osgSim
-  openscenegraph-osgText
-  openscenegraph-osgUtil
-  openscenegraph-osgTerrain
-  openscenegraph-osgManipulator
-  openscenegraph-osgViewer
-  openscenegraph-osgWidget
-  openscenegraph-osgShadow
-  openscenegraph-osgAnimation
-  openscenegraph-osgVolume
-)
-
-FOREACH(PKGCONFIG_FILE ${PKGCONFIG_FILES})
-  CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/pkgconfig/${PKGCONFIG_FILE}.pc.in
-    ${PROJECT_BINARY_DIR}/packaging/pkgconfig/${PKGCONFIG_FILE}.pc
-    @ONLY
-    )
-  INSTALL(FILES ${PROJECT_BINARY_DIR}/packaging/pkgconfig/${PKGCONFIG_FILE}.pc DESTINATION lib${LIB_POSTFIX}/pkgconfig COMPONENT libopenscenegraph-dev)
-ENDFOREACH(PKGCONFIG_FILE)
 
 
 # Run this as late as possible so users can easier spot the message

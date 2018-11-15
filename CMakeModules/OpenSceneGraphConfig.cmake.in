@@ -41,7 +41,7 @@
 
 
 # =========================== DO NOT MODIFY THIS FILE DIRECTLY ===========================
-# This file is auto-generated from OpenSceneGraph/CMakeModules/OpenSceneGraph-config.cmake
+# This file is auto-generated from OpenSceneGraph/CMakeModules/OpenSceneGraphConfig.cmake
 # ========================================================================================
 
 # We depend on 2.8.8 for CMakePackageConfigHelpers. This config file is not
@@ -78,6 +78,8 @@ set(OpenSceneGraph_LIBRARIES)
 
 foreach(component OpenThreads osg ${OpenSceneGraph_FIND_COMPONENTS})
 
+    message(STATUS "Looking for [${component}] component of OpenSceneGraph")
+
     if(TARGET @PKG_NAMESPACE@::${component})
         # This component has already been found, so we'll skip it
         continue()
@@ -94,6 +96,10 @@ foreach(component OpenThreads osg ${OpenSceneGraph_FIND_COMPONENTS})
     endif()
 
     include(${CMAKE_CURRENT_LIST_DIR}/${component}-targets.cmake)
+
+    if(NOT OpenSceneGraph_FIND_QUIETLY)
+        message(STATUS "Found [${component}] component of OpenSceneGraph")
+    endif()
 
     string(TOUPPER ${component} UC_COMPONENT)
 

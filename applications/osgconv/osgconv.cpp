@@ -771,7 +771,7 @@ int main( int argc, char **argv )
         osgDB::Registry::instance()->getOptions()->setObjectCacheHint(osgDB::Options::CACHE_ALL);
     }
 
-    std::string fileNameOut("converted.osg");
+    std::string fileNameOut("converted.osgt");
     if (fileNames.size()>1)
     {
         fileNameOut = fileNames.back();
@@ -780,29 +780,66 @@ int main( int argc, char **argv )
 
     osg::Timer_t startTick = osg::Timer::instance()->tick();
 
-    osg::ref_ptr<osg::Node> root = osgDB::readRefNodeFiles(fileNames);
+    typedef std::vector< osg::ref_ptr<osg::Image> > Images;
+    typedef std::vector< osg::ref_ptr<osg::Node> > Nodes;
+    typedef std::vector< osg::ref_ptr<osg::Object> > Objects;
 
-    if (root.valid())
+    Images images;
+    Nodes nodes;
+    Objects objects;
+
+    for(FileNameList::iterator itr = fileNames.begin();
+        itr != fileNames.end();
+        ++itr)
     {
-        osg::Timer_t endTick = osg::Timer::instance()->tick();
-        osg::notify(osg::INFO)<<"Time to load files "<<osg::Timer::instance()->delta_m(startTick, endTick)<<" ms"<<std::endl;
+        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(*itr);
+        if (object.valid())
+        {
+            if (object->asNode()) nodes.push_back(object->asNode());
+            else if (object->asImage()) images.push_back(object->asImage());
+            else objects.push_back(object);
+        }
+    }
+
+    if (images.empty() && nodes.empty() && objects.empty())
+    {
+        osg::notify(osg::NOTICE)<<"Warning: failed to load any files"<<std::endl;
+        return 1;
     }
 
 
-    if (pruneStateSet)
-    {
-        PruneStateSetVisitor pssv;
-        root->accept(pssv);
-    }
+    osg::Timer_t endTick = osg::Timer::instance()->tick();
+    osg::notify(osg::INFO)<<"Time to load files "<<osg::Timer::instance()->delta_m(startTick, endTick)<<" ms"<<std::endl;
 
-    if (fixTransparencyMode != FixTransparencyVisitor::NO_TRANSPARANCY_FIXING)
+    osg::ref_ptr<osg::Node> root;
+
+    if (nodes.size()==1) root = nodes.front();
+    else if (nodes.size()>1)
     {
-        FixTransparencyVisitor atv(fixTransparencyMode);
-        root->accept(atv);
+        osg::ref_ptr<osg::Group> group = new osg::Group;
+        for(Nodes::iterator itr = nodes.begin();
+            itr != nodes.end();
+            ++itr)
+        {
+            group->addChild(itr->get());
+        }
+
+        root = group;
     }
 
     if ( root.valid() )
     {
+        if (pruneStateSet)
+        {
+            PruneStateSetVisitor pssv;
+            root->accept(pssv);
+        }
+
+        if (fixTransparencyMode != FixTransparencyVisitor::NO_TRANSPARANCY_FIXING)
+        {
+            FixTransparencyVisitor atv(fixTransparencyMode);
+            root->accept(atv);
+        }
 
         if (smooth)
         {
@@ -867,6 +904,20 @@ int main( int argc, char **argv )
         {
             osg::notify(osg::NOTICE)<<result.message()<< std::endl;
         }
+    }
+    else if (!images.empty())
+    {
+        if (images.size()>1)
+        {
+            OSG_NOTICE<<"Warning: osgconv does not support writing multiple to a single file."<<std::endl;
+            return 1;
+        }
+
+        osgDB::writeImageFile(*images.front(), fileNameOut);
+    }
+    else if (!objects.empty())
+    {
+        osgDB::writeObjectFile(*images.front(), fileNameOut);
     }
     else
     {

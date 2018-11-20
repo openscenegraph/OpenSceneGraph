@@ -288,6 +288,9 @@ Registry::Registry()
     addFileExtensionAlias("terrain", "osgterrain");
     addFileExtensionAlias("view",  "osgviewer");
 
+    //addFileExtensionAlias("vsga", "vsg");
+    //addFileExtensionAlias("vsgb", "vsg");
+
     addFileExtensionAlias("sgi",  "rgb");
     addFileExtensionAlias("rgba", "rgb");
     addFileExtensionAlias("int",  "rgb");

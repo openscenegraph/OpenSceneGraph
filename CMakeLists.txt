@@ -880,6 +880,67 @@ IF(NOT DEFINED LIB_POSTFIX)
     SET(LIB_POSTFIX "")
 ENDIF()
 
+# Set installation variables
+SET(INSTALL_INCDIR include)
+SET(INSTALL_BINDIR bin)
+IF(WIN32)
+    SET(INSTALL_LIBDIR bin)
+    SET(INSTALL_ARCHIVEDIR lib)
+ELSE()
+    SET(INSTALL_LIBDIR lib${LIB_POSTFIX})
+    SET(INSTALL_ARCHIVEDIR lib${LIB_POSTFIX})
+ENDIF()
+
+# If the version is equal to or greater than 2.8.8, then we can use the
+# CMakePackageConfigHelpers module, which we use for configuring the package
+# config file. If we are not producing the package config file, then there is no
+# point in exporting the targets.
+IF(CMAKE_VERSION VERSION_EQUAL   "2.8.8" OR
+   CMAKE_VERSION VERSION_GREATER "2.8.8")
+
+    # Tell the project that we will be exporting targets
+    SET(OSG_EXPORT_TARGETS TRUE CACHE BOOL "Install a config-file and export targets")
+
+    # Set the package namespace for exporting
+    SET(PKG_NAMESPACE osg${OPENSCENEGRAPH_MAJOR_VERSION})
+
+    IF(WIN32)
+        SET(INSTALL_CONFIGDIR cmake)
+    ELSE()
+        SET(INSTALL_CONFIGDIR lib${LIB_POSTFIX}/cmake/OpenSceneGraph)
+    ENDIF()
+
+    INCLUDE(CMakePackageConfigHelpers)
+    CONFIGURE_PACKAGE_CONFIG_FILE(
+        ${PROJECT_SOURCE_DIR}/packaging/cmake/OpenSceneGraphConfig.cmake.in
+        configure/OpenSceneGraphConfig.cmake
+        INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
+        PATH_VARS INSTALL_INCDIR
+    )
+
+    WRITE_BASIC_PACKAGE_VERSION_FILE(
+        configure/OpenSceneGraphConfigVersion.cmake
+        VERSION ${OPENSCENEGRAPH_VERSION}
+        COMPATIBILITY SameMajorVersion
+    )
+
+    INSTALL(
+        FILES
+            ${PROJECT_BINARY_DIR}/configure/OpenSceneGraphConfig.cmake
+            ${PROJECT_BINARY_DIR}/configure/OpenSceneGraphConfigVersion.cmake
+        DESTINATION ${INSTALL_CONFIGDIR}
+        COMPONENT libopenscenegraph-dev
+    )
+
+ELSE()
+
+    # We don't support exporting creating config files or exporting targets without >=2.8.8
+    SET(OSG_EXPORT_TARGETS FALSE CACHE BOOL "Cannot install config files without CMake >= 2.8.8" FORCE)
+
+ENDIF()
+
+SET(INSTALL_PKGCONFIGDIR lib${LIB_POSTFIX}/pkgconfig)
+
 # Here we apparently do some funky stuff with making the bin/ and lib/
 # folders which is probably needed to work around a very old CMake bug?
 
@@ -1236,35 +1297,6 @@ IF(CMAKE_CPACK_COMMAND)
       INCLUDE(OsgCPack)
     ENDIF()
 ENDIF()
-
-# Generate pkg-config configuration files
-
-SET(PKGCONFIG_FILES
-  openscenegraph
-  openscenegraph-osg
-  openscenegraph-osgDB
-  openscenegraph-osgFX
-  openscenegraph-osgGA
-  openscenegraph-osgParticle
-  openscenegraph-osgSim
-  openscenegraph-osgText
-  openscenegraph-osgUtil
-  openscenegraph-osgTerrain
-  openscenegraph-osgManipulator
-  openscenegraph-osgViewer
-  openscenegraph-osgWidget
-  openscenegraph-osgShadow
-  openscenegraph-osgAnimation
-  openscenegraph-osgVolume
-)
-
-FOREACH(PKGCONFIG_FILE ${PKGCONFIG_FILES})
-  CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/pkgconfig/${PKGCONFIG_FILE}.pc.in
-    ${PROJECT_BINARY_DIR}/packaging/pkgconfig/${PKGCONFIG_FILE}.pc
-    @ONLY
-    )
-  INSTALL(FILES ${PROJECT_BINARY_DIR}/packaging/pkgconfig/${PKGCONFIG_FILE}.pc DESTINATION lib${LIB_POSTFIX}/pkgconfig COMPONENT libopenscenegraph-dev)
-ENDFOREACH(PKGCONFIG_FILE)
 
 
 # Run this as late as possible so users can easier spot the message

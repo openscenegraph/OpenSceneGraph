@@ -43,12 +43,50 @@ IF(MSVC AND OSG_MSVC_VERSIONED_DLL)
     HANDLE_MSVC_DLL(ot ${OPENTHREADS_SOVERSION})
 ENDIF()
 
-INSTALL(
-    TARGETS OpenThreads
-    ARCHIVE DESTINATION lib COMPONENT libopenthreads-dev
-    LIBRARY DESTINATION lib COMPONENT libopenthreads
-    RUNTIME DESTINATION bin COMPONENT libopenthreads
-)
+IF(OSG_EXPORT_TARGETS)
+
+    INSTALL(
+        TARGETS OpenThreads
+        EXPORT  OpenThreads
+        ARCHIVE DESTINATION lib COMPONENT libopenthreads-dev
+        LIBRARY DESTINATION lib COMPONENT libopenthreads
+        RUNTIME DESTINATION bin COMPONENT libopenthreads
+    )
+
+    INSTALL(
+        EXPORT OpenThreads
+        NAMESPACE ${PKG_NAMESPACE}::
+        DESTINATION ${INSTALL_CONFIGDIR}
+        FILE OpenThreads-targets.cmake
+        COMPONENT libopenthreads-dev
+    )
+
+    # Intentionally blank
+    SET(COMPONENT_CMAKE_DEPENDENCIES)
+
+    SET(TARGET_IMPORT_INPUT_FILE  "${PROJECT_SOURCE_DIR}/packaging/cmake/openscenegraph-component-import-targets.cmake")
+    SET(TARGET_IMPORT_OUTPUT_FILE "${PROJECT_BINARY_DIR}/packaging/cmake/openscenegraph-OpenThreads-import-targets.cmake")
+    CONFIGURE_FILE(
+        ${TARGET_IMPORT_INPUT_FILE}
+        ${TARGET_IMPORT_OUTPUT_FILE}
+        @ONLY
+    )
+    INSTALL(
+        FILES ${TARGET_IMPORT_OUTPUT_FILE}
+        DESTINATION ${INSTALL_CONFIGDIR}
+        COMPONENT libopenscenegraph-dev
+    )
+
+ELSE()
+
+    INSTALL(
+        TARGETS OpenThreads
+        ARCHIVE DESTINATION lib COMPONENT libopenthreads-dev
+        LIBRARY DESTINATION lib COMPONENT libopenthreads
+        RUNTIME DESTINATION bin COMPONENT libopenthreads
+    )
+
+ENDIF()
 INSTALL(
     FILES ${OpenThreads_PUBLIC_HEADERS}
     DESTINATION include/OpenThreads

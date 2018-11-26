@@ -46,14 +46,16 @@ SET(TARGET_SRC
 )
 
 SET(TARGET_LIBRARIES
-    osgDB
-    osgGA
-    osgUtil
-    osgText
     osgViewer
+    osgText
+    osgGA
+    osgDB
+    osgUtil
     osg
     OpenThreads
 )
+
+SET(COMPONENT_PKGCONFIG_DESCRIPTION "Library for creating user interfaces in OpenSceneGraph")
 
 SETUP_LIBRARY(${LIB_NAME})
 

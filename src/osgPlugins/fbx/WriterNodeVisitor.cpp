@@ -598,6 +598,14 @@ void WriterNodeVisitor::buildFaces(const std::string& name,
         mesh->EndPolygon();
     }
     setControlPointAndNormalsAndUV(geometryList, index_vert, texcoords, mesh);
+
+	_geometryList.clear();
+	_listTriangles.clear();
+	_texcoords = false;
+	_drawableNum = 0;
+	for (MaterialMap::iterator it = _materialMap.begin(); it != _materialMap.end(); ++it)
+		it->second.setIndex(-1);
+	_lastMaterialIndex = 0;
 }
 
 void WriterNodeVisitor::createListTriangle(const osg::Geometry* geo,
@@ -657,7 +665,7 @@ void WriterNodeVisitor::apply(osg::Geometry& geometry)
 
     osg::NodeVisitor::traverse(geometry);
 
-    if (geometry.getNumParents() == 0)
+    if (getNodePath().size() == 1)
         buildFaces(geometry.getName(), _geometryList, _listTriangles, _texcoords);
 
     // return to parent fbx node
@@ -671,14 +679,6 @@ void WriterNodeVisitor::apply(osg::Group& node)
     FbxNode* nodeFBX = FbxNode::Create(_pSdkManager, node.getName().empty() ? "DefaultName" : node.getName().c_str());
     _curFbxNode->AddChild(nodeFBX);
     _curFbxNode = nodeFBX;
-
-    _geometryList.clear();
-    _listTriangles.clear();
-    _texcoords = false;
-    _drawableNum = 0;
-    for (MaterialMap::iterator it = _materialMap.begin(); it != _materialMap.end(); ++it)
-        it->second.setIndex(-1);
-    _lastMaterialIndex = 0;
 
     traverse(node);
 

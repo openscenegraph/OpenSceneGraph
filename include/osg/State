@@ -544,7 +544,7 @@ class OSG_EXPORT State : public Referenced
         void setCurrentVertexArrayState(VertexArrayState* vas) { _vas = vas; }
 
         /** Get the CurrentVetexArrayState object that take which vertex arrays are bound.*/
-        VertexArrayState* getCurrentVertexArrayState() const { return _vas; }
+        inline VertexArrayState* getCurrentVertexArrayState() const { return _vas; }
 
         /** Set the getCurrentVertexArrayState to the GlobalVertexArrayState.*/
         void setCurrentToGlobalVertexArrayState() { _vas = _globalVertexArrayState.get(); }
@@ -568,7 +568,6 @@ class OSG_EXPORT State : public Referenced
 
         void bindElementBufferObject(osg::GLBufferObject* ebo) { _vas->bindElementBufferObject(ebo); }
         void unbindElementBufferObject() { _vas->unbindElementBufferObject(); }
-
 
         void setCurrentPixelBufferObject(osg::GLBufferObject* pbo) { _currentPBO = pbo; }
         const GLBufferObject* getCurrentPixelBufferObject() const { return _currentPBO; }
@@ -620,15 +619,22 @@ class OSG_EXPORT State : public Referenced
             _currentDIBO = 0;
         }
 
-        void setCurrentVertexArrayObject(GLuint vao) { _currentVAO = vao; }
-        GLuint getCurrentVertexArrayObject() const { return _currentVAO; }
+        inline void setCurrentVertexArrayObject(GLuint vao) { _currentVAO = vao; }
 
-        inline void bindVertexArrayObject(const VertexArrayState* vas) { bindVertexArrayObject(vas->getVertexArrayObject()); }
+        inline GLuint getCurrentVertexArrayObject() const { return _currentVAO; }
 
-        inline void bindVertexArrayObject(GLuint vao) { if (_currentVAO!=vao) { _glExtensions->glBindVertexArray(vao); _currentVAO = vao; } }
+        inline void bindVertexArrayObject() const {
+            if (_currentVAO == _vas->getVertexArrayObject()) return;
+            _currentVAO = _vas->getVertexArrayObject();
+            _glBindVertexArrayObject(_currentVAO);
+        }
 
-        inline void unbindVertexArrayObject() { if (_currentVAO!=0) { _glExtensions->glBindVertexArray(0); _currentVAO = 0; } }
-
+        inline void unbindVertexArrayObject() const {
+           if (_currentVAO != 0) {
+               _currentVAO = 0;
+               _glBindVertexArrayObject(0);
+          }
+        }
 
         typedef std::vector<GLushort> IndicesGLushort;
         IndicesGLushort _quadIndicesGLushort[4];
@@ -1297,8 +1303,8 @@ class OSG_EXPORT State : public Referenced
         unsigned int                    _currentClientActiveTextureUnit;
         GLBufferObject*                 _currentPBO;
         GLBufferObject*                 _currentDIBO;
-        GLuint                          _currentVAO;
 
+        mutable GLuint                  _currentVAO;
 
         inline ModeMap& getOrCreateTextureModeMap(unsigned int unit)
         {
@@ -1367,6 +1373,7 @@ class OSG_EXPORT State : public Referenced
         typedef void (GL_APIENTRY * EnableVertexAttribProc) (unsigned int);
         typedef void (GL_APIENTRY * DisableVertexAttribProc) (unsigned int);
         typedef void (GL_APIENTRY * BindBufferProc) (GLenum target, GLuint buffer);
+        typedef void (GL_APIENTRY * BindVertexArrayObjectProc) (GLuint vao);
 
         typedef void (GL_APIENTRY * DrawArraysInstancedProc)( GLenum mode, GLint first, GLsizei count, GLsizei primcount );
         typedef void (GL_APIENTRY * DrawElementsInstancedProc)( GLenum mode, GLsizei count, GLenum type, const GLvoid *indices, GLsizei primcount );
@@ -1387,6 +1394,7 @@ class OSG_EXPORT State : public Referenced
         EnableVertexAttribProc      _glEnableVertexAttribArray;
         DisableVertexAttribProc     _glDisableVertexAttribArray;
         BindBufferProc              _glBindBuffer;
+        BindVertexArrayObjectProc   _glBindVertexArrayObject;
         DrawArraysInstancedProc     _glDrawArraysInstanced;
         DrawElementsInstancedProc   _glDrawElementsInstanced;
 
@@ -1489,6 +1497,7 @@ inline void State::pushUniformList(UniformMap& uniformMap,const StateSet::Unifor
         }
     }
 }
+
 
 inline void State::pushDefineList(DefineMap& defineMap,const StateSet::DefineList& defineList)
 {
@@ -2362,3 +2371,4 @@ template<> inline void State::set<GLExtensions>(GLExtensions* ptr) { _glExtensio
 }
 
 #endif
+

@@ -846,7 +846,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
 
             State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 
-            state.bindVertexArrayObject(vas);
+            state.bindVertexArrayObject( );
 
             drawVertexArraysImplementation(renderInfo);
 

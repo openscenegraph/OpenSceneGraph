@@ -132,6 +132,7 @@ State::State():
     _glVertexAttrib4fv = 0;
     _glVertexAttrib4f = 0;
     _glBindBuffer = 0;
+    _glBindVertexArrayObject=0;
 
     _dynamicObjectCount  = 0;
 
@@ -237,6 +238,7 @@ void State::initializeExtensionProcs()
     setGLExtensionFuncPtr(_glVertexAttrib4fv, "glVertexAttrib4fv");
     setGLExtensionFuncPtr(_glDisableVertexAttribArray, "glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
     setGLExtensionFuncPtr(_glBindBuffer, "glBindBuffer","glBindBufferARB");
+    setGLExtensionFuncPtr(_glBindVertexArrayObject, "glBindVertexArray","glBindVertexArrayARB");
 
     setGLExtensionFuncPtr(_glDrawArraysInstanced, "glDrawArraysInstanced","glDrawArraysInstancedARB","glDrawArraysInstancedEXT");
     setGLExtensionFuncPtr(_glDrawElementsInstanced, "glDrawElementsInstanced","glDrawElementsInstancedARB","glDrawElementsInstancedEXT");

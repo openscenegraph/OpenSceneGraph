@@ -566,7 +566,7 @@ inline void Drawable::draw(RenderInfo& renderInfo) const
 
         State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 
-        state.bindVertexArrayObject(vas);
+        state.bindVertexArrayObject();
 
         drawInner(renderInfo);
 
@@ -579,7 +579,7 @@ inline void Drawable::draw(RenderInfo& renderInfo) const
     if (state.getCurrentVertexArrayState())
     {
         //OSG_NOTICE<<"state.getCurrentVertexArrayState()->getVertexArrayObject()="<< state.getCurrentVertexArrayState()->getVertexArrayObject()<<std::endl;
-        state.bindVertexArrayObject(state.getCurrentVertexArrayState());
+        state.unbindVertexArrayObject();
     }
 
 

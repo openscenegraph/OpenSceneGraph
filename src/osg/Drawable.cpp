@@ -656,7 +656,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
 
         State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 
-        state.bindVertexArrayObject(vas);
+        state.bindVertexArrayObject( );
 
         drawInner(renderInfo);
 
@@ -669,7 +669,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
     if (state.getCurrentVertexArrayState())
     {
         //OSG_NOTICE<<"state.getCurrentVertexArrayState()->getVertexArrayObject()="<< state.getCurrentVertexArrayState()->getVertexArrayObject()<<std::endl;
-        state.bindVertexArrayObject(state.getCurrentVertexArrayState());
+        state.unbindVertexArrayObject();
     }
 
 
@@ -714,6 +714,7 @@ VertexArrayState* Drawable::createVertexArrayStateImplementation(RenderInfo& ren
 {
     OSG_INFO<<"VertexArrayState* Drawable::createVertexArrayStateImplementation(RenderInfo& renderInfo) const "<<this<<std::endl;
     VertexArrayState* vos = new osg::VertexArrayState(renderInfo.getState());
+   
     vos->assignAllDispatchers();
     return vos;
 }

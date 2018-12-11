@@ -626,12 +626,6 @@ void ParallelSplitShadowMap::cull(osgUtil::CullVisitor& cv){
 
     }
 
-    // need to compute view frustum for RTT camera.
-    // get the bounds of the model.
-    osg::ComputeBoundsVisitor cbbv(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
-    cbbv.setTraversalMask(getShadowedScene()->getCastsShadowTraversalMask());
-    _shadowedScene->osg::Group::traverse(cbbv);
-
     //////////////////////////////////////////////////////////////////////////
     const osg::Light* selectLight = 0;
 

@@ -71,16 +71,16 @@ class ValueVisitor : public osg::ValueVisitor {
         }
     
         //add Vec3dArray* vertex output to avoid inaccuracy
-		virtual void apply(osg::Vec3d & inv)
-		{
-			osg::Vec3d v(inv[0], inv[1], inv[2]);
-			osg::Vec3d orign_d((double)_origin.x(), (double)_origin.y(), (double)_origin.z());
-			if (_applyMatrix)  v = (_isNormal) ? (v * _m) - orign_d : v * _m;
+        virtual void apply(osg::Vec3d & inv)
+        {
+            osg::Vec3d v(inv[0], inv[1], inv[2]);
+	    osg::Vec3d orign_d((double)_origin.x(), (double)_origin.y(), (double)_origin.z());
+	    if (_applyMatrix)  v = (_isNormal) ? (v * _m) - orign_d : v * _m;
 
-			//Setting 10-digit Significant Number
-			_fout.precision(10);
-			_fout << v[0] << ' ' << v[1] << ' ' << v[2];
-		}
+	    //Setting 10-digit Significant Number
+	    _fout.precision(10);
+	    _fout << v[0] << ' ' << v[1] << ' ' << v[2];
+	}
     private:
 
         ValueVisitor& operator = (const ValueVisitor&) { return *this; }

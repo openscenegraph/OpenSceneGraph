@@ -88,13 +88,14 @@ Many of the example programs use command-line arguments. When double-clicking on
 
 ## Section 3. Release notes on iOS build, by Thomas Hogarth
 
-With CMake, XCode and the iOS sdk installed you can generate an iOS XCode project using the following command line:
+With CMake 3.11, XCode 9.4 and the iOS sdk 11.4 installed you can generate an iOS XCode project using the following command line:
 
-    export THIRDPARTY_PATH=/path/to/my/3rdParty
+    export THIRDPARTY_PATH=/path/to/3rdParty
     cmake ./ -G Xcode -DOSG_BUILD_PLATFORM_IPHONE:BOOL=ON \
-    -DIPHONE_SDKVER="10.2" \
-    -DIPHONE_VERSION_MIN="8.0" \
-    -DOPENGL_PROFILE:STRING=GLES2 \
+    -DIPHONE_SDKVER="11.4" \
+    -DIPHONE_VERSION_MIN="10.0" \
+    -DOPENGL_PROFILE:STRING=GLES3 \
+    -DOSG_CPP_EXCEPTIONS_AVAILABLE:BOOL=ON \
     -DBUILD_OSG_APPLICATIONS:BOOL=OFF \
     -DBUILD_OSG_EXAMPLES:BOOL=ON \
     -DOSG_WINDOWING_SYSTEM:STRING=IOS \
@@ -105,15 +106,15 @@ With CMake, XCode and the iOS sdk installed you can generate an iOS XCode projec
     -DCURL_LIBRARY:PATH="$THIRDPARTY_PATH/curl-ios-device/lib/libcurl.a" \
     -DFREETYPE_INCLUDE_DIR_freetype2:PATH="$THIRDPARTY_PATH/freetype-ios-universal/include/freetype" \
     -DFREETYPE_INCLUDE_DIR_ft2build:PATH="$THIRDPARTY_PATH/freetype-ios-universal/include" \
-    -DFREETYPE_LIBRARY:PATH="$THIRDPARTY_PATH/freetype-ios-universal/lib/libFreeType_iphone_universal.a" \
+    -DFREETYPE_LIBRARY:PATH="$THIRDPARTY_PATH/freetype-ios-universal/lib/libFreetype2.a" \
     -DTIFF_INCLUDE_DIR:PATH="$THIRDPARTY_PATH/tiff-ios-device/include" \
     -DTIFF_LIBRARY:PATH="$THIRDPARTY_PATH/tiff-ios-device/lib/libtiff.a" \
     -DGDAL_INCLUDE_DIR:PATH="$THIRDPARTY_PATH/gdal-ios-device/include" \
     -DGDAL_LIBRARY:PATH="$THIRDPARTY_PATH/gdal-ios-device/lib/libgdal.a"
 
 
-Be sure to set the THIRDPARTY_PATH to the path containing your thirdparty dependencies. Set IPHONE_SDKVER to the version of the iOS sdk you have installed, in this instance 10.2. IPHONE_VERSION_MIN controls the base sdk used by xcode, and lastly set OPENGL_PROFILE to the version of GLES you want to use.
+Be sure to set the THIRDPARTY_PATH to the path containing your thirdparty dependencies. Set IPHONE_SDKVER to the version of the iOS sdk you have installed, in this instance 11.4. IPHONE_VERSION_MIN controls the deployment sdk used by xcode, and lastly set OPENGL_PROFILE to the version of GLES you want to use.
 
-Once this completes an XCode project will have been generated in the osg root folder. Open the generated Xcode project, select the example_osgViewerIPhone target. In 'General' tab set a development team. In the 'Build Settings' tab search for 'Other Linker Flags', then for each target type (debug, release etc) that you want to use open the list of arguments and delete the 'OpenGL' line and the '-framework' line above it. This is because cmake has tried to add the desktop OpenGL library which we don't want.
+Once this completes an XCode project will have been generated in the osg root folder. Open the generated Xcode project, select the example_osgViewerIPhone target. In 'General' tab set a development team.
 
 Once this is done you should be able to build and deploy the `example_osgViewerIPhone` target on your device.

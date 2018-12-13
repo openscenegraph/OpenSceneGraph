@@ -223,7 +223,7 @@ ELSE()
         # X11 on Apple requires X11 library plus OpenGL linking hack on Leopard
         IF(APPLE)
             # hack for finding the iphone opengl es lib
-            IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
+            IF(OSG_BUILD_PLATFORM_IPHONE)
               SET(OPENGL_INCLUDE_DIR ${IPHONE_SDKROOT}/System/Library/Frameworks)
               SET(OPENGL_LIBRARIES ${IPHONE_SDKROOT}/System/Library/Frameworks/OpenGLES)
             ELSE()

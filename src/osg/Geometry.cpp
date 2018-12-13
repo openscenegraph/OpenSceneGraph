@@ -83,7 +83,6 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
 Geometry::~Geometry()
 {
     _stateset = 0;
-    Geometry::releaseGLObjects();
 }
 
 #define ARRAY_NOT_EMPTY(array) (array!=0 && array->getNumElements()!=0)

@@ -372,7 +372,7 @@ private:
             }
 
             //add vec3d data output, Solve the problem of 
-            //program crash caused by STL of output osg::Vev3d type,by Dyuzz Yu
+            //program crash caused by STL of output osg::Vev3d type
             inline void operator () (const osg::Vec3d& _v1, const osg::Vec3d& _v2, const osg::Vec3d& _v3)
             {
                 osg::Vec3d v1 = _v1 * m_mat;

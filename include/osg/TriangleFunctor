@@ -45,7 +45,7 @@ public:
     {
         _vertexArraySize=0;
         _vertexArrayPtr=0;
-        _vertexArrayPtr_3d = nullptr;
+        _vertexArrayPtr_3d = 0;
     }
 
     virtual ~TriangleFunctor() {}

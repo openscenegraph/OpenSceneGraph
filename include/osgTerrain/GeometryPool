@@ -65,8 +65,7 @@ class OSGTERRAIN_EXPORT SharedGeometry : public osg::Drawable
         VertexToHeightFieldMapping& getVertexToHeightFieldMapping() { return _vertexToHeightFieldMapping; }
         const VertexToHeightFieldMapping& getVertexToHeightFieldMapping() const { return _vertexToHeightFieldMapping; }
 
-
-        osg::VertexArrayState* createVertexArrayStateImplementation(osg::RenderInfo& renderInfo) const;
+        virtual osg::VertexArrayState* createVertexArrayStateImplementation(osg::State* state) const;
 
         void compileGLObjects(osg::RenderInfo& renderInfo) const;
 

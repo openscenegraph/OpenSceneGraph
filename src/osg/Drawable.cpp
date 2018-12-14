@@ -250,14 +250,16 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     _useVertexBufferObjects(drawable._useVertexBufferObjects),
     _useVertexArrayObject(drawable._useVertexArrayObject),
     _drawCallback(drawable._drawCallback),
-    _createVertexArrayStateCallback(drawable._createVertexArrayStateCallback)
+    _createVertexArrayStateCallback(drawable._createVertexArrayStateCallback),
+    _destroyVertexArrayStateCallback(drawable._destroyVertexArrayStateCallback)
 {
 }
 
 Drawable::~Drawable()
 {
     _stateset = 0;
-    Drawable::releaseGLObjects();
+    dirtyGLObjects();
+    Drawable::destroyVertexArrayState();
 }
 
 osg::MatrixList Drawable::getWorldMatrices(const osg::Node* haltTraversalAtNode) const
@@ -341,26 +343,7 @@ void Drawable::releaseGLObjects(State* state) const
     }
     else
     {
-    #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
-        for(unsigned int i=0;i<_globjList.size();++i)
-        {
-            if (_globjList[i] != 0)
-            {
-                Drawable::deleteDisplayList(i,_globjList[i], getGLObjectSizeHint());
-                _globjList[i] = 0;
-            }
-        }
-    #endif
-
-        for(unsigned int i=0; i<_vertexArrayStateList.size(); ++i)
-        {
-            VertexArrayState* vas = _vertexArrayStateList[i].get();
-            if (vas)
-            {
-                vas->release();
-                _vertexArrayStateList[i] = 0;
-            }
-        }
+        const_cast<Drawable*>(this)->dirtyGLObjects();
     }
 }
 
@@ -454,8 +437,9 @@ void Drawable::setUseVertexBufferObjects(bool flag)
 
 void Drawable::dirtyGLObjects()
 {
+    unsigned int i;
 #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
-    for(unsigned int i=0;i<_globjList.size();++i)
+    for(i=0; i<_globjList.size(); ++i)
     {
         if (_globjList[i] != 0)
         {
@@ -465,7 +449,7 @@ void Drawable::dirtyGLObjects()
     }
 #endif
 
-    for(unsigned int i=0; i<_vertexArrayStateList.size(); ++i)
+    for(i=0; i<_vertexArrayStateList.size(); ++i)
     {
         VertexArrayState* vas = _vertexArrayStateList[i].get();
         if (vas) vas->dirty();
@@ -647,7 +631,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
         VertexArrayState* vas = _vertexArrayStateList[contextID].get();
         if (!vas)
         {
-            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
+            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo.getState());
         }
         else
         {
@@ -710,10 +694,35 @@ void Drawable::draw(RenderInfo& renderInfo) const
 
 #endif
 
-VertexArrayState* Drawable::createVertexArrayStateImplementation(RenderInfo& renderInfo) const
+VertexArrayState* Drawable::createVertexArrayStateImplementation(State* state ) const
 {
     OSG_INFO<<"VertexArrayState* Drawable::createVertexArrayStateImplementation(RenderInfo& renderInfo) const "<<this<<std::endl;
-    VertexArrayState* vos = new osg::VertexArrayState(renderInfo.getState());
+    VertexArrayState* vos = new osg::VertexArrayState(state);
     vos->assignAllDispatchers();
     return vos;
+}
+
+VertexArrayState* Drawable::destroyVertexArrayStateImplementation(State* state ) const
+{
+    OSG_INFO<<"VertexArrayState* Drawable::createVertexArrayStateImplementation(RenderInfo& renderInfo) const "<<this<<std::endl;
+    if(state)
+    {
+        _vertexArrayStateList[state->getContextID()]->release();
+        _vertexArrayStateList[state->getContextID()] = 0;
+    }
+    else
+    {
+        //destroy for all context
+        for(unsigned int i=0; i<_vertexArrayStateList.size(); ++i)
+        {
+            VertexArrayState* vas = _vertexArrayStateList[i].get();
+            if (vas)
+            {
+                vas->release();
+                _vertexArrayStateList[i] = 0;
+            }
+        }
+
+    }
+    return 0;
 }

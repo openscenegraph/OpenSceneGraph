@@ -370,6 +370,29 @@ private:
                 *m_stream << "endloop" << std::endl;
                 *m_stream << "endfacet" << std::endl;
             }
+
+            //add vec3d data output, Solve the problem of 
+            //program crash caused by STL of output osg::Vev3d type,by Dyuzz Yu
+            inline void operator () (const osg::Vec3d& _v1, const osg::Vec3d& _v2, const osg::Vec3d& _v3, bool treatVertexDataAsTemporary)
+            {
+                osg::Vec3d v1 = _v1 * m_mat;
+                osg::Vec3d v2 = _v2 * m_mat;
+                osg::Vec3d v3 = _v3 * m_mat;
+                osg::Vec3d vV1V2 = v2 - v1;
+                osg::Vec3d vV1V3 = v3 - v1;
+                osg::Vec3d vNormal = vV1V2.operator ^(vV1V3);
+                if (m_dontSaveNormals)
+                    *m_stream << "facet normal 0 0 0" << std::endl;
+                else
+                    *m_stream << "facet normal " << vNormal[0] << " " << vNormal[1] << " " << vNormal[2] << std::endl;
+                *m_stream << "outer loop" << std::endl;
+                m_stream->precision(10);
+                *m_stream << "vertex " << v1[0] << " " << v1[1] << " " << v1[2] << std::endl;
+                *m_stream << "vertex " << v2[0] << " " << v2[1] << " " << v2[2] << std::endl;
+                *m_stream << "vertex " << v3[0] << " " << v3[1] << " " << v3[2] << std::endl;
+                *m_stream << "endloop" << std::endl;
+                *m_stream << "endfacet" << std::endl;
+            }
         };
     };
 };

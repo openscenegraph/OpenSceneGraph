@@ -106,14 +106,14 @@ public:
                 {
                     const Vec3* vlast = &_vertexArrayPtr[first+count];
                     for(const Vec3* vptr=&_vertexArrayPtr[first];vptr<vlast;vptr+=3)
-                        this->operator()(*(vptr),*(vptr+1),*(vptr+2),_treatVertexDataAsTemporary);
+                        this->operator()(*(vptr),*(vptr+1),*(vptr+2));
                 }
 
                 if(isVec3d)
                 {
                     const Vec3d* vlast = &_vertexArrayPtr_3d[first+count];
                     for(const Vec3d* vptr=&_vertexArrayPtr_3d[first];vptr<vlast;vptr+=3)
-                        this->operator()(*(vptr),*(vptr+1),*(vptr+2),_treatVertexDataAsTemporary);
+                        this->operator()(*(vptr),*(vptr+1),*(vptr+2));
                 }
 
                 break;
@@ -125,8 +125,8 @@ public:
                     const Vec3* vptr = &_vertexArrayPtr[first];
                     for(GLsizei i=2;i<count;++i,++vptr)
                     {
-                        if ((i%2)) this->operator()(*(vptr),*(vptr+2),*(vptr+1),_treatVertexDataAsTemporary);
-                        else       this->operator()(*(vptr),*(vptr+1),*(vptr+2),_treatVertexDataAsTemporary);
+                        if ((i%2)) this->operator()(*(vptr),*(vptr+2),*(vptr+1));
+                        else       this->operator()(*(vptr),*(vptr+1),*(vptr+2));
                     }
                 }
 
@@ -135,8 +135,8 @@ public:
                     const Vec3d* vptr = &_vertexArrayPtr_3d[first];
                     for(GLsizei i=2;i<count;++i,++vptr)
                     {
-                        if ((i%2)) this->operator()(*(vptr),*(vptr+2),*(vptr+1),_treatVertexDataAsTemporary);
-                        else       this->operator()(*(vptr),*(vptr+1),*(vptr+2),_treatVertexDataAsTemporary);
+                        if ((i%2)) this->operator()(*(vptr),*(vptr+2),*(vptr+1));
+                        else       this->operator()(*(vptr),*(vptr+1),*(vptr+2));
                     }
                 }
 
@@ -149,8 +149,8 @@ public:
                     const Vec3* vptr = &_vertexArrayPtr[first];
                     for(GLsizei i=3;i<count;i+=4,vptr+=4)
                     {
-                        this->operator()(*(vptr),*(vptr+1),*(vptr+2),_treatVertexDataAsTemporary);
-                        this->operator()(*(vptr),*(vptr+2),*(vptr+3),_treatVertexDataAsTemporary);
+                        this->operator()(*(vptr),*(vptr+1),*(vptr+2));
+                        this->operator()(*(vptr),*(vptr+2),*(vptr+3));
                     }
                 }
 
@@ -159,8 +159,8 @@ public:
                     const Vec3d* vptr = &_vertexArrayPtr_3d[first];
                     for(GLsizei i=3;i<count;i+=4,vptr+=4)
                     {
-                        this->operator()(*(vptr),*(vptr+1),*(vptr+2),_treatVertexDataAsTemporary);
-                        this->operator()(*(vptr),*(vptr+2),*(vptr+3),_treatVertexDataAsTemporary);
+                        this->operator()(*(vptr),*(vptr+1),*(vptr+2));
+                        this->operator()(*(vptr),*(vptr+2),*(vptr+3));
                     }
                 }
 
@@ -173,8 +173,8 @@ public:
                     const Vec3* vptr = &_vertexArrayPtr[first];
                     for(GLsizei i=3;i<count;i+=2,vptr+=2)
                     {
-                        this->operator()(*(vptr),*(vptr+1),*(vptr+2),_treatVertexDataAsTemporary);
-                        this->operator()(*(vptr+1),*(vptr+3),*(vptr+2),_treatVertexDataAsTemporary);
+                        this->operator()(*(vptr),*(vptr+1),*(vptr+2));
+                        this->operator()(*(vptr+1),*(vptr+3),*(vptr+2));
                     }
                 }
 
@@ -183,8 +183,8 @@ public:
                     const Vec3d* vptr = &_vertexArrayPtr_3d[first];
                     for(GLsizei i=3;i<count;i+=2,vptr+=2)
                     {
-                        this->operator()(*(vptr),*(vptr+1),*(vptr+2),_treatVertexDataAsTemporary);
-                        this->operator()(*(vptr+1),*(vptr+3),*(vptr+2),_treatVertexDataAsTemporary);
+                        this->operator()(*(vptr),*(vptr+1),*(vptr+2));
+                        this->operator()(*(vptr+1),*(vptr+3),*(vptr+2));
                     }
                 }
 
@@ -199,7 +199,7 @@ public:
                     const Vec3* vptr = vfirst+1;
                     for(GLsizei i=2;i<count;++i,++vptr)
                     {
-                        this->operator()(*(vfirst),*(vptr),*(vptr+1),_treatVertexDataAsTemporary);
+                        this->operator()(*(vfirst),*(vptr),*(vptr+1));
                     }
                 }
 
@@ -209,7 +209,7 @@ public:
                     const Vec3d* vptr = vfirst+1;
                     for(GLsizei i=2;i<count;++i,++vptr)
                     {
-                        this->operator()(*(vfirst),*(vptr),*(vptr+1),_treatVertexDataAsTemporary);
+                        this->operator()(*(vfirst),*(vptr),*(vptr+1));
                     }
                 }
 
@@ -247,10 +247,10 @@ public:
                 for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
                 {
                     if(isVec3f)
-                        this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
 
                     if(isVec3d)
-                        this->operator()(_vertexArrayPtr_3d[*iptr],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr_3d[*iptr],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)]);
                 }
                 break;
             }
@@ -260,12 +260,12 @@ public:
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
                     if(isVec3f)
-                        if ((i%2)) this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+1)],_treatVertexDataAsTemporary);
-                        else       this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                        if ((i%2)) this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+1)]);
+                        else       this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
                     
                     if(isVec3d)
-                        if ((i%2)) this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+2)],_vertexArrayPtr_3d[*(iptr+1)],_treatVertexDataAsTemporary);
-                        else       this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)],_treatVertexDataAsTemporary);
+                        if ((i%2)) this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+2)],_vertexArrayPtr_3d[*(iptr+1)]);
+                        else       this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)]);
                 }
                 break;
             }
@@ -276,14 +276,14 @@ public:
                 {
                     if(isVec3f)
                     {
-                        this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
-                        this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                        this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)]);
                     }
 
                     if(isVec3d)
                     {
-                        this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)],_treatVertexDataAsTemporary);
-                        this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+2)],_vertexArrayPtr_3d[*(iptr+3)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)]);
+                        this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+2)],_vertexArrayPtr_3d[*(iptr+3)]);
                     }      
                 }
                 break;
@@ -295,14 +295,14 @@ public:
                 {
                     if(isVec3f)
                     {
-                        this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
-                        this->operator()(_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+3)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                        this->operator()(_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+3)],_vertexArrayPtr[*(iptr+2)]);
                     }
 
                     if(isVec3f)
                     {
-                        this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)],_treatVertexDataAsTemporary);
-                        this->operator()(_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+3)],_vertexArrayPtr_3d[*(iptr+2)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)]);
+                        this->operator()(_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+3)],_vertexArrayPtr_3d[*(iptr+2)]);
                     }                   
                 }
                 break;
@@ -316,7 +316,7 @@ public:
 					const Vec3& vfirst = _vertexArrayPtr[*iptr];
 					++iptr;
 					for(GLsizei i=2;i<count;++i,++iptr)
-						this->operator()(vfirst,_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_treatVertexDataAsTemporary);
+						this->operator()(vfirst,_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)]);
 				}
 
                 if(isVec3d)
@@ -324,7 +324,7 @@ public:
 					const Vec3d& vfirst = _vertexArrayPtr_3d[*iptr];
 					++iptr;
 					for(GLsizei i=2;i<count;++i,++iptr)
-					this->operator()(vfirst,_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_treatVertexDataAsTemporary);
+					this->operator()(vfirst,_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)]);
 				}
 
                 break;
@@ -361,10 +361,10 @@ public:
                 for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
                 {
                     if(isVec3f)
-                        this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
 
                     if(isVec3d)
-                        this->operator()(_vertexArrayPtr_3d[*iptr],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr_3d[*iptr],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)]);
                 }
                 break;
             }
@@ -374,12 +374,12 @@ public:
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
                     if(isVec3f)
-                        if ((i%2)) this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+1)],_treatVertexDataAsTemporary);
-                        else       this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                        if ((i%2)) this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+1)]);
+                        else       this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
                     
                     if(isVec3d)
-                        if ((i%2)) this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+2)],_vertexArrayPtr_3d[*(iptr+1)],_treatVertexDataAsTemporary);
-                        else       this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)],_treatVertexDataAsTemporary);
+                        if ((i%2)) this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+2)],_vertexArrayPtr_3d[*(iptr+1)]);
+                        else       this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)]);
                 }
                 break;
             }
@@ -390,14 +390,14 @@ public:
                 {
                     if(isVec3f)
                     {
-                        this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
-                        this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                        this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)]);
                     }
 
                     if(isVec3d)
                     {
-                        this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)],_treatVertexDataAsTemporary);
-                        this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+2)],_vertexArrayPtr_3d[*(iptr+3)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)]);
+                        this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+2)],_vertexArrayPtr_3d[*(iptr+3)]);
                     }    
                 }
                 break;
@@ -409,14 +409,14 @@ public:
                 {
                     if(isVec3f)
                     {
-                        this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
-                        this->operator()(_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+3)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                        this->operator()(_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+3)],_vertexArrayPtr[*(iptr+2)]);
                     }
 
                     if(isVec3d)
                     {
-                        this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)],_treatVertexDataAsTemporary);
-                        this->operator()(_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+3)],_vertexArrayPtr_3d[*(iptr+2)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)]);
+                        this->operator()(_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+3)],_vertexArrayPtr_3d[*(iptr+2)]);
                     }                   
                 }
                 break;
@@ -430,7 +430,7 @@ public:
 					const Vec3& vfirst = _vertexArrayPtr[*iptr];
 					++iptr;
 					for(GLsizei i=2;i<count;++i,++iptr)
-						this->operator()(vfirst,_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_treatVertexDataAsTemporary);
+						this->operator()(vfirst,_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)]);
 				}
 
                 if(isVec3d)
@@ -438,7 +438,7 @@ public:
 					const Vec3d& vfirst = _vertexArrayPtr_3d[*iptr];
 					++iptr;
 					for(GLsizei i=2;i<count;++i,++iptr)
-					this->operator()(vfirst,_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_treatVertexDataAsTemporary);
+					this->operator()(vfirst,_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)]);
 				}
 
                 break;
@@ -475,10 +475,10 @@ public:
                 for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
                 {
                     if(isVec3f)
-                        this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
 
                     if(isVec3d)
-                        this->operator()(_vertexArrayPtr_3d[*iptr],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr_3d[*iptr],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)]);
                 }
                 break;
             }
@@ -488,12 +488,12 @@ public:
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
                     if(isVec3f)
-                        if ((i%2)) this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+1)],_treatVertexDataAsTemporary);
-                        else       this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                        if ((i%2)) this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+1)]);
+                        else       this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
                     
                     if(isVec3d)
-                        if ((i%2)) this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+2)],_vertexArrayPtr_3d[*(iptr+1)],_treatVertexDataAsTemporary);
-                        else       this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)],_treatVertexDataAsTemporary);
+                        if ((i%2)) this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+2)],_vertexArrayPtr_3d[*(iptr+1)]);
+                        else       this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)]);
                 }
                 break;
             }
@@ -504,14 +504,14 @@ public:
                 {
                     if(isVec3f)
                     {
-                        this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
-                        this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                        this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)]);
                     }
 
                     if(isVec3d)
                     {
-                        this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)],_treatVertexDataAsTemporary);
-                        this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+2)],_vertexArrayPtr_3d[*(iptr+3)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)]);
+                        this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+2)],_vertexArrayPtr_3d[*(iptr+3)]);
                     }    
                 }
                 break;
@@ -523,14 +523,14 @@ public:
                 {
                     if(isVec3f)
                     {
-                        this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
-                        this->operator()(_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+3)],_vertexArrayPtr[*(iptr+2)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                        this->operator()(_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+3)],_vertexArrayPtr[*(iptr+2)]);
                     }
 
                     if(isVec3d)
                     {
-                        this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)],_treatVertexDataAsTemporary);
-                        this->operator()(_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+3)],_vertexArrayPtr_3d[*(iptr+2)],_treatVertexDataAsTemporary);
+                        this->operator()(_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+2)]);
+                        this->operator()(_vertexArrayPtr_3d[*(iptr+1)],_vertexArrayPtr_3d[*(iptr+3)],_vertexArrayPtr_3d[*(iptr+2)]);
                     }                   
                 }
                 break;
@@ -545,7 +545,7 @@ public:
 					const Vec3& vfirst = _vertexArrayPtr[*iptr];
 					++iptr;
 					for(GLsizei i=2;i<count;++i,++iptr)
-						this->operator()(vfirst,_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_treatVertexDataAsTemporary);
+						this->operator()(vfirst,_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)]);
 				}
                     
                 if(isVec3d)
@@ -553,7 +553,7 @@ public:
 					const Vec3d& vfirst = _vertexArrayPtr_3d[*iptr];
 					++iptr;
 					for(GLsizei i=2;i<count;++i,++iptr)
-						this->operator()(vfirst,_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)],_treatVertexDataAsTemporary);
+						this->operator()(vfirst,_vertexArrayPtr_3d[*(iptr)],_vertexArrayPtr_3d[*(iptr+1)]);
 				}
                    
                 break;

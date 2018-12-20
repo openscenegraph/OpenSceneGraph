@@ -357,6 +357,8 @@ void ParallelSplitShadowMap::init()
         {
             // create the camera
             pssmShadowSplitTexture._camera = new osg::Camera;
+            pssmShadowSplitTexture._camera->setReadBuffer(GL_BACK);
+            pssmShadowSplitTexture._camera->setDrawBuffer(GL_BACK);
             pssmShadowSplitTexture._camera->setCullCallback(new CameraCullCallback(this));
 
 

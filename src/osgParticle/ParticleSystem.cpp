@@ -664,6 +664,8 @@ void osgParticle::ParticleSystem::resizeGLObjectBuffers(unsigned int maxSize)
     {
         _bufferedArrayData[i].resizeGLObjectBuffers(maxSize);
     }
+
+    dirtyGLObjects();
 }
 
 void osgParticle::ParticleSystem::releaseGLObjects(osg::State* state) const
@@ -679,21 +681,16 @@ void osgParticle::ParticleSystem::releaseGLObjects(osg::State* state) const
             _bufferedArrayData[i].releaseGLObjects(0);
         }
     }
+    Drawable::releaseGLObjects(state);
 }
 
 osg::VertexArrayState* osgParticle::ParticleSystem::createVertexArrayStateImplemenation(osg::State* state) const
 {
-    osg::VertexArrayState* vas = new osg::VertexArrayState(state);
-
+    osg::VertexArrayState* vas = osg::VertexArrayState::createVertexArrayState(state, _useVertexArrayObject);
     vas->assignVertexArrayDispatcher();
     vas->assignNormalArrayDispatcher();
     vas->assignColorArrayDispatcher();
     vas->assignTexCoordArrayDispatcher(1);
-
-    if (state->useVertexArrayObject(_useVertexArrayObject))
-    {
-        vas->generateVertexArrayObject();
-    }
 
     return vas;
 }

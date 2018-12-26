@@ -28,9 +28,8 @@ class VertexArrayStateManager : public GraphicsObjectManager
 public:
     VertexArrayStateManager(unsigned int contextID):
         GraphicsObjectManager("VertexArrayStateManager", contextID)
-    {
-    }
-
+    {}
+   
     virtual void flushDeletedGLObjects(double, double& availableTime)
     {
         // if no time available don't try to flush objects.
@@ -46,18 +45,19 @@ public:
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_vertexArrayStateList);
 
             // trim from front
-            VertexArrayStateList::iterator ditr=_vertexArrayStateList.begin();
+            VertexArrayState::VASList::iterator ditr=_toremove.begin();
             for(;
-                ditr!=_vertexArrayStateList.end() && elapsedTime<availableTime;
+                ditr!=_toremove.end() && elapsedTime<availableTime;
                 ++ditr)
             {
                 VertexArrayState* vas = ditr->get();
+                _managed.erase(vas->_iteratormanager);
                 vas->deleteVertexArrayObject();
 
                 elapsedTime = timer.delta_s(start_tick,timer.tick());
             }
 
-            if (ditr!=_vertexArrayStateList.begin()) _vertexArrayStateList.erase(_vertexArrayStateList.begin(),ditr);
+            if (ditr!=_toremove.begin()) _toremove.erase(_toremove.begin(),ditr);
 
         }
 
@@ -71,27 +71,58 @@ public:
         VAS_NOTICE<<"VertexArrayStateManager::flushAllDeletedGLObjects()"<<std::endl;
 
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_vertexArrayStateList);
-        for(VertexArrayStateList::iterator itr = _vertexArrayStateList.begin();
-            itr != _vertexArrayStateList.end();
+        if(!_managed.empty())/// manager can be recreated after context destruction
+            for(VertexArrayState::VASList::iterator itr = _toremove.begin();
+            itr != _toremove.end();
             ++itr)
-        {
-            VertexArrayState* vas = itr->get();
-            vas->deleteVertexArrayObject();
-        }
-        _vertexArrayStateList.clear();
+            {
+                VertexArrayState* vas = itr->get();
+                _managed.erase(vas->_iteratormanager);
+                vas->deleteVertexArrayObject();
+
+            }
+        _toremove.clear();
     }
 
     virtual void deleteAllGLObjects()
     {
-         OSG_INFO<<"VertexArrayStateManager::deleteAllGLObjects() Not currently implemented"<<std::endl;
+        VAS_NOTICE<<"VertexArrayStateManager::deleteAllGLObjects()"<<std::endl;
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_vertexArrayStateList);
+        for(VertexArrayState::VASList::iterator itr = _managed.begin();
+            itr != _managed.end();
+            ++itr)
+        {
+            VertexArrayState* vas = itr->get();
+            vas->deleteVertexArrayObject();
+
+        }
+        _managed.clear();
+        _toremove.clear();
     }
 
     virtual void discardAllGLObjects()
     {
-        VAS_NOTICE<<"VertexArrayStateManager::flushAllDeletedGLObjects()"<<std::endl;
-
+        VAS_NOTICE<<"VertexArrayStateManager::discardAllGLObjects()"<<std::endl;
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_vertexArrayStateList);
-        _vertexArrayStateList.clear();
+        for(VertexArrayState::VASList::iterator itr = _toremove.begin();
+            itr != _toremove.end();
+            ++itr)
+        {
+            VertexArrayState* vas = itr->get();
+            _managed.erase(vas->_iteratormanager);
+            vas->deleteVertexArrayObject();
+
+        }
+        _toremove.clear();
+        for(VertexArrayState::VASList::iterator itr = _managed.begin();
+            itr != _managed.end();
+            ++itr)
+        {
+            VertexArrayState* vas = itr->get();
+            vas->deleteVertexArrayObject();
+
+        }
+        _managed.clear();
     }
 
     void release(VertexArrayState* vas)
@@ -99,16 +130,31 @@ public:
         VAS_NOTICE<<"VertexArrayStateManager::release("<<this<<")"<<std::endl;
 
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_vertexArrayStateList);
-        _vertexArrayStateList.push_back(vas);
+        _toremove.push_back(vas);
+    }
+
+    VertexArrayState* createVertexArrayState(State* state, bool forceVAO)
+    {
+        VAS_NOTICE<<"VertexArrayStateManager::createVertexArrayState("<<this<<")"<<std::endl;
+        VertexArrayState * ret= new VertexArrayState(state);
+        if(state->useVertexArrayObject(forceVAO))
+            ret->generateVertexArrayObject();
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex_vertexArrayStateList);
+        _managed.push_back(ret);
+        ret->_iteratormanager= --_managed.end();
+        return ret;
     }
 
 protected:
 
-    typedef std::list< osg::ref_ptr<VertexArrayState> > VertexArrayStateList;
     OpenThreads::Mutex _mutex_vertexArrayStateList;
-    VertexArrayStateList _vertexArrayStateList;
+    VertexArrayState::VASList _toremove;
+    VertexArrayState::VASList _managed;
 };
 
+VertexArrayState *VertexArrayState::createVertexArrayState(osg::State* state, bool useVAO){
+    return osg::get<VertexArrayStateManager>(state->getContextID())->createVertexArrayState(state, useVAO);
+}
 #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
 ///////////////////////////////////////////////////////////////////////////////////
 //

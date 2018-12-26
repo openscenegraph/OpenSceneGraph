@@ -715,16 +715,6 @@ void Geometry::releaseGLObjects(State* state) const
 {
     Drawable::releaseGLObjects(state);
 
-    if (state)
-    {
-        if (_vertexArrayStateList[state->getContextID()].valid())
-        {
-            _vertexArrayStateList[state->getContextID()]->release();
-            _vertexArrayStateList[state->getContextID()] = 0;
-        }
-    }
-    else _vertexArrayStateList.clear();
-
     ArrayList arrays;
     if (getArrayList(arrays))
     {
@@ -752,7 +742,7 @@ void Geometry::releaseGLObjects(State* state) const
 VertexArrayState* Geometry::createVertexArrayStateImplementation(State* state) const
 {
 
-    VertexArrayState* vas = new osg::VertexArrayState(state);
+    VertexArrayState* vas = osg::VertexArrayState::createVertexArrayState(state,state->useVertexArrayObject(_useVertexArrayObject));
 
     // OSG_NOTICE<<"Creating new osg::VertexArrayState "<< vas<<std::endl;
 
@@ -764,17 +754,6 @@ VertexArrayState* Geometry::createVertexArrayStateImplementation(State* state) c
 
     if (!_texCoordList.empty()) vas->assignTexCoordArrayDispatcher(_texCoordList.size());
     if (!_vertexAttribList.empty()) vas->assignVertexAttribArrayDispatcher(_vertexAttribList.size());
-
-    if (state->useVertexArrayObject(_useVertexArrayObject))
-    {
-        // OSG_NOTICE<<"  Setup VertexArrayState to use VAO "<<vas<<std::endl;
-
-        vas->generateVertexArrayObject();
-    }
-    else
-    {
-        // OSG_NOTICE<<"  Setup VertexArrayState to without using VAO "<<vas<<std::endl;
-    }
 
     return vas;
 }

@@ -111,26 +111,14 @@ void TextBase::initArraysAndBuffers()
 
 osg::VertexArrayState* TextBase::createVertexArrayStateImplementation(osg::State* state) const
 {
-    VertexArrayState* vas = new osg::VertexArrayState(state);
+    osg::VertexArrayState* vas = osg::VertexArrayState::createVertexArrayState(state, _useVertexArrayObject);
 
     // OSG_NOTICE<<"Creating new osg::VertexArrayState "<< vas<<std::endl;
 
     if (_coords.valid()) vas->assignVertexArrayDispatcher();
     if (_colorCoords.valid()) vas->assignColorArrayDispatcher();
     if (_normals.valid()) vas->assignNormalArrayDispatcher();
-
     if (_texcoords.valid()) vas->assignTexCoordArrayDispatcher(1);
-
-    if (state->useVertexArrayObject(_useVertexArrayObject))
-    {
-        OSG_INFO<<"TextBase::createVertexArrayState() Setup VertexArrayState to use VAO "<<vas<<std::endl;
-
-        vas->generateVertexArrayObject();
-    }
-    else
-    {
-        OSG_INFO<<"TextBase::createVertexArrayState() Setup VertexArrayState to without using VAO "<<vas<<std::endl;
-    }
 
     return vas;
 }

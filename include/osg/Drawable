@@ -294,7 +294,7 @@ class OSG_EXPORT Drawable : public Node
             META_Object(osg, VertexArrayStateCallback);
 
             /** do customize VertexArrayState lifecycle.*/
-            virtual osg::VertexArrayState* operator () (osg::State*, const osg::Drawable*) const { return 0; }
+            virtual osg::VertexArrayState* operator () (osg::State*, const osg::Drawable*) { return 0; }
         };
 
 

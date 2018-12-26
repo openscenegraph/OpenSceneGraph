@@ -217,7 +217,7 @@ void State::initializeExtensionProcs()
 
 
     // Set up up global VertexArrayState object
-    _globalVertexArrayState = new VertexArrayState(this);
+    _globalVertexArrayState = VertexArrayState::createVertexArrayState(this);
     _globalVertexArrayState->assignAllDispatchers();
     // if (_useVertexArrayObject) _globalVertexArrayState->generateVertexArrayObject();
 

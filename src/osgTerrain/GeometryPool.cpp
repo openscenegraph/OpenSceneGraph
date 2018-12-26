@@ -798,7 +798,7 @@ SharedGeometry::~SharedGeometry()
 
 osg::VertexArrayState* SharedGeometry::createVertexArrayStateImplementation(osg::State* state) const
 {
-    osg::VertexArrayState* vas = new osg::VertexArrayState(state);
+    osg::VertexArrayState* vas = osg::VertexArrayState::createVertexArrayState(state, _useVertexArrayObject);
 
     // OSG_NOTICE<<"Creating new osg::VertexArrayState "<< vas<<std::endl;
 
@@ -806,17 +806,6 @@ osg::VertexArrayState* SharedGeometry::createVertexArrayStateImplementation(osg:
     if (_colorArray.valid()) vas->assignColorArrayDispatcher();
     if (_normalArray.valid()) vas->assignNormalArrayDispatcher();
     if (_texcoordArray.valid()) vas->assignTexCoordArrayDispatcher(1);
-
-    if (state->useVertexArrayObject(_useVertexArrayObject))
-    {
-        // OSG_NOTICE<<"  Setup VertexArrayState to use VAO "<<vas<<std::endl;
-
-        vas->generateVertexArrayObject();
-    }
-    else
-    {
-        // OSG_NOTICE<<"  Setup VertexArrayState to without using VAO "<<vas<<std::endl;
-    }
 
     return vas;
 }
@@ -886,6 +875,7 @@ void SharedGeometry::resizeGLObjectBuffers(unsigned int maxSize)
 
     osg::BufferObject* ebo = _drawElements->getElementBufferObject();
     if (ebo) ebo->resizeGLObjectBuffers(maxSize);
+    dirtyGLObjects();
 }
 
 void SharedGeometry::releaseGLObjects(osg::State* state) const
@@ -897,6 +887,7 @@ void SharedGeometry::releaseGLObjects(osg::State* state) const
 
     osg::BufferObject* ebo = _drawElements->getElementBufferObject();
     if (ebo) ebo->releaseGLObjects(state);
+    Drawable::releaseGLObjects(state);
 }
 
 void SharedGeometry::drawImplementation(osg::RenderInfo& renderInfo) const

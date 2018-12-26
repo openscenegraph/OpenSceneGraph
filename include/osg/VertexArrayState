@@ -24,8 +24,8 @@ namespace osg {
 class OSG_EXPORT VertexArrayState : public osg::Referenced
 {
     public:
+        static VertexArrayState *createVertexArrayState(osg::State* state, bool useVAO=false);
 
-        VertexArrayState(osg::State* state);
 
         struct ArrayDispatch : public osg::Referenced
         {
@@ -180,8 +180,7 @@ class OSG_EXPORT VertexArrayState : public osg::Referenced
 
         void release();
 
-    public:
-
+        VertexArrayState(osg::State* state);
 
         // osg::GLBufferObject* getGLBufferObject(osg::Array* array);
 
@@ -209,6 +208,8 @@ class OSG_EXPORT VertexArrayState : public osg::Referenced
         GLBufferObject*                 _currentEBO;
 
         bool                            _requiresSetArrays;
+        typedef std::list< osg::ref_ptr<VertexArrayState> > VASList;
+        VASList::iterator _iteratormanager;
 };
 
 

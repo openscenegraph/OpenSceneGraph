@@ -83,7 +83,21 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
 Geometry::~Geometry()
 {
     _stateset = 0;
+
+#if 1
+    // use the destructors to automatically handle GL object clean up when the array/primtives ref count goes to 0
+    _primitives.clear();
+    _vertexArray = 0;
+    _normalArray = 0;
+    _colorArray = 0;
+    _secondaryColorArray = 0;
+    _fogCoordArray = 0;
+    _texCoordList.clear();
+    _vertexAttribList.clear();
+#else
+    // original clean up that cleans up GL objects regardless of any sharing of arrays/primitives
     Geometry::releaseGLObjects();
+#endif
 }
 
 #define ARRAY_NOT_EMPTY(array) (array!=0 && array->getNumElements()!=0)

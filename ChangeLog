@@ -1,3 +1,188 @@
+Fri, 4 Jan 2019 08:10:15 +0000
+Author : Robert Osfield
+Added use of sizeof to make code a bit more flexible
+
+Fri, 4 Jan 2019 08:08:07 +0000
+Author : Robert Osfield
+Restructured the clean up of arrays/primitives and GL objects
+
+Mon, 31 Dec 2018 11:06:45 +0000
+Author : Robert Osfield
+Changed the clean up of the GL objects on destruction so that the destructors of the arrays/primitives themselves do the release rather than have it done explictly in the destructor.  This allows arrays/primitives to be shared.
+
+Thu, 20 Dec 2018 08:46:12 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #679 from mp3butcher/patch-18setup camera Read/Draw Buffer
+
+Wed, 19 Dec 2018 18:30:26 +0100
+Author : Julien Valentin
+setup camera Read/Draw Bufferfix flickering shadows in SingleThread
+
+Fri, 14 Dec 2018 09:14:26 +0000
+Author : Robert Osfield
+Removed examples from build as it was causing travis to timeout
+
+Thu, 13 Dec 2018 14:06:51 +0000
+Author : OpenSceneGraph git repository
+Fixed indentation
+
+Thu, 13 Dec 2018 08:31:27 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #671 from mp3butcher/patch-16remove useless code
+
+Thu, 13 Dec 2018 08:01:24 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #672 from ccochran/OpenSceneGraph-3.6Xcode 9/10 build fixes for OSG 3.6
+
+Tue, 11 Dec 2018 23:56:47 +0100
+Author : Julien Valentin
+remove dead code
+
+Mon, 23 Jul 2018 23:52:16 +0100
+Author : Thomas Hogarth
+removed ios simulator reference, adjusted readme
+
+Tue, 10 Jul 2018 02:09:28 +0100
+Author : Thomas Hogarth
+Improved iOS cmake support for xcode 9.4 and cmake 3.11
+
+Fri, 7 Dec 2018 14:53:52 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #670 from emminizer/four-byte-utf8osgText::String:createUTF8EncodedString() now supports 4-byte UTF-8 strings (code points over 0x100000)
+
+Thu, 6 Dec 2018 14:07:55 -0500
+Author : Daniel Emminizer
+osgText::String:createUTF8EncodedString() now supports 4-byte UTF-8 strings (code points over 0x100000).
+
+Tue, 20 Nov 2018 16:12:21 -0800
+Author : flashk
+Prefer FOURCC pixel format in DDS loaderI have found that certain image editing programs export DDS images with both the DDPF_FOURCC and DDPF_RGB pixel format flags. The DDS loader will give preference to the DDPF_RGB flag and try to deduce the format from the RGB bit mask values instead of using the more reliable FOURCC flag. This causes some images to not load, even though the FOURCC flag is supported.  I've modified the loader so that it checks for the DDPF_FOURCC flag first, then falls back on deducing the format from the RGB bit masks.
+
+Tue, 20 Nov 2018 14:24:24 +0000
+Author : Robert Osfield
+Added, currently commented out, alias for .vsga and .vsgb to help with automatic loading a vsg plugin when .vsga and .vsgb files are encountered.
+
+Tue, 20 Nov 2018 14:19:37 +0000
+Author : Robert Osfield
+Added support for reading and writing images
+
+Sun, 11 Nov 2018 10:14:50 +0000
+Author : Robert Osfield
+Restructed the setting of the OSG_GL_CONTEXT_VERSION to allow script to set it's default value
+
+Fri, 9 Nov 2018 11:28:57 +0000
+Author : Robert Osfield
+Added make clobber target, imported in from the VSG project.
+
+Fri, 9 Nov 2018 11:25:16 +0000
+Author : Robert Osfield
+Removed 12 year old workaround that is no longer required and was causing a misleading info message  "OpenGL extension '' is not supported." to be reported.
+
+Fri, 2 Nov 2018 08:34:43 +0000
+Author : OpenSceneGraph git repository
+Replaced tabs with spaces to fix indentation
+
+Thu, 1 Nov 2018 10:49:40 -0700
+Author : flashk
+Fix handling of alpha values in animated gifsThe gif loader was incorrectly setting pixels as transparent in certain animated gifs. It was ignoring the disposal method value in the extension block and always overwriting the alpha value in each frame. It is common for some animated gifs to set the disposal method so that the previous alpha value is retained. This patch modifies the loader to respect the disposal method flag.
+
+Thu, 1 Nov 2018 09:13:43 +0000
+Author : Robert Osfield
+Removed reprecated C++ usage
+
+Mon, 29 Oct 2018 07:22:50 +0100
+Author : Emil Knabe
+Added support for FBX 2019
+
+Tue, 23 Oct 2018 08:44:55 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #649 from LaurensVoerman/3.6-dae3.6 dae
+
+Fri, 12 Oct 2018 13:25:13 -0700
+Author : flashk
+Update daeRMaterials.cpp
+
+Fri, 12 Oct 2018 13:23:23 -0700
+Author : flashk
+Update daeReader.h
+
+Wed, 17 Oct 2018 15:55:10 +0100
+Author : Robert Osfield
+Added check under Windows for a concatinated path that exceeds the MAX_PATH so that it isn't used for file IO operations that could lead to undefined behavior https://github.com/openscenegraph/OpenSceneGraph/issues/634
+
+Mon, 15 Oct 2018 11:03:54 -0700
+Author : flashk
+Update ReaderWriterDAE.cpp
+
+Thu, 11 Oct 2018 16:13:01 -0700
+Author : flashk
+Fix crash in Collada loaderThe collada loader would crash when processing effects that didn't have a technique defined.
+
+Wed, 10 Oct 2018 02:33:47 +0300
+Author : Boris Pek
+fix builds with case sensitive includesTested during cross-compilation for MS Windows using MinGW.
+
+
+Wed, 10 Oct 2018 13:10:55 +0100
+Author : Robert Osfield
+Fixed buld
+
+Wed, 10 Oct 2018 08:31:30 +0200
+Author : Antoine Lavenant
+fix apply once
+
+Wed, 3 Oct 2018 14:21:03 -0700
+Author : flashk
+Fix for HDR DDS imagesThe DDS loader was not applying the correct internal format for certain HDR images (e.g. float/half_float formats)
+
+Wed, 3 Oct 2018 14:12:54 -0700
+Author : flashk
+osgDB::OutputStream write array optimizationI've made a change to osgDB::OutputStream::writeArrayImplementation so that it writes the array data in a single write operation for binary files. This significantly speeds up writing out osgb files for large data sets (e.g. point clouds). osgDB::InputStream already performs a similar optimization when reading array data from binary files.
+
+Wed, 3 Oct 2018 11:32:10 -0700
+Author : flashk
+Fix for GifImageStream::setReferenceTimeSetting the reference time greater than the duration of a gif would cause a crash. Also, the current reference time is not immediately updated when manually setting the reference time.
+
+Wed, 3 Oct 2018 09:59:34 -0700
+Author : flashk
+Update ReaderWriterFBX.cpp
+
+Wed, 3 Oct 2018 09:52:10 -0700
+Author : flashk
+Update fbxRMesh.cpp
+
+Wed, 3 Oct 2018 09:49:37 -0700
+Author : flashk
+Update fbxReader.h
+
+Tue, 2 Oct 2018 09:04:26 -0700
+Author : flashk
+Fix hardware mipmap generation for cube mapsI was getting a black image when enabling hardware mipmap generation on cubemaps. I believe the problem is that the base Texture class is hard coding GL_TEXTURE_2D when enabling mipmap generation, instead of using the target type from the derived class.
+
+Tue, 2 Oct 2018 12:21:31 +0100
+Author : Robert Osfield
+Removed unused static variables
+
+Tue, 2 Oct 2018 11:28:34 +0100
+Author : Robert Osfield
+From Andy Skinner, Added ~GLExtensions to clear cached values for context ID
+
+Mon, 1 Oct 2018 23:13:10 +0200
+Author : Julien Valentin
+add version and required extensionlet a chance to work on intel chipset
+
+Tue, 2 Oct 2018 10:46:25 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #627 from eligovision/OpenSceneGraph-3.6_gui_adapters_1px1px error in GUIEventAdapter, View, Viewer and CompositeViewer major fix
+
+Fri, 21 Sep 2018 13:26:18 +0300
+Author : Konstantin S. Matveyev
+1px error in GUIEventAdapter, View, Viewer and CompositeViewer major fix
+
+Fri, 14 Sep 2018 11:16:53 +0100
+Author : Robert Osfield
+Updated ChangeLog for 3.6.3 release
+
 Fri, 14 Sep 2018 10:41:24 +0100
 Author : Robert Osfield
 Updated version number and date for 3.6.3 stable release

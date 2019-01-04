@@ -82,8 +82,17 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
 
 Geometry::~Geometry()
 {
-    _stateset = 0;
-    Geometry::releaseGLObjects();
+    // clean up display lists if assigned, and use the GLObjectSizeHint() while prior to it being invalidated by the automatic clean up of arrays that will invalidate the getGLObjectSizeHint() value.
+    #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
+    for(unsigned int i=0;i<_globjList.size();++i)
+    {
+        if (_globjList[i] != 0)
+        {
+            Drawable::deleteDisplayList(i,_globjList[i], getGLObjectSizeHint());
+            _globjList[i] = 0;
+        }
+    }
+    #endif
 }
 
 #define ARRAY_NOT_EMPTY(array) (array!=0 && array->getNumElements()!=0)
@@ -680,6 +689,28 @@ void Geometry::setUseVertexBufferObjects(bool flag)
 void Geometry::dirtyGLObjects()
 {
     Drawable::dirtyGLObjects();
+
+    ArrayList arrays;
+    if (getArrayList(arrays))
+    {
+        for(ArrayList::iterator itr = arrays.begin();
+            itr != arrays.end();
+            ++itr)
+        {
+            (*itr)->dirty();
+        }
+    }
+
+    DrawElementsList drawElements;
+    if (getDrawElementsList(drawElements))
+    {
+        for(DrawElementsList::iterator itr = drawElements.begin();
+            itr != drawElements.end();
+            ++itr)
+        {
+            (*itr)->dirty();
+        }
+    }
 }
 
 void Geometry::resizeGLObjectBuffers(unsigned int maxSize)
@@ -712,16 +743,6 @@ void Geometry::resizeGLObjectBuffers(unsigned int maxSize)
 void Geometry::releaseGLObjects(State* state) const
 {
     Drawable::releaseGLObjects(state);
-
-    if (state)
-    {
-        if (_vertexArrayStateList[state->getContextID()].valid())
-        {
-            _vertexArrayStateList[state->getContextID()]->release();
-            _vertexArrayStateList[state->getContextID()] = 0;
-        }
-    }
-    else _vertexArrayStateList.clear();
 
     ArrayList arrays;
     if (getArrayList(arrays))

@@ -261,6 +261,8 @@ IF(MINGW OR CYGWIN)
     SET(TARGET_EXTERNAL_LIBRARIES ${TARGET_EXTERNAL_LIBRARIES} gdi32 )
 ENDIF()
 
+SET(COMPONENT_PKGCONFIG_DESCRIPTION "Windowing system setup, thread scene manager library for Openscenegraph")
+
 SETUP_LIBRARY(${LIB_NAME})
 
 # install these headers manually since setup_library and moduleinstall

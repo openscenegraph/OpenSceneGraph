@@ -357,6 +357,8 @@ void ParallelSplitShadowMap::init()
         {
             // create the camera
             pssmShadowSplitTexture._camera = new osg::Camera;
+            pssmShadowSplitTexture._camera->setReadBuffer(GL_BACK);
+            pssmShadowSplitTexture._camera->setDrawBuffer(GL_BACK);
             pssmShadowSplitTexture._camera->setCullCallback(new CameraCullCallback(this));
 
 
@@ -625,12 +627,6 @@ void ParallelSplitShadowMap::cull(osgUtil::CullVisitor& cv){
         cv.popStateSet();
 
     }
-
-    // need to compute view frustum for RTT camera.
-    // get the bounds of the model.
-    osg::ComputeBoundsVisitor cbbv(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
-    cbbv.setTraversalMask(getShadowedScene()->getCastsShadowTraversalMask());
-    _shadowedScene->osg::Group::traverse(cbbv);
 
     //////////////////////////////////////////////////////////////////////////
     const osg::Light* selectLight = 0;

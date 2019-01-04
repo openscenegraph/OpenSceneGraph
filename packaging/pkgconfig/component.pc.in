@@ -5,10 +5,10 @@ exec_prefix=${prefix}
 libdir=${exec_prefix}/lib@LIB_POSTFIX@
 includedir=${prefix}/include
 
-Name: openscenegraph-osgDB
-Description: File format reading library for Openscenegraph
+Name: openscenegraph-@LIB_NAME@
+Description: @COMPONENT_PKGCONFIG_DESCRIPTION@
 Version: @OPENSCENEGRAPH_VERSION@
-Requires: openscenegraph-osg openthreads
+Requires:@COMPONENT_PKGCONFIG_REQUIRES@ openthreads
 Conflicts:
-Libs: -L${libdir} -losgDB@CMAKE_BUILD_POSTFIX@
+Libs: -L${libdir} -l@LIB_NAME@@CMAKE_BUILD_POSTFIX@
 Cflags: -I${includedir}

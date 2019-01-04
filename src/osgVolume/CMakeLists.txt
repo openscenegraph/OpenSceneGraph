@@ -42,12 +42,14 @@ SET(TARGET_SRC
 
 
 SET(TARGET_LIBRARIES
-    osgUtil
-    osgDB
     osgGA
+    osgDB
+    osgUtil
     osg
     OpenThreads
 )
+
+SET(COMPONENT_PKGCONFIG_DESCRIPTION "Volume library for Openscenegraph")
 
 SETUP_LIBRARY(${LIB_NAME})
 

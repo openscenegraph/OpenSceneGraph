@@ -1770,7 +1770,7 @@ void GraphicsWindowX11::transformMouseXY(float& x, float& y)
 void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol, int& unmodifiedKeySymbol)
 {
     unsigned char buffer_return[32];
-    int bytes_buffer = 32;
+    int bytes_buffer = sizeof(buffer_return);
     KeySym keysym_return;
 
     int numChars = XLookupString(&keyevent, reinterpret_cast<char*>(buffer_return), bytes_buffer, &keysym_return, NULL);

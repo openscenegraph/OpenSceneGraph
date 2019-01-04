@@ -82,22 +82,17 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
 
 Geometry::~Geometry()
 {
-    _stateset = 0;
-
-#if 1
-    // use the destructors to automatically handle GL object clean up when the array/primtives ref count goes to 0
-    _primitives.clear();
-    _vertexArray = 0;
-    _normalArray = 0;
-    _colorArray = 0;
-    _secondaryColorArray = 0;
-    _fogCoordArray = 0;
-    _texCoordList.clear();
-    _vertexAttribList.clear();
-#else
-    // original clean up that cleans up GL objects regardless of any sharing of arrays/primitives
-    Geometry::releaseGLObjects();
-#endif
+    // clean up display lists if assigned, and use the GLObjectSizeHint() while prior to it being invalidated by the automatic clean up of arrays that will invalidate the getGLObjectSizeHint() value.
+    #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
+    for(unsigned int i=0;i<_globjList.size();++i)
+    {
+        if (_globjList[i] != 0)
+        {
+            Drawable::deleteDisplayList(i,_globjList[i], getGLObjectSizeHint());
+            _globjList[i] = 0;
+        }
+    }
+    #endif
 }
 
 #define ARRAY_NOT_EMPTY(array) (array!=0 && array->getNumElements()!=0)

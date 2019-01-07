@@ -93,6 +93,32 @@ void SphereSegment::traverse(osg::NodeVisitor& nv)
     }
 }
 
+void SphereSegment::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    if (_surfaceGeometry.valid()) _surfaceGeometry->resizeGLObjectBuffers(maxSize);
+    if (_spokesGeometry.valid()) _spokesGeometry->resizeGLObjectBuffers(maxSize);
+    if (_edgeLineGeometry.valid())  _edgeLineGeometry->resizeGLObjectBuffers(maxSize);
+    if (_sidesGeometry.valid()) _sidesGeometry->resizeGLObjectBuffers(maxSize);
+
+    if (_litOpaqueState.valid())  _litOpaqueState->resizeGLObjectBuffers(maxSize);
+    if (_unlitOpaqueState.valid())  _unlitOpaqueState->resizeGLObjectBuffers(maxSize);
+    if (_litTransparentState.valid())  _litTransparentState->resizeGLObjectBuffers(maxSize);
+    if (_unlitTransparentState.valid()) _unlitTransparentState->resizeGLObjectBuffers(maxSize);
+}
+
+void SphereSegment::releaseGLObjects(osg::State* state) const
+{
+    if (_surfaceGeometry.valid()) _surfaceGeometry->releaseGLObjects(state);
+    if (_spokesGeometry.valid()) _spokesGeometry->releaseGLObjects(state);
+    if (_edgeLineGeometry.valid())  _edgeLineGeometry->releaseGLObjects(state);
+    if (_sidesGeometry.valid()) _sidesGeometry->releaseGLObjects(state);
+
+    if (_litOpaqueState.valid())  _litOpaqueState->releaseGLObjects(state);
+    if (_unlitOpaqueState.valid())  _unlitOpaqueState->releaseGLObjects(state);
+    if (_litTransparentState.valid())  _litTransparentState->releaseGLObjects(state);
+    if (_unlitTransparentState.valid()) _unlitTransparentState->releaseGLObjects(state);
+}
+
 osg::BoundingSphere SphereSegment::computeBound() const
 {
     _bbox.init();

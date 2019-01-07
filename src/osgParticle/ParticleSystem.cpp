@@ -647,6 +647,8 @@ osg::BoundingBox osgParticle::ParticleSystem::computeBoundingBox() const
 
 void osgParticle::ParticleSystem::resizeGLObjectBuffers(unsigned int maxSize)
 {
+    Drawable::resizeGLObjectBuffers(maxSize);
+
     _bufferedArrayData.resize(maxSize);
     for(unsigned int i=0; i<_bufferedArrayData.size(); ++i)
     {
@@ -656,6 +658,8 @@ void osgParticle::ParticleSystem::resizeGLObjectBuffers(unsigned int maxSize)
 
 void osgParticle::ParticleSystem::releaseGLObjects(osg::State* state) const
 {
+    Drawable::releaseGLObjects(state);
+
     if (state)
     {
         _bufferedArrayData[state->getContextID()].releaseGLObjects(state);

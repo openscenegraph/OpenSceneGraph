@@ -385,6 +385,8 @@ QueryGeometry::getNumPixels( const osg::Camera* cam )
 void
 QueryGeometry::releaseGLObjects( osg::State* state ) const
 {
+    Geometry::releaseGLObjects(state);
+
     if (!state)
     {
         // delete all query IDs for all contexts.

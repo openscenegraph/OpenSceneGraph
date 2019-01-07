@@ -119,6 +119,9 @@ namespace osgFX
         /** default traversal */
         inline void inherited_traverse(osg::NodeVisitor& nv);
 
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+        virtual void releaseGLObjects(osg::State* state = 0) const;
+
     protected:
         virtual ~Effect();
         Effect &operator=(const Effect &) { return *this; }

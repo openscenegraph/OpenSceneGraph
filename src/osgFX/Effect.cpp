@@ -135,6 +135,20 @@ void Effect::traverse(osg::NodeVisitor& nv)
     // wow, we're finished! :)
 }
 
+void Effect::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    Group::resizeGLObjectBuffers(maxSize);
+    if (_dummy_for_validation) _dummy_for_validation->resizeGLObjectBuffers(maxSize);
+}
+
+void Effect::releaseGLObjects(osg::State* state) const
+{
+    Group::releaseGLObjects(state);
+    if (_dummy_for_validation) _dummy_for_validation->releaseGLObjects(state);
+}
+
+
+
 void Effect::build_dummy_node()
 {
     _dummy_for_validation = new osg::Geode;

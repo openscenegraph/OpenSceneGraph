@@ -927,6 +927,58 @@ void SceneView::releaseAllGLObjects()
     _camera->releaseGLObjects(_renderInfo.getState());
 }
 
+void SceneView::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    struct Resize
+    {
+        unsigned int maxSize = 1;
+
+        Resize(unsigned int ms) : maxSize(ms) {}
+
+        void operator() (osg::Referenced* object)
+        {
+            if (object) object->resizeGLObjectBuffers(maxSize);
+        }
+    } operation(maxSize);
+
+    operation(_localStateSet.get());
+    operation(_updateVisitor.get());
+    operation(_cullVisitor.get());
+    operation(_stateGraph.get());
+    operation(_renderStage.get());
+    operation(_cullVisitorRight.get());
+    operation(_stateGraphRight.get());
+    operation(_renderStageRight.get());
+    operation(_globalStateSet.get());
+    operation(_secondaryStateSet.get());
+    operation(_cameraWithOwnership.get());
+}
+
+void SceneView::releaseGLObjects(osg::State* state) const
+{
+    if (state && state!=_renderInfo.getState()) return;
+
+    struct Release
+    {
+        void operator() (const osg::Referenced* object)
+        {
+            if (object) object->releaseGLObjects();
+        }
+    } operation;
+
+    operation(_localStateSet.get());
+    operation(_updateVisitor.get());
+    operation(_cullVisitor.get());
+    operation(_stateGraph.get());
+    operation(_renderStage.get());
+    operation(_cullVisitorRight.get());
+    operation(_stateGraphRight.get());
+    operation(_renderStageRight.get());
+    operation(_globalStateSet.get());
+    operation(_secondaryStateSet.get());
+    operation(_cameraWithOwnership.get());
+}
+
 void SceneView::flushAllDeletedGLObjects()
 {
     _requiresFlush = false;

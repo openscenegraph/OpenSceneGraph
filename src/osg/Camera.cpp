@@ -340,9 +340,14 @@ void Camera::resizeGLObjectBuffers(unsigned int maxSize)
 
 void Camera::releaseGLObjects(osg::State* state) const
 {
+    if (_renderer.valid())
+    {
+        _renderer->releaseGLObjects(state);
+    }
+
     if (_renderingCache.valid())
     {
-        const_cast<Camera*>(this)->_renderingCache->releaseGLObjects(state);
+        _renderingCache->releaseGLObjects(state);
     }
 
     Transform::releaseGLObjects(state);

@@ -43,8 +43,8 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
     public:
 
 
-        typedef std::map< const osg::StateSet*, osg::ref_ptr<StateGraph> >   ChildList;
-        typedef std::vector< osg::ref_ptr<RenderLeaf> >                 LeafList;
+        typedef std::map< const osg::StateSet*, osg::ref_ptr<StateGraph> >  ChildList;
+        typedef std::vector< osg::ref_ptr<RenderLeaf> >                     LeafList;
 
         StateGraph*                         _parent;
 
@@ -171,6 +171,42 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
         /** Recursively prune the StateGraph of empty children.*/
         void prune();
 
+
+        void resizeGLObjectBuffers(unsigned int maxSize)
+        {
+            for(ChildList::iterator itr = _children.begin();
+                itr != _children.end();
+                ++itr)
+            {
+                (itr->second)->resizeGLObjectBuffers(maxSize);
+            }
+
+            for(LeafList::iterator itr = _leaves.begin();
+                itr != _leaves.end();
+                ++itr)
+            {
+                (*itr)->resizeGLObjectBuffers(maxSize);
+            }
+        }
+
+        void releaseGLObjects(osg::State* state=0) const
+        {
+            if (_stateset) _stateset->releaseGLObjects(state);
+
+            for(ChildList::const_iterator itr = _children.begin();
+                itr != _children.end();
+                ++itr)
+            {
+                (itr->second)->releaseGLObjects(state);
+            }
+
+            for(LeafList::const_iterator itr = _leaves.begin();
+                itr != _leaves.end();
+                ++itr)
+            {
+                (*itr)->releaseGLObjects(state);
+            }
+        }
 
         inline StateGraph* find_or_insert(const osg::StateSet* stateset)
         {

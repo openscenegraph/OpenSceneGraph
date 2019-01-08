@@ -25,7 +25,6 @@
 namespace osg {
 
 // forward declare
-class State;
 class UserDataContainer;
 class Node;
 class NodeVisitor;

@@ -930,6 +930,18 @@ void Renderer::operator () (osg::GraphicsContext* /*context*/)
     }
 }
 
+void Renderer::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    if (_sceneView[0].valid()) _sceneView[0]->resizeGLObjectBuffers(maxSize);
+    if (_sceneView[1].valid()) _sceneView[1]->resizeGLObjectBuffers(maxSize);
+}
+
+void Renderer::releaseGLObjects(osg::State* state) const
+{
+    if (_sceneView[0].valid()) _sceneView[0]->releaseGLObjects(state);
+    if (_sceneView[1].valid()) _sceneView[1]->releaseGLObjects(state);
+}
+
 void Renderer::release()
 {
     OSG_INFO<<"Renderer::release()"<<std::endl;

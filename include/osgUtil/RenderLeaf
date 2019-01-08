@@ -72,6 +72,16 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
 
         virtual void render(osg::RenderInfo& renderInfo,RenderLeaf* previous);
 
+        virtual void resizeGLObjectBuffers(unsigned int maxSize)
+        {
+            if (_drawable) _drawable->resizeGLObjectBuffers(maxSize);
+        }
+
+        virtual void releaseGLObjects(osg::State* state=0) const
+        {
+            if (_drawable) _drawable->releaseGLObjects(state);
+        }
+
         /// Allow StateGraph to change the RenderLeaf's _parent.
         friend class osgUtil::StateGraph;
 

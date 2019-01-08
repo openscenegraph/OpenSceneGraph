@@ -56,7 +56,6 @@ LightPointDrawable::LightPointDrawable(const LightPointDrawable& lpd,const osg::
 
 LightPointDrawable::~LightPointDrawable()
 {
-    OSG_NOTICE<<"LightPointDrawable::~LightPointDrawable()"<<std::endl;
 }
 
 void LightPointDrawable::reset()

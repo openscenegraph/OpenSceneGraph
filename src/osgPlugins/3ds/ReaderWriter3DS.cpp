@@ -1338,6 +1338,7 @@ ReaderWriter3DS::StateSetInfo ReaderWriter3DS::ReaderObject::createStateSet(Lib3
             unsigned char* orig_img_data = (unsigned char*)osg_image->getDataPointer();
             int n = osg_image->s()*osg_image->t()*4;
             unsigned char* img_data = new unsigned char[n];
+            memset(img_data, 0, n);
             // rebuild the texture with alpha channel (rescale according to map amount)
             for (int i=0, j=0; i<n; i+=4, j+=nc)
             {

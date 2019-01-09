@@ -557,13 +557,19 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                     (unsigned char *)imageData,
                     osg::Image::USE_NEW_DELETE);
 
-                if (texCoordRange) image->setUserData(texCoordRange);
+                if (texCoordRange) 
+                {
+                    image->setUserData(texCoordRange);
+                    delete texCoordRange;
+                }
 
                 image->flipVertical();
 
                 return image;
 
             }
+
+            if(texCoordRange) delete texCoordRange;
 
             return 0;
 
@@ -621,6 +627,8 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                                            (desiredWidth)/(double)windowWidth,
                                            (desiredHeight)/(double)windowHeight);
                         OSG_INFO<<"tex coord range "<<texCoordRange->_x<<" "<<texCoordRange->_y<<" "<<texCoordRange->_w<<" "<<texCoordRange->_h<<std::endl;
+
+                        delete texCoordRange;
                     }
                     break;
                 case(osgDB::ImageOptions::PIXEL_WINDOW):

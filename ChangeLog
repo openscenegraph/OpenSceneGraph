@@ -1,3 +1,39 @@
+Wed, 9 Jan 2019 10:19:34 +0000
+Author : Robert Osfield
+Updated for 3.6.4-rc2
+
+Wed, 9 Jan 2019 08:51:29 +0000
+Author : Robert Osfield
+Added cmake package configuration files to gitignore
+
+Wed, 9 Jan 2019 08:43:08 +0000
+Author : Robert Osfield
+Replaced use of heap with use of stack created ifstream to avoid potential memory leak
+
+Wed, 9 Jan 2019 08:38:16 +0000
+Author : Robert Osfield
+Introduced use of ref_ptr<> and private destructor to tighen up memory management and avoid users attempting to inappropriately delete TexCoordRange.
+
+Tue, 8 Jan 2019 19:32:50 +0000
+Author : Robert Osfield
+Fixed for crashes on exit associaciated with VAO usage and vairous niche usage cases
+
+Mon, 7 Jan 2019 17:46:02 +0000
+Author : Robert Osfield
+Fixed crash on exit issues with osgFX, osgParticle, osgSim and the osgforest example
+
+Mon, 7 Jan 2019 10:25:13 +0000
+Author : Robert Osfield
+Merged changes from master
+
+Fri, 4 Jan 2019 09:22:12 +0000
+Author : Robert Osfield
+Updated rc number for 3.6.4 release candidate
+
+Fri, 4 Jan 2019 09:10:39 +0000
+Author : Robert Osfield
+Updated ChangeLog and AUTHORS in prep for 3.6.4 work
+
 Fri, 4 Jan 2019 08:10:15 +0000
 Author : Robert Osfield
 Added use of sizeof to make code a bit more flexible

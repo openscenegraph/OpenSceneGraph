@@ -69,6 +69,9 @@ bool VVDReader::readFile(const std::string & file)
     if (header.magic_number != VVD_MAGIC_NUMBER)
     {
         OSG_NOTICE << "Vertex data file not valid" << std::endl;
+        // Close the file
+        vvdFile->close();
+        delete vvdFile;
         return false;
     }
 

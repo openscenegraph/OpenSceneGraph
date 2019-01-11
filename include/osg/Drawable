@@ -294,7 +294,7 @@ class OSG_EXPORT Drawable : public Node
             META_Object(osg, CreateVertexArrayStateCallback);
 
             /** do customized createVertexArrayState .*/
-            virtual osg::VertexArrayState* createVertexArrayStateImplementation(osg::RenderInfo& renderInfo, const osg::Drawable* drawable) const
+            virtual osg::VertexArrayState* createVertexArrayStateImplementation(osg::RenderInfo& renderInfo, const osg::Drawable* drawable)
             {
                 return drawable->createVertexArrayStateImplementation(renderInfo);
             }

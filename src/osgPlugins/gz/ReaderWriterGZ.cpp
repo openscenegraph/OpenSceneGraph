@@ -241,6 +241,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterGZ::readFile(ObjectType objectType, 
     std::stringstream strstream;
     read(fin, strstream);
 
+    local_opt.get()->setName(fileName);
+
     return readFile(objectType, rw, strstream, local_opt.get());
 }
 

@@ -1417,7 +1417,13 @@ public:
                 }
             }
         }
+        // in the case of a .dds.gz the name of the image will blank
+        // so if the options has a name then use this (set in the DDS reader)
+        // for the image filename
+        if (options && !options->getName().empty()) {
+            if (osgImage->valid()) osgImage->setFileName(options->getName());
 
+        }
         return osgImage;
     }
 

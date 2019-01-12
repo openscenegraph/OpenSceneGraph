@@ -45,6 +45,7 @@ namespace ac3d {
 osg::Node*
 readFile(std::istream& stream, const osgDB::ReaderWriter::Options* options);
 
+static std::string ac3dSrcFilename;
 }
 
 class geodeVisitor : public osg::NodeVisitor { // collects geodes from scene sub-graph attached to 'this'
@@ -108,6 +109,7 @@ class ReaderWriterAC : public osgDB::ReaderWriter
                 local_opt = new Options;
             local_opt->getDatabasePathList().push_back(osgDB::getFilePath(fileName));
 
+            ac3d::ac3dSrcFilename = fileName;
             ReadResult result = readNode(fin, local_opt.get());
             if (result.validNode())
                 result.getNode()->setName(fileName);
@@ -1344,6 +1346,8 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                     // in case this is an invalid refs count for this primitive
                     // read further, but do not store that primitive
                     bool acceptPrimitive = primitiveBin->beginPrimitive(nRefs);
+                    if(!acceptPrimitive)
+                        OSG_WARN << ac3d::ac3dSrcFilename <<": -- primitive not accepted object " << group->getName() << std::endl;
                     for (unsigned i = 0; i < nRefs; ++i) {
                         // Read the vertex index
                         unsigned index;

@@ -15,6 +15,7 @@
 #define OSGDB_REGISTRY 1
 
 #include <OpenThreads/ReentrantMutex>
+#include <OpenThreads/ReadWriteMutex>
 
 #include <osg/ref_ptr>
 #include <osg/ArgumentParser>
@@ -119,6 +120,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         /** get a reader writer which handles specified extension.*/
         ReaderWriter* getReaderWriterForExtension(const std::string& ext);
+        OpenThreads::ReadWriteMutex *getObjectCacheExpiryMutex(){return &_objectCacheExpiryMutex;}
 
         /** gets a reader/writer that handles the extension mapped to by one of
           * the registered mime-types. */
@@ -610,6 +612,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         osg::ref_ptr<WriteFileCallback>     _writeFileCallback;
         osg::ref_ptr<FileLocationCallback>  _fileLocationCallback;
 
+        mutable OpenThreads::ReadWriteMutex _objectCacheExpiryMutex;
         OpenThreads::ReentrantMutex _pluginMutex;
         ReaderWriterList            _rwList;
         ImageProcessorList          _ipList;

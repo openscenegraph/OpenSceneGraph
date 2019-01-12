@@ -847,6 +847,7 @@ void DatabasePager::DatabaseThread::run()
 
         if (databaseRequest.valid())
         {
+            Registry::instance()->getObjectCacheExpiryMutex()->readLock();
 
             // load the data, note safe to write to the databaseRequest since once
             // it is created this thread is the only one to write to the _loadedModel pointer.
@@ -941,7 +942,7 @@ void DatabasePager::DatabaseThread::run()
                 }
 
             }
-
+            Registry::instance()->getObjectCacheExpiryMutex()->readUnlock();
             // _pager->_dataToCompileList->pruneOldRequestsAndCheckIfEmpty();
         }
         else

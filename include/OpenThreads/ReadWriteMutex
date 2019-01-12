@@ -61,6 +61,11 @@ class ReadWriteMutex
             return _readWriteMutex.lock();
         }
 
+        virtual int writeTryLock()
+        {
+            return _readWriteMutex.trylock();
+        }
+
         virtual int writeUnlock()
         {
             return _readWriteMutex.unlock();

@@ -13,6 +13,7 @@
 
 #include <osgDB/ObjectCache>
 #include <osgDB/Options>
+#include <osgDB/Registry>
 
 using namespace osgDB;
 
@@ -156,22 +157,26 @@ void ObjectCache::removeExpiredObjectsInCache(double expiryTime)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
 
-    // Remove expired entries from object cache
-    ObjectCacheMap::iterator oitr = _objectCache.begin();
-    while(oitr != _objectCache.end())
+    if (!Registry::instance()->getObjectCacheExpiryMutex()->writeTryLock())
     {
-        if (oitr->second.second<=expiryTime)
+        // Remove expired entries from object cache
+        ObjectCacheMap::iterator oitr = _objectCache.begin();
+        while (oitr != _objectCache.end())
         {
+            if (oitr->second.second < expiryTime)
+            {
 #if __cplusplus > 199711L
-            oitr = _objectCache.erase(oitr);
+                oitr = _objectCache.erase(oitr);
 #else
-            _objectCache.erase(oitr++);
+                _objectCache.erase(oitr++);
 #endif
+            }
+            else
+            {
+                ++oitr;
+            }
         }
-        else
-        {
-            ++oitr;
-        }
+        Registry::instance()->getObjectCacheExpiryMutex()->writeUnlock();
     }
 }
 

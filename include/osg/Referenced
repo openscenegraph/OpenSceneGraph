@@ -115,7 +115,7 @@ class OSG_EXPORT Referenced
 
         /** Remove Observer that is observing this object.*/
         void removeObserver(Observer* observer) const;
-
+#if 0
          /** Resize any per context GLObject buffers to specified size. */
         virtual void resizeGLObjectBuffers(unsigned int /*maxSize*/) {}
 
@@ -123,7 +123,7 @@ class OSG_EXPORT Referenced
            * the specified graphics context. Otherwise, releases OpenGL objects
            * for all graphics contexts. */
         virtual void releaseGLObjects(osg::State* = 0) const {}
-
+#endif
 public:
 
         friend class DeleteHandler;

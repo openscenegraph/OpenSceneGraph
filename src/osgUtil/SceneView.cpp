@@ -720,11 +720,11 @@ void SceneView::cull()
         {
 
             if (!_cullVisitorLeft.valid()) _cullVisitorLeft = _cullVisitor->clone();
-            if (!_stateGraphLeft.valid()) _stateGraphLeft = _stateGraph->cloneType();
+            if (!_stateGraphLeft.valid()) _stateGraphLeft = _stateGraph->cloneStateGraph();
             if (!_renderStageLeft.valid()) _renderStageLeft = osg::clone(_renderStage.get(), osg::CopyOp::DEEP_COPY_ALL);
 
             if (!_cullVisitorRight.valid()) _cullVisitorRight = _cullVisitor->clone();
-            if (!_stateGraphRight.valid()) _stateGraphRight = _stateGraph->cloneType();
+            if (!_stateGraphRight.valid()) _stateGraphRight = _stateGraph->cloneStateGraph();
             if (!_renderStageRight.valid()) _renderStageRight = osg::clone(_renderStage.get(), osg::CopyOp::DEEP_COPY_ALL);
 
             _cullVisitorLeft->setDatabaseRequestHandler(_cullVisitor->getDatabaseRequestHandler());
@@ -931,11 +931,15 @@ void SceneView::resizeGLObjectBuffers(unsigned int maxSize)
 {
     struct Resize
     {
-        unsigned int maxSize = 1;
+        unsigned int maxSize;
 
         Resize(unsigned int ms) : maxSize(ms) {}
 
         void operator() (osg::Referenced* object)
+        {
+            operator()(dynamic_cast<osg::Object*>(object));
+        }
+        void operator() (osg::Object* object)
         {
             if (object) object->resizeGLObjectBuffers(maxSize);
         }
@@ -960,11 +964,19 @@ void SceneView::releaseGLObjects(osg::State* state) const
 
     struct Release
     {
-        void operator() (const osg::Referenced* object)
+        osg::State* _state;
+
+        Release(State* state) : _state(state) {}
+
+        void operator() (osg::Referenced* object)
         {
-            if (object) object->releaseGLObjects();
+            operator()(dynamic_cast<osg::Object*>(object));
         }
-    } operation;
+        void operator() (osg::Object* object)
+        {
+            if (object) object->releaseGLObjects(_state);
+        }
+    } operation(state);
 
     operation(_localStateSet.get());
     operation(_updateVisitor.get());

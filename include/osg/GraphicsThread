@@ -42,6 +42,14 @@ struct OSG_EXPORT GraphicsOperation : public Operation
     virtual void operator () (Object* object);
 
     virtual void operator () (GraphicsContext* context) = 0;
+
+    /** Resize any per context GLObject buffers to specified size. */
+    virtual void resizeGLObjectBuffers(unsigned int /*maxSize*/) {}
+
+    /** If State is non-zero, this function releases any associated OpenGL objects for
+        * the specified graphics context. Otherwise, releases OpenGL objects
+        * for all graphics contexts. */
+    virtual void releaseGLObjects(osg::State* = 0) const {}
 };
 
 

@@ -685,18 +685,16 @@ void osgParticle::ParticleSystem::releaseGLObjects(osg::State* state) const
     }
 }
 
-osg::VertexArrayState* osgParticle::ParticleSystem::createVertexArrayStateImplemenation(osg::RenderInfo& renderInfo) const
+osg::VertexArrayState* osgParticle::ParticleSystem::createVertexArrayStateImplementation(osg::State* state) const
 {
-    osg::State& state = *renderInfo.getState();
-
-    osg::VertexArrayState* vas = new osg::VertexArrayState(&state);
+    osg::VertexArrayState* vas = new osg::VertexArrayState(state);
 
     vas->assignVertexArrayDispatcher();
     vas->assignNormalArrayDispatcher();
     vas->assignColorArrayDispatcher();
     vas->assignTexCoordArrayDispatcher(1);
 
-    if (state.useVertexArrayObject(_useVertexArrayObject))
+    if (state->useVertexArrayObject(_useVertexArrayObject))
     {
         vas->generateVertexArrayObject();
     }

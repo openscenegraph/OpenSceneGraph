@@ -796,11 +796,9 @@ SharedGeometry::~SharedGeometry()
 {
 }
 
-osg::VertexArrayState* SharedGeometry::createVertexArrayStateImplementation(osg::RenderInfo& renderInfo) const
+osg::VertexArrayState* SharedGeometry::createVertexArrayStateImplementation(osg::State* state) const
 {
-    osg::State& state = *renderInfo.getState();
-
-    osg::VertexArrayState* vas = new osg::VertexArrayState(&state);
+    osg::VertexArrayState* vas = new osg::VertexArrayState(state);
 
     // OSG_NOTICE<<"Creating new osg::VertexArrayState "<< vas<<std::endl;
 
@@ -809,7 +807,7 @@ osg::VertexArrayState* SharedGeometry::createVertexArrayStateImplementation(osg:
     if (_normalArray.valid()) vas->assignNormalArrayDispatcher();
     if (_texcoordArray.valid()) vas->assignTexCoordArrayDispatcher(1);
 
-    if (state.useVertexArrayObject(_useVertexArrayObject))
+    if (state->useVertexArrayObject(_useVertexArrayObject))
     {
         // OSG_NOTICE<<"  Setup VertexArrayState to use VAO "<<vas<<std::endl;
 

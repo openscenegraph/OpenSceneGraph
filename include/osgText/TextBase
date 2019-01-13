@@ -295,7 +295,7 @@ protected:
 
     void initArraysAndBuffers();
 
-    osg::VertexArrayState* createVertexArrayStateImplementation(osg::RenderInfo& renderInfo) const;
+    osg::VertexArrayState* createVertexArrayStateImplementation(osg::State* state) const;
 
     void positionCursor(const osg::Vec2 & endOfLine_coords, osg::Vec2 & cursor, unsigned int linelength);
     String::iterator computeLastCharacterOnLine(osg::Vec2& cursor, String::iterator first,String::iterator last);

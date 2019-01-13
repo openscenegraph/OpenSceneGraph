@@ -39,7 +39,8 @@ class OSG_EXPORT DispatchCompute : public osg::Drawable
 
         virtual void compileGLObjects(RenderInfo&) const {}
 
-        virtual VertexArrayState* createVertexArrayStateImplememtation(RenderInfo&) const { return 0; }
+        virtual VertexArrayState* createVertexArrayStateImplememtation(State*) const { return 0; }
+        virtual VertexArrayState* destroyVertexArrayStateImplememtation(State*) const { return 0; }
 
         virtual void drawImplementation(RenderInfo& renderInfo) const;
 

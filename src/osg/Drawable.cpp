@@ -269,15 +269,7 @@ Drawable::~Drawable()
     #endif
 
     // clean up VertexArrayState
-    for(unsigned int i=0; i<_vertexArrayStateList.size(); ++i)
-    {
-        VertexArrayState* vas = _vertexArrayStateList[i].get();
-        if (vas)
-        {
-            vas->release();
-            _vertexArrayStateList[i] = 0;
-        }
-    }
+    destroyVertexArrayState();
 }
 
 osg::MatrixList Drawable::getWorldMatrices(const osg::Node* haltTraversalAtNode) const
@@ -353,13 +345,7 @@ void Drawable::releaseGLObjects(State* state) const
             }
         }
     #endif
-
-        VertexArrayState* vas = contextID <_vertexArrayStateList.size() ? _vertexArrayStateList[contextID].get() : 0;
-        if (vas)
-        {
-            vas->release();
-            _vertexArrayStateList[contextID] = 0;
-        }
+        destroyVertexArrayStateImplementation(state);
     }
     else
     {
@@ -373,16 +359,7 @@ void Drawable::releaseGLObjects(State* state) const
             }
         }
     #endif
-
-        for(unsigned int i=0; i<_vertexArrayStateList.size(); ++i)
-        {
-            VertexArrayState* vas = _vertexArrayStateList[i].get();
-            if (vas)
-            {
-                vas->release();
-                _vertexArrayStateList[i] = 0;
-            }
-        }
+        destroyVertexArrayState();
     }
 }
 
@@ -669,7 +646,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
         VertexArrayState* vas = _vertexArrayStateList[contextID].get();
         if (!vas)
         {
-            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
+            _vertexArrayStateList[contextID] = vas = createVertexArrayState(&state);
         }
         else
         {
@@ -732,10 +709,36 @@ void Drawable::draw(RenderInfo& renderInfo) const
 
 #endif
 
-VertexArrayState* Drawable::createVertexArrayStateImplementation(RenderInfo& renderInfo) const
+VertexArrayState* Drawable::createVertexArrayStateImplementation(State* state) const
 {
     OSG_INFO<<"VertexArrayState* Drawable::createVertexArrayStateImplementation(RenderInfo& renderInfo) const "<<this<<std::endl;
-    VertexArrayState* vos = new osg::VertexArrayState(renderInfo.getState());
+    VertexArrayState* vos = new osg::VertexArrayState(state);
     vos->assignAllDispatchers();
     return vos;
+}
+
+VertexArrayState* Drawable::destroyVertexArrayStateImplementation(State* state) const
+{
+    OSG_INFO<<"VertexArrayState* Drawable::destroyVertexArrayStateImplementation(RenderInfo& renderInfo) const "<<this<<std::endl;
+    if(state)
+    {
+        unsigned int contextID=state->getContextID();
+        VertexArrayState* vas =contextID <_vertexArrayStateList.size() ? _vertexArrayStateList[contextID].get() : 0;
+        if (vas)
+        {
+            vas->release();
+            _vertexArrayStateList[contextID] = 0;
+        }
+    }
+    else
+        for(unsigned int i=0; i<_vertexArrayStateList.size(); ++i)
+        {
+            VertexArrayState* vas = _vertexArrayStateList[i].get();
+            if (vas)
+            {
+                vas->release();
+                _vertexArrayStateList[i] = 0;
+            }
+        }
+    return 0;
 }

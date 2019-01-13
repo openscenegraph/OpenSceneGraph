@@ -756,11 +756,9 @@ void Geometry::releaseGLObjects(State* state) const
 
 }
 
-VertexArrayState* Geometry::createVertexArrayStateImplementation(RenderInfo& renderInfo) const
+VertexArrayState* Geometry::createVertexArrayStateImplementation(State* state) const
 {
-    State& state = *renderInfo.getState();
-
-    VertexArrayState* vas = new osg::VertexArrayState(&state);
+    VertexArrayState* vas = new osg::VertexArrayState(state);
 
     // OSG_NOTICE<<"Creating new osg::VertexArrayState "<< vas<<std::endl;
 
@@ -773,7 +771,7 @@ VertexArrayState* Geometry::createVertexArrayStateImplementation(RenderInfo& ren
     if (!_texCoordList.empty()) vas->assignTexCoordArrayDispatcher(_texCoordList.size());
     if (!_vertexAttribList.empty()) vas->assignVertexAttribArrayDispatcher(_vertexAttribList.size());
 
-    if (state.useVertexArrayObject(_useVertexArrayObject))
+    if (state->useVertexArrayObject(_useVertexArrayObject))
     {
         // OSG_NOTICE<<"  Setup VertexArrayState to use VAO "<<vas<<std::endl;
 
@@ -851,7 +849,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
         {
             VertexArrayState* vas = 0;
 
-            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
+            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo.getState());
 
             State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
 

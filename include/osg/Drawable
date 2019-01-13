@@ -283,43 +283,49 @@ class OSG_EXPORT Drawable : public Node
         virtual void compileGLObjects(RenderInfo& renderInfo) const;
 
 
-        /** Callback class for overriding the default Drawable::createCreateVertexArrayStateImplementation().*/
-        struct CreateVertexArrayStateCallback : public virtual osg::Object
+        /** Callback class for overriding the default Drawable::Create/DestroyVertexArrayStateImplementation().*/
+        struct VertexArrayStateCallback : public virtual osg::Object
         {
-            CreateVertexArrayStateCallback() {}
+            VertexArrayStateCallback() {}
 
-            CreateVertexArrayStateCallback(const CreateVertexArrayStateCallback& rhs,const CopyOp& copyop):
+            VertexArrayStateCallback(const VertexArrayStateCallback& rhs,const CopyOp& copyop):
                 Object(rhs, copyop) {}
 
-            META_Object(osg, CreateVertexArrayStateCallback);
+            META_Object(osg, VertexArrayStateCallback);
 
-            /** do customized createVertexArrayState .*/
-            virtual osg::VertexArrayState* createVertexArrayStateImplementation(osg::RenderInfo& renderInfo, const osg::Drawable* drawable) const
-            {
-                return drawable->createVertexArrayStateImplementation(renderInfo);
-            }
+            /** customized VertexArrayState .*/
+            virtual osg::VertexArrayState* operator() (State* /*state*/, const Drawable* /*drawable*/) const { return 0; }
         };
 
 
         /** Set the callback to override the default Drawable::createCreateVertexArrayStateImplementation().*/
-        void setCreateVertexArrayStateCallback(CreateVertexArrayStateCallback* cb) { _createVertexArrayStateCallback = cb; }
+        void setCreateVertexArrayStateCallback(VertexArrayStateCallback* cb) { _createVertexArrayStateCallback = cb; }
+        void setDestroyVertexArrayStateCallback(VertexArrayStateCallback* cb) { _destroyVertexArrayStateCallback = cb; }
 
         /** Get the callback that overrides the default Drawable::createCreateVertexArrayStateImplementation().*/
-        CreateVertexArrayStateCallback* getCreateVertexArrayStateCallback() { return _createVertexArrayStateCallback.get(); }
+        VertexArrayStateCallback* getCreateVertexArrayStateCallback() { return _createVertexArrayStateCallback.get(); }
+        VertexArrayStateCallback* getDestroyVertexArrayStateCallback() { return _destroyVertexArrayStateCallback.get(); }
 
         /** Get the const callback that overrides the default Drawable::createCreateVertexArrayStateImplementation().*/
-        const CreateVertexArrayStateCallback* getCreateVertexArrayStateCallback() const { return _createVertexArrayStateCallback.get(); }
+        const VertexArrayStateCallback* getCreateVertexArrayStateCallback() const { return _createVertexArrayStateCallback.get(); }
+        const VertexArrayStateCallback* getDestroyVertexArrayStateCallback() const { return _destroyVertexArrayStateCallback.get(); }
 
 
         /** Create the VertexArrayState object used to track vertex array and vertex array object state. This method will be called automatically during rendering setup so users should not call this themselves.*/
-        inline VertexArrayState* createVertexArrayState(RenderInfo& renderInfo) const
+        inline VertexArrayState* createVertexArrayState(State* state) const
         {
-            if (_createVertexArrayStateCallback.valid()) return _createVertexArrayStateCallback->createVertexArrayStateImplementation(renderInfo, this);
-            else return createVertexArrayStateImplementation(renderInfo);
+            if (_createVertexArrayStateCallback.valid()) return _createVertexArrayStateCallback->operator()(state, this);
+            else return createVertexArrayStateImplementation(state);
+        }
+        inline VertexArrayState* destroyVertexArrayState(State* state=0) const
+        {
+            if (_destroyVertexArrayStateCallback.valid()) return _destroyVertexArrayStateCallback->operator()(state, this);
+            else return destroyVertexArrayStateImplementation(state);
         }
 
         /** Implementation of Create the VertexArrayState object.*/
-        virtual VertexArrayState* createVertexArrayStateImplementation(RenderInfo& renderInfo) const;
+        virtual VertexArrayState* createVertexArrayStateImplementation(State* state) const;
+        virtual VertexArrayState* destroyVertexArrayStateImplementation(State* state) const;
 
         void setVertexArrayStateList(VertexArrayStateList& vasl) { _vertexArrayStateList = vasl; }
 
@@ -542,7 +548,8 @@ class OSG_EXPORT Drawable : public Node
         mutable VertexArrayStateList    _vertexArrayStateList;
 
         ref_ptr<DrawCallback>   _drawCallback;
-        ref_ptr<CreateVertexArrayStateCallback> _createVertexArrayStateCallback;
+        ref_ptr<VertexArrayStateCallback> _createVertexArrayStateCallback;
+        ref_ptr<VertexArrayStateCallback> _destroyVertexArrayStateCallback;
 };
 
 #ifdef INLINE_DRAWABLE_DRAW
@@ -557,7 +564,7 @@ inline void Drawable::draw(RenderInfo& renderInfo) const
         VertexArrayState* vas = _vertexArrayStateList[contextID].get();
         if (!vas)
         {
-            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
+            _vertexArrayStateList[contextID] = vas = createVertexArrayState(&state);
         }
         else
         {

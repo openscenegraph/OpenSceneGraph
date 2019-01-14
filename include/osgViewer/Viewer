@@ -113,6 +113,9 @@ class OSGVIEWER_EXPORT Viewer : public ViewerBase, public osgViewer::View
         /** Get the keyboard and mouse usage of this viewer.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const;
 
+        // ensure that osg::View provides the reiszerGLObjects and releaseGLObjects methods
+        using osg::View::resizeGLObjectBuffers;
+        using osg::View::releaseGLObjects;
 
     protected:
 

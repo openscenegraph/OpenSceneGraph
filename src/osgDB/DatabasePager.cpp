@@ -1663,12 +1663,6 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
                 registerPagedLODs(databaseRequest->_loadedModel.get(), frameNumber);
             }
 
-            if (databaseRequest->_objectCache.valid() && osgDB::Registry::instance()->getObjectCache())
-            {
-                // insert loaded model into Registry ObjectCache
-                osgDB::Registry::instance()->getObjectCache()->addObjectCache( databaseRequest->_objectCache.get());
-            }
-
             // OSG_NOTICE<<"merged subgraph"<<databaseRequest->_fileName<<" after "<<databaseRequest->_numOfRequests<<" requests and time="<<(timeStamp-databaseRequest->_timestampFirstRequest)*1000.0<<std::endl;
 
             double timeToMerge = timeStamp-databaseRequest->_timestampFirstRequest;
@@ -1684,6 +1678,13 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
             OSG_INFO<<"DatabasePager::addLoadedDataToSceneGraph() node in parental chain deleted, discarding subgaph."<<std::endl;
         }
 
+
+        if (databaseRequest->_objectCache.valid() && osgDB::Registry::instance()->getObjectCache())
+        {
+            // insert loaded model into Registry ObjectCache
+            osgDB::Registry::instance()->getObjectCache()->addObjectCache( databaseRequest->_objectCache.get());
+            databaseRequest->_objectCache->clear();
+        }
         // reset the loadedModel pointer
         databaseRequest->_loadedModel = 0;
 

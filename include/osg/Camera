@@ -599,12 +599,12 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
                 Callback(org, copyop) {}
 
             META_Object(osg, DrawCallback);
-            
+
             /** Functor method called by rendering thread to recursively launch operator() on _nestedcallback **/
             inline void run(osg::RenderInfo& renderInfo) const
             {
                 operator () (renderInfo);
-                
+
                 if (_nestedCallback.valid())
                     ((const DrawCallback*)_nestedCallback.get())->run(renderInfo);
             }
@@ -614,6 +614,23 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
             /** Functor method, provided for backwards compatibility, called by operator() (osg::RenderInfo& renderInfo) method.**/
             virtual void operator () (const osg::Camera& /*camera*/) const {}
+
+            /** Resize any per context GLObject buffers to specified size. */
+            virtual void resizeGLObjectBuffers(unsigned int maxSize)
+            {
+                if (_nestedCallback.valid())
+                    _nestedCallback->resizeGLObjectBuffers(maxSize);
+            }
+
+            /** If State is non-zero, this function releases any associated OpenGL objects for
+            * the specified graphics context. Otherwise, releases OpenGL objexts
+            * for all graphics contexts. */
+            virtual void releaseGLObjects(osg::State* state = 0) const
+            {
+                if (_nestedCallback.valid())
+                    _nestedCallback->releaseGLObjects(state);
+            }
+
         };
 
         /** Set the initial draw callback for custom operations to be done before the drawing of the camera's subgraph and pre render stages.*/

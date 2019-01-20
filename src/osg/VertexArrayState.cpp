@@ -541,6 +541,9 @@ void VertexArrayState::deleteVertexArrayObject()
     {
         VAS_NOTICE<<"  VertexArrayState::deleteVertexArrayObject() "<<_vertexArrayObject<<std::endl;
 
+        _state->setCurrentToGlobalVertexArrayState();
+        _state->setCurrentVertexArrayObject(_state->getCurrentVertexArrayState()->getVertexArrayObject());
+        
         _ext->glDeleteVertexArrays(1, &_vertexArrayObject);
         _vertexArrayObject = 0;
     }

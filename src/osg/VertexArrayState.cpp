@@ -540,7 +540,7 @@ void VertexArrayState::deleteVertexArrayObject()
     if (_vertexArrayObject)
     {
         VAS_NOTICE<<"  VertexArrayState::deleteVertexArrayObject() "<<_vertexArrayObject<<std::endl;
-
+        _state->setCurrentVertexArrayObject(0);
         _ext->glDeleteVertexArrays(1, &_vertexArrayObject);
         _vertexArrayObject = 0;
     }

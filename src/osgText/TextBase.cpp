@@ -128,6 +128,7 @@ osg::VertexArrayState* TextBase::createVertexArrayStateImplementation(osg::Rende
         OSG_INFO<<"TextBase::createVertexArrayState() Setup VertexArrayState to use VAO "<<vas<<std::endl;
 
         vas->generateVertexArrayObject();
+        state.resetCurrentVertexArrayStateOnMatch(vas);
     }
     else
     {

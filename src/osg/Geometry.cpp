@@ -778,6 +778,7 @@ VertexArrayState* Geometry::createVertexArrayStateImplementation(RenderInfo& ren
         // OSG_NOTICE<<"  Setup VertexArrayState to use VAO "<<vas<<std::endl;
 
         vas->generateVertexArrayObject();
+        state.resetCurrentVertexArrayStateOnMatch(vas);
     }
     else
     {

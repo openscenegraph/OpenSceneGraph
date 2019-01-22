@@ -699,6 +699,7 @@ osg::VertexArrayState* osgParticle::ParticleSystem::createVertexArrayStateImplem
     if (state.useVertexArrayObject(_useVertexArrayObject))
     {
         vas->generateVertexArrayObject();
+        state.resetCurrentVertexArrayStateOnMatch(vas);
     }
 
     return vas;

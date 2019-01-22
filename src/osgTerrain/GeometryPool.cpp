@@ -814,6 +814,7 @@ osg::VertexArrayState* SharedGeometry::createVertexArrayStateImplementation(osg:
         // OSG_NOTICE<<"  Setup VertexArrayState to use VAO "<<vas<<std::endl;
 
         vas->generateVertexArrayObject();
+        state.resetCurrentVertexArrayStateOnMatch(vas);
     }
     else
     {

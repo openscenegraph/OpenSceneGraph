@@ -125,6 +125,11 @@ public:
     void setQueryFrameCount( unsigned int frames ) { _queryFrameCount = frames; }
     unsigned int getQueryFrameCount() const { return _queryFrameCount; }
 
+    // Resets the queries. The next frame will issue a new query.
+    // This is useful for big view changes, if it shouldn't be waited for
+    // '_queryFrameCount' till the frame contents change.
+    void resetQueries();
+
     // Indicate whether or not the bounding box used in the occlusion query test
     //   should be rendered. Handy for debugging and development.
     // Should only be called outside of cull/draw. No thread issues.

@@ -72,7 +72,9 @@ public:
 
     virtual void drawImplementation( osg::RenderInfo& renderInfo ) const;
 
-    unsigned int getNumPixels( const osg::Camera* cam );
+    // Returns the num visible pixels of the query geometry. The returned
+    // value is only correct if 'valid == true'.
+    unsigned int getNumPixels( const osg::Camera* cam, bool* valid=NULL );
 
     virtual void releaseGLObjects( osg::State* state = 0 ) const;
 

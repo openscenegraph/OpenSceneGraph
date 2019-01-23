@@ -46,7 +46,7 @@ class OSGUTIL_EXPORT IndexMeshVisitor : public GeometryCollector
 {
 public:
     IndexMeshVisitor(Optimizer* optimizer = 0)
-        : GeometryCollector(optimizer, Optimizer::INDEX_MESH), _isForcedReindexationEnable(false)
+        : GeometryCollector(optimizer, Optimizer::INDEX_MESH), _generateNewIndicesOnAllGeometries(false)
     {
     }
     inline void setGenerateNewIndicesOnAllGeometries(bool b) { _generateNewIndicesOnAllGeometries = b; }

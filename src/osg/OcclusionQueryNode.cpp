@@ -588,6 +588,12 @@ void OcclusionQueryNode::setQueriesEnabled( bool enable )
     _enabled = enable;
 }
 
+void OcclusionQueryNode::resetQueries()
+{
+   OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _frameCountMutex );
+   _frameCountMap.clear();
+}
+
 // Should only be called outside of cull/draw. No thread issues.
 void OcclusionQueryNode::setDebugDisplay( bool debug )
 {

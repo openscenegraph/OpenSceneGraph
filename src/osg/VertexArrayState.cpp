@@ -551,7 +551,7 @@ void VertexArrayState::deleteVertexArrayObject()
         VAS_NOTICE<<"  VertexArrayState::deleteVertexArrayObject() "<<_vertexArrayObject<<" "<<_stateObserverSet->getObserverdObject()<<std::endl;
 
         _ext->glDeleteVertexArrays(1, &_vertexArrayObject);
-        _vertexArrayObject = 0;
+        //_vertexArrayObject = 0;
     }
 }
 

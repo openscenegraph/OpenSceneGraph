@@ -483,21 +483,6 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
         return _passed;
     }
 
-    QueryGeometry* qg = static_cast< QueryGeometry* >( _queryGeode->getDrawable( 0 ) );
-
-    if ( !_validQueryGeometry )
-    {
-        // There're cases that the occlusion test result has been retrieved
-        // after the query geometry has been changed, it's the result of the
-        // geometry before the change.
-        qg->reset();
-
-        // The box of the query geometry is invalid, return false to not traverse
-        // the subgraphs.
-        _passed = false;
-        return _passed;
-    }
-
     {
         // Two situations where we want to simply do a regular traversal:
         //  1) it's the first frame for this camera
@@ -520,6 +505,7 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
         _passed = true;
         return _passed;
     }
+    QueryGeometry* qg = static_cast< QueryGeometry* >( _queryGeode->getDrawable( 0 ) );
 
     // Get the near plane for the upcoming distance calculation.
     osg::Matrix::value_type nearPlane;
@@ -544,7 +530,8 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
         {
            // The query hasn't finished yet and the result still
            // isn't available, return true to traverse the subgraphs.
-           return true;
+           _passed = true;
+           return _passed;
         }
 
         _passed = ( result.numPixels > _visThreshold );

@@ -474,10 +474,12 @@ OcclusionQueryNode::OcclusionQueryNode( const OcclusionQueryNode& oqn, const Cop
 bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
 {
     if ( !_enabled )
+    {
         // Queries are not enabled. The caller should be osgUtil::CullVisitor,
         //   return true to traverse the subgraphs.
         _passed = true;
         return _passed;
+    }
 
     {
         // Two situations where we want to simply do a regular traversal:
@@ -487,7 +489,8 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _frameCountMutex );
         const unsigned int& lastQueryFrame( _frameCountMap[ camera ] );
         if( ( lastQueryFrame == 0 ) ||
-            ( (nv.getTraversalNumber() - lastQueryFrame) >  (_queryFrameCount + 1) ) ) {
+            ( (nv.getTraversalNumber() - lastQueryFrame) >  (_queryFrameCount + 1) ) )
+        {
             _passed = true;
             return _passed;
         }

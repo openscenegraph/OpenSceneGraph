@@ -544,8 +544,7 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
         {
            // The query hasn't finished yet and the result still
            // isn't available, return true to traverse the subgraphs.
-           _passed = true;
-           return _passed;
+           return true;
         }
 
         _passed = ( result.numPixels > _visThreshold );

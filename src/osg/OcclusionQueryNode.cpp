@@ -364,9 +364,7 @@ QueryGeometry::drawImplementation( osg::RenderInfo& renderInfo ) const
 
 }
 
-
-unsigned int
-QueryGeometry::getNumPixels( const osg::Camera* cam )
+QueryGeometry::QueryResult QueryGeometry::getQueryResult( const osg::Camera* cam )
 {
     osg::ref_ptr<osg::TestResult> tr;
     {
@@ -378,9 +376,14 @@ QueryGeometry::getNumPixels( const osg::Camera* cam )
             _results[ cam ] = tr;
         }
     }
-    return tr->_numPixels;
+    return QueryResult((tr->_init && !tr->_active), tr->_numPixels);
 }
 
+unsigned int
+QueryGeometry::getNumPixels( const osg::Camera* cam )
+{
+    return getQueryResult(cam).numPixels;
+}
 
 void
 QueryGeometry::releaseGLObjects( osg::State* state ) const
@@ -513,8 +516,15 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
     _passed = ( distance <= 0.0 );
     if (!_passed)
     {
-        int result = qg->getNumPixels( camera );
-        _passed = ( (unsigned int)(result) > _visThreshold );
+        QueryGeometry::QueryResult result = qg->getQueryResult( camera );
+        if (!result.valid)
+        {
+           // The query hasn't finished yet and the result still
+           // isn't available, return true to traverse the subgraphs.
+           return true;
+        }
+
+        _passed = ( result.numPixels > _visThreshold );
     }
 
     return _passed;

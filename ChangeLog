@@ -1,3 +1,105 @@
+Sat, 26 Jan 2019 18:21:47 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #702 from mp3butcher/fix36add MeshReindexation flag
+
+Sat, 26 Jan 2019 18:10:44 +0000
+Author : Robert Osfield
+Added missing {} to fix getPassed() bug introducted by previus commit
+
+Fri, 25 Jan 2019 15:02:45 +0100
+Author : Daniel Trstenjak
+OcclusionQueryNode: ensure a consistent value for '_passed'
+
+Sat, 26 Jan 2019 16:33:23 +0000
+Author : Robert Osfield
+Introduced a QueryGeometry::getQueryResult(const osg::Camera*) method as a more informative replacedment for QueryGeometry::getNumPixels().
+
+Wed, 23 Jan 2019 12:10:00 +0100
+Author : Daniel Trstenjak
+OcclusionQueryNode: add resetting of queriesIf there's a big view change then it might not be appropriate to wait
+for '_queryFrameCount' till the next query is issued, because then
+geometry might pop into the view after '_queryFrameCount'.
+
+This is especially important for applications not having a constant
+frame rate, but just issue a new frame on demand.
+
+
+Wed, 23 Jan 2019 17:06:04 +0100
+Author : mp3butcher
+fix variable name
+
+Fri, 17 Aug 2018 09:22:40 +0100
+Author : OpenSceneGraph git repository
+Changed member variable name to be consistent with header
+
+Fri, 17 Aug 2018 09:21:31 +0100
+Author : OpenSceneGraph git repository
+Changed the member variable to be consistent with the method name.
+
+Thu, 16 Aug 2018 00:18:24 +0200
+Author : mp3butcher
+add a bool parameter to allow forced reindexation of a mesh
+
+Wed, 23 Jan 2019 15:40:13 +0000
+Author : Robert Osfield
+Commented out the reset of the _vertexArrayObject = 0 as it was break later State::resetCurrentVertexArrayStateOnMatch() calls ability to reset the State::_currentVAO when required.
+
+Wed, 23 Jan 2019 08:52:11 +0000
+Author : Robert Osfield
+Fixed typo
+
+Tue, 22 Jan 2019 20:21:56 +0000
+Author : Robert Osfield
+Added separate test and rest of _currentVAO to State::resetCurrentVertexArrayStateOnMatch(..) method
+
+Mon, 21 Jan 2019 18:13:43 +0000
+Author : Robert Osfield
+Changed resetCurrentVertexArrayStateOnMatch() to reset  _vas tp _globalVertexArrayState and currentVAO to 0.
+
+Mon, 21 Jan 2019 17:36:40 +0000
+Author : Robert Osfield
+Added reset of the State::CurrentVertexArrayState() to prevent the State::_vas becoming a dangling pointer when VertexArrayState objects are deleted.
+
+Sat, 19 Jan 2019 16:16:53 +0000
+Author : Robert Osfield
+Added calling of releaseGLObjects() and resizeGLObjects() to the Camera DrawCallback's to enable the draw callbacks to clean up their own GL objects.
+
+Thu, 17 Jan 2019 17:24:22 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #693 from LaurensVoerman/glObj_C4250fix MSVC warning C4250: inherits 'X' via dominance (94x)
+
+Thu, 17 Jan 2019 16:22:51 +0100
+Author : Laurens Voerman
+fix MSVC warning C4250: inherits 'X' via dominance (94x)
+
+Mon, 14 Jan 2019 11:55:24 +0000
+Author : Robert Osfield
+Added derpecated and thread unsafe warning message to docs of ObjectCache::getgetFromObjectCache()
+
+Mon, 14 Jan 2019 10:23:05 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #691 from LaurensVoerman/clrObjCacheclear temp objectCache in databaseRequest
+
+Mon, 14 Jan 2019 09:55:00 +0000
+Author : Robert Osfield
+Added using to quieten VS warnings
+
+Mon, 14 Jan 2019 10:19:41 +0100
+Author : Laurens Voerman
+clear temp objectCache in databaseRequest
+
+Sat, 12 Jan 2019 11:27:18 +0000
+Author : Robert Osfield
+Moved resizeGLObjects/releaseGLObjects out of Referenced to avoid multiple inheritance warnings
+
+Thu, 10 Jan 2019 09:45:32 +0000
+Author : Robert Osfield
+Added read/writeObject() entry point to FBX plugin.
+
+Wed, 9 Jan 2019 10:22:54 +0000
+Author : Robert Osfield
+Upated ChangeLog
+
 Wed, 9 Jan 2019 10:19:34 +0000
 Author : Robert Osfield
 Updated for 3.6.4-rc2

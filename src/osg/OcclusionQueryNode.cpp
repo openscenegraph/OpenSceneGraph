@@ -173,11 +173,17 @@ struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
                     OSG_WARN << "osgOQ: RQCB: " <<
                     "glGetQueryObjectiv returned negative value (" << tr->_numPixels << ")." << std::endl;
 
+                OSG_DEBUG << "osgOQ: query result: numPixels=" << tr->_numPixels << std::endl;
+
                 // Either retrieve last frame's results, or ignore it because the
                 //   camera is inside the view. In either case, _active is now false.
                 tr->_active = false;
             }
-            // else: query result not available yet, try again next frame
+            // query result not available yet, try again next frame
+            else
+            {
+               OSG_DEBUG << "osgOQ: query result not available yet" << std::endl;
+            }
 
             it++;
             count++;
@@ -263,6 +269,8 @@ QueryGeometry::~QueryGeometry()
 void
 QueryGeometry::reset()
 {
+    OSG_DEBUG << "osgOQ: QueryGeometry::reset()" << std::endl;
+
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _mapMutex );
 
     ResultMap::iterator it = _results.begin();
@@ -282,6 +290,8 @@ QueryGeometry::reset()
 void
 QueryGeometry::drawImplementation( osg::RenderInfo& renderInfo ) const
 {
+    OSG_DEBUG << "osgOQ: QueryGeometry::drawImplementation(...)" << std::endl;
+
     unsigned int contextID = renderInfo.getState()->getContextID();
     osg::GLExtensions* ext = renderInfo.getState()->get<GLExtensions>();
 
@@ -477,6 +487,7 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
     {
         // Queries are not enabled. The caller should be osgUtil::CullVisitor,
         //   return true to traverse the subgraphs.
+        OSG_DEBUG << "osgOQ: passed because queries are disabled" << std::endl;
         _passed = true;
         return _passed;
     }
@@ -491,6 +502,12 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
         if( ( lastQueryFrame == 0 ) ||
             ( (nv.getTraversalNumber() - lastQueryFrame) >  (_queryFrameCount + 1) ) )
         {
+            OSG_DEBUG << "osgOQ: passed because"
+                      << " lastQueryFrame=" << lastQueryFrame
+                      << ", traversalNumber=" << nv.getTraversalNumber()
+                      << ", _queryFrameCount=" << _queryFrameCount
+                      << std::endl;
+
             _passed = true;
             return _passed;
         }
@@ -528,11 +545,20 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
         {
            // The query hasn't finished yet and the result still
            // isn't available, return true to traverse the subgraphs.
+           OSG_DEBUG << "osgOQ: passed because query result is still not available" << std::endl;
            _passed = true;
            return _passed;
         }
 
         _passed = ( result.numPixels > _visThreshold );
+
+        OSG_DEBUG << "osgOQ: passed=" << _passed << " because"
+                  << " numPixels=" << result.numPixels
+                  << ", _visThreshold=" << _visThreshold
+                  << std::endl;
+    }
+    else {
+       OSG_DEBUG << "osgOQ: passed because distance=" << distance << std::endl;
     }
 
     return _passed;
@@ -548,8 +574,17 @@ void OcclusionQueryNode::traverseQuery( const Camera* camera, NodeVisitor& nv )
         unsigned int& lastQueryFrame = _frameCountMap[ camera ];
         issueQuery = (curFrame - lastQueryFrame >= _queryFrameCount);
         if (issueQuery)
+        {
+            OSG_DEBUG << "osgOQ: traverse query because:"
+                      << " curFrame=" << curFrame
+                      << ", lastQueryFrame=" << lastQueryFrame
+                      << ", _queryFrameCount=" << _queryFrameCount
+                      << std::endl;
+
             lastQueryFrame = curFrame;
+        }
     }
+
     if (issueQuery)
         _queryGeode->accept( nv );
 }
@@ -573,10 +608,14 @@ BoundingSphere OcclusionQueryNode::computeBound() const
         //   away constness to compute the bounding box and modify the query geometry.
         osg::OcclusionQueryNode* nonConstThis = const_cast<osg::OcclusionQueryNode*>( this );
 
-
         ComputeBoundsVisitor cbv;
         nonConstThis->accept( cbv );
         BoundingBox bb = cbv.getBoundingBox();
+
+        OSG_DEBUG << "osgOQ: compute query bound:"
+                  << " min=(" << bb._min.x() << "," << bb._min.y() << "," << bb._min.z() << ")"
+                  << ", max=(" << bb._max.x() << "," << bb._max.y() << "," << bb._max.z() << ")"
+                  << std::endl;
 
         osg::ref_ptr<Vec3Array> v = new Vec3Array;
         v->resize( 8 );
@@ -608,6 +647,8 @@ void OcclusionQueryNode::setQueriesEnabled( bool enable )
 
 void OcclusionQueryNode::resetQueries()
 {
+   OSG_DEBUG << "osgOQ: OcclusionQueryNode::resetQueries()" << std::endl;
+
    OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _frameCountMutex );
    _frameCountMap.clear();
 }

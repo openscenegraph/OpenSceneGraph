@@ -483,6 +483,14 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
         return _passed;
     }
 
+    if ( !_validQueryGeometry )
+    {
+        // The box of the query geometry is invalid, return false to not traverse
+        // the subgraphs.
+        _passed = false;
+        return _passed;
+    }
+
     {
         // Two situations where we want to simply do a regular traversal:
         //  1) it's the first frame for this camera

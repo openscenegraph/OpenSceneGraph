@@ -198,6 +198,9 @@ protected:
 
     bool _enabled;
 
+    // If the box of the query geometry is valid.
+    mutable bool _validQueryGeometry;
+
     // Tracks the last frame number that we performed a query.
     // User can set how many times  (See setQueryFrameCount).
     typedef std::map< const osg::Camera*, unsigned int > FrameCountMap;

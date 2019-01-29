@@ -831,7 +831,7 @@ class OSG_EXPORT Texture : public osg::TextureAttribute
         bool isHardwareMipmapGenerationEnabled(const State& state) const;
 
         /** Returns true if the associated Image should be released and it's safe to do so. */
-        bool isSafeToUnrefImageData(const State& state) const {
+        virtual bool isSafeToUnrefImageData(const State& state) const {
             return (_unrefImageDataAfterApply && state.getMaxTexturePoolSize()==0 && areAllTextureObjectsLoaded());
         }
 

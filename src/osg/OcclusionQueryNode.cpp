@@ -452,6 +452,7 @@ QueryGeometry::discardDeletedQueryObjects( unsigned int contextID )
 
 OcclusionQueryNode::OcclusionQueryNode()
   : _enabled( true ),
+    _validQueryGeometry( false ),
     _passed(false),
     _visThreshold( 500 ),
     _queryFrameCount( 5 ),
@@ -469,6 +470,7 @@ OcclusionQueryNode::~OcclusionQueryNode()
 
 OcclusionQueryNode::OcclusionQueryNode( const OcclusionQueryNode& oqn, const CopyOp& copyop )
   : Group( oqn, copyop ),
+    _validQueryGeometry( false ),
     _passed( false )
 {
     _enabled = oqn._enabled;
@@ -488,6 +490,14 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
         // Queries are not enabled. The caller should be osgUtil::CullVisitor,
         //   return true to traverse the subgraphs.
         OSG_DEBUG << "osgOQ: passed because queries are disabled" << std::endl;
+        _passed = true;
+        return _passed;
+    }
+
+    if ( !_validQueryGeometry )
+    {
+        // The box of the query geometry is invalid, return true to traverse
+        // the subgraphs.
         _passed = true;
         return _passed;
     }
@@ -566,6 +576,9 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
 
 void OcclusionQueryNode::traverseQuery( const Camera* camera, NodeVisitor& nv )
 {
+    if (!_validQueryGeometry)
+        return;
+
     bool issueQuery;
     {
         const int curFrame = nv.getTraversalNumber();
@@ -617,16 +630,28 @@ BoundingSphere OcclusionQueryNode::computeBound() const
                   << ", max=(" << bb._max.x() << "," << bb._max.y() << "," << bb._max.z() << ")"
                   << std::endl;
 
+        nonConstThis->_validQueryGeometry = bb.valid();
+        OSG_DEBUG << "osgOQ: _validQueryGeometry=" << nonConstThis->_validQueryGeometry << std::endl;
+
         osg::ref_ptr<Vec3Array> v = new Vec3Array;
         v->resize( 8 );
-        (*v)[0] = Vec3( bb._min.x(), bb._min.y(), bb._min.z() );
-        (*v)[1] = Vec3( bb._max.x(), bb._min.y(), bb._min.z() );
-        (*v)[2] = Vec3( bb._max.x(), bb._min.y(), bb._max.z() );
-        (*v)[3] = Vec3( bb._min.x(), bb._min.y(), bb._max.z() );
-        (*v)[4] = Vec3( bb._max.x(), bb._max.y(), bb._min.z() );
-        (*v)[5] = Vec3( bb._min.x(), bb._max.y(), bb._min.z() );
-        (*v)[6] = Vec3( bb._min.x(), bb._max.y(), bb._max.z() );
-        (*v)[7] = Vec3( bb._max.x(), bb._max.y(), bb._max.z() );
+
+        // Having (0,0,0) as vertices for the case of the invalid query geometry
+        // still isn't quite the right thing. But the query geometry is public
+        // accessible and therefore a user might expect eight vertices, so
+        // it seems safer to keep eight vertices in the geometry.
+
+        if (nonConstThis->_validQueryGeometry)
+        {
+            (*v)[0] = Vec3( bb._min.x(), bb._min.y(), bb._min.z() );
+            (*v)[1] = Vec3( bb._max.x(), bb._min.y(), bb._min.z() );
+            (*v)[2] = Vec3( bb._max.x(), bb._min.y(), bb._max.z() );
+            (*v)[3] = Vec3( bb._min.x(), bb._min.y(), bb._max.z() );
+            (*v)[4] = Vec3( bb._max.x(), bb._max.y(), bb._min.z() );
+            (*v)[5] = Vec3( bb._min.x(), bb._max.y(), bb._min.z() );
+            (*v)[6] = Vec3( bb._min.x(), bb._max.y(), bb._max.z() );
+            (*v)[7] = Vec3( bb._max.x(), bb._max.y(), bb._max.z() );
+        }
 
         Geometry* geom = static_cast< Geometry* >( nonConstThis->_queryGeode->getDrawable( 0 ) );
         geom->setVertexArray( v.get() );

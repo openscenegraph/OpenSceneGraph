@@ -294,7 +294,7 @@ osg::Node* TXPNode::addPagedLODTile(int x, int y)
     // If you look at the code that calls it, it is effectively called only when
     // lod = 0. So all is OK
     int lod = 0;
-    char pagedLODfile[1024];
+    char pagedLODfile[1070];
     sprintf(pagedLODfile,"%s\\tile%d_%dx%d_%d.txp",_archive->getDir(),lod,x,y,_archive->getId());
 
 

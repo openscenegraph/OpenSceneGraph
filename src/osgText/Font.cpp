@@ -328,21 +328,19 @@ Glyph* Font::getGlyph(const FontResolution& fontRes, unsigned int charcode)
     FontResolution fontResUsed(0,0);
     if (_implementation->supportsMultipleFontResolutions()) fontResUsed = fontRes;
 
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_glyphMapMutex);
+    FontSizeGlyphMap::iterator itr = _sizeGlyphMap.find(fontResUsed);
+    if (itr!=_sizeGlyphMap.end())
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_glyphMapMutex);
-        FontSizeGlyphMap::iterator itr = _sizeGlyphMap.find(fontResUsed);
-        if (itr!=_sizeGlyphMap.end())
-        {
-            GlyphMap& glyphmap = itr->second;
-            GlyphMap::iterator gitr = glyphmap.find(charcode);
-            if (gitr!=glyphmap.end()) return gitr->second.get();
-        }
+        GlyphMap& glyphmap = itr->second;
+        GlyphMap::iterator gitr = glyphmap.find(charcode);
+        if (gitr!=glyphmap.end()) return gitr->second.get();
     }
 
     Glyph* glyph = _implementation->getGlyph(fontResUsed, charcode);
     if (glyph)
     {
-        addGlyph(fontResUsed, charcode, glyph);
+        _sizeGlyphMap[fontResUsed][charcode] = glyph;
         return glyph;
     }
     else return 0;
@@ -355,21 +353,18 @@ Glyph3D* Font::getGlyph3D(const FontResolution &fontRes, unsigned int charcode)
     FontResolution fontResUsed(0,0);
     if (_implementation->supportsMultipleFontResolutions()) fontResUsed = fontRes;
 
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_glyphMapMutex);
+    FontSizeGlyph3DMap::iterator itr = _sizeGlyph3DMap.find(fontResUsed);
+    if (itr!=_sizeGlyph3DMap.end())
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_glyphMapMutex);
-        FontSizeGlyph3DMap::iterator itr = _sizeGlyph3DMap.find(fontResUsed);
-        if (itr!=_sizeGlyph3DMap.end())
-        {
-            Glyph3DMap& glyphmap = itr->second;
-            Glyph3DMap::iterator gitr = glyphmap.find(charcode);
-            if (gitr!=glyphmap.end()) return gitr->second.get();
-        }
+        Glyph3DMap& glyphmap = itr->second;
+        Glyph3DMap::iterator gitr = glyphmap.find(charcode);
+        if (gitr!=glyphmap.end()) return gitr->second.get();
     }
 
     Glyph3D* glyph = _implementation->getGlyph3D(fontResUsed, charcode);
     if (glyph)
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_glyphMapMutex);
         _sizeGlyph3DMap[fontResUsed][charcode] = glyph;
         return glyph;
     }

@@ -35,11 +35,13 @@ SET(TARGET_SRC
 )
 
 SET(TARGET_LIBRARIES
-    osgUtil
     osgDB
+    osgUtil
     osg
     OpenThreads
 )
+
+SET(COMPONENT_PKGCONFIG_DESCRIPTION "Terrain library for Openscenegraph")
 
 SETUP_LIBRARY(${LIB_NAME})
 

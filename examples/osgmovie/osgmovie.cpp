@@ -641,7 +641,11 @@ int main(int argc, char** argv)
         if (wsi)
         {
             unsigned int width, height;
-            wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
+            osg::GraphicsContext::ScreenIdentifier main_screen_id;
+
+            main_screen_id.readDISPLAY();
+            main_screen_id.setUndefinedScreenDetailsToDefaultScreen();
+            wsi->getScreenResolution(main_screen_id, width, height);
 
             screenAspectRatio = float(width) / float(height);
         }

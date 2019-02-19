@@ -182,10 +182,12 @@ class OSG_EXPORT VertexArrayState : public osg::Referenced
 
     public:
 
+        virtual ~VertexArrayState();
 
         // osg::GLBufferObject* getGLBufferObject(osg::Array* array);
 
         osg::State*                     _state;
+        osg::ref_ptr<ObserverSet>       _stateObserverSet;
         osg::ref_ptr<osg::GLExtensions> _ext;
 
         bool                            _isVertexBufferObjectSupported;

@@ -109,8 +109,9 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapte
                 user_event->setName("osc_test_1");
 
                 _device->sendEvent(*user_event);
+                return true;
             }
-
+            return false;
         }
 
         default:
@@ -443,6 +444,8 @@ int main( int argc, char **argv )
         traits->doubleBuffer = true;
         traits->sharedContext = 0;
         traits->windowName = "Receiver / view two";
+        traits->readDISPLAY();
+        traits->setUndefinedScreenDetailsToDefaultScreen();
 
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 
@@ -509,6 +512,8 @@ int main( int argc, char **argv )
         traits->doubleBuffer = true;
         traits->sharedContext = 0;
         traits->windowName = "Sender / view one";
+        traits->readDISPLAY();
+        traits->setUndefinedScreenDetailsToDefaultScreen();
 
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 

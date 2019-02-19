@@ -79,7 +79,11 @@ struct CommandLineOptions
             return;
         }
 
-        wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
+        osg::GraphicsContext::ScreenIdentifier main_screen_id;
+
+        main_screen_id.readDISPLAY();
+        main_screen_id.setUndefinedScreenDetailsToDefaultScreen();
+        wsi->getScreenResolution(main_screen_id, width, height);
         distance = sqrt(sphere_radius*sphere_radius - collar_radius*collar_radius);
     }
 
@@ -274,6 +278,8 @@ void setDomeFaces(osgViewer::Viewer& viewer, CommandLineOptions& options)
     traits->windowDecoration = true;
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
+    traits->readDISPLAY();
+    traits->setUndefinedScreenDetailsToDefaultScreen();
 
     osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
     if (!gc)
@@ -502,6 +508,8 @@ void setDomeCorrection(osgViewer::Viewer& viewer, CommandLineOptions& options)
     traits->windowDecoration = false;
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
+    traits->readDISPLAY();
+    traits->setUndefinedScreenDetailsToDefaultScreen();
 
     osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
     if (!gc)

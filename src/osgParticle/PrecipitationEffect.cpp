@@ -121,22 +121,64 @@ void PrecipitationEffect::snow(float intensity)
 
 void PrecipitationEffect::compileGLObjects(osg::RenderInfo& renderInfo) const
 {
-    if (_quadGeometry.valid())
-    {
-        _quadGeometry->compileGLObjects(renderInfo);
-        if (_quadGeometry->getStateSet()) _quadGeometry->getStateSet()->compileGLObjects(*renderInfo.getState());
-    }
+    if (_quadGeometry.valid()) _quadGeometry->compileGLObjects(renderInfo);
+    if (_lineGeometry.valid()) _lineGeometry->compileGLObjects(renderInfo);
+    if (_pointGeometry.valid()) _pointGeometry->compileGLObjects(renderInfo);
 
-    if (_lineGeometry.valid())
-    {
-        _lineGeometry->compileGLObjects(renderInfo);
-        if (_lineGeometry->getStateSet()) _lineGeometry->getStateSet()->compileGLObjects(*renderInfo.getState());
-    }
+    if (_quadStateSet.valid()) _quadStateSet->compileGLObjects(*renderInfo.getState());
+    if (_lineStateSet.valid()) _lineStateSet->compileGLObjects(*renderInfo.getState());
+    if (_pointStateSet.valid()) _pointStateSet->compileGLObjects(*renderInfo.getState());
 
-    if (_pointGeometry.valid())
+    for(ViewDrawableMap::const_iterator itr = _viewDrawableMap.begin();
+        itr != _viewDrawableMap.end();
+        ++itr)
     {
-        _pointGeometry->compileGLObjects(renderInfo);
-        if (_pointGeometry->getStateSet()) _pointGeometry->getStateSet()->compileGLObjects(*renderInfo.getState());
+        const PrecipitationDrawableSet& pds = itr->second;
+        if (pds._quadPrecipitationDrawable.valid()) pds._quadPrecipitationDrawable->compileGLObjects(renderInfo);
+        if (pds._linePrecipitationDrawable.valid()) pds._linePrecipitationDrawable->compileGLObjects(renderInfo);
+        if (pds._pointPrecipitationDrawable.valid()) pds._pointPrecipitationDrawable->compileGLObjects(renderInfo);
+    }
+}
+
+void PrecipitationEffect::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    if (_quadGeometry.valid()) _quadGeometry->resizeGLObjectBuffers(maxSize);
+    if (_lineGeometry.valid()) _lineGeometry->resizeGLObjectBuffers(maxSize);
+    if (_pointGeometry.valid()) _pointGeometry->resizeGLObjectBuffers(maxSize);
+
+    if (_quadStateSet.valid()) _quadStateSet->resizeGLObjectBuffers(maxSize);
+    if (_lineStateSet.valid()) _lineStateSet->resizeGLObjectBuffers(maxSize);
+    if (_pointStateSet.valid()) _pointStateSet->resizeGLObjectBuffers(maxSize);
+
+    for(ViewDrawableMap::const_iterator itr = _viewDrawableMap.begin();
+        itr != _viewDrawableMap.end();
+        ++itr)
+    {
+        const PrecipitationDrawableSet& pds = itr->second;
+        if (pds._quadPrecipitationDrawable.valid()) pds._quadPrecipitationDrawable->resizeGLObjectBuffers(maxSize);
+        if (pds._linePrecipitationDrawable.valid()) pds._linePrecipitationDrawable->resizeGLObjectBuffers(maxSize);
+        if (pds._pointPrecipitationDrawable.valid()) pds._pointPrecipitationDrawable->resizeGLObjectBuffers(maxSize);
+    }
+}
+
+void PrecipitationEffect::releaseGLObjects(osg::State* state) const
+{
+    if (_quadGeometry.valid()) _quadGeometry->releaseGLObjects(state);
+    if (_lineGeometry.valid()) _lineGeometry->releaseGLObjects(state);
+    if (_pointGeometry.valid()) _pointGeometry->releaseGLObjects(state);
+
+    if (_quadStateSet.valid()) _quadStateSet->releaseGLObjects(state);
+    if (_lineStateSet.valid()) _lineStateSet->releaseGLObjects(state);
+    if (_pointStateSet.valid()) _pointStateSet->releaseGLObjects(state);
+
+    for(ViewDrawableMap::const_iterator itr = _viewDrawableMap.begin();
+        itr != _viewDrawableMap.end();
+        ++itr)
+    {
+        const PrecipitationDrawableSet& pds = itr->second;
+        if (pds._quadPrecipitationDrawable.valid()) pds._quadPrecipitationDrawable->releaseGLObjects(state);
+        if (pds._linePrecipitationDrawable.valid()) pds._linePrecipitationDrawable->releaseGLObjects(state);
+        if (pds._pointPrecipitationDrawable.valid()) pds._pointPrecipitationDrawable->releaseGLObjects(state);
     }
 }
 
@@ -829,7 +871,24 @@ PrecipitationEffect::PrecipitationDrawable::PrecipitationDrawable(const Precipit
 {
 }
 
+PrecipitationEffect::PrecipitationDrawable::~PrecipitationDrawable()
+{
+    OSG_NOTICE<<"PrecipitationEffect::~PrecipitationDrawable() "<<this<<std::endl;
+}
 
+void PrecipitationEffect::PrecipitationDrawable::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    Drawable::resizeGLObjectBuffers(maxSize);
+
+    if (_geometry) _geometry->resizeGLObjectBuffers(maxSize);
+}
+
+void PrecipitationEffect::PrecipitationDrawable::releaseGLObjects(osg::State* state) const
+{
+    Drawable::releaseGLObjects(state);
+
+    if (_geometry) _geometry->releaseGLObjects(state);
+}
 
 void PrecipitationEffect::PrecipitationDrawable::drawImplementation(osg::RenderInfo& renderInfo) const
 {

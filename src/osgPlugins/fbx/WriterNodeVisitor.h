@@ -78,23 +78,17 @@ class WriterNodeVisitor: public osg::NodeVisitor
                           const std::string& srcDirectory) :
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
             _pSdkManager(pSdkManager),
-            _succeedLastApply(true),
             _pScene(pScene),
             _curFbxNode(pScene->GetRootNode()),
             _currentStateSet(new osg::StateSet()),
             _lastMaterialIndex(0),
             _lastMeshIndex(0),
             _options(options),
-            _externalWriter(srcDirectory, osgDB::getFilePath(fileName), true, 0)
+            _externalWriter(srcDirectory, osgDB::getFilePath(fileName), true, 0),
+            _texcoords(false),
+            _drawableNum(0)
         {}
 
-        ///Tell us if last Node succeed traversing.
-        bool succeedLastApply() const { return _succeedLastApply; }
-
-        ///Set the flag _succeedLastApply to false.
-        void failedApply() { _succeedLastApply = false; }
-
-        virtual void apply(osg::Geode& node);
         virtual void apply(osg::Geometry& node);
         virtual void apply(osg::Group& node);
         virtual void apply(osg::MatrixTransform& node);
@@ -195,9 +189,6 @@ class WriterNodeVisitor: public osg::NodeVisitor
 
     private:
 
-       /// process triangles and build faces for a batch of geometries
-       void processGeometryList(GeometryList& geometryList, const std::string& meshName);
-
         /**
         *  Fill the faces field of the mesh and call buildMesh().
         *  \param name the name to assign to the Fbx Mesh
@@ -229,7 +220,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
         void createListTriangle(const osg::Geometry* geo,
                                 ListTriangle&        listTriangles,
                                 bool&                texcoords,
-                                unsigned int&        drawable_n);
+                                unsigned int         drawable_n);
 
         ///Store the material of the stateset in the MaterialMap.
         int processStateSet(const osg::StateSet* stateset);
@@ -264,6 +255,12 @@ class WriterNodeVisitor: public osg::NodeVisitor
         unsigned int                        _lastMeshIndex;
         const osgDB::ReaderWriter::Options* _options;
         osgDB::ExternalFileWriter           _externalWriter;
+
+        ///Maintain geode state between visits to the geometry
+        GeometryList _geometryList;
+        ListTriangle _listTriangles;
+        bool _texcoords;
+        unsigned int _drawableNum;
 };
 
 // end namespace pluginfbx

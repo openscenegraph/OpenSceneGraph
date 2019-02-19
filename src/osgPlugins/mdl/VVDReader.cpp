@@ -46,7 +46,6 @@ VVDReader::~VVDReader()
 
 bool VVDReader::readFile(const std::string & file)
 {
-    osgDB::ifstream *   vvdFile;
     VVDHeader           header;
     int                 vertIndex;
     int                 i, j;
@@ -54,7 +53,7 @@ bool VVDReader::readFile(const std::string & file)
     // Remember the map name
     vvd_name = getStrippedName(file);
 
-    vvdFile = new osgDB::ifstream(file.c_str(), std::ios::binary);
+    osgDB::ifstream vvdFile(file.c_str(), std::ios::binary);
     if (!vvdFile)
     {
         OSG_NOTICE << "Vertex data file not found" << std::endl;
@@ -63,7 +62,7 @@ bool VVDReader::readFile(const std::string & file)
 
     // Read the header
     memset(&header, 0xcd, sizeof(VVDHeader));
-    vvdFile->read((char *) &header, sizeof(VVDHeader));
+    vvdFile.read((char *) &header, sizeof(VVDHeader));
 
     // Make sure the file is a valid Valve VVD file
     if (header.magic_number != VVD_MAGIC_NUMBER)
@@ -77,9 +76,9 @@ bool VVDReader::readFile(const std::string & file)
 
     // Read the fixup table
     fixup_table = new VVDFixupEntry[header.num_fixups];
-    vvdFile->seekg(header.fixup_table_offset);
+    vvdFile.seekg(header.fixup_table_offset);
     for (i = 0; i < header.num_fixups; i++)
-        vvdFile->read((char *) &fixup_table[i], sizeof(VVDFixupEntry));
+        vvdFile.read((char *) &fixup_table[i], sizeof(VVDFixupEntry));
 
     // Create the vertex buffers
     for (i = 0; i < header.num_lods; i++)
@@ -100,12 +99,12 @@ bool VVDReader::readFile(const std::string & file)
                 if (fixup_table[j].lod_number >= i)
                 {
                     // Seek to the vertex indicated by the fixup table entry
-                    vvdFile->seekg(header.vertex_data_offset +
+                    vvdFile.seekg(header.vertex_data_offset +
                                    fixup_table[j].source_vertex_id *
                                    sizeof(VVDVertex));
 
                     // Read the number of vertices specified
-                    vvdFile->read((char *) &vertex_buffer[i][vertIndex],
+                    vvdFile.read((char *) &vertex_buffer[i][vertIndex],
                                   fixup_table[j].num_vertices *
                                   sizeof(VVDVertex));
 
@@ -117,10 +116,10 @@ bool VVDReader::readFile(const std::string & file)
         else
         {
             // Seek to the vertex data
-            vvdFile->seekg(header.vertex_data_offset);
+            vvdFile.seekg(header.vertex_data_offset);
 
             // Just read the vertices directly
-            vvdFile->read((char *) &vertex_buffer[i][0],
+            vvdFile.read((char *) &vertex_buffer[i][0],
                           header.num_lod_verts[i] * sizeof(VVDVertex));
         }
 
@@ -130,8 +129,7 @@ bool VVDReader::readFile(const std::string & file)
     }
 
     // Close the file
-    vvdFile->close();
-    delete vvdFile;
+    vvdFile.close();
 
     return true;
 }

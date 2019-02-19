@@ -330,20 +330,26 @@ void Camera::detach(BufferComponent buffer)
 
 void Camera::resizeGLObjectBuffers(unsigned int maxSize)
 {
-    if (_renderingCache.valid())
-    {
-        const_cast<Camera*>(this)->_renderingCache->resizeGLObjectBuffers(maxSize);
-    }
+    if (_renderer.valid()) _renderer->resizeGLObjectBuffers(maxSize);
+    if (_renderingCache.valid()) _renderingCache->resizeGLObjectBuffers(maxSize);
+
+    if (_initialDrawCallback.valid()) _initialDrawCallback->resizeGLObjectBuffers(maxSize);
+    if (_preDrawCallback.valid()) _preDrawCallback->resizeGLObjectBuffers(maxSize);
+    if (_postDrawCallback.valid()) _postDrawCallback->resizeGLObjectBuffers(maxSize);
+    if (_finalDrawCallback.valid()) _finalDrawCallback->resizeGLObjectBuffers(maxSize);
 
     Transform::resizeGLObjectBuffers(maxSize);
 }
 
 void Camera::releaseGLObjects(osg::State* state) const
 {
-    if (_renderingCache.valid())
-    {
-        const_cast<Camera*>(this)->_renderingCache->releaseGLObjects(state);
-    }
+    if (_renderer.valid()) _renderer->releaseGLObjects(state);
+    if (_renderingCache.valid()) _renderingCache->releaseGLObjects(state);
+
+    if (_initialDrawCallback.valid()) _initialDrawCallback->releaseGLObjects(state);
+    if (_preDrawCallback.valid()) _preDrawCallback->releaseGLObjects(state);
+    if (_postDrawCallback.valid()) _postDrawCallback->releaseGLObjects(state);
+    if (_finalDrawCallback.valid()) _finalDrawCallback->releaseGLObjects(state);
 
     Transform::releaseGLObjects(state);
 }

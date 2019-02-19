@@ -240,6 +240,10 @@ public:
     /** recompute the primitives rendering meshes/lines thtat represent the sphere segment.*/
     void updatePrimitives();
 
+
+    virtual void resizeGLObjectBuffers(unsigned int maxSize);
+    virtual void releaseGLObjects(osg::State* state = 0) const;
+
     virtual osg::BoundingSphere computeBound() const;
 
 private:

@@ -17,6 +17,7 @@
 #include <osgDB/ConvertBase64>
 #include <osgDB/FileUtils>
 #include <osgDB/WriteFile>
+#include <osgDB/FileNameUtils>
 #include <osgDB/ObjectWrapper>
 #include <osgDB/fstream>
 #include <sstream>
@@ -581,35 +582,61 @@ void OutputStream::writeImage( const osg::Image* img )
             if ( isBinary() )
             {
                 std::string fullPath = osgDB::findDataFile( img->getFileName(), _options.get() );
-                osgDB::ifstream infile( fullPath.c_str(), std::ios::in|std::ios::binary );
-                if ( infile )
+                if (fullPath.empty()==false)
                 {
-                    infile.seekg( 0, std::ios::end );
-                    unsigned int size = infile.tellg();
-                    writeSize(size);
-
-                    if ( size>0 )
+                    osgDB::ifstream infile( fullPath.c_str(), std::ios::in|std::ios::binary );
+                
+                    if ( infile )
                     {
-                        char* data = new char[size];
-                        if ( !data )
-                        {
-                            throwException( "OutputStream::writeImage(): Out of memory." );
-                            if ( getException() ) return;
-                        }
+                        infile.seekg( 0, std::ios::end );
+                        unsigned int size = infile.tellg();
+                        writeSize(size);
 
-                        infile.seekg( 0, std::ios::beg );
-                        infile.read( data, size );
-                        writeCharArray( data, size );
-                        delete[] data;
+                        if ( size>0 )
+                        {
+                            char* data = new char[size];
+                            if ( !data )
+                            {
+                                throwException( "OutputStream::writeImage(): Out of memory." );
+                                if ( getException() ) return;
+                            }
+
+                            infile.seekg( 0, std::ios::beg );
+                            infile.read( data, size );
+                            writeCharArray( data, size );
+                            delete[] data;
+                        }
+                        infile.close();
                     }
-                    infile.close();
+                    else
+                    {
+                        OSG_WARN << "OutputStream::writeImage(): Failed to open image file "
+                                            << img->getFileName() << std::endl;
+                        *this << (unsigned int)0;
+                    }
                 }
                 else
                 {
-                    OSG_WARN << "OutputStream::writeImage(): Failed to open image file "
-                                        << img->getFileName() << std::endl;
-                    *this << (unsigned int)0;
+                    std::string ext = osgDB::getFileExtension( img->getFileName() );
+                    osgDB::ReaderWriter* writer =
+                        osgDB::Registry::instance()->getReaderWriterForExtension( ext );
+                    if ( writer )
+                    {
+                        std::stringstream outputStream;
+                        writer->writeImage(*img, outputStream, getOptions());
+                        std::string data (outputStream.str()); 
+                        unsigned int size = data.size();
+                        writeSize(size);
+                        writeCharArray( data.c_str(), size );
+                    }
+                    else
+                    {
+                        OSG_WARN << "OutputStream::writeImage(): Failed to find a plugin to write the image file "
+                                            << img->getFileName() << std::endl;
+                        *this << (unsigned int)0;
+                    }
                 }
+
             }
             break;
         case IMAGE_EXTERNAL:
@@ -898,24 +925,31 @@ template<typename T>
 void OutputStream::writeArrayImplementation( const T* a, int write_size, unsigned int numInRow )
 {
     *this << write_size << BEGIN_BRACKET;
-    if ( numInRow>1 )
+    if ( isBinary() )
     {
-        for ( int i=0; i<write_size; ++i )
-        {
-            if ( !(i%numInRow) )
-            {
-                *this << std::endl << (*a)[i];
-            }
-            else
-                *this << (*a)[i];
-        }
-        *this << std::endl;
+        if (write_size) writeCharArray((char*)&((*a)[0]), write_size * sizeof((*a)[0]));
     }
     else
     {
-        *this << std::endl;
-        for ( int i=0; i<write_size; ++i )
-            *this << (*a)[i] << std::endl;
+        if ( numInRow>1 )
+        {
+            for ( int i=0; i<write_size; ++i )
+            {
+                if ( !(i%numInRow) )
+                {
+                    *this << std::endl << (*a)[i];
+                }
+                else
+                    *this << (*a)[i];
+            }
+            *this << std::endl;
+        }
+        else
+        {
+            *this << std::endl;
+            for ( int i=0; i<write_size; ++i )
+                *this << (*a)[i] << std::endl;
+        }
     }
     *this << END_BRACKET << std::endl;
 }

@@ -38,13 +38,13 @@ struct LessDepthSortFunctor
 
 /** StateGraph - contained in a renderBin, defines the scene to be drawn.
   */
-class OSGUTIL_EXPORT StateGraph : public osg::Referenced
+class OSGUTIL_EXPORT StateGraph : public osg::Object
 {
     public:
 
 
-        typedef std::map< const osg::StateSet*, osg::ref_ptr<StateGraph> >   ChildList;
-        typedef std::vector< osg::ref_ptr<RenderLeaf> >                 LeafList;
+        typedef std::map< const osg::StateSet*, osg::ref_ptr<StateGraph> >  ChildList;
+        typedef std::vector< osg::ref_ptr<RenderLeaf> >                     LeafList;
 
         StateGraph*                         _parent;
 
@@ -66,7 +66,6 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
         bool                                _dynamic;
 
         StateGraph():
-            osg::Referenced(false),
             _parent(NULL),
             _stateset(NULL),
             _depth(0),
@@ -78,7 +77,6 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
         }
 
         StateGraph(StateGraph* parent,const osg::StateSet* stateset):
-            osg::Referenced(false),
             _parent(parent),
             _stateset(stateset),
             _depth(0),
@@ -95,7 +93,13 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
 
         ~StateGraph() {}
 
-        StateGraph* cloneType() const { return new StateGraph; }
+
+        virtual osg::Object* cloneType() const { return new StateGraph(); }
+        virtual StateGraph* cloneStateGraph() const { return new StateGraph(); }
+        virtual osg::Object* clone(const osg::CopyOp&) const { return new StateGraph(); }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const StateGraph*>(obj)!=0L; }
+        virtual const char* libraryName() const { return "osgUtil"; }
+        virtual const char* className() const { return "StateGraph"; }
 
         void setUserData(osg::Referenced* obj) { _userData = obj; }
         osg::Referenced* getUserData() { return _userData.get(); }
@@ -171,6 +175,42 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
         /** Recursively prune the StateGraph of empty children.*/
         void prune();
 
+
+        void resizeGLObjectBuffers(unsigned int maxSize)
+        {
+            for(ChildList::iterator itr = _children.begin();
+                itr != _children.end();
+                ++itr)
+            {
+                (itr->second)->resizeGLObjectBuffers(maxSize);
+            }
+
+            for(LeafList::iterator itr = _leaves.begin();
+                itr != _leaves.end();
+                ++itr)
+            {
+                (*itr)->resizeGLObjectBuffers(maxSize);
+            }
+        }
+
+        void releaseGLObjects(osg::State* state=0) const
+        {
+            if (_stateset) _stateset->releaseGLObjects(state);
+
+            for(ChildList::const_iterator itr = _children.begin();
+                itr != _children.end();
+                ++itr)
+            {
+                (itr->second)->releaseGLObjects(state);
+            }
+
+            for(LeafList::const_iterator itr = _leaves.begin();
+                itr != _leaves.end();
+                ++itr)
+            {
+                (*itr)->releaseGLObjects(state);
+            }
+        }
 
         inline StateGraph* find_or_insert(const osg::StateSet* stateset)
         {
@@ -309,7 +349,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
     private:
 
         /// disallow copy construction.
-        StateGraph(const StateGraph&):osg::Referenced() {}
+        StateGraph(const StateGraph&) : osg::Object() {}
         /// disallow copy operator.
         StateGraph& operator = (const StateGraph&) { return *this; }
 

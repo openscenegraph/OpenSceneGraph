@@ -54,6 +54,10 @@ LightPointDrawable::LightPointDrawable(const LightPointDrawable& lpd,const osg::
 {
 }
 
+LightPointDrawable::~LightPointDrawable()
+{
+}
+
 void LightPointDrawable::reset()
 {
     SizedLightPointList::iterator itr;

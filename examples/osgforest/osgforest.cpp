@@ -803,6 +803,18 @@ class ShaderGeometry : public osg::Drawable
 
         typedef std::vector<osg::Vec4> PositionSizeList;
 
+        virtual void resizeGLObjectBuffers(unsigned int maxSize)
+        {
+            osg::Drawable::resizeGLObjectBuffers(maxSize);
+            if (_geometry) _geometry->resizeGLObjectBuffers(maxSize);
+        }
+
+        virtual void releaseGLObjects(osg::State* state) const
+        {
+            osg::Drawable::releaseGLObjects(state);
+            if (_geometry) _geometry->releaseGLObjects(state);
+        }
+
         virtual void drawImplementation(osg::RenderInfo& renderInfo) const
         {
             for(PositionSizeList::const_iterator itr = _trees.begin();

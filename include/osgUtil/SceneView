@@ -484,6 +484,9 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
           * then need to be deleted in OpenGL by SceneView::flushAllDeleteGLObjects(). */
         virtual void releaseAllGLObjects();
 
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+        virtual void releaseGLObjects(osg::State* = 0) const;
+
         /** Flush all deleted OpenGL objects, such as texture objects, display lists, etc.*/
         virtual void flushAllDeletedGLObjects();
 

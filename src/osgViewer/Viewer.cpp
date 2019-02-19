@@ -701,7 +701,7 @@ void Viewer::generateSlavePointerData(osg::Camera* camera, osgGA::GUIEventAdapte
         float y = event.getY();
 
         bool invert_y = event.getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
-        if (invert_y && gw->getTraits()) y = gw->getTraits()->height - y;
+        if (invert_y && gw->getTraits()) y = gw->getTraits()->height - 1 - y;
 
         double master_min_x = -1.0;
         double master_max_x = 1.0;
@@ -714,8 +714,8 @@ void Viewer::generateSlavePointerData(osg::Camera* camera, osgGA::GUIEventAdapte
             osg::Viewport* viewport = getCamera()->getViewport();
             master_min_x = viewport->x();
             master_min_y = viewport->y();
-            master_max_x = viewport->x()+viewport->width();
-            master_max_y = viewport->y()+viewport->height();
+            master_max_x = viewport->x() + viewport->width() - 1;
+            master_max_y = viewport->y() + viewport->height() - 1;
             masterCameraVPW *= viewport->computeWindowMatrix();
         }
 
@@ -788,7 +788,6 @@ void Viewer::generateSlavePointerData(osg::Camera* camera, osgGA::GUIEventAdapte
     }
 }
 
-
 void Viewer::generatePointerData(osgGA::GUIEventAdapter& event)
 {
     osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(event.getGraphicsContext());
@@ -798,10 +797,10 @@ void Viewer::generatePointerData(osgGA::GUIEventAdapter& event)
     float y = event.getY();
 
     bool invert_y = event.getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
-    if (invert_y && gw->getTraits()) y = gw->getTraits()->height - y;
+    if (invert_y && gw->getTraits()) y = gw->getTraits()->height - 1 - y;
 
-    event.addPointerData(new osgGA::PointerData(gw, x, 0, gw->getTraits()->width,
-                                                    y, 0, gw->getTraits()->height));
+    event.addPointerData(new osgGA::PointerData(gw, x, 0, gw->getTraits()->width - 1,
+                                                    y, 0, gw->getTraits()->height - 1));
 
     event.setMouseYOrientationAndUpdateCoords(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
 
@@ -822,7 +821,7 @@ void Viewer::generatePointerData(osgGA::GUIEventAdapter& event)
             osg::Viewport* viewport = camera->getViewport();
             if (viewport &&
                 x >= viewport->x() && y >= viewport->y() &&
-                x <= (viewport->x()+viewport->width()) && y <= (viewport->y()+viewport->height()) )
+                x < (viewport->x()+viewport->width()) && y < (viewport->y()+viewport->height()) )
             {
                 activeCameras.push_back(camera);
             }
@@ -837,8 +836,8 @@ void Viewer::generatePointerData(osgGA::GUIEventAdapter& event)
     {
         osg::Viewport* viewport = camera->getViewport();
 
-        event.addPointerData(new osgGA::PointerData(camera, (x-viewport->x())/viewport->width()*2.0f-1.0f, -1.0, 1.0,
-                                                            (y-viewport->y())/viewport->height()*2.0f-1.0f, -1.0, 1.0));
+        event.addPointerData(new osgGA::PointerData(camera, (x-viewport->x())/(viewport->width() - 1)*2.0f-1.0f, -1.0, 1.0,
+                                                            (y-viewport->y())/(viewport->height() - 1)*2.0f-1.0f, -1.0, 1.0));
 
         // if camera isn't the master it must be a slave and could need reprojecting.
         if (camera!=getCamera())
@@ -857,10 +856,10 @@ void Viewer::reprojectPointerData(osgGA::GUIEventAdapter& source_event, osgGA::G
     float y = dest_event.getY();
 
     bool invert_y = dest_event.getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
-    if (invert_y && gw->getTraits()) y = gw->getTraits()->height - y;
+    if (invert_y && gw->getTraits()) y = gw->getTraits()->height - 1 - y;
 
-    dest_event.addPointerData(new osgGA::PointerData(gw, x, 0, gw->getTraits()->width,
-                                                         y, 0, gw->getTraits()->height));
+    dest_event.addPointerData(new osgGA::PointerData(gw, x, 0, gw->getTraits()->width - 1,
+                                                         y, 0, gw->getTraits()->height - 1));
 
     dest_event.setMouseYOrientationAndUpdateCoords(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
 
@@ -870,8 +869,8 @@ void Viewer::reprojectPointerData(osgGA::GUIEventAdapter& source_event, osgGA::G
 
     if (!viewport) return;
 
-    dest_event.addPointerData(new osgGA::PointerData(camera, (x-viewport->x())/viewport->width()*2.0f-1.0f, -1.0, 1.0,
-                                                             (y-viewport->y())/viewport->height()*2.0f-1.0f, -1.0, 1.0));
+    dest_event.addPointerData(new osgGA::PointerData(camera, (x-viewport->x())/(viewport->width() - 1)*2.0f-1.0f, -1.0, 1.0,
+                                                             (y-viewport->y())/(viewport->height() - 1)*2.0f-1.0f, -1.0, 1.0));
 
     // if camera isn't the master it must be a slave and could need reprojecting.
     if (camera!=getCamera())

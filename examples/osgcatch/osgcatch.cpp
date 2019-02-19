@@ -971,9 +971,7 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                 {
                     createNewCatchable();
                 }
-
-
-
+                break;
             }
             case(osgGA::GUIEventAdapter::KEYDOWN):
             {
@@ -987,6 +985,7 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                     _rightKeyPressed=true;
                     return true;
                 }
+                break;
             }
             case(osgGA::GUIEventAdapter::KEYUP):
             {
@@ -1000,6 +999,7 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                     _rightKeyPressed=false;
                     return true;
                 }
+                break;
             }
             case(osgGA::GUIEventAdapter::DRAG):
             case(osgGA::GUIEventAdapter::MOVE):

@@ -364,9 +364,7 @@ QueryGeometry::drawImplementation( osg::RenderInfo& renderInfo ) const
 
 }
 
-
-unsigned int
-QueryGeometry::getNumPixels( const osg::Camera* cam )
+QueryGeometry::QueryResult QueryGeometry::getQueryResult( const osg::Camera* cam )
 {
     osg::ref_ptr<osg::TestResult> tr;
     {
@@ -378,13 +376,20 @@ QueryGeometry::getNumPixels( const osg::Camera* cam )
             _results[ cam ] = tr;
         }
     }
-    return tr->_numPixels;
+    return QueryResult((tr->_init && !tr->_active), tr->_numPixels);
 }
 
+unsigned int
+QueryGeometry::getNumPixels( const osg::Camera* cam )
+{
+    return getQueryResult(cam).numPixels;
+}
 
 void
 QueryGeometry::releaseGLObjects( osg::State* state ) const
 {
+    Geometry::releaseGLObjects(state);
+
     if (!state)
     {
         // delete all query IDs for all contexts.
@@ -469,9 +474,12 @@ OcclusionQueryNode::OcclusionQueryNode( const OcclusionQueryNode& oqn, const Cop
 bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
 {
     if ( !_enabled )
+    {
         // Queries are not enabled. The caller should be osgUtil::CullVisitor,
         //   return true to traverse the subgraphs.
-        return true;
+        _passed = true;
+        return _passed;
+    }
 
     {
         // Two situations where we want to simply do a regular traversal:
@@ -482,14 +490,18 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
         const unsigned int& lastQueryFrame( _frameCountMap[ camera ] );
         if( ( lastQueryFrame == 0 ) ||
             ( (nv.getTraversalNumber() - lastQueryFrame) >  (_queryFrameCount + 1) ) )
-            return true;
+        {
+            _passed = true;
+            return _passed;
+        }
     }
 
     if (_queryGeode->getDrawable( 0 ) == NULL)
     {
         OSG_FATAL << "osgOQ: OcclusionQueryNode: No QueryGeometry." << std::endl;
         // Something's broke. Return true so we at least render correctly.
-        return true;
+        _passed = true;
+        return _passed;
     }
     QueryGeometry* qg = static_cast< QueryGeometry* >( _queryGeode->getDrawable( 0 ) );
 
@@ -511,8 +523,16 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
     _passed = ( distance <= 0.0 );
     if (!_passed)
     {
-        int result = qg->getNumPixels( camera );
-        _passed = ( (unsigned int)(result) > _visThreshold );
+        QueryGeometry::QueryResult result = qg->getQueryResult( camera );
+        if (!result.valid)
+        {
+           // The query hasn't finished yet and the result still
+           // isn't available, return true to traverse the subgraphs.
+           _passed = true;
+           return _passed;
+        }
+
+        _passed = ( result.numPixels > _visThreshold );
     }
 
     return _passed;
@@ -584,6 +604,12 @@ BoundingSphere OcclusionQueryNode::computeBound() const
 void OcclusionQueryNode::setQueriesEnabled( bool enable )
 {
     _enabled = enable;
+}
+
+void OcclusionQueryNode::resetQueries()
+{
+   OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _frameCountMutex );
+   _frameCountMap.clear();
 }
 
 // Should only be called outside of cull/draw. No thread issues.

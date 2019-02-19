@@ -253,7 +253,7 @@ void Texture2D::apply(State& state) const
         // compute the dimensions of the texture.
         computeRequiredTextureDimensions(state,*image,_textureWidth, _textureHeight, _numMipmapLevels);
 
-        GLenum texStorageSizedInternalFormat = extensions->isTextureStorageEnabled && (_borderWidth==0) ? selectSizedInternalFormat(_image) : 0;
+        GLenum texStorageSizedInternalFormat = extensions->isTextureStorageEnabled && (_borderWidth==0) ? selectSizedInternalFormat(_image.get()) : 0;
 
         textureObject = generateAndAssignTextureObject(contextID,GL_TEXTURE_2D,_numMipmapLevels,
             texStorageSizedInternalFormat!=0 ? texStorageSizedInternalFormat : _internalFormat,
@@ -305,7 +305,7 @@ void Texture2D::apply(State& state) const
             textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_2D, _numMipmapLevels, texStorageSizedInternalFormat, _textureWidth, _textureHeight, 1, _borderWidth);
             textureObject->bind(state);
             applyTexParameters(GL_TEXTURE_2D, state);
-            extensions->glTexStorage2D( GL_TEXTURE_2D, (_numMipmapLevels >0)?_numMipmapLevels:1, texStorageSizedInternalFormat,
+            extensions->glTexStorage2D( GL_TEXTURE_2D, osg::maximum(_numMipmapLevels,1), texStorageSizedInternalFormat,
                      _textureWidth, _textureHeight);
         }
         else

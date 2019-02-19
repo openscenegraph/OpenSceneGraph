@@ -28,7 +28,7 @@
 #include <osgText/KerningType>
 #include <osgText/Style>
 
-#include <OpenThreads/Mutex>
+#include <OpenThreads/ReentrantMutex>
 
 namespace osgText {
 
@@ -126,6 +126,8 @@ protected:
 
     typedef std::vector< osg::ref_ptr<TextureInfo> > TextureInfoList;
     TextureInfoList             _textureInfoList;
+
+    mutable OpenThreads::ReentrantMutex  _textureInfoListMutex;
 };
 
 class OSGTEXT_EXPORT GlyphGeometry : public osg::Referenced

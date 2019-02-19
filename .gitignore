@@ -59,6 +59,10 @@ install_manifest*.txt
 *.out
 *.app
 
+# Automatically generated Package files
+packaging/cmake/*
+configure/*
+
 # Platform Specifics - auto generated files
 PlatformSpecifics/Windows/*.rc
 

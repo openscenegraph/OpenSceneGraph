@@ -43,11 +43,13 @@ SET(TARGET_LIBRARIES
     osgFX
     osgText
     osgGA
-    osgUtil
     osgDB
+    osgUtil
     osg
     OpenThreads
 )
+
+SET(COMPONENT_PKGCONFIG_DESCRIPTION "A library for creating slide show presentations with OpenSceneGraph")
 
 SETUP_LIBRARY(${LIB_NAME})
 

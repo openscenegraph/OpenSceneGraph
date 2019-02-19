@@ -209,6 +209,8 @@ osgViewer::View* createView(osg::ref_ptr<osg::Node> scenegraph, osg::ref_ptr<osg
         traits->windowDecoration = true;
         traits->doubleBuffer = true;
         traits->sharedContext = 0;
+        traits->readDISPLAY();
+        traits->setUndefinedScreenDetailsToDefaultScreen();
 
         gc = osg::GraphicsContext::createGraphicsContext(traits.get());
         if (!gc)
@@ -267,7 +269,11 @@ int main(int argc, char** argv)
         }
 
         unsigned int width, height;
-        wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
+        osg::GraphicsContext::ScreenIdentifier main_screen_id;
+
+        main_screen_id.readDISPLAY();
+        main_screen_id.setUndefinedScreenDetailsToDefaultScreen();
+        wsi->getScreenResolution(main_screen_id, width, height);
 
         unsigned int x=0, y=0;
         while(arguments.read("--window", x, y, width, height)) {}
@@ -283,6 +289,8 @@ int main(int argc, char** argv)
             traits->windowDecoration = true;
             traits->doubleBuffer = true;
             traits->sharedContext = 0;
+            traits->readDISPLAY();
+            traits->setUndefinedScreenDetailsToDefaultScreen();
 
             gc = osg::GraphicsContext::createGraphicsContext(traits.get());
             if (!gc)

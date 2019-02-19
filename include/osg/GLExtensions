@@ -841,7 +841,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         inline void glUniform(GLint location, const osg::Vec3d& value) const { glUniform3dv(location, 1, value.ptr()); }
         inline void glUniform(GLint location, const osg::Vec4d& value) const { glUniform4dv(location, 1, value.ptr()); }
 
-        inline void glUniform(GLint location, const osg::Plane& value) const { glUniform4dv(location, 1, value.ptr()); }
+        inline void glUniform(GLint location, const osg::Plane& value) const { glUniform(location, value.asVec4()); }
 
         inline void glUniform(GLint location, const osg::Matrix2& value) const { glUniformMatrix2fv(location, 1, GL_FALSE, value.ptr()); }
         inline void glUniform(GLint location, const osg::Matrix2x3& value) const { glUniformMatrix2x3fv(location, 1, GL_FALSE, value.ptr()); }
@@ -902,6 +902,9 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         inline void glUniform(GLint location, const std::vector<osg::Matrix4x2>& array) const { if (!array.empty()) glUniformMatrix4x2fv(location, static_cast<GLsizei>(array.size()), GL_FALSE, array.front().ptr()); }
 
         inline void glUniform(GLint location, const std::vector<osg::Matrixd>& array) const { if (!array.empty()) glUniformMatrix4dv(location, static_cast<GLsizei>(array.size()), GL_FALSE, array.front().ptr()); }
+
+    protected:
+        virtual ~GLExtensions();
 };
 
 

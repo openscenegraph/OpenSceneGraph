@@ -184,14 +184,18 @@ osg::ref_ptr<osg::Texture2D> FbxMaterialToOsgStateSet::fbxTextureToOsgTexture(co
 	{
 		filename = osgDB::concatPaths(_dir, fbx->GetFileName());
 	} 
-	else if (osgDB::fileExists(fbx->GetFileName())) // Then try  "name" (if absolute)
+	else if (osgDB::fileExists(fbx->GetFileName())) // Then try "name" (if absolute)
 	{
 		filename = fbx->GetFileName();
 	} 
-	else if (osgDB::fileExists(osgDB::concatPaths(_dir, fbx->GetRelativeFileName()))) // Else try  "current dir/name"
+	else if (osgDB::fileExists(osgDB::concatPaths(_dir, fbx->GetRelativeFileName()))) // Else try  "current dir + relative filename"
 	{
 		filename = osgDB::concatPaths(_dir, fbx->GetRelativeFileName());
 	} 
+	else if (osgDB::fileExists(osgDB::concatPaths(_dir, osgDB::getSimpleFileName(fbx->GetFileName())))) // Else try "current dir + simple filename"
+	{
+		filename = osgDB::concatPaths(_dir, osgDB::getSimpleFileName(fbx->GetFileName()));
+	}
 	else 
 	{
 		OSG_WARN << "Could not find valid file for " << fbx->GetFileName() << std::endl;

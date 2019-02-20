@@ -33,12 +33,13 @@ if(COMMAND cmake_policy)
 endif()
 
 IF(APPLE)
-  # Get OSX version in MAJOR.MINOR format
-  EXECUTE_PROCESS(COMMAND sw_vers -productVersion
-    OUTPUT_VARIABLE OSG_OSX_VERSION
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-  STRING(REGEX REPLACE "^([0-9]+\\.[0-9]+).*$" "\\1"
-    OSG_OSX_VERSION "${OSG_OSX_VERSION}")
+    # Get OSX version in MAJOR.MINOR format
+    EXECUTE_PROCESS(COMMAND sw_vers -productVersion
+        OUTPUT_VARIABLE OSG_OSX_VERSION
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+    STRING(REGEX REPLACE "^([0-9]+\\.[0-9]+).*$" "\\1"
+        OSG_OSX_VERSION "${OSG_OSX_VERSION}")
+    MESSAGE(STATUS "OSG_OSX_VERSION=${OSG_OSX_VERSION}")
 ENDIF()
 
 # Set OSX architecture flags here, since they must be specified before
@@ -76,23 +77,27 @@ IF(APPLE AND NOT ANDROID)
         SET(CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD)")
 
     ELSE()
-        # OSX >= 10.5 uses Cocoa windowing system, otherwise Carbon
-        IF(OSG_OSX_VERSION VERSION_LESS 10.5)
-            SET(OSG_WINDOWING_SYSTEM "Carbon" CACHE STRING "Windowing system type for graphics window creation, options Carbon, Cocoa or X11.")
-        ELSE()
+        # macOS >= 10.5 uses Cocoa windowing system, otherwise Carbon
+        IF(OSG_OSX_VERSION VERSION_GREATER_EQUAL 10.5)
             SET(OSG_WINDOWING_SYSTEM "Cocoa" CACHE STRING "Windowing system type for graphics window creation, options Carbon, Cocoa or X11.")
+        ELSE()
+            SET(OSG_WINDOWING_SYSTEM "Carbon" CACHE STRING "Windowing system type for graphics window creation, options Carbon, Cocoa or X11.")
         ENDIF()
 
-        # Set defaults for Universal Binaries. We want 32-bit Intel/PPC on 10.4
-        # and 32/64-bit Intel/PPC on >= 10.5. Anything <= 10.3 doesn't support.
-        # These are set the first time CMake is run, and can be changed by
-        # the user at any time.
-        IF(OSG_OSX_VERSION VERSION_GREATER 10.7)
-            # 64 Bit Works, i386,ppc is not supported any more
+        # Set macOS architectures for Universal Binaries.
+        IF(OSG_OSX_VERSION VERSION_GREATER_EQUAL 10.14)
+            # x86_64 only
+            SET(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX")
+            SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.9" CACHE STRING "Target OSX version")
+            # libstdc++ is no longer supported
+            SET(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
+            SET(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
+        ELSEIF(OSG_OSX_VERSION VERSION_GREATER_EQUAL 10.8)
+            # i386 is no longer supported
             SET(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX")
             SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.8" CACHE STRING "Target OSX version")
         ELSEIF(OSG_OSX_VERSION VERSION_EQUAL 10.7)
-            # 64 Bit Works, PPC is not supported any more
+            # ppc is no longer supported
             SET(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for OSX")
         ELSEIF(OSG_OSX_VERSION VERSION_GREATER 10.4)
             # 64-bit compiles are not supported with Carbon.
@@ -108,7 +113,6 @@ IF(APPLE AND NOT ANDROID)
         ENDIF()
     ENDIF()
 ENDIF()
-
 
 PROJECT(OpenSceneGraph)
 
@@ -216,7 +220,7 @@ IF (OSG_MAINTAINER)
         COMMAND ${GENERATELOGS} > ChangeLog
     )
 
-ENDIF(OSG_MAINTAINER)
+ENDIF()
 
 IF(NOT ANDROID)
 IF(APPLE)
@@ -230,7 +234,6 @@ IF(APPLE)
         SET(OPENGL_gl_LIBRARY "${IPHONE_SDKROOT}/System/Library/Frameworks/OpenGLES.framework")
 
     ELSE ()
-        FIND_LIBRARY(CARBON_LIBRARY Carbon)
         FIND_LIBRARY(COCOA_LIBRARY Cocoa)
 
         # Apple OS X: Find OpenGL and AGL based on OSG_WINDOWING_SYSTEM
@@ -254,6 +257,7 @@ IF(APPLE)
 
         ELSEIF(OSG_WINDOWING_SYSTEM STREQUAL "Carbon")
           # AGL needed for Carbon windowing systems
+          FIND_LIBRARY(CARBON_LIBRARY Carbon)
           FIND_LIBRARY(AGL_LIBRARY AGL)
         ENDIF()
 
@@ -772,8 +776,7 @@ INCLUDE(OsgMacroUtils)
 
 
 #optional example related dependencies
-IF   (BUILD_OSG_EXAMPLES AND NOT ANDROID)
-
+IF(BUILD_OSG_EXAMPLES AND NOT ANDROID)
 
     FIND_PACKAGE(FLTK)
     FIND_PACKAGE(FOX)
@@ -781,7 +784,7 @@ IF   (BUILD_OSG_EXAMPLES AND NOT ANDROID)
     SET(wxWidgets_USE_LIBS base core gl net)
     FIND_PACKAGE(wxWidgets)
 
-ENDIF(BUILD_OSG_EXAMPLES AND NOT ANDROID)
+ENDIF()
 
 
 # Platform specific:
@@ -1046,50 +1049,44 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
 
     # Previous included -Wformat=2 in OSG_AGGRESSIVE_WARNING_FLAGS but had to remove it due to standard library errors
 
-
 ELSEIF(MSVC)
-        #disable specific warning level 4 warnings:
-        #C4100 'identifier' : unreferenced formal parameter
-        #C4127 Error Message conditional expression is constant
-        #C4706 assignment within conditional expression
-        #C4589: Constructor of abstract class 'osgGA::CameraManipulator' ignores initializer for virtual base class 'osg::Object'
-        SET(OSG_AGGRESSIVE_WARNING_FLAGS /W4 /wd4589 /wd4706 /wd4127 /wd4100)
+    #disable specific warning level 4 warnings:
+    #C4100 'identifier' : unreferenced formal parameter
+    #C4127 Error Message conditional expression is constant
+    #C4706 assignment within conditional expression
+    #C4589: Constructor of abstract class 'osgGA::CameraManipulator' ignores initializer for virtual base class 'osg::Object'
+    SET(OSG_AGGRESSIVE_WARNING_FLAGS /W4 /wd4589 /wd4706 /wd4127 /wd4100)
 ELSEIF(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-        SET(OSG_AGGRESSIVE_WARNING_FLAGS  -Wall -Wparentheses -Wno-long-long -Wno-import -pedantic -Wreturn-type -Wmissing-braces -Wunknown-pragmas -Wunused -Wno-overloaded-virtual)
+    SET(OSG_AGGRESSIVE_WARNING_FLAGS  -Wall -Wparentheses -Wno-long-long -Wno-import -pedantic -Wreturn-type -Wmissing-braces -Wunknown-pragmas -Wunused -Wno-overloaded-virtual)
 
-        # CMake lacks an elseif, so other non-gcc, non-VS compilers need
-        # to be listed below. If unhandled, OSG_AGGRESSIVE_WARNING_FLAGS should
-        # remain unset.
+    IF (APPLE)
+        SET(OSG_CXX_LANGUAGE_STANDARD "C++11" CACHE STRING "set the c++ language standard (C++98 / GNU++98 / C++11) for OSG" )
+        MARK_AS_ADVANCED(OSG_CXX_LANGUAGE_STANDARD)
 
-        IF (APPLE)
-            SET(OSG_CXX_LANGUAGE_STANDARD "C++11" CACHE STRING "set the c++ language standard (C++98 / GNU++98 / C++11) for OSG" )
-            MARK_AS_ADVANCED(OSG_CXX_LANGUAGE_STANDARD)
-            # remove existing flags
-            REMOVE_CXX_FLAG(-std=c++98)
-            REMOVE_CXX_FLAG(-std=gnu++98)
-            REMOVE_CXX_FLAG(-std=c++11)
-            REMOVE_CXX_FLAG(-stdlib=libstdc++)
-            REMOVE_CXX_FLAG(-stdlib=libc++)
+        # remove existing flags
+        REMOVE_CXX_FLAG(-std=c++98)
+        REMOVE_CXX_FLAG(-std=gnu++98)
+        REMOVE_CXX_FLAG(-std=c++11)
+        REMOVE_CXX_FLAG(-stdlib=libstdc++)
+        REMOVE_CXX_FLAG(-stdlib=libc++)
 
-            IF(${OSG_CXX_LANGUAGE_STANDARD} STREQUAL "c++98" OR ${OSG_CXX_LANGUAGE_STANDARD} STREQUAL "C++98")
-                set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++98")
-                set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libstdc++")
-                set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -stdlib=libstdc++")
-            ELSE()
-                IF(${OSG_CXX_LANGUAGE_STANDARD} STREQUAL "gnu++98" OR ${OSG_CXX_LANGUAGE_STANDARD} STREQUAL "GNU++98")
-                    set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "gnu++98")
-                    set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libstdc++")
-                    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++98 -stdlib=libstdc++")
-                ELSE()
-                    set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
-                    set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
-                    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
-                ENDIF()
-            ENDIF()
-
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-overloaded-virtual -Wno-conversion")
-            set(WARNING_CFLAGS "")
+        IF(${OSG_CXX_LANGUAGE_STANDARD} STREQUAL "c++98" OR ${OSG_CXX_LANGUAGE_STANDARD} STREQUAL "C++98")
+            set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++98")
+            set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libstdc++")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -stdlib=libstdc++")
+        ELSEIF(${OSG_CXX_LANGUAGE_STANDARD} STREQUAL "gnu++98" OR ${OSG_CXX_LANGUAGE_STANDARD} STREQUAL "GNU++98")
+            set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "gnu++98")
+            set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libstdc++")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++98 -stdlib=libstdc++")
+        ELSE()
+            set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
+            set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
         ENDIF()
+
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-overloaded-virtual -Wno-conversion")
+        set(WARNING_CFLAGS "")
+    ENDIF()
 ENDIF()
 
 # This part is for the CMake menu option to toggle the warnings on/off.

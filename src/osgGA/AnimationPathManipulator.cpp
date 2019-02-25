@@ -186,8 +186,7 @@ void AnimationPathManipulator::handleFrame( double time )
         {
             double delta = time-_realStartOfTimedPeriod;
             double frameRate = (double)_numOfFramesSinceStartOfTimedPeriod/delta;
-            OSG_NOTICE <<"AnimatonPath completed in "<<delta<<" seconds, completing "<<_numOfFramesSinceStartOfTimedPeriod<<" frames,"<<std::endl;
-            OSG_NOTICE <<"             average frame rate = "<<frameRate<<std::endl;
+            OSG_NOTICE <<"AnimatonPath completed in "<<delta<<" seconds, completing "<<_numOfFramesSinceStartOfTimedPeriod<<" frames, average frame rate = "<<frameRate<<std::endl;
         }
 
         // reset counters for next loop.

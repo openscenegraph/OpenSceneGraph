@@ -35,17 +35,17 @@ class OSG_EXPORT CullStack : public osg::CullSettings
 
         ~CullStack();
 
-        typedef std::vector<ShadowVolumeOccluder>   OccluderList;
 
         void reset();
 
         void pushCullingSet();
         void popCullingSet();
 
+#ifdef COMPILE_WITH_SHADOW_OCCLUSION_CULLING
         void setOccluderList(const ShadowVolumeOccluderList& svol) { _occluderList = svol; }
         ShadowVolumeOccluderList& getOccluderList() { return _occluderList; }
         const ShadowVolumeOccluderList& getOccluderList() const { return _occluderList; }
-
+#endif
         void pushViewport(osg::Viewport* viewport);
         void popViewport();
 
@@ -81,7 +81,7 @@ class OSG_EXPORT CullStack : public osg::CullSettings
         {
             return clampedPixelSize(bs.center(),bs.radius());
         }
-
+#ifdef COMPILE_WITH_SHADOW_OCCLUSION_CULLING
         inline void disableAndPushOccludersCurrentMask(NodePath& nodePath)
         {
             getCurrentCullingSet().disableAndPushOccludersCurrentMask(nodePath);
@@ -91,7 +91,7 @@ class OSG_EXPORT CullStack : public osg::CullSettings
         {
             getCurrentCullingSet().popOccludersCurrentMask(nodePath);
         }
-
+#endif
         inline bool isCulled(const std::vector<Vec3>& vertices)
         {
             return getCurrentCullingSet().isCulled(vertices);
@@ -186,10 +186,11 @@ class OSG_EXPORT CullStack : public osg::CullSettings
         const MatrixStack& getMVPWStack() const { return _MVPW_Stack; }
 
     protected:
-
+#ifdef COMPILE_WITH_SHADOW_OCCLUSION_CULLING
         // base set of shadow volume occluder to use in culling.
+        typedef std::vector<ShadowVolumeOccluder> OccluderList;
         ShadowVolumeOccluderList                                    _occluderList;
-
+#endif
 
         MatrixStack                                                 _projectionStack;
 

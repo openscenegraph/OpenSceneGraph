@@ -10,6 +10,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
+#ifdef COMPILE_WITH_SHADOW_OCCLUSION_CULLING
 #include <osg/ShadowVolumeOccluder>
 #include <osg/CullStack>
 
@@ -361,3 +362,4 @@ bool ShadowVolumeOccluder::contains(const BoundingBox& bound)
     //std::cout << "+ not in occluder"<<std::endl;
     return false;
 }
+#endif

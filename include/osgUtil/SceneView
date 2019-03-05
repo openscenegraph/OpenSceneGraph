@@ -14,6 +14,7 @@
 #ifndef OSGUTIL_SCENEVIEW
 #define OSGUTIL_SCENEVIEW 1
 
+#include <osg/CullingSet>
 #include <osg/Node>
 #include <osg/StateSet>
 #include <osg/Light>
@@ -290,10 +291,11 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         osgUtil::CullVisitor* getCullVisitorRight() { return _cullVisitorRight.get(); }
         const osgUtil::CullVisitor* getCullVisitorRight() const { return _cullVisitorRight.get(); }
 
+#ifdef COMPILE_WITH_SHADOW_OCCLUSION_CULLING
         void setCollectOccludersVisitor(osg::CollectOccludersVisitor* cov) { _collectOccludersVisitor = cov; }
         osg::CollectOccludersVisitor* getCollectOccludersVisitor() { return _collectOccludersVisitor.get(); }
         const osg::CollectOccludersVisitor* getCollectOccludersVisitor() const { return _collectOccludersVisitor.get(); }
-
+#endif
 
         void setStateGraph(osgUtil::StateGraph* rg) { _stateGraph = rg; }
         osgUtil::StateGraph* getStateGraph() { return _stateGraph.get(); }
@@ -539,8 +541,9 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         osg::ref_ptr<osgUtil::RenderStage>          _renderStageRight;
         osg::ref_ptr<osg::Viewport>                 _viewportRight;
 
+#ifdef COMPILE_WITH_SHADOW_OCCLUSION_CULLING
         osg::ref_ptr<osg::CollectOccludersVisitor>  _collectOccludersVisitor;
-
+#endif
         osg::ref_ptr<osg::FrameStamp>               _frameStamp;
 
         osg::observer_ptr<osg::Camera>              _camera;

@@ -777,6 +777,7 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     osg::ref_ptr<RefMatrix> proj = new osg::RefMatrix(projection);
     osg::ref_ptr<RefMatrix> mv = new osg::RefMatrix(modelview);
 
+#ifdef COMPILE_WITH_SHADOW_OCCLUSION_CULLING
     // collect any occluder in the view frustum.
     if (_camera->containsOccluderNodes())
     {
@@ -817,7 +818,7 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
         cullVisitor->getOccluderList().clear();
         std::copy(_collectOccludersVisitor->getCollectedOccluderSet().begin(),_collectOccludersVisitor->getCollectedOccluderSet().end(), std::back_insert_iterator<CullStack::OccluderList>(cullVisitor->getOccluderList()));
     }
-
+#endif
 
 
     cullVisitor->reset();

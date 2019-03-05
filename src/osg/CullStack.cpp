@@ -171,6 +171,7 @@ void CullStack::pushProjectionMatrix(RefMatrix* matrix)
     // set the small feature culling.
     cullingSet.setSmallFeatureCullingPixelSize(_smallFeatureCullingPixelSize);
 
+#ifdef COMPILE_WITH_SHADOW_OCCLUSION_CULLING
     // set up the relevant occluders which a related to this projection.
     for(ShadowVolumeOccluderList::iterator itr=_occluderList.begin();
         itr!=_occluderList.end();
@@ -183,7 +184,7 @@ void CullStack::pushProjectionMatrix(RefMatrix* matrix)
             cullingSet.addOccluder(*itr);
         }
     }
-
+#endif
 
 
     // need to recompute frustum volume.

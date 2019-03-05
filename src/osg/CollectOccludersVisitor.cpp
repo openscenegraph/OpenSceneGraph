@@ -10,6 +10,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
+
+#ifdef COMPILE_WITH_SHADOW_OCCLUSION_CULLING
+
 #include <osg/CollectOccludersVisitor>
 #include <osg/Transform>
 #include <osg/Switch>
@@ -261,3 +264,4 @@ void CollectOccludersVisitor::removeOccludedOccluders()
     _occluderSet.erase(occludeeItr,_occluderSet.end());
 
 }
+#endif

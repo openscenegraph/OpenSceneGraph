@@ -1685,15 +1685,18 @@ void CullVisitor::apply(osg::OccluderNode& node)
 {
     // need to check if occlusion node is in the occluder
     // list, if so disable the appropriate ShadowOccluderVolume
+ 
+#ifdef COMPILE_WITH_SHADOW_OCCLUSION_CULLING
     disableAndPushOccludersCurrentMask(_nodePath);
-
 
     if (isCulled(node))
     {
         popOccludersCurrentMask(_nodePath);
         return;
     }
-
+#else 
+    if (isCulled(node)) return;
+#endif
     // push the culling mode.
     pushCurrentMask();
 
@@ -1711,8 +1714,10 @@ void CullVisitor::apply(osg::OccluderNode& node)
     // pop the culling mode.
     popCurrentMask();
 
+#ifdef COMPILE_WITH_SHADOW_OCCLUSION_CULLING
     // pop the current mask for the disabled occluder
     popOccludersCurrentMask(_nodePath);
+#endif
 }
 
 void CullVisitor::apply(osg::OcclusionQueryNode& node)

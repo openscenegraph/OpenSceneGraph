@@ -23,7 +23,7 @@
 
 namespace osg {
 
-#define COMPILE_WITH_SHADOW_OCCLUSION_CULLING
+//#define COMPILE_WITH_SHADOW_OCCLUSION_CULLING
 
 /** A CullingSet class which contains a frustum and a list of occluders. */
 class OSG_EXPORT CullingSet : public Referenced

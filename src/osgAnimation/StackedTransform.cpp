@@ -41,9 +41,7 @@ void StackedTransform::update(float t)
             continue;
         // update and check if there are changes
         element->update(t);
-        if (!dirty && !element->isIdentity()){
-            dirty = true;
-        }
+        dirty = true;
     }
 
     if (!dirty)

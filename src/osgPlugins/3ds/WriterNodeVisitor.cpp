@@ -528,7 +528,6 @@ void WriterNodeVisitor::writeMaterials()
                         path = osgDB::getPathRelative(_srcDirectory, mat.image->getFileName());
                     }
                     path = convertExt(path, _extendedFilePaths);
-                    path = getUniqueName(path, false, "");
 
                     // Write
                     const std::string fullPath( osgDB::concatPaths(_directory, path) );

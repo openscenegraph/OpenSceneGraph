@@ -6,6 +6,10 @@ doc/openthreads.doxyfile
 
 doc/OpenSceneGraphReferenceDocs/
 doc/OpenThreadsReferenceDocs/
+doc/*.chm
+
+CMakeDoxyfile.in
+CMakeDoxygenDefaults.cmake
 
 cmake_uninstall.cmake
 

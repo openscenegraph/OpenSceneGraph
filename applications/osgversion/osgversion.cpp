@@ -17,6 +17,7 @@
 #include <osg/Plane>
 #include <osg/BoundingBox>
 #include <osg/BoundingSphere>
+#include <osg/Quat>
 
 #ifdef BUILD_CONTRIBUTORS
 extern void printContributors(const std::string& changeLog, bool printNumEntries);
@@ -40,6 +41,7 @@ int main( int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("Plane::value_type",              "Print the value of Plane::value_type");
     arguments.getApplicationUsage()->addCommandLineOption("BoundingSphere::value_type",     "Print the value of BoundingSphere::value_type");
     arguments.getApplicationUsage()->addCommandLineOption("BoundingBox::value_type",        "Print the value of BoundingBox::value_type");
+    arguments.getApplicationUsage()->addCommandLineOption("Quat::value_type",               "Print the value of Quat::value_type");
 
 #ifdef BUILD_CONTRIBUTORS
     arguments.getApplicationUsage()->addCommandLineOption("-r <file> or --read <file>",     "Read the ChangeLog to generate an estimated contributors list.");
@@ -136,6 +138,12 @@ int main( int argc, char** argv)
     if (arguments.read("BoundingBox::value_type"))
     {
         cout << ((sizeof(osg::BoundingBox::value_type) == 4) ? "float" : "double") << endl;
+        return 0;
+    }
+
+    if (arguments.read("Quat::value_type"))
+    {
+        cout << ((sizeof(osg::Quat::value_type) == 4) ? "float" : "double") << endl;
         return 0;
     }
 

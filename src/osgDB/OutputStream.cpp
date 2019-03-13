@@ -172,7 +172,7 @@ OutputStream& OutputStream::operator<<( const osg::Vec4ui& v )
 
 
 OutputStream& OutputStream::operator<<( const osg::Quat& q )
-{ *this << q.x() << q.y() << q.z() << q.w(); return *this; }
+{ *this << (double)q.x() << (double)q.y() << (double)q.z() << (double)q.w(); return *this; }
 
 OutputStream& OutputStream::operator<<( const osg::Plane& p )
 { *this << (double)p[0] << (double)p[1] << (double)p[2] << (double)p[3]; return *this; }

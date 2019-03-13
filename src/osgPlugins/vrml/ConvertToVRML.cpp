@@ -562,7 +562,7 @@ void ToVRML::apply(osg::MatrixTransform& node) {
   osg::Vec3 scale = mat.getScale();
   osg::Quat quat;
   mat.get(quat);
-  double angle;
+  osg::Quat::value_type angle;
   osg::Vec3 axe;
   quat.getRotate(angle, axe);
 
@@ -597,7 +597,7 @@ void ToVRML::apply(osg::PositionAttitudeTransform& node) {
   osg::Vec3 trans = node.getPosition();
   osg::Vec3 scale = node.getScale();
   osg::Quat quat = node.getAttitude();
-  double angle;
+  osg::Quat::value_type angle;
   osg::Vec3 axe;
   quat.getRotate(angle, axe);
 

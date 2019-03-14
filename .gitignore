@@ -6,6 +6,10 @@ doc/openthreads.doxyfile
 
 doc/OpenSceneGraphReferenceDocs/
 doc/OpenThreadsReferenceDocs/
+doc/*.chm
+
+CMakeDoxyfile.in
+CMakeDoxygenDefaults.cmake
 
 cmake_uninstall.cmake
 
@@ -82,6 +86,9 @@ PlatformSpecifics/Windows/*.rc
 # Visual Studio - Browsing Database File
 *.sdf
 *.opensdf
+
+# Visual Studio - Cache/Options Directory
+.vs/
 
 #osx xcode
 DerivedData/

@@ -349,7 +349,7 @@ MACRO(SETUP_PLUGIN PLUGIN_NAME)
     ENDIF()
     SETUP_LINK_LIBRARIES()
 
-#the installation path are differentiated for win32 that install in bib versus other architecture that install in lib${LIB_POSTFIX}/${OSG_PLUGINS}
+#the installation path are differentiated for win32 that install in bib versus other architecture that install in ${CMAKE_INSTALL_LIBDIR}/${OSG_PLUGINS}
     IF(WIN32)
         INSTALL(TARGETS ${TARGET_TARGETNAME}
             RUNTIME DESTINATION bin COMPONENT ${PACKAGE_COMPONENT}
@@ -362,8 +362,8 @@ MACRO(SETUP_PLUGIN PLUGIN_NAME)
     ELSE(WIN32)
         INSTALL(TARGETS ${TARGET_TARGETNAME}
             RUNTIME DESTINATION bin COMPONENT ${PACKAGE_COMPONENT}
-            ARCHIVE DESTINATION lib${LIB_POSTFIX}/${OSG_PLUGINS} COMPONENT libopenscenegraph-dev
-            LIBRARY DESTINATION lib${LIB_POSTFIX}/${OSG_PLUGINS} COMPONENT ${PACKAGE_COMPONENT})
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/${OSG_PLUGINS} COMPONENT libopenscenegraph-dev
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/${OSG_PLUGINS} COMPONENT ${PACKAGE_COMPONENT})
     ENDIF(WIN32)
 ENDMACRO(SETUP_PLUGIN)
 

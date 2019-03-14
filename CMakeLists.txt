@@ -876,25 +876,16 @@ IF(CYGWIN)
   SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -D_DEBUG")
 ENDIF()
 
-IF(UNIX AND NOT WIN32 AND NOT APPLE)
-  IF(CMAKE_SIZEOF_VOID_P MATCHES "8")
-      SET(LIB_POSTFIX "64" CACHE STRING "suffix for 32/64 dir placement")
-      MARK_AS_ADVANCED(LIB_POSTFIX)
-  ENDIF()
-ENDIF()
-IF(NOT DEFINED LIB_POSTFIX)
-    SET(LIB_POSTFIX "")
-ENDIF()
-
 # Set installation variables
+include(GNUInstallDirs)
 SET(INSTALL_INCDIR include)
 SET(INSTALL_BINDIR bin)
 IF(WIN32)
     SET(INSTALL_LIBDIR bin)
     SET(INSTALL_ARCHIVEDIR lib)
 ELSE()
-    SET(INSTALL_LIBDIR lib${LIB_POSTFIX})
-    SET(INSTALL_ARCHIVEDIR lib${LIB_POSTFIX})
+    SET(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR})
+    SET(INSTALL_ARCHIVEDIR ${CMAKE_INSTALL_LIBDIR})
 ENDIF()
 
 # If the version is equal to or greater than 2.8.8, then we can use the
@@ -913,7 +904,7 @@ IF(CMAKE_VERSION VERSION_EQUAL   "2.8.8" OR
     IF(WIN32)
         SET(INSTALL_CONFIGDIR cmake)
     ELSE()
-        SET(INSTALL_CONFIGDIR lib${LIB_POSTFIX}/cmake/OpenSceneGraph)
+        SET(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/OpenSceneGraph)
     ENDIF()
 
     INCLUDE(CMakePackageConfigHelpers)
@@ -945,7 +936,7 @@ ELSE()
 
 ENDIF()
 
-SET(INSTALL_PKGCONFIGDIR lib${LIB_POSTFIX}/pkgconfig)
+SET(INSTALL_PKGCONFIGDIR ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
 # Here we apparently do some funky stuff with making the bin/ and lib/
 # folders which is probably needed to work around a very old CMake bug?
@@ -1308,7 +1299,7 @@ IF(REQUIRES_LIBPATH_MESSAGE)
     IF (NOT OSG_LIBPATH_MESSAGE_HAS_BEEN_RUN_BEFORE)
         SET(OSG_LIBPATH_MESSAGE_HAS_BEEN_RUN_BEFORE 1 CACHE INTERNAL "Flag to track whether the libpath message has been reported before")
 
-        MESSAGE("\nThe build system is configured to install libraries to ${CMAKE_INSTALL_PREFIX}/lib${LIB_POSTFIX}\n"
+        MESSAGE("\nThe build system is configured to install libraries to ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}\n"
             "Your applications may not be able to find your installed libraries unless you:\n"
             "    set your LD_LIBRARY_PATH (user specific) or\n"
             "    update your ld.so configuration (system wide)")
@@ -1330,12 +1321,12 @@ IF(REQUIRES_LIBPATH_MESSAGE)
             IF(EXISTS /etc/ld.so.conf)
                 MESSAGE("You have an ld.so.conf file in /etc, if you wish to ensure \n"
                 "that applications find the installed osg libraries, system wide, you\n"
-                "could add ${CMAKE_INSTALL_PREFIX}/lib${LIB_POSTFIX} to it.")
+                "could add ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} to it.")
             ENDIF()
         ENDIF()
 
         # emit a message during installation.
-        INSTALL(CODE "MESSAGE(\"Libraries were installed to ${CMAKE_INSTALL_PREFIX}lib${LIB_POSTFIX}.\\nYou may need to update your ld.so configuration. \")")
+        INSTALL(CODE "MESSAGE(\"Libraries were installed to ${CMAKE_INSTALL_PREFIX}${CMAKE_INSTALL_LIBDIR}.\\nYou may need to update your ld.so configuration. \")")
 
     ENDIF(NOT OSG_LIBPATH_MESSAGE_HAS_BEEN_RUN_BEFORE)
 

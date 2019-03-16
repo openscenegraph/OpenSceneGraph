@@ -42,6 +42,7 @@ class Node;
 class Switch;
 class Geode;
 class Camera;
+class OccluderNode;
 
 /** A vector of Nodes pointers which is used to describe the path from a root node to a descendant.*/
 typedef std::vector< Node* > NodePath;
@@ -132,6 +133,12 @@ class OSG_EXPORT Node : public Object
           * Equivalent to dynamic_cast<const Transform*>(this).*/
         virtual const Transform* asTransform() const { return 0; }
 
+        /** Convert 'this' into an OccluderNode pointer if Node is an OccluderNode, otherwise return 0.
+          * Equivalent to dynamic_cast<OccluderNode*>(this).*/
+        virtual OccluderNode* asOccluderNode() { return 0; }
+        /** Convert 'const this' into a const OccluderNode pointer if Node is an OccluderNode, otherwise return 0.
+          * Equivalent to dynamic_cast<const OccluderNode*>(this).*/
+        virtual const OccluderNode* asOccluderNode() const { return 0; }
 
 
         /** Convert 'this' into a Switch pointer if Node is a Switch, otherwise return 0.

@@ -87,7 +87,9 @@ ELSE()
       SET(OSG_WINDOWING_SYSTEM "X11" CACHE STRING "Windowing system type for graphics window creation. options only X11")
     ENDIF()
 
-    IF(${OSG_WINDOWING_SYSTEM} STREQUAL "Cocoa")
+    IF(ANDROID)
+	MESSAGE(STATUS "Windowing system not supported for Android.")
+    ELSEIF(${OSG_WINDOWING_SYSTEM} STREQUAL "Cocoa")
         ADD_DEFINITIONS(-DUSE_DARWIN_COCOA_IMPLEMENTATION)
 
         IF(OSG_COMPILE_FRAMEWORKS)

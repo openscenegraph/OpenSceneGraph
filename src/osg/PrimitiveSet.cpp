@@ -187,6 +187,9 @@ DrawElementsUByte::~DrawElementsUByte()
 
 void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const
 {
+    if (empty())
+        return;
+    
     GLenum mode = _mode;
     #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
         if (mode==GL_POLYGON) mode = GL_TRIANGLE_FAN;
@@ -249,6 +252,9 @@ DrawElementsUShort::~DrawElementsUShort()
 
 void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
 {
+    if (empty())
+        return;
+
     GLenum mode = _mode;
     #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
         if (mode==GL_POLYGON) mode = GL_TRIANGLE_FAN;
@@ -310,6 +316,9 @@ DrawElementsUInt::~DrawElementsUInt()
 
 void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const
 {
+    if (empty())
+        return;
+
     GLenum mode = _mode;
     #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
         if (mode==GL_POLYGON) mode = GL_TRIANGLE_FAN;

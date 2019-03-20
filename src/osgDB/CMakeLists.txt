@@ -7,7 +7,7 @@ IF   (DYNAMIC_OPENSCENEGRAPH)
 
     IF(OSG_PLUGIN_SEARCH_INSTALL_DIR_FOR_PLUGINS)
         # Add a default plugin search path component
-        ADD_DEFINITIONS(-DOSG_DEFAULT_LIBRARY_PATH=\"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/${OSG_PLUGINS}\")
+        ADD_DEFINITIONS(-DOSG_DEFAULT_LIBRARY_PATH=\"${CMAKE_INSTALL_PREFIX}/${OSG_INSTALL_LIBDIR}/${OSG_PLUGINS}\")
     ENDIF()
 
     # Set the library extension according to what configuration is being built.

@@ -174,7 +174,7 @@ void osgParticle::ParticleSystem::update(double dt, osg::NodeVisitor& nv)
         osgUtil::CullVisitor* cv = nv.asCullVisitor();
         if (cv)
         {
-            osg::Matrixd modelview = *(cv->getModelViewMatrix());
+            osg::Matrix modelview = *(cv->getModelViewMatrix());
             double scale = (_sortMode==SORT_FRONT_TO_BACK ? -1.0 : 1.0);
             double deadDistance = DBL_MAX;
             for (unsigned int i=0; i<_particles.size(); ++i)
@@ -647,6 +647,8 @@ osg::BoundingBox osgParticle::ParticleSystem::computeBoundingBox() const
 
 void osgParticle::ParticleSystem::resizeGLObjectBuffers(unsigned int maxSize)
 {
+    Drawable::resizeGLObjectBuffers(maxSize);
+
     _bufferedArrayData.resize(maxSize);
     for(unsigned int i=0; i<_bufferedArrayData.size(); ++i)
     {
@@ -656,6 +658,8 @@ void osgParticle::ParticleSystem::resizeGLObjectBuffers(unsigned int maxSize)
 
 void osgParticle::ParticleSystem::releaseGLObjects(osg::State* state) const
 {
+    Drawable::releaseGLObjects(state);
+
     if (state)
     {
         _bufferedArrayData[state->getContextID()].releaseGLObjects(state);
@@ -669,7 +673,7 @@ void osgParticle::ParticleSystem::releaseGLObjects(osg::State* state) const
     }
 }
 
-osg::VertexArrayState* osgParticle::ParticleSystem::createVertexArrayStateImplemenation(osg::RenderInfo& renderInfo) const
+osg::VertexArrayState* osgParticle::ParticleSystem::createVertexArrayStateImplementation(osg::RenderInfo& renderInfo) const
 {
     osg::State& state = *renderInfo.getState();
 

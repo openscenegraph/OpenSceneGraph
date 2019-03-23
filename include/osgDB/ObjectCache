@@ -55,10 +55,10 @@ class OSGDB_EXPORT ObjectCache : public osg::Referenced
         /** Remove Object from cache.*/
         void removeFromObjectCache(const std::string& fileName, const Options *options = NULL);
 
-        /** Get an Object from the object cache*/
+        /** Deprecated, the getFromObjectCache() returns a C pointer that is not thread safe when using database paging, please use the thread safe getRefFromObjectCache() method instead. */
         osg::Object* getFromObjectCache(const std::string& fileName, const Options *options = NULL);
 
-        /** Get an ref_ptr<Object> from the object cache*/
+        /** Get a thread safe ref_ptr<Object> from the object cache*/
         osg::ref_ptr<osg::Object> getRefFromObjectCache(const std::string& fileName, const Options *options = NULL);
 
         /** call rleaseGLObjects on all objects attached to the object cache.*/

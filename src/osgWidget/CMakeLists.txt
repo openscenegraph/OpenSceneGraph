@@ -66,13 +66,15 @@ SET(TARGET_SRC
 
 
 SET(TARGET_LIBRARIES
-    osgText
     osgViewer
+    osgGA
+    osgText
     osgDB
     osg
     OpenThreads
-    osgGA
 )
+
+SET(COMPONENT_PKGCONFIG_DESCRIPTION "Windowing toolkit library for Openscenegraph")
 
 SETUP_LIBRARY(${LIB_NAME})
 

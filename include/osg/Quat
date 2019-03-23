@@ -32,7 +32,11 @@ class OSG_EXPORT Quat
     public:
 
         /** Data type of vector components.*/
+        #ifdef OSG_USE_FLOAT_QUAT
+        typedef float value_type;
+        #else
         typedef double value_type;
+        #endif
 
         /** Number of vector components. */
         enum { num_components = 4 };

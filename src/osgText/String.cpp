@@ -312,10 +312,17 @@ std::string String::createUTF8EncodedString() const
             utf8string+=(char)(0xc0 | (currentChar>>6));
             utf8string+=(char)(0x80 | (currentChar & 0x3f));
         }
-        else
+        else if (currentChar < 0x10000)
         {
             utf8string+=(char)(0xe0 | (currentChar>>12));
             utf8string+=(char)(0x80 | ((currentChar>>6) & 0x3f));
+            utf8string+=(char)(0x80 | (currentChar & 0x3f));
+        }
+        else
+        {
+            utf8string+=(char)(0xf0 | (currentChar >> 18));
+            utf8string+=(char)(0x80 | ((currentChar >> 12) & 0x3f));
+            utf8string+=(char)(0x80 | ((currentChar >> 6) & 0x3f));
             utf8string+=(char)(0x80 | (currentChar & 0x3f));
         }
     }

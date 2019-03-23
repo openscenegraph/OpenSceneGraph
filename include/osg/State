@@ -572,6 +572,13 @@ class OSG_EXPORT State : public Referenced
         /** Set the getCurrentVertexArrayState to the GlobalVertexArrayState.*/
         void setCurrentToGlobalVertexArrayState() { _vas = _globalVertexArrayState.get(); }
 
+        /** Reset the CurrentVertexArrayState/VertexArrayObject if it's value matches the specificied vas - use when deleting a vas.*/
+        void resetCurrentVertexArrayStateOnMatch(VertexArrayState* vas)
+        {
+            if (vas->getVertexArrayObject()== _currentVAO) _currentVAO = 0;
+            if (_vas==vas) _vas = _globalVertexArrayState.get();
+        }
+
 
         /** disable the vertex, normal, color, tex coords, secondary color, fog coord and index arrays.*/
         void disableAllVertexArrays();

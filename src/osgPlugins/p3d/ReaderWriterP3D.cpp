@@ -217,10 +217,10 @@ public:
         qlhs.makeRotate(osg::DegreesToRadians(lhs[0]),lhs[1],lhs[2],lhs[3]);
         qrhs.makeRotate(osg::DegreesToRadians(rhs[0]),rhs[1],rhs[2],rhs[3]);
         osg::Quat quat = qlhs*qrhs;
-        osg::Vec4d result;
-        quat.getRotate ( result[0], result[1], result[2], result[3]);
-        result[0] = osg::RadiansToDegrees(result[0]);
-        return result;
+        osg::Quat::value_type angle;
+        osg::Vec3 direction;
+        quat.getRotate(angle, direction);
+        return osg::Vec4(osg::RadiansToDegrees(angle), direction.x(), direction.y(), direction.z());
     }
 
     inline bool read(const char* str, int& value) const;

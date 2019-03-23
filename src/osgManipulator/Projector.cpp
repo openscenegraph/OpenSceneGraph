@@ -405,7 +405,7 @@ osg::Quat SpherePlaneProjector::getRotation(const osg::Vec3d& p1, bool p1OnSpher
         osg::Quat rotation;
         rotation.makeRotate(p1 - getSphere()->getCenter(), p2 - getSphere()->getCenter());
 
-        osg::Vec3d axis; double angle;
+        osg::Vec3d axis; osg::Quat::value_type angle;
         rotation.getRotate(angle, axis);
 
         osg::Vec3d realAxis;

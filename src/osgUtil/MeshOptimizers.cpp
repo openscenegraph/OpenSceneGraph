@@ -56,7 +56,7 @@ struct GeometryArrayGatherer
 
     GeometryArrayGatherer(osg::Geometry& geometry)
     {
-        add(geometry.getVertexArray());
+        add(geometry.getVertexArray(), osg::Array::BIND_PER_VERTEX);
         add(geometry.getNormalArray());
         add(geometry.getColorArray());
         add(geometry.getSecondaryColorArray());
@@ -64,7 +64,7 @@ struct GeometryArrayGatherer
         unsigned int i;
         for(i=0;i<geometry.getNumTexCoordArrays();++i)
         {
-            add(geometry.getTexCoordArray(i));
+            add(geometry.getTexCoordArray(i), osg::Array::BIND_PER_VERTEX);
         }
         for(i=0;i<geometry.getNumVertexAttribArrays();++i)
         {
@@ -72,9 +72,16 @@ struct GeometryArrayGatherer
         }
     }
 
-    void add(osg::Array* array)
+    void add(osg::Array* array, osg::Array::Binding overrideBinding=osg::Array::BIND_UNDEFINED)
     {
-        if (array && array->getBinding()==osg::Array::BIND_PER_VERTEX)
+        if (!array) return;
+
+        if (overrideBinding!=osg::Array::BIND_UNDEFINED && array->getBinding()!=overrideBinding)
+        {
+            array->setBinding(overrideBinding);
+        }
+
+        if (array->getBinding()==osg::Array::BIND_PER_VERTEX)
         {
             _arrayList.push_back(array);
         }

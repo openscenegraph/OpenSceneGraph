@@ -34,6 +34,12 @@ class OSG_EXPORT OccluderNode : public Group
 
         META_Node(osg, OccluderNode);
 
+        /** Convert 'this' into an OccluderNode pointer if Node is an OccluderNode, otherwise return 0.
+          * Equivalent to dynamic_cast<OccluderNode*>(this).*/
+        virtual OccluderNode* asOccluderNode() { return this; }
+        /** Convert 'const this' into a const OccluderNode pointer if Node is an OccluderNode, otherwise return 0.
+          * Equivalent to dynamic_cast<const OccluderNode*>(this).*/
+        virtual const OccluderNode* asOccluderNode() const { return this; }
 
         /** Attach a ConvexPlanarOccluder to an OccluderNode.*/
         void setOccluder(ConvexPlanarOccluder* occluder) { _occluder = occluder; }

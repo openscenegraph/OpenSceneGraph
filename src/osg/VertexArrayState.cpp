@@ -488,7 +488,7 @@ struct VertexAttribArrayDispatch : public VertexArrayState::ArrayDispatch
     virtual void enable_and_dispatch(osg::State& state, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean normalized)
     {
         GLExtensions* ext = state.get<GLExtensions>();
- 
+
         ext->glEnableVertexAttribArray( unit );
         ext->glVertexAttribPointer(static_cast<GLuint>(unit), size, type, normalized, stride, ptr);
     }
@@ -526,8 +526,17 @@ VertexArrayState::VertexArrayState(osg::State* state):
     _currentEBO(0),
     _requiresSetArrays(true)
 {
+    _stateObserverSet = _state->getOrCreateObserverSet();
     _ext = _state->get<GLExtensions>();
     _isVertexBufferObjectSupported =  _ext->isBufferObjectSupported;
+}
+
+VertexArrayState::~VertexArrayState()
+{
+    if (_stateObserverSet->getObserverdObject())
+    {
+        _state->resetCurrentVertexArrayStateOnMatch(this);
+    }
 }
 
 void VertexArrayState::generateVertexArrayObject()
@@ -539,10 +548,10 @@ void VertexArrayState::deleteVertexArrayObject()
 {
     if (_vertexArrayObject)
     {
-        VAS_NOTICE<<"  VertexArrayState::deleteVertexArrayObject() "<<_vertexArrayObject<<std::endl;
+        VAS_NOTICE<<"  VertexArrayState::deleteVertexArrayObject() "<<_vertexArrayObject<<" "<<_stateObserverSet->getObserverdObject()<<std::endl;
 
         _ext->glDeleteVertexArrays(1, &_vertexArrayObject);
-        _vertexArrayObject = 0;
+        //_vertexArrayObject = 0;
     }
 }
 

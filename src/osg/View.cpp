@@ -222,3 +222,26 @@ unsigned int View::findSlaveIndexForCamera(osg::Camera* camera) const
     return _slaves.size();
 }
 
+void View::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    if (_camera) _camera->resizeGLObjectBuffers(maxSize);
+
+    for(Slaves::iterator itr = _slaves.begin();
+        itr != _slaves.end();
+        ++itr)
+    {
+        if (itr->_camera.valid()) itr->_camera->resizeGLObjectBuffers(maxSize);
+    }
+}
+
+void View::releaseGLObjects(osg::State* state) const
+{
+    if (_camera) _camera->releaseGLObjects(state);
+
+    for(Slaves::const_iterator itr = _slaves.begin();
+        itr != _slaves.end();
+        ++itr)
+    {
+        if (itr->_camera.valid()) itr->_camera->releaseGLObjects(state);
+    }
+}

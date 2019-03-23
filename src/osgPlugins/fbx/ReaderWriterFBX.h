@@ -28,6 +28,16 @@ public:
 
     const char* className() const { return "FBX reader/writer"; }
 
+    virtual ReadResult readObject(const std::string& filename, const Options* options) const
+    {
+        return readNode(filename, options);
+    }
+
+    virtual WriteResult writObject(const osg::Node& node, const std::string& filename, const Options* options) const
+    {
+        return writeNode(node, filename, options);
+    }
+
     virtual ReadResult readNode(const std::string& filename, const Options*) const;
     virtual WriteResult writeNode(const osg::Node&, const std::string& filename, const Options*) const;
 };

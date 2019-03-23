@@ -102,7 +102,7 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
 
     protected:
 
-        virtual ~LightPointDrawable() {}
+        virtual ~LightPointDrawable();
 
         osg::Endian                     _endian;
 

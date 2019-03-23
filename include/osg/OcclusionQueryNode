@@ -72,6 +72,18 @@ public:
 
     virtual void drawImplementation( osg::RenderInfo& renderInfo ) const;
 
+    struct QueryResult
+    {
+        QueryResult() : valid(false), numPixels(0) {}
+        QueryResult(bool v, unsigned int p) : valid(v), numPixels(p) {}
+
+        bool valid;
+        unsigned int numPixels;
+    };
+
+    /** return a QueryResult for specified Camera, where the QueryResult.valid is true when query results are available, and in which case the QueryResult.numPixels provides the num of pixels in the query result.*/
+    QueryResult getQueryResult( const osg::Camera* cam );
+
     unsigned int getNumPixels( const osg::Camera* cam );
 
     virtual void releaseGLObjects( osg::State* state = 0 ) const;
@@ -124,6 +136,11 @@ public:
     // Specifies how many frames to wait before issuing another query.
     void setQueryFrameCount( unsigned int frames ) { _queryFrameCount = frames; }
     unsigned int getQueryFrameCount() const { return _queryFrameCount; }
+
+    // Resets the queries. The next frame will issue a new query.
+    // This is useful for big view changes, if it shouldn't be waited for
+    // '_queryFrameCount' till the frame contents change.
+    void resetQueries();
 
     // Indicate whether or not the bounding box used in the occlusion query test
     //   should be rendered. Handy for debugging and development.
@@ -180,6 +197,9 @@ protected:
     osg::ref_ptr< osg::Geode > _debugGeode;
 
     bool _enabled;
+
+    // If the box of the query geometry is valid.
+    mutable bool _validQueryGeometry;
 
     // Tracks the last frame number that we performed a query.
     // User can set how many times  (See setQueryFrameCount).

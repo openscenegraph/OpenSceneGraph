@@ -142,7 +142,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 //             int destHeight = osg::minimum(dataHeight,4096);
 
 
-            osgDB::ImageOptions::TexCoordRange* texCoordRange = 0;
+            osg::ref_ptr<osgDB::ImageOptions::TexCoordRange> texCoordRange;
 
             osgDB::ImageOptions* imageOptions = dynamic_cast<osgDB::ImageOptions*>(const_cast<osgDB::ReaderWriter::Options*>(options));
             if (imageOptions)
@@ -557,7 +557,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                     (unsigned char *)imageData,
                     osg::Image::USE_NEW_DELETE);
 
-                if (texCoordRange) image->setUserData(texCoordRange);
+                if (texCoordRange.valid()) image->setUserData(texCoordRange.get());
 
                 image->flipVertical();
 
@@ -593,7 +593,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             int destWidth = osg::minimum(dataWidth,4096);
             int destHeight = osg::minimum(dataHeight,4096);
 
-            osgDB::ImageOptions::TexCoordRange* texCoordRange = 0;
+            osg::ref_ptr<osgDB::ImageOptions::TexCoordRange> texCoordRange;
 
             const osgDB::ImageOptions* imageOptions = dynamic_cast<const osgDB::ImageOptions*>(options);
             if (imageOptions)

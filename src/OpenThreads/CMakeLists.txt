@@ -113,4 +113,4 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/pkgconfig/openthreads.pc.in
     @ONLY
     )
 
-INSTALL(FILES ${PROJECT_BINARY_DIR}/packaging/pkgconfig/openthreads.pc DESTINATION lib${LIB_POSTFIX}/pkgconfig  COMPONENT libopenthreads-dev)
+INSTALL(FILES ${PROJECT_BINARY_DIR}/packaging/pkgconfig/openthreads.pc DESTINATION ${OSG_INSTALL_LIBDIR}/pkgconfig  COMPONENT libopenthreads-dev)

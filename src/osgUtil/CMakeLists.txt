@@ -101,5 +101,7 @@ SET(TARGET_LIBRARIES
     OpenThreads
 )
 
+SET(COMPONENT_PKGCONFIG_DESCRIPTION "Utility library for Openscenegraph")
+
 SETUP_LIBRARY(${LIB_NAME})
 

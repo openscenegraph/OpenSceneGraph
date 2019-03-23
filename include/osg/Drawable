@@ -55,7 +55,7 @@
 #endif
 
 
-// #define INLINE_DRAWABLE_DRAW
+#define INLINE_DRAWABLE_DRAW
 
 namespace osg {
 

@@ -438,7 +438,7 @@ bool GraphicsContext::realize()
 
 void GraphicsContext::close(bool callCloseImplementation)
 {
-    OSG_INFO<<"close("<<callCloseImplementation<<")"<<this<<std::endl;
+    OSG_INFO<<"GraphicsContext::close("<<callCloseImplementation<<")"<<this<<std::endl;
 
     // switch off the graphics thread...
     setGraphicsThread(0);

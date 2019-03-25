@@ -105,6 +105,8 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
     osg::DisplaySettings::instance()->readCommandLine(arguments);
     osgDB::readCommandLine(arguments);
 
+    getCamera()->readCommandLine(arguments);
+
     std::string colorStr;
     while (arguments.read("--clear-color",colorStr))
     {

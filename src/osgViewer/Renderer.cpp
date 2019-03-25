@@ -588,7 +588,29 @@ void Renderer::compile()
     {
         osgUtil::GLObjectsVisitor glov;
         glov.setState(sceneView->getState());
-        glov.compile(*(sceneView->getSceneData()));
+
+        // collect stats if required
+        osg::View* view = _camera.valid() ? _camera->getView() : 0;
+        osg::Stats* stats = view ? view->getStats() : 0;
+        if (stats && stats->collectStats("compile"))
+        {
+            osg::ElapsedTime elapsedTime;
+
+            glov.compile(*(sceneView->getSceneData()));
+
+            double compileTime = elapsedTime.elapsedTime();
+
+            const osg::FrameStamp* fs = sceneView->getFrameStamp();
+            unsigned int frameNumber = fs ? fs->getFrameNumber() : 0;
+
+            stats->setAttribute(frameNumber, "compile", compileTime);
+
+            OSG_NOTICE<<"Compile time "<<compileTime*1000.0<<"ms"<<std::endl;
+        }
+        else
+        {
+            glov.compile(*(sceneView->getSceneData()));
+        }
     }
 
     sceneView->getState()->checkGLErrors("After Renderer::compile");

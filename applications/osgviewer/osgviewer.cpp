@@ -48,6 +48,7 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("-p <filename>","Play specified camera path animation file, previously saved with 'z' key.");
     arguments.getApplicationUsage()->addCommandLineOption("--speed <factor>","Speed factor for animation playing (1 == normal speed).");
     arguments.getApplicationUsage()->addCommandLineOption("--device <device-name>","add named device to the viewer");
+    arguments.getApplicationUsage()->addCommandLineOption("--stats","print out load and compile timing stats");
 
     osgViewer::Viewer viewer(arguments);
 
@@ -70,6 +71,8 @@ int main(int argc, char** argv)
         arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
         return 1;
     }
+
+    bool printStats = arguments.read("--stats");
 
     std::string url, username, password;
     while(arguments.read("--login",url, username, password))
@@ -147,6 +150,8 @@ int main(int argc, char** argv)
     // add the screen capture handler
     viewer.addEventHandler(new osgViewer::ScreenCaptureHandler);
 
+    osg::ElapsedTime elapsedTime;
+
     // load the data
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(arguments);
     if (!loadedModel)
@@ -154,6 +159,15 @@ int main(int argc, char** argv)
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;
     }
+
+    if (printStats)
+    {
+        double loadTime = elapsedTime.elapsedTime_m();
+        std::cout<<"Load time "<<loadTime<<"ms"<<std::endl;
+
+        viewer.getStats()->collectStats("compile", true);
+    }
+
 
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();

@@ -27,9 +27,9 @@
 
 enum GeometryType
 {
-    GEOMETRY_STATIC,
-    GEOMETRY_RIG,
-    GEOMETRY_MORPH
+    GEOMETRY_STATIC = 0,
+    GEOMETRY_RIG    = 0x1,
+    GEOMETRY_MORPH  = 0x2
 };
 
 osg::Vec3d convertVec3(const FbxVector4& v)
@@ -147,7 +147,7 @@ osg::Array* createVec4Array(bool doublePrecision)
 
 osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
     std::vector<StateSetContent>& stateSetList,
-    GeometryType gt,
+    unsigned int gt,
     unsigned int mti,
     bool bNormal,
     bool useDiffuseMap,
@@ -170,7 +170,7 @@ osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
     }
 
     osg::ref_ptr<osg::Geometry> pGeometry;
-    if (gt == GEOMETRY_MORPH)
+    if (gt & GEOMETRY_MORPH)
     {
         pGeometry = new osgAnimation::MorphGeometry;
     }
@@ -768,16 +768,16 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
     int nDeformerCount = fbxMesh->GetDeformerCount(FbxDeformer::eSkin);
     int nDeformerBlendShapeCount = fbxMesh->GetDeformerCount(FbxDeformer::eBlendShape);
 
-    GeometryType geomType = GEOMETRY_STATIC;
+    unsigned int geomType = GEOMETRY_STATIC;
 
     //determine the type of geometry
     if (nDeformerCount)
     {
-        geomType = GEOMETRY_RIG;
+        geomType |= GEOMETRY_RIG;
     }
-    else if (nDeformerBlendShapeCount)
+    if (nDeformerBlendShapeCount)
     {
-        geomType = GEOMETRY_MORPH;
+        geomType |= GEOMETRY_MORPH;
     }
 
     FbxToOsgVertexMap fbxToOsgVertMap;
@@ -995,76 +995,8 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
         }
     }
 
-    if (geomType == GEOMETRY_RIG)
-    {
-        typedef std::map<osg::ref_ptr<osg::Geometry>,
-            osg::ref_ptr<osgAnimation::RigGeometry> > GeometryRigGeometryMap;
-        GeometryRigGeometryMap old2newGeometryMap;
-
-        for (unsigned i = 0; i < pGeode->getNumDrawables(); ++i)
-        {
-            osg::Geometry* pGeometry = pGeode->getDrawable(i)->asGeometry();
-
-            osgAnimation::RigGeometry* pRig = new osgAnimation::RigGeometry;
-            pRig->setSourceGeometry(pGeometry);
-            pRig->copyFrom(*pGeometry);
-            old2newGeometryMap.insert(GeometryRigGeometryMap::value_type(
-                pGeometry, pRig));
-            pRig->setDataVariance(osg::Object::DYNAMIC);
-            pRig->setUseDisplayList( false );
-            pGeode->setDrawable(i, pRig);
-
-            pRig->setInfluenceMap(new osgAnimation::VertexInfluenceMap);
-            pGeometry = pRig;
-        }
-
-        for (int i = 0; i < nDeformerCount; ++i)
-        {
-            FbxSkin* pSkin = (FbxSkin*)fbxMesh->GetDeformer(i, FbxDeformer::eSkin);
-            int nClusters = pSkin->GetClusterCount();
-            for (int j = 0; j < nClusters; ++j)
-            {
-                FbxCluster* pCluster = pSkin->GetCluster(j);
-                //assert(KFbxCluster::eNORMALIZE == pCluster->GetLinkMode());
-                FbxNode* pBone = pCluster->GetLink();
-
-                FbxAMatrix transformLink;
-                pCluster->GetTransformLinkMatrix(transformLink);
-                FbxAMatrix transformLinkInverse = transformLink.Inverse();
-                const double* pTransformLinkInverse = transformLinkInverse;
-                osg::Matrix bindMatrix(pTransformLinkInverse);
-
-                int nIndices = pCluster->GetControlPointIndicesCount();
-                int* pIndices = pCluster->GetControlPointIndices();
-                double* pWeights = pCluster->GetControlPointWeights();
-
-                for (int k = 0; k < nIndices; ++k)
-                {
-                    int fbxIndex = pIndices[k];
-                    float weight = static_cast<float>(pWeights[k]);
-
-                    for (FbxToOsgVertexMap::const_iterator it =
-                        fbxToOsgVertMap.find(fbxIndex);
-                        it != fbxToOsgVertMap.end() &&
-                        it->first == fbxIndex; ++it)
-                    {
-                        GIPair gi = it->second;
-                        osgAnimation::RigGeometry& rig =
-                            dynamic_cast<osgAnimation::RigGeometry&>(
-                            *old2newGeometryMap[gi.first]);
-                        addBindMatrix(boneBindMatrices, pBone, bindMatrix, &rig);
-                        osgAnimation::VertexInfluenceMap& vim =
-                            *rig.getInfluenceMap();
-                        osgAnimation::VertexInfluence& vi =
-                            getVertexInfluence(vim, pBone->GetName());
-                        vi.push_back(osgAnimation::VertexIndexWeight(
-                            gi.second, weight));
-                    }
-                }
-            }
-        }
-    }
-    else if (geomType == GEOMETRY_MORPH)
+    // Process morph geometry before converting geometry to rig
+    if (geomType & GEOMETRY_MORPH)
     {
         for (unsigned i = 0; i < pGeode->getNumDrawables(); ++i)
         {
@@ -1190,6 +1122,76 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
         }
     }
 
+    if (geomType & GEOMETRY_RIG)
+    {
+        typedef std::map<osg::ref_ptr<osg::Geometry>,
+            osg::ref_ptr<osgAnimation::RigGeometry> > GeometryRigGeometryMap;
+        GeometryRigGeometryMap old2newGeometryMap;
+
+        for (unsigned i = 0; i < pGeode->getNumDrawables(); ++i)
+        {
+            osg::Geometry* pGeometry = pGeode->getDrawable(i)->asGeometry();
+
+            osgAnimation::RigGeometry* pRig = new osgAnimation::RigGeometry;
+            pRig->setSourceGeometry(pGeometry);
+            pRig->copyFrom(*pGeometry);
+            old2newGeometryMap.insert(GeometryRigGeometryMap::value_type(
+                pGeometry, pRig));
+            pRig->setDataVariance(osg::Object::DYNAMIC);
+            pRig->setUseDisplayList( false );
+            pGeode->setDrawable(i, pRig);
+
+            pRig->setInfluenceMap(new osgAnimation::VertexInfluenceMap);
+            pGeometry = pRig;
+        }
+
+        for (int i = 0; i < nDeformerCount; ++i)
+        {
+            FbxSkin* pSkin = (FbxSkin*)fbxMesh->GetDeformer(i, FbxDeformer::eSkin);
+            int nClusters = pSkin->GetClusterCount();
+            for (int j = 0; j < nClusters; ++j)
+            {
+                FbxCluster* pCluster = pSkin->GetCluster(j);
+                //assert(KFbxCluster::eNORMALIZE == pCluster->GetLinkMode());
+                FbxNode* pBone = pCluster->GetLink();
+
+                FbxAMatrix transformLink;
+                pCluster->GetTransformLinkMatrix(transformLink);
+                FbxAMatrix transformLinkInverse = transformLink.Inverse();
+                const double* pTransformLinkInverse = transformLinkInverse;
+                osg::Matrix bindMatrix(pTransformLinkInverse);
+
+                int nIndices = pCluster->GetControlPointIndicesCount();
+                int* pIndices = pCluster->GetControlPointIndices();
+                double* pWeights = pCluster->GetControlPointWeights();
+
+                for (int k = 0; k < nIndices; ++k)
+                {
+                    int fbxIndex = pIndices[k];
+                    float weight = static_cast<float>(pWeights[k]);
+
+                    for (FbxToOsgVertexMap::const_iterator it =
+                        fbxToOsgVertMap.find(fbxIndex);
+                        it != fbxToOsgVertMap.end() &&
+                        it->first == fbxIndex; ++it)
+                    {
+                        GIPair gi = it->second;
+                        osgAnimation::RigGeometry& rig =
+                            dynamic_cast<osgAnimation::RigGeometry&>(
+                            *old2newGeometryMap[gi.first]);
+                        addBindMatrix(boneBindMatrices, pBone, bindMatrix, &rig);
+                        osgAnimation::VertexInfluenceMap& vim =
+                            *rig.getInfluenceMap();
+                        osgAnimation::VertexInfluence& vi =
+                            getVertexInfluence(vim, pBone->GetName());
+                        vi.push_back(osgAnimation::VertexIndexWeight(
+                            gi.second, weight));
+                    }
+                }
+            }
+        }
+    }
+
     FbxAMatrix fbxGeometricTransform;
     fbxGeometricTransform.SetTRS(
         pNode->GeometricTranslation.Get(),
@@ -1198,7 +1200,7 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
     const double* pGeometricMat = fbxGeometricTransform;
     osg::Matrix osgGeometricTransform(pGeometricMat);
 
-    if (geomType == GEOMETRY_RIG)
+    if (geomType & GEOMETRY_RIG)
     {
         FbxSkin* pSkin = (FbxSkin*)fbxMesh->GetDeformer(0, FbxDeformer::eSkin);
         if (pSkin->GetClusterCount())
@@ -1219,7 +1221,7 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
         pResult = pMatTrans;
     }
 
-    if (geomType == GEOMETRY_RIG)
+    if (geomType & GEOMETRY_RIG)
     {
         //Add the geometry to the skeleton ancestor of one of the bones.
         FbxSkin* pSkin = (FbxSkin*)fbxMesh->GetDeformer(0, FbxDeformer::eSkin);

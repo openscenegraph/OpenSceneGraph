@@ -603,7 +603,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glVertexAttribPointer, "glVertexAttribPointer","glVertexAttribPointerARB", validContext);
     setGLExtensionFuncPtr(glVertexAttribIPointer, "glVertexAttribIPointer","glVertexAttribIPointerARB", validContext);
     setGLExtensionFuncPtr(glVertexAttribLPointer, "glVertexAttribLPointer","glVertexAttribLPointerARB", validContext);
-    setGLExtensionFuncPtr(glVertexAttribDivisor, "glVertexAttribDivisor", validContext);
+    setGLExtensionFuncPtr(glVertexAttribDivisor, "glVertexAttribDivisor", "glVertexAttribDivisorARB", validContext);
 
     // v1.5-only ARB entry points, in case they're needed for fallback
     setGLExtensionFuncPtr(glGetInfoLogARB, "glGetInfoLogARB", validContext);

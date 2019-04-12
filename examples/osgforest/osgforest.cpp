@@ -38,6 +38,7 @@
 #include <osg/FragmentProgram>
 
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 #include <osgDB/FileUtils>
 
 #include <osgUtil/LineSegmentIntersector>
@@ -63,6 +64,18 @@ class ForestTechniqueManager : public osg::Referenced
 public:
 
     ForestTechniqueManager() {}
+
+    enum Features
+    {
+        HUD_TEXT = 1,
+        BILLBOARD_GRAPH = 2,
+        X_GRAPH = 4,
+        TRANSFORM_GRAPH = 8,
+        SHADER_GRAPH = 16,
+        GEOMETRY_SHADER_GRAPH = 32,
+        TEXTURE_BUFFER_GRAPH = 64,
+        ALL_FEATURES = (TEXTURE_BUFFER_GRAPH<<1)-1
+    };
 
     class Tree : public osg::Referenced
     {
@@ -150,7 +163,7 @@ public:
 
     osg::Node* createHUDWithText(const std::string& text);
 
-    osg::Node* createScene(unsigned int numTreesToCreates, unsigned int maxNumTreesPerCell);
+    osg::Node* createScene(unsigned int numTreesToCreates, unsigned int maxNumTreesPerCell, unsigned int mask=ALL_FEATURES);
 
     void advanceToNextTechnique(int delta=1)
     {
@@ -1172,7 +1185,7 @@ osg::Node* ForestTechniqueManager::createHUDWithText(const std::string& str)
     return projection;
 }
 
-osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates, unsigned int maxNumTreesPerCell)
+osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates, unsigned int maxNumTreesPerCell, unsigned int mask)
 {
     osg::Vec3 origin(0.0f,0.0f,0.0f);
     osg::Vec3 size(1000.0f,1000.0f,200.0f);
@@ -1218,33 +1231,37 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates, u
 
     _techniqueSwitch = new osg::Switch;
 
+    if ((mask & BILLBOARD_GRAPH)!=0)
     {
         std::cout<<"Creating osg::Billboard based forest...";
         osg::Group* group = new osg::Group;
         group->addChild(createBillboardGraph(cell.get(),dstate));
-        group->addChild(createHUDWithText("Using osg::Billboard's to create a forest\n\nPress left cursor key to select geometry instancing with Texture Buffer Object\nPress right cursor key to select double quad based forest"));
+        if ((mask & HUD_TEXT)!=0) group->addChild(createHUDWithText("Using osg::Billboard's to create a forest\n\nPress left cursor key to select geometry instancing with Texture Buffer Object\nPress right cursor key to select double quad based forest"));
         _techniqueSwitch->addChild(group);
         std::cout<<"done."<<std::endl;
     }
 
+    if ((mask & X_GRAPH)!=0)
     {
         std::cout<<"Creating double quad based forest...";
         osg::Group* group = new osg::Group;
         group->addChild(createXGraph(cell.get(),dstate));
-        group->addChild(createHUDWithText("Using double quads to create a forest\n\nPress left cursor key to select osg::Billboard based forest\nPress right cursor key to select osg::MatrixTransform based forest\n"));
+        if ((mask & HUD_TEXT)!=0) group->addChild(createHUDWithText("Using double quads to create a forest\n\nPress left cursor key to select osg::Billboard based forest\nPress right cursor key to select osg::MatrixTransform based forest\n"));
         _techniqueSwitch->addChild(group);
         std::cout<<"done."<<std::endl;
     }
 
+    if ((mask & TRANSFORM_GRAPH)!=0)
     {
         std::cout<<"Creating osg::MatrixTransform based forest...";
         osg::Group* group = new osg::Group;
         group->addChild(createTransformGraph(cell.get(),dstate));
-        group->addChild(createHUDWithText("Using osg::MatrixTransform's to create a forest\n\nPress left cursor key to select double quad based forest\nPress right cursor key to select osg::Vertex/FragmentProgram based forest"));
+        if ((mask & HUD_TEXT)!=0) group->addChild(createHUDWithText("Using osg::MatrixTransform's to create a forest\n\nPress left cursor key to select double quad based forest\nPress right cursor key to select osg::Vertex/FragmentProgram based forest"));
         _techniqueSwitch->addChild(group);
         std::cout<<"done."<<std::endl;
     }
 
+    if ((mask & SHADER_GRAPH)!=0)
     {
         std::cout<<"Creating osg::Vertex/FragmentProgram based forest...";
         osg::Group* group = new osg::Group;
@@ -1301,11 +1318,12 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates, u
         }
 
         group->addChild(createShaderGraph(cell.get(),stateset));
-        group->addChild(createHUDWithText("Using osg::Vertex/FragmentProgram to create a forest\n\nPress left cursor key to select osg::MatrixTransform's based forest\nPress right cursor key to select OpenGL shader based forest"));
+        if ((mask & HUD_TEXT)!=0) group->addChild(createHUDWithText("Using osg::Vertex/FragmentProgram to create a forest\n\nPress left cursor key to select osg::MatrixTransform's based forest\nPress right cursor key to select OpenGL shader based forest"));
         _techniqueSwitch->addChild(group);
         std::cout<<"done."<<std::endl;
     }
 
+    if ((mask & SHADER_GRAPH)!=0)
     {
         std::cout<<"Creating OpenGL shader based forest...";
         osg::Group* group = new osg::Group;
@@ -1363,11 +1381,12 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates, u
         }
 
         group->addChild(createShaderGraph(cell.get(),stateset));
-        group->addChild(createHUDWithText("Using OpenGL Shader to create a forest\n\nPress left cursor key to select osg::Vertex/FragmentProgram based forest\nPress right cursor key to select osg::Vertex/Geometry/FragmentProgram based forest"));
+        if ((mask & HUD_TEXT)!=0) group->addChild(createHUDWithText("Using OpenGL Shader to create a forest\n\nPress left cursor key to select osg::Vertex/FragmentProgram based forest\nPress right cursor key to select osg::Vertex/Geometry/FragmentProgram based forest"));
         _techniqueSwitch->addChild(group);
         std::cout<<"done."<<std::endl;
     }
 
+    if ((mask & GEOMETRY_SHADER_GRAPH)!=0)
     {
         std::cout<<"Creating Geometry Shader based forest...";
 
@@ -1375,12 +1394,13 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates, u
 
         osg::Group* group = new osg::Group;
         group->addChild(createGeometryShaderGraph(cell.get(), stateset));
-        group->addChild(createHUDWithText("Using osg::Vertex/Geometry/FragmentProgram to create a forest\n\nPress left cursor key to select OpenGL Shader based forest\nPress right cursor key to select geometry instancing with Texture Buffer Object"));
+        if ((mask & HUD_TEXT)!=0) group->addChild(createHUDWithText("Using osg::Vertex/Geometry/FragmentProgram to create a forest\n\nPress left cursor key to select OpenGL Shader based forest\nPress right cursor key to select geometry instancing with Texture Buffer Object"));
 
         _techniqueSwitch->addChild(group);
         std::cout<<"done."<<std::endl;
     }
 
+    if ((mask & TEXTURE_BUFFER_GRAPH)!=0)
     {
         std::cout<<"Creating forest using geometry instancing and texture buffer objects ...";
 
@@ -1442,7 +1462,7 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates, u
         textureBufferGraph->setStateSet( stateset );
         osg::Group* group = new osg::Group;
         group->addChild(textureBufferGraph);
-        group->addChild(createHUDWithText("Using geometry instancing to create a forest\n\nPress left cursor key to select osg::Vertex/Geometry/FragmentProgram based forest\nPress right cursor key to select osg::Billboard based forest"));
+        if ((mask & HUD_TEXT)!=0) group->addChild(createHUDWithText("Using geometry instancing to create a forest\n\nPress left cursor key to select osg::Vertex/Geometry/FragmentProgram based forest\nPress right cursor key to select osg::Billboard based forest"));
 
         _techniqueSwitch->addChild(group);
 
@@ -1478,6 +1498,16 @@ int main( int argc, char **argv )
 
     arguments.read("--trees-per-cell",maxNumTreesPerCell);
 
+
+    unsigned int features = ForestTechniqueManager::ALL_FEATURES;
+    while(arguments.read("--features", features))
+    {
+        std::cout<<"features = "<<features<<std::endl;
+    }
+
+    std::string outputFilename;
+    while(arguments.read("-o", outputFilename)) {}
+
     osg::ref_ptr<ForestTechniqueManager> ttm = new ForestTechniqueManager;
 
     // add the stats handler
@@ -1487,8 +1517,13 @@ int main( int argc, char **argv )
     viewer.addEventHandler(new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()));
 
     // add model to viewer.
-    viewer.setSceneData( ttm->createScene(numTreesToCreate, maxNumTreesPerCell) );
+    viewer.setSceneData( ttm->createScene(numTreesToCreate, maxNumTreesPerCell, features) );
 
+    if (!outputFilename.empty())
+    {
+        osgDB::writeNodeFile(*viewer.getSceneData(), outputFilename);
+        return 0;
+    }
 
     return viewer.run();
 }

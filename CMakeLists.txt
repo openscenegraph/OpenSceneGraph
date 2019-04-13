@@ -48,8 +48,11 @@ ENDIF()
 # See https://cmake.org/Bug/view.php?id=14695#c34953
 # Additionally, OSG_WINDOWING_SYSTEM is set here for OSX since its
 # value is needed to find the correct version of OpenGL (X11 or Cocoa).
-IF(APPLE AND NOT ANDROID)
 
+IF(ANDROID)
+    SET(OSG_WINDOWING_SYSTEM "None" CACHE STRING "None Windowing system type for graphics window creation.")
+
+ELSIF(APPLE)
     # custom option to flag an iOS build
     OPTION(OSG_BUILD_PLATFORM_IPHONE "Enable IPhoneSDK Device support" OFF)
 
@@ -107,6 +110,8 @@ IF(APPLE AND NOT ANDROID)
             MESSAGE(WARNING "OSX 10.3 and earlier not supported.")
         ENDIF()
     ENDIF()
+ELSE()
+    SET(OSG_WINDOWING_SYSTEM "X11" CACHE STRING "Windowing system type for graphics window creation. options only X11")
 ENDIF()
 
 

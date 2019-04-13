@@ -81,12 +81,6 @@ IF(WIN32 AND NOT ANDROID)
         PixelBufferWin32.cpp
     )
 ELSE()
-    IF(ANDROID)
-      SET(OSG_WINDOWING_SYSTEM "None" CACHE STRING "None Windowing system type for graphics window creation." FORCE)
-    ELSE()
-      SET(OSG_WINDOWING_SYSTEM "X11" CACHE STRING "Windowing system type for graphics window creation. options only X11" FORCE)
-    ENDIF()
-
     IF(${OSG_WINDOWING_SYSTEM} STREQUAL "Cocoa")
         ADD_DEFINITIONS(-DUSE_DARWIN_COCOA_IMPLEMENTATION)
 

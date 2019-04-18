@@ -436,7 +436,7 @@ void Text3D::computeGlyphRepresentation()
             _coords->insert(_coords->end(), src_vertices->begin(), src_vertices->end());
             for(unsigned int i=base; i<_coords->size(); ++i)
             {
-                (*_coords)[i] += position;
+                (*_coords)[i] = ((*_coords)[i] + position)*_matrix;
             }
             _coords->dirty();
 
@@ -478,32 +478,6 @@ osg::BoundingBox Text3D::computeBoundingBox() const
 void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
 {
     osg::State & state = *renderInfo.getState();
-
-
-    // ** save the previous modelview matrix
-    osg::Matrix previous_modelview(state.getModelViewMatrix());
-
-    // set up the new modelview matrix
-    osg::Matrix modelview;
-    bool needToApplyMatrix = computeMatrix(modelview, &state);
-
-    if (needToApplyMatrix)
-    {
-        // ** mult previous by the modelview for this context
-        modelview.postMult(previous_modelview);
-
-        // ** apply this new modelview matrix
-        state.applyModelViewMatrix(modelview);
-
-        // workaround for GL3/GL2
-        if (state.getUseModelViewAndProjectionUniforms()) state.applyModelViewAndProjectionUniformsIfRequired();
-
-        // OSG_NOTICE<<"New state.applyModelViewMatrix() "<<modelview<<std::endl;
-    }
-    else
-    {
-        // OSG_NOTICE<<"No need to apply matrix "<<std::endl;
-    }
 
     osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
@@ -579,15 +553,6 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
         // unbind the VBO's if any are used.
         vas->unbindVertexBufferObject();
         vas->unbindElementBufferObject();
-    }
-
-    if (needToApplyMatrix)
-    {
-        // restore the previous modelview matrix
-        state.applyModelViewMatrix(previous_modelview);
-
-        // workaround for GL3/GL2
-        if (state.getUseModelViewAndProjectionUniforms()) state.applyModelViewAndProjectionUniformsIfRequired();
     }
 }
 

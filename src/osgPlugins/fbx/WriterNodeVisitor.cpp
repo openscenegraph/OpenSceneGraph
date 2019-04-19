@@ -664,26 +664,26 @@ void WriterNodeVisitor::apply(osg::Geometry& geometry)
 
 void WriterNodeVisitor::apply(osg::Group& node)
 {
-	if (_firstNodeProcessed)
-	{
-		FbxNode* parent = _curFbxNode;
+    if (_firstNodeProcessed)
+    {
+        FbxNode* parent = _curFbxNode;
 
-		FbxNode* nodeFBX = FbxNode::Create(_pSdkManager, node.getName().empty() ? "DefaultName" : node.getName().c_str());
-		_curFbxNode->AddChild(nodeFBX);
-		_curFbxNode = nodeFBX;
+        FbxNode* nodeFBX = FbxNode::Create(_pSdkManager, node.getName().empty() ? "DefaultName" : node.getName().c_str());
+        _curFbxNode->AddChild(nodeFBX);
+        _curFbxNode = nodeFBX;
 
-		traverse(node);
+        traverse(node);
 
-		if (_listTriangles.size() > 0)
-			buildFaces(node.getName(), _geometryList, _listTriangles, _texcoords);
+        if (_listTriangles.size() > 0)
+            buildFaces(node.getName(), _geometryList, _listTriangles, _texcoords);
 
-		_curFbxNode = parent;
-	}
-	else
-	{
-		//ignore the root node to maintain same hierarchy
-		_firstNodeProcessed = true;
-		traverse(node);		
+        _curFbxNode = parent;
+    }
+    else
+    {
+        //ignore the root node to maintain same hierarchy
+        _firstNodeProcessed = true;
+        traverse(node);		
 	}
 }
 

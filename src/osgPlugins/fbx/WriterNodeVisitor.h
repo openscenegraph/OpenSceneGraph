@@ -87,7 +87,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
             _externalWriter(srcDirectory, osgDB::getFilePath(fileName), true, 0),
             _texcoords(false),
             _drawableNum(0),
-			_firstNodeProcessed(false)
+            _firstNodeProcessed(false)
         {}
 
         virtual void apply(osg::Geometry& node);
@@ -235,8 +235,8 @@ class WriterNodeVisitor: public osg::NodeVisitor
         ///Tell us if the last apply succeed, useful to stop going through the graph.
         bool _succeedLastApply;
 
-		///Marks if the first node is processed.
-		bool _firstNodeProcessed;
+        ///Marks if the first node is processed.
+        bool _firstNodeProcessed;
 		
         ///The current directory.
         std::string _directory;

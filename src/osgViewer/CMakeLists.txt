@@ -57,7 +57,7 @@ SET(LIB_COMMON_FILES
 # Collect all the configuration files
 SET(LIB_EXTRA_LIBS)
 
-IF(WIN32 AND NOT ANDROID)
+IF(${OSG_WINDOWING_SYSTEM} STREQUAL "Win32")
     #
     # Enable workaround for OpenGL driver issues when used in multithreaded/multiscreen with NVidia drivers on Windows XP
     # For example: osgviewer dumptruck.osg was showing total garbage (screen looked like shattered, splashed hedgehog)
@@ -80,163 +80,155 @@ IF(WIN32 AND NOT ANDROID)
         GraphicsWindowWin32.cpp
         PixelBufferWin32.cpp
     )
-ELSE()
-    IF(ANDROID)
-      SET(OSG_WINDOWING_SYSTEM "None" CACHE STRING "None Windowing system type for graphics window creation." FORCE)
+ELSIF(${OSG_WINDOWING_SYSTEM} STREQUAL "Cocoa")
+    ADD_DEFINITIONS(-DUSE_DARWIN_COCOA_IMPLEMENTATION)
+
+    IF(OSG_COMPILE_FRAMEWORKS)
+       SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
+             ${HEADER_PATH}/api/Cocoa/GraphicsHandleCocoa
+             ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa
+             ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa
+         )
+        SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/GraphicsHandleCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa)
+        SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa)
+        SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa)
     ELSE()
-      SET(OSG_WINDOWING_SYSTEM "X11" CACHE STRING "Windowing system type for graphics window creation. options only X11" FORCE)
+        SET(TARGET_H_NO_MODULE_INSTALL
+            ${HEADER_PATH}/api/Cocoa/GraphicsHandleCocoa
+            ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa
+            ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa
+        )
     ENDIF()
 
-    IF(${OSG_WINDOWING_SYSTEM} STREQUAL "Cocoa")
-        ADD_DEFINITIONS(-DUSE_DARWIN_COCOA_IMPLEMENTATION)
+    SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
+        GraphicsWindowCocoa.mm
+        DarwinUtils.h
+        DarwinUtils.mm
+        PixelBufferCocoa.mm
+    )
+    SET(LIB_EXTRA_LIBS ${COCOA_LIBRARY} ${LIB_EXTRA_LIBS})
 
-        IF(OSG_COMPILE_FRAMEWORKS)
-           SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
-                 ${HEADER_PATH}/api/Cocoa/GraphicsHandleCocoa
-                 ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa
-                 ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa
-             )
-            SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/GraphicsHandleCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa)
-            SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa)
-            SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa)
-        ELSE()
-            SET(TARGET_H_NO_MODULE_INSTALL
-                ${HEADER_PATH}/api/Cocoa/GraphicsHandleCocoa
-                ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa
-                ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa
-            )
-        ENDIF()
+ELSEIF(${OSG_WINDOWING_SYSTEM} STREQUAL "Carbon")
+    ADD_DEFINITIONS(-DUSE_DARWIN_CARBON_IMPLEMENTATION)
 
-        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
-            GraphicsWindowCocoa.mm
-            DarwinUtils.h
-            DarwinUtils.mm
-            PixelBufferCocoa.mm
+    IF(OSG_COMPILE_FRAMEWORKS)
+       SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
+             ${HEADER_PATH}/api/Carbon/GraphicsHandleCarbon
+             ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon
+             ${HEADER_PATH}/api/Carbon/PixelBufferCarbon
+         )
+        SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/GraphicsHandleCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon)
+        SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon)
+        SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/PixelBufferCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon)
+    ELSE()
+        SET(TARGET_H_NO_MODULE_INSTALL
+            ${HEADER_PATH}/api/Carbon/GraphicsHandleCarbon
+            ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon
+            ${HEADER_PATH}/api/Carbon/PixelBufferCarbon
         )
-        SET(LIB_EXTRA_LIBS ${COCOA_LIBRARY} ${LIB_EXTRA_LIBS})
+    ENDIF()
 
-    ELSEIF(${OSG_WINDOWING_SYSTEM} STREQUAL "Carbon")
-        ADD_DEFINITIONS(-DUSE_DARWIN_CARBON_IMPLEMENTATION)
+    SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
+        GraphicsWindowCarbon.cpp
+        DarwinUtils.h
+        DarwinUtils.mm
+        PixelBufferCarbon.cpp
+    )
 
-        IF(OSG_COMPILE_FRAMEWORKS)
-           SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
-                 ${HEADER_PATH}/api/Carbon/GraphicsHandleCarbon
-                 ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon
-                 ${HEADER_PATH}/api/Carbon/PixelBufferCarbon
-             )
-            SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/GraphicsHandleCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon)
-            SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon)
-            SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/PixelBufferCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon)
-        ELSE()
-            SET(TARGET_H_NO_MODULE_INSTALL
-                ${HEADER_PATH}/api/Carbon/GraphicsHandleCarbon
-                ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon
-                ${HEADER_PATH}/api/Carbon/PixelBufferCarbon
-            )
-        ENDIF()
+    SET(LIB_EXTRA_LIBS ${COCOA_LIBRARY} ${AGL_LIBRARY} ${LIB_EXTRA_LIBS})
 
-        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
-            GraphicsWindowCarbon.cpp
-            DarwinUtils.h
-            DarwinUtils.mm
-            PixelBufferCarbon.cpp
+ELSEIF(${OSG_WINDOWING_SYSTEM} STREQUAL "IOS")
+
+    ADD_DEFINITIONS(-DUSE_IOS_IMPLEMENTATION)
+
+    IF(OSG_COMPILE_FRAMEWORKS)
+       SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
+             ${HEADER_PATH}/api/IOS/GraphicsWindowIOS
+         )
+
+        SET_PROPERTY(SOURCE ${HEADER_PATH}/api/IOS/GraphicsWindowIOS PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/IOS)
+    ELSE()
+        SET(TARGET_H_NO_MODULE_INSTALL
+            ${HEADER_PATH}/api/IOS/GraphicsWindowIOS
+            #${HEADER_PATH}/api/IOS/PixelBufferIOS
         )
+    ENDIF()
 
-        SET(LIB_EXTRA_LIBS ${COCOA_LIBRARY} ${AGL_LIBRARY} ${LIB_EXTRA_LIBS})
+    SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
+        GraphicsWindowIOS.mm
+        IOSUtils.h
+        IOSUtils.mm
+    )
 
-    ELSEIF(${OSG_WINDOWING_SYSTEM} STREQUAL "IOS")
+    SET(LIB_EXTRA_LIBS ${COCOA_LIBRARY} ${LIB_EXTRA_LIBS})
 
-        ADD_DEFINITIONS(-DUSE_IOS_IMPLEMENTATION)
+ELSEIF(${OSG_WINDOWING_SYSTEM} STREQUAL "X11")
+    # X11 for everybody else
+    INCLUDE(FindPkgConfig OPTIONAL)
+    IF(PKG_CONFIG_FOUND)
 
-        IF(OSG_COMPILE_FRAMEWORKS)
-           SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
-                 ${HEADER_PATH}/api/IOS/GraphicsWindowIOS
-             )
-
-            SET_PROPERTY(SOURCE ${HEADER_PATH}/api/IOS/GraphicsWindowIOS PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/IOS)
-        ELSE()
-            SET(TARGET_H_NO_MODULE_INSTALL
-                ${HEADER_PATH}/api/IOS/GraphicsWindowIOS
-                #${HEADER_PATH}/api/IOS/PixelBufferIOS
-            )
-        ENDIF()
-
-        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
-            GraphicsWindowIOS.mm
-            IOSUtils.h
-            IOSUtils.mm
-        )
-
-        SET(LIB_EXTRA_LIBS ${COCOA_LIBRARY} ${LIB_EXTRA_LIBS})
-
-    ELSEIF(${OSG_WINDOWING_SYSTEM} STREQUAL "X11")
-        # X11 for everybody else
-        INCLUDE(FindPkgConfig OPTIONAL)
-        IF(PKG_CONFIG_FOUND)
-
-            PKG_CHECK_MODULES(XRANDR xrandr)
-            IF(XRANDR_FOUND)
-                OPTION(OSGVIEWER_USE_XRANDR "Set to ON to enable Xrandr support for GraphicsWindowX11." ON)
-            ELSE()
-                SET(OSGVIEWER_USE_XRANDR OFF)
-            ENDIF()
-
-            PKG_CHECK_MODULES(XINERAMA xinerama)
-            IF(XINERAMA_FOUND)
-                SET(OSGVIEWER_USE_XINERAMA ON)
-            ELSE()
-                SET(OSGVIEWER_USE_XINERAMA OFF)
-            ENDIF()
+        PKG_CHECK_MODULES(XRANDR xrandr)
+        IF(XRANDR_FOUND)
+            OPTION(OSGVIEWER_USE_XRANDR "Set to ON to enable Xrandr support for GraphicsWindowX11." ON)
         ELSE()
             SET(OSGVIEWER_USE_XRANDR OFF)
+        ENDIF()
+
+        PKG_CHECK_MODULES(XINERAMA xinerama)
+        IF(XINERAMA_FOUND)
+            SET(OSGVIEWER_USE_XINERAMA ON)
+        ELSE()
             SET(OSGVIEWER_USE_XINERAMA OFF)
         ENDIF()
-
-        SET(TARGET_H_NO_MODULE_INSTALL
-            ${HEADER_PATH}/api/X11/GraphicsHandleX11
-            ${HEADER_PATH}/api/X11/GraphicsWindowX11
-            ${HEADER_PATH}/api/X11/PixelBufferX11
-        )
-
-        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
-            GraphicsWindowX11.cpp
-            PixelBufferX11.cpp
-        )
-
-        IF(OSGVIEWER_USE_XRANDR)
-            ADD_DEFINITIONS(-DOSGVIEWER_USE_XRANDR)
-            SET(LIB_PRIVATE_HEADERS ${LIB_PRIVATE_HEADERS} ${XRANDR_INCLUDE_DIRS} )
-
-            IF(X11_Xrandr_LIB)
-                SET(LIB_EXTRA_LIBS ${X11_Xrandr_LIB} ${LIB_EXTRA_LIBS})
-            ELSE()
-                SET(LIB_EXTRA_LIBS ${XRANDR_LIBRARIES} ${LIB_EXTRA_LIBS})
-            ENDIF()
-        ENDIF()
-
-        IF(OSGVIEWER_USE_XINERAMA)
-            ADD_DEFINITIONS(-DOSGVIEWER_USE_XINERAMA)
-            SET(LIB_PRIVATE_HEADERS ${LIB_PRIVATE_HEADERS} ${XINERAMA_INCLUDE_DIRS} )
-            SET(LIB_EXTRA_LIBS -lXinerama ${LIB_EXTRA_LIBS})
-        ENDIF()
-
-        # X11 on Apple requires X11 library plus OpenGL linking hack on Leopard
-        IF(APPLE)
-            # hack for finding the iphone opengl es lib
-            IF(OSG_BUILD_PLATFORM_IPHONE)
-              SET(OPENGL_INCLUDE_DIR ${IPHONE_SDKROOT}/System/Library/Frameworks)
-              SET(OPENGL_LIBRARIES ${IPHONE_SDKROOT}/System/Library/Frameworks/OpenGLES)
-            ELSE()
-              SET(LIB_EXTRA_LIBS ${X11_X11_LIB} ${LIB_EXTRA_LIBS})
-            ENDIF()
-
-        ELSE(APPLE)
-
-          SET(LIB_EXTRA_LIBS ${X11_X11_LIB} ${LIB_EXTRA_LIBS})
-        ENDIF(APPLE)
     ELSE()
-        MESSAGE(STATUS "Windowing system not supported")
+        SET(OSGVIEWER_USE_XRANDR OFF)
+        SET(OSGVIEWER_USE_XINERAMA OFF)
     ENDIF()
+
+    SET(TARGET_H_NO_MODULE_INSTALL
+        ${HEADER_PATH}/api/X11/GraphicsHandleX11
+        ${HEADER_PATH}/api/X11/GraphicsWindowX11
+        ${HEADER_PATH}/api/X11/PixelBufferX11
+    )
+
+    SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
+        GraphicsWindowX11.cpp
+        PixelBufferX11.cpp
+    )
+
+    IF(OSGVIEWER_USE_XRANDR)
+        ADD_DEFINITIONS(-DOSGVIEWER_USE_XRANDR)
+        SET(LIB_PRIVATE_HEADERS ${LIB_PRIVATE_HEADERS} ${XRANDR_INCLUDE_DIRS} )
+
+        IF(X11_Xrandr_LIB)
+            SET(LIB_EXTRA_LIBS ${X11_Xrandr_LIB} ${LIB_EXTRA_LIBS})
+        ELSE()
+            SET(LIB_EXTRA_LIBS ${XRANDR_LIBRARIES} ${LIB_EXTRA_LIBS})
+        ENDIF()
+    ENDIF()
+
+    IF(OSGVIEWER_USE_XINERAMA)
+        ADD_DEFINITIONS(-DOSGVIEWER_USE_XINERAMA)
+        SET(LIB_PRIVATE_HEADERS ${LIB_PRIVATE_HEADERS} ${XINERAMA_INCLUDE_DIRS} )
+        SET(LIB_EXTRA_LIBS -lXinerama ${LIB_EXTRA_LIBS})
+    ENDIF()
+
+    # X11 on Apple requires X11 library plus OpenGL linking hack on Leopard
+    IF(APPLE)
+        # hack for finding the iphone opengl es lib
+        IF(OSG_BUILD_PLATFORM_IPHONE)
+          SET(OPENGL_INCLUDE_DIR ${IPHONE_SDKROOT}/System/Library/Frameworks)
+          SET(OPENGL_LIBRARIES ${IPHONE_SDKROOT}/System/Library/Frameworks/OpenGLES)
+        ELSE()
+          SET(LIB_EXTRA_LIBS ${X11_X11_LIB} ${LIB_EXTRA_LIBS})
+        ENDIF()
+
+    ELSE(APPLE)
+
+      SET(LIB_EXTRA_LIBS ${X11_X11_LIB} ${LIB_EXTRA_LIBS})
+    ENDIF(APPLE)
+ELSE()
+    MESSAGE(STATUS "Windowing system not supported")
 ENDIF()
 
 

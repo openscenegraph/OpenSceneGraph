@@ -683,8 +683,8 @@ void WriterNodeVisitor::apply(osg::Group& node)
     {
         //ignore the root node to maintain same hierarchy
         _firstNodeProcessed = true;
-        traverse(node);		
-	}
+        traverse(node);
+    }
 }
 
 void WriterNodeVisitor::apply(osg::MatrixTransform& node)

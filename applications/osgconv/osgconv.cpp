@@ -792,12 +792,18 @@ int main( int argc, char **argv )
         itr != fileNames.end();
         ++itr)
     {
-        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(*itr);
-        if (object.valid())
-        {
-            if (object->asNode()) nodes.push_back(object->asNode());
-            else if (object->asImage()) images.push_back(object->asImage());
-            else objects.push_back(object);
+        // a few plugins don't implement readObjectFile
+        osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile(*itr);
+        if (node.valid()) {
+            nodes.push_back(node);
+        } else {
+            osg::ref_ptr<osg::Object> object = osgDB::readRefObjectFile(*itr);
+            if (object.valid())
+            {
+                if (object->asNode()) nodes.push_back(object->asNode());
+                else if (object->asImage()) images.push_back(object->asImage());
+                else objects.push_back(object);
+            }
         }
     }
 

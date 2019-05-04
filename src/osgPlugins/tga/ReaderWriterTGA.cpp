@@ -273,8 +273,9 @@ int *numComponents_ret)
     int flags;
     int format;
     unsigned char *colormap;
+    int colormapFirst = 0;
     int colormapLen = 0;
-    int indexsize = 0;
+    int colormapDepth = 0;
     int rleIsCompressed;
     int rleRemaining;
     int rleEntrySize;
@@ -283,6 +284,7 @@ int *numComponents_ret)
     unsigned char *dest;
     int bpr;
     unsigned char *linebuf;
+    int alphaBPP;
 
     tgaerror = ERR_NO_ERROR;     /* clear error */
 
@@ -296,8 +298,10 @@ int *numComponents_ret)
     type = header[2];
     width = getInt16(&header[12]);
     height = getInt16(&header[14]);
-    depth = header[16] >> 3;
+    // Add 7 as R5G5B5 images with no alpha data take up two bytes per pixel, but only 15 bits
+    depth = (header[16] + 7) >> 3;
     flags = header[17];
+    alphaBPP = flags & 0x0F;
 
     /* check for reasonable values in case this is not a tga file */
     if ((type != 1 && type != 2 && type != 10) ||
@@ -315,18 +319,25 @@ int *numComponents_ret)
     colormap = NULL;
     if (header[1] == 1)          /* there is a colormap */
     {
-        colormapLen = getInt16(&header[5]);
-        indexsize = header[7]>>3;
-        colormap = new unsigned char [colormapLen*indexsize];
-        fin.read((char*)colormap,colormapLen*indexsize);
-
-        if (indexsize == 2)          /* 16 bits */
+        colormapFirst = getInt16(&header[3]);
+        if (colormapFirst != 0)
         {
-            if (flags & 1) format = 4;
+            // Error on non-zero colormapFirst as it's unclear from the specification what it actually does
+            tgaerror = ERR_UNSUPPORTED;
+            return NULL;
+        }
+        colormapLen = getInt16(&header[5]);
+        colormapDepth = (header[7] + 7) >> 3;
+        colormap = new unsigned char[colormapLen*colormapDepth];
+        fin.read((char*)colormap, colormapLen*colormapDepth);
+
+        if (colormapDepth == 2)          /* 16 bits */
+        {
+            if (alphaBPP == 1) format = 4;
             else format = 3;
         }
         else
-            format = indexsize;
+            format = colormapDepth;
     }
     else
     {
@@ -360,7 +371,7 @@ int *numComponents_ret)
     {
         case 1:                  /* colormap, uncompressed */
         {
-            if (colormapLen == 0 || indexsize == 0)
+            if (colormapLen == 0 || colormapDepth == 0)
             {
                 tgaerror = ERR_UNSUPPORTED; /* colormap missing or empty */
 
@@ -373,7 +384,7 @@ int *numComponents_ret)
             unsigned char * formattedMap = new unsigned char[colormapLen * format];
             for (int i = 0; i < colormapLen; i++)
             {
-                convert_data(colormap, formattedMap, i, indexsize, format);
+                convert_data(colormap, formattedMap, i, colormapDepth, format);
             }
 
             int x, y;

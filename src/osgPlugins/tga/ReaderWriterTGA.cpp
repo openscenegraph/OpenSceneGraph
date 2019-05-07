@@ -356,6 +356,11 @@ int *numComponents_ret)
         colormapLen = getInt16(&header[5]);
         colormapDepth = (header[7] + 7) >> 3;
         colormap.reinitialise(colormapLen*colormapDepth);
+        if (colormap == NULL)
+        {
+            tgaerror = ERR_MEM;
+            return NULL;
+        }
         fin.read((char*)colormap, colormapLen*colormapDepth);
 
         if (colormapDepth == 2)          /* 16 bits */
@@ -387,6 +392,12 @@ int *numComponents_ret)
     bpr = format * width;
     SafeArray<unsigned char> linebuf(width * depth);
 
+    if (buffer == NULL || linebuf == NULL)
+    {
+        tgaerror = ERR_MEM;
+        return NULL;
+    }
+
     //check the intended image orientation
     bool bLeftToRight = (flags&0x10)==0;
     bool bTopToBottom = (flags&0x20)!=0;
@@ -404,6 +415,11 @@ int *numComponents_ret)
                 return NULL;
             }
             SafeArray<unsigned char> formattedMap(colormapLen * format);
+            if (formattedMap == NULL)
+            {
+                tgaerror = ERR_MEM;
+                return NULL;
+            }
             for (int i = 0; i < colormapLen; i++)
             {
                 convert_data(colormap, formattedMap, i, colormapDepth, format);

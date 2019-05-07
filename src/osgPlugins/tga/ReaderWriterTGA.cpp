@@ -258,6 +258,36 @@ const int rleEntrySize)
     }
 }
 
+template<typename T>
+struct SafeArray
+{
+    SafeArray() { impl = NULL; }
+    SafeArray(size_t size) { impl = new T[size]; }
+    ~SafeArray() { delete[] impl; }
+
+    T* release()
+    {
+        T* temp = impl;
+        impl = NULL;
+        return temp;
+    }
+
+    void reinitialise(size_t size)
+    {
+        delete[] impl;
+
+        impl = new T[size];
+    }
+
+    operator T*() { return impl; }
+
+    template<typename U>
+    explicit operator U() { return (U)impl; }
+
+private:
+    T* impl;
+};
+
 
 unsigned char *
 simage_tga_load(std::istream& fin,
@@ -272,7 +302,7 @@ int *numComponents_ret)
     int depth;
     int flags;
     int format;
-    unsigned char *colormap;
+    SafeArray<unsigned char> colormap;
     int colormapFirst = 0;
     int colormapLen = 0;
     int colormapDepth = 0;
@@ -280,10 +310,8 @@ int *numComponents_ret)
     int rleRemaining;
     int rleEntrySize;
     unsigned char rleCurrent[4];
-    unsigned char *buffer;
     unsigned char *dest;
     int bpr;
-    unsigned char *linebuf;
     int alphaBPP;
 
     tgaerror = ERR_NO_ERROR;     /* clear error */
@@ -316,7 +344,6 @@ int *numComponents_ret)
     if (header[0])               /* skip identification field */
         fin.seekg(header[0],std::ios::cur);
 
-    colormap = NULL;
     if (header[1] == 1)          /* there is a colormap */
     {
         colormapFirst = getInt16(&header[3]);
@@ -328,7 +355,7 @@ int *numComponents_ret)
         }
         colormapLen = getInt16(&header[5]);
         colormapDepth = (header[7] + 7) >> 3;
-        colormap = new unsigned char[colormapLen*colormapDepth];
+        colormap.reinitialise(colormapLen*colormapDepth);
         fin.read((char*)colormap, colormapLen*colormapDepth);
 
         if (colormapDepth == 2)          /* 16 bits */
@@ -355,10 +382,10 @@ int *numComponents_ret)
     rleIsCompressed = 0;
     rleRemaining = 0;
     rleEntrySize = depth;
-    buffer = new unsigned char [width*height*format];
+    SafeArray<unsigned char> buffer(width*height*format);
     dest = buffer;
     bpr = format * width;
-    linebuf = new unsigned char [width*depth];
+    SafeArray<unsigned char> linebuf(width * depth);
 
     //check the intended image orientation
     bool bLeftToRight = (flags&0x10)==0;
@@ -374,14 +401,9 @@ int *numComponents_ret)
             if (colormapLen == 0 || colormapDepth == 0)
             {
                 tgaerror = ERR_UNSUPPORTED; /* colormap missing or empty */
-
-                if (colormap) delete [] colormap;
-                delete [] buffer;
-                delete [] linebuf;
-
                 return NULL;
             }
-            unsigned char * formattedMap = new unsigned char[colormapLen * format];
+            SafeArray<unsigned char> formattedMap(colormapLen * format);
             for (int i = 0; i < colormapLen; i++)
             {
                 convert_data(colormap, formattedMap, i, colormapDepth, format);
@@ -394,7 +416,7 @@ int *numComponents_ret)
                 if (fin.gcount() != (std::streamsize) (width*depth))
                 {
                     tgaerror = ERR_READ;
-                    break;
+                    return NULL;
                 }
 
                 for (x = 0; x < width; x++)
@@ -416,7 +438,6 @@ int *numComponents_ret)
                         break;
                     default:
                         tgaerror = ERR_UNSUPPORTED;
-                        delete [] formattedMap;
                         return NULL; /* unreachable code - (depth < 1 || depth > 4) rejected by "check for reasonable values in case this is not a tga file" near the start of this function*/
                     }
 
@@ -426,8 +447,6 @@ int *numComponents_ret)
                 }
                 dest += lineoffset;
             }
-
-            delete [] formattedMap;
         }
         break;
         case 2:                  /* RGB, uncompressed */
@@ -439,7 +458,7 @@ int *numComponents_ret)
                 if (fin.gcount() != (std::streamsize) (width*depth))
                 {
                     tgaerror = ERR_READ;
-                    break;
+                    return NULL;
                 }
                 for (x = 0; x < width; x++)
                 {
@@ -455,13 +474,14 @@ int *numComponents_ret)
             int pos = fin.tellg();
 
             fin.seekg(0,std::ios::end);
+            // This is the size of the rest of the TGA file, not just the image section
             size = (int)fin.tellg() - pos;
             fin.seekg(pos,std::ios::beg);
-            unsigned char* buf = new unsigned char [size];
+            SafeArray<unsigned char> buf(size);
             if (buf == NULL)
             {
                 tgaerror = ERR_MEM;
-                break;
+                return NULL;
             }
             unsigned char* src = buf;
 
@@ -483,27 +503,21 @@ int *numComponents_ret)
             else
             {
                 tgaerror = ERR_READ;
+                return NULL;
             }
-            if (buf) delete [] buf;
         }
         break;
         default:
+        {
             tgaerror = ERR_UNSUPPORTED;
-    }
-
-    if (linebuf) delete [] linebuf;
-    if (colormap) delete [] colormap;
-
-    if (tgaerror)
-    {
-        if (buffer) delete [] buffer;
-        return NULL;
+            return NULL;
+        }
     }
 
     *width_ret = width;
     *height_ret = height;
     *numComponents_ret = format;
-    return buffer;
+    return buffer.release();
 }
 
 

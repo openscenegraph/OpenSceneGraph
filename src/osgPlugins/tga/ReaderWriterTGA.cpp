@@ -391,7 +391,7 @@ int *numComponents_ret)
     fin.seekg(18);
 
     /* check for reasonable values in case this is not a tga file */
-    if ((type != 1 && type != 2 && type != 10) ||
+    if ((type != 1 && type != 2 && type != 9 && type != 10) ||
         (width < 0 || width > 4096) ||
         (height < 0 || height > 4096) ||
         (depth < 1 || depth > 4))
@@ -561,6 +561,90 @@ int *numComponents_ret)
                     convert_data(linebuf, dest, bLeftToRight ? x : (width-1) - x, depth, format);
                 }
                 dest += lineoffset;
+            }
+        }
+        break;
+        case 9:                  /* colormap, compressed */
+        {
+            if (colormapLen == 0 || colormapDepth == 0)
+            {
+                tgaerror = ERR_UNSUPPORTED; /* colormap missing or empty */
+                return NULL;
+            }
+            SafeArray<unsigned char> formattedMap(colormapLen * format);
+            if (formattedMap == NULL)
+            {
+                tgaerror = ERR_MEM;
+                return NULL;
+            }
+            for (int i = 0; i < colormapLen; i++)
+            {
+                convert_data(colormap, formattedMap, i, colormapDepth, format);
+            }
+
+            int size, x, y;
+            int pos = fin.tellg();
+
+            fin.seekg(0, std::ios::end);
+            // This is the size of the rest of the TGA file, not just the image section
+            size = (int)fin.tellg() - pos;
+            fin.seekg(pos, std::ios::beg);
+            SafeArray<unsigned char> buf(size);
+            if (buf == NULL)
+            {
+                tgaerror = ERR_MEM;
+                return NULL;
+            }
+            unsigned char* src = buf;
+
+            fin.read((char*)buf, size);
+            if (fin.gcount() == (std::streamsize)size)
+            {
+                for (y = 0; y < height; y++)
+                {
+                    rle_decode(&src, linebuf, width*depth, &rleRemaining,
+                        &rleIsCompressed, rleCurrent, rleEntrySize);
+                    assert(src <= buf + size);
+
+                    for (x = 0; x < width; x++)
+                    {
+                        int index;
+                        switch (depth)
+                        {
+                        case 1:
+                            index = linebuf[x];
+                            break;
+                        case 2:
+                            index = getInt16(linebuf + x * 2);
+                            break;
+                        case 3:
+                            index = getInt24(linebuf + x * 3);
+                            break;
+                        case 4:
+                            index = getInt32(linebuf + x * 4);
+                            break;
+                        default:
+                            tgaerror = ERR_UNSUPPORTED;
+                            return NULL; /* unreachable code - (depth < 1 || depth > 4) rejected by "check for reasonable values in case this is not a tga file" near the start of this function*/
+                        }
+
+                        if (index >= colormapLen)
+                        {
+                            tgaerror = ERR_UNSUPPORTED;
+                            return NULL;
+                        }
+
+                        int adjustedX = bLeftToRight ? x : (width - 1) - x;
+                        for (int i = 0; i < format; i++)
+                            (dest + adjustedX * format)[i] = (formattedMap + index * format)[i];
+                    }
+                    dest += lineoffset;
+                }
+            }
+            else
+            {
+                tgaerror = ERR_READ;
+                return NULL;
             }
         }
         break;

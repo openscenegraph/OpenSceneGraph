@@ -76,6 +76,15 @@ simage_tga_error(char * buffer, int buflen)
     return tgaerror;
 }
 
+enum AttributeType
+{
+    NO_ALPHA = 0,
+    ALPHA_UNDEFINED_IGNORE = 1,
+    ALPHA_UNDEFINED_KEEP = 2,
+    ALPHA_PRESENT = 3,
+    ALPHA_PREMULTIPLIED = 4,
+    ATTRIBUTE_TYPE_UNSET = 256 // Out of range of values possible in file
+};
 
 /* TODO: */
 /* - bottom-up images */
@@ -133,6 +142,16 @@ convert_32_to_32(const unsigned char * const src, unsigned char * const dest)
     dest[3] = src[3];
 }
 
+static void
+convert_32_to_24(const unsigned char * const src, unsigned char * const dest)
+{
+    /* opengl image format is RGB */
+    /* TGA image format is BGRA (with A as attribute, not alpha) for 32 bit */
+    dest[0] = src[2];
+    dest[1] = src[1];
+    dest[2] = src[0];
+}
+
 
 static void
 convert_data(const unsigned char * const src, unsigned char * const dest,
@@ -159,9 +178,16 @@ const int destformat)
     }
     else
     {
-        assert(srcformat == 4 && destformat == 4);
-        convert_32_to_32(src+x*srcformat,
-            dest+x*destformat);
+        assert(srcformat == 4);
+        if (destformat == 3)
+            convert_32_to_24(src + x * srcformat,
+                dest + x * destformat);
+        else
+        {
+            assert(destformat == 4);
+            convert_32_to_32(src + x * srcformat,
+                dest + x * destformat);
+        }
     }
 }
 
@@ -296,6 +322,7 @@ int *height_ret,
 int *numComponents_ret)
 {
     unsigned char header[18];
+    unsigned char footer[26];
     int type;
     int width;
     int height;
@@ -313,6 +340,7 @@ int *numComponents_ret)
     unsigned char *dest;
     int bpr;
     int alphaBPP;
+    AttributeType attributeType = ATTRIBUTE_TYPE_UNSET;
 
     tgaerror = ERR_NO_ERROR;     /* clear error */
 
@@ -330,6 +358,37 @@ int *numComponents_ret)
     depth = (header[16] + 7) >> 3;
     flags = header[17];
     alphaBPP = flags & 0x0F;
+
+    fin.seekg(-26, std::ios::end);
+    fin.read((char*)footer, 26);
+    if (fin.gcount() != 26)
+    {
+        tgaerror = ERR_READ;
+        return NULL;
+    }
+
+    // TGA footer signature is null-terminated, so works like a C string
+    if (strcmp((char*)&footer[8], "TRUEVISION-XFILE.") == 0)
+    {
+        unsigned int extensionAreaOffset = getInt32(&footer[0]);
+        unsigned int developerAreaOffset = getInt32(&footer[4]);
+
+        if (extensionAreaOffset != 0)
+        {
+            fin.seekg(extensionAreaOffset + 494);
+            char attrType;
+            fin.read(&attrType, 1);
+            if (fin.gcount() != 1)
+            {
+                tgaerror = ERR_READ;
+                return NULL;
+            }
+
+            attributeType = (AttributeType) attrType;
+        }
+    }
+
+    fin.seekg(18);
 
     /* check for reasonable values in case this is not a tga file */
     if ((type != 1 && type != 2 && type != 10) ||
@@ -365,20 +424,41 @@ int *numComponents_ret)
 
         if (colormapDepth == 2)          /* 16 bits */
         {
-            if (alphaBPP == 1) format = 4;
-            else format = 3;
+            if (alphaBPP == 1 && (attributeType == ALPHA_PRESENT || attributeType == ALPHA_PREMULTIPLIED || attributeType == ATTRIBUTE_TYPE_UNSET))
+                format = 4;
+            else
+                format = 3;
         }
+        else if (colormapDepth == 3)
+            format = 3;
         else
-            format = colormapDepth;
+        {
+            assert(colormapDepth == 4);
+            if (attributeType == ALPHA_PRESENT || attributeType == ALPHA_PREMULTIPLIED || attributeType == ATTRIBUTE_TYPE_UNSET)
+                format = 4;
+            else
+                format = 3;
+        }
     }
     else
     {
         if (depth == 2)              /* 16 bits */
         {
-            if (flags & 1) format = 4;
-            else format = 3;
+            if (alphaBPP == 1 && (attributeType == ALPHA_PRESENT || attributeType == ALPHA_PREMULTIPLIED || attributeType == ATTRIBUTE_TYPE_UNSET))
+                format = 4;
+            else
+                format = 3;
         }
-        else format = depth;
+        else if (depth == 3)
+            format = 3;
+        else
+        {
+            assert(depth == 4);
+            if (attributeType == ALPHA_PRESENT || attributeType == ALPHA_PREMULTIPLIED || attributeType == ATTRIBUTE_TYPE_UNSET)
+                format = 4;
+            else
+                format = 3;
+        }
     }
 
     /*    SoDebugError::postInfo("simage_tga_load", "TARGA file: %d %d %d %d %d\n",  */

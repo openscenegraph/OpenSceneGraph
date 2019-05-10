@@ -341,6 +341,7 @@ int *numComponents_ret)
     int bpr;
     int alphaBPP;
     AttributeType attributeType = ATTRIBUTE_TYPE_UNSET;
+    std::streampos endOfImage;
 
     tgaerror = ERR_NO_ERROR;     /* clear error */
 
@@ -360,6 +361,7 @@ int *numComponents_ret)
     alphaBPP = flags & 0x0F;
 
     fin.seekg(-26, std::ios::end);
+    endOfImage = fin.tellg() + (std::streamoff)26;
     fin.read((char*)footer, 26);
     if (fin.gcount() != 26)
     {
@@ -370,22 +372,40 @@ int *numComponents_ret)
     // TGA footer signature is null-terminated, so works like a C string
     if (strcmp((char*)&footer[8], "TRUEVISION-XFILE.") == 0)
     {
+        endOfImage -= 26;
         unsigned int extensionAreaOffset = getInt32(&footer[0]);
         unsigned int developerAreaOffset = getInt32(&footer[4]);
 
         if (extensionAreaOffset != 0)
         {
-            fin.seekg(extensionAreaOffset + 494);
-            char attrType;
-            fin.read(&attrType, 1);
-            if (fin.gcount() != 1)
+            endOfImage = std::min(endOfImage, (std::streampos)extensionAreaOffset);
+            
+            // We only need the last few fields of the extension area
+            fin.seekg(extensionAreaOffset + 482);
+            unsigned char extensionAreaBuffer[13];
+            fin.read((char*)extensionAreaBuffer, 13);
+            if (fin.gcount() != 13)
             {
                 tgaerror = ERR_READ;
                 return NULL;
             }
 
-            attributeType = (AttributeType) attrType;
+            unsigned int colorCorrectionOffset = getInt32(&extensionAreaBuffer[0]);
+            unsigned int postageStampOffset = getInt32(&extensionAreaBuffer[4]);
+            unsigned int scanLineOffset = getInt32(&extensionAreaBuffer[8]);
+
+            if (colorCorrectionOffset != 0)
+                endOfImage = std::min(endOfImage, (std::streampos)colorCorrectionOffset);
+            if (postageStampOffset != 0)
+                endOfImage = std::min(endOfImage, (std::streampos)postageStampOffset);
+            if (scanLineOffset != 0)
+                endOfImage = std::min(endOfImage, (std::streampos)scanLineOffset);
+
+            attributeType = (AttributeType) extensionAreaBuffer[12];
         }
+
+        if (developerAreaOffset != 0)
+            endOfImage = std::min(endOfImage, (std::streampos)developerAreaOffset);
     }
 
     fin.seekg(18);
@@ -583,12 +603,10 @@ int *numComponents_ret)
             }
 
             int size, x, y;
-            int pos = fin.tellg();
+            std::streampos pos = fin.tellg();
 
-            fin.seekg(0, std::ios::end);
-            // This is the size of the rest of the TGA file, not just the image section
-            size = (int)fin.tellg() - pos;
-            fin.seekg(pos, std::ios::beg);
+            size = (int)(endOfImage - pos);
+
             SafeArray<unsigned char> buf(size);
             if (buf == NULL)
             {
@@ -651,12 +669,9 @@ int *numComponents_ret)
         case 10:                 /* RGB, compressed */
         {
             int size, x, y;
-            int pos = fin.tellg();
+            std::streampos pos = fin.tellg();
 
-            fin.seekg(0,std::ios::end);
-            // This is the size of the rest of the TGA file, not just the image section
-            size = (int)fin.tellg() - pos;
-            fin.seekg(pos,std::ios::beg);
+            size = (int)(endOfImage - pos);
             SafeArray<unsigned char> buf(size);
             if (buf == NULL)
             {

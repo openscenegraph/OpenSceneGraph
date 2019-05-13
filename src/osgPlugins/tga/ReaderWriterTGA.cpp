@@ -158,35 +158,52 @@ convert_data(const unsigned char * const src, unsigned char * const dest,
 const int x, const int srcformat,
 const int destformat)
 {
-    if (srcformat == 2)
+    if (destformat > 2) /* color */
     {
-        if (destformat == 3)
-            convert_16_to_24(src+x*srcformat,
-                dest+x*destformat);
+        if (srcformat == 2)
+        {
+            if (destformat == 3)
+                convert_16_to_24(src + x * srcformat,
+                    dest + x * destformat);
+            else
+            {
+                assert(destformat == 4);
+                convert_16_to_32(src + x * srcformat,
+                    dest + x * destformat);
+            }
+        }
+        else if (srcformat == 3)
+        {
+            assert(destformat == 3);
+            convert_24_to_24(src + x * srcformat,
+                dest + x * destformat);
+        }
         else
         {
-            assert(destformat == 4);
-            convert_16_to_32(src+x*srcformat,
-                dest+x*destformat);
+            assert(srcformat == 4);
+            if (destformat == 3)
+                convert_32_to_24(src + x * srcformat,
+                    dest + x * destformat);
+            else
+            {
+                assert(destformat == 4);
+                convert_32_to_32(src + x * srcformat,
+                    dest + x * destformat);
+            }
         }
-    }
-    else if (srcformat == 3)
-    {
-        assert(destformat == 3);
-        convert_24_to_24(src+x*srcformat,
-            dest+x*destformat);
     }
     else
     {
-        assert(srcformat == 4);
-        if (destformat == 3)
-            convert_32_to_24(src + x * srcformat,
-                dest + x * destformat);
+        if (destformat == 1)
+        {
+            assert(srcformat == 1 || srcformat == 2);
+            (dest + x * destformat)[0] = (src + x * srcformat)[0];
+        }
         else
         {
-            assert(destformat == 4);
-            convert_32_to_32(src + x * srcformat,
-                dest + x * destformat);
+            assert(srcformat == 2 && destformat == 2);
+            (dest + x * destformat)[0] = (src + x * srcformat)[0];
+            (dest + x * destformat)[1] = (src + x * srcformat)[1];
         }
     }
 }
@@ -411,7 +428,7 @@ int *numComponents_ret)
     fin.seekg(18);
 
     /* check for reasonable values in case this is not a tga file */
-    if ((type != 1 && type != 2 && type != 9 && type != 10) ||
+    if ((type != 1 && type != 2 && type != 3 && type != 9 && type != 10 && type != 11) ||
         (width < 0 || width > 4096) ||
         (height < 0 || height > 4096) ||
         (depth < 1 || depth > 4))
@@ -460,7 +477,7 @@ int *numComponents_ret)
                 format = 3;
         }
     }
-    else
+    else if ((type & ~8) != 3)       /* color image */
     {
         if (depth == 2)              /* 16 bits */
         {
@@ -478,6 +495,19 @@ int *numComponents_ret)
                 format = 4;
             else
                 format = 3;
+        }
+    }
+    else                             /* greyscale image */
+    {
+        if (depth == 1)
+            format = 1;
+        else
+        {
+            assert(depth == 2);
+            if (attributeType == ALPHA_PRESENT || attributeType == ALPHA_PREMULTIPLIED || attributeType == ATTRIBUTE_TYPE_UNSET)
+                format = 2;
+            else
+                format = 1;
         }
     }
 
@@ -566,6 +596,7 @@ int *numComponents_ret)
         }
         break;
         case 2:                  /* RGB, uncompressed */
+        case 3:                  /* greyscale, uncompressed */
         {
             int x, y;
             for (y = 0; y < height; y++)
@@ -667,6 +698,7 @@ int *numComponents_ret)
         }
         break;
         case 10:                 /* RGB, compressed */
+        case 11:                 /* greyscale, compressed */
         {
             int size, x, y;
             std::streampos pos = fin.tellg();

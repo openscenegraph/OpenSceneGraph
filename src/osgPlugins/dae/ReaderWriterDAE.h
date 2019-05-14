@@ -40,7 +40,18 @@ public:
 
     const char* className() const { return "COLLADA 1.4.x DAE reader/writer"; }
 
+    virtual ReadResult readObject(std::istream& fin, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(fin, options);
+    }
+
     ReadResult readNode(std::istream&, const Options* = NULL) const;
+
+    virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(fileName, options);
+    }
+
     ReadResult readNode(const std::string&, const Options* = NULL) const;
 
     WriteResult writeNode(const osg::Node&, const std::string&, const Options* = NULL) const;

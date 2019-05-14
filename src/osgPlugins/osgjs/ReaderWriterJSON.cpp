@@ -76,6 +76,11 @@ public:
 
     virtual const char* className() const { return "OSGJS json Writer"; }
 
+    virtual ReadResult readObject(const std::string& filename, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(filename, options);
+    }
+
     virtual ReadResult readNode(const std::string& fileName, const Options* options) const;
 
     virtual WriteResult writeNode(const Node& node,

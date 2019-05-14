@@ -34,6 +34,11 @@ class ReaderWriterLAS : public osgDB::ReaderWriter
 
         virtual const char* className() const { return "LAS point cloud reader"; }
 
+        virtual ReadResult readObject(const std::string& filename, const osgDB::ReaderWriter::Options* options) const
+        {
+            return readNode(filename, options);
+        }
+
         virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const 
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
@@ -51,7 +56,12 @@ class ReaderWriterLAS : public osgDB::ReaderWriter
             return readNode(ifs, options);
         }
 
-        virtual ReadResult readNode(std::istream& ifs, const Options* options) const {
+        virtual ReadResult readObject(std::istream& fin, const osgDB::ReaderWriter::Options* options) const
+        {
+            return readNode(fin, options);
+        }
+
+       virtual ReadResult readNode(std::istream& ifs, const Options* options) const {
             // Reading options
             bool _verbose = false;
             bool _scale = true;

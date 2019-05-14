@@ -45,6 +45,12 @@ public:
     }
 
     virtual const char* className() const { return "ReaderWriterPLY"; }
+    
+    virtual ReadResult readObject(const std::string& filename, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(filename, options);
+    }
+
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
 protected:
 };

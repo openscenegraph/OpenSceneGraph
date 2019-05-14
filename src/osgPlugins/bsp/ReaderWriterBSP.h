@@ -18,6 +18,11 @@ public:
 
     virtual bool   acceptsExtension(const std::string& extension) const;
 
+    virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(fileName, options);
+    }
+
     virtual ReadResult   readNode(const std::string& file,
                                   const Options* options) const;
 };

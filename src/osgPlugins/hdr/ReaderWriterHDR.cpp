@@ -69,6 +69,11 @@ public:
 
     virtual const char* className() const { return "HDR Image Reader"; }
 
+    virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readImage(file, options);
+    }
+
     virtual ReadResult readImage(const std::string &_file, const osgDB::ReaderWriter::Options *_opts) const
     {
         std::string filepath = osgDB::findDataFile(_file, _opts);

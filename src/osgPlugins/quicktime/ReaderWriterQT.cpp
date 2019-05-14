@@ -209,6 +209,11 @@ public:
          acceptsLiveExtension(extension);
    }
 
+   virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+   {
+       return readImage(file,options);
+   }
+
    virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
    {
       std::string ext = osgDB::getLowerCaseFileExtension(file);
@@ -362,6 +367,11 @@ public:
       _qtExitObserver.addMedia(image.get());
 
       return image.release();
+   }
+
+   virtual ReadResult readObject(std::istream& fin, const Options* options) const
+   {
+       return readImage(fin,options);
    }
 
     virtual ReadResult readImage (std::istream& is, const osgDB::ReaderWriter::Options* options=NULL) const

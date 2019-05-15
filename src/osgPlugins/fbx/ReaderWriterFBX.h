@@ -33,7 +33,7 @@ public:
         return readNode(filename, options);
     }
 
-    virtual WriteResult writObject(const osg::Node& node, const std::string& filename, const Options* options) const
+    virtual WriteResult writeObject(const osg::Node& node, const std::string& filename, const Options* options) const
     {
         return writeNode(node, filename, options);
     }

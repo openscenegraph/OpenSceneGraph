@@ -565,7 +565,7 @@ namespace {
 
         return ad.get();
     }
-}// anonumous namespace
+}// anonymous namespace
 
 void VertexArrayState::assignVertexArrayDispatcher()
 {

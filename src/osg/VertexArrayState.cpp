@@ -562,7 +562,19 @@ bool VertexArrayState::correctArrayDispatchAssigned(const ArrayDispatch* ad)
 #else
     return ad!=0;
 #endif
- }
+}
+
+namespace {
+    VertexArrayState::ArrayDispatch* getOrCreateVertexAttributeDispatch(VertexArrayState::ArrayDispatchList& list, int slot)
+    {
+        list.resize(slot + 1);
+        osg::ref_ptr<VertexArrayState::ArrayDispatch>& ad = list[slot];
+        if (!ad.valid())
+            ad = new VertexAttribArrayDispatch(slot);
+
+        return ad.get();
+    }
+}// anonymous namespace
 
 void VertexArrayState::assignVertexArrayDispatcher()
 {
@@ -576,9 +588,9 @@ void VertexArrayState::assignVertexArrayDispatcher()
     else
 #endif
     {
-        if (_vertexArray.valid()) return;
-        VAS_NOTICE<<"VertexArrayState::assignVertexArrayDispatcher() _state->getVertexAlias()._location="<<_state->getVertexAlias()._location<<std::endl;
-        _vertexArray = new VertexAttribArrayDispatch(_state->getVertexAlias()._location);
+        int slot = _state->getVertexAlias()._location;
+        VAS_NOTICE << "VertexArrayState::assignVertexArrayDispatcher() _state->getVertexAlias()._location = " << slot << std::endl;
+        _vertexArray = getOrCreateVertexAttributeDispatch(_vertexAttribArrays, slot);
     }
 }
 
@@ -594,8 +606,9 @@ void VertexArrayState::assignNormalArrayDispatcher()
     else
 #endif
     {
-        VAS_NOTICE<<"VertexArrayState::assignNormalArrayDispatcher() _state->getNormalAlias()._location="<<_state->getNormalAlias()._location<<std::endl;
-        _normalArray = new VertexAttribArrayDispatch(_state->getNormalAlias()._location);
+        int slot = _state->getNormalAlias()._location;
+        VAS_NOTICE << "VertexArrayState::assignNormalArrayDispatcher() _state->getNormalAlias()._location = " << slot << std::endl;
+        _normalArray = getOrCreateVertexAttributeDispatch(_vertexAttribArrays, slot);
     }
 }
 
@@ -611,8 +624,9 @@ void VertexArrayState::assignColorArrayDispatcher()
     else
 #endif
     {
-        VAS_NOTICE<<"VertexArrayState::assignColorArrayDispatcher() _state->getColorAlias()._location="<<_state->getColorAlias()._location<<std::endl;
-        _colorArray = new VertexAttribArrayDispatch(_state->getColorAlias()._location);
+        int slot = _state->getColorAlias()._location;
+        VAS_NOTICE << "VertexArrayState::assignColorArrayDispatcher() _state->getColorAlias()._location = " << slot << std::endl;
+        _colorArray = getOrCreateVertexAttributeDispatch(_vertexAttribArrays, slot);
     }
 }
 
@@ -628,7 +642,9 @@ void VertexArrayState::assignSecondaryColorArrayDispatcher()
     else
 #endif
     {
-        _secondaryColorArray = new VertexAttribArrayDispatch(_state->getSecondaryColorAlias()._location);
+        int slot = _state->getSecondaryColorAlias()._location;
+        VAS_NOTICE << "VertexArrayState::assignSecondaryColorArrayDispatcher() _state->getSecondaryColorAlias()._location = " << slot << std::endl;
+        _secondaryColorArray = getOrCreateVertexAttributeDispatch(_vertexAttribArrays, slot);
     }
 }
 
@@ -644,7 +660,9 @@ void VertexArrayState::assignFogCoordArrayDispatcher()
     else
 #endif
     {
-        _fogCoordArray = new VertexAttribArrayDispatch(_state->getFogCoordAlias()._location);
+        int slot = _state->getFogCoordAlias()._location;
+        VAS_NOTICE << "VertexArrayState::assignFogCoordArrayDispatcher() _state->getFogCoordAlias()._location = " << slot << std::endl;
+        _fogCoordArray = getOrCreateVertexAttributeDispatch(_vertexAttribArrays, slot);
     }
 }
 
@@ -664,7 +682,9 @@ void VertexArrayState::assignTexCoordArrayDispatcher(unsigned int numUnits)
         else
 #endif
         {
-            _texCoordArrays[i] = new VertexAttribArrayDispatch(_state->getTexCoordAliasList()[i]._location);
+            int slot = _state->getTexCoordAliasList()[i]._location;
+            VAS_NOTICE << "VertexArrayState::assignTexCoordArrayDispatcher() _state->getTexCoordAliasList()[" << i << "]._location = " << slot << std::endl;
+            _texCoordArrays[i] = getOrCreateVertexAttributeDispatch(_vertexAttribArrays, slot);
         }
     }
 }
@@ -686,13 +706,14 @@ void VertexArrayState::assignAllDispatchers()
     unsigned int numUnits = 8;
     unsigned int numVertexAttrib = 16;
 
+    assignVertexAttribArrayDispatcher(numVertexAttrib);
+
     assignVertexArrayDispatcher();
     assignNormalArrayDispatcher();
     assignColorArrayDispatcher();
     assignSecondaryColorArrayDispatcher();
     assignFogCoordArrayDispatcher();
     assignTexCoordArrayDispatcher(numUnits);
-    assignVertexAttribArrayDispatcher(numVertexAttrib);
 }
 
 void VertexArrayState::release()

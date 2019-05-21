@@ -112,7 +112,7 @@ int main(int argc, char** argv)
         while (arguments.read("-p",pathfile))
         {
             osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
-            if (apm || !apm->valid())
+            if (apm && !apm->getAnimationPath()->empty())
             {
                 apm->setTimeScale(animationSpeed);
 

@@ -71,6 +71,7 @@ public:
         supportsOption("BUMP=<unit>", "Set texture unit for bumpmap texture");
         supportsOption("DISPLACEMENT=<unit>", "Set texture unit for displacement texture");
         supportsOption("REFLECTION=<unit>", "Set texture unit for reflection texture");
+        supportsOption("NsIfNotPresent=<value>", "set specular exponent if not present");
 
     }
 
@@ -145,6 +146,7 @@ protected:
         // otherwise overriden
         typedef std::vector< std::pair<int,obj::Material::Map::TextureMapType> > TextureAllocationMap;
         TextureAllocationMap textureUnitAllocation;
+        int specularExponent;
 
         ObjOptionsStruct()
         {
@@ -154,6 +156,7 @@ protected:
             generateFacetNormals = false;
             fixBlackMaterials = true;
             noReverseFaces = false;
+            specularExponent = -1;
         }
     };
 
@@ -349,7 +352,8 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
             } else {
                 osg_material->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0,0,0,1));
             }
-            osg_material->setShininess(osg::Material::FRONT_AND_BACK,(material.Ns/1000.0f)*128.0f ); // note OBJ shiniess is 0..1000.
+            int ns = material.Ns != -1 ? material.Ns : localOptions.specularExponent != -1 ? localOptions.specularExponent : 0;
+            osg_material->setShininess(osg::Material::FRONT_AND_BACK,(ns/1000.0f)*128.0f ); // note OBJ shiniess is 0..1000.
 
             if (material.ambient[3]!=1.0 ||
                 material.diffuse[3]!=1.0 ||
@@ -872,6 +876,11 @@ ReaderWriterOBJ::ObjOptionsStruct ReaderWriterOBJ::parseOptions(const osgDB::Rea
             else if (pre_equals == "noReverseFaces")
             {
                 localOptions.noReverseFaces = true;
+            }
+            else if (pre_equals == "NsIfNotPresent")
+            {
+                int value = atoi(post_equals.c_str());
+                localOptions.specularExponent = value ;
             }
             else if (post_equals.length()>0)
             {

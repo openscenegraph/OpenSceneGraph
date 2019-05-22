@@ -133,7 +133,8 @@ public:
 
 protected:
 
-     struct ObjOptionsStruct {
+     class ObjOptionsStruct {
+     public:
         bool rotate;
         bool noTesselateLargePolygons;
         bool noTriStripPolygons;
@@ -144,6 +145,16 @@ protected:
         // otherwise overriden
         typedef std::vector< std::pair<int,obj::Material::Map::TextureMapType> > TextureAllocationMap;
         TextureAllocationMap textureUnitAllocation;
+
+        ObjOptionsStruct()
+        {
+            rotate = true;
+            noTesselateLargePolygons = false;
+            noTriStripPolygons = false;
+            generateFacetNormals = false;
+            fixBlackMaterials = true;
+            noReverseFaces = false;
+        }
     };
 
     typedef std::map< std::string, osg::ref_ptr<osg::StateSet> > MaterialToStateSetMap;
@@ -820,12 +831,6 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, ObjOptio
 ReaderWriterOBJ::ObjOptionsStruct ReaderWriterOBJ::parseOptions(const osgDB::ReaderWriter::Options* options) const
 {
     ObjOptionsStruct localOptions;
-    localOptions.rotate = true;
-    localOptions.noTesselateLargePolygons = false;
-    localOptions.noTriStripPolygons = false;
-    localOptions.generateFacetNormals = false;
-    localOptions.fixBlackMaterials = true;
-    localOptions.noReverseFaces = false;
 
     if (options!=NULL)
     {

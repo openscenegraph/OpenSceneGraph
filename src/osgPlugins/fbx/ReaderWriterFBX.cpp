@@ -308,7 +308,6 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
                 localOptions = options->cloneOptions();
             else
                 localOptions = new osgDB::Options();
-            localOptions->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_IMAGES);
 
             std::string filePath = osgDB::getFilePath(filename);
             FbxMaterialToOsgStateSet fbxMaterialToOsgStateSet(filePath, localOptions.get(), lightmapTextures);

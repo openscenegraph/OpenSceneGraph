@@ -58,7 +58,7 @@ static bool writeDefaultParticleTemplate( osgDB::OutputStream& os, const osgPart
 REGISTER_OBJECT_WRAPPER( osgParticleParticleSystem,
                          new osgParticle::ParticleSystem,
                          osgParticle::ParticleSystem,
-                         "osg::Object osg::Drawable osgParticle::ParticleSystem" )
+                         "osg::Object osg::Node osg::Drawable osgParticle::ParticleSystem" )
 {
     ADD_USER_SERIALIZER( DefaultBoundingBox );  // _def_bbox
 

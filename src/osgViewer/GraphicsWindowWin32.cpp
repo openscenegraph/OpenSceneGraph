@@ -688,6 +688,16 @@ class Win32KeyboardMap
 static Win32KeyboardMap s_win32KeyboardMap;
 static int remapWin32Key(int key)
 {
+    bool numlockIsActive = static_cast<bool>(GetKeyState(VK_NUMLOCK) & 0x1);
+    if (numlockIsActive)
+    {
+        if (key >= VK_NUMPAD0 && key <= VK_NUMPAD9)
+            return key - VK_NUMPAD0 + osgGA::GUIEventAdapter::KEY_KP_0;
+
+        if (key == VK_DECIMAL)
+            return osgGA::GUIEventAdapter::KEY_KP_Decimal;
+    }
+
     return s_win32KeyboardMap.remapKey(key);
 }
 

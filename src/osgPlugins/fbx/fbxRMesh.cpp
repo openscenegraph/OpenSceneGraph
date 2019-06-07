@@ -476,17 +476,17 @@ std::string getUVChannelForTextureMap(std::vector<StateSetContent>& stateSetList
     {
         if (stateSetList[i].diffuse.valid() && (0 == strcmp(pName, FbxSurfaceMaterial::sDiffuse)))
             return stateSetList[i].diffuse->channel;
-        if (stateSetList[i].shininess.valid() && (0 == strcmp(pName, FbxSurfaceMaterial::sTransparentColor)))
+        if (stateSetList[i].opacity.valid() && (0 == strcmp(pName, FbxSurfaceMaterial::sTransparentColor)))
             return stateSetList[i].opacity->channel;
-        if (stateSetList[i].shininess.valid() && (0 == strcmp(pName, FbxSurfaceMaterial::sReflection)))
+        if (stateSetList[i].reflection.valid() && (0 == strcmp(pName, FbxSurfaceMaterial::sReflection)))
             return stateSetList[i].reflection->channel;
-        if (stateSetList[i].shininess.valid() && (0 == strcmp(pName, FbxSurfaceMaterial::sEmissive)))
+        if (stateSetList[i].emissive.valid() && (0 == strcmp(pName, FbxSurfaceMaterial::sEmissive)))
             return stateSetList[i].emissive->channel;
-        if (stateSetList[i].shininess.valid() && (0 == strcmp(pName, FbxSurfaceMaterial::sAmbient)))
+        if (stateSetList[i].ambient.valid() && (0 == strcmp(pName, FbxSurfaceMaterial::sAmbient)))
             return stateSetList[i].ambient->channel;
-        if (stateSetList[i].shininess.valid() && (0 == strcmp(pName, FbxSurfaceMaterial::sNormalMap)))
+        if (stateSetList[i].normalMap.valid() && (0 == strcmp(pName, FbxSurfaceMaterial::sNormalMap)))
             return stateSetList[i].normalMap->channel;
-        if (stateSetList[i].shininess.valid() && (0 == strcmp(pName, FbxSurfaceMaterial::sSpecular)))
+        if (stateSetList[i].specular.valid() && (0 == strcmp(pName, FbxSurfaceMaterial::sSpecular)))
             return stateSetList[i].specular->channel;
         if (stateSetList[i].shininess.valid() && (0 == strcmp(pName, FbxSurfaceMaterial::sShininess)))
             return stateSetList[i].shininess->channel;

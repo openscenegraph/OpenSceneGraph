@@ -62,8 +62,9 @@ protected:
     // Return true if the manipulator is std::endl
     bool isEndl( std::ostream& (*fn)(std::ostream&) )
     {
-#ifdef __sun
+#if defined (__sun) || (defined _WIN32 && !defined OSG_LIBRARY_STATIC)
         // What a mess, but solaris does not like taking the address below
+        // windows std::endl is a template with different adresses in different dll's
         std::stringstream ss;
         ss << fn;
         std::string s = ss.str();

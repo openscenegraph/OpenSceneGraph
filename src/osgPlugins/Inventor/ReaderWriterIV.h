@@ -19,8 +19,19 @@ class ReaderWriterIV : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension, "iv") ? true : false;
         }
 
+        virtual ReadResult readObject(const std::string& filename, const osgDB::ReaderWriter::Options* options) const
+        {
+            return readNode(filename, options);
+        }
+
         virtual ReadResult readNode(const std::string& filename,
                                     const osgDB::ReaderWriter::Options*) const;
+
+        virtual ReadResult readObject(std::istream& fin, const osgDB::ReaderWriter::Options* options) const
+        {
+            return readNode(fin, options);
+        }
+
         virtual ReadResult readNode(std::istream& fin,
                                     const osgDB::ReaderWriter::Options* = NULL) const;
 

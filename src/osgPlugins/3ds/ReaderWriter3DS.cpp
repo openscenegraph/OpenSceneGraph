@@ -171,7 +171,18 @@ public:
 
     virtual const char* className() const { return "3DS Auto Studio Reader/Writer"; }
 
+    virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(fileName, options);
+    }
+
     virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const;
+    virtual ReadResult readObject(std::istream& fin, const Options* options) const
+    {
+        return readNode(fin, options);
+    }
+
+
     virtual ReadResult readNode(std::istream& fin, const Options* options) const;
     virtual ReadResult doReadNode(std::istream& fin, const Options* options, const std::string & fileNamelib3ds) const;        ///< Subfunction of readNode()s functions.
 

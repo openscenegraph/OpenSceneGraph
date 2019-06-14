@@ -34,6 +34,11 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
 
         virtual const char* className() const { return "OSGTGZ Database Reader/Writer"; }
 
+        virtual ReadResult readObject(const std::string& filename, const osgDB::ReaderWriter::Options* options) const
+        {
+            return readNode(filename, options);
+        }
+
         virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getFileExtension(file);

@@ -78,7 +78,10 @@ class ReaderWriterAC : public osgDB::ReaderWriter
         }
 
         virtual const char* className() const { return "AC3D Database Reader"; }
-
+        virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+        {
+            return readNode(fileName, options);
+        }
         virtual ReadResult readNode(const std::string& file,const Options* options) const
         {
             std::string ext = osgDB::getFileExtension(file);
@@ -109,6 +112,10 @@ class ReaderWriterAC : public osgDB::ReaderWriter
             if (result.validNode())
                 result.getNode()->setName(fileName);
             return result;
+        }
+        virtual ReadResult readObject(std::istream& fin, const Options* options) const
+        {
+            return readNode(fin, options);
         }
         virtual ReadResult readNode(std::istream& fin, const Options* options) const
         {

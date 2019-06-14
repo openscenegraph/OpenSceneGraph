@@ -106,6 +106,10 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
             return result;
         }
 
+        virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+        {
+            return readNode(fileName, options); 
+        }
 
         virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
@@ -130,6 +134,11 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
             local_options->setDatabasePath(file);
 
             return readNodeFromArchive(*archive, local_options.get());
+        }
+
+        virtual ReadResult readObject(std::istream& fin, const Options* options) const
+        {
+            return readNode(fin,options);
         }
 
         virtual ReadResult readNode(std::istream& fin,const osgDB::ReaderWriter::Options* options) const

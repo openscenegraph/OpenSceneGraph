@@ -110,6 +110,11 @@ public:
         return "STL Reader";
     }
 
+    virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(fileName, options); 
+    }
+
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
     virtual WriteResult writeNode(const osg::Node& node, const std::string& fileName, const Options* = NULL) const;
 

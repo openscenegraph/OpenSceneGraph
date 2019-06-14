@@ -50,24 +50,20 @@ public:
         return archive.get();
     }
 
-    virtual ReadResult readImage(const std::string& file,const Options* options) const
+    enum ReadType
     {
-        ReadResult result = openArchive(file,osgDB::Archive::READ);
+        READ_OBJECT,
+        READ_IMAGE,
+        READ_HEIGHT_FIELD,
+        READ_NODE,
+        READ_SHADER
+    };
+
+    virtual ReadResult readMasterFile(ReadType type, const std::string& file, const Options* options) const
+    {
+        ReadResult result = openArchive(file, osgDB::Archive::READ);
 
         if (!result.validArchive()) return result;
-
-
-        // copy the incoming options if possible so that plugin options can be applied to files
-        // inside the archive
-        osg::ref_ptr<osgDB::ReaderWriter::Options> local_options =
-            options?
-            new osgDB::ReaderWriter::Options( *options ) :
-            new osgDB::ReaderWriter::Options;
-
-        local_options->setDatabasePath(file);
-
-        ReadResult result_2 = result.getArchive()->readImage(result.getArchive()->getMasterFileName(),local_options.get());
-
 
         if (!options || (options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_ARCHIVES))
         {
@@ -75,35 +71,53 @@ public:
             osgDB::Registry::instance()->addToArchiveCache(file, result.getArchive());
         }
 
-        return result_2;
+        // copy the incoming options if possible so that plugin options can be applied to files
+        // inside the archive
+        osg::ref_ptr<osgDB::ReaderWriter::Options> local_options =
+            options ?
+            new osgDB::ReaderWriter::Options(*options) :
+            new osgDB::ReaderWriter::Options;
+
+        local_options->setDatabasePath(file);
+
+        ReadResult result_2;
+        switch (type) {
+        default:
+        case READ_OBJECT:
+            return result.getArchive()->readObject(result.getArchive()->getMasterFileName(), local_options.get());
+        case READ_IMAGE:
+            return result.getArchive()->readImage(result.getArchive()->getMasterFileName(), local_options.get());
+        case READ_HEIGHT_FIELD:
+            return result.getArchive()->readHeightField(result.getArchive()->getMasterFileName(), local_options.get());
+        case READ_NODE:
+            return result.getArchive()->readNode(result.getArchive()->getMasterFileName(), local_options.get());
+        case READ_SHADER:
+            return result.getArchive()->readShader(result.getArchive()->getMasterFileName(), local_options.get());
+        }
+    }
+    virtual ReadResult readObject(const std::string& file, const Options* options) const
+    {
+        return readMasterFile(READ_OBJECT, file, options);
     }
 
-    virtual ReadResult readNode(const std::string& file,const Options* options) const
+    virtual ReadResult readImage(const std::string& file, const Options* options) const
     {
-        ReadResult result = openArchive(file,osgDB::Archive::READ);
+        return readMasterFile(READ_IMAGE, file, options);
+    }
 
-        if (!result.validArchive()) return result;
+    virtual ReadResult readHeightField(const std::string& file, const Options* options) const
+    {
+        return readMasterFile(READ_HEIGHT_FIELD, file, options);
+    }
 
+    virtual ReadResult readNode(const std::string& file, const Options* options) const
+    {
+        return readMasterFile(READ_IMAGE, file, options);
+    }
 
-        // copy the incoming options if possible so that plugin options can be applied to files
-        // inside the archive
-        osg::ref_ptr<osgDB::ReaderWriter::Options> local_options =
-            options?
-            new osgDB::ReaderWriter::Options( *options ) :
-            new osgDB::ReaderWriter::Options;
-
-        local_options->setDatabasePath(file);
-
-        ReadResult result_2 = result.getArchive()->readNode(result.getArchive()->getMasterFileName(),local_options.get());
-
-
-        if (!options || (options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_ARCHIVES))
-        {
-            // register the archive so that it is cached for future use.
-            osgDB::Registry::instance()->addToArchiveCache(file, result.getArchive());
-        }
-
-        return result_2;
+    virtual ReadResult readShader(const std::string& file, const Options* options) const
+    {
+        return readMasterFile(READ_SHADER, file, options);
     }
 
 protected:

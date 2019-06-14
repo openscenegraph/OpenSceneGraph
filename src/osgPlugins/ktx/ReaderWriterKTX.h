@@ -43,7 +43,18 @@ public:
     ReaderWriterKTX();
 
     virtual const char* className() const;
+
+    virtual ReadResult readObject(std::istream& fin, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readImage(fin, options);
+    }
+    
     virtual ReadResult readImage(std::istream& fin,const osgDB::ReaderWriter::Options* =NULL) const;
+
+    virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readImage(file, options);
+    }
     virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const;
 
     virtual WriteResult writeObject(const osg::Object& object, const std::string& file, const osgDB::ReaderWriter::Options* options) const;

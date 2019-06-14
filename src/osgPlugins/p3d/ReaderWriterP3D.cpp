@@ -163,8 +163,18 @@ public:
 
     osgDB::XmlNode::Properties::const_iterator findProperty(osgDB::XmlNode* cur, const char* token) const;
 
+    virtual ReadResult readObject(const std::string& filename, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(filename, options);
+    }
+
     virtual ReadResult readNode(const std::string& fileName,
                                 const osgDB::ReaderWriter::Options* options) const;
+
+    virtual ReadResult readObject(std::istream& fin, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(fin, options);
+    }
 
     virtual ReadResult readNode(std::istream& fin, const Options* options) const;
 

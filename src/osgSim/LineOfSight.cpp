@@ -72,7 +72,7 @@ osg::ref_ptr<osg::Node> DatabaseCacheReadCallback::readNodeFile(const std::strin
             {
                 if (itr->second->referenceCount()==1)
                 {
-                    OSG_NOTICE<<"Erasing "<<itr->first<<std::endl;
+                    OSG_INFO<<"Erasing "<<itr->first<<std::endl;
                     // found a node which is only referenced in the cache so we can discard it
                     // and know that the actual memory will be released.
                     _filenameSceneMap.erase(itr);

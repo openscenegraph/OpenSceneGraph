@@ -575,9 +575,11 @@ void OcclusionQueryNode::traverseQuery( const Camera* camera, NodeVisitor& nv )
 
 void OcclusionQueryNode::traverseDebug( NodeVisitor& nv )
 {
-    if (_debugBB &&  _enabled)
+    if (_debugBB && _enabled)
+    {
         // If requested, display the debug geometry
         _debugGeode->accept( nv );
+    }
 }
 
 BoundingSphere OcclusionQueryNode::computeBound() const

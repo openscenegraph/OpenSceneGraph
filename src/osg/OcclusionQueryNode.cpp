@@ -556,7 +556,7 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
 
 void OcclusionQueryNode::traverseQuery( const Camera* camera, NodeVisitor& nv )
 {
-    if (!_validQueryGeometry)
+    if (!_validQueryGeometry || ! _enabled)
         return;
 
     bool issueQuery;
@@ -575,7 +575,7 @@ void OcclusionQueryNode::traverseQuery( const Camera* camera, NodeVisitor& nv )
 
 void OcclusionQueryNode::traverseDebug( NodeVisitor& nv )
 {
-    if (_debugBB)
+    if (_debugBB &&  _enabled)
         // If requested, display the debug geometry
         _debugGeode->accept( nv );
 }

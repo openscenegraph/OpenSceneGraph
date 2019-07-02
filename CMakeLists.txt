@@ -789,9 +789,7 @@ IF(BUILD_OSG_EXAMPLES AND NOT ANDROID)
 
     FIND_PACKAGE(FLTK)
     FIND_PACKAGE(FOX)
-
-    SET(wxWidgets_USE_LIBS base core gl net)
-    FIND_PACKAGE(wxWidgets)
+    FIND_PACKAGE(wxWidgets COMPONENTS base core gl net)
 
 ENDIF()
 

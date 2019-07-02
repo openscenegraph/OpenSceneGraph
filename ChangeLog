@@ -1,3 +1,11 @@
+Tue, 2 Jul 2019 20:21:05 +0100
+Author : Robert Osfield
+Updated SO number to refect change to the Drawable header inline method status
+
+Tue, 2 Jul 2019 20:19:05 +0100
+Author : Robert Osfield
+Updated in prep for 3.6.4-rc4
+
 Mon, 1 Jul 2019 16:15:21 +0100
 Author : Colin McDonald
 Trivial change to src/osgSim/LineOfSight.cpp to quieten down an info message in DatabaseCacheReadCallback::readNodeFile.

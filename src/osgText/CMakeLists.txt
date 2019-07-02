@@ -1,3 +1,4 @@
+find_package(Fontconfig MODULE)
 
 IF(DYNAMIC_OPENSCENEGRAPH)
     ADD_DEFINITIONS(-DOSGTEXT_LIBRARY)
@@ -47,7 +48,13 @@ SET(TARGET_LIBRARIES
     OpenThreads
 )
 
+
 SET(COMPONENT_PKGCONFIG_DESCRIPTION "Text rendering library for OpenSceneGraph")
+
+if(Fontconfig_FOUND)
+    list(APPEND TARGET_LIBRARIES Fontconfig::Fontconfig)
+    ADD_DEFINITIONS(-DWITH_FONTCONFIG)
+endif()
 
 SETUP_LIBRARY(${LIB_NAME})
 

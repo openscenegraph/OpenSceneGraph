@@ -1,6 +1,6 @@
 OpenSceneGraph Library 3.6.4
 
-569 Contributors:
+570 Contributors:
 
 Firstname Surname
 -----------------
@@ -232,6 +232,7 @@ Dietmar Funck
 Colin Cochran
 Christian Ruzicka
 Christian Buchner
+Chris Djali
 Charles Cole
 Blake Williams
 Björn Hein
@@ -539,8 +540,8 @@ Christian Kaser
 Christian Ehrlicher
 Chris White
 Chris McGlone
-Chris Djali
 Carlos Garcea
+Capostrophic
 Bryce Eldridge
 Bruno Herbelin
 Brian Keener

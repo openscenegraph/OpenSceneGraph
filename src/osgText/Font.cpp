@@ -27,6 +27,10 @@
 
 #include <OpenThreads/ReentrantMutex>
 
+#ifdef WITH_FONTCONFIG
+#include <fontconfig/fontconfig.h>
+#endif
+
 #include "DefaultFont.h"
 
 using namespace osgText;
@@ -46,6 +50,34 @@ static OpenThreads::ReentrantMutex& getFontFileMutex()
     static OpenThreads::ReentrantMutex s_FontFileMutex;
     return s_FontFileMutex;
 }
+
+#ifdef WITH_FONTCONFIG
+static FcConfig* getFontConfig()
+{
+    static FcConfig* s_fontConfig = FcInitLoadConfigAndFonts();
+    return s_fontConfig;
+}
+
+static bool getFilePathFromFontconfig(const std::string &fontName, std::string &fontPath)
+{
+    FcPattern* pat = FcNameParse((FcChar8*)fontName.c_str());
+    FcConfigSubstitute(getFontConfig(), pat, FcMatchPattern);
+    FcDefaultSubstitute(pat);
+    FcResult result = FcResultNoMatch;
+    FcPattern* font = FcFontMatch(getFontConfig(), pat, &result);
+    if (font)
+    {
+        FcChar8* file = NULL;
+        if (FcPatternGetString(font, FC_FILE, 0, &file) == FcResultMatch)
+        {
+            fontPath = (char *)file;
+        }
+        FcPatternDestroy(font);
+    }
+    FcPatternDestroy(pat);
+    return result == FcResultMatch;
+}
+#endif
 
 std::string osgText::findFontFile(const std::string& str)
 {
@@ -78,10 +110,16 @@ std::string osgText::findFontFile(const std::string& str)
         s_FontFilePath);
     #else
       osgDB::convertStringPathIntoFilePathList(
-        ".:/usr/share/fonts/ttf:/usr/share/fonts/ttf/western:/usr/share/fonts/ttf/decoratives",
+        ".:/usr/share/fonts/ttf:/usr/share/fonts/truetype:/usr/share/fonts/ttf/western:/usr/share/fonts/ttf/decoratives",
         s_FontFilePath);
     #endif
     }
+
+#ifdef WITH_FONTCONFIG
+    std::string fontPath;
+    if (getFilePathFromFontconfig(str, fontPath))
+        return fontPath;
+#endif
 
     filename = osgDB::findFileInPath(str,s_FontFilePath);
     if (!filename.empty()) return filename;

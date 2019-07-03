@@ -594,6 +594,14 @@ void FrameBufferObject::resizeGLObjectBuffers(unsigned int maxSize)
     _fboID.resize(maxSize);
     _unsupported.resize(maxSize);
     _fboID.resize(maxSize);
+    for (AttachmentMap::iterator i = _attachments.begin(); i != _attachments.end(); ++i)
+    {
+        FrameBufferAttachment &fa = i->second;
+        Texture* tex = fa.getTexture();
+        if (tex) tex->resizeGLObjectBuffers(maxSize);
+        RenderBuffer* rb = fa.getRenderBuffer();
+        if (rb) rb->resizeGLObjectBuffers(maxSize);
+    }
 }
 
 void FrameBufferObject::releaseGLObjects(osg::State* state) const
@@ -617,6 +625,14 @@ void FrameBufferObject::releaseGLObjects(osg::State* state) const
                 _fboID[i] = 0;
             }
         }
+    }
+    for (AttachmentMap::const_iterator i = _attachments.begin(); i != _attachments.end(); ++i)
+    {
+        const FrameBufferAttachment &fa = i->second;
+        const Texture* tex = fa.getTexture();
+        if (tex) tex->releaseGLObjects(state);
+        const RenderBuffer* rb = fa.getRenderBuffer();
+        if (rb) rb->releaseGLObjects(state);
     }
 }
 

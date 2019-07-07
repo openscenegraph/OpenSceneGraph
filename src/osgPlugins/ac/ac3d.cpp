@@ -43,7 +43,7 @@
 namespace ac3d {
 
 osg::Node*
-readFile(std::istream& stream, const osgDB::ReaderWriter::Options* options);
+readFile(std::istream& stream, const osgDB::ReaderWriter::Options* options, std::string filename);
 
 static std::string ac3dSrcFilename;
 }
@@ -72,6 +72,7 @@ class geodeVisitor : public osg::NodeVisitor { // collects geodes from scene sub
 class ReaderWriterAC : public osgDB::ReaderWriter
 {
     public:
+		std::string ac3dSrcFilename;
 
         ReaderWriterAC()
         {
@@ -109,24 +110,24 @@ class ReaderWriterAC : public osgDB::ReaderWriter
                 local_opt = new Options;
             local_opt->getDatabasePathList().push_back(osgDB::getFilePath(fileName));
 
-            ac3d::ac3dSrcFilename = fileName;
-            ReadResult result = readNode(fin, local_opt.get());
+            //ac3d::ac3dSrcFilename = fileName;
+            ReadResult result = readNode(fin, local_opt.get(), fileName);
             if (result.validNode())
                 result.getNode()->setName(fileName);
             return result;
         }
-        virtual ReadResult readObject(std::istream& fin, const Options* options) const
+        virtual ReadResult readObject(std::istream& fin, const Options* options, std::string srcFilename) const
         {
-            return readNode(fin, options);
+            return readNode(fin, options, srcFilename);
         }
-        virtual ReadResult readNode(std::istream& fin, const Options* options) const
+        virtual ReadResult readNode(std::istream& fin, const Options* options, std::string srcFilename) const
         {
             std::string header;
             fin >> header;
             if (header.substr(0, 4) != "AC3D")
                 return osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED;
 
-            return ac3d::readFile(fin, options);
+            return ac3d::readFile(fin, options, srcFilename);
         }
         virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName, const Options* /*options*/) const
         {
@@ -339,7 +340,7 @@ class TextureData
     {
     }
 
-    bool setTexture(const std::string& name, const osgDB::ReaderWriter::Options* options, osg::TexEnv* modulateTexEnv)
+    bool setTexture(const std::string& name, const osgDB::ReaderWriter::Options* options, osg::TexEnv* modulateTexEnv, const std::string srcFilename)
     {
         mTexture2DRepeat = new osg::Texture2D;
         mTexture2DRepeat->setDataVariance(osg::Object::STATIC);
@@ -354,13 +355,13 @@ class TextureData
         std::string absFileName = osgDB::findDataFile(name, options);
         if (absFileName.empty())
         {
-            OSG_FATAL << "osgDB ac3d reader: could not find texture \"" << name << "\"" << std::endl;
+            OSG_FATAL << "osgDB ac3d reader " <<srcFilename << ": could not find texture \"" << name << "\"" << std::endl;
             return false;
         }
         mImage = osgDB::readRefImageFile(absFileName, options);
         if (!mImage.valid())
         {
-            OSG_FATAL << "osgDB ac3d reader: could not read texture \"" << name << "\"" << std::endl;
+            OSG_FATAL << "osgDB ac3d reader " <<srcFilename << ": could not read texture \"" << name << "\"" << std::endl;
             return false;
         }
         mTexture2DRepeat->setImage(mImage.get());
@@ -411,13 +412,15 @@ private:
 class FileData
 {
   public:
-    FileData(const osgDB::ReaderWriter::Options* options) :
+    FileData(const osgDB::ReaderWriter::Options* options, std::string filename) :
         mOptions(options),
         mLightIndex(1)
     {
         mModulateTexEnv = new osg::TexEnv;
         mModulateTexEnv->setDataVariance(osg::Object::STATIC);
         mModulateTexEnv->setMode(osg::TexEnv::MODULATE);
+		srcFilename = filename;
+
     }
 
     TextureData toTextureData(const std::string& texName)
@@ -428,7 +431,7 @@ class FileData
             return i->second;
         // Try to load that texture.
         TextureData textureData;
-        textureData.setTexture(texName, mOptions.get(), mModulateTexEnv.get());
+        textureData.setTexture(texName, mOptions.get(), mModulateTexEnv.get(), srcFilename);
         if (textureData.valid()) {
             mTextureStates[texName] = textureData;
             return textureData;
@@ -480,6 +483,8 @@ private:
 
     /// Hack to include light nodes from ac3d into the scenegraph
     unsigned mLightIndex;
+
+	std::string srcFilename;
 };
 
 struct RefData {
@@ -640,11 +645,11 @@ public:
         return _vertices[vertexIndex.vertexIndex]._refs[vertexIndex.refIndex].texCoord;
     }
 
-    VertexIndex addRefData(unsigned i, const RefData& refData)
+    VertexIndex addRefData(unsigned i, const RefData& refData, const std::string srcFilename)
     {
          if (_vertices.size() <= i)
          {
-             OSG_FATAL << "osgDB ac3d reader: internal error, got invalid vertex index!" << std::endl;
+             OSG_FATAL << "osgDB ac3d reader " <<srcFilename << ": internal error, got invalid vertex index!" << std::endl;
              return VertexIndex(0, 0);
          }
         _dirty = true;
@@ -679,9 +684,9 @@ class PrimitiveBin : public osg::Referenced
         _geode->setDataVariance(osg::Object::STATIC);
     }
 
-    virtual bool beginPrimitive(unsigned nRefs) = 0;
-    virtual bool vertex(unsigned vertexIndex, const osg::Vec2& texCoord) = 0;
-    virtual bool endPrimitive() = 0;
+    virtual bool beginPrimitive(unsigned nRefs, const std::string srcFilename) = 0;
+    virtual bool vertex(unsigned vertexIndex, const osg::Vec2& texCoord, const std::string srcFilename) = 0;
+    virtual bool endPrimitive(const std::string srcFilename) = 0;
 
     virtual osg::Geode* finalize(const MaterialData& material, const TextureData& textureData) = 0;
 
@@ -738,11 +743,11 @@ class LineBin : public PrimitiveBin
         stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     }
 
-    virtual bool beginPrimitive(unsigned nRefs)
+    virtual bool beginPrimitive(unsigned nRefs, const std::string srcFilename)
     {
         // Check if we have enough for a line or something broken ...
         if (nRefs < 2) {
-            OSG_WARN << "osgDB ac3d reader: detected line with less than 2 vertices!" << std::endl;
+            OSG_WARN << "osgDB ac3d reader " <<srcFilename << ": detected line with less than 2 vertices!" << std::endl;
             return false;
         }
 
@@ -750,7 +755,7 @@ class LineBin : public PrimitiveBin
         _refs.resize(0);
         return true;
     }
-    virtual bool vertex(unsigned vertexIndex, const osg::Vec2& texCoord)
+    virtual bool vertex(unsigned vertexIndex, const osg::Vec2& texCoord, const std::string srcFilename)
     {
         Ref ref;
         ref.index = vertexIndex;
@@ -758,7 +763,7 @@ class LineBin : public PrimitiveBin
         _refs.push_back(ref);
         return true;
     }
-    virtual bool endPrimitive()
+    virtual bool endPrimitive(const std::string srcFilename)
     {
         GLint type;
         if (isLineLoop())
@@ -766,7 +771,7 @@ class LineBin : public PrimitiveBin
         else if (isLineStrip())
             type = osg::PrimitiveSet::LINE_STRIP;
         else {
-            OSG_FATAL << "osgDB ac3d reader: non surface flags in surface bin!" << std::endl;
+            OSG_FATAL << "osgDB ac3d reader " <<srcFilename << ": non surface flags in surface bin!" << std::endl;
             return false;
         }
         unsigned nRefs = _refs.size();
@@ -827,19 +832,19 @@ class SurfaceBin : public PrimitiveBin {
         PrimitiveBin(flags, vertexSet)
     { }
 
-    virtual bool beginPrimitive(unsigned nRefs)
+    virtual bool beginPrimitive(unsigned nRefs, const std::string srcFilename)
     {
         _refs.reserve(nRefs);
         _refs.clear();
 
         // Check if we have enough for a line or something broken ...
         if (nRefs < 3) {
-            OSG_WARN << "osgDB ac3d reader: detected surface with less than 3 vertices!" << std::endl;
+            OSG_WARN << "osgDB ac3d reader " <<srcFilename << ": detected surface with less than 3 vertices!" << std::endl;
             return false;
         }
         return true;
     }
-    virtual bool vertex(unsigned vertexIndex, const osg::Vec2& texCoord)
+    virtual bool vertex(unsigned vertexIndex, const osg::Vec2& texCoord, const std::string srcFilename)
     {
         Ref ref;
         ref.index = vertexIndex;
@@ -847,7 +852,7 @@ class SurfaceBin : public PrimitiveBin {
         _refs.push_back(ref);
         return true;
     }
-    virtual bool endPrimitive()
+    virtual bool endPrimitive(const std::string srcFilename)
     {
         unsigned nRefs = _refs.size();
 
@@ -893,7 +898,7 @@ class SurfaceBin : public PrimitiveBin {
             _toTessellatePolygons.resize(polygonIndex + 1);
             for (unsigned i = 0; i < nRefs; ++i) {
                 RefData refData(weightedNormal, _refs[i].texCoord, isSmooth());
-                VertexIndex vertexIndex = _vertexSet->addRefData(_refs[i].index, refData);
+                VertexIndex vertexIndex = _vertexSet->addRefData(_refs[i].index, refData, srcFilename);
                 _toTessellatePolygons[polygonIndex].index.push_back(vertexIndex);
             }
         }
@@ -903,7 +908,7 @@ class SurfaceBin : public PrimitiveBin {
             _triangles.resize(triangleIndex + 1);
             for (unsigned i = 0; i < 3; ++i) {
                 RefData refData(weightedNormal, _refs[i].texCoord, isSmooth());
-                VertexIndex vertexIndex = _vertexSet->addRefData(_refs[i].index, refData);
+                VertexIndex vertexIndex = _vertexSet->addRefData(_refs[i].index, refData, srcFilename);
                 _triangles[triangleIndex].index[i] = vertexIndex;
             }
         }
@@ -913,7 +918,7 @@ class SurfaceBin : public PrimitiveBin {
             _quads.resize(quadIndex + 1);
             for (unsigned i = 0; i < 4; ++i) {
                 RefData refData(weightedNormal, _refs[i].texCoord, isSmooth());
-                VertexIndex vertexIndex = _vertexSet->addRefData(_refs[i].index, refData);
+                VertexIndex vertexIndex = _vertexSet->addRefData(_refs[i].index, refData, srcFilename);
                 _quads[quadIndex].index[i] = vertexIndex;
             }
         }
@@ -923,7 +928,7 @@ class SurfaceBin : public PrimitiveBin {
             _polygons.resize(polygonIndex + 1);
             for (unsigned i = 0; i < nRefs; ++i) {
                 RefData refData(weightedNormal, _refs[i].texCoord, isSmooth());
-                VertexIndex vertexIndex = _vertexSet->addRefData(_refs[i].index, refData);
+                VertexIndex vertexIndex = _vertexSet->addRefData(_refs[i].index, refData, srcFilename);
                 _polygons[polygonIndex].index.push_back(vertexIndex);
             }
         }
@@ -1185,7 +1190,7 @@ private:
 };
 
 osg::Node*
-readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTransform, TextureData textureData)
+readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTransform, TextureData textureData, std::string srcFilename)
 {
     // most of this logic came from Andy Colebourne (developer of the AC3D editor) so it had better be right!
 
@@ -1304,7 +1309,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
 
                     stream >> inner_token;
                     if (inner_token != "mat") {
-                        OSG_FATAL << "osgDB ac3d reader: expected mat line while reading object \""
+                        OSG_FATAL << "osgDB ac3d reader " <<srcFilename << ": expected mat line while reading object \""
                                                 << group->getName() << "\"!" << std::endl;
                         return group.release();
                     }
@@ -1313,7 +1318,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                     unsigned matIdx;
                     stream >> matIdx;
                     if (primitiveBins.size() <= matIdx) {
-                        OSG_FATAL << "osgDB ac3d reader: invalid material number while reading object \""
+                        OSG_FATAL << "osgDB ac3d reader " <<srcFilename << ": invalid material number while reading object \""
                                                 << group->getName() << "\"" << std::endl;
                         return group.release();
                     }
@@ -1322,7 +1327,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                     PrimitiveBin* primitiveBin = 0;
                     primitiveBin = primitiveBins[matIdx].getOrCreatePrimitiveBin(flags, vertexSet.get());
                     if (!primitiveBin) {
-                        OSG_FATAL << "osgDB ac3d reader: unexpected primitive flags while reading object \""
+                        OSG_FATAL << "osgDB ac3d reader " <<srcFilename << ": unexpected primitive flags while reading object \""
                                                 << group->getName() << "\"" << std::endl;
                         return group.release();
                     }
@@ -1330,7 +1335,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                     // read the refs
                     stream >> inner_token;
                     if (inner_token != "refs") {
-                        OSG_FATAL << "osgDB ac3d reader: expected refs line while reading object \""
+                        OSG_FATAL << "osgDB ac3d reader " <<srcFilename << ": expected refs line while reading object \""
                                                 << group->getName() << "\"" << std::endl;
                         return group.release();
                     }
@@ -1338,23 +1343,23 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                     unsigned nRefs = 0;
                     stream >> nRefs;
                     if (!stream) {
-                        OSG_FATAL << "osgDB ac3d reader: could not read number of refs while reading object \""
+                        OSG_FATAL << "osgDB ac3d reader " <<srcFilename << ": could not read number of refs while reading object \""
                                                 << group->getName() << "\"" << std::endl;
                         return group.release();
                     }
 
                     // in case this is an invalid refs count for this primitive
                     // read further, but do not store that primitive
-                    bool acceptPrimitive = primitiveBin->beginPrimitive(nRefs);
+                    bool acceptPrimitive = primitiveBin->beginPrimitive(nRefs, srcFilename);
                     if(!acceptPrimitive)
-                        OSG_WARN << ac3d::ac3dSrcFilename <<": -- primitive not accepted object " << group->getName() << std::endl;
+                        OSG_WARN << srcFilename <<": -- primitive not accepted object " << group->getName() << std::endl;
                     for (unsigned i = 0; i < nRefs; ++i) {
                         // Read the vertex index
                         unsigned index;
                         stream >> index;
                         if (vertexSet->size() <= index)
                         {
-                            OSG_FATAL << "osgDB ac3d reader: invalid ref vertex index while reading object \""
+                            OSG_FATAL << "osgDB ac3d reader " <<srcFilename << ": invalid ref vertex index while reading object \""
                                                     << group->getName() << "\"" << std::endl;
                             return group.release();
                         }
@@ -1363,7 +1368,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                         osg::Vec2 texCoord;
                         stream >> texCoord[0] >> texCoord[1];
                         if (!stream) {
-                            OSG_WARN << "osgDB ac3d reader: could not parse texture coords while reading object \""
+                            OSG_WARN << "osgDB ac3d reader " <<srcFilename << ": could not parse texture coords while reading object \""
                                                    << group->getName() << "\" setting to (0,0)" << std::endl;
                             stream.clear();
                             std::string dummy;
@@ -1375,7 +1380,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                             texCoord[0] = textureOffset[0] + texCoord[0]*textureRepeat[0];
                             texCoord[1] = textureOffset[1] + texCoord[1]*textureRepeat[1];
 
-                            if (!primitiveBin->vertex(index, texCoord))
+                            if (!primitiveBin->vertex(index, texCoord, srcFilename))
                             {
                                 return group.release();
                             }
@@ -1383,7 +1388,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                     }
                     if (acceptPrimitive)
                     {
-                        if (!primitiveBin->endPrimitive())
+                        if (!primitiveBin->endPrimitive(srcFilename))
                         {
                             return group.release();
                         }
@@ -1399,9 +1404,9 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
             stream >> num;
             if (num != 0) {
                 for (unsigned n = 0; n < num; n++) {
-                    osg::Node *k = readObject(stream, fileData, transform*parentTransform, textureData);
+                    osg::Node *k = readObject(stream, fileData, transform*parentTransform, textureData, srcFilename);
                     if (k == 0) {
-                        OSG_FATAL << "osgDB ac3d reader: error reading child object" << std::endl;
+                        OSG_FATAL << "osgDB ac3d reader " <<srcFilename << ": error reading child object" << std::endl;
                         return group.release();
                     }
                     else {
@@ -1442,11 +1447,11 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
 }
 
 osg::Node*
-readFile(std::istream& stream, const osgDB::ReaderWriter::Options* options)
+readFile(std::istream& stream, const osgDB::ReaderWriter::Options* options, std::string filename)
 {
-    FileData fileData(options);
+    FileData fileData(options, filename);
     osg::Matrix identityTransform;
-    osg::Node* node = readObject(stream, fileData, identityTransform, TextureData());
+    osg::Node* node = readObject(stream, fileData, identityTransform, TextureData(), filename);
     if (node)
       node->setName("World");
     return node;

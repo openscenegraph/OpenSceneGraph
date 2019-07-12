@@ -419,6 +419,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         DistanceMatrixDrawableMap                                  _farPlaneCandidateMap;
 
         osg::ref_ptr<Identifier> _identifier;
+        bool _useCoarseDepth;
 };
 
 inline void CullVisitor::addDrawable(osg::Drawable* drawable,osg::RefMatrix* matrix)

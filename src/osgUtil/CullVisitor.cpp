@@ -52,7 +52,8 @@ CullVisitor::CullVisitor():
     _computed_zfar(-FLT_MAX),
     _traversalOrderNumber(0),
     _currentReuseRenderLeafIndex(0),
-    _numberOfEncloseOverrideRenderBinDetails(0)
+    _numberOfEncloseOverrideRenderBinDetails(0),
+    _useCoarseDepth(true)
 {
     _identifier = new Identifier;
 }
@@ -68,7 +69,8 @@ CullVisitor::CullVisitor(const CullVisitor& rhs):
     _traversalOrderNumber(0),
     _currentReuseRenderLeafIndex(0),
     _numberOfEncloseOverrideRenderBinDetails(0),
-    _identifier(rhs._identifier)
+    _identifier(rhs._identifier),
+    _useCoarseDepth(rhs._useCoarseDepth)
 {
 }
 
@@ -954,7 +956,17 @@ void CullVisitor::apply(osg::Drawable& drawable)
         }
     }
 
-    float depth = bb.valid() ? distance(bb.center(),matrix) : 0.0f;
+    float depth = FLT_MAX;
+    if(_useCoarseDepth)
+        depth = bb.valid() ? distance(bb.center(),matrix) : 0.0f;
+    else
+        if(bb.valid())
+        {
+            for(unsigned int i=0; i<8; ++i)
+                depth=std::min(distance(bb.corner(i), matrix), depth);
+
+        }
+        else depth = 0.0f;
 
     if (osg::isNaN(depth))
     {

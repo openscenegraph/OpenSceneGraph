@@ -1092,6 +1092,8 @@ struct LineConstructor
 
     void copyPoints(ElevationSlice::Vec3dList& intersections, ElevationSlice::DistanceHeightList& distanceHeightIntersections)
     {
+        if (_segments.empty()) return;
+
         SegmentSet::iterator prevItr = _segments.begin();
         SegmentSet::iterator nextItr = prevItr;
         ++nextItr;

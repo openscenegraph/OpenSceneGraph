@@ -72,6 +72,7 @@ public:
         supportsOption("BUMP=<unit>", "Set texture unit for bumpmap texture");
         supportsOption("DISPLACEMENT=<unit>", "Set texture unit for displacement texture");
         supportsOption("REFLECTION=<unit>", "Set texture unit for reflection texture");
+        supportsOption("NsIfNotPresent=<value>", "set specular exponent if not present");
 
         supportsOption("precision=<digits>","Set the floating point precision when writing out files");
     }
@@ -156,6 +157,7 @@ protected:
         TextureAllocationMap textureUnitAllocation;
         /// Coordinates precision.
         int precision;
+        int specularExponent;
 
         ObjOptionsStruct()
         {
@@ -166,6 +168,7 @@ protected:
             fixBlackMaterials = true;
             noReverseFaces = false;
             precision = std::numeric_limits<double>::digits10 + 2;
+            specularExponent = -1;
         }
     };
 
@@ -361,7 +364,8 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
             } else {
                 osg_material->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0,0,0,1));
             }
-            osg_material->setShininess(osg::Material::FRONT_AND_BACK,(material.Ns/1000.0f)*128.0f ); // note OBJ shiniess is 0..1000.
+            int ns = material.Ns != -1 ? material.Ns : localOptions.specularExponent != -1 ? localOptions.specularExponent : 0;
+            osg_material->setShininess(osg::Material::FRONT_AND_BACK,(ns/1000.0f)*128.0f ); // note OBJ shiniess is 0..1000.
 
             if (material.ambient[3]!=1.0 ||
                 material.diffuse[3]!=1.0 ||
@@ -886,6 +890,11 @@ ReaderWriterOBJ::ObjOptionsStruct ReaderWriterOBJ::parseOptions(const osgDB::Rea
                 else {
                     localOptions.precision = val;
                 }
+            }
+            else if (pre_equals == "NsIfNotPresent")
+            {
+                int value = atoi(post_equals.c_str());
+                localOptions.specularExponent = value ;
             }
             else if (post_equals.length()>0)
             {

@@ -60,6 +60,11 @@ REGISTER_OBJECT_WRAPPER( osgParticleParticleSystem,
                          osgParticle::ParticleSystem,
                          "osg::Object osg::Drawable osgParticle::ParticleSystem" )
 {
+    {
+         UPDATE_TO_VERSION_SCOPED( 200 )
+         ADDED_ASSOCIATE("osg::Node")
+    }
+
     ADD_USER_SERIALIZER( DefaultBoundingBox );  // _def_bbox
 
     BEGIN_ENUM_SERIALIZER2( ParticleAlignment, osgParticle::ParticleSystem::Alignment, BILLBOARD );

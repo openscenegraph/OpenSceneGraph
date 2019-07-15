@@ -43,9 +43,15 @@ public:
     {
     }
 
-    virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter&)
+    virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
     {
-        if (ea.getEventType() == osgGA::GUIEventAdapter::KEYUP)
+        if (ea.getEventType() == osgGA::GUIEventAdapter::PUSH)
+        {
+            osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+            if (view) pick(view,ea);
+            return false;
+        }
+        else if (ea.getEventType() == osgGA::GUIEventAdapter::KEYUP)
         {
             if (ea.getKey() == osgGA::GUIEventAdapter::KEY_Up)
             {
@@ -83,6 +89,24 @@ public:
         return false;
     }
 
+    void pick(osgViewer::View* view, const osgGA::GUIEventAdapter& ea)
+    {
+        osgUtil::LineSegmentIntersector::Intersections intersections;
+        if (view->computeIntersections(ea, intersections))
+        {
+            OSG_NOTICE<<"found intersections : "<<std::endl;
+            for(osgUtil::LineSegmentIntersector::Intersections::iterator itr = intersections.begin();
+                itr != intersections.end();
+                ++itr)
+            {
+                OSG_NOTICE<<"    intersection "<<itr->localIntersectionPoint<<std::endl;
+            }
+        }
+        else
+        {
+            OSG_NOTICE<<"failed to get intersection "<<std::endl;
+        }
+    }
 private:
     osgText::Text3D*        m_Text3D;
 };

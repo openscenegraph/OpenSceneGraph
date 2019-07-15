@@ -1,3 +1,68 @@
+Mon, 15 Jul 2019 16:16:45 +0100
+Author : Robert Osfield
+Adopted the matrix transformation code from Text
+
+Mon, 15 Jul 2019 16:13:57 +0100
+Author : Robert Osfield
+Added test of picking
+
+Mon, 15 Jul 2019 15:05:05 +0100
+Author : Robert Osfield
+Cuietened down the reporting of failure to find fontconfig
+
+Mon, 15 Jul 2019 14:11:11 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #788 from rhabacker/3.6-obj-plugin-fixes3.6 obj plugin fixes
+
+Tue, 16 Jan 2018 10:23:36 +0100
+Author : Ralf Habacker
+obj plugin: Fix bug not adding first vertex index on writing GL_LINExxx array types
+
+Mon, 15 Jan 2018 14:22:18 +0100
+Author : Ralf Habacker
+obj plugin: Fix not writing material shininess
+
+Mon, 15 Jul 2019 14:29:26 +0200
+Author : Ralf Habacker
+obj plugin: add option "NsIfNotPresent=" for setting the specular exponent of a material if not present
+
+Mon, 25 Sep 2017 13:59:13 +0200
+Author : Ralf Habacker
+obj plugin: Fix bug not using specular color (Ks) for illumination mode > 2See paragraph "Illumination models" at http://paulbourke.net/dataformats/mtl/ for details.
+
+
+Mon, 15 Jul 2019 11:14:47 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #786 from rhabacker/OpenSceneGraph-3.6Fix 'Incorrect default location for true type fonts on openSUSE'
+
+Tue, 2 Jul 2019 22:56:02 +0200
+Author : Ralf Habacker
+Fix 'Incorrect default location for true type fonts on openSUSE'https://github.com/openscenegraph/OpenSceneGraph/issues/778
+
+
+Fri, 12 Jul 2019 17:00:20 +0100
+Author : Robert Osfield
+Added check against any empty _segments to avoid undefined behaviour
+
+Fri, 12 Jul 2019 16:16:43 +0100
+Author : Robert Osfield
+Removed debug info for constructor and destructors
+
+Fri, 12 Jul 2019 16:09:12 +0100
+Author : Robert Osfield
+Added FrameBufferAttachment::resizeGLObjectBuffers(..) and releaseGLObjects(..) methods
+
+Tue, 2 Jul 2019 20:37:02 +0200
+Author : StefanBruens
+Fix wxWidgets COMPONENTS specification, deprecated usage broken with CMake 3.14Current FindWxWidgets.cmake allows to specify OPTIONAL components, unfortunately
+this broke the (deprecated) use of wxWidgets_USE_LIBS.
+
+Fixes: #779
+
+Tue, 2 Jul 2019 20:21:45 +0100
+Author : Robert Osfield
+Updated ChangeLog for rc4
+
 Tue, 2 Jul 2019 20:21:05 +0100
 Author : Robert Osfield
 Updated SO number to refect change to the Drawable header inline method status

@@ -71,6 +71,7 @@ public:
         supportsOption("BUMP=<unit>", "Set texture unit for bumpmap texture");
         supportsOption("DISPLACEMENT=<unit>", "Set texture unit for displacement texture");
         supportsOption("REFLECTION=<unit>", "Set texture unit for reflection texture");
+        supportsOption("NsIfNotPresent=<value>", "set specular exponent if not present");
 
     }
 
@@ -133,7 +134,8 @@ public:
 
 protected:
 
-     struct ObjOptionsStruct {
+     class ObjOptionsStruct {
+     public:
         bool rotate;
         bool noTesselateLargePolygons;
         bool noTriStripPolygons;
@@ -144,6 +146,18 @@ protected:
         // otherwise overriden
         typedef std::vector< std::pair<int,obj::Material::Map::TextureMapType> > TextureAllocationMap;
         TextureAllocationMap textureUnitAllocation;
+        int specularExponent;
+
+        ObjOptionsStruct()
+        {
+            rotate = true;
+            noTesselateLargePolygons = false;
+            noTriStripPolygons = false;
+            generateFacetNormals = false;
+            fixBlackMaterials = true;
+            noReverseFaces = false;
+            specularExponent = -1;
+        }
     };
 
     typedef std::map< std::string, osg::ref_ptr<osg::StateSet> > MaterialToStateSetMap;
@@ -333,12 +347,13 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
             osg_material->setDiffuse(osg::Material::FRONT_AND_BACK,material.diffuse);
             osg_material->setEmission(osg::Material::FRONT_AND_BACK,material.emissive);
 
-            if (material.illum == 2) {
+            if (material.illum >= 2) {
                 osg_material->setSpecular(osg::Material::FRONT_AND_BACK,material.specular);
             } else {
                 osg_material->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0,0,0,1));
             }
-            osg_material->setShininess(osg::Material::FRONT_AND_BACK,(material.Ns/1000.0f)*128.0f ); // note OBJ shiniess is 0..1000.
+            int ns = material.Ns != -1 ? material.Ns : localOptions.specularExponent != -1 ? localOptions.specularExponent : 0;
+            osg_material->setShininess(osg::Material::FRONT_AND_BACK,(ns/1000.0f)*128.0f ); // note OBJ shiniess is 0..1000.
 
             if (material.ambient[3]!=1.0 ||
                 material.diffuse[3]!=1.0 ||
@@ -820,12 +835,6 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, ObjOptio
 ReaderWriterOBJ::ObjOptionsStruct ReaderWriterOBJ::parseOptions(const osgDB::ReaderWriter::Options* options) const
 {
     ObjOptionsStruct localOptions;
-    localOptions.rotate = true;
-    localOptions.noTesselateLargePolygons = false;
-    localOptions.noTriStripPolygons = false;
-    localOptions.generateFacetNormals = false;
-    localOptions.fixBlackMaterials = true;
-    localOptions.noReverseFaces = false;
 
     if (options!=NULL)
     {
@@ -867,6 +876,11 @@ ReaderWriterOBJ::ObjOptionsStruct ReaderWriterOBJ::parseOptions(const osgDB::Rea
             else if (pre_equals == "noReverseFaces")
             {
                 localOptions.noReverseFaces = true;
+            }
+            else if (pre_equals == "NsIfNotPresent")
+            {
+                int value = atoi(post_equals.c_str());
+                localOptions.specularExponent = value ;
             }
             else if (post_equals.length()>0)
             {

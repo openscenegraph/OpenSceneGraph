@@ -12,8 +12,29 @@
 */
 
 #include <osgDB/ObjectCache>
+#include <osgDB/Options>
 
 using namespace osgDB;
+
+bool ObjectCache::ClassComp::operator() (const ObjectCache::FileNameOptionsPair& lhs, const ObjectCache::FileNameOptionsPair& rhs)
+{
+    // check if filename are the same
+    if (lhs.first < rhs.first) return true;
+    if (rhs.first < lhs.first) return false;
+
+    // check if Options pointers are the same.
+    if (lhs.second == rhs.second) return false;
+
+    // need to compare Options pointers
+    if (lhs.second.valid() && rhs.second.valid())
+    {
+        // lhs & rhs have valid Options objects
+        return *lhs.second < *rhs.second;
+    }
+
+    // finally use pointer comparison, expecting at least one will be NULL pointer
+    return lhs.second < rhs.second;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -39,34 +60,48 @@ void ObjectCache::addObjectCache(ObjectCache* objectCache)
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock1(_objectCacheMutex);
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock2(objectCache->_objectCacheMutex);
 
-    // OSG_NOTICE<<"Inserting objects to main ObjectCache "<<objectCache->_objectCache.size()<<std::endl;
+    OSG_DEBUG<<"Inserting objects to main ObjectCache "<<objectCache->_objectCache.size()<<std::endl;
 
     _objectCache.insert(objectCache->_objectCache.begin(), objectCache->_objectCache.end());
 }
 
 
-void ObjectCache::addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp)
+void ObjectCache::addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp, const Options *options)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-    _objectCache[filename]=ObjectTimeStampPair(object,timestamp);
+    _objectCache[FileNameOptionsPair(filename, osg::clone(options))] = ObjectTimeStampPair(object,timestamp);
+    OSG_DEBUG<<"Adding "<<filename<<" with options '"<<(options ? options->getOptionString() : "")<<"' to ObjectCache "<<this<<std::endl;
 }
 
-osg::Object* ObjectCache::getFromObjectCache(const std::string& fileName)
+osg::Object* ObjectCache::getFromObjectCache(const std::string& fileName, const Options *options)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-    ObjectCacheMap::iterator itr = _objectCache.find(fileName);
-    if (itr!=_objectCache.end()) return itr->second.first.get();
+    ObjectCacheMap::iterator itr = _objectCache.find(FileNameOptionsPair(fileName, options));
+    if (itr!=_objectCache.end())
+    {
+        osg::ref_ptr<const osgDB::Options> o = itr->first.second;
+        if (o.valid())
+            OSG_DEBUG<<"Found "<<fileName<<" with options '"<< o->getOptionString()<< "' in ObjectCache "<<this<<std::endl;
+        else
+            OSG_DEBUG<<"Found "<<fileName<<" in ObjectCache "<<this<<std::endl;
+        return itr->second.first.get();
+    }
     else return 0;
 }
 
-osg::ref_ptr<osg::Object> ObjectCache::getRefFromObjectCache(const std::string& fileName)
+osg::ref_ptr<osg::Object> ObjectCache::getRefFromObjectCache(const std::string& fileName, const Options *options)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-    ObjectCacheMap::iterator itr = _objectCache.find(fileName);
+    ObjectCacheMap::iterator itr;
+    itr = _objectCache.find(FileNameOptionsPair(fileName, options));
     if (itr!=_objectCache.end())
     {
-        // OSG_NOTICE<<"Found "<<fileName<<" in ObjectCache "<<this<<std::endl;
-        return itr->second.first;
+        osg::ref_ptr<const osgDB::Options> o = itr->first.second;
+        if (o.valid())
+            OSG_DEBUG<<"Found "<<fileName<<" with options '"<< o->getOptionString()<< "' in ObjectCache "<<this<<std::endl;
+        else
+            OSG_DEBUG<<"Found "<<fileName<<" in ObjectCache "<<this<<std::endl;
+        return itr->second.first.get();
     }
     else return 0;
 }
@@ -108,10 +143,10 @@ void ObjectCache::removeExpiredObjectsInCache(double expiryTime)
     }
 }
 
-void ObjectCache::removeFromObjectCache(const std::string& fileName)
+void ObjectCache::removeFromObjectCache(const std::string& fileName, const Options *options)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-    ObjectCacheMap::iterator itr = _objectCache.find(fileName);
+    ObjectCacheMap::iterator itr = _objectCache.find(FileNameOptionsPair(fileName, options));
     if (itr!=_objectCache.end()) _objectCache.erase(itr);
 }
 

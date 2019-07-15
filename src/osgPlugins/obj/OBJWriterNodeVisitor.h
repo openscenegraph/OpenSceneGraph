@@ -116,6 +116,7 @@ class OBJWriterNodeVisitor: public osg::NodeVisitor {
                 OBJMaterial(osg::Material* mat, osg::Texture* tex);
 
                 osg::Vec4  diffuse, ambient, specular;
+                float shininess;
                 std::string    image;
                 std::string name;
         };

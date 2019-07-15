@@ -1,4 +1,4 @@
-find_package(Fontconfig MODULE QUIET)
+find_package(Fontconfig MODULE)
 
 IF(DYNAMIC_OPENSCENEGRAPH)
     ADD_DEFINITIONS(-DOSGTEXT_LIBRARY)

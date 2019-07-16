@@ -24,6 +24,7 @@
 #include <osg/Geometry>
 #include <osg/Notify>
 #include <osg/io_utils>
+#include <osg/CullingSet>
 
 using namespace osgUtil;
 

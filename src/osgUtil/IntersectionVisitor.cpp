@@ -304,89 +304,127 @@ void IntersectionVisitor::apply(osg::PagedLOD& plod)
 
     if (plod.getNumFileNames()>0)
     {
-#if 1
-        // Identify the range value for the highest res child
-        float targetRangeValue;
-        if( plod.getRangeMode() == osg::LOD::DISTANCE_FROM_EYE_POINT )
-            targetRangeValue = 1e6; // Init high to find min value
-        else
-            targetRangeValue = 0; // Init low to find max value
-
-        const osg::LOD::RangeList rl = plod.getRangeList();
-        osg::LOD::RangeList::const_iterator rit;
-        for( rit = rl.begin();
-             rit != rl.end();
-             rit++ )
+        // Select only the currently visible PagedLOD node
+        if (getWindowMatrix() && getProjectionMatrix() && getModelMatrix() && getViewMatrix() && getLODSelectionMode()==USE_EYE_POINT_FOR_LOD_LEVEL_SELECTION)
         {
-            if( plod.getRangeMode() == osg::LOD::DISTANCE_FROM_EYE_POINT )
+            float required_range = 0;
+            if (plod.getRangeMode() == osg::LOD::DISTANCE_FROM_EYE_POINT)
             {
-                if( rit->first < targetRangeValue )
-                    targetRangeValue = rit->first;
+                required_range = (plod.getCenter() - getEyePoint()).length();
             }
             else
             {
-                if( rit->first > targetRangeValue )
-                    targetRangeValue = rit->first;
+                osg::ref_ptr<osg::Viewport> viewport = new osg::Viewport((*getWindowMatrix())(3, 0) - (*getWindowMatrix())(0, 0),
+                    (*getWindowMatrix())(3, 1) - (*getWindowMatrix())(1, 1),
+                    (*getWindowMatrix())(0, 0)*2.0,
+                    (*getWindowMatrix())(1, 1)*2.0);
+
+                osg::Matrixd modeMatrix = (*getModelMatrix())*(*getViewMatrix());
+                osg::Vec4 pixelSizeVector = osg::CullingSet::computePixelSizeVector(*(viewport.get()), *getProjectionMatrix(), modeMatrix);
+                required_range = fabs(plod.getBound().radius() / (plod.getBound().center()*pixelSizeVector));
+            }
+
+            if (required_range > 0)
+            {
+                for (int cindex = plod.getNumChildren() - 1; cindex >= 0; cindex--)
+                {
+                    osg::Node* pChild = plod.getChild(cindex);
+                    if (pChild == nullptr)
+                        continue;
+
+                    if (plod.getMinRange(cindex) <= required_range && required_range < plod.getMaxRange(cindex))
+                    {
+                        pChild->accept(*this);
+                    }
+                }
             }
         }
-
-        // Perform an intersection test only on children that display
-        // at the maximum resolution.
-        unsigned int childIndex;
-        for( rit = rl.begin(), childIndex = 0;
-             rit != rl.end();
-             rit++, childIndex++ )
+        else
         {
-            if( rit->first != targetRangeValue )
-                // This is not one of the highest res children
-                continue;
+#if 1
+            // Identify the range value for the highest res child
+            float targetRangeValue;
+            if( plod.getRangeMode() == osg::LOD::DISTANCE_FROM_EYE_POINT )
+                targetRangeValue = 1e6; // Init high to find min value
+            else
+                targetRangeValue = 0; // Init low to find max value
 
-            osg::ref_ptr<osg::Node> child( NULL );
-            if( plod.getNumChildren() > childIndex )
-                child = plod.getChild( childIndex );
-
-            if( (!child.valid()) && (_readCallback.valid()) )
+            const osg::LOD::RangeList rl = plod.getRangeList();
+            osg::LOD::RangeList::const_iterator rit;
+            for( rit = rl.begin();
+                 rit != rl.end();
+                 rit++ )
             {
-                // Child is NULL; attempt to load it, if we have a readCallback...
-                unsigned int validIndex( childIndex );
-                if (plod.getNumFileNames() <= childIndex)
-                    validIndex = plod.getNumFileNames()-1;
-
-                child = _readCallback->readNodeFile( plod.getDatabasePath() + plod.getFileName( validIndex ) );
+                if( plod.getRangeMode() == osg::LOD::DISTANCE_FROM_EYE_POINT )
+                {
+                    if( rit->first < targetRangeValue )
+                        targetRangeValue = rit->first;
+                }
+                else
+                {
+                    if( rit->first > targetRangeValue )
+                        targetRangeValue = rit->first;
+                }
             }
 
-            if ( !child.valid() && plod.getNumChildren()>0)
+            // Perform an intersection test only on children that display
+            // at the maximum resolution.
+            unsigned int childIndex;
+            for( rit = rl.begin(), childIndex = 0;
+                 rit != rl.end();
+                 rit++, childIndex++ )
             {
-                // Child is still NULL, so just use the one at the end of the list.
-                child = plod.getChild( plod.getNumChildren()-1 );
-            }
+                if( rit->first != targetRangeValue )
+                    // This is not one of the highest res children
+                    continue;
 
-            if (child.valid())
-            {
-                child->accept(*this);
+                osg::ref_ptr<osg::Node> child( NULL );
+                if( plod.getNumChildren() > childIndex )
+                    child = plod.getChild( childIndex );
+
+                if( (!child.valid()) && (_readCallback.valid()) )
+                {
+                    // Child is NULL; attempt to load it, if we have a readCallback...
+                    unsigned int validIndex( childIndex );
+                    if (plod.getNumFileNames() <= childIndex)
+                        validIndex = plod.getNumFileNames()-1;
+
+                    child = _readCallback->readNodeFile( plod.getDatabasePath() + plod.getFileName( validIndex ) );
+                }
+
+                if ( !child.valid() && plod.getNumChildren()>0)
+                {
+                    // Child is still NULL, so just use the one at the end of the list.
+                    child = plod.getChild( plod.getNumChildren()-1 );
+                }
+
+                if (child.valid())
+                {
+                    child->accept(*this);
+                }
             }
-        }
 #else
-        // older code than above block, that assumes that the PagedLOD is ordered correctly
-        // i.e. low res children first, no duplicate ranges.
+            // older code than above block, that assumes that the PagedLOD is ordered correctly
+            // i.e. low res children first, no duplicate ranges.
 
-        osg::ref_ptr<osg::Node> highestResChild;
+            osg::ref_ptr<osg::Node> highestResChild;
 
-        if (plod.getNumFileNames() != plod.getNumChildren() && _readCallback.valid())
-        {
-            highestResChild = _readCallback->readNodeFile( plod.getDatabasePath() + plod.getFileName(plod.getNumFileNames()-1) );
-        }
+            if (plod.getNumFileNames() != plod.getNumChildren() && _readCallback.valid())
+            {
+                highestResChild = _readCallback->readNodeFile( plod.getDatabasePath() + plod.getFileName(plod.getNumFileNames()-1) );
+            }
 
-        if ( !highestResChild.valid() && plod.getNumChildren()>0)
-        {
-            highestResChild = plod.getChild( plod.getNumChildren()-1 );
-        }
+            if ( !highestResChild.valid() && plod.getNumChildren()>0)
+            {
+                highestResChild = plod.getChild( plod.getNumChildren()-1 );
+            }
 
-        if (highestResChild.valid())
-        {
-            highestResChild->accept(*this);
-        }
+            if (highestResChild.valid())
+            {
+                highestResChild->accept(*this);
+            }
 #endif
+        }
     }
 
     leave();

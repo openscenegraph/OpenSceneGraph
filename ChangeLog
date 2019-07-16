@@ -1,3 +1,30 @@
+Tue, 16 Jul 2019 11:53:24 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #789 from rhabacker/OpenSceneGraph-3.6cmake: Add find_package module for fontconfig
+
+Tue, 16 Jul 2019 11:32:10 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #791 from aluaces/mingw-osg_windowing_systemAvoid that mingw cross-compilation choosing X11 as the windowing system.
+
+Tue, 16 Jul 2019 11:08:25 +0200
+Author : Alberto Luaces
+Avoid that mingw cross-compilation choosing X11 as the windowing system.I have moved the PROJECT stanza before the conditionals, because
+otherwise expressions like IF(MINGW) always fail.
+
+
+Mon, 15 Jul 2019 18:54:30 +0200
+Author : Ralf Habacker
+cmake: Add summary information to get an idea of what dependencies might be missing
+
+Mon, 15 Jul 2019 18:52:14 +0200
+Author : Ralf Habacker
+cmake: Added find_package module for fontconfig which is not available with cmake < 3.14This file has been taken from cmake 3.14
+
+
+Mon, 15 Jul 2019 17:06:51 +0100
+Author : Robert Osfield
+Updated for 3.6.4-rc5
+
 Mon, 15 Jul 2019 16:16:45 +0100
 Author : Robert Osfield
 Adopted the matrix transformation code from Text

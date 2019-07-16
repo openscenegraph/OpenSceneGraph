@@ -328,13 +328,13 @@ void IntersectionVisitor::apply(osg::PagedLOD& plod)
             {
                 for (int cindex = plod.getNumChildren() - 1; cindex >= 0; cindex--)
                 {
-                    osg::Node* pChild = plod.getChild(cindex);
-                    if (pChild == nullptr)
+                    osg::ref_ptr<osg::Node> child = plod.getChild(cindex);
+                    if (!child.valid())
                         continue;
 
                     if (plod.getMinRange(cindex) <= required_range && required_range < plod.getMaxRange(cindex))
                     {
-                        pChild->accept(*this);
+                        child->accept(*this);
                     }
                 }
             }

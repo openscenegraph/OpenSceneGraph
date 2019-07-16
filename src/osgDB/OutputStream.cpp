@@ -581,6 +581,7 @@ void OutputStream::writeImage( const osg::Image* img )
         case IMAGE_INLINE_FILE:
             if ( isBinary() )
             {
+                bool bNeedStream = true;
                 std::string fullPath = osgDB::findDataFile( img->getFileName(), _options.get() );
                 if (fullPath.empty()==false)
                 {
@@ -588,6 +589,7 @@ void OutputStream::writeImage( const osg::Image* img )
                 
                     if ( infile )
                     {
+                        bNeedStream = false;
                         infile.seekg( 0, std::ios::end );
                         unsigned int size = infile.tellg();
                         writeSize(size);
@@ -608,16 +610,13 @@ void OutputStream::writeImage( const osg::Image* img )
                         }
                         infile.close();
                     }
-                    else
-                    {
-                        OSG_WARN << "OutputStream::writeImage(): Failed to open image file "
-                                            << img->getFileName() << std::endl;
-                        *this << (unsigned int)0;
-                    }
                 }
-                else
+                
+                if (bNeedStream)
                 {
                     std::string ext = osgDB::getFileExtension( img->getFileName() );
+                    if (ext.empty())
+						ext = "jpg";
                     osgDB::ReaderWriter* writer =
                         osgDB::Registry::instance()->getReaderWriterForExtension( ext );
                     if ( writer )

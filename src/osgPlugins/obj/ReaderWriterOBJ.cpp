@@ -102,7 +102,7 @@ public:
         f.precision(localOptions.precision);
 
         std::string materialFile = osgDB::getNameLessExtension(fileName) + ".mtl";
-        OBJWriterNodeVisitor nv(f, osgDB::getSimpleFileName(materialFile));
+        OBJWriterNodeVisitor nv(f, osgDB::getSimpleFileName(materialFile), options);
 
         // we must cast away constness
         (const_cast<osg::Node*>(&node))->accept(nv);
@@ -130,7 +130,7 @@ public:
 
         // writing to a stream does not support materials
 
-        OBJWriterNodeVisitor nv(fout);
+        OBJWriterNodeVisitor nv(fout, "", options);
 
         // we must cast away constness
         (const_cast<osg::Node*>(&node))->accept(nv);

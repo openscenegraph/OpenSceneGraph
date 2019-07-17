@@ -18,7 +18,7 @@
 
 #include <osg/io_utils>
 #include "OBJWriterNodeVisitor.h"
-
+#include <osgDB/WriteFile>
 
 
 /** writes all values of an array out to a stream, applies a matrix beforehand if necessary */
@@ -420,7 +420,7 @@ void ObjPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
 }
 
 
-OBJWriterNodeVisitor::OBJMaterial::OBJMaterial(osg::Material* mat, osg::Texture* tex) :
+OBJWriterNodeVisitor::OBJMaterial::OBJMaterial(osg::Material* mat, osg::Texture* tex, const osgDB::Options* options) :
     diffuse(1,1,1,1),
     ambient(0.2,0.2,0.2,1),
     specular(0,0,0,1),
@@ -440,9 +440,10 @@ OBJWriterNodeVisitor::OBJMaterial::OBJMaterial(osg::Material* mat, osg::Texture*
 
     if (tex) {
         osg::Image* img = tex->getImage(0);
-        if ((img) && (!img->getFileName().empty()))
-            image = img->getFileName();
-
+		if ((img) && (!img->getFileName().empty())) {
+			image = img->getFileName();
+			osgDB::writeImageFile(*img, image, options);
+		}
     }
 
 }

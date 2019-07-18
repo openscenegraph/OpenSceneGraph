@@ -618,7 +618,7 @@ BoundingBox Drawable::computeBoundingBox() const
 
 	if (cb._bb.valid())
 	{
-		if (cb._bb.radius() <= std::numeric_limits<float>::epsilon())
+		if (cb._bb.radius() <= FLT_EPSILON)
 			cb._bb.expandBy(osg::BoundingSphere(cb._bb.center(), 0.00001));
 	}
 

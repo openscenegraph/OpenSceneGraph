@@ -443,11 +443,12 @@ OBJWriterNodeVisitor::OBJMaterial::OBJMaterial(osg::Material* mat, osg::Texture*
 
     if (tex) {
         osg::Image* img = tex->getImage(0);
-		if ((img) && (!img->getFileName().empty())) {
-			image = img->getFileName();
-			if(outputTextureFiles)
-				osgDB::writeImageFile(*img, image, options);
-		}
+        if ((img) && (!img->getFileName().empty()))
+        {
+            image = img->getFileName();
+            if(outputTextureFiles)
+                osgDB::writeImageFile(*img, image, options);
+        }
     }
 
 }

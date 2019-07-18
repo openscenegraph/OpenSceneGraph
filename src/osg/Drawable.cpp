@@ -605,18 +605,24 @@ BoundingSphere Drawable::computeBound() const
 
 BoundingBox Drawable::computeBoundingBox() const
 {
-    ComputeBound cb;
+	ComputeBound cb;
 
-    Drawable* non_const_this = const_cast<Drawable*>(this);
-    non_const_this->accept(cb);
+	Drawable* non_const_this = const_cast<Drawable*>(this);
+	non_const_this->accept(cb);
 
 #if 0
-    OSG_NOTICE<<"computeBound() "<<cb._bb.xMin()<<", "<<cb._bb.xMax()<<", "<<std::endl;
-    OSG_NOTICE<<"               "<<cb._bb.yMin()<<", "<<cb._bb.yMax()<<", "<<std::endl;
-    OSG_NOTICE<<"               "<<cb._bb.zMin()<<", "<<cb._bb.zMax()<<", "<<std::endl;
+	OSG_NOTICE << "computeBound() " << cb._bb.xMin() << ", " << cb._bb.xMax() << ", " << std::endl;
+	OSG_NOTICE << "               " << cb._bb.yMin() << ", " << cb._bb.yMax() << ", " << std::endl;
+	OSG_NOTICE << "               " << cb._bb.zMin() << ", " << cb._bb.zMax() << ", " << std::endl;
 #endif
 
-    return cb._bb;
+	if (cb._bb.valid())
+	{
+		if (cb._bb.radius() <= std::numeric_limits<float>::epsilon())
+			cb._bb.expandBy(osg::BoundingSphere(cb._bb.center(), 0.00001));
+	}
+
+	return cb._bb;
 }
 
 void Drawable::setBound(const BoundingBox& bb) const

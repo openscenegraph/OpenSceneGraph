@@ -421,7 +421,7 @@ void ObjPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
 }
 
 
-OBJWriterNodeVisitor::OBJMaterial::OBJMaterial(osg::Material* mat, osg::Texture* tex, const osgDB::Options* options) :
+OBJWriterNodeVisitor::OBJMaterial::OBJMaterial(osg::Material* mat, osg::Texture* tex, bool outputTextureFiles, const osgDB::Options* options) :
     diffuse(1,1,1,1),
     ambient(0.2,0.2,0.2,1),
     specular(0,0,0,1),
@@ -445,7 +445,8 @@ OBJWriterNodeVisitor::OBJMaterial::OBJMaterial(osg::Material* mat, osg::Texture*
         osg::Image* img = tex->getImage(0);
 		if ((img) && (!img->getFileName().empty())) {
 			image = img->getFileName();
-			osgDB::writeImageFile(*img, image, options);
+			if(outputTextureFiles)
+				osgDB::writeImageFile(*img, image, options);
 		}
     }
 
@@ -526,7 +527,7 @@ void OBJWriterNodeVisitor::processStateSet(osg::StateSet* ss)
 
     if (mat || tex)
     {
-        _materialMap.insert(std::make_pair(osg::ref_ptr<osg::StateSet>(ss), OBJMaterial(mat, tex, _options)));
+        _materialMap.insert(std::make_pair(osg::ref_ptr<osg::StateSet>(ss), OBJMaterial(mat, tex, _outputTextureFiles, _options)));
         _fout << "usemtl " << _materialMap[ss].name << std::endl;
     }
 

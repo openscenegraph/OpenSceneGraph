@@ -74,7 +74,7 @@ public:
         supportsOption("REFLECTION=<unit>", "Set texture unit for reflection texture");
 
         supportsOption("precision=<digits>","Set the floating point precision when writing out files");
-		supportsOption("OutputTextureFiles", "Write out the texture images to file");
+        supportsOption("OutputTextureFiles", "Write out the texture images to file");
     }
 
     virtual const char* className() const { return "Wavefront OBJ Reader"; }
@@ -157,7 +157,7 @@ protected:
         TextureAllocationMap textureUnitAllocation;
         /// Coordinates precision.
         int precision;
-		bool outputTextureFiles;
+        bool outputTextureFiles;
 
         ObjOptionsStruct()
         {
@@ -168,7 +168,7 @@ protected:
             fixBlackMaterials = true;
             noReverseFaces = false;
             precision = std::numeric_limits<double>::digits10 + 2;
-			outputTextureFiles = false;
+            outputTextureFiles = false;
         }
     };
 
@@ -880,10 +880,10 @@ ReaderWriterOBJ::ObjOptionsStruct ReaderWriterOBJ::parseOptions(const osgDB::Rea
             {
                 localOptions.noReverseFaces = true;
             }
-			else if (pre_equals == "OutputTextureFiles")
-			{
-				localOptions.outputTextureFiles = true;
-			}
+            else if (pre_equals == "OutputTextureFiles")
+            {
+                localOptions.outputTextureFiles = true;
+            }
             else if (pre_equals == "precision")
             {
                 int val = std::atoi(post_equals.c_str());

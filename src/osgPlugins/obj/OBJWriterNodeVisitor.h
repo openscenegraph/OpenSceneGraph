@@ -56,9 +56,9 @@ class OBJWriterNodeVisitor: public osg::NodeVisitor {
             _currentStateSet(new osg::StateSet()),
             _lastVertexIndex(1),
             _lastNormalIndex(1),
-			_lastTexIndex(1),
-			_outputTextureFiles(outputTextureFiles),
-			_options(options)
+            _lastTexIndex(1),
+            _outputTextureFiles(outputTextureFiles),
+            _options(options)
         {
             _fout << "# file written by OpenSceneGraph" << std::endl << std::endl;
 
@@ -148,15 +148,15 @@ class OBJWriterNodeVisitor: public osg::NodeVisitor {
         typedef std::map< osg::ref_ptr<osg::StateSet>, OBJMaterial, CompareStateSet> MaterialMap;
 
 
-        std::ostream&                            _fout;
-        std::list<std::string>                    _nameStack;
-        StateSetStack                            _stateSetStack;
-        osg::ref_ptr<osg::StateSet>                _currentStateSet;
-        std::map<std::string, unsigned int>        _nameMap;
+        std::ostream&                           _fout;
+        std::list<std::string>                  _nameStack;
+        StateSetStack                           _stateSetStack;
+        osg::ref_ptr<osg::StateSet>             _currentStateSet;
+        std::map<std::string, unsigned int>     _nameMap;
         unsigned int                            _lastVertexIndex, _lastNormalIndex, _lastTexIndex;
-        MaterialMap                                _materialMap;
-		bool                                    _outputTextureFiles;
-		osg::ref_ptr<const osgDB::Options>      _options;
+        MaterialMap                             _materialMap;
+        bool                                    _outputTextureFiles;
+        osg::ref_ptr<const osgDB::Options>      _options;
 
 };
 

@@ -1,3 +1,41 @@
+Thu, 18 Jul 2019 12:44:59 +0100
+Author : Robert Osfield
+Fixed indentation
+
+Thu, 18 Jul 2019 09:13:25 +0800
+Author : Long Huan
+Add OutputTextureFiles OptionAdd OutputTextureFiles Option support Write out the texture images to file
+
+
+Wed, 17 Jul 2019 15:07:38 +0800
+Author : Long Huan
+Update OBJWriterNodeVisitor.cpp
+
+Wed, 17 Jul 2019 14:52:10 +0800
+Author : Long Huan
+fix obj-Plugin export texture fileFix obj-plugin to support export texture file
+
+
+Thu, 18 Jul 2019 12:18:04 +0100
+Author : Robert Osfield
+Added handling of zero radius models
+
+Thu, 18 Jul 2019 11:16:08 +0100
+Author : Robert Osfield
+Removed references OpenVRML plugin
+
+Thu, 18 Jul 2019 11:14:10 +0100
+Author : Robert Osfield
+Removed vrml plugin from build as OpenVRML plugin relies on no longer supported functionality
+
+Thu, 18 Jul 2019 10:34:53 +0100
+Author : Robert Osfield
+Added calls to curl_global_init and curl_global_cleanup to improve the robustness of threaded curl plugin usage
+
+Tue, 16 Jul 2019 13:50:02 +0100
+Author : Robert Osfield
+Updated for rc6
+
 Tue, 16 Jul 2019 11:53:24 +0100
 Author : OpenSceneGraph git repository
 Merge pull request #789 from rhabacker/OpenSceneGraph-3.6cmake: Add find_package module for fontconfig

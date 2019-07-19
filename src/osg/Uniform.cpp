@@ -285,8 +285,8 @@ void Uniform::allocateDataArray()
                 _int64Array = new Int64Array(arrayNumElements);
                 return;
 
-            case GL_UINT64_ARB:
-                _uintArray = new UInt64Array(arrayNumElements);
+            case GL_UNSIGNED_INT64_ARB:
+                _uint64Array = new UInt64Array(arrayNumElements);
                 return;
 
             default:

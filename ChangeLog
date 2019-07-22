@@ -1,3 +1,23 @@
+Mon, 22 Jul 2019 17:20:10 +0100
+Author : Robert Osfield
+Added handling of iOS and Android to make sure FontConfig is only used for Desktop builds
+
+Fri, 19 Jul 2019 09:20:50 +0100
+Author : Robert Osfield
+Updated for rc7
+
+Fri, 19 Jul 2019 09:10:02 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #797 from wangii/OpenSceneGraph-3.6 fix u64 and i64 allocation, setArray bug 
+
+Fri, 19 Jul 2019 14:06:20 +0800
+Author : Linan Wang
+fix typo
+
+Fri, 19 Jul 2019 13:28:25 +0800
+Author : Linan Wang
+fix u64 and i64 allocation, setArray bug
+
 Thu, 18 Jul 2019 12:44:59 +0100
 Author : Robert Osfield
 Fixed indentation

@@ -80,6 +80,22 @@ public:
 
     virtual const char* className() const { return "Wavefront OBJ Reader"; }
 
+    virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+    {
+        ReadResult result = readNode(fileName, options);
+        osg::Node* node = result.getNode();
+        if (node) return node;
+        else return result;
+    }
+
+    virtual ReadResult readObject(std::istream& fin, const Options* options) const
+    {
+        ReadResult result = readNode(fin, options);
+        osg::Node* node = result.getNode();
+        if (node) return node;
+        else return result;
+    }
+
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const;
 
     virtual ReadResult readNode(std::istream& fin, const Options* options) const;

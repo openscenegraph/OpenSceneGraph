@@ -82,18 +82,12 @@ public:
 
     virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
     {
-        ReadResult result = readNode(fileName, options);
-        osg::Node* node = result.getNode();
-        if (node) return node;
-        else return result;
+        return readNode(fileName, options);
     }
 
     virtual ReadResult readObject(std::istream& fin, const Options* options) const
     {
-        ReadResult result = readNode(fin, options);
-        osg::Node* node = result.getNode();
-        if (node) return node;
-        else return result;
+        return readNode(fin, options);
     }
 
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const;

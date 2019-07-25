@@ -64,6 +64,12 @@ public:
         return "TXP Reader/Writer";
     }
 
+
+    virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(fileName, options);
+    }
+
     virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
         if( !acceptsExtension(osgDB::getFileExtension(file) ))

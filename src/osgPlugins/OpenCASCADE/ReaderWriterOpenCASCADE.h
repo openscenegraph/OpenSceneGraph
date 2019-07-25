@@ -62,6 +62,12 @@ class ReaderWritterOpenCASCADE: public osgDB::ReaderWriter
         /// \brief returns class name
         virtual const char* className() const { return "STEP/IGES Reader"; }
 
+
+        virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+        {
+            return readNode(fileName, options);
+        }
+
         virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
 
         virtual osgDB::ReaderWriter::WriteResult writeNode(const osg::Node&, const std::string&, const Options* =NULL) const ;

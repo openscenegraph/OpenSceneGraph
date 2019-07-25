@@ -36,13 +36,23 @@
 using namespace osgText;
 using namespace std;
 
-osg::ref_ptr<Font>& Font::getDefaultFont()
+osg::ref_ptr<Font> Font::getDefaultFont()
 {
     static OpenThreads::Mutex s_DefaultFontMutex;
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_DefaultFontMutex);
 
-    static osg::ref_ptr<Font> s_defaultFont = new DefaultFont;
-    return s_defaultFont;
+    osg::ref_ptr<osg::Object> object = osgDB::Registry::instance()->getObjectCache()->getFromObjectCache("DefaultFont");
+    osg::ref_ptr<osgText::Font> font = dynamic_cast<osgText::Font*>(object.get());
+    if (!font)
+    {
+        font = new DefaultFont;
+        osgDB::Registry::instance()->getObjectCache()->addEntryToObjectCache("DefaultFont", font.get());
+        return font;
+    }
+    else
+    {
+        return font;
+    }
 }
 
 static OpenThreads::ReentrantMutex& getFontFileMutex()

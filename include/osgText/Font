@@ -83,7 +83,7 @@ public:
 
     virtual std::string getFileName() const;
 
-    static osg::ref_ptr<Font>& getDefaultFont();
+    static osg::ref_ptr<Font> getDefaultFont();
 
     typedef std::vector< osg::ref_ptr<osg::StateSet> > StateSets;
     StateSets& getCachedStateSets() { return _statesets; }

@@ -1,3 +1,23 @@
+Thu, 25 Jul 2019 14:58:17 +0100
+Author : Robert Osfield
+Changed the #extension enable
+
+Thu, 25 Jul 2019 14:10:01 +0100
+Author : Robert Osfield
+Change the DefaultFont so that it's managemed via the ObjectCache to enabl it to be release and cleared in a central manner. Added call to Registry::releaseGLObjects() to osgViewer/Renderer.cpp to enable automatic clean up of objects in the ObjectCache.
+
+Thu, 25 Jul 2019 12:48:21 +0100
+Author : Robert Osfield
+Added readObject() implementations
+
+Thu, 25 Jul 2019 10:39:34 +0100
+Author : Robert Osfield
+Added ReaderWriterOBJ::readObject(..) implementations to address issue with using osgconv
+
+Mon, 22 Jul 2019 19:22:16 +0100
+Author : Robert Osfield
+Updates for 3.6.4-rc8
+
 Mon, 22 Jul 2019 17:20:10 +0100
 Author : Robert Osfield
 Added handling of iOS and Android to make sure FontConfig is only used for Desktop builds

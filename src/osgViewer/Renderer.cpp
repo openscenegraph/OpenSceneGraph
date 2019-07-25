@@ -25,6 +25,7 @@
 
 #include <osgDB/DatabasePager>
 #include <osgDB/ImagePager>
+#include <osgDB/Registry>
 
 #include <osg/io_utils>
 
@@ -960,6 +961,8 @@ void Renderer::resizeGLObjectBuffers(unsigned int maxSize)
 
 void Renderer::releaseGLObjects(osg::State* state) const
 {
+    osgDB::Registry::instance()->releaseGLObjects(state);
+
     if (_sceneView[0].valid()) _sceneView[0]->releaseGLObjects(state);
     if (_sceneView[1].valid()) _sceneView[1]->releaseGLObjects(state);
 }

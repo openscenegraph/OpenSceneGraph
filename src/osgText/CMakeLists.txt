@@ -1,4 +1,4 @@
-IF(NOT OSG_BUILD_PLATFORM_IPHONE AND NOT ANDROID)
+IF(OSG_TEXT_USE_FONTCONFIG)
     find_package(Fontconfig MODULE)
 ENDIF()
 
@@ -54,8 +54,11 @@ SET(TARGET_LIBRARIES
 SET(COMPONENT_PKGCONFIG_DESCRIPTION "Text rendering library for OpenSceneGraph")
 
 if(Fontconfig_FOUND)
+    MESSAGE(STATUS "osgText will be linked with FontConfig library")
     list(APPEND TARGET_LIBRARIES Fontconfig::Fontconfig)
     ADD_DEFINITIONS(-DWITH_FONTCONFIG)
+else()
+    MESSAGE(STATUS "osgText will not be linked with FontConfig library")
 endif()
 
 SETUP_LIBRARY(${LIB_NAME})

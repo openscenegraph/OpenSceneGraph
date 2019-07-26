@@ -50,7 +50,7 @@ SET(TARGET_LIBRARIES
     OpenThreads
 )
 
-if(Fontconfig_FOUND)
+if(OSG_TEXT_USE_FONTCONFIG AND Fontconfig_FOUND)
     MESSAGE(STATUS "osgText will be linked with FontConfig library")
     list(APPEND TARGET_LIBRARIES Fontconfig::Fontconfig)
     ADD_DEFINITIONS(-DWITH_FONTCONFIG)

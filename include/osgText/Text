@@ -265,7 +265,6 @@ protected:
     virtual osg::StateSet* createStateSet();
 
     Font* getActiveFont();
-    const Font* getActiveFont() const;
 
     String::iterator computeLastCharacterOnLine(osg::Vec2& cursor, String::iterator first,String::iterator last);
 

@@ -312,6 +312,7 @@ protected:
     // members which have public access.
     osg::Vec4                               _color;
     osg::ref_ptr<Font>                      _font;
+    osg::ref_ptr<Font>                      _fontFallback;
     osg::ref_ptr<Style>                     _style;
     FontResolution                          _fontSize;
     float                                   _characterHeight;

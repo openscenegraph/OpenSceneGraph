@@ -249,12 +249,11 @@ osg::StateSet* Text::createStateSet()
 
 Font* Text::getActiveFont()
 {
-    return _font.valid() ? _font.get() : Font::getDefaultFont().get();
-}
+    if (_font.valid()) return _font.get();
 
-const Font* Text::getActiveFont() const
-{
-    return _font.valid() ? _font.get() : Font::getDefaultFont().get();
+    if (!_fontFallback) _fontFallback = Font::getDefaultFont();
+
+    return _fontFallback.get();
 }
 
 String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::iterator first,String::iterator last)

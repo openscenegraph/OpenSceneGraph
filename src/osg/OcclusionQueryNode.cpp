@@ -631,7 +631,6 @@ BoundingSphere OcclusionQueryNode::computeBound() const
     return Group::computeBound();
 }
 
-
 // Should only be called outside of cull/draw. No thread issues.
 void OcclusionQueryNode::setQueriesEnabled( bool enable )
 {
@@ -785,6 +784,15 @@ void OcclusionQueryNode::discardDeletedQueryObjects( unsigned int contextID )
 {
     // Query object discard and deletion is handled by QueryGeometry support class.
     QueryGeometry::discardDeletedQueryObjects( contextID );
+}
+
+void OcclusionQueryNode::setCustomQueryGeometry(osg::QueryGeometry* qg)
+{
+     _queryGeode->removeChild(0, 1);
+     _queryGeode->insertChild(0, qg);
+     _validQueryGeometry = true;
+     if(!getComputeBoundingSphereCallback())
+         setComputeBoundingSphereCallback(new Node::ComputeBoundingSphereCallback());
 }
 
 osg::QueryGeometry* OcclusionQueryNode::getQueryGeometry()

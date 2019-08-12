@@ -120,12 +120,10 @@ public:
 
     virtual void releaseGLObjects( osg::State* state = 0 ) const;
 
-
     // When disabled, OQN doesn't perform occlusion queries, and simply
     //   renders its children.
     void setQueriesEnabled( bool enable=true );
     bool getQueriesEnabled() const { return _enabled; }
-
 
     // Sets/gets the visibility threshold. If the test indicates that
     //   the number of visible pixels is less than the specified
@@ -148,7 +146,6 @@ public:
     void setDebugDisplay( bool enable );
     bool getDebugDisplay() const;
 
-
     // Set and get the StateSet used by the OcclusionQueryNode
     //   when rendering the query geometry. OQN creates its own by
     //   default, but if you use many OQNs you might want to use
@@ -157,6 +154,10 @@ public:
     void setQueryStateSet( osg::StateSet* ss );
     osg::StateSet* getQueryStateSet();
     const osg::StateSet* getQueryStateSet() const;
+
+    // override construction of querygeometry based on child bounds
+    void setCustomQueryGeometry( osg::QueryGeometry* qg);
+    const osg::QueryGeometry* getCustomQueryGeometry() const { if (getComputeBoundingSphereCallback()) return getQueryGeometry(); return 0; }
 
     // Get the QueryGeometry object used for occlusion query. Returns 0 if no QueryGeometry is created.
     osg::QueryGeometry* getQueryGeometry();
@@ -171,13 +172,11 @@ public:
     // For statistics gathering, e.g., by a NodeVisitor.
     bool getPassed() const;
 
-
     // These methods are public so that osgUtil::CullVisitor can access them.
     // Not intended for application use.
     virtual bool getPassed( const osg::Camera* camera, osg::NodeVisitor& nv );
     void traverseQuery( const osg::Camera* camera, osg::NodeVisitor& nv );
     void traverseDebug( osg::NodeVisitor& nv );
-
 
     // Delete unused query IDs for this contextID.
     static void flushDeletedQueryObjects( unsigned int contextID, double currentTime, double& availableTime );
@@ -214,7 +213,6 @@ protected:
     unsigned int _visThreshold;
     unsigned int _queryFrameCount;
     bool _debugBB;
-
 
     // Required to ensure that computeBound() is thread-safe.
     mutable OpenThreads::Mutex _computeBoundMutex;

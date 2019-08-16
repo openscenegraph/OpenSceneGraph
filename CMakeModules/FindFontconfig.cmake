@@ -1,7 +1,6 @@
 # Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
 # file Copyright.txt or https://cmake.org/licensing for details.
-
-#[=======================================================================[.rst:
+#[[=======================================================================.rst:
 FindFontconfig
 --------------
 
@@ -29,9 +28,7 @@ This will define the following variables in your project:
 ``FONTCONFIG_COMPILE_OPTIONS``
   this should be passed to target_compile_options(), if the
   target is not used for linking
-
-#]=======================================================================]
-
+=======================================================================]]
 
 # use pkg-config to get the directories and then use these values
 # in the FIND_PATH() and FIND_LIBRARY() calls

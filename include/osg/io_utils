@@ -66,7 +66,6 @@ class MakeString
         inline operator std::string () const { return sstream.str(); }
 
         inline std::string str() const { return sstream.str(); }
-        inline const char* c_str() const { return sstream.str().c_str(); }
 };
 
 

@@ -991,12 +991,11 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
 
    OSG_INFO<<"ReadDDS, dataType = 0x"<<std::hex<<dataType<<std::endl;
 
-    unsigned char* palette = new unsigned char [1024];
+    unsigned char palette [1024];
     if (ddsd.ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED8)
     {
         if (!_istream.read((char*)palette, 1024))
         {
-            delete [] palette;
             OSG_WARN << "ReadDDSFile warning: couldn't read palette" << std::endl;
             return NULL;
         }
@@ -1039,6 +1038,7 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
             convertedData[i * 4 + 2] = palette[imageData[i] * 4 + 2];
             convertedData[i * 4 + 3] = palette[imageData[i] * 4 + 3];
         }
+        delete [] imageData;
         for (unsigned int i = 0; i < mipmap_offsets.size(); i++)
             mipmap_offsets[i] *= 4;
         internalFormat = GL_RGBA;

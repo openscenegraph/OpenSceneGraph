@@ -989,12 +989,17 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
         }
     }
 
-   OSG_INFO<<"ReadDDS, dataType = 0x"<<std::hex<<dataType<<std::endl;
+    OSG_INFO<<"ReadDDS, dataType = 0x"<<std::hex<<dataType<<std::endl;
+    typedef union {
+        float f32;
+        unsigned char c8[4];
+    } PaletteWord;
 
-    unsigned char palette [1024];
+    PaletteWord palette [256];
+
     if (ddsd.ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED8)
     {
-        if (!_istream.read((char*)palette, 1024))
+        if (!_istream.read((char*)&palette->c8, 1024))
         {
             OSG_WARN << "ReadDDSFile warning: couldn't read palette" << std::endl;
             return NULL;
@@ -1030,20 +1035,16 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
     if (ddsd.ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED8)
     {
         // Now we need to substitute the indexed image data with full RGBA image data.
-        unsigned char* convertedData = new unsigned char [sizeWithMipmaps * 4];
+        PaletteWord* convertedData = new PaletteWord [sizeWithMipmaps];
+        PaletteWord* pconvertedData = convertedData;
         for (unsigned int i = 0; i < sizeWithMipmaps; i++)
-        {
-            convertedData[i * 4 + 0] = palette[imageData[i] * 4 + 0];
-            convertedData[i * 4 + 1] = palette[imageData[i] * 4 + 1];
-            convertedData[i * 4 + 2] = palette[imageData[i] * 4 + 2];
-            convertedData[i * 4 + 3] = palette[imageData[i] * 4 + 3];
-        }
+            pconvertedData++->f32 = palette[imageData[i]].f32;
         delete [] imageData;
         for (unsigned int i = 0; i < mipmap_offsets.size(); i++)
             mipmap_offsets[i] *= 4;
         internalFormat = GL_RGBA;
         pixelFormat = GL_RGBA;
-        osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, convertedData, osg::Image::USE_NEW_DELETE, packing);
+        osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, convertedData->c8, osg::Image::USE_NEW_DELETE, packing);
     }
     else
     {

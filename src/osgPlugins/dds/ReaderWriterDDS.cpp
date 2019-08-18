@@ -990,16 +990,12 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
     }
 
     OSG_INFO<<"ReadDDS, dataType = 0x"<<std::hex<<dataType<<std::endl;
-    typedef union {
-        float f32;
-        unsigned char c8[4];
-    } PaletteWord;
 
-    PaletteWord palette [256];
+    unsigned char palette [1024];
 
     if (ddsd.ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED8)
     {
-        if (!_istream.read((char*)&palette->c8, 1024))
+        if (!_istream.read((char*)palette, 1024))
         {
             OSG_WARN << "ReadDDSFile warning: couldn't read palette" << std::endl;
             return NULL;
@@ -1035,16 +1031,19 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
     if (ddsd.ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED8)
     {
         // Now we need to substitute the indexed image data with full RGBA image data.
-        PaletteWord* convertedData = new PaletteWord [sizeWithMipmaps];
-        PaletteWord* pconvertedData = convertedData;
+        unsigned char * convertedData = new unsigned char [sizeWithMipmaps * 4];
+        unsigned char * pconvertedData = convertedData;
         for (unsigned int i = 0; i < sizeWithMipmaps; i++)
-            pconvertedData++->f32 = palette[imageData[i]].f32;
+        {
+            memcpy(pconvertedData, &palette[ imageData[i] * 4], sizeof(unsigned char) * 4 );
+            pconvertedData += 4;
+        }
         delete [] imageData;
         for (unsigned int i = 0; i < mipmap_offsets.size(); i++)
             mipmap_offsets[i] *= 4;
         internalFormat = GL_RGBA;
         pixelFormat = GL_RGBA;
-        osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, convertedData->c8, osg::Image::USE_NEW_DELETE, packing);
+        osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, convertedData, osg::Image::USE_NEW_DELETE, packing);
     }
     else
     {

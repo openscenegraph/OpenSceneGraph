@@ -77,6 +77,8 @@ DynamicLibrary* DynamicLibrary::loadLibrary(const std::string& libraryName)
 
     HANDLE handle = NULL;
 
+    OSG_DEBUG << "DynamicLibrary::try to load library \"" << libraryName << "\"" << std::endl;
+    
     std::string fullLibraryName = osgDB::findLibraryFile(libraryName);
     if (!fullLibraryName.empty()) handle = getLibraryHandle( fullLibraryName ); // try the lib we have found
     else handle = getLibraryHandle( libraryName ); // haven't found a lib ourselves, see if the OS can find it simply from the library name.

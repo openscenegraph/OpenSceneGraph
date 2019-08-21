@@ -487,15 +487,20 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
 
     if ( !_validQueryGeometry )
     {
-        // There're cases that the occlusion test result has been retrieved
-        // after the query geometry has been changed, it's the result of the
-        // geometry before the change.
-        qg->reset();
+        if(qg->getBoundingBox().valid())
+            _validQueryGeometry = true;
+        else
+        {
+            // There're cases that the occlusion test result has been retrieved
+            // after the query geometry has been changed, it's the result of the
+            // geometry before the change.
+            qg->reset();
 
-        // The box of the query geometry is invalid, return false to not traverse
-        // the subgraphs.
-        _passed = false;
-        return _passed;
+            // The box of the query geometry is invalid, return false to not traverse
+            // the subgraphs.
+            _passed = false;
+            return _passed;
+        }
     }
 
     {

@@ -184,7 +184,6 @@ int Program::compare(const osg::StateAttribute& sa) const
     return 0; // passed all the above comparison macros, must be equal.
 }
 
-
 void Program::compileGLObjects( osg::State& state ) const
 {
     if( _shaderList.empty() ) return;
@@ -927,6 +926,14 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
             }
         }
         delete [] name;
+    }
+
+    ///extra uniform locations
+    for( unsigned int i=0; i<_program->getNumExtraUniformLocations(); ++i)
+    {
+        const ExtraUniformLocation& cloc = _program->getExtraUniformLocation(i);
+        GLint loc = _extensions->glGetUniformLocation(_glProgramHandle, cloc._locationname.c_str());
+        _uniformInfoMap[osg::Uniform::getNameID(cloc._locationname)] = ActiveVarInfo(loc, cloc._type, cloc._size);
     }
 
     // print atomic counter

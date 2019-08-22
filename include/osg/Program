@@ -156,8 +156,6 @@ class OSG_EXPORT Program : public osg::StateAttribute
         ShaderDefines& getShaderDefines() { return _shaderDefines; }
         const ShaderDefines& getShaderDefines() const { return _shaderDefines; }
 
-
-
         /** Simple class for wrapping up the data used in glProgramBinary and glGetProgramBinary.
           * On the first run of your application Programs should be assigned an empty ProgramBinary.
           * Before your application exits it should retrieve the program binary via
@@ -227,6 +225,18 @@ class OSG_EXPORT Program : public osg::StateAttribute
 
         /** Query InfoLog from a glProgram */
         bool getGlProgramInfoLog(unsigned int contextID, std::string& log) const;
+
+        struct ExtraUniformLocation {
+            ExtraUniformLocation() : _locationname(""), _type(Uniform::UNDEFINED), _size(-1) {}
+            ExtraUniformLocation( std::string locname, GLenum type, GLint size ) : _locationname(locname), _type(type), _size(size) {}
+            std::string _locationname;
+            GLenum _type;
+            GLint _size;
+        };
+        void addExtraUniformLocation(ExtraUniformLocation loc) { _extrauniformlocations.push_back(loc); }
+        void removeExtraUniformLocation(unsigned int index) { _extrauniformlocations.erase(_extrauniformlocations.begin()+index); }
+        const ExtraUniformLocation& getExtraUniformLocation(unsigned int index) const { return _extrauniformlocations[index]; }
+        unsigned int getNumExtraUniformLocations() const { return _extrauniformlocations.size(); }
 
         struct ActiveVarInfo {
             ActiveVarInfo() : _location(-1), _type(Uniform::UNDEFINED), _size(-1) {}
@@ -441,6 +451,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
 
         ShaderDefines _shaderDefines;
 
+        std::vector<ExtraUniformLocation> _extrauniformlocations;
 
     private:
         Program& operator=(const Program&);        // disallowed

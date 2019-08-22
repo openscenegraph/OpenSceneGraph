@@ -586,7 +586,7 @@ bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
 
 void OcclusionQueryNode::traverseQuery( const Camera* camera, NodeVisitor& nv )
 {
-    if (!isQueryGeometryValid())
+    if (!_validQueryGeometry || ! _enabled)
         return;
 
     bool issueQuery;

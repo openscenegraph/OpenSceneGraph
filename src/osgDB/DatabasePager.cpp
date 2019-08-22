@@ -1128,6 +1128,7 @@ DatabasePager::DatabasePager(const DatabasePager& rhs)
     _dataToCompileList = new RequestQueue(this);
     _dataToMergeList = new RequestQueue(this);
 
+    _databaseThreads.reserve(rhs._databaseThreads.size());
     for(DatabaseThreadList::const_iterator dt_itr = rhs._databaseThreads.begin();
         dt_itr != rhs._databaseThreads.end();
         ++dt_itr)

@@ -81,6 +81,7 @@ void ObserverNodePath::setNodePath(const osg::NodePath& nodePath)
 void ObserverNodePath::setNodePath(const osg::RefNodePath& refNodePath)
 {
     osg::NodePath nodePath;
+    nodePath.reserve(refNodePath.size());
     for(RefNodePath::const_iterator itr = refNodePath.begin(); itr != refNodePath.end(); ++itr)
     {
         nodePath.push_back(itr->get());

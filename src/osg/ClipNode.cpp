@@ -55,6 +55,7 @@ void ClipNode::setReferenceFrame(ReferenceFrame rf)
 void ClipNode::createClipBox(const BoundingBox& bb,unsigned int clipPlaneNumberBase)
 {
     _planes.clear();
+    _planes.reserve(6);
     if (!_stateset.valid()) _stateset = new osg::StateSet;
 
     _planes.push_back(new ClipPlane(clipPlaneNumberBase  ,1.0,0.0,0.0,-bb.xMin()));

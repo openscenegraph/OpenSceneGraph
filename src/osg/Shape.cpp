@@ -1284,6 +1284,7 @@ Geometry* osg::convertShapeToGeometry(const Shape& shape, const TessellationHint
         ref_ptr<Vec4Array> colors = new Vec4Array(colorBinding);
         geometry->setColorArray(colors.get());
 
+        colors->reserve(numColors);
         for(unsigned int i=0; i<numColors; ++i)
         {
             colors->push_back(color);

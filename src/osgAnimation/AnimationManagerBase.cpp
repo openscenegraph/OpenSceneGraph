@@ -68,6 +68,7 @@ AnimationManagerBase::AnimationManagerBase(const AnimationManagerBase& b, const 
     osg::NodeCallback(b,copyop) // TODO check this
 {
     const AnimationList& animationList = b.getAnimationList();
+    _animations.reserve(animationList.size());
     for (AnimationList::const_iterator it = animationList.begin();
          it != animationList.end();
          ++it)

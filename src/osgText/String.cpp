@@ -259,6 +259,7 @@ String& String::operator = (const String& str)
 void String::set(const std::string& text)
 {
     clear();
+    reserve(text.size());
     for ( std::string::const_iterator it = text.begin(); it != text.end(); ++it )
     {
         unsigned int charcode = (unsigned char )*it;

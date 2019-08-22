@@ -52,6 +52,7 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
         if (primitive) _primitives.push_back(primitive);
     }
 
+    _texCoordList.reserve(geometry._texCoordList.size());
     for(ArrayList::const_iterator titr=geometry._texCoordList.begin();
         titr!=geometry._texCoordList.end();
         ++titr)
@@ -59,6 +60,7 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
         _texCoordList.push_back(copyop(titr->get()));
     }
 
+    _vertexAttribList.reserve(geometry._vertexAttribList.size());
     for(ArrayList::const_iterator vitr=geometry._vertexAttribList.begin();
         vitr!=geometry._vertexAttribList.end();
         ++vitr)
@@ -1210,6 +1212,7 @@ Geometry* osg::createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVe
     geom->setNormalArray(normals, osg::Array::BIND_OVERALL);
 
     DrawElementsUByte* elems = new DrawElementsUByte(PrimitiveSet::TRIANGLES);
+    elems->reserve(6);
     elems->push_back(0);
     elems->push_back(1);
     elems->push_back(2);
@@ -1650,6 +1653,7 @@ void Geometry::fixDeprecatedData()
     PtrList perVertexPtrs;
     PtrList perPrimitivePtrs;
 
+    perVertexPtrs.reserve(perVertexArrays.size());
     for(GeometryUtilFunctions::ArrayPairs::iterator itr = perVertexArrays.begin();
         itr != perVertexArrays.end();
         ++itr)
@@ -1657,6 +1661,7 @@ void Geometry::fixDeprecatedData()
         perVertexPtrs.push_back(GeometryUtilFunctions::PtrData(itr->first.get(), itr->second.get()));
     }
 
+    perPrimitivePtrs.reserve(perPrimitiveArrays.size());
     for(GeometryUtilFunctions::ArrayPairs::iterator itr = perPrimitiveArrays.begin();
         itr != perPrimitiveArrays.end();
         ++itr)

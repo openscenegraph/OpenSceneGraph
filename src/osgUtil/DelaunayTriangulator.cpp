@@ -421,6 +421,7 @@ Triangle_list fillHole(osg::Vec3Array *points, const std::vector<int>& vindexlis
     Triangle_list triangles; // returned list
     osg::ref_ptr<osg::Geometry> gtess=new osg::Geometry; // add all the contours to this for analysis
     osg::ref_ptr<osg::Vec3Array> constraintverts=new osg::Vec3Array;
+    constraintverts->reserve(vindexlist.size());
     osg::ref_ptr<osgUtil::Tessellator> tscx=new osgUtil::Tessellator; // this assembles all the constraints
 
     for (std::vector<int>::const_iterator itint=vindexlist.begin(); itint!=vindexlist.end(); itint++)

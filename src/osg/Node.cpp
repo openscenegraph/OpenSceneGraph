@@ -185,6 +185,7 @@ MatrixList Node::getWorldMatrices(const osg::Node* haltTraversalAtNode) const
     const_cast<Node*>(this)->accept(cpp);
 
     MatrixList matrices;
+    matrices.reserve(cpp._nodePaths.size());
 
     for(NodePathList::iterator itr = cpp._nodePaths.begin();
         itr != cpp._nodePaths.end();

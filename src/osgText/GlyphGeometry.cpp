@@ -92,6 +92,7 @@ public:
     void set(const osg::Vec3Array* vertices, unsigned int start, unsigned int count, float thickness)
     {
         osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(osg::PrimitiveSet::POLYGON);
+        elements->reserve(count);
         for(unsigned int i=start; i<start+count; ++i)
         {
             elements->push_back(i);
@@ -902,6 +903,7 @@ OSGTEXT_EXPORT osg::Geometry* computeGlyphGeometry(const osgText::Glyph3D* glyph
         osg::DrawElementsUShort* front_face = new osg::DrawElementsUShort(GL_TRIANGLES);
         front_face->setName("face");
         new_geometry->addPrimitiveSet(front_face);
+        front_face->reserve(indices.size());
         for(unsigned int i=0; i<indices.size();++i)
         {
             front_face->push_back(indices[i]);
@@ -957,6 +959,7 @@ OSGTEXT_EXPORT osg::Geometry* computeTextGeometry(const osgText::Glyph3D* glyph,
     osg::DrawElementsUShort* frontFace = new osg::DrawElementsUShort(GL_TRIANGLES);
     frontFace->setName("front");
     text_geometry->addPrimitiveSet(frontFace);
+    frontFace->reserve(indices.size());
     for(unsigned int i=0; i<indices.size();++i)
     {
         frontFace->push_back(indices[i]);
@@ -974,6 +977,7 @@ OSGTEXT_EXPORT osg::Geometry* computeTextGeometry(const osgText::Glyph3D* glyph,
     osg::DrawElementsUShort* backFace = new osg::DrawElementsUShort(GL_TRIANGLES);
     backFace->setName("back");
     text_geometry->addPrimitiveSet(backFace);
+    backFace->reserve((indices.size() - 2) * 3);
     for(unsigned int i=0; i<indices.size()-2;)
     {
         unsigned int p1 = indices[i++];
@@ -1019,6 +1023,7 @@ OSGTEXT_EXPORT osg::Geometry* computeTextGeometry(const osgText::Glyph3D* glyph,
         osg::DrawElementsUShort* elements = dynamic_cast<osg::DrawElementsUShort*>(itr->get());
         if (elements)
         {
+            edging->reserve(elements->size() * 2);
             for(unsigned int i=0; i<elements->size(); ++i)
             {
                 unsigned int ei = (*elements)[i];
@@ -1100,6 +1105,7 @@ OSGTEXT_EXPORT osg::Geometry* computeTextGeometry(osg::Geometry* glyphGeometry, 
     osg::DrawElementsUShort* frontFace = new osg::DrawElementsUShort(GL_TRIANGLES);
     frontFace->setName("front");
     text_geometry->addPrimitiveSet(frontFace);
+    frontFace->reserve(face->size());
     for(unsigned int i=0; i<face->size();)
     {
         unsigned int pi = (*face)[i++];
@@ -1118,6 +1124,7 @@ OSGTEXT_EXPORT osg::Geometry* computeTextGeometry(osg::Geometry* glyphGeometry, 
     osg::DrawElementsUShort* backFace = new osg::DrawElementsUShort(GL_TRIANGLES);
     backFace->setName("back");
     text_geometry->addPrimitiveSet(backFace);
+    backFace->reserve((face->size() - 2) * 3);
     for(unsigned int i=0; i<face->size()-2;)
     {
         unsigned int p1 = (*face)[i++];
@@ -1199,6 +1206,7 @@ OSGTEXT_EXPORT osg::Geometry* computeTextGeometry(osg::Geometry* glyphGeometry, 
 
         osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(GL_TRIANGLES);
         elements->setName("wall");
+        elements->reserve((no_vertices_on_boundary - 1) * (no_vertices_on_bevel - 1) * 6);
         unsigned int base, next;
         for(unsigned int i = 0; i< no_vertices_on_boundary-1; ++i)
         {
@@ -1278,6 +1286,7 @@ OSGTEXT_EXPORT osg::Geometry* computeShellGeometry(osg::Geometry* glyphGeometry,
     // the order of the triangle indices are flipped to make sure that the triangles are back face
     osg::DrawElementsUShort* frontFace = new osg::DrawElementsUShort(GL_TRIANGLES);
     text_geometry->addPrimitiveSet(frontFace);
+    frontFace->reserve((face->size() - 2) * 3);
     for(unsigned int i=0; i<face->size()-2;)
     {
         unsigned int p1 = (*face)[i++];
@@ -1311,6 +1320,7 @@ OSGTEXT_EXPORT osg::Geometry* computeShellGeometry(osg::Geometry* glyphGeometry,
     // for later use, and to ensure sharing of vertices in the face primitive set
     osg::DrawElementsUShort* backFace = new osg::DrawElementsUShort(GL_TRIANGLES);
     text_geometry->addPrimitiveSet(backFace);
+    backFace->reserve(face->size());
     for(unsigned int i=0; i<face->size();)
     {
         unsigned int pi = (*face)[i++];
@@ -1418,6 +1428,7 @@ OSGTEXT_EXPORT osg::Geometry* computeShellGeometry(osg::Geometry* glyphGeometry,
         }
 
         osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(GL_TRIANGLES);
+        elements->reserve((no_vertices_on_boundary - 1) * (no_vertices_on_bevel - 1) * 6);
         unsigned int base, next;
         for(unsigned int i = 0; i< no_vertices_on_boundary-1; ++i)
         {

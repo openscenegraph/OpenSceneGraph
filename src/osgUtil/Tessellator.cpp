@@ -682,6 +682,7 @@ void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int /*origin
               if(vertexPtrToIndexMap.size() <= 255)
               {
                   osg::DrawElementsUByte* elements = new osg::DrawElementsUByte(prim->_mode);
+                  elements->reserve(prim->_vertices.size());
                   for(Prim::VecList::iterator vitr=prim->_vertices.begin();
                   vitr!=prim->_vertices.end();
                   ++vitr)
@@ -696,6 +697,7 @@ void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int /*origin
               else if(vertexPtrToIndexMap.size() > 255 && vertexPtrToIndexMap.size() <= 65535)
               {
                   osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(prim->_mode);
+                  elements->reserve(prim->_vertices.size());
                   for(Prim::VecList::iterator vitr=prim->_vertices.begin();
                     vitr!=prim->_vertices.end();
                     ++vitr)
@@ -710,6 +712,7 @@ void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int /*origin
               else
               {
                   osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(prim->_mode);
+                  elements->reserve(prim->_vertices.size());
                   for(Prim::VecList::iterator vitr=prim->_vertices.begin();
                     vitr!=prim->_vertices.end();
                     ++vitr)

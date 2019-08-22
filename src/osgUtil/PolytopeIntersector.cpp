@@ -221,6 +221,7 @@ struct IntersectFunctor
     {
         // initialize the set of vertices to test.
         src.clear();
+        src.reserve(2);
         src.push_back(v0);
         src.push_back(v1);
 
@@ -231,6 +232,7 @@ struct IntersectFunctor
     {
         // initialize the set of vertices to test.
         src.clear();
+        src.reserve(4);
         src.push_back(v0);
         src.push_back(v1);
         src.push_back(v2);
@@ -243,6 +245,7 @@ struct IntersectFunctor
     {
         // initialize the set of vertices to test.
         src.clear();
+        src.reserve(5);
         src.push_back(v0);
         src.push_back(v1);
         src.push_back(v2);
@@ -308,6 +311,7 @@ struct IntersectFunctor
         }
 
         src.clear();
+        src.reserve(3);
         src.push_back(v0);
         src.push_back(v1);
         src.push_back(v0);
@@ -330,6 +334,7 @@ struct IntersectFunctor
         }
 
         src.clear();
+        src.reserve(4);
         src.push_back(v0);
         src.push_back(v1);
         src.push_back(v2);
@@ -353,6 +358,7 @@ struct IntersectFunctor
         }
 
         src.clear();
+        src.reserve(5);
 
         src.push_back(v0);
         src.push_back(v1);

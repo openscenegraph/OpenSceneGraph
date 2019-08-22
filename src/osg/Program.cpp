@@ -932,6 +932,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
     {
         std::vector<GLint> bufferIndex( atomicCounterMap.size(), 0 );
         std::vector<GLuint> uniformIndex;
+        uniformIndex.reserve(atomicCounterMap.size());
         for (AtomicCounterMap::iterator it = atomicCounterMap.begin(), end = atomicCounterMap.end();
              it != end; ++it)
         {

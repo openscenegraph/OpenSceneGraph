@@ -52,6 +52,7 @@ DefaultUserDataContainer::DefaultUserDataContainer(const DefaultUserDataContaine
 {
     _userData = udc._userData;
     _descriptionList = udc._descriptionList;
+    _objectList.reserve(udc._objectList.size());
     for(ObjectList::const_iterator itr = udc._objectList.begin();
         itr != udc._objectList.end();
         ++itr)

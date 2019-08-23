@@ -759,8 +759,6 @@ void OcclusionQueryNode::setQueryGeometryInternal( QueryGeometry* queryGeom,
         return;
     }
 
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _computeBoundMutex )  ;
-
     _queryGeometryState = state;
 
     _queryGeode->removeDrawables(0, _queryGeode->getNumDrawables());
@@ -836,6 +834,8 @@ void OcclusionQueryNode::discardDeletedQueryObjects( unsigned int contextID )
 
 void OcclusionQueryNode::setQueryGeometry( QueryGeometry* geom )
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _computeBoundMutex )  ;
+
     if (geom)
     {
         setQueryGeometryInternal( geom, geom, USER_DEFINED );

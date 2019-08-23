@@ -208,6 +208,8 @@ protected:
                                    osg::Geometry* debugQueryGeom,
                                    QueryGeometryState state );
 
+    void updateDefaultQueryGeometry();
+
     osg::ref_ptr< osg::Geode > _queryGeode;
     osg::ref_ptr< osg::Geode > _debugGeode;
 

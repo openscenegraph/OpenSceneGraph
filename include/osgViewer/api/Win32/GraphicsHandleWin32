@@ -29,51 +29,98 @@
 #define _WIN32_WINNT    0x0500 // Windows NT
 #endif
 #include <windows.h>
+#if defined(OSG_USE_EGL)
+#include "EGL/egl.h"
+#endif
 
 namespace osgViewer
 {
 
-/** Class to encapsulate platform-specific OpenGL context handle variables.
-  * Derived osg::GraphicsContext classes can inherit from this class to
-  * share OpenGL resources.*/
+	/** Class to encapsulate platform-specific OpenGL context handle variables.
+	  * Derived osg::GraphicsContext classes can inherit from this class to
+	  * share OpenGL resources.*/
 
-class OSGVIEWER_EXPORT GraphicsHandleWin32
-{
-    public:
-    
-        GraphicsHandleWin32():
-            _hwnd(0),
-            _hdc(0),
-            _hglrc(0) {}
+#if defined(OSG_USE_EGL)
+	class OSGVIEWER_EXPORT GraphicsHandleWin32
+	{
+	public:
+		struct EGLContextInfo {
+			EGLContextInfo() { clear(); }
+			EGLContextInfo(EGLContext _eglContext, EGLDisplay _eglDisplay, EGLSurface _eglSurface) : eglContext(_eglContext), eglDisplay(_eglDisplay), eglSurface(_eglSurface) {}
+			EGLContextInfo(const EGLContextInfo& o) : eglContext(o.eglContext), eglDisplay(o.eglDisplay), eglSurface(o.eglSurface) {}
+			EGLContextInfo& operator=(const EGLContextInfo& o) { eglContext = o.eglContext; eglDisplay = o.eglDisplay; eglSurface = o.eglSurface; return *this; }
+			void clear() { eglContext = EGL_NO_CONTEXT; eglDisplay = EGL_NO_DISPLAY; eglSurface = EGL_NO_SURFACE; }
+			bool isEmpty() { return eglContext == 0 && eglDisplay == 0; }
+			EGLContext  eglContext;
+			EGLDisplay  eglDisplay;
+			EGLSurface  eglSurface;
+		};
 
-        /** Set native window.*/        
-        inline void setHWND(HWND hwnd) { _hwnd = hwnd; }
+		GraphicsHandleWin32()
+			: _hwnd(0), _hdc(0) {}
 
-        /** Get native window.*/        
-        inline HWND getHWND() const { return _hwnd; }
+		/** Set native window.*/
+		inline void setHWND(HWND hwnd) { _hwnd = hwnd; }
 
-        /** Set device context.*/        
-        inline void setHDC(HDC hdc) { _hdc = hdc; }
+		/** Get native window.*/
+		inline HWND getHWND() const { return _hwnd; }
 
-        /** Get device context.*/        
-        inline HDC getHDC() const { return _hdc; }
+		/** Set device context.*/
+		inline void setHDC(HDC hdc) { _hdc = hdc; }
 
-        /** Set native OpenGL graphics context.*/        
-        inline void setWGLContext(HGLRC hglrc) { _hglrc = hglrc; }
+		/** Get device context.*/
+		inline HDC getHDC() const { return _hdc; }
 
-        /** Get native OpenGL graphics context.*/        
-        inline HGLRC getWGLContext() const { return _hglrc; }
-     
-    protected:
-        
-        HWND            _hwnd;
-        HDC             _hdc;
-        HGLRC           _hglrc;
-    
-};
+		/** Set native EGL graphics context.*/
+		inline void setEGLContext(const EGLContextInfo& eglContextInfo) { _eglContextInfo = eglContextInfo; }
 
+		/** Get native EGL graphics context.*/
+		inline const EGLContextInfo& getEGLContext() const { return _eglContextInfo; }
+
+	protected:
+
+		HWND            _hwnd;
+		HDC             _hdc;
+		EGLContextInfo  _eglContextInfo;
+	};
+
+#else
+	class OSGVIEWER_EXPORT GraphicsHandleWin32
+	{
+	public:
+
+		GraphicsHandleWin32() :
+			_hwnd(0),
+			_hdc(0),
+			_hglrc(0) {}
+
+		/** Set native window.*/
+		inline void setHWND(HWND hwnd) { _hwnd = hwnd; }
+
+		/** Get native window.*/
+		inline HWND getHWND() const { return _hwnd; }
+
+		/** Set device context.*/
+		inline void setHDC(HDC hdc) { _hdc = hdc; }
+
+		/** Get device context.*/
+		inline HDC getHDC() const { return _hdc; }
+
+		/** Set native OpenGL graphics context.*/
+		inline void setWGLContext(HGLRC hglrc) { _hglrc = hglrc; }
+
+		/** Get native OpenGL graphics context.*/
+		inline HGLRC getWGLContext() const { return _hglrc; }
+
+	protected:
+
+		HWND            _hwnd;
+		HDC             _hdc;
+		HGLRC           _hglrc;
+
+	};
+#endif
 }
-
 
 // Definitions required to create an OpenGL pixel format, from the WGL_ARB_pixel_format specification document.
 // See http://www.opengl.org/registry/specs/ARB/wgl_pixel_format.txt

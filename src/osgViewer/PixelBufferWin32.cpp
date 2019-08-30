@@ -14,6 +14,8 @@
  * These elements are licensed under OSGPL as above, with Copyright (C) 2001-2004  Don Burns.
  */
 
+#if defined(OSG_USE_EGL)
+#else
 #include <osgViewer/api/Win32/PixelBufferWin32>
 #include <osgViewer/api/Win32/GraphicsWindowWin32>
 #include <osg/TextureRectangle>
@@ -809,3 +811,4 @@ void PixelBufferWin32::swapBuffersImplementation()
     SwapBuffers( _hdc );
 }
 
+#endif // OSG_USE_EGL

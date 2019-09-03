@@ -809,19 +809,18 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             int t = height_ret;
             int r = 1;
 
-            int internalFormat = numComponents_ret;
-
             unsigned int pixelFormat =
                 numComponents_ret == 1 ? GL_LUMINANCE :
                 numComponents_ret == 2 ? GL_LUMINANCE_ALPHA :
                 numComponents_ret == 3 ? GL_RGB :
                 numComponents_ret == 4 ? GL_RGBA : (GLenum)-1;
 
-
             unsigned int dataType =
                 bitspersample_ret == 8 ? GL_UNSIGNED_BYTE :
                 bitspersample_ret == 16 ? GL_UNSIGNED_SHORT :
                 bitspersample_ret == 32 ? GL_FLOAT : (GLenum)-1;
+
+            int internalFormat = pixelFormat;
 
             osg::Image* pOsgImage = new osg::Image;
             pOsgImage->setImage(s,t,r,

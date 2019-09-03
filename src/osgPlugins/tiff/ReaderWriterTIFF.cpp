@@ -820,7 +820,41 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
                 bitspersample_ret == 16 ? GL_UNSIGNED_SHORT :
                 bitspersample_ret == 32 ? GL_FLOAT : (GLenum)-1;
 
-            int internalFormat = pixelFormat;
+            int internalFormat = 0;
+            switch (pixelFormat) {
+                case GL_LUMINANCE: {
+                    switch (dataType) {
+                        case GL_UNSIGNED_BYTE: internalFormat = GL_LUMINANCE8UI_EXT; break;
+                        case GL_UNSIGNED_SHORT: internalFormat = GL_LUMINANCE16UI_EXT; break;
+                        case GL_FLOAT : internalFormat = GL_LUMINANCE32F_ARB; break;
+                    }
+                    break;
+                }
+                case GL_LUMINANCE_ALPHA: {
+                    switch (dataType) {
+                        case GL_UNSIGNED_BYTE: internalFormat = GL_LUMINANCE_ALPHA8UI_EXT; break;
+                        case GL_UNSIGNED_SHORT: internalFormat = GL_LUMINANCE_ALPHA16UI_EXT; break;
+                        case GL_FLOAT: internalFormat = GL_LUMINANCE_ALPHA32F_ARB; break;
+                    }
+                    break;
+                }
+                case GL_RGB: {
+                    switch (dataType) {
+                        case GL_UNSIGNED_BYTE: internalFormat = GL_RGB8UI_EXT; break;
+                        case GL_UNSIGNED_SHORT: internalFormat = GL_RGB16UI_EXT; break;
+                        case GL_FLOAT: internalFormat = GL_RGB32F_ARB; break;
+                    }
+                    break;
+                }
+                case GL_RGBA : {
+                    switch (dataType) {
+                        case GL_UNSIGNED_BYTE: internalFormat = GL_RGBA8UI_EXT; break;
+                        case GL_UNSIGNED_SHORT: internalFormat = GL_RGBA16UI_EXT; break;
+                        case GL_FLOAT: internalFormat = GL_RGBA32F_ARB; break;
+                    }
+                    break;
+                }
+            }
 
             osg::Image* pOsgImage = new osg::Image;
             pOsgImage->setImage(s,t,r,

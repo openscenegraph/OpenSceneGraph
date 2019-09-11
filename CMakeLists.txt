@@ -86,6 +86,7 @@ ELSEIF(APPLE)
         # OSX >= 10.5 uses Cocoa windowing system, otherwise Carbon
         IF(OSG_OSX_VERSION VERSION_LESS 10.5)
             SET(OSG_WINDOWING_SYSTEM "Carbon" CACHE STRING "Windowing system type for graphics window creation; options: Carbon, Cocoa, X11 or None.")
+			SET(OSG_WINDOWING_SYSTEM_CARBON ON INTERNAL "use Carbon (apple; 32 bit only)")
         ELSE()
             SET(OSG_WINDOWING_SYSTEM "Cocoa" CACHE STRING "Windowing system type for graphics window creation; options: Carbon, Cocoa, X11 or None.")
         ENDIF()

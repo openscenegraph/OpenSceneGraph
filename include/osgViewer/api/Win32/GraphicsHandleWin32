@@ -29,9 +29,7 @@
 #define _WIN32_WINNT    0x0500 // Windows NT
 #endif
 #include <windows.h>
-#if defined(OSG_USE_EGL)
-#include "EGL/egl.h"
-#endif
+#include "Win32GWUtils"
 
 namespace osgViewer
 {
@@ -44,17 +42,6 @@ namespace osgViewer
 	class OSGVIEWER_EXPORT GraphicsHandleWin32
 	{
 	public:
-		struct EGLContextInfo {
-			EGLContextInfo() { clear(); }
-			EGLContextInfo(EGLContext _eglContext, EGLDisplay _eglDisplay, EGLSurface _eglSurface) : eglContext(_eglContext), eglDisplay(_eglDisplay), eglSurface(_eglSurface) {}
-			EGLContextInfo(const EGLContextInfo& o) : eglContext(o.eglContext), eglDisplay(o.eglDisplay), eglSurface(o.eglSurface) {}
-			EGLContextInfo& operator=(const EGLContextInfo& o) { eglContext = o.eglContext; eglDisplay = o.eglDisplay; eglSurface = o.eglSurface; return *this; }
-			void clear() { eglContext = EGL_NO_CONTEXT; eglDisplay = EGL_NO_DISPLAY; eglSurface = EGL_NO_SURFACE; }
-			bool isEmpty() { return eglContext == 0 && eglDisplay == 0; }
-			EGLContext  eglContext;
-			EGLDisplay  eglDisplay;
-			EGLSurface  eglSurface;
-		};
 
 		GraphicsHandleWin32()
 			: _hwnd(0), _hdc(0) {}
@@ -72,16 +59,16 @@ namespace osgViewer
 		inline HDC getHDC() const { return _hdc; }
 
 		/** Set native EGL graphics context.*/
-		inline void setEGLContext(const EGLContextInfo& eglContextInfo) { _eglContextInfo = eglContextInfo; }
+		inline void setEGLContext(const EGL::ContextInfo& eglContextInfo) { _eglContextInfo = eglContextInfo; }
 
 		/** Get native EGL graphics context.*/
-		inline const EGLContextInfo& getEGLContext() const { return _eglContextInfo; }
+		inline const EGL::ContextInfo& getEGLContext() const { return _eglContextInfo; }
 
 	protected:
 
 		HWND            _hwnd;
 		HDC             _hdc;
-		EGLContextInfo  _eglContextInfo;
+		EGL::ContextInfo  _eglContextInfo;
 	};
 
 #else

@@ -1,0 +1,156 @@
+#ifndef _OSGVIEWER_WIN32GWUtils_H_
+#define _OSGVIEWER_WIN32GWUtils_H_
+
+#if defined(OSG_USE_EGL)
+#include <EGL/egl.h>
+#define EGL_EGLEXT_PROTOTYPES
+#include <EGL/eglext.h>
+#endif
+
+#include <osg/GraphicsContext>
+
+namespace osgViewer {
+		
+	template <typename T> class XGLAttributes
+	{
+	public:
+
+		XGLAttributes() {}
+		~XGLAttributes() {}
+
+		void begin() { m_parameters.clear(); }
+		void set(const T& id, const T& value) { add(id); add(value); }
+		void enable(const T& id) { add(id); add(true); }
+		void disable(const T& id) { add(id); add(false); }
+		#if defined(OSG_USE_EGL)
+		void end() { add(EGL_NONE); }
+		#else
+		void end() { add(0); }
+		#endif
+
+		const T* get() const { return &m_parameters.front(); }
+
+	protected:
+
+		void add(const T& t) { m_parameters.push_back(t); }
+
+		std::vector<T>    m_parameters;        // parameters added
+
+	private:
+
+		// No implementation for these
+		XGLAttributes(const XGLAttributes&);
+		XGLAttributes& operator=(const XGLAttributes&);
+	};
+	
+	typedef XGLAttributes<int>   XGLIntegerAttributes;
+	typedef XGLAttributes<float> XGLFloatAttributes;
+
+	void reportError(const std::string& msg);
+	void reportError(const std::string& msg, unsigned int errorCode);
+	void reportErrorForScreen(const std::string& msg, const osg::GraphicsContext::ScreenIdentifier& si, unsigned int errorCode);
+
+
+	#if defined(OSG_USE_EGL)
+	namespace EGL {
+		struct ContextInfo {
+			ContextInfo();
+			ContextInfo(EGLContext _eglContext, EGLDisplay _eglDisplay, EGLSurface _eglSurface);
+			ContextInfo(const ContextInfo& o);
+			ContextInfo& operator=(const ContextInfo& o);
+			void clear();
+			bool isEmpty();
+			EGLContext  eglContext;
+			EGLDisplay  eglDisplay;
+			EGLSurface  eglSurface;
+		};
+
+		// A class representing an OpenGL rendering context 
+		class OpenGLContext
+		{
+		public:
+
+			OpenGLContext();
+			OpenGLContext(HWND hwnd, HDC hdc, EGLContext eglContext, EGLDisplay eglDisplay, EGLSurface eglSurface);
+
+			~OpenGLContext();
+
+			void set(HWND hwnd, HDC hdc, EGLContext eglContext, EGLDisplay eglDisplay, EGLSurface eglSurface, EGLConfig eglConfig);
+			void clear();
+
+			HDC deviceContext();
+			EGLConfig getConfig();
+
+			bool makeCurrent(HDC restoreOnHdc, bool restorePreviousOnExit);
+			ContextInfo& contextInfo();
+
+		protected:
+
+			EGL::ContextInfo _eglCtx;
+			EGLConfig _eglConfig;
+
+			HDC   _previousHdc;             // previously HDC to restore rendering context on
+			EGLContext _previousContext;           // previously current rendering context
+
+			HWND  _hwnd;                    // handle to OpenGL window
+			HDC   _hdc;                     // handle to device context
+
+		private:
+
+			// no implementation for these
+			OpenGLContext(const OpenGLContext&);
+			OpenGLContext& operator=(const OpenGLContext&);
+		};
+
+		bool createDisplaySurfaceAndContext(ContextInfo& context, EGLConfig& config, XGLAttributes<int>& configAttribs, HWND hwnd, HDC hdc);
+		bool createDisplaySurfaceAndContextForPBuffer(ContextInfo& context, EGLConfig& config, XGLAttributes<int>& configAttribs);
+		EGLContext createContext(EGLDisplay eglDisplay, const EGLConfig& config);
+		void destroyContext(ContextInfo& c);
+		void preparePixelFormatSpecifications(const osg::GraphicsContext::Traits& traits, XGLIntegerAttributes& attributes, bool allowSwapExchangeARB);
+	} // end of namespace EGL
+
+	#else
+
+	namespace WGL {
+		class OpenGLContext
+		{
+		public:
+
+			OpenGLContext();
+			OpenGLContext(HWND hwnd, HDC hdc, HGLRC hglrc);
+
+			~OpenGLContext();
+
+			void set(HWND hwnd, HDC hdc, HGLRC hglrc);
+
+			void clear();
+
+			HDC deviceContext();
+
+			bool makeCurrent(HDC restoreOnHdc, bool restorePreviousOnExit);
+
+		protected:
+
+			//
+			// Data members
+			//
+
+			HDC   _previousHdc;             // previously HDC to restore rendering context on
+			HGLRC _previousHglrc;           // previously current rendering context
+			HWND  _hwnd;                    // handle to OpenGL window
+			HDC   _hdc;                     // handle to device context
+			HGLRC _hglrc;                   // handle to OpenGL rendering context
+			bool  _restorePreviousOnExit;   // restore original context on exit
+
+		private:
+
+			// no implementation for these
+			OpenGLContext(const OpenGLContext&);
+			OpenGLContext& operator=(const OpenGLContext&);
+		};
+	} // end of namespace WGL
+	#endif
+
+}
+
+#endif

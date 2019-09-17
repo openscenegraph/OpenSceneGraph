@@ -27,13 +27,9 @@
 
 #include <vector>
 #include <map>
-#include <sstream>
 #include <windowsx.h>
 
-#if defined(OSG_USE_EGL)
-#define EGL_EGLEXT_PROTOTYPES
-#include <EGL/eglext.h>
-#endif
+#include "Win32GWUtils"
 
 #define MOUSEEVENTF_FROMTOUCH           0xFF515700
 
@@ -186,42 +182,10 @@ static osg::ApplicationUsageProxy GraphicsWindowWin32_e0(osg::ApplicationUsage::
 // Utility class to specify the visual attributes for wglChoosePixelFormatARB() function
 //
 
-template <typename T> class XGLAttributes
-{
-public:
-
-	XGLAttributes() {}
-	~XGLAttributes() {}
-
-	void begin() { m_parameters.clear(); }
-	void set(const T& id, const T& value) { add(id); add(value); }
-	void enable(const T& id) { add(id); add(true); }
-	void disable(const T& id) { add(id); add(false); }
-	#if defined(OSG_USE_EGL)
-	void end() { add(EGL_NONE); }
-	#else
-	void end() { add(0); }
-	#endif
-
-	const T* get() const { return &m_parameters.front(); }
-
-protected:
-
-	void add(const T& t) { m_parameters.push_back(t); }
-
-	std::vector<T>    m_parameters;        // parameters added
-
-private:
-
-	// No implementation for these
-	XGLAttributes(const XGLAttributes&);
-	XGLAttributes& operator=(const XGLAttributes&);
-};
-
-typedef XGLAttributes<int>   XGLIntegerAttributes;
-typedef XGLAttributes<float> XGLFloatAttributes;
-
-#if !defined(OSG_USE_EGL)
+#if defined(OSG_USE_EGL)
+using namespace EGL;
+#else
+using namespace WGL;
 //
 // Defines from the WGL_ARB_pixel_format specification document
 // See http://www.opengl.org/registry/specs/ARB/wgl_pixel_format.txt
@@ -309,14 +273,6 @@ typedef HGLRC (WINAPI * PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC, HGLRC hShar
 //
 
 typedef bool (WINAPI * WGLChoosePixelFormatARB) ( HDC, const int *, const float *, unsigned int, int *, unsigned int * );
-#else
-#if defined(OSG_GLES3_AVAILABLE)
-EGLint eglOpenglBit = EGL_OPENGL_ES3_BIT, eglContextClientVersion = 3;
-#endif
-#if defined(OSG_GLES2_AVAILABLE)
-EGLint eglOpenglBit = 0, eglContextClientVersion = 2;
-#endif
-EGLenum eglApi = EGL_OPENGL_ES_API;
 #endif
 
 //
@@ -342,135 +298,6 @@ EGLenum eglApi = EGL_OPENGL_ES_API;
 class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterface
 {
   public:
-
-    // A class representing an OpenGL rendering context for WGL
-#if defined(OSG_USE_EGL)
-	  class OpenGLContext
-	  {
-	  public:
-
-		  OpenGLContext() :
-			  _hwnd(0),
-			  _hdc(0),
-			  _eglConfig(0)
-		  {}
-
-		  OpenGLContext(HWND hwnd, HDC hdc, EGLContext eglContext, EGLDisplay eglDisplay, EGLSurface eglSurface) :
-			  _hwnd(hwnd),
-			  _hdc(hdc),
-			  _eglCtx(eglContext, eglDisplay,eglSurface)
-		  {}
-
-		  ~OpenGLContext();
-
-		  void set(HWND hwnd, HDC hdc, EGLContext eglContext, EGLDisplay eglDisplay, EGLSurface eglSurface, EGLConfig eglConfig)
-		  {
-			  _hwnd = hwnd;
-			  _hdc = hdc;
-			  _eglCtx.eglContext = eglContext;
-			  _eglCtx.eglDisplay = eglDisplay;
-			  _eglCtx.eglSurface = eglSurface;
-			  _eglConfig = eglConfig;
-		  }
-
-		  void clear() {
-			  _hwnd = 0;
-			  _hdc = 0;
-			  _eglCtx.clear();
-		  }
-
-		  HDC deviceContext() { return _hdc; }
-		  EGLConfig getConfig() { return _eglConfig; }
-
-		  bool makeCurrent(HDC restoreOnHdc, bool restorePreviousOnExit);
-
-		  const GraphicsHandleWin32::EGLContextInfo& contextInfo() {
-			  return _eglCtx;
-		  }
-
-	  protected:
-
-		  //
-		  // Data members
-		  //
-
-		  GraphicsHandleWin32::EGLContextInfo _eglCtx;
-		  EGLConfig _eglConfig;
-
-		  HDC   _previousHdc;             // previously HDC to restore rendering context on
-		  EGLContext _previousContext;           // previously current rendering context
-
-		  HWND  _hwnd;                    // handle to OpenGL window
-		  HDC   _hdc;                     // handle to device context
-
-	  private:
-
-		  // no implementation for these
-		  OpenGLContext(const OpenGLContext&);
-		  OpenGLContext& operator=(const OpenGLContext&);
-	  };
-#else
-    class OpenGLContext
-    {
-      public:
-
-        OpenGLContext()
-        : _previousHdc(0),
-          _previousHglrc(0),
-          _hwnd(0),
-          _hdc(0),
-          _hglrc(0),
-          _restorePreviousOnExit(false)
-        {}
-
-        OpenGLContext( HWND hwnd, HDC hdc, HGLRC hglrc )
-        : _previousHdc(0),
-          _previousHglrc(0),
-          _hwnd(hwnd),
-          _hdc(hdc),
-          _hglrc(hglrc),
-          _restorePreviousOnExit(false)
-        {}
-
-        ~OpenGLContext();
-
-        void set( HWND hwnd, HDC hdc, HGLRC hglrc )
-        {
-            _hwnd  = hwnd;
-            _hdc   = hdc;
-            _hglrc = hglrc;
-        }
-
-		void clear() {
-			_hwnd = 0;
-			_hdc = 0;
-			_hglrc = 0;
-		}
-
-        HDC deviceContext() { return _hdc; }
-
-        bool makeCurrent( HDC restoreOnHdc, bool restorePreviousOnExit );
-
-      protected:
-
-        //
-        // Data members
-        //
-
-        HDC   _previousHdc;             // previously HDC to restore rendering context on
-        HGLRC _previousHglrc;           // previously current rendering context
-        HWND  _hwnd;                    // handle to OpenGL window
-        HDC   _hdc;                     // handle to device context
-        HGLRC _hglrc;                   // handle to OpenGL rendering context
-        bool  _restorePreviousOnExit;   // restore original context on exit
-
-        private:
-
-        // no implementation for these
-        OpenGLContext( const OpenGLContext& );
-        OpenGLContext& operator=( const OpenGLContext& );
-    };
-#endif
 
     static std::string osgGraphicsWindowWithCursorClass;    //!< Name of Win32 window class (with cursor) used by OSG graphics window instances
     static std::string osgGraphicsWindowWithoutCursorClass; //!< Name of Win32 window class (without cursor) used by OSG graphics window instances
@@ -593,57 +420,6 @@ static bool areWindowDimensionsChanged(HWND hwnd, int screenOriginX, int screenO
     {
         return false;
     }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-//                             Error reporting
-//////////////////////////////////////////////////////////////////////////////
-
-static void reportError( const std::string& msg )
-{
-    OSG_WARN << "Error: " << msg.c_str() << std::endl;
-}
-
-static void reportError( const std::string& msg, unsigned int errorCode )
-{
-    //
-    // Some APIs are documented as returning the error in ::GetLastError but apparently do not
-    // Skip "Reason" field if the errorCode is still success
-    //
-
-    if (errorCode==0)
-    {
-        reportError(msg);
-        return;
-    }
-
-    OSG_WARN << "Windows Error #"   << errorCode << ": " << msg.c_str();
-
-    LPVOID lpMsgBuf;
-
-    if (FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                      NULL,
-                      errorCode,
-                      0, // Default language
-                      (LPTSTR) &lpMsgBuf,
-                      0,
-                      NULL)!=0)
-    {
-        OSG_WARN << ". Reason: " << LPTSTR(lpMsgBuf) << std::endl;
-        ::LocalFree(lpMsgBuf);
-    }
-    else
-    {
-        OSG_WARN << std::endl;
-    }
-}
-
-static void reportErrorForScreen( const std::string& msg, const osg::GraphicsContext::ScreenIdentifier& si, unsigned int errorCode )
-{
-    std::ostringstream str;
-
-    str << "[Screen #" << si.screenNum << "] " << msg;
-    reportError(str.str(), errorCode);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -792,22 +568,6 @@ static int remapWin32Key(int key)
     return s_win32KeyboardMap.remapKey(key);
 }
 
-#if defined(OSG_USE_EGL)
-static void destroyEGLContext(GraphicsHandleWin32::EGLContextInfo& c)
-{
-	if (!::eglMakeCurrent(c.eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT)) {
-		reportError("Win32WindowingSystem.destroyEGLContext() - Unable to set current EGL rendering context", ::eglGetError());
-	}
-	if (!::eglDestroySurface(c.eglDisplay, c.eglSurface)) {
-		reportError("Win32WindowingSystem.destroyEGLContext() - Unable to destroy current EGL Surface context", ::eglGetError());
-	}
-	if (!::eglDestroyContext(c.eglDisplay, c.eglContext)) {
-		reportError("Win32WindowingSystem.destroyEGLContext() - Unable to destroy current EGL rendering context", ::eglGetError());
-	}
-
-}
-#endif
-
 //////////////////////////////////////////////////////////////////////////////
 //         Window procedure for all GraphicsWindowWin32 instances
 //           Dispatches the call to the actual instance
@@ -820,82 +580,6 @@ static LRESULT CALLBACK WindowProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
                     ::DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-//              Win32WindowingSystem::OpenGLContext implementation
-//////////////////////////////////////////////////////////////////////////////
-
-Win32WindowingSystem::OpenGLContext::~OpenGLContext()
-{
-	#if defined(OSG_USE_EGL)
-	if(_eglCtx.eglContext)
-	{
-		destroyEGLContext(_eglCtx);
-		_eglCtx.clear();
-		OSG_NOTIFY(osg::INFO) << "eglMakeCurrent: " << _eglCtx.eglDisplay << " " << EGL_NO_SURFACE << std::endl;
-	}
-	#else
-	if(_restorePreviousOnExit && _previousHglrc != _hglrc && !::wglMakeCurrent(_previousHdc, _previousHglrc))
-	{
-		reportError("Win32WindowingSystem::OpenGLContext() - Unable to restore current OpenGL rendering context", ::GetLastError());
-	}
-	if(_hglrc)
-	{
-		::wglMakeCurrent(_hdc, NULL);
-		::wglDeleteContext(_hglrc);
-		_hglrc = 0;
-	}
-	_previousHdc = 0;
-	_previousHglrc = 0;
-	#endif
-
-
-    if (_hdc)
-    {
-        ::ReleaseDC(_hwnd, _hdc);
-        _hdc = 0;
-    }
-
-    if (_hwnd)
-    {
-        ::DestroyWindow(_hwnd);
-        _hwnd = 0;
-    }
-}
-
-bool Win32WindowingSystem::OpenGLContext::makeCurrent(HDC restoreOnHdc, bool restorePreviousOnExit)
-{
-	#if defined(OSG_USE_EGL)
-	if(_hdc == 0 || _eglCtx.isEmpty()) return false;	
-	_previousContext = restorePreviousOnExit ? ::eglGetCurrentContext() : 0;
-	_previousHdc = restoreOnHdc;	
-
-	if(_eglCtx.eglContext == _previousContext) return true;
-
-	if(!::eglMakeCurrent(_eglCtx.eglDisplay, _eglCtx.eglSurface, _eglCtx.eglSurface, _eglCtx.eglContext))
-	{
-		reportError("Win32WindowingSystem::OpenGLContext() - Unable to set current OpenGL rendering context", ::GetLastError());
-		return false;
-	}
-	OSG_NOTIFY(osg::INFO) << "eglMakeCurrent: " << _eglCtx.eglDisplay << " " << _eglCtx.eglSurface << " " << _eglCtx.eglContext << std::endl;
-	#else
-	if (_hdc==0 || _hglrc==0) return false;
-
-    _previousHglrc = restorePreviousOnExit ? ::wglGetCurrentContext() : 0;
-    _previousHdc   = restoreOnHdc;
-
-    if (_hglrc==_previousHglrc) return true;
-
-    if (!::wglMakeCurrent(_hdc, _hglrc))
-    {
-        reportError("Win32WindowingSystem::OpenGLContext() - Unable to set current OpenGL rendering context", ::GetLastError());
-        return false;
-    }
-
-    _restorePreviousOnExit = restorePreviousOnExit;
-	#endif
-
-    return true;
-}
 
 //////////////////////////////////////////////////////////////////////////////
 //              Win32WindowingSystem implementation
@@ -1122,69 +806,20 @@ bool Win32WindowingSystem::getSampleOpenGLContext( OpenGLContext& context, HDC w
 
 #if defined(OSG_USE_EGL)
 
-	/* possible types:
-	EGL_PLATFORM_ANGLE_TYPE_DEFAULT_ANGLE
-	EGL_PLATFORM_ANGLE_TYPE_D3D9_ANGLE
-	EGL_PLATFORM_ANGLE_TYPE_D3D11_ANGLE
-	EGL_PLATFORM_ANGLE_TYPE_OPENGL_ANGLE
-	EGL_PLATFORM_ANGLE_TYPE_OPENGLES_ANGLE
-	EGL_PLATFORM_ANGLE_TYPE_VULKAN_ANGLE
-	EGL_PLATFORM_ANGLE_TYPE_NULL_ANGLE
-	*/
-	GLenum platformType = EGL_PLATFORM_ANGLE_TYPE_D3D11_ANGLE;
+	XGLAttributes<int> configAttribs;
 
-	std::vector<EGLint> displayAttributes;
-	displayAttributes.push_back(EGL_PLATFORM_ANGLE_TYPE_ANGLE);
-	displayAttributes.push_back(platformType);
-	displayAttributes.push_back(EGL_PLATFORM_ANGLE_MAX_VERSION_MAJOR_ANGLE);
-	displayAttributes.push_back(EGL_DONT_CARE);
-	displayAttributes.push_back(EGL_PLATFORM_ANGLE_MAX_VERSION_MINOR_ANGLE);
-	displayAttributes.push_back(EGL_DONT_CARE);
-	displayAttributes.push_back(EGL_PLATFORM_ANGLE_DEVICE_TYPE_ANGLE);
-	displayAttributes.push_back(EGL_PLATFORM_ANGLE_DEVICE_TYPE_HARDWARE_ANGLE);
-	displayAttributes.push_back(EGL_NONE);
+	configAttribs.set(EGL_SURFACE_TYPE, EGL_WINDOW_BIT);
+	configAttribs.set(EGL_BLUE_SIZE, 8);
+	configAttribs.set(EGL_GREEN_SIZE, 8);
+	configAttribs.set(EGL_RED_SIZE, 8);
+	configAttribs.set(EGL_ALPHA_SIZE, 8);
+	configAttribs.set(EGL_DEPTH_SIZE, 16);
 
-	const EGLint configAttribs[] = {
-		  EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-		  EGL_BLUE_SIZE, 8,
-		  EGL_GREEN_SIZE, 8,
-		  EGL_RED_SIZE, 8,
-		  EGL_ALPHA_SIZE, 8,
-		  EGL_DEPTH_SIZE, 16,
-		  EGL_RENDERABLE_TYPE, eglOpenglBit,
-		  EGL_NONE
-	};
+	ContextInfo ci;
+	EGLConfig config;
+	createDisplaySurfaceAndContext(ci, config, configAttribs, hwnd, hdc);
+	context.set(hwnd, hdc, ci.eglContext, ci.eglDisplay, ci.eglSurface, config);
 
-	EGLint      major, minor;
-	EGLConfig   windowConfig;
-	EGLint numConfigs;
-
-	EGLDisplay  eglDisplay = eglGetPlatformDisplayEXT(EGL_PLATFORM_ANGLE_ANGLE,
-		reinterpret_cast<void *>(hdc),
-		displayAttributes.data());
-
-	eglInitialize(eglDisplay, &major, &minor);
-
-	printf("EGL Version: \"%s\"\n", eglQueryString(eglDisplay, EGL_VERSION));
-	printf("EGL Vendor: \"%s\"\n", eglQueryString(eglDisplay, EGL_VENDOR));
-	printf("EGL Extensions: \"%s\"\n", eglQueryString(eglDisplay, EGL_EXTENSIONS));
-
-	EGLBoolean err = eglChooseConfig(eglDisplay, configAttribs, &windowConfig, 1, &numConfigs);
-	if(!err) {
-		std::ostringstream str;
-		str << "Win32WindowingSystem::getSampleOpenGLContext() - eglChooseConfig";
-		reportError(str.str(), err);
-		return false;
-	}
-
-	//EGLint surfaceAttributes[] = { EGL_RENDER_BUFFER, EGL_POST_SUB_BUFFER_SUPPORTED_NV, EGL_NONE };
-	EGLint surfaceAttributes[] = { EGL_NONE, EGL_NONE };
-	EGLSurface eglSurface = eglCreateWindowSurface(eglDisplay, windowConfig, hwnd, surfaceAttributes);
-	eglBindAPI(eglApi);
-
-	EGLint contextAttributes[] = { EGL_CONTEXT_CLIENT_VERSION, eglContextClientVersion, EGL_NONE };
-	EGLContext eglContext = eglCreateContext(eglDisplay, windowConfig, EGL_NO_CONTEXT, contextAttributes);
-	context.set(hwnd, hdc, eglContext, eglDisplay, eglSurface, windowConfig);
 	if(!context.makeCurrent(windowHDC, true)) return false;
 #else
     HGLRC hglrc = ::wglCreateContext(hdc);
@@ -1405,13 +1040,9 @@ osg::GraphicsContext* Win32WindowingSystem::createGraphicsContext( osg::Graphics
 {
     if (traits->pbuffer)
 	{
-		#if defined(OSG_USE_EGL)
-		return 0;
-		#else
         osg::ref_ptr<osgViewer::PixelBufferWin32> pbuffer = new PixelBufferWin32(traits);
         if (pbuffer->valid()) return pbuffer.release();
         else return 0;
-		#endif
     }
     else
     {
@@ -1639,8 +1270,6 @@ bool GraphicsWindowWin32::createWindow()
 	#ifdef OSG_USE_EGL
 	_eglContextInfo = createContextImplementation();
 	if (_eglContextInfo.eglContext == EGL_NO_CONTEXT) {
-		destroyEGLContext(_eglContextInfo);
-		_eglContextInfo.clear();
 		::ReleaseDC(_hwnd, _hdc);
 		_hdc = 0;
 		destroyWindow();
@@ -1715,9 +1344,8 @@ bool GraphicsWindowWin32::setWindow( HWND handle )
 	{
 		if (!registerWindowProcedure())
 		{
-			destroyEGLContext(_eglContextInfo);
+			destroyContext(_eglContextInfo);
 			::ReleaseDC(_hwnd, _hdc);
-			_eglContextInfo.clear();
 			_hdc = 0;
 			_hwnd = 0;
 			return false;
@@ -1929,15 +1557,15 @@ bool GraphicsWindowWin32::determineWindowPositionAndStyle( unsigned int  screenN
 }
 
 #ifdef OSG_USE_EGL 
-const GraphicsHandleWin32::EGLContextInfo GraphicsWindowWin32::createContextImplementation()
+const ContextInfo GraphicsWindowWin32::createContextImplementation()
 {
-	GraphicsHandleWin32::EGLContextInfo context;
+	ContextInfo context;
 
 	if(OSG_GLES3_FEATURES) {
 		OSG_NOTIFY(osg::INFO) << "GLES3: Attempting to create GLES3 context." << std::endl;
 		OSG_NOTIFY(osg::INFO) << "GLES3: version: " << _traits->glContextVersion << std::endl;
 		OSG_NOTIFY(osg::INFO) << "GLES3: context flags: " << _traits->glContextFlags << std::endl;
-		Win32WindowingSystem::OpenGLContext openGLContext;
+		OpenGLContext openGLContext;
 		if(!Win32WindowingSystem::getInterface()->getSampleOpenGLContext(openGLContext, _hdc, _screenOriginX, _screenOriginY))
 		{
 			reportErrorForScreen("GLES3: Can't create context.",
@@ -1945,9 +1573,8 @@ const GraphicsHandleWin32::EGLContextInfo GraphicsWindowWin32::createContextImpl
 		}
 		else
 		{
-			EGLint contextAttributes[] = { EGL_CONTEXT_CLIENT_VERSION, eglContextClientVersion, EGL_NONE };
-			context.eglContext = eglCreateContext(openGLContext.contextInfo().eglDisplay, openGLContext.getConfig(), EGL_NO_CONTEXT, contextAttributes);
 			context.eglDisplay = openGLContext.contextInfo().eglDisplay;
+			context.eglContext = createContext(openGLContext.contextInfo().eglDisplay, openGLContext.getConfig());
 
 			EGLint surfaceAttributes[] = { EGL_NONE, EGL_NONE };
 			context.eglSurface = eglCreateWindowSurface(openGLContext.contextInfo().eglDisplay, openGLContext.getConfig(), _hwnd, surfaceAttributes);
@@ -1962,61 +1589,10 @@ const GraphicsHandleWin32::EGLContextInfo GraphicsWindowWin32::createContextImpl
 	return context;
 }
 
-static void PreparePixelFormatSpecifications(const osg::GraphicsContext::Traits& traits,
-	XGLIntegerAttributes&               attributes,
-	bool                                allowSwapExchangeARB)
-{
-	attributes.begin();
-
-	attributes.set(EGL_SURFACE_TYPE, EGL_WINDOW_BIT);
-	attributes.set(EGL_RENDERABLE_TYPE, eglOpenglBit);
-
-	//attributes.set(EGL_COLOWGL_COLOR_BITS_ARB, traits.red + traits.green + traits.blue);
-	attributes.set(EGL_RED_SIZE, traits.red);
-	attributes.set(EGL_GREEN_SIZE, traits.green);
-	attributes.set(EGL_BLUE_SIZE, traits.blue);
-	attributes.set(EGL_DEPTH_SIZE, traits.depth);
-#if 0
-	if(traits.doubleBuffer)
-	{
-		attributes.enable(WGL_DOUBLE_BUFFER_ARB);
-
-		switch(traits.swapMethod)
-		{
-		case osg::DisplaySettings::SWAP_COPY:
-			attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_COPY_ARB);
-			break;
-		case osg::DisplaySettings::SWAP_EXCHANGE:
-			attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_EXCHANGE_ARB);
-			break;
-		case osg::DisplaySettings::SWAP_UNDEFINED:
-			attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_UNDEFINED_ARB);
-			break;
-		case osg::DisplaySettings::SWAP_DEFAULT:
-			// Wojtek Lewandowski 2010-09-28:
-			// Keep backward compatibility if no method is selected via traits
-			// and let wglSwapExchangeARB flag select swap method.
-			// However, I would rather remove this flag because its
-			// now redundant to Traits::swapMethod and it looks like
-			// WGL_SWAP_EXCHANGE_ARB is the GL default when no WGL_SWAP attrib is given.
-			// To be precise: At least on Windows 7 and Nvidia it seems to be a default.
-			if(allowSwapExchangeARB)
-				attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_EXCHANGE_ARB);
-			break;
-		}
-	}
-#endif
-	if(traits.alpha)         attributes.set(EGL_ALPHA_SIZE, traits.alpha);
-	if(traits.stencil)       attributes.set(EGL_STENCIL_SIZE, traits.stencil);
-	if(traits.sampleBuffers) attributes.set(EGL_SAMPLE_BUFFERS, traits.sampleBuffers);
-	if(traits.samples)       attributes.set(EGL_SAMPLES, traits.samples);
-
-	attributes.end();
-}
 
 bool GraphicsWindowWin32::setPixelFormat()
 {
-	Win32WindowingSystem::OpenGLContext openGLContext;
+	OpenGLContext openGLContext;
 	if(!Win32WindowingSystem::getInterface()->getSampleOpenGLContext(openGLContext, _hdc, _screenOriginX, _screenOriginY)) return false;
 
 	//
@@ -2024,7 +1600,7 @@ bool GraphicsWindowWin32::setPixelFormat()
 	//
 
 	XGLIntegerAttributes formatSpecs;
-	::PreparePixelFormatSpecifications(*_traits, formatSpecs, true);
+	preparePixelFormatSpecifications(*_traits, formatSpecs, true);
 
 	//
 	// Choose the closest matching pixel format from the specified traits
@@ -2037,7 +1613,7 @@ bool GraphicsWindowWin32::setPixelFormat()
 	{
 		return false;
 	}
-	// 2. Select an appropriate configuration
+	
 	EGLBoolean err = eglChooseConfig(openGLContext.contextInfo().eglDisplay, formatSpecs.get(), &windowConfig, 1, &numConfigs);
 
 	if(err == EGL_FALSE)
@@ -2051,16 +1627,17 @@ bool GraphicsWindowWin32::setPixelFormat()
 				<< _traits->screenNum
 				<< std::endl;
 
-			_traits->red = bpp / 4; //integer divide, determine minimum number of bits we will accept
+			_traits->red = bpp / 4; 
 			_traits->green = bpp / 4;
 			_traits->blue = bpp / 4;
-			::PreparePixelFormatSpecifications(*_traits, formatSpecs, true);// try again with WGL_SWAP_METHOD_ARB
+			preparePixelFormatSpecifications(*_traits, formatSpecs, true);
 			err = eglChooseConfig(openGLContext.contextInfo().eglDisplay, formatSpecs.get(), &windowConfig, 1, &numConfigs);
 		}
 	}
+
 	if(err == EGL_FALSE)
 	{
-		::PreparePixelFormatSpecifications(*_traits, formatSpecs, false);
+		preparePixelFormatSpecifications(*_traits, formatSpecs, false);
 		err = eglChooseConfig(openGLContext.contextInfo().eglDisplay, formatSpecs.get(), &windowConfig, 1, &numConfigs);
 		if(err == EGL_FALSE)
 		{
@@ -2072,82 +1649,11 @@ bool GraphicsWindowWin32::setPixelFormat()
 			<< _traits->screenNum
 			<< std::endl;
 	}
-#if 0
-	//
-	// Set the pixel format found
-	//
 
-	PIXELFORMATDESCRIPTOR pfd;
-	::memset(&pfd, 0, sizeof(pfd));
-	pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
-	pfd.nVersion = 1;
-
-	if(!::SetPixelFormat(_hdc, pixelFormatIndex, &pfd))
-	{
-		reportErrorForScreen("GraphicsWindowWin32::setPixelFormat() - Unable to set pixel format", _traits->screenNum, ::GetLastError());
-		return false;
-	}
-#endif
 	return true;
 }
 
 #else
-static void PreparePixelFormatSpecifications( const osg::GraphicsContext::Traits& traits,
-                                              XGLIntegerAttributes&               attributes,
-                                              bool                                allowSwapExchangeARB )
-{
-    attributes.begin();
-
-    attributes.enable(WGL_DRAW_TO_WINDOW_ARB);
-    attributes.enable(WGL_SUPPORT_OPENGL_ARB);
-
-    attributes.set(WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB);
-    attributes.set(WGL_PIXEL_TYPE_ARB,   WGL_TYPE_RGBA_ARB);
-
-    attributes.set(WGL_COLOR_BITS_ARB,   traits.red + traits.green + traits.blue);
-    attributes.set(WGL_RED_BITS_ARB,     traits.red);
-    attributes.set(WGL_GREEN_BITS_ARB,   traits.green);
-    attributes.set(WGL_BLUE_BITS_ARB,    traits.blue);
-    attributes.set(WGL_DEPTH_BITS_ARB,   traits.depth);
-
-    if (traits.doubleBuffer)
-    {
-        attributes.enable(WGL_DOUBLE_BUFFER_ARB);
-
-        switch ( traits.swapMethod )
-        {
-            case osg::DisplaySettings::SWAP_COPY:
-                attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_COPY_ARB);
-                break;
-            case osg::DisplaySettings::SWAP_EXCHANGE:
-                attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_EXCHANGE_ARB);
-                break;
-            case osg::DisplaySettings::SWAP_UNDEFINED:
-                attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_UNDEFINED_ARB);
-                break;
-            case osg::DisplaySettings::SWAP_DEFAULT:
-                // Wojtek Lewandowski 2010-09-28:
-                // Keep backward compatibility if no method is selected via traits
-                // and let wglSwapExchangeARB flag select swap method.
-                // However, I would rather remove this flag because its
-                // now redundant to Traits::swapMethod and it looks like
-                // WGL_SWAP_EXCHANGE_ARB is the GL default when no WGL_SWAP attrib is given.
-                // To be precise: At least on Windows 7 and Nvidia it seems to be a default.
-                if ( allowSwapExchangeARB )
-                    attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_EXCHANGE_ARB);
-                break;
-        }
-    }
-
-    if (traits.alpha)         attributes.set(WGL_ALPHA_BITS_ARB,     traits.alpha);
-    if (traits.stencil)       attributes.set(WGL_STENCIL_BITS_ARB,   traits.stencil);
-    if (traits.sampleBuffers) attributes.set(WGL_SAMPLE_BUFFERS_ARB, traits.sampleBuffers);
-    if (traits.samples)       attributes.set(WGL_SAMPLES_ARB,        traits.samples);
-
-    if (traits.quadBufferStereo) attributes.enable(WGL_STEREO_ARB);
-
-    attributes.end();
-}
 
 static int ChooseMatchingPixelFormat( HDC hdc, int screenNum, const XGLIntegerAttributes& formatSpecifications ,osg::GraphicsContext::Traits* _traits)
 {
@@ -2554,7 +2060,7 @@ bool GraphicsWindowWin32::makeCurrentImplementation()
         return false;
     }
 	#ifdef OSG_USE_EGL
-	const EGLContextInfo& c = getEGLContext();
+	const ContextInfo& c = getEGLContext();
 
 	if (eglGetCurrentContext() == c.eglContext) {
 		return true;

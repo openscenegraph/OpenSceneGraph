@@ -1,5 +1,4 @@
 #include <osg/GLExtensions>
-#include <windowsx.h>
 
 #include "Win32GWUtils"
 #include <vector>
@@ -307,153 +306,154 @@ void preparePixelFormatSpecifications(const osg::GraphicsContext::Traits& traits
 
 // *** WGL Implementation
 
-namespace WGL {
+	namespace WGL {
 
-//////////////////////////////////////////////////////////////////////////////
-//              WGL::OpenGLContext implementation
-//////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////
+		//              WGL::OpenGLContext implementation
+		//////////////////////////////////////////////////////////////////////////////
 
-OpenGLContext::OpenGLContext()
-	: _previousHdc(0),
-	_previousHglrc(0),
-	_hwnd(0),
-	_hdc(0),
-	_hglrc(0),
-	_restorePreviousOnExit(false)
-{}
+		OpenGLContext::OpenGLContext()
+			: _previousHdc(0),
+			_previousHglrc(0),
+			_hwnd(0),
+			_hdc(0),
+			_hglrc(0),
+			_restorePreviousOnExit(false)
+		{}
 
-OpenGLContext::OpenGLContext(HWND hwnd, HDC hdc, HGLRC hglrc)
-	: _previousHdc(0),
-	_previousHglrc(0),
-	_hwnd(hwnd),
-	_hdc(hdc),
-	_hglrc(hglrc),
-	_restorePreviousOnExit(false)
-{}
+		OpenGLContext::OpenGLContext(HWND hwnd, HDC hdc, HGLRC hglrc)
+			: _previousHdc(0),
+			_previousHglrc(0),
+			_hwnd(hwnd),
+			_hdc(hdc),
+			_hglrc(hglrc),
+			_restorePreviousOnExit(false)
+		{}
 
-OpenGLContext::~OpenGLContext()
-{
-	if (_restorePreviousOnExit && _previousHglrc != _hglrc && !::wglMakeCurrent(_previousHdc, _previousHglrc))
-	{
-		reportError("Win32WindowingSystem::OpenGLContext() - Unable to restore current OpenGL rendering context", ::GetLastError());
-	}
-	if (_hglrc)
-	{
-		::wglMakeCurrent(_hdc, NULL);
-		::wglDeleteContext(_hglrc);
-		_hglrc = 0;
-	}
-	_previousHdc = 0;
-	_previousHglrc = 0;
-
-	if (_hdc)
-	{
-		::ReleaseDC(_hwnd, _hdc);
-		_hdc = 0;
-	}
-
-	if (_hwnd)
-	{
-		::DestroyWindow(_hwnd);
-		_hwnd = 0;
-	}
-
-}
-
-void OpenGLContext::set(HWND hwnd, HDC hdc, HGLRC hglrc)
-{
-	_hwnd = hwnd;
-	_hdc = hdc;
-	_hglrc = hglrc;
-}
-
-void OpenGLContext::clear() 
-{
-	_hwnd = 0;
-	_hdc = 0;
-	_hglrc = 0;
-}
-
-HDC OpenGLContext::deviceContext() 
-{ 
-	return _hdc; 
-}
-
-bool OpenGLContext::makeCurrent(HDC restoreOnHdc, bool restorePreviousOnExit)
-{
-	if (_hdc == 0 || _hglrc == 0) return false;
-
-	_previousHglrc = restorePreviousOnExit ? ::wglGetCurrentContext() : 0;
-	_previousHdc = restoreOnHdc;
-
-	if (_hglrc == _previousHglrc) return true;
-
-	if (!::wglMakeCurrent(_hdc, _hglrc))
-	{
-		reportError("Win32WindowingSystem::OpenGLContext() - Unable to set current OpenGL rendering context", ::GetLastError());
-		return false;
-	}
-
-	_restorePreviousOnExit = restorePreviousOnExit;
-}
-
-void preparePixelFormatSpecifications(const osg::GraphicsContext::Traits& traits,
-	XGLIntegerAttributes&               attributes,
-	bool                                allowSwapExchangeARB)
-{
-	attributes.begin();
-
-	attributes.enable(WGL_DRAW_TO_WINDOW_ARB);
-	attributes.enable(WGL_SUPPORT_OPENGL_ARB);
-
-	attributes.set(WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB);
-	attributes.set(WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB);
-
-	attributes.set(WGL_COLOR_BITS_ARB, traits.red + traits.green + traits.blue);
-	attributes.set(WGL_RED_BITS_ARB, traits.red);
-	attributes.set(WGL_GREEN_BITS_ARB, traits.green);
-	attributes.set(WGL_BLUE_BITS_ARB, traits.blue);
-	attributes.set(WGL_DEPTH_BITS_ARB, traits.depth);
-
-	if (traits.doubleBuffer)
-	{
-		attributes.enable(WGL_DOUBLE_BUFFER_ARB);
-
-		switch (traits.swapMethod)
+		OpenGLContext::~OpenGLContext()
 		{
-		case osg::DisplaySettings::SWAP_COPY:
-			attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_COPY_ARB);
-			break;
-		case osg::DisplaySettings::SWAP_EXCHANGE:
-			attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_EXCHANGE_ARB);
-			break;
-		case osg::DisplaySettings::SWAP_UNDEFINED:
-			attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_UNDEFINED_ARB);
-			break;
-		case osg::DisplaySettings::SWAP_DEFAULT:
-			// Wojtek Lewandowski 2010-09-28:
-			// Keep backward compatibility if no method is selected via traits
-			// and let wglSwapExchangeARB flag select swap method.
-			// However, I would rather remove this flag because its
-			// now redundant to Traits::swapMethod and it looks like
-			// WGL_SWAP_EXCHANGE_ARB is the GL default when no WGL_SWAP attrib is given.
-			// To be precise: At least on Windows 7 and Nvidia it seems to be a default.
-			if (allowSwapExchangeARB)
-				attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_EXCHANGE_ARB);
-			break;
+			if(_restorePreviousOnExit && _previousHglrc != _hglrc && !::wglMakeCurrent(_previousHdc, _previousHglrc))
+			{
+				reportError("Win32WindowingSystem::OpenGLContext() - Unable to restore current OpenGL rendering context", ::GetLastError());
+			}
+			if(_hglrc)
+			{
+				::wglMakeCurrent(_hdc, NULL);
+				::wglDeleteContext(_hglrc);
+				_hglrc = 0;
+			}
+			_previousHdc = 0;
+			_previousHglrc = 0;
+
+			if(_hdc)
+			{
+				::ReleaseDC(_hwnd, _hdc);
+				_hdc = 0;
+			}
+
+			if(_hwnd)
+			{
+				::DestroyWindow(_hwnd);
+				_hwnd = 0;
+			}
+
 		}
-	}
 
-	if (traits.alpha)         attributes.set(WGL_ALPHA_BITS_ARB, traits.alpha);
-	if (traits.stencil)       attributes.set(WGL_STENCIL_BITS_ARB, traits.stencil);
-	if (traits.sampleBuffers) attributes.set(WGL_SAMPLE_BUFFERS_ARB, traits.sampleBuffers);
-	if (traits.samples)       attributes.set(WGL_SAMPLES_ARB, traits.samples);
+		void OpenGLContext::set(HWND hwnd, HDC hdc, HGLRC hglrc)
+		{
+			_hwnd = hwnd;
+			_hdc = hdc;
+			_hglrc = hglrc;
+		}
 
-	if (traits.quadBufferStereo) attributes.enable(WGL_STEREO_ARB);
+		void OpenGLContext::clear()
+		{
+			_hwnd = 0;
+			_hdc = 0;
+			_hglrc = 0;
+		}
 
-	attributes.end();
-}
+		HDC OpenGLContext::deviceContext()
+		{
+			return _hdc;
+		}
 
+		bool OpenGLContext::makeCurrent(HDC restoreOnHdc, bool restorePreviousOnExit)
+		{
+			if(_hdc == 0 || _hglrc == 0) return false;
+
+			_previousHglrc = restorePreviousOnExit ? ::wglGetCurrentContext() : 0;
+			_previousHdc = restoreOnHdc;
+
+			if(_hglrc == _previousHglrc) return true;
+
+			if(!::wglMakeCurrent(_hdc, _hglrc))
+			{
+				reportError("Win32WindowingSystem::OpenGLContext() - Unable to set current OpenGL rendering context", ::GetLastError());
+				return false;
+			}
+
+			_restorePreviousOnExit = restorePreviousOnExit;
+			return true;
+		}
+
+		void preparePixelFormatSpecifications(const osg::GraphicsContext::Traits& traits,
+			XGLIntegerAttributes&               attributes,
+			bool                                allowSwapExchangeARB)
+		{
+			attributes.begin();
+
+			attributes.enable(WGL_DRAW_TO_WINDOW_ARB);
+			attributes.enable(WGL_SUPPORT_OPENGL_ARB);
+
+			attributes.set(WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB);
+			attributes.set(WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB);
+
+			attributes.set(WGL_COLOR_BITS_ARB, traits.red + traits.green + traits.blue);
+			attributes.set(WGL_RED_BITS_ARB, traits.red);
+			attributes.set(WGL_GREEN_BITS_ARB, traits.green);
+			attributes.set(WGL_BLUE_BITS_ARB, traits.blue);
+			attributes.set(WGL_DEPTH_BITS_ARB, traits.depth);
+
+			if(traits.doubleBuffer)
+			{
+				attributes.enable(WGL_DOUBLE_BUFFER_ARB);
+
+				switch(traits.swapMethod)
+				{
+				case osg::DisplaySettings::SWAP_COPY:
+					attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_COPY_ARB);
+					break;
+				case osg::DisplaySettings::SWAP_EXCHANGE:
+					attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_EXCHANGE_ARB);
+					break;
+				case osg::DisplaySettings::SWAP_UNDEFINED:
+					attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_UNDEFINED_ARB);
+					break;
+				case osg::DisplaySettings::SWAP_DEFAULT:
+					// Wojtek Lewandowski 2010-09-28:
+					// Keep backward compatibility if no method is selected via traits
+					// and let wglSwapExchangeARB flag select swap method.
+					// However, I would rather remove this flag because its
+					// now redundant to Traits::swapMethod and it looks like
+					// WGL_SWAP_EXCHANGE_ARB is the GL default when no WGL_SWAP attrib is given.
+					// To be precise: At least on Windows 7 and Nvidia it seems to be a default.
+					if(allowSwapExchangeARB)
+						attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_EXCHANGE_ARB);
+					break;
+				}
+			}
+
+			if(traits.alpha)         attributes.set(WGL_ALPHA_BITS_ARB, traits.alpha);
+			if(traits.stencil)       attributes.set(WGL_STENCIL_BITS_ARB, traits.stencil);
+			if(traits.sampleBuffers) attributes.set(WGL_SAMPLE_BUFFERS_ARB, traits.sampleBuffers);
+			if(traits.samples)       attributes.set(WGL_SAMPLES_ARB, traits.samples);
+
+			if(traits.quadBufferStereo) attributes.enable(WGL_STEREO_ARB);
+
+			attributes.end();
+		}
+	} // end of namespace WGL
 #endif // OSG_USE_EGL
 
 

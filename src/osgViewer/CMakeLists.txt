@@ -91,6 +91,8 @@ IF(WIN32 AND NOT ANDROID)
         SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
             GraphicsWindowWin32.cpp
             PixelBufferWin32.cpp
+			Win32GWUtils.cpp
+			Win32GWUtils
         )
     ENDIF()
 ELSE()

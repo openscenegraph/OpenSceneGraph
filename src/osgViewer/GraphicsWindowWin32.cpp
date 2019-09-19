@@ -27,9 +27,9 @@
 
 #include <vector>
 #include <map>
-#include <windowsx.h>
 
 #include "Win32GWUtils"
+#include "windowsx.h"
 
 #define MOUSEEVENTF_FROMTOUCH           0xFF515700
 
@@ -186,93 +186,6 @@ static osg::ApplicationUsageProxy GraphicsWindowWin32_e0(osg::ApplicationUsage::
 using namespace EGL;
 #else
 using namespace WGL;
-//
-// Defines from the WGL_ARB_pixel_format specification document
-// See http://www.opengl.org/registry/specs/ARB/wgl_pixel_format.txt
-//
-#define WGL_NUMBER_PIXEL_FORMATS_ARB            0x2000
-#define WGL_DRAW_TO_WINDOW_ARB                  0x2001
-#define WGL_DRAW_TO_BITMAP_ARB                  0x2002
-#define WGL_ACCELERATION_ARB                    0x2003
-#define WGL_NEED_PALETTE_ARB                    0x2004
-#define WGL_NEED_SYSTEM_PALETTE_ARB             0x2005
-#define WGL_SWAP_LAYER_BUFFERS_ARB              0x2006
-#define WGL_SWAP_METHOD_ARB                     0x2007
-#define WGL_NUMBER_OVERLAYS_ARB                 0x2008
-#define WGL_NUMBER_UNDERLAYS_ARB                0x2009
-#define WGL_TRANSPARENT_ARB                     0x200A
-#define WGL_TRANSPARENT_RED_VALUE_ARB           0x2037
-#define WGL_TRANSPARENT_GREEN_VALUE_ARB         0x2038
-#define WGL_TRANSPARENT_BLUE_VALUE_ARB          0x2039
-#define WGL_TRANSPARENT_ALPHA_VALUE_ARB         0x203A
-#define WGL_TRANSPARENT_INDEX_VALUE_ARB         0x203B
-#define WGL_SHARE_DEPTH_ARB                     0x200C
-#define WGL_SHARE_STENCIL_ARB                   0x200D
-#define WGL_SHARE_ACCUM_ARB                     0x200E
-#define WGL_SUPPORT_GDI_ARB                     0x200F
-#define WGL_SUPPORT_OPENGL_ARB                  0x2010
-#define WGL_DOUBLE_BUFFER_ARB                   0x2011
-#define WGL_STEREO_ARB                          0x2012
-#define WGL_PIXEL_TYPE_ARB                      0x2013
-#define WGL_COLOR_BITS_ARB                      0x2014
-#define WGL_RED_BITS_ARB                        0x2015
-#define WGL_RED_SHIFT_ARB                       0x2016
-#define WGL_GREEN_BITS_ARB                      0x2017
-#define WGL_GREEN_SHIFT_ARB                     0x2018
-#define WGL_BLUE_BITS_ARB                       0x2019
-#define WGL_BLUE_SHIFT_ARB                      0x201A
-#define WGL_ALPHA_BITS_ARB                      0x201B
-#define WGL_ALPHA_SHIFT_ARB                     0x201C
-#define WGL_ACCUM_BITS_ARB                      0x201D
-#define WGL_ACCUM_RED_BITS_ARB                  0x201E
-#define WGL_ACCUM_GREEN_BITS_ARB                0x201F
-#define WGL_ACCUM_BLUE_BITS_ARB                 0x2020
-#define WGL_ACCUM_ALPHA_BITS_ARB                0x2021
-#define WGL_DEPTH_BITS_ARB                      0x2022
-#define WGL_STENCIL_BITS_ARB                    0x2023
-#define WGL_AUX_BUFFERS_ARB                     0x2024
-#define WGL_NO_ACCELERATION_ARB                 0x2025
-#define WGL_GENERIC_ACCELERATION_ARB            0x2026
-#define WGL_FULL_ACCELERATION_ARB               0x2027
-#define WGL_SWAP_EXCHANGE_ARB                   0x2028
-#define WGL_SWAP_COPY_ARB                       0x2029
-#define WGL_SWAP_UNDEFINED_ARB                  0x202A
-#define WGL_TYPE_RGBA_ARB                       0x202B
-#define WGL_TYPE_COLORINDEX_ARB                 0x202C
-#define WGL_SAMPLE_BUFFERS_ARB                  0x2041
-#define WGL_SAMPLES_ARB                         0x2042
-
-#ifndef WGL_ARB_create_context
-#define WGL_CONTEXT_DEBUG_BIT_ARB      0x00000001
-#define WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x00000002
-#define WGL_CONTEXT_MAJOR_VERSION_ARB  0x2091
-#define WGL_CONTEXT_MINOR_VERSION_ARB  0x2092
-#define WGL_CONTEXT_LAYER_PLANE_ARB    0x2093
-#define WGL_CONTEXT_FLAGS_ARB          0x2094
-#define WGL_CONTEXT_PROFILE_MASK_ARB   0x9126
-#define ERROR_INVALID_VERSION_ARB      0x2095
-#endif
-
-#ifndef WGL_ARB_create_context
-#define WGL_ARB_create_context 1
-#ifdef WGL_WGLEXT_PROTOTYPES
-extern HGLRC WINAPI wglCreateContextAttribsARB (HDC, HGLRC, const int *);
-#endif /* WGL_WGLEXT_PROTOTYPES */
-typedef HGLRC (WINAPI * PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC, HGLRC hShareContext, const int *attribList);
-#endif
-
-//
-// Entry points used from the WGL extensions
-//
-//    BOOL wglChoosePixelFormatARB(HDC hdc,
-//                                 const int *piAttribIList,
-//                                 const FLOAT *pfAttribFList,
-//                                 UINT nMaxFormats,
-//                                 int *piFormats,
-//                                 UINT *nNumFormats);
-//
-
-typedef bool (WINAPI * WGLChoosePixelFormatARB) ( HDC, const int *, const float *, unsigned int, int *, unsigned int * );
 #endif
 
 //
@@ -1655,6 +1568,64 @@ bool GraphicsWindowWin32::setPixelFormat()
 
 #else
 
+static void PreparePixelFormatSpecifications(const osg::GraphicsContext::Traits& traits,
+	XGLIntegerAttributes&               attributes,
+	bool                                allowSwapExchangeARB)
+{
+	attributes.begin();
+
+	attributes.enable(WGL_DRAW_TO_WINDOW_ARB);
+	attributes.enable(WGL_SUPPORT_OPENGL_ARB);
+
+	attributes.set(WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB);
+	attributes.set(WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB);
+
+	attributes.set(WGL_COLOR_BITS_ARB, traits.red + traits.green + traits.blue);
+	attributes.set(WGL_RED_BITS_ARB, traits.red);
+	attributes.set(WGL_GREEN_BITS_ARB, traits.green);
+	attributes.set(WGL_BLUE_BITS_ARB, traits.blue);
+	attributes.set(WGL_DEPTH_BITS_ARB, traits.depth);
+
+	if(traits.doubleBuffer)
+	{
+		attributes.enable(WGL_DOUBLE_BUFFER_ARB);
+
+		switch(traits.swapMethod)
+		{
+		case osg::DisplaySettings::SWAP_COPY:
+			attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_COPY_ARB);
+			break;
+		case osg::DisplaySettings::SWAP_EXCHANGE:
+			attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_EXCHANGE_ARB);
+			break;
+		case osg::DisplaySettings::SWAP_UNDEFINED:
+			attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_UNDEFINED_ARB);
+			break;
+		case osg::DisplaySettings::SWAP_DEFAULT:
+			// Wojtek Lewandowski 2010-09-28:
+			// Keep backward compatibility if no method is selected via traits
+			// and let wglSwapExchangeARB flag select swap method.
+			// However, I would rather remove this flag because its
+			// now redundant to Traits::swapMethod and it looks like
+			// WGL_SWAP_EXCHANGE_ARB is the GL default when no WGL_SWAP attrib is given.
+			// To be precise: At least on Windows 7 and Nvidia it seems to be a default.
+			if(allowSwapExchangeARB)
+				attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_EXCHANGE_ARB);
+			break;
+		}
+	}
+
+	if(traits.alpha)         attributes.set(WGL_ALPHA_BITS_ARB, traits.alpha);
+	if(traits.stencil)       attributes.set(WGL_STENCIL_BITS_ARB, traits.stencil);
+	if(traits.sampleBuffers) attributes.set(WGL_SAMPLE_BUFFERS_ARB, traits.sampleBuffers);
+	if(traits.samples)       attributes.set(WGL_SAMPLES_ARB, traits.samples);
+
+	if(traits.quadBufferStereo) attributes.enable(WGL_STEREO_ARB);
+
+	attributes.end();
+}
+
+
 static int ChooseMatchingPixelFormat( HDC hdc, int screenNum, const XGLIntegerAttributes& formatSpecifications ,osg::GraphicsContext::Traits* _traits)
 {
     //
@@ -1722,7 +1693,7 @@ static int ChooseMatchingPixelFormat( HDC hdc, int screenNum, const XGLIntegerAt
 
 bool GraphicsWindowWin32::setPixelFormat()
 {
-    Win32WindowingSystem::OpenGLContext openGLContext;
+    OpenGLContext openGLContext;
     if (!Win32WindowingSystem::getInterface()->getSampleOpenGLContext(openGLContext, _hdc, _screenOriginX, _screenOriginY)) return false;
 
     //
@@ -1800,7 +1771,7 @@ HGLRC GraphicsWindowWin32::createContextImplementation()
         OSG_NOTIFY( osg::INFO ) << "GL3: context flags: " << _traits->glContextFlags << std::endl;
         OSG_NOTIFY( osg::INFO ) << "GL3: profile: " << _traits->glContextProfileMask << std::endl;
 
-        Win32WindowingSystem::OpenGLContext openGLContext;
+        OpenGLContext openGLContext;
         if( !Win32WindowingSystem::getInterface()->getSampleOpenGLContext( openGLContext, _hdc, _screenOriginX, _screenOriginY ) )
         {
             reportErrorForScreen( "GL3: Can't create sample context.",
@@ -3065,33 +3036,6 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
     return _windowProcedure==0 ? ::DefWindowProc(hwnd, uMsg, wParam, lParam) :
                                  ::CallWindowProc(_windowProcedure, hwnd, uMsg, wParam, lParam);
 }
-
-
-//////////////////////////////////////////////////////////////////////////////
-//  Class responsible for registering the Win32 Windowing System interface
-//////////////////////////////////////////////////////////////////////////////
-#if 0
-struct RegisterWindowingSystemInterfaceProxy
-{
-    RegisterWindowingSystemInterfaceProxy()
-    {
-        osg::GraphicsContext::setWindowingSystemInterface(Win32WindowingSystem::getInterface());
-    }
-
-    ~RegisterWindowingSystemInterfaceProxy()
-    {
-        if (osg::Referenced::getDeleteHandler())
-        {
-            osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(0);
-            osg::Referenced::getDeleteHandler()->flushAll();
-        }
-
-        osg::GraphicsContext::setWindowingSystemInterface(0);
-    }
-};
-
-static RegisterWindowingSystemInterfaceProxy createWindowingSystemInterfaceProxy;
-#endif
 
 } // namespace OsgViewer
 

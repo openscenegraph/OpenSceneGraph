@@ -49,7 +49,9 @@ void ClampColor::apply(State& state) const
         return;
     }
 
+#if !defined(OSG_GL3_AVAILABLE)
     extensions->glClampColor(GL_CLAMP_VERTEX_COLOR, _clampVertexColor);
     extensions->glClampColor(GL_CLAMP_FRAGMENT_COLOR, _clampFragmentColor);
+#endif
     extensions->glClampColor(GL_CLAMP_READ_COLOR, _clampReadColor);
 }

@@ -83,6 +83,9 @@ PlatformSpecifics/Windows/*.rc
 *.sdf
 *.opensdf
 
+# Visual Studio - Cache/Options Directory
+.vs/
+
 #osx xcode
 DerivedData/
 *.DS_Store

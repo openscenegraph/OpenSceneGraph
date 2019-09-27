@@ -28,6 +28,8 @@ public:
 
     DefaultFont();
 
+    virtual const char* className() const { return "DefaultFont"; }
+
     virtual std::string getFileName() const { return ""; }
 
     virtual bool supportsMultipleFontResolutions() const { return false; }

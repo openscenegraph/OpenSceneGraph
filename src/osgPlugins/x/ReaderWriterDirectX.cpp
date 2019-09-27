@@ -61,7 +61,18 @@ public:
         return "DirectX Reader";
     }
 
+    virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(fileName, options); 
+    }
+
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const;
+
+    virtual ReadResult readObject(std::istream& fin, const Options* options) const
+    {
+        return readNode(fin,options);
+    }
+
     virtual ReadResult readNode(std::istream& fin, const osgDB::ReaderWriter::Options* options) const;
 
 private:

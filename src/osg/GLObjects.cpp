@@ -62,12 +62,10 @@ GraphicsObjectManager::GraphicsObjectManager(const std::string& name, unsigned i
     _name(name),
     _contextID(contextID)
 {
-    OSG_INFO<<_name<<"::"<<_name<<"()"<<this<<std::endl;
 }
 
 GraphicsObjectManager::~GraphicsObjectManager()
 {
-    OSG_INFO<<_name<<"::~"<<_name<<"()"<<this<<std::endl;
 }
 
 

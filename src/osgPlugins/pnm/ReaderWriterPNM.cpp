@@ -226,6 +226,11 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
 
         virtual const char* className() const { return "PNM Image Reader/Writer"; }
 
+        virtual ReadResult readObject(std::istream& fin, const Options* options) const
+        {
+            return readImage(fin,options);
+        }
+
         virtual ReadResult readImage(std::istream& fin, const osgDB::ReaderWriter::Options* options=NULL) const
         {
             int ppmtype = 0;    /* P1, P2, etc. */
@@ -373,6 +378,11 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
             }
 
             return pOsgImage;
+        }
+
+        virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        {
+            return readImage(file,options);
         }
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const

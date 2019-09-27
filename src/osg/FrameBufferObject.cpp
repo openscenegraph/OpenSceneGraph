@@ -565,6 +565,18 @@ unsigned int FrameBufferAttachment::getTextureArrayLayer() const
     return _ximpl->zoffset;
 }
 
+void FrameBufferAttachment::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    if (_ximpl->renderbufferTarget.valid()) _ximpl->renderbufferTarget->resizeGLObjectBuffers(maxSize);
+    if (_ximpl->textureTarget.valid()) _ximpl->textureTarget->resizeGLObjectBuffers(maxSize);
+}
+
+void FrameBufferAttachment::releaseGLObjects(osg::State* state) const
+{
+    if (_ximpl->renderbufferTarget.valid()) _ximpl->renderbufferTarget->releaseGLObjects(state);
+    if (_ximpl->textureTarget.valid()) _ximpl->textureTarget->releaseGLObjects(state);
+}
+
 /**************************************************************************
  * FrameBufferObject
  **************************************************************************/
@@ -594,6 +606,11 @@ void FrameBufferObject::resizeGLObjectBuffers(unsigned int maxSize)
     _fboID.resize(maxSize);
     _unsupported.resize(maxSize);
     _fboID.resize(maxSize);
+
+    for(AttachmentMap::iterator itr = _attachments.begin(); itr != _attachments.end(); ++itr)
+    {
+        itr->second.resizeGLObjectBuffers(maxSize);
+    }
 }
 
 void FrameBufferObject::releaseGLObjects(osg::State* state) const
@@ -617,6 +634,11 @@ void FrameBufferObject::releaseGLObjects(osg::State* state) const
                 _fboID[i] = 0;
             }
         }
+    }
+
+    for(AttachmentMap::const_iterator itr = _attachments.begin(); itr != _attachments.end(); ++itr)
+    {
+        itr->second.releaseGLObjects(state);
     }
 }
 

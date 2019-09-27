@@ -25,6 +25,11 @@ class ReaderWriterTerrain : public osgDB::ReaderWriter
 
         virtual const char* className() const { return "Terrain ReaderWriter"; }
 
+        virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+        {
+            return readNode(fileName, options); 
+        }
+
         virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* opt) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);

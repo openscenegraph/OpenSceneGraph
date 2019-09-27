@@ -457,7 +457,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     isVertexShaderSupported = validContext && (shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_vertex_shader"));
     isFragmentShaderSupported = validContext && (shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_fragment_shader"));
     isLanguage100Supported = validContext && (shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_shading_language_100"));
-    isGeometryShader4Supported = validContext && (osg::isGLExtensionSupported(contextID,"GL_EXT_geometry_shader4") || osg::isGLExtensionSupported(contextID,"GL_OES_geometry_shader") || osg::isGLExtensionOrVersionSupported(contextID,"GL_ARB_geometry_shader4", 3.2f));
+    isGeometryShader4Supported = validContext && (osg::isGLExtensionSupported(contextID,"GL_EXT_geometry_shader4") || osg::isGLExtensionSupported(contextID,"GL_ARB_geometry_shader4"));
     isGpuShader4Supported = validContext && osg::isGLExtensionOrVersionSupported(contextID,"GL_EXT_gpu_shader4", 3.0f);
     areTessellationShadersSupported = validContext && (osg::isGLExtensionOrVersionSupported(contextID, "GL_ARB_tessellation_shader", 4.0f) || osg::isGLExtensionSupported(contextID,"GL_OES_tessellation_shader"));
     isUniformBufferObjectSupported = validContext && osg::isGLExtensionOrVersionSupported(contextID,"GL_ARB_uniform_buffer_object", 3.1f);
@@ -603,7 +603,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glVertexAttribPointer, "glVertexAttribPointer","glVertexAttribPointerARB", validContext);
     setGLExtensionFuncPtr(glVertexAttribIPointer, "glVertexAttribIPointer","glVertexAttribIPointerARB", validContext);
     setGLExtensionFuncPtr(glVertexAttribLPointer, "glVertexAttribLPointer","glVertexAttribLPointerARB", validContext);
-    setGLExtensionFuncPtr(glVertexAttribDivisor, "glVertexAttribDivisor", validContext);
+    setGLExtensionFuncPtr(glVertexAttribDivisor, "glVertexAttribDivisor", "glVertexAttribDivisorARB", validContext);
 
     // v1.5-only ARB entry points, in case they're needed for fallback
     setGLExtensionFuncPtr(glGetInfoLogARB, "glGetInfoLogARB", validContext);

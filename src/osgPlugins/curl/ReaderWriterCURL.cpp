@@ -378,6 +378,9 @@ osgDB::ReaderWriter::ReadResult EasyCurl::processResponse(CURLcode res, const st
 
 ReaderWriterCURL::ReaderWriterCURL()
 {
+    // initialize curl to ensure it's done single threaded
+    curl_global_init(CURL_GLOBAL_ALL);
+
     supportsProtocol("http","Read from http port using libcurl.");
     supportsProtocol("https","Read from https port using libcurl.");
     supportsProtocol("ftp","Read from ftp port using libcurl.");
@@ -395,6 +398,11 @@ ReaderWriterCURL::ReaderWriterCURL()
 ReaderWriterCURL::~ReaderWriterCURL()
 {
     //OSG_NOTICE<<"ReaderWriterCURL::~ReaderWriterCURL()"<<std::endl;
+
+    _threadCurlMap.clear();
+
+    // clean up curl
+    curl_global_cleanup();
 }
 
 osgDB::ReaderWriter::WriteResult ReaderWriterCURL::writeFile(const osg::Object& obj, osgDB::ReaderWriter* rw, std::ostream& fout, const osgDB::ReaderWriter::Options *options) const

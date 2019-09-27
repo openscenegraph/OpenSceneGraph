@@ -52,6 +52,11 @@ public:
         return "ReaderWriterGStreamer";
     }
 
+    virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readImage(file, options);
+    }
+
     virtual ReadResult readImage(const std::string & filename, const osgDB::ReaderWriter::Options* options) const
     {
         const std::string ext = osgDB::getLowerCaseFileExtension(filename);

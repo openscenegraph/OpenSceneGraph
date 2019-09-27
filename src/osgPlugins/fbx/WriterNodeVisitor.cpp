@@ -648,15 +648,7 @@ void WriterNodeVisitor::createListTriangle(const osg::Geometry* geo,
 
 void WriterNodeVisitor::apply(osg::Geometry& geometry)
 {
-    // here we simply create a single fbx node to assign it the mesh
     // retrieved from the geometry.
-
-    // create fbx node to contain the single geometry
-    FbxNode* parent = _curFbxNode;
-    FbxNode* nodeFBX = FbxNode::Create(_pSdkManager, geometry.getName().empty() ? "Geometry" : geometry.getName().c_str());
-    _curFbxNode->AddChild(nodeFBX);
-    _curFbxNode = nodeFBX;
-
     _geometryList.push_back(&geometry);
 
     pushStateSet(geometry.getStateSet());
@@ -668,24 +660,31 @@ void WriterNodeVisitor::apply(osg::Geometry& geometry)
     if (getNodePath().size() == 1)
         buildFaces(geometry.getName(), _geometryList, _listTriangles, _texcoords);
 
-    // return to parent fbx node
-    _curFbxNode = parent;
 }
 
 void WriterNodeVisitor::apply(osg::Group& node)
 {
-    FbxNode* parent = _curFbxNode;
+    if (_firstNodeProcessed)
+    {
+        FbxNode* parent = _curFbxNode;
 
-    FbxNode* nodeFBX = FbxNode::Create(_pSdkManager, node.getName().empty() ? "DefaultName" : node.getName().c_str());
-    _curFbxNode->AddChild(nodeFBX);
-    _curFbxNode = nodeFBX;
+        FbxNode* nodeFBX = FbxNode::Create(_pSdkManager, node.getName().empty() ? "DefaultName" : node.getName().c_str());
+        _curFbxNode->AddChild(nodeFBX);
+        _curFbxNode = nodeFBX;
 
-    traverse(node);
+        traverse(node);
 
-    if (_listTriangles.size() > 0)
-        buildFaces(node.getName(), _geometryList, _listTriangles, _texcoords);
+        if (_listTriangles.size() > 0)
+            buildFaces(node.getName(), _geometryList, _listTriangles, _texcoords);
 
-    _curFbxNode = parent;
+        _curFbxNode = parent;
+    }
+    else
+    {
+        //ignore the root node to maintain same hierarchy
+        _firstNodeProcessed = true;
+        traverse(node);
+    }
 }
 
 void WriterNodeVisitor::apply(osg::MatrixTransform& node)

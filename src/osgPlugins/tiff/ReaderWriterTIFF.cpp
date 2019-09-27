@@ -308,7 +308,7 @@ tiff_error(const char*, const char* fmt, va_list ap)
 {
     // values are (const char* module, const char* fmt, va_list list)
     /* FIXME: store error message ? */
-    OSG_WARN << "TIFF rader: " << doFormat(fmt, ap) << std::endl;
+    OSG_WARN << "TIFF reader: " << doFormat(fmt, ap) << std::endl;
 }
 
 
@@ -317,7 +317,7 @@ tiff_warn(const char*, const char* fmt, va_list ap)
 {
     // values are (const char* module, const char* fmt, va_list list)
     /* FIXME: notify? */
-    OSG_NOTICE << "TIFF rader: " << doFormat(fmt, ap) << std::endl;
+    OSG_NOTICE << "TIFF reader: " << doFormat(fmt, ap) << std::endl;
 }
 
 

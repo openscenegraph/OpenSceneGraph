@@ -129,6 +129,10 @@ public:
         return model.release();
     }
 
+    virtual ReadResult readObject(const std::string& filename, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(filename, options);
+    }
 
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
     {

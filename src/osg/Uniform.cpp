@@ -257,7 +257,7 @@ void Uniform::setNumElements( unsigned int numElements )
 void Uniform::allocateDataArray()
 {
     // if one array is already allocated, the job is done.
-    if( _floatArray.valid() || _doubleArray.valid() || _intArray.valid() || _uintArray.valid() ) return;
+    if( _floatArray.valid() || _doubleArray.valid() || _intArray.valid() || _uintArray.valid() || _int64Array.valid() || _uint64Array.valid()) return;
 
     // array cannot be created until _type and _numElements are specified
     int arrayNumElements = getInternalArrayNumElements();
@@ -279,6 +279,14 @@ void Uniform::allocateDataArray()
 
             case GL_UNSIGNED_INT:
                 _uintArray = new UIntArray(arrayNumElements);
+                return;
+
+            case GL_INT64_ARB:
+                _int64Array = new Int64Array(arrayNumElements);
+                return;
+
+            case GL_UNSIGNED_INT64_ARB:
+                _uint64Array = new UInt64Array(arrayNumElements);
                 return;
 
             default:
@@ -375,7 +383,7 @@ bool Uniform::setArray( UInt64Array* array )
     if( !array ) return false;
 
     // incoming array must match configuration of the Uniform
-    if( getInternalArrayType(getType())!=GL_UNSIGNED_INT || getInternalArrayNumElements()!=array->getNumElements() )
+    if( getInternalArrayType(getType())!=GL_UNSIGNED_INT64_ARB || getInternalArrayNumElements()!=array->getNumElements() )
     {
         OSG_WARN << "Uniform::setArray : incompatible array" << std::endl;
         return false;
@@ -396,7 +404,7 @@ bool Uniform::setArray( Int64Array* array )
     if( !array ) return false;
 
     // incoming array must match configuration of the Uniform
-    if( getInternalArrayType(getType())!=GL_UNSIGNED_INT || getInternalArrayNumElements()!=array->getNumElements() )
+    if( getInternalArrayType(getType())!=GL_UNSIGNED_INT64_ARB || getInternalArrayNumElements()!=array->getNumElements() )
     {
         OSG_WARN << "Uniform::setArray : incompatible array" << std::endl;
         return false;

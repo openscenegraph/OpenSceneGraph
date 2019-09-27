@@ -114,6 +114,12 @@ public:
 
     virtual const char* className() const { return "OGR file reader"; }
 
+
+    virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(fileName, options);
+    }
+
     virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
         OSG_INFO<<"OGR::readNode("<<file<<")"<<std::endl;

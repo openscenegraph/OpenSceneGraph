@@ -22,8 +22,7 @@ osgParticle::ParticleSystemUpdater::ParticleSystemUpdater(const ParticleSystemUp
 
 void osgParticle::ParticleSystemUpdater::traverse(osg::NodeVisitor& nv)
 {
-    osgUtil::CullVisitor* cv = nv.asCullVisitor();
-    if (cv)
+    if (nv.getVisitorType() == osg::NodeVisitor::CULL_VISITOR)
     {
         if (nv.getFrameStamp())
         {

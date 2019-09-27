@@ -7,7 +7,7 @@ IF   (DYNAMIC_OPENSCENEGRAPH)
 
     IF(OSG_PLUGIN_SEARCH_INSTALL_DIR_FOR_PLUGINS)
         # Add a default plugin search path component
-        ADD_DEFINITIONS(-DOSG_DEFAULT_LIBRARY_PATH=\"${CMAKE_INSTALL_PREFIX}/lib${LIB_POSTFIX}/${OSG_PLUGINS}\")
+        ADD_DEFINITIONS(-DOSG_DEFAULT_LIBRARY_PATH=\"${CMAKE_INSTALL_PREFIX}/${OSG_INSTALL_LIBDIR}/${OSG_PLUGINS}\")
     ENDIF()
 
     # Set the library extension according to what configuration is being built.
@@ -127,8 +127,13 @@ SET(TARGET_SRC
 
 IF(APPLE AND NOT ANDROID)
     IF(NOT OSG_BUILD_PLATFORM_IPHONE)
-        # Needs CoreFoundation calls and a Carbon function
-        SET(OSGDB_PLATFORM_SPECIFIC_LIBRARIES ${CARBON_LIBRARY} ${COCOA_LIBRARY})
+        IF(OSG_OSX_VERSION VERSION_GREATER_EQUAL 10.14)
+            # Needs CoreFoundation
+            SET(OSGDB_PLATFORM_SPECIFIC_LIBRARIES ${COCOA_LIBRARY})
+        ELSE()
+            # Needs CoreFoundation calls and a Carbon function
+            SET(OSGDB_PLATFORM_SPECIFIC_LIBRARIES ${CARBON_LIBRARY} ${COCOA_LIBRARY})
+        ENDIF()
     ENDIF()
 
     IF(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX STREQUAL "quicktime")

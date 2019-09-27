@@ -108,6 +108,11 @@ public:
         return osgDB::equalCaseInsensitive( extension, EXTENSION_NAME );
     }
 
+    virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(fileName, options); 
+    }
+
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
     {
         std::string ext = osgDB::getLowerCaseFileExtension(fileName);

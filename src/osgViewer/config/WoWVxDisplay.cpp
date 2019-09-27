@@ -171,19 +171,20 @@ void WoWVxDisplay::configure(osgViewer::View& view) const
             osg::Vec3Array* vertices = new osg::Vec3Array;
             vertices->push_back(osg::Vec3(0,height,0));
             vertices->push_back(osg::Vec3(0,0,0));
-            vertices->push_back(osg::Vec3(width,0,0));
             vertices->push_back(osg::Vec3(width,height,0));
+            vertices->push_back(osg::Vec3(width,0,0));
             geom->setVertexArray(vertices);
 
             osg::Vec2Array* tex = new osg::Vec2Array;
             tex->push_back(osg::Vec2(0,1));
             tex->push_back(osg::Vec2(0,0));
-            tex->push_back(osg::Vec2(1,0));
             tex->push_back(osg::Vec2(1,1));
+            tex->push_back(osg::Vec2(1,0));
             geom->setTexCoordArray(0,tex);
 
-            geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,4));
+            geom->addPrimitiveSet(new osg::DrawArrays(GL_TRIANGLE_STRIP,0,4));
             geode->addDrawable(geom);
+
 
             // new we need to add the textures to the quad, and setting up the shader.
             osg::StateSet* stateset = geode->getOrCreateStateSet();

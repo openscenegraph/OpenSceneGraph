@@ -305,6 +305,8 @@ void FFmpegImageStream::cmdPlay()
 
         m_decoder->video_decoder().pause(false);
         m_decoder->audio_decoder().pause(false);
+
+        _lastUpdateTS = 0.;
     }
 
     _status = PLAYING;

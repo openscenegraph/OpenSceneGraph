@@ -159,8 +159,8 @@ ELSE()
         INSTALL(
             TARGETS ${LIB_NAME}
             EXPORT  ${LIB_NAME}
-            ARCHIVE DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads-dev
-            LIBRARY DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads
+            ARCHIVE DESTINATION ${OSG_INSTALL_LIBDIR} COMPONENT libopenthreads-dev
+            LIBRARY DESTINATION ${OSG_INSTALL_LIBDIR} COMPONENT libopenthreads
             RUNTIME DESTINATION bin COMPONENT libopenthreads
         )
 
@@ -192,8 +192,8 @@ ELSE()
 
         INSTALL(
             TARGETS ${LIB_NAME}
-            ARCHIVE DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads-dev
-            LIBRARY DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads
+            ARCHIVE DESTINATION ${OSG_INSTALL_LIBDIR} COMPONENT libopenthreads-dev
+            LIBRARY DESTINATION ${OSG_INSTALL_LIBDIR} COMPONENT libopenthreads
             RUNTIME DESTINATION bin COMPONENT libopenthreads
         )
 

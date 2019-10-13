@@ -440,7 +440,7 @@ osg::Group* create3DText(const osg::Vec3& center,float radius)
     text5->setFont("fonts/times.ttf");
     //text5->setCharacterSize(characterSize);
     text5->setCharacterSize(32.0f); // medium
-    text5->setPosition(center - osg::Vec3(0.0, 0.0, 0.2));
+    text5->setPosition(center - osg::Vec3(0.0, 0.0, 0.2) * radius);
     text5->setAxisAlignment(osgText::Text::SCREEN);
     text5->setCharacterSizeMode(osgText::Text::SCREEN_COORDS);
     text5->setDrawMode(osgText::Text::TEXT | osgText::Text::BOUNDINGBOX);
@@ -451,7 +451,7 @@ osg::Group* create3DText(const osg::Vec3& center,float radius)
     text6->setColor(characterSizeModeColor);
     text6->setFont("fonts/times.ttf");
     text6->setCharacterSize(characterSize);
-    text6->setPosition(center - osg::Vec3(0.0, 0.0, 0.4));
+    text6->setPosition(center - osg::Vec3(0.0, 0.0, 0.4) * radius);
     text6->setAxisAlignment(osgText::Text::SCREEN);
     text6->setCharacterSizeMode(osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
     text6->setText("CharacterSizeMode OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT");
@@ -461,7 +461,7 @@ osg::Group* create3DText(const osg::Vec3& center,float radius)
     text7->setColor(characterSizeModeColor);
     text7->setFont("fonts/times.ttf");
     text7->setCharacterSize(characterSize);
-    text7->setPosition(center - osg::Vec3(0.0, 0.0, 0.6));
+    text7->setPosition(center - osg::Vec3(0.0, 0.0, 0.6) * radius);
     text7->setAxisAlignment(osgText::Text::SCREEN);
     text7->setCharacterSizeMode(osgText::Text::OBJECT_COORDS);
     text7->setText("CharacterSizeMode OBJECT_COORDS (default)");
@@ -692,7 +692,7 @@ int main(int argc, char** argv)
             text->setFont("fonts/times.ttf");
             text->setAxisAlignment(osgText::Text::XZ_PLANE);
             text->setText("Alingment\nAfter:");
-            text->setAlignment(osgText::Text::RIGHT_TOP);
+            text->setAlignment(osgText::Text::LEFT_TOP);
             group->addChild(text);
         }
 
@@ -754,7 +754,7 @@ int main(int argc, char** argv)
     {
         // prepare scene.
         osg::Vec3 center(0.0f,0.0f,0.0f);
-        float radius = 1.0f;
+        float radius = 100.0f;
 
         // make sure the root node is group so we can add extra nodes to it.
         osg::Group* group = new osg::Group;

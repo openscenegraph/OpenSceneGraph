@@ -854,6 +854,10 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
               GL_RGBA, GL_RGBA, GL_UNSIGNED_INT_2_10_10_10_REV },
             { "G16R16",      32, 0x0000ffff, 0xffff0000, 0x00000000, 0x00000000,
               GL_RGB, UNSUPPORTED, GL_UNSIGNED_SHORT },
+            { "B16G16R16",   48,   0x0000ff,   0x00ff00,   0xff0000,   0x000000,
+              GL_RGB16F_ARB , GL_RGB , GL_HALF_FLOAT },
+            { "B32G32R32",   96,   0x0000ff,   0x00ff00,   0xff0000,   0x000000,
+              GL_RGB32F_ARB , GL_RGB , GL_FLOAT },
         };
 
         bool found = false;

@@ -23,6 +23,7 @@
 using namespace osg;
 
 const unsigned int Camera::FACE_CONTROLLED_BY_GEOMETRY_SHADER = 0xffffffff;
+const unsigned int Camera::FACE_CONTROLLED_BY_MULTIVIEW_SHADER = 0xfffffff0;
 
 Camera::Camera():
     _view(0),

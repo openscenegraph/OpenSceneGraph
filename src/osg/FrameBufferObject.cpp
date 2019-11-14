@@ -492,6 +492,13 @@ void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachmen
     case Pimpl::TEXTURE2DARRAY:
         if (_ximpl->zoffset == Camera::FACE_CONTROLLED_BY_GEOMETRY_SHADER)
             ext->glFramebufferTexture(target, attachment_point, tobj->id(), _ximpl->level);
+        else if(_ximpl->zoffset == Camera::FACE_CONTROLLED_BY_MULTIVIEW_SHADER)
+        {
+            if (ext->glFramebufferTextureMultiviewOVR)
+            {
+                ext->glFramebufferTextureMultiviewOVR(target, attachment_point, tobj->id(), _ximpl->level, 0, 2);
+            }
+        }
         else
             ext->glFramebufferTextureLayer(target, attachment_point, tobj->id(), _ximpl->level, _ximpl->zoffset);
         break;

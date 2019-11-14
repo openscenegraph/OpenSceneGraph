@@ -347,6 +347,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         };
 
         static const unsigned int FACE_CONTROLLED_BY_GEOMETRY_SHADER;
+        static const unsigned int FACE_CONTROLLED_BY_MULTIVIEW_SHADER;
 
         /** Attach a buffer with specified OpenGL internal format.*/
         void attach(BufferComponent buffer, GLenum internalFormat);

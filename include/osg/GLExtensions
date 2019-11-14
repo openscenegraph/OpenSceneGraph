@@ -680,6 +680,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glFramebufferTexture) (GLenum, GLenum, GLint, GLint);
         void (GL_APIENTRY * glFramebufferTextureLayer) (GLenum, GLenum, GLuint, GLint, GLint);
         void (GL_APIENTRY * glFramebufferTextureFace)( GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face );
+        void (GL_APIENTRY * glFramebufferTextureMultiviewOVR) (GLenum, GLenum, GLenum, GLuint, GLint, GLint);
         void (GL_APIENTRY * glFramebufferRenderbuffer) (GLenum, GLenum, GLenum, GLuint);
 
         void (GL_APIENTRY * glGenerateMipmap) (GLenum);

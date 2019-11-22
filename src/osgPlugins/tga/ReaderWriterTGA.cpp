@@ -322,10 +322,13 @@ struct SafeArray
         impl = new T[size];
     }
 
-    operator T*() { return impl; }
+    const T& operator[](std::size_t i) const { return impl[i]; }
 
-    template<typename U>
-    operator U() { return (U)impl; }
+    T& operator[](std::size_t i) { return impl[i]; }
+
+    const T* data() const { return impl; }
+
+    T* data() { return impl; }
 
 private:
     T* impl;
@@ -452,12 +455,12 @@ int *numComponents_ret)
         colormapLen = getInt16(&header[5]);
         colormapDepth = (header[7] + 7) >> 3;
         colormap.reinitialise(colormapLen*colormapDepth);
-        if (colormap == NULL)
+        if (colormap.data() == NULL)
         {
             tgaerror = ERR_MEM;
             return NULL;
         }
-        fin.read((char*)colormap, colormapLen*colormapDepth);
+        fin.read(reinterpret_cast<char*>(colormap.data()), colormapLen*colormapDepth);
 
         if (colormapDepth == 2)          /* 16 bits */
         {
@@ -518,11 +521,11 @@ int *numComponents_ret)
     rleRemaining = 0;
     rleEntrySize = depth;
     SafeArray<unsigned char> buffer(width*height*format);
-    dest = buffer;
+    dest = buffer.data();
     bpr = format * width;
     SafeArray<unsigned char> linebuf(width * depth);
 
-    if (buffer == NULL || linebuf == NULL)
+    if (buffer.data() == NULL || linebuf.data() == NULL)
     {
         tgaerror = ERR_MEM;
         return NULL;
@@ -545,20 +548,20 @@ int *numComponents_ret)
                 return NULL;
             }
             SafeArray<unsigned char> formattedMap(colormapLen * format);
-            if (formattedMap == NULL)
+            if (formattedMap.data() == NULL)
             {
                 tgaerror = ERR_MEM;
                 return NULL;
             }
             for (int i = 0; i < colormapLen; i++)
             {
-                convert_data(colormap, formattedMap, i, colormapDepth, format);
+                convert_data(colormap.data(), formattedMap.data(), i, colormapDepth, format);
             }
 
             int x, y;
             for (y = 0; y < height; y++)
             {
-                fin.read((char*)linebuf, width*depth);
+                fin.read(reinterpret_cast<char*>(linebuf.data()), width*depth);
                 if (fin.gcount() != (std::streamsize) (width*depth))
                 {
                     tgaerror = ERR_READ;
@@ -574,13 +577,13 @@ int *numComponents_ret)
                         index = linebuf[x];
                         break;
                     case 2:
-                        index = getInt16(linebuf + x * 2);
+                        index = getInt16(linebuf.data() + x * 2);
                         break;
                     case 3:
-                        index = getInt24(linebuf + x * 3);
+                        index = getInt24(linebuf.data() + x * 3);
                         break;
                     case 4:
-                        index = getInt32(linebuf + x * 4);
+                        index = getInt32(linebuf.data() + x * 4);
                         break;
                     default:
                         tgaerror = ERR_UNSUPPORTED;
@@ -589,7 +592,7 @@ int *numComponents_ret)
 
                     int adjustedX = bLeftToRight ? x : (width - 1) - x;
                     for (int i = 0; i < format; i++)
-                        (dest + adjustedX * format)[i] = (formattedMap + index * format)[i];
+                        (dest + adjustedX * format)[i] = formattedMap[index * format + i];
                 }
                 dest += lineoffset;
             }
@@ -601,7 +604,7 @@ int *numComponents_ret)
             int x, y;
             for (y = 0; y < height; y++)
             {
-                fin.read((char*)linebuf,width*depth);
+                fin.read(reinterpret_cast<char*>(linebuf.data()), width*depth);
                 if (fin.gcount() != (std::streamsize) (width*depth))
                 {
                     tgaerror = ERR_READ;
@@ -609,7 +612,7 @@ int *numComponents_ret)
                 }
                 for (x = 0; x < width; x++)
                 {
-                    convert_data(linebuf, dest, bLeftToRight ? x : (width-1) - x, depth, format);
+                    convert_data(linebuf.data(), dest, bLeftToRight ? x : (width-1) - x, depth, format);
                 }
                 dest += lineoffset;
             }
@@ -623,14 +626,14 @@ int *numComponents_ret)
                 return NULL;
             }
             SafeArray<unsigned char> formattedMap(colormapLen * format);
-            if (formattedMap == NULL)
+            if (formattedMap.data() == NULL)
             {
                 tgaerror = ERR_MEM;
                 return NULL;
             }
             for (int i = 0; i < colormapLen; i++)
             {
-                convert_data(colormap, formattedMap, i, colormapDepth, format);
+                convert_data(colormap.data(), formattedMap.data(), i, colormapDepth, format);
             }
 
             int size, x, y;
@@ -639,19 +642,19 @@ int *numComponents_ret)
             size = (int)(endOfImage - pos);
 
             SafeArray<unsigned char> buf(size);
-            if (buf == NULL)
+            if (buf.data() == NULL)
             {
                 tgaerror = ERR_MEM;
                 return NULL;
             }
-            unsigned char* src = buf;
+            unsigned char* src = buf.data();
 
-            fin.read((char*)buf, size);
+            fin.read(reinterpret_cast<char*>(buf.data()), size);
             if (fin.gcount() == (std::streamsize)size)
             {
                 for (y = 0; y < height; y++)
                 {
-                    rle_decode(&src, linebuf, width*depth, &rleRemaining,
+                    rle_decode(&src, linebuf.data(), width*depth, &rleRemaining,
                         &rleIsCompressed, rleCurrent, rleEntrySize);
                     assert(src <= buf + size);
 
@@ -664,13 +667,13 @@ int *numComponents_ret)
                             index = linebuf[x];
                             break;
                         case 2:
-                            index = getInt16(linebuf + x * 2);
+                            index = getInt16(linebuf.data() + x * 2);
                             break;
                         case 3:
-                            index = getInt24(linebuf + x * 3);
+                            index = getInt24(linebuf.data() + x * 3);
                             break;
                         case 4:
-                            index = getInt32(linebuf + x * 4);
+                            index = getInt32(linebuf.data() + x * 4);
                             break;
                         default:
                             tgaerror = ERR_UNSUPPORTED;
@@ -685,7 +688,7 @@ int *numComponents_ret)
 
                         int adjustedX = bLeftToRight ? x : (width - 1) - x;
                         for (int i = 0; i < format; i++)
-                            (dest + adjustedX * format)[i] = (formattedMap + index * format)[i];
+                            (dest + adjustedX * format)[i] = formattedMap[index * format + i];
                     }
                     dest += lineoffset;
                 }
@@ -705,24 +708,24 @@ int *numComponents_ret)
 
             size = (int)(endOfImage - pos);
             SafeArray<unsigned char> buf(size);
-            if (buf == NULL)
+            if (buf.data() == NULL)
             {
                 tgaerror = ERR_MEM;
                 return NULL;
             }
-            unsigned char* src = buf;
+            unsigned char* src = buf.data();
 
-            fin.read((char*)buf,size);
+            fin.read(reinterpret_cast<char*>(buf.data()), size);
             if (fin.gcount() == (std::streamsize) size)
             {
                 for (y = 0; y < height; y++)
                 {
-                    rle_decode(&src, linebuf, width*depth, &rleRemaining,
+                    rle_decode(&src, linebuf.data(), width*depth, &rleRemaining,
                         &rleIsCompressed, rleCurrent, rleEntrySize);
                     assert(src <= buf + size);
                     for (x = 0; x < width; x++)
                     {
-                        convert_data(linebuf, dest,  bLeftToRight ? x : (width-1) - x, depth, format);
+                        convert_data(linebuf.data(), dest,  bLeftToRight ? x : (width-1) - x, depth, format);
                     }
                     dest += lineoffset;
                 }

@@ -52,88 +52,113 @@ typedef std::vector<unsigned int> IndexList;
 // ArrayVisitor on them.
 struct GeometryArrayGatherer
 {
-    typedef std::vector<osg::Array*> ArrayList;
+   typedef std::vector<osg::Array*> ArrayList;
 
-    GeometryArrayGatherer(osg::Geometry& geometry)
-    {
-        add(geometry.getVertexArray(), osg::Array::BIND_PER_VERTEX);
-        add(geometry.getNormalArray());
-        add(geometry.getColorArray());
-        add(geometry.getSecondaryColorArray());
-        add(geometry.getFogCoordArray());
-        unsigned int i;
-        for(i=0;i<geometry.getNumTexCoordArrays();++i)
-        {
-            add(geometry.getTexCoordArray(i), osg::Array::BIND_PER_VERTEX);
-        }
-        for(i=0;i<geometry.getNumVertexAttribArrays();++i)
-        {
-            add(geometry.getVertexAttribArray(i));
-        }
-    }
+   GeometryArrayGatherer(osg::Geometry& geometry)
+   {
+       _vertexarray = dynamic_cast<osg::Vec3Array*>(geometry.getVertexArray());
+       if(!_vertexarray.valid()) add(geometry.getVertexArray(), osg::Array::BIND_PER_VERTEX);
+       add(geometry.getNormalArray());
+       add(geometry.getColorArray());
+       add(geometry.getSecondaryColorArray());
+       add(geometry.getFogCoordArray());
+       unsigned int i;
+       for(i=0;i<geometry.getNumTexCoordArrays();++i)
+       {
+           add(geometry.getTexCoordArray(i), osg::Array::BIND_PER_VERTEX);
+       }
+       for(i=0;i<geometry.getNumVertexAttribArrays();++i)
+       {
+           add(geometry.getVertexAttribArray(i));
+       }
+   }
 
-    void add(osg::Array* array, osg::Array::Binding overrideBinding=osg::Array::BIND_UNDEFINED)
-    {
-        if (!array) return;
+   void add(osg::Array* array, osg::Array::Binding overrideBinding=osg::Array::BIND_UNDEFINED)
+   {
+       if (!array) return;
 
-        if (overrideBinding!=osg::Array::BIND_UNDEFINED && array->getBinding()!=overrideBinding)
-        {
-            array->setBinding(overrideBinding);
-        }
+       if (overrideBinding!=osg::Array::BIND_UNDEFINED && array->getBinding()!=overrideBinding)
+       {
+           array->setBinding(overrideBinding);
+       }
 
-        if (array->getBinding()==osg::Array::BIND_PER_VERTEX)
-        {
-            _arrayList.push_back(array);
-        }
-    }
+       if (array->getBinding()==osg::Array::BIND_PER_VERTEX)
+       {
+           _arrayList.push_back(array);
+       }
+   }
 
-    void accept(osg::ArrayVisitor& av)
-    {
-        for(ArrayList::iterator itr=_arrayList.begin();
-            itr!=_arrayList.end();
-            ++itr)
-        {
-            (*itr)->accept(av);
-        }
-    }
+   void accept(osg::ArrayVisitor& av)
+   {
+       if(_vertexarray) _vertexarray->accept(av);
+       for(ArrayList::iterator itr=_arrayList.begin();
+           itr!=_arrayList.end();
+           ++itr)
+       {
+           (*itr)->accept(av);
+       }
+   }
 
-    ArrayList _arrayList;
+   ArrayList _arrayList;
+   osg::ref_ptr<osg::Vec3Array> _vertexarray;
 };
 
 // Compare vertices in a mesh using all their attributes. The vertices
-// are identified by their index. Extracted from TriStripVisitor.cpp
+// are identified by their index.
 struct VertexAttribComparitor : public GeometryArrayGatherer
 {
-    VertexAttribComparitor(osg::Geometry& geometry)
-        : GeometryArrayGatherer(geometry)
-    {
-    }
+   float _epsilondist;
+   VertexAttribComparitor(osg::Geometry& geometry)
+       : GeometryArrayGatherer(geometry), _epsilondist(1e-9)
+   {
+   }
 
-    bool operator() (unsigned int lhs, unsigned int rhs) const
-    {
-        for(ArrayList::const_iterator itr=_arrayList.begin();
-            itr!=_arrayList.end();
-            ++itr)
-        {
-            int compare = (*itr)->compare(lhs,rhs);
-            if (compare==-1) return true;
-            if (compare==1) return false;
-        }
-        return false;
-    }
+   ///sort by distance to origin 
+   bool operator() (unsigned int lhs, unsigned int rhs) const
+   {
+       for(ArrayList::const_reverse_iterator itr=_arrayList.rbegin();
+           itr!=_arrayList.rend();
+           ++itr)
+       {
+           int compare = (*itr)->compare(lhs,rhs);
+           if (compare==-1) return true;
+           else if (compare==1) return false;
 
-    int compare(unsigned int lhs, unsigned int rhs)
-    {
-        for(ArrayList::iterator itr=_arrayList.begin();
-            itr!=_arrayList.end();
-            ++itr)
-        {
-            int compare = (*itr)->compare(lhs,rhs);
-            if (compare==-1) return -1;
-            if (compare==1) return 1;
-        }
-        return 0;
-    }
+       }
+       if(_vertexarray.valid())
+       {
+           float dpos1 = _vertexarray->at(lhs).length2();
+           float dpos2 = _vertexarray->at(rhs).length2();
+
+           if(dpos1 < dpos2) return true;
+           else if(dpos1 > dpos2) return false;
+       }
+       return false;
+   }
+
+   ///compare returning equals if vertices distance is low enough
+   int compare(unsigned int lhs, unsigned int rhs)
+   {
+       for(ArrayList::reverse_iterator itr=_arrayList.rbegin();
+           itr!=_arrayList.rend();
+           ++itr)
+       {
+           int compare = (*itr)->compare(lhs,rhs);
+           if (compare==-1) return -1;
+           if (compare==1) return 1;
+       }
+       if(_vertexarray.valid())
+       {
+            float dpos1 = (_vertexarray->at(lhs) - _vertexarray->at(rhs)).length2();
+            if(dpos1 > _epsilondist)
+            {
+                int compare = _vertexarray->compare(lhs,rhs);
+                if (compare==-1) return -1;
+                if (compare==1) return 1;
+            }
+       }
+       return 0;
+   }
 
 protected:
     VertexAttribComparitor& operator = (const VertexAttribComparitor&) { return *this; }

@@ -52,7 +52,7 @@ SET(TARGET_LIBRARIES
 
 if(OSG_TEXT_USE_FONTCONFIG AND Fontconfig_FOUND)
     MESSAGE(STATUS "osgText will be linked with FontConfig library")
-    list(APPEND TARGET_LIBRARIES Fontconfig::Fontconfig)
+    LIST(APPEND TARGET_EXTERNAL_LIBRARIES Fontconfig::Fontconfig)
     ADD_DEFINITIONS(-DWITH_FONTCONFIG)
 else()
     MESSAGE(STATUS "osgText will not be linked with FontConfig library")

@@ -625,39 +625,7 @@ BoundingSphere OcclusionQueryNode::computeBound() const
             // This is the logical place to put this code, but the method is const. Cast
             //   away constness to compute the bounding box and modify the query geometry.
             osg::OcclusionQueryNode* nonConstThis = const_cast<osg::OcclusionQueryNode*>( this );
-
-
-            ComputeBoundsVisitor cbv;
-            nonConstThis->accept( cbv );
-            BoundingBox bb = cbv.getBoundingBox();
-            const bool bbValid = bb.valid();
-            _queryGeometryState = bbValid ? VALID : INVALID;
-
-            osg::ref_ptr<Vec3Array> v = new Vec3Array;
-            v->resize( 8 );
-
-            // Having (0,0,0) as vertices for the case of the invalid query geometry
-            // still isn't quite the right thing. But the query geometry is public
-            // accessible and therefore a user might expect eight vertices, so
-            // it seems safer to keep eight vertices in the geometry.
-
-            if (bbValid)
-            {
-                (*v)[0] = Vec3( bb._min.x(), bb._min.y(), bb._min.z() );
-                (*v)[1] = Vec3( bb._max.x(), bb._min.y(), bb._min.z() );
-                (*v)[2] = Vec3( bb._max.x(), bb._min.y(), bb._max.z() );
-                (*v)[3] = Vec3( bb._min.x(), bb._min.y(), bb._max.z() );
-                (*v)[4] = Vec3( bb._max.x(), bb._max.y(), bb._min.z() );
-                (*v)[5] = Vec3( bb._min.x(), bb._max.y(), bb._min.z() );
-                (*v)[6] = Vec3( bb._min.x(), bb._max.y(), bb._max.z() );
-                (*v)[7] = Vec3( bb._max.x(), bb._max.y(), bb._max.z() );
-            }
-
-            Geometry* geom = static_cast< Geometry* >( nonConstThis->_queryGeode->getDrawable( 0 ) );
-            geom->setVertexArray( v.get() );
-
-            geom = static_cast< osg::Geometry* >( nonConstThis->_debugGeode->getDrawable( 0 ) );
-            geom->setVertexArray( v.get() );
+            nonConstThis->updateDefaultQueryGeometry();
         }
     }
 
@@ -791,8 +759,6 @@ void OcclusionQueryNode::setQueryGeometryInternal( QueryGeometry* queryGeom,
         return;
     }
 
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _computeBoundMutex )  ;
-
     _queryGeometryState = state;
 
     _queryGeode->removeDrawables(0, _queryGeode->getNumDrawables());
@@ -800,6 +766,49 @@ void OcclusionQueryNode::setQueryGeometryInternal( QueryGeometry* queryGeom,
 
     _debugGeode->removeDrawables(0, _debugGeode->getNumDrawables());
     _debugGeode->addDrawable(debugQueryGeom);
+}
+
+
+void OcclusionQueryNode::updateDefaultQueryGeometry()
+{
+    if (_queryGeometryState == USER_DEFINED)
+    {
+        OSG_FATAL << "osgOQ: OcclusionQueryNode: Unexpected QueryGeometryState=USER_DEFINED." << std::endl;
+        return;
+    }
+
+    ComputeBoundsVisitor cbv;
+    accept( cbv );
+
+    BoundingBox bb = cbv.getBoundingBox();
+    const bool bbValid = bb.valid();
+    _queryGeometryState = bbValid ? VALID : INVALID;
+
+    osg::ref_ptr<Vec3Array> v = new Vec3Array;
+    v->resize( 8 );
+
+    // Having (0,0,0) as vertices for the case of the invalid query geometry
+    // still isn't quite the right thing. But the query geometry is public
+    // accessible and therefore a user might expect eight vertices, so
+    // it seems safer to keep eight vertices in the geometry.
+
+    if (bbValid)
+    {
+        (*v)[0] = Vec3( bb._min.x(), bb._min.y(), bb._min.z() );
+        (*v)[1] = Vec3( bb._max.x(), bb._min.y(), bb._min.z() );
+        (*v)[2] = Vec3( bb._max.x(), bb._min.y(), bb._max.z() );
+        (*v)[3] = Vec3( bb._min.x(), bb._min.y(), bb._max.z() );
+        (*v)[4] = Vec3( bb._max.x(), bb._max.y(), bb._min.z() );
+        (*v)[5] = Vec3( bb._min.x(), bb._max.y(), bb._min.z() );
+        (*v)[6] = Vec3( bb._min.x(), bb._max.y(), bb._max.z() );
+        (*v)[7] = Vec3( bb._max.x(), bb._max.y(), bb._max.z() );
+    }
+
+    Geometry* geom = static_cast< Geometry* >( _queryGeode->getDrawable( 0 ) );
+    geom->setVertexArray( v.get() );
+
+    geom = static_cast< osg::Geometry* >( _debugGeode->getDrawable( 0 ) );
+    geom->setVertexArray( v.get() );
 }
 
 
@@ -825,6 +834,8 @@ void OcclusionQueryNode::discardDeletedQueryObjects( unsigned int contextID )
 
 void OcclusionQueryNode::setQueryGeometry( QueryGeometry* geom )
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _computeBoundMutex )  ;
+
     if (geom)
     {
         setQueryGeometryInternal( geom, geom, USER_DEFINED );
@@ -834,6 +845,8 @@ void OcclusionQueryNode::setQueryGeometry( QueryGeometry* geom )
         setQueryGeometryInternal( createDefaultQueryGeometry( getName() ),
                                   createDefaultDebugQueryGeometry(),
                                   INVALID);
+
+        updateDefaultQueryGeometry();
     }
 }
 

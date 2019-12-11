@@ -276,8 +276,25 @@ IF(APPLE)
     SET(OSG_COMPILE_FRAMEWORKS_INSTALL_NAME_DIR "@executable_path/../Frameworks" CACHE STRING "install name dir for compiled frameworks")
 ELSE()
     # Non-Apple: Find OpenGL
-    FIND_PACKAGE(OpenGL)
-    FIND_PACKAGE(EGL)
+    
+    # Support EGL on Windows
+    IF(OSG_WINDOWING_SYSTEM STREQUAL "Win32" AND (OSG_GLES2_AVAILABLE OR OSG_GLES3_AVAILABLE ) )
+        FIND_PACKAGE(EGL)
+    
+        set(OSG_USE_EGL ON)
+
+        IF(OSG_GLES3_AVAILABLE)
+            FIND_PATH(OPENGL_INCLUDE_DIR GLES3/gl3.h)
+        ENDIF()
+        IF(OSG_GLES2_AVAILABLE)
+            FIND_PATH(OPENGL_INCLUDE_DIR GLES2/gl2.h)
+        ENDIF()
+        FIND_LIBRARY(OPENGL_gl_LIBRARY "libGLESv2.dll")
+    ELSE()
+        # Non-Apple: Find OpenGL
+        FIND_PACKAGE(OpenGL)
+    ENDIF()
+
 ENDIF()
 ENDIF()
 

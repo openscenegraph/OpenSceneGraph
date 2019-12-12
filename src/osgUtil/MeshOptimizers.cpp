@@ -116,24 +116,23 @@ struct VertexAttribComparitor : public GeometryArrayGatherer
     ///sort by distance to origin 
     bool operator() (unsigned int lhs, unsigned int rhs) const
     {
-       for(ArrayList::const_reverse_iterator itr=_arrayList.rbegin();
+        for(ArrayList::const_reverse_iterator itr=_arrayList.rbegin();
            itr!=_arrayList.rend();
            ++itr)
-       {
-           int compare = (*itr)->compare(lhs,rhs);
-           if (compare==-1) return true;
-           else if (compare==1) return false;
+        {
+            int compare = (*itr)->compare(lhs,rhs);
+            if (compare==-1) return true;
+            else if (compare==1) return false;
+        }
+        if(_vertexarray.valid())
+        {
+            float dpos1 = _vertexarray->at(lhs).length2();
+            float dpos2 = _vertexarray->at(rhs).length2();
 
-       }
-       if(_vertexarray.valid())
-       {
-           float dpos1 = _vertexarray->at(lhs).length2();
-           float dpos2 = _vertexarray->at(rhs).length2();
-
-           if(dpos1 < dpos2) return true;
-           else if(dpos1 > dpos2) return false;
-       }
-       return false;
+            if(dpos1 < dpos2) return true;
+            else if(dpos1 > dpos2) return false;
+        }
+        return false;
     }
 
     ///compare returning equals if vertices distance is low enough

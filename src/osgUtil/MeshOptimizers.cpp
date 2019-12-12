@@ -75,22 +75,22 @@ struct GeometryArrayGatherer
 
     void add(osg::Array* array, osg::Array::Binding overrideBinding=osg::Array::BIND_UNDEFINED)
     {
-       if (!array) return;
+        if (!array) return;
 
-       if (overrideBinding!=osg::Array::BIND_UNDEFINED && array->getBinding()!=overrideBinding)
-       {
-           array->setBinding(overrideBinding);
-       }
+        if (overrideBinding!=osg::Array::BIND_UNDEFINED && array->getBinding()!=overrideBinding)
+        {
+            array->setBinding(overrideBinding);
+        }
 
-       if (array->getBinding()==osg::Array::BIND_PER_VERTEX)
-       {
-           _arrayList.push_back(array);
-       }
+        if (array->getBinding()==osg::Array::BIND_PER_VERTEX)
+        {
+            _arrayList.push_back(array);
+        }
     }
 
     void accept(osg::ArrayVisitor& av)
     {
-        if(_vertexarray) _vertexarray->accept(av);
+        if (_vertexarray) _vertexarray->accept(av);
         for(ArrayList::iterator itr=_arrayList.begin();
             itr!=_arrayList.end();
             ++itr)
@@ -109,7 +109,7 @@ struct VertexAttribComparitor : public GeometryArrayGatherer
 {
     float _epsilondist;
     VertexAttribComparitor(osg::Geometry& geometry)
-       : GeometryArrayGatherer(geometry), _epsilondist(1e-9)
+        : GeometryArrayGatherer(geometry), _epsilondist(1e-9)
     {
     }
 
@@ -122,15 +122,15 @@ struct VertexAttribComparitor : public GeometryArrayGatherer
         {
             int compare = (*itr)->compare(lhs,rhs);
             if (compare==-1) return true;
-            else if (compare==1) return false;
+            if (compare==1) return false;
         }
-        if(_vertexarray.valid())
+        if (_vertexarray.valid())
         {
             float dpos1 = _vertexarray->at(lhs).length2();
             float dpos2 = _vertexarray->at(rhs).length2();
 
-            if(dpos1 < dpos2) return true;
-            else if(dpos1 > dpos2) return false;
+            if (dpos1 < dpos2) return true;
+            else if (dpos1 > dpos2) return false;
         }
         return false;
     }
@@ -146,10 +146,10 @@ struct VertexAttribComparitor : public GeometryArrayGatherer
             if (compare==-1) return -1;
             if (compare==1) return 1;
         }
-        if(_vertexarray.valid())
+        if (_vertexarray.valid())
         {
             float dpos1 = (_vertexarray->at(lhs) - _vertexarray->at(rhs)).length2();
-            if(dpos1 > _epsilondist)
+            if (dpos1 > _epsilondist)
             {
                 int compare = _vertexarray->compare(lhs,rhs);
                 if (compare==-1) return -1;

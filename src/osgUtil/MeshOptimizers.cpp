@@ -57,7 +57,7 @@ struct GeometryArrayGatherer
     GeometryArrayGatherer(osg::Geometry& geometry)
     {
         _vertexarray = dynamic_cast<osg::Vec3Array*>(geometry.getVertexArray());
-        if(!_vertexarray.valid()) add(geometry.getVertexArray(), osg::Array::BIND_PER_VERTEX);
+        if (!_vertexarray.valid()) add(geometry.getVertexArray(), osg::Array::BIND_PER_VERTEX);
         add(geometry.getNormalArray());
         add(geometry.getColorArray());
         add(geometry.getSecondaryColorArray());
@@ -117,8 +117,8 @@ struct VertexAttribComparitor : public GeometryArrayGatherer
     bool operator() (unsigned int lhs, unsigned int rhs) const
     {
         for(ArrayList::const_reverse_iterator itr=_arrayList.rbegin();
-           itr!=_arrayList.rend();
-           ++itr)
+            itr!=_arrayList.rend();
+            ++itr)
         {
             int compare = (*itr)->compare(lhs,rhs);
             if (compare==-1) return true;
@@ -139,8 +139,8 @@ struct VertexAttribComparitor : public GeometryArrayGatherer
     int compare(unsigned int lhs, unsigned int rhs)
     {
         for(ArrayList::reverse_iterator itr=_arrayList.rbegin();
-           itr!=_arrayList.rend();
-           ++itr)
+            itr!=_arrayList.rend();
+            ++itr)
         {
             int compare = (*itr)->compare(lhs,rhs);
             if (compare==-1) return -1;

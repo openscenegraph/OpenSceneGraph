@@ -136,7 +136,7 @@ public:
     {
         const std::string ext = osgDB::getLowerCaseFileExtension(filename);
         const std::string pro = osgDB::getServerProtocol(filename);
-		if (!acceptsExtension(ext) && !acceptsProtocol(pro)) return ReadResult::FILE_NOT_HANDLED;
+        if (!acceptsExtension(ext) && !acceptsProtocol(pro)) return ReadResult::FILE_NOT_HANDLED;
         
         if (ext=="ffmpeg") return readImage(osgDB::getNameLessExtension(filename),options);
 

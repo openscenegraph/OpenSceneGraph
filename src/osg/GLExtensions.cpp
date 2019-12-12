@@ -1077,6 +1077,9 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
 
     // FrameBufferObject
+    isMultisampledRenderToTextureSupported = validContext && isGLExtensionSupported(contextID, "GL_EXT_multisampled_render_to_texture");
+    isInvalidateFramebufferSupported = validContext && (isGLExtensionSupported(contextID, "GL_ARB_invalidate_subdata") || (OSG_GLES2_FEATURES && glVersion >= 3.0) || (OSG_GL2_FEATURES && glVersion >= 4.3));
+
     setGLExtensionFuncPtr(glBindRenderbuffer, "glBindRenderbuffer", "glBindRenderbufferEXT", "glBindRenderbufferOES", validContext);
     setGLExtensionFuncPtr(glDeleteRenderbuffers, "glDeleteRenderbuffers", "glDeleteRenderbuffersEXT", "glDeleteRenderbuffersOES", validContext);
     setGLExtensionFuncPtr(glGenRenderbuffers, "glGenRenderbuffers", "glGenRenderbuffersEXT", "glGenRenderbuffersOES", validContext);
@@ -1106,6 +1109,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
     setGLExtensionFuncPtr(glGenerateMipmap, "glGenerateMipmap", "glGenerateMipmapEXT", "glGenerateMipmapOES", validContext);
     setGLExtensionFuncPtr(glBlitFramebuffer, "glBlitFramebuffer", "glBlitFramebufferEXT", "glBlitFramebufferOES", validContext);
+    setGLExtensionFuncPtr(glInvalidateFramebuffer, "glInvalidateFramebuffer", "glInvalidateFramebufferEXT", validContext);
     setGLExtensionFuncPtr(glGetRenderbufferParameteriv, "glGetRenderbufferParameteriv", "glGetRenderbufferParameterivEXT", "glGetRenderbufferParameterivOES", validContext);
 
 
@@ -1129,8 +1133,6 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
                                     (OSG_GL3_FEATURES ||
                                      (isGLExtensionSupported(contextID, "GL_EXT_packed_depth_stencil")) ||
                                      (isGLExtensionSupported(contextID, "GL_OES_packed_depth_stencil")));
-
-    isMultisampledRenderToTextureSupported = validContext && isGLExtensionSupported(contextID, "GL_EXT_multisampled_render_to_texture");
 
     //subroutine
     osg::setGLExtensionFuncPtr(glGetSubroutineUniformLocation, "glGetSubroutineUniformLocation", validContext);

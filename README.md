@@ -31,6 +31,11 @@ Project Lead.
 
 ## Section 1. How to build OpenSceneGraph
 
+If you are using the [vcpkg](https://github.com/Microsoft/vcpkg/) dependency manager you can download and install OpenSceneGraph from source with CMake integration using a single command:
+```
+vcpkg install osg
+```
+
 The OpenSceneGraph uses the CMake build system to generate a platform-specific build environment.  CMake reads the `CMakeLists.txt` files that you'll find throughout the OpenSceneGraph directories, checks for installed dependencies and then generates files for the selected build system.
 
 If you don't already have CMake installed on your system you can grab it from http://www.cmake.org, use version 2.8.0 or later.  Details on the OpenSceneGraph's CMake build can be found at:

@@ -721,9 +721,9 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glTexBuffer, "glTexBuffer","glTexBufferARB" , validContext);
 
     isVBOSupported = validContext && (OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_vertex_buffer_object"));
-    isPBOSupported = validContext && (OSG_GLES3_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_pixel_buffer_object"));
+    isPBOSupported = validContext && ((OSG_GLES3_FEATURES && glVersion >= 3.0) || OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_pixel_buffer_object"));
     isTBOSupported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_texture_buffer_object");
-    isVAOSupported = validContext && (OSG_GLES3_FEATURES || OSG_GL3_FEATURES  || osg::isGLExtensionSupported(contextID, "GL_ARB_vertex_array_object", "GL_OES_vertex_array_object"));
+    isVAOSupported = validContext && ((OSG_GLES3_FEATURES && glVersion >= 3.0) || OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID, "GL_ARB_vertex_array_object", "GL_OES_vertex_array_object"));
     isTransformFeedbackSupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_transform_feedback2");
     isBufferObjectSupported = isVBOSupported || isPBOSupported;
 

@@ -1,3 +1,313 @@
+Mon, 16 Dec 2019 16:51:16 +0000
+Author : Robert Osfield
+Added automatically removal from the OjbectCache when a object or it's subgraph contain Texture that no longer have an osg::Image.
+
+Mon, 16 Dec 2019 11:54:12 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #871 from LaurensVoerman/commit_tgaFixfix debug compile error for ReaderWriterTGA
+
+Mon, 16 Dec 2019 11:02:41 +0100
+Author : Laurens Voerman
+fix debug compile error for ReaderWriterTGA
+
+Mon, 16 Dec 2019 09:40:30 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #870 from eligovision/OpenSceneGraph-3.6_glext_fixGLExtensions's isPBOSupported and isVAOSupported flags fixed
+
+Mon, 16 Dec 2019 09:40:00 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #869 from eligovision/OpenSceneGraph-3.6_glextAdded FBO GL extensions (useful for mobile VR etc.)
+
+Fri, 13 Dec 2019 19:40:11 +0300
+Author : konstantin.matveyev
+GLExtensions's isPBOSupported and isVAOSupported flags fixed for GLES2+GLES3 configuration
+
+Fri, 13 Dec 2019 19:42:30 +0300
+Author : konstantin.matveyev
+GLExtensions's isInvalidateFramebufferSupported flag improved
+
+Tue, 26 Nov 2019 17:17:38 +0800
+Author : PntAndCnt
+Fontconfig should be external library.Add Fontconfig to TARGET_LIBRARIES cause osg3::osgText target looking for
+openscegraph-Fontconfig-import-targets.cmake, which doesn't exists.
+
+
+Sun, 13 Oct 2019 20:24:36 +0800
+Author : PntAndCnt
+Fix a typo and invisible 3dtext in examples/osgtext.Second text alignment is wrong when "--alignment" specified.
+
+3D text radius is too small, only SCREEN_COORDS can be seen.
+
+Text position should multiply radius.
+
+
+Tue, 3 Sep 2019 16:11:14 +0800
+Author : Kent
+Mered fix for internalFormat
+
+Thu, 12 Dec 2019 18:41:23 +0300
+Author : valid-ptr
+glInvalidateFramebuffer added to GLExtensions
+
+Thu, 31 Oct 2019 18:59:04 +0300
+Author : konstantin.matveyev
+glFramebufferTexture2DMultisample added to GLExtensions
+
+Tue, 10 Dec 2019 15:08:25 +0300
+Author : Dmitry Marakasov
+Add FreeBSD-specific code bits for pthread_setaffinity_np support
+
+Thu, 12 Dec 2019 13:25:44 +0000
+Author : Robert Osfield
+Fix linking with Xinerama
+
+Thu, 12 Dec 2019 13:09:33 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #861 from aluaces/default-ffmpegSet ffmpeg as the default plugin for video files.
+
+Fri, 22 Nov 2019 21:07:36 +0100
+Author : elsid
+Fix clang 8 & libc++ build errorsReplace operators for implicit type conversion by explicit data() method to
+access implementation pointer and subscript operator to access element by
+index just like in std::vector.
+
+src/osgPlugins/tga/ReaderWriterTGA.cpp:455:22: error: use of overloaded operator '==' is ambiguous (with operand types 'SafeArray<unsigned char>' and 'long')
+        if (colormap == NULL)
+            ~~~~~~~~ ^  ~~~~
+src/osgPlugins/tga/ReaderWriterTGA.cpp:525:16: error: use of overloaded operator '==' is ambiguous (with operand types 'SafeArray<unsigned char>' and 'long')
+    if (buffer == NULL || linebuf == NULL)
+        ~~~~~~ ^  ~~~~
+src/osgPlugins/tga/ReaderWriterTGA.cpp:525:35: error: use of overloaded operator '==' is ambiguous (with operand types 'SafeArray<unsigned char>' and 'long')
+    if (buffer == NULL || linebuf == NULL)
+                          ~~~~~~~ ^  ~~~~
+src/osgPlugins/tga/ReaderWriterTGA.cpp:548:30: error: use of overloaded operator '==' is ambiguous (with operand types 'SafeArray<unsigned char>' and 'long')
+            if (formattedMap == NULL)
+                ~~~~~~~~~~~~ ^  ~~~~
+src/osgPlugins/tga/ReaderWriterTGA.cpp:574:40: error: use of overloaded operator '[]' is ambiguous (with operand types 'SafeArray<unsigned char>' and 'int')
+                        index = linebuf[x];
+                                ~~~~~~~^~
+src/osgPlugins/tga/ReaderWriterTGA.cpp:577:50: error: use of overloaded operator '+' is ambiguous (with operand types 'SafeArray<unsigned char>' and 'int')
+                        index = getInt16(linebuf + x * 2);
+                                         ~~~~~~~ ^ ~~~~~
+src/osgPlugins/tga/ReaderWriterTGA.cpp:580:50: error: use of overloaded operator '+' is ambiguous (with operand types 'SafeArray<unsigned char>' and 'int')
+                        index = getInt24(linebuf + x * 3);
+                                         ~~~~~~~ ^ ~~~~~
+src/osgPlugins/tga/ReaderWriterTGA.cpp:583:50: error: use of overloaded operator '+' is ambiguous (with operand types 'SafeArray<unsigned char>' and 'int')
+                        index = getInt32(linebuf + x * 4);
+                                         ~~~~~~~ ^ ~~~~~
+src/osgPlugins/tga/ReaderWriterTGA.cpp:592:72: error: use of overloaded operator '+' is ambiguous (with operand types 'SafeArray<unsigned char>' and 'int')
+                        (dest + adjustedX * format)[i] = (formattedMap + index * format)[i];
+                                                          ~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+src/osgPlugins/tga/ReaderWriterTGA.cpp:626:30: error: use of overloaded operator '==' is ambiguous (with operand types 'SafeArray<unsigned char>' and 'long')
+            if (formattedMap == NULL)
+                ~~~~~~~~~~~~ ^  ~~~~
+src/osgPlugins/tga/ReaderWriterTGA.cpp:642:21: error: use of overloaded operator '==' is ambiguous (with operand types 'SafeArray<unsigned char>' and 'long')
+            if (buf == NULL)
+                ~~~ ^  ~~~~
+src/osgPlugins/tga/ReaderWriterTGA.cpp:664:44: error: use of overloaded operator '[]' is ambiguous (with operand types 'SafeArray<unsigned char>' and 'int')
+                            index = linebuf[x];
+                                    ~~~~~~~^~
+src/osgPlugins/tga/ReaderWriterTGA.cpp:667:54: error: use of overloaded operator '+' is ambiguous (with operand types 'SafeArray<unsigned char>' and 'int')
+                            index = getInt16(linebuf + x * 2);
+                                             ~~~~~~~ ^ ~~~~~
+src/osgPlugins/tga/ReaderWriterTGA.cpp:670:54: error: use of overloaded operator '+' is ambiguous (with operand types 'SafeArray<unsigned char>' and 'int')
+                            index = getInt24(linebuf + x * 3);
+                                             ~~~~~~~ ^ ~~~~~
+src/osgPlugins/tga/ReaderWriterTGA.cpp:673:54: error: use of overloaded operator '+' is ambiguous (with operand types 'SafeArray<unsigned char>' and 'int')
+                            index = getInt32(linebuf + x * 4);
+                                             ~~~~~~~ ^ ~~~~~
+src/osgPlugins/tga/ReaderWriterTGA.cpp:688:76: error: use of overloaded operator '+' is ambiguous (with operand types 'SafeArray<unsigned char>' and 'int')
+                            (dest + adjustedX * format)[i] = (formattedMap + index * format)[i];
+                                                              ~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+src/osgPlugins/tga/ReaderWriterTGA.cpp:708:21: error: use of overloaded operator '==' is ambiguous (with operand types 'SafeArray<unsigned char>' and 'long')
+            if (buf == NULL)
+                ~~~ ^  ~~~~
+17 errors generated.
+
+
+Thu, 12 Dec 2019 10:55:35 +0000
+Author : OpenSceneGraph git repository
+Fixed indentation, replacing tabs with spaces
+
+Mon, 4 Nov 2019 05:37:37 +0100
+Author : Tim Moore
+Fix bug in matrix transpose() and transpose3x3The diagonal elements were not copied from the source matrix.
+
+
+Fri, 1 Nov 2019 09:26:28 -0700
+Author : flashk
+Support reading RGB float DDS imagesThe DDS plugin is not able to load floating point RGB images saved out by itself. There doesn't appear to be a fourcc code for RGB float/half-float data, so I added the appropriate entries to the RGBFormat table so the images can be loaded properly.
+
+Thu, 12 Dec 2019 10:08:32 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #851 from LaurensVoerman/submitCpSubImgfix copySubImage crash on compressed files
+
+Wed, 25 Sep 2019 12:16:51 -0500
+Author : DCFennell
+GL_CLAMP_VERTEX_COLOR and GL_CLAMP_FRAGMENT_COLOR deprecated in GL core profile according to OpenGL 4.5 specification.
+
+Mon, 23 Sep 2019 15:05:54 +0200
+Author : Johannes Pabst
+Fix: LuaCallbackObject could form circular references to LuaScriptEngine that prevented its destruction. Destruction of LuaScriptEngine now disarms all callbacks into Lua.
+
+Fri, 13 Sep 2019 12:50:29 +0200
+Author : Riccardo Corsi
+Fbx Plugin: added plugin option to set the target axis system. Default left to OpenGL.
+
+Thu, 12 Sep 2019 13:54:28 -0700
+Author : grdowns
+Add vcpkg installation instructions
+
+Wed, 11 Dec 2019 17:51:02 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #837 from LaurensVoerman/carbonFixfix apple carbon reference
+
+Wed, 11 Dec 2019 17:07:27 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #833 from cj-mcdonald/osga-fixUpdate ReaderWriterOSGA.cpp
+
+Fri, 30 Aug 2019 16:48:25 +0200
+Author : Guilhem Saurel
+fix dae readme
+
+Wed, 11 Dec 2019 16:58:50 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #828 from eligovision/OpenSceneGraph-3.6_ios_build_fixFix build iOS: when using Toolchain or building with Makefiles (not X…
+
+Wed, 11 Dec 2019 16:47:44 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #822 from mp3butcher/patch-32optimize indexed color DDS conversion
+
+Wed, 4 Dec 2019 22:10:46 +0100
+Author : Alberto Luaces
+Set ffmpeg as the default plugin for video files.As xine is not used anymore, there is no plugin in charge of loading
+video files, and osgmovie and other programs are not able to open
+them.
+
+If ffmpeg is present, it is registered for opening video files.
+
+
+Fri, 1 Nov 2019 16:42:50 +0100
+Author : Laurens Voerman
+fix copySubImage crash on compressed files
+
+Wed, 11 Sep 2019 10:22:16 +0200
+Author : Laurens Voerman
+fix apple carbon reference
+
+Mon, 2 Sep 2019 17:43:38 +0100
+Author : Colin McDonald
+Update ReaderWriterOSGA.cppFix typo in osga archives which stops node files working
+
+Fri, 23 Aug 2019 18:31:22 +0300
+Author : Konstantin S. Matveyev
+Fix build iOS: when using Toolchain or building with Makefiles (not Xcode)
+
+Sun, 18 Aug 2019 17:56:51 +0200
+Author : Julien Valentin
+use memcpy instead of union
+
+Sat, 17 Aug 2019 22:05:38 +0200
+Author : Julien Valentin
+optimize conversion with a union
+
+Thu, 22 Aug 2019 14:49:43 +0100
+Author : Robert Osfield
+Removed exlict keyword to address build problems with VS older than 2015.
+
+Sun, 18 Aug 2019 20:14:17 +0200
+Author : Remo E
+Debugging: Hint to debug LoadLibrary issuesThis helps to debug loading dynamic libraries in an environment without implemented "dlopen". For example emscripten with static compiled OSG.
+
+Sat, 17 Aug 2019 20:04:38 +0100
+Author : Robert Osfield
+Merge branch 'OpenSceneGraph-3.6' of https://github.com/openscenegraph/OpenSceneGraph into OpenSceneGraph-3.6
+
+Sat, 17 Aug 2019 20:04:30 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #820 from Capostrophic/ddsDDS plugin: add support for DDPF_PALETTEINDEXED8 pixel format reading
+
+Fri, 16 Aug 2019 13:52:56 +0200
+Author : Björn Blissing
+Fixed spelling error in warning message
+
+Sat, 17 Aug 2019 15:11:49 +0300
+Author : capostrophic
+Fix memory leaks
+
+Sat, 17 Aug 2019 01:43:47 +0300
+Author : capostrophic
+Add support for DDPF_PALETTEINDEXED8 pixel format reading
+
+Fri, 16 Aug 2019 10:27:28 +0100
+Author : Robert Osfield
+Added TKXCAF to find package list
+
+Thu, 15 Aug 2019 20:21:15 +0200
+Author : Julien Valentin
+remove return of local pointer
+
+Fri, 16 Aug 2019 09:35:00 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #818 from mp3butcher/patch-31fix comment block CMake syntax
+
+Thu, 15 Aug 2019 20:46:52 +0200
+Author : Julien Valentin
+fix cmake block comment syntax
+
+Thu, 15 Aug 2019 20:27:05 +0200
+Author : Julien Valentin
+remove unproperly parsed CMake commenthttps://github.com/openscenegraph/OpenSceneGraph/issues/812
+
+Wed, 7 Aug 2019 10:56:59 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #808 from 640kb/OpenSceneGraph-3.6las plugin: fix linking against static boost library under windows
+
+Wed, 7 Aug 2019 09:49:16 +0200
+Author : Daniel Wendt
+las plugin: fix linking against static boost library under windowsSigned-off-by: Daniel Wendt <daniel.wendt@linux.com>
+
+
+Wed, 31 Jul 2019 14:11:59 +0100
+Author : Robert Osfield
+Added a _fontFallback to TextBase to cache any fallback font (usually DefaultFont) that is used when the Textbase::_font is null.
+
+Mon, 29 Jul 2019 13:01:00 +0100
+Author : Robert Osfield
+Replaced GL_QUADS usage with GL_TRIANGLE_STRIP
+
+Mon, 29 Jul 2019 12:29:25 +0100
+Author : Robert Osfield
+Refactored the mesh setup to use GL_TRIANGLE_STIP instead of GL_QUADS
+
+Mon, 29 Jul 2019 09:59:57 +0100
+Author : Robert Osfield
+Updated version to 3.6.5
+
+Mon, 29 Jul 2019 08:57:56 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #804 from eligovision/OpenSceneGraph-3.6_GLQUADS[*] ParticleSystem: Use GL_TRIANGLES instead if GL_QUADS when GL{1,2}…
+
+Fri, 26 Jul 2019 21:14:45 +0300
+Author : Konstantin S. Matveyev
+[*] ParticleSystem: Use GL_TRIANGLES instead if GL_QUADS when GL{1,2} or GLES1 are unavailable
+
+Fri, 26 Jul 2019 12:54:16 +0100
+Author : OpenSceneGraph git repository
+Merge pull request #802 from eligovision/OpenSceneGraph-3.6_osgtext_fcOSG_TEXT_USE_FONTCONFIG cmake option added: Set to ON to enable attem…
+
+Fri, 26 Jul 2019 14:40:47 +0300
+Author : konstantin.matveyev
+OSG_TEXT_USE_FONTCONFIG additional check needed
+
+Fri, 26 Jul 2019 14:09:36 +0300
+Author : konstantin.matveyev
+OSG_TEXT_USE_FONTCONFIG cmake option added: Set to ON to enable attempt to use FontConfig in osgText; Disabled by default for iOS and Android
+
+Thu, 25 Jul 2019 15:10:36 +0100
+Author : Robert Osfield
+UPdated for 3.6.3-rc9
+
 Thu, 25 Jul 2019 14:58:17 +0100
 Author : Robert Osfield
 Changed the #extension enable

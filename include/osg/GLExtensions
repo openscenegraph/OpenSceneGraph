@@ -656,6 +656,9 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         // FrameBuferObject
         bool isFrameBufferObjectSupported;
         bool isPackedDepthStencilSupported;
+        bool isMultisampledRenderToTextureSupported;
+        bool isInvalidateFramebufferSupported;
+
         bool isRenderbufferMultisampleSupported() const { return glRenderbufferStorageMultisample != 0; }
         bool isRenderbufferMultisampleCoverageSupported() const { return glRenderbufferStorageMultisampleCoverageNV != 0; }
 
@@ -672,6 +675,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
 
         void (GL_APIENTRY * glFramebufferTexture1D) (GLenum, GLenum, GLenum, GLuint, GLint);
         void (GL_APIENTRY * glFramebufferTexture2D) (GLenum, GLenum, GLenum, GLuint, GLint);
+        void (GL_APIENTRY * glFramebufferTexture2DMultisample) (GLenum, GLenum, GLenum, GLuint, GLint, GLsizei);
         void (GL_APIENTRY * glFramebufferTexture3D) (GLenum, GLenum, GLenum, GLuint, GLint, GLint);
         void (GL_APIENTRY * glFramebufferTexture) (GLenum, GLenum, GLint, GLint);
         void (GL_APIENTRY * glFramebufferTextureLayer) (GLenum, GLenum, GLuint, GLint, GLint);
@@ -680,6 +684,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
 
         void (GL_APIENTRY * glGenerateMipmap) (GLenum);
         void (GL_APIENTRY * glBlitFramebuffer) (GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum);
+        void (GL_APIENTRY * glInvalidateFramebuffer) (GLenum, GLsizei, const GLenum*); // GL_ARB_invalidate_subdata or GL 4.3 or GLES 3
         void (GL_APIENTRY * glGetRenderbufferParameteriv) (GLenum, GLenum, GLint*);
 
         //ARB_framebuffer_no_attachments

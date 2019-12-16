@@ -656,7 +656,7 @@ int *numComponents_ret)
                 {
                     rle_decode(&src, linebuf.data(), width*depth, &rleRemaining,
                         &rleIsCompressed, rleCurrent, rleEntrySize);
-                    assert(src <= buf + size);
+                    assert(src <= buf.data() + size);
 
                     for (x = 0; x < width; x++)
                     {
@@ -722,7 +722,7 @@ int *numComponents_ret)
                 {
                     rle_decode(&src, linebuf.data(), width*depth, &rleRemaining,
                         &rleIsCompressed, rleCurrent, rleEntrySize);
-                    assert(src <= buf + size);
+                    assert(src <= buf.data() + size);
                     for (x = 0; x < width; x++)
                     {
                         convert_data(linebuf.data(), dest,  bLeftToRight ? x : (width-1) - x, depth, format);

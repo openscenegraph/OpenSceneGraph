@@ -292,7 +292,7 @@ osg::ref_ptr<osg::Geode> ReaderWritterOpenCASCADE::OCCTKReader::igesToOSGGeode(c
         /// transfer data from reader to doc
         if(!reader.Transfer(doc))
         {
-            cout << "Cannot read any relevant data from the STEP file" << endl;
+            std::cout << "Cannot read any relevant data from the STEP file" << std::endl;
             return NULL;
         }
     }
@@ -309,7 +309,7 @@ osg::ref_ptr<osg::Geode> ReaderWritterOpenCASCADE::OCCTKReader::igesToOSGGeode(c
         /// transfer data from reader to doc
         if(!reader.Transfer(doc))
         {
-            cout << "Cannot read any relevant data from the IGES file" << endl;
+            std::cout << "Cannot read any relevant data from the IGES file" << std::endl;
             return NULL;
         }
     }
@@ -327,7 +327,7 @@ osg::ref_ptr<osg::Geode> ReaderWritterOpenCASCADE::OCCTKReader::igesToOSGGeode(c
 
     if(freeShapes.Length() == 0)
     {
-        std::cout << "No Shapes found" << endl;
+        std::cout << "No Shapes found" << std::endl;
         return NULL;
     }
     else

@@ -8,7 +8,7 @@
 # correspond to the ./configure --prefix=$OPENCASCADE_DIR
 # used in building OPENCASCADE.
 
-FIND_PATH(OPENCASCADE_INCLUDE_DIR BRepMesh.hxx
+FIND_PATH(OPENCASCADE_INCLUDE_DIR Standard_Version.hxx
   PATHS
     ${OPENCASCADE_DIR}
     $ENV{OPENCASCADE_DIR}

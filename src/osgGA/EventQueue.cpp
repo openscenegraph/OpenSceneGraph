@@ -357,7 +357,7 @@ osgGA::GUIEventAdapter* EventQueue::mouseButtonRelease(float x, float y, unsigne
 
 osgGA::GUIEventAdapter* EventQueue::keyPress(int key, double time, int unmodifiedKey)
 {
-    switch(key)
+    switch(unmodifiedKey)
     {
         case(GUIEventAdapter::KEY_Shift_L):      _accumulateEventState->setModKeyMask(GUIEventAdapter::MODKEY_LEFT_SHIFT | _accumulateEventState->getModKeyMask()); break;
         case(GUIEventAdapter::KEY_Shift_R):      _accumulateEventState->setModKeyMask(GUIEventAdapter::MODKEY_RIGHT_SHIFT | _accumulateEventState->getModKeyMask()); break;
@@ -403,7 +403,7 @@ osgGA::GUIEventAdapter* EventQueue::keyPress(int key, double time, int unmodifie
 
 osgGA::GUIEventAdapter* EventQueue::keyRelease(int key, double time, int unmodifiedKey)
 {
-    switch(key)
+    switch(unmodifiedKey)
     {
         case(GUIEventAdapter::KEY_Shift_L):      _accumulateEventState->setModKeyMask(~GUIEventAdapter::MODKEY_LEFT_SHIFT & _accumulateEventState->getModKeyMask()); break;
         case(GUIEventAdapter::KEY_Shift_R):      _accumulateEventState->setModKeyMask(~GUIEventAdapter::MODKEY_RIGHT_SHIFT & _accumulateEventState->getModKeyMask()); break;

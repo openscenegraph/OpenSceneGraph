@@ -54,7 +54,7 @@ unsigned int GLBufferObject::BufferEntry::getNumClients() const
 GLBufferObject::GLBufferObject(unsigned int contextID, BufferObject* bufferObject, unsigned int glObjectID):
     _contextID(contextID),
     _glObjectID(glObjectID),
-    _profile(0,0,0,0),
+    _profile(0,0,0),
     _allocatedSize(0),
     _dirty(true),
     _bufferObject(0),
@@ -106,7 +106,7 @@ void GLBufferObject::assign(BufferObject* bufferObject)
     }
     else
     {
-        _profile.setProfile(0,0,0,0);
+        _profile.setProfile(0,0,0);
 
         // clear all previous entries;
         _bufferEntries.clear();
@@ -214,19 +214,19 @@ void GLBufferObject::compileBuffer()
         _allocatedSize = _profile._size;
         OSG_INFO<<"    Allocating new glBufferData(), _allocatedSize="<<_allocatedSize<<std::endl;
 
-        if(_profile._mappingbitfield != 0)
+        if( _profile._usage < GL_STREAM_DRAW_ARB) // any bitfield is lower
         {
-            _extensions->glBufferStorage(_profile._target, _profile._size, NULL, _profile._mappingbitfield);
+            _extensions->glBufferStorage(_profile._target, _profile._size, NULL, _profile._usage);
 
-            if(_profile._mappingbitfield & GL_MAP_PERSISTENT_BIT )
+            if(_profile._usage & GL_MAP_PERSISTENT_BIT)
             {
-                /// invalidate mapping of previously allocated
+                // invalidate mapping of previously allocated
                 if(_persistantDMA)
                 {
                     _extensions->glUnmapBuffer(_profile._target);
                     _persistantDMA = 0;
                 }
-                _persistantDMA = _extensions->glMapBufferRange( _profile._target, 0, _profile._size, _profile._mappingbitfield );
+                _persistantDMA = _extensions->glMapBufferRange( _profile._target, 0, _profile._size, _profile._usage);
             }
 
         }
@@ -260,22 +260,22 @@ void GLBufferObject::compileBuffer()
             }
             else
             {
-                if(_profile._mappingbitfield != 0 )
+                if( _profile._usage < GL_STREAM_DRAW_ARB) // any bitfield is lower
                 {
-                    if(_profile._mappingbitfield & GL_MAP_PERSISTENT_BIT)
+                    if(_profile._usage & GL_MAP_PERSISTENT_BIT)
                     {
                         if(_persistantDMA)
                         {
                             GLvoid* src = const_cast<GLvoid*>(entry.dataSource->getDataPointer());
                             memcpy((unsigned char*)_persistantDMA + entry.offset, src, entry.dataSize);
-                            _extensions->glFlushMappedBufferRange(_profile._target, (GLintptr)entry.offset, (GLsizeiptr)entry.dataSize );
+                            _extensions->glFlushMappedBufferRange(_profile._target, (GLintptr)entry.offset, (GLsizeiptr)entry.dataSize);
                         }
                         else OSG_WARN<<" GL_MAP_PERSISTENT_BIT problem"<<std::endl;
                     }
-                    else if(_profile._mappingbitfield & GL_MAP_WRITE_BIT)
+                    else if(_profile._usage & GL_MAP_WRITE_BIT)
                     {
                         GLvoid *src = const_cast<GLvoid*>(entry.dataSource->getDataPointer()),
-                               *dst = _extensions->glMapBufferRange( _profile._target, (GLintptr)entry.offset,  (GLsizeiptr)entry.dataSize, _profile._mappingbitfield);
+                               *dst = _extensions->glMapBufferRange( _profile._target, (GLintptr)entry.offset,  (GLsizeiptr)entry.dataSize, _profile._usage);
                         memcpy(dst, src, entry.dataSize);
                         _extensions->glUnmapBuffer(_profile._target);
                     }
@@ -291,19 +291,19 @@ void GLBufferObject::compileBuffer()
 
 void GLBufferObject::commitDMA(unsigned int entryidx)
 {
-    if( !(_profile._mappingbitfield & GL_MAP_PERSISTENT_BIT) ) return;
-    if (entryidx>=_bufferEntries.size()) compileBuffer();
+    if( !(_profile._usage & GL_MAP_PERSISTENT_BIT) ) return;
+    if (entryidx >= _bufferEntries.size()) compileBuffer();
     BufferEntry& entry = _bufferEntries[entryidx];
     _extensions->glFlushMappedBufferRange(_profile._target, (GLintptr)entry.offset, (GLsizeiptr)entry.dataSize);
 }
 
 void GLBufferObject::downloadBuffer(unsigned int entryidx)
 {
-    if( !(_profile._mappingbitfield & GL_MAP_READ_BIT) ) return;
-    if (entryidx>=_bufferEntries.size()) compileBuffer();
+    if( !(_profile._usage & GL_MAP_READ_BIT) ) return;
+    if (entryidx >= _bufferEntries.size()) compileBuffer();
     BufferEntry& entry = _bufferEntries[entryidx];
     GLvoid *dst = const_cast<GLvoid*>(entry.dataSource->getDataPointer()),
-           *src = _extensions->glMapBufferRange( _profile._target, (GLintptr)entry.offset, (GLsizeiptr)entry.dataSize, _profile._mappingbitfield);
+           *src = _extensions->glMapBufferRange( _profile._target, (GLintptr)entry.offset, (GLsizeiptr)entry.dataSize, _profile._usage);
     memcpy(dst, src, entry.dataSize);
     _extensions->glUnmapBuffer(_profile._target);
 }
@@ -970,7 +970,7 @@ osg::ref_ptr<GLBufferObject> GLBufferObjectManager::generateGLBufferObject(const
 
     unsigned int requiredBufferSize = osg::maximum(bufferObject->computeRequiredBufferSize(), bufferObject->getProfile()._size);
 
-    BufferObjectProfile profile(bufferObject->getTarget(), bufferObject->getUsage(), requiredBufferSize, bufferObject->getMappingBitfield());
+    BufferObjectProfile profile(bufferObject->getTarget(), bufferObject->getUsage(), requiredBufferSize);
 
     // OSG_NOTICE<<"GLBufferObjectManager::generateGLBufferObject size="<<requiredBufferSize<<std::endl;
 

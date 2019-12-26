@@ -228,7 +228,6 @@ void GLBufferObject::compileBuffer()
                 }
                 _persistantDMA = _extensions->glMapBufferRange( _profile._target, 0, _profile._size, _profile._usage);
             }
-
         }
         else
         {
@@ -313,6 +312,14 @@ void GLBufferObject::deleteGLObject()
     OSG_DEBUG<<"GLBufferObject::deleteGLObject() "<<_glObjectID<<std::endl;
     if (_glObjectID!=0)
     {
+        if(_persistantDMA)
+        {
+            _extensions->glBindBuffer(_profile._target, _glObjectID);
+            _extensions->glUnmapBuffer(_profile._target);
+            _persistantDMA = 0;
+            _extensions->glBindBuffer(_profile._target, 0);
+        }
+
         _extensions->glDeleteBuffers(1, &_glObjectID);
         _glObjectID = 0;
 

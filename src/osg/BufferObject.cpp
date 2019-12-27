@@ -63,7 +63,7 @@ GLBufferObject::GLBufferObject(unsigned int contextID, BufferObject* bufferObjec
     _next(0),
     _frameLastUsed(0),
     _extensions(0),
-    _persistantDMA(0)
+    _persistentDMA(0)
 {
     assign(bufferObject);
 
@@ -221,12 +221,12 @@ void GLBufferObject::compileBuffer()
             if(_profile._usage & GL_MAP_PERSISTENT_BIT)
             {
                 // invalidate mapping of previously allocated
-                if(_persistantDMA)
+                if(_persistentDMA)
                 {
                     _extensions->glUnmapBuffer(_profile._target);
-                    _persistantDMA = 0;
+                    _persistentDMA = 0;
                 }
-                _persistantDMA = _extensions->glMapBufferRange( _profile._target, 0, _profile._size, _profile._usage);
+                _persistentDMA = _extensions->glMapBufferRange( _profile._target, 0, _profile._size, _profile._usage);
             }
         }
         else
@@ -263,10 +263,10 @@ void GLBufferObject::compileBuffer()
                 {
                     if(_profile._usage & GL_MAP_PERSISTENT_BIT)
                     {
-                        if(_persistantDMA)
+                        if(_persistentDMA)
                         {
                             GLvoid* src = const_cast<GLvoid*>(entry.dataSource->getDataPointer());
-                            memcpy((unsigned char*)_persistantDMA + entry.offset, src, entry.dataSize);
+                            memcpy((unsigned char*)_persistentDMA + entry.offset, src, entry.dataSize);
                             _extensions->glFlushMappedBufferRange(_profile._target, (GLintptr)entry.offset, (GLsizeiptr)entry.dataSize);
                         }
                         else OSG_WARN<<" GL_MAP_PERSISTENT_BIT problem"<<std::endl;
@@ -312,11 +312,11 @@ void GLBufferObject::deleteGLObject()
     OSG_DEBUG<<"GLBufferObject::deleteGLObject() "<<_glObjectID<<std::endl;
     if (_glObjectID!=0)
     {
-        if(_persistantDMA)
+        if(_persistentDMA)
         {
             _extensions->glBindBuffer(_profile._target, _glObjectID);
             _extensions->glUnmapBuffer(_profile._target);
-            _persistantDMA = 0;
+            _persistentDMA = 0;
             _extensions->glBindBuffer(_profile._target, 0);
         }
 

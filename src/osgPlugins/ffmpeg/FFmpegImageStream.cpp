@@ -303,6 +303,8 @@ void FFmpegImageStream::cmdPlay()
         if (! m_decoder->video_decoder().isRunning())
             m_decoder->video_decoder().start();
 
+        _lastUpdateTS = osg::Timer::instance()->tick();
+        
         m_decoder->video_decoder().pause(false);
         m_decoder->audio_decoder().pause(false);
 

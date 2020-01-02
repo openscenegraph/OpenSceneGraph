@@ -36,5 +36,6 @@
 #cmakedefine OSG_PROVIDE_READFILE
 #cmakedefine OSG_USE_DEPRECATED_API
 #cmakedefine OSG_ENVVAR_SUPPORTED
+#cmakedefine OSG_WINDOWING_SYSTEM_CARBON
 
 #endif

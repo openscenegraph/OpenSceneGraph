@@ -5,6 +5,11 @@ ELSE()
     ADD_DEFINITIONS(-DOSG_LIBRARY_STATIC)
 ENDIF()
 
+IF(OSG_USE_EGL)
+    ADD_DEFINITIONS(-DOSG_USE_EGL)
+ENDIF()
+
+
 SET(LIB_NAME osgViewer)
 
 
@@ -75,11 +80,21 @@ IF(WIN32 AND NOT ANDROID)
         ${HEADER_PATH}/api/Win32/GraphicsWindowWin32
         ${HEADER_PATH}/api/Win32/PixelBufferWin32
     )
-
-    SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
-        GraphicsWindowWin32.cpp
-        PixelBufferWin32.cpp
-    )
+    IF(OSG_USE_EGL)
+        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
+            GraphicsWindowWin32.cpp
+            PixelBufferWin32EGL.cpp
+			Win32GWUtils.cpp
+			Win32GWUtils
+        )
+    ELSE()
+        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
+            GraphicsWindowWin32.cpp
+            PixelBufferWin32.cpp
+			Win32GWUtils.cpp
+			Win32GWUtils
+        )
+    ENDIF()
 ELSE()
     IF(ANDROID)
       SET(OSG_WINDOWING_SYSTEM "None" CACHE STRING "None Windowing system type for graphics window creation.")
@@ -217,7 +232,7 @@ ELSE()
         IF(OSGVIEWER_USE_XINERAMA)
             ADD_DEFINITIONS(-DOSGVIEWER_USE_XINERAMA)
             SET(LIB_PRIVATE_HEADERS ${LIB_PRIVATE_HEADERS} ${XINERAMA_INCLUDE_DIRS} )
-            SET(LIB_EXTRA_LIBS -lXinerama ${LIB_EXTRA_LIBS})
+            SET(LIB_EXTRA_LIBS ${X11_Xinerama_LIB} ${LIB_EXTRA_LIBS})
         ENDIF()
 
         # X11 on Apple requires X11 library plus OpenGL linking hack on Leopard

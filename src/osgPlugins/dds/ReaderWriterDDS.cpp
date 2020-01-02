@@ -222,6 +222,7 @@ struct DXT1TexelsBlock
 //
 #define DDPF_ALPHAPIXELS        0x00000001l
 #define DDPF_FOURCC             0x00000004l        // Compressed formats
+#define DDPF_PALETTEINDEXED8    0x00000020l
 #define DDPF_RGB                0x00000040l        // Uncompressed formats
 #define DDPF_ALPHA              0x00000002l
 #define DDPF_COMPRESSED         0x00000080l
@@ -853,6 +854,10 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
               GL_RGBA, GL_RGBA, GL_UNSIGNED_INT_2_10_10_10_REV },
             { "G16R16",      32, 0x0000ffff, 0xffff0000, 0x00000000, 0x00000000,
               GL_RGB, UNSUPPORTED, GL_UNSIGNED_SHORT },
+            { "B16G16R16",   48,   0x0000ff,   0x00ff00,   0xff0000,   0x000000,
+              GL_RGB16F_ARB , GL_RGB , GL_HALF_FLOAT },
+            { "B32G32R32",   96,   0x0000ff,   0x00ff00,   0xff0000,   0x000000,
+              GL_RGB32F_ARB , GL_RGB , GL_FLOAT },
         };
 
         bool found = false;
@@ -944,6 +949,12 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
             internalFormat = GL_ALPHA;
             pixelFormat    = GL_ALPHA;
     }
+    else if (ddsd.ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED8)
+    {
+            OSG_INFO << "ReadDDSFile info : format = PALETTEINDEXED8" << std::endl;
+            // The indexed data needs to first be loaded as a single-component image.
+            pixelFormat = GL_RED;
+    }
     else
     {
         OSG_WARN << "ReadDDSFile warning: unhandled pixel format (ddsd.ddpfPixelFormat.dwFlags"
@@ -982,7 +993,17 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
         }
     }
 
-   OSG_INFO<<"ReadDDS, dataType = 0x"<<std::hex<<dataType<<std::endl;
+    OSG_INFO<<"ReadDDS, dataType = 0x"<<std::hex<<dataType<<std::endl;
+
+    unsigned char palette [1024];
+    if (ddsd.ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED8)
+    {
+        if (!_istream.read((char*)palette, 1024))
+        {
+            OSG_WARN << "ReadDDSFile warning: couldn't read palette" << std::endl;
+            return NULL;
+        }
+    }
 
     unsigned char* imageData = new unsigned char [sizeWithMipmaps];
     if(!imageData)
@@ -1010,7 +1031,27 @@ osg::Image* ReadDDSFile(std::istream& _istream, bool flipDDSRead)
         // this memory will not be used but it will not cause leak in worst meaning of this word.
     }
 
-    osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, imageData, osg::Image::USE_NEW_DELETE, packing);
+    if (ddsd.ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED8)
+    {
+        // Now we need to substitute the indexed image data with full RGBA image data.
+        unsigned char * convertedData = new unsigned char [sizeWithMipmaps * 4];
+        unsigned char * pconvertedData = convertedData;
+        for (unsigned int i = 0; i < sizeWithMipmaps; i++)
+        {
+            memcpy(pconvertedData, &palette[ imageData[i] * 4], sizeof(unsigned char) * 4 );
+            pconvertedData += 4;
+        }
+        delete [] imageData;
+        for (unsigned int i = 0; i < mipmap_offsets.size(); i++)
+            mipmap_offsets[i] *= 4;
+        internalFormat = GL_RGBA;
+        pixelFormat = GL_RGBA;
+        osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, convertedData, osg::Image::USE_NEW_DELETE, packing);
+    }
+    else
+    {
+        osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, imageData, osg::Image::USE_NEW_DELETE, packing);
+    }
 
     if (mipmap_offsets.size()>0) osgImage->setMipmapLevels(mipmap_offsets);
 

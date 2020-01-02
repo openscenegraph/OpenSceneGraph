@@ -74,18 +74,19 @@ ELSEIF(APPLE)
         SET (IPHONE_ENABLE_BITCODE "NO" CACHE STRING "IOS Enable Bitcode")
 
         # seamless toggle between device and simulator
-        SET(CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos;-iphonesimulator")
+        SET(CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos;-iphonesimulator" CACHE STRING "Xcode effective platforms for iOS")
 
         # set deployment target to min version
-        SET(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET "${IPHONE_VERSION_MIN}" CACHE STRING "Deployment target for iOS" FORCE)
+        SET(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET "${IPHONE_VERSION_MIN}" CACHE STRING "Xcode deployment target for iOS")
 
         # Set standard architectures
-        SET(CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD)")
+        SET(CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD)" CACHE STRING "Build architectures for iOS")
 
     ELSE()
         # OSX >= 10.5 uses Cocoa windowing system, otherwise Carbon
         IF(OSG_OSX_VERSION VERSION_LESS 10.5)
             SET(OSG_WINDOWING_SYSTEM "Carbon" CACHE STRING "Windowing system type for graphics window creation; options: Carbon, Cocoa, X11 or None.")
+			SET(OSG_WINDOWING_SYSTEM_CARBON ON INTERNAL "use Carbon (apple; 32 bit only)")
         ELSE()
             SET(OSG_WINDOWING_SYSTEM "Cocoa" CACHE STRING "Windowing system type for graphics window creation; options: Carbon, Cocoa, X11 or None.")
         ENDIF()
@@ -276,8 +277,25 @@ IF(APPLE)
     SET(OSG_COMPILE_FRAMEWORKS_INSTALL_NAME_DIR "@executable_path/../Frameworks" CACHE STRING "install name dir for compiled frameworks")
 ELSE()
     # Non-Apple: Find OpenGL
-    FIND_PACKAGE(OpenGL)
-    FIND_PACKAGE(EGL)
+    
+    # Support EGL on Windows
+    IF(OSG_WINDOWING_SYSTEM STREQUAL "Win32" AND (OSG_GLES2_AVAILABLE OR OSG_GLES3_AVAILABLE ) )
+        FIND_PACKAGE(EGL)
+    
+        set(OSG_USE_EGL ON)
+
+        IF(OSG_GLES3_AVAILABLE)
+            FIND_PATH(OPENGL_INCLUDE_DIR GLES3/gl3.h)
+        ENDIF()
+        IF(OSG_GLES2_AVAILABLE)
+            FIND_PATH(OPENGL_INCLUDE_DIR GLES2/gl2.h)
+        ENDIF()
+        FIND_LIBRARY(OPENGL_gl_LIBRARY "libGLESv2.dll")
+    ELSE()
+        # Non-Apple: Find OpenGL
+        FIND_PACKAGE(OpenGL)
+    ENDIF()
+
 ENDIF()
 ENDIF()
 

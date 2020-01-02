@@ -99,3 +99,7 @@ _CPack_Packages/
 #packages
 *.tar.gz
 *.zip
+
+#individual build files
+config.yaml
+_build

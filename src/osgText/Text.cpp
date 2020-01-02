@@ -102,6 +102,7 @@ osg::StateSet* Text::createStateSet()
     Font::StateSets& statesets = activeFont->getCachedStateSets();
 
     std::stringstream ss;
+    ss.imbue(std::locale::classic());
     ss<<std::fixed<<std::setprecision(3);
 
     osg::StateSet::DefineList defineList;

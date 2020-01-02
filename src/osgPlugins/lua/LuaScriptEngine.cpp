@@ -14,6 +14,7 @@
 #include "LuaScriptEngine.h"
 
 #include <osg/io_utils>
+#include <osg/observer_ptr>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 
@@ -32,32 +33,42 @@ public:
 
     virtual bool run(osg::Object* object, osg::Parameters& inputParameters, osg::Parameters& outputParameters) const
     {
-        int topBeforeCall = lua_gettop(_lse->getLuaState());
+        if (!_lse)
+        {
+            OSG_NOTICE << "Warning: Ignoring call to Lua by an expired callback" << std::endl;
+            return false;
+        }
+        
+        // a strong reference is necessary as the lua call might trigger deletion of the LuaScriptEngine object
+        // avoid overhead by observer_ptr<>::lock as a race on run/destruction never is valid
+        osg::ref_ptr<const LuaScriptEngine> lse(_lse.get());
 
-        lua_rawgeti(_lse->getLuaState(), LUA_REGISTRYINDEX, _ref);
+        int topBeforeCall = lua_gettop(lse->getLuaState());
+
+        lua_rawgeti(lse->getLuaState(), LUA_REGISTRYINDEX, _ref);
 
         int numInputs = 1;
-        _lse->pushParameter(object);
+        lse->pushParameter(object);
 
         for(osg::Parameters::iterator itr = inputParameters.begin();
             itr != inputParameters.end();
             ++itr)
         {
-            _lse->pushParameter(itr->get());
+            lse->pushParameter(itr->get());
             ++numInputs;
         }
 
-        if (lua_pcall(_lse->getLuaState(), numInputs, LUA_MULTRET,0)!=0)
+        if (lua_pcall(lse->getLuaState(), numInputs, LUA_MULTRET,0)!=0)
         {
-            OSG_NOTICE<<"Lua error : "<<lua_tostring(_lse->getLuaState(), -1)<<std::endl;
+            OSG_NOTICE<<"Lua error : "<<lua_tostring(lse->getLuaState(), -1)<<std::endl;
             return false;
         }
 
-        int topAfterCall = lua_gettop(_lse->getLuaState());
+        int topAfterCall = lua_gettop(lse->getLuaState());
         int numReturns = topAfterCall-topBeforeCall;
         for(int i=1; i<=numReturns; ++i)
         {
-            outputParameters.insert(outputParameters.begin(), _lse->popParameterObject());
+            outputParameters.insert(outputParameters.begin(), lse->popParameterObject());
         }
         return true;
     }
@@ -66,7 +77,7 @@ public:
 
 protected:
 
-    osg::ref_ptr<const LuaScriptEngine> _lse;
+    osg::observer_ptr<const LuaScriptEngine> _lse;
     int _ref;
 };
 

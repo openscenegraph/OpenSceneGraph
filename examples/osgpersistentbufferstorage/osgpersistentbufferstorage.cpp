@@ -25,36 +25,19 @@
 *
 */
 
-
-#include <osg/GL2Extensions>
-#include <osg/Notify>
-#include <osg/ref_ptr>
-#include <osg/Geode>
 #include <osg/Geometry>
-#include <osg/Point>
-#include <osg/Vec3>
-#include <osg/Vec4>
-#include <osg/Program>
-#include <osg/Shader>
-#include <osg/BlendFunc>
-
-#include <osg/Uniform>
 #include <osgViewer/Viewer>
-
-#include <osg/BufferIndexBinding>
-
-#include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////
 
-class SineAnimation: public osg::Camera::DrawCallback
+class SineAnimation: public osg::Drawable::DrawCallback
 {
 public:
     SineAnimation(osg::Vec4Array* dyn, float scale = 1.0f, float offset = 0.0f ) :
         _dyn(dyn),_rate(0), _scale(scale), _offset(offset)
     {}
 
-    void operator()(osg::RenderInfo& renderInfo) const
+    virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable*  drawable ) const
     {
         unsigned int contextId =  renderInfo.getContextID();
         osg::GLBufferObject * glbo = _dyn->getBufferObject()->getOrCreateGLBufferObject(contextId);
@@ -63,13 +46,13 @@ public:
         if(data)
         {
             _rate+=0.01;
-            float angle = _rate ;
-            float value =  sinf( angle ) * _scale + _offset;
+            float value =  sinf( _rate ) * _scale + _offset;
             for(int i=0; i<4; i++) {
                 data[i*4+0]=float(i)*0.25*value;
             }
             glbo->commitDMA(_dyn->getBufferIndex());
         }
+        drawable->drawImplementation(renderInfo);
     }
 
 private:
@@ -84,19 +67,20 @@ private:
 
 int main( int, char** )
 {
-    osg::Camera* root=new osg::Camera;
+    osg::ref_ptr<osg::Group> root = new osg::Group;
     /// a first geom to demonstrate how to use usage to enable immutable buffer storage
     {
-        osg::Vec4Array* vAry = new osg::Vec4Array;
+        osg::ref_ptr<osg::Vec4Array> vAry = new osg::Vec4Array;
         vAry->push_back( osg::Vec4(2,0,0,1) );
-        vAry->push_back( osg::Vec4(2,1,0,1) );
+        vAry->push_back( osg::Vec4(2,0,1,1) );
         vAry->push_back( osg::Vec4(3,0,0,1) );
-        vAry->push_back( osg::Vec4(3,1,0,1 ));
-        osg::VertexBufferObject*vbo = new osg::VertexBufferObject;
-        vbo->setUsage(GL_MAP_WRITE_BIT);//enable bufferStorage
-        vbo->setMappingBitfield(GL_MAP_WRITE_BIT);//set mapping flags
+        vAry->push_back( osg::Vec4(3,0,1,1) );
+        osg::ref_ptr<osg::VertexBufferObject> vbo = new osg::VertexBufferObject;
+        vbo->setUsage(GL_MAP_WRITE_BIT); // enable bufferStorage
+        vbo->setMappingBitfield(GL_MAP_WRITE_BIT); // set mapping flags
         vAry->setBufferObject(vbo);
-        osg::Geometry * geom=new osg::Geometry;
+
+        osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
         geom->setUseDisplayList(false);
         geom->setUseVertexBufferObjects(true);
         geom->setVertexArray( vAry );
@@ -106,28 +90,28 @@ int main( int, char** )
 
     //second geometry buffer is persistent mapped and modified in camera callback
     {
-        osg::Vec4Array* vAry = new osg::Vec4Array;
+        osg::ref_ptr<osg::Vec4Array> vAry = new osg::Vec4Array;
         vAry->setDataVariance(osg::Object::STATIC);
         vAry->push_back( osg::Vec4(0,0,0,1) );
-        vAry->push_back( osg::Vec4(0,1,0,1) );
+        vAry->push_back( osg::Vec4(0,0,1,1) );
         vAry->push_back( osg::Vec4(1,0,0,1) );
-        vAry->push_back( osg::Vec4(1,1,0,1 ));
-        osg::VertexBufferObject*vbo = new osg::VertexBufferObject;
+        vAry->push_back( osg::Vec4(1,0,1,1) );
+        osg::ref_ptr<osg::VertexBufferObject> vbo = new osg::VertexBufferObject;
         vbo->setDataVariance(osg::Object::STATIC);
-        vbo->setUsage(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT );//enable persistant bufferStorage
-        vbo->setMappingBitfield(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT| GL_MAP_FLUSH_EXPLICIT_BIT );//set mapping flags
-
+        vbo->setUsage(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT ); // enable persistant bufferStorage
+        vbo->setMappingBitfield(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT| GL_MAP_FLUSH_EXPLICIT_BIT );// set mapping flags
         vAry->setBufferObject(vbo);
-        osg::Geometry * geom=new osg::Geometry;
 
+        osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
         geom->setUseDisplayList(false);
         geom->setUseVertexBufferObjects(true);
         geom->setVertexArray( vAry );
         geom->addPrimitiveSet( new osg::DrawArrays( GL_QUADS, 0, vAry->size() ) );
+        geom->setDrawCallback(new SineAnimation(vAry));
         root->addChild(geom);
 
-        root->addPostDrawCallback(new SineAnimation(vAry));
     }
+
     osgViewer::Viewer viewer;
     viewer.setSceneData( root );
     return viewer.run();

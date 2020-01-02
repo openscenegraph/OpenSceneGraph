@@ -101,17 +101,20 @@ class BufferObjectProfile
         BufferObjectProfile():
             _target(0),
             _usage(0),
-            _size(0) {}
+            _size(0),
+            _mappingbitfield(0) {}
 
-        BufferObjectProfile(GLenum target, GLenum usage, unsigned int size):
+        BufferObjectProfile(GLenum target, GLenum usage, unsigned int size, GLbitfield mappingbitfield ):
             _target(target),
             _usage(usage),
-            _size(size) {}
+            _size(size),
+            _mappingbitfield(mappingbitfield) {}
 
         BufferObjectProfile(const BufferObjectProfile& bpo):
             _target(bpo._target),
             _usage(bpo._usage),
-            _size(bpo._size) {}
+            _size(bpo._size),
+            _mappingbitfield(bpo._mappingbitfield) {}
 
         bool operator < (const BufferObjectProfile& rhs) const
         {
@@ -119,6 +122,8 @@ class BufferObjectProfile
             else if (_target > rhs._target) return false;
             if (_usage < rhs._usage) return true;
             else if (_usage > rhs._usage) return false;
+            if (_mappingbitfield < rhs._mappingbitfield) return true;
+            else if (_mappingbitfield > rhs._mappingbitfield) return false;
             return _size < rhs._size;
         }
 
@@ -126,14 +131,16 @@ class BufferObjectProfile
         {
             return (_target == rhs._target) &&
                    (_usage == rhs._usage) &&
-                   (_size == rhs._size);
+                   (_size == rhs._size) &&
+                   (_mappingbitfield == rhs._mappingbitfield);
         }
 
-        void setProfile(GLenum target, GLenum usage, unsigned int size)
+        void setProfile(GLenum target, GLenum usage, unsigned int size, GLbitfield mappingbitfield )
         {
             _target = target;
             _usage = usage;
             _size = size;
+            _mappingbitfield = mappingbitfield;
         }
 
         BufferObjectProfile& operator = (const BufferObjectProfile& rhs)
@@ -141,12 +148,14 @@ class BufferObjectProfile
             _target = rhs._target;
             _usage = rhs._usage;
             _size = rhs._size;
+            _mappingbitfield = rhs._mappingbitfield;
             return *this;
         }
 
         GLenum _target;
         GLenum _usage;
         GLuint _size;
+        GLbitfield _mappingbitfield;
 };
 
 // forward declare
@@ -427,14 +436,15 @@ class OSG_EXPORT BufferObject : public Object
           *          GL_STREAM_DRAW, GL_STREAM_READ, GL_STREAM_COPY,
           *          GL_STATIC_DRAW, GL_STATIC_READ, GL_STATIC_COPY,
           *          GL_DYNAMIC_DRAW, GL_DYNAMIC_READ, or GL_DYNAMIC_COPY.
-          *or buffer storage features as bitfield composed with:
-          *          GL_MAP_READ_BIT, GL_MAP_WRITE_BIT, GL_MAP_PERSISTENT_BIT, GL_MAP_COHERENT_BIT,
-          *          GL_MAP_INVALIDATE_RANGE_BIT, GL_MAP_FLUSH_EXPLICIT_BIT, GL_MAP_UNSYNCHRONIZED_BIT.
           */
         void setUsage(GLenum usage) { _profile._usage = usage; }
 
         /** Get the type of usage the buffer object has been set up for.*/
         GLenum getUsage() const { return _profile._usage; }
+
+        /** Enable GL4 buffer storage features (override usage if setted) */
+        void setMappingBitfield(GLbitfield b){ if(_profile._mappingbitfield == b) return; _profile._mappingbitfield = b; }
+        GLbitfield getMappingBitfield() const { return _profile._mappingbitfield; }
 
         BufferObjectProfile& getProfile() { return _profile; }
         const BufferObjectProfile& getProfile() const { return _profile; }

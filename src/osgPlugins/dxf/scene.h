@@ -210,7 +210,7 @@ protected:
 			if (lineWidth > 0)
 			{
 				spLinewidth = new osg::LineWidth();
-				spLinewidth->setWidth(lineWidth*0.1f);
+				spLinewidth->setWidth(lineWidth * 96 / 254.0f);
 			}
 			for (MapVListList::iterator mlitr = mmlitr->second.begin();
 				mlitr != mmlitr->second.end();

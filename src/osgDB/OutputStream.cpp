@@ -495,13 +495,17 @@ void OutputStream::writeImage( const osg::Image* img )
                 imageFileName = "image.dds";
             }
 			
-
 			std::string fullPath = imageFileName;
-			//if (!osgDB::isAbsolutePath(absoluteFilePath) && !fw.getFileName().empty())
-			//	absoluteFilePath = osgDB::concatPaths(osgDB::getFilePath(fw.getFileName()), imageFilePath);
+			if (!osgDB::isAbsolutePath(fullPath))
+			{
+				ofstream* os = dynamic_cast<ofstream*>(_out->getStream());
+				if( os!=NULL && !os->getFileName().empty() )
+					fullPath = osgDB::concatPaths(osgDB::getFilePath(os->getFileName()), fullPath);
+			}
+			osgDB::convertFileNameToNativeStyle(fullPath);
 			osgDB::makeDirectoryForFile(fullPath);
             bool result = osgDB::writeImageFile( *img, fullPath);
-            OSG_NOTICE << "OutputStream::writeImage(): Write image data to external file " << fullPath << std::endl;
+            OSG_NOTICE << "OutputStream::writeImage(): Write image data to external file " << imageFileName << std::endl;
             if ( !result )
             {
                 OSG_WARN << "OutputStream::writeImage(): Failed to write " << img->getFileName() << std::endl;

@@ -34,26 +34,37 @@ namespace osgDB
     }
 
 
-    ifstream::ifstream(){}
-    ifstream::ifstream(const char* filename,
-        std::ios_base::openmode mode) : std::ifstream(OSGDB_CONVERT_UTF8_FILENAME(filename), mode)
+	ifstream::ifstream() { _filename = ""; }
+	ifstream::ifstream(const char* filename,
+		std::ios_base::openmode mode) : _filename(filename), std::ifstream(OSGDB_CONVERT_UTF8_FILENAME(filename), mode)		
     {}
     ifstream::~ifstream(){}
     void ifstream::open(const char* filename,
         std::ios_base::openmode mode)
     {
+		_filename = filename;
         std::ifstream::open(OSGDB_CONVERT_UTF8_FILENAME(filename), mode);
     }
 
-    ofstream::ofstream(){}
+	std::string ifstream::getFileName() const
+	{
+		return _filename;
+	}
+
+    ofstream::ofstream(){ _filename = ""; }
     ofstream::ofstream(const char* filename,
-        std::ios_base::openmode mode) : std::ofstream(OSGDB_CONVERT_UTF8_FILENAME(filename), mode)
+        std::ios_base::openmode mode) : _filename(filename), std::ofstream(OSGDB_CONVERT_UTF8_FILENAME(filename), mode)		
     {}
     ofstream::~ofstream(){}
     void ofstream::open(const char* filename,
         std::ios_base::openmode mode)
     {
-        std::ofstream::open(OSGDB_CONVERT_UTF8_FILENAME(filename), mode);
+		_filename = filename;
+        std::ofstream::open(OSGDB_CONVERT_UTF8_FILENAME(filename), mode);		
     }
 
+	std::string ofstream::getFileName() const
+	{
+		return _filename;
+	}
 }

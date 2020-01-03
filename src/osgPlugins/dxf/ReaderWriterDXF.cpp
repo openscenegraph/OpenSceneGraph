@@ -36,6 +36,8 @@ public:
     ReaderWriterdxf()
     {
         supportsExtension("dxf","Autodesk DXF format");
+
+		supportsOption("FontFile=<fontfile>", "Set the font file for dxf text");
     }
 
     virtual const char* className() const { return "Autodesk DXF Reader/Writer"; }
@@ -143,6 +145,39 @@ ReaderWriterdxf::readNode(const std::string& filename, const osgDB::ReaderWriter
             dxfEntity::getRegistryEntity("ARC")->setAccuracy(true,maxError,improveAccuracyOnly);
             dxfEntity::getRegistryEntity("CIRCLE")->setAccuracy(true,maxError,improveAccuracyOnly);
         } // accuracy options exists
+
+		{
+			std::istringstream iss(options->getOptionString());
+			std::string opt;
+			while (iss >> opt)
+			{
+				// split opt into pre= and post=
+				std::string pre_equals;
+				std::string post_equals;
+
+				size_t found = opt.find("=");
+				if (found != std::string::npos)
+				{
+					pre_equals = opt.substr(0, found);
+					post_equals = opt.substr(found + 1);
+				}
+				else
+				{
+					pre_equals = opt;
+				}
+
+				if (pre_equals == "FontFile")
+				{
+					std::string fontFile = post_equals.c_str();
+					if (fontFile.empty()) {
+						OSG_NOTICE << "Warning: invalid FontFile value: " << post_equals << std::endl;
+					}
+					else {
+						dynamic_cast<dxfText*>(dxfEntity::getRegistryEntity("TEXT"))->setFontFile(fontFile);
+					}
+				}
+			}
+		}
     } // options exist
 
 

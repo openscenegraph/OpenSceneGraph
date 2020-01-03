@@ -60,7 +60,7 @@ getOCSMatrix(const osg::Vec3d& ocs, osg::Matrixd& m)
 class dxfBasicEntity : public osg::Referenced
 {
 public:
-    dxfBasicEntity() : _color(0), _useAccuracy(false), _maxError(0.01), _improveAccuracyOnly(false) {}
+    dxfBasicEntity() : _color(0), _lineWidth(-1), _lineThickness(-1), _useAccuracy(false), _maxError(0.01), _improveAccuracyOnly(false) {}
     virtual ~dxfBasicEntity() {}
     virtual dxfBasicEntity* create() = 0;
     virtual const char* name() = 0;
@@ -74,15 +74,15 @@ public:
         _improveAccuracyOnly=improveAccuracyOnly;
     }
 
-
 protected:
     std::string    _layer;
     unsigned short    _color;
+	double  _lineWidth;
+	double  _lineThickness;
 
     bool _useAccuracy;          // true to specify a maximum deviation for curve rendering
     double _maxError;         // the error in model units, if _useAccuracy==true
     bool _improveAccuracyOnly;// if true only use _maxError where it would increase the quality of curves compared to the previous algorithm
-
 };
 
 
@@ -302,13 +302,22 @@ public:
         _rotation(0),
         _flags(0),
         _hjustify(0),
-        _vjustify(0) {}
+        _vjustify(0),
+		_fontFile("arial.ttf")
+#if (defined(WIN32) && !defined(__CYGWIN__))
+		, _encoding("")
+#endif
+	{}
 
     virtual ~dxfText() {}
     virtual dxfBasicEntity*        create() { return new dxfText; }
     virtual const char*            name() { return "TEXT"; }
     virtual void                   assign(dxfFile* dxf, codeValue& cv);
     virtual void                   drawScene(scene* sc);
+
+	void setFontFile(const std::string& file) {
+		_fontFile = file;
+	}
 
 protected:
     std::string       _string;    // 1
@@ -321,6 +330,10 @@ protected:
     int               _flags;     // 71
     int               _hjustify;  // 72
     int               _vjustify;  // 73
+	std::string       _fontFile;
+#if (defined(WIN32) && !defined(__CYGWIN__))
+	std::string       _encoding;
+#endif	
 };
 
 class dxfEntity : public osg::Referenced

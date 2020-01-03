@@ -36,16 +36,20 @@ public:
 class dxfLayer : public osg::Referenced
 {
 public:
-	dxfLayer(std::string name = "0") : _name(name), _color(7), _frozen(false) {}
+	dxfLayer(std::string name = "0") : _name(name), _color(7), _lineWidth(-1), _lineThickness(-1), _frozen(false) {}
 	virtual ~dxfLayer() {}
 	virtual void assign(dxfFile* dxf, codeValue& cv);
 	virtual const std::string& getName() const { return _name; }
 	virtual const unsigned short& getColor() const { return _color; }
+	virtual const double& getLineWidth() const { return _lineWidth; }
+	virtual const double& getLineThickness() const { return _lineThickness; }
 	virtual void setName(const std::string& name) { _name = name; }
 	const bool& getFrozen() const { return _frozen; }
 protected:
 	std::string	_name;
 	unsigned short _color;
+	double _lineWidth;
+	double  _lineThickness;
 	bool			_frozen;
 };
 

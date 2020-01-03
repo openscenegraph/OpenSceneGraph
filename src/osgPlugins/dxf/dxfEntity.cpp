@@ -20,6 +20,14 @@
 
 #include <algorithm>
 
+#if (defined(WIN32) && !defined(__CYGWIN__))
+#if defined(USE_GDAL)
+#include "cpl_string.h"
+#else
+#include <osgDB/ConvertUTF>
+#endif
+#endif
+
 using namespace std;
 using namespace osg;
 
@@ -46,6 +54,23 @@ dxfBasicEntity::assign(dxfFile* , codeValue& cv)
         case 62:
             _color = cv._short;
             break;
+			// Thickness
+		case 370:
+		case 39:
+			if (cv._double > 0)
+			{
+				_lineThickness = cv._double;
+				if (_lineThickness > _lineWidth)
+					_lineWidth = _lineThickness;
+			}
+			break;
+			// width
+		case 43:
+			if (cv._double > 0 && cv._double > _lineWidth)
+				_lineWidth = cv._double;
+			break;
+		default:
+			break;
     }
 }
 
@@ -211,7 +236,7 @@ dxfCircle::drawScene(scene* sc)
         vlist.push_back(b);
     }
 
-    sc->addLineStrip(getLayer(), _color, vlist); // Should really add LineLoop implementation and save a vertex
+    sc->addLineStrip(getLayer(), _color, vlist, _lineWidth); // Should really add LineLoop implementation and save a vertex
     sc->ocs_clear();
 }
 
@@ -311,7 +336,7 @@ dxfArc::drawScene(scene* sc)
     }
 
 
-    sc->addLineStrip(getLayer(), _color, vlist);
+    sc->addLineStrip(getLayer(), _color, vlist, _lineWidth);
     sc->ocs_clear();
 }
 
@@ -361,7 +386,7 @@ dxfLine::drawScene(scene* sc)
     getOCSMatrix(_ocs, m);
     // don't know why this doesn't work
 //    sc->ocs(m);
-    sc->addLine(getLayer(), _color, _b, _a);
+    sc->addLine(getLayer(), _color, _b, _a, _lineWidth);
 //    static long lcount = 0;
 //    std::cout << ++lcount << " ";
 //    sc->ocs_clear();
@@ -670,10 +695,10 @@ dxfPolyline::drawScene(scene* sc)
             vlist.push_back(_vertices[i]->getVertex());
         if (_flag & 1) {
 //            std::cout << "line loop " << _vertices.size() << std::endl;
-            sc->addLineLoop(getLayer(), _color, vlist);
+            sc->addLineLoop(getLayer(), _color, vlist, _lineWidth);
         } else {
 //            std::cout << "line strip " << _vertices.size() << std::endl;
-            sc->addLineStrip(getLayer(), _color, vlist);
+            sc->addLineStrip(getLayer(), _color, vlist, _lineWidth);
         }
 
     }
@@ -732,10 +757,10 @@ dxfLWPolyline::drawScene(scene* sc)
     sc->ocs(m);
     if (_flag & 1) {
 //        std::cout << "lwpolyline line loop " << _vertices.size() << std::endl;
-        sc->addLineLoop(getLayer(), _color, _vertices);
+        sc->addLineLoop(getLayer(), _color, _vertices, _lineWidth);
     } else {
 //        std::cout << "lwpolyline line strip " << _vertices.size() << std::endl;
-        sc->addLineStrip(getLayer(), _color, _vertices);
+        sc->addLineStrip(getLayer(), _color, _vertices, _lineWidth);
     }
     sc->ocs_clear();
 }
@@ -846,7 +871,33 @@ dxfText::assign(dxfFile* dxf, codeValue& cv)
 {
     switch (cv._groupCode) {
         case 1:
-            _string = cv._string;
+			{
+#if (defined(WIN32) && !defined(__CYGWIN__))
+				// Get the string encoding according to $DWGCODEPAGE, refer to the code in gdal
+				VariableList codeList = dxf->getVariable("$DWGCODEPAGE");
+				if (codeList.size() > 0)
+				{
+					if (codeList[0]._string.compare("ANSI_1252") == 0)
+#if defined(USE_GDAL)
+						_encoding = "ISO-8859-1";
+#else
+						_encoding = "";
+#endif
+					else if (codeList[0]._string.find("ANSI_") == 0)
+					{
+						_encoding = "CP";
+						_encoding += (codeList[0]._string.c_str() + 5);
+					}
+					else
+#if defined(USE_GDAL)
+						_encoding = "ISO-8859-1";
+#else
+						_encoding = "";
+#endif						
+				}
+#endif
+				_string = cv._string;
+			}			
             break;
         case 10:
             _point1.x() = cv._double;
@@ -909,11 +960,32 @@ dxfText::drawScene(scene* sc)
     getOCSMatrix(_ocs, m);
     sc->ocs(m);
 
-    ref_ptr<osgText::Text> _text = new osgText::Text;
-    _text->setText(_string);
+	ref_ptr<osgText::Text> _text = new osgText::Text;
+	std::string fontFile = _fontFile;
+#if (defined(WIN32) && !defined(__CYGWIN__))
+	std::string encoding = _encoding;
+	if (!encoding.empty())
+	{
+#if defined(USE_GDAL)
+		std::wstring wText = CPLRecodeToWChar(_string.c_str(), encoding.c_str(), "WCHAR_T");
+#else
+		std::wstring wText = encoding.empty() ? L"" : osgDB::convertUTF8toUTF16(osgDB::convertStringFromCurrentCodePageToUTF8(_string.c_str()).c_str());
+#endif
+		if (!wText.empty())
+		{
+			_text->setText(wText.c_str());
+			if (fontFile.compare("arial.ttf") == 0)
+				fontFile = "fonts\\msyh.ttf";
+		}
+		else
+			_text->setText(_string.c_str());
+	}
+	else
+#endif
+		_text->setText(_string.c_str());
 
     _text->setCharacterSize( _height, 1.0/_xscale );
-    _text->setFont("arial.ttf");
+    _text->setFont(fontFile);
 
     Quat qr( DegreesToRadians(_rotation), Z_AXIS );
 

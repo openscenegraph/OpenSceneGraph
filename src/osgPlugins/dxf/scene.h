@@ -205,7 +205,7 @@ protected:
     {	
 		for (MapMapVListList::iterator mmlitr = _maplinestrips.begin(); mmlitr != _maplinestrips.end(); ++mmlitr)
 		{
-			osg::ref_ptr<osg::LineWidth> spLinewidth = nullptr;
+			osg::ref_ptr<osg::LineWidth> spLinewidth = NULL;
 			short lineWidth = mmlitr->first;
 			if (lineWidth > 0)
 			{
@@ -243,7 +243,7 @@ protected:
 
 		for (MapMapVList::iterator mmitr = _maplines.begin(); mmitr != _maplines.end(); ++mmitr)
 		{
-			osg::ref_ptr<osg::LineWidth> spLinewidth = nullptr;
+			osg::ref_ptr<osg::LineWidth> spLinewidth = NULL;
 			double lineWidth = mmitr->first;
 			if (lineWidth > 0)
 			{
@@ -421,7 +421,7 @@ public:
             sceneLayer* ly = (*litr).second.get();
             if (!ly) continue;
 
-			osg::ref_ptr<osg::LineWidth> spLinewidth = nullptr;
+			osg::ref_ptr<osg::LineWidth> spLinewidth = NULL;
 			double lineWidth = correctedLineWidth((*litr).first, -1);
 			if( lineWidth>0 )
 			{

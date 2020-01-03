@@ -87,7 +87,8 @@ bool TextureCubeMap_readLocalData(Object& obj, Input& fr)
                     {\
                         fileName = fw.getTextureFileNameForOutput();\
                     }\
-                    osgDB::writeImageFile(*image, fileName);\
+					std::string fullPath = fw.getFullPathForOutput(fileName);\
+                    osgDB::writeImageFile(*image, fullPath);\
                 }\
                 if (!fileName.empty())\
                 {\

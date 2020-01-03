@@ -13,6 +13,7 @@
 #include <osgDB/Output>
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 
 #include <osg/Notify>
 
@@ -255,4 +256,20 @@ bool Output::getExternalFileWritten(const std::string& filename) const
     ExternalFileWrittenMap::const_iterator itr = _externalFileWritten.find(filename);
     if (itr != _externalFileWritten.end()) return itr->second;
     return false;
+}
+
+std::string Output::getFullPathForOutput(const std::string& filename) const
+{
+	std::string fullPath = filename;
+	if (!osgDB::isAbsolutePath(filename))
+	{
+		std::string path = osgDB::getFilePath(getFileName());
+		if (getFileName().empty())
+			path = osgDB::getCurrentWorkingDirectory();
+		fullPath = osgDB::concatPaths(path, filename);
+	}
+	fullPath = osgDB::convertFileNameToNativeStyle(fullPath);
+	osgDB::makeDirectoryForFile(fullPath);
+	return fullPath;
+		
 }

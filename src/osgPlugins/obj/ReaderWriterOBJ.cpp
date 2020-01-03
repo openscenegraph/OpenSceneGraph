@@ -114,7 +114,7 @@ public:
         f.precision(localOptions.precision);
 
         std::string materialFile = osgDB::getNameLessExtension(fileName) + ".mtl";
-        OBJWriterNodeVisitor nv(f, osgDB::getSimpleFileName(materialFile), localOptions.outputTextureFiles, options);
+        OBJWriterNodeVisitor nv(f, materialFile, localOptions.outputTextureFiles, options);
 
         // we must cast away constness
         (const_cast<osg::Node*>(&node))->accept(nv);

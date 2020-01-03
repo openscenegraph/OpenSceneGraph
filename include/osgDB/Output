@@ -105,6 +105,9 @@ class OSGDB_EXPORT Output : public osgDB::ofstream
         void setExternalFileWritten(const std::string& filename, bool hasBeenWritten=true);
         bool getExternalFileWritten(const std::string& filename) const;
 
+		// If the input path is a relative path, it is converted to an absolute path
+		virtual std::string getFullPathForOutput(const std::string& filename) const;
+
     protected:
 
 

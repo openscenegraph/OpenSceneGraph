@@ -63,7 +63,8 @@ class OBJWriterNodeVisitor: public osg::NodeVisitor {
             _fout << "# file written by OpenSceneGraph" << std::endl << std::endl;
 
             if (!materialFileName.empty()) {
-                _fout << "mtllib " << materialFileName << std::endl << std::endl;
+                _fout << "mtllib " << osgDB::getSimpleFileName(materialFileName) << std::endl << std::endl;
+				_outputPath = osgDB::getFilePath(materialFileName);
             }
         }
 
@@ -115,12 +116,13 @@ class OBJWriterNodeVisitor: public osg::NodeVisitor {
         class OBJMaterial {
             public:
                 OBJMaterial() {}
-                OBJMaterial(osg::Material* mat, osg::Texture* tex, bool outputTextureFiles = false, const osgDB::Options* options = NULL);
+                OBJMaterial(osg::Material* mat, osg::Texture* tex, const std::string& path, bool outputTextureFiles = false, const osgDB::Options* options = NULL);
 
                 osg::Vec4  diffuse, ambient, specular;
                 float shininess;
                 std::string    image;
                 std::string name;
+				std::string    filePath;
         };
 
     protected:
@@ -158,6 +160,7 @@ class OBJWriterNodeVisitor: public osg::NodeVisitor {
         MaterialMap                             _materialMap;
         bool                                    _outputTextureFiles;
         osg::ref_ptr<const osgDB::Options>      _options;
+		std::string                             _outputPath;
 
 };
 

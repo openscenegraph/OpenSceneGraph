@@ -96,7 +96,9 @@ bool Texture2DArray_writeLocalData(const Object& obj, Output& fw)
                     {
                         fileName = fw.getTextureFileNameForOutput();
                     }
-                    osgDB::writeImageFile(*image, fileName);
+
+					std::string fullPath = fw.getFullPathForOutput(fileName);
+                    osgDB::writeImageFile(*image, fullPath);
                 }
                 if (!fileName.empty())
                 {

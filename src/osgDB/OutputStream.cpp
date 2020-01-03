@@ -494,9 +494,14 @@ void OutputStream::writeImage( const osg::Image* img )
                 OSG_NOTICE<<"Empty Image::FileName resetting to image.dds"<<std::endl;
                 imageFileName = "image.dds";
             }
+			
 
-            bool result = osgDB::writeImageFile( *img, imageFileName );
-            OSG_NOTICE << "OutputStream::writeImage(): Write image data to external file " << imageFileName << std::endl;
+			std::string fullPath = imageFileName;
+			//if (!osgDB::isAbsolutePath(absoluteFilePath) && !fw.getFileName().empty())
+			//	absoluteFilePath = osgDB::concatPaths(osgDB::getFilePath(fw.getFileName()), imageFilePath);
+			osgDB::makeDirectoryForFile(fullPath);
+            bool result = osgDB::writeImageFile( *img, fullPath);
+            OSG_NOTICE << "OutputStream::writeImage(): Write image data to external file " << fullPath << std::endl;
             if ( !result )
             {
                 OSG_WARN << "OutputStream::writeImage(): Failed to write " << img->getFileName() << std::endl;

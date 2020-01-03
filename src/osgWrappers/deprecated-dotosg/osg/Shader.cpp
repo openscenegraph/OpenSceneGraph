@@ -92,7 +92,8 @@ bool Shader_writeLocalData(const Object& obj,Output& fw)
             fileName = fw.getShaderFileNameForOutput();
         }
 
-        osgDB::writeShaderFile(shader, fileName);
+		std::string fullPath = fw.getFullPathForOutput(fileName);
+        osgDB::writeShaderFile(shader, fullPath);
 
         if (!fileName.empty())
         {

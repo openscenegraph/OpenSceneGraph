@@ -420,12 +420,13 @@ void ObjPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
 }
 
 
-OBJWriterNodeVisitor::OBJMaterial::OBJMaterial(osg::Material* mat, osg::Texture* tex, bool outputTextureFiles, const osgDB::Options* options) :
+OBJWriterNodeVisitor::OBJMaterial::OBJMaterial(osg::Material* mat, osg::Texture* tex, const std::string& path, bool outputTextureFiles, const osgDB::Options* options) :
     diffuse(1,1,1,1),
     ambient(0.2,0.2,0.2,1),
     specular(0,0,0,1),
     shininess(-1),
-    image("")
+    image(""),
+	filePath(path)
 {
     static unsigned int s_objmaterial_id = 0;
     ++s_objmaterial_id;
@@ -445,8 +446,14 @@ OBJWriterNodeVisitor::OBJMaterial::OBJMaterial(osg::Material* mat, osg::Texture*
         if ((img) && (!img->getFileName().empty()))
         {
             image = img->getFileName();
-            if(outputTextureFiles)
-                osgDB::writeImageFile(*img, image, options);
+			if (outputTextureFiles) {
+				std::string fullPath = image;
+				if (!osgDB::isAbsolutePath(fullPath) && !filePath.empty())
+					fullPath = osgDB::concatPaths(filePath, fullPath);
+				fullPath = osgDB::convertFileNameToNativeStyle(fullPath);
+				osgDB::makeDirectoryForFile(fullPath);
+				osgDB::writeImageFile(*img, fullPath, options);
+			}
         }
     }
 
@@ -461,8 +468,16 @@ std::ostream& operator<<(std::ostream& fout, const OBJWriterNodeVisitor::OBJMate
     if (mat.shininess != -1)
         fout << "       " << "Ns " << mat.shininess<< std::endl;
 
-    if(!mat.image.empty())
-        fout << "       " << "map_Kd " << mat.image << std::endl;
+	if (!mat.image.empty()) {
+		std::string image = mat.image;
+		if (osgDB::isAbsolutePath(image)) {
+			image = osgDB::getRealPath(image);
+			image = osgDB::convertFileNameToNativeStyle(image);
+			image = osgDB::getPathRelative(mat.filePath, image);
+		}
+		fout << "       " << "map_Kd " << image << std::endl;
+	}
+        
 
     return fout;
 
@@ -527,7 +542,7 @@ void OBJWriterNodeVisitor::processStateSet(osg::StateSet* ss)
 
     if (mat || tex)
     {
-        _materialMap.insert(std::make_pair(osg::ref_ptr<osg::StateSet>(ss), OBJMaterial(mat, tex, _outputTextureFiles, _options)));
+        _materialMap.insert(std::make_pair(osg::ref_ptr<osg::StateSet>(ss), OBJMaterial(mat, tex, _outputPath, _outputTextureFiles, _options)));
         _fout << "usemtl " << _materialMap[ss].name << std::endl;
     }
 

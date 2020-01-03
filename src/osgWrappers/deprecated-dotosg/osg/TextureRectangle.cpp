@@ -85,7 +85,9 @@ bool TextureRectangle_writeLocalData(const Object& obj, Output& fw)
                 {
                     fileName = fw.getTextureFileNameForOutput();
                 }
-                osgDB::writeImageFile(*texture.getImage(), fileName);
+
+				std::string fullPath = fw.getFullPathForOutput(fileName);
+                osgDB::writeImageFile(*texture.getImage(), fullPath);
             }
 
             if (!fileName.empty())

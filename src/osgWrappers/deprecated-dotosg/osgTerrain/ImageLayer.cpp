@@ -74,7 +74,9 @@ bool ImageLayer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
         {
             fileName = fw.getTextureFileNameForOutput();
         }
-        osgDB::writeImageFile(*layer.getImage(), fileName);
+
+		std::string fullPath = fw.getFullPathForOutput(fileName);
+        osgDB::writeImageFile(*layer.getImage(), fullPath);
     }
     if (!fileName.empty())
     {

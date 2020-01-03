@@ -1523,7 +1523,12 @@ void DataOutputStream::writeImage(IncludeImageMode mode, osg::Image *image)
                     { // synthesize a new faux filename
                         fileName = getTextureFileNameForOutput();
                     }
-                    osgDB::writeImageFile(*image, fileName);
+
+					std::string fullPath = fileName;
+					if (!osgDB::isAbsolutePath(fullPath) && !getFileName().empty())
+						fullPath = osgDB::concatPaths(osgDB::getFilePath(getFileName()), fullPath);
+					osgDB::makeDirectoryForFile(fullPath);
+                    osgDB::writeImageFile(*image, fullPath);
                 }
                 writeString(fileName);
             }

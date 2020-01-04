@@ -122,19 +122,38 @@ class OSG_EXPORT StateAttribute : public Object
           * that type's value. */
         enum Type
         {
+/// Renderpass attributes
+            FRAME_BUFFER_OBJECT,
+
+/// Shader attributes
+            VERTEXPROGRAM,
+            FRAGMENTPROGRAM,
+            PROGRAM,
+
+/// Material attributes
             TEXTURE,
+            SAMPLER,
+            BINDIMAGETEXTURE,
+            MATERIAL,
+            LIGHTMODEL,
+            LIGHT,
+            UNIFORMBUFFERBINDING,
+
+/// Object attributes
+            TRANSFORMFEEDBACKBUFFERBINDING,
+            ATOMICCOUNTERBUFFERBINDING,
+            SHADERSTORAGEBUFFERBINDING,
+            INDIRECTDRAWBUFFERBINDING,
+
 
             POLYGONMODE,
             POLYGONOFFSET,
-            MATERIAL,
             ALPHAFUNC,
             ANTIALIAS,
             COLORTABLE,
             CULLFACE,
             FOG,
             FRONTFACE,
-
-            LIGHT,
 
             POINT,
             LINEWIDTH,
@@ -145,7 +164,6 @@ class OSG_EXPORT StateAttribute : public Object
             TEXENVFILTER,
             TEXGEN,
             TEXMAT,
-            LIGHTMODEL,
             BLENDFUNC,
             BLENDEQUATION,
             LOGICOP,
@@ -158,10 +176,7 @@ class OSG_EXPORT StateAttribute : public Object
             MULTISAMPLE,
             CLIPPLANE,
             COLORMATRIX,
-            VERTEXPROGRAM,
-            FRAGMENTPROGRAM,
             POINTSPRITE,
-            PROGRAM,
             CLAMPCOLOR,
             HINT,
             SAMPLEMASKI,
@@ -189,27 +204,14 @@ class OSG_EXPORT StateAttribute : public Object
             // osgNVParse
             OSGNVPARSE_PROGRAM_PARSER,
 
-            UNIFORMBUFFERBINDING,
-            TRANSFORMFEEDBACKBUFFERBINDING,
-
-            ATOMICCOUNTERBUFFERBINDING,
-
             PATCH_PARAMETER,
 
-            FRAME_BUFFER_OBJECT,
-
             VERTEX_ATTRIB_DIVISOR,
-
-            SHADERSTORAGEBUFFERBINDING,
-
-            INDIRECTDRAWBUFFERBINDING,
 
             VIEWPORTINDEXED,
             DEPTHRANGEINDEXED,
             SCISSORINDEXED,
 
-            BINDIMAGETEXTURE,
-            SAMPLER,
 
             CAPABILITY = 100
         };

@@ -390,7 +390,7 @@ class OSG_EXPORT GraphicsContext : public Object
         bool releaseContext();
 
         /** Return true if the current thread has this OpenGL graphics context.*/
-        inline bool isCurrent() const { return _threadOfLastMakeCurrent == OpenThreads::Thread::CurrentThread(); }
+        inline bool isCurrent() const { return _threadOfLastMakeCurrent == OpenThreads::Thread::CurrentThreadId(); }
 
         /** Bind the graphics context to associated texture.*/
         inline void bindPBufferToTexture(GLenum buffer) { bindPBufferToTextureImplementation(buffer); }
@@ -547,7 +547,7 @@ class OSG_EXPORT GraphicsContext : public Object
         Vec4                    _clearColor;
         GLbitfield              _clearMask;
 
-        OpenThreads::Thread*    _threadOfLastMakeCurrent;
+        size_t                              _threadOfLastMakeCurrent;
 
         OpenThreads::Mutex                  _operationsMutex;
         osg::ref_ptr<osg::RefBlock>         _operationsBlock;

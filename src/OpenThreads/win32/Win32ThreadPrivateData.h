@@ -54,7 +54,7 @@ private:
 
     HandleHolder tid;
 
-    int uniqueId;
+    size_t uniqueId;
 
     Affinity affinity;
 

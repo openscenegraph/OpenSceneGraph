@@ -92,7 +92,7 @@ class ZipArchive : public osgDB::Archive
             HZIP _zipHandle;
         };
 
-        typedef std::map<OpenThreads::Thread*, PerThreadData> PerThreadDataMap;
+        typedef std::map<size_t, PerThreadData> PerThreadDataMap;
         PerThreadDataMap _perThreadData;
 
         const PerThreadData& getData() const;

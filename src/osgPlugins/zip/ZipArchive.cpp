@@ -672,7 +672,7 @@ const ZipArchive::PerThreadData&
 ZipArchive::getDataNoLock() const
 {
     // get/create data for the currently running thread:
-    OpenThreads::Thread* current = OpenThreads::Thread::CurrentThread();
+    size_t current = OpenThreads::Thread::CurrentThreadId();
 
     PerThreadDataMap::const_iterator i = _perThreadData.find( current );
 

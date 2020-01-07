@@ -558,6 +558,10 @@ typedef char GLchar;
 #define GL_MAP_UNSYNCHRONIZED_BIT 0x0020
 #endif
 
+#ifndef GL_VERSION_4_4
+#define GL_MAP_PERSISTENT_BIT             0x0040
+#endif
+
 #define GL_INT64_ARB               0x140E
 #define GL_UNSIGNED_INT64_ARB      0x140F
 #define GL_INT64_VEC2_ARB          0x8FE9

@@ -1,5 +1,6 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  * Copyright (C) 2012 David Callu
+ * Copyright (C) 2019 Julien Valentin
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -53,7 +54,7 @@ unsigned int GLBufferObject::BufferEntry::getNumClients() const
 GLBufferObject::GLBufferObject(unsigned int contextID, BufferObject* bufferObject, unsigned int glObjectID):
     _contextID(contextID),
     _glObjectID(glObjectID),
-    _profile(0,0,0),
+    _profile(0,0,0,0),
     _allocatedSize(0),
     _dirty(true),
     _bufferObject(0),
@@ -61,7 +62,8 @@ GLBufferObject::GLBufferObject(unsigned int contextID, BufferObject* bufferObjec
     _previous(0),
     _next(0),
     _frameLastUsed(0),
-    _extensions(0)
+    _extensions(0),
+    _persistentDMA(0)
 {
     assign(bufferObject);
 
@@ -104,7 +106,7 @@ void GLBufferObject::assign(BufferObject* bufferObject)
     }
     else
     {
-        _profile.setProfile(0,0,0);
+        _profile.setProfile(0,0,0,0);
 
         // clear all previous entries;
         _bufferEntries.clear();
@@ -211,7 +213,26 @@ void GLBufferObject::compileBuffer()
     {
         _allocatedSize = _profile._size;
         OSG_INFO<<"    Allocating new glBufferData(), _allocatedSize="<<_allocatedSize<<std::endl;
-        _extensions->glBufferData(_profile._target, _profile._size, NULL, _profile._usage);
+
+        if(_profile._mappingbitfield != 0)
+        {
+            _extensions->glBufferStorage(_profile._target, _profile._size, NULL, _profile._usage);
+
+            if(_profile._usage & GL_MAP_PERSISTENT_BIT )
+            {
+                /// invalidate mapping of previously allocated
+                if(_persistentDMA)
+                {
+                    _extensions->glUnmapBuffer(_profile._target);
+                    _persistentDMA = 0;
+                }
+                _persistentDMA = _extensions->glMapBufferRange(_profile._target, 0, _profile._size, _profile._mappingbitfield);
+            }
+        }
+        else
+        {
+            _extensions->glBufferData(_profile._target, _profile._size, NULL, _profile._usage);
+        }
         compileAll = true;
     }
 
@@ -238,10 +259,52 @@ void GLBufferObject::compileBuffer()
             }
             else
             {
-                _extensions->glBufferSubData(_profile._target, (GLintptr)entry.offset, (GLsizeiptr)entry.dataSize, entry.dataSource->getDataPointer());
+                if(_profile._mappingbitfield != 0 )
+                {
+                    if(_profile._mappingbitfield & GL_MAP_PERSISTENT_BIT)
+                    {
+                        if(_persistentDMA)
+                        {
+                            GLvoid* src = const_cast<GLvoid*>(entry.dataSource->getDataPointer());
+                            memcpy((unsigned char*)_persistentDMA + entry.offset, src, entry.dataSize);
+                            _extensions->glFlushMappedBufferRange(_profile._target, (GLintptr)entry.offset, (GLsizeiptr)entry.dataSize);
+                        }
+                        else OSG_WARN<<" GL_MAP_PERSISTENT_BIT problem"<<std::endl;
+                    }
+                    else if(_profile._mappingbitfield & GL_MAP_WRITE_BIT)
+                    {
+                        GLvoid *src = const_cast<GLvoid*>(entry.dataSource->getDataPointer()),
+                               *dst = _extensions->glMapBufferRange( _profile._target, (GLintptr)entry.offset,  (GLsizeiptr)entry.dataSize, _profile._mappingbitfield);
+                        memcpy(dst, src, entry.dataSize);
+                        _extensions->glUnmapBuffer(_profile._target);
+                    }
+                }
+                else
+                {
+                    _extensions->glBufferSubData(_profile._target, (GLintptr)entry.offset, (GLsizeiptr)entry.dataSize, entry.dataSource->getDataPointer());
+                }
             }
         }
     }
+}
+
+void GLBufferObject::commitDMA(unsigned int entryidx)
+{
+    if( !(_profile._mappingbitfield & GL_MAP_PERSISTENT_BIT) ) return;
+    if (entryidx>=_bufferEntries.size()) compileBuffer();
+    BufferEntry& entry = _bufferEntries[entryidx];
+    _extensions->glFlushMappedBufferRange(_profile._target, (GLintptr)entry.offset, (GLsizeiptr)entry.dataSize);
+}
+
+void GLBufferObject::downloadBuffer(unsigned int entryidx)
+{
+    if( !(_profile._mappingbitfield & GL_MAP_READ_BIT) ) return;
+    if (entryidx>=_bufferEntries.size()) compileBuffer();
+    BufferEntry& entry = _bufferEntries[entryidx];
+    GLvoid *dst = const_cast<GLvoid*>(entry.dataSource->getDataPointer()),
+           *src = _extensions->glMapBufferRange( _profile._target, (GLintptr)entry.offset, (GLsizeiptr)entry.dataSize, _profile._mappingbitfield);
+    memcpy(dst, src, entry.dataSize);
+    _extensions->glUnmapBuffer(_profile._target);
 }
 
 void GLBufferObject::deleteGLObject()
@@ -249,6 +312,14 @@ void GLBufferObject::deleteGLObject()
     OSG_DEBUG<<"GLBufferObject::deleteGLObject() "<<_glObjectID<<std::endl;
     if (_glObjectID!=0)
     {
+        if(_persistentDMA)
+        {
+            _extensions->glBindBuffer(_profile._target, _glObjectID);
+            _extensions->glUnmapBuffer(_profile._target);
+            _persistentDMA = 0;
+            _extensions->glBindBuffer(_profile._target, 0);
+        }
+
         _extensions->glDeleteBuffers(1, &_glObjectID);
         _glObjectID = 0;
 
@@ -906,7 +977,7 @@ osg::ref_ptr<GLBufferObject> GLBufferObjectManager::generateGLBufferObject(const
 
     unsigned int requiredBufferSize = osg::maximum(bufferObject->computeRequiredBufferSize(), bufferObject->getProfile()._size);
 
-    BufferObjectProfile profile(bufferObject->getTarget(), bufferObject->getUsage(), requiredBufferSize);
+    BufferObjectProfile profile(bufferObject->getTarget(), bufferObject->getUsage(), requiredBufferSize, bufferObject->getMappingBitfield());
 
     // OSG_NOTICE<<"GLBufferObjectManager::generateGLBufferObject size="<<requiredBufferSize<<std::endl;
 
@@ -1267,7 +1338,6 @@ void BufferData::releaseGLObjects(State* state) const
         _bufferObject->releaseGLObjects(state);
     }
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////
 //

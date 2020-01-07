@@ -715,6 +715,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glNamedBufferStorage, "glNamedBufferStorage","glNamedBufferStorageARB", validContext);
     setGLExtensionFuncPtr(glMapBuffer, "glMapBuffer","glMapBufferARB", validContext);
     setGLExtensionFuncPtr(glMapBufferRange,  "glMapBufferRange", "glMapBufferRangeARB" , validContext);
+    setGLExtensionFuncPtr(glFlushMappedBufferRange,  "glFlushMappedBufferRange", "glFlushMappedBufferRangeARB" , validContext);
     setGLExtensionFuncPtr(glUnmapBuffer, "glUnmapBuffer","glUnmapBufferARB", validContext);
     setGLExtensionFuncPtr(glGetBufferParameteriv, "glGetBufferParameteriv","glGetBufferParameterivARB", validContext);
     setGLExtensionFuncPtr(glGetBufferPointerv, "glGetBufferPointerv","glGetBufferPointervARB", validContext);

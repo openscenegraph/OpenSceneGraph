@@ -342,6 +342,11 @@ std::string osgDB::findFileInPath(const std::string& filename, const FilePathLis
         OSG_DEBUG << "itr='" <<*itr<< "'\n";
         std::string path = itr->empty() ? filename : concatPaths(*itr, filename);
 
+#ifdef WIN32
+        // if combined file path exceeds MAX_PATH then ignore as it's not a legal path otherwise subsequent IO calls with this path may result in undefined behavior
+        if (path.length()>MAX_PATH) continue;
+#endif
+
         path = getRealPath(path);
 
         OSG_DEBUG << "FindFileInPath() : trying " << path << " ...\n";
@@ -422,7 +427,19 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         realFileName = getSimpleFileName(fileName);
     }
 
-    OSG_DEBUG << "findFileInDirectory() : looking for " << realFileName << " in " << realDirName << "...\n";
+
+    if (realDirName.size()>2)
+    {
+        char lastCharacter = realDirName[realDirName.size()-1];
+        bool trimLastCharacter = lastCharacter=='/' ||  lastCharacter=='\\';
+        if (trimLastCharacter)
+        {
+            realDirName.erase(realDirName.size()-1, 1);
+            OSG_DEBUG << "findFileInDirectory() Trimming last character of filepath, now realDirName="<<realDirName<<std::endl;
+        }
+    }
+
+    OSG_DEBUG << "findFileInDirectory() : looking for " << realFileName << " in " << realDirName << std::endl;
 
     if (realDirName.empty())
     {

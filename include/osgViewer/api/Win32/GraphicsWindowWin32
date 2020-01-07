@@ -115,8 +115,12 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow, p
 
         virtual bool registerWindowProcedure();
         virtual bool unregisterWindowProcedure();
-
+	
+        #ifdef OSG_USE_EGL
+        virtual const EGL::ContextInfo createContextImplementation();
+        #else
         virtual HGLRC createContextImplementation();
+        #endif
         virtual bool createWindow();
         virtual bool setWindow( HWND handle );
 

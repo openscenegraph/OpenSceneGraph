@@ -312,6 +312,7 @@ protected:
     // members which have public access.
     osg::Vec4                               _color;
     osg::ref_ptr<Font>                      _font;
+    osg::ref_ptr<Font>                      _fontFallback;
     osg::ref_ptr<Style>                     _style;
     FontResolution                          _fontSize;
     float                                   _characterHeight;
@@ -337,6 +338,7 @@ protected:
     osg::Vec3                               _offset;
     osg::Vec3                               _normal;
     osg::BoundingBox                        _textBB;
+    osg::BoundingBox                        _textBBWithMargin;
 
     mutable osg::Matrix                     _matrix;
 

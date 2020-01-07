@@ -205,7 +205,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
         // as this will be our special light point drawable.
         osgUtil::StateGraph::LeafList::iterator litr;
         for(litr = rg->_leaves.begin();
-            litr != rg->_leaves.end() && (*litr)->_drawable.get()!=drawable;
+            litr != rg->_leaves.end() && (*litr)->getDrawable()!=drawable;
             ++litr)
         {}
 
@@ -271,7 +271,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             // slip light point if its intensity is 0.0 or negative.
             if (intensity<=minimumIntensity) continue;
 
-            // (SIB) Clip on distance, if close to limit, add transparancy
+            // (SIB) Clip on distance, if close to limit, add transparency
             float distanceFactor = 1.0f;
             if (_maxVisibleDistance2!=FLT_MAX)
             {

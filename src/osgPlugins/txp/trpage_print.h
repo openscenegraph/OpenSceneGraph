@@ -112,7 +112,7 @@ public:
         // After parsing this will return the number of trpgChildRef node found.
         unsigned int GetNbChildrenRef() const;
         // This will return the trpgChildRef node associated with the index.
-        // this will retrun 0 if idx is out of bound
+        // this will return 0 if idx is out of bound
         const trpgChildRef* GetChildRef(unsigned int idx) const;
     protected:
         trpgPrintBuffer *pBuf;

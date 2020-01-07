@@ -597,10 +597,15 @@ struct WindowingSystemInterfaceProxy
     osg::ref_ptr<T> _wsi;
 };
 
-#define REGISTER_WINDOWINGSYSTEMINTERFACE(ext, classname) \
-    extern "C" void graphicswindow_##ext(void) {} \
+// Internal use only - compile on C90 compilers, which prohibit empty macro arguments.
+#define _OSG_GRAPHICSCONTEXT_NO_ATTRIBS
+
+#define REGISTER_WINDOWINGSYSTEMINTERFACE2(ext, classname, attribs) \
+    extern "C" attribs void graphicswindow_##ext(void) {} \
     static osg::WindowingSystemInterfaceProxy<classname> s_proxy_##classname(#ext);
 
+#define REGISTER_WINDOWINGSYSTEMINTERFACE(ext, classname) \
+    REGISTER_WINDOWINGSYSTEMINTERFACE2(ext, classname, _OSG_GRAPHICSCONTEXT_NO_ATTRIBS)
 }
 
 #endif

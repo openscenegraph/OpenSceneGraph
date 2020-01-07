@@ -50,7 +50,7 @@ FFmpegImageStream::~FFmpegImageStream()
     OSG_INFO<<"Have done quit"<<std::endl;
 
     // release athe audio streams to make sure that the decoder doesn't retain any external
-    // refences.
+    // references.
     getAudioStreams().clear();
 
     // destroy the decoder and associated threads
@@ -303,8 +303,12 @@ void FFmpegImageStream::cmdPlay()
         if (! m_decoder->video_decoder().isRunning())
             m_decoder->video_decoder().start();
 
+        _lastUpdateTS = osg::Timer::instance()->tick();
+        
         m_decoder->video_decoder().pause(false);
         m_decoder->audio_decoder().pause(false);
+
+        _lastUpdateTS = 0.;
     }
 
     _status = PLAYING;

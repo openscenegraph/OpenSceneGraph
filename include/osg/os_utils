@@ -30,6 +30,8 @@ extern OSG_EXPORT int osg_system(const char* str);
 
 #ifdef __cplusplus
 
+#include <string>
+
 #if defined(OSG_ENVVAR_SUPPORTED)
     #include <stdlib.h>
     #include <sstream>
@@ -47,11 +49,16 @@ inline unsigned int getClampedLength(const char* str, unsigned int maxNumChars=4
 
 inline std::string getEnvVar(const char* name)
 {
+#ifdef OSG_ENVVAR_SUPPORTED
     std::string value;
     const char* ptr = getenv(name);
     if (ptr) value.assign(ptr, getClampedLength(ptr));
     return value;
- }
+#else
+    OSG_UNUSED(name);
+    return std::string();
+#endif
+}
 
 
 template<typename T>
@@ -65,6 +72,7 @@ inline bool getEnvVar(const char* name, T& value)
     str >> value;
     return !str.fail();
 #else
+    OSG_UNUSED2(name, value);
     return false;
 #endif
 }
@@ -79,6 +87,7 @@ inline bool getEnvVar(const char* name, std::string& value)
     value.assign(ptr, getClampedLength(ptr));
     return true;
 #else
+    OSG_UNUSED2(name, value);
     return false;
 #endif
 }
@@ -94,6 +103,7 @@ inline bool getEnvVar(const char* name, T1& value1, T2& value2)
     str >> value1 >> value2;
     return !str.fail();
 #else
+    OSG_UNUSED3(name, value1, value2);
     return false;
 #endif
 }
@@ -109,6 +119,7 @@ inline bool getEnvVar(const char* name, T1& value1, T2& value2, T3& value3)
     str >> value1 >> value2 >> value3;
     return !str.fail();
 #else
+    OSG_UNUSED4(name, value1, value2, value3);
     return false;
 #endif
 }
@@ -124,6 +135,7 @@ inline bool getEnvVar(const char* name, T1& value1, T2& value2, T3& value3, T4& 
     str >> value1 >> value2 >> value3 >> value4;
     return !str.fail();
 #else
+    OSG_UNUSED5(name, value1, value2, value3, value4);
     return false;
 #endif
 }

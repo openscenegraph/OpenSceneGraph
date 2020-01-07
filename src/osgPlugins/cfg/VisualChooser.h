@@ -49,7 +49,7 @@ class VisualChooser : public osg::Referenced
         };
 #if 0
         //-------------------------------------------------------------------------
-        // Explicitely set the visual info pointer.  This will override the use of
+        // Explicitly set the visual info pointer.  This will override the use of
         // glXChooseVisual().  Useful for functions requiring a VisualChooser
         // argument, but not a XVisualInfo.
         void setVisual( VisualInfo *vinfo );
@@ -87,7 +87,7 @@ class VisualChooser : public osg::Referenced
         bool isDoubleBuffer() const;
 
         //-------------------------------------------------------------------------
-        // The following methods set attributes explicitely
+        // The following methods set attributes explicitly
         //
         void setBufferSize( unsigned int size );
 

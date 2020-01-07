@@ -323,7 +323,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         /** search through any pre and post RenderStages that reference a Camera, and take a reference to each of these cameras to prevent them being deleted while they are still be used by the drawing thread.*/
         void collateReferencesToDependentCameras();
 
-        /** clear the refence to any any dependent cameras.*/
+        /** clear the reference to any any dependent cameras.*/
         void clearReferencesToDependentCameras();
 
 
@@ -483,6 +483,9 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
           * These released scene graphs are placed in the respective delete GLObjects cache, and
           * then need to be deleted in OpenGL by SceneView::flushAllDeleteGLObjects(). */
         virtual void releaseAllGLObjects();
+
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+        virtual void releaseGLObjects(osg::State* = 0) const;
 
         /** Flush all deleted OpenGL objects, such as texture objects, display lists, etc.*/
         virtual void flushAllDeletedGLObjects();

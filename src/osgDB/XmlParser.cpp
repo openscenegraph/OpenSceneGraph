@@ -101,13 +101,15 @@ void XmlNode::ControlMap::setUpControlMappings()
 }
 
 XmlNode::Input::Input():
-    _currentPos(0)
+    _currentPos(0),
+    _encoding(ENCODING_ASCII)
 {
 }
 
-XmlNode::Input::Input(const Input&):
+XmlNode::Input::Input(const Input& rhs):
     ControlMap(),
-    _currentPos(0)
+    _currentPos(0),
+    _encoding(rhs._encoding)
 {
 }
 
@@ -251,6 +253,11 @@ bool XmlNode::read(Input& input)
             commentNode->contents = input.substr(0, end);
             if (end!=std::string::npos)
             {
+                if (commentNode->contents.find("encoding=\"UTF-8\"")!=std::string::npos)
+                {
+                    input.setEncoding(Input::ENCODING_UTF8);
+                }
+
                 OSG_INFO<<"Valid information record ["<<commentNode->contents<<"]"<<std::endl;
                 input += (end+2);
             }
@@ -273,8 +280,7 @@ bool XmlNode::read(Input& input)
             int c = 0;
             while ((c=input[0])>=0 && c!=' ' && c!='\n' && c!='\r' && c!='>' && c!='/')
             {
-                childNode->name.push_back(c);
-                ++input;
+                input.copyCharacterToString(childNode->name);
             }
 
             while ((c=input[0])>=0 && c!='>' && c!='/')
@@ -295,8 +301,7 @@ bool XmlNode::read(Input& input)
                             readAndReplaceControl(option, input);
                         else
                         {
-                            option.push_back(c);
-                            ++input;
+                            input.copyCharacterToString(option);
                         }
                     }
                     option.push_back(input[0]);
@@ -306,8 +311,7 @@ bool XmlNode::read(Input& input)
                 {
                     while((c=input[0])>=0 && c!='>' && c!='/' && c!='"' && c!='\'' && c!='=' && c!=' ' && c!='\n' && c!='\r')
                     {
-                        option.push_back(c);
-                        ++input;
+                        input.copyCharacterToString(option);
                     }
                 }
 
@@ -327,8 +331,7 @@ bool XmlNode::read(Input& input)
                                 readAndReplaceControl(value, input);
                             else
                             {
-                                value.push_back(c);
-                                ++input;
+                                input.copyCharacterToString(value);
                             }
                         }
                         ++input;
@@ -342,8 +345,7 @@ bool XmlNode::read(Input& input)
                                 readAndReplaceControl(value, input);
                             else
                             {
-                                value.push_back(c);
-                                ++input;
+                                input.copyCharacterToString(value);
                             }
                         }
                         ++input;
@@ -353,8 +355,7 @@ bool XmlNode::read(Input& input)
                         ++input;
                         while((c=input[0])>=0 && c!=' ' && c!='\n' && c!='\r' && c!='"' && c!='\'' && c!='>')
                         {
-                            value.push_back(c);
-                            ++input;
+                            input.copyCharacterToString(value);
                         }
                     }
                 }
@@ -414,8 +415,7 @@ bool XmlNode::read(Input& input)
             }
             else
             {
-                contents.push_back( c );
-                ++input;
+                input.copyCharacterToString(contents);
             }
 
         }

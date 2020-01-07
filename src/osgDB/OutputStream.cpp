@@ -17,6 +17,7 @@
 #include <osgDB/ConvertBase64>
 #include <osgDB/FileUtils>
 #include <osgDB/WriteFile>
+#include <osgDB/FileNameUtils>
 #include <osgDB/ObjectWrapper>
 #include <osgDB/fstream>
 #include <sstream>
@@ -25,7 +26,7 @@
 using namespace osgDB;
 
 OutputStream::OutputStream( const osgDB::Options* options )
-:   _writeImageHint(WRITE_USE_IMAGE_HINT), _useSchemaData(false), _useRobustBinaryFormat(true)
+:   _writeImageHint(WRITE_USE_IMAGE_HINT), _useSchemaData(false), _useRobustBinaryFormat(true), _targetFileVersion(OPENSCENEGRAPH_SOVERSION)
 {
     BEGIN_BRACKET.set( "{", +INDENT_VALUE );
     END_BRACKET.set( "}", -INDENT_VALUE );
@@ -61,15 +62,31 @@ OutputStream::OutputStream( const osgDB::Options* options )
                 _domainVersionMap[keyAndValue.front()] = atoi(keyAndValue.back().c_str());
         }
     }
+
+    if (!options->getPluginStringData("TargetFileVersion").empty())
+    {
+        std::string strVersion = options->getPluginStringData("TargetFileVersion");
+        int version = atoi(strVersion.c_str());
+        if (version > 0 && version <= OPENSCENEGRAPH_SOVERSION)
+            _targetFileVersion = version;
+    }
+
+    if (_targetFileVersion < 99) _useRobustBinaryFormat = false;
 }
 
 OutputStream::~OutputStream()
 {
 }
 
+void OutputStream::setFileVersion( const std::string& d, int v )
+{
+    if (d.empty()) _targetFileVersion = v;
+    else _domainVersionMap[d] = v;
+}
+
 int OutputStream::getFileVersion( const std::string& d ) const
 {
-    if ( d.empty() ) return OPENSCENEGRAPH_SOVERSION;
+    if ( d.empty() ) return _targetFileVersion;
     VersionMap::const_iterator itr = _domainVersionMap.find(d);
     return itr==_domainVersionMap.end() ? 0 : itr->second;
 }
@@ -155,7 +172,7 @@ OutputStream& OutputStream::operator<<( const osg::Vec4ui& v )
 
 
 OutputStream& OutputStream::operator<<( const osg::Quat& q )
-{ *this << q.x() << q.y() << q.z() << q.w(); return *this; }
+{ *this << (double)q.x() << (double)q.y() << (double)q.z() << (double)q.w(); return *this; }
 
 OutputStream& OutputStream::operator<<( const osg::Plane& p )
 { *this << (double)p[0] << (double)p[1] << (double)p[2] << (double)p[3]; return *this; }
@@ -389,15 +406,18 @@ void OutputStream::writePrimitiveSet( const osg::PrimitiveSet* p )
         *this << MAPPEE(PrimitiveType, ID_DRAWARRAYS);
         {
             const osg::DrawArrays* da = static_cast<const osg::DrawArrays*>(p);
-            *this << MAPPEE(PrimitiveType, da->getMode()) << da->getNumInstances()
-                  << da->getFirst() << da->getCount() << std::endl;
+            *this << MAPPEE(PrimitiveType, da->getMode());
+            if (_targetFileVersion > 96) *this << da->getNumInstances();
+            *this << da->getFirst() << da->getCount() << std::endl;
         }
         break;
     case osg::PrimitiveSet::DrawArrayLengthsPrimitiveType:
         *this << MAPPEE(PrimitiveType, ID_DRAWARRAY_LENGTH);
         {
             const osg::DrawArrayLengths* dl = static_cast<const osg::DrawArrayLengths*>(p);
-            *this << MAPPEE(PrimitiveType, dl->getMode()) << dl->getNumInstances() << dl->getFirst();
+            *this << MAPPEE(PrimitiveType, dl->getMode());
+            if (_targetFileVersion > 96) *this << dl->getNumInstances();
+            *this << dl->getFirst();
             writeArrayImplementation( dl, dl->size(), 4 );
         }
         break;
@@ -405,7 +425,8 @@ void OutputStream::writePrimitiveSet( const osg::PrimitiveSet* p )
         *this << MAPPEE(PrimitiveType, ID_DRAWELEMENTS_UBYTE);
         {
             const osg::DrawElementsUByte* de = static_cast<const osg::DrawElementsUByte*>(p);
-            *this << MAPPEE(PrimitiveType, de->getMode()) << de->getNumInstances();
+            *this << MAPPEE(PrimitiveType, de->getMode());
+            if (_targetFileVersion > 96) *this << de->getNumInstances();
             writeArrayImplementation( de, de->size(), 4 );
         }
         break;
@@ -413,7 +434,8 @@ void OutputStream::writePrimitiveSet( const osg::PrimitiveSet* p )
         *this << MAPPEE(PrimitiveType, ID_DRAWELEMENTS_USHORT);
         {
             const osg::DrawElementsUShort* de = static_cast<const osg::DrawElementsUShort*>(p);
-            *this << MAPPEE(PrimitiveType, de->getMode()) << de->getNumInstances();
+            *this << MAPPEE(PrimitiveType, de->getMode());
+            if (_targetFileVersion > 96) *this << de->getNumInstances();
             writeArrayImplementation( de, de->size(), 4 );
         }
         break;
@@ -421,7 +443,8 @@ void OutputStream::writePrimitiveSet( const osg::PrimitiveSet* p )
         *this << MAPPEE(PrimitiveType, ID_DRAWELEMENTS_UINT);
         {
             const osg::DrawElementsUInt* de = static_cast<const osg::DrawElementsUInt*>(p);
-            *this << MAPPEE(PrimitiveType, de->getMode()) << de->getNumInstances();
+            *this << MAPPEE(PrimitiveType, de->getMode());
+            if (_targetFileVersion > 96) *this << de->getNumInstances();
             writeArrayImplementation( de, de->size(), 4 );
         }
         break;
@@ -440,7 +463,8 @@ void OutputStream::writeImage( const osg::Image* img )
     bool newID = false;
     unsigned int id = findOrCreateObjectID( img, newID );
 
-    *this << PROPERTY("ClassName") << name << std::endl;   // Write object name
+    if (_targetFileVersion > 94) *this << PROPERTY("ClassName") << name << std::endl;   // Write object name
+
     *this << PROPERTY("UniqueID") << id << std::endl;      // Write image ID
     if ( getException() ) return;
 
@@ -557,36 +581,62 @@ void OutputStream::writeImage( const osg::Image* img )
         case IMAGE_INLINE_FILE:
             if ( isBinary() )
             {
-                std::string fullPath = osgDB::findDataFile( img->getFileName() );
-                osgDB::ifstream infile( fullPath.c_str(), std::ios::in|std::ios::binary );
-                if ( infile )
+                std::string fullPath = osgDB::findDataFile( img->getFileName(), _options.get() );
+                if (fullPath.empty()==false)
                 {
-                    infile.seekg( 0, std::ios::end );
-                    unsigned int size = infile.tellg();
-                    writeSize(size);
-
-                    if ( size>0 )
+                    osgDB::ifstream infile( fullPath.c_str(), std::ios::in|std::ios::binary );
+                
+                    if ( infile )
                     {
-                        char* data = new char[size];
-                        if ( !data )
-                        {
-                            throwException( "OutputStream::writeImage(): Out of memory." );
-                            if ( getException() ) return;
-                        }
+                        infile.seekg( 0, std::ios::end );
+                        unsigned int size = infile.tellg();
+                        writeSize(size);
 
-                        infile.seekg( 0, std::ios::beg );
-                        infile.read( data, size );
-                        writeCharArray( data, size );
-                        delete[] data;
+                        if ( size>0 )
+                        {
+                            char* data = new char[size];
+                            if ( !data )
+                            {
+                                throwException( "OutputStream::writeImage(): Out of memory." );
+                                if ( getException() ) return;
+                            }
+
+                            infile.seekg( 0, std::ios::beg );
+                            infile.read( data, size );
+                            writeCharArray( data, size );
+                            delete[] data;
+                        }
+                        infile.close();
                     }
-                    infile.close();
+                    else
+                    {
+                        OSG_WARN << "OutputStream::writeImage(): Failed to open image file "
+                                            << img->getFileName() << std::endl;
+                        *this << (unsigned int)0;
+                    }
                 }
                 else
                 {
-                    OSG_WARN << "OutputStream::writeImage(): Failed to open image file "
-                                        << img->getFileName() << std::endl;
-                    *this << (unsigned int)0;
+                    std::string ext = osgDB::getFileExtension( img->getFileName() );
+                    osgDB::ReaderWriter* writer =
+                        osgDB::Registry::instance()->getReaderWriterForExtension( ext );
+                    if ( writer )
+                    {
+                        std::stringstream outputStream;
+                        writer->writeImage(*img, outputStream, getOptions());
+                        std::string data (outputStream.str()); 
+                        unsigned int size = data.size();
+                        writeSize(size);
+                        writeCharArray( data.c_str(), size );
+                    }
+                    else
+                    {
+                        OSG_WARN << "OutputStream::writeImage(): Failed to find a plugin to write the image file "
+                                            << img->getFileName() << std::endl;
+                        *this << (unsigned int)0;
+                    }
                 }
+
             }
             break;
         case IMAGE_EXTERNAL:
@@ -710,7 +760,7 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
 
     if ( isBinary() )
     {
-        *this << (unsigned int)type << (unsigned int)OPENSCENEGRAPH_SOVERSION;
+        *this << (unsigned int)type << (unsigned int)_targetFileVersion;
 
         bool useCompressSource = false;
         unsigned int attributes = 0;
@@ -875,24 +925,31 @@ template<typename T>
 void OutputStream::writeArrayImplementation( const T* a, int write_size, unsigned int numInRow )
 {
     *this << write_size << BEGIN_BRACKET;
-    if ( numInRow>1 )
+    if ( isBinary() )
     {
-        for ( int i=0; i<write_size; ++i )
-        {
-            if ( !(i%numInRow) )
-            {
-                *this << std::endl << (*a)[i];
-            }
-            else
-                *this << (*a)[i];
-        }
-        *this << std::endl;
+        if (write_size) writeCharArray((char*)&((*a)[0]), write_size * sizeof((*a)[0]));
     }
     else
     {
-        *this << std::endl;
-        for ( int i=0; i<write_size; ++i )
-            *this << (*a)[i] << std::endl;
+        if ( numInRow>1 )
+        {
+            for ( int i=0; i<write_size; ++i )
+            {
+                if ( !(i%numInRow) )
+                {
+                    *this << std::endl << (*a)[i];
+                }
+                else
+                    *this << (*a)[i];
+            }
+            *this << std::endl;
+        }
+        else
+        {
+            *this << std::endl;
+            for ( int i=0; i<write_size; ++i )
+                *this << (*a)[i] << std::endl;
+        }
     }
     *this << END_BRACKET << std::endl;
 }

@@ -366,11 +366,25 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         virtual osg::Matrixd computeRightEyeViewImplementation(const osg::Matrixd& view, double eyeSeperationScale=1.0) const;
 
 
-        void setValue(const std::string& name, const std::string& value);
+        typedef std::vector< std::string > Filenames;
 
+        void setShaderPipeline(bool flag) { _shaderPipeline = flag; }
+        bool getShaderPipeline() const { return _shaderPipeline; }
+
+        void setShaderPipelineFiles(const Filenames& filename) { _shaderPipelineFiles = filename; }
+        const Filenames& getShaderPipelineFiles() const { return _shaderPipelineFiles; }
+
+        void setShaderPipelineNumTextureUnits(unsigned int units) { _shaderPipelineNumTextureUnits = units; }
+        unsigned int getShaderPipelineNumTextureUnits() const { return _shaderPipelineNumTextureUnits; }
+
+        void setValue(const std::string& name, const std::string& value);
         bool getValue(const std::string& name, std::string& value, bool use_getenv_fallback=true) const;
 
-    protected:
+        void setObject(const std::string& name, osg::Object* object) { _objectMap[name] = object; }
+        Object* getObject(const std::string& name) { ObjectMap::iterator itr = _objectMap.find(name); return itr!=_objectMap.end() ? itr->second.get() : 0; }
+        const Object* getObject(const std::string& name) const { ObjectMap::const_iterator itr = _objectMap.find(name); return itr!=_objectMap.end() ? itr->second.get() : 0; }
+
+protected:
 
         virtual ~DisplaySettings();
 
@@ -435,10 +449,17 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
 
         OSXMenubarBehavior              _OSXMenubarBehavior;
 
+
+        bool                            _shaderPipeline;
+        Filenames                       _shaderPipelineFiles;
+        unsigned int                    _shaderPipelineNumTextureUnits;
+
         typedef std::map<std::string, std::string> ValueMap;
+        typedef std::map<std::string, ref_ptr<Object> > ObjectMap;
 
         mutable OpenThreads::Mutex      _valueMapMutex;
         mutable ValueMap                _valueMap;
+        mutable ObjectMap               _objectMap;
 
 };
 

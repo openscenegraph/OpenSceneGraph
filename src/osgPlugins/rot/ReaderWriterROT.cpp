@@ -100,6 +100,11 @@ public:
 
     virtual const char* className() const { return "rotation pseudo-loader"; }
 
+    virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(fileName, options); 
+    }
+
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
     {
         std::string ext = osgDB::getLowerCaseFileExtension(fileName);

@@ -12,11 +12,6 @@
 
 void textInfo(osgText::Text* text)
 {
-    const osgText::Text::TextureGlyphQuadMap& tgqm = text->getTextureGlyphQuadMap();
-
-    const osgText::Text::TextureGlyphQuadMap::const_iterator tgqmi = tgqm.begin();
-
-
     osgText::String& s = text->getText();
 
     for(unsigned int i = 0; i < s.size(); i++)

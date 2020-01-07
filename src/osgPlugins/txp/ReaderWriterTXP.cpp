@@ -276,7 +276,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
                     std::string childInfoStr;
                     createChildrenLocationString(childrenChildLoc, childInfoStr);
 
-                    char pagedLODfile[1024];
+                    char pagedLODfile[1084];
                     sprintf(pagedLODfile,"%s\\subtiles%d_%dx%d_%d%s.txp",
                         archive->getDir(),
                         loc.lod,
@@ -380,7 +380,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
 
                     if (tileLOD < (numLods-1))
                     {
-                        char pagedLODfile[1024];
+                        char pagedLODfile[1094];
                         sprintf(pagedLODfile,"%s\\subtiles%d_%dx%d_%d.txp",
                             archive->getDir(),
                             tileLOD,

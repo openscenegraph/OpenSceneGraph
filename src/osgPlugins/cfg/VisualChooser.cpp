@@ -527,7 +527,7 @@ void VisualChooser::applyAttribute(const VisualAttribute &va, std::vector<int> &
     }
 
     // please note that *all* WGL attributes must have a parameter!
-    // to keep compatibility we'll explicitely set a boolean
+    // to keep compatibility we'll explicitly set a boolean
     // parameter value where needed.
 
     std::pair<int, int> attr = std::make_pair(static_cast<int>(va.attribute()), va.parameter());

@@ -209,6 +209,11 @@ public:
          acceptsLiveExtension(extension);
    }
 
+   virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+   {
+       return readImage(file,options);
+   }
+
    virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
    {
       std::string ext = osgDB::getLowerCaseFileExtension(file);
@@ -229,9 +234,9 @@ public:
               QTScopedMovieInitialiser qt_movie_init;
               //
               ComponentDescription video_component_description;
-              video_component_description.componentType         = 'vdig';  /* A unique 4-byte code indentifying the command set */
+              video_component_description.componentType         = 'vdig';  /* A unique 4-byte code identifying the command set */
               video_component_description.componentSubType      = 0L;      /* Particular flavor of this instance */
-              video_component_description.componentManufacturer = 0L;      /* Vendor indentification */
+              video_component_description.componentManufacturer = 0L;      /* Vendor identification */
               video_component_description.componentFlags        = 0L;      /* 8 each for Component,Type,SubType,Manuf/revision */
               video_component_description.componentFlagsMask    = 0L;      /* Mask for specifying which flags to consider in search, zero during registration */
               num_video_components = CountComponents (&video_component_description);
@@ -362,6 +367,11 @@ public:
       _qtExitObserver.addMedia(image.get());
 
       return image.release();
+   }
+
+   virtual ReadResult readObject(std::istream& fin, const Options* options) const
+   {
+       return readImage(fin,options);
    }
 
     virtual ReadResult readImage (std::istream& is, const osgDB::ReaderWriter::Options* options=NULL) const

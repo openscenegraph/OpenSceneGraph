@@ -17,8 +17,6 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/ReadFile>
 
-#include <osgUtil/TriStripVisitor>
-
 //MIKEC debug only for PrintVisitor
 #include <osg/NodeVisitor>
 
@@ -173,7 +171,18 @@ public:
 
     virtual const char* className() const { return "3DS Auto Studio Reader/Writer"; }
 
+    virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(fileName, options);
+    }
+
     virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const;
+    virtual ReadResult readObject(std::istream& fin, const Options* options) const
+    {
+        return readNode(fin, options);
+    }
+
+
     virtual ReadResult readNode(std::istream& fin, const Options* options) const;
     virtual ReadResult doReadNode(std::istream& fin, const Options* options, const std::string & fileNamelib3ds) const;        ///< Subfunction of readNode()s functions.
 
@@ -206,7 +215,7 @@ protected:
         typedef std::vector<int> FaceList;
         typedef std::map<std::string,osg::StateSet*> GeoStateMap;
 
-        osg::Texture2D* createTexture(Lib3dsTextureMap *texture,const char* label,bool& transparancy);
+        osg::Texture2D* createTexture(Lib3dsTextureMap *texture,const char* label,bool& transparency);
         StateSetInfo createStateSet(Lib3dsMaterial *materials);
         osg::Drawable* createDrawable(Lib3dsMesh *meshes,FaceList& faceList, const osg::Matrix * matrix, StateSetInfo & ssi, bool smoothVertexNormals);
 
@@ -1139,10 +1148,6 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
     } else {
         fillTriangles<DrawElementsUInt>  (*geom, remappedFaces, faceCount * 3);
    }
-#if 0
-    osgUtil::TriStripVisitor tsv;
-    tsv.stripify(*geom);
-#endif
 
     return geom;
 }
@@ -1211,7 +1216,7 @@ osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *
         osg::Texture2D* osg_texture = new osg::Texture2D;
         osg_texture->setImage(osg_image.get());
         osg_texture->setName(texture->name);
-        // does the texture support transparancy?
+        // does the texture support transparency?
         transparency = ((texture->flags)&LIB3DS_TEXTURE_ALPHA_SOURCE)!=0;
 
         // what is the wrap mode of the texture.

@@ -76,12 +76,12 @@ void SingleWindow::configure(osgViewer::View& view) const
     osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
     if (gw)
     {
-        OSG_INFO<<"View::setUpViewOnSingleScreen - GraphicsWindow has been created successfully."<<std::endl;
+        OSG_INFO<<"SingleWindow::configure - GraphicsWindow has been created successfully."<<std::endl;
         gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(traits->x, traits->y, traits->width, traits->height );
     }
     else
     {
-        OSG_NOTICE<<"  GraphicsWindow has not been created successfully."<<std::endl;
+        OSG_NOTICE<<"SingleWindow::configure - GraphicsWindow has not been created successfully."<<std::endl;
         return;
     }
 

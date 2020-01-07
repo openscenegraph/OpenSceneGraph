@@ -422,62 +422,43 @@ void MultipassTechnique::init()
     {
         osg::Geometry* geom = new osg::Geometry;
 
-        osg::Vec3Array* coords = new osg::Vec3Array(8);
-        (*coords)[0] = osg::Vec3d(0.0,0.0,0.0);
-        (*coords)[1] = osg::Vec3d(1.0,0.0,0.0);
-        (*coords)[2] = osg::Vec3d(1.0,1.0,0.0);
-        (*coords)[3] = osg::Vec3d(0.0,1.0,0.0);
-        (*coords)[4] = osg::Vec3d(0.0,0.0,1.0);
-        (*coords)[5] = osg::Vec3d(1.0,0.0,1.0);
-        (*coords)[6] = osg::Vec3d(1.0,1.0,1.0);
-        (*coords)[7] = osg::Vec3d(0.0,1.0,1.0);
-        geom->setVertexArray(coords);
-
         osg::Vec4Array* colours = new osg::Vec4Array(1);
         (*colours)[0].set(1.0f,1.0f,1.0,1.0f);
         geom->setColorArray(colours, osg::Array::BIND_OVERALL);
 
-        osg::DrawElementsUShort* drawElements = new osg::DrawElementsUShort(GL_QUADS);
-        // bottom
+        // triangle strip of cube based on : http://www.cs.umd.edu/gvil/papers/av_ts.pdf
+        osg::Vec3Array* coords = new osg::Vec3Array(8);
+        (*coords)[0] = osg::Vec3d(0.0,1.0,1.0); // Back-top-left
+        (*coords)[1] = osg::Vec3d(1.0,1.0,1.0); // Back-top-right
+        (*coords)[2] = osg::Vec3d(0.0,0.0,1.0); // Front-top-left
+        (*coords)[3] = osg::Vec3d(1.0,0.0,1.0); // Front-top-right
+        (*coords)[4] = osg::Vec3d(0.0,1.0,0.0); // Back-bottom-left
+        (*coords)[5] = osg::Vec3d(1.0,1.0,0.0); // Back-bottom-right
+        (*coords)[6] = osg::Vec3d(1.0,0.0,0.0); // Front-bottom-right
+        (*coords)[7] = osg::Vec3d(0.0,0.0,0.0); // Front-bottom-left
+        geom->setVertexArray(coords);
+
+        osg::DrawElementsUShort* drawElements = new osg::DrawElementsUShort(GL_TRIANGLE_STRIP);
+
         drawElements->push_back(3);
         drawElements->push_back(2);
-        drawElements->push_back(1);
-        drawElements->push_back(0);
-
-        // bottom
-        drawElements->push_back(7);//7623
         drawElements->push_back(6);
-        drawElements->push_back(2);
-        drawElements->push_back(3);
-
-        // left
-        drawElements->push_back(4);//4730
         drawElements->push_back(7);
-        drawElements->push_back(3);
-        drawElements->push_back(0);
-
-        // right
-        drawElements->push_back(1);//1265
-        drawElements->push_back(2);
-        drawElements->push_back(6);
-        drawElements->push_back(5);
-
-        // front
-        drawElements->push_back(5);//5401
         drawElements->push_back(4);
+        drawElements->push_back(2);
         drawElements->push_back(0);
-        drawElements->push_back(1);
 
-        // top
-        drawElements->push_back(4);//4567
-        drawElements->push_back(5);
+        drawElements->push_back(3);
+        drawElements->push_back(1);
         drawElements->push_back(6);
-        drawElements->push_back(7);
+        drawElements->push_back(5);
+        drawElements->push_back(4);
+        drawElements->push_back(1);
+        drawElements->push_back(0);
 
         geom->addPrimitiveSet(drawElements);
 
         geode->addDrawable(geom);
-
     }
 
     _transform = new osg::MatrixTransform;
@@ -670,7 +651,7 @@ void MultipassTechnique::init()
     osg::ref_ptr<osg::Shader> main_vertexShader = osgDB::readRefShaderFile(osg::Shader::VERTEX, "shaders/volume_multipass.vert");
     if (!main_vertexShader)
     {
-        #include "Shaders/volume_multipass_vert.cpp"
+        #include "shaders/volume_multipass_vert.cpp"
         main_vertexShader = new osg::Shader(osg::Shader::VERTEX, volume_multipass_vert);
     }
 
@@ -679,7 +660,7 @@ void MultipassTechnique::init()
     osg::ref_ptr<osg::Shader> computeRayColorShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_compute_ray_color.frag");
     if (!computeRayColorShader)
     {
-        #include "Shaders/volume_compute_ray_color_frag.cpp"
+        #include "shaders/volume_compute_ray_color_frag.cpp"
         computeRayColorShader = new osg::Shader(osg::Shader::FRAGMENT, volume_compute_ray_color_frag);
     }
 
@@ -691,7 +672,7 @@ void MultipassTechnique::init()
     osg::ref_ptr<osg::Shader> cube_main_fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_multipass_cube.frag");;
     if (!cube_main_fragmentShader)
     {
-        #include "Shaders/volume_multipass_cube_frag.cpp"
+        #include "shaders/volume_multipass_cube_frag.cpp"
         cube_main_fragmentShader = new osg::Shader(osg::Shader::FRAGMENT, volume_multipass_cube_frag);
     }
     osg::ref_ptr<osg::StateSet> cube_stateset_prototype = new osg::StateSet;
@@ -709,7 +690,7 @@ void MultipassTechnique::init()
     osg::ref_ptr<osg::Shader> hull_main_fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_multipass_hull.frag");;
     if (!hull_main_fragmentShader)
     {
-        #include "Shaders/volume_multipass_hull_frag.cpp"
+        #include "shaders/volume_multipass_hull_frag.cpp"
         hull_main_fragmentShader = new osg::Shader(osg::Shader::FRAGMENT, volume_multipass_hull_frag);
     }
     osg::ref_ptr<osg::StateSet> hull_stateset_prototype = new osg::StateSet;
@@ -728,7 +709,7 @@ void MultipassTechnique::init()
     osg::ref_ptr<osg::Shader> cube_and_hull_main_fragmentShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_multipass_cube_and_hull.frag");;
     if (!cube_and_hull_main_fragmentShader)
     {
-        #include "Shaders/volume_multipass_cube_and_hull_frag.cpp"
+        #include "shaders/volume_multipass_cube_and_hull_frag.cpp"
         cube_and_hull_main_fragmentShader = new osg::Shader(osg::Shader::FRAGMENT, volume_multipass_cube_and_hull_frag);
     }
     osg::ref_ptr<osg::StateSet> cube_and_hull_stateset_prototype = new osg::StateSet;
@@ -764,7 +745,7 @@ void MultipassTechnique::init()
             osg::ref_ptr<osg::Shader> accumulateSamplesShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_accumulateSamples_standard.frag");
             if (!accumulateSamplesShader)
             {
-                #include "Shaders/volume_accumulateSamples_standard_frag.cpp"
+                #include "shaders/volume_accumulateSamples_standard_frag.cpp"
                 accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_standard_frag);
             }
 
@@ -779,7 +760,7 @@ void MultipassTechnique::init()
             osg::ref_ptr<osg::Shader> accumulateSamplesShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_accumulateSamples_standard_tf.frag");
             if (!accumulateSamplesShader)
             {
-                #include "Shaders/volume_accumulateSamples_standard_tf_frag.cpp"
+                #include "shaders/volume_accumulateSamples_standard_tf_frag.cpp"
                 accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_standard_tf_frag);
             }
 
@@ -797,7 +778,7 @@ void MultipassTechnique::init()
             osg::ref_ptr<osg::Shader> accumulateSamplesShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_accumulateSamples_iso.frag");
             if (!accumulateSamplesShader)
             {
-                #include "Shaders/volume_accumulateSamples_iso_frag.cpp"
+                #include "shaders/volume_accumulateSamples_iso_frag.cpp"
                 accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_iso_frag);
             }
 
@@ -812,7 +793,7 @@ void MultipassTechnique::init()
             osg::ref_ptr<osg::Shader> accumulateSamplesShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_accumulateSamples_iso_tf.frag");
             if (!accumulateSamplesShader)
             {
-                #include "Shaders/volume_accumulateSamples_iso_tf_frag.cpp"
+                #include "shaders/volume_accumulateSamples_iso_tf_frag.cpp"
                 accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_iso_tf_frag);
             }
 
@@ -830,7 +811,7 @@ void MultipassTechnique::init()
             osg::ref_ptr<osg::Shader> accumulateSamplesShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_accumulateSamples_mip.frag");
             if (!accumulateSamplesShader)
             {
-                #include "Shaders/volume_accumulateSamples_mip_frag.cpp"
+                #include "shaders/volume_accumulateSamples_mip_frag.cpp"
                 accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_mip_frag);
             }
 
@@ -845,7 +826,7 @@ void MultipassTechnique::init()
             osg::ref_ptr<osg::Shader> accumulateSamplesShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_accumulateSamples_mip_tf.frag");
             if (!accumulateSamplesShader)
             {
-                #include "Shaders/volume_accumulateSamples_mip_tf_frag.cpp"
+                #include "shaders/volume_accumulateSamples_mip_tf_frag.cpp"
                 accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_mip_tf_frag);
             }
 
@@ -863,7 +844,7 @@ void MultipassTechnique::init()
             osg::ref_ptr<osg::Shader> accumulateSamplesShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_accumulateSamples_lit.frag");
             if (!accumulateSamplesShader)
             {
-                #include "Shaders/volume_accumulateSamples_lit_frag.cpp"
+                #include "shaders/volume_accumulateSamples_lit_frag.cpp"
                 accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_lit_frag);
             }
 
@@ -878,7 +859,7 @@ void MultipassTechnique::init()
             osg::ref_ptr<osg::Shader> accumulateSamplesShader = osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/volume_accumulateSamples_lit_tf.frag");
             if (!accumulateSamplesShader)
             {
-                #include "Shaders/volume_accumulateSamples_lit_tf_frag.cpp"
+                #include "shaders/volume_accumulateSamples_lit_tf_frag.cpp"
                 accumulateSamplesShader = new osg::Shader(osg::Shader::FRAGMENT, volume_accumulateSamples_lit_tf_frag);
             }
 

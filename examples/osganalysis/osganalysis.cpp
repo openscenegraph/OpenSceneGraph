@@ -393,8 +393,6 @@ public:
         while (arguments.read("--dl")) { modifyDrawableSettings = true; useDisplayLists = true;  }
 
         while (arguments.read("-s", simplificatioRatio)) {}
-        while (arguments.read("--tristripper")) { useTriStripVisitor=true; }
-        while (arguments.read("--no-tristripper")) { useTriStripVisitor=false; }
         while (arguments.read("--smoother")) {  useSmoothingVisitor=true; }
         while (arguments.read("--no-smoother")) {  useSmoothingVisitor=false; }
 
@@ -426,7 +424,6 @@ public:
             OSG_NOTICE<<"Running simplifier with simplification ratio="<<simplificatioRatio<<std::endl;
             float maxError = 4.0f;
             osgUtil::Simplifier simplifier(simplificatioRatio, maxError);
-            simplifier.setDoTriStrip(useTriStripVisitor);
             simplifier.setSmoothing(useSmoothingVisitor);
             node->accept(simplifier);
         }

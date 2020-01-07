@@ -46,8 +46,8 @@ osg::Node* OpenGLESGeometryOptimizer::optimize(osg::Node& node) {
         }
 
         // strip
-        if(!_disableTriStrip) {
-            makeTriStrip(model.get());
+        if(!_disableMeshOptimization) {
+            makeOptimizeMesh(model.get());
         }
 
         if(_useDrawArray) {

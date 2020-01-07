@@ -59,6 +59,10 @@ install_manifest*.txt
 *.out
 *.app
 
+# Automatically generated Package files
+packaging/cmake/*
+configure/*
+
 # Platform Specifics - auto generated files
 PlatformSpecifics/Windows/*.rc
 
@@ -79,6 +83,9 @@ PlatformSpecifics/Windows/*.rc
 *.sdf
 *.opensdf
 
+# Visual Studio - Cache/Options Directory
+.vs/
+
 #osx xcode
 DerivedData/
 *.DS_Store
@@ -92,3 +99,7 @@ _CPack_Packages/
 #packages
 *.tar.gz
 *.zip
+
+#individual build files
+config.yaml
+_build

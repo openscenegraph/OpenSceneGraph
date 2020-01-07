@@ -76,7 +76,7 @@ void condition_cleanup_handler(void *arg) {
 
 //----------------------------------------------------------------------------
 //
-// Decription: Constructor
+// Description: Constructor
 //
 // Use: public.
 //
@@ -97,7 +97,7 @@ Condition::Condition() {
 
 //----------------------------------------------------------------------------
 //
-// Decription: Destructor
+// Description: Destructor
 //
 // Use: public.
 //
@@ -118,7 +118,7 @@ Condition::~Condition() {
 
 //----------------------------------------------------------------------------
 //
-// Decription: wait on a condition
+// Description: wait on a condition
 //
 // Use: public.
 //
@@ -145,7 +145,7 @@ int Condition::wait(Mutex *mutex) {
 
 //----------------------------------------------------------------------------
 //
-// Decription: wait on a condition, for a specified period of time
+// Description: wait on a condition, for a specified period of time
 //
 // Use: public.
 //
@@ -191,7 +191,7 @@ int Condition::wait(Mutex *mutex, unsigned long int ms) {
 
 //----------------------------------------------------------------------------
 //
-// Decription: signal a thread to wake up.
+// Description: signal a thread to wake up.
 //
 // Use: public.
 //
@@ -205,7 +205,7 @@ int Condition::signal() {
 
 //----------------------------------------------------------------------------
 //
-// Decription: signal many threads to wake up.
+// Description: signal many threads to wake up.
 //
 // Use: public.
 //

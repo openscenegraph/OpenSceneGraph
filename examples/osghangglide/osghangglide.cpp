@@ -48,7 +48,7 @@ class MoveEarthySkyWithEyePointTransform : public osg::Transform
 {
 public:
     /** Get the transformation matrix which moves from local coords to world coords.*/
-    virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const 
+    virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const
     {
         osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
         if (cv)
@@ -63,7 +63,7 @@ public:
     virtual bool computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const
     {
         std::cout<<"computing transform"<<std::endl;
-    
+
         osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
         if (cv)
         {
@@ -99,7 +99,7 @@ osg::Group* createModel()
 
     // add the sky and base layer.
     transform->addChild(makeSky());  // bin number -2 so drawn first.
-    transform->addChild(makeBase()); // bin number -1 so draw second.      
+    transform->addChild(makeBase()); // bin number -1 so draw second.
 
     // add the transform to the earth sky.
     clearNode->addChild(transform);
@@ -125,7 +125,7 @@ int main( int argc, char **argv )
     osg::ArgumentParser arguments(&argc,argv);
 
     // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates how to create a scene programatically, in this case a hang gliding flying site.");
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates how to create a scene programmatically, in this case a hang gliding flying site.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
 
@@ -138,14 +138,14 @@ int main( int argc, char **argv )
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
-    
+
     bool customWindows = false;
     while(arguments.read("-2")) customWindows = true;
 
     if (customWindows)
     {
         osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-        if (!wsi) 
+        if (!wsi)
         {
             osg::notify(osg::NOTICE)<<"View::setUpViewAcrossAllScreens() : Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
             return 0;
@@ -159,6 +159,8 @@ int main( int argc, char **argv )
         traits->windowDecoration = true;
         traits->doubleBuffer = true;
         traits->sharedContext = 0;
+        traits->readDISPLAY();
+        traits->setUndefinedScreenDetailsToDefaultScreen();
 
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
         if (gc.valid())
@@ -186,17 +188,17 @@ int main( int argc, char **argv )
 
             viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::scale(aspectRatioScale,1.0,1.0));
         }
-    }    
+    }
     else
     {
         viewer.setUpViewAcrossAllScreens();
-    
+
     }
 
     // set up the camera manipulation with our custom manipultor
     viewer.setCameraManipulator(new GliderManipulator());
 
-    // pass the scene graph to the viewer    
+    // pass the scene graph to the viewer
     viewer.setSceneData( createModel() );
 
     return viewer.run();

@@ -1,5 +1,3 @@
-#include <osgShadow/ShadowVolume>
-
 #include <iostream>
 #include <string>
 
@@ -17,7 +15,7 @@ bool ShadowVolume_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
 REGISTER_DOTOSGWRAPPER(ShadowVolume_Proxy)
 (
-    new osgShadow::ShadowVolume,
+    0,
     "ShadowVolume",
     "Object ShadowTechnique ShadowVolume",
     ShadowVolume_readLocalData,

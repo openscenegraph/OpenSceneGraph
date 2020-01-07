@@ -492,6 +492,8 @@ KdTree::KdTree(const KdTree& rhs, const osg::CopyOp& copyop):
     Shape(rhs, copyop),
     _degenerateCount(rhs._degenerateCount),
     _vertices(rhs._vertices),
+    _primitiveIndices(rhs._primitiveIndices),
+    _vertexIndices(rhs._vertexIndices),
     _kdNodes(rhs._kdNodes)
 {
 }

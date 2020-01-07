@@ -1,0 +1,14 @@
+# pkg-config source file
+
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/@CMAKE_INSTALL_LIBDIR@
+includedir=${prefix}/include
+
+Name: openscenegraph-@LIB_NAME@
+Description: @COMPONENT_PKGCONFIG_DESCRIPTION@
+Version: @OPENSCENEGRAPH_VERSION@
+Requires:@COMPONENT_PKGCONFIG_REQUIRES@ openthreads
+Conflicts:
+Libs: -L${libdir} -l@LIB_NAME@@CMAKE_BUILD_POSTFIX@
+Cflags: -I${includedir}

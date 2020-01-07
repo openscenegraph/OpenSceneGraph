@@ -297,6 +297,10 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
     osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts(1);
 #endif // VIEWER_USE_SHARED_CONTEXTS
 
+    // set the draw and read buffers up for a double buffered window with rendering going to back buffer
+    theViewer->getCamera()->setDrawBuffer(GL_BACK);
+    theViewer->getCamera()->setReadBuffer(GL_BACK);
+
     // Cocoa follows the same coordinate convention as OpenGL. osgViewer's default is inverted.
     theViewer->getEventQueue()->getCurrentEventState()->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
     // Use a trackball manipulator...matches nicely with the Mighty Mouse Scrollball.

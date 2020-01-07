@@ -16,7 +16,7 @@
 #include <osgUtil/Simplifier>
 
 #include <osgUtil/SmoothingVisitor>
-#include <osgUtil/TriStripVisitor>
+#include <osgUtil/MeshOptimizers>
 
 #include <set>
 #include <list>
@@ -1802,8 +1802,7 @@ void Simplifier::simplify(osg::Geometry& geometry, const IndexList& protectedPoi
 
     if (_triStrip)
     {
-        osgUtil::TriStripVisitor stripper;
-        stripper.stripify(geometry);
+        osgUtil::optimizeMesh(&geometry);
     }
 
 }

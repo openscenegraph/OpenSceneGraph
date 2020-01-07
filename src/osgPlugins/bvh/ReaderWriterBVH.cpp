@@ -365,10 +365,20 @@ public:
     virtual const char* className() const
     { return "BVH Motion Reader"; }
 
+    virtual ReadResult readObject(std::istream& stream, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(stream, options);
+    }
+
     virtual ReadResult readNode(std::istream& stream, const osgDB::ReaderWriter::Options* options) const
     {
         ReadResult rr = BvhMotionBuilder::instance()->buildBVH( stream, options );
         return rr;
+    }
+
+    virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(fileName, options);
     }
 
     virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const

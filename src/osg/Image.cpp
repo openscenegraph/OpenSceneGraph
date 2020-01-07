@@ -241,7 +241,7 @@ Image::Image(const Image& image,const CopyOp& copyop):
     {
         unsigned int size = image.getTotalSizeInBytesIncludingMipmaps();
         setData(new unsigned char [size],USE_NEW_DELETE);
-        if (unsigned char* dest_ptr = _data) 
+        if (unsigned char* dest_ptr = _data)
         {
             for(DataIterator itr(&image); itr.valid(); ++itr)
             {
@@ -356,14 +356,58 @@ GLenum Image::computePixelFormat(GLenum format)
         case(GL_LUMINANCE_ALPHA32F_ARB):
             return GL_LUMINANCE_ALPHA;
 
+        case (GL_R16F):
+        case (GL_R32F):
+        case (GL_R8):
+        case (GL_R8_SNORM):
+        case (GL_R16):
+        case (GL_R16_SNORM):
+            return GL_RED;
+
+        case (GL_R8I):
+        case (GL_R8UI):
+        case (GL_R16I):
+        case (GL_R16UI):
+        case (GL_R32I):
+        case (GL_R32UI):
+            return GL_RED_INTEGER_EXT;
+
+        case (GL_RG16F):
+        case (GL_RG32F):
+        case (GL_RG8):
+        case (GL_RG8_SNORM):
+        case (GL_RG16):
+        case (GL_RG16_SNORM):
+            return GL_RG;
+
+        case (GL_RG8I):
+        case (GL_RG8UI):
+        case (GL_RG16I):
+        case (GL_RG16UI):
+        case (GL_RG32I):
+        case (GL_RG32UI):
+            return GL_RG_INTEGER;
+
         case(GL_RGB32F_ARB):
         case(GL_RGB16F_ARB):
+        case(GL_R3_G3_B2):
+        case(GL_RGB4):
+        case(GL_RGB5):
+        case(GL_RGB8):
+        case(GL_RGB8_SNORM):
+        case(GL_RGB10):
+        case(GL_RGB12):
+        case(GL_SRGB8):
             return GL_RGB;
 
         case(GL_RGBA8):
         case(GL_RGBA16):
         case(GL_RGBA32F_ARB):
         case(GL_RGBA16F_ARB):
+        case(GL_RGBA8_SNORM):
+        case(GL_RGB10_A2):
+        case(GL_RGBA12):
+        case(GL_SRGB8_ALPHA8):
             return GL_RGBA;
 
         case(GL_ALPHA8I_EXT):
@@ -535,9 +579,31 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_ALPHA32UI_EXT): return 1;
         case(GL_ALPHA16F_ARB): return 1;
         case(GL_ALPHA32F_ARB): return 1;
+        case(GL_R16F): return 1;
         case(GL_R32F): return 1;
+        case(GL_R8): return 1;
+        case(GL_R8_SNORM): return 1;
+        case(GL_R16): return 1;
+        case(GL_R16_SNORM): return 1;
+        case(GL_R8I): return 1;
+        case(GL_R8UI): return 1;
+        case(GL_R16I): return 1;
+        case(GL_R16UI): return 1;
+        case(GL_R32I): return 1;
+        case(GL_R32UI): return 1;
         case(GL_RG): return 2;
+        case(GL_RG16F): return 2;
         case(GL_RG32F): return 2;
+        case(GL_RG8): return 2;
+        case(GL_RG8_SNORM): return 2;
+        case(GL_RG16): return 2;
+        case(GL_RG16_SNORM): return 2;
+        case(GL_RG8I): return 2;
+        case(GL_RG8UI): return 2;
+        case(GL_RG16I): return 2;
+        case(GL_RG16UI): return 2;
+        case(GL_RG32I): return 2;
+        case(GL_RG32UI): return 2;
         case(GL_RGB): return 3;
         case(GL_BGR): return 3;
         case(GL_RGB8I_EXT): return 3;
@@ -683,7 +749,7 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
     // which raises the question of how to actually query for these sizes...
     // will need to revisit this issue, for now just report an error.
     // this is possible a bit of mute point though as since the ARB compressed formats
-    // arn't yet used for storing images to disk, so its likely that users wont have
+    // aren't yet used for storing images to disk, so its likely that users wont have
     // osg::Image's for pixel formats set the ARB compressed formats, just using these
     // compressed formats as internal texture modes.  This is very much speculation though
     // if get the below error then its time to revist this issue :-)
@@ -805,15 +871,16 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
 
 }
 
-osg::Vec3i Image::computeBlockFootprint(GLenum pixelFormat) {
+osg::Vec3i Image::computeBlockFootprint(GLenum pixelFormat)
+{
     switch (pixelFormat)
     {
         case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT) :
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) :
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT) :
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT) :
-           return osg::Vec3i(4,4,4);//opengl 3d dxt: r value means (max)4 consecutive blocks in r direction packed into a slab.
-        
+            return osg::Vec3i(4,4,4);//opengl 3d dxt: r value means (max)4 consecutive blocks in r direction packed into a slab.
+
         case(GL_COMPRESSED_SIGNED_RED_RGTC1_EXT) :
         case(GL_COMPRESSED_RED_RGTC1_EXT) :
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT) :
@@ -863,7 +930,7 @@ osg::Vec3i Image::computeBlockFootprint(GLenum pixelFormat) {
         case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR) : return osg::Vec3i(10, 10, 1);
         case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR) : return osg::Vec3i(12, 10, 1);
         case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR) : return osg::Vec3i(12, 12, 1);
-        
+
         default:
             break;
     }
@@ -997,7 +1064,7 @@ int Image::computeNearestPowerOfTwo(int s,float bias)
     {
         // it isn't so lets find the closest power of two.
         // yes, logf and powf are slow, but this code should
-        // only be called during scene graph initilization,
+        // only be called during scene graph initialization,
         // if at all, so not critical in the greater scheme.
         float p2 = logf((float)s)/logf(2.0f);
         float rounded_p2 = floorf(p2+bias);
@@ -1274,10 +1341,10 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
 
     if (extensions->isTexture2DArraySupported)
     {
-        glGetBooleanv(GL_TEXTURE_BINDING_2D_ARRAY_EXT, &binding2DArray);
+        glGetBooleanv(GL_TEXTURE_BINDING_2D_ARRAY, &binding2DArray);
     }
 
-    GLenum textureMode = binding1D ? GL_TEXTURE_1D : binding2D ? GL_TEXTURE_2D : bindingRect ? GL_TEXTURE_RECTANGLE : binding3D ? GL_TEXTURE_3D : binding2DArray ? GL_TEXTURE_2D_ARRAY_EXT : 0;
+    GLenum textureMode = binding1D ? GL_TEXTURE_1D : binding2D ? GL_TEXTURE_2D : bindingRect ? GL_TEXTURE_RECTANGLE : binding3D ? GL_TEXTURE_3D : binding2DArray ? GL_TEXTURE_2D_ARRAY : 0;
     if (bindingCubeMap)
     {
         switch (face)
@@ -1348,7 +1415,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
             glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_COMPRESSED_ARB,&compressed);
         }
     }
-    else if (textureMode==GL_TEXTURE_2D_ARRAY_EXT)
+    else if (textureMode==GL_TEXTURE_2D_ARRAY)
     {
         if (extensions->isCompressedTexImage3DSupported())
         {
@@ -1517,7 +1584,7 @@ void Image::swap(osg::Image& rhs)
 
 void Image::scaleImage(int s,int t,int r, GLenum newDataType)
 {
-    if (_s==s && _t==t && _r==r) return;
+    if (_s==s && _t==t && _r==r && _dataType==newDataType) return;
 
     if (_data==NULL)
     {
@@ -1611,13 +1678,16 @@ void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Im
     if (isCompressed())
     {
         osg::Vec3i footprint = computeBlockFootprint(_pixelFormat);
-        if (footprint.x() == 4 && footprint.y() == 4) { 
-        if ((source->s() & 0x3) || (source->t() & 0x3) || (s_offset & 0x3) || (t_offset & 0x3))
+        if (footprint.x() == 4 && footprint.y() == 4)
         {
-            OSG_WARN << "Error Image::copySubImage() did not succeed : size " << source->s() << "x" << source->t() << " or offset " << s_offset<< "," << t_offset << " not multiple of 4." << std::endl;
-            return;
+            if ((source->s() & 0x3) || (source->t() & 0x3) || (s_offset & 0x3) || (t_offset & 0x3))
+            {
+                OSG_WARN << "Error Image::copySubImage() did not succeed : size " << source->s() << "x" << source->t() << " or offset " << s_offset<< "," << t_offset << " not multiple of 4." << std::endl;
+                return;
+            }
         }
-        } else {
+        else
+        {
             if ((source->s() % footprint.x()) || (source->t() % footprint.y()) || (s_offset % footprint.x()) || (t_offset% footprint.y()))
             {
                 OSG_WARN << "Error Image::copySubImage() did not succeed : size " << source->s() << "x" << source->t() << " or offset " << s_offset << "," << t_offset << " not multiple of footprint " << footprint.x() << "x" << footprint.y() << std::endl;
@@ -1626,11 +1696,11 @@ void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Im
         }
         unsigned int rowWidthInBlocks = (_s + footprint.x() - 1) / footprint.x();
         unsigned int blockSize = computeBlockSize(_pixelFormat, 0);
-        data_destination = _data + blockSize * (rowWidthInBlocks * t_offset + (s_offset / footprint.x()));
+        data_destination = _data + blockSize * (rowWidthInBlocks * (t_offset / footprint.y()) + (s_offset / footprint.x()));
         unsigned int copy_width = (osg::minimum(source->s(), _s - s_offset) + footprint.x() - 1) / footprint.x();
         unsigned int copy_height = (osg::minimum(source->t(), _t - t_offset) + footprint.y() - 1) / footprint.y();
         unsigned int dstRowStep = blockSize * rowWidthInBlocks;
-        unsigned int srcRowStep = blockSize * (source->_s + footprint.x() - 1) / footprint.x();
+        unsigned int srcRowStep = blockSize * ((source->_s + footprint.x() - 1) / footprint.x());
         const unsigned char* data_source = source->data(0, 0, 0);
         for (unsigned int row = 0; row < copy_height; row += 1) { //copy blocks in a row, footprint.y() rows at a time
             memcpy(data_destination, data_source, copy_width * blockSize);
@@ -2136,6 +2206,8 @@ Vec4 _readColor(GLenum pixelFormat, T* data,float scale)
         case(GL_DEPTH_COMPONENT):   //intentionally fall through and execute the code for GL_LUMINANCE
         case(GL_LUMINANCE):         { float l = float(*data++)*scale; return Vec4(l, l, l, 1.0f); }
         case(GL_ALPHA):             { float a = float(*data++)*scale; return Vec4(1.0f, 1.0f, 1.0f, a); }
+        case(GL_RED):               { float r = float(*data++)*scale; return Vec4(r, 1.0f, 1.0f, 1.0f); }
+        case(GL_RG):                { float r = float(*data++)*scale; float g = float(*data++)*scale; return Vec4(r, g, 1.0f, 1.0f); }
         case(GL_LUMINANCE_ALPHA):   { float l = float(*data++)*scale; float a = float(*data++)*scale; return Vec4(l,l,l,a); }
         case(GL_RGB):               { float r = float(*data++)*scale; float g = float(*data++)*scale; float b = float(*data++)*scale; return Vec4(r,g,b,1.0f); }
         case(GL_RGBA):              { float r = float(*data++)*scale; float g = float(*data++)*scale; float b = float(*data++)*scale; float a = float(*data++)*scale; return Vec4(r,g,b,a); }

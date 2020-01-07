@@ -40,10 +40,10 @@ ClusterCullingCallback::ClusterCullingCallback(const ClusterCullingCallback& ccc
 {
 }
 
-ClusterCullingCallback::ClusterCullingCallback(const osg::Vec3& controlPoint, const osg::Vec3& normal, float deviation):
+ClusterCullingCallback::ClusterCullingCallback(const osg::Vec3& controlPoint, const osg::Vec3& normal, float deviation, float radius):
     _controlPoint(controlPoint),
     _normal(normal),
-    _radius(-1.0f),
+    _radius(radius),
     _deviation(deviation)
 {
 }

@@ -114,6 +114,12 @@ public:
 
     virtual const char* className() const { return "OGR file reader"; }
 
+
+    virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(fileName, options);
+    }
+
     virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
         OSG_INFO<<"OGR::readNode("<<file<<")"<<std::endl;
@@ -284,7 +290,7 @@ public:
 
         if (pointGeom->getVertexArray())
         {
-            OSG_INFO << "osgOgrFeature::multiPointToDrawable " << pointGeom->getVertexArray()->getNumElements() << " vertexes"<< std::endl;
+            OSG_INFO << "osgOgrFeature::multiPointToDrawable " << pointGeom->getVertexArray()->getNumElements() << " vertices"<< std::endl;
         }
 
         return pointGeom;
@@ -338,7 +344,7 @@ public:
 
         if (geom->getVertexArray())
         {
-            OSG_INFO << "osgOgrFeature::multiPolygonToDrawable " << geom->getVertexArray()->getNumElements() << " vertexes"<< std::endl;
+            OSG_INFO << "osgOgrFeature::multiPolygonToDrawable " << geom->getVertexArray()->getNumElements() << " vertices"<< std::endl;
         }
 
         return geom;

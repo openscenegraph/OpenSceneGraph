@@ -23,7 +23,7 @@ namespace osgWidget {
 // Externally defined; does this work in Windows?
 struct LuaEngineData;
 
-// The actual Engine itself. Every attempt is made to export the implemenation into the
+// The actual Engine itself. Every attempt is made to export the implementation into the
 // source file, rather than having it here.
 class OSGWIDGET_EXPORT LuaEngine: public ScriptEngine
 {

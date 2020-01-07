@@ -313,10 +313,6 @@ void SceneView::init()
 {
     _initCalled = true;
 
-    // force the initialization of the OpenGL extension string
-    // to try and work around a Windows NVidia driver bug circa Oct 2006.
-    osg::isGLExtensionSupported(_renderInfo.getState()->getContextID(),"");
-
     if (_camera.valid() && _initVisitor.valid())
     {
         _initVisitor->reset();
@@ -724,11 +720,11 @@ void SceneView::cull()
         {
 
             if (!_cullVisitorLeft.valid()) _cullVisitorLeft = _cullVisitor->clone();
-            if (!_stateGraphLeft.valid()) _stateGraphLeft = _stateGraph->cloneType();
+            if (!_stateGraphLeft.valid()) _stateGraphLeft = _stateGraph->cloneStateGraph();
             if (!_renderStageLeft.valid()) _renderStageLeft = osg::clone(_renderStage.get(), osg::CopyOp::DEEP_COPY_ALL);
 
             if (!_cullVisitorRight.valid()) _cullVisitorRight = _cullVisitor->clone();
-            if (!_stateGraphRight.valid()) _stateGraphRight = _stateGraph->cloneType();
+            if (!_stateGraphRight.valid()) _stateGraphRight = _stateGraph->cloneStateGraph();
             if (!_renderStageRight.valid()) _renderStageRight = osg::clone(_renderStage.get(), osg::CopyOp::DEEP_COPY_ALL);
 
             _cullVisitorLeft->setDatabaseRequestHandler(_cullVisitor->getDatabaseRequestHandler());
@@ -913,7 +909,7 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     // note, this would be not required if the rendergraph had been
     // reset at the start of each frame (see top of this method) but
     // a clean has been used instead to try to minimize the amount of
-    // allocation and deleteing of the StateGraph nodes.
+    // allocation and deleting of the StateGraph nodes.
     rendergraph->prune();
 
     // set the number of dynamic objects in the scene.
@@ -929,6 +925,70 @@ void SceneView::releaseAllGLObjects()
     if (!_camera) return;
 
     _camera->releaseGLObjects(_renderInfo.getState());
+}
+
+void SceneView::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    struct Resize
+    {
+        unsigned int maxSize;
+
+        Resize(unsigned int ms) : maxSize(ms) {}
+
+        void operator() (osg::Referenced* object)
+        {
+            operator()(dynamic_cast<osg::Object*>(object));
+        }
+        void operator() (osg::Object* object)
+        {
+            if (object) object->resizeGLObjectBuffers(maxSize);
+        }
+    } operation(maxSize);
+
+    operation(_localStateSet.get());
+    operation(_updateVisitor.get());
+    operation(_cullVisitor.get());
+    operation(_stateGraph.get());
+    operation(_renderStage.get());
+    operation(_cullVisitorRight.get());
+    operation(_stateGraphRight.get());
+    operation(_renderStageRight.get());
+    operation(_globalStateSet.get());
+    operation(_secondaryStateSet.get());
+    operation(_cameraWithOwnership.get());
+}
+
+void SceneView::releaseGLObjects(osg::State* state) const
+{
+    if (state && state!=_renderInfo.getState()) return;
+
+    struct Release
+    {
+        osg::State* _state;
+
+        Release(State* state) : _state(state) {}
+
+        void operator() (osg::Referenced* object)
+        {
+            operator()(dynamic_cast<osg::Object*>(object));
+        }
+        void operator() (osg::Object* object)
+        {
+            if (object) object->releaseGLObjects(_state);
+        }
+    } operation(state);
+
+    operation(_localStateSet.get());
+    operation(_updateVisitor.get());
+    operation(_cullVisitor.get());
+    operation(_stateGraph.get());
+    operation(_renderStage.get());
+    operation(_cullVisitorRight.get());
+    operation(_stateGraphRight.get());
+    operation(_renderStageRight.get());
+    operation(_globalStateSet.get());
+    operation(_secondaryStateSet.get());
+    operation(_cameraWithOwnership.get());
 }
 
 void SceneView::flushAllDeletedGLObjects()
@@ -957,7 +1017,7 @@ void SceneView::draw()
 
     osg::State* state = _renderInfo.getState();
 
-    // we in theory should be able to be able to bypass reset, but we'll call it just incase.
+    // we in theory should be able to be able to bypass reset, but we'll call it just in case.
     //_state->reset();
     state->setFrameStamp(_frameStamp.get());
 

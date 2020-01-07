@@ -59,12 +59,8 @@ void osgParticle::ParticleProcessor::setParticleSystem(ParticleSystem* ps)
 
 void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
 {
-    // typecast the NodeVisitor to CullVisitor
-    osgUtil::CullVisitor* cv = nv.asCullVisitor();
-
     // continue only if the visitor actually is a cull visitor
-    if (cv) {
-
+    if (nv.getVisitorType() == osg::NodeVisitor::CULL_VISITOR) {
         // continue only if the particle system is valid
         if (_ps.valid())
         {
@@ -73,7 +69,7 @@ void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
                 ParticleSystem::ScopedWriteLock lock(*(_ps->getReadWriteMutex()));
 
                 //added- 1/17/06- bgandere@nps.edu
-                //a check to make sure we havent updated yet this frame
+                //a check to make sure we haven't updated yet this frame
                 if(_frameNumber < nv.getFrameStamp()->getFrameNumber())
                 {
 

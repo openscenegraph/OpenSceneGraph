@@ -39,7 +39,7 @@ extern OSGDB_EXPORT std::string getNameLessAllExtensions(const std::string& file
 extern OSGDB_EXPORT std::string getStrippedName(const std::string& fileName);
 /** If 'to' is in a subdirectory of 'from' then this function returns the subpath, otherwise it just returns the file name.
   * The function does \b not automagically resolve paths as the system does, so be careful to give canonical paths.
-  * However, the function interprets slashes ('/') ans backslashes ('\') as they were equal.
+  * However, the function interprets slashes ('/') and backslashes ('\') as they were equal.
   */
 extern OSGDB_EXPORT std::string getPathRelative(const std::string& from, const std::string& to);
 /** Gets root part of a path ("/" or "C:"), or an empty string if none found. */

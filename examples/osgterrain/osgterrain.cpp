@@ -379,6 +379,11 @@ int main(int argc, char** argv)
     terrain->setVerticalScale(verticalScale);
     terrain->setBlendingPolicy(blendingPolicy);
 
+    if (arguments.read("--equalize-boundaries") || arguments.read("-e"))
+    {
+        terrain->setEqualizeBoundaries(true);
+    }
+
 
     if (useDisplacementMappingTechnique)
     {

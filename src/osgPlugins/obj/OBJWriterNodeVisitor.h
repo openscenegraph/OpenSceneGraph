@@ -50,13 +50,15 @@
 class OBJWriterNodeVisitor: public osg::NodeVisitor {
 
     public:
-        OBJWriterNodeVisitor(std::ostream& fout, const std::string materialFileName = "") :
+        OBJWriterNodeVisitor(std::ostream& fout, const std::string materialFileName = "", bool outputTextureFiles = false, const osgDB::Options* options = NULL) :
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
             _fout(fout),
             _currentStateSet(new osg::StateSet()),
             _lastVertexIndex(1),
             _lastNormalIndex(1),
-            _lastTexIndex(1)
+            _lastTexIndex(1),
+            _outputTextureFiles(outputTextureFiles),
+            _options(options)
         {
             _fout << "# file written by OpenSceneGraph" << std::endl << std::endl;
 
@@ -113,9 +115,10 @@ class OBJWriterNodeVisitor: public osg::NodeVisitor {
         class OBJMaterial {
             public:
                 OBJMaterial() {}
-                OBJMaterial(osg::Material* mat, osg::Texture* tex);
+                OBJMaterial(osg::Material* mat, osg::Texture* tex, bool outputTextureFiles = false, const osgDB::Options* options = NULL);
 
                 osg::Vec4  diffuse, ambient, specular;
+                float shininess;
                 std::string    image;
                 std::string name;
         };
@@ -146,13 +149,15 @@ class OBJWriterNodeVisitor: public osg::NodeVisitor {
         typedef std::map< osg::ref_ptr<osg::StateSet>, OBJMaterial, CompareStateSet> MaterialMap;
 
 
-        std::ostream&                            _fout;
-        std::list<std::string>                    _nameStack;
-        StateSetStack                            _stateSetStack;
-        osg::ref_ptr<osg::StateSet>                _currentStateSet;
-        std::map<std::string, unsigned int>        _nameMap;
+        std::ostream&                           _fout;
+        std::list<std::string>                  _nameStack;
+        StateSetStack                           _stateSetStack;
+        osg::ref_ptr<osg::StateSet>             _currentStateSet;
+        std::map<std::string, unsigned int>     _nameMap;
         unsigned int                            _lastVertexIndex, _lastNormalIndex, _lastTexIndex;
-        MaterialMap                                _materialMap;
+        MaterialMap                             _materialMap;
+        bool                                    _outputTextureFiles;
+        osg::ref_ptr<const osgDB::Options>      _options;
 
 };
 

@@ -135,27 +135,31 @@ void resolveBindMatrices(
         nodeNames.insert(it->second->getName());
     }
 
-    for (BindMatrixMap::const_iterator it = boneBindMatrices.begin();
-        it != boneBindMatrices.end();)
+    for (BindMatrixMap::const_iterator it = boneBindMatrices.begin(); it != boneBindMatrices.end(); ++it)
     {
-        FbxNode* const fbxBone = it->first.first;
+        FbxNode* const fbxBone = it->first;
         std::map<FbxNode*, osg::Node*>::const_iterator nodeIt = nodeMap.find(fbxBone);
         if (nodeIt != nodeMap.end())
         {
-            const osg::Matrix bindMatrix = it->second;
-            osgAnimation::Bone& osgBone = dynamic_cast<osgAnimation::Bone&>(*nodeIt->second);
-            osgBone.setInvBindMatrixInSkeletonSpace(bindMatrix);
+            osgAnimation::Bone* originalBone = dynamic_cast<osgAnimation::Bone*>(nodeIt->second);
 
-            ++it;
-            for (; it != boneBindMatrices.end() && it->first.first == fbxBone; ++it)
+            // Iterate bind matrices and create new bones if needed
+            const BindMatrixGeometryMap& bindMatrixGeom = it->second;
+            for ( BindMatrixGeometryMap::const_iterator bindIt = bindMatrixGeom.begin(); bindIt != bindMatrixGeom.end(); ++bindIt)
             {
-                if (it->second != bindMatrix)
+                // First matrix will use original bone
+                if (bindIt == bindMatrixGeom.begin())
                 {
+                    originalBone->setInvBindMatrixInSkeletonSpace(bindIt->first);
+                }
+                else
+                {
+                    // Additional matrices need new bone
                     std::string name;
                     for (int i = 0;; ++i)
                     {
                         std::stringstream ss;
-                        ss << osgBone.getName() << '_' << i;
+                        ss << originalBone->getName() << '_' << i;
                         name = ss.str();
                         if (nodeNames.insert(name).second)
                         {
@@ -164,26 +168,32 @@ void resolveBindMatrices(
                     }
                     osgAnimation::Bone* newBone = new osgAnimation::Bone(name);
                     newBone->setDefaultUpdateCallback();
-                    newBone->setInvBindMatrixInSkeletonSpace(it->second);
-                    osgBone.addChild(newBone);
+                    newBone->setInvBindMatrixInSkeletonSpace(bindIt->first);
+                    originalBone->addChild(newBone);
 
-                    osgAnimation::RigGeometry* pRigGeometry = it->first.second;
-
-                    osgAnimation::VertexInfluenceMap* vertexInfluences = pRigGeometry->getInfluenceMap();
-
-                    osgAnimation::VertexInfluenceMap::iterator vimIt = vertexInfluences->find(osgBone.getName());
-                    if (vimIt != vertexInfluences->end())
+                    // Update rig geometry with new bone names
+                    for (std::set<osgAnimation::RigGeometry*>::const_iterator rigIt = bindIt->second.begin();
+                         rigIt != bindIt->second.end();
+                         ++rigIt)
                     {
-                        osgAnimation::VertexInfluence vi;
-                        vi.swap(vimIt->second);
-                        vertexInfluences->erase(vimIt);
-                        osgAnimation::VertexInfluence& vi2 = (*vertexInfluences)[name];
-                        vi.swap(vi2);
-                        vi2.setName(name);
-                    }
-                    else
-                    {
-                        OSG_WARN << "No vertex influences found for \"" << osgBone.getName() << "\"" << std::endl;
+                        osgAnimation::RigGeometry* pRigGeometry = (*rigIt);
+
+                        osgAnimation::VertexInfluenceMap* vertexInfluences = pRigGeometry->getInfluenceMap();
+
+                        osgAnimation::VertexInfluenceMap::iterator vimIt = vertexInfluences->find(originalBone->getName());
+                        if (vimIt != vertexInfluences->end())
+                        {
+                            osgAnimation::VertexInfluence vi;
+                            vi.swap(vimIt->second);
+                            vertexInfluences->erase(vimIt);
+                            osgAnimation::VertexInfluence& vi2 = (*vertexInfluences)[name];
+                            vi.swap(vi2);
+                            vi2.setName(name);
+                        }
+                        else
+                        {
+                            OSG_WARN << "No vertex influences found for \"" << originalBone->getName() << "\"" << std::endl;
+                        }
                     }
                 }
             }
@@ -295,10 +305,14 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
             int nLightCount = 0;
             osg::ref_ptr<Options> localOptions = NULL;
             if (options)
+            {
                 localOptions = options->cloneOptions();
+            }
             else
+            {
                 localOptions = new osgDB::Options();
-            localOptions->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_IMAGES);
+                localOptions->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_IMAGES);
+            }
 
             std::string filePath = osgDB::getFilePath(filename);
             FbxMaterialToOsgStateSet fbxMaterialToOsgStateSet(filePath, localOptions.get(), lightmapTextures);
@@ -558,7 +572,34 @@ osgDB::ReaderWriter::WriteResult ReaderWriterFBX::writeNode(
         }
 
         FbxExporter* lExporter = FbxExporter::Create(pSdkManager, "");
-        pScene->GetGlobalSettings().SetAxisSystem(FbxAxisSystem::eOpenGL);
+
+        // default axis system is openGL
+        FbxAxisSystem::EPreDefinedAxisSystem axisSystem = FbxAxisSystem::eOpenGL;
+
+        // check options
+        if (options)
+        {
+           std::string axisOption = options->getPluginStringData("FBX-AxisSystem");
+           if (!axisOption.empty())
+           {
+              if (axisOption == "MayaZUp")
+                 axisSystem = FbxAxisSystem::eMayaZUp;
+              else if (axisOption == "MayaYUp")
+                 axisSystem = FbxAxisSystem::eMayaYUp;
+              else if (axisOption == "Max")
+                 axisSystem = FbxAxisSystem::eMax;
+              else if (axisOption == "MotionBuilder")
+                 axisSystem = FbxAxisSystem::eMotionBuilder;
+              else if (axisOption == "OpenGL")
+                 axisSystem = FbxAxisSystem::eOpenGL;
+              else if (axisOption == "DirectX")
+                 axisSystem = FbxAxisSystem::eDirectX;
+              else if (axisOption == "Lightwave")
+                 axisSystem = FbxAxisSystem::eLightwave;
+           }
+        }
+
+        pScene->GetGlobalSettings().SetAxisSystem(axisSystem);
 
         // Ensure the directory exists or else the FBX SDK will fail
         if (!osgDB::makeDirectoryForFile(filename)) {

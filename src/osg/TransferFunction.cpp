@@ -87,6 +87,10 @@ void TransferFunction1D::assignToImage(float lower_v, const osg::Vec4& lower_c, 
     if (end_iPos < 0) return;
     if (end_iPos > endPos) end_iPos = endPos;
 
+    // clamp to ends to avoid any precision issues
+    if (lower_v == minimum) start_iPos = 0;
+    if (upper_v == maximum) end_iPos = endPos;
+
     //OSG_NOTICE<<"TransferFunction1D::assignToImage[lower_v="<<lower_v<<", lower_c="<<lower_c<<", upper_v="<<upper_v<<" upper_c="<<upper_c<<std::endl;
     //OSG_NOTICE<<"  lower_iPos="<<lower_iPos<<"  start_iPpos="<<start_iPos<<std::endl;
     //OSG_NOTICE<<"  upper_iPos="<<upper_iPos<<"  end_iPpos="<<end_iPos<<std::endl;

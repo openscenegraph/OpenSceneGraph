@@ -74,7 +74,6 @@
 #include<osg/PrimitiveSet>
 #include <osg/MatrixTransform>
 
-#include <osgUtil/TriStripVisitor>
 #include <osgUtil/SmoothingVisitor>
 
 //#define _LOG_DEBUG_
@@ -293,7 +292,7 @@ osg::ref_ptr<osg::Geode> ReaderWritterOpenCASCADE::OCCTKReader::igesToOSGGeode(c
         /// transfer data from reader to doc
         if(!reader.Transfer(doc))
         {
-            cout << "Cannot read any relevant data from the STEP file" << endl;
+            std::cout << "Cannot read any relevant data from the STEP file" << std::endl;
             return NULL;
         }
     }
@@ -310,7 +309,7 @@ osg::ref_ptr<osg::Geode> ReaderWritterOpenCASCADE::OCCTKReader::igesToOSGGeode(c
         /// transfer data from reader to doc
         if(!reader.Transfer(doc))
         {
-            cout << "Cannot read any relevant data from the IGES file" << endl;
+            std::cout << "Cannot read any relevant data from the IGES file" << std::endl;
             return NULL;
         }
     }
@@ -322,13 +321,13 @@ osg::ref_ptr<osg::Geode> ReaderWritterOpenCASCADE::OCCTKReader::igesToOSGGeode(c
     _colorTool = XCAFDoc_DocumentTool::ColorTool(doc->Main());
 
     // free shape sequence
-    // get sequence of free shape lables
+    // get sequence of free shape labels
     TDF_LabelSequence freeShapes;
     _assembly->GetFreeShapes(freeShapes);
 
     if(freeShapes.Length() == 0)
     {
-        std::cout << "No Shapes found" << endl;
+        std::cout << "No Shapes found" << std::endl;
         return NULL;
     }
     else

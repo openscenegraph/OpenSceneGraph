@@ -16,7 +16,7 @@
 
 #include <osg/GL>
 #include <osg/Image>
-#include <osg/StateAttribute>
+#include <osg/TextureAttribute>
 #include <osg/GraphicsContext>
 #include <osg/ref_ptr>
 #include <osg/Vec4>
@@ -418,7 +418,7 @@ class TextureObjectManager;
 /** Texture pure virtual base class that encapsulates OpenGL texture
   * functionality common to the various types of OSG textures.
 */
-class OSG_EXPORT Texture : public osg::StateAttribute
+class OSG_EXPORT Texture : public osg::TextureAttribute
 {
 
     public :
@@ -652,7 +652,14 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         /** Get the internal texture format type. */
         inline InternalFormatType getInternalFormatType() const { return _internalFormatType; }
 
+        /* select the size internal format to use based on Image when available or Texture format settings.*/
+        GLenum selectSizedInternalFormat(const osg::Image* image=0) const;
+
         class TextureObject;
+
+        /** return true if the texture image data has been modified and the associated GL texture object needs to be updated.*/
+        virtual bool isDirty(unsigned int /*contextID*/) const { return false; }
+
 
         /** Returns a pointer to the TextureObject for the current context. */
         inline TextureObject* getTextureObject(unsigned int contextID) const
@@ -730,8 +737,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         void setShadowAmbient(float shadow_ambient) { _shadow_ambient = shadow_ambient; }
         float getShadowAmbient() const { return _shadow_ambient; }
 
-        /** Gets the texture BufferData */
-        virtual const BufferData* getBufferData() const { return getImage(0); }
 
         /** Sets the texture image for the specified face. */
         virtual void setImage(unsigned int face, Image* image) = 0;
@@ -740,7 +745,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         /** Gets the texture image for the specified face. */
         virtual Image* getImage(unsigned int face) = 0;
-
 
         /** Gets the const texture image for specified face. */
         virtual const Image* getImage(unsigned int face) const = 0;
@@ -1043,7 +1047,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             }
 
 
-            void bind();
+            void bind(osg::State& state);
 
             inline GLenum id() const { return _id; }
             inline GLenum target() const { return _profile._target; }

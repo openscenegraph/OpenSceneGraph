@@ -1,11 +1,11 @@
 IF  (DCMTK_FOUND)
 
     # note, we have to include a '/' in front of the directory string to prevent a CMake bug from ignoring the directory
-    INCLUDE_DIRECTORIES(${DCMTK_ROOT_INCLUDE_DIR})
+    INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIRS})
 
     SET(TARGET_SRC ReaderWriterDICOM.cpp )
 
-    LINK_LIBRARIES(${DCMTK_LIBRARIES} ${ZLIB_LIBRARIES})
+    LINK_LIBRARIES(${DCMTK_LIBRARIES})
 
     ADD_DEFINITIONS(-DUSE_DCMTK)
 

@@ -27,6 +27,7 @@
 
 #include <osgDB/Registry>
 #include <osgDB/FileUtils>
+#include <osgDB/ReadFile>
 #include <osgDB/FileNameUtils>
 #include <osgDB/fstream>
 #include <osgDB/Archive>
@@ -377,16 +378,16 @@ Registry::Registry()
     addFileExtensionAlias("tif",  "tiff");
 
     // really need to decide this at runtime...
-    #if defined(USE_XINE)
+    #if defined(USE_FFMPEG)
 
-        addFileExtensionAlias("mov",  "xine");
-        addFileExtensionAlias("mpg",  "xine");
-        addFileExtensionAlias("ogv",  "xine");
-        addFileExtensionAlias("mpv",  "xine");
-        addFileExtensionAlias("dv",   "xine");
-        addFileExtensionAlias("avi",  "xine");
-        addFileExtensionAlias("wmv",  "xine");
-        addFileExtensionAlias("flv",  "xine");
+        addFileExtensionAlias("mov",  "ffmpeg");
+        addFileExtensionAlias("mpg",  "ffmpeg");
+        addFileExtensionAlias("ogv",  "ffmpeg");
+        addFileExtensionAlias("mpv",  "ffmpeg");
+        addFileExtensionAlias("dv",   "ffmpeg");
+        addFileExtensionAlias("avi",  "ffmpeg");
+        addFileExtensionAlias("wmv",  "ffmpeg");
+        addFileExtensionAlias("flv",  "ffmpeg");
     #endif
 
     // support QuickTime for Windows
@@ -582,7 +583,7 @@ void Registry::readCommandLine(osg::ArgumentParser& arguments)
     std::string value;
     while(arguments.read("-l",value))
     {
-        if (loadLibrary(value)!=NOT_LOADED)
+        if (loadLibrary(value)==NOT_LOADED)
         {
             OSG_NOTICE<<"Unable to load library : "<<value<<std::endl;
         }
@@ -591,7 +592,7 @@ void Registry::readCommandLine(osg::ArgumentParser& arguments)
     while(arguments.read("-e",value))
     {
         std::string libName = createLibraryNameForExtension(value);
-        if (loadLibrary(libName)!=NOT_LOADED)
+        if (loadLibrary(libName)==NOT_LOADED)
         {
             OSG_NOTICE<<"Unable to load library : "<<libName<<std::endl;
         }
@@ -1168,7 +1169,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
 
             options->setDatabasePath(archiveName);
 
-            std::auto_ptr<ReadFunctor> rf(readFunctor.cloneType(fileName, options.get()));
+            osg::ref_ptr<ReadFunctor> rf(readFunctor.cloneType(fileName, options.get()));
 
             result = rf->doRead(*archive);
 

@@ -3,6 +3,63 @@
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
 
+#define WRAPUNIFORMTEMAPLATE( TYPE, INHERITANCE_STRING, SERIALIZER_TYPE, DEFAULT) \
+    namespace Wrap##TYPE \
+    { \
+        REGISTER_OBJECT_WRAPPER( TYPE, \
+                                new osg::TYPE, \
+                                osg::TYPE, \
+                                INHERITANCE_STRING ) \
+        { \
+            SERIALIZER_TYPE( Value, DEFAULT ); \
+        } \
+    }
+
+
+WRAPUNIFORMTEMAPLATE( IntUniform, "osg::Object osg::IntUniform", ADD_REF_INT_SERIALIZER, 0)
+WRAPUNIFORMTEMAPLATE( UIntUniform, "osg::Object osg::UIntUniform", ADD_REF_UINT_SERIALIZER, 0u)
+WRAPUNIFORMTEMAPLATE( FloatUniform, "osg::Object osg::FloatUniform", ADD_REF_FLOAT_SERIALIZER, 0.0f)
+
+WRAPUNIFORMTEMAPLATE( Vec2Uniform, "osg::Object osg::Vec2Uniform", ADD_VEC2F_SERIALIZER, osg::Vec2f())
+WRAPUNIFORMTEMAPLATE( Vec3Uniform, "osg::Object osg::Vec3Uniform", ADD_VEC3F_SERIALIZER, osg::Vec3f())
+WRAPUNIFORMTEMAPLATE( Vec4Uniform, "osg::Object osg::Vec4Uniform", ADD_VEC4F_SERIALIZER, osg::Vec4f())
+
+WRAPUNIFORMTEMAPLATE( MatrixfUniform, "osg::Object osg::MatrixfUniform", ADD_MATRIXF_SERIALIZER, osg::Matrixf())
+WRAPUNIFORMTEMAPLATE( MatrixdUniform, "osg::Object osg::MatrixdUniform", ADD_MATRIXD_SERIALIZER, osg::Matrixd())
+
+#define WRAPUNIFORMARRAYTEMAPLATE( TYPE, INHERITANCE_STRING, ELEMENT_TYPE) \
+    namespace Wrap##TYPE \
+    { \
+        REGISTER_OBJECT_WRAPPER( TYPE, \
+                                new osg::TYPE, \
+                                osg::TYPE, \
+                                INHERITANCE_STRING ) \
+        { \
+            ADD_VECTOR_SERIALIZER(Array, osg::TYPE::array_type, ELEMENT_TYPE, 1); \
+        } \
+    }
+
+
+WRAPUNIFORMARRAYTEMAPLATE( IntArrayUniform, "osg::Object osg::IntArrayUniform", osgDB::BaseSerializer::RW_INT)
+WRAPUNIFORMARRAYTEMAPLATE( UIntArrayUniform, "osg::Object osg::UIntArrayUniform", osgDB::BaseSerializer::RW_UINT)
+WRAPUNIFORMARRAYTEMAPLATE( FloatArrayUniform, "osg::Object osg::FloatArrayUniform", osgDB::BaseSerializer::RW_FLOAT)
+WRAPUNIFORMARRAYTEMAPLATE( DoubleArrayUniform, "osg::Object osg::DoubleArrayUniform", osgDB::BaseSerializer::RW_DOUBLE)
+WRAPUNIFORMARRAYTEMAPLATE( Vec2ArrayUniform, "osg::Object osg::Vec2ArrayUniform", osgDB::BaseSerializer::RW_VEC2F)
+WRAPUNIFORMARRAYTEMAPLATE( Vec3ArrayUniform, "osg::Object osg::Vec3ArrayUniform", osgDB::BaseSerializer::RW_VEC3F)
+WRAPUNIFORMARRAYTEMAPLATE( Vec4ArrayUniform, "osg::Object osg::Vec4ArrayUniform", osgDB::BaseSerializer::RW_VEC4F)
+WRAPUNIFORMARRAYTEMAPLATE( Vec2iArrayUniform, "osg::Object osg::Vec2iArrayUniform", osgDB::BaseSerializer::RW_VEC2I)
+WRAPUNIFORMARRAYTEMAPLATE( Vec3iArrayUniform, "osg::Object osg::Vec3iArrayUniform", osgDB::BaseSerializer::RW_VEC3I)
+WRAPUNIFORMARRAYTEMAPLATE( Vec4iArrayUniform, "osg::Object osg::Vec4iArrayUniform", osgDB::BaseSerializer::RW_VEC4I)
+WRAPUNIFORMARRAYTEMAPLATE( Vec2uiArrayUniform, "osg::Object osg::Vec2uiArrayUniform", osgDB::BaseSerializer::RW_VEC2UI)
+WRAPUNIFORMARRAYTEMAPLATE( Vec3uiArrayUniform, "osg::Object osg::Vec3uiArrayUniform", osgDB::BaseSerializer::RW_VEC3UI)
+WRAPUNIFORMARRAYTEMAPLATE( Vec4uiArrayUniform, "osg::Object osg::Vec4uiArrayUniform", osgDB::BaseSerializer::RW_VEC4UI)
+WRAPUNIFORMARRAYTEMAPLATE( MatrixfArrayUniform, "osg::Object osg::MatrixfArrayUniform", osgDB::BaseSerializer::RW_MATRIXF)
+WRAPUNIFORMARRAYTEMAPLATE( MatrixdArrayUniform, "osg::Object osg::MatrixdArrayUniform", osgDB::BaseSerializer::RW_MATRIXD)
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Old osg::Unfirom serializer`
 static bool checkElements( const osg::Uniform& uniform )
 {
     return uniform.getNumElements()>0;

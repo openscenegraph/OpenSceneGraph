@@ -13,8 +13,8 @@
 #define MESH_TYPEDEFS_H
 
 #   if defined(_MSC_VER)
-#      include <Winsock2.h>
-#      include <Windows.h>
+#      include <winsock2.h>
+#      include <windows.h>
 #   endif
 
 #   include <osg/Notify>

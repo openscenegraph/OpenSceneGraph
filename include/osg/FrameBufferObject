@@ -304,6 +304,9 @@ class OSG_EXPORT FrameBufferAttachment
         unsigned int getTexture3DZOffset() const;
         unsigned int getTextureArrayLayer() const;
 
+        void resizeGLObjectBuffers(unsigned int maxSize);
+        void releaseGLObjects(osg::State* = 0) const;
+
     private:
         // use the Pimpl idiom to avoid dependency from
         // all Texture* headers

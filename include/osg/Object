@@ -25,7 +25,6 @@
 namespace osg {
 
 // forward declare
-class State;
 class UserDataContainer;
 class Node;
 class NodeVisitor;
@@ -134,6 +133,14 @@ class OSG_EXPORT Object : public Referenced
         /** Convert 'this' into a Uniform pointer if Object is a Uniform, otherwise return 0.
           * Equivalent to dynamic_cast<Uniform*>(this).*/
         virtual Uniform* asUniform() { return 0; }
+
+        /** convert 'const this' into a const Uniform pointer if Object is a Uniform, otherwise return 0.
+          * Equivalent to dynamic_cast<const UniformBase*>(this).*/
+        virtual const UniformBase* asUniformBase() const { return 0; }
+
+        /** Convert 'this' into a Uniform pointer if Object is a Uniform, otherwise return 0.
+          * Equivalent to dynamic_cast<UniformBase*>(this).*/
+        virtual UniformBase* asUniformBase() { return 0; }
 
         /** convert 'const this' into a const Uniform pointer if Object is a Uniform, otherwise return 0.
           * Equivalent to dynamic_cast<const Uniform*>(this).*/

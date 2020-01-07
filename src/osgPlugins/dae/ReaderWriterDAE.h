@@ -13,6 +13,8 @@ class ReaderWriterDAE : public osgDB::ReaderWriter
 public:
     ReaderWriterDAE()
     {
+        _specversion = "1.4.1";
+
         // Collada document
         supportsExtension("dae","COLLADA 1.4.x DAE format");
         // Collada zip archive (contains one or more dae files and a manifest.xml)
@@ -38,7 +40,18 @@ public:
 
     const char* className() const { return "COLLADA 1.4.x DAE reader/writer"; }
 
+    virtual ReadResult readObject(std::istream& fin, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(fin, options);
+    }
+
     ReadResult readNode(std::istream&, const Options* = NULL) const;
+
+    virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+    {
+        return readNode(fileName, options);
+    }
+
     ReadResult readNode(const std::string&, const Options* = NULL) const;
 
     WriteResult writeNode(const osg::Node&, const std::string&, const Options* = NULL) const;
@@ -48,6 +61,7 @@ public:
 
 private:
     mutable OpenThreads::ReentrantMutex _serializerMutex;
+    const char* _specversion;
 };
 
 ///////////////////////////////////////////////////////////////////////////

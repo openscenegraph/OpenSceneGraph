@@ -18,7 +18,7 @@
 
 #include <osg/io_utils>
 #include "OBJWriterNodeVisitor.h"
-
+#include <osgDB/WriteFile>
 
 
 /** writes all values of an array out to a stream, applies a matrix beforehand if necessary */
@@ -67,6 +67,18 @@ class ValueVisitor : public osg::ValueVisitor {
         {
             osg::Vec3 v(inv[0], inv[1], inv[2]);
             if (_applyMatrix)  v = (_isNormal) ? (v * _m) - _origin : v * _m;
+            _fout << v[0] << ' ' << v[1] << ' ' << v[2];
+        }
+    
+        //add Vec3dArray* vertex output to avoid inaccuracy
+        virtual void apply(osg::Vec3d & inv)
+        {
+            osg::Vec3d v(inv[0], inv[1], inv[2]);
+            osg::Vec3d orign_d((double)_origin.x(), (double)_origin.y(), (double)_origin.z());
+            if (_applyMatrix)  v = (_isNormal) ? (v * _m) - orign_d : v * _m;
+
+            //Setting 10-digit Significant Number
+            _fout.precision(10);
             _fout << v[0] << ' ' << v[1] << ' ' << v[2];
         }
     private:
@@ -371,7 +383,7 @@ void ObjPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
 
             for(GLsizei i=0;i<count;++i)
             {
-                writePoint(i);
+                writePoint(first + i);
             }
             break;
         }
@@ -380,7 +392,7 @@ void ObjPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
         {
             for(GLsizei i=0;i<count;i+=2)
             {
-                writeLine(i, i+1);
+                writeLine(first + i, first + i+1);
             }
             break;
         }
@@ -388,7 +400,7 @@ void ObjPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
         {
             for(GLsizei i=1;i<count;++i)
             {
-                writeLine(i-1, i);
+                writeLine(first + i-1, first + i);
             }
             break;
         }
@@ -396,9 +408,9 @@ void ObjPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
         {
             for(GLsizei i=1;i<count;++i)
             {
-                writeLine(i-1, i);
+                writeLine(first + i-1, first + i);
             }
-            writeLine(count-1, 0);
+            writeLine(first + count-1, first + 0);
             break;
         }
         default:
@@ -408,10 +420,11 @@ void ObjPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
 }
 
 
-OBJWriterNodeVisitor::OBJMaterial::OBJMaterial(osg::Material* mat, osg::Texture* tex) :
+OBJWriterNodeVisitor::OBJMaterial::OBJMaterial(osg::Material* mat, osg::Texture* tex, bool outputTextureFiles, const osgDB::Options* options) :
     diffuse(1,1,1,1),
     ambient(0.2,0.2,0.2,1),
     specular(0,0,0,1),
+    shininess(-1),
     image("")
 {
     static unsigned int s_objmaterial_id = 0;
@@ -424,13 +437,17 @@ OBJWriterNodeVisitor::OBJMaterial::OBJMaterial(osg::Material* mat, osg::Texture*
         diffuse = mat->getDiffuse(osg::Material::FRONT);
         ambient = mat->getAmbient(osg::Material::FRONT);
         specular = mat->getSpecular(osg::Material::FRONT);
+        shininess = mat->getShininess(osg::Material::FRONT)*1000.0f/128.0f;
     }
 
     if (tex) {
         osg::Image* img = tex->getImage(0);
         if ((img) && (!img->getFileName().empty()))
+        {
             image = img->getFileName();
-
+            if(outputTextureFiles)
+                osgDB::writeImageFile(*img, image, options);
+        }
     }
 
 }
@@ -441,6 +458,8 @@ std::ostream& operator<<(std::ostream& fout, const OBJWriterNodeVisitor::OBJMate
     fout << "       " << "Ka " << mat.ambient << std::endl;
     fout << "       " << "Kd " << mat.diffuse << std::endl;
     fout << "       " << "Ks " << mat.specular << std::endl;
+    if (mat.shininess != -1)
+        fout << "       " << "Ns " << mat.shininess<< std::endl;
 
     if(!mat.image.empty())
         fout << "       " << "map_Kd " << mat.image << std::endl;
@@ -508,7 +527,7 @@ void OBJWriterNodeVisitor::processStateSet(osg::StateSet* ss)
 
     if (mat || tex)
     {
-        _materialMap.insert(std::make_pair(osg::ref_ptr<osg::StateSet>(ss), OBJMaterial(mat, tex)));
+        _materialMap.insert(std::make_pair(osg::ref_ptr<osg::StateSet>(ss), OBJMaterial(mat, tex, _outputTextureFiles, _options)));
         _fout << "usemtl " << _materialMap[ss].name << std::endl;
     }
 

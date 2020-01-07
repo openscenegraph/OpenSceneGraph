@@ -1,3 +1,6 @@
+IF(OSG_TEXT_USE_FONTCONFIG)
+    find_package(Fontconfig MODULE)
+ENDIF()
 
 IF(DYNAMIC_OPENSCENEGRAPH)
     ADD_DEFINITIONS(-DOSGTEXT_LIBRARY)
@@ -42,10 +45,20 @@ SET(TARGET_SRC
 
 SET(TARGET_LIBRARIES
     osgDB
-    osg
     osgUtil
+    osg
     OpenThreads
 )
+
+SET(COMPONENT_PKGCONFIG_DESCRIPTION "Text rendering library for OpenSceneGraph")
+
+if(OSG_TEXT_USE_FONTCONFIG AND Fontconfig_FOUND)
+    MESSAGE(STATUS "osgText will be linked with FontConfig library")
+    LIST(APPEND TARGET_EXTERNAL_LIBRARIES Fontconfig::Fontconfig)
+    ADD_DEFINITIONS(-DWITH_FONTCONFIG)
+else()
+    MESSAGE(STATUS "osgText will not be linked with FontConfig library")
+endif()
 
 SETUP_LIBRARY(${LIB_NAME})
 

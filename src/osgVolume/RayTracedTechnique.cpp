@@ -170,7 +170,7 @@ void RayTracedTechnique::init()
         }
         else
         {
-            #include "Shaders/volume_vert.cpp"
+            #include "shaders/volume_vert.cpp"
             program->addShader(new osg::Shader(osg::Shader::VERTEX, volume_vert));
         }
 
@@ -252,7 +252,7 @@ void RayTracedTechnique::init()
                 }
                 else
                 {
-                    #include "Shaders/volume_tf_mip_frag.cpp"
+                    #include "shaders/volume_tf_mip_frag.cpp"
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_tf_mip_frag));
                 }
 
@@ -269,7 +269,7 @@ void RayTracedTechnique::init()
                 }
                 else
                 {
-                    #include "Shaders/volume_mip_frag.cpp"
+                    #include "shaders/volume_mip_frag.cpp"
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_mip_frag));
                 }
             }
@@ -290,7 +290,7 @@ void RayTracedTechnique::init()
                 }
                 else
                 {
-                    #include "Shaders/volume_tf_iso_frag.cpp"
+                    #include "shaders/volume_tf_iso_frag.cpp"
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_tf_iso_frag));
                 }
             }
@@ -307,7 +307,7 @@ void RayTracedTechnique::init()
                 {
                     OSG_INFO<<"No Shader found"<<std::endl;
 
-                    #include "Shaders/volume_iso_frag.cpp"
+                    #include "shaders/volume_iso_frag.cpp"
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_iso_frag));
                 }
             }
@@ -325,7 +325,7 @@ void RayTracedTechnique::init()
                 }
                 else
                 {
-                    #include "Shaders/volume_lit_tf_frag.cpp"
+                    #include "shaders/volume_lit_tf_frag.cpp"
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_lit_tf_frag));
                 }
 
@@ -339,7 +339,7 @@ void RayTracedTechnique::init()
                 }
                 else
                 {
-                    #include "Shaders/volume_lit_frag.cpp"
+                    #include "shaders/volume_lit_frag.cpp"
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_lit_frag));
                 }
             }
@@ -357,7 +357,7 @@ void RayTracedTechnique::init()
                 }
                 else
                 {
-                    #include "Shaders/volume_tf_frag.cpp"
+                    #include "shaders/volume_tf_frag.cpp"
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_tf_frag));
                 }
 
@@ -371,7 +371,7 @@ void RayTracedTechnique::init()
                 }
                 else
                 {
-                    #include "Shaders/volume_frag.cpp"
+                    #include "shaders/volume_frag.cpp"
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_frag));
                 }
             }
@@ -425,62 +425,46 @@ void RayTracedTechnique::init()
     {
         osg::Geometry* geom = new osg::Geometry;
 
-        osg::Vec3Array* coords = new osg::Vec3Array(8);
-        (*coords)[0] = osg::Vec3d(0.0,0.0,0.0);
-        (*coords)[1] = osg::Vec3d(1.0,0.0,0.0);
-        (*coords)[2] = osg::Vec3d(1.0,1.0,0.0);
-        (*coords)[3] = osg::Vec3d(0.0,1.0,0.0);
-        (*coords)[4] = osg::Vec3d(0.0,0.0,1.0);
-        (*coords)[5] = osg::Vec3d(1.0,0.0,1.0);
-        (*coords)[6] = osg::Vec3d(1.0,1.0,1.0);
-        (*coords)[7] = osg::Vec3d(0.0,1.0,1.0);
-        geom->setVertexArray(coords);
-
         osg::Vec4Array* colours = new osg::Vec4Array(1);
         (*colours)[0].set(1.0f,1.0f,1.0,1.0f);
         geom->setColorArray(colours, osg::Array::BIND_OVERALL);
 
-        osg::DrawElementsUShort* drawElements = new osg::DrawElementsUShort(GL_QUADS);
-        // bottom
-        drawElements->push_back(0);
-        drawElements->push_back(1);
-        drawElements->push_back(2);
-        drawElements->push_back(3);
+        // triangle strip of cube based on : http://www.cs.umd.edu/gvil/papers/av_ts.pdf
+        osg::Vec3Array* coords = new osg::Vec3Array(8);
+        (*coords)[0] = osg::Vec3d(1.0,1.0,1.0); // Back-top-right
+        (*coords)[1] = osg::Vec3d(0.0,1.0,1.0); // Back-top-left
+        (*coords)[2] = osg::Vec3d(1.0,0.0,1.0); // Front-top-right
+        (*coords)[3] = osg::Vec3d(0.0,0.0,1.0); // Front-top-left
+        (*coords)[4] = osg::Vec3d(1.0,1.0,0.0); // Back-bottom-right
+        (*coords)[5] = osg::Vec3d(0.0,1.0,0.0); // Back-bottom-left
+        (*coords)[6] = osg::Vec3d(0.0,0.0,0.0); // Front-bottom-left
+        (*coords)[7] = osg::Vec3d(1.0,0.0,0.0); // Front-bottom-right
+        geom->setVertexArray(coords);
+
+        OSG_NOTICE<<"New RayTracedTechnique"<<std::endl;
+
+        osg::DrawElementsUShort* drawElements = new osg::DrawElementsUShort(GL_TRIANGLE_STRIP);
 
         // bottom
         drawElements->push_back(3);
         drawElements->push_back(2);
         drawElements->push_back(6);
         drawElements->push_back(7);
-
-        // left
-        drawElements->push_back(0);
-        drawElements->push_back(3);
-        drawElements->push_back(7);
         drawElements->push_back(4);
-
-        // right
-        drawElements->push_back(5);
-        drawElements->push_back(6);
         drawElements->push_back(2);
-        drawElements->push_back(1);
-
-        // front
-        drawElements->push_back(1);
         drawElements->push_back(0);
-        drawElements->push_back(4);
-        drawElements->push_back(5);
 
-        // top
-        drawElements->push_back(7);
+        drawElements->push_back(3);
+        drawElements->push_back(1);
         drawElements->push_back(6);
         drawElements->push_back(5);
         drawElements->push_back(4);
+        drawElements->push_back(1);
+        drawElements->push_back(0);
 
         geom->addPrimitiveSet(drawElements);
 
         geode->addDrawable(geom);
-
     }
 
     if (cpv._sampleDensityWhenMovingProperty.valid())

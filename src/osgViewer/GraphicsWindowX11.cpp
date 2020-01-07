@@ -1770,7 +1770,7 @@ void GraphicsWindowX11::transformMouseXY(float& x, float& y)
 void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol, int& unmodifiedKeySymbol)
 {
     unsigned char buffer_return[32];
-    int bytes_buffer = 32;
+    int bytes_buffer = sizeof(buffer_return);
     KeySym keysym_return;
 
     int numChars = XLookupString(&keyevent, reinterpret_cast<char*>(buffer_return), bytes_buffer, &keysym_return, NULL);
@@ -2277,42 +2277,7 @@ public:
 
 };
 
-#if 1
-
-REGISTER_WINDOWINGSYSTEMINTERFACE(X11, X11WindowingSystemInterface)
-
-
-#else
-struct RegisterWindowingSystemInterfaceProxy
-{
-    RegisterWindowingSystemInterfaceProxy()
-    {
-        OSG_INFO<<"RegisterWindowingSystemInterfaceProxy()"<<std::endl;
-        osg::GraphicsContext::setWindowingSystemInterface(new X11WindowingSystemInterface);
-    }
-
-    ~RegisterWindowingSystemInterfaceProxy()
-    {
-        OSG_INFO<<"~RegisterWindowingSystemInterfaceProxy()"<<std::endl;
-
-        if (osg::Referenced::getDeleteHandler())
-        {
-            osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(0);
-            osg::Referenced::getDeleteHandler()->flushAll();
-        }
-
-        osg::GraphicsContext::setWindowingSystemInterface(0);
-
-    }
-};
-RegisterWindowingSystemInterfaceProxy createWindowingSystemInterfaceProxy;
-
-// declare C entry point for static compilation.
-extern "C" void graphicswindow_X11(void)
-{
-    osg::GraphicsContext::setWindowingSystemInterface(new X11WindowingSystemInterface);
-}
-#endif
+REGISTER_WINDOWINGSYSTEMINTERFACE2(X11, X11WindowingSystemInterface, OSGVIEWER_EXPORT)
 
 void GraphicsWindowX11::raiseWindow()
 {

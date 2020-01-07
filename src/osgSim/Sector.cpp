@@ -361,6 +361,6 @@ float DirectionalSector::operator() (const osg::Vec3& eyeLocal) const
    // Azimuth check passed
 
    // We're good! Return full intensity
-   //fprintf(stderr, "   %%%% Returing intensity = %f\n", elev_intensity * azim_intensity) ;
+   //fprintf(stderr, "   %%%% Returning intensity = %f\n", elev_intensity * azim_intensity) ;
    return elev_intensity * azim_intensity ;
 }

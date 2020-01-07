@@ -80,14 +80,14 @@ void ShadowedScene::setShadowTechnique(ShadowTechnique* technique)
     if (_shadowTechnique.valid())
     {
         _shadowTechnique->cleanSceneGraph();
-        _shadowTechnique->_shadowedScene = 0;
+        _shadowTechnique->setShadowedScene(0);
     }
 
     _shadowTechnique = technique;
 
     if (_shadowTechnique.valid())
     {
-        _shadowTechnique->_shadowedScene = this;
+        _shadowTechnique->setShadowedScene(this);
         _shadowTechnique->dirty();
     }
 }

@@ -21,6 +21,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <pthread.h>
+#if defined(HAVE_PTHREAD_SETAFFINITY_NP) && defined(__FreeBSD__)
+    #include <pthread_np.h>
+#endif
 #include <limits.h>
 
 #if defined __linux__ || defined __sun || defined __APPLE__ || ANDROID
@@ -113,7 +116,11 @@ namespace OpenThreads
 static void setAffinity(const Affinity& affinity)
 {
     //std::cout<<"setProcessAffinity : "<< affinity.activeCPUs.size() <<std::endl;
+#if defined(__FreeBSD__)
+    cpuset_t cpumask;
+#else
     cpu_set_t cpumask;
+#endif
     CPU_ZERO( &cpumask );
     unsigned int numprocessors = OpenThreads::GetNumberOfProcessors();
     if (affinity)
@@ -401,7 +408,7 @@ int Thread::GetConcurrency()
 
 //----------------------------------------------------------------------------
 //
-// Decription: Constructor
+// Description: Constructor
 //
 // Use: public.
 //
@@ -418,7 +425,7 @@ Thread::Thread()
 
 //----------------------------------------------------------------------------
 //
-// Decription: Destructor
+// Description: Destructor
 //
 // Use: public.
 //
@@ -603,6 +610,12 @@ bool Thread::isRunning()
 //
 int Thread::start() {
 
+    PThreadPrivateData *pd = static_cast<PThreadPrivateData *> (_prvData);
+    if (pd->isRunning())
+    {
+        return 0;
+    }
+
     int status;
     pthread_attr_t thread_attr;
 
@@ -611,8 +624,6 @@ int Thread::start() {
     {
         return status;
     }
-
-    PThreadPrivateData *pd = static_cast<PThreadPrivateData *> (_prvData);
 
     //-------------------------------------------------------------------------
     // Set the stack size if requested, but not less than a platform reasonable

@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include <osg/Texture>
 #include <osgDB/ObjectCache>
 #include <osgDB/Options>
 
@@ -68,15 +69,36 @@ void ObjectCache::addObjectCache(ObjectCache* objectCache)
 
 void ObjectCache::addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp, const Options *options)
 {
+    if (!object) return;
+
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-    _objectCache[FileNameOptionsPair(filename, osg::clone(options))] = ObjectTimeStampPair(object,timestamp);
+    _objectCache[FileNameOptionsPair(filename, options ? osg::clone(options) : 0)] = ObjectTimeStampPair(object,timestamp);
     OSG_DEBUG<<"Adding "<<filename<<" with options '"<<(options ? options->getOptionString() : "")<<"' to ObjectCache "<<this<<std::endl;
 }
+
+ObjectCache::ObjectCacheMap::iterator ObjectCache::find(const std::string& fileName, const osgDB::Options* options)
+{
+    for(ObjectCacheMap::iterator itr = _objectCache.begin();
+        itr != _objectCache.end();
+        ++itr)
+    {
+        if (itr->first.first==fileName)
+        {
+            if (itr->first.second.valid())
+            {
+                if (options && *(itr->first.second)==*options) return itr;
+            }
+            else if (!options) return itr;
+        }
+    }
+    return _objectCache.end();
+}
+
 
 osg::Object* ObjectCache::getFromObjectCache(const std::string& fileName, const Options *options)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-    ObjectCacheMap::iterator itr = _objectCache.find(FileNameOptionsPair(fileName, options));
+    ObjectCacheMap::iterator itr = find(fileName, options);
     if (itr!=_objectCache.end())
     {
         osg::ref_ptr<const osgDB::Options> o = itr->first.second;
@@ -96,8 +118,7 @@ osg::Object* ObjectCache::getFromObjectCache(const std::string& fileName, const 
 osg::ref_ptr<osg::Object> ObjectCache::getRefFromObjectCache(const std::string& fileName, const Options *options)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-    ObjectCacheMap::iterator itr;
-    itr = _objectCache.find(FileNameOptionsPair(fileName, options));
+    ObjectCacheMap::iterator itr = find(fileName, options);
     if (itr!=_objectCache.end())
     {
         osg::ref_ptr<const osgDB::Options> o = itr->first.second;
@@ -142,7 +163,11 @@ void ObjectCache::removeExpiredObjectsInCache(double expiryTime)
     {
         if (oitr->second.second<=expiryTime)
         {
+#if __cplusplus > 199711L
+            oitr = _objectCache.erase(oitr);
+#else
             _objectCache.erase(oitr++);
+#endif
         }
         else
         {
@@ -154,7 +179,7 @@ void ObjectCache::removeExpiredObjectsInCache(double expiryTime)
 void ObjectCache::removeFromObjectCache(const std::string& fileName, const Options *options)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-    ObjectCacheMap::iterator itr = _objectCache.find(FileNameOptionsPair(fileName, options));
+    ObjectCacheMap::iterator itr = find(fileName, options);
     if (itr!=_objectCache.end()) _objectCache.erase(itr);
 }
 
@@ -164,15 +189,95 @@ void ObjectCache::clear()
     _objectCache.clear();
 }
 
+namespace ObjectCacheUtils
+{
+
+struct ContainsUnreffedTextures : public osg::NodeVisitor
+{
+    ContainsUnreffedTextures() :
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        foundUnreffedTexture(false)
+    {}
+
+    bool foundUnreffedTexture;
+
+    bool check(const osg::Texture* texture)
+    {
+        if (!texture) return false;
+
+        unsigned int numImages = 0;
+        for(unsigned int i=0; i<texture->getNumImages(); ++i)
+        {
+            if (texture->getImage(i)) ++numImages;
+        }
+
+        return numImages==0;
+    }
+
+    bool check(const osg::StateSet* stateset)
+    {
+        for(unsigned int i=0; i<stateset->getNumTextureAttributeLists(); ++i)
+        {
+            const osg::StateAttribute* sa = stateset->getTextureAttribute(i, osg::StateAttribute::TEXTURE);
+            if (sa && check(sa->asTexture())) return true;
+        }
+        return false;
+    }
+
+    bool check(osg::Object* object)
+    {
+        if (object->asStateAttribute()) return check(dynamic_cast<const osg::Texture*>(object));
+        if (object->asStateSet()) return check(object->asStateSet());
+        if (!object->asNode()) return false;
+
+        foundUnreffedTexture = false;
+
+        object->asNode()->accept(*this);
+
+        return foundUnreffedTexture;
+    }
+
+    void apply(osg::Node& node)
+    {
+        if (node.getStateSet())
+        {
+            if (check(node.getStateSet()))
+            {
+                foundUnreffedTexture = true;
+                return;
+            }
+        }
+
+        traverse(node);
+    }
+};
+
+} // ObjectCacheUtils
+
 void ObjectCache::releaseGLObjects(osg::State* state)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
 
+    ObjectCacheUtils::ContainsUnreffedTextures cut;
+
     for(ObjectCacheMap::iterator itr = _objectCache.begin();
         itr != _objectCache.end();
-        ++itr)
+        )
     {
+        ObjectCacheMap::iterator curr_itr = itr;
+
+        // get object and advance iterator to next item
         osg::Object* object = itr->second.first.get();
+
+        bool needToRemoveEntry = cut.check(itr->second.first.get());
+
         object->releaseGLObjects(state);
+
+        ++itr;
+
+        if (needToRemoveEntry)
+        {
+            _objectCache.erase(curr_itr);
+        }
     }
 }

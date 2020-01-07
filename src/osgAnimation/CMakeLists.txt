@@ -106,5 +106,7 @@ SET(TARGET_LIBRARIES
     OpenThreads
 )
 
+SET(COMPONENT_PKGCONFIG_DESCRIPTION "Skinning and morphing library for Openscenegraph")
+
 SETUP_LIBRARY(${LIB_NAME})
 

@@ -27,7 +27,7 @@ namespace osgShadow {
 // forward declare ShadowedScene
 class ShadowedScene;
 
-/** ShadowedScene provides a mechanism for decorating a scene that the needs to have shadows cast upon it.*/
+/** ShadowTechnique is the base class for different shadow implementations.*/
 class OSGSHADOW_EXPORT ShadowTechnique : public osg::Object
 {
     public :
@@ -38,6 +38,8 @@ class OSGSHADOW_EXPORT ShadowTechnique : public osg::Object
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const ShadowTechnique*>(obj)!=NULL; } \
         virtual const char* libraryName() const { return "osgShadow"; }\
         virtual const char* className() const { return "ShadowTechnique"; }
+
+        virtual void setShadowedScene(ShadowedScene* ss);
 
         ShadowedScene* getShadowedScene() { return _shadowedScene; }
 

@@ -250,6 +250,8 @@ void osg::StandardNotifyHandler::notify(osg::NotifySeverity severity, const char
 
 void osg::WinDebugNotifyHandler::notify(osg::NotifySeverity severity, const char *message)
 {
+    OSG_UNUSED(severity);
+
     OutputDebugStringA(message);
 }
 

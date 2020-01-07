@@ -43,7 +43,7 @@ public:
         illum(2),
         Tf(0.0f,0.0f,0.0f,1.0f),
         Ni(0),
-        Ns(0),
+        Ns(-1),
         // textureReflection(false),
         alpha(1.0f) {}
 

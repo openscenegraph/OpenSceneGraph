@@ -17,7 +17,7 @@
 */
 
 #ifdef _MSC_VER
-#include <Windows.h>
+#include <windows.h>
 #pragma warning( disable : 4244 )
 #endif
 

@@ -161,6 +161,9 @@ class OSG_EXPORT View : public virtual osg::Object
 
         void updateSlaves();
 
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+        virtual void releaseGLObjects(osg::State* = 0) const;
+
     protected :
 
         virtual ~View();

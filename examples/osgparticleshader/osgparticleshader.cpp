@@ -155,7 +155,7 @@ int main( int argc, char** argv )
     root->addChild( parent.get() );
     root->addChild( updater.get() );
 
-    // FIXME 2010.9.19: the updater can't be a drawable; otehrwise the ParticleEffect will not work properly. why?
+    // FIXME 2010.9.19: the updater can't be a drawable; otherwise the ParticleEffect will not work properly. why?
     updater->addParticleSystem( ps.get() );
 
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;

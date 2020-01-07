@@ -712,6 +712,8 @@ int main(int argc, char** argv)
         traits->pbuffer = true;
         traits->doubleBuffer = true;
         traits->sharedContext = 0;
+        traits->readDISPLAY();
+        traits->setUndefinedScreenDetailsToDefaultScreen();
 
         pbuffer = osg::GraphicsContext::createGraphicsContext(traits.get());
         if (pbuffer.valid())

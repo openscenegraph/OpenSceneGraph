@@ -14,8 +14,9 @@
 #ifndef OSG_TEXGEN
 #define OSG_TEXGEN 1
 
-#include <osg/Plane>
-#include <osg/StateAttribute>
+#include <osg/TextureAttribute>
+#include <osg/Uniform>
+#include <osg/State>
 
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE) || defined(OSG_GL3_AVAILABLE)
     #define GL_OBJECT_LINEAR    0x2401
@@ -27,36 +28,28 @@
     #define GL_TEXTURE_GEN_Q    0x0C63
 #endif
 
-#ifndef GL_NORMAL_MAP_ARB
-    #define GL_NORMAL_MAP_ARB                   0x8511
+#ifndef GL_NORMAL_MAP
+    #define GL_NORMAL_MAP       0x8511
 #endif
 
-#ifndef GL_REFLECTION_MAP_ARB
-    #define GL_REFLECTION_MAP_ARB               0x8512
+#ifndef GL_REFLECTION_MAP
+    #define GL_REFLECTION_MAP   0x8512
 #endif
 
 namespace osg {
 
 /** TexGen encapsulates the OpenGL glTexGen (texture coordinate generation)
   * state.*/
-class OSG_EXPORT TexGen : public StateAttribute
+class OSG_EXPORT TexGen : public TextureAttribute
 {
     public :
 
         TexGen();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
-        TexGen(const TexGen& texgen,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            StateAttribute(texgen,copyop),
-            _mode(texgen._mode),
-            _plane_s(texgen._plane_s),
-            _plane_t(texgen._plane_t),
-            _plane_r(texgen._plane_r),
-            _plane_q(texgen._plane_q) {}
+        TexGen(const TexGen& texgen,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_StateAttribute(osg, TexGen, TEXGEN);
-
-        virtual bool isTextureAttribute() const { return true; }
 
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
@@ -101,11 +94,11 @@ class OSG_EXPORT TexGen : public StateAttribute
             OBJECT_LINEAR  = GL_OBJECT_LINEAR,
             EYE_LINEAR     = GL_EYE_LINEAR,
             SPHERE_MAP     = GL_SPHERE_MAP,
-            NORMAL_MAP     = GL_NORMAL_MAP_ARB,
-            REFLECTION_MAP = GL_REFLECTION_MAP_ARB
+            NORMAL_MAP     = GL_NORMAL_MAP,
+            REFLECTION_MAP = GL_REFLECTION_MAP
         };
 
-        inline void setMode( Mode mode ) { _mode = mode; }
+        void setMode( Mode mode );
 
         Mode getMode() const { return _mode; }
 
@@ -129,12 +122,18 @@ class OSG_EXPORT TexGen : public StateAttribute
 
         virtual ~TexGen( void );
 
+        std::string getUniformName(const char* baseName, unsigned int unit);
+
+        void configureUniformNames();
+
         Mode _mode;
 
-        /** Additional texgen coefficients for GL_OBJECT_PLANE or
-          * GL_EYE_PLANE, */
-        Plane _plane_s, _plane_t, _plane_r, _plane_q;
+        ref_ptr<PlaneUniform> _plane_s;
+        ref_ptr<PlaneUniform> _plane_t;
+        ref_ptr<PlaneUniform> _plane_r;
+        ref_ptr<PlaneUniform> _plane_q;
 
+        StateSet::DefineList    _defineList;
 };
 
 }

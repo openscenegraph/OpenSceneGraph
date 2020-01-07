@@ -1,2 +1,2 @@
 # openscenegraph library configuration
-${CMAKE_INSTALL_PREFIX}/lib${LIB_POSTFIX}
+${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}

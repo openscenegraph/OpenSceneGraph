@@ -37,8 +37,10 @@ namespace osgParticle
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const PrecipitationEffect*>(obj) != 0; }
         virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) { nv.pushOntoNodePath(this); nv.apply(*this); nv.popFromNodePath(); } }
 
-        virtual void traverse(osg::NodeVisitor& nv);
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+        virtual void releaseGLObjects(osg::State* state = 0) const;
 
+        virtual void traverse(osg::NodeVisitor& nv);
 
         /** Set all the parameters to create an rain effect of specified intensity.*/
         void rain(float intensity);
@@ -117,6 +119,9 @@ namespace osgParticle
             void setNumberOfVertices(unsigned int numVertices) { _numberOfVertices = numVertices; }
             unsigned int getNumberOfVertices() const { return _numberOfVertices; }
 
+            virtual void resizeGLObjectBuffers(unsigned int maxSize);
+            virtual void releaseGLObjects(osg::State* state) const;
+
             virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
 
             struct Cell
@@ -174,7 +179,7 @@ namespace osgParticle
 
         protected:
 
-            virtual ~PrecipitationDrawable() {}
+            virtual ~PrecipitationDrawable();
 
             bool _requiresPreviousMatrix;
 

@@ -34,7 +34,6 @@
 #include "RemapGeometryVisitor"
 #include "SmoothNormalVisitor"
 #include "TangentSpaceVisitor"
-#include "TriangleStripVisitor"
 #include "UnIndexMeshVisitor"
 #include "WireframeVisitor"
 
@@ -51,14 +50,12 @@ public:
     OpenGLESGeometryOptimizer() :
         _mode("all"),
         _useDrawArray(false),
-        _disableTriStrip(false),
+        _disableMeshOptimization(false),
         _disableMergeTriStrip(false),
         _disablePreTransform(false),
         _disableAnimation(false),
         _disableAnimationCleaning(false),
         _enableAABBonBone(false),
-        _triStripCacheSize(16),
-        _triStripMinSize(2),
         _generateTangentSpace(false),
         _tangentUnit(0),
         _maxIndexValue(65535),
@@ -74,14 +71,12 @@ public:
     void setMode(const std::string& mode) { _mode = mode; }
     void setUseDrawArray(bool s) { _useDrawArray = s; }
 
-    void setDisableTriStrip(bool s) { _disableTriStrip = s; }
+    void setDisableMeshOptimization(bool s) { _disableMeshOptimization = s; }
     void setDisableMergeTriStrip(bool s) { _disableMergeTriStrip = s; }
     void setDisablePreTransform(bool s) { _disablePreTransform = s; }
     void setDisableAnimation(bool s) { _disableAnimation = s; }
     void setDisableAnimationCleaning(bool s) { _disableAnimationCleaning = s; }
     void setEnableAABBonBone(bool s)  { _enableAABBonBone = s; }
-    void setTripStripCacheSize(unsigned int size) { _triStripCacheSize = size; }
-    void setTripStripMinSize(unsigned int size) { _triStripMinSize = std::max<unsigned int>(size, 2); }
     void setExportNonGeometryDrawables(bool value) { _exportNonGeometryDrawables = value; }
     void setTexCoordChannelForTangentSpace(int uv) {
         _tangentUnit = uv;
@@ -93,7 +88,7 @@ public:
         _wireframe = s;
         if(_wireframe == std::string("outline")) {
             // no use to build strip if we only want wireframe
-            setDisableTriStrip(true);
+            setDisableMeshOptimization(true);
         }
     }
     void setMaxMorphTarget(unsigned int maxMorphTarget) {
@@ -193,9 +188,8 @@ protected:
         node->accept(remapper);
     }
 
-    void makeTriStrip(osg::Node* node) {
-        TriangleStripVisitor strip(_triStripCacheSize, _triStripMinSize, !_disableMergeTriStrip);
-        node->accept(strip);
+    void makeOptimizeMesh(osg::Node* node) {
+        osgUtil::optimizeMesh(node);
     }
 
     void makeDrawArray(osg::Node* node) {
@@ -226,14 +220,12 @@ protected:
 
     std::string _mode;
     bool _useDrawArray;
-    bool _disableTriStrip;
+    bool _disableMeshOptimization;
     bool _disableMergeTriStrip;
     bool _disablePreTransform;
     bool _disableAnimation;
     bool _disableAnimationCleaning;
     bool _enableAABBonBone;
-    unsigned int _triStripCacheSize;
-    unsigned int _triStripMinSize;
 
     bool _generateTangentSpace;
     int _tangentUnit;

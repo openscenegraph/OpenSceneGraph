@@ -18,6 +18,7 @@
 #include <osgManipulator/RotateCylinderDragger>
 #include <osgManipulator/RotateSphereDragger>
 #include <osg/ShapeDrawable>
+#include <osg/Geode>
 #include <osg/Geometry>
 #include <osg/LineWidth>
 

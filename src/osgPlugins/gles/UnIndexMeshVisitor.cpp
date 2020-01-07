@@ -69,7 +69,7 @@ void UnIndexMeshVisitor::process(osg::Geometry& geom)
         case(osg::PrimitiveSet::QUAD_STRIP):
         case(osg::PrimitiveSet::POLYGON):
         {
-            // for each geometry list indexes of vertexes
+            // for each geometry list indexes of vertices
             // to makes triangles
             TriangleIndexor triangleIndexList;
             (*itr)->accept(triangleIndexList);

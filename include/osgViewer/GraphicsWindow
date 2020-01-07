@@ -273,6 +273,7 @@ class GraphicsWindowEmbedded : public GraphicsWindow
         virtual void raiseWindow() {}
 };
 
+
 struct GraphicsWindowFunctionProxy
 {
     GraphicsWindowFunctionProxy(CGraphicsWindowFunction function) { (function)(); }
@@ -285,7 +286,11 @@ struct GraphicsWindowFunctionProxy
 #if defined(_WIN32)
     #define USE_GRAPHICSWINDOW()  USE_GRAPICSWINDOW_IMPLEMENTATION(Win32)
 #elif defined(__APPLE__)
+  #if defined(OSG_WINDOWING_SYSTEM_CARBON)
     #define USE_GRAPHICSWINDOW()  USE_GRAPICSWINDOW_IMPLEMENTATION(Carbon)
+  #else
+    #define USE_GRAPHICSWINDOW()  USE_GRAPICSWINDOW_IMPLEMENTATION(Cocoa)
+  #endif
 #else
     #define USE_GRAPHICSWINDOW()  USE_GRAPICSWINDOW_IMPLEMENTATION(X11)
 #endif

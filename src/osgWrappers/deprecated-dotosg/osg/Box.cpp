@@ -45,11 +45,11 @@ bool Box_readLocalData(Object& obj, Input& fr)
 
     if (fr.matchSequence("HalfLengths %f %f %f"))
     {
-        osg::Vec3 lenghts;
-        fr[1].getFloat(lenghts.x());
-        fr[2].getFloat(lenghts.y());
-        fr[3].getFloat(lenghts.z());
-        box.setHalfLengths(lenghts);
+        osg::Vec3 lengths;
+        fr[1].getFloat(lengths.x());
+        fr[2].getFloat(lengths.y());
+        fr[3].getFloat(lengths.z());
+        box.setHalfLengths(lengths);
         fr+=4;
         iteratorAdvanced = true;
     }

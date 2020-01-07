@@ -254,7 +254,7 @@ JSONObject* createImage(osg::Image* image, bool inlineImages, int maxTextureDime
                     in.seekg(0, std::ifstream::beg);
                     std::vector<unsigned char> rawData;
                     rawData.resize(size);
-                    in.read(reinterpret_cast<char*>(rawData.data()),size);
+                    in.read(reinterpret_cast<char*>(&rawData[0]),size);
                     in.seekg(std::ios_base::beg);
 
                     std::stringstream out;
@@ -1034,8 +1034,6 @@ JSONObject* WriteVisitor::createJSONStateSet(osg::StateSet* stateset)
             osg::ref_ptr<osg::CullFace> defaultCull = new osg::CullFace();
             cf = createJSONCullFace(defaultCull.get());
             cf->getMaps()["Mode"] = new JSONValue<std::string>("DISABLE");
-            obj->getMaps()["osg.CullFace"] = cf;
-            attributeList->getArray().push_back(obj);
         } else {
             if (!cullFace) {
                 cullFace = new osg::CullFace();

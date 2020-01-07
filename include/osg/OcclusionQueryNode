@@ -72,7 +72,19 @@ public:
 
     virtual void drawImplementation( osg::RenderInfo& renderInfo ) const;
 
-    unsigned int getNumPixels( const osg::Camera* cam );
+    struct QueryResult
+    {
+        QueryResult() : valid(false), numPixels(0) {}
+        QueryResult(bool v, unsigned int p) : valid(v), numPixels(p) {}
+
+        bool valid;
+        unsigned int numPixels;
+    };
+
+    /** return a QueryResult for specified Camera, where the QueryResult.valid is true when query results are available, and in which case the QueryResult.numPixels provides the num of pixels in the query result.*/
+    QueryResult getQueryResult( const osg::Camera* cam ) const;
+
+    unsigned int getNumPixels( const osg::Camera* cam ) const;
 
     virtual void releaseGLObjects( osg::State* state = 0 ) const;
 
@@ -125,6 +137,11 @@ public:
     void setQueryFrameCount( unsigned int frames ) { _queryFrameCount = frames; }
     unsigned int getQueryFrameCount() const { return _queryFrameCount; }
 
+    // Resets the queries. The next frame will issue a new query.
+    // This is useful for big view changes, if it shouldn't be waited for
+    // '_queryFrameCount' till the frame contents change.
+    void resetQueries();
+
     // Indicate whether or not the bounding box used in the occlusion query test
     //   should be rendered. Handy for debugging and development.
     // Should only be called outside of cull/draw. No thread issues.
@@ -141,8 +158,11 @@ public:
     osg::StateSet* getQueryStateSet();
     const osg::StateSet* getQueryStateSet() const;
 
-    // Get the QueryGeometry object used for occlusion query. Returns 0 if no QueryGeometry is created.
-    osg::QueryGeometry* getQueryGeometry();
+    // Set and get the QueryGeometry object used for the occlusion query.
+    // By default an axis aligned box is used as the query geometry.
+    // Resetting to the default query geometry is done by setting it to 0.
+    // Returns 0 if no QueryGeometry is created.
+    void setQueryGeometry( osg::QueryGeometry* geom );
     const osg::QueryGeometry* getQueryGeometry() const;
 
     // Set and get the StateSet used by the OcclusionQueryNode
@@ -172,14 +192,30 @@ public:
     static void discardDeletedQueryObjects( unsigned int contextID );
 
 protected:
+    enum QueryGeometryState {
+        INVALID,
+        VALID,
+        USER_DEFINED
+    };
+
     virtual ~OcclusionQueryNode();
 
     virtual void createSupportNodes();
+
+    bool isQueryGeometryValid() const { return _queryGeometryState != INVALID; }
+
+    void setQueryGeometryInternal( osg::QueryGeometry* queryGeom,
+                                   osg::Geometry* debugQueryGeom,
+                                   QueryGeometryState state );
+
+    void updateDefaultQueryGeometry();
 
     osg::ref_ptr< osg::Geode > _queryGeode;
     osg::ref_ptr< osg::Geode > _debugGeode;
 
     bool _enabled;
+
+    mutable QueryGeometryState _queryGeometryState;
 
     // Tracks the last frame number that we performed a query.
     // User can set how many times  (See setQueryFrameCount).

@@ -34,6 +34,11 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
 
         virtual const char* className() const { return "OSGTGZ Database Reader/Writer"; }
 
+        virtual ReadResult readObject(const std::string& filename, const osgDB::ReaderWriter::Options* options) const
+        {
+            return readNode(filename, options);
+        }
+
         virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getFileExtension(file);
@@ -102,7 +107,7 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
 
         #if defined(_WIN32) && !defined(__CYGWIN__)
             // note, is this the right command for windows?
-            // is there any way of overiding the Y/N option? RO.
+            // is there any way of overriding the Y/N option? RO.
             sprintf( command, "erase %s", dirname );
         #else
 

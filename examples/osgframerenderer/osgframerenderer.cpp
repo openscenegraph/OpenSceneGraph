@@ -74,7 +74,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options]");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("-i <filename>","Input scene (or presentation) filename.");
-    arguments.getApplicationUsage()->addCommandLineOption("-o <filename>","Base ouput filename of the images, recommended to use something like Images/image.png");
+    arguments.getApplicationUsage()->addCommandLineOption("-o <filename>","Base output filename of the images, recommended to use something like Images/image.png");
     arguments.getApplicationUsage()->addCommandLineOption("--cs <filename>","Load pre-generated configuration file for run.");
     arguments.getApplicationUsage()->addCommandLineOption("--ouput-cs <filename>","Output configuration file with settings provided on commandline.");
     arguments.getApplicationUsage()->addCommandLineOption("-p <filename>","Use specificied camera path file to control camera position.");

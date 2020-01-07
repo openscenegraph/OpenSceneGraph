@@ -120,6 +120,8 @@ class OSGDB_EXPORT ImageOptions : public osgDB::Options
             }
 
             double _x,_y,_w,_h;
+        protected:
+            virtual ~TexCoordRange() {}
         };
 
 

@@ -135,7 +135,7 @@ REGISTER_OBJECT_WRAPPER( DrawArraysIndirect,
                          osg::DrawArraysIndirect,
                          "osg::Object osg::BufferData osg::PrimitiveSet osg::DrawArraysIndirect" )
 {
-    ADD_OBJECT_SERIALIZER( IndirectCommandArray, osg::IndirectCommandDrawArrays ,new osg::DefaultIndirectCommandDrawArrays());
+    ADD_OBJECT_SERIALIZER( IndirectCommandArray, osg::IndirectCommandDrawArrays, new osg::DefaultIndirectCommandDrawArrays());
     ADD_UINT_SERIALIZER( FirstCommandToDraw, 0);
     ADD_INT_SERIALIZER( Stride, 0);
 }

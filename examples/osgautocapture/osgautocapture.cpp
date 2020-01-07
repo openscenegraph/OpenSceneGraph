@@ -245,10 +245,12 @@ int main( int argc, char **argv )
             traits->depth = src_traits->depth;
             traits->pbuffer = true;
         } else {
-            //viewer would use fullscreen size (unknown here) pbuffer will use 4096 x4096 (or best avaiable)
+            //viewer would use fullscreen size (unknown here) pbuffer will use 4096 x4096 (or best available)
             traits->width = 1 << 12;
             traits->height = 1 << 12;
             traits->pbuffer = true;
+            traits->readDISPLAY();
+            traits->setUndefinedScreenDetailsToDefaultScreen();
         }
         osg::ref_ptr<osg::GraphicsContext> pbuffer = osg::GraphicsContext::createGraphicsContext(traits.get());
         if (pbuffer.valid())

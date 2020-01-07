@@ -13,6 +13,7 @@
 #include <osg/ShapeDrawable>
 #include <osg/GL>
 #include <osg/Notify>
+#include <osg/KdTree>
 
 using namespace osg;
 
@@ -76,6 +77,9 @@ void ShapeDrawable::setTessellationHints(TessellationHints* hints)
 
 void ShapeDrawable::build()
 {
+    // we can't create a tessellation for a KdTree
+    if (dynamic_cast<KdTree*>(_shape.get())!=0) return;
+
     // reset all the properties.
     setVertexArray(0);
     setNormalArray(0);

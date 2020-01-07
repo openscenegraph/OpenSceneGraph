@@ -25,6 +25,7 @@ class State;
 
 typedef std::vector<osg::ShaderComponent*> ShaderComponents;
 
+/// deprecated
 class OSG_EXPORT ShaderComposer : public osg::Object
 {
     public:

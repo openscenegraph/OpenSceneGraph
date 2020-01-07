@@ -60,6 +60,9 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation
 
         virtual void compile();
 
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+        virtual void releaseGLObjects(osg::State* = 0) const;
+
         void setCompileOnNextDraw(bool flag) { _compileOnNextDraw = flag; }
         bool getCompileOnNextDraw() const { return _compileOnNextDraw; }
 

@@ -60,6 +60,7 @@ class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object, public osg::Obser
 
         META_Object(osgTerrain, TerrainTechnique);
 
+        virtual void setTerrainTile(TerrainTile* tile);
         TerrainTile* getTerrainTile() { return _terrainTile; }
         const TerrainTile* getTerrainTile() const { return _terrainTile; }
 
@@ -80,16 +81,14 @@ class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object, public osg::Obser
         * for all graphics contexts. */
         virtual void releaseGLObjects(osg::State* = 0) const {}
 
-        void addNeighbour(TerrainTile* tile) { _neighbours.addNeighbour(tile); }
-        void removeNeighbour(TerrainTile* tile) {  _neighbours.removeNeighbour(tile); }
-        bool containsNeighbour(TerrainTile* tile) { return _neighbours.containsNeighbour(tile); }
+        virtual void addNeighbour(TerrainTile* tile) { _neighbours.addNeighbour(tile); }
+        virtual void removeNeighbour(TerrainTile* tile) {  _neighbours.removeNeighbour(tile); }
+        virtual bool containsNeighbour(TerrainTile* tile) { return _neighbours.containsNeighbour(tile); }
+
 
     protected:
 
         virtual ~TerrainTechnique();
-
-        void setTerrainTile(TerrainTile* tile);
-        void setDirty(bool dirty);
 
         friend class osgTerrain::TerrainTile;
 

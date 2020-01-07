@@ -308,11 +308,13 @@ void View::setSceneData(osg::Node* node)
 
     if (getSceneData())
     {
+#if 0
         #if defined(OSG_GLES2_AVAILABLE)
             osgUtil::ShaderGenVisitor sgv;
             getSceneData()->getOrCreateStateSet();
             getSceneData()->accept(sgv);
         #endif
+#endif
 
         // now make sure the scene graph is set up with the correct DataVariance to protect the dynamic elements of
         // the scene graph from being run in parallel.
@@ -857,7 +859,7 @@ void View::requestWarpPointer(float x,float y)
             getEventQueue()->mouseWarped(x,y);
             if (gw->getEventQueue()->getCurrentEventState()->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS)
             {
-                local_y = gw->getTraits()->height - local_y;
+                local_y = gw->getTraits()->height - 1 - local_y;
             }
             const_cast<osgViewer::GraphicsWindow*>(gw)->getEventQueue()->mouseWarped(local_x,local_y);
             const_cast<osgViewer::GraphicsWindow*>(gw)->requestWarpPointer(local_x, local_y);
@@ -885,7 +887,7 @@ bool View::containsCamera(const osg::Camera* camera) const
 const osg::Camera* View::getCameraContainingPosition(float x, float y, float& local_x, float& local_y) const
 {
     const osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState();
-    const osgViewer::GraphicsWindow* gw = dynamic_cast<const osgViewer::GraphicsWindow*>(eventState->getGraphicsContext());
+    const osg::GraphicsContext* gc = eventState->getGraphicsContext();
     bool view_invert_y = eventState->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
 
     // OSG_NOTICE<<"getCameraContainingPosition("<<x<<", "<<y<<") view_invert_y = "<<view_invert_y<<", Xmin() = "<<eventState->getXmin()<<", Xmax() = "<<eventState->getXmax()<<", Ymin() = "<<eventState->getYmin()<<", Ymax() = "<<eventState->getYmax()<<std::endl;
@@ -896,7 +898,7 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
     // if master camera has graphics context and eventState context matches then assume coordinates refer
     // to master camera
     bool masterActive = (_camera->getGraphicsContext()!=0 && _camera->getViewport());
-    bool eventStateMatchesMaster = (gw!=0) ? _camera->getGraphicsContext()==gw : false;
+    bool eventStateMatchesMaster = (gc!=0) ? _camera->getGraphicsContext()==gc : false;
 
     if (masterActive && eventStateMatchesMaster)
     {
@@ -915,7 +917,7 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
         new_y *= static_cast<double>(_camera->getGraphicsContext()->getTraits()->height);
 
         if (new_x >= (viewport->x()-epsilon) && new_y >= (viewport->y()-epsilon) &&
-            new_x < (viewport->x()+viewport->width()-1.0+epsilon) && new_y <= (viewport->y()+viewport->height()-1.0+epsilon) )
+            new_x < (viewport->x()+viewport->width()+epsilon) && new_y < (viewport->y()+viewport->height()+epsilon) )
         {
             local_x = new_x;
             local_y = new_y;
@@ -963,7 +965,7 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
 
             if (viewport &&
                 new_coord.x() >= (viewport->x()-epsilon) && new_coord.y() >= (viewport->y()-epsilon) &&
-                new_coord.x() < (viewport->x()+viewport->width()-1.0+epsilon) && new_coord.y() <= (viewport->y()+viewport->height()-1.0+epsilon) )
+                new_coord.x() < (viewport->x()+viewport->width()+epsilon) && new_coord.y() < (viewport->y()+viewport->height()+epsilon) )
             {
                 // OSG_NOTICE<<"  in viewport "<<std::endl;;
 

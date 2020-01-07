@@ -178,7 +178,7 @@ void GlyphTexture::copyGlyphImage(Glyph* glyph, Glyph::TextureInfo* info)
     if (_shaderTechnique<=GREYSCALE)
     {
         // OSG_NOTICE<<"GlyphTexture::copyGlyphImage() greyscale copying. glyphTexture="<<this<<", glyph="<<glyph->getGlyphCode()<<std::endl;
-        // make sure the glyph image settings and the target image are consisent before copying.
+        // make sure the glyph image settings and the target image are consistent before copying.
         glyph->setPixelFormat(_image->getPixelFormat());
         glyph->setInternalTextureFormat(_image->getPixelFormat());
         _image->copySubImage(info->texturePositionX, info->texturePositionY, 0, glyph);
@@ -464,6 +464,8 @@ float Glyph::getVerticalAdvance() const { return _verticalAdvance; }
 
 void Glyph::setTextureInfo(ShaderTechnique technique, TextureInfo* info)
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_textureInfoListMutex);
+
     if (technique>=_textureInfoList.size())
     {
         _textureInfoList.resize(technique+1);
@@ -473,11 +475,15 @@ void Glyph::setTextureInfo(ShaderTechnique technique, TextureInfo* info)
 
 const Glyph::TextureInfo* Glyph::getTextureInfo(ShaderTechnique technique) const
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_textureInfoListMutex);
+
     return  (technique<_textureInfoList.size()) ? _textureInfoList[technique].get() : 0;
 }
 
 Glyph::TextureInfo* Glyph::getOrCreateTextureInfo(ShaderTechnique technique)
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_textureInfoListMutex);
+
     if (technique>=_textureInfoList.size())
     {
         _textureInfoList.resize(technique+1);

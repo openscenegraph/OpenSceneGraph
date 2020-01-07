@@ -35,7 +35,7 @@ using namespace osgShadow;
 // Unfortuantely this condition often happens in daily routine of shadow usage
 // due precision errors mixed with repeating frustum cuts performed by MinimalShadowClasses.
 // However, in most of above cases this condition is not fatal
-// because polyhedron becomes concave by very small margin (mesuring deep the hole).
+// because polyhedron becomes concave by very small margin (measuring deep the hole).
 // Unfortunately warnings are produced even for such small margin cases and can
 // easily flood the console.
 // So I leave MAKE_CHECKS commented out. Its really useful only for a guy who debugs
@@ -479,7 +479,7 @@ void ConvexPolyhedron::transformClip(const osg::Matrix& matrix, const osg::Matri
             // This may happen if face polygon is not planar or convex.
             // It may happen when face was distorted by projection transform
             // or when some polygon vertices land in incorrect positions after
-            // some transformation by badly conditioned matrix (weak precison)
+            // some transformation by badly conditioned matrix (weak precision)
 
             WARN
                 << "ConvexPolyhedron::transformClip - Slicing face polygon returns "
@@ -815,7 +815,7 @@ void ConvexPolyhedron::removeDuplicateVertices( void )
 {
 #if 1
     // Aggressive removal, find very close points and replace them
-    // with their average. Second step wil do the rest.
+    // with their average. Second step will do the rest.
 
     typedef std::map< osg::Vec3f, osg::Vec4d > PointMap;
     typedef std::set< osg::Vec3d > VertexSet;
@@ -1392,7 +1392,7 @@ void ConvexPolyhedron::cut(const osg::Plane& plane, const std::string& name)
             // This may happen if face polygon is not planar or convex.
             // It may happen when face was distorted by projection transform
             // or when some polygon vertices land in incorrect positions after
-            // some transformation by badly conditioned matrix (weak precison)
+            // some transformation by badly conditioned matrix (weak precision)
 
             WARN
                 << "ConvexPolyhedron::cut - Slicing face polygon returns "

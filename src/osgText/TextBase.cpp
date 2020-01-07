@@ -139,7 +139,34 @@ osg::VertexArrayState* TextBase::createVertexArrayStateImplementation(osg::Rende
 
 void TextBase::compileGLObjects(osg::RenderInfo& renderInfo) const
 {
-    Drawable::compileGLObjects(renderInfo);
+    State& state = *renderInfo.getState();
+    if (renderInfo.getState()->useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects))
+    {
+        unsigned int contextID = state.getContextID();
+        GLExtensions* extensions = state.get<GLExtensions>();
+        if (state.useVertexArrayObject(_useVertexArrayObject))
+        {
+            VertexArrayState* vas = 0;
+
+            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
+
+            State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
+
+            state.bindVertexArrayObject(vas);
+
+            drawImplementation(renderInfo);
+
+            state.unbindVertexArrayObject();
+        }
+        else
+        {
+            drawImplementation(renderInfo);
+        }
+
+        // unbind the BufferObjects
+        extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
+        extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
+    }
 }
 
 void TextBase::resizeGLObjectBuffers(unsigned int maxSize)

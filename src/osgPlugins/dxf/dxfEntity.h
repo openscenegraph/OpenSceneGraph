@@ -60,7 +60,7 @@ getOCSMatrix(const osg::Vec3d& ocs, osg::Matrixd& m)
 class dxfBasicEntity : public osg::Referenced
 {
 public:
-    dxfBasicEntity() : _color(0), _useAccuracy(false), _maxError(0.01), _improveAccuracyOnly(false) {}
+    dxfBasicEntity() : _color(0), _useAccuracy(false), _maxError(0.01), _improveAccuracyOnly(false), _lineWidth(-1), _lineThickness(-1) {}
     virtual ~dxfBasicEntity() {}
     virtual dxfBasicEntity* create() = 0;
     virtual const char* name() = 0;
@@ -78,6 +78,8 @@ public:
 protected:
     std::string    _layer;
     unsigned short    _color;
+    double  _lineWidth;
+    double  _lineThickness;
 
     bool _useAccuracy;          // true to specify a maximum deviation for curve rendering
     double _maxError;         // the error in model units, if _useAccuracy==true

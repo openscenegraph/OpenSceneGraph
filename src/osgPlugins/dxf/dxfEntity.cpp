@@ -46,6 +46,23 @@ dxfBasicEntity::assign(dxfFile* , codeValue& cv)
         case 62:
             _color = cv._short;
             break;
+        // Thickness
+        case 370:
+        case 39:
+            if (cv._double > 0)
+            {
+                _lineThickness = cv._double;
+                if (_lineWidth<=0)
+                    _lineWidth = _lineThickness;
+            }
+            break;
+        // width
+        case 43:
+            if (cv._double > 0)
+                _lineWidth = cv._double;
+            break;
+        default:
+            break;
     }
 }
 
@@ -211,7 +228,7 @@ dxfCircle::drawScene(scene* sc)
         vlist.push_back(b);
     }
 
-    sc->addLineStrip(getLayer(), _color, vlist); // Should really add LineLoop implementation and save a vertex
+    sc->addLineStrip(getLayer(), _color, vlist, _lineWidth); // Should really add LineLoop implementation and save a vertex
     sc->ocs_clear();
 }
 
@@ -311,7 +328,7 @@ dxfArc::drawScene(scene* sc)
     }
 
 
-    sc->addLineStrip(getLayer(), _color, vlist);
+    sc->addLineStrip(getLayer(), _color, vlist, _lineWidth);
     sc->ocs_clear();
 }
 
@@ -361,7 +378,7 @@ dxfLine::drawScene(scene* sc)
     getOCSMatrix(_ocs, m);
     // don't know why this doesn't work
 //    sc->ocs(m);
-    sc->addLine(getLayer(), _color, _b, _a);
+    sc->addLine(getLayer(), _color, _b, _a, _lineWidth);
 //    static long lcount = 0;
 //    std::cout << ++lcount << " ";
 //    sc->ocs_clear();
@@ -670,10 +687,10 @@ dxfPolyline::drawScene(scene* sc)
             vlist.push_back(_vertices[i]->getVertex());
         if (_flag & 1) {
 //            std::cout << "line loop " << _vertices.size() << std::endl;
-            sc->addLineLoop(getLayer(), _color, vlist);
+            sc->addLineLoop(getLayer(), _color, vlist, _lineWidth);
         } else {
 //            std::cout << "line strip " << _vertices.size() << std::endl;
-            sc->addLineStrip(getLayer(), _color, vlist);
+            sc->addLineStrip(getLayer(), _color, vlist, _lineWidth);
         }
 
     }
@@ -732,10 +749,10 @@ dxfLWPolyline::drawScene(scene* sc)
     sc->ocs(m);
     if (_flag & 1) {
 //        std::cout << "lwpolyline line loop " << _vertices.size() << std::endl;
-        sc->addLineLoop(getLayer(), _color, _vertices);
+        sc->addLineLoop(getLayer(), _color, _vertices, _lineWidth);
     } else {
 //        std::cout << "lwpolyline line strip " << _vertices.size() << std::endl;
-        sc->addLineStrip(getLayer(), _color, _vertices);
+        sc->addLineStrip(getLayer(), _color, _vertices, _lineWidth);
     }
     sc->ocs_clear();
 }

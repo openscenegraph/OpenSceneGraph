@@ -203,14 +203,16 @@ protected:
 
     void osgLines(osg::Group* root, bounds &b)
     {
+        std::map<double, osg::ref_ptr<osg::StateSet>> mapStateSet;
         for (MapMapVListList::iterator mmlitr = _maplinestrips.begin(); mmlitr != _maplinestrips.end(); ++mmlitr)
         {
-            osg::ref_ptr<osg::LineWidth> spLinewidth = NULL;
+            osg::ref_ptr<osg::StateSet> spStateSet = NULL;
             short lineWidth = mmlitr->first;
             if (lineWidth > 0)
             {
-                spLinewidth = new osg::LineWidth();
-                spLinewidth->setWidth(lineWidth * 96.0f / 254.0f);
+                spStateSet = new osg::StateSet;
+                spStateSet->setAttributeAndModes(new osg::LineWidth(lineWidth * 96.0f / 254.0f), osg::StateAttribute::ON);
+                mapStateSet[lineWidth] = spStateSet;
             }
             for (MapVListList::iterator mlitr = mmlitr->second.begin();
                 mlitr != mmlitr->second.end();
@@ -229,12 +231,8 @@ protected:
                         }
 
                         osg::Geode* geode = createModel(_name, createLnGeometry(osg::PrimitiveSet::LINE_STRIP, coords, getColor(mlitr->first)));
-                        if (spLinewidth.valid())
-                        {
-                            geode->getOrCreateStateSet()->setMode(GL_LINE_SMOOTH, osg::StateAttribute::ON);
-                            geode->getOrCreateStateSet()->setAttributeAndModes(new osg::Hint(GL_LINE_SMOOTH_HINT, GL_NICEST), osg::StateAttribute::ON);
-                            geode->getOrCreateStateSet()->setAttributeAndModes(spLinewidth.get(), osg::StateAttribute::ON);
-                        }
+                        if (spStateSet.valid())
+                            geode->setStateSet(spStateSet.get());
                         root->addChild(geode);
                     }
                 }
@@ -243,12 +241,18 @@ protected:
 
         for (MapMapVList::iterator mmitr = _maplines.begin(); mmitr != _maplines.end(); ++mmitr)
         {
-            osg::ref_ptr<osg::LineWidth> spLinewidth = NULL;
+            osg::ref_ptr<osg::StateSet> spStateSet = NULL;
             double lineWidth = mmitr->first;
             if (lineWidth > 0)
             {
-                spLinewidth = new osg::LineWidth();
-                spLinewidth->setWidth(lineWidth * 96.0f / 254.0f);
+                std::map<double, osg::ref_ptr<osg::StateSet>>::iterator it = mapStateSet.find(lineWidth);
+                if ( it != mapStateSet.end())
+                    spStateSet =it->second;
+                else
+                {
+                    spStateSet = new osg::StateSet;
+                    spStateSet->setAttributeAndModes(new osg::LineWidth(lineWidth * 96.0f / 254.0f), osg::StateAttribute::ON);
+                }
             }
             for (MapVList::iterator mitr = mmitr->second.begin();
                 mitr != mmitr->second.end(); ++mitr) {
@@ -260,12 +264,8 @@ protected:
                 }
 
                 osg::Geode* geode = createModel(_name, createLnGeometry(osg::PrimitiveSet::LINES, coords, getColor(mitr->first)));
-                if (spLinewidth.valid())
-                {
-                    geode->getOrCreateStateSet()->setMode(GL_LINE_SMOOTH, osg::StateAttribute::ON);
-                    geode->getOrCreateStateSet()->setAttributeAndModes(new osg::Hint(GL_LINE_SMOOTH_HINT, GL_NICEST), osg::StateAttribute::ON);
-                    geode->getOrCreateStateSet()->setAttributeAndModes(spLinewidth.get(), osg::StateAttribute::ON);
-                }
+                if (spStateSet.valid())
+                    geode->setStateSet(spStateSet.get());
                 root->addChild(geode);
             }
         }
@@ -416,24 +416,31 @@ public:
 
         child->setName("Layers");
 
+        std::map<double, osg::ref_ptr<osg::StateSet>> mapStateSet;
         for (std::map<std::string, osg::ref_ptr<sceneLayer> >::iterator litr = _layers.begin();
             litr != _layers.end(); ++litr) {
             sceneLayer* ly = (*litr).second.get();
             if (!ly) continue;
 
-            osg::ref_ptr<osg::LineWidth> spLinewidth = NULL;
+            osg::ref_ptr<osg::StateSet> spStateSet = NULL;
             double lineWidth = correctedLineWidth((*litr).first, -1);
             if( lineWidth>0 )
             {
-                spLinewidth = new osg::LineWidth();
-                spLinewidth->setWidth(lineWidth * 96.0f / 254.0f);
+                std::map<double, osg::ref_ptr<osg::StateSet>>::iterator it = mapStateSet.find(lineWidth);
+                if (it != mapStateSet.end())
+                    spStateSet = it->second;
+                else
+                {
+                    spStateSet = new osg::StateSet;
+                    spStateSet->setAttributeAndModes(new osg::LineWidth(lineWidth * 96.0f / 254.0f), osg::StateAttribute::ON);
+                }
             }
             osg::Group* lg = new osg::Group;
             lg->setName((*litr).first);
             child->addChild(lg);
             ly->layer2osg(lg, _b);
-            if( spLinewidth.valid() )
-                lg->getOrCreateStateSet()->setAttributeAndModes(spLinewidth.get(), osg::StateAttribute::ON);
+            if( spStateSet.valid() )
+                lg->setStateSet(spStateSet.get());
         }
         return root;
     }

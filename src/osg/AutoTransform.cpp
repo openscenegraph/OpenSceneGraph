@@ -153,7 +153,7 @@ osg::Matrixd AutoTransform::computeMatrix(const osg::NodeVisitor* nv) const
         {
             double size = 1.0/cs->pixelSize(getPosition(),0.48f);
 
-            //if (_autoScaleTransitionWidthRatio>0.0)
+            if (_autoScaleTransitionWidthRatio>0.0)
             {
                 if (_minimumScale>0.0)
                 {
@@ -183,6 +183,18 @@ osg::Matrixd AutoTransform::computeMatrix(const osg::NodeVisitor* nv) const
 
                     if (size>p) size = _maximumScale;
                     else if (size>m) size = a + b*size + c*(size*size);
+                }
+            }
+            else
+            {
+                if (_minimumScale>0.0 && size<_minimumScale)
+                {
+                    size = _minimumScale;
+                }
+
+                if (_maximumScale<DBL_MAX && size>_maximumScale)
+                {
+                    size = _maximumScale;
                 }
             }
 

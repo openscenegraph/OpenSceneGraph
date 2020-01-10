@@ -78,13 +78,13 @@ public:
 protected:
     std::string    _layer;
     unsigned short    _color;
-    double  _lineWidth;
-    double  _lineThickness;
 
     bool _useAccuracy;          // true to specify a maximum deviation for curve rendering
     double _maxError;         // the error in model units, if _useAccuracy==true
     bool _improveAccuracyOnly;// if true only use _maxError where it would increase the quality of curves compared to the previous algorithm
 
+    double  _lineWidth;
+    double  _lineThickness;
 };
 
 

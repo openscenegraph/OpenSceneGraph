@@ -21,6 +21,7 @@
 #include <osg/Texture2DMultisample>
 #include <osg/Texture3D>
 #include <osg/Texture2DArray>
+#include <osg/Texture2DMultisampleArray>
 #include <osg/TextureCubeMap>
 #include <osg/TextureRectangle>
 #include <osg/Notify>
@@ -209,7 +210,8 @@ struct FrameBufferAttachment::Pimpl
         TEXTURECUBE,
         TEXTURERECT,
         TEXTURE2DARRAY,
-        TEXTURE2DMULTISAMPLE
+        TEXTURE2DMULTISAMPLE,
+        TEXTURE2DMULTISAMPLEARRAY
     };
 
     TargetType targetType;
@@ -286,6 +288,13 @@ FrameBufferAttachment::FrameBufferAttachment(Texture2DArray* target, unsigned in
     _ximpl->zoffset = layer;
 }
 
+FrameBufferAttachment::FrameBufferAttachment(Texture2DMultisampleArray* target, unsigned int layer, unsigned int level)
+{
+    _ximpl = new Pimpl(Pimpl::TEXTURE2DMULTISAMPLEARRAY, level);
+    _ximpl->textureTarget = target;
+    _ximpl->zoffset = layer;
+}
+
 FrameBufferAttachment::FrameBufferAttachment(TextureCubeMap* target, unsigned int face, unsigned int level)
 {
     _ximpl = new Pimpl(Pimpl::TEXTURECUBE, level);
@@ -343,6 +352,15 @@ FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment& attachment)
         {
             _ximpl = new Pimpl(Pimpl::TEXTURE2DARRAY, attachment._level);
             _ximpl->textureTarget = texture2DArray;
+            _ximpl->zoffset = attachment._face;
+            return;
+        }
+
+        osg::Texture2DMultisampleArray* texture2DMSArray = dynamic_cast<osg::Texture2DMultisampleArray*>(texture);
+        if (texture2DMSArray)
+        {
+            _ximpl = new Pimpl(Pimpl::TEXTURE2DMULTISAMPLEARRAY, attachment._level);
+            _ximpl->textureTarget = texture2DMSArray;
             _ximpl->zoffset = attachment._face;
             return;
         }
@@ -409,6 +427,14 @@ bool FrameBufferAttachment::isMultisample() const
     if (_ximpl->renderbufferTarget.valid())
     {
         return _ximpl->renderbufferTarget->getSamples() > 0;
+    }
+    else if(_ximpl->textureTarget.valid())
+    {
+        osg::Texture2DMultisampleArray* tex2DMSArray = dynamic_cast<osg::Texture2DMultisampleArray*>(_ximpl->textureTarget.get());
+        if (tex2DMSArray != NULL)
+        {
+            return tex2DMSArray->getNumSamples() > 0;
+        }
     }
 
     return false;
@@ -502,6 +528,24 @@ void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachmen
         else
             ext->glFramebufferTextureLayer(target, attachment_point, tobj->id(), _ximpl->level, _ximpl->zoffset);
         break;
+    case Pimpl::TEXTURE2DMULTISAMPLEARRAY:
+        if (_ximpl->zoffset == Camera::FACE_CONTROLLED_BY_GEOMETRY_SHADER)
+        {
+            if (ext->glFramebufferTexture)
+            {
+                ext->glFramebufferTexture(target, attachment_point, tobj->id(), _ximpl->level);
+            }
+        }
+        else if (_ximpl->zoffset == Camera::FACE_CONTROLLED_BY_MULTIVIEW_SHADER)
+        {
+            if (ext->glFramebufferTextureMultiviewOVR)
+            {
+                ext->glFramebufferTextureMultiviewOVR(target, attachment_point, tobj->id(), _ximpl->level, 0, 2);
+            }
+        }
+        else
+            ext->glFramebufferTextureLayer(target, attachment_point, tobj->id(), _ximpl->level, _ximpl->zoffset);
+        break;
     case Pimpl::TEXTURERECT:
         ext->glFramebufferTexture2D(target, attachment_point, GL_TEXTURE_RECTANGLE, tobj->id(), 0);
         break;
@@ -570,6 +614,11 @@ unsigned int FrameBufferAttachment::getTexture3DZOffset() const
 unsigned int FrameBufferAttachment::getTextureArrayLayer() const
 {
     return _ximpl->zoffset;
+}
+
+bool FrameBufferAttachment::isArray() const
+{
+    return _ximpl->targetType == Pimpl::TEXTURE2DARRAY || _ximpl->targetType == Pimpl::TEXTURE2DMULTISAMPLEARRAY;
 }
 
 void FrameBufferAttachment::resizeGLObjectBuffers(unsigned int maxSize)
@@ -802,6 +851,18 @@ bool FrameBufferObject::isMultisample() const
         // multisampled or single sampled. Therefore we can just return the
         // result of the first attachment.
         return _attachments.begin()->second.isMultisample();
+    }
+
+    return false;
+}
+
+bool FrameBufferObject::isArray() const
+{
+    if (_attachments.size())
+    {
+        // If the FBO is correctly set up then all attachments will be either
+        // arrays or standard types
+        return _attachments.begin()->second.isArray();
     }
 
     return false;

@@ -265,6 +265,7 @@ class Texture2D;
 class Texture2DMultisample;
 class Texture3D;
 class Texture2DArray;
+class Texture2DMultisampleArray;
 class TextureCubeMap;
 class TextureRectangle;
 
@@ -280,6 +281,7 @@ class OSG_EXPORT FrameBufferAttachment
         explicit FrameBufferAttachment(Texture2DMultisample* target, unsigned int level = 0);
         explicit FrameBufferAttachment(Texture3D* target, unsigned int zoffset, unsigned int level = 0);
         explicit FrameBufferAttachment(Texture2DArray* target, unsigned int layer, unsigned int level = 0);
+        explicit FrameBufferAttachment(Texture2DMultisampleArray* target, unsigned int layer, unsigned int level = 0);
         explicit FrameBufferAttachment(TextureCubeMap* target, unsigned int face, unsigned int level = 0);
         explicit FrameBufferAttachment(TextureRectangle* target);
         explicit FrameBufferAttachment(Camera::Attachment& attachment);
@@ -303,6 +305,8 @@ class OSG_EXPORT FrameBufferAttachment
         unsigned int getTextureLevel() const;
         unsigned int getTexture3DZOffset() const;
         unsigned int getTextureArrayLayer() const;
+
+        bool isArray() const;
 
         void resizeGLObjectBuffers(unsigned int maxSize);
         void releaseGLObjects(osg::State* = 0) const;
@@ -341,6 +345,7 @@ class OSG_EXPORT FrameBufferObject: public StateAttribute
         inline const MultipleRenderingTargets& getMultipleRenderingTargets() const { return _drawBuffers; }
 
         bool isMultisample() const;
+        bool isArray() const;
 
         int compare(const StateAttribute &sa) const;
 

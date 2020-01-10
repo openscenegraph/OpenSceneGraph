@@ -182,6 +182,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Texture2D
     ${HEADER_PATH}/Texture2DMultisample
     ${HEADER_PATH}/Texture2DArray
+    ${HEADER_PATH}/Texture2DMultisampleArray
     ${HEADER_PATH}/Texture3D
     ${HEADER_PATH}/TextureBuffer
     ${HEADER_PATH}/TextureCubeMap
@@ -385,6 +386,7 @@ SET(TARGET_SRC
     TexMat.cpp
     Texture1D.cpp
     Texture2DArray.cpp
+	Texture2DMultisampleArray.cpp
     Texture2D.cpp
     Texture2DMultisample.cpp
     Texture3D.cpp

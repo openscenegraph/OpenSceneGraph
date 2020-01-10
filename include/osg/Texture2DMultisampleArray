@@ -1,0 +1,95 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+ *
+*/
+
+#ifndef OSG_TEXTURE2DMSARRAY
+#define OSG_TEXTURE2DMSARRAY 1
+
+#include <osg/Texture>
+
+namespace osg {
+
+class OSG_EXPORT Texture2DMultisampleArray : public Texture
+{
+    public :
+
+        Texture2DMultisampleArray();
+
+        Texture2DMultisampleArray(GLsizei numSamples, GLboolean fixedsamplelocations);
+
+        Texture2DMultisampleArray(int width, int height, int depth, GLenum internalFormat, GLsizei numSamples, GLboolean fixedsamplelocations);
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
+        Texture2DMultisampleArray(const Texture2DMultisampleArray& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_StateAttribute(osg, Texture2DMultisampleArray,TEXTURE);
+
+        /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
+        virtual int compare(const StateAttribute& rhs) const;
+
+        virtual GLenum getTextureTarget() const
+        {
+          return GL_TEXTURE_2D_MULTISAMPLE_ARRAY;
+        }
+
+        /** Texture2DMultisampleArray is related to non fixed pipeline usage only so isn't appropriate to enable/disable.*/
+        virtual bool getModeUsage(StateAttribute::ModeUsage&) const { return false; }
+
+        /** Sets the texture width and height. **/
+        inline void setTextureSize(int width, int height, int depth) const
+        {
+            _textureWidth = width;
+            _textureHeight = height;
+            _textureDepth = depth;
+        }
+
+        inline void setNumSamples( int samples ) { _numSamples = samples; }
+        GLsizei getNumSamples() const { return _numSamples; }
+
+        // unnecessary for Texture2DMultisampleArray
+        virtual void setImage(unsigned int /*face*/, Image* /*image*/) {}
+        virtual Image* getImage(unsigned int /*face*/) { return NULL; }
+        virtual const Image* getImage(unsigned int /*face*/) const { return NULL; }
+        virtual unsigned int getNumImages() const {return 0; }
+        virtual void allocateMipmap(State& /*state*/) const {}
+
+        void setTextureWidth(int width) { _textureWidth=width; }
+        void setTextureHeight(int height) { _textureHeight=height; }
+        void setTextureDepth(int depth) { _textureDepth=depth; }
+
+        virtual int getTextureWidth() const { return _textureWidth; }
+        virtual int getTextureHeight() const { return _textureHeight; }
+        virtual int getTextureDepth() const { return _textureDepth; }
+
+        /** Bind the texture object. If the texture object hasn't already been
+          * compiled, create the texture mipmap levels. */
+        virtual void apply(State& state) const;
+
+    protected :
+
+        virtual ~Texture2DMultisampleArray();
+
+        virtual void computeInternalFormat() const;
+
+        /** Subloaded images can have different texture and image sizes. */
+        mutable GLsizei _textureWidth, _textureHeight, _textureDepth;
+
+        mutable GLsizei _numSamples;
+
+        mutable GLboolean _fixedsamplelocations;
+
+};
+
+}
+
+#endif

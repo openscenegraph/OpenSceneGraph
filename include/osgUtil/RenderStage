@@ -313,6 +313,13 @@ protected:
 
         osg::ref_ptr<osg::FrameBufferObject>    _fbo;
         osg::ref_ptr<osg::FrameBufferObject>    _resolveFbo;
+
+        // VRV_PATCH BEGIN
+        // for resolving individual layers of a multisampled texture 2d array
+        std::vector<osg::ref_ptr<osg::FrameBufferObject>> _arrayLayerFbos;
+        std::vector<osg::ref_ptr<osg::FrameBufferObject>> _resolveArrayLayerFbos;
+        // VRV_PATCH END
+
         osg::ref_ptr<osg::GraphicsContext>      _graphicsContext;
         bool                                    _disableFboAfterRender;
 

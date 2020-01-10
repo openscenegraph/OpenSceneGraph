@@ -240,6 +240,10 @@
     #define GL_TEXTURE_2D_MULTISAMPLE         0x9100
 #endif
 
+#ifndef GL_TEXTURE_2D_MULTISAMPLE_ARRAY
+    #define GL_TEXTURE_2D_MULTISAMPLE_ARRAY   0x9102
+#endif
+
 // Integer texture extension as in http://www.opengl.org/registry/specs/EXT/texture_integer.txt
 #ifndef GL_EXT_texture_integer
     #define GL_RGBA32UI_EXT                                    0x8D70

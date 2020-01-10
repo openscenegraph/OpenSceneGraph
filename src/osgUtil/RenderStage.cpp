@@ -17,6 +17,8 @@
 #include <osg/Texture2D>
 #include <osg/Texture2DMultisample>
 #include <osg/Texture3D>
+#include <osg/Texture2DArray>
+#include <osg/Texture2DMultisampleArray>
 #include <osg/TextureRectangle>
 #include <osg/TextureCubeMap>
 #include <osg/ContextData>
@@ -243,11 +245,14 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
     osg::Camera::BufferAttachmentMap& bufferAttachments = _camera->getBufferAttachmentMap();
 
     _bufferAttachmentMap.clear();
+    _resolveArrayLayerFbos.clear();
+    _arrayLayerFbos.clear();
 
     // compute the required dimensions
     int width = static_cast<int>(_viewport->x() + _viewport->width());
     int height = static_cast<int>(_viewport->y() + _viewport->height());
     int depth = 1;
+    bool isArray = false;
     for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachments.begin();
         itr != bufferAttachments.end();
         ++itr)
@@ -296,6 +301,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             osg::Texture3D* texture3D = 0;
             osg::TextureCubeMap* textureCubeMap = 0;
             osg::TextureRectangle* textureRectangle = 0;
+            osg::Texture2DArray* texture2DArray = 0;
             if (0 != (texture1D=dynamic_cast<osg::Texture1D*>(texture)))
             {
                 if (texture1D->getTextureWidth()==0)
@@ -339,7 +345,13 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                     textureRectangle->setTextureSize(width,height);
                 }
             }
-
+            else if (0 != (texture2DArray = dynamic_cast<osg::Texture2DArray*>(texture)))
+            {
+                isArray = true;
+                //width = texture2DArray->getTextureWidth();
+                //height = texture2DArray->getTextureHeight();
+                depth = texture2DArray->getTextureDepth();
+            }
         }
     }
 
@@ -437,10 +449,62 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                             break;
                         }
                     }
-                    fbo_multisample->setAttachment(buffer,
-                        osg::FrameBufferAttachment(new osg::RenderBuffer(
-                        width, height, internalFormat,
-                        samples, colorSamples)));
+
+                    // VRV_PATCH BEGIN
+                    if(!isArray)
+                    {
+                        fbo_multisample->setAttachment(buffer,
+                            osg::FrameBufferAttachment(new osg::RenderBuffer(
+                            width, height, internalFormat,
+                            samples, colorSamples)));
+                    }
+                    else
+                    {
+                        if(ext->isTextureMultisampledSupported)
+                        {
+                            osg::Texture2DMultisampleArray* multiSampleTexArray = new osg::Texture2DMultisampleArray(width, height, depth, internalFormat, samples, GL_FALSE);
+                            fbo_multisample->setAttachment(buffer, osg::FrameBufferAttachment(multiSampleTexArray, attachment._face, 0));
+
+                            osg::Texture2DArray* attachmentAsTex2dArray = dynamic_cast<osg::Texture2DArray*>(attachment._texture.get());
+
+                            // make a read and draw fbos for each layer so we can resolve later
+                            for(unsigned int i=0; i<depth; i++)
+                            {
+                                osg::ref_ptr<osg::FrameBufferObject> layerfbo;
+                                osg::ref_ptr<osg::FrameBufferObject> resolvelayerfbo;
+
+                                if(static_cast<int>(_arrayLayerFbos.size()) <= i)
+                                {
+                                    layerfbo = new osg::FrameBufferObject;
+                                    layerfbo->setName(_camera->getName() + "_layer_");
+                                    _arrayLayerFbos.push_back(layerfbo);
+                                }
+                                else
+                                {
+                                    layerfbo = _arrayLayerFbos[i];
+                                }
+
+                                if (static_cast<int>(_resolveArrayLayerFbos.size()) <= i)
+                                {
+                                    resolvelayerfbo = new osg::FrameBufferObject;
+                                    resolvelayerfbo->setName(_camera->getName() + "_resolvelayer_");
+                                    _resolveArrayLayerFbos.push_back(resolvelayerfbo);
+                                }
+                                else
+                                {
+                                    resolvelayerfbo = _resolveArrayLayerFbos[i];
+                                }
+
+                                resolvelayerfbo->setAttachment(buffer, osg::FrameBufferAttachment(attachmentAsTex2dArray, i, 0));
+                                layerfbo->setAttachment(buffer, osg::FrameBufferAttachment(multiSampleTexArray, i, 0));
+                            }
+                        }
+                        else
+                        {
+                            fbo_multisample = NULL;
+                        }
+                    }
+                    // VRV_PATCH END
                 }
 
                 if (buffer==osg::Camera::DEPTH_BUFFER) depthAttached = true;
@@ -542,7 +606,11 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             }
             else
             {
-                setDrawBuffer(GL_NONE, false );
+                //OSG_WARN << "Camera '" << _camera->getName() << "' fbo details" << std::endl;
+
+                //dumpFboInfo(fbo);
+               
+                setDrawBuffer(GL_NONE, false);
                 setReadBuffer(GL_NONE, false );
 
                 _fbo = fbo;
@@ -557,6 +625,8 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                         OSG_NOTICE << "RenderStage::runCameraSetUp(), "
                             "multisample FBO setup failed, FBO status = 0x"
                             << std::hex << status << std::dec << std::endl;
+
+                        //dumpFboInfo(fbo_multisample);
 
                         fbo->apply(state);
                         fbo_multisample = 0;
@@ -951,6 +1021,8 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
 
     if (fbo_supported && _resolveFbo.valid() && ext->glBlitFramebuffer)
     {
+        bool isArray = _resolveFbo->getAttachmentMap().begin()->second.isArray(); // VRV_PATCH
+
         GLbitfield blitMask = 0;
         bool needToBlitColorBuffers = false;
 
@@ -979,52 +1051,77 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
             }
         }
 
-        // Bind the resolve framebuffer to blit into.
-        _fbo->apply(state, FrameBufferObject::READ_FRAMEBUFFER);
-        _resolveFbo->apply(state, FrameBufferObject::DRAW_FRAMEBUFFER);
-
-        if (blitMask)
+        if (!isArray) // VRV_PATCH
         {
-            // Blit to the resolve framebuffer.
-            // Note that (with nvidia 175.16 windows drivers at least) if the read
-            // framebuffer is multisampled then the dimension arguments are ignored
-            // and the whole framebuffer is always copied.
-            ext->glBlitFramebuffer(
-                static_cast<GLint>(_viewport->x()), static_cast<GLint>(_viewport->y()),
-                static_cast<GLint>(_viewport->x() + _viewport->width()), static_cast<GLint>(_viewport->y() + _viewport->height()),
-                static_cast<GLint>(_viewport->x()), static_cast<GLint>(_viewport->y()),
-                static_cast<GLint>(_viewport->x() + _viewport->width()), static_cast<GLint>(_viewport->y() + _viewport->height()),
-                blitMask, GL_NEAREST);
-        }
 
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
-        if (needToBlitColorBuffers)
-        {
-            for (FrameBufferObject::AttachmentMap::const_iterator
-                it = _resolveFbo->getAttachmentMap().begin(),
-                end =_resolveFbo->getAttachmentMap().end(); it != end; ++it)
+            // Bind the resolve framebuffer to blit into.
+            _fbo->apply(state, FrameBufferObject::READ_FRAMEBUFFER);
+            _resolveFbo->apply(state, FrameBufferObject::DRAW_FRAMEBUFFER);
+
+            if (blitMask)
             {
-                osg::Camera::BufferComponent attachment = it->first;
-                if (attachment >=osg::Camera::COLOR_BUFFER0)
+                // Blit to the resolve framebuffer.
+                // Note that (with nvidia 175.16 windows drivers at least) if the read
+                // framebuffer is multisampled then the dimension arguments are ignored
+                // and the whole framebuffer is always copied.
+                ext->glBlitFramebuffer(
+                    static_cast<GLint>(_viewport->x()), static_cast<GLint>(_viewport->y()),
+                    static_cast<GLint>(_viewport->x() + _viewport->width()), static_cast<GLint>(_viewport->y() + _viewport->height()),
+                    static_cast<GLint>(_viewport->x()), static_cast<GLint>(_viewport->y()),
+                    static_cast<GLint>(_viewport->x() + _viewport->width()), static_cast<GLint>(_viewport->y() + _viewport->height()),
+                    blitMask, GL_NEAREST);
+            }
+
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+            if (needToBlitColorBuffers)
+            {
+                for (FrameBufferObject::AttachmentMap::const_iterator
+                    it = _resolveFbo->getAttachmentMap().begin(),
+                    end =_resolveFbo->getAttachmentMap().end(); it != end; ++it)
                 {
-                    state.glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + (attachment - osg::Camera::COLOR_BUFFER0));
-                    state.glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + (attachment - osg::Camera::COLOR_BUFFER0));
+                    osg::Camera::BufferComponent attachment = it->first;
+                    if (attachment >= osg::Camera::COLOR_BUFFER0)
+                    {
+                        glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + (attachment - osg::Camera::COLOR_BUFFER0));
+                        glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + (attachment - osg::Camera::COLOR_BUFFER0));
+
+                        ext->glBlitFramebuffer(
+                            static_cast<GLint>(_viewport->x()), static_cast<GLint>(_viewport->y()),
+                            static_cast<GLint>(_viewport->x() + _viewport->width()), static_cast<GLint>(_viewport->y() + _viewport->height()),
+                            static_cast<GLint>(_viewport->x()), static_cast<GLint>(_viewport->y()),
+                            static_cast<GLint>(_viewport->x() + _viewport->width()), static_cast<GLint>(_viewport->y() + _viewport->height()),
+                            GL_COLOR_BUFFER_BIT, GL_NEAREST);
+                    }
+                }
+                // reset the read and draw buffers?  will comment out for now with the assumption that
+                // the buffers will be set explicitly when needed elsewhere.
+                // glReadBuffer(GL_COLOR_ATTACHMENT0_EXT);
+                // glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
+            }
+#endif
+        }
+        else
+        {
+            // VRV_PATCH BEGIN
+            if (blitMask)
+            {
+                for(unsigned int i = 0; i < _resolveArrayLayerFbos.size(); i++)
+                {
+                    //_arrayLayerFbos[i]->dirtyAll();
+                    _arrayLayerFbos[i]->apply(state, FrameBufferObject::READ_FRAMEBUFFER);
+                    _resolveArrayLayerFbos[i]->apply(state, FrameBufferObject::DRAW_FRAMEBUFFER);
 
                     ext->glBlitFramebuffer(
                         static_cast<GLint>(_viewport->x()), static_cast<GLint>(_viewport->y()),
                         static_cast<GLint>(_viewport->x() + _viewport->width()), static_cast<GLint>(_viewport->y() + _viewport->height()),
                         static_cast<GLint>(_viewport->x()), static_cast<GLint>(_viewport->y()),
                         static_cast<GLint>(_viewport->x() + _viewport->width()), static_cast<GLint>(_viewport->y() + _viewport->height()),
-                        GL_COLOR_BUFFER_BIT, GL_NEAREST);
+                        blitMask, GL_NEAREST);
                 }
             }
-            // reset the read and draw buffers?  will comment out for now with the assumption that
-            // the buffers will be set explicitly when needed elsewhere.
-            // glReadBuffer(GL_COLOR_ATTACHMENT0_EXT);
-            // glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
+            // VRV_PATCH END
         }
-#endif
-
+        
         apply_read_fbo = true;
         read_fbo = _resolveFbo.get();
 

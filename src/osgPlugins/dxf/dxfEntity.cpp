@@ -17,6 +17,7 @@
 #include "codeValue.h"
 
 #include <osg/io_utils> // just for debugging
+#include <osgDB/ConvertUTF>
 
 #include <algorithm>
 
@@ -910,10 +911,19 @@ dxfText::drawScene(scene* sc)
     sc->ocs(m);
 
     ref_ptr<osgText::Text> _text = new osgText::Text;
-    _text->setText(_string);
+    if (_useWideChar && !_string.empty())
+    {
+        std::wstring wText = osgDB::convertUTF8toUTF16(osgDB::convertStringFromCurrentCodePageToUTF8(_string.c_str()).c_str());
+        if (wText.empty())
+            _text->setText(_string);
+        else
+            _text->setText(wText.c_str());
+    }
+    else
+        _text->setText(_string);
 
     _text->setCharacterSize( _height, 1.0/_xscale );
-    _text->setFont("arial.ttf");
+    _text->setFont(_fontFile);
 
     Quat qr( DegreesToRadians(_rotation), Z_AXIS );
 

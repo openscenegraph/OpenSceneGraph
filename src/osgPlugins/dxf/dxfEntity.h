@@ -302,13 +302,22 @@ public:
         _rotation(0),
         _flags(0),
         _hjustify(0),
-        _vjustify(0) {}
+        _vjustify(0),
+        _fontFile("arial.ttf"),
+        _useWideChar(false) {}
 
     virtual ~dxfText() {}
-    virtual dxfBasicEntity*        create() { return new dxfText; }
+    virtual dxfBasicEntity*        create() { // we create a copy which uses our text settings
+        dxfText* text = new dxfText;
+        text->setFontFile(_fontFile);
+        text->setUseWideChar(_useWideChar);
+        return text;
+    }
     virtual const char*            name() { return "TEXT"; }
     virtual void                   assign(dxfFile* dxf, codeValue& cv);
     virtual void                   drawScene(scene* sc);
+    void setFontFile(const std::string& file) { _fontFile = file; }
+    void setUseWideChar(const bool& use) { _useWideChar = use; }
 
 protected:
     std::string       _string;    // 1
@@ -321,6 +330,8 @@ protected:
     int               _flags;     // 71
     int               _hjustify;  // 72
     int               _vjustify;  // 73
+    std::string       _fontFile;
+    bool              _useWideChar;
 };
 
 class dxfEntity : public osg::Referenced

@@ -203,7 +203,7 @@ protected:
 
     void osgLines(osg::Group* root, bounds &b)
     {
-        std::map<double, osg::ref_ptr<osg::StateSet>> mapStateSet;
+        std::map<double, osg::ref_ptr<osg::StateSet> > mapStateSet;
         for (MapMapVListList::iterator mmlitr = _maplinestrips.begin(); mmlitr != _maplinestrips.end(); ++mmlitr)
         {
             osg::ref_ptr<osg::StateSet> spStateSet = NULL;
@@ -245,7 +245,7 @@ protected:
             double lineWidth = mmitr->first;
             if (lineWidth > 0)
             {
-                std::map<double, osg::ref_ptr<osg::StateSet>>::iterator it = mapStateSet.find(lineWidth);
+                std::map<double, osg::ref_ptr<osg::StateSet> >::iterator it = mapStateSet.find(lineWidth);
                 if ( it != mapStateSet.end())
                     spStateSet =it->second;
                 else
@@ -416,7 +416,7 @@ public:
 
         child->setName("Layers");
 
-        std::map<double, osg::ref_ptr<osg::StateSet>> mapStateSet;
+        std::map<double, osg::ref_ptr<osg::StateSet> > mapStateSet;
         for (std::map<std::string, osg::ref_ptr<sceneLayer> >::iterator litr = _layers.begin();
             litr != _layers.end(); ++litr) {
             sceneLayer* ly = (*litr).second.get();
@@ -426,7 +426,7 @@ public:
             double lineWidth = correctedLineWidth((*litr).first, -1);
             if( lineWidth>0 )
             {
-                std::map<double, osg::ref_ptr<osg::StateSet>>::iterator it = mapStateSet.find(lineWidth);
+                std::map<double, osg::ref_ptr<osg::StateSet> >::iterator it = mapStateSet.find(lineWidth);
                 if (it != mapStateSet.end())
                     spStateSet = it->second;
                 else

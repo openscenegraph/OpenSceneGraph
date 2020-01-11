@@ -91,7 +91,8 @@ class dxfCircle : public dxfBasicEntity
 public:
     dxfCircle() : _radius(0), _ocs(0,0,1) {}
     virtual ~dxfCircle() {}
-    virtual dxfBasicEntity* create() { // we create a copy which uses our accuracy settings
+    virtual dxfBasicEntity* create()
+    { // we create a copy which uses our accuracy settings
         dxfBasicEntity* circle=new dxfCircle;
         circle->setAccuracy(_useAccuracy,_maxError,_improveAccuracyOnly);
         return circle;
@@ -110,7 +111,8 @@ class dxfArc : public dxfBasicEntity
 public:
     dxfArc() : _radius(0), _startAngle(0), _endAngle(360), _ocs(0,0,1) {}
     virtual ~dxfArc() {}
-    virtual dxfBasicEntity* create() { // we create a copy which uses our accuracy settings
+    virtual dxfBasicEntity* create()
+    { // we create a copy which uses our accuracy settings
         dxfBasicEntity* arc=new dxfArc;
         arc->setAccuracy(_useAccuracy,_maxError,_improveAccuracyOnly);
         //std::cout<<"dxfArc::create with _useAccuracy="<<_useAccuracy<<" maxError="<<_maxError<<" improveAccuracyOnly="<<_improveAccuracyOnly<<std::endl;

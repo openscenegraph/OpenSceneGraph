@@ -24,6 +24,21 @@ void dxfLayer::assign(dxfFile*, codeValue& cv)
             _color = cv._short;
             if ((short)_color < 0) _frozen = true;
             break;
+        // Thickness
+        case 370:
+        case 39:
+            if (cv._double > 0)
+            {
+                _lineThickness = cv._double;
+                if (_lineWidth<=0)
+                    _lineWidth = _lineThickness;
+            }
+            break;
+        // width
+        case 43:
+            if (cv._double > 0)
+                _lineWidth = cv._double;
+            break;
         case 70:
             _frozen = (bool)(cv._short & 1);
             break;

@@ -27,6 +27,8 @@
 #include <osg/Vec3d>
 #include <osgText/Text>
 #include <osgUtil/SmoothingVisitor>
+#include <osg/LineWidth>
+#include <osg/Hint>
 
 class dxfLayerTable;
 
@@ -143,6 +145,8 @@ typedef std::vector<osg::Vec3d> VList;
 typedef std::map<unsigned short, VList> MapVList;
 typedef std::vector<VList> VListList;
 typedef std::map<unsigned short, VListList> MapVListList;
+typedef std::map<double, MapVList> MapMapVList;
+typedef std::map<double, MapVListList> MapMapVListList;
 
 
 class sceneLayer : public osg::Referenced {
@@ -157,9 +161,9 @@ public:
         osgQuads(root, b);
         osgText(root, b);
     }
-    MapVListList    _linestrips;
+    MapMapVListList _maplinestrips;
+    MapMapVList     _maplines;
     MapVList        _points;
-    MapVList        _lines;
     MapVList        _triangles;
     MapVList        _trinorms;
     MapVList        _quads;
@@ -199,34 +203,71 @@ protected:
 
     void osgLines(osg::Group* root, bounds &b)
     {
-        for(MapVListList::iterator mlitr = _linestrips.begin();
-            mlitr != _linestrips.end();
-            ++mlitr)
+        std::map<double, osg::ref_ptr<osg::StateSet> > mapStateSet;
+        for (MapMapVListList::iterator mmlitr = _maplinestrips.begin(); mmlitr != _maplinestrips.end(); ++mmlitr)
         {
-            for(VListList::iterator itr = mlitr->second.begin();
-                itr != mlitr->second.end();
-                ++itr)
+            osg::ref_ptr<osg::StateSet> spStateSet = NULL;
+            short lineWidth = mmlitr->first;
+            if (lineWidth > 0)
             {
-                if (itr->size()) {
-                    osg::Vec3Array *coords = new osg::Vec3Array;
-                    for (VList::iterator vitr = itr->begin();
-                        vitr != itr->end(); ++vitr) {
-                        osg::Vec3 v(vitr->x() - b._min.x(), vitr->y() - b._min.y(), vitr->z() - b._min.z());
-                        coords->push_back(v);
+                spStateSet = new osg::StateSet;
+                spStateSet->setAttributeAndModes(new osg::LineWidth(lineWidth * 96.0f / 254.0f), osg::StateAttribute::ON);
+                mapStateSet[lineWidth] = spStateSet;
+            }
+            for (MapVListList::iterator mlitr = mmlitr->second.begin();
+                mlitr != mmlitr->second.end();
+                ++mlitr)
+            {
+                for (VListList::iterator itr = mlitr->second.begin();
+                    itr != mlitr->second.end();
+                    ++itr)
+                {
+                    if (itr->size()) {
+                        osg::Vec3Array *coords = new osg::Vec3Array;
+                        for (VList::iterator vitr = itr->begin();
+                            vitr != itr->end(); ++vitr) {
+                            osg::Vec3 v(vitr->x() - b._min.x(), vitr->y() - b._min.y(), vitr->z() - b._min.z());
+                            coords->push_back(v);
+                        }
+
+                        osg::Geode* geode = createModel(_name, createLnGeometry(osg::PrimitiveSet::LINE_STRIP, coords, getColor(mlitr->first)));
+                        if (spStateSet.valid())
+                            geode->setStateSet(spStateSet.get());
+                        root->addChild(geode);
                     }
-                    root->addChild(createModel(_name, createLnGeometry(osg::PrimitiveSet::LINE_STRIP, coords, getColor(mlitr->first))));
                 }
             }
         }
-        for (MapVList::iterator mitr = _lines.begin();
-            mitr != _lines.end(); ++mitr) {
-            osg::Vec3Array *coords = new osg::Vec3Array;
-            for (VList::iterator itr = mitr->second.begin();
-                itr != mitr->second.end(); ++itr) {
-                osg::Vec3 v(itr->x() - b._min.x(), itr->y() - b._min.y(), itr->z() - b._min.z());
-                coords->push_back(v);
+
+        for (MapMapVList::iterator mmitr = _maplines.begin(); mmitr != _maplines.end(); ++mmitr)
+        {
+            osg::ref_ptr<osg::StateSet> spStateSet = NULL;
+            double lineWidth = mmitr->first;
+            if (lineWidth > 0)
+            {
+                std::map<double, osg::ref_ptr<osg::StateSet> >::iterator it = mapStateSet.find(lineWidth);
+                if ( it != mapStateSet.end())
+                    spStateSet =it->second;
+                else
+                {
+                    spStateSet = new osg::StateSet;
+                    spStateSet->setAttributeAndModes(new osg::LineWidth(lineWidth * 96.0f / 254.0f), osg::StateAttribute::ON);
+                }
             }
-            root->addChild(createModel(_name, createLnGeometry(osg::PrimitiveSet::LINES, coords, getColor(mitr->first))));
+            for (MapVList::iterator mitr = mmitr->second.begin();
+                mitr != mmitr->second.end(); ++mitr) {
+                osg::Vec3Array *coords = new osg::Vec3Array;
+                for (VList::iterator itr = mitr->second.begin();
+                    itr != mitr->second.end(); ++itr) {
+                    osg::Vec3 v(itr->x() - b._min.x(), itr->y() - b._min.y(), itr->z() - b._min.z());
+                    coords->push_back(v);
+                }
+
+                osg::Geode* geode = createModel(_name, createLnGeometry(osg::PrimitiveSet::LINES, coords, getColor(mitr->first)));
+                if (spStateSet.valid())
+                    geode->setStateSet(spStateSet.get());
+                root->addChild(geode);
+            }
         }
     }
 
@@ -343,11 +384,12 @@ public:
         return ly;
     }
     unsigned short correctedColorIndex(const std::string & l, unsigned short color);
+    double correctedLineWidth(const std::string & l, double defaultLineWidth = -1.0);
 
     void addPoint(const std::string & l, unsigned short color, osg::Vec3d & s);
-    void addLine(const std::string & l, unsigned short color, osg::Vec3d & s, osg::Vec3d & e);
-    void addLineStrip(const std::string & l, unsigned short color, std::vector<osg::Vec3d> & vertices);
-    void addLineLoop(const std::string & l, unsigned short color, std::vector<osg::Vec3d> & vertices);
+    void addLine(const std::string & l, unsigned short color, osg::Vec3d & s, osg::Vec3d & e, double lineWidth);
+    void addLineStrip(const std::string & l, unsigned short color, std::vector<osg::Vec3d> & vertices, double lineWidth);
+    void addLineLoop(const std::string & l, unsigned short color, std::vector<osg::Vec3d> & vertices, double lineWidth);
     void addTriangles(const std::string & l, unsigned short color, std::vector<osg::Vec3d> & vertices, bool inverted=false);
     void addQuads(const std::string & l, unsigned short color, std::vector<osg::Vec3d> & vertices, bool inverted=false);
     void addText(const std::string & l, unsigned short color, osg::Vec3d & point, osgText::Text *text);
@@ -374,14 +416,31 @@ public:
 
         child->setName("Layers");
 
+        std::map<double, osg::ref_ptr<osg::StateSet> > mapStateSet;
         for (std::map<std::string, osg::ref_ptr<sceneLayer> >::iterator litr = _layers.begin();
             litr != _layers.end(); ++litr) {
             sceneLayer* ly = (*litr).second.get();
             if (!ly) continue;
+
+            osg::ref_ptr<osg::StateSet> spStateSet = NULL;
+            double lineWidth = correctedLineWidth((*litr).first, -1);
+            if( lineWidth>0 )
+            {
+                std::map<double, osg::ref_ptr<osg::StateSet> >::iterator it = mapStateSet.find(lineWidth);
+                if (it != mapStateSet.end())
+                    spStateSet = it->second;
+                else
+                {
+                    spStateSet = new osg::StateSet;
+                    spStateSet->setAttributeAndModes(new osg::LineWidth(lineWidth * 96.0f / 254.0f), osg::StateAttribute::ON);
+                }
+            }
             osg::Group* lg = new osg::Group;
             lg->setName((*litr).first);
             child->addChild(lg);
             ly->layer2osg(lg, _b);
+            if( spStateSet.valid() )
+                lg->setStateSet(spStateSet.get());
         }
         return root;
     }

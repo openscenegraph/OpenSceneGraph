@@ -309,7 +309,8 @@ public:
         _useWideChar(false) {}
 
     virtual ~dxfText() {}
-    virtual dxfBasicEntity*        create() { // we create a copy which uses our text settings
+    virtual dxfBasicEntity* create()
+    { // we create a copy which uses our text settings
         dxfText* text = new dxfText;
         text->setFontFile(_fontFile);
         text->setUseWideChar(_useWideChar);

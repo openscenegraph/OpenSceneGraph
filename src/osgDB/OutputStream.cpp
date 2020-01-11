@@ -495,6 +495,12 @@ void OutputStream::writeImage( const osg::Image* img )
                 imageFileName = "image.dds";
             }
 
+            std::string imagePath = osgDB::getFilePath(imageFileName);
+            if (!imagePath.empty() && !osgDB::fileExists(imagePath))
+            {
+                osgDB::makeDirectory(imagePath);
+            }
+
             bool result = osgDB::writeImageFile( *img, imageFileName );
             OSG_NOTICE << "OutputStream::writeImage(): Write image data to external file " << imageFileName << std::endl;
             if ( !result )

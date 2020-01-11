@@ -446,8 +446,16 @@ OBJWriterNodeVisitor::OBJMaterial::OBJMaterial(osg::Material* mat, osg::Texture*
         if ((img) && (!img->getFileName().empty()))
         {
             image = img->getFileName();
-            if(outputTextureFiles)
+            if (outputTextureFiles)
+            {
+                std::string imagePath = osgDB::getFilePath(image);
+                if (!imagePath.empty() && !osgDB::fileExists(imagePath))
+                {
+                    osgDB::makeDirectory(imagePath);
+                }
+
                 osgDB::writeImageFile(*img, image, options);
+            }
         }
     }
 

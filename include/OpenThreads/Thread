@@ -109,7 +109,7 @@ public:
 
 
     /**
-     *  Return a pointer to the current running thread
+     *  Return a pointer to the current running thread, returns NULL for a non OpenThreads thread.
      */
     static Thread *CurrentThread();
 

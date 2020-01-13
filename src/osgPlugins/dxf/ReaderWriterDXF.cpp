@@ -36,6 +36,13 @@ public:
     ReaderWriterdxf()
     {
         supportsExtension("dxf","Autodesk DXF format");
+
+        supportsOption("UTF8", "Assuming UTF8 encoding of dxf text");
+        supportsOption("UTF16", "Assuming UTF16 encoding of dxf text");
+        supportsOption("UTF32", "Assuming UTF32 encoding of dxf text");
+        supportsOption("SIGNATURE", "Detrmine encoding of dxf text from it's signative");
+        supportsOption("WideChar | CurrentCodePage", "Detrmine encoding of dxf text using CurrentCodePage (Windows only.)");
+        supportsOption("FontFile=<fontfile>", "Set the font file for dxf text");
     }
 
     virtual const char* className() const { return "Autodesk DXF Reader/Writer"; }
@@ -143,6 +150,68 @@ ReaderWriterdxf::readNode(const std::string& filename, const osgDB::ReaderWriter
             dxfEntity::getRegistryEntity("ARC")->setAccuracy(true,maxError,improveAccuracyOnly);
             dxfEntity::getRegistryEntity("CIRCLE")->setAccuracy(true,maxError,improveAccuracyOnly);
         } // accuracy options exists
+
+        {
+            std::istringstream iss(options->getOptionString());
+            std::string opt;
+            while (iss >> opt)
+            {
+                // split opt into pre= and post=
+                std::string pre_equals;
+                std::string post_equals;
+
+                size_t found = opt.find("=");
+                if (found != std::string::npos)
+                {
+                    pre_equals = opt.substr(0, found);
+                    post_equals = opt.substr(found + 1);
+                }
+                else
+                {
+                    pre_equals = opt;
+                }
+
+                if (pre_equals == "FontFile")
+                {
+                    std::string fontFile = post_equals.c_str();
+                    if (!fontFile.empty())
+                    {
+                        dynamic_cast<dxfText*>(dxfEntity::getRegistryEntity("TEXT"))->font = fontFile;
+
+                        OSG_INFO<<"ReaderWriteDXF : Set fontFile to "<<fontFile<<std::endl;
+                    }
+                    else
+                    {
+                        OSG_NOTICE << "Warning: invalid FontFile value: " << post_equals << std::endl;
+                    }
+                }
+                else if (pre_equals=="UTF8")
+                {
+                    dynamic_cast<dxfText*>(dxfEntity::getRegistryEntity("TEXT"))->encoding = osgText::String::ENCODING_UTF8;
+                    OSG_INFO<<"ReaderWriteDXF : Set encoding to osgText::String::ENCODING_UTF8"<<std::endl;
+                }
+                else if (pre_equals=="UTF16")
+                {
+                    dynamic_cast<dxfText*>(dxfEntity::getRegistryEntity("TEXT"))->encoding = osgText::String::ENCODING_UTF16;
+                    OSG_INFO<<"ReaderWriteDXF : Set encoding to osgText::String::ENCODING_UTF16"<<std::endl;
+                }
+                else if (pre_equals=="UTF32")
+                {
+                    dynamic_cast<dxfText*>(dxfEntity::getRegistryEntity("TEXT"))->encoding = osgText::String::ENCODING_UTF32;
+                    OSG_INFO<<"ReaderWriteDXF : Set encoding to osgText::String::ENCODING_UTF32"<<std::endl;
+                }
+                else if (pre_equals=="SIGNATURE")
+                {
+                    dynamic_cast<dxfText*>(dxfEntity::getRegistryEntity("TEXT"))->encoding = osgText::String::ENCODING_SIGNATURE;
+                    OSG_INFO<<"ReaderWriteDXF : Set encoding to osgText::String::ENCODING_SIGNATURE"<<std::endl;
+                }
+                else if (pre_equals=="WideChar" || pre_equals=="CurrentCodePage")
+                {
+                    dynamic_cast<dxfText*>(dxfEntity::getRegistryEntity("TEXT"))->encoding = osgText::String::ENCODING_CURRENT_CODE_PAGE;
+                    OSG_INFO<<"ReaderWriteDXF : Set encoding to osgText::String::ENCODING_CURRENT_CODE_PAGE"<<std::endl;
+                }
+            }
+        }
     } // options exist
 
 

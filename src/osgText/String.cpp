@@ -3,6 +3,8 @@
 #include <osg/Notify>
 #include <osg/Math>
 
+#include <osgDB/ConvertUTF>
+
 #include <iterator>
 
 using namespace osgText;
@@ -275,8 +277,14 @@ void String::set(const wchar_t* text)
     }
 }
 
-void String::set(const std::string& text,Encoding encoding)
+void String::set(const std::string& text, Encoding encoding)
 {
+    if (encoding==ENCODING_CURRENT_CODE_PAGE)
+    {
+        set(osgDB::convertStringFromCurrentCodePageToUTF8(text), ENCODING_UTF8);
+        return;
+    }
+
     clear();
 
     look_ahead_iterator itr(text);

@@ -911,9 +911,8 @@ dxfText::drawScene(scene* sc)
 
     ref_ptr<osgText::Text> _text = new osgText::Text;
     _text->setText(_string, encoding);
-    _text->setFont(font);
-
     _text->setCharacterSize( _height, 1.0/_xscale );
+    _text->setFont(font);
 
     Quat qr( DegreesToRadians(_rotation), Z_AXIS );
 

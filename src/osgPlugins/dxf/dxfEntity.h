@@ -307,7 +307,14 @@ public:
         _vjustify(0) {}
 
     virtual ~dxfText() {}
-    virtual dxfBasicEntity*        create() { return new dxfText; }
+    virtual dxfBasicEntity* create()
+    {
+        dxfText* text = new dxfText;
+        text->encoding = encoding;
+        text->font = font;
+        return text;
+    }
+
     virtual const char*            name() { return "TEXT"; }
     virtual void                   assign(dxfFile* dxf, codeValue& cv);
     virtual void                   drawScene(scene* sc);

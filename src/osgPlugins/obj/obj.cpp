@@ -668,28 +668,22 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
 
                     if (sscanf(ptr, "%d/%d/%d", &vi, &ti, &ni) == 3)
                     {
-                        // OSG_NOTICE<<"   vi="<<vi<<"/ti="<<ti<<"/ni="<<ni<<std::endl;
                         element->vertexIndices.push_back(remapVertexIndex(vi));
-                        element->normalIndices.push_back(remapNormalIndex(ni));
-                        element->texCoordIndices.push_back(remapTexCoordIndex(ti));
+                        if (normals.size() > 0 && remapNormalIndex(ni) < static_cast<int>(normals.size())) element->normalIndices.push_back(remapNormalIndex(ni));
+                        if (texcoords.size() > 0 && remapTexCoordIndex(ti) < static_cast<int>(texcoords.size())) element->texCoordIndices.push_back(remapTexCoordIndex(ti));
                     }
                     else if (sscanf(ptr, "%d//%d", &vi, &ni) == 2)
                     {
-                        // OSG_NOTICE<<"   vi="<<vi<<"//ni="<<ni<<std::endl;
                         element->vertexIndices.push_back(remapVertexIndex(vi));
-                        if (remapNormalIndex(ni) < static_cast<int>(normals.size()))
-                            element->normalIndices.push_back(remapNormalIndex(ni));
+                        if (normals.size() > 0 && remapNormalIndex(ni) < static_cast<int>(normals.size())) element->normalIndices.push_back(remapNormalIndex(ni));
                     }
                     else if (sscanf(ptr, "%d/%d", &vi, &ti) == 2)
                     {
-                        // OSG_NOTICE<<"   vi="<<vi<<"/ti="<<ti<<std::endl;
                         element->vertexIndices.push_back(remapVertexIndex(vi));
-                        if (remapTexCoordIndex(ti) < static_cast<int>(texcoords.size()))
-                            element->texCoordIndices.push_back(remapTexCoordIndex(ti));
+                        if (texcoords.size() > 0 && remapTexCoordIndex(ti) < static_cast<int>(texcoords.size())) element->texCoordIndices.push_back(remapTexCoordIndex(ti));
                     }
                     else if (sscanf(ptr, "%d", &vi) == 1)
                     {
-                        // OSG_NOTICE<<"   vi="<<vi<<std::endl;
                         element->vertexIndices.push_back(remapVertexIndex(vi));
                     }
 

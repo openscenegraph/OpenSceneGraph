@@ -1,3 +1,88 @@
+Tue, 14 Jan 2020 16:29:07 +0000
+Author : Robert Osfield
+Fixed warnings
+
+Tue, 14 Jan 2020 14:57:15 +0000
+Author : Robert Osfield
+Fixed build warning due to auto_ptr<>
+
+Tue, 14 Jan 2020 14:42:01 +0000
+Author : Robert Osfield
+Fixed workaround for invalid indices
+
+Mon, 13 Jan 2020 14:14:48 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #895 from openscenegraph/CurrentThreadIdAdded commment explaining that OpenThreads::Thread::CurrentThread() r…
+
+Mon, 13 Jan 2020 14:12:54 +0000
+Author : Robert Osfield
+Added commment explaining that OpenThreads::Thread::CurrentThread() return NULL on non OpenThreads thread.
+
+Mon, 13 Jan 2020 13:41:37 +0000
+Author : Robert Osfield
+Added support for using CurrentCodePage functionality with osgText::String To the DXF plugin added Option string support for using CurrentCodePage|WidePage, UTF8, UTF16, UTF32 and FontFile=filename
+
+Mon, 13 Jan 2020 09:58:47 +0000
+Author : Robert Osfield
+Added encoding and font setting to dxfText as a first step towards making these user controllable to enble handling of non default settings
+
+Sat, 11 Jan 2020 14:39:46 +0000
+Author : Robert Osfield
+Added creation of image directories when required
+
+Fri, 10 Jan 2020 10:12:13 +0000
+Author : Robert Osfield
+Fixed handling of _autoScaleTransitionWidthRatio<=0.0
+
+Tue, 7 Jan 2020 11:12:18 +0000
+Author : Robert Osfield
+Implemented TextBase::compileGLObjects() with handling of VAO/VBOs to address bugs associated with VAO usage of Text.
+
+Mon, 6 Jan 2020 18:39:51 +0000
+Author : Robert Osfield
+Added Thread::CurrentThreadId() method to wrap up thread id functionality in a more platform appropriate way.
+
+Mon, 6 Jan 2020 10:27:18 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #887 from limbolily/patch-1Fix navagation error about Android GLES2 example.
+
+Mon, 6 Jan 2020 14:48:34 +0800
+Author : limbolily
+Fix navagation error about Android GLES2 example.Android GLES2 example use event queue without initializing window rectangle with graphics context,that produce navigation error.
+
+Mon, 23 Dec 2019 14:20:26 +0100
+Author : Michael Danilov
+Fix #877 "Shift key stuck if both shifts switch keymap"Adapted the patch from https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=687332
+
+
+Mon, 23 Dec 2019 14:53:17 +0000
+Author : Robert Osfield
+Adopted CMake's FindDCMTK.cmake variables
+
+Sun, 22 Dec 2019 12:29:47 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #874 from blobfish/occt7.4Occt7.4
+
+Thu, 19 Dec 2019 11:46:05 -0500
+Author : blobfish
+Plugins: OpenCasCade: Adding 'std' prefix where needed. See Following.Prior to 7.4, occt had a 'using namespace std' in a header file that
+was polluting dependent projects. They have since fixed it and so these
+changes are required.
+
+
+Thu, 19 Dec 2019 10:16:09 -0500
+Author : blobfish
+Plugins: Cmake: OpenCasCade: Changing header used for include directory search. See Following.BRepMesh.hxx is gone in occt 7.4. Now searching for Standard_Version.hxx, which should be more consistent.
+
+
+Wed, 18 Dec 2019 14:25:07 +0000
+Author : Robert Osfield
+Added classic locale setting to avoid local setting of locale affecting the GLSL code generated.
+
+Mon, 16 Dec 2019 17:10:39 +0000
+Author : Robert Osfield
+Updated ChangeLog
+
 Mon, 16 Dec 2019 16:51:16 +0000
 Author : Robert Osfield
 Added automatically removal from the OjbectCache when a object or it's subgraph contain Texture that no longer have an osg::Image.

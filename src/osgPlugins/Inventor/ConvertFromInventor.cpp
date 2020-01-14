@@ -1537,15 +1537,14 @@ convertShader(osg::Shader::Type osgShaderType,
         return true;
 
     // Create shader
-    osg::ref_ptr<osg::Shader> osgShader = new osg::Shader(osgShaderType);
+    osg::ref_ptr<osg::Shader> osgShader;
     if (ivShader->sourceType.getValue() == SoShaderObject::FILENAME)
-        osgShader->loadShaderSourceFromFile(ivShader->sourceProgram.getValue().getString());
+        osgShader = osgDB::readRefShaderFile(osgShaderType, ivShader->sourceProgram.getValue().getString());
     else
     if (ivShader->sourceType.getValue() == SoShaderObject::GLSL_PROGRAM)
-        osgShader->setShaderSource(ivShader->sourceProgram.getValue().getString());
+        osgShader = new osg::Shader(osgShaderType, ivShader->sourceProgram.getValue().getString());
     else {
-        OSG_WARN << NOTIFY_HEADER << "Can not convert "
-                  << "shader. Unsupported shader language." << std::endl;
+        OSG_WARN << NOTIFY_HEADER << "Can not convert shader. Unsupported shader language." << std::endl;
         return false;
     }
 

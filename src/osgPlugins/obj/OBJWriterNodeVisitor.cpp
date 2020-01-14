@@ -536,7 +536,7 @@ void OBJWriterNodeVisitor::processStateSet(osg::StateSet* ss)
 
     if (mat || tex)
     {
-        _materialMap.insert(std::make_pair(osg::ref_ptr<osg::StateSet>(ss), OBJMaterial(mat, tex, _outputTextureFiles, _options)));
+        _materialMap.insert(std::make_pair(osg::ref_ptr<osg::StateSet>(ss), OBJMaterial(mat, tex, _outputTextureFiles, _options.get())));
         _fout << "usemtl " << _materialMap[ss].name << std::endl;
     }
 

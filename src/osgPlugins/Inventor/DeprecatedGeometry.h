@@ -34,7 +34,7 @@ namespace deprecated_osg {
     if (array->getBinding() == static_cast<osg::Array::Binding>(ab)) return; \
     array->setBinding(static_cast<osg::Array::Binding>(ab));\
     if (ab==3 /*osg::Geometry::BIND_PER_PRIMITIVE*/) _containsDeprecatedData = true; \
-    dirtyDisplayList();
+    dirtyGLObjects();
 
 
 #define GET_BINDING(array) (array!=0 ? static_cast<AttributeBinding>(array->getBinding()) : BIND_OFF)

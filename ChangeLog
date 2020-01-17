@@ -1,3 +1,19 @@
+Fri, 17 Jan 2020 09:07:58 +0000
+Author : Robert Osfield
+Moved setting of isftream locale to Model::readOBJ(..) and Model::readMTL(..).
+
+Fri, 17 Jan 2020 08:54:52 +0000
+Author : Robert Osfield
+Added explict setting of local to classic to avoid local platform settings affecting parsing
+
+Tue, 14 Jan 2020 16:32:29 +0000
+Author : Robert Osfield
+Updated README.md for 3.6.5-rc1
+
+Tue, 14 Jan 2020 16:30:14 +0000
+Author : Robert Osfield
+Updated ChangeLog and set rc candidate 1 for 3.6.5-rc1
+
 Tue, 14 Jan 2020 16:29:07 +0000
 Author : Robert Osfield
 Fixed warnings

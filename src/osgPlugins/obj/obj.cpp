@@ -225,6 +225,8 @@ bool Model::readMTL(std::istream& fin)
 {
     OSG_INFO<<"Reading MTL file"<<std::endl;
 
+    fin.imbue(std::locale::classic());
+
     const int LINE_SIZE = 4096;
     char line[LINE_SIZE];
     float r = 1.0f, g = 1.0f, b = 1.0f, a = 1.0f;
@@ -566,6 +568,8 @@ inline bool isZBrushColorField(char* line)
 bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* options)
 {
     OSG_INFO<<"Reading OBJ file"<<std::endl;
+
+    fin.imbue(std::locale::classic());
 
     const int LINE_SIZE = 4096;
     char line[LINE_SIZE];

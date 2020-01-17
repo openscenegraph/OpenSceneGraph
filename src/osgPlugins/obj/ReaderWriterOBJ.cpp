@@ -952,6 +952,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
     osgDB::ifstream fin(fileName.c_str());
     if (fin)
     {
+        fin.imbue(std::locale::classic());
 
         // code for setting up the database path so that internally referenced file are searched for on relative paths.
         osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;

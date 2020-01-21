@@ -743,7 +743,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     isSecondaryColorSupported = validContext && isGLExtensionSupported(contextID,"GL_EXT_secondary_color");
     isFogCoordSupported = validContext && isGLExtensionSupported(contextID,"GL_EXT_fog_coord");
     isMultiTexSupported = validContext && isGLExtensionSupported(contextID,"GL_ARB_multitexture");
-    isOcclusionQuerySupported = validContext && osg::isGLExtensionSupported(contextID, "GL_NV_occlusion_query");
+    isOcclusionQuerySupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_occlusion_query");
     isARBOcclusionQuerySupported = validContext && (OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID, "GL_ARB_occlusion_query"));
 
     isTimerQuerySupported = validContext && osg::isGLExtensionSupported(contextID, "GL_EXT_timer_query");

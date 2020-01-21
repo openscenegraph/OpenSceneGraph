@@ -1,3 +1,83 @@
+Tue, 21 Jan 2020 09:43:08 +0000
+Author : Robert Osfield
+Removed stray space
+
+Tue, 21 Jan 2020 09:32:57 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #902 from mp3butcher/oqn3.6 OQN API convergence 
+
+Tue, 21 Jan 2020 09:16:51 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #903 from dedowsdi/renderstageAdd getPreRenderList, getPostRenderList to RenderStage.
+
+Fri, 17 Jan 2020 18:47:49 +0800
+Author : dedowsdi
+Add getPreRenderList getPostRenderList to RenderStage.
+
+Fri, 23 Aug 2019 09:59:54 +0200
+Author : Daniel Trstenjak
+OcclusionQueryNode: make all usages of 'updateDefaultQueryGeometry' thread safe
+
+Fri, 23 Aug 2019 09:46:02 +0200
+Author : Daniel Trstenjak
+OcclusionQueryNode: fix resetting to default query geometryWhen the query geometry gets reset to its default then its
+vertices have to be updated by the bounding box dimensions of
+the current children of the OcclusionQueryNode.
+
+
+Wed, 14 Aug 2019 11:27:40 +0200
+Author : Daniel Trstenjak
+OcclusionQueryNode: fix use case of user defined query geometryThe user defined query geometry handling has been broken in several ways.
+
+The previous way of defining a query geometry was using the non const
+`getQueryGeometry` method and overriding its members. But then
+`OcclusionQueryNode` wasn't aware of the geometry change and couldn't
+internally handle it correctly.
+
+The `computeBound` method never considered a user defined query geometry and
+always just overrode the vertices of the geometry.
+
+The member `_validQueryGeometry` wasn't correctly set.
+
+This change should fix all this issues by introducing a small backward
+compatibility break. The non const `getQueryGeometry` method is removed
+forcing the user to use the `setQueryGeometry` method. But then `OcclusionQueryNode`
+is aware of the user defined query geometry and can handle it correctly.
+
+
+Tue, 29 Jan 2019 14:40:16 +0100
+Author : Daniel Trstenjak
+OcclusionQueryNode: reset the test result of the invalid geometryThere're cases that the occlusion test result has been retrieved
+after the query geometry has been changed, it's the result of the
+geometry before the change.
+
+
+Tue, 29 Jan 2019 11:37:28 +0100
+Author : Daniel Trstenjak
+OcclusionQueryNode: ensure a valid query geometryIf the query geometry is invalid then don't do any occlusion queries and
+never traverse the subgraphs.
+
+
+Fri, 25 Jan 2019 15:02:45 +0100
+Author : Daniel Trstenjak
+OcclusionQueryNode: ensure a consistent value for '_passed'
+
+Sat, 26 Jan 2019 16:33:23 +0000
+Author : Robert Osfield
+Introduced a QueryGeometry::getQueryResult(const osg::Camera*) method as a more informative replacedment for QueryGeometry::getNumPixels().
+
+Mon, 20 Jan 2020 10:37:12 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #900 from dedowsdi/fix_particle_rotationFix particle rotation.
+
+Fri, 17 Jan 2020 11:18:30 +0800
+Author : dedowsdi
+Fix particle rotation.
+
+Fri, 17 Jan 2020 09:28:09 +0000
+Author : Robert Osfield
+Updated ChangeLog
+
 Fri, 17 Jan 2020 09:07:58 +0000
 Author : Robert Osfield
 Moved setting of isftream locale to Model::readOBJ(..) and Model::readMTL(..).

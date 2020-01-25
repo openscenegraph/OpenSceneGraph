@@ -6,8 +6,6 @@
     Implementation of the VertexData class.
 */
 
-/** note, derived from Equalizer LGPL source.*/
-
 #include "typedefs.h"
 #include "vertexData.h"
 
@@ -28,8 +26,8 @@ using namespace ply;
 
 template<int PLYType, int numcomp>
 struct ArrayCreator: public ArrayFactory{
-virtual osg::Array * getArray(){ OSG_WARN<<"ply::VertexData: ArrayCreator not implemented: "<<std::endl; return 0;}
-    virtual void addElement(char * dataptr,osg::Array* arr){ OSG_WARN<<"ply::VertexData: ArrayCreator not implemented: "<<std::endl;}
+virtual osg::Array * getArray(){ OSG_FATAL<<"ply::VertexData: ArrayCreator not implemented: "<<std::endl; return 0;}
+    virtual void addElement(char * dataptr,osg::Array* arr){ OSG_FATAL<<"ply::VertexData: ArrayCreator not implemented: "<<std::endl;}
 };
 //
 template<> struct ArrayCreator<PLY_CHAR,0>: public ArrayFactory
@@ -208,82 +206,80 @@ VertexData::VertexData(const VertexSemantics& s)
     : _semantics(s), _invertFaces( false )
 {
     // Initialize array factories
-    _arrayfactories[PLY_CHAR][0]=new ArrayCreator<PLY_CHAR,0>();
-    _arrayfactories[PLY_CHAR][1]=new ArrayCreator<PLY_CHAR,1>;
-    _arrayfactories[PLY_CHAR][2]=new ArrayCreator<PLY_CHAR,2>;
-    _arrayfactories[PLY_CHAR][3]=new ArrayCreator<PLY_CHAR,3>;
+    _arrayfactories[PLY_CHAR][0] = new ArrayCreator<PLY_CHAR,0>;
+    _arrayfactories[PLY_CHAR][1] = new ArrayCreator<PLY_CHAR,1>;
+    _arrayfactories[PLY_CHAR][2] = new ArrayCreator<PLY_CHAR,2>;
+    _arrayfactories[PLY_CHAR][3] = new ArrayCreator<PLY_CHAR,3>;
 
-    _arrayfactories[PLY_UCHAR][0]=_arrayfactories[PLY_UINT8][0]=new ArrayCreator<PLY_UCHAR,0>;
-    _arrayfactories[PLY_UCHAR][1]=_arrayfactories[PLY_UINT8][1]=new ArrayCreator<PLY_UCHAR,1>;
-    _arrayfactories[PLY_UCHAR][2]=_arrayfactories[PLY_UINT8][2]=new ArrayCreator<PLY_UCHAR,2>;
-    _arrayfactories[PLY_UCHAR][3]=_arrayfactories[PLY_UINT8][3]= new ArrayCreator<PLY_UCHAR,3>;
+    _arrayfactories[PLY_UCHAR][0] = _arrayfactories[PLY_UINT8][0] = new ArrayCreator<PLY_UCHAR,0>;
+    _arrayfactories[PLY_UCHAR][1] = _arrayfactories[PLY_UINT8][1] = new ArrayCreator<PLY_UCHAR,1>;
+    _arrayfactories[PLY_UCHAR][2] = _arrayfactories[PLY_UINT8][2] = new ArrayCreator<PLY_UCHAR,2>;
+    _arrayfactories[PLY_UCHAR][3] = _arrayfactories[PLY_UINT8][3] = new ArrayCreator<PLY_UCHAR,3>;
 
-    _arrayfactories[PLY_SHORT][0]=new ArrayCreator<PLY_SHORT,0>;
-    _arrayfactories[PLY_SHORT][1]=new ArrayCreator<PLY_SHORT,1>;
-    _arrayfactories[PLY_SHORT][2]=new ArrayCreator<PLY_SHORT,2>;
-    _arrayfactories[PLY_SHORT][3]=new ArrayCreator<PLY_SHORT,3>;
+    _arrayfactories[PLY_SHORT][0] = new ArrayCreator<PLY_SHORT,0>;
+    _arrayfactories[PLY_SHORT][1] = new ArrayCreator<PLY_SHORT,1>;
+    _arrayfactories[PLY_SHORT][2] = new ArrayCreator<PLY_SHORT,2>;
+    _arrayfactories[PLY_SHORT][3] = new ArrayCreator<PLY_SHORT,3>;
 
-    _arrayfactories[PLY_USHORT][0]=new ArrayCreator<PLY_USHORT,0>;
-    _arrayfactories[PLY_USHORT][1]=new ArrayCreator<PLY_USHORT,1>;
-    _arrayfactories[PLY_USHORT][2]=new ArrayCreator<PLY_USHORT,2>;
-    _arrayfactories[PLY_USHORT][3]=new ArrayCreator<PLY_USHORT,3>;
+    _arrayfactories[PLY_USHORT][0] = new ArrayCreator<PLY_USHORT,0>;
+    _arrayfactories[PLY_USHORT][1] = new ArrayCreator<PLY_USHORT,1>;
+    _arrayfactories[PLY_USHORT][2] = new ArrayCreator<PLY_USHORT,2>;
+    _arrayfactories[PLY_USHORT][3] = new ArrayCreator<PLY_USHORT,3>;
 
-    _arrayfactories[PLY_INT][0]=_arrayfactories[PLY_UINT][0]=new ArrayCreator<PLY_INT,0>;
-    _arrayfactories[PLY_INT][1]=_arrayfactories[PLY_UINT][1]=new ArrayCreator<PLY_INT,1>;
-    _arrayfactories[PLY_INT][2]=_arrayfactories[PLY_UINT][2]=new ArrayCreator<PLY_INT,2>;
-    _arrayfactories[PLY_INT][3]=_arrayfactories[PLY_UINT][3]=new ArrayCreator<PLY_INT,3>;
+    _arrayfactories[PLY_INT][0] = _arrayfactories[PLY_UINT][0] = new ArrayCreator<PLY_INT,0>;
+    _arrayfactories[PLY_INT][1] = _arrayfactories[PLY_UINT][1] = new ArrayCreator<PLY_INT,1>;
+    _arrayfactories[PLY_INT][2] = _arrayfactories[PLY_UINT][2] = new ArrayCreator<PLY_INT,2>;
+    _arrayfactories[PLY_INT][3] = _arrayfactories[PLY_UINT][3] = new ArrayCreator<PLY_INT,3>;
 
-    _arrayfactories[PLY_UINT][0]=new ArrayCreator<PLY_UINT,0>;
-    _arrayfactories[PLY_UINT][1]=new ArrayCreator<PLY_UINT,1>;
-    _arrayfactories[PLY_UINT][2]=new ArrayCreator<PLY_UINT,2>;
-    _arrayfactories[PLY_UINT][3]=new ArrayCreator<PLY_UINT,3>;
+    _arrayfactories[PLY_UINT][0] = new ArrayCreator<PLY_UINT,0>;
+    _arrayfactories[PLY_UINT][1] = new ArrayCreator<PLY_UINT,1>;
+    _arrayfactories[PLY_UINT][2] = new ArrayCreator<PLY_UINT,2>;
+    _arrayfactories[PLY_UINT][3] = new ArrayCreator<PLY_UINT,3>;
 
+    _arrayfactories[PLY_FLOAT][0] = _arrayfactories[PLY_FLOAT32][0] = new ArrayCreator<PLY_FLOAT,0>;
+    _arrayfactories[PLY_FLOAT][1] = _arrayfactories[PLY_FLOAT32][1] = new ArrayCreator<PLY_FLOAT,1>;
+    _arrayfactories[PLY_FLOAT][2] = _arrayfactories[PLY_FLOAT32][2] = new ArrayCreator<PLY_FLOAT,2>;
+    _arrayfactories[PLY_FLOAT][3] = _arrayfactories[PLY_FLOAT32][3] = new ArrayCreator<PLY_FLOAT,3>;
 
-    _arrayfactories[PLY_FLOAT][0]=_arrayfactories[PLY_FLOAT32][0]=new ArrayCreator<PLY_FLOAT,0>;
-    _arrayfactories[PLY_FLOAT][1]=_arrayfactories[PLY_FLOAT32][1]=new ArrayCreator<PLY_FLOAT,1>;
-    _arrayfactories[PLY_FLOAT][2]=_arrayfactories[PLY_FLOAT32][2]=new ArrayCreator<PLY_FLOAT,2>;
-    _arrayfactories[PLY_FLOAT][3]=_arrayfactories[PLY_FLOAT32][3]=new ArrayCreator<PLY_FLOAT,3>;
-
-
-    _arrayfactories[PLY_DOUBLE][0]=new ArrayCreator<PLY_DOUBLE,0>;
-    _arrayfactories[PLY_DOUBLE][1]=new ArrayCreator<PLY_DOUBLE,1>;
-    _arrayfactories[PLY_DOUBLE][2]=new ArrayCreator<PLY_DOUBLE,2>;
-    _arrayfactories[PLY_DOUBLE][3]=new ArrayCreator<PLY_DOUBLE,3>;
+    _arrayfactories[PLY_DOUBLE][0] = new ArrayCreator<PLY_DOUBLE,0>;
+    _arrayfactories[PLY_DOUBLE][1] = new ArrayCreator<PLY_DOUBLE,1>;
+    _arrayfactories[PLY_DOUBLE][2] = new ArrayCreator<PLY_DOUBLE,2>;
+    _arrayfactories[PLY_DOUBLE][3] = new ArrayCreator<PLY_DOUBLE,3>;
 }
 
-
+inline osg::Array * getArrayFromFactory(ArrayFactory*factarray, int curchannel)
+{
+        osg::Array* arr = factarray->getArray();
+        arr->setUserData(new osg::IntValueObject(curchannel));
+        return arr;
+}
 /*  Read the vertex and (if available/wanted) color data from the open file.  */
 void VertexData::readVertices( PlyFile* file, const int nVertices, PlyProperty** props, int numprops)
                                //const int fields )
 {
     // read in the vertices
-    std::vector<int> propertyOffsets;    
-//    propertyOffsets.push_back(0);
-
+    std::vector<int> propertyOffsets;
     unsigned int totalvertexsize = 0;
+
     {
         int curchannel = -1, numcomp = 0, curcompsize = 0; const PlyProperty* cursem = 0;
         for(VertexSemantics::iterator semit =_semantics.begin(); semit!=_semantics.end(); ++semit)
         {
             VertexSemantic &sem = *semit;
-           //search for sem in props and goto next if not found
+            //search for sem in props and goto next if not found
             int propcpt;
             for(propcpt = 0; propcpt< numprops && strcmp(props[propcpt]->name, sem.first.name)!=0; ++propcpt);
             if(propcpt == numprops) continue;
+
             ply_get_property( file, "vertex", &sem.first);
             if(curchannel != sem.second)
             {
                 if(numcomp != 0)
                 {
-                    ArrayFactory * newarray = 0;
-                    newarray = _arrayfactories[cursem->internal_type][numcomp-1];
-                    if(newarray) {
-                        osg::ref_ptr<osg::Array> arr=newarray->getArray();
-                        arr->setUserData(new osg::IntValueObject(curchannel));
-                        _factoryarrayspair.push_back(FactAndArrays(newarray,arr));
-                    }
-
-                    totalvertexsize=cursem->offset+curcompsize;
+                    if(numcomp>4) { OSG_FATAL<<"osg ply plugin doesn't support "<<numcomp<<" components arrays, trying 4 instead"<<std::endl; numcomp = 4; }
+                    ArrayFactory * factarray = _arrayfactories[cursem->internal_type][numcomp-1];
+                    if(factarray) _factoryarrayspair.push_back(FactAndArrays(factarray, getArrayFromFactory(factarray, curchannel)));
+                    totalvertexsize = cursem->offset + curcompsize;
                     propertyOffsets.push_back(cursem->offset);
                 }
                 numcomp = 0; curcompsize = 0; cursem = &sem.first;
@@ -309,14 +305,10 @@ void VertexData::readVertices( PlyFile* file, const int nVertices, PlyProperty**
 
         }
         if(numcomp != 0){
-            ArrayFactory * newarray = 0;
-            newarray = _arrayfactories[cursem->internal_type][numcomp-1];
-            if(newarray) {
-                osg::ref_ptr<osg::Array> arr = newarray->getArray();
-                arr->setUserData(new osg::IntValueObject(curchannel));
-                _factoryarrayspair.push_back(FactAndArrays(newarray, arr));
-            }
-            totalvertexsize=cursem->offset+curcompsize;
+            if(numcomp>4) { OSG_FATAL<<"osg ply plugin doesn't support "<<numcomp<<" components arrays, trying 4 instead"<<std::endl; numcomp = 4; }
+            ArrayFactory * factarray = _arrayfactories[cursem->internal_type][numcomp-1];
+            if(factarray) _factoryarrayspair.push_back(FactAndArrays(factarray, getArrayFromFactory(factarray, curchannel)));
+            totalvertexsize = cursem->offset + curcompsize;
             propertyOffsets.push_back(cursem->offset);
         }
     }
@@ -326,8 +318,7 @@ void VertexData::readVertices( PlyFile* file, const int nVertices, PlyProperty**
         ply_get_element( file, static_cast< void* >( rawvertex ) );
 
         ///convert rawvertex to osg
-        int curprop=0;
-
+        int curprop = 0;
         for(std::vector<FactAndArrays>::iterator arrit = _factoryarrayspair.begin(); arrit != _factoryarrayspair.end(); ++arrit)
         {
             arrit->first->addElement((char*)rawvertex+propertyOffsets[curprop++], arrit->second);
@@ -544,9 +535,6 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         // Create geometry node
         osg::Geometry* geom  =  new osg::Geometry;
 
-        // set the vertex array
-        //geom->setVertexArray(_vertices.get());
-
         // Add the primitive set
         bool hasTriOrQuads = false;
         if (_triangles.valid() && _triangles->size() > 0 )
@@ -565,42 +553,6 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         if(!hasTriOrQuads)
             geom->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, _factoryarrayspair[0].second->getNumElements()));
 
-
-        // Apply the colours to the model; at the moment this is a
-        // kludge because we only use one kind and apply them all the
-        // same way. Also, the priority order is completely arbitrary
-/*
-        if(_colors.valid())
-        {
-            geom->setColorArray(_colors.get(), osg::Array::BIND_PER_VERTEX );
-        }
-        else if(_ambient.valid())
-        {
-            geom->setColorArray(_ambient.get(), osg::Array::BIND_PER_VERTEX );
-        }
-        else if(_diffuse.valid())
-        {
-            geom->setColorArray(_diffuse.get(), osg::Array::BIND_PER_VERTEX );
-        }
-        else if(_specular.valid())
-        {
-            geom->setColorArray(_specular.get(), osg::Array::BIND_PER_VERTEX );
-        }
-        else if (_texcoord.valid())
-        {
-            geom->setTexCoordArray(0, _texcoord.get());
-        }
-
-        // If the model has normals, add them to the geometry
-        if(_normals.valid())
-        {
-            geom->setNormalArray(_normals.get(), osg::Array::BIND_PER_VERTEX);
-        }
-        else
-        {   // If not, use the smoothing visitor to generate them
-            // (quads will be triangulated by the smoothing visitor)
-            osgUtil::SmoothingVisitor::smooth((*geom), osg::PI/2);
-        }*/
        for(std::vector<FactAndArrays>::iterator arrit = _factoryarrayspair.begin(); arrit != _factoryarrayspair.end(); ++arrit)
        {
             osg::Array* a = arrit->second;

@@ -48,29 +48,29 @@ public:
 
         /** Note semantics from Equalizer LGPL source.*/
         //assuming compact aliasing (only name and internal format is meaningfull
-        _semantic.push_back(ply::VertexSemantic({ "x", PLY_FLOAT, PLY_FLOAT, 0, 0, 0, 0, 0 }, 0));
-        _semantic.push_back(ply::VertexSemantic({ "y", PLY_FLOAT, PLY_FLOAT, 0, 0, 0, 0, 0 }, 0));
-        _semantic.push_back(ply::VertexSemantic({ "z", PLY_FLOAT, PLY_FLOAT, 0, 0, 0, 0, 0 }, 0));
-        _semantic.push_back(ply::VertexSemantic({ "nx", PLY_FLOAT, PLY_FLOAT, 0, 0, 0, 0, 0 }, 1));
-        _semantic.push_back(ply::VertexSemantic({ "ny", PLY_FLOAT, PLY_FLOAT, 0, 0, 0, 0, 0 }, 1));
-        _semantic.push_back(ply::VertexSemantic({ "nz", PLY_FLOAT, PLY_FLOAT, 0, 0, 0, 0, 0 }, 1));
-        _semantic.push_back(ply::VertexSemantic({ "red", PLY_UCHAR, PLY_UCHAR, 0, 0, 0, 0, 0 }, 2));
-        _semantic.push_back(ply::VertexSemantic({ "green", PLY_UCHAR, PLY_UCHAR, 0, 0, 0, 0, 0 }, 2));
-        _semantic.push_back(ply::VertexSemantic({ "blue", PLY_UCHAR, PLY_UCHAR, 0, 0, 0, 0, 0 } , 2));
-        _semantic.push_back(ply::VertexSemantic({ "alpha", PLY_UCHAR, PLY_UCHAR,0, 0, 0, 0, 0 }, 2));
-        _semantic.push_back(ply::VertexSemantic({ "u", PLY_FLOAT, PLY_FLOAT, 0, 0, 0, 0, 0 }, 3));
-        _semantic.push_back(ply::VertexSemantic({ "v", PLY_FLOAT, PLY_FLOAT, 0, 0, 0, 0, 0 }, 3));
-        _semantic.push_back(ply::VertexSemantic({ "ambient_red", PLY_UCHAR, PLY_UCHAR, 0, 0, 0, 0, 0 }, 4));
-        _semantic.push_back(ply::VertexSemantic({ "ambient_green", PLY_UCHAR, PLY_UCHAR, 0, 0, 0, 0, 0 }, 4));
-        _semantic.push_back(ply::VertexSemantic({ "ambient_blue", PLY_UCHAR, PLY_UCHAR, 0, 0, 0, 0, 0 }, 4));
-        _semantic.push_back(ply::VertexSemantic({ "diffuse_red", PLY_UCHAR, PLY_UCHAR, 0, 0, 0, 0, 0 }, 5));
-        _semantic.push_back(ply::VertexSemantic({ "diffuse_green", PLY_UCHAR, PLY_UCHAR, 0, 0, 0, 0, 0 }, 5));
-        _semantic.push_back(ply::VertexSemantic({ "diffuse_blue", PLY_UCHAR, PLY_UCHAR, 0, 0, 0, 0, 0 }, 5));
-        _semantic.push_back(ply::VertexSemantic({ "specular_red", PLY_UCHAR, PLY_UCHAR, 0, 0, 0, 0, 0 }, 6));
-        _semantic.push_back(ply::VertexSemantic({ "specular_green", PLY_UCHAR, PLY_UCHAR, 0, 0, 0, 0, 0 }, 6));
-        _semantic.push_back(ply::VertexSemantic({ "specular_blue", PLY_UCHAR, PLY_UCHAR, 0, 0, 0, 0, 0 }, 6));
-        _semantic.push_back(ply::VertexSemantic({ "specular_coeff", PLY_FLOAT, PLY_FLOAT, 0, 0, 0, 0, 0 }, 7));
-        _semantic.push_back(ply::VertexSemantic({ "specular_power", PLY_FLOAT, PLY_FLOAT, 0, 0, 0, 0, 0 }, 7));
+        _semantic.push_back({ "x", PLY_FLOAT, 0 });
+        _semantic.push_back({ "y", PLY_FLOAT,  0});
+        _semantic.push_back({ "z", PLY_FLOAT,  0});
+        _semantic.push_back({ "nx", PLY_FLOAT, 1});
+        _semantic.push_back({ "ny", PLY_FLOAT,  1});
+        _semantic.push_back({ "nz", PLY_FLOAT,  1});
+        _semantic.push_back({ "red", PLY_UCHAR,  2});
+        _semantic.push_back({ "green", PLY_UCHAR,  2});
+        _semantic.push_back({ "blue", PLY_UCHAR,  2});
+        _semantic.push_back({ "alpha", PLY_UCHAR,  2});
+        _semantic.push_back({ "u", PLY_FLOAT, 3});
+        _semantic.push_back({ "v", PLY_FLOAT,  3});
+        _semantic.push_back({ "ambient_red", PLY_UCHAR, 4});
+        _semantic.push_back({ "ambient_green", PLY_UCHAR, 4});
+        _semantic.push_back({ "ambient_blue", PLY_UCHAR, 4});
+        _semantic.push_back({ "diffuse_red", PLY_UCHAR,  5});
+        _semantic.push_back({ "diffuse_green", PLY_UCHAR,  5});
+        _semantic.push_back({ "diffuse_blue", PLY_UCHAR, 5});
+        _semantic.push_back({ "specular_red", PLY_UCHAR, 6});
+        _semantic.push_back({ "specular_green", PLY_UCHAR,  6});
+        _semantic.push_back({ "specular_blue", PLY_UCHAR, 6});
+        _semantic.push_back({ "specular_coeff", PLY_FLOAT,  7});
+        _semantic.push_back({ "specular_power", PLY_FLOAT, 7});
     }
 
     virtual const char* className() const { return "ReaderWriterPLY"; }

@@ -351,7 +351,7 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,char*  elemNam
     _factoryarrayspair.push_back(newarrayvector);
     AFactAndArrays &factoryarrays = _factoryarrayspair.back().second.first;
     {
-        int curchannel = -1, numcomp = 0, curcompsize = 0; const PlyProperty* cursem = 0;
+        int curchannel = -1, numcomp = 0, curcompsize = 0; const VertexSemantic* cursem = 0;
         for(int propcpt=0; propcpt < numprops; ++propcpt)
         {
             if(props[propcpt]->is_list )
@@ -361,17 +361,17 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,char*  elemNam
             }
             //search for prop in user semantics and goto next if not found (TODO add semantics through reader options)
             VertexSemantics::iterator semit;
-            for( semit =_semantics.begin(); semit!=_semantics.end() &&strcmp(props[propcpt]->name,semit->first.name)!=0; ++semit);
+            for( semit =_semantics.begin(); semit!=_semantics.end() &&strcmp(props[propcpt]->name,semit->name)!=0; ++semit);
             if(semit==_semantics.end()) continue;
             VertexSemantic &sem = *semit;
 
             //setup user property
             props[propcpt]->offset = totalvertexsize+curcompsize;
-            props[propcpt]->internal_type = sem.first.internal_type;
+            props[propcpt]->internal_type = sem.internal_type;
             ply_get_property( file, elemName, props[propcpt]);
 
 
-            if(curchannel != sem.second)
+            if(curchannel != sem.osgmapping)
             {
                 if(numcomp != 0)
                 {
@@ -383,11 +383,11 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,char*  elemNam
                     propertyOffsets.push_back(totalvertexsize);
                     totalvertexsize +=  curcompsize;
                 }
-                numcomp = 0; curcompsize = 0; cursem = &sem.first;
-                curchannel = sem.second;
+                numcomp = 0; curcompsize = 0; cursem = &sem;
+                curchannel = sem.osgmapping;
             }
             numcomp++;
-            switch (sem.first.internal_type)
+            switch (sem.internal_type)
             {
                 case PLY_UINT8:    curcompsize+=sizeof(uint8_t);        break;
                 case PLY_UCHAR:    curcompsize+=sizeof(unsigned char);  break;
@@ -401,7 +401,7 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,char*  elemNam
                 case PLY_INT32:    curcompsize+=sizeof(int32_t);        break;
                 case PLY_FLOAT32:  curcompsize+=4;                      break;
                 default:
-                    OSG_WARN<<"ply::VertexData: unknown internal_type" <<sem.first.internal_type<<" not implemented,"<<std::endl;
+                    OSG_WARN<<"ply::VertexData: unknown internal_type" <<sem.internal_type<<" not implemented,"<<std::endl;
             }
 
         }

@@ -28,8 +28,12 @@
 
 namespace ply
 {
+    typedef struct VertexSemantic {    /* description of a property */
+      const char *name;                           /* property name */
+      int internal_type;                    /* program's data type */
+      int osgmapping;                       /* index of the array to mapping int out geometry... */
+    } VertexSemantic;
 
-    typedef std::pair<PlyProperty, int> VertexSemantic;
     typedef std::vector<VertexSemantic> VertexSemantics;
     struct ArrayFactory : public osg::Referenced
     {

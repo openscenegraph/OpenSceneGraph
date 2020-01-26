@@ -23,30 +23,32 @@
 //!
 //! \class VertexData
 //! \brief helps to read ply file and converts in to osg::Node format
+//! \details element properties grouped according @osgmapping (max 4)
+//! \details first element property is considered as geometry vertices
+//! \details second element list properties are considered as primitivesets
 //!
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace ply
 {
-    typedef struct VertexSemantic {    /* description of a property */
-      const char *name;                           /* property name */
-      int internal_type;                    /* program's data type */
-      int osgmapping;                       /* index of the array to mapping int out geometry... */
+    typedef struct VertexSemantic {    /* description of a mapping */
+      const char *name;                 /* property name retrieve from the file */
+      int internal_type;               /* target data type */
+      int osgmapping;                  /* index of the array to mapping int out geometry... */
     } VertexSemantic;
 
     typedef std::vector<VertexSemantic> VertexSemantics;
     struct ArrayFactory : public osg::Referenced
     {
-        virtual osg::Array * getArray() { return 0; }
+        virtual osg::Array * createArray() = 0;
         virtual void addElement(char * dataptr, osg::Array*) = 0;
     };
     struct DrawElementFactory : public osg::Referenced
     {
-        virtual osg::DrawElements * getDrawElement() = 0;
+        virtual osg::DrawElements * createDrawElement() = 0;
         virtual void addElement(char * dataptr, osg::DrawElements*) = 0;
     };
 
-    /*  Holds the flat data and offers routines to read, scale and sort it.  */
     class VertexData
     {
         osg::ref_ptr<ArrayFactory> _arrayfactories[PLY_END_TYPE-1][4];
@@ -74,18 +76,10 @@ namespace ply
     private:
         VertexSemantics _semantics;
 
-        // Function which reads all the vertices and colors if color info is
-        // given and also if the user wants that information
+        ///  Read the vertex data from the open file.
         void readVertices( PlyFile* file, const int nVertices, char*  elemName,
                          PlyProperty** props, int numprops);
-
-        // Reads the triangle indices from the ply file
-        void readListProperty( PlyFile* file, const int nFaces, char*  elemName, PlyProperty* listprop);
         bool _invertFaces;
-
-        // The indices of the faces in premitive set
-        osg::ref_ptr<osg::DrawElementsUInt> _triangles;
-        osg::ref_ptr<osg::DrawElementsUInt> _quads;
     };
 }
 

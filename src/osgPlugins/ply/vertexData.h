@@ -31,18 +31,40 @@ namespace ply
 
     typedef std::pair<PlyProperty, int> VertexSemantic;
     typedef std::vector<VertexSemantic> VertexSemantics;
-    struct ArrayFactory: osg::Referenced
+    struct ArrayFactory : public osg::Referenced
     {
-        virtual osg::Array * getArray() = 0;
+        virtual osg::Array * getArray() { return 0; }
         virtual void addElement(char * dataptr, osg::Array*) = 0;
+    };
+    struct DrawElementFactory : public osg::Referenced
+    {
+        virtual osg::DrawElements * getDrawElement() = 0;
+        virtual void addElement(char * dataptr, osg::DrawElements*) = 0;
     };
 
     /*  Holds the flat data and offers routines to read, scale and sort it.  */
     class VertexData
     {
         osg::ref_ptr<ArrayFactory> _arrayfactories[PLY_END_TYPE-1][4];
-        typedef std::pair <ArrayFactory*,osg::ref_ptr<osg::Array> > FactAndArrays;
-        std::vector<FactAndArrays> _factoryarrayspair;
+        osg::ref_ptr<DrawElementFactory> _prfactories[PLY_END_TYPE-1];
+        /*struct name
+        {
+            name() {}
+            ArrayFactory* factory;
+            osg::ref_ptr<osg::Array> arr;
+            int osgmapping;
+
+        };*/
+
+        typedef std::pair< ArrayFactory*, osg::ref_ptr<osg::Array> > AFactAndArray;
+        typedef std::vector<AFactAndArray> AFactAndArrays;
+
+        typedef std::pair< DrawElementFactory*, osg::ref_ptr<osg::DrawElements> > PFactAndDrawElement;
+        typedef std::vector<PFactAndDrawElement> PFactAndDrawElements;
+
+        typedef std::pair<AFactAndArrays , PFactAndDrawElements > APFactAndArrays;
+
+        std::vector< std::pair< std::string, APFactAndArrays > > _factoryarrayspair; //per element name
     public:
 
         // Default constructor
@@ -59,13 +81,12 @@ namespace ply
 
         // Function which reads all the vertices and colors if color info is
         // given and also if the user wants that information
-        void readVertices( PlyFile* file, const int nVertices,
+        void readVertices( PlyFile* file, const int nVertices, char*  elemName,
                          PlyProperty** props, int numprops);
 
         // Reads the triangle indices from the ply file
-        void readTriangles( PlyFile* file, const int nFaces );
-
-        bool        _invertFaces;
+        void readListProperty( PlyFile* file, const int nFaces, char*  elemName, PlyProperty* listprop);
+        bool _invertFaces;
 
         // The indices of the faces in premitive set
         osg::ref_ptr<osg::DrawElementsUInt> _triangles;

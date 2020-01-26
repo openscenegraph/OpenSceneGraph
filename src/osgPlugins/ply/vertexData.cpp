@@ -24,9 +24,31 @@
 using namespace std;
 using namespace ply;
 
-template<int PLYType, int numcomp>
-struct ArrayCreator: public ArrayFactory{
-virtual osg::Array * getArray(){ OSG_FATAL<<"ply::VertexData: ArrayCreator not implemented: "<<std::endl; return 0;}
+template<int PLYType> struct DrawElementCreator: public DrawElementFactory
+{
+    virtual osg::DrawElements * getDrawElement(){ OSG_FATAL<<"ply::VertexData: DrawElementCreator not implemented: "<<std::endl; return 0;}
+    virtual void addElement(char * dataptr,osg::Array* arr){ OSG_FATAL<<"ply::VertexData: DrawElementCreator not implemented: "<<std::endl;}
+};
+template<> struct DrawElementCreator<PLY_UCHAR>: public DrawElementFactory
+{
+    virtual osg::DrawElements * getDrawElement(){ return new osg::DrawElementsUByte; }
+    virtual void addElement(char * dataptr,osg::DrawElements* arr){ char *ptr=dataptr; static_cast<osg::DrawElementsUByte*>(arr)->push_back(ptr[0]); }
+};
+template<> struct DrawElementCreator<PLY_USHORT>: public DrawElementFactory
+{
+    virtual osg::DrawElements * getDrawElement(){ return new osg::DrawElementsUShort; }
+    virtual void addElement(char * dataptr,osg::DrawElements* arr){ char *ptr=dataptr; static_cast<osg::DrawElementsUShort*>(arr)->push_back(ptr[0]); }
+};
+template<> struct DrawElementCreator<PLY_UINT>: public DrawElementFactory
+{
+    virtual osg::DrawElements * getDrawElement(){ return new osg::DrawElementsUInt; }
+    virtual void addElement(char * dataptr,osg::DrawElements* arr){ char *ptr=dataptr; static_cast<osg::DrawElementsUInt*>(arr)->push_back(ptr[0]); }
+};
+
+
+template<int PLYType, int numcomp> struct ArrayCreator: public ArrayFactory
+{
+    virtual osg::Array * getArray(){ OSG_FATAL<<"ply::VertexData: ArrayCreator not implemented: "<<std::endl; return 0;}
     virtual void addElement(char * dataptr,osg::Array* arr){ OSG_FATAL<<"ply::VertexData: ArrayCreator not implemented: "<<std::endl;}
 };
 //
@@ -206,6 +228,10 @@ VertexData::VertexData(const VertexSemantics& s)
     : _semantics(s), _invertFaces( false )
 {
     // Initialize array factories
+    _prfactories[PLY_CHAR] = _prfactories[PLY_UCHAR] = _prfactories[PLY_UINT8] = new DrawElementCreator<PLY_UCHAR>;
+    _prfactories[PLY_INT] = _prfactories[PLY_UINT] = new DrawElementCreator<PLY_UINT>;
+    _prfactories[PLY_USHORT] = _prfactories[PLY_SHORT] = new DrawElementCreator<PLY_USHORT>;
+
     _arrayfactories[PLY_CHAR][0] = new ArrayCreator<PLY_CHAR,0>;
     _arrayfactories[PLY_CHAR][1] = new ArrayCreator<PLY_CHAR,1>;
     _arrayfactories[PLY_CHAR][2] = new ArrayCreator<PLY_CHAR,2>;
@@ -247,40 +273,115 @@ VertexData::VertexData(const VertexSemantics& s)
     _arrayfactories[PLY_DOUBLE][3] = new ArrayCreator<PLY_DOUBLE,3>;
 }
 
+
+/*  Read the index data from the open file.  */
+void VertexData::readListProperty( PlyFile* file, const int nFaces, char*  elemName, PlyProperty* listprop )
+{
+    PFactAndDrawElements & out = _factoryarrayspair.back().second.second;
+    //PFactAndDrawElement triangles(_prfactories[/*listprop->internal_type*/PLY_UINT], _prfactories[/*listprop->internal_type*/PLY_UINT]->getDrawElement());
+    //PFactAndDrawElement quads(_prfactories[/*listprop->internal_type*/PLY_UINT], _prfactories[/*listprop->internal_type*/PLY_UINT]->getDrawElement());
+    osg::ref_ptr<osg::DrawElementsUInt> triangles = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES);
+    osg::ref_ptr<osg::DrawElementsUInt> quads = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS);
+    // temporary face structure for ply loading
+    struct _Face
+    {
+        unsigned int   nVertices;
+        unsigned int*   vertices;
+    } face;
+
+    PlyProperty faceProps[] =
+    {
+        { listprop->name, listprop->external_type, PLY_UINT, offsetof( _Face, vertices ),
+          1, listprop->count_external, PLY_UINT, offsetof( _Face, nVertices ) }
+    };
+
+    ply_get_property( file,elemName, &faceProps[0] );
+
+    const char NUM_VERTICES_TRIANGLE(3);
+    const char NUM_VERTICES_QUAD(4);
+
+    // read the faces, reversing the reading direction if _invertFaces is true
+    for( int i = 0 ; i < nFaces; i++ )
+    {
+        // initialize face values
+        face.nVertices = 0;
+        face.vertices = 0;
+
+        ply_get_element( file, static_cast< void* >( &face ) );
+        if (face.vertices)
+        {
+            if (face.nVertices == NUM_VERTICES_TRIANGLE ||  face.nVertices == NUM_VERTICES_QUAD)
+            {
+                unsigned short index;
+                for(int j = 0 ; j < face.nVertices ; j++)
+                {
+                    index = ( _invertFaces ? face.nVertices - 1 - j : j );
+                    if(face.nVertices == 4)
+                        quads->push_back(face.vertices[index]);
+                    else
+                        triangles->push_back(face.vertices[index]);
+                }
+            }
+            // free the memory that was allocated by ply_get_element
+            free( face.vertices );
+        }
+    }
+    if(!triangles->empty())
+        out.push_back(PFactAndDrawElement(0, triangles));
+    if(!quads->empty())
+        out.push_back(PFactAndDrawElement(0, quads));
+
+}
+
 inline osg::Array * getArrayFromFactory(ArrayFactory*factarray, int curchannel)
 {
         osg::Array* arr = factarray->getArray();
         arr->setUserData(new osg::IntValueObject(curchannel));
         return arr;
 }
+
 /*  Read the vertex and (if available/wanted) color data from the open file.  */
-void VertexData::readVertices( PlyFile* file, const int nVertices, PlyProperty** props, int numprops)
-                               //const int fields )
+void VertexData::readVertices( PlyFile* file, const int nVertices,char*  elemName, PlyProperty** props, int numprops)
 {
     // read in the vertices
     std::vector<int> propertyOffsets;
     unsigned int totalvertexsize = 0;
 
+    std::pair<std::string, APFactAndArrays> newarrayvector(elemName, APFactAndArrays());
+    _factoryarrayspair.push_back(newarrayvector);
+    AFactAndArrays &factoryarrays = _factoryarrayspair.back().second.first;
     {
         int curchannel = -1, numcomp = 0, curcompsize = 0; const PlyProperty* cursem = 0;
-        for(VertexSemantics::iterator semit =_semantics.begin(); semit!=_semantics.end(); ++semit)
+        for(int propcpt=0; propcpt < numprops; ++propcpt)
         {
+            if(props[propcpt]->is_list )
+            {
+                readListProperty(  file, nVertices, elemName, props[propcpt]);
+                continue;
+            }
+            //search for prop in user semantics and goto next if not found (TODO add semantics through reader options)
+            VertexSemantics::iterator semit;
+            for( semit =_semantics.begin(); semit!=_semantics.end() &&strcmp(props[propcpt]->name,semit->first.name)!=0; ++semit);
+            if(semit==_semantics.end()) continue;
             VertexSemantic &sem = *semit;
-            //search for sem in props and goto next if not found
-            int propcpt;
-            for(propcpt = 0; propcpt< numprops && strcmp(props[propcpt]->name, sem.first.name)!=0; ++propcpt);
-            if(propcpt == numprops) continue;
 
-            ply_get_property( file, "vertex", &sem.first);
+            //setup user property
+            props[propcpt]->offset = totalvertexsize+curcompsize;
+            props[propcpt]->internal_type = sem.first.internal_type;
+            ply_get_property( file, elemName, props[propcpt]);
+
+
             if(curchannel != sem.second)
             {
                 if(numcomp != 0)
                 {
                     if(numcomp>4) { OSG_FATAL<<"osg ply plugin doesn't support "<<numcomp<<" components arrays, trying 4 instead"<<std::endl; numcomp = 4; }
                     ArrayFactory * factarray = _arrayfactories[cursem->internal_type][numcomp-1];
-                    if(factarray) _factoryarrayspair.push_back(FactAndArrays(factarray, getArrayFromFactory(factarray, curchannel)));
-                    totalvertexsize = cursem->offset + curcompsize;
-                    propertyOffsets.push_back(cursem->offset);
+                    if(factarray) factoryarrays.push_back(AFactAndArray(factarray, getArrayFromFactory(factarray, curchannel)));
+                    /*totalvertexsize = cursem->offset + curcompsize;
+                    propertyOffsets.push_back(cursem->offset);*/
+                    propertyOffsets.push_back(totalvertexsize);
+                    totalvertexsize +=  curcompsize;
                 }
                 numcomp = 0; curcompsize = 0; cursem = &sem.first;
                 curchannel = sem.second;
@@ -307,83 +408,30 @@ void VertexData::readVertices( PlyFile* file, const int nVertices, PlyProperty**
         if(numcomp != 0){
             if(numcomp>4) { OSG_FATAL<<"osg ply plugin doesn't support "<<numcomp<<" components arrays, trying 4 instead"<<std::endl; numcomp = 4; }
             ArrayFactory * factarray = _arrayfactories[cursem->internal_type][numcomp-1];
-            if(factarray) _factoryarrayspair.push_back(FactAndArrays(factarray, getArrayFromFactory(factarray, curchannel)));
-            totalvertexsize = cursem->offset + curcompsize;
-            propertyOffsets.push_back(cursem->offset);
+            if(factarray) factoryarrays.push_back(AFactAndArray(factarray, getArrayFromFactory(factarray, curchannel)));
+            /*totalvertexsize = cursem->offset + curcompsize;
+            propertyOffsets.push_back(cursem->offset);*/
+            propertyOffsets.push_back(totalvertexsize);
+            totalvertexsize +=  curcompsize;
         }
     }
-    char * rawvertex= new char[totalvertexsize];
-    for( int i = 0; i < nVertices; ++i )
+    if(totalvertexsize>0)
     {
-        ply_get_element( file, static_cast< void* >( rawvertex ) );
-
-        ///convert rawvertex to osg
-        int curprop = 0;
-        for(std::vector<FactAndArrays>::iterator arrit = _factoryarrayspair.begin(); arrit != _factoryarrayspair.end(); ++arrit)
+        char * rawvertex= new char[totalvertexsize];
+        for( int i = 0; i < nVertices; ++i )
         {
-            arrit->first->addElement((char*)rawvertex+propertyOffsets[curprop++], arrit->second);
-        }
-    }
-    delete rawvertex;
-}
+            ply_get_element( file, static_cast< void* >( rawvertex ) );
 
-
-/*  Read the index data from the open file.  */
-void VertexData::readTriangles( PlyFile* file, const int nFaces )
-{
-    // temporary face structure for ply loading
-    struct _Face
-    {
-        unsigned char   nVertices;
-        int*            vertices;
-    } face;
-
-    PlyProperty faceProps[] =
-    {
-        { "vertex_indices|vertex_index", PLY_INT, PLY_INT, offsetof( _Face, vertices ),
-          1, PLY_UCHAR, PLY_UCHAR, offsetof( _Face, nVertices ) }
-    };
-
-    ply_get_property( file, "face", &faceProps[0] );
-
-    if(!_triangles.valid())
-        _triangles = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES);
-
-    if(!_quads.valid())
-        _quads = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS);
-
-
-    const char NUM_VERTICES_TRIANGLE(3);
-    const char NUM_VERTICES_QUAD(4);
-
-    // read the faces, reversing the reading direction if _invertFaces is true
-    for( int i = 0 ; i < nFaces; i++ )
-    {
-        // initialize face values
-        face.nVertices = 0;
-        face.vertices = 0;
-
-        ply_get_element( file, static_cast< void* >( &face ) );
-        if (face.vertices)
-        {
-            if (face.nVertices == NUM_VERTICES_TRIANGLE ||  face.nVertices == NUM_VERTICES_QUAD)
+            ///convert rawvertex to osg
+            int curprop = 0;
+            for(std::vector<AFactAndArray>::iterator arrit = factoryarrays.begin(); arrit != factoryarrays.end(); ++arrit)
             {
-                unsigned short index;
-                for(int j = 0 ; j < face.nVertices ; j++)
-                {
-                    index = ( _invertFaces ? face.nVertices - 1 - j : j );
-                    if(face.nVertices == 4)
-                        _quads->push_back(face.vertices[index]);
-                    else
-                        _triangles->push_back(face.vertices[index]);
-                }
+                arrit->first->addElement((char*)rawvertex+propertyOffsets[curprop++], arrit->second);
             }
-            // free the memory that was allocated by ply_get_element
-            free( face.vertices );
         }
+        delete rawvertex;
     }
 }
-
 
 /*  Open a PLY file and read vertex, color and index data. and returns the node  */
 osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColors )
@@ -434,13 +482,13 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
     std::string textureFile;
     for( int i = 0; i < nComments; i++ )
     {
-        if( equal_strings( comments[i], "modified by flipply" ) )
+        if( equal_strings( comments[i], "InvertFaces" ) )
         {
             _invertFaces = true;
         }
-        if (strncmp(comments[i], "TextureFile",11)==0)
+        if (strncmp(comments[i], "TextureFile", 11)==0)
         {
-            textureFile = comments[i]+12;
+            textureFile = comments[i] + 12;
             if (!osgDB::isAbsolutePath(textureFile))
             {
                 textureFile = osgDB::concatPaths(osgDB::getFilePath(filename), textureFile);
@@ -474,12 +522,10 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         }
         #endif
 
-        // if the string is vertex means vertex data is started
-        if( equal_strings( elemNames[i], "vertex" ) )
         {
             try {
                 // Read vertices and store in a std::vector array
-                readVertices( file, nElems, props, nProps );
+                readVertices( file, nElems, elemNames[i], props, nProps );
                 result = true;
             }
             catch( exception& e )
@@ -491,30 +537,7 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
                 i = nPlyElems;
 
             }
-        }
-        // If the string is face means triangle info started
-        else if( equal_strings( elemNames[i], "face" ) )
-        try
-        {
-            // Read Triangles
-            readTriangles( file, nElems );
-            // Check whether all face elements read or not
-#if DEBUG
-            unsigned int nbTriangles = (_triangles.valid() ? _triangles->size() / 3 : 0) ;
-            unsigned int nbQuads = (_quads.valid() ? _quads->size() / 4 : 0 );
-
-            MESHASSERT( (nbTriangles + nbQuads) == static_cast< size_t >( nElems ) );
-#endif
-            result = true;
-        }
-        catch( exception& e )
-        {
-            MESHERROR << "Unable to read PLY file, an exception occurred:  "
-                      << e.what() << endl;
-            // stop for loop by setting the loop variable to break condition
-            // this way resources still get released even on error cases
-            i = nPlyElems;
-        }
+        }       
 
         // free the memory that was allocated by ply_get_element_description
         for( int j = 0; j < nProps; ++j )
@@ -548,12 +571,13 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
             geom->addPrimitiveSet(_quads.get());
             hasTriOrQuads = true;
         }
+        // Assuming First Element is vertices
+        std::vector< std::pair<std::string, APFactAndArrays> >::iterator elementarraysit = _factoryarrayspair.begin();
+        AFactAndArrays &factoryarrays = elementarraysit->second.first;
+        int numvertices = factoryarrays[0].second->getNumElements();
 
-        // Print points if the file contains unsupported primitives
-        if(!hasTriOrQuads)
-            geom->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, _factoryarrayspair[0].second->getNumElements()));
 
-       for(std::vector<FactAndArrays>::iterator arrit = _factoryarrayspair.begin(); arrit != _factoryarrayspair.end(); ++arrit)
+       for(std::vector<AFactAndArray>::iterator arrit = factoryarrays.begin(); arrit != factoryarrays.end(); ++arrit)
        {
             osg::Array* a = arrit->second;
             int index = static_cast<osg::IntValueObject*>(a->getUserData())->getValue();
@@ -561,6 +585,38 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
             a->setUserData(NULL);
         }
 
+        // Assuming Second Element has a list with primitiveset indices
+        elementarraysit++;
+        PFactAndDrawElements &factoryprs = elementarraysit->second.second;
+
+        // Print points if the file contains unsupported primitives
+        if(factoryprs.empty())
+            geom->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, numvertices));
+
+        for(std::vector<PFactAndDrawElement>::iterator arrit = factoryprs.begin(); arrit != factoryprs.end(); ++arrit)
+        {
+            osg::DrawElements* a = arrit->second;
+            geom->addPrimitiveSet(a);
+            a->setUserData(NULL);
+        }
+
+        for(; elementarraysit!=_factoryarrayspair.end(); ++elementarraysit)
+        {
+            factoryarrays = elementarraysit->second.first;
+            for(std::vector<AFactAndArray>::iterator arrit = factoryarrays.begin(); arrit != factoryarrays.end(); ++arrit)
+            {
+                 osg::Array* a = arrit->second;
+                 geom->getOrCreateUserDataContainer()->addUserObject(a);
+                 a->setUserData(NULL);
+             }
+            factoryprs = elementarraysit->second.second;
+            for(std::vector<PFactAndDrawElement>::iterator arrit = factoryprs.begin(); arrit != factoryprs.end(); ++arrit)
+            {
+                osg::DrawElements* a = arrit->second;
+                geom->getOrCreateUserDataContainer()->addUserObject(a);
+                a->setUserData(NULL);
+            }
+        }
         // set flage true to activate the vertex buffer object of drawable
         geom->setUseVertexBufferObjects(true);
 

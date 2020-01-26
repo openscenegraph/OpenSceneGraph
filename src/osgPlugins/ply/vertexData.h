@@ -51,14 +51,6 @@ namespace ply
     {
         osg::ref_ptr<ArrayFactory> _arrayfactories[PLY_END_TYPE-1][4];
         osg::ref_ptr<DrawElementFactory> _prfactories[PLY_END_TYPE-1];
-        /*struct name
-        {
-            name() {}
-            ArrayFactory* factory;
-            osg::ref_ptr<osg::Array> arr;
-            int osgmapping;
-
-        };*/
 
         typedef std::pair< ArrayFactory*, osg::ref_ptr<osg::Array> > AFactAndArray;
         typedef std::vector<AFactAndArray> AFactAndArrays;
@@ -67,7 +59,6 @@ namespace ply
         typedef std::vector<PFactAndDrawElement> PFactAndDrawElements;
 
         typedef std::pair<AFactAndArrays , PFactAndDrawElements > APFactAndArrays;
-
         std::vector< std::pair< std::string, APFactAndArrays > > _factoryarrayspair; //per element name
     public:
 

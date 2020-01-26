@@ -354,16 +354,16 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,char*  elemNam
         int curchannel = -1, numcomp = 0, curcompsize = 0; const VertexSemantic* cursem = 0;
         for(int propcpt=0; propcpt < numprops; ++propcpt)
         {
+        //search for prop in user semantics and goto next if not found (TODO add semantics through reader options)
+            VertexSemantics::iterator semit;
+            for( semit =_semantics.begin(); semit!=_semantics.end() &&strcmp(props[propcpt]->name,semit->name)!=0; ++semit);
+            if(semit==_semantics.end()) continue;
+            VertexSemantic &sem = *semit;
             if(props[propcpt]->is_list )
             {
                 readListProperty(  file, nVertices, elemName, props[propcpt]);
                 continue;
             }
-            //search for prop in user semantics and goto next if not found (TODO add semantics through reader options)
-            VertexSemantics::iterator semit;
-            for( semit =_semantics.begin(); semit!=_semantics.end() &&strcmp(props[propcpt]->name,semit->name)!=0; ++semit);
-            if(semit==_semantics.end()) continue;
-            VertexSemantic &sem = *semit;
 
             //setup user property
             props[propcpt]->offset = totalvertexsize+curcompsize;
@@ -378,8 +378,6 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,char*  elemNam
                     if(numcomp>4) { OSG_FATAL<<"osg ply plugin doesn't support "<<numcomp<<" components arrays, trying 4 instead"<<std::endl; numcomp = 4; }
                     ArrayFactory * factarray = _arrayfactories[cursem->internal_type][numcomp-1];
                     if(factarray) factoryarrays.push_back(AFactAndArray(factarray, getArrayFromFactory(factarray, curchannel)));
-                    /*totalvertexsize = cursem->offset + curcompsize;
-                    propertyOffsets.push_back(cursem->offset);*/
                     propertyOffsets.push_back(totalvertexsize);
                     totalvertexsize +=  curcompsize;
                 }
@@ -409,8 +407,6 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,char*  elemNam
             if(numcomp>4) { OSG_FATAL<<"osg ply plugin doesn't support "<<numcomp<<" components arrays, trying 4 instead"<<std::endl; numcomp = 4; }
             ArrayFactory * factarray = _arrayfactories[cursem->internal_type][numcomp-1];
             if(factarray) factoryarrays.push_back(AFactAndArray(factarray, getArrayFromFactory(factarray, curchannel)));
-            /*totalvertexsize = cursem->offset + curcompsize;
-            propertyOffsets.push_back(cursem->offset);*/
             propertyOffsets.push_back(totalvertexsize);
             totalvertexsize +=  curcompsize;
         }

@@ -44,7 +44,7 @@ class ReaderWriterPLY : public osgDB::ReaderWriter
 public:
     ReaderWriterPLY()
     {
-        supportsExtension("ply","Stanford Triangle Meta Format");
+        supportsExtension("ply","Stanford Meta Format");
 
         /** Note semantics from Equalizer LGPL source.*/
         //assuming compact aliasing (only name and internal format is meaningfull
@@ -71,6 +71,9 @@ public:
         _semantic.push_back({ "specular_blue", PLY_UCHAR, 6});
         _semantic.push_back({ "specular_coeff", PLY_FLOAT,  7});
         _semantic.push_back({ "specular_power", PLY_FLOAT, 7});
+
+
+        _semantic.push_back({ "vertex_indices", -1, -1}); //autotyped uint
     }
 
     virtual const char* className() const { return "ReaderWriterPLY"; }

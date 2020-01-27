@@ -60,6 +60,8 @@ public:
         _semantic.push_back({ "alpha", PLY_FLOAT,  2});
         _semantic.push_back({ "u", PLY_FLOAT, 3});
         _semantic.push_back({ "v", PLY_FLOAT,  3});
+        _semantic.push_back({ "texture_u", PLY_FLOAT, 3});
+        _semantic.push_back({ "texture_v", PLY_FLOAT,  3});
         _semantic.push_back({ "ambient_red", PLY_UCHAR, 4});
         _semantic.push_back({ "ambient_green", PLY_UCHAR, 4});
         _semantic.push_back({ "ambient_blue", PLY_UCHAR, 4});

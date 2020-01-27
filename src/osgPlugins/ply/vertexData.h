@@ -51,8 +51,8 @@ namespace ply
 
     class VertexData
     {
-        osg::ref_ptr<ArrayFactory> _arrayfactories[PLY_END_TYPE-1][4];
-        osg::ref_ptr<DrawElementFactory> _prfactories[PLY_END_TYPE-1];
+        osg::ref_ptr<ArrayFactory> _arrayfactories[PLY_END_TYPE][4];
+        osg::ref_ptr<DrawElementFactory> _prfactories[PLY_END_TYPE];
 
         typedef std::pair< ArrayFactory*, osg::ref_ptr<osg::Array> > AFactAndArray;
         typedef std::vector<AFactAndArray> AFactAndArrays;

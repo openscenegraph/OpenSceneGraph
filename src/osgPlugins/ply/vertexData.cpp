@@ -290,9 +290,9 @@ void VertexData::readVertices( PlyFile* file, const int nVertices, char*  elemNa
     std::pair<std::string, APFactAndArrays> newarrayvector(elemName, APFactAndArrays());
     _factoryarrayspair.push_back(newarrayvector);
     // read in the vertices properties
-    AFactAndArrays &factoryarrays = _factoryarrayspair.back().second.first;
+    AFactAndArrays *factoryarrays = &_factoryarrayspair.back().second.first;
     //read in lists properties
-    PFactAndDrawElements &factorydrs = _factoryarrayspair.back().second.second;
+    PFactAndDrawElements *factorydrs = &_factoryarrayspair.back().second.second;
 
     {
         int curchannel = -1, numcomp = 0, curcompsize = 0; const VertexSemantic* cursem = 0;
@@ -320,7 +320,7 @@ void VertexData::readVertices( PlyFile* file, const int nVertices, char*  elemNa
                 {
                     if(numcomp>4) { OSG_FATAL<<"osg ply plugin doesn't support "<<numcomp<<" components arrays, trying 4 instead"<<std::endl; numcomp = 4; }
                     ArrayFactory * factarray = _arrayfactories[cursem->internal_type][numcomp-1];
-                    if(factarray) factoryarrays.push_back(AFactAndArray(factarray, getArrayFromFactory(factarray, cursem->name, curchannel)));
+                    if(factarray) factoryarrays->push_back(AFactAndArray(factarray, getArrayFromFactory(factarray, cursem->name, curchannel)));
                     arrOffsets.push_back(totalvertexsize);
                     totalvertexsize +=  curcompsize;
                 }
@@ -334,13 +334,13 @@ void VertexData::readVertices( PlyFile* file, const int nVertices, char*  elemNa
                 if(factarray)
                 {
                     osg::DrawElements* dr;
-                    factorydrs.push_back(PFactAndDrawElement(factarray, factarray->createDrawElement())); dr = factorydrs.back().second;
+                    factorydrs->push_back(PFactAndDrawElement(factarray, factarray->createDrawElement())); dr = factorydrs->back().second;
                     dr->setName(cursem->name); dr->setMode(GL_LINES);
-                    factorydrs.push_back(PFactAndDrawElement(factarray, factarray->createDrawElement())); dr = factorydrs.back().second;
+                    factorydrs->push_back(PFactAndDrawElement(factarray, factarray->createDrawElement())); dr = factorydrs->back().second;
                     dr->setName(cursem->name); dr->setMode(GL_TRIANGLES);
-                    factorydrs.push_back(PFactAndDrawElement(factarray, factarray->createDrawElement())); dr = factorydrs.back().second;
+                    factorydrs->push_back(PFactAndDrawElement(factarray, factarray->createDrawElement())); dr = factorydrs->back().second;
                     dr->setName(cursem->name); dr->setMode(GL_QUADS);
-                    factorydrs.push_back(PFactAndDrawElement(factarray, factarray->createDrawElement())); dr = factorydrs.back().second;
+                    factorydrs->push_back(PFactAndDrawElement(factarray, factarray->createDrawElement())); dr = factorydrs->back().second;
                     dr->setName(cursem->name); dr->setMode(GL_POLYGON);
                 }
                 prOffsets.push_back(totalvertexsize);
@@ -382,7 +382,7 @@ void VertexData::readVertices( PlyFile* file, const int nVertices, char*  elemNa
         {
             if(numcomp>4) { OSG_FATAL<<"osg ply plugin doesn't support "<<numcomp<<" components arrays, trying 4 instead"<<std::endl; numcomp = 4; }
             ArrayFactory * factarray = _arrayfactories[cursem->internal_type][numcomp-1];
-            if(factarray) factoryarrays.push_back(AFactAndArray(factarray, getArrayFromFactory(factarray, cursem->name, curchannel)));
+            if(factarray) factoryarrays->push_back(AFactAndArray(factarray, getArrayFromFactory(factarray, cursem->name, curchannel)));
             arrOffsets.push_back(totalvertexsize);
             totalvertexsize +=  curcompsize;
         }
@@ -396,13 +396,13 @@ void VertexData::readVertices( PlyFile* file, const int nVertices, char*  elemNa
 
             ///convert rawvertex to osg
             int curprop = 0;
-            for(AFactAndArrays::iterator arrit = factoryarrays.begin(); arrit != factoryarrays.end(); ++arrit)
+            for(AFactAndArrays::iterator arrit = factoryarrays->begin(); arrit != factoryarrays->end(); ++arrit)
             {
                 arrit->first->addElement(rawvertex + arrOffsets[curprop++], arrit->second);
             }
             curprop = 0; unsigned int *face=0;
 
-            for(PFactAndDrawElements::iterator arrit = factorydrs.begin(); arrit != factorydrs.end(); arrit+=4)
+            for(PFactAndDrawElements::iterator arrit = factorydrs->begin(); arrit != factorydrs->end(); arrit+=4)
             {
                 osg::DrawElements * lines = arrit->second;
                 osg::DrawElements * triangles = (arrit+1)->second;
@@ -424,7 +424,7 @@ void VertexData::readVertices( PlyFile* file, const int nVertices, char*  elemNa
                 {
                     arrit->first->addElement((char*)(face+j), drelmt);
                 }
-               free(face);
+                free(face);
             }
 
         }
@@ -559,10 +559,10 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
 
         //1 Assuming First Element is vertices
         std::vector< std::pair<std::string, APFactAndArrays> >::iterator elementarraysit = _factoryarrayspair.begin();
-        AFactAndArrays &factoryarrays = elementarraysit->second.first;
-        int numvertices = factoryarrays[0].second->getNumElements();
+        AFactAndArrays *factoryarrays = &elementarraysit->second.first;
+        int numvertices = (*factoryarrays)[0].second->getNumElements();
 
-       for(std::vector<AFactAndArray>::iterator arrit = factoryarrays.begin(); arrit != factoryarrays.end(); ++arrit)
+       for(std::vector<AFactAndArray>::iterator arrit = factoryarrays->begin(); arrit != factoryarrays->end(); ++arrit)
        {
             osg::Array* a = arrit->second;
             int index = static_cast<osg::IntValueObject*>(a->getUserData())->getValue();
@@ -572,13 +572,13 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
 
         //2 Assuming Second Element has a list with primitiveset indices
         elementarraysit++;
-        PFactAndDrawElements &factoryprs = elementarraysit->second.second;
+        PFactAndDrawElements *factoryprs = &elementarraysit->second.second;
 
         // Print points if the file contains unsupported primitives
-        if(factoryprs.empty())
+        if(factoryprs->empty())
             geom->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, numvertices));
         else
-            for(std::vector<PFactAndDrawElement>::iterator arrit = factoryprs.begin(); arrit != factoryprs.end(); ++arrit)
+            for(PFactAndDrawElements::iterator arrit = factoryprs->begin(); arrit != factoryprs->end(); ++arrit)
             {
                 osg::DrawElements* a = arrit->second;
                 if(a->getNumIndices()>0)
@@ -592,19 +592,26 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         {
              osg::Node * elmt = new osg::Node;
              elmt->setName(elementarraysit->first);
-            factoryarrays = elementarraysit->second.first;
-            for(std::vector<AFactAndArray>::iterator arrit = factoryarrays.begin(); arrit != factoryarrays.end(); ++arrit)
+            factoryarrays = &elementarraysit->second.first;
+            for(AFactAndArrays::iterator arrit = factoryarrays->begin(); arrit != factoryarrays->end(); ++arrit)
             {
                  osg::Array* a = arrit->second;
-                 elmt->getOrCreateUserDataContainer()->addUserObject(a);
+                 if(a->getNumElements()>0)
+                 {
+                     MESHINFO << "OSGPLY Results: element " << elmt->getName() << ", property " << a->getName() <<" loaded as Array"<< endl;
+                     elmt->getOrCreateUserDataContainer()->addUserObject(a);
+                 }
                  a->setUserData(NULL);
              }
-            factoryprs = elementarraysit->second.second;
-            for(std::vector<PFactAndDrawElement>::iterator arrit = factoryprs.begin(); arrit != factoryprs.end(); ++arrit)
+            factoryprs = &elementarraysit->second.second;
+            for(PFactAndDrawElements::iterator arrit = factoryprs->begin(); arrit != factoryprs->end(); ++arrit)
             {
                 osg::DrawElements* a = arrit->second;
                 if(a->getNumIndices()>0)
-                    elmt->getOrCreateUserDataContainer()->addUserObject(a);
+                {
+                    elmt->getOrCreateUserDataContainer()->addUserObject(a);                    
+                    MESHINFO << "OSGPLY Results: element " << elmt->getName() << ", list property " << a->getName() <<" loaded as DrawElements"<< endl;
+                }
                 a->setUserData(NULL);
             }
             plyobj->getOrCreateUserDataContainer()->addUserObject(elmt);

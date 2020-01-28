@@ -19,8 +19,11 @@
 #include <osg/TexEnv>
 #include <osgDB/ReaderWriter>
 #include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 #include <osgDB/ReadFile>
 #include <osg/Texture2D>
+#include <osg/ScriptEngine>
+#include <osgUtil/UpdateVisitor>
 
 using namespace std;
 using namespace ply;
@@ -276,7 +279,7 @@ VertexData::VertexData(const VertexSemantics& s)
 
 inline osg::Array * getArrayFromFactory(ArrayFactory*factarray, const char *name, int osgmapping)
 {
-        osg::Array* arr = factarray->createArray();
+        osg::Array* arr = factarray->createArray(); arr->setBinding(osg::Array::BIND_PER_VERTEX);
         arr->setName(name);
         arr->setUserData(new osg::IntValueObject(osgmapping));
         return arr;
@@ -432,6 +435,52 @@ void VertexData::readVertices( PlyFile* file, const int nVertices, char*  elemNa
     }
 }
 
+void postprocess(osg::Geometry* geom, const std::string textureFile)
+{
+    // set flag true to activate the vertex buffer object of drawable
+    geom->setUseVertexBufferObjects(true);
+    if(!geom->getNormalArray()){   // If not, use the smoothing visitor to generate them
+        // (quads will be triangulated by the smoothing visitor)
+        osgUtil::SmoothingVisitor::smooth((*geom), osg::PI/2);
+    }
+
+    osg::ref_ptr<osg::Image> image;
+    if (!textureFile.empty() && (image = osgDB::readRefImageFile(textureFile)) != NULL)
+    {
+        osg::Texture2D *texture = new osg::Texture2D;
+        texture->setImage(image.get());
+        texture->setResizeNonPowerOfTwoHint(false);
+
+        osg::TexEnv *texenv = new osg::TexEnv;
+        texenv->setMode(osg::TexEnv::REPLACE);
+
+        osg::StateSet *stateset = geom->getOrCreateStateSet();
+        stateset->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
+        stateset->setTextureAttribute(0, texenv);
+    }
+}
+
+class ScaleArrayVisitor : public osg::ArrayVisitor
+{
+public:
+    ScaleArrayVisitor(float s):
+        _scale(s) {}
+
+    template <class ARRAY>
+    void apply_imp(ARRAY& array)
+    {
+        for(unsigned int i=0 ;i<array.size(); ++i){
+            array[i]*=_scale;
+        }
+    }
+    virtual void apply(osg::FloatArray& ba) { apply_imp(ba); }
+    virtual void apply(osg::Vec2Array& ba) { apply_imp(ba); }
+    virtual void apply(osg::Vec3Array& ba) { apply_imp(ba); }
+    virtual void apply(osg::Vec4Array& ba) { apply_imp(ba); }
+
+     float _scale;
+};
+
 /*  Open a PLY file and read vertex, color and index data. and returns the node  */
 osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColors )
 {
@@ -557,90 +606,122 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         // Create geometry node
         osg::Geometry* geom  =  new osg::Geometry;
 
-        //1 Assuming First Element is vertices
+        PFactAndDrawElements *factoryprs;   AFactAndArrays *factoryarrays;
         std::vector< std::pair<std::string, APFactAndArrays> >::iterator elementarraysit = _factoryarrayspair.begin();
-        AFactAndArrays *factoryarrays = &elementarraysit->second.first;
-        int numvertices = (*factoryarrays)[0].second->getNumElements();
+        std::string luascript = osgDB::findDataFile("ply2osgMapper.lua");
+        if(osgDB::fileExists(luascript))
+        {
+            /// create Object Hierarchy and parse it with lua
+            osg::ref_ptr<osg::Script> readscript = osgDB::readScriptFile(luascript);
+            osg::Group * plyobj = new osg::Group;
+            plyobj->setName("PLY");
+            MESHERROR << "OSGPLY lua engine begin"<< endl;
+            osg::ScriptEngine * luaengine = osgDB::readFile<osg::ScriptEngine>("ScriptEngine.lua");
+            if(!luaengine) {
+                 OSG_WARN << "OSGPLY lua engine not found"<< endl;
+                return geom;
+            }
+            osg::ref_ptr<osg::Group> processor = new osg::Group;
+            processor->getOrCreateUserDataContainer()->addUserObject(luaengine);
 
-       for(std::vector<AFactAndArray>::iterator arrit = factoryarrays->begin(); arrit != factoryarrays->end(); ++arrit)
-       {
-            osg::Array* a = arrit->second;
-            int index = static_cast<osg::IntValueObject*>(a->getUserData())->getValue();
-            geom->setVertexAttribArray(index, a, osg::Array::BIND_PER_VERTEX );
-            a->setUserData(NULL);
+            osg::ScriptNodeCallback *scp = new osg::ScriptNodeCallback(readscript,"mapElements");
+            processor->setUpdateCallback(scp);
+
+            for(elementarraysit = _factoryarrayspair.begin(); elementarraysit != _factoryarrayspair.end(); ++elementarraysit)
+            {
+                osg::Geometry * elmt = new osg::Geometry;
+                elmt->setName(elementarraysit->first);
+                factoryarrays = &elementarraysit->second.first;
+                int cpt=0;
+                for(AFactAndArrays::iterator arrit = factoryarrays->begin(); arrit != factoryarrays->end(); ++arrit)
+                {
+                     osg::Array* a = arrit->second;
+                     if(a->getNumElements()>0)
+                     {
+                         MESHINFO << "OSGPLY Results: element " << elmt->getName() << ", property " << a->getName() <<" loaded as Array"<< endl;
+                         elmt->setVertexAttribArray(cpt++, a, osg::Array::BIND_PER_VERTEX);
+                     }
+                     a->setUserData(NULL);
+                }
+                factoryprs = &elementarraysit->second.second;
+                for(PFactAndDrawElements::iterator arrit = factoryprs->begin(); arrit != factoryprs->end(); ++arrit)
+                {
+                    osg::DrawElements* a = arrit->second;
+                    if(a->getNumIndices()>0)
+                    {
+                        elmt->addPrimitiveSet(a);
+                        MESHINFO << "OSGPLY Results: element " << elmt->getName() << ", list property " << a->getName() <<" loaded as DrawElements"<< endl;
+                    }
+                    a->setUserData(NULL);
+                }
+                plyobj->addChild(elmt);
+            }
+
+            osg::Group* res = new osg::Group;
+            res->addChild(geom);
+            postprocess(geom, textureFile);
+            geom->setUseVertexBufferObjects(true);
+            processor->addChild(res);
+            processor->addChild(plyobj);
+            osg::ref_ptr<osgUtil::UpdateVisitor> upd = new osgUtil::UpdateVisitor;
+            processor->accept(*upd);
+            return res;
         }
-
-        //2 Assuming Second Element has a list with primitiveset indices
-        elementarraysit++;
-        PFactAndDrawElements *factoryprs = &elementarraysit->second.second;
-
-        // Print points if the file contains unsupported primitives
-        if(factoryprs->empty())
-            geom->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, numvertices));
         else
+        {
+            //Default
+            //1 Assuming vertices named "vertex"
+            elementarraysit = _factoryarrayspair.begin();
+            while(elementarraysit->first != "vertex" && elementarraysit != _factoryarrayspair.end()) elementarraysit++;
+            if(elementarraysit == _factoryarrayspair.end())
+                return NULL;
+            factoryarrays = &elementarraysit->second.first;
+            int numvertices = (*factoryarrays)[0].second->getNumElements();
+
+           for(AFactAndArrays::iterator arrit = factoryarrays->begin(); arrit != factoryarrays->end(); ++arrit)
+           {
+                osg::Array* a = arrit->second;
+                int index = static_cast<osg::IntValueObject*>(a->getUserData())->getValue();
+                switch (index) {
+                    case 0 : geom->setVertexArray(a); break;
+                    case 1 : geom->setNormalArray(a); break;
+                    case 2 : case 4 :case 5 :case 6 :
+                    if(!ignoreColors){
+                            //assuming converted from char
+                            ScaleArrayVisitor scaler(1.0f/255.0f); a->accept(scaler);
+                            geom->setColorArray(a);
+                    }
+                    break;
+                    case 3 : geom->setTexCoordArray(0, a); break;
+                    break;
+                default:
+                    MESHINFO << "OSGPLY Results: semantic " << index<< ", unresolved, setting vertex attribute array"<< endl;
+                    geom->setVertexAttribArray(index, a);
+                    break;
+                }
+           }
+           //2 Assuming  primitiveset indices element is "face"
+           elementarraysit = _factoryarrayspair.begin();
+           while(elementarraysit->first != "face" && elementarraysit != _factoryarrayspair.end()) elementarraysit++;
+           if(elementarraysit == _factoryarrayspair.end())
+               return NULL;
+            factoryprs = &elementarraysit->second.second;
+
             for(PFactAndDrawElements::iterator arrit = factoryprs->begin(); arrit != factoryprs->end(); ++arrit)
             {
                 osg::DrawElements* a = arrit->second;
                 if(a->getNumIndices()>0)
                     geom->addPrimitiveSet(a);
-                a->setUserData(NULL);
             }
-
-        /// create Object Hierarchy and set it as geoemtry userdata
-        osg::Node * plyobj = new osg::Node;
-        for(elementarraysit = _factoryarrayspair.begin(); elementarraysit != _factoryarrayspair.end(); ++elementarraysit)
-        {
-             osg::Node * elmt = new osg::Node;
-             elmt->setName(elementarraysit->first);
-            factoryarrays = &elementarraysit->second.first;
-            for(AFactAndArrays::iterator arrit = factoryarrays->begin(); arrit != factoryarrays->end(); ++arrit)
-            {
-                 osg::Array* a = arrit->second;
-                 if(a->getNumElements()>0)
-                 {
-                     MESHINFO << "OSGPLY Results: element " << elmt->getName() << ", property " << a->getName() <<" loaded as Array"<< endl;
-                     elmt->getOrCreateUserDataContainer()->addUserObject(a);
-                 }
-                 a->setUserData(NULL);
-             }
-            factoryprs = &elementarraysit->second.second;
-            for(PFactAndDrawElements::iterator arrit = factoryprs->begin(); arrit != factoryprs->end(); ++arrit)
-            {
-                osg::DrawElements* a = arrit->second;
-                if(a->getNumIndices()>0)
-                {
-                    elmt->getOrCreateUserDataContainer()->addUserObject(a);                    
-                    MESHINFO << "OSGPLY Results: element " << elmt->getName() << ", list property " << a->getName() <<" loaded as DrawElements"<< endl;
-                }
-                a->setUserData(NULL);
-            }
-            plyobj->getOrCreateUserDataContainer()->addUserObject(elmt);
+            // Print points if the file contains unsupported primitives
+            if(geom->getNumPrimitiveSets() == 0)
+                geom->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, numvertices));
+            postprocess(geom, textureFile);
+            osg::Geode* geode = new osg::Geode;
+            geode->addDrawable(geom);
+            return geode;
         }
-        geom->setUserData(plyobj);
-
-        // set flag true to activate the vertex buffer object of drawable
-        geom->setUseVertexBufferObjects(true);
-
-        osg::ref_ptr<osg::Image> image;
-        if (!textureFile.empty() && (image = osgDB::readRefImageFile(textureFile)) != NULL)
-        {
-            osg::Texture2D *texture = new osg::Texture2D;
-            texture->setImage(image.get());
-            texture->setResizeNonPowerOfTwoHint(false);
-
-            osg::TexEnv *texenv = new osg::TexEnv;
-            texenv->setMode(osg::TexEnv::REPLACE);
-
-            osg::StateSet *stateset = geom->getOrCreateStateSet();
-            stateset->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
-            stateset->setTextureAttribute(0, texenv);
-        }
-
-        osg::Geode* geode = new osg::Geode;
-        geode->addDrawable(geom);
-        return geode;
     }
-
     return NULL;
 }
 

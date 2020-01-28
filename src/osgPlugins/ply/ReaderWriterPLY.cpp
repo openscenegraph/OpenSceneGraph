@@ -48,33 +48,33 @@ public:
         /** Note semantics from Equalizer LGPL source.*/
         //assuming compact aliasing (only name and internal format is meaningfull
 /// element properties to read and their mapping
-        _semantic.push_back({ "x", PLY_FLOAT, 0 });
-        _semantic.push_back({ "y", PLY_FLOAT,  0});
-        _semantic.push_back({ "z", PLY_FLOAT,  0});
+        _semantic.push_back({ "x", PLY_FLOAT, 0});
+        _semantic.push_back({ "y", PLY_FLOAT, 0});
+        _semantic.push_back({ "z", PLY_FLOAT, 0});
         _semantic.push_back({ "nx", PLY_FLOAT, 1});
-        _semantic.push_back({ "ny", PLY_FLOAT,  1});
-        _semantic.push_back({ "nz", PLY_FLOAT,  1});
-        _semantic.push_back({ "red", PLY_FLOAT,  2});
-        _semantic.push_back({ "green", PLY_FLOAT,  2});
-        _semantic.push_back({ "blue", PLY_FLOAT,  2});
-        _semantic.push_back({ "alpha", PLY_FLOAT,  2});
+        _semantic.push_back({ "ny", PLY_FLOAT, 1});
+        _semantic.push_back({ "nz", PLY_FLOAT, 1});
+        _semantic.push_back({ "red", PLY_FLOAT, 2});
+        _semantic.push_back({ "green", PLY_FLOAT, 2});
+        _semantic.push_back({ "blue", PLY_FLOAT, 2});
+        _semantic.push_back({ "alpha", PLY_FLOAT, 2});
         _semantic.push_back({ "u", PLY_FLOAT, 3});
-        _semantic.push_back({ "v", PLY_FLOAT,  3});
+        _semantic.push_back({ "v", PLY_FLOAT, 3});
         _semantic.push_back({ "texture_u", PLY_FLOAT, 3});
-        _semantic.push_back({ "texture_v", PLY_FLOAT,  3});
-        _semantic.push_back({ "ambient_red", PLY_UCHAR, 4});
-        _semantic.push_back({ "ambient_green", PLY_UCHAR, 4});
-        _semantic.push_back({ "ambient_blue", PLY_UCHAR, 4});
-        _semantic.push_back({ "diffuse_red", PLY_UCHAR,  5});
-        _semantic.push_back({ "diffuse_green", PLY_UCHAR,  5});
-        _semantic.push_back({ "diffuse_blue", PLY_UCHAR, 5});
-        _semantic.push_back({ "specular_red", PLY_UCHAR, 6});
-        _semantic.push_back({ "specular_green", PLY_UCHAR,  6});
-        _semantic.push_back({ "specular_blue", PLY_UCHAR, 6});
-        _semantic.push_back({ "specular_coeff", PLY_FLOAT,  7});
+        _semantic.push_back({ "texture_v", PLY_FLOAT, 3});
+        _semantic.push_back({ "ambient_red", PLY_FLOAT, 4});
+        _semantic.push_back({ "ambient_green", PLY_FLOAT, 4});
+        _semantic.push_back({ "ambient_blue", PLY_FLOAT, 4});
+        _semantic.push_back({ "diffuse_red", PLY_FLOAT, 5});
+        _semantic.push_back({ "diffuse_green", PLY_FLOAT, 5});
+        _semantic.push_back({ "diffuse_blue", PLY_FLOAT, 5});
+        _semantic.push_back({ "specular_red", PLY_FLOAT, 6});
+        _semantic.push_back({ "specular_green", PLY_FLOAT, 6});
+        _semantic.push_back({ "specular_blue", PLY_FLOAT, 6});
+        _semantic.push_back({ "specular_coeff", PLY_FLOAT, 7});
         _semantic.push_back({ "specular_power", PLY_FLOAT, 7});
-        _semantic.push_back({ "tx", PLY_UCHAR, 6});
-        _semantic.push_back({ "tn", PLY_UINT, 7});
+        _semantic.push_back({ "tx", PLY_UCHAR, 8});
+        _semantic.push_back({ "tn", PLY_UINT, 9});
 /// list properties to read (first found is set as primitiveset)
         _semantic.push_back({ "vertex_indices", -1, -2}); //autotyped uint
         _semantic.push_back({ "vertex_index", -1, -2}); //autotyped uint

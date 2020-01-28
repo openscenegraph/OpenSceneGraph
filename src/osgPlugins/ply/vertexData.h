@@ -24,8 +24,8 @@
 //! \class VertexData
 //! \brief helps to read ply file and converts in to osg::Node format
 //! \details element properties grouped according @osgmapping (max 4)
-//! \details first element property is considered as geometry vertices
-//! \details second element list properties are considered as primitivesets
+//! \details default: geometry vertices in "vertex" element / primitivesets in "face" element
+//! \details custom mapping possible with lua script file "ply2osgMapper.lua" and/or overriding VertexSemantics
 //!
 ///////////////////////////////////////////////////////////////////////////////
 

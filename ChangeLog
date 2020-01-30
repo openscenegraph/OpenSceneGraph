@@ -1,3 +1,27 @@
+Thu, 30 Jan 2020 16:30:41 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #911 from LaurensVoerman/FbxSdkFixFix for older versions of fbxsdk without xml or zlib libraries,
+
+Thu, 30 Jan 2020 16:21:32 +0000
+Author : Robert Osfield
+Added explicit clean up removeView
+
+Thu, 30 Jan 2020 16:32:42 +0100
+Author : Laurens Voerman
+Fix for older versions of fbxsdk without xml or zlib libraries, fix cmake multiconfig generators (msvc) with irrelevant CMAKE_BUILD_TYPE.
+
+Mon, 27 Jan 2020 10:11:23 +0000
+Author : OpenSceneGraph git repository
+Merge pull request #907 from DeadParrot/OpenSceneGraph-3.6FBX plugin updates / PREFIX-NOTFOUND work-around
+
+Sun, 26 Jan 2020 14:28:56 -0500
+Author : Stuart Mentzer
+FBX plugin updates / PREFIX-NOTFOUND work-around
+
+Tue, 21 Jan 2020 10:11:30 +0000
+Author : Robert Osfield
+Updater rc number for 3.6.5-rc2, and CHangeLog
+
 Tue, 21 Jan 2020 09:43:08 +0000
 Author : Robert Osfield
 Removed stray space

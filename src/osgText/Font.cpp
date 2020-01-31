@@ -492,6 +492,8 @@ void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph*
 
 void Font::assignGlyphToGlyphTexture(Glyph* glyph, ShaderTechnique shaderTechnique)
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_glyphMapMutex);
+
     int posX=0,posY=0;
 
     GlyphTexture* glyphTexture = 0;

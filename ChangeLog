@@ -1,3 +1,7 @@
+Fri, 31 Jan 2020 11:02:47 +0000
+Author : Robert Osfield
+Updates for 3.6.5 release
+
 Fri, 31 Jan 2020 10:37:25 +0000
 Author : Robert Osfield
 Added mutex lock to avoid threading issues when glyphs are added to a Font from multiple threads

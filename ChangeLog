@@ -1,3 +1,11 @@
+Fri, 31 Jan 2020 10:37:25 +0000
+Author : Robert Osfield
+Added mutex lock to avoid threading issues when glyphs are added to a Font from multiple threads
+
+Thu, 30 Jan 2020 19:25:50 +0000
+Author : Robert Osfield
+Updates for 3.6.5-rc3
+
 Thu, 30 Jan 2020 16:30:41 +0000
 Author : OpenSceneGraph git repository
 Merge pull request #911 from LaurensVoerman/FbxSdkFixFix for older versions of fbxsdk without xml or zlib libraries,

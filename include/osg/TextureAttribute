@@ -28,7 +28,7 @@ class TextureAttribute : public StateAttribute
             _textureUnit(0) {}
 
         TextureAttribute(const TextureAttribute& ta, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            StateAttribute(ta, copyop) {}
+            StateAttribute(ta, copyop), _textureUnit(ta._textureUnit) {}
 
         virtual bool isTextureAttribute() const { return true; }
 

@@ -128,7 +128,7 @@ int main( int argc, char **argv )
     osg::ArgumentParser arguments(&argc,argv);
 
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
 
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );

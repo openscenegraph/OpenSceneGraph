@@ -28,8 +28,8 @@
 #include <vector>
 #include <map>
 
-#include "Win32GWUtils"
-#include "windowsx.h"
+#include <osgViewer/api/Win32/Win32GWUtils>
+#include <windowsx.h>
 
 #define MOUSEEVENTF_FROMTOUCH           0xFF515700
 

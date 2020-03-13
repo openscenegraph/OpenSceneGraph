@@ -14,7 +14,7 @@
 #ifndef OSGVIEWER_GRAPHICSHANDLEWIN32
 #define OSGVIEWER_GRAPHICSHANDLEWIN32 1
 
-#include "Win32GWUtils"
+#include <osgViewer/api/Win32/Win32GWUtils>
 #include <osgViewer/Export>
 
 namespace osgViewer

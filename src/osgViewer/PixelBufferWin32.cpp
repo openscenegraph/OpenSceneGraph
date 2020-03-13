@@ -15,7 +15,7 @@
  */
 
 #if !defined(OSG_USE_EGL)
-#include "Win32GWUtils"
+#include <osgViewer/api/Win32/Win32GWUtils>
 #include <osgViewer/api/Win32/PixelBufferWin32>
 #include <osgViewer/api/Win32/GraphicsWindowWin32>
 #include <osg/TextureRectangle>

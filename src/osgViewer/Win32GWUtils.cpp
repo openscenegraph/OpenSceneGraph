@@ -1,6 +1,6 @@
 #include <osg/GLExtensions>
 
-#include "Win32GWUtils"
+#include <osgViewer/api/Win32/Win32GWUtils>
 #include <vector>
 #include <sstream>
 

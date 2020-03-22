@@ -89,6 +89,7 @@ PlatformSpecifics/Windows/*.rc
 
 # Visual Studio - Cache/Options Directory
 .vs/
+.vscode/*
 
 #osx xcode
 DerivedData/

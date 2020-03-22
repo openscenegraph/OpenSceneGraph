@@ -790,8 +790,11 @@ ELSE()
     ENDIF()
     FIND_PACKAGE(ZeroConf)
 
-    FIND_PACKAGE(LIBLAS)
-
+    FIND_PACKAGE(LASlib)
+    if (NOT LASlib_FOUND)
+        FIND_PACKAGE(LIBLAS)
+    endif()
+    
     IF (NOT(OSG_USE_LOCAL_LUA_SOURCE))
         FIND_PACKAGE(Lua52)
         IF (NOT (LUA_LIBRARIES AND LUA_INCLUDE_DIR))

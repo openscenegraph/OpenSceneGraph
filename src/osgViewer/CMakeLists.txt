@@ -185,7 +185,7 @@ ELSE()
 
     ELSEIF(${OSG_WINDOWING_SYSTEM} STREQUAL "X11")
         # X11 for everybody else
-        INCLUDE(FindPkgConfig OPTIONAL)
+        find_package(PkgConfig QUIET)
         IF(PKG_CONFIG_FOUND)
 
             PKG_CHECK_MODULES(XRANDR xrandr)

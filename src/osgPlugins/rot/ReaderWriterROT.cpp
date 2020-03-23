@@ -80,7 +80,7 @@ static bool getFilenameAndParams(const std::string& input, std::string& filename
  * This pseudo-loader makes it simple to change the orientation of a saved
  * model by specifying a correcting rotation as part of the filename.
  *
- * Usage: <modelfile.ext>.<rx>,<ry>,<rz>.globe
+ * Usage: <modelfile.ext>.<rx>,<ry>,<rz>.rot
  * where:
  *    <modelfile.ext> = an model filename.
  *    <rx> = rotation around X axis [degrees]

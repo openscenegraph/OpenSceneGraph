@@ -158,7 +158,7 @@ If you have an external project that will depend on OSG built for OpenGL 3.x,
 you'll need to ensure your external project also uses the compiler include
 directives to find <GL3/gl3.h>.
 
-To berify your application is using a pure OpenGL 3.x context, set
+To verify your application is using a pure OpenGL 3.x context, set
 OSG_NOTIFY_LEVEL=INFO in the environment and check the console output. Context
 creation displays output such as the following:
     GL3: Attempting to create OpenGL3 context.

@@ -59,6 +59,8 @@ void RenderLeaf::render(osg::RenderInfo& renderInfo,RenderLeaf* previous)
         // modelview and projection matrices then apply them now.
         if (state.getUseModelViewAndProjectionUniforms()) state.applyModelViewAndProjectionUniformsIfRequired();
 
+        if (_renderLeafCallback)
+            _renderLeafCallback->run(*this, renderInfo);
 
         // draw the drawable
         _drawable->draw(renderInfo);
@@ -77,6 +79,9 @@ void RenderLeaf::render(osg::RenderInfo& renderInfo,RenderLeaf* previous)
         // if we are using osg::Program which requires OSG's generated uniforms to track
         // modelview and projection matrices then apply them now.
         if (state.getUseModelViewAndProjectionUniforms()) state.applyModelViewAndProjectionUniformsIfRequired();
+
+        if (_renderLeafCallback)
+            _renderLeafCallback->run(*this, renderInfo);
 
         // draw the drawable
         _drawable->draw(renderInfo);

@@ -27,6 +27,7 @@ namespace osgUtil {
 
 // Forward declare StateGraph
 class StateGraph;
+class RenderLeafCallback;
 
 /** Container class for all data required for rendering of drawables.
   */
@@ -35,20 +36,21 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
     public:
 
 
-        inline RenderLeaf(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* modelview, float depth=0.0f, unsigned int traversalOrderNumber=0):
+        inline RenderLeaf(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* modelview, float depth=0.0f, unsigned int traversalOrderNumber=0, osg::ref_ptr<RenderLeafCallback> callback = nullptr):
             osg::Referenced(false),
             _parent(0),
             _drawable(drawable),
             _projection(projection),
             _modelview(modelview),
             _depth(depth),
-            _traversalOrderNumber(traversalOrderNumber)
+            _traversalOrderNumber(traversalOrderNumber),
+            _renderLeafCallback(callback)
         {
             _dynamic = (drawable->getDataVariance()==osg::Object::DYNAMIC);
         }
 
 
-        inline void set(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* modelview, float depth=0.0f, unsigned int traversalOrderNumber=0)
+        inline void set(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* modelview, float depth=0.0f, unsigned int traversalOrderNumber=0, osg::ref_ptr<RenderLeafCallback> callback = nullptr)
         {
             _parent = 0;
             _drawable = drawable;
@@ -57,6 +59,7 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
             _depth = depth;
             _dynamic = (drawable->getDataVariance()==osg::Object::DYNAMIC);
             _traversalOrderNumber = traversalOrderNumber;
+            _renderLeafCallback = callback;
         }
 
         inline void reset()
@@ -103,6 +106,7 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
         float                           _depth;
         bool                            _dynamic;
         unsigned int                    _traversalOrderNumber;
+        osg::ref_ptr<RenderLeafCallback>     _renderLeafCallback;
 
     private:
 
@@ -121,6 +125,15 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
         /// disallow copy operator.
         RenderLeaf& operator = (const RenderLeaf&) { return *this; }
 
+};
+
+class RenderLeafCallback : public osg::Referenced
+{
+public:
+    RenderLeafCallback() = default;
+    virtual void run(const RenderLeaf& renderLeaf, osg::RenderInfo& renderInfo) = 0;
+protected:
+    virtual ~RenderLeafCallback() = default;
 };
 
 }

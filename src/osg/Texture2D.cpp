@@ -298,27 +298,30 @@ void Texture2D::apply(State& state) const
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_internalFormat!=0) )
     {
         // no image present, but dimensions at set so lets create the texture
-        GLExtensions * extensions = state.get<GLExtensions>();
-        GLenum texStorageSizedInternalFormat = extensions->isTextureStorageEnabled && (_borderWidth==0) ? selectSizedInternalFormat() : 0;
-        if (texStorageSizedInternalFormat!=0)
-        {
-            textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_2D, _numMipmapLevels, texStorageSizedInternalFormat, _textureWidth, _textureHeight, 1, _borderWidth);
-            textureObject->bind(state);
-            applyTexParameters(GL_TEXTURE_2D, state);
-            extensions->glTexStorage2D( GL_TEXTURE_2D, osg::maximum(_numMipmapLevels,1), texStorageSizedInternalFormat,
-                     _textureWidth, _textureHeight);
-        }
-        else
-        {
-            GLenum internalFormat = _sourceFormat ? _sourceFormat : _internalFormat;
-            textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_2D, _numMipmapLevels, internalFormat, _textureWidth, _textureHeight, 1, _borderWidth);
-            textureObject->bind(state);
-            applyTexParameters(GL_TEXTURE_2D, state);
-            glTexImage2D( GL_TEXTURE_2D, 0, _internalFormat,
-                     _textureWidth, _textureHeight, _borderWidth,
-                     internalFormat,
-                     _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
-                     0);
+         GLExtensions * extensions = state.get<GLExtensions>();
+         GLenum texStorageSizedInternalFormat = extensions->isTextureStorageEnabled && (_borderWidth==0) ? selectSizedInternalFormat() : 0;
+         if (texStorageSizedInternalFormat!=0)
+         {
+             textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_2D, _numMipmapLevels, texStorageSizedInternalFormat, _textureWidth, _textureHeight, 1, _borderWidth);
+             textureObject->bind(state);
+             applyTexParameters(GL_TEXTURE_2D, state);
+             if(!textureObject->_allocated)
+             {
+                 extensions->glTexStorage2D( GL_TEXTURE_2D, osg::maximum(_numMipmapLevels,1), texStorageSizedInternalFormat,
+                          _textureWidth, _textureHeight);
+             }
+         }
+         else
+         {
+             GLenum internalFormat = _sourceFormat ? _sourceFormat : _internalFormat;
+             textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_2D, _numMipmapLevels, internalFormat, _textureWidth, _textureHeight, 1, _borderWidth);
+             textureObject->bind(state);
+             applyTexParameters(GL_TEXTURE_2D, state);
+             glTexImage2D( GL_TEXTURE_2D, 0, _internalFormat,
+                      _textureWidth, _textureHeight, _borderWidth,
+                      internalFormat,
+                      _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
+                      0);
         }
 
         if (_readPBuffer.valid())
@@ -326,6 +329,7 @@ void Texture2D::apply(State& state) const
             _readPBuffer->bindPBufferToTexture(GL_FRONT);
         }
 
+        textureObject->setAllocated(_numMipmapLevels, texStorageSizedInternalFormat!=0? texStorageSizedInternalFormat: _internalFormat, _textureWidth, _textureHeight, 1, _borderWidth);
     }
     else
     {

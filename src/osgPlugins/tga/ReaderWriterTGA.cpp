@@ -805,6 +805,7 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
         ReaderWriterTGA()
         {
             supportsExtension("tga","Tga Image format");
+            supportsOption("ignoreTga2Fields", "(Read option) Ignore TGA 2.0 fields, even if present. Makes it possible to read files as a TGA 1.0 reader would, helpful when dealing with malformed TGA 2.0 files which are still valid TGA 1.0 files, such as when an image ends with data resembling a TGA 2.0 footer by coincidence.");
         }
 
         virtual const char* className() const { return "TGA Image Reader"; }
@@ -859,7 +860,7 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
 
         virtual ReadResult readImage(std::istream& fin, const Options* options = NULL) const
         {
-            return readTGAStream(fin, options && options->getOptionString().find("IGNORE_TGA_2_FIELDS") != std::string::npos);
+            return readTGAStream(fin, options && options->getOptionString().find("ignoreTga2Fields") != std::string::npos);
         }
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
@@ -872,7 +873,7 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
 
             osgDB::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
             if(!istream) return ReadResult::FILE_NOT_HANDLED;
-            ReadResult rr = readTGAStream(istream, options && options->getOptionString().find("IGNORE_TGA_2_FIELDS") != std::string::npos);
+            ReadResult rr = readTGAStream(istream, options && options->getOptionString().find("ignoreTga2Fields") != std::string::npos);
             if(rr.validImage()) rr.getImage()->setFileName(file);
             return rr;
         }

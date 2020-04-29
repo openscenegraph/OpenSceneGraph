@@ -339,7 +339,8 @@ unsigned char *
 simage_tga_load(std::istream& fin,
 int *width_ret,
 int *height_ret,
-int *numComponents_ret)
+int *numComponents_ret,
+bool ignoreTGA2Fields)
 {
     unsigned char header[18];
     unsigned char footer[26];
@@ -382,50 +383,54 @@ int *numComponents_ret)
 
     fin.seekg(-26, std::ios::end);
     endOfImage = fin.tellg() + (std::streamoff)26;
-    fin.read((char*)footer, 26);
-    if (fin.gcount() != 26)
-    {
-        tgaerror = ERR_READ;
-        return NULL;
-    }
 
-    // TGA footer signature is null-terminated, so works like a C string
-    if (strcmp((char*)&footer[8], "TRUEVISION-XFILE.") == 0)
+    if (!ignoreTGA2Fields)
     {
-        endOfImage -= 26;
-        unsigned int extensionAreaOffset = getInt32(&footer[0]);
-        unsigned int developerAreaOffset = getInt32(&footer[4]);
-
-        if (extensionAreaOffset != 0)
+        fin.read((char*)footer, 26);
+        if (fin.gcount() != 26)
         {
-            endOfImage = std::min(endOfImage, (std::streampos)extensionAreaOffset);
-            
-            // We only need the last few fields of the extension area
-            fin.seekg(extensionAreaOffset + 482);
-            unsigned char extensionAreaBuffer[13];
-            fin.read((char*)extensionAreaBuffer, 13);
-            if (fin.gcount() != 13)
-            {
-                tgaerror = ERR_READ;
-                return NULL;
-            }
-
-            unsigned int colorCorrectionOffset = getInt32(&extensionAreaBuffer[0]);
-            unsigned int postageStampOffset = getInt32(&extensionAreaBuffer[4]);
-            unsigned int scanLineOffset = getInt32(&extensionAreaBuffer[8]);
-
-            if (colorCorrectionOffset != 0)
-                endOfImage = std::min(endOfImage, (std::streampos)colorCorrectionOffset);
-            if (postageStampOffset != 0)
-                endOfImage = std::min(endOfImage, (std::streampos)postageStampOffset);
-            if (scanLineOffset != 0)
-                endOfImage = std::min(endOfImage, (std::streampos)scanLineOffset);
-
-            attributeType = (AttributeType) extensionAreaBuffer[12];
+            tgaerror = ERR_READ;
+            return NULL;
         }
 
-        if (developerAreaOffset != 0)
-            endOfImage = std::min(endOfImage, (std::streampos)developerAreaOffset);
+        // TGA footer signature is null-terminated, so works like a C string
+        if (strcmp((char*)&footer[8], "TRUEVISION-XFILE.") == 0)
+        {
+            endOfImage -= 26;
+            unsigned int extensionAreaOffset = getInt32(&footer[0]);
+            unsigned int developerAreaOffset = getInt32(&footer[4]);
+
+            if (extensionAreaOffset != 0)
+            {
+                endOfImage = std::min(endOfImage, (std::streampos)extensionAreaOffset);
+
+                // We only need the last few fields of the extension area
+                fin.seekg(extensionAreaOffset + 482);
+                unsigned char extensionAreaBuffer[13];
+                fin.read((char*)extensionAreaBuffer, 13);
+                if (fin.gcount() != 13)
+                {
+                    tgaerror = ERR_READ;
+                    return NULL;
+                }
+
+                unsigned int colorCorrectionOffset = getInt32(&extensionAreaBuffer[0]);
+                unsigned int postageStampOffset = getInt32(&extensionAreaBuffer[4]);
+                unsigned int scanLineOffset = getInt32(&extensionAreaBuffer[8]);
+
+                if (colorCorrectionOffset != 0)
+                    endOfImage = std::min(endOfImage, (std::streampos)colorCorrectionOffset);
+                if (postageStampOffset != 0)
+                    endOfImage = std::min(endOfImage, (std::streampos)postageStampOffset);
+                if (scanLineOffset != 0)
+                    endOfImage = std::min(endOfImage, (std::streampos)scanLineOffset);
+
+                attributeType = (AttributeType)extensionAreaBuffer[12];
+            }
+
+            if (developerAreaOffset != 0)
+                endOfImage = std::min(endOfImage, (std::streampos)developerAreaOffset);
+        }
     }
 
     fin.seekg(18);
@@ -800,18 +805,19 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
         ReaderWriterTGA()
         {
             supportsExtension("tga","Tga Image format");
+            supportsOption("ignoreTga2Fields", "(Read option) Ignore TGA 2.0 fields, even if present. Makes it possible to read files as a TGA 1.0 reader would, helpful when dealing with malformed TGA 2.0 files which are still valid TGA 1.0 files, such as when an image ends with data resembling a TGA 2.0 footer by coincidence.");
         }
 
         virtual const char* className() const { return "TGA Image Reader"; }
 
-        ReadResult readTGAStream(std::istream& fin) const
+        ReadResult readTGAStream(std::istream& fin, bool ignoreTGA2Fields) const
         {
             unsigned char *imageData = NULL;
             int width_ret;
             int height_ret;
             int numComponents_ret;
 
-            imageData = simage_tga_load(fin,&width_ret,&height_ret,&numComponents_ret);
+            imageData = simage_tga_load(fin, &width_ret, &height_ret, &numComponents_ret, ignoreTGA2Fields);
 
             if (imageData==NULL) return ReadResult::FILE_NOT_HANDLED;
 
@@ -852,9 +858,9 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
             return readImage(file, options);
         }
 
-        virtual ReadResult readImage(std::istream& fin,const Options* =NULL) const
+        virtual ReadResult readImage(std::istream& fin, const Options* options = NULL) const
         {
-            return readTGAStream(fin);
+            return readTGAStream(fin, options && options->getOptionString().find("ignoreTga2Fields") != std::string::npos);
         }
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
@@ -867,7 +873,7 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
 
             osgDB::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
             if(!istream) return ReadResult::FILE_NOT_HANDLED;
-            ReadResult rr = readTGAStream(istream);
+            ReadResult rr = readTGAStream(istream, options && options->getOptionString().find("ignoreTga2Fields") != std::string::npos);
             if(rr.validImage()) rr.getImage()->setFileName(file);
             return rr;
         }

@@ -31,7 +31,7 @@
 
 using namespace osg;
 
-Sampler::Sampler(): StateAttribute(),
+Sampler::Sampler(): TextureAttribute(),
     _wrap_s(Texture::CLAMP),
     _wrap_t(Texture::CLAMP),
     _wrap_r(Texture::CLAMP),
@@ -48,7 +48,7 @@ Sampler::Sampler(): StateAttribute(),
     _PCsampler.setAllElementsTo(0);
 }
 
-Sampler::Sampler(const Sampler& sampler,const CopyOp &copyop ):StateAttribute(sampler,copyop),
+Sampler::Sampler(const Sampler& sampler,const CopyOp &copyop ):TextureAttribute(sampler,copyop),
     _wrap_s(sampler._wrap_s),
     _wrap_t(sampler._wrap_t),
     _wrap_r(sampler._wrap_r),

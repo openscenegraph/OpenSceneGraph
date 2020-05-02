@@ -58,7 +58,7 @@ namespace osg {
 
 /** TexEnvCombine encapsulates the OpenGL glTexEnvCombine (texture
   * environment) state. */
-class OSG_EXPORT TexEnvCombine : public StateAttribute
+class OSG_EXPORT TexEnvCombine : public TextureAttribute
 {
     public :
 
@@ -66,7 +66,7 @@ class OSG_EXPORT TexEnvCombine : public StateAttribute
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         TexEnvCombine(const TexEnvCombine& texenv,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            StateAttribute(texenv,copyop),
+            TextureAttribute(texenv,copyop),
             _needsTexEnvCrossbar(texenv._needsTexEnvCrossbar),
             _combine_RGB(texenv._combine_RGB),
             _combine_Alpha(texenv._combine_Alpha),
@@ -89,8 +89,6 @@ class OSG_EXPORT TexEnvCombine : public StateAttribute
 
         META_StateAttribute(osg, TexEnvCombine, TEXENV);
 
-
-        virtual bool isTextureAttribute() const { return true; }
 
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const

@@ -14,14 +14,14 @@
 #ifndef OSG_TEXMAT
 #define OSG_TEXMAT 1
 
-#include <osg/StateAttribute>
+#include <osg/TextureAttribute>
 #include <osg/Matrix>
 
 namespace osg {
 
 /** A texture matrix state class that encapsulates OpenGL texture matrix
   * functionality. */
-class OSG_EXPORT TexMat : public StateAttribute
+class OSG_EXPORT TexMat : public TextureAttribute
 {
     public :
 
@@ -31,13 +31,11 @@ class OSG_EXPORT TexMat : public StateAttribute
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         TexMat(const TexMat& texmat,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            StateAttribute(texmat,copyop),
+            TextureAttribute(texmat,copyop),
             _matrix(texmat._matrix),
             _scaleByTextureRectangleSize(texmat._scaleByTextureRectangleSize) {}
 
         META_StateAttribute(osg, TexMat, TEXMAT);
-
-        virtual bool isTextureAttribute() const { return true; }
 
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const

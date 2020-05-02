@@ -15,7 +15,7 @@
 #define OSG_POINTSPRITE 1
 
 #include <osg/GL>
-#include <osg/StateAttribute>
+#include <osg/TextureAttribute>
 
 #ifndef GL_ARB_point_sprite
 #define GL_POINT_SPRITE_ARB               0x8861
@@ -31,14 +31,14 @@
 namespace osg {
 
 /** PointSprite base class which encapsulates enabling of point sprites .*/
-class OSG_EXPORT PointSprite : public osg::StateAttribute {
+class OSG_EXPORT PointSprite : public TextureAttribute {
 public:
 
         PointSprite();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         PointSprite(const PointSprite& ps,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            StateAttribute(ps,copyop),
+            TextureAttribute(ps,copyop),
             _coordOriginMode(ps._coordOriginMode) {}
 
 
@@ -54,8 +54,6 @@ public:
         }
 
         virtual bool checkValidityOfAssociatedModes(osg::State&) const;
-
-        virtual bool isTextureAttribute() const { return true; }
 
         virtual void apply(osg::State& state) const;
 

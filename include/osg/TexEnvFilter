@@ -15,7 +15,7 @@
 #define OSG_TEXENVFILTER 1
 
 #include <osg/GL>
-#include <osg/StateAttribute>
+#include <osg/TextureAttribute>
 
 #ifndef GL_EXT_texture_lod_bias
 #define GL_MAX_TEXTURE_LOD_BIAS_EXT       0x84FD
@@ -26,19 +26,17 @@
 namespace osg {
 
 /** TexEnvFilter - encapsulates the OpenGL glTexEnv (GL_TEXTURE_FILTER_CONTROL) state.*/
-class OSG_EXPORT TexEnvFilter : public StateAttribute
+class OSG_EXPORT TexEnvFilter : public TextureAttribute
 {
   public:
     TexEnvFilter(float lodBias = 0.0f);
 
     /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
     TexEnvFilter(const TexEnvFilter& texenv,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            StateAttribute(texenv,copyop),
+            TextureAttribute(texenv,copyop),
             _lodBias(texenv._lodBias) {}
 
     META_StateAttribute(osg, TexEnvFilter, TEXENVFILTER);
-
-    virtual bool isTextureAttribute() const { return true; }
 
     /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
     virtual int compare(const StateAttribute& sa) const

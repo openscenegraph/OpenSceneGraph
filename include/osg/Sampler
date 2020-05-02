@@ -25,7 +25,7 @@ namespace osg{
 */
 
 
-class OSG_EXPORT Sampler : public osg::StateAttribute
+class OSG_EXPORT Sampler : public TextureAttribute
 {
     public:
         Sampler();
@@ -34,8 +34,6 @@ class OSG_EXPORT Sampler : public osg::StateAttribute
         Sampler(const Sampler& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_StateAttribute(osg,Sampler,SAMPLER)
-
-        virtual bool isTextureAttribute() const { return true; }
 
         /** Sets the texture wrap mode. */
         void setWrap(Texture::WrapParameter which, Texture::WrapMode wrap);

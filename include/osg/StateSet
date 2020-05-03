@@ -598,8 +598,14 @@ class OSG_EXPORT StateSet : public Object
 
         void setAttribute(AttributeList& attributeList,StateAttribute *attribute, StateAttribute::OverrideValue value=StateAttribute::OFF);
 
+        StateAttribute* getAttribute(AttributeList& attributeList, StateAttribute::Type type);
+        const StateAttribute* getAttribute(const AttributeList& attributeList, StateAttribute::Type type) const;
+
         StateAttribute* getAttribute(AttributeList& attributeList, StateAttribute::Type type, unsigned int member);
         const StateAttribute* getAttribute(const AttributeList& attributeList, StateAttribute::Type type, unsigned int member) const;
+
+        RefAttributePair* getAttributePair(AttributeList& attributeList, StateAttribute::Type type);
+        const RefAttributePair* getAttributePair(const AttributeList& attributeList, StateAttribute::Type type) const;
 
         RefAttributePair* getAttributePair(AttributeList& attributeList, StateAttribute::Type type, unsigned int member);
         const RefAttributePair* getAttributePair(const AttributeList& attributeList, StateAttribute::Type type, unsigned int member) const;

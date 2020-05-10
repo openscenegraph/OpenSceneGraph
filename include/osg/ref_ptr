@@ -40,6 +40,28 @@ class ref_ptr
         ref_ptr(observer_ptr<T>& optr) : _ptr(0) { optr.lock(*this); }
         ~ref_ptr() { if (_ptr) _ptr->unref();  _ptr = 0; }
 
+#ifdef __cpp_noexcept_function_type
+#define OSG_REF_PTR_NOEXCEPT noexcept
+#else
+#define OSG_REF_PTR_NOEXCEPT
+#endif
+#ifdef __cpp_rvalue_references
+        ref_ptr(ref_ptr&& rp) OSG_REF_PTR_NOEXCEPT : _ptr(rp._ptr) { rp._ptr = nullptr; }
+        template<class Other> ref_ptr(ref_ptr<Other>&& rp) OSG_REF_PTR_NOEXCEPT : _ptr(rp._ptr) { rp._ptr = nullptr; }
+        ref_ptr& operator = (ref_ptr&& rp)
+        {
+            move(static_cast<ref_ptr&&>(rp));
+            return *this;
+        }
+        template<class Other>
+        ref_ptr& operator = (ref_ptr<Other>&& rp)
+        {
+            move(static_cast<ref_ptr<Other>&&>(rp));
+            return *this;
+        }
+#endif
+#undef OSG_REF_PTR_NOEXCEPT
+
         ref_ptr& operator = (const ref_ptr& rp)
         {
             assign(rp);
@@ -140,6 +162,16 @@ class ref_ptr
             // original _ptr.
             if (tmp_ptr) tmp_ptr->unref();
         }
+
+#ifdef __cpp_rvalue_references
+        template<class Other> void move(ref_ptr<Other>&& rp)
+        {
+            if (_ptr == rp._ptr) return;
+            T* tmp_ptr = _ptr;
+            _ptr = rp._ptr;
+            if (tmp_ptr) tmp_ptr->unref();
+        }
+#endif
 
         template<class Other> friend class ref_ptr;
 

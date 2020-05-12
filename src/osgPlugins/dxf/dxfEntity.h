@@ -60,7 +60,7 @@ getOCSMatrix(const osg::Vec3d& ocs, osg::Matrixd& m)
 class dxfBasicEntity : public osg::Referenced
 {
 public:
-    dxfBasicEntity() : _color(0), _useAccuracy(false), _maxError(0.01), _improveAccuracyOnly(false) {}
+    dxfBasicEntity() : _color(0), _useAccuracy(false), _maxError(0.01), _improveAccuracyOnly(false), _lineWidth(-1), _lineThickness(-1) {}
     virtual ~dxfBasicEntity() {}
     virtual dxfBasicEntity* create() = 0;
     virtual const char* name() = 0;
@@ -83,6 +83,8 @@ protected:
     double _maxError;         // the error in model units, if _useAccuracy==true
     bool _improveAccuracyOnly;// if true only use _maxError where it would increase the quality of curves compared to the previous algorithm
 
+    double  _lineWidth;
+    double  _lineThickness;
 };
 
 
@@ -293,6 +295,8 @@ class dxfText : public dxfBasicEntity
 {
 public:
     dxfText() :
+        encoding(osgText::String::ENCODING_ASCII),
+        font("arial.ttf"),
         _string(""),
         _point1(0,0,0),
         _point2(0,0,0),
@@ -305,10 +309,21 @@ public:
         _vjustify(0) {}
 
     virtual ~dxfText() {}
-    virtual dxfBasicEntity*        create() { return new dxfText; }
+    virtual dxfBasicEntity* create()
+    {
+        dxfText* text = new dxfText;
+        text->encoding = encoding;
+        text->font = font;
+        return text;
+    }
+
     virtual const char*            name() { return "TEXT"; }
     virtual void                   assign(dxfFile* dxf, codeValue& cv);
     virtual void                   drawScene(scene* sc);
+
+    // application settings
+    osgText::String::Encoding encoding;
+    std::string font;
 
 protected:
     std::string       _string;    // 1

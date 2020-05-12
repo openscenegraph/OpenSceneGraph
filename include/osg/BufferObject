@@ -1,5 +1,6 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  * Copyright (C) 2012 David Callu
+ * Copyright (C) 2018 Julien Valentin
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -100,17 +101,20 @@ class BufferObjectProfile
         BufferObjectProfile():
             _target(0),
             _usage(0),
-            _size(0) {}
+            _size(0),
+            _mappingbitfield(0) {}
 
-        BufferObjectProfile(GLenum target, GLenum usage, unsigned int size):
+        BufferObjectProfile(GLenum target, GLenum usage, unsigned int size, GLbitfield mappingbitfield ):
             _target(target),
             _usage(usage),
-            _size(size) {}
+            _size(size),
+            _mappingbitfield(mappingbitfield) {}
 
         BufferObjectProfile(const BufferObjectProfile& bpo):
             _target(bpo._target),
             _usage(bpo._usage),
-            _size(bpo._size) {}
+            _size(bpo._size),
+            _mappingbitfield(bpo._mappingbitfield) {}
 
         bool operator < (const BufferObjectProfile& rhs) const
         {
@@ -118,6 +122,8 @@ class BufferObjectProfile
             else if (_target > rhs._target) return false;
             if (_usage < rhs._usage) return true;
             else if (_usage > rhs._usage) return false;
+            if (_mappingbitfield < rhs._mappingbitfield) return true;
+            else if (_mappingbitfield > rhs._mappingbitfield) return false;
             return _size < rhs._size;
         }
 
@@ -125,14 +131,16 @@ class BufferObjectProfile
         {
             return (_target == rhs._target) &&
                    (_usage == rhs._usage) &&
-                   (_size == rhs._size);
+                   (_size == rhs._size) &&
+                   (_mappingbitfield == rhs._mappingbitfield);
         }
 
-        void setProfile(GLenum target, GLenum usage, unsigned int size)
+        void setProfile(GLenum target, GLenum usage, unsigned int size, GLbitfield mappingbitfield )
         {
             _target = target;
             _usage = usage;
             _size = size;
+            _mappingbitfield = mappingbitfield;
         }
 
         BufferObjectProfile& operator = (const BufferObjectProfile& rhs)
@@ -140,12 +148,14 @@ class BufferObjectProfile
             _target = rhs._target;
             _usage = rhs._usage;
             _size = rhs._size;
+            _mappingbitfield = rhs._mappingbitfield;
             return *this;
         }
 
         GLenum _target;
         GLenum _usage;
-        GLenum _size;
+        GLuint _size;
+        GLbitfield _mappingbitfield;
 };
 
 // forward declare
@@ -237,6 +247,10 @@ class OSG_EXPORT GLBufferObject : public GraphicsObject
 
         void setBufferDataHasBeenRead(const osg::BufferData* bd);
 
+        void downloadBuffer(unsigned int entryidx);
+
+        void commitDMA(unsigned int entryidx);
+
     protected:
 
         virtual ~GLBufferObject();
@@ -268,6 +282,7 @@ class OSG_EXPORT GLBufferObject : public GraphicsObject
 
     public:
         GLExtensions*          _extensions;
+        GLvoid*                _persistentDMA;
 
 };
 
@@ -433,6 +448,10 @@ class OSG_EXPORT BufferObject : public Object
         /** Get the type of usage the buffer object has been set up for.*/
         GLenum getUsage() const { return _profile._usage; }
 
+        /** Enable GL4 buffer storage features (override usage if setted) */
+        void setMappingBitfield(GLbitfield b){ if(_profile._mappingbitfield == b) return; _profile._mappingbitfield = b; }
+        GLbitfield getMappingBitfield() const { return _profile._mappingbitfield; }
+
         BufferObjectProfile& getProfile() { return _profile; }
         const BufferObjectProfile& getProfile() const { return _profile; }
 
@@ -442,7 +461,6 @@ class OSG_EXPORT BufferObject : public Object
 
         /** Get whether the BufferObject should use a GLBufferObject just for copying the BufferData and release it immediately.*/
         bool getCopyDataAndReleaseGLBufferObject() const { return _copyDataAndReleaseGLBufferObject; }
-
 
         void dirty();
 
@@ -579,7 +597,6 @@ class OSG_EXPORT BufferData : public Object
         void addClient(osg::Object * /*client*/) { ++_numClients; }
 
         void removeClient(osg::Object * /*client*/) { --_numClients; }
-
 protected:
 
         virtual ~BufferData();

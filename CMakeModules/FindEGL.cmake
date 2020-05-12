@@ -10,24 +10,26 @@
 
 
 FIND_PATH( EGL_INCLUDE_DIR
-    NAMES EGL/egl.h
-    HINTS ENV EGL_DIR
+    NAMES egl.h
+    PATH_SUFFIXES EGL
+    PATHS ENV EGL_DIR
 )
 
 FIND_LIBRARY(EGL_LIBRARY
-    NAMES EGL
-    HINTS ENV EGL_DIR
-    PATH_SUFFIXES lib
+    NAMES EGL libEGL.dll.lib
+    PATHS ENV EGL_DIR
 )
 
 # handle the QUIETLY and REQUIRED arguments and set
 # EGL_FOUND to TRUE as appropriate
 INCLUDE( FindPackageHandleStandardArgs )
 
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(EGL
-                                  REQUIRED_VARS EGL_LIBRARY EGL_INCLUDE_DIR)
-
-MARK_AS_ADVANCED(
-    EGL_INCLUDE_DIR
-    EGL_LIBRARY
+find_package_handle_standard_args(EGL
+	FOUND_VAR 
+	  EGL_FOUND
+	REQUIRED_VARS
+	  EGL_LIBRARY
+	  EGL_INCLUDE_DIR
+	FAIL_MESSAGE
+	  "Could NOT find EGL, try to set the path to EGL root folder in the system variable EGL_DIR"
 )

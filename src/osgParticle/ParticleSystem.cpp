@@ -343,16 +343,16 @@ void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo
 
                     if (_alignment==BILLBOARD)
                     {
-                        xAxis = osg::Matrix::transform3x3(R,scaled_aligned_xAxis);
+                        xAxis = osg::Matrix::transform3x3(scaled_aligned_xAxis, R);
                         xAxis = osg::Matrix::transform3x3(modelview,xAxis);
 
-                        yAxis = osg::Matrix::transform3x3(R,scaled_aligned_yAxis);
+                        yAxis = osg::Matrix::transform3x3(scaled_aligned_yAxis, R);
                         yAxis = osg::Matrix::transform3x3(modelview,yAxis);
                     }
                     else
                     {
-                        xAxis = osg::Matrix::transform3x3(R, scaled_aligned_xAxis);
-                        yAxis = osg::Matrix::transform3x3(R, scaled_aligned_yAxis);
+                        xAxis = osg::Matrix::transform3x3(scaled_aligned_xAxis, R);
+                        yAxis = osg::Matrix::transform3x3(scaled_aligned_yAxis, R);
                     }
                 }
 

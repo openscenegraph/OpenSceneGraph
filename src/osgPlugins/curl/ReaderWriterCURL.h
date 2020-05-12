@@ -165,7 +165,7 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex>  lock(_threadCurlMapMutex);
 
-            osg::ref_ptr<EasyCurl>& ec = _threadCurlMap[OpenThreads::Thread::CurrentThread()];
+            osg::ref_ptr<EasyCurl>& ec = _threadCurlMap[OpenThreads::Thread::CurrentThreadId()];
             if (!ec) ec = new EasyCurl;
 
             return *ec;
@@ -176,7 +176,7 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
     protected:
         void getConnectionOptions(const osgDB::ReaderWriter::Options *options, std::string& proxyAddress, long& connectTimeout, long& timeout, long& sslVerifyPeer) const;
 
-        typedef std::map< OpenThreads::Thread*, osg::ref_ptr<EasyCurl> >    ThreadCurlMap;
+        typedef std::map< size_t, osg::ref_ptr<EasyCurl> >    ThreadCurlMap;
 
         mutable OpenThreads::Mutex          _threadCurlMapMutex;
         mutable ThreadCurlMap               _threadCurlMap;

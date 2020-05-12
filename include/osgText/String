@@ -60,7 +60,8 @@ class OSGTEXT_EXPORT String : public VectorUInt
             ENCODING_UTF32,                     /// 32-bit signature
             ENCODING_UTF32_BE,                  /// 32-bit big-endian
             ENCODING_UTF32_LE,                  /// 32-bit little-endian
-            ENCODING_SIGNATURE                  /// detect encoding from signature
+            ENCODING_SIGNATURE,                 /// detect encoding from signature
+            ENCODING_CURRENT_CODE_PAGE          /// Use Windows Current Code Page ecoding
         };
 
 

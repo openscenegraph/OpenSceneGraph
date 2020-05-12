@@ -49,8 +49,7 @@ private:
         setRunning(false);
         isCanceled = false;
         tid = 0;
-        uniqueId = nextId;
-        nextId++;
+        uniqueId = 0;
         threadPriority = Thread::THREAD_PRIORITY_DEFAULT;
         threadPolicy = Thread::THREAD_SCHEDULE_DEFAULT;
     };
@@ -78,11 +77,9 @@ private:
 
     pthread_t tid;
 
-    volatile int uniqueId;
+    size_t uniqueId;
 
     Affinity affinity;
-
-    static int nextId;
 
     static pthread_key_t s_tls_key;
 

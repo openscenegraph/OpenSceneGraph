@@ -344,7 +344,7 @@ OSG_INIT_SINGLETON_PROXY(GLExtensionDisableStringInitializationProxy, osg::getGL
 
     #elif defined(WIN32)
 
-        #if defined(OSG_GLES2_AVAILABLE)
+        #if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
             static HMODULE hmodule = GetModuleHandle(TEXT("libGLESv2.dll"));
             return convertPointerType<void*, PROC>(GetProcAddress(hmodule, funcName));
         #elif defined(OSG_GLES1_AVAILABLE)
@@ -715,6 +715,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glNamedBufferStorage, "glNamedBufferStorage","glNamedBufferStorageARB", validContext);
     setGLExtensionFuncPtr(glMapBuffer, "glMapBuffer","glMapBufferARB", validContext);
     setGLExtensionFuncPtr(glMapBufferRange,  "glMapBufferRange", "glMapBufferRangeARB" , validContext);
+    setGLExtensionFuncPtr(glFlushMappedBufferRange,  "glFlushMappedBufferRange", "glFlushMappedBufferRangeARB" , validContext);
     setGLExtensionFuncPtr(glUnmapBuffer, "glUnmapBuffer","glUnmapBufferARB", validContext);
     setGLExtensionFuncPtr(glGetBufferParameteriv, "glGetBufferParameteriv","glGetBufferParameterivARB", validContext);
     setGLExtensionFuncPtr(glGetBufferPointerv, "glGetBufferPointerv","glGetBufferPointervARB", validContext);
@@ -1049,7 +1050,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
     isPointSpriteSupported = validContext && (OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES || isGLExtensionSupported(contextID, "GL_ARB_point_sprite") || isGLExtensionSupported(contextID, "GL_OES_point_sprite") || isGLExtensionSupported(contextID, "GL_NV_point_sprite"));
 
-    isPointSpriteModeSupported = isPointSpriteModeSupported && !OSG_GL3_FEATURES;
+    isPointSpriteModeSupported = isPointSpriteSupported && !OSG_GL3_FEATURES;
 
     isPointSpriteCoordOriginSupported = validContext && (OSG_GL3_FEATURES || (glVersion >= 2.0f));
 

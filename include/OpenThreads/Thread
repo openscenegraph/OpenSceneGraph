@@ -109,9 +109,14 @@ public:
 
 
     /**
-     *  Return a pointer to the current running thread
+     *  Return a pointer to the current running thread, returns NULL for a non OpenThreads thread.
      */
     static Thread *CurrentThread();
+
+    /**
+     *  Return the id of the current thread
+     */
+    static size_t CurrentThreadId();
 
 
     /**
@@ -147,7 +152,7 @@ public:
      *
      *  @return a unique thread identifier
      */
-    int getThreadId();
+    size_t getThreadId();
 
     /**
      *  Get the thread's process id.  This is the pthread_t or pid_t value

@@ -279,7 +279,7 @@ Display* GraphicsWindowX11::getDisplayToUse() const
         return _display;
     }
 
-    if (OpenThreads::Thread::CurrentThread()==_threadOfLastMakeCurrent)
+    if (OpenThreads::Thread::CurrentThreadId()==_threadOfLastMakeCurrent)
     {
         return _display;
     }

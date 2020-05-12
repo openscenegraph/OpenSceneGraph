@@ -61,16 +61,18 @@ scene::addPoint(const std::string & l, unsigned short color, Vec3d & s)
 }
 
 void
-scene::addLine(const std::string & l, unsigned short color, Vec3d & s, Vec3d & e)
+scene::addLine(const std::string & l, unsigned short color, Vec3d & s, Vec3d & e, double lineWidth)
 {
     dxfLayer* layer = _layerTable->findOrCreateLayer(l);
     if (layer->getFrozen()) return;
     sceneLayer* ly = findOrCreateSceneLayer(l);
     Vec3d a(addVertex(s)), b(addVertex(e));
-    ly->_lines[correctedColorIndex(l, color)].push_back(a);
-    ly->_lines[correctedColorIndex(l, color)].push_back(b);
+    if( lineWidth<=0 )
+        lineWidth = 0;
+    ly->_maplines[lineWidth][correctedColorIndex(l, color)].push_back(a);
+    ly->_maplines[lineWidth][correctedColorIndex(l, color)].push_back(b);
 }
-void scene::addLineStrip(const std::string & l, unsigned short color, std::vector<Vec3d> & vertices)
+void scene::addLineStrip(const std::string & l, unsigned short color, std::vector<Vec3d> & vertices, double lineWidth)
 {
     dxfLayer* layer = _layerTable->findOrCreateLayer(l);
     if (layer->getFrozen()) return;
@@ -80,9 +82,11 @@ void scene::addLineStrip(const std::string & l, unsigned short color, std::vecto
         itr != vertices.end(); ++itr) {
             converted.push_back(addVertex(*itr));
     }
-    ly->_linestrips[correctedColorIndex(l, color)].push_back(converted);
+    if( lineWidth<=0 )
+        lineWidth = 0;
+    ly->_maplinestrips[lineWidth][correctedColorIndex(l, color)].push_back(converted);
 }
-void scene::addLineLoop(const std::string & l, unsigned short color, std::vector<Vec3d> & vertices)
+void scene::addLineLoop(const std::string & l, unsigned short color, std::vector<Vec3d> & vertices, double lineWidth)
 {
     dxfLayer* layer = _layerTable->findOrCreateLayer(l);
     if (layer->getFrozen()) return;
@@ -93,7 +97,9 @@ void scene::addLineLoop(const std::string & l, unsigned short color, std::vector
             converted.push_back(addVertex(*itr));
     }
     converted.push_back(addVertex(vertices.front()));
-    ly->_linestrips[correctedColorIndex(l, color)].push_back(converted);
+    if( lineWidth<=0 )
+        lineWidth = 0;
+    ly->_maplinestrips[lineWidth][correctedColorIndex(l, color)].push_back(converted);
 }
 
 
@@ -216,4 +222,15 @@ scene::correctedColorIndex(const std::string & l, unsigned short color)
         }
     }
     return aci::WHITE;
+}
+
+double scene::correctedLineWidth(const std::string & l, double defaultLineWidth)
+{
+    if(defaultLineWidth <=0 )
+    {
+        dxfLayer* layer = _layerTable->findOrCreateLayer(l);
+        return layer->getLineWidth();
+    }
+
+    return defaultLineWidth;
 }

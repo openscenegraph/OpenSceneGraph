@@ -948,11 +948,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
     std::string fileName = osgDB::findDataFile( file, options );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-
     osgDB::ifstream fin(fileName.c_str());
     if (fin)
     {
-
         // code for setting up the database path so that internally referenced file are searched for on relative paths.
         osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
         local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
@@ -974,8 +972,6 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(std::istream& fin, con
 {
     if (fin)
     {
-        fin.imbue(std::locale::classic());
-
         obj::Model model;
         model.readOBJ(fin, options);
 

@@ -1565,27 +1565,27 @@ void StateSet::removeTextureAttribute(unsigned int unit, StateAttribute* attribu
 StateAttribute* StateSet::getTextureAttribute(unsigned int unit,StateAttribute::Type type)
 {
     if (unit>=_textureAttributeList.size()) return 0;
-    return getAttribute(_textureAttributeList[unit],type,unit);
+    return getAttribute(_textureAttributeList[unit],type);
 }
 
 
 const StateAttribute* StateSet::getTextureAttribute(unsigned int unit,StateAttribute::Type type) const
 {
     if (unit>=_textureAttributeList.size()) return 0;
-    return getAttribute(_textureAttributeList[unit],type,unit);
+    return getAttribute(_textureAttributeList[unit],type);
 }
 
 
 StateSet::RefAttributePair* StateSet::getTextureAttributePair(unsigned int unit, StateAttribute::Type type)
 {
     if (unit>=_textureAttributeList.size()) return 0;
-    return getAttributePair(_textureAttributeList[unit],type,unit);
+    return getAttributePair(_textureAttributeList[unit],type);
 }
 
 const StateSet::RefAttributePair* StateSet::getTextureAttributePair(unsigned int unit, StateAttribute::Type type) const
 {
     if (unit>=_textureAttributeList.size()) return 0;
-    return getAttributePair(_textureAttributeList[unit],type,unit);
+    return getAttributePair(_textureAttributeList[unit],type);
 }
 
 bool StateSet::checkValidityOfAssociatedModes(osg::State& state) const
@@ -1913,6 +1913,28 @@ void StateSet::setAttribute(AttributeList& attributeList,StateAttribute *attribu
 }
 
 
+StateAttribute* StateSet::getAttribute(AttributeList& attributeList, StateAttribute::Type type)
+{
+    for(AttributeList::iterator itr = attributeList.begin();
+        itr != attributeList.end();
+        ++itr)
+    {
+        if (itr->first.first==type) return itr->second.first.get();
+    }
+    return NULL;
+}
+
+const StateAttribute* StateSet::getAttribute(const AttributeList& attributeList, StateAttribute::Type type) const
+{
+    for(AttributeList::const_iterator itr = attributeList.begin();
+        itr != attributeList.end();
+        ++itr)
+    {
+        if (itr->first.first==type) return itr->second.first.get();
+    }
+    return NULL;
+}
+
 StateAttribute* StateSet::getAttribute(AttributeList& attributeList, StateAttribute::Type type, unsigned int member)
 {
     AttributeList::iterator itr = attributeList.find(StateAttribute::TypeMemberPair(type,member));
@@ -1933,6 +1955,28 @@ const StateAttribute* StateSet::getAttribute(const AttributeList& attributeList,
     }
     else
         return NULL;
+}
+
+StateSet::RefAttributePair* StateSet::getAttributePair(AttributeList& attributeList, StateAttribute::Type type)
+{
+    for(AttributeList::iterator itr = attributeList.begin();
+        itr != attributeList.end();
+        ++itr)
+    {
+        if (itr->first.first==type) return &(itr->second);
+    }
+    return NULL;
+}
+
+const StateSet::RefAttributePair* StateSet::getAttributePair(const AttributeList& attributeList, StateAttribute::Type type) const
+{
+    for(AttributeList::const_iterator itr = attributeList.begin();
+        itr != attributeList.end();
+        ++itr)
+    {
+        if (itr->first.first==type) return &(itr->second);
+    }
+    return NULL;
 }
 
 StateSet::RefAttributePair* StateSet::getAttributePair(AttributeList& attributeList, StateAttribute::Type type, unsigned int member)
@@ -1956,7 +2000,6 @@ const StateSet::RefAttributePair* StateSet::getAttributePair(const AttributeList
     else
         return NULL;
 }
-
 
 
 

@@ -21,6 +21,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <pthread.h>
+#if defined(HAVE_PTHREAD_SETAFFINITY_NP) && defined(__FreeBSD__)
+    #include <pthread_np.h>
+#endif
 #include <limits.h>
 
 #if defined __linux__ || defined __sun || defined __APPLE__ || ANDROID
@@ -45,6 +48,11 @@
 #endif
 #endif
 
+#if defined(__APPLE__) || defined(__linux__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__ANDROID__)
+#   include <unistd.h>
+#   include <sys/syscall.h>
+#endif
+
 #if defined(__ANDROID__)
     #ifndef PAGE_SIZE
         #define PAGE_SIZE 0x400
@@ -64,11 +72,6 @@ using namespace OpenThreads;
 # define DPRINTF(arg)
 #endif
 
-
-//-----------------------------------------------------------------------------
-// Initialize the static unique ids.
-//
-int PThreadPrivateData::nextId = 0;
 
 //-----------------------------------------------------------------------------
 // Initialize thread master priority level
@@ -113,7 +116,11 @@ namespace OpenThreads
 static void setAffinity(const Affinity& affinity)
 {
     //std::cout<<"setProcessAffinity : "<< affinity.activeCPUs.size() <<std::endl;
+#if defined(__FreeBSD__)
+    cpuset_t cpumask;
+#else
     cpu_set_t cpumask;
+#endif
     CPU_ZERO( &cpumask );
     unsigned int numprocessors = OpenThreads::GetNumberOfProcessors();
     if (affinity)
@@ -177,8 +184,7 @@ private:
 
         Thread *thread = static_cast<Thread *>(data);
 
-        PThreadPrivateData *pd =
-        static_cast<PThreadPrivateData *>(thread->_prvData);
+        PThreadPrivateData *pd = static_cast<PThreadPrivateData *>(thread->_prvData);
 
         // set up processor affinity
         setAffinity( pd->affinity );
@@ -204,6 +210,8 @@ private:
         SetThreadSchedulingParams(thread);
 
 #endif // ] ALLOW_PRIORITY_SCHEDULING
+
+        pd->uniqueId = Thread::CurrentThreadId();
 
         pd->setRunning(true);
 
@@ -456,6 +464,25 @@ Thread *Thread::CurrentThread()
 
 }
 
+size_t Thread::CurrentThreadId()
+{
+#if defined(__APPLE__)
+  return (size_t)::syscall(SYS_thread_selfid);
+#elif defined(__ANDROID__)
+  return (size_t)gettid();
+#elif defined(__linux__)
+  return (size_t)::syscall(SYS_gettid);
+#elif defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+  long  tid;
+  syscall(SYS_thr_self, &tid);
+  return (size_t)tid;
+#else
+  return (size_t)pthread_self();
+#endif
+}
+
+
+
 //-----------------------------------------------------------------------------
 //
 // Description: Initialize Threading
@@ -521,7 +548,7 @@ void Thread::Init()
 //
 // Use: public
 //
-int Thread::getThreadId()
+size_t Thread::getThreadId()
 {
 
     PThreadPrivateData *pd = static_cast<PThreadPrivateData *> (_prvData);

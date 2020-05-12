@@ -526,7 +526,7 @@ void GraphicsContext::close(bool callCloseImplementation)
 
 bool GraphicsContext::makeCurrent()
 {
-    _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThread();
+    _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThreadId();
 
     bool result = makeCurrentImplementation();
 
@@ -546,7 +546,7 @@ bool GraphicsContext::makeContextCurrent(GraphicsContext* readContext)
 
     if (result)
     {
-        _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThread();
+        _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThreadId();
 
         // initialize extension process, not only initializes on first
         // call, will be a non-op on subsequent calls.
@@ -560,7 +560,7 @@ bool GraphicsContext::releaseContext()
 {
     bool result = releaseContextImplementation();
 
-    _threadOfLastMakeCurrent = (OpenThreads::Thread*)(-1);
+    _threadOfLastMakeCurrent = 0;
 
     return result;
 }
@@ -573,7 +573,7 @@ void GraphicsContext::swapBuffers()
         clear();
     }
     else if (_graphicsThread.valid() &&
-             _threadOfLastMakeCurrent == _graphicsThread.get())
+             _threadOfLastMakeCurrent == _graphicsThread->getThreadId())
     {
         _graphicsThread->add(new SwapBuffersOperation);
     }

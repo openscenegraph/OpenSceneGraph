@@ -38,6 +38,8 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
 {
     public:
 
+        typedef std::pair< int , osg::ref_ptr<RenderStage> > RenderStageOrderPair;
+        typedef std::list< RenderStageOrderPair > RenderStageList;
 
         RenderStage();
         RenderStage(SortMode mode);
@@ -236,6 +238,12 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
 
         void addPostRenderStage(RenderStage* rs, int order = 0);
 
+        const RenderStageList& getPreRenderList() const { return _preRenderList; }
+        RenderStageList& getPreRenderList() { return _preRenderList; }
+
+        const RenderStageList& getPostRenderList() const { return _postRenderList; }
+        RenderStageList& getPostRenderList() { return _postRenderList; }
+
         /** Extract stats for current draw list. */
         bool getStats(Statistics& stats) const;
 
@@ -266,8 +274,6 @@ protected:
 
         virtual ~RenderStage();
 
-        typedef std::pair< int , osg::ref_ptr<RenderStage> > RenderStageOrderPair;
-        typedef std::list< RenderStageOrderPair > RenderStageList;
         typedef std::vector< osg::ref_ptr<osg::Camera> > Cameras;
 
         bool                                _stageDrawnThisFrame;

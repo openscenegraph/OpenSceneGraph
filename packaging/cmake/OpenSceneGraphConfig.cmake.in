@@ -95,6 +95,8 @@ foreach(component OpenThreads osg ${OpenSceneGraph_FIND_COMPONENTS})
 
     if(TARGET @PKG_NAMESPACE@::${component})
         # This component has already been found, so we'll skip it
+        set(OpenSceneGraph_${component}_FOUND TRUE)
+        set(OPENSCENEGRAPH_${component}_FOUND TRUE)
         continue()
     endif()
 

@@ -1,10 +1,7 @@
 #use pkg-config to find various modues
-INCLUDE(FindPkgConfig OPTIONAL)
+find_package(PkgConfig QUIET)
 
 IF(PKG_CONFIG_FOUND)
-
-    INCLUDE(FindPkgConfig)
-
     PKG_CHECK_MODULES(CAIRO cairo)
     PKG_CHECK_MODULES(POPPLER poppler-glib)
 

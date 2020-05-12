@@ -103,6 +103,8 @@ namespace OpenThreads {
 
             pd->isRunning = true;
 
+            pd->uniqueId = Thread::CurrentThreadId();
+
             // release the thread that created this thread.
             pd->threadStartedBlock.release();
 
@@ -210,6 +212,11 @@ Thread* Thread::CurrentThread()
     return (Thread* )TlsGetValue(ID);
 }
 
+size_t Thread::CurrentThreadId()
+{
+    return (size_t)::GetCurrentThreadId();
+}
+
 //----------------------------------------------------------------------------
 //
 // Description: Set the concurrency level (no-op)
@@ -300,7 +307,7 @@ void Thread::Init() {
 //
 // Use: public
 //
-int Thread::getThreadId() {
+size_t Thread::getThreadId() {
     Win32ThreadPrivateData *pd = static_cast<Win32ThreadPrivateData *> (_prvData);
     return pd->uniqueId;
 }
@@ -352,7 +359,7 @@ int Thread::start() {
     pd->tid.set( (void*)_beginthreadex(NULL,static_cast<unsigned>(pd->stackSize),ThreadPrivateActions::StartThread,static_cast<void *>(this),CREATE_SUSPENDED,&ID));
     ResumeThread(pd->tid.get());
 
-    pd->uniqueId = (int)ID;
+    pd->uniqueId = (size_t)ID;
 
     if(!pd->tid) {
         return -1;
@@ -442,9 +449,9 @@ int Thread::testCancel()
     if(pd->cancelMode == 2)
         return 0;
 
-    DWORD curr = GetCurrentThreadId();
+    size_t curr = Thread::CurrentThreadId();
 
-    if( pd->uniqueId != (int)curr )
+    if( pd->uniqueId != curr )
         return -1;
 
 //    pd->isRunning = false;

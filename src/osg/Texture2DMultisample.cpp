@@ -108,8 +108,10 @@ void Texture2DMultisample::apply(State& state) const
         {
             textureObject = generateAndAssignTextureObject(contextID, getTextureTarget(), 1, texStorageSizedInternalFormat, _textureWidth, _textureHeight, 1, 0);
             textureObject->bind(state);
-
-            extensions->glTexStorage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE, _numSamples, texStorageSizedInternalFormat, _textureWidth, _textureHeight, _fixedsamplelocations);
+            if(!textureObject->_allocated)
+            {
+                extensions->glTexStorage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE, _numSamples, texStorageSizedInternalFormat, _textureWidth, _textureHeight, _fixedsamplelocations);
+            }
         }
         else
         {
@@ -123,6 +125,7 @@ void Texture2DMultisample::apply(State& state) const
                                              _textureHeight,
                                              _fixedsamplelocations );
         }
+        textureObject->setAllocated(1, texStorageSizedInternalFormat!=0? texStorageSizedInternalFormat: _internalFormat, _textureWidth, _textureHeight, 1, _borderWidth);
 
     }
     else

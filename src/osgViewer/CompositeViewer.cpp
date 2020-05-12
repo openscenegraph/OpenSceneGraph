@@ -226,8 +226,45 @@ void CompositeViewer::removeView(osgViewer::View* view)
             bool threadsWereRunning = _threadsRunning;
             if (threadsWereRunning) stopThreading();
 
-            view->_viewerBase = 0;
+            // clean up any attached contexts that are solely attached to this view
+            typedef std::map<osg::GraphicsContext*, int> ContextMap;
+            ContextMap contexts;
 
+            if (view->getCamera()->getGraphicsContext())
+            {
+                view->getCamera()->releaseGLObjects(view->getCamera()->getGraphicsContext()->getState());
+                contexts[view->getCamera()->getGraphicsContext()]++;
+            }
+            for(unsigned int i=0; i<view->getNumSlaves(); ++i)
+            {
+                if (view->getSlave(i)._camera->getGraphicsContext())
+                {
+                    view->getSlave(i)._camera->releaseGLObjects(view->getSlave(i)._camera->getGraphicsContext()->getState());
+                    contexts[view->getSlave(i)._camera->getGraphicsContext()]++;
+                }
+            }
+
+            for(ContextMap::iterator citr = contexts.begin();
+                citr != contexts.end();
+                ++citr)
+            {
+                osg::GraphicsContext* gc = citr->first;
+                if (citr->second == gc->referenceCount())
+                {
+                    if (_cleanUpOperation.valid())
+                    {
+                        gc->makeCurrent();
+
+                        (*_cleanUpOperation)(gc);
+
+                        gc->releaseContext();
+                    }
+
+                    gc->close();
+                }
+            }
+
+            view->_viewerBase = 0;
             _views.erase(itr);
 
             if (threadsWereRunning) startThreading();

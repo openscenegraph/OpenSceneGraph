@@ -407,6 +407,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         GLvoid* (GL_APIENTRY * glNamedBufferStorage) (GLuint buffer, GLsizei size, const void * data, GLbitfield flags);
         GLvoid* (GL_APIENTRY * glMapBuffer) (GLenum target, GLenum access);
         GLvoid* (GL_APIENTRY * glMapBufferRange)(GLenum target,  GLintptr offset,  GLsizeiptr length,  GLbitfield access);
+        GLvoid* (GL_APIENTRY * glFlushMappedBufferRange)(GLenum target,  GLintptr offset,  GLsizeiptr length);
         GLboolean (GL_APIENTRY * glUnmapBuffer) (GLenum target);
         void (GL_APIENTRY * glGetBufferParameteriv) (GLenum target, GLenum pname, GLint *params);
         void (GL_APIENTRY * glGetBufferPointerv) (GLenum target, GLenum pname, GLvoid* *params);

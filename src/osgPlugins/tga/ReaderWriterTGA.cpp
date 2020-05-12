@@ -322,10 +322,13 @@ struct SafeArray
         impl = new T[size];
     }
 
-    operator T*() { return impl; }
+    const T& operator[](std::size_t i) const { return impl[i]; }
 
-    template<typename U>
-    operator U() { return (U)impl; }
+    T& operator[](std::size_t i) { return impl[i]; }
+
+    const T* data() const { return impl; }
+
+    T* data() { return impl; }
 
 private:
     T* impl;
@@ -336,7 +339,8 @@ unsigned char *
 simage_tga_load(std::istream& fin,
 int *width_ret,
 int *height_ret,
-int *numComponents_ret)
+int *numComponents_ret,
+bool ignoreTGA2Fields)
 {
     unsigned char header[18];
     unsigned char footer[26];
@@ -379,50 +383,54 @@ int *numComponents_ret)
 
     fin.seekg(-26, std::ios::end);
     endOfImage = fin.tellg() + (std::streamoff)26;
-    fin.read((char*)footer, 26);
-    if (fin.gcount() != 26)
-    {
-        tgaerror = ERR_READ;
-        return NULL;
-    }
 
-    // TGA footer signature is null-terminated, so works like a C string
-    if (strcmp((char*)&footer[8], "TRUEVISION-XFILE.") == 0)
+    if (!ignoreTGA2Fields)
     {
-        endOfImage -= 26;
-        unsigned int extensionAreaOffset = getInt32(&footer[0]);
-        unsigned int developerAreaOffset = getInt32(&footer[4]);
-
-        if (extensionAreaOffset != 0)
+        fin.read((char*)footer, 26);
+        if (fin.gcount() != 26)
         {
-            endOfImage = std::min(endOfImage, (std::streampos)extensionAreaOffset);
-            
-            // We only need the last few fields of the extension area
-            fin.seekg(extensionAreaOffset + 482);
-            unsigned char extensionAreaBuffer[13];
-            fin.read((char*)extensionAreaBuffer, 13);
-            if (fin.gcount() != 13)
-            {
-                tgaerror = ERR_READ;
-                return NULL;
-            }
-
-            unsigned int colorCorrectionOffset = getInt32(&extensionAreaBuffer[0]);
-            unsigned int postageStampOffset = getInt32(&extensionAreaBuffer[4]);
-            unsigned int scanLineOffset = getInt32(&extensionAreaBuffer[8]);
-
-            if (colorCorrectionOffset != 0)
-                endOfImage = std::min(endOfImage, (std::streampos)colorCorrectionOffset);
-            if (postageStampOffset != 0)
-                endOfImage = std::min(endOfImage, (std::streampos)postageStampOffset);
-            if (scanLineOffset != 0)
-                endOfImage = std::min(endOfImage, (std::streampos)scanLineOffset);
-
-            attributeType = (AttributeType) extensionAreaBuffer[12];
+            tgaerror = ERR_READ;
+            return NULL;
         }
 
-        if (developerAreaOffset != 0)
-            endOfImage = std::min(endOfImage, (std::streampos)developerAreaOffset);
+        // TGA footer signature is null-terminated, so works like a C string
+        if (strcmp((char*)&footer[8], "TRUEVISION-XFILE.") == 0)
+        {
+            endOfImage -= 26;
+            unsigned int extensionAreaOffset = getInt32(&footer[0]);
+            unsigned int developerAreaOffset = getInt32(&footer[4]);
+
+            if (extensionAreaOffset != 0)
+            {
+                endOfImage = std::min(endOfImage, (std::streampos)extensionAreaOffset);
+
+                // We only need the last few fields of the extension area
+                fin.seekg(extensionAreaOffset + 482);
+                unsigned char extensionAreaBuffer[13];
+                fin.read((char*)extensionAreaBuffer, 13);
+                if (fin.gcount() != 13)
+                {
+                    tgaerror = ERR_READ;
+                    return NULL;
+                }
+
+                unsigned int colorCorrectionOffset = getInt32(&extensionAreaBuffer[0]);
+                unsigned int postageStampOffset = getInt32(&extensionAreaBuffer[4]);
+                unsigned int scanLineOffset = getInt32(&extensionAreaBuffer[8]);
+
+                if (colorCorrectionOffset != 0)
+                    endOfImage = std::min(endOfImage, (std::streampos)colorCorrectionOffset);
+                if (postageStampOffset != 0)
+                    endOfImage = std::min(endOfImage, (std::streampos)postageStampOffset);
+                if (scanLineOffset != 0)
+                    endOfImage = std::min(endOfImage, (std::streampos)scanLineOffset);
+
+                attributeType = (AttributeType)extensionAreaBuffer[12];
+            }
+
+            if (developerAreaOffset != 0)
+                endOfImage = std::min(endOfImage, (std::streampos)developerAreaOffset);
+        }
     }
 
     fin.seekg(18);
@@ -452,12 +460,12 @@ int *numComponents_ret)
         colormapLen = getInt16(&header[5]);
         colormapDepth = (header[7] + 7) >> 3;
         colormap.reinitialise(colormapLen*colormapDepth);
-        if (colormap == NULL)
+        if (colormap.data() == NULL)
         {
             tgaerror = ERR_MEM;
             return NULL;
         }
-        fin.read((char*)colormap, colormapLen*colormapDepth);
+        fin.read(reinterpret_cast<char*>(colormap.data()), colormapLen*colormapDepth);
 
         if (colormapDepth == 2)          /* 16 bits */
         {
@@ -518,11 +526,11 @@ int *numComponents_ret)
     rleRemaining = 0;
     rleEntrySize = depth;
     SafeArray<unsigned char> buffer(width*height*format);
-    dest = buffer;
+    dest = buffer.data();
     bpr = format * width;
     SafeArray<unsigned char> linebuf(width * depth);
 
-    if (buffer == NULL || linebuf == NULL)
+    if (buffer.data() == NULL || linebuf.data() == NULL)
     {
         tgaerror = ERR_MEM;
         return NULL;
@@ -545,20 +553,20 @@ int *numComponents_ret)
                 return NULL;
             }
             SafeArray<unsigned char> formattedMap(colormapLen * format);
-            if (formattedMap == NULL)
+            if (formattedMap.data() == NULL)
             {
                 tgaerror = ERR_MEM;
                 return NULL;
             }
             for (int i = 0; i < colormapLen; i++)
             {
-                convert_data(colormap, formattedMap, i, colormapDepth, format);
+                convert_data(colormap.data(), formattedMap.data(), i, colormapDepth, format);
             }
 
             int x, y;
             for (y = 0; y < height; y++)
             {
-                fin.read((char*)linebuf, width*depth);
+                fin.read(reinterpret_cast<char*>(linebuf.data()), width*depth);
                 if (fin.gcount() != (std::streamsize) (width*depth))
                 {
                     tgaerror = ERR_READ;
@@ -574,13 +582,13 @@ int *numComponents_ret)
                         index = linebuf[x];
                         break;
                     case 2:
-                        index = getInt16(linebuf + x * 2);
+                        index = getInt16(linebuf.data() + x * 2);
                         break;
                     case 3:
-                        index = getInt24(linebuf + x * 3);
+                        index = getInt24(linebuf.data() + x * 3);
                         break;
                     case 4:
-                        index = getInt32(linebuf + x * 4);
+                        index = getInt32(linebuf.data() + x * 4);
                         break;
                     default:
                         tgaerror = ERR_UNSUPPORTED;
@@ -589,7 +597,7 @@ int *numComponents_ret)
 
                     int adjustedX = bLeftToRight ? x : (width - 1) - x;
                     for (int i = 0; i < format; i++)
-                        (dest + adjustedX * format)[i] = (formattedMap + index * format)[i];
+                        (dest + adjustedX * format)[i] = formattedMap[index * format + i];
                 }
                 dest += lineoffset;
             }
@@ -601,7 +609,7 @@ int *numComponents_ret)
             int x, y;
             for (y = 0; y < height; y++)
             {
-                fin.read((char*)linebuf,width*depth);
+                fin.read(reinterpret_cast<char*>(linebuf.data()), width*depth);
                 if (fin.gcount() != (std::streamsize) (width*depth))
                 {
                     tgaerror = ERR_READ;
@@ -609,7 +617,7 @@ int *numComponents_ret)
                 }
                 for (x = 0; x < width; x++)
                 {
-                    convert_data(linebuf, dest, bLeftToRight ? x : (width-1) - x, depth, format);
+                    convert_data(linebuf.data(), dest, bLeftToRight ? x : (width-1) - x, depth, format);
                 }
                 dest += lineoffset;
             }
@@ -623,14 +631,14 @@ int *numComponents_ret)
                 return NULL;
             }
             SafeArray<unsigned char> formattedMap(colormapLen * format);
-            if (formattedMap == NULL)
+            if (formattedMap.data() == NULL)
             {
                 tgaerror = ERR_MEM;
                 return NULL;
             }
             for (int i = 0; i < colormapLen; i++)
             {
-                convert_data(colormap, formattedMap, i, colormapDepth, format);
+                convert_data(colormap.data(), formattedMap.data(), i, colormapDepth, format);
             }
 
             int size, x, y;
@@ -639,21 +647,21 @@ int *numComponents_ret)
             size = (int)(endOfImage - pos);
 
             SafeArray<unsigned char> buf(size);
-            if (buf == NULL)
+            if (buf.data() == NULL)
             {
                 tgaerror = ERR_MEM;
                 return NULL;
             }
-            unsigned char* src = buf;
+            unsigned char* src = buf.data();
 
-            fin.read((char*)buf, size);
+            fin.read(reinterpret_cast<char*>(buf.data()), size);
             if (fin.gcount() == (std::streamsize)size)
             {
                 for (y = 0; y < height; y++)
                 {
-                    rle_decode(&src, linebuf, width*depth, &rleRemaining,
+                    rle_decode(&src, linebuf.data(), width*depth, &rleRemaining,
                         &rleIsCompressed, rleCurrent, rleEntrySize);
-                    assert(src <= buf + size);
+                    assert(src <= buf.data() + size);
 
                     for (x = 0; x < width; x++)
                     {
@@ -664,13 +672,13 @@ int *numComponents_ret)
                             index = linebuf[x];
                             break;
                         case 2:
-                            index = getInt16(linebuf + x * 2);
+                            index = getInt16(linebuf.data() + x * 2);
                             break;
                         case 3:
-                            index = getInt24(linebuf + x * 3);
+                            index = getInt24(linebuf.data() + x * 3);
                             break;
                         case 4:
-                            index = getInt32(linebuf + x * 4);
+                            index = getInt32(linebuf.data() + x * 4);
                             break;
                         default:
                             tgaerror = ERR_UNSUPPORTED;
@@ -685,7 +693,7 @@ int *numComponents_ret)
 
                         int adjustedX = bLeftToRight ? x : (width - 1) - x;
                         for (int i = 0; i < format; i++)
-                            (dest + adjustedX * format)[i] = (formattedMap + index * format)[i];
+                            (dest + adjustedX * format)[i] = formattedMap[index * format + i];
                     }
                     dest += lineoffset;
                 }
@@ -705,24 +713,24 @@ int *numComponents_ret)
 
             size = (int)(endOfImage - pos);
             SafeArray<unsigned char> buf(size);
-            if (buf == NULL)
+            if (buf.data() == NULL)
             {
                 tgaerror = ERR_MEM;
                 return NULL;
             }
-            unsigned char* src = buf;
+            unsigned char* src = buf.data();
 
-            fin.read((char*)buf,size);
+            fin.read(reinterpret_cast<char*>(buf.data()), size);
             if (fin.gcount() == (std::streamsize) size)
             {
                 for (y = 0; y < height; y++)
                 {
-                    rle_decode(&src, linebuf, width*depth, &rleRemaining,
+                    rle_decode(&src, linebuf.data(), width*depth, &rleRemaining,
                         &rleIsCompressed, rleCurrent, rleEntrySize);
-                    assert(src <= buf + size);
+                    assert(src <= buf.data() + size);
                     for (x = 0; x < width; x++)
                     {
-                        convert_data(linebuf, dest,  bLeftToRight ? x : (width-1) - x, depth, format);
+                        convert_data(linebuf.data(), dest,  bLeftToRight ? x : (width-1) - x, depth, format);
                     }
                     dest += lineoffset;
                 }
@@ -797,18 +805,19 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
         ReaderWriterTGA()
         {
             supportsExtension("tga","Tga Image format");
+            supportsOption("ignoreTga2Fields", "(Read option) Ignore TGA 2.0 fields, even if present. Makes it possible to read files as a TGA 1.0 reader would, helpful when dealing with malformed TGA 2.0 files which are still valid TGA 1.0 files, such as when an image ends with data resembling a TGA 2.0 footer by coincidence.");
         }
 
         virtual const char* className() const { return "TGA Image Reader"; }
 
-        ReadResult readTGAStream(std::istream& fin) const
+        ReadResult readTGAStream(std::istream& fin, bool ignoreTGA2Fields) const
         {
             unsigned char *imageData = NULL;
             int width_ret;
             int height_ret;
             int numComponents_ret;
 
-            imageData = simage_tga_load(fin,&width_ret,&height_ret,&numComponents_ret);
+            imageData = simage_tga_load(fin, &width_ret, &height_ret, &numComponents_ret, ignoreTGA2Fields);
 
             if (imageData==NULL) return ReadResult::FILE_NOT_HANDLED;
 
@@ -849,9 +858,9 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
             return readImage(file, options);
         }
 
-        virtual ReadResult readImage(std::istream& fin,const Options* =NULL) const
+        virtual ReadResult readImage(std::istream& fin, const Options* options = NULL) const
         {
-            return readTGAStream(fin);
+            return readTGAStream(fin, options && options->getOptionString().find("ignoreTga2Fields") != std::string::npos);
         }
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
@@ -864,7 +873,7 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
 
             osgDB::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
             if(!istream) return ReadResult::FILE_NOT_HANDLED;
-            ReadResult rr = readTGAStream(istream);
+            ReadResult rr = readTGAStream(istream, options && options->getOptionString().find("ignoreTga2Fields") != std::string::npos);
             if(rr.validImage()) rr.getImage()->setFileName(file);
             return rr;
         }

@@ -445,8 +445,16 @@ OBJWriterNodeVisitor::OBJMaterial::OBJMaterial(osg::Material* mat, osg::Texture*
         if ((img) && (!img->getFileName().empty()))
         {
             image = img->getFileName();
-            if(outputTextureFiles)
+            if (outputTextureFiles)
+            {
+                std::string imagePath = osgDB::getFilePath(image);
+                if (!imagePath.empty() && !osgDB::fileExists(imagePath))
+                {
+                    osgDB::makeDirectory(imagePath);
+                }
+
                 osgDB::writeImageFile(*img, image, options);
+            }
         }
     }
 
@@ -527,7 +535,7 @@ void OBJWriterNodeVisitor::processStateSet(osg::StateSet* ss)
 
     if (mat || tex)
     {
-        _materialMap.insert(std::make_pair(osg::ref_ptr<osg::StateSet>(ss), OBJMaterial(mat, tex, _outputTextureFiles, _options)));
+        _materialMap.insert(std::make_pair(osg::ref_ptr<osg::StateSet>(ss), OBJMaterial(mat, tex, _outputTextureFiles, _options.get())));
         _fout << "usemtl " << _materialMap[ss].name << std::endl;
     }
 

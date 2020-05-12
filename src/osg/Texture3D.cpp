@@ -322,8 +322,10 @@ void Texture3D::apply(State& state) const
             textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_3D, _numMipmapLevels, texStorageSizedInternalFormat, _textureWidth, _textureHeight, _textureDepth,0);
             textureObject->bind(state);
             applyTexParameters(GL_TEXTURE_3D, state);
-
-            extensions->glTexStorage3D( GL_TEXTURE_3D, osg::maximum(_numMipmapLevels,1), texStorageSizedInternalFormat, _textureWidth, _textureHeight, _textureDepth);
+            if(!textureObject->_allocated)
+            {
+                extensions->glTexStorage3D( GL_TEXTURE_3D, osg::maximum(_numMipmapLevels,1), texStorageSizedInternalFormat, _textureWidth, _textureHeight, _textureDepth);
+            }
         }
         else
         {
@@ -345,6 +347,7 @@ void Texture3D::apply(State& state) const
             _readPBuffer->bindPBufferToTexture(GL_FRONT);
         }
 
+        textureObject->setAllocated(_numMipmapLevels, texStorageSizedInternalFormat!=0? texStorageSizedInternalFormat : _internalFormat, _textureWidth, _textureHeight, _textureDepth, _borderWidth);
     }
     else
     {

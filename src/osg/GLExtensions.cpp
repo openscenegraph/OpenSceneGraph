@@ -918,8 +918,8 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glTextureStorage2D,"glTextureStorage2D","glTextureStorage2DARB", validContext);
     setGLExtensionFuncPtr(glTexStorage3D, "glTexStorage3D","glTexStorage3DEXT", validContext);
     setGLExtensionFuncPtr(glTextureStorage3D, "glTextureStorage3D","glTextureStorage3DEXT", validContext);
-    setGLExtensionFuncPtr(glTexStorage2DMultisample, "glTextureStorage2DMultisample","glTextureStorage2DMultisampleEXT", validContext);
-    setGLExtensionFuncPtr(glTexStorage3DMultisample, "glTextureStorage3DMultisample","glTextureStorage3DMultisampleEXT", validContext);
+    setGLExtensionFuncPtr(glTexStorage2DMultisample, "glTexStorage2DMultisample", validContext);
+    setGLExtensionFuncPtr(glTexStorage3DMultisample, "glTexStorage3DMultisample", validContext);
     setGLExtensionFuncPtr(glTextureView, "glTextureView","glTextureViewEXT", validContext);
 
     setGLExtensionFuncPtr(glCompressedTexImage2D,"glCompressedTexImage2D","glCompressedTexImage2DARB", validContext);

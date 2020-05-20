@@ -33,7 +33,9 @@
 #include "DataTypeSize.h"
 #include "Exception.h"
 
-
+namespace osgAnimation {
+    class Skeleton;
+}
 
 namespace ive{
 
@@ -169,6 +171,7 @@ private:
     osg::ref_ptr<const osgDB::ReaderWriter::Options> _options;
 
     osg::ref_ptr<Exception> _exception;
+    osg::ref_ptr<osgAnimation::Skeleton> _skeletion;
 };
 
 }

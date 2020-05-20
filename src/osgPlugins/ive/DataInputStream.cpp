@@ -125,6 +125,10 @@
 #include "FadeText.h"
 #include "Text3D.h"
 
+#include "Bone.h"
+#include "RigGeometry.h"
+#include "Skeleton.h"
+
 #include <osg/Endian>
 #include <osg/Notify>
 #include <osg/io_utils>
@@ -210,6 +214,7 @@ DataInputStream::DataInputStream(std::istream* istream, const osgDB::ReaderWrite
             OSG_INFO<<"uncompressed ive stream"<<std::endl;
         }
     }
+    _skeletion = nullptr;
 }
 
 DataInputStream::~DataInputStream()
@@ -1628,6 +1633,11 @@ osg::Drawable* DataInputStream::readDrawable()
         drawable = new osgText::Text3D();
         ((Text3D*)(drawable.get()))->read(this);
     }
+    else if (drawableTypeID == IVERIGGEOMETRY) {
+        drawable = new osgAnimation::RigGeometry();
+        static_cast<osgAnimation::RigGeometry*>(drawable.get())->setSkeleton(_skeletion.get());
+        static_cast<ive::RigGeometry*>(drawable.get())->read(this);
+    }
     else
         throwException("Unknown drawable drawableTypeIDentification in Geode::read()");
 
@@ -1860,6 +1870,15 @@ osg::Node* DataInputStream::readNode()
     else if(nodeTypeID== IVENODE){
         node = new osg::Node();
         ((ive::Node*)(node.get()))->read(this);
+    }
+    else if (nodeTypeID == IVEBONE) {
+        node = new osgAnimation::Bone();
+        static_cast<ive::Bone*>(node.get())->read(this);
+    }
+    else if (nodeTypeID == IVESKELETON) {
+        node = new osgAnimation::Skeleton();
+        _skeletion = osg::static_pointer_cast<osgAnimation::Skeleton>(node);
+        static_cast<ive::Skeleton*>(node.get())->read(this);
     }
     else{
         throwException("Unknown node identification in DataInputStream::readNode()");

@@ -179,5 +179,16 @@ namespace ive {
 #define IVETEXT3D                       0x10000002
 #define IVEFADETEXT                     0x10000003
 
+
+//osgAnimation classes
+#define IVERIGGEOMETRY                  0x20001001
+#define IVEBONE                         0x20000013
+#define IVESKELETON                     0x20000014
+#define IVESTACKEDMATRIXELEMENT         0x20000020
+#define IVESTACKEDQUATERNIONELEMENT     0x20000021
+#define IVESTACKEDROTATEAXISELEMENT     0x20000022
+#define IVESTACKEDTRANSLATEELEMENT      0x20000023
+#define IVESTACKEDSCALEELEMENT          0x20000024
+
 }
 #endif // IVE_READWRITE

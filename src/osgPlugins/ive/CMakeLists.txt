@@ -17,6 +17,7 @@ SET(TARGET_SRC
     BlendEquation.cpp
     BlendFunc.cpp
     BlinkSequence.cpp
+    Bone.cpp
     BumpMapping.cpp
     Camera.cpp
     CameraView.cpp
@@ -88,6 +89,7 @@ SET(TARGET_SRC
     Program.cpp
     ProxyNode.cpp
     ReaderWriterIVE.cpp
+    RigGeometry.cpp
     Scissor.cpp
     Scribe.cpp
     Sequence.cpp
@@ -96,6 +98,7 @@ SET(TARGET_SRC
     ShapeAttributeList.cpp
     Shape.cpp
     ShapeDrawable.cpp
+    Skeleton.cpp
     SpecularHighlights.cpp
     StateSet.cpp
     Stencil.cpp
@@ -147,6 +150,7 @@ SET(TARGET_H
     BlendColor.h
     BlendFunc.h
     BlinkSequence.h
+    Bone.h
     BumpMapping.h
     Camera.h
     CameraView.h
@@ -219,6 +223,7 @@ SET(TARGET_H
     Program.h
     ProxyNode.h
     ReadWrite.h
+    RigGeometry.h
     Scissor.h
     Scribe.h
     Sequence.h
@@ -227,6 +232,7 @@ SET(TARGET_H
     ShapeAttributeList.h
     ShapeDrawable.h
     Shape.h
+    Skeleton.h
     SpecularHighlights.h
     StateSet.h
     Stencil.h
@@ -266,7 +272,7 @@ SET(TARGET_H
     VolumeLocator.h
     VolumeTile.h
 )
-SET(TARGET_ADDED_LIBRARIES osgSim osgFX osgText osgTerrain osgVolume)
+SET(TARGET_ADDED_LIBRARIES osgSim osgFX osgText osgTerrain osgVolume osgAnimation)
 
 IF(ZLIB_FOUND)
     SET(TARGET_LIBRARIES_VARS ZLIB_LIBRARIES)

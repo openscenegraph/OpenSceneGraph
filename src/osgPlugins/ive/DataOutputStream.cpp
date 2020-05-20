@@ -124,6 +124,11 @@
 #include "VolumeScalarProperty.h"
 #include "VolumeTransferFunctionProperty.h"
 
+
+#include "RigGeometry.h"
+#include "Bone.h"
+#include "Skeleton.h"
+
 #include <osg/Notify>
 #include <osg/io_utils>
 #include <osgDB/FileUtils>
@@ -1254,8 +1259,10 @@ void DataOutputStream::writeDrawable(const osg::Drawable* drawable)
 
         // write the id.
         writeInt(id);
-
-        if(dynamic_cast<const osg::Geometry*>(drawable))
+        if (dynamic_cast<const osgAnimation::RigGeometry*>(drawable)) {
+            ((ive::RigGeometry*)(drawable))->write(this);
+        }
+        else if(dynamic_cast<const osg::Geometry*>(drawable))
             ((ive::Geometry*)(drawable))->write(this);
         else if(dynamic_cast<const osg::ShapeDrawable*>(drawable))
             ((ive::ShapeDrawable*)(drawable))->write(this);
@@ -1332,8 +1339,13 @@ void DataOutputStream::writeNode(const osg::Node* node)
         writeInt(id);
 
         // this follow code *really* should use a NodeVisitor... Robert Osfield August 2003.
-
-        if(dynamic_cast<const osg::MatrixTransform*>(node)){
+        if (dynamic_cast<const osgAnimation::Bone*>(node)) {
+            ((ive::Bone*)(node))->write(this);
+        }
+        else if (dynamic_cast<const osgAnimation::Skeleton*>(node)) {
+            ((ive::Skeleton*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osg::MatrixTransform*>(node)){
             ((ive::MatrixTransform*)(node))->write(this);
         }
         else if(dynamic_cast<const osg::Camera*>(node)){

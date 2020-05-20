@@ -33,6 +33,7 @@
 #include <osg/MatrixTemplate>
 #include <osg/Matrixd>
 #include <osg/Matrixf>
+#include <osg/observer_ptr>
 
 #include <stdlib.h>
 #include <string.h>
@@ -904,8 +905,10 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
 
         inline void glUniform(GLint location, const std::vector<osg::Matrixd>& array) const { if (!array.empty()) glUniformMatrix4dv(location, static_cast<GLsizei>(array.size()), GL_FALSE, array.front().ptr()); }
 
+        struct ExtensionData;
     protected:
         virtual ~GLExtensions();
+        observer_ptr<ExtensionData> _extensionData;
 };
 
 

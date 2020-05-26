@@ -306,6 +306,8 @@ class ReaderWriterXine : public osgDB::ReaderWriter
             supportsExtension("wmv","");
             supportsExtension("xine","Xine plugin Pseduo plugin");
 
+            supportsEnvironment("OSG_XINE_AUDIO_DRIVER", "name of default audio driver to use");
+
             _xine = xine_new();
 
             const char* user_home = xine_get_homedir();

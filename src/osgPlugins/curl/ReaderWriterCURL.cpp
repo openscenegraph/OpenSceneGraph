@@ -388,11 +388,12 @@ ReaderWriterCURL::ReaderWriterCURL()
 
     supportsExtension("curl","Pseudo file extension, used to select curl plugin.");
     supportsExtension("*","Passes all read files to other plugins to handle actual model loading.");
-    supportsOption("OSG_CURL_PROXY","Specify the http proxy.");
-    supportsOption("OSG_CURL_PROXYPORT","Specify the http proxy port.");
-    supportsOption("OSG_CURL_CONNECTTIMEOUT","Specify the connection timeout duration in seconds [default = 0 = not set].");
-    supportsOption("OSG_CURL_TIMEOUT","Specify the timeout duration of the whole transfer in seconds [default = 0 = not set].");
-    supportsOption("OSG_CURL_SSL_VERIFYPEER","Specify ssl verification peer [default = 1 = set].");
+
+    supportsEnvironment("OSG_CURL_PROXY","Specify the http proxy.");
+    supportsEnvironment("OSG_CURL_PROXYPORT","Specify the http proxy port.");
+    supportsEnvironment("OSG_CURL_CONNECTTIMEOUT","Specify the connection timeout duration in seconds [default = 0 = not set].");
+    supportsEnvironment("OSG_CURL_TIMEOUT","Specify the timeout duration of the whole transfer in seconds [default = 0 = not set].");
+    supportsEnvironment("OSG_CURL_SSL_VERIFYPEER","Specify ssl verification peer [default = 1 = set].");
 }
 
 ReaderWriterCURL::~ReaderWriterCURL()

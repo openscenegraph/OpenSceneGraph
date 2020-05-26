@@ -80,6 +80,7 @@ bool osgDB::queryPlugin(const std::string& fileName, ReaderWriterInfoList& infoL
                 rwi->protocols = rw->supportedProtocols();
                 rwi->extensions = rw->supportedExtensions();
                 rwi->options = rw->supportedOptions();
+                rwi->environment = rw->supportedEnvironment();
                 rwi->features = rw->supportedFeatures();
 
                 infoList.push_back(rwi.get());
@@ -151,6 +152,13 @@ bool osgDB::outputPluginDetails(std::ostream& out, const std::string& fileName)
                 if (fdm_itr->first.length()>longestOptionLength) longestOptionLength = fdm_itr->first.length();
             }
 
+            for(fdm_itr = info.environment.begin();
+                fdm_itr != info.environment.end();
+                ++fdm_itr)
+            {
+                if (fdm_itr->first.length()>longestOptionLength) longestOptionLength = fdm_itr->first.length();
+            }
+
             unsigned int padLength = longestOptionLength+4;
 
             for(fdm_itr = info.protocols.begin();
@@ -172,6 +180,13 @@ bool osgDB::outputPluginDetails(std::ostream& out, const std::string& fileName)
                 ++fdm_itr)
             {
                 out<<"        options    : "<<padwithspaces(fdm_itr->first, padLength)<<fdm_itr->second<<std::endl;
+            }
+
+            for(fdm_itr = info.environment.begin();
+                fdm_itr != info.environment.end();
+                ++fdm_itr)
+            {
+                out<<"        environment: "<<padwithspaces(fdm_itr->first, padLength)<<fdm_itr->second<<std::endl;
             }
             out<<"    }"<<std::endl;
         }

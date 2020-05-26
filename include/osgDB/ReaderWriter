@@ -63,6 +63,9 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
         /** Return which list of file extensions supported by ReaderWriter. */
         virtual const FormatDescriptionMap& supportedOptions() const { return _supportedOptions; }
 
+        /** Return which list of file environment variables supported by ReaderWriter. */
+        virtual const FormatDescriptionMap& supportedEnvironment() const { return _supportedEnvironment; }
+
         /** Return true if ReaderWriter accepts specified file extension.*/
         virtual bool acceptsExtension(const std::string& /*extension*/) const;
 
@@ -282,11 +285,15 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
           * Please note, this should usually only be used internally by subclasses of ReaderWriter. */
         void supportsOption(const std::string& opt, const std::string& description);
 
+        /** Specify env string as a supported environment string. */
+        void supportsEnvironment(const std::string& opt, const std::string& description);
+
     protected:
 
         FormatDescriptionMap _supportedProtocols;
         FormatDescriptionMap _supportedExtensions;
         FormatDescriptionMap _supportedOptions;
+        FormatDescriptionMap _supportedEnvironment;
 };
 
 }

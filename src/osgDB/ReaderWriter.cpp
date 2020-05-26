@@ -128,6 +128,11 @@ void ReaderWriter::supportsOption(const std::string& fmt, const std::string& des
     _supportedOptions[fmt] = description;
 }
 
+void ReaderWriter::supportsEnvironment(const std::string& fmt, const std::string& description)
+{
+    _supportedEnvironment[fmt] = description;
+}
+
 ReaderWriter::Features ReaderWriter::supportedFeatures() const
 {
     int features = FEATURE_NONE;

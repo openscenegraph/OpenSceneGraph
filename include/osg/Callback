@@ -121,8 +121,33 @@ class OSG_EXPORT Callback : public virtual Object {
             }
         }
 
-    protected:
+        /** Convenience method to find a nested callback by type. */
+        template <typename T>
+        static T* findNestedCallback(osg::Callback* callback)
+        {
+            if (!callback)
+                return nullptr;
 
+            if (T* cb = dynamic_cast<T*>(callback))
+                return cb;
+
+            return findNestedCallback<T>(callback->getNestedCallback());
+        }
+
+        /** Convenience method to find a nested callback by type. */
+        template <typename T>
+        static const T* findNestedCallback(const osg::Callback* callback)
+        {
+            if (!callback)
+                return nullptr;
+
+            if (const T* cb = dynamic_cast<const T*>(callback))
+                return cb;
+
+            return findNestedCallback<T>(callback->getNestedCallback());
+        }
+
+    protected:
         virtual ~Callback() {}
         ref_ptr<Callback> _nestedCallback;
 };

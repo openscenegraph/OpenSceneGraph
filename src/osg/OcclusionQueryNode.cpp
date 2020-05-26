@@ -320,15 +320,20 @@ QueryGeometry::drawImplementation( osg::RenderInfo& renderInfo ) const
 
     osg::Camera* cam = renderInfo.getCurrentCamera();
 
-    // Add callbacks if necessary.
-    if (!cam->getPostDrawCallback())
+    RetrieveQueriesCallback* rqcb = cam->findPostDrawCallback<RetrieveQueriesCallback>();
+    if (!rqcb)
     {
-        RetrieveQueriesCallback* rqcb = new RetrieveQueriesCallback( ext );
-        cam->setPostDrawCallback( rqcb );
+        rqcb = new RetrieveQueriesCallback( ext );
+        cam->addPostDrawCallback( rqcb );
 
-        ClearQueriesCallback* cqcb = new ClearQueriesCallback;
+        ClearQueriesCallback* cqcb = cam->findPreDrawCallback<ClearQueriesCallback>();
+        if (!cqcb)
+        {
+            cqcb = new ClearQueriesCallback;
+            cam->addPreDrawCallback( cqcb );
+        }
+
         cqcb->_rqcb = rqcb;
-        cam->setPreDrawCallback( cqcb );
     }
 
     // Get TestResult from Camera map
@@ -342,7 +347,6 @@ QueryGeometry::drawImplementation( osg::RenderInfo& renderInfo ) const
             _results[ cam ] = tr;
         }
     }
-
 
     // Issue query
     if (!tr->_init)
@@ -358,9 +362,6 @@ QueryGeometry::drawImplementation( osg::RenderInfo& renderInfo ) const
         return;
     }
 
-    // Add TestResult to RQCB.
-    RetrieveQueriesCallback* rqcb = dynamic_cast<
-        RetrieveQueriesCallback* >( cam->getPostDrawCallback() );
     if (!rqcb)
     {
         OSG_FATAL << "osgOQ: QG: Invalid RQCB." << std::endl;

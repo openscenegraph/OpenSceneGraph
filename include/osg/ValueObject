@@ -308,8 +308,8 @@ class TemplateValueObject : public ValueObject
         void setValue(const T& value) { _value = value; }
         const T& getValue() const { return _value; }
 
-        virtual bool get(GetValueVisitor& gvv) const { gvv.apply(_value); return true; }
-        virtual bool set(SetValueVisitor& svv) { svv.apply(_value); return true; }
+        virtual bool get(GetValueVisitor& gvv) const { static_cast<GetScalarValue<T>&>(gvv).apply(_value); return true; }
+        virtual bool set(SetValueVisitor& svv) { static_cast<SetScalarValue<T>&>(svv).apply(_value); return true; }
 
 protected:
 

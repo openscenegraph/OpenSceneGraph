@@ -1,34 +1,34 @@
 # Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
 # file Copyright.txt or https://cmake.org/licensing for details.
 #[[=======================================================================.rst:
-FindFontconfig
---------------
-
-Find Fontconfig headers and library.
-
-Imported Targets
-^^^^^^^^^^^^^^^^
-
-``Fontconfig::Fontconfig``
-  The Fontconfig library, if found.
-
-Result Variables
-^^^^^^^^^^^^^^^^
-
-This will define the following variables in your project:
-
-``FONTCONFIG_FOUND``
-  true if (the requested version of) Fontconfig is available.
-``FONTCONFIG_VERSION``
-  the version of Fontconfig.
-``FONTCONFIG_LIBRARIES``
-  the libraries to link against to use Fontconfig.
-``FONTCONFIG_INCLUDE_DIRS``
-  where to find the Fontconfig headers.
-``FONTCONFIG_COMPILE_OPTIONS``
-  this should be passed to target_compile_options(), if the
-  target is not used for linking
-=======================================================================]]
+# FindFontconfig
+# --------------
+#
+# Find Fontconfig headers and library.
+#
+# Imported Targets
+# ^^^^^^^^^^^^^^^^
+#
+# ``Fontconfig::Fontconfig``
+#  The Fontconfig library, if found.
+#
+# Result Variables
+# ^^^^^^^^^^^^^^^^
+#
+# This will define the following variables in your project:
+#
+# ``FONTCONFIG_FOUND``
+#  true if (the requested version of) Fontconfig is available.
+# ``FONTCONFIG_VERSION``
+#  the version of Fontconfig.
+# ``FONTCONFIG_LIBRARIES``
+#  the libraries to link against to use Fontconfig.
+# ``FONTCONFIG_INCLUDE_DIRS``
+#  where to find the Fontconfig headers.
+# ``FONTCONFIG_COMPILE_OPTIONS``
+#  this should be passed to target_compile_options(), if the
+#  target is not used for linking
+#=======================================================================]]
 
 # use pkg-config to get the directories and then use these values
 # in the FIND_PATH() and FIND_LIBRARY() calls

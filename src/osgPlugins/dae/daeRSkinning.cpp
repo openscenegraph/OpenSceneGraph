@@ -252,10 +252,18 @@ void daeReader::processSkeletonSkins(domNode* skeletonRoot, const domInstance_co
         {
             osgAnimation::Bone* pOsgBone = getOrCreateBone(jointsAndInverseBindMatrices[j].first);
             pOsgBone->setInvBindMatrixInSkeletonSpace(jointsAndInverseBindMatrices[j].second);
+            unsigned int numAttrs = jointsAndInverseBindMatrices[j].first->getAttributeCount();
+            for ( unsigned int currAttr = 0; currAttr < numAttrs; ++currAttr )
+                if (jointsAndInverseBindMatrices[j].first->getAttributeName(currAttr) == "name")
+                    pOsgBone->setName(jointsAndInverseBindMatrices[j].first->getAttribute( currAttr ));
         }
     }
 
     osgAnimation::Skeleton* skeleton = getOrCreateSkeleton(skeletonRoot);
+
+    unsigned int numAttrs = skeletonRoot->getAttributeCount();
+    for ( unsigned int currAttr = 0; currAttr < numAttrs; ++currAttr )
+        if (skeletonRoot->getAttributeName(currAttr) == "name") skeleton->setName(skeletonRoot->getAttribute( currAttr ));
 
     for (size_t i = 0; i < instanceControllers.size(); ++i)
     {

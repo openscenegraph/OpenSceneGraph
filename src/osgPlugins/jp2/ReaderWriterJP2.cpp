@@ -267,8 +267,7 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
                 pixelFormat,
                 dataType,
                 data,
-//                osg::Image::USE_NEW_DELETE);
-                osg::Image::NO_DELETE);
+                osg::Image::USE_NEW_DELETE);
 
             OSG_INFO << "image read ok "<<s<<"  "<<t<< std::endl;
             return image;
@@ -334,8 +333,7 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
                 pixelFormat,
                 dataType,
                 data,
-//                osg::Image::USE_NEW_DELETE);
-                osg::Image::NO_DELETE);
+                osg::Image::USE_NEW_DELETE);
 
             OSG_INFO << "image read ok "<<s<<"  "<<t<< std::endl;
             return image;

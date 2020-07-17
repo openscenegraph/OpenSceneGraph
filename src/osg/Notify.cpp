@@ -241,7 +241,7 @@ void osg::StandardNotifyHandler::notify(osg::NotifySeverity severity, const char
         fputs(message, stdout);
 }
 
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32) && !defined(__CYGWIN__)
 
 #ifndef WIN32_LEAN_AND_MEAN
     #define WIN32_LEAN_AND_MEAN

@@ -417,7 +417,7 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--shader","Use shaders to post process the video.");
     arguments.getApplicationUsage()->addCommandLineOption("--interactive","Use camera manipulator to allow movement around movie.");
     arguments.getApplicationUsage()->addCommandLineOption("--flip","Flip the movie so top becomes bottom.");
-#if defined(WIN32) || defined(__APPLE__)
+#if defined(_WIN32) || defined(__APPLE__)
     arguments.getApplicationUsage()->addCommandLineOption("--devices","Print the Video input capability via QuickTime and exit.");
 #endif
 
@@ -433,7 +433,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-#if defined(WIN32) || defined(__APPLE__)
+#if defined(_WIN32) || defined(__APPLE__)
     // if user requests devices video capability.
     if (arguments.read("-devices") || arguments.read("--devices"))
     {

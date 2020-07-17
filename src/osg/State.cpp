@@ -52,7 +52,7 @@ using namespace std;
 using namespace osg;
 
 
-#ifdef WIN32
+#ifdef _WIN32
     const char* s_LineEnding = "\r\n";
 #else
     const char* s_LineEnding = "\n";

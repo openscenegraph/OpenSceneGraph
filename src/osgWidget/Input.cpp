@@ -5,7 +5,7 @@
 #include <osgWidget/Input>
 #include <iterator>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #endif
 
@@ -512,7 +512,7 @@ bool Input::keyDown(int key, int mask, const WindowManager*)
         {
             std::string data;
 // Data from clipboard
-#ifdef WIN32
+#ifdef _WIN32
             if (::OpenClipboard(NULL))
             {
                 HANDLE hData = ::GetClipboardData( CF_TEXT );
@@ -571,7 +571,7 @@ bool Input::keyDown(int key, int mask, const WindowManager*)
                 data = selection.createUTF8EncodedString();
 
 // Data to clipboard
-#ifdef WIN32
+#ifdef _WIN32
                 if(::OpenClipboard(NULL))
                 {
                     ::EmptyClipboard();

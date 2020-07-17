@@ -21,7 +21,7 @@
 #include <sys/types.h>
 #include <iostream>
 
-#if !defined (WIN32) || defined(__CYGWIN__)
+#if !defined (_WIN32) || defined(__CYGWIN__)
 #include <sys/ioctl.h>
 #include <sys/uio.h>
 #include <sys/socket.h>
@@ -54,7 +54,7 @@
 #elif defined (__APPLE__)
     #include <unistd.h>
     #include <sys/sockio.h>
-#elif defined (WIN32)
+#elif defined (_WIN32)
     #include <winsock.h>
     #include <stdio.h>
 #elif defined (__hpux)
@@ -73,7 +73,7 @@ Broadcaster::Broadcaster( void )
      _ifr_name = "eth0";
 #elif defined(__sun)
      _ifr_name = "hme0";
-#elif !defined (WIN32)
+#elif !defined (_WIN32)
      _ifr_name = "ef0";
 #endif
     _port = 0;
@@ -84,7 +84,7 @@ Broadcaster::Broadcaster( void )
 
 Broadcaster::~Broadcaster( void )
 {
-#if defined (WIN32) && !defined(__CYGWIN__)
+#if defined (_WIN32) && !defined(__CYGWIN__)
     closesocket( _so);
 #else
     close( _so );
@@ -93,7 +93,7 @@ Broadcaster::~Broadcaster( void )
 
 bool Broadcaster::init( void )
 {
-#if defined (WIN32) && !defined(__CYGWIN__)
+#if defined (_WIN32) && !defined(__CYGWIN__)
     WORD version = MAKEWORD(1,1);
     WSADATA wsaData;
     // First, we start up Winsock
@@ -111,13 +111,13 @@ bool Broadcaster::init( void )
         perror( "Socket" );
         return false;
     }
-#if defined (WIN32) && !defined(__CYGWIN__)
+#if defined (_WIN32) && !defined(__CYGWIN__)
     const BOOL on = TRUE;
 #else
     int on = 1;
 #endif
 
-#if defined (WIN32) && !defined(__CYGWIN__)
+#if defined (_WIN32) && !defined(__CYGWIN__)
     setsockopt( _so, SOL_SOCKET, SO_REUSEADDR, (const char *) &on, sizeof(int));
 #else
     setsockopt( _so, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
@@ -127,17 +127,17 @@ bool Broadcaster::init( void )
     saddr.sin_port   = htons( _port );
     if( _address == 0 )
     {
-#if defined (WIN32) && !defined(__CYGWIN__)
+#if defined (_WIN32) && !defined(__CYGWIN__)
         setsockopt( _so, SOL_SOCKET, SO_BROADCAST, (const char *) &on, sizeof(int));
 #else
         setsockopt( _so, SOL_SOCKET, SO_BROADCAST, &on, sizeof(on));
 #endif
 
-#if !defined (WIN32) || defined(__CYGWIN__)
+#if !defined (_WIN32) || defined(__CYGWIN__)
         struct ifreq ifr;
         strcpy( ifr.ifr_name, _ifr_name.c_str());
 #endif
-#if defined (WIN32) // get the server address
+#if defined (_WIN32) // get the server address
         saddr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
     }
 #else
@@ -202,7 +202,7 @@ void Broadcaster::sync( void )
         return;
     }
 
-#if defined (WIN32) && !defined(__CYGWIN__)
+#if defined (_WIN32) && !defined(__CYGWIN__)
     unsigned int size = sizeof( SOCKADDR_IN );
     sendto( _so, (const char *)_buffer, _buffer_size, 0, (struct sockaddr *)&saddr, size );
     int err = WSAGetLastError ();

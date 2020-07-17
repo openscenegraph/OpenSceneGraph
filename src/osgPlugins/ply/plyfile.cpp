@@ -55,7 +55,7 @@ WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
     #pragma warning( disable : 4996 )
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #    ifndef LITTLE_ENDIAN
 #    define LITTLE_ENDIAN
 #    endif

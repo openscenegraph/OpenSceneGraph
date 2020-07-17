@@ -27,7 +27,7 @@
 #include <set>
 #include <sstream>
 
-#if defined(WIN32)
+#if defined(_WIN32)
     #ifndef WIN32_LEAN_AND_MEAN
         #define WIN32_LEAN_AND_MEAN
     #endif // WIN32_LEAN_AND_MEAN
@@ -174,7 +174,7 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
                 if (*startOfWord!=0) extensionSet.insert(std::string(startOfWord));
             }
 
-    #if defined(WIN32) && (defined(OSG_GL1_AVAILABLE) || defined(OSG_GL2_AVAILABLE) || defined(OSG_GL3_AVAILABLE))
+    #if defined(_WIN32) && (defined(OSG_GL1_AVAILABLE) || defined(OSG_GL2_AVAILABLE) || defined(OSG_GL3_AVAILABLE))
 
             // add WGL extensions to the list
 
@@ -340,7 +340,7 @@ OSG_INIT_SINGLETON_PROXY(GLExtensionDisableStringInitializationProxy, osg::getGL
         #endif
         return dlsym(handle, funcName);
 
-    #elif defined(WIN32)
+    #elif defined(_WIN32)
 
         #if defined(OSG_GLES2_AVAILABLE)
             static HMODULE hmodule = GetModuleHandle(TEXT("libGLESv2.dll"));

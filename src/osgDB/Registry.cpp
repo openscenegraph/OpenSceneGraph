@@ -39,7 +39,7 @@
 
 #if defined(__sgi)
     #include <ctype.h>
-#elif defined(__GNUC__) || !defined(WIN32) || defined(__MWERKS__)
+#elif defined(__GNUC__) || !defined(_WIN32) || defined(__MWERKS__)
     #include <cctype>
     using std::tolower;
 #endif
@@ -53,7 +53,7 @@
 using namespace osg;
 using namespace osgDB;
 
-#if !defined(WIN32) || defined(__CYGWIN__)
+#if !defined(_WIN32) || defined(__CYGWIN__)
 static osg::ApplicationUsageProxy Registry_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FILE_PATH <path>[:path]..","Paths for locating datafiles");
 static osg::ApplicationUsageProxy Registry_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_LIBRARY_PATH <path>[:path]..","Paths for locating libraries/ plugins");
 #else
@@ -787,7 +787,7 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
     return prepend+"cygwin_"+"osgdb_"+lowercase_ext+OSG_LIBRARY_POSTFIX_WITH_QUOTES+".dll";
 #elif defined(__MINGW32__)
     return prepend+"mingw_"+"osgdb_"+lowercase_ext+OSG_LIBRARY_POSTFIX_WITH_QUOTES+".dll";
-#elif defined(WIN32)
+#elif defined(_WIN32)
     return prepend+"osgdb_"+lowercase_ext+OSG_LIBRARY_POSTFIX_WITH_QUOTES+".dll";
 #elif macintosh
     return prepend+"osgdb_"+lowercase_ext+OSG_LIBRARY_POSTFIX_WITH_QUOTES;
@@ -803,7 +803,7 @@ std::string Registry::createLibraryNameForNodeKit(const std::string& name)
     return "cyg"+name+OSG_LIBRARY_POSTFIX_WITH_QUOTES+".dll";
 #elif defined(__MINGW32__)
     return "lib"+name+OSG_LIBRARY_POSTFIX_WITH_QUOTES+".dll";
-#elif defined(WIN32)
+#elif defined(_WIN32)
     return name+OSG_LIBRARY_POSTFIX_WITH_QUOTES+".dll";
 #elif macintosh
     return name+OSG_LIBRARY_POSTFIX_WITH_QUOTES;

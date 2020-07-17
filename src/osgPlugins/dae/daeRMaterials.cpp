@@ -907,7 +907,7 @@ std::string daeReader::processImagePath(const domImage* pDomImage) const
                 OSG_WARN << "Unable to get path from URI." << std::endl;
                 return std::string();
             }
-#ifdef WIN32
+#ifdef _WIN32
             // If the path has a drive specifier or a UNC name then strip the leading /
             if (path.size() > 2 && (path[2] == ':' || (path[1] == '/' && path[2] == '/')))
                 return path.substr(1, std::string::npos);

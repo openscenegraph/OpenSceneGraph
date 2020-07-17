@@ -24,7 +24,7 @@ typedef char TCHAR;
 // the mac version will change soon to reflect the path scheme under osx, but
 // for now, the above include is commented out, and the below code takes precedence.
 
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32) && !defined(__CYGWIN__)
     #include <io.h>
     #define WINBASE_DECLARE_GET_MODULE_HANDLE_EX
     #include <windows.h>
@@ -204,7 +204,7 @@ bool osgDB::makeDirectory( const std::string &path )
     {
         std::string dir = paths.top();
 
-        #if defined(WIN32)
+        #if defined(_WIN32)
             //catch drive name
             if (dir.size() == 2 && dir.c_str()[1] == ':') {
                 paths.pop();
@@ -274,7 +274,7 @@ bool osgDB::setCurrentWorkingDirectory( const std::string &newCurrentWorkingDire
 
 void osgDB::convertStringPathIntoFilePathList(const std::string& paths,FilePathList& filepath)
 {
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32) && !defined(__CYGWIN__)
     char delimitor = ';';
 #else
     char delimitor = ':';
@@ -342,7 +342,7 @@ std::string osgDB::findFileInPath(const std::string& filename, const FilePathLis
         OSG_DEBUG << "itr='" <<*itr<< "'\n";
         std::string path = itr->empty() ? filename : concatPaths(*itr, filename);
 
-#ifdef WIN32
+#ifdef _WIN32
         // if combined file path exceeds MAX_PATH then ignore as it's not a legal path otherwise subsequent IO calls with this path may result in undefined behavior
         if (path.length()>MAX_PATH) continue;
 #endif
@@ -355,7 +355,7 @@ std::string osgDB::findFileInPath(const std::string& filename, const FilePathLis
             OSG_DEBUG << "FindFileInPath() : USING " << path << "\n";
             return path;
         }
-#ifndef WIN32
+#ifndef _WIN32
 // windows already case insensitive so no need to retry..
         else if (caseSensitivity==CASE_INSENSITIVE)
         {
@@ -395,7 +395,7 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
     std::string realFileName = fileName;
 
     // Skip case-insensitive recursion if on Windows
-    #ifdef WIN32
+    #ifdef _WIN32
         bool win32 = true;
     #else
         bool win32 = false;
@@ -535,7 +535,7 @@ static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
 #endif
 }
 
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32) && !defined(__CYGWIN__)
     #include <io.h>
     #include <direct.h>
 
@@ -763,7 +763,7 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
         convertStringPathIntoFilePathList("/usr/bin/:/usr/local/bin/",filepath);
     }
 
-#elif defined(WIN32)
+#elif defined(_WIN32)
 
     void osgDB::appendPlatformSpecificLibraryFilePaths(FilePathList& filepath)
     {

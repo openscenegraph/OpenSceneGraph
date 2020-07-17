@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <sys/types.h>
-#if defined (WIN32) && !defined(__CYGWIN__)
+#if defined (_WIN32) && !defined(__CYGWIN__)
 #include <winsock.h>
 #else
 #include <unistd.h>
@@ -46,7 +46,7 @@ Receiver::Receiver( void )
 
 Receiver::~Receiver( void )
 {
-#if defined (WIN32) && !defined(__CYGWIN__)
+#if defined (_WIN32) && !defined(__CYGWIN__)
     closesocket( _so);
 #else
     close( _so );
@@ -55,7 +55,7 @@ Receiver::~Receiver( void )
 
 bool Receiver::init( void )
 {
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32) && !defined(__CYGWIN__)
     WORD version = MAKEWORD(1,1);
     WSADATA wsaData;
     // First, we start up Winsock
@@ -73,7 +73,7 @@ bool Receiver::init( void )
         perror( "Socket" );
     return false;
     }
-#if defined (WIN32) && !defined(__CYGWIN__)
+#if defined (_WIN32) && !defined(__CYGWIN__)
 //    const BOOL on = TRUE;
 //    setsockopt( _so, SOL_SOCKET, SO_REUSEADDR, (const char*) &on, sizeof(int));
 #else
@@ -84,7 +84,7 @@ bool Receiver::init( void )
 //    struct sockaddr_in saddr;
     saddr.sin_family = AF_INET;
     saddr.sin_port   = htons( _port );
-#if defined (WIN32) && !defined(__CYGWIN__)
+#if defined (_WIN32) && !defined(__CYGWIN__)
     saddr.sin_addr.s_addr =  htonl(INADDR_ANY);
 #else
     saddr.sin_addr.s_addr =  0;
@@ -137,7 +137,7 @@ unsigned int Receiver::sync( void )
     tv.tv_sec = 0;
     tv.tv_usec = 0;
 
-#if defined (WIN32) && !defined(__CYGWIN__)
+#if defined (_WIN32) && !defined(__CYGWIN__)
 //    saddr.sin_port   = htons( _port );
     recvfrom( _so, (char *)_buffer, _buffer_size, 0, (sockaddr*)&saddr, &size );
 //    recvfrom(sock_Receive, szMessage, 256, 0, (sockaddr*)&addr_Cli, &clilen)

@@ -236,7 +236,13 @@ void IntersectionVisitor::apply(osg::Geode& geode)
 
     for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
     {
-        intersect( geode.getDrawable(i) );
+        // drawable might be 0, because getDrawable might return 0: 
+		// getDrawable( unsigned int i ) { return _children[i].valid() ? _children[i]->asDrawable() : 0; }
+		osg::Drawable* drawable = geode.getDrawable(i);
+		if (drawable != nullptr)
+		{
+			intersect(drawable);
+		}
     }
 
     leave();

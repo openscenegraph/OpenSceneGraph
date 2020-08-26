@@ -309,7 +309,7 @@ public:
 
             return true;
         }
-        catch(osc::Exception e) {
+        catch(osc::Exception& e) {
             handleException(e);
         }
 
@@ -342,7 +342,7 @@ public:
 
             return true;
         }
-        catch(osc::Exception e) {
+        catch(osc::Exception& e) {
             handleException(e);
         }
 
@@ -378,7 +378,7 @@ public:
 
             return true;
         }
-        catch(osc::Exception e) {
+        catch(osc::Exception& e) {
             handleException(e);
         }
 
@@ -413,7 +413,7 @@ public:
 
             return true;
         }
-        catch(osc::Exception e) {
+        catch(osc::Exception& e) {
             handleException(e);
         }
 
@@ -449,7 +449,7 @@ public:
 
             return true;
         }
-        catch (osc::Exception e) {
+        catch (osc::Exception& e) {
             handleException(e);
         }
         return false;
@@ -491,7 +491,7 @@ public:
 
             return true;
         }
-        catch (osc::Exception e) {
+        catch (osc::Exception& e) {
             handleException(e);
         }
         return false;
@@ -529,7 +529,7 @@ public:
 
             return true;
         }
-        catch (osc::Exception e) {
+        catch (osc::Exception& e) {
             handleException(e);
         }
         return false;
@@ -588,7 +588,7 @@ public:
 
             return true;
         }
-        catch (osc::Exception e) {
+        catch (osc::Exception& e) {
             handleException(e);
         }
         return false;
@@ -630,7 +630,7 @@ public:
 
             return true;
         }
-        catch (osc::Exception e) {
+        catch (osc::Exception& e) {
             handleException(e);
         }
         return false;
@@ -662,7 +662,7 @@ public:
 
             return true;
         }
-        catch (osc::Exception e) {
+        catch (osc::Exception& e) {
             handleException(e);
         }
         return false;
@@ -695,7 +695,7 @@ public:
 
             return true;
         }
-        catch (osc::Exception e) {
+        catch (osc::Exception& e) {
             handleException(e);
         }
         return false;

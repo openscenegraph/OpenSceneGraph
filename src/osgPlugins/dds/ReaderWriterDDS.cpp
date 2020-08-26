@@ -1078,15 +1078,12 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout, bool autoFlipDDSWri
 
     // Initialize ddsd structure and its members
     DDSURFACEDESC2 ddsd;
-    memset( &ddsd, 0, sizeof( ddsd ) );
     DDPIXELFORMAT  ddpf;
-    memset( &ddpf, 0, sizeof( ddpf ) );
     //DDCOLORKEY     ddckCKDestOverlay;
     //DDCOLORKEY     ddckCKDestBlt;
     //DDCOLORKEY     ddckCKSrcOverlay;
     //DDCOLORKEY     ddckCKSrcBlt;
     DDSCAPS2       ddsCaps;
-    memset( &ddsCaps, 0, sizeof( ddsCaps ) );
 
     ddsd.dwSize = sizeof(ddsd);
     ddpf.dwSize = sizeof(ddpf);

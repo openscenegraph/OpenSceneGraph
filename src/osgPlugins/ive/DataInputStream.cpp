@@ -287,7 +287,7 @@ bool DataInputStream::uncompress(std::istream& fin, std::string& destination) co
     return ret == Z_STREAM_END ? true : false;
 }
 #else
-bool DataInputStream::uncompress(std::istream& fin, std::string& destination) const
+bool DataInputStream::uncompress(std::istream& /*fin*/, std::string& /*destination*/) const
 {
     return false;
 }

@@ -537,9 +537,12 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
     switch(pixelFormat)
     {
         case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT): return 3;
-        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT): return 4;
+        case(GL_COMPRESSED_SRGB_S3TC_DXT1_EXT): return 3;
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT): return 4;
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT): return 4;
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT): return 4;
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT): return 4;
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT): return 4;
         case(GL_COMPRESSED_SIGNED_RED_RGTC1_EXT): return 1;
         case(GL_COMPRESSED_RED_RGTC1_EXT):   return 1;
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT): return 2;
@@ -719,9 +722,13 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
     switch(format)
     {
         case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT): return 4;
+        case(GL_COMPRESSED_SRGB_S3TC_DXT1_EXT): return 4;
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT): return 4;
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT): return 4;
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT): return 8;
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT): return 8;
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT): return 8;
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT): return 8;
         case(GL_COMPRESSED_SIGNED_RED_RGTC1_EXT): return 4;
         case(GL_COMPRESSED_RED_RGTC1_EXT):   return 4;
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT): return 8;
@@ -942,10 +949,14 @@ unsigned int Image::computeBlockSize(GLenum pixelFormat, GLenum packing)
     switch(pixelFormat)
     {
         case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_SRGB_S3TC_DXT1_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
-            return osg::maximum(8u,packing); // block size of 8
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT):
+            return osg::maximum(8u, packing); // block size of 8
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT):
         case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG):
         case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG):
         case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG):
@@ -1095,9 +1106,13 @@ bool Image::isCompressed() const
         case(GL_COMPRESSED_RGBA_ARB):
         case(GL_COMPRESSED_RGB_ARB):
         case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_SRGB_S3TC_DXT1_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT):
         case(GL_COMPRESSED_SIGNED_RED_RGTC1_EXT):
         case(GL_COMPRESSED_RED_RGTC1_EXT):
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT):
@@ -2013,10 +2028,14 @@ bool Image::isImageTranslucent() const
         case(GL_BGR):
             return false;
         case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_SRGB_S3TC_DXT1_EXT):
             return false;
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT):
             return dxtc_tool::isCompressedImageTranslucent(_s, _t, _pixelFormat, _data);
         default:
             return false;

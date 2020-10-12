@@ -196,10 +196,10 @@ InternalPixelRelations compressedInternalFormats[] = {
     , { GL_COMPRESSED_RGBA_S3TC_DXT3_EXT       , GL_RGBA             , GL_COMPRESSED_RGBA_S3TC_DXT3_EXT             }
     , { GL_COMPRESSED_RGBA_S3TC_DXT5_EXT       , GL_RGBA             , GL_COMPRESSED_RGBA_S3TC_DXT5_EXT             }
 
- // , { GL_COMPRESSED_SRGB_S3TC_DXT1_EXT       , GL_RGB              , GL_COMPRESSED_SRGB_S3TC_DXT1_EXT             }
- // , { GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT , GL_RGBA             , GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT       }
- // , { GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT , GL_RGBA             , GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT       }
- // , { GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT , GL_RGBA             , GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT       }
+    , { GL_COMPRESSED_SRGB_S3TC_DXT1_EXT       , GL_RGB              , GL_COMPRESSED_SRGB_S3TC_DXT1_EXT             }
+    , { GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT , GL_RGBA             , GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT       }
+    , { GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT , GL_RGBA             , GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT       }
+    , { GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT , GL_RGBA             , GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT       }
 };
 
 bool isSizedInternalFormat(GLint internalFormat)
@@ -306,15 +306,19 @@ void Texture::TextureProfile::computeSize()
         case(GL_RGBA): numBitsPerTexel = 32; break;
         case(4): numBitsPerTexel = 32; break;
 
-        case(GL_COMPRESSED_ALPHA_ARB):           numBitsPerTexel = 4; break;
-        case(GL_COMPRESSED_INTENSITY_ARB):       numBitsPerTexel = 4; break;
-        case(GL_COMPRESSED_LUMINANCE_ALPHA_ARB): numBitsPerTexel = 4; break;
-        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):   numBitsPerTexel = 4; break;
-        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):  numBitsPerTexel = 4; break;
+        case(GL_COMPRESSED_ALPHA_ARB):                 numBitsPerTexel = 4; break;
+        case(GL_COMPRESSED_INTENSITY_ARB):             numBitsPerTexel = 4; break;
+        case(GL_COMPRESSED_LUMINANCE_ALPHA_ARB):       numBitsPerTexel = 4; break;
+        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):         numBitsPerTexel = 4; break;
+        case(GL_COMPRESSED_SRGB_S3TC_DXT1_EXT):        numBitsPerTexel = 4; break;
+        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):        numBitsPerTexel = 4; break;
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT):  numBitsPerTexel = 4; break;
 
-        case(GL_COMPRESSED_RGB_ARB):             numBitsPerTexel = 8; break;
-        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):  numBitsPerTexel = 8; break;
-        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):  numBitsPerTexel = 8; break;
+        case(GL_COMPRESSED_RGB_ARB):                   numBitsPerTexel = 8; break;
+        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):        numBitsPerTexel = 8; break;
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT):  numBitsPerTexel = 8; break;
+        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):        numBitsPerTexel = 8; break;
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT):  numBitsPerTexel = 8; break;
 
         case(GL_COMPRESSED_SIGNED_RED_RGTC1_EXT):       numBitsPerTexel = 4; break;
         case(GL_COMPRESSED_RED_RGTC1_EXT):              numBitsPerTexel = 4; break;
@@ -1801,7 +1805,9 @@ bool Texture::isCompressedInternalFormat(GLint internalFormat)
         case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
-        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT):
+		case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT):
         case(GL_COMPRESSED_SIGNED_RED_RGTC1_EXT):
         case(GL_COMPRESSED_RED_RGTC1_EXT):
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT):
@@ -2159,6 +2165,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         switch(_internalFormat)
         {
             case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+            case GL_COMPRESSED_SRGB_S3TC_DXT1_EXT:
             case GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG:
             case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
             case GL_ETC1_RGB8_OES:
@@ -2166,8 +2173,11 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
             case(GL_COMPRESSED_SRGB8_ETC2):
             case GL_COMPRESSED_RGB: _internalFormat = GL_RGB; break;
             case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
+            case GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT:
             case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
+            case GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT:
             case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
+            case GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT:
             case GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG:
             case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
             case(GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2):

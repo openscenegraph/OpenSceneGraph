@@ -166,6 +166,15 @@ class VertexAttribAlias
             _osgName(osgName),
             _declaration(declaration) {}
 
+        VertexAttribAlias& operator = (const VertexAttribAlias& rhs)
+        {
+            _location = rhs._location;
+            _glName = rhs._glName;
+            _osgName = rhs._osgName;
+            _declaration = rhs._declaration;
+            return *this;
+        }
+
         GLuint      _location;
         std::string _glName;
         std::string _osgName;

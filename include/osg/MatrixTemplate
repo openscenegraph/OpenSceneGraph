@@ -115,6 +115,13 @@ class Matrix2Template : public TemplateMatrix<T, 2, 2>
         }
         ~Matrix2Template() {}
 
+        Matrix2Template& operator = (const Matrix2Template& rhs)
+        {
+            if( &rhs == this ) return *this;
+            set(rhs.ptr());
+            return *this;
+        }
+
         using base_class::set;
 
         void set(value_type a00, value_type a01,
@@ -150,6 +157,13 @@ class Matrix2x3Template : public TemplateMatrix<T, 2, 3>
         }
         ~Matrix2x3Template() {}
 
+        Matrix2x3Template& operator = (const Matrix2x3Template& rhs)
+        {
+            if( &rhs == this ) return *this;
+            set(rhs.ptr());
+            return *this;
+        }
+
         using base_class::set;
 
         void set( value_type a00, value_type a01, value_type a02,
@@ -178,6 +192,13 @@ class Matrix2x4Template : public TemplateMatrix<T, 2, 4>
                  a10, a11, a12, a13 );
         }
         ~Matrix2x4Template() {}
+
+        Matrix2x4Template& operator = (const Matrix2x4Template& rhs)
+        {
+            if( &rhs == this ) return *this;
+            set(rhs.ptr());
+            return *this;
+        }
 
         using base_class::set;
 
@@ -208,6 +229,13 @@ class Matrix3x2Template : public TemplateMatrix<T, 3, 2>
                  a20, a21 );
         }
         ~Matrix3x2Template() {}
+
+        Matrix3x2Template& operator = (const Matrix3x2Template& rhs)
+        {
+            if( &rhs == this ) return *this;
+            set(rhs.ptr());
+            return *this;
+        }
 
         using base_class::set;
 
@@ -240,6 +268,13 @@ class Matrix3Template : public TemplateMatrix<T, 3, 3>
                  a20, a21, a22 );
         }
         ~Matrix3Template() {}
+
+        Matrix3Template& operator = (const Matrix3Template& rhs)
+        {
+            if( &rhs == this ) return *this;
+            set(rhs.ptr());
+            return *this;
+        }
 
         using base_class::set;
 
@@ -280,6 +315,13 @@ class Matrix3x4Template : public TemplateMatrix<T, 3, 4>
         }
         ~Matrix3x4Template() {}
 
+        Matrix3x4Template& operator = (const Matrix3x4Template& rhs)
+        {
+            if( &rhs == this ) return *this;
+            set(rhs.ptr());
+            return *this;
+        }
+
         using base_class::set;
 
         void set( value_type a00, value_type a01, value_type a02, value_type a03,
@@ -313,6 +355,13 @@ class Matrix4x2Template : public TemplateMatrix<T, 4, 2>
                  a30, a31 );
         }
         ~Matrix4x2Template() {}
+
+        Matrix4x2Template& operator = (const Matrix4x2Template& rhs)
+        {
+            if( &rhs == this ) return *this;
+            set(rhs.ptr());
+            return *this;
+        }
 
         using base_class::set;
 
@@ -349,6 +398,13 @@ class Matrix4x3Template : public TemplateMatrix<T, 4, 3>
                  a30, a31, a32 );
         }
         ~Matrix4x3Template() {}
+
+        Matrix4x3Template& operator = (const Matrix4x3Template& rhs)
+        {
+            if( &rhs == this ) return *this;
+            set(rhs.ptr());
+            return *this;
+        }
 
         using base_class::set;
 

@@ -320,7 +320,7 @@ bool DataOutputStream::compress(std::ostream& fout, const std::string& source) c
     return true;
 }
 #else
-bool DataOutputStream::compress(std::ostream& fout, const std::string& source) const
+bool DataOutputStream::compress(std::ostream& /*fout*/, const std::string& /*source*/) const
 {
     return false;
 }

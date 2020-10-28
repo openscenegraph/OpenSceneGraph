@@ -53,7 +53,7 @@ void VolumeTransferFunctionProperty::write(DataOutputStream* out)
         // write out the num of colours
         out->writeUInt(numColours);
 
-        // write out the colour map entires
+        // write out the colour map entries
         for(osg::TransferFunction1D::ColorMap::const_iterator itr = colourMap.begin();
             itr != colourMap.end();
             ++itr)

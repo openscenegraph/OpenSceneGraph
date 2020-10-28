@@ -1,9 +1,9 @@
 /* A demonstration of Tessellation Shaders in OpenScenegraph.
  *
  * Instructions:
- *   Press plus to increase tesselation and minus to decrease it.
- *   Press right arrow to increase inner tesselation and left arrow to decrease it.
- *   Press up arrow to increase outer tesselation and down arrow to decrease it.
+ *   Press plus to increase tessellation and minus to decrease it.
+ *   Press right arrow to increase inner tessellation and left arrow to decrease it.
+ *   Press up arrow to increase outer tessellation and down arrow to decrease it.
  *
  * Original code by Philip Rideout
  * Adapted to OpenScenegraph by John Kaniarz

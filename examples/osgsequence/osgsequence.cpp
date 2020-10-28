@@ -69,7 +69,7 @@ osg::Node* createTextGroup(const char** text)
     // loop through all children
     seq->setInterval(osg::Sequence::LOOP, 0,-1);
 
-    // real-time playback, repeat indefinitively
+    // real-time playback, repeat indefinitely
     seq->setDuration(1.0f, -1);
 
     // must be started explicitly
@@ -157,7 +157,7 @@ osg::Sequence* createSequence(osg::ArgumentParser& arguments)
     // loop through all children
     seq->setInterval(osg::Sequence::LOOP, 0,-1);
 
-    // real-time playback, repeat indefinitively
+    // real-time playback, repeat indefinitely
     seq->setDuration(1.0f, -1);
 
     seq->setMode(osg::Sequence::START);
@@ -244,7 +244,7 @@ int main( int argc, char **argv )
         "- is subclassed from osg::Switch",
         "- assigns a display duration to each child",
         "- can loop or swing through an interval of it's children",
-        "- can repeat the interval a number of times or indefinitively",
+        "- can repeat the interval a number of times or indefinitely",
         "- press 's' to start/pause/resume",
         "- press 'l' to toggle loop/swing mode",
         NULL

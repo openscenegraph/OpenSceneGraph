@@ -837,11 +837,11 @@ struct ListDeviceAvailable
                 _listDevice[i]._device->Release();
     }
 
-    void displayDevicesFound(const std::string& prefixForMessage, osg::NotifySeverity serverity = osg::NOTICE) const
+    void displayDevicesFound(const std::string& prefixForMessage, osg::NotifySeverity severity = osg::NOTICE) const
     {
         for (int i = 0; i < (int)_listDevice.size(); i++)
         {
-            OSG_NOTIFY(serverity) << prefixForMessage << " device \"" << _listDevice[i]._name << "\" clsid " << _listDevice[i]._clsid << std::endl;
+            OSG_NOTIFY(severity) << prefixForMessage << " device \"" << _listDevice[i]._name << "\" clsid " << _listDevice[i]._clsid << std::endl;
         }
     }
 

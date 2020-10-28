@@ -215,7 +215,7 @@ void testGetQuatFromMatrix(const osg::Vec3d& scale)
     double yaw2stop = 360.0;
     double yaw2step = 20.0;
 #else
-    // focussed range
+    // focused range
     double rol1start = 0.0;
     double rol1stop = 0.0;
     double rol1step = 0.1;

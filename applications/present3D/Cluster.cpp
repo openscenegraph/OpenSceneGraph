@@ -305,7 +305,7 @@ bool Receiver::init( void )
 
     if (result)
     {
-        OSG_NOTICE<<"Warning: Reciever::init() setsockopt(..) failed, errno="<<errno<<std::endl;
+        OSG_NOTICE<<"Warning: Receiver::init() setsockopt(..) failed, errno="<<errno<<std::endl;
         return false;
     }
 

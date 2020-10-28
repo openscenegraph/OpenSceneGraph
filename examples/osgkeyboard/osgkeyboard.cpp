@@ -64,7 +64,7 @@ void KeyboardModel::keyChange(int key, int virtualKey, int value)
 {
     osg::notify(osg::INFO) << "key value change, code="<<std::hex << key << "\t value="<< value << std::dec  << std::endl;
 
-    // toggle the keys graphical representation on or off via osg::Swithc
+    // toggle the keys graphical representation on or off via osg::Switch
     KeyModelMap::iterator itr = _keyModelMap.find(virtualKey);
     if (itr!=_keyModelMap.end())
     {

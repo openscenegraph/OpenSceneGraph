@@ -923,7 +923,7 @@ void TextureObjectSet::remove(Texture::TextureObject* to)
     }
     else
     {
-        // 'to' was tail so assing tail to the previous in list
+        // 'to' was tail so assign tail to the previous in list
         _tail = to->_previous;
     }
 

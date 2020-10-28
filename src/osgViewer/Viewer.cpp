@@ -688,7 +688,7 @@ void Viewer::generateSlavePointerData(osg::Camera* camera, osgGA::GUIEventAdapte
     if (!gw) return;
 
     // What type of Camera is it?
-    // 1) Master Camera : do nothin extra
+    // 1) Master Camera : do nothing extra
     // 2) Slave Camera, Relative RF, Same scene graph as master : transform coords into Master Camera and add to PointerData list
     // 3) Slave Camera, Relative RF, Different scene graph from master : do nothing extra?
     // 4) Slave Camera, Absolute RF, Same scene graph as master : do nothing extra?
